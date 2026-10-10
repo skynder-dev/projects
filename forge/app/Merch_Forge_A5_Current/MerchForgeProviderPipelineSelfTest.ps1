@@ -8,10 +8,18 @@ function Ensure-Dir([string]$Path){if(-not(Test-Path -LiteralPath $Path)){New-It
 function Write-AppLog([string]$Level,[string]$Message){}
 function Show-Error([string]$Message){throw $Message}
 function Confirm([string]$Message,[string]$Title='Merch Forge'){return $true}
-function Fail([string]$Message){throw $Message}
+$script:LastChildDiag=''
+function Fail([string]$Message){if($script:LastChildDiag){$Message=$Message+' | last child: '+$script:LastChildDiag};throw $Message}
 function Invoke-SelfTestProcess([string]$FilePath,[string]$ArgumentList,[int]$TimeoutMs=15000){
-  $p=Start-Process -FilePath $FilePath -ArgumentList $ArgumentList -WindowStyle Hidden -PassThru
+  $diagBase=Join-Path ([IO.Path]::GetTempPath()) ('MerchForge-selftest-child-'+[Guid]::NewGuid().ToString('N'))
+  $p=Start-Process -FilePath $FilePath -ArgumentList $ArgumentList -WindowStyle Hidden -PassThru -RedirectStandardOutput ($diagBase+'.out') -RedirectStandardError ($diagBase+'.err')
+  $null=$p.Handle
   if(-not $p.WaitForExit($TimeoutMs)){try{$p.Kill()}catch{};throw ('Self-test child process timed out after '+$TimeoutMs+' ms.')}
+  $p.WaitForExit()
+  $o='';$e='';try{$o=[string](Get-Content -LiteralPath ($diagBase+'.out') -Raw -ErrorAction SilentlyContinue)}catch{};try{$e=[string](Get-Content -LiteralPath ($diagBase+'.err') -Raw -ErrorAction SilentlyContinue)}catch{}
+  $tail=(($o+' '+$e) -replace '\s+',' ').Trim();if($tail.Length -gt 600){$tail=$tail.Substring($tail.Length-600)}
+  $script:LastChildDiag=('exit='+[string]$p.ExitCode+' output='+$tail)
+  Remove-Item -LiteralPath ($diagBase+'.out'),($diagBase+'.err') -Force -ErrorAction SilentlyContinue
   return $p
 }
 $PackageRoot=([string]$PackageRoot).Trim().Trim([char[]]@([char]34));$PackageRoot=(Get-Item -LiteralPath $PackageRoot -Force -ErrorAction Stop).FullName;$root=$PackageRoot;$sandbox=Join-Path $env:TEMP ('MerchForge-ProviderSelfTest-'+[Guid]::NewGuid().ToString('N'));$oldLocal=$env:LOCALAPPDATA
