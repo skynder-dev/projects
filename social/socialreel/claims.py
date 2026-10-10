@@ -24,28 +24,41 @@ def _src(rec, snap, *keys):
     }
 
 
-def first_sentence(text: str, max_words: int = 40) -> str | None:
+BOILERPLATE = re.compile(r"notice of funding|\bNOFO\b|funding opportunity announcement|announces the availability|"
+                         r"this (?:announcement|opportunity|solicitation) (?:is|will)|please (?:see|refer|read)|"
+                         r"see the full|attached|click|webinar|passcode|https?://", re.I)
+
+
+def first_sentence(text: str, max_words: int = 40, title: str = "") -> str | None:
+    """First informative sentence (skips NOFO boilerplate and sentences that just repeat the title)."""
     if not text:
         return None
-    m = re.match(r"(.+?[.!?])(\s|$)", text)
-    s = (m.group(1) if m else text).strip()
-    if len(s.split()) > max_words or len(s.split()) < 6:
-        return None
-    return s
+    sentences = re.findall(r"[^.!?]+(?:[.!?](?=\s|$)|$)", text)[:5]
+    tw = set(re.findall(r"[a-z]{4,}", title.lower()))
+    for s in sentences:
+        s = s.strip()
+        n = len(s.split())
+        if n < 8 or n > max_words or BOILERPLATE.search(s):
+            continue
+        words = set(re.findall(r"[a-z]{4,}", s.lower()))
+        if tw and words and len(words & tw) / len(words) > 0.6:
+            continue
+        return s
+    return None
 
 
 def build_claims(rec: dict, snap: dict, today: dt.date) -> list[dict]:
     """Return the claim ledger. Each claim is a single checkable statement."""
     C: list[dict] = []
-    agency = rec.get("agency_name") or ""
-    if re.match(r"^\s*[0-9A-Z]{4,}\s", agency or ""):       # e.g. "69A350 OSDBU" -> not a readable name
-        agency = ""
+    from .grants import clean_agency
+    agency = clean_agency(rec.get("agency_name")) or ""
     top = rec.get("top_agency")
-    display_agency = agency if agency and not agency.isupper() else (top or agency or rec.get("agency_code") or "")
+    display_agency = agency or top or ""
 
     def add(key, statement, values, *fields):
         C.append({"key": key, "statement": statement, "values": values, "source": _src(rec, snap, *fields)})
 
+    agency_fields = ("agency_name", "agency_code") if agency else ("top_agency",)
     add("identity",
         f"Grants.gov lists \"{rec['title']}\" as funding opportunity {rec.get('number') or rec['opportunity_id']}.",
         {"title": rec["title"], "number": rec.get("number"), "opportunity_id": rec["opportunity_id"]},
@@ -53,10 +66,10 @@ def build_claims(rec: dict, snap: dict, today: dt.date) -> list[dict]:
     if display_agency:
         add("agency", f"The listing agency is {display_agency}.",
             {"agency": display_agency, "agency_code": rec.get("agency_code"), "parent_agency": top},
-            "agency_name", "agency_code")
+            *agency_fields)
     if top and top != display_agency:
-        add("parent_agency", f"The agency code {rec.get('agency_code')} belongs to the {top}.",
-            {"parent_agency": top, "agency_code": rec.get("agency_code")}, "agency_code")
+        add("parent_agency", f"The listing agency is part of the {top}.",
+            {"parent_agency": top, "agency_code": rec.get("agency_code")}, "top_agency")
     if rec.get("status"):
         add("status", f"The opportunity status on Grants.gov is \"{rec['status']}\".",
             {"status": rec["status"]}, "status")
@@ -110,7 +123,7 @@ def build_claims(rec: dict, snap: dict, today: dt.date) -> list[dict]:
     if cs is not None:
         add("cost_sharing", "Cost sharing or matching is " + ("required." if cs else "not required."),
             {"cost_sharing_required": cs}, "cost_sharing")
-    q = first_sentence(rec.get("description") or "")
+    q = first_sentence(rec.get("description") or "", title=rec.get("title", ""))
     if q:
         add("purpose_quote", f"The official synopsis says: \"{q}\"", {"quote": q}, "description")
     return C
