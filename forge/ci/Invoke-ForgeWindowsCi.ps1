@@ -1,4 +1,4 @@
-# Merch Forge · Windows CI driver (Windows PowerShell 5.1)
+﻿# Merch Forge · Windows CI driver (Windows PowerShell 5.1)
 # 1) real startup preflight (integrity, parser, WPF XAML load, provider pipeline self-test)
 # 2) research-draft headless self-test under Windows PowerShell 5.1 (incl. 054 rollback compatibility)
 # 3) real WPF window smoke in two processes (create + restart), with screenshots
@@ -57,7 +57,7 @@ if($wb.IndexOf($marker) -lt 0){ Step 'wpf_hook_inserted' $false 'ShowDialog mark
     $ciCopy = Join-Path $app 'MerchForgeWorkbench.ci.ps1'
     [IO.File]::WriteAllText($ciCopy, $wb.Replace($marker, ". `$env:FORGE_CI_HOOK`n"+$marker), (New-Object Text.UTF8Encoding($true)))
     $env:FORGE_CI_HOOK = Join-Path $PSScriptRoot 'ForgeWpfSmoke.hook.ps1'; $env:FORGE_CI_OUT = $OutDir
-    foreach($phase in @('create','restart','package','offline')){
+    foreach($phase in @('create','restart','package','layout','offline')){
         $env:FORGE_CI_PHASE = $phase; $env:FORGE_CI_RESULT = Join-Path $OutDir ("wpf-$phase.json"); Remove-Item $env:FORGE_CI_RESULT -ErrorAction SilentlyContinue
         $r = Run-Child ('wpf-'+$phase) @('-NoLogo','-NoProfile','-ExecutionPolicy','Bypass','-STA','-File',$ciCopy) 420
         $j=$null; if(Test-Path $env:FORGE_CI_RESULT){ $j = Get-Content $env:FORGE_CI_RESULT -Raw -Encoding UTF8 | ConvertFrom-Json }

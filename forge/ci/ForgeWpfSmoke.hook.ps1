@@ -75,11 +75,14 @@ function Ci-FindButtons($Root) {
     return $out
 }
 $script:CiDenyButtons=@('ForgetButton','ConnectButton','HomeButton')
-function Ci-ClickAll([string]$Where,[scriptblock]$Return) {
+# Window-level buttons (they reset the open idea or open the side panel): clicked only in the final, idea-free pass.
+$script:CiGlobalButtons=@('AboutButton','RefreshButton','BackendRetryButton','UtilityCloseTopButton','UtilityCloseButton','DiagnosticsButton','UtilityOpenLogButton')
+function Ci-ClickAll([string]$Where,[scriptblock]$Return,[bool]$IncludeGlobal=$false) {
     $seen=@{}
     foreach($b in @(Ci-FindButtons $Window)){
         if(([DateTime]::UtcNow-$script:CiClickStart).TotalSeconds -gt 230){ return }
         $name=[string]$b.Name; if($seen.ContainsKey($name) -or $script:CiDenyButtons -contains $name -or $name -like 'Nav*'){continue}; $seen[$name]=$true
+        if(-not $IncludeGlobal -and $script:CiGlobalButtons -contains $name){continue}
         if(-not $b.IsVisible -or -not $b.IsEnabled){continue}
         $script:CiClicked += ($Where+':'+$name)
         Ci-Try ($Where+' / '+$name) { $b.RaiseEvent((New-Object System.Windows.RoutedEventArgs ([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent))) }
@@ -91,6 +94,31 @@ function Ci-StubModalEntryPoints {
     foreach($n in @('Import-AmazonPrintProfileFile','Invoke-AmazonProfileForm','Invoke-ConfirmChecks','Open-LocalChecksFolder','Open-DiagnosticLogSafe','Import-LocalArtwork','Import-LocalCheckEvidence','Import-LocalPublicationReceipt','Import-LocalSalesCsv','Queue-Generation','Save-PublicationMetadata')){
         Set-Item -Path ('function:script:'+$n) -Value ([scriptblock]::Create("`$script:Ci.confirms += 'modal stub: $n'"))
     }
+}
+
+# ---------- layout phase: three window widths, every section, clipped text detection ----------
+function Ci-IsInsideListItem($El) {
+    $p=$El; for($i=0;$i -lt 40 -and $null -ne $p;$i++){ if($p -is [System.Windows.Controls.ListBoxItem] -or $p -is [System.Windows.Controls.ComboBox]){ return $true }; try{ $p=[System.Windows.Media.VisualTreeHelper]::GetParent($p) }catch{ return $false } }
+    return $false
+}
+function Ci-FindClippedText {
+    # A single-line TextBlock whose text needs more width than it has is cut off (with or without an ellipsis).
+    $out=New-Object System.Collections.Generic.List[string]; $stack=New-Object System.Collections.Stack; $stack.Push($Window)
+    $dpi=1.0; try{ $dpi=[System.Windows.Media.VisualTreeHelper]::GetDpi($Window).PixelsPerDip }catch{}
+    while($stack.Count -gt 0){
+        $n=$stack.Pop()
+        if($n -is [System.Windows.UIElement] -and -not $n.IsVisible){ continue }
+        if($n -is [System.Windows.Controls.TextBlock] -and $n.TextWrapping -eq 'NoWrap' -and -not [string]::IsNullOrWhiteSpace($n.Text) -and $n.ActualWidth -gt 0 -and -not (Ci-IsInsideListItem $n)){
+            try{
+                $tf=New-Object System.Windows.Media.Typeface($n.FontFamily,$n.FontStyle,$n.FontWeight,$n.FontStretch)
+                $ft=New-Object System.Windows.Media.FormattedText(($n.Text -split "`n")[0],[Globalization.CultureInfo]::CurrentUICulture,$n.FlowDirection,$tf,$n.FontSize,[System.Windows.Media.Brushes]::Black,$dpi)
+                if($ft.WidthIncludingTrailingWhitespace -gt ($n.ActualWidth+1.5)){ $nm=if($n.Name){$n.Name}else{'"'+(($n.Text -split "`n")[0]).Substring(0,[Math]::Min(40,(($n.Text -split "`n")[0]).Length))+'"'}; [void]$out.Add(('{0} ({1:0}/{2:0})' -f $nm,$ft.WidthIncludingTrailingWhitespace,$n.ActualWidth)) }
+            }catch{}
+        }
+        $c=0; try{ $c=[System.Windows.Media.VisualTreeHelper]::GetChildrenCount($n) }catch{}
+        for($i=0;$i -lt $c;$i++){ $stack.Push([System.Windows.Media.VisualTreeHelper]::GetChild($n,$i)) }
+    }
+    return @($out | Sort-Object -Unique)
 }
 
 $script:CiWatchdog=New-Object System.Windows.Threading.DispatcherTimer
@@ -294,34 +322,59 @@ $Window.Add_ContentRendered({
                 Ci-Check 'home_attention_count' ($HomeMetricAttentionValue.Text -eq '1') $HomeMetricAttentionValue.Text
                 Ci-Shot '14-performance'
             }
+        } elseif($script:Ci.phase -eq 'layout') {
+            $draft=$null; foreach($i in @($ConceptList.Items)){ if([bool](Get-PropertyValue $i 'is_local_draft')){$draft=$i} }
+            $ConceptList.SelectedItem=$draft; Ci-Flush
+            $clip=[ordered]@{}
+            foreach($w in @(1024,1366,1920)){
+                $Window.WindowState='Normal'; $Window.Width=$w; $Window.Height=$(if($w -ge 1920){1040}elseif($w -ge 1366){768}else{720}); Ci-Flush; Update-ResponsiveLayout; Ci-Flush
+                foreach($sec in @('home','discover','ideas','artwork','checks','publish','portfolio','performance')){
+                    Show-ProductSection $sec; Ci-Flush
+                    $found=@(Ci-FindClippedText)
+                    if($found.Count){ $clip[('{0}-{1}' -f $w,$sec)]=($found -join ', ') }
+                    Ci-Shot ('w{0}-{1}' -f $w,$sec)
+                }
+            }
+            $script:Ci['clipped']=$clip
+            $wide=@($clip.Keys | Where-Object { $_ -notlike '1024-*' })
+            Ci-Check 'layout_no_clipped_text_1366_1920' ($wide.Count -eq 0) ((@($wide | ForEach-Object { $_+': '+$clip[$_] })) -join ' || ')
+            Ci-Check 'layout_clipped_text_1024_info' $true ((@($clip.Keys | Where-Object { $_ -like '1024-*' } | ForEach-Object { $_+': '+$clip[$_] })) -join ' || ')
         } elseif($script:Ci.phase -eq 'offline') {
             Ci-StubModalEntryPoints
             Enter-OfflineWorkbench 'HTTP 503 Service Unavailable (CI fixture: backend down)'; Ci-Flush
             Ci-Check 'offline_mode_on' ([bool]$script:OfflineMode -and $BackendBanner.Visibility -eq 'Visible' -and $HomeLandingScroll.Visibility -eq 'Visible') ([string]$script:OfflineMode)
             Ci-Shot '20-offline-home'
             $script:CiClickStart=[DateTime]::UtcNow
+            Ci-Check 'offline_draft_listed' (@(@($ConceptList.Items) | Where-Object { [bool](Get-PropertyValue $_ 'is_local_draft') }).Count -ge 1) $ConceptList.Items.Count
+            # 1) inside ideas: the research draft (full local path) and two offline snapshot ideas; every section and tab
+            $items=@(@(@($ConceptList.Items) | Where-Object { [bool](Get-PropertyValue $_ 'is_local_draft') }) + @(@($ConceptList.Items) | Where-Object { -not [bool](Get-PropertyValue $_ 'is_local_draft') } | Select-Object -First 2))
+            foreach($it in $items){
+                $label=[string](Get-PropertyValue $it 'concept_key')
+                Ci-Try ('open '+$label) { $ConceptList.SelectedItem=$null; Ci-Flush; $ConceptList.SelectedItem=$it }
+                foreach($sec in @('ideas','artwork','checks','publish')){
+                    $s=$sec; Ci-Try ('section '+$label+' '+$s) { Show-ProductSection $s }
+                    $back=[scriptblock]::Create("if(`$script:ProductSection -ne '$s'){ Show-ProductSection '$s' }")
+                    Ci-ClickAll ($label+'@'+$s) $back
+                    foreach($tab in @($MainTabs.Items)){
+                        if(-not ($tab -is [System.Windows.Controls.TabItem]) -or -not $tab.IsEnabled -or $tab.Visibility -ne 'Visible' -or $MainTabs.Visibility -ne 'Visible'){continue}
+                        $tk=Get-MainTabKey $tab
+                        Ci-Try ('tab '+$label+' '+$tk) { $MainTabs.SelectedItem=$tab }
+                        Ci-ClickAll ($label+'@'+$s+'#'+$tk) $null
+                    }
+                }
+            }
+            # 2) every section without an idea, including the window-level buttons (Refresh / Retry / About / Diagnostics)
             foreach($sec in @('home','discover','ideas','artwork','checks','publish','portfolio','performance')){
                 $nav=Get-Variable -Name ('Nav'+(Get-Culture).TextInfo.ToTitleCase($sec)+'Button') -ValueOnly -ErrorAction SilentlyContinue
                 Ci-Try ('nav '+$sec) { Ci-Click $nav ('Nav '+$sec) }
-                $s=$sec; Ci-ClickAll $sec ([scriptblock]::Create("if(`$script:ProductSection -ne '$s'){ Show-ProductSection '$s' }"))
-            }
-            Ci-Check 'offline_draft_listed' (@(@($ConceptList.Items) | Where-Object { [bool](Get-PropertyValue $_ 'is_local_draft') }).Count -ge 1) $ConceptList.Items.Count
-            $items=@(@($ConceptList.Items) | Select-Object -First 3)
-            foreach($it in $items){
-                $label=[string](Get-PropertyValue $it 'concept_key')
-                Ci-Try ('open '+$label) { $ConceptList.SelectedItem=$it }
-                foreach($tab in @($MainTabs.Items)){
-                    if(-not ($tab -is [System.Windows.Controls.TabItem]) -or -not $tab.IsEnabled -or $tab.Visibility -ne 'Visible'){continue}
-                    $tk=Get-MainTabKey $tab
-                    Ci-Try ('tab '+$tk) { $MainTabs.SelectedItem=$tab }
-                    Ci-ClickAll ($label+'#'+$tk) $null
-                }
+                $s=$sec; Ci-ClickAll $sec ([scriptblock]::Create("if(`$script:ProductSection -ne '$s'){ Show-ProductSection '$s' }")) $true
             }
             Ci-Try 'portfolio rows' { Show-ProductSection 'portfolio'; foreach($row in @($PortfolioPipelineList.Items)){ $PortfolioPipelineList.SelectedItem=$row; Ci-Flush; Show-ProductSection 'portfolio' } }
             foreach($lang in @('Es','Ru','En')){ $lb=Get-Variable -Name ('HeaderLang'+$lang) -ValueOnly -ErrorAction SilentlyContinue; if($null -ne $lb){ Ci-Try ('lang '+$lang) { $lb.RaiseEvent((New-Object System.Windows.RoutedEventArgs ([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent))) } } }
             Ci-Try 'retry backend' { Ci-Click $BackendRetryButton 'BackendRetryButton' }
             Ci-Check 'offline_stays_offline_after_retry' ([bool]$script:OfflineMode) ([string]$script:ConnectionState)
-            Ci-Check 'offline_clicked_many' (@($script:CiClicked).Count -ge 40) (@($script:CiClicked).Count)
+            $distinct=@($script:CiClicked | ForEach-Object { ($_ -split ':')[-1] } | Sort-Object -Unique)
+            Ci-Check 'offline_clicked_many' (@($script:CiClicked).Count -ge 60 -and $distinct.Count -ge 20) ((@($script:CiClicked).Count)+' clicks, '+$distinct.Count+' distinct: '+($distinct -join ','))
             Ci-Check 'offline_no_crashes' (@($script:CiCrashes).Count -eq 0) ((@($script:CiCrashes) | Select-Object -First 12) -join ' || ')
             $script:Ci['clicked']=@($script:CiClicked); $script:Ci['crashes']=@($script:CiCrashes)
             Ci-Shot '21-offline-after-clicks'

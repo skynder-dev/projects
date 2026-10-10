@@ -4,8 +4,8 @@
   "files": [
     {
       "path": "candidate_manifest.json",
-      "sha256": "07a38fb04b6a36f9ae5719d9614731173cf719919868b3e2fa883c271ac6f6b3",
-      "size_bytes": 77569
+      "sha256": "e9b963a7036379446d3fe46627a528e1a3fa1e0e2f3c1ef60b409d0b2f1471cb",
+      "size_bytes": 77552
     },
     {
       "path": "Configure Image Provider.ps1",
@@ -134,8 +134,8 @@
     },
     {
       "path": "MerchForgeWorkbench.ps1",
-      "sha256": "43cc880d5c96a50c83dec0508db9bc505c0b9c7ab532036a697f9eeaafdb23dd",
-      "size_bytes": 255644
+      "sha256": "85a9d3179205d73f6837e8919b5685858d4438a6e54d836d5b7f06c085bef111",
+      "size_bytes": 256257
     },
     {
       "path": "Modules\\Forge.AmazonProfile.ps1",

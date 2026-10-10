@@ -13,7 +13,7 @@
     "status": "ACTIVE"
   },
   "desktop": {
-    "app_version": "2.16.1-crash-hunt",
+    "app_version": "2.17.0-layout",
     "native_windows_runtime_verified": false,
     "orange_semantic_palette": true,
     "overview_first": true,
@@ -28,10 +28,10 @@
       "ru",
       "es"
     ],
-    "workbench_sha256": "43cc880d5c96a50c83dec0508db9bc505c0b9c7ab532036a697f9eeaafdb23dd",
-    "workbench_size_bytes": 255644,
+    "workbench_sha256": "85a9d3179205d73f6837e8919b5685858d4438a6e54d836d5b7f06c085bef111",
+    "workbench_size_bytes": 256257,
     "native_windows_parser_verified": false,
-    "native_windows_parser_target_sha256": "43cc880d5c96a50c83dec0508db9bc505c0b9c7ab532036a697f9eeaafdb23dd",
+    "native_windows_parser_target_sha256": "85a9d3179205d73f6837e8919b5685858d4438a6e54d836d5b7f06c085bef111",
     "native_windows_parser_result_sha256": null,
     "product_home_dashboard": true,
     "brand_home_navigation": "dedicated_home_dashboard",
@@ -320,7 +320,7 @@
     "trusted_local_check_worker": "MerchForgeCheckWorker.ps1",
     "generation_spool_policy": "forge.generation_spool_policy.v1",
     "publication_receipt_print_binding": true,
-    "current_release": "066_Merch_Forge_CRASH_HUNT_RC",
+    "current_release": "067_Merch_Forge_LAYOUT_RC",
     "generation_authority_module": "Modules\\Forge.GenerationAuthority.ps1",
     "generation_temporal_authority": "future generation job/attempt timestamps beyond 10-minute clock-skew tolerance fail closed before paid dispatch/readiness; shared first-live authority also revalidates non-future ordered attempt/result/import timestamps",
     "amazon_print_profile_temporal_authority": "valid_until must be strictly later than captured_at; captured_at remains bounded by 10-minute future-skew tolerance and 120-day horizon",
@@ -483,11 +483,11 @@
     "owner_separate_parser_zip_required": false,
     "current_release": "044_Merch_Forge_PACKAGE_ROOT_RC"
   },
-  "package_name": "066_Merch_Forge_CRASH_HUNT_RC",
-  "package_number": 66,
-  "result_intent": "Offline crash hunt phase; readable checks; header title fix",
+  "package_name": "067_Merch_Forge_LAYOUT_RC",
+  "package_number": 67,
+  "result_intent": "Layout cleanup; layout CI phase; deeper offline crash hunt",
   "schema": "forge.reconciled_candidate_manifest.v1",
-  "stage": "FORGE-066-CRASH-HUNT-RC",
+  "stage": "FORGE-067-LAYOUT-RC",
   "startup_baseline": {
     "immutable_exact": false,
     "inner_start_sha256": "013e9dcfbfb4c2a42c12b4f6ee208767d80509be9e877160f088a9d2984f51a1",
@@ -647,7 +647,7 @@
     "exact_043_native_windows_stage": "integrity",
     "package_root_native_argv_repair": true
   },
-  "installer_generation": "00000000000000100249",
+  "installer_generation": "00000000000000100250",
   "installer_generation_format": "fixed_width_decimal_v1",
   "installer_guard": {
     "single_writer_lock": "install.lock",

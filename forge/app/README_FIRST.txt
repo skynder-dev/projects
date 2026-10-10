@@ -1,15 +1,14 @@
-MERCH FORGE 066 Merch Forge CRASH HUNT RC
+MERCH FORGE 067 Merch Forge LAYOUT RC
 
 START
 1. Extract the whole folder.
-2. Run START_066_MERCH_FORGE.vbs.
+2. Run START_067_MERCH_FORGE.vbs.
 
-WHAT IS NEW (066)
-- Checks list is readable: "IP · passed", "Artwork · passed", "Print file · passed"... in the app language,
-  common check notes translated.
-- Coming back to an idea from Portfolio/Performance/Home/Discover shows the idea's title again
-  (before, the header could still say "Portfolio" while you were in Checks).
-- Amazon profile days left are rounded up (30-day profile shows 30, not 29).
-- New Windows test phase "backend down": every button in every section and tab is clicked with the server
-  unavailable; any crash fails the build.
-- Includes 065 and earlier (055-064).
+WHAT IS NEW (067)
+- No more double titles: Home, Discover, Portfolio and Performance show their title once (in the header).
+- Discover header is no longer squeezed; card captions (Products, Channels, Niches...) wrap instead of being cut.
+- Header subtitle wraps instead of being cut.
+- Windows tests: new "layout" phase takes screenshots of every section at 1024, 1366 and 1920 px and fails
+  if any text is cut off at 1366 or 1920; the "backend down" phase now also clicks every button inside an
+  idea (research draft and offline ideas) in every section and tab.
+- Includes 066 and earlier (055-065).

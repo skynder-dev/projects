@@ -1,9 +1,9 @@
 {
   "schema": "forge.release_checkpoint.v1",
-  "package": "066_Merch_Forge_CRASH_HUNT_RC",
-  "previous_package": "065_Merch_Forge_AMAZON_PROFILE_RC",
-  "app_version": "2.16.1-forge-crash-hunt",
-  "installer_generation": "00000000000000100249",
+  "package": "067_Merch_Forge_LAYOUT_RC",
+  "previous_package": "066_Merch_Forge_CRASH_HUNT_RC",
+  "app_version": "2.17.0-forge-layout",
+  "installer_generation": "00000000000000100250",
   "static": "13/13",
   "checks": {
     "xaml_xml_parse": true,
