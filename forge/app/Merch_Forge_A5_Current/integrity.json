@@ -119,8 +119,8 @@
     },
     {
       "path": "MerchForgeProviderPipelineSelfTest.ps1",
-      "sha256": "94cf9ce4cdd1990421556b5719f1fe8bcde27189b041c68e7bba06cbf05eff66",
-      "size_bytes": 85610
+      "sha256": "2a40e0e0bc8843d173324a638e7971d9b90d2a7fbca331abf7115ea5d9d47da0",
+      "size_bytes": 85588
     },
     {
       "path": "MerchForgeResearchDraftSelfTest.ps1",
