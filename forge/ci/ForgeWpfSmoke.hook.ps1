@@ -181,6 +181,11 @@ $Window.Add_ContentRendered({
         Ci-Check 'window_rendered' ($Window.IsVisible -and $AppGrid.Visibility -eq 'Visible')
         Ci-Check 'app_version_reported' ($script:AppVersion -like '2.*') $script:AppVersion
         if($script:Ci.phase -eq 'create'){
+            # first start of this version: the "What's new" card on Home, dismissed once
+            Ci-Check 'whats_new_shown_first_start' ($WhatsNewCard.Visibility -eq 'Visible' -and $WhatsNewTitle.Text -like "What's new in Merch Forge 2.*" -and $WhatsNewText.Text -like '*Create concept draft*') ($WhatsNewTitle.Text)
+            Ci-Shot '00-whats-new'
+            Ci-Click $WhatsNewDismissButton 'WhatsNewDismissButton'
+            Ci-Check 'whats_new_dismissed' ($WhatsNewCard.Visibility -eq 'Collapsed' -and (Test-Path -LiteralPath (Get-WhatsNewSeenPath))) ''
             # Discover renders the (fixture) live snapshot through the real Load-DiscoverSnapshot code path
             Ci-Click $NavDiscoverButton 'NavDiscoverButton'
             Ci-Check 'discover_visible' ($DiscoverLandingScroll.Visibility -eq 'Visible')
@@ -340,7 +345,7 @@ $Window.Add_ContentRendered({
             Ci-Check 'chk_dialog_accepts' ($second -and $null -ne $answers) ''
             $before=$script:Ci.errors.Count; $ok=$false; if($null -ne $answers){ $ok=Submit-OwnerCheckAnswers $answers.answers $answers.confirmed }; Ci-Flush
             Ci-Check 'chk_saved_status_ru' ($ok -and $StatusText.Text -like 'Проверки сохранены:*') $StatusText.Text
-            Ci-Check 'chk_evidence_text_ru' ($AnalysisEvidence.Text -like 'IP · пройдено*' -and $AnalysisEvidence.Text -like '*Макет · пройдено*' -and $AnalysisEvidence.Text -like '*Текст карточки · пройдено*') ($AnalysisEvidence.Text.Substring(0,[Math]::Min(300,$AnalysisEvidence.Text.Length)))
+            Ci-Check 'chk_evidence_text_ru' ($AnalysisEvidence.Text -like 'IP · пройдено*' -and $AnalysisEvidence.Text -like '*Макет · пройдено*' -and $AnalysisEvidence.Text -like '*Текст карточки · пройдено*' -and $AnalysisEvidence.Text -like '*Принятый прозрачный PNG совпадает*') ($AnalysisEvidence.Text.Substring(0,[Math]::Min(300,$AnalysisEvidence.Text.Length)))
             $lc=Get-LocalCoreConcept $key; $gate=Get-LocalCheckGateSnapshot $lc
             Ci-Check 'pkg_evidence_imported' ($script:Ci.errors.Count -eq $before) (($script:Ci.errors | Select-Object -Last 1))
             Ci-Check 'pkg_all_checks_ready' ([bool]$gate.all_ready) (($gate.checks | ConvertTo-Json -Depth 4 -Compress))
@@ -484,6 +489,7 @@ $Window.Add_ContentRendered({
             $draft=$null; foreach($i in @($ConceptList.Items)){ if([bool](Get-PropertyValue $i 'is_local_draft')){$draft=$i} }
             Ci-Check 'draft_listed_after_restart' ($null -ne $draft)
             Ci-Check 'locale_ru_persisted' ($script:Locale -eq 'ru') $script:Locale
+            Ci-Check 'whats_new_not_shown_again' ($WhatsNewCard.Visibility -eq 'Collapsed') ([string]$WhatsNewCard.Visibility)
             $ConceptList.SelectedItem=$draft; Ci-Flush
             Ci-Check 'draft_opened_by_list_selection' ((Test-CurrentIsResearchDraft) -and $ConceptTitle.Text -eq 'CI FIXTURE · Night-shift nurses') $ConceptTitle.Text
             Ci-Check 'revision_2_after_restart' ([int]$script:Current.concept.current_revision_no -eq 2)

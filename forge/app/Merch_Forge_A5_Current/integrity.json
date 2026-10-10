@@ -4,8 +4,8 @@
   "files": [
     {
       "path": "candidate_manifest.json",
-      "sha256": "92b7b66c873cb1119aa7abc59cda903500bd38ace3716957f965684a4e05d8ca",
-      "size_bytes": 77892
+      "sha256": "e7d5d72a2d530602598e4a5a7a31a1f719abd2518b14841974d833c394857883",
+      "size_bytes": 78089
     },
     {
       "path": "Configure Image Provider.ps1",
@@ -34,8 +34,13 @@
     },
     {
       "path": "Data\\Forge.MessageTranslations.json",
-      "sha256": "b61c9ef5d1781eb36e3dc03f082d0b75486a023151c048c14032641a894df9a7",
-      "size_bytes": 87088
+      "sha256": "7ba8b43c84e6b2960ad20503963d189e90dd675113269b7cc35d007c2613d1fe",
+      "size_bytes": 89573
+    },
+    {
+      "path": "Data\\Forge.WhatsNew.json",
+      "sha256": "9216247034c4da1ff3dc78b02aed75515dae06361a28ac72d726546a42bfe218",
+      "size_bytes": 3009
     },
     {
       "path": "Data\\GenerationJob.example.json",
@@ -139,8 +144,8 @@
     },
     {
       "path": "MerchForgeWorkbench.ps1",
-      "sha256": "74ae5f406d3acc73bd9b5790b925f24a38357a38be509ddcb61be0254a4da54c",
-      "size_bytes": 258789
+      "sha256": "c0a9465ce696f288ecdcbea673667d5c26702fab393c8ef08b920cab448f8409",
+      "size_bytes": 259786
     },
     {
       "path": "Modules\\Forge.AmazonProfile.ps1",
@@ -219,8 +224,8 @@
     },
     {
       "path": "Modules\\Forge.LocalCore.ps1",
-      "sha256": "be81ac89e30cc58470303c92ca4ee3776752680791472f2e3eb12e97655b129e",
-      "size_bytes": 126534
+      "sha256": "b93902d67ab6c5b7e1dd3ce5ccae34f22b5001ffb1b13643c59daee611c5dffc",
+      "size_bytes": 126638
     },
     {
       "path": "Modules\\Forge.Localization.ps1",
@@ -261,6 +266,11 @@
       "path": "Modules\\Forge.UI.Layout.ps1",
       "sha256": "c30d699f93b6ee4f1d766c1687f1074148ca937a77e8251d214a257cebc76fd3",
       "size_bytes": 9674
+    },
+    {
+      "path": "Modules\\Forge.WhatsNew.ps1",
+      "sha256": "3e9f21e69eab6687e46147fa072ea23857f37d2452a64df5a37a537d4a2caf52",
+      "size_bytes": 2832
     },
     {
       "path": "Open Error Log.vbs",

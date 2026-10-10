@@ -106,6 +106,11 @@ for f in ['Start Merch Forge.vbs', 'MerchForgeLauncher.cmd', 'MerchForgePrefligh
     C['byte_equal_054_' + os.path.basename(f).replace(' ', '_')] = sha(os.path.join(INNER, f)) == sha(os.path.join(old, f))
 vbs = [os.path.join(dp, f) for dp, dn, fn in os.walk(APP) for f in fn if f.lower().endswith('.vbs')]
 C['vbs_no_utf8_bom_ascii_only'] = all(not open(v, 'rb').read().startswith(b'\xef\xbb\xbf') and all(x < 128 for x in open(v, 'rb').read()) for v in vbs)
+wn_path = os.path.join(INNER, 'Data', 'Forge.WhatsNew.json')
+try:
+    wn = json.loads(rd(wn_path)); C['whats_new_valid'] = bool(wn.get('version')) and all(isinstance(wn['items'].get(l), list) and wn['items'][l] for l in ('en', 'ru', 'es'))
+except Exception:
+    C['whats_new_valid'] = False
 C['integrity_all_pass'] = all(sha(os.path.join(INNER, f['path'].replace('\\', '/'))) == f['sha256'] for f in integ['files'])
 C['manifest_workbench_sha'] = json.loads(rd(mp))['desktop']['workbench_sha256'] == sha(os.path.join(INNER, 'MerchForgeWorkbench.ps1'))
 C['manifest_authority_all_false'] = all(v is False for v in m['authority'].values())

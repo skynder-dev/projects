@@ -1615,6 +1615,41 @@
    "en": "This sales CSV has no units or royalty column. Columns found: {0}.",
    "ru": "В этом CSV продаж нет колонки со штуками или роялти. Найдены колонки: {0}.",
    "es": "Este CSV de ventas no tiene columna de unidades ni de regalías. Columnas encontradas: {0}."
+  },
+  {
+   "en": "Accepted artwork failed local PNG/transparency validation: {0}",
+   "ru": "Принятый макет не прошёл проверку PNG/прозрачности: {0}",
+   "es": "El diseño aceptado no pasó la revisión de PNG/transparencia: {0}"
+  },
+  {
+   "en": "Artwork PNG decode/validation failed: {0}",
+   "ru": "Не удалось прочитать или проверить PNG макета: {0}",
+   "es": "No se pudo leer o revisar el PNG del diseño: {0}"
+  },
+  {
+   "en": "Local technical image checks passed, but accepted artwork dimensions do not match the owner-attested Amazon template canvas.",
+   "ru": "Технические проверки картинки пройдены, но размер принятого макета не совпадает с холстом шаблона Amazon из вашего профиля.",
+   "es": "Las revisiones técnicas pasaron, pero el tamaño del diseño aceptado no coincide con el lienzo de la plantilla de Amazon de tu perfil."
+  },
+  {
+   "en": "Local technical image checks passed, but no current owner-attested Amazon print profile is available.",
+   "ru": "Технические проверки картинки пройдены, но нет действующего Amazon-профиля печати. Заполните его в «Проверках».",
+   "es": "Las revisiones técnicas pasaron, pero no hay un perfil de impresión de Amazon válido. Rellénalo en Comprobaciones."
+  },
+  {
+   "en": "Unsupported accepted artwork format.",
+   "ru": "Формат принятого макета не поддерживается (нужен PNG).",
+   "es": "El formato del diseño aceptado no es compatible (se necesita PNG)."
+  },
+  {
+   "en": "Local check worker failed with exit code {0}.",
+   "ru": "Проверка печати завершилась с ошибкой (код {0}). Откройте «Проверки» ещё раз.",
+   "es": "La revisión de impresión falló (código {0}). Abre Comprobaciones de nuevo."
+  },
+  {
+   "en": "Owner-attested values from a current Amazon Merch product template; not independently verified by Merch Forge.",
+   "ru": "Значения перенесены владельцем из текущего шаблона Amazon Merch; Merch Forge их отдельно не проверяет.",
+   "es": "Valores copiados por el propietario de la plantilla actual de Amazon Merch; Merch Forge no los verifica por separado."
   }
  ]
 }

@@ -682,6 +682,7 @@ function Update-LocalCoreBusinessSurfaces {
     try{Update-PerformanceInsightsSurface}catch{Write-AppLog 'WARN' ('Performance insights refresh failed: '+$_.Exception.Message)}
     try{if(Get-Command Update-AmazonProfileSurface -ErrorAction SilentlyContinue){Update-AmazonProfileSurface}}catch{Write-AppLog 'WARN' ('Amazon profile status refresh failed: '+$_.Exception.Message)}
     try{if(Get-Command Update-DataCopySurface -ErrorAction SilentlyContinue){Update-DataCopySurface}}catch{}
+    try{if(Get-Command Update-WhatsNewCard -ErrorAction SilentlyContinue){Update-WhatsNewCard}}catch{}
 }
 function Update-LocalCoreStatusUi {
     if($null -eq $script:Current){return};$lc=Get-LocalCoreConcept ([string]$script:Current.concept.concept_key);if($null -eq $lc){return};$identity=Get-LocalCurrentRevisionIdentity $script:Current.concept;$acc=Get-PropertyValue $lc 'active_acceptance';$accepted=($null-ne$acc -and [string](Get-PropertyValue $acc 'concept_revision_id') -eq $identity.id -and [string](Get-PropertyValue $acc 'revision_hash') -eq $identity.hash)

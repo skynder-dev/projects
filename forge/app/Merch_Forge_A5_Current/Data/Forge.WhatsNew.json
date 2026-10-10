@@ -1,0 +1,36 @@
+﻿{
+ "schema": "forge.whats_new.v1",
+ "version": "2.24.0-whats-new",
+ "items": {
+  "en": [
+   "Discover -> \"Create concept draft\": an idea from research, with KEEP / EDIT / REGEN / SKIP.",
+   "Portfolio shows where every idea stands; a click opens the tab where work continues.",
+   "Checks: \"Confirm checks...\" and \"Fill Amazon profile...\" forms instead of editing JSON files.",
+   "Publish: live hints for Amazon limits and risky wording.",
+   "Performance: real leaders by sales and royalties, and a \"needs attention\" list.",
+   "Home -> My data: save and restore a copy of all your work; an automatic copy is made once a day.",
+   "Errors say the real reason and what to do, in English, Russian and Spanish.",
+   "Fixed: START_0xx.vbs did not open the app; local image generation could not start."
+  ],
+  "ru": [
+   "Поиск → «Создать черновик концепта»: идея из исследования, с решением ОСТАВИТЬ / ИЗМЕНИТЬ / ЗАНОВО / ПРОПУСТИТЬ.",
+   "«Портфолио» показывает, где каждая идея; клик открывает вкладку, где продолжать.",
+   "«Проверки»: формы «Подтвердить проверки…» и «Заполнить Amazon-профиль…» вместо правки JSON-файлов.",
+   "«Публикация»: подсказки по лимитам Amazon и рискованным словам прямо при вводе.",
+   "«Результаты»: настоящие лидеры по продажам и роялти и список «Требует внимания».",
+   "«Главная» → «Мои данные»: копия всей работы и восстановление; автокопия раз в день.",
+   "Ошибки говорят настоящую причину и что делать — на русском, английском и испанском.",
+   "Исправлено: START_0xx.vbs не открывал программу; локальная генерация картинок не запускалась."
+  ],
+  "es": [
+   "Descubrir -> \"Crear borrador de concepto\": una idea desde la investigación, con MANTENER / EDITAR / REGENERAR / OMITIR.",
+   "Portafolio muestra dónde está cada idea; un clic abre la pestaña donde seguir.",
+   "Comprobaciones: formularios \"Confirmar revisiones...\" y \"Rellenar perfil de Amazon...\" en lugar de editar JSON.",
+   "Publicar: sugerencias en vivo sobre límites de Amazon y palabras de riesgo.",
+   "Rendimiento: líderes reales por ventas y regalías, y una lista de lo que requiere atención.",
+   "Inicio -> Mis datos: guardar y restaurar una copia de todo tu trabajo; copia automática una vez al día.",
+   "Los errores dicen el motivo real y qué hacer, en inglés, ruso y español.",
+   "Corregido: START_0xx.vbs no abría la aplicación; la generación local de imágenes no podía empezar."
+  ]
+ }
+}
