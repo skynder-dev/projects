@@ -128,7 +128,9 @@ $Window.Add_ContentRendered({
             Ci-Shot '06b-portfolio'
             $draftKey=[string]$script:Current.concept.concept_key
             $PortfolioPipelineList.SelectedItem=$mine[0]; Ci-Flush
-            Ci-Check 'portfolio_click_opens_idea' ($script:ProductSection -eq 'ideas' -and [string]$script:Current.concept.concept_key -eq $draftKey -and $MainTabs.Visibility -eq 'Visible') $script:ProductSection
+            Ci-Check 'portfolio_keep_shows_next_step' ([string]$mine[0].next_label -like '*Click to open: Artwork*') ([string]$mine[0].next_label)
+            Ci-Check 'portfolio_click_opens_artwork' ($script:ProductSection -eq 'artwork' -and [string]$script:Current.concept.concept_key -eq $draftKey -and $MainTabs.Visibility -eq 'Visible' -and (Get-MainTabKey $MainTabs.SelectedItem) -eq 'visuals') ($script:ProductSection+' / '+(Get-MainTabKey $MainTabs.SelectedItem))
+            Ci-Click $NavIdeasButton 'NavIdeasButton (back to idea)'
             # Russian UI
             Ci-Click $HeaderLangRu 'HeaderLangRu'
             Ci-Check 'ru_draft_overview_rerendered' ($OverviewStatus.Text -eq 'Черновик исследования' -and $OverviewHook.Text -eq 'CI hook: Running on caffeine and charting') ($OverviewStatus.Text+' | '+$OverviewHook.Text)
@@ -155,6 +157,10 @@ $Window.Add_ContentRendered({
             $lc=Get-LocalCoreConcept $key
             Ci-Check 'pkg_exact_accept' ($null -ne $lc.active_acceptance -and [string]$lc.active_acceptance.concept_revision_id -eq [string]$script:Current.concept.current_revision_id) ''
             Ci-Shot '10-accepted'
+            Ci-Click $NavPortfolioButton 'NavPortfolioButton (accepted)'
+            $row=@(@($PortfolioPipelineList.Items) | Where-Object { [string]$_.concept_key -eq $key })
+            if($row.Count){ $PortfolioPipelineList.SelectedItem=$row[0]; Ci-Flush }
+            Ci-Check 'portfolio_accepted_opens_checks' ($row.Count -eq 1 -and [string]$row[0].stage -eq 'artwork_accepted' -and $script:ProductSection -eq 'checks' -and (Get-MainTabKey $MainTabs.SelectedItem) -eq 'evidence') ($(if($row.Count){[string]$row[0].stage}else{'missing'})+' / '+$script:ProductSection+' / '+(Get-MainTabKey $MainTabs.SelectedItem))
             # 2) owner-attested Amazon profile through the real importer tool (non-interactive)
             $attest=[ordered]@{schema='forge.amazon_print_profile_attestation.v1';attested=$true;marketplace='amazon.com_us';product_type_key='standard_tshirt';template_key='ci-template';canvas_width_px=1024;canvas_height_px=1024;dpi=300;file_format='png';background='transparent';template_file_sha256=('a'*64);source_refs=@('https://merch.amazon.com/resource/Y28FFE5NLRYJG4V');captured_at=[DateTime]::UtcNow.AddMinutes(-5).ToString('o');valid_until=[DateTime]::UtcNow.AddDays(30).ToString('o')}
             $attestPath=Join-Path $env:FORGE_CI_OUT 'ci-profile-attestation.json'; [IO.File]::WriteAllText($attestPath,($attest|ConvertTo-Json -Depth 6),(New-Object Text.UTF8Encoding($false)))
@@ -202,6 +208,8 @@ $Window.Add_ContentRendered({
             $row=@(@($PortfolioPipelineList.Items) | Where-Object { [string]$_.concept_key -eq $key })
             Ci-Check 'pkg_portfolio_package_ready' ($row.Count -eq 1 -and [string]$row[0].stage -eq 'package_ready' -and $PipePackageValue.Text -eq '1') $(if($row.Count){[string]$row[0].stage}else{'missing'})
             Ci-Shot '12-portfolio-package-ready'
+            if($row.Count){ $PortfolioPipelineList.SelectedItem=$row[0]; Ci-Flush }
+            Ci-Check 'portfolio_package_opens_publish' ($script:ProductSection -eq 'publish' -and (Get-MainTabKey $MainTabs.SelectedItem) -eq 'publication' -and [string]$row[0].next_label -like '*Нажмите, чтобы открыть: Публикация*') ($script:ProductSection+' / '+(Get-MainTabKey $MainTabs.SelectedItem)+' / '+[string]$row[0].next_label)
             # 6) publication receipt (owner records the manual upload) -> Published
             if($null -ne $pk){
                 $rc=[ordered]@{schema='forge.local_publication_receipt.v3';concept_key=$key;package_sha256=[string]$pk.sha256;lineage_fingerprint=[string]$pk.acceptance_fingerprint;listing_hash=[string]$pk.listing_hash;preupload_gate_sha256=[string]$pk.preupload_gate_sha256;print_production_sha256=[string]$pk.print_production_sha256;channel='amazon_merch';marketplace=[string]$pk.marketplace;product_id='CI-ASIN-0001';published_at=[DateTime]::UtcNow.AddMinutes(-1).ToString('o');source='ci-owner-receipt';note='CI fixture receipt (nothing was uploaded).'}

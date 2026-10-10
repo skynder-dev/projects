@@ -227,6 +227,8 @@ if($Phase -eq 'restart'){
         Check 'pipeline_keep_sorted_first' ([string]@($pipe.rows)[0].concept_key -eq [string]$k.key) ([string]@($pipe.rows)[0].concept_key)
         $nurses=@($pipe.niches | Where-Object { $_.niche_name -like '*Night-shift nurses*' })
         Check 'pipeline_niche_counts' ($nurses.Count -eq 1 -and $nurses[0].keep -eq 1 -and $nurses[0].total -eq 1) ($nurses | ConvertTo-Json -Compress)
+        $map=@('undecided','edit','regen','skip','keep_no_artwork','artwork_accepted','checks_ready','package_ready','published' | ForEach-Object { Get-PipelineTargetSection $_ }) -join ','
+        Check 'pipeline_next_step_sections' ($map -eq 'ideas,ideas,artwork,ideas,artwork,checks,publish,publish,publish') $map
         # performance insights: pure aggregation over a synthetic verified state (authority + profile stubbed in a child scope)
         $now=[DateTime]::UtcNow; $d=[Globalization.CultureInfo]::InvariantCulture
         $ps=[pscustomobject]@{

@@ -20,7 +20,8 @@ function Register-PipelineUiText {
             'biz.portfolio.local'='Local core: {0} accepted design(s), {1} valid package(s), {2} verified published product(s). Live listing health is not fabricated.'; 'biz.receipts.some'='Verified published products: {0} · channels: {1}'; 'biz.receipts.none'='No verified local publication receipt imported.';
             'biz.perf.linked'='Verified linked sales rows: {0}. 30-day units: {1}; royalties: ${2:0.00}.'; 'biz.perf.unlinked'='No imported sales rows match a verified Forge product ID. Unlinked rows: {0}.'; 'biz.perf.none'='No local sales CSV imported yet.';
             'biz.sales.some'='Imported: {0} · linked: {1} · unlinked: {2} · undated linked: {3} · future linked: {4}'; 'biz.sales.none'='No local sales data imported.';
-            'perf.leaders.none'='No verified sales yet.'; 'perf.leader.line'='{0} · {1} — 30 days: {2} pcs, ${3:0.00} · 90 days: {4} pcs, ${5:0.00}';
+            'pipe.go'='Click to open: {0}';
+            'perf.leaders.none'='No verified sales yet.'; 'perf.leader.line'='30 days: {2} pcs, ${3:0.00} · 90 days: {4} pcs, ${5:0.00}';
             'perf.att.none'='Nothing needs attention.'; 'perf.att.nosales'='No sales for 30 days: {0} ({1}), published {2}.';
             'perf.att.unknown'='Sales with an unknown product ID {0}: {1} row(s). Import the publication receipt for this product so they count.';
             'perf.att.noprofile'='No valid Amazon print profile: packages cannot become ready. Import the profile in Checks.';
@@ -41,7 +42,8 @@ function Register-PipelineUiText {
             'biz.portfolio.local'='Локально: принятых макетов {0}, действующих пакетов {1}, проверенных опубликованных товаров {2}. Состояние карточек не выдумывается.'; 'biz.receipts.some'='Проверенных опубликованных товаров: {0} · площадок: {1}'; 'biz.receipts.none'='Проверенных квитанций публикации пока нет.';
             'biz.perf.linked'='Проверенных строк продаж: {0}. Продаж за 30 дней: {1}; роялти: ${2:0.00}.'; 'biz.perf.unlinked'='Ни одна строка продаж не совпала с проверенным товаром Forge. Несвязанных строк: {0}.'; 'biz.perf.none'='CSV с продажами ещё не импортирован.';
             'biz.sales.some'='Импортировано: {0} · связано: {1} · не связано: {2} · без даты: {3} · с будущей датой: {4}'; 'biz.sales.none'='Данные о продажах не импортированы.';
-            'perf.leaders.none'='Проверенных продаж пока нет.'; 'perf.leader.line'='{0} · {1} — 30 дн.: {2} шт., ${3:0.00} · 90 дн.: {4} шт., ${5:0.00}';
+            'pipe.go'='Нажмите, чтобы открыть: {0}';
+            'perf.leaders.none'='Проверенных продаж пока нет.'; 'perf.leader.line'='30 дн.: {2} шт., ${3:0.00} · 90 дн.: {4} шт., ${5:0.00}';
             'perf.att.none'='Ничего не требует внимания.'; 'perf.att.nosales'='Нет продаж 30 дней: {0} ({1}), опубликован {2}.';
             'perf.att.unknown'='Продажи с неизвестным ID товара {0}: строк {1}. Импортируйте квитанцию публикации этого товара, чтобы они учитывались.';
             'perf.att.noprofile'='Нет действующего Amazon-профиля печати: пакеты не смогут стать готовыми. Импортируйте профиль в «Проверках».';
@@ -62,10 +64,11 @@ function Register-PipelineUiText {
             'biz.portfolio.local'='Local: {0} diseño(s) aceptado(s), {1} paquete(s) válido(s), {2} producto(s) publicado(s) verificado(s). El estado de las fichas no se inventa.'; 'biz.receipts.some'='Productos publicados verificados: {0} · canales: {1}'; 'biz.receipts.none'='Aún no hay recibos de publicación verificados.';
             'biz.perf.linked'='Filas de ventas verificadas: {0}. Unidades en 30 días: {1}; regalías: ${2:0.00}.'; 'biz.perf.unlinked'='Ninguna fila de ventas coincide con un producto verificado de Forge. Filas sin vincular: {0}.'; 'biz.perf.none'='Aún no se ha importado ningún CSV de ventas.';
             'biz.sales.some'='Importadas: {0} · vinculadas: {1} · sin vincular: {2} · sin fecha: {3} · con fecha futura: {4}'; 'biz.sales.none'='No hay datos de ventas importados.';
-            'perf.leaders.none'='Aún no hay ventas verificadas.'; 'perf.leader.line'='{0} · {1} — 30 días: {2} uds., ${3:0.00} · 90 días: {4} uds., ${5:0.00}';
+            'pipe.go'='Haz clic para abrir: {0}';
+            'perf.leaders.none'='Aún no hay ventas verificadas.'; 'perf.leader.line'='30 días: {2} uds., ${3:0.00} · 90 días: {4} uds., ${5:0.00}';
             'perf.att.none'='Nada requiere atención.'; 'perf.att.nosales'='Sin ventas en 30 días: {0} ({1}), publicado {2}.';
             'perf.att.unknown'='Ventas con ID de producto desconocido {0}: {1} fila(s). Importa el recibo de publicación de este producto para que cuenten.';
-            'perf.att.noprofile'='No hay un perfil de impresión de Amazon válido: los paquetes no podrán estar listos. Importa el perfil en Revisiones.';
+            'perf.att.noprofile'='No hay un perfil de impresión de Amazon válido: los paquetes no podrán estar listos. Importa el perfil en Comprobaciones.';
             'perf.att.profile'='El perfil de impresión de Amazon caduca el {0}. Renuévalo antes de crear paquetes nuevos.';
             'perf.att.unpublished'='Paquete listo desde {1} pero no marcado como publicado: {0}. Súbelo e importa el recibo.';
             'perf.att.undated'='{0} fila(s) de ventas vinculadas sin fecha no se cuentan.';
@@ -149,6 +152,8 @@ function Update-PortfolioPipelineSurface {
         if($r.stage -eq 'skip'){continue}
         $meta=@(); if($r.niche_name){$meta+=$r.niche_name}; if($r.is_local_draft){$meta+=(Get-UiText 'pipe.draft' 'research draft')}
         $meta+=(Get-UiText ('pipe.n.'+$r.stage) '')
+        $target=Get-PipelineTargetSection $r.stage
+        $meta+=((Get-UiText 'pipe.go' 'Click to open: {0}') -f (Get-UiText ('nav.'+$target) $target))
         $display+=[pscustomobject]@{concept_key=$r.concept_key;title=$r.title;stage=$r.stage;stage_label=(Get-UiText ('pipe.s.'+$r.stage) $r.stage);next_label=($meta -join ' · ');queue_item=$r.queue_item}
     }
     $PortfolioPipelineList.ItemsSource=$display
@@ -156,14 +161,24 @@ function Update-PortfolioPipelineSurface {
     foreach($n in @($p.niches)){ $name=if($n.niche_name){$n.niche_name}else{Get-UiText 'pipe.niche.none' '(no niche)'}; [void]$lines.Add(('{0}: KEEP {1} · EDIT {2} · REGEN {3} · SKIP {4} · {5} {6}' -f $name,$n.keep,$n.edit,$n.regen,$n.skip,(Get-UiText 'pipe.k.undecided' 'No decision'),$n.undecided)) }
     $PortfolioNicheText.Text=if($lines.Count){$lines -join [Environment]::NewLine}else{'—'}
 }
+function Get-PipelineTargetSection([string]$Stage) {
+    # Where the owner continues work for this stage.
+    switch($Stage){
+        'regen'{return 'artwork'} 'keep_no_artwork'{return 'artwork'}
+        'artwork_accepted'{return 'checks'}
+        'checks_ready'{return 'publish'} 'package_ready'{return 'publish'} 'published'{return 'publish'}
+        default{return 'ideas'}
+    }
+}
 function Open-PortfolioPipelineSelection {
     if($null -eq $PortfolioPipelineList -or $script:PipelineOpening){return}
     $sel=$PortfolioPipelineList.SelectedItem; if($null -eq $sel){return}
     $script:PipelineOpening=$true
     try {
-        $script:ProductSection='ideas'; Open-ConceptItem $sel.queue_item
-        # Open-ConceptItem returns early when the idea is already open; make sure we still land on it.
-        if($null -ne $script:Current -and [string](Get-PropertyValue $script:Current.concept 'concept_key') -eq [string]$sel.concept_key){Show-ProductSection 'ideas'}
+        $target=Get-PipelineTargetSection ([string]$sel.stage)
+        $script:ProductSection=$target; Open-ConceptItem $sel.queue_item
+        # Open-ConceptItem returns early when the idea is already open; make sure we still land on the right section.
+        if($null -ne $script:Current -and [string](Get-PropertyValue $script:Current.concept 'concept_key') -eq [string]$sel.concept_key){Show-ProductSection $target}
     } catch { Show-Error ('Could not open the idea: '+$_.Exception.Message) } finally { $script:PipelineOpening=$false }
 }
 
@@ -224,7 +239,7 @@ function Update-PerformanceInsightsSurface {
     $ins=Get-ForgePerformanceInsights $state
     $lines=New-Object System.Collections.Generic.List[string]
     $inv=[Globalization.CultureInfo]::InvariantCulture
-    foreach($l in @($ins.leaders)){ [void]$lines.Add([string]::Format($inv,(Get-UiText 'perf.leader.line' '{0} · {1}'),[object[]]@($l.title,$l.product_id,[int]$l.units30,[double]$l.roy30,[int]$l.units90,[double]$l.roy90))) }
+    foreach($l in @($ins.leaders)){ [void]$lines.Add(([string]$l.title+' · '+[string]$l.product_id+[Environment]::NewLine+'    '+[string]::Format($inv,(Get-UiText 'perf.leader.line' '30 days: {2}'),[object[]]@($l.title,$l.product_id,[int]$l.units30,[double]$l.roy30,[int]$l.units90,[double]$l.roy90)))) }
     $PerformanceLeadersText.Text=if($lines.Count){$lines -join [Environment]::NewLine}else{Get-UiText 'perf.leaders.none' 'No verified sales yet.'}
     $a=New-Object System.Collections.Generic.List[string]
     foreach($x in @($ins.attention)){ $tpl=Get-UiText ('perf.att.'+$x.kind) ''; if($tpl){ [void]$a.Add(('• '+[string]::Format($inv,$tpl,[object[]]@($x.args)))) } }

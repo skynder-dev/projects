@@ -13,7 +13,7 @@
     "status": "ACTIVE"
   },
   "desktop": {
-    "app_version": "2.13.0-performance-insights",
+    "app_version": "2.14.0-next-step",
     "native_windows_runtime_verified": false,
     "orange_semantic_palette": true,
     "overview_first": true,
@@ -28,10 +28,10 @@
       "ru",
       "es"
     ],
-    "workbench_sha256": "092b3440501d502392b33f9d3482534d460555c4aea722393c25f9fd8d35b35f",
-    "workbench_size_bytes": 254223,
+    "workbench_sha256": "e3d03e6e84de1a3c5ee47d7e9dc6c9c7be5ea99ecb6dec39978e046c5952ae72",
+    "workbench_size_bytes": 254201,
     "native_windows_parser_verified": false,
-    "native_windows_parser_target_sha256": "092b3440501d502392b33f9d3482534d460555c4aea722393c25f9fd8d35b35f",
+    "native_windows_parser_target_sha256": "e3d03e6e84de1a3c5ee47d7e9dc6c9c7be5ea99ecb6dec39978e046c5952ae72",
     "native_windows_parser_result_sha256": null,
     "product_home_dashboard": true,
     "brand_home_navigation": "dedicated_home_dashboard",
@@ -132,8 +132,8 @@
       },
       {
         "path": "Modules\\Forge.Pipeline.ps1",
-        "sha256": "5e6e4a8fd1336aa4dbe064e5a4260bd90d309424dcbf051ea6e57020c466d0b6",
-        "size_bytes": 27656
+        "sha256": "12c18c16922315ab7b5f9d573468c82ffbf90f919ffca3f22eafcc24910d88a7",
+        "size_bytes": 28477
       },
       {
         "path": "Modules\\Forge.PrintChecks.ps1",
@@ -310,7 +310,7 @@
     "trusted_local_check_worker": "MerchForgeCheckWorker.ps1",
     "generation_spool_policy": "forge.generation_spool_policy.v1",
     "publication_receipt_print_binding": true,
-    "current_release": "062_Merch_Forge_PERFORMANCE_INSIGHTS_RC",
+    "current_release": "063_Merch_Forge_NEXT_STEP_RC",
     "generation_authority_module": "Modules\\Forge.GenerationAuthority.ps1",
     "generation_temporal_authority": "future generation job/attempt timestamps beyond 10-minute clock-skew tolerance fail closed before paid dispatch/readiness; shared first-live authority also revalidates non-future ordered attempt/result/import timestamps",
     "amazon_print_profile_temporal_authority": "valid_until must be strictly later than captured_at; captured_at remains bounded by 10-minute future-skew tolerance and 120-day horizon",
@@ -473,11 +473,11 @@
     "owner_separate_parser_zip_required": false,
     "current_release": "044_Merch_Forge_PACKAGE_ROOT_RC"
   },
-  "package_name": "062_Merch_Forge_PERFORMANCE_INSIGHTS_RC",
-  "package_number": 62,
-  "result_intent": "Performance Winners and Needs attention computed from verified local data",
+  "package_name": "063_Merch_Forge_NEXT_STEP_RC",
+  "package_number": 63,
+  "result_intent": "Portfolio click opens the tab for the next step",
   "schema": "forge.reconciled_candidate_manifest.v1",
-  "stage": "FORGE-062-PERFORMANCE-INSIGHTS-RC",
+  "stage": "FORGE-063-NEXT-STEP-RC",
   "startup_baseline": {
     "immutable_exact": false,
     "inner_start_sha256": "013e9dcfbfb4c2a42c12b4f6ee208767d80509be9e877160f088a9d2984f51a1",
@@ -637,7 +637,7 @@
     "exact_043_native_windows_stage": "integrity",
     "package_root_native_argv_repair": true
   },
-  "installer_generation": "00000000000000100245",
+  "installer_generation": "00000000000000100246",
   "installer_generation_format": "fixed_width_decimal_v1",
   "installer_guard": {
     "single_writer_lock": "install.lock",
