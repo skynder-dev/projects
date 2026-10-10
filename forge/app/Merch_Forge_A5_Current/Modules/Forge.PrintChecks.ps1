@@ -98,7 +98,8 @@ function New-LocalCheckWorkerRequest($Lc,$Identity,$Acceptance) {
     $utf8=New-Object Text.UTF8Encoding -ArgumentList $false
     [IO.File]::WriteAllText($tmp,($req|ConvertTo-Json -Depth 20),$utf8)
     Move-Item -LiteralPath $tmp -Destination $rp -Force
-    return [pscustomobject]@{request=$req;path=$rp;sha256=(Get-FileSha256Hex $rp)}
+    # Callers read fields with Get-PropertyValue, which cannot see dictionary keys: return an object, like the reuse path.
+    return [pscustomobject]@{request=[pscustomobject]$req;path=$rp;sha256=(Get-FileSha256Hex $rp)}
 }
 function ConvertTo-LocalCheckWorkerLiteral([string]$Value) { return ("'"+([string]$Value).Replace("'","''")+"'") }
 function New-LocalCheckWorkerEncodedCommand([string]$Worker,[string]$PackageRoot,[string]$RequestPath) {
