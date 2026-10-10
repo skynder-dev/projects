@@ -1,16 +1,16 @@
-MERCH FORGE 064 Merch Forge CONFIRM CHECKS RC
+MERCH FORGE 065 Merch Forge AMAZON PROFILE RC
 
 START
 1. Extract the whole folder.
-2. Run START_064_MERCH_FORGE.vbs.
+2. Run START_065_MERCH_FORGE.vbs.
 
-WHAT IS NEW (064)
-- Checks -> new "Confirm checks..." button: a form with a plain checklist for IP (trademarks/copyright),
-  Amazon Merch content policy and listing text. For each one choose: all good / needs more checking /
-  problem / leave as is. "All good" needs a link or a short note and the "I checked this myself" tick.
-  The form writes the same evidence file as before and imports it through the same validation.
-- A plain-language CHECKLIST.txt is written next to the JSON evidence template (in the app language).
-- "Open checks folder" button.
-- Clearer import errors: broken JSON, and "evidence is for another revision/artwork/listing" now say what to do.
-- Error messages built from the app's own texts (any language) are shown as-is, not as a generic error.
-- Includes 063 and earlier (055-062).
+WHAT IS NEW (065)
+- Checks -> new "Amazon print profile" card: shows the profile (size, DPI, marketplace, product type)
+  and how many days it is valid; warns when it expires within 7 days, has expired or is missing.
+- "Fill Amazon profile..." form: choose the downloaded Amazon template file - for a PNG the size and the
+  file fingerprint are filled automatically; enter product type and how long it is valid (max 120 days),
+  tick "I copied these values from the current Amazon template". The form writes the same attestation
+  file and runs the same standalone importer, so validation is unchanged.
+- "Import profile file..." for a filled JSON profile; importer errors are now translated.
+- Confirm-checks form: checklist lines on separate lines; readable checkbox text.
+- Includes 064 and earlier (055-063).

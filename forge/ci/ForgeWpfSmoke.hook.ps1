@@ -162,13 +162,21 @@ $Window.Add_ContentRendered({
             $row=@(@($PortfolioPipelineList.Items) | Where-Object { [string]$_.concept_key -eq $key })
             if($row.Count){ $PortfolioPipelineList.SelectedItem=$row[0]; Ci-Flush }
             Ci-Check 'portfolio_accepted_opens_checks' ($row.Count -eq 1 -and [string]$row[0].stage -eq 'artwork_accepted' -and $script:ProductSection -eq 'checks' -and (Get-MainTabKey $MainTabs.SelectedItem) -eq 'evidence') ($(if($row.Count){[string]$row[0].stage}else{'missing'})+' / '+$script:ProductSection+' / '+(Get-MainTabKey $MainTabs.SelectedItem))
-            # 2) owner-attested Amazon profile through the real importer tool (non-interactive)
-            $attest=[ordered]@{schema='forge.amazon_print_profile_attestation.v1';attested=$true;marketplace='amazon.com_us';product_type_key='standard_tshirt';template_key='ci-template';canvas_width_px=1024;canvas_height_px=1024;dpi=300;file_format='png';background='transparent';template_file_sha256=('a'*64);source_refs=@('https://merch.amazon.com/resource/Y28FFE5NLRYJG4V');captured_at=[DateTime]::UtcNow.AddMinutes(-5).ToString('o');valid_until=[DateTime]::UtcNow.AddDays(30).ToString('o')}
-            $attestPath=Join-Path $env:FORGE_CI_OUT 'ci-profile-attestation.json'; [IO.File]::WriteAllText($attestPath,($attest|ConvertTo-Json -Depth 6),(New-Object Text.UTF8Encoding($false)))
-            $importer=[IO.Path]::GetFullPath((Join-Path $script:ModuleRoot '..\Import Amazon Print Profile.ps1'))
-            $psExe=Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
-            $impOut=& $psExe -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File $importer -SourcePath $attestPath -NonInteractive 2>&1 | Out-String
-            Ci-Check 'pkg_profile_imported' ($LASTEXITCODE -eq 0 -and $null -ne (Get-LocalPolicyProfileBinding)) ($impOut.Trim())
+            # 2) Amazon print profile through the in-app form (the standalone importer tool runs unchanged as a child process)
+            Ci-Click $NavChecksButton 'NavChecksButton (profile)'
+            Ci-Check 'prof_status_none_ru' ($AmazonProfileStatusText.Text -like 'Не импортирован*' -and [string]$AmazonProfileFormButton.Content -eq 'Заполнить Amazon-профиль…') ($AmazonProfileStatusText.Text+' | '+[string]$AmazonProfileFormButton.Content)
+            $pd=New-AmazonProfileDialog; $pd.Show(); Ci-Flush
+            Set-AmazonProfileDialogFile $pd ([IO.Path]::GetFullPath($art)); $pd.FindName('Days').Text='30'; Ci-Flush
+            Ci-Check 'prof_png_size_autofilled' ($pd.FindName('Width').Text -eq '1024' -and $pd.FindName('Height').Text -eq '1024' -and $pd.FindName('FileSha').Text -like 'SHA-256 *' -and $pd.FindName('TemplateKey').Text -eq 'mock-01') ($pd.FindName('Width').Text+'x'+$pd.FindName('Height').Text+' '+$pd.FindName('TemplateKey').Text)
+            $first=Complete-AmazonProfileDialog $pd $false; Ci-Flush
+            Ci-Check 'prof_form_requires_attest_ru' (-not $first -and [string]$pd.FindName('ErrorText').Text -like 'Поставьте галочку*') ([string]$pd.FindName('ErrorText').Text)
+            $pd.FindName('Attest').IsChecked=$true; Ci-Flush
+            Ci-Shot '09b-amazon-profile-form' $pd
+            $second=Complete-AmazonProfileDialog $pd $false; $att=$pd.Tag; $pd.Close(); Ci-Flush
+            $ok=$false; if($second -and $null -ne $att){ $ok=Save-AmazonProfileAttestation $att }; Ci-Flush
+            Ci-Check 'pkg_profile_imported' ($ok -and $null -ne (Get-LocalPolicyProfileBinding)) ($StatusText.Text+' | '+(($script:Ci.errors | Select-Object -Last 1)))
+            Ci-Check 'prof_status_valid_ru' ($AmazonProfileStatusText.Text -like '1024 × 1024 пикс., 300 DPI · amazon.com_us / standard_tshirt · действует до *' -and $StatusText.Text -like 'Amazon-профиль печати сохранён*') ($AmazonProfileStatusText.Text+' | '+$StatusText.Text)
+            Ci-Shot '09c-checks-profile'
             # 3) listing metadata through the Publication tab and its Save button
             Ci-Click $NavPublishButton 'NavPublishButton'
             $PublicationTitleBox.Text='Night Shift Nurse Coffee Fuel Funny ICU ER Nurse Gift'; $PublicationBrandBox.Text='CI Fixture Brand'; $PublicationBullet1Box.Text='Funny night shift nurse design for ICU and ER nurses.'; $PublicationBullet2Box.Text='Great gift for nurses who run on coffee.'; $PublicationDescriptionBox.Text='CI fixture listing.'; $PublicationKeywordsBox.Text='night shift nurse, icu nurse, er nurse'; $PublicationReasonBox.Text='ci'

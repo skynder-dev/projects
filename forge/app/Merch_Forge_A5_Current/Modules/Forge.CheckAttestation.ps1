@@ -158,7 +158,7 @@ function Submit-OwnerCheckAnswers($Answers,[bool]$Confirmed) {
 }
 
 function New-ConfirmChecksDialog {
-    $esc={param([string]$s) [Security.SecurityElement]::Escape($s)}
+    $esc={param([string]$s) ([Security.SecurityElement]::Escape($s)).Replace("`r",'').Replace("`n",'&#10;')}   # XML attributes turn raw newlines into spaces
     $sections=''
     foreach($n in $script:CheckAttestationNames){
         $sections+=@"
@@ -192,6 +192,7 @@ function New-ConfirmChecksDialog {
         try{ if($Window.IsLoaded){$w.Owner=$Window} }catch{}
         try{ $w.Background=$Window.Background; $w.Foreground=$Window.Foreground }catch{}
         try{ $w.Resources.MergedDictionaries.Add($Window.Resources) }catch{}
+        try{ $w.FindName('ConfirmBox').Foreground=$Window.FindResource('Text') }catch{}
     }
     return $w
 }
@@ -211,7 +212,7 @@ function Complete-ConfirmChecksDialog($Dialog,[bool]$Modal=$true) {
     # OK button: validate inside the dialog so the owner can fix the answer without losing it.
     $r=Read-ConfirmChecksAnswers $Dialog; $why=Test-ConfirmChecksAnswers $r
     if($why){ $Dialog.FindName('ErrorText').Text=$why; return $false }
-    $Dialog.Tag=$r; if($Modal){ $Dialog.DialogResult=$true }
+    $Dialog.FindName('ErrorText').Text=''; $Dialog.Tag=$r; if($Modal){ $Dialog.DialogResult=$true }
     return $true
 }
 function Invoke-ConfirmChecks {

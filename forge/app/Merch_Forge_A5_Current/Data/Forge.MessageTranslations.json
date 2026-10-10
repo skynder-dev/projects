@@ -1360,6 +1360,96 @@
    "en": "Local checks are evidence for workflow continuity only. IP pass is not a legal opinion; marketplace policy and print requirements must be revalidated before external publication.",
    "ru": "Локальные проверки — это только отметки для рабочего процесса. «IP пройдено» — не юридическое заключение; правила площадки и требования печати нужно перепроверить перед публикацией.",
    "es": "Las revisiones locales solo sirven para el flujo de trabajo. Una PI aprobada no es una opinión legal; la política del mercado y los requisitos de impresión deben revalidarse antes de publicar."
+  },
+  {
+   "en": "Unsupported print profile schema.",
+   "ru": "Неподдерживаемый формат файла профиля печати.",
+   "es": "Formato de perfil de impresión no compatible."
+  },
+  {
+   "en": "Set attested=true only after copying exact values from the current Amazon Merch product template.",
+   "ru": "Поставьте attested=true только после того, как перенесёте точные значения из текущего шаблона товара Amazon Merch.",
+   "es": "Pon attested=true solo después de copiar los valores exactos de la plantilla actual de Amazon Merch."
+  },
+  {
+   "en": "Canvas dimensions must be between 500 and 10,000 pixels.",
+   "ru": "Размеры холста должны быть от 500 до 10 000 пикселей.",
+   "es": "Las dimensiones del lienzo deben estar entre 500 y 10.000 píxeles."
+  },
+  {
+   "en": "DPI is outside the accepted profile range.",
+   "ru": "DPI вне допустимого диапазона профиля.",
+   "es": "El DPI está fuera del rango aceptado."
+  },
+  {
+   "en": "This Forge apparel profile requires transparent PNG.",
+   "ru": "Для профиля одежды нужен прозрачный PNG.",
+   "es": "Este perfil de ropa requiere PNG transparente."
+  },
+  {
+   "en": "template_file_sha256 must be the SHA-256 of the exact current Amazon template file.",
+   "ru": "template_file_sha256 должен быть SHA-256 точного текущего файла шаблона Amazon.",
+   "es": "template_file_sha256 debe ser el SHA-256 del archivo de plantilla actual de Amazon."
+  },
+  {
+   "en": "marketplace, product_type_key and template_key are required.",
+   "ru": "Нужно заполнить площадку (marketplace), тип товара (product_type_key) и название шаблона (template_key).",
+   "es": "Se requieren mercado (marketplace), tipo de producto (product_type_key) y plantilla (template_key)."
+  },
+  {
+   "en": "At least one Amazon source_ref is required.",
+   "ru": "Нужна хотя бы одна ссылка на страницу Amazon (source_refs).",
+   "es": "Se requiere al menos un enlace de Amazon (source_refs)."
+  },
+  {
+   "en": "captured_at and valid_until must be valid ISO date/time values.",
+   "ru": "captured_at и valid_until должны быть корректными датами.",
+   "es": "captured_at y valid_until deben ser fechas válidas."
+  },
+  {
+   "en": "captured_at is in the future.",
+   "ru": "Дата captured_at — в будущем.",
+   "es": "La fecha captured_at está en el futuro."
+  },
+  {
+   "en": "valid_until is already expired.",
+   "ru": "Срок valid_until уже истёк.",
+   "es": "La fecha valid_until ya ha caducado."
+  },
+  {
+   "en": "valid_until must be later than captured_at.",
+   "ru": "valid_until должен быть позже captured_at.",
+   "es": "valid_until debe ser posterior a captured_at."
+  },
+  {
+   "en": "valid_until may be at most 120 days after captured_at; re-attest current channel templates periodically.",
+   "ru": "valid_until — не позже чем через 120 дней после captured_at; периодически обновляйте профиль по текущему шаблону.",
+   "es": "valid_until puede ser como máximo 120 días después de captured_at; vuelve a confirmar la plantilla periódicamente."
+  },
+  {
+   "en": "Invalid JSON: {0}",
+   "ru": "Файл не является корректным JSON: {0}",
+   "es": "JSON no válido: {0}"
+  },
+  {
+   "en": "Non-Amazon or non-HTTPS source_ref is not allowed: {0}",
+   "ru": "Ссылка-источник должна быть https-ссылкой Amazon: {0}",
+   "es": "El enlace de origen debe ser un enlace https de Amazon: {0}"
+  },
+  {
+   "en": "Invalid source_ref: {0}",
+   "ru": "Неверная ссылка-источник: {0}",
+   "es": "Enlace de origen no válido: {0}"
+  },
+  {
+   "en": "The profile import did not finish in time.",
+   "ru": "Импорт профиля не завершился вовремя.",
+   "es": "La importación del perfil no terminó a tiempo."
+  },
+  {
+   "en": "The profile import failed (exit {0}).",
+   "ru": "Импорт профиля не удался (код {0}).",
+   "es": "La importación del perfil falló (código {0})."
   }
  ]
 }

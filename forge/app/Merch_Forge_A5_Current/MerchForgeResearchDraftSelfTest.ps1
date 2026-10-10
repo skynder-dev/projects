@@ -76,6 +76,8 @@ $hasPipelineModule = Test-Path -LiteralPath (Join-Path $mod 'Forge.Pipeline.ps1'
 if($hasPipelineModule){ . (Join-Path $mod 'Forge.Pipeline.ps1') }
 $hasCheckAttestation = Test-Path -LiteralPath (Join-Path $mod 'Forge.CheckAttestation.ps1')
 if($hasCheckAttestation){ . (Join-Path $mod 'Forge.MessageLocalization.ps1'); . (Join-Path $mod 'Forge.CheckAttestation.ps1'); Register-CheckAttestationUiText }
+$hasAmazonProfile = Test-Path -LiteralPath (Join-Path $mod 'Forge.AmazonProfile.ps1')
+if($hasAmazonProfile){ . (Join-Path $mod 'Forge.AmazonProfile.ps1'); Register-AmazonProfileUiText }
 
 # state root isolation
 $script:StateRoot=$StateRoot; $script:LogRoot=Join-Path $StateRoot 'logs'; $script:RuntimeLogPath=Join-Path $script:LogRoot 'runtime.log'
@@ -278,6 +280,23 @@ if($Phase -eq 'restart'){
         Check 'chk_checklist_ru' ($txt -like '*ЧЕК-ЛИСТ ДЛЯ «Тест»*' -and $txt -like '*tmsearch.uspto.gov*' -and $txt -like '*check-evidence-x.template.json*' -and $txt -like "*`r`n*") ($txt.Substring(0,[Math]::Min(120,$txt.Length)))
         Check 'chk_ru_error_is_known_message' ($ruErr -like 'Для «всё в порядке»*' -and (Test-KnownUiMessage $ruErr)) $ruErr
         Check 'chk_server_error_not_known' (-not (Test-KnownUiMessage 'HTTP 500 database exploded')) ''
+    }
+    # Amazon print profile: status wording and the owner form -> attestation (the standalone tool re-validates)
+    if($hasAmazonProfile){
+        $now=[DateTime]::UtcNow
+        $vp={param($d) [pscustomobject]@{canvas_width_px=4500;canvas_height_px=5400;dpi=300;marketplace='amazon.com_us';product_type_key='standard_tshirt';valid_until=$now.AddDays($d).ToString('o')}}
+        $s1=Get-AmazonProfileStatusFrom $false $null $null $now; $s2=Get-AmazonProfileStatusFrom $true (& $vp 30.5) $null $now; $s3=Get-AmazonProfileStatusFrom $true (& $vp 3.5) $null $now
+        $s4=Get-AmazonProfileStatusFrom $true $null ([pscustomobject]@{valid_until=$now.AddDays(-2).ToString('o')}) $now; $s5=Get-AmazonProfileStatusFrom $true $null ([pscustomobject]@{x=1}) $now
+        Check 'prof_states' ((@($s1,$s2,$s3,$s4,$s5) | ForEach-Object { $_.state }) -join ',' -eq 'none,valid,expiring,expired,invalid') ((@($s1,$s2,$s3,$s4,$s5) | ForEach-Object { $_.state }) -join ',')
+        $prevLoc=$script:Locale; $script:Locale='ru'; $txt2=Format-AmazonProfileStatus $s2; $txt3=Format-AmazonProfileStatus $s3; $txt1=Format-AmazonProfileStatus $s1; $script:Locale=$prevLoc
+        Check 'prof_status_text_ru' ($txt2 -like '4500 × 5400 пикс., 300 DPI · amazon.com_us / standard_tshirt · действует до *(осталось дней: 30).' -and $txt3 -like 'Скоро истекает:*осталось дней: 3*' -and $txt1 -like 'Не импортирован*') ($txt2+' | '+$txt3)
+        $profFields={ [pscustomobject]@{marketplace='amazon.com_us';product_type_key='standard_tshirt';template_key='std-4500';template_file_sha256=('b'*64);width='4500';height='5400';dpi='300';days='90';source_ref='https://merch.amazon.com/resource/Y28FFE5NLRYJG4V';attested=$true} }
+        $att=New-AmazonProfileAttestation (& $profFields) $now
+        $vd=([DateTime]::Parse($att.valid_until,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind)-[DateTime]::Parse($att.captured_at,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind)).TotalDays
+        Check 'prof_attestation_shape' ($att.schema -eq 'forge.amazon_print_profile_attestation.v1' -and $att.attested -eq $true -and $att.canvas_width_px -eq 4500 -and $att.file_format -eq 'png' -and $att.background -eq 'transparent' -and [int]$vd -eq 90 -and ($att | ConvertTo-Json -Compress).Contains('"source_refs":["https://merch.amazon.com')) ($att | ConvertTo-Json -Compress)
+        $errs=@()
+        foreach($mut in @({param($f) $f.attested=$false},{param($f) $f.width='300'},{param($f) $f.days='200'},{param($f) $f.source_ref='http://example.com/x'},{param($f) $f.template_file_sha256=''},{param($f) $f.template_key=' '})){ $pf=& $profFields; & $mut $pf; try{ $null=New-AmazonProfileAttestation $pf $now; $errs+='NO ERROR' }catch{ $errs+=$_.Exception.Message } }
+        Check 'prof_form_rejects_bad_input' (@($errs | Where-Object { $_ -eq 'NO ERROR' }).Count -eq 0 -and $errs[0] -like 'Tick*' -and $errs[1] -like 'Width and height*' -and $errs[2] -like 'Valid for*' -and $errs[3] -like 'The source link*' -and $errs[4] -like 'Choose the Amazon template*' -and $errs[5] -like 'Fill marketplace*') ($errs -join ' | ')
     }
     # no-dispatch artwork preparation
     Export-LocalGenerationBrief

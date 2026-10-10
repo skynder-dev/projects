@@ -13,7 +13,7 @@
     "status": "ACTIVE"
   },
   "desktop": {
-    "app_version": "2.15.0-confirm-checks",
+    "app_version": "2.16.0-amazon-profile",
     "native_windows_runtime_verified": false,
     "orange_semantic_palette": true,
     "overview_first": true,
@@ -28,10 +28,10 @@
       "ru",
       "es"
     ],
-    "workbench_sha256": "e900bedb4901837a3d8e5667901798f8c04dd7aefb822e689348a1a34c27982f",
-    "workbench_size_bytes": 254743,
+    "workbench_sha256": "d3789230229b28f1df31404e02c4e853d8571e463432975d4d2877cfe0349118",
+    "workbench_size_bytes": 255652,
     "native_windows_parser_verified": false,
-    "native_windows_parser_target_sha256": "e900bedb4901837a3d8e5667901798f8c04dd7aefb822e689348a1a34c27982f",
+    "native_windows_parser_target_sha256": "d3789230229b28f1df31404e02c4e853d8571e463432975d4d2877cfe0349118",
     "native_windows_parser_result_sha256": null,
     "product_home_dashboard": true,
     "brand_home_navigation": "dedicated_home_dashboard",
@@ -56,14 +56,19 @@
     "commerce_metrics_synthetic_values_allowed": false,
     "runtime_modules": [
       {
+        "path": "Modules\\Forge.AmazonProfile.ps1",
+        "sha256": "2252edd70a564d8775d635fc7bb589e86e59530e0a505189d3ef6661237347eb",
+        "size_bytes": 23169
+      },
+      {
         "path": "Modules\\Forge.BackendStatus.ps1",
         "sha256": "f6b96825281fdd37e13e8a7740c2b7d47cba35a74330a464c280c6de6fff23b9",
         "size_bytes": 2114
       },
       {
         "path": "Modules\\Forge.CheckAttestation.ps1",
-        "sha256": "99b71c68a78417b178a4340f518ce42192d8738d76a61c75ef160d1ddbae94fb",
-        "size_bytes": 23084
+        "sha256": "6d3c32de2b87638bf1a58584ff4c9fc7d2ca86493c34be55939eee2712b027c6",
+        "size_bytes": 23301
       },
       {
         "path": "Modules\\Forge.DataAdapter.ps1",
@@ -117,8 +122,8 @@
       },
       {
         "path": "Modules\\Forge.LocalCore.ps1",
-        "sha256": "5518394d1256383bc22bbffc855c905c713a6fb9b66cb1db7e2a447dd2f31b10",
-        "size_bytes": 120593
+        "sha256": "51814331ce28f62f1ae818bd1499568c5b08241b6e9cd1ffe9cc343fac692b26",
+        "size_bytes": 120796
       },
       {
         "path": "Modules\\Forge.Localization.ps1",
@@ -161,7 +166,7 @@
         "size_bytes": 9674
       }
     ],
-    "runtime_module_count": 21,
+    "runtime_module_count": 22,
     "architecture_contract": "forge.product_architecture.v1",
     "design_baseline_contract": "forge.design_baseline.v1",
     "design_baseline_status": "candidate_pending_owner_visual_freeze",
@@ -315,7 +320,7 @@
     "trusted_local_check_worker": "MerchForgeCheckWorker.ps1",
     "generation_spool_policy": "forge.generation_spool_policy.v1",
     "publication_receipt_print_binding": true,
-    "current_release": "064_Merch_Forge_CONFIRM_CHECKS_RC",
+    "current_release": "065_Merch_Forge_AMAZON_PROFILE_RC",
     "generation_authority_module": "Modules\\Forge.GenerationAuthority.ps1",
     "generation_temporal_authority": "future generation job/attempt timestamps beyond 10-minute clock-skew tolerance fail closed before paid dispatch/readiness; shared first-live authority also revalidates non-future ordered attempt/result/import timestamps",
     "amazon_print_profile_temporal_authority": "valid_until must be strictly later than captured_at; captured_at remains bounded by 10-minute future-skew tolerance and 120-day horizon",
@@ -478,11 +483,11 @@
     "owner_separate_parser_zip_required": false,
     "current_release": "044_Merch_Forge_PACKAGE_ROOT_RC"
   },
-  "package_name": "064_Merch_Forge_CONFIRM_CHECKS_RC",
-  "package_number": 64,
-  "result_intent": "In-app owner checklist form for IP, policy and listing checks",
+  "package_name": "065_Merch_Forge_AMAZON_PROFILE_RC",
+  "package_number": 65,
+  "result_intent": "Amazon print profile status and in-app form",
   "schema": "forge.reconciled_candidate_manifest.v1",
-  "stage": "FORGE-064-CONFIRM-CHECKS-RC",
+  "stage": "FORGE-065-AMAZON-PROFILE-RC",
   "startup_baseline": {
     "immutable_exact": false,
     "inner_start_sha256": "013e9dcfbfb4c2a42c12b4f6ee208767d80509be9e877160f088a9d2984f51a1",
@@ -642,7 +647,7 @@
     "exact_043_native_windows_stage": "integrity",
     "package_root_native_argv_repair": true
   },
-  "installer_generation": "00000000000000100247",
+  "installer_generation": "00000000000000100248",
   "installer_generation_format": "fixed_width_decimal_v1",
   "installer_guard": {
     "single_writer_lock": "install.lock",
