@@ -61,9 +61,12 @@ function Test-StartAndClose([string]$Label,[string]$Vbs,[string]$Lad){
     # The start helper waits for the window's ready flag, then for the exit code; close the window like a person would.
     $logs=Join-Path $Lad 'MerchForge\logs'
     $env:LOCALAPPDATA=$Lad
+    $tStart=[DateTime]::UtcNow
     $helper=Start-Process -FilePath $wscript -ArgumentList ('"'+$Vbs+'"') -PassThru; $null=$helper.Handle
     $ready=Wait-File (Join-Path $logs 'MerchForge-ready-*.flag') 200
-    Check ($Label+'_window_ready') ($null -ne $ready) $(if($ready){$ready.Name}else{'no ready flag; dialogs: '+(($Report.dialogs) -join ' | ')})
+    $secs=[Math]::Round(([DateTime]::UtcNow-$tStart).TotalSeconds,1)
+    Check ($Label+'_window_ready') ($null -ne $ready) $(if($ready){$ready.Name+' after '+$secs+' s'}else{'no ready flag; dialogs: '+(($Report.dialogs) -join ' | ')})
+    if($null -ne $ready){ Check ($Label+'_starts_within_60s') ($secs -lt 60) ([string]$secs+' s') }
     $app=Find-AppWindowProcess 60
     Check ($Label+'_window_visible') ($null -ne $app) $(if($app){$app.MainWindowTitle}else{'no window'})
     if($null -ne $app){ Start-Sleep -Seconds 3; $null=$app.CloseMainWindow() }
@@ -110,6 +113,12 @@ try {
     $i0=Get-Installed $ladC
     $oldName=[string](Get-Content -LiteralPath (Join-Path $old 'Merch_Forge_A5_Current\candidate_manifest.json') -Raw -Encoding UTF8 | ConvertFrom-Json).package_name
     Check 'upgrade_054_installed_first' ($r0.code -eq 0 -and $null -ne $i0 -and [string]$i0.package_name -eq $oldName) ('archive manifest '+$oldName+'; installed '+$(if($i0){[string]$i0.package_name}else{'none, exit '+$r0.code}))
+    # the owner's data (from the window phases: drafts, decisions, artwork, packages, receipts, sales) placed before the upgrade
+    $src=Join-Path $OutDir 'localappdata\MerchForge'
+    New-Item -ItemType Directory -Path (Join-Path $ladC 'MerchForge') -Force | Out-Null
+    foreach($d in @('local-core-v1','channel-profiles')){ if(Test-Path -LiteralPath (Join-Path $src $d)){ Copy-Item -LiteralPath (Join-Path $src $d) -Destination (Join-Path $ladC 'MerchForge') -Recurse -Force } }
+    function Get-DataFacts([string]$Lad){ $s=$null; try{ $s=Get-Content -LiteralPath (Join-Path $Lad 'MerchForge\local-core-v1\state.json') -Raw -Encoding UTF8 | ConvertFrom-Json }catch{}; if($null -eq $s){ return 'no state' }; return ('drafts {0}, concepts {1}, receipts {2}, sales {3}' -f @($s.research_drafts).Count,@($s.concepts).Count,@($s.publication_receipts).Count,@($s.sales_rows).Count) }
+    $factsBefore=Get-DataFacts $ladC
     $relC=Expand-Release $zip (Join-Path $work 'cnew')
     $r1=Invoke-ScriptHost (Join-Path $relC 'Merch_Forge_A5_Current\Install Merch Forge.vbs') $ladC 300
     $i1=Get-Installed $ladC
@@ -118,6 +127,8 @@ try {
     Check 'upgrade_installed_new' ($r1.code -eq 0 -and $null -ne $i1 -and [string]$i1.package_name -eq $pkg -and [string]$i1.installer_generation -gt [string]$i0.installer_generation) ('exit '+$r1.code+'; '+$(if($i1){[string]$i1.package_name+' gen '+[string]$i1.installer_generation}else{'none'}))
     Check 'upgrade_keeps_previous' ($null -ne $p0 -and [string]$p0.package_name -eq $oldName) $(if($p0){[string]$p0.package_name}else{'no app.previous'})
     Test-StartAndClose 'upgraded' (Join-Path $ladC 'Programs\MerchForge\app\Start Merch Forge.vbs') $ladC
+    $factsAfter=Get-DataFacts $ladC
+    Check 'upgrade_keeps_user_data' ($factsBefore -ne 'no state' -and $factsBefore -notlike 'drafts 0,*' -and $factsAfter -eq $factsBefore) ('before: '+$factsBefore+' | after: '+$factsAfter)
     # Downgrade guard: installing 054 again over the new version must be refused without changes
     $r2=Invoke-ScriptHost (Join-Path $old 'Merch_Forge_A5_Current\Install Merch Forge.vbs') $ladC 300
     $i2=Get-Installed $ladC
