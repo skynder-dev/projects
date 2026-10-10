@@ -151,7 +151,7 @@ $Window.Add_ContentRendered({
             Ci-Check 'ru_status_after_restart' ($OverviewStatus.Text -eq 'Черновик исследования') $OverviewStatus.Text
             Ci-Shot '08-after-restart'
             Ci-Click $NavPortfolioButton 'NavPortfolioButton (restart)'
-            $mine=@(@($PortfolioPipelineList.Items) | Where-Object { [bool]$_.queue_item.is_local_draft })
+            $mine=@(@($PortfolioPipelineList.Items) | Where-Object { [bool](Get-PropertyValue $_.queue_item 'is_local_draft') })
             Ci-Check 'portfolio_after_restart_ru' ($mine.Count -eq 1 -and [string]$mine[0].stage_label -eq 'ОСТАВИТЬ · нет макета' -and $PortfolioPipelineTitle.Text -eq 'Конвейер') $(if($mine.Count){[string]$mine[0].stage_label}else{'missing'})
             Ci-Shot '09-portfolio-ru'
         }
