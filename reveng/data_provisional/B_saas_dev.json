@@ -1,0 +1,865 @@
+[
+ {
+  "id": "SAS-01",
+  "name": "Failed-payment recovery add-on for tiny Stripe SaaS",
+  "family": "saas_or_micro_saas",
+  "category": "billing/churn tooling",
+  "buyer": "Solo/indie SaaS founders on Stripe with <$20k MRR",
+  "pain": "Involuntary churn from failed cards; founders do not measure recovery",
+  "evidence": [
+   {
+    "url": "https://churnkey.co/pricing",
+    "publisher": "Churnkey",
+    "date": "2026-10-09",
+    "shows": "Payment recovery included on all plans; Starter $250/mo billed yearly ($300 monthly) (fact)",
+    "kind": "incumbent_price",
+    "class": "fact"
+   },
+   {
+    "url": "https://stripe.com/billing/pricing",
+    "publisher": "Stripe",
+    "date": "2026-10-09",
+    "shows": "Smart Retries, overdue reminders and up to 3 recovery automations listed as Included; Billing 0.7% of volume pay-as-you-go (fact)",
+    "kind": "incumbent_price",
+    "class": "fact"
+   },
+   {
+    "url": "https://www.indiehackers.com/product/workaid-dunning",
+    "publisher": "Indie Hackers",
+    "date": "2026-03-16",
+    "shows": "A solo founder's WorkAid Dunning (Stripe failed-payment visibility) listed at $0/mo revenue; founder says recovery is rarely measured (fact); shows crowding by other micro-entrants",
+    "kind": "demand",
+    "class": "fact"
+   },
+   {
+    "url": "https://beancount.io/blog/2026/07/08/involuntary-churn-dunning-failed-payment-recovery-saas",
+    "publisher": "beancount.io blog",
+    "date": "2026-07-08",
+    "shows": "Claims involuntary churn is 20-40% of churn and tooling recovers 40-80% (secondary blog claim, unverified)",
+    "kind": "demand",
+    "class": "inference"
+   },
+   {
+    "url": "https://docs.stripe.com/billing/revenue-recovery/smart-retries",
+    "publisher": "Stripe Docs",
+    "date": "2026-10-09",
+    "shows": "Platform natively retries (default 8 tries in 2 weeks); hard-decline cards not retried; Stripe can change/expand native features at any time (fact)",
+    "kind": "constraint",
+    "class": "fact"
+   }
+  ],
+  "substitutes": [
+   {
+    "name": "Stripe Smart Retries",
+    "price_point": "included in Billing",
+    "url": "https://stripe.com/billing/pricing"
+   },
+   {
+    "name": "Churnkey",
+    "price_point": "from $250/mo yearly",
+    "url": "https://churnkey.co/pricing"
+   }
+  ],
+  "entrant_wedge": "Cheap dunning email/card-update-page for sub-$20k MRR Stripe shops",
+  "entrant_edge": {
+   "criterion": "cash_cost",
+   "direction": "lower_is_better",
+   "unit": "USD/month to customer",
+   "incumbent_value": 0,
+   "incumbent_source_url": "https://stripe.com/billing/pricing",
+   "entrant_value": 19,
+   "entrant_basis": "Entrant would charge ~$19/mo; but the native incumbent is $0, so entrant has NO cost edge",
+   "falsifier": "If >=30% of surveyed sub-$20k MRR Stripe founders say native Smart Retries leaves meaningful unrecovered revenue they would pay for, wedge survives; otherwise dead"
+  },
+  "startup_cash_usd": 300,
+  "time_to_first_revenue_days": 45,
+  "owner_hours_per_week_steady": 5,
+  "automation_potential_pct": 85,
+  "unit_economics": {
+   "price_usd": 19,
+   "variable_cost_usd": 1,
+   "contribution_margin_pct": 94,
+   "notes": "Model: $19/mo, email+hosting variable ~ $1; no evidence anyone pays",
+   "class": "model"
+  },
+  "regulatory_or_platform_dependency": "Depends on Stripe API/Connect OAuth; Stripe native features directly substitute",
+  "major_uncertainty": "Free native Stripe feature already covers most of it; no entrant edge",
+  "dimension_scores": {
+   "contribution_economics": 3,
+   "demand_signal": 2,
+   "acquisition_efficiency": 2,
+   "automation": 4,
+   "competition_gap": 1,
+   "defensibility": 1,
+   "owner_time_efficiency": 4,
+   "capital_efficiency": 5,
+   "launch_speed": 4,
+   "platform_resilience": 1,
+   "scale_without_hiring": 4,
+   "fulfillment_simplicity": 5,
+   "regulatory_simplicity": 4
+  },
+  "dimension_reasons": {
+   "contribution_economics": "Model 94% margin but price unproven",
+   "demand_signal": "Only one dated blog and a $0-revenue clone; no paying-behavior signal",
+   "acquisition_efficiency": "No evidenced free channel; IH crowded",
+   "automation": "Mostly webhooks+email",
+   "competition_gap": "Stripe Smart Retries free + Churnkey + clones",
+   "defensibility": "Trivially cloned, Stripe can absorb",
+   "owner_time_efficiency": "Low ops after setup (model)",
+   "capital_efficiency": "Build cost ~$300 (model)",
+   "launch_speed": "MVP feasible in weeks (model)",
+   "platform_resilience": "Single platform (Stripe) dependency",
+   "scale_without_hiring": "Software only",
+   "fulfillment_simplicity": "Instant digital",
+   "regulatory_simplicity": "Card data stays with Stripe; low regulation"
+  },
+  "pre_deep_verdict": "reject",
+  "verdict_reason": "Native free incumbent (Stripe Smart Retries) and crowded clones; no unknown-entrant edge",
+  "unknowns": [
+   "Actual recovery uplift of third-party vs native not verified",
+   "Third-party recovery rates are blog claims"
+  ]
+ },
+ {
+  "id": "SAS-02",
+  "name": "Missed-call text-back for home-service trades",
+  "family": "saas_or_micro_saas",
+  "category": "SMS automation for local business",
+  "buyer": "Solo plumbers/HVAC/electricians (1-5 staff)",
+  "pain": "Missed calls become lost jobs",
+  "evidence": [
+   {
+    "url": "https://www.gohighlevel.com/pricing",
+    "publisher": "GoHighLevel",
+    "date": "2026-10-09",
+    "shows": "Starter $97/mo, Unlimited $297/mo, Agency Pro $497/mo; page does not name missed-call text-back (fact)",
+    "kind": "incumbent_price",
+    "class": "fact"
+   },
+   {
+    "url": "https://www.podium.com/pricing",
+    "publisher": "Podium",
+    "date": "2026-10-09",
+    "shows": "Pricing not published, sales-gated; page does not mention missed-call text-back (fact)",
+    "kind": "incumbent_price",
+    "class": "fact"
+   },
+   {
+    "url": "https://www.twilio.com/en-us/sms/pricing/us",
+    "publisher": "Twilio",
+    "date": "2026-10-09",
+    "shows": "SMS $0.0083/segment plus carrier fees $0.0035-0.005 outbound; 10DLC onboarding fees apply (fact)",
+    "kind": "constraint",
+    "class": "fact"
+   },
+   {
+    "url": "https://usehatchapp.com/blog/guide-to-10dlc",
+    "publisher": "Hatch",
+    "date": "2023-05-01",
+    "shows": "10DLC brand $4-$44 one-time, campaign $15 one-time, $0.75-$10/mo; carriers block unregistered traffic; approval 2-4 weeks at time of writing (fact, dated 2023, fees may have changed)",
+    "kind": "constraint",
+    "class": "fact"
+   }
+  ],
+  "substitutes": [
+   {
+    "name": "GoHighLevel",
+    "price_point": "$97-$497/mo",
+    "url": "https://www.gohighlevel.com/pricing"
+   },
+   {
+    "name": "Podium",
+    "price_point": "quote only",
+    "url": "https://www.podium.com/pricing"
+   }
+  ],
+  "entrant_wedge": "Narrow trades-only productized MCTB",
+  "entrant_edge": {
+   "criterion": "cycle_time",
+   "direction": "lower_is_better",
+   "unit": "days to compliant sending",
+   "incumbent_value": 14,
+   "incumbent_source_url": "https://usehatchapp.com/blog/guide-to-10dlc",
+   "entrant_value": 14,
+   "entrant_basis": "Entrant faces same carrier registration (2-4 wks at 2023); no shortcut",
+   "falsifier": "If a pooled/ISV 10DLC registration lets customers send within 2 days at <$5 cost, edge would appear"
+  },
+  "startup_cash_usd": 1500,
+  "time_to_first_revenue_days": 60,
+  "owner_hours_per_week_steady": 6,
+  "automation_potential_pct": 80,
+  "unit_economics": {
+   "price_usd": 49,
+   "variable_cost_usd": 8,
+   "contribution_margin_pct": 84,
+   "notes": "Model: ~100 texts/mo at ~$0.013 plus number rental; support unknown",
+   "class": "model"
+  },
+  "regulatory_or_platform_dependency": "Carrier/CTIA 10DLC and TCPA consent rules; Twilio or carriers can suspend",
+  "major_uncertainty": "Per-customer brand registration and support burden; unknown demand",
+  "dimension_scores": {
+   "contribution_economics": 3,
+   "demand_signal": 1,
+   "acquisition_efficiency": 1,
+   "automation": 3,
+   "competition_gap": 1,
+   "defensibility": 1,
+   "owner_time_efficiency": 2,
+   "capital_efficiency": 3,
+   "launch_speed": 2,
+   "platform_resilience": 1,
+   "scale_without_hiring": 2,
+   "fulfillment_simplicity": 3,
+   "regulatory_simplicity": 1
+  },
+  "dimension_reasons": {
+   "contribution_economics": "Model 84% margin but registration/support cost uncounted",
+   "demand_signal": "No dated paying-behavior evidence found",
+   "acquisition_efficiency": "No channel evidence; unknown entrant, cold local trades",
+   "automation": "Message flow automatable, onboarding/registration is manual",
+   "competition_gap": "GHL, Podium, many resellers (price page not showing standalone)",
+   "defensibility": "No moat",
+   "owner_time_efficiency": "Support of non-technical trades likely >10h/wk",
+   "capital_efficiency": "Twilio+registration fees modest",
+   "launch_speed": "10DLC delays weeks",
+   "platform_resilience": "Dependent on carriers+Twilio",
+   "scale_without_hiring": "Support scales with count",
+   "fulfillment_simplicity": "Registration step per customer",
+   "regulatory_simplicity": "TCPA/10DLC compliance heavy"
+  },
+  "pre_deep_verdict": "reject",
+  "verdict_reason": "Compliance/registration friction and bundled incumbents; no evidence of demand or edge",
+  "unknowns": [
+   "Standalone MCTB prices not verified",
+   "Current 10DLC fees (source 2023)",
+   "No demand evidence collected"
+  ]
+ },
+ {
+  "id": "SAS-03",
+  "name": "State sales-tax nexus tracker for small SaaS/ecommerce sellers",
+  "family": "saas_or_micro_saas",
+  "category": "tax compliance monitoring",
+  "buyer": "Micro-SaaS founders selling in multiple US states",
+  "pain": "Unaware when they cross economic-nexus thresholds",
+  "evidence": [
+   {
+    "url": "https://stripe.com/tax",
+    "publisher": "Stripe",
+    "date": "2026-10-09",
+    "shows": "Stripe Tax monitors registration thresholds (incl. VAT OSS) and alerts via dashboard/email (fact)",
+    "kind": "incumbent_price",
+    "class": "fact"
+   },
+   {
+    "url": "https://erpresearch.com/erp-add-ons/tax-compliance/stripe-tax/pricing",
+    "publisher": "ERP Research (third party)",
+    "date": "undated",
+    "shows": "Stripe Tax listed at 0.5% per transaction in registered jurisdictions (third-party, unverified vs Stripe)",
+    "kind": "incumbent_price",
+    "class": "inference"
+   },
+   {
+    "url": "https://beancount.io/blog/2026/08/12/state-sales-tax-nexus-2026-guide",
+    "publisher": "beancount.io blog",
+    "date": "2026-08-12",
+    "shows": "Typical nexus: $100K sales or 200 transactions; some states repealed transaction prong; 200-transaction test 'SaaS-hostile' (secondary blog)",
+    "kind": "demand",
+    "class": "inference"
+   }
+  ],
+  "substitutes": [
+   {
+    "name": "Stripe Tax",
+    "price_point": "~0.5%/txn (third-party figure)",
+    "url": "https://erpresearch.com/erp-add-ons/tax-compliance/stripe-tax/pricing"
+   }
+  ],
+  "entrant_wedge": "Read-only threshold dashboard across payment processors",
+  "entrant_edge": {
+   "criterion": "cash_cost",
+   "direction": "lower_is_better",
+   "unit": "USD/month",
+   "incumbent_value": 0,
+   "incumbent_source_url": "https://stripe.com/tax",
+   "entrant_value": 15,
+   "entrant_basis": "Stripe threshold monitoring has no separate listed fee; entrant would add cost",
+   "falsifier": "Founders not on Stripe or needing multi-processor view willing to pay; else no gap"
+  },
+  "startup_cash_usd": 500,
+  "time_to_first_revenue_days": 60,
+  "owner_hours_per_week_steady": 6,
+  "automation_potential_pct": 70,
+  "unit_economics": {
+   "price_usd": 15,
+   "variable_cost_usd": 1,
+   "contribution_margin_pct": 93,
+   "notes": "Model only",
+   "class": "model"
+  },
+  "regulatory_or_platform_dependency": "State rules change; liability risk if advice is wrong; processor API access",
+  "major_uncertainty": "Liability for wrong threshold data; Stripe already covers it",
+  "dimension_scores": {
+   "contribution_economics": 3,
+   "demand_signal": 1,
+   "acquisition_efficiency": 1,
+   "automation": 4,
+   "competition_gap": 1,
+   "defensibility": 1,
+   "owner_time_efficiency": 3,
+   "capital_efficiency": 4,
+   "launch_speed": 3,
+   "platform_resilience": 2,
+   "scale_without_hiring": 4,
+   "fulfillment_simplicity": 5,
+   "regulatory_simplicity": 2
+  },
+  "dimension_reasons": {
+   "contribution_economics": "Model 93% margin only",
+   "demand_signal": "One secondary blog, no paying signal",
+   "acquisition_efficiency": "No channel evidence",
+   "automation": "Rules updates need monitoring",
+   "competition_gap": "Stripe Tax and others already alert",
+   "defensibility": "Rule data copyable",
+   "owner_time_efficiency": "Rule maintenance ongoing",
+   "capital_efficiency": "Cheap to build",
+   "launch_speed": "Basic MVP ok",
+   "platform_resilience": "Needs processor APIs",
+   "scale_without_hiring": "Software",
+   "fulfillment_simplicity": "Digital",
+   "regulatory_simplicity": "Tax-advice liability, 50 state rules"
+  },
+  "pre_deep_verdict": "reject",
+  "verdict_reason": "Stripe already monitors thresholds; rule-maintenance liability; no edge",
+  "unknowns": [
+   "Anrok/TaxJar prices not fetched",
+   "State-by-state rule data source and cost unverified"
+  ]
+ },
+ {
+  "id": "SAS-04",
+  "name": "Simple e-signature for small landlords/contractors",
+  "family": "saas_or_micro_saas",
+  "category": "document signing",
+  "buyer": "Small landlords and contractors",
+  "pain": "Need signed lease/work orders cheaply",
+  "evidence": [
+   {
+    "url": "https://www.signwell.com/pricing/",
+    "publisher": "SignWell",
+    "date": "2026-10-09",
+    "shows": "Free 3 docs/mo; Light $10/mo yearly ($12 monthly); Business $30/mo yearly (fact)",
+    "kind": "incumbent_price",
+    "class": "fact"
+   },
+   {
+    "url": "https://www.law.cornell.edu/uscode/text/15/7001",
+    "publisher": "Cornell LII (15 USC 7001)",
+    "date": "2026-10-09",
+    "shows": "ESIGN Act: signatures cannot be denied legal effect solely for being electronic; so low legal barrier (fact)",
+    "kind": "constraint",
+    "class": "fact"
+   }
+  ],
+  "substitutes": [
+   {
+    "name": "SignWell",
+    "price_point": "free 3 docs/mo; $10/mo",
+    "url": "https://www.signwell.com/pricing/"
+   }
+  ],
+  "entrant_wedge": "Landlord-specific lease templates + signing",
+  "entrant_edge": {
+   "criterion": "cash_cost",
+   "direction": "lower_is_better",
+   "unit": "USD/month",
+   "incumbent_value": 0,
+   "incumbent_source_url": "https://www.signwell.com/pricing/",
+   "entrant_value": 9,
+   "entrant_basis": "Incumbent free tier is $0; entrant cannot undercut",
+   "falsifier": "Landlords exceeding 3 docs/mo prefer template bundle at higher price; no evidence"
+  },
+  "startup_cash_usd": 300,
+  "time_to_first_revenue_days": 30,
+  "owner_hours_per_week_steady": 5,
+  "automation_potential_pct": 85,
+  "unit_economics": {
+   "price_usd": 9,
+   "variable_cost_usd": 1,
+   "contribution_margin_pct": 89,
+   "notes": "Model only",
+   "class": "model"
+  },
+  "regulatory_or_platform_dependency": "Audit-trail/legal admissibility expectations; state lease law varies",
+  "major_uncertainty": "Saturated, free tiers; no demand evidence gathered",
+  "dimension_scores": {
+   "contribution_economics": 3,
+   "demand_signal": 0,
+   "acquisition_efficiency": 1,
+   "automation": 4,
+   "competition_gap": 0,
+   "defensibility": 0,
+   "owner_time_efficiency": 3,
+   "capital_efficiency": 5,
+   "launch_speed": 4,
+   "platform_resilience": 3,
+   "scale_without_hiring": 4,
+   "fulfillment_simplicity": 5,
+   "regulatory_simplicity": 3
+  },
+  "dimension_reasons": {
+   "contribution_economics": "Model margin only",
+   "demand_signal": "No demand evidence gathered (fetches failed)",
+   "acquisition_efficiency": "None",
+   "automation": "Automatable",
+   "competition_gap": "Free tiers from SignWell and others",
+   "defensibility": "Cloneable",
+   "owner_time_efficiency": "Support modest",
+   "capital_efficiency": "Cheap",
+   "launch_speed": "Fast MVP",
+   "platform_resilience": "Own distribution possible",
+   "scale_without_hiring": "Software",
+   "fulfillment_simplicity": "Digital",
+   "regulatory_simplicity": "ESIGN broadly permissive but state lease law varies"
+  },
+  "pre_deep_verdict": "reject",
+  "verdict_reason": "Saturated with free incumbents; only 2 evidence items obtained (research limit reached)",
+  "unknowns": [
+   "DocuSign/Adobe pricing not verified (fetch failed)",
+   "Demand evidence missing",
+   "Evidence below 3-item minimum"
+  ]
+ },
+ {
+  "id": "DEV-01",
+  "name": "Webhook capture and replay for small teams",
+  "family": "b2b_api_devtools",
+  "category": "webhook tooling",
+  "buyer": "Indie devs/small teams consuming Stripe/GitHub/Shopify webhooks",
+  "pain": "Hard to reproduce events, replay with valid signatures, missed events",
+  "evidence": [
+   {
+    "url": "https://www.hookdeck.com/pricing",
+    "publisher": "Hookdeck",
+    "date": "2026-10-09",
+    "shows": "Developer $0 (10k events, 3-day retention); Team from $39/mo (7 days); Growth from $499/mo (fact)",
+    "kind": "incumbent_price",
+    "class": "fact"
+   },
+   {
+    "url": "https://hookcap.dev/blog/how-to-replay-webhooks-for-faster-debugging/",
+    "publisher": "HookCap",
+    "date": "2026-03-31",
+    "shows": "Describes replay/re-sign pain: re-triggering events is the bottleneck; signature fail on replay (fact; vendor marketing)",
+    "kind": "demand",
+    "class": "fact"
+   },
+   {
+    "url": "https://www.hunted.space/product/hunginn",
+    "publisher": "hunted.space (Product Hunt mirror)",
+    "date": "undated",
+    "shows": "Another webhook-inspect/replay tool launched with 0 upvotes (fact); shows crowding and weak traction",
+    "kind": "demand",
+    "class": "fact"
+   },
+   {
+    "url": "https://docs.stripe.com/webhooks",
+    "publisher": "Stripe Docs",
+    "date": "2026-10-09",
+    "shows": "Stripe retries up to 3 days live; Dashboard resend 15 days, CLI resend 30 days; stripe listen for local testing (fact)",
+    "kind": "constraint",
+    "class": "fact"
+   }
+  ],
+  "substitutes": [
+   {
+    "name": "Hookdeck",
+    "price_point": "free 10k events; $39/mo",
+    "url": "https://www.hookdeck.com/pricing"
+   },
+   {
+    "name": "Stripe CLI/Dashboard resend",
+    "price_point": "free",
+    "url": "https://docs.stripe.com/webhooks"
+   }
+  ],
+  "entrant_wedge": "Cheaper replay with re-signing",
+  "entrant_edge": {
+   "criterion": "cash_cost",
+   "direction": "lower_is_better",
+   "unit": "USD/month",
+   "incumbent_value": 0,
+   "incumbent_source_url": "https://www.hookdeck.com/pricing",
+   "entrant_value": 9,
+   "entrant_basis": "Hookdeck free tier is $0; no edge",
+   "falsifier": "Pay signal at $9 in a niche Hookdeck free tier does not serve"
+  },
+  "startup_cash_usd": 250,
+  "time_to_first_revenue_days": 30,
+  "owner_hours_per_week_steady": 4,
+  "automation_potential_pct": 90,
+  "unit_economics": {
+   "price_usd": 9,
+   "variable_cost_usd": 1,
+   "contribution_margin_pct": 89,
+   "notes": "Model only",
+   "class": "model"
+  },
+  "regulatory_or_platform_dependency": "Own infra; no platform lock besides provider webhooks",
+  "major_uncertainty": "Free incumbent tiers and provider-native tools",
+  "dimension_scores": {
+   "contribution_economics": 3,
+   "demand_signal": 2,
+   "acquisition_efficiency": 2,
+   "automation": 5,
+   "competition_gap": 1,
+   "defensibility": 1,
+   "owner_time_efficiency": 3,
+   "capital_efficiency": 5,
+   "launch_speed": 4,
+   "platform_resilience": 4,
+   "scale_without_hiring": 4,
+   "fulfillment_simplicity": 5,
+   "regulatory_simplicity": 5
+  },
+  "dimension_reasons": {
+   "contribution_economics": "Model",
+   "demand_signal": "One vendor blog, one 0-upvote clone",
+   "acquisition_efficiency": "Dev SEO/HN possible but unproven",
+   "automation": "Fully automatable",
+   "competition_gap": "Hookdeck free tier, Stripe CLI, webhook.site, clones",
+   "defensibility": "Cloneable",
+   "owner_time_efficiency": "Low",
+   "capital_efficiency": "Cheap",
+   "launch_speed": "Quick",
+   "platform_resilience": "Independent",
+   "scale_without_hiring": "Software",
+   "fulfillment_simplicity": "Digital",
+   "regulatory_simplicity": "None"
+  },
+  "pre_deep_verdict": "reject",
+  "verdict_reason": "Free incumbent tiers plus provider-native tools; no entrant edge",
+  "unknowns": [
+   "webhook.site pricing fetch failed",
+   "Hookdeck per-event rates inconsistent on page"
+  ]
+ },
+ {
+  "id": "DEV-02",
+  "name": "Cron/heartbeat monitoring for small projects",
+  "family": "b2b_api_devtools",
+  "category": "monitoring",
+  "buyer": "Indie devs and small agencies",
+  "pain": "Silent failures of scheduled jobs",
+  "evidence": [
+   {
+    "url": "https://cronitor.io/pricing",
+    "publisher": "Cronitor",
+    "date": "2026-10-09",
+    "shows": "Hacker free 5 monitors; Business $2/monitor/mo + $5/user (fact)",
+    "kind": "incumbent_price",
+    "class": "fact"
+   },
+   {
+    "url": "https://healthchecks.io/pricing/",
+    "publisher": "Healthchecks.io",
+    "date": "2026-10-09",
+    "shows": "Free 20 jobs; Business $20/mo for 100 jobs; open-source projects free (fact)",
+    "kind": "incumbent_price",
+    "class": "fact"
+   },
+   {
+    "url": "https://github.com/healthchecks/healthchecks",
+    "publisher": "GitHub",
+    "date": "2026-10-09",
+    "shows": "BSD-3-Clause, ~10.3k stars, Docker self-host (fact)",
+    "kind": "constraint",
+    "class": "fact"
+   }
+  ],
+  "substitutes": [
+   {
+    "name": "Healthchecks.io",
+    "price_point": "free-$20/mo",
+    "url": "https://healthchecks.io/pricing/"
+   },
+   {
+    "name": "Cronitor",
+    "price_point": "free-$2/monitor",
+    "url": "https://cronitor.io/pricing"
+   }
+  ],
+  "entrant_wedge": "None identified",
+  "entrant_edge": {
+   "criterion": "cash_cost",
+   "direction": "lower_is_better",
+   "unit": "USD/month",
+   "incumbent_value": 0,
+   "incumbent_source_url": "https://healthchecks.io/pricing/",
+   "entrant_value": 5,
+   "entrant_basis": "Free open-source and free tier exist; no edge",
+   "falsifier": "n/a"
+  },
+  "startup_cash_usd": 200,
+  "time_to_first_revenue_days": 30,
+  "owner_hours_per_week_steady": 4,
+  "automation_potential_pct": 90,
+  "unit_economics": {
+   "price_usd": 5,
+   "variable_cost_usd": 1,
+   "contribution_margin_pct": 80,
+   "notes": "Model only",
+   "class": "model"
+  },
+  "regulatory_or_platform_dependency": "None material",
+  "major_uncertainty": "Open-source free equivalent",
+  "dimension_scores": {
+   "contribution_economics": 2,
+   "demand_signal": 1,
+   "acquisition_efficiency": 1,
+   "automation": 5,
+   "competition_gap": 0,
+   "defensibility": 0,
+   "owner_time_efficiency": 3,
+   "capital_efficiency": 5,
+   "launch_speed": 4,
+   "platform_resilience": 4,
+   "scale_without_hiring": 4,
+   "fulfillment_simplicity": 5,
+   "regulatory_simplicity": 5
+  },
+  "dimension_reasons": {
+   "contribution_economics": "Model",
+   "demand_signal": "No dated demand found",
+   "acquisition_efficiency": "None",
+   "automation": "Automatable",
+   "competition_gap": "Open-source BSD Healthchecks + free tiers",
+   "defensibility": "None",
+   "owner_time_efficiency": "Low",
+   "capital_efficiency": "Cheap",
+   "launch_speed": "Fast",
+   "platform_resilience": "Independent",
+   "scale_without_hiring": "Software",
+   "fulfillment_simplicity": "Digital",
+   "regulatory_simplicity": "None"
+  },
+  "pre_deep_verdict": "reject",
+  "verdict_reason": "Saturated with open-source and free tiers",
+  "unknowns": [
+   "Demand evidence not collected (research limit)"
+  ]
+ },
+ {
+  "id": "DEV-03",
+  "name": "Normalized SEC XBRL financials API for indie quant/AI builders",
+  "family": "b2b_api_devtools",
+  "category": "public-data API",
+  "buyer": "Indie devs/students/small fintech startups needing clean US-company fundamentals",
+  "pain": "Raw EDGAR XBRL needs heavy normalization",
+  "evidence": [
+   {
+    "url": "https://sec-api.io/pricing",
+    "publisher": "sec-api.io",
+    "date": "2026-10-09",
+    "shows": "Free 100 calls; Personal/Startups $49/mo; Business $199/mo; extra data $0.30/GB (fact)",
+    "kind": "incumbent_price",
+    "class": "fact"
+   },
+   {
+    "url": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces",
+    "publisher": "SEC",
+    "date": "2026-10-09",
+    "shows": "EDGAR submissions/XBRL APIs and nightly bulk ZIPs are free, no API key; SEC gives no technical support (fact)",
+    "kind": "constraint",
+    "class": "fact"
+   },
+   {
+    "url": "https://sec-api.io/pricing",
+    "publisher": "sec-api.io",
+    "date": "2026-10-09",
+    "shows": "Existence of paid tiers incl. startup plan suggests paying behavior for wrappers around free data (inference, no customer counts)",
+    "kind": "demand",
+    "class": "inference"
+   }
+  ],
+  "substitutes": [
+   {
+    "name": "sec-api.io",
+    "price_point": "$49-$199/mo",
+    "url": "https://sec-api.io/pricing"
+   },
+   {
+    "name": "SEC EDGAR APIs",
+    "price_point": "free",
+    "url": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces"
+   }
+  ],
+  "entrant_wedge": "Pre-normalized fundamentals (standardized line items) over free SEC bulk data; niche pricing",
+  "entrant_edge": {
+   "criterion": "owner_time",
+   "direction": "lower_is_better",
+   "unit": "hours/week steady",
+   "incumbent_value": 0,
+   "incumbent_source_url": "https://sec-api.io/pricing",
+   "entrant_value": 5,
+   "entrant_basis": "No demonstrable edge versus established wrapper; value would be modeled",
+   "falsifier": "If no buyer pays >$20/mo for normalized fundamentals in a trial landing test, reject"
+  },
+  "startup_cash_usd": 400,
+  "time_to_first_revenue_days": 60,
+  "owner_hours_per_week_steady": 5,
+  "automation_potential_pct": 90,
+  "unit_economics": {
+   "price_usd": 29,
+   "variable_cost_usd": 3,
+   "contribution_margin_pct": 90,
+   "notes": "Model: public data bulk download, hosting small; SEC fair-access rate limit not verified (fetch failed)",
+   "class": "model"
+  },
+  "regulatory_or_platform_dependency": "SEC fair-access/terms (rate limit unverified); XBRL data quality",
+  "major_uncertainty": "Entrant has no moat vs sec-api.io; normalization correctness",
+  "dimension_scores": {
+   "contribution_economics": 4,
+   "demand_signal": 2,
+   "acquisition_efficiency": 2,
+   "automation": 4,
+   "competition_gap": 2,
+   "defensibility": 1,
+   "owner_time_efficiency": 3,
+   "capital_efficiency": 4,
+   "launch_speed": 3,
+   "platform_resilience": 4,
+   "scale_without_hiring": 4,
+   "fulfillment_simplicity": 5,
+   "regulatory_simplicity": 4
+  },
+  "dimension_reasons": {
+   "contribution_economics": "Model 90% margin",
+   "demand_signal": "Inference only from competitor pricing",
+   "acquisition_efficiency": "Dev-community/SEO possible, unproven",
+   "automation": "Nightly bulk ingest automatable",
+   "competition_gap": "Established paid wrapper but gap in niche normalization unproven",
+   "defensibility": "Data free; only normalization quality",
+   "owner_time_efficiency": "Support modest",
+   "capital_efficiency": "~$400",
+   "launch_speed": "Weeks",
+   "platform_resilience": "Public gov data, no platform ban",
+   "scale_without_hiring": "Software",
+   "fulfillment_simplicity": "API",
+   "regulatory_simplicity": "Public data, no licenses"
+  },
+  "pre_deep_verdict": "accept",
+  "verdict_reason": "Free public data with low cost; keep for deep dive to test demand, though no proven edge",
+  "unknowns": [
+   "SEC fair-access limit not verified",
+   "Demand beyond competitor pricing unverified"
+  ]
+ },
+ {
+  "id": "DEV-04",
+  "name": "Hosted MCP server generator for SaaS APIs",
+  "family": "b2b_api_devtools",
+  "category": "AI-agent tooling",
+  "buyer": "Small API/SaaS vendors wanting MCP exposure",
+  "pain": "Need an MCP server without building one",
+  "evidence": [
+   {
+    "url": "https://www.speakeasy.com/pricing",
+    "publisher": "Speakeasy",
+    "date": "2026-10-09",
+    "shows": "Only Enterprise tier shown with 'custom server creation' for MCP; no public prices (fact)",
+    "kind": "incumbent_price",
+    "class": "fact"
+   },
+   {
+    "url": "https://www.stainless.com/pricing",
+    "publisher": "Stainless",
+    "date": "2026-10-09",
+    "shows": "Free plan $0 up to 5 generators (SDK/docs/MCP server); other tiers not priced on page (fact)",
+    "kind": "incumbent_price",
+    "class": "fact"
+   },
+   {
+    "url": "https://registry.modelcontextprotocol.io/",
+    "publisher": "Model Context Protocol",
+    "date": "2026-10-09",
+    "shows": "Official MCP Registry exists, so discovery channel is open; server count not obtainable (fact)",
+    "kind": "constraint",
+    "class": "fact"
+   }
+  ],
+  "substitutes": [
+   {
+    "name": "Stainless",
+    "price_point": "free up to 5 generators",
+    "url": "https://www.stainless.com/pricing"
+   },
+   {
+    "name": "Speakeasy",
+    "price_point": "enterprise/custom",
+    "url": "https://www.speakeasy.com/pricing"
+   }
+  ],
+  "entrant_wedge": "Self-serve low-price hosted MCP for small API vendors",
+  "entrant_edge": {
+   "criterion": "cash_cost",
+   "direction": "lower_is_better",
+   "unit": "USD/month",
+   "incumbent_value": 0,
+   "incumbent_source_url": "https://www.stainless.com/pricing",
+   "entrant_value": 29,
+   "entrant_basis": "Free tier exists at Stainless; entrant not cheaper",
+   "falsifier": "No small vendor pays for hosted MCP in landing test"
+  },
+  "startup_cash_usd": 500,
+  "time_to_first_revenue_days": 60,
+  "owner_hours_per_week_steady": 6,
+  "automation_potential_pct": 75,
+  "unit_economics": {
+   "price_usd": 29,
+   "variable_cost_usd": 5,
+   "contribution_margin_pct": 83,
+   "notes": "Model only",
+   "class": "model"
+  },
+  "regulatory_or_platform_dependency": "MCP spec churn; agent-client platforms",
+  "major_uncertainty": "Whether demand is paying vs free; incumbents backed by funding",
+  "dimension_scores": {
+   "contribution_economics": 3,
+   "demand_signal": 1,
+   "acquisition_efficiency": 2,
+   "automation": 4,
+   "competition_gap": 2,
+   "defensibility": 1,
+   "owner_time_efficiency": 3,
+   "capital_efficiency": 4,
+   "launch_speed": 3,
+   "platform_resilience": 3,
+   "scale_without_hiring": 4,
+   "fulfillment_simplicity": 5,
+   "regulatory_simplicity": 5
+  },
+  "dimension_reasons": {
+   "contribution_economics": "Model",
+   "demand_signal": "No demand data collected",
+   "acquisition_efficiency": "Registry listing possible",
+   "automation": "Generation automatable",
+   "competition_gap": "Free generator exists; mid-market self-serve gap unverified",
+   "defensibility": "Cloneable",
+   "owner_time_efficiency": "Support unknown",
+   "capital_efficiency": "Hosting cheap",
+   "launch_speed": "Weeks",
+   "platform_resilience": "Spec churn risk",
+   "scale_without_hiring": "Hosting scales",
+   "fulfillment_simplicity": "Digital",
+   "regulatory_simplicity": "None"
+  },
+  "pre_deep_verdict": "accept",
+  "verdict_reason": "Possible mid-market gap (incumbent prices opaque); worth deep dive but demand unproven",
+  "unknowns": [
+   "Demand evidence missing",
+   "Stainless/Speakeasy paid prices not shown"
+  ]
+ }
+]

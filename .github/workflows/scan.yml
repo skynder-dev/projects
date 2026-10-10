@@ -1,0 +1,43 @@
+name: reveng-scan
+on:
+  workflow_dispatch:
+    inputs:
+      per_family:
+        description: candidates per family
+        default: "4"
+permissions:
+  contents: write
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: reveng
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: tests
+        run: node --test test/*.test.js
+      - name: scan
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -o pipefail
+          mkdir -p runs
+          echo "key_present=$([ -n "$ANTHROPIC_API_KEY" ] && echo yes || echo no)" > runs/console.log
+          node src/cli.js run --config config.json --per-family "${{ github.event.inputs.per_family }}" --out runs 2>&1 | tee -a runs/console.log
+      - name: publish results to branch
+        if: always()
+        run: |
+          d=$(ls -d runs/run_* 2>/dev/null | tail -1)
+          if [ -n "$d" ] && [ -f "$d/REPORT.md" ]; then cat "$d/REPORT.md" >> "$GITHUB_STEP_SUMMARY"; fi
+          rm -rf runs/*/cache
+          git config user.name "reveng-bot"; git config user.email "bot@users.noreply.github.com"
+          git checkout -B results
+          git add -f runs
+          git commit -m "scan results ${GITHUB_RUN_ID}" || true
+          git push --force origin results

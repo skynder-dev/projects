@@ -1,0 +1,29 @@
+{
+  "baseline_zip_sha256": "b83930f25163f47895a903014eb594fa6b5ab26becbe1d8230ce9b188fca25d2",
+  "files": {
+    "decision_snapshot.js": {
+      "sha256": "144422c2470a6baf47aa159e8c9e83869677d76804825a9cdcb276e184269672",
+      "source": "G280 frozen baseline app/decision_snapshot.js"
+    },
+    "economics_contract.js": {
+      "sha256": "d53044e17298ea14a3691c2c483f5df90ab58ac708dac1f75fc0de8ab29ac9c4",
+      "source": "G280 frozen baseline app/economics_contract.js"
+    },
+    "economics_roi_payback_limits.js": {
+      "sha256": "75f2e7b0e84ddc94c1865008ee3e8622f931201c765dcae5fc6ada42f584d052",
+      "source": "G280 frozen baseline app/economics_roi_payback_limits.js"
+    },
+    "entrant_advantage.js": {
+      "sha256": "1680bb071ea0c4eea83b52f74259ab351b01234a6de371be98e3f62ebc288b17",
+      "source": "G280 frozen baseline app/entrant_advantage.js"
+    },
+    "scoring_profiles.js": {
+      "sha256": "f071b418159753df32c7ed19361c94cea3b01509ea5cbcffadfa0bc5d252b851",
+      "source": "G280 frozen baseline app/scoring_profiles.js"
+    },
+    "untrusted_source_isolation.js": {
+      "sha256": "652e03238fa2ffd4aec695c22d2fd6ac69d7d49f6056f001121ec183ffddd4d3",
+      "source": "G280 frozen baseline app/untrusted_source_isolation.js"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "reveng_entrant_advantage_fixture_v1",
+  "stage": "REVA2-G097",
+  "test_fixture_only": true,
+  "criterionKey": "owner_time",
+  "direction": "lower_is_better",
+  "unit": "minutes_per_100_orders",
+  "claim": "Measured prototype workflow uses fewer operator minutes per 100 orders than the incumbent workflow.",
+  "falsifier": "Reject the hypothesis if a repeat measurement on the same task shows entrant time greater than or equal to incumbent time.",
+  "incumbentEvidence": {
+    "value": 18,
+    "evidenceRef": "fixture:incumbent:owner-time",
+    "statement": "Test fixture incumbent workflow measurement.",
+    "sourcePublisher": "RevEng runtime fixture",
+    "sourceLocator": "https://example.com/reveng/runtime-fixture/incumbent",
+    "observedAt": "2026-09-29T17:50:00Z",
+    "sourceVerified": true,
+    "syntheticEvidence": true
+  },
+  "entrantEvidence": {
+    "value": 9,
+    "evidenceRef": "fixture:entrant:owner-time",
+    "statement": "Test fixture entrant workflow measurement.",
+    "artifactRef": "fixture:entrant-prototype-v1",
+    "artifactSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "observedAt": "2026-09-29T17:50:00Z",
+    "verificationMode": "runtime_measurement",
+    "syntheticEvidence": true
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "llm": {
+    "provider": "anthropic",
+    "model": "claude-sonnet-5-5",
+    "max_tokens": 8000,
+    "web_search_max_uses": 6
+  },
+  "budget": {
+    "allow_spend": true,
+    "max_calls": 120,
+    "max_usd": 15,
+    "price_in_per_mtok": 2,
+    "price_out_per_mtok": 10,
+    "price_per_search": 0.01
+  },
+  "families": [
+    "games",
+    "saas_or_micro_saas",
+    "ecommerce_or_dropshipping",
+    "services",
+    "marketplaces",
+    "digital_or_data_products",
+    "physical_products",
+    "media_or_content",
+    "education_training",
+    "b2b_api_devtools"
+  ],
+  "per_family": 4,
+  "deep": {
+    "top_k": 8,
+    "min_verified": 3
+  },
+  "sources": {
+    "enabled": true
+  },
+  "http": {
+    "min_interval_ms": 1200
+  },
+  "gates": {},
+  "decide": {
+    "min_raw": 30,
+    "min_families": 8,
+    "min_per_family": 3,
+    "min_margin": 5,
+    "min_deep": 5
+  }
+}

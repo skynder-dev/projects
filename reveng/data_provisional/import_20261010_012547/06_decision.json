@@ -1,0 +1,29 @@
+{
+  "families": {
+    "b2b_api_devtools": 4,
+    "ecommerce_or_dropshipping": 4,
+    "physical_products": 4,
+    "saas_or_micro_saas": 4
+  },
+  "hard_blockers": [
+    "raw_candidates 16<30",
+    "families 4<8",
+    "required_families_underrepresented(<3): games,services,marketplaces,digital_or_data_products,media_or_content",
+    "provisional_run: evidence not engine-verified",
+    "no_candidate_survived_hard_gates"
+  ],
+  "integrity_violations": [],
+  "leader": null,
+  "margin_adjusted_points": null,
+  "rank_by_profile": null,
+  "ranking": [],
+  "survivors": 0,
+  "unmet_conditions": [
+    "raw_candidates 16<30",
+    "families 4<8",
+    "required_families_underrepresented(<3): games,services,marketplaces,digital_or_data_products,media_or_content",
+    "provisional_run: evidence not engine-verified",
+    "no_candidate_survived_hard_gates"
+  ],
+  "verdict": "no_winner"
+}

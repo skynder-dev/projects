@@ -1,0 +1,450 @@
+{
+  "DEV-01": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "no_measured_advantage(inc=0,ent=9)"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "waived_provisional(evidence not engine-verified)"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "DEV-02": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "no_measured_advantage(inc=0,ent=5)"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "waived_provisional(evidence not engine-verified)"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "DEV-03": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "no_measured_advantage(inc=0,ent=5)"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "waived_provisional(evidence not engine-verified)"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "DEV-04": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "no_measured_advantage(inc=0,ent=29)"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "waived_provisional(evidence not engine-verified)"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "ECO-01": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "incumbent_source_not_in_evidence"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "waived_provisional(evidence not engine-verified)"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "ECO-02": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "incumbent_source_not_in_evidence"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "waived_provisional(evidence not engine-verified)"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "ECO-03": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "no_measured_advantage(inc=12,ent=12)"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "waived_provisional(evidence not engine-verified)"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "ECO-04": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "incumbent_source_not_in_evidence"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "waived_provisional(evidence not engine-verified)"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "PHY-01": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "no_measured_advantage(inc=3000,ent=3000)"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "waived_provisional(evidence not engine-verified)"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "PHY-02": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "incumbent_source_not_in_evidence"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "waived_provisional(evidence not engine-verified)"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "PHY-03": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "no_measured_advantage(inc=3000,ent=3000)"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "waived_provisional(evidence not engine-verified)"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "PHY-04": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "no_measured_advantage(inc=3000,ent=4150)"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "waived_provisional(evidence not engine-verified)"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "SAS-01": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "no_measured_advantage(inc=0,ent=19)"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "waived_provisional(evidence not engine-verified)"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "SAS-02": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "no_measured_advantage(inc=14,ent=14)"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "waived_provisional(evidence not engine-verified)"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "SAS-03": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "no_measured_advantage(inc=0,ent=15)"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "waived_provisional(evidence not engine-verified)"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "SAS-04": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "no_measured_advantage(inc=0,ent=9)"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "waived_provisional(evidence not engine-verified)"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  }
+}

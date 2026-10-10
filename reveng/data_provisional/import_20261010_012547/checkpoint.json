@@ -1,0 +1,26 @@
+{
+  "assumptions": [],
+  "blockers": [],
+  "leader": null,
+  "next_exact_action": "Resolve hard blockers: raw_candidates 16<30 | families 4<8 | required_families_underrepresented(<3): games,services,marketplaces,digital_or_data_products,media_or_content | provisional_run: evidence not engine-verified | no_candidate_survived_hard_gates",
+  "objective": "reveng_v6_independent broad scan -> gates -> score -> deep screen -> decision",
+  "provisional": true,
+  "run_id": "import_20261010_012547",
+  "scoring_version": "reveng_v6_independent",
+  "stages_done": [
+    "import",
+    "gate_score",
+    "decide",
+    "report"
+  ],
+  "unmet": [
+    "raw_candidates 16<30",
+    "families 4<8",
+    "required_families_underrepresented(<3): games,services,marketplaces,digital_or_data_products,media_or_content",
+    "provisional_run: evidence not engine-verified",
+    "no_candidate_survived_hard_gates"
+  ],
+  "updated_at": "2026-10-10T01:25:47Z",
+  "usage": null,
+  "verdict": "no_winner"
+}

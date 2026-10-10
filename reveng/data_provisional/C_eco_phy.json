@@ -1,0 +1,853 @@
+[
+ {
+  "id": "ECO-01",
+  "name": "Generic AliExpress/CJ-to-Shopify dropshipping store",
+  "family": "ecommerce_or_dropshipping",
+  "category": "dropshipping",
+  "buyer": "Impulse online shoppers reached via paid social",
+  "pain": "Entrant wants a no-inventory store; shoppers want cheap novelty items fast",
+  "evidence": [
+   {
+    "url": "https://www.shopify.com/pricing",
+    "publisher": "Shopify",
+    "date": "2026-10-09",
+    "shows": "Basic plan $39/mo monthly or $29/mo yearly; card rate 2.9%+30c online standard; 2% third-party gateway fee",
+    "kind": "incumbent_price",
+    "class": "fact"
+   },
+   {
+    "url": "https://marksinsights.com/dropshipping-profit-margins-explained/",
+    "publisher": "Marksinsights (vendor blog, unsourced estimates)",
+    "date": "2026-02-16",
+    "shows": "Claims gross 30-50%, net 10-20%, $50 example 58% gross -> 4-6% net; CAC FB/IG $20-50, TikTok $15-40; apparel returns 20-30%, general 8-12%; chargebacks 1-2%",
+    "kind": "demand",
+    "class": "inference"
+   },
+   {
+    "url": "https://www.novadata.io/resources/news/de-minimis-exemption-ends-china-tariffs",
+    "publisher": "Novadata",
+    "date": "undated (describes Nov 1 2025 change; compliance Jan 15 2026)",
+    "shows": "De minimis ended for China shipments 2025-11-01; duties 30-54% by category regardless of value",
+    "kind": "constraint",
+    "class": "fact"
+   }
+  ],
+  "substitutes": [
+   {
+    "name": "Shopify Basic",
+    "price_point": "$29-39/mo + 2.9%+30c",
+    "url": "https://www.shopify.com/pricing"
+   }
+  ],
+  "entrant_wedge": "None identifiable: every dropshipper has same suppliers and tools.",
+  "entrant_edge": {
+   "criterion": "cash_cost",
+   "direction": "lower_is_better",
+   "unit": "USD upfront",
+   "incumbent_value": 3000,
+   "incumbent_source_url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label",
+   "entrant_value": 500,
+   "entrant_basis": "model: no inventory; Shopify ~$29-39/mo plus ~$400 test ad budget. Available to every competitor, so not a differentiator.",
+   "falsifier": "If blended CAC >= gross profit per order (source cites CAC $20-50 on ~$50 AOV), edge is nil."
+  },
+  "startup_cash_usd": 500,
+  "time_to_first_revenue_days": 14,
+  "owner_hours_per_week_steady": 20,
+  "automation_potential_pct": 60,
+  "unit_economics": {
+   "price_usd": 30,
+   "variable_cost_usd": null,
+   "contribution_margin_pct": null,
+   "notes": "Source-claimed net 4-6% on $50 example after ads; CAC $20-50 (unsourced vendor estimate); tariffs 30-54% on China-origin goods now apply to parcels",
+   "class": "model"
+  },
+  "regulatory_or_platform_dependency": "Shopify/payment processor terms; ad-platform policies; US customs duties on direct-from-China parcels",
+  "major_uncertainty": "Whether any product/niche has CAC low enough; shipping times and returns from overseas suppliers",
+  "dimension_scores": {
+   "contribution_economics": 1,
+   "demand_signal": 2,
+   "acquisition_efficiency": 0,
+   "automation": 3,
+   "competition_gap": 0,
+   "defensibility": 0,
+   "owner_time_efficiency": 2,
+   "capital_efficiency": 4,
+   "launch_speed": 4,
+   "platform_resilience": 1,
+   "scale_without_hiring": 3,
+   "fulfillment_simplicity": 2,
+   "regulatory_simplicity": 3
+  },
+  "dimension_reasons": {
+   "contribution_economics": "Source-claimed net 4-6% to 10-20% after ads (vendor estimate)",
+   "demand_signal": "Only vendor blogs with unsourced figures; no independent paying-behavior data verified",
+   "acquisition_efficiency": "Paid ads CAC $20-50 per same vendor; no organic channel evidenced",
+   "automation": "Order routing automatable but support/returns manual (inference)",
+   "competition_gap": "Commodity items; no gap evidenced",
+   "defensibility": "Trivially cloned",
+   "owner_time_efficiency": "Support, refunds, creative testing ~20h/wk (inference)",
+   "capital_efficiency": "~$500 cash; unfavorable because ads are the sink",
+   "launch_speed": "Store can launch in days (inference)",
+   "platform_resilience": "Depends on Shopify, ad platforms, supplier",
+   "scale_without_hiring": "Labor grows with order/support volume (inference)",
+   "fulfillment_simplicity": "Overseas shipping and 8-30%+ returns for apparel per source",
+   "regulatory_simplicity": "Customs duties now apply, otherwise light"
+  },
+  "pre_deep_verdict": "reject",
+  "verdict_reason": "Margins after CAC and now-applicable China duties are thin; no entrant edge since tooling is available to all.",
+  "unknowns": [
+   "Independent (non-vendor) CAC and conversion data not verified",
+   "Supplier shipping times not verified"
+  ]
+ },
+ {
+  "id": "ECO-02",
+  "name": "Niche personalized POD gifts on Etsy (pet memorial / specialty nursing / hobby journals)",
+  "family": "ecommerce_or_dropshipping",
+  "category": "print_on_demand",
+  "buyer": "Etsy gift shoppers in narrow niches",
+  "pain": "Gift buyers want specific personalized items generic shops lack",
+  "evidence": [
+   {
+    "url": "https://checkoutpage.com/blog/etsy-fees",
+    "publisher": "Checkoutpage",
+    "date": "2026-07-19",
+    "shows": "Etsy: $0.20 listing, 6.5% transaction, 3%+$0.25 processing, Offsite Ads 15% (<$10k yr sales) capped $100/order",
+    "kind": "incumbent_price",
+    "class": "fact"
+   },
+   {
+    "url": "https://app.unilink.us/blog/print-on-demand-etsy-2026",
+    "publisher": "UniLink",
+    "date": "2026-05-03",
+    "shows": "Etsy POD GMV ~ $4.1B 2025 (+11%); $24.99 mug: gross 54.8%, 36.8% after Offsite Ads, ~28-32% after returns/etc.; generic designs saturated (one design ~4,200 sellers); niches with velocity listed",
+    "kind": "demand",
+    "class": "inference"
+   },
+   {
+    "url": "https://mockey.ai/blog/is-print-on-demand-profitable/",
+    "publisher": "Mockey",
+    "date": "2025-12-19",
+    "shows": "Reddit seller example: $17.68 sale, $10.61 production, $4.75 shipping = $2.32 profit (~13%, my calc); many sellers report ~20% net; some report 30-35%",
+    "kind": "constraint",
+    "class": "inference"
+   },
+   {
+    "url": "https://ecommerceceo.com/printful-pricing/",
+    "publisher": "EcommerceCEO",
+    "date": "2026-03-01",
+    "shows": "Printful tee base $9.25-13.50 (Free plan), mug $5.95; Growth plan $24.99/mo",
+    "kind": "incumbent_price",
+    "class": "fact"
+   }
+  ],
+  "substitutes": [
+   {
+    "name": "Printful",
+    "price_point": "tee $9.25-13.50 base, mug $5.95",
+    "url": "https://ecommerceceo.com/printful-pricing/"
+   },
+   {
+    "name": "Printify",
+    "price_point": "~$7.50 tee/mug base (varies by provider, per UniLink)",
+    "url": "https://app.unilink.us/blog/print-on-demand-etsy-2026"
+   }
+  ],
+  "entrant_wedge": "Narrow-niche designs/keywords only; edge is research effort, not a structural advantage.",
+  "entrant_edge": {
+   "criterion": "cash_cost",
+   "direction": "lower_is_better",
+   "unit": "USD upfront",
+   "incumbent_value": 3000,
+   "incumbent_source_url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label",
+   "entrant_value": 300,
+   "entrant_basis": "UniLink: realistic minimum $200-400 (listings, samples, tools); no inventory",
+   "falsifier": "If niche shops show net margin <15% after Offsite Ads/returns or <1 sale/week after 60 days, no viable business."
+  },
+  "startup_cash_usd": 300,
+  "time_to_first_revenue_days": 21,
+  "owner_hours_per_week_steady": 12,
+  "automation_potential_pct": 55,
+  "unit_economics": {
+   "price_usd": 24.99,
+   "variable_cost_usd": 17.7,
+   "contribution_margin_pct": 30,
+   "notes": "UniLink mug example: ~28-32% realistic after returns; Mockey reddit example ~13%; Offsite Ads 15% on ad-driven sales",
+   "class": "model"
+  },
+  "regulatory_or_platform_dependency": "Etsy (single marketplace; fees/policies can change); POD supplier",
+  "major_uncertainty": "Whether specific niche has demand not captured by top shops; design IP/AI-art policy not verified",
+  "dimension_scores": {
+   "contribution_economics": 2,
+   "demand_signal": 3,
+   "acquisition_efficiency": 2,
+   "automation": 3,
+   "competition_gap": 1,
+   "defensibility": 0,
+   "owner_time_efficiency": 3,
+   "capital_efficiency": 5,
+   "launch_speed": 4,
+   "platform_resilience": 1,
+   "scale_without_hiring": 3,
+   "fulfillment_simplicity": 5,
+   "regulatory_simplicity": 4
+  },
+  "dimension_reasons": {
+   "contribution_economics": "28-32% modeled, 13% in reddit case",
+   "demand_signal": "Etsy POD GMV $4.1B (+11%) per one blog; no independent data verified",
+   "acquisition_efficiency": "Etsy search organic but 15% Offsite Ads and saturation noted",
+   "automation": "Supplier fulfills; design/listing creation manual",
+   "competition_gap": "Source says generic saturated; niche gap only claimed",
+   "defensibility": "Designs cloneable",
+   "owner_time_efficiency": "~12h/wk listings/support (inference)",
+   "capital_efficiency": "$200-400 per source",
+   "launch_speed": "Listings live in days; first sale uncertain",
+   "platform_resilience": "Etsy plus Printify/Printful dependency",
+   "scale_without_hiring": "Supplier fulfills; design labor scales with SKUs",
+   "fulfillment_simplicity": "Supplier ships; returns ~4% per source",
+   "regulatory_simplicity": "No licenses; IP care needed"
+  },
+  "pre_deep_verdict": "reject",
+  "verdict_reason": "Modeled ~30% net at best on a saturated marketplace with commodity base cost and no structural entrant edge.",
+  "unknowns": [
+   "Independent conversion data not verified",
+   "AI-generated design policies on Etsy not verified"
+  ]
+ },
+ {
+  "id": "ECO-03",
+  "name": "Thrift/estate-sale sourcing resold on eBay (vintage and branded)",
+  "family": "ecommerce_or_dropshipping",
+  "category": "reselling",
+  "buyer": "eBay buyers of vintage/branded secondhand goods",
+  "pain": "Buyers want specific secondhand items; entrant arbitrages local thrift pricing",
+  "evidence": [
+   {
+    "url": "https://www.ebay.com/help/selling/fees-credits-invoices/selling-fees?id=4822",
+    "publisher": "eBay",
+    "date": "2026-10-09",
+    "shows": "Final value fee 13.6% up to $7,500 plus $0.30 (<=$10) or $0.40 per order",
+    "kind": "incumbent_price",
+    "class": "fact"
+   },
+   {
+    "url": "https://www.underpriced.app/blog/how-much-money-can-you-make-reselling-realistic-income-2026",
+    "publisher": "Underpriced (vendor blog)",
+    "date": "2026-02-19 (updated 2026-10-02)",
+    "shows": "Typical reseller net 30-50% of gross; 10-20% inventory never sells; 5-10% returns; ~$20/hr in one example ($1,024 net, 12h/wk); part-time 25-80 items/month",
+    "kind": "demand",
+    "class": "inference"
+   },
+   {
+    "url": "https://retaildive.com/news/us-resale-market-surpass-78-billion-in-2030-secondhand/",
+    "publisher": "Retail Dive citing ThredUp 2026 Resale Report",
+    "date": "2026-04-03",
+    "shows": "US secondhand apparel projected $78.8B by 2030, ~7.3% annual growth",
+    "kind": "demand",
+    "class": "fact"
+   },
+   {
+    "url": "https://www.ebay.com/help/selling/fees-credits-invoices/selling-fees?id=4822",
+    "publisher": "eBay",
+    "date": "2026-10-09",
+    "shows": "US seller currency conversion charge rising 3% to 3.25% on 2026-10-14; seller platform terms set by eBay",
+    "kind": "constraint",
+    "class": "fact"
+   }
+  ],
+  "substitutes": [
+   {
+    "name": "eBay",
+    "price_point": "13.6% FVF + $0.30-0.40/order",
+    "url": "https://www.ebay.com/help/selling/fees-credits-invoices/selling-fees?id=4822"
+   }
+  ],
+  "entrant_wedge": "No structural wedge; edge is sourcing skill and local access.",
+  "entrant_edge": {
+   "criterion": "owner_time",
+   "direction": "lower_is_better",
+   "unit": "hours/week for ~$1,000 net",
+   "incumbent_value": 12,
+   "incumbent_source_url": "https://www.underpriced.app/blog/how-much-money-can-you-make-reselling-realistic-income-2026",
+   "entrant_value": 12,
+   "entrant_basis": "No improvement claimed; AI listing tools could cut drafting time but unverified",
+   "falsifier": "Any measured listing/photography time cut >30% from AI tooling would create edge; otherwise none."
+  },
+  "startup_cash_usd": 200,
+  "time_to_first_revenue_days": 10,
+  "owner_hours_per_week_steady": 20,
+  "automation_potential_pct": 30,
+  "unit_economics": {
+   "price_usd": 40,
+   "variable_cost_usd": 20,
+   "contribution_margin_pct": 40,
+   "notes": "Source: net 30-50% of gross after COGS 20-40% and ~14% fees; mid-point model",
+   "class": "model"
+  },
+  "regulatory_or_platform_dependency": "eBay fee/policy changes; local thrift supply",
+  "major_uncertainty": "Whether entrant sourcing yields >$8/hr; income range $500-2000/mo per source is unverified",
+  "dimension_scores": {
+   "contribution_economics": 3,
+   "demand_signal": 3,
+   "acquisition_efficiency": 2,
+   "automation": 1,
+   "competition_gap": 1,
+   "defensibility": 0,
+   "owner_time_efficiency": 0,
+   "capital_efficiency": 5,
+   "launch_speed": 5,
+   "platform_resilience": 2,
+   "scale_without_hiring": 0,
+   "fulfillment_simplicity": 1,
+   "regulatory_simplicity": 5
+  },
+  "dimension_reasons": {
+   "contribution_economics": "Source net 30-50%, but per-sale profit small",
+   "demand_signal": "ThredUp growth data plus vendor blog; no eBay sell-through data verified",
+   "acquisition_efficiency": "Marketplace search; sourcing is manual",
+   "automation": "Photographing/listing/shipping manual",
+   "competition_gap": "Large incumbent resale base",
+   "defensibility": "No moat",
+   "owner_time_efficiency": "Source: 12h/wk for ~$1,000 net; scales with hours",
+   "capital_efficiency": "$0-200 start per source",
+   "launch_speed": "First listings within days",
+   "platform_resilience": "eBay-dependent, multi-channel possible",
+   "scale_without_hiring": "Labor linear with items",
+   "fulfillment_simplicity": "Each item stored, shipped",
+   "regulatory_simplicity": "No licenses"
+  },
+  "pre_deep_verdict": "reject",
+  "verdict_reason": "Labor-linear and low $/hr; no structural edge for an unknown entrant.",
+  "unknowns": [
+   "Realistic $/hour not independently verified"
+  ]
+ },
+ {
+  "id": "ECO-04",
+  "name": "Amazon online/retail arbitrage and wholesale reselling",
+  "family": "ecommerce_or_dropshipping",
+  "category": "reselling",
+  "buyer": "Amazon shoppers buying branded goods",
+  "pain": "Entrant buys discounted brand-name goods and resells on Amazon",
+  "evidence": [
+   {
+    "url": "https://sellingpartners.aboutamazon.com/update-to-u-s-referral-and-fulfillment-by-amazon-fees-for-2026",
+    "publisher": "Amazon Selling Partners",
+    "date": "2025-10-15",
+    "shows": "FBA fees rise avg $0.08/unit effective 2026-01-15",
+    "kind": "incumbent_price",
+    "class": "fact"
+   },
+   {
+    "url": "https://ecomclips.com/blog/amazon-fba-still-worth-it-in-2026/",
+    "publisher": "Ecomclips (vendor)",
+    "date": "2026-02-02",
+    "shows": "3P sellers >60% of Amazon sales; most sellers fail due to flawed math; fee rises: +$0.08 standard $10-50",
+    "kind": "demand",
+    "class": "inference"
+   },
+   {
+    "url": "https://www.repricer.com/blog/amazon-gated-categories/",
+    "publisher": "Repricer",
+    "date": "2026-05-13",
+    "shows": "Gated categories/brands need invoices, ODR<1%, late shipment <4%; Toys gated; brand examples gated",
+    "kind": "constraint",
+    "class": "fact"
+   }
+  ],
+  "substitutes": [
+   {
+    "name": "Amazon FBA",
+    "price_point": "referral 8-15% (per Bebold) + fulfillment",
+    "url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label"
+   }
+  ],
+  "entrant_wedge": "None: tools and sourcing are open to all; new accounts are gated.",
+  "entrant_edge": {
+   "criterion": "cash_cost",
+   "direction": "lower_is_better",
+   "unit": "USD upfront",
+   "incumbent_value": 3000,
+   "incumbent_source_url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label",
+   "entrant_value": 1500,
+   "entrant_basis": "model: ~$1,000 inventory + $39/mo Pro plan + prep; no source for arbitrage margins verified",
+   "falsifier": "If post-fee ROI <20% on a 20-item test buy, no edge."
+  },
+  "startup_cash_usd": 1500,
+  "time_to_first_revenue_days": 14,
+  "owner_hours_per_week_steady": 15,
+  "automation_potential_pct": 40,
+  "unit_economics": {
+   "price_usd": null,
+   "variable_cost_usd": null,
+   "contribution_margin_pct": null,
+   "notes": "No verified arbitrage margin; Amazon referral 8-15% plus FBA fees; return processing $2-6/unit per Bebold",
+   "class": "model"
+  },
+  "regulatory_or_platform_dependency": "Amazon account health, brand/category gating, authenticity complaints",
+  "major_uncertainty": "Arbitrage margins, sell-through, restrictions on new accounts; sellerboard source not read",
+  "dimension_scores": {
+   "contribution_economics": 1,
+   "demand_signal": 2,
+   "acquisition_efficiency": 1,
+   "automation": 2,
+   "competition_gap": 0,
+   "defensibility": 0,
+   "owner_time_efficiency": 2,
+   "capital_efficiency": 3,
+   "launch_speed": 4,
+   "platform_resilience": 0,
+   "scale_without_hiring": 1,
+   "fulfillment_simplicity": 3,
+   "regulatory_simplicity": 3
+  },
+  "dimension_reasons": {
+   "contribution_economics": "Unverified margin, fees and returns eat gap",
+   "demand_signal": "Only vendor blog; no demand data for arbitrage",
+   "acquisition_efficiency": "Buy Box competition (inference)",
+   "automation": "Repricing tools help partly",
+   "competition_gap": "Saturated per source (>60% 3P)",
+   "defensibility": "Cloneable",
+   "owner_time_efficiency": "~15h/wk (inference)",
+   "capital_efficiency": "~$1,500 model",
+   "launch_speed": "Weeks for account approval (inference)",
+   "platform_resilience": "Single platform ban risk",
+   "scale_without_hiring": "Labor linear",
+   "fulfillment_simplicity": "FBA ships; returns eat margin",
+   "regulatory_simplicity": "Gating/IP complaints"
+  },
+  "pre_deep_verdict": "reject",
+  "verdict_reason": "Gated brands, single-platform risk, no verified margin or entrant edge.",
+  "unknowns": [
+   "Sellerboard retail arbitrage 2026 article not read (session limit)"
+  ]
+ },
+ {
+  "id": "PHY-01",
+  "name": "Private-label China-sourced Amazon kitchen gadget",
+  "family": "physical_products",
+  "category": "private_label",
+  "buyer": "Amazon shoppers seeking low-cost kitchen gadgets",
+  "pain": "Entrant sources generic product and brands it",
+  "evidence": [
+   {
+    "url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label",
+    "publisher": "Bebold Digital",
+    "date": "2025-11-07 (updated 2026-07-08)",
+    "shows": "Startup $3,000-10,000; inventory $1,000-3,000 for 200-500 units; PPC launch $300-800; referral 8-15%; return processing $2-6/unit; target 30-40% net",
+    "kind": "incumbent_price",
+    "class": "fact"
+   },
+   {
+    "url": "https://www.sellersprite.com/en/blog/amazon-tariffs-2026-fba-sellers-guide",
+    "publisher": "SellerSprite (vendor)",
+    "date": "2026-06-09",
+    "shows": "China tariffs 20-30%; $29.99 gadget net 32.8% (2023) to 24.9% after 2026 changes (vendor model); 12% ACoS assumption",
+    "kind": "constraint",
+    "class": "inference"
+   },
+   {
+    "url": "https://ecomclips.com/blog/amazon-fba-still-worth-it-in-2026/",
+    "publisher": "Ecomclips (vendor)",
+    "date": "2026-02-02",
+    "shows": "Many launch at 20-30% gross before ads/returns; 3P sellers >60% of Amazon sales",
+    "kind": "demand",
+    "class": "inference"
+   },
+   {
+    "url": "https://sellingpartners.aboutamazon.com/update-to-u-s-referral-and-fulfillment-by-amazon-fees-for-2026",
+    "publisher": "Amazon Selling Partners",
+    "date": "2025-10-15",
+    "shows": "FBA fees +$0.08/unit avg effective 2026-01-15",
+    "kind": "other",
+    "class": "fact"
+   }
+  ],
+  "substitutes": [
+   {
+    "name": "Amazon FBA private label",
+    "price_point": "$3k-10k startup",
+    "url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label"
+   }
+  ],
+  "entrant_wedge": "None: sourcing via marketplaces open to all.",
+  "entrant_edge": {
+   "criterion": "cash_cost",
+   "direction": "lower_is_better",
+   "unit": "USD upfront",
+   "incumbent_value": 3000,
+   "incumbent_source_url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label",
+   "entrant_value": 3000,
+   "entrant_basis": "Same low-end budget; no differential",
+   "falsifier": "Edge fails by construction; entrant spends same as others."
+  },
+  "startup_cash_usd": 3000,
+  "time_to_first_revenue_days": 120,
+  "owner_hours_per_week_steady": 15,
+  "automation_potential_pct": 50,
+  "unit_economics": {
+   "price_usd": 29.99,
+   "variable_cost_usd": 22.5,
+   "contribution_margin_pct": 25,
+   "notes": "SellerSprite vendor model: ~24.9% net after 2026 fees incl. 12% ACoS; excludes launch PPC and returns",
+   "class": "model"
+  },
+  "regulatory_or_platform_dependency": "Amazon fee/ban policies; US tariffs (reciprocal suspended through Nov 2026 per source)",
+  "major_uncertainty": "Realistic launch ACoS far above 12% model; tariff rollback risk",
+  "dimension_scores": {
+   "contribution_economics": 2,
+   "demand_signal": 2,
+   "acquisition_efficiency": 1,
+   "automation": 3,
+   "competition_gap": 0,
+   "defensibility": 0,
+   "owner_time_efficiency": 3,
+   "capital_efficiency": 2,
+   "launch_speed": 2,
+   "platform_resilience": 0,
+   "scale_without_hiring": 3,
+   "fulfillment_simplicity": 3,
+   "regulatory_simplicity": 3
+  },
+  "dimension_reasons": {
+   "contribution_economics": "~25% model leaves thin margin",
+   "demand_signal": "Vendor sources only",
+   "acquisition_efficiency": "Paid PPC launch $300-800",
+   "automation": "Prep/replenishment partly automatable",
+   "competition_gap": "Saturated, 60% 3P",
+   "defensibility": "Cloneable",
+   "owner_time_efficiency": "~15h/wk",
+   "capital_efficiency": "$3k-10k exceeds $200",
+   "launch_speed": "Sourcing+shipping ~months (inference)",
+   "platform_resilience": "Single platform",
+   "scale_without_hiring": "Inventory scale not labor",
+   "fulfillment_simplicity": "FBA but inventory/returns",
+   "regulatory_simplicity": "Tariffs/labeling moderate"
+  },
+  "pre_deep_verdict": "reject",
+  "verdict_reason": "Thin modeled margin, upfront inventory, PPC dependence, no entrant edge.",
+  "unknowns": [
+   "Real CPC/ACoS not verified",
+   "Specific product margins unknown"
+  ]
+ },
+ {
+  "id": "PHY-02",
+  "name": "3D-printed original-design hobby organizers/accessories sold on Etsy",
+  "family": "physical_products",
+  "category": "made_to_order_manufacturing",
+  "buyer": "Hobbyists (tabletop gaming, cosplay, hobby organizers) on Etsy",
+  "pain": "Niche hobby accessories are underserved by generic goods",
+  "evidence": [
+   {
+    "url": "https://stacksheriff.com/3d-printing/3d-printing-side-hustle-guide/?format=md",
+    "publisher": "StackSheriff",
+    "date": "2026-08-19",
+    "shows": "Bambu A1 Mini $299/Combo $449; PLA $15-20/kg; claimed 55-85% margins at $0.50-3 material; Etsy fees ~11-15%; part-timers $500-2,000/mo after 6-12 months; generic phone stands saturated",
+    "kind": "demand",
+    "class": "inference"
+   },
+   {
+    "url": "https://www.tctmagazine.com/from-templates-to-originality-etsy-new-3d-printing-policy/",
+    "publisher": "TCT Magazine",
+    "date": "2025-07-07 (updated 2025-11-27)",
+    "shows": "Since 2025-06-10 Etsy bans selling prints from third-party files even if licensed; own original designs allowed",
+    "kind": "constraint",
+    "class": "fact"
+   },
+   {
+    "url": "https://slickdeals.net/f/18393619-bambu-lab-3d-printers-a1-339-a1-combo-479-p1p-399-more-shipping",
+    "publisher": "Slickdeals",
+    "date": "2025-06-20",
+    "shows": "Bambu A1 $339, A1 Combo $479, P1S $499 (expired promo)",
+    "kind": "incumbent_price",
+    "class": "fact"
+   },
+   {
+    "url": "https://checkoutpage.com/blog/etsy-fees",
+    "publisher": "Checkoutpage",
+    "date": "2026-07-19",
+    "shows": "Etsy 6.5% transaction + 3%+$0.25 + $0.20 listing; Offsite Ads 12-15%",
+    "kind": "incumbent_price",
+    "class": "fact"
+   }
+  ],
+  "substitutes": [
+   {
+    "name": "Etsy 3D-print sellers",
+    "price_point": "fees 6.5%+3%+$0.25",
+    "url": "https://checkoutpage.com/blog/etsy-fees"
+   }
+  ],
+  "entrant_wedge": "Original CAD designs (AI-assisted CAD) in a narrow hobby; Etsy requires originality so asset-licensing competitors are barred.",
+  "entrant_edge": {
+   "criterion": "cash_cost",
+   "direction": "lower_is_better",
+   "unit": "USD upfront",
+   "incumbent_value": 3000,
+   "incumbent_source_url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label",
+   "entrant_value": 449,
+   "entrant_basis": "A1 Mini Combo $449 plus ~$60 filament (StackSheriff prices); design effort own time",
+   "falsifier": "If Etsy demand for original designs yields <$500/mo after 6 months (source's own range lower bound), or listings are removed under the originality policy."
+  },
+  "startup_cash_usd": 600,
+  "time_to_first_revenue_days": 30,
+  "owner_hours_per_week_steady": 15,
+  "automation_potential_pct": 40,
+  "unit_economics": {
+   "price_usd": 25,
+   "variable_cost_usd": 4,
+   "contribution_margin_pct": 55,
+   "notes": "Material $0.50-3 per print (source) plus ~14% Etsy fees plus packaging/postage (inference); source-claimed 55-85%; owner print/pack time excluded",
+   "class": "model"
+  },
+  "regulatory_or_platform_dependency": "Etsy originality policy since 2025-06-10; single marketplace; product-safety if marketed to children",
+  "major_uncertainty": "Whether original designs sell at volume; printer time per unit; no $/hr measured",
+  "dimension_scores": {
+   "contribution_economics": 3,
+   "demand_signal": 2,
+   "acquisition_efficiency": 2,
+   "automation": 2,
+   "competition_gap": 2,
+   "defensibility": 1,
+   "owner_time_efficiency": 2,
+   "capital_efficiency": 4,
+   "launch_speed": 3,
+   "platform_resilience": 1,
+   "scale_without_hiring": 1,
+   "fulfillment_simplicity": 2,
+   "regulatory_simplicity": 4
+  },
+  "dimension_reasons": {
+   "contribution_economics": "Source claims 55-85%; effective hourly unmeasured",
+   "demand_signal": "One blog; income range $500-2k/mo",
+   "acquisition_efficiency": "Etsy search only",
+   "automation": "Printing partly automatic, packing manual",
+   "competition_gap": "Source says generic saturated, niche gap claimed",
+   "defensibility": "Original designs weak moat",
+   "owner_time_efficiency": "~15h/wk for ~$500-2k/mo",
+   "capital_efficiency": "~$450-600 above $200",
+   "launch_speed": "Weeks to design and list",
+   "platform_resilience": "Etsy single channel, can sell direct",
+   "scale_without_hiring": "Capacity limited by printers",
+   "fulfillment_simplicity": "Own printing and shipping",
+   "regulatory_simplicity": "Mostly none"
+  },
+  "pre_deep_verdict": "accept",
+  "verdict_reason": "Low capital and a policy that shuts out file-licence competitors; still marginal income, so deeper check needed.",
+  "unknowns": [
+   "Printer throughput per day and actual sell-through not verified",
+   "Etsy AI-design stance not verified"
+  ]
+ },
+ {
+  "id": "PHY-03",
+  "name": "Private-label natural skincare via contract manufacturer",
+  "family": "physical_products",
+  "category": "private_label",
+  "buyer": "Consumers buying DTC/Amazon skincare",
+  "pain": "Entrant brands a white-label formula",
+  "evidence": [
+   {
+    "url": "https://www.registrarcorp.com/blog/cosmetics/mocra/mocra-exemptions/",
+    "publisher": "Registrar Corp",
+    "date": "undated",
+    "shows": "MoCRA small-business exemption under $1M avg sales avoids registration/listing/GMP; adverse event and safety/labeling apply; OTC drug products (sunscreen) excluded",
+    "kind": "constraint",
+    "class": "fact"
+   },
+   {
+    "url": "https://stocksmith.io/blog/mocra-cosmetics",
+    "publisher": "Stocksmith",
+    "date": "2026-03",
+    "shows": "Safety substantiation records required even for exempt; label needs ingredients and responsible-person contact since Dec 2024; registration effective 2024-07-01",
+    "kind": "constraint",
+    "class": "fact"
+   },
+   {
+    "url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label",
+    "publisher": "Bebold Digital",
+    "date": "2025-11-07 (updated 2026-07-08)",
+    "shows": "Marketplace costs: referral 8-15%, return processing $2-6, startup $3k-10k, launch PPC $300-800 (general, not skincare-specific)",
+    "kind": "incumbent_price",
+    "class": "inference"
+   }
+  ],
+  "substitutes": [
+   {
+    "name": "Amazon marketplace (general)",
+    "price_point": "8-15% referral",
+    "url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label"
+   }
+  ],
+  "entrant_wedge": "None: contract manufacturers sell same formulas to all.",
+  "entrant_edge": {
+   "criterion": "cash_cost",
+   "direction": "lower_is_better",
+   "unit": "USD upfront",
+   "incumbent_value": 3000,
+   "incumbent_source_url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label",
+   "entrant_value": 3000,
+   "entrant_basis": "no verified manufacturer MOQ pricing (fetch failed); assume same budget",
+   "falsifier": "Edge fails by construction."
+  },
+  "startup_cash_usd": 3000,
+  "time_to_first_revenue_days": 150,
+  "owner_hours_per_week_steady": 15,
+  "automation_potential_pct": 40,
+  "unit_economics": {
+   "price_usd": null,
+   "variable_cost_usd": null,
+   "contribution_margin_pct": null,
+   "notes": "No verified per-unit cost or MOQ; demand and CAC not verified",
+   "class": "model"
+  },
+  "regulatory_or_platform_dependency": "FDA MoCRA labeling/adverse events/safety substantiation; contract manufacturer; marketplaces",
+  "major_uncertainty": "MOQ, per-unit cost, CAC, demand not verified",
+  "dimension_scores": {
+   "contribution_economics": 2,
+   "demand_signal": 2,
+   "acquisition_efficiency": 1,
+   "automation": 2,
+   "competition_gap": 0,
+   "defensibility": 0,
+   "owner_time_efficiency": 3,
+   "capital_efficiency": 2,
+   "launch_speed": 1,
+   "platform_resilience": 2,
+   "scale_without_hiring": 3,
+   "fulfillment_simplicity": 3,
+   "regulatory_simplicity": 2
+  },
+  "dimension_reasons": {
+   "contribution_economics": "Unknown, default 2",
+   "demand_signal": "No demand evidence collected, default 2",
+   "acquisition_efficiency": "Paid acquisition assumed",
+   "automation": "Partly outsourced",
+   "competition_gap": "Saturated (inference; no evidence), 0",
+   "defensibility": "No moat",
+   "owner_time_efficiency": "~15h/wk",
+   "capital_efficiency": "$3k+ (inference)",
+   "launch_speed": "Formulation/labeling months",
+   "platform_resilience": "Multiple channels possible",
+   "scale_without_hiring": "Not labor-linear",
+   "fulfillment_simplicity": "Inventory storage and returns",
+   "regulatory_simplicity": "MoCRA recordkeeping, adverse events"
+  },
+  "pre_deep_verdict": "reject",
+  "verdict_reason": "Compliance recordkeeping plus no entrant edge or verified economics.",
+  "unknowns": [
+   "Manufacturer MOQ and unit price not verified",
+   "Competitor pricing and CAC not verified"
+  ]
+ },
+ {
+  "id": "PHY-04",
+  "name": "Private-label children's/baby product (toys, plush, apparel accessories)",
+  "family": "physical_products",
+  "category": "private_label",
+  "buyer": "Parents buying children's products",
+  "pain": "Entrant brands a sourced children's item",
+  "evidence": [
+   {
+    "url": "https://www.cpsc.gov/Business--Manufacturing/Testing-Certification/Lab-Accreditation/Rules-Requiring-Third-Party-Testing",
+    "publisher": "CPSC",
+    "date": "list current as of 2024-12-05",
+    "shows": "Toys (ASTM F963), small parts, lead, phthalates, apparel, sleepwear, etc. require CPSC-accepted lab testing; small batch relief only for some requirements",
+    "kind": "constraint",
+    "class": "fact"
+   },
+   {
+    "url": "https://www.compliancegate.com/cpsia-product-lab-testing/",
+    "publisher": "ComplianceGate",
+    "date": "2025-10-15",
+    "shows": "Typical testing $500-1,800 per product (simple $400-800; complex electronic $1,500-2,500); 1-3 weeks",
+    "kind": "constraint",
+    "class": "fact"
+   },
+   {
+    "url": "https://www.novadata.io/resources/news/de-minimis-exemption-ends-china-tariffs",
+    "publisher": "Novadata",
+    "date": "undated",
+    "shows": "Duties: toys 30-40%, textiles 40-54% for China shipments post-de minimis",
+    "kind": "incumbent_price",
+    "class": "inference"
+   },
+   {
+    "url": "https://www.repricer.com/blog/amazon-gated-categories/",
+    "publisher": "Repricer",
+    "date": "2026-05-13",
+    "shows": "Amazon Toys & Games is a gated category with holiday selling requirements",
+    "kind": "constraint",
+    "class": "fact"
+   }
+  ],
+  "substitutes": [
+   {
+    "name": "Amazon Toys & Games",
+    "price_point": "gated; referral 8-15% (general, Bebold)",
+    "url": "https://www.repricer.com/blog/amazon-gated-categories/"
+   }
+  ],
+  "entrant_wedge": "None.",
+  "entrant_edge": {
+   "criterion": "cash_cost",
+   "direction": "lower_is_better",
+   "unit": "USD upfront",
+   "incumbent_value": 3000,
+   "incumbent_source_url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label",
+   "entrant_value": 4150,
+   "entrant_basis": "model: $3,000 base + ~$1,150 midpoint CPC lab test per product ($500-1,800)",
+   "falsifier": "Edge fails by construction; entrant cost is higher."
+  },
+  "startup_cash_usd": 4150,
+  "time_to_first_revenue_days": 150,
+  "owner_hours_per_week_steady": 15,
+  "automation_potential_pct": 40,
+  "unit_economics": {
+   "price_usd": null,
+   "variable_cost_usd": null,
+   "contribution_margin_pct": null,
+   "notes": "Duties 30-40% toys; test $500-1,800 per product; no verified demand or margin",
+   "class": "model"
+  },
+  "regulatory_or_platform_dependency": "CPSIA/CPC, Amazon gating, tariffs; recall/liability exposure",
+  "major_uncertainty": "Demand evidence and margin not collected (session limit)",
+  "dimension_scores": {
+   "contribution_economics": 1,
+   "demand_signal": 2,
+   "acquisition_efficiency": 1,
+   "automation": 2,
+   "competition_gap": 0,
+   "defensibility": 0,
+   "owner_time_efficiency": 3,
+   "capital_efficiency": 2,
+   "launch_speed": 1,
+   "platform_resilience": 1,
+   "scale_without_hiring": 3,
+   "fulfillment_simplicity": 3,
+   "regulatory_simplicity": 0
+  },
+  "dimension_reasons": {
+   "contribution_economics": "Duties plus testing cost per SKU depress margin",
+   "demand_signal": "Demand not verified, default 2",
+   "acquisition_efficiency": "Paid ads (inference)",
+   "automation": "Partly outsourced",
+   "competition_gap": "Saturated (inference)",
+   "defensibility": "No moat",
+   "owner_time_efficiency": "~15h/wk",
+   "capital_efficiency": "$4k+",
+   "launch_speed": "Test plus sourcing months",
+   "platform_resilience": "Amazon gating",
+   "scale_without_hiring": "Not labor-linear",
+   "fulfillment_simplicity": "Inventory/returns",
+   "regulatory_simplicity": "CPC, lab testing per SKU, recall exposure"
+  },
+  "pre_deep_verdict": "reject",
+  "verdict_reason": "Per-SKU lab testing, duties, gated category, and liability for a no-edge entrant.",
+  "unknowns": [
+   "Demand/CAC evidence not collected",
+   "Small-batch relief applicability not verified"
+  ]
+ }
+]

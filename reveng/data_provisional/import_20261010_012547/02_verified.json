@@ -1,0 +1,1996 @@
+[
+  {
+    "automation_potential_pct": 85,
+    "buyer": "Solo/indie SaaS founders on Stripe with <$20k MRR",
+    "category": "billing/churn tooling",
+    "dimension_reasons": {
+      "acquisition_efficiency": "No evidenced free channel; IH crowded",
+      "automation": "Mostly webhooks+email",
+      "capital_efficiency": "Build cost ~$300 (model)",
+      "competition_gap": "Stripe Smart Retries free + Churnkey + clones",
+      "contribution_economics": "Model 94% margin but price unproven",
+      "defensibility": "Trivially cloned, Stripe can absorb",
+      "demand_signal": "Only one dated blog and a $0-revenue clone; no paying-behavior signal",
+      "fulfillment_simplicity": "Instant digital",
+      "launch_speed": "MVP feasible in weeks (model)",
+      "owner_time_efficiency": "Low ops after setup (model)",
+      "platform_resilience": "Single platform (Stripe) dependency",
+      "regulatory_simplicity": "Card data stays with Stripe; low regulation",
+      "scale_without_hiring": "Software only"
+    },
+    "dimension_scores": {
+      "acquisition_efficiency": 2,
+      "automation": 4,
+      "capital_efficiency": 5,
+      "competition_gap": 1,
+      "contribution_economics": 3,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 5,
+      "launch_speed": 4,
+      "owner_time_efficiency": 4,
+      "platform_resilience": 1,
+      "regulatory_simplicity": 4,
+      "scale_without_hiring": 4
+    },
+    "entrant_edge": {
+      "criterion": "cash_cost",
+      "direction": "lower_is_better",
+      "entrant_basis": "Entrant would charge ~$19/mo; but the native incumbent is $0, so entrant has NO cost edge",
+      "entrant_value": 19,
+      "falsifier": "If >=30% of surveyed sub-$20k MRR Stripe founders say native Smart Retries leaves meaningful unrecovered revenue they would pay for, wedge survives; otherwise dead",
+      "incumbent_source_url": "https://stripe.com/billing/pricing",
+      "incumbent_value": 0,
+      "unit": "USD/month to customer"
+    },
+    "entrant_wedge": "Cheap dunning email/card-update-page for sub-$20k MRR Stripe shops",
+    "evidence": [
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "SAS-01-E1",
+        "kind": "incumbent_price",
+        "publisher": "Churnkey",
+        "shows": "Payment recovery included on all plans; Starter $250/mo billed yearly ($300 monthly) (fact)",
+        "url": "https://churnkey.co/pricing",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "SAS-01-E2",
+        "kind": "incumbent_price",
+        "publisher": "Stripe",
+        "shows": "Smart Retries, overdue reminders and up to 3 recovery automations listed as Included; Billing 0.7% of volume pay-as-you-go (fact)",
+        "url": "https://stripe.com/billing/pricing",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2026-03-16",
+        "id": "SAS-01-E3",
+        "kind": "demand",
+        "publisher": "Indie Hackers",
+        "shows": "A solo founder's WorkAid Dunning (Stripe failed-payment visibility) listed at $0/mo revenue; founder says recovery is rarely measured (fact); shows crowding by other micro-entrants",
+        "url": "https://www.indiehackers.com/product/workaid-dunning",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "inference",
+        "date": "2026-07-08",
+        "id": "SAS-01-E4",
+        "kind": "demand",
+        "publisher": "beancount.io blog",
+        "shows": "Claims involuntary churn is 20-40% of churn and tooling recovers 40-80% (secondary blog claim, unverified)",
+        "url": "https://beancount.io/blog/2026/07/08/involuntary-churn-dunning-failed-payment-recovery-saas",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "SAS-01-E5",
+        "kind": "constraint",
+        "publisher": "Stripe Docs",
+        "shows": "Platform natively retries (default 8 tries in 2 weeks); hard-decline cards not retried; Stripe can change/expand native features at any time (fact)",
+        "url": "https://docs.stripe.com/billing/revenue-recovery/smart-retries",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      }
+    ],
+    "family": "saas_or_micro_saas",
+    "id": "SAS-01",
+    "major_uncertainty": "Free native Stripe feature already covers most of it; no entrant edge",
+    "name": "Failed-payment recovery add-on for tiny Stripe SaaS",
+    "owner_hours_per_week_steady": 5,
+    "pain": "Involuntary churn from failed cards; founders do not measure recovery",
+    "pre_deep_verdict": "reject",
+    "regulatory_or_platform_dependency": "Depends on Stripe API/Connect OAuth; Stripe native features directly substitute",
+    "startup_cash_usd": 300,
+    "substitutes": [
+      {
+        "name": "Stripe Smart Retries",
+        "price_point": "included in Billing",
+        "url": "https://stripe.com/billing/pricing"
+      },
+      {
+        "name": "Churnkey",
+        "price_point": "from $250/mo yearly",
+        "url": "https://churnkey.co/pricing"
+      }
+    ],
+    "time_to_first_revenue_days": 45,
+    "unit_economics": {
+      "class": "model",
+      "contribution_margin_pct": 94,
+      "notes": "Model: $19/mo, email+hosting variable ~ $1; no evidence anyone pays",
+      "price_usd": 19,
+      "variable_cost_usd": 1
+    },
+    "unknowns": [
+      "Actual recovery uplift of third-party vs native not verified",
+      "Third-party recovery rates are blog claims"
+    ],
+    "verdict_reason": "Native free incumbent (Stripe Smart Retries) and crowded clones; no unknown-entrant edge"
+  },
+  {
+    "automation_potential_pct": 80,
+    "buyer": "Solo plumbers/HVAC/electricians (1-5 staff)",
+    "category": "SMS automation for local business",
+    "dimension_reasons": {
+      "acquisition_efficiency": "No channel evidence; unknown entrant, cold local trades",
+      "automation": "Message flow automatable, onboarding/registration is manual",
+      "capital_efficiency": "Twilio+registration fees modest",
+      "competition_gap": "GHL, Podium, many resellers (price page not showing standalone)",
+      "contribution_economics": "Model 84% margin but registration/support cost uncounted",
+      "defensibility": "No moat",
+      "demand_signal": "No dated paying-behavior evidence found",
+      "fulfillment_simplicity": "Registration step per customer",
+      "launch_speed": "10DLC delays weeks",
+      "owner_time_efficiency": "Support of non-technical trades likely >10h/wk",
+      "platform_resilience": "Dependent on carriers+Twilio",
+      "regulatory_simplicity": "TCPA/10DLC compliance heavy",
+      "scale_without_hiring": "Support scales with count"
+    },
+    "dimension_scores": {
+      "acquisition_efficiency": 1,
+      "automation": 3,
+      "capital_efficiency": 3,
+      "competition_gap": 1,
+      "contribution_economics": 3,
+      "defensibility": 1,
+      "demand_signal": 1,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 2,
+      "owner_time_efficiency": 2,
+      "platform_resilience": 1,
+      "regulatory_simplicity": 1,
+      "scale_without_hiring": 2
+    },
+    "entrant_edge": {
+      "criterion": "cycle_time",
+      "direction": "lower_is_better",
+      "entrant_basis": "Entrant faces same carrier registration (2-4 wks at 2023); no shortcut",
+      "entrant_value": 14,
+      "falsifier": "If a pooled/ISV 10DLC registration lets customers send within 2 days at <$5 cost, edge would appear",
+      "incumbent_source_url": "https://usehatchapp.com/blog/guide-to-10dlc",
+      "incumbent_value": 14,
+      "unit": "days to compliant sending"
+    },
+    "entrant_wedge": "Narrow trades-only productized MCTB",
+    "evidence": [
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "SAS-02-E1",
+        "kind": "incumbent_price",
+        "publisher": "GoHighLevel",
+        "shows": "Starter $97/mo, Unlimited $297/mo, Agency Pro $497/mo; page does not name missed-call text-back (fact)",
+        "url": "https://www.gohighlevel.com/pricing",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "SAS-02-E2",
+        "kind": "incumbent_price",
+        "publisher": "Podium",
+        "shows": "Pricing not published, sales-gated; page does not mention missed-call text-back (fact)",
+        "url": "https://www.podium.com/pricing",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "SAS-02-E3",
+        "kind": "constraint",
+        "publisher": "Twilio",
+        "shows": "SMS $0.0083/segment plus carrier fees $0.0035-0.005 outbound; 10DLC onboarding fees apply (fact)",
+        "url": "https://www.twilio.com/en-us/sms/pricing/us",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2023-05-01",
+        "id": "SAS-02-E4",
+        "kind": "constraint",
+        "publisher": "Hatch",
+        "shows": "10DLC brand $4-$44 one-time, campaign $15 one-time, $0.75-$10/mo; carriers block unregistered traffic; approval 2-4 weeks at time of writing (fact, dated 2023, fees may have changed)",
+        "url": "https://usehatchapp.com/blog/guide-to-10dlc",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      }
+    ],
+    "family": "saas_or_micro_saas",
+    "id": "SAS-02",
+    "major_uncertainty": "Per-customer brand registration and support burden; unknown demand",
+    "name": "Missed-call text-back for home-service trades",
+    "owner_hours_per_week_steady": 6,
+    "pain": "Missed calls become lost jobs",
+    "pre_deep_verdict": "reject",
+    "regulatory_or_platform_dependency": "Carrier/CTIA 10DLC and TCPA consent rules; Twilio or carriers can suspend",
+    "startup_cash_usd": 1500,
+    "substitutes": [
+      {
+        "name": "GoHighLevel",
+        "price_point": "$97-$497/mo",
+        "url": "https://www.gohighlevel.com/pricing"
+      },
+      {
+        "name": "Podium",
+        "price_point": "quote only",
+        "url": "https://www.podium.com/pricing"
+      }
+    ],
+    "time_to_first_revenue_days": 60,
+    "unit_economics": {
+      "class": "model",
+      "contribution_margin_pct": 84,
+      "notes": "Model: ~100 texts/mo at ~$0.013 plus number rental; support unknown",
+      "price_usd": 49,
+      "variable_cost_usd": 8
+    },
+    "unknowns": [
+      "Standalone MCTB prices not verified",
+      "Current 10DLC fees (source 2023)",
+      "No demand evidence collected"
+    ],
+    "verdict_reason": "Compliance/registration friction and bundled incumbents; no evidence of demand or edge"
+  },
+  {
+    "automation_potential_pct": 70,
+    "buyer": "Micro-SaaS founders selling in multiple US states",
+    "category": "tax compliance monitoring",
+    "dimension_reasons": {
+      "acquisition_efficiency": "No channel evidence",
+      "automation": "Rules updates need monitoring",
+      "capital_efficiency": "Cheap to build",
+      "competition_gap": "Stripe Tax and others already alert",
+      "contribution_economics": "Model 93% margin only",
+      "defensibility": "Rule data copyable",
+      "demand_signal": "One secondary blog, no paying signal",
+      "fulfillment_simplicity": "Digital",
+      "launch_speed": "Basic MVP ok",
+      "owner_time_efficiency": "Rule maintenance ongoing",
+      "platform_resilience": "Needs processor APIs",
+      "regulatory_simplicity": "Tax-advice liability, 50 state rules",
+      "scale_without_hiring": "Software"
+    },
+    "dimension_scores": {
+      "acquisition_efficiency": 1,
+      "automation": 4,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 3,
+      "defensibility": 1,
+      "demand_signal": 1,
+      "fulfillment_simplicity": 5,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 2,
+      "regulatory_simplicity": 2,
+      "scale_without_hiring": 4
+    },
+    "entrant_edge": {
+      "criterion": "cash_cost",
+      "direction": "lower_is_better",
+      "entrant_basis": "Stripe threshold monitoring has no separate listed fee; entrant would add cost",
+      "entrant_value": 15,
+      "falsifier": "Founders not on Stripe or needing multi-processor view willing to pay; else no gap",
+      "incumbent_source_url": "https://stripe.com/tax",
+      "incumbent_value": 0,
+      "unit": "USD/month"
+    },
+    "entrant_wedge": "Read-only threshold dashboard across payment processors",
+    "evidence": [
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "SAS-03-E1",
+        "kind": "incumbent_price",
+        "publisher": "Stripe",
+        "shows": "Stripe Tax monitors registration thresholds (incl. VAT OSS) and alerts via dashboard/email (fact)",
+        "url": "https://stripe.com/tax",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "inference",
+        "date": "undated",
+        "id": "SAS-03-E2",
+        "kind": "incumbent_price",
+        "publisher": "ERP Research (third party)",
+        "shows": "Stripe Tax listed at 0.5% per transaction in registered jurisdictions (third-party, unverified vs Stripe)",
+        "url": "https://erpresearch.com/erp-add-ons/tax-compliance/stripe-tax/pricing",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "inference",
+        "date": "2026-08-12",
+        "id": "SAS-03-E3",
+        "kind": "demand",
+        "publisher": "beancount.io blog",
+        "shows": "Typical nexus: $100K sales or 200 transactions; some states repealed transaction prong; 200-transaction test 'SaaS-hostile' (secondary blog)",
+        "url": "https://beancount.io/blog/2026/08/12/state-sales-tax-nexus-2026-guide",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      }
+    ],
+    "family": "saas_or_micro_saas",
+    "id": "SAS-03",
+    "major_uncertainty": "Liability for wrong threshold data; Stripe already covers it",
+    "name": "State sales-tax nexus tracker for small SaaS/ecommerce sellers",
+    "owner_hours_per_week_steady": 6,
+    "pain": "Unaware when they cross economic-nexus thresholds",
+    "pre_deep_verdict": "reject",
+    "regulatory_or_platform_dependency": "State rules change; liability risk if advice is wrong; processor API access",
+    "startup_cash_usd": 500,
+    "substitutes": [
+      {
+        "name": "Stripe Tax",
+        "price_point": "~0.5%/txn (third-party figure)",
+        "url": "https://erpresearch.com/erp-add-ons/tax-compliance/stripe-tax/pricing"
+      }
+    ],
+    "time_to_first_revenue_days": 60,
+    "unit_economics": {
+      "class": "model",
+      "contribution_margin_pct": 93,
+      "notes": "Model only",
+      "price_usd": 15,
+      "variable_cost_usd": 1
+    },
+    "unknowns": [
+      "Anrok/TaxJar prices not fetched",
+      "State-by-state rule data source and cost unverified"
+    ],
+    "verdict_reason": "Stripe already monitors thresholds; rule-maintenance liability; no edge"
+  },
+  {
+    "automation_potential_pct": 85,
+    "buyer": "Small landlords and contractors",
+    "category": "document signing",
+    "dimension_reasons": {
+      "acquisition_efficiency": "None",
+      "automation": "Automatable",
+      "capital_efficiency": "Cheap",
+      "competition_gap": "Free tiers from SignWell and others",
+      "contribution_economics": "Model margin only",
+      "defensibility": "Cloneable",
+      "demand_signal": "No demand evidence gathered (fetches failed)",
+      "fulfillment_simplicity": "Digital",
+      "launch_speed": "Fast MVP",
+      "owner_time_efficiency": "Support modest",
+      "platform_resilience": "Own distribution possible",
+      "regulatory_simplicity": "ESIGN broadly permissive but state lease law varies",
+      "scale_without_hiring": "Software"
+    },
+    "dimension_scores": {
+      "acquisition_efficiency": 1,
+      "automation": 4,
+      "capital_efficiency": 5,
+      "competition_gap": 0,
+      "contribution_economics": 3,
+      "defensibility": 0,
+      "demand_signal": 0,
+      "fulfillment_simplicity": 5,
+      "launch_speed": 4,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 4
+    },
+    "entrant_edge": {
+      "criterion": "cash_cost",
+      "direction": "lower_is_better",
+      "entrant_basis": "Incumbent free tier is $0; entrant cannot undercut",
+      "entrant_value": 9,
+      "falsifier": "Landlords exceeding 3 docs/mo prefer template bundle at higher price; no evidence",
+      "incumbent_source_url": "https://www.signwell.com/pricing/",
+      "incumbent_value": 0,
+      "unit": "USD/month"
+    },
+    "entrant_wedge": "Landlord-specific lease templates + signing",
+    "evidence": [
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "SAS-04-E1",
+        "kind": "incumbent_price",
+        "publisher": "SignWell",
+        "shows": "Free 3 docs/mo; Light $10/mo yearly ($12 monthly); Business $30/mo yearly (fact)",
+        "url": "https://www.signwell.com/pricing/",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "SAS-04-E2",
+        "kind": "constraint",
+        "publisher": "Cornell LII (15 USC 7001)",
+        "shows": "ESIGN Act: signatures cannot be denied legal effect solely for being electronic; so low legal barrier (fact)",
+        "url": "https://www.law.cornell.edu/uscode/text/15/7001",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      }
+    ],
+    "family": "saas_or_micro_saas",
+    "id": "SAS-04",
+    "major_uncertainty": "Saturated, free tiers; no demand evidence gathered",
+    "name": "Simple e-signature for small landlords/contractors",
+    "owner_hours_per_week_steady": 5,
+    "pain": "Need signed lease/work orders cheaply",
+    "pre_deep_verdict": "reject",
+    "regulatory_or_platform_dependency": "Audit-trail/legal admissibility expectations; state lease law varies",
+    "startup_cash_usd": 300,
+    "substitutes": [
+      {
+        "name": "SignWell",
+        "price_point": "free 3 docs/mo; $10/mo",
+        "url": "https://www.signwell.com/pricing/"
+      }
+    ],
+    "time_to_first_revenue_days": 30,
+    "unit_economics": {
+      "class": "model",
+      "contribution_margin_pct": 89,
+      "notes": "Model only",
+      "price_usd": 9,
+      "variable_cost_usd": 1
+    },
+    "unknowns": [
+      "DocuSign/Adobe pricing not verified (fetch failed)",
+      "Demand evidence missing",
+      "Evidence below 3-item minimum"
+    ],
+    "verdict_reason": "Saturated with free incumbents; only 2 evidence items obtained (research limit reached)"
+  },
+  {
+    "automation_potential_pct": 90,
+    "buyer": "Indie devs/small teams consuming Stripe/GitHub/Shopify webhooks",
+    "category": "webhook tooling",
+    "dimension_reasons": {
+      "acquisition_efficiency": "Dev SEO/HN possible but unproven",
+      "automation": "Fully automatable",
+      "capital_efficiency": "Cheap",
+      "competition_gap": "Hookdeck free tier, Stripe CLI, webhook.site, clones",
+      "contribution_economics": "Model",
+      "defensibility": "Cloneable",
+      "demand_signal": "One vendor blog, one 0-upvote clone",
+      "fulfillment_simplicity": "Digital",
+      "launch_speed": "Quick",
+      "owner_time_efficiency": "Low",
+      "platform_resilience": "Independent",
+      "regulatory_simplicity": "None",
+      "scale_without_hiring": "Software"
+    },
+    "dimension_scores": {
+      "acquisition_efficiency": 2,
+      "automation": 5,
+      "capital_efficiency": 5,
+      "competition_gap": 1,
+      "contribution_economics": 3,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 5,
+      "launch_speed": 4,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 4,
+      "regulatory_simplicity": 5,
+      "scale_without_hiring": 4
+    },
+    "entrant_edge": {
+      "criterion": "cash_cost",
+      "direction": "lower_is_better",
+      "entrant_basis": "Hookdeck free tier is $0; no edge",
+      "entrant_value": 9,
+      "falsifier": "Pay signal at $9 in a niche Hookdeck free tier does not serve",
+      "incumbent_source_url": "https://www.hookdeck.com/pricing",
+      "incumbent_value": 0,
+      "unit": "USD/month"
+    },
+    "entrant_wedge": "Cheaper replay with re-signing",
+    "evidence": [
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "DEV-01-E1",
+        "kind": "incumbent_price",
+        "publisher": "Hookdeck",
+        "shows": "Developer $0 (10k events, 3-day retention); Team from $39/mo (7 days); Growth from $499/mo (fact)",
+        "url": "https://www.hookdeck.com/pricing",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2026-03-31",
+        "id": "DEV-01-E2",
+        "kind": "demand",
+        "publisher": "HookCap",
+        "shows": "Describes replay/re-sign pain: re-triggering events is the bottleneck; signature fail on replay (fact; vendor marketing)",
+        "url": "https://hookcap.dev/blog/how-to-replay-webhooks-for-faster-debugging/",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "undated",
+        "id": "DEV-01-E3",
+        "kind": "demand",
+        "publisher": "hunted.space (Product Hunt mirror)",
+        "shows": "Another webhook-inspect/replay tool launched with 0 upvotes (fact); shows crowding and weak traction",
+        "url": "https://www.hunted.space/product/hunginn",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "DEV-01-E4",
+        "kind": "constraint",
+        "publisher": "Stripe Docs",
+        "shows": "Stripe retries up to 3 days live; Dashboard resend 15 days, CLI resend 30 days; stripe listen for local testing (fact)",
+        "url": "https://docs.stripe.com/webhooks",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      }
+    ],
+    "family": "b2b_api_devtools",
+    "id": "DEV-01",
+    "major_uncertainty": "Free incumbent tiers and provider-native tools",
+    "name": "Webhook capture and replay for small teams",
+    "owner_hours_per_week_steady": 4,
+    "pain": "Hard to reproduce events, replay with valid signatures, missed events",
+    "pre_deep_verdict": "reject",
+    "regulatory_or_platform_dependency": "Own infra; no platform lock besides provider webhooks",
+    "startup_cash_usd": 250,
+    "substitutes": [
+      {
+        "name": "Hookdeck",
+        "price_point": "free 10k events; $39/mo",
+        "url": "https://www.hookdeck.com/pricing"
+      },
+      {
+        "name": "Stripe CLI/Dashboard resend",
+        "price_point": "free",
+        "url": "https://docs.stripe.com/webhooks"
+      }
+    ],
+    "time_to_first_revenue_days": 30,
+    "unit_economics": {
+      "class": "model",
+      "contribution_margin_pct": 89,
+      "notes": "Model only",
+      "price_usd": 9,
+      "variable_cost_usd": 1
+    },
+    "unknowns": [
+      "webhook.site pricing fetch failed",
+      "Hookdeck per-event rates inconsistent on page"
+    ],
+    "verdict_reason": "Free incumbent tiers plus provider-native tools; no entrant edge"
+  },
+  {
+    "automation_potential_pct": 90,
+    "buyer": "Indie devs and small agencies",
+    "category": "monitoring",
+    "dimension_reasons": {
+      "acquisition_efficiency": "None",
+      "automation": "Automatable",
+      "capital_efficiency": "Cheap",
+      "competition_gap": "Open-source BSD Healthchecks + free tiers",
+      "contribution_economics": "Model",
+      "defensibility": "None",
+      "demand_signal": "No dated demand found",
+      "fulfillment_simplicity": "Digital",
+      "launch_speed": "Fast",
+      "owner_time_efficiency": "Low",
+      "platform_resilience": "Independent",
+      "regulatory_simplicity": "None",
+      "scale_without_hiring": "Software"
+    },
+    "dimension_scores": {
+      "acquisition_efficiency": 1,
+      "automation": 5,
+      "capital_efficiency": 5,
+      "competition_gap": 0,
+      "contribution_economics": 2,
+      "defensibility": 0,
+      "demand_signal": 1,
+      "fulfillment_simplicity": 5,
+      "launch_speed": 4,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 4,
+      "regulatory_simplicity": 5,
+      "scale_without_hiring": 4
+    },
+    "entrant_edge": {
+      "criterion": "cash_cost",
+      "direction": "lower_is_better",
+      "entrant_basis": "Free open-source and free tier exist; no edge",
+      "entrant_value": 5,
+      "falsifier": "n/a",
+      "incumbent_source_url": "https://healthchecks.io/pricing/",
+      "incumbent_value": 0,
+      "unit": "USD/month"
+    },
+    "entrant_wedge": "None identified",
+    "evidence": [
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "DEV-02-E1",
+        "kind": "incumbent_price",
+        "publisher": "Cronitor",
+        "shows": "Hacker free 5 monitors; Business $2/monitor/mo + $5/user (fact)",
+        "url": "https://cronitor.io/pricing",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "DEV-02-E2",
+        "kind": "incumbent_price",
+        "publisher": "Healthchecks.io",
+        "shows": "Free 20 jobs; Business $20/mo for 100 jobs; open-source projects free (fact)",
+        "url": "https://healthchecks.io/pricing/",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "DEV-02-E3",
+        "kind": "constraint",
+        "publisher": "GitHub",
+        "shows": "BSD-3-Clause, ~10.3k stars, Docker self-host (fact)",
+        "url": "https://github.com/healthchecks/healthchecks",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      }
+    ],
+    "family": "b2b_api_devtools",
+    "id": "DEV-02",
+    "major_uncertainty": "Open-source free equivalent",
+    "name": "Cron/heartbeat monitoring for small projects",
+    "owner_hours_per_week_steady": 4,
+    "pain": "Silent failures of scheduled jobs",
+    "pre_deep_verdict": "reject",
+    "regulatory_or_platform_dependency": "None material",
+    "startup_cash_usd": 200,
+    "substitutes": [
+      {
+        "name": "Healthchecks.io",
+        "price_point": "free-$20/mo",
+        "url": "https://healthchecks.io/pricing/"
+      },
+      {
+        "name": "Cronitor",
+        "price_point": "free-$2/monitor",
+        "url": "https://cronitor.io/pricing"
+      }
+    ],
+    "time_to_first_revenue_days": 30,
+    "unit_economics": {
+      "class": "model",
+      "contribution_margin_pct": 80,
+      "notes": "Model only",
+      "price_usd": 5,
+      "variable_cost_usd": 1
+    },
+    "unknowns": [
+      "Demand evidence not collected (research limit)"
+    ],
+    "verdict_reason": "Saturated with open-source and free tiers"
+  },
+  {
+    "automation_potential_pct": 90,
+    "buyer": "Indie devs/students/small fintech startups needing clean US-company fundamentals",
+    "category": "public-data API",
+    "dimension_reasons": {
+      "acquisition_efficiency": "Dev-community/SEO possible, unproven",
+      "automation": "Nightly bulk ingest automatable",
+      "capital_efficiency": "~$400",
+      "competition_gap": "Established paid wrapper but gap in niche normalization unproven",
+      "contribution_economics": "Model 90% margin",
+      "defensibility": "Data free; only normalization quality",
+      "demand_signal": "Inference only from competitor pricing",
+      "fulfillment_simplicity": "API",
+      "launch_speed": "Weeks",
+      "owner_time_efficiency": "Support modest",
+      "platform_resilience": "Public gov data, no platform ban",
+      "regulatory_simplicity": "Public data, no licenses",
+      "scale_without_hiring": "Software"
+    },
+    "dimension_scores": {
+      "acquisition_efficiency": 2,
+      "automation": 4,
+      "capital_efficiency": 4,
+      "competition_gap": 2,
+      "contribution_economics": 4,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 5,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 4,
+      "regulatory_simplicity": 4,
+      "scale_without_hiring": 4
+    },
+    "entrant_edge": {
+      "criterion": "owner_time",
+      "direction": "lower_is_better",
+      "entrant_basis": "No demonstrable edge versus established wrapper; value would be modeled",
+      "entrant_value": 5,
+      "falsifier": "If no buyer pays >$20/mo for normalized fundamentals in a trial landing test, reject",
+      "incumbent_source_url": "https://sec-api.io/pricing",
+      "incumbent_value": 0,
+      "unit": "hours/week steady"
+    },
+    "entrant_wedge": "Pre-normalized fundamentals (standardized line items) over free SEC bulk data; niche pricing",
+    "evidence": [
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "DEV-03-E1",
+        "kind": "incumbent_price",
+        "publisher": "sec-api.io",
+        "shows": "Free 100 calls; Personal/Startups $49/mo; Business $199/mo; extra data $0.30/GB (fact)",
+        "url": "https://sec-api.io/pricing",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "DEV-03-E2",
+        "kind": "constraint",
+        "publisher": "SEC",
+        "shows": "EDGAR submissions/XBRL APIs and nightly bulk ZIPs are free, no API key; SEC gives no technical support (fact)",
+        "url": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "inference",
+        "date": "2026-10-09",
+        "id": "DEV-03-E3",
+        "kind": "demand",
+        "publisher": "sec-api.io",
+        "shows": "Existence of paid tiers incl. startup plan suggests paying behavior for wrappers around free data (inference, no customer counts)",
+        "url": "https://sec-api.io/pricing",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      }
+    ],
+    "family": "b2b_api_devtools",
+    "id": "DEV-03",
+    "major_uncertainty": "Entrant has no moat vs sec-api.io; normalization correctness",
+    "name": "Normalized SEC XBRL financials API for indie quant/AI builders",
+    "owner_hours_per_week_steady": 5,
+    "pain": "Raw EDGAR XBRL needs heavy normalization",
+    "pre_deep_verdict": "accept",
+    "regulatory_or_platform_dependency": "SEC fair-access/terms (rate limit unverified); XBRL data quality",
+    "startup_cash_usd": 400,
+    "substitutes": [
+      {
+        "name": "sec-api.io",
+        "price_point": "$49-$199/mo",
+        "url": "https://sec-api.io/pricing"
+      },
+      {
+        "name": "SEC EDGAR APIs",
+        "price_point": "free",
+        "url": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces"
+      }
+    ],
+    "time_to_first_revenue_days": 60,
+    "unit_economics": {
+      "class": "model",
+      "contribution_margin_pct": 90,
+      "notes": "Model: public data bulk download, hosting small; SEC fair-access rate limit not verified (fetch failed)",
+      "price_usd": 29,
+      "variable_cost_usd": 3
+    },
+    "unknowns": [
+      "SEC fair-access limit not verified",
+      "Demand beyond competitor pricing unverified"
+    ],
+    "verdict_reason": "Free public data with low cost; keep for deep dive to test demand, though no proven edge"
+  },
+  {
+    "automation_potential_pct": 75,
+    "buyer": "Small API/SaaS vendors wanting MCP exposure",
+    "category": "AI-agent tooling",
+    "dimension_reasons": {
+      "acquisition_efficiency": "Registry listing possible",
+      "automation": "Generation automatable",
+      "capital_efficiency": "Hosting cheap",
+      "competition_gap": "Free generator exists; mid-market self-serve gap unverified",
+      "contribution_economics": "Model",
+      "defensibility": "Cloneable",
+      "demand_signal": "No demand data collected",
+      "fulfillment_simplicity": "Digital",
+      "launch_speed": "Weeks",
+      "owner_time_efficiency": "Support unknown",
+      "platform_resilience": "Spec churn risk",
+      "regulatory_simplicity": "None",
+      "scale_without_hiring": "Hosting scales"
+    },
+    "dimension_scores": {
+      "acquisition_efficiency": 2,
+      "automation": 4,
+      "capital_efficiency": 4,
+      "competition_gap": 2,
+      "contribution_economics": 3,
+      "defensibility": 1,
+      "demand_signal": 1,
+      "fulfillment_simplicity": 5,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 5,
+      "scale_without_hiring": 4
+    },
+    "entrant_edge": {
+      "criterion": "cash_cost",
+      "direction": "lower_is_better",
+      "entrant_basis": "Free tier exists at Stainless; entrant not cheaper",
+      "entrant_value": 29,
+      "falsifier": "No small vendor pays for hosted MCP in landing test",
+      "incumbent_source_url": "https://www.stainless.com/pricing",
+      "incumbent_value": 0,
+      "unit": "USD/month"
+    },
+    "entrant_wedge": "Self-serve low-price hosted MCP for small API vendors",
+    "evidence": [
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "DEV-04-E1",
+        "kind": "incumbent_price",
+        "publisher": "Speakeasy",
+        "shows": "Only Enterprise tier shown with 'custom server creation' for MCP; no public prices (fact)",
+        "url": "https://www.speakeasy.com/pricing",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "DEV-04-E2",
+        "kind": "incumbent_price",
+        "publisher": "Stainless",
+        "shows": "Free plan $0 up to 5 generators (SDK/docs/MCP server); other tiers not priced on page (fact)",
+        "url": "https://www.stainless.com/pricing",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "DEV-04-E3",
+        "kind": "constraint",
+        "publisher": "Model Context Protocol",
+        "shows": "Official MCP Registry exists, so discovery channel is open; server count not obtainable (fact)",
+        "url": "https://registry.modelcontextprotocol.io/",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      }
+    ],
+    "family": "b2b_api_devtools",
+    "id": "DEV-04",
+    "major_uncertainty": "Whether demand is paying vs free; incumbents backed by funding",
+    "name": "Hosted MCP server generator for SaaS APIs",
+    "owner_hours_per_week_steady": 6,
+    "pain": "Need an MCP server without building one",
+    "pre_deep_verdict": "accept",
+    "regulatory_or_platform_dependency": "MCP spec churn; agent-client platforms",
+    "startup_cash_usd": 500,
+    "substitutes": [
+      {
+        "name": "Stainless",
+        "price_point": "free up to 5 generators",
+        "url": "https://www.stainless.com/pricing"
+      },
+      {
+        "name": "Speakeasy",
+        "price_point": "enterprise/custom",
+        "url": "https://www.speakeasy.com/pricing"
+      }
+    ],
+    "time_to_first_revenue_days": 60,
+    "unit_economics": {
+      "class": "model",
+      "contribution_margin_pct": 83,
+      "notes": "Model only",
+      "price_usd": 29,
+      "variable_cost_usd": 5
+    },
+    "unknowns": [
+      "Demand evidence missing",
+      "Stainless/Speakeasy paid prices not shown"
+    ],
+    "verdict_reason": "Possible mid-market gap (incumbent prices opaque); worth deep dive but demand unproven"
+  },
+  {
+    "automation_potential_pct": 60,
+    "buyer": "Impulse online shoppers reached via paid social",
+    "category": "dropshipping",
+    "dimension_reasons": {
+      "acquisition_efficiency": "Paid ads CAC $20-50 per same vendor; no organic channel evidenced",
+      "automation": "Order routing automatable but support/returns manual (inference)",
+      "capital_efficiency": "~$500 cash; unfavorable because ads are the sink",
+      "competition_gap": "Commodity items; no gap evidenced",
+      "contribution_economics": "Source-claimed net 4-6% to 10-20% after ads (vendor estimate)",
+      "defensibility": "Trivially cloned",
+      "demand_signal": "Only vendor blogs with unsourced figures; no independent paying-behavior data verified",
+      "fulfillment_simplicity": "Overseas shipping and 8-30%+ returns for apparel per source",
+      "launch_speed": "Store can launch in days (inference)",
+      "owner_time_efficiency": "Support, refunds, creative testing ~20h/wk (inference)",
+      "platform_resilience": "Depends on Shopify, ad platforms, supplier",
+      "regulatory_simplicity": "Customs duties now apply, otherwise light",
+      "scale_without_hiring": "Labor grows with order/support volume (inference)"
+    },
+    "dimension_scores": {
+      "acquisition_efficiency": 0,
+      "automation": 3,
+      "capital_efficiency": 4,
+      "competition_gap": 0,
+      "contribution_economics": 1,
+      "defensibility": 0,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 2,
+      "launch_speed": 4,
+      "owner_time_efficiency": 2,
+      "platform_resilience": 1,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 3
+    },
+    "entrant_edge": {
+      "criterion": "cash_cost",
+      "direction": "lower_is_better",
+      "entrant_basis": "model: no inventory; Shopify ~$29-39/mo plus ~$400 test ad budget. Available to every competitor, so not a differentiator.",
+      "entrant_value": 500,
+      "falsifier": "If blended CAC >= gross profit per order (source cites CAC $20-50 on ~$50 AOV), edge is nil.",
+      "incumbent_source_url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label",
+      "incumbent_value": 3000,
+      "unit": "USD upfront"
+    },
+    "entrant_wedge": "None identifiable: every dropshipper has same suppliers and tools.",
+    "evidence": [
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "ECO-01-E1",
+        "kind": "incumbent_price",
+        "publisher": "Shopify",
+        "shows": "Basic plan $39/mo monthly or $29/mo yearly; card rate 2.9%+30c online standard; 2% third-party gateway fee",
+        "url": "https://www.shopify.com/pricing",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "inference",
+        "date": "2026-02-16",
+        "id": "ECO-01-E2",
+        "kind": "demand",
+        "publisher": "Marksinsights (vendor blog, unsourced estimates)",
+        "shows": "Claims gross 30-50%, net 10-20%, $50 example 58% gross -> 4-6% net; CAC FB/IG $20-50, TikTok $15-40; apparel returns 20-30%, general 8-12%; chargebacks 1-2%",
+        "url": "https://marksinsights.com/dropshipping-profit-margins-explained/",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "undated (describes Nov 1 2025 change; compliance Jan 15 2026)",
+        "id": "ECO-01-E3",
+        "kind": "constraint",
+        "publisher": "Novadata",
+        "shows": "De minimis ended for China shipments 2025-11-01; duties 30-54% by category regardless of value",
+        "url": "https://www.novadata.io/resources/news/de-minimis-exemption-ends-china-tariffs",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      }
+    ],
+    "family": "ecommerce_or_dropshipping",
+    "id": "ECO-01",
+    "major_uncertainty": "Whether any product/niche has CAC low enough; shipping times and returns from overseas suppliers",
+    "name": "Generic AliExpress/CJ-to-Shopify dropshipping store",
+    "owner_hours_per_week_steady": 20,
+    "pain": "Entrant wants a no-inventory store; shoppers want cheap novelty items fast",
+    "pre_deep_verdict": "reject",
+    "regulatory_or_platform_dependency": "Shopify/payment processor terms; ad-platform policies; US customs duties on direct-from-China parcels",
+    "startup_cash_usd": 500,
+    "substitutes": [
+      {
+        "name": "Shopify Basic",
+        "price_point": "$29-39/mo + 2.9%+30c",
+        "url": "https://www.shopify.com/pricing"
+      }
+    ],
+    "time_to_first_revenue_days": 14,
+    "unit_economics": {
+      "class": "model",
+      "contribution_margin_pct": null,
+      "notes": "Source-claimed net 4-6% on $50 example after ads; CAC $20-50 (unsourced vendor estimate); tariffs 30-54% on China-origin goods now apply to parcels",
+      "price_usd": 30,
+      "variable_cost_usd": null
+    },
+    "unknowns": [
+      "Independent (non-vendor) CAC and conversion data not verified",
+      "Supplier shipping times not verified"
+    ],
+    "verdict_reason": "Margins after CAC and now-applicable China duties are thin; no entrant edge since tooling is available to all."
+  },
+  {
+    "automation_potential_pct": 55,
+    "buyer": "Etsy gift shoppers in narrow niches",
+    "category": "print_on_demand",
+    "dimension_reasons": {
+      "acquisition_efficiency": "Etsy search organic but 15% Offsite Ads and saturation noted",
+      "automation": "Supplier fulfills; design/listing creation manual",
+      "capital_efficiency": "$200-400 per source",
+      "competition_gap": "Source says generic saturated; niche gap only claimed",
+      "contribution_economics": "28-32% modeled, 13% in reddit case",
+      "defensibility": "Designs cloneable",
+      "demand_signal": "Etsy POD GMV $4.1B (+11%) per one blog; no independent data verified",
+      "fulfillment_simplicity": "Supplier ships; returns ~4% per source",
+      "launch_speed": "Listings live in days; first sale uncertain",
+      "owner_time_efficiency": "~12h/wk listings/support (inference)",
+      "platform_resilience": "Etsy plus Printify/Printful dependency",
+      "regulatory_simplicity": "No licenses; IP care needed",
+      "scale_without_hiring": "Supplier fulfills; design labor scales with SKUs"
+    },
+    "dimension_scores": {
+      "acquisition_efficiency": 2,
+      "automation": 3,
+      "capital_efficiency": 5,
+      "competition_gap": 1,
+      "contribution_economics": 2,
+      "defensibility": 0,
+      "demand_signal": 3,
+      "fulfillment_simplicity": 5,
+      "launch_speed": 4,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 1,
+      "regulatory_simplicity": 4,
+      "scale_without_hiring": 3
+    },
+    "entrant_edge": {
+      "criterion": "cash_cost",
+      "direction": "lower_is_better",
+      "entrant_basis": "UniLink: realistic minimum $200-400 (listings, samples, tools); no inventory",
+      "entrant_value": 300,
+      "falsifier": "If niche shops show net margin <15% after Offsite Ads/returns or <1 sale/week after 60 days, no viable business.",
+      "incumbent_source_url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label",
+      "incumbent_value": 3000,
+      "unit": "USD upfront"
+    },
+    "entrant_wedge": "Narrow-niche designs/keywords only; edge is research effort, not a structural advantage.",
+    "evidence": [
+      {
+        "class": "fact",
+        "date": "2026-07-19",
+        "id": "ECO-02-E1",
+        "kind": "incumbent_price",
+        "publisher": "Checkoutpage",
+        "shows": "Etsy: $0.20 listing, 6.5% transaction, 3%+$0.25 processing, Offsite Ads 15% (<$10k yr sales) capped $100/order",
+        "url": "https://checkoutpage.com/blog/etsy-fees",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "inference",
+        "date": "2026-05-03",
+        "id": "ECO-02-E2",
+        "kind": "demand",
+        "publisher": "UniLink",
+        "shows": "Etsy POD GMV ~ $4.1B 2025 (+11%); $24.99 mug: gross 54.8%, 36.8% after Offsite Ads, ~28-32% after returns/etc.; generic designs saturated (one design ~4,200 sellers); niches with velocity listed",
+        "url": "https://app.unilink.us/blog/print-on-demand-etsy-2026",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "inference",
+        "date": "2025-12-19",
+        "id": "ECO-02-E3",
+        "kind": "constraint",
+        "publisher": "Mockey",
+        "shows": "Reddit seller example: $17.68 sale, $10.61 production, $4.75 shipping = $2.32 profit (~13%, my calc); many sellers report ~20% net; some report 30-35%",
+        "url": "https://mockey.ai/blog/is-print-on-demand-profitable/",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2026-03-01",
+        "id": "ECO-02-E4",
+        "kind": "incumbent_price",
+        "publisher": "EcommerceCEO",
+        "shows": "Printful tee base $9.25-13.50 (Free plan), mug $5.95; Growth plan $24.99/mo",
+        "url": "https://ecommerceceo.com/printful-pricing/",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      }
+    ],
+    "family": "ecommerce_or_dropshipping",
+    "id": "ECO-02",
+    "major_uncertainty": "Whether specific niche has demand not captured by top shops; design IP/AI-art policy not verified",
+    "name": "Niche personalized POD gifts on Etsy (pet memorial / specialty nursing / hobby journals)",
+    "owner_hours_per_week_steady": 12,
+    "pain": "Gift buyers want specific personalized items generic shops lack",
+    "pre_deep_verdict": "reject",
+    "regulatory_or_platform_dependency": "Etsy (single marketplace; fees/policies can change); POD supplier",
+    "startup_cash_usd": 300,
+    "substitutes": [
+      {
+        "name": "Printful",
+        "price_point": "tee $9.25-13.50 base, mug $5.95",
+        "url": "https://ecommerceceo.com/printful-pricing/"
+      },
+      {
+        "name": "Printify",
+        "price_point": "~$7.50 tee/mug base (varies by provider, per UniLink)",
+        "url": "https://app.unilink.us/blog/print-on-demand-etsy-2026"
+      }
+    ],
+    "time_to_first_revenue_days": 21,
+    "unit_economics": {
+      "class": "model",
+      "contribution_margin_pct": 30,
+      "notes": "UniLink mug example: ~28-32% realistic after returns; Mockey reddit example ~13%; Offsite Ads 15% on ad-driven sales",
+      "price_usd": 24.99,
+      "variable_cost_usd": 17.7
+    },
+    "unknowns": [
+      "Independent conversion data not verified",
+      "AI-generated design policies on Etsy not verified"
+    ],
+    "verdict_reason": "Modeled ~30% net at best on a saturated marketplace with commodity base cost and no structural entrant edge."
+  },
+  {
+    "automation_potential_pct": 30,
+    "buyer": "eBay buyers of vintage/branded secondhand goods",
+    "category": "reselling",
+    "dimension_reasons": {
+      "acquisition_efficiency": "Marketplace search; sourcing is manual",
+      "automation": "Photographing/listing/shipping manual",
+      "capital_efficiency": "$0-200 start per source",
+      "competition_gap": "Large incumbent resale base",
+      "contribution_economics": "Source net 30-50%, but per-sale profit small",
+      "defensibility": "No moat",
+      "demand_signal": "ThredUp growth data plus vendor blog; no eBay sell-through data verified",
+      "fulfillment_simplicity": "Each item stored, shipped",
+      "launch_speed": "First listings within days",
+      "owner_time_efficiency": "Source: 12h/wk for ~$1,000 net; scales with hours",
+      "platform_resilience": "eBay-dependent, multi-channel possible",
+      "regulatory_simplicity": "No licenses",
+      "scale_without_hiring": "Labor linear with items"
+    },
+    "dimension_scores": {
+      "acquisition_efficiency": 2,
+      "automation": 1,
+      "capital_efficiency": 5,
+      "competition_gap": 1,
+      "contribution_economics": 3,
+      "defensibility": 0,
+      "demand_signal": 3,
+      "fulfillment_simplicity": 1,
+      "launch_speed": 5,
+      "owner_time_efficiency": 0,
+      "platform_resilience": 2,
+      "regulatory_simplicity": 5,
+      "scale_without_hiring": 0
+    },
+    "entrant_edge": {
+      "criterion": "owner_time",
+      "direction": "lower_is_better",
+      "entrant_basis": "No improvement claimed; AI listing tools could cut drafting time but unverified",
+      "entrant_value": 12,
+      "falsifier": "Any measured listing/photography time cut >30% from AI tooling would create edge; otherwise none.",
+      "incumbent_source_url": "https://www.underpriced.app/blog/how-much-money-can-you-make-reselling-realistic-income-2026",
+      "incumbent_value": 12,
+      "unit": "hours/week for ~$1,000 net"
+    },
+    "entrant_wedge": "No structural wedge; edge is sourcing skill and local access.",
+    "evidence": [
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "ECO-03-E1",
+        "kind": "incumbent_price",
+        "publisher": "eBay",
+        "shows": "Final value fee 13.6% up to $7,500 plus $0.30 (<=$10) or $0.40 per order",
+        "url": "https://www.ebay.com/help/selling/fees-credits-invoices/selling-fees?id=4822",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "inference",
+        "date": "2026-02-19 (updated 2026-10-02)",
+        "id": "ECO-03-E2",
+        "kind": "demand",
+        "publisher": "Underpriced (vendor blog)",
+        "shows": "Typical reseller net 30-50% of gross; 10-20% inventory never sells; 5-10% returns; ~$20/hr in one example ($1,024 net, 12h/wk); part-time 25-80 items/month",
+        "url": "https://www.underpriced.app/blog/how-much-money-can-you-make-reselling-realistic-income-2026",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2026-04-03",
+        "id": "ECO-03-E3",
+        "kind": "demand",
+        "publisher": "Retail Dive citing ThredUp 2026 Resale Report",
+        "shows": "US secondhand apparel projected $78.8B by 2030, ~7.3% annual growth",
+        "url": "https://retaildive.com/news/us-resale-market-surpass-78-billion-in-2030-secondhand/",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2026-10-09",
+        "id": "ECO-03-E4",
+        "kind": "constraint",
+        "publisher": "eBay",
+        "shows": "US seller currency conversion charge rising 3% to 3.25% on 2026-10-14; seller platform terms set by eBay",
+        "url": "https://www.ebay.com/help/selling/fees-credits-invoices/selling-fees?id=4822",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      }
+    ],
+    "family": "ecommerce_or_dropshipping",
+    "id": "ECO-03",
+    "major_uncertainty": "Whether entrant sourcing yields >$8/hr; income range $500-2000/mo per source is unverified",
+    "name": "Thrift/estate-sale sourcing resold on eBay (vintage and branded)",
+    "owner_hours_per_week_steady": 20,
+    "pain": "Buyers want specific secondhand items; entrant arbitrages local thrift pricing",
+    "pre_deep_verdict": "reject",
+    "regulatory_or_platform_dependency": "eBay fee/policy changes; local thrift supply",
+    "startup_cash_usd": 200,
+    "substitutes": [
+      {
+        "name": "eBay",
+        "price_point": "13.6% FVF + $0.30-0.40/order",
+        "url": "https://www.ebay.com/help/selling/fees-credits-invoices/selling-fees?id=4822"
+      }
+    ],
+    "time_to_first_revenue_days": 10,
+    "unit_economics": {
+      "class": "model",
+      "contribution_margin_pct": 40,
+      "notes": "Source: net 30-50% of gross after COGS 20-40% and ~14% fees; mid-point model",
+      "price_usd": 40,
+      "variable_cost_usd": 20
+    },
+    "unknowns": [
+      "Realistic $/hour not independently verified"
+    ],
+    "verdict_reason": "Labor-linear and low $/hr; no structural edge for an unknown entrant."
+  },
+  {
+    "automation_potential_pct": 40,
+    "buyer": "Amazon shoppers buying branded goods",
+    "category": "reselling",
+    "dimension_reasons": {
+      "acquisition_efficiency": "Buy Box competition (inference)",
+      "automation": "Repricing tools help partly",
+      "capital_efficiency": "~$1,500 model",
+      "competition_gap": "Saturated per source (>60% 3P)",
+      "contribution_economics": "Unverified margin, fees and returns eat gap",
+      "defensibility": "Cloneable",
+      "demand_signal": "Only vendor blog; no demand data for arbitrage",
+      "fulfillment_simplicity": "FBA ships; returns eat margin",
+      "launch_speed": "Weeks for account approval (inference)",
+      "owner_time_efficiency": "~15h/wk (inference)",
+      "platform_resilience": "Single platform ban risk",
+      "regulatory_simplicity": "Gating/IP complaints",
+      "scale_without_hiring": "Labor linear"
+    },
+    "dimension_scores": {
+      "acquisition_efficiency": 1,
+      "automation": 2,
+      "capital_efficiency": 3,
+      "competition_gap": 0,
+      "contribution_economics": 1,
+      "defensibility": 0,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 4,
+      "owner_time_efficiency": 2,
+      "platform_resilience": 0,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 1
+    },
+    "entrant_edge": {
+      "criterion": "cash_cost",
+      "direction": "lower_is_better",
+      "entrant_basis": "model: ~$1,000 inventory + $39/mo Pro plan + prep; no source for arbitrage margins verified",
+      "entrant_value": 1500,
+      "falsifier": "If post-fee ROI <20% on a 20-item test buy, no edge.",
+      "incumbent_source_url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label",
+      "incumbent_value": 3000,
+      "unit": "USD upfront"
+    },
+    "entrant_wedge": "None: tools and sourcing are open to all; new accounts are gated.",
+    "evidence": [
+      {
+        "class": "fact",
+        "date": "2025-10-15",
+        "id": "ECO-04-E1",
+        "kind": "incumbent_price",
+        "publisher": "Amazon Selling Partners",
+        "shows": "FBA fees rise avg $0.08/unit effective 2026-01-15",
+        "url": "https://sellingpartners.aboutamazon.com/update-to-u-s-referral-and-fulfillment-by-amazon-fees-for-2026",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "inference",
+        "date": "2026-02-02",
+        "id": "ECO-04-E2",
+        "kind": "demand",
+        "publisher": "Ecomclips (vendor)",
+        "shows": "3P sellers >60% of Amazon sales; most sellers fail due to flawed math; fee rises: +$0.08 standard $10-50",
+        "url": "https://ecomclips.com/blog/amazon-fba-still-worth-it-in-2026/",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2026-05-13",
+        "id": "ECO-04-E3",
+        "kind": "constraint",
+        "publisher": "Repricer",
+        "shows": "Gated categories/brands need invoices, ODR<1%, late shipment <4%; Toys gated; brand examples gated",
+        "url": "https://www.repricer.com/blog/amazon-gated-categories/",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      }
+    ],
+    "family": "ecommerce_or_dropshipping",
+    "id": "ECO-04",
+    "major_uncertainty": "Arbitrage margins, sell-through, restrictions on new accounts; sellerboard source not read",
+    "name": "Amazon online/retail arbitrage and wholesale reselling",
+    "owner_hours_per_week_steady": 15,
+    "pain": "Entrant buys discounted brand-name goods and resells on Amazon",
+    "pre_deep_verdict": "reject",
+    "regulatory_or_platform_dependency": "Amazon account health, brand/category gating, authenticity complaints",
+    "startup_cash_usd": 1500,
+    "substitutes": [
+      {
+        "name": "Amazon FBA",
+        "price_point": "referral 8-15% (per Bebold) + fulfillment",
+        "url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label"
+      }
+    ],
+    "time_to_first_revenue_days": 14,
+    "unit_economics": {
+      "class": "model",
+      "contribution_margin_pct": null,
+      "notes": "No verified arbitrage margin; Amazon referral 8-15% plus FBA fees; return processing $2-6/unit per Bebold",
+      "price_usd": null,
+      "variable_cost_usd": null
+    },
+    "unknowns": [
+      "Sellerboard retail arbitrage 2026 article not read (session limit)"
+    ],
+    "verdict_reason": "Gated brands, single-platform risk, no verified margin or entrant edge."
+  },
+  {
+    "automation_potential_pct": 50,
+    "buyer": "Amazon shoppers seeking low-cost kitchen gadgets",
+    "category": "private_label",
+    "dimension_reasons": {
+      "acquisition_efficiency": "Paid PPC launch $300-800",
+      "automation": "Prep/replenishment partly automatable",
+      "capital_efficiency": "$3k-10k exceeds $200",
+      "competition_gap": "Saturated, 60% 3P",
+      "contribution_economics": "~25% model leaves thin margin",
+      "defensibility": "Cloneable",
+      "demand_signal": "Vendor sources only",
+      "fulfillment_simplicity": "FBA but inventory/returns",
+      "launch_speed": "Sourcing+shipping ~months (inference)",
+      "owner_time_efficiency": "~15h/wk",
+      "platform_resilience": "Single platform",
+      "regulatory_simplicity": "Tariffs/labeling moderate",
+      "scale_without_hiring": "Inventory scale not labor"
+    },
+    "dimension_scores": {
+      "acquisition_efficiency": 1,
+      "automation": 3,
+      "capital_efficiency": 2,
+      "competition_gap": 0,
+      "contribution_economics": 2,
+      "defensibility": 0,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 2,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 0,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 3
+    },
+    "entrant_edge": {
+      "criterion": "cash_cost",
+      "direction": "lower_is_better",
+      "entrant_basis": "Same low-end budget; no differential",
+      "entrant_value": 3000,
+      "falsifier": "Edge fails by construction; entrant spends same as others.",
+      "incumbent_source_url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label",
+      "incumbent_value": 3000,
+      "unit": "USD upfront"
+    },
+    "entrant_wedge": "None: sourcing via marketplaces open to all.",
+    "evidence": [
+      {
+        "class": "fact",
+        "date": "2025-11-07 (updated 2026-07-08)",
+        "id": "PHY-01-E1",
+        "kind": "incumbent_price",
+        "publisher": "Bebold Digital",
+        "shows": "Startup $3,000-10,000; inventory $1,000-3,000 for 200-500 units; PPC launch $300-800; referral 8-15%; return processing $2-6/unit; target 30-40% net",
+        "url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "inference",
+        "date": "2026-06-09",
+        "id": "PHY-01-E2",
+        "kind": "constraint",
+        "publisher": "SellerSprite (vendor)",
+        "shows": "China tariffs 20-30%; $29.99 gadget net 32.8% (2023) to 24.9% after 2026 changes (vendor model); 12% ACoS assumption",
+        "url": "https://www.sellersprite.com/en/blog/amazon-tariffs-2026-fba-sellers-guide",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "inference",
+        "date": "2026-02-02",
+        "id": "PHY-01-E3",
+        "kind": "demand",
+        "publisher": "Ecomclips (vendor)",
+        "shows": "Many launch at 20-30% gross before ads/returns; 3P sellers >60% of Amazon sales",
+        "url": "https://ecomclips.com/blog/amazon-fba-still-worth-it-in-2026/",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2025-10-15",
+        "id": "PHY-01-E4",
+        "kind": "other",
+        "publisher": "Amazon Selling Partners",
+        "shows": "FBA fees +$0.08/unit avg effective 2026-01-15",
+        "url": "https://sellingpartners.aboutamazon.com/update-to-u-s-referral-and-fulfillment-by-amazon-fees-for-2026",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      }
+    ],
+    "family": "physical_products",
+    "id": "PHY-01",
+    "major_uncertainty": "Realistic launch ACoS far above 12% model; tariff rollback risk",
+    "name": "Private-label China-sourced Amazon kitchen gadget",
+    "owner_hours_per_week_steady": 15,
+    "pain": "Entrant sources generic product and brands it",
+    "pre_deep_verdict": "reject",
+    "regulatory_or_platform_dependency": "Amazon fee/ban policies; US tariffs (reciprocal suspended through Nov 2026 per source)",
+    "startup_cash_usd": 3000,
+    "substitutes": [
+      {
+        "name": "Amazon FBA private label",
+        "price_point": "$3k-10k startup",
+        "url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label"
+      }
+    ],
+    "time_to_first_revenue_days": 120,
+    "unit_economics": {
+      "class": "model",
+      "contribution_margin_pct": 25,
+      "notes": "SellerSprite vendor model: ~24.9% net after 2026 fees incl. 12% ACoS; excludes launch PPC and returns",
+      "price_usd": 29.99,
+      "variable_cost_usd": 22.5
+    },
+    "unknowns": [
+      "Real CPC/ACoS not verified",
+      "Specific product margins unknown"
+    ],
+    "verdict_reason": "Thin modeled margin, upfront inventory, PPC dependence, no entrant edge."
+  },
+  {
+    "automation_potential_pct": 40,
+    "buyer": "Hobbyists (tabletop gaming, cosplay, hobby organizers) on Etsy",
+    "category": "made_to_order_manufacturing",
+    "dimension_reasons": {
+      "acquisition_efficiency": "Etsy search only",
+      "automation": "Printing partly automatic, packing manual",
+      "capital_efficiency": "~$450-600 above $200",
+      "competition_gap": "Source says generic saturated, niche gap claimed",
+      "contribution_economics": "Source claims 55-85%; effective hourly unmeasured",
+      "defensibility": "Original designs weak moat",
+      "demand_signal": "One blog; income range $500-2k/mo",
+      "fulfillment_simplicity": "Own printing and shipping",
+      "launch_speed": "Weeks to design and list",
+      "owner_time_efficiency": "~15h/wk for ~$500-2k/mo",
+      "platform_resilience": "Etsy single channel, can sell direct",
+      "regulatory_simplicity": "Mostly none",
+      "scale_without_hiring": "Capacity limited by printers"
+    },
+    "dimension_scores": {
+      "acquisition_efficiency": 2,
+      "automation": 2,
+      "capital_efficiency": 4,
+      "competition_gap": 2,
+      "contribution_economics": 3,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 2,
+      "launch_speed": 3,
+      "owner_time_efficiency": 2,
+      "platform_resilience": 1,
+      "regulatory_simplicity": 4,
+      "scale_without_hiring": 1
+    },
+    "entrant_edge": {
+      "criterion": "cash_cost",
+      "direction": "lower_is_better",
+      "entrant_basis": "A1 Mini Combo $449 plus ~$60 filament (StackSheriff prices); design effort own time",
+      "entrant_value": 449,
+      "falsifier": "If Etsy demand for original designs yields <$500/mo after 6 months (source's own range lower bound), or listings are removed under the originality policy.",
+      "incumbent_source_url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label",
+      "incumbent_value": 3000,
+      "unit": "USD upfront"
+    },
+    "entrant_wedge": "Original CAD designs (AI-assisted CAD) in a narrow hobby; Etsy requires originality so asset-licensing competitors are barred.",
+    "evidence": [
+      {
+        "class": "inference",
+        "date": "2026-08-19",
+        "id": "PHY-02-E1",
+        "kind": "demand",
+        "publisher": "StackSheriff",
+        "shows": "Bambu A1 Mini $299/Combo $449; PLA $15-20/kg; claimed 55-85% margins at $0.50-3 material; Etsy fees ~11-15%; part-timers $500-2,000/mo after 6-12 months; generic phone stands saturated",
+        "url": "https://stacksheriff.com/3d-printing/3d-printing-side-hustle-guide/?format=md",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2025-07-07 (updated 2025-11-27)",
+        "id": "PHY-02-E2",
+        "kind": "constraint",
+        "publisher": "TCT Magazine",
+        "shows": "Since 2025-06-10 Etsy bans selling prints from third-party files even if licensed; own original designs allowed",
+        "url": "https://www.tctmagazine.com/from-templates-to-originality-etsy-new-3d-printing-policy/",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2025-06-20",
+        "id": "PHY-02-E3",
+        "kind": "incumbent_price",
+        "publisher": "Slickdeals",
+        "shows": "Bambu A1 $339, A1 Combo $479, P1S $499 (expired promo)",
+        "url": "https://slickdeals.net/f/18393619-bambu-lab-3d-printers-a1-339-a1-combo-479-p1p-399-more-shipping",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2026-07-19",
+        "id": "PHY-02-E4",
+        "kind": "incumbent_price",
+        "publisher": "Checkoutpage",
+        "shows": "Etsy 6.5% transaction + 3%+$0.25 + $0.20 listing; Offsite Ads 12-15%",
+        "url": "https://checkoutpage.com/blog/etsy-fees",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      }
+    ],
+    "family": "physical_products",
+    "id": "PHY-02",
+    "major_uncertainty": "Whether original designs sell at volume; printer time per unit; no $/hr measured",
+    "name": "3D-printed original-design hobby organizers/accessories sold on Etsy",
+    "owner_hours_per_week_steady": 15,
+    "pain": "Niche hobby accessories are underserved by generic goods",
+    "pre_deep_verdict": "accept",
+    "regulatory_or_platform_dependency": "Etsy originality policy since 2025-06-10; single marketplace; product-safety if marketed to children",
+    "startup_cash_usd": 600,
+    "substitutes": [
+      {
+        "name": "Etsy 3D-print sellers",
+        "price_point": "fees 6.5%+3%+$0.25",
+        "url": "https://checkoutpage.com/blog/etsy-fees"
+      }
+    ],
+    "time_to_first_revenue_days": 30,
+    "unit_economics": {
+      "class": "model",
+      "contribution_margin_pct": 55,
+      "notes": "Material $0.50-3 per print (source) plus ~14% Etsy fees plus packaging/postage (inference); source-claimed 55-85%; owner print/pack time excluded",
+      "price_usd": 25,
+      "variable_cost_usd": 4
+    },
+    "unknowns": [
+      "Printer throughput per day and actual sell-through not verified",
+      "Etsy AI-design stance not verified"
+    ],
+    "verdict_reason": "Low capital and a policy that shuts out file-licence competitors; still marginal income, so deeper check needed."
+  },
+  {
+    "automation_potential_pct": 40,
+    "buyer": "Consumers buying DTC/Amazon skincare",
+    "category": "private_label",
+    "dimension_reasons": {
+      "acquisition_efficiency": "Paid acquisition assumed",
+      "automation": "Partly outsourced",
+      "capital_efficiency": "$3k+ (inference)",
+      "competition_gap": "Saturated (inference; no evidence), 0",
+      "contribution_economics": "Unknown, default 2",
+      "defensibility": "No moat",
+      "demand_signal": "No demand evidence collected, default 2",
+      "fulfillment_simplicity": "Inventory storage and returns",
+      "launch_speed": "Formulation/labeling months",
+      "owner_time_efficiency": "~15h/wk",
+      "platform_resilience": "Multiple channels possible",
+      "regulatory_simplicity": "MoCRA recordkeeping, adverse events",
+      "scale_without_hiring": "Not labor-linear"
+    },
+    "dimension_scores": {
+      "acquisition_efficiency": 1,
+      "automation": 2,
+      "capital_efficiency": 2,
+      "competition_gap": 0,
+      "contribution_economics": 2,
+      "defensibility": 0,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 1,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 2,
+      "regulatory_simplicity": 2,
+      "scale_without_hiring": 3
+    },
+    "entrant_edge": {
+      "criterion": "cash_cost",
+      "direction": "lower_is_better",
+      "entrant_basis": "no verified manufacturer MOQ pricing (fetch failed); assume same budget",
+      "entrant_value": 3000,
+      "falsifier": "Edge fails by construction.",
+      "incumbent_source_url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label",
+      "incumbent_value": 3000,
+      "unit": "USD upfront"
+    },
+    "entrant_wedge": "None: contract manufacturers sell same formulas to all.",
+    "evidence": [
+      {
+        "class": "fact",
+        "date": "undated",
+        "id": "PHY-03-E1",
+        "kind": "constraint",
+        "publisher": "Registrar Corp",
+        "shows": "MoCRA small-business exemption under $1M avg sales avoids registration/listing/GMP; adverse event and safety/labeling apply; OTC drug products (sunscreen) excluded",
+        "url": "https://www.registrarcorp.com/blog/cosmetics/mocra/mocra-exemptions/",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2026-03",
+        "id": "PHY-03-E2",
+        "kind": "constraint",
+        "publisher": "Stocksmith",
+        "shows": "Safety substantiation records required even for exempt; label needs ingredients and responsible-person contact since Dec 2024; registration effective 2024-07-01",
+        "url": "https://stocksmith.io/blog/mocra-cosmetics",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "inference",
+        "date": "2025-11-07 (updated 2026-07-08)",
+        "id": "PHY-03-E3",
+        "kind": "incumbent_price",
+        "publisher": "Bebold Digital",
+        "shows": "Marketplace costs: referral 8-15%, return processing $2-6, startup $3k-10k, launch PPC $300-800 (general, not skincare-specific)",
+        "url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      }
+    ],
+    "family": "physical_products",
+    "id": "PHY-03",
+    "major_uncertainty": "MOQ, per-unit cost, CAC, demand not verified",
+    "name": "Private-label natural skincare via contract manufacturer",
+    "owner_hours_per_week_steady": 15,
+    "pain": "Entrant brands a white-label formula",
+    "pre_deep_verdict": "reject",
+    "regulatory_or_platform_dependency": "FDA MoCRA labeling/adverse events/safety substantiation; contract manufacturer; marketplaces",
+    "startup_cash_usd": 3000,
+    "substitutes": [
+      {
+        "name": "Amazon marketplace (general)",
+        "price_point": "8-15% referral",
+        "url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label"
+      }
+    ],
+    "time_to_first_revenue_days": 150,
+    "unit_economics": {
+      "class": "model",
+      "contribution_margin_pct": null,
+      "notes": "No verified per-unit cost or MOQ; demand and CAC not verified",
+      "price_usd": null,
+      "variable_cost_usd": null
+    },
+    "unknowns": [
+      "Manufacturer MOQ and unit price not verified",
+      "Competitor pricing and CAC not verified"
+    ],
+    "verdict_reason": "Compliance recordkeeping plus no entrant edge or verified economics."
+  },
+  {
+    "automation_potential_pct": 40,
+    "buyer": "Parents buying children's products",
+    "category": "private_label",
+    "dimension_reasons": {
+      "acquisition_efficiency": "Paid ads (inference)",
+      "automation": "Partly outsourced",
+      "capital_efficiency": "$4k+",
+      "competition_gap": "Saturated (inference)",
+      "contribution_economics": "Duties plus testing cost per SKU depress margin",
+      "defensibility": "No moat",
+      "demand_signal": "Demand not verified, default 2",
+      "fulfillment_simplicity": "Inventory/returns",
+      "launch_speed": "Test plus sourcing months",
+      "owner_time_efficiency": "~15h/wk",
+      "platform_resilience": "Amazon gating",
+      "regulatory_simplicity": "CPC, lab testing per SKU, recall exposure",
+      "scale_without_hiring": "Not labor-linear"
+    },
+    "dimension_scores": {
+      "acquisition_efficiency": 1,
+      "automation": 2,
+      "capital_efficiency": 2,
+      "competition_gap": 0,
+      "contribution_economics": 1,
+      "defensibility": 0,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 1,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 1,
+      "regulatory_simplicity": 0,
+      "scale_without_hiring": 3
+    },
+    "entrant_edge": {
+      "criterion": "cash_cost",
+      "direction": "lower_is_better",
+      "entrant_basis": "model: $3,000 base + ~$1,150 midpoint CPC lab test per product ($500-1,800)",
+      "entrant_value": 4150,
+      "falsifier": "Edge fails by construction; entrant cost is higher.",
+      "incumbent_source_url": "https://www.bebolddigital.com/blog/how-much-does-it-cost-to-start-amazon-fba-private-label",
+      "incumbent_value": 3000,
+      "unit": "USD upfront"
+    },
+    "entrant_wedge": "None.",
+    "evidence": [
+      {
+        "class": "fact",
+        "date": "list current as of 2024-12-05",
+        "id": "PHY-04-E1",
+        "kind": "constraint",
+        "publisher": "CPSC",
+        "shows": "Toys (ASTM F963), small parts, lead, phthalates, apparel, sleepwear, etc. require CPSC-accepted lab testing; small batch relief only for some requirements",
+        "url": "https://www.cpsc.gov/Business--Manufacturing/Testing-Certification/Lab-Accreditation/Rules-Requiring-Third-Party-Testing",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2025-10-15",
+        "id": "PHY-04-E2",
+        "kind": "constraint",
+        "publisher": "ComplianceGate",
+        "shows": "Typical testing $500-1,800 per product (simple $400-800; complex electronic $1,500-2,500); 1-3 weeks",
+        "url": "https://www.compliancegate.com/cpsia-product-lab-testing/",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "inference",
+        "date": "undated",
+        "id": "PHY-04-E3",
+        "kind": "incumbent_price",
+        "publisher": "Novadata",
+        "shows": "Duties: toys 30-40%, textiles 40-54% for China shipments post-de minimis",
+        "url": "https://www.novadata.io/resources/news/de-minimis-exemption-ends-china-tariffs",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      },
+      {
+        "class": "fact",
+        "date": "2026-05-13",
+        "id": "PHY-04-E4",
+        "kind": "constraint",
+        "publisher": "Repricer",
+        "shows": "Amazon Toys & Games is a gated category with holiday selling requirements",
+        "url": "https://www.repricer.com/blog/amazon-gated-categories/",
+        "verify": {
+          "note": "imported; not fetched by engine",
+          "status": "agent_reported"
+        }
+      }
+    ],
+    "family": "physical_products",
+    "id": "PHY-04",
+    "major_uncertainty": "Demand evidence and margin not collected (session limit)",
+    "name": "Private-label children's/baby product (toys, plush, apparel accessories)",
+    "owner_hours_per_week_steady": 15,
+    "pain": "Entrant brands a sourced children's item",
+    "pre_deep_verdict": "reject",
+    "regulatory_or_platform_dependency": "CPSIA/CPC, Amazon gating, tariffs; recall/liability exposure",
+    "startup_cash_usd": 4150,
+    "substitutes": [
+      {
+        "name": "Amazon Toys & Games",
+        "price_point": "gated; referral 8-15% (general, Bebold)",
+        "url": "https://www.repricer.com/blog/amazon-gated-categories/"
+      }
+    ],
+    "time_to_first_revenue_days": 150,
+    "unit_economics": {
+      "class": "model",
+      "contribution_margin_pct": null,
+      "notes": "Duties 30-40% toys; test $500-1,800 per product; no verified demand or margin",
+      "price_usd": null,
+      "variable_cost_usd": null
+    },
+    "unknowns": [
+      "Demand/CAC evidence not collected",
+      "Small-batch relief applicability not verified"
+    ],
+    "verdict_reason": "Per-SKU lab testing, duties, gated category, and liability for a no-edge entrant."
+  }
+]
