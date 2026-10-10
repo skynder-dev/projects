@@ -45,8 +45,12 @@ os.remove(os.path.join(APP, starts[0])); open(os.path.join(APP, start_new), 'wb'
 for f in os.listdir(APP):
     if re.match(r'FORGE_\d+_.*\.json$', f): os.remove(os.path.join(APP, f))
 notes = open(a.notes, encoding='utf-8').read().strip()
-readme = 'MERCH FORGE %s\r\n\r\nSTART\r\n1. Extract the whole folder.\r\n2. Run %s.\r\n\r\n%s\r\n' % (NAME.replace('_', ' '), start_new, notes.replace('\r\n', '\n').replace('\n', '\r\n'))
-open(os.path.join(APP, 'README_FIRST.txt'), 'wb').write(readme.encode('utf-8'))
+readme = ('MERCH FORGE %s\r\n\r\n'
+          'ПО-РУССКИ\r\n1. Распакуйте всю папку: правый клик по ZIP -> «Извлечь все».\r\n2. Запустите %s двойным щелчком.\r\n'
+          '3. Как пользоваться (1 страница): HOW_TO_USE_RU.txt\r\n\r\n'
+          'START\r\n1. Extract the whole folder.\r\n2. Run %s.\r\n\r\n%s\r\n') % (NAME.replace('_', ' '), start_new, start_new, notes.replace('\r\n', '\n').replace('\n', '\r\n'))
+open(os.path.join(APP, 'README_FIRST.txt'), 'wb').write(b'\xef\xbb\xbf' + readme.encode('utf-8'))
+assert os.path.exists(os.path.join(APP, 'HOW_TO_USE_RU.txt')), 'HOW_TO_USE_RU.txt missing next to START'
 
 # ---------- manifest ----------
 mp = os.path.join(INNER, 'candidate_manifest.json')

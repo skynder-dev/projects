@@ -22,7 +22,8 @@ function Register-AmazonProfileUiText {
             'prof.form.ref'='Amazon page you took it from'; 'prof.form.attest'='I copied these values from the current Amazon Merch template.';
             'prof.err.file'='Choose the Amazon template file.'; 'prof.err.attest'='Tick "I copied these values…" to save the profile.';
             'prof.err.size'='Width and height must be between 500 and 10000 px.'; 'prof.err.dpi'='DPI must be between 72 and 600.'; 'prof.err.days'='Valid for must be 1 to 120 days.';
-            'prof.err.text'='Fill marketplace, product type and template name.'; 'prof.err.ref'='The source link must be an https link on merch.amazon.com, developer.amazon.com or sellercentral.amazon.com.'
+            'prof.err.text'='Fill marketplace, product type and template name.'; 'prof.err.ref'='Paste the Amazon page you took the values from: an https link on merch.amazon.com, developer.amazon.com or sellercentral.amazon.com.';
+            'prof.err.artwork'='This file is one of your accepted designs, not the Amazon template. Choose the template file you downloaded from Amazon.'
         }
         ru=@{
             'prof.none'='Не импортирован. Без него пакеты не станут готовыми. Нажмите «Заполнить Amazon-профиль…».';
@@ -38,7 +39,8 @@ function Register-AmazonProfileUiText {
             'prof.form.ref'='Страница Amazon, откуда взяты значения'; 'prof.form.attest'='Я перенёс(ла) эти значения из текущего шаблона Amazon Merch.';
             'prof.err.file'='Выберите файл шаблона Amazon.'; 'prof.err.attest'='Поставьте галочку «Я перенёс(ла) эти значения…», чтобы сохранить профиль.';
             'prof.err.size'='Ширина и высота должны быть от 500 до 10000 пикс.'; 'prof.err.dpi'='DPI должен быть от 72 до 600.'; 'prof.err.days'='Срок действия — от 1 до 120 дней.';
-            'prof.err.text'='Заполните площадку, тип товара и название шаблона.'; 'prof.err.ref'='Ссылка-источник должна быть https-ссылкой на merch.amazon.com, developer.amazon.com или sellercentral.amazon.com.'
+            'prof.err.text'='Заполните площадку, тип товара и название шаблона.'; 'prof.err.ref'='Вставьте ссылку на страницу Amazon, откуда взяты значения: https-ссылку на merch.amazon.com, developer.amazon.com или sellercentral.amazon.com.';
+            'prof.err.artwork'='Этот файл — один из ваших принятых макетов, а не шаблон Amazon. Выберите файл шаблона, скачанный с Amazon.'
         }
         es=@{
             'prof.none'='No importado. Sin él los paquetes no pueden estar listos. Pulsa "Rellenar perfil de Amazon…".';
@@ -54,7 +56,8 @@ function Register-AmazonProfileUiText {
             'prof.form.ref'='Página de Amazon de donde salen los valores'; 'prof.form.attest'='He copiado estos valores de la plantilla actual de Amazon Merch.';
             'prof.err.file'='Elige el archivo de plantilla de Amazon.'; 'prof.err.attest'='Marca "He copiado estos valores…" para guardar el perfil.';
             'prof.err.size'='Ancho y alto deben estar entre 500 y 10000 px.'; 'prof.err.dpi'='DPI debe estar entre 72 y 600.'; 'prof.err.days'='La validez debe ser de 1 a 120 días.';
-            'prof.err.text'='Rellena mercado, tipo de producto y nombre de plantilla.'; 'prof.err.ref'='El enlace de origen debe ser https en merch.amazon.com, developer.amazon.com o sellercentral.amazon.com.'
+            'prof.err.text'='Rellena mercado, tipo de producto y nombre de plantilla.'; 'prof.err.ref'='Pega la página de Amazon de donde salen los valores: un enlace https en merch.amazon.com, developer.amazon.com o sellercentral.amazon.com.';
+            'prof.err.artwork'='Este archivo es uno de tus diseños aceptados, no la plantilla de Amazon. Elige el archivo de plantilla que descargaste de Amazon.'
         }
     }
     foreach($loc in $texts.Keys){ if($null -eq $script:UiText[$loc]){$script:UiText[$loc]=@{}}; foreach($k in $texts[$loc].Keys){$script:UiText[$loc][$k]=$texts[$loc][$k]} }
@@ -105,9 +108,9 @@ function Invoke-AmazonProfileImporter([string]$SourcePath) {
     $psi.FileName=$psExe; $psi.Arguments=('-NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "{0}" -SourcePath "{1}" -NonInteractive' -f $tool,$SourcePath)
     $psi.UseShellExecute=$false; $psi.CreateNoWindow=$true; $psi.RedirectStandardOutput=$true; $psi.RedirectStandardError=$true
     $p=[System.Diagnostics.Process]::Start($psi)
-    $errTask=$p.StandardError.ReadToEndAsync(); $out=$p.StandardOutput.ReadToEnd()
+    $errTask=$p.StandardError.ReadToEndAsync(); $outTask=$p.StandardOutput.ReadToEndAsync()
     if(-not $p.WaitForExit(120000)){ try{$p.Kill()}catch{}; return [pscustomobject]@{ok=$false;message='The profile import did not finish in time.'} }
-    $p.WaitForExit(); $err=[string]$errTask.Result
+    $p.WaitForExit(); $err=[string]$errTask.Result; $out=[string]$outTask.Result
     if($p.ExitCode -eq 0 -and $out -match 'PROFILE IMPORTED'){ return [pscustomobject]@{ok=$true;message=''} }
     $m=''; foreach($line in ($err -split "`r?`n")){ if($line -match '^PROFILE IMPORT FAIL: (.+)$'){ $m=$Matches[1].Trim() } }
     if(-not $m){ $m=('The profile import failed (exit {0}).' -f $p.ExitCode) }
@@ -115,7 +118,7 @@ function Invoke-AmazonProfileImporter([string]$SourcePath) {
 }
 function Import-AmazonPrintProfileFromPath([string]$Path) {
     if([string]::IsNullOrWhiteSpace($Path) -or -not (Test-Path -LiteralPath $Path -PathType Leaf)){ Show-Error 'File not found.'; return $false }
-    $r=Invoke-AmazonProfileImporter $Path
+    $r=$null; try{ $r=Invoke-AmazonProfileImporter $Path }catch{ Show-Error $_.Exception.Message; return $false }
     if(-not $r.ok){ Show-Error $r.message; return $false }
     $st=Get-AmazonProfileStatus
     $vu=if($st.state -in @('valid','expiring')){[string]$st.args[5]}else{''}
@@ -127,15 +130,22 @@ function Import-AmazonPrintProfileFromPath([string]$Path) {
     return $true
 }
 function Import-AmazonPrintProfileFile {
-    $dlg=New-Object Microsoft.Win32.OpenFileDialog; $dlg.Title='Amazon print profile JSON'; $dlg.Filter='JSON (*.json)|*.json'
-    if($dlg.ShowDialog() -ne $true){return}; $null=Import-AmazonPrintProfileFromPath $dlg.FileName
+    try {
+        $dlg=New-Object Microsoft.Win32.OpenFileDialog; $dlg.Title='Amazon print profile JSON'; $dlg.Filter='JSON (*.json)|*.json'
+        if($dlg.ShowDialog() -ne $true){return}; $null=Import-AmazonPrintProfileFromPath $dlg.FileName
+    } catch { Show-Error $_.Exception.Message }
 }
 
-function New-AmazonProfileAttestation($Fields,[datetime]$NowUtc=([DateTime]::UtcNow)) {
+function Get-AcceptedArtworkShas {
+    $out=@{}; try{ foreach($c in @((Read-LocalCoreState).concepts)){ $a=Get-PropertyValue $c 'active_acceptance'; $s=([string](Get-PropertyValue $a 'asset_sha256')).ToLowerInvariant(); if($s){$out[$s]=$true} } }catch{}
+    return $out
+}
+function New-AmazonProfileAttestation($Fields,[datetime]$NowUtc=([DateTime]::UtcNow),$ForbiddenShas=$null) {
     # Pure: owner form -> forge.amazon_print_profile_attestation.v1 (the standalone tool re-validates everything).
     $market=([string]$Fields.marketplace).Trim(); $product=([string]$Fields.product_type_key).Trim(); $key=([string]$Fields.template_key).Trim()
     if(-not $market -or -not $product -or -not $key){ throw (Get-UiText 'prof.err.text' 'Fill marketplace, product type and template name.') }
     if(([string]$Fields.template_file_sha256) -notmatch '^[0-9a-f]{64}$'){ throw (Get-UiText 'prof.err.file' 'Choose the Amazon template file.') }
+    if($null -ne $ForbiddenShas -and $ForbiddenShas.ContainsKey([string]$Fields.template_file_sha256)){ throw (Get-UiText 'prof.err.artwork' 'This file is one of your accepted designs, not the Amazon template. Choose the template file you downloaded from Amazon.') }
     $w=0;$h=0;$dpi=0;$days=0
     [void][int]::TryParse(([string]$Fields.width).Trim(),[ref]$w); [void][int]::TryParse(([string]$Fields.height).Trim(),[ref]$h); [void][int]::TryParse(([string]$Fields.dpi).Trim(),[ref]$dpi); [void][int]::TryParse(([string]$Fields.days).Trim(),[ref]$days)
     if($w -lt 500 -or $w -gt 10000 -or $h -lt 500 -or $h -gt 10000){ throw (Get-UiText 'prof.err.size' 'Width and height must be between 500 and 10000 px.') }
@@ -174,7 +184,7 @@ $(& $lbl 'prof.form.key' 'Template name')<TextBox x:Name="TemplateKey"/>
 <StackPanel Grid.Column="2">$(& $lbl 'prof.form.height' 'Height, px')<TextBox x:Name="Height"/></StackPanel>
 <StackPanel Grid.Column="4">$(& $lbl 'prof.form.dpi' 'DPI')<TextBox x:Name="Dpi" Text="300"/></StackPanel></Grid>
 $(& $lbl 'prof.form.days' 'Valid for, days')<TextBox x:Name="Days" Text="90" Width="120" HorizontalAlignment="Left"/>
-$(& $lbl 'prof.form.ref' 'Amazon page')<TextBox x:Name="SourceRef" Text="https://merch.amazon.com/resource/Y28FFE5NLRYJG4V"/>
+$(& $lbl 'prof.form.ref' 'Amazon page')<TextBox x:Name="SourceRef" Text=""/>
 </StackPanel></ScrollViewer>
 <StackPanel Grid.Row="2" Margin="0,10,0,0">
 <CheckBox x:Name="Attest" Content="$(& $esc (Get-UiText 'prof.form.attest' 'I copied these values from the current Amazon Merch template.'))"/>
@@ -203,17 +213,22 @@ function Read-AmazonProfileDialog($Dialog) {
     return [pscustomobject]@{marketplace=[string]$Dialog.FindName('Market').Text;product_type_key=[string]$Dialog.FindName('Product').Text;template_key=[string]$Dialog.FindName('TemplateKey').Text;template_file_sha256=$sha;width=[string]$Dialog.FindName('Width').Text;height=[string]$Dialog.FindName('Height').Text;dpi=[string]$Dialog.FindName('Dpi').Text;days=[string]$Dialog.FindName('Days').Text;source_ref=[string]$Dialog.FindName('SourceRef').Text;attested=[bool]$Dialog.FindName('Attest').IsChecked}
 }
 function Complete-AmazonProfileDialog($Dialog,[bool]$Modal=$true) {
-    try { $att=New-AmazonProfileAttestation (Read-AmazonProfileDialog $Dialog) } catch { $Dialog.FindName('ErrorText').Text=$_.Exception.Message; return $false }
+    try { $att=New-AmazonProfileAttestation (Read-AmazonProfileDialog $Dialog) ([DateTime]::UtcNow) (Get-AcceptedArtworkShas) } catch { $Dialog.FindName('ErrorText').Text=$_.Exception.Message; return $false }
     $Dialog.FindName('ErrorText').Text=''; $Dialog.Tag=$att; if($Modal){ $Dialog.DialogResult=$true }
     return $true
 }
 function Save-AmazonProfileAttestation($Attestation) {
-    $dir=Join-Path $script:LocalCoreExportRoot 'amazon-profile'; Ensure-Dir $dir
-    $path=Join-Path $dir ('amazon-print-profile-{0}.json' -f [DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss'))
-    [IO.File]::WriteAllText($path,($Attestation | ConvertTo-Json -Depth 10),(New-Object System.Text.UTF8Encoding($false)))
+    try {
+        $dir=Join-Path $script:LocalCoreExportRoot 'amazon-profile'; Ensure-Dir $dir
+        $path=Join-Path $dir ('amazon-print-profile-{0}.json' -f [DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss'))
+        [IO.File]::WriteAllText($path,($Attestation | ConvertTo-Json -Depth 10),(New-Object System.Text.UTF8Encoding($false)))
+    } catch { Show-Error $_.Exception.Message; return $false }
     return (Import-AmazonPrintProfileFromPath $path)
 }
 function Invoke-AmazonProfileForm {
+    try { Invoke-AmazonProfileFormCore } catch { $script:AmazonProfileDialog=$null; Show-Error $_.Exception.Message }
+}
+function Invoke-AmazonProfileFormCore {
     $d=New-AmazonProfileDialog; $script:AmazonProfileDialog=$d
     $d.FindName('Browse').Add_Click({
         $o=New-Object Microsoft.Win32.OpenFileDialog; $o.Title=Get-UiText 'prof.form.file' 'Amazon template file'; $o.Filter='Amazon template (*.png;*.psd)|*.png;*.psd|All files (*.*)|*.*'

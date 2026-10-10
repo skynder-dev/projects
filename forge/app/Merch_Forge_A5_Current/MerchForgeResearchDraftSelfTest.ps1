@@ -255,6 +255,14 @@ if($Phase -eq 'restart'){
         $unk=@($ins.attention | Where-Object { $_.kind -eq 'unknown' })
         Check 'perf_unknown_counted_by_id' ($unk.Count -eq 1 -and $unk[0].args[0] -eq 'ASIN-OTHER' -and $unk[0].args[1] -eq 2) ($unk | ConvertTo-Json -Compress -Depth 3)
         $ins2=& { function Test-LocalPublicationReceiptAuthority($State,$Receipt){ return $false }; function Get-LocalAmazonPrintProfile { return $null }; Get-ForgePerformanceInsights $ps $now }
+        $psNoSales=[pscustomobject]@{concepts=$ps.concepts;publication_receipts=$ps.publication_receipts;sales_rows=@()}
+        $ins3=& { function Test-LocalPublicationReceiptAuthority($State,$Receipt){ return $true }; function Get-LocalAmazonPrintProfile { return $null }; Get-ForgePerformanceInsights $psNoSales $now }
+        $k3=@($ins3.attention | ForEach-Object { $_.kind }) -join ','
+        Check 'perf_no_data_is_not_no_sales' ($k3 -notlike '*nosales*' -and $k3 -like 'nodata*') $k3
+        $psOld=[pscustomobject]@{concepts=$ps.concepts;publication_receipts=$ps.publication_receipts;sales_rows=@([pscustomobject]@{date=$now.AddDays(-40).ToString('yyyy-MM-dd',$d);units=1;royalty=1.0;product_id='ASIN-BEST'})}
+        $ins4=& { function Test-LocalPublicationReceiptAuthority($State,$Receipt){ return $true }; function Get-LocalAmazonPrintProfile { return $null }; Get-ForgePerformanceInsights $psOld $now }
+        $k4=@($ins4.attention | ForEach-Object { $_.kind }) -join ','
+        Check 'perf_stale_data_reported' ($k4 -notlike '*nosales*' -and $k4 -like 'stale*') $k4
         Check 'perf_unverified_receipts_ignored' (@($ins2.leaders).Count -eq 0 -and (@($ins2.attention | ForEach-Object { $_.kind }) -join ',') -eq 'unknown,unknown,noprofile,unpublished') (@($ins2.attention | ForEach-Object { $_.kind }) -join ',')
     }
     # owner check confirmation (pure part: evidence built from answers; import validation stays the normal importer)
@@ -281,6 +289,19 @@ if($Phase -eq 'restart'){
         Check 'chk_ru_error_is_known_message' ($ruErr -like 'Для «всё в порядке»*' -and (Test-KnownUiMessage $ruErr)) $ruErr
         Check 'chk_server_error_not_known' (-not (Test-KnownUiMessage 'HTTP 500 database exploded')) ''
     }
+    # sales CSV numbers and dates (decimal commas, thousands, US/ISO/dotted dates; unclear -> not guessed)
+    $money=@(@('$1,234.56',1234.56),@('1.234,56 €',1234.56),@('1,50',1.5),@('(0.35)',-0.35),@('-2.10',-2.1),@('4.50',4.5),@('1,234',1234.0),@('',0.0))
+    $mBad=@($money | Where-Object { $v=ConvertFrom-ForgeMoney $_[0]; $null -eq $v -or [Math]::Abs([double]$v-[double]$_[1]) -gt 0.0001 } | ForEach-Object { $_[0]+'=>'+[string](ConvertFrom-ForgeMoney $_[0]) })
+    Check 'sales_money_parsing' ($mBad.Count -eq 0 -and $null -eq (ConvertFrom-ForgeMoney 'n/a')) ($mBad -join ' | ')
+    $dates=@(@('2026-10-05','2026-10-05'),@('10/5/2026','2026-10-05'),@('5.10.2026','2026-10-05'),@('2026-10-05T23:10:00Z','2026-10-05'),@('2026/10/05','2026-10-05'))
+    $dBad=@($dates | Where-Object { $v=ConvertFrom-ForgeSalesDate $_[0]; $null -eq $v -or $v.ToString('yyyy-MM-dd') -ne $_[1] } | ForEach-Object { $_[0] })
+    Check 'sales_date_parsing' ($dBad.Count -eq 0 -and $null -eq (ConvertFrom-ForgeSalesDate '13/25/2026') -and $null -eq (ConvertFrom-ForgeSalesDate 'last week')) ($dBad -join ' | ')
+    # static guard: no assignment to PowerShell's read-only automatic variables anywhere in the package ($pid broke local generation)
+    $ro=@('pid','host','true','false','error','executioncontext','home','pshome','shellid','psversiontable','psculture','psuiculture')   # read-only/constant: assigning throws at run time
+    $roHits=@()
+    foreach($f in @(Get-ChildItem -LiteralPath $root -Recurse -Filter *.ps1)){ $tk=$null;$er=$null; $a=[System.Management.Automation.Language.Parser]::ParseFile($f.FullName,[ref]$tk,[ref]$er)
+        foreach($as in $a.FindAll({param($n) $n -is [System.Management.Automation.Language.AssignmentStatementAst]},$true)){ $l=$as.Left; if($l -is [System.Management.Automation.Language.ConvertExpressionAst]){$l=$l.Child}; if($l -is [System.Management.Automation.Language.VariableExpressionAst] -and $ro -contains $l.VariablePath.UserPath.ToLowerInvariant()){ $roHits+=($f.Name+':'+$as.Extent.StartLineNumber+' $'+$l.VariablePath.UserPath) } } }
+    Check 'no_readonly_automatic_variable_assignment' ($roHits.Count -eq 0) ($roHits -join ', ')
     # Amazon print profile: status wording and the owner form -> attestation (the standalone tool re-validates)
     if($hasAmazonProfile){
         $now=[DateTime]::UtcNow
@@ -296,7 +317,11 @@ if($Phase -eq 'restart'){
         Check 'prof_attestation_shape' ($att.schema -eq 'forge.amazon_print_profile_attestation.v1' -and $att.attested -eq $true -and $att.canvas_width_px -eq 4500 -and $att.file_format -eq 'png' -and $att.background -eq 'transparent' -and [int]$vd -eq 90 -and ($att | ConvertTo-Json -Compress).Contains('"source_refs":["https://merch.amazon.com')) ($att | ConvertTo-Json -Compress)
         $errs=@()
         foreach($mut in @({param($f) $f.attested=$false},{param($f) $f.width='300'},{param($f) $f.days='200'},{param($f) $f.source_ref='http://example.com/x'},{param($f) $f.template_file_sha256=''},{param($f) $f.template_key=' '})){ $pf=& $profFields; & $mut $pf; try{ $null=New-AmazonProfileAttestation $pf $now; $errs+='NO ERROR' }catch{ $errs+=$_.Exception.Message } }
-        Check 'prof_form_rejects_bad_input' (@($errs | Where-Object { $_ -eq 'NO ERROR' }).Count -eq 0 -and $errs[0] -like 'Tick*' -and $errs[1] -like 'Width and height*' -and $errs[2] -like 'Valid for*' -and $errs[3] -like 'The source link*' -and $errs[4] -like 'Choose the Amazon template*' -and $errs[5] -like 'Fill marketplace*') ($errs -join ' | ')
+        $pfa=& $profFields; $forb=@{}; $forb[('b'*64)]=$true; $eArt=''; try{ $null=New-AmazonProfileAttestation $pfa $now $forb }catch{ $eArt=$_.Exception.Message }
+        Check 'prof_rejects_accepted_artwork_as_template' ($eArt -like 'This file is one of your accepted designs*') $eArt
+        $pfe=& $profFields; $pfe.source_ref=''; $eRef=''; try{ $null=New-AmazonProfileAttestation $pfe $now }catch{ $eRef=$_.Exception.Message }
+        Check 'prof_requires_source_ref' ($eRef -like 'Paste the Amazon page*') $eRef
+        Check 'prof_form_rejects_bad_input' (@($errs | Where-Object { $_ -eq 'NO ERROR' }).Count -eq 0 -and $errs[0] -like 'Tick*' -and $errs[1] -like 'Width and height*' -and $errs[2] -like 'Valid for*' -and $errs[3] -like 'Paste the Amazon page*' -and $errs[4] -like 'Choose the Amazon template*' -and $errs[5] -like 'Fill marketplace*') ($errs -join ' | ')
     }
     # no-dispatch artwork preparation
     Export-LocalGenerationBrief

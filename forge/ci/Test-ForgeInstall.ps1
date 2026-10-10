@@ -1,4 +1,4 @@
-# Merch Forge · install / start / upgrade test on real Windows (Windows PowerShell 5.1)
+﻿# Merch Forge · install / start / upgrade test on real Windows (Windows PowerShell 5.1)
 # Uses the RELEASE ZIP exactly as the owner gets it:
 #   A) extract -> double-click START_0xx_MERCH_FORGE.vbs -> the window opens -> close it -> clean exit
 #   B) extract -> Install Merch Forge.vbs -> "installed" dialog -> files + desktop shortcut
@@ -10,8 +10,8 @@ $ErrorActionPreference='Stop'
 Add-Type -AssemblyName UIAutomationClient,UIAutomationTypes
 $work=Join-Path $OutDir 'install-test'; if(Test-Path $work){ Remove-Item $work -Recurse -Force }; New-Item -ItemType Directory -Path $work -Force | Out-Null
 $wscript=Join-Path $env:SystemRoot 'System32\wscript.exe'
-$R=[ordered]@{checks=[ordered]@{};dialogs=@();notes=@()}
-function Check([string]$Name,[bool]$Ok,$Detail=''){ $R.checks[$Name]=[ordered]@{pass=$Ok;detail=[string]$Detail} }
+$Report=[ordered]@{checks=[ordered]@{};dialogs=@();notes=@()}
+function Check([string]$Name,[bool]$Ok,$Detail=''){ $Report.checks[$Name]=[ordered]@{pass=$Ok;detail=[string]$Detail} }
 
 $manifest=Get-Content (Join-Path $RepoForge 'app\Merch_Forge_A5_Current\candidate_manifest.json') -Raw -Encoding UTF8 | ConvertFrom-Json
 $pkg=[string]$manifest.package_name; $num=('{0:000}' -f [int]$manifest.package_number)
@@ -40,7 +40,7 @@ function Invoke-ScriptHost([string]$Vbs,[string]$Lad,[int]$TimeoutSec=240,[scrip
     $p=Start-Process -FilePath $wscript -ArgumentList ('"'+$Vbs+'"') -PassThru; $null=$p.Handle
     $seen=@(); $t0=[DateTime]::UtcNow
     while(-not $p.HasExited){
-        foreach($w in @(Get-ProcessWindows $p.Id)){ try{ $d=Read-Dialog $w; $seen+=$d; $R.dialogs+=($d.title+': '+$d.text); $null=Press-Ok $w }catch{} }
+        foreach($w in @(Get-ProcessWindows $p.Id)){ try{ $d=Read-Dialog $w; $seen+=$d; $Report.dialogs+=($d.title+': '+$d.text); $null=Press-Ok $w }catch{} }
         if($null -ne $UntilDone -and (& $UntilDone)){ break }
         if(([DateTime]::UtcNow-$t0).TotalSeconds -gt $TimeoutSec){ try{$p.Kill()}catch{}; return [pscustomobject]@{code=-1;dialogs=$seen;timeout=$true;process=$p} }
         Start-Sleep -Milliseconds 400
@@ -63,7 +63,7 @@ function Test-StartAndClose([string]$Label,[string]$Vbs,[string]$Lad){
     $env:LOCALAPPDATA=$Lad
     $helper=Start-Process -FilePath $wscript -ArgumentList ('"'+$Vbs+'"') -PassThru; $null=$helper.Handle
     $ready=Wait-File (Join-Path $logs 'MerchForge-ready-*.flag') 200
-    Check ($Label+'_window_ready') ($null -ne $ready) $(if($ready){$ready.Name}else{'no ready flag; dialogs: '+(($R.dialogs) -join ' | ')})
+    Check ($Label+'_window_ready') ($null -ne $ready) $(if($ready){$ready.Name}else{'no ready flag; dialogs: '+(($Report.dialogs) -join ' | ')})
     $app=Find-AppWindowProcess 60
     Check ($Label+'_window_visible') ($null -ne $app) $(if($app){$app.MainWindowTitle}else{'no window'})
     if($null -ne $app){ Start-Sleep -Seconds 3; $null=$app.CloseMainWindow() }
@@ -72,11 +72,11 @@ function Test-StartAndClose([string]$Label,[string]$Vbs,[string]$Lad){
     Check ($Label+'_clean_exit') ($code -eq '0') $code
     # the helper must end on its own without an error dialog
     $t0=[DateTime]::UtcNow; $dlg=@()
-    while(-not $helper.HasExited -and ([DateTime]::UtcNow-$t0).TotalSeconds -lt 30){ foreach($w in @(Get-ProcessWindows $helper.Id)){ try{ $d=Read-Dialog $w; $dlg+=$d; $R.dialogs+=($d.title+': '+$d.text); $null=Press-Ok $w }catch{} }; Start-Sleep -Milliseconds 400 }
+    while(-not $helper.HasExited -and ([DateTime]::UtcNow-$t0).TotalSeconds -lt 30){ foreach($w in @(Get-ProcessWindows $helper.Id)){ try{ $d=Read-Dialog $w; $dlg+=$d; $Report.dialogs+=($d.title+': '+$d.text); $null=Press-Ok $w }catch{} }; Start-Sleep -Milliseconds 400 }
     if(-not $helper.HasExited){ try{$helper.Kill()}catch{} }
     Check ($Label+'_no_error_dialog') ($dlg.Count -eq 0) ((@($dlg | ForEach-Object { $_.title+': '+$_.text })) -join ' | ')
     $launch=@(Get-ChildItem -Path (Join-Path $logs 'MerchForge-launch-*.log') -ErrorAction SilentlyContinue)
-    if($launch.Count){ $R.notes+=($Label+' launch log tail: '+(([string](Get-Content -LiteralPath $launch[0].FullName -Raw)) -replace '\s+',' ').Substring(0,[Math]::Min(400,([string](Get-Content -LiteralPath $launch[0].FullName -Raw)).Length))) }
+    if($launch.Count){ $Report.notes+=($Label+' launch log tail: '+(([string](Get-Content -LiteralPath $launch[0].FullName -Raw)) -replace '\s+',' ').Substring(0,[Math]::Min(400,([string](Get-Content -LiteralPath $launch[0].FullName -Raw)).Length))) }
 }
 function Get-Installed([string]$Lad){ $m=Join-Path $Lad 'Programs\MerchForge\app\candidate_manifest.json'; if(Test-Path -LiteralPath $m){ return (Get-Content -LiteralPath $m -Raw -Encoding UTF8 | ConvertFrom-Json) }; return $null }
 
@@ -103,22 +103,23 @@ try {
     $old=Expand-Release (Join-Path $RepoForge 'archive\054_Merch_Forge_DISCOVER_RESEARCH_RC.zip') (Join-Path $work 'c054')
     $r0=Invoke-ScriptHost (Join-Path $old 'Merch_Forge_A5_Current\Install Merch Forge.vbs') $ladC 300
     $i0=Get-Installed $ladC
-    Check 'upgrade_054_installed_first' ($r0.code -eq 0 -and $null -ne $i0 -and [string]$i0.package_name -like '054_*') $(if($i0){[string]$i0.package_name}else{'exit '+$r0.code})
+    $oldName=[string](Get-Content -LiteralPath (Join-Path $old 'Merch_Forge_A5_Current\candidate_manifest.json') -Raw -Encoding UTF8 | ConvertFrom-Json).package_name
+    Check 'upgrade_054_installed_first' ($r0.code -eq 0 -and $null -ne $i0 -and [string]$i0.package_name -eq $oldName) ('archive manifest '+$oldName+'; installed '+$(if($i0){[string]$i0.package_name}else{'none, exit '+$r0.code}))
     $relC=Expand-Release $zip (Join-Path $work 'cnew')
     $r1=Invoke-ScriptHost (Join-Path $relC 'Merch_Forge_A5_Current\Install Merch Forge.vbs') $ladC 300
     $i1=Get-Installed $ladC
     $prev=Join-Path $ladC 'Programs\MerchForge\app.previous\candidate_manifest.json'
     $p0=if(Test-Path -LiteralPath $prev){ Get-Content -LiteralPath $prev -Raw -Encoding UTF8 | ConvertFrom-Json }else{$null}
     Check 'upgrade_installed_new' ($r1.code -eq 0 -and $null -ne $i1 -and [string]$i1.package_name -eq $pkg -and [string]$i1.installer_generation -gt [string]$i0.installer_generation) ('exit '+$r1.code+'; '+$(if($i1){[string]$i1.package_name+' gen '+[string]$i1.installer_generation}else{'none'}))
-    Check 'upgrade_keeps_previous' ($null -ne $p0 -and [string]$p0.package_name -like '054_*') $(if($p0){[string]$p0.package_name}else{'no app.previous'})
+    Check 'upgrade_keeps_previous' ($null -ne $p0 -and [string]$p0.package_name -eq $oldName) $(if($p0){[string]$p0.package_name}else{'no app.previous'})
     Test-StartAndClose 'upgraded' (Join-Path $ladC 'Programs\MerchForge\app\Start Merch Forge.vbs') $ladC
     # Downgrade guard: installing 054 again over the new version must be refused without changes
     $r2=Invoke-ScriptHost (Join-Path $old 'Merch_Forge_A5_Current\Install Merch Forge.vbs') $ladC 300
     $i2=Get-Installed $ladC
     Check 'downgrade_blocked' ($r2.code -eq 22 -and $null -ne $i2 -and [string]$i2.package_name -eq $pkg) ('exit '+$r2.code+'; '+$(if($i2){[string]$i2.package_name}else{'none'}))
 } catch {
-    $R['fatal']=($_.Exception.Message+' @ '+$_.InvocationInfo.PositionMessage)
+    $Report['fatal']=($_.Exception.Message+' @ '+$_.InvocationInfo.PositionMessage)
 }
-$R | ConvertTo-Json -Depth 6 | Set-Content (Join-Path $OutDir 'install-test.json') -Encoding UTF8
-$failed=@($R.checks.Keys | Where-Object { -not $R.checks[$_].pass })
-if($R.Contains('fatal') -or $failed.Count){ exit 1 } else { exit 0 }
+$Report | ConvertTo-Json -Depth 6 | Set-Content (Join-Path $OutDir 'install-test.json') -Encoding UTF8
+$failed=@($Report.checks.Keys | Where-Object { -not $Report.checks[$_].pass })
+if($Report.Contains('fatal') -or $failed.Count){ exit 1 } else { exit 0 }

@@ -50,3 +50,13 @@
 
 ## 060 — localized runtime messages
 - Added a central translator instead of editing ~190 call sites. Known English templates (154, with {n} variable parts) are rewritten in RU/ES where they are shown: a TextBlock.Text value-changed hook on StatusText/BusyText/LocalCoreStatusText, plus Show-Error and Confirm. CI asserts RU texts after Build and sales import (package phase 25/25).
+
+## 061–067 — 10-hour roadmap, blocks 1–7 (2026-10-10)
+- 061: error dialogs show the real reason (known messages as-is, translated); 115 more messages.
+- 062: Performance Leaders / Needs attention from verified data only; Home attention count. Found and fixed on the way: `$r`/`$R` and `$F`/`$f` collide in PowerShell (case-insensitive names) — test variables renamed; `@($list)` inside a hashtable literal threw "Argument types do not match" — converted to arrays first.
+- 063: Portfolio click opens the tab for the next step (Artwork / Checks / Publish).
+- 064: Confirm-checks form + CHECKLIST.txt next to the JSON template; clearer evidence errors; messages built from UI texts count as readable. Found: `$(if(..){@($x)})` unrolls a one-element array → evidence_refs became a string; fixed with direct assignment. XML attributes turn newlines into spaces → `&#10;`.
+- 065: Amazon profile card + form; the unchanged standalone importer runs as a child process (validation identical); importer errors translated.
+- 066: new CI phase "offline" (backend down, click every button). First run: 0 crashes but shallow (83 clicks, mostly window buttons) → deepened in 067 to every section/tab inside a draft and two offline ideas. Localized checks view; idea title restored in the header after Portfolio.
+- 067: no double titles; KPI captions wrap; CI "layout" phase (3 widths, clipped-text detector). Runner screen is 1024×768, so the workflow now sets 1920×1080 first and the phase checks that widths were really reached.
+- CI: install/start/upgrade test from the release ZIP (UI Automation answers script-host dialogs).

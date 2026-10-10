@@ -91,9 +91,24 @@ function Ci-ClickAll([string]$Where,[scriptblock]$Return,[bool]$IncludeGlobal=$f
 }
 function Ci-StubModalEntryPoints {
     # These open file pickers, modal windows, Explorer/Notepad or a blocking MessageBox; their file-processing parts are covered in other phases.
-    foreach($n in @('Import-AmazonPrintProfileFile','Invoke-AmazonProfileForm','Invoke-ConfirmChecks','Open-LocalChecksFolder','Open-DiagnosticLogSafe','Import-LocalArtwork','Import-LocalCheckEvidence','Import-LocalPublicationReceipt','Import-LocalSalesCsv','Queue-Generation','Save-PublicationMetadata')){
+    # Win32 file pickers, Explorer/Notepad and blocking MessageBoxes cannot be answered from here: stub those entry points only.
+    foreach($n in @('Import-AmazonPrintProfileFile','Open-LocalChecksFolder','Open-DiagnosticLogSafe','Import-LocalArtwork','Import-LocalCheckEvidence','Import-LocalPublicationReceipt','Import-LocalSalesCsv','Queue-Generation','Save-PublicationMetadata')){
         Set-Item -Path ('function:script:'+$n) -Value ([scriptblock]::Create("`$script:Ci.confirms += 'modal stub: $n'"))
     }
+    # WPF dialogs (Confirm checks, Amazon profile) run for real: a timer presses their OK button (empty form -> validation text), then closes them.
+    $script:CiDialogsAnswered=@()
+    $script:CiDialogTimer=New-Object System.Windows.Threading.DispatcherTimer; $script:CiDialogTimer.Interval=[TimeSpan]::FromMilliseconds(250)
+    $script:CiDialogTimer.Add_Tick({
+        foreach($dw in @($Window.OwnedWindows)){
+            if(-not $dw.IsVisible){continue}
+            try{
+                $ok=$dw.FindName('OkButton'); if($null -ne $ok){ $ok.RaiseEvent((New-Object System.Windows.RoutedEventArgs ([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent))) }
+                $et=$dw.FindName('ErrorText'); $script:CiDialogsAnswered += ([string]$dw.Title+' => '+$(if($et){[string]$et.Text}else{''}))
+                if($dw.IsVisible){ $dw.Close() }
+            }catch{ $script:CiCrashes += ('dialog '+[string]$dw.Title+' => '+$_.Exception.Message) }
+        }
+    })
+    $script:CiDialogTimer.Start()
 }
 
 # ---------- layout phase: three window widths, every section, clipped text detection ----------
@@ -233,9 +248,16 @@ $Window.Add_ContentRendered({
             # 2) Amazon print profile through the in-app form (the standalone importer tool runs unchanged as a child process)
             Ci-Click $NavChecksButton 'NavChecksButton (profile)'
             Ci-Check 'prof_status_none_ru' ($AmazonProfileStatusText.Text -like 'Не импортирован*' -and [string]$AmazonProfileFormButton.Content -eq 'Заполнить Amazon-профиль…') ($AmazonProfileStatusText.Text+' | '+[string]$AmazonProfileFormButton.Content)
+            # a stand-in "Amazon template" PNG (same canvas as the CI artwork, different bytes); the real artwork is refused as a template
+            Add-Type -AssemblyName System.Drawing
+            $tplPng=Join-Path $env:FORGE_CI_OUT 'ci-amazon-template.png'; $bmp=New-Object System.Drawing.Bitmap(1024,1024,[System.Drawing.Imaging.PixelFormat]::Format32bppArgb); try{ $g=[System.Drawing.Graphics]::FromImage($bmp); $g.Clear([System.Drawing.Color]::Transparent); $g.Dispose(); $bmp.Save($tplPng,[System.Drawing.Imaging.ImageFormat]::Png) } finally { $bmp.Dispose() }
             $pd=New-AmazonProfileDialog; $pd.Show(); Ci-Flush
-            Set-AmazonProfileDialogFile $pd ([IO.Path]::GetFullPath($art)); $pd.FindName('Days').Text='30'; Ci-Flush
-            Ci-Check 'prof_png_size_autofilled' ($pd.FindName('Width').Text -eq '1024' -and $pd.FindName('Height').Text -eq '1024' -and $pd.FindName('FileSha').Text -like 'SHA-256 *' -and $pd.FindName('TemplateKey').Text -eq 'mock-01') ($pd.FindName('Width').Text+'x'+$pd.FindName('Height').Text+' '+$pd.FindName('TemplateKey').Text)
+            Set-AmazonProfileDialogFile $pd ([IO.Path]::GetFullPath($art)); $pd.FindName('Days').Text='30'; $pd.FindName('Attest').IsChecked=$true; $pd.FindName('SourceRef').Text='https://merch.amazon.com/resource/Y28FFE5NLRYJG4V'; Ci-Flush
+            $artAsTpl=Complete-AmazonProfileDialog $pd $false; Ci-Flush
+            Ci-Check 'prof_refuses_artwork_as_template_ru' (-not $artAsTpl -and [string]$pd.FindName('ErrorText').Text -like 'Этот файл — один из ваших принятых макетов*') ([string]$pd.FindName('ErrorText').Text)
+            $pd.FindName('Attest').IsChecked=$false; $pd.FindName('TemplateKey').Text=''
+            Set-AmazonProfileDialogFile $pd $tplPng; Ci-Flush
+            Ci-Check 'prof_png_size_autofilled' ($pd.FindName('Width').Text -eq '1024' -and $pd.FindName('Height').Text -eq '1024' -and $pd.FindName('FileSha').Text -like 'SHA-256 *' -and $pd.FindName('TemplateKey').Text -eq 'ci-amazon-template') ($pd.FindName('Width').Text+'x'+$pd.FindName('Height').Text+' '+$pd.FindName('TemplateKey').Text)
             $first=Complete-AmazonProfileDialog $pd $false; Ci-Flush
             Ci-Check 'prof_form_requires_attest_ru' (-not $first -and [string]$pd.FindName('ErrorText').Text -like 'Поставьте галочку*') ([string]$pd.FindName('ErrorText').Text)
             $pd.FindName('Attest').IsChecked=$true; Ci-Flush
@@ -320,6 +342,7 @@ $Window.Add_ContentRendered({
                 Ci-Check 'perf_leaders_list_product' ($PerformanceLeadersText.Text -like '*CI-ASIN-0001*' -and $PerformanceLeadersText.Text -like '*30 дн.: 5 шт., $7.50*') $PerformanceLeadersText.Text
                 Ci-Check 'perf_attention_unknown_asin' ($PerformanceAttentionText.Text -like '*UNKNOWN-ASIN*' -and $PerformanceAttentionText.Text -like '*неизвестным ID*' -and $PerformanceAttentionText.Text -notlike '*CI-ASIN-0001*') $PerformanceAttentionText.Text
                 Ci-Check 'home_attention_count' ($HomeMetricAttentionValue.Text -eq '1') $HomeMetricAttentionValue.Text
+                Ci-Check 'home_hints_name_the_source_ru' ($HomeMetricSalesHint.Text -eq 'По импортированным продажам ваших товаров' -and $HomeMetricPublishedHint.Text -eq 'По импортированным квитанциям публикации') ($HomeMetricSalesHint.Text+' | '+$HomeMetricPublishedHint.Text)
                 Ci-Shot '14-performance'
             }
         } elseif($script:Ci.phase -eq 'layout') {
@@ -379,6 +402,7 @@ $Window.Add_ContentRendered({
             $distinct=@($script:CiClicked | ForEach-Object { ($_ -split ':')[-1] } | Sort-Object -Unique)
             Ci-Check 'offline_clicked_many' (@($script:CiClicked).Count -ge 60 -and $distinct.Count -ge 20) (([string]@($script:CiClicked).Count)+' clicks, '+[string]$distinct.Count+' distinct: '+($distinct -join ','))
             Ci-Check 'offline_no_crashes' (@($script:CiCrashes).Count -eq 0) ((@($script:CiCrashes) | Select-Object -First 12) -join ' || ')
+            Ci-Check 'offline_real_dialogs_opened_and_validated' (@($script:CiDialogsAnswered | Where-Object { $_ -like '*=> ?*' }).Count -ge 1) ((@($script:CiDialogsAnswered) | Select-Object -First 6) -join ' || ')
             $script:Ci['clicked']=@($script:CiClicked); $script:Ci['crashes']=@($script:CiCrashes)
             Ci-Shot '21-offline-after-clicks'
         } else {

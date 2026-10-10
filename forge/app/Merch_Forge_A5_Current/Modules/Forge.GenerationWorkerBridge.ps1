@@ -137,7 +137,7 @@ function Get-LocalGenerationJobsForCurrent {
         if(Test-Path -LiteralPath $resultPath){
             try{$r=Get-Content -LiteralPath $resultPath -Raw -Encoding UTF8|ConvertFrom-Json;$status=[string](Get-PropertyValue $r 'status');$failure=[string](Get-PropertyValue $r 'error_message');if($status -eq 'completed'){if(-not(Test-Path -LiteralPath $attemptPath -PathType Leaf)){$status='ambiguous'}else{try{$a=Get-Content -LiteralPath $attemptPath -Raw -Encoding UTF8|ConvertFrom-Json;if([string](Get-PropertyValue $a 'phase') -ne 'completed' -or [string](Get-PropertyValue $a 'result_sha256') -ne (Get-FileSha256Hex $resultPath)){$status='ambiguous'}else{$status='completed_pending_import'}}catch{$status='ambiguous'}}}}catch{if(Test-Path -LiteralPath $attemptPath -PathType Leaf){$status='ambiguous';$failure='Provider result is unreadable after a dispatch attempt.'}else{$status='result_invalid_pre_dispatch';$failure='Provider result is unreadable before any recorded dispatch.'}}
         } elseif(Test-Path -LiteralPath $attemptPath){
-            try{$a=Get-Content -LiteralPath $attemptPath -Raw -Encoding UTF8|ConvertFrom-Json;$phase=[string](Get-PropertyValue $a 'phase');$pid=[int](Get-PropertyValue $a 'worker_pid');$alive=$false;if($pid -gt 0){try{$null=Get-Process -Id $pid -ErrorAction Stop;$alive=$true}catch{}};if($phase -in @('dispatching','response_received')){$status=if($alive){'running'}else{'ambiguous'}}elseif($phase -eq 'completed'){$status='ambiguous'}elseif($phase -eq 'pre_dispatch_failed'){$status='failed_pre_dispatch'}else{$status='ambiguous'}}catch{$status='ambiguous'}
+            try{$a=Get-Content -LiteralPath $attemptPath -Raw -Encoding UTF8|ConvertFrom-Json;$phase=[string](Get-PropertyValue $a 'phase');$workerPid=[int](Get-PropertyValue $a 'worker_pid');$alive=$false;if($workerPid -gt 0){try{$null=Get-Process -Id $workerPid -ErrorAction Stop;$alive=$true}catch{}};if($phase -in @('dispatching','response_received')){$status=if($alive){'running'}else{'ambiguous'}}elseif($phase -eq 'completed'){$status='ambiguous'}elseif($phase -eq 'pre_dispatch_failed'){$status='failed_pre_dispatch'}else{$status='ambiguous'}}catch{$status='ambiguous'}
         } else {
             try{$created=[DateTime]::Parse([string](Get-PropertyValue $j 'created_at')).ToUniversalTime();if(([DateTime]::UtcNow-$created).TotalMinutes -gt $expiry){$status='stale_pre_dispatch'}}catch{$status='stale_pre_dispatch'}
         }
@@ -165,9 +165,9 @@ function Sync-LocalGenerationResults {
 }
 function Queue-LocalGeneration([string]$Kind,[string]$PriorJobId='') {
     $q=New-LocalGenerationJob $Kind $PriorJobId
-    try{$pid=Start-LocalGenerationWorker $q}catch{
+    try{$workerPid=Start-LocalGenerationWorker $q}catch{
         $jobPath=[string](Get-PropertyValue $q 'path');if(-not[string]::IsNullOrWhiteSpace($jobPath) -and (Test-Path -LiteralPath $jobPath -PathType Leaf)){try{Remove-Item -LiteralPath $jobPath -Force}catch{Write-AppLog 'WARN' ('Could not remove pre-dispatch generation job after worker launch failure: '+$jobPath)}}
         throw
     }
-    $script:LocalGenerationProviderMode=[string](Get-PropertyValue (Get-PropertyValue $q 'job') 'provider_key');return [pscustomobject]@{job=(Get-PropertyValue $q 'job');worker_pid=$pid}
+    $script:LocalGenerationProviderMode=[string](Get-PropertyValue (Get-PropertyValue $q 'job') 'provider_key');return [pscustomobject]@{job=(Get-PropertyValue $q 'job');worker_pid=$workerPid}
 }

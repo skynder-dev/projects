@@ -151,7 +151,7 @@ function Submit-OwnerCheckAnswers($Answers,[bool]$Confirmed) {
     } catch { Show-Error $_.Exception.Message; return $false }
     $dir=Split-Path -Parent $bundle.evidence_template_path
     $path=Join-Path $dir (('check-evidence-{0}.owner-{1}.json' -f $bundle.lineage_key.Substring(0,16),[DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss')))
-    [IO.File]::WriteAllText($path,($r.evidence | ConvertTo-Json -Depth 20),(New-Object System.Text.UTF8Encoding($false)))
+    try { [IO.File]::WriteAllText($path,($r.evidence | ConvertTo-Json -Depth 20),(New-Object System.Text.UTF8Encoding($false))) } catch { Show-Error $_.Exception.Message; return $false }
     $script:LastCheckEvidenceImportOk=$false
     Import-LocalCheckEvidenceFromPath $path
     $ok=[bool]$script:LastCheckEvidenceImportOk
@@ -222,6 +222,9 @@ function Complete-ConfirmChecksDialog($Dialog,[bool]$Modal=$true) {
     return $true
 }
 function Invoke-ConfirmChecks {
+    try { Invoke-ConfirmChecksCore } catch { $script:ConfirmChecksDialog=$null; Show-Error $_.Exception.Message }
+}
+function Invoke-ConfirmChecksCore {
     if($null -eq $script:Current){ Show-Error 'Choose an idea first.'; return }
     $d=New-ConfirmChecksDialog; $script:ConfirmChecksDialog=$d
     $d.FindName('OkButton').Add_Click({ Complete-ConfirmChecksDialog $script:ConfirmChecksDialog })
@@ -231,5 +234,5 @@ function Open-LocalChecksFolder {
     $dir=$null
     try { if($null -ne $script:Current){ $dir=Join-Path $script:LocalCoreExportRoot (Join-Path (Get-LocalCoreSafeKey ([string]$script:Current.concept.concept_key)) 'checks') } } catch {}
     if([string]::IsNullOrWhiteSpace($dir) -or -not (Test-Path -LiteralPath $dir -PathType Container)){ Show-Error (Get-UiText 'chk.folder.missing' 'The checks folder appears after you accept the artwork.'); return }
-    Start-Process -FilePath 'explorer.exe' -ArgumentList ('"'+$dir+'"')
+    try { Start-Process -FilePath 'explorer.exe' -ArgumentList ('"'+$dir+'"') } catch { Show-Error $_.Exception.Message }
 }

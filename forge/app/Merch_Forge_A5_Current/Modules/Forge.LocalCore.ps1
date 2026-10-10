@@ -587,6 +587,27 @@ function Reconcile-LocalSalesLinks($State) {
 function Get-FirstCsvProperty($Row,[string[]]$Aliases) {
     foreach($a in $Aliases){foreach($p in $Row.PSObject.Properties){if(([string]$p.Name).Trim().ToLowerInvariant() -eq $a.ToLowerInvariant()){return $p.Value}}};return $null
 }
+function ConvertFrom-ForgeMoney($Raw) {
+    # "$1,234.56", "1.234,56 €", "1,50", "(0.35)" -> number. $null when the text is not a number.
+    $s=([string]$Raw).Trim(); if(-not $s){return 0.0}
+    $neg=($s -match '^\(.*\)$' -or $s -match '^[^0-9]*-'); $s=($s -replace '[^0-9.,]','')
+    if(-not $s){return $null}
+    $lc=$s.LastIndexOf(','); $ld=$s.LastIndexOf('.')
+    if($lc -ge 0 -and $ld -ge 0){ if($lc -gt $ld){ $s=$s.Replace('.','').Replace(',','.') } else { $s=$s.Replace(',','') } }
+    elseif($lc -ge 0){ $tail=$s.Length-$lc-1; if($s.Split(',').Count -eq 2 -and $tail -ge 1 -and $tail -le 2){ $s=$s.Replace(',','.') } else { $s=$s.Replace(',','') } }
+    elseif($ld -ge 0 -and $s.Split('.').Count -gt 2){ $s=$s.Replace('.','') }
+    $v=0.0; if(-not [double]::TryParse($s,[Globalization.NumberStyles]::AllowDecimalPoint,[Globalization.CultureInfo]::InvariantCulture,[ref]$v)){return $null}
+    if($neg){$v=-$v}; return $v
+}
+function ConvertFrom-ForgeSalesDate($Raw) {
+    # ISO dates first; slashes are read as US month/day (Amazon.com reports); dots as day.month. Anything else -> $null (counted as undated).
+    $s=([string]$Raw).Trim(); if(-not $s){return $null}
+    if($s -match '^\d{4}-\d{2}-\d{2}T'){ try{ return [DateTime]::Parse($s,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind) }catch{ return $null } }
+    $fmts=[string[]]@('yyyy-MM-dd','yyyy-MM-dd HH:mm:ss','yyyy-MM-dd HH:mm','yyyy/MM/dd','yyyy.MM.dd','M/d/yyyy','M/d/yyyy H:mm','M/d/yyyy h:mm tt','M/d/yyyy H:mm:ss','d.M.yyyy','d.M.yyyy H:mm')
+    $d=[DateTime]::MinValue
+    if([DateTime]::TryParseExact($s,$fmts,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::AllowWhiteSpaces,[ref]$d)){ return $d }
+    return $null
+}
 function Import-LocalSalesCsv {
     $dlg=New-Object Microsoft.Win32.OpenFileDialog;$dlg.Title='Import sales / royalty CSV';$dlg.Filter='CSV files (*.csv)|*.csv';if($dlg.ShowDialog() -ne $true){return};Import-LocalSalesCsvFromPath $dlg.FileName
 }
@@ -594,7 +615,7 @@ function Import-LocalSalesCsvFromPath([string]$Path) {
     if([string]::IsNullOrWhiteSpace($Path) -or -not(Test-Path -LiteralPath $Path -PathType Leaf)){Show-Error 'File not found.';return}
     try {
         $rows=@(Import-Csv -LiteralPath $Path);if($rows.Count -eq 0){throw 'CSV contains no data rows.'};$normalized=@();foreach($row in $rows){
-            $dateRaw=Get-FirstCsvProperty $row @('date','order date','sale date','transaction date','period');$unitsRaw=Get-FirstCsvProperty $row @('units','units sold','quantity','qty','items sold');$royRaw=Get-FirstCsvProperty $row @('royalty','royalties','earnings','amount','net earnings');$revRaw=Get-FirstCsvProperty $row @('revenue','sales revenue','gross sales','gross');$title=Get-FirstCsvProperty $row @('title','product title','design title');$id=Get-FirstCsvProperty $row @('asin','product id','listing id','sku');$d=$null;if($dateRaw){try{$d=[DateTime]::Parse([string]$dateRaw,[Globalization.CultureInfo]::InvariantCulture)}catch{try{$d=[DateTime]::Parse([string]$dateRaw)}catch{}}};[double]$units=0;[double]$roy=0;[double]$rev=0;[void][double]::TryParse(([string]$unitsRaw),[Globalization.NumberStyles]::Any,[Globalization.CultureInfo]::InvariantCulture,[ref]$units);[void][double]::TryParse((([string]$royRaw)-replace '[^0-9.\-]',''),[Globalization.NumberStyles]::Any,[Globalization.CultureInfo]::InvariantCulture,[ref]$roy);[void][double]::TryParse((([string]$revRaw)-replace '[^0-9.\-]',''),[Globalization.NumberStyles]::Any,[Globalization.CultureInfo]::InvariantCulture,[ref]$rev);$normalized+=[pscustomobject]@{date=if($null-ne$d){$d.ToString('yyyy-MM-dd')}else{''};units=$units;royalty=$roy;revenue=$rev;title=[string]$title;product_id=([string]$id).Trim();source_file=[IO.Path]::GetFileName($Path);linked=$false;linked_product_key=''}
+            $dateRaw=Get-FirstCsvProperty $row @('date','order date','sale date','transaction date','period');$unitsRaw=Get-FirstCsvProperty $row @('units','units sold','quantity','qty','items sold');$royRaw=Get-FirstCsvProperty $row @('royalty','royalties','earnings','amount','net earnings');$revRaw=Get-FirstCsvProperty $row @('revenue','sales revenue','gross sales','gross');$title=Get-FirstCsvProperty $row @('title','product title','design title');$id=Get-FirstCsvProperty $row @('asin','product id','listing id','sku');$d=ConvertFrom-ForgeSalesDate $dateRaw;[double]$units=0;[double]$roy=0;[double]$rev=0;[void][double]::TryParse(([string]$unitsRaw),[Globalization.NumberStyles]::Any,[Globalization.CultureInfo]::InvariantCulture,[ref]$units);$royV=ConvertFrom-ForgeMoney $royRaw;if($null -ne $royV){$roy=[double]$royV};$revV=ConvertFrom-ForgeMoney $revRaw;if($null -ne $revV){$rev=[double]$revV};$normalized+=[pscustomobject]@{date=if($null-ne$d){$d.ToString('yyyy-MM-dd')}else{''};units=$units;royalty=$roy;revenue=$rev;title=[string]$title;product_id=([string]$id).Trim();source_file=[IO.Path]::GetFileName($Path);linked=$false;linked_product_key=''}
         }
         $s=Read-LocalCoreState;$fileSha=Get-FileSha256Hex $Path;$existing=$false;foreach($imp in @($s.sales_imports)){if([string]$imp.sha256 -eq $fileSha){$existing=$true;break}};if(-not $existing){$s.sales_rows=@($s.sales_rows)+@($normalized);$s.sales_imports=@($s.sales_imports)+@([pscustomobject]@{file=[IO.Path]::GetFileName($Path);sha256=$fileSha;rows=$rows.Count;imported_at=[DateTime]::UtcNow.ToString('o')});Reconcile-LocalSalesLinks $s;Write-LocalCoreState $s};Update-LocalCoreBusinessSurfaces;$m=Get-LocalSalesMetrics;$StatusText.Text=if($existing){'This sales CSV was already imported; no duplicate rows were added.'}else{("Imported {0} row(s): {1} linked to verified Forge products, {2} unlinked." -f $rows.Count,$m.linked_rows,$m.unlinked_rows)}
     } catch {Show-Error $_.Exception.Message;$StatusText.Text='Sales CSV import failed.'}

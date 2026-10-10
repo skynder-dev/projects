@@ -285,6 +285,7 @@ function Save-CurrentResearchDraftRevision {
     $c=$script:Current.concept
     $fields=[ordered]@{title=([string]$TitleBox.Text).Trim();hook=[string]$HookBox.Text;concept_text=[string]$ConceptTextBox.Text;target_buyer=[string]$BuyerBox.Text;purchase_reason=[string]$PurchaseBox.Text;differentiation=[string]$DifferentiationBox.Text;visual_direction_text=[string]$VisualBox.Text}
     if([string]::IsNullOrWhiteSpace($fields.title)){Show-Error (Get-UiText 'draft.need.title' 'Title cannot be empty.');return}
+    if($script:PublicationDirty){if(-not (Confirm 'Saving a new creative revision invalidates the current publication context and discards unsaved publication metadata. Continue?')){return};Set-PublicationDirty $false}
     try {
         $r=Save-ResearchDraftRevision ([string]$c.concept_key) $fields ([string]$ReasonBox.Text) ([string]$c.current_revision_id)
         Set-Dirty $false

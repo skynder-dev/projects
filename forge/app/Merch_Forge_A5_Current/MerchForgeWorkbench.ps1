@@ -1,6 +1,6 @@
 ﻿# Merch Forge Workbench
 # Native WPF desktop UI. Internal alpha build; not owner-accepted visual design.
-# Version: 2.17.0-layout
+# Version: 2.18.0-review-fixes
 
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
@@ -12,7 +12,7 @@ Add-Type -AssemblyName System.Security
 
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
 
-$script:AppVersion = '2.17.0-forge-layout'
+$script:AppVersion = '2.18.0-forge-review-fixes'
 $script:MinimumBackendVersion = [version]'0.2.70'
 $script:ApiUrl = 'https://ldlhnedbqeqcbqelhuhm.supabase.co/functions/v1/forge-app'
 $script:OwnerKey = $null
@@ -1080,7 +1080,7 @@ function Clear-GenerationIdempotencyKey { $script:GenerationIdempotencyKey=$null
                 <StackPanel x:Name="HomeLandingPanel">
                   <Border Background="{StaticResource ChromeSurface2}" BorderBrush="{StaticResource ChromeStroke}" BorderThickness="1" CornerRadius="14" Padding="24" Effect="{StaticResource SurfaceShadow}">
                     <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="24"/><ColumnDefinition Width="300"/></Grid.ColumnDefinitions>
-                      <StackPanel><TextBlock Text="MERCH FORGE" Foreground="{StaticResource Accent}" FontSize="12" FontWeight="Bold"/><TextBlock x:Name="HomeTitle" Visibility="Collapsed" Text="Business dashboard" Style="{StaticResource DisplayTitleText}" Margin="0,8,0,0"/><TextBlock x:Name="HomeBody" Text="Ideas, products and results in one place — from first concept to sales." Style="{StaticResource SubtitleText}" TextWrapping="Wrap" MaxWidth="780" Margin="0,9,0,0"/></StackPanel>
+                      <StackPanel><TextBlock Text="MERCH FORGE" Foreground="{StaticResource Accent}" FontSize="12" FontWeight="Bold"/><TextBlock x:Name="HomeTitle" Visibility="Collapsed" Text="Business dashboard" Style="{StaticResource DisplayTitleText}" Margin="0,8,0,0"/><TextBlock x:Name="HomeBody" Text="Ideas, products and results in one place — from first concept to sales." Style="{StaticResource SubtitleText}" TextWrapping="Wrap" MaxWidth="780" HorizontalAlignment="Left" Margin="0,9,0,0"/></StackPanel>
                       <Border Grid.Column="2" Background="{StaticResource AccentSoft}" BorderBrush="{StaticResource AccentStroke}" BorderThickness="1" CornerRadius="12" Padding="16" VerticalAlignment="Center"><StackPanel><TextBlock x:Name="HomeStatusLabel" Text="WORKSPACE STATUS" Foreground="{StaticResource Accent}" FontSize="11.5" FontWeight="Bold"/><TextBlock x:Name="HomeConnectionText" Text="Offline" Style="{StaticResource SectionTitleText}" Margin="0,7,0,0"/><TextBlock x:Name="HomeConnectionBody" Text="Waiting for live data." Style="{StaticResource MetaText}" TextWrapping="Wrap" Margin="0,4,0,0"/></StackPanel></Border>
                     </Grid>
                   </Border>
@@ -1173,7 +1173,7 @@ function Clear-GenerationIdempotencyKey { $script:GenerationIdempotencyKey=$null
                     <ListBox x:Name="VariantList" ItemContainerStyle="{StaticResource CardListBoxItem}" DisplayMemberPath="display" SelectionMode="Extended" Margin="0,8,0,6" AutomationProperties.Name="Generated variants"/><Button x:Name="CompareVariantsButton" Content="Compare two selected variants" IsEnabled="False" ToolTip="Compare two selected visual variants side by side" AutomationProperties.Name="Compare selected variants"/>
                   </StackPanel>
                   <StackPanel x:Name="VariantsRightPane" Grid.Column="2">
-                    <TextBlock Text="Variant" Style="{StaticResource SubsectionTitleText}"/><TextBox x:Name="VariantPreview" Margin="0,8,0,6" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="90" VerticalScrollBarVisibility="Auto"/><Expander Header="Technical details" IsExpanded="False" Margin="0,0,0,10"><TextBox x:Name="VariantAdvanced" Margin="0,8,0,0" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Consolas" FontSize="11" MinHeight="100"/></Expander>
+                    <TextBlock Text="Variant" Style="{StaticResource SubsectionTitleText}"/><TextBox x:Name="VariantPreview" Margin="0,8,0,6" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="90" VerticalScrollBarVisibility="Auto"/><Expander Foreground="{StaticResource Secondary}" Header="Technical details" IsExpanded="False" Margin="0,0,0,10"><TextBox x:Name="VariantAdvanced" Margin="0,8,0,0" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Consolas" FontSize="11" MinHeight="100"/></Expander>
                     <TextBlock Text="Visual preview" Style="{StaticResource SectionTitleText}"/>
                     <TextBlock Text="Artwork is fitted to the frame so the full design remains visible." Style="{StaticResource MutedCaptionText}" Margin="0,4,0,0"/>
                     <Grid x:Name="VariantMediaGrid" Margin="0,10,0,14">
@@ -1233,7 +1233,7 @@ function Clear-GenerationIdempotencyKey { $script:GenerationIdempotencyKey=$null
                 </Grid>
                 <Grid x:Name="HistoryRightPane" Grid.Column="2"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition x:Name="HistoryDetailGapColumn" Width="12"/><ColumnDefinition x:Name="HistoryDetailRightColumn" Width="*"/></Grid.ColumnDefinitions>
                   <StackPanel><TextBlock Text="Current" Style="{StaticResource SubsectionTitleText}"/><TextBox x:Name="CurrentRevisionPreview" Margin="0,8,0,0" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/></StackPanel>
-                  <StackPanel x:Name="HistoryDetailRightPane" Grid.Column="2"><TextBlock Text="Selected revision" Style="{StaticResource SubsectionTitleText}"/><TextBox x:Name="SelectedRevisionPreview" Margin="0,8,0,8" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/><Expander Header="Technical details" IsExpanded="False" Margin="0,0,0,12"><TextBox x:Name="RevisionAdvanced" Margin="0,8,0,0" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Consolas" FontSize="11"/></Expander><TextBlock Text="Selected activity evidence" Style="{StaticResource SubsectionTitleText}"/><TextBox x:Name="AuditDetail" Margin="0,8,0,8" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="110" VerticalScrollBarVisibility="Auto"/><Expander Header="Technical details" IsExpanded="False"><TextBox x:Name="AuditAdvanced" Margin="0,8,0,0" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Consolas" FontSize="11" MinHeight="100"/></Expander></StackPanel>
+                  <StackPanel x:Name="HistoryDetailRightPane" Grid.Column="2"><TextBlock Text="Selected revision" Style="{StaticResource SubsectionTitleText}"/><TextBox x:Name="SelectedRevisionPreview" Margin="0,8,0,8" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/><Expander Foreground="{StaticResource Secondary}" Header="Technical details" IsExpanded="False" Margin="0,0,0,12"><TextBox x:Name="RevisionAdvanced" Margin="0,8,0,0" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Consolas" FontSize="11"/></Expander><TextBlock Text="Selected activity evidence" Style="{StaticResource SubsectionTitleText}"/><TextBox x:Name="AuditDetail" Margin="0,8,0,8" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="110" VerticalScrollBarVisibility="Auto"/><Expander Foreground="{StaticResource Secondary}" Header="Technical details" IsExpanded="False"><TextBox x:Name="AuditAdvanced" Margin="0,8,0,0" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Consolas" FontSize="11" MinHeight="100"/></Expander></StackPanel>
                 </Grid>
               </Grid></ScrollViewer></TabItem>
 
@@ -1243,7 +1243,7 @@ function Clear-GenerationIdempotencyKey { $script:GenerationIdempotencyKey=$null
                 <TextBlock Text="Meaning / joke" Style="{StaticResource SectionTitleText}"/><TextBlock x:Name="AnalysisMeaning" TextWrapping="Wrap" Margin="0,8,0,14"/>
                 <TextBlock Text="Evidence &amp; IP readiness" Style="{StaticResource SectionTitleText}"/><TextBlock x:Name="AnalysisEvidence" TextWrapping="Wrap" Margin="0,8,0,14"/>
                 <TextBlock Text="Score dimensions" Style="{StaticResource SectionTitleText}"/><TextBox x:Name="AnalysisScores" Margin="0,8,0,12" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" BorderThickness="0" Background="Transparent"/>
-                <Expander Header="Technical details" IsExpanded="False" Margin="0,0,0,14"><TextBox x:Name="AnalysisAdvanced" Margin="0,8,0,0" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Consolas" FontSize="11" MinHeight="100"/></Expander>
+                <Expander Foreground="{StaticResource Secondary}" Header="Technical details" IsExpanded="False" Margin="0,0,0,14"><TextBox x:Name="AnalysisAdvanced" Margin="0,8,0,0" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Consolas" FontSize="11" MinHeight="100"/></Expander>
                 <TextBlock Text="Warnings / blockers" Style="{StaticResource SectionTitleText}"/><TextBlock x:Name="AnalysisWarnings" TextWrapping="Wrap" Margin="0,8,0,14"/><Border Style="{StaticResource CardSurfaceBorder}" Padding="12" Margin="0,4,0,10"><StackPanel><TextBlock Text="Amazon print profile" Style="{StaticResource SubsectionTitleText}"/><TextBlock x:Name="AmazonProfileStatusText" Text="—" TextWrapping="Wrap" Margin="0,6,0,0"/><WrapPanel Margin="0,8,0,0"><Button x:Name="AmazonProfileFormButton" Content="Fill Amazon profile…" Margin="0,0,8,6"/><Button x:Name="AmazonProfileImportButton" Content="Import profile file…" Margin="0,0,0,6"/></WrapPanel></StackPanel></Border><Border Style="{StaticResource CardSurfaceBorder}" Padding="12" Margin="0,4,0,0"><StackPanel><TextBlock Text="Local check evidence" Style="{StaticResource SubsectionTitleText}"/><WrapPanel Margin="0,8,0,0"><Button x:Name="LocalConfirmChecksButton" Content="Confirm checks…" Margin="0,0,8,6"/><Button x:Name="LocalImportCheckEvidenceButton" Content="Import check evidence…" Margin="0,0,8,6"/><Button x:Name="LocalOpenChecksFolderButton" Content="Open checks folder" Margin="0,0,0,6"/></WrapPanel><TextBlock x:Name="LocalCheckStatusText" Text="No local check evidence imported." Style="{StaticResource MetaText}" TextWrapping="Wrap" Margin="0,6,0,0"/></StackPanel></Border>
               </StackPanel></ScrollViewer></TabItem>
 
@@ -1257,7 +1257,7 @@ function Clear-GenerationIdempotencyKey { $script:GenerationIdempotencyKey=$null
                 <TextBlock x:Name="DownstreamPolicy" TextWrapping="Wrap" Margin="0,0,0,16"/>
                 <TextBlock Text="Readiness" Style="{StaticResource SectionTitleText}"/>
                 <TextBlock x:Name="DownstreamEligibility" TextWrapping="Wrap" Margin="0,8,0,8"/>
-                <TextBlock x:Name="DownstreamBlocker" TextWrapping="Wrap" Style="{StaticResource StatusWarningText}" Margin="0,0,0,16"/><Expander Header="Technical details" IsExpanded="False" Margin="0,0,0,16"><TextBox x:Name="DownstreamAdvanced" Margin="0,8,0,0" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Consolas" FontSize="11" MinHeight="90"/></Expander>
+                <TextBlock x:Name="DownstreamBlocker" TextWrapping="Wrap" Style="{StaticResource StatusWarningText}" Margin="0,0,0,16"/><Expander Foreground="{StaticResource Secondary}" Header="Technical details" IsExpanded="False" Margin="0,0,0,16"><TextBox x:Name="DownstreamAdvanced" Margin="0,8,0,0" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Consolas" FontSize="11" MinHeight="90"/></Expander>
                 <Border Style="{StaticResource CardSurfaceBorder}" Padding="14">
                   <StackPanel><TextBlock Text="External action boundary" Style="{StaticResource SubsectionTitleText}"/><TextBlock x:Name="DownstreamExternal" TextWrapping="Wrap" Margin="0,5,0,0"/></StackPanel>
                 </Border>
@@ -1303,7 +1303,7 @@ function Clear-GenerationIdempotencyKey { $script:GenerationIdempotencyKey=$null
                   </WrapPanel>
                   <TextBlock x:Name="PackageBoundaryText" Text="Preparation only. Export does not mean saved locally; Social handoff does not mean approval; package preparation does not submit or publish." TextWrapping="Wrap" Style="{StaticResource MetaText}" Margin="0,2,0,14"/>
                   <Border Style="{StaticResource CardSurfaceBorder}" Padding="14"><StackPanel><TextBlock Text="Submit" Style="{StaticResource SubsectionTitleText}"/><TextBlock Text="Locked external action" Style="{StaticResource StatusWarningText}" Margin="0,5,0,0"/><TextBlock x:Name="PublicationExternal" TextWrapping="Wrap" Margin="0,5,0,0"/></StackPanel></Border>
-                  <Expander Header="Technical details" IsExpanded="False" Margin="0,16,0,0"><Border Style="{StaticResource CardSurfaceBorder}" Padding="11" Margin="0,8,0,0"><TextBlock x:Name="PublicationAdvanced" FontFamily="Consolas" FontSize="11" TextWrapping="Wrap"/></Border></Expander>
+                  <Expander Foreground="{StaticResource Secondary}" Header="Technical details" IsExpanded="False" Margin="0,16,0,0"><Border Style="{StaticResource CardSurfaceBorder}" Padding="11" Margin="0,8,0,0"><TextBlock x:Name="PublicationAdvanced" FontFamily="Consolas" FontSize="11" TextWrapping="Wrap"/></Border></Expander>
                 </StackPanel>
               </Grid></ScrollViewer></TabItem>
 
@@ -1318,7 +1318,7 @@ function Clear-GenerationIdempotencyKey { $script:GenerationIdempotencyKey=$null
                 <StackPanel x:Name="EditRightPane" Grid.Column="2">
                   <TextBlock Text="Differentiation" Style="{StaticResource FieldLabelText}"/><TextBox x:Name="DifferentiationBox" Margin="0,6,0,12" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="80" AutomationProperties.Name="Differentiation"/>
                   <TextBlock Text="Visual direction" Style="{StaticResource FieldLabelText}"/><TextBox x:Name="VisualBox" Margin="0,6,0,12" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="100" AutomationProperties.Name="Visual direction"/>
-                  <Expander Header="Technical details · production spec JSON" IsExpanded="False" Margin="0,0,0,12"><TextBox x:Name="SpecBox" Margin="0,8,0,0" AcceptsReturn="True" AcceptsTab="True" TextWrapping="NoWrap" FontFamily="Consolas" FontSize="12" MinHeight="190" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AutomationProperties.Name="Advanced production specification JSON"/></Expander>
+                  <Expander Foreground="{StaticResource Secondary}" Header="Technical details · production spec JSON" IsExpanded="False" Margin="0,0,0,12"><TextBox x:Name="SpecBox" Margin="0,8,0,0" AcceptsReturn="True" AcceptsTab="True" TextWrapping="NoWrap" FontFamily="Consolas" FontSize="12" MinHeight="190" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AutomationProperties.Name="Advanced production specification JSON"/></Expander>
                   <TextBlock Text="Edit reason (optional)" Style="{StaticResource FieldLabelText}"/><TextBox x:Name="ReasonBox" Margin="0,6,0,12" AutomationProperties.Name="Reason for creative revision"/>
                 </StackPanel>
               </Grid></ScrollViewer></TabItem>
@@ -1341,7 +1341,7 @@ function Clear-GenerationIdempotencyKey { $script:GenerationIdempotencyKey=$null
               <StackPanel>
                 <TextBlock x:Name="UtilitySummaryText" Style="{StaticResource SubtitleText}" TextWrapping="Wrap"/>
                 <Border Style="{StaticResource CardSurfaceBorder}" Padding="16" Margin="0,16,0,0"><TextBlock x:Name="UtilityBodyText" Style="{StaticResource BodyText}" TextWrapping="Wrap" LineHeight="22"/></Border>
-                <Expander x:Name="UtilityTechnicalExpander" Header="Technical details" IsExpanded="False" Margin="0,16,0,0">
+                <Expander Foreground="{StaticResource Secondary}" x:Name="UtilityTechnicalExpander" Header="Technical details" IsExpanded="False" Margin="0,16,0,0">
                   <Border Style="{StaticResource CardSurfaceBorder}" Padding="12" Margin="0,8,0,0"><TextBox x:Name="UtilityTechnicalText" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Consolas" FontSize="11.5" MinHeight="130" MaxHeight="250" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"/></Border>
                 </Expander>
               </StackPanel>
