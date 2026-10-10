@@ -14,18 +14,18 @@ Every push to `forge/**` runs the **forge-windows** workflow on a real Windows m
    - `package`: artwork → accept → Amazon profile form → listing → Confirm-checks form → READY package → receipt → sales → Performance leaders/attention → data copy save/restore
    - `layout`: every section at 1024 / 1366 / 1920 px; fails if any text is cut off at 1366/1920 or any English sentence is left on a Russian screen
    - `offline`: backend down; every button in every section and tab (inside a draft and two offline ideas) is clicked; any crash fails
-4. **install test from the release ZIP**: START from the extracted folder (window opens, clean exit), fresh install (dialog answered via UI Automation, shortcut), upgrade over 054 (054 kept as `app.previous`, installed app starts), downgrade guard.
+4. **install test from the release ZIP**: START from the extracted folder (window opens, clean exit), fresh install (dialog answered via UI Automation, shortcut), upgrade over 054 with the owner's data in place (054 kept as `app.previous`, data unchanged, installed app starts in ~5 s), downgrade guard, the app's own daily copy.
 
 Results (JSON, screenshots, logs) → branch **`forge-ci-results`** (`latest/`) and run annotations. CI data are labelled fixtures; nothing is uploaded or published; "owner attestations" in CI are fixtures, not real reviews.
 
-## What the app does now (055–076)
+## What the app does now (055–077)
 - Discover → **Create concept draft** (local, bound to its research). Ideas: KEEP / EDIT / REGEN / SKIP, local revisions, brief export. Live server actions blocked for drafts.
 - Artwork import → exact Accept → **Amazon print profile form** (PNG template fills size + fingerprint; status and days left; warning 7 days before expiry) → **Confirm checks form** (plain checklist for IP, Amazon policy, listing text; PASS needs a reference and the owner's tick; same importer/validation as JSON) → listing → READY package → receipt → sales.
 - **Portfolio pipeline**: counters, next actions; a click opens the tab where work continues.
 - **Performance**: Leaders (per product, 30/90 days, verified receipts only) and Needs attention (no sales 30 days, unknown product IDs, profile missing/expiring, unpublished READY packages, undated rows). Home shows the attention count.
 - Errors show the real reason in EN/RU/ES (central translator, ~300 messages). Checks list readable in the UI language.
 - Layout: no double titles; captions wrap; the idea title comes back in the header.
-- **My data** (Home): save a copy of all local work as one ZIP (never keys/secrets) and restore it — verified file by file, previous data saved first, files not in the copy set aside (never deleted), automatic rollback on failure, works on another PC. An automatic copy is made once a day (7 kept).
+- **My data** (Home): save a copy of all local work as one ZIP (never keys/secrets) and restore it — verified file by file, previous data saved first, files not in the copy set aside (never deleted), automatic rollback on failure, works on another PC. An automatic copy is made once a day in the background (3 kept; it never collides with a restore).
 - "What's new" card on Home after each update (EN/RU/ES).
 - Publish: live listing hints (Amazon lengths, risky wording, HTML/emoji). Ideas: filter by pipeline stage.
 - Sales CSV: loose column names, ";" files, decimal commas, per-file day/month order; unreadable rows are counted and shown.
