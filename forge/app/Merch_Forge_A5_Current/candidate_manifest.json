@@ -13,7 +13,7 @@
     "status": "ACTIVE"
   },
   "desktop": {
-    "app_version": "2.22.1-third-review",
+    "app_version": "2.23.0-auto-copy",
     "native_windows_runtime_verified": false,
     "orange_semantic_palette": true,
     "overview_first": true,
@@ -28,10 +28,10 @@
       "ru",
       "es"
     ],
-    "workbench_sha256": "5f74d02315f47148988f64ceb845dfa68fc6c65d250264fee8d2478b9778fbef",
-    "workbench_size_bytes": 258593,
+    "workbench_sha256": "74ae5f406d3acc73bd9b5790b925f24a38357a38be509ddcb61be0254a4da54c",
+    "workbench_size_bytes": 258789,
     "native_windows_parser_verified": false,
-    "native_windows_parser_target_sha256": "5f74d02315f47148988f64ceb845dfa68fc6c65d250264fee8d2478b9778fbef",
+    "native_windows_parser_target_sha256": "74ae5f406d3acc73bd9b5790b925f24a38357a38be509ddcb61be0254a4da54c",
     "native_windows_parser_result_sha256": null,
     "product_home_dashboard": true,
     "brand_home_navigation": "dedicated_home_dashboard",
@@ -77,8 +77,8 @@
       },
       {
         "path": "Modules\\Forge.DataBackup.ps1",
-        "sha256": "5120f4f7dd7aac772b034962230177e139121350f895ea8202ebc29589d6a022",
-        "size_bytes": 21970
+        "sha256": "dbc03fb1b6c1f4ef44723141ca13127757bcf5902b080c3d56bd7ffebe70c421",
+        "size_bytes": 24995
       },
       {
         "path": "Modules\\Forge.DataViews.ps1",
@@ -132,8 +132,8 @@
       },
       {
         "path": "Modules\\Forge.LocalCore.ps1",
-        "sha256": "37feddebe483487c4559400e185c550c2683e6f171a05d2302640e23b449b804",
-        "size_bytes": 126424
+        "sha256": "be81ac89e30cc58470303c92ca4ee3776752680791472f2e3eb12e97655b129e",
+        "size_bytes": 126534
       },
       {
         "path": "Modules\\Forge.Localization.ps1",
@@ -330,7 +330,7 @@
     "trusted_local_check_worker": "MerchForgeCheckWorker.ps1",
     "generation_spool_policy": "forge.generation_spool_policy.v1",
     "publication_receipt_print_binding": true,
-    "current_release": "074_Merch_Forge_THIRD_REVIEW_RC",
+    "current_release": "075_Merch_Forge_AUTO_COPY_RC",
     "generation_authority_module": "Modules\\Forge.GenerationAuthority.ps1",
     "generation_temporal_authority": "future generation job/attempt timestamps beyond 10-minute clock-skew tolerance fail closed before paid dispatch/readiness; shared first-live authority also revalidates non-future ordered attempt/result/import timestamps",
     "amazon_print_profile_temporal_authority": "valid_until must be strictly later than captured_at; captured_at remains bounded by 10-minute future-skew tolerance and 120-day horizon",
@@ -493,11 +493,11 @@
     "owner_separate_parser_zip_required": false,
     "current_release": "044_Merch_Forge_PACKAGE_ROOT_RC"
   },
-  "package_name": "074_Merch_Forge_THIRD_REVIEW_RC",
-  "package_number": 74,
-  "result_intent": "Third independent review fixes",
+  "package_name": "075_Merch_Forge_AUTO_COPY_RC",
+  "package_number": 75,
+  "result_intent": "Automatic daily data copy",
   "schema": "forge.reconciled_candidate_manifest.v1",
-  "stage": "FORGE-074-THIRD-REVIEW-RC",
+  "stage": "FORGE-075-AUTO-COPY-RC",
   "startup_baseline": {
     "immutable_exact": false,
     "inner_start_sha256": "013e9dcfbfb4c2a42c12b4f6ee208767d80509be9e877160f088a9d2984f51a1",
@@ -657,7 +657,7 @@
     "exact_043_native_windows_stage": "integrity",
     "package_root_native_argv_repair": true
   },
-  "installer_generation": "00000000000000100257",
+  "installer_generation": "00000000000000100258",
   "installer_generation_format": "fixed_width_decimal_v1",
   "installer_guard": {
     "single_writer_lock": "install.lock",

@@ -167,6 +167,9 @@ function Ci-FindUntranslated($EnSet,[string]$Where) {
     return [pscustomobject]@{strict=@($strict);loose=@($loose)}
 }
 
+# The daily automatic data copy would run in the background during the test; it is exercised explicitly in the package phase.
+$script:AutoDataCopyEnabled=$false
+
 $script:CiWatchdog=New-Object System.Windows.Threading.DispatcherTimer
 $script:CiWatchdog.Interval=[TimeSpan]::FromSeconds(360)
 $script:CiWatchdog.Add_Tick({ $script:CiWatchdog.Stop(); $script:Ci.fatal='watchdog timeout'; Ci-Finish })
@@ -390,6 +393,14 @@ $Window.Add_ContentRendered({
                 Ci-Check 'backup_restore_roundtrip' ($okR -and $script:Ci.errors.Count -eq $before -and @(Get-ResearchDraftList $s1).Count -eq $nDrafts -and $nDrafts -ge 1 -and $StatusText.Text -like 'Восстановлено файлов из копии:*') ([string]$bk.file_count+' files; drafts '+$nDrafts+' -> '+@(Get-ResearchDraftList $s1).Count+'; '+$StatusText.Text)
                 $ins=Get-ForgePerformanceInsights $s1
                 Ci-Check 'backup_restore_keeps_verified_product' (@($ins.leaders).Count -eq 1 -and [string]@($ins.leaders)[0].product_id -eq 'CI-ASIN-0001') (@($ins.leaders).Count)
+                # automatic daily copy: the hidden helper run synchronously, then the Home text
+                $auto=[IO.Path]::GetFullPath((Join-Path $script:ModuleRoot '..\MerchForgeAutoDataCopy.ps1')); $psExe=Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+                $ap=Start-Process -FilePath $psExe -ArgumentList @('-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',('"'+$auto+'"'),'-StateRoot',('"'+$script:StateRoot+'"')) -WindowStyle Hidden -PassThru; $null=$ap.Handle; $null=$ap.WaitForExit(120000)
+                Update-DataCopySurface; Ci-Flush
+                $az=@(Get-ChildItem -LiteralPath (Join-Path $script:StateRoot 'backups') -Filter 'auto-*.zip' -File -ErrorAction SilentlyContinue)
+                $stg=Join-Path $env:FORGE_CI_OUT 'auto-copy-verify'; $vm=$null; if($az.Count){ try{ $vm=Read-ForgeDataBackup $az[0].FullName $stg }catch{} }
+                Ci-Check 'auto_copy_made_and_valid' ($ap.ExitCode -eq 0 -and $az.Count -eq 1 -and $null -ne $vm -and [int]$vm.file_count -ge 3) ('exit '+$ap.ExitCode+'; copies '+$az.Count+'; files '+$(if($vm){[string]$vm.file_count}else{'?'}))
+                Ci-Check 'auto_copy_status_ru' ($DataAutoCopyText.Text -like 'Автокопия раз в день: последняя *, хранится 1 в *') $DataAutoCopyText.Text
                 Ci-Shot '15-home-data-copy'
             }
         } elseif($script:Ci.phase -eq 'layout') {

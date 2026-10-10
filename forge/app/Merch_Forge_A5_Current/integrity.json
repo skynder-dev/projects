@@ -4,8 +4,8 @@
   "files": [
     {
       "path": "candidate_manifest.json",
-      "sha256": "3ac5fa5c31aeb8fb7577af8a84f6c2e5588e79a0b9f08c84f1839e9a2c3f26ad",
-      "size_bytes": 77909
+      "sha256": "92b7b66c873cb1119aa7abc59cda903500bd38ace3716957f965684a4e05d8ca",
+      "size_bytes": 77892
     },
     {
       "path": "Configure Image Provider.ps1",
@@ -103,6 +103,11 @@
       "size_bytes": 21877
     },
     {
+      "path": "MerchForgeAutoDataCopy.ps1",
+      "sha256": "e6498c05a3816de0c990f7d3ce7b72ef11896dc302d457ee228d65e8c1e6cedf",
+      "size_bytes": 2200
+    },
+    {
       "path": "MerchForgeCheckWorker.ps1",
       "sha256": "374b07e0136048c4035f41891b55ab9eceffa598ad9ad16ccae343c6884b9441",
       "size_bytes": 7173
@@ -129,13 +134,13 @@
     },
     {
       "path": "MerchForgeResearchDraftSelfTest.ps1",
-      "sha256": "eca625b1ae253961f1a151f07b0ccc7d29e13830fbc7ed19db272acd2cc9d017",
-      "size_bytes": 49577
+      "sha256": "a780ab451dc33430b033d45144c3f9956ba2515be510246add7f627d01d9351b",
+      "size_bytes": 50964
     },
     {
       "path": "MerchForgeWorkbench.ps1",
-      "sha256": "5f74d02315f47148988f64ceb845dfa68fc6c65d250264fee8d2478b9778fbef",
-      "size_bytes": 258593
+      "sha256": "74ae5f406d3acc73bd9b5790b925f24a38357a38be509ddcb61be0254a4da54c",
+      "size_bytes": 258789
     },
     {
       "path": "Modules\\Forge.AmazonProfile.ps1",
@@ -159,8 +164,8 @@
     },
     {
       "path": "Modules\\Forge.DataBackup.ps1",
-      "sha256": "5120f4f7dd7aac772b034962230177e139121350f895ea8202ebc29589d6a022",
-      "size_bytes": 21970
+      "sha256": "dbc03fb1b6c1f4ef44723141ca13127757bcf5902b080c3d56bd7ffebe70c421",
+      "size_bytes": 24995
     },
     {
       "path": "Modules\\Forge.DataViews.ps1",
@@ -214,8 +219,8 @@
     },
     {
       "path": "Modules\\Forge.LocalCore.ps1",
-      "sha256": "37feddebe483487c4559400e185c550c2683e6f171a05d2302640e23b449b804",
-      "size_bytes": 126424
+      "sha256": "be81ac89e30cc58470303c92ca4ee3776752680791472f2e3eb12e97655b129e",
+      "size_bytes": 126534
     },
     {
       "path": "Modules\\Forge.Localization.ps1",

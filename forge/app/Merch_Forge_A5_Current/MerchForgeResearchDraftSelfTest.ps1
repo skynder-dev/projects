@@ -339,6 +339,14 @@ if($Phase -eq 'restart'){
             $errBefore=$script:Errors.Count; $res2=Restore-ForgeDataBackupFromPath $bk
             Check 'backup_damaged_copy_refused' (-not $res2.ok -and $script:Errors.Count -gt $errBefore -and [string]$script:Errors[$script:Errors.Count-1] -like '*checksum mismatch*' -and @(Get-ResearchDraftList (Read-LocalCoreState)).Count -eq $draftsBefore) ([string]$(if($script:Errors.Count){$script:Errors[$script:Errors.Count-1]}else{''}))
             Remove-Item -LiteralPath $bk -Force -ErrorAction SilentlyContinue; Remove-Item -LiteralPath (Join-Path $script:StateRoot 'owner.key') -Force -ErrorAction SilentlyContinue
+            # automatic daily copy helper: makes a valid copy, never includes the key, keeps at most N copies
+            $bdir=Join-Path $script:StateRoot 'backups'; New-Item -ItemType Directory -Path $bdir -Force | Out-Null
+            foreach($i in 1..3){ $old=Join-Path $bdir ('auto-2026010'+$i+'-000000.zip'); [IO.File]::WriteAllText($old,'old'); (Get-Item $old).LastWriteTimeUtc=[DateTime]::UtcNow.AddDays(-10+$i) }
+            $psExe=Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+            $ap=Start-Process -FilePath $psExe -ArgumentList @('-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',('"'+(Join-Path $PackageRoot 'MerchForgeAutoDataCopy.ps1')+'"'),'-StateRoot',('"'+$script:StateRoot+'"'),'-Keep','2') -WindowStyle Hidden -PassThru; $null=$ap.Handle; $null=$ap.WaitForExit(120000)
+            $autos=@(Get-ChildItem -LiteralPath $bdir -Filter 'auto-*.zip' -File | Sort-Object LastWriteTimeUtc -Descending)
+            $vm=$null; try{ $vm=Read-ForgeDataBackup $autos[0].FullName (Join-Path ([IO.Path]::GetTempPath()) ('forge-av-'+[Guid]::NewGuid().ToString('N'))) }catch{}
+            Check 'auto_copy_helper_valid_and_pruned' ($ap.ExitCode -eq 0 -and $autos.Count -eq 2 -and $null -ne $vm -and @($vm.files | Where-Object { $_.path -like '*owner.key*' }).Count -eq 0) ('exit '+$ap.ExitCode+'; copies '+$autos.Count)
         }
     }
     # sales CSV as Amazon-like exports write it: other column names, ';' delimiter, decimal commas, a row without ASIN and one without a date

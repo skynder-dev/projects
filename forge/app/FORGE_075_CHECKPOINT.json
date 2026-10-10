@@ -1,16 +1,16 @@
 {
   "schema": "forge.release_checkpoint.v1",
-  "package": "074_Merch_Forge_THIRD_REVIEW_RC",
-  "previous_package": "073_Merch_Forge_LISTING_HINTS_RC",
-  "app_version": "2.22.1-forge-third-review",
-  "installer_generation": "00000000000000100257",
-  "static": "14/14",
+  "package": "075_Merch_Forge_AUTO_COPY_RC",
+  "previous_package": "074_Merch_Forge_THIRD_REVIEW_RC",
+  "app_version": "2.23.0-forge-auto-copy",
+  "installer_generation": "00000000000000100258",
+  "static": "13/14",
   "checks": {
     "xaml_xml_parse": true,
     "xaml_names_unique": true,
     "version_header_matches_appversion": true,
     "powershell_parse_all": true,
-    "ps1_nonascii_have_bom": true,
+    "ps1_nonascii_have_bom": false,
     "byte_equal_054_Start_Merch_Forge.vbs": true,
     "byte_equal_054_MerchForgeLauncher.cmd": true,
     "byte_equal_054_MerchForgePreflight.ps1": true,
@@ -22,7 +22,7 @@
     "headless_selftest_pass": true
   },
   "headless_selftest": "PASS 110/110 (PowerShell 7, Linux)",
-  "integrity": "59 files",
+  "integrity": "60 files",
   "windows_proof": "see GitHub workflow forge-windows (branch forge-ci-results)",
   "authority": {
     "generate_authorized": false,

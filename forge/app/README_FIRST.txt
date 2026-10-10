@@ -1,22 +1,18 @@
-﻿MERCH FORGE 074 Merch Forge THIRD REVIEW RC
+﻿MERCH FORGE 075 Merch Forge AUTO COPY RC
 
 ПО-РУССКИ
 1. Распакуйте всю папку: правый клик по ZIP -> «Извлечь все».
-2. Запустите START_074_MERCH_FORGE.vbs двойным щелчком.
+2. Запустите START_075_MERCH_FORGE.vbs двойным щелчком.
 3. Как пользоваться (1 страница): HOW_TO_USE_RU.txt
 
 START
 1. Extract the whole folder.
-2. Run START_074_MERCH_FORGE.vbs.
+2. Run START_075_MERCH_FORGE.vbs.
 
-WHAT IS NEW (074) - fixes from the third independent review
-- Data copy restore never deletes your files any more: files that are not in the copy are moved to
-  backups\set-aside-<time>\, and files a copy does not contain (unusual names, temp files, saved ZIPs) are
-  not touched at all. If any affected file is open in another program (e.g. a CSV in Excel), nothing is
-  changed and the message says which file to close.
-- Ideas stage filter: stages are cached and recomputed only when your data changes (typing in the search box
-  no longer re-checks every package); the list refreshes after a decision or an accepted artwork.
-- Listing hints: no false alarms for "Licensed Practical Nurse", "100% cotton" or "x < y"; more symbols
-  (e.g. stars) are recognized; hints follow a language switch.
-- Sales CSV: a "Units Returned"/"Units Cancelled" column is never read as units sold.
-- Includes 073 and earlier (055-072).
+WHAT IS NEW (075)
+- Automatic data copy once a day: shortly after start, if the last automatic copy is older than ~20 hours,
+  Merch Forge makes one in the background (a hidden helper, the window never waits) into
+  <data>\backups\auto-*.zip and keeps the newest 7. Home -> My data shows when the last one was made.
+  Same format and checks as "Save a copy"; restore it with "Restore from a copy...". Keys are never included.
+- Copies can now be made while the app writes its data (the state file can be replaced during reading).
+- Includes 074 and earlier (055-073).
