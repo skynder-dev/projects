@@ -399,8 +399,13 @@ $Window.Add_ContentRendered({
                 $ins=Get-ForgePerformanceInsights $s1
                 Ci-Check 'backup_restore_keeps_verified_product' (@($ins.leaders).Count -eq 1 -and [string]@($ins.leaders)[0].product_id -eq 'CI-ASIN-0001') (@($ins.leaders).Count)
                 # automatic daily copy: the hidden helper run synchronously, then the Home text
-                $auto=[IO.Path]::GetFullPath((Join-Path $script:ModuleRoot '..\MerchForgeAutoDataCopy.ps1')); $psExe=Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
-                $ap=Start-Process -FilePath $psExe -ArgumentList @('-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',('"'+$auto+'"'),'-StateRoot',('"'+$script:StateRoot+'"')) -WindowStyle Hidden -PassThru; $null=$ap.Handle; $null=$ap.WaitForExit(120000)
+                # the production start path (due check, helper path, arguments), then a second call that must not start another copy
+                $script:AutoDataCopyEnabled=$true; $started=Start-AutoDataCopyIfDue
+                $lastJ=Join-Path $script:StateRoot 'backups\auto-last.json'; $t0=[DateTime]::UtcNow; $done=$false
+                while(-not $done -and ([DateTime]::UtcNow-$t0).TotalSeconds -lt 150){ Start-Sleep -Milliseconds 500; try{ $lj=Get-Content -LiteralPath $lastJ -Raw -Encoding UTF8 | ConvertFrom-Json; $done=([string]$lj.state -in @('done','failed')) }catch{} }
+                $again=Start-AutoDataCopyIfDue; $script:AutoDataCopyEnabled=$false
+                $ap=[pscustomobject]@{ExitCode=$(if($done -and [string]$lj.state -eq 'done'){0}else{1})}
+                Ci-Check 'auto_copy_started_once_by_app' ($started -eq $true -and $again -eq $false) ('first '+[string]$started+', second '+[string]$again)
                 Update-DataCopySurface; Ci-Flush
                 $az=@(Get-ChildItem -LiteralPath (Join-Path $script:StateRoot 'backups') -Filter 'auto-*.zip' -File -ErrorAction SilentlyContinue)
                 $stg=Join-Path $env:FORGE_CI_OUT 'auto-copy-verify'; $vm=$null; if($az.Count){ try{ $vm=Read-ForgeDataBackup $az[0].FullName $stg }catch{} }

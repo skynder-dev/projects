@@ -1,10 +1,10 @@
 {
   "schema": "forge.release_checkpoint.v1",
-  "package": "076_Merch_Forge_WHATS_NEW_RC",
-  "previous_package": "075_Merch_Forge_AUTO_COPY_RC",
-  "app_version": "2.24.0-forge-whats-new",
-  "installer_generation": "00000000000000100259",
-  "static": "15/15",
+  "package": "077_Merch_Forge_FOURTH_REVIEW_RC",
+  "previous_package": "076_Merch_Forge_WHATS_NEW_RC",
+  "app_version": "2.24.1-forge-fourth-review",
+  "installer_generation": "00000000000000100260",
+  "static": "16/16",
   "checks": {
     "xaml_xml_parse": true,
     "xaml_names_unique": true,
@@ -17,6 +17,7 @@
     "byte_equal_054_Install_Merch_Forge.vbs": true,
     "vbs_no_utf8_bom_ascii_only": true,
     "whats_new_valid": true,
+    "whats_new_matches_release": true,
     "integrity_all_pass": true,
     "manifest_workbench_sha": true,
     "manifest_authority_all_false": true,

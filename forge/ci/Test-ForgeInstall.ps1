@@ -74,6 +74,11 @@ function Test-StartAndClose([string]$Label,[string]$Vbs,[string]$Lad){
     $t0=[DateTime]::UtcNow; $dlg=@()
     while(-not $helper.HasExited -and ([DateTime]::UtcNow-$t0).TotalSeconds -lt 30){ foreach($w in @(Get-ProcessWindows $helper.Id)){ try{ $d=Read-Dialog $w; $dlg+=$d; $Report.dialogs+=($d.title+': '+$d.text); $null=Press-Ok $w }catch{} }; Start-Sleep -Milliseconds 400 }
     if(-not $helper.HasExited){ try{$helper.Kill()}catch{} }
+    if($Label -eq 'start'){
+        # the app starts its daily data copy in the background on first start
+        $az=$null; $t1=[DateTime]::UtcNow; while(([DateTime]::UtcNow-$t1).TotalSeconds -lt 90){ $az=@(Get-ChildItem -Path (Join-Path $Lad 'MerchForge\backups\auto-*.zip') -ErrorAction SilentlyContinue); if($az.Count){break}; Start-Sleep -Milliseconds 500 }
+        Check 'start_auto_copy_made' ($null -ne $az -and $az.Count -ge 1) $(if($az -and $az.Count){$az[0].Name}else{'none'})
+    }
     Check ($Label+'_no_error_dialog') ($dlg.Count -eq 0) ((@($dlg | ForEach-Object { $_.title+': '+$_.text })) -join ' | ')
     $launch=@(Get-ChildItem -Path (Join-Path $logs 'MerchForge-launch-*.log') -ErrorAction SilentlyContinue)
     if($launch.Count){ $lt=(([string](Get-Content -LiteralPath $launch[0].FullName -Raw)) -replace '\s+',' ').Trim(); $Report.notes+=($Label+' launch log tail: '+$lt.Substring([Math]::Max(0,$lt.Length-400))) }

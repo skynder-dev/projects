@@ -346,6 +346,10 @@ if($Phase -eq 'restart'){
             $ap=Start-Process -FilePath $psExe -ArgumentList @('-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',('"'+(Join-Path $PackageRoot 'MerchForgeAutoDataCopy.ps1')+'"'),'-StateRoot',('"'+$script:StateRoot+'"'),'-Keep','2') -WindowStyle Hidden -PassThru; $null=$ap.Handle; $null=$ap.WaitForExit(120000)
             $autos=@(Get-ChildItem -LiteralPath $bdir -Filter 'auto-*.zip' -File | Sort-Object LastWriteTimeUtc -Descending)
             $vm=$null; try{ $vm=Read-ForgeDataBackup $autos[0].FullName (Join-Path ([IO.Path]::GetTempPath()) ('forge-av-'+[Guid]::NewGuid().ToString('N'))) }catch{}
+            $lk=[IO.File]::Open((Join-Path $bdir 'auto-copy.lock'),[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
+            try { $ap2=Start-Process -FilePath $psExe -ArgumentList @('-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',('"'+(Join-Path $PackageRoot 'MerchForgeAutoDataCopy.ps1')+'"'),'-StateRoot',('"'+$script:StateRoot+'"'),'-Keep','2') -WindowStyle Hidden -PassThru; $null=$ap2.Handle; $null=$ap2.WaitForExit(60000) } finally { $lk.Dispose() }
+            $autos2=@(Get-ChildItem -LiteralPath $bdir -Filter 'auto-*.zip' -File)
+            Check 'auto_copy_second_helper_steps_aside' ($ap2.ExitCode -eq 0 -and $autos2.Count -eq $autos.Count -and @(Get-ChildItem -LiteralPath $bdir -Filter 'auto-*.zip.tmp.*' -File).Count -eq 0) ('exit '+$ap2.ExitCode+'; copies '+$autos2.Count)
             Check 'auto_copy_helper_valid_and_pruned' ($ap.ExitCode -eq 0 -and $autos.Count -eq 2 -and $null -ne $vm -and @($vm.files | Where-Object { $_.path -like '*owner.key*' }).Count -eq 0) ('exit '+$ap.ExitCode+'; copies '+$autos.Count)
         }
     }

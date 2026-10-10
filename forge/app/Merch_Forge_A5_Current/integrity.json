@@ -4,8 +4,8 @@
   "files": [
     {
       "path": "candidate_manifest.json",
-      "sha256": "e7d5d72a2d530602598e4a5a7a31a1f719abd2518b14841974d833c394857883",
-      "size_bytes": 78089
+      "sha256": "1bf874655977daa31d3ef22a8d70bad6e7116b3520cfc6b5a4c8679096d8f1f6",
+      "size_bytes": 78091
     },
     {
       "path": "Configure Image Provider.ps1",
@@ -109,8 +109,8 @@
     },
     {
       "path": "MerchForgeAutoDataCopy.ps1",
-      "sha256": "beeb40f0837e761ba6a0b02461a86f03f8e31e5e1786c301fe331c9cad664d03",
-      "size_bytes": 2203
+      "sha256": "dfa61d0bbfb99e1e4363c92bfa91e20a1e3a6b4dcca744cc3bda5b6c31cca264",
+      "size_bytes": 3006
     },
     {
       "path": "MerchForgeCheckWorker.ps1",
@@ -139,13 +139,13 @@
     },
     {
       "path": "MerchForgeResearchDraftSelfTest.ps1",
-      "sha256": "a780ab451dc33430b033d45144c3f9956ba2515be510246add7f627d01d9351b",
-      "size_bytes": 50964
+      "sha256": "6c99f8cea394d839958a7d1e8ab5bb3c913a67682e773b27c5539c4fc341ed7d",
+      "size_bytes": 51814
     },
     {
       "path": "MerchForgeWorkbench.ps1",
-      "sha256": "c0a9465ce696f288ecdcbea673667d5c26702fab393c8ef08b920cab448f8409",
-      "size_bytes": 259786
+      "sha256": "5aed878eabcbf48e5c1092792c0b72fb80272a1b45b72d146dc895ed1f949d0d",
+      "size_bytes": 259794
     },
     {
       "path": "Modules\\Forge.AmazonProfile.ps1",
@@ -169,8 +169,8 @@
     },
     {
       "path": "Modules\\Forge.DataBackup.ps1",
-      "sha256": "dbc03fb1b6c1f4ef44723141ca13127757bcf5902b080c3d56bd7ffebe70c421",
-      "size_bytes": 24995
+      "sha256": "f08666d3676b4cdfd4cc6d4a425a1bf2486ae3fccf0f7a5b2616f88565de0c34",
+      "size_bytes": 26622
     },
     {
       "path": "Modules\\Forge.DataViews.ps1",
