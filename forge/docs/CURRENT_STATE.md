@@ -18,7 +18,7 @@ Every push to `forge/**` runs the **forge-windows** workflow on a real Windows m
 
 Results (JSON, screenshots, logs) → branch **`forge-ci-results`** (`latest/`) and run annotations. CI data are labelled fixtures; nothing is uploaded or published; "owner attestations" in CI are fixtures, not real reviews.
 
-## What the app does now (055–072)
+## What the app does now (055–073)
 - Discover → **Create concept draft** (local, bound to its research). Ideas: KEEP / EDIT / REGEN / SKIP, local revisions, brief export. Live server actions blocked for drafts.
 - Artwork import → exact Accept → **Amazon print profile form** (PNG template fills size + fingerprint; status and days left; warning 7 days before expiry) → **Confirm checks form** (plain checklist for IP, Amazon policy, listing text; PASS needs a reference and the owner's tick; same importer/validation as JSON) → listing → READY package → receipt → sales.
 - **Portfolio pipeline**: counters, next actions; a click opens the tab where work continues.
@@ -26,6 +26,7 @@ Results (JSON, screenshots, logs) → branch **`forge-ci-results`** (`latest/`) 
 - Errors show the real reason in EN/RU/ES (central translator, ~300 messages). Checks list readable in the UI language.
 - Layout: no double titles; captions wrap; the idea title comes back in the header.
 - **My data** (Home): save a copy of all local work as one ZIP (never keys/secrets) and restore it — verified file by file, previous data saved first, automatic rollback on failure, works on another PC.
+- Publish: live listing hints (Amazon lengths, risky wording, HTML/emoji). Ideas: filter by pipeline stage.
 - Sales CSV: loose column names, ";" files, decimal commas, per-file day/month order; unreadable rows are counted and shown.
 - Fixed old bugs found by the new tests: START_0xx entrypoint never ran (UTF-8 BOM in a .vbs), local image generation never started (`$pid`).
 
