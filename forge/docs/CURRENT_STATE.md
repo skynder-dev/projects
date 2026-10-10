@@ -34,4 +34,4 @@ The app gets a labelled fixture only for `discover_snapshot`; every other backen
 No backend deployment, Supabase write, paid generation, acceptance on the owner's behalf, publication or external contact.
 
 ## Process
-Direct-to-`main` (owner's decision). Rollback point = branch `forge-last-green` (updated automatically by CI after every green run on main); before this change: tag `safe/main-before-direct-work`.
+Direct-to-`main` (owner's decision). Rollback point = branch `forge-last-green` (updated automatically by CI after every green run on main); before this change: commit `e6c836d` (main after PR #1).

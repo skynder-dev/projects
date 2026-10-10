@@ -1,9 +1,9 @@
 {
   "schema": "forge.release_checkpoint.v1",
-  "package": "056_Merch_Forge_WINDOWS_FIXES_RC",
-  "previous_package": "055_Merch_Forge_RESEARCH_DRAFT_RC",
-  "app_version": "2.9.1-forge-windows-fixes",
-  "installer_generation": "00000000000000100239",
+  "package": "057_Merch_Forge_AMAZON_PROFILE_FIX_RC",
+  "previous_package": "056_Merch_Forge_WINDOWS_FIXES_RC",
+  "app_version": "2.9.2-forge-amazon-profile-fix",
+  "installer_generation": "00000000000000100240",
   "static": "14/14",
   "checks": {
     "xaml_xml_parse": true,

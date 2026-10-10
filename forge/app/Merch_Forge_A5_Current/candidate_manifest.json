@@ -13,7 +13,7 @@
     "status": "ACTIVE"
   },
   "desktop": {
-    "app_version": "2.9.1-windows-fixes",
+    "app_version": "2.9.2-amazon-profile-fix",
     "native_windows_runtime_verified": false,
     "orange_semantic_palette": true,
     "overview_first": true,
@@ -28,10 +28,10 @@
       "ru",
       "es"
     ],
-    "workbench_sha256": "61a88b479d3cddc3f261674724502d89f834169eb2060feb214778bed04e1c06",
-    "workbench_size_bytes": 248739,
+    "workbench_sha256": "aa42e5f9ed736902c917c018c8bc4c3e552666d48699dcd3b3f343da1dd7db22",
+    "workbench_size_bytes": 248749,
     "native_windows_parser_verified": false,
-    "native_windows_parser_target_sha256": "61a88b479d3cddc3f261674724502d89f834169eb2060feb214778bed04e1c06",
+    "native_windows_parser_target_sha256": "aa42e5f9ed736902c917c018c8bc4c3e552666d48699dcd3b3f343da1dd7db22",
     "native_windows_parser_result_sha256": null,
     "product_home_dashboard": true,
     "brand_home_navigation": "dedicated_home_dashboard",
@@ -127,8 +127,8 @@
       },
       {
         "path": "Modules\\Forge.PrintChecks.ps1",
-        "sha256": "e8c836083ec2cd94889b3459f04a53c64a9002b083123accea3e5f34101de4d0",
-        "size_bytes": 16663
+        "sha256": "c7f803ef10ce0741dba87e05c7e151e10a2f3ad88f23ec6886f154d2ee164f7d",
+        "size_bytes": 16920
       },
       {
         "path": "Modules\\Forge.ProductNavigation.ps1",
@@ -300,7 +300,7 @@
     "trusted_local_check_worker": "MerchForgeCheckWorker.ps1",
     "generation_spool_policy": "forge.generation_spool_policy.v1",
     "publication_receipt_print_binding": true,
-    "current_release": "056_Merch_Forge_WINDOWS_FIXES_RC",
+    "current_release": "057_Merch_Forge_AMAZON_PROFILE_FIX_RC",
     "generation_authority_module": "Modules\\Forge.GenerationAuthority.ps1",
     "generation_temporal_authority": "future generation job/attempt timestamps beyond 10-minute clock-skew tolerance fail closed before paid dispatch/readiness; shared first-live authority also revalidates non-future ordered attempt/result/import timestamps",
     "amazon_print_profile_temporal_authority": "valid_until must be strictly later than captured_at; captured_at remains bounded by 10-minute future-skew tolerance and 120-day horizon",
@@ -463,11 +463,11 @@
     "owner_separate_parser_zip_required": false,
     "current_release": "044_Merch_Forge_PACKAGE_ROOT_RC"
   },
-  "package_name": "056_Merch_Forge_WINDOWS_FIXES_RC",
-  "package_number": 56,
-  "result_intent": "056: 055 research drafts + fixes from first native Windows CI run (locale re-render of live surfaces, idle status text, PS 5.1 spool Sum); no backend change, no generation/accept/publish/paid authority",
+  "package_name": "057_Merch_Forge_AMAZON_PROFILE_FIX_RC",
+  "package_number": 57,
+  "result_intent": "057: fix owner-attested Amazon print profile never accepted (read-only $host assignment in profile check + importer); includes 055/056; no backend change, no generation/accept/publish/paid authority",
   "schema": "forge.reconciled_candidate_manifest.v1",
-  "stage": "FORGE-056-WINDOWS-FIXES-RC",
+  "stage": "FORGE-057-AMAZON-PROFILE-FIX-RC",
   "startup_baseline": {
     "immutable_exact": false,
     "inner_start_sha256": "013e9dcfbfb4c2a42c12b4f6ee208767d80509be9e877160f088a9d2984f51a1",
@@ -627,7 +627,7 @@
     "exact_043_native_windows_stage": "integrity",
     "package_root_native_argv_repair": true
   },
-  "installer_generation": "00000000000000100239",
+  "installer_generation": "00000000000000100240",
   "installer_generation_format": "fixed_width_decimal_v1",
   "installer_guard": {
     "single_writer_lock": "install.lock",

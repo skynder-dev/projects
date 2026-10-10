@@ -31,12 +31,11 @@ try {
     $r = Run-Child 'preflight' @('-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',(Join-Path $app 'MerchForgePreflight.ps1'),'-PackageRoot',$app) 600
     Step 'startup_preflight_as_launcher_runs_it' ($r.code -eq 0) ([string]$r.out).Trim()
 } catch { Step 'startup_preflight_as_launcher_runs_it' $false $_.Exception.Message }
-# Optional provider pipeline self-test (the launcher does not run it). Known pre-existing failure since <=054, tracked separately.
+# Provider pipeline self-test (the launcher does not run it, but it covers generation import, exact accept and the Amazon profile gate)
 try {
     $r = Run-Child 'providerselftest' @('-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',(Join-Path $app 'MerchForgePreflight.ps1'),'-PackageRoot',$app,'-RunProviderPipelineSelfTest') 900
-    $summary.known_preexisting=[ordered]@{provider_pipeline_selftest=[ordered]@{pass=($r.code -eq 0);detail=([string]$r.out).Trim()}}
-    Write-Output ("::warning title=Known pre-existing (not gating) provider_pipeline_selftest::{0}" -f (([string]$r.out).Trim().Replace("`r",'').Replace("`n",'%0A')))
-} catch { Write-Output ('::warning title=provider_pipeline_selftest::'+$_.Exception.Message) }
+    Step 'provider_pipeline_selftest' ($r.code -eq 0) ([string]$r.out).Trim()
+} catch { Step 'provider_pipeline_selftest' $false $_.Exception.Message }
 
 # 2) headless research-draft self-test on Windows PowerShell 5.1 (+ 054 rollback read)
 try {

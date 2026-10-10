@@ -1,4 +1,4 @@
-# Merch Forge · print/channel profile + trusted local check-worker bridge
+﻿# Merch Forge · print/channel profile + trusted local check-worker bridge
 function Get-LocalCheckSpoolRoot { return (Join-Path $script:StateRoot 'check-spool-v1') }
 function Get-LocalCheckRequestRoot { return (Join-Path (Get-LocalCheckSpoolRoot) 'requests') }
 function Get-LocalCheckResultRoot { return (Join-Path (Get-LocalCheckSpoolRoot) 'results') }
@@ -7,14 +7,20 @@ function Get-LocalAmazonPrintProfilePath { return (Join-Path (Get-LocalChannelPr
 function Initialize-PrintChecks {
     foreach($p in @((Get-LocalCheckSpoolRoot),(Get-LocalCheckRequestRoot),(Get-LocalCheckResultRoot),(Get-LocalChannelProfileRoot))){Ensure-Dir $p}
 }
+function ConvertTo-ForgeUtcDateTime($Value) {
+    # Windows PowerShell 5.1 ConvertFrom-Json keeps ISO dates as strings; PowerShell 7 turns them into DateTime.
+    # Casting a DateTime to [string] drops its zone, so handle both shapes explicitly.
+    if($Value -is [DateTime]){ return $Value.ToUniversalTime() }
+    return [DateTime]::Parse([string]$Value,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind).ToUniversalTime()
+}
 function Get-LocalAmazonPrintProfile {
     $path=Get-LocalAmazonPrintProfilePath;if(-not(Test-Path -LiteralPath $path -PathType Leaf)){return $null}
     try{$p=Get-Content -LiteralPath $path -Raw -Encoding UTF8|ConvertFrom-Json}catch{return $null}
     if([string](Get-PropertyValue $p 'schema') -ne 'forge.amazon_print_profile.v1' -or [bool](Get-PropertyValue $p 'attested') -ne $true -or [string](Get-PropertyValue $p 'authority_kind') -ne 'owner_attested_external' -or [bool](Get-PropertyValue $p 'independent_verification') -ne $false){return $null}
     $w=[int](Get-PropertyValue $p 'canvas_width_px');$h=[int](Get-PropertyValue $p 'canvas_height_px');$dpi=[int](Get-PropertyValue $p 'dpi');$fmt=([string](Get-PropertyValue $p 'file_format')).ToLowerInvariant();$bg=([string](Get-PropertyValue $p 'background')).ToLowerInvariant();$tsha=([string](Get-PropertyValue $p 'template_file_sha256')).ToLowerInvariant();$sourceSha=([string](Get-PropertyValue $p 'source_file_sha256')).ToLowerInvariant();$refs=@(Get-PropertyValue $p 'source_refs');$market=[string](Get-PropertyValue $p 'marketplace');$product=[string](Get-PropertyValue $p 'product_type_key');$template=[string](Get-PropertyValue $p 'template_key')
     if($w-lt500 -or $w-gt10000 -or $h-lt500 -or $h-gt10000 -or $dpi-lt72 -or $dpi-gt600 -or $fmt-ne'png' -or $bg-ne'transparent' -or $tsha-notmatch'^[0-9a-f]{64}$' -or $sourceSha-notmatch'^[0-9a-f]{64}$' -or $refs.Count-lt1 -or [string]::IsNullOrWhiteSpace($market) -or [string]::IsNullOrWhiteSpace($product) -or [string]::IsNullOrWhiteSpace($template)){return $null}
-    foreach($r in $refs){try{$u=[Uri][string]$r;$host=$u.Host.ToLowerInvariant();if($u.Scheme-ne'https' -or $host-notin@('developer.amazon.com','merch.amazon.com','sellercentral.amazon.com')){return $null}}catch{return $null}}
-    try{$capt=[DateTime]::Parse([string](Get-PropertyValue $p 'captured_at'),[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind).ToUniversalTime();$vu=[DateTime]::Parse([string](Get-PropertyValue $p 'valid_until'),[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind).ToUniversalTime();if($capt-gt[DateTime]::UtcNow.AddMinutes(10) -or $vu-lt[DateTime]::UtcNow -or $vu-le$capt -or ($vu-$capt).TotalDays-gt120){return $null}}catch{return $null}
+    foreach($r in $refs){try{$u=[Uri][string]$r;$refHost=$u.Host.ToLowerInvariant();if($u.Scheme-ne'https' -or $refHost-notin@('developer.amazon.com','merch.amazon.com','sellercentral.amazon.com')){return $null}}catch{return $null}}
+    try{$capt=ConvertTo-ForgeUtcDateTime (Get-PropertyValue $p 'captured_at');$vu=ConvertTo-ForgeUtcDateTime (Get-PropertyValue $p 'valid_until');if($capt-gt[DateTime]::UtcNow.AddMinutes(10) -or $vu-lt[DateTime]::UtcNow -or $vu-le$capt -or ($vu-$capt).TotalDays-gt120){return $null}}catch{return $null}
     return $p
 }
 function Get-LocalPrintTechnicalSnapshot([string]$ArtworkPath) {

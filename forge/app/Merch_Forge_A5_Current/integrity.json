@@ -4,8 +4,8 @@
   "files": [
     {
       "path": "candidate_manifest.json",
-      "sha256": "a6aa4790e6da4b640d293e4433dbe306040d0aef99ffd4f2d24e71c9005df3da",
-      "size_bytes": 76987
+      "sha256": "3c10ae3cf01d0d8ac4c5eb02d41065cc3e926e245aa9f462fba2dd820982571a",
+      "size_bytes": 77004
     },
     {
       "path": "Configure Image Provider.ps1",
@@ -84,8 +84,8 @@
     },
     {
       "path": "Import Amazon Print Profile.ps1",
-      "sha256": "aee427e4a957d446e5cad55090748ce5b86db9d060b824b78cf4ba0bab6f747d",
-      "size_bytes": 4285
+      "sha256": "fed2d373e519018348e277bf5a18830f70e003eb360c34fc9abe2534c0115b87",
+      "size_bytes": 4291
     },
     {
       "path": "Import Amazon Print Profile.vbs",
@@ -129,8 +129,8 @@
     },
     {
       "path": "MerchForgeWorkbench.ps1",
-      "sha256": "61a88b479d3cddc3f261674724502d89f834169eb2060feb214778bed04e1c06",
-      "size_bytes": 248739
+      "sha256": "aa42e5f9ed736902c917c018c8bc4c3e552666d48699dcd3b3f343da1dd7db22",
+      "size_bytes": 248749
     },
     {
       "path": "Modules\\Forge.BackendStatus.ps1",
@@ -204,8 +204,8 @@
     },
     {
       "path": "Modules\\Forge.PrintChecks.ps1",
-      "sha256": "e8c836083ec2cd94889b3459f04a53c64a9002b083123accea3e5f34101de4d0",
-      "size_bytes": 16663
+      "sha256": "c7f803ef10ce0741dba87e05c7e151e10a2f3ad88f23ec6886f154d2ee164f7d",
+      "size_bytes": 16920
     },
     {
       "path": "Modules\\Forge.ProductNavigation.ps1",
