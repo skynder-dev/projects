@@ -137,6 +137,7 @@ function Apply-LocaleUi {
                 'accepted' {$item.Content=Get-UiText 'queue.accepted' 'Accepted'}
                 'blocked' {$item.Content=Get-UiText 'queue.blocked' 'Blocked'}
                 'research_draft' {$item.Content=Get-UiText 'queue.draft' 'Research draft'}
+                default { $tg=[string]$item.Tag; if($tg -like 'stage:*'){ $item.Content=(Get-UiText 'pipe.filter' 'Stage: {0}') -f (Get-UiText ('pipe.s.'+$tg.Substring(6)) $tg.Substring(6)) } }
             }
         }
     }

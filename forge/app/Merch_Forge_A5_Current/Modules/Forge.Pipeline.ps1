@@ -20,7 +20,7 @@ function Register-PipelineUiText {
             'biz.portfolio.local'='Local core: {0} accepted design(s), {1} valid package(s), {2} verified published product(s). Live listing health is not fabricated.'; 'biz.receipts.some'='Verified published products: {0} · channels: {1}'; 'biz.receipts.none'='No verified local publication receipt imported.';
             'biz.perf.linked'='Verified linked sales rows: {0}. 30-day units: {1}; royalties: ${2:0.00}.'; 'biz.perf.unlinked'='No imported sales rows match a verified Forge product ID. Unlinked rows: {0}.'; 'biz.perf.none'='No local sales CSV imported yet.';
             'biz.sales.some'='Imported: {0} · linked: {1} · unlinked: {2} · undated linked: {3} · future linked: {4}'; 'biz.sales.none'='No local sales data imported.';
-            'pipe.go'='Click to open: {0}';
+            'pipe.go'='Click to open: {0}'; 'pipe.filter'='Stage: {0}';
             'lc.status'='Artwork: {0} · accepted: {1} · ready packages: {2}'; 'lc.yes'='yes'; 'lc.no'='no';
             'metric.hint.receipts'='From imported publication receipts'; 'metric.hint.sales'='From imported sales linked to your products'; 'metric.hint.attention'='Details in Performance';
             'perf.leaders.none'='No verified sales yet.'; 'perf.leader.line'='30 days: {2} pcs, ${3:0.00} · 90 days: {4} pcs, ${5:0.00}';
@@ -46,7 +46,7 @@ function Register-PipelineUiText {
             'biz.portfolio.local'='Локально: принятых макетов {0}, действующих пакетов {1}, проверенных опубликованных товаров {2}. Состояние карточек не выдумывается.'; 'biz.receipts.some'='Проверенных опубликованных товаров: {0} · площадок: {1}'; 'biz.receipts.none'='Проверенных квитанций публикации пока нет.';
             'biz.perf.linked'='Проверенных строк продаж: {0}. Продаж за 30 дней: {1}; роялти: ${2:0.00}.'; 'biz.perf.unlinked'='Ни одна строка продаж не совпала с проверенным товаром Forge. Несвязанных строк: {0}.'; 'biz.perf.none'='CSV с продажами ещё не импортирован.';
             'biz.sales.some'='Импортировано: {0} · связано: {1} · не связано: {2} · без даты: {3} · с будущей датой: {4}'; 'biz.sales.none'='Данные о продажах не импортированы.';
-            'pipe.go'='Нажмите, чтобы открыть: {0}';
+            'pipe.go'='Нажмите, чтобы открыть: {0}'; 'pipe.filter'='Этап: {0}';
             'lc.status'='Макетов: {0} · принят: {1} · готовых пакетов: {2}'; 'lc.yes'='да'; 'lc.no'='нет';
             'metric.hint.receipts'='По импортированным квитанциям публикации'; 'metric.hint.sales'='По импортированным продажам ваших товаров'; 'metric.hint.attention'='Подробности — в «Результатах»';
             'perf.leaders.none'='Проверенных продаж пока нет.'; 'perf.leader.line'='30 дн.: {2} шт., ${3:0.00} · 90 дн.: {4} шт., ${5:0.00}';
@@ -72,7 +72,7 @@ function Register-PipelineUiText {
             'biz.portfolio.local'='Local: {0} diseño(s) aceptado(s), {1} paquete(s) válido(s), {2} producto(s) publicado(s) verificado(s). El estado de las fichas no se inventa.'; 'biz.receipts.some'='Productos publicados verificados: {0} · canales: {1}'; 'biz.receipts.none'='Aún no hay recibos de publicación verificados.';
             'biz.perf.linked'='Filas de ventas verificadas: {0}. Unidades en 30 días: {1}; regalías: ${2:0.00}.'; 'biz.perf.unlinked'='Ninguna fila de ventas coincide con un producto verificado de Forge. Filas sin vincular: {0}.'; 'biz.perf.none'='Aún no se ha importado ningún CSV de ventas.';
             'biz.sales.some'='Importadas: {0} · vinculadas: {1} · sin vincular: {2} · sin fecha: {3} · con fecha futura: {4}'; 'biz.sales.none'='No hay datos de ventas importados.';
-            'pipe.go'='Haz clic para abrir: {0}';
+            'pipe.go'='Haz clic para abrir: {0}'; 'pipe.filter'='Etapa: {0}';
             'lc.status'='Diseños: {0} · aceptado: {1} · paquetes listos: {2}'; 'lc.yes'='sí'; 'lc.no'='no';
             'metric.hint.receipts'='Según los recibos de publicación importados'; 'metric.hint.sales'='Según las ventas importadas de tus productos'; 'metric.hint.attention'='Detalles en Rendimiento';
             'perf.leaders.none'='Aún no hay ventas verificadas.'; 'perf.leader.line'='30 días: {2} uds., ${3:0.00} · 90 días: {4} uds., ${5:0.00}';

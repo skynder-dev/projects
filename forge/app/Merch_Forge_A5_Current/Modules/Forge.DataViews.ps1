@@ -40,7 +40,13 @@ function Apply-Filter {
     $q=([string]$SearchBox.Text).Trim().ToLowerInvariant()
     if(-not [string]::IsNullOrWhiteSpace($q)) { $items=@($items | Where-Object { (([string]$_.title)+' '+([string]$_.hook)+' '+([string]$_.niche_name)+' '+([string]$_.workflow_state)).ToLowerInvariant().Contains($q) }) }
     $state=if($null -ne $FilterBox.SelectedItem){[string]$FilterBox.SelectedItem.Tag}else{''}
-    if(-not [string]::IsNullOrWhiteSpace($state)) { $items=@($items | Where-Object { [string]$_.workflow_state -eq $state }) }
+    if($state -like 'stage:*') {
+        # Pipeline stage from local data (decision, artwork, checks, package, receipt) - same as the Portfolio board.
+        $want=$state.Substring(6); $stageOf=@{}
+        try { $pipe=Get-ForgePortfolioPipeline (Read-LocalCoreState) $items; foreach($r in @($pipe.rows)){ $stageOf[[string]$r.concept_key]=[string]$r.stage } } catch { Write-AppLog 'WARN' ('Stage filter failed: '+$_.Exception.Message) }
+        $items=@($items | Where-Object { $stageOf.ContainsKey([string]$_.concept_key) -and $stageOf[[string]$_.concept_key] -eq $want })
+    }
+    elseif(-not [string]::IsNullOrWhiteSpace($state)) { $items=@($items | Where-Object { [string]$_.workflow_state -eq $state }) }
     $sort=if($null -ne $SortBox.SelectedItem){[string]$SortBox.SelectedItem.Tag}else{'score'}
     if($sort -eq 'title') { $items=@($items | Sort-Object title) }
     elseif($sort -eq 'workflow') { $items=@($items | Sort-Object workflow_state,@{Expression='score_total';Descending=$true}) }

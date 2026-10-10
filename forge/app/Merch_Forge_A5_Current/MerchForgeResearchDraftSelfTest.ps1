@@ -78,6 +78,8 @@ $hasCheckAttestation = Test-Path -LiteralPath (Join-Path $mod 'Forge.CheckAttest
 if($hasCheckAttestation){ . (Join-Path $mod 'Forge.MessageLocalization.ps1'); . (Join-Path $mod 'Forge.CheckAttestation.ps1'); Register-CheckAttestationUiText }
 $hasDataBackup = Test-Path -LiteralPath (Join-Path $mod 'Forge.DataBackup.ps1')
 if($hasDataBackup){ . (Join-Path $mod 'Forge.DataBackup.ps1'); Register-DataBackupUiText }
+$hasListingHints = Test-Path -LiteralPath (Join-Path $mod 'Forge.ListingHints.ps1')
+if($hasListingHints){ . (Join-Path $mod 'Forge.ListingHints.ps1'); Register-ListingHintsUiText }
 $hasAmazonProfile = Test-Path -LiteralPath (Join-Path $mod 'Forge.AmazonProfile.ps1')
 if($hasAmazonProfile){ . (Join-Path $mod 'Forge.AmazonProfile.ps1'); Register-AmazonProfileUiText }
 
@@ -352,6 +354,18 @@ if($Phase -eq 'restart'){
     $eb=$script:Errors.Count; Import-LocalSalesCsvFromPath $csvN
     Check 'sales_csv_without_units_or_royalty_refused' ($script:Errors.Count -eq $eb+1 -and [string]$script:Errors[$script:Errors.Count-1] -like 'This sales CSV has no units or royalty column*') $(if($script:Errors.Count){[string]$script:Errors[$script:Errors.Count-1]}else{''})
     Remove-Item -LiteralPath $csvN -Force -ErrorAction SilentlyContinue
+    # listing hints: Amazon lengths and risky wording (advice only)
+    if($hasListingHints){
+        $ok=@(Get-ListingIssues ([pscustomobject]@{title='Night Shift Nurse Coffee Fuel Funny ICU ER Nurse Gift';brand='Night Shift Supply';bullet1='Funny night shift nurse design.';bullet2='Great for ICU nurses.';description=('A '+('very '*20)+'funny nurse shirt.');keywords='nurse, icu'}))
+        Check 'listing_clean_text_no_issues' ($ok.Count -eq 0) (($ok | ConvertTo-Json -Compress))
+        $bad=@(Get-ListingIssues ([pscustomobject]@{title=('Official Nurse Shirt '+('x'*60));brand='AB';bullet1='<b>Best Seller</b> design';bullet2='<b>Best Seller</b> design';description='short';keywords='official, amazon'}))
+        $kinds=(@($bad | ForEach-Object { $_.field+':'+$_.kind }) -join ',')
+        Check 'listing_problems_found' ($kinds -eq 'title:long,title:word,brand:short,bullet1:word,bullet1:html,bullet2:word,bullet2:html,description:short,bullet2:samebullets') $kinds
+        $prevLoc=$script:Locale; $script:Locale='ru'; $l1=Format-ListingIssue $bad[0]; $l2=Format-ListingIssue $bad[1]; $script:Locale=$prevLoc
+        Check 'listing_hint_text_ru' ($l1 -like '• Название: 81 симв., Amazon разрешает 60.' -and $l2 -like '• Название: «official» обычно не пропускают*') ($l1+' | '+$l2)
+        $notWord=@(Get-ListingIssues ([pscustomobject]@{title='Unofficial guide to salesforce discounts';brand='';bullet1='';bullet2='';description='';keywords=''}) | Where-Object { $_.kind -eq 'word' })
+        Check 'listing_words_match_whole_words_only' ($notWord.Count -eq 1 -and $notWord[0].args[0] -eq 'discount') (($notWord | ConvertTo-Json -Compress))
+    }
     # Amazon print profile: status wording and the owner form -> attestation (the standalone tool re-validates)
     if($hasAmazonProfile){
         $now=[DateTime]::UtcNow

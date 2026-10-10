@@ -13,7 +13,7 @@
     "status": "ACTIVE"
   },
   "desktop": {
-    "app_version": "2.20.2-second-review",
+    "app_version": "2.22.0-stage-filter",
     "native_windows_runtime_verified": false,
     "orange_semantic_palette": true,
     "overview_first": true,
@@ -28,10 +28,10 @@
       "ru",
       "es"
     ],
-    "workbench_sha256": "13c6ecda120d1c6733ae90bb8d9930042c730593e4aac320442960e4bb3000b8",
-    "workbench_size_bytes": 257486,
+    "workbench_sha256": "e36184d9051b541d7f9834787799813c4db5500071f25872594601de6782fe45",
+    "workbench_size_bytes": 258593,
     "native_windows_parser_verified": false,
-    "native_windows_parser_target_sha256": "13c6ecda120d1c6733ae90bb8d9930042c730593e4aac320442960e4bb3000b8",
+    "native_windows_parser_target_sha256": "e36184d9051b541d7f9834787799813c4db5500071f25872594601de6782fe45",
     "native_windows_parser_result_sha256": null,
     "product_home_dashboard": true,
     "brand_home_navigation": "dedicated_home_dashboard",
@@ -82,8 +82,8 @@
       },
       {
         "path": "Modules\\Forge.DataViews.ps1",
-        "sha256": "f301c8fafd4dfad38c71a26c4aedcd3519a7a8ea6652f20fbf5395cdd874b185",
-        "size_bytes": 29179
+        "sha256": "5f6d097d3a2528246a1b1e21368b1337d5d516a05992abdfe0246f97c747edd5",
+        "size_bytes": 29769
       },
       {
         "path": "Modules\\Forge.Diagnostics.ps1",
@@ -126,14 +126,19 @@
         "size_bytes": 4149
       },
       {
+        "path": "Modules\\Forge.ListingHints.ps1",
+        "sha256": "316a5d565c48185b916db2fa2408070ceb7995b0bf9156e17e8750dae08d54d5",
+        "size_bytes": 6318
+      },
+      {
         "path": "Modules\\Forge.LocalCore.ps1",
         "sha256": "6488516923ccd283f3ed06f0bc4522269750de406b24d1988bf30ef1cab17986",
         "size_bytes": 126338
       },
       {
         "path": "Modules\\Forge.Localization.ps1",
-        "sha256": "5c29798b89cacef69a5ec65edd06a4f4705347b242af783f75f715ea982a8afd",
-        "size_bytes": 19442
+        "sha256": "5117898bf7fe35d80f8ef050223ceaee44cceea2ce7c725312d88a7f379a8379",
+        "size_bytes": 19636
       },
       {
         "path": "Modules\\Forge.Media.ps1",
@@ -147,8 +152,8 @@
       },
       {
         "path": "Modules\\Forge.Pipeline.ps1",
-        "sha256": "84f09cb031e0860c3c1c47470ddd2478a9953638db2f9fb561b429c48828a10c",
-        "size_bytes": 32091
+        "sha256": "698c5056cff1a3217832e43cc737bdafc45843e529cc84eec992ac38f6f12b09",
+        "size_bytes": 32178
       },
       {
         "path": "Modules\\Forge.PrintChecks.ps1",
@@ -171,7 +176,7 @@
         "size_bytes": 9674
       }
     ],
-    "runtime_module_count": 23,
+    "runtime_module_count": 24,
     "architecture_contract": "forge.product_architecture.v1",
     "design_baseline_contract": "forge.design_baseline.v1",
     "design_baseline_status": "candidate_pending_owner_visual_freeze",
@@ -325,7 +330,7 @@
     "trusted_local_check_worker": "MerchForgeCheckWorker.ps1",
     "generation_spool_policy": "forge.generation_spool_policy.v1",
     "publication_receipt_print_binding": true,
-    "current_release": "072_Merch_Forge_SECOND_REVIEW_RC",
+    "current_release": "073_Merch_Forge_LISTING_HINTS_RC",
     "generation_authority_module": "Modules\\Forge.GenerationAuthority.ps1",
     "generation_temporal_authority": "future generation job/attempt timestamps beyond 10-minute clock-skew tolerance fail closed before paid dispatch/readiness; shared first-live authority also revalidates non-future ordered attempt/result/import timestamps",
     "amazon_print_profile_temporal_authority": "valid_until must be strictly later than captured_at; captured_at remains bounded by 10-minute future-skew tolerance and 120-day horizon",
@@ -488,11 +493,11 @@
     "owner_separate_parser_zip_required": false,
     "current_release": "044_Merch_Forge_PACKAGE_ROOT_RC"
   },
-  "package_name": "072_Merch_Forge_SECOND_REVIEW_RC",
-  "package_number": 72,
-  "result_intent": "Second independent review fixes",
+  "package_name": "073_Merch_Forge_LISTING_HINTS_RC",
+  "package_number": 73,
+  "result_intent": "Listing hints; Ideas stage filter",
   "schema": "forge.reconciled_candidate_manifest.v1",
-  "stage": "FORGE-072-SECOND-REVIEW-RC",
+  "stage": "FORGE-073-LISTING-HINTS-RC",
   "startup_baseline": {
     "immutable_exact": false,
     "inner_start_sha256": "013e9dcfbfb4c2a42c12b4f6ee208767d80509be9e877160f088a9d2984f51a1",
@@ -652,7 +657,7 @@
     "exact_043_native_windows_stage": "integrity",
     "package_root_native_argv_repair": true
   },
-  "installer_generation": "00000000000000100255",
+  "installer_generation": "00000000000000100256",
   "installer_generation_format": "fixed_width_decimal_v1",
   "installer_guard": {
     "single_writer_lock": "install.lock",

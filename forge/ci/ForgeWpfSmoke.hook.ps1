@@ -302,6 +302,11 @@ $Window.Add_ContentRendered({
             Ci-Click $NavPublishButton 'NavPublishButton'
             $PublicationTitleBox.Text='Night Shift Nurse Coffee Fuel Funny ICU ER Nurse Gift'; $PublicationBrandBox.Text='CI Fixture Brand'; $PublicationBullet1Box.Text='Funny night shift nurse design for ICU and ER nurses.'; $PublicationBullet2Box.Text='Great gift for nurses who run on coffee.'; $PublicationDescriptionBox.Text='CI fixture listing.'; $PublicationKeywordsBox.Text='night shift nurse, icu nurse, er nurse'; $PublicationReasonBox.Text='ci'
             Ci-Flush
+            Ci-Check 'listing_hints_short_description_ru' ($PublicationListingHints.IsVisible -and $PublicationListingHints.Text -like '*Описание: 19 симв., Amazon требует не меньше 75.*') $PublicationListingHints.Text
+            $keepTitle=$PublicationTitleBox.Text; $PublicationTitleBox.Text='Official Night Shift Nurse Coffee Fuel Funny ICU ER Nurse Gift Tee'; Ci-Flush
+            Ci-Check 'listing_hints_long_title_and_word_ru' ($PublicationListingHints.Text -like '*Название: 66 симв., Amazon разрешает 60.*' -and $PublicationListingHints.Text -like '*«official»*') $PublicationListingHints.Text
+            Ci-Shot '09d-listing-hints'
+            $PublicationTitleBox.Text=$keepTitle; Ci-Flush
             Ci-Check 'pkg_save_listing_enabled' ([bool]$SavePublicationButton.IsEnabled)
             if($SavePublicationButton.IsEnabled){ Ci-Click $SavePublicationButton 'SavePublicationButton' } else { $null=Save-LocalPublicationMetadata }
             $lc=Get-LocalCoreConcept $key
@@ -479,6 +484,12 @@ $Window.Add_ContentRendered({
             $mine=@(@($PortfolioPipelineList.Items) | Where-Object { [bool](Get-PropertyValue $_.queue_item 'is_local_draft') })
             Ci-Check 'portfolio_after_restart_ru' ($mine.Count -eq 1 -and [string]$mine[0].stage_label -eq 'ОСТАВИТЬ · нет макета' -and $PortfolioPipelineTitle.Text -eq 'Конвейер') $(if($mine.Count){[string]$mine[0].stage_label}else{'missing'})
             Ci-Shot '09-portfolio-ru'
+            # Ideas list filtered by pipeline stage
+            $fi=@(@($FilterBox.Items) | Where-Object { [string]$_.Tag -eq 'stage:keep_no_artwork' })
+            if($fi.Count){ $FilterBox.SelectedItem=$fi[0]; Ci-Flush }
+            $shown=@($ConceptList.Items)
+            Ci-Check 'ideas_stage_filter_ru' ($fi.Count -eq 1 -and [string]$fi[0].Content -eq 'Этап: ОСТАВИТЬ · нет макета' -and $shown.Count -eq 1 -and [bool](Get-PropertyValue $shown[0] 'is_local_draft')) ($(if($fi.Count){[string]$fi[0].Content}else{'no item'})+' / shown '+$shown.Count)
+            $FilterBox.SelectedIndex=0; Ci-Flush
         }
         if($script:Ci.phase -ne 'offline'){ Ci-Check 'only_discover_snapshot_api' (@($script:Ci.api | Where-Object { $_ -ne 'discover_snapshot' }).Count -eq 0) (($script:Ci.api) -join ',') }
         Ci-Check 'no_network' ($script:Ci.network -eq 0)
