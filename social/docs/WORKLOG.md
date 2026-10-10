@@ -12,3 +12,6 @@
 - Run 38020038390: 2 Reels rendered and auto-accepted, then **retracted by review**: agency taken from `synopsis.agencyName` = grantor contact ("Lynn Bailey Grantor").
 - Fix: agency from `agencyDetails`/`topAgencyDetails`, `clean_agency` guard, informative purpose sentence, topic-family dedupe, ASR (faster-whisper base.en) narration check. 20 tests.
 - Run 38020401436: 2 Reels accepted (363902 OJJDP, 363998 DOT SBTTAC R3); rebuild byte-identical; ASR recall 0.85/0.88, all numbers heard.
+- Run 38020613636: +2 Reels (363767, 345738). Found: results-branch archive ran from `social/` subdir and dropped older runs → fixed (archive from repo root), restored lost runs.
+- Run 38020956930: +1 Reel (363762); history preserved. Fixed "1 awards", agency " - ERA" suffix, applicant ordering.
+- Merged to `main` (workflow now dispatchable). 5 accepted Reels on `social-results`.
