@@ -20,6 +20,13 @@ function Register-PipelineUiText {
             'biz.portfolio.local'='Local core: {0} accepted design(s), {1} valid package(s), {2} verified published product(s). Live listing health is not fabricated.'; 'biz.receipts.some'='Verified published products: {0} · channels: {1}'; 'biz.receipts.none'='No verified local publication receipt imported.';
             'biz.perf.linked'='Verified linked sales rows: {0}. 30-day units: {1}; royalties: ${2:0.00}.'; 'biz.perf.unlinked'='No imported sales rows match a verified Forge product ID. Unlinked rows: {0}.'; 'biz.perf.none'='No local sales CSV imported yet.';
             'biz.sales.some'='Imported: {0} · linked: {1} · unlinked: {2} · undated linked: {3} · future linked: {4}'; 'biz.sales.none'='No local sales data imported.';
+            'perf.leaders.none'='No verified sales yet.'; 'perf.leader.line'='{0} · {1} — 30 days: {2} pcs, ${3:0.00} · 90 days: {4} pcs, ${5:0.00}';
+            'perf.att.none'='Nothing needs attention.'; 'perf.att.nosales'='No sales for 30 days: {0} ({1}), published {2}.';
+            'perf.att.unknown'='Sales with an unknown product ID {0}: {1} row(s). Import the publication receipt for this product so they count.';
+            'perf.att.noprofile'='No valid Amazon print profile: packages cannot become ready. Import the profile in Checks.';
+            'perf.att.profile'='Amazon print profile expires {0}. Re-attest it before building new packages.';
+            'perf.att.unpublished'='Package ready since {1} but not marked as published: {0}. Upload it and import the receipt.';
+            'perf.att.undated'='{0} linked sales row(s) have no date and are not counted.';
             'pipe.empty'='No ideas yet. Create a draft from Discover or reconnect to load ideas.'; 'pipe.draft'='research draft'; 'pipe.niche.none'='(no niche)'
         }
         ru=@{
@@ -34,6 +41,13 @@ function Register-PipelineUiText {
             'biz.portfolio.local'='Локально: принятых макетов {0}, действующих пакетов {1}, проверенных опубликованных товаров {2}. Состояние карточек не выдумывается.'; 'biz.receipts.some'='Проверенных опубликованных товаров: {0} · площадок: {1}'; 'biz.receipts.none'='Проверенных квитанций публикации пока нет.';
             'biz.perf.linked'='Проверенных строк продаж: {0}. Продаж за 30 дней: {1}; роялти: ${2:0.00}.'; 'biz.perf.unlinked'='Ни одна строка продаж не совпала с проверенным товаром Forge. Несвязанных строк: {0}.'; 'biz.perf.none'='CSV с продажами ещё не импортирован.';
             'biz.sales.some'='Импортировано: {0} · связано: {1} · не связано: {2} · без даты: {3} · с будущей датой: {4}'; 'biz.sales.none'='Данные о продажах не импортированы.';
+            'perf.leaders.none'='Проверенных продаж пока нет.'; 'perf.leader.line'='{0} · {1} — 30 дн.: {2} шт., ${3:0.00} · 90 дн.: {4} шт., ${5:0.00}';
+            'perf.att.none'='Ничего не требует внимания.'; 'perf.att.nosales'='Нет продаж 30 дней: {0} ({1}), опубликован {2}.';
+            'perf.att.unknown'='Продажи с неизвестным ID товара {0}: строк {1}. Импортируйте квитанцию публикации этого товара, чтобы они учитывались.';
+            'perf.att.noprofile'='Нет действующего Amazon-профиля печати: пакеты не смогут стать готовыми. Импортируйте профиль в «Проверках».';
+            'perf.att.profile'='Amazon-профиль печати истекает {0}. Обновите его до сборки новых пакетов.';
+            'perf.att.unpublished'='Пакет готов с {1}, но не отмечен как опубликованный: {0}. Загрузите его и импортируйте квитанцию.';
+            'perf.att.undated'='Строк продаж без даты: {0} — они не учитываются.';
             'pipe.empty'='Идей пока нет. Создайте черновик в «Поиске» или подключитесь, чтобы загрузить идеи.'; 'pipe.draft'='черновик исследования'; 'pipe.niche.none'='(без ниши)'
         }
         es=@{
@@ -48,6 +62,13 @@ function Register-PipelineUiText {
             'biz.portfolio.local'='Local: {0} diseño(s) aceptado(s), {1} paquete(s) válido(s), {2} producto(s) publicado(s) verificado(s). El estado de las fichas no se inventa.'; 'biz.receipts.some'='Productos publicados verificados: {0} · canales: {1}'; 'biz.receipts.none'='Aún no hay recibos de publicación verificados.';
             'biz.perf.linked'='Filas de ventas verificadas: {0}. Unidades en 30 días: {1}; regalías: ${2:0.00}.'; 'biz.perf.unlinked'='Ninguna fila de ventas coincide con un producto verificado de Forge. Filas sin vincular: {0}.'; 'biz.perf.none'='Aún no se ha importado ningún CSV de ventas.';
             'biz.sales.some'='Importadas: {0} · vinculadas: {1} · sin vincular: {2} · sin fecha: {3} · con fecha futura: {4}'; 'biz.sales.none'='No hay datos de ventas importados.';
+            'perf.leaders.none'='Aún no hay ventas verificadas.'; 'perf.leader.line'='{0} · {1} — 30 días: {2} uds., ${3:0.00} · 90 días: {4} uds., ${5:0.00}';
+            'perf.att.none'='Nada requiere atención.'; 'perf.att.nosales'='Sin ventas en 30 días: {0} ({1}), publicado {2}.';
+            'perf.att.unknown'='Ventas con ID de producto desconocido {0}: {1} fila(s). Importa el recibo de publicación de este producto para que cuenten.';
+            'perf.att.noprofile'='No hay un perfil de impresión de Amazon válido: los paquetes no podrán estar listos. Importa el perfil en Revisiones.';
+            'perf.att.profile'='El perfil de impresión de Amazon caduca el {0}. Renuévalo antes de crear paquetes nuevos.';
+            'perf.att.unpublished'='Paquete listo desde {1} pero no marcado como publicado: {0}. Súbelo e importa el recibo.';
+            'perf.att.undated'='{0} fila(s) de ventas vinculadas sin fecha no se cuentan.';
             'pipe.empty'='Aún no hay ideas. Crea un borrador desde Descubrir o reconecta para cargar ideas.'; 'pipe.draft'='borrador de investigación'; 'pipe.niche.none'='(sin nicho)'
         }
     }
@@ -144,4 +165,69 @@ function Open-PortfolioPipelineSelection {
         # Open-ConceptItem returns early when the idea is already open; make sure we still land on it.
         if($null -ne $script:Current -and [string](Get-PropertyValue $script:Current.concept 'concept_key') -eq [string]$sel.concept_key){Show-ProductSection 'ideas'}
     } catch { Show-Error ('Could not open the idea: '+$_.Exception.Message) } finally { $script:PipelineOpening=$false }
+}
+
+# ---------- Performance insights (verified data only) ----------
+function ConvertTo-PerfUtc($Value) {
+    if($Value -is [DateTime]){ return $Value.ToUniversalTime() }
+    return [DateTime]::Parse([string]$Value,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind).ToUniversalTime()
+}
+function Get-ForgePerformanceInsights($State,[datetime]$NowUtc=([DateTime]::UtcNow)) {
+    Reconcile-LocalSalesLinks $State
+    $today=$NowUtc.Date
+    $products=@{}
+    foreach($r in @(Get-PropertyValue $State 'publication_receipts')){
+        if($null -eq $r){continue}; $ok=$false; try{$ok=Test-LocalPublicationReceiptAuthority $State $r}catch{}; if(-not $ok){continue}
+        $pk=Get-LocalPublicationProductKey $r; if([string]::IsNullOrWhiteSpace($pk) -or $products.ContainsKey($pk)){continue}
+        $lc=Get-LocalCoreConcept ([string](Get-PropertyValue $r 'concept_key')) $State
+        $pub=$null; try{$pub=ConvertTo-PerfUtc (Get-PropertyValue $r 'published_at')}catch{}
+        $title=[string](Get-PropertyValue $lc 'title'); if([string]::IsNullOrWhiteSpace($title)){$title=[string](Get-PropertyValue $r 'concept_key')}
+        $products[$pk]=[pscustomobject]@{product_key=$pk;concept_key=[string](Get-PropertyValue $r 'concept_key');title=$title;product_id=[string](Get-PropertyValue $r 'product_id');published_at=$pub;units30=0.0;roy30=0.0;units90=0.0;roy90=0.0}
+    }
+    $unknown=@{}; $undated=0
+    foreach($row in @(Get-PropertyValue $State 'sales_rows')){
+        if($null -eq $row){continue}
+        $id=([string](Get-PropertyValue $row 'product_id')).Trim()
+        if(-not [bool](Get-PropertyValue $row 'linked')){ if($id){ if(-not $unknown.ContainsKey($id)){$unknown[$id]=0}; $unknown[$id]++ }; continue }
+        $pk=[string](Get-PropertyValue $row 'linked_product_key'); if(-not $products.ContainsKey($pk)){continue}
+        $d=$null; $dv=Get-PropertyValue $row 'date'; if($dv -is [DateTime]){$d=$dv}else{ try{$d=[DateTime]::ParseExact([string]$dv,'yyyy-MM-dd',[Globalization.CultureInfo]::InvariantCulture)}catch{} }
+        if($null -eq $d){$undated++;continue}
+        $age=($today-$d.Date).TotalDays; if($age -lt 0){continue}
+        $u=0.0;$y=0.0; try{$u=[double](Get-PropertyValue $row 'units')}catch{}; try{$y=[double](Get-PropertyValue $row 'royalty')}catch{}
+        $p=$products[$pk]; if($age -le 90){$p.units90+=$u;$p.roy90+=$y}; if($age -le 30){$p.units30+=$u;$p.roy30+=$y}
+    }
+    $leaders=@($products.Values | Where-Object { $_.units90 -gt 0 -or $_.roy90 -gt 0 } | Sort-Object @{Expression='roy30';Descending=$true},@{Expression='units30';Descending=$true},@{Expression='roy90';Descending=$true} | Select-Object -First 5)
+    $att=New-Object System.Collections.Generic.List[object]
+    foreach($p in $products.Values){ if($p.units30 -le 0 -and $null -ne $p.published_at -and ($NowUtc-$p.published_at).TotalDays -ge 30){ $att.Add([pscustomobject]@{kind='nosales';args=@($p.title,$p.product_id,$p.published_at.ToString('yyyy-MM-dd'))}) } }
+    foreach($k in ($unknown.Keys | Sort-Object)){ $att.Add([pscustomobject]@{kind='unknown';args=@($k,$unknown[$k])}) }
+    $prof=$null; try{$prof=Get-LocalAmazonPrintProfile}catch{}
+    $anyAccepted=$false; foreach($c in @(Get-PropertyValue $State 'concepts')){ if($null -ne $c -and $null -ne (Get-PropertyValue $c 'active_acceptance')){$anyAccepted=$true;break} }
+    if($null -eq $prof){ if($anyAccepted){ $att.Add([pscustomobject]@{kind='noprofile';args=@()}) } }
+    else { try{ $vu=ConvertTo-PerfUtc (Get-PropertyValue $prof 'valid_until'); if(($vu-$NowUtc).TotalDays -le 7){ $att.Add([pscustomobject]@{kind='profile';args=@($vu.ToString('yyyy-MM-dd'))}) } }catch{} }
+    $publishedConcepts=@{}; foreach($p in $products.Values){$publishedConcepts[$p.concept_key]=$true}
+    foreach($c in @(Get-PropertyValue $State 'concepts')){
+        if($null -eq $c){continue}; $ck=[string](Get-PropertyValue $c 'concept_key'); if($publishedConcepts.ContainsKey($ck)){continue}
+        foreach($pkg in @(Get-PropertyValue $c 'packages')){
+            if($null -eq $pkg -or -not [bool](Get-PropertyValue $pkg 'valid') -or [string](Get-PropertyValue $pkg 'status') -ne 'READY_FOR_MANUAL_UPLOAD'){continue}
+            $when=$null; try{$when=ConvertTo-PerfUtc (Get-PropertyValue $pkg 'created_at')}catch{}
+            if($null -eq $when){ $path=[string](Get-PropertyValue $pkg 'path'); if($path -and (Test-Path -LiteralPath $path -PathType Leaf)){ $when=(Get-Item -LiteralPath $path).LastWriteTimeUtc } }
+            if($null -ne $when -and ($NowUtc-$when).TotalDays -ge 7){ $att.Add([pscustomobject]@{kind='unpublished';args=@([string](Get-PropertyValue $c 'title'),$when.ToString('yyyy-MM-dd'))}); break }
+        }
+    }
+    if($undated -gt 0){ $att.Add([pscustomobject]@{kind='undated';args=@($undated)}) }
+    [object[]]$attArr=$att.ToArray(); [object[]]$prodArr=@(foreach($v in $products.Values){$v})
+    return [pscustomobject]@{leaders=$leaders;attention=$attArr;products=$prodArr}
+}
+function Update-PerformanceInsightsSurface {
+    if($null -eq $PerformanceLeadersText -or $null -eq $PerformanceAttentionText){return}
+    $state=$null; try{$state=Read-LocalCoreState}catch{return}
+    $ins=Get-ForgePerformanceInsights $state
+    $lines=New-Object System.Collections.Generic.List[string]
+    $inv=[Globalization.CultureInfo]::InvariantCulture
+    foreach($l in @($ins.leaders)){ [void]$lines.Add([string]::Format($inv,(Get-UiText 'perf.leader.line' '{0} · {1}'),[object[]]@($l.title,$l.product_id,[int]$l.units30,[double]$l.roy30,[int]$l.units90,[double]$l.roy90))) }
+    $PerformanceLeadersText.Text=if($lines.Count){$lines -join [Environment]::NewLine}else{Get-UiText 'perf.leaders.none' 'No verified sales yet.'}
+    $a=New-Object System.Collections.Generic.List[string]
+    foreach($x in @($ins.attention)){ $tpl=Get-UiText ('perf.att.'+$x.kind) ''; if($tpl){ [void]$a.Add(('• '+[string]::Format($inv,$tpl,[object[]]@($x.args)))) } }
+    $PerformanceAttentionText.Text=if($a.Count){$a -join [Environment]::NewLine}else{Get-UiText 'perf.att.none' 'Nothing needs attention.'}
+    if($null -ne $HomeMetricAttentionValue){ $HomeMetricAttentionValue.Text=if($a.Count){[string]$a.Count}elseif(@($ins.products).Count){'0'}else{'—'} }
 }

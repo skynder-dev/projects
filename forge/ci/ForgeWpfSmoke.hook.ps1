@@ -222,6 +222,9 @@ $Window.Add_ContentRendered({
                 Ci-Check 'pkg_performance_linked_only' ($PerfSales7Value.Text -eq '3' -and $PerfSales30Value.Text -eq '5' -and $PerfRoyalties30Value.Text -eq '$7.50') ($PerfSales7Value.Text+' / '+$PerfSales30Value.Text+' / '+$PerfRoyalties30Value.Text)
                 Ci-Check 'pkg_performance_text_shows_amount' ($PerformanceEmpty.Text -like '*$7.50*' -and $PerformanceEmpty.Text -like '*роялти*') $PerformanceEmpty.Text
                 Ci-Check 'pkg_home_text_shows_amounts' ($HomePerformanceBody.Text -like '*$4.50*' -and $HomePerformanceBody.Text -like '*$7.50*') $HomePerformanceBody.Text
+                Ci-Check 'perf_leaders_list_product' ($PerformanceLeadersText.Text -like '*CI-ASIN-0001*' -and $PerformanceLeadersText.Text -like '*30 дн.: 5 шт., $7.50*') $PerformanceLeadersText.Text
+                Ci-Check 'perf_attention_unknown_asin' ($PerformanceAttentionText.Text -like '*UNKNOWN-ASIN*' -and $PerformanceAttentionText.Text -like '*неизвестным ID*' -and $PerformanceAttentionText.Text -notlike '*CI-ASIN-0001*') $PerformanceAttentionText.Text
+                Ci-Check 'home_attention_count' ($HomeMetricAttentionValue.Text -eq '1') $HomeMetricAttentionValue.Text
                 Ci-Shot '14-performance'
             }
         } else {

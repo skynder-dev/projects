@@ -227,6 +227,29 @@ if($Phase -eq 'restart'){
         Check 'pipeline_keep_sorted_first' ([string]@($pipe.rows)[0].concept_key -eq [string]$k.key) ([string]@($pipe.rows)[0].concept_key)
         $nurses=@($pipe.niches | Where-Object { $_.niche_name -like '*Night-shift nurses*' })
         Check 'pipeline_niche_counts' ($nurses.Count -eq 1 -and $nurses[0].keep -eq 1 -and $nurses[0].total -eq 1) ($nurses | ConvertTo-Json -Compress)
+        # performance insights: pure aggregation over a synthetic verified state (authority + profile stubbed in a child scope)
+        $now=[DateTime]::UtcNow; $d=[Globalization.CultureInfo]::InvariantCulture
+        $ps=[pscustomobject]@{
+            concepts=@([pscustomobject]@{concept_key='pc-1';title='Quiet Product';active_acceptance=[pscustomobject]@{x=1};packages=@()},
+                       [pscustomobject]@{concept_key='pc-2';title='Waiting Package';active_acceptance=[pscustomobject]@{x=1};packages=@([pscustomobject]@{valid=$true;status='READY_FOR_MANUAL_UPLOAD';created_at=$now.AddDays(-10).ToString('o');path=''})},
+                       [pscustomobject]@{concept_key='pc-3';title='Best Seller';active_acceptance=[pscustomobject]@{x=1};packages=@()})
+            publication_receipts=@([pscustomobject]@{concept_key='pc-1';channel='amazon_merch';marketplace='amazon.com_us';product_id='ASIN-QUIET';published_at=$now.AddDays(-40).ToString('o')},
+                                   [pscustomobject]@{concept_key='pc-3';channel='amazon_merch';marketplace='amazon.com_us';product_id='ASIN-BEST';published_at=$now.AddDays(-50).ToString('o')})
+            sales_rows=@([pscustomobject]@{date=$now.AddDays(-5).ToString('yyyy-MM-dd',$d);units=2;royalty=5.0;product_id='ASIN-BEST'},
+                         [pscustomobject]@{date=$now.AddDays(-60).ToString('yyyy-MM-dd',$d);units=1;royalty=1.0;product_id='ASIN-BEST'},
+                         [pscustomobject]@{date='';units=7;royalty=7.0;product_id='ASIN-BEST'},
+                         [pscustomobject]@{date=$now.AddDays(-1).ToString('yyyy-MM-dd',$d);units=4;royalty=4.0;product_id='ASIN-OTHER'},
+                         [pscustomobject]@{date=$now.AddDays(-2).ToString('yyyy-MM-dd',$d);units=1;royalty=1.0;product_id='ASIN-OTHER'})
+        }
+        $ins=& { function Test-LocalPublicationReceiptAuthority($State,$Receipt){ return $true }; function Get-LocalAmazonPrintProfile { return [pscustomobject]@{valid_until=([DateTime]::UtcNow.AddDays(3).ToString('o'))} }; Get-ForgePerformanceInsights $ps $now }
+        $lead=@($ins.leaders)
+        Check 'perf_leader_best_seller' ($lead.Count -eq 1 -and $lead[0].product_id -eq 'ASIN-BEST' -and $lead[0].units30 -eq 2 -and $lead[0].roy30 -eq 5.0 -and $lead[0].units90 -eq 3 -and $lead[0].roy90 -eq 6.0) ($lead | ConvertTo-Json -Compress -Depth 3)
+        $kinds=@($ins.attention | ForEach-Object { $_.kind }) -join ','
+        Check 'perf_attention_kinds' ($kinds -eq 'nosales,unknown,profile,unpublished,undated') $kinds
+        $unk=@($ins.attention | Where-Object { $_.kind -eq 'unknown' })
+        Check 'perf_unknown_counted_by_id' ($unk.Count -eq 1 -and $unk[0].args[0] -eq 'ASIN-OTHER' -and $unk[0].args[1] -eq 2) ($unk | ConvertTo-Json -Compress -Depth 3)
+        $ins2=& { function Test-LocalPublicationReceiptAuthority($State,$Receipt){ return $false }; function Get-LocalAmazonPrintProfile { return $null }; Get-ForgePerformanceInsights $ps $now }
+        Check 'perf_unverified_receipts_ignored' (@($ins2.leaders).Count -eq 0 -and (@($ins2.attention | ForEach-Object { $_.kind }) -join ',') -eq 'unknown,unknown,noprofile,unpublished') (@($ins2.attention | ForEach-Object { $_.kind }) -join ',')
     }
     # no-dispatch artwork preparation
     Export-LocalGenerationBrief

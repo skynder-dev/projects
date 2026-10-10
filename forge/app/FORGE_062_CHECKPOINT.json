@@ -1,9 +1,9 @@
 {
   "schema": "forge.release_checkpoint.v1",
-  "package": "061_Merch_Forge_READABLE_ERRORS_RC",
-  "previous_package": "060_Merch_Forge_LOCALIZED_MESSAGES_RC",
-  "app_version": "2.12.1-forge-readable-errors",
-  "installer_generation": "00000000000000100244",
+  "package": "062_Merch_Forge_PERFORMANCE_INSIGHTS_RC",
+  "previous_package": "061_Merch_Forge_READABLE_ERRORS_RC",
+  "app_version": "2.13.0-forge-performance-insights",
+  "installer_generation": "00000000000000100245",
   "static": "13/13",
   "checks": {
     "xaml_xml_parse": true,
@@ -20,7 +20,7 @@
     "manifest_authority_all_false": true,
     "headless_selftest_pass": true
   },
-  "headless_selftest": "PASS 72/72 (PowerShell 7, Linux)",
+  "headless_selftest": "PASS 76/76 (PowerShell 7, Linux)",
   "integrity": "55 files",
   "windows_proof": "see GitHub workflow forge-windows (branch forge-ci-results)",
   "authority": {
