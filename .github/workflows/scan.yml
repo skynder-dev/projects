@@ -53,8 +53,12 @@ jobs:
           if [ -n "$d" ] && [ -f "$d/REPORT.md" ]; then cat "$d/REPORT.md" >> "$GITHUB_STEP_SUMMARY"; fi
           cat runs/console.log >> "$GITHUB_STEP_SUMMARY" || true
           rm -rf runs/*/cache
+          cp runs/console.log "runs/console_${GITHUB_RUN_ID}.log" || true
+          rm -rf /tmp/newruns && cp -r runs /tmp/newruns
           git config user.name "reveng-bot"; git config user.email "bot@users.noreply.github.com"
-          git checkout -B results
+          # accumulate: build on the existing results branch so earlier runs (needed for resume) are never lost
+          if git fetch --depth 1 origin results:refs/remotes/origin/results 2>/dev/null; then git checkout -f -B results origin/results; else git checkout -B results; fi
+          mkdir -p runs && cp -r /tmp/newruns/. runs/
           git add -f runs
           git commit -m "scan results ${GITHUB_RUN_ID}" || true
-          git push --force origin results
+          git push origin results
