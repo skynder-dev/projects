@@ -3,9 +3,10 @@
 Owner: nothing required.
 
 Autonomous queue (in order):
-1. Confirm the live `discover_snapshot` field names (niche id, note→niche link) by reading the deployed forge-app function source / schema **read-only**, and align draft provenance matching with them.
-2. Performance screen: the same honesty rules as Portfolio. Sales only from verified receipts plus imported CSV. Show winners and needs-attention from real linked rows; keep empty states truthful.
-3. Cosmetic: duplicated page titles and the narrow Discover header at ~1024 px.
+1. Status-bar and dialog messages after actions are still English in RU/ES (e.g., "Imported 3 row(s)…", "Local manual-upload package created…"). Route them through localization, starting with the core path.
+2. Performance "Leaders / Needs attention": list real linked products (units/royalties per product) and published products without sales. Keep empty states truthful.
+3. Cosmetic: duplicated page titles (header + page) and the narrow Discover header at ~1024 px.
+4. Owner/backend decision (not autonomous): the live `discover_snapshot` has no note→niche link (the DB `research_notes` table has none either). Drafts therefore get 0 linked notes. Exposing a link needs a forge-app change, which is owner-gated.
 
 Owner-only gates (unchanged): paid generation, publishing/submission, backend write contract for promoting KEEP'd drafts to server ideas.
 

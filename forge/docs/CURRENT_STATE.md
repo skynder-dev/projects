@@ -1,7 +1,7 @@
 # CURRENT STATE — Merch Forge
 
-## Current release: 058_Merch_Forge_PORTFOLIO_PIPELINE_RC
-`forge/releases/058_Merch_Forge_PORTFOLIO_PIPELINE_RC.zip` (SHA-256 in the `.sha256` file next to it). App `2.10.0-forge-portfolio-pipeline`, backend minimum `forge-app 0.2.70` (unchanged). Rollback: branch `forge-last-green`; older ZIPs in releases/; 054 and frozen 050 in archive/.
+## Current release: 059_Merch_Forge_LOCAL_PACKAGE_PATH_RC
+`forge/releases/059_Merch_Forge_LOCAL_PACKAGE_PATH_RC.zip` (SHA-256 in the `.sha256` file next to it). App `2.11.0-forge-local-package-path`, backend minimum `forge-app 0.2.70` (unchanged). Rollback: branch `forge-last-green`; older ZIPs in releases/; 054 and frozen 050 in archive/.
 
 ## How proof works now
 Every push that touches `forge/` runs the **forge-windows** GitHub workflow on a real Windows machine (free for this public repo):
@@ -12,19 +12,27 @@ Every push that touches `forge/` runs the **forge-windows** GitHub workflow on a
 Results (JSON, screenshots, app logs) are published to the branch **`forge-ci-results`** (`latest/`), and failures also appear as annotations on the run.
 The app gets a labelled fixture only for `discover_snapshot`; every other backend or network call fails by construction. No secrets, no paid calls.
 
-## Proven on real Windows (commit 00631e3, all steps green)
+## Proven on real Windows (commit f700120, all steps green)
 | Step | Result |
 |---|---|
 | Startup preflight as the launcher runs it | PASS |
-| Provider pipeline self-test (generation → import → exact accept → Amazon profile → trusted check → package gate → spool) | PASS |
+| Provider pipeline self-test | PASS |
 | Research-draft + pipeline self-test, Windows PowerShell 5.1 | 72/72 |
-| WPF window: Discover → draft → KEEP → edit rev 2 → brief → **Portfolio board (counts, list, click-to-open, full width)** → RU | 45/45 |
-| WPF window after restart (draft, rev 2, KEEP, RU, Portfolio in RU) | 13/13 |
+| Window, phase 1: Discover → draft → KEEP → edit rev 2 → brief → Portfolio board → RU | 45/45 |
+| Window, phase 2 (restart): draft, rev 2, KEEP, RU, Portfolio in RU | 13/13 |
+| **Window, phase 3 (full local path)**: import artwork → exact accept (button) → Amazon profile via the real importer → listing (Save) → trusted print check → owner evidence from the app's template → **READY_FOR_MANUAL_UPLOAD package** (Build button) → publication receipt → Portfolio "Published" → sales CSV → Performance counts linked rows only | **23/23** |
 
-## Features in the app (055–058)
+All CI data are labelled fixtures. Nothing is uploaded or published, and the "owner attestations" in CI are fixtures, not real reviews.
+
+## Features in the app (055–059)
 - Discover → select niche → **Create concept draft**: a LOCAL draft bound to its research (niche id, row SHA-256, snapshot time, explicitly linked notes only). It appears in Ideas with KEEP/EDIT/REGEN/SKIP, supports local revisions (a new revision resets the decision) and a no-dispatch brief. Generate and live server actions are blocked for drafts.
 - 058 Portfolio **pipeline board**: counters (no decision / KEEP / artwork accepted / checks passed / package ready / published), Next actions sorted closest-to-publishing first (click opens the idea), and decisions by niche. Read-only, local data, EN/RU/ES. Home/Portfolio/Performance now use the full window width.
 - 056 fixes found by the first Windows run: a language switch no longer resets live screens; the status bar no longer sticks on "Working…"; PS 5.1 spool cleanup works.
+
+## Fixed in 059 (pre-existing; found by the full-path CI phase)
+- Selecting an imported or locally generated artwork in the Artwork list **threw** (StrictMode: the list read server-only fields). Local artwork now carries neutral defaults.
+- Royalty amounts were **blank** in the Performance/Home texts (`"${2:0.00}"` in double quotes is a variable name). Those texts are now EN/RU/ES.
+- Imports were split into dialog + `*FromPath` (same behaviour), and `Import Amazon Print Profile.ps1` gained `-SourcePath/-NonInteractive`. These make the full path testable.
 
 ## Fixed in 057 (all pre-existing since ≤054; found by the Windows provider self-test)
 - An owner-attested Amazon print profile was **never accepted**: the profile check and the `Import Amazon Print Profile` tool assigned to the read-only `$host` variable.

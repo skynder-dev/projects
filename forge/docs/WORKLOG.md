@@ -41,3 +41,9 @@
 - New module Forge.Pipeline.ps1: per-idea stage from LocalCore (decision bound to revision, current acceptance, check gate, READY package for current revision, verified receipt), summary, and per-niche decisions. The Portfolio card is read-only; a click opens the idea.
 - Windows screenshots exposed a pre-existing layout bug: QueueColumn MinWidth=340 kept an empty column on Home/Portfolio/Performance. Fixed. Counters changed to 3x2. Added RU/ES for 3 untranslated Portfolio captions.
 - Tests: 5 headless pipeline checks (72/72); 7 window checks incl. click-to-open and full width (45/45 create, 13/13 restart).
+
+## 059 — full local path in Windows CI (2026-10-09 night)
+- Read the live forge-app `discover_snapshot` source read-only via the Supabase connector. Niche id = `niche_key` (already matched). Notes have no niche link, and neither does `merch.research_notes` → drafts get 0 linked notes (fail-closed; recorded as an owner/backend item). Provenance now also stores source url/authority_level/last_checked_at. CI fixtures mirror the live shape.
+- Imports split into dialog + FromPath. Profile importer gained `-SourcePath/-NonInteractive`.
+- New CI phase "package" drives the real window to READY_FOR_MANUAL_UPLOAD, receipt and sales. It found 2 pre-existing bugs: a StrictMode throw when selecting local artwork, and blank royalty amounts (`${2:0.00}` in double quotes). Both fixed. Performance/Home business texts are localized.
+- Removed the "LocalCore byte-identical to 054" build check, since LocalCore now changes legitimately.
