@@ -1,0 +1,775 @@
+{
+ "schema": "forge.message_translations.v1",
+ "entries": [
+  {
+   "en": "A completed provider result is waiting for verified import/recovery before another paid request can start: {0}",
+   "ru": "Готовый результат генерации ждёт проверенного импорта/восстановления, прежде чем можно начать новый платный запрос: {0}",
+   "es": "Un resultado del proveedor espera importación/recuperación verificada antes de iniciar otra solicitud de pago: {0}"
+  },
+  {
+   "en": "A current accepted visual is required before starting an accepted-history iteration.",
+   "ru": "Сначала нужен принятый текущий визуал, чтобы начать итерацию из истории принятых.",
+   "es": "Se requiere un visual aceptado actual antes de iniciar una iteración desde el historial aceptado."
+  },
+  {
+   "en": "A current Amazon preflight package is required first.",
+   "ru": "Сначала нужен актуальный предварительный пакет Amazon.",
+   "es": "Primero se requiere un paquete de prevalidación de Amazon actual."
+  },
+  {
+   "en": "A draft from this exact research already exists: {0}",
+   "ru": "Черновик из этого же исследования уже есть: {0}",
+   "es": "Ya existe un borrador de esta misma investigación: {0}"
+  },
+  {
+   "en": "About panel is temporarily unavailable.",
+   "ru": "Панель «О программе» временно недоступна.",
+   "es": "El panel Acerca de no está disponible temporalmente."
+  },
+  {
+   "en": "Accept a design version before saving listing details.",
+   "ru": "Примите версию дизайна, прежде чем сохранять данные карточки.",
+   "es": "Acepta una versión del diseño antes de guardar los datos de la ficha."
+  },
+  {
+   "en": "Accept exact design?\n\nConcept: {0}\nRevision: {1}\nVariant: {2}\n\nThis records the exact visual. Favorite is not Accept. This does not authorize Amazon submission.",
+   "ru": "Принять именно этот дизайн?\n\nКонцепт: {0}\nРевизия: {1}\nВариант: {2}\n\nФиксируется именно этот визуал. «Избранное» — это не принятие. Отправка в Amazon этим не разрешается.",
+   "es": "¿Aceptar este diseño exacto?\n\nConcepto: {0}\nRevisión: {1}\nVariante: {2}\n\nSe registra este visual exacto. Favorito no es Aceptar. No autoriza el envío a Amazon."
+  },
+  {
+   "en": "Accept exact visual",
+   "ru": "Принять именно этот визуал",
+   "es": "Aceptar visual exacto"
+  },
+  {
+   "en": "Accept local artwork",
+   "ru": "Принять локальный макет",
+   "es": "Aceptar arte local"
+  },
+  {
+   "en": "Accept local artwork first.",
+   "ru": "Сначала примите локальный макет.",
+   "es": "Primero acepta el arte local."
+  },
+  {
+   "en": "Accept needs attention; retry reuses the same action key.",
+   "ru": "Принятие требует внимания; повтор использует тот же ключ действия.",
+   "es": "La aceptación requiere atención; reintentar reutiliza la misma clave de acción."
+  },
+  {
+   "en": "Accept this exact local artwork?\n\nSHA-256: {0}\nRevision: {1}\n\nThis creates LOCAL acceptance only.",
+   "ru": "Принять именно этот локальный макет?\n\nSHA-256: {0}\nРевизия: {1}\n\nЭто только ЛОКАЛЬНОЕ принятие.",
+   "es": "¿Aceptar este arte local exacto?\n\nSHA-256: {0}\nRevisión: {1}\n\nEsto crea solo una aceptación LOCAL."
+  },
+  {
+   "en": "Acceptance reopened; no new iteration was created.",
+   "ru": "Принятие отменено; новая итерация не создавалась.",
+   "es": "Aceptación reabierta; no se creó una nueva iteración."
+  },
+  {
+   "en": "Accepted revisions are frozen. Start a new iteration before generating again.",
+   "ru": "Принятые ревизии заморожены. Начните новую итерацию, чтобы генерировать снова.",
+   "es": "Las revisiones aceptadas están congeladas. Inicia una nueva iteración antes de generar de nuevo."
+  },
+  {
+   "en": "Artwork import failed.",
+   "ru": "Импорт макета не удался.",
+   "es": "La importación del arte falló."
+  },
+  {
+   "en": "Artwork imported locally and SHA-256 verified for the current revision.",
+   "ru": "Макет импортирован локально, SHA-256 проверен для текущей ревизии.",
+   "es": "Arte importado localmente y SHA-256 verificado para la revisión actual."
+  },
+  {
+   "en": "Authority-bound local check evidence imported.",
+   "ru": "Подтверждения проверок импортированы и привязаны к полномочиям.",
+   "es": "Evidencia de revisiones vinculada a su autoridad importada."
+  },
+  {
+   "en": "Cancel failed",
+   "ru": "Отмена не удалась",
+   "es": "La cancelación falló"
+  },
+  {
+   "en": "Cancel generation request",
+   "ru": "Отменить запрос генерации",
+   "es": "Cancelar solicitud de generación"
+  },
+  {
+   "en": "Cancel queued generation request {0}? Existing variants and earlier runs are preserved.",
+   "ru": "Отменить запрос генерации {0} в очереди? Существующие варианты и прошлые запуски сохранятся.",
+   "es": "¿Cancelar la solicitud de generación {0} en cola? Las variantes existentes y ejecuciones anteriores se conservan."
+  },
+  {
+   "en": "Cancelling queued generation request…",
+   "ru": "Отмена запроса генерации…",
+   "es": "Cancelando solicitud de generación…"
+  },
+  {
+   "en": "Check evidence import failed.",
+   "ru": "Импорт подтверждений проверок не удался.",
+   "es": "La importación de evidencia de revisiones falló."
+  },
+  {
+   "en": "Choose a structured reason before rejecting this variant.",
+   "ru": "Выберите причину, прежде чем отклонить этот вариант.",
+   "es": "Elige un motivo antes de rechazar esta variante."
+  },
+  {
+   "en": "Choose an idea first.",
+   "ru": "Сначала выберите идею.",
+   "es": "Primero elige una idea."
+  },
+  {
+   "en": "Close Workbench and discard unsaved creative/publication edits?",
+   "ru": "Закрыть программу и отбросить несохранённые правки?",
+   "es": "¿Cerrar y descartar los cambios no guardados?"
+  },
+  {
+   "en": "Concept click failed",
+   "ru": "Не удалось открыть концепт",
+   "es": "No se pudo abrir el concepto"
+  },
+  {
+   "en": "Concept click failed: {0}",
+   "ru": "Не удалось открыть концепт: {0}",
+   "es": "No se pudo abrir el concepto: {0}"
+  },
+  {
+   "en": "Concept load failed",
+   "ru": "Загрузка концепта не удалась",
+   "es": "La carga del concepto falló"
+  },
+  {
+   "en": "Concept load failed: {0}",
+   "ru": "Загрузка концепта не удалась: {0}",
+   "es": "La carga del concepto falló: {0}"
+  },
+  {
+   "en": "Concept loaded",
+   "ru": "Концепт загружен",
+   "es": "Concepto cargado"
+  },
+  {
+   "en": "Could not copy diagnostics.",
+   "ru": "Не удалось скопировать диагностику.",
+   "es": "No se pudo copiar el diagnóstico."
+  },
+  {
+   "en": "Could not open the idea: {0}",
+   "ru": "Не удалось открыть идею: {0}",
+   "es": "No se pudo abrir la idea: {0}"
+  },
+  {
+   "en": "Could not open the log. The Workbench remains open.",
+   "ru": "Не удалось открыть журнал. Программа продолжает работать.",
+   "es": "No se pudo abrir el registro. La aplicación sigue abierta."
+  },
+  {
+   "en": "Current revision is already accepted. Reopen it or start a new iteration explicitly.",
+   "ru": "Текущая ревизия уже принята. Отмените принятие или явно начните новую итерацию.",
+   "es": "La revisión actual ya está aceptada. Reábrela o inicia una nueva iteración."
+  },
+  {
+   "en": "Delivery manifest prepared. No ZIP was claimed saved.",
+   "ru": "Манифест поставки подготовлен. ZIP не сохранялся.",
+   "es": "Manifiesto de entrega preparado. No se guardó ningún ZIP."
+  },
+  {
+   "en": "Delivery package needs attention.",
+   "ru": "Пакет поставки требует внимания.",
+   "es": "El paquete de entrega requiere atención."
+  },
+  {
+   "en": "Diagnostics are temporarily unavailable. The Workbench remains open.",
+   "ru": "Диагностика временно недоступна. Программа продолжает работать.",
+   "es": "El diagnóstico no está disponible temporalmente. La aplicación sigue abierta."
+  },
+  {
+   "en": "Diagnostics copied.",
+   "ru": "Диагностика скопирована.",
+   "es": "Diagnóstico copiado."
+  },
+  {
+   "en": "Discard unsaved creative/publication edits and open another concept?",
+   "ru": "Отбросить несохранённые правки и открыть другой концепт?",
+   "es": "¿Descartar los cambios no guardados y abrir otro concepto?"
+  },
+  {
+   "en": "Draft created: {0}",
+   "ru": "Черновик создан: {0}",
+   "es": "Borrador creado: {0}"
+  },
+  {
+   "en": "Draft open failed",
+   "ru": "Не удалось открыть черновик",
+   "es": "No se pudo abrir el borrador"
+  },
+  {
+   "en": "Draft revision {0} saved locally. Earlier owner decisions for this draft no longer apply.",
+   "ru": "Ревизия черновика {0} сохранена локально. Прежние решения по черновику больше не действуют.",
+   "es": "Revisión {0} del borrador guardada localmente. Las decisiones anteriores ya no aplican."
+  },
+  {
+   "en": "Draft save failed",
+   "ru": "Сохранение черновика не удалось",
+   "es": "No se pudo guardar el borrador"
+  },
+  {
+   "en": "Draft was not created: {0}",
+   "ru": "Черновик не создан: {0}",
+   "es": "No se creó el borrador: {0}"
+  },
+  {
+   "en": "Edit the brief first, then start the edited iteration.",
+   "ru": "Сначала измените бриф, затем начните итерацию с изменениями.",
+   "es": "Edita primero el brief y luego inicia la iteración editada."
+  },
+  {
+   "en": "Enter a reason before reopening the current acceptance.",
+   "ru": "Укажите причину, прежде чем отменять текущее принятие.",
+   "es": "Indica un motivo antes de reabrir la aceptación actual."
+  },
+  {
+   "en": "Exact local artwork accepted for the current revision. Downstream checks were rebound fail-closed.",
+   "ru": "Локальный макет принят для текущей ревизии. Последующие проверки перепривязаны и сброшены.",
+   "es": "Arte local exacto aceptado para la revisión actual. Las revisiones posteriores se reiniciaron."
+  },
+  {
+   "en": "Exact visual accepted. External submission remains locked.",
+   "ru": "Визуал принят. Внешняя отправка по-прежнему заблокирована.",
+   "es": "Visual exacto aceptado. El envío externo sigue bloqueado."
+  },
+  {
+   "en": "File not found.",
+   "ru": "Файл не найден.",
+   "es": "Archivo no encontrado."
+  },
+  {
+   "en": "Generation brief prepared. Import the resulting artwork for exact review.",
+   "ru": "Бриф для генерации готов. Импортируйте готовый макет для проверки.",
+   "es": "Brief de generación preparado. Importa el arte resultante para revisarlo."
+  },
+  {
+   "en": "Generation brief saved locally: {0}",
+   "ru": "Бриф для генерации сохранён: {0}",
+   "es": "Brief de generación guardado: {0}"
+  },
+  {
+   "en": "Generation is not available for the current review state. Refresh the workspace.",
+   "ru": "Генерация недоступна в текущем состоянии ревью. Обновите данные.",
+   "es": "La generación no está disponible en el estado actual. Actualiza el espacio de trabajo."
+  },
+  {
+   "en": "Generation request {0} cancelled.",
+   "ru": "Запрос генерации {0} отменён.",
+   "es": "Solicitud de generación {0} cancelada."
+  },
+  {
+   "en": "Generation request {0} queued.",
+   "ru": "Запрос генерации {0} поставлен в очередь.",
+   "es": "Solicitud de generación {0} en cola."
+  },
+  {
+   "en": "Generation request accepted; refresh needed",
+   "ru": "Запрос генерации принят; нужно обновить",
+   "es": "Solicitud de generación aceptada; actualiza"
+  },
+  {
+   "en": "Generation request needs attention",
+   "ru": "Запрос генерации требует внимания",
+   "es": "La solicitud de generación requiere atención"
+  },
+  {
+   "en": "Imported {0} row(s): {1} linked to verified Forge products, {2} unlinked.",
+   "ru": "Импортировано строк: {0}; связано с проверенными товарами Forge: {1}; не связано: {2}.",
+   "es": "Importadas {0} fila(s): {1} vinculadas a productos verificados de Forge, {2} sin vincular."
+  },
+  {
+   "en": "Invalid owner decision.",
+   "ru": "Недопустимое решение владельца.",
+   "es": "Decisión del propietario no válida."
+  },
+  {
+   "en": "Listing save needs attention",
+   "ru": "Сохранение карточки требует внимания",
+   "es": "Guardar la ficha requiere atención"
+  },
+  {
+   "en": "Listing title is required.",
+   "ru": "Нужен заголовок карточки.",
+   "es": "Se requiere el título de la ficha."
+  },
+  {
+   "en": "Listing version saved; accepted design unchanged.",
+   "ru": "Версия карточки сохранена; принятый дизайн не изменился.",
+   "es": "Versión de la ficha guardada; el diseño aceptado no cambió."
+  },
+  {
+   "en": "Live research is required.",
+   "ru": "Нужны живые данные исследования.",
+   "es": "Se requiere investigación en vivo."
+  },
+  {
+   "en": "Loading concept…",
+   "ru": "Загрузка концепта…",
+   "es": "Cargando concepto…"
+  },
+  {
+   "en": "Loading concepts…",
+   "ru": "Загрузка концептов…",
+   "es": "Cargando conceptos…"
+  },
+  {
+   "en": "Local acceptance is stale for this idea revision.",
+   "ru": "Локальное принятие устарело для этой ревизии идеи.",
+   "es": "La aceptación local está desactualizada para esta revisión."
+  },
+  {
+   "en": "Local artwork acceptance failed.",
+   "ru": "Принятие локального макета не удалось.",
+   "es": "La aceptación del arte local falló."
+  },
+  {
+   "en": "Local artwork is reviewed through exact Local Accept. No server review event was sent.",
+   "ru": "Локальный макет проверяется через локальное принятие. На сервер ничего не отправлено.",
+   "es": "El arte local se revisa con la aceptación local. No se envió nada al servidor."
+  },
+  {
+   "en": "Local concept state could not be prepared.",
+   "ru": "Не удалось подготовить локальное состояние концепта.",
+   "es": "No se pudo preparar el estado local del concepto."
+  },
+  {
+   "en": "Local generation could not start.",
+   "ru": "Локальная генерация не запустилась.",
+   "es": "La generación local no pudo iniciarse."
+  },
+  {
+   "en": "Local generation job {0} started in worker process {1}. Reopen Artwork or Refresh to import completed variants.",
+   "ru": "Локальное задание генерации {0} запущено (процесс {1}). Откройте «Макеты» снова или обновите, чтобы импортировать готовые варианты.",
+   "es": "Trabajo de generación local {0} iniciado en el proceso {1}. Reabre Arte o actualiza para importar las variantes."
+  },
+  {
+   "en": "Local listing draft saved as revision {0}. Check request refreshed for this exact listing. Nothing was published.",
+   "ru": "Черновик карточки сохранён как ревизия {0}. Запрос проверок обновлён для этой карточки. Ничего не опубликовано.",
+   "es": "Borrador de ficha guardado como revisión {0}. Solicitud de revisiones actualizada. No se publicó nada."
+  },
+  {
+   "en": "Local listing draft saved as revision {0}. Nothing was published.",
+   "ru": "Черновик карточки сохранён как ревизия {0}. Ничего не опубликовано.",
+   "es": "Borrador de ficha guardado como revisión {0}. No se publicó nada."
+  },
+  {
+   "en": "Local manual-upload package created. Status: {0}",
+   "ru": "Локальный пакет для ручной загрузки создан. Статус: {0}",
+   "es": "Paquete local para carga manual creado. Estado: {0}"
+  },
+  {
+   "en": "Local package creation failed.",
+   "ru": "Создание локального пакета не удалось.",
+   "es": "La creación del paquete local falló."
+  },
+  {
+   "en": "Local provider jobs are not server queue requests. Refresh Artwork to see the local worker result; no server cancel action was sent.",
+   "ru": "Локальные задания — не запросы серверной очереди. Обновите «Макеты», чтобы увидеть результат; на сервер ничего не отправлено.",
+   "es": "Los trabajos locales no son solicitudes del servidor. Actualiza Arte para ver el resultado; no se envió nada al servidor."
+  },
+  {
+   "en": "New explicit generation job {0} started after ambiguous job {1}.",
+   "ru": "Новое задание генерации {0} запущено после задания {1} с неясным исходом.",
+   "es": "Nuevo trabajo de generación {0} iniciado tras el trabajo ambiguo {1}."
+  },
+  {
+   "en": "New iteration created. Previous accepted visual remains in history; generation did not start.",
+   "ru": "Новая итерация создана. Прежний принятый визуал остаётся в истории; генерация не запускалась.",
+   "es": "Nueva iteración creada. El visual aceptado anterior queda en el historial; la generación no se inició."
+  },
+  {
+   "en": "New iteration needs attention; retry reuses the same action key.",
+   "ru": "Новая итерация требует внимания; повтор использует тот же ключ действия.",
+   "es": "La nueva iteración requiere atención; reintentar reutiliza la misma clave."
+  },
+  {
+   "en": "No changes to save.",
+   "ru": "Изменений нет.",
+   "es": "No hay cambios."
+  },
+  {
+   "en": "No concepts available in this workspace.",
+   "ru": "В рабочей области нет концептов.",
+   "es": "No hay conceptos en este espacio de trabajo."
+  },
+  {
+   "en": "No production image provider is configured locally, and the live workspace cannot authorize generation. Use the manual artwork bridge or configure an image provider.",
+   "ru": "Генератор изображений не настроен локально, а сервер не может разрешить генерацию. Используйте ручной импорт макета или настройте генератор.",
+   "es": "No hay un proveedor de imágenes configurado y el servidor no puede autorizar la generación. Usa la importación manual o configura un proveedor."
+  },
+  {
+   "en": "Owner decision cleared.",
+   "ru": "Решение владельца сброшено.",
+   "es": "Decisión del propietario borrada."
+  },
+  {
+   "en": "Owner decision saved locally: {0}",
+   "ru": "Решение владельца сохранено: {0}",
+   "es": "Decisión del propietario guardada: {0}"
+  },
+  {
+   "en": "Owner decision was not saved: {0}",
+   "ru": "Решение владельца не сохранено: {0}",
+   "es": "La decisión del propietario no se guardó: {0}"
+  },
+  {
+   "en": "Owner package needs attention.",
+   "ru": "Пакет владельца требует внимания.",
+   "es": "El paquete del propietario requiere atención."
+  },
+  {
+   "en": "Owner package prepared. Nothing was submitted or published.",
+   "ru": "Пакет владельца подготовлен. Ничего не отправлено и не опубликовано.",
+   "es": "Paquete del propietario preparado. No se envió ni publicó nada."
+  },
+  {
+   "en": "Prepare the delivery package first.",
+   "ru": "Сначала подготовьте пакет поставки.",
+   "es": "Primero prepara el paquete de entrega."
+  },
+  {
+   "en": "Preparing delivery manifest…",
+   "ru": "Подготовка манифеста поставки…",
+   "es": "Preparando manifiesto de entrega…"
+  },
+  {
+   "en": "Preparing owner package…",
+   "ru": "Подготовка пакета владельца…",
+   "es": "Preparando paquete del propietario…"
+  },
+  {
+   "en": "Preparing Social handoff…",
+   "ru": "Подготовка передачи в Social…",
+   "es": "Preparando envío a Social…"
+  },
+  {
+   "en": "Production spec must be valid JSON.",
+   "ru": "Спецификация производства должна быть корректным JSON.",
+   "es": "La especificación de producción debe ser JSON válido."
+  },
+  {
+   "en": "Provider outcome unknown",
+   "ru": "Исход генерации неизвестен",
+   "es": "Resultado del proveedor desconocido"
+  },
+  {
+   "en": "Publication receipt import failed.",
+   "ru": "Импорт квитанции публикации не удался.",
+   "es": "La importación del recibo de publicación falló."
+  },
+  {
+   "en": "Publication receipt imported and exact package lineage verified.",
+   "ru": "Квитанция публикации импортирована, связь с пакетом проверена.",
+   "es": "Recibo de publicación importado y linaje del paquete verificado."
+  },
+  {
+   "en": "Queueing generation request…",
+   "ru": "Постановка запроса генерации в очередь…",
+   "es": "Encolando solicitud de generación…"
+  },
+  {
+   "en": "Re-generate requires artwork produced by the local provider. Manual imports do not have provider request lineage.",
+   "ru": "Перегенерация требует макета от локального генератора. У вручную импортированных нет связи с запросом.",
+   "es": "Regenerar requiere arte del proveedor local. Las importaciones manuales no tienen linaje de solicitud."
+  },
+  {
+   "en": "Refresh Workbench",
+   "ru": "Обновить программу",
+   "es": "Actualizar"
+  },
+  {
+   "en": "Refresh Workbench and discard unsaved creative/publication edits?",
+   "ru": "Обновить и отбросить несохранённые правки?",
+   "es": "¿Actualizar y descartar los cambios no guardados?"
+  },
+  {
+   "en": "Reopen accepted revision {0}?\n\nReason: {1}\n\nThis withdraws the current acceptance but does not create a new iteration or publish anything.",
+   "ru": "Отменить принятие ревизии {0}?\n\nПричина: {1}\n\nТекущее принятие снимается, но новая итерация не создаётся и ничего не публикуется.",
+   "es": "¿Reabrir la revisión aceptada {0}?\n\nMotivo: {1}\n\nSe retira la aceptación actual sin crear una iteración ni publicar nada."
+  },
+  {
+   "en": "Reopen exact acceptance",
+   "ru": "Отменить принятие",
+   "es": "Reabrir aceptación"
+  },
+  {
+   "en": "Reopen needs attention; retry reuses the same action key.",
+   "ru": "Отмена принятия требует внимания; повтор использует тот же ключ действия.",
+   "es": "Reabrir requiere atención; reintentar reutiliza la misma clave."
+  },
+  {
+   "en": "Reopening acceptance discards unsaved publication metadata. Continue?",
+   "ru": "Отмена принятия отбросит несохранённые данные карточки. Продолжить?",
+   "es": "Reabrir descarta los metadatos de publicación no guardados. ¿Continuar?"
+  },
+  {
+   "en": "Reopening exact acceptance…",
+   "ru": "Отмена принятия…",
+   "es": "Reabriendo aceptación…"
+  },
+  {
+   "en": "Research draft could not be opened: {0}",
+   "ru": "Не удалось открыть черновик исследования: {0}",
+   "es": "No se pudo abrir el borrador de investigación: {0}"
+  },
+  {
+   "en": "Restore revision {0} as a NEW revision? History will be preserved.",
+   "ru": "Восстановить ревизию {0} как НОВУЮ ревизию? История сохранится.",
+   "es": "¿Restaurar la revisión {0} como una NUEVA revisión? Se conserva el historial."
+  },
+  {
+   "en": "Retrying…",
+   "ru": "Повтор…",
+   "es": "Reintentando…"
+  },
+  {
+   "en": "Sales CSV import failed.",
+   "ru": "Импорт CSV с продажами не удался.",
+   "es": "La importación del CSV de ventas falló."
+  },
+  {
+   "en": "Save failed",
+   "ru": "Сохранение не удалось",
+   "es": "No se pudo guardar"
+  },
+  {
+   "en": "Saved revision {0}",
+   "ru": "Сохранена ревизия {0}",
+   "es": "Revisión {0} guardada"
+  },
+  {
+   "en": "Saving a new creative revision invalidates the current publication context and discards unsaved publication metadata. Continue?",
+   "ru": "Новая ревизия сбросит текущий контекст публикации и несохранённые данные карточки. Продолжить?",
+   "es": "Guardar una nueva revisión invalida el contexto de publicación y descarta metadatos no guardados. ¿Continuar?"
+  },
+  {
+   "en": "Saving exact visual acceptance…",
+   "ru": "Сохранение принятия визуала…",
+   "es": "Guardando aceptación del visual…"
+  },
+  {
+   "en": "Saving listing version…",
+   "ru": "Сохранение версии карточки…",
+   "es": "Guardando versión de la ficha…"
+  },
+  {
+   "en": "Saving new revision…",
+   "ru": "Сохранение новой ревизии…",
+   "es": "Guardando nueva revisión…"
+  },
+  {
+   "en": "Saving variant review…",
+   "ru": "Сохранение ревью варианта…",
+   "es": "Guardando revisión de la variante…"
+  },
+  {
+   "en": "Select exactly one current-revision variant before Re-generate so lineage stays exact.",
+   "ru": "Выберите ровно один вариант текущей ревизии перед перегенерацией.",
+   "es": "Selecciona exactamente una variante de la revisión actual antes de regenerar."
+  },
+  {
+   "en": "Select exactly one generated current-revision local artwork before Re-generate.",
+   "ru": "Выберите ровно один сгенерированный локальный макет текущей ревизии перед перегенерацией.",
+   "es": "Selecciona exactamente un arte local generado de la revisión actual antes de regenerar."
+  },
+  {
+   "en": "Select exactly one local artwork file first.",
+   "ru": "Сначала выберите ровно один локальный макет.",
+   "es": "Primero selecciona exactamente un archivo de arte local."
+  },
+  {
+   "en": "Select exactly one review-ready visual for Final Accept.",
+   "ru": "Выберите ровно один визуал, готовый к принятию.",
+   "es": "Selecciona exactamente un visual listo para la aceptación final."
+  },
+  {
+   "en": "Selected concept has no concept key. Refresh the workspace.",
+   "ru": "У выбранного концепта нет ключа. Обновите данные.",
+   "es": "El concepto seleccionado no tiene clave. Actualiza el espacio de trabajo."
+  },
+  {
+   "en": "Selected visual has no exact SHA-256 identity.",
+   "ru": "У выбранного визуала нет точного SHA-256.",
+   "es": "El visual seleccionado no tiene identidad SHA-256 exacta."
+  },
+  {
+   "en": "Send to Social",
+   "ru": "Передать в Social",
+   "es": "Enviar a Social"
+  },
+  {
+   "en": "Sign out and remove saved access from this Windows account?",
+   "ru": "Выйти и удалить сохранённый доступ для этой учётной записи Windows?",
+   "es": "¿Cerrar sesión y quitar el acceso guardado de esta cuenta de Windows?"
+  },
+  {
+   "en": "Social handoff needs attention.",
+   "ru": "Передача в Social требует внимания.",
+   "es": "El envío a Social requiere atención."
+  },
+  {
+   "en": "Social source envelope prepared. Social was not approved or published.",
+   "ru": "Материалы для Social подготовлены. Ничего не одобрено и не опубликовано.",
+   "es": "Paquete para Social preparado. No se aprobó ni publicó nada."
+  },
+  {
+   "en": "Start new iteration",
+   "ru": "Начать новую итерацию",
+   "es": "Iniciar nueva iteración"
+  },
+  {
+   "en": "Starting explicit generation after ambiguous provider outcome…",
+   "ru": "Запуск генерации после неясного исхода…",
+   "es": "Iniciando generación tras un resultado ambiguo…"
+  },
+  {
+   "en": "Starting local generation worker…",
+   "ru": "Запуск локального генератора…",
+   "es": "Iniciando generación local…"
+  },
+  {
+   "en": "Starting new iteration…",
+   "ru": "Создание новой итерации…",
+   "es": "Iniciando nueva iteración…"
+  },
+  {
+   "en": "The selected artwork belongs to another revision.",
+   "ru": "Выбранный макет относится к другой ревизии.",
+   "es": "El arte seleccionado pertenece a otra revisión."
+  },
+  {
+   "en": "This exact published product/package binding is already recorded locally.",
+   "ru": "Эта связь опубликованного товара и пакета уже записана.",
+   "es": "Este vínculo de producto publicado y paquete ya está registrado."
+  },
+  {
+   "en": "This is a local research draft. Live server actions are not available for it.",
+   "ru": "Это локальный черновик исследования. Действия на сервере для него недоступны.",
+   "es": "Este es un borrador local de investigación. Las acciones del servidor no están disponibles."
+  },
+  {
+   "en": "This publication receipt was already imported.",
+   "ru": "Эта квитанция публикации уже импортирована.",
+   "es": "Este recibo de publicación ya se importó."
+  },
+  {
+   "en": "This research draft is not available in local Forge state. Refresh the Ideas list.",
+   "ru": "Этого черновика нет в локальном состоянии Forge. Обновите список идей.",
+   "es": "Este borrador no está en el estado local de Forge. Actualiza la lista de ideas."
+  },
+  {
+   "en": "This research draft no longer exists. Refresh the Ideas list.",
+   "ru": "Этого черновика больше нет. Обновите список идей.",
+   "es": "Este borrador ya no existe. Actualiza la lista de ideas."
+  },
+  {
+   "en": "This revision is accepted. Use Start new iteration · edited brief so the accepted version stays in history.",
+   "ru": "Эта ревизия принята. Используйте «Новая итерация · изменённый бриф», чтобы принятая версия осталась в истории.",
+   "es": "Esta revisión está aceptada. Usa Nueva iteración · brief editado para conservar la versión aceptada."
+  },
+  {
+   "en": "This sales CSV was already imported; no duplicate rows were added.",
+   "ru": "Этот CSV с продажами уже импортирован; дубликаты не добавлены.",
+   "es": "Este CSV de ventas ya se importó; no se añadieron duplicados."
+  },
+  {
+   "en": "This variant is not review-ready. Refresh or restore its verified preview first.",
+   "ru": "Этот вариант не готов к ревью. Обновите или восстановите проверенное превью.",
+   "es": "Esta variante no está lista para revisión. Actualiza o restaura su vista previa."
+  },
+  {
+   "en": "This visual cannot be accepted in its current review/preview state.",
+   "ru": "Этот визуал нельзя принять в текущем состоянии.",
+   "es": "Este visual no se puede aceptar en su estado actual."
+  },
+  {
+   "en": "Variant review needs attention; retry reuses the same action key.",
+   "ru": "Ревью варианта требует внимания; повтор использует тот же ключ действия.",
+   "es": "La revisión de la variante requiere atención; reintentar reutiliza la misma clave."
+  },
+  {
+   "en": "Variant review saved. Favorite/Reject did not Accept or regenerate anything.",
+   "ru": "Ревью варианта сохранено. «Избранное/Отклонить» ничего не приняли и не перегенерировали.",
+   "es": "Revisión de variante guardada. Favorito/Rechazar no aceptó ni regeneró nada."
+  },
+  {
+   "en": "Workbench open · waiting for service",
+   "ru": "Программа открыта · ожидание сервиса",
+   "es": "Aplicación abierta · esperando el servicio"
+  },
+  {
+   "en": "Workspace access is required.",
+   "ru": "Нужен доступ к рабочей области.",
+   "es": "Se requiere acceso al espacio de trabajo."
+  },
+  {
+   "en": "You have unsaved edits. Use Start new iteration · edited brief or discard the edits.",
+   "ru": "Есть несохранённые правки. Используйте «Новая итерация · изменённый бриф» или отбросьте правки.",
+   "es": "Tienes cambios sin guardar. Usa Nueva iteración · brief editado o descártalos."
+  },
+  {
+   "en": "Your workspace role cannot Accept exact versions.",
+   "ru": "Ваша роль не позволяет принимать версии.",
+   "es": "Tu rol no puede aceptar versiones."
+  },
+  {
+   "en": "Your workspace role cannot cancel generation requests.",
+   "ru": "Ваша роль не позволяет отменять запросы генерации.",
+   "es": "Tu rol no puede cancelar solicitudes de generación."
+  },
+  {
+   "en": "Your workspace role cannot edit concepts.",
+   "ru": "Ваша роль не позволяет редактировать концепты.",
+   "es": "Tu rol no puede editar conceptos."
+  },
+  {
+   "en": "Your workspace role cannot edit publication metadata.",
+   "ru": "Ваша роль не позволяет редактировать данные публикации.",
+   "es": "Tu rol no puede editar metadatos de publicación."
+  },
+  {
+   "en": "Your workspace role cannot Reopen acceptances.",
+   "ru": "Ваша роль не позволяет отменять принятие.",
+   "es": "Tu rol no puede reabrir aceptaciones."
+  },
+  {
+   "en": "Your workspace role cannot review variants.",
+   "ru": "Ваша роль не позволяет делать ревью вариантов.",
+   "es": "Tu rol no puede revisar variantes."
+  },
+  {
+   "en": "Your workspace role cannot start a new iteration.",
+   "ru": "Ваша роль не позволяет начинать новую итерацию.",
+   "es": "Tu rol no puede iniciar una nueva iteración."
+  },
+  {
+   "en": "Research drafts cannot be generated from Forge yet. Use Export brief (no dispatch) and import the finished artwork. Paid generation stays a separate owner-authorized gate.",
+   "ru": "Черновики исследования пока нельзя генерировать из Forge. Используйте «Экспорт брифа» (без отправки) и импортируйте готовый макет. Платная генерация остаётся отдельным шагом с разрешения владельца.",
+   "es": "Los borradores de investigación aún no se pueden generar desde Forge. Usa Exportar brief e importa el arte final. La generación de pago sigue requiriendo autorización del propietario."
+  },
+  {
+   "en": "Accepted artwork is missing or failed SHA verification for local check worker.",
+   "ru": "Принятый макет отсутствует или не прошёл проверку SHA для проверки печати.",
+   "es": "El arte aceptado falta o no pasó la verificación SHA para la revisión de impresión."
+  },
+  {
+   "en": "Only a currently valid READY_FOR_MANUAL_UPLOAD package may be recorded as published.",
+   "ru": "Опубликованным можно отметить только действующий пакет READY_FOR_MANUAL_UPLOAD.",
+   "es": "Solo un paquete READY_FOR_MANUAL_UPLOAD válido puede registrarse como publicado."
+  },
+  {
+   "en": "Accept exact local artwork first.",
+   "ru": "Сначала примите локальный макет.",
+   "es": "Primero acepta el arte local exacto."
+  }
+ ]
+}

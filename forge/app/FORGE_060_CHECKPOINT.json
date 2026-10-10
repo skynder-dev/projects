@@ -1,9 +1,9 @@
 {
   "schema": "forge.release_checkpoint.v1",
-  "package": "059_Merch_Forge_LOCAL_PACKAGE_PATH_RC",
+  "package": "060_Merch_Forge_LOCALIZED_MESSAGES_RC",
   "previous_package": "059_Merch_Forge_LOCAL_PACKAGE_PATH_RC",
-  "app_version": "2.11.0-forge-local-package-path",
-  "installer_generation": "00000000000000100242",
+  "app_version": "2.12.0-forge-localized-messages",
+  "installer_generation": "00000000000000100243",
   "static": "13/13",
   "checks": {
     "xaml_xml_parse": true,
@@ -21,7 +21,7 @@
     "headless_selftest_pass": true
   },
   "headless_selftest": "PASS 72/72 (PowerShell 7, Linux)",
-  "integrity": "53 files",
+  "integrity": "55 files",
   "windows_proof": "see GitHub workflow forge-windows (branch forge-ci-results)",
   "authority": {
     "generate_authorized": false,

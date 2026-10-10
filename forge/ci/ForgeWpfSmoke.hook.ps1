@@ -190,6 +190,7 @@ $Window.Add_ContentRendered({
             if($LocalBuildPackageButton.IsEnabled){ Ci-Click $LocalBuildPackageButton 'LocalBuildPackageButton' } else { Build-LocalAmazonPackage }
             $lc=Get-LocalCoreConcept $key; $pk=@($lc.packages | Where-Object { [bool]$_.valid }) | Select-Object -Last 1
             Ci-Check 'pkg_ready_for_manual_upload' ($null -ne $pk -and [string]$pk.status -eq 'READY_FOR_MANUAL_UPLOAD' -and (Test-Path -LiteralPath ([string]$pk.path))) $(if($pk){[string]$pk.status}else{'no package'})
+            Ci-Check 'pkg_status_bar_russian' ($StatusText.Text -like 'Локальный пакет для ручной загрузки создан. Статус: READY_FOR_MANUAL_UPLOAD*') $StatusText.Text
             Ci-Click $NavPortfolioButton 'NavPortfolioButton (package)'
             $row=@(@($PortfolioPipelineList.Items) | Where-Object { [string]$_.concept_key -eq $key })
             Ci-Check 'pkg_portfolio_package_ready' ($row.Count -eq 1 -and [string]$row[0].stage -eq 'package_ready' -and $PipePackageValue.Text -eq '1') $(if($row.Count){[string]$row[0].stage}else{'missing'})
@@ -209,6 +210,7 @@ $Window.Add_ContentRendered({
                 Set-Content -LiteralPath $csvPath -Encoding UTF8 -Value @('date,asin,units,royalty',([DateTime]::UtcNow.AddDays(-2).ToString('yyyy-MM-dd')+',CI-ASIN-0001,3,4.50'),([DateTime]::UtcNow.AddDays(-20).ToString('yyyy-MM-dd')+',CI-ASIN-0001,2,3.00'),([DateTime]::UtcNow.AddDays(-3).ToString('yyyy-MM-dd')+',UNKNOWN-ASIN,9,9.99'))
                 $before=$script:Ci.errors.Count; Import-LocalSalesCsvFromPath $csvPath; Ci-Flush
                 Ci-Check 'pkg_sales_imported' ($script:Ci.errors.Count -eq $before) (($script:Ci.errors | Select-Object -Last 1))
+                Ci-Check 'pkg_sales_status_russian' ($StatusText.Text -like 'Импортировано строк: 3;*') $StatusText.Text
                 Ci-Click $NavPerformanceButton 'NavPerformanceButton'
                 Ci-Check 'pkg_performance_linked_only' ($PerfSales7Value.Text -eq '3' -and $PerfSales30Value.Text -eq '5' -and $PerfRoyalties30Value.Text -eq '$7.50') ($PerfSales7Value.Text+' / '+$PerfSales30Value.Text+' / '+$PerfRoyalties30Value.Text)
                 Ci-Check 'pkg_performance_text_shows_amount' ($PerformanceEmpty.Text -like '*$7.50*' -and $PerformanceEmpty.Text -like '*роялти*') $PerformanceEmpty.Text

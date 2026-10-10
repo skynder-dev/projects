@@ -1,22 +1,15 @@
-MERCH FORGE 059 Merch Forge LOCAL PACKAGE PATH RC
+MERCH FORGE 060 Merch Forge LOCALIZED MESSAGES RC
 
 START
 1. Extract the whole folder.
-2. Run START_059_MERCH_FORGE.vbs.
+2. Run START_060_MERCH_FORGE.vbs.
 
-WHAT IS NEW (059)
-- The full local path from a research draft to a READY package, publication receipt and sales is now
-  exercised end-to-end on a real Windows machine by CI (accepted artwork -> owner-attested Amazon profile ->
-  listing -> trusted print check -> owner evidence -> READY_FOR_MANUAL_UPLOAD package -> receipt -> sales).
-- FIX: selecting an imported or locally generated artwork in the Artwork list threw (missing review/stale fields
-  under StrictMode). Local artwork now carries the fields the list expects. Pre-existing.
-- FIX: royalty amounts were blank in the Performance and Home texts ("royalties: ."): "${2:0.00}" inside double
-  quotes is a PowerShell variable name, not a dollar sign + number. Pre-existing. These texts are now EN/RU/ES.
-- Imports (check evidence, publication receipt, sales CSV) are split into "choose file" and "process file";
-  behaviour in the app is unchanged.
-- "Import Amazon Print Profile" accepts -SourcePath and -NonInteractive (used by CI; normal double-click unchanged).
-- Draft provenance also stores source url / authority level / last checked (fields the live server sends).
-- Includes 058 (Portfolio pipeline board), 057 (Amazon profile, PNG check, first trusted check), 056, 055.
+WHAT IS NEW (060)
+- Status bar, "working" banner, error and confirmation messages are now shown in Russian / Spanish when the UI
+  language is RU / ES (154 messages; numbers, paths and statuses inside a message are kept as they are).
+  Unknown messages fall back to English.
+- Includes 059 (full local package path proven on Windows, local artwork selection fix, royalty amounts),
+  058 (Portfolio pipeline board), 057, 056, 055.
 
 SAFETY
-- No backend change, no paid provider call, no publishing, no Supabase mutation. CI uses labelled fixtures only.
+- No backend change, no paid provider call, no publishing, no Supabase mutation.

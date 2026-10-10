@@ -1,6 +1,6 @@
 ﻿# Merch Forge Workbench
 # Native WPF desktop UI. Internal alpha build; not owner-accepted visual design.
-# Version: 2.11.0-local-package-path
+# Version: 2.12.0-localized-messages
 
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
@@ -12,7 +12,7 @@ Add-Type -AssemblyName System.Security
 
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
 
-$script:AppVersion = '2.11.0-forge-local-package-path'
+$script:AppVersion = '2.12.0-forge-localized-messages'
 $script:MinimumBackendVersion = [version]'0.2.70'
 $script:ApiUrl = 'https://ldlhnedbqeqcbqelhuhm.supabase.co/functions/v1/forge-app'
 $script:OwnerKey = $null
@@ -79,6 +79,7 @@ $script:ModuleRoot = Join-Path $PSScriptRoot 'Modules'
 . (Join-Path $script:ModuleRoot 'Forge.LocalCore.ps1')
 . (Join-Path $script:ModuleRoot 'Forge.ResearchDrafts.ps1')
 . (Join-Path $script:ModuleRoot 'Forge.Pipeline.ps1')
+. (Join-Path $script:ModuleRoot 'Forge.MessageLocalization.ps1')
 . (Join-Path $script:ModuleRoot 'Forge.ProductNavigation.ps1')
 . (Join-Path $script:ModuleRoot 'Forge.BackendStatus.ps1')
 . (Join-Path $script:ModuleRoot 'Forge.Localization.ps1')
@@ -743,7 +744,7 @@ function Load-EncryptedOwnerKey { if (-not (Test-Path -LiteralPath $script:KeyPa
 function Remove-EncryptedOwnerKey { if (Test-Path -LiteralPath $script:KeyPath) { Remove-Item -LiteralPath $script:KeyPath -Force -ErrorAction SilentlyContinue } }
 function Get-HttpStatusCode($Exception) { try { if ($Exception.Response -and $Exception.Response.StatusCode) { return [int]$Exception.Response.StatusCode } } catch {}; return 0 }
 # R2O module: Forge.DataAdapter.ps1
-function Confirm([string]$Message,[string]$Title='Merch Forge') { return ([System.Windows.MessageBox]::Show($Window,$Message,$Title,[System.Windows.MessageBoxButton]::YesNo,[System.Windows.MessageBoxImage]::Question) -eq [System.Windows.MessageBoxResult]::Yes) }
+function Confirm([string]$Message,[string]$Title='Merch Forge') { try{$Message=Translate-UiMessage $Message;$Title=Translate-UiMessage $Title}catch{}; return ([System.Windows.MessageBox]::Show($Window,$Message,$Title,[System.Windows.MessageBoxButton]::YesNo,[System.Windows.MessageBoxImage]::Question) -eq [System.Windows.MessageBoxResult]::Yes) }
 function Get-OwnerActionIdempotencyKey([string]$PayloadKey) {
     if(-not $script:PendingOwnerActionKeys.ContainsKey($PayloadKey)){ $script:PendingOwnerActionKeys[$PayloadKey]=([guid]::NewGuid().ToString('N')) }
     return [string]$script:PendingOwnerActionKeys[$PayloadKey]
@@ -778,7 +779,7 @@ function Get-ProductionSpecDirtyValues($Base,$Edited) {
 }
 function Show-Error([string]$Message) {
     if((Test-BackendUnavailableMessage $Message) -and $null -ne $AppGrid -and $AppGrid.Visibility -eq 'Visible'){Enter-OfflineWorkbench $Message;return}
-    $human=Get-HumanErrorMessage $Message; $code=0; if($Message -match 'HTTP ([0-9]{3})'){try{$code=[int]$Matches[1]}catch{$code=0}}
+    $human=Get-HumanErrorMessage $Message; try{$human=Translate-UiMessage $human}catch{}; $code=0; if($Message -match 'HTTP ([0-9]{3})'){try{$code=[int]$Matches[1]}catch{$code=0}}
     Write-AppLog 'ERROR' $Message; Set-LastDiagnostic 'error' $code 'review_and_retry' $Message $human
     [System.Windows.MessageBox]::Show($Window,("{0}`n`nTechnical details are available in Diagnostics." -f $human),'Merch Forge — Error',[System.Windows.MessageBoxButton]::OK,[System.Windows.MessageBoxImage]::Error)|Out-Null
 }
@@ -1660,6 +1661,7 @@ $HomeButton.Add_Click({Go-Home}); $NavHomeButton.Add_Click({Show-ProductSection 
 $DiscoverCreateDraftButton=X 'DiscoverCreateDraftButton'; $DiscoverDraftStatusText=X 'DiscoverDraftStatusText'
 $PortfolioPipelineTitle=X 'PortfolioPipelineTitle'; $PortfolioPipelineSummary=X 'PortfolioPipelineSummary'; $PortfolioNextTitle=X 'PortfolioNextTitle'; $PortfolioPipelineList=X 'PortfolioPipelineList'; $PortfolioNicheTitle=X 'PortfolioNicheTitle'; $PortfolioNicheText=X 'PortfolioNicheText'; $PipeUndecidedLabel=X 'PipeUndecidedLabel'; $PipeUndecidedValue=X 'PipeUndecidedValue'; $PipeKeepLabel=X 'PipeKeepLabel'; $PipeKeepValue=X 'PipeKeepValue'; $PipeArtworkLabel=X 'PipeArtworkLabel'; $PipeArtworkValue=X 'PipeArtworkValue'; $PipeChecksLabel=X 'PipeChecksLabel'; $PipeChecksValue=X 'PipeChecksValue'; $PipePackageLabel=X 'PipePackageLabel'; $PipePackageValue=X 'PipePackageValue'; $PipePublishedLabel=X 'PipePublishedLabel'; $PipePublishedValue=X 'PipePublishedValue'
 $PortfolioPipelineList.Add_SelectionChanged({Open-PortfolioPipelineSelection})
+try{Initialize-MessageTranslations;Register-MessageLocalizationSinks}catch{Write-AppLog 'WARN' ('Message localization unavailable: '+$_.Exception.Message)}
 $DiscoverRefreshButton.Add_Click({Load-DiscoverSnapshot $true})
 $DiscoverCreateDraftButton.Add_Click({Invoke-DiscoverCreateDraft})
 $DiscoverNicheList.Add_SelectionChanged({Update-DiscoverDetail;Update-DiscoverDraftControls})
