@@ -5,7 +5,7 @@ const { runGates } = require('./gates');
 const { scoreCandidate, rank, GLOBAL_PROFILE, SCORING_VERSION } = require('./scoring');
 const { decide } = require('./decide');
 const { discoverFamily, DiscoveryAborted } = require('./discover');
-const { deepScreen } = require('./deep');
+const { deepScreen, DEEP_PROTOCOL } = require('./deep');
 const { SpendNotAuthorized, BudgetExceeded } = require('./budget');
 const FATAL_PROVIDER = /credit balance|anthropic_http_(401|403)|invalid x-api-key|authentication_error|permission_error/i;
 const { collect } = require('./sources');
@@ -73,29 +73,42 @@ async function run({ runDir, cfg, provider = null, fetcher = null, candidates = 
   // 3 gate + score
   let { gateById, scored } = evaluateAll(ver, cfg, provisional);
   writeJson(P('03_gates.json'), gateById); writeJson(P('04_scored.json'), scored); done('gate_score');
-  // 4 deep screen (equal depth). Resumable per candidate: only pool members without a COMPLETE deep screen are (re)run, best pre-score first.
+  // 4 deep screen (equal depth, ONE protocol). Resumable per candidate. Phase 1: the pre-score pool. Phase 2: keep going down the ranking until the top-N
+  // SURVIVORS are all deep-screened (a killed leader is replaced by the next one), capped by deep.max_total. Provider-fatal errors stop all further calls.
   let cand = has('05_deep.json') ? readJson(P('05_deep.json')) : ver;
   const dcfg = cfg.deep || {};
   if (provider && !provisional && dcfg.enabled !== false) {
     const pool = deepPool(ver, gateById, scored, dcfg.top_k || 8).map(c => c.id);
     const byId = Object.fromEntries(cand.map(c => [c.id, c]));
-    const pending = pool.filter(id => !(byId[id] && byId[id].deep && byId[id].deep.done));
+    const screened = (id) => !!(byId[id] && byId[id].deep && byId[id].deep.done && byId[id].deep.protocol === DEEP_PROTOCOL);
+    const pending = pool.filter(id => !screened(id));
     log(`deep screen pool: ${pool.join(',')}${pending.length < pool.length ? ` (pending: ${pending.join(',') || 'none'})` : ''}`);
-    chk.blockers = (chk.blockers || []).filter(x => !x.startsWith('deep_failed:'));
-    let fatal = null;
-    for (const id of pending) {
+    chk.blockers = (chk.blockers || []).filter(x => !x.startsWith('deep_failed:') && x !== 'deep_stopped_provider_fatal');
+    let fatal = null, stop = false; const tried = new Set(), maxTotal = dcfg.max_total || 16, ensureTop = dcfg.ensure_top || 2;
+    const save = () => { cand = cand.map(c => byId[c.id] || c); writeJson(P('05_deep.json'), cand); };
+    const screen = async (id) => {
+      tried.add(id);
       try { byId[id] = await deepScreen({ provider, candidate: byId[id], minVerified: dcfg.min_verified || 3, maxUses: (cfg.llm || {}).web_search_max_uses }); }
       catch (e) {
         log(`deep FAILED ${id}: ${e.message}`); chk.blockers.push(`deep_failed:${id}:${e.message}`);
-        if (e instanceof SpendNotAuthorized || e instanceof BudgetExceeded) fatal = e;
-        else if (FATAL_PROVIDER.test(e.message)) { chk.blockers.push('deep_stopped_provider_fatal'); break; } // out of credits / bad key: further calls cannot succeed
-        if (fatal) break;
+        if (e instanceof SpendNotAuthorized || e instanceof BudgetExceeded) { fatal = e; stop = true; }
+        else if (FATAL_PROVIDER.test(e.message)) { chk.blockers.push('deep_stopped_provider_fatal'); stop = true; }
       }
-      cand = cand.map(c => byId[c.id] || c); writeJson(P('05_deep.json'), cand);
+      save();
+    };
+    for (const id of pending) { if (stop) break; await screen(id); }
+    while (!stop && Object.keys(byId).filter(id => screened(id)).length < maxTotal) {      // phase 2: replace killed leaders
+      ({ gateById, scored } = evaluateAll(cand, cfg, provisional));
+      const top = rank(scored.filter(r => gateById[r.id] && gateById[r.id].passed), GLOBAL_PROFILE).slice(0, ensureTop).map(r => r.id);
+      const next = top.find(id => !screened(id) && !tried.has(id));
+      if (!next) break;
+      log(`deep screen (next in ranking): ${next}`); await screen(next);
     }
-    cand = cand.map(c => byId[c.id] || c); writeJson(P('05_deep.json'), cand);
+    save();
     if (fatal) { chk.updated_at = nowIso(); writeJson(P('checkpoint.json'), chk); throw fatal; }
-    if (pool.every(id => byId[id] && byId[id].deep && byId[id].deep.done)) done('deep'); else { chk.updated_at = nowIso(); writeJson(P('checkpoint.json'), chk); }
+    ({ gateById, scored } = evaluateAll(cand, cfg, provisional));
+    const topNow = rank(scored.filter(r => gateById[r.id] && gateById[r.id].passed), GLOBAL_PROFILE).slice(0, ensureTop).map(r => r.id);
+    if (pool.every(screened) && topNow.every(screened)) done('deep'); else { chk.updated_at = nowIso(); writeJson(P('checkpoint.json'), chk); }
   }
   ({ gateById, scored } = evaluateAll(cand, cfg, provisional)); writeJson(P('03_gates.json'), gateById); writeJson(P('04_scored.json'), scored);
   // 5 decide + report

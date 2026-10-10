@@ -28,6 +28,9 @@ function decide({ candidates, scored, gateById, cfg = {}, provisional = false })
     robust = {}; for (const p of Object.keys(PROFILES)) { const r = rank(survivors, p).map(x => x.id); robust[p] = r.indexOf(top.id) + 1; }
     chk(Object.values(robust).every(r => r <= 2), `not_top2_in_all_profiles ${JSON.stringify(robust)}`, false);
     chk(!!(tc.deep && tc.deep.economics && tc.deep.economics.survives_pessimistic), 'top_fails_or_lacks_pessimistic_economics', false);
+    const kr = (tc.deep && tc.deep.kill_reasons) || [], unresolved = kr.filter(k => k.severity === 'fatal' && k.ref_status !== 'verified'), majors = kr.filter(k => k.severity === 'major');
+    chk(!unresolved.length, `top_has_uncited_fatal_claims(${unresolved.length}): ${unresolved.map(k => k.reason).join(' | ').slice(0, 300)}`, false);
+    chk(majors.length < 3, `top_has_${majors.length}_major_kill_reasons`, false);
   }
   const verdict = hard.length ? 'no_winner' : (reasons.length ? 'conditional_winner' : 'winner');
   return { verdict, leader: verdict === 'no_winner' ? null : (top ? top.id : null), unmet_conditions: reasons, hard_blockers: hard, margin_adjusted_points: margin, rank_by_profile: robust,

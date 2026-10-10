@@ -45,7 +45,7 @@ function provider(base, opts = {}) {
         competitors: [{ name: 'Inc', price_point: '$50/mo', free_tier: false }], constraints: ['none material'],
         monthly_model: opts.badEconomics ? { price: 10, units: 10, revenue: 100, cashCost: 90, contribution: 10, ownerHours: 40, startup: 500, automation: 80, launchDays: 20, assumptions: ['x'] } : { price: 30, units: 100, revenue: 3000, cashCost: 600, contribution: 2400, ownerHours: 40, startup: 500, automation: 80, launchDays: 20, assumptions: ['100 customers by month 6 (model)'] },
         revised: { dimension_scores: st ? { ...strongDims } : {}, dimension_evidence: st ? { demand_signal: ['E1'], acquisition_efficiency: ['E1'], competition_gap: ['E2'], defensibility: ['E3'], platform_resilience: ['E3'], scale_without_hiring: ['E2'] } : {} },
-        kill_reasons: [], unknowns: ['real conversion rate'] }) };
+        kill_reasons: (opts.kill || []).includes(id) ? [{ reason: 'A free tool already covers the entire wedge', severity: opts.killRef === false ? 'fatal' : 'fatal', ref: opts.killRef === false ? 'C999' : rm[url(id, 'deep1')] }] : [], unknowns: ['real conversion rate'] }) };
     }
     throw new Error('unexpected prompt: ' + system.slice(0, 60));
   });
@@ -147,5 +147,32 @@ test('spend-cap hit during deep screen propagates (never swallowed) after saving
     p.budget = new Budget({ allow_spend: true, max_calls: 28 });      // 20 discovery calls + a few deep calls
     await assert.rejects(run({ runDir: dir, cfg: cfg(), provider: p, fetcher: mkFetch() }), BudgetExceeded);
     assert.ok(fs.existsSync(path.join(dir, '05_deep.json')) && fs.existsSync(path.join(dir, '01_raw.json')));
+  } finally { await w.close(); }
+});
+
+test('deep-screen KILL gate: fatal reason citing a verified excerpt kills the leader; next survivors are deep-screened; killed candidate never wins', async () => {
+  const w = await world(); const p = provider(w.base, { kill: ['SAS-01'] }), dir = tmp();
+  try {
+    const r = await run({ runDir: dir, cfg: cfg({ deep: { top_k: 1, min_verified: 3, ensure_top: 2 } }), provider: p, fetcher: mkFetch() });
+    assert.equal(r.gateById['SAS-01'].passed, false); assert.ok(r.gateById['SAS-01'].failed.includes('deep_kill')); assert.match(r.gateById['SAS-01'].gates.deep_kill.reason, /free tool already covers/);
+    assert.notEqual(r.decision.leader, 'SAS-01'); assert.ok(!r.decision.ranking.some(x => x.id === 'SAS-01'));
+    const screened = r.candidates.filter(c => c.deep && c.deep.done).map(c => c.id); assert.ok(screened.length >= 3, 'killed leader replaced by next survivors: ' + screened);
+    const top2 = r.decision.ranking.slice(0, 2).map(x => x.id); for (const id of top2) assert.ok(screened.includes(id), id + ' (top-2 survivor) must be deep-screened');
+  } finally { await w.close(); }
+});
+test('fatal claim WITHOUT a verified excerpt does not kill, but blocks a clean win (conditional_winner)', async () => {
+  const w = await world(); const p = provider(w.base, { kill: ['SAS-01'], killRef: false }), dir = tmp();
+  try {
+    const r = await run({ runDir: dir, cfg: cfg(), provider: p, fetcher: mkFetch() });
+    assert.equal(r.gateById['SAS-01'].passed, true); assert.equal(r.decision.verdict, 'conditional_winner'); assert.equal(r.decision.leader, 'SAS-01');
+    assert.ok(r.decision.unmet_conditions.some(x => /uncited_fatal_claims/.test(x)));
+  } finally { await w.close(); }
+});
+test('deep screen with a malformed revised entrant_edge keeps the ORIGINAL edge (no silent kill by formatting)', async () => {
+  const { deepScreen } = require('../src/deep'); const w = await world(); const p = provider(w.base);
+  try {
+    const orig = p.handler; p.handler = (req, n) => { const r = orig(req, n); if (!req.webSearch && /convert deep-screen/.test(req.system)) { const j = JSON.parse(r.text); j.revised.entrant_edge = { criterion: 'monthly subscription price', direction: 'lower', incumbent_value: 50, entrant_value: 10 }; return { text: JSON.stringify(j) }; } return r; };
+    const base = cand({ id: 'SAS-01', family: 'saas_or_micro_saas' }); const out = await deepScreen({ provider: p, candidate: base, minVerified: 3 });
+    assert.deepEqual(out.entrant_edge, base.entrant_edge); assert.match(out.deep.edge_note, /rejected_by_schema/);
   } finally { await w.close(); }
 });

@@ -94,3 +94,10 @@ test('source adapters parse documented response shapes (fixtures, NOT live)', as
     const bad = await collect(f, [{ source: 'nope', query: 'x' }, { source: 'steam', query: 'x' }]); assert.equal(bad.errors[0].error, 'unknown_source'); assert.equal(bad.errors[1].error, 'unknown_source', 'unofficial steam endpoint removed');
   } finally { await srv.close(); }
 });
+
+test('killReasons: fatal+C ref => verified; S ref => search_confirmed only; bad ref => none; plain strings => minor', () => {
+  const { killReasons } = require('../src/deep'); const idx = buildRefIndex({ citations: [{ url: 'https://a.com', title: 'A', cited_text: 'Free plan includes everything.' }], searchResults: [{ url: 'https://b.com', title: 'B' }] });
+  const k = killReasons([{ reason: 'free plan', severity: 'fatal', ref: 'C1' }, { reason: 'maybe', severity: 'fatal', ref: 'S1' }, { reason: 'invented', severity: 'fatal', ref: 'C77' }, 'plain text', { severity: 'fatal', ref: 'C1' }, { reason: 'odd', severity: 'catastrophic', ref: 'C1' }], idx);
+  assert.deepEqual(k.map(x => [x.severity, x.ref_status]), [['fatal', 'verified'], ['fatal', 'search_confirmed'], ['fatal', 'none'], ['minor', 'none'], ['minor', 'verified']]);
+  assert.equal(k[0].cited_text, 'Free plan includes everything.'); assert.equal(k[0].url, 'https://a.com');
+});

@@ -52,7 +52,13 @@ function gateOwnerLeak(c, g) {
   const hits = g.owner_leak_patterns.filter(p => new RegExp(p, 'i').test(txt));
   return [!hits.length, hits.length ? 'owner_specific_language:' + hits.join(',') : 'ok'];
 }
-const ORDER = [['reference_entrant', gateReferenceEntrant], ['entrant_edge', gateEntrantEdge], ['evidence_depth', gateEvidenceDepth], ['owner_leak', gateOwnerLeak]];
+// Deep-screen kill: a FATAL reason (free substitute covers the whole wedge, legal/platform prohibition, negative economics, nobody demonstrably pays)
+// kills the candidate ONLY if it cites a provider-verified excerpt. Uncited fatal claims never kill; decide() lists them as unresolved.
+function gateDeepKill(c) {
+  const k = ((c.deep || {}).kill_reasons || []).filter(x => x && x.severity === 'fatal' && x.ref_status === 'verified');
+  return [!k.length, k.length ? 'deep_screen_fatal:' + k.map(x => x.reason).join(' | ').slice(0, 400) : 'ok'];
+}
+const ORDER = [['reference_entrant', gateReferenceEntrant], ['entrant_edge', gateEntrantEdge], ['evidence_depth', gateEvidenceDepth], ['owner_leak', gateOwnerLeak], ['deep_kill', gateDeepKill]];
 function runGates(c, cfg = {}) {
   const g = { ...DEFAULTS, ...cfg }, res = {}, [ok, why] = gateSchema(c);
   res.schema = { passed: ok, reason: why };
