@@ -141,14 +141,14 @@ function Sync-LocalCheckWorkerResult($Lc,$Identity,$Acceptance) {
         try{$null=Start-LocalCheckWorker $q}catch{Write-AppLog 'WARN' ('Local check worker: '+$_.Exception.Message)}
         $r=Get-ValidatedLocalCheckWorkerResult $q $resultPath $Identity $Acceptance
     }
-    if($null-eq$r){return $false}
+    if($null-eq$r){Write-AppLog 'WARN' ('Local check worker produced no valid result at '+$resultPath+' (exists='+(Test-Path -LiteralPath $resultPath)+')');return $false}
     $print=Get-PropertyValue $r 'print'
-    if($null-eq$print){return $false}
+    if($null-eq$print){Write-AppLog 'WARN' 'Local check worker result has no print section';return $false}
     $state=[string](Get-PropertyValue $print 'state')
     $authority=[string](Get-PropertyValue $print 'authority_kind')
     $refs=@(Get-PropertyValue $print 'evidence_refs')
     if($state-eq'pass'){
-        if($authority-ne'owner_attested_external' -or $refs.Count-lt1){return $false}
+        if($authority-ne'owner_attested_external' -or $refs.Count-lt1){Write-AppLog 'WARN' ('Local check worker pass without authority/refs: '+$authority+' refs='+$refs.Count);return $false}
     }else{
         $authority='none';$refs=@()
     }

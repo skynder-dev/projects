@@ -127,8 +127,8 @@
       },
       {
         "path": "Modules\\Forge.PrintChecks.ps1",
-        "sha256": "bd0aca1e89a673b0c0a96296058eb5fd5cb10acdb0eb6b35165259c025ad0895",
-        "size_bytes": 18040
+        "sha256": "050ea5e4eac2ca449410bb161dd2463bfe72a174e00044bcb78df6c3d45e9d02",
+        "size_bytes": 18351
       },
       {
         "path": "Modules\\Forge.ProductNavigation.ps1",
