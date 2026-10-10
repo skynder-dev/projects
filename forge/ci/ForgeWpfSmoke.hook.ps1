@@ -136,6 +136,36 @@ function Ci-FindClippedText {
     return @($out | Sort-Object -Unique)
 }
 
+# ---------- untranslated UI text in RU ----------
+function Ci-EnglishUiStrings {
+    $set=New-Object 'System.Collections.Generic.HashSet[string]'
+    foreach($v in @($script:UiText['en'].Values)){ $s=([string]$v).Trim(); if($s.Length -ge 3){ [void]$set.Add($s) } }
+    foreach($b in @($script:StaticLocaleRegistry)){ $s=([string]$b.Source).Trim(); if($s.Length -ge 3){ [void]$set.Add($s) } }
+    return ,$set
+}
+$script:CiDataControls=@('ConceptTitle','PerformanceLeadersText','DiscoverDetailName','DiscoverDetailMeta','DiscoverDetailSummary','OverviewHook','OverviewConcept','OverviewBuyer','OverviewWhy','OverviewDifferent','OverviewVisual','OverviewMeaning','AnalysisPurchase','AnalysisContext','AnalysisMeaning','GenerationBriefText','OverviewWarnings','LocalCoreStatusText')
+function Ci-FindUntranslated($EnSet,[string]$Where) {
+    $strict=New-Object System.Collections.Generic.List[string]; $loose=New-Object System.Collections.Generic.List[string]
+    $stack=New-Object System.Collections.Stack; $stack.Push($Window)
+    while($stack.Count -gt 0){
+        $n=$stack.Pop()
+        if($n -is [System.Windows.UIElement] -and -not $n.IsVisible){ continue }
+        $txt=$null; $nm=''
+        if($n -is [System.Windows.Controls.TextBlock]){ $txt=[string]$n.Text; $nm=[string]$n.Name }
+        elseif($n -is [System.Windows.Controls.ContentControl] -and $n.Content -is [string]){ $txt=[string]$n.Content; $nm=[string]$n.Name }
+        if($null -ne $txt){
+            $tt=$txt.Trim()
+            if($tt -and $tt -notmatch '[А-Яа-яЁё]' -and $tt -match '[A-Za-z]{3}'){
+                if($EnSet.Contains($tt)){ [void]$strict.Add($Where+': '+$(if($nm){$nm+'='}else{''})+$tt.Substring(0,[Math]::Min(70,$tt.Length))) }
+                elseif(-not (Ci-IsInsideListItem $n) -and $script:CiDataControls -notcontains $nm -and @([regex]::Matches($tt,'[A-Za-z]{3,}')).Count -ge 3){ [void]$loose.Add($Where+': '+$(if($nm){$nm+'='}else{''})+$tt.Substring(0,[Math]::Min(70,$tt.Length))) }
+            }
+        }
+        $c=0; try{ $c=[System.Windows.Media.VisualTreeHelper]::GetChildrenCount($n) }catch{}
+        for($i=0;$i -lt $c;$i++){ $stack.Push([System.Windows.Media.VisualTreeHelper]::GetChild($n,$i)) }
+    }
+    return [pscustomobject]@{strict=@($strict);loose=@($loose)}
+}
+
 $script:CiWatchdog=New-Object System.Windows.Threading.DispatcherTimer
 $script:CiWatchdog.Interval=[TimeSpan]::FromSeconds(360)
 $script:CiWatchdog.Add_Tick({ $script:CiWatchdog.Stop(); $script:Ci.fatal='watchdog timeout'; Ci-Finish })
@@ -361,6 +391,22 @@ $Window.Add_ContentRendered({
                 }
             }
             $script:Ci['clipped']=$clip
+            # RU: no English UI text left (product data excluded)
+            if($script:Locale -ne 'ru'){ Ci-Click $HeaderLangRu 'HeaderLangRu (layout)' }
+            $Window.Width=1366; $Window.Height=768; Ci-Flush
+            $en=Ci-EnglishUiStrings; $strictAll=@(); $looseAll=@()
+            foreach($sec in @('home','discover','portfolio','performance')){ Show-ProductSection $sec; Ci-Flush; $u=Ci-FindUntranslated $en $sec; $strictAll+=$u.strict; $looseAll+=$u.loose }
+            foreach($sec in @('ideas','artwork','checks','publish')){
+                Show-ProductSection $sec; Ci-Flush
+                foreach($tab in @($MainTabs.Items)){
+                    if(-not ($tab -is [System.Windows.Controls.TabItem]) -or -not $tab.IsEnabled -or $tab.Visibility -ne 'Visible' -or $MainTabs.Visibility -ne 'Visible'){continue}
+                    $MainTabs.SelectedItem=$tab; Ci-Flush; $u=Ci-FindUntranslated $en ($sec+'#'+(Get-MainTabKey $tab)); $strictAll+=$u.strict; $looseAll+=$u.loose
+                }
+            }
+            $strictAll=@($strictAll | Sort-Object -Unique); $looseAll=@($looseAll | Sort-Object -Unique)
+            $script:Ci['untranslated_strict']=$strictAll; $script:Ci['untranslated_loose']=$looseAll
+            Ci-Check 'ru_no_untranslated_ui_text' ($strictAll.Count -eq 0) ($strictAll -join ' || ')
+            Ci-Check 'ru_english_text_info' $true ((@($looseAll) | Select-Object -First 40) -join ' || ')
             Ci-Check 'layout_widths_reached' (@($reached | Where-Object { [int](($_ -split '->')[1]) -lt ([int](($_ -split '->')[0])-24) }).Count -eq 0) ('screen '+[string]$screen+'; '+($reached -join ', '))
             $wide=@($clip.Keys | Where-Object { $_ -notlike '1024-*' })
             Ci-Check 'layout_no_clipped_text_1366_1920' ($wide.Count -eq 0) ((@($wide | ForEach-Object { $_+': '+$clip[$_] })) -join ' || ')
