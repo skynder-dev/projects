@@ -1,0 +1,25 @@
+{
+  "search": {
+    "keywords": ["small business", "nonprofit", "community"],
+    "rows": 25,
+    "statuses": "posted",
+    "max_detail_fetch": 14
+  },
+  "selection": {
+    "min_days_left": 10
+  },
+  "writer": "auto",
+  "llm": {
+    "provider": "anthropic",
+    "model": "claude-sonnet-5-5",
+    "allow_spend": false,
+    "max_calls_per_run": 2,
+    "max_output_tokens": 2500
+  },
+  "voice": {
+    "backend": "piper",
+    "piper_voice": "en_US-ryan-high",
+    "length_scale": 1.0,
+    "espeak_rate": 165
+  }
+}

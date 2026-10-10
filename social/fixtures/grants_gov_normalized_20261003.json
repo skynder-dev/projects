@@ -1,0 +1,147 @@
+[
+  {
+    "external_id": "359671",
+    "source_url": "https://www.grants.gov/search-results-detail/359671",
+    "snapshot_hash": "6f28a989d0ef839e3282513a1de46339e4dfebf52aee601f2cb64713bd92be32",
+    "observed_at": "2026-10-03 08:25:53.612056+00",
+    "normalized_facts": {
+      "title": "NIH, CDC and FDA Small Business Innovation Research Grant (Parent SBIR [R43/R44] Clinical Trial Optional)",
+      "number": "PA-27-100",
+      "status": "posted",
+      "doc_type": "synopsis",
+      "open_date": "05/28/2026",
+      "close_date": "04/05/2027",
+      "agency_code": "HHS-NIH11",
+      "agency_name": "National Institutes of Health",
+      "award_floor": null,
+      "description": "The Small Business Innovation Research (SBIR) program helps United States small business concerns (SBCs) bring scientific innovations to the marketplace. The SBIR program supports feasibility studies to later research and development (R&D) needed to develop a commercial product.",
+      "cost_sharing": false,
+      "award_ceiling": null,
+      "detail_fetched": true,
+      "opportunity_id": "359671",
+      "applicant_types": [
+        "Small businesses"
+      ],
+      "funding_categories": [
+        "Health"
+      ],
+      "assistance_listings": [],
+      "funding_instruments": [
+        "Grant"
+      ],
+      "expected_number_of_awards": null,
+      "estimated_total_program_funding": null
+    },
+    "provenance": {
+      "query": {
+        "rows": 10,
+        "keyword": "small business",
+        "statuses": "forecasted|posted"
+      },
+      "adapter": "social-grants-gov-v2",
+      "detail_api": "https://api.grants.gov/v1/api/fetchOpportunity",
+      "fetched_at": "2026-10-03T08:25:53.611Z",
+      "search_api": "https://api.grants.gov/v1/api/search2",
+      "source_url": "https://www.grants.gov/search-results-detail/359671",
+      "rights_note": "Official Grants.gov public opportunity metadata. Recheck current deadline, eligibility and award terms before audience-facing use."
+    }
+  },
+  {
+    "external_id": "363996",
+    "source_url": "https://www.grants.gov/search-results-detail/363996",
+    "snapshot_hash": "03e494403c7c9dfc69275d7ae4e8cbb38bcccd3f2bf0cf9828147cd0777ff48f",
+    "observed_at": "2026-10-03 08:25:53.201963+00",
+    "normalized_facts": {
+      "title": "Small Business Transportation Technical Assistance Center (Region 1)",
+      "number": "OST-OSDBU-2027-SBTTAC-REGION1-FY2027-1",
+      "status": "posted",
+      "doc_type": "synopsis",
+      "open_date": "10/01/2026",
+      "close_date": "10/31/2026",
+      "agency_code": "DOT-OSDBU",
+      "agency_name": "69A350 OSDBU",
+      "award_floor": 377016,
+      "description": "<p>The U.S. Department of Transportation (USDOT), Office of the Secretary (OST), Office of Small and Disadvantaged Business Utilization (OSDBU), announces the availability of funding under Notice of Funding Opportunity (NOFO) Number OST/OSDBU-2027-SBTTAC-Region1-FY2027-1 to establish and operate the Region 1 Small Business Transportation Technical Assistance Center (SBTTAC) <strong>formerly known as the Small Business Transportation Resource Centers (SBTRC).</strong>The cooperative agreement is for one (1) award for a 10-months base year with two option years, based on performance.</p><p><br></p><p><strong>Link to Recorded NOFO Information Session (Webinar) - Aug 3, 2026, 1PM ET</strong></p><p><a href=\"https://usdot.zoomgov.com/rec/share/84PjqpAOpvEeyc1B7HP-fmGEdi2tR7Le7sjEnHbep3ssbGuAideifzgmo282RsBh.lucHhIC2nlBYIlks?startTime=1785776732000%C2%A0\" target=\"_blank\">https://usdot.zoomgov.com/rec/share/84PjqpAOpvEeyc1B7HP-fmGEdi2tR7Le7sjEnHbep3ssbGuAideifzgmo282RsBh.lucHhIC2nlBYIlks?startTime=1785776732000&nbsp;</a></p><p><strong>Passcode</strong>: Nzy1RYQ=</p>",
+      "cost_sharing": true,
+      "award_ceiling": 377016,
+      "detail_fetched": true,
+      "opportunity_id": "363996",
+      "applicant_types": [
+        "Private institutions of higher education",
+        "State governments",
+        "Public and State controlled institutions of higher education",
+        "Nonprofits that do not have a 501(c)(3) status with the IRS, other than institutions of higher education",
+        "Nonprofits having a 501(c)(3) status with the IRS, other than institutions of higher education"
+      ],
+      "funding_categories": [
+        "Transportation"
+      ],
+      "assistance_listings": [],
+      "funding_instruments": [
+        "Cooperative Agreement"
+      ],
+      "expected_number_of_awards": null,
+      "estimated_total_program_funding": null
+    },
+    "provenance": {
+      "query": {
+        "rows": 10,
+        "keyword": "small business",
+        "statuses": "forecasted|posted"
+      },
+      "adapter": "social-grants-gov-v2",
+      "detail_api": "https://api.grants.gov/v1/api/fetchOpportunity",
+      "fetched_at": "2026-10-03T08:25:53.200Z",
+      "search_api": "https://api.grants.gov/v1/api/search2",
+      "source_url": "https://www.grants.gov/search-results-detail/363996",
+      "rights_note": "Official Grants.gov public opportunity metadata. Recheck current deadline, eligibility and award terms before audience-facing use."
+    }
+  },
+  {
+    "external_id": "364020",
+    "source_url": "https://www.grants.gov/search-results-detail/364020",
+    "snapshot_hash": "14f20d8b0db253a5027ac19c55ee9adefaa8d57f9890cda234af8858c3cf045a",
+    "observed_at": "2026-10-03 08:25:53.426666+00",
+    "normalized_facts": {
+      "title": "Small Business Innovation Research and Small Business Technology Transfer Programs Phase II",
+      "number": "USDA-NIFA-SBIR-012221",
+      "status": "posted",
+      "doc_type": "synopsis",
+      "open_date": "10/01/2026",
+      "close_date": "11/17/2026",
+      "agency_code": "USDA-NIFA",
+      "agency_name": "National Institute of Food and Agriculture",
+      "award_floor": 600000,
+      "description": "<p>The USDA SBIR/STTR programs, Assistance Listing number 10.212, support scientific excellence and technological innovation through investment of Federal research funds to build a strong national economy by stimulating technological innovation in the private sector; strengthening the role of small business in meeting Federal research and development needs; and increasing the commercial application of Federally supported research results. Further, the objective of the STTR program is to stimulate formal cooperative partnerships of ideas and technologies between small businesses and partnering research institutions (e.g., Universities and Federal laboratories).&nbsp;</p>",
+      "cost_sharing": false,
+      "award_ceiling": 650000,
+      "detail_fetched": true,
+      "opportunity_id": "364020",
+      "applicant_types": [
+        "Others (see text field entitled \"Additional Information on Eligibility\" for clarification)"
+      ],
+      "funding_categories": [
+        "Agriculture"
+      ],
+      "assistance_listings": [],
+      "funding_instruments": [
+        "Grant"
+      ],
+      "expected_number_of_awards": null,
+      "estimated_total_program_funding": 24750000
+    },
+    "provenance": {
+      "query": {
+        "rows": 10,
+        "keyword": "small business",
+        "statuses": "forecasted|posted"
+      },
+      "adapter": "social-grants-gov-v2",
+      "detail_api": "https://api.grants.gov/v1/api/fetchOpportunity",
+      "fetched_at": "2026-10-03T08:25:53.424Z",
+      "search_api": "https://api.grants.gov/v1/api/search2",
+      "source_url": "https://www.grants.gov/search-results-detail/364020",
+      "rights_note": "Official Grants.gov public opportunity metadata. Recheck current deadline, eligibility and award terms before audience-facing use."
+    }
+  }
+]

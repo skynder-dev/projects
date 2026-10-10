@@ -1,0 +1,99 @@
+{
+  "bundle": "03_SOCIAL_CLAUDE_MIGRATION_01",
+  "project_id": "704dc059-a067-49ff-86dd-3e15561ea023",
+  "product_contract": "SOCIAL_REAL_REELS_V1",
+  "migration_date": "2026-10-09",
+  "authoritative_counters": {
+    "live_topic": "1/1",
+    "research_packs": "3/3",
+    "real_reel_packages": "0/3",
+    "finished_mediaengine_reel": "0/1"
+  },
+  "files": [
+    {
+      "path": "00_START_HERE.md",
+      "size_bytes": 1331,
+      "sha256": "101e00233c561834ee3dce89a367be9c97c765adeea6bd648efd2623c20d49d8"
+    },
+    {
+      "path": "01_PRODUCT_SPEC.md",
+      "size_bytes": 1203,
+      "sha256": "b2a29abeb2c294e270e2fa2966210893fa50b599bcb6708153a715321cf8ad07"
+    },
+    {
+      "path": "02_CURRENT_STATE.md",
+      "size_bytes": 1735,
+      "sha256": "1b749d4dca67addb0a8aa99ddb75bf05bb086bc2e8204578363717136f2474ac"
+    },
+    {
+      "path": "03_DONE_DEFINITION.md",
+      "size_bytes": 1073,
+      "sha256": "09ec60f4a4e814f5a545b84a9c4d22e26b454c70fd28f4194e777144e1a88430"
+    },
+    {
+      "path": "04_OWNER_RULES.md",
+      "size_bytes": 839,
+      "sha256": "102a78d4b1f2754fcf099d6433a3ad62b33326a77e8e09467f31db557dbd80c3"
+    },
+    {
+      "path": "05_KNOWN_FAILURES.md",
+      "size_bytes": 1110,
+      "sha256": "0b9ddba00381ede2588e2c02409a59aec22a047baeedce8844a13b74447d0df0"
+    },
+    {
+      "path": "06_DECISIONS.md",
+      "size_bytes": 490,
+      "sha256": "bb57ee334c860ce1ad3570cfcd6c27a2a0014a99f62dccea4c91a6a507e5f4b0"
+    },
+    {
+      "path": "07_NEXT_WORK.md",
+      "size_bytes": 1471,
+      "sha256": "5e88293c506aa0eac6dc33077d4d7951fc2bd57f4f9a96e6c3e24927cd5d5eec"
+    },
+    {
+      "path": "08_MIGRATION_MANIFEST.json",
+      "size_bytes": 3200,
+      "sha256": "5e562d7291517f5bc236e2d3828503c003323790f11f1f354d720146552cfee0"
+    },
+    {
+      "path": "09_CLAUDE_START_PROMPT.md",
+      "size_bytes": 1005,
+      "sha256": "7e86b5e43fd30bed557f4de545b71af51cc7947c9cad54e79f32967ff20d4a41"
+    },
+    {
+      "path": "10_MEDIAENGINE_HANDOFF.md",
+      "size_bytes": 656,
+      "sha256": "ff9ca60807b908c3ddce4bfa574768672accd07422ec921906783d3f77e74428"
+    },
+    {
+      "path": "ALEX_AUTONOMOUS_WORK_CONTRACT.md",
+      "size_bytes": 664,
+      "sha256": "91963331d2497e2e3053ef50b9ada3a2e95350a4edfee6b2b54a6f180e92f66d"
+    },
+    {
+      "path": "historical_reference/00_SOCIAL_BUNDLE13_LIVE_DEPENDENCY_PREFLIGHT_20261001.sql",
+      "size_bytes": 17932,
+      "sha256": "02cfae240fd942f649228b5ed9dd7d6cf746c29599a7a668ea74a2ae361aa551"
+    },
+    {
+      "path": "historical_reference/MEDENG_P11_FULL_LIFECYCLE_CONSISTENCY_AUDIT_V1_ACCEPTANCE.json",
+      "size_bytes": 4366,
+      "sha256": "2eb6464648100e7cf5e976d4484595d1d796ad8cf4c1c73c29bc8bd3f1548f61"
+    },
+    {
+      "path": "historical_reference/SOCIAL_DB_RECOVERY_APPLY_RUNBOOK_BUNDLE13_20261001.md",
+      "size_bytes": 4776,
+      "sha256": "18161f8909426b717c14f12f8a003b457589cf690ba8c487021e7a23b9ba5b94"
+    },
+    {
+      "path": "historical_reference/SOCIAL_LONGRUN_BUNDLE_05_AUTHORITATIVE.manifest.json",
+      "size_bytes": 3203,
+      "sha256": "b6b7786e6c09c2bdd194394d0b29886eaf677dfe1e3f37ad292c912bc229b28a"
+    },
+    {
+      "path": "historical_reference/SOCIAL_V7_WINDOWS_RUNTIME_CHECKPOINT_20261003.json",
+      "size_bytes": 1998,
+      "sha256": "2a4fe287d170fedaa2685bfa390bc1193d30dc5b059a8c90650d00e463a7f284"
+    }
+  ]
+}
