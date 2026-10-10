@@ -116,6 +116,18 @@ $Window.Add_ContentRendered({
             Ci-Shot '06-artwork'
             $before=$script:Ci.errors.Count; Queue-Generation
             Ci-Check 'generate_handler_blocks_draft' ($script:Ci.errors.Count -eq $before+1 -and $script:Ci.errors[-1] -like 'Research drafts cannot be generated*')
+            # Portfolio pipeline board
+            Ci-Click $NavPortfolioButton 'NavPortfolioButton'
+            Ci-Check 'portfolio_visible' ($PortfolioLandingScroll.Visibility -eq 'Visible')
+            $pipeItems=@($PortfolioPipelineList.Items); $mine=@($pipeItems | Where-Object { [string]$_.concept_key -eq [string]$script:Current.concept.concept_key })
+            Ci-Check 'portfolio_lists_draft_keep' ($mine.Count -eq 1 -and [string]$mine[0].stage -eq 'keep_no_artwork' -and [string]$mine[0].stage_label -eq 'KEEP · no artwork') $(if($mine.Count){[string]$mine[0].stage_label}else{'missing'})
+            Ci-Check 'portfolio_keep_first' ($pipeItems.Count -gt 1 -and [string]$pipeItems[0].concept_key -eq [string]$script:Current.concept.concept_key) $pipeItems.Count
+            Ci-Check 'portfolio_counts' ($PipeKeepValue.Text -eq '1' -and [int]$PipeUndecidedValue.Text -ge 1 -and $PipePublishedValue.Text -eq '0') ($PipeUndecidedValue.Text+'/'+$PipeKeepValue.Text+'/'+$PipePublishedValue.Text)
+            Ci-Check 'portfolio_niche_line' ($PortfolioNicheText.Text -like '*Night-shift nurses: KEEP 1*') $PortfolioNicheText.Text
+            Ci-Shot '06b-portfolio'
+            $draftKey=[string]$script:Current.concept.concept_key
+            $PortfolioPipelineList.SelectedItem=$mine[0]; Ci-Flush
+            Ci-Check 'portfolio_click_opens_idea' ($script:ProductSection -eq 'ideas' -and [string]$script:Current.concept.concept_key -eq $draftKey -and $MainTabs.Visibility -eq 'Visible') $script:ProductSection
             # Russian UI
             Ci-Click $HeaderLangRu 'HeaderLangRu'
             Ci-Check 'ru_draft_overview_rerendered' ($OverviewStatus.Text -eq 'Черновик исследования' -and $OverviewHook.Text -eq 'CI hook: Running on caffeine and charting') ($OverviewStatus.Text+' | '+$OverviewHook.Text)
@@ -138,6 +150,10 @@ $Window.Add_ContentRendered({
             Ci-Check 'keep_persisted_after_restart' ([string]$OwnerKeepButton.FontWeight -eq 'Bold' -and $OwnerKeepButton.IsEnabled)
             Ci-Check 'ru_status_after_restart' ($OverviewStatus.Text -eq 'Черновик исследования') $OverviewStatus.Text
             Ci-Shot '08-after-restart'
+            Ci-Click $NavPortfolioButton 'NavPortfolioButton (restart)'
+            $mine=@(@($PortfolioPipelineList.Items) | Where-Object { [bool]$_.queue_item.is_local_draft })
+            Ci-Check 'portfolio_after_restart_ru' ($mine.Count -eq 1 -and [string]$mine[0].stage_label -eq 'ОСТАВИТЬ · нет макета' -and $PortfolioPipelineTitle.Text -eq 'Конвейер') $(if($mine.Count){[string]$mine[0].stage_label}else{'missing'})
+            Ci-Shot '09-portfolio-ru'
         }
         Ci-Check 'only_discover_snapshot_api' (@($script:Ci.api | Where-Object { $_ -ne 'discover_snapshot' }).Count -eq 0) (($script:Ci.api) -join ',')
         Ci-Check 'no_network' ($script:Ci.network -eq 0)

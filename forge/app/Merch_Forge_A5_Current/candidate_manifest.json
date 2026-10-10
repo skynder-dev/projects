@@ -13,7 +13,7 @@
     "status": "ACTIVE"
   },
   "desktop": {
-    "app_version": "2.9.2-amazon-profile-fix",
+    "app_version": "2.10.0-portfolio-pipeline",
     "native_windows_runtime_verified": false,
     "orange_semantic_palette": true,
     "overview_first": true,
@@ -28,10 +28,10 @@
       "ru",
       "es"
     ],
-    "workbench_sha256": "aa42e5f9ed736902c917c018c8bc4c3e552666d48699dcd3b3f343da1dd7db22",
-    "workbench_size_bytes": 248749,
+    "workbench_sha256": "0541568d447ece5be00242fa2dd28743075acb127bd1daab17ca0d17bb76aa66",
+    "workbench_size_bytes": 253490,
     "native_windows_parser_verified": false,
-    "native_windows_parser_target_sha256": "aa42e5f9ed736902c917c018c8bc4c3e552666d48699dcd3b3f343da1dd7db22",
+    "native_windows_parser_target_sha256": "0541568d447ece5be00242fa2dd28743075acb127bd1daab17ca0d17bb76aa66",
     "native_windows_parser_result_sha256": null,
     "product_home_dashboard": true,
     "brand_home_navigation": "dedicated_home_dashboard",
@@ -102,8 +102,8 @@
       },
       {
         "path": "Modules\\Forge.GenerationWorkerBridge.ps1",
-        "sha256": "ec25ad6ab5c252ef0c7ecd42a493492ef8df64281e56502509aa0ae69d082360",
-        "size_bytes": 35748
+        "sha256": "6369c6b0c12a5611688429aad3255b816295178f664e941cc0bb6571653477d4",
+        "size_bytes": 35826
       },
       {
         "path": "Modules\\Forge.ImageValidation.ps1",
@@ -126,19 +126,24 @@
         "size_bytes": 14304
       },
       {
+        "path": "Modules\\Forge.Pipeline.ps1",
+        "sha256": "7bcd036d4c5a740dfda0228215d0e80182952f0a17b994143dc88ce5bbc9f6bc",
+        "size_bytes": 13765
+      },
+      {
         "path": "Modules\\Forge.PrintChecks.ps1",
         "sha256": "33173471368c0c4c8315e4ce70ffd087df3c0bc26d6583a7ff5025bc7eb016cf",
         "size_bytes": 18490
       },
       {
         "path": "Modules\\Forge.ProductNavigation.ps1",
-        "sha256": "64fb8eb1ca1391b248c7c180c28366f6d150893d84cb7307e4a372c21ef1e92b",
-        "size_bytes": 13330
+        "sha256": "4f06f9294f6710f5525809a18d5c77002c7f648c9e33595eb51894ff0e3ae624",
+        "size_bytes": 13455
       },
       {
         "path": "Modules\\Forge.ResearchDrafts.ps1",
-        "sha256": "ef8f67582233d4a978115bb7374963263bc2fd93e6ab0215c6ca6dfce23e1f10",
-        "size_bytes": 32314
+        "sha256": "9a51c55f22def54100ad9568063e3dc15768061e24df524e6550160b9d6f97d3",
+        "size_bytes": 32406
       },
       {
         "path": "Modules\\Forge.UI.Layout.ps1",
@@ -146,7 +151,7 @@
         "size_bytes": 9480
       }
     ],
-    "runtime_module_count": 18,
+    "runtime_module_count": 19,
     "architecture_contract": "forge.product_architecture.v1",
     "design_baseline_contract": "forge.design_baseline.v1",
     "design_baseline_status": "candidate_pending_owner_visual_freeze",
@@ -300,7 +305,7 @@
     "trusted_local_check_worker": "MerchForgeCheckWorker.ps1",
     "generation_spool_policy": "forge.generation_spool_policy.v1",
     "publication_receipt_print_binding": true,
-    "current_release": "057_Merch_Forge_AMAZON_PROFILE_FIX_RC",
+    "current_release": "058_Merch_Forge_PORTFOLIO_PIPELINE_RC",
     "generation_authority_module": "Modules\\Forge.GenerationAuthority.ps1",
     "generation_temporal_authority": "future generation job/attempt timestamps beyond 10-minute clock-skew tolerance fail closed before paid dispatch/readiness; shared first-live authority also revalidates non-future ordered attempt/result/import timestamps",
     "amazon_print_profile_temporal_authority": "valid_until must be strictly later than captured_at; captured_at remains bounded by 10-minute future-skew tolerance and 120-day horizon",
@@ -463,11 +468,11 @@
     "owner_separate_parser_zip_required": false,
     "current_release": "044_Merch_Forge_PACKAGE_ROOT_RC"
   },
-  "package_name": "057_Merch_Forge_AMAZON_PROFILE_FIX_RC",
-  "package_number": 57,
-  "result_intent": "057: fix owner-attested Amazon print profile never accepted (read-only $host assignment in profile check + importer); includes 055/056; no backend change, no generation/accept/publish/paid authority",
+  "package_name": "058_Merch_Forge_PORTFOLIO_PIPELINE_RC",
+  "package_number": 58,
+  "result_intent": "058: Portfolio pipeline board (stage counters, next actions, decisions by niche) from local data; generation job object fix; includes 055-057; no backend change, no generation/accept/publish/paid authority",
   "schema": "forge.reconciled_candidate_manifest.v1",
-  "stage": "FORGE-057-AMAZON-PROFILE-FIX-RC",
+  "stage": "FORGE-058-PORTFOLIO-PIPELINE-RC",
   "startup_baseline": {
     "immutable_exact": false,
     "inner_start_sha256": "013e9dcfbfb4c2a42c12b4f6ee208767d80509be9e877160f088a9d2984f51a1",
@@ -627,7 +632,7 @@
     "exact_043_native_windows_stage": "integrity",
     "package_root_native_argv_repair": true
   },
-  "installer_generation": "00000000000000100240",
+  "installer_generation": "00000000000000100241",
   "installer_generation_format": "fixed_width_decimal_v1",
   "installer_guard": {
     "single_writer_lock": "install.lock",

@@ -330,6 +330,7 @@ function Invoke-DiscoverCreateDraft {
 }
 
 function Restore-DynamicSurfacesAfterLocale {
+    if($script:ProductSection -eq 'portfolio'){try{Update-PortfolioPipelineSurface}catch{}}
     # Apply-StaticLocaleUi rewrites every TextBlock with the text captured at startup ("—", "Select a niche"...).
     # Re-render the live surfaces from current data so a language switch never shows stale placeholders.
     if($null -ne $script:DiscoverSnapshot -and $null -ne $DiscoverNicheList){

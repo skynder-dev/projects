@@ -72,6 +72,8 @@ $mod=Join-Path $root 'Modules'
 foreach($m in @('Forge.Media.ps1','Forge.LocalCore.ps1','Forge.ProductNavigation.ps1','Forge.Localization.ps1','Forge.Gates.ps1','Forge.DataViews.ps1','Forge.DomainActions.ps1')){ . (Join-Path $mod $m) }
 $hasDraftModule = Test-Path -LiteralPath (Join-Path $mod 'Forge.ResearchDrafts.ps1')
 if($hasDraftModule){ . (Join-Path $mod 'Forge.ResearchDrafts.ps1') }
+$hasPipelineModule = Test-Path -LiteralPath (Join-Path $mod 'Forge.Pipeline.ps1')
+if($hasPipelineModule){ . (Join-Path $mod 'Forge.Pipeline.ps1') }
 
 # state root isolation
 $script:StateRoot=$StateRoot; $script:LogRoot=Join-Path $StateRoot 'logs'; $script:RuntimeLogPath=Join-Path $script:LogRoot 'runtime.log'
@@ -214,6 +216,18 @@ if($Phase -eq 'restart'){
     $before=@(Get-ResearchDraft $k.key).revisions.Count; $HookBox.Text=$HookBox.Text; $script:Dirty=$true; Save-Revision
     Check 'unchanged_save_no_revision' (@((Get-ResearchDraft $k.key).revisions).Count -eq $before)
     Check 'keep_on_revision_2' (Set-LocalOwnerDecision 'KEEP')
+    # portfolio pipeline board (pure computation over the same state)
+    if($hasPipelineModule){
+        $script:Queue=@(Add-QueueDisplayProperties @(Merge-ResearchDraftsIntoQueue @(Read-QueueSnapshotFile $script:EmbeddedIdeasPath)))
+        $pipe=Get-ForgePortfolioPipeline (Read-LocalCoreState) $script:Queue
+        $r1=@($pipe.rows | Where-Object { $_.concept_key -eq $k.key }); $r2=@($pipe.rows | Where-Object { $_.concept_key -eq $k.key2 })
+        Check 'pipeline_keep_draft_needs_artwork' ($r1.Count -eq 1 -and $r1[0].stage -eq 'keep_no_artwork') $(if($r1.Count){$r1[0].stage}else{'missing'})
+        Check 'pipeline_skip_draft_parked' ($r2.Count -eq 1 -and $r2[0].stage -eq 'skip') $(if($r2.Count){$r2[0].stage}else{'missing'})
+        Check 'pipeline_counts' ($pipe.summary.kept_or_later -eq 1 -and $pipe.summary.skip -eq 1 -and $pipe.summary.drafts -eq 2 -and $pipe.summary.ideas -eq @($script:Queue).Count -and $pipe.summary.undecided -eq (@($script:Queue).Count-2)) ($pipe.summary | ConvertTo-Json -Compress)
+        Check 'pipeline_keep_sorted_first' ([string]@($pipe.rows)[0].concept_key -eq [string]$k.key) ([string]@($pipe.rows)[0].concept_key)
+        $nurses=@($pipe.niches | Where-Object { $_.niche_name -like '*Night-shift nurses*' })
+        Check 'pipeline_niche_counts' ($nurses.Count -eq 1 -and $nurses[0].keep -eq 1 -and $nurses[0].total -eq 1) ($nurses | ConvertTo-Json -Compress)
+    }
     # no-dispatch artwork preparation
     Export-LocalGenerationBrief
     $dir=Join-Path $script:LocalCoreExportRoot (Get-LocalCoreSafeKey $k.key); $bj=@(Get-ChildItem -LiteralPath $dir -Filter 'generation-brief-*.json')

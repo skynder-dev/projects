@@ -93,7 +93,7 @@ function Show-ProductSection([string]$Section) {
     switch($Section){
         'home' { $HomeLandingScroll.Visibility='Visible'; if($null -ne $ConceptTitle){$ConceptTitle.Text=Get-UiText 'home.title' 'Business dashboard'}; if($null -ne $ConceptMeta){$ConceptMeta.Text=''} }
         'discover' { $DiscoverLandingScroll.Visibility='Visible'; if($null -ne $ConceptTitle){$ConceptTitle.Text=Get-UiText 'discover.title' 'Discover / Research'}; if($null -ne $ConceptMeta){$ConceptMeta.Text=Get-UiText 'discover.body' 'Ranked market opportunities backed by Forge research, evidence and concept depth.'}; Load-DiscoverSnapshot $false }
-        'portfolio' { $PortfolioLandingScroll.Visibility='Visible'; if($null -ne $ConceptTitle){$ConceptTitle.Text=Get-UiText 'portfolio.title' 'Portfolio'}; if($null -ne $ConceptMeta){$ConceptMeta.Text=Get-UiText 'portfolio.body' 'Published products, channels and listing health.'} }
+        'portfolio' { $PortfolioLandingScroll.Visibility='Visible'; if($null -ne $ConceptTitle){$ConceptTitle.Text=Get-UiText 'portfolio.title' 'Portfolio'}; if($null -ne $ConceptMeta){$ConceptMeta.Text=Get-UiText 'portfolio.body' 'Published products, channels and listing health.'}; try{Update-PortfolioPipelineSurface}catch{Write-AppLog 'WARN' ('Portfolio pipeline refresh failed: '+$_.Exception.Message)} }
         'performance' { $PerformanceLandingScroll.Visibility='Visible'; if($null -ne $ConceptTitle){$ConceptTitle.Text=Get-UiText 'performance.title' 'Performance'}; if($null -ne $ConceptMeta){$ConceptMeta.Text=Get-UiText 'performance.body' 'Sales, royalties and product momentum.'} }
         default {
             if($null -eq $script:Current){

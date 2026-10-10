@@ -1,9 +1,9 @@
 {
   "schema": "forge.release_checkpoint.v1",
-  "package": "057_Merch_Forge_AMAZON_PROFILE_FIX_RC",
+  "package": "058_Merch_Forge_PORTFOLIO_PIPELINE_RC",
   "previous_package": "057_Merch_Forge_AMAZON_PROFILE_FIX_RC",
-  "app_version": "2.9.2-forge-amazon-profile-fix",
-  "installer_generation": "00000000000000100240",
+  "app_version": "2.10.0-forge-portfolio-pipeline",
+  "installer_generation": "00000000000000100241",
   "static": "14/14",
   "checks": {
     "xaml_xml_parse": true,
@@ -21,8 +21,8 @@
     "manifest_authority_all_false": true,
     "headless_selftest_pass": true
   },
-  "headless_selftest": "PASS 67/67 (PowerShell 7, Linux)",
-  "integrity": "52 files",
+  "headless_selftest": "PASS 72/72 (PowerShell 7, Linux)",
+  "integrity": "53 files",
   "windows_proof": "see GitHub workflow forge-windows (branch forge-ci-results)",
   "authority": {
     "generate_authorized": false,
