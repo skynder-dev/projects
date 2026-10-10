@@ -40,6 +40,11 @@ function Register-PipelineUiText {
         }
     }
     foreach($loc in $texts.Keys){ if($null -eq $script:UiText[$loc]){$script:UiText[$loc]=@{}}; foreach($k in $texts[$loc].Keys){$script:UiText[$loc][$k]=$texts[$loc][$k]} }
+    # Static XAML captions on Portfolio that had no translation.
+    if($null -ne $script:StaticUiTranslations){
+        $static=@{ ru=@{'Products'='Товары';'Channels'='Площадки';'Listing health'='Состояние карточек'}; es=@{'Products'='Productos';'Channels'='Canales';'Listing health'='Estado de fichas'} }
+        foreach($loc in $static.Keys){ if($null -ne $script:StaticUiTranslations[$loc]){ foreach($k in $static[$loc].Keys){ if(-not $script:StaticUiTranslations[$loc].ContainsKey($k)){$script:StaticUiTranslations[$loc][$k]=$static[$loc][$k]} } } }
+    }
 }
 
 # ---------- pure computation (headless-testable) ----------

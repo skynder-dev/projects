@@ -58,6 +58,8 @@ function Update-ResponsiveLayout {
         $VariantReviewGrid.ColumnDefinitions[1].Width=Set-GridLength 8;$VariantReviewGrid.ColumnDefinitions[2].Width=Set-GridLength 210;$VariantReviewGrid.ColumnDefinitions[3].Width=Set-GridLength 8;$VariantReviewGrid.ColumnDefinitions[4].Width=New-StarGridLength 1;Set-GridPos $VariantReviewState 0 0;Set-GridPos $VariantReviewReason 2 0;Set-GridPos $VariantReviewNote 4 0;$VariantReviewState.Margin=Set-Thickness 0;$VariantReviewReason.Margin=Set-Thickness 0;$VariantReviewNote.Margin=Set-Thickness 0
     }
     if(@('home','portfolio','performance') -contains $script:ProductSection){$QueueColumn.Width=Set-GridLength 0;$QueueGapColumn.Width=Set-GridLength 0;$ConceptPane.Visibility='Collapsed';$CompactConceptBox.Visibility='Collapsed'}
+    # The XAML gives QueueColumn MinWidth=340; without clearing it a 'hidden' queue still occupies 340px of empty space.
+    $QueueColumn.MinWidth=if($QueueColumn.Width.Value -le 0){0}else{340}
 }
 function Select-MainTab([string]$Header) {
     if($null -eq $MainTabs){return}

@@ -28,10 +28,10 @@
       "ru",
       "es"
     ],
-    "workbench_sha256": "0541568d447ece5be00242fa2dd28743075acb127bd1daab17ca0d17bb76aa66",
-    "workbench_size_bytes": 253490,
+    "workbench_sha256": "b3f5f030e43027fa93e9714699e04cdf35892a45438ddf282126271c979e5a15",
+    "workbench_size_bytes": 253506,
     "native_windows_parser_verified": false,
-    "native_windows_parser_target_sha256": "0541568d447ece5be00242fa2dd28743075acb127bd1daab17ca0d17bb76aa66",
+    "native_windows_parser_target_sha256": "b3f5f030e43027fa93e9714699e04cdf35892a45438ddf282126271c979e5a15",
     "native_windows_parser_result_sha256": null,
     "product_home_dashboard": true,
     "brand_home_navigation": "dedicated_home_dashboard",
@@ -127,8 +127,8 @@
       },
       {
         "path": "Modules\\Forge.Pipeline.ps1",
-        "sha256": "7bcd036d4c5a740dfda0228215d0e80182952f0a17b994143dc88ce5bbc9f6bc",
-        "size_bytes": 13765
+        "sha256": "0575c66f2f55981c04804f7c88ed0fb7875869d4657a2c396f0389b3c66b8f52",
+        "size_bytes": 14357
       },
       {
         "path": "Modules\\Forge.PrintChecks.ps1",
@@ -147,8 +147,8 @@
       },
       {
         "path": "Modules\\Forge.UI.Layout.ps1",
-        "sha256": "7dc8576f3a91057ee5d2bd7611c161d1c73ce6b257119aa0f648e979a0698ce1",
-        "size_bytes": 9480
+        "sha256": "c30d699f93b6ee4f1d766c1687f1074148ca937a77e8251d214a257cebc76fd3",
+        "size_bytes": 9674
       }
     ],
     "runtime_module_count": 19,

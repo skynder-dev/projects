@@ -119,6 +119,7 @@ $Window.Add_ContentRendered({
             # Portfolio pipeline board
             Ci-Click $NavPortfolioButton 'NavPortfolioButton'
             Ci-Check 'portfolio_visible' ($PortfolioLandingScroll.Visibility -eq 'Visible')
+            Ci-Check 'portfolio_uses_full_width' ($QueueColumn.ActualWidth -lt 1 -and $PortfolioLandingScroll.ActualWidth -gt ($Window.ActualWidth*0.85)) ([string][int]$QueueColumn.ActualWidth+' / '+[string][int]$PortfolioLandingScroll.ActualWidth+' of '+[string][int]$Window.ActualWidth)
             $pipeItems=@($PortfolioPipelineList.Items); $mine=@($pipeItems | Where-Object { [string]$_.concept_key -eq [string]$script:Current.concept.concept_key })
             Ci-Check 'portfolio_lists_draft_keep' ($mine.Count -eq 1 -and [string]$mine[0].stage -eq 'keep_no_artwork' -and [string]$mine[0].stage_label -eq 'KEEP · no artwork') $(if($mine.Count){[string]$mine[0].stage_label}else{'missing'})
             Ci-Check 'portfolio_keep_first' ($pipeItems.Count -gt 1 -and [string]$pipeItems[0].concept_key -eq [string]$script:Current.concept.concept_key) $pipeItems.Count
