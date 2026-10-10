@@ -8,38 +8,46 @@ const { FAMILIES_REQUIRED } = require('../src/schema'), { CODES } = require('../
 const { load } = require('../vendor/load'), { cand } = require('./helpers');
 
 const stmt = (id, kind) => `Documented evidence statement for ${id} about ${kind} appears on this page only.`;
-function world(opts = {}) { return Promise.resolve({ base: 'https://evidence.test', hallucinate: opts.hallucinate || [], close: async () => {} }); }
+const BASE = 'https://evidence.test';
+function world() { return Promise.resolve({ base: BASE, close: async () => {} }); }
+const refMap = (user) => { const m = {}; for (const x of user.matchAll(/\[([CS]\d+)\] (\S+) ::/g)) if (!m[x[2]]) m[x[2]] = x[1]; return m; };
+const strongDims = { demand_signal: 4, acquisition_efficiency: 4, competition_gap: 4, defensibility: 4, platform_resilience: 4, scale_without_hiring: 5, fulfillment_simplicity: 5, regulatory_simplicity: 4 };
 function provider(base, opts = {}) {
-  const halluc = new Set(opts.hallucinate || []);
-  const cites = (id, kinds) => kinds.map(k => ({ url: `${base}/p/${id}/${k}`, title: 't', cited_text: halluc.has(id) ? 'Unrelated text about nothing in particular here.' : stmt(id, k) }));
-  const strong = new Set(opts.strong || ['SAS-01']), free = new Set(opts.free || []);
-  return new FakeProvider(({ system, user }) => {
-    if (/discovery researcher/.test(system)) {
-      const fam = user.match(/Family: (\w+)/)[1], code = CODES[fam], n = +user.match(/exactly (\d+)/)[1], out = [];
+  const strong = new Set(opts.strong || ['SAS-01']), free = new Set(opts.free || []), halluc = new Set(opts.hallucinate || []);
+  const url = (id, k) => `${base}/p/${id}/${k}`;
+  return new FakeProvider(({ system, user, webSearch }) => {
+    if (webSearch && /research stage/.test(system)) {   // phase 1 discovery: prose + citations
+      const fam = user.match(/Family: (\w+)/)[1], code = CODES[fam], n = +user.match(/exactly (\d+)/)[1], citations = [], searchResults = [];
+      for (let i = 1; i <= n; i++) { const id = `${code}-${String(i).padStart(2, '0')}`; for (const k of ['price', 'demand', 'constraint']) { searchResults.push({ url: url(id, k), title: 'T ' + id }); if (!halluc.has(id)) citations.push({ url: url(id, k), title: 'T ' + id, cited_text: stmt(id, k) }); } }
+      return { text: `Research notes for ${fam}: ${n} ideas.`, finalText: `Research notes for ${fam}: ${n} ideas. `.repeat(10), citations, searchResults };
+    }
+    if (!webSearch && /convert research notes/.test(system)) {   // phase 2 discovery: JSON by reference
+      const fam = user.match(/Family: (\w+)/)[1], code = CODES[fam], n = +user.match(/exactly (\d+) candidates/)[1], rm = refMap(user), out = [];
       for (let i = 1; i <= n; i++) {
         const id = `${code}-${String(i).padStart(2, '0')}`, st = strong.has(id), fr = free.has(id);
-        const url = (k) => `${base}/p/${id}/${k}`;
         out.push({ name: `Idea ${id}`, category: 'c', buyer: 'buyers', pain: 'pain', entrant_wedge: 'automates three manual steps with a measured workflow',
-          evidence: [{ url: url('price'), publisher: 'p', date: '2026-10-01', quote: stmt(id, 'price'), shows: 's', kind: 'incumbent_price', class: 'fact' }, { url: url('demand'), publisher: 'p', date: '2026-10-01', quote: stmt(id, 'demand'), shows: 's', kind: 'demand', class: 'fact' }, { url: url('constraint'), publisher: 'p', date: '2026-10-01', quote: stmt(id, 'constraint'), shows: 's', kind: 'constraint', class: 'fact' }],
-          substitutes: [], entrant_edge: { criterion: 'cash_cost', direction: 'lower_is_better', unit: 'usd_month', incumbent_value: fr ? 0 : 50, incumbent_source_url: url('price'), entrant_value: 10, entrant_basis: 'serverless hosting without per-seat licence costs', falsifier: 'reject if hosting exceeds $10/month' },
+          evidence: [['price', 'incumbent_price'], ['demand', 'demand'], ['constraint', 'constraint']].map(([k, kind]) => ({ ref: rm[url(id, k)], kind, shows: 's', class: 'fact' })),
+          substitutes: [], entrant_edge: { criterion: 'cash_cost', direction: 'lower_is_better', unit: 'usd_month', incumbent_value: fr ? 0 : 50, incumbent_ref: rm[url(id, 'price')], entrant_value: 10, entrant_basis: 'serverless hosting without per-seat licence costs', falsifier: 'reject if hosting exceeds $10/month' },
           startup_cash_usd: st ? 150 : 2500, time_to_first_revenue_days: st ? 12 : 60, owner_hours_per_week_steady: st ? 2 : 12, automation_potential_pct: st ? 92 : 60,
           unit_economics: { contribution_margin_pct: st ? 80 : 45, class: 'model' }, regulatory_or_platform_dependency: 'none', major_uncertainty: 'demand', unknowns: [],
-          dimension_scores: { demand_signal: st ? 4 : 2, acquisition_efficiency: st ? 4 : 2, competition_gap: st ? 4 : 2, defensibility: st ? 4 : 2, platform_resilience: st ? 4 : 3, scale_without_hiring: st ? 5 : 3, fulfillment_simplicity: 5, regulatory_simplicity: 4 },
+          dimension_scores: st ? { ...strongDims } : { demand_signal: 2, acquisition_efficiency: 2, competition_gap: 2, defensibility: 2, platform_resilience: 3, scale_without_hiring: 3, fulfillment_simplicity: 5, regulatory_simplicity: 4 },
           dimension_evidence: st ? { demand_signal: ['E2'], acquisition_efficiency: ['E2'], competition_gap: ['E1'], defensibility: ['E3'], platform_resilience: ['E3'], scale_without_hiring: ['E1'] } : {} });
       }
-      const allC = out.flatMap((o, i) => cites(`${code}-${String(i + 1).padStart(2, '0')}`, ['price', 'demand', 'constraint']));
-      return { text: 'Searching [1] now.\n```json\n' + JSON.stringify(out) + '\n```', finalText: '```json\n' + JSON.stringify(out) + '\n```', citations: allC, searchResults: allC.map(c => ({ url: c.url, title: 't' })) };
+      return { text: '```json\n' + JSON.stringify(out) + '\n```' };
     }
-    if (/deep-screen researcher/.test(system)) {
-      const id = user.match(/Candidate ([A-Z]+-\d+)/)[1], url = (k) => `${base}/p/${id}/${k}`, st = strong.has(id);
-      const dc = cites(id, ['deep1', 'deep2', 'deep3']);
-      return { citations: dc, searchResults: dc.map(c => ({ url: c.url })), text: JSON.stringify({ evidence: [1, 2, 3].map(i => ({ url: url('deep' + i), publisher: 'p', date: '2026-10-05', quote: stmt(id, 'deep' + i), shows: 's', kind: ['demand', 'incumbent_price', 'constraint'][i - 1], class: 'fact' })),
-        competitors: [{ name: 'Inc', price_point: '$50/mo', url: url('price'), free_tier: false }], constraints: ['none material'],
+    if (webSearch && /deep-screen stage/.test(system)) {
+      const id = user.match(/Candidate ([A-Z]+-\d+)/)[1], ks = ['deep1', 'deep2', 'deep3'], cit = ks.map(k => ({ url: url(id, k), title: 'D', cited_text: halluc.has(id) ? '' : stmt(id, k) })).filter(c => c.cited_text);
+      return { text: 'deep notes', finalText: 'deep notes '.repeat(30), citations: cit, searchResults: ks.map(k => ({ url: url(id, k), title: 'D' })) };
+    }
+    if (!webSearch && /convert deep-screen notes/.test(system)) {
+      const id = user.match(/Candidate ([A-Z]+-\d+)/)[1], rm = refMap(user), st = strong.has(id);
+      return { text: JSON.stringify({ evidence: [['deep1', 'demand'], ['deep2', 'incumbent_price'], ['deep3', 'constraint']].map(([k, kind]) => ({ ref: rm[url(id, k)], kind, shows: 's', class: 'fact' })),
+        competitors: [{ name: 'Inc', price_point: '$50/mo', free_tier: false }], constraints: ['none material'],
         monthly_model: opts.badEconomics ? { price: 10, units: 10, revenue: 100, cashCost: 90, contribution: 10, ownerHours: 40, startup: 500, automation: 80, launchDays: 20, assumptions: ['x'] } : { price: 30, units: 100, revenue: 3000, cashCost: 600, contribution: 2400, ownerHours: 40, startup: 500, automation: 80, launchDays: 20, assumptions: ['100 customers by month 6 (model)'] },
-        revised: { dimension_scores: st ? { demand_signal: 4, acquisition_efficiency: 4, competition_gap: 4, defensibility: 4, platform_resilience: 4, scale_without_hiring: 5, fulfillment_simplicity: 5, regulatory_simplicity: 4 } : {}, dimension_evidence: st ? { demand_signal: ['E1'], acquisition_efficiency: ['E1'], competition_gap: ['E2'], defensibility: ['E3'], platform_resilience: ['E3'], scale_without_hiring: ['E2'] } : {} },
+        revised: { dimension_scores: st ? { ...strongDims } : {}, dimension_evidence: st ? { demand_signal: ['E1'], acquisition_efficiency: ['E1'], competition_gap: ['E2'], defensibility: ['E3'], platform_resilience: ['E3'], scale_without_hiring: ['E2'] } : {} },
         kill_reasons: [], unknowns: ['real conversion rate'] }) };
     }
-    throw new Error('unexpected prompt');
+    throw new Error('unexpected prompt: ' + system.slice(0, 60));
   });
 }
 const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'rv-run-'));
@@ -66,11 +74,11 @@ test('E2E winner path: 32 candidates/8 families, citation-verified evidence, dee
     assert.match(fs.readFileSync(path.join(dir, 'REPORT.md'), 'utf8'), /WINNER/);
   } finally { await w.close(); }
 });
-test('ANTI-HALLUCINATION: quotes absent from provider citations => cannot survive gates or win', async () => {
+test('ANTI-HALLUCINATION: search URLs without citation excerpts => cannot survive gates or win', async () => {
   const bad = []; for (const c of Object.values(CODES)) for (let i = 1; i <= 4; i++) bad.push(`${c}-0${i}`);
-  const w = await world({ hallucinate: bad }); const p = provider(w.base, { hallucinate: bad });
+  const w = await world(); const p = provider(w.base, { hallucinate: bad });
   try { const r = await run({ runDir: tmp(), cfg: cfg(), provider: p, fetcher: mkFetch() });
-    assert.equal(r.decision.verdict, 'no_winner'); assert.equal(r.decision.survivors, 0); assert.ok(r.candidates.every(c => c.evidence.every(e => e.verify.status === 'search_confirmed')), 'URL seen in search but quote not in any citation => half weight only');
+    assert.equal(r.decision.verdict, 'no_winner'); assert.equal(r.decision.survivors, 0); assert.ok(r.candidates.every(c => c.evidence.every(e => e.verify.status === 'search_confirmed')), 'URL seen in search but no citation excerpt => half weight only');
   } finally { await w.close(); }
 });
 test('free incumbent (value 0) candidates are rejected even with perfect evidence', async () => {

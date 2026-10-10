@@ -4,7 +4,6 @@ const { writeJson, readJson, sha256File, nowIso } = require('./util');
 const { runGates } = require('./gates');
 const { scoreCandidate, rank, GLOBAL_PROFILE, SCORING_VERSION } = require('./scoring');
 const { decide } = require('./decide');
-const { verifyCandidate } = require('./evidence');
 const { discoverFamily, DiscoveryAborted } = require('./discover');
 const { deepScreen } = require('./deep');
 const { collect } = require('./sources');
@@ -50,29 +49,25 @@ async function run({ runDir, cfg, provider = null, fetcher = null, candidates = 
   else if (has('01_raw.json')) raw = readJson(P('01_raw.json'));
   else {
     if (!provider) throw new Error('discover stage needs an LLM provider (see config.llm). Use `reveng import` for pre-researched candidates.');
-    raw = []; const cites = {}, srs = {}, dlog = [], diags = [], breaker = { fails: 0, max: (cfg.discovery || {}).max_consecutive_failures || 2 };
+    raw = []; const research = {}, dlog = [], diags = [], breaker = { fails: 0, max: (cfg.discovery || {}).max_consecutive_failures || 2 };
     try {
       for (const family of families) {
         log(`discover ${family}`);
         const r = await discoverFamily({ provider, fetcher, collect, family, perFamily: cfg.per_family || 4, signalsEnabled: (cfg.sources || {}).enabled !== false, bases: (cfg.sources || {}).bases, breaker, maxUses: (cfg.llm || {}).web_search_max_uses });
-        raw.push(...r.candidates); cites[family] = r.citations; srs[family] = r.searchResults; dlog.push({ family, got: r.candidates.length, dropped: r.dropped, log: r.log }); diags.push(...r.diags);
+        raw.push(...r.candidates); research[family] = r.research; dlog.push({ family, got: r.candidates.length, dropped: r.dropped, log: r.log }); diags.push(...r.diags);
         writeJson(P('01_raw.partial.json'), { raw, dlog }); writeJson(P('01_diagnostics.json'), diags);
       }
     } catch (e) {
       if (e instanceof DiscoveryAborted) { diags.push(...(e.diags || [])); writeJson(P('01_diagnostics.json'), diags); chk.blockers.push('discovery_aborted:' + e.message); chk.updated_at = nowIso(); writeJson(P('checkpoint.json'), chk); }
       throw e;
     }
-    writeJson(P('01_raw.json'), raw); writeJson(P('01_discovery_log.json'), { dlog, citations: cites, searchResults: srs }); done('discover');
+    writeJson(P('01_raw.json'), raw); writeJson(P('01_discovery_log.json'), { dlog, research }); done('discover');
   }
-  // 2 verify (engine fetches every cited URL)
+  // 2 verify (evidence statuses were assigned from provider-returned refs; nothing is fetched)
   let ver;
   if (has('02_verified.json')) ver = readJson(P('02_verified.json'));
   else if (provisional) { ver = raw; writeJson(P('02_verified.json'), ver); }
-  else {
-    const dl = has('01_discovery_log.json') ? readJson(P('01_discovery_log.json')) : { citations: {}, searchResults: {} };
-    ver = raw.map(c => verifyCandidate(c, dl.citations[c.family] || [], dl.searchResults[c.family] || []));
-    writeJson(P('02_verified.json'), ver); done('verify');
-  }
+  else { ver = raw; writeJson(P('02_verified.json'), ver); done('verify'); } // evidence already resolved from provider refs at discovery time
   // 3 gate + score
   let { gateById, scored } = evaluateAll(ver, cfg, provisional);
   writeJson(P('03_gates.json'), gateById); writeJson(P('04_scored.json'), scored); done('gate_score');
@@ -86,7 +81,7 @@ async function run({ runDir, cfg, provider = null, fetcher = null, candidates = 
     const out = [];
     for (const c of ver) {
       if (!pool.includes(c.id)) { out.push(c); continue; }
-      try { out.push(await deepScreen({ provider, candidate: c, minVerified: dcfg.min_verified || 3 })); }
+      try { out.push(await deepScreen({ provider, candidate: c, minVerified: dcfg.min_verified || 3, maxUses: (cfg.llm || {}).web_search_max_uses })); }
       catch (e) { log(`deep FAILED ${c.id}: ${e.message}`); chk.blockers.push(`deep_failed:${c.id}:${e.message}`); out.push(c); }
     }
     cand = out; writeJson(P('05_deep.json'), cand); done('deep');

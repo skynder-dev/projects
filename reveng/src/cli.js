@@ -8,7 +8,7 @@ const { AnthropicProvider } = require('./llm/anthropic');
 const { OpenAIProvider } = require('./llm/openai');
 const { markAgentReported } = require('./evidence');
 const { readJson } = require('./util');
-const { discoverPrompts } = require('./prompts');
+const { discoverMemoPrompts } = require('./prompts');
 const { FAMILIES_REQUIRED, FAMILIES_EXTRA } = require('./schema');
 
 function args(argv) { const a = { _: [] }; for (let i = 0; i < argv.length; i++) { const t = argv[i]; if (t.startsWith('--')) { const k = t.slice(2); const nx = argv[i + 1]; if (nx === undefined || nx.startsWith('--')) a[k] = true; else { a[k] = nx; i++; } } else a._.push(t); } return a; }
@@ -31,7 +31,7 @@ async function main() {
     const fetcher = new Fetcher({ cacheDir: path.join(runDir, 'cache'), userAgent: (cfg.http || {}).user_agent || undefined, allowHosts: (cfg.http || {}).allow_hosts || undefined });
     if (a['dry-run']) {
       fs.mkdirSync(runDir, { recursive: true }); const fams = cfg.families || [...FAMILIES_REQUIRED, ...FAMILIES_EXTRA];
-      const prompts = fams.map(f => ({ family: f, ...discoverPrompts({ family: f, code: f.slice(0, 3).toUpperCase(), n: cfg.per_family || 4, lens: 'dry-run', signals: [] }) }));
+      const prompts = fams.map(f => ({ family: f, phase1: discoverMemoPrompts({ family: f, n: cfg.per_family || 4, lens: 'dry-run', signals: [] }) }));
       fs.writeFileSync(path.join(runDir, 'dryrun_prompts.json'), JSON.stringify(prompts, null, 2)); console.log('dry-run prompts written to ' + runDir); return;
     }
     const provider = makeProvider(cfg);
@@ -44,7 +44,7 @@ async function main() {
     const { smoke } = require('./smoke'); const dir = path.join(out, 'smoke_' + stamp()); fs.mkdirSync(dir, { recursive: true });
     const rep = await smoke({ provider, family: a.family || 'saas_or_micro_saas' }); rep.finished_at = new Date().toISOString();
     fs.writeFileSync(path.join(dir, 'smoke_result.json'), JSON.stringify(rep, null, 2));
-    console.log(JSON.stringify({ ok: rep.ok, parsed_candidates: rep.parsed_candidates, evidence: rep.evidence, usage: rep.usage, error: rep.error }, null, 2)); process.exit(rep.ok ? 0 : 4);
+    console.log(JSON.stringify({ ok: rep.ok, parsed_candidates: rep.parsed_candidates, excerpts_returned: rep.excerpts_returned, evidence: rep.evidence, usage: rep.usage, error: rep.error }, null, 2)); process.exit(rep.ok ? 0 : 4);
   }
   if (cmd === 'import') {
     const files = String(a.raw || '').split(',').filter(Boolean); if (!files.length) { console.error('usage: import --raw a.json,b.json'); process.exit(2); }
