@@ -1,9 +1,9 @@
 {
   "schema": "forge.release_checkpoint.v1",
-  "package": "069_Merch_Forge_START_FIX_RC",
-  "previous_package": "068_Merch_Forge_REVIEW_FIXES_RC",
-  "app_version": "2.18.1-forge-start-fix",
-  "installer_generation": "00000000000000100252",
+  "package": "070_Merch_Forge_DRAFT_CHECKS_TEXT_RC",
+  "previous_package": "069_Merch_Forge_START_FIX_RC",
+  "app_version": "2.18.2-forge-draft-checks-text",
+  "installer_generation": "00000000000000100253",
   "static": "14/14",
   "checks": {
     "xaml_xml_parse": true,

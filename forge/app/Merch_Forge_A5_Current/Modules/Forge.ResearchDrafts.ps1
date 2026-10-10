@@ -259,6 +259,8 @@ function Open-ResearchDraftItem($Item,[bool]$Force=$false) {
             $ConceptTitle.Text=$c.title
             $OverviewHook.Text=$c.hook;$OverviewConcept.Text=$c.concept_text;$OverviewBuyer.Text=$c.target_buyer;$OverviewWhy.Text=$c.purchase_reason;$OverviewDifferent.Text=$c.differentiation;$OverviewVisual.Text=$c.visual_direction_text;$OverviewMeaning.Text=''
             $OverviewStatus.Text=Get-UiText 'draft.state' 'Research draft'
+            # Checks tab: show the draft's own reasoning instead of empty server-analysis sections.
+            $dash='—'; $AnalysisPurchase.Text=if([string]$c.purchase_reason){[string]$c.purchase_reason}else{$dash}; $AnalysisContext.Text=if([string]$c.target_buyer){[string]$c.target_buyer}else{$dash}; $AnalysisMeaning.Text=if([string]$c.concept_text){[string]$c.concept_text}else{$dash}
             $OverviewWarnings.Text=Get-ResearchDraftProvenanceText $d
             $missing=@(Get-ResearchDraftMissing $c); $next=Get-UiText 'draft.next' 'Review this draft.'
             if($missing.Count){$next=((Get-UiText 'draft.missing' 'Still missing before artwork: {0}.') -f ($missing -join ', '))+' '+$next}
