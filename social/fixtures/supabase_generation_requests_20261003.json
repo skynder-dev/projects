@@ -1,0 +1,520 @@
+[
+  {
+    "id": "3ffd0e69-2d19-4f9a-ae17-f6b7fd17e26b",
+    "created_at": "2026-10-03T08:53:00.814712+00:00",
+    "state": "waiting_provider_activation",
+    "input_manifest": {
+      "task": "Generate one factual, compelling 30-90 second social-media Reel package from ONLY the supplied frozen facts and supported claims.",
+      "facts": {
+        "agency": "USDA National Institute of Food and Agriculture",
+        "status": "posted",
+        "close_date": "2026-11-17",
+        "posted_date": "2026-10-01",
+        "opportunity_id": "364020",
+        "award_floor_usd": 600000,
+        "reel_truth_guard": "Do not describe this as a grant available to any small business.",
+        "agency_source_url": "https://www.nifa.usda.gov/grants/funding-opportunities/small-business-innovation-research-small-business-technology",
+        "award_ceiling_usd": 650000,
+        "eligibility_guard": "Only previous SBIR/STTR Phase I winners are eligible for Phase II support under this NOFO.",
+        "opportunity_number": "USDA-NIFA-SBIR-012221",
+        "primary_source_url": "https://www.grants.gov/search-results-detail/364020",
+        "cost_share_required": false,
+        "estimated_total_program_funding_usd": 24750000
+      },
+      "rules": [
+        "Do not invent amounts, eligibility rules, deadlines, agency names, program purpose, or outcomes.",
+        "Every factual segment must cite one or more supplied claim_keys.",
+        "Do not imply the viewer is eligible unless the supplied facts explicitly support that statement.",
+        "Do not present medical efficacy or safety claims.",
+        "Use plain, energetic language without clickbait that changes the meaning.",
+        "The source_note must tell viewers to verify current details on the official source before acting.",
+        "No public publication is authorized; output is for human review and MediaEngine preparation."
+      ],
+      "contract": "SOCIAL_REAL_REELS_V1",
+      "language": "English",
+      "story_title": "Small Business Innovation Research and Small Business Technology Transfer Programs Phase II",
+      "factual_hash": "006db7e5db44421f439ac3d49690ccc52a52ad49eb827914c48c562f0d50097c",
+      "factual_core_id": "8bcbfda5-939d-4557-ac0a-5d230071e1f1",
+      "output_contract": "structured_reel_package_v1",
+      "research_summary": "USDA NIFA SBIR/STTR Phase II is a current posted small-business R&D funding opportunity. Official sources show a Nov. 17, 2026 close date, $600k-$650k award range, $24.75M estimated program funding, and Phase II eligibility limited to prior Phase I winners.",
+      "supported_claims": [
+        {
+          "metadata": {
+            "field_scope": "status_and_deadline"
+          },
+          "claim_key": "current_status",
+          "statement": "The opportunity is posted and the current closing date is November 17, 2026.",
+          "confidence": 0.99,
+          "freshness_due_at": "2026-10-03T14:22:12.12851+00:00"
+        },
+        {
+          "metadata": {
+            "field_scope": "eligibility"
+          },
+          "claim_key": "eligibility",
+          "statement": "USDA NIFA states that only previous SBIR/STTR Phase I winners are eligible to apply for this Phase II opportunity.",
+          "confidence": 0.99,
+          "freshness_due_at": "2026-10-03T14:22:12.12851+00:00"
+        },
+        {
+          "metadata": {
+            "field_scope": "funding"
+          },
+          "claim_key": "funding",
+          "statement": "Estimated total program funding is $24.75 million and the listed award range is $600,000 to $650,000.",
+          "confidence": 0.99,
+          "freshness_due_at": "2026-10-03T14:22:12.12851+00:00"
+        },
+        {
+          "metadata": {
+            "field_scope": "program_purpose"
+          },
+          "claim_key": "purpose",
+          "statement": "The program funds Phase II research and development intended to advance small-business technology toward commercial application.",
+          "confidence": 0.97,
+          "freshness_due_at": "2026-10-03T14:22:12.12851+00:00"
+        }
+      ],
+      "research_packet_id": "1fa32094-813a-4c2e-b662-e8fcbc592d1f",
+      "story_candidate_id": "deadac24-a079-4f81-bc52-9a2d63c7d63d",
+      "target_duration_seconds": 55
+    },
+    "output_schema": {
+      "type": "object",
+      "required": [
+        "title",
+        "hook",
+        "duration_seconds",
+        "script",
+        "narration_text",
+        "description",
+        "source_note",
+        "segments",
+        "verification_notes"
+      ],
+      "properties": {
+        "hook": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "script": {
+          "type": "string"
+        },
+        "segments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "start_s",
+              "end_s",
+              "voiceover",
+              "on_screen_text",
+              "visual",
+              "source_requirement",
+              "claim_keys"
+            ],
+            "properties": {
+              "end_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "visual": {
+                "type": "string"
+              },
+              "start_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "voiceover": {
+                "type": "string"
+              },
+              "claim_keys": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "on_screen_text": {
+                "type": "string"
+              },
+              "source_requirement": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          },
+          "maxItems": 12,
+          "minItems": 3
+        },
+        "description": {
+          "type": "string"
+        },
+        "source_note": {
+          "type": "string"
+        },
+        "narration_text": {
+          "type": "string"
+        },
+        "duration_seconds": {
+          "type": "number",
+          "maximum": 90,
+          "minimum": 30
+        },
+        "verification_notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
+    "id": "4cfe28f1-83c8-49aa-a283-a6502369ec0d",
+    "created_at": "2026-10-03T08:53:00.814712+00:00",
+    "state": "waiting_provider_activation",
+    "input_manifest": {
+      "task": "Generate one factual, compelling 30-90 second social-media Reel package from ONLY the supplied frozen facts and supported claims.",
+      "facts": {
+        "agency": "U.S. Department of Transportation / OSDBU",
+        "status": "posted",
+        "award_usd": 250143,
+        "close_date": "2026-10-31",
+        "posted_date": "2026-09-30",
+        "region_states": [
+          "Alabama",
+          "Arkansas",
+          "Illinois",
+          "Iowa",
+          "Kentucky",
+          "Mississippi",
+          "Missouri",
+          "Nebraska",
+          "Tennessee"
+        ],
+        "opportunity_id": "364004",
+        "applicant_guard": "Current synopsis says financial assistance is to an eligible nonprofit organization to establish and operate the center.",
+        "reel_truth_guard": "Do not say small businesses can each apply for or receive the $250,143 award directly.",
+        "funding_instrument": "Cooperative Agreement",
+        "opportunity_number": "OST-OSDBU-2027-SBTTAC-REGION-4-FY2027-1",
+        "primary_source_url": "https://www.grants.gov/search-results-detail/364004",
+        "program_context_url": "https://www.transportation.gov/sites/dot.gov/files/2026-07/Region%204%20Long%20NOFO%20%20final%20.pdf",
+        "small_business_benefit": "Technical assistance, business development support and access-to-capital resources for small businesses competing for transportation-related contracts."
+      },
+      "rules": [
+        "Do not invent amounts, eligibility rules, deadlines, agency names, program purpose, or outcomes.",
+        "Every factual segment must cite one or more supplied claim_keys.",
+        "Do not imply the viewer is eligible unless the supplied facts explicitly support that statement.",
+        "Do not present medical efficacy or safety claims.",
+        "Use plain, energetic language without clickbait that changes the meaning.",
+        "The source_note must tell viewers to verify current details on the official source before acting.",
+        "No public publication is authorized; output is for human review and MediaEngine preparation."
+      ],
+      "contract": "SOCIAL_REAL_REELS_V1",
+      "language": "English",
+      "story_title": "Region 4 Small Business Transportation Technical Assistance Center (SBTTAC)",
+      "factual_hash": "c534e23652e3be0c07e99f8428e30b2d2700ce1fb92883ab1ef4a8044c0be90a",
+      "factual_core_id": "aea306d6-aced-4268-a29c-393adc2f4a7d",
+      "output_contract": "structured_reel_package_v1",
+      "research_summary": "USDOT Region 4 SBTTAC is a current posted cooperative-agreement opportunity closing Oct. 31, 2026. Grants.gov lists a $250,143 award. The center is intended to provide technical assistance, business development and access-to-capital support to small businesses in nine states including Illinois.",
+      "supported_claims": [
+        {
+          "metadata": {},
+          "claim_key": "award",
+          "statement": "Grants.gov lists the Region 4 cooperative-agreement award at $250,143.",
+          "confidence": 0.99,
+          "freshness_due_at": "2026-10-03T14:22:12.12851+00:00"
+        },
+        {
+          "metadata": {},
+          "claim_key": "beneficiary_vs_applicant",
+          "statement": "The synopsis describes financial assistance to an eligible nonprofit organization to operate the center; small businesses are beneficiaries of the center's services rather than direct recipients of this $250,143 award.",
+          "confidence": 0.98,
+          "freshness_due_at": "2026-10-03T14:22:12.12851+00:00"
+        },
+        {
+          "metadata": {},
+          "claim_key": "current_status",
+          "statement": "The Region 4 SBTTAC opportunity is posted and currently closes October 31, 2026.",
+          "confidence": 0.99,
+          "freshness_due_at": "2026-10-03T14:22:12.12851+00:00"
+        },
+        {
+          "metadata": {},
+          "claim_key": "region_and_purpose",
+          "statement": "Region 4 covers Alabama, Arkansas, Illinois, Iowa, Kentucky, Mississippi, Missouri, Nebraska and Tennessee; the center is intended to provide technical assistance, business development and access-to-capital support to small businesses competing for transportation-related contracts.",
+          "confidence": 0.98,
+          "freshness_due_at": "2026-10-03T14:22:12.12851+00:00"
+        }
+      ],
+      "research_packet_id": "79e30744-9923-4290-acd9-cd08575606a3",
+      "story_candidate_id": "d13f499f-4caa-4b05-8b3b-ba2fc10e99bd",
+      "target_duration_seconds": 55
+    },
+    "output_schema": {
+      "type": "object",
+      "required": [
+        "title",
+        "hook",
+        "duration_seconds",
+        "script",
+        "narration_text",
+        "description",
+        "source_note",
+        "segments",
+        "verification_notes"
+      ],
+      "properties": {
+        "hook": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "script": {
+          "type": "string"
+        },
+        "segments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "start_s",
+              "end_s",
+              "voiceover",
+              "on_screen_text",
+              "visual",
+              "source_requirement",
+              "claim_keys"
+            ],
+            "properties": {
+              "end_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "visual": {
+                "type": "string"
+              },
+              "start_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "voiceover": {
+                "type": "string"
+              },
+              "claim_keys": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "on_screen_text": {
+                "type": "string"
+              },
+              "source_requirement": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          },
+          "maxItems": 12,
+          "minItems": 3
+        },
+        "description": {
+          "type": "string"
+        },
+        "source_note": {
+          "type": "string"
+        },
+        "narration_text": {
+          "type": "string"
+        },
+        "duration_seconds": {
+          "type": "number",
+          "maximum": 90,
+          "minimum": 30
+        },
+        "verification_notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
+    "id": "c04690e2-7499-4ed0-96f4-84f7479d28fb",
+    "created_at": "2026-10-03T08:53:00.814712+00:00",
+    "state": "waiting_provider_activation",
+    "input_manifest": {
+      "task": "Generate one factual, compelling 30-90 second social-media Reel package from ONLY the supplied frozen facts and supported claims.",
+      "facts": {
+        "agency": "NIH / CDC / FDA",
+        "status": "posted",
+        "mechanisms": [
+          "R43",
+          "R44"
+        ],
+        "posted_date": "2026-05-28",
+        "applicant_type": "Small businesses",
+        "opportunity_id": "359671",
+        "program_purpose": "Support U.S. small business concerns in feasibility and R&D needed to move scientific innovations toward commercial products.",
+        "reel_truth_guard": "Funding/program explainer only. Do not make medical efficacy claims. Tell viewers to verify the exact current due date in the official announcement.",
+        "agency_source_url": "https://grants.nih.gov/funding/explore-nih-opportunities/parent-announcements",
+        "opportunity_number": "PA-27-100",
+        "primary_source_url": "https://www.grants.gov/search-results-detail/359671",
+        "grants_gov_close_date": "2027-04-05",
+        "nih_parent_announcement_expiration_context": "2027-04-06"
+      },
+      "rules": [
+        "Do not invent amounts, eligibility rules, deadlines, agency names, program purpose, or outcomes.",
+        "Every factual segment must cite one or more supplied claim_keys.",
+        "Do not imply the viewer is eligible unless the supplied facts explicitly support that statement.",
+        "Do not present medical efficacy or safety claims.",
+        "Use plain, energetic language without clickbait that changes the meaning.",
+        "The source_note must tell viewers to verify current details on the official source before acting.",
+        "No public publication is authorized; output is for human review and MediaEngine preparation."
+      ],
+      "contract": "SOCIAL_REAL_REELS_V1",
+      "language": "English",
+      "story_title": "NIH, CDC and FDA Small Business Innovation Research Grant (Parent SBIR [R43/R44] Clinical Trial Optional)",
+      "factual_hash": "3c18b192825c0599fbe83998c83d1476a30aab2c5ff243bc102b0961e820e39c",
+      "factual_core_id": "b2c76194-f2ee-40e8-bb3b-8fd6c180806c",
+      "output_contract": "structured_reel_package_v1",
+      "research_summary": "PA-27-100 is the current NIH/CDC/FDA Parent SBIR opportunity for U.S. small businesses. It supports feasibility and later R&D aimed at bringing scientific innovations toward commercial products. Grants.gov currently lists a close date of Apr. 5, 2027; exact agency due date must be rechecked before publication.",
+      "supported_claims": [
+        {
+          "metadata": {
+            "grants_gov_close_date": "2027-04-05",
+            "nih_expiration_context": "2027-04-06"
+          },
+          "claim_key": "current_window",
+          "statement": "The opportunity was posted May 28, 2026 and remains current into April 2027; exact application due date must be rechecked before audience-facing use.",
+          "confidence": 0.97,
+          "freshness_due_at": "2026-10-03T14:22:12.12851+00:00"
+        },
+        {
+          "metadata": {},
+          "claim_key": "eligibility",
+          "statement": "The current Grants.gov detail identifies small businesses as the applicant type for PA-27-100.",
+          "confidence": 0.99,
+          "freshness_due_at": "2026-10-03T14:22:12.12851+00:00"
+        },
+        {
+          "metadata": {},
+          "claim_key": "program_identity",
+          "statement": "PA-27-100 is the NIH, CDC and FDA Parent Small Business Innovation Research grant announcement using R43/R44 mechanisms.",
+          "confidence": 0.99,
+          "freshness_due_at": "2026-10-03T14:22:12.12851+00:00"
+        },
+        {
+          "metadata": {},
+          "claim_key": "purpose",
+          "statement": "The SBIR program is intended to help U.S. small business concerns move scientific innovations toward the marketplace by supporting feasibility work and later research and development.",
+          "confidence": 0.98,
+          "freshness_due_at": "2026-10-03T14:22:12.12851+00:00"
+        }
+      ],
+      "research_packet_id": "d5649985-dca2-4ee6-a2d7-b771211b46d8",
+      "story_candidate_id": "527fdab2-8418-4aac-b700-895ef63f2aaf",
+      "target_duration_seconds": 55
+    },
+    "output_schema": {
+      "type": "object",
+      "required": [
+        "title",
+        "hook",
+        "duration_seconds",
+        "script",
+        "narration_text",
+        "description",
+        "source_note",
+        "segments",
+        "verification_notes"
+      ],
+      "properties": {
+        "hook": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "script": {
+          "type": "string"
+        },
+        "segments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "start_s",
+              "end_s",
+              "voiceover",
+              "on_screen_text",
+              "visual",
+              "source_requirement",
+              "claim_keys"
+            ],
+            "properties": {
+              "end_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "visual": {
+                "type": "string"
+              },
+              "start_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "voiceover": {
+                "type": "string"
+              },
+              "claim_keys": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "on_screen_text": {
+                "type": "string"
+              },
+              "source_requirement": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          },
+          "maxItems": 12,
+          "minItems": 3
+        },
+        "description": {
+          "type": "string"
+        },
+        "source_note": {
+          "type": "string"
+        },
+        "narration_text": {
+          "type": "string"
+        },
+        "duration_seconds": {
+          "type": "number",
+          "maximum": 90,
+          "minimum": 30
+        },
+        "verification_notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+]

@@ -1,0 +1,128 @@
+name: social-reel
+# Social: live Grants.gov topic -> grounded claims -> Reel package -> verified 1080x1920 MP4.
+# No paid calls unless social/config.json llm.allow_spend is true AND the key is passed below.
+# Nothing is published to any social network. Results go to branch social-results + run artifacts.
+on:
+  push:
+    branches: ['social/**']
+    paths: ['social/**', '.github/workflows/social-reel.yml']
+  workflow_dispatch:
+    inputs:
+      count:
+        description: how many Reels (distinct topics) to make
+        default: '1'
+      opportunity:
+        description: force one Grants.gov opportunity id (optional)
+        default: ''
+permissions:
+  contents: write
+concurrency:
+  group: social-reel
+  cancel-in-progress: false
+jobs:
+  reel:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: social
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: System tools (ffmpeg, espeak-ng fallback voice)
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q ffmpeg espeak-ng
+      - name: Python deps
+        run: pip install -r requirements.txt
+      - name: Voice model cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/socialreel/voices
+          key: piper-voices-v1
+      - name: Unit tests
+        run: python -m socialreel selftest
+      - name: Load topic history
+        run: |
+          if git fetch -q origin social-results 2>/dev/null; then
+            git show FETCH_HEAD:history.json > "$RUNNER_TEMP/history.json" 2>/dev/null || echo '{"runs": []}' > "$RUNNER_TEMP/history.json"
+          else
+            echo '{"runs": []}' > "$RUNNER_TEMP/history.json"
+          fi
+          cat "$RUNNER_TEMP/history.json"
+      - name: Make Reels
+        id: make
+        env:
+          COUNT: ${{ inputs.count || '2' }}
+          OPP: ${{ inputs.opportunity }}
+        run: |
+          set +e
+          out="$RUNNER_TEMP/runs"; mkdir -p "$out"
+          rc_all=0
+          for i in $(seq 1 "$COUNT"); do
+            extra=""; if [ -n "$OPP" ] && [ "$i" = "1" ]; then extra="--opportunity $OPP"; fi
+            python -m socialreel run --out "$out" --history "$RUNNER_TEMP/history.json" $extra
+            rc=$?; echo "run $i exit $rc"
+            d=$(ls -td "$out"/*/ 2>/dev/null | head -1)
+            if [ "$rc" = "0" ] && [ -n "$d" ]; then
+              python -m socialreel rebuild "$d" > "$d/rebuild_check.json"; echo "rebuild exit $?"; cat "$d/rebuild_check.json"
+            fi
+            [ "$rc" != "0" ] && rc_all=$rc
+          done
+          echo "rc=$rc_all" >> "$GITHUB_OUTPUT"
+          ls -la "$out"
+      - name: Upload full packages
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: social-reels-${{ github.run_id }}
+          path: ${{ runner.temp }}/runs
+          if-no-files-found: warn
+      - name: Publish to branch social-results
+        if: always()
+        env:
+          RUN_ID: ${{ github.run_id }}
+          SRC_SHA: ${{ github.sha }}
+        run: |
+          set -e
+          out="$RUNNER_TEMP/runs"; pub="$RUNNER_TEMP/pub"; rm -rf "$pub"; mkdir -p "$pub"
+          if git fetch -q origin social-results 2>/dev/null; then git archive FETCH_HEAD | tar -x -C "$pub"; fi
+          cp "$RUNNER_TEMP/history.json" "$pub/history.json"
+          for d in $(ls -trd "$out"/*/ 2>/dev/null); do
+            name=$(basename "$d")
+            if [ -f "$d/result.json" ] && python -c "import json,sys;sys.exit(0 if json.load(open('$d/result.json'))['accepted'] else 1)"; then
+              rm -rf "$pub/latest"; mkdir -p "$pub/latest"; cp -r "$d/." "$pub/latest/"
+              mkdir -p "$pub/runs/$name"
+              for f in result.json REVIEW.md package_manifest.json claims.json script.md timing.json rebuild_check.json; do
+                [ -f "$d/$f" ] && cp "$d/$f" "$pub/runs/$name/"
+              done
+              [ -f "$d/review/contact_sheet.jpg" ] && cp "$d/review/contact_sheet.jpg" "$pub/runs/$name/"
+              cp "$d/final/reel.mp4" "$pub/runs/$name/reel.mp4"
+            else
+              rm -rf "$pub/last_failed"; mkdir -p "$pub/last_failed"; cp -r "$d/." "$pub/last_failed/"
+            fi
+          done
+          python - "$pub" <<'PY'
+          import json, os, sys
+          pub = sys.argv[1]
+          rows = []
+          for name in sorted(os.listdir(os.path.join(pub, "runs")) if os.path.isdir(os.path.join(pub, "runs")) else [], reverse=True):
+              p = os.path.join(pub, "runs", name, "result.json")
+              if os.path.exists(p):
+                  r = json.load(open(p))
+                  rows.append(f"| [{name}](runs/{name}/REVIEW.md) | {r['verification'].get('duration_s')} s | {r['writer']} | `{r['video']['sha256'][:16]}` | [mp4](runs/{name}/reel.mp4) |")
+          open(os.path.join(pub, "README.md"), "w").write(
+              "# Social Reels — results\n\nAccepted Reels (newest first). Full packages: Actions artifacts of each run.\n\n"
+              "| Run | Length | Writer | Video SHA-256 | Video |\n|---|---|---|---|---|\n" + "\n".join(rows) + "\n")
+          PY
+          cd "$pub"
+          printf 'workflow_run=%s\nsource_sha=%s\n' "$RUN_ID" "$SRC_SHA" > RUN.txt
+          git init -q; git checkout -q -b social-results
+          git config user.name "social-bot"; git config user.email "social-bot@users.noreply.github.com"
+          git add -A; git commit -q -m "social reels: run $RUN_ID ($SRC_SHA)"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" social-results
+      - name: Fail if any Reel was not accepted
+        if: steps.make.outputs.rc != '0'
+        run: exit 1
