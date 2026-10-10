@@ -8,7 +8,7 @@ on:
       - '.github/workflows/forge-windows.yml'
   workflow_dispatch:
 permissions:
-  contents: write   # only to publish CI results to branch forge-ci-results
+  contents: write   # publish results to forge-ci-results and the safety copy forge-last-green
 concurrency:
   group: forge-windows-${{ github.ref }}
   cancel-in-progress: true
@@ -21,6 +21,10 @@ jobs:
       - name: Forge Windows CI
         shell: powershell
         run: powershell -NoLogo -NoProfile -ExecutionPolicy Bypass -File forge/ci/Invoke-ForgeWindowsCi.ps1 -OutDir "$env:RUNNER_TEMP\forge-ci"
+      - name: Save safety copy (last version of main that passed on Windows)
+        if: success() && github.ref == 'refs/heads/main'
+        shell: bash
+        run: git push --force origin HEAD:refs/heads/forge-last-green
       - name: Upload screenshots and reports
         if: always()
         uses: actions/upload-artifact@v4
