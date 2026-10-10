@@ -3,10 +3,9 @@
 Owner: nothing required.
 
 Autonomous queue (in order):
-1. **Sweep for the dictionary pattern**: find every function that returns or stores `[ordered]@{}` and is later read via Get-PropertyValue. Fix and test.
-2. **Stage 4 Portfolio/Performance**: the first useful read/decision surface. It shows owner decisions per niche (KEEP/EDIT/REGEN/SKIP, drafts vs server ideas) and receipt-verified sales. Add CI window checks and screenshots for it.
-3. Confirm the live `discover_snapshot` field names (read-only) when a safe read path is available.
-4. Cosmetic: the Discover header layout at ~1024 px and the duplicated title.
+1. Confirm the live `discover_snapshot` field names (niche id, note→niche link) by reading the deployed forge-app function source / schema **read-only**, and align draft provenance matching with them.
+2. Performance screen: the same honesty rules as Portfolio. Sales only from verified receipts plus imported CSV. Show winners and needs-attention from real linked rows; keep empty states truthful.
+3. Cosmetic: duplicated page titles and the narrow Discover header at ~1024 px.
 
 Owner-only gates (unchanged): paid generation, publishing/submission, backend write contract for promoting KEEP'd drafts to server ideas.
 

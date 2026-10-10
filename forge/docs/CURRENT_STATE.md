@@ -1,7 +1,7 @@
 # CURRENT STATE — Merch Forge
 
-## Current release: 057_Merch_Forge_AMAZON_PROFILE_FIX_RC
-`forge/releases/057_Merch_Forge_AMAZON_PROFILE_FIX_RC.zip` (SHA-256 in the `.sha256` file next to it). App `2.9.2-forge-amazon-profile-fix`, backend minimum `forge-app 0.2.70` (unchanged). Rollback: branch `forge-last-green` (last version proven green on Windows), older ZIPs in releases/, 054 and frozen 050 in archive/.
+## Current release: 058_Merch_Forge_PORTFOLIO_PIPELINE_RC
+`forge/releases/058_Merch_Forge_PORTFOLIO_PIPELINE_RC.zip` (SHA-256 in the `.sha256` file next to it). App `2.10.0-forge-portfolio-pipeline`, backend minimum `forge-app 0.2.70` (unchanged). Rollback: branch `forge-last-green`; older ZIPs in releases/; 054 and frozen 050 in archive/.
 
 ## How proof works now
 Every push that touches `forge/` runs the **forge-windows** GitHub workflow on a real Windows machine (free for this public repo):
@@ -12,17 +12,18 @@ Every push that touches `forge/` runs the **forge-windows** GitHub workflow on a
 Results (JSON, screenshots, app logs) are published to the branch **`forge-ci-results`** (`latest/`), and failures also appear as annotations on the run.
 The app gets a labelled fixture only for `discover_snapshot`; every other backend or network call fails by construction. No secrets, no paid calls.
 
-## Proven on real Windows (commit 3d42f5c, all steps green)
+## Proven on real Windows (commit 00631e3, all steps green)
 | Step | Result |
 |---|---|
 | Startup preflight as the launcher runs it | PASS |
-| **Provider pipeline self-test** (mock generation → verified import → exact accept → Amazon profile → trusted print check → package gate → spool pruning) | **PASS. First time ever on Windows** |
-| Research-draft self-test, Windows PowerShell 5.1 | 67/67 |
-| WPF window: Discover → Create draft → KEEP → edit/save rev 2 → brief → RU | 38/38 |
-| WPF window after restart | 12/12 |
+| Provider pipeline self-test (generation → import → exact accept → Amazon profile → trusted check → package gate → spool) | PASS |
+| Research-draft + pipeline self-test, Windows PowerShell 5.1 | 72/72 |
+| WPF window: Discover → draft → KEEP → edit rev 2 → brief → **Portfolio board (counts, list, click-to-open, full width)** → RU | 45/45 |
+| WPF window after restart (draft, rev 2, KEEP, RU, Portfolio in RU) | 13/13 |
 
-## Features in the app (055 + 056)
+## Features in the app (055–058)
 - Discover → select niche → **Create concept draft**: a LOCAL draft bound to its research (niche id, row SHA-256, snapshot time, explicitly linked notes only). It appears in Ideas with KEEP/EDIT/REGEN/SKIP, supports local revisions (a new revision resets the decision) and a no-dispatch brief. Generate and live server actions are blocked for drafts.
+- 058 Portfolio **pipeline board**: counters (no decision / KEEP / artwork accepted / checks passed / package ready / published), Next actions sorted closest-to-publishing first (click opens the idea), and decisions by niche. Read-only, local data, EN/RU/ES. Home/Portfolio/Performance now use the full window width.
 - 056 fixes found by the first Windows run: a language switch no longer resets live screens; the status bar no longer sticks on "Working…"; PS 5.1 spool cleanup works.
 
 ## Fixed in 057 (all pre-existing since ≤054; found by the Windows provider self-test)
@@ -33,9 +34,9 @@ The app gets a labelled fixture only for `discover_snapshot`; every other backen
 - The app now logs **why** a check result is rejected (field name), instead of failing silently.
 
 ## Known, not yet fixed
-- At the CI window width (~1024 px), the Discover header text wraps into a narrow column, and the Discover title appears twice. Cosmetic, pre-existing.
+- Page titles appear twice (header + page) on Discover/Portfolio; at ~1024 px the Discover header text wraps narrowly. Cosmetic, pre-existing.
 - Live `discover_snapshot` field names for niche id and note links are not yet confirmed against real data. Matching is defensive and fail-closed.
-- Pattern risk: other places may still read `[ordered]` dictionaries with Get-PropertyValue. Two instances were found and fixed; a systematic sweep is queued.
+- The dictionary-vs-object sweep was done with an AST scan: one more real case (generation job) was fixed in 058; the rest are API payloads or dot-access, which are safe.
 
 ## Not authorized / not done
 No backend deployment, Supabase write, paid generation, acceptance on the owner's behalf, publication or external contact.

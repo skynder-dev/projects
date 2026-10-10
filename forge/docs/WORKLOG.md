@@ -35,3 +35,9 @@
 ## 057 — making the provider pipeline self-test pass on Windows (2026-10-09 night)
 - The owner decided to work directly on main, with no PRs. CI saves `forge-last-green` after each green run. Another session (reveng) also pushes to main, so always `pull --rebase` before pushing.
 - The provider self-test was peeled layer by layer, adding diagnostics wherever a failure was silent: `$host` read-only (profile + importer) → backtick-quoted worker args (self-test) → comma/minus precedence in PNG border sampling → empty ExitCode on PS 5.1 (check worker) → fresh check request returned as a dictionary → spool report returned as a dictionary. All fixed. Commit 3d42f5c: every CI step is green and the provider pipeline self-test passes on Windows for the first time.
+
+## 058 — Portfolio pipeline board (2026-10-09 night)
+- AST sweep for dictionaries read as objects: one real case (the generation job returned as a dict, so the status bar showed an empty job id); fixed.
+- New module Forge.Pipeline.ps1: per-idea stage from LocalCore (decision bound to revision, current acceptance, check gate, READY package for current revision, verified receipt), summary, and per-niche decisions. The Portfolio card is read-only; a click opens the idea.
+- Windows screenshots exposed a pre-existing layout bug: QueueColumn MinWidth=340 kept an empty column on Home/Portfolio/Performance. Fixed. Counters changed to 3x2. Added RU/ES for 3 untranslated Portfolio captions.
+- Tests: 5 headless pipeline checks (72/72); 7 window checks incl. click-to-open and full width (45/45 create, 13/13 restart).
