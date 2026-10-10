@@ -1,0 +1,232 @@
+{
+  "contract": "SOCIAL_REAL_REELS_V1",
+  "files": [
+    {
+      "bytes": 7000,
+      "path": "sources.json",
+      "sha256": "257879cf4a5c43e423a69312e23053c5f6128525898b3d6a5c12496a07a0a095"
+    },
+    {
+      "bytes": 7031,
+      "path": "topic.json",
+      "sha256": "4566c9c92d9eeae46695385e8d98432457dcfe389996c0c59cbcf4d786d7b043"
+    },
+    {
+      "bytes": 8489,
+      "path": "claims.json",
+      "sha256": "bbff6666080b2f78edd8d3714333caff957bc73d936f11e2b2e1c74a365da812"
+    },
+    {
+      "bytes": 4179,
+      "path": "script.json",
+      "sha256": "45793bb976e8df53bceac518aa36377365b8b8fb22309e2f8105974d3b123adc"
+    },
+    {
+      "bytes": 4438,
+      "path": "script.md",
+      "sha256": "0ab8de1b044ae8bbb1833e73cfb40da0266534b64f1498ba5cb919c80da6c142"
+    },
+    {
+      "bytes": 1101,
+      "path": "timing.json",
+      "sha256": "0f58ff68b1165ea71ba8bfc0f44f229cb6adca86164ffddf7d2495b4abb24134"
+    },
+    {
+      "bytes": 684,
+      "path": "voice.txt",
+      "sha256": "b510b9b2d287f720503ec37023561f084992553309fec98ba6cca519e9fa0efa"
+    },
+    {
+      "bytes": 2502,
+      "path": "visual_plan.json",
+      "sha256": "b896246f744774a028dca95b0a24a33c477ce835203c9dd2a077a51d62598f1f"
+    },
+    {
+      "bytes": 2889,
+      "path": "media_manifest.json",
+      "sha256": "93e80a958b81bdf9ef2081c8080f5c42befb0b0742a68da53ae677e8081d7e25"
+    },
+    {
+      "bytes": 6419,
+      "path": "source/opportunity_362175.json",
+      "sha256": "afb6e56e80e8414ab6dd2b6605cb06e9d0574e83e0928160563862b904fd8c88"
+    },
+    {
+      "bytes": 7410,
+      "path": "source/opportunity_362530.json",
+      "sha256": "2d151f3fefce9c57ec6cb9692e1e1cd699b0f087fdf1c047267b682242fbe9c9"
+    },
+    {
+      "bytes": 63922,
+      "path": "source/opportunity_362551.json",
+      "sha256": "8bd8c3766c282cd78eff146cc14054714912ba5e15f309461089596b8cc58592"
+    },
+    {
+      "bytes": 26987,
+      "path": "source/opportunity_362827.json",
+      "sha256": "13ce132a1522d8952d5195bbe97a0544c2170d9d9c0ac6cd8f9b5593cd7bcc1b"
+    },
+    {
+      "bytes": 10725,
+      "path": "source/opportunity_363482.json",
+      "sha256": "0c7b0f6709a20f63a1e3a5b01ff9bd163e68d57020064e4f7244da8f2e5fb140"
+    },
+    {
+      "bytes": 5602,
+      "path": "source/opportunity_363762.json",
+      "sha256": "daf7877ea20943fea73a0a4935aedffd498e2f2696d59e7d4c4452cb7ee669ec"
+    },
+    {
+      "bytes": 5785,
+      "path": "source/opportunity_363766.json",
+      "sha256": "96c603b8b15ae4ce597ac0e51279f01097738b0697171f368a3d8804923fccca"
+    },
+    {
+      "bytes": 5445,
+      "path": "source/opportunity_363767.json",
+      "sha256": "5ad6f77d6081eb6ee084a419b889ca2c6017d129cedef42806a36e77986eb4ca"
+    },
+    {
+      "bytes": 5663,
+      "path": "source/opportunity_363771.json",
+      "sha256": "156f9643a41f993af510d3be5f558653fdbfe3b34d7c2bbf1cd0d29f26997fa2"
+    },
+    {
+      "bytes": 6895,
+      "path": "source/opportunity_363852.json",
+      "sha256": "5aa458039a2a8789bf848f1470b2c985c0946fc9b20af814d54a25654198cc7f"
+    },
+    {
+      "bytes": 6670,
+      "path": "source/opportunity_363996.json",
+      "sha256": "afe373f5f4572dfb47f65da099b70999b22428afbe2cc429667b95b4992d3d36"
+    },
+    {
+      "bytes": 6297,
+      "path": "source/opportunity_363998.json",
+      "sha256": "35181b2a26e9e628e6fc594ffffb513dc17bffd8cd36c015cd2fda33b756c711"
+    },
+    {
+      "bytes": 12400,
+      "path": "source/opportunity_364004.json",
+      "sha256": "047418919aaf3ff1d4497783feda85602780102609e14fe7acf2f7cb5bfe43a5"
+    },
+    {
+      "bytes": 10147,
+      "path": "source/opportunity_364020.json",
+      "sha256": "97cf0edf5f7fb0ed16ba491951f23355b6b0427f9dcdb2cb33a39ddb6adaea89"
+    },
+    {
+      "bytes": 19435,
+      "path": "source/search_community.json",
+      "sha256": "8229f9b994c0b0cd437ce36fcb795c4745223f6a60b752f3fc3a3d6f823988b1"
+    },
+    {
+      "bytes": 19549,
+      "path": "source/search_nonprofit.json",
+      "sha256": "6926652a54c77bd7c01490bfc4f058c8a96f683748aadde37f741e7989e2fd62"
+    },
+    {
+      "bytes": 21046,
+      "path": "source/search_small_business.json",
+      "sha256": "ca4fcd312dbabdf42a39ff8f7a10b0f813c0dad24e9f0ef72458417c642b023d"
+    },
+    {
+      "bytes": 582,
+      "path": "mediaengine_handoff/README.md",
+      "sha256": "1862fc37fa4f4cdda7c397b5aed6a69b71224918c41e86ea653a930d86ca0bcf"
+    },
+    {
+      "bytes": 1981816,
+      "path": "mediaengine_handoff/audio/narration.wav",
+      "sha256": "75b968a92f84951520593cb8678046e119b8169aacdcb9c825a3bf60caddfbd4"
+    },
+    {
+      "bytes": 251436,
+      "path": "mediaengine_handoff/audio/segment_01.wav",
+      "sha256": "0cb62ed17b84b0824310afc4c6431a6b0ca3bca21752161cc553263ac5535de9"
+    },
+    {
+      "bytes": 273452,
+      "path": "mediaengine_handoff/audio/segment_02.wav",
+      "sha256": "2643765872e9bd95790552e347dbb7de3e2791e8ec65327a61908943baa3b55d"
+    },
+    {
+      "bytes": 431148,
+      "path": "mediaengine_handoff/audio/segment_03.wav",
+      "sha256": "522b26cd6bb3156bb53e0732ac3e4a2f728d5186f6588720793609414bd6618c"
+    },
+    {
+      "bytes": 344620,
+      "path": "mediaengine_handoff/audio/segment_04.wav",
+      "sha256": "46835a23f32480447d89e18b969dc97b572a3511d82ad691c980429efddfbcee"
+    },
+    {
+      "bytes": 248876,
+      "path": "mediaengine_handoff/audio/segment_05.wav",
+      "sha256": "7404dcd9287c63cb19bcdeb57e39f81a64fb66ec01b806110b5494f00474692b"
+    },
+    {
+      "bytes": 243756,
+      "path": "mediaengine_handoff/audio/segment_06.wav",
+      "sha256": "53f19e667a122de50c8d793d2d018274ebc0e9e645dc66ac977542f2339fac5a"
+    },
+    {
+      "bytes": 125847,
+      "path": "mediaengine_handoff/stills/segment_01.png",
+      "sha256": "fd72795b4c748e197e70635a865693a4de11bbd172b1ef1182ece6b25e8a89a8"
+    },
+    {
+      "bytes": 158863,
+      "path": "mediaengine_handoff/stills/segment_02.png",
+      "sha256": "db6dfedaf66cc2832ee83ef61f4dc58add8015243eba93bd1a4c836e5a24895a"
+    },
+    {
+      "bytes": 150150,
+      "path": "mediaengine_handoff/stills/segment_03.png",
+      "sha256": "4eb29f2eca41ec93ff3c8f04ee8532cdf091931cb2ce6fa67148e822d3b745bf"
+    },
+    {
+      "bytes": 154752,
+      "path": "mediaengine_handoff/stills/segment_04.png",
+      "sha256": "473a433d9847748464082144867e43aac3a046d0a59ee9928829d2ad64744ea5"
+    },
+    {
+      "bytes": 115243,
+      "path": "mediaengine_handoff/stills/segment_05.png",
+      "sha256": "1009d9e4f57ea8263e6d77b1409d2c0c8fa7e6193328ad92385f322749b6c3d4"
+    },
+    {
+      "bytes": 119900,
+      "path": "mediaengine_handoff/stills/segment_06.png",
+      "sha256": "11f29cccd4a9297d2dd6f1c452c54a32c8a80266afd139591f19049393a2b065"
+    },
+    {
+      "bytes": 976,
+      "path": "mediaengine_handoff/timeline.json",
+      "sha256": "a4a6ac857c55f9b6eaebb78703513aa54550bf52fa13ebe88928e94cfcb34488"
+    }
+  ],
+  "lineage": {
+    "claims_sha256": "bbff6666080b2f78edd8d3714333caff957bc73d936f11e2b2e1c74a365da812",
+    "narration_sha256": "75b968a92f84951520593cb8678046e119b8169aacdcb9c825a3bf60caddfbd4",
+    "package_id": "642cde279d18fd696086acd94291c0ad8ca5db4dbe68e1f4cacc317b407b35d7",
+    "script_sha256": "45793bb976e8df53bceac518aa36377365b8b8fb22309e2f8105974d3b123adc",
+    "source_snapshot": {
+      "bytes": 6297,
+      "fetched_at": "2026-10-10T03:25:14.304172+00:00",
+      "file": "source/opportunity_363998.json",
+      "http_status": 200,
+      "request": {
+        "opportunityId": 363998
+      },
+      "sha256": "35181b2a26e9e628e6fc594ffffb513dc17bffd8cd36c015cd2fda33b756c711",
+      "url": "https://api.grants.gov/v1/api/fetchOpportunity"
+    },
+    "timing_sha256": "0f58ff68b1165ea71ba8bfc0f44f229cb6adca86164ffddf7d2495b4abb24134",
+    "video_sha256": "f24e3360642799f0902cf2a2817047b80b50567177b7450625ab6fc3b16e7b0c"
+  },
+  "package_id": "642cde279d18fd696086acd94291c0ad8ca5db4dbe68e1f4cacc317b407b35d7",
+  "run_id": "20261010_363998_small-business-transportation-te",
+  "schema": "social_reel_package_v1"
+}

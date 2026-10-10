@@ -1,0 +1,55 @@
+{
+  "fps": 30,
+  "rule": "timing is measured from the synthesized audio, not guessed",
+  "segments": [
+    {
+      "audio": "audio/segment_01.wav",
+      "end_s": 6.707,
+      "id": "s1",
+      "role": "hook",
+      "speech_s": 6.107,
+      "start_s": 0.0
+    },
+    {
+      "audio": "audio/segment_02.wav",
+      "end_s": 13.518,
+      "id": "s2",
+      "role": "what",
+      "speech_s": 6.211,
+      "start_s": 6.707
+    },
+    {
+      "audio": "audio/segment_03.wav",
+      "end_s": 22.106,
+      "id": "s3",
+      "role": "money",
+      "speech_s": 7.988,
+      "start_s": 13.518
+    },
+    {
+      "audio": "audio/segment_04.wav",
+      "end_s": 32.748,
+      "id": "s4",
+      "role": "who",
+      "speech_s": 10.043,
+      "start_s": 22.106
+    },
+    {
+      "audio": "audio/segment_05.wav",
+      "end_s": 38.736,
+      "id": "s5",
+      "role": "deadline",
+      "speech_s": 5.387,
+      "start_s": 32.748
+    },
+    {
+      "audio": "audio/segment_06.wav",
+      "end_s": 45.762,
+      "id": "s6",
+      "role": "cta",
+      "speech_s": 5.747,
+      "start_s": 38.736
+    }
+  ],
+  "total_s": 45.762
+}

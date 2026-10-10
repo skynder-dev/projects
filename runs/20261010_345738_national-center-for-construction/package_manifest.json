@@ -1,0 +1,242 @@
+{
+  "contract": "SOCIAL_REAL_REELS_V1",
+  "files": [
+    {
+      "bytes": 7002,
+      "path": "sources.json",
+      "sha256": "e5fb2fa92e24fce3b868c3305b20e4375b8d9b04f145047732995425b08c414b"
+    },
+    {
+      "bytes": 8711,
+      "path": "topic.json",
+      "sha256": "d21196d9496b3f85ccd5f36890d1f277733710c801d980c8d43680206975150c"
+    },
+    {
+      "bytes": 10858,
+      "path": "claims.json",
+      "sha256": "4048f3cf1228139585dab6caf862427af43f3ec65597f0d25a899d40433366e4"
+    },
+    {
+      "bytes": 5370,
+      "path": "script.json",
+      "sha256": "06360a95464b1c02781804ccba295af616d39a358cf4cdb4e0c61ea79e7276f6"
+    },
+    {
+      "bytes": 6057,
+      "path": "script.md",
+      "sha256": "88adb59aac243e101ece38a1d25c6ac2ac8a3fd632d2df416a6cc54effb25c34"
+    },
+    {
+      "bytes": 1279,
+      "path": "timing.json",
+      "sha256": "c07bf80e72724cef18ee2f490ca93b984a3776f10667be447c5f59bfa253b361"
+    },
+    {
+      "bytes": 895,
+      "path": "voice.txt",
+      "sha256": "d0145f44b39996c4696b5f3c24a5d645dd7698711ae3c3d5716b2762170a9802"
+    },
+    {
+      "bytes": 2991,
+      "path": "visual_plan.json",
+      "sha256": "d0bf0de39ecd243e516d73ccd261220031ac5ade1434c85233ebce35b6c1b42a"
+    },
+    {
+      "bytes": 3248,
+      "path": "media_manifest.json",
+      "sha256": "67f5e7420812db532a5a958faa8259ddc835c40bc97743c40b05bab2f235a4d2"
+    },
+    {
+      "bytes": 48933,
+      "path": "source/opportunity_345738.json",
+      "sha256": "62e3ef1fd9b1926938ff7a9115ee8190773b7fadf38f6c6fe754ebe6c2c293f8"
+    },
+    {
+      "bytes": 76632,
+      "path": "source/opportunity_359966.json",
+      "sha256": "367fda8d72964a4c6ab08b5e1440d8e2e34334cf6193122c120f125812f8663c"
+    },
+    {
+      "bytes": 6419,
+      "path": "source/opportunity_362175.json",
+      "sha256": "977fa1ea89610b31d64aba2bf1e36f5f9567fa6c6872dcd33d0fa632dcac70cf"
+    },
+    {
+      "bytes": 7410,
+      "path": "source/opportunity_362530.json",
+      "sha256": "e522b53cd4e9e9d17a8a4b8f8a1956df3a45f7ab3197475cbe4b1702fff9af6a"
+    },
+    {
+      "bytes": 63922,
+      "path": "source/opportunity_362551.json",
+      "sha256": "f3c269e4541a85330a0ff08f17dfbeefd02140286511ce5c488f691b24242154"
+    },
+    {
+      "bytes": 26987,
+      "path": "source/opportunity_362827.json",
+      "sha256": "afb5c43fc7016ff6d4cb5789546f613746afcd46d840d7cd8a888598a8a5a74d"
+    },
+    {
+      "bytes": 6228,
+      "path": "source/opportunity_362850.json",
+      "sha256": "f05587ce787b1b32d65d70752bb5d87c9b90513a8b9f37e25ae7bd6420c15957"
+    },
+    {
+      "bytes": 10725,
+      "path": "source/opportunity_363482.json",
+      "sha256": "4236075976919e8c128cfe6cb8908374629e3c52e2e303640dbbfef8e0f2d37a"
+    },
+    {
+      "bytes": 5602,
+      "path": "source/opportunity_363762.json",
+      "sha256": "ba3a51c1bb59f25042f8683887dc32e21b6f3bf45af9333fbf8a4eefd2d06e61"
+    },
+    {
+      "bytes": 5785,
+      "path": "source/opportunity_363766.json",
+      "sha256": "af6ac7805dde8112040d65db997b7dc7414de27e7a3130c0b0551c0d80cd8e4f"
+    },
+    {
+      "bytes": 5663,
+      "path": "source/opportunity_363771.json",
+      "sha256": "a7b3f83b456a2ecfe1c0de52f12aa8f9698d0d0ce33ba7849cedd2514290ff62"
+    },
+    {
+      "bytes": 6895,
+      "path": "source/opportunity_363852.json",
+      "sha256": "e4f4b3f157b06f534218b5f674fa9751586b6fe6b5ed14d0f0b2a3b721448add"
+    },
+    {
+      "bytes": 7992,
+      "path": "source/opportunity_364006.json",
+      "sha256": "56fbcf8049bb41260bfbf6aa95ef5125c47b8aae55906087b52be587f097490d"
+    },
+    {
+      "bytes": 10147,
+      "path": "source/opportunity_364020.json",
+      "sha256": "d9d1f4d3868594dba50135cefa56d94c0b2e97871a3e3d32929e87637cf67b10"
+    },
+    {
+      "bytes": 19435,
+      "path": "source/search_community.json",
+      "sha256": "303ece6eb8eed3c0c6ac2cdfb561079acc1076ea1f83a9180de761c860cc1238"
+    },
+    {
+      "bytes": 19549,
+      "path": "source/search_nonprofit.json",
+      "sha256": "3f9a6382483b5dc6631b523836ac4b45e09fa32467a0b40bc6c0cce90017a127"
+    },
+    {
+      "bytes": 21046,
+      "path": "source/search_small_business.json",
+      "sha256": "19b6e0778967481043f09bb909468a503f28bc8c0a706e304c5212c22211bad1"
+    },
+    {
+      "bytes": 582,
+      "path": "mediaengine_handoff/README.md",
+      "sha256": "1862fc37fa4f4cdda7c397b5aed6a69b71224918c41e86ea653a930d86ca0bcf"
+    },
+    {
+      "bytes": 2481364,
+      "path": "mediaengine_handoff/audio/narration.wav",
+      "sha256": "0ac7918b7cbd340da895644e87562f4200f10d02d6aa5a0adbfdf948c3d97b78"
+    },
+    {
+      "bytes": 264236,
+      "path": "mediaengine_handoff/audio/segment_01.wav",
+      "sha256": "8cf99c5e68bbeb703d58b009784267183a409c1f77462438b8d8b3d3c86fca87"
+    },
+    {
+      "bytes": 306220,
+      "path": "mediaengine_handoff/audio/segment_02.wav",
+      "sha256": "97ff48ed363f8cb9812343e286c21e0b00d9a948d769daf38d04280a83790374"
+    },
+    {
+      "bytes": 461356,
+      "path": "mediaengine_handoff/audio/segment_03.wav",
+      "sha256": "72276792460d98295ec5946564b4e9bc3ec0bedb0ae1693ec5f5dcb2f2c93dab"
+    },
+    {
+      "bytes": 302124,
+      "path": "mediaengine_handoff/audio/segment_04.wav",
+      "sha256": "d261943a5ede6c29ff93066fe0e5b9aefca14d9cb638b1f5565097d0b66749dc"
+    },
+    {
+      "bytes": 454188,
+      "path": "mediaengine_handoff/audio/segment_05.wav",
+      "sha256": "d11a8cfe7a92d3f099ff2928a4038695a4b01f253df2e1b72167f97f99958e2e"
+    },
+    {
+      "bytes": 231980,
+      "path": "mediaengine_handoff/audio/segment_06.wav",
+      "sha256": "4ab8ea24db18bed4cd3553c962b4e361ee3ebd84d2b9a13f362d5dc1ccc1a643"
+    },
+    {
+      "bytes": 246316,
+      "path": "mediaengine_handoff/audio/segment_07.wav",
+      "sha256": "cd2aaf8480655901afd21f15ffae003d1b64b88243690d65294df1ba494434ef"
+    },
+    {
+      "bytes": 132392,
+      "path": "mediaengine_handoff/stills/segment_01.png",
+      "sha256": "65eb29a566ca781674afe76caf29d9e0d3938ed456d812b89e5878aa2068903e"
+    },
+    {
+      "bytes": 150403,
+      "path": "mediaengine_handoff/stills/segment_02.png",
+      "sha256": "1dc4953da30d7523a142ed8001347d17fded1c2039137375f7a23d70772327bf"
+    },
+    {
+      "bytes": 142387,
+      "path": "mediaengine_handoff/stills/segment_03.png",
+      "sha256": "d5064fdf747aba9d81a4784e8d89b5ab703ccd146fe3edf75bbaa3c6f3b80890"
+    },
+    {
+      "bytes": 147548,
+      "path": "mediaengine_handoff/stills/segment_04.png",
+      "sha256": "39f3b3796aa8715194d7b62c735aa9e6c897a07c48c601ec5bc59869e91644d8"
+    },
+    {
+      "bytes": 182083,
+      "path": "mediaengine_handoff/stills/segment_05.png",
+      "sha256": "843e9fb283c314c74361ceb119b1fbf8d6b600039c0d671bf01dc3f843673cb4"
+    },
+    {
+      "bytes": 110935,
+      "path": "mediaengine_handoff/stills/segment_06.png",
+      "sha256": "cf3b107642788e0bb73535d94c6b494902a1c737797cf052b9a81b05b3f199e8"
+    },
+    {
+      "bytes": 108490,
+      "path": "mediaengine_handoff/stills/segment_07.png",
+      "sha256": "6ec3695ebd86a6b0a3ad189a23836cf5c437d122bee525cb18f94290cd99166d"
+    },
+    {
+      "bytes": 1123,
+      "path": "mediaengine_handoff/timeline.json",
+      "sha256": "39e93ecb57c1a6078dc150cd0021f0844a9be2a036fa519a071d349962916a0d"
+    }
+  ],
+  "lineage": {
+    "claims_sha256": "4048f3cf1228139585dab6caf862427af43f3ec65597f0d25a899d40433366e4",
+    "narration_sha256": "0ac7918b7cbd340da895644e87562f4200f10d02d6aa5a0adbfdf948c3d97b78",
+    "package_id": "7d9a24fc39cfa329beef3dbd5e5876407b70e5ec83caf64f79faa827206b2485",
+    "script_sha256": "06360a95464b1c02781804ccba295af616d39a358cf4cdb4e0c61ea79e7276f6",
+    "source_snapshot": {
+      "bytes": 48933,
+      "fetched_at": "2026-10-10T03:29:31.783870+00:00",
+      "file": "source/opportunity_345738.json",
+      "http_status": 200,
+      "request": {
+        "opportunityId": 345738
+      },
+      "sha256": "62e3ef1fd9b1926938ff7a9115ee8190773b7fadf38f6c6fe754ebe6c2c293f8",
+      "url": "https://api.grants.gov/v1/api/fetchOpportunity"
+    },
+    "timing_sha256": "c07bf80e72724cef18ee2f490ca93b984a3776f10667be447c5f59bfa253b361",
+    "video_sha256": "e805ee628033f65e8c8d41f1376b1a0d1ec8ed2c818825957c06a3eed2f5ae2a"
+  },
+  "package_id": "7d9a24fc39cfa329beef3dbd5e5876407b70e5ec83caf64f79faa827206b2485",
+  "run_id": "20261010_345738_national-center-for-construction",
+  "schema": "social_reel_package_v1"
+}

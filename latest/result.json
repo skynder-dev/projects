@@ -1,0 +1,123 @@
+{
+  "accepted": true,
+  "contract": "SOCIAL_REAL_REELS_V1",
+  "finished_at": "2026-10-10T03:34:38.207235+00:00",
+  "log": {
+    "mode": "live",
+    "notes": [],
+    "started_at": "2026-10-10T03:33:46.828519+00:00",
+    "writer": {
+      "llm_available": false,
+      "llm_log": [],
+      "llm_reason": "llm.allow_spend is false (owner has not authorized spend)",
+      "requested": "auto",
+      "used": "template_v1"
+    }
+  },
+  "mode": "live",
+  "package_id": "d7b0872c61aa081a93c971693d850cadb66c2cacb92897c1387f5adf4a119d57",
+  "run_id": "20261010_363762_native-american-library-services",
+  "verification": {
+    "checks": [
+      {
+        "check": "file_exists",
+        "detail": "3359387 bytes",
+        "pass": true
+      },
+      {
+        "check": "video_stream_h264",
+        "detail": "h264",
+        "pass": true
+      },
+      {
+        "check": "dimensions_1080x1920",
+        "detail": "1080x1920",
+        "pass": true
+      },
+      {
+        "check": "pix_fmt_yuv420p",
+        "detail": "yuv420p",
+        "pass": true
+      },
+      {
+        "check": "fps_30",
+        "detail": 30.0,
+        "pass": true
+      },
+      {
+        "check": "audio_stream_aac",
+        "detail": "aac",
+        "pass": true
+      },
+      {
+        "check": "duration_matches_timeline",
+        "detail": "49.47s vs timeline 49.47s",
+        "pass": true
+      },
+      {
+        "check": "duration_reel_range",
+        "detail": "49.47s",
+        "pass": true
+      },
+      {
+        "check": "full_decode_no_errors",
+        "detail": "clean",
+        "pass": true
+      },
+      {
+        "check": "audio_not_silent",
+        "detail": "mean -19.3 dB, peak -4.2 dB",
+        "pass": true
+      },
+      {
+        "check": "review_frames_extracted",
+        "detail": 7,
+        "pass": true
+      },
+      {
+        "check": "narration_asr_matches_script",
+        "detail": "content-word recall 0.94 (model base.en); numbers heard ['13', '150000', '2026', '2027', '25', '3', '5', '50000'] of ['13', '150000', '2026', '2027', '25', '3', '5', '50000']",
+        "pass": true
+      }
+    ],
+    "contact_sheet": "contact_sheet.jpg",
+    "duration_s": 49.467,
+    "ffprobe": {
+      "audio": {
+        "channels": 2,
+        "codec_name": "aac",
+        "sample_rate": "48000"
+      },
+      "format": {
+        "bit_rate": "543297",
+        "duration": "49.466667",
+        "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+        "size": "3359387"
+      },
+      "video": {
+        "avg_frame_rate": "30/1",
+        "codec_name": "h264",
+        "height": 1920,
+        "pix_fmt": "yuv420p",
+        "profile": "High",
+        "width": 1080
+      }
+    },
+    "fps": 30.0,
+    "mean_volume_db": -19.3,
+    "pass": true
+  },
+  "video": {
+    "bytes": 3359387,
+    "path": "final/reel.mp4",
+    "sha256": "75539d6b0085cccae4287874d76e7ad000282585c2853e863b75e7cad707d85b"
+  },
+  "voice": {
+    "backend": "piper",
+    "length_scale": 1.0,
+    "model_sha256": "b3990d7606e183ec8dbfba70a4607074f162de1a0c412e0180d1ff60bb154eca",
+    "test_only": false,
+    "voice": "en_US-ryan-high"
+  },
+  "writer": "template_v1"
+}

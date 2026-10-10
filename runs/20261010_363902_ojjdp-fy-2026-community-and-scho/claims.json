@@ -1,0 +1,262 @@
+{
+  "built_from": {
+    "bytes": 12736,
+    "fetched_at": "2026-10-10T03:24:26.661700+00:00",
+    "file": "source/opportunity_363902.json",
+    "http_status": 200,
+    "request": {
+      "opportunityId": 363902
+    },
+    "sha256": "14aab4c1b916113d2953d63c3a90bdf79e597513f037ff4e257542a4c4c96434",
+    "url": "https://api.grants.gov/v1/api/fetchOpportunity"
+  },
+  "claims": [
+    {
+      "key": "identity",
+      "observed_at": "2026-10-10T03:24:26.661700+00:00",
+      "source": {
+        "fields": [
+          "detail.opportunityTitle",
+          "detail.opportunityNumber"
+        ],
+        "snapshot_file": "source/opportunity_363902.json",
+        "snapshot_sha256": "14aab4c1b916113d2953d63c3a90bdf79e597513f037ff4e257542a4c4c96434",
+        "url": "https://www.grants.gov/search-results-detail/363902"
+      },
+      "statement": "Grants.gov lists \"OJJDP FY 2026 Community and Schools Youth Drug Prevention Program\" as funding opportunity O-OJJDP-2026-172734.",
+      "values": {
+        "number": "O-OJJDP-2026-172734",
+        "opportunity_id": "363902",
+        "title": "OJJDP FY 2026 Community and Schools Youth Drug Prevention Program"
+      }
+    },
+    {
+      "key": "agency",
+      "observed_at": "2026-10-10T03:24:26.661700+00:00",
+      "source": {
+        "fields": [
+          "detail.agencyDetails.agencyName",
+          "detail.owningAgencyCode"
+        ],
+        "snapshot_file": "source/opportunity_363902.json",
+        "snapshot_sha256": "14aab4c1b916113d2953d63c3a90bdf79e597513f037ff4e257542a4c4c96434",
+        "url": "https://www.grants.gov/search-results-detail/363902"
+      },
+      "statement": "The listing agency is Office of Juvenile Justice Delinquency Prevention.",
+      "values": {
+        "agency": "Office of Juvenile Justice Delinquency Prevention",
+        "agency_code": "USDOJ-OJP-OJJDP",
+        "parent_agency": "Department of Justice"
+      }
+    },
+    {
+      "key": "parent_agency",
+      "observed_at": "2026-10-10T03:24:26.661700+00:00",
+      "source": {
+        "fields": [
+          "detail.topAgencyDetails.agencyName"
+        ],
+        "snapshot_file": "source/opportunity_363902.json",
+        "snapshot_sha256": "14aab4c1b916113d2953d63c3a90bdf79e597513f037ff4e257542a4c4c96434",
+        "url": "https://www.grants.gov/search-results-detail/363902"
+      },
+      "statement": "The listing agency is part of the Department of Justice.",
+      "values": {
+        "agency_code": "USDOJ-OJP-OJJDP",
+        "parent_agency": "Department of Justice"
+      }
+    },
+    {
+      "key": "status",
+      "observed_at": "2026-10-10T03:24:26.661700+00:00",
+      "source": {
+        "fields": [
+          "hit.oppStatus"
+        ],
+        "snapshot_file": "source/opportunity_363902.json",
+        "snapshot_sha256": "14aab4c1b916113d2953d63c3a90bdf79e597513f037ff4e257542a4c4c96434",
+        "url": "https://www.grants.gov/search-results-detail/363902"
+      },
+      "statement": "The opportunity status on Grants.gov is \"posted\".",
+      "values": {
+        "status": "posted"
+      }
+    },
+    {
+      "key": "posted",
+      "observed_at": "2026-10-10T03:24:26.661700+00:00",
+      "source": {
+        "fields": [
+          "hit.openDate"
+        ],
+        "snapshot_file": "source/opportunity_363902.json",
+        "snapshot_sha256": "14aab4c1b916113d2953d63c3a90bdf79e597513f037ff4e257542a4c4c96434",
+        "url": "https://www.grants.gov/search-results-detail/363902"
+      },
+      "statement": "Grants.gov lists the posting date as September 21, 2026.",
+      "values": {
+        "date": "2026-09-21"
+      }
+    },
+    {
+      "key": "deadline",
+      "observed_at": "2026-10-10T03:24:26.661700+00:00",
+      "source": {
+        "fields": [
+          "hit.closeDate"
+        ],
+        "snapshot_file": "source/opportunity_363902.json",
+        "snapshot_sha256": "14aab4c1b916113d2953d63c3a90bdf79e597513f037ff4e257542a4c4c96434",
+        "url": "https://www.grants.gov/search-results-detail/363902"
+      },
+      "statement": "Grants.gov lists the close date as October 29, 2026.",
+      "values": {
+        "date": "2026-10-29",
+        "days_left_at_build": 19
+      }
+    },
+    {
+      "key": "award_ceiling",
+      "observed_at": "2026-10-10T03:24:26.661700+00:00",
+      "source": {
+        "fields": [
+          "synopsis.awardCeiling"
+        ],
+        "snapshot_file": "source/opportunity_363902.json",
+        "snapshot_sha256": "14aab4c1b916113d2953d63c3a90bdf79e597513f037ff4e257542a4c4c96434",
+        "url": "https://www.grants.gov/search-results-detail/363902"
+      },
+      "statement": "Grants.gov lists an award ceiling of $750,000 per award.",
+      "values": {
+        "award_ceiling": 750000.0
+      }
+    },
+    {
+      "key": "total_funding",
+      "observed_at": "2026-10-10T03:24:26.661700+00:00",
+      "source": {
+        "fields": [
+          "synopsis.estimatedFunding"
+        ],
+        "snapshot_file": "source/opportunity_363902.json",
+        "snapshot_sha256": "14aab4c1b916113d2953d63c3a90bdf79e597513f037ff4e257542a4c4c96434",
+        "url": "https://www.grants.gov/search-results-detail/363902"
+      },
+      "statement": "Grants.gov lists estimated total program funding of $12 million.",
+      "values": {
+        "estimated_total_program_funding": 12000000.0
+      }
+    },
+    {
+      "key": "expected_awards",
+      "observed_at": "2026-10-10T03:24:26.661700+00:00",
+      "source": {
+        "fields": [
+          "synopsis.numberOfAwards"
+        ],
+        "snapshot_file": "source/opportunity_363902.json",
+        "snapshot_sha256": "14aab4c1b916113d2953d63c3a90bdf79e597513f037ff4e257542a4c4c96434",
+        "url": "https://www.grants.gov/search-results-detail/363902"
+      },
+      "statement": "Grants.gov lists 16 expected awards.",
+      "values": {
+        "expected_number_of_awards": 16
+      }
+    },
+    {
+      "key": "eligibility",
+      "observed_at": "2026-10-10T03:24:26.661700+00:00",
+      "source": {
+        "fields": [
+          "synopsis.applicantTypes"
+        ],
+        "snapshot_file": "source/opportunity_363902.json",
+        "snapshot_sha256": "14aab4c1b916113d2953d63c3a90bdf79e597513f037ff4e257542a4c4c96434",
+        "url": "https://www.grants.gov/search-results-detail/363902"
+      },
+      "statement": "Eligible applicant types listed: Native American tribal governments (Federally recognized); Nonprofits having a 501(c)(3) status with the IRS, other than institutions of higher education; Nonprofits that do not have a 501(c)(3) status with the IRS, other than institutions of higher education; County governments; City or township governments; State governments.",
+      "values": {
+        "applicant_types": [
+          "Native American tribal governments (Federally recognized)",
+          "Nonprofits having a 501(c)(3) status with the IRS, other than institutions of higher education",
+          "Nonprofits that do not have a 501(c)(3) status with the IRS, other than institutions of higher education",
+          "County governments",
+          "City or township governments",
+          "State governments"
+        ],
+        "has_additional_conditions": true
+      }
+    },
+    {
+      "key": "instrument",
+      "observed_at": "2026-10-10T03:24:26.661700+00:00",
+      "source": {
+        "fields": [
+          "synopsis.fundingInstruments"
+        ],
+        "snapshot_file": "source/opportunity_363902.json",
+        "snapshot_sha256": "14aab4c1b916113d2953d63c3a90bdf79e597513f037ff4e257542a4c4c96434",
+        "url": "https://www.grants.gov/search-results-detail/363902"
+      },
+      "statement": "Funding instrument: Grant.",
+      "values": {
+        "funding_instruments": [
+          "Grant"
+        ]
+      }
+    },
+    {
+      "key": "category",
+      "observed_at": "2026-10-10T03:24:26.661700+00:00",
+      "source": {
+        "fields": [
+          "synopsis.fundingActivityCategories"
+        ],
+        "snapshot_file": "source/opportunity_363902.json",
+        "snapshot_sha256": "14aab4c1b916113d2953d63c3a90bdf79e597513f037ff4e257542a4c4c96434",
+        "url": "https://www.grants.gov/search-results-detail/363902"
+      },
+      "statement": "Funding category: Law, Justice and Legal Services.",
+      "values": {
+        "funding_categories": [
+          "Law, Justice and Legal Services"
+        ]
+      }
+    },
+    {
+      "key": "cost_sharing",
+      "observed_at": "2026-10-10T03:24:26.661700+00:00",
+      "source": {
+        "fields": [
+          "synopsis.costSharing"
+        ],
+        "snapshot_file": "source/opportunity_363902.json",
+        "snapshot_sha256": "14aab4c1b916113d2953d63c3a90bdf79e597513f037ff4e257542a4c4c96434",
+        "url": "https://www.grants.gov/search-results-detail/363902"
+      },
+      "statement": "Cost sharing or matching is not required.",
+      "values": {
+        "cost_sharing_required": false
+      }
+    },
+    {
+      "key": "purpose_quote",
+      "observed_at": "2026-10-10T03:24:26.661700+00:00",
+      "source": {
+        "fields": [
+          "synopsis.synopsisDesc"
+        ],
+        "snapshot_file": "source/opportunity_363902.json",
+        "snapshot_sha256": "14aab4c1b916113d2953d63c3a90bdf79e597513f037ff4e257542a4c4c96434",
+        "url": "https://www.grants.gov/search-results-detail/363902"
+      },
+      "statement": "The official synopsis says: \"This opportunity supports states, units of local government, federally recognized Native American Tribal governments and nonprofit organizations to deliver substance use prevention programs for youth in schools and extracurricular settings in coordination with law enforcement and community coalitions.\"",
+      "values": {
+        "quote": "This opportunity supports states, units of local government, federally recognized Native American Tribal governments and nonprofit organizations to deliver substance use prevention programs for youth in schools and extracurricular settings in coordination with law enforcement and community coalitions."
+      }
+    }
+  ],
+  "contract": "SOCIAL_REAL_REELS_V1",
+  "opportunity_id": "363902",
+  "rule": "claims are copied from official fields only; writers can cite, never add"
+}

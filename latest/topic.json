@@ -1,0 +1,219 @@
+{
+  "considered": [
+    {
+      "opportunity_id": "363482",
+      "score": -99,
+      "title": "Fiscal Year (FY) 2027 AmeriCorps Seniors RSVP Competition",
+      "why": [
+        "no award amount or total funding listed"
+      ]
+    },
+    {
+      "opportunity_id": "362530",
+      "score": 6,
+      "title": "DoW Autism Clinical Trial Award",
+      "why": [
+        "no ceiling",
+        "audience breadth 0",
+        "12 days left"
+      ]
+    },
+    {
+      "opportunity_id": "362175",
+      "score": 7,
+      "title": "DoW Arthritis Clinical Research Award",
+      "why": [
+        "no ceiling",
+        "audience breadth 0",
+        "12 days left"
+      ]
+    },
+    {
+      "opportunity_id": "363852",
+      "score": 7,
+      "title": "Climate Program Office (CPO) FY2026 Earth System Science and Services Partnership",
+      "why": [
+        "award ceiling",
+        "audience breadth 0",
+        "restricted applicant type",
+        "16 days left"
+      ]
+    },
+    {
+      "opportunity_id": "362827",
+      "score": 10,
+      "title": "FAIR HOUSING INITIATIVES PROGRAM PRIVATE ENFORCEMENT INITIATIVE",
+      "why": [
+        "award ceiling",
+        "audience breadth 0",
+        "restricted applicant type",
+        "23 days left"
+      ]
+    },
+    {
+      "opportunity_id": "362551",
+      "score": 6,
+      "title": "NSF Small Business Innovation Research / Small Business Technology Transfer Phase I, Phase II, Fast-Track Programs: A Pilot Emphasis on Scientific Instrumentation",
+      "why": [
+        "no ceiling",
+        "audience breadth 0",
+        "restricted applicant type",
+        "25 days left"
+      ]
+    },
+    {
+      "opportunity_id": "363771",
+      "score": 9,
+      "title": "Inspire Grants for Small Museums (2027)",
+      "why": [
+        "award ceiling",
+        "audience breadth 0",
+        "restricted applicant type",
+        "34 days left"
+      ]
+    },
+    {
+      "opportunity_id": "363762",
+      "score": 13,
+      "title": "Native American Library Services Enhancement Grants (2027)",
+      "why": [
+        "award ceiling",
+        "audience breadth 1",
+        "34 days left"
+      ]
+    },
+    {
+      "opportunity_id": "363766",
+      "score": 10,
+      "title": "National Leadership Grants for Libraries (2027)",
+      "why": [
+        "award ceiling",
+        "audience breadth 0",
+        "restricted applicant type",
+        "34 days left"
+      ]
+    },
+    {
+      "opportunity_id": "364020",
+      "score": 10,
+      "title": "Small Business Innovation Research and Small Business Technology Transfer Programs Phase II",
+      "why": [
+        "award ceiling",
+        "audience breadth 0",
+        "restricted applicant type",
+        "38 days left"
+      ]
+    },
+    {
+      "opportunity_id": "359966",
+      "score": 8,
+      "title": "National Science Foundation Translation to Practice (NSF TTP)",
+      "why": [
+        "award ceiling",
+        "audience breadth 0",
+        "restricted applicant type",
+        "38 days left"
+      ]
+    },
+    {
+      "opportunity_id": "362850",
+      "score": 8,
+      "title": "DoW Rare Cancers Resource and Community Development Award",
+      "why": [
+        "no ceiling",
+        "audience breadth 0",
+        "39 days left"
+      ]
+    },
+    {
+      "opportunity_id": "364006",
+      "score": 10,
+      "title": "Dairy Business Innovation Initiatives Program (DBI) Fiscal Year 2026",
+      "why": [
+        "award ceiling",
+        "audience breadth 0",
+        "restricted applicant type",
+        "52 days left"
+      ]
+    },
+    {
+      "opportunity_id": "363846",
+      "score": 10,
+      "title": "Hispanic-Serving Institutions Education Grants Program",
+      "why": [
+        "award ceiling",
+        "audience breadth 0",
+        "restricted applicant type",
+        "54 days left"
+      ]
+    }
+  ],
+  "excluded_previously_used": [
+    "345738",
+    "363767",
+    "363902",
+    "363998",
+    "national center for construction safety and health research and translation",
+    "native american library services basic grant",
+    "ojjdp community and schools youth drug prevention program",
+    "small business transportation technical assistance center"
+  ],
+  "found": 66,
+  "run_id": "20261010_363762_native-american-library-services",
+  "score": 13,
+  "selected": {
+    "agency_code": "IMLS",
+    "agency_name": "Institute of Museum and Library Services",
+    "applicant_eligibility_desc": "See the Notice of Funding Opportunity for program eligibility criteria.",
+    "applicant_types": [
+      "Native American tribal governments (Federally recognized)"
+    ],
+    "award_ceiling": 150000.0,
+    "award_floor": 50000.0,
+    "close_date": "11/13/2026",
+    "cost_sharing": false,
+    "description": "The Native American Library Services Enhancement Grants program (NAE) assists eligible Native Communities in sustaining and improving library services with their communities. As information needs change, Tribal libraries must be able to serve as knowledge and resource centers to benefit their users and the wellness of their communities. The program supports Native Communities across the country to address their individual information needs and priorities.",
+    "detail_fetched": true,
+    "doc_type": "synopsis",
+    "estimated_total_program_funding": 3500000.0,
+    "expected_number_of_awards": 25.0,
+    "fields": {
+      "agency_code": "detail.owningAgencyCode",
+      "agency_name": "detail.agencyDetails.agencyName",
+      "applicant_eligibility_desc": "synopsis.applicantEligibilityDesc",
+      "applicant_types": "synopsis.applicantTypes",
+      "award_ceiling": "synopsis.awardCeiling",
+      "award_floor": "synopsis.awardFloor",
+      "close_date": "hit.closeDate",
+      "cost_sharing": "synopsis.costSharing",
+      "description": "synopsis.synopsisDesc",
+      "doc_type": "hit.docType",
+      "estimated_total_program_funding": "synopsis.estimatedFunding",
+      "expected_number_of_awards": "synopsis.numberOfAwards",
+      "funding_categories": "synopsis.fundingActivityCategories",
+      "funding_instruments": "synopsis.fundingInstruments",
+      "number": "detail.opportunityNumber",
+      "open_date": "hit.openDate",
+      "status": "hit.oppStatus",
+      "title": "detail.opportunityTitle",
+      "top_agency": "detail.topAgencyDetails.agencyName",
+      "top_agency_name": "detail.topAgencyDetails.agencyName"
+    },
+    "funding_categories": [
+      "Arts",
+      "Humanities"
+    ],
+    "funding_instruments": [
+      "Grant"
+    ],
+    "number": "NAG-ENHANCEMENT-FY27",
+    "open_date": "09/01/2026",
+    "opportunity_id": "363762",
+    "source_url": "https://www.grants.gov/search-results-detail/363762",
+    "status": "posted",
+    "title": "Native American Library Services Enhancement Grants (2027)",
+    "top_agency": "Institute of Museum and Library Services",
+    "top_agency_name": "Institute of Museum and Library Services"
+  },
+  "selected_at": "2026-10-10T03:33:46.828519+00:00"
+}

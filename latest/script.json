@@ -1,0 +1,115 @@
+{
+  "description": "Native American Library Services Enhancement Grants (2027)\n\n• The listing agency is Institute of Museum and Library Services.\n• Grants.gov lists individual awards from $50,000 to $150,000.\n• Grants.gov lists estimated total program funding of $3.5 million.\n• Grants.gov lists 25 expected awards.\n• Grants.gov lists the close date as November 13, 2026.\n• Eligible applicant types listed: Native American tribal governments (Federally recognized).\n\nOfficial listing: https://www.grants.gov/search-results-detail/363762\nAlways verify current details on Grants.gov before applying.\n#grants #federalfunding #smallbusiness",
+  "hook": "Up to $150,000 per award, from the Institute of Museum and Library Services.",
+  "segments": [
+    {
+      "claim_keys": [
+        "award_range",
+        "agency"
+      ],
+      "id": "s1",
+      "on_screen": {
+        "big": "$150,000",
+        "headline": "per award",
+        "kicker": "FEDERAL FUNDING · UP TO",
+        "sub": "Institute of Museum and Library Services"
+      },
+      "role": "hook",
+      "visual": "hook",
+      "voiceover": "Up to $150,000 per award, from the Institute of Museum and Library Services."
+    },
+    {
+      "claim_keys": [
+        "identity",
+        "instrument"
+      ],
+      "id": "s2",
+      "on_screen": {
+        "headline": "Native American Library Services Enhancement Grants (2027)",
+        "kicker": "THE PROGRAM",
+        "sub": "Opportunity NAG-ENHANCEMENT-FY27"
+      },
+      "role": "what",
+      "visual": "title",
+      "voiceover": "It's a grant. The program: Native American Library Services Enhancement Grants (2027)."
+    },
+    {
+      "claim_keys": [
+        "total_funding",
+        "award_range",
+        "expected_awards"
+      ],
+      "id": "s3",
+      "on_screen": {
+        "big": "$3.5 million",
+        "headline": "estimated total funding",
+        "kicker": "THE MONEY",
+        "sub": "Awards: $50,000 – $150,000 · 25 expected awards"
+      },
+      "role": "money",
+      "visual": "stat",
+      "voiceover": "Estimated total funding is $3.5 million, with individual awards from $50,000 to $150,000. Grants.gov expects 25 awards."
+    },
+    {
+      "claim_keys": [
+        "eligibility"
+      ],
+      "id": "s4",
+      "on_screen": {
+        "headline": "Tribal governments",
+        "kicker": "WHO CAN APPLY",
+        "sub": "Eligibility details: official listing"
+      },
+      "role": "who",
+      "visual": "list",
+      "voiceover": "Who can apply? Tribal governments."
+    },
+    {
+      "claim_keys": [
+        "purpose_quote"
+      ],
+      "id": "s5",
+      "on_screen": {
+        "headline": "“The Native American Library Services Enhancement Grants program (NAE) assists eligible Native Communities in sustaining and improving library services with their communities.”",
+        "kicker": "FROM THE SYNOPSIS",
+        "sub": "Official Grants.gov synopsis"
+      },
+      "role": "purpose",
+      "visual": "quote",
+      "voiceover": "In the agency's words: The Native American Library Services Enhancement Grants program (NAE) assists eligible Native Communities in sustaining and improving library services with their communities."
+    },
+    {
+      "claim_keys": [
+        "deadline",
+        "cost_sharing"
+      ],
+      "id": "s6",
+      "on_screen": {
+        "big": "Nov 13",
+        "headline": "2026",
+        "kicker": "APPLICATIONS CLOSE",
+        "sub": "No cost match required"
+      },
+      "role": "deadline",
+      "visual": "date",
+      "voiceover": "Applications close November 13, 2026. No cost match is required."
+    },
+    {
+      "claim_keys": [
+        "identity"
+      ],
+      "id": "s7",
+      "on_screen": {
+        "headline": "NAG-ENHANCEMENT-FY27",
+        "kicker": "CHECK THE OFFICIAL LISTING",
+        "sub": "grants.gov · verify details before applying"
+      },
+      "role": "cta",
+      "visual": "source",
+      "voiceover": "Search the opportunity number on Grants.gov, and check the official listing before you apply."
+    }
+  ],
+  "source_note": "Source: Grants.gov opportunity NAG-ENHANCEMENT-FY27 (https://www.grants.gov/search-results-detail/363762). Details can change; always verify the official listing before applying.",
+  "title": "$150,000 federal funding: Native American Library Services Enhancement Grants (2027)",
+  "writer": "template_v1"
+}

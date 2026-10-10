@@ -1,0 +1,243 @@
+{
+  "built_from": {
+    "bytes": 5445,
+    "fetched_at": "2026-10-10T03:28:14.735392+00:00",
+    "file": "source/opportunity_363767.json",
+    "http_status": 200,
+    "request": {
+      "opportunityId": 363767
+    },
+    "sha256": "157f83db96838dc550cfac084180158e10754124b3fcc5a63fe50e11a03c0e7a",
+    "url": "https://api.grants.gov/v1/api/fetchOpportunity"
+  },
+  "claims": [
+    {
+      "key": "identity",
+      "observed_at": "2026-10-10T03:28:14.735392+00:00",
+      "source": {
+        "fields": [
+          "detail.opportunityTitle",
+          "detail.opportunityNumber"
+        ],
+        "snapshot_file": "source/opportunity_363767.json",
+        "snapshot_sha256": "157f83db96838dc550cfac084180158e10754124b3fcc5a63fe50e11a03c0e7a",
+        "url": "https://www.grants.gov/search-results-detail/363767"
+      },
+      "statement": "Grants.gov lists \"Native American Library Services Basic Grant (2027)\" as funding opportunity NAG-BASIC-FY27.",
+      "values": {
+        "number": "NAG-BASIC-FY27",
+        "opportunity_id": "363767",
+        "title": "Native American Library Services Basic Grant (2027)"
+      }
+    },
+    {
+      "key": "agency",
+      "observed_at": "2026-10-10T03:28:14.735392+00:00",
+      "source": {
+        "fields": [
+          "detail.agencyDetails.agencyName",
+          "detail.owningAgencyCode"
+        ],
+        "snapshot_file": "source/opportunity_363767.json",
+        "snapshot_sha256": "157f83db96838dc550cfac084180158e10754124b3fcc5a63fe50e11a03c0e7a",
+        "url": "https://www.grants.gov/search-results-detail/363767"
+      },
+      "statement": "The listing agency is Institute of Museum and Library Services.",
+      "values": {
+        "agency": "Institute of Museum and Library Services",
+        "agency_code": "IMLS",
+        "parent_agency": "Institute of Museum and Library Services"
+      }
+    },
+    {
+      "key": "status",
+      "observed_at": "2026-10-10T03:28:14.735392+00:00",
+      "source": {
+        "fields": [
+          "hit.oppStatus"
+        ],
+        "snapshot_file": "source/opportunity_363767.json",
+        "snapshot_sha256": "157f83db96838dc550cfac084180158e10754124b3fcc5a63fe50e11a03c0e7a",
+        "url": "https://www.grants.gov/search-results-detail/363767"
+      },
+      "statement": "The opportunity status on Grants.gov is \"posted\".",
+      "values": {
+        "status": "posted"
+      }
+    },
+    {
+      "key": "posted",
+      "observed_at": "2026-10-10T03:28:14.735392+00:00",
+      "source": {
+        "fields": [
+          "hit.openDate"
+        ],
+        "snapshot_file": "source/opportunity_363767.json",
+        "snapshot_sha256": "157f83db96838dc550cfac084180158e10754124b3fcc5a63fe50e11a03c0e7a",
+        "url": "https://www.grants.gov/search-results-detail/363767"
+      },
+      "statement": "Grants.gov lists the posting date as September 1, 2026.",
+      "values": {
+        "date": "2026-09-01"
+      }
+    },
+    {
+      "key": "deadline",
+      "observed_at": "2026-10-10T03:28:14.735392+00:00",
+      "source": {
+        "fields": [
+          "hit.closeDate"
+        ],
+        "snapshot_file": "source/opportunity_363767.json",
+        "snapshot_sha256": "157f83db96838dc550cfac084180158e10754124b3fcc5a63fe50e11a03c0e7a",
+        "url": "https://www.grants.gov/search-results-detail/363767"
+      },
+      "statement": "Grants.gov lists the close date as November 13, 2026.",
+      "values": {
+        "date": "2026-11-13",
+        "days_left_at_build": 34
+      }
+    },
+    {
+      "key": "award_range",
+      "observed_at": "2026-10-10T03:28:14.735392+00:00",
+      "source": {
+        "fields": [
+          "synopsis.awardFloor",
+          "synopsis.awardCeiling"
+        ],
+        "snapshot_file": "source/opportunity_363767.json",
+        "snapshot_sha256": "157f83db96838dc550cfac084180158e10754124b3fcc5a63fe50e11a03c0e7a",
+        "url": "https://www.grants.gov/search-results-detail/363767"
+      },
+      "statement": "Grants.gov lists individual awards from $6,000 to $10,000.",
+      "values": {
+        "award_ceiling": 10000.0,
+        "award_floor": 6000.0
+      }
+    },
+    {
+      "key": "total_funding",
+      "observed_at": "2026-10-10T03:28:14.735392+00:00",
+      "source": {
+        "fields": [
+          "synopsis.estimatedFunding"
+        ],
+        "snapshot_file": "source/opportunity_363767.json",
+        "snapshot_sha256": "157f83db96838dc550cfac084180158e10754124b3fcc5a63fe50e11a03c0e7a",
+        "url": "https://www.grants.gov/search-results-detail/363767"
+      },
+      "statement": "Grants.gov lists estimated total program funding of $1.7 million.",
+      "values": {
+        "estimated_total_program_funding": 1700000.0
+      }
+    },
+    {
+      "key": "expected_awards",
+      "observed_at": "2026-10-10T03:28:14.735392+00:00",
+      "source": {
+        "fields": [
+          "synopsis.numberOfAwards"
+        ],
+        "snapshot_file": "source/opportunity_363767.json",
+        "snapshot_sha256": "157f83db96838dc550cfac084180158e10754124b3fcc5a63fe50e11a03c0e7a",
+        "url": "https://www.grants.gov/search-results-detail/363767"
+      },
+      "statement": "Grants.gov lists 170 expected awards.",
+      "values": {
+        "expected_number_of_awards": 170
+      }
+    },
+    {
+      "key": "eligibility",
+      "observed_at": "2026-10-10T03:28:14.735392+00:00",
+      "source": {
+        "fields": [
+          "synopsis.applicantTypes"
+        ],
+        "snapshot_file": "source/opportunity_363767.json",
+        "snapshot_sha256": "157f83db96838dc550cfac084180158e10754124b3fcc5a63fe50e11a03c0e7a",
+        "url": "https://www.grants.gov/search-results-detail/363767"
+      },
+      "statement": "Eligible applicant types listed: Native American tribal governments (Federally recognized).",
+      "values": {
+        "applicant_types": [
+          "Native American tribal governments (Federally recognized)"
+        ],
+        "has_additional_conditions": false
+      }
+    },
+    {
+      "key": "instrument",
+      "observed_at": "2026-10-10T03:28:14.735392+00:00",
+      "source": {
+        "fields": [
+          "synopsis.fundingInstruments"
+        ],
+        "snapshot_file": "source/opportunity_363767.json",
+        "snapshot_sha256": "157f83db96838dc550cfac084180158e10754124b3fcc5a63fe50e11a03c0e7a",
+        "url": "https://www.grants.gov/search-results-detail/363767"
+      },
+      "statement": "Funding instrument: Grant.",
+      "values": {
+        "funding_instruments": [
+          "Grant"
+        ]
+      }
+    },
+    {
+      "key": "category",
+      "observed_at": "2026-10-10T03:28:14.735392+00:00",
+      "source": {
+        "fields": [
+          "synopsis.fundingActivityCategories"
+        ],
+        "snapshot_file": "source/opportunity_363767.json",
+        "snapshot_sha256": "157f83db96838dc550cfac084180158e10754124b3fcc5a63fe50e11a03c0e7a",
+        "url": "https://www.grants.gov/search-results-detail/363767"
+      },
+      "statement": "Funding category: Arts, Humanities.",
+      "values": {
+        "funding_categories": [
+          "Arts",
+          "Humanities"
+        ]
+      }
+    },
+    {
+      "key": "cost_sharing",
+      "observed_at": "2026-10-10T03:28:14.735392+00:00",
+      "source": {
+        "fields": [
+          "synopsis.costSharing"
+        ],
+        "snapshot_file": "source/opportunity_363767.json",
+        "snapshot_sha256": "157f83db96838dc550cfac084180158e10754124b3fcc5a63fe50e11a03c0e7a",
+        "url": "https://www.grants.gov/search-results-detail/363767"
+      },
+      "statement": "Cost sharing or matching is not required.",
+      "values": {
+        "cost_sharing_required": false
+      }
+    },
+    {
+      "key": "purpose_quote",
+      "observed_at": "2026-10-10T03:28:14.735392+00:00",
+      "source": {
+        "fields": [
+          "synopsis.synopsisDesc"
+        ],
+        "snapshot_file": "source/opportunity_363767.json",
+        "snapshot_sha256": "157f83db96838dc550cfac084180158e10754124b3fcc5a63fe50e11a03c0e7a",
+        "url": "https://www.grants.gov/search-results-detail/363767"
+      },
+      "statement": "The official synopsis says: \"The Native American Basic Grants (NAB) program assists eligible Native Communities in establishing, sustaining, and improving library services and operations with their communities.\"",
+      "values": {
+        "quote": "The Native American Basic Grants (NAB) program assists eligible Native Communities in establishing, sustaining, and improving library services and operations with their communities."
+      }
+    }
+  ],
+  "contract": "SOCIAL_REAL_REELS_V1",
+  "opportunity_id": "363767",
+  "rule": "claims are copied from official fields only; writers can cite, never add"
+}

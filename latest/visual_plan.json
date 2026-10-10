@@ -1,0 +1,105 @@
+{
+  "canvas": "1080x1920@30",
+  "footer": "Source: Grants.gov listing 363762\nData as of October 10, 2026 · verify before applying",
+  "segments": [
+    {
+      "claim_keys": [
+        "award_range",
+        "agency"
+      ],
+      "id": "s1",
+      "on_screen": {
+        "big": "$150,000",
+        "headline": "per award",
+        "kicker": "FEDERAL FUNDING · UP TO",
+        "sub": "Institute of Museum and Library Services"
+      },
+      "still": "mediaengine_handoff/stills/segment_01.png",
+      "visual": "hook"
+    },
+    {
+      "claim_keys": [
+        "identity",
+        "instrument"
+      ],
+      "id": "s2",
+      "on_screen": {
+        "headline": "Native American Library Services Enhancement Grants (2027)",
+        "kicker": "THE PROGRAM",
+        "sub": "Opportunity NAG-ENHANCEMENT-FY27"
+      },
+      "still": "mediaengine_handoff/stills/segment_02.png",
+      "visual": "title"
+    },
+    {
+      "claim_keys": [
+        "total_funding",
+        "award_range",
+        "expected_awards"
+      ],
+      "id": "s3",
+      "on_screen": {
+        "big": "$3.5 million",
+        "headline": "estimated total funding",
+        "kicker": "THE MONEY",
+        "sub": "Awards: $50,000 – $150,000 · 25 expected awards"
+      },
+      "still": "mediaengine_handoff/stills/segment_03.png",
+      "visual": "stat"
+    },
+    {
+      "claim_keys": [
+        "eligibility"
+      ],
+      "id": "s4",
+      "on_screen": {
+        "headline": "Tribal governments",
+        "kicker": "WHO CAN APPLY",
+        "sub": "Eligibility details: official listing"
+      },
+      "still": "mediaengine_handoff/stills/segment_04.png",
+      "visual": "list"
+    },
+    {
+      "claim_keys": [
+        "purpose_quote"
+      ],
+      "id": "s5",
+      "on_screen": {
+        "headline": "“The Native American Library Services Enhancement Grants program (NAE) assists eligible Native Communities in sustaining and improving library services with their communities.”",
+        "kicker": "FROM THE SYNOPSIS",
+        "sub": "Official Grants.gov synopsis"
+      },
+      "still": "mediaengine_handoff/stills/segment_05.png",
+      "visual": "quote"
+    },
+    {
+      "claim_keys": [
+        "deadline",
+        "cost_sharing"
+      ],
+      "id": "s6",
+      "on_screen": {
+        "big": "Nov 13",
+        "headline": "2026",
+        "kicker": "APPLICATIONS CLOSE",
+        "sub": "No cost match required"
+      },
+      "still": "mediaengine_handoff/stills/segment_06.png",
+      "visual": "date"
+    },
+    {
+      "claim_keys": [
+        "identity"
+      ],
+      "id": "s7",
+      "on_screen": {
+        "headline": "NAG-ENHANCEMENT-FY27",
+        "kicker": "CHECK THE OFFICIAL LISTING",
+        "sub": "grants.gov · verify details before applying"
+      },
+      "still": "mediaengine_handoff/stills/segment_07.png",
+      "visual": "source"
+    }
+  ]
+}

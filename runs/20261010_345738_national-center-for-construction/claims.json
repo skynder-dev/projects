@@ -1,0 +1,272 @@
+{
+  "built_from": {
+    "bytes": 48933,
+    "fetched_at": "2026-10-10T03:29:31.783870+00:00",
+    "file": "source/opportunity_345738.json",
+    "http_status": 200,
+    "request": {
+      "opportunityId": 345738
+    },
+    "sha256": "62e3ef1fd9b1926938ff7a9115ee8190773b7fadf38f6c6fe754ebe6c2c293f8",
+    "url": "https://api.grants.gov/v1/api/fetchOpportunity"
+  },
+  "claims": [
+    {
+      "key": "identity",
+      "observed_at": "2026-10-10T03:29:31.783870+00:00",
+      "source": {
+        "fields": [
+          "detail.opportunityTitle",
+          "detail.opportunityNumber"
+        ],
+        "snapshot_file": "source/opportunity_345738.json",
+        "snapshot_sha256": "62e3ef1fd9b1926938ff7a9115ee8190773b7fadf38f6c6fe754ebe6c2c293f8",
+        "url": "https://www.grants.gov/search-results-detail/345738"
+      },
+      "statement": "Grants.gov lists \"National Center for Construction Safety and Health Research and Translation (U54)\" as funding opportunity RFA-OH-24-001.",
+      "values": {
+        "number": "RFA-OH-24-001",
+        "opportunity_id": "345738",
+        "title": "National Center for Construction Safety and Health Research and Translation (U54)"
+      }
+    },
+    {
+      "key": "agency",
+      "observed_at": "2026-10-10T03:29:31.783870+00:00",
+      "source": {
+        "fields": [
+          "detail.agencyDetails.agencyName",
+          "detail.owningAgencyCode"
+        ],
+        "snapshot_file": "source/opportunity_345738.json",
+        "snapshot_sha256": "62e3ef1fd9b1926938ff7a9115ee8190773b7fadf38f6c6fe754ebe6c2c293f8",
+        "url": "https://www.grants.gov/search-results-detail/345738"
+      },
+      "statement": "The listing agency is Centers for Disease Control and Prevention - ERA.",
+      "values": {
+        "agency": "Centers for Disease Control and Prevention - ERA",
+        "agency_code": "HHS-CDC-HHSCDCERA",
+        "parent_agency": "Department of Health and Human Services"
+      }
+    },
+    {
+      "key": "parent_agency",
+      "observed_at": "2026-10-10T03:29:31.783870+00:00",
+      "source": {
+        "fields": [
+          "detail.topAgencyDetails.agencyName"
+        ],
+        "snapshot_file": "source/opportunity_345738.json",
+        "snapshot_sha256": "62e3ef1fd9b1926938ff7a9115ee8190773b7fadf38f6c6fe754ebe6c2c293f8",
+        "url": "https://www.grants.gov/search-results-detail/345738"
+      },
+      "statement": "The listing agency is part of the Department of Health and Human Services.",
+      "values": {
+        "agency_code": "HHS-CDC-HHSCDCERA",
+        "parent_agency": "Department of Health and Human Services"
+      }
+    },
+    {
+      "key": "status",
+      "observed_at": "2026-10-10T03:29:31.783870+00:00",
+      "source": {
+        "fields": [
+          "hit.oppStatus"
+        ],
+        "snapshot_file": "source/opportunity_345738.json",
+        "snapshot_sha256": "62e3ef1fd9b1926938ff7a9115ee8190773b7fadf38f6c6fe754ebe6c2c293f8",
+        "url": "https://www.grants.gov/search-results-detail/345738"
+      },
+      "statement": "The opportunity status on Grants.gov is \"posted\".",
+      "values": {
+        "status": "posted"
+      }
+    },
+    {
+      "key": "posted",
+      "observed_at": "2026-10-10T03:29:31.783870+00:00",
+      "source": {
+        "fields": [
+          "hit.openDate"
+        ],
+        "snapshot_file": "source/opportunity_345738.json",
+        "snapshot_sha256": "62e3ef1fd9b1926938ff7a9115ee8190773b7fadf38f6c6fe754ebe6c2c293f8",
+        "url": "https://www.grants.gov/search-results-detail/345738"
+      },
+      "statement": "Grants.gov lists the posting date as September 13, 2023.",
+      "values": {
+        "date": "2023-09-13"
+      }
+    },
+    {
+      "key": "deadline",
+      "observed_at": "2026-10-10T03:29:31.783870+00:00",
+      "source": {
+        "fields": [
+          "hit.closeDate"
+        ],
+        "snapshot_file": "source/opportunity_345738.json",
+        "snapshot_sha256": "62e3ef1fd9b1926938ff7a9115ee8190773b7fadf38f6c6fe754ebe6c2c293f8",
+        "url": "https://www.grants.gov/search-results-detail/345738"
+      },
+      "statement": "Grants.gov lists the close date as December 1, 2026.",
+      "values": {
+        "date": "2026-12-01",
+        "days_left_at_build": 52
+      }
+    },
+    {
+      "key": "award_range",
+      "observed_at": "2026-10-10T03:29:31.783870+00:00",
+      "source": {
+        "fields": [
+          "synopsis.awardFloor",
+          "synopsis.awardCeiling"
+        ],
+        "snapshot_file": "source/opportunity_345738.json",
+        "snapshot_sha256": "62e3ef1fd9b1926938ff7a9115ee8190773b7fadf38f6c6fe754ebe6c2c293f8",
+        "url": "https://www.grants.gov/search-results-detail/345738"
+      },
+      "statement": "Grants.gov lists individual awards from $3 million to $5.75 million.",
+      "values": {
+        "award_ceiling": 5750000.0,
+        "award_floor": 3000000.0
+      }
+    },
+    {
+      "key": "total_funding",
+      "observed_at": "2026-10-10T03:29:31.783870+00:00",
+      "source": {
+        "fields": [
+          "synopsis.estimatedFunding"
+        ],
+        "snapshot_file": "source/opportunity_345738.json",
+        "snapshot_sha256": "62e3ef1fd9b1926938ff7a9115ee8190773b7fadf38f6c6fe754ebe6c2c293f8",
+        "url": "https://www.grants.gov/search-results-detail/345738"
+      },
+      "statement": "Grants.gov lists estimated total program funding of $28.75 million.",
+      "values": {
+        "estimated_total_program_funding": 28750000.0
+      }
+    },
+    {
+      "key": "expected_awards",
+      "observed_at": "2026-10-10T03:29:31.783870+00:00",
+      "source": {
+        "fields": [
+          "synopsis.numberOfAwards"
+        ],
+        "snapshot_file": "source/opportunity_345738.json",
+        "snapshot_sha256": "62e3ef1fd9b1926938ff7a9115ee8190773b7fadf38f6c6fe754ebe6c2c293f8",
+        "url": "https://www.grants.gov/search-results-detail/345738"
+      },
+      "statement": "Grants.gov lists 1 expected awards.",
+      "values": {
+        "expected_number_of_awards": 1
+      }
+    },
+    {
+      "key": "eligibility",
+      "observed_at": "2026-10-10T03:29:31.783870+00:00",
+      "source": {
+        "fields": [
+          "synopsis.applicantTypes"
+        ],
+        "snapshot_file": "source/opportunity_345738.json",
+        "snapshot_sha256": "62e3ef1fd9b1926938ff7a9115ee8190773b7fadf38f6c6fe754ebe6c2c293f8",
+        "url": "https://www.grants.gov/search-results-detail/345738"
+      },
+      "statement": "Eligible applicant types listed: Public housing authorities/Indian housing authorities; Special district governments; Native American tribal governments (Federally recognized); Independent school districts; Nonprofits having a 501(c)(3) status with the IRS, other than institutions of higher education; County governments; For profit organizations other than small businesses; Small businesses; State governments; Public and State controlled institutions of higher education; Nonprofits that do not have a 501(c)(3) status with the IRS, other than institutions of higher education; Private institutions of higher education; City or township governments; Native American tribal organizations (other than Federally recognized tribal governments).",
+      "values": {
+        "applicant_types": [
+          "Public housing authorities/Indian housing authorities",
+          "Special district governments",
+          "Native American tribal governments (Federally recognized)",
+          "Independent school districts",
+          "Nonprofits having a 501(c)(3) status with the IRS, other than institutions of higher education",
+          "County governments",
+          "For profit organizations other than small businesses",
+          "Small businesses",
+          "State governments",
+          "Public and State controlled institutions of higher education",
+          "Nonprofits that do not have a 501(c)(3) status with the IRS, other than institutions of higher education",
+          "Private institutions of higher education",
+          "City or township governments",
+          "Native American tribal organizations (other than Federally recognized tribal governments)"
+        ],
+        "has_additional_conditions": false
+      }
+    },
+    {
+      "key": "instrument",
+      "observed_at": "2026-10-10T03:29:31.783870+00:00",
+      "source": {
+        "fields": [
+          "synopsis.fundingInstruments"
+        ],
+        "snapshot_file": "source/opportunity_345738.json",
+        "snapshot_sha256": "62e3ef1fd9b1926938ff7a9115ee8190773b7fadf38f6c6fe754ebe6c2c293f8",
+        "url": "https://www.grants.gov/search-results-detail/345738"
+      },
+      "statement": "Funding instrument: Cooperative Agreement.",
+      "values": {
+        "funding_instruments": [
+          "Cooperative Agreement"
+        ]
+      }
+    },
+    {
+      "key": "category",
+      "observed_at": "2026-10-10T03:29:31.783870+00:00",
+      "source": {
+        "fields": [
+          "synopsis.fundingActivityCategories"
+        ],
+        "snapshot_file": "source/opportunity_345738.json",
+        "snapshot_sha256": "62e3ef1fd9b1926938ff7a9115ee8190773b7fadf38f6c6fe754ebe6c2c293f8",
+        "url": "https://www.grants.gov/search-results-detail/345738"
+      },
+      "statement": "Funding category: Health.",
+      "values": {
+        "funding_categories": [
+          "Health"
+        ]
+      }
+    },
+    {
+      "key": "cost_sharing",
+      "observed_at": "2026-10-10T03:29:31.783870+00:00",
+      "source": {
+        "fields": [
+          "synopsis.costSharing"
+        ],
+        "snapshot_file": "source/opportunity_345738.json",
+        "snapshot_sha256": "62e3ef1fd9b1926938ff7a9115ee8190773b7fadf38f6c6fe754ebe6c2c293f8",
+        "url": "https://www.grants.gov/search-results-detail/345738"
+      },
+      "statement": "Cost sharing or matching is not required.",
+      "values": {
+        "cost_sharing_required": false
+      }
+    },
+    {
+      "key": "purpose_quote",
+      "observed_at": "2026-10-10T03:29:31.783870+00:00",
+      "source": {
+        "fields": [
+          "synopsis.synopsisDesc"
+        ],
+        "snapshot_file": "source/opportunity_345738.json",
+        "snapshot_sha256": "62e3ef1fd9b1926938ff7a9115ee8190773b7fadf38f6c6fe754ebe6c2c293f8",
+        "url": "https://www.grants.gov/search-results-detail/345738"
+      },
+      "statement": "The official synopsis says: \"NIOSH is encouraging the submission of an application from qualified organizations for a National Center for Construction Safety and Health Research and Translation.\"",
+      "values": {
+        "quote": "NIOSH is encouraging the submission of an application from qualified organizations for a National Center for Construction Safety and Health Research and Translation."
+      }
+    }
+  ],
+  "contract": "SOCIAL_REAL_REELS_V1",
+  "opportunity_id": "345738",
+  "rule": "claims are copied from official fields only; writers can cite, never add"
+}

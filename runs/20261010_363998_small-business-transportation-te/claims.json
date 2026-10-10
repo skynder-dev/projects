@@ -1,0 +1,227 @@
+{
+  "built_from": {
+    "bytes": 6297,
+    "fetched_at": "2026-10-10T03:25:14.304172+00:00",
+    "file": "source/opportunity_363998.json",
+    "http_status": 200,
+    "request": {
+      "opportunityId": 363998
+    },
+    "sha256": "35181b2a26e9e628e6fc594ffffb513dc17bffd8cd36c015cd2fda33b756c711",
+    "url": "https://api.grants.gov/v1/api/fetchOpportunity"
+  },
+  "claims": [
+    {
+      "key": "identity",
+      "observed_at": "2026-10-10T03:25:14.304172+00:00",
+      "source": {
+        "fields": [
+          "detail.opportunityTitle",
+          "detail.opportunityNumber"
+        ],
+        "snapshot_file": "source/opportunity_363998.json",
+        "snapshot_sha256": "35181b2a26e9e628e6fc594ffffb513dc17bffd8cd36c015cd2fda33b756c711",
+        "url": "https://www.grants.gov/search-results-detail/363998"
+      },
+      "statement": "Grants.gov lists \"Small Business Transportation Technical Assistance Center (Region 3)\" as funding opportunity OST-OSDBU-2027-SBTTAC-REGION3-FY2027-1.",
+      "values": {
+        "number": "OST-OSDBU-2027-SBTTAC-REGION3-FY2027-1",
+        "opportunity_id": "363998",
+        "title": "Small Business Transportation Technical Assistance Center (Region 3)"
+      }
+    },
+    {
+      "key": "agency",
+      "observed_at": "2026-10-10T03:25:14.304172+00:00",
+      "source": {
+        "fields": [
+          "detail.topAgencyDetails.agencyName"
+        ],
+        "snapshot_file": "source/opportunity_363998.json",
+        "snapshot_sha256": "35181b2a26e9e628e6fc594ffffb513dc17bffd8cd36c015cd2fda33b756c711",
+        "url": "https://www.grants.gov/search-results-detail/363998"
+      },
+      "statement": "The listing agency is Department of Transportation.",
+      "values": {
+        "agency": "Department of Transportation",
+        "agency_code": "DOT-OSDBU",
+        "parent_agency": "Department of Transportation"
+      }
+    },
+    {
+      "key": "status",
+      "observed_at": "2026-10-10T03:25:14.304172+00:00",
+      "source": {
+        "fields": [
+          "hit.oppStatus"
+        ],
+        "snapshot_file": "source/opportunity_363998.json",
+        "snapshot_sha256": "35181b2a26e9e628e6fc594ffffb513dc17bffd8cd36c015cd2fda33b756c711",
+        "url": "https://www.grants.gov/search-results-detail/363998"
+      },
+      "statement": "The opportunity status on Grants.gov is \"posted\".",
+      "values": {
+        "status": "posted"
+      }
+    },
+    {
+      "key": "posted",
+      "observed_at": "2026-10-10T03:25:14.304172+00:00",
+      "source": {
+        "fields": [
+          "hit.openDate"
+        ],
+        "snapshot_file": "source/opportunity_363998.json",
+        "snapshot_sha256": "35181b2a26e9e628e6fc594ffffb513dc17bffd8cd36c015cd2fda33b756c711",
+        "url": "https://www.grants.gov/search-results-detail/363998"
+      },
+      "statement": "Grants.gov lists the posting date as October 1, 2026.",
+      "values": {
+        "date": "2026-10-01"
+      }
+    },
+    {
+      "key": "deadline",
+      "observed_at": "2026-10-10T03:25:14.304172+00:00",
+      "source": {
+        "fields": [
+          "hit.closeDate"
+        ],
+        "snapshot_file": "source/opportunity_363998.json",
+        "snapshot_sha256": "35181b2a26e9e628e6fc594ffffb513dc17bffd8cd36c015cd2fda33b756c711",
+        "url": "https://www.grants.gov/search-results-detail/363998"
+      },
+      "statement": "Grants.gov lists the close date as October 31, 2026.",
+      "values": {
+        "date": "2026-10-31",
+        "days_left_at_build": 21
+      }
+    },
+    {
+      "key": "award_ceiling",
+      "observed_at": "2026-10-10T03:25:14.304172+00:00",
+      "source": {
+        "fields": [
+          "synopsis.awardCeiling"
+        ],
+        "snapshot_file": "source/opportunity_363998.json",
+        "snapshot_sha256": "35181b2a26e9e628e6fc594ffffb513dc17bffd8cd36c015cd2fda33b756c711",
+        "url": "https://www.grants.gov/search-results-detail/363998"
+      },
+      "statement": "Grants.gov lists an award ceiling of $231,183 per award.",
+      "values": {
+        "award_ceiling": 231183.0
+      }
+    },
+    {
+      "key": "expected_awards",
+      "observed_at": "2026-10-10T03:25:14.304172+00:00",
+      "source": {
+        "fields": [
+          "synopsis.numberOfAwards"
+        ],
+        "snapshot_file": "source/opportunity_363998.json",
+        "snapshot_sha256": "35181b2a26e9e628e6fc594ffffb513dc17bffd8cd36c015cd2fda33b756c711",
+        "url": "https://www.grants.gov/search-results-detail/363998"
+      },
+      "statement": "Grants.gov lists 1 expected awards.",
+      "values": {
+        "expected_number_of_awards": 1
+      }
+    },
+    {
+      "key": "eligibility",
+      "observed_at": "2026-10-10T03:25:14.304172+00:00",
+      "source": {
+        "fields": [
+          "synopsis.applicantTypes"
+        ],
+        "snapshot_file": "source/opportunity_363998.json",
+        "snapshot_sha256": "35181b2a26e9e628e6fc594ffffb513dc17bffd8cd36c015cd2fda33b756c711",
+        "url": "https://www.grants.gov/search-results-detail/363998"
+      },
+      "statement": "Eligible applicant types listed: Public and State controlled institutions of higher education; Nonprofits that do not have a 501(c)(3) status with the IRS, other than institutions of higher education; Nonprofits having a 501(c)(3) status with the IRS, other than institutions of higher education; Private institutions of higher education; State governments.",
+      "values": {
+        "applicant_types": [
+          "Public and State controlled institutions of higher education",
+          "Nonprofits that do not have a 501(c)(3) status with the IRS, other than institutions of higher education",
+          "Nonprofits having a 501(c)(3) status with the IRS, other than institutions of higher education",
+          "Private institutions of higher education",
+          "State governments"
+        ],
+        "has_additional_conditions": false
+      }
+    },
+    {
+      "key": "instrument",
+      "observed_at": "2026-10-10T03:25:14.304172+00:00",
+      "source": {
+        "fields": [
+          "synopsis.fundingInstruments"
+        ],
+        "snapshot_file": "source/opportunity_363998.json",
+        "snapshot_sha256": "35181b2a26e9e628e6fc594ffffb513dc17bffd8cd36c015cd2fda33b756c711",
+        "url": "https://www.grants.gov/search-results-detail/363998"
+      },
+      "statement": "Funding instrument: Cooperative Agreement.",
+      "values": {
+        "funding_instruments": [
+          "Cooperative Agreement"
+        ]
+      }
+    },
+    {
+      "key": "category",
+      "observed_at": "2026-10-10T03:25:14.304172+00:00",
+      "source": {
+        "fields": [
+          "synopsis.fundingActivityCategories"
+        ],
+        "snapshot_file": "source/opportunity_363998.json",
+        "snapshot_sha256": "35181b2a26e9e628e6fc594ffffb513dc17bffd8cd36c015cd2fda33b756c711",
+        "url": "https://www.grants.gov/search-results-detail/363998"
+      },
+      "statement": "Funding category: Transportation.",
+      "values": {
+        "funding_categories": [
+          "Transportation"
+        ]
+      }
+    },
+    {
+      "key": "cost_sharing",
+      "observed_at": "2026-10-10T03:25:14.304172+00:00",
+      "source": {
+        "fields": [
+          "synopsis.costSharing"
+        ],
+        "snapshot_file": "source/opportunity_363998.json",
+        "snapshot_sha256": "35181b2a26e9e628e6fc594ffffb513dc17bffd8cd36c015cd2fda33b756c711",
+        "url": "https://www.grants.gov/search-results-detail/363998"
+      },
+      "statement": "Cost sharing or matching is required.",
+      "values": {
+        "cost_sharing_required": true
+      }
+    },
+    {
+      "key": "purpose_quote",
+      "observed_at": "2026-10-10T03:25:14.304172+00:00",
+      "source": {
+        "fields": [
+          "synopsis.synopsisDesc"
+        ],
+        "snapshot_file": "source/opportunity_363998.json",
+        "snapshot_sha256": "35181b2a26e9e628e6fc594ffffb513dc17bffd8cd36c015cd2fda33b756c711",
+        "url": "https://www.grants.gov/search-results-detail/363998"
+      },
+      "statement": "The official synopsis says: \"The cooperative agreement is for one (1) award for a 10-months base year with two option years, based on performance.\"",
+      "values": {
+        "quote": "The cooperative agreement is for one (1) award for a 10-months base year with two option years, based on performance."
+      }
+    }
+  ],
+  "contract": "SOCIAL_REAL_REELS_V1",
+  "opportunity_id": "363998",
+  "rule": "claims are copied from official fields only; writers can cite, never add"
+}

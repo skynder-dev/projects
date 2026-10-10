@@ -1,0 +1,55 @@
+{
+  "fps": 30,
+  "rule": "timing is measured from the synthesized audio, not guessed",
+  "segments": [
+    {
+      "audio": "audio/segment_01.wav",
+      "end_s": 6.3,
+      "id": "s1",
+      "role": "hook",
+      "speech_s": 5.7,
+      "start_s": 0.0
+    },
+    {
+      "audio": "audio/segment_02.wav",
+      "end_s": 13.1,
+      "id": "s2",
+      "role": "what",
+      "speech_s": 6.2,
+      "start_s": 6.3
+    },
+    {
+      "audio": "audio/segment_03.wav",
+      "end_s": 23.476,
+      "id": "s3",
+      "role": "who",
+      "speech_s": 9.776,
+      "start_s": 13.1
+    },
+    {
+      "audio": "audio/segment_04.wav",
+      "end_s": 31.889,
+      "id": "s4",
+      "role": "purpose",
+      "speech_s": 7.814,
+      "start_s": 23.476
+    },
+    {
+      "audio": "audio/segment_05.wav",
+      "end_s": 38.132,
+      "id": "s5",
+      "role": "deadline",
+      "speech_s": 5.642,
+      "start_s": 31.889
+    },
+    {
+      "audio": "audio/segment_06.wav",
+      "end_s": 44.938,
+      "id": "s6",
+      "role": "cta",
+      "speech_s": 5.526,
+      "start_s": 38.132
+    }
+  ],
+  "total_s": 44.938
+}
