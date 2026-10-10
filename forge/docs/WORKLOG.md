@@ -47,3 +47,6 @@
 - Imports split into dialog + FromPath. Profile importer gained `-SourcePath/-NonInteractive`.
 - New CI phase "package" drives the real window to READY_FOR_MANUAL_UPLOAD, receipt and sales. It found 2 pre-existing bugs: a StrictMode throw when selecting local artwork, and blank royalty amounts (`${2:0.00}` in double quotes). Both fixed. Performance/Home business texts are localized.
 - Removed the "LocalCore byte-identical to 054" build check, since LocalCore now changes legitimately.
+
+## 060 — localized runtime messages
+- Added a central translator instead of editing ~190 call sites. Known English templates (154, with {n} variable parts) are rewritten in RU/ES where they are shown: a TextBlock.Text value-changed hook on StatusText/BusyText/LocalCoreStatusText, plus Show-Error and Confirm. CI asserts RU texts after Build and sales import (package phase 25/25).

@@ -3,7 +3,7 @@
 Owner: nothing required.
 
 Autonomous queue (in order):
-1. Status-bar and dialog messages after actions are still English in RU/ES (e.g., "Imported 3 row(s)…", "Local manual-upload package created…"). Route them through localization, starting with the core path.
+1. Remaining English in RU/ES: exception texts thrown deep in LocalCore/PrintChecks (shown in error dialogs) and the Performance 'Needs attention' card. Extend `Data/Forge.MessageTranslations.json`.
 2. Performance "Leaders / Needs attention": list real linked products (units/royalties per product) and published products without sales. Keep empty states truthful.
 3. Cosmetic: duplicated page titles (header + page) and the narrow Discover header at ~1024 px.
 4. Owner/backend decision (not autonomous): the live `discover_snapshot` has no note→niche link (the DB `research_notes` table has none either). Drafts therefore get 0 linked notes. Exposing a link needs a forge-app change, which is owner-gated.
