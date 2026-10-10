@@ -7,13 +7,14 @@
 $script:BackupIncludeDirs  = @('local-core-v1','channel-profiles','generation-v1')
 $script:BackupIncludeFiles = @('ui-locale.txt','queue-snapshot.json')
 $script:BackupLastSkipped = 0
+$script:BackupChanged = $false
 
 function Register-DataBackupUiText {
     if($null -eq $script:UiText){return}
     $texts=@{
-        en=@{ 'backup.title'='Save a copy of Merch Forge data'; 'backup.title.restore'='Restore Merch Forge data from a copy'; 'backup.saved'='Copy saved: {0} files in {1}.'; 'backup.restored'='Restored {0} files from the copy. Your previous data was saved to {1}.'; 'backup.confirm'='Replace your current Merch Forge data with the copy from {0} ({1} files)? Your current data will be saved first.'; 'backup.bad'='This file is not a Merch Forge data copy, or it is damaged: {0}'; 'backup.dirty'='Save or discard your unsaved edits first.'; 'backup.newer'='This copy was made by a newer Merch Forge ({0}). Update Merch Forge first.'; 'backup.rolledback'='The copy could not be restored, so your previous data was put back. Reason: {0}'; 'backup.partial'='The copy could not be restored and your previous data could not be put back automatically. Your previous data is saved in {1}. Reason: {0}'; 'backup.skipped'=' Not included (unusual file names): {0}.' }
-        ru=@{ 'backup.title'='Сохранить копию данных Merch Forge'; 'backup.title.restore'='Восстановить данные Merch Forge из копии'; 'backup.saved'='Копия сохранена: файлов {0}, {1}.'; 'backup.restored'='Восстановлено файлов из копии: {0}. Прежние данные сохранены в {1}.'; 'backup.confirm'='Заменить текущие данные Merch Forge копией от {0} (файлов: {1})? Сначала текущие данные будут сохранены.'; 'backup.bad'='Это не копия данных Merch Forge или файл повреждён: {0}'; 'backup.dirty'='Сначала сохраните или отмените несохранённые правки.'; 'backup.newer'='Эта копия сделана более новой версией Merch Forge ({0}). Сначала обновите Merch Forge.'; 'backup.rolledback'='Копию восстановить не удалось, поэтому прежние данные возвращены на место. Причина: {0}'; 'backup.partial'='Копию восстановить не удалось, и прежние данные не удалось вернуть автоматически. Они сохранены в {1}. Причина: {0}'; 'backup.skipped'=' Не вошли (необычные имена файлов): {0}.' }
-        es=@{ 'backup.title'='Guardar una copia de los datos de Merch Forge'; 'backup.title.restore'='Restaurar datos de Merch Forge desde una copia'; 'backup.saved'='Copia guardada: {0} archivos en {1}.'; 'backup.restored'='Se restauraron {0} archivos desde la copia. Tus datos anteriores se guardaron en {1}.'; 'backup.confirm'='¿Reemplazar tus datos actuales de Merch Forge por la copia del {0} ({1} archivos)? Primero se guardarán tus datos actuales.'; 'backup.bad'='Este archivo no es una copia de datos de Merch Forge o está dañado: {0}'; 'backup.dirty'='Primero guarda o descarta las ediciones sin guardar.'; 'backup.newer'='Esta copia la hizo una versión más nueva de Merch Forge ({0}). Actualiza Merch Forge primero.'; 'backup.rolledback'='No se pudo restaurar la copia, así que se volvieron a poner tus datos anteriores. Motivo: {0}'; 'backup.partial'='No se pudo restaurar la copia ni volver a poner tus datos anteriores automáticamente. Están guardados en {1}. Motivo: {0}'; 'backup.skipped'=' No incluidos (nombres de archivo inusuales): {0}.' }
+        en=@{ 'backup.title'='Save a copy of Merch Forge data'; 'backup.title.restore'='Restore Merch Forge data from a copy'; 'backup.saved'='Copy saved: {0} files in {1}.'; 'backup.restored'='Restored {0} files from the copy. Your previous data was saved to {1}.'; 'backup.confirm'='Replace your current Merch Forge data with the copy from {0} ({1} files)? Your current data will be saved first.'; 'backup.bad'='This file is not a Merch Forge data copy, or it is damaged: {0}'; 'backup.dirty'='Save or discard your unsaved edits first.'; 'backup.newer'='This copy was made by a newer Merch Forge ({0}). Update Merch Forge first.'; 'backup.rolledback'='The copy could not be restored, so your previous data was put back. Reason: {0}'; 'backup.partial'='The copy could not be restored and your previous data could not be put back automatically. Your previous data is saved in {1}. Reason: {0}'; 'backup.skipped'=' Not included (unusual file names): {0}.'; 'backup.inuse'='A file is open in another program: {0}. Close it and try again.'; 'backup.aside'=' Files that were not in the copy were moved to {0}.' }
+        ru=@{ 'backup.title'='Сохранить копию данных Merch Forge'; 'backup.title.restore'='Восстановить данные Merch Forge из копии'; 'backup.saved'='Копия сохранена: файлов {0}, {1}.'; 'backup.restored'='Восстановлено файлов из копии: {0}. Прежние данные сохранены в {1}.'; 'backup.confirm'='Заменить текущие данные Merch Forge копией от {0} (файлов: {1})? Сначала текущие данные будут сохранены.'; 'backup.bad'='Это не копия данных Merch Forge или файл повреждён: {0}'; 'backup.dirty'='Сначала сохраните или отмените несохранённые правки.'; 'backup.newer'='Эта копия сделана более новой версией Merch Forge ({0}). Сначала обновите Merch Forge.'; 'backup.rolledback'='Копию восстановить не удалось, поэтому прежние данные возвращены на место. Причина: {0}'; 'backup.partial'='Копию восстановить не удалось, и прежние данные не удалось вернуть автоматически. Они сохранены в {1}. Причина: {0}'; 'backup.skipped'=' Не вошли (необычные имена файлов): {0}.'; 'backup.inuse'='Файл открыт в другой программе: {0}. Закройте его и повторите.'; 'backup.aside'=' Файлы, которых не было в копии, перенесены в {0}.' }
+        es=@{ 'backup.title'='Guardar una copia de los datos de Merch Forge'; 'backup.title.restore'='Restaurar datos de Merch Forge desde una copia'; 'backup.saved'='Copia guardada: {0} archivos en {1}.'; 'backup.restored'='Se restauraron {0} archivos desde la copia. Tus datos anteriores se guardaron en {1}.'; 'backup.confirm'='¿Reemplazar tus datos actuales de Merch Forge por la copia del {0} ({1} archivos)? Primero se guardarán tus datos actuales.'; 'backup.bad'='Este archivo no es una copia de datos de Merch Forge o está dañado: {0}'; 'backup.dirty'='Primero guarda o descarta las ediciones sin guardar.'; 'backup.newer'='Esta copia la hizo una versión más nueva de Merch Forge ({0}). Actualiza Merch Forge primero.'; 'backup.rolledback'='No se pudo restaurar la copia, así que se volvieron a poner tus datos anteriores. Motivo: {0}'; 'backup.partial'='No se pudo restaurar la copia ni volver a poner tus datos anteriores automáticamente. Están guardados en {1}. Motivo: {0}'; 'backup.skipped'=' No incluidos (nombres de archivo inusuales): {0}.'; 'backup.inuse'='Un archivo está abierto en otro programa: {0}. Ciérralo e inténtalo de nuevo.'; 'backup.aside'=' Los archivos que no estaban en la copia se movieron a {0}.' }
     }
     foreach($loc in $texts.Keys){ if($null -eq $script:UiText[$loc]){$script:UiText[$loc]=@{}}; foreach($k in $texts[$loc].Keys){$script:UiText[$loc][$k]=$texts[$loc][$k]} }
     if($null -ne $script:StaticUiTranslations){
@@ -54,7 +55,7 @@ function Test-BackupRelativePath([string]$Rel) {
 function Copy-FileIntoZipEntry([string]$Path,$Zip,[string]$EntryName) {
     # Hashes exactly the bytes that go into the ZIP, so a file that changes while saving can never make the copy unrestorable.
     $sha=[Security.Cryptography.SHA256]::Create(); $buf=New-Object byte[] 1048576; $total=0
-    $src=[IO.File]::Open($Path,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::ReadWrite)
+    $src=$null; try{ $src=[IO.File]::Open($Path,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::ReadWrite) }catch{ $sha.Dispose(); throw ((Get-UiText 'backup.inuse' 'A file is open in another program: {0}. Close it and try again.') -f $Path) }
     try {
         $entry=$Zip.CreateEntry($EntryName,[System.IO.Compression.CompressionLevel]::Optimal); $dst=$entry.Open()
         try { while(($n=$src.Read($buf,0,$buf.Length)) -gt 0){ $null=$sha.TransformBlock($buf,0,$n,$null,0); $dst.Write($buf,0,$n); $total+=$n } } finally { $dst.Dispose() }
@@ -125,22 +126,26 @@ function Install-BackupStage($Manifest,[string]$Stage,[string]$Root) {
         $null=Read-LocalCoreStateCandidate $tmpState   # schema + envelope, before anything is changed
     }
     $keep=@{}
+    foreach($rel in $files){ $dst=[IO.Path]::GetFullPath((Join-Path $Root ($rel.Replace('/','\')))); if(-not $dst.ToLowerInvariant().StartsWith($rootFull)){ throw ('unsafe path '+$rel) }; $keep[$dst.ToLowerInvariant()]=$true }
+    # Only files a data copy would contain are replaced or set aside; anything else in the folders (odd names, temp files, saved ZIPs) is left alone.
+    $current=@(Get-BackupRelativeFiles $Root | ForEach-Object { [IO.Path]::GetFullPath((Join-Path $Root ($_.Replace('/','\')))) })
+    $toSetAside=@($current | Where-Object { -not $keep.ContainsKey($_.ToLowerInvariant()) -and $statePaths -notcontains $_.ToLowerInvariant() })
+    # Nothing is changed while any affected file is open in another program.
+    foreach($pth in @(@($current | Where-Object { $keep.ContainsKey($_.ToLowerInvariant()) -and $statePaths -notcontains $_.ToLowerInvariant() })+$toSetAside)){
+        try{ $h=[IO.File]::Open($pth,[IO.FileMode]::Open,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None); $h.Dispose() }catch{ throw ((Get-UiText 'backup.inuse' 'A file is open in another program: {0}. Close it and try again.') -f $pth) }
+    }
+    $script:BackupChanged=$true
+    if($toSetAside.Count){
+        $aside=Join-Path $Root ('backups\set-aside-'+[DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss')+'-'+[Guid]::NewGuid().ToString('N').Substring(0,6))
+        foreach($pth in $toSetAside){ $rel=$pth.Substring($rootFull.Length); $dst=Join-Path $aside $rel; Ensure-Dir (Split-Path -Parent $dst); Move-Item -LiteralPath $pth -Destination $dst -Force }
+    }
     foreach($rel in $files){
         $dst=[IO.Path]::GetFullPath((Join-Path $Root ($rel.Replace('/','\'))))
-        if(-not $dst.ToLowerInvariant().StartsWith($rootFull)){ throw ('unsafe path '+$rel) }
-        $keep[$dst.ToLowerInvariant()]=$true
         if($statePaths -contains $dst.ToLowerInvariant()){continue}
         $src=Join-Path $Stage ($rel.Replace('/','\')); Ensure-Dir (Split-Path -Parent $dst)
         $done=$false
         if($rel.ToLowerInvariant().EndsWith('.json') -and $oldRoot -ne $newRoot){ $txt=[IO.File]::ReadAllText($src); $moved=Convert-BackupJsonRoot $txt $oldRoot $newRoot; if($moved -ne $txt){ [IO.File]::WriteAllText($dst,$moved,$utf8); $done=$true } }
         if(-not $done){ Copy-Item -LiteralPath $src -Destination $dst -Force }
-    }
-    foreach($d in $script:BackupIncludeDirs){
-        $dir=Join-Path $Root $d; if(-not (Test-Path -LiteralPath $dir -PathType Container)){continue}
-        foreach($f in @(Get-ChildItem -LiteralPath $dir -Recurse -File -Force -ErrorAction SilentlyContinue)){
-            $full=$f.FullName.ToLowerInvariant(); if($keep.ContainsKey($full) -or $statePaths -contains $full -or $f.Name -like '*.lock'){continue}
-            Remove-Item -LiteralPath $f.FullName -Force
-        }
     }
     if($null -ne $stateJson){
         $st=$stateJson | ConvertFrom-Json
@@ -153,7 +158,7 @@ function Install-BackupStage($Manifest,[string]$Stage,[string]$Root) {
 function Restore-ForgeDataBackupFromPath([string]$ZipPath,[bool]$IsRollback=$false) {
     # Returns @{ok; files; previous}. Any failure after the first change puts the before-restore copy back.
     $root=$script:StateRoot; $stamp=[DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss')+'-'+[Guid]::NewGuid().ToString('N').Substring(0,6)
-    $stage=Join-Path $root ('restore-staging-'+$stamp); $before=''; $changed=$false
+    $stage=Join-Path $root ('restore-staging-'+$stamp); $before=''; $script:BackupChanged=$false
     try {
         try { $m=Read-ForgeDataBackup $ZipPath $stage } catch { throw ((Get-UiText 'backup.bad' 'This file is not a Merch Forge data copy, or it is damaged: {0}') -f $_.Exception.Message) }
         if([string](Get-PropertyValue $m 'state_schema') -notin @('','forge.local_core.v2')){ throw ((Get-UiText 'backup.newer' 'This copy was made by a newer Merch Forge ({0}). Update Merch Forge first.') -f [string](Get-PropertyValue $m 'app_version')) }
@@ -162,12 +167,12 @@ function Restore-ForgeDataBackupFromPath([string]$ZipPath,[bool]$IsRollback=$fal
             $before=Join-Path $backups ('before-restore-'+$stamp+'.zip'); $null=New-ForgeDataBackup $root $before
             foreach($old in @(Get-ChildItem -LiteralPath $backups -Filter 'before-restore-*.zip' -File | Sort-Object LastWriteTimeUtc -Descending | Select-Object -Skip 5)){ try{ Remove-Item -LiteralPath $old.FullName -Force }catch{} }
         }
-        $changed=$true
+        $script:BackupChanged=$false
         $n=Install-BackupStage $m $stage $root
         return [pscustomobject]@{ok=$true;files=$n;previous=$before}
     } catch {
         $why=$_.Exception.Message
-        if($changed -and -not $IsRollback -and $before -and (Test-Path -LiteralPath $before)){
+        if($script:BackupChanged -and -not $IsRollback -and $before -and (Test-Path -LiteralPath $before)){
             $rb=Restore-ForgeDataBackupFromPath $before $true
             $why=if($rb.ok){(Get-UiText 'backup.rolledback' 'The copy could not be restored, so your previous data was put back. Reason: {0}') -f $why}else{(Get-UiText 'backup.partial' 'The copy could not be restored and your previous data could not be put back automatically. Your previous data is saved in {1}. Reason: {0}') -f $why,$before}
         }

@@ -1,9 +1,9 @@
 {
   "schema": "forge.release_checkpoint.v1",
-  "package": "073_Merch_Forge_LISTING_HINTS_RC",
-  "previous_package": "072_Merch_Forge_SECOND_REVIEW_RC",
-  "app_version": "2.22.0-forge-stage-filter",
-  "installer_generation": "00000000000000100256",
+  "package": "074_Merch_Forge_THIRD_REVIEW_RC",
+  "previous_package": "073_Merch_Forge_LISTING_HINTS_RC",
+  "app_version": "2.22.1-forge-third-review",
+  "installer_generation": "00000000000000100257",
   "static": "14/14",
   "checks": {
     "xaml_xml_parse": true,
@@ -21,7 +21,7 @@
     "manifest_authority_all_false": true,
     "headless_selftest_pass": true
   },
-  "headless_selftest": "PASS 109/109 (PowerShell 7, Linux)",
+  "headless_selftest": "PASS 110/110 (PowerShell 7, Linux)",
   "integrity": "59 files",
   "windows_proof": "see GitHub workflow forge-windows (branch forge-ci-results)",
   "authority": {

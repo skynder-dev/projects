@@ -35,6 +35,20 @@ function Load-OfflineQueueSnapshot {
     if($null -ne $QueueCountText){$QueueCountText.Text=((Get-UiText 'queue.cached' '{0} cached ideas') -f @($script:Queue).Count)}
     return @($script:Queue).Count
 }
+$script:StageFilterCache=$null
+function Get-StageFilterMap {
+    # Stages of all ideas, recomputed only when the local state file or the Ideas list changed (not on every keystroke).
+    $stamp=''; try{ $stamp=[string](Get-Item -LiteralPath $script:LocalCoreStatePath -ErrorAction Stop).LastWriteTimeUtc.Ticks }catch{}
+    $key=$stamp+'|'+(@($script:Queue | ForEach-Object { [string](Get-PropertyValue $_ 'concept_key') }) -join ',')
+    if($null -ne $script:StageFilterCache -and $script:StageFilterCache.key -eq $key){ return $script:StageFilterCache.map }
+    $map=@{}
+    try { $pipe=Get-ForgePortfolioPipeline (Read-LocalCoreState) $script:Queue; foreach($r in @($pipe.rows)){ $map[[string]$r.concept_key]=[string]$r.stage } } catch { Write-AppLog 'WARN' ('Stage filter failed: '+$_.Exception.Message) }
+    $script:StageFilterCache=[pscustomobject]@{key=$key;map=$map}
+    return $map
+}
+function Refresh-StageFilterIfActive {
+    try { if($null -ne $FilterBox -and $null -ne $FilterBox.SelectedItem -and [string]$FilterBox.SelectedItem.Tag -like 'stage:*'){ Apply-Filter } } catch {}
+}
 function Apply-Filter {
     $items=@($script:Queue)
     $q=([string]$SearchBox.Text).Trim().ToLowerInvariant()
@@ -42,8 +56,7 @@ function Apply-Filter {
     $state=if($null -ne $FilterBox.SelectedItem){[string]$FilterBox.SelectedItem.Tag}else{''}
     if($state -like 'stage:*') {
         # Pipeline stage from local data (decision, artwork, checks, package, receipt) - same as the Portfolio board.
-        $want=$state.Substring(6); $stageOf=@{}
-        try { $pipe=Get-ForgePortfolioPipeline (Read-LocalCoreState) $items; foreach($r in @($pipe.rows)){ $stageOf[[string]$r.concept_key]=[string]$r.stage } } catch { Write-AppLog 'WARN' ('Stage filter failed: '+$_.Exception.Message) }
+        $want=$state.Substring(6); $stageOf=Get-StageFilterMap
         $items=@($items | Where-Object { $stageOf.ContainsKey([string]$_.concept_key) -and $stageOf[[string]$_.concept_key] -eq $want })
     }
     elseif(-not [string]::IsNullOrWhiteSpace($state)) { $items=@($items | Where-Object { [string]$_.workflow_state -eq $state }) }

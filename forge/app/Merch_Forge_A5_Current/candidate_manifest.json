@@ -13,7 +13,7 @@
     "status": "ACTIVE"
   },
   "desktop": {
-    "app_version": "2.22.0-stage-filter",
+    "app_version": "2.22.1-third-review",
     "native_windows_runtime_verified": false,
     "orange_semantic_palette": true,
     "overview_first": true,
@@ -28,10 +28,10 @@
       "ru",
       "es"
     ],
-    "workbench_sha256": "e36184d9051b541d7f9834787799813c4db5500071f25872594601de6782fe45",
+    "workbench_sha256": "5f74d02315f47148988f64ceb845dfa68fc6c65d250264fee8d2478b9778fbef",
     "workbench_size_bytes": 258593,
     "native_windows_parser_verified": false,
-    "native_windows_parser_target_sha256": "e36184d9051b541d7f9834787799813c4db5500071f25872594601de6782fe45",
+    "native_windows_parser_target_sha256": "5f74d02315f47148988f64ceb845dfa68fc6c65d250264fee8d2478b9778fbef",
     "native_windows_parser_result_sha256": null,
     "product_home_dashboard": true,
     "brand_home_navigation": "dedicated_home_dashboard",
@@ -77,13 +77,13 @@
       },
       {
         "path": "Modules\\Forge.DataBackup.ps1",
-        "sha256": "caa473fd2c4212b778bf8d5128fb878792c61cbf1cb79af40709f9551b6cb481",
-        "size_bytes": 20250
+        "sha256": "5120f4f7dd7aac772b034962230177e139121350f895ea8202ebc29589d6a022",
+        "size_bytes": 21970
       },
       {
         "path": "Modules\\Forge.DataViews.ps1",
-        "sha256": "5f6d097d3a2528246a1b1e21368b1337d5d516a05992abdfe0246f97c747edd5",
-        "size_bytes": 29769
+        "sha256": "82625789ec80459defbd9866a1ff9ad177ffe2f58bf4e34157773f96ffcd2f1a",
+        "size_bytes": 30650
       },
       {
         "path": "Modules\\Forge.Diagnostics.ps1",
@@ -127,13 +127,13 @@
       },
       {
         "path": "Modules\\Forge.ListingHints.ps1",
-        "sha256": "316a5d565c48185b916db2fa2408070ceb7995b0bf9156e17e8750dae08d54d5",
-        "size_bytes": 6318
+        "sha256": "d66ecfb9e25e2ca1a45d21e295c2274c0c0ec9e81aaa837fb4c39aebd7235151",
+        "size_bytes": 6346
       },
       {
         "path": "Modules\\Forge.LocalCore.ps1",
-        "sha256": "6488516923ccd283f3ed06f0bc4522269750de406b24d1988bf30ef1cab17986",
-        "size_bytes": 126338
+        "sha256": "37feddebe483487c4559400e185c550c2683e6f171a05d2302640e23b449b804",
+        "size_bytes": 126424
       },
       {
         "path": "Modules\\Forge.Localization.ps1",
@@ -167,8 +167,8 @@
       },
       {
         "path": "Modules\\Forge.ResearchDrafts.ps1",
-        "sha256": "7b46fa00f778312150d783460569d78149f1f045b133c6d90f21ebbdc8abdf0d",
-        "size_bytes": 33467
+        "sha256": "b8a1fe87bd0b2897b22476c7549b61508fb73b8700acd769474d831efc23e8a5",
+        "size_bytes": 33574
       },
       {
         "path": "Modules\\Forge.UI.Layout.ps1",
@@ -330,7 +330,7 @@
     "trusted_local_check_worker": "MerchForgeCheckWorker.ps1",
     "generation_spool_policy": "forge.generation_spool_policy.v1",
     "publication_receipt_print_binding": true,
-    "current_release": "073_Merch_Forge_LISTING_HINTS_RC",
+    "current_release": "074_Merch_Forge_THIRD_REVIEW_RC",
     "generation_authority_module": "Modules\\Forge.GenerationAuthority.ps1",
     "generation_temporal_authority": "future generation job/attempt timestamps beyond 10-minute clock-skew tolerance fail closed before paid dispatch/readiness; shared first-live authority also revalidates non-future ordered attempt/result/import timestamps",
     "amazon_print_profile_temporal_authority": "valid_until must be strictly later than captured_at; captured_at remains bounded by 10-minute future-skew tolerance and 120-day horizon",
@@ -493,11 +493,11 @@
     "owner_separate_parser_zip_required": false,
     "current_release": "044_Merch_Forge_PACKAGE_ROOT_RC"
   },
-  "package_name": "073_Merch_Forge_LISTING_HINTS_RC",
-  "package_number": 73,
-  "result_intent": "Listing hints; Ideas stage filter",
+  "package_name": "074_Merch_Forge_THIRD_REVIEW_RC",
+  "package_number": 74,
+  "result_intent": "Third independent review fixes",
   "schema": "forge.reconciled_candidate_manifest.v1",
-  "stage": "FORGE-073-LISTING-HINTS-RC",
+  "stage": "FORGE-074-THIRD-REVIEW-RC",
   "startup_baseline": {
     "immutable_exact": false,
     "inner_start_sha256": "013e9dcfbfb4c2a42c12b4f6ee208767d80509be9e877160f088a9d2984f51a1",
@@ -657,7 +657,7 @@
     "exact_043_native_windows_stage": "integrity",
     "package_root_native_argv_repair": true
   },
-  "installer_generation": "00000000000000100256",
+  "installer_generation": "00000000000000100257",
   "installer_generation_format": "fixed_width_decimal_v1",
   "installer_guard": {
     "single_writer_lock": "install.lock",

@@ -1,19 +1,22 @@
-﻿MERCH FORGE 073 Merch Forge LISTING HINTS RC
+﻿MERCH FORGE 074 Merch Forge THIRD REVIEW RC
 
 ПО-РУССКИ
 1. Распакуйте всю папку: правый клик по ZIP -> «Извлечь все».
-2. Запустите START_073_MERCH_FORGE.vbs двойным щелчком.
+2. Запустите START_074_MERCH_FORGE.vbs двойным щелчком.
 3. Как пользоваться (1 страница): HOW_TO_USE_RU.txt
 
 START
 1. Extract the whole folder.
-2. Run START_073_MERCH_FORGE.vbs.
+2. Run START_074_MERCH_FORGE.vbs.
 
-WHAT IS NEW (073)
-- Publish: live hints under the listing fields while you type - Amazon length limits (title 60, brand 50,
-  bullets 256, description 75-2000 characters), wording that listings usually get rejected for
-  ("official", "best seller", "#1", "free shipping", mentioning Amazon...), HTML tags, emoji, identical bullets.
-  Hints only: nothing is blocked or changed.
-- Ideas list: the filter now also has pipeline stages (No decision, KEEP · no artwork, Artwork accepted,
-  Checks passed, Package ready, Published, SKIP...), the same stages as the Portfolio board.
-- Includes 072 and earlier (055-071).
+WHAT IS NEW (074) - fixes from the third independent review
+- Data copy restore never deletes your files any more: files that are not in the copy are moved to
+  backups\set-aside-<time>\, and files a copy does not contain (unusual names, temp files, saved ZIPs) are
+  not touched at all. If any affected file is open in another program (e.g. a CSV in Excel), nothing is
+  changed and the message says which file to close.
+- Ideas stage filter: stages are cached and recomputed only when your data changes (typing in the search box
+  no longer re-checks every package); the list refreshes after a decision or an accepted artwork.
+- Listing hints: no false alarms for "Licensed Practical Nurse", "100% cotton" or "x < y"; more symbols
+  (e.g. stars) are recognized; hints follow a language switch.
+- Sales CSV: a "Units Returned"/"Units Cancelled" column is never read as units sold.
+- Includes 073 and earlier (055-072).

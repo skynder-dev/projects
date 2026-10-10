@@ -10,7 +10,7 @@ $script:ListingLimits = [ordered]@{
     description = @{min=75; max=2000}
 }
 # Phrases that marketplace listing rules commonly reject (claims of status, sales talk, reviews, Amazon itself).
-$script:ListingRiskPhrases = @('officially licensed','official','licensed','best seller','best-seller','bestseller','#1','number one','free shipping','on sale','discount','limited time','guarantee','guaranteed','100%','premium quality','high quality','top quality','amazon prime','amazon','5 star','five star')
+$script:ListingRiskPhrases = @('officially licensed','official','best seller','best-seller','bestseller','#1','number one','free shipping','on sale','discount','limited time','guarantee','guaranteed','premium quality','high quality','top quality','amazon prime','amazon','5 star','five star')
 
 function Register-ListingHintsUiText {
     if($null -eq $script:UiText){return}
@@ -45,8 +45,8 @@ function Get-ListingIssues($Fields) {
                 if([regex]::IsMatch($v,$rx,[Text.RegularExpressions.RegexOptions]::IgnoreCase)){ $out.Add([pscustomobject]@{field=$f;kind='word';args=@($p)}); break }
             }
         }
-        if($v -match '<\s*/?\s*[a-zA-Z][^>]*>'){ $out.Add([pscustomobject]@{field=$f;kind='html';args=@()}) }
-        if($v -match '[\uD800-\uDBFF][\uDC00-\uDFFF]' -or $v -match '[☀-➿]'){ $out.Add([pscustomobject]@{field=$f;kind='emoji';args=@()}) }
+        if($v -match '</?[a-zA-Z][a-zA-Z0-9]*(\s[^<>]*)?/?>'){ $out.Add([pscustomobject]@{field=$f;kind='html';args=@()}) }
+        if($v -match '[\uD800-\uDBFF][\uDC00-\uDFFF]' -or $v -match '[\u2300-\u23FF\u2600-\u27BF\u2B00-\u2BFF]'){ $out.Add([pscustomobject]@{field=$f;kind='emoji';args=@()}) }
     }
     $b1=([string](Get-PropertyValue $Fields 'bullet1')).Trim(); $b2=([string](Get-PropertyValue $Fields 'bullet2')).Trim()
     if($b1 -and $b1 -eq $b2){ $out.Add([pscustomobject]@{field='bullet2';kind='samebullets';args=@()}) }

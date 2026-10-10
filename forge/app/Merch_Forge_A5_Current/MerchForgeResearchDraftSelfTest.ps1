@@ -325,8 +325,14 @@ if($Phase -eq 'restart'){
             $s0=Read-LocalCoreState; Set-ResearchDraftList $s0 @(); Write-LocalCoreState $s0
             Remove-Item -LiteralPath $probePath -Force
             $extra=Join-Path $script:LocalCoreRoot 'exports\added-after-copy.txt'; New-Item -ItemType Directory -Path (Split-Path -Parent $extra) -Force | Out-Null; [IO.File]::WriteAllText($extra,'x')
+            $odd=Join-Path $script:LocalCoreRoot 'exports\notes & links.txt'; [IO.File]::WriteAllText($odd,'kept')
+            $lockH=[IO.File]::Open($extra,[IO.FileMode]::Open,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
+            $eb=$script:Errors.Count; try { $resBusy=Restore-ForgeDataBackupFromPath $bk } finally { $lockH.Dispose() }
+            Check 'backup_restore_refuses_while_file_open' (-not $resBusy.ok -and [string]$script:Errors[$script:Errors.Count-1] -like '*open in another program*' -and @(Get-ResearchDraftList (Read-LocalCoreState)).Count -eq 0 -and (Test-Path -LiteralPath $extra)) ([string]$script:Errors[$script:Errors.Count-1])
             $res=Restore-ForgeDataBackupFromPath $bk
-            Check 'backup_restore_brings_files_back_and_matches_copy' ((Test-Path -LiteralPath $probePath) -and [IO.File]::ReadAllText($probePath) -eq 'probe' -and -not (Test-Path -LiteralPath $extra)) ('probe '+$probePath)
+            $aside=@(Get-ChildItem -LiteralPath (Join-Path $script:StateRoot 'backups') -Recurse -File -Filter 'added-after-copy.txt' -ErrorAction SilentlyContinue)
+            Check 'backup_restore_brings_files_back_and_matches_copy' ((Test-Path -LiteralPath $probePath) -and [IO.File]::ReadAllText($probePath) -eq 'probe' -and -not (Test-Path -LiteralPath $extra) -and $aside.Count -eq 1) ('probe '+$probePath+'; set aside '+$aside.Count)
+            Check 'backup_restore_never_touches_other_files' ((Test-Path -LiteralPath $odd) -and [IO.File]::ReadAllText($odd) -eq 'kept') $odd
             $draftsAfter=@(Get-ResearchDraftList (Read-LocalCoreState)).Count
             Check 'backup_restore_brings_data_back' ($res.ok -and $draftsBefore -gt 0 -and $draftsAfter -eq $draftsBefore -and (Test-Path -LiteralPath $res.previous)) ('before '+$draftsBefore+', after '+$draftsAfter+', prev '+$res.previous)
             $bad=$bk+'.bad.zip'; $z=[System.IO.Compression.ZipFile]::Open($bk,[System.IO.Compression.ZipArchiveMode]::Update); try{ $en=$z.GetEntry('data/local-core-v1/state.json'); $sw=New-Object IO.StreamWriter($en.Open()); try{ $sw.BaseStream.SetLength(0); $sw.Write('{"tampered":true}') } finally { $sw.Dispose() } } finally { $z.Dispose() }
@@ -364,6 +370,9 @@ if($Phase -eq 'restart'){
         $prevLoc=$script:Locale; $script:Locale='ru'; $l1=Format-ListingIssue $bad[0]; $l2=Format-ListingIssue $bad[1]; $script:Locale=$prevLoc
         Check 'listing_hint_text_ru' ($l1 -like '• Название: 81 симв., Amazon разрешает 60.' -and $l2 -like '• Название: «official» обычно не пропускают*') ($l1+' | '+$l2)
         $notWord=@(Get-ListingIssues ([pscustomobject]@{title='Unofficial guide to salesforce discounts';brand='';bullet1='';bullet2='';description='';keywords=''}) | Where-Object { $_.kind -eq 'word' })
+        $fp=@(Get-ListingIssues ([pscustomobject]@{title='LPN Licensed Practical Nurse Gift';brand='';bullet1='100% Cotton feel, x < y > z';bullet2='';description='';keywords=''}))
+        $star=@(Get-ListingIssues ([pscustomobject]@{title=('Night shift nurse '+[char]0x2B50);brand='';bullet1='';bullet2='';description='';keywords=''}))
+        Check 'listing_no_false_alarms_and_star_emoji' ($fp.Count -eq 0 -and @($star | Where-Object { $_.kind -eq 'emoji' }).Count -eq 1) (($fp | ConvertTo-Json -Compress)+' / '+($star | ConvertTo-Json -Compress))
         Check 'listing_words_match_whole_words_only' ($notWord.Count -eq 1 -and $notWord[0].args[0] -eq 'discount') (($notWord | ConvertTo-Json -Compress))
     }
     # Amazon print profile: status wording and the owner form -> attestation (the standalone tool re-validates)

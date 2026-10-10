@@ -263,6 +263,7 @@ function Set-LocalOwnerDecision([string]$Decision) {
         Add-OrSetProperty $lc 'owner_decision' $d;Add-OrSetProperty $lc 'owner_decision_revision_id' $identity.id;Add-OrSetProperty $lc 'owner_decision_revision_hash' $identity.hash;Add-OrSetProperty $lc 'owner_decision_at' $(if($d-eq'UNDECIDED'){''}else{[DateTime]::UtcNow.ToString('o')})
         Write-LocalCoreState $s
         try{Update-OwnerDecisionControls}catch{}
+        Refresh-StageFilterIfActive
         if($null-ne$StatusText){$StatusText.Text=if($d-eq'UNDECIDED'){'Owner decision cleared.'}else{('Owner decision saved locally: '+$d)}}
         return $true
     } catch {Show-Error ('Owner decision was not saved: '+$_.Exception.Message);return $false}
@@ -353,7 +354,7 @@ function Set-LocalExactAcceptance($Variant,[bool]$SkipOwnerConfirm=$false) {
 }
 function Accept-LocalArtwork {
     if($null -eq $script:Current){return};$sel=@($VariantList.SelectedItems);if($sel.Count -ne 1){Show-Error 'Select exactly one local artwork file first.';return}
-    try{if(Set-LocalExactAcceptance $sel[0] $false){Refresh-LocalArtworkUi;$StatusText.Text='Exact local artwork accepted for the current revision. Downstream checks were rebound fail-closed.'}}catch{Show-Error $_.Exception.Message;$StatusText.Text='Local artwork acceptance failed.'}
+    try{if(Set-LocalExactAcceptance $sel[0] $false){Refresh-LocalArtworkUi;Refresh-StageFilterIfActive;$StatusText.Text='Exact local artwork accepted for the current revision. Downstream checks were rebound fail-closed.'}}catch{Show-Error $_.Exception.Message;$StatusText.Text='Local artwork acceptance failed.'}
 }
 function Write-LocalCheckRequestBundle {
     if($null -eq $script:Current){return $null};$state=Read-LocalCoreState;$key=[string](Get-PropertyValue $script:Current.concept 'concept_key');$lc=Get-LocalCoreConcept $key $state;if($null -eq $lc -or $null -eq $lc.active_acceptance){return $null}
@@ -618,7 +619,7 @@ function Import-LocalSalesCsv {
 function Find-CsvColumn([string[]]$Names,[string[]]$Aliases) {
     # Exact names first; an alias ending in * matches a prefix, but never rate / currency / percent columns ("Royalty Rate", "Royalties Currency").
     foreach($a in $Aliases){ if($a.EndsWith('*')){continue}; $want=ConvertTo-CsvKey $a; foreach($n in $Names){ if((ConvertTo-CsvKey $n) -eq $want){ return $n } } }
-    foreach($a in $Aliases){ if(-not $a.EndsWith('*')){continue}; $want=ConvertTo-CsvKey $a.TrimEnd('*'); foreach($n in $Names){ $k=ConvertTo-CsvKey $n; if($k.StartsWith($want) -and $k -notmatch 'rate|currency|percent|pct|code|type'){ return $n } } }
+    foreach($a in $Aliases){ if(-not $a.EndsWith('*')){continue}; $want=ConvertTo-CsvKey $a.TrimEnd('*'); foreach($n in $Names){ $k=ConvertTo-CsvKey $n; if($k.StartsWith($want) -and $k -notmatch 'rate|currency|percent|pct|code|type|return|cancel|refund'){ return $n } } }
     return $null
 }
 function Get-CsvSlashDateOrder([string[]]$Values,[string]$Delimiter) {
