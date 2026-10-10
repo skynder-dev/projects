@@ -4,8 +4,8 @@
   "files": [
     {
       "path": "candidate_manifest.json",
-      "sha256": "ad0b5820f733af92a1e2517d4739cafa2accd4e1392bf3310679e9b13edde03a",
-      "size_bytes": 74940
+      "sha256": "268cf72568342d80e07a44986a5c8d5dbc0ca742abe4f54a0c8fbab947a14bd8",
+      "size_bytes": 77040
     },
     {
       "path": "Configure Image Provider.ps1",
@@ -123,9 +123,14 @@
       "size_bytes": 84757
     },
     {
+      "path": "MerchForgeResearchDraftSelfTest.ps1",
+      "sha256": "050a0316afc857bb66fa2d1eda7e71a9bfe6aadea9d88b83ac5da19fe14f831f",
+      "size_bytes": 22927
+    },
+    {
       "path": "MerchForgeWorkbench.ps1",
-      "sha256": "8048a37e210753f9228b57915b6381126984db97d6c60bf0af09d9c6e3413efb",
-      "size_bytes": 247736
+      "sha256": "56e40929408955be27f39efdf44575e707d88992fd38445604bf64dcf58f2fbe",
+      "size_bytes": 248741
     },
     {
       "path": "Modules\\Forge.BackendStatus.ps1",
@@ -139,8 +144,8 @@
     },
     {
       "path": "Modules\\Forge.DataViews.ps1",
-      "sha256": "c3e6e54627e5a6f95fb93cf44d7be2208f59a676ce3ac413ebd0b5032fdf84fa",
-      "size_bytes": 28333
+      "sha256": "f301c8fafd4dfad38c71a26c4aedcd3519a7a8ea6652f20fbf5395cdd874b185",
+      "size_bytes": 29179
     },
     {
       "path": "Modules\\Forge.Diagnostics.ps1",
@@ -149,13 +154,13 @@
     },
     {
       "path": "Modules\\Forge.DomainActions.ps1",
-      "sha256": "8bfc20f636173a7a663c858e01031bf3bf371f54f9aef1ccdd2d7fe1b64a690c",
-      "size_bytes": 28213
+      "sha256": "f3659dc52d00aa6ad2628527ec4c52cfedefa3addd3b62e883fa9f1eff34f22c",
+      "size_bytes": 29669
     },
     {
       "path": "Modules\\Forge.Gates.ps1",
-      "sha256": "5a8d78f4c628d1b1cd3f2ab2c192c66670da82d4258911a6e64fbc1f718d9327",
-      "size_bytes": 10757
+      "sha256": "08de10d24a6856905cb331ecb82355e1c3d2f6ce2932df0c117cf471d98b8786",
+      "size_bytes": 10945
     },
     {
       "path": "Modules\\Forge.GenerationAuthority.ps1",
@@ -189,8 +194,8 @@
     },
     {
       "path": "Modules\\Forge.Localization.ps1",
-      "sha256": "64b3b046d1e5ffc44072d8e932a94aa0b4c182f1601ece17fc83a59ce4038363",
-      "size_bytes": 19151
+      "sha256": "01175b77e7f6ed8a93b0511e53e3c141baae5a9bf7f71cb8b44643c0fb41bbd7",
+      "size_bytes": 19287
     },
     {
       "path": "Modules\\Forge.Media.ps1",
@@ -204,8 +209,13 @@
     },
     {
       "path": "Modules\\Forge.ProductNavigation.ps1",
-      "sha256": "ed2bfc65c9a42a2ebd5a19c80ecac8e0312863293fc7d2eb1b75329b0f5eec54",
-      "size_bytes": 12700
+      "sha256": "1b86e2193ee71ea2f082943f3e62fa7bee710169d816c538ee85c294fdff43ee",
+      "size_bytes": 12906
+    },
+    {
+      "path": "Modules\\Forge.ResearchDrafts.ps1",
+      "sha256": "a741cc9d4c059a470fc582be076dafd6e3dbb364a90dda93df82e04199d044c4",
+      "size_bytes": 31072
     },
     {
       "path": "Modules\\Forge.UI.Layout.ps1",
@@ -219,8 +229,8 @@
     },
     {
       "path": "README.txt",
-      "sha256": "a47049a0348f141aa69dccc4e2d579831f05d050e1e7cabdc961ce4233e5c6ec",
-      "size_bytes": 17128
+      "sha256": "fdabf9305ead50aa763cc12cd63d1d3877825fd37f5590ab9325af262a998579",
+      "size_bytes": 17991
     },
     {
       "path": "Remove Saved Access.vbs",

@@ -13,7 +13,7 @@
     "status": "ACTIVE"
   },
   "desktop": {
-    "app_version": "2.8.0-discover-research",
+    "app_version": "2.9.0-research-draft",
     "native_windows_runtime_verified": false,
     "orange_semantic_palette": true,
     "overview_first": true,
@@ -28,10 +28,10 @@
       "ru",
       "es"
     ],
-    "workbench_sha256": "8048a37e210753f9228b57915b6381126984db97d6c60bf0af09d9c6e3413efb",
-    "workbench_size_bytes": 247736,
+    "workbench_sha256": "56e40929408955be27f39efdf44575e707d88992fd38445604bf64dcf58f2fbe",
+    "workbench_size_bytes": 248741,
     "native_windows_parser_verified": false,
-    "native_windows_parser_target_sha256": "8048a37e210753f9228b57915b6381126984db97d6c60bf0af09d9c6e3413efb",
+    "native_windows_parser_target_sha256": "56e40929408955be27f39efdf44575e707d88992fd38445604bf64dcf58f2fbe",
     "native_windows_parser_result_sha256": null,
     "product_home_dashboard": true,
     "brand_home_navigation": "dedicated_home_dashboard",
@@ -67,8 +67,8 @@
       },
       {
         "path": "Modules\\Forge.DataViews.ps1",
-        "sha256": "c3e6e54627e5a6f95fb93cf44d7be2208f59a676ce3ac413ebd0b5032fdf84fa",
-        "size_bytes": 28333
+        "sha256": "f301c8fafd4dfad38c71a26c4aedcd3519a7a8ea6652f20fbf5395cdd874b185",
+        "size_bytes": 29179
       },
       {
         "path": "Modules\\Forge.Diagnostics.ps1",
@@ -77,13 +77,13 @@
       },
       {
         "path": "Modules\\Forge.DomainActions.ps1",
-        "sha256": "8bfc20f636173a7a663c858e01031bf3bf371f54f9aef1ccdd2d7fe1b64a690c",
-        "size_bytes": 28213
+        "sha256": "f3659dc52d00aa6ad2628527ec4c52cfedefa3addd3b62e883fa9f1eff34f22c",
+        "size_bytes": 29669
       },
       {
         "path": "Modules\\Forge.Gates.ps1",
-        "sha256": "5a8d78f4c628d1b1cd3f2ab2c192c66670da82d4258911a6e64fbc1f718d9327",
-        "size_bytes": 10757
+        "sha256": "08de10d24a6856905cb331ecb82355e1c3d2f6ce2932df0c117cf471d98b8786",
+        "size_bytes": 10945
       },
       {
         "path": "Modules\\Forge.GenerationAuthority.ps1",
@@ -117,8 +117,8 @@
       },
       {
         "path": "Modules\\Forge.Localization.ps1",
-        "sha256": "64b3b046d1e5ffc44072d8e932a94aa0b4c182f1601ece17fc83a59ce4038363",
-        "size_bytes": 19151
+        "sha256": "01175b77e7f6ed8a93b0511e53e3c141baae5a9bf7f71cb8b44643c0fb41bbd7",
+        "size_bytes": 19287
       },
       {
         "path": "Modules\\Forge.Media.ps1",
@@ -132,8 +132,13 @@
       },
       {
         "path": "Modules\\Forge.ProductNavigation.ps1",
-        "sha256": "ed2bfc65c9a42a2ebd5a19c80ecac8e0312863293fc7d2eb1b75329b0f5eec54",
-        "size_bytes": 12700
+        "sha256": "1b86e2193ee71ea2f082943f3e62fa7bee710169d816c538ee85c294fdff43ee",
+        "size_bytes": 12906
+      },
+      {
+        "path": "Modules\\Forge.ResearchDrafts.ps1",
+        "sha256": "a741cc9d4c059a470fc582be076dafd6e3dbb364a90dda93df82e04199d044c4",
+        "size_bytes": 31072
       },
       {
         "path": "Modules\\Forge.UI.Layout.ps1",
@@ -141,7 +146,7 @@
         "size_bytes": 9480
       }
     ],
-    "runtime_module_count": 17,
+    "runtime_module_count": 18,
     "architecture_contract": "forge.product_architecture.v1",
     "design_baseline_contract": "forge.design_baseline.v1",
     "design_baseline_status": "candidate_pending_owner_visual_freeze",
@@ -295,7 +300,7 @@
     "trusted_local_check_worker": "MerchForgeCheckWorker.ps1",
     "generation_spool_policy": "forge.generation_spool_policy.v1",
     "publication_receipt_print_binding": true,
-    "current_release": "050_Merch_Forge_CORE_WORKING_RC",
+    "current_release": "055_Merch_Forge_RESEARCH_DRAFT_RC",
     "generation_authority_module": "Modules\\Forge.GenerationAuthority.ps1",
     "generation_temporal_authority": "future generation job/attempt timestamps beyond 10-minute clock-skew tolerance fail closed before paid dispatch/readiness; shared first-live authority also revalidates non-future ordered attempt/result/import timestamps",
     "amazon_print_profile_temporal_authority": "valid_until must be strictly later than captured_at; captured_at remains bounded by 10-minute future-skew tolerance and 120-day horizon",
@@ -311,7 +316,8 @@
     "owner_review_external_sidecar_required_for_normal_review": false,
     "discover_research_first_class_surface": true,
     "discover_research_contract": "forge.discover_snapshot.v1",
-    "discover_research_read_only": true
+    "discover_research_read_only": true,
+    "research_concept_draft": true
   },
   "gates": {
     "content_rendered_ready_required": true,
@@ -457,11 +463,11 @@
     "owner_separate_parser_zip_required": false,
     "current_release": "044_Merch_Forge_PACKAGE_ROOT_RC"
   },
-  "package_name": "053_Merch_Forge_OWNER_REVIEW_RUNTIME_RC",
-  "package_number": 53,
-  "result_intent": "cumulative owner-review runtime repair over immutable 050 baseline: fixes live-mode click enablement and applies complete EN/RU/ES localization for the in-app owner decision block; no generation, Accept, paid provider, Supabase mutation, state sync or external Submit",
+  "package_name": "055_Merch_Forge_RESEARCH_DRAFT_RC",
+  "package_number": 55,
+  "result_intent": "research -> local concept draft over 054: Discover creates a provenance-bound LOCAL draft that enters the normal Ideas/owner-review/no-dispatch brief flow; no backend change, generation, Accept, paid provider, Supabase mutation or external submission",
   "schema": "forge.reconciled_candidate_manifest.v1",
-  "stage": "FORGE-053-OWNER-REVIEW-RUNTIME-RC",
+  "stage": "FORGE-055-RESEARCH-DRAFT-RC",
   "startup_baseline": {
     "immutable_exact": false,
     "inner_start_sha256": "013e9dcfbfb4c2a42c12b4f6ee208767d80509be9e877160f088a9d2984f51a1",
@@ -621,7 +627,7 @@
     "exact_043_native_windows_stage": "integrity",
     "package_root_native_argv_repair": true
   },
-  "installer_generation": "00000000000000100237",
+  "installer_generation": "00000000000000100238",
   "installer_generation_format": "fixed_width_decimal_v1",
   "installer_guard": {
     "single_writer_lock": "install.lock",
@@ -1215,5 +1221,63 @@
     "paid_provider_call": false,
     "external_submission": false,
     "startup_chain_modified": false
+  },
+  "research_draft_055": {
+    "status": "candidate_pending_native_windows_execution",
+    "source_release": "054_Merch_Forge_DISCOVER_RESEARCH_RC",
+    "source_release_sha256": "c6ea5f5071310848010a3a3f4e23fb75f4128e985a211ced86a61d61358b8383",
+    "module": "Modules\\Forge.ResearchDrafts.ps1",
+    "draft_schema": "forge.research_concept_draft.v1",
+    "storage": "LocalCore state research_drafts[] (forge.local_core.v2 envelope unchanged)",
+    "concept_key_prefix": "rd-",
+    "workflow_state": "research_draft",
+    "provenance_fields": [
+      "contract",
+      "snapshot_loaded_at",
+      "backend_version",
+      "niche_identity_field",
+      "niche_identity",
+      "niche_name",
+      "niche_row_sha256",
+      "niche_row",
+      "score_total",
+      "score_confidence",
+      "category",
+      "audience",
+      "concept_count_at_snapshot",
+      "evidence_notes",
+      "snapshot_sources"
+    ],
+    "evidence_note_match": "explicit_niche_link_only",
+    "creative_fields_invented": false,
+    "revision_binding": "revision id + SHA-256 over all creative fields; new revision resets owner decision",
+    "idempotent_create_on_identical_research": true,
+    "blocked_for_drafts": [
+      "Generate",
+      "live Accept",
+      "Reopen",
+      "Start new iteration",
+      "Cancel generation",
+      "delivery/social/owner packages",
+      "server publication save"
+    ],
+    "allowed_for_drafts": [
+      "owner review KEEP/EDIT/REGEN/SKIP",
+      "local draft edit",
+      "Export brief (no dispatch)",
+      "local artwork import",
+      "local exact accept (existing owner gate)"
+    ],
+    "backend_change": false,
+    "backend_mutation": false,
+    "headless_selftest": {
+      "script": "MerchForgeResearchDraftSelfTest.ps1",
+      "status": "PASS",
+      "passed": 67,
+      "total": 67,
+      "network_calls": 0,
+      "api_calls": 0
+    },
+    "native_windows_runtime_verified": false
   }
 }

@@ -1,0 +1,308 @@
+{
+  "schema": "forge.research_draft_selftest.v1",
+  "status": "PASS",
+  "passed": 67,
+  "total": 67,
+  "api_calls": 0,
+  "network_calls": 0,
+  "billable_requests": 0,
+  "backend_mutations": 0,
+  "proof_boundary": "Headless PowerShell execution of the real Forge functions with inert WPF control stubs and an isolated state root. Restart persistence is proven across separate PowerShell processes. Native Windows WPF rendering/click behaviour is NOT covered by this test.",
+  "powershell": "7.4.6",
+  "platform": "Unix 6.18.44.114",
+  "executed_at": "2026-10-10T01:52:16.3726066Z",
+  "phases": {
+    "create": {
+      "phase": "create",
+      "checks": {
+        "draft_module_present": {
+          "pass": true,
+          "detail": ""
+        },
+        "refuses_without_live_snapshot": {
+          "pass": true,
+          "detail": ""
+        },
+        "discover_button_enabled_with_selection": {
+          "pass": true,
+          "detail": ""
+        },
+        "no_errors_on_create": {
+          "pass": true,
+          "detail": ""
+        },
+        "draft_persisted": {
+          "pass": true,
+          "detail": ""
+        },
+        "draft_key_prefix": {
+          "pass": true,
+          "detail": "rd-88510f799e7647dfb97a601c"
+        },
+        "provenance_niche_identity": {
+          "pass": true,
+          "detail": ""
+        },
+        "provenance_row_hash": {
+          "pass": true,
+          "detail": ""
+        },
+        "provenance_contract": {
+          "pass": true,
+          "detail": ""
+        },
+        "provenance_snapshot_time": {
+          "pass": true,
+          "detail": ""
+        },
+        "evidence_only_explicitly_linked_notes": {
+          "pass": true,
+          "detail": ""
+        },
+        "creative_fields_not_invented": {
+          "pass": true,
+          "detail": ""
+        },
+        "authority_all_false": {
+          "pass": true,
+          "detail": ""
+        },
+        "draft_in_ideas_queue": {
+          "pass": true,
+          "detail": ""
+        },
+        "queue_label_research_draft": {
+          "pass": true,
+          "detail": ""
+        },
+        "filter_research_draft": {
+          "pass": true,
+          "detail": ""
+        },
+        "draft_opened_as_current": {
+          "pass": true,
+          "detail": ""
+        },
+        "routed_to_ideas": {
+          "pass": true,
+          "detail": ""
+        },
+        "overview_flags_missing_creative": {
+          "pass": true,
+          "detail": ""
+        },
+        "localcore_mirror_bound_to_revision": {
+          "pass": true,
+          "detail": ""
+        },
+        "edit_boxes_editable_for_draft": {
+          "pass": true,
+          "detail": ""
+        },
+        "second_click_same_research_reuses": {
+          "pass": true,
+          "detail": ""
+        },
+        "owner_buttons_disabled_while_busy": {
+          "pass": true,
+          "detail": ""
+        },
+        "owner_buttons_enabled_after_busy_052": {
+          "pass": true,
+          "detail": ""
+        },
+        "keep_saved": {
+          "pass": true,
+          "detail": ""
+        },
+        "keep_visible": {
+          "pass": true,
+          "detail": ""
+        },
+        "second_draft_created": {
+          "pass": true,
+          "detail": ""
+        },
+        "second_draft_has_no_decision": {
+          "pass": true,
+          "detail": ""
+        },
+        "skip_saved": {
+          "pass": true,
+          "detail": ""
+        },
+        "switch_back_keeps_keep": {
+          "pass": true,
+          "detail": ""
+        },
+        "progress_counts_drafts": {
+          "pass": true,
+          "detail": ""
+        },
+        "ru_state_label": {
+          "pass": true,
+          "detail": ""
+        }
+      },
+      "notes": [],
+      "api_calls": 0,
+      "network_calls": 0
+    },
+    "restart": {
+      "phase": "restart",
+      "checks": {
+        "drafts_survive_restart": {
+          "pass": true,
+          "detail": ""
+        },
+        "provenance_survives_restart": {
+          "pass": true,
+          "detail": ""
+        },
+        "state_envelope_valid": {
+          "pass": true,
+          "detail": ""
+        },
+        "backup_written": {
+          "pass": true,
+          "detail": ""
+        },
+        "state_research_drafts_plain_json_array": {
+          "pass": true,
+          "detail": ""
+        },
+        "state_revisions_plain_json_array": {
+          "pass": true,
+          "detail": ""
+        },
+        "keep_survives_restart": {
+          "pass": true,
+          "detail": ""
+        },
+        "skip_survives_restart": {
+          "pass": true,
+          "detail": ""
+        },
+        "edit_creates_revision_2": {
+          "pass": true,
+          "detail": ""
+        },
+        "revision_1_preserved": {
+          "pass": true,
+          "detail": ""
+        },
+        "stale_keep_invalidated": {
+          "pass": true,
+          "detail": ""
+        },
+        "ui_shows_no_decision_after_edit": {
+          "pass": true,
+          "detail": ""
+        },
+        "overview_no_missing_after_edit": {
+          "pass": true,
+          "detail": ""
+        },
+        "stale_save_rejected": {
+          "pass": true,
+          "detail": ""
+        },
+        "unchanged_save_no_revision": {
+          "pass": true,
+          "detail": ""
+        },
+        "keep_on_revision_2": {
+          "pass": true,
+          "detail": ""
+        },
+        "brief_exported": {
+          "pass": true,
+          "detail": ""
+        },
+        "brief_bound_to_revision_2": {
+          "pass": true,
+          "detail": ""
+        },
+        "brief_no_external_generation": {
+          "pass": true,
+          "detail": ""
+        },
+        "generate_blocked_for_draft": {
+          "pass": true,
+          "detail": ""
+        },
+        "live_action_blocked_Prepare-DeliveryPackage": {
+          "pass": true,
+          "detail": ""
+        },
+        "live_action_blocked_Start-NewIteration": {
+          "pass": true,
+          "detail": ""
+        },
+        "live_action_blocked_Reopen-CurrentAcceptance": {
+          "pass": true,
+          "detail": ""
+        },
+        "live_action_blocked_Cancel-Generation": {
+          "pass": true,
+          "detail": ""
+        },
+        "no_acceptance_created": {
+          "pass": true,
+          "detail": ""
+        },
+        "no_package_created": {
+          "pass": true,
+          "detail": ""
+        },
+        "missing_draft_key_never_hits_api": {
+          "pass": true,
+          "detail": ""
+        },
+        "stale_live_surfaces_cleared": {
+          "pass": true,
+          "detail": ""
+        },
+        "open_error_is_contained": {
+          "pass": true,
+          "detail": ""
+        },
+        "reload_draft_stays_local": {
+          "pass": true,
+          "detail": ""
+        },
+        "draft_still_not_server_concept": {
+          "pass": true,
+          "detail": ""
+        }
+      },
+      "notes": [],
+      "api_calls": 0,
+      "network_calls": 0
+    },
+    "legacy054": {
+      "phase": "legacy054",
+      "checks": {
+        "legacy_has_no_draft_module": {
+          "pass": true,
+          "detail": ""
+        },
+        "legacy_054_reads_055_state": {
+          "pass": true,
+          "detail": ""
+        },
+        "legacy_sees_owner_decision_mirror": {
+          "pass": true,
+          "detail": ""
+        },
+        "legacy_write_preserves_drafts": {
+          "pass": true,
+          "detail": ""
+        }
+      },
+      "notes": [],
+      "api_calls": 0,
+      "network_calls": 0
+    }
+  }
+}

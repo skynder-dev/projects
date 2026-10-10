@@ -229,3 +229,13 @@ SPOOL RETENTION
 - Includes 052 click-enablement fix.
 - Fixes Owner Review EN/RU/ES localization, including title, body, action buttons, clear action, and progress text.
 - Owner action enums stored internally remain KEEP/EDIT/REGEN/SKIP; display labels are localized only.
+
+055 RESEARCH -> CONCEPT DRAFT
+- Discover > select niche > Create concept draft: creates a LOCAL draft in Ideas with research provenance.
+- Provenance: niche identity, exact niche row SHA-256, snapshot time, contract, explicitly linked notes only.
+- Hook and visual direction are never invented; the Overview lists what is still missing.
+- Edit tab saves local draft revisions; a new revision resets the owner decision to UNDECIDED.
+- Export brief works as before (no dispatch). Generate, live Accept, delivery and server actions are blocked for drafts.
+- Clicking Create twice on identical research reuses the existing draft.
+- Drafts are stored in LocalCore state (research_drafts). 054 can still read and rewrite this state without losing drafts.
+- Self-test: MerchForgeResearchDraftSelfTest.ps1 -OutputPath <file> (headless; not a WPF click test).

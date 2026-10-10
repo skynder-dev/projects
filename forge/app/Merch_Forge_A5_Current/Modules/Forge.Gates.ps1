@@ -1,4 +1,4 @@
-# Merch Forge · Capability and safety gates
+﻿# Merch Forge · Capability and safety gates
 # Owns fail-closed enablement and readiness states. No external submission.
 function Has-Cap([string]$Name) {
     if($null -eq $script:Session -or $null -eq $script:Session.capabilities){return $false}
@@ -11,7 +11,7 @@ function Apply-RoleUi {
     $roleLabel=if($role){Get-RoleLabel $role}else{''}
     if($null -ne $ActorText){$ActorText.Text=if($roleLabel){"$actor · $roleLabel"}else{$actor}}
     $localPub=($null -ne $script:Publication -and [bool](Get-PropertyValue $script:Publication 'local_core')); $canEdit=Has-Cap 'edit'; $canReview=Has-Cap 'review'; $canPub=((Has-Cap 'prepare_publication') -or $localPub)
-    foreach($box in @($TitleBox,$HookBox,$ConceptTextBox,$BuyerBox,$PurchaseBox,$DifferentiationBox,$VisualBox,$SpecBox,$ReasonBox)){$box.IsReadOnly=(-not $canEdit)}
+    foreach($box in @($TitleBox,$HookBox,$ConceptTextBox,$BuyerBox,$PurchaseBox,$DifferentiationBox,$VisualBox,$SpecBox,$ReasonBox)){$box.IsReadOnly=(-not $canEdit)}; if((Test-CurrentIsResearchDraft)){Set-DraftEditBoxesEditable $true}
     $VariantReviewState.IsEnabled=$canReview; $VariantReviewReason.IsEnabled=$canReview; $VariantReviewNote.IsReadOnly=(-not $canReview)
     foreach($box in @($PublicationTitleBox,$PublicationBrandBox,$PublicationBullet1Box,$PublicationBullet2Box,$PublicationDescriptionBox,$PublicationKeywordsBox,$PublicationReasonBox)){$box.IsReadOnly=(-not $canPub)}
     if(-not $canEdit){$DirtyLabel.Text=Get-UiText 'role.readonly' 'Read-only for this role'}
@@ -38,7 +38,7 @@ function Update-AcceptanceControls {
     $selected=@($VariantList.SelectedItems)
     $accepted=[bool](Get-PropertyValue $c 'current_revision_accepted')
     if($null -ne $rw){$accepted=([string](Get-PropertyValue $rw 'active_acceptance_id')).Length -gt 0}
-    $localGenerate=Test-LocalProductionProviderReady;$canGenerate=(-not $script:Busy -and ((Has-Cap 'generate') -or $localGenerate) -and -not $script:Dirty -and -not $accepted)
+    $localGenerate=Test-LocalProductionProviderReady;$canGenerate=(-not $script:Busy -and ((Has-Cap 'generate') -or $localGenerate) -and -not $script:Dirty -and -not $accepted -and -not (Test-CurrentIsResearchDraft))
     $rwAllowed=Get-PropertyValue $rw 'allowed_actions'
     if($null -ne $rwAllowed -and -not $localGenerate){$canGenerate=$canGenerate -and [bool](Get-PropertyValue $rwAllowed 'generate_or_regenerate_same_revision')}
     $GenerateButton.IsEnabled=$canGenerate
@@ -75,8 +75,8 @@ function Update-AcceptanceControls {
 function Set-Busy([bool]$Value,[string]$Message='Working…') {
     $script:Busy=$Value; $StatusText.Text=$Message; if($null -ne $BusyText){$BusyText.Text=$Message}; if($null -ne $BusyBanner){$BusyBanner.Visibility=if($Value){'Visible'}else{'Collapsed'}}
     $RefreshButton.IsEnabled=-not $Value; $ConceptList.IsEnabled=-not $Value; $SearchBox.IsEnabled=-not $Value; $FilterBox.IsEnabled=-not $Value; $SortBox.IsEnabled=-not $Value
-    $SaveButton.IsEnabled=(-not $Value -and (Has-Cap 'edit') -and $script:Dirty -and $null -ne $script:Current)
-    $GenerateButton.IsEnabled=(-not $Value -and ((Has-Cap 'generate') -or (Test-LocalProductionProviderReady)) -and $null -ne $script:Current -and -not $script:Dirty)
+    $SaveButton.IsEnabled=(-not $Value -and ((Has-Cap 'edit') -or (Test-CurrentIsResearchDraft)) -and $script:Dirty -and $null -ne $script:Current)
+    $GenerateButton.IsEnabled=(-not $Value -and ((Has-Cap 'generate') -or (Test-LocalProductionProviderReady)) -and $null -ne $script:Current -and -not $script:Dirty -and -not (Test-CurrentIsResearchDraft))
     if($Value){$CancelGenerationButton.IsEnabled=$false}else{Update-CancelGenerationState}
     try { Update-AcceptanceControls } catch { Write-AppLog 'ERROR' ('Acceptance control refresh failed: '+$_.Exception.Message) }
     if($null -ne $SavePublicationButton){try{$pubWorkspace=Get-PropertyValue $script:Publication 'workspace';$localPub=($null -ne $script:Publication -and [bool](Get-PropertyValue $script:Publication 'local_core'));$can=($null -ne $pubWorkspace -and [bool](Get-PropertyValue $pubWorkspace 'current_revision_accepted') -and ((Has-Cap 'prepare_publication') -or $localPub)); $SavePublicationButton.IsEnabled=(-not $Value -and $script:PublicationDirty -and $can)}catch{$SavePublicationButton.IsEnabled=$false;Write-AppLog 'ERROR' ('Publication control refresh failed: '+$_.Exception.Message)}}

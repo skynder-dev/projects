@@ -64,7 +64,7 @@ function Load-DiscoverSnapshot([bool]$Force=$false) {
         $DiscoverStatusText.Text=('{0} · {1:HH:mm} UTC' -f (Get-UiText 'discover.ready' 'Live research loaded'),[datetime]$script:DiscoverLoadedAt)
     } catch {
         $DiscoverStatusText.Text=Get-UiText 'discover.offline' 'Live research is unavailable. No market data is fabricated.';Write-AppLog 'WARN' ('Discover load failed: '+$_.Exception.Message)
-    } finally {Set-Busy $false}
+    } finally {Set-Busy $false; try{Update-DiscoverDraftControls}catch{}}
 }
 
 function Set-SectionLanding([string]$Section) {
@@ -95,6 +95,8 @@ function Show-ProductSection([string]$Section) {
                 $SectionLandingScroll.Visibility='Visible';Set-SectionLanding $Section
                 if($null -ne $ConceptTitle){$ConceptTitle.Text=$SectionLandingTitle.Text}
                 if($null -ne $ConceptMeta){$ConceptMeta.Text=if($script:OfflineMode){Get-UiText 'backend.offline.status' 'Workbench open · waiting for service'}else{''}}
+            } elseif((Test-CurrentIsResearchDraft) -and $Section -in @('ideas','artwork','checks','publish')) {
+                Enter-ResearchDraftSection $Section
             } elseif($script:OfflineMode -and $script:OfflineSnapshotMode) {
                 if($Section -eq 'ideas'){
                     $MainTabs.Visibility='Visible';Enter-LocalCoreSection 'ideas'

@@ -1,14 +1,14 @@
 ﻿# Merch Forge · Explicit owner actions
 # Mutating Generate/Accept/Publication/package actions live here; all remain explicit and gated.
 function Prepare-DeliveryPackage {
-    if($null -eq $script:Current){return}; $c=$script:Current.concept
+    if(Test-CurrentIsResearchDraft){Show-Error (Get-UiText 'draft.live.blocked' 'This is a local research draft. Live server actions are not available for it.');return}; if($null -eq $script:Current){return}; $c=$script:Current.concept
     Set-Busy $true 'Preparing delivery manifest…'
     try { $null=Invoke-ForgeApi 'prepare_delivery_bundle' @{concept_key=$c.concept_key}; Load-Delivery ([string]$c.concept_key); $StatusText.Text='Delivery manifest prepared. No ZIP was claimed saved.' }
     catch { Show-Error $_.Exception.Message; $StatusText.Text='Delivery package needs attention.' }
     finally { Set-Busy $false $StatusText.Text }
 }
 function Prepare-SocialHandoff {
-    if($null -eq $script:Current -or $null -eq $script:Delivery){return}; $c=$script:Current.concept; $w=$script:Delivery.workspace
+    if(Test-CurrentIsResearchDraft){Show-Error (Get-UiText 'draft.live.blocked' 'This is a local research draft. Live server actions are not available for it.');return}; if($null -eq $script:Current -or $null -eq $script:Delivery){return}; $c=$script:Current.concept; $w=$script:Delivery.workspace
     if([string]::IsNullOrWhiteSpace([string]$w.delivery_bundle_id)){Show-Error 'Prepare the delivery package first.';return}
     if(-not (Confirm 'Prepare this exact accepted design as source material for the separate Social workflow? This does not approve or publish a Social post.' 'Send to Social')){return}
     Set-Busy $true 'Preparing Social handoff…'
@@ -17,7 +17,7 @@ function Prepare-SocialHandoff {
     finally { Set-Busy $false $StatusText.Text }
 }
 function Prepare-OwnerPackage {
-    if($null -eq $script:Current -or $null -eq $script:Delivery){return}; $c=$script:Current.concept; $w=$script:Delivery.workspace
+    if(Test-CurrentIsResearchDraft){Show-Error (Get-UiText 'draft.live.blocked' 'This is a local research draft. Live server actions are not available for it.');return}; if($null -eq $script:Current -or $null -eq $script:Delivery){return}; $c=$script:Current.concept; $w=$script:Delivery.workspace
     if([string]::IsNullOrWhiteSpace([string]$w.delivery_bundle_id)){Show-Error 'Prepare the delivery package first.';return}
     $kind='generic_owner_export'; if($null -ne $PackageTargetBox.SelectedItem){$kind=[string]$PackageTargetBox.SelectedItem.Tag}
     $payload=@{package_kind=$kind;delivery_bundle_id=$w.delivery_bundle_id;social_handoff_id=$null;amazon_preflight_package_id=$null}
@@ -33,6 +33,7 @@ function Prepare-OwnerPackage {
 }
 function Save-PublicationMetadata {
     if($null -ne $script:Publication -and [bool](Get-PropertyValue $script:Publication 'local_core')){Save-LocalPublicationMetadata;return}
+    if(Test-CurrentIsResearchDraft){Show-Error (Get-UiText 'draft.live.blocked' 'This is a local research draft. Live server actions are not available for it.');return}; 
     if(-not (Has-Cap 'prepare_publication')){Show-Error 'Your workspace role cannot edit publication metadata.';return}
     if($null -eq $script:Current -or $null -eq $script:Publication -or -not $script:PublicationDirty){return}; $c=$script:Current.concept; $w=$script:Publication.workspace
     if(-not [bool]$w.current_revision_accepted -or [string]::IsNullOrWhiteSpace([string]$w.current_acceptance_id)){Show-Error 'Accept a design version before saving listing details.';return}
@@ -42,11 +43,13 @@ function Save-PublicationMetadata {
     Set-Busy $true 'Saving listing version…'; try { $null=Invoke-ForgeApi 'save_publication_metadata' @{concept_key=$c.concept_key;expected_acceptance_id=$w.current_acceptance_id;expected_metadata_revision_id=([string]$w.current_metadata_revision_id);expected_metadata_content_hash=([string]$w.metadata_content_hash);payload=$payload;edit_reason=$PublicationReasonBox.Text}; Set-PublicationDirty $false; Load-Publication ([string]$c.concept_key); $StatusText.Text='Listing version saved; accepted design unchanged.' } catch { $technical=$_.Exception.Message; Write-AppLog 'ERROR' ("Publication metadata save failed: {0}" -f $technical); $human=if($technical -match 'Accepted creative lineage changed'){'The accepted design changed. Refresh Publication before saving.'}elseif($technical -match 'changed in another client|HTTP 409'){'This listing changed somewhere else. Refresh Publication before saving.'}else{Get-HumanErrorMessage $technical}; Set-LastDiagnostic 'publication_save' 0 'refresh_before_retry' $technical $human; [System.Windows.MessageBox]::Show($Window,("{0}`n`nTechnical details are available in Diagnostics." -f $human),'Merch Forge — Listing',[System.Windows.MessageBoxButton]::OK,[System.Windows.MessageBoxImage]::Warning)|Out-Null; $StatusText.Text='Listing save needs attention' } finally { Set-Busy $false $StatusText.Text }
 }
 function Save-Revision {
+    if(Test-CurrentIsResearchDraft){Save-CurrentResearchDraftRevision;return}
     if(-not (Has-Cap 'edit')){Show-Error 'Your workspace role cannot edit concepts.';return}
     if($null -eq $script:Current){return}; if([bool]$script:Current.concept.current_revision_accepted){Show-Error 'This revision is accepted. Use Start new iteration · edited brief so the accepted version stays in history.';return}; if($script:PublicationDirty){if(-not (Confirm 'Saving a new creative revision invalidates the current publication context and discards unsaved publication metadata. Continue?')){return};Set-PublicationDirty $false}; Set-Busy $true 'Saving new revision…'
     try { $c=$script:Current.concept; $editedSpec=$null; try { $editedSpec=$SpecBox.Text|ConvertFrom-Json -ErrorAction Stop } catch { throw 'Production spec must be valid JSON.' }; $patch=Build-Patch; $dirty=Get-ProductionSpecDirtyValues $c.production_spec $editedSpec; $payload=@{concept_key=$c.concept_key;expected_revision_id=$c.current_revision_id;expected_content_hash=$c.current_content_hash;patch=$patch;production_spec_dirty_values=$dirty;edit_reason=$ReasonBox.Text}; if($script:RestoreSourceRevisionId){$payload.source_revision_id=$script:RestoreSourceRevisionId}; $r=Invoke-ForgeApi 'save_revision' $payload; Set-Dirty $false; Load-Concept ([string]$c.concept_key)|Out-Null; $StatusText.Text=("Saved revision {0}" -f $r.revision.revision_no) } catch { Show-Error $_.Exception.Message; $StatusText.Text='Save failed' } finally { Set-Busy $false $StatusText.Text }
 }
 function Queue-Generation {
+    if(Test-CurrentIsResearchDraft){Show-Error (Get-UiText 'draft.generate.blocked' 'Research drafts cannot be generated from Forge yet. Use Export brief (no dispatch) and import the finished artwork.');return}
     if($null -ne $script:Current){try{$null=Sync-LocalGenerationResults}catch{Write-AppLog 'WARN' ('Pre-generate local result recovery failed: '+$_.Exception.Message)}}
     $localCfg=Get-GenerationProviderRuntimeConfig;$localReadiness=Get-GenerationProviderLocalReadiness;$localEnabled=[bool](Get-PropertyValue $localCfg 'enabled');$localReady=[bool](Get-PropertyValue $localReadiness 'ready')
     if($localEnabled -and -not $localReady){$code=[string](Get-PropertyValue $localReadiness 'code');$detail=if($code -eq 'daily_request_limit_reached'){('Daily provider request ceiling reached: {0}/{1}. Increase the ceiling explicitly in Configure Image Provider, or wait for the next UTC day.' -f [int](Get-PropertyValue $localReadiness 'paid_requests_today'),[int](Get-PropertyValue $localReadiness 'daily_request_limit'))}elseif($code -eq 'credential_missing'){'The local image provider is enabled but its credential is missing. Run Configure Image Provider or set OPENAI_API_KEY.'}elseif($code -eq 'unsafe_config'){'The local image provider configuration failed its safety contract. Run Configure Image Provider again.'}else{('The local image provider is enabled but not ready: '+$code)};Show-Error $detail;return}
@@ -104,7 +107,7 @@ function Queue-Generation {
     } finally { Set-Busy $false $StatusText.Text }
 }
 function Cancel-Generation {
-    if($null -eq $script:Current){return}; $g=$GenerationRequestList.SelectedItem; if($null -eq $g -or [string](Get-PropertyValue $g 'status') -ne 'queued'){return}
+    if(Test-CurrentIsResearchDraft){Show-Error (Get-UiText 'draft.live.blocked' 'This is a local research draft. Live server actions are not available for it.');return}; if($null -eq $script:Current){return}; $g=$GenerationRequestList.SelectedItem; if($null -eq $g -or [string](Get-PropertyValue $g 'status') -ne 'queued'){return}
     if([string](Get-PropertyValue $g 'request_origin') -eq 'local_worker'){Show-Error 'Local provider jobs are not server queue requests. Refresh Artwork to see the local worker result; no server cancel action was sent.';return}
     if(-not (Has-Cap 'generate')){Show-Error 'Your workspace role cannot cancel generation requests.';return}
     $c=$script:Current.concept
@@ -165,7 +168,7 @@ function Accept-Current {
     finally { Set-Busy $false $StatusText.Text }
 }
 function Reopen-CurrentAcceptance {
-    if(-not (Has-Cap 'accept')){Show-Error 'Your workspace role cannot Reopen acceptances.';return}
+    if(Test-CurrentIsResearchDraft){Show-Error (Get-UiText 'draft.live.blocked' 'This is a local research draft. Live server actions are not available for it.');return}; if(-not (Has-Cap 'accept')){Show-Error 'Your workspace role cannot Reopen acceptances.';return}
     if($null -eq $script:Current -or $script:Dirty -or $null -eq $script:ReviewWorkspace){return}; if($script:PublicationDirty){if(-not (Confirm 'Reopening acceptance discards unsaved publication metadata. Continue?')){return};Set-PublicationDirty $false}; $c=$script:Current.concept
     $acceptanceId=[string]$script:ReviewWorkspace.workspace.active_acceptance_id
     if([string]::IsNullOrWhiteSpace($acceptanceId)){return}
@@ -182,7 +185,7 @@ function Reopen-CurrentAcceptance {
     finally { Set-Busy $false $StatusText.Text }
 }
 function Start-NewIteration([string]$Mode) {
-    if(-not (Has-Cap 'edit')){Show-Error 'Your workspace role cannot start a new iteration.';return}
+    if(Test-CurrentIsResearchDraft){Show-Error (Get-UiText 'draft.live.blocked' 'This is a local research draft. Live server actions are not available for it.');return}; if(-not (Has-Cap 'edit')){Show-Error 'Your workspace role cannot start a new iteration.';return}
     if($null -eq $script:Current -or $null -eq $script:ReviewWorkspace){return}; $c=$script:Current.concept
     $acceptanceId=[string]$script:ReviewWorkspace.workspace.active_acceptance_id
     if([string]::IsNullOrWhiteSpace($acceptanceId)){Show-Error 'A current accepted visual is required before starting an accepted-history iteration.';return}

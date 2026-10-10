@@ -30,7 +30,7 @@ function Load-OfflineQueueSnapshot {
     if(Test-Path -LiteralPath $script:QueueSnapshotPath -PathType Leaf){$items=@(Read-QueueSnapshotFile $script:QueueSnapshotPath)}
     if($items.Count -eq 0){$items=@(Read-QueueSnapshotFile $script:EmbeddedIdeasPath)}
     $script:OfflineSnapshotMode=($items.Count -gt 0)
-    $script:Queue=@(Add-QueueDisplayProperties $items)
+    $script:Queue=@(Add-QueueDisplayProperties @(Merge-ResearchDraftsIntoQueue $items))
     Apply-Filter
     if($null -ne $QueueCountText){$QueueCountText.Text=((Get-UiText 'queue.cached' '{0} cached ideas') -f @($script:Queue).Count)}
     return @($script:Queue).Count
@@ -58,7 +58,7 @@ function Load-Queue {
         $raw=@($r.concepts)
         Save-QueueSnapshot $raw
         $script:OfflineSnapshotMode=$false
-        $script:Queue=@(Add-QueueDisplayProperties $raw)
+        $script:Queue=@(Add-QueueDisplayProperties @(Merge-ResearchDraftsIntoQueue $raw))
         Apply-Filter
         $script:ConnectionState='Connected'
         $BackendText.Text=Get-UiText 'system.connected' 'Connected'
@@ -217,6 +217,12 @@ function Load-Delivery([string]$Key) {
     }
 }
 function Load-Concept([string]$Key,[bool]$SkipDirtyPrompt=$false) {
+    if(Test-ResearchDraftKey $Key){
+        if((-not $SkipDirtyPrompt) -and ($script:Dirty -or $script:PublicationDirty) -and -not (Confirm 'Discard unsaved creative/publication edits and open another concept?')){return $false}
+        $draftFound=$false;try{$draftFound=($null -ne (Get-ResearchDraft $Key))}catch{Write-AppLog 'WARN' ('Research draft lookup failed: '+$_.Exception.Message)}
+        if(-not $draftFound){Show-Error 'This research draft is not available in local Forge state. Refresh the Ideas list.';return $false}
+        Open-ResearchDraftItem ([pscustomobject]@{concept_key=$Key}) $true;return $true
+    }
     if((-not $SkipDirtyPrompt) -and ($script:Dirty -or $script:PublicationDirty) -and -not (Confirm 'Discard unsaved creative/publication edits and open another concept?')) { return $false }
     $script:Dirty=$false; $script:PublicationDirty=$false
     Set-Busy $true 'Loading concept…'
@@ -237,7 +243,7 @@ function Load-Concept([string]$Key,[bool]$SkipDirtyPrompt=$false) {
             $v2+=$v
         }
         $d.variants=$v2
-        Populate-Detail $d; try{$null=Ensure-LocalCoreConceptFromCurrent;Update-OwnerDecisionControls}catch{Write-AppLog 'WARN' ('Local core concept mirror/owner review failed: '+$_.Exception.Message)}; Load-AuditHistory $Key; Load-Downstream $Key; Load-Publication $Key; Load-Delivery $Key
+        Populate-Detail $d; Restore-RoleEditability; try{$null=Ensure-LocalCoreConceptFromCurrent;Update-OwnerDecisionControls}catch{Write-AppLog 'WARN' ('Local core concept mirror/owner review failed: '+$_.Exception.Message)}; Load-AuditHistory $Key; Load-Downstream $Key; Load-Publication $Key; Load-Delivery $Key
         $StatusText.Text='Concept loaded'; return $true
     } finally { Set-Busy $false $StatusText.Text }
 }
@@ -265,6 +271,7 @@ function Open-OfflineConceptItem($Item) {
     $c.current_content_hash=$snapshotHash
     $c.current_revision_id=('snapshot-'+$snapshotHash.Substring(0,24))
     $script:Current=[pscustomobject]@{concept=$c}
+    Restore-RoleEditability
     $script:ProductSection='ideas'
     Show-ConceptSurface
     $ConceptTitle.Text=[string]$c.title
@@ -288,6 +295,7 @@ function Open-OfflineConceptItem($Item) {
 }
 function Open-ConceptItem($Item,[bool]$SkipDirtyPrompt=$false) {
     if($script:ConceptLoadInProgress -or $null -eq $Item){return}
+    if([bool](Get-PropertyValue $Item 'is_local_draft')){Open-ResearchDraftItem $Item;return}
     if($script:OfflineMode){Open-OfflineConceptItem $Item;return}
     $key=([string]$Item.concept_key).Trim()
     if([string]::IsNullOrWhiteSpace($key)){Show-Error 'Selected concept has no concept key. Refresh the workspace.';return}

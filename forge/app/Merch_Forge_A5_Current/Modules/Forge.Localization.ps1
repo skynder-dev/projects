@@ -136,6 +136,7 @@ function Apply-LocaleUi {
                 'has_variants' {$item.Content=Get-UiText 'queue.variants' 'Has variants'}
                 'accepted' {$item.Content=Get-UiText 'queue.accepted' 'Accepted'}
                 'blocked' {$item.Content=Get-UiText 'queue.blocked' 'Blocked'}
+                'research_draft' {$item.Content=Get-UiText 'queue.draft' 'Research draft'}
             }
         }
     }
@@ -199,6 +200,7 @@ function Apply-LocaleUi {
     if($null -ne $DiscoverTitle){$DiscoverTitle.Text=Get-UiText 'discover.title' 'Discover / Research'}
     if($null -ne $DiscoverBody){$DiscoverBody.Text=Get-UiText 'discover.body' 'Ranked market opportunities backed by Forge research, evidence and concept depth.'}
     if($null -ne $DiscoverRefreshButton){$DiscoverRefreshButton.Content=Get-UiText 'discover.refresh' 'Refresh research'}
+    try{Update-DiscoverDraftControls}catch{}
     if($null -ne $DiscoverNichesLabel){$DiscoverNichesLabel.Text=Get-UiText 'discover.niches' 'Niches'}
     if($null -ne $DiscoverNotesLabel){$DiscoverNotesLabel.Text=Get-UiText 'discover.notes' 'Research notes'}
     if($null -ne $DiscoverSourcesLabel){$DiscoverSourcesLabel.Text=Get-UiText 'discover.sources' 'Active sources'}
