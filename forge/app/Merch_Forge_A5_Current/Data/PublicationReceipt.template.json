@@ -1,0 +1,15 @@
+{
+  "schema": "forge.local_publication_receipt.v3",
+  "concept_key": "REPLACE_WITH_CONCEPT_KEY",
+  "package_sha256": "REPLACE_WITH_FORGE_PACKAGE_SHA256",
+  "lineage_fingerprint": "REPLACE_WITH_PACKAGE_LINEAGE_FINGERPRINT",
+  "listing_hash": "REPLACE_WITH_PACKAGE_LISTING_HASH",
+  "channel": "amazon_merch",
+  "marketplace": "REPLACE_WITH_EXACT_PACKAGE_MARKETPLACE",
+  "product_id": "REPLACE_WITH_PRODUCT_OR_LISTING_ID",
+  "published_at": "2026-10-01T00:00:00Z",
+  "source": "owner_manual_upload_receipt",
+  "note": "Records a completed manual Amazon Merch publication. channel must remain amazon_merch; marketplace must match the exact owner-attested marketplace embedded in the READY package print-production profile; published_at must be the actual non-future publication time. Forge revalidates this receipt against immutable stored READY package lineage before sales/portfolio use.",
+  "preupload_gate_sha256": "REPLACE_WITH_EXACT_READY_PACKAGE_PREUPLOAD_GATE_SHA256",
+  "print_production_sha256": ""
+}

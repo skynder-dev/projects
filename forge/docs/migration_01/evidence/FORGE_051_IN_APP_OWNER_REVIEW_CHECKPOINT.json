@@ -1,0 +1,40 @@
+{
+  "schema": "forge.checkpoint.v1",
+  "project_route": "FORGE",
+  "release_family": "051",
+  "title": "051 in-app owner review RC built",
+  "artifact": "051_Merch_Forge_IN_APP_OWNER_REVIEW_RC.zip",
+  "artifact_sha256": "286adb805d06200e76cfe5b82efb2c0b325c0fc05d80d1db6f51a286ddf1d6c8",
+  "artifact_size_bytes": 267439,
+  "source_release": "050_Merch_Forge_CORE_WORKING_RC.zip",
+  "source_sha256": "13aaf21c9bf5f5383dfce6589c6849b20ba6ffa2228ae1efcd38b3123783187d",
+  "verification": {
+    "static_contracts": "93/93 PASS",
+    "inner_integrity": "50/50 PASS",
+    "deterministic_rebuild_exact": true,
+    "one_top_level_folder": true,
+    "outer_launcher_unchanged": true,
+    "inner_launcher_unchanged": true,
+    "launcher_cmd_unchanged": true,
+    "preflight_unchanged": true,
+    "native_windows_parser_executed": false,
+    "native_windows_visual_smoke_executed": false
+  },
+  "completed": [
+    "In-app KEEP/EDIT/REGEN/SKIP owner review in Ideas Overview",
+    "LocalCore persistence exact-bound to revision id/hash",
+    "Revision changes invalidate prior owner decision",
+    "EN/RU/ES owner-review copy",
+    "No sidecar required for normal owner review interaction"
+  ],
+  "boundaries": {
+    "supabase_mutation": false,
+    "state_sync": false,
+    "generate": false,
+    "accept": false,
+    "paid_provider_call": false,
+    "external_submit": false,
+    "godog_mutation": false
+  },
+  "next_exact_action": "Native Windows parse/startup/visual smoke of exact 051 bytes; if PASS, continue Discover/Research product-scope repair while preserving separate Generate/Accept/Submit authorization."
+}

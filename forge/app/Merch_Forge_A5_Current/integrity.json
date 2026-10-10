@@ -1,0 +1,256 @@
+{
+  "schema": "forge.package_integrity.v1",
+  "hash_algorithm": "SHA-256",
+  "files": [
+    {
+      "path": "candidate_manifest.json",
+      "sha256": "ad0b5820f733af92a1e2517d4739cafa2accd4e1392bf3310679e9b13edde03a",
+      "size_bytes": 74940
+    },
+    {
+      "path": "Configure Image Provider.ps1",
+      "sha256": "45efd5c519cc292c18f08a606312f18261cdcb76072ab92b52973ee64b2bec97",
+      "size_bytes": 6991
+    },
+    {
+      "path": "Configure Image Provider.vbs",
+      "sha256": "d2def86c2b6174781738fffd8340077b42b553693ccca401a0dda00fa8502cb7",
+      "size_bytes": 753
+    },
+    {
+      "path": "Data\\AmazonPrintProfile.template.json",
+      "sha256": "cd6392abc7790e8901e543eb194a42d7356ab21f146d6234763c9e09d377848f",
+      "size_bytes": 726
+    },
+    {
+      "path": "Data\\Forge.GenerationProviders.json",
+      "sha256": "9dd37f684592f10ae5134d5306834a00d45a4e3ed2bff3896d7ea5c0158dad39",
+      "size_bytes": 9730
+    },
+    {
+      "path": "Data\\Forge.LastKnownIdeas.json",
+      "sha256": "953cdf1e829820555144fda4072287695928f56be2f229ceeb4142b4f781efec",
+      "size_bytes": 10522
+    },
+    {
+      "path": "Data\\GenerationJob.example.json",
+      "sha256": "24254b29d8b1fd825d4e8e670463e5c9e9f73b569d174634022982fbe156e4d4",
+      "size_bytes": 1415
+    },
+    {
+      "path": "Data\\GenerationResult.example.json",
+      "sha256": "08f66d51b4b539c0692a70500b06f4317d7893dde4d98d7f02e38037e2e3d0d4",
+      "size_bytes": 1688
+    },
+    {
+      "path": "Data\\LocalCheckEvidence.template.json",
+      "sha256": "74e35aa203ec94df3acb975bc4dc764d894d58bd988ec5f39137171ab117be52",
+      "size_bytes": 1517
+    },
+    {
+      "path": "Data\\LocalCheckRequest_README.txt",
+      "sha256": "532a8703308d0523d3c5d602a6d4a6c692c5ba23acc3bde7d221855c4e8e01db",
+      "size_bytes": 2460
+    },
+    {
+      "path": "Data\\PrintProduction_README.txt",
+      "sha256": "2829be6d0d6467f1c2d95b7e61bd33dd82c4b8d84d0939c4b8d87b4bdf6a6c51",
+      "size_bytes": 1614
+    },
+    {
+      "path": "Data\\ProviderSetup_README.txt",
+      "sha256": "f7f4ffd1a1850e0b44ef38e4b4cb2fb85a83e424351cdafec1684a0b42921798",
+      "size_bytes": 3862
+    },
+    {
+      "path": "Data\\PublicationReceipt.template.json",
+      "sha256": "8bd74dc4e42af03016fdba48d25d881be0badebc5e2e68fb4ca0f1369e810b80",
+      "size_bytes": 1007
+    },
+    {
+      "path": "Data\\SalesImport_README.txt",
+      "sha256": "772e2aa81d6745f1a970ee914a1ed66b5427b044d6e10abc0d3ff42f4725fa2e",
+      "size_bytes": 1274
+    },
+    {
+      "path": "Data\\SelfTest\\mock-01.png",
+      "sha256": "a4bbea03a53b8659a2a8b6db722553bc566ef3d17852c1421ab55c19cdb03060",
+      "size_bytes": 7715
+    },
+    {
+      "path": "Data\\SelfTest\\mock-02.png",
+      "sha256": "2851b8cdb0b9aa37f4a39d4384f9100052b4e1c6b7c5e67599209caf3bb9c915",
+      "size_bytes": 8035
+    },
+    {
+      "path": "Import Amazon Print Profile.ps1",
+      "sha256": "aee427e4a957d446e5cad55090748ce5b86db9d060b824b78cf4ba0bab6f747d",
+      "size_bytes": 4285
+    },
+    {
+      "path": "Import Amazon Print Profile.vbs",
+      "sha256": "3659e01c40b80984d1d23f0ffe6d1fa6b1ad8a490252609e37b7ee9f7ed5ce8a",
+      "size_bytes": 467
+    },
+    {
+      "path": "Install Merch Forge.vbs",
+      "sha256": "e6be4eb6ffd2e148136b2d75ec130e96d8df85241d88c9dbaac9c1007dfbd91f",
+      "size_bytes": 21877
+    },
+    {
+      "path": "MerchForgeCheckWorker.ps1",
+      "sha256": "374b07e0136048c4035f41891b55ab9eceffa598ad9ad16ccae343c6884b9441",
+      "size_bytes": 7173
+    },
+    {
+      "path": "MerchForgeGenerationWorker.ps1",
+      "sha256": "9c09688a4579fe8f156c8052b55e229b927286c48b23e8fabe55873e39fa36ae",
+      "size_bytes": 24122
+    },
+    {
+      "path": "MerchForgeLauncher.cmd",
+      "sha256": "a25dfc71cc8f126c472eb21ecefa731e46f7b123b2a0c438c9acf0240aff6abd",
+      "size_bytes": 1775
+    },
+    {
+      "path": "MerchForgePreflight.ps1",
+      "sha256": "b7dedaeade34b2ac607c80f71f44709ec5f98b321ecac281cc61a8df9758b2e1",
+      "size_bytes": 11516
+    },
+    {
+      "path": "MerchForgeProviderPipelineSelfTest.ps1",
+      "sha256": "f8bb08f50577f9aecb3a2660687d6b414af48493a0aaa937888bc7dfe74f4e79",
+      "size_bytes": 84757
+    },
+    {
+      "path": "MerchForgeWorkbench.ps1",
+      "sha256": "8048a37e210753f9228b57915b6381126984db97d6c60bf0af09d9c6e3413efb",
+      "size_bytes": 247736
+    },
+    {
+      "path": "Modules\\Forge.BackendStatus.ps1",
+      "sha256": "f6b96825281fdd37e13e8a7740c2b7d47cba35a74330a464c280c6de6fff23b9",
+      "size_bytes": 2114
+    },
+    {
+      "path": "Modules\\Forge.DataAdapter.ps1",
+      "sha256": "f23d240f6feffa0043f695ac5a8c964925837ef014ee19b430aef276f45c08d7",
+      "size_bytes": 1167
+    },
+    {
+      "path": "Modules\\Forge.DataViews.ps1",
+      "sha256": "c3e6e54627e5a6f95fb93cf44d7be2208f59a676ce3ac413ebd0b5032fdf84fa",
+      "size_bytes": 28333
+    },
+    {
+      "path": "Modules\\Forge.Diagnostics.ps1",
+      "sha256": "ff9bc2409466c41652dbb56d2acfed564e292ea6b03daddaf456646397e47f11",
+      "size_bytes": 4349
+    },
+    {
+      "path": "Modules\\Forge.DomainActions.ps1",
+      "sha256": "8bfc20f636173a7a663c858e01031bf3bf371f54f9aef1ccdd2d7fe1b64a690c",
+      "size_bytes": 28213
+    },
+    {
+      "path": "Modules\\Forge.Gates.ps1",
+      "sha256": "5a8d78f4c628d1b1cd3f2ab2c192c66670da82d4258911a6e64fbc1f718d9327",
+      "size_bytes": 10757
+    },
+    {
+      "path": "Modules\\Forge.GenerationAuthority.ps1",
+      "sha256": "5a1a9aeee6bfa683d9fba83b8c8eef75ddee418f9d1f5c828a894d24a3e9b329",
+      "size_bytes": 18088
+    },
+    {
+      "path": "Modules\\Forge.GenerationMaintenance.ps1",
+      "sha256": "518013132654681ec5a8cc15ca30c454096aad1775b91e7acf5518b9e574333c",
+      "size_bytes": 4446
+    },
+    {
+      "path": "Modules\\Forge.GenerationProvider.ps1",
+      "sha256": "6b722a65e9b581c8a1a95ecc4e271409c0150bf6d4c5381e8f1fc966373fb224",
+      "size_bytes": 17985
+    },
+    {
+      "path": "Modules\\Forge.GenerationWorkerBridge.ps1",
+      "sha256": "ec25ad6ab5c252ef0c7ecd42a493492ef8df64281e56502509aa0ae69d082360",
+      "size_bytes": 35748
+    },
+    {
+      "path": "Modules\\Forge.ImageValidation.ps1",
+      "sha256": "70eb5aeeb4f2491a657171d945d29b8cc5db75579b7bf095dea7bb03c9167a64",
+      "size_bytes": 4145
+    },
+    {
+      "path": "Modules\\Forge.LocalCore.ps1",
+      "sha256": "119377a2d9684077b0ae7f716f66305a5e65a961be8ff2852d25ff723fdd0ad7",
+      "size_bytes": 117716
+    },
+    {
+      "path": "Modules\\Forge.Localization.ps1",
+      "sha256": "64b3b046d1e5ffc44072d8e932a94aa0b4c182f1601ece17fc83a59ce4038363",
+      "size_bytes": 19151
+    },
+    {
+      "path": "Modules\\Forge.Media.ps1",
+      "sha256": "b4a6250f8dce016b4b08ddc3d8fb1d56c11836bdfa07c5fb9255317f20eebb52",
+      "size_bytes": 14304
+    },
+    {
+      "path": "Modules\\Forge.PrintChecks.ps1",
+      "sha256": "e8c836083ec2cd94889b3459f04a53c64a9002b083123accea3e5f34101de4d0",
+      "size_bytes": 16663
+    },
+    {
+      "path": "Modules\\Forge.ProductNavigation.ps1",
+      "sha256": "ed2bfc65c9a42a2ebd5a19c80ecac8e0312863293fc7d2eb1b75329b0f5eec54",
+      "size_bytes": 12700
+    },
+    {
+      "path": "Modules\\Forge.UI.Layout.ps1",
+      "sha256": "7dc8576f3a91057ee5d2bd7611c161d1c73ce6b257119aa0f648e979a0698ce1",
+      "size_bytes": 9480
+    },
+    {
+      "path": "Open Error Log.vbs",
+      "sha256": "8749bcde87f3e3be3eeeb6e0d3b766732b3889eb4725581d74f6e01b2b75f152",
+      "size_bytes": 1697
+    },
+    {
+      "path": "README.txt",
+      "sha256": "a47049a0348f141aa69dccc4e2d579831f05d050e1e7cabdc961ce4233e5c6ec",
+      "size_bytes": 17128
+    },
+    {
+      "path": "Remove Saved Access.vbs",
+      "sha256": "38d51383e0367579d20a4a26e14d29890ef7d4f942a239fcee2a39e6d33f7c9d",
+      "size_bytes": 469
+    },
+    {
+      "path": "Start Merch Forge.vbs",
+      "sha256": "013e9dcfbfb4c2a42c12b4f6ee208767d80509be9e877160f088a9d2984f51a1",
+      "size_bytes": 5334
+    },
+    {
+      "path": "Test Image Provider Online.ps1",
+      "sha256": "f25b4fdbc759344f5edc87d70405cf68e505118b786371cc146ab39d336e59cc",
+      "size_bytes": 3101
+    },
+    {
+      "path": "Test Image Provider Online.vbs",
+      "sha256": "70af1402830993ff228bcbdb2d67a8a7bfd831e8067fdea7222cfdbd837b482b",
+      "size_bytes": 1529
+    },
+    {
+      "path": "Test Image Provider.ps1",
+      "sha256": "43fc72fe3c69b1211ca5abbb2906510294637a747822b0fe16facba2d5513896",
+      "size_bytes": 8055
+    },
+    {
+      "path": "Test Image Provider.vbs",
+      "sha256": "ff417711e239d0d48c30c8f51810de7332c9f74288972dec5cee1dad97559d0c",
+      "size_bytes": 1309
+    }
+  ]
+}

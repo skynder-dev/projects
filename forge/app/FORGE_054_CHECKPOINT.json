@@ -1,0 +1,46 @@
+{
+  "schema": "forge.compact_checkpoint.v1",
+  "project_route": "FORGE",
+  "release_family": "054",
+  "title": "054 in-app Discover / Research read-only foundation",
+  "artifact": "054_Merch_Forge_DISCOVER_RESEARCH_RC.zip",
+  "completed": [
+    "Deployed forge-app 0.2.70 edge version 75 with read-only discover_snapshot contract.",
+    "Added Discover as a first-class desktop navigation surface.",
+    "Added live ranked niche list with score/confidence/concept count.",
+    "Added niche detail summary and score-dimension display.",
+    "Added recent research notes and active evidence source display.",
+    "Added EN/RU/ES Discover navigation and surface labels.",
+    "Preserved 053 inner startup chain byte-for-byte.",
+    "Static/package checks 37/37 PASS and inner integrity 50/50 PASS."
+  ],
+  "live_research_baseline": {
+    "niches": 48,
+    "research_notes": 144,
+    "active_sources": 16,
+    "concepts": 174
+  },
+  "backend": {
+    "slug": "forge-app",
+    "app_version": "0.2.70",
+    "edge_version": 75,
+    "deployment_bundle_sha256": "1b1415278e929a9af1d4d536feb5e1e30b49755dcceec2d2a4d049314ced3218",
+    "discover_contract": "forge.discover_snapshot.v1"
+  },
+  "authority": {
+    "edge_function_deployment": true,
+    "supabase_schema_mutation": false,
+    "supabase_product_data_mutation": false,
+    "generation_authorized": false,
+    "accept_authorized": false,
+    "paid_provider_authorized": false,
+    "external_submission_authorized": false
+  },
+  "unfinished": [
+    "Native Windows WPF smoke for 054 not yet run.",
+    "Discover is read-only; creation of new research jobs / new niche discovery is not yet exposed in-app.",
+    "Research-to-new-concept draft action is not yet implemented.",
+    "Portfolio/Performance enrichment remains future autonomous work."
+  ],
+  "next_exact_action": "Autonomous: add safe research-to-concept draft preparation inside Forge without paid generation or external submission; then improve Portfolio/Performance. Owner testing of 054 is not required before that autonomous work."
+}

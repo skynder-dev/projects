@@ -1,0 +1,44 @@
+{
+  "schema": "forge.generation_result.v4",
+  "job_id": "gen-00000000000000000000000000000000",
+  "job_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "status": "completed",
+  "provider_key": "openai_image_api",
+  "provider_profile": "draft",
+  "provider_contract_version": "5",
+  "provider_registry_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "provider_config_fingerprint": "0000000000000000000000000000000000000000000000000000000000000000",
+  "provider_request_id": "req_example",
+  "provider_request_count": 1,
+  "automatic_retry": false,
+  "internal_mock": false,
+  "network_call": true,
+  "billable": true,
+  "model": "gpt-image-2.5-flare-2026-09-08",
+  "concept_key": "example",
+  "source_revision_id": "revision-example",
+  "source_revision_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "provider_response": {
+    "request_id": "req_example",
+    "usage": {}
+  },
+  "assets": [
+    {
+      "file": "gen-example-01.png",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "size_bytes": 0,
+      "mime_type": "image/png",
+      "variant_index": 1,
+      "width_px": 1024,
+      "height_px": 1024,
+      "has_alpha": true,
+      "revised_prompt": "Example revised prompt"
+    }
+  ],
+  "started_at": "2026-10-01T00:00:00Z",
+  "completed_at": "2026-10-01T00:00:01Z",
+  "external_submission_authorized": false,
+  "prompt_compiler_version": "forge.prompt.apparel.v2",
+  "prompt_template_sha256": "8f5e3bbdd3d8ec3e1205c6bf2d18e541a6b34532a82539c29320ae02e12efdd4"
+}

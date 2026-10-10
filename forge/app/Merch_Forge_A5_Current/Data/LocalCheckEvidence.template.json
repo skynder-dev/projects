@@ -1,0 +1,58 @@
+{
+  "schema": "forge.local_check_evidence.v3",
+  "request_id": "REPLACE_WITH_EXPORTED_REQUEST_ID",
+  "lineage_key": "REPLACE_WITH_EXPORTED_LINEAGE_KEY",
+  "concept_key": "REPLACE_WITH_CONCEPT_KEY",
+  "concept_revision_id": "REPLACE_WITH_CURRENT_REVISION_ID",
+  "artwork_sha256": "REPLACE_WITH_EXACT_ACCEPTED_ARTWORK_SHA256",
+  "listing_hash": "REPLACE_WITH_CURRENT_LISTING_HASH_FOR_POLICY_AND_METADATA_CHECK",
+  "ip": {
+    "state": "needs_review",
+    "source": "",
+    "note": "",
+    "checked_at": "",
+    "authority_kind": "owner_attested_external",
+    "evidence_refs": [],
+    "attested": false
+  },
+  "visual": {
+    "state": "needs_review",
+    "source": "",
+    "note": "",
+    "checked_at": "",
+    "authority_kind": "owner_exact_accept",
+    "evidence_refs": [],
+    "attested": false
+  },
+  "print": {
+    "state": "needs_review",
+    "source": "",
+    "note": "",
+    "checked_at": "",
+    "authority_kind": "owner_attested_external",
+    "evidence_refs": [],
+    "attested": false
+  },
+  "policy": {
+    "state": "needs_review",
+    "source": "",
+    "note": "",
+    "checked_at": "",
+    "authority_kind": "owner_attested_external",
+    "evidence_refs": [],
+    "attested": false,
+    "channel_profile_fingerprint": "",
+    "marketplace": "",
+    "product_type_key": "",
+    "template_key": ""
+  },
+  "metadata": {
+    "state": "needs_review",
+    "source": "",
+    "note": "",
+    "checked_at": "",
+    "authority_kind": "owner_attested_external",
+    "evidence_refs": [],
+    "attested": false
+  }
+}
