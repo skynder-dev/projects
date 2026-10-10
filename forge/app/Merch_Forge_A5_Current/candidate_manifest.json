@@ -112,8 +112,8 @@
       },
       {
         "path": "Modules\\Forge.LocalCore.ps1",
-        "sha256": "6431b0aa9fa6f54835d68ffa33766f2a875d85348f50a03636e3ff4f31c9c226",
-        "size_bytes": 118396
+        "sha256": "0246967c98a33cac5fbcb4c1b47975cadb0b4d7cd215931e4cb392f0044cb1e0",
+        "size_bytes": 119298
       },
       {
         "path": "Modules\\Forge.Localization.ps1",

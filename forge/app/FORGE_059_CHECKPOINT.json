@@ -1,7 +1,7 @@
 {
   "schema": "forge.release_checkpoint.v1",
   "package": "059_Merch_Forge_LOCAL_PACKAGE_PATH_RC",
-  "previous_package": "058_Merch_Forge_PORTFOLIO_PIPELINE_RC",
+  "previous_package": "059_Merch_Forge_LOCAL_PACKAGE_PATH_RC",
   "app_version": "2.11.0-forge-local-package-path",
   "installer_generation": "00000000000000100242",
   "static": "13/13",

@@ -303,6 +303,10 @@ function Add-LocalArtworkFromPath([string]$Path,[string]$GenerationRequestId='lo
     return $existing
 }
 function New-LocalVariantDisplay($Variant) {
+    # The variant list UI (Format-Variant, Format-VariantAdvanced, Update-VariantSelection) reads server-variant fields
+    # directly; under StrictMode a missing field throws on selection. Give local artwork neutral values for all of them.
+    $defaults=[ordered]@{status='available';review_state='neutral';review_note='';latest_reason_codes=@();variant_key=[string](Get-PropertyValue $Variant 'id');preview_key='';generation_request_id='';stale_revision=$false;created_at=[string](Get-PropertyValue $Variant 'imported_at');asset_metadata=[pscustomobject]@{mime_type=[string](Get-PropertyValue $Variant 'mime_type');width_px=(Get-PropertyValue $Variant 'width_px');height_px=(Get-PropertyValue $Variant 'height_px');source='local'}}
+    foreach($k in $defaults.Keys){if($null -eq $Variant.PSObject.Properties[$k]){$Variant|Add-Member -NotePropertyName $k -NotePropertyValue $defaults[$k] -Force}}
     $Variant|Add-Member -NotePropertyName display -NotePropertyValue ("Local artwork {0} · {1}×{2} · {3}" -f (Get-PropertyValue $Variant 'variant_index'),(Get-PropertyValue $Variant 'width_px'),(Get-PropertyValue $Variant 'height_px'),$(if([bool](Get-PropertyValue $Variant 'accepted')){'accepted'}else{'review'})) -Force
     return $Variant
 }
