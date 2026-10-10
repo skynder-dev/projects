@@ -136,7 +136,7 @@ def template_script(rec: dict, claims: list[dict]) -> dict:
     q = v("purpose_quote", "quote")
     if q and len(q.split()) <= 32:
         segs.append(dict(role="purpose", visual="quote", voiceover=f"In the agency's words: {q}",
-                         on_screen={"kicker": "WHAT IT FUNDS", "headline": f"“{q}”", "sub": "Official synopsis"},
+                         on_screen={"kicker": "FROM THE SYNOPSIS", "headline": f"“{q}”", "sub": "Official Grants.gov synopsis"},
                          claim_keys=["purpose_quote"]))
 
     # 6 deadline
