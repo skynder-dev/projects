@@ -10,6 +10,8 @@ WHAT IS NEW (059)
   listing -> trusted print check -> owner evidence -> READY_FOR_MANUAL_UPLOAD package -> receipt -> sales).
 - FIX: selecting an imported or locally generated artwork in the Artwork list threw (missing review/stale fields
   under StrictMode). Local artwork now carries the fields the list expects. Pre-existing.
+- FIX: royalty amounts were blank in the Performance and Home texts ("royalties: ."): "${2:0.00}" inside double
+  quotes is a PowerShell variable name, not a dollar sign + number. Pre-existing. These texts are now EN/RU/ES.
 - Imports (check evidence, publication receipt, sales CSV) are split into "choose file" and "process file";
   behaviour in the app is unchanged.
 - "Import Amazon Print Profile" accepts -SourcePath and -NonInteractive (used by CI; normal double-click unchanged).

@@ -4,7 +4,7 @@
   "files": [
     {
       "path": "candidate_manifest.json",
-      "sha256": "96640fe8191390a11603452c27a5f4ecb9abc0765b39b16c11e3d8ca3a55b07f",
+      "sha256": "1019171240ed3ec99682664ac617380dc4981c990fd6ae377217b89d2428495a",
       "size_bytes": 77228
     },
     {
@@ -189,8 +189,8 @@
     },
     {
       "path": "Modules\\Forge.LocalCore.ps1",
-      "sha256": "0246967c98a33cac5fbcb4c1b47975cadb0b4d7cd215931e4cb392f0044cb1e0",
-      "size_bytes": 119298
+      "sha256": "66bb8680315941d2646f80d17b5dfe95ceab5739098a161c0ac722b4ff672979",
+      "size_bytes": 119637
     },
     {
       "path": "Modules\\Forge.Localization.ps1",
@@ -204,8 +204,8 @@
     },
     {
       "path": "Modules\\Forge.Pipeline.ps1",
-      "sha256": "0575c66f2f55981c04804f7c88ed0fb7875869d4657a2c396f0389b3c66b8f52",
-      "size_bytes": 14357
+      "sha256": "b615509522534e02b8d2a69270b78d2e214442707998acc2e679ab36ea4c8194",
+      "size_bytes": 18244
     },
     {
       "path": "Modules\\Forge.PrintChecks.ps1",

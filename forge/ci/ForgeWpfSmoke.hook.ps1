@@ -211,6 +211,8 @@ $Window.Add_ContentRendered({
                 Ci-Check 'pkg_sales_imported' ($script:Ci.errors.Count -eq $before) (($script:Ci.errors | Select-Object -Last 1))
                 Ci-Click $NavPerformanceButton 'NavPerformanceButton'
                 Ci-Check 'pkg_performance_linked_only' ($PerfSales7Value.Text -eq '3' -and $PerfSales30Value.Text -eq '5' -and $PerfRoyalties30Value.Text -eq '$7.50') ($PerfSales7Value.Text+' / '+$PerfSales30Value.Text+' / '+$PerfRoyalties30Value.Text)
+                Ci-Check 'pkg_performance_text_shows_amount' ($PerformanceEmpty.Text -like '*$7.50*' -and $PerformanceEmpty.Text -like '*роялти*') $PerformanceEmpty.Text
+                Ci-Check 'pkg_home_text_shows_amounts' ($HomePerformanceBody.Text -like '*$4.50*' -and $HomePerformanceBody.Text -like '*$7.50*') $HomePerformanceBody.Text
                 Ci-Shot '14-performance'
             }
         } else {

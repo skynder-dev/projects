@@ -16,6 +16,10 @@ function Register-PipelineUiText {
             'pipe.n.undecided'='Review the idea: KEEP, EDIT, REGEN or SKIP.'; 'pipe.n.edit'='Rewrite the idea, then decide again.'; 'pipe.n.regen'='Make new artwork for this idea.';
             'pipe.n.keep_no_artwork'='Export the brief, then import or generate artwork and accept one.'; 'pipe.n.artwork_accepted'='Complete the checks (IP, print, policy, metadata).';
             'pipe.n.checks_ready'='Build the manual-upload package.'; 'pipe.n.package_ready'='Upload manually, then import the publication receipt.'; 'pipe.n.published'='Import sales to track it.'; 'pipe.n.skip'='Parked.';
+            'biz.home.linked'='Verified linked import · 7d: {0} sale(s), ${1:0.00} · 30d: {2}, ${3:0.00} · 90d: {4}, ${5:0.00}'; 'biz.home.unlinked'='Imported data is not linked to a verified Forge publication receipt; {0} row(s) excluded.'; 'biz.home.none'='Import a sales/royalty CSV to populate local performance.';
+            'biz.portfolio.local'='Local core: {0} accepted design(s), {1} valid package(s), {2} verified published product(s). Live listing health is not fabricated.'; 'biz.receipts.some'='Verified published products: {0} · channels: {1}'; 'biz.receipts.none'='No verified local publication receipt imported.';
+            'biz.perf.linked'='Verified linked sales rows: {0}. 30-day units: {1}; royalties: ${2:0.00}.'; 'biz.perf.unlinked'='No imported sales rows match a verified Forge product ID. Unlinked rows: {0}.'; 'biz.perf.none'='No local sales CSV imported yet.';
+            'biz.sales.some'='Imported: {0} · linked: {1} · unlinked: {2} · undated linked: {3} · future linked: {4}'; 'biz.sales.none'='No local sales data imported.';
             'pipe.empty'='No ideas yet. Create a draft from Discover or reconnect to load ideas.'; 'pipe.draft'='research draft'; 'pipe.niche.none'='(no niche)'
         }
         ru=@{
@@ -26,6 +30,10 @@ function Register-PipelineUiText {
             'pipe.n.undecided'='Посмотрите идею: ОСТАВИТЬ, ИЗМЕНИТЬ, ЗАНОВО или ПРОПУСТИТЬ.'; 'pipe.n.edit'='Перепишите идею и решите снова.'; 'pipe.n.regen'='Сделайте новый макет для этой идеи.';
             'pipe.n.keep_no_artwork'='Экспортируйте бриф, затем импортируйте или сгенерируйте макет и примите один.'; 'pipe.n.artwork_accepted'='Пройдите проверки (IP, печать, политика, метаданные).';
             'pipe.n.checks_ready'='Соберите пакет для ручной загрузки.'; 'pipe.n.package_ready'='Загрузите вручную, затем импортируйте квитанцию публикации.'; 'pipe.n.published'='Импортируйте продажи, чтобы отслеживать.'; 'pipe.n.skip'='Отложено.';
+            'biz.home.linked'='Проверенный импорт · 7 дн.: {0} прод., ${1:0.00} · 30 дн.: {2}, ${3:0.00} · 90 дн.: {4}, ${5:0.00}'; 'biz.home.unlinked'='Импортированные данные не связаны с проверенной квитанцией публикации Forge; исключено строк: {0}.'; 'biz.home.none'='Импортируйте CSV с продажами и роялти, чтобы заполнить результаты.';
+            'biz.portfolio.local'='Локально: принятых макетов {0}, действующих пакетов {1}, проверенных опубликованных товаров {2}. Состояние карточек не выдумывается.'; 'biz.receipts.some'='Проверенных опубликованных товаров: {0} · площадок: {1}'; 'biz.receipts.none'='Проверенных квитанций публикации пока нет.';
+            'biz.perf.linked'='Проверенных строк продаж: {0}. Продаж за 30 дней: {1}; роялти: ${2:0.00}.'; 'biz.perf.unlinked'='Ни одна строка продаж не совпала с проверенным товаром Forge. Несвязанных строк: {0}.'; 'biz.perf.none'='CSV с продажами ещё не импортирован.';
+            'biz.sales.some'='Импортировано: {0} · связано: {1} · не связано: {2} · без даты: {3} · с будущей датой: {4}'; 'biz.sales.none'='Данные о продажах не импортированы.';
             'pipe.empty'='Идей пока нет. Создайте черновик в «Поиске» или подключитесь, чтобы загрузить идеи.'; 'pipe.draft'='черновик исследования'; 'pipe.niche.none'='(без ниши)'
         }
         es=@{
@@ -36,6 +44,10 @@ function Register-PipelineUiText {
             'pipe.n.undecided'='Revisa la idea: MANTENER, EDITAR, REGENERAR u OMITIR.'; 'pipe.n.edit'='Reescribe la idea y decide de nuevo.'; 'pipe.n.regen'='Crea arte nuevo para esta idea.';
             'pipe.n.keep_no_artwork'='Exporta el brief, importa o genera arte y acepta uno.'; 'pipe.n.artwork_accepted'='Completa las revisiones (IP, impresión, política, metadatos).';
             'pipe.n.checks_ready'='Crea el paquete de carga manual.'; 'pipe.n.package_ready'='Súbelo manualmente e importa el recibo de publicación.'; 'pipe.n.published'='Importa ventas para seguirlo.'; 'pipe.n.skip'='Aparcado.';
+            'biz.home.linked'='Importación verificada · 7 d: {0} venta(s), ${1:0.00} · 30 d: {2}, ${3:0.00} · 90 d: {4}, ${5:0.00}'; 'biz.home.unlinked'='Los datos importados no están vinculados a un recibo de publicación verificado; {0} fila(s) excluida(s).'; 'biz.home.none'='Importa un CSV de ventas y regalías para ver resultados.';
+            'biz.portfolio.local'='Local: {0} diseño(s) aceptado(s), {1} paquete(s) válido(s), {2} producto(s) publicado(s) verificado(s). El estado de las fichas no se inventa.'; 'biz.receipts.some'='Productos publicados verificados: {0} · canales: {1}'; 'biz.receipts.none'='Aún no hay recibos de publicación verificados.';
+            'biz.perf.linked'='Filas de ventas verificadas: {0}. Unidades en 30 días: {1}; regalías: ${2:0.00}.'; 'biz.perf.unlinked'='Ninguna fila de ventas coincide con un producto verificado de Forge. Filas sin vincular: {0}.'; 'biz.perf.none'='Aún no se ha importado ningún CSV de ventas.';
+            'biz.sales.some'='Importadas: {0} · vinculadas: {1} · sin vincular: {2} · sin fecha: {3} · con fecha futura: {4}'; 'biz.sales.none'='No hay datos de ventas importados.';
             'pipe.empty'='Aún no hay ideas. Crea un borrador desde Descubrir o reconecta para cargar ideas.'; 'pipe.draft'='borrador de investigación'; 'pipe.niche.none'='(sin nicho)'
         }
     }
