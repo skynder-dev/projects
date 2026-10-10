@@ -96,6 +96,7 @@ function Show-ProductSection([string]$Section) {
         'portfolio' { $PortfolioLandingScroll.Visibility='Visible'; if($null -ne $ConceptTitle){$ConceptTitle.Text=Get-UiText 'portfolio.title' 'Portfolio'}; if($null -ne $ConceptMeta){$ConceptMeta.Text=Get-UiText 'portfolio.body' 'Published products, channels and listing health.'}; try{Update-PortfolioPipelineSurface}catch{Write-AppLog 'WARN' ('Portfolio pipeline refresh failed: '+$_.Exception.Message)} }
         'performance' { $PerformanceLandingScroll.Visibility='Visible'; if($null -ne $ConceptTitle){$ConceptTitle.Text=Get-UiText 'performance.title' 'Performance'}; if($null -ne $ConceptMeta){$ConceptMeta.Text=Get-UiText 'performance.body' 'Sales, royalties and product momentum.'} }
         default {
+            if($null -ne $script:Current){ try{Restore-ConceptHeader}catch{} }
             if($null -eq $script:Current){
                 $SectionLandingScroll.Visibility='Visible';Set-SectionLanding $Section
                 if($null -ne $ConceptTitle){$ConceptTitle.Text=$SectionLandingTitle.Text}
@@ -108,7 +109,6 @@ function Show-ProductSection([string]$Section) {
                     if($null -ne $ContextNav){$ContextNav.Visibility='Collapsed'}
                 } elseif($Section -in @('artwork','checks','publish')) {
                     Enter-LocalCoreSection $Section
-                    if($null -ne $ConceptTitle){$ConceptTitle.Text=if($Section -eq 'artwork'){Get-UiText 'section.artwork.title' 'Artwork'}elseif($Section -eq 'checks'){Get-UiText 'section.checks.title' 'Checks'}else{Get-UiText 'section.publish.title' 'Publish'}}
                     if($null -ne $ConceptMeta){$ConceptMeta.Text=Get-UiText 'offline.snapshot.meta' 'Local snapshot · live service unavailable'}
                     if($null -ne $ContextNav){$ContextNav.Visibility='Collapsed'}
                 } else {
@@ -129,6 +129,16 @@ function Show-ProductSection([string]$Section) {
         }
     }
     Update-GlobalBusinessSurfaces;Update-ResponsiveLayout
+}
+function Restore-ConceptHeader {
+    # Portfolio/Performance/Home/Discover put their own title in the shared header; put the idea back when returning to it.
+    if($null -eq $script:Current -or $null -eq $ConceptTitle){return}
+    $c=Get-PropertyValue $script:Current 'concept'; if($null -eq $c){return}
+    $ConceptTitle.Text=[string](Get-PropertyValue $c 'title')
+    if($null -eq $ConceptMeta){return}
+    if(Test-CurrentIsResearchDraft){ $ConceptMeta.Text=(Get-UiText 'draft.meta' 'Local research draft · revision {0} · not on the server') -f [int](Get-PropertyValue $c 'current_revision_no') }
+    elseif($script:OfflineMode -and $script:OfflineSnapshotMode){ $ConceptMeta.Text=Get-UiText 'offline.snapshot.meta' 'Local snapshot · live service unavailable' }
+    else { $ConceptMeta.Text=('{0} · revision {1}' -f (Get-PropertyValue $c 'niche_name'),(Get-PropertyValue $c 'current_revision_no')) }
 }
 function Show-HomeLanding([bool]$Offline=$false) { $script:OfflineMode=$Offline;Show-ProductSection 'home' }
 function Show-ConceptSurface { if($null -eq $script:Current){Show-ProductSection $script:ProductSection;return};if(@('home','discover','portfolio','performance') -contains $script:ProductSection){$script:ProductSection='ideas'};Show-ProductSection $script:ProductSection }

@@ -285,7 +285,7 @@ if($Phase -eq 'restart'){
     if($hasAmazonProfile){
         $now=[DateTime]::UtcNow
         $vp={param($d) [pscustomobject]@{canvas_width_px=4500;canvas_height_px=5400;dpi=300;marketplace='amazon.com_us';product_type_key='standard_tshirt';valid_until=$now.AddDays($d).ToString('o')}}
-        $s1=Get-AmazonProfileStatusFrom $false $null $null $now; $s2=Get-AmazonProfileStatusFrom $true (& $vp 30.5) $null $now; $s3=Get-AmazonProfileStatusFrom $true (& $vp 3.5) $null $now
+        $s1=Get-AmazonProfileStatusFrom $false $null $null $now; $s2=Get-AmazonProfileStatusFrom $true (& $vp 29.6) $null $now; $s3=Get-AmazonProfileStatusFrom $true (& $vp 2.6) $null $now
         $s4=Get-AmazonProfileStatusFrom $true $null ([pscustomobject]@{valid_until=$now.AddDays(-2).ToString('o')}) $now; $s5=Get-AmazonProfileStatusFrom $true $null ([pscustomobject]@{x=1}) $now
         Check 'prof_states' ((@($s1,$s2,$s3,$s4,$s5) | ForEach-Object { $_.state }) -join ',' -eq 'none,valid,expiring,expired,invalid') ((@($s1,$s2,$s3,$s4,$s5) | ForEach-Object { $_.state }) -join ',')
         $prevLoc=$script:Locale; $script:Locale='ru'; $txt2=Format-AmazonProfileStatus $s2; $txt3=Format-AmazonProfileStatus $s3; $txt1=Format-AmazonProfileStatus $s1; $script:Locale=$prevLoc

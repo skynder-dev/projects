@@ -1,16 +1,15 @@
-MERCH FORGE 065 Merch Forge AMAZON PROFILE RC
+MERCH FORGE 066 Merch Forge CRASH HUNT RC
 
 START
 1. Extract the whole folder.
-2. Run START_065_MERCH_FORGE.vbs.
+2. Run START_066_MERCH_FORGE.vbs.
 
-WHAT IS NEW (065)
-- Checks -> new "Amazon print profile" card: shows the profile (size, DPI, marketplace, product type)
-  and how many days it is valid; warns when it expires within 7 days, has expired or is missing.
-- "Fill Amazon profile..." form: choose the downloaded Amazon template file - for a PNG the size and the
-  file fingerprint are filled automatically; enter product type and how long it is valid (max 120 days),
-  tick "I copied these values from the current Amazon template". The form writes the same attestation
-  file and runs the same standalone importer, so validation is unchanged.
-- "Import profile file..." for a filled JSON profile; importer errors are now translated.
-- Confirm-checks form: checklist lines on separate lines; readable checkbox text.
-- Includes 064 and earlier (055-063).
+WHAT IS NEW (066)
+- Checks list is readable: "IP · passed", "Artwork · passed", "Print file · passed"... in the app language,
+  common check notes translated.
+- Coming back to an idea from Portfolio/Performance/Home/Discover shows the idea's title again
+  (before, the header could still say "Portfolio" while you were in Checks).
+- Amazon profile days left are rounded up (30-day profile shows 30, not 29).
+- New Windows test phase "backend down": every button in every section and tab is clicked with the server
+  unavailable; any crash fails the build.
+- Includes 065 and earlier (055-064).

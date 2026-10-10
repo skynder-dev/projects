@@ -11,6 +11,8 @@ function Register-CheckAttestationUiText {
     if($null -eq $script:UiText){return}
     $texts=@{
         en=@{
+            'chk.label.ip'='IP'; 'chk.label.visual'='Artwork'; 'chk.label.print'='Print file'; 'chk.label.policy'='Amazon policy'; 'chk.label.metadata'='Listing text';
+            'chk.view.pass'='passed'; 'chk.view.needs_review'='needs checking'; 'chk.view.blocked'='problem'; 'chk.view.not_required'='not required'; 'chk.view.none'='not checked'; 'chk.view.'='not checked';
             'chk.title'='Confirm checks';
             'chk.intro'='Check the items below yourself, then choose a result. A passed check needs a link or a short note on where you checked. This is not a legal opinion.';
             'chk.ip.title'='IP: trademarks and copyright';
@@ -34,6 +36,8 @@ function Register-CheckAttestationUiText {
             'checks.loaded'='Checks loaded. Press "Confirm checks…" to confirm IP, policy and listing text.'
         }
         ru=@{
+            'chk.label.ip'='IP'; 'chk.label.visual'='Макет'; 'chk.label.print'='Файл для печати'; 'chk.label.policy'='Правила Amazon'; 'chk.label.metadata'='Текст карточки';
+            'chk.view.pass'='пройдено'; 'chk.view.needs_review'='нужно проверить'; 'chk.view.blocked'='проблема'; 'chk.view.not_required'='не требуется'; 'chk.view.none'='не проверено'; 'chk.view.'='не проверено';
             'chk.title'='Подтвердить проверки';
             'chk.intro'='Проверьте пункты ниже сами и выберите результат. Для «всё в порядке» нужна ссылка или короткая заметка, где вы проверяли. Это не юридическое заключение.';
             'chk.ip.title'='IP: товарные знаки и авторские права';
@@ -57,6 +61,8 @@ function Register-CheckAttestationUiText {
             'checks.loaded'='Проверки загружены. Нажмите «Подтвердить проверки…», чтобы подтвердить IP, правила и текст карточки.'
         }
         es=@{
+            'chk.label.ip'='PI'; 'chk.label.visual'='Diseño'; 'chk.label.print'='Archivo de impresión'; 'chk.label.policy'='Política de Amazon'; 'chk.label.metadata'='Texto de la ficha';
+            'chk.view.pass'='aprobado'; 'chk.view.needs_review'='hay que revisar'; 'chk.view.blocked'='problema'; 'chk.view.not_required'='no requerido'; 'chk.view.none'='sin revisar'; 'chk.view.'='sin revisar';
             'chk.title'='Confirmar revisiones';
             'chk.intro'='Revisa tú mismo los puntos de abajo y elige un resultado. Una revisión aprobada necesita un enlace o una nota breve de dónde lo comprobaste. No es una opinión legal.';
             'chk.ip.title'='PI: marcas y derechos de autor';

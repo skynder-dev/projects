@@ -425,7 +425,12 @@ function Import-LocalCheckEvidenceFromPath([string]$Path) {
     } catch {Show-Error $_.Exception.Message;$StatusText.Text='Check evidence import failed.'}
 }
 function Format-LocalCheck([string]$Label,$Check) {
-    if($null -eq $Check){return "$Label · Not checked"};$state=[string](Get-PropertyValue $Check 'state');$note=[string](Get-PropertyValue $Check 'note');return ("{0} · {1}`n{2}" -f $Label,$state,$note)
+    $keys=@{IP='ip';Visual='visual';Print='print';Policy='policy';Metadata='metadata'}; $k=if($keys.ContainsKey($Label)){$keys[$Label]}else{$Label.ToLowerInvariant()}
+    $lab=Get-UiText ('chk.label.'+$k) $Label
+    if($null -eq $Check){return ("{0} · {1}" -f $lab,(Get-UiText 'chk.view.none' 'Not checked'))}
+    $state=[string](Get-PropertyValue $Check 'state'); $st=Get-UiText ('chk.view.'+$state) $state
+    $note=[string](Get-PropertyValue $Check 'note'); try{ if(Get-Command Translate-UiMessage -ErrorAction SilentlyContinue){ $note=Translate-UiMessage $note } }catch{}
+    return ("{0} · {1}`n{2}" -f $lab,$st,$note)
 }
 function Load-LocalChecksUi {
     if($null -eq $script:Current){return};$lc=Ensure-LocalCoreConceptFromCurrent;if($null -eq $lc){return};try{if($null-ne$lc.active_acceptance){$null=Invoke-LocalCheckAutomation;$lc=Ensure-LocalCoreConceptFromCurrent}}catch{Write-AppLog 'WARN' ('Local check automation on Checks open failed: '+$_.Exception.Message)}

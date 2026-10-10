@@ -1450,6 +1450,46 @@
    "en": "The profile import failed (exit {0}).",
    "ru": "Импорт профиля не удался (код {0}).",
    "es": "La importación del perfil falló (código {0})."
+  },
+  {
+   "en": "IP screen is not available locally. No legal clearance is implied.",
+   "ru": "Проверка IP не выполняется автоматически. Это не юридическое заключение — подтвердите проверку сами.",
+   "es": "La revisión de PI no se hace automáticamente. No es una opinión legal: confírmala tú."
+  },
+  {
+   "en": "Owner explicitly reviewed and accepted this exact artwork; the local file decoded successfully and its SHA-256 was verified before acceptance.",
+   "ru": "Вы сами просмотрели и приняли именно этот макет; файл открывается, его отпечаток SHA-256 проверен.",
+   "es": "Revisaste y aceptaste exactamente este diseño; el archivo se abre y su huella SHA-256 está verificada."
+  },
+  {
+   "en": "Exact accepted transparent PNG matches the owner-attested current Amazon template canvas.",
+   "ru": "Принятый прозрачный PNG совпадает с холстом текущего шаблона Amazon из вашего профиля.",
+   "es": "El PNG transparente aceptado coincide con el lienzo de la plantilla actual de Amazon de tu perfil."
+  },
+  {
+   "en": "Authoritative channel print profile is not available locally.",
+   "ru": "Нет действующего Amazon-профиля печати. Заполните его в карточке «Amazon-профиль печати».",
+   "es": "No hay un perfil de impresión de Amazon válido. Rellénalo en la tarjeta del perfil."
+  },
+  {
+   "en": "Marketplace metadata must be checked against this exact listing revision.",
+   "ru": "Текст карточки нужно проверить для этой версии карточки.",
+   "es": "El texto de la ficha debe revisarse para esta versión de la ficha."
+  },
+  {
+   "en": "Marketplace policy evidence must be bound to this exact listing revision.",
+   "ru": "Правила Amazon нужно подтвердить для этой версии карточки.",
+   "es": "La política de Amazon debe confirmarse para esta versión de la ficha."
+  },
+  {
+   "en": "Blocked: save listing metadata for this exact accepted artwork.",
+   "ru": "Сначала сохраните текст карточки для принятого макета (вкладка «Публикация»).",
+   "es": "Primero guarda el texto de la ficha para el diseño aceptado (pestaña Publicar)."
+  },
+  {
+   "en": "Blocked: listing metadata belongs to another accepted artwork.",
+   "ru": "Текст карточки сохранён для другого макета. Сохраните его заново.",
+   "es": "El texto de la ficha pertenece a otro diseño. Guárdalo de nuevo."
   }
  ]
 }

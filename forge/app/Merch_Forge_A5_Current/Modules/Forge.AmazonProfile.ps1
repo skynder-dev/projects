@@ -74,7 +74,7 @@ function Get-AmazonProfileStatusFrom([bool]$Exists,$ValidProfile,$RawProfile,[da
     if($null -ne $ValidProfile){
         $vu=$null; try{$vu=ConvertTo-ProfileUtc (Get-PropertyValue $ValidProfile 'valid_until')}catch{}
         if($null -eq $vu){ return [pscustomobject]@{state='invalid';args=@()} }
-        $days=[int][Math]::Floor(($vu-$NowUtc).TotalDays)
+        $days=[int][Math]::Ceiling(($vu-$NowUtc).TotalDays)
         $a=@([int](Get-PropertyValue $ValidProfile 'canvas_width_px'),[int](Get-PropertyValue $ValidProfile 'canvas_height_px'),[int](Get-PropertyValue $ValidProfile 'dpi'),[string](Get-PropertyValue $ValidProfile 'marketplace'),[string](Get-PropertyValue $ValidProfile 'product_type_key'),$vu.ToString('yyyy-MM-dd'),$days)
         return [pscustomobject]@{state=$(if($days -le 7){'expiring'}else{'valid'});args=$a}
     }

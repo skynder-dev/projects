@@ -4,7 +4,7 @@
   "files": [
     {
       "path": "candidate_manifest.json",
-      "sha256": "53c25e3f77271672d68b49fb6392f6ad55e1f4b51894c23f54931f21acf81cf9",
+      "sha256": "07a38fb04b6a36f9ae5719d9614731173cf719919868b3e2fa883c271ac6f6b3",
       "size_bytes": 77569
     },
     {
@@ -34,8 +34,8 @@
     },
     {
       "path": "Data\\Forge.MessageTranslations.json",
-      "sha256": "3942a24956b0b493af25bf7bf149613c1e4fe7ccdcfe81c327a8e226970eaa7f",
-      "size_bytes": 77160
+      "sha256": "a5ee24c5425f2defa8b287e23dafddd11ad91ebf4087a14025c6b3d5aa8e55a7",
+      "size_bytes": 79959
     },
     {
       "path": "Data\\GenerationJob.example.json",
@@ -129,18 +129,18 @@
     },
     {
       "path": "MerchForgeResearchDraftSelfTest.ps1",
-      "sha256": "ee602cf8294951a30e34f900a96a96c8b1828af3d1dfdb5e3ea30384f1ae76b0",
+      "sha256": "8013a892ea6ea7292bd23bd34096a61b51ea974d4e31ac88d099e3ac317bff70",
       "size_bytes": 34901
     },
     {
       "path": "MerchForgeWorkbench.ps1",
-      "sha256": "d3789230229b28f1df31404e02c4e853d8571e463432975d4d2877cfe0349118",
-      "size_bytes": 255652
+      "sha256": "43cc880d5c96a50c83dec0508db9bc505c0b9c7ab532036a697f9eeaafdb23dd",
+      "size_bytes": 255644
     },
     {
       "path": "Modules\\Forge.AmazonProfile.ps1",
-      "sha256": "2252edd70a564d8775d635fc7bb589e86e59530e0a505189d3ef6661237347eb",
-      "size_bytes": 23169
+      "sha256": "74d036c4686163aff655a19b352daef2dbd8446d6fba9971ee3254ab29fe7d43",
+      "size_bytes": 23171
     },
     {
       "path": "Modules\\Forge.BackendStatus.ps1",
@@ -149,8 +149,8 @@
     },
     {
       "path": "Modules\\Forge.CheckAttestation.ps1",
-      "sha256": "6d3c32de2b87638bf1a58584ff4c9fc7d2ca86493c34be55939eee2712b027c6",
-      "size_bytes": 23301
+      "sha256": "40befdfadbb9ba643f8be477e0ff125298c1c4fb9e100704a7df2cf255c9adaf",
+      "size_bytes": 24568
     },
     {
       "path": "Modules\\Forge.DataAdapter.ps1",
@@ -204,8 +204,8 @@
     },
     {
       "path": "Modules\\Forge.LocalCore.ps1",
-      "sha256": "51814331ce28f62f1ae818bd1499568c5b08241b6e9cd1ffe9cc343fac692b26",
-      "size_bytes": 120796
+      "sha256": "77548225b3a26776296060f45931e2f5d9d7e47071ade4dce3be38516aa3774d",
+      "size_bytes": 121222
     },
     {
       "path": "Modules\\Forge.Localization.ps1",
@@ -234,8 +234,8 @@
     },
     {
       "path": "Modules\\Forge.ProductNavigation.ps1",
-      "sha256": "4f06f9294f6710f5525809a18d5c77002c7f648c9e33595eb51894ff0e3ae624",
-      "size_bytes": 13455
+      "sha256": "e46d8b56369198c6bc2f9e28b9006d2c06d4275cb7b1f56dde469612f4b46e31",
+      "size_bytes": 14178
     },
     {
       "path": "Modules\\Forge.ResearchDrafts.ps1",

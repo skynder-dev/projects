@@ -1,9 +1,9 @@
 {
   "schema": "forge.release_checkpoint.v1",
-  "package": "065_Merch_Forge_AMAZON_PROFILE_RC",
-  "previous_package": "064_Merch_Forge_CONFIRM_CHECKS_RC",
-  "app_version": "2.16.0-forge-amazon-profile",
-  "installer_generation": "00000000000000100248",
+  "package": "066_Merch_Forge_CRASH_HUNT_RC",
+  "previous_package": "065_Merch_Forge_AMAZON_PROFILE_RC",
+  "app_version": "2.16.1-forge-crash-hunt",
+  "installer_generation": "00000000000000100249",
   "static": "13/13",
   "checks": {
     "xaml_xml_parse": true,

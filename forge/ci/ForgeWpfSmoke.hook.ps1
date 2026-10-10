@@ -18,7 +18,11 @@ function Get-CiFixture {
         notes=@([pscustomobject]@{id='ci-note-1';topic='Shift humor';conclusion='CI fixture note (live notes carry no niche link).';confidence=0.7;valid_as_of='2026-10-01'},[pscustomobject]@{id='ci-note-2';topic='Unlinked';conclusion='CI fixture note.';confidence=0.5;valid_as_of='2026-09-01'})
         sources=@([pscustomobject]@{name='CI fixture source';source_class='fixture';url='https://example.invalid/ci';jurisdiction='US';authority_level=1;last_checked_at='2026-10-01';active=$true})}
 }
-function Invoke-ForgeApi([string]$Action,[hashtable]$Payload=@{}) { $script:Ci.api += $Action; if($Action -eq 'discover_snapshot'){ return (Get-CiFixture) }; throw ('CI: no backend for '+$Action) }
+function Invoke-ForgeApi([string]$Action,[hashtable]$Payload=@{}) {
+    $script:Ci.api += $Action
+    if($script:Ci.phase -eq 'offline'){ throw 'HTTP 503 Service Unavailable (CI: backend is down in the offline phase)' }
+    if($Action -eq 'discover_snapshot'){ return (Get-CiFixture) }; throw ('CI: no backend for '+$Action)
+}
 
 function Ci-Flush { $Window.UpdateLayout(); [Windows.Threading.Dispatcher]::CurrentDispatcher.Invoke([Action]{}, [Windows.Threading.DispatcherPriority]::Background) }
 function Ci-Click($Button,[string]$Label) {
@@ -51,6 +55,42 @@ function Ci-Finish {
     try { [IO.File]::WriteAllText($env:FORGE_CI_RESULT,($script:Ci | ConvertTo-Json -Depth 8),(New-Object Text.UTF8Encoding($false))) } catch {}
     $script:Dirty=$false; $script:PublicationDirty=$false
     $null=$Window.Dispatcher.BeginInvoke([Action]{ $Window.Close() })
+}
+
+# ---------- offline phase: crash hunt ----------
+# Every visible, enabled, named button in every section and tab is clicked with the backend down.
+# A crash = an exception escaping a click handler (in the real app that ends the window). Show-Error is fine.
+$script:CiCrashes=@(); $script:CiClicked=@(); $script:CiClickStart=$null
+function Ci-Try([string]$What,[scriptblock]$Do) {
+    try { & $Do; Ci-Flush } catch { $script:CiCrashes += ($What+' => '+$_.Exception.Message+' @ '+[IO.Path]::GetFileName([string]$_.InvocationInfo.ScriptName)+':'+$_.InvocationInfo.ScriptLineNumber) }
+}
+function Ci-FindButtons($Root) {
+    $out=New-Object System.Collections.Generic.List[object]; $stack=New-Object System.Collections.Stack; $stack.Push($Root)
+    while($stack.Count -gt 0){
+        $n=$stack.Pop()
+        if($n -is [System.Windows.Controls.Button] -and -not [string]::IsNullOrWhiteSpace($n.Name)){ $out.Add($n) }
+        $c=0; try{ $c=[System.Windows.Media.VisualTreeHelper]::GetChildrenCount($n) }catch{}
+        for($i=$c-1;$i -ge 0;$i--){ $stack.Push([System.Windows.Media.VisualTreeHelper]::GetChild($n,$i)) }
+    }
+    return $out
+}
+$script:CiDenyButtons=@('ForgetButton','ConnectButton','HomeButton')
+function Ci-ClickAll([string]$Where,[scriptblock]$Return) {
+    $seen=@{}
+    foreach($b in @(Ci-FindButtons $Window)){
+        if(([DateTime]::UtcNow-$script:CiClickStart).TotalSeconds -gt 230){ return }
+        $name=[string]$b.Name; if($seen.ContainsKey($name) -or $script:CiDenyButtons -contains $name -or $name -like 'Nav*'){continue}; $seen[$name]=$true
+        if(-not $b.IsVisible -or -not $b.IsEnabled){continue}
+        $script:CiClicked += ($Where+':'+$name)
+        Ci-Try ($Where+' / '+$name) { $b.RaiseEvent((New-Object System.Windows.RoutedEventArgs ([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent))) }
+        if($null -ne $Return){ Ci-Try ($Where+' / return after '+$name) $Return }
+    }
+}
+function Ci-StubModalEntryPoints {
+    # These open file pickers, modal windows, Explorer/Notepad or a blocking MessageBox; their file-processing parts are covered in other phases.
+    foreach($n in @('Import-AmazonPrintProfileFile','Invoke-AmazonProfileForm','Invoke-ConfirmChecks','Open-LocalChecksFolder','Open-DiagnosticLogSafe','Import-LocalArtwork','Import-LocalCheckEvidence','Import-LocalPublicationReceipt','Import-LocalSalesCsv','Queue-Generation','Save-PublicationMetadata')){
+        Set-Item -Path ('function:script:'+$n) -Value ([scriptblock]::Create("`$script:Ci.confirms += 'modal stub: $n'"))
+    }
 }
 
 $script:CiWatchdog=New-Object System.Windows.Threading.DispatcherTimer
@@ -161,7 +201,7 @@ $Window.Add_ContentRendered({
             Ci-Click $NavPortfolioButton 'NavPortfolioButton (accepted)'
             $row=@(@($PortfolioPipelineList.Items) | Where-Object { [string]$_.concept_key -eq $key })
             if($row.Count){ $PortfolioPipelineList.SelectedItem=$row[0]; Ci-Flush }
-            Ci-Check 'portfolio_accepted_opens_checks' ($row.Count -eq 1 -and [string]$row[0].stage -eq 'artwork_accepted' -and $script:ProductSection -eq 'checks' -and (Get-MainTabKey $MainTabs.SelectedItem) -eq 'evidence') ($(if($row.Count){[string]$row[0].stage}else{'missing'})+' / '+$script:ProductSection+' / '+(Get-MainTabKey $MainTabs.SelectedItem))
+            Ci-Check 'portfolio_accepted_opens_checks' ($row.Count -eq 1 -and [string]$row[0].stage -eq 'artwork_accepted' -and $script:ProductSection -eq 'checks' -and (Get-MainTabKey $MainTabs.SelectedItem) -eq 'evidence' -and $ConceptTitle.Text -eq 'CI FIXTURE · Night-shift nurses') ($(if($row.Count){[string]$row[0].stage}else{'missing'})+' / '+$script:ProductSection+' / '+(Get-MainTabKey $MainTabs.SelectedItem))
             # 2) Amazon print profile through the in-app form (the standalone importer tool runs unchanged as a child process)
             Ci-Click $NavChecksButton 'NavChecksButton (profile)'
             Ci-Check 'prof_status_none_ru' ($AmazonProfileStatusText.Text -like 'Не импортирован*' -and [string]$AmazonProfileFormButton.Content -eq 'Заполнить Amazon-профиль…') ($AmazonProfileStatusText.Text+' | '+[string]$AmazonProfileFormButton.Content)
@@ -211,6 +251,7 @@ $Window.Add_ContentRendered({
             Ci-Check 'chk_dialog_accepts' ($second -and $null -ne $answers) ''
             $before=$script:Ci.errors.Count; $ok=$false; if($null -ne $answers){ $ok=Submit-OwnerCheckAnswers $answers.answers $answers.confirmed }; Ci-Flush
             Ci-Check 'chk_saved_status_ru' ($ok -and $StatusText.Text -like 'Проверки сохранены:*') $StatusText.Text
+            Ci-Check 'chk_evidence_text_ru' ($AnalysisEvidence.Text -like 'IP · пройдено*' -and $AnalysisEvidence.Text -like '*Макет · пройдено*' -and $AnalysisEvidence.Text -like '*Текст карточки · пройдено*') ($AnalysisEvidence.Text.Substring(0,[Math]::Min(300,$AnalysisEvidence.Text.Length)))
             $lc=Get-LocalCoreConcept $key; $gate=Get-LocalCheckGateSnapshot $lc
             Ci-Check 'pkg_evidence_imported' ($script:Ci.errors.Count -eq $before) (($script:Ci.errors | Select-Object -Last 1))
             Ci-Check 'pkg_all_checks_ready' ([bool]$gate.all_ready) (($gate.checks | ConvertTo-Json -Depth 4 -Compress))
@@ -253,6 +294,37 @@ $Window.Add_ContentRendered({
                 Ci-Check 'home_attention_count' ($HomeMetricAttentionValue.Text -eq '1') $HomeMetricAttentionValue.Text
                 Ci-Shot '14-performance'
             }
+        } elseif($script:Ci.phase -eq 'offline') {
+            Ci-StubModalEntryPoints
+            Enter-OfflineWorkbench 'HTTP 503 Service Unavailable (CI fixture: backend down)'; Ci-Flush
+            Ci-Check 'offline_mode_on' ([bool]$script:OfflineMode -and $BackendBanner.Visibility -eq 'Visible' -and $HomeLandingScroll.Visibility -eq 'Visible') ([string]$script:OfflineMode)
+            Ci-Shot '20-offline-home'
+            $script:CiClickStart=[DateTime]::UtcNow
+            foreach($sec in @('home','discover','ideas','artwork','checks','publish','portfolio','performance')){
+                $nav=Get-Variable -Name ('Nav'+(Get-Culture).TextInfo.ToTitleCase($sec)+'Button') -ValueOnly -ErrorAction SilentlyContinue
+                Ci-Try ('nav '+$sec) { Ci-Click $nav ('Nav '+$sec) }
+                $s=$sec; Ci-ClickAll $sec ([scriptblock]::Create("if(`$script:ProductSection -ne '$s'){ Show-ProductSection '$s' }"))
+            }
+            Ci-Check 'offline_draft_listed' (@(@($ConceptList.Items) | Where-Object { [bool](Get-PropertyValue $_ 'is_local_draft') }).Count -ge 1) $ConceptList.Items.Count
+            $items=@(@($ConceptList.Items) | Select-Object -First 3)
+            foreach($it in $items){
+                $label=[string](Get-PropertyValue $it 'concept_key')
+                Ci-Try ('open '+$label) { $ConceptList.SelectedItem=$it }
+                foreach($tab in @($MainTabs.Items)){
+                    if(-not ($tab -is [System.Windows.Controls.TabItem]) -or -not $tab.IsEnabled -or $tab.Visibility -ne 'Visible'){continue}
+                    $tk=Get-MainTabKey $tab
+                    Ci-Try ('tab '+$tk) { $MainTabs.SelectedItem=$tab }
+                    Ci-ClickAll ($label+'#'+$tk) $null
+                }
+            }
+            Ci-Try 'portfolio rows' { Show-ProductSection 'portfolio'; foreach($row in @($PortfolioPipelineList.Items)){ $PortfolioPipelineList.SelectedItem=$row; Ci-Flush; Show-ProductSection 'portfolio' } }
+            foreach($lang in @('Es','Ru','En')){ $lb=Get-Variable -Name ('HeaderLang'+$lang) -ValueOnly -ErrorAction SilentlyContinue; if($null -ne $lb){ Ci-Try ('lang '+$lang) { $lb.RaiseEvent((New-Object System.Windows.RoutedEventArgs ([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent))) } } }
+            Ci-Try 'retry backend' { Ci-Click $BackendRetryButton 'BackendRetryButton' }
+            Ci-Check 'offline_stays_offline_after_retry' ([bool]$script:OfflineMode) ([string]$script:ConnectionState)
+            Ci-Check 'offline_clicked_many' (@($script:CiClicked).Count -ge 40) (@($script:CiClicked).Count)
+            Ci-Check 'offline_no_crashes' (@($script:CiCrashes).Count -eq 0) ((@($script:CiCrashes) | Select-Object -First 12) -join ' || ')
+            $script:Ci['clicked']=@($script:CiClicked); $script:Ci['crashes']=@($script:CiCrashes)
+            Ci-Shot '21-offline-after-clicks'
         } else {
             # Restart: a fresh process with the same LocalCore state
             $draft=$null; foreach($i in @($ConceptList.Items)){ if([bool](Get-PropertyValue $i 'is_local_draft')){$draft=$i} }
@@ -270,9 +342,9 @@ $Window.Add_ContentRendered({
             Ci-Check 'portfolio_after_restart_ru' ($mine.Count -eq 1 -and [string]$mine[0].stage_label -eq 'ОСТАВИТЬ · нет макета' -and $PortfolioPipelineTitle.Text -eq 'Конвейер') $(if($mine.Count){[string]$mine[0].stage_label}else{'missing'})
             Ci-Shot '09-portfolio-ru'
         }
-        Ci-Check 'only_discover_snapshot_api' (@($script:Ci.api | Where-Object { $_ -ne 'discover_snapshot' }).Count -eq 0) (($script:Ci.api) -join ',')
+        if($script:Ci.phase -ne 'offline'){ Ci-Check 'only_discover_snapshot_api' (@($script:Ci.api | Where-Object { $_ -ne 'discover_snapshot' }).Count -eq 0) (($script:Ci.api) -join ',') }
         Ci-Check 'no_network' ($script:Ci.network -eq 0)
-        Ci-Check 'no_unexpected_errors' (@($script:Ci.errors | Where-Object { $_ -notlike 'Research drafts cannot be generated*' }).Count -eq 0) (($script:Ci.errors) -join ' | ')
+        if($script:Ci.phase -ne 'offline'){ Ci-Check 'no_unexpected_errors' (@($script:Ci.errors | Where-Object { $_ -notlike 'Research drafts cannot be generated*' }).Count -eq 0) (($script:Ci.errors) -join ' | ') }
     } catch {
         $script:Ci.fatal=($_.Exception.Message+' @ '+$_.InvocationInfo.PositionMessage)
         Ci-Shot 'zz-failure'
