@@ -1,0 +1,386 @@
+{
+  "acceptedStateMutationAllowed": false,
+  "capturedAt": "2026-10-10T03:46:05.731Z",
+  "claimRule": "verified_only",
+  "claimableFacts": [
+    {
+      "key": "buyer",
+      "section": "buyer",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:85554b9d",
+        "objectId": "EDU-01:buyer",
+        "version": 1
+      },
+      "state": "verified",
+      "value": "Independent US tutors and music or test-prep teachers who pay a marketplace commission but now get most students by referral"
+    },
+    {
+      "key": "pain",
+      "section": "buyer",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:85554b9d",
+        "objectId": "EDU-01:buyer",
+        "version": 1
+      },
+      "state": "verified",
+      "value": "The marketplace commission is a large share of pay. Once tutors leave they must set up scheduling, invoicing and 1099 income tracking by hand across several tools."
+    },
+    {
+      "key": "incumbent_price",
+      "section": "economics",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:59b33fdf",
+        "objectId": "EDU-01:unit_economics",
+        "version": 1
+      },
+      "state": "verified",
+      "value": "TutorBird: from $16.95/month (per research notes); TutorCruncher: $30, $80 or $240/month by tier (per research notes); Teachworks: $16.49/month plus about $0.32 per student lesson (per research notes); TutorTab (explicit Wyzant-exit competitor): not stated in excerpts"
+    },
+    {
+      "key": "regulatory_platform",
+      "section": "risks",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:35d5c3dd",
+        "objectId": "EDU-01:regulatory_or_platform_dependency",
+        "version": 1
+      },
+      "state": "verified",
+      "value": "Depends on Stripe and on Google SEO. Wyzant terms may restrict taking students off-platform (not verified). Student-data regulation is light because the tutor is the buyer."
+    }
+  ],
+  "contractId": "reveng_decision_snapshot_v1",
+  "currentWorkspaceAssemblyDeferred": true,
+  "decisionAuthority": false,
+  "exactVersionProvenanceRequired": true,
+  "opportunityId": "EDU-01",
+  "persistenceAllowed": false,
+  "probabilityOfSuccess": false,
+  "recommendationAuthority": false,
+  "revisionId": "run_20261010_031655",
+  "revisionVersion": 1,
+  "sections": {
+    "buyer": {
+      "name": "buyer",
+      "rows": [
+        {
+          "claimable": true,
+          "key": "buyer",
+          "label": "Buyer",
+          "reason": null,
+          "sourceRef": "https://www.trustpilot.com/review/wyzant.com",
+          "state": "verified",
+          "value": "Independent US tutors and music or test-prep teachers who pay a marketplace commission but now get most students by referral"
+        },
+        {
+          "claimable": true,
+          "key": "pain",
+          "label": "Pain",
+          "reason": null,
+          "sourceRef": "https://www.trustpilot.com/review/wyzant.com",
+          "state": "verified",
+          "value": "The marketplace commission is a large share of pay. Once tutors leave they must set up scheduling, invoicing and 1099 income tracking by hand across several tools."
+        }
+      ],
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:85554b9d",
+        "objectId": "EDU-01:buyer",
+        "version": 1
+      }
+    },
+    "channel": {
+      "name": "channel",
+      "rows": [
+        {
+          "claimable": false,
+          "key": "acquisition_efficiency",
+          "label": "Acquisition efficiency score (0-5)",
+          "reason": "judged score; evidence cap applied",
+          "sourceRef": null,
+          "state": "unverified",
+          "value": 2
+        }
+      ],
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:15bbadd2",
+        "objectId": "EDU-01:channel",
+        "version": 1
+      }
+    },
+    "economics": {
+      "name": "economics",
+      "rows": [
+        {
+          "claimable": true,
+          "key": "incumbent_price",
+          "label": "Incumbent price evidence",
+          "reason": null,
+          "sourceRef": "https://www.indeed.com/cmp/Wyzant/reviews",
+          "state": "verified",
+          "value": "TutorBird: from $16.95/month (per research notes); TutorCruncher: $30, $80 or $240/month by tier (per research notes); Teachworks: $16.49/month plus about $0.32 per student lesson (per research notes); TutorTab (explicit Wyzant-exit competitor): not stated in excerpts"
+        },
+        {
+          "claimable": false,
+          "key": "model_cash_margin_pct",
+          "label": "Modelled cash margin %",
+          "reason": "modelled in deep screen",
+          "sourceRef": null,
+          "state": "unknown",
+          "value": null
+        },
+        {
+          "claimable": false,
+          "key": "model_payback_months",
+          "label": "Modelled startup payback (months)",
+          "reason": "modelled in deep screen",
+          "sourceRef": null,
+          "state": "unknown",
+          "value": null
+        },
+        {
+          "claimable": false,
+          "key": "pessimistic_contribution_usd_month",
+          "label": "Pessimistic contribution $/mo",
+          "reason": "explicit pessimistic model: price x0.8, units x0.5, cost x0.5",
+          "sourceRef": null,
+          "state": "unknown",
+          "value": null
+        }
+      ],
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:59b33fdf",
+        "objectId": "EDU-01:unit_economics",
+        "version": 1
+      }
+    },
+    "openQuestions": {
+      "name": "openQuestions",
+      "rows": [
+        {
+          "claimable": false,
+          "key": "major_uncertainty",
+          "label": "Major uncertainty",
+          "reason": "model_or_inference_not_backed_by_verified_page",
+          "sourceRef": null,
+          "state": "unverified",
+          "value": "Whether an unknown entrant can differentiate on an importer and rank for 'Wyzant alternative' terms that TutorTab already targets."
+        },
+        {
+          "claimable": false,
+          "key": "unknowns",
+          "label": "Unknowns",
+          "reason": "model_or_inference_not_backed_by_verified_page",
+          "sourceRef": null,
+          "state": "unverified",
+          "value": "Whether Wyzant's terms restrict moving students off-platform; Actual current prices of Teachworks, TutorBird and Tutorbase (not visible in the excerpts); Whether setup can really take under 15 minutes; Whether tutors will pay for an importer; Real conversion rate from SEO"
+        }
+      ],
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:e857430b",
+        "objectId": "EDU-01:unknowns",
+        "version": 1
+      }
+    },
+    "resources": {
+      "name": "resources",
+      "rows": [
+        {
+          "claimable": false,
+          "key": "startup_cash_usd",
+          "label": "Startup cash (USD)",
+          "reason": "estimate",
+          "sourceRef": null,
+          "state": "unverified",
+          "value": 500
+        },
+        {
+          "claimable": false,
+          "key": "days_to_first_revenue",
+          "label": "Days to first revenue",
+          "reason": "estimate",
+          "sourceRef": null,
+          "state": "unverified",
+          "value": 37
+        },
+        {
+          "claimable": false,
+          "key": "owner_hours_week",
+          "label": "Owner hours/week",
+          "reason": "estimate",
+          "sourceRef": null,
+          "state": "unverified",
+          "value": 10
+        }
+      ],
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:2b98a2b0",
+        "objectId": "EDU-01:startup_cash_usd",
+        "version": 1
+      }
+    },
+    "risks": {
+      "name": "risks",
+      "rows": [
+        {
+          "claimable": true,
+          "key": "regulatory_platform",
+          "label": "Regulatory / platform dependency",
+          "reason": null,
+          "sourceRef": "https://tutortab.net/compare/wyzant-commission",
+          "state": "verified",
+          "value": "Depends on Stripe and on Google SEO. Wyzant terms may restrict taking students off-platform (not verified). Student-data regulation is light because the tutor is the buyer."
+        },
+        {
+          "claimable": false,
+          "key": "kill_reasons",
+          "label": "Deep-screen kill reasons",
+          "reason": "LLM-reported",
+          "sourceRef": null,
+          "state": "unknown",
+          "value": null
+        }
+      ],
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:35d5c3dd",
+        "objectId": "EDU-01:regulatory_or_platform_dependency",
+        "version": 1
+      }
+    }
+  },
+  "snapshotDigest": "fnv1a:a98af063",
+  "status": "snapshot_defined",
+  "unknownValueRule": "unknown_requires_null",
+  "unresolved": [
+    {
+      "key": "acquisition_efficiency",
+      "reason": "judged score; evidence cap applied",
+      "section": "channel",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:15bbadd2",
+        "objectId": "EDU-01:channel",
+        "version": 1
+      },
+      "state": "unverified"
+    },
+    {
+      "key": "model_cash_margin_pct",
+      "reason": "modelled in deep screen",
+      "section": "economics",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:59b33fdf",
+        "objectId": "EDU-01:unit_economics",
+        "version": 1
+      },
+      "state": "unknown"
+    },
+    {
+      "key": "model_payback_months",
+      "reason": "modelled in deep screen",
+      "section": "economics",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:59b33fdf",
+        "objectId": "EDU-01:unit_economics",
+        "version": 1
+      },
+      "state": "unknown"
+    },
+    {
+      "key": "pessimistic_contribution_usd_month",
+      "reason": "explicit pessimistic model: price x0.8, units x0.5, cost x0.5",
+      "section": "economics",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:59b33fdf",
+        "objectId": "EDU-01:unit_economics",
+        "version": 1
+      },
+      "state": "unknown"
+    },
+    {
+      "key": "startup_cash_usd",
+      "reason": "estimate",
+      "section": "resources",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:2b98a2b0",
+        "objectId": "EDU-01:startup_cash_usd",
+        "version": 1
+      },
+      "state": "unverified"
+    },
+    {
+      "key": "days_to_first_revenue",
+      "reason": "estimate",
+      "section": "resources",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:2b98a2b0",
+        "objectId": "EDU-01:startup_cash_usd",
+        "version": 1
+      },
+      "state": "unverified"
+    },
+    {
+      "key": "owner_hours_week",
+      "reason": "estimate",
+      "section": "resources",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:2b98a2b0",
+        "objectId": "EDU-01:startup_cash_usd",
+        "version": 1
+      },
+      "state": "unverified"
+    },
+    {
+      "key": "kill_reasons",
+      "reason": "LLM-reported",
+      "section": "risks",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:35d5c3dd",
+        "objectId": "EDU-01:regulatory_or_platform_dependency",
+        "version": 1
+      },
+      "state": "unknown"
+    },
+    {
+      "key": "major_uncertainty",
+      "reason": "model_or_inference_not_backed_by_verified_page",
+      "section": "openQuestions",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:e857430b",
+        "objectId": "EDU-01:unknowns",
+        "version": 1
+      },
+      "state": "unverified"
+    },
+    {
+      "key": "unknowns",
+      "reason": "model_or_inference_not_backed_by_verified_page",
+      "section": "openQuestions",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:e857430b",
+        "objectId": "EDU-01:unknowns",
+        "version": 1
+      },
+      "state": "unverified"
+    }
+  ],
+  "winnerAuthority": false,
+  "workspaceId": "reveng_global"
+}

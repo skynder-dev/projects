@@ -1,0 +1,386 @@
+{
+  "acceptedStateMutationAllowed": false,
+  "capturedAt": "2026-10-10T03:46:05.739Z",
+  "claimRule": "verified_only",
+  "claimableFacts": [
+    {
+      "key": "buyer",
+      "section": "buyer",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:ce754ea7",
+        "objectId": "EDU-04:buyer",
+        "version": 1
+      },
+      "state": "verified",
+      "value": "Individual K-12 special-education teachers who track IEP goals and annual-review dates and would pay a small personal fee"
+    },
+    {
+      "key": "pain",
+      "section": "buyer",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:ce754ea7",
+        "objectId": "EDU-04:buyer",
+        "version": 1
+      },
+      "state": "verified",
+      "value": "Drafting is well served by free AI tools, but caseload tracking and progress monitoring are not. Putting student data into consumer AI tools is risky."
+    },
+    {
+      "key": "incumbent_price",
+      "section": "economics",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:eeba768c",
+        "objectId": "EDU-04:unit_economics",
+        "version": 1
+      },
+      "state": "verified",
+      "value": "MagicSchool: free tier with caps; Plus $8.33/month billed annually; Goalbook Toolkit: district quote only; single teacher membership $595/year per an older review; EasyClass free IEP goal generator: free; Playground IEP CoPilot: free, anonymous input; FrenalyticsEDU: no public pricing"
+    },
+    {
+      "key": "regulatory_platform",
+      "section": "risks",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:f647632a",
+        "objectId": "EDU-04:regulatory_or_platform_dependency",
+        "version": 1
+      },
+      "state": "verified",
+      "value": "FERPA and IDEA apply, and districts are the procurement gatekeepers. A personal account storing student data may violate district policy. Sales are seasonal (August-September and IEP season)."
+    }
+  ],
+  "contractId": "reveng_decision_snapshot_v1",
+  "currentWorkspaceAssemblyDeferred": true,
+  "decisionAuthority": false,
+  "exactVersionProvenanceRequired": true,
+  "opportunityId": "EDU-04",
+  "persistenceAllowed": false,
+  "probabilityOfSuccess": false,
+  "recommendationAuthority": false,
+  "revisionId": "run_20261010_031655",
+  "revisionVersion": 1,
+  "sections": {
+    "buyer": {
+      "name": "buyer",
+      "rows": [
+        {
+          "claimable": true,
+          "key": "buyer",
+          "label": "Buyer",
+          "reason": null,
+          "sourceRef": "https://blog.aieducator.tools/posts/ai-tools-for-writing-ieps",
+          "state": "verified",
+          "value": "Individual K-12 special-education teachers who track IEP goals and annual-review dates and would pay a small personal fee"
+        },
+        {
+          "claimable": true,
+          "key": "pain",
+          "label": "Pain",
+          "reason": null,
+          "sourceRef": "https://blog.aieducator.tools/posts/ai-tools-for-writing-ieps",
+          "state": "verified",
+          "value": "Drafting is well served by free AI tools, but caseload tracking and progress monitoring are not. Putting student data into consumer AI tools is risky."
+        }
+      ],
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:ce754ea7",
+        "objectId": "EDU-04:buyer",
+        "version": 1
+      }
+    },
+    "channel": {
+      "name": "channel",
+      "rows": [
+        {
+          "claimable": false,
+          "key": "acquisition_efficiency",
+          "label": "Acquisition efficiency score (0-5)",
+          "reason": "judged score; evidence cap applied",
+          "sourceRef": null,
+          "state": "unverified",
+          "value": 2
+        }
+      ],
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:c1c0ead9",
+        "objectId": "EDU-04:channel",
+        "version": 1
+      }
+    },
+    "economics": {
+      "name": "economics",
+      "rows": [
+        {
+          "claimable": true,
+          "key": "incumbent_price",
+          "label": "Incumbent price evidence",
+          "reason": null,
+          "sourceRef": "https://www.commonsense.org/education/reviews/goalbook-toolkit/teacher-reviews/3981616",
+          "state": "verified",
+          "value": "MagicSchool: free tier with caps; Plus $8.33/month billed annually; Goalbook Toolkit: district quote only; single teacher membership $595/year per an older review; EasyClass free IEP goal generator: free; Playground IEP CoPilot: free, anonymous input; FrenalyticsEDU: no public pricing"
+        },
+        {
+          "claimable": false,
+          "key": "model_cash_margin_pct",
+          "label": "Modelled cash margin %",
+          "reason": "modelled in deep screen",
+          "sourceRef": null,
+          "state": "unknown",
+          "value": null
+        },
+        {
+          "claimable": false,
+          "key": "model_payback_months",
+          "label": "Modelled startup payback (months)",
+          "reason": "modelled in deep screen",
+          "sourceRef": null,
+          "state": "unknown",
+          "value": null
+        },
+        {
+          "claimable": false,
+          "key": "pessimistic_contribution_usd_month",
+          "label": "Pessimistic contribution $/mo",
+          "reason": "explicit pessimistic model: price x0.8, units x0.5, cost x0.5",
+          "sourceRef": null,
+          "state": "unknown",
+          "value": null
+        }
+      ],
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:eeba768c",
+        "objectId": "EDU-04:unit_economics",
+        "version": 1
+      }
+    },
+    "openQuestions": {
+      "name": "openQuestions",
+      "rows": [
+        {
+          "claimable": false,
+          "key": "major_uncertainty",
+          "label": "Major uncertainty",
+          "reason": "model_or_inference_not_backed_by_verified_page",
+          "sourceRef": null,
+          "state": "unverified",
+          "value": "Whether individual teachers will pay for tracking at all, and whether district policy allows a personal tool."
+        },
+        {
+          "claimable": false,
+          "key": "unknowns",
+          "label": "Unknowns",
+          "reason": "model_or_inference_not_backed_by_verified_page",
+          "sourceRef": null,
+          "state": "unverified",
+          "value": "Direct evidence that teachers pay for or complain about tracking; District policy on personal tools; FERPA/IDEA treatment of a local-first design; Real willingness to pay at $5/month; Current Goalbook individual pricing"
+        }
+      ],
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:3a315991",
+        "objectId": "EDU-04:unknowns",
+        "version": 1
+      }
+    },
+    "resources": {
+      "name": "resources",
+      "rows": [
+        {
+          "claimable": false,
+          "key": "startup_cash_usd",
+          "label": "Startup cash (USD)",
+          "reason": "estimate",
+          "sourceRef": null,
+          "state": "unverified",
+          "value": 500
+        },
+        {
+          "claimable": false,
+          "key": "days_to_first_revenue",
+          "label": "Days to first revenue",
+          "reason": "estimate",
+          "sourceRef": null,
+          "state": "unverified",
+          "value": 90
+        },
+        {
+          "claimable": false,
+          "key": "owner_hours_week",
+          "label": "Owner hours/week",
+          "reason": "estimate",
+          "sourceRef": null,
+          "state": "unverified",
+          "value": 12
+        }
+      ],
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:2b98a2b0",
+        "objectId": "EDU-04:startup_cash_usd",
+        "version": 1
+      }
+    },
+    "risks": {
+      "name": "risks",
+      "rows": [
+        {
+          "claimable": true,
+          "key": "regulatory_platform",
+          "label": "Regulatory / platform dependency",
+          "reason": null,
+          "sourceRef": "https://aitoolsbakery.com/blog/best-ai-iep-writing-tools/",
+          "state": "verified",
+          "value": "FERPA and IDEA apply, and districts are the procurement gatekeepers. A personal account storing student data may violate district policy. Sales are seasonal (August-September and IEP season)."
+        },
+        {
+          "claimable": false,
+          "key": "kill_reasons",
+          "label": "Deep-screen kill reasons",
+          "reason": "LLM-reported",
+          "sourceRef": null,
+          "state": "unknown",
+          "value": null
+        }
+      ],
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:f647632a",
+        "objectId": "EDU-04:regulatory_or_platform_dependency",
+        "version": 1
+      }
+    }
+  },
+  "snapshotDigest": "fnv1a:7a59b491",
+  "status": "snapshot_defined",
+  "unknownValueRule": "unknown_requires_null",
+  "unresolved": [
+    {
+      "key": "acquisition_efficiency",
+      "reason": "judged score; evidence cap applied",
+      "section": "channel",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:c1c0ead9",
+        "objectId": "EDU-04:channel",
+        "version": 1
+      },
+      "state": "unverified"
+    },
+    {
+      "key": "model_cash_margin_pct",
+      "reason": "modelled in deep screen",
+      "section": "economics",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:eeba768c",
+        "objectId": "EDU-04:unit_economics",
+        "version": 1
+      },
+      "state": "unknown"
+    },
+    {
+      "key": "model_payback_months",
+      "reason": "modelled in deep screen",
+      "section": "economics",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:eeba768c",
+        "objectId": "EDU-04:unit_economics",
+        "version": 1
+      },
+      "state": "unknown"
+    },
+    {
+      "key": "pessimistic_contribution_usd_month",
+      "reason": "explicit pessimistic model: price x0.8, units x0.5, cost x0.5",
+      "section": "economics",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:eeba768c",
+        "objectId": "EDU-04:unit_economics",
+        "version": 1
+      },
+      "state": "unknown"
+    },
+    {
+      "key": "startup_cash_usd",
+      "reason": "estimate",
+      "section": "resources",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:2b98a2b0",
+        "objectId": "EDU-04:startup_cash_usd",
+        "version": 1
+      },
+      "state": "unverified"
+    },
+    {
+      "key": "days_to_first_revenue",
+      "reason": "estimate",
+      "section": "resources",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:2b98a2b0",
+        "objectId": "EDU-04:startup_cash_usd",
+        "version": 1
+      },
+      "state": "unverified"
+    },
+    {
+      "key": "owner_hours_week",
+      "reason": "estimate",
+      "section": "resources",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:2b98a2b0",
+        "objectId": "EDU-04:startup_cash_usd",
+        "version": 1
+      },
+      "state": "unverified"
+    },
+    {
+      "key": "kill_reasons",
+      "reason": "LLM-reported",
+      "section": "risks",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:f647632a",
+        "objectId": "EDU-04:regulatory_or_platform_dependency",
+        "version": 1
+      },
+      "state": "unknown"
+    },
+    {
+      "key": "major_uncertainty",
+      "reason": "model_or_inference_not_backed_by_verified_page",
+      "section": "openQuestions",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:3a315991",
+        "objectId": "EDU-04:unknowns",
+        "version": 1
+      },
+      "state": "unverified"
+    },
+    {
+      "key": "unknowns",
+      "reason": "model_or_inference_not_backed_by_verified_page",
+      "section": "openQuestions",
+      "source": {
+        "contractId": "reveng_engine_section_v1",
+        "digest": "fnv1a:3a315991",
+        "objectId": "EDU-04:unknowns",
+        "version": 1
+      },
+      "state": "unverified"
+    }
+  ],
+  "winnerAuthority": false,
+  "workspaceId": "reveng_global"
+}

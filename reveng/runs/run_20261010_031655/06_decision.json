@@ -1,0 +1,214 @@
+{
+  "families": {
+    "b2b_api_devtools": 4,
+    "digital_or_data_products": 4,
+    "ecommerce_or_dropshipping": 4,
+    "education_training": 4,
+    "games": 4,
+    "marketplaces": 4,
+    "media_or_content": 4,
+    "physical_products": 4,
+    "saas_or_micro_saas": 4,
+    "services": 4
+  },
+  "hard_blockers": [
+    "top_candidate_not_deep_screened_to_equal_depth(EDU-01)"
+  ],
+  "integrity_violations": [],
+  "leader": null,
+  "margin_adjusted_points": 0.6,
+  "rank_by_profile": {
+    "autonomy_first": 2,
+    "balanced": 1,
+    "defensibility_growth": 2
+  },
+  "ranking": [
+    {
+      "adjusted": 62.4,
+      "family": "education_training",
+      "id": "EDU-01",
+      "raw": 62.4
+    },
+    {
+      "adjusted": 61.8,
+      "family": "media_or_content",
+      "id": "MED-04",
+      "raw": 61.8
+    },
+    {
+      "adjusted": 61.2,
+      "family": "education_training",
+      "id": "EDU-04",
+      "raw": 61.2
+    },
+    {
+      "adjusted": 58,
+      "family": "media_or_content",
+      "id": "MED-02",
+      "raw": 58
+    },
+    {
+      "adjusted": 57.6,
+      "family": "games",
+      "id": "GAM-01",
+      "raw": 57.6
+    },
+    {
+      "adjusted": 57.6,
+      "family": "saas_or_micro_saas",
+      "id": "SAS-02",
+      "raw": 57.6
+    },
+    {
+      "adjusted": 57.2,
+      "family": "b2b_api_devtools",
+      "id": "DEV-02",
+      "raw": 57.2
+    },
+    {
+      "adjusted": 56.606918,
+      "family": "ecommerce_or_dropshipping",
+      "id": "ECO-02",
+      "raw": 57.6
+    },
+    {
+      "adjusted": 56.2,
+      "family": "ecommerce_or_dropshipping",
+      "id": "ECO-04",
+      "raw": 56.2
+    },
+    {
+      "adjusted": 56.2,
+      "family": "education_training",
+      "id": "EDU-03",
+      "raw": 56.2
+    },
+    {
+      "adjusted": 56.2,
+      "family": "games",
+      "id": "GAM-04",
+      "raw": 56.2
+    },
+    {
+      "adjusted": 55.8,
+      "family": "b2b_api_devtools",
+      "id": "DEV-01",
+      "raw": 55.8
+    },
+    {
+      "adjusted": 55.6,
+      "family": "games",
+      "id": "GAM-02",
+      "raw": 55.6
+    },
+    {
+      "adjusted": 55.542874,
+      "family": "saas_or_micro_saas",
+      "id": "SAS-01",
+      "raw": 57.6
+    },
+    {
+      "adjusted": 54.8,
+      "family": "b2b_api_devtools",
+      "id": "DEV-03",
+      "raw": 54.8
+    },
+    {
+      "adjusted": 54.8,
+      "family": "services",
+      "id": "SVC-02",
+      "raw": 54.8
+    },
+    {
+      "adjusted": 54.669252,
+      "family": "saas_or_micro_saas",
+      "id": "SAS-03",
+      "raw": 55.2
+    },
+    {
+      "adjusted": 54.4,
+      "family": "marketplaces",
+      "id": "MKT-02",
+      "raw": 54.4
+    },
+    {
+      "adjusted": 52.6,
+      "family": "b2b_api_devtools",
+      "id": "DEV-04",
+      "raw": 52.6
+    },
+    {
+      "adjusted": 52.2,
+      "family": "services",
+      "id": "SVC-03",
+      "raw": 52.2
+    },
+    {
+      "adjusted": 51.50002,
+      "family": "saas_or_micro_saas",
+      "id": "SAS-04",
+      "raw": 52
+    },
+    {
+      "adjusted": 50.8,
+      "family": "marketplaces",
+      "id": "MKT-01",
+      "raw": 50.8
+    },
+    {
+      "adjusted": 50.8,
+      "family": "physical_products",
+      "id": "PHY-01",
+      "raw": 50.8
+    },
+    {
+      "adjusted": 50,
+      "family": "digital_or_data_products",
+      "id": "DAT-03",
+      "raw": 50
+    },
+    {
+      "adjusted": 49.8,
+      "family": "media_or_content",
+      "id": "MED-01",
+      "raw": 49.8
+    },
+    {
+      "adjusted": 49.6,
+      "family": "games",
+      "id": "GAM-03",
+      "raw": 49.6
+    },
+    {
+      "adjusted": 47.2,
+      "family": "services",
+      "id": "SVC-04",
+      "raw": 47.2
+    },
+    {
+      "adjusted": 44.6,
+      "family": "marketplaces",
+      "id": "MKT-03",
+      "raw": 44.6
+    },
+    {
+      "adjusted": 42.8,
+      "family": "physical_products",
+      "id": "PHY-04",
+      "raw": 42.8
+    },
+    {
+      "adjusted": 40.2,
+      "family": "media_or_content",
+      "id": "MED-03",
+      "raw": 40.2
+    }
+  ],
+  "survivors": 30,
+  "unmet_conditions": [
+    "top_candidate_not_deep_screened_to_equal_depth(EDU-01)",
+    "margin_over_runner_up 0.6<5",
+    "top_fails_or_lacks_pessimistic_economics"
+  ],
+  "verdict": "no_winner"
+}
