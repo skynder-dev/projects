@@ -13,7 +13,7 @@
     "status": "ACTIVE"
   },
   "desktop": {
-    "app_version": "2.12.0-localized-messages",
+    "app_version": "2.12.1-readable-errors",
     "native_windows_runtime_verified": false,
     "orange_semantic_palette": true,
     "overview_first": true,
@@ -28,10 +28,10 @@
       "ru",
       "es"
     ],
-    "workbench_sha256": "a2fa77ce1a3289f6dcf0a7e26fa0af503d16fc097e5c935fd0fd5c8032e038d2",
-    "workbench_size_bytes": 253859,
+    "workbench_sha256": "45cc82bfa43449f28276e2f3a4a0a075554bf22a908145919376cb6cb56e7b91",
+    "workbench_size_bytes": 253981,
     "native_windows_parser_verified": false,
-    "native_windows_parser_target_sha256": "a2fa77ce1a3289f6dcf0a7e26fa0af503d16fc097e5c935fd0fd5c8032e038d2",
+    "native_windows_parser_target_sha256": "45cc82bfa43449f28276e2f3a4a0a075554bf22a908145919376cb6cb56e7b91",
     "native_windows_parser_result_sha256": null,
     "product_home_dashboard": true,
     "brand_home_navigation": "dedicated_home_dashboard",
@@ -127,8 +127,8 @@
       },
       {
         "path": "Modules\\Forge.MessageLocalization.ps1",
-        "sha256": "1292a8e468379c20349b3d3fd2341921b2c2ae27442e86f135fd5742745a04b0",
-        "size_bytes": 2992
+        "sha256": "7c9f5c9cbdfdae3f64a4495a92791b710a33697a6d42993536ee59e8e5dc5014",
+        "size_bytes": 3921
       },
       {
         "path": "Modules\\Forge.Pipeline.ps1",
@@ -310,7 +310,7 @@
     "trusted_local_check_worker": "MerchForgeCheckWorker.ps1",
     "generation_spool_policy": "forge.generation_spool_policy.v1",
     "publication_receipt_print_binding": true,
-    "current_release": "060_Merch_Forge_LOCALIZED_MESSAGES_RC",
+    "current_release": "061_Merch_Forge_READABLE_ERRORS_RC",
     "generation_authority_module": "Modules\\Forge.GenerationAuthority.ps1",
     "generation_temporal_authority": "future generation job/attempt timestamps beyond 10-minute clock-skew tolerance fail closed before paid dispatch/readiness; shared first-live authority also revalidates non-future ordered attempt/result/import timestamps",
     "amazon_print_profile_temporal_authority": "valid_until must be strictly later than captured_at; captured_at remains bounded by 10-minute future-skew tolerance and 120-day horizon",
@@ -473,11 +473,11 @@
     "owner_separate_parser_zip_required": false,
     "current_release": "044_Merch_Forge_PACKAGE_ROOT_RC"
   },
-  "package_name": "060_Merch_Forge_LOCALIZED_MESSAGES_RC",
-  "package_number": 60,
-  "result_intent": "060: runtime RU/ES translation of status/busy/error/confirm messages (154 templates); includes 055-059; no backend change, no generation/accept/publish/paid authority",
+  "package_name": "061_Merch_Forge_READABLE_ERRORS_RC",
+  "package_number": 61,
+  "result_intent": "061: error dialogs show the real (translated) reason; +115 message translations; includes 055-060; no backend change",
   "schema": "forge.reconciled_candidate_manifest.v1",
-  "stage": "FORGE-060-LOCALIZED-MESSAGES-RC",
+  "stage": "FORGE-061-READABLE-ERRORS-RC",
   "startup_baseline": {
     "immutable_exact": false,
     "inner_start_sha256": "013e9dcfbfb4c2a42c12b4f6ee208767d80509be9e877160f088a9d2984f51a1",
@@ -637,7 +637,7 @@
     "exact_043_native_windows_stage": "integrity",
     "package_root_native_argv_repair": true
   },
-  "installer_generation": "00000000000000100243",
+  "installer_generation": "00000000000000100244",
   "installer_generation_format": "fixed_width_decimal_v1",
   "installer_guard": {
     "single_writer_lock": "install.lock",

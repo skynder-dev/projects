@@ -4,8 +4,8 @@
   "files": [
     {
       "path": "candidate_manifest.json",
-      "sha256": "1c9bad9d4fad7dab893e35a1803b836e54504b959b8ae92ae91332f184e93b71",
-      "size_bytes": 77339
+      "sha256": "7fcc9f9878c9999fddb490540aa21cb5510d45d7107cf24c546c411a0bafe7be",
+      "size_bytes": 77277
     },
     {
       "path": "Configure Image Provider.ps1",
@@ -34,8 +34,8 @@
     },
     {
       "path": "Data\\Forge.MessageTranslations.json",
-      "sha256": "8f8bcc79b9dec78c9840c1b3d7f77774cbeee37f0d5fe1c61650b22d28ebf4d7",
-      "size_bytes": 38411
+      "sha256": "8759c9177fd1523aff3a0ed26d30633320745214a756db4d21d26384c1cf09b6",
+      "size_bytes": 69593
     },
     {
       "path": "Data\\GenerationJob.example.json",
@@ -134,8 +134,8 @@
     },
     {
       "path": "MerchForgeWorkbench.ps1",
-      "sha256": "a2fa77ce1a3289f6dcf0a7e26fa0af503d16fc097e5c935fd0fd5c8032e038d2",
-      "size_bytes": 253859
+      "sha256": "45cc82bfa43449f28276e2f3a4a0a075554bf22a908145919376cb6cb56e7b91",
+      "size_bytes": 253981
     },
     {
       "path": "Modules\\Forge.BackendStatus.ps1",
@@ -209,8 +209,8 @@
     },
     {
       "path": "Modules\\Forge.MessageLocalization.ps1",
-      "sha256": "1292a8e468379c20349b3d3fd2341921b2c2ae27442e86f135fd5742745a04b0",
-      "size_bytes": 2992
+      "sha256": "7c9f5c9cbdfdae3f64a4495a92791b710a33697a6d42993536ee59e8e5dc5014",
+      "size_bytes": 3921
     },
     {
       "path": "Modules\\Forge.Pipeline.ps1",

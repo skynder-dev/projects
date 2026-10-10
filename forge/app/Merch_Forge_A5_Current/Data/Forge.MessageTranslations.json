@@ -770,6 +770,581 @@
    "en": "Accept exact local artwork first.",
    "ru": "Сначала примите локальный макет.",
    "es": "Primero acepta el arte local exacto."
+  },
+  {
+   "en": "{0}\n\nTechnical details are available in Diagnostics.",
+   "ru": "{0}\n\nТехнические подробности — в «Диагностике».",
+   "es": "{0}\n\nLos detalles técnicos están en Diagnóstico."
+  },
+  {
+   "en": "Merch Forge could not complete that action. Try again.",
+   "ru": "Merch Forge не смог выполнить действие. Попробуйте ещё раз.",
+   "es": "Merch Forge no pudo completar la acción. Inténtalo de nuevo."
+  },
+  {
+   "en": "This item is no longer available. Refresh the workspace.",
+   "ru": "Этот элемент больше недоступен. Обновите данные.",
+   "es": "Este elemento ya no está disponible. Actualiza el espacio de trabajo."
+  },
+  {
+   "en": "This changed somewhere else. Refresh before saving again.",
+   "ru": "Это изменилось в другом месте. Обновите перед повторным сохранением.",
+   "es": "Esto cambió en otro lugar. Actualiza antes de guardar de nuevo."
+  },
+  {
+   "en": "Merch Forge could not be reached. Check your connection and try again.",
+   "ru": "Не удалось связаться с Merch Forge. Проверьте подключение и попробуйте снова.",
+   "es": "No se pudo conectar con Merch Forge. Revisa la conexión e inténtalo de nuevo."
+  },
+  {
+   "en": "Image generation is not available right now. Your design was not sent.",
+   "ru": "Генерация изображений сейчас недоступна. Дизайн не отправлялся.",
+   "es": "La generación de imágenes no está disponible ahora. El diseño no se envió."
+  },
+  {
+   "en": "Your saved access is no longer valid. Sign in again.",
+   "ru": "Сохранённый доступ больше не действует. Войдите снова.",
+   "es": "Tu acceso guardado ya no es válido. Inicia sesión de nuevo."
+  },
+  {
+   "en": "Configured generation provider is unavailable.",
+   "ru": "Настроенный генератор недоступен.",
+   "es": "El proveedor de generación configurado no está disponible."
+  },
+  {
+   "en": "Configured generation provider is unknown.",
+   "ru": "Настроенный генератор неизвестен.",
+   "es": "El proveedor de generación configurado es desconocido."
+  },
+  {
+   "en": "Configured image format is invalid.",
+   "ru": "Неверный формат изображения в настройках.",
+   "es": "El formato de imagen configurado no es válido."
+  },
+  {
+   "en": "Configured image quality is invalid.",
+   "ru": "Неверное качество изображения в настройках.",
+   "es": "La calidad de imagen configurada no es válida."
+  },
+  {
+   "en": "Configured image size is invalid.",
+   "ru": "Неверный размер изображения в настройках.",
+   "es": "El tamaño de imagen configurado no es válido."
+  },
+  {
+   "en": "Configured image size is outside the provider contract.",
+   "ru": "Размер изображения не поддерживается генератором.",
+   "es": "El tamaño de imagen no está admitido por el proveedor."
+  },
+  {
+   "en": "Configured OpenAI image model is outside the provider allowlist.",
+   "ru": "Выбранная модель OpenAI не входит в разрешённый список.",
+   "es": "El modelo de OpenAI configurado no está en la lista permitida."
+  },
+  {
+   "en": "Configured output count must be between 1 and 4.",
+   "ru": "Количество вариантов должно быть от 1 до 4.",
+   "es": "El número de variantes debe estar entre 1 y 4."
+  },
+  {
+   "en": "Configured provider must use transparent PNG output.",
+   "ru": "Генератор должен выдавать PNG с прозрачностью.",
+   "es": "El proveedor debe generar PNG transparente."
+  },
+  {
+   "en": "Configured render values do not match the selected provider profile.",
+   "ru": "Параметры генерации не совпадают с выбранным профилем.",
+   "es": "Los valores de render no coinciden con el perfil seleccionado."
+  },
+  {
+   "en": "Daily paid-request limit must be between 1 and 20.",
+   "ru": "Дневной лимит платных запросов должен быть от 1 до 20.",
+   "es": "El límite diario de solicitudes de pago debe estar entre 1 y 20."
+  },
+  {
+   "en": "Duplicate generation provider key: {0}",
+   "ru": "Повторяющийся ключ генератора: {0}",
+   "es": "Clave de proveedor duplicada: {0}"
+  },
+  {
+   "en": "First live generation safety is active. Use Smoke profile with exactly 1 output and daily request limit 1 until one exact billable live result is successfully imported.",
+   "ru": "Включена защита первой реальной генерации. Используйте профиль Smoke с 1 вариантом и дневным лимитом 1, пока первый платный результат не будет успешно импортирован.",
+   "es": "La protección de la primera generación real está activa. Usa el perfil Smoke con 1 variante y límite diario 1 hasta importar con éxito el primer resultado de pago."
+  },
+  {
+   "en": "Generation profile is missing.",
+   "ru": "Профиль генерации не задан.",
+   "es": "Falta el perfil de generación."
+  },
+  {
+   "en": "Generation profile is outside the provider contract.",
+   "ru": "Профиль генерации не поддерживается генератором.",
+   "es": "El perfil de generación no está admitido por el proveedor."
+  },
+  {
+   "en": "Generation provider contract is missing.",
+   "ru": "Нет описания генератора.",
+   "es": "Falta el contrato del proveedor."
+  },
+  {
+   "en": "Generation provider key is missing.",
+   "ru": "Не указан генератор.",
+   "es": "Falta la clave del proveedor."
+  },
+  {
+   "en": "Manual artwork bridge is unavailable.",
+   "ru": "Ручной импорт макета недоступен.",
+   "es": "La importación manual de arte no está disponible."
+  },
+  {
+   "en": "OpenAI image endpoint is outside the pinned provider contract.",
+   "ru": "Адрес OpenAI не совпадает с разрешённым.",
+   "es": "El endpoint de OpenAI no coincide con el permitido."
+  },
+  {
+   "en": "Provider attempt journal directory cannot be read safely. Paid generation is blocked: {0}",
+   "ru": "Журнал запросов генерации не читается. Платная генерация заблокирована: {0}",
+   "es": "No se puede leer el registro de intentos. La generación de pago está bloqueada: {0}"
+  },
+  {
+   "en": "Provider attempt journal has a future dispatch timestamp. Paid generation is blocked: {0}",
+   "ru": "В журнале запросов дата из будущего. Платная генерация заблокирована: {0}",
+   "es": "El registro de intentos tiene una fecha futura. La generación de pago está bloqueada: {0}"
+  },
+  {
+   "en": "Provider attempt journal has an invalid dispatch timestamp. Paid generation is blocked: {0}",
+   "ru": "В журнале запросов неверная дата. Платная генерация заблокирована: {0}",
+   "es": "El registro de intentos tiene una fecha no válida. La generación de pago está bloqueada: {0}"
+  },
+  {
+   "en": "Provider attempt journal is malformed. Paid generation is blocked: {0}",
+   "ru": "Журнал запросов повреждён. Платная генерация заблокирована: {0}",
+   "es": "El registro de intentos está dañado. La generación de pago está bloqueada: {0}"
+  },
+  {
+   "en": "Provider attempt journal is unreadable. Paid generation is blocked: {0}",
+   "ru": "Журнал запросов не читается. Платная генерация заблокирована: {0}",
+   "es": "El registro de intentos no se puede leer. La generación de pago está bloqueada: {0}"
+  },
+  {
+   "en": "Unsupported generation provider contract.",
+   "ru": "Неподдерживаемое описание генератора.",
+   "es": "Contrato de proveedor no admitido."
+  },
+  {
+   "en": "Unsupported local provider config.",
+   "ru": "Неподдерживаемые настройки генератора.",
+   "es": "Configuración del proveedor no admitida."
+  },
+  {
+   "en": "Another Merch Forge window is creating a generation action right now. No job was created; wait a moment and try again.",
+   "ru": "Другое окно Merch Forge сейчас создаёт задание генерации. Задание не создано; подождите и попробуйте снова.",
+   "es": "Otra ventana de Merch Forge está creando una generación. No se creó el trabajo; espera e inténtalo de nuevo."
+  },
+  {
+   "en": "Daily provider request limit reached: {0}",
+   "ru": "Достигнут дневной лимит запросов к генератору: {0}",
+   "es": "Se alcanzó el límite diario de solicitudes: {0}"
+  },
+  {
+   "en": "Generation job journal is structurally incomplete or unsafe. New paid generation is blocked: {0}",
+   "ru": "Журнал заданий генерации неполон или небезопасен. Новая платная генерация заблокирована: {0}",
+   "es": "El registro de trabajos está incompleto o no es seguro. La nueva generación de pago está bloqueada: {0}"
+  },
+  {
+   "en": "Generation job journal is unreadable. New paid generation is blocked: {0}",
+   "ru": "Журнал заданий генерации не читается. Новая платная генерация заблокирована: {0}",
+   "es": "El registro de trabajos no se puede leer. La nueva generación de pago está bloqueada: {0}"
+  },
+  {
+   "en": "Generation job path is missing.",
+   "ru": "Не указан путь задания генерации.",
+   "es": "Falta la ruta del trabajo de generación."
+  },
+  {
+   "en": "Generation outbox cannot be read safely. New paid generation is blocked: {0}",
+   "ru": "Очередь заданий не читается. Новая платная генерация заблокирована: {0}",
+   "es": "No se puede leer la cola de trabajos. La nueva generación de pago está bloqueada: {0}"
+  },
+  {
+   "en": "Generation output count must be between 1 and 4.",
+   "ru": "Количество вариантов должно быть от 1 до 4.",
+   "es": "El número de variantes debe estar entre 1 y 4."
+  },
+  {
+   "en": "Generation pre-dispatch expiry policy is invalid.",
+   "ru": "Неверная настройка срока действия задания.",
+   "es": "La política de caducidad del trabajo no es válida."
+  },
+  {
+   "en": "Generation provider registry is missing.",
+   "ru": "Нет списка генераторов.",
+   "es": "Falta el registro de proveedores."
+  },
+  {
+   "en": "Generation worker is missing from this package.",
+   "ru": "В пакете нет обработчика генерации.",
+   "es": "Falta el proceso de generación en este paquete."
+  },
+  {
+   "en": "Invalid local generation request kind.",
+   "ru": "Неверный тип запроса генерации.",
+   "es": "Tipo de solicitud de generación no válido."
+  },
+  {
+   "en": "No production image provider is configured locally.",
+   "ru": "Генератор изображений не настроен.",
+   "es": "No hay un proveedor de imágenes configurado."
+  },
+  {
+   "en": "Production provider is not ready: {0}",
+   "ru": "Генератор не готов: {0}",
+   "es": "El proveedor no está listo: {0}"
+  },
+  {
+   "en": "Windows PowerShell is unavailable.",
+   "ru": "Windows PowerShell недоступен.",
+   "es": "Windows PowerShell no está disponible."
+  },
+  {
+   "en": "Local Forge state changed in another window. Expected revision {0} but current revision is {1}. Nothing was overwritten; refresh and try again.",
+   "ru": "Данные Forge изменились в другом окне (ожидалась версия {0}, сейчас {1}). Ничего не перезаписано; обновите и попробуйте снова.",
+   "es": "El estado de Forge cambió en otra ventana (se esperaba la versión {0}, ahora {1}). No se sobrescribió nada; actualiza e inténtalo de nuevo."
+  },
+  {
+   "en": "Local Forge state changed in another window. Expected revision {0} but the current state file is missing. Nothing was overwritten; refresh and try again.",
+   "ru": "Данные Forge изменились в другом окне (ожидалась версия {0}, но файл состояния пропал). Ничего не перезаписано; обновите и попробуйте снова.",
+   "es": "El estado de Forge cambió en otra ventana (se esperaba la versión {0}, pero falta el archivo). No se sobrescribió nada; actualiza e inténtalo de nuevo."
+  },
+  {
+   "en": "{0} evidence listing_hash does not match the current listing revision.",
+   "ru": "Подтверждение «{0}» относится к другой версии карточки.",
+   "es": "La evidencia «{0}» corresponde a otra versión de la ficha."
+  },
+  {
+   "en": "{0} authority_kind is not allowed for state {1}.",
+   "ru": "Для «{0}» такой тип полномочий не допускается при состоянии {1}.",
+   "es": "Para «{0}» ese tipo de autoridad no se admite con el estado {1}."
+  },
+  {
+   "en": "{0} checked_at must be a valid non-future ISO date/time.",
+   "ru": "Для «{0}» дата проверки (checked_at) должна быть корректной и не из будущего.",
+   "es": "Para «{0}» la fecha de revisión (checked_at) debe ser válida y no futura."
+  },
+  {
+   "en": "{0} evidence artwork SHA does not match the exact accepted artwork.",
+   "ru": "Подтверждение «{0}» относится к другому макету, не к принятому.",
+   "es": "La evidencia «{0}» corresponde a otro arte, no al aceptado."
+  },
+  {
+   "en": "{0} evidence revision does not match the current idea revision.",
+   "ru": "Подтверждение «{0}» относится к другой ревизии идеи.",
+   "es": "La evidencia «{0}» corresponde a otra revisión de la idea."
+  },
+  {
+   "en": "{0} owner_attested_external evidence requires attested=true.",
+   "ru": "Для «{0}» нужно подтвердить проверку: attested=true.",
+   "es": "Para «{0}» confirma la revisión: attested=true."
+  },
+  {
+   "en": "{0} passing evidence contains an empty or non-string evidence_ref.",
+   "ru": "Для «{0}» в списке ссылок (evidence_refs) есть пустая или неверная ссылка.",
+   "es": "Para «{0}» la lista de referencias (evidence_refs) tiene un valor vacío o no válido."
+  },
+  {
+   "en": "{0} passing evidence requires at least one non-empty string evidence_ref.",
+   "ru": "Для «{0}» нужна хотя бы одна ссылка-доказательство (evidence_refs).",
+   "es": "Para «{0}» se requiere al menos una referencia (evidence_refs)."
+  },
+  {
+   "en": "{0} passing evidence requires source and checked_at.",
+   "ru": "Для «{0}» нужно указать источник (source) и дату проверки (checked_at).",
+   "es": "Para «{0}» indica la fuente (source) y la fecha (checked_at)."
+  },
+  {
+   "en": "Acceptance lineage is stale for the current idea revision.",
+   "ru": "Принятие относится к старой ревизии идеи.",
+   "es": "La aceptación corresponde a una revisión anterior de la idea."
+  },
+  {
+   "en": "Accepted local artwork failed SHA-256 verification.",
+   "ru": "Принятый макет не прошёл проверку SHA-256 (файл изменён или пропал).",
+   "es": "El arte aceptado no pasó la verificación SHA-256 (el archivo cambió o falta)."
+  },
+  {
+   "en": "Artwork file is empty.",
+   "ru": "Файл макета пуст.",
+   "es": "El archivo de arte está vacío."
+  },
+  {
+   "en": "Artwork file is missing.",
+   "ru": "Файл макета не найден.",
+   "es": "No se encuentra el archivo de arte."
+  },
+  {
+   "en": "Check request export verification failed.",
+   "ru": "Не удалось проверить экспорт запроса проверок.",
+   "es": "No se pudo verificar la exportación de la solicitud de revisiones."
+  },
+  {
+   "en": "CSV contains no data rows.",
+   "ru": "В CSV нет строк с данными.",
+   "es": "El CSV no contiene filas de datos."
+  },
+  {
+   "en": "Current local-core state cannot be safely compared before write: {0}",
+   "ru": "Нельзя безопасно сравнить данные перед записью: {0}",
+   "es": "No se puede comparar el estado de forma segura antes de escribir: {0}"
+  },
+  {
+   "en": "Evidence belongs to a different concept.",
+   "ru": "Подтверждение относится к другой идее.",
+   "es": "La evidencia pertenece a otra idea."
+  },
+  {
+   "en": "Exact package ZIP does not contain an authority-valid READY preupload gate matching the local package lineage.",
+   "ru": "В ZIP пакета нет действующей отметки готовности, совпадающей с локальным пакетом.",
+   "es": "El ZIP del paquete no contiene una marca de listo válida que coincida con el paquete local."
+  },
+  {
+   "en": "Generated artwork belongs to another revision.",
+   "ru": "Сгенерированный макет относится к другой ревизии.",
+   "es": "El arte generado pertenece a otra revisión."
+  },
+  {
+   "en": "Generated artwork revision hash is stale.",
+   "ru": "Сгенерированный макет устарел для этой ревизии.",
+   "es": "El arte generado está desactualizado para esta revisión."
+  },
+  {
+   "en": "Generated artwork SHA-256 does not match its result manifest.",
+   "ru": "SHA-256 сгенерированного макета не совпадает с результатом генерации.",
+   "es": "El SHA-256 del arte generado no coincide con el resultado."
+  },
+  {
+   "en": "Hardened build requires a v3 publication receipt bound to the exact pre-upload gate.",
+   "ru": "Нужна квитанция публикации версии v3, привязанная к готовому пакету.",
+   "es": "Se requiere un recibo de publicación v3 vinculado al paquete listo."
+  },
+  {
+   "en": "Imported owner JSON cannot replace the exact-accept visual authority.",
+   "ru": "Визуальную проверку даёт только принятие макета; файл подтверждений её не заменяет.",
+   "es": "La revisión visual solo la da la aceptación del arte; el archivo de evidencia no la reemplaza."
+  },
+  {
+   "en": "Imported owner JSON cannot self-assert authority_kind {0}; use the corresponding verified sync/worker/profile path.",
+   "ru": "Файл подтверждений не может сам назначить полномочия «{0}».",
+   "es": "El archivo de evidencia no puede asignarse la autoridad «{0}»."
+  },
+  {
+   "en": "Invalid {0} state in evidence JSON.",
+   "ru": "Неверное состояние «{0}» в файле подтверждений.",
+   "es": "Estado «{0}» no válido en el archivo de evidencia."
+  },
+  {
+   "en": "Listing metadata is not bound to the current accepted artwork.",
+   "ru": "Данные карточки относятся не к текущему принятому макету.",
+   "es": "Los datos de la ficha no corresponden al arte aceptado actual."
+  },
+  {
+   "en": "Local artwork copy failed SHA-256 verification.",
+   "ru": "Копия макета не прошла проверку SHA-256.",
+   "es": "La copia del arte no pasó la verificación SHA-256."
+  },
+  {
+   "en": "Local artwork failed exact-file verification.",
+   "ru": "Макет не прошёл проверку файла.",
+   "es": "El arte no pasó la verificación del archivo."
+  },
+  {
+   "en": "Local concept state is unavailable.",
+   "ru": "Локальные данные идеи недоступны.",
+   "es": "El estado local de la idea no está disponible."
+  },
+  {
+   "en": "Local Forge state is being updated in another window. Nothing was overwritten; refresh and try again.",
+   "ru": "Данные Forge сейчас обновляются в другом окне. Ничего не перезаписано; обновите и попробуйте снова.",
+   "es": "El estado de Forge se está actualizando en otra ventana. No se sobrescribió nada; actualiza e inténtalo de nuevo."
+  },
+  {
+   "en": "Local Forge state recovery stopped because existing primary/last-good state could not be validated. No empty state was created. Preserved recovery copies remain under {0}",
+   "ru": "Восстановление данных Forge остановлено: основной файл и резервная копия не прошли проверку. Пустые данные не создавались. Копии для восстановления сохранены в {0}",
+   "es": "Se detuvo la recuperación: ni el archivo principal ni la copia pasaron la verificación. No se creó un estado vacío. Las copias quedan en {0}"
+  },
+  {
+   "en": "Local Forge state uses an unsupported schema. Recovery stopped; no empty state was created. {0}",
+   "ru": "Данные Forge в неподдерживаемом формате. Восстановление остановлено; пустые данные не создавались. {0}",
+   "es": "El estado de Forge usa un formato no admitido. Se detuvo la recuperación; no se creó un estado vacío. {0}"
+  },
+  {
+   "en": "Local listing draft could not be saved.",
+   "ru": "Не удалось сохранить черновик карточки.",
+   "es": "No se pudo guardar el borrador de la ficha."
+  },
+  {
+   "en": "Only PNG and JPEG artwork are supported.",
+   "ru": "Поддерживаются только PNG и JPEG.",
+   "es": "Solo se admiten PNG y JPEG."
+  },
+  {
+   "en": "Only v3 authority-bound evidence may create a new passing check.",
+   "ru": "Пройденную проверку можно подтвердить только файлом версии v3.",
+   "es": "Solo la evidencia v3 puede aprobar una revisión."
+  },
+  {
+   "en": "Passing policy evidence requires a current valid owner-attested Amazon print profile.",
+   "ru": "Чтобы подтвердить политику, нужен действующий Amazon-профиль печати.",
+   "es": "Para aprobar la política se requiere un perfil de impresión de Amazon vigente."
+  },
+  {
+   "en": "Policy evidence Amazon profile binding does not match the current owner-attested print profile.",
+   "ru": "Подтверждение политики сделано для другого Amazon-профиля. Выгрузите шаблон заново.",
+   "es": "La evidencia de política es de otro perfil de Amazon. Exporta la plantilla de nuevo."
+  },
+  {
+   "en": "Publication receipt concept is not present in local Forge state.",
+   "ru": "Идеи из квитанции нет в локальных данных Forge.",
+   "es": "La idea del recibo no está en el estado local de Forge."
+  },
+  {
+   "en": "Publication receipt concept_key is required.",
+   "ru": "В квитанции не указана идея (concept_key).",
+   "es": "El recibo no indica la idea (concept_key)."
+  },
+  {
+   "en": "Publication receipt does not match a package built by this local Forge state.",
+   "ru": "Квитанция не соответствует ни одному пакету, собранному здесь.",
+   "es": "El recibo no corresponde a ningún paquete creado aquí."
+  },
+  {
+   "en": "Publication receipt lineage does not match the exact Forge package.",
+   "ru": "Квитанция не совпадает с пакетом Forge.",
+   "es": "El recibo no coincide con el paquete de Forge."
+  },
+  {
+   "en": "Publication receipt marketplace does not match the exact Amazon print profile embedded in the READY package.",
+   "ru": "Маркетплейс в квитанции не совпадает с Amazon-профилем пакета.",
+   "es": "El marketplace del recibo no coincide con el perfil de Amazon del paquete."
+  },
+  {
+   "en": "Publication receipt must identify the amazon_merch channel, exact package marketplace, and product_id.",
+   "ru": "В квитанции нужны канал amazon_merch, маркетплейс пакета и product_id (ASIN).",
+   "es": "El recibo debe indicar el canal amazon_merch, el marketplace del paquete y el product_id."
+  },
+  {
+   "en": "Publication receipt package_sha256 is invalid.",
+   "ru": "Неверный package_sha256 в квитанции.",
+   "es": "El package_sha256 del recibo no es válido."
+  },
+  {
+   "en": "Publication receipt preupload_gate_sha256 does not match the exact READY package gate.",
+   "ru": "Квитанция не совпадает с отметкой готовности пакета.",
+   "es": "El recibo no coincide con la marca de listo del paquete."
+  },
+  {
+   "en": "Publication receipt print_production_sha256 does not match the exact READY package.",
+   "ru": "Квитанция не совпадает с данными печати пакета.",
+   "es": "El recibo no coincide con los datos de impresión del paquete."
+  },
+  {
+   "en": "Publication receipt published_at cannot be in the future.",
+   "ru": "Дата публикации в квитанции не может быть в будущем.",
+   "es": "La fecha de publicación no puede ser futura."
+  },
+  {
+   "en": "Publication receipt published_at is after the Amazon print profile valid_until used to build this package. Re-attest the current template and build a fresh READY package before publication.",
+   "ru": "Дата публикации позже срока действия Amazon-профиля, с которым собран пакет. Обновите профиль и соберите пакет заново.",
+   "es": "La fecha de publicación es posterior a la vigencia del perfil de Amazon del paquete. Actualiza el perfil y crea un paquete nuevo."
+  },
+  {
+   "en": "Publication receipt published_at must be a valid date/time.",
+   "ru": "В квитанции неверная дата публикации.",
+   "es": "La fecha de publicación del recibo no es válida."
+  },
+  {
+   "en": "Publication receipt published_at predates creation of the exact Forge package.",
+   "ru": "Дата публикации раньше, чем был собран пакет.",
+   "es": "La fecha de publicación es anterior a la creación del paquete."
+  },
+  {
+   "en": "Published package bytes are missing or no longer match their SHA-256.",
+   "ru": "Файл опубликованного пакета пропал или изменён.",
+   "es": "El archivo del paquete publicado falta o cambió."
+  },
+  {
+   "en": "This artwork belongs to another idea revision. Import artwork for the current revision.",
+   "ru": "Этот макет относится к другой ревизии идеи. Импортируйте макет для текущей ревизии.",
+   "es": "Este arte pertenece a otra revisión. Importa arte para la revisión actual."
+  },
+  {
+   "en": "This channel/product_id is already bound to a different verified Forge package. The conflicting receipt was not imported.",
+   "ru": "Этот ASIN уже привязан к другому пакету Forge. Квитанция не импортирована.",
+   "es": "Este ASIN ya está vinculado a otro paquete de Forge. El recibo no se importó."
+  },
+  {
+   "en": "Unsupported check evidence schema.",
+   "ru": "Неподдерживаемый формат файла подтверждений.",
+   "es": "Formato de archivo de evidencia no admitido."
+  },
+  {
+   "en": "Use the normal Accept action for server-managed variants.",
+   "ru": "Для вариантов с сервера используйте обычное принятие.",
+   "es": "Usa la aceptación normal para las variantes del servidor."
+  },
+  {
+   "en": "Visual PASS is created only by exact local Accept for the current artwork.",
+   "ru": "Визуальную проверку даёт только принятие текущего макета.",
+   "es": "La revisión visual solo la da la aceptación del arte actual."
+  },
+  {
+   "en": "Local check worker failed with exit code {0}.",
+   "ru": "Проверка печати завершилась с ошибкой (код {0}).",
+   "es": "La revisión de impresión falló (código {0})."
+  },
+  {
+   "en": "Local check worker timed out.",
+   "ru": "Проверка печати не уложилась во время.",
+   "es": "La revisión de impresión superó el tiempo."
+  },
+  {
+   "en": "Trusted local check worker is missing.",
+   "ru": "В пакете нет обработчика проверки печати.",
+   "es": "Falta el proceso de revisión de impresión."
+  },
+  {
+   "en": "DRAFT_NOT_FOUND: The research draft no longer exists.",
+   "ru": "Этого черновика больше нет.",
+   "es": "Este borrador ya no existe."
+  },
+  {
+   "en": "DRAFT_STALE: This draft changed in another window. Reopen it before saving.",
+   "ru": "Черновик изменился в другом окне. Откройте его заново перед сохранением.",
+   "es": "El borrador cambió en otra ventana. Ábrelo de nuevo antes de guardar."
+  },
+  {
+   "en": "DRAFT_TITLE_REQUIRED: Title cannot be empty.",
+   "ru": "Название не может быть пустым.",
+   "es": "El título no puede estar vacío."
+  },
+  {
+   "en": "NO_LIVE_RESEARCH: Live research snapshot is required.",
+   "ru": "Нужны живые данные исследования.",
+   "es": "Se requiere investigación en vivo."
+  },
+  {
+   "en": "NO_NICHE_IDENTITY: The selected niche has no id or name.",
+   "ru": "У выбранной ниши нет ни ключа, ни названия.",
+   "es": "El nicho seleccionado no tiene clave ni nombre."
+  },
+  {
+   "en": "NO_NICHE: Select a niche first.",
+   "ru": "Сначала выберите нишу.",
+   "es": "Primero selecciona un nicho."
+  },
+  {
+   "en": "Accepted artwork failed exact SHA verification.",
+   "ru": "Принятый макет не прошёл проверку SHA.",
+   "es": "El arte aceptado no pasó la verificación SHA."
   }
  ]
 }

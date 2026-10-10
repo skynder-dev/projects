@@ -1,9 +1,9 @@
 {
   "schema": "forge.release_checkpoint.v1",
-  "package": "060_Merch_Forge_LOCALIZED_MESSAGES_RC",
-  "previous_package": "059_Merch_Forge_LOCAL_PACKAGE_PATH_RC",
-  "app_version": "2.12.0-forge-localized-messages",
-  "installer_generation": "00000000000000100243",
+  "package": "061_Merch_Forge_READABLE_ERRORS_RC",
+  "previous_package": "060_Merch_Forge_LOCALIZED_MESSAGES_RC",
+  "app_version": "2.12.1-forge-readable-errors",
+  "installer_generation": "00000000000000100244",
   "static": "13/13",
   "checks": {
     "xaml_xml_parse": true,

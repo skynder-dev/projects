@@ -1,6 +1,6 @@
 ﻿# Merch Forge Workbench
 # Native WPF desktop UI. Internal alpha build; not owner-accepted visual design.
-# Version: 2.12.0-localized-messages
+# Version: 2.12.1-readable-errors
 
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
@@ -12,7 +12,7 @@ Add-Type -AssemblyName System.Security
 
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
 
-$script:AppVersion = '2.12.0-forge-localized-messages'
+$script:AppVersion = '2.12.1-forge-readable-errors'
 $script:MinimumBackendVersion = [version]'0.2.70'
 $script:ApiUrl = 'https://ldlhnedbqeqcbqelhuhm.supabase.co/functions/v1/forge-app'
 $script:OwnerKey = $null
@@ -779,9 +779,10 @@ function Get-ProductionSpecDirtyValues($Base,$Edited) {
 }
 function Show-Error([string]$Message) {
     if((Test-BackendUnavailableMessage $Message) -and $null -ne $AppGrid -and $AppGrid.Visibility -eq 'Visible'){Enter-OfflineWorkbench $Message;return}
-    $human=Get-HumanErrorMessage $Message; try{$human=Translate-UiMessage $human}catch{}; $code=0; if($Message -match 'HTTP ([0-9]{3})'){try{$code=[int]$Matches[1]}catch{$code=0}}
+    $known=$false; try{$known=Test-KnownUiMessage $Message}catch{}; $human=if($known){$Message}else{Get-HumanErrorMessage $Message}; $code=0; if($Message -match 'HTTP ([0-9]{3})'){try{$code=[int]$Matches[1]}catch{$code=0}}
     Write-AppLog 'ERROR' $Message; Set-LastDiagnostic 'error' $code 'review_and_retry' $Message $human
-    [System.Windows.MessageBox]::Show($Window,("{0}`n`nTechnical details are available in Diagnostics." -f $human),'Merch Forge — Error',[System.Windows.MessageBoxButton]::OK,[System.Windows.MessageBoxImage]::Error)|Out-Null
+    $dialogText=("{0}`n`nTechnical details are available in Diagnostics." -f $human); try{$dialogText=Translate-UiMessage $dialogText}catch{}
+    [System.Windows.MessageBox]::Show($Window,$dialogText,'Merch Forge — Error',[System.Windows.MessageBoxButton]::OK,[System.Windows.MessageBoxImage]::Error)|Out-Null
 }
 function Get-RoleLabel([string]$Role) {
     switch(([string]$Role).ToLowerInvariant()){'owner'{return 'Owner'}'editor'{return 'Editor'}'reviewer'{return 'Reviewer'}'viewer'{return 'Viewer'}default{return 'Workspace member'}}

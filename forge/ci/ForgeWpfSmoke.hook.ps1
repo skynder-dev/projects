@@ -179,6 +179,13 @@ $Window.Add_ContentRendered({
             foreach($n in @('ip','policy','metadata')){ $c=$ev.$n; $c.state='pass'; $c.source='ci-owner-attestation'; $c.note='CI fixture attestation (not a real legal or policy review).'; $c.checked_at=[DateTime]::UtcNow.AddMinutes(-1).ToString('o'); $c.authority_kind='owner_attested_external'; $c.attested=$true; $c.evidence_refs=@('https://merch.amazon.com/resource/Y28FFE5NLRYJG4V') }
             $evPath=Join-Path $env:FORGE_CI_OUT 'ci-check-evidence.json'; [IO.File]::WriteAllText($evPath,($ev|ConvertTo-Json -Depth 20),(New-Object Text.UTF8Encoding($false)))
             Ci-Click $NavChecksButton 'NavChecksButton'
+            # A real local error in the RU UI must reach the owner as a readable Russian message
+            $badPath=Join-Path $env:FORGE_CI_OUT 'ci-bad-evidence.json'; [IO.File]::WriteAllText($badPath,'{"schema":"forge.local_check_evidence.v0"}',(New-Object Text.UTF8Encoding($false)))
+            $before=$script:Ci.errors.Count; Import-LocalCheckEvidenceFromPath $badPath
+            $raw=if($script:Ci.errors.Count -gt $before){[string]$script:Ci.errors[-1]}else{''}
+            $shown=if((Test-KnownUiMessage $raw)){Translate-UiMessage $raw}else{Translate-UiMessage (Get-HumanErrorMessage $raw)}
+            Ci-Check 'msg_error_readable_ru' ($raw -eq 'Unsupported check evidence schema.' -and $shown -eq 'Неподдерживаемый формат файла подтверждений.') ($raw+' => '+$shown)
+            $script:Ci.errors=@($script:Ci.errors | Select-Object -First $before)
             $before=$script:Ci.errors.Count; Import-LocalCheckEvidenceFromPath $evPath; Ci-Flush
             $lc=Get-LocalCoreConcept $key; $gate=Get-LocalCheckGateSnapshot $lc
             Ci-Check 'pkg_evidence_imported' ($script:Ci.errors.Count -eq $before) (($script:Ci.errors | Select-Object -Last 1))

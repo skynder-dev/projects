@@ -1,15 +1,12 @@
-MERCH FORGE 060 Merch Forge LOCALIZED MESSAGES RC
+MERCH FORGE 061 Merch Forge READABLE ERRORS RC
 
 START
 1. Extract the whole folder.
-2. Run START_060_MERCH_FORGE.vbs.
+2. Run START_061_MERCH_FORGE.vbs.
 
-WHAT IS NEW (060)
-- Status bar, "working" banner, error and confirmation messages are now shown in Russian / Spanish when the UI
-  language is RU / ES (154 messages; numbers, paths and statuses inside a message are kept as they are).
-  Unknown messages fall back to English.
-- Includes 059 (full local package path proven on Windows, local artwork selection fix, royalty amounts),
-  058 (Portfolio pipeline board), 057, 056, 055.
-
-SAFETY
-- No backend change, no paid provider call, no publishing, no Supabase mutation.
+WHAT IS NEW (061)
+- Error dialogs now show the real reason. Before, almost every local error became the generic
+  "Merch Forge could not complete that action" and the reason was hidden in Diagnostics.
+  Known messages are shown as-is (in RU/ES when that language is selected); server/network errors keep the friendly text.
+- 115 more messages translated (errors from checks, receipts, packages, generation settings, local data).
+- Includes 060 and earlier (055-059).
