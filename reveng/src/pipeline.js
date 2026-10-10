@@ -5,7 +5,7 @@ const { runGates } = require('./gates');
 const { scoreCandidate, rank, GLOBAL_PROFILE, SCORING_VERSION } = require('./scoring');
 const { decide } = require('./decide');
 const { verifyCandidate } = require('./evidence');
-const { discoverFamily } = require('./discover');
+const { discoverFamily, DiscoveryAborted } = require('./discover');
 const { deepScreen } = require('./deep');
 const { collect } = require('./sources');
 const { buildSnapshot, markdown } = require('./report');
@@ -30,7 +30,7 @@ function deepPool(candidates, gateById, scored, topK) {
 const evidenceClasses = (provisional, usage) => ({
   'source/static verified': 'engine code + frozen G280 vendor hashes checked at load',
   'internal tests verified': 'see test results in checkpoint (node --test)',
-  'runtime verified': provisional ? 'NOT for market data in this run' : 'engine fetched & quote-checked cited pages in this run',
+  'runtime verified': provisional ? 'NOT for market data in this run' : 'evidence = quotes matched against the provider web-search citation text (engine opened no third-party pages)',
   'live-provider verified': usage && usage.calls ? `provider calls this run: ${usage.calls}` : 'NOT RUN (no provider calls in this run)',
   'market validated': 'NO — research evidence only; no customer/commercial test performed',
   'commercial result observed': 'NO',
@@ -50,22 +50,27 @@ async function run({ runDir, cfg, provider = null, fetcher = null, candidates = 
   else if (has('01_raw.json')) raw = readJson(P('01_raw.json'));
   else {
     if (!provider) throw new Error('discover stage needs an LLM provider (see config.llm). Use `reveng import` for pre-researched candidates.');
-    raw = []; const sUrls = {}, dlog = [];
-    for (const family of families) {
-      log(`discover ${family}`);
-      const r = await discoverFamily({ provider, fetcher, collect, family, perFamily: cfg.per_family || 4, signalsEnabled: (cfg.sources || {}).enabled !== false, bases: (cfg.sources || {}).bases });
-      raw.push(...r.candidates); sUrls[family] = r.searchUrls; dlog.push({ family, got: r.candidates.length, dropped: r.dropped, log: r.log });
-      writeJson(P('01_raw.partial.json'), { raw, sUrls, dlog });
+    raw = []; const cites = {}, srs = {}, dlog = [], diags = [], breaker = { fails: 0, max: (cfg.discovery || {}).max_consecutive_failures || 2 };
+    try {
+      for (const family of families) {
+        log(`discover ${family}`);
+        const r = await discoverFamily({ provider, fetcher, collect, family, perFamily: cfg.per_family || 4, signalsEnabled: (cfg.sources || {}).enabled !== false, bases: (cfg.sources || {}).bases, breaker, maxUses: (cfg.llm || {}).web_search_max_uses });
+        raw.push(...r.candidates); cites[family] = r.citations; srs[family] = r.searchResults; dlog.push({ family, got: r.candidates.length, dropped: r.dropped, log: r.log }); diags.push(...r.diags);
+        writeJson(P('01_raw.partial.json'), { raw, dlog }); writeJson(P('01_diagnostics.json'), diags);
+      }
+    } catch (e) {
+      if (e instanceof DiscoveryAborted) { diags.push(...(e.diags || [])); writeJson(P('01_diagnostics.json'), diags); chk.blockers.push('discovery_aborted:' + e.message); chk.updated_at = nowIso(); writeJson(P('checkpoint.json'), chk); }
+      throw e;
     }
-    writeJson(P('01_raw.json'), raw); writeJson(P('01_discovery_log.json'), { dlog, searchUrls: sUrls }); done('discover');
+    writeJson(P('01_raw.json'), raw); writeJson(P('01_discovery_log.json'), { dlog, citations: cites, searchResults: srs }); done('discover');
   }
   // 2 verify (engine fetches every cited URL)
   let ver;
   if (has('02_verified.json')) ver = readJson(P('02_verified.json'));
   else if (provisional) { ver = raw; writeJson(P('02_verified.json'), ver); }
   else {
-    const su = has('01_discovery_log.json') ? readJson(P('01_discovery_log.json')).searchUrls : {};
-    ver = []; for (const c of raw) { log(`verify ${c.id}`); ver.push(await verifyCandidate(c, fetcher, new Set(su[c.family] || []))); }
+    const dl = has('01_discovery_log.json') ? readJson(P('01_discovery_log.json')) : { citations: {}, searchResults: {} };
+    ver = raw.map(c => verifyCandidate(c, dl.citations[c.family] || [], dl.searchResults[c.family] || []));
     writeJson(P('02_verified.json'), ver); done('verify');
   }
   // 3 gate + score
@@ -81,7 +86,7 @@ async function run({ runDir, cfg, provider = null, fetcher = null, candidates = 
     const out = [];
     for (const c of ver) {
       if (!pool.includes(c.id)) { out.push(c); continue; }
-      try { out.push(await deepScreen({ provider, fetcher, candidate: c, minVerified: dcfg.min_verified || 3 })); }
+      try { out.push(await deepScreen({ provider, candidate: c, minVerified: dcfg.min_verified || 3 })); }
       catch (e) { log(`deep FAILED ${c.id}: ${e.message}`); chk.blockers.push(`deep_failed:${c.id}:${e.message}`); out.push(c); }
     }
     cand = out; writeJson(P('05_deep.json'), cand); done('deep');

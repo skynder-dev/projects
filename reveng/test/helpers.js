@@ -34,6 +34,6 @@ function cand(o = {}) {
 // Test-only provider: returns scripted text. Labelled FAKE in every use; proves wiring, never market truth.
 class FakeProvider {
   constructor(handler) { this.handler = handler; this.budget = new Budget({ allow_spend: true, max_calls: 1000 }); this.calls = []; this.name = 'fake'; }
-  async complete(req) { this.budget.authorize(); this.calls.push(req); const r = this.handler(req, this.calls.length); this.budget.record({ input_tokens: 10, output_tokens: 10 }); return { text: r.text, searchUrls: r.searchUrls || new Set(), usage: { input_tokens: 10, output_tokens: 10, search_requests: 0 } }; }
+  async complete(req) { this.budget.authorize(); this.calls.push(req); const r = this.handler(req, this.calls.length); this.budget.record({ input_tokens: 10, output_tokens: 10 }); return { text: r.text, finalText: r.finalText ?? r.text, citations: r.citations || [], searchResults: r.searchResults || [], stop_reason: r.stop_reason || 'end_turn', diag: { stop_reason: r.stop_reason || 'end_turn', text_head: String(r.text).slice(0, 200) }, searchUrls: new Set(), usage: { input_tokens: 10, output_tokens: 10, search_requests: 0 } }; }
 }
 module.exports = { startServer, page, cand, FakeProvider };

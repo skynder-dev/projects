@@ -1,4 +1,5 @@
 'use strict';
+// Official-API adapters only (HN Algolia, GitHub REST, Stack Exchange API, npm registry, iTunes Search API). Unofficial endpoints are not used.
 // Keyless public-data adapters. Each returns Signal[]: {source,url,title,text,date,metrics}. Response shapes follow the public docs;
 // they are tested against local fixtures (shape parsing), NOT live (egress closed in build env).
 const q = encodeURIComponent;
@@ -11,8 +12,6 @@ const A = {
     parse: (j) => (j.items || []).map(i => ({ source: 'stackexchange', url: i.link, title: i.title, text: '', date: i.creation_date ? new Date(i.creation_date * 1000).toISOString() : null, metrics: { score: i.score, views: i.view_count, answers: i.answer_count } })) },
   npm: { urlFor: (query, o) => `${o.base || 'https://registry.npmjs.org'}/-/v1/search?text=${q(query)}&size=${o.limit || 10}`,
     parse: (j) => (j.objects || []).map(o => ({ source: 'npm', url: `https://www.npmjs.com/package/${o.package.name}`, title: o.package.name, text: o.package.description || '', date: o.package.date || null, metrics: { score: o.score && o.score.final } })) },
-  steam: { urlFor: (query, o) => `${o.base || 'https://store.steampowered.com'}/api/storesearch/?term=${q(query)}&cc=us&l=en`,
-    parse: (j) => (j.items || []).slice(0, 10).map(i => ({ source: 'steam', url: `https://store.steampowered.com/app/${i.id}`, title: i.name, text: '', date: null, metrics: { price_cents: i.price && i.price.final, metascore: i.metascore } })) },
   itunes: { urlFor: (query, o) => `${o.base || 'https://itunes.apple.com'}/search?term=${q(query)}&entity=software&limit=${o.limit || 10}`,
     parse: (j) => (j.results || []).map(r => ({ source: 'itunes', url: r.trackViewUrl, title: r.trackName, text: r.description ? String(r.description).slice(0, 300) : '', date: r.currentVersionReleaseDate || null, metrics: { price: r.price, rating: r.averageUserRating, ratings: r.userRatingCount } })) },
 };

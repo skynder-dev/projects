@@ -102,3 +102,7 @@ test('Phase E: G280 entrant_advantage via engine — synthetic evidence never su
   const ok = evaluateMeasured('X-1', real); assert.equal(ok.supportedAdvantageHypothesis, true); assert.equal(ok.advantageProven, false, 'even supported claims are only hypotheses (G280 rule)');
   real.entrantEvidence.value = 30; assert.equal(evaluateMeasured('X-1', real).supportedAdvantageHypothesis, false);
 });
+test('gate: search_confirmed-only evidence (URL seen, quote not matched) can never pass, however many items', () => {
+  const c = cand(); c.evidence = Array.from({ length: 8 }, (_, i) => ({ id: `E${i}`, url: 'https://example.com/pricing' + (i ? '/' + i : ''), kind: ['incumbent_price', 'demand', 'constraint'][i % 3], verify: { status: 'search_confirmed' } }));
+  const g = runGates(c); assert.ok(g.failed.includes('evidence_depth')); assert.match(g.gates.evidence_depth.reason, /quote_verified_items 0<2/);
+});

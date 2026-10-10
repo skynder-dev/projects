@@ -2,18 +2,16 @@
 // End-to-end wiring tests. The LLM is a scripted FAKE and the "internet" is a local server: this proves the engine's logic
 // (verification, gating, scoring, deep screen, decision, resume) -- NOT market truth and NOT live-provider behaviour.
 const test = require('node:test'), assert = require('node:assert/strict'), fs = require('node:fs'), os = require('node:os'), path = require('node:path');
-const { startServer, page, FakeProvider } = require('./helpers');
+const { FakeProvider } = require('./helpers');
 const { run } = require('../src/pipeline'), { Fetcher } = require('../src/fetcher'), { decide } = require('../src/decide');
 const { FAMILIES_REQUIRED } = require('../src/schema'), { CODES } = require('../src/discover'), S = require('../src/scoring');
 const { load } = require('../vendor/load'), { cand } = require('./helpers');
 
 const stmt = (id, kind) => `Documented evidence statement for ${id} about ${kind} appears on this page only.`;
-function world(opts = {}) {
-  // opts: leaders (ids with strong profile), hallucinate (ids whose quotes are NOT on page), badEconomics
-  const pages = (req) => { const m = req.url.match(/^\/p\/([A-Z]+-\d+)\/(\w+)/); if (!m) return { status: 404, body: 'x' }; const [, id, kind] = m; return { body: page(opts.hallucinate && opts.hallucinate.includes(id) ? 'Unrelated text about nothing.' : stmt(id, kind)) }; };
-  return startServer({ '*': pages });
-}
+function world(opts = {}) { return Promise.resolve({ base: 'https://evidence.test', hallucinate: opts.hallucinate || [], close: async () => {} }); }
 function provider(base, opts = {}) {
+  const halluc = new Set(opts.hallucinate || []);
+  const cites = (id, kinds) => kinds.map(k => ({ url: `${base}/p/${id}/${k}`, title: 't', cited_text: halluc.has(id) ? 'Unrelated text about nothing in particular here.' : stmt(id, k) }));
   const strong = new Set(opts.strong || ['SAS-01']), free = new Set(opts.free || []);
   return new FakeProvider(({ system, user }) => {
     if (/discovery researcher/.test(system)) {
@@ -29,11 +27,13 @@ function provider(base, opts = {}) {
           dimension_scores: { demand_signal: st ? 4 : 2, acquisition_efficiency: st ? 4 : 2, competition_gap: st ? 4 : 2, defensibility: st ? 4 : 2, platform_resilience: st ? 4 : 3, scale_without_hiring: st ? 5 : 3, fulfillment_simplicity: 5, regulatory_simplicity: 4 },
           dimension_evidence: st ? { demand_signal: ['E2'], acquisition_efficiency: ['E2'], competition_gap: ['E1'], defensibility: ['E3'], platform_resilience: ['E3'], scale_without_hiring: ['E1'] } : {} });
       }
-      return { text: '```json\n' + JSON.stringify(out) + '\n```' };
+      const allC = out.flatMap((o, i) => cites(`${code}-${String(i + 1).padStart(2, '0')}`, ['price', 'demand', 'constraint']));
+      return { text: 'Searching [1] now.\n```json\n' + JSON.stringify(out) + '\n```', finalText: '```json\n' + JSON.stringify(out) + '\n```', citations: allC, searchResults: allC.map(c => ({ url: c.url, title: 't' })) };
     }
     if (/deep-screen researcher/.test(system)) {
       const id = user.match(/Candidate ([A-Z]+-\d+)/)[1], url = (k) => `${base}/p/${id}/${k}`, st = strong.has(id);
-      return { text: JSON.stringify({ evidence: [1, 2, 3].map(i => ({ url: url('deep' + i), publisher: 'p', date: '2026-10-05', quote: stmt(id, 'deep' + i), shows: 's', kind: ['demand', 'incumbent_price', 'constraint'][i - 1], class: 'fact' })),
+      const dc = cites(id, ['deep1', 'deep2', 'deep3']);
+      return { citations: dc, searchResults: dc.map(c => ({ url: c.url })), text: JSON.stringify({ evidence: [1, 2, 3].map(i => ({ url: url('deep' + i), publisher: 'p', date: '2026-10-05', quote: stmt(id, 'deep' + i), shows: 's', kind: ['demand', 'incumbent_price', 'constraint'][i - 1], class: 'fact' })),
         competitors: [{ name: 'Inc', price_point: '$50/mo', url: url('price'), free_tier: false }], constraints: ['none material'],
         monthly_model: opts.badEconomics ? { price: 10, units: 10, revenue: 100, cashCost: 90, contribution: 10, ownerHours: 40, startup: 500, automation: 80, launchDays: 20, assumptions: ['x'] } : { price: 30, units: 100, revenue: 3000, cashCost: 600, contribution: 2400, ownerHours: 40, startup: 500, automation: 80, launchDays: 20, assumptions: ['100 customers by month 6 (model)'] },
         revised: { dimension_scores: st ? { demand_signal: 4, acquisition_efficiency: 4, competition_gap: 4, defensibility: 4, platform_resilience: 4, scale_without_hiring: 5, fulfillment_simplicity: 5, regulatory_simplicity: 4 } : {}, dimension_evidence: st ? { demand_signal: ['E1'], acquisition_efficiency: ['E1'], competition_gap: ['E2'], defensibility: ['E3'], platform_resilience: ['E3'], scale_without_hiring: ['E2'] } : {} },
@@ -43,10 +43,10 @@ function provider(base, opts = {}) {
   });
 }
 const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'rv-run-'));
-const cfg = (o = {}) => ({ families: FAMILIES_REQUIRED, per_family: 4, sources: { enabled: false }, gates: { require_https_incumbent_source: false /* test world is http://127.0.0.1 only */ }, deep: { top_k: 8, min_verified: 3 }, ...o });
-const mkFetch = () => new Fetcher({ minIntervalMs: 0 });
+const cfg = (o = {}) => ({ families: FAMILIES_REQUIRED, per_family: 4, sources: { enabled: false }, deep: { top_k: 8, min_verified: 3 }, ...o });
+const mkFetch = () => new Fetcher({ allowHosts: [], defaultIntervalMs: 0 });
 
-test('E2E winner path: 32 candidates/8 families, engine-verified evidence, deep screen, single clear leader', async () => {
+test('E2E winner path: 32 candidates/8 families, citation-verified evidence, deep screen, single clear leader', async () => {
   const w = await world(); const p = provider(w.base);
   try {
     const dir = tmp(), r = await run({ runDir: dir, cfg: cfg(), provider: p, fetcher: mkFetch() });
@@ -66,11 +66,11 @@ test('E2E winner path: 32 candidates/8 families, engine-verified evidence, deep 
     assert.match(fs.readFileSync(path.join(dir, 'REPORT.md'), 'utf8'), /WINNER/);
   } finally { await w.close(); }
 });
-test('ANTI-HALLUCINATION: quotes not on the real page => unverified => cannot survive gates or win', async () => {
+test('ANTI-HALLUCINATION: quotes absent from provider citations => cannot survive gates or win', async () => {
   const bad = []; for (const c of Object.values(CODES)) for (let i = 1; i <= 4; i++) bad.push(`${c}-0${i}`);
-  const w = await world({ hallucinate: bad }); const p = provider(w.base);
+  const w = await world({ hallucinate: bad }); const p = provider(w.base, { hallucinate: bad });
   try { const r = await run({ runDir: tmp(), cfg: cfg(), provider: p, fetcher: mkFetch() });
-    assert.equal(r.decision.verdict, 'no_winner'); assert.equal(r.decision.survivors, 0); assert.ok(r.candidates.every(c => c.evidence.every(e => e.verify.status === 'quote_not_found')));
+    assert.equal(r.decision.verdict, 'no_winner'); assert.equal(r.decision.survivors, 0); assert.ok(r.candidates.every(c => c.evidence.every(e => e.verify.status === 'search_confirmed')), 'URL seen in search but quote not in any citation => half weight only');
   } finally { await w.close(); }
 });
 test('free incumbent (value 0) candidates are rejected even with perfect evidence', async () => {

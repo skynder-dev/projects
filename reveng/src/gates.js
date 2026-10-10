@@ -3,7 +3,7 @@ const { validateCandidate, EDGE_CRITERIA, EDGE_DIRECTIONS } = require('./schema'
 const { evW } = require('./scoring');
 const DEFAULTS = {
   max_startup_cash_usd: 10000, max_days_to_first_revenue: 365, max_owner_hours_per_week: 40, min_relative_edge_improvement: 0.25,
-  require_https_incumbent_source: true, min_evidence_items: 3, min_evidence_weight: 2.0, required_evidence_kinds: ['incumbent_price', 'demand', 'constraint'],
+  require_https_incumbent_source: true, min_evidence_items: 3, min_verified_items: 2, min_evidence_weight: 2.0, required_evidence_kinds: ['incumbent_price', 'demand', 'constraint'],
   owner_leak_patterns: ['\\bmy (network|contacts|friends|company|truck|license|experience)\\b', "\\bthe owner'?s\\b", '\\bowner (has|already has|owns|knows)\\b',
     '\\bwarm (network|intro)', '\\bprior (trucking|industry) experience\\b'],
 };
@@ -42,6 +42,8 @@ function gateEvidenceDepth(c, g) {
   const miss = g.required_evidence_kinds.filter(k => !kinds.has(k));
   if (ev.length < g.min_evidence_items) r.push(`items ${ev.length}<${g.min_evidence_items}`);
   if (w < g.min_evidence_weight) r.push(`verified_weight ${w}<${g.min_evidence_weight}`);
+  const nv = ev.filter(x => (x.verify || {}).status === 'verified').length;
+  if (nv < g.min_verified_items) r.push(`quote_verified_items ${nv}<${g.min_verified_items}`);
   if (miss.length) r.push('missing_verified_kinds:' + miss.join(','));
   return [!r.length, r.join(';') || 'ok'];
 }

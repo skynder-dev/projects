@@ -2,6 +2,9 @@ name: reveng-scan
 on:
   workflow_dispatch:
     inputs:
+      mode:
+        description: smoke (1 cheap call) or full
+        default: smoke
       per_family:
         description: candidates per family
         default: "4"
@@ -29,12 +32,17 @@ jobs:
           set -o pipefail
           mkdir -p runs
           echo "key_present=$([ -n "$ANTHROPIC_API_KEY" ] && echo yes || echo no)" > runs/console.log
-          node src/cli.js run --config config.json --per-family "${{ github.event.inputs.per_family }}" --out runs 2>&1 | tee -a runs/console.log
+          if [ "${{ github.event.inputs.mode }}" = "full" ]; then
+            node src/cli.js run --config config.json --per-family "${{ github.event.inputs.per_family }}" --out runs 2>&1 | tee -a runs/console.log
+          else
+            node src/cli.js smoke --config config.json --out runs 2>&1 | tee -a runs/console.log
+          fi
       - name: publish results to branch
         if: always()
         run: |
           d=$(ls -d runs/run_* 2>/dev/null | tail -1)
           if [ -n "$d" ] && [ -f "$d/REPORT.md" ]; then cat "$d/REPORT.md" >> "$GITHUB_STEP_SUMMARY"; fi
+          cat runs/console.log >> "$GITHUB_STEP_SUMMARY" || true
           rm -rf runs/*/cache
           git config user.name "reveng-bot"; git config user.email "bot@users.noreply.github.com"
           git checkout -B results

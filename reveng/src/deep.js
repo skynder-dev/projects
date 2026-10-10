@@ -1,7 +1,7 @@
 'use strict';
 const { extractJson } = require('./llm/json');
 const { deepPrompts } = require('./prompts');
-const { verifyEvidenceItem } = require('./evidence');
+const { verifyAgainstCitations } = require('./evidence');
 const { load } = require('../vendor/load');
 const econ = load('economics_contract');
 const MODEL_KEYS = ['price', 'units', 'revenue', 'cashCost', 'contribution', 'ownerHours', 'startup', 'automation', 'launchDays'];
@@ -19,16 +19,16 @@ function economics(model) {
     pessimistic: { rule: 'price x0.8, units x0.5, cash cost x0.5', cashMarginPct: val(p, 'cashMargin'), contributionUsdPerMonth: val(p, 'contribution'), startupPaybackMonths: val(p, 'startupPayback') },
     survives_pessimistic: val(p, 'contribution') !== null && val(p, 'contribution') > 0 };
 }
-async function deepScreen({ provider, fetcher, candidate, minVerified = 3 }) {
+async function deepScreen({ provider, candidate, minVerified = 3 }) {
   const { system, user } = deepPrompts({ candidate });
   const res = await provider.complete({ system, user, webSearch: true });
-  const d = extractJson(res.text), searchUrls = new Set(res.searchUrls || []);
+  let d; try { d = extractJson(res.finalText || res.text, 'object'); } catch (_) { d = extractJson(res.text, 'object'); }
   const c = JSON.parse(JSON.stringify(candidate)), newEv = [];
   const map = {};
   for (let i = 0; i < (d.evidence || []).length; i++) {
     const it = { ...d.evidence[i], id: `${c.id}-D${i + 1}`, stage: 'deep' };
     if (!/^https?:\/\//.test(it.url || '') || !['incumbent_price', 'demand', 'constraint', 'other'].includes(it.kind)) continue;
-    const v = await verifyEvidenceItem(it, fetcher, searchUrls); delete v._text; newEv.push(v); map[`E${i + 1}`] = it.id;
+    newEv.push(verifyAgainstCitations(it, res.citations || [], res.searchResults || [])); map[`E${i + 1}`] = it.id;
   }
   c.evidence = [...(c.evidence || []), ...newEv];
   const rv = d.revised || {};
