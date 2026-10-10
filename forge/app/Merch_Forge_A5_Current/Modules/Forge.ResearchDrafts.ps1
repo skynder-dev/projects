@@ -145,14 +145,14 @@ function New-ResearchConceptDraft($Niche,$Snapshot,$LoadedAtUtc,[string]$Backend
     $key=$script:ResearchDraftKeyPrefix+([Guid]::NewGuid().ToString('N').Substring(0,24))
     $rev=New-ResearchDraftRevision $key 1 $fields 'created_from_discover_research'
     $loaded=''; if($null -ne $LoadedAtUtc){try{$loaded=([datetime]$LoadedAtUtc).ToUniversalTime().ToString('o')}catch{$loaded=[string]$LoadedAtUtc}}
-    $sources=@(); foreach($x in @(Get-PropertyValue $Snapshot 'sources') | Select-Object -First 16){if($null -eq $x){continue};$sources+=[pscustomobject]@{source_id=[string](Get-PropertyValue $x 'id');name=[string](Get-PropertyValue $x 'name');source_class=[string](Get-PropertyValue $x 'source_class')}}
+    $sources=@(); foreach($x in @(Get-PropertyValue $Snapshot 'sources') | Select-Object -First 16){if($null -eq $x){continue};$sources+=[pscustomobject]@{source_id=[string](Get-PropertyValue $x 'id');name=[string](Get-PropertyValue $x 'name');source_class=[string](Get-PropertyValue $x 'source_class');url=[string](Get-PropertyValue $x 'url');authority_level=(Get-PropertyValue $x 'authority_level');last_checked_at=[string](Get-PropertyValue $x 'last_checked_at')}}
     $provenance=[pscustomobject]@{
         origin='discover_research'; contract=[string]$(if(Get-PropertyValue $Snapshot 'contract'){Get-PropertyValue $Snapshot 'contract'}else{'forge.discover_snapshot.v1'})
         snapshot_loaded_at=$loaded; backend_version=$BackendVersion
         niche_identity_field=$identity.field; niche_identity=$identity.value; niche_name=$identity.name
         niche_row_sha256=$rowSha; niche_row=($rowJson | ConvertFrom-Json)
         score_total=(Get-PropertyValue $Niche 'score_total'); score_confidence=(Get-PropertyValue $Niche 'score_confidence'); category=[string](Get-PropertyValue $Niche 'category'); audience=[string](Get-PropertyValue $Niche 'audience'); concept_count_at_snapshot=(Get-PropertyValue $Niche 'concept_count')
-        evidence_notes=@($notes); evidence_note_match='explicit_niche_link_only'
+        evidence_notes=@($notes); evidence_note_match='explicit_niche_link_only'; evidence_note_link_available=[bool](@(Get-PropertyValue $Snapshot 'notes') | Where-Object { $null -ne $_ -and ($null -ne $_.PSObject.Properties['niche_key'] -or $null -ne $_.PSObject.Properties['niche_id'] -or $null -ne $_.PSObject.Properties['niche_name']) } | Select-Object -First 1)
         snapshot_sources=@($sources); snapshot_sources_scope='snapshot_wide_context_not_niche_specific'
     }
     $draft=[pscustomobject]@{

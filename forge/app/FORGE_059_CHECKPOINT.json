@@ -1,10 +1,10 @@
 {
   "schema": "forge.release_checkpoint.v1",
-  "package": "058_Merch_Forge_PORTFOLIO_PIPELINE_RC",
+  "package": "059_Merch_Forge_LOCAL_PACKAGE_PATH_RC",
   "previous_package": "058_Merch_Forge_PORTFOLIO_PIPELINE_RC",
-  "app_version": "2.10.0-forge-portfolio-pipeline",
-  "installer_generation": "00000000000000100241",
-  "static": "14/14",
+  "app_version": "2.11.0-forge-local-package-path",
+  "installer_generation": "00000000000000100242",
+  "static": "13/13",
   "checks": {
     "xaml_xml_parse": true,
     "xaml_names_unique": true,
@@ -15,7 +15,6 @@
     "byte_equal_054_MerchForgeLauncher.cmd": true,
     "byte_equal_054_MerchForgePreflight.ps1": true,
     "byte_equal_054_Install_Merch_Forge.vbs": true,
-    "byte_equal_054_Forge.LocalCore.ps1": true,
     "integrity_all_pass": true,
     "manifest_workbench_sha": true,
     "manifest_authority_all_false": true,

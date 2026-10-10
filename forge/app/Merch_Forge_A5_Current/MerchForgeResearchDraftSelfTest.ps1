@@ -104,11 +104,11 @@ if($hasDraftModule){ Register-ResearchDraftUiText }
 
 function Get-Fixture {
     # Labeled test fixture shaped like forge.discover_snapshot.v1. Not market data.
-    $n1=[pscustomobject]@{niche_id='fixture-niche-nurses';name='TEST FIXTURE · Night-shift nurses';category='profession';audience='ICU and ER nurses on night rotation';score_total=8.4;score_confidence=72;concept_count=3;research_summary='Fixture summary: recurring humor about night shifts and coffee.';dimensions=[pscustomobject]@{demand=8.1;competition=6.2;evergreen=9.0;ip_risk=2.0}}
-    $n2=[pscustomobject]@{niche_id='fixture-niche-welders';name='TEST FIXTURE · Pipe welders';category='trade';audience='Union pipe welders';score_total=7.1;score_confidence=60;concept_count=0;research_summary='Fixture summary: pride and safety culture.';dimensions=[pscustomobject]@{demand=7.0}}
+    $n1=[pscustomobject]@{niche_key='fixture-niche-nurses';name='TEST FIXTURE · Night-shift nurses';category='profession';audience='ICU and ER nurses on night rotation';score_total=8.4;score_confidence=72;concept_count=3;research_summary='Fixture summary: recurring humor about night shifts and coffee.';dimensions=[pscustomobject]@{demand=8.1;competition=6.2;evergreen=9.0;ip_risk=2.0}}
+    $n2=[pscustomobject]@{niche_key='fixture-niche-welders';name='TEST FIXTURE · Pipe welders';category='trade';audience='Union pipe welders';score_total=7.1;score_confidence=60;concept_count=0;research_summary='Fixture summary: pride and safety culture.';dimensions=[pscustomobject]@{demand=7.0}}
     return [pscustomobject]@{contract='forge.discover_snapshot.v1';stats=[pscustomobject]@{niches=2;research_notes=3;active_sources=2;concepts=3}
         niches=@($n1,$n2)
-        notes=@([pscustomobject]@{id='fixture-note-1';niche_id='fixture-niche-nurses';topic='Shift humor';conclusion='Fixture: night-shift jokes recur across forums.'},[pscustomobject]@{id='fixture-note-2';niche_id='fixture-niche-welders';topic='Safety';conclusion='Fixture: welders value safety pride.'},[pscustomobject]@{id='fixture-note-3';topic='Unlinked';conclusion='Fixture: note without niche link must not be attached.'})
+        notes=@([pscustomobject]@{id='fixture-note-1';niche_key='fixture-niche-nurses';topic='Shift humor';conclusion='Fixture: night-shift jokes recur across forums.'},[pscustomobject]@{id='fixture-note-2';niche_key='fixture-niche-welders';topic='Safety';conclusion='Fixture: welders value safety pride.'},[pscustomobject]@{id='fixture-note-3';topic='Unlinked';conclusion='Fixture: note without niche link must not be attached.'})
         sources=@([pscustomobject]@{id='fixture-src-1';name='Fixture source A';source_class='forum'},[pscustomobject]@{id='fixture-src-2';name='Fixture source B';source_class='marketplace'})}
 }
 function Find-QueueItem([string]$Key){ foreach($i in @($script:Queue)){ if([string]$i.concept_key -eq $Key){return $i} }; return $null }
@@ -134,7 +134,7 @@ if($Phase -eq 'create'){
     Check 'draft_persisted' ($drafts.Count -eq 1)
     $d=$drafts[0]; $key=[string]$d.concept_key; $p=$d.provenance
     Check 'draft_key_prefix' ($key -like 'rd-*') $key
-    Check 'provenance_niche_identity' ([string]$p.niche_identity -eq 'fixture-niche-nurses' -and [string]$p.niche_identity_field -eq 'niche_id')
+    Check 'provenance_niche_identity' ([string]$p.niche_identity -eq 'fixture-niche-nurses' -and [string]$p.niche_identity_field -eq 'niche_key')
     Check 'provenance_row_hash' ([string]$p.niche_row_sha256 -match '^[0-9a-f]{64}$')
     Check 'provenance_contract' ([string]$p.contract -eq 'forge.discover_snapshot.v1')
     Check 'provenance_snapshot_time' (-not [string]::IsNullOrWhiteSpace([string]$p.snapshot_loaded_at))

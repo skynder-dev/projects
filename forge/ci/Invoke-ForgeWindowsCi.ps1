@@ -57,9 +57,9 @@ if($wb.IndexOf($marker) -lt 0){ Step 'wpf_hook_inserted' $false 'ShowDialog mark
     $ciCopy = Join-Path $app 'MerchForgeWorkbench.ci.ps1'
     [IO.File]::WriteAllText($ciCopy, $wb.Replace($marker, ". `$env:FORGE_CI_HOOK`n"+$marker), (New-Object Text.UTF8Encoding($true)))
     $env:FORGE_CI_HOOK = Join-Path $PSScriptRoot 'ForgeWpfSmoke.hook.ps1'; $env:FORGE_CI_OUT = $OutDir
-    foreach($phase in @('create','restart')){
+    foreach($phase in @('create','restart','package')){
         $env:FORGE_CI_PHASE = $phase; $env:FORGE_CI_RESULT = Join-Path $OutDir ("wpf-$phase.json"); Remove-Item $env:FORGE_CI_RESULT -ErrorAction SilentlyContinue
-        $r = Run-Child ('wpf-'+$phase) @('-NoLogo','-NoProfile','-ExecutionPolicy','Bypass','-STA','-File',$ciCopy) 240
+        $r = Run-Child ('wpf-'+$phase) @('-NoLogo','-NoProfile','-ExecutionPolicy','Bypass','-STA','-File',$ciCopy) 420
         $j=$null; if(Test-Path $env:FORGE_CI_RESULT){ $j = Get-Content $env:FORGE_CI_RESULT -Raw -Encoding UTF8 | ConvertFrom-Json }
         $bad=@(); if($j){ foreach($c in $j.checks.PSObject.Properties){ if(-not $c.Value.pass){ $bad += ($c.Name+' => '+$c.Value.detail) } } }
         $ok = ($null -ne $j -and $null -eq $j.fatal -and $bad.Count -eq 0 -and @($j.checks.PSObject.Properties).Count -gt 0)

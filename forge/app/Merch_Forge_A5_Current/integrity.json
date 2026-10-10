@@ -4,8 +4,8 @@
   "files": [
     {
       "path": "candidate_manifest.json",
-      "sha256": "146a122e4478bd31884ef461ba1366f53e15d23db69158721f1f4f2546b65ad2",
-      "size_bytes": 77190
+      "sha256": "e45510529a53551bf0e0031fccefd82508f293c989b0d0100397d14ab5d105fa",
+      "size_bytes": 77228
     },
     {
       "path": "Configure Image Provider.ps1",
@@ -84,8 +84,8 @@
     },
     {
       "path": "Import Amazon Print Profile.ps1",
-      "sha256": "fed2d373e519018348e277bf5a18830f70e003eb360c34fc9abe2534c0115b87",
-      "size_bytes": 4291
+      "sha256": "19a78d1d968256ccef98ad52e4d13ec31151cff6de2687846209aaecdd246718",
+      "size_bytes": 4574
     },
     {
       "path": "Import Amazon Print Profile.vbs",
@@ -124,12 +124,12 @@
     },
     {
       "path": "MerchForgeResearchDraftSelfTest.ps1",
-      "sha256": "5e011e52c76c120ad7938ddd3b28a041121b8f54f6ac94afd239e618d9df05cb",
-      "size_bytes": 24490
+      "sha256": "77f6ebfbf4870569818ecb0a7b4adf891fe8d6b435caeac7f2183fafc91d9000",
+      "size_bytes": 24495
     },
     {
       "path": "MerchForgeWorkbench.ps1",
-      "sha256": "b3f5f030e43027fa93e9714699e04cdf35892a45438ddf282126271c979e5a15",
+      "sha256": "b424e6b30964ba8a3ac54d628f7e6ceb96943a357ad5fd0acba8f2adb62f13cf",
       "size_bytes": 253506
     },
     {
@@ -189,8 +189,8 @@
     },
     {
       "path": "Modules\\Forge.LocalCore.ps1",
-      "sha256": "119377a2d9684077b0ae7f716f66305a5e65a961be8ff2852d25ff723fdd0ad7",
-      "size_bytes": 117716
+      "sha256": "6431b0aa9fa6f54835d68ffa33766f2a875d85348f50a03636e3ff4f31c9c226",
+      "size_bytes": 118396
     },
     {
       "path": "Modules\\Forge.Localization.ps1",
@@ -219,8 +219,8 @@
     },
     {
       "path": "Modules\\Forge.ResearchDrafts.ps1",
-      "sha256": "9a51c55f22def54100ad9568063e3dc15768061e24df524e6550160b9d6f97d3",
-      "size_bytes": 32406
+      "sha256": "e38bf90f46fa5cb78c924dfd31b4057b49c46db45da1875a3dab940bc6c3d5ab",
+      "size_bytes": 32856
     },
     {
       "path": "Modules\\Forge.UI.Layout.ps1",

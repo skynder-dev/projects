@@ -97,7 +97,7 @@ C['ps1_nonascii_have_bom'] = not [f for f in nonascii_nobom if 'PrintChecks' not
 tmp = tempfile.mkdtemp()
 with zipfile.ZipFile(ARCHIVE_054) as z: z.extractall(tmp)
 old = os.path.join(tmp, '054_Merch_Forge_DISCOVER_RESEARCH_RC', 'Merch_Forge_A5_Current')
-for f in ['Start Merch Forge.vbs', 'MerchForgeLauncher.cmd', 'MerchForgePreflight.ps1', 'Install Merch Forge.vbs', 'Modules/Forge.LocalCore.ps1']:
+for f in ['Start Merch Forge.vbs', 'MerchForgeLauncher.cmd', 'MerchForgePreflight.ps1', 'Install Merch Forge.vbs']:
     C['byte_equal_054_' + os.path.basename(f).replace(' ', '_')] = sha(os.path.join(INNER, f)) == sha(os.path.join(old, f))
 C['integrity_all_pass'] = all(sha(os.path.join(INNER, f['path'].replace('\\', '/'))) == f['sha256'] for f in integ['files'])
 C['manifest_workbench_sha'] = json.loads(rd(mp))['desktop']['workbench_sha256'] == sha(os.path.join(INNER, 'MerchForgeWorkbench.ps1'))

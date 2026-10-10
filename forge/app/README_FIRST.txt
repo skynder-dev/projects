@@ -1,26 +1,18 @@
-MERCH FORGE 058 Merch Forge PORTFOLIO PIPELINE RC
+MERCH FORGE 059 Merch Forge LOCAL PACKAGE PATH RC
 
 START
 1. Extract the whole folder.
-2. Run START_058_MERCH_FORGE.vbs.
+2. Run START_059_MERCH_FORGE.vbs.
 
-WHAT IS NEW (058)
-- Portfolio now has a PIPELINE board built from your own local data (nothing invented):
-  * counters: no decision / KEEP / artwork accepted / checks passed / package ready / published;
-  * "Next actions": every idea with its stage and the next step, closest-to-publishing first;
-    click an idea to open it;
-  * "Decisions by niche": KEEP / EDIT / REGEN / SKIP / no decision per niche.
-  EN / RU / ES.
-- Fix: Home, Portfolio and Performance kept an empty 340px column on the left (the hidden Ideas list kept its
-  minimum width). These screens now use the full window. Portfolio captions translated (RU/ES).
-- Fix: after starting a generation the status bar showed an empty job id, and the provider mode was not
-  recorded in later briefs (job returned as a dictionary).
-- Includes 057 (Amazon profile, PNG transparency check, first trusted check, PS 5.1 exit codes),
-  056 and 055 (Discover > Create concept draft).
-
-PROOF
-- Tested automatically on a real Windows machine by the GitHub workflow "forge-windows",
-  including clicks on the Portfolio board and screenshots.
+WHAT IS NEW (059)
+- The full local path from a research draft to a READY package, publication receipt and sales is now
+  exercised end-to-end on a real Windows machine by CI (accepted artwork -> owner-attested Amazon profile ->
+  listing -> trusted print check -> owner evidence -> READY_FOR_MANUAL_UPLOAD package -> receipt -> sales).
+- Imports (check evidence, publication receipt, sales CSV) are split into "choose file" and "process file";
+  behaviour in the app is unchanged.
+- "Import Amazon Print Profile" accepts -SourcePath and -NonInteractive (used by CI; normal double-click unchanged).
+- Draft provenance also stores source url / authority level / last checked (fields the live server sends).
+- Includes 058 (Portfolio pipeline board), 057 (Amazon profile, PNG check, first trusted check), 056, 055.
 
 SAFETY
-- Read-only board. No backend change, no paid provider call, no publishing, no Supabase mutation.
+- No backend change, no paid provider call, no publishing, no Supabase mutation. CI uses labelled fixtures only.

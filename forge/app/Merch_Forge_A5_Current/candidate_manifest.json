@@ -13,7 +13,7 @@
     "status": "ACTIVE"
   },
   "desktop": {
-    "app_version": "2.10.0-portfolio-pipeline",
+    "app_version": "2.11.0-local-package-path",
     "native_windows_runtime_verified": false,
     "orange_semantic_palette": true,
     "overview_first": true,
@@ -28,10 +28,10 @@
       "ru",
       "es"
     ],
-    "workbench_sha256": "b3f5f030e43027fa93e9714699e04cdf35892a45438ddf282126271c979e5a15",
+    "workbench_sha256": "b424e6b30964ba8a3ac54d628f7e6ceb96943a357ad5fd0acba8f2adb62f13cf",
     "workbench_size_bytes": 253506,
     "native_windows_parser_verified": false,
-    "native_windows_parser_target_sha256": "b3f5f030e43027fa93e9714699e04cdf35892a45438ddf282126271c979e5a15",
+    "native_windows_parser_target_sha256": "b424e6b30964ba8a3ac54d628f7e6ceb96943a357ad5fd0acba8f2adb62f13cf",
     "native_windows_parser_result_sha256": null,
     "product_home_dashboard": true,
     "brand_home_navigation": "dedicated_home_dashboard",
@@ -112,8 +112,8 @@
       },
       {
         "path": "Modules\\Forge.LocalCore.ps1",
-        "sha256": "119377a2d9684077b0ae7f716f66305a5e65a961be8ff2852d25ff723fdd0ad7",
-        "size_bytes": 117716
+        "sha256": "6431b0aa9fa6f54835d68ffa33766f2a875d85348f50a03636e3ff4f31c9c226",
+        "size_bytes": 118396
       },
       {
         "path": "Modules\\Forge.Localization.ps1",
@@ -142,8 +142,8 @@
       },
       {
         "path": "Modules\\Forge.ResearchDrafts.ps1",
-        "sha256": "9a51c55f22def54100ad9568063e3dc15768061e24df524e6550160b9d6f97d3",
-        "size_bytes": 32406
+        "sha256": "e38bf90f46fa5cb78c924dfd31b4057b49c46db45da1875a3dab940bc6c3d5ab",
+        "size_bytes": 32856
       },
       {
         "path": "Modules\\Forge.UI.Layout.ps1",
@@ -305,7 +305,7 @@
     "trusted_local_check_worker": "MerchForgeCheckWorker.ps1",
     "generation_spool_policy": "forge.generation_spool_policy.v1",
     "publication_receipt_print_binding": true,
-    "current_release": "058_Merch_Forge_PORTFOLIO_PIPELINE_RC",
+    "current_release": "059_Merch_Forge_LOCAL_PACKAGE_PATH_RC",
     "generation_authority_module": "Modules\\Forge.GenerationAuthority.ps1",
     "generation_temporal_authority": "future generation job/attempt timestamps beyond 10-minute clock-skew tolerance fail closed before paid dispatch/readiness; shared first-live authority also revalidates non-future ordered attempt/result/import timestamps",
     "amazon_print_profile_temporal_authority": "valid_until must be strictly later than captured_at; captured_at remains bounded by 10-minute future-skew tolerance and 120-day horizon",
@@ -468,11 +468,11 @@
     "owner_separate_parser_zip_required": false,
     "current_release": "044_Merch_Forge_PACKAGE_ROOT_RC"
   },
-  "package_name": "058_Merch_Forge_PORTFOLIO_PIPELINE_RC",
-  "package_number": 58,
-  "result_intent": "058: Portfolio pipeline board (stage counters, next actions, decisions by niche) from local data; generation job object fix; includes 055-057; no backend change, no generation/accept/publish/paid authority",
+  "package_name": "059_Merch_Forge_LOCAL_PACKAGE_PATH_RC",
+  "package_number": 59,
+  "result_intent": "059: end-to-end local package path proven in Windows CI; import file-processing split from dialogs; profile importer non-interactive mode; provenance source urls; includes 055-058; no backend change, no generation/accept/publish/paid authority",
   "schema": "forge.reconciled_candidate_manifest.v1",
-  "stage": "FORGE-058-PORTFOLIO-PIPELINE-RC",
+  "stage": "FORGE-059-LOCAL-PACKAGE-PATH-RC",
   "startup_baseline": {
     "immutable_exact": false,
     "inner_start_sha256": "013e9dcfbfb4c2a42c12b4f6ee208767d80509be9e877160f088a9d2984f51a1",
@@ -632,7 +632,7 @@
     "exact_043_native_windows_stage": "integrity",
     "package_root_native_argv_repair": true
   },
-  "installer_generation": "00000000000000100241",
+  "installer_generation": "00000000000000100242",
   "installer_generation_format": "fixed_width_decimal_v1",
   "installer_guard": {
     "single_writer_lock": "install.lock",
