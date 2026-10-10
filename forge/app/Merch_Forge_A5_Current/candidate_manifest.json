@@ -107,8 +107,8 @@
       },
       {
         "path": "Modules\\Forge.ImageValidation.ps1",
-        "sha256": "70eb5aeeb4f2491a657171d945d29b8cc5db75579b7bf095dea7bb03c9167a64",
-        "size_bytes": 4145
+        "sha256": "224281dcfe49c0bf3589fdba1b498d1b46543f5d832fd0cf372d83d20eeb4bcb",
+        "size_bytes": 4149
       },
       {
         "path": "Modules\\Forge.LocalCore.ps1",

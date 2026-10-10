@@ -9,6 +9,9 @@ WHAT IS NEW (057)
   "Import Amazon Print Profile" tool both assigned to PowerShell's read-only $host variable, which
   always failed silently. Without a valid profile no product could reach "ready to publish";
   this predates the migration (<=054). Profile dates are now read correctly on PowerShell 5.1 and 7.
+- FIX: the transparent-border check for PNG artwork never worked: `@($x,$bmp.Height-1)` is
+  parsed as `($x,$bmp.Height)-1` (the comma binds tighter than minus), so it always threw. Every generated
+  image was rejected and the print check never confirmed transparency. Pre-existing since <=054.
 - Includes 056: language switch keeps live screens, no stuck "Working...", PS 5.1 spool cleanup.
 - Includes 055: Discover > "Create concept draft" (local draft bound to research, owner review, no-dispatch brief).
 
