@@ -18,6 +18,12 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+      - name: Screen 1920x1080 (runner default is 1024x768; the layout phase needs real widths)
+        shell: powershell
+        continue-on-error: true
+        run: |
+          try { Set-DisplayResolution -Width 1920 -Height 1080 -Force -ErrorAction Stop } catch { Write-Output ('Set-DisplayResolution failed: ' + $_.Exception.Message) }
+          Add-Type -AssemblyName System.Windows.Forms; Write-Output ('Screen: ' + [System.Windows.Forms.Screen]::PrimaryScreen.Bounds)
       - name: Forge Windows CI
         shell: powershell
         run: powershell -NoLogo -NoProfile -ExecutionPolicy Bypass -File forge/ci/Invoke-ForgeWindowsCi.ps1 -OutDir "$env:RUNNER_TEMP\forge-ci"

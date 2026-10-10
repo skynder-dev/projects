@@ -325,9 +325,11 @@ $Window.Add_ContentRendered({
         } elseif($script:Ci.phase -eq 'layout') {
             $draft=$null; foreach($i in @($ConceptList.Items)){ if([bool](Get-PropertyValue $i 'is_local_draft')){$draft=$i} }
             $ConceptList.SelectedItem=$draft; Ci-Flush
-            $clip=[ordered]@{}
+            $clip=[ordered]@{}; $reached=@()
+            $screen=[System.Windows.SystemParameters]::PrimaryScreenWidth
             foreach($w in @(1024,1366,1920)){
-                $Window.WindowState='Normal'; $Window.Width=$w; $Window.Height=$(if($w -ge 1920){1040}elseif($w -ge 1366){768}else{720}); Ci-Flush; Update-ResponsiveLayout; Ci-Flush
+                $Window.WindowState='Normal'; $Window.Left=0; $Window.Top=0; $Window.Width=$w; $Window.Height=$(if($w -ge 1920){1040}elseif($w -ge 1366){768}else{720}); Ci-Flush; Update-ResponsiveLayout; Ci-Flush
+                $reached+=('{0}->{1:0}' -f $w,$Window.ActualWidth)
                 foreach($sec in @('home','discover','ideas','artwork','checks','publish','portfolio','performance')){
                     Show-ProductSection $sec; Ci-Flush
                     $found=@(Ci-FindClippedText)
@@ -336,6 +338,7 @@ $Window.Add_ContentRendered({
                 }
             }
             $script:Ci['clipped']=$clip
+            Ci-Check 'layout_widths_reached' (@($reached | Where-Object { [int](($_ -split '->')[1]) -lt ([int](($_ -split '->')[0])-24) }).Count -eq 0) ('screen '+[string]$screen+'; '+($reached -join ', '))
             $wide=@($clip.Keys | Where-Object { $_ -notlike '1024-*' })
             Ci-Check 'layout_no_clipped_text_1366_1920' ($wide.Count -eq 0) ((@($wide | ForEach-Object { $_+': '+$clip[$_] })) -join ' || ')
             Ci-Check 'layout_clipped_text_1024_info' $true ((@($clip.Keys | Where-Object { $_ -like '1024-*' } | ForEach-Object { $_+': '+$clip[$_] })) -join ' || ')
@@ -374,7 +377,7 @@ $Window.Add_ContentRendered({
             Ci-Try 'retry backend' { Ci-Click $BackendRetryButton 'BackendRetryButton' }
             Ci-Check 'offline_stays_offline_after_retry' ([bool]$script:OfflineMode) ([string]$script:ConnectionState)
             $distinct=@($script:CiClicked | ForEach-Object { ($_ -split ':')[-1] } | Sort-Object -Unique)
-            Ci-Check 'offline_clicked_many' (@($script:CiClicked).Count -ge 60 -and $distinct.Count -ge 20) ((@($script:CiClicked).Count)+' clicks, '+$distinct.Count+' distinct: '+($distinct -join ','))
+            Ci-Check 'offline_clicked_many' (@($script:CiClicked).Count -ge 60 -and $distinct.Count -ge 20) (([string]@($script:CiClicked).Count)+' clicks, '+[string]$distinct.Count+' distinct: '+($distinct -join ','))
             Ci-Check 'offline_no_crashes' (@($script:CiCrashes).Count -eq 0) ((@($script:CiCrashes) | Select-Object -First 12) -join ' || ')
             $script:Ci['clicked']=@($script:CiClicked); $script:Ci['crashes']=@($script:CiCrashes)
             Ci-Shot '21-offline-after-clicks'

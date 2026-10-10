@@ -69,6 +69,15 @@ if($wb.IndexOf($marker) -lt 0){ Step 'wpf_hook_inserted' $false 'ShowDialog mark
 }
 } catch { Step 'wpf_window' $false ($_.Exception.Message+' @ '+$_.InvocationInfo.PositionMessage) }
 
+# 4) the release ZIP as the owner gets it: START from the extracted folder, fresh install, upgrade over 054, downgrade guard
+try {
+    $r = Run-Child 'installtest' @('-NoLogo','-NoProfile','-ExecutionPolicy','Bypass','-STA','-File',(Join-Path $PSScriptRoot 'Test-ForgeInstall.ps1'),'-RepoForge',$RepoForge,'-OutDir',$OutDir) 900
+    $ij=$null; $ip=Join-Path $OutDir 'install-test.json'; if(Test-Path $ip){ $ij=Get-Content $ip -Raw -Encoding UTF8 | ConvertFrom-Json }
+    $bad=@(); if($ij){ foreach($c in $ij.checks.PSObject.Properties){ if(-not $c.Value.pass){ $bad+=($c.Name+' => '+$c.Value.detail) } } }
+    $fatal=if($ij -and $ij.PSObject.Properties['fatal']){[string]$ij.fatal}else{$null}
+    Step 'install_start_upgrade' ($r.code -eq 0 -and $null -ne $ij -and $bad.Count -eq 0 -and $null -eq $fatal) ([ordered]@{checks=$(if($ij){@($ij.checks.PSObject.Properties).Count}else{0});failed=$bad;fatal=$fatal;dialogs=$(if($ij){$ij.dialogs}else{@()});notes=$(if($ij){$ij.notes}else{@()});stderr=([string]$r.err).Trim()})
+} catch { Step 'install_start_upgrade' $false $_.Exception.Message }
+
 $all = @($summary.steps.Values | Where-Object { -not $_.pass }).Count -eq 0
 $summary.status = $(if($all){'PASS'}else{'FAIL'})
 $summary | ConvertTo-Json -Depth 10 | Set-Content (Join-Path $OutDir 'windows-ci-summary.json') -Encoding UTF8
