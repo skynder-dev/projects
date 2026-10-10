@@ -1,0 +1,15 @@
+{
+    "schema":  "forge.local_publication_receipt.v3",
+    "concept_key":  "rd-ae675eb094064c5f9a373261",
+    "package_sha256":  "eabd9bce456c355f624ffd48539dddf0b2422f5e191a5a91a917ac9e77f3d993",
+    "lineage_fingerprint":  "251421c5fcaeb1eac75470a7822cedb8c3ca23af706afa319b4cfa57323ab709",
+    "listing_hash":  "4b457865481d2861f86eb43832453a3d03c0f4c83303a94469c241326fdd8bc9",
+    "preupload_gate_sha256":  "e6e6eba13ec5be4885d8bf61daa3cb73d7437a0ec69eeb56828b4431e1a70eba",
+    "print_production_sha256":  "597ebb43866a7e18cb72a4e4e6cb342a120b44042b3db19aa2a26eea1f387271",
+    "channel":  "amazon_merch",
+    "marketplace":  "amazon.com_us",
+    "product_id":  "CI-ASIN-0001",
+    "published_at":  "2026-10-10T17:14:42.3612286Z",
+    "source":  "ci-owner-receipt",
+    "note":  "CI fixture receipt (nothing was uploaded)."
+}

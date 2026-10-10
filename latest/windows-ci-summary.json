@@ -1,0 +1,163 @@
+﻿{
+    "schema":  "forge.windows_ci.v1",
+    "powershell":  "5.1.26100.33438",
+    "os":  "Microsoft Windows NT 10.0.26100.0",
+    "executed_at":  "2026-10-10T17:14:44.0047116Z",
+    "steps":  {
+                  "startup_preflight_as_launcher_runs_it":  {
+                                                                "pass":  true,
+                                                                "detail":  "PRECHECK ROOT: D:\\a\\projects\\projects\\forge\\app\\Merch_Forge_A5_Current\r\nPRECHECK PASS: 62 integrity files; 36 PowerShell files; XAML load OK."
+                                                            },
+                  "provider_pipeline_selftest":  {
+                                                     "pass":  true,
+                                                     "detail":  "PRECHECK ROOT: D:\\a\\projects\\projects\\forge\\app\\Merch_Forge_A5_Current\r\nPRECHECK PASS: 62 integrity files; 36 PowerShell files; XAML load OK."
+                                                 },
+                  "research_draft_selftest_ps51":  {
+                                                       "pass":  true,
+                                                       "detail":  {
+                                                                      "status":  "PASS",
+                                                                      "passed":  118,
+                                                                      "total":  118,
+                                                                      "failed":  [
+
+                                                                                 ],
+                                                                      "out":  "RESEARCH DRAFT SELFTEST PASS: 118/118 checks; api_calls=0; network_calls=0"
+                                                                  }
+                                                   },
+                  "wpf_window_create":  {
+                                            "pass":  true,
+                                            "detail":  {
+                                                           "checks":  48,
+                                                           "failed":  [
+
+                                                                      ],
+                                                           "fatal":  null,
+                                                           "screenshots":  [
+                                                                               "create-00-whats-new.png",
+                                                                               "create-01-discover.png",
+                                                                               "create-02-draft-overview.png",
+                                                                               "create-03-keep.png",
+                                                                               "create-04-edit.png",
+                                                                               "create-05-revision2-keep.png",
+                                                                               "create-06-artwork.png",
+                                                                               "create-06b-portfolio.png",
+                                                                               "create-07a-draft-ru.png",
+                                                                               "create-07-discover-ru.png"
+                                                                           ],
+                                                           "stderr":  ""
+                                                       }
+                                        },
+                  "wpf_window_restart":  {
+                                             "pass":  true,
+                                             "detail":  {
+                                                            "checks":  15,
+                                                            "failed":  [
+
+                                                                       ],
+                                                            "fatal":  null,
+                                                            "screenshots":  [
+                                                                                "restart-08-after-restart.png",
+                                                                                "restart-09-portfolio-ru.png"
+                                                                            ],
+                                                            "stderr":  ""
+                                                        }
+                                         },
+                  "wpf_window_package":  {
+                                             "pass":  true,
+                                             "detail":  {
+                                                            "checks":  51,
+                                                            "failed":  [
+
+                                                                       ],
+                                                            "fatal":  null,
+                                                            "screenshots":  [
+                                                                                "package-10-accepted.png",
+                                                                                "package-09b-amazon-profile-form.png",
+                                                                                "package-09c-checks-profile.png",
+                                                                                "package-09d-listing-hints.png",
+                                                                                "package-11a-confirm-checks-dialog.png",
+                                                                                "package-11-checks.png",
+                                                                                "package-12-portfolio-package-ready.png",
+                                                                                "package-13-portfolio-published.png",
+                                                                                "package-14-performance.png",
+                                                                                "package-15-home-data-copy.png"
+                                                                            ],
+                                                            "stderr":  ""
+                                                        }
+                                         },
+                  "wpf_window_layout":  {
+                                            "pass":  true,
+                                            "detail":  {
+                                                           "checks":  10,
+                                                           "failed":  [
+
+                                                                      ],
+                                                           "fatal":  null,
+                                                           "screenshots":  [
+                                                                               "layout-w1024-home.png",
+                                                                               "layout-w1024-discover.png",
+                                                                               "layout-w1024-ideas.png",
+                                                                               "layout-w1024-artwork.png",
+                                                                               "layout-w1024-checks.png",
+                                                                               "layout-w1024-publish.png",
+                                                                               "layout-w1024-portfolio.png",
+                                                                               "layout-w1024-performance.png",
+                                                                               "layout-w1366-home.png",
+                                                                               "layout-w1366-discover.png",
+                                                                               "layout-w1366-ideas.png",
+                                                                               "layout-w1366-artwork.png",
+                                                                               "layout-w1366-checks.png",
+                                                                               "layout-w1366-publish.png",
+                                                                               "layout-w1366-portfolio.png",
+                                                                               "layout-w1366-performance.png",
+                                                                               "layout-w1920-home.png",
+                                                                               "layout-w1920-discover.png",
+                                                                               "layout-w1920-ideas.png",
+                                                                               "layout-w1920-artwork.png",
+                                                                               "layout-w1920-checks.png",
+                                                                               "layout-w1920-publish.png",
+                                                                               "layout-w1920-portfolio.png",
+                                                                               "layout-w1920-performance.png"
+                                                                           ],
+                                                           "stderr":  ""
+                                                       }
+                                        },
+                  "wpf_window_offline":  {
+                                             "pass":  true,
+                                             "detail":  {
+                                                            "checks":  9,
+                                                            "failed":  [
+
+                                                                       ],
+                                                            "fatal":  null,
+                                                            "screenshots":  [
+                                                                                "offline-20-offline-home.png",
+                                                                                "offline-21-offline-after-clicks.png"
+                                                                            ],
+                                                            "stderr":  ""
+                                                        }
+                                         },
+                  "install_start_upgrade":  {
+                                                "pass":  true,
+                                                "detail":  {
+                                                               "checks":  21,
+                                                               "failed":  [
+
+                                                                          ],
+                                                               "fatal":  null,
+                                                               "dialogs":  [
+                                                                               "Merch Forge - Install: Merch Forge is installed for this Windows account. Use the Merch Forge desktop shortcut to open it.",
+                                                                               "Merch Forge - Install: Merch Forge is installed for this Windows account. Use the Merch Forge desktop shortcut to open it.",
+                                                                               "Merch Forge - Install: Merch Forge is installed for this Windows account. Use the Merch Forge desktop shortcut to open it.",
+                                                                               "Merch Forge - Downgrade Blocked: This package is older than the currently installed guarded Merch Forge generation.\r\n\r\nDowngrade was blocked before the current installation was changed.\r\nSource generation: 00000000000000100237\r\nInstalled generation: 00000000000000100260"
+                                                                           ],
+                                                               "notes":  [
+                                                                             "start launch log tail: PRECHECK ROOT: D:\\a\\_temp\\forge-ci\\install-test\\a\\077_Merch_Forge_FOURTH_REVIEW_RC\\Merch_Forge_A5_Current PRECHECK PASS: 62 integrity files; 36 PowerShell files; XAML load OK.",
+                                                                             "upgraded launch log tail: PRECHECK ROOT: D:\\a\\_temp\\forge-ci\\install-test\\lad-upgrade\\Programs\\MerchForge\\app PRECHECK PASS: 62 integrity files; 36 PowerShell files; XAML load OK."
+                                                                         ],
+                                                               "stderr":  ""
+                                                           }
+                                            }
+              },
+    "status":  "PASS"
+}

@@ -1,0 +1,232 @@
+{
+    "phase":  "package",
+    "checks":  {
+                   "window_rendered":  {
+                                           "pass":  true,
+                                           "detail":  ""
+                                       },
+                   "app_version_reported":  {
+                                                "pass":  true,
+                                                "detail":  "2.24.1-forge-fourth-review"
+                                            },
+                   "pkg_draft_open":  {
+                                          "pass":  true,
+                                          "detail":  "rd-ae675eb094064c5f9a373261"
+                                      },
+                   "pkg_artwork_listed":  {
+                                              "pass":  true,
+                                              "detail":  "1"
+                                          },
+                   "pkg_exact_accept":  {
+                                            "pass":  true,
+                                            "detail":  ""
+                                        },
+                   "portfolio_accepted_opens_checks":  {
+                                                           "pass":  true,
+                                                           "detail":  "artwork_accepted / checks / evidence"
+                                                       },
+                   "prof_status_none_ru":  {
+                                               "pass":  true,
+                                               "detail":  "Не импортирован. Без него пакеты не станут готовыми. Нажмите «Заполнить Amazon-профиль…». | Заполнить Amazon-профиль…"
+                                           },
+                   "prof_refuses_artwork_as_template_ru":  {
+                                                               "pass":  true,
+                                                               "detail":  "Этот файл — один из ваших принятых макетов, а не шаблон Amazon. Выберите файл шаблона, скачанный с Amazon."
+                                                           },
+                   "prof_png_size_autofilled":  {
+                                                    "pass":  true,
+                                                    "detail":  "1024x1024 ci-amazon-template"
+                                                },
+                   "prof_form_requires_attest_ru":  {
+                                                        "pass":  true,
+                                                        "detail":  "Поставьте галочку «Я перенёс(ла) эти значения…», чтобы сохранить профиль."
+                                                    },
+                   "pkg_profile_imported":  {
+                                                "pass":  true,
+                                                "detail":  "Amazon-профиль печати сохранён. Действует до 2026-11-09. | "
+                                            },
+                   "prof_status_valid_ru":  {
+                                                "pass":  true,
+                                                "detail":  "1024 × 1024 пикс., 300 DPI · amazon.com_us / standard_tshirt · действует до 2026-11-09 (осталось дней: 30). | Amazon-профиль печати сохранён. Действует до 2026-11-09."
+                                            },
+                   "listing_hints_short_description_ru":  {
+                                                              "pass":  true,
+                                                              "detail":  "• Описание: 19 симв., Amazon требует не меньше 75."
+                                                          },
+                   "listing_hints_long_title_and_word_ru":  {
+                                                                "pass":  true,
+                                                                "detail":  "• Название: 66 симв., Amazon разрешает 60.\r\n• Название: «official» обычно не пропускают в карточках (обещания, реклама или упоминание Amazon).\r\n• Описание: 19 симв., Amazon требует не меньше 75."
+                                                            },
+                   "pkg_save_listing_enabled":  {
+                                                    "pass":  true,
+                                                    "detail":  ""
+                                                },
+                   "pkg_listing_saved":  {
+                                             "pass":  true,
+                                             "detail":  ""
+                                         },
+                   "pkg_print_check_pass_by_worker":  {
+                                                          "pass":  true,
+                                                          "detail":  "pass / Exact accepted transparent PNG matches the owner-attested current Amazon template canvas."
+                                                      },
+                   "chk_checklist_file_next_to_template":  {
+                                                               "pass":  true,
+                                                               "detail":  "check-evidence-2fac1f0c205dcc72.CHECKLIST.txt"
+                                                           },
+                   "chk_buttons_ru":  {
+                                          "pass":  true,
+                                          "detail":  "Подтвердить проверки… | Открыть папку проверок"
+                                      },
+                   "msg_error_readable_ru":  {
+                                                 "pass":  true,
+                                                 "detail":  "Unsupported check evidence schema. =\u003e Неподдерживаемый формат файла подтверждений."
+                                             },
+                   "chk_dialog_requires_confirm_ru":  {
+                                                          "pass":  true,
+                                                          "detail":  "Поставьте галочку «Я сам(а) проверил(а)…», чтобы сохранить пройденную проверку."
+                                                      },
+                   "chk_dialog_accepts":  {
+                                              "pass":  true,
+                                              "detail":  ""
+                                          },
+                   "chk_saved_status_ru":  {
+                                               "pass":  true,
+                                               "detail":  "Проверки сохранены: IP: товарные знаки и авторские права; Правила контента Amazon Merch; Текст карточки (название, бренд, пункты, описание)."
+                                           },
+                   "chk_evidence_text_ru":  {
+                                                "pass":  true,
+                                                "detail":  "IP · пройдено\nCI fixture attestation (not a real legal or policy review).\n\nМакет · пройдено\nВы сами просмотрели и приняли именно этот макет; файл открывается, его отпечаток SHA-256 проверен.\n\nФайл для печати · пройдено\nПринятый прозрачный PNG совпадает с холстом текущего шаблона Amazon из вашего про"
+                                            },
+                   "pkg_evidence_imported":  {
+                                                 "pass":  true,
+                                                 "detail":  ""
+                                             },
+                   "pkg_all_checks_ready":  {
+                                                "pass":  true,
+                                                "detail":  "{\"ip\":{\"state\":\"pass\",\"ready\":true,\"authority_kind\":\"owner_attested_external\",\"source\":\"owner_in_app_checklist\",\"checked_at\":\"2026-10-10T17:15:39.5729636Z\",\"evidence_refs\":[\"https://merch.amazon.com/resource/Y28FFE5NLRYJG4V\"],\"evidence_source_file_sha256\":\"56896e1783b94a4e3dee87d0384e286fd70e9fdd89bd2a4a5cbd7fcd26fcfe12\",\"evidence_schema\":\"forge.local_check_evidence.v3\",\"channel_profile_fingerprint\":\"\",\"marketplace\":\"\",\"product_type_key\":\"\",\"template_key\":\"\"},\"visual\":{\"state\":\"pass\",\"ready\":true,\"authority_kind\":\"owner_exact_accept\",\"source\":\"owner_exact_accept\",\"checked_at\":\"2026-10-10T17:15:33.7475163Z\",\"evidence_refs\":[\"sha256:a4bbea03a53b8659a2a8b6db722553bc566ef3d17852c1421ab55c19cdb03060\"],\"evidence_source_file_sha256\":\"\",\"evidence_schema\":\"forge.owner_exact_accept.v1\",\"channel_profile_fingerprint\":\"\",\"marketplace\":\"\",\"product_type_key\":\"\",\"template_key\":\"\"},\"print\":{\"state\":\"pass\",\"ready\":true,\"authority_kind\":\"owner_attested_external\",\"source\":\"trusted_local_check_worker\",\"checked_at\":\"2026-10-10T17:15:39.8675588Z\",\"evidence_refs\":[\"https://merch.amazon.com/resource/Y28FFE5NLRYJG4V\",\"template_sha256:6b27f20e142055a57682b17fdd0aea969ad8c9c2ed43294bc11e19a60014cb77\",\"artwork_sha256:a4bbea03a53b8659a2a8b6db722553bc566ef3d17852c1421ab55c19cdb03060\"],\"evidence_source_file_sha256\":\"d3b7cf1d5ff0be972dcc8daef9efb9ffa5359206593212ee1dbff14ecfacb432\",\"evidence_schema\":\"forge.check_worker_result.v1\",\"channel_profile_fingerprint\":\"\",\"marketplace\":\"\",\"product_type_key\":\"\",\"template_key\":\"\"},\"policy\":{\"state\":\"pass\",\"ready\":true,\"authority_kind\":\"owner_attested_external\",\"source\":\"owner_in_app_checklist\",\"checked_at\":\"2026-10-10T17:15:39.5729636Z\",\"evidence_refs\":[\"https://merch.amazon.com/resource/Y28FFE5NLRYJG4V\"],\"evidence_source_file_sha256\":\"56896e1783b94a4e3dee87d0384e286fd70e9fdd89bd2a4a5cbd7fcd26fcfe12\",\"evidence_schema\":\"forge.local_check_evidence.v3\",\"channel_profile_fingerprint\":\"ce632fea34a30ac3d0aa4be53e0eb80255033cca40fb94a7f6a560ad6719f3d4\",\"marketplace\":\"amazon.com_us\",\"product_type_key\":\"standard_tshirt\",\"template_key\":\"ci-amazon-template\"},\"metadata\":{\"state\":\"pass\",\"ready\":true,\"authority_kind\":\"owner_attested_external\",\"source\":\"owner_in_app_checklist\",\"checked_at\":\"2026-10-10T17:15:39.5729636Z\",\"evidence_refs\":[\"https://merch.amazon.com/resource/Y28FFE5NLRYJG4V\"],\"evidence_source_file_sha256\":\"56896e1783b94a4e3dee87d0384e286fd70e9fdd89bd2a4a5cbd7fcd26fcfe12\",\"evidence_schema\":\"forge.local_check_evidence.v3\",\"channel_profile_fingerprint\":\"\",\"marketplace\":\"\",\"product_type_key\":\"\",\"template_key\":\"\"}}"
+                                            },
+                   "pkg_build_enabled":  {
+                                             "pass":  true,
+                                             "detail":  ""
+                                         },
+                   "pkg_ready_for_manual_upload":  {
+                                                       "pass":  true,
+                                                       "detail":  "READY_FOR_MANUAL_UPLOAD"
+                                                   },
+                   "pkg_status_bar_russian":  {
+                                                  "pass":  true,
+                                                  "detail":  "Локальный пакет для ручной загрузки создан. Статус: READY_FOR_MANUAL_UPLOAD"
+                                              },
+                   "pkg_portfolio_package_ready":  {
+                                                       "pass":  true,
+                                                       "detail":  "package_ready"
+                                                   },
+                   "portfolio_package_opens_publish":  {
+                                                           "pass":  true,
+                                                           "detail":  "publish / publication / CI FIXTURE · Night-shift nurses · черновик исследования · Загрузите вручную, затем импортируйте квитанцию публикации. · Нажмите, чтобы открыть: Публикация"
+                                                       },
+                   "pkg_receipt_imported":  {
+                                                "pass":  true,
+                                                "detail":  ""
+                                            },
+                   "pkg_portfolio_published":  {
+                                                   "pass":  true,
+                                                   "detail":  "1 / 1"
+                                               },
+                   "pkg_sales_imported":  {
+                                              "pass":  true,
+                                              "detail":  ""
+                                          },
+                   "pkg_sales_status_russian":  {
+                                                    "pass":  true,
+                                                    "detail":  "Импортировано строк: 3; связано с проверенными товарами Forge: 2; не связано: 1."
+                                                },
+                   "pkg_performance_linked_only":  {
+                                                       "pass":  true,
+                                                       "detail":  "3 / 5 / $7.50"
+                                                   },
+                   "pkg_performance_text_shows_amount":  {
+                                                             "pass":  true,
+                                                             "detail":  "Проверенных строк продаж: 2. Продаж за 30 дней: 5; роялти: $7.50."
+                                                         },
+                   "pkg_home_text_shows_amounts":  {
+                                                       "pass":  true,
+                                                       "detail":  "Проверенный импорт · 7 дн.: 3 прод., $4.50 · 30 дн.: 5, $7.50 · 90 дн.: 5, $7.50"
+                                                   },
+                   "perf_leaders_list_product":  {
+                                                     "pass":  true,
+                                                     "detail":  "CI FIXTURE · Night-shift nurses · CI-ASIN-0001\r\n    30 дн.: 5 шт., $7.50 · 90 дн.: 5 шт., $7.50"
+                                                 },
+                   "perf_attention_unknown_asin":  {
+                                                       "pass":  true,
+                                                       "detail":  "• Продажи с неизвестным ID товара UNKNOWN-ASIN: строк 1. Импортируйте квитанцию публикации этого товара, чтобы они учитывались."
+                                                   },
+                   "home_attention_count":  {
+                                                "pass":  true,
+                                                "detail":  "1"
+                                            },
+                   "home_hints_name_the_source_ru":  {
+                                                         "pass":  true,
+                                                         "detail":  "По импортированным продажам ваших товаров | По импортированным квитанциям публикации"
+                                                     },
+                   "backup_buttons_ru":  {
+                                             "pass":  true,
+                                             "detail":  "Сохранить копию… | Восстановить из копии…"
+                                         },
+                   "backup_restore_roundtrip":  {
+                                                    "pass":  true,
+                                                    "detail":  "18 files; drafts 1 -\u003e 1; Восстановлено файлов из копии: 18. Прежние данные сохранены в D:\\a\\_temp\\forge-ci\\localappdata\\MerchForge\\backups\\before-restore-20261010-171544-ad333c.zip."
+                                                },
+                   "backup_restore_keeps_verified_product":  {
+                                                                 "pass":  true,
+                                                                 "detail":  "1"
+                                                             },
+                   "auto_copy_started_once_by_app":  {
+                                                         "pass":  true,
+                                                         "detail":  "first True, second False"
+                                                     },
+                   "auto_copy_made_and_valid":  {
+                                                    "pass":  true,
+                                                    "detail":  "exit 0; copies 1; files 18"
+                                                },
+                   "auto_copy_status_ru":  {
+                                               "pass":  true,
+                                               "detail":  "Автокопия раз в день: последняя 2026-10-10 17:15, хранится 1 в D:\\a\\_temp\\forge-ci\\localappdata\\MerchForge\\backups"
+                                           },
+                   "only_discover_snapshot_api":  {
+                                                      "pass":  true,
+                                                      "detail":  ""
+                                                  },
+                   "no_network":  {
+                                      "pass":  true,
+                                      "detail":  ""
+                                  },
+                   "no_unexpected_errors":  {
+                                                "pass":  true,
+                                                "detail":  ""
+                                            }
+               },
+    "api":  [
+
+            ],
+    "errors":  [
+
+               ],
+    "confirms":  [
+                     "Accept this exact local artwork?\n\nSHA-256: a4bbea03a53b8659a2a8b6db722553bc566ef3d17852c1421ab55c19cdb03060\nRevision: rdrev-ae675eb094064c5f9a373261-2-2b533b119833\n\nThis creates LOCAL acceptance only."
+                 ],
+    "screenshots":  [
+                        "package-10-accepted.png",
+                        "package-09b-amazon-profile-form.png",
+                        "package-09c-checks-profile.png",
+                        "package-09d-listing-hints.png",
+                        "package-11a-confirm-checks-dialog.png",
+                        "package-11-checks.png",
+                        "package-12-portfolio-package-ready.png",
+                        "package-13-portfolio-published.png",
+                        "package-14-performance.png",
+                        "package-15-home-data-copy.png"
+                    ],
+    "fatal":  null,
+    "network":  0
+}

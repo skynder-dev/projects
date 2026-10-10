@@ -1,0 +1,220 @@
+{
+    "phase":  "create",
+    "checks":  {
+                   "window_rendered":  {
+                                           "pass":  true,
+                                           "detail":  ""
+                                       },
+                   "app_version_reported":  {
+                                                "pass":  true,
+                                                "detail":  "2.24.1-forge-fourth-review"
+                                            },
+                   "whats_new_shown_first_start":  {
+                                                       "pass":  true,
+                                                       "detail":  "What\u0027s new in Merch Forge 2.24.0"
+                                                   },
+                   "whats_new_dismissed":  {
+                                               "pass":  true,
+                                               "detail":  ""
+                                           },
+                   "discover_visible":  {
+                                            "pass":  true,
+                                            "detail":  ""
+                                        },
+                   "discover_two_niches":  {
+                                               "pass":  true,
+                                               "detail":  "2"
+                                           },
+                   "discover_first_selected":  {
+                                                   "pass":  true,
+                                                   "detail":  "CI FIXTURE · Night-shift nurses"
+                                               },
+                   "create_button_enabled":  {
+                                                 "pass":  true,
+                                                 "detail":  ""
+                                             },
+                   "create_button_label_en":  {
+                                                  "pass":  true,
+                                                  "detail":  "Create concept draft"
+                                              },
+                   "status_bar_not_stuck_working":  {
+                                                        "pass":  true,
+                                                        "detail":  "Live research loaded · 17:15 UTC"
+                                                    },
+                   "navigated_to_ideas":  {
+                                              "pass":  true,
+                                              "detail":  "ideas"
+                                          },
+                   "draft_is_current":  {
+                                            "pass":  true,
+                                            "detail":  "CI FIXTURE · Night-shift nurses"
+                                        },
+                   "overview_tab_selected":  {
+                                                 "pass":  true,
+                                                 "detail":  "overview"
+                                             },
+                   "overview_status_research_draft":  {
+                                                          "pass":  true,
+                                                          "detail":  "Research draft"
+                                                      },
+                   "overview_flags_missing_hook":  {
+                                                       "pass":  true,
+                                                       "detail":  "Still missing before artwork: hook, visual direction. Review this draft: write or fix the hook and visual direction in Edit, then choose KEEP / EDIT / REGEN / SKIP. Artwork: Export brief (no dispatch), then import the finished image."
+                                                   },
+                   "meta_says_local_not_server":  {
+                                                      "pass":  true,
+                                                      "detail":  "Local research draft · revision 1 · not on the server"
+                                                  },
+                   "draft_in_ideas_list":  {
+                                               "pass":  true,
+                                               "detail":  ""
+                                           },
+                   "owner_buttons_enabled":  {
+                                                 "pass":  true,
+                                                 "detail":  ""
+                                             },
+                   "generate_disabled_for_draft":  {
+                                                       "pass":  true,
+                                                       "detail":  ""
+                                                   },
+                   "keep_selected":  {
+                                         "pass":  true,
+                                         "detail":  "Current decision: KEEP · 2026-10-10T17:15:20.5052711Z"
+                                     },
+                   "edit_tab_open":  {
+                                         "pass":  true,
+                                         "detail":  ""
+                                     },
+                   "edit_boxes_writable":  {
+                                               "pass":  true,
+                                               "detail":  ""
+                                           },
+                   "save_enabled_after_typing":  {
+                                                     "pass":  true,
+                                                     "detail":  ""
+                                                 },
+                   "saved_revision_2":  {
+                                            "pass":  true,
+                                            "detail":  "Local research draft · revision 2 · not on the server"
+                                        },
+                   "decision_reset_after_edit":  {
+                                                     "pass":  true,
+                                                     "detail":  "No decision yet"
+                                                 },
+                   "overview_shows_new_hook":  {
+                                                   "pass":  true,
+                                                   "detail":  "CI hook: Running on caffeine and charting"
+                                               },
+                   "keep_on_revision_2":  {
+                                              "pass":  true,
+                                              "detail":  ""
+                                          },
+                   "artwork_tab_selected":  {
+                                                "pass":  true,
+                                                "detail":  "visuals"
+                                            },
+                   "no_stale_variants":  {
+                                             "pass":  true,
+                                             "detail":  "0"
+                                         },
+                   "generate_still_disabled":  {
+                                                   "pass":  true,
+                                                   "detail":  ""
+                                               },
+                   "brief_exported_no_dispatch":  {
+                                                      "pass":  true,
+                                                      "detail":  ""
+                                                  },
+                   "generate_handler_blocks_draft":  {
+                                                         "pass":  true,
+                                                         "detail":  ""
+                                                     },
+                   "portfolio_visible":  {
+                                             "pass":  true,
+                                             "detail":  ""
+                                         },
+                   "portfolio_uses_full_width":  {
+                                                     "pass":  true,
+                                                     "detail":  "0 / 1886 of 1936"
+                                                 },
+                   "portfolio_lists_draft_keep":  {
+                                                      "pass":  true,
+                                                      "detail":  "KEEP · no artwork"
+                                                  },
+                   "portfolio_keep_first":  {
+                                                "pass":  true,
+                                                "detail":  "11"
+                                            },
+                   "portfolio_counts":  {
+                                            "pass":  true,
+                                            "detail":  "10/1/0"
+                                        },
+                   "portfolio_niche_line":  {
+                                                "pass":  true,
+                                                "detail":  "Avionics Technician: KEEP 0 · EDIT 0 · REGEN 0 · SKIP 0 · No decision 1\r\nBiomedical Equipment Technician: KEEP 0 · EDIT 0 · REGEN 0 · SKIP 0 · No decision 1\r\nCI FIXTURE · Night-shift nurses: KEEP 1 · EDIT 0 · REGEN 0 · SKIP 0 · No decision 0\r\nCytotechnologist / Cytologist: KEEP 0 · EDIT 0 · REGEN 0 · SKIP 0 · No decision 1\r\nElectrical / Electronic Engineering Technician: KEEP 0 · EDIT 0 · REGEN 0 · SKIP 0 · No decision 1\r\nInstrumentation \u0026 Controls Technician: KEEP 0 · EDIT 0 · REGEN 0 · SKIP 0 · No decision 1\r\nSemiconductor Processing Technician: KEEP 0 · EDIT 0 · REGEN 0 · SKIP 0 · No decision 2\r\nSterile Processing: KEEP 0 · EDIT 0 · REGEN 0 · SKIP 0 · No decision 1\r\nSubstation / Relay Technician: KEEP 0 · EDIT 0 · REGEN 0 · SKIP 0 · No decision 2"
+                                            },
+                   "portfolio_keep_shows_next_step":  {
+                                                          "pass":  true,
+                                                          "detail":  "CI FIXTURE · Night-shift nurses · research draft · Export the brief, then import or generate artwork and accept one. · Click to open: Artwork"
+                                                      },
+                   "portfolio_click_opens_artwork":  {
+                                                         "pass":  true,
+                                                         "detail":  "artwork / visuals"
+                                                     },
+                   "ru_draft_overview_rerendered":  {
+                                                        "pass":  true,
+                                                        "detail":  "Черновик исследования | CI hook: Running on caffeine and charting"
+                                                    },
+                   "ru_create_button_label":  {
+                                                  "pass":  true,
+                                                  "detail":  "Создать черновик концепта"
+                                              },
+                   "ru_discover_numbers_kept":  {
+                                                    "pass":  true,
+                                                    "detail":  "2/3"
+                                                },
+                   "ru_discover_selection_kept":  {
+                                                      "pass":  true,
+                                                      "detail":  "CI FIXTURE · Night-shift nurses"
+                                                  },
+                   "ru_discover_status_localized":  {
+                                                        "pass":  true,
+                                                        "detail":  "Живые исследования загружены · 17:15 UTC"
+                                                    },
+                   "only_discover_snapshot_api":  {
+                                                      "pass":  true,
+                                                      "detail":  "discover_snapshot"
+                                                  },
+                   "no_network":  {
+                                      "pass":  true,
+                                      "detail":  ""
+                                  },
+                   "no_unexpected_errors":  {
+                                                "pass":  true,
+                                                "detail":  "Research drafts cannot be generated from Forge yet. Use Export brief (no dispatch) and import the finished artwork. Paid generation stays a separate owner-authorized gate."
+                                            }
+               },
+    "api":  [
+                "discover_snapshot"
+            ],
+    "errors":  [
+                   "Research drafts cannot be generated from Forge yet. Use Export brief (no dispatch) and import the finished artwork. Paid generation stays a separate owner-authorized gate."
+               ],
+    "confirms":  [
+
+                 ],
+    "screenshots":  [
+                        "create-00-whats-new.png",
+                        "create-01-discover.png",
+                        "create-02-draft-overview.png",
+                        "create-03-keep.png",
+                        "create-04-edit.png",
+                        "create-05-revision2-keep.png",
+                        "create-06-artwork.png",
+                        "create-06b-portfolio.png",
+                        "create-07a-draft-ru.png",
+                        "create-07-discover-ru.png"
+                    ],
+    "fatal":  null,
+    "network":  0
+}

@@ -1,0 +1,80 @@
+{
+    "phase":  "restart",
+    "checks":  {
+                   "window_rendered":  {
+                                           "pass":  true,
+                                           "detail":  ""
+                                       },
+                   "app_version_reported":  {
+                                                "pass":  true,
+                                                "detail":  "2.24.1-forge-fourth-review"
+                                            },
+                   "draft_listed_after_restart":  {
+                                                      "pass":  true,
+                                                      "detail":  ""
+                                                  },
+                   "locale_ru_persisted":  {
+                                               "pass":  true,
+                                               "detail":  "ru"
+                                           },
+                   "whats_new_not_shown_again":  {
+                                                     "pass":  true,
+                                                     "detail":  "Collapsed"
+                                                 },
+                   "draft_opened_by_list_selection":  {
+                                                          "pass":  true,
+                                                          "detail":  "CI FIXTURE · Night-shift nurses"
+                                                      },
+                   "revision_2_after_restart":  {
+                                                    "pass":  true,
+                                                    "detail":  ""
+                                                },
+                   "hook_persisted":  {
+                                          "pass":  true,
+                                          "detail":  "CI hook: Running on caffeine and charting"
+                                      },
+                   "keep_persisted_after_restart":  {
+                                                        "pass":  true,
+                                                        "detail":  ""
+                                                    },
+                   "ru_status_after_restart":  {
+                                                   "pass":  true,
+                                                   "detail":  "Черновик исследования"
+                                               },
+                   "portfolio_after_restart_ru":  {
+                                                      "pass":  true,
+                                                      "detail":  "ОСТАВИТЬ · нет макета"
+                                                  },
+                   "ideas_stage_filter_ru":  {
+                                                 "pass":  true,
+                                                 "detail":  "Этап: ОСТАВИТЬ · нет макета / shown 1"
+                                             },
+                   "only_discover_snapshot_api":  {
+                                                      "pass":  true,
+                                                      "detail":  ""
+                                                  },
+                   "no_network":  {
+                                      "pass":  true,
+                                      "detail":  ""
+                                  },
+                   "no_unexpected_errors":  {
+                                                "pass":  true,
+                                                "detail":  ""
+                                            }
+               },
+    "api":  [
+
+            ],
+    "errors":  [
+
+               ],
+    "confirms":  [
+
+                 ],
+    "screenshots":  [
+                        "restart-08-after-restart.png",
+                        "restart-09-portfolio-ru.png"
+                    ],
+    "fatal":  null,
+    "network":  0
+}

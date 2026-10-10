@@ -1,0 +1,2 @@
+PRECHECK ROOT: D:\a\projects\projects\forge\app\Merch_Forge_A5_Current
+PRECHECK PASS: 62 integrity files; 36 PowerShell files; XAML load OK.

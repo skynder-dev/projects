@@ -1,0 +1,518 @@
+{
+    "schema":  "forge.research_draft_selftest.v1",
+    "status":  "PASS",
+    "passed":  118,
+    "total":  118,
+    "api_calls":  0,
+    "network_calls":  0,
+    "billable_requests":  0,
+    "backend_mutations":  0,
+    "proof_boundary":  "Headless PowerShell execution of the real Forge functions with inert WPF control stubs and an isolated state root. Restart persistence is proven across separate PowerShell processes. Native Windows WPF rendering/click behaviour is NOT covered by this test.",
+    "powershell":  "5.1.26100.33438",
+    "platform":  "Microsoft Windows NT 10.0.26100.0",
+    "executed_at":  "2026-10-10T17:15:15.0618339Z",
+    "phases":  {
+                   "create":  {
+                                  "phase":  "create",
+                                  "checks":  {
+                                                 "draft_module_present":  {
+                                                                              "pass":  true,
+                                                                              "detail":  ""
+                                                                          },
+                                                 "refuses_without_live_snapshot":  {
+                                                                                       "pass":  true,
+                                                                                       "detail":  ""
+                                                                                   },
+                                                 "discover_button_enabled_with_selection":  {
+                                                                                                "pass":  true,
+                                                                                                "detail":  ""
+                                                                                            },
+                                                 "no_errors_on_create":  {
+                                                                             "pass":  true,
+                                                                             "detail":  ""
+                                                                         },
+                                                 "draft_persisted":  {
+                                                                         "pass":  true,
+                                                                         "detail":  ""
+                                                                     },
+                                                 "draft_key_prefix":  {
+                                                                          "pass":  true,
+                                                                          "detail":  "rd-c13e014e741f4d8ab7646ddb"
+                                                                      },
+                                                 "provenance_niche_identity":  {
+                                                                                   "pass":  true,
+                                                                                   "detail":  ""
+                                                                               },
+                                                 "provenance_row_hash":  {
+                                                                             "pass":  true,
+                                                                             "detail":  ""
+                                                                         },
+                                                 "provenance_contract":  {
+                                                                             "pass":  true,
+                                                                             "detail":  ""
+                                                                         },
+                                                 "provenance_snapshot_time":  {
+                                                                                  "pass":  true,
+                                                                                  "detail":  ""
+                                                                              },
+                                                 "evidence_only_explicitly_linked_notes":  {
+                                                                                               "pass":  true,
+                                                                                               "detail":  ""
+                                                                                           },
+                                                 "creative_fields_not_invented":  {
+                                                                                      "pass":  true,
+                                                                                      "detail":  ""
+                                                                                  },
+                                                 "authority_all_false":  {
+                                                                             "pass":  true,
+                                                                             "detail":  ""
+                                                                         },
+                                                 "draft_in_ideas_queue":  {
+                                                                              "pass":  true,
+                                                                              "detail":  ""
+                                                                          },
+                                                 "queue_label_research_draft":  {
+                                                                                    "pass":  true,
+                                                                                    "detail":  ""
+                                                                                },
+                                                 "filter_research_draft":  {
+                                                                               "pass":  true,
+                                                                               "detail":  ""
+                                                                           },
+                                                 "draft_opened_as_current":  {
+                                                                                 "pass":  true,
+                                                                                 "detail":  ""
+                                                                             },
+                                                 "routed_to_ideas":  {
+                                                                         "pass":  true,
+                                                                         "detail":  ""
+                                                                     },
+                                                 "overview_flags_missing_creative":  {
+                                                                                         "pass":  true,
+                                                                                         "detail":  ""
+                                                                                     },
+                                                 "localcore_mirror_bound_to_revision":  {
+                                                                                            "pass":  true,
+                                                                                            "detail":  ""
+                                                                                        },
+                                                 "edit_boxes_editable_for_draft":  {
+                                                                                       "pass":  true,
+                                                                                       "detail":  ""
+                                                                                   },
+                                                 "second_click_same_research_reuses":  {
+                                                                                           "pass":  true,
+                                                                                           "detail":  ""
+                                                                                       },
+                                                 "owner_buttons_disabled_while_busy":  {
+                                                                                           "pass":  true,
+                                                                                           "detail":  ""
+                                                                                       },
+                                                 "owner_buttons_enabled_after_busy_052":  {
+                                                                                              "pass":  true,
+                                                                                              "detail":  ""
+                                                                                          },
+                                                 "keep_saved":  {
+                                                                    "pass":  true,
+                                                                    "detail":  ""
+                                                                },
+                                                 "keep_visible":  {
+                                                                      "pass":  true,
+                                                                      "detail":  ""
+                                                                  },
+                                                 "second_draft_created":  {
+                                                                              "pass":  true,
+                                                                              "detail":  ""
+                                                                          },
+                                                 "second_draft_has_no_decision":  {
+                                                                                      "pass":  true,
+                                                                                      "detail":  ""
+                                                                                  },
+                                                 "skip_saved":  {
+                                                                    "pass":  true,
+                                                                    "detail":  ""
+                                                                },
+                                                 "switch_back_keeps_keep":  {
+                                                                                "pass":  true,
+                                                                                "detail":  ""
+                                                                            },
+                                                 "progress_counts_drafts":  {
+                                                                                "pass":  true,
+                                                                                "detail":  ""
+                                                                            },
+                                                 "ru_state_label":  {
+                                                                        "pass":  true,
+                                                                        "detail":  ""
+                                                                    }
+                                             },
+                                  "notes":  [
+
+                                            ],
+                                  "api_calls":  0,
+                                  "network_calls":  0
+                              },
+                   "restart":  {
+                                   "phase":  "restart",
+                                   "checks":  {
+                                                  "drafts_survive_restart":  {
+                                                                                 "pass":  true,
+                                                                                 "detail":  ""
+                                                                             },
+                                                  "provenance_survives_restart":  {
+                                                                                      "pass":  true,
+                                                                                      "detail":  ""
+                                                                                  },
+                                                  "state_envelope_valid":  {
+                                                                               "pass":  true,
+                                                                               "detail":  ""
+                                                                           },
+                                                  "backup_written":  {
+                                                                         "pass":  true,
+                                                                         "detail":  ""
+                                                                     },
+                                                  "state_research_drafts_plain_json_array":  {
+                                                                                                 "pass":  true,
+                                                                                                 "detail":  ""
+                                                                                             },
+                                                  "state_revisions_plain_json_array":  {
+                                                                                           "pass":  true,
+                                                                                           "detail":  ""
+                                                                                       },
+                                                  "keep_survives_restart":  {
+                                                                                "pass":  true,
+                                                                                "detail":  ""
+                                                                            },
+                                                  "skip_survives_restart":  {
+                                                                                "pass":  true,
+                                                                                "detail":  ""
+                                                                            },
+                                                  "edit_creates_revision_2":  {
+                                                                                  "pass":  true,
+                                                                                  "detail":  ""
+                                                                              },
+                                                  "revision_1_preserved":  {
+                                                                               "pass":  true,
+                                                                               "detail":  ""
+                                                                           },
+                                                  "stale_keep_invalidated":  {
+                                                                                 "pass":  true,
+                                                                                 "detail":  ""
+                                                                             },
+                                                  "ui_shows_no_decision_after_edit":  {
+                                                                                          "pass":  true,
+                                                                                          "detail":  ""
+                                                                                      },
+                                                  "overview_no_missing_after_edit":  {
+                                                                                         "pass":  true,
+                                                                                         "detail":  ""
+                                                                                     },
+                                                  "stale_save_rejected":  {
+                                                                              "pass":  true,
+                                                                              "detail":  ""
+                                                                          },
+                                                  "unchanged_save_no_revision":  {
+                                                                                     "pass":  true,
+                                                                                     "detail":  ""
+                                                                                 },
+                                                  "keep_on_revision_2":  {
+                                                                             "pass":  true,
+                                                                             "detail":  ""
+                                                                         },
+                                                  "pipeline_keep_draft_needs_artwork":  {
+                                                                                            "pass":  true,
+                                                                                            "detail":  "keep_no_artwork"
+                                                                                        },
+                                                  "pipeline_skip_draft_parked":  {
+                                                                                     "pass":  true,
+                                                                                     "detail":  "skip"
+                                                                                 },
+                                                  "pipeline_counts":  {
+                                                                          "pass":  true,
+                                                                          "detail":  "{\"ideas\":12,\"undecided\":10,\"kept_or_later\":1,\"edit\":0,\"regen\":0,\"skip\":1,\"artwork_or_later\":0,\"checks_or_later\":0,\"package_ready\":0,\"published\":0,\"drafts\":2}"
+                                                                      },
+                                                  "pipeline_keep_sorted_first":  {
+                                                                                     "pass":  true,
+                                                                                     "detail":  "rd-c13e014e741f4d8ab7646ddb"
+                                                                                 },
+                                                  "pipeline_niche_counts":  {
+                                                                                "pass":  true,
+                                                                                "detail":  "{\"niche_name\":\"TEST FIXTURE · Night-shift nurses\",\"keep\":1,\"edit\":0,\"regen\":0,\"skip\":0,\"undecided\":0,\"total\":1}"
+                                                                            },
+                                                  "pipeline_next_step_sections":  {
+                                                                                      "pass":  true,
+                                                                                      "detail":  "ideas,ideas,artwork,ideas,artwork,checks,publish,publish,publish"
+                                                                                  },
+                                                  "perf_leader_best_seller":  {
+                                                                                  "pass":  true,
+                                                                                  "detail":  "{\"product_key\":\"amazon_merch|amazon.com_us|asin-best\",\"concept_key\":\"pc-3\",\"title\":\"Best Seller\",\"product_id\":\"ASIN-BEST\",\"published_at\":\"\\/Date(1787332510215)\\/\",\"units30\":2,\"roy30\":5,\"units90\":3,\"roy90\":6}"
+                                                                              },
+                                                  "perf_attention_kinds":  {
+                                                                               "pass":  true,
+                                                                               "detail":  "nosales,unknown,profile,unpublished,undated"
+                                                                           },
+                                                  "perf_unknown_counted_by_id":  {
+                                                                                     "pass":  true,
+                                                                                     "detail":  "{\"kind\":\"unknown\",\"args\":[\"ASIN-OTHER\",2]}"
+                                                                                 },
+                                                  "perf_no_data_is_not_no_sales":  {
+                                                                                       "pass":  true,
+                                                                                       "detail":  "nodata,noprofile,unpublished"
+                                                                                   },
+                                                  "perf_stale_data_reported":  {
+                                                                                   "pass":  true,
+                                                                                   "detail":  "stale,noprofile,unpublished"
+                                                                               },
+                                                  "perf_unverified_receipts_ignored":  {
+                                                                                           "pass":  true,
+                                                                                           "detail":  "unknown,unknown,noprofile,unpublished"
+                                                                                       },
+                                                  "chk_evidence_sections":  {
+                                                                                "pass":  true,
+                                                                                "detail":  "schema,concept_key,ip,policy"
+                                                                            },
+                                                  "chk_pass_is_owner_attested":  {
+                                                                                     "pass":  true,
+                                                                                     "detail":  "{\"state\":\"pass\",\"evidence_refs\":[\"https://tmsearch.uspto.gov/ (no live mark)\"],\"source\":\"owner_in_app_checklist\",\"note\":\"n\",\"checked_at\":\"2026-10-10T17:15:09.3240041Z\",\"authority_kind\":\"owner_attested_external\",\"attested\":true}"
+                                                                                 },
+                                                  "chk_review_not_attested":  {
+                                                                                  "pass":  true,
+                                                                                  "detail":  "{\"state\":\"needs_review\",\"marketplace\":\"amazon.com_us\",\"evidence_refs\":[],\"source\":\"owner_in_app_checklist\",\"note\":\"\",\"checked_at\":\"2026-10-10T17:15:09.3240041Z\",\"authority_kind\":\"none\",\"attested\":false}"
+                                                                              },
+                                                  "chk_pass_needs_confirm":  {
+                                                                                 "pass":  true,
+                                                                                 "detail":  "Tick \"I checked … myself\" to save a passed check."
+                                                                             },
+                                                  "chk_pass_needs_reference":  {
+                                                                                   "pass":  true,
+                                                                                   "detail":  "A passed check needs a link or a short note on where you checked: ip."
+                                                                               },
+                                                  "chk_nothing_chosen":  {
+                                                                             "pass":  true,
+                                                                             "detail":  "Choose a result for at least one check."
+                                                                         },
+                                                  "chk_checklist_ru":  {
+                                                                           "pass":  true,
+                                                                           "detail":  "MERCH FORGE · ЧЕК-ЛИСТ ДЛЯ «Тест»\r\n\r\nПроверьте пункты ниже сами и выберите результат. Для «всё в порядке» нужна ссылка и"
+                                                                       },
+                                                  "chk_ru_error_is_known_message":  {
+                                                                                        "pass":  true,
+                                                                                        "detail":  "Для «всё в порядке» нужна ссылка или заметка, где вы проверяли: ip."
+                                                                                    },
+                                                  "chk_server_error_not_known":  {
+                                                                                     "pass":  true,
+                                                                                     "detail":  ""
+                                                                                 },
+                                                  "sales_money_parsing":  {
+                                                                              "pass":  true,
+                                                                              "detail":  ""
+                                                                          },
+                                                  "sales_date_parsing":  {
+                                                                             "pass":  true,
+                                                                             "detail":  ""
+                                                                         },
+                                                  "no_readonly_automatic_variable_assignment":  {
+                                                                                                    "pass":  true,
+                                                                                                    "detail":  ""
+                                                                                                },
+                                                  "backup_paths_moved_apostrophe":  {
+                                                                                        "pass":  true,
+                                                                                        "detail":  "D:\\X\\MerchForge\\a.png"
+                                                                                    },
+                                                  "backup_rejects_tricky_names":  {
+                                                                                      "pass":  true,
+                                                                                      "detail":  ""
+                                                                                  },
+                                                  "backup_paths_moved_to_this_computer":  {
+                                                                                              "pass":  true,
+                                                                                              "detail":  "{\"p\":\"D:\\\\U\\\\b\\\\MerchForge\\\\local-core-v1\\\\x.png\",\"q\":\"C:\\\\Users\\\\a\\\\AppData\\\\Local\\\\MerchForge2\\\\y\",\"r\":\"D:\\\\U\\\\b\\\\MerchForge\"}"
+                                                                                          },
+                                                  "backup_contains_state_not_keys":  {
+                                                                                         "pass":  true,
+                                                                                         "detail":  "3 files"
+                                                                                     },
+                                                  "backup_restore_refuses_while_file_open":  {
+                                                                                                 "pass":  true,
+                                                                                                 "detail":  "A file is open in another program: C:\\Users\\runneradmin\\AppData\\Local\\Temp\\MerchForge-rdtest-ebdc714ef8504198a66ab9bd38eaef9b\\state\\local-core-v1\\exports\\added-after-copy.txt. Close it and try again."
+                                                                                             },
+                                                  "backup_restore_brings_files_back_and_matches_copy":  {
+                                                                                                            "pass":  true,
+                                                                                                            "detail":  "probe C:\\Users\\runneradmin\\AppData\\Local\\Temp\\MerchForge-rdtest-ebdc714ef8504198a66ab9bd38eaef9b\\state\\local-core-v1\\exports\\probe-in-copy.txt; set aside 1"
+                                                                                                        },
+                                                  "backup_restore_never_touches_other_files":  {
+                                                                                                   "pass":  true,
+                                                                                                   "detail":  "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\MerchForge-rdtest-ebdc714ef8504198a66ab9bd38eaef9b\\state\\local-core-v1\\exports\\notes \u0026 links.txt"
+                                                                                               },
+                                                  "backup_restore_brings_data_back":  {
+                                                                                          "pass":  true,
+                                                                                          "detail":  "before 2, after 2, prev C:\\Users\\runneradmin\\AppData\\Local\\Temp\\MerchForge-rdtest-ebdc714ef8504198a66ab9bd38eaef9b\\state\\backups\\before-restore-20261010-171511-43d120.zip"
+                                                                                      },
+                                                  "backup_damaged_copy_refused":  {
+                                                                                      "pass":  true,
+                                                                                      "detail":  "This file is not a Merch Forge data copy, or it is damaged: checksum mismatch local-core-v1/state.json"
+                                                                                  },
+                                                  "auto_copy_second_helper_steps_aside":  {
+                                                                                              "pass":  true,
+                                                                                              "detail":  "exit 0; copies 2"
+                                                                                          },
+                                                  "auto_copy_helper_valid_and_pruned":  {
+                                                                                            "pass":  true,
+                                                                                            "detail":  "exit 0; copies 2"
+                                                                                        },
+                                                  "sales_csv_amazon_like_columns":  {
+                                                                                        "pass":  true,
+                                                                                        "detail":  "[{\"date\":\"2026-10-01\",\"units\":2,\"royalty\":3.1,\"revenue\":0,\"title\":\"\",\"product_id\":\"B0TESTCSV1\",\"source_file\":\"forge-sales-ba312c67dfe14b21b44b075f971a6398.csv\",\"linked\":false,\"linked_product_key\":\"\"},{\"date\":\"2026-10-02\",\"units\":1,\"royalty\":1.55,\"revenue\":0,\"title\":\"\",\"product_id\":\"B0TESTCSV1\",\"source_file\":\"forge-sales-ba312c67dfe14b21b44b075f971a6398.csv\",\"linked\":false,\"linked_product_key\":\"\"},{\"date\":\"2026-10-03\",\"units\":4,\"royalty\":8,\"revenue\":0,\"title\":\"\",\"product_id\":\"\",\"source_file\":\"forge-sales-ba312c67dfe14b21b44b075f971a6398.csv\",\"linked\":false,\"linked_product_key\":\"\"},{\"date\":\"\",\"units\":1,\"royalty\":2,\"revenue\":0,\"title\":\"\",\"product_id\":\"B0TESTCSV2\",\"source_file\":\"forge-sales-ba312c67dfe14b21b44b075f971a6398.csv\",\"linked\":false,\"linked_product_key\":\"\"}]"
+                                                                                    },
+                                                  "sales_csv_reports_unreadable_rows":  {
+                                                                                            "pass":  true,
+                                                                                            "detail":  "Imported 4 row(s): 0 linked to verified Forge products, 4 unlinked. Not readable: 1 without a product ID (ASIN), 1 without a date, 0 unreadable amount(s)."
+                                                                                        },
+                                                  "sales_csv_skips_rate_and_currency_columns":  {
+                                                                                                    "pass":  true,
+                                                                                                    "detail":  "Royalty Amount / Units Ordered"
+                                                                                                },
+                                                  "sales_csv_date_order_per_file":  {
+                                                                                        "pass":  true,
+                                                                                        "detail":  "dmy,mdy,dmy,mdy"
+                                                                                    },
+                                                  "sales_csv_without_units_or_royalty_refused":  {
+                                                                                                     "pass":  true,
+                                                                                                     "detail":  "This sales CSV has no units or royalty column. Columns found: Date, ASIN, Title."
+                                                                                                 },
+                                                  "listing_clean_text_no_issues":  {
+                                                                                       "pass":  true,
+                                                                                       "detail":  ""
+                                                                                   },
+                                                  "listing_problems_found":  {
+                                                                                 "pass":  true,
+                                                                                 "detail":  "title:long,title:word,brand:short,bullet1:word,bullet1:html,bullet2:word,bullet2:html,description:short,bullet2:samebullets"
+                                                                             },
+                                                  "listing_hint_text_ru":  {
+                                                                               "pass":  true,
+                                                                               "detail":  "• Название: 81 симв., Amazon разрешает 60. | • Название: «official» обычно не пропускают в карточках (обещания, реклама или упоминание Amazon)."
+                                                                           },
+                                                  "listing_no_false_alarms_and_star_emoji":  {
+                                                                                                 "pass":  true,
+                                                                                                 "detail":  " / {\"field\":\"title\",\"kind\":\"emoji\",\"args\":[]}"
+                                                                                             },
+                                                  "listing_words_match_whole_words_only":  {
+                                                                                               "pass":  true,
+                                                                                               "detail":  "{\"field\":\"title\",\"kind\":\"word\",\"args\":[\"discount\"]}"
+                                                                                           },
+                                                  "prof_states":  {
+                                                                      "pass":  true,
+                                                                      "detail":  "none,valid,expiring,expired,invalid"
+                                                                  },
+                                                  "prof_status_text_ru":  {
+                                                                              "pass":  true,
+                                                                              "detail":  "4500 × 5400 пикс., 300 DPI · amazon.com_us / standard_tshirt · действует до 2026-11-09 (осталось дней: 30). | Скоро истекает: 2026-10-13 (осталось дней: 3). Заполните профиль заново по текущему шаблону Amazon. · 4500 × 5400 пикс., 300 DPI · amazon.com_us / standard_tshirt"
+                                                                          },
+                                                  "prof_attestation_shape":  {
+                                                                                 "pass":  true,
+                                                                                 "detail":  "{\"schema\":\"forge.amazon_print_profile_attestation.v1\",\"attested\":true,\"marketplace\":\"amazon.com_us\",\"product_type_key\":\"standard_tshirt\",\"template_key\":\"std-4500\",\"canvas_width_px\":4500,\"canvas_height_px\":5400,\"dpi\":300,\"file_format\":\"png\",\"background\":\"transparent\",\"captured_at\":\"2026-10-10T17:14:13.2570119Z\",\"valid_until\":\"2027-01-08T17:14:13.2570119Z\",\"template_file_sha256\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"source_refs\":[\"https://merch.amazon.com/resource/Y28FFE5NLRYJG4V\"],\"note\":\"Filled in the Merch Forge profile form by the owner from the current Amazon Merch template.\"}"
+                                                                             },
+                                                  "prof_rejects_accepted_artwork_as_template":  {
+                                                                                                    "pass":  true,
+                                                                                                    "detail":  "This file is one of your accepted designs, not the Amazon template. Choose the template file you downloaded from Amazon."
+                                                                                                },
+                                                  "prof_requires_source_ref":  {
+                                                                                   "pass":  true,
+                                                                                   "detail":  "Paste the Amazon page you took the values from: an https link on merch.amazon.com, developer.amazon.com or sellercentral.amazon.com."
+                                                                               },
+                                                  "prof_form_rejects_bad_input":  {
+                                                                                      "pass":  true,
+                                                                                      "detail":  "Tick \"I copied these values…\" to save the profile. | Width and height must be between 500 and 10000 px. | Valid for must be 1 to 120 days. | Paste the Amazon page you took the values from: an https link on merch.amazon.com, developer.amazon.com or sellercentral.amazon.com. | Choose the Amazon template file. | Fill marketplace, product type and template name."
+                                                                                  },
+                                                  "brief_exported":  {
+                                                                         "pass":  true,
+                                                                         "detail":  ""
+                                                                     },
+                                                  "brief_bound_to_revision_2":  {
+                                                                                    "pass":  true,
+                                                                                    "detail":  ""
+                                                                                },
+                                                  "brief_no_external_generation":  {
+                                                                                       "pass":  true,
+                                                                                       "detail":  ""
+                                                                                   },
+                                                  "generate_blocked_for_draft":  {
+                                                                                     "pass":  true,
+                                                                                     "detail":  ""
+                                                                                 },
+                                                  "live_action_blocked_Prepare-DeliveryPackage":  {
+                                                                                                      "pass":  true,
+                                                                                                      "detail":  ""
+                                                                                                  },
+                                                  "live_action_blocked_Start-NewIteration":  {
+                                                                                                 "pass":  true,
+                                                                                                 "detail":  ""
+                                                                                             },
+                                                  "live_action_blocked_Reopen-CurrentAcceptance":  {
+                                                                                                       "pass":  true,
+                                                                                                       "detail":  ""
+                                                                                                   },
+                                                  "live_action_blocked_Cancel-Generation":  {
+                                                                                                "pass":  true,
+                                                                                                "detail":  ""
+                                                                                            },
+                                                  "no_acceptance_created":  {
+                                                                                "pass":  true,
+                                                                                "detail":  ""
+                                                                            },
+                                                  "no_package_created":  {
+                                                                             "pass":  true,
+                                                                             "detail":  ""
+                                                                         },
+                                                  "missing_draft_key_never_hits_api":  {
+                                                                                           "pass":  true,
+                                                                                           "detail":  ""
+                                                                                       },
+                                                  "stale_live_surfaces_cleared":  {
+                                                                                      "pass":  true,
+                                                                                      "detail":  ""
+                                                                                  },
+                                                  "open_error_is_contained":  {
+                                                                                  "pass":  true,
+                                                                                  "detail":  ""
+                                                                              },
+                                                  "reload_draft_stays_local":  {
+                                                                                   "pass":  true,
+                                                                                   "detail":  ""
+                                                                               },
+                                                  "draft_still_not_server_concept":  {
+                                                                                         "pass":  true,
+                                                                                         "detail":  ""
+                                                                                     }
+                                              },
+                                   "notes":  [
+
+                                             ],
+                                   "api_calls":  0,
+                                   "network_calls":  0
+                               },
+                   "legacy054":  {
+                                     "phase":  "legacy054",
+                                     "checks":  {
+                                                    "legacy_has_no_draft_module":  {
+                                                                                       "pass":  true,
+                                                                                       "detail":  ""
+                                                                                   },
+                                                    "legacy_054_reads_055_state":  {
+                                                                                       "pass":  true,
+                                                                                       "detail":  ""
+                                                                                   },
+                                                    "legacy_sees_owner_decision_mirror":  {
+                                                                                              "pass":  true,
+                                                                                              "detail":  ""
+                                                                                          },
+                                                    "legacy_write_preserves_drafts":  {
+                                                                                          "pass":  true,
+                                                                                          "detail":  ""
+                                                                                      }
+                                                },
+                                     "notes":  [
+
+                                               ],
+                                     "api_calls":  0,
+                                     "network_calls":  0
+                                 }
+               }
+}

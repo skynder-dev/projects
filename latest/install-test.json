@@ -1,0 +1,98 @@
+﻿{
+    "checks":  {
+                   "release_zip_present":  {
+                                               "pass":  true,
+                                               "detail":  "D:\\a\\projects\\projects\\forge\\releases\\077_Merch_Forge_FOURTH_REVIEW_RC.zip"
+                                           },
+                   "start_entrypoint_present":  {
+                                                    "pass":  true,
+                                                    "detail":  "D:\\a\\_temp\\forge-ci\\install-test\\a\\077_Merch_Forge_FOURTH_REVIEW_RC\\START_077_MERCH_FORGE.vbs"
+                                                },
+                   "start_window_ready":  {
+                                              "pass":  true,
+                                              "detail":  "MerchForge-ready-20261010-171702-132839.flag after 4.6 s"
+                                          },
+                   "start_starts_within_60s":  {
+                                                   "pass":  true,
+                                                   "detail":  "4.6 s"
+                                               },
+                   "start_window_visible":  {
+                                                "pass":  true,
+                                                "detail":  "Merch Forge · Product Workspace"
+                                            },
+                   "start_clean_exit":  {
+                                            "pass":  true,
+                                            "detail":  "0"
+                                        },
+                   "start_auto_copy_made":  {
+                                                "pass":  true,
+                                                "detail":  "auto-20261010-171706.zip"
+                                            },
+                   "start_no_error_dialog":  {
+                                                 "pass":  true,
+                                                 "detail":  ""
+                                             },
+                   "install_success_dialog":  {
+                                                  "pass":  true,
+                                                  "detail":  "exit 0; Merch Forge - Install: Merch Forge is installed for this Windows account. Use the Merch Forge desktop shortcut to open it."
+                                              },
+                   "install_files_and_version":  {
+                                                     "pass":  true,
+                                                     "detail":  "077_Merch_Forge_FOURTH_REVIEW_RC"
+                                                 },
+                   "install_desktop_shortcut":  {
+                                                    "pass":  true,
+                                                    "detail":  "C:\\Users\\runneradmin\\Desktop\\Merch Forge.lnk"
+                                                },
+                   "upgrade_054_installed_first":  {
+                                                       "pass":  true,
+                                                       "detail":  "archive manifest 053_Merch_Forge_OWNER_REVIEW_RUNTIME_RC; installed 053_Merch_Forge_OWNER_REVIEW_RUNTIME_RC"
+                                                   },
+                   "upgrade_installed_new":  {
+                                                 "pass":  true,
+                                                 "detail":  "exit 0; 077_Merch_Forge_FOURTH_REVIEW_RC gen 00000000000000100260"
+                                             },
+                   "upgrade_keeps_previous":  {
+                                                  "pass":  true,
+                                                  "detail":  "053_Merch_Forge_OWNER_REVIEW_RUNTIME_RC"
+                                              },
+                   "upgraded_window_ready":  {
+                                                 "pass":  true,
+                                                 "detail":  "MerchForge-ready-20261010-171731-826412.flag after 4.5 s"
+                                             },
+                   "upgraded_starts_within_60s":  {
+                                                      "pass":  true,
+                                                      "detail":  "4.5 s"
+                                                  },
+                   "upgraded_window_visible":  {
+                                                   "pass":  true,
+                                                   "detail":  "Merch Forge · Product Workspace"
+                                               },
+                   "upgraded_clean_exit":  {
+                                               "pass":  true,
+                                               "detail":  "0"
+                                           },
+                   "upgraded_no_error_dialog":  {
+                                                    "pass":  true,
+                                                    "detail":  ""
+                                                },
+                   "upgrade_keeps_user_data":  {
+                                                   "pass":  true,
+                                                   "detail":  "before: drafts 1, concepts 3, receipts 1, sales 3 | after: drafts 1, concepts 3, receipts 1, sales 3"
+                                               },
+                   "downgrade_blocked":  {
+                                             "pass":  true,
+                                             "detail":  "exit 22; 077_Merch_Forge_FOURTH_REVIEW_RC"
+                                         }
+               },
+    "dialogs":  [
+                    "Merch Forge - Install: Merch Forge is installed for this Windows account. Use the Merch Forge desktop shortcut to open it.",
+                    "Merch Forge - Install: Merch Forge is installed for this Windows account. Use the Merch Forge desktop shortcut to open it.",
+                    "Merch Forge - Install: Merch Forge is installed for this Windows account. Use the Merch Forge desktop shortcut to open it.",
+                    "Merch Forge - Downgrade Blocked: This package is older than the currently installed guarded Merch Forge generation.\r\n\r\nDowngrade was blocked before the current installation was changed.\r\nSource generation: 00000000000000100237\r\nInstalled generation: 00000000000000100260"
+                ],
+    "notes":  [
+                  "start launch log tail: PRECHECK ROOT: D:\\a\\_temp\\forge-ci\\install-test\\a\\077_Merch_Forge_FOURTH_REVIEW_RC\\Merch_Forge_A5_Current PRECHECK PASS: 62 integrity files; 36 PowerShell files; XAML load OK.",
+                  "upgraded launch log tail: PRECHECK ROOT: D:\\a\\_temp\\forge-ci\\install-test\\lad-upgrade\\Programs\\MerchForge\\app PRECHECK PASS: 62 integrity files; 36 PowerShell files; XAML load OK."
+              ]
+}
