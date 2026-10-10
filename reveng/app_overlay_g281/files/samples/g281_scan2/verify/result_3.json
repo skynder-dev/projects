@@ -1,0 +1,156 @@
+{
+ "results": [
+  {
+   "candidateId": "MED-1",
+   "evidenceId": "MED-1-E5",
+   "url": "https://growgetters.substack.com/p/we-tried-to-buy-a-newsletter",
+   "status": "confirmed",
+   "note": "Both sentences appear verbatim (97 emails, 3 replies); no conflicting figures.",
+   "pageSnippet": "The market is very very shallow. ... After emailing 97 of the Substack owners who had closed their shops we received a whopping 3 replies."
+  },
+  {
+   "candidateId": "MED-1",
+   "evidenceId": "MED-1-E1",
+   "url": "https://flippa.com/12260974-8-3k-subscriber-book-newsletter-with-85-margin-606-avg-monthly-profit-32-open-rate-and-scalable-sponsorship-model",
+   "status": "confirmed",
+   "note": "Asking $17,000, reduced 10% to $15,300, monthly profit $606, 8,300 active subscribers all match.",
+   "pageSnippet": "Asking Price (Classified) USD $17,000; Reduced 10% USD $15,300; Monthly Profit USD $606 /mo; Active Subscribers 8,300"
+  },
+  {
+   "candidateId": "MED-2",
+   "evidenceId": "MED-2-E4",
+   "url": "https://thepodcastconsultant.com/blog/spotify-for-creators",
+   "status": "confirmed",
+   "note": "Page says 'Spotify takes a 50% cut of your ad revenue' (quote omits 'your'); six-month deactivation sentence matches (page prefixes 'Plus,'). 50% and six months match.",
+   "pageSnippet": "Plus, Spotify reserves the right to deactivate this feature if you don't publish an episode in six months or more. ... Spotify takes a 50% cut of your ad revenue."
+  },
+  {
+   "candidateId": "MED-2",
+   "evidenceId": "MED-2-E1",
+   "url": "https://flippa.com/13925600-active-podcast-with-built-in-ad-sales-11k-mo-downloads-200-episodes-automatic-ad-sales-big-brand-sponsors-priced-below-market-value-at-1-3x-multiple",
+   "status": "confirmed",
+   "note": "All quoted figures match: $9,950 asking, $7,960 (Reduced 20%), $597/mo profit, ~11,000 downloads, 200+ episodes. Page body shows 1.1x profit multiple vs '1.3X' in title (not in quote).",
+   "pageSnippet": "USD $9,950; USD $7,960 (Reduced 20%); Monthly Profit USD $597 /mo; approximately 11,000 monthly downloads; over 200 episodes"
+  },
+  {
+   "candidateId": "MED-2",
+   "evidenceId": "MED-2-E3",
+   "url": "https://podnews.net/press-release/the-podcast-broker-sales",
+   "status": "confirmed",
+   "note": "Both phrases appear verbatim (10,000 downloads/month minimum; $5,000 to six-figure deals).",
+   "pageSnippet": "must have a minimum of 10,000 downloads per month ... from as low as $5,000 to over six-figure deals"
+  },
+  {
+   "candidateId": "MED-3",
+   "evidenceId": "MED-3-E1",
+   "url": "https://www.unionbaygroup.com/listings/weekly-community-newspaper",
+   "status": "confirmed",
+   "note": "$154,900 (AR not included), +/- $300,000 revenue, SDE $58,767 all match (apostrophe renders as '?' on page).",
+   "pageSnippet": "$154,900 (accounts receivable not included); This year revenues are expected to be +/- $300,000; Seller?s Discretionary Earnings (SDE) estimated at $58,767"
+  },
+  {
+   "candidateId": "MED-3",
+   "evidenceId": "MED-3-E2",
+   "url": "https://texas.public.law/statutes/tex._gov't_code_section_2051.044",
+   "status": "confirmed",
+   "note": "Subsection (a)(4) 12 months continuous publication and (a)(3) second-class postal matter in county where published both present; figure 12 matches.",
+   "pageSnippet": "have been published regularly and continuously for at least 12 months before the governmental entity or representative publishes notice; be entered as second-class postal matter in the county where published."
+  },
+  {
+   "candidateId": "MED-4",
+   "evidenceId": "MED-4-E1",
+   "url": "https://niemanlab.org/2026/05/the-emerging-ai-content-licensing-market-puts-news-publishers-in-a-double-bind-a-new-report-warns",
+   "status": "confirmed",
+   "note": "All fragments on page: 500+ publishers (ProRata), 100% retained (TollBit/Sphere), ScalePost ~15%, Cloudflare ~30% (authors' estimate). Page has correction on TollBit's fee model.",
+   "pageSnippet": "over 500 publishers had signed up with ProRata.ai ... retain 100% of their revenue ... ScalePost takes roughly a 15% cut ... Cloudflare is taking about a 30% cut of revenue."
+  },
+  {
+   "candidateId": "MED-4",
+   "evidenceId": "MED-4-E3",
+   "url": "https://blog.pebblous.ai/blog/ai-content-licensing-market-leverage/en/",
+   "status": "confirmed",
+   "note": "Sentence appears verbatim in the Executive Summary.",
+   "pageSnippet": "Below that, the long tail settles toward a value of zero and remains free training data."
+  },
+  {
+   "candidateId": "PHY-1",
+   "evidenceId": "PHY1-E2",
+   "url": "https://www.dla.mil/Aviation/Offers/Engineering/RPPOB/New-Source-Contract-Step-by-Step/",
+   "status": "confirmed",
+   "note": "All three sentences match; 180-day minimum for Navy and Army matches.",
+   "pageSnippet": "you must have a significant history of producing items for the Government to achieve SAR approval ... The Navy and the Army now require a minimum of 180 days to evaluate any new sources ... you conduct the reverse engineering at your own expense"
+  },
+  {
+   "candidateId": "PHY-1",
+   "evidenceId": "PHY1-E6",
+   "url": "https://alicorp.com/GovBids.htm",
+   "status": "confirmed",
+   "note": "Sentence verbatim, including 'more than 2,000 daily RFQs'.",
+   "pageSnippet": "Professional contractors rapidly quote Directed, NPD, and any of the more than 2,000 daily RFQs using ALI's Quoting System."
+  },
+  {
+   "candidateId": "PHY-1",
+   "evidenceId": "PHY1-E1",
+   "url": "https://www.dla.mil/Portals/104/Documents/LandAndMaritime/V/VE/VESARBriefing.pdf",
+   "status": "confirmed",
+   "note": "All fragments present; 40% figure matches ('40% of the award will be given to the newly approved source').",
+   "pageSnippet": "If not low, but fair and reasonable...40% of the award will be given to the newly approved source ... NSNs will be removed for Auto-Solicitation and Long Term Contracts unless circumstances dictate otherwise"
+  },
+  {
+   "candidateId": "PHY-2",
+   "evidenceId": "PHY2-E6",
+   "url": "https://www.shopify.com/pricing",
+   "status": "confirmed",
+   "note": "Basic plan shows 'Pay monthly $39 USD/mo' (yearly billing is $29/mo) and 'Card rates from 2.9% + 30¢ USD'; both match.",
+   "pageSnippet": "Pay monthly$39 USD/mo ... Card rates from 2.9% + 30¢ USD"
+  },
+  {
+   "candidateId": "PHY-2",
+   "evidenceId": "PHY2-E2",
+   "url": "https://perkinscoie.com/insights/update/californias-digital-fair-repair-act-sb-244",
+   "status": "confirmed",
+   "note": "Source reads contiguously '...offered at cost (not including research and development (R&D) expenses).' The quote's ellipsis omits nothing; wording otherwise identical.",
+   "pageSnippet": "If a manufacturer does not use an authorized repair provider, then documentation, tools, and parts must be offered at cost (not including research and development (R&D) expenses)."
+  },
+  {
+   "candidateId": "PHY-2",
+   "evidenceId": "PHY2-E5",
+   "url": "https://www.ifixit.com/solutions",
+   "status": "confirmed",
+   "note": "All three fragments on page; only difference is a curly apostrophe in 'we've'.",
+   "pageSnippet": "...we can support your parts operations from inventory planning to distribution and sales. ... Right to Repair compliance? ... Odds are we’ve done it before."
+  },
+  {
+   "candidateId": "PHY-3",
+   "evidenceId": "PHY3-E5",
+   "url": "https://eathealthy365.com/cost-of-battery-pack-certification/",
+   "status": "confirmed",
+   "note": "Row matches: Scenario A (simple consumer device) $9,500-$17,500; Scenario B (light electric vehicle pack) $34,000-$56,000+.",
+   "pageSnippet": "Estimated Total Cost | $9,500 – $17,500 | $34,000 – $56,000+"
+  },
+  {
+   "candidateId": "PHY-3",
+   "evidenceId": "PHY3-E7",
+   "url": "https://forums.electricbikereview.com/posts/718756/",
+   "status": "confirmed",
+   "note": "All three sentences appear verbatim in the Kriti Yad post (a forum vendor post; page also has a 36-month warranty claim, not in quote).",
+   "pageSnippet": "We build UL 2271 certified replacement battery packs for Rad, Juiced, Igo and other ebike brands. ... The first production run is limited, and allocation follows registration order. ... Deliveries begin early October."
+  },
+  {
+   "candidateId": "PHY-4",
+   "evidenceId": "PHY4-E2",
+   "url": "https://ecomcircles.com/prep-centers/hazmat/",
+   "status": "confirmed",
+   "note": "36 centers, $1.10 to $0.50 above 8,001 units, $1.25 to $0.40 with $50 setup, and LWT no-additional-fee wording all present. LWT sentence adds '(only shipping cost passed through)'.",
+   "pageSnippet": "We list 36 hazmat prep centers ... from $1.10 for small batches down to $0.50 above 8,001 units ... from $1.25 down to $0.40 per unit with a $50 one-time setup fee"
+  },
+  {
+   "candidateId": "PHY-4",
+   "evidenceId": "PHY4-E3",
+   "url": "https://www.lion.com/catalog/courses/shipping-lithium-batteries",
+   "status": "partially_supported",
+   "note": "DOT sentence verbatim. $299 appears only as the lower of two formats ($299 vs $349 each; header '$299 - $349'); group tiers start at $349 ea, so $299 is not the single price.",
+   "pageSnippet": "US DOT requires training for all \"hazmat employees,\" including any person who performs or directs ... $299 each ... $349 each; Attendee 1 – 4: $349 ea."
+  }
+ ]
+}

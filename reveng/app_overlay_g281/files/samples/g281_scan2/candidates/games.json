@@ -1,0 +1,905 @@
+{
+ "candidates": [
+  {
+   "id": "GAM-1",
+   "name": "Steam sales-actuals benchmark panel for indie developers",
+   "family": "games",
+   "buyer": "Indie developers and small publishers releasing PC games on Steam who plan budgets and launch timing from comparable-title sales and wishlist-conversion benchmarks",
+   "pain": "Public-signal estimators infer sales from top-seller rank, concurrent players and regression, and the free wishlist benchmark is a median from about 50 survey responses, so teams plan launches on rough comps.",
+   "wedge": "A contributor panel where studios upload their own Steamworks wishlist and sales exports in exchange for percentile benchmarks by genre, price and launch timing, sold as a monthly subscription.",
+   "referenceEntrant": {
+    "startupCashUsd": 1500,
+    "daysToFirstRevenue": 120,
+    "ownerHoursPerWeek": 20
+   },
+   "entrantEdge": {
+    "type": "proprietary_or_compounding_data",
+    "status": "claimed",
+    "statement": "Steamworks sales and wishlist actuals are visible only to each developer, so a panel of contributed actuals is data that scraped-signal estimators cannot obtain, and every added contributor sharpens the percentile benchmarks. It is not exclusive: GameDiscoverCo already runs public developer surveys, any competitor can add an upload form, and a stranger entrant starts with zero contributors.",
+    "evidenceIds": [
+     "GAM-1-E3",
+     "GAM-1-E5"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "impress.games Steam Wishlists To Sales Calculator (free; GameDiscoverCo survey medians)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://impress.games/steam-wishlists-sales-calculator",
+      "evidenceRef": "GAM-1-E6",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Status quo: developer own Steamworks reports plus sales data other developers choose to publish",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://newsletter.gamediscover.co/p/call-for-data-i-want-your-steam-stats",
+      "evidenceRef": "GAM-1-E3",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Gamalytic (free tier; Starter $25/month; Professional $75/month or $810/year)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 25,
+      "coversWedge": "partial",
+      "sourceLocator": "https://gamalytic.com/pricing",
+      "evidenceRef": "GAM-1-E1",
+      "metrics": {
+       "cash_cost": 25
+      }
+     },
+     {
+      "label": "VG Insights indie plan (archived 1 April 2025 price, now part of Sensor Tower)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 20,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.steampageanalyzer.com/blog/gamalytic-vs-vg-insights",
+      "evidenceRef": "GAM-1-E8",
+      "metrics": {
+       "cash_cost": 20
+      }
+     },
+     {
+      "label": "GameDiscoverCo Plus (2021 first-year offer $100, about $8.33/month)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 8.33,
+      "coversWedge": "partial",
+      "sourceLocator": "https://newsletter.gamediscover.co/p/anniversary-black-friday-sale-get",
+      "evidenceRef": "GAM-1-E2",
+      "metrics": {
+       "cash_cost": 8.33
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 15,
+    "falsifier": "The edge is accuracy and exclusivity of contributed actuals, not price (the entrant at about $15/month is dearer than the free calculator). It is disproved if a panel of 100+ contributed Steam games does not cut the error of Gamalytic/VG Insights estimates by at least 25% on held-out games, or if GameDiscoverCo or Gamalytic add an actuals-upload feature."
+   },
+   "evidence": [
+    {
+     "id": "GAM-1-E1",
+     "url": "https://gamalytic.com/pricing",
+     "quote": "or $810 / year (save 10%)",
+     "kind": "incumbent_price",
+     "publisher": "Gamalytic",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-1-E2",
+     "url": "https://newsletter.gamediscover.co/p/anniversary-black-friday-sale-get",
+     "quote": "You can sign up to GameDiscoverCo Plus for the first year for only $100 USD (or your local equivalent):",
+     "kind": "demand",
+     "publisher": "GameDiscoverCo",
+     "date": "2021-11",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-1-E3",
+     "url": "https://newsletter.gamediscover.co/p/call-for-data-i-want-your-steam-stats",
+     "quote": "to make it clear that the partner can share sales data about their game as they see fit.",
+     "kind": "constraint",
+     "publisher": "GameDiscoverCo",
+     "date": "2019-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-1-E4",
+     "url": "https://newsletter.gamediscover.co/p/steam-the-new-wishlists-to-first",
+     "quote": "because their devs or publishers are nervous about submitting anonymous data.",
+     "kind": "constraint",
+     "publisher": "GameDiscoverCo",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-1-E5",
+     "url": "https://newsletter.gamediscover.co/p/steam-the-new-wishlists-to-first",
+     "quote": "We ended up getting 50 responses (yay!).",
+     "kind": "other",
+     "publisher": "GameDiscoverCo",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-1-E6",
+     "url": "https://impress.games/steam-wishlists-sales-calculator",
+     "quote": "These values are from the latest GameDiscoverCo survey data and can be adjusted in Calculator tool above.",
+     "kind": "other",
+     "publisher": "impress.games",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-1-E7",
+     "url": "https://80.lv/articles/gamediscoverco-helping-indie-devs-with-models-and-data/",
+     "quote": "We also do a lot of public surveys to ask other devs for their experiences on Steam, and then print the results for everyone!",
+     "kind": "other",
+     "publisher": "80 Level",
+     "date": "2021-09-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-1-E8",
+     "url": "https://www.steampageanalyzer.com/blog/gamalytic-vs-vg-insights",
+     "quote": "listed an indie plan at $20 per month billed annually or $30 per month billed monthly,",
+     "kind": "incumbent_price",
+     "publisher": "Steam Page Analyzer (secondary source)",
+     "date": "2026-08-15",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-1-E9",
+     "url": "https://www.steampageanalyzer.com/blog/gamalytic-vs-vg-insights",
+     "quote": "Tracking the Steam top seller rank to estimate revenue and sales.",
+     "kind": "other",
+     "publisher": "Steam Page Analyzer (quoting Gamalytic about page)",
+     "date": "2026-08-15",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 3,
+    "customer_problem_or_value": 5,
+    "distribution_advantage": 2,
+    "defensibility": 4,
+    "absolute_gross_profit_potential": 4,
+    "willingness_to_pay": 5,
+    "repeat_ltv_potential": 5,
+    "competition_adjusted_gap": 3,
+    "market_depth": 3,
+    "end_to_end_automation": 6,
+    "capital_risk": 9,
+    "owner_time_support": 6
+   },
+   "componentReasons": {
+    "entrant_edge": "Steamworks actuals are private to each developer and Valve lets partners share them (GAM-1-E3), so a contributed panel is data scraped-signal tools lack, but the edge is only claimed and the one demonstrated collector got just 50 responses (GAM-1-E5).",
+    "customer_problem_or_value": "Estimators infer sales from public signals such as top-seller rank (GAM-1-E9) and the free benchmark is a survey median (GAM-1-E6), so better comps are a real but modest pain.",
+    "distribution_advantage": "The entrant has no owned or partner channel: GameDiscoverCo already solicits developer data from its newsletter audience (GAM-1-E7) and larger developers hesitate to submit data (GAM-1-E4).",
+    "defensibility": "Contributed data compounds, but nothing is exclusive and a rival can add an upload form since survey collection already exists (GAM-1-E7).",
+    "absolute_gross_profit_potential": "Paid Steam-data tools price at $20-75 per month (GAM-1-E1, GAM-1-E8), so a few hundred subscribers gives low five-figure annual gross profit at best.",
+    "willingness_to_pay": "Developers do pay for Steam data ($810/year professional plan in GAM-1-E1, a $100 first-year Plus offer in GAM-1-E2), yet a free calculator covers the headline metric (GAM-1-E6).",
+    "repeat_ltv_potential": "Monthly plans exist (GAM-1-E8) but benchmark need clusters around a release, so churn after launch is likely.",
+    "competition_adjusted_gap": "A free calculator (GAM-1-E6), free survey articles (GAM-1-E7) and $20-75 estimators (GAM-1-E1, GAM-1-E8) leave little uncovered.",
+    "market_depth": "The paying indie-on-Steam segment was not measured; the sources show paid products exist (GAM-1-E1, GAM-1-E2) but give no customer counts.",
+    "end_to_end_automation": "CSV ingestion, percentile calculation and billing can be automated; contributor vetting and data cleaning stay manual.",
+    "capital_risk": "Needs only hosting, a database and a payment account; no inventory or licences (GAM-1-E3 removes the main legal doubt).",
+    "owner_time_support": "After the build the work is support and data checks, but recruiting contributors is slow and manual (GAM-1-E5)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "GAM-1-E3: a 2019 GameDiscoverCo post says Valve changed the Steam agreement so partners may share sales data about their own game; confirm current Steamworks terms and each contributor publisher contract or NDA before ingesting data (unverified).",
+    "GAM-1-E4: panel relies on voluntary uploads, no scraping or login automation; a privacy policy and contributor consent terms are needed and GDPR/CCPA applicability is unverified (not legal advice)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "Assumed base: 250 subscribers x $15/month = $3,750/month, costs about $250/month. Pessimistic (price x0.8 = $12, volume x0.5 = 125 subscribers, cost x1.5 = $375 plus 3% fees) leaves about $1,080/month. Arithmetic only: no evidence that 125 paying subscribers can be reached without an existing audience."
+    },
+    "killReasons": [
+     {
+      "reason": "Cold start: contributors must hand private revenue data to an unknown panel; the largest collector (GameDiscoverCo) reached only 50 survey responses and notes bigger developers hesitate (GAM-1-E4, GAM-1-E5).",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "GAM-1-E5"
+     },
+     {
+      "reason": "Free survey-based benchmarks and calculators already cover the headline wishlist-to-sales metric (GAM-1-E6, GAM-1-E7).",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "GAM-1-E6"
+     },
+     {
+      "reason": "Incumbents can copy the mechanism by adding an upload form; the edge is a data race the entrant starts from zero in (GAM-1-E7).",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "GAM-1-E7"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: the data edge is real in principle (Steamworks actuals are private and sharing is allowed, GAM-1-E3), but free survey benchmarks cover the headline metric (GAM-1-E6), the only demonstrated collector of developer actuals needed a large newsletter audience to get 50 responses and says bigger developers hesitate (GAM-1-E4, GAM-1-E5), and buyers already have $0-$25/month estimators (GAM-1-E1, GAM-1-E8). A stranger with no audience cannot seed the panel."
+  },
+  {
+   "id": "GAM-2",
+   "name": "Success-fee royalty statement review for developers on publisher deals",
+   "family": "games",
+   "buyer": "Independent game developers and small studios with a signed publisher or revenue-share agreement that contains recoupment, deduction and audit-rights clauses",
+   "pain": "Publishers report net revenue after deductions and statements can be arithmetically correct yet wrong by six figures, but audits cost several thousand dollars up front and need specialists, so developers rarely audit and underpayments go unclaimed.",
+   "wedge": "A flat-fee desk review of royalty statements against the contract definitions, with optional success-fee audit coordination using subcontracted forensic accountants and a growing library of per-publisher deduction patterns.",
+   "referenceEntrant": {
+    "startupCashUsd": 6000,
+    "daysToFirstRevenue": 90,
+    "ownerHoursPerWeek": 25
+   },
+   "entrantEdge": {
+    "type": "unique_recovery_or_outcome_based_economics",
+    "status": "claimed",
+    "statement": "The developer pays only a small desk-review fee unless money is recovered, and each completed audit adds publisher- and platform-specific deduction patterns that make later reviews faster and more accurate. It is not exclusive: audit firms can already negotiate higher contingency in place of day rates (GAM-2-E6), and access to a publisher's books depends on the developer's contract audit right, not on the entrant.",
+    "evidenceIds": [
+     "GAM-2-E6",
+     "GAM-2-E7"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Developer self-review of statements against contract definitions and own platform data (DIY)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://legalmoveslawfirm.com/video-game-royalties/",
+      "evidenceRef": "GAM-2-E5",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "RoyalTea free tools and Reactorcore Revshare (team revenue-split calculators; no publisher audit)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "none",
+      "sourceLocator": "https://glama.ai/mcp/connectors/technology.royalty/royaltea-public",
+      "evidenceRef": "GAM-2-E9",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Boutique royalty-audit firms (GHJ, Media Forensics): GBP 500-1,000 per man-day; a 5-day audit is roughly $4,900 (FX approximate), amortised over 12 months",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 400,
+      "coversWedge": "full",
+      "sourceLocator": "https://mcvuk.com/development-news/the-royalty-family/",
+      "evidenceRef": "GAM-2-E1",
+      "metrics": {
+       "cash_cost": 400
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 400,
+    "falsifier": "No edge if audit firms already take small-developer cases on success-fee terms (GAM-2-E6), or if fewer than about one in three desk-reviewed statements reveal a recoverable deduction error, or if publishers refuse books access to a non-accountant coordinator. Note the entrant is not cheaper than DIY (cash_cost 0), so the claim rests entirely on outcome-based pricing and access."
+   },
+   "evidence": [
+    {
+     "id": "GAM-2-E1",
+     "url": "https://mcvuk.com/development-news/the-royalty-family/",
+     "quote": "The going rate for an audit company can be anywhere between £500 and £1,000 per man day.",
+     "kind": "incumbent_price",
+     "publisher": "MCV / DEVELOP",
+     "date": "2010",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-2-E2",
+     "url": "https://mcvuk.com/development-news/the-royalty-family/",
+     "quote": "After all, my opening paragraph stated a figure of $16m so there are clearly accounting discrepancies to report.",
+     "kind": "demand",
+     "publisher": "MCV / DEVELOP",
+     "date": "2010",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-2-E3",
+     "url": "https://gamedev.net/tutorials/article2383.asp",
+     "quote": "the exercise of audit rights by developers is, in reality, fairly rare.",
+     "kind": "constraint",
+     "publisher": "GameDev.net",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-2-E4",
+     "url": "https://gamedev.net/tutorials/article2383.asp",
+     "quote": "Audits cost several thousand dollars.",
+     "kind": "incumbent_price",
+     "publisher": "GameDev.net",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-2-E5",
+     "url": "https://legalmoveslawfirm.com/video-game-royalties/",
+     "quote": "A royalty statement can be arithmetically perfect and still be wrong by six figures.",
+     "kind": "demand",
+     "publisher": "Legal Moves Law Firm",
+     "date": "2026-02-23",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-2-E6",
+     "url": "https://mcvuk.com/development-news/the-royalty-family/",
+     "quote": "If available cash is tight, then a good option may be to negotiate a lower day rate and higher contingency or bonus,",
+     "kind": "constraint",
+     "publisher": "MCV / DEVELOP",
+     "date": "2010",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-2-E7",
+     "url": "https://www.vondranlegal.com/game-toy-audit",
+     "quote": "An experienced royalty auditor or forensic accountant may review available books and records to identify discrepancies.",
+     "kind": "constraint",
+     "publisher": "Vondran Legal",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-2-E8",
+     "url": "https://www.ghjadvisors.com/services/profit-participation-services/royalty-licensing",
+     "quote": "GHJ's team has performed over 100 examinations of third-party records to recover money and other valuable benefits",
+     "kind": "other",
+     "publisher": "Green Hasson Janks (GHJ)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-2-E9",
+     "url": "https://glama.ai/mcp/connectors/technology.royalty/royaltea-public",
+     "quote": "Free no-auth game-dev tools: revenue splits with real store cuts, agreement drafts, studio setup.",
+     "kind": "other",
+     "publisher": "Glama (RoyalTea listing)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 3,
+    "customer_problem_or_value": 6,
+    "distribution_advantage": 2,
+    "defensibility": 3,
+    "absolute_gross_profit_potential": 4,
+    "willingness_to_pay": 5,
+    "repeat_ltv_potential": 3,
+    "competition_adjusted_gap": 4,
+    "market_depth": 3,
+    "end_to_end_automation": 2,
+    "capital_risk": 5,
+    "owner_time_support": 3
+   },
+   "componentReasons": {
+    "entrant_edge": "Outcome-based pricing and a deduction-pattern library are claimed, but audit firms can already negotiate contingency (GAM-2-E6) and books access runs through the developer's contract audit right (GAM-2-E7), so the edge is unproven.",
+    "customer_problem_or_value": "Statements can be correct arithmetically and still wrong by six figures (GAM-2-E5) and the same GameDev.net page cites a top-tier developer finding $6 million owed (page of GAM-2-E3), so the loss per affected deal can be large.",
+    "distribution_advantage": "Developers with a dispute are not identifiable in advance and audit rights are rarely exercised (GAM-2-E3), leaving no cheap channel to reach them.",
+    "defensibility": "Per-publisher deduction knowledge accrues slowly and incumbent firms with 100+ examinations already hold it (GAM-2-E8).",
+    "absolute_gross_profit_potential": "About $16m recovered by two firms over roughly eight years (GAM-2-E2) implies a small niche, and success fees of 20% on small-deal recoveries give low five-figure revenue.",
+    "willingness_to_pay": "Developers do pay audit firms GBP 500-1,000 per man-day (GAM-2-E1) and audits cost several thousand dollars (GAM-2-E4), but only after a suspected shortfall.",
+    "repeat_ltv_potential": "An audit is a one-off per deal and audit rights are rarely used (GAM-2-E3); only monthly statement checks could repeat, and no evidence shows developers buy them.",
+    "competition_adjusted_gap": "Specialist firms and law firms already serve the work (GAM-2-E7, GAM-2-E8) and DIY comparison against platform data is free (GAM-2-E5), leaving a gap only for small deals and success-fee terms.",
+    "market_depth": "The only quantified market figure is a 2010 total of $16m recovered (GAM-2-E2) and audits are described as fairly rare (GAM-2-E3).",
+    "end_to_end_automation": "Reviewing deductions against contract clauses and coordinating accountants is judgement-heavy and not automatable end to end (GAM-2-E7).",
+    "capital_risk": "Subcontracted audit days of GBP 500-1,000 (GAM-2-E1) must be pre-funded under a success-fee model, so a few failed audits consume the $6,000 reserve.",
+    "owner_time_support": "Each engagement needs contract reading, client communication and accountant management, so owner time scales with cases (GAM-2-E7)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "GAM-2-E7: audits are performed by a royalty auditor or forensic accountant reviewing the publisher's books; whether an uncertified entrant may coordinate audits or must engage a licensed CPA, and whether contingency fees for audit work are restricted in a given jurisdiction, is unverified (not legal advice).",
+    "GAM-2-E5: audit clauses, notice periods and deemed-accepted language are per-contract and bind the developer, not the entrant; NDAs may bar sharing statements with third parties (unverified)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Assumed base: 12 desk reviews at $400 = $4,800; 5 audits at $3,000 subcontract cost; 3 recoveries averaging $25,000 at a 20% fee = $15,000; net about $4,800 per year. Pessimistic (fee x0.8, volume x0.5 = 6 reviews, 2.5 audits, 1.5 recoveries, audit cost x1.5 = $4,500): revenue about $7,900 against about $11,250 cost, net about -$3,300. All volumes and recovery rates are assumptions, none evidenced."
+    },
+    "killReasons": [
+     {
+      "reason": "Outcome-based pricing is not exclusive: audit firms already negotiate higher contingency in place of day rates (GAM-2-E6).",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "GAM-2-E6"
+     },
+     {
+      "reason": "Audit rights are described as fairly rare to exercise and audits cost several thousand dollars, so demand is thin and episodic (GAM-2-E3, GAM-2-E4).",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "GAM-2-E3"
+     },
+     {
+      "reason": "Pessimistic economics are negative because audit days must be pre-funded under a success-fee model (GAM-2-E1).",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "GAM-2-E1"
+     },
+     {
+      "reason": "Could not confirm that Media Forensics or Loxley still operate; only 2010-era pages surfaced, so the current competitor set is unverified.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "GAM-2-E2"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: demand exists (day rates of GBP 500-1,000, GAM-2-E1; about $16m recovered by two firms since 2002, GAM-2-E2) but the market is small and episodic (GAM-2-E3, GAM-2-E4), success-fee terms are not exclusive to an entrant (GAM-2-E6), books access runs through accountants under the developer's contract right (GAM-2-E7), and pessimistic economics are negative. A stranger without audit expertise would pre-fund audits for a handful of cases a year."
+  },
+  {
+   "id": "GAM-3",
+   "name": "Premium Godot add-ons sold through the official Godot Asset Store",
+   "family": "games",
+   "buyer": "Godot 4 game developers (indie, hobbyist and professional) who buy engine add-ons such as gameplay systems, editor tools and integrations",
+   "pain": "Godot has had no official paid-asset channel, so paid add-ons are sold through itch.io or private sites where buyers cannot discover, trust or update them inside the editor and sellers get no in-engine discovery.",
+   "wedge": "A small maintained catalog of paid Godot 4 add-ons (editor tools and gameplay systems with documentation, tests and per-version updates), sold on itch.io now and listed in the official Godot Asset Store when paid listings open.",
+   "referenceEntrant": {
+    "startupCashUsd": 3000,
+    "daysToFirstRevenue": 150,
+    "ownerHoursPerWeek": 25
+   },
+   "entrantEdge": {
+    "type": "privileged_or_low_cac_distribution",
+    "status": "claimed",
+    "statement": "From Godot 4.7 the new official store is integrated into the engine, so a listed add-on is discoverable inside the editor, and early paid listings accumulate ratings, downloads and update history that later arrivals cannot copy quickly. This is only claimed: paid listings are not live, will start with a select group of asset creators, and fees and eligibility are unpublished, so access for an unknown entrant is unconfirmed.",
+    "evidenceIds": [
+     "GAM-3-E3",
+     "GAM-3-E4"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Free open-source add-ons in the Godot Asset Library and the new store (free community assets)",
+      "kind": "open_source",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.eneba.com/hub/news/godot-asset-store-launch-godot-4-7-update/",
+      "evidenceRef": "GAM-3-E10",
+      "metrics": {
+       "step_count": 3
+      }
+     },
+     {
+      "label": "Paid Godot tools on itch.io (observed one-time list prices $4.99-$79, about $15 typical, amortised over 12 months)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 1.25,
+      "coversWedge": "partial",
+      "sourceLocator": "https://itch.io/tools/newest/released/store/tag-godot?page=3",
+      "evidenceRef": "GAM-3-E1",
+      "metrics": {
+       "step_count": 6
+      }
+     },
+     {
+      "label": "DIY: the developer writes the system in-house (no marketplace)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://godotforums.org/d/27798-commercial-marketplaces",
+      "evidenceRef": "GAM-3-E2"
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "step_count",
+    "direction": "lower_is_better",
+    "incumbentValue": 3,
+    "entrantValue": 3,
+    "falsifier": "Step counts are the researcher's estimates, not measured: free in-engine Asset Library install is about 3 steps (search, download, install), itch.io purchase about 6 (find, pay, download zip, copy to addons, enable, update by hand). A paid in-engine listing is also about 3, so there is no measured advantage over the free in-engine path. The edge is disproved if paid listings stay invite-only beyond 12 months, if in-engine browsing is not the main discovery path, or if paid add-on sales on the store stay in the low tens per month."
+   },
+   "evidence": [
+    {
+     "id": "GAM-3-E1",
+     "url": "https://itch.io/tools/newest/released/store/tag-godot?page=3",
+     "quote": "Godot Barracks & Unit Training System ... $9.99",
+     "kind": "incumbent_price",
+     "publisher": "itch.io",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-3-E2",
+     "url": "https://godotforums.org/d/27798-commercial-marketplaces",
+     "quote": "There's plenty of godot users using itch.io and tools and assets can be sold there just fine too.",
+     "kind": "demand",
+     "publisher": "Godot Forums",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-3-E3",
+     "url": "https://www.pocketgamer.biz/game-engine-godot-rolls-out-asset-store-in-early-beta",
+     "quote": "Once we are happy with the new platform, we'll start rolling out paid assets",
+     "kind": "constraint",
+     "publisher": "PocketGamer.biz",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-3-E4",
+     "url": "https://www.pocketgamer.biz/game-engine-godot-rolls-out-asset-store-in-early-beta",
+     "quote": "we are going to be working with a certain group of asset creators",
+     "kind": "constraint",
+     "publisher": "PocketGamer.biz",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-3-E5",
+     "url": "https://www.eneba.com/hub/news/godot-asset-store-launch-godot-4-7-update/",
+     "quote": "Godot has confirmed that support for paid content is planned for future updates.",
+     "kind": "constraint",
+     "publisher": "Eneba Hub",
+     "date": "2026-07-07",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-3-E6",
+     "url": "https://godotengine.org/article/introducing-the-godot-asset-store/",
+     "quote": "Following that, we have several items on the Asset Store roadmap, the most anticipated one being the ability to sell and buy assets.",
+     "kind": "constraint",
+     "publisher": "Godot Engine",
+     "date": "2026-05-22",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-3-E7",
+     "url": "https://create.roblox.com/docs/production/publishing/selling-on-the-creator-store",
+     "quote": "Sell a Model or Plugin and earn 100% of net proceeds on transactions.",
+     "kind": "other",
+     "publisher": "Roblox Creator Docs",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-3-E8",
+     "url": "https://devforum.roblox.com/t/do-not-stick-with-usd-as-the-only-currency-for-plugins-assets-and-such-make-it-like-ads-manager-accept-both-robux-and-usd/3977274",
+     "quote": "USD purchases has restricted a lot of people from buying anything - mainly due to regional blocks.",
+     "kind": "constraint",
+     "publisher": "Roblox Developer Forum",
+     "date": "2025-10-04",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-3-E9",
+     "url": "https://ziva.sh/blogs/godot-community-poll-2025",
+     "quote": "The official Godot Community Poll 2025 drew 9,661 respondents",
+     "kind": "other",
+     "publisher": "Ziva",
+     "date": "2025",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-3-E10",
+     "url": "https://www.eneba.com/hub/news/godot-asset-store-launch-godot-4-7-update/",
+     "quote": "While the current rollout focuses mainly on free community assets,",
+     "kind": "other",
+     "publisher": "Eneba Hub",
+     "date": "2026-07-07",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 3,
+    "customer_problem_or_value": 4,
+    "distribution_advantage": 3,
+    "defensibility": 3,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 3,
+    "repeat_ltv_potential": 4,
+    "competition_adjusted_gap": 5,
+    "market_depth": 5,
+    "end_to_end_automation": 6,
+    "capital_risk": 8,
+    "owner_time_support": 5
+   },
+   "componentReasons": {
+    "entrant_edge": "In-engine distribution is a real platform channel but only claimed for an entrant: paid listings are not live and begin with a select creator group (GAM-3-E3, GAM-3-E4), so access is unconfirmed.",
+    "customer_problem_or_value": "Paid add-ons are sold ad hoc on itch.io today (GAM-3-E1, GAM-3-E2) and an official sell-and-buy feature is the most anticipated roadmap item (GAM-3-E6), but free add-ons cover many needs (GAM-3-E10).",
+    "distribution_advantage": "In-editor store listing could cut acquisition cost, yet it is available to every seller and the paid rollout is gated (GAM-3-E4, GAM-3-E5).",
+    "defensibility": "Ratings, update history and catalog breadth accumulate, but add-on code is easy to imitate and the closest live analogue shows piracy and payment friction (GAM-3-E8).",
+    "absolute_gross_profit_potential": "Observed list prices are about $5-$80 one-time (GAM-3-E1) and no sales volumes were found, so profit potential is unproven and likely small per add-on.",
+    "willingness_to_pay": "Sellers list paid Godot tools (GAM-3-E1) and a forum reply says assets sell fine on itch.io (GAM-3-E2), but there is no purchase data and free add-ons are the norm (GAM-3-E10).",
+    "repeat_ltv_potential": "One-time purchases dominate (GAM-3-E1); repeat revenue would come from new add-ons and engine-version upgrades, not subscriptions.",
+    "competition_adjusted_gap": "There is no official paid channel yet (GAM-3-E5, GAM-3-E6), but itch.io already serves it (GAM-3-E2) and free add-ons partially cover the need (GAM-3-E10).",
+    "market_depth": "The 2025 community poll alone drew 9,661 respondents (GAM-3-E9), so the Godot base is large, though the share that pays for add-ons is unknown.",
+    "end_to_end_automation": "Store delivery and payment are platform-run, as on the Roblox analogue (GAM-3-E7), leaving support and per-version maintenance manual.",
+    "capital_risk": "Development is time, not cash and there is no inventory; itch.io and Godot store fee terms are unverified (GAM-3-E1, GAM-3-E4).",
+    "owner_time_support": "Add-ons need updates for every Godot release and buyer support, so owner time persists after launch (GAM-3-E6)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "GAM-3-E3 and GAM-3-E4: the Godot Foundation controls paid-asset eligibility, fees and payout terms, none published yet (unverified); fee assumption of 30% used in economics is a guess.",
+    "GAM-3-E8: the closest live analogue (Roblox Creator Store) sells in USD only and buyers report regional payment blocks and piracy; the Godot store may differ (unverified). Add-ons must respect Godot's MIT licence and the store's publisher terms (unverified)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "Assumed base: 6 add-ons x 15 sales/month x $15 x 0.70 (assumed 30% platform fee) = about $945/month, costs $100/month. Pessimistic (price x0.8 = $12, volume x0.5 = 7.5 sales, cost x1.5 = $150): about $378 revenue, +$228/month. Arithmetic only: no sales data for paid Godot add-ons was found and paid listings on the official store are not live."
+    },
+    "killReasons": [
+     {
+      "reason": "Paid listings are not live and will first go to a select group of creators; eligibility, fee and timing are unpublished (GAM-3-E3, GAM-3-E4, GAM-3-E5).",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "GAM-3-E4"
+     },
+     {
+      "reason": "Free open-source add-ons are the Godot norm and no purchase volumes for paid add-ons were found (GAM-3-E10, GAM-3-E1).",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "GAM-3-E10"
+     },
+     {
+      "reason": "Closest live analogue (Roblox plugin store) shows USD-only payment friction and piracy that would also hit a code-based add-on (GAM-3-E8).",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "GAM-3-E8"
+     }
+    ]
+   },
+   "researcherVerdict": "uncertain",
+   "verdictReason": "Open question: when, and on what eligibility and fee terms, will the Godot Asset Store open paid listings beyond a select creator group (GAM-3-E3, GAM-3-E4, GAM-3-E5), and do Godot developers buy add-ons at volume? Demand for paid Godot add-ons is evidenced only by itch.io listings (GAM-3-E1, GAM-3-E2), with no sales data; free alternatives partly cover the need (GAM-3-E10). Not killable on evidence, not a survivor: re-check once paid listings go live."
+  },
+  {
+   "id": "GAM-4",
+   "name": "Curated pay-what-you-want tabletop RPG bundle storefront",
+   "family": "games",
+   "buyer": "Tabletop RPG players and game masters who buy discounted multi-title PDF bundles, and small RPG publishers who want a revenue-shared sales event for their back catalog",
+   "pain": "Small RPG publishers cannot run a bundle audience themselves, and buyers want curated, tiered discounts without hunting across stores.",
+   "wedge": "A recurring calendar of curated tiered bundles of third-party RPG PDFs, sold through itch.io's bundle tool and an email list, with the organizer taking a negotiated revenue weight in each bundle.",
+   "referenceEntrant": {
+    "startupCashUsd": 1500,
+    "daysToFirstRevenue": 75,
+    "ownerHoursPerWeek": 20
+   },
+   "entrantEdge": {
+    "type": "network_effect_or_marketplace_liquidity",
+    "status": "claimed",
+    "statement": "What accumulates is a repeat-buyer email list and a roster of publishers who trust the storefront with their back catalog. Bundle of Holding shows the shape after 13 years: about 86,000 customers, 46 new subscribers a week and 16,000-20,000 unique buyers a year. An entrant starts with neither side, and itch.io's tool is open to any developer, so the tool itself gives no exclusivity.",
+    "evidenceIds": [
+     "GAM-4-E4",
+     "GAM-4-E2"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "itch.io bundle tool (any developer can host; no organizer fee stated; no audience supplied)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://itch.io/docs/creators/bundles",
+      "evidenceRef": "GAM-4-E2"
+     },
+     {
+      "label": "Bundle of Holding (average paid per copy $24.61 in 2017; per-bundle buyer cost)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 24.61,
+      "coversWedge": "partial",
+      "sourceLocator": "https://beyondthebundle.com/?p=3889",
+      "evidenceRef": "GAM-4-E1",
+      "metrics": {
+       "channel_reach": 86000
+      }
+     },
+     {
+      "label": "Humble Bundle tabletop bundles ($25 top tier example; at least 30% to Humble)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 25,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.wargamer.com/pathfinder/books-rpg-humble-bundle",
+      "evidenceRef": "GAM-4-E7"
+     },
+     {
+      "label": "DriveThruRPG publisher bundles and sales (example $13.49 at 25% off)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 13.49,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.enworld.org/threads/freebies-sales-and-charity-bundles-for-may-18-2026.719155/",
+      "evidenceRef": "GAM-4-E10"
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "channel_reach",
+    "direction": "higher_is_better",
+    "incumbentValue": 86000,
+    "entrantValue": 500,
+    "falsifier": "Incumbent value is Bundle of Holding's cumulative customers since 2013 (GAM-4-E4); the entrant value of 500 buyers after 12 months is an assumption. No edge if the first three bundles each sell fewer than about 100 copies without a pre-existing personal audience, or if publishers will not commit titles to an unknown storefront."
+   },
+   "evidence": [
+    {
+     "id": "GAM-4-E1",
+     "url": "https://beyondthebundle.com/?p=3889",
+     "quote": "this year, with one day left as I write, you've already bought a record 50,396 bundles and paid an average of $24.61.",
+     "kind": "incumbent_price",
+     "publisher": "Bundle of Holding (operator blog)",
+     "date": "2017-12-31",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-4-E2",
+     "url": "https://itch.io/docs/creators/bundles",
+     "quote": "Any developer on itch.io can organize and publish a bundle.",
+     "kind": "other",
+     "publisher": "itch.io",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-4-E3",
+     "url": "https://beyondthebundle.com/2022-12-31/2022-review/",
+     "quote": "Every year the Bundle of Holding sells to 16,000 to 20,000 unique customers.",
+     "kind": "demand",
+     "publisher": "Bundle of Holding (operator blog)",
+     "date": "2022-12-31",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-4-E4",
+     "url": "https://beyondthebundle.com/2022-12-31/2022-review/",
+     "quote": "Since 2013 the site has served about 86,000 customers, which implies many of you buy multiple offers across many years.",
+     "kind": "other",
+     "publisher": "Bundle of Holding (operator blog)",
+     "date": "2022-12-31",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-4-E5",
+     "url": "https://cannibalhalflinggaming.com/?p=12482",
+     "quote": "You need a bedrock of people who know and trust you to build confidence in other people.",
+     "kind": "constraint",
+     "publisher": "Cannibal Halfling Gaming",
+     "date": "2025-12-30",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-4-E6",
+     "url": "https://beyondthebundle.com/2022-12-31/2022-review/",
+     "quote": "Month by month, Twitter has never sent more than 2% of the Bundle site's total visitors, and Facebook no more than 1.5%.",
+     "kind": "other",
+     "publisher": "Bundle of Holding (operator blog)",
+     "date": "2022-12-31",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-4-E7",
+     "url": "https://www.wargamer.com/pathfinder/books-rpg-humble-bundle",
+     "quote": "You'll have to pay at least 30% ($7.50) to Humble Bundle, however.",
+     "kind": "incumbent_price",
+     "publisher": "Wargamer",
+     "date": "2023-12-08",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-4-E8",
+     "url": "https://cannibalhalflinggaming.com/?p=12482",
+     "quote": "Queerotica 2025 Bundle [January 2025; $13,908.70 / 25 contributors]",
+     "kind": "demand",
+     "publisher": "Cannibal Halfling Gaming",
+     "date": "2025-12-30",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-4-E9",
+     "url": "https://beyondthebundle.com/2022-12-31/2022-review/",
+     "quote": "Average sales per offer go up a little one year, down the next, then up, but the high-altitude view? Flat as Kansas.",
+     "kind": "constraint",
+     "publisher": "Bundle of Holding (operator blog)",
+     "date": "2022-12-31",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "GAM-4-E10",
+     "url": "https://www.enworld.org/threads/freebies-sales-and-charity-bundles-for-may-18-2026.719155/",
+     "quote": "Price: $13.49 (25% off)",
+     "kind": "incumbent_price",
+     "publisher": "ENWorld",
+     "date": "2026-05-18",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 2,
+    "customer_problem_or_value": 4,
+    "distribution_advantage": 1,
+    "defensibility": 3,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 5,
+    "repeat_ltv_potential": 5,
+    "competition_adjusted_gap": 2,
+    "market_depth": 4,
+    "end_to_end_automation": 4,
+    "capital_risk": 8,
+    "owner_time_support": 3
+   },
+   "componentReasons": {
+    "entrant_edge": "A buyer list and publisher roster would compound, but Bundle of Holding needed 13 years to reach 86,000 customers (GAM-4-E4) and the entrant starts at zero, so the edge belongs to the incumbent.",
+    "customer_problem_or_value": "Buyers pay an average of $24.61 per copy for curated bundles (GAM-4-E1) but Humble, DriveThruRPG and itch.io already offer many bundles every week (GAM-4-E7, GAM-4-E10).",
+    "distribution_advantage": "Organizer guidance says bundles depend on people who already know and trust you (GAM-4-E5) and social media sends at most 2% of visitors (GAM-4-E6), leaving a stranger with no channel.",
+    "defensibility": "itch.io lets any developer host a bundle (GAM-4-E2), so only the owned list and publisher trust protect the business, and both take years to build (GAM-4-E4).",
+    "absolute_gross_profit_potential": "Example itch.io bundles gross $154 to $13,909 (GAM-4-E8) and the organizer keeps only a negotiated weight, so profit per bundle is small without a large list.",
+    "willingness_to_pay": "Buyers demonstrably pay: 16,000-20,000 unique customers a year at about $24 per copy (GAM-4-E3, GAM-4-E1).",
+    "repeat_ltv_potential": "Many Bundle of Holding customers buy multiple offers across years (GAM-4-E4), so repeat purchase is strong once a list exists.",
+    "competition_adjusted_gap": "Bundle of Holding, Humble and DriveThruRPG run weekly bundles (GAM-4-E1, GAM-4-E7, GAM-4-E10) and sales at the leader are flat (GAM-4-E9), so little unmet demand remains.",
+    "market_depth": "Bundle of Holding alone sold 50,396 bundles in 2017 (GAM-4-E1), showing real depth, but flat since (GAM-4-E9).",
+    "end_to_end_automation": "itch.io handles payment and split (GAM-4-E2); recruiting publishers, approvals and marketing stay manual (GAM-4-E5).",
+    "capital_risk": "The itch.io tool needs no upfront fee (GAM-4-E2); only list-building spend is at risk.",
+    "owner_time_support": "An organizer reports roughly two weeks of chasing approvals per bundle (GAM-4-E5 source page), so time scales with bundle count."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "GAM-4-E2: itch.io requires every participant to approve a bundle and splits revenue by relative weight; VAT is applied automatically; whether an organizer may take a curation weight without owning a project is unverified.",
+    "GAM-4-E7: Humble sets a minimum 30% share, showing platform-set terms; resale of publisher PDFs in bundles depends on each publisher's own licence and consent per bundle (unverified, not legal advice)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "Assumed base: 10 bundles/year x $5,000 gross (between the $154 and $13,909 examples in GAM-4-E8) x 15% organizer weight = $7,500; costs $1,500 -> $6,000. Pessimistic (price x0.8, volume x0.5 -> $2,000 gross per bundle; weight 15% -> $3,000; costs x1.5 = $2,250): about +$750/year, before roughly two weeks of owner time per bundle, so effectively unpaid."
+    },
+    "killReasons": [
+     {
+      "reason": "Cold start: bundles depend on a pre-existing circle of people who know and trust the organizer (GAM-4-E5); the leader built 86,000 customers over 13 years (GAM-4-E4) and social media is under 2% of its traffic (GAM-4-E6).",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "GAM-4-E5"
+     },
+     {
+      "reason": "Leader sales are flat and Humble, DriveThruRPG and itch.io already run weekly bundles (GAM-4-E9, GAM-4-E10).",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "GAM-4-E9"
+     },
+     {
+      "reason": "No organizer fee exists on itch.io; income is a negotiated revenue weight, and Humble keeps at least 30% (GAM-4-E2, GAM-4-E7).",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "GAM-4-E7"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: buyers do pay (GAM-4-E1, GAM-4-E3) but the compounding asset is a buyer list and publisher trust that the incumbent built over 13 years (GAM-4-E4); organizer guidance says bundles depend on people who already know and trust you (GAM-4-E5), the tool is open to everyone (GAM-4-E2), the leader is flat (GAM-4-E9) and larger platforms run bundles weekly (GAM-4-E10). A stranger has no channel to the first 100 buyers."
+  }
+ ]
+}

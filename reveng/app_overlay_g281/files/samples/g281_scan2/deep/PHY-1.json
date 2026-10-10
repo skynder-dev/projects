@@ -1,0 +1,302 @@
+{
+ "id": "PHY-1",
+ "verdict": "killed",
+ "verdictReason": "Killed. Public DLA and NAVSUP pages say SAR approval goes to the actual manufacturer (distributors are not approved), needs prior Government production history, and the approval would sit on the machine shop's CAGE, so a broker using contract shops gets no edge it owns. Before approval it competes on lowest-acceptable-price RFQs averaging under $4,000, only ~24% of parts are openly competable, and the modelled year-1 profit is about -$0.2k base and -$14k pessimistic.",
+ "answers": [
+  {
+   "question": "Can a stranger with no Government delivery record reach an approved SAR within roughly 12-18 months?",
+   "answer": "Unlikely. DLA Aviation says a significant history of producing items for the Government is needed (PHY1-E2); the Navy wants the exact or a similar item produced for the OEM or Government within 3-5 years and refuses Category III (alternate item) SARs (PHY-1-D2). Nominal DLA Land and Maritime step times add to about 190 days (5+15+30+90+15+30+5) if the package is complete (PHY-1-D3), the Navy and Army need at least 180 days (PHY1-E2), reverse-engineered items typically take 12-18 months (PHY-1-D4), and in FY17 of 282 packages received 111 were approved and 114 rejected (PHY-1-D3). Reasons for rejection include no Government data to compare and business case (PHY-1-D4).",
+   "evidenceIds": [
+    "PHY1-E2",
+    "PHY-1-D2",
+    "PHY-1-D3",
+    "PHY-1-D4"
+   ]
+  },
+  {
+   "question": "Can a non-manufacturing entrant that buys from contract machine shops hold approved-source status and the 40% split award?",
+   "answer": "Not on the evidence found. NAVSUP states SARs are for actual manufacturers only, distributors will not be considered approved, and the production data must come from the actual manufacturer (PHY-1-D1, PHY-1-D2). The DLA SAR package must show competence to manufacture the NSN with company manufacturing and quality information (PHY-1-D15, PHY-1-D3). So approval, and the 40% split award with the one-year multi-source clause (PHY-1-D9), would attach to the shop's CAGE; the shop could file its own SAR and bypass the entrant. The DLA SAR Guide itself could not be fetched, so the Land and Maritime rule for dealers is not confirmed first-hand.",
+   "evidenceIds": [
+    "PHY-1-D1",
+    "PHY-1-D2",
+    "PHY-1-D9",
+    "PHY-1-D15",
+    "PHY-1-D3"
+   ]
+  },
+  {
+   "question": "Can the entrant earn positive margin on openly competable RFQs while waiting for approval?",
+   "answer": "Public pages give no margin or win-rate figures. What they show: RFQs average under $4,000 (PHY-1-D6), awards go to the lowest technically acceptable offer within days (PHY-1-D8), and only about 24% of parts on one month's open solicitations were openly competable while about 72% were approved-source-only (PHY-1-D7), so a newcomer can bid on a minority of lines against professional quoters (PHY1-E6). With stated assumptions (5% win rate, 12% gross margin) the model is near break-even in the base case (about -$220) and clearly negative in the pessimistic case (about -$14,190).",
+   "evidenceIds": [
+    "PHY-1-D6",
+    "PHY-1-D8",
+    "PHY-1-D7",
+    "PHY1-E6"
+   ]
+  },
+  {
+   "question": "Is a large price gap available that a second source could exploit?",
+   "answer": "Evidence points to modest gaps: the DoD IG excess was about 17% of sole-source order value (PHY1-E4) and DLA's own success story cites savings of up to 35% on a redesigned item (PHY-1-D12), both below the roughly 47% gap needed for the pessimistic case to stay positive. A 40% split is only given when the new source is not low but fair and reasonable (PHY1-E1), so the new source is not the lowest price.",
+   "evidenceIds": [
+    "PHY1-E4",
+    "PHY-1-D12",
+    "PHY1-E1"
+   ]
+  },
+  {
+   "question": "Do the access and compliance gates block a stranger from handling the drawings?",
+   "answer": "They add cost and delay rather than block outright. Export-controlled drawings need JCP vetting, and a missing or stale NIST SP 800-171 self-assessment score is the most common reason applications are delayed or denied (PHY-1-D10, PHY1-E5). One vendor page says CMMC Level 2 applies to contracts involving CUI such as drawings, with Phase 2 reported as suspended on July 13, 2026; the status is unverified (PHY-1-D11). Whether outside shops need JCP was not addressed.",
+   "evidenceIds": [
+    "PHY-1-D10",
+    "PHY1-E5",
+    "PHY-1-D11"
+   ]
+  },
+  {
+   "question": "Can DLA lawfully restrict a quote to the approved source, leaving non-approved brokers no recourse?",
+   "answer": "Yes. GAO denied a protest by Chase Defense Partners against a DLA buy limited to one approved source, noting neither the protester nor its source had submitted an official SAR package (PHY-1-D5). Price is not the first filter; source approval is (PHY-1-D7).",
+   "evidenceIds": [
+    "PHY-1-D5",
+    "PHY-1-D7"
+   ]
+  }
+ ],
+ "newEvidence": [
+  {
+   "id": "PHY-1-D1",
+   "url": "https://www.navsup.navy.mil/Portals/65/NAVSUP%20ENTERPRISE/NAVSUP%20Weapon%20Systems%20Support/Documents/sar_aviation_spares.pdf",
+   "quote": "SARs are intended for actual manufacturers only. ... distributors will not be considered approved.",
+   "kind": "constraint",
+   "publisher": "NAVSUP Weapon Systems Support, SAR guidance for aviation spares",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-1-D2",
+   "url": "https://www.navsup.navy.mil/Portals/65/NAVSUP%20ENTERPRISE/NAVSUP%20Weapon%20Systems%20Support/Documents/sar_aviation_spares.pdf",
+   "quote": "within the past 3 years for CSIs or past 5 years for CAIs ... Category III SARs will not be accepted by the Navy. ... The data provided must be from the actual manufacturer.",
+   "kind": "constraint",
+   "publisher": "NAVSUP Weapon Systems Support, SAR guidance for aviation spares",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-1-D3",
+   "url": "https://ndia.dtic.mil/wp-content/uploads/2018/dla/SARBriefing_SC.pdf",
+   "quote": "282 packages received ... 111 packages approved ... 114 packages rejected ... 144 packages pending ... ESA reviews package (90 day response time)",
+   "kind": "other",
+   "publisher": "Defense Logistics Agency Land and Maritime SAR briefing (FY17 figures) hosted by NDIA",
+   "date": "2018",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-1-D4",
+   "url": "https://ndia.dtic.mil/wp-content/uploads/2016/DLA/SourceApprovalRequestsCastingandForging.pdf",
+   "quote": "Typical timeline is 12 to 18 months for full approval. ... Can't validate part (no government data to compare) ... Business case/not in the best interest of the government",
+   "kind": "constraint",
+   "publisher": "Defense Logistics Agency SAR briefing for casting and forging suppliers hosted by NDIA",
+   "date": "2016",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-1-D5",
+   "url": "https://gao.gov/assets/820/819375.pdf",
+   "quote": "a restricted source item, which can only be obtained from an approved source ... neither Chase, nor Skyko, have submitted an official SAR package",
+   "kind": "constraint",
+   "publisher": "U.S. Government Accountability Office, bid protest decision B-421411 (Chase Defense Partners)",
+   "date": "2023-04-14",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-1-D6",
+   "url": "https://ndia.dtic.mil/wp-content/uploads/2018/dla/C171_DoingBusinesswithDLA.pdf",
+   "quote": "Average award is <$4,000 ... Source controlled via approved sources",
+   "kind": "demand",
+   "publisher": "Defense Logistics Agency, Doing Business with DLA briefing hosted by NDIA",
+   "date": "2018",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-1-D7",
+   "url": "https://www.cleat.ai/blog/dibbs-dla-internet-bid-board-system-guide",
+   "quote": "about 72% are restricted to approved sources and only about 24% are openly competable. ... Price is not the first filter on a DLA parts solicitation.",
+   "kind": "demand",
+   "publisher": "CLEATUS (cleat.ai) DIBBS guide (vendor's own count of September 2026 solicitations)",
+   "date": "2026",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-1-D8",
+   "url": "https://www.nffs.org/news/dla-internet-bid-board-system-dibbs-basics-what-every-foundry-should-know",
+   "quote": "the lowest technically acceptable offer wins ... awards are typically made quickly, sometimes within days of the solicitation closing",
+   "kind": "other",
+   "publisher": "Non-Ferrous Founders' Society, DIBBS basics article",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-1-D9",
+   "url": "https://ndia.dtic.mil/wp-content/uploads/2018/dla/SARBriefing_SC.pdf",
+   "quote": "Utilization of multi-source award clause for a minimum of one (1) year from approval date and/or 1st award ... 40% of the award may be given to the newly approved source",
+   "kind": "other",
+   "publisher": "Defense Logistics Agency Land and Maritime SAR briefing (DAG 17.7501-6) hosted by NDIA",
+   "date": "2018",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-1-D10",
+   "url": "https://www.nffs.org/news/jcpejcp-fundamentals-what-every-foundry-should-know",
+   "quote": "access to them is restricted to companies that have been vetted and approved by the government ... is the most common reason applications are delayed or denied",
+   "kind": "constraint",
+   "publisher": "Non-Ferrous Founders' Society, JCP/eJCP fundamentals article",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-1-D11",
+   "url": "https://tritoncomputercorp.com/?p=52343",
+   "quote": "Level 2 applies. The threshold is the data, not the firm size. ... On July 13, 2026 the Department of War suspended Phase 2",
+   "kind": "constraint",
+   "publisher": "Triton Computer Corp (IT services vendor blog on CMMC Phase 2)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-1-D12",
+   "url": "https://www.dla.mil/Portals/104/Documents/SmallBusiness/Spectral%20Labs%20Becomes%20a%20Small%20Business%20Source%20for%20Military%20Battery%20Charger.pdf",
+   "quote": "Developing the Source Approval Request (SAR) package required by DLA ... now saves the DoD up to 35% cost of the original item",
+   "kind": "other",
+   "publisher": "Defense Logistics Agency Small Business Office, Spectral Labs success story",
+   "date": "2019",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-1-D13",
+   "url": "https://iira.org/apex/",
+   "quote": "accessible to all Illinois businesses at no charge ... One-On-One Counseling Assistance",
+   "kind": "other",
+   "publisher": "Illinois Institute for Rural Affairs, APEX Accelerator page",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-1-D14",
+   "url": "https://info.winvale.com/blog/what-defense-logistics-agency-understanding-dla-nsns-dibbs",
+   "quote": "multiple contractors may be approved as a source of supply for one NSN ... requires extensive knowledge of NSNs, solicitation requirements, delivery procedures",
+   "kind": "other",
+   "publisher": "Winvale (government-contracting consultancy) blog on DLA NSNs and DIBBS",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-1-D15",
+   "url": "https://ndia.dtic.mil/wp-content/uploads/2024/dla/Tue_Breakout_SAR_RPPOB.pdf",
+   "quote": "must contain all technical data needed to demonstrate competence to manufacture the NSN ... Legible and complete copies of all drawings (signed and approved)",
+   "kind": "constraint",
+   "publisher": "Defense Logistics Agency SAR and RPPOB breakout slides hosted by NDIA",
+   "date": "2024",
+   "evidenceClass": "agent_reported"
+  }
+ ],
+ "newAlternatives": [
+  {
+   "label": "The machine shops themselves filing their own SAR and quoting DLA directly (no broker layer)",
+   "kind": "diy_or_status_quo",
+   "costUsdPerMonth": 0,
+   "coversWedge": "full",
+   "sourceLocator": "https://www.navsup.navy.mil/Portals/65/NAVSUP%20ENTERPRISE/NAVSUP%20Weapon%20Systems%20Support/Documents/sar_aviation_spares.pdf",
+   "evidenceRef": "PHY-1-D1"
+  },
+  {
+   "label": "APEX Accelerator free one-on-one counseling (SAM registration and DIBBS help for any small business)",
+   "kind": "free_tool",
+   "costUsdPerMonth": 0,
+   "coversWedge": "none",
+   "sourceLocator": "https://iira.org/apex/",
+   "evidenceRef": "PHY-1-D13"
+  },
+  {
+   "label": "Specialist engineering small businesses that already reverse-engineer and file SARs (example: Spectral Labs; DLA pays per award, no subscription price to the entrant)",
+   "kind": "paid_incumbent",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.dla.mil/Portals/104/Documents/SmallBusiness/Spectral%20Labs%20Becomes%20a%20Small%20Business%20Source%20for%20Military%20Battery%20Charger.pdf",
+   "evidenceRef": "PHY-1-D12"
+  }
+ ],
+ "killReasons": [
+  {
+   "reason": "SAR approval is for actual manufacturers (distributors are not approved) and needs prior Government production history of the same or a similar item; a broker with no record cannot obtain it, and the Navy refuses alternate-item (Category III) SARs.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "PHY-1-D1"
+  },
+  {
+   "reason": "Even if approved, the status and the 40% split would attach to the contract shop's CAGE, not the entrant, so the claimed edge is not owned by the entrant and the shop could bypass it.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "PHY-1-D2"
+  },
+  {
+   "reason": "Pre-approval revenue is price-only: RFQs average under $4,000, the lowest technically acceptable offer wins, and only about 24% of parts are openly competable. Bottom-up year-1 profit is about -$220 base and about -$14,190 pessimistic.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "PHY-1-D6"
+  },
+  {
+   "reason": "Approval is not assured: of 282 packages received in FY17, 111 were approved, 114 rejected and 144 pending; rejection reasons include no Government data to compare.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "PHY-1-D3"
+  },
+  {
+   "reason": "JCP vetting, NIST SP 800-171 score and possible CMMC Level 2 add delay and cost before the entrant can even see export-controlled drawings.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "PHY-1-D10"
+  }
+ ],
+ "economics": {
+  "revenue365": 31500,
+  "cost365": 31720.0,
+  "pessimisticProfit365": -14190,
+  "survivesPessimistic": false,
+  "assumptions": [
+   "Revenue window is days 150 to 365 (215 days, about 31 weeks) from the candidate's referenceEntrant daysToFirstRevenue of 150.",
+   "Assumption: 6 quotes per week (about 10 of the 25 owner hours, about 1.5 h per quote) gives about 184 quotes in the window.",
+   "Assumption: 5% win rate on openly competable RFQs (no public win-rate figure found) gives 9 awards.",
+   "Average award $3,500, set just below the sourced RFQ average of under $4,000 (PHY-1-D6).",
+   "Assumption: 12% gross margin after the contract shop's price (no margin figure found); COGS is 88% of revenue.",
+   "Assumption: no SAR-derived revenue in year 1 (approval needs production history, a 90-day ESA step and at least 180 days for Navy and Army).",
+   "Assumption: fixed costs $4,000 (about $2,400 for first-article and sample runs on 6 NSNs, $500 optional HigherGov subscription from PHY1-E7, about $1,100 insurance, accounting and shipping supplies); SAM, CAGE, DIBBS and JCP registrations are free.",
+   "Base profit = 31,500 - (27,720 COGS + 4,000 fixed) = -220. Break-even gross margin is about 12.7%.",
+   "Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue 12,600; COGS 27,720 x0.5 x1.5 = 20,790; fixed 6,000; profit -14,190, which exceeds the $8,000 startup cash."
+  ],
+  "sources": [
+   "PHY-1-D6",
+   "PHY-1-D7",
+   "PHY-1-D8",
+   "PHY-1-D3",
+   "PHY-1-D4",
+   "PHY1-E7"
+  ]
+ },
+ "legalNotes": [
+  "SAM.gov registration with UEI and CAGE is required to hold a DIBBS account and quote; all registrations are free (PHY1-E8, PHY1-E3).",
+  "Export-controlled drawings need JCP (DD Form 2345) vetting; a missing or stale NIST SP 800-171 score in SPRS is the most common reason JCP applications are delayed or denied (PHY-1-D10). Whether subcontracted shops also need JCP was not addressed on the page read.",
+  "DFARS safeguarding and CMMC Level 2 may apply to contracts involving CUI such as drawings; one vendor page reports Phase 2 (Nov 10, 2026) was suspended on July 13, 2026, which is unverified (PHY-1-D11).",
+  "GAO upheld DLA limiting a buy to one approved source (PHY-1-D5): a non-approved broker cannot force its way into an approved-source-only solicitation.",
+  "SAR approval is not guaranteed; reverse engineering is at the supplier's own expense (PHY1-E2). Specialty metals, Buy American, counterfeit-parts and the small-business non-manufacturer rule were not read.",
+  "Research used public pages only: no logins, signups, purchases or contact with DLA; dla.mil PDFs fetched by the tool for the DLA SAR Guide failed and were skipped."
+ ],
+ "unverified": [
+  "The DLA SAR Guide (dla.mil) could not be fetched, so whether DLA Land and Maritime or Aviation lets a non-manufacturer hold approved-source status is not confirmed first-hand; the manufacturers-only statement is from NAVSUP (PHY-1-D1).",
+  "Margins, win rates and number of offers on openly competable DIBBS RFQs were not found; the 5% win rate and 12% margin are assumptions.",
+  "Annual re-buy dollars and reorder frequency per approved NSN were not found, so upside from a successful SAR is not quantified.",
+  "The 72%/24% split is cleat.ai's own count for one month of solicitations, not a DLA statistic; cleat.ai sells GovCon tools.",
+  "The 12-18 month timeline is for the reverse-engineering (RPPOB) route; the timeline for a drawing-supported SAR is the nominal ~190 days plus any Navy or Army review, which was not observed in practice.",
+  "CMMC Phase 2 status (start date versus suspension) rests on a single vendor blog.",
+  "Machine-shop landed cost, sample and first-article costs per NSN were not found."
+ ],
+ "nextStep": "Drop this wedge; revisit only if a legal manufacturer-of-record with Government production history is a partner, which is outside the owner-independent constraint."
+}

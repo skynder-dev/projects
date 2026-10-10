@@ -1,0 +1,1035 @@
+{
+ "candidates": [
+  {
+   "family": "education_training",
+   "confidenceGrade": "D",
+   "id": "EDU-1",
+   "name": "Florida condo/HOA board-member certification and annual-CE online course (DBPR-approved provider)",
+   "buyer": "Florida condominium and homeowners-association directors (newly elected or appointed), and the associations or managers that buy the course for them",
+   "pain": "A Florida condominium or HOA director must hold a board-member certification from a DBPR-approved provider and then complete annual continuing education (HOA: 4 hours, or 8 hours for 2,500+ parcels); missing it is a compliance problem for the director and the association",
+   "wedge": "Become a DBPR-approved Board Member Certification provider and sell the 4-hour certification plus the yearly CE hours online, per director",
+   "referenceEntrant": {
+    "startupCashUsd": 3000,
+    "daysToFirstRevenue": 150,
+    "ownerHoursPerWeek": 10
+   },
+   "entrantEdge": {
+    "type": "regulatory_license_intrinsic_to_model",
+    "status": "none",
+    "statement": "Tested claim: DBPR provider approval is a licence intrinsic to the model and the annual CE hours repeat every year. The evidence reads against it: approval is open to any applicant who follows the provider guidelines (EDU1-E4), the approved list already has roughly 320 entries (EDU1-E5, count from a page summary), and both the regulator and the largest community-association manager give the certification course away for free (EDU1-E1, EDU1-E2). Approval is a table stake, not something exclusive or compounding that a rival could not copy.",
+    "evidenceIds": [
+     "EDU1-E4",
+     "EDU1-E5",
+     "EDU1-E1"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "FirstService Residential free on-demand Florida board certification course (a property manager gives it away to attract board members)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.fsresidential.com/florida/what-we-do/florida-property-management-courses/florida-board-certification/",
+      "evidenceRef": "EDU1-E1",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "DBPR free self-paced Board Member Certification course (the DBPR page is inconsistent on whether it satisfies the statutory requirement, so scored partial)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www2.myfloridalicense.com/condos-timeshares-mobile-homes/education/",
+      "evidenceRef": "EDU1-E2",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Becker law firm: 30+ DBPR-approved on-demand classes (price not found on the page; 0 entered as an unverified placeholder)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://beckerlawyers.com/class-is-in-session-the-abcs-of-floridas-board-member-education-requirements-flcaj/",
+      "evidenceRef": "EDU1-E6",
+      "metrics": {
+       "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 0,
+    "falsifier": "cash_cost is the director cost of the certification. The best alternative is already $0 (EDU1-E1, EDU1-E2), so a paid course cannot be cheaper. An edge would need a paying segment the free courses do not serve (for example an HOA 8-hour annual CE track for 2,500+ parcel associations); if the approved list shows free providers for that track too, there is none."
+   },
+   "evidence": [
+    {
+     "id": "EDU1-E1",
+     "url": "https://www.fsresidential.com/florida/what-we-do/florida-property-management-courses/florida-board-certification/",
+     "quote": "This FREE Florida board certification course",
+     "kind": "incumbent_price",
+     "publisher": "FirstService Residential (Florida community-association manager)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU1-E2",
+     "url": "https://www2.myfloridalicense.com/condos-timeshares-mobile-homes/education/",
+     "quote": "The Division now offers a free, self-paced asynchronous Board Member Certification course for Condominium Association and Homeowners' Association board members.",
+     "kind": "incumbent_price",
+     "publisher": "Florida DBPR, Division of Condominiums, Timeshares and Mobile Homes",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU1-E3",
+     "url": "https://beckerlawyers.com/class-is-in-session-the-abcs-of-floridas-board-member-education-requirements-flcaj/",
+     "quote": "must complete at least four hours of continuing education annually",
+     "kind": "demand",
+     "publisher": "Becker (Florida community-association law firm), article for FLCAJ",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU1-E4",
+     "url": "https://www2.myfloridalicense.com/condos-timeshares-mobile-homes/education/",
+     "quote": "The Division approves providers of board member certification programs as described in Chapter 718, 719, 720 & 723.",
+     "kind": "constraint",
+     "publisher": "Florida DBPR, Division of Condominiums, Timeshares and Mobile Homes",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU1-E5",
+     "url": "https://www2.myfloridalicense.com/lsc/documents/BMC%20Approved%20Providers%20List.pdf",
+     "quote": "Board Member Certification Approved Providers",
+     "kind": "other",
+     "publisher": "Florida DBPR (approved-provider list, REVISED 8/24/2026, roughly 320 entries per page summary)",
+     "date": "2026-08-24",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU1-E6",
+     "url": "https://beckerlawyers.com/class-is-in-session-the-abcs-of-floridas-board-member-education-requirements-flcaj/",
+     "quote": "Becker has more than 30 classes approved by the DBPR that we offer on-demand online.",
+     "kind": "other",
+     "publisher": "Becker (Florida community-association law firm), article for FLCAJ",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 0,
+    "customer_problem_or_value": 4,
+    "distribution_advantage": 1,
+    "defensibility": 1,
+    "absolute_gross_profit_potential": 1,
+    "willingness_to_pay": 1,
+    "repeat_ltv_potential": 4,
+    "competition_adjusted_gap": 0,
+    "market_depth": 3,
+    "end_to_end_automation": 8,
+    "capital_risk": 8,
+    "owner_time_support": 8
+   },
+   "componentReasons": {
+    "entrant_edge": "Approval is open to any applicant and is shared by roughly 320 listed providers, so it is not exclusive (EDU1-E4, EDU1-E5).",
+    "customer_problem_or_value": "The requirement is real and recurs (certification, then annual CE) but the same course is offered free (EDU1-E3, EDU1-E1).",
+    "distribution_advantage": "No channel is evidenced for a stranger; the property manager and the regulator already reach every director for free (EDU1-E1, EDU1-E2).",
+    "defensibility": "Anything built can be matched by a free course from a manager or law firm marketing to the same directors (EDU1-E1, EDU1-E6).",
+    "absolute_gross_profit_potential": "The only evidenced price is $0, so no sourced revenue exists (EDU1-E1, EDU1-E2).",
+    "willingness_to_pay": "No paid price was found; the cheapest evidenced option is free from two sources (EDU1-E1, EDU1-E2).",
+    "repeat_ltv_potential": "Annual CE hours recur by statute, but directors turn over and free options absorb the repeat (EDU1-E3).",
+    "competition_adjusted_gap": "No gap: free regulator course, free manager course, 30+ law-firm classes from one firm alone (EDU1-E1, EDU1-E2, EDU1-E6).",
+    "market_depth": "Florida only and limited to people serving on association boards; association count and director count were not verified.",
+    "end_to_end_automation": "A recorded online course plus certificate issuance can run without staff once approved.",
+    "capital_risk": "Setup is small (content and LMS), assumed at about $3,000.",
+    "owner_time_support": "Self-paced delivery needs little owner time apart from the approval and renewal paperwork."
+   },
+   "legalNotes": [
+    "EDU1-E4: the DBPR Division approves board-member-certification providers under Chapters 718, 719, 720 and 723; a stranger can apply under the provider guidelines (not read in full, so approval time and fee are unverified).",
+    "EDU1-E2: the DBPR page says its free course can satisfy the statutory requirement in one passage and does not in another; which statement is current is unverified.",
+    "EDU1-E3: HOA annual CE is 4 hours (fewer than 2,500 parcels) or 8 hours (2,500 or more) per the law-firm article; the condominium annual item is described only as a one-hour legal update and the article text was garbled in the page summary. Not legal advice."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "No sourced paid price exists (cheapest evidenced price is $0 from two sources), so revenue cannot be sourced. Illustration with assumptions only: $30 per director x 200 directors = $6,000 revenue against about $3,000 setup plus $600 hosting. Pessimistic (price x0.8, volume x0.5, cost x1.5) = $2,400 revenue against about $5,400 cost, which is negative; and the free alternatives make even the base volume doubtful."
+    },
+    "killReasons": [
+     {
+      "reason": "A free official course (DBPR) and a free commercial course from a large property manager already deliver the same certification, so there is nothing for a paid entrant to sell.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "EDU1-E1"
+     },
+     {
+      "reason": "Roughly 320 approved-provider entries (page summary) and 30+ approved classes from one law firm; approval is a commodity, not an exclusive licence.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "EDU1-E5"
+     },
+     {
+      "reason": "No sourced way for a stranger to reach the first 10 paying associations when the manager-run free course reaches the same directors.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "EDU1-E6"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: a free regulator course (EDU1-E2) and a free large-manager course (EDU1-E1) already cover the 4-hour certification, about 320 provider entries are approved (EDU1-E5), and approval is open to any applicant (EDU1-E4). Not verified: any paid price in this market, the number of Florida directors, and the HOA 8-hour CE track. Quotes captured through WebFetch page summaries."
+  },
+  {
+   "family": "education_training",
+   "confidenceGrade": "D",
+   "id": "EDU-2",
+   "name": "Florida court-approved online parenting / divorce-education course (DCF-approved provider, fee per parent)",
+   "buyer": "Divorcing or separating parents of minor children in Florida; each parent must complete the course before final judgment, so each case yields up to two buyers",
+   "pain": "Florida requires every parent in a divorce or paternity case with a minor child to complete a DCF-approved 4-hour Parent Education and Family Stabilization course, and the case cannot finish without the certificate",
+   "wedge": "Obtain DCF approval for an online course and sell it per parent at a court-accepted price, found through court and DCF provider lists",
+   "referenceEntrant": {
+    "startupCashUsd": 2500,
+    "daysToFirstRevenue": 120,
+    "ownerHoursPerWeek": 10
+   },
+   "entrantEdge": {
+    "type": "regulatory_license_intrinsic_to_model",
+    "status": "none",
+    "statement": "Tested claim: DCF approval is a licence intrinsic to the model and court provider lists send learners to approved providers. The evidence reads against it: the Department approves any applicant that submits a packet (EDU2-E4), approved providers sit side by side on the DCF and circuit lists with no exclusivity, an older circuit list shows roughly 45 statewide online providers including brands named for a low price (EDU2-E5, a 2014 snapshot), and a public college sells the DCF-approved course at $25 (EDU2-E2). Nothing accumulates: each learner buys once.",
+    "evidenceIds": [
+     "EDU2-E4",
+     "EDU2-E5",
+     "EDU2-E2"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Reduced-fee or waived course that approved providers must offer to parents who cannot afford the standard price (free for qualifying parents)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://divorce.law/guides/divorce-parenting-class/florida/",
+      "evidenceRef": "EDU2-E8",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Pensacola State College online DCF-approved parenting course, $25.00 for 4 hours (one-time, per parent)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 25,
+      "coversWedge": "full",
+      "sourceLocator": "https://pensacolastate.estore.flywire.com/products/Florida-Parenting-Course-Online-25821",
+      "evidenceRef": "EDU2-E2",
+      "metrics": {
+       "cash_cost": 25
+      }
+     },
+     {
+      "label": "Statewide online providers charging about $20 to $30 per parent, with court-acceptance guarantees (for example Certevia, DCF approved since 1990 per its FAQ)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 25,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.certevia.com/frequently-asked-questions.html",
+      "evidenceRef": "EDU2-E6",
+      "metrics": {
+       "cash_cost": 25
+      }
+     },
+     {
+      "label": "Low-price brands on the circuit list (names such as 14DollarParentEducation and Lowest Price Parenting CLASS.com; price implied by the names only, on a 2014 list, unverified today)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 14,
+      "coversWedge": "full",
+      "sourceLocator": "https://ninthcircuit.org/sites/default/files/ParentEducationAndFamilyStabilization.pdf",
+      "evidenceRef": "EDU2-E5",
+      "metrics": {
+       "cash_cost": 14
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 14,
+    "falsifier": "cash_cost is the parent cost of one course. Qualifying parents already get it free or reduced (EDU2-E8) and low-price brands sit at about $14 to $25 (EDU2-E5, EDU2-E1), so an entrant cannot be cheaper. An edge would need a channel that sends parents to one provider only, for example a county that names a single provider; the circuit list instead shows many providers per circuit (EDU2-E5)."
+   },
+   "evidence": [
+    {
+     "id": "EDU2-E1",
+     "url": "https://divorce.law/guides/divorce-parenting-class/florida/",
+     "quote": "many statewide providers charging around $20 to $30",
+     "kind": "incumbent_price",
+     "publisher": "divorce.law (legal guide site)",
+     "date": "2026-08",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU2-E2",
+     "url": "https://pensacolastate.estore.flywire.com/products/Florida-Parenting-Course-Online-25821",
+     "quote": "This online course is approved by the Florida Department of Children and Families, as required by Florida Statute 61.21.",
+     "kind": "other",
+     "publisher": "Pensacola State College (public college e-store; page shows $25.00 for the 4-hour course)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU2-E3",
+     "url": "https://divorce.law/guides/divorce-parenting-class/florida/",
+     "quote": "Every parent divorcing in Florida with a minor child must complete a 4-hour",
+     "kind": "demand",
+     "publisher": "divorce.law (legal guide site)",
+     "date": "2026-08",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU2-E4",
+     "url": "https://myflfamilies.com/services/child-family/child-and-family-well-being/pefs/course-providers",
+     "quote": "The Department is responsible for approving providers, instructors, and course curriculum",
+     "kind": "constraint",
+     "publisher": "Florida Department of Children and Families",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU2-E5",
+     "url": "https://ninthcircuit.org/sites/default/files/ParentEducationAndFamilyStabilization.pdf",
+     "quote": "Lowest Price Parenting CLASS.com",
+     "kind": "other",
+     "publisher": "Ninth Judicial Circuit of Florida (provider list, last updated 6/6/14; roughly 45 statewide online or distance providers per page summary)",
+     "date": "2014-06-06",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU2-E6",
+     "url": "https://www.certevia.com/frequently-asked-questions.html",
+     "quote": "We guarantee Court Acceptance of our Online Parenting Classes for Divorce Certificate or your money back.",
+     "kind": "other",
+     "publisher": "Certevia (online parenting-class provider)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU2-E7",
+     "url": "https://ninthcircuit.org/sites/default/files/ParentEducationAndFamilyStabilization.pdf",
+     "quote": "Some Florida counties have Administrative Orders requiring parents to take the Course in a live-classroom setting.",
+     "kind": "constraint",
+     "publisher": "Ninth Judicial Circuit of Florida (provider list, last updated 6/6/14)",
+     "date": "2014-06-06",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU2-E8",
+     "url": "https://divorce.law/guides/divorce-parenting-class/florida/",
+     "quote": "providers must offer a reduced fee or a waiver for parents who cannot afford the standard price.",
+     "kind": "constraint",
+     "publisher": "divorce.law (legal guide site)",
+     "date": "2026-08",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 5,
+    "distribution_advantage": 2,
+    "defensibility": 1,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 4,
+    "repeat_ltv_potential": 1,
+    "competition_adjusted_gap": 1,
+    "market_depth": 5,
+    "end_to_end_automation": 8,
+    "capital_risk": 8,
+    "owner_time_support": 7
+   },
+   "componentReasons": {
+    "entrant_edge": "DCF approval is open to any applicant and does not exclude rivals; many approved providers are listed (EDU2-E4, EDU2-E5).",
+    "customer_problem_or_value": "Every parent in a covered case must take the course, so the need is certain (EDU2-E3).",
+    "distribution_advantage": "Courts and DCF list approved providers, but the lists name dozens of providers per state with no preference for a newcomer (EDU2-E5).",
+    "defensibility": "A rival can approve a near-identical course in about 30 working days and undercut on price (EDU2-E4, EDU2-E5).",
+    "absolute_gross_profit_potential": "At $20 to $30 per parent the contribution per learner is small and Florida case volume was not verified (EDU2-E1).",
+    "willingness_to_pay": "Parents do pay $15 to $50 because the certificate is mandatory, but the price is anchored low (EDU2-E1, EDU2-E2).",
+    "repeat_ltv_potential": "One course per parent per case; no recurring obligation was found (EDU2-E3).",
+    "competition_adjusted_gap": "A public college, long-standing private providers and low-price brands already sell the same approved course (EDU2-E2, EDU2-E5, EDU2-E6).",
+    "market_depth": "Statewide Florida demand from every divorcing parent with a minor child; exact case counts were not verified (EDU2-E3).",
+    "end_to_end_automation": "Self-paced video or text course with automated certificate issuance can run unattended.",
+    "capital_risk": "Small setup (content, LMS), assumed at about $2,500.",
+    "owner_time_support": "Mostly unattended after launch, though some counties require live classes so online reach is not universal (EDU2-E7)."
+   },
+   "legalNotes": [
+    "EDU2-E4: the Department approves providers, instructors and curriculum (Rule 65C-32 per the page, not read in full); the page gives about 30 working days for review; fee not stated on the page.",
+    "EDU2-E7: some circuits require live-classroom attendance through administrative orders (2014 list; current status unverified), so an online course may be rejected there.",
+    "EDU2-E8: providers must offer reduced fees or waivers for indigent parents, which caps the revenue per learner for a share of customers. Not legal advice."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "All inputs are assumptions except the $20 to $30 price band (EDU2-E1): base 800 learners x $25 = $20,000 revenue; cost about $15,700 = $3,100 setup and hosting + $600 payment fees + $12,000 paid acquisition at an assumed $15 per learner (no CPC data was found). Pessimistic (price x0.8 = $20, volume x0.5 = 400, cost x1.5): revenue $8,000 against about $14,000 cost, so about -$6,000. The result is driven by the acquisition-cost assumption, which no source supports either way."
+    },
+    "killReasons": [
+     {
+      "reason": "One-time purchase with a price war: roughly 45 statewide online providers on an older circuit list (including low-price brands) and a public college at $25; a newcomer has no structural way to win learners.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "EDU2-E5"
+     },
+     {
+      "reason": "No structural edge: DCF approval is open to any applicant (about 30 working days), so it protects nobody and gives no channel.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "EDU2-E4"
+     },
+     {
+      "reason": "Required fee waivers for indigent parents and live-class orders in some counties cut the reachable paying volume.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "EDU2-E8"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: a one-time $14 to $30 purchase (EDU2-E1, EDU2-E2) sold by dozens of approved online providers (EDU2-E5, a 2014 snapshot) with open DCF approval (EDU2-E4) and no recurring revenue. Not verified: current DCF approved-provider count (the DCF table did not render), Florida case volume, approval fee. Only Florida was tested; other states may differ. Quotes captured through WebFetch page summaries."
+  },
+  {
+   "family": "education_training",
+   "confidenceGrade": "D",
+   "id": "EDU-3",
+   "name": "State-approved cannabis responsible-vendor (RVT) worker-training provider (Maryland rolling approval; Illinois odd-year window)",
+   "buyer": "Licensed cannabis dispensaries, growers and processors, whose agents must complete state-approved responsible-vendor training (Maryland: every year before January 1)",
+   "pain": "Maryland cannabis business agents must complete an MCA-approved course each year, and Illinois lets only IDFPR-approved providers run its responsible vendor program, so employers must buy from an approved list",
+   "wedge": "Obtain state approval as a responsible-vendor training provider and sell the annual online course per agent, with in-house or white-label versions for operators",
+   "referenceEntrant": {
+    "startupCashUsd": 3500,
+    "daysToFirstRevenue": 240,
+    "ownerHoursPerWeek": 10
+   },
+   "entrantEdge": {
+    "type": "regulatory_license_intrinsic_to_model",
+    "status": "none",
+    "statement": "Tested claim: state approval is a licence intrinsic to the model, and the annual cycle makes demand recur. The evidence reads against it: Maryland approves any qualified applicant for $500 on a rolling basis (EDU3-E3, EDU3-E5), the approved lists already hold 8 providers in Maryland (page summary) and 18 in Illinois including multi-state vendors and an operator that trains its own staff (EDU3-E8), and the regulator expects training at $50 or less per person while an approved course sells at $21 (EDU3-E4, EDU3-E1). Illinois approvals are non-transferable and only open in August of odd years (EDU3-E6, EDU3-E7). New York gives the core modules free (EDU3-E9).",
+    "evidenceIds": [
+     "EDU3-E3",
+     "EDU3-E5",
+     "EDU3-E8",
+     "EDU3-E1"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "New York OCM/NYSDOL Responsible Workforce Training: free state-run online modules for cannabis workers (covers part of the New York requirement; not Maryland or Illinois)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.cannabissciencetech.com/view/new-cannabis-responsible-workforce-training-program-launched-in-new-york-by-ocm-and-nysdol",
+      "evidenceRef": "EDU3-E9",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Operator trains its own staff as an approved provider (Verano Illinois, LLC appears on the Illinois approved list)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://idfpr.illinois.gov/content/dam/soi/en/web/idfpr/forms/auc/2025-2027-list-approved-responsible-vendor.pdf",
+      "evidenceRef": "EDU3-E8",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Bud Education: Maryland dispensary, cultivation and processor RVT, $21 per person, listed as approved by MCA",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 21,
+      "coversWedge": "full",
+      "sourceLocator": "https://budedonline.teachable.com",
+      "evidenceRef": "EDU3-E1",
+      "metrics": {
+       "cash_cost": 21
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 21,
+    "entrantValue": 21,
+    "falsifier": "cash_cost is the employer cost per agent per year. An approved course already sells at $21 (EDU3-E1) and the regulator expects $50 or less (EDU3-E4), so a new provider only matches. An edge would need a state with mandated training and zero or one approved provider; Maryland lists 8 and Illinois 18 (EDU3-E5, EDU3-E8), and New York is free (EDU3-E9)."
+   },
+   "evidence": [
+    {
+     "id": "EDU3-E1",
+     "url": "https://budedonline.teachable.com",
+     "quote": "Responsible Vendor Trainings $21.00",
+     "kind": "incumbent_price",
+     "publisher": "Bud Education (online cannabis training school; page also lists the Maryland course as approved by MCA)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU3-E2",
+     "url": "https://cannabis.maryland.gov/Pages/Responsible_Vendor_Training.aspx",
+     "quote": "are required to complete an MCA-approved training course prior to January 1st each year",
+     "kind": "demand",
+     "publisher": "Maryland Cannabis Administration",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU3-E3",
+     "url": "https://cannabis.maryland.gov/Documents/2026_PDF_Files/RVT/RVT%20Application%20Guidance%20Document.pdf",
+     "quote": "A non-refundable $500 fee for a three-year approval must be paid in the form of a cashier's check or money order.",
+     "kind": "constraint",
+     "publisher": "Maryland Cannabis Administration (RVT application guidance)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU3-E4",
+     "url": "https://cannabis.maryland.gov/Documents/2026_PDF_Files/RVT/RVT%20Application%20Guidance%20Document.pdf",
+     "quote": "MCA expects training per person would cost $50 or less.",
+     "kind": "other",
+     "publisher": "Maryland Cannabis Administration (RVT application guidance)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU3-E5",
+     "url": "https://cannabis.maryland.gov/Pages/Responsible_Vendor_Training.aspx",
+     "quote": "Applications are accepted on a rolling basis.",
+     "kind": "constraint",
+     "publisher": "Maryland Cannabis Administration (page summary lists 8 approved providers)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU3-E6",
+     "url": "https://my.ilga.gov/ftp/JCAR/AdminCode/068/068012910B01000R.html",
+     "quote": "The application submission window is the period between August 1st and August 15th of every odd-numbered year.",
+     "kind": "constraint",
+     "publisher": "Illinois Administrative Code, Title 68 (IDFPR)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU3-E7",
+     "url": "https://my.ilga.gov/ftp/JCAR/AdminCode/068/068012910B01000R.html",
+     "quote": "An approval for a responsible vendor provider shall be valid only for the provider named in the application.",
+     "kind": "constraint",
+     "publisher": "Illinois Administrative Code, Title 68 (IDFPR)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU3-E8",
+     "url": "https://idfpr.illinois.gov/content/dam/soi/en/web/idfpr/forms/auc/2025-2027-list-approved-responsible-vendor.pdf",
+     "quote": "Online Training Providers, LLC (dba Cannabis Training University)",
+     "kind": "other",
+     "publisher": "Illinois IDFPR (2025-2027 approved responsible vendor list; 18 providers per page summary, including 360Training.com, American Safety Council, Green Flower and Verano Illinois, an operator)",
+     "date": "2025",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU3-E9",
+     "url": "https://www.cannabissciencetech.com/view/new-cannabis-responsible-workforce-training-program-launched-in-new-york-by-ocm-and-nysdol",
+     "quote": "The trainings will be offered at no cost to employees.",
+     "kind": "incumbent_price",
+     "publisher": "Cannabis Science and Technology (reporting on New York OCM and NYSDOL program)",
+     "date": "2025-04-10",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 5,
+    "distribution_advantage": 2,
+    "defensibility": 1,
+    "absolute_gross_profit_potential": 2,
+    "willingness_to_pay": 3,
+    "repeat_ltv_potential": 7,
+    "competition_adjusted_gap": 1,
+    "market_depth": 3,
+    "end_to_end_automation": 8,
+    "capital_risk": 8,
+    "owner_time_support": 7
+   },
+   "componentReasons": {
+    "entrant_edge": "Approval is open to any qualified applicant for $500 (Maryland) or in a two-week window every odd year (Illinois) and is shared by 8 to 18 providers (EDU3-E3, EDU3-E6, EDU3-E8).",
+    "customer_problem_or_value": "Employers must train every agent annually in Maryland, so the need is certain (EDU3-E2).",
+    "distribution_advantage": "No channel is evidenced for a stranger; incumbents include multi-state vendors and operators that train in-house (EDU3-E8).",
+    "defensibility": "Approval lasts three years in Maryland and must be re-won in Illinois, and rivals can copy any course (EDU3-E3, EDU3-E6, EDU3-E7).",
+    "absolute_gross_profit_potential": "At $21 per person the revenue pool is small and the agent count was not verified (EDU3-E1).",
+    "willingness_to_pay": "Employers pay, but the regulator expects $50 or less and a rival sells at $21 (EDU3-E4, EDU3-E1).",
+    "repeat_ltv_potential": "The Maryland obligation is annual, so the same agents repeat every year (EDU3-E2).",
+    "competition_adjusted_gap": "Eight Maryland providers and 18 Illinois providers already serve the wedge, one at $21 (EDU3-E1, EDU3-E8).",
+    "market_depth": "A few thousand agents per state at most (agent counts not verified), and New York gives its training free (EDU3-E9).",
+    "end_to_end_automation": "Online course, automated certificate and employer roster could run without staff.",
+    "capital_risk": "$500 Maryland fee plus content and LMS, assumed at about $3,500 in total.",
+    "owner_time_support": "Mostly unattended after approval, apart from renewals every three years (Maryland) and the Illinois window."
+   },
+   "legalNotes": [
+    "EDU3-E3: Maryland charges $500 for a three-year approval ($250 renewal per the guidance page), requires at least 4 hours of training and 12 months of instructor experience, and reviews price; review takes about 60 to 90 business days per the page summary.",
+    "EDU3-E6, EDU3-E7: Illinois accepts applications only between August 1 and 15 of odd-numbered years and approvals are valid only for the named provider, so the earliest Illinois start is the August 2027 window and an acquired approval would not carry over.",
+    "EDU3-E9: New York training is free state-run for two of four modules; the other states, and whether other newly legal states approve providers, were not checked. Not legal advice."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Assumptions: 10,000 Maryland agents (not verified), 3% share = 300 learners x $21 = $6,300 revenue; cost about $4,600 = $500 fee + $2,500 content + $600 hosting + about $1,000 fees and support. Pessimistic (price x0.8 = $16.80, volume x0.5 = 150, cost x1.5): revenue about $2,520 against about $6,900 cost, negative. Even 10% share (1,000 learners) yields only about $21,000 revenue."
+    },
+    "killReasons": [
+     {
+      "reason": "Crowded and price-anchored: 8 approved Maryland providers (page summary) and 18 Illinois providers, one course at $21 and a regulator expectation of $50 or less per person; a newcomer only matches.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "EDU3-E1"
+     },
+     {
+      "reason": "Approval is open to any qualified applicant ($500, rolling) so it is a table stake; Illinois is closed until the August 2027 window and approvals do not transfer.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "EDU3-E6"
+     },
+     {
+      "reason": "New York, a large new market, provides free state-run training for its core modules.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "EDU3-E9"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: a $21 approved course already exists (EDU3-E1) among 8 Maryland and 18 Illinois approved providers (EDU3-E5, EDU3-E8), approval is open to anyone for $500 (EDU3-E3), Illinois is closed until August 2027 (EDU3-E6), and New York is free (EDU3-E9). Not verified: agent counts per state, other newly legal states (Ohio, Minnesota, Delaware, Missouri), Maryland review time. Quotes captured through WebFetch page summaries."
+  },
+  {
+   "family": "education_training",
+   "confidenceGrade": "D",
+   "id": "EDU-4",
+   "name": "Acquired small online continuing-education / exam-prep school bought on a business marketplace, run for renewal-cycle learners",
+   "buyer": "Licensed professionals who must renew through approved continuing education (real estate, trades, health and fitness), reached through an acquired school's existing site, courses and learner list",
+   "pain": "A stranger has no audience and no approved-provider track record; buying a running school looks like a shortcut to both learners and approvals",
+   "wedge": "Buy an existing online CE school (courses, domain, learner list and, where allowed, provider approvals) for up to $10,000 on a business-for-sale marketplace and run it for renewal-cycle revenue",
+   "referenceEntrant": {
+    "startupCashUsd": 10000,
+    "daysToFirstRevenue": 45,
+    "ownerHoursPerWeek": 15
+   },
+   "entrantEdge": {
+    "type": "acquirable_owned_audience_or_partner_channel",
+    "status": "none",
+    "statement": "Tested claim: an acquired school transfers a learner base, content and approvals that a stranger could not build in a year. The evidence reads against it at a $10,000 budget: the one profitable approved school found asks $1,850,000 for about $380,000 cash flow (EDU4-E1), a $24,000 education site earns $500 a month (EDU4-E5), and the $10,600 CEU course business loses money (EDU4-E2). Provider approval, the asset that matters, does not carry to a new owner under the North Carolina statute and the Illinois rule (EDU4-E3, EDU4-E4), and approval is free or cheap to obtain from scratch (EDU4-E6).",
+    "evidenceIds": [
+     "EDU4-E1",
+     "EDU4-E2",
+     "EDU4-E3"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Apply for provider approval yourself and build courses from scratch (no fee in Washington per its OSPI page; no fee mentioned on the Pennsylvania guidelines page; $500 for three years in Maryland cannabis RVT)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://ospi.k12.wa.us/educator-support/continuing-education-clock-hours/become-approved-provider",
+      "evidenceRef": "EDU4-E6",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Flippa CEU-approved health and fitness course business, asking $10,600 (one-time, amortized over 12 months); listing profit -$33 a month",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 883,
+      "coversWedge": "partial",
+      "sourceLocator": "https://flippa.com/12382099-ceu-approved-online-course-business-learnworlds-with-opts-asoc-registered-trademarks-full-curriculum-templates-and-student-resources",
+      "evidenceRef": "EDU4-E2",
+      "metrics": {
+       "cash_cost": 883
+      }
+     },
+     {
+      "label": "Flippa online postgraduate-course site, asking $24,000 (one-time, amortized over 12 months) for $500 a month profit; no accreditation stated",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 2000,
+      "coversWedge": "partial",
+      "sourceLocator": "https://flippa.com/12752132-online-university-website-for-sale-postgraduate-courses-fully-operational-serious-buyers-only",
+      "evidenceRef": "EDU4-E5",
+      "metrics": {
+       "cash_cost": 2000
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 10600,
+    "falsifier": "cash_cost is the upfront cash to obtain approval plus a first course. Applying yourself costs $0 to $500 (EDU4-E6) while the cheapest acquisition found costs $10,600 for a loss-making business (EDU4-E2). The idea would only hold if a sub-$10,000 school with positive profit and transferable approvals existed; the listings read here show none, and North Carolina and Illinois say approvals do not transfer (EDU4-E3, EDU4-E4)."
+   },
+   "evidence": [
+    {
+     "id": "EDU4-E1",
+     "url": "https://loopnet.ca/biz/Business-Opportunity/accredited-online-real-estate-school-for-sale-in-florida/2243321",
+     "quote": "This is a long-standing online real estate school delivering courses accredited by the Florida Real Estate Commission",
+     "kind": "other",
+     "publisher": "LoopNet listing (page shows asking price $1,850,000, gross revenue $1,123,458, cash flow $380,402 as of year-end 2023)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU4-E2",
+     "url": "https://flippa.com/12382099-ceu-approved-online-course-business-learnworlds-with-opts-asoc-registered-trademarks-full-curriculum-templates-and-student-resources",
+     "quote": "ranging in cost investments of approximately $350 each for approval.",
+     "kind": "other",
+     "publisher": "Flippa listing (page shows asking price $10,600 and monthly profit of -$33; sale includes trademarks, domain and content)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU4-E3",
+     "url": "https://ncleg.gov/EnactedLegislation/Statutes/HTML/BySection/Chapter_93A/GS_93A-35.html",
+     "quote": "the certification issued to the original owner is not transferable to the new owner.",
+     "kind": "constraint",
+     "publisher": "North Carolina General Statutes, G.S. 93A-35 (real estate education provider certification)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU4-E4",
+     "url": "https://my.ilga.gov/ftp/JCAR/AdminCode/068/068012910B01000R.html",
+     "quote": "An approval for a responsible vendor provider shall be valid only for the provider named in the application.",
+     "kind": "constraint",
+     "publisher": "Illinois Administrative Code, Title 68 (IDFPR cannabis responsible-vendor providers)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU4-E5",
+     "url": "https://flippa.com/12752132-online-university-website-for-sale-postgraduate-courses-fully-operational-serious-buyers-only",
+     "quote": "A well-established online education platform offers a comprehensive range of postgraduate courses",
+     "kind": "demand",
+     "publisher": "Flippa listing (page shows asking price $24,000, monthly profit $500, 8.0x profit multiple, 741 page views a month)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU4-E6",
+     "url": "https://ospi.k12.wa.us/educator-support/continuing-education-clock-hours/become-approved-provider",
+     "quote": "There is no fee for agencies to seek approval as a clock hour provider.",
+     "kind": "other",
+     "publisher": "Washington OSPI (clock-hour provider approval)",
+     "date": "2026",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 4,
+    "distribution_advantage": 2,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 2,
+    "willingness_to_pay": 4,
+    "repeat_ltv_potential": 6,
+    "competition_adjusted_gap": 1,
+    "market_depth": 3,
+    "end_to_end_automation": 5,
+    "capital_risk": 2,
+    "owner_time_support": 4
+   },
+   "componentReasons": {
+    "entrant_edge": "Profitable schools sell at multiples far above $10,000 and the sub-$11,000 listing loses money, so no acquirable edge exists in budget (EDU4-E1, EDU4-E2, EDU4-E5).",
+    "customer_problem_or_value": "Licensed professionals do need approved CE on a cycle, but the acquired business does not add anything a new approved provider lacks (EDU4-E3, EDU4-E6).",
+    "distribution_advantage": "A purchased audience is unproven: listing financials and traffic sit behind sign-up walls and the $10,600 asset shows negative profit (EDU4-E2).",
+    "defensibility": "Approvals do not transfer and are cheap for rivals to obtain, so owning the school protects little (EDU4-E3, EDU4-E6).",
+    "absolute_gross_profit_potential": "Sub-$25,000 listings show $500 a month or less in profit (EDU4-E2, EDU4-E5).",
+    "willingness_to_pay": "The $1.12 million revenue Florida school shows learners pay, but it is out of budget (EDU4-E1).",
+    "repeat_ltv_potential": "Renewal cycles create repeat learners where CE is mandatory, which is the reason to buy (EDU4-E1).",
+    "competition_adjusted_gap": "Applying for approval from scratch is free or near-free, so buying adds no gap over building (EDU4-E6).",
+    "market_depth": "A handful of listings were seen; the sample is not a market measurement (EDU4-E1, EDU4-E2, EDU4-E5).",
+    "end_to_end_automation": "Run-rate operation of an on-demand school is largely automated, but transfers, approvals and support need hands (EDU4-E3).",
+    "capital_risk": "The whole $10,000 would go into a single asset whose profit is unproven; due diligence data is gated (EDU4-E2).",
+    "owner_time_support": "Post-sale seller support is limited (about 30 days in one listing) and approvals need re-filing (EDU4-E5, EDU4-E3)."
+   },
+   "legalNotes": [
+    "EDU4-E3: North Carolina says a real-estate education provider certification issued to the original owner is not transferable and the new owner must apply for an original certification; other states and professions were not checked, and an entity purchase may differ from an asset purchase (unverified).",
+    "EDU4-E4: Illinois cannabis responsible-vendor approvals are valid only for the provider named in the application.",
+    "EDU4-E2, EDU4-E5: marketplace listings keep traffic, financials and seller notes behind sign-up, which were not accessed; BizQuest and BusinessBroker listing pages returned errors and were skipped. Not legal advice."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Assumption: buy the Flippa-type asset at $10,600 and spend $2,000 on upkeep in year one; its listed profit is -$33 a month (about -$400 a year), so base profit is about -$13,000 including the price if the price is expensed. A $24,000 asset earning $500 a month ($6,000 a year) would return the price in 4 years. Pessimistic (price x0.8, volume x0.5, cost x1.5) is more negative still; no sourced positive case exists."
+    },
+    "killReasons": [
+     {
+      "reason": "Budget: profitable approved schools are priced at multiples of earnings ($1.85 million for about $380,000 cash flow; $24,000 for $500 a month) while the $10,600 listing loses money, so $10,000 buys no earning asset.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "EDU4-E1"
+     },
+     {
+      "reason": "Provider approvals, the asset that matters, do not carry to a new owner (North Carolina statute; Illinois rule) and are free or cheap to obtain from scratch, so acquisition adds nothing structural.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "EDU4-E3"
+     },
+     {
+      "reason": "Diligence data on traffic and financials is gated behind sign-up and was not seen; any buyer relies on seller claims.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "EDU4-E2"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: the profitable approved school found costs $1.85 million (EDU4-E1), sub-$25,000 education listings earn at most $500 a month or lose money (EDU4-E2, EDU4-E5), and provider approvals are non-transferable where checked (EDU4-E3, EDU4-E4) and cheap to get from scratch (EDU4-E6). Not verified: financials behind marketplace sign-ups, other states approval-transfer rules, BizQuest and BusinessBroker listings (errors). Quotes captured through WebFetch page summaries."
+  },
+  {
+   "family": "education_training",
+   "confidenceGrade": "D",
+   "id": "EDU-5",
+   "name": "Pennsylvania Act 48 approved-provider online teacher professional-development courses (per-hour, five-year renewal cycle)",
+   "buyer": "Pennsylvania public-school certificate holders who need 180 PDE-approved hours every five years and pay for courses themselves when district or free options do not fill the gap",
+   "pain": "An educator who ends an Act 48 compliance period short of 180 hours has an inactive certificate and is disqualified from public-school employment until the hours are earned",
+   "wedge": "Register as a PDE Act 48 approved provider (business entity, no fee on the guidelines page, 30 to 90 days) and sell self-paced online courses that award Act 48 hours uploaded to PERMS",
+   "referenceEntrant": {
+    "startupCashUsd": 3000,
+    "daysToFirstRevenue": 150,
+    "ownerHoursPerWeek": 12
+   },
+   "entrantEdge": {
+    "type": "regulatory_license_intrinsic_to_model",
+    "status": "none",
+    "statement": "Tested claim: PDE approval is a licence intrinsic to the model and the five-year, 180-hour cycle makes demand recur. The evidence reads against it: approval is open to businesses, LLCs and sole proprietors for three-year terms (EDU5-E4), existing approved providers already sell the same hours (EDU5-E1, EDU5-E6), the state gives free Act 48 courses and presumes districts are approved providers (EDU5-E3, EDU5-E5), and Washington, the other state checked, restricts provider status to non-profit and public bodies rather than for-profit companies (EDU5-E8, page does not list them). Approval is a table stake.",
+    "evidenceIds": [
+     "EDU5-E4",
+     "EDU5-E3",
+     "EDU5-E1"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Pennsylvania Standards Aligned System (SAS) PD Center: free Act 48 eligible self-paced courses (catalog size unverified, so scored partial)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.pa.gov/agencies/education/programs-and-services/educators/continuing-education-and-professional-development/act-48-and-perms/frequently-asked-questions/options-to-earn-act-48-faq",
+      "evidenceRef": "EDU5-E3",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "District and intermediate-unit in-service hours (presumed approved Act 48 providers; cost to the educator not stated on the page)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.pa.gov/agencies/education/programs-and-services/educators/continuing-education-and-professional-development/act-48-and-perms/frequently-asked-questions/options-to-earn-act-48-faq",
+      "evidenceRef": "EDU5-E5",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "For Teachers By Teachers: $165 for a 45-hour Act 48 course (about $3.67 per Act 48 hour; one-time per course)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 165,
+      "coversWedge": "full",
+      "sourceLocator": "https://forteachersbyteachers.teachable.com/p/act48burnout",
+      "evidenceRef": "EDU5-E1",
+      "metrics": {
+       "cash_cost": 3.67
+      }
+     },
+     {
+      "label": "Model Teaching: PDE-approved online PD courses (price not found on the page)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.modelteaching.com/?p=3426",
+      "evidenceRef": "EDU5-E6",
+      "metrics": {
+       "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 3.67,
+    "falsifier": "cash_cost is the educator cost per Act 48 hour. Free SAS courses and district in-service hours cost $0 and a rival sells at about $3.67 an hour (EDU5-E3, EDU5-E5, EDU5-E1), so an entrant cannot be cheaper. An edge would need exclusive hours that educators must buy (for example a course the state mandates only from approved private providers); the evidence shows districts and the state supply hours free."
+   },
+   "evidence": [
+    {
+     "id": "EDU5-E1",
+     "url": "https://forteachersbyteachers.teachable.com/p/act48burnout",
+     "quote": "Enroll in Course for $165",
+     "kind": "incumbent_price",
+     "publisher": "For Teachers By Teachers (PDE Act 48 provider; page shows 45 Act 48 hours per course)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU5-E2",
+     "url": "https://www.pa.gov/agencies/education/programs-and-services/educators/continuing-education-and-professional-development/act-48-and-perms/frequently-asked-questions/general-act-48-faq",
+     "quote": "the educator is disqualified from employment in Pennsylvania public school entities",
+     "kind": "demand",
+     "publisher": "Pennsylvania Department of Education (Act 48 FAQ)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU5-E3",
+     "url": "https://www.pa.gov/agencies/education/programs-and-services/educators/continuing-education-and-professional-development/act-48-and-perms/frequently-asked-questions/options-to-earn-act-48-faq",
+     "quote": "Standards Aligned System (SAS) provides free Act 48 eligible courses.",
+     "kind": "incumbent_price",
+     "publisher": "Pennsylvania Department of Education (options to earn Act 48 FAQ)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU5-E4",
+     "url": "https://www.pa.gov/agencies/education/programs-and-services/educators/continuing-education-and-professional-development/act-48-approved-providers/act-48-approved-provider-guidelines",
+     "quote": "Approvals are granted for a period of three years.",
+     "kind": "constraint",
+     "publisher": "Pennsylvania Department of Education (Act 48 approved provider guidelines; page lists businesses, LLCs and sole proprietors as eligible and mentions no fee)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU5-E5",
+     "url": "https://www.pa.gov/agencies/education/programs-and-services/educators/continuing-education-and-professional-development/act-48-and-perms/frequently-asked-questions/options-to-earn-act-48-faq",
+     "quote": "school districts and intermediate units are presumed approved providers of Act 48 hours for their certified professional educators.",
+     "kind": "other",
+     "publisher": "Pennsylvania Department of Education (options to earn Act 48 FAQ)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU5-E6",
+     "url": "https://www.modelteaching.com/?p=3426",
+     "quote": "All Model Teaching regular Professional Development (PD) courses are pre-approved by the Pennsylvania Department of Education",
+     "kind": "other",
+     "publisher": "Model Teaching (online teacher PD provider)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU5-E7",
+     "url": "https://www.pa.gov/agencies/education/programs-and-services/educators/continuing-education-and-professional-development/act-48-and-perms/frequently-asked-questions/options-to-earn-act-48-faq",
+     "quote": "A total of 180 hours is always required for Act 48.",
+     "kind": "demand",
+     "publisher": "Pennsylvania Department of Education (options to earn Act 48 FAQ)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "EDU5-E8",
+     "url": "https://ospi.k12.wa.us/educator-support/continuing-education-clock-hours/become-approved-provider",
+     "quote": "501(c)4 organizations are prohibited from becoming an approved provider.",
+     "kind": "constraint",
+     "publisher": "Washington OSPI (page lists colleges, nonprofits, ESDs, agencies and private schools as eligible, not private for-profit companies)",
+     "date": "2026",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 6,
+    "distribution_advantage": 2,
+    "defensibility": 1,
+    "absolute_gross_profit_potential": 4,
+    "willingness_to_pay": 5,
+    "repeat_ltv_potential": 7,
+    "competition_adjusted_gap": 2,
+    "market_depth": 6,
+    "end_to_end_automation": 8,
+    "capital_risk": 8,
+    "owner_time_support": 6
+   },
+   "componentReasons": {
+    "entrant_edge": "Approval is open to businesses, LLCs and sole proprietors and rivals already hold it (EDU5-E4, EDU5-E6).",
+    "customer_problem_or_value": "A missed compliance period makes the certificate inactive and bars public-school employment, so the need is strong (EDU5-E2).",
+    "distribution_advantage": "No channel to reach educators was evidenced for a stranger; districts supply hours to their own staff (EDU5-E5).",
+    "defensibility": "Courses are copyable and approval is cheap, so nothing locks educators in (EDU5-E4, EDU5-E6).",
+    "absolute_gross_profit_potential": "A $165 45-hour course is a decent ticket, but volume depends on an unproven channel and acquisition cost (EDU5-E1).",
+    "willingness_to_pay": "Educators demonstrably pay $165 for 45 hours at an existing provider, but free options cap the price (EDU5-E1, EDU5-E3).",
+    "repeat_ltv_potential": "The 180-hour requirement renews every five years and up to 50 excess hours carry over, so learners return (EDU5-E7).",
+    "competition_adjusted_gap": "Several approved online providers and free state courses already serve the wedge (EDU5-E1, EDU5-E3, EDU5-E6).",
+    "market_depth": "All Pennsylvania-certified educators are covered by the rule, though educator counts were not verified (EDU5-E2).",
+    "end_to_end_automation": "Self-paced courses, completion tracking and PERMS hour uploads can be automated, though uploads happen in batches (EDU5-E6).",
+    "capital_risk": "Small setup (content and LMS), assumed at about $3,000.",
+    "owner_time_support": "PERMS uploads within 30 days and seven-year record keeping need light but recurring owner attention (EDU5-E4)."
+   },
+   "legalNotes": [
+    "EDU5-E4: PDE guidelines list businesses, LLCs and sole proprietors as eligible; a business entity number from the PA Department of State is needed; approval typically takes 30 to 90 days per the page summary and lasts three years; hours must be uploaded to PERMS within 30 days with records kept for seven years.",
+    "EDU5-E8: Washington clock-hour approval is limited to listed public and non-profit organization types and applications open only March 1 to May 1, so the model does not transfer to Washington for a for-profit company (the page does not state an outright ban; unverified).",
+    "EDU5-E2: the compliance consequence is stated by PDE; whether employers reimburse course fees was not found. Not legal advice."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Assumptions: 300 course sales a year x $165 = $49,500 revenue; cost about $23,000 = $3,000 setup + $3,000 content (6 courses at $500) + $600 platform + $1,500 payment fees + $15,000 acquisition at an assumed $50 per sale (no CPC data found). Base profit about $26,000. Pessimistic (price x0.8 = $132, volume x0.5 = 150 sales, cost x1.5): revenue $19,800 against about $34,500 cost, about -$14,700. The result is driven by the unsourced acquisition cost; the $165 price is sourced (EDU5-E1)."
+    },
+    "killReasons": [
+     {
+      "reason": "No structural edge: approval is open to any business entity, rivals already sell Act 48 hours (about $3.67 per hour), and the state supplies free courses and presumes districts approved.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "EDU5-E4"
+     },
+     {
+      "reason": "No sourced channel to reach the first 10 paying educators without an audience; free state courses and district hours compete for the same need.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "EDU5-E3"
+     },
+     {
+      "reason": "Washington, the second state checked, does not list for-profit companies as eligible providers, limiting replication.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "EDU5-E8"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: open approval (EDU5-E4), rivals already selling the same hours at $165 per 45 hours (EDU5-E1, EDU5-E6), free state courses and district in-service (EDU5-E3, EDU5-E5), and no sourced channel for a stranger. Real demand and a recurring five-year cycle exist (EDU5-E2, EDU5-E7). Not verified: the size of the free SAS catalog, Pennsylvania educator count, Texas and other states clock-hour rules. Quotes captured through WebFetch page summaries."
+  }
+ ]
+}

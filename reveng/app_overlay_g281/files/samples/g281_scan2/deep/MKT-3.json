@@ -1,0 +1,386 @@
+{
+  "id": "MKT-3",
+  "verdict": "killed",
+  "verdictReason": "Killed. (1) No exclusive edge: where a seller fee was made mandatory, members listed on both sites and 'Sold Elsewhere' ads rose (D6), Audiogon fee rises pushed sellers to a rival (D8), and Reverb, Facebook and Reddit swap subs with free trade-confirmation flair already give reputation at no forum cost (D4, D22). (2) Liquidity is not for sale: even established gear forums call their classifieds slow (D1, D3, D4); forum listings sell on ad income, prices undisclosed (D12-D14). (3) Bottom-up: base profit about 635 USD on ~1,040 owner hours, pessimistic about -3,350 USD.",
+  "answers": [
+    {
+      "question": "Open question: does any acquirable forum show about 100+ live sale threads a month with feedback history?",
+      "answer": "Not found, and the evidence points the other way. The Flippa listing used earlier as the 'trading forum' example (MKT-3-E6) is an Indonesian investing forum (domain indo-investasi.com) with a listed monthly profit of USD 32 and price undisclosed (D13). Other sold forum listings read monetise through ads and subscriptions and do not mention classifieds or feedback (D12, D14), and sale prices are hidden ('Contact Flippa for Price'). Where forums do have a sale section, members of established gear forums describe it as slow (D1, D3, D4). Live thread counts of a specific purchasable forum cannot be settled from public pages without contacting a seller or reading its full archive, which this screen forbids.",
+      "evidenceIds": ["MKT-3-D1", "MKT-3-D3", "MKT-3-D4", "MKT-3-D12", "MKT-3-D13", "MKT-3-D14", "MKT-3-E5", "MKT-3-E6"]
+    },
+    {
+      "question": "Does gating selling behind a paid membership or a seller fee hold once a free channel exists?",
+      "answer": "It holds only at forums that already have liquidity and a scarce audience. Smaller or fee-gated sites report weak volume: a camera forum with a paid Site Supporter gate calls its marketplace 'pretty quiet' and has considered a roughly USD 5 fee (D1, D2); StereoNET's mandatory 4% fee produced a 'noticeable rise' in ads 'Sold Elsewhere' and members listing in parallel on Gumtree (D6, MKT-3-E4); Audiogon's fee rises triggered 'silly when USaudiomart exists' (D8). Other forums run the opposite model: PentaxForums lets members qualify to sell without paying (D15) and BladeForums' 2026 classifieds adds no seller fee beyond its paid membership (D16).",
+      "evidenceIds": ["MKT-3-D1", "MKT-3-D2", "MKT-3-D6", "MKT-3-D8", "MKT-3-D15", "MKT-3-D16", "MKT-3-E4"]
+    },
+    {
+      "question": "Do free or cheap alternatives already cover the reputation plus niche-audience wedge?",
+      "answer": "Largely yes. Reverb charges 5% plus 2.99% plus USD 0.49 and members say it sells faster (D4, D10, D11); Facebook groups and Marketplace take higher-priced sales (D4, MKT-3-E7); Reddit swap subs award bot-confirmed trade flair for free to 'gauge a user's experience' (D22), and a forum member calls Reddit classifieds 'extremely active' versus the forum's slow ones (D3). For forum owners, ready-made classifieds and feedback add-ons exist (D17, D18, D19). What remains uniquely forum-held is a long member history, which an acquirer inherits only if the forum is actually active.",
+      "evidenceIds": ["MKT-3-D3", "MKT-3-D4", "MKT-3-D10", "MKT-3-D11", "MKT-3-D17", "MKT-3-D18", "MKT-3-D19", "MKT-3-D22", "MKT-3-E7"]
+    },
+    {
+      "question": "What does willingness to pay look like at niche forums, and who is already collecting it?",
+      "answer": "Sellers pay small annual sums at forums that already have liquidity: BladeForums Gold about USD 30-35 a year (MKT-3-E1), Audioaficionado USD 25 a year (D9), a Site Supporter gate at Alpha Shooters (D2). Those slots in each niche are held by incumbents that are expanding their own classifieds (D16), and funded companies are buying active forums such as GolfWRX (D24). A newcomer would therefore buy a forum nobody funded wanted, and the DNForum case shows a trading forum that changed owners twice and faded as deals moved elsewhere (D25).",
+      "evidenceIds": ["MKT-3-E1", "MKT-3-D2", "MKT-3-D9", "MKT-3-D16", "MKT-3-D24", "MKT-3-D25"]
+    },
+    {
+      "question": "Bottom-up first-365-days economics for the reference entrant (startup cash 3,000 USD, 20 h/week, revenue by day 120)?",
+      "answer": "Base: 100 paying sellers x USD 30 = 3,000 plus about 1,100 legacy ad/upgrade income (11 months x 100) = 4,100 revenue, against 3,465 cost (purchase 2,000, cloud hosting 720, XenForo licence 195, classifieds add-on 60, legal/templates 300, misc 100, 3% payment fees 90) = about +635 profit, roughly 0.6 USD per owner hour over 1,040 hours. Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue 1,750, cost 5,099, profit about -3,349. The pessimistic case breaks even only at about 194 paying sellers (about 388 in the base case); no evidence found of a forum with that many paying sellers being offered for about 2,000 USD. The 100 sellers, the 2,000 purchase price and the legacy income are assumptions.",
+      "evidenceIds": ["MKT-3-E1", "MKT-3-D9", "MKT-3-D13", "MKT-3-D19", "MKT-3-D20", "MKT-3-D21"]
+    },
+    {
+      "question": "Which legal or operational constraints apply?",
+      "answer": "If the operator takes a capped success fee it must run the payment flow; the FTC INFORM Consumers Act then applies to marketplaces handling third-party seller sales and payments once a seller reaches 200 sales and USD 5,000 in 12 months (D23). A membership-only model with off-site payment avoids that (add-ons say they do not process payments, D18), but then there is no per-sale revenue. Admin labour is the cost that scales: StereoNET's operator says classifieds 'require the most labour' (D7).",
+      "evidenceIds": ["MKT-3-D7", "MKT-3-D18", "MKT-3-D23"]
+    }
+  ],
+  "newEvidence": [
+    {
+      "id": "MKT-3-D1",
+      "url": "https://www.alphashooters.com/community/threads/ok-i-am-bored-so-a-quick-question-has-anyone-ever-sold-anything-on-the-for-sale-listings-and-does-anyone-ever-look-at-the-ads.7912/post-49094",
+      "quote": "the for-sale section here is S L O W.",
+      "kind": "constraint",
+      "publisher": "Alpha Shooters (Sony Alpha forum) member Brownie",
+      "date": "2023-10-23",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D2",
+      "url": "https://www.alphashooters.com/community/threads/ok-i-am-bored-so-a-quick-question-has-anyone-ever-sold-anything-on-the-for-sale-listings-and-does-anyone-ever-look-at-the-ads.7912/post-49094",
+      "quote": "you do need to be a paying \"Site Supporter\" in order to post anything in the marketplace forums.",
+      "kind": "demand",
+      "publisher": "Alpha Shooters administrator (Tim Mayo)",
+      "date": "2023-10-23",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D3",
+      "url": "https://budgetlightforum.com/t/what-happened-to-everybody/226074?page=2",
+      "quote": "seem to have low readership and slow turn over.",
+      "kind": "constraint",
+      "publisher": "BudgetLightForum member jon_slider",
+      "date": "2024-11-06",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D4",
+      "url": "https://www.rig-talk.com/forum/threads/real-talk-is-it-worth-posting-in-classifieds-here-or-just-post-up-on-reverb.338489/",
+      "quote": "I can usually put the same thing on Reverb, and sell it a lot quicker and for more.",
+      "kind": "constraint",
+      "publisher": "Rig-Talk forum member War_in_D",
+      "date": "2026-03-24",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D5",
+      "url": "https://www.rig-talk.com/forum/threads/real-talk-is-it-worth-posting-in-classifieds-here-or-just-post-up-on-reverb.338489/",
+      "quote": "Buyer protection here comes in the form of paypal and credit cards (for example) but more importantly - reputation.",
+      "kind": "demand",
+      "publisher": "Rig-Talk forum member 311boogieman",
+      "date": "2026-03-24",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D6",
+      "url": "https://www.stereonet.com/forums/topic/578458-a-conversation-about-sellers-fees",
+      "quote": "There has been a noticeable rise in ads marked 'Sold Elsewhere.'",
+      "kind": "constraint",
+      "publisher": "StereoNET forum administrator Marc",
+      "date": "2023-04-20",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D7",
+      "url": "https://www.stereonet.com/forums/topic/578458-a-conversation-about-sellers-fees",
+      "quote": "the classifieds require the most labour",
+      "kind": "constraint",
+      "publisher": "StereoNET forum administrator Marc",
+      "date": "2023-04-20",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D8",
+      "url": "https://whatsbestforum.com/goto/post?id=849945",
+      "quote": "their fees are just plain silly when USaudiomart exists.",
+      "kind": "constraint",
+      "publisher": "WhatsBestForum member sktn77a (Audiogon fee thread)",
+      "date": "2022-12-25",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D9",
+      "url": "https://whatsbestforum.com/threads/best-place-to-sell-gear-these-days.35615/post-829378",
+      "quote": "It has an annual membership fee of $25.",
+      "kind": "incumbent_price",
+      "publisher": "WhatsBestForum member tima, describing Audioaficionado",
+      "date": "2022-10-08",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D10",
+      "url": "https://help.reverb.com/hc/en-us/articles/360002914813-What-are-my-fees-as-a-Reverb-Preferred-Seller",
+      "quote": "The selling fee is 5% of the total sale amount (including shipping) after your item has sold.",
+      "kind": "incumbent_price",
+      "publisher": "Reverb Help Center",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D11",
+      "url": "https://help.reverb.com/hc/en-us/articles/360002914813-What-are-my-fees-as-a-Reverb-Preferred-Seller",
+      "quote": "As a Reverb Preferred Seller, you pay 2.99% plus $0.49 per transaction.",
+      "kind": "incumbent_price",
+      "publisher": "Reverb Help Center",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D12",
+      "url": "https://flippa.com/5460133-10-yr-old-established-business-forum-225k-posts-15k-members-growing-revenue",
+      "quote": "Revenue from BuySellAds (featured), Subscriptions (upgrades), PublicityClerks and AdSense (backfilled).",
+      "kind": "other",
+      "publisher": "Flippa listing (sold, price undisclosed, USD 455 per month profit)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D13",
+      "url": "https://flippa.com/11717385-a-busy-and-active-16-year-old-trading-forum-with-over-65-000-members",
+      "quote": "Contact Flippa for Price",
+      "kind": "other",
+      "publisher": "Flippa listing (indo-investasi.com, sold, listed profit USD 32 per month)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D14",
+      "url": "https://flippa.com/11216073-a-20-year-old-highly-profitable-forum-based-in-the-religious-niche-one-of-the-largest-forums-on-the-internet",
+      "quote": "Users also contribute financially through membership upgrades, which remove ads and offer additional perks.",
+      "kind": "other",
+      "publisher": "Flippa listing (sold, price undisclosed, USD 2,348 per month profit)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D15",
+      "url": "https://www.pentaxforums.com/articles/pages/marketplace.html",
+      "quote": "We do NOT charge any fees on a per-item basis",
+      "kind": "incumbent_price",
+      "publisher": "PentaxForums.com Marketplace page (2012 article, may be outdated)",
+      "date": "2012-04-24",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D16",
+      "url": "https://www.bladeforums.com/threads/proposed-moving-the-bladeforums-exchange-to-a-dedicated-classifieds-system.2082427",
+      "quote": "There will be no additional seller fee for standard Classifieds listings.",
+      "kind": "other",
+      "publisher": "BladeForums administrator Spark",
+      "date": "2026-09-03",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D17",
+      "url": "https://www.xenforo.com/community/resources/xencentral-feedback-system-2.6238",
+      "quote": "give positive, negative, neutral feedback to each other.",
+      "kind": "other",
+      "publisher": "XenForo Resource Manager (XenCentral Feedback System 2; page showed no price)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D18",
+      "url": "https://xenaddons.com/products/classified-ads-system-premium.28/",
+      "quote": "This addon does not handle payment processing.",
+      "kind": "constraint",
+      "publisher": "XenAddons (Classified Ads System Premium)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D19",
+      "url": "https://xenaddons.com/products/classified-ads-system-premium.28/",
+      "quote": "No permission to purchase ~~$75.00~~ $60.00",
+      "kind": "incumbent_price",
+      "publisher": "XenAddons (Classified Ads System Premium)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D20",
+      "url": "https://toolradar.com/tools/xenforo/pricing",
+      "quote": "\"$195/Custom\", described as \"One-time payment, lifetime use.\"",
+      "kind": "incumbent_price",
+      "publisher": "Toolradar (third-party price listing for XenForo self-hosted licence)",
+      "date": "2026-10",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D21",
+      "url": "https://toolradar.com/tools/xenforo/pricing",
+      "quote": "Cloud Starter: \"$60/month\"",
+      "kind": "incumbent_price",
+      "publisher": "Toolradar (third-party price listing for XenForo cloud hosting)",
+      "date": "2026-10",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D22",
+      "url": "https://lr.eu.psf.lt/r/SteelbookSwap/wiki/rules/trades",
+      "quote": "Flair is used to gauge a user's experience.",
+      "kind": "other",
+      "publisher": "r/SteelbookSwap wiki (read through a Reddit mirror)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D23",
+      "url": "https://search.ftc.gov/business-guidance/resources/what-third-party-sellers-need-know-about-inform-consumers-act",
+      "quote": "200 or more separate sales or transactions of new or unused consumer products",
+      "kind": "constraint",
+      "publisher": "US Federal Trade Commission business guidance (INFORM Consumers Act)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D24",
+      "url": "https://www.skitalk.com/threads/golfwrx-was-sold.37939/post-1122590",
+      "quote": "big companies buying up forums and review sites",
+      "kind": "constraint",
+      "publisher": "SkiTalk member Philpug (thread on the sale of GolfWRX)",
+      "date": "2025-08-09",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MKT-3-D25",
+      "url": "https://domainnamewire.com/2016/02/19/r-i-p-dnforum-2001-2016/",
+      "quote": "used to be the place people went to get deals done",
+      "kind": "constraint",
+      "publisher": "Domain Name Wire",
+      "date": "2016-02-19",
+      "evidenceClass": "agent_reported"
+    }
+  ],
+  "newAlternatives": [
+    {
+      "label": "Reverb (5% selling fee + 2.99% + USD 0.49 per sale, about USD 80 on a USD 1,000 sale; per-sale, no monthly fee)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://help.reverb.com/hc/en-us/articles/360002914813-What-are-my-fees-as-a-Reverb-Preferred-Seller",
+      "evidenceRef": "MKT-3-D10"
+    },
+    {
+      "label": "Reddit niche swap subreddits with bot-confirmed trade flair (r/SteelbookSwap example; free; only in niches that have such a sub)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://lr.eu.psf.lt/r/SteelbookSwap/wiki/rules/trades",
+      "evidenceRef": "MKT-3-D22"
+    },
+    {
+      "label": "Audioaficionado paid-membership niche forum (USD 25 per year, 'reputations are known')",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 2.08,
+      "coversWedge": "partial",
+      "sourceLocator": "https://whatsbestforum.com/threads/best-place-to-sell-gear-these-days.35615/post-829378",
+      "evidenceRef": "MKT-3-D9"
+    },
+    {
+      "label": "PentaxForums Marketplace (no per-item fee, built-in feedback; 2012 page, may be outdated)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.pentaxforums.com/articles/pages/marketplace.html",
+      "evidenceRef": "MKT-3-D15"
+    },
+    {
+      "label": "DIY on stock forum software: XenForo licence USD 195 plus Classified Ads System add-on USD 60 plus feedback add-on (price not shown); year-one amortised, excludes hosting and the feedback add-on",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 21.25,
+      "coversWedge": "partial",
+      "sourceLocator": "https://xenaddons.com/products/classified-ads-system-premium.28/",
+      "evidenceRef": "MKT-3-D19"
+    },
+    {
+      "label": "US Audio Mart and Audiogon (niche paid classifieds; Audiogon reported as eBay-style per-sale fees, USAM as lower; exact fees not read)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://whatsbestforum.com/goto/post?id=849945",
+      "evidenceRef": "MKT-3-D8"
+    }
+  ],
+  "killReasons": [
+    {
+      "reason": "No exclusive edge: when a niche forum made seller fees mandatory, members listed in parallel on free sites and 'Sold Elsewhere' ads rose; Audiogon fee rises pushed sellers to a rival; Reverb, Facebook and free Reddit trade-flair subs already provide reputation and audience. A fee-gated acquired forum would lose volume to them with nothing exclusive to hold it.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MKT-3-D6"
+    },
+    {
+      "reason": "The liquidity the wedge needs is not for sale at four figures: established gear forums describe their classifieds as slow or 'S L O W', sold-forum listings monetise through ads and upgrades with prices undisclosed, and advisers say most forums offered are dead (adverse selection).",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MKT-3-D1"
+    },
+    {
+      "reason": "Economics fail the pessimistic test: base profit about 635 USD on about 1,040 owner hours (0.6 USD per hour), pessimistic about -3,349 USD; pessimistic break-even needs about 194 paying sellers at a 24 USD price, with no evidence such a forum is purchasable for about 2,000 USD.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MKT-3-D20"
+    },
+    {
+      "reason": "Classifieds moderation and ad approval are labour-heavy, so owner time is high and does not automate.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "MKT-3-D7"
+    },
+    {
+      "reason": "A capped success fee needs a payment flow, which can bring marketplace obligations (FTC INFORM Consumers Act) that a membership-only model avoids; the membership-only model then forgoes per-sale revenue.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "MKT-3-D23"
+    },
+    {
+      "reason": "Active forums are being bought by funded companies, so what a four-figure buyer can afford skews to inactive ones.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "MKT-3-D24"
+    }
+  ],
+  "economics": {
+    "revenue365": 4100,
+    "cost365": 3465,
+    "pessimisticProfit365": -3348.5,
+    "survivesPessimistic": false,
+    "assumptions": [
+      "Assumption: forum purchase price 2,000 USD; no sold price was disclosed on any listing read (Flippa pages show 'Contact Flippa for Price').",
+      "Assumption: 100 paying sellers by day 365 at 30 USD per year (price anchored to BladeForums 30-35 USD, MKT-3-E1, and Audioaficionado 25 USD, D9); the seller count is not evidenced for any purchasable forum.",
+      "Assumption: legacy ad/upgrade income of 100 USD per month for 11 months (1,100 USD); listed sold forums earned 32 to 2,348 USD profit per month (D13, D14), so the figure is a guess within that range.",
+      "Sourced: cloud hosting 60 USD per month = 720 USD (D21), XenForo licence 195 USD (D20), classifieds add-on 60 USD (D19); a self-hosted VPS could be cheaper (unverified).",
+      "Assumption: legal templates and one-off review 300 USD, domain/email/backup misc 100 USD, payment processing 3% of membership revenue.",
+      "Owner time 20 h/week x 52 = 1,040 hours; first revenue assumed day 120 (acquisition closing plus migration), unverified.",
+      "Pessimistic: price x0.8 (24 USD), volume x0.5 (50 sellers, legacy income halved to 550), cost x1.5 (fixed costs 5,062.5 plus 36 fees) = revenue 1,750, cost 5,098.5, profit -3,348.5.",
+      "Break-even: base about 79 sellers, pessimistic about 194 sellers (388 base-equivalent), on the same cost base."
+    ],
+    "sources": ["MKT-3-E1", "MKT-3-D9", "MKT-3-D13", "MKT-3-D14", "MKT-3-D19", "MKT-3-D20", "MKT-3-D21"]
+  },
+  "legalNotes": [
+    "Acquisition: domain, content licence and member-database transfer, plus privacy-law duties (for example notifying members of the change of controller) need review per listing; not legal advice and not verified here.",
+    "FTC INFORM Consumers Act (D23): an online marketplace that processes third-party seller sales and payments must collect and verify bank, tax and contact details once a seller reaches 200 sales and 5,000 USD in 12 months, and disclose seller identity above 20,000 USD; a membership-only model with off-site payment (D18 add-on does not process payments) is likely outside this, but a capped success fee collected through the operator is not (unverified whether it applies to a given structure).",
+    "Sales-tax marketplace-facilitator rules and payment-processor restrictions on escrow-like flows may apply if the operator handles buyer money (unverified, not researched).",
+    "Niches with regulated goods (knives in some places, firearms accessories, alcohol, medicines) add listing rules and liability; a forum whose existing terms already ban such trades would need its terms changed with member notice.",
+    "Mirror site used for the Reddit wiki (D22) is a third-party front end; Reddit's own ToS on commercial use of trade flair was not read."
+  ],
+  "unverified": [
+    "Live sale-thread counts, paying-seller counts and feedback volume of any specific purchasable forum.",
+    "Actual sale prices of forums on Flippa or similar markets (all listings read hide the price).",
+    "Price of the XenCentral feedback add-on (page showed none) and exact US Audio Mart fees.",
+    "Audioaficionado details (page could not be read; figures come from a member post in D9).",
+    "Whether the Flippa '4.4x revenue multiple' on the 2,348 USD per month listing is monthly or annual.",
+    "Current Facebook Marketplace shipping fee (earlier evidence MKT-3-E7 is from 2024).",
+    "Whether a 2,000 USD forum could be migrated and monetised by day 120."
+  ],
+  "nextStep": "Drop the acquire-a-forum wedge; revisit only if a specific forum with 100+ live sale threads a month, 190+ paying sellers and a four-figure price can be named from public data."
+}

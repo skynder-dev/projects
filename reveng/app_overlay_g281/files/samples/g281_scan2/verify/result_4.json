@@ -1,0 +1,148 @@
+{
+ "results": [
+  {
+   "candidateId": "SAS-1",
+   "evidenceId": "SAS-1-E5",
+   "url": "https://www.refundretriever.com/blog/howwecompare",
+   "status": "confirmed",
+   "note": "Exact wording and $12,486 figure match.",
+   "pageSnippet": "We were able to secure $12,486 in late package guaranteed service refunds!"
+  },
+  {
+   "candidateId": "SAS-1",
+   "evidenceId": "SAS-1-E6",
+   "url": "https://beancount.io/blog/2026/09/15/fedex-ups-invoice-audit-late-delivery-refunds-duplicate-charges-guide",
+   "status": "confirmed",
+   "note": "Sentence matches; page continues 'Both carriers accept manual claims:'.",
+   "pageSnippet": "You do not need software to start. Both carriers accept manual claims:"
+  },
+  {
+   "candidateId": "SAS-2",
+   "evidenceId": "SAS-2-E3",
+   "url": "https://www.indiehackers.com/product/ref-leaklog",
+   "status": "confirmed",
+   "note": "Both fragments on page; second is a truncated sentence continuing 'through the real calculation engine - no customer data.'",
+   "pageSnippet": "Revenue $0/mo ... Everything shown is a product demo running on a fictional fleet (Copper Ridge Mechanical) through the real calculation engine - no customer data."
+  },
+  {
+   "candidateId": "SAS-2",
+   "evidenceId": "SAS-2-E2",
+   "url": "https://www.indiehackers.com/product/ref-leaklog",
+   "status": "confirmed",
+   "note": "Exact match in launch post; $29-$89/mo and 14-day trial both present.",
+   "pageSnippet": "It's bootstrapped and priced for small shops: $29-$89/mo, 14-day free trial, no credit card."
+  },
+  {
+   "candidateId": "SAS-3",
+   "evidenceId": "SAS-3-E5",
+   "url": "https://apify.com/virtual-constructs/subprocessor-change-monitor.md",
+   "status": "confirmed",
+   "note": "Exact match in Stats line.",
+   "pageSnippet": "Stats: 2 total users, 1 monthly users, 100.0% runs succeeded, 0 bookmarks"
+  },
+  {
+   "candidateId": "SAS-3",
+   "evidenceId": "SAS-3-E3",
+   "url": "https://visualping.io/subprocessor",
+   "status": "confirmed",
+   "note": "Exact match in page heading; no other count shown.",
+   "pageSnippet": "Installed on more than 6,000 websites worldwide."
+  },
+  {
+   "candidateId": "SAS-4",
+   "evidenceId": "SAS-4-E2",
+   "url": "https://cpsc.gov/s3fs-public/2024_07_08_eFiling_Quick_Start_Guide_FINAL_Draft.pdf",
+   "status": "confirmed",
+   "note": "Verbatim match.",
+   "pageSnippet": "The CPSC Product Registry is a new and optional system for entering and storing product certificate data."
+  },
+  {
+   "candidateId": "SAS-4",
+   "evidenceId": "SAS-4-E4",
+   "url": "https://www.eurofins.com/en/consumer-product-testing/softlines-hardlines/regulatory-compliance/global-market-access/cpsc-efiling-digital-solution/",
+   "status": "confirmed",
+   "note": "Quote is a truncated sentence: page has comma and continues ', enabling you ... to file the Reference Message Set in the CBP ACE'. Meaning unchanged.",
+   "pageSnippet": "We manage the submission of your certificate data into the CPSC Product Registry, enabling you as an Importer of Record to file the Reference Message Set in the CBP ACE."
+  },
+  {
+   "candidateId": "SAS-4",
+   "evidenceId": "SAS-4-E3",
+   "url": "https://payhip.com/b/4prBk",
+   "status": "confirmed",
+   "note": "Exact wording; price $199.00 USD in metadata, no differing price.",
+   "pageSnippet": "One-time purchase: $199. No subscription."
+  },
+  {
+   "candidateId": "SVC-1",
+   "evidenceId": "SVC1-E7",
+   "url": "https://casepacer.com/resources/lien-tracking-for-personal-injury-firms-best-practices-and-tools",
+   "status": "confirmed",
+   "note": "Full sentence matches (preceded by 'To make this a regular process,'); ends 'negotiation status and deadlines.'",
+   "pageSnippet": "To make this a regular process, begin by assigning responsibility to a dedicated member or department, who tracks negotiation status and deadlines."
+  },
+  {
+   "candidateId": "SVC-1",
+   "evidenceId": "SVC1-E2",
+   "url": "https://ezel.ai/ethics-opinions/utahbar/14-01-outsourcing-lien-resolution-cost-or-fee",
+   "status": "confirmed",
+   "note": "Wording matches; in the opinion it is conditional on the company's services being the practice of law, preceded by 'Then,'.",
+   "pageSnippet": "Then, the lawyer cannot treat the lien resolution fee as a cost to the client."
+  },
+  {
+   "candidateId": "SVC-2",
+   "evidenceId": "SVC2-E5",
+   "url": "https://assets.ecua.fl.gov/BPA-Testers-by-Company-2025.pdf",
+   "status": "confirmed",
+   "note": "Heading matches exactly; document dated 'Revised 5/14/2025'.",
+   "pageSnippet": "Companies with Certified Backflow Prevention Testers Registered with ECUA"
+  },
+  {
+   "candidateId": "SVC-2",
+   "evidenceId": "SVC2-E7",
+   "url": "https://beancount.io/blog/2026/09/17/backflow-testing-business-bookkeeping-certification-contracts-gauge-calibration-guide",
+   "status": "confirmed",
+   "note": "Fragment and $695-$1,650 figures match; same sentence says utility-hosted courses cost about $500.",
+   "pageSnippet": "private training centers charge $695 to $1,650 including exam fees"
+  },
+  {
+   "candidateId": "SVC-2",
+   "evidenceId": "SVC2-E1",
+   "url": "https://www.tommycool.com/blog/backflow-preventer-testing-cost",
+   "status": "confirmed",
+   "note": "Exact wording, $85-$180 per device for commercial/multi-unit; residential is $55-$95 (different category).",
+   "pageSnippet": "If you own a commercial property or a multi-unit building, the cost is generally higher, usually falling somewhere between $85 and $180 per device."
+  },
+  {
+   "candidateId": "SVC-3",
+   "evidenceId": "SVC3-E7",
+   "url": "https://easproject.com/gpsr/",
+   "status": "confirmed",
+   "note": "Exact wording; page also shows '4,000+ Businesses trust EAS' stat block.",
+   "pageSnippet": "Trusted by thousands of businesses selling to Europe"
+  },
+  {
+   "candidateId": "SVC-3",
+   "evidenceId": "SVC3-E9",
+   "url": "https://www.flexfulfillment.eu/gpsr-and-eu-product-safety-what-non-eu-brands-must-know-in-2026/",
+   "status": "confirmed",
+   "note": "Phrase present; subject is the EU Responsible Person (RP).",
+   "pageSnippet": "The RP assumes real legal liability, not just an administrative role."
+  },
+  {
+   "candidateId": "SVC-4",
+   "evidenceId": "SVC4-E3",
+   "url": "https://www.cohnreznick.com/insights/ieepa-tariffs-refund-request-process-open",
+   "status": "confirmed",
+   "note": "Wording matches ('Who can file:' bullet); page continues '; for example, attorneys cannot file on an importer's behalf.'",
+   "pageSnippet": "Who can file: Only the Importer of Record (IOR) or the licensed customs broker who filed the entries can file a CAPE Declaration; for example, attorneys cannot file on an importer's behalf."
+  },
+  {
+   "candidateId": "SVC-4",
+   "evidenceId": "SVC4-E1",
+   "url": "https://gingercontrol.com/blog/duty-drawback-service-how-to-choose-provider",
+   "status": "confirmed",
+   "note": "Exact wording; page continues ', depending on volume and complexity.' 15-30% repeated consistently elsewhere.",
+   "pageSnippet": "The market rate sits between 15% and 30% of recovered amounts, depending on volume and complexity."
+  }
+ ]
+}

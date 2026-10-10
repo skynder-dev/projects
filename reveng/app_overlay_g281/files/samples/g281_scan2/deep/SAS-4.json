@@ -1,0 +1,322 @@
+{
+ "id": "SAS-4",
+ "verdict": "killed",
+ "verdictReason": "The lab-neutral gap is already sold: Comply PRO+ markets supplier logins, data collection, certificate generation and one-click Product Registry filing to Amazon sellers (D1, D2, D4), ComplianceGate sells a certificate platform from $199/yr (D5), and the Registry itself is free with CSV, API and designee entry (D6, D7, D9, D19). The only price anchors ($199/yr, $199 once, $20/report) sit far below the assumed $39/mo. Bottom-up first-365-day economics with a 150-day build are negative when pessimistic (about -$3.9k), and no exclusive edge exists.",
+ "answers": [
+  {
+   "question": "Is the CPSC Product Registry free, and can third-party software integrate (cost and developer terms)?",
+   "answer": "A third-party guide reports eFiling registration is free (D6) and that the Registry takes CPSC's CSV bulk-upload template (D7). The final rule says the Registry allows importers 'or their designees' to enter certificate data (D19). CPSC says the Registry has an API and that Software Development Accounts are given to developers on request (D9). No fee and no written API terms appear on any CPSC page read, so the Registry is a $0 storage-and-submission substrate and a legal integration path exists, but the exact developer terms remain unverified.",
+   "evidenceIds": ["SAS-4-D6", "SAS-4-D7", "SAS-4-D9", "SAS-4-D19"]
+  },
+  {
+   "question": "Does a lab-neutral, supplier-facing certificate register already exist, so the claimed open gap is closed?",
+   "answer": "Yes, at least as vendor claims. Comply PRO+ (Jacoby Solutions) markets two products for Amazon sellers, with a supplier login to capture data from suppliers per shipment, data collection, certificate generation, compliance verification and one-click Registry submission (D1, D2, D4). ComplianceGate offers certificate creation from CPSC templates from $199/yr (D5). Bureau Veritas runs supplier-led data capture at $20/report (D8) and Eurofins generates and submits CPC/GCC (D10). Enterprise vendors such as Altana pitch certificate data at scale on a demo-only basis (D18). The multi-lab supplier-collection gap named in the earlier entry is therefore contested, not open.",
+   "evidenceIds": ["SAS-4-D1", "SAS-4-D2", "SAS-4-D4", "SAS-4-D5", "SAS-4-D8", "SAS-4-D10", "SAS-4-D18"]
+  },
+  {
+   "question": "Will importers with about 20-500 SKUs pay a recurring fee for a standalone register, and at what price?",
+   "answer": "The pain is real: multi-SKU importers are described as especially exposed (D17), and many sellers still use spreadsheets, email chains and lab portals (D3). But the only prices found are $199/yr (D5), $199 one-time (SAS-4-E3) and $20/report from a lab (D8); Comply PRO+ promotes no filing fees to early adopters (D1 article) and its plan price was not found. No page shows any importer paying a recurring fee to an independent register. The assumed $39/mo ($468/yr) is about 2.3x the cheapest paid platform price seen. Willingness to pay at that price is unevidenced.",
+   "evidenceIds": ["SAS-4-D3", "SAS-4-D5", "SAS-4-D8", "SAS-4-D17"]
+  },
+  {
+   "question": "Has the deadline-driven demand already passed, and how hard is enforcement?",
+   "answer": "CPSC states eFiling is now in effect as of July 8, 2026 (D16), with FTZ imports following on January 8, 2027 (per the CPSC release as read). A law firm says CPSC has given little indication how it will enforce (D12), so urgency to buy a tool is unproven, and the first wave of set-up was served by labs, brokers and vendors that launched before the deadline (D1, D8). New-SKU and retest flow recurs, but at modest value per importer.",
+   "evidenceIds": ["SAS-4-D12", "SAS-4-D16", "SAS-4-D1", "SAS-4-D8"]
+  },
+  {
+   "question": "Is there any structural, exclusive or compounding edge for a new entrant?",
+   "answer": "None evidenced. Once a certificate is in the Registry it is entered once and referenced repeatedly (D11), so the authoritative record and its IDs live at CPSC; Shopify and ShipStation already carry the Reference IDs as fields (D13, D14); brokers read new Registry entries directly once given viewer access (D15). A register that mirrors the Registry has low switching cost. Falsifier: ten importers on a paid pre-sale at more than $199/yr who keep the register as their working record despite free Registry upload. No evidence of this was found.",
+   "evidenceIds": ["SAS-4-D11", "SAS-4-D13", "SAS-4-D14", "SAS-4-D15"]
+  }
+ ],
+ "newEvidence": [
+  {
+   "id": "SAS-4-D1",
+   "url": "https://prospershow.com/news/are-you-ready-for-cpsc-efiling-on-july-8/40234/",
+   "quote": "Comply PRO+ offers two solutions to help Amazon Sellers automate this process ahead of the July 8, 2026 eFiling requirement.",
+   "kind": "other",
+   "publisher": "Prosper Show (guest post by Bill Jacoby, Comply PRO+; promotional)",
+   "date": "2026-02-26",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-4-D2",
+   "url": "https://prospershow.com/news/are-you-ready-for-cpsc-efiling-on-july-8/40234/",
+   "quote": "Supplier login to capture production data and tracking from your suppliers for each shipment.",
+   "kind": "other",
+   "publisher": "Prosper Show (guest post by Bill Jacoby, Comply PRO+; promotional)",
+   "date": "2026-02-26",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-4-D3",
+   "url": "https://prospershow.com/news/are-you-ready-for-cpsc-efiling-on-july-8/40234/",
+   "quote": "Many Amazon sellers still rely on spreadsheets, email chains, and lab portals to manage product safety documentation.",
+   "kind": "demand",
+   "publisher": "Prosper Show (guest post by Bill Jacoby, Comply PRO+; promotional)",
+   "date": "2026-02-26",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-4-D4",
+   "url": "https://www.babysafetyalliance.org/events/EventDetails.aspx?id=2003091",
+   "quote": "Comply PRO+ protects brands by automating data collection, certificate generation, and compliance verification",
+   "kind": "other",
+   "publisher": "Baby Safety Alliance (webinar listing)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-4-D5",
+   "url": "https://www.compliancegate.com/cpsc-efiling-registration/",
+   "quote": "Starting from $199 per year",
+   "kind": "incumbent_price",
+   "publisher": "ComplianceGate",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-4-D6",
+   "url": "https://www.compliancegate.com/cpsc-efiling-registration/",
+   "quote": "Yes, the eFiling registration is free.",
+   "kind": "constraint",
+   "publisher": "ComplianceGate",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-4-D7",
+   "url": "https://www.compliancegate.com/cpsc-efiling-registration/",
+   "quote": "The information listed below is based on the CSV Template for Bulk Upload V3 provided by the CPSC.",
+   "kind": "constraint",
+   "publisher": "ComplianceGate",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-4-D8",
+   "url": "https://cps.bureauveritas.com/newsroom/bureau-veritas-new-efiling-data-capture-solution",
+   "quote": "No cost until August 31. After this time it will be $20/report",
+   "kind": "incumbent_price",
+   "publisher": "Bureau Veritas Consumer Products Services",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-4-D9",
+   "url": "https://www.cpsc.gov/efiling/developers",
+   "quote": "special Software Development Accounts are made available to developers upon request.",
+   "kind": "constraint",
+   "publisher": "U.S. Consumer Product Safety Commission",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-4-D10",
+   "url": "https://www.eurofins.com/en/consumer-product-testing/softlines-hardlines/regulatory-compliance/global-market-access/cpsc-efiling-digital-solution/",
+   "quote": "We digitally generate the relevant CPC or GCC.",
+   "kind": "other",
+   "publisher": "Eurofins",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-4-D11",
+   "url": "https://www.foley.com/insights/publications/2026/05/cpsc-efiling-begins-july-2026importers-of-consumer-products-are-you-ready/",
+   "quote": "a certificate can be entered once in the Product Registry and referenced repeatedly for future shipments.",
+   "kind": "constraint",
+   "publisher": "Foley & Lardner LLP",
+   "date": "2026-05",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-4-D12",
+   "url": "https://www.foley.com/insights/publications/2026/05/cpsc-efiling-begins-july-2026importers-of-consumer-products-are-you-ready/",
+   "quote": "has given little indication as to how it will enforce the new eFiling requirements",
+   "kind": "constraint",
+   "publisher": "Foley & Lardner LLP",
+   "date": "2026-05",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-4-D13",
+   "url": "https://changelog.shopify.com/posts/cpsc-efiling-fields-now-available",
+   "quote": "Merchants and their suppliers are responsible for completing the electronic filing with government agencies.",
+   "kind": "constraint",
+   "publisher": "Shopify Changelog",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-4-D14",
+   "url": "https://docs.shipstation.com/cpsc-efiling",
+   "quote": "Any international business shipping finished consumer products under CPSC jurisdiction to the United States.",
+   "kind": "other",
+   "publisher": "ShipStation developer docs",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-4-D15",
+   "url": "https://www.flexport.com/webinars/flexport-customs-webinar-cpsc-efiling-june-4-2026/",
+   "quote": "anytime you input a new product into the registry, we'll have access to that.",
+   "kind": "other",
+   "publisher": "Flexport (webinar transcript, AI-generated per publisher)",
+   "date": "2026-06-04",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-4-D16",
+   "url": "https://cpsc.gov/Newsroom/News-Releases/2026/CPSC-Implements-Mandatory-eFiling-for-Certificates-of-Compliance-Targeting-Dangerous-Foreign-Imports",
+   "quote": "the Commission's eFiling program is now in effect",
+   "kind": "constraint",
+   "publisher": "U.S. Consumer Product Safety Commission",
+   "date": "2026-07-08",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-4-D17",
+   "url": "https://www.khlaw.com/insights/your-business-prepared-cpsc-efiling",
+   "quote": "Compliance will likely be especially challenging for companies shipping multiple SKUs",
+   "kind": "demand",
+   "publisher": "Keller and Heckman LLP",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-4-D18",
+   "url": "https://altana.ai/resources/cpsc-efiling-webinar-01",
+   "quote": "importers are feeling the certificate crunch",
+   "kind": "demand",
+   "publisher": "Altana",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-4-D19",
+   "url": "https://www.federalregister.gov/documents/2025/01/08/2024-30826/certificates-of-compliance",
+   "quote": "allows importers, or their designees, to enter the certificate data elements",
+   "kind": "constraint",
+   "publisher": "Federal Register (CPSC final rule)",
+   "date": "2025-01-08",
+   "evidenceClass": "agent_reported"
+  }
+ ],
+ "newAlternatives": [
+  {
+   "label": "Comply PRO+ / PRO File+ (Jacoby Solutions): supplier login, data collection, certificate generation, one-click Product Registry filing for Amazon sellers; plan price not found, early adopters promoted as no filing fees",
+   "kind": "paid_incumbent",
+   "costUsdPerMonth": 0,
+   "coversWedge": "full",
+   "sourceLocator": "https://prospershow.com/news/are-you-ready-for-cpsc-efiling-on-july-8/40234/",
+   "evidenceRef": "SAS-4-D2"
+  },
+  {
+   "label": "ComplianceGate platform (certificate creation from CPSC templates; from $199 per year, about $17/month)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 17,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.compliancegate.com/cpsc-efiling-registration/",
+   "evidenceRef": "SAS-4-D5"
+  },
+  {
+   "label": "Bureau Veritas eFiling Data Capture (supplier-led submissions; $20 per report after Aug 31; cost per month depends on report volume)",
+   "kind": "paid_incumbent",
+   "costUsdPerMonth": 20,
+   "coversWedge": "partial",
+   "sourceLocator": "https://cps.bureauveritas.com/newsroom/bureau-veritas-new-efiling-data-capture-solution",
+   "evidenceRef": "SAS-4-D8"
+  },
+  {
+   "label": "Customs broker with viewer access to the importer's own Product Registry account (status quo, no separate tool)",
+   "kind": "diy_or_status_quo",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.flexport.com/webinars/flexport-customs-webinar-cpsc-efiling-june-4-2026/",
+   "evidenceRef": "SAS-4-D15"
+  },
+  {
+   "label": "Shopify and ShipStation CPSC fields that carry Reference PGA IDs (Certifier ID, Product ID, Version ID) to the carrier",
+   "kind": "free_tool",
+   "costUsdPerMonth": 0,
+   "coversWedge": "none",
+   "sourceLocator": "https://changelog.shopify.com/posts/cpsc-efiling-fields-now-available",
+   "evidenceRef": "SAS-4-D13"
+  },
+  {
+   "label": "Altana certificate-data programme for importers (demo-only, price not published)",
+   "kind": "paid_incumbent",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://altana.ai/resources/cpsc-efiling-webinar-01",
+   "evidenceRef": "SAS-4-D18"
+  }
+ ],
+ "killReasons": [
+  {
+   "reason": "A direct SaaS rival already sells the wedge: Comply PRO+ markets a supplier login that captures data from suppliers per shipment, automated data collection, certificate generation and one-click Registry submission to Amazon sellers and distributors, so the lab-neutral supplier-collection gap is not open (vendor claims; its price and customer base were not found).",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "SAS-4-D2"
+  },
+  {
+   "reason": "Free or near-free substitutes cap the price well below the assumed $39/mo: the Registry is free with CSV, API and designee entry, ComplianceGate sells a certificate platform from $199/yr, a $199 workbook exists, and a lab charges $20/report. No evidence shows importers paying a recurring fee to an independent register.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "SAS-4-D5"
+  },
+  {
+   "reason": "Bottom-up first-365-day economics for the reference entrant (150-day build, $3,000 start-up cash) are negative under the pessimistic case (about -$3.9k) even when granted 60 customers by day 365; break-even needs about 65 average-priced customers on the pessimistic price and cost. The entry's earlier +$486/month figure ignored the build period and ramp.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "SAS-4-D8"
+  },
+  {
+   "reason": "No exclusive or compounding edge: the authoritative certificate record and its IDs live in CPSC's Registry (entered once, referenced repeatedly), shipping platforms already carry the IDs as fields, and brokers can read new Registry entries directly, so a mirror register has low switching cost.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "SAS-4-D11"
+  },
+  {
+   "reason": "Demand is deadline-driven and enforcement is unclear: the program has been in effect since July 8, 2026, and a law firm says CPSC has given little indication how it will enforce, which weakens urgency to buy a paid tool.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "SAS-4-D12"
+  }
+ ],
+ "economics": {
+  "revenue365": 8270,
+  "cost365": 4800,
+  "pessimisticProfit365": -3892,
+  "survivesPessimistic": false,
+  "assumptions": [
+    "Timeline (reference entrant, given): first revenue at day 150, so 215 selling days = 7.07 months in the first 365 days.",
+    "Assumption: paying customers ramp linearly from 0 at day 150 to 60 at day 365 (60 reused from the earlier entry, generous given no owned channel); average active customers 30, i.e. 212 customer-months.",
+    "Assumption: price $39 per month, i.e. 2.3x the cheapest paid platform price seen ($199/yr, D5).",
+    "Base revenue = 30 x 7.07 x $39 = about $8,270.",
+    "Assumption: cost365 = $3,000 start-up spend (build, legal review of claims, domain; equals the reference start-up cash) + $150/month hosting, document extraction and support tooling x 12 = $4,800. Owner time (about 1,300 h at 25 h/week) is not costed; base profit of about +$3,470 is roughly $2.7 per owner-hour.",
+    "Pessimistic (price x0.8 = $31.20, volume x0.5 = 30 customers by day 365, cost x1.5 = $7,200): revenue about $3,308, profit about -$3,892.",
+    "Sensitivity: with the base volume of 60 but pessimistic price and cost, profit is still about -$584.",
+    "No customer count, conversion rate or churn is sourced; all are assumptions because no public page gives importer counts or competitor customer numbers."
+  ],
+  "sources": ["SAS-4-D5", "SAS-4-D8", "SAS-4-D1"]
+ },
+ "legalNotes": [
+  "The duty to eFile falls on the importer, with the ACE filing made by the importer or its customs broker; the entrant must not file with CBP or act as a customs broker, and must not advise which products need certificates or tests (Foley says it is the importer's responsibility to decide). Sources: SAS-4-E1, SAS-4-D12.",
+  "SAS-4-D19: the final rule lets importers 'or their designees' enter certificate data in the Registry, so a third-party tool acting for the importer has a legal basis.",
+  "SAS-4-D9: Registry API access needs a Software Development Account on request from CPSC; terms, any fee and approval criteria were not stated on the page read (unverified).",
+  "Supplier documents include manufacturer identity and contact data that law-firm commentary says has long been treated as confidential business information (khlaw page read); uploading it to a third-party register and an AI extraction service needs a privacy policy, data-processing terms and supplier consent.",
+  "Penalty amounts quoted by secondary sources vary; the controlling text is 16 CFR Part 1110 and CPSC guidance. Do not make marketing claims about avoiding penalties or guaranteeing release."
+ ],
+ "unverified": [
+  "Comply PRO+ plan prices, customer numbers and whether it accepts any lab's reports (the article's lab lock-in point was truncated in the page text read); all its features are vendor claims in a promotional guest post.",
+  "ComplianceGate's plan limits and whether its platform collects supplier certificates (its pricing page was not read; permission request timed out).",
+  "Terms, fees and approval criteria for CPSC Software Development Accounts (D9) and any Registry fee on CPSC's own pages; the 'free' statement comes from a third-party guide (D6).",
+  "Number of US importers or small importers in scope; the Federal Register extract read had no count or cost-per-importer figures.",
+  "Whether any importer pays a recurring fee for a standalone certificate register; no buyer evidence found.",
+  "Eurofins and Intertek ongoing prices and whether their portals accept other labs' reports; Bureau Veritas page date and whether its tool accepts non-BV lab data.",
+  "CPSC enforcement activity since July 8, 2026 (no hold or compliance statistics found).",
+  "UPS and Zonos eFiling pages and Shopify's help-centre page could not be opened (permission request timed out or redirect to a login page); no sign-in was attempted."
+ ],
+ "nextStep": "Do not build; revisit only if a public plan page shows Comply PRO+ and ComplianceGate lack multi-lab supplier collection and CPSC's Software Development Account terms are acceptable."
+}

@@ -1,0 +1,293 @@
+{
+  "id": "B2B-1",
+  "verdict": "killed",
+  "verdictReason": "Killed. Every public listing of a plugin business with renewing licences starts near $30k (Flippa $30,000 for ~$6.7k revenue with 60% churn; Acquire $31,500 for $8.9k revenue; Flippa $149,300 for $47k), while the sub-$10k listings seen were lifetime-licence ($800) or pre-revenue ($6,480). At the lowest observed 3.2x revenue, $8.5k buys ~$2.7k revenue (~27 licences at $99/yr): operating profit ~$2.2k/yr (~$3.6/h), payback ~4 years, pessimistic -$9.2k. Free B2B cores (20,000+ installs) and GPL code leave no exclusive edge.",
+  "answers": [
+    {
+      "question": "Do sub-$10k WooCommerce/WordPress B2B-operations plugin businesses with >= 12 months of verifiable renewing licences exist for sale (the open question)?",
+      "answer": "No such listing was found, and the public listings show where the floor sits. Recurring-licence plugin businesses seen: Flippa portfolio of 50+ plugins asking USD $30,000 with ~$6.7k 2025 revenue, 80 active subscribers and 60% overall churn (D3); Acquire.com ratings plugin asking $31,500 with $8,873 annual revenue (D4); Flippa four-plugin WooCommerce business asking USD $149,300 on $46,950 revenue (D1, D2). Sub-$10k listings found were a Microns plugin asking $800 on $680 revenue with a lifetime licence and 36 customers, labelled 'Already Sold' (D5), and a pre-revenue WooCommerce plugin reduced to USD $6,480 (D6). None was a B2B-operations plugin. This cannot be proven absent: private broker lists and the paid tiers (FlipWP $299/yr, Acquire full financials) were not read (D16, B2B-1-E8), but the observed price floor of roughly 3.2x-4.5x revenue means a $10k budget only reaches businesses with about $2.5k-$3k of revenue.",
+      "evidenceIds": ["B2B-1-D1", "B2B-1-D2", "B2B-1-D3", "B2B-1-D4", "B2B-1-D5", "B2B-1-D6", "B2B-1-D16", "B2B-1-E8"]
+    },
+    {
+      "question": "What renewal rates do WordPress/WooCommerce plugin licences actually get, and do they support buying an installed licence base?",
+      "answer": "Evidence is mixed and none is B2B-specific. Freemius's valuation guide calls a 'typical' business one with a renewal rate in the 50%+ range (D8). Toolset reported ~30% on manual renewals in 2018 (D9). A 2017 Freemius post cites developers reporting 60-80% after WooCommerce changed renewal rules, against 10% before (D10). The only listing with a stated figure shows 60% overall churn (D3). So a purchased annual-licence base can plausibly lose 40-70% of its renewing revenue each year unless the seller's new-sales engine (SEO, reviews, marketplace ranking) also transfers, which a stranger cannot assume.",
+      "evidenceIds": ["B2B-1-D3", "B2B-1-D8", "B2B-1-D9", "B2B-1-D10"]
+    },
+    {
+      "question": "Do free or cheap alternatives already cover what a wholesale WooCommerce merchant needs from the premium add-on?",
+      "answer": "Largely yes. WooCommerce Wholesale Prices is free with 20,000+ active installs (D11). A WordPress.org B2B suite lists six free modules (access control, wholesale pricing with volume tiers and quick order, RFQ and quotes, registration approvals, analytics, automation) and a Pro add-on for net terms/CRM/ERP (D12). Paid options are cheap: WooCommerce.com B2B Pricing $99 for a 1-year plan (D14), Wholesale Suite $99/yr single site, $199 unlimited, $299 for the full five-plugin bundle (D13). At $99/yr, $2.7k of revenue is about 27 paying licences, which is a very thin base.",
+      "evidenceIds": ["B2B-1-D11", "B2B-1-D12", "B2B-1-D13", "B2B-1-D14"]
+    },
+    {
+      "question": "Is there an exclusive or compounding edge for a stranger who buys such a plugin, and what would falsify it?",
+      "answer": "No structural edge was found. The WordPress.org listing and installs do transfer, but the handbook restricts larger plugins (B2B-1-E11), code must be GPL-compatible so rivals can fork it (B2B-1-E13), and another acquirer is openly buying: Bright Plugins runs 19+ premium plugins and says deals go 'from first call to payout in weeks, not months' (D15), so the entrant would bid against a faster, portfolio-scale buyer. WooCommerce.com Marketplace sellers also keep only 70% of sales and the transfer terms sit in a vendor agreement not read (D17). Falsifier: a public, verifiable listing of a B2B plugin at or below ~3x revenue with >= 60% renewal and a documented acquisition channel that survives a change of owner; none was found.",
+      "evidenceIds": ["B2B-1-D15", "B2B-1-D17", "B2B-1-E11", "B2B-1-E13"]
+    },
+    {
+      "question": "What are the bottom-up first-365-day economics for the reference entrant ($10k, 12 h/week)?",
+      "answer": "Allocation (assumption): $8,500 purchase, $299 listing-access membership (D16), $500 legal/escrow/transfer admin, $350 running costs, 3% payment fees. Purchase multiple 3.2x revenue (lowest observed: $149,300 / $46,950 = 3.18x, D1) gives revenue ~$2,656 (D7 range 2-4x ARR; 2x would give $4,250). Year-1 cost $9,729, profit about -$7,073 including the purchase; operating profit (revenue minus running costs and fees) about $2,226, i.e. ~$3.6 per hour over 624 hours, payback ~4.2 years if revenue holds flat. Pessimistic (price x0.8, volume x0.5, operating costs x1.5, purchase fixed): revenue ~$1,062, cost ~$10,271, profit ~-$9,209, operating profit ~$490 and payback ~19 years.",
+      "evidenceIds": ["B2B-1-D1", "B2B-1-D3", "B2B-1-D7", "B2B-1-D13", "B2B-1-D16"]
+    }
+  ],
+  "newEvidence": [
+    {
+      "id": "B2B-1-D1",
+      "url": "https://flippa.com/12861716-established-woocommerce-plugin-business-with-a-47-500-yearly-revenue-from-four-commercial-plugins-three-hosted-on-the-official-woocommerce-marketplace",
+      "quote": "has generated a gross revenue of $46,950 over the past 12 months",
+      "kind": "incumbent_price",
+      "publisher": "Flippa (live listing 12861716, four WooCommerce plugins, asking USD $149,300, listed revenue multiple 3.1x, 72% margin, 1,400+ active installs across the two main plugins)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-1-D2",
+      "url": "https://flippa.com/12861716-established-woocommerce-plugin-business-with-a-47-500-yearly-revenue-from-four-commercial-plugins-three-hosted-on-the-official-woocommerce-marketplace",
+      "quote": "Customers pay annual license fees, ensuring regular income.",
+      "kind": "demand",
+      "publisher": "Flippa (live listing 12861716; shows buyers do pay for WooCommerce plugins on annual licences, but at USD $149,300)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-1-D3",
+      "url": "https://flippa.com/12279112",
+      "quote": "In 2025, the business achieved a net revenue of $6,741, which is on track to grow to an annualized $8,320 in 2026",
+      "kind": "incumbent_price",
+      "publisher": "Flippa (live listing 12279112, 50+ premium WooCommerce/WordPress plugins; page fields: Asking Price (Classified) USD $30,000, Total Active Subscribers 80, Overall Churn 60%, site age 6 years)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-1-D4",
+      "url": "https://app.acquire.com/startup/vvc1ctl45x-profitable-wordpress-ratings-plugin-9k-ttm-profit-250-customers",
+      "quote": "Asking Price: $31,500",
+      "kind": "incumbent_price",
+      "publisher": "Acquire.com (public listing: WordPress ratings plugin, Annual Revenue $8,873, Annual Profit $9,000, 251-500 customers, $6.1K ARR; churn and annual-licence status not stated)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-1-D5",
+      "url": "https://www.microns.io/startup-listings/discount-codes-wp-plugin",
+      "quote": "Business model: Lifetime payment.",
+      "kind": "other",
+      "publisher": "Microns (listing: WP discount-codes plugin, asking $800, $680 annual revenue, 36 customers, lifetime licence for $19.99, marked 'Already Sold'); example of sub-$10k supply being lifetime-licence, not renewing",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-1-D6",
+      "url": "https://flippa.com/14281629-production-ready-woocommerce-account-dashboard-plugin-with-source-code-domain-website-brand-licensing-system-and-backend",
+      "quote": "Despite being pre-revenue",
+      "kind": "other",
+      "publisher": "Flippa (live listing 14281629, WooCommerce account-dashboard plugin with licensing system, USD $9,000 reduced 28% to USD $6,480, no revenue or customers stated)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-1-D7",
+      "url": "https://freemius.com/blog/acquisitions-exits-wordpress-business-worth/",
+      "quote": "your asking price on a sale should be somewhere between 2–4x your ARR.",
+      "kind": "incumbent_price",
+      "publisher": "Freemius blog (Alex Denning, 'Acquisitions & Exits: How Much Is Your WordPress Business Worth?')",
+      "date": "2022-01-11",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-1-D8",
+      "url": "https://freemius.com/blog/acquisitions-exits-wordpress-business-worth/",
+      "quote": "your renewal rate being in the 50%+ range",
+      "kind": "other",
+      "publisher": "Freemius blog (Alex Denning; describes a 'typical' WordPress business as having a 50%+ renewal rate)",
+      "date": "2022-01-11",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-1-D9",
+      "url": "https://freemius.com/blog/lifetime-licenses-to-automatic-renewals/",
+      "quote": "We had a renewal rate of around 30%.",
+      "kind": "other",
+      "publisher": "Freemius blog (Amir Helzer, Toolset/WPML on manual annual renewals before lifetime licences)",
+      "date": "2018-08-28",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-1-D10",
+      "url": "https://freemius.com/blog/renewals-discount-for-wordpress-plugins-and-themes/",
+      "quote": "Instead of an Avg. 10% renewals rate, developers are reporting 60%, 70%, and even 80% renewals rate.",
+      "kind": "other",
+      "publisher": "Freemius blog (renewals-discount article following WooCommerce's 2017 change; developer-reported, unaudited)",
+      "date": "2017-06-28",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-1-D11",
+      "url": "https://wordpress.org/plugins/woocommerce-wholesale-prices/",
+      "quote": "Active installations 20,000+",
+      "kind": "demand",
+      "publisher": "WordPress.org Plugin Directory (WooCommerce Wholesale Prices, free, 'Last updated 2 weeks ago', lists a Premium add-on)",
+      "date": "2026-10",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-1-D12",
+      "url": "https://wordpress.org/plugins/codeatoz-b2b-suite-for-woocommerce/",
+      "quote": "Six powerful free modules cover the essentials.",
+      "kind": "other",
+      "publisher": "WordPress.org Plugin Directory (CodeAtoZ B2B Suite: free access control, wholesale pricing, RFQ and quotes, registrations/approvals, analytics, automation; Pro add-on with 16 more modules incl. net terms; fewer than 10 installs, price of Pro not shown)",
+      "date": "2026-10",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-1-D13",
+      "url": "https://wholesalesuiteplugin.com/?p=12630",
+      "quote": "Special introductory pricing, all renewals are at full price.",
+      "kind": "incumbent_price",
+      "publisher": "Wholesale Suite (Rymera) vendor pricing page: Single Site $99/year, Unlimited $199/year, All Access Bundle $299/year (five wholesale plugins), page last modified 2026-07-31",
+      "date": "2026-07-31",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-1-D14",
+      "url": "https://woocommerce.com/products/b2b-pricing/",
+      "quote": "Create role-based pricing, tiered discounts, and tax exemptions for wholesale buyers and B2B customers.",
+      "kind": "incumbent_price",
+      "publisher": "WooCommerce.com Marketplace (B2B Pricing by WPKoders; page shows 1-year plan $99 and a 2-year plan $198 listed at $158.40)",
+      "date": "2026-10",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-1-D15",
+      "url": "https://brightplugins.com/sell-my-woocommerce-wordpress-plugin-business/",
+      "quote": "Most deals go from first call to payout in weeks, not months.",
+      "kind": "other",
+      "publisher": "Bright Plugins (active acquirer of WordPress/WooCommerce plugins; page also says 'Your plugin joins 19+ plugins under one roof' and offers on 'revenue, installs, reviews, and growth potential')",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-1-D16",
+      "url": "https://poststatus.com/flipwp-a-marketplace-for-acquisitions-alex/",
+      "quote": "Membership is $299/year, which gets you access to listings of WordPress businesses for sale.",
+      "kind": "incumbent_price",
+      "publisher": "Post Status (Dan Knauss on FlipWP, a WordPress-business acquisition marketplace; 2021 price, may have changed)",
+      "date": "2021-06-18",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-1-D17",
+      "url": "https://developer.woocommerce.com/docs/woo-marketplace/getting-started/",
+      "quote": "The commercial terms are based on a revenue share model, with 70% of sales going to the vendor.",
+      "kind": "constraint",
+      "publisher": "WooCommerce Developer Docs (Woo Marketplace getting started; links to a Marketplace Vendor Agreement not read)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    }
+  ],
+  "newAlternatives": [
+    {
+      "label": "CodeAtoZ B2B Suite for WooCommerce (free: access control, wholesale pricing, RFQ/quotes, registration approvals; Pro add-on adds net terms)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://wordpress.org/plugins/codeatoz-b2b-suite-for-woocommerce/",
+      "evidenceRef": "B2B-1-D12"
+    },
+    {
+      "label": "WooCommerce Wholesale Prices (free, 20,000+ installs, premium add-on available)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://wordpress.org/plugins/woocommerce-wholesale-prices/",
+      "evidenceRef": "B2B-1-D11"
+    },
+    {
+      "label": "WooCommerce.com B2B Pricing by WPKoders ($99 for a 1-year plan)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 8.25,
+      "coversWedge": "partial",
+      "sourceLocator": "https://woocommerce.com/products/b2b-pricing/",
+      "evidenceRef": "B2B-1-D14"
+    },
+    {
+      "label": "Wholesale Suite All Access Bundle ($299/year: wholesale prices, payments, order form, lead capture, quotes)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 24.92,
+      "coversWedge": "full",
+      "sourceLocator": "https://wholesalesuiteplugin.com/?p=12630",
+      "evidenceRef": "B2B-1-D13"
+    },
+    {
+      "label": "FlipWP membership to browse WordPress businesses for sale ($299/year in 2021)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 24.92,
+      "coversWedge": "partial",
+      "sourceLocator": "https://poststatus.com/flipwp-a-marketplace-for-acquisitions-alex/",
+      "evidenceRef": "B2B-1-D16"
+    }
+  ],
+  "killReasons": [
+    {
+      "reason": "No public sign of sub-$10k supply for the wedge: recurring-licence plugin businesses are listed at $30,000 (~$6.7k revenue, 80 subscribers, 60% churn), $31,500 ($8.9k revenue) and $149,300 ($47k revenue); sub-$10k listings seen are lifetime-licence ($800) or pre-revenue ($6,480), and none is B2B-operations.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "B2B-1-D3"
+    },
+    {
+      "reason": "Economics fail even if supply existed: at 3.2x revenue (observed low; 2-4x ARR range) $8.5k buys ~$2.7k revenue, operating profit ~$2.2k/yr (~$3.6 per hour at 12 h/week), payback ~4 years, year-1 profit about -$7.1k; pessimistic (price x0.8, volume x0.5, cost x1.5) is about -$9.2k with ~19-year payback.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "B2B-1-D7"
+    },
+    {
+      "reason": "The purchased revenue base decays: renewal rates cited are ~30% (manual), 50%+ (valuation norm) and 60% churn on the one listing with a figure; at $99/yr per licence the base is only ~27 customers, and vendor pricing pages show renewal repricing risk ('all renewals are at full price').",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "B2B-1-D9"
+    },
+    {
+      "reason": "No exclusive or compounding edge: free B2B cores with 20,000+ installs and a free six-module B2B suite cover the basics, GPL-compatible code can be forked, and an active portfolio acquirer closes deals in weeks.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "B2B-1-D11"
+    },
+    {
+      "reason": "Directory transfer of larger plugins is restricted and WooCommerce.com Marketplace sellers keep 70% with transfer terms in an unread vendor agreement, adding delay and margin risk.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "B2B-1-D17"
+    }
+  ],
+  "economics": {
+    "revenue365": 2656,
+    "cost365": 9729,
+    "pessimisticProfit365": -9209,
+    "survivesPessimistic": false,
+    "assumptions": [
+      "assumption: $8,500 of the $10,000 goes to the purchase price; the rest covers listing-access membership, legal/escrow/transfer admin and running costs",
+      "Purchase multiple 3.2x revenue = lowest observed (149,300 / 46,950 = 3.18x, B2B-1-D1); other observed: 31,500 / 8,873 = 3.55x (D4), 30,000 / 8,320 annualised = 3.6x (D3); Freemius range 2-4x ARR (D7). Revenue365 = 8,500 / 3.2 = about $2,656",
+      "assumption: seller's run-rate holds flat for the first 365 days (generous given 30-60% renewal evidence, D3/D8/D9); revenue arrives from inherited licence anniversaries, first revenue within ~90 days",
+      "FlipWP membership $299 (D16, 2021 price); assumption: $500 legal/escrow/transfer admin; assumption: $350 running costs (hosting, licence server, email, support desk; listings show far lower seller expenses but those exclude the buyer's tooling); assumption: 3% payment processing",
+      "Year-1 cost = 8,500 + 299 + 500 + 350 + 80 = $9,729; profit = -$7,073 including purchase; operating profit = 2,656 - 430 = $2,226 (~$3.6/h over 624 h)",
+      "Pessimistic: price x0.8 and volume x0.5 gives revenue ~$1,062; cost x1.5 applied to non-purchase costs (purchase price is a fixed contract amount, otherwise cost would exceed the $10k budget) gives cost ~$10,271 and profit ~-$9,209",
+      "Owner time (12 h/week) is not costed; ownership of the support and compatibility-testing workload is assumed possible at that time budget"
+    ],
+    "sources": ["B2B-1-D1", "B2B-1-D3", "B2B-1-D4", "B2B-1-D7", "B2B-1-D8", "B2B-1-D9", "B2B-1-D13", "B2B-1-D16"]
+  },
+  "legalNotes": [
+    "WordPress.org: plugin transfer to a new owner is possible but larger plugins are restricted (B2B-1-E11); make any purchase conditional on the directory accepting the transfer.",
+    "WordPress.org guidelines: free plugins may not lock functionality behind payment (B2B-1-E12) and code must be GPL-compatible (B2B-1-E13), so a premium add-on has to be separate code and rivals may legally fork it.",
+    "WooCommerce.com Marketplace products are sold under a Marketplace Vendor Agreement with a 70% vendor share (D17); whether a product can be assigned to a new vendor was not read.",
+    "Transferring customer/licence databases may need a privacy-policy and data-processing review; acquisition-marketplace terms, fees and escrow rules (Flippa, Acquire.com, FlipWP) were not read. Not legal advice.",
+    "This research read only public pages with no logins, signups, purchases or contact with sellers; seller claims on listings are unaudited."
+  ],
+  "unverified": [
+    "Whether any sub-$10k B2B-operations plugin with >= 12 months of renewing licences exists on private broker lists, in FlipWP's paid listings, or in Acquire.com's paid detail views; public pages cannot settle this and the sellers or brokers hold the data.",
+    "The renewal rate of any WooCommerce B2B plugin; the figures found are general WordPress plugin figures from 2017-2022 or a single listing, and none is audited.",
+    "Acquire.com listing 'WordPress plugin with 10K installs, recurring revenue, $29K TTM profit' could not be read (page returned no listing text), so its price and licence model are unknown.",
+    "Flippa listing 12279112 page fields show a 60% overall churn but do not say whether the subscriptions are annual licences; its stated revenue multiple (4.1x) differs from asking price divided by annualised revenue (3.6x).",
+    "WooCommerce.com Marketplace vendor-agreement transfer terms, WordPress.org transfer timing, and buyer fees on Flippa/Acquire.com were not read.",
+    "FlipWP membership price is from a 2021 article and may have changed; Freemius renewal figures are dated 2017-2022."
+  ],
+  "nextStep": "Drop B2B-1; reopen only if a public listing shows a WooCommerce B2B plugin at or below about $10k with 12 months of audited annual-licence renewals of 60% or better."
+}

@@ -1,0 +1,810 @@
+{
+ "candidates": [
+  {
+   "id": "MKT-1",
+   "name": "Open-slot exchange for small-farm meat processing (inspected plants)",
+   "family": "marketplaces",
+   "buyer": "Small livestock producers selling beef, pork or lamb direct, who must book kill-floor and cutting slots at a few regional inspected plants, plus the plants themselves",
+   "pain": "Processing slots at the nearest inspected plant are booked up to a year ahead ('I can't retail cuts because I'm not going to book a year in advance for a product I haven't sold yet'), so producers cannot line animals up with sales.",
+   "wedge": "A booking layer where plants publish open and cancelled slots and producers reserve them across plants for a per-booking fee, bundled with a free scheduling calendar for the plant.",
+   "referenceEntrant": {
+    "startupCashUsd": 3000,
+    "daysToFirstRevenue": 150,
+    "ownerHoursPerWeek": 20
+   },
+   "entrantEdge": {
+    "type": "embedded_workflow_or_system_of_record",
+    "status": "none",
+    "statement": "Tried: becoming the plants' scheduling system of record so slot and cut-sheet data accumulates. It does not hold: plant software vendors already own intake, scheduling and customer portals (E4, E5, E6), a free university-run directory already holds the processor listing layer (E3), and the binding constraint is physical kill-floor capacity and labour that a booking layer cannot add (E2, E7). Nothing exclusive accrues to a third-party exchange; a plant can run its own calendar and phone line.",
+    "evidenceIds": [
+     "MKT-1-E5",
+     "MKT-1-E6"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "MeatSuite processor directory (NC State / Cornell, free accounts)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://cefs.ncsu.edu/food-system-initiatives/nc-choices/meatsuite/",
+      "evidenceRef": "MKT-1-E3",
+      "metrics": {
+       "channel_reach": 0
+      }
+     },
+     {
+      "label": "Plant-run booking portal or phone (e.g. plants using finerbutcher.com scheduling)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://finerbutcher.screenstepslive.com/s/fbdocs/m/portal/l/729122-online-scheduling-poultry",
+      "evidenceRef": "MKT-1-E5",
+      "metrics": {
+       "channel_reach": 1
+      }
+     },
+     {
+      "label": "Cleavr processor software (intake, cut instructions, scheduling); billing period not stated on page, treated as monthly",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 249,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.capterra.com.au/software/1108654/Cleavr",
+      "evidenceRef": "MKT-1-E4",
+      "metrics": {
+       "channel_reach": 1
+      }
+     },
+     {
+      "label": "Booking a year ahead directly at the one nearby plant (status quo)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.farmanddairy.com/?p=921281",
+      "evidenceRef": "MKT-1-E1",
+      "metrics": {
+       "channel_reach": 1
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "channel_reach",
+    "direction": "higher_is_better",
+    "incumbentValue": 1,
+    "entrantValue": 15,
+    "falsifier": "Values are hypotheses read from page descriptions, not measurements. If fewer than about 10 plants in one state agree within 90 days to expose live open or cancelled slots to a third party at no cost to them, or producers will not pay a per-booking fee when slots are scarce, there is no edge."
+   },
+   "evidence": [
+    {
+     "id": "MKT-1-E1",
+     "url": "https://www.farmanddairy.com/?p=921281",
+     "quote": "I can't retail cuts because I'm not going to book a year in advance for a product I haven't sold yet.",
+     "kind": "demand",
+     "publisher": "Farm and Dairy",
+     "date": "2026-07-14",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-1-E2",
+     "url": "https://www.farmanddairy.com/?p=921281",
+     "quote": "backs are against the wall with labor shortages",
+     "kind": "constraint",
+     "publisher": "Farm and Dairy",
+     "date": "2026-07-14",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-1-E3",
+     "url": "https://cefs.ncsu.edu/food-system-initiatives/nc-choices/meatsuite/",
+     "quote": "Create a free farmer or processor account to access all of the tools on MeatSuite.com.",
+     "kind": "incumbent_price",
+     "publisher": "NC State Center for Environmental Farming Systems",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-1-E4",
+     "url": "https://www.capterra.com.au/software/1108654/Cleavr",
+     "quote": "Starting Price: USD 249.00",
+     "kind": "incumbent_price",
+     "publisher": "Capterra",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-1-E5",
+     "url": "https://finerbutcher.screenstepslive.com/s/fbdocs/m/portal/l/729122-online-scheduling-poultry",
+     "quote": "Your plant uses finerbutcher.com to provide an easy, efficient and unique way to schedule your animals for processing.",
+     "kind": "other",
+     "publisher": "Finer Butcher help centre",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-1-E6",
+     "url": "https://meatpoultry.com/articles/26241-smart-locker-introduces-new-tool-for-meat-processors",
+     "quote": "manage slaughter availability, book appointments and send reminders",
+     "kind": "other",
+     "publisher": "Meat+Poultry",
+     "date": "2022-02-23",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-1-E7",
+     "url": "https://www.farmanddairy.com/?p=921281",
+     "quote": "there's not enough processors out there that can do double inspection.",
+     "kind": "constraint",
+     "publisher": "Farm and Dairy",
+     "date": "2026-07-14",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 6,
+    "distribution_advantage": 2,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 2,
+    "willingness_to_pay": 3,
+    "repeat_ltv_potential": 4,
+    "competition_adjusted_gap": 3,
+    "market_depth": 3,
+    "end_to_end_automation": 6,
+    "capital_risk": 8,
+    "owner_time_support": 5
+   },
+   "componentReasons": {
+    "entrant_edge": "No structural edge: scheduling and customer portals are already sold to plants (MKT-1-E4, MKT-1-E5, MKT-1-E6) and a third-party exchange holds nothing exclusive.",
+    "customer_problem_or_value": "The pain is real, with year-long lead times for producers who cannot sell cuts they have not yet booked (MKT-1-E1), but the root cause is plant capacity (MKT-1-E2, MKT-1-E7).",
+    "distribution_advantage": "No owned or low-CAC channel to producers or plants was found; the only free reach asset is a university directory that is already live (MKT-1-E3).",
+    "defensibility": "Plants can keep their own calendars and a rival can copy a slot board; vendors with plant data already in place (MKT-1-E5, MKT-1-E6) are better positioned.",
+    "absolute_gross_profit_potential": "Plants are capacity-constrained (MKT-1-E2), so there are few reallocatable slots to charge on, and the pessimistic case is negative under flagged assumptions.",
+    "willingness_to_pay": "Producers clearly suffer (MKT-1-E1) but no page shows producers or plants paying a third party; the only observed payments are plant-side software at USD 249 and up (MKT-1-E4).",
+    "repeat_ltv_potential": "Producers rebook animals each season, so repeat use is plausible, but cancellations are scarce so volume per producer is low.",
+    "competition_adjusted_gap": "A free directory (MeatSuite, MKT-1-E3) and plant software with customer scheduling (MKT-1-E5) cover most of the surrounding workflow; only cross-plant live slots are unserved.",
+    "market_depth": "The market is small plants in each region with thin cancellations, and the shortage is physical (MKT-1-E7).",
+    "end_to_end_automation": "Slot listing, reservation and payment can be automated, but plants without software would need onboarding by phone.",
+    "capital_risk": "A web app and payments integration fit under 3000 USD.",
+    "owner_time_support": "Plant onboarding and dispute handling need ongoing human time."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "MKT-1-E7: plants operate under federal or state inspection; a scheduling-only intermediary is not itself an inspected establishment (unverified, not a lawyer). No licence identified for a booking layer.",
+    "MKT-1-E3: MeatSuite is a university-run service with free accounts; no platform terms were read that would block a competing directory (unverified)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Flagged assumptions, none evidenced: 25 USD per booking x 400 bookings per year = 10,000 USD revenue against 3,000 USD yearly cost is positive. Pessimistic (price 20, volume 200, cost 4,500) = 4,000 against 4,500, negative."
+    },
+    "killReasons": [
+     {
+      "reason": "No payer: plants are over capacity and already pay for their own scheduling software, and nothing shows producers or plants paying a third party to move slots.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "MKT-1-E2"
+     },
+     {
+      "reason": "The scheduling system-of-record layer is occupied by processor software vendors with customer portals.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MKT-1-E5"
+     },
+     {
+      "reason": "A free university-run directory already covers processor discovery.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MKT-1-E3"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: the scarce resource is plant capacity, which a booking layer cannot create; plants already buy scheduling software with customer portals (MKT-1-E4, MKT-1-E5, MKT-1-E6) and discovery is free (MKT-1-E3), so no structural edge or payer was found. Not verified: whether any plant would share open slots with a third party (no contact allowed), and the prices of Finer Butcher and Smart Locker (not published on the pages read)."
+  },
+  {
+   "id": "MKT-2",
+   "name": "Lab-bid exchange for children's-product compliance testing",
+   "family": "marketplaces",
+   "buyer": "Small importers and makers of children's products (Amazon, Etsy, Shopify sellers) that must have each product tested by a CPSC-accepted lab before issuing a Children's Product Certificate",
+   "pain": "Testing is mandatory and costs 'between 500 and 1800 USD per product' with no fixed price, so sellers must gather and compare quotes from several labs.",
+   "wedge": "A single-form quote exchange where CPSC-accepted labs bid on a seller's test plan and pay a success fee when the seller books.",
+   "referenceEntrant": {
+    "startupCashUsd": 2500,
+    "daysToFirstRevenue": 120,
+    "ownerHoursPerWeek": 15
+   },
+   "entrantEdge": {
+    "type": "proprietary_or_compounding_data",
+    "status": "none",
+    "statement": "Tried: accumulate a private dataset of lab quotes, turnaround times and test plans per product type. It is not structural: ComplianceGate already runs 'Book testing and compare prices' with lab partners and seller subscriptions from 199 USD a year (MKT-2-E1, MKT-2-E3), Amazon publishes its own curated lab list (MKT-2-E5), the CPSC publishes the accepted-lab list free (MKT-2-E4), and labs bill sellers directly (MKT-2-E6). Any competitor can rebuild a quote dataset with the same lab emails.",
+    "evidenceIds": [
+     "MKT-2-E3"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "CPSC 'Search for a CPSC-Accepted Testing Lab' tool",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://cpsc.gov/Business--Manufacturing/Testing-Certification/Lab-Accreditation",
+      "evidenceRef": "MKT-2-E4",
+      "metrics": {
+       "step_count": 3
+      }
+     },
+     {
+      "label": "Amazon Seller Central curated provider list (described in Euverify guide)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://euverify.com/resource/amazons-approved-third-party-testing-labs/",
+      "evidenceRef": "MKT-2-E5",
+      "metrics": {
+       "step_count": 3
+      }
+     },
+     {
+      "label": "Request quotes by email from two or three labs yourself",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://euverify.com/resource/amazons-approved-third-party-testing-labs/",
+      "evidenceRef": "MKT-2-E7",
+      "metrics": {
+       "step_count": 3
+      }
+     },
+     {
+      "label": "ComplianceGate platform (subscription from 199 USD per year, about 16.6 per month; lab fees paid separately)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 16.6,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.compliancegate.com/lab-testing/",
+      "evidenceRef": "MKT-2-E1",
+      "metrics": {
+       "step_count": 1
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "step_count",
+    "direction": "lower_is_better",
+    "incumbentValue": 1,
+    "entrantValue": 1,
+    "falsifier": "Values are estimates from page descriptions. Edge exists only if a lab-bid flow measurably needs fewer seller steps or yields lower all-in test cost than ComplianceGate's quote flow; if labs decline to bid or sellers see no price difference versus ComplianceGate, there is no edge."
+   },
+   "evidence": [
+    {
+     "id": "MKT-2-E1",
+     "url": "https://www.compliancegate.com/lab-testing/",
+     "quote": "Starting from $199 per year.",
+     "kind": "incumbent_price",
+     "publisher": "ComplianceGate",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-2-E2",
+     "url": "https://www.compliancegate.com/cpsia-product-lab-testing/",
+     "quote": "most of our customers pay somewhere between 500 and 1800 USD per product.",
+     "kind": "demand",
+     "publisher": "ComplianceGate",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-2-E3",
+     "url": "https://www.compliancegate.com/lab-testing/",
+     "quote": "Book testing and compare prices",
+     "kind": "other",
+     "publisher": "ComplianceGate",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-2-E4",
+     "url": "https://cpsc.gov/Business--Manufacturing/Testing-Certification/Lab-Accreditation",
+     "quote": "testing performed by a third-party accredited laboratory that CPSC has accepted to perform the specific tests",
+     "kind": "constraint",
+     "publisher": "U.S. Consumer Product Safety Commission",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-2-E5",
+     "url": "https://euverify.com/resource/amazons-approved-third-party-testing-labs/",
+     "quote": "maintains a curated list of third-party testing laboratories",
+     "kind": "other",
+     "publisher": "Euverify",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-2-E6",
+     "url": "https://www.compliancegate.com/lab-testing/",
+     "quote": "Lab testing fees are charged directly by our lab testing partners.",
+     "kind": "constraint",
+     "publisher": "ComplianceGate",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-2-E7",
+     "url": "https://euverify.com/resource/amazons-approved-third-party-testing-labs/",
+     "quote": "at least two or three labs",
+     "kind": "other",
+     "publisher": "Euverify",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 6,
+    "distribution_advantage": 3,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 4,
+    "willingness_to_pay": 6,
+    "repeat_ltv_potential": 4,
+    "competition_adjusted_gap": 1,
+    "market_depth": 5,
+    "end_to_end_automation": 6,
+    "capital_risk": 9,
+    "owner_time_support": 6
+   },
+   "componentReasons": {
+    "entrant_edge": "No edge: an incumbent already offers booking and price comparison with lab partners (MKT-2-E1, MKT-2-E3) and the lab lists are public (MKT-2-E4, MKT-2-E5).",
+    "customer_problem_or_value": "Testing is legally required and costs hundreds to thousands of dollars per product (MKT-2-E2, MKT-2-E4), so a quote-comparison pain is real.",
+    "distribution_advantage": "Search demand for testing costs probably exists, but no owned or exclusive channel was found, and the incumbent already ranks and sells to this audience (MKT-2-E2).",
+    "defensibility": "Quote data and lab relationships are easy for ComplianceGate or a lab group to replicate, and labs bill sellers directly (MKT-2-E6).",
+    "absolute_gross_profit_potential": "Per-test tickets of 500 to 1800 USD (MKT-2-E2) support a meaningful per-booking fee, but whether labs pay referral fees is unverified.",
+    "willingness_to_pay": "Sellers demonstrably spend 500 to 1800 USD per product on testing (MKT-2-E2) and pay a subscription from 199 USD a year for a comparison platform (MKT-2-E1).",
+    "repeat_ltv_potential": "Sellers retest when they add products or standards change, but each product needs only periodic testing.",
+    "competition_adjusted_gap": "The wedge is covered by ComplianceGate's flow (MKT-2-E3), Amazon's provider list (MKT-2-E5) and free lab search (MKT-2-E4).",
+    "market_depth": "Many small sellers of children's products exist, but no figure was collected, so depth is a moderate guess.",
+    "end_to_end_automation": "Quote intake, routing and booking can be automated; lab disputes and test-plan questions need humans.",
+    "capital_risk": "A web form, email routing and payments cost under 2500 USD.",
+    "owner_time_support": "Mostly routed automatically, with occasional lab and seller support."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "MKT-2-E4: federal rules require children's-product testing by a CPSC-accepted lab; the exchange would only route quotes and would not test or certify. Whether any rule restricts lab referral fees is unverified (not a lawyer).",
+    "MKT-2-E6: the incumbent's lab fees are billed by labs directly, so a success-fee model would need its own lab agreements; none was read."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "Flagged assumptions, none evidenced: 8 percent success fee on an average 1,000 USD test = 80 USD x 120 bookings per year = 9,600 USD against 2,500 USD cost. Pessimistic (price 64, volume 60, cost 3,750) = 3,840 against 3,750, barely positive. Moot because competition removes the volume."
+    },
+    "killReasons": [
+     {
+      "reason": "An incumbent already operates 'Book testing and compare prices' with named lab partners, and free lab lists exist from the CPSC and Amazon.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "MKT-2-E3"
+     },
+     {
+      "reason": "Labs bill sellers directly, and no evidence was found that labs pay referral fees to an exchange.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MKT-2-E6"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: ComplianceGate already sells a booking and price-comparison platform from 199 USD a year (MKT-2-E1, MKT-2-E3), and free lab lists exist (MKT-2-E4, MKT-2-E5); a quote dataset is not an exclusive asset. Not verified: ComplianceGate's lab count or revenue model, and whether labs would pay referral fees."
+  },
+  {
+   "id": "MKT-3",
+   "name": "Acquired niche hobby forum with paid seller membership classifieds",
+   "family": "marketplaces",
+   "buyer": "Hobbyists who buy and sell expensive used gear inside a niche community that values member reputation, and the sellers who would pay for access to that audience",
+   "pain": "General free channels lack seller reputation history, while niche forums that do have it are old communities that gate selling behind paid membership (for example BladeForums, where selling needs a paid Gold membership of about 30 to 35 USD a year).",
+   "wedge": "Buy an aged, weakly monetised niche forum with an existing buy/sell/trade section from a public site-sale listing, then gate selling behind a paid seller membership or capped success fee with feedback records.",
+   "referenceEntrant": {
+    "startupCashUsd": 3000,
+    "daysToFirstRevenue": 120,
+    "ownerHoursPerWeek": 20
+   },
+   "entrantEdge": {
+    "type": "acquirable_owned_audience_or_partner_channel",
+    "status": "claimed",
+    "statement": "Liquidity without an existing audience can only come from buying one with its reputation history. Listings show aged forums changing hands at low multiples of very small profit (MKT-3-E6), and what would accumulate is member feedback and seller history that free channels lack. Not evidenced: that any purchasable forum has active buy/sell volume (advisers say most listed forums are dead, MKT-3-E5), and fee evasion to free channels is documented (MKT-3-E4).",
+    "evidenceIds": [
+     "MKT-3-E6",
+     "MKT-3-E5"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Facebook Marketplace and groups (local pickup free; shipped sales 10 percent)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.valueaddedresource.net/facebook-marketplace-doubling-selling-fees/",
+      "evidenceRef": "MKT-3-E7",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Free general classifieds that sellers use alongside the forum (Gumtree in the Australian example)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.stereonet.com/forums/topic/578458-a-conversation-about-sellers-fees",
+      "evidenceRef": "MKT-3-E4",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Established forum with paid seller membership (BladeForums Gold, about 30 to 35 USD per year)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 2.9,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.bladeforums.com/threads/do-you-need-a-paid-subscription-to-sell-a-knife-and-if-so-how-much.1897050/",
+      "evidenceRef": "MKT-3-E1",
+      "metrics": {
+       "cash_cost": 2.9
+      }
+     },
+     {
+      "label": "Forum's own free classifieds with no fee structure (BrickPicker thread)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.brickpicker.com/forums/topic/5132-a-serious-discussion-about-brick-classifieds/page/6",
+      "evidenceRef": "MKT-3-E8",
+      "metrics": {
+       "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 2.9,
+    "falsifier": "Screen purchasable forums for active classifieds. If none show about 100 or more live sale threads per month with feedback history, or if after a fee is introduced more than half of previously visible sales move to free channels ('sold elsewhere'), the audience is not monetisable and there is no edge. Entrant fee of 2.9 USD per month is the BladeForums analogue, not a measurement."
+   },
+   "evidence": [
+    {
+     "id": "MKT-3-E1",
+     "url": "https://www.bladeforums.com/threads/do-you-need-a-paid-subscription-to-sell-a-knife-and-if-so-how-much.1897050/",
+     "quote": "the minimum would be a Gold membership. I believe that is around $30-35 for the entire year.",
+     "kind": "incumbent_price",
+     "publisher": "BladeForums member post",
+     "date": "2022-10-25",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-3-E2",
+     "url": "https://www.bladeforums.com/help/exchange-rules-revision/",
+     "quote": "Basic Members may not post items for sale.",
+     "kind": "demand",
+     "publisher": "BladeForums",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-3-E3",
+     "url": "https://www.stereonet.com/forums/topic/578458-a-conversation-about-sellers-fees",
+     "quote": "a mandatory 4% fee based on the selling price",
+     "kind": "demand",
+     "publisher": "StereoNET forum administrator",
+     "date": "2023-04-20",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-3-E4",
+     "url": "https://www.stereonet.com/forums/topic/578458-a-conversation-about-sellers-fees",
+     "quote": "StereoNET is just being used for 'lead generation' in those cases.",
+     "kind": "constraint",
+     "publisher": "StereoNET forum member",
+     "date": "2023-04",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-3-E5",
+     "url": "https://xenforo.com/community/threads/buying-forums.91467/",
+     "quote": "most of them are dead forums.",
+     "kind": "constraint",
+     "publisher": "XenForo community member",
+     "date": "2015-01-27",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-3-E6",
+     "url": "https://flippa.com/11717385-a-busy-and-active-16-year-old-trading-forum-with-over-65-000-members",
+     "quote": "A busy and active 16 year old trading forum with over 65,000 members",
+     "kind": "other",
+     "publisher": "Flippa listing",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-3-E7",
+     "url": "https://www.valueaddedresource.net/facebook-marketplace-doubling-selling-fees/",
+     "quote": "Items for local pickup are not charged this fee.",
+     "kind": "incumbent_price",
+     "publisher": "Value Added Resource",
+     "date": "2024-04",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-3-E8",
+     "url": "https://www.brickpicker.com/forums/topic/5132-a-serious-discussion-about-brick-classifieds/page/6",
+     "quote": "people would expect too many guarantees for very little fees that are paid.",
+     "kind": "constraint",
+     "publisher": "BrickPicker forum member",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 3,
+    "customer_problem_or_value": 5,
+    "distribution_advantage": 3,
+    "defensibility": 3,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 5,
+    "repeat_ltv_potential": 6,
+    "competition_adjusted_gap": 3,
+    "market_depth": 3,
+    "end_to_end_automation": 3,
+    "capital_risk": 8,
+    "owner_time_support": 3
+   },
+   "componentReasons": {
+    "entrant_edge": "The audience-acquisition edge is only claimed: the sale listing shows cheap forums exist (MKT-3-E6) but not that any has live trading, and advisers say most are dead (MKT-3-E5).",
+    "customer_problem_or_value": "Reputation-backed niche selling has value to hobbyists, as shown by established forums that restrict selling to members (MKT-3-E2), but free channels cover local trades (MKT-3-E7).",
+    "distribution_advantage": "A bought forum brings an organic audience only if it is truly active; evidence on activity of purchasable forums is absent (MKT-3-E5, MKT-3-E6).",
+    "defensibility": "Member feedback history is hard to copy but sellers can leave for free channels, and the documented evasion shows weak lock-in (MKT-3-E4).",
+    "absolute_gross_profit_potential": "At the BladeForums analogue of about 30 USD a year (MKT-3-E1), a few hundred paying sellers gives only low four-figure revenue against forum hosting costs.",
+    "willingness_to_pay": "Sellers do pay to sell at a liquid niche forum, with a 30 to 35 USD annual membership (MKT-3-E1) or a 4 percent fee (MKT-3-E3), though that liquidity pre-existed.",
+    "repeat_ltv_potential": "Annual seller memberships and repeat sellers are recurring by nature (MKT-3-E1).",
+    "competition_adjusted_gap": "Free channels cover part of the wedge (MKT-3-E7), members resist pay-to-list (MKT-3-E8), and incumbent niche forums already own the active communities.",
+    "market_depth": "Each forum is a small closed community, so revenue per acquisition is capped and each niche needs its own purchase.",
+    "end_to_end_automation": "Memberships and payments automate, but moderation, scam handling and community management do not.",
+    "capital_risk": "Listings show forums changing hands at small figures (MKT-3-E6), so a four-figure purchase caps the loss, though real prices were not disclosed.",
+    "owner_time_support": "Moderation and dispute handling make this the opposite of hands-off (MKT-3-E4, MKT-3-E8)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "MKT-3-E6: purchase terms, domain and member-data transfer, and privacy law on inherited member databases need review per listing (unverified, not a lawyer).",
+    "MKT-3-E3: charging a percentage on member sales may make the operator a marketplace or payment facilitator in some jurisdictions; payments should go through a licensed escrow or payment processor (unverified).",
+    "MKT-3-E7: Facebook Marketplace and groups are free for local pickup, so a competing fee must be justified by reputation and trust, not price."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Flagged assumptions, none evidenced for any specific forum: 150 paying sellers x 30 USD per year = 4,500 USD revenue against 2,600 USD yearly hosting (the cost shown on one listed forum). Pessimistic (price 24, 75 sellers, cost 3,900) = 1,800 against 3,900, negative. Economics only work at the scale of a forum that is unlikely to be for sale at four figures."
+    },
+    "killReasons": [
+     {
+      "reason": "Fee evasion to free channels is documented on a forum that tried a mandatory seller fee.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MKT-3-E4"
+     },
+     {
+      "reason": "Adverse selection: forum advisers say most forums offered for sale are dead.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MKT-3-E5"
+     },
+     {
+      "reason": "Moderation and dispute handling make owner time high.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "MKT-3-E8"
+     }
+    ]
+   },
+   "researcherVerdict": "uncertain",
+   "verdictReason": "Uncertain, with a low prior: the only evidence of sellers paying comes from long-established forums (MKT-3-E1, MKT-3-E3), while purchasable forums are mostly dead (MKT-3-E5) and fee evasion is documented (MKT-3-E4). Open question: whether any acquirable forum has at least about 100 live sale threads a month with feedback history; this could not be checked from listing pages read, and no actual sale prices were disclosed."
+  },
+  {
+   "id": "MKT-4",
+   "name": "Price-listed booking directory for immigration medical exams (Form I-693 civil surgeons)",
+   "family": "marketplaces",
+   "buyer": "Green-card applicants who must see a USCIS-designated civil surgeon, and the small clinics that hold the designation",
+   "pain": "Fees vary 'by several hundred dollars' between designated doctors, and the government finder gives no prices or booking, so applicants are told to phone around.",
+   "wedge": "A public-registry-seeded, price-listed, online-booking directory of designated civil surgeons that charges clinics a per-completed-exam fee.",
+   "referenceEntrant": {
+    "startupCashUsd": 2500,
+    "daysToFirstRevenue": 150,
+    "ownerHoursPerWeek": 15
+   },
+   "entrantEdge": {
+    "type": "exclusive_or_difficult_supply_or_access",
+    "status": "none",
+    "statement": "Tried: designated-surgeon supply as hard-to-get supply. It is not: the designations are a public USCIS registry (MKT-4-E1), and a rival has already seeded it with price listings and free online booking (MKT-4-E3, MKT-4-E4). No data or contract accrues to a second entrant that the first mover does not already hold.",
+    "evidenceIds": [
+     "MKT-4-E1",
+     "MKT-4-E3"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "USCIS Find a Civil Surgeon tool",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.uscis.gov/tools/find-a-civil-surgeon",
+      "evidenceRef": "MKT-4-E1",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Phone several designated clinics and compare prices (status quo)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.uscis.gov/tools/find-a-civil-surgeon",
+      "evidenceRef": "MKT-4-E6",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "easyIME price-listed booking directory (free to applicants)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.easyime.com/uscis-civil-surgeon-locator-tualatin-or",
+      "evidenceRef": "MKT-4-E3",
+      "metrics": {
+       "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 0,
+    "falsifier": "Edge exists only if the entrant can show something easyIME lacks (exclusive clinic inventory or measurably better prices) that moves bookings; if easyIME keeps free booking and lists prices in the same cities, there is no edge. Values are page-derived, not measured."
+   },
+   "evidence": [
+    {
+     "id": "MKT-4-E1",
+     "url": "https://www.uscis.gov/tools/find-a-civil-surgeon",
+     "quote": "USCIS designates certain doctors (known as civil surgeons) to perform the immigration medical examination.",
+     "kind": "constraint",
+     "publisher": "U.S. Citizenship and Immigration Services",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-4-E2",
+     "url": "https://www.uscis.gov/tools/find-a-civil-surgeon",
+     "quote": "Prices can vary by several hundred dollars.",
+     "kind": "demand",
+     "publisher": "U.S. Citizenship and Immigration Services",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-4-E3",
+     "url": "https://www.easyime.com/uscis-civil-surgeon-locator-tualatin-or",
+     "quote": "easyime.com is free service for green card applicant looking for immigration medical exam.",
+     "kind": "incumbent_price",
+     "publisher": "easyIME",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-4-E4",
+     "url": "https://www.easyime.com/i693-immigration-medical-exam-bend-or",
+     "quote": "Always 100% free to book",
+     "kind": "incumbent_price",
+     "publisher": "easyIME",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-4-E5",
+     "url": "https://www.easyime.com/uscis-civil-surgeon-locator-tualatin-or",
+     "quote": "The total cost may change based on age, medical and vaccination history at the time of exam / respective clinic policy.",
+     "kind": "demand",
+     "publisher": "easyIME",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MKT-4-E6",
+     "url": "https://www.uscis.gov/tools/find-a-civil-surgeon",
+     "quote": "call a few civil surgeons to find out how much they charge",
+     "kind": "other",
+     "publisher": "U.S. Citizenship and Immigration Services",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 6,
+    "distribution_advantage": 2,
+    "defensibility": 1,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 4,
+    "repeat_ltv_potential": 1,
+    "competition_adjusted_gap": 1,
+    "market_depth": 5,
+    "end_to_end_automation": 6,
+    "capital_risk": 9,
+    "owner_time_support": 6
+   },
+   "componentReasons": {
+    "entrant_edge": "No edge: the supply list is a public registry (MKT-4-E1) and an existing directory already lists prices and takes free bookings (MKT-4-E3, MKT-4-E4).",
+    "customer_problem_or_value": "The exam is mandatory and prices vary by several hundred dollars (MKT-4-E1, MKT-4-E2), so price discovery has real value to applicants.",
+    "distribution_advantage": "City-level search pages are the likely channel, but easyIME already runs them (MKT-4-E3, MKT-4-E4) and no owned channel was found.",
+    "defensibility": "Public registry supply and public prices let any rival copy the directory; nothing accumulates exclusively.",
+    "absolute_gross_profit_potential": "Exam fees are about 125 to 380 USD per listed city (MKT-4-E5) and any per-exam referral fee is unverified, so gross profit per booking would be small.",
+    "willingness_to_pay": "Applicants pay clinics for the exam (MKT-4-E5), but the existing platform is free to applicants (MKT-4-E4) and no clinic-side payment to platforms was observed.",
+    "repeat_ltv_potential": "Each applicant needs the exam once, with no recurring use.",
+    "competition_adjusted_gap": "easyIME covers the booking and price-comparison wedge for free (MKT-4-E3), and USCIS advises phoning clinics as the free fallback (MKT-4-E6).",
+    "market_depth": "Immigration medical exams are national and mandatory for adjustment cases, but no volume figure was collected and policy can change demand.",
+    "end_to_end_automation": "Listing, booking and reminders can be automated; clinic onboarding and price upkeep need some manual work.",
+    "capital_risk": "A directory and booking form cost under 2500 USD.",
+    "owner_time_support": "Mostly automated after clinic onboarding, with limited support load."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "MKT-4-E1: the civil-surgeon designation is a USCIS credential held by clinics; a directory needs no designation itself. Per-patient referral fees paid by clinics to a non-clinician may implicate state fee-splitting or patient-brokering rules (unverified, not a lawyer).",
+    "MKT-4-E3: easyIME's terms were not read; the entrant should not copy its pages or prices (copyright and scraping terms unverified).",
+    "MKT-4-E2: demand depends on immigration policy and the form requirement, which can change (unverified)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Flagged assumptions, none evidenced: 30 USD clinic-paid fee x 300 completed exams per year = 9,000 USD revenue against 3,000 USD yearly cost. Pessimistic (price 24, volume 150, cost 4,500) = 3,600 against 4,500, negative."
+    },
+    "killReasons": [
+     {
+      "reason": "A free competitor already offers price-listed online booking of civil-surgeon exams.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "MKT-4-E3"
+     },
+     {
+      "reason": "Supply is a public registry and the exam is a one-time purchase, so no exclusive supply or repeat revenue accrues.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MKT-4-E1"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: easyIME already offers a free, price-listed, online-booking directory for civil-surgeon exams (MKT-4-E3, MKT-4-E4), the supply list is a public USCIS registry (MKT-4-E1), and exams are one-time purchases. Not verified: easyIME's clinic count, traffic and whether clinics pay it; per-exam referral fees; the legality of clinic-paid referral fees by state."
+  }
+ ]
+}

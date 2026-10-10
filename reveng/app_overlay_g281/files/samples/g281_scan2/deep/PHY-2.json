@@ -1,0 +1,294 @@
+{
+  "id": "PHY-2",
+  "verdict": "killed",
+  "verdictReason": "Killed. Parts must be sold at cost or on authorized-provider terms (PHY2-E2, PHY-2-D11), so revenue is a retainer plus per-order fee only. A brand can meet the duty itself for $0-$39/month or via the replacement-product off-ramp (D1); enforcement is attorney-general-only with a cure period in Texas and no state-statute action reported in a July 2026 survey (D2), so urgency is low. Paying outsourcers found are mid/large brands already with incumbents (D10, D6). Year-1 profit is about +$2.5k base (~$3/h for ~780 h), -$4.9k pessimistic, and still negative at the $800/month Claimlane anchor (D7).",
+  "answers": [
+    {
+      "question": "Will any sub-$10M hardware brand pay more than the $39/month DIY floor for a managed parts and compliance desk?",
+      "answer": "No public evidence of a small-brand payer was found. Demonstrated outsourcing is by mid/large brands to incumbents: Encompass runs parts supply for Philips (PHY2-E4) and for Element (founded 2007; D10). iFixit's services page offers parts operations and lists partners such as Framework, Polaroid, Kobo and HMD (read on the page, not quoted; D6), and its partnerships page adds Teenage Engineering and others (PHY2-E7), but neither publishes prices. The nearest sourced price anchor for brand-side tooling is Claimlane Core at $800/month with a spare-parts add-on, a returns/warranty/claims platform and not a parts store or price-parity log (D7). Whether a sub-$10M brand would pay a $300-$800/month managed desk cannot be settled from public pages; iFixit and Encompass hold the contract data.",
+      "evidenceIds": [
+        "PHY2-E4",
+        "PHY2-E7",
+        "PHY-2-D6",
+        "PHY-2-D7",
+        "PHY-2-D10"
+      ]
+    },
+    {
+      "question": "Does the law force a small brand to buy outside help, or can it meet the minimum itself?",
+      "answer": "It can meet the minimum itself. The duty sits on the manufacturer; California lets a manufacturer instead provide a free equivalent-or-better replacement product (D1), Kansas and Texas allow reimbursement or an equivalent replacement (D2 page), and Texas requires a 30-day written cure notice before enforcement (D2). Enforcement is by state attorneys general (Minnesota D4; California, New York, Oregon, Kansas, Texas per the Faegre survey), Oregon penalties start only on 2027-07-01 (PHY2-E3), and the July 2026 survey of statutes reports no enforcement action under the state electronics statutes (absence in one article; not proof). Law firms advise brands to keep their own availability documentation (D3).",
+      "evidenceIds": [
+        "PHY-2-D1",
+        "PHY-2-D2",
+        "PHY-2-D3",
+        "PHY-2-D4",
+        "PHY2-E3"
+      ]
+    },
+    {
+      "question": "Is there parts margin that could fund the service?",
+      "answer": "No. Parts, tools and documentation must be offered on terms equivalent to the most favourable given authorized providers (D11) or, with no authorized network, at actual cost to prepare and deliver (PHY2-E1, PHY2-E2). Revenue is therefore the desk's own fees. Separately, iFixit left Samsung's parts program in 2024 citing high parts prices and design (D5), which shows the third-party parts channel is price-constrained even for a well-funded specialist.",
+      "evidenceIds": [
+        "PHY-2-D11",
+        "PHY2-E1",
+        "PHY2-E2",
+        "PHY-2-D5"
+      ]
+    },
+    {
+      "question": "Which free, cheap or DIY alternatives were not already in the survey?",
+      "answer": "(1) The statutory replacement-product off-ramp and, in KS/TX, reimbursement (D1, D2); (2) law-firm checklists plus a brand-kept availability log (PHY2-E3, D3); (3) Claimlane Core, $800/month, with a spare-parts self-service add-on (D7); (4) Sortly inventory tracking from $49/month (D8); (5) ShipBob-style 3PL at about $5 per bin per month storage and $0.20 per pick beyond four (2022 table; D9). The Claimlane blog's spare-parts roundup names no tool built for right-to-repair parts sales (summary of the page, not a quote), so a purpose-built product is not covered, but a brand's own Shopify store plus 3PL covers the sale and shipping.",
+      "evidenceIds": [
+        "PHY-2-D1",
+        "PHY-2-D2",
+        "PHY-2-D3",
+        "PHY-2-D7",
+        "PHY-2-D8",
+        "PHY-2-D9",
+        "PHY2-E3"
+      ]
+    },
+    {
+      "question": "Is there an exclusive or compounding edge, and what would falsify it?",
+      "answer": "None found. The per-SKU, per-state availability and price-parity log is documentation that counsel already tells brands to keep themselves (D3), so switching cost is a spreadsheet export; the hard scarce input is small-quantity component supply years after production ends, which sits in the brand's own supplier contracts (D12) and which the desk cannot make exclusive. The falsifier in the entry stands: no sub-$10M brand paying above $39/month plus per-order fees was found, and enforcement is unproven before Oregon's 2027 start.",
+      "evidenceIds": [
+        "PHY-2-D3",
+        "PHY-2-D12",
+        "PHY2-E3"
+      ]
+    }
+  ],
+  "newEvidence": [
+    {
+      "id": "PHY-2-D1",
+      "url": "https://bhgs.dca.ca.gov/forms_pubs/sb_244_industry_advisory_english.pdf",
+      "quote": "at no charge to the consumer, a replacement product that is equivalent or better and is readily available",
+      "kind": "constraint",
+      "publisher": "California Department of Consumer Affairs, Bureau of Household Goods and Services (SB 244 industry advisory)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-2-D2",
+      "url": "https://www.faegredrinker.com/zh/insights/publications/2026/7/unlocking-the-right-to-repair-the-expanding-compliance-landscape",
+      "quote": "mandatory 30-day written cure notice before any enforcement action may be brought",
+      "kind": "constraint",
+      "publisher": "Faegre Drinker Biddle & Reath LLP (Unlocking the Right to Repair: the expanding compliance landscape)",
+      "date": "2026-07-30",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-2-D3",
+      "url": "https://www.faegredrinker.com/zh/insights/publications/2026/7/unlocking-the-right-to-repair-the-expanding-compliance-landscape",
+      "quote": "documentation of repair-material availability to demonstrate good-faith compliance",
+      "kind": "other",
+      "publisher": "Faegre Drinker Biddle & Reath LLP (Unlocking the Right to Repair: the expanding compliance landscape)",
+      "date": "2026-07-30",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-2-D4",
+      "url": "https://www.ag.state.mn.us/Brochures/pubRightToRepair.pdf",
+      "quote": "The Attorney General has authority to investigate and enforce violations of the Digital Fair Repair Act.",
+      "kind": "constraint",
+      "publisher": "Minnesota Attorney General's Office (Right to Repair brochure)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-2-D5",
+      "url": "https://www.gsmarena.com/samsung_partnership_with_ifixit_for_selfrepairs_comes_to_an_end-news-62997.php",
+      "quote": "high parts prices and Samsung's design",
+      "kind": "other",
+      "publisher": "GSMArena (Samsung partnership with iFixit for self-repairs comes to an end)",
+      "date": "2024-05-24",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-2-D6",
+      "url": "https://www.ifixit.com/Page/Services",
+      "quote": "bundle our quality, trusted tools with your parts",
+      "kind": "demand",
+      "publisher": "iFixit (services for manufacturers; page also lists partner brands incl. Framework, Polaroid, Kobo, HMD; no prices published)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-2-D7",
+      "url": "https://claimlane.com/pricing",
+      "quote": "Core ... $800/month ... 2,000 tickets / year",
+      "kind": "incumbent_price",
+      "publisher": "Claimlane (pricing page: Core plan; spare parts, warranty registration and vendor reporting are add-ons)",
+      "date": "2026-10",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-2-D8",
+      "url": "https://www.claimlane.com/resources/blog/spare-parts-management-software",
+      "quote": "From $49/month for the Advanced plan.",
+      "kind": "incumbent_price",
+      "publisher": "Claimlane blog (Best Spare Parts Management Software, 2026), Sortly entry",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-2-D9",
+      "url": "https://www.business.org/finance/inventory-management/shipbob-review/",
+      "quote": "$0.00/order for first 4 picks, $0.20/pick for every item in the order thereafter",
+      "kind": "incumbent_price",
+      "publisher": "business.org (ShipBob Inventory Management Review; table data as of 12/13/22, also lists $5.00/mo. per bin storage)",
+      "date": "2022-12-13",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-2-D10",
+      "url": "https://airfreight.news/articles/full/encompass-to-manage-parts-supply-for-element-appliances",
+      "quote": "Encompass services will include forecasting, procurement, warehousing and distribution of parts.",
+      "kind": "demand",
+      "publisher": "Air Freight News (Encompass to manage parts supply for Element Appliances)",
+      "date": "2021-06-09",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-2-D11",
+      "url": "https://legislation.nysenate.gov/pdf/bills/2021/S4104A",
+      "quote": "at costs and terms that are equivalent to the most favorable costs and terms",
+      "kind": "constraint",
+      "publisher": "New York State Senate (bill S4104-A, Digital Fair Repair Act; 2021 bill version, not the enacted text)",
+      "date": "2021-02-02",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-2-D12",
+      "url": "https://blog.promise.legal/right-to-repair-compliance-hardware-startups/",
+      "quote": "verify that your supplier can fulfill small-quantity orders for years after volume production ends",
+      "kind": "other",
+      "publisher": "Promise Legal Insights",
+      "date": "2026-07-07",
+      "evidenceClass": "agent_reported"
+    }
+  ],
+  "newAlternatives": [
+    {
+      "label": "Claimlane Core: brand-side returns/warranty/claims portal with spare-parts self-service add-on (from $800/month, 2,000 tickets/year)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 800,
+      "coversWedge": "partial",
+      "sourceLocator": "https://claimlane.com/pricing",
+      "evidenceRef": "PHY-2-D7"
+    },
+    {
+      "label": "Sortly inventory and parts tracking (from $49/month Advanced plan)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 49,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.claimlane.com/resources/blog/spare-parts-management-software",
+      "evidenceRef": "PHY-2-D8"
+    },
+    {
+      "label": "ShipBob-style 3PL for parts storage and shipping (about $5 per bin per month storage; 2022 rates)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 5,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.business.org/finance/inventory-management/shipbob-review/",
+      "evidenceRef": "PHY-2-D9"
+    },
+    {
+      "label": "Statutory off-ramp: brand supplies a free equivalent-or-better replacement product (CA) or reimbursement/replacement (KS, TX) instead of stocking parts",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://bhgs.dca.ca.gov/forms_pubs/sb_244_industry_advisory_english.pdf",
+      "evidenceRef": "PHY-2-D1"
+    },
+    {
+      "label": "Brand keeps its own availability and price-parity documentation following law-firm checklists",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.faegredrinker.com/zh/insights/publications/2026/7/unlocking-the-right-to-repair-the-expanding-compliance-landscape",
+      "evidenceRef": "PHY-2-D3"
+    }
+  ],
+  "killReasons": [
+    {
+      "reason": "A small brand can meet the statutory minimum without a managed desk: a free email parts desk, a $39/month store (PHY2-E6), or in California a free equivalent-or-better replacement product instead of stocking parts. Willingness to pay for a retainer above the DIY floor is unevidenced for sub-$10M brands.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "PHY-2-D1"
+    },
+    {
+      "reason": "Parts must be offered on the most favourable authorized-provider terms or at cost, so there is no parts margin; revenue is only a retainer plus per-order fee, and year-1 bottom-up profit is about $2.5k base and negative under the pessimistic recomputation (also negative at the $800/month Claimlane anchor).",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "PHY-2-D11"
+    },
+    {
+      "reason": "Low urgency to buy: enforcement is attorney-general-led, Texas requires a 30-day cure notice, Oregon penalties start only on 2027-07-01, and a July 2026 survey of the statutes reports no enforcement action under the state electronics laws (absence in one article, not proof).",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "PHY-2-D2"
+    },
+    {
+      "reason": "No exclusive or compounding edge: the availability and price-parity log is documentation that law firms tell brands to keep themselves, and the scarce input (small-quantity component supply for years) is in the brand's own supplier contracts.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "PHY-2-D3"
+    },
+    {
+      "reason": "Outsourced parts operations are already sold by incumbents to mid/large brands (Encompass, iFixit), and iFixit's page lists smaller brands as partners; prices are unpublished so the gap at the small end is unmeasured.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "PHY-2-D6"
+    },
+    {
+      "reason": "iFixit exited Samsung's parts program citing high parts prices, showing the third-party parts channel is price-constrained even for a funded specialist.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "PHY-2-D5"
+    }
+  ],
+  "economics": {
+    "revenue365": 7800,
+    "cost365": 5340,
+    "pessimisticProfit365": -4890,
+    "survivesPessimistic": false,
+    "assumptions": [
+      "Base case, reference entrant ($3,000 cash, first revenue day 120, 15 h/week = about 780 owner hours/year, owner time unpaid): all numbers below are assumptions unless tagged to evidence.",
+      "Assumption: 4 brands sign, starting months 5, 7, 9 and 11, giving 8+6+4+2 = 20 brand-months in year 1. No source shows how many small brands would sign; none was contacted.",
+      "Assumption: retainer $300 per brand-month, set between the $39/month DIY store floor (PHY2-E6) and Claimlane Core at $800/month (PHY-2-D7) = $6,000.",
+      "Assumption: $3 fee per parts order and 30 orders per brand-month = $90 per brand-month = $1,800. Parts are passed through at cost (PHY2-E2, PHY-2-D11), so parts and postage are excluded from revenue.",
+      "Revenue365 = $6,000 + $1,800 = $7,800.",
+      "Cost assumption: one Shopify Basic store per brand at $39/month (PHY2-E6) x 20 brand-months = $780.",
+      "Cost assumption: 3PL storage of 10 bins per brand at $5/bin/month (PHY-2-D9, 2022 rates) x 20 brand-months = $1,000, plus two $25 receiving fees per brand x 4 = $200; pick fees are $0 for the first 4 picks (PHY-2-D9).",
+      "Cost assumption (no source): services-agreement legal review $1,500, liability/E&O insurance $1,000, software/domain/email $360, outreach and listing $500.",
+      "Cost365 = 780 + 1,200 + 1,500 + 1,000 + 360 + 500 = $5,340; base profit = $2,460, about $3.15 per owner hour.",
+      "Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue 7,800 x 0.8 x 0.5 = $3,120; cost 5,340 x 1.5 = $8,010; profit = -$4,890 (also above the $3,000 cash of the reference entrant).",
+      "Sensitivity: at an $800 retainer (Claimlane anchor) base revenue = 20 x 890 = $17,800 and base profit $12,460, but pessimistic revenue $7,120 less $8,010 cost = -$890, so it still fails; pessimistic break-even needs about 23 base-case brand-months, i.e. 5-6 signed brands by month 7.",
+      "Consignment: assumes brands consign parts stock at their cost, so the entrant carries no inventory capital; supplier terms for small-quantity parts supply are unresearched (PHY-2-D12 only states the risk)."
+    ],
+    "sources": [
+      "PHY-2-D7",
+      "PHY-2-D9",
+      "PHY-2-D11"
+    ]
+  },
+  "legalNotes": [
+    "Statutory duties sit on the manufacturer; the desk would act as the brand's agent and the brand stays liable, so a services agreement allocating liability, indemnity and data/records ownership is needed (agency effect not confirmed by any source read; the California advisory page does not address third-party agents).",
+    "Pricing: parts, tools and documentation on the most favourable authorized-provider terms, or at actual cost with no authorized network (PHY2-E1, PHY2-E2, PHY-2-D11); no parts mark-up path. Documentation must be free except reasonable printing/sending costs (California advisory page).",
+    "California scope read: covered only if wholesale cost is $50 or more; 3 years from last manufacture for $50-$99.99 products and 7 years for $100 or more; exemptions include video game consoles, alarm and fire systems, and agricultural/construction/industrial/outdoor-power equipment; trade secrets and anti-theft overrides need not be disclosed; a free equivalent-or-better replacement satisfies the duty (PHY-2-D1).",
+    "Enforcement: California attorney general and local prosecutors with $1,000-$5,000 per day; Minnesota AG exclusive with up to $25,000 per violation; New York AG at $500 per violation; Oregon AG at $1,000 per day from 2027-07-01; Texas requires a 30-day cure notice (PHY-2-D2, PHY-2-D4, PHY2-E3). No small-business exemption was found in the NY 2021 bill text, the Promise Legal or Faegre articles.",
+    "Selling parts to the public makes the desk a seller: sales tax, product-liability and importer/consumer-protection duties apply to consigned stock; these were not researched.",
+    "Research stayed within rules: public pages only, no logins, signups, purchases or contact; curl fetches were blocked by the proxy (403) and were not worked around."
+  ],
+  "unverified": [
+    "Any sub-$10M brand actually paying a managed parts or compliance retainer: not found; settling it needs iFixit's or Encompass's small-brand contract terms or a paid pilot.",
+    "iFixit and Encompass pricing and minimums: not published.",
+    "Enacted New York text: only the 2021 bill version S4104-A was read; its home-appliance exclusion (section 3(g)) and the enacted scope were not confirmed.",
+    "Whether any state attorney general has taken action under the state electronics statutes: a July 2026 law-firm survey reported none, but absence in one article is not proof.",
+    "Claimlane add-on prices (spare parts, warranty registration) and ShipBob's current rates (table is from 12/13/22).",
+    "Legal review, insurance, software and outreach costs and the number of signable brands are assumptions with no source.",
+    "Quotes were taken from page text returned by the fetch tool; I could not re-check them directly because curl access was blocked."
+  ],
+  "nextStep": "Drop PHY-2; revisit only if a public contract, price list or case study shows a sub-$10M brand paying at least $300 per month for managed parts and compliance operations."
+}

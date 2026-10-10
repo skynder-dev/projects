@@ -14,6 +14,16 @@
    "sha256": "1dfcd456ed598bc54a6e3d3b97601570d607192284d3851b2ee46b38164f67c7"
   },
   {
+   "path": "app/data/g281_scan2_view.js",
+   "size": 429395,
+   "sha256": "12f096e8ab41349c534f3fb51c563de5cc6bc6fb9c56326a74975db6d7106fad"
+  },
+  {
+   "path": "app/data/g281_scan3_view.js",
+   "size": 367619,
+   "sha256": "5846c43a02a32c53e58c40e635882a11f8ea51e304f751eed490cf265f48ef4f"
+  },
+  {
    "path": "app/evidence_protocol_v6.js",
    "size": 6228,
    "sha256": "7f0e594479fa54bc6d0805d67b9befb1c49bf20b449c356c02de722026a29684"
@@ -30,13 +40,13 @@
   },
   {
    "path": "app/global_ranking.html",
-   "size": 1717,
-   "sha256": "5f52a49ec60ff2f85c60b72aeb4b23f0b910a4d9bc0f03de0e919fc4eaeddd42"
+   "size": 1881,
+   "sha256": "102f3df49db5c5eca67383ecb3e6d2650de9655f01a3adba63990e1104e1001f"
   },
   {
    "path": "app/global_ranking_page.js",
-   "size": 5088,
-   "sha256": "bb560a824ef030e3cc971a8b09d8e28fde0465f469dca7bac08b6684cb0de6da"
+   "size": 9605,
+   "sha256": "edc45e9b6c8ed0fe882342013259473aa2a63f463e6ad28af27729029b8b33e1"
   },
   {
    "path": "app/global_ranking_v6.js",
@@ -45,8 +55,8 @@
   },
   {
    "path": "app/global_ranking_view.js",
-   "size": 4494,
-   "sha256": "e88030a8dbec18a643b6f2f5cfb43b92a48ec57ae24b99c59675575185a35291"
+   "size": 6911,
+   "sha256": "fefabc3957b6cee70120cdeb04e7c9a0e76dcb05086a3e7349013ddc1684f0e7"
   },
   {
    "path": "app/global_scan_v6.js",
@@ -84,9 +94,14 @@
    "sha256": "1eb7482fc8d8126cb2252a40295e811f6767786cce8727e44aea1f0c50e2ffdd"
   },
   {
+   "path": "diagnostics/tests/reva2_g281_scan_packages.mjs",
+   "size": 9287,
+   "sha256": "6aa29ed7c226f03de235b444e12a72f2d056ea7664276958da2210e281804a43"
+  },
+  {
    "path": "diagnostics/tests/test_reva2_g281_global_ranking_page.py",
-   "size": 6565,
-   "sha256": "2b508117b6ca34d412e60255d221ae6315f19c3efa5e693c010927f695c39c5e"
+   "size": 11251,
+   "sha256": "d7f48e0e8b8d8147ad614a326afbb020a65503a942a5fdc6778cb61c49a95763"
   },
   {
    "path": "diagnostics/tests/verify_reva2_g281_overlay.py",
@@ -94,9 +109,19 @@
    "sha256": "652dbe327a59dc36d3d27cedef39557dd32426a64cd571d13acc9991c5f50039"
   },
   {
+   "path": "diagnostics/tools/aggregate_scan_g281.mjs",
+   "size": 3433,
+   "sha256": "53b6bd2fad79cbf429695f54290c99d50308988314ff865db79704fee9f780ff"
+  },
+  {
    "path": "diagnostics/tools/build_g281_overlay_manifest.py",
    "size": 1911,
    "sha256": "8cd29ece6f2937100d97614c08bfb7118ba22ea164b900b91a20852d33a5e143"
+  },
+  {
+   "path": "diagnostics/tools/build_scan23_import_g281.py",
+   "size": 11811,
+   "sha256": "56a25ea7021258d64d8c8f1b3bd5be5a6fcb30c636b9ca72855fadb18eaa4d8a"
   },
   {
    "path": "diagnostics/tools/build_scan_import_g281.py",
@@ -105,8 +130,8 @@
   },
   {
    "path": "diagnostics/tools/dryrun_scan_import_g281.sh",
-   "size": 2432,
-   "sha256": "f9e736fcf113069a485070d224cc872e195f90f07a44b15319f8020ef00c6042"
+   "size": 2920,
+   "sha256": "2acec5912eeaf93ea5122be883f2ec2aaefdd773137e0c2aabedfb5567f156fb"
   },
   {
    "path": "diagnostics/tools/g281_local_schema/inbox_private_metadata_guard.sql",
@@ -119,9 +144,19 @@
    "sha256": "cf5fef553c110c5bab6526fa0ffeb4c1536fd15d4360fe15a08226e591945f26"
   },
   {
+   "path": "diagnostics/tools/validate_scan2_candidates.mjs",
+   "size": 4670,
+   "sha256": "9f18545b6acca7a6a0a837ec836bff741baa256084fca7f76656602dd3c11509"
+  },
+  {
    "path": "docs/REVA2_G281_GLOBAL_PATH.md",
    "size": 5834,
    "sha256": "b4a4662b1514ee0f6c640e5b1d23f47998e5749f18f35a973f3a873b36a4e001"
+  },
+  {
+   "path": "docs/REVA2_G281_SCAN2_REPORT_RU.md",
+   "size": 12459,
+   "sha256": "8f1423b7711822277f2e3dab3cb94ea81b2d9a73beef174eaf42872feda5c7bb"
   },
   {
    "path": "samples/g281_scan1/01_raw.json",
@@ -159,6 +194,226 @@
    "sha256": "dba8a4fd945e95be3b7074f9590040e1b884a2108d7dd4ca476230d74e033a20"
   },
   {
+   "path": "samples/g281_scan2/BRIEF.md",
+   "size": 4612,
+   "sha256": "98aef50b212104558b6f65d3332e4c495d2c16c8c3891bc80eb43194040cc717"
+  },
+  {
+   "path": "samples/g281_scan2/DEEP_BRIEF.md",
+   "size": 3574,
+   "sha256": "93759afe5d329ccb2602425572c647d6ec350db33821e09a0009494fd36aa429"
+  },
+  {
+   "path": "samples/g281_scan2/TIMES.json",
+   "size": 171,
+   "sha256": "d86d7cff76984baf7498c0ecbc9890b81493c64c03a8a9f0e62f2a0b09d4ce5d"
+  },
+  {
+   "path": "samples/g281_scan2/aggregate.json",
+   "size": 65914,
+   "sha256": "b54a15a7ad2bc9cd3ddca2a0d423f926582c26a1b87500c016b5a55ad67534ab"
+  },
+  {
+   "path": "samples/g281_scan2/candidates/digital_or_data_products.json",
+   "size": 44076,
+   "sha256": "8ab7a0298ae839519c538472b8da94547a149152caabe684470bd71be199860c"
+  },
+  {
+   "path": "samples/g281_scan2/candidates/ecommerce_or_dropshipping.json",
+   "size": 45914,
+   "sha256": "d419cf2832d92d7727ef007c445dedca4cdb97c3a3233f9f4a19f08a14541af6"
+  },
+  {
+   "path": "samples/g281_scan2/candidates/games.json",
+   "size": 47377,
+   "sha256": "942770f9df41310b053c294e14f5b633674a1f2842e2ebe330ff50dcf803be5a"
+  },
+  {
+   "path": "samples/g281_scan2/candidates/marketplaces.json",
+   "size": 40181,
+   "sha256": "fd7490329cadc9419f1bc8e3e7950a73b2e0b5b2aaa604972f490e5f6c495fe8"
+  },
+  {
+   "path": "samples/g281_scan2/candidates/media_or_content.json",
+   "size": 44475,
+   "sha256": "1cf52f3dfe34ac7771e3132dd76b465022ea91b490bd069354fde6fe5aa5f31b"
+  },
+  {
+   "path": "samples/g281_scan2/candidates/physical_products.json",
+   "size": 46803,
+   "sha256": "34fc56d3fb9fd926d1a857da8310c5e5f21c1e9634479fa8908d2d8c2ea42418"
+  },
+  {
+   "path": "samples/g281_scan2/candidates/saas_or_micro_saas.json",
+   "size": 48192,
+   "sha256": "6a776daa65de2a0ba5103ef7d0c382358ae1678af43663a909fabd9b86984eae"
+  },
+  {
+   "path": "samples/g281_scan2/candidates/services.json",
+   "size": 48292,
+   "sha256": "b19cfc5351382e188cfd1ef9992849aa68a63d688104d633bca640fdc3228ff3"
+  },
+  {
+   "path": "samples/g281_scan2/deep/ECO-2.json",
+   "size": 21643,
+   "sha256": "1d88ae07104b2aed5b74d74516939c0ec70010821c679ac30280a412d7baafe1"
+  },
+  {
+   "path": "samples/g281_scan2/deep/GAM-3.json",
+   "size": 19900,
+   "sha256": "98762e9b610fed28459f44c5f00691334c7d87b8472bd317016f689c81866229"
+  },
+  {
+   "path": "samples/g281_scan2/deep/MED-2.json",
+   "size": 16653,
+   "sha256": "17df99785a4b646c48c360581ef9415207870e6d4290fd00ad53ddb82b0f0a70"
+  },
+  {
+   "path": "samples/g281_scan2/deep/MKT-3.json",
+   "size": 23804,
+   "sha256": "a451484197b1a63646e0b4d5222bdc31058ec521122b1cb65f71df3ed4a88e19"
+  },
+  {
+   "path": "samples/g281_scan2/deep/PHY-1.json",
+   "size": 18272,
+   "sha256": "b9ae7db792228b7f66fc6b863fa3a43bbdff56a446447a7d01bfaca6f052adda"
+  },
+  {
+   "path": "samples/g281_scan2/deep/PHY-2.json",
+   "size": 19712,
+   "sha256": "cbc7aa6ae8e9110a8a1326187e20cb76c110da5e3f43135d9c61c370ed63641d"
+  },
+  {
+   "path": "samples/g281_scan2/deep/SAS-4.json",
+   "size": 19621,
+   "sha256": "313c7a85c9723a63ee95f2d38eb29c275001093aaf5f24d9a7a0f69eff7604a4"
+  },
+  {
+   "path": "samples/g281_scan2/deep/SVC-2.json",
+   "size": 29746,
+   "sha256": "bf2d80f82b65bd95ee7b9a1ce43756d4b5cf4df16f6d4d2139769fbb0b62ee08"
+  },
+  {
+   "path": "samples/g281_scan2/verify/deep_result_1.json",
+   "size": 5296,
+   "sha256": "af6615c48823881e12e7f435512cd2082bfa9987b3ff2c2dbd9f0c83acf4e3a9"
+  },
+  {
+   "path": "samples/g281_scan2/verify/deep_result_2.json",
+   "size": 6052,
+   "sha256": "7ca8026d6536f4d7af8ff6dd2421939312358e06ae1580a542d597ce1461b668"
+  },
+  {
+   "path": "samples/g281_scan2/verify/result_1.json",
+   "size": 7222,
+   "sha256": "c7386757e3dd0d0d7f95b1713c0f5c38ae11dd386d135fb5e33989325f456218"
+  },
+  {
+   "path": "samples/g281_scan2/verify/result_2.json",
+   "size": 6368,
+   "sha256": "de06c69f597bb272079fc2dbe44742f4cab8b954cf1ba4a5b72299f61ce48fe5"
+  },
+  {
+   "path": "samples/g281_scan2/verify/result_3.json",
+   "size": 9228,
+   "sha256": "ad1ef7251b506ae1f3a56effe39fc8a8f2103775f8fc254bd1118a877ea366c8"
+  },
+  {
+   "path": "samples/g281_scan2/verify/result_4.json",
+   "size": 7070,
+   "sha256": "98956bc9d5581c0a88f6c190e52ef106d4ce06e268eec35e7b94387334064f46"
+  },
+  {
+   "path": "samples/g281_scan3/BRIEF.md",
+   "size": 4612,
+   "sha256": "98aef50b212104558b6f65d3332e4c495d2c16c8c3891bc80eb43194040cc717"
+  },
+  {
+   "path": "samples/g281_scan3/BRIEF_ADDENDUM.md",
+   "size": 5781,
+   "sha256": "6911613cc550923a8590e5492ea238bf9cde02475e312126d672cfe52f8949b2"
+  },
+  {
+   "path": "samples/g281_scan3/DEEP_BRIEF.md",
+   "size": 3574,
+   "sha256": "93759afe5d329ccb2602425572c647d6ec350db33821e09a0009494fd36aa429"
+  },
+  {
+   "path": "samples/g281_scan3/TIMES.json",
+   "size": 171,
+   "sha256": "4ae08bb8911d4f549604ea68f77fc83e09d1eaddaeb2904862c65c2d902f5f8d"
+  },
+  {
+   "path": "samples/g281_scan3/aggregate.json",
+   "size": 65901,
+   "sha256": "de7ad168aea25038d26fed01ffd024ddb5ab4a8c15559fe125c600837f4dbc69"
+  },
+  {
+   "path": "samples/g281_scan3/candidates/affiliate_or_referral.json",
+   "size": 60272,
+   "sha256": "7cb90255495e0170ffbc919086dc4fbf0b376377215ec35e34e2a6351255d48b"
+  },
+  {
+   "path": "samples/g281_scan3/candidates/b2b_api_devtools.json",
+   "size": 61295,
+   "sha256": "672c5a97c5f3aa7abfa1f5425c81395d6d16158e964a3e5541c6cb907aba1979"
+  },
+  {
+   "path": "samples/g281_scan3/candidates/b2b_operations.json",
+   "size": 61883,
+   "sha256": "e1840374906b6eb43290d21800142de1302bc67fdbeab1d374a2a019e8ceaf4d"
+  },
+  {
+   "path": "samples/g281_scan3/candidates/consumer_products.json",
+   "size": 56262,
+   "sha256": "7b62a58f03fb127fb64694b9d7f7a05a5f806d35ea3d07a3d109aa43b1853912"
+  },
+  {
+   "path": "samples/g281_scan3/candidates/education_training.json",
+   "size": 59659,
+   "sha256": "e696558a398cb2f2e3f8c0b28ad178a9637fb1cf3a308a9828190d4afe346ee8"
+  },
+  {
+   "path": "samples/g281_scan3/candidates/local_businesses.json",
+   "size": 66509,
+   "sha256": "e3b794ead8d8b7db3d4d21f2f9a75f31c9c71aa0700a68fe750ae8fa62cae754"
+  },
+  {
+   "path": "samples/g281_scan3/deep/B2B-1.json",
+   "size": 21248,
+   "sha256": "879c278791275b62d8d16f14a9c8210626341680a77fe1c2710628283282f685"
+  },
+  {
+   "path": "samples/g281_scan3/deep/B2B-5.json",
+   "size": 19989,
+   "sha256": "3d63cf3194efa1b7b7a0d87bceba0003ef479aa943f08411799f6a73535e74c6"
+  },
+  {
+   "path": "samples/g281_scan3/deep/CON-1.json",
+   "size": 26234,
+   "sha256": "ad59fd412bc4ef32636cf3a12eedf77b7a747fa4cd6c343e91afd31b8eb7dcf1"
+  },
+  {
+   "path": "samples/g281_scan3/deep/LOC-3.json",
+   "size": 20851,
+   "sha256": "27915ebd56f5fdd572b2d6b38fe9838c2816f6778bacd71af767bf9cc7fd120c"
+  },
+  {
+   "path": "samples/g281_scan3/verify/deep_result_1.json",
+   "size": 4969,
+   "sha256": "03c3d8e220e92f52a7eed91fb6cec87a94395c44cdddf2036cbb55a6377e7923"
+  },
+  {
+   "path": "samples/g281_scan3/verify/result_1.json",
+   "size": 11837,
+   "sha256": "c1f52f70f05baddecd088b539ca8918016c92513b65c30aa55651410ea23e042"
+  },
+  {
+   "path": "samples/g281_scan3/verify/result_2.json",
+   "size": 12932,
+   "sha256": "f71b79c743f6b17baca717f200a7b9545ba6edfd9263bc539857bb07deee2905"
+  },
+  {
    "path": "server/REVA2_G281_SCAN1_IMPORT.json",
    "size": 175952,
    "sha256": "dcf2fad69704ab258d2bc0d1b9b119140a3ba18f5c3dc7aab175768cdcdd0030"
@@ -167,6 +422,26 @@
    "path": "server/REVA2_G281_SCAN1_IMPORT_DRYRUN.sql",
    "size": 163909,
    "sha256": "0873c8745f9aa86a4cc2f406ff731dafce925ef4f0dad600a114ea4bd9d3c7ec"
+  },
+  {
+   "path": "server/REVA2_G281_SCAN2_IMPORT.json",
+   "size": 491685,
+   "sha256": "527a26474084c3ec8ba2e23a3b15f6b04c4c7999fc8fcd5bfcc7d1450a0d195b"
+  },
+  {
+   "path": "server/REVA2_G281_SCAN2_IMPORT_DRYRUN.sql",
+   "size": 446724,
+   "sha256": "9b95894298d7ccbbfbb5a247a2a71a7d34a4501512e103e5d867fb8b6d6e67b2"
+  },
+  {
+   "path": "server/REVA2_G281_SCAN3_IMPORT.json",
+   "size": 419590,
+   "sha256": "61bd7ff453f84f251d87e9e6962287a8a610ac313a1efbcb45c6ce804759c4b3"
+  },
+  {
+   "path": "server/REVA2_G281_SCAN3_IMPORT_DRYRUN.sql",
+   "size": 382535,
+   "sha256": "1a53d09f1c550e80eeba849aaad50849afeaccb68aff80ca6e62256cefd7a991"
   },
   {
    "path": "server/REVA2_G281_SOURCE_POLICY_SNAPSHOT.json",
@@ -183,7 +458,7 @@
   }
  ],
  "counts": {
-  "added": 33,
+  "added": 88,
   "modified": 1,
   "removed": 0
  }

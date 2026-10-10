@@ -1,0 +1,852 @@
+{
+ "candidates": [
+  {
+   "id": "DAT-1",
+   "name": "Cross-state normalized highway pay-item unit-price benchmark built from state DOT bid tabulations",
+   "buyer": "Highway, heavy-civil and utility contractor estimators (plus materials suppliers and engineering consultants) who price work in states where they have no bid history",
+   "pain": "Every state DOT uses its own pay-item numbering and names, so comparing historical bid unit prices across states means manual item matching; each DOT tool or spreadsheet shows only that agency's history, so an estimator entering a new state has no comparable price base.",
+   "wedge": "A subscription dataset/API of state DOT bid-tabulation unit prices with a maintained cross-state pay-item crosswalk and inflation-adjusted comparable prices, refreshed after each letting.",
+   "referenceEntrant": {
+    "startupCashUsd": 3000,
+    "daysToFirstRevenue": 150,
+    "ownerHoursPerWeek": 25
+   },
+   "entrantEdge": {
+    "type": "proprietary_or_compounding_data",
+    "status": "claimed",
+    "statement": "A hand-validated crosswalk from each state's pay-item codes/names to canonical items, plus every letting's results, accumulates with each state and letting added; the 2003 DOT-commissioned study says item ID numbers differ by state so matching cannot be automated by ID (E3). Weakness: the inputs are public records any rival can fetch, and incumbents (Bid Express, Oman Systems) already hold multi-agency history, so the crosswalk is labor rather than a durable moat.",
+    "evidenceIds": [
+     "DAT-1-E3",
+     "DAT-1-E2"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Bid Express Competitive Analysis Suite (Bid Tab Analysis + Competitor Insights; $648/yr billed yearly)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 54,
+      "coversWedge": "partial",
+      "sourceLocator": "https://infotechinc.com/bid-x-fee-schedule",
+      "evidenceRef": "DAT-1-E1",
+      "metrics": {
+       "step_count": 10
+      }
+     },
+     {
+      "label": "Free state DOT bid-price tools (Caltrans Contract Cost Data, WSDOT Unit Bid Analysis) - single-agency history each",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://sv08data.dot.ca.gov/help.php",
+      "evidenceRef": "DAT-1-E4",
+      "metrics": {
+       "step_count": 15
+      }
+     },
+     {
+      "label": "State DOT annual bid-price spreadsheets (e.g. ODOT) plus own spreadsheet crosswalk",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.oregon.gov/odot/Business/Pages/average_bid_item_prices.aspx",
+      "evidenceRef": "DAT-1-E5",
+      "metrics": {
+       "step_count": 20
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "step_count",
+    "direction": "lower_is_better",
+    "incumbentValue": 10,
+    "entrantValue": 2,
+    "falsifier": "Step counts are ESTIMATES (manual steps to get comparable unit prices for one pay item across five states), not measured. Edge is disproved if Bid Express/BidTabs.NET already return cross-agency matched items, or if estimators say per-agency search is sufficient."
+   },
+   "evidence": [
+    {
+     "id": "DAT-1-E1",
+     "url": "https://infotechinc.com/bid-x-fee-schedule",
+     "quote": "Competitive Analysis Suite for $60/month",
+     "kind": "incumbent_price",
+     "publisher": "Infotech Inc. (Bid Express fee schedule)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-1-E2",
+     "url": "https://www.omanco.com/",
+     "quote": "Contractors, subcontractors, and DOTs in many states rely on Oman Systems.",
+     "kind": "demand",
+     "publisher": "Oman Systems (BidTabs.NET)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-1-E3",
+     "url": "https://rosap.ntl.bts.gov/view/dot/88938/dot_88938_DS1.pdf",
+     "quote": "identification (ID) numbers for each bid item differ from state to state, making it impossible to match items by their ID numbers",
+     "kind": "constraint",
+     "publisher": "Langston University for Oklahoma DOT / FHWA (BTS ROSA P)",
+     "date": "2003",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-1-E4",
+     "url": "https://sv08data.dot.ca.gov/help.php",
+     "quote": "designed to give the engineer more power to search the contract cost data",
+     "kind": "other",
+     "publisher": "Caltrans",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-1-E5",
+     "url": "https://www.oregon.gov/odot/Business/Pages/average_bid_item_prices.aspx",
+     "quote": "The reports below are spreadsheets containing bid price data from ODOT Bid Tabulations.",
+     "kind": "other",
+     "publisher": "Oregon DOT",
+     "date": "2026-09",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-1-E6",
+     "url": "https://bidx.com/help/Bidding_Services.htm",
+     "quote": "The Bid Tab Analysis service allows you to view past bid prices and use this information as a guide to help you in pricing.",
+     "kind": "demand",
+     "publisher": "Infotech Inc. (Bid Express)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-1-E7",
+     "url": "https://wsdot.wa.gov/engineering-standards/design-topics/engineering-applications/unit-bid-analysis",
+     "quote": "All queries ran against the database may either be printed as a report or saved in excel format.",
+     "kind": "other",
+     "publisher": "Washington State DOT",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "legalNotes": [
+    "DAT-1-E4/E5/E7: DOT bid tabulations are posted publicly by the agencies; the pages read state no reuse restriction, but Caltrans 'Conditions of Use' was not read (unverified) and each DOT's terms must be checked state by state.",
+    "DAT-1-E1/E6: Bid Express history is data submitted by agencies under Infotech's service terms; redistribution rights are unverified, so the entrant would use only each DOT's own public postings and no logged-in or bulk-crawled sources."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "Paper model: $39/mo x 120 subs = $4.7k/mo vs $0.5k/mo cost; pessimistic ($31 x 60 subs, cost x1.5 = $0.75k) is still about +$1.1k/mo, but only if 60 estimators can be reached by manual B2B sales."
+    },
+    "killReasons": [
+     {
+      "severity": "fatal",
+      "reason": "Bid Express already sells multi-agency historical bid-tab analysis for $54-60/month and DOTs publish free search tools, so the buyer's price ceiling is about $60/month and the wedge is partly covered for free.",
+      "refClass": "agent_reported",
+      "ref": "DAT-1-E1"
+     },
+     {
+      "severity": "major",
+      "reason": "No exclusive supply: every input is a public record and Oman Systems already serves contractors and DOTs in many states.",
+      "refClass": "agent_reported",
+      "ref": "DAT-1-E2"
+     },
+     {
+      "severity": "major",
+      "reason": "Gross profit ceiling is low at the $54-60/month anchor and reaching estimators is manual B2B selling, not automated.",
+      "refClass": "agent_reported",
+      "ref": "DAT-1-E1"
+     },
+     {
+      "severity": "minor",
+      "reason": "The item-ID mismatch evidence is from 2003 and may be out of date (AASHTO item lists may have converged).",
+      "refClass": "agent_reported",
+      "ref": "DAT-1-E3"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: the multi-agency incumbent (Bid Express, $54-60/mo) and free DOT tools cover most of the wedge, the cross-state crosswalk is copyable labor over public records, and the price ceiling caps gross profit; no structural edge is evidenced.",
+   "family": "digital_or_data_products",
+   "confidenceGrade": "D",
+   "componentScores": {
+    "entrant_edge": 2,
+    "customer_problem_or_value": 5,
+    "distribution_advantage": 2,
+    "defensibility": 3,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 3,
+    "repeat_ltv_potential": 6,
+    "competition_adjusted_gap": 2,
+    "market_depth": 4,
+    "end_to_end_automation": 5,
+    "capital_risk": 9,
+    "owner_time_support": 5
+   },
+   "componentReasons": {
+    "entrant_edge": "Edge is only claimed: the crosswalk is labor over public records, DAT-1-E3 shows matching is hard but not exclusive, and DAT-1-E2 shows incumbents already serve many states.",
+    "customer_problem_or_value": "Cross-state matching is a real cost (DAT-1-E3) and bid-tab analysis is a recognised estimating task (DAT-1-E6), but most bidders price mainly in their home DOT's data.",
+    "distribution_advantage": "No privileged channel: reaching estimators needs cold B2B outreach, while Bid Express reaches bidders already inside its bidding portal (DAT-1-E6).",
+    "defensibility": "Any competitor can fetch the same public DOT postings (DAT-1-E4, DAT-1-E5, DAT-1-E7) and rebuild a crosswalk; only labor and time protect it.",
+    "absolute_gross_profit_potential": "Price anchor is $54-60/month (DAT-1-E1), so even 200 subscribers is roughly $10k/month revenue before sales cost.",
+    "willingness_to_pay": "The only published price point is $60/month for the whole competitive-analysis suite (DAT-1-E1) and free state tools exist (DAT-1-E4, DAT-1-E7).",
+    "repeat_ltv_potential": "Letting-driven data refresh gives natural monthly retention for active bidders, supported by the subscription model in DAT-1-E6.",
+    "competition_adjusted_gap": "Bid Express (DAT-1-E1) and Oman Systems (DAT-1-E2) cover multi-agency bid-tab analysis and free DOT tools cover single states, leaving only unverified cross-state normalization.",
+    "market_depth": "Addressable buyers are active highway/utility bidders and consultants; the 2003 study found only a few comparable projects across neighbouring states (DAT-1-E3), suggesting thin cross-state demand.",
+    "end_to_end_automation": "Ingestion and inflation adjustment can be automated but crosswalk validation and format drift across 50 DOTs (DAT-1-E3) need recurring human review.",
+    "capital_risk": "Needs only hosting and parsing tools (about $3k), with no licence fees because the inputs are DOT postings (DAT-1-E5).",
+    "owner_time_support": "Format changes at each DOT and customer support for estimators need steady attention, and sales is manual."
+   }
+  },
+  {
+   "id": "DAT-2",
+   "name": "Death Master File match API / batch service run as a certified LADMF licensee for small pension plans, insurers and credit unions",
+   "buyer": "Small pension plan administrators, life/annuity carriers and credit unions that need to screen participant or member records against recent Social Security deaths but will not certify with NTIS themselves",
+   "pain": "Recent deaths are only available through the Limited Access DMF, which requires annual certification plus a three-yearly accredited attestation; PBGC's inspector general reports plans cannot use the full DMF and rely on vendors whose match rates range 25-95%, while about 2% of PBGC single-employer payees are deceased.",
+   "wedge": "A pay-per-batch matching service that returns LADMF hit/no-hit flags, operated by the entrant as a certified subscriber/licensee under NTIS's Use and Resale agreement.",
+   "referenceEntrant": {
+    "startupCashUsd": 19044,
+    "daysToFirstRevenue": 300,
+    "ownerHoursPerWeek": 20
+   },
+   "entrantEdge": {
+    "type": "regulatory_license_intrinsic_to_model",
+    "status": "claimed",
+    "statement": "Only persons certified under the NTIS program may receive LADMF data (E1), and resale needs the Use and Resale agreement plus weekly updates (E3), so uncertified rivals cannot enter without paying fees and passing attestation. But the licence is purchasable by anyone and incumbents are already certified (E6), so it protects incumbents more than a first-year entrant; the documented NTIS fees alone ($2,930 certification + $3,105 base file + $12,762 weekly updates + $247 attestation) exceed the $10k reference budget.",
+    "evidenceIds": [
+     "DAT-2-E1",
+     "DAT-2-E3",
+     "DAT-2-E6"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Buyer certifies directly with NTIS and buys weekly LADMF updates ($2,930/yr certification + $12,762/yr weekly updates, about $1,308/month)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 1308,
+      "coversWedge": "full",
+      "sourceLocator": "https://ntis.gov/ladmf/ladmf_assets/LADMF_Raw_Data_Order_Form_FY24.pdf",
+      "evidenceRef": "DAT-2-E2",
+      "metrics": {
+       "step_count": 7
+      }
+     },
+     {
+      "label": "Free public SSDI / genealogy copies of the older DMF (no recent deaths; public updates ceased 2014)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "none",
+      "sourceLocator": "https://en.wikipedia.org/wiki/Death_Master_File",
+      "evidenceRef": "DAT-2-E8",
+      "metrics": {
+       "step_count": 1
+      }
+     },
+     {
+      "label": "Certified commercial death-match vendors (Streamline Verify, Berwyn Group CertiDeath) - price UNPUBLISHED, quote-only; 0 here means unknown, not free",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://streamlineverify.com/death-master-files/",
+      "evidenceRef": "DAT-2-E6",
+      "metrics": {
+       "step_count": 1
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "step_count",
+    "direction": "lower_is_better",
+    "incumbentValue": 1,
+    "entrantValue": 1,
+    "falsifier": "Step counts are ESTIMATES of steps the BUYER must complete. Existing certified vendors already let customers use their LADMF subscription 'without having to become certified', so a one-step buyer experience is not an advantage; edge would exist only if a measurable price or accuracy gap versus those vendors were shown."
+   },
+   "evidence": [
+    {
+     "id": "DAT-2-E1",
+     "url": "https://ladmf.ntis.gov/",
+     "quote": "The certification program established under the final rule limits access to LADMF information to those persons certified under the program.",
+     "kind": "constraint",
+     "publisher": "NTIS (US Dept. of Commerce) LADMF",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-2-E2",
+     "url": "https://ntis.gov/ladmf/ladmf_assets/LADMF_Raw_Data_Order_Form_FY24.pdf",
+     "quote": "$12,762.00 annually",
+     "kind": "incumbent_price",
+     "publisher": "NTIS LADMF Raw Data Order Form (weekly updates, https download)",
+     "date": "FY2024",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-2-E3",
+     "url": "https://ntis.gov/ladmf/ladmf_assets/LADMF_Raw_Data_Order_Form_FY24.pdf",
+     "quote": "Subscribers who sign the \"Use and Resale Agreement\" are required to purchase the weekly updates to the base file.",
+     "kind": "constraint",
+     "publisher": "NTIS LADMF Raw Data Order Form",
+     "date": "FY2024",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-2-E4",
+     "url": "https://ladmf.ntis.gov/",
+     "quote": "Annually pay the $2,930.00 LADMF Subscriber Certification Form processing fee",
+     "kind": "constraint",
+     "publisher": "NTIS LADMF",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-2-E5",
+     "url": "https://oig.pbgc.gov/pdfs/SR-2023-10.pdf",
+     "quote": "Commercial vendors offer these death match services for a fee.",
+     "kind": "demand",
+     "publisher": "PBGC Office of Inspector General (SR-2023-10)",
+     "date": "2023",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-2-E6",
+     "url": "https://streamlineverify.com/death-master-files/",
+     "quote": "Streamline Verify is already a certified subscriber of the LADMF.",
+     "kind": "other",
+     "publisher": "Streamline Verify",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-2-E7",
+     "url": "https://www.a-lign.com/articles/blog-what-is-death-master-file-certification",
+     "quote": "Fines up to $250,000 per year for noncompliance",
+     "kind": "constraint",
+     "publisher": "A-LIGN",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-2-E8",
+     "url": "https://en.wikipedia.org/wiki/Death_Master_File",
+     "quote": "Public updates to the Social Security Death Index ceased entirely in 2014.",
+     "kind": "other",
+     "publisher": "Wikipedia",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-2-E9",
+     "url": "https://oig.pbgc.gov/pdfs/SR-2023-10.pdf",
+     "quote": "pension plan administrators do not have access to the Full DMF",
+     "kind": "demand",
+     "publisher": "PBGC Office of Inspector General (SR-2023-10)",
+     "date": "2023",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "legalNotes": [
+    "DAT-2-E1/E3/E4: LADMF access is limited to certified persons under 15 CFR Part 1110; resale needs the NTIS Use and Resale agreement, and redisclosure terms in that agreement were not read (unverified).",
+    "DAT-2-E7: noncompliance fines of up to $250,000 per year are reported by an assessor's blog (secondary source, unverified against the statute); the ACAB assessor fee is unpublished.",
+    "No scraping or circumvention is involved: data would come only from NTIS under licence."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Assumed $300/mo x 40 customers = $12k/mo vs about $2.8k/mo cost (NTIS $1.3k + assumed $1.5k security/compliance); pessimistic ($240 x 20 = $4.8k vs $4.2k cost) is about +$0.6k/mo before the unpublished ACAB assessor fee and the $19k upfront, so it fails once those are included. Customer count and security-cost figures are assumptions."
+    },
+    "killReasons": [
+     {
+      "severity": "fatal",
+      "reason": "Documented NTIS fees ($2,930 certification + $3,105 base file + $12,762 weekly updates + $247 attestation, about $19k) exceed the $10,000 reference budget before the unpublished accredited-assessor fee.",
+      "refClass": "agent_reported",
+      "ref": "DAT-2-E4"
+     },
+     {
+      "severity": "major",
+      "reason": "Certified vendors (Streamline Verify, Berwyn Group) already sell DMF matching without the buyer certifying, so the licence barrier protects incumbents, not the entrant.",
+      "refClass": "agent_reported",
+      "ref": "DAT-2-E6"
+     },
+     {
+      "severity": "major",
+      "reason": "Ongoing compliance (annual recertification, 3-year attestation, unscheduled audits, fines up to $250,000) makes owner time and liability heavy for a solo entrant.",
+      "refClass": "agent_reported",
+      "ref": "DAT-2-E7"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: licence-intrinsic edge exists but is purchasable and already held by certified incumbents, and the documented fixed NTIS costs (about $19k in year one plus assessor and security) break the $10k reference-entrant capital limit.",
+   "family": "digital_or_data_products",
+   "confidenceGrade": "D",
+   "componentScores": {
+    "entrant_edge": 3,
+    "customer_problem_or_value": 6,
+    "distribution_advantage": 2,
+    "defensibility": 4,
+    "absolute_gross_profit_potential": 4,
+    "willingness_to_pay": 6,
+    "repeat_ltv_potential": 7,
+    "competition_adjusted_gap": 2,
+    "market_depth": 5,
+    "end_to_end_automation": 6,
+    "capital_risk": 1,
+    "owner_time_support": 4
+   },
+   "componentReasons": {
+    "entrant_edge": "The certification barrier is real (DAT-2-E1) but purchasable by any rival and already held by incumbents (DAT-2-E6), so the edge is only claimed.",
+    "customer_problem_or_value": "Plans cannot access the full DMF (DAT-2-E9) and about 2% of PBGC single-employer payees are deceased, so death screening has clear dollar value (DAT-2-E5).",
+    "distribution_advantage": "No low-CAC channel: regulated buyers (plans, carriers, credit unions) are sold to by established certified vendors (DAT-2-E6).",
+    "defensibility": "Annual recertification, three-yearly attestation and audits (DAT-2-E4, DAT-2-E7) deter casual entrants and create switching costs once live, but incumbents are already inside the barrier.",
+    "absolute_gross_profit_potential": "Compliance costs consume the margin first: the NTIS data and certification stack is about $19k/year (DAT-2-E2, DAT-2-E4) before attestation, security and insurance.",
+    "willingness_to_pay": "PBGC OIG confirms plans pay vendors for death matching (DAT-2-E5), and fines of up to $250,000 (DAT-2-E7) support paying for compliance.",
+    "repeat_ltv_potential": "Death screening is periodic and continuous (weekly updates, DAT-2-E3), so contracts recur.",
+    "competition_adjusted_gap": "Certified vendors already sell the same service without the buyer certifying (DAT-2-E6), and PBGC notes multiple commercial vendors (DAT-2-E5).",
+    "market_depth": "Pension plans, insurers, banks and credit unions are numerous, but many large ones already use large vendors; small-buyer depth is unverified.",
+    "end_to_end_automation": "Matching can be automated but certification renewals, attestations and audits (DAT-2-E4, DAT-2-E7) require recurring human compliance work.",
+    "capital_risk": "Documented NTIS fees alone are about $19k in year one (DAT-2-E2, DAT-2-E3, DAT-2-E4), over the $10k reference budget, before the unpublished assessor fee, with penalty exposure (DAT-2-E7).",
+    "owner_time_support": "Annual recertification, unscheduled NTIS audits and security incident duties (DAT-2-E7) add continuing owner time."
+   }
+  },
+  {
+   "id": "DAT-3",
+   "name": "A la carte FDA Form 483 / EIR archive and citation-trend subscription for small FDA-regulated manufacturers and consultants",
+   "buyer": "Small drug, device and food manufacturers, contract manufacturers and quality/regulatory consultants who cannot afford enterprise inspection-intelligence platforms",
+   "pain": "FDA publishes only a subset of Form 483s and EIRs; the rest need a FOIA request that can cost $29-$102 and take hundreds of days, and the enterprise tool that has them in bulk costs tens of thousands of dollars per year.",
+   "wedge": "A low-priced document store plus citation-trend reports covering FDA 483s and EIRs, built from the FDA reading room, the FDA Data Dashboard downloads and FOIA'd documents.",
+   "referenceEntrant": {
+    "startupCashUsd": 2500,
+    "daysToFirstRevenue": 120,
+    "ownerHoursPerWeek": 20
+   },
+   "entrantEdge": {
+    "type": "cheaper",
+    "status": "none",
+    "statement": "The exclusive-supply route (FOIA'd 483s/EIRs) was tested and fails: FDA says not all 483s/EIRs are publicly posted (E4) and an unposted document takes 'hundreds of days' (E3), while the incumbent already holds 47,000+ documents on demand (E6). FDA's own page also refers to posting rules, so FOIA'd documents may become public and lose exclusivity (rule wording unverified). What remains is only a lower price tier, which is not an edge.",
+    "evidenceIds": [
+     "DAT-3-E3",
+     "DAT-3-E4",
+     "DAT-3-E6"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "FDA OII FOIA Electronic Reading Room (posted 483s/EIRs, RSS feed)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.fda.gov/about-fda/office-inspections-and-investigations/oii-foia-electronic-reading-room",
+      "evidenceRef": "DAT-3-E4",
+      "metrics": {
+       "cycle_time": 0
+      }
+     },
+     {
+      "label": "FDA Data Dashboard inspection and citation datasets (weekly updated downloads)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://datadashboard.fda.gov/oii/cd/inspections.htm",
+      "evidenceRef": "DAT-3-E5",
+      "metrics": {
+       "cycle_time": 0
+      }
+     },
+     {
+      "label": "Direct FOIA request to FDA ($29/$58/$102 per request; 'hundreds of days' for unrequested documents) - shown at one lowest-fee request per month",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 29,
+      "coversWedge": "partial",
+      "sourceLocator": "https://redica.com/who-can-see-form-fda-483s-and-where-do-i-get-them/",
+      "evidenceRef": "DAT-3-E7",
+      "metrics": {
+       "cycle_time": 300
+      }
+     },
+     {
+      "label": "Redica Systems (Document Store + analytics; Vendr median $212,000/yr)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 17667,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.vendr.com/marketplace/redica",
+      "evidenceRef": "DAT-3-E1",
+      "metrics": {
+       "cycle_time": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cycle_time",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 300,
+    "falsifier": "cycle_time = days to obtain a specific un-posted 483/EIR. 300 for the entrant is an ESTIMATE from the 'hundreds of days' FOIA wait; the edge would exist only if the entrant could show a faster legal route to un-posted documents than FOIA or an incumbent's instant store."
+   },
+   "evidence": [
+    {
+     "id": "DAT-3-E1",
+     "url": "https://www.vendr.com/marketplace/redica",
+     "quote": "Median: $212,000",
+     "kind": "incumbent_price",
+     "publisher": "Vendr (Redica Systems contract data)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-3-E2",
+     "url": "https://documentstore.redica.com/",
+     "quote": "provides on-demand, a la carte access to FDA 483s, 483Rs, and EIRs.",
+     "kind": "demand",
+     "publisher": "Redica Systems Document Store",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-3-E3",
+     "url": "https://redica.com/who-can-see-form-fda-483s-and-where-do-i-get-them/",
+     "quote": "may end up paying hundreds of dollars and waiting hundreds of days before getting it.",
+     "kind": "constraint",
+     "publisher": "Redica Systems (competitor-authored)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-3-E4",
+     "url": "https://www.fda.gov/about-fda/office-inspections-and-investigations/oii-foia-electronic-reading-room",
+     "quote": "Not all inspectional observations (Form FDA 483s) or Establishment Inspection Reports (EIRs) are publicly posted.",
+     "kind": "constraint",
+     "publisher": "US FDA Office of Inspections and Investigations",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-3-E5",
+     "url": "https://datadashboard.fda.gov/oii/cd/inspections.htm",
+     "quote": "The datasets are updated weekly and only include final actions.",
+     "kind": "other",
+     "publisher": "US FDA Data Dashboard",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-3-E6",
+     "url": "https://documentstore.redica.com/",
+     "quote": "Over 47,000+ FDA inspection documents.",
+     "kind": "other",
+     "publisher": "Redica Systems Document Store",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-3-E7",
+     "url": "https://redica.com/who-can-see-form-fda-483s-and-where-do-i-get-them/",
+     "quote": "the FDA charges $29, $58, or $102 (depending on the level of the FDA employee fulfilling the request)",
+     "kind": "other",
+     "publisher": "Redica Systems (competitor-authored)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "legalNotes": [
+    "DAT-3-E4/E7: Form 483s/EIRs are obtainable by anyone through FOIA and the reading room; the legal route is lawful and fee-based, and reuse terms of posted documents were not read (unverified).",
+    "DAT-3-E3: the FOIA delay and fee figures are from a competitor's marketing article, not FDA; the FDA 'three-or-more requests' posting rule was only seen in a summary and is unverified.",
+    "No scraping is required: only the reading room's published index, Data Dashboard downloads and FOIA responses would be used."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "Paper only: $99/mo x 100 subs = $9.9k/mo vs about $0.35k/mo (hosting plus 4 FOIA requests at $58); pessimistic ($79 x 50 = $4.0k vs $0.5k) stays positive. The kill is edge and supply, not unit economics; 100 small-firm subscribers is unproven."
+    },
+    "killReasons": [
+     {
+      "severity": "fatal",
+      "reason": "No supply edge: un-posted 483s/EIRs require FOIA taking 'hundreds of days' while the incumbent already holds 47,000+ documents on demand, so a new entrant cannot get ahead on exclusive supply within 365 days.",
+      "refClass": "agent_reported",
+      "ref": "DAT-3-E3"
+     },
+     {
+      "severity": "major",
+      "reason": "FDA's reading room and Data Dashboard publish a free subset and weekly datasets, covering much of what a small buyer needs.",
+      "refClass": "agent_reported",
+      "ref": "DAT-3-E5"
+     },
+     {
+      "severity": "major",
+      "reason": "The surviving proposition is only a cheaper tier, which is not a structural edge, and the buyer segment's willingness to pay is unverified.",
+      "refClass": "agent_reported",
+      "ref": "DAT-3-E1"
+     },
+     {
+      "severity": "minor",
+      "reason": "FDA appears to post FOIA'd documents once requested repeatedly, which would erode any exclusivity (rule wording unverified).",
+      "refClass": "agent_reported",
+      "ref": "DAT-3-E4"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: the only differentiator is a lower price, FOIA supply is slow and non-exclusive, and the incumbent (47,000+ documents, instant access) plus FDA's free reading room and dashboard cover the wedge.",
+   "family": "digital_or_data_products",
+   "confidenceGrade": "D",
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 6,
+    "distribution_advantage": 2,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 4,
+    "willingness_to_pay": 5,
+    "repeat_ltv_potential": 7,
+    "competition_adjusted_gap": 3,
+    "market_depth": 4,
+    "end_to_end_automation": 5,
+    "capital_risk": 8,
+    "owner_time_support": 5
+   },
+   "componentReasons": {
+    "entrant_edge": "No edge: un-posted documents need FOIA at 'hundreds of days' (DAT-3-E3) and the incumbent already holds 47,000+ documents (DAT-3-E6), so exclusivity belongs to the incumbent.",
+    "customer_problem_or_value": "Not all 483s/EIRs are posted (DAT-3-E4) and FOIA is slow and costly (DAT-3-E3, DAT-3-E7), so access to inspection documents is a real compliance-intelligence need.",
+    "distribution_advantage": "No low-CAC channel; small manufacturers and consultants would have to be found by outbound marketing against a well-funded incumbent (DAT-3-E2).",
+    "defensibility": "Any rival can file the same FOIA requests (DAT-3-E7) and FDA posts a growing subset free (DAT-3-E4, DAT-3-E5).",
+    "absolute_gross_profit_potential": "A small-firm tier at roughly $50-200/month is far below the enterprise median of $212,000/year (DAT-3-E1), so volume must come from small buyers whose spend is unverified.",
+    "willingness_to_pay": "Enterprises pay tens to hundreds of thousands of dollars (DAT-3-E1) and a la carte purchase exists (DAT-3-E2), but small-firm willingness is unverified.",
+    "repeat_ltv_potential": "Inspection monitoring is continuous and new 483s appear weekly (DAT-3-E5), supporting subscription retention.",
+    "competition_adjusted_gap": "Free reading room and dashboard (DAT-3-E4, DAT-3-E5) cover part of the wedge and Redica's a la carte store (DAT-3-E2) covers the rest; the only gap is an unproven small-firm price tier.",
+    "market_depth": "FDA-regulated establishments are numerous, but those who need 483 text rather than the free dashboard (DAT-3-E5) are a narrower consultant and quality-team segment.",
+    "end_to_end_automation": "Indexing posted documents is automatable, but FOIA filing, redaction handling and document parsing need recurring human steps.",
+    "capital_risk": "Low cash at risk: FOIA fees are $29-$102 each (DAT-3-E7) and hosting is small.",
+    "owner_time_support": "FOIA follow-up, document QA and expert-customer support need steady attention."
+   }
+  },
+  {
+   "id": "DAT-4",
+   "name": "Contractor insurance and bond expiry (x-date) calendar with carrier-switch history, built from open state contractor-licence registers",
+   "buyer": "Independent commercial-insurance and surety agencies that write contractor workers' comp, general liability and licence bonds and want to call prospects before renewal",
+   "pain": "Agents value renewal timing because employers rarely switch mid-term, but an agent in a 2013 forum thread was quoted $7,000/year for lists, current exclusive WC leads run $150-$400 each, while the free state files are raw, single-state and carry no contact emails.",
+   "wedge": "A weekly subscription calendar of contractor workers' comp / insurance / bond policy end dates merged from open state registers (CA, WA and other states with bulk files), with a snapshot-built history of carrier changes.",
+   "referenceEntrant": {
+    "startupCashUsd": 1500,
+    "daysToFirstRevenue": 90,
+    "ownerHoursPerWeek": 15
+   },
+   "entrantEdge": {
+    "type": "proprietary_or_compounding_data",
+    "status": "claimed",
+    "statement": "Weekly snapshots of the open registers would build a carrier-switch and tenure history that no source publishes (the CSLB file is 'current as of' its download date, E4) and that cannot be backfilled later. But the expiry dates themselves are free (E4, E6), the history needs 12+ months before it is useful, any rival (including existing Apify actor authors, E5) can start snapshotting, and buyer value of the history is unvalidated.",
+    "evidenceIds": [
+     "DAT-4-E4",
+     "DAT-4-E5"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "California CSLB Master List + Workers' Compensation free download (policy company, number and dates)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.cslb.ca.gov/onlineservices/dataportal/ContractorList.aspx",
+      "evidenceRef": "DAT-4-E4",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Washington L&I contractor licence, bond and insurance open datasets on data.wa.gov (CSV/JSON)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://catalog.data.gov/dataset/li-contractor-license-data-bond",
+      "evidenceRef": "DAT-4-E6",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Apify packaged WA contractor bonds and insurance actor (from $0.06 per 1,000 records; about $6/month at 100k records)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 6,
+      "coversWedge": "full",
+      "sourceLocator": "https://apify.com/j0401/wa-contractor-licenses.md",
+      "evidenceRef": "DAT-4-E5",
+      "metrics": {
+       "cash_cost": 6
+      }
+     },
+     {
+      "label": "Commercial x-date list subscriptions (one agent was quoted $7,000/year = $583/month in a 2013 forum post; stale, anecdotal, all-industry)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 583,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.insurance-forums.com/community/threads/business-x-dates.53254/latest",
+      "evidenceRef": "DAT-4-E1",
+      "metrics": {
+       "cash_cost": 583
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 49,
+    "falsifier": "cash_cost = buyer's monthly cost; $49 is a hypothetical entrant price (ESTIMATE). The free state files already cost $0, so there is no cost edge; the idea has an edge only if buyers are shown to pay for carrier-switch history that the free files cannot supply."
+   },
+   "evidence": [
+    {
+     "id": "DAT-4-E1",
+     "url": "https://www.insurance-forums.com/community/threads/business-x-dates.53254/latest",
+     "quote": "$7,000.00 for an annual subscription",
+     "kind": "incumbent_price",
+     "publisher": "Insurance-Forums.com (agent forum thread, anecdotal quote)",
+     "date": "2013-05-24",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-4-E2",
+     "url": "https://www.leadgen-economy.com/blog/workers-compensation-lead-generation-agencies/",
+     "quote": "Renewal timing is critical because employers rarely switch mid-term.",
+     "kind": "demand",
+     "publisher": "LeadGen Economy",
+     "date": "2026",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-4-E3",
+     "url": "https://www.cslb.ca.gov/onlineservices/dataportal/ContractorList.aspx",
+     "quote": "NOTE: Email addresses are not provided",
+     "kind": "constraint",
+     "publisher": "California Contractors State License Board (CSLB)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-4-E4",
+     "url": "https://www.cslb.ca.gov/onlineservices/dataportal/ContractorList.aspx",
+     "quote": "There is no charge for this service.",
+     "kind": "other",
+     "publisher": "California Contractors State License Board (CSLB)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-4-E5",
+     "url": "https://apify.com/j0401/wa-contractor-licenses.md",
+     "quote": "from $0.06 / 1,000 contractor records",
+     "kind": "incumbent_price",
+     "publisher": "Apify Store (actor j0401/wa-contractor-licenses)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-4-E6",
+     "url": "https://catalog.data.gov/dataset/li-contractor-license-data-bond",
+     "quote": "State of Washington, Labor & Industries contractor license and bond data.",
+     "kind": "other",
+     "publisher": "Data.gov catalog / WA Labor & Industries",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "DAT-4-E7",
+     "url": "https://www.leadgen-economy.com/blog/workers-compensation-lead-generation-agencies/",
+     "quote": "Exclusive leads typically range from $150-400, with $200-300 being most common for mid-market prospects.",
+     "kind": "demand",
+     "publisher": "LeadGen Economy",
+     "date": "2026",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "legalNotes": [
+    "DAT-4-E1: the $7,000/year list price is a single 2013 forum anecdote (stale, unverified); current x-date list prices were not found.",
+    "DAT-4-E3/E4: CSLB provides the file free and states it does not include email addresses (citing Business & Professions Code 27); its 'Conditions of Use' page was not read, so restrictions on commercial solicitation use are unverified.",
+    "DAT-4-E6: WA L&I data is published as open data (accessLevel public) with no licence text seen on the catalog page; reuse terms unverified.",
+    "Contacting contractors to sell insurance can fall under state insurance-solicitation, telemarketing and CAN-SPAM rules, which agency buyers (not the data seller) would carry; unverified."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "Paper only: $49/mo x 150 agencies = $7.4k/mo vs about $0.3k/mo cost; pessimistic ($39 x 75 = $2.9k vs $0.45k) stays positive, but 75 agencies must be reached through manual sales and the buyer proof of paying for history is missing."
+    },
+    "killReasons": [
+     {
+      "severity": "fatal",
+      "reason": "The free CSLB download and the free WA open datasets already contain the policy and bond end dates the wedge sells, and pay-per-record packagers exist at $0.06 per 1,000 records, so the core expiry-calendar wedge is covered for free.",
+      "refClass": "agent_reported",
+      "ref": "DAT-4-E4"
+     },
+     {
+      "severity": "major",
+      "reason": "The only non-copyable asset, carrier-switch history, needs 12+ months of snapshots before it exists and no evidence shows agents will pay for it.",
+      "refClass": "agent_reported",
+      "ref": "DAT-4-E1"
+     },
+     {
+      "severity": "major",
+      "reason": "Distribution to agencies is manual and unadvantaged; other packagers can snapshot the same registers.",
+      "refClass": "agent_reported",
+      "ref": "DAT-4-E5"
+     },
+     {
+      "severity": "minor",
+      "reason": "Only some states publish bulk policy dates (CA, WA confirmed), so multi-state coverage is limited and uncertain.",
+      "refClass": "agent_reported",
+      "ref": "DAT-4-E6"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: free state files and pay-per-record packagers already supply the expiry dates; the compounding carrier-switch history is a real but unvalidated and slow-to-build add-on that cannot produce differentiated revenue within 365 days.",
+   "family": "digital_or_data_products",
+   "confidenceGrade": "D",
+   "componentScores": {
+    "entrant_edge": 3,
+    "customer_problem_or_value": 6,
+    "distribution_advantage": 2,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 4,
+    "willingness_to_pay": 4,
+    "repeat_ltv_potential": 7,
+    "competition_adjusted_gap": 2,
+    "market_depth": 5,
+    "end_to_end_automation": 8,
+    "capital_risk": 9,
+    "owner_time_support": 6
+   },
+   "componentReasons": {
+    "entrant_edge": "Only claimed: snapshot history cannot be backfilled, but the expiry dates are free (DAT-4-E4, DAT-4-E6) and any rival can start snapshotting (DAT-4-E5).",
+    "customer_problem_or_value": "Renewal timing drives commercial insurance prospecting (DAT-4-E2) and lead prices of $150-$400 (DAT-4-E7) plus a list quote (DAT-4-E1, 2013) show agents spend on it.",
+    "distribution_advantage": "No privileged channel to agencies; the packaged raw feeds already sell at pennies per record (DAT-4-E5), so reach, not data, is the scarce asset.",
+    "defensibility": "Open registers (DAT-4-E4, DAT-4-E6) plus existing packagers (DAT-4-E5) leave only time-based history as protection.",
+    "absolute_gross_profit_potential": "The only list-price anchor is a 2013 forum quote of $7,000/year (DAT-4-E1, stale and anecdotal) for all-industry lists, and the free files compress what a contractor-only calendar can charge.",
+    "willingness_to_pay": "Agents pay for leads (DAT-4-E7) and were quoted for lists (DAT-4-E1, 2013), yet the same dates are free from the state (DAT-4-E4) and the packaged WA feed costs $0.06 per 1,000 records (DAT-4-E5).",
+    "repeat_ltv_potential": "Policy and bond renewals recur annually and new periods open weekly (DAT-4-E2), supporting subscription retention.",
+    "competition_adjusted_gap": "The free CSLB and WA files plus pay-per-record packagers (DAT-4-E4, DAT-4-E5, DAT-4-E6) cover the expiry wedge; only carrier-change history is uncovered and unvalidated.",
+    "market_depth": "Contractor registers exist in every state, but only some publish bulk policy dates (CA, WA confirmed in DAT-4-E4 and DAT-4-E6), limiting coverage.",
+    "end_to_end_automation": "Downloading open files, diffing weekly and emailing a calendar is largely automatable; only agent support and sales are manual.",
+    "capital_risk": "Hosting and storage only; the source files are free (DAT-4-E4, DAT-4-E6).",
+    "owner_time_support": "Source schema changes and agency support are modest, but selling to agencies is manual."
+   }
+  }
+ ]
+}

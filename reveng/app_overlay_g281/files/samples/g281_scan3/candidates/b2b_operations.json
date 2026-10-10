@@ -1,0 +1,1162 @@
+{
+ "candidates": [
+  {
+   "id": "B2B-1",
+   "name": "Acquired WooCommerce B2B/wholesale plugin business with renewing annual licences",
+   "family": "b2b_operations",
+   "buyer": "Small online merchants running WooCommerce stores that sell wholesale or to business customers (role-based prices, order forms, invoices, net terms) and renew a premium add-on licence each year",
+   "pain": "Wholesale WooCommerce merchants already pay for B2B add-ons (a 10,000+ install plugin sells a Premium tier, B2B-1-E4/E5), but the entrant's problem is distribution: a brand-new plugin on WordPress.org starts at 'Fewer than 10 active installations' (B2B-1-E3), so an installed base cannot be built from zero inside 365 days and has to be bought together with its renewing licences.",
+   "wedge": "Buy a sub-$10,000 WooCommerce/WordPress B2B-operations plugin business (free core on WordPress.org plus a separately-coded premium add-on sold on annual licences), transfer the WordPress.org listing to the entrant, and run renewals, support and maintenance.",
+   "referenceEntrant": {
+    "startupCashUsd": 10000,
+    "daysToFirstRevenue": 90,
+    "ownerHoursPerWeek": 12
+   },
+   "entrantEdge": {
+    "type": "acquirable_owned_audience_or_partner_channel",
+    "status": "claimed",
+    "statement": "What is bought and accumulates is the plugin's WordPress.org listing (an installed base that receives updates through the directory) and its renewing licence list. A rival cannot create that base quickly because new plugins show 'Fewer than 10 active installations' (B2B-1-E3) and the free adoption supply is small and not B2B (B2B-1-E14), but any rival can bid for the same listing and plugin code is GPL-compatible (B2B-1-E13), so only the purchased installs and the renewal rate are scarce, and both stay unverified until a seller shows data (B2B-1-E8).",
+    "evidenceIds": [
+     "B2B-1-E3",
+     "B2B-1-E4",
+     "B2B-1-E14"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Build a new plugin and list it free on WordPress.org (DIY)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://wordpress.org/plugins/browse/new/",
+      "evidenceRef": "B2B-1-E3",
+      "metrics": {
+       "channel_reach": 10
+      }
+     },
+     {
+      "label": "Adopt an abandoned plugin tagged adopt-me on WordPress.org (free; top results 1,000+ installs, none B2B)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://wordpress.org/plugins/tags/adopt-me/",
+      "evidenceRef": "B2B-1-E14",
+      "metrics": {
+       "channel_reach": 1000
+      }
+     },
+     {
+      "label": "WooCommerce PDF Invoices & Packing Slips (free core, 300,000+ installs, paid premium extensions)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://wordpress.org/plugins/woocommerce-pdf-invoices-packing-slips/",
+      "evidenceRef": "B2B-1-E1"
+     },
+     {
+      "label": "B2BKing wholesale plugin (free core with 10,000+ installs; Premium tier, price not shown on page)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://wordpress.org/plugins/b2bking-wholesale-for-woocommerce/",
+      "evidenceRef": "B2B-1-E4"
+     },
+     {
+      "label": "Acquire.com Basic buyer account (public listings only; detailed financials need a membership starting at $390)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://acquire.com/pricing",
+      "evidenceRef": "B2B-1-E8"
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "channel_reach",
+    "direction": "higher_is_better",
+    "incumbentValue": 1000,
+    "entrantValue": 2000,
+    "falsifier": "Metric = active WordPress.org installs reachable on day one. Best entrant-accessible alternative is adopting an abandoned plugin (top adopt-me results show 1,000+, none B2B-operations); a new plugin reaches fewer than 10. Entrant value 2000 is an ASSUMPTION for a plugin priced at roughly $4k ARR (2.1x-2.7x ARR in B2B-1-E6/E7). Falsified if purchasable sub-$10k listings show under 1,000 active installs, a licence renewal rate under 60%, or seller financials cannot be verified."
+   },
+   "evidence": [
+    {
+     "id": "B2B-1-E1",
+     "url": "https://wordpress.org/plugins/woocommerce-pdf-invoices-packing-slips/",
+     "quote": "Active installations 300,000+",
+     "kind": "demand",
+     "publisher": "WordPress.org Plugin Directory (PDF Invoices & Packing Slips listing)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-1-E2",
+     "url": "https://wordpress.org/plugins/woocommerce-pdf-invoices-packing-slips/",
+     "quote": "In addition to this, we offer several premium extensions:",
+     "kind": "other",
+     "publisher": "WordPress.org Plugin Directory (PDF Invoices & Packing Slips listing)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-1-E3",
+     "url": "https://wordpress.org/plugins/browse/new/",
+     "quote": "Fewer than 10 active installations",
+     "kind": "constraint",
+     "publisher": "WordPress.org Plugin Directory (newest plugins list, e.g. QuoShop for WooCommerce)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-1-E4",
+     "url": "https://wordpress.org/plugins/b2bking-wholesale-for-woocommerce/",
+     "quote": "Active installations 10,000+",
+     "kind": "demand",
+     "publisher": "WordPress.org Plugin Directory (B2BKing listing)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-1-E5",
+     "url": "https://wordpress.org/plugins/b2bking-wholesale-for-woocommerce/",
+     "quote": "Check out B2BKing Premium",
+     "kind": "other",
+     "publisher": "WordPress.org Plugin Directory (B2BKing listing)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-1-E6",
+     "url": "https://flippa.com/search?query=woocommerce%20plugin",
+     "quote": "$273K ARR, 71% margins, and 522 active subscribers, with approximately 76% on annual plans.",
+     "kind": "incumbent_price",
+     "publisher": "Flippa (live SaaS listing, asking price USD $575,000 on the same page)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-1-E7",
+     "url": "https://flippa.com/search?query=woocommerce%20plugin",
+     "quote": "Established SaaS business in Education with $63K ARR revenue, 70% profit margin, and a Domain Authority of 24.",
+     "kind": "incumbent_price",
+     "publisher": "Flippa (live SaaS listing, asking price USD $170,000 reduced from USD $300,000 on the same page)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-1-E8",
+     "url": "https://acquire.com/pricing",
+     "quote": "Detailed financials, customer, and traffic metrics",
+     "kind": "constraint",
+     "publisher": "Acquire.com (buyer membership features)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-1-E9",
+     "url": "https://acquire.com/pricing",
+     "quote": "Starting at $390",
+     "kind": "incumbent_price",
+     "publisher": "Acquire.com (buyer membership price; billing period not stated)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-1-E10",
+     "url": "https://acquire.com/",
+     "quote": "2,000+ startups sold",
+     "kind": "demand",
+     "publisher": "Acquire.com (homepage marketplace statistic)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-1-E11",
+     "url": "https://developer.wordpress.org/plugins/wordpress-org/transferring-your-plugin-to-a-new-owner/",
+     "quote": "larger plugins and those officially recognized as featured/beta are restricted from these changes.",
+     "kind": "constraint",
+     "publisher": "WordPress.org Plugin Handbook",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-1-E12",
+     "url": "https://developer.wordpress.org/plugins/wordpress-org/detailed-plugin-guidelines/",
+     "quote": "Plugins may not contain functionality that is restricted or locked, only to be made available by payment or upgrade.",
+     "kind": "constraint",
+     "publisher": "WordPress.org Detailed Plugin Guidelines (guideline 5)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-1-E13",
+     "url": "https://developer.wordpress.org/plugins/wordpress-org/detailed-plugin-guidelines/",
+     "quote": "Although any GPL-compatible license is acceptable, using the same license as WordPress",
+     "kind": "constraint",
+     "publisher": "WordPress.org Detailed Plugin Guidelines (guideline 1)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-1-E14",
+     "url": "https://wordpress.org/plugins/tags/adopt-me/",
+     "quote": "** this plugin is no longer being update. Please feel free to adopt me! **",
+     "kind": "other",
+     "publisher": "WordPress.org Plugin Directory (adopt-me tag listing; top results show 1,000+, 700+, 400+ installs, none B2B)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 3,
+    "customer_problem_or_value": 4,
+    "distribution_advantage": 3,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 2,
+    "willingness_to_pay": 4,
+    "repeat_ltv_potential": 6,
+    "competition_adjusted_gap": 3,
+    "market_depth": 4,
+    "end_to_end_automation": 5,
+    "capital_risk": 3,
+    "owner_time_support": 4
+   },
+   "componentReasons": {
+    "entrant_edge": "Only claimed: an installed base is scarce (new plugins start under 10 installs, B2B-1-E3; adoptable supply tops out near 1,000, B2B-1-E14) but the size and renewal rate of any purchasable plugin are unverified (B2B-1-E8).",
+    "customer_problem_or_value": "Wholesale merchants do pay for B2B add-ons (Premium tier on a 10,000+ install plugin, B2B-1-E4/E5; paid extensions on a 300,000+ install plugin, B2B-1-E1/E2) but free cores cover the basics.",
+    "distribution_advantage": "The directory sends nothing to newcomers (B2B-1-E3), so the only channel is a bought installed base; the transfer itself can be restricted or delayed for larger plugins (B2B-1-E11).",
+    "defensibility": "Plugin code is GPL-compatible so rivals can fork it (B2B-1-E13) and the free-core rule forces premium features into separate code (B2B-1-E12); lock-in is limited to renewals and habit.",
+    "absolute_gross_profit_potential": "At 2.1x-2.7x ARR (asking USD $575,000 on $273K ARR, B2B-1-E6; USD $170,000 on $63K ARR, B2B-1-E7) a $10k budget buys roughly $3.7k-$4.8k ARR at about 70% margin, i.e. $2.6k-$3.3k a year.",
+    "willingness_to_pay": "Paid tiers exist next to free cores (B2B-1-E2, B2B-1-E5) and acquirers pay for ARR (B2B-1-E10), but no renewal rate or price for a purchasable plugin was seen.",
+    "repeat_ltv_potential": "Annual licences recur by design (B2B-1-E6 shows 76% of subscribers on annual plans for a comparable SaaS), but plugin renewal rates were not found.",
+    "competition_adjusted_gap": "Free cores with large installs (B2B-1-E1, B2B-1-E4) already cover basic B2B/invoice needs, leaving only premium features as the gap.",
+    "market_depth": "WooCommerce B2B is a real segment (B2B-1-E4) but each purchasable plugin is a small slice; the listings visible were $170k-$2.5M, far above $10k (B2B-1-E6/E7).",
+    "end_to_end_automation": "Licence keys, updates and renewal emails automate; support and compatibility fixes after each WordPress/WooCommerce release stay manual.",
+    "capital_risk": "Nearly the full $10k is paid up front for a business whose financials need a paid membership to see (B2B-1-E8/E9) and that cannot be refunded if renewals collapse.",
+    "owner_time_support": "Support tickets and release testing need a few hours a week; no evidence that either can be fully outsourced at this revenue level."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "B2B-1-E11: WordPress.org allows transferring a plugin to a new owner, but larger plugins are restricted and requests can be denied or delayed; make any purchase conditional on the directory accepting the transfer (timing unverified).",
+    "B2B-1-E12: a free WordPress.org plugin may not lock features behind payment, so the premium add-on must be separate code, and guideline 11 limits upgrade notices; this constrains how renewals can be marketed.",
+    "B2B-1-E8/E9: Acquire.com and Flippa terms, fees and escrow rules were not read; seller claims are unverified; transfer of licence-key customer data may need privacy-policy review (unverified, not legal advice)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Assumptions: pay $9,000 at 2.4x ARR (between 2.11x = 575/273 and 2.70x = 170/63 from B2B-1-E6/E7) = ARR $3,750; margin 70% (B2B-1-E6/E7) so costs $1,125. Base profit about +$2,625/yr before the entrant's own time. Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue 3,750 x0.8 x0.5 = $1,500; costs 1,125 x1.5 = $1,688; result about -$188/yr, plus unrecovered purchase price."
+    },
+    "killReasons": [
+     {
+      "reason": "Thin economics: a $10k budget buys about $3.7k-$4.8k ARR at about 70% margin, and the pessimistic case is negative.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "B2B-1-E6"
+     },
+     {
+      "reason": "Plugin code is GPL-compatible and free cores with large installs exist, so rivals can fork or out-feature it; lock-in is only habit and renewals.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "B2B-1-E13"
+     },
+     {
+      "reason": "Seller financials, install counts and renewal rates are behind a paid membership or NDA, so supply at the $10k level cannot be verified from public pages.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "B2B-1-E8"
+     }
+    ]
+   },
+   "researcherVerdict": "uncertain",
+   "verdictReason": "Open question: do sub-$10k WooCommerce/WordPress B2B-operations plugin businesses with at least 12 months of verifiable renewing licences exist for sale, and what are their install counts and renewal rates? Public listings seen were $170k-$2.5M (B2B-1-E6/E7) and detailed financials need a paid membership (B2B-1-E8/E9), so only seller data under NDA can settle it. Even if supply exists, base profit is about $2.6k/yr and the pessimistic case is negative, so the ceiling is low."
+  },
+  {
+   "id": "B2B-2",
+   "name": "Annual FTC Safeguards Rule evidence pack for non-bank financial firms (scans, board report, training, breach-notice log)",
+   "family": "b2b_operations",
+   "buyer": "Non-bank financial institutions under FTC jurisdiction that hold customer information on 5,000 or more consumers (tax-preparation firms, mortgage brokers, collection agencies, non-SEC-registered investment advisers, finders, check cashers)",
+   "pain": "Under 16 CFR 314.4 these firms must run vulnerability scans twice a year, annual penetration testing unless continuously monitored, an at-least-annual written report from a Qualified Individual to the board, ongoing training, and notify the FTC within 30 days of a breach touching 500+ consumers (B2B-2-E3, E4, E6); firms with fewer than 5,000 consumers are exempt from the testing, incident-response and board-report items (B2B-2-E1, E2).",
+   "wedge": "Subscription that schedules and stores the semi-annual scan runs (open-source scanner), coordinates the annual penetration test, drafts the annual board report, and keeps the training log and breach-notice log as one audit-ready record, optionally with a service-provider Qualified Individual.",
+   "referenceEntrant": {
+    "startupCashUsd": 1500,
+    "daysToFirstRevenue": 120,
+    "ownerHoursPerWeek": 20
+   },
+   "entrantEdge": {
+    "type": "generic_managed_service",
+    "status": "none",
+    "statement": "Attempted type: embedded_workflow_or_system_of_record (the evidence binder becomes the firm's compliance record). It fails: the binder is dated documents and scan reports that export to any rival, an AGPL open-source compliance platform already offers the same record (B2B-2-E8, B2B-2-E9), the scanner is open source (B2B-2-E7), and the rule lets the Qualified Individual be an employee, an affiliate or a service provider (B2B-2-E5), so no licence or exclusive access exists to build on.",
+    "evidenceIds": [
+     "B2B-2-E5",
+     "B2B-2-E7",
+     "B2B-2-E8"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "The rule text and FTC guide, applied by the firm's own Qualified Individual (DIY)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.ftc.gov/business-guidance/resources/ftc-safeguards-rule-what-your-business-needs-know",
+      "evidenceRef": "B2B-2-E6",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Greenbone Community Edition / OpenVAS vulnerability scanner (GPL)",
+      "kind": "open_source",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://github.com/greenbone/openvas-scanner",
+      "evidenceRef": "B2B-2-E7",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Comp AI open-source \"Vanta & Drata alternative\" (AGPL core; cloud version price not shown)",
+      "kind": "open_source",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://github.com/trycompai/comp",
+      "evidenceRef": "B2B-2-E8",
+      "metrics": {
+       "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 149,
+    "falsifier": "Metric = USD per month for the compliance record. DIY, the open-source scanner and the open-source platform cost $0 (self-hosted); entrant price of $149/month is an ASSUMPTION. Best alternative is already $0 so there is no measured advantage. Reopen only if (a) firms with 5,000+ consumers and no IT staff turn out to be numerous and (b) free tooling proves unusable for them without a paid Qualified Individual."
+   },
+   "evidence": [
+    {
+     "id": "B2B-2-E1",
+     "url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-314/section-314.6",
+     "quote": "financial institutions that maintain customer information concerning fewer than five thousand consumers",
+     "kind": "constraint",
+     "publisher": "16 CFR 314.6 (eCFR)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-2-E2",
+     "url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-314/section-314.6",
+     "quote": "Section 314.4(b)(1), (d)(2), (h), and (i) do not apply",
+     "kind": "constraint",
+     "publisher": "16 CFR 314.6 (eCFR)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-2-E3",
+     "url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-314/section-314.4",
+     "quote": "Annual penetration testing of your information systems determined each given year based on relevant identified risks.",
+     "kind": "constraint",
+     "publisher": "16 CFR 314.4 (eCFR)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-2-E4",
+     "url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-314/section-314.4",
+     "quote": "Require your Qualified Individual to report in writing, regularly and at least annually, to your board of directors.",
+     "kind": "constraint",
+     "publisher": "16 CFR 314.4 (eCFR)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-2-E5",
+     "url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-314/section-314.4",
+     "quote": "Designate a qualified individual responsible for overseeing and implementing your information security program.",
+     "kind": "constraint",
+     "publisher": "16 CFR 314.4 (eCFR)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-2-E6",
+     "url": "https://www.ftc.gov/business-guidance/resources/ftc-safeguards-rule-what-your-business-needs-know",
+     "quote": "no later than 30 days after discovery",
+     "kind": "constraint",
+     "publisher": "FTC business guidance (Safeguards Rule)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-2-E7",
+     "url": "https://github.com/greenbone/openvas-scanner",
+     "quote": "This module except for the Rust-implementation in directory rust/ is licensed under the GNU General Public License v2.0 only.",
+     "kind": "incumbent_price",
+     "publisher": "Greenbone (GitHub repository, open-source licence = $0 to obtain)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-2-E8",
+     "url": "https://github.com/trycompai/comp",
+     "quote": "AI Native platform to get companies compliant - Vanta & Drata Alternative",
+     "kind": "demand",
+     "publisher": "Comp AI (GitHub repository, 1.9k stars shown)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-2-E9",
+     "url": "https://github.com/trycompai/comp",
+     "quote": "the core technology (99%) is fully open source, licensed under AGPLv3",
+     "kind": "other",
+     "publisher": "Comp AI (GitHub repository)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 4,
+    "distribution_advantage": 2,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 3,
+    "repeat_ltv_potential": 6,
+    "competition_adjusted_gap": 2,
+    "market_depth": 3,
+    "end_to_end_automation": 5,
+    "capital_risk": 8,
+    "owner_time_support": 4
+   },
+   "componentReasons": {
+    "entrant_edge": "No edge: the record is portable, an AGPL platform and an open-source scanner already exist (B2B-2-E7, B2B-2-E8, B2B-2-E9) and the Qualified Individual role is open to anyone (B2B-2-E5).",
+    "customer_problem_or_value": "The obligations recur (semi-annual scans, annual test, annual board report, B2B-2-E3/E4) but they only bind firms with 5,000+ consumers (B2B-2-E1/E2).",
+    "distribution_advantage": "No channel was found for reaching tax preparers or brokers that holds up for a stranger; nothing in the sources shows a platform or association sending buyers to newcomers.",
+    "defensibility": "A rival can reproduce the document set and scan schedule from the public rule text (B2B-2-E3/E4) and open-source tools (B2B-2-E7/E8).",
+    "absolute_gross_profit_potential": "At an assumed $149/month and a dozen customers by month 12 revenue is about $10k in year one, small against effort; price is an assumption, not sourced.",
+    "willingness_to_pay": "No third-party price was found (search unavailable); free scanner and free open-source platform lower the ceiling (B2B-2-E7/E8).",
+    "repeat_ltv_potential": "The duties recur every six or twelve months (B2B-2-E3/E4), so a subscription fits if a buyer exists.",
+    "competition_adjusted_gap": "Open-source scanning and compliance-record tools already cover most of the wedge (B2B-2-E7/E8/E9).",
+    "market_depth": "The exemption for fewer than 5,000 consumers (B2B-2-E1/E2) removes most small firms, leaving mid-sized non-bank lenders and larger tax firms, who are better served by IT vendors.",
+    "end_to_end_automation": "Scans and reminders automate; the annual penetration test and board report need a qualified human (B2B-2-E3/E4).",
+    "capital_risk": "Software and scanner hosting only, about $1.5k.",
+    "owner_time_support": "Report drafting and Qualified Individual work are human-heavy for each customer."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "B2B-2-E1/E2: applicability is per customer (fewer than 5,000 consumers is exempt from 314.4(b)(1), (d)(2), (h), (i)); confirm each buyer is in scope before selling (unverified, not legal advice).",
+    "B2B-2-E5: acting as a customer's Qualified Individual can create oversight duties and contract liability for the vendor (unverified).",
+    "B2B-2-E6: FTC breach notice within 30 days for 500+ consumers; scanning a customer's systems needs written authorization (not researched, unverified)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "ALL INPUTS ARE ASSUMPTIONS (no vendor price found): $149/month, 12 customers by month 12 (average 6 over the year) = about $10,700 revenue; costs $3,000 (scanner hosting, tools, insurance). Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue about $4,300 vs cost $4,500 = about -$200."
+    },
+    "killReasons": [
+     {
+      "reason": "The testing, incident-response and board-report items do not apply to firms with fewer than 5,000 consumers, which removes the smallest buyers.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "B2B-2-E2"
+     },
+     {
+      "reason": "An open-source scanner and an open-source compliance platform cover scans and the evidence record for free.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "B2B-2-E8"
+     },
+     {
+      "reason": "No structural edge: the record is portable and the Qualified Individual role needs no licence.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "B2B-2-E5"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: no structural edge (portable record; open-source scanner and AGPL compliance platform exist: B2B-2-E7/E8/E9; the Qualified Individual may be any employee, affiliate or provider: B2B-2-E5) and the recurring testing and board-report duties do not bind firms holding data on fewer than 5,000 consumers (B2B-2-E1/E2). Not checked: prices of paid compliance vendors or MSP packages (web search was unavailable)."
+  },
+  {
+   "id": "B2B-3",
+   "name": "Medicare enrollment-revalidation desk for small provider and supplier practices",
+   "family": "b2b_operations",
+   "buyer": "Small Medicare-enrolled practices and DMEPOS suppliers (individual and organizational providers) whose revalidation due date has been posted by CMS",
+   "pain": "Medicare providers must resubmit and recertify their enrollment every 5 years (DMEPOS suppliers every 3) and, once CMS notifies them, file a complete application within 60 calendar days (B2B-3-E1, E5, E6); CMS posts due dates seven months ahead (B2B-3-E2) and sends the provider an email or letter three to four months before (B2B-3-E4).",
+   "wedge": "Service that watches the public Medicare Revalidation List for newly posted due dates, prepares the revalidation application from the practice's data, tracks the 60-day clock and files it, sold per revalidation.",
+   "referenceEntrant": {
+    "startupCashUsd": 1000,
+    "daysToFirstRevenue": 90,
+    "ownerHoursPerWeek": 20
+   },
+   "entrantEdge": {
+    "type": "niche_focus",
+    "status": "none",
+    "statement": "Attempted type: privileged_or_low_cac_distribution (the public Revalidation List is a dated lead feed seven months ahead). CMS publishes the same list to everyone (B2B-3-E2, B2B-3-E3) and prompts the provider directly by email or post (B2B-3-E4), so every competitor sees the same leads and the provider is already reminded; the filing itself is done in CMS's own free online tool with tutorials (B2B-3-E7). Nothing exclusive or compounding is left, only focus on one filing.",
+    "evidenceIds": [
+     "B2B-3-E3",
+     "B2B-3-E4",
+     "B2B-3-E7"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "CMS Medicare Revalidation List (public due-date search)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/revalidations",
+      "evidenceRef": "B2B-3-E3",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "PECOS online enrollment application with CMS video and print tutorials",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers",
+      "evidenceRef": "B2B-3-E7",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Paper application filed by the practice's own billing staff",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers",
+      "evidenceRef": "B2B-3-E8",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "CMS enrollment-contractor revalidation notice by email or post (status quo reminder)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/revalidations",
+      "evidenceRef": "B2B-3-E4",
+      "metrics": {
+       "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 4,
+    "falsifier": "Metric = USD per month averaged over the 60-month cycle. The free CMS tools cost $0; entrant price of $250 per revalidation (ASSUMPTION) averages about $4/month. No measured advantage over a $0 official path. Reopen only if evidence shows practices routinely lose enrollment because the free path fails and pay third parties to prevent it (no such evidence found)."
+   },
+   "evidence": [
+    {
+     "id": "B2B-3-E1",
+     "url": "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/revalidations",
+     "quote": "In general, providers and suppliers revalidate every five years but DMEPOS suppliers revalidate every three years.",
+     "kind": "constraint",
+     "publisher": "CMS (Revalidations page)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-3-E2",
+     "url": "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/revalidations",
+     "quote": "CMS posts revalidation due dates seven months in advance.",
+     "kind": "other",
+     "publisher": "CMS (Revalidations page)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-3-E3",
+     "url": "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/revalidations",
+     "quote": "You can search the Medicare Revalidation List to find a due date for an individual or organizational provider.",
+     "kind": "other",
+     "publisher": "CMS (Revalidations page)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-3-E4",
+     "url": "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/revalidations",
+     "quote": "Your enrollment contractor will send a revalidation notice to you via email or U.S. postal mail",
+     "kind": "other",
+     "publisher": "CMS (Revalidations page)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-3-E5",
+     "url": "https://www.ecfr.gov/current/title-42/chapter-IV/subchapter-B/part-424/subpart-P/section-424.515",
+     "quote": "within 60 calendar days of our notification",
+     "kind": "constraint",
+     "publisher": "42 CFR 424.515 (eCFR)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-3-E6",
+     "url": "https://www.ecfr.gov/current/title-42/chapter-IV/subchapter-B/part-424/subpart-P/section-424.515",
+     "quote": "resubmit and recertify the accuracy of its enrollment information every 5 years",
+     "kind": "constraint",
+     "publisher": "42 CFR 424.515 (eCFR)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-3-E7",
+     "url": "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers",
+     "quote": "PECOS has video and print tutorials and will walk you through your enrollment",
+     "kind": "other",
+     "publisher": "CMS (Medicare Enrollment for Providers & Suppliers)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-3-E8",
+     "url": "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers",
+     "quote": "If you’re unable to apply online using PECOS, you can use a paper application form.",
+     "kind": "other",
+     "publisher": "CMS (Medicare Enrollment for Providers & Suppliers)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-3-E9",
+     "url": "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers",
+     "quote": "Pay the Medicare Application Fee, if applicable",
+     "kind": "incumbent_price",
+     "publisher": "CMS (Medicare Enrollment for Providers & Suppliers; fee is paid to CMS by some institutional providers, amount not shown)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 5,
+    "distribution_advantage": 2,
+    "defensibility": 1,
+    "absolute_gross_profit_potential": 2,
+    "willingness_to_pay": 3,
+    "repeat_ltv_potential": 2,
+    "competition_adjusted_gap": 1,
+    "market_depth": 6,
+    "end_to_end_automation": 3,
+    "capital_risk": 9,
+    "owner_time_support": 4
+   },
+   "componentReasons": {
+    "entrant_edge": "No edge: the lead list is public to all (B2B-3-E2/E3), the provider is notified directly (B2B-3-E4) and the filing is in a free CMS tool (B2B-3-E7).",
+    "customer_problem_or_value": "The duty is real and time-boxed (60 days, B2B-3-E5; every 5 or 3 years, B2B-3-E1) but the consequence of missing it is not stated on the pages read.",
+    "distribution_advantage": "The public list gives a lead source any competitor can use (B2B-3-E3); no channel that sends buyers to newcomers was found.",
+    "defensibility": "No lock-in: each revalidation is a fresh filing in the provider's own CMS account (B2B-3-E7).",
+    "absolute_gross_profit_potential": "Revenue per customer arrives once per 5 years (B2B-3-E1/E6) at an assumed $250 per filing, so annual gross profit per customer is tiny.",
+    "willingness_to_pay": "No evidence was found that practices pay third parties for this; the official path is free and guided (B2B-3-E7).",
+    "repeat_ltv_potential": "A 5-year (3-year for DMEPOS) cycle (B2B-3-E1/E6) means almost no repeat revenue.",
+    "competition_adjusted_gap": "CMS reminder, list and tutorials already cover the wedge (B2B-3-E3/E4/E7).",
+    "market_depth": "Many enrolled providers revalidate each year (B2B-3-E1), but the addressable share that would pay is unknown.",
+    "end_to_end_automation": "Application data entry is semi-manual per provider and depends on the provider granting access; surrogacy was not described on the pages read (B2B-3-E7).",
+    "capital_risk": "About $1k of tooling.",
+    "owner_time_support": "Each filing needs provider data collection and follow-up."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "B2B-3-E7: the CMS pages read did not describe how a third party may act for a provider (surrogacy/authorization); verify before offering filing on behalf of providers (unverified).",
+    "Provider enrollment data is sensitive and may make the vendor a HIPAA business associate (unverified, not legal advice).",
+    "B2B-3-E9: some institutional providers owe a CMS application fee; the vendor must never collect or hide it (amount not read)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "ALL INPUTS ARE ASSUMPTIONS: $250 per revalidation, 40 filings in the first 365 days = $10,000; costs $1,500. Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue $4,000, costs $2,250 = +$1,750. Positive only because inputs are unsourced; there is no evidence anyone pays, and the revenue does not repeat for 5 years."
+    },
+    "killReasons": [
+     {
+      "reason": "Free official path covers the wedge: public Revalidation List, direct email/post notice, and a guided PECOS application.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "B2B-3-E7"
+     },
+     {
+      "reason": "No exclusive or compounding data: the due-date list is public to every competitor and to the provider.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "B2B-3-E3"
+     },
+     {
+      "reason": "Five-year cycle (three for DMEPOS) gives almost no repeat revenue per customer.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "B2B-3-E1"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: no structural edge (the due-date list is public and CMS itself notifies providers: B2B-3-E3/E4), a free guided CMS tool covers the filing (B2B-3-E7), and a 5-year cycle (B2B-3-E1/E6) leaves no repeat revenue. Not checked: whether any consultants charge for this and at what price (web search was unavailable); whether PECOS lets a vendor act for a provider."
+  },
+  {
+   "id": "B2B-4",
+   "name": "Open Payments (Sunshine Act) annual reporting service for small drug and device makers",
+   "family": "b2b_operations",
+   "buyer": "Small US drug and medical-device manufacturers (and group purchasing organizations) that make payments or transfers of value to physicians and teaching hospitals and must report them to CMS each year",
+   "pain": "Reporting entities submit the previous calendar year's data in a fixed window ('Data Submission: February 1 – March 31.', B2B-4-E5/E6); civil penalties run $1,000-$10,000 per unreported, late or inaccurate item (cap $150,000 a year) and $10,000-$100,000 per knowing failure (B2B-4-E1, E2, E3), as adjusted annually.",
+   "wedge": "Year-round payment-capture log (expense, speaker-fee and sample feeds), physician matching, and the February-March submission file prepared and uploaded to the CMS Open Payments System, sold as an annual subscription.",
+   "referenceEntrant": {
+    "startupCashUsd": 1500,
+    "daysToFirstRevenue": 180,
+    "ownerHoursPerWeek": 20
+   },
+   "entrantEdge": {
+    "type": "generic_managed_service",
+    "status": "none",
+    "statement": "Attempted types: embedded_workflow_or_system_of_record and proprietary_or_compounding_data (a payments ledger plus physician-matching history). Both fail: the submission goes into CMS's own Open Payments System (B2B-4-E7) and CMS publishes the program data to everyone (B2B-4-E4), so matching history is reproducible, and the ledger is exportable to any rival. The remaining value is outsourced data entry, which is a generic managed service.",
+    "evidenceIds": [
+     "B2B-4-E4",
+     "B2B-4-E7",
+     "B2B-4-E9"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "CMS Open Payments System (reporting entities submit data to CMS; no fee stated on the pages read)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.cms.gov/priorities/key-initiatives/open-payments",
+      "evidenceRef": "B2B-4-E7",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "CMS \"Resources for Reporting Entities\" (content not read; free status not stated)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.cms.gov/priorities/key-initiatives/open-payments",
+      "evidenceRef": "B2B-4-E9",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Finance staff compile payments in a spreadsheet and upload at year end (DIY)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.cms.gov/priorities/key-initiatives/open-payments",
+      "evidenceRef": "B2B-4-E5",
+      "metrics": {
+       "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 250,
+    "falsifier": "Metric = USD per month. CMS system and DIY cost $0 (cash); entrant price of $3,000 a year = $250/month is an ASSUMPTION. No measured advantage against $0. Reopen only if evidence shows small makers routinely incur penalties because the free path is unworkable, and that they buy outside help; no such evidence was found."
+   },
+   "evidence": [
+    {
+     "id": "B2B-4-E1",
+     "url": "https://www.law.cornell.edu/cfr/text/42/403.912",
+     "quote": "is subject to a civil monetary penalty of not less than $1,000, but not more than $10,000.",
+     "kind": "constraint",
+     "publisher": "42 CFR 403.912 (Cornell LII)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-4-E2",
+     "url": "https://www.law.cornell.edu/cfr/text/42/403.912",
+     "quote": "will not exceed $150,000 as adjusted annually under 45 CFR part 102.",
+     "kind": "constraint",
+     "publisher": "42 CFR 403.912 (Cornell LII)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-4-E3",
+     "url": "https://www.law.cornell.edu/cfr/text/42/403.912",
+     "quote": "is subject to a civil monetary penalty of not less than $10,000, but not more than $100,000.",
+     "kind": "constraint",
+     "publisher": "42 CFR 403.912 (Cornell LII)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-4-E4",
+     "url": "https://www.cms.gov/priorities/key-initiatives/open-payments",
+     "quote": "17.07 million published records totaling $14.67 billion in payments",
+     "kind": "demand",
+     "publisher": "CMS (Open Payments, Program Year 2025 data)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-4-E5",
+     "url": "https://www.cms.gov/priorities/key-initiatives/open-payments",
+     "quote": "Reporting entities submit data collected during the previous calendar year to CMS.",
+     "kind": "constraint",
+     "publisher": "CMS (Open Payments)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-4-E6",
+     "url": "https://www.cms.gov/priorities/key-initiatives/open-payments",
+     "quote": "Data Submission: February 1 – March 31.",
+     "kind": "constraint",
+     "publisher": "CMS (Open Payments)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-4-E7",
+     "url": "https://www.cms.gov/priorities/key-initiatives/open-payments",
+     "quote": "The Open Payments System (OPS) has been significantly enhanced.",
+     "kind": "other",
+     "publisher": "CMS (Open Payments)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-4-E8",
+     "url": "https://www.ecfr.gov/current/title-42/chapter-IV/subchapter-B/part-403/subpart-I/section-403.904",
+     "quote": "by the applicable manufacturer to CMS on an annual basis",
+     "kind": "constraint",
+     "publisher": "42 CFR 403.904 (eCFR)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-4-E9",
+     "url": "https://www.cms.gov/priorities/key-initiatives/open-payments",
+     "quote": "Resources for Reporting Entities",
+     "kind": "other",
+     "publisher": "CMS (Open Payments; link text, contents not shown)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 6,
+    "distribution_advantage": 2,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 4,
+    "willingness_to_pay": 4,
+    "repeat_ltv_potential": 7,
+    "competition_adjusted_gap": 2,
+    "market_depth": 3,
+    "end_to_end_automation": 5,
+    "capital_risk": 8,
+    "owner_time_support": 4
+   },
+   "componentReasons": {
+    "entrant_edge": "No edge: submission goes into CMS's own system (B2B-4-E7) and the program data are published to everyone (B2B-4-E4); the ledger is exportable.",
+    "customer_problem_or_value": "The obligation is annual with sizeable per-item penalties (B2B-4-E1/E2/E3) and a fixed window (B2B-4-E6), so the pain is real for makers with physician payments.",
+    "distribution_advantage": "No channel to reach small makers was found; nothing in the sources sends buyers to a newcomer.",
+    "defensibility": "A rival can copy the workflow from the public rules (B2B-4-E8) and CMS format; switching cost is low once data are exported.",
+    "absolute_gross_profit_potential": "If a small maker paid about $3,000 a year (ASSUMPTION, no price evidence) a handful of customers gives low five figures, in a program with 17.07 million records mostly from large makers (B2B-4-E4).",
+    "willingness_to_pay": "Penalty exposure (B2B-4-E1/E3) creates a reason to pay, but no price or paying customer for an outside service was found.",
+    "repeat_ltv_potential": "Reporting repeats every year (B2B-4-E5/E8), so a subscription fits.",
+    "competition_adjusted_gap": "The free CMS system plus resources and DIY spreadsheets cover submission (B2B-4-E7/E9); paid aggregate-spend vendors were not priced (search unavailable).",
+    "market_depth": "The reporting-entity universe is not counted on the pages read, and small makers with few physician payments may not buy outside help.",
+    "end_to_end_automation": "Ingesting expense feeds and generating the CMS file automate; physician matching and dispute handling need review.",
+    "capital_risk": "Software and a small amount of compliance reading, about $1.5k.",
+    "owner_time_support": "Each customer needs data onboarding and a February-March crunch."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "B2B-4-E1/E2/E3: penalties fall on the reporting entity, not the vendor; contracts should allocate responsibility for data accuracy (unverified, not legal advice).",
+    "B2B-4-E8: reporting duties are defined in 42 CFR 403 subpart I; exact thresholds and exclusions (e.g. small payments, product categories) were not read, so scope per customer is unverified.",
+    "Physician payment data and any health-related information could create privacy and contract obligations (unverified)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "ALL INPUTS ARE ASSUMPTIONS: $3,000 per customer-year, 6 customers in the first 365 days = $18,000; costs $2,500. Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue $7,200, costs $3,750 = +$3,450. Positive only because inputs are unsourced; no evidence of any paying customer or price was found."
+    },
+    "killReasons": [
+     {
+      "reason": "The CMS Open Payments System is the free official channel and covers submission; the service would only repackage data entry.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "B2B-4-E7"
+     },
+     {
+      "reason": "No structural edge: program data are public to all (B2B-4-E4) and the ledger is portable.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "B2B-4-E4"
+     },
+     {
+      "reason": "No price, paying customer or lead channel for small makers was found.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "B2B-4-E9"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: no structural edge (CMS runs the submission system and publishes the data: B2B-4-E4/E7; the ledger is portable), and nothing shows a stranger can reach small makers or that they pay outsiders. Penalty exposure (B2B-4-E1/E3) is real, so a stronger entrant with an existing reporting-entity audience might differ. Not checked: prices of paid aggregate-spend vendors and consultants, and the count of small reporting entities (web search was unavailable)."
+  },
+  {
+   "id": "B2B-5",
+   "name": "SEC-registered transfer agent and shareholder-ledger service for micro-cap and private issuers",
+   "family": "b2b_operations",
+   "buyer": "Small issuers that must or choose to keep an official securityholder ledger through a registered transfer agent: OTC-quoted companies, Regulation A and crowdfunding issuers, and private companies with many holders",
+   "pain": "Performing the transfer-agent function for a security registered under section 12 is unlawful unless registered (B2B-5-E1); the agent keeps the official list of securityholder accounts (B2B-5-E9), must turn routine items around within three business days for at least 90 percent of items (B2B-5-E6) and file annual reports (B2B-5-E4, E5). The demand is therefore legally mandated for registered securities; what small issuers pay was not found.",
+   "wedge": "File Form TA-1, run a hosted control book and master securityholder file for small issuers (OTC-quoted, Regulation A and crowdfunding), and charge an annual fee per issuer.",
+   "referenceEntrant": {
+    "startupCashUsd": 10000,
+    "daysToFirstRevenue": 300,
+    "ownerHoursPerWeek": 30
+   },
+   "entrantEdge": {
+    "type": "regulatory_license_intrinsic_to_model",
+    "status": "claimed",
+    "statement": "Exclusive: only a registered transfer agent may perform the function for registered securities (B2B-5-E1), and the ledger the agent keeps is the issuer's official securityholder list (B2B-5-E9), which cannot move to another agent without a formal cutover. What accumulates: issuer ledgers under custody and a clean exam history. Why copying is slow: each new agent needs a 30-day registration (B2B-5-E3, E7) and an annual independent-accountant control report (B2B-5-E5). Limit: registration is open to anyone who files Form TA-1, so the licence blocks software-only cap-table tools (B2B-5-E10), not other registered agents.",
+    "evidenceIds": [
+     "B2B-5-E1",
+     "B2B-5-E5",
+     "B2B-5-E9"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Issuer acts as its own transfer agent (self-transfer; the annual accountant-report rule has exemptions for agents serving only their own securities, per the page summary)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.ecfr.gov/current/title-17/chapter-II/part-240/subject-group-ECFR9f5ef2d6d9b7d5f/section-240.17Ad-13",
+      "evidenceRef": "B2B-5-E5",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Open-source cap-table software (Captable, AGPL) for private companies",
+      "kind": "open_source",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://github.com/captableinc/captable",
+      "evidenceRef": "B2B-5-E10",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Spreadsheet ledger for securities that are not registered under section 12 (no registered agent required by the statute text read)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.law.cornell.edu/uscode/text/15/78q-1",
+      "evidenceRef": "B2B-5-E1",
+      "metrics": {
+       "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 100,
+    "falsifier": "Metric = USD per month for the issuer. Self-transfer, open-source cap-table software and a spreadsheet ledger cost $0; entrant fee of $1,200 a year ($100/month) is an ASSUMPTION. The alternatives do not satisfy the legal need for registered securities, so the true comparison is existing registered agents, whose prices and count were NOT found. Falsified if existing registered agents already serve micro-issuers at or below the cost of the entrant's mandatory compliance stack, or if the independent-accountant report alone exceeds the fee base."
+   },
+   "evidence": [
+    {
+     "id": "B2B-5-E1",
+     "url": "https://www.law.cornell.edu/uscode/text/15/78q-1",
+     "quote": "to perform the function of a transfer agent with respect to any security registered under section 78l of this title",
+     "kind": "constraint",
+     "publisher": "15 U.S.C. 78q-1(c) (Cornell LII)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-5-E2",
+     "url": "https://www.sec.gov/about/divisions-offices/division-trading-markets/transfer-agents",
+     "quote": "Transfer agents record changes of ownership, maintain the issuer's security holder records",
+     "kind": "other",
+     "publisher": "SEC (Transfer Agents)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-5-E3",
+     "url": "https://www.sec.gov/about/divisions-offices/division-trading-markets/transfer-agents",
+     "quote": "thirty days after receipt by the ARA of the application",
+     "kind": "constraint",
+     "publisher": "SEC (Transfer Agents; no registration fee listed on the page)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-5-E4",
+     "url": "https://www.sec.gov/divisions/marketreg/mrtransfer.shtml",
+     "quote": "Every transfer agent that is registered on December 31 must file an annual report of its activities on Form TA-2",
+     "kind": "constraint",
+     "publisher": "SEC (Transfer Agent Regulation)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-5-E5",
+     "url": "https://www.ecfr.gov/current/title-17/chapter-II/part-240/subject-group-ECFR9f5ef2d6d9b7d5f/section-240.17Ad-13",
+     "quote": "prepared by an independent accountant concerning the transfer agent's system of internal accounting control",
+     "kind": "constraint",
+     "publisher": "17 CFR 240.17Ad-13 (eCFR)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-5-E6",
+     "url": "https://www.law.cornell.edu/cfr/text/17/240.17Ad-2",
+     "quote": "shall turnaround within three business days of receipt at least 90 percent of all routine items",
+     "kind": "constraint",
+     "publisher": "17 CFR 240.17Ad-2 (Cornell LII)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-5-E7",
+     "url": "https://www.law.cornell.edu/cfr/text/17/240.17Ac2-1",
+     "quote": "shall become effective on the thirtieth day following the date on which the application is filed",
+     "kind": "constraint",
+     "publisher": "17 CFR 240.17Ac2-1 (Cornell LII)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-5-E8",
+     "url": "https://www.law.cornell.edu/cfr/text/17/240.17Ad-12",
+     "quote": "protected, in light of all facts and circumstances, against misuse",
+     "kind": "constraint",
+     "publisher": "17 CFR 240.17Ad-12 (Cornell LII)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-5-E9",
+     "url": "https://www.law.cornell.edu/cfr/text/17/240.17Ad-9",
+     "quote": "the official list of individual securityholder accounts",
+     "kind": "other",
+     "publisher": "17 CFR 240.17Ad-9 (Cornell LII; definition of master securityholder file)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "B2B-5-E10",
+     "url": "https://github.com/captableinc/captable",
+     "quote": "#1 Open-Source Captable, an alternative to Carta, Pully, Angelist and others.",
+     "kind": "demand",
+     "publisher": "Captable Inc. (GitHub repository, 820 stars shown; AGPL-3.0)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 3,
+    "customer_problem_or_value": 5,
+    "distribution_advantage": 2,
+    "defensibility": 4,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 3,
+    "repeat_ltv_potential": 8,
+    "competition_adjusted_gap": 2,
+    "market_depth": 4,
+    "end_to_end_automation": 4,
+    "capital_risk": 3,
+    "owner_time_support": 3
+   },
+   "componentReasons": {
+    "entrant_edge": "Claimed only: the registered-agent requirement and ledger cutover are real structural features (B2B-5-E1, B2B-5-E9) but registration is open to anyone in 30 days (B2B-5-E7), so rivals can enter, and no evidence shows a newcomer can win issuers.",
+    "customer_problem_or_value": "Issuers with registered securities must use a registered agent (B2B-5-E1), so the need is legally mandated, though its price was not found.",
+    "distribution_advantage": "No channel evidence: issuers choose agents on trust and track record, which a newcomer lacks; nothing in the sources sends issuers to new agents.",
+    "defensibility": "Ledger cutover and the registration requirement make switching and entry slow (B2B-5-E1, B2B-5-E9) but incumbents already hold the same status.",
+    "absolute_gross_profit_potential": "At an assumed $1,200 per issuer-year (no price evidence) profit is small against a mandatory independent-accountant report and insurance (B2B-5-E5).",
+    "willingness_to_pay": "Payment is implied by the legal requirement (B2B-5-E1) but no actual fee schedule or paying issuer was found.",
+    "repeat_ltv_potential": "Ledger custody is an annual, sticky relationship (B2B-5-E9), so lifetime value per issuer is high if won.",
+    "competition_adjusted_gap": "Existing registered agents are not counted or priced on the pages read (B2B-5-E2), so the gap is unproven; free cap-table tools cover only unregistered companies (B2B-5-E10).",
+    "market_depth": "Micro-issuers needing an agent exist, but their number was not found on the pages read.",
+    "end_to_end_automation": "Ledger software can automate record-keeping, but the turnaround standard, safeguarding duty and exams (B2B-5-E6, B2B-5-E8) need staff and controls.",
+    "capital_risk": "Registration is free to file (no fee listed, B2B-5-E3) but accountant report, insurance, ledger software and compliance setup could consume most of the $10k before revenue (costs are assumptions).",
+    "owner_time_support": "Daily transfer processing, 3-day turnaround and annual filings are continuous obligations (B2B-5-E4, B2B-5-E6)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "B2B-5-E1/E7: registration on Form TA-1 is mandatory and effective 30 days after filing; the SEC page also says personnel of registered agents must be fingerprinted (not captured as a quote), so every principal must be fingerprinted (unverified detail).",
+    "B2B-5-E5: the annual independent-accountant internal-control report applies unless an exemption fits (agents serving only their own securities are exempt per the page summary); the accountant's fee was not found.",
+    "B2B-5-E8: safeguarding of funds and securities duty applies; whether insurance or bonding is required beyond the rule text was not found (unverified). Securities-law practice may require counsel; this is not legal advice."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "ALL INPUTS ARE ASSUMPTIONS (no fee or cost evidence found): 8 issuers by day 365 (average 4 over the year) at $1,200 = $4,800 base revenue; costs $10,700 (independent accountant report $6,000, ledger software $2,400, insurance $2,000, filings and fingerprints $300). Base is about -$5,900; pessimistic (price x0.8, volume x0.5, cost x1.5): revenue $1,920 vs costs $16,050 = about -$14,100. Break-even would need roughly 15 or more issuers on these assumptions."
+    },
+    "killReasons": [
+     {
+      "reason": "Fixed regulatory stack (30-day registration, fingerprinting, annual independent-accountant report, TA-2, 3-day/90% turnaround) is carried before any micro-issuer fee base exists; amount unquantified.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "B2B-5-E5"
+     },
+     {
+      "reason": "No evidence a newcomer without track record can win its first 10 issuers in 365 days; registration is open to anyone, so incumbent agents are plentiful (count not found).",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "B2B-5-E7"
+     },
+     {
+      "reason": "No fee schedule or paying customer found; the accountant fee and agent prices are unknown.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "B2B-5-E3"
+     }
+    ]
+   },
+   "researcherVerdict": "uncertain",
+   "verdictReason": "Open question: what do micro-issuers pay existing registered transfer agents, what does the annual independent-accountant report (B2B-5-E5) plus insurance cost a new agent, and how many micro-issuers switch agents each year? Public pages read give the rules but no prices or counts, so only quotes from accountants and agents can settle it. On assumed numbers the idea loses money at under about 15 issuers, and a stranger has no track record, so treat as unlikely without that data."
+  }
+ ]
+}

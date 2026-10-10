@@ -1,0 +1,92 @@
+{
+ "results": [
+  {
+   "candidateId": "ECO-2",
+   "evidenceId": "ECO-2-D1",
+   "url": "https://epr.eldris.ai/data-centre/epr-registration-guides/ppwr-packaging-epr-cost-by-country-2026/",
+   "status": "confirmed",
+   "note": "Exact wording present as first bullet under price table; sentence continues with a Portugal parenthetical (representative fee passed through at cost). No figures in quote.",
+   "pageSnippet": "Each price covers the registration, the annual reporting and the authorised representative where the law requires one (for Portugal packaging the representative's fee is passed through at cost)."
+  },
+  {
+   "candidateId": "ECO-2",
+   "evidenceId": "ECO-2-D12",
+   "url": "https://www.firma.de/en/company-formation/how-to-start-a-ug-company-the-ultimate-formation-checklist/",
+   "status": "confirmed",
+   "note": "Figure matches: 'Solo founder: approx. EUR 1,171 + share capital' under UG with custom articles. Other tiers differ: standard articles solo ~531, multi-founder custom ~1,181, standard ~617.",
+   "pageSnippet": "Solo founder: approx. €1,171 + share capital (under 'UG with custom articles / Satzung')"
+  },
+  {
+   "candidateId": "ECO-2",
+   "evidenceId": "ECO-2-D10",
+   "url": "https://verpackungsregister.org/fileadmin/files/Erklaermaterialien/Bevollmaechtigung_Hinweise_zur_Vertragsgestaltung.pdf",
+   "status": "confirmed",
+   "note": "Sentence appears verbatim in section 1.2.1 ('Bevollmaechtigter wird Quasi-Hersteller').",
+   "pageSnippet": "Der Bevollmächtigte ist somit auch selbst für die Erfüllung der übernommenen Pflichten nach dem VerpackG verantwortlich."
+  },
+  {
+   "candidateId": "GAM-3",
+   "evidenceId": "GAM-3-D1",
+   "url": "https://store.godotengine.org/roadmap",
+   "status": "confirmed",
+   "note": "Exact sentence found under the 'Buy and sell assets' roadmap item.",
+   "pageSnippet": "At the current beta stage, we only allow to publish free assets."
+  },
+  {
+   "candidateId": "GAM-3",
+   "evidenceId": "GAM-3-D13",
+   "url": "https://cookiebadger.itch.io/assetplacer",
+   "status": "confirmed",
+   "note": "Rating text and figures (4.9 of 5, 24 total ratings) match; only extra whitespace differs.",
+   "pageSnippet": "Rated 4.9 out of 5 stars (24 total ratings)"
+  },
+  {
+   "candidateId": "GAM-3",
+   "evidenceId": "GAM-3-D14",
+   "url": "https://www.godotengine.org/asset-library/asset/edit/22799",
+   "status": "confirmed",
+   "note": "Wording matches word for word; it is in the Description field of an asset edit page (Old/Current), after 'Boost your Godot level design workflow with Godot Asset Placer'.",
+   "pageSnippet": "a free and open-source Godot Engine plugin that lets you easily manage, organize, and place assets into your 3D scenes"
+  },
+  {
+   "candidateId": "MED-2",
+   "evidenceId": "MED-2-D1",
+   "url": "https://flippa.com/13925600-active-podcast-with-built-in-ad-sales-11k-mo-downloads-200-episodes-automatic-ad-sales-big-brand-sponsors-priced-below-market-value-at-1-3x-multiple",
+   "status": "confirmed",
+   "note": "Both figures match ($32,852.10 gross in 2022; projected $8,887.62 in 2026) in the About the Business section; sentence continues with net profit remark.",
+   "pageSnippet": "revenue has progressively decreased from $32,852.10 gross in 2022 to a projected $8,887.62 in 2026"
+  },
+  {
+   "candidateId": "MED-2",
+   "evidenceId": "MED-2-D12",
+   "url": "https://websiteclosers.com/businesses/award-winning-daily-entrepreneurial-podcast-11-years-established-145m-listens-3-500-interviews-to-date-15-yoy-growth-long-term-contracts/106023",
+   "status": "confirmed",
+   "note": "Clause present with '11 years'; full sentence continues 'it is important that this plan be well thought out and executed post-closing'. Page elsewhere says podcast launched 2012 (older than 11 yrs).",
+   "pageSnippet": "Since the owner has been the driving force behind the podcast for 11 years, it is important that this plan be well thought out and executed post-closing."
+  },
+  {
+   "candidateId": "MKT-3",
+   "evidenceId": "MKT-3-D6",
+   "url": "https://www.stereonet.com/forums/topic/578458-a-conversation-about-sellers-fees",
+   "status": "confirmed",
+   "note": "Exact sentence in admin's original post dated 20 Apr 2023, in section about listing on StereoNET and Gumtree.",
+   "pageSnippet": "There has been a noticeable rise in ads marked 'Sold Elsewhere.'"
+  },
+  {
+   "candidateId": "MKT-3",
+   "evidenceId": "MKT-3-D1",
+   "url": "https://www.alphashooters.com/community/threads/ok-i-am-bored-so-a-quick-question-has-anyone-ever-sold-anything-on-the-for-sale-listings-and-does-anyone-ever-look-at-the-ads.7912/post-49094",
+   "status": "confirmed",
+   "note": "Phrase is verbatim, from a post by Brownie (Oct 20, 2023) quoted in a reply; one member's opinion, not site-wide data.",
+   "pageSnippet": "I look once in a while, but the for-sale section here is S L O W."
+  },
+  {
+   "candidateId": "MKT-3",
+   "evidenceId": "MKT-3-D20",
+   "url": "https://toolradar.com/tools/xenforo/pricing",
+   "status": "confirmed",
+   "note": "'$195/Custom' and 'One-time payment, lifetime use' both appear. Same plan lists '1 year support & updates included'; page says no official public pricing page, figures are Toolradar's own.",
+   "pageSnippet": "$195/Custom ... One-time payment, lifetime use"
+  }
+ ]
+}

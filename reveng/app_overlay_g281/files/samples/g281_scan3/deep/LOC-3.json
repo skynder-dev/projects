@@ -1,0 +1,354 @@
+{
+ "id": "LOC-3",
+ "verdict": "killed",
+ "verdictReason": "Killed. Demand is real (code-mandated cycles; a listed NorCal firm shows ~600 repeat clients, $375K revenue, $90K cash flow) but a stranger has no structural edge: the IKECA exam is open ($750 non-member, no stated prerequisite), photo records are commodity software, incumbents and a 135-unit franchise hold the accounts, and no source shows a newcomer winning a first restaurant. Year 1: +$4.9K only at 3 new accounts/month with an already-owned van; pessimistic -$16.2K; buying a van ($10-30K) breaks the $10K cap.",
+ "answers": [
+  {
+   "question": "What do certification, insurance and equipment cost a new firm (open cost question)?",
+   "answer": "Certification: IKECA lets a candidate sit the CECS exam after agreeing to the Code of Conduct (no experience prerequisite stated); the handbook fee table shows $750 for an individual non-member (read through a page summary; handbook version 7.20 may be old). IKECA company membership is optional: $995/yr dues + $250 application (introductory tier $575 + $100) and a $2M liability/completed-operations policy. Insurance (GL + workers comp): $3,000-$6,000/yr from a low-reliability guide. Equipment: hot-water pressure washer, ladders, safety gear roughly $5,000 on that guide; a used work van/pickup $10,000-$30,000. Whole-business estimates range from \"$5,000 or even lower\" to $10,000-$50,000. So $9K only closes if the stranger already owns a suitable vehicle and pays insurance monthly; otherwise it exceeds the cap.",
+   "evidenceIds": [
+    "LOC-3-D1",
+    "LOC-3-D2",
+    "LOC-3-D3",
+    "LOC-3-D7",
+    "LOC-3-D8",
+    "LOC-3-D10",
+    "LOC-3-D11"
+   ]
+  },
+  {
+   "question": "Is certification a barrier that protects a new entrant, or at least a cheap ticket anyone can get?",
+   "answer": "It is a cheap, open ticket, not an edge. IKECA requires no stated prerequisite to sit the exam, and a Nevada rule shows the state-licence route is an exam (>=75%) plus an employer letter, with uncertified helpers allowed under a certified supervisor on site. Incumbents hold the same credentials, so it excludes only uncertified amateurs, not rivals. Which states/AHJs accept which credentials was verified for Nevada only.",
+   "evidenceIds": [
+    "LOC-3-D1",
+    "LOC-3-D4",
+    "LOC-3-D5",
+    "LOC3-E4"
+   ]
+  },
+  {
+   "question": "Can a stranger win accounts from incumbents (open channel question)?",
+   "answer": "No public source shows it. The one first-hand source is a new kitchen-exhaust firm asking how to get a first restaurant to say yes; the only reply is untested walk-in advice, with no results reported. Guides say clients \"will likely come from direct outreach\". A listed incumbent claims ~600 clients with repeat cycles amid \"numerous regional and national players\", and Hoodz has 135 units (franchise cost $184K-$232K, out of budget). Generic commercial-cleaning leads cost $50-$150 each (not hood-specific). Assumed 3 wins/month is unevidenced.",
+   "evidenceIds": [
+    "LOC-3-D15",
+    "LOC-3-D16",
+    "LOC-3-D21",
+    "LOC-3-D13",
+    "LOC-3-D14",
+    "LOC-3-D6",
+    "LOC-3-D17"
+   ]
+  },
+  {
+   "question": "Is the digital service certificate with before/after photos an exclusive or compounding edge?",
+   "answer": "No. Software vendors already sell timestamped pre/post-photo service records to hotels and operators, and fire-marshal report-submission platforms exist for contractors (the Arlington page covers suppression systems, not hood cleaning, so this is only partial evidence). Any rival can adopt such tools; the record-holding secondary edge claimed earlier is therefore replicable and hands over with the account.",
+   "evidenceIds": [
+    "LOC-3-D18",
+    "LOC-3-D19",
+    "LOC3-E7"
+   ]
+  },
+  {
+   "question": "What do first-365-day economics look like bottom-up for the reference entrant?",
+   "answer": "Baseline (assumption-heavy): 3 new accounts/month from month 3, 2 visits/account/year, $600/visit: 42 visits, revenue $25,200, cost $20,260 (fixed $14,800 + $130/visit), profit +$4,940 with owner unpaid and no vehicle purchase. Break-even is about 32 visits. Pessimistic (price x0.8, volume x0.5, cost x1.5): 21 visits, revenue $10,080, cost $26,295, profit -$16,215. Price evidence spans ~$360/visit (supplier hourly-rate average, 2018) to $900 (guide average); a listed mature firm implies about $625 revenue per client per year ($375,000 / ~600), well below the 2-visits x $600 assumed per account.",
+   "evidenceIds": [
+    "LOC-3-D9",
+    "LOC-3-D12",
+    "LOC-3-D13",
+    "LOC-3-D7",
+    "LOC-3-D17",
+    "LOC3-E1"
+   ]
+  },
+  {
+   "question": "Are there free/cheap/DIY alternatives or adjacent substitutes not previously listed?",
+   "answer": "Newly found: grease-filter exchange services (cover filters only, price not published, performed alongside vent cleaning), compliance software for tracking and photo records (price not published), per-hour price anchors ($102.96/h two-man crew, 2018; $900 average job), and franchise networks (Hoodz). None is a free full substitute for certified duct cleaning, so the wedge is not displaced by a free tool, but several partly cover the record-keeping angle.",
+   "evidenceIds": [
+    "LOC-3-D20",
+    "LOC-3-D18",
+    "LOC-3-D12",
+    "LOC-3-D9",
+    "LOC-3-D6"
+   ]
+  }
+ ],
+ "newEvidence": [
+  {
+   "id": "LOC-3-D1",
+   "url": "https://cdn.ymaws.com/www.ikeca.org/resource/resmgr/certifications/CECS_Candidate_Handbook_7.20.pdf",
+   "quote": "Candidates must agree to the IKECA Code of Conduct at the time of application",
+   "kind": "constraint",
+   "publisher": "IKECA (International Kitchen Exhaust Cleaning Association), CECS Candidate Handbook v7.20",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "LOC-3-D2",
+   "url": "https://cdn.ymaws.com/www.ikeca.org/resource/resmgr/membership/membership_policies_and_proc.pdf",
+   "quote": "Annual dues will be $995.00 USD per year",
+   "kind": "constraint",
+   "publisher": "IKECA, Membership Policies and Procedures",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "LOC-3-D3",
+   "url": "https://cdn.ymaws.com/www.ikeca.org/resource/resmgr/membership/membership_policies_and_proc.pdf",
+   "quote": "A minimum of $2,000,000 in Liability and Completed Operations insurance coverage.",
+   "kind": "constraint",
+   "publisher": "IKECA, Membership Policies and Procedures",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "LOC-3-D4",
+   "url": "https://law.cornell.edu/regulations/nevada/NAC-477-770",
+   "quote": "A license must be obtained from the State Fire Marshal to service and clean Type 1 exhaust system grease ducts.",
+   "kind": "constraint",
+   "publisher": "Nevada Administrative Code 477.770 (via Cornell LII)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "LOC-3-D5",
+   "url": "https://law.cornell.edu/regulations/nevada/NAC-477-770",
+   "quote": "Employees of the licensed firm who are not certified may be allowed to assist",
+   "kind": "constraint",
+   "publisher": "Nevada Administrative Code 477.770 (via Cornell LII)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "LOC-3-D6",
+   "url": "https://franzy.com/franchises/hoodz",
+   "quote": "an initial investment of $183,838 - $231,992.",
+   "kind": "other",
+   "publisher": "Franzy (franchise directory, citing the 2024 Hoodz FDD)",
+   "date": "2024 FDD",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "LOC-3-D7",
+   "url": "https://nikonomics-tools.onrender.com/resources/hood-cleaning-business/index.html",
+   "quote": "Insurance (General Liability + Workers Comp) | $3,000-$6,000 | Annual premium, critical for B2B contracts",
+   "kind": "other",
+   "publisher": "nikonomics-tools (unattributed start-up guide; low reliability)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "LOC-3-D8",
+   "url": "https://nikonomics-tools.onrender.com/resources/hood-cleaning-business/index.html",
+   "quote": "Work Truck or Van | $10,000-$30,000 | Used cargo van or pickup truck with ladder rack",
+   "kind": "other",
+   "publisher": "nikonomics-tools (unattributed start-up guide; low reliability)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "LOC-3-D9",
+   "url": "https://nikonomics-tools.onrender.com/resources/hood-cleaning-business/index.html",
+   "quote": "Average price per job: $900",
+   "kind": "incumbent_price",
+   "publisher": "nikonomics-tools (unattributed start-up guide; low reliability)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "LOC-3-D10",
+   "url": "https://climbtheladder.com/how-to-start-a-hood-cleaning-business-from-scratch/",
+   "quote": "Initial investment typically ranges from $10,000 to $50,000 depending on how much equipment you buy upfront versus lease.",
+   "kind": "other",
+   "publisher": "Climb the Ladder (career blog)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "LOC-3-D11",
+   "url": "https://www.profitableventure.com/cost-start-hood-cleaning-business/",
+   "quote": "With as low as $5,000 or even lower, you should be able to start a small-scale hood cleaning business",
+   "kind": "other",
+   "publisher": "Profitable Venture (business-idea blog)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "LOC-3-D12",
+   "url": "https://www.hoodmart.com/blog/post/the-average-cost-of-a-commercial-exhaust-hood-cleaning",
+   "quote": "On average you the cost of a commercial hood cleaning is $102.96 per hour for a two-man crew.",
+   "kind": "incumbent_price",
+   "publisher": "HoodMart (hood-cleaning supplier blog)",
+   "date": "2018-12-12",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "LOC-3-D13",
+   "url": "https://www.bizbuysell.com/business-opportunity/kitchen-exhaust-and-commercial-restaurant-hood-cleaning-company-sc2223/2376746",
+   "quote": "a large amount of repeat customers across Northern California",
+   "kind": "demand",
+   "publisher": "BizBuySell (broker listing SC2223, kitchen exhaust cleaning company for sale)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "LOC-3-D14",
+   "url": "https://www.bizbuysell.com/business-opportunity/kitchen-exhaust-and-commercial-restaurant-hood-cleaning-company-sc2223/2376746",
+   "quote": "the presence of numerous regional and national players",
+   "kind": "other",
+   "publisher": "BizBuySell (broker listing SC2223, kitchen exhaust cleaning company for sale)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "LOC-3-D15",
+   "url": "https://community.getjobber.com/discussions/marketing-forum/expertise-is-there-but-how-do-we-get-the-first-kec-clients/10327",
+   "quote": "What's the best way to get that first restaurant to say \"yes\"?",
+   "kind": "other",
+   "publisher": "Jobber Community forum (post by a new kitchen-exhaust-cleaning business)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "LOC-3-D16",
+   "url": "https://community.getjobber.com/discussions/marketing-forum/expertise-is-there-but-how-do-we-get-the-first-kec-clients/10327",
+   "quote": "walk into restaurants, introduce myself and the business, and lead with the compliance angle",
+   "kind": "other",
+   "publisher": "Jobber Community forum (reply)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "LOC-3-D17",
+   "url": "https://www.abstraktmg.com/cost-of-commercial-cleaning-leads-appointments/",
+   "quote": "A typical CPL may fall between $50–$150.",
+   "kind": "other",
+   "publisher": "Abstrakt Marketing Group (commercial cleaning lead-gen agency; generic cleaning, not hood-specific)",
+   "date": "2025-04-29",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "LOC-3-D18",
+   "url": "https://oxmaint.com/industries/hospitality/best-hotel-kitchen-hood-cleaning-software-nfpa-96-compliance",
+   "quote": "Digital records with timestamped photos now count, which is exactly what OXMaint AI captures.",
+   "kind": "other",
+   "publisher": "Oxmaint (compliance software vendor)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "LOC-3-D19",
+   "url": "https://www.arlingtonva.us/Government/Departments/Fire/Office-of-the-Fire-Marshal/Inspections-Permits/Brycer-TCE-Fire-Protection-System-Reporting",
+   "quote": "allows qualified contractors to submit required reports directly to the Office of the Fire Marshal",
+   "kind": "other",
+   "publisher": "Arlington County, Virginia Fire Marshal (Brycer TCE reporting page)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "LOC-3-D20",
+   "url": "https://www.filtershineusa.com/services-grease-filter-exchange",
+   "quote": "We provide scheduled exchanges, professional maintenance, and expert advice to keep your kitchen safe and efficient.",
+   "kind": "other",
+   "publisher": "FilterShine USA (grease filter exchange service)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "LOC-3-D21",
+   "url": "https://climbtheladder.com/how-to-start-a-hood-cleaning-business-from-scratch/",
+   "quote": "Your initial clients will likely come from direct outreach.",
+   "kind": "other",
+   "publisher": "Climb the Ladder (career blog)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  }
+ ],
+ "newAlternatives": [
+  {
+   "label": "Existing certified crew billed by the hour (average $102.96/h two-man crew, 2018; 3.5 h per hood assumed, quarterly = about $120/month)",
+   "kind": "paid_incumbent",
+   "costUsdPerMonth": 120,
+   "coversWedge": "full",
+   "sourceLocator": "https://www.hoodmart.com/blog/post/the-average-cost-of-a-commercial-exhaust-hood-cleaning",
+   "evidenceRef": "LOC-3-D12"
+  },
+  {
+   "label": "Existing certified cleaner at a guide-quoted average of $900 per job (quarterly = $300/month)",
+   "kind": "paid_incumbent",
+   "costUsdPerMonth": 300,
+   "coversWedge": "full",
+   "sourceLocator": "https://nikonomics-tools.onrender.com/resources/hood-cleaning-business/index.html",
+   "evidenceRef": "LOC-3-D9"
+  }
+ ],
+ "killReasons": [
+  {
+   "reason": "No structural edge: the IKECA exam needs only agreement to a code of conduct, the Nevada route is an exam plus employer letter, incumbents and franchises hold the same credentials, and timestamped photo records are sold as off-the-shelf software, so neither certification nor the digital certificate is exclusive or compounding.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "LOC-3-D1"
+  },
+  {
+   "reason": "First-customer channel unevidenced against entrenched incumbents: the only first-hand source is a new firm asking how to get a first restaurant, with untested advice; an incumbent lists ~600 repeat clients and numerous regional and national rivals; paid leads cost $50-$150 each and a franchise channel costs $184K+.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "LOC-3-D15"
+  },
+  {
+   "reason": "Capital and pessimistic economics: a bought work van is $10,000-$30,000 and whole-business estimates run $10,000-$50,000 (two sources), against a $10K cap; at price x0.8, volume x0.5, cost x1.5 year 1 loses about $16K, and break-even needs about 32 visits at baseline. Inputs are assumptions, but the structure is unfavourable.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "LOC-3-D8"
+  },
+  {
+   "reason": "Licensing is a patchwork: Nevada requires a State Fire Marshal licence and exam to clean Type 1 grease ducts plus a city/county business licence; other states and AHJs were not verified.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "LOC-3-D4"
+  }
+ ],
+ "economics": {
+  "revenue365": 25200,
+  "cost365": 20260,
+  "pessimisticProfit365": -16215,
+  "survivesPessimistic": false,
+  "assumptions": [
+   "ASSUMPTION: months 1-2 are setup (certification, insurance, equipment, quoting); accounts are won from month 3 to month 12; first cleaning happens at signing; later visits at 12/visits-per-year month intervals; first revenue about day 60-90.",
+   "ASSUMPTION: baseline 3 new recurring accounts per month and an average of 2 visits per account per year (LOC3-E3 says most hoods are quarterly, but a listed mature firm implies about $625 revenue per client per year, LOC-3-D13 figures as read via summary).",
+   "ASSUMPTION: $600 revenue per visit (anchored on LOC3-E1 starting price $475; LOC-3-D9 average job $900; LOC-3-D12 implies about $360 for 3.5 h at $102.96/h).",
+   "ASSUMPTION: variable cost $130 per visit = one paid helper 3.5 h x $20/h ($70) + $60 consumables, fuel and disposal; owner works the second crew seat unpaid (3.5 h per visit comes from an earlier page summary, not re-verified).",
+   "ASSUMPTION: fixed year-1 cost $14,800 = equipment $5,000 (hot-water pressure washer about $3,000, ladders and safety $1,500, chemicals and tools $500) + certification and training $1,500 ($750 CECS non-member fee per LOC-3-D1 plus $750 assumed study/training) + insurance $4,500 (midpoint of LOC-3-D7) + marketing $3,000 (about 20-60 leads at LOC-3-D17 $50-$150) + licences, LLC, software and accounting $800.",
+   "ASSUMPTION: the entrant already owns a suitable pickup or van with ladder rack; if not, add $10,000-$30,000 (LOC-3-D8) and the $10K cap is breached.",
+   "Peak cash need before first revenue is about $11,000-$12,000 if insurance is paid annually and marketing is front-loaded; it fits $10K only with monthly insurance and staged marketing.",
+   "Pessimistic case applies price x0.8 ($480), volume x0.5 (1.5 accounts/month, 21 visits) and cost x1.5 to all fixed and variable costs: revenue $10,080, cost $26,295, profit -$16,215. Baseline profit +$4,940 is before any owner wage (about 147 crew hours plus sales and admin).",
+   "Owner-hours and mature-business upside (listing: $375,000 revenue, $90,000 cash flow, 3 full-time staff, about 600 clients, broker asking claims) are not reachable within the first 365 days from a standing start."
+  ],
+  "sources": [
+   "LOC-3-D1",
+   "LOC-3-D7",
+   "LOC-3-D8",
+   "LOC-3-D9",
+   "LOC-3-D10",
+   "LOC-3-D11",
+   "LOC-3-D12",
+   "LOC-3-D13",
+   "LOC-3-D17"
+  ]
+ },
+ "legalNotes": [
+  "LOC-3-D4: Nevada requires a State Fire Marshal licence (exam, score >= 75%, employer letter, NFPA 96 knowledge) to service and clean Type 1 exhaust grease ducts, plus a city or county business licence; uncertified employees may assist only under direct on-site supervision (LOC-3-D5). Other states and AHJs differ and were not verified.",
+  "IKECA certification and membership are private credentials, not statutes; they matter because many AHJs, insurers and restaurant buyers ask for them (LOC3-E4, earlier evidence). Membership requires a $2M liability and completed-operations policy (LOC-3-D3).",
+  "Fire-suppression system inspection and recharge is a separate licensed activity and is outside this wedge (LOC3-E10).",
+  "No ToS barrier to the business itself; this research read only public pages without logins or contact."
+ ],
+ "unverified": [
+  "All page text was read through WebFetch's summarizing model; quotes are copied from what it returned and were not diffed against raw page source. Table values (for example the $750 non-member CECS fee) were rendered by the summarizer, not quoted as sentences.",
+  "The IKECA CECS handbook fetched is version 7.20 (date unknown, possibly 2020); the newer 1.26 handbook could not be fetched, so current fees and any new experience prerequisite are unconfirmed. IKECA training-course cost was not found.",
+  "Insurance premium, van, washer and equipment prices come from a low-reliability unattributed guide (nikonomics-tools) and two generic blogs; no insurer quote or equipment-vendor price was read.",
+  "Whether AHJs in most states accept non-IKECA credentials, or require a state licence, was confirmed only for Nevada; the Boston fire-prevention page failed to load.",
+  "No hood-specific customer-acquisition cost, close rate, contract length, switching rate or churn was found; the $50-$150 lead figure is for generic commercial cleaning. Whether a newcomer can reach 3 accounts per month is the decisive unknown and public pages did not settle it.",
+  "The BizBuySell listing figures ($399,000 ask, $375,000 revenue, $90,000 cash flow, about 600 clients) are an unaudited broker claim read via summary; numbers are not in the quoted text.",
+  "HoodMart $102.96/hour is from 2018 and may be stale; the per-visit hours (3-4 h) come from earlier work and were not re-verified. Brycer fee schedule was an unreadable image; compliance-software and filter-exchange prices are not published."
+ ],
+ "nextStep": "Drop it unless a public source shows unaffiliated new firms reaching about 20 recurring restaurant accounts within 12 months of starting."
+}

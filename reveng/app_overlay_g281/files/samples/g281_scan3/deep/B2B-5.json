@@ -1,0 +1,268 @@
+{
+  "id": "B2B-5",
+  "verdict": "killed",
+  "verdictReason": "Open question settled enough to kill. A micro-agent under 500 items per six months is exempt from the accountant report (D3, D4), so the old cost stack was overstated, but the market is crowded and priced against the entrant: StartEngine Secure bundles an SEC-registered-agent product free up to 100 investors, $250-350/mo above (D8); incumbents lock issuers in with long contracts and $3k-20k termination fees (D7). Bottom-up economics: about +$440 base, -$7,260 pessimistic, with no sourced edge for a stranger.",
+  "answers": [
+    {
+      "question": "Does the annual independent-accountant report (Rule 17Ad-13) apply to a new micro transfer agent, and what does it cost?",
+      "answer": "The SEC's own paperwork estimate for Rule 17Ad-13 is 120 accountant hours at $291/hour, about $34,920 per filing agent, for roughly 100 professional independent agents. But an 'exempt transfer agent' (fewer than 500 items for transfer and fewer than 500 for processing in six consecutive months, Rule 17Ad-4(b)) is exempt from 17Ad-13 under paragraph (d)(2); the 1,000-account condition in (d)(2)(ii) is limited to redeemable investment-company securities. So a very small agent does not carry that cost, and per 17Ad-4(b)(2) is also outside the 3-business-day/90 percent turnaround rule 17Ad-2(a). The catch: growth past 500 items per six months removes the exemption and brings the report, so the exemption caps scale rather than removing the fixed cost. The earlier $6,000 accountant figure was an unsourced assumption and is dropped.",
+      "evidenceIds": ["B2B-5-D2", "B2B-5-D3", "B2B-5-D4"]
+    },
+    {
+      "question": "What do micro-issuers pay existing registered transfer agents?",
+      "answer": "No microcap agent publishes a current schedule on the pages read. Found: StartEngine Secure lists Free (up to 100 investors), $250/mo (up to 300 shareholders) and $350/mo (unlimited); an SEC-filed 2007 Empire Stock Transfer agreement shows an annual fee of $500 after an initial $1,000; an agent describes a competitor wanting $100-150 to DRS shares; KoreConX sells a 'flat monthly fee' for Reg A/D/CF issuers with no dollar figure. Termination fees of $3,000-$20,000 for a microcap issuer are described. The entrant's $1,200/year assumption therefore sits between a free tier and $3,000-4,200/year plans.",
+      "evidenceIds": ["B2B-5-D6", "B2B-5-D7", "B2B-5-D8", "B2B-5-D9", "B2B-5-D14"]
+    },
+    {
+      "question": "How many competing agents exist and do micro-issuers switch?",
+      "answer": "SEC statistics show 328 registered transfer agents at Mar. 31, 2026 (273 SEC-registered, 55 bank-registered); 139 are 'small' by the SEC page's own definition (fewer than 1,000 in answers to questions 4(a) and 5(a)). One agent says the industry is 'a few hundred agents' and 'commoditized', and that Equity Stock Transfer grew from about 6 issuers in 2011 to nearly 400 in 10 years, so winning issuers is possible but slow, and that termination fees and 2-7 year contracts are common. A switch-rate figure was not found. A transfer-agent change involves a Rule 17Ad-16 notice and the old agent coordinating a conversion (a 2020 Direct Transfer to Pacific Stock Transfer letter).",
+      "evidenceIds": ["B2B-5-D1", "B2B-5-D6", "B2B-5-D7", "B2B-5-D15"]
+    },
+    {
+      "question": "Is a registered agent legally required for the target issuers (Reg CF, Reg A, private companies)?",
+      "answer": "Only conditionally. For Regulation Crowdfunding securities, the Rule 12g-6 exclusion from section 12(g) counting requires that the issuer 'has engaged a transfer agent registered pursuant to Section 17A(c)'; that matters only to issuers approaching the 12(g) thresholds. Private companies and startups are described as no longer needing an agent at all (spreadsheet or cap-table software suffices). Reg CF has about 7,000 issuers since 2016, so many issuers exist, but the mandate covers only a small subset, and the largest platform bundles its own agent product (D8). The original 'legally mandated demand' framing is therefore weaker for the named segments than the pain statement implied; for section 12-registered OTC issuers it still holds (B2B-5-E1).",
+      "evidenceIds": ["B2B-5-D10", "B2B-5-D11", "B2B-5-D12", "B2B-5-D8"]
+    },
+    {
+      "question": "What compliance obligations does a stranger-run micro agent carry, and are insurance or bonds mandated?",
+      "answer": "Form TA-1 (effective 30 days after filing, no fee listed by the SEC page, B2B-5-E3/E7), annual Form TA-2 (B2B-5-E4), fingerprinting of every partner, director, officer and employee engaged in agent functions (Rule 17f-2), and the safeguarding duty of Rule 17Ad-12, which is a principles-based standard that weighs 'the cost of the various safeguards and procedures' and does not, in the text read, mandate a bond or insurance. Insurance is therefore a commercial assumption, not a rule requirement.",
+      "evidenceIds": ["B2B-5-D5", "B2B-5-D16", "B2B-5-E3", "B2B-5-E4", "B2B-5-E7"]
+    }
+  ],
+  "newEvidence": [
+    {
+      "id": "B2B-5-D1",
+      "url": "https://www.sec.gov/data-research/statistics-data-visualizations/transfer-agents",
+      "quote": "A \"small TA\" is defined as a transfer agent who reported fewer than 1,000 in response to questions 4(a) and 5(a).",
+      "kind": "other",
+      "publisher": "SEC (Transfer Agents statistics page; table shows 328 total, 273 SEC-registered, 139 small at Mar. 31, 2026)",
+      "date": "2026-03-31",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-5-D2",
+      "url": "https://govinfo.gov/content/pkg/FR-2024-10-04/pdf/2024-23005.pdf",
+      "quote": "a total annual external cost burden of $34,920",
+      "kind": "constraint",
+      "publisher": "SEC via Federal Register (PRA notice, Rule 17Ad-13; 120 hours at $291/hour; about 100 respondents)",
+      "date": "2024-10-04",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-5-D3",
+      "url": "https://www.law.cornell.edu/cfr/text/17/240.17Ad-4",
+      "quote": "shall have received fewer than 500 items",
+      "kind": "constraint",
+      "publisher": "17 CFR 240.17Ad-4(b) (Cornell LII; exempt transfer agent definition, fewer than 500 items for transfer and fewer than 500 for processing in six consecutive months)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-5-D4",
+      "url": "https://www.law.cornell.edu/cfr/text/17/240.17Ad-13",
+      "quote": "In the case of a transfer agent that performs transfer agent functions for redeemable securities",
+      "kind": "constraint",
+      "publisher": "17 CFR 240.17Ad-13(d)(2)(ii) (Cornell LII; the 1,000-account condition applies only to investment-company redeemable securities, so an exempt agent under 17Ad-4(b) is exempt from the report)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-5-D5",
+      "url": "https://www.law.cornell.edu/cfr/text/17/240.17f-2",
+      "quote": "each of its partners, directors, officers and employees be fingerprinted",
+      "kind": "constraint",
+      "publisher": "17 CFR 240.17f-2 (Cornell LII; fingerprinting of registered transfer agent personnel, exemptions for staff not engaged in agent functions)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-5-D6",
+      "url": "https://www.otcmarkets.com/files/AdvisorInsightsPodcast_EquityStockTransfer_Season3Episode8.pdf",
+      "quote": "we're over three hundred nearly four hundred issuers in 10 years",
+      "kind": "demand",
+      "publisher": "OTC Markets Group, Advisor Insights podcast transcript with Equity Stock Transfer (auto-generated transcript; also says 'this is a commoditized industry' and 'a few hundred agents')",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-5-D7",
+      "url": "https://www.otcmarkets.com/files/AdvisorInsightsPodcast_EquityStockTransfer_Season3Episode8.pdf",
+      "quote": "They could be from three thousand to Twenty Thousand for a microcap issuer",
+      "kind": "incumbent_price",
+      "publisher": "OTC Markets Group, Advisor Insights podcast transcript with Equity Stock Transfer (termination fees charged by transfer agents; also 'many transfer agents charge egregious termination fees', contract terms of 2, 3, 5, 7 years)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-5-D8",
+      "url": "https://startengine.com/secure",
+      "quote": "Seed $250/mo / Up to 300 shareholders",
+      "kind": "incumbent_price",
+      "publisher": "StartEngine Secure pricing page (headline 'Transfer Agent & Cap Table Management for Equity Crowdfunding'; plans read: Essential Free up to 100 investors, Seed $250/mo up to 300 shareholders, Growth $350/mo unlimited; the quote joins two adjacent plan-card strings)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-5-D9",
+      "url": "https://www.sec.gov/Archives/edgar/data/1436273/000143627308000002/transferagentempire.htm",
+      "quote": "an annual fee of $500",
+      "kind": "incumbent_price",
+      "publisher": "Empire Stock Transfer transfer agent agreement filed with the SEC (agreement dated April 30, 2007; initial fee $1,000 incl. $500 setup and first-year maintenance; dated, not a current price)",
+      "date": "2007-04-30",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-5-D10",
+      "url": "https://www.law.cornell.edu/cfr/text/17/240.12g-6",
+      "quote": "Has engaged a transfer agent registered pursuant to Section 17A(c) of the Act",
+      "kind": "constraint",
+      "publisher": "17 CFR 240.12g-6(a)(3) (Cornell LII; Regulation Crowdfunding exclusion from section 12(g) holder counting)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-5-D11",
+      "url": "https://www.freewritings.law/2025/06/sec-releases-data-on-regulation-a-and-regulation-crowdfunding-offerings/",
+      "quote": "approximately 8,500 crowdfunding offerings",
+      "kind": "demand",
+      "publisher": "freewritings.law summary of SEC data (Reg CF May 2016 to Dec 2024: around 7,000 issuers; Reg A: more than 1,400 offerings, more than 800 issuers reporting proceeds)",
+      "date": "2025-06",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-5-D12",
+      "url": "https://eqvista.com/transfer-agent/you-dont-need-transfer-agent/",
+      "quote": "transfer agents may no longer be a mandatory requirement",
+      "kind": "other",
+      "publisher": "Eqvista (cap table software vendor, so self-interested; says private startups with few shareholders can self-administer with a spreadsheet or cap-table software, and describes termination charges of $500 to $15,000)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-5-D13",
+      "url": "https://eqvista.com/transfer-agent/transfer-agent-for-startups/",
+      "quote": "cost anywhere between $500 and $15,000",
+      "kind": "incumbent_price",
+      "publisher": "Eqvista (cap table software vendor; early-termination clauses in transfer agent contracts, usually if ended before 7 to 10 years)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-5-D14",
+      "url": "https://www.koreconx.com/transfer-agent-management",
+      "quote": "KoreConX provides transfer agent services for private companies in the US (RegA+, RegD, RegCF)",
+      "kind": "other",
+      "publisher": "KoreConX (vendor page; 'simple flat monthly fee', no dollar figure published)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-5-D15",
+      "url": "https://www.sec.gov/Archives/edgar/data/1592411/000168316821000960/dkg_ex1003.htm",
+      "quote": "promptly file the 17ad-16 ( Notice of Assumption or Termination of Transfer Agent Services)",
+      "kind": "other",
+      "publisher": "SEC-filed transfer agent termination letter (issuer moving from Direct Transfer LLC / Issuer Direct to Pacific Stock Transfer Company, effective December 11, 2020)",
+      "date": "2020-12-11",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "B2B-5-D16",
+      "url": "https://www.law.cornell.edu/cfr/text/17/240.17Ad-12",
+      "quote": "the cost of the various safeguards and procedures",
+      "kind": "constraint",
+      "publisher": "17 CFR 240.17Ad-12 (Cornell LII; principles-based safeguarding standard; the text read names no bond or insurance requirement)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    }
+  ],
+  "newAlternatives": [
+    {
+      "label": "StartEngine Secure, Essential tier (registered-agent product bundled with the largest equity-crowdfunding platform; free up to 100 investors)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://startengine.com/secure",
+      "evidenceRef": "B2B-5-D8"
+    },
+    {
+      "label": "StartEngine Secure, Growth tier (unlimited shareholders, $350/mo; Seed tier $250/mo up to 300 shareholders)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 350,
+      "coversWedge": "full",
+      "sourceLocator": "https://startengine.com/secure",
+      "evidenceRef": "B2B-5-D8"
+    },
+    {
+      "label": "Empire Stock Transfer small-issuer agreement as filed in 2007 ($500 annual fee after $1,000 initial; dated, not a current price)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 41.67,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.sec.gov/Archives/edgar/data/1436273/000143627308000002/transferagentempire.htm",
+      "evidenceRef": "B2B-5-D9"
+    }
+  ],
+  "killReasons": [
+    {
+      "reason": "Cheapest part of the target market is served free or near-free by a bundled incumbent: StartEngine Secure is free up to 100 investors and $250-350/mo above, attached to the platform where Reg CF and Reg A issuers already raise money; a stranger's $100/mo agent has no distribution to reach those issuers and a $0 price to beat.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "B2B-5-D8"
+    },
+    {
+      "reason": "The claimed edge (ledger custody and formal cutover) protects incumbents, not the entrant: existing microcap issuers sit on 2-7 year contracts with $3,000-$20,000 termination fees, so only brand-new issuers are winnable, and the industry is described as commoditized with a few hundred agents (328 registered per SEC).",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "B2B-5-D7"
+    },
+    {
+      "reason": "Bottom-up first-year economics fail the pessimistic case at every sourced price anchor (entrant $1,200/yr or StartEngine-Seed-level $3,000/yr): base about +$440 for roughly 1,500 owner hours, pessimistic about -$7,260 (about -$2,940 even at $3,000/yr); pessimistic cost of about $10,140 exceeds the $10,000 cash.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "B2B-5-D9"
+    },
+    {
+      "reason": "Scale ceiling: staying exempt from the accountant report requires under 500 items per six months; growing past it brings a report the SEC prices at about $34,920 per filer (for typical professional agents), so the fixed cost returns exactly when the book grows.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "B2B-5-D2"
+    },
+    {
+      "reason": "Mandated demand is narrower than the pain statement: Reg CF issuers need a registered agent only to use the Rule 12g-6 exclusion, and private startups are described as not needing one at all.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "B2B-5-D12"
+    }
+  ],
+  "economics": {
+    "revenue365": 7200,
+    "cost365": 6760,
+    "pessimisticProfit365": -7260,
+    "survivesPessimistic": false,
+    "assumptions": [
+      "ASSUMPTION: price $1,200 per issuer-year billed annually in advance (about $100/mo); anchors: free to $350/mo at StartEngine Secure (D8), $500/yr in a 2007 Empire agreement (D9). Per-transaction fees (DRS items etc.) ignored as unquantified.",
+      "ASSUMPTION: 6 issuers signed and paid by day 365 (first about day 120 after the 30-day registration, build and outreach), loosely anchored on an incumbent starting with about 6 issuers (D6); no stranger first-year count found. Reference entrant's daysToFirstRevenue is 300, so this is generous.",
+      "ASSUMPTION costs, base: fingerprinting and filings $60; ledger software/hosting $1,200; insurance $2,000 (not mandated by the 17Ad-12 text, D16); securities counsel review of TA-1 and procedures $1,500; formation and misc $500; issuer outreach $1,500; total $6,760. No accountant report because the agent stays under 500 items per six months (D3, D4). Form TA-1 has no fee listed (B2B-5-E3).",
+      "Base profit about +$440 before any owner pay (about 1,500 owner hours at 30 h/week).",
+      "Pessimistic (price x0.8, volume x0.5, cost x1.5): 3 issuers x $960 = $2,880 revenue; cost $10,140; profit -$7,260. Sensitivity: at $3,000/issuer-year (StartEngine Seed-level), base +$11,240 but pessimistic 3 x $2,400 = $7,200 vs $10,140 = -$2,940, still negative.",
+      "Growth beyond 500 items per six months would add the Rule 17Ad-13 report (SEC estimate about $34,920 per filer, D2); not included in first-year costs."
+    ],
+    "sources": ["B2B-5-D2", "B2B-5-D3", "B2B-5-D4", "B2B-5-D6", "B2B-5-D8", "B2B-5-D9", "B2B-5-D16"]
+  },
+  "legalNotes": [
+    "Registration on Form TA-1 is mandatory for performing agent functions for section 12-registered securities and becomes effective 30 days after filing (B2B-5-E1, E7); the SEC page lists no filing fee (B2B-5-E3). Annual Form TA-2 still applies (B2B-5-E4).",
+    "Rule 17Ad-4(b): an agent under 500 items for transfer and under 500 for processing in six consecutive months is 'exempt' and must certify that within ten business days after the sixth month; it is outside 17Ad-13 (D3, D4) and 17Ad-2(a) turnaround per 17Ad-4(b)(2) as read, but not outside registration, safeguarding (D16), recordkeeping not listed in 17Ad-4(b)(2), or SEC examination.",
+    "Rule 17f-2: personnel engaged in agent functions must be fingerprinted (D5). Securities counsel is advisable; this is not legal advice.",
+    "Switching a client between agents involves a Rule 17Ad-16 notice and conversion coordination with the old agent (D15), so winning an existing issuer depends on its contract and termination fee.",
+    "ToS: all pages were read as an ordinary reader; eCFR API was blocked by robots and skipped; no logins, signups, or contact."
+  ],
+  "unverified": [
+    "Current published fee schedules of microcap agents (Equity, Pacific, Colonial, Direct Transfer/Issuer Direct, Empire): none shown on pages read; Issuer Direct page redirected and was not read; KoreConX price not published.",
+    "That StartEngine Secure is itself an SEC-registered agent and what its issuer count is; page title says 'Transfer Agent' but registration was not checked.",
+    "How many micro-issuers switch agents per year; no churn figure found.",
+    "What a stranger could actually sign in year 1; the 6-issuer figure is an assumption.",
+    "Insurance, errors-and-omissions, or banking requirements that counterparties may impose beyond the rule text; the cost of fingerprints and counsel.",
+    "Equity Stock Transfer podcast is an auto-generated transcript with no date on the PDF; figures may contain transcription errors; Rule 17Ad-4/17Ad-13/17f-2 quotes were taken from fetch-tool extractions of the Cornell LII pages, not the raw HTML; the eCFR text itself could not be read (robots).",
+    "Whether the exemption items count (e.g., DRS/book-entry processing, dividend items) leaves headroom for 6 or more active micro-issuers within 500 items per six months."
+  ],
+  "nextStep": ""
+}

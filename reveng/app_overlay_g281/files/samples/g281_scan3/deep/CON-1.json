@@ -1,0 +1,343 @@
+{
+  "id": "CON-1",
+  "verdict": "killed",
+  "verdictReason": "Killed. (1) Under $10k the market sells almost no verifiable subscription revenue: listings that disclose MRR or subscribers ask about 17-27x the monthly figure ($15k-$52k, D3-D5); the one cheap outlier (Jawsi, $10k ask, $1,296/mo profit seller-reported, $30k Buy It Now) shows no verification and no subscriber count (D1, D2). (2) Even taken at face value, pessimistic year-1 result is about -$10.2k (base only +$3.0k if the seller is right), every input seller-reported (D6). (3) The 'edge', a transferable base (D15), is on sale to everyone at market multiples and Apple gives no pre-transfer sales data (E6).",
+  "answers": [
+    {
+      "question": "Open question: does any listing at or under about $10,000 show at least $300/month of verifiable subscription revenue and a clean Apple transfer?",
+      "answer": "Only one listing fits on paper: Jawsi (iOS+Android, 7 years old, asking $10,000, Buy It Now $30,000, Monthly Profit $1,296, 97% margin, 'in-app subscription model'), but the page shows no subscriber count and no verification statement, and its price is 7.7x monthly profit against 17.6x-26.7x on every other listing that discloses MRR or subscribers (D1, D2). Others: Wing AI Flirt asks $15,120 for about $588/mo profit (25.7x, D5); AI Deep Face Swap SwapX asks $18,000 and its own headline ($3,200/month, 173 subscribers, $9K total revenue) does not reconcile with its Monthly Profit field of $1,025 (D3); the e-signature app asks $38,500 for $1,442 MRR (26.7x, listing page cited in D6) and the item-scanner asks $52,000 for about $2.3K MRR (22.6x, D4). At the cheap end: Pika $3,500 for about $154/mo (CON-1-E3), Microns apps of $100-$1,900 annual revenue sold for $1,000-$2,000 (D9) and a $300-start auction with 8 subscribers (D10). The Apple transfer mechanics themselves are mechanical (shared secret, product-ID collision rule, reviews and ratings kept: D14, D15, CON-1-E5), but Apple only gives the buyer sales data for transactions after the transfer (CON-1-E6). Whether Jawsi's figures are real cannot be settled from public pages (the seller holds the App Store Connect/RevenueCat data); it does not change the verdict because pessimistic economics fail even if it is real.",
+      "evidenceIds": ["CON-1-D1", "CON-1-D2", "CON-1-D3", "CON-1-D4", "CON-1-D5", "CON-1-D6", "CON-1-D9", "CON-1-D10", "CON-1-D14", "CON-1-D15", "CON-1-E3", "CON-1-E5", "CON-1-E6"]
+    },
+    {
+      "question": "Can the buyer verify seller-reported MRR before paying?",
+      "answer": "Not independently from public pages. Flippa's own buying advice on a 'Vetted Listing' says financials are seller-provided inputs and to ask for verified financials (D6); the 'vetted' badge covers listing-level review of revenue, expenses and traffic, not buyer access to dashboards. Jawsi carries no verification statement (D1). Apple gives the recipient only post-transfer sales data (CON-1-E6). A buyer could ask the seller for live App Store Connect or RevenueCat screen-shares, but that needs contact with the seller and cannot be done in this read-only screen; and a seller-controlled screen share is still not an audited record.",
+      "evidenceIds": ["CON-1-D1", "CON-1-D6", "CON-1-E6"]
+    },
+    {
+      "question": "Do free, cheap or DIY alternatives and incumbents already cover the wedge (a paying base without the cold start)?",
+      "answer": "Partly, and the cheap ones do not carry a real base. Free: RevenueCat is free up to $2,500 of monthly tracked revenue and Apple membership is $99/yr (D11, CON-1-E10), so a from-scratch build costs almost nothing in cash (but gives no base, ratings or rank). Cheap acquisitions: Microns lists tiny iOS apps with $100-$4,100 annual revenue at $1,000-$10,000 (D9), and Flippa has $300-start auctions of early apps with 8 subscribers (D10). Incumbent clones: 'Who Touched My Phone'-style apps already sell near-identical weekly/monthly/yearly subscriptions ($3.99 / $9.99 / $39.99) from multiple developers (D20), and Apple's own review rules reject apps 'indistinguishable from what's already widely available' (D16) and template-generated apps (D17). Nothing at or under $10k both carries verified revenue and is not an outlier or a micro-app.",
+      "evidenceIds": ["CON-1-D9", "CON-1-D10", "CON-1-D11", "CON-1-D16", "CON-1-D17", "CON-1-D20", "CON-1-E10"]
+    },
+    {
+      "question": "Is the US web-checkout (link-out) part of the wedge legally safe and does it add much?",
+      "answer": "Currently permitted but unsettled. The Ninth Circuit (Dec 2025) held Apple may charge a reasonable cost-based commission on linked-out purchases and remanded (D19); the US Supreme Court agreed on 30 June 2026 to hear Apple's appeal, with a ruling expected by June 2027 (D18); as of that article Apple had not collected commission on external-link payments for nearly a year (D21). The benefit is limited: it applies only to NEW US purchasers (existing subscribers stay on Apple billing), so it trims Apple's 15% (CON-1-E7) toward Stripe's 2.9%+30c (CON-1-E9) on a small share of revenue, and adds sales-tax and payment-processing duties (not verified). It is a footnote, not an edge.",
+      "evidenceIds": ["CON-1-D18", "CON-1-D19", "CON-1-D21", "CON-1-E7", "CON-1-E9"]
+    },
+    {
+      "question": "Do acquired subscriber bases keep paying after a change of owner?",
+      "answer": "No retention data for any listing could be read. Industry data point against optimism: RevenueCat's 2026 report (via TechCrunch) puts 12-month annual retention at 21.1% for AI apps vs 30.7% for non-AI apps (D12), and several cheap listings are AI wrappers whose 100% profit margin suggests inference costs are not deducted (D3). A practitioner who bought a small app reported plain-text API keys and security flaws found only after purchase (D13). Apple keeps reviews and ratings through a transfer (D15) but nothing source-verified says organic keyword rank survives.",
+      "evidenceIds": ["CON-1-D3", "CON-1-D12", "CON-1-D13", "CON-1-D15"]
+    },
+    {
+      "question": "What is exclusive or compounding about the entrant, and what would falsify the kill?",
+      "answer": "Nothing exclusive: the paying base, ratings and bundle ID are an asset any rival can buy from the same marketplace at a price that already capitalises them (D15 shows ratings transfer; multiples in D3-D5). It does not compound: the buyer inherits a depreciating, unverified cash flow plus maintenance duty. The kill would be falsified by a seller showing dashboard-verified (App Store Connect/RevenueCat) subscription revenue of at least $600/month with 12-month retention for at most $10,000 all-in, at a multiple under about 17x, with a clean transfer; the holder of that evidence is the listing's seller."
+      ,
+      "evidenceIds": ["CON-1-D3", "CON-1-D4", "CON-1-D5", "CON-1-D15"]
+    }
+  ],
+  "newEvidence": [
+    {
+      "id": "CON-1-D1",
+      "url": "https://flippa.com/10707131-jawsi",
+      "quote": "Revenue from the app is generated through an in-app subscription model.",
+      "kind": "demand",
+      "publisher": "Flippa (listing page: Jawsi, iOS App | Entertainment, 7 years old, asking USD $10,000, Monthly Profit USD $1,296 /mo, Profit Margin 97%; sale includes iOS and Android app; no subscriber count and no verification statement on the page)",
+      "date": "2026-10",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "CON-1-D2",
+      "url": "https://flippa.com/10707131-jawsi",
+      "quote": "Buy It Now for USD $30,000",
+      "kind": "incumbent_price",
+      "publisher": "Flippa (same Jawsi listing page; Buy It Now shown beside the USD $10,000 Asking Price (Classified) and a Make Offer button)",
+      "date": "2026-10",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "CON-1-D3",
+      "url": "https://flippa.com/12208013-ai-deep-face-swap-swapx",
+      "quote": "Profitable AI Face Swap App generating $3,200/month  16K+ downloads, 173 active subscribers, and $9K total revenue.",
+      "kind": "demand",
+      "publisher": "Flippa (listing meta description: AI Deep Face Swap - SwapX, asking USD $18,000 reduced 28% from $25,000, Monthly Profit field USD $1,025 /mo at 100% margin, app age 1 year, 2,156 views, 28 watchers)",
+      "date": "2026-10",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "CON-1-D4",
+      "url": "https://flippa.com/14286659-value-ai-item-price-scanner",
+      "quote": "Monthly Recurring Revenue (MRR) of about $2.3K",
+      "kind": "demand",
+      "publisher": "Flippa (listing page: Value AI item price scanner, iOS, asking USD $52,000, Monthly Profit USD $1,557 /mo, approximately 151 active subscribers, weekly and annual subscriptions)",
+      "date": "2026-10",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "CON-1-D5",
+      "url": "https://flippa.com/12366937-wing-ai-flirt-ai-app",
+      "quote": "earnings exceeding $650 per month",
+      "kind": "demand",
+      "publisher": "Flippa (listing page: Wing AI flirt app, 1 year old, asking USD $15,120 reduced 28% from $21,000, Monthly Profit USD $588 /mo, MRR not stated)",
+      "date": "2026-10",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "CON-1-D6",
+      "url": "https://flippa.com/12292920-esign-digital-signature-app",
+      "quote": "Financials are seller-provided inputs. Always ask for verified financials.",
+      "kind": "constraint",
+      "publisher": "Flippa (buying advice on a 'Vetted Listing' for a subscription e-signing app, asking USD $38,500, Monthly Profit USD $1,248 /mo, MRR cited as $1,442)",
+      "date": "2026-10",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "CON-1-D7",
+      "url": "https://support.flippa.com/hc/en-us/articles/360000774276",
+      "quote": "All packages will come with discounted escrow fees paid by the Buyer when initiating an Escrow.com transaction via Flippa.",
+      "kind": "other",
+      "publisher": "Flippa Support (Pricing, Escrow Fees, FlippaPay Fees, and Buyer Verification)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "CON-1-D8",
+      "url": "https://support.flippa.com/hc/en-us/articles/360000774276",
+      "quote": "$162.50 + 0.26% of amount over $5,000",
+      "kind": "incumbent_price",
+      "publisher": "Flippa Support (Escrow.com fee table row for $5,000.01 - $25,000; Flippa users get discounted variable fees, discount not applied in the estimate)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "CON-1-D9",
+      "url": "https://www.microns.io/",
+      "quote": "iOS app helping users restore, enhance, and colorize old and damaged photos using AI",
+      "kind": "demand",
+      "publisher": "Microns (card for Old Photo Restore iOS App, Recently Sold: $1,900 Annual Revenue, $2,000 Exit Price; also Star Wars Board Game App $4,100 Annual Revenue, $10,000 Asking Price; AI Calorie Counter iOS App $156 Annual Revenue, $2,000 Asking Price)",
+      "date": "2026-10",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "CON-1-D10",
+      "url": "https://flippa.com/14025019-ai-face-swap-photo-video-app-3-000-organic-downloads-in-1-month-8-subscribers-6-trials-3-seo-landing-pages-flutter-monetized-ios-ready",
+      "quote": "The sale package includes the complete application, Flutter source code, AI workflows",
+      "kind": "other",
+      "publisher": "Flippa (auction listing, starting bid USD $300, Reserve not met, 8 active subscribers, USD $112 /mo profit, site age 2 months, no verified-seller checkmark)",
+      "date": "2026-10",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "CON-1-D11",
+      "url": "https://revenuecat.com/pricing",
+      "quote": "Pay nothing for up to $2,500 in monthly tracked revenue.",
+      "kind": "incumbent_price",
+      "publisher": "RevenueCat (pricing page)",
+      "date": "2026-10",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "CON-1-D12",
+      "url": "https://techcrunch.com/2026/03/10/ai-powered-apps-struggle-with-long-term-retention-new-report-shows",
+      "quote": "21.1% for AI apps, compared with a higher 30.7% for non-AI apps",
+      "kind": "demand",
+      "publisher": "TechCrunch (reporting RevenueCat's 2026 State of Subscription Apps report; 12-month annual retention)",
+      "date": "2026-03-10",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "CON-1-D13",
+      "url": "https://adamlyttleapps.substack.com/p/from-copycat-to-original-my-journey",
+      "quote": "several negative reviews and significant security flaws in the code, such as plain text API keys",
+      "kind": "other",
+      "publisher": "Adam Lyttle (Substack; first-person account of buying a $10/month app for $900)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "CON-1-D14",
+      "url": "https://developer.apple.com/help/app-store-connect/transfer-an-app/app-transfer-criteria",
+      "quote": "In-App Purchase product IDs on the app can't be the same as product IDs on any apps in the recipient's account.",
+      "kind": "constraint",
+      "publisher": "Apple Developer (App Store Connect Help: App transfer criteria)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "CON-1-D15",
+      "url": "https://developer.apple.com/help/app-store-connect/transfer-an-app/overview-of-app-transfer/",
+      "quote": "During and after the transfer, the app retains its reviews and ratings, and users continue to receive updates.",
+      "kind": "other",
+      "publisher": "Apple Developer (App Store Connect Help: Overview of app transfer)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "CON-1-D16",
+      "url": "https://developer.apple.com/app-store/review/guidelines/",
+      "quote": "Don't submit apps that are indistinguishable from what's already widely available.",
+      "kind": "constraint",
+      "publisher": "Apple Developer (App Review Guidelines 4.3(b))",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "CON-1-D17",
+      "url": "https://developer.apple.com/app-store/review/guidelines/",
+      "quote": "Apps created from a commercialized template or app generation service will be rejected unless they are submitted directly by the provider of the app's content.",
+      "kind": "constraint",
+      "publisher": "Apple Developer (App Review Guidelines 4.2.6)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "CON-1-D18",
+      "url": "https://thenextweb.com/news/supreme-court-apple-epic-contempt-app-store-commission",
+      "quote": "The US Supreme Court on Tuesday agreed to hear Apple’s appeal of the contempt finding.",
+      "kind": "constraint",
+      "publisher": "The Next Web (article on the Epic v. Apple contempt appeal; ruling expected by June 2027)",
+      "date": "2026-06",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "CON-1-D19",
+      "url": "https://www.fenwick.com/insights/publications/ninth-circuit-largely-upholds-ruling-in-epic-v-apple",
+      "quote": "Apple may charge a commission or fee for linked-out purchases, but it must be reasonable and not prohibitive.",
+      "kind": "constraint",
+      "publisher": "Fenwick (law-firm analysis of the Ninth Circuit's December 2025 Epic v. Apple opinion)",
+      "date": "2025-12-22",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "CON-1-D20",
+      "url": "https://apps.apple.com/us/app/id1637519272",
+      "quote": "WTMP Yearly Premium",
+      "kind": "incumbent_price",
+      "publisher": "Apple App Store (AntiSpy: Who Touched My Phone?, Yapps Limited, 517 ratings; listed in-app purchases: Weekly Premium $3.99, Monthly Premium $9.99, Yearly Premium $39.99; the same web search returned at least seven similarly named apps)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "CON-1-D21",
+      "url": "https://thenextweb.com/news/supreme-court-apple-epic-contempt-app-store-commission",
+      "quote": "Apple has not collected commission on external-link payments for nearly a year.",
+      "kind": "constraint",
+      "publisher": "The Next Web (same article; status of Apple's commission on link-out purchases)",
+      "date": "2026-06",
+      "evidenceClass": "agent_reported"
+    }
+  ],
+  "newAlternatives": [
+    {
+      "label": "Microns.io small iOS apps (e.g. Old Photo Restore, $1,900 annual revenue, sold for $2,000; amortised over 36 months)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 55.56,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.microns.io/",
+      "evidenceRef": "CON-1-D9"
+    },
+    {
+      "label": "Flippa early-stage Flutter AI app auction (starting bid $300, 8 subscribers; amortised over 36 months)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 8.33,
+      "coversWedge": "none",
+      "sourceLocator": "https://flippa.com/14025019-ai-face-swap-photo-video-app-3-000-organic-downloads-in-1-month-8-subscribers-6-trials-3-seo-landing-pages-flutter-monetized-ios-ready",
+      "evidenceRef": "CON-1-D10"
+    },
+    {
+      "label": "Build from scratch with RevenueCat free tier for subscription billing (no purchased base)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://revenuecat.com/pricing",
+      "evidenceRef": "CON-1-D11"
+    },
+    {
+      "label": "Existing competing clone apps that already sell the same subscription (AntiSpy / Who Touched My Phone family, $9.99 monthly premium)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 9.99,
+      "coversWedge": "partial",
+      "sourceLocator": "https://apps.apple.com/us/app/id1637519272",
+      "evidenceRef": "CON-1-D20"
+    },
+    {
+      "label": "Flippa vetted e-signature subscription app (asking $38,500, MRR $1,442; amortised over 36 months)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 1069.44,
+      "coversWedge": "full",
+      "sourceLocator": "https://flippa.com/12292920-esign-digital-signature-app",
+      "evidenceRef": "CON-1-D6"
+    }
+  ],
+  "killReasons": [
+    {
+      "reason": "Market-clearing prices leave a $10k budget with almost no verifiable subscription revenue: listings that disclose MRR or subscribers ask about 17.6x-26.7x the monthly figure ($15k-$52k, e.g. $52,000 for about $2.3K MRR = 22.6x), and the only listing at or under $10k that discloses a subscription model (Jawsi) has no subscriber count or verification and carries a $30,000 Buy It Now.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "CON-1-D4"
+    },
+    {
+      "reason": "Bottom-up first-365-day economics fail the pessimistic case: base +$3,007 only if the single unverified outlier's seller-reported $1,340/month revenue is real; pessimistic (price x0.8, volume x0.5, cost x1.5) is -$10,229 (-$5,529 if the purchase price is held fixed); at a typical market-priced $350/month the base case is already about -$6,893 in year 1.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "CON-1-D1"
+    },
+    {
+      "reason": "No buyer-side verification: the marketplace itself says financials are seller-provided inputs, Apple gives the recipient only post-transfer sales data, and listing figures can be internally inconsistent (SwapX headline $3,200/month vs Monthly Profit field $1,025 and $9K total revenue).",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "CON-1-D6"
+    },
+    {
+      "reason": "The claimed edge (transferable subscriber base, ratings and bundle ID) is not exclusive or compounding: any rival can buy the same asset on the same marketplace at a price that already capitalises it, and similar apps are plentiful and near-identical in the same categories.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "CON-1-D15"
+    },
+    {
+      "reason": "Retention risk: annual retention is 21.1% for AI apps vs 30.7% for non-AI apps, many cheap listings are AI wrappers whose margins appear to omit inference cost, and a practitioner found plain-text API keys only after buying.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "CON-1-D12"
+    },
+    {
+      "reason": "The US link-out benefit is legally unsettled: the Ninth Circuit allows a reasonable cost-based commission and the Supreme Court will hear Apple's appeal (ruling expected by June 2027); the benefit only applies to new US purchasers.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "CON-1-D18"
+    }
+  ],
+  "economics": {
+    "revenue365": 13400,
+    "cost365": 10392.94,
+    "pessimisticProfit365": -10229.41,
+    "survivesPessimistic": false,
+    "assumptions": [
+      "Reference purchase: Jawsi-type listing (the only sub-$10k listing disclosing a subscription model and meaningful profit); seller-reported Monthly Profit $1,296 and revenue about $1,340/month (earlier scan card); asking $10,000 (D1) negotiated to $9,400 via 'Make Offer' (assumption).",
+      "Escrow fee: $162.50 + 0.26% of the amount over $5,000 = $173.94 at $9,400, paid by the buyer (D7, D8); Flippa's discount on the variable part not applied.",
+      "Apple Developer Program $99 in year 1 (CON-1-E10). Startup cash at closing = $9,672.94, within the $10,000 cap.",
+      "Operating cost assumption $60/month ($720/year) for hosting/APIs/tools (seller-reported expenses imply roughly $44/month); owner time (10 h/week) valued at $0; RevenueCat free tier (D11).",
+      "Revenue assumption: seller-reported revenue is already net of Apple's cut; about 10 months of receipts fall inside 365 days (about 30 days to close the transfer plus an assumed ~1 month Apple payout lag): 10 x $1,340 = $13,400. All revenue inputs are seller-reported and unverified (D6).",
+      "Base profit365 = 13,400 - 10,392.94 = +$3,007.06 (cash, including the purchase price as a year-1 cost).",
+      "Pessimistic: revenue x0.8 price x0.5 volume = $5,360; every cost x1.5 including the purchase price (stress for price overrun) = $15,589.41; profit = -$10,229.41. If the purchase price is held fixed and only other costs x1.5: cost $10,889.41, profit -$5,529.41. Both negative.",
+      "Sensitivity at a typical market-priced listing (about $350/month revenue for $9,400, assumption from the 17-27x multiples in D3-D5): revenue365 $3,500, base year-1 profit about -$6,893.",
+      "Pessimistic run-rate after year 1 is about $446/month ($1,340 x 0.4 - $90), so even the stressed purchase takes about 22 months to pay back the $10,000."
+    ],
+    "sources": ["CON-1-D1", "CON-1-D2", "CON-1-D3", "CON-1-D4", "CON-1-D5", "CON-1-D6", "CON-1-D7", "CON-1-D8", "CON-1-D11", "CON-1-E10"]
+  },
+  "legalNotes": [
+    "Apple transfer: the recipient must use the seller's app-specific shared secret for auto-renewable subscriptions (CON-1-E5), both accounts must be in a non-pending state with the latest agreements accepted, and In-App Purchase product IDs must not collide with the recipient's apps (D14). The recipient gets sales data only for post-transfer transactions (CON-1-E6). The criteria page read lists nine criteria and none on account good standing or waiting periods; those were not verified.",
+    "App Review: template-generated apps are rejected unless submitted by the template provider (D17) and apps 'indistinguishable from what's already widely available' are rejectable (D16); several cheap listings are AI-wrapper or near-clone utilities, so post-transfer update or review risk is real.",
+    "Link-out: US apps may include external purchase calls to action per the guideline text read (CON-1-E8), but the Ninth Circuit allows a reasonable cost-based commission (D19) and the Supreme Court will hear Apple's appeal (D18); Apple had collected no commission for nearly a year (D21). Web billing adds Stripe fees (CON-1-E9) and, unverified, US sales-tax collection duties. Not legal advice.",
+    "Acquired apps may carry privacy, children's-data, face-image (AI face-swap) or AI-content obligations and third-party AI API terms; none were researched. Do not contact sellers or request dashboard access as part of this screen (read-only rule).",
+    "Marketplace terms: Flippa escrow fees are paid by the buyer (D7); Flippa's page says financials are seller-provided (D6); I did not read the Flippa or Microns buyer terms beyond the quoted pages."
+  ],
+  "unverified": [
+    "Whether Jawsi's seller-reported $1,296/month profit, $1,340/month revenue and subscription base are real, and whether Flippa's iOS 'revenue' fields are net or gross of Apple's cut (assumed net). Only the seller (App Store Connect / RevenueCat dashboards) can settle this.",
+    "Listings seen only in the summarised listing-index table (no verbatim quote captured, not used as evidence): Who Touched My Phone: Anti Spy ($25,000, '$591 MRR'), AI ChatBot - Video Generator ($114,999, '$5,400 MRR'), and the 326 other mobile-app listings on pages 2-8 were not read, so a better sub-$10k listing may exist.",
+    "Acquire.com, Empire Flippers and brokers: only a search result and the FE International landing page (no figures) were seen; Microns and Acquire.com buyer fees were not stated on the pages read; support.flippa.com was blocked to curl (proxy 403) and not worked around.",
+    "Retention or churn after transfer for any specific listing, and whether organic keyword rank survives a change of owner (D15 only covers reviews and ratings).",
+    "Apple payout timing (assumed ~1 month lag), Small Business Program re-enrolment after transfer, US sales-tax and AI/face-image legal obligations, and Apple's account good-standing criteria.",
+    "Page-read budget of about 25 reads was fully used; the last 18,904 characters of Apple's guidelines page and 9,571 of the transfer overview (Alternative marketplaces section) were not read."
+  ],
+  "nextStep": "Drop CON-1 as a Scan 2 candidate; reopen only if a seller shows dashboard-verified subscription revenue of at least $600/month with 12-month retention for at most $10,000 all-in."
+}

@@ -1,0 +1,817 @@
+{
+ "candidates": [
+  {
+   "id": "MED-1",
+   "name": "Marketplace-bought niche newsletter (1k-10k subscribers) held for sponsor income",
+   "family": "media_or_content",
+   "buyer": "Advertisers that buy per-issue sponsorship slots in small niche newsletters (CPM-priced), and the readers of those lists",
+   "pain": "A newcomer needs a monetized email audience; building one means months of content plus rented subscribers at roughly $1.10-$2.50 each, while small-newsletter sellers want an exit at about 2x annual profit.",
+   "wedge": "Buy one or two profitable small newsletters listed on public marketplaces at <=2.5x annual profit, keep issues going with contract writers, sell slots through ad networks and cross-promote between the lists.",
+   "referenceEntrant": {
+    "startupCashUsd": 10000,
+    "daysToFirstRevenue": 60,
+    "ownerHoursPerWeek": 15
+   },
+   "entrantEdge": {
+    "type": "acquirable_owned_audience_or_partner_channel",
+    "status": "claimed",
+    "statement": "What would accumulate is a platform-independent email list with existing sponsor history, bought at about 2x annual profit (a listed 8.3k-subscriber book newsletter asks $15,300 for $606/month profit). It is not structural against other cash buyers: the same listing is open to any bidder, and the implied $1.84 per subscriber sits inside the $1.50-$2.50 range for renting new subscribers, so the real advantage is time-to-revenue plus existing sponsor demand, not cost. Only a 30k-subscriber crypto list ($0.57/sub) is cheaper than rental, and its $15k annual revenue implies about $0.50 per subscriber per year, i.e. low-value subscribers.",
+    "evidenceIds": [
+     "MED-1-E1",
+     "MED-1-E2",
+     "MED-1-E4"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "beehiiv Free plan: build a list from scratch (up to 2,500 subscribers, recommendation network included)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.beehiiv.com/pricing",
+      "evidenceRef": "MED-1-E6",
+      "metrics": {}
+     },
+     {
+      "label": "Rent subscribers through paid recommendation/partner networks (about $1.50-$2.50 per subscriber; cost shown assumes 500 new subscribers a month at $1.50)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 750,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.aifire.co/p/paid-newsletter-growth-playbook-scale-without-burning-cash",
+      "evidenceRef": "MED-1-E4",
+      "metrics": {
+       "channel_reach": 6667
+      }
+     },
+     {
+      "label": "beehiiv Ad Network on the Lite plan, for sponsor sourcing only (needs an existing list)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 49,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.beehiiv.com/features/ad-network",
+      "evidenceRef": "MED-1-E7",
+      "metrics": {}
+     },
+     {
+      "label": "Flippa / Acquire / Duuce marketplaces: the buy route itself, with competing bidders (cost shown is the $15,300 ask amortized over 24 months)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 638,
+      "coversWedge": "partial",
+      "sourceLocator": "https://flippa.com/12260974-8-3k-subscriber-book-newsletter-with-85-margin-606-avg-monthly-profit-32-open-rate-and-scalable-sponsorship-model",
+      "evidenceRef": "MED-1-E1",
+      "metrics": {
+       "channel_reach": 5435
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "channel_reach",
+    "direction": "higher_is_better",
+    "incumbentValue": 6667,
+    "entrantValue": 5435,
+    "falsifier": "Subscribers obtainable per $10,000: renting at the $1.50 low end of the CPA range gives 6,667 (9,091 at the $1.10 average); the 8.3k listing at its $15,300 ask gives 5,435. An edge exists only if platform-exported, engaged lists can be bought repeatedly at well under $1.00 per subscriber with stable sponsor revenue; the one listing found shows no per-subscriber discount."
+   },
+   "evidence": [
+    {
+     "id": "MED-1-E1",
+     "url": "https://flippa.com/12260974-8-3k-subscriber-book-newsletter-with-85-margin-606-avg-monthly-profit-32-open-rate-and-scalable-sponsorship-model",
+     "quote": "Asking Price (Classified) ... USD $17,000 ... Reduced 10% ... USD $15,300 ... Monthly Profit ... USD $606 /mo ... Active Subscribers ... 8,300",
+     "kind": "incumbent_price",
+     "publisher": "Flippa (seller listing, figures seller-reported)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-1-E2",
+     "url": "https://flippa.com/11886020-30k-subscriber-crypto-newsletter-with-15k-annual-revenue-from-sponsors-and-paid-subs-soon-passing-50-paid-subs-with-50-more-on-free-trial",
+     "quote": "USD $17,000 ... more than 30,000 subscribers ... annual recurring revenue of $15,000 ... USD $721 /mo",
+     "kind": "incumbent_price",
+     "publisher": "Flippa (seller listing, figures seller-reported)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-1-E3",
+     "url": "https://microns.io/blog/newsletter-valuation",
+     "quote": "Typically, you can get between $30 and $50 per 1000 subscribers.",
+     "kind": "demand",
+     "publisher": "Microns",
+     "date": "2024-04-13",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-1-E4",
+     "url": "https://www.aifire.co/p/paid-newsletter-growth-playbook-scale-without-burning-cash",
+     "quote": "Default CPA: $1.50–$2.50. ... the average CPA moved closer to $1.1",
+     "kind": "incumbent_price",
+     "publisher": "AI Fire newsletter",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-1-E5",
+     "url": "https://growgetters.substack.com/p/we-tried-to-buy-a-newsletter",
+     "quote": "The market is very very shallow. ... After emailing 97 of the Substack owners who had closed their shops we received a whopping 3 replies.",
+     "kind": "constraint",
+     "publisher": "Growgetters (Substack)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-1-E6",
+     "url": "https://www.beehiiv.com/pricing",
+     "quote": "Subscribers, Free, Up to 2,500 ... Free forever. ... Recommendation network",
+     "kind": "other",
+     "publisher": "beehiiv",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-1-E7",
+     "url": "https://www.beehiiv.com/features/ad-network",
+     "quote": "The Ad Network is available to anyone on the Lite plan or above who is actively sending on beehiiv.",
+     "kind": "other",
+     "publisher": "beehiiv",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-1-E8",
+     "url": "https://microns.io/blog/newsletter-valuation",
+     "quote": "we use a higher multiplier for newsletters: 10x to 20x.",
+     "kind": "incumbent_price",
+     "publisher": "Microns",
+     "date": "2024-04-13",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 2,
+    "customer_problem_or_value": 4,
+    "distribution_advantage": 2,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 5,
+    "repeat_ltv_potential": 5,
+    "competition_adjusted_gap": 2,
+    "market_depth": 3,
+    "end_to_end_automation": 3,
+    "capital_risk": 3,
+    "owner_time_support": 4
+   },
+   "componentReasons": {
+    "entrant_edge": "The only claimed edge is a one-off purchase discount open to any cash bidder, and the 8.3k listing costs $1.84 per subscriber versus a $1.50-$2.50 rental range (MED-1-E1, MED-1-E4).",
+    "customer_problem_or_value": "Sponsors do pay for small lists (about $30-$50 per 1,000 subscribers per issue) but the pain is the newcomer's slow audience build, not a buyer emergency (MED-1-E3).",
+    "distribution_advantage": "Buying a list gives an owned channel but no privileged low-CAC distribution beyond the list itself, and renting subscribers is a comparable price (MED-1-E4).",
+    "defensibility": "Nothing stops another buyer from bidding on the same listings or the seller from starting a rival list; the 'market is very very shallow' also limits portfolio scaling (MED-1-E5).",
+    "absolute_gross_profit_potential": "The listed assets earn $606-$721 a month profit for $15,300-$17,000, so a $10k budget buys roughly $400 a month of profit (MED-1-E1, MED-1-E2).",
+    "willingness_to_pay": "Sponsors pay per-issue CPMs and buyers pay 2x-5x annual profit, so money does move, but the CPM figure is a vendor blog's typical rate (MED-1-E3, MED-1-E8).",
+    "repeat_ltv_potential": "Sponsorship is repeat revenue per issue, but sponsor churn and list decay after a sale were not evidenced.",
+    "competition_adjusted_gap": "Duuce, Flippa and Acquire already list newsletters and rival buyers set 2x-3x prices, leaving little arbitrage on quality lists (MED-1-E5).",
+    "market_depth": "A buyer reported fewer than 15 interesting newsletters across marketplaces and 3 replies to 97 outreach emails, so deal flow is thin (MED-1-E5).",
+    "end_to_end_automation": "Sponsor sourcing can be automated via an ad network, but content production and list upkeep still need people (MED-1-E7).",
+    "capital_risk": "Seller-reported subscriber and profit figures are unverified and most of the $10k would sit in one asset (MED-1-E1).",
+    "owner_time_support": "Contract writers and the ad network can cover most work, but quality control and sponsor handling remain (MED-1-E7)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "MED-1-E1: purchase is of a listed web business; transferring an email list must honour the original sign-up terms, the email platform's terms and CAN-SPAM. None of these were read, so unverified.",
+    "MED-1-E5: marketplaces and sellers set their own deal terms (NDAs, access to metrics); no regulation specific to buying a newsletter was identified. Unverified; not legal advice."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "Base: $606/mo profit at an 85% margin implies about $713 revenue and $107 cost. Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue about $285, cost about $160, profit about $125/mo, still positive but a roughly 10-year payback on a $15,300 ask. Positive on paper only."
+    },
+    "killReasons": [
+     {
+      "reason": "No per-subscriber discount versus renting: the 8.3k list asks about $1.84 per subscriber against a $1.50-$2.50 default rental range, and 'faster' is not an edge.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "MED-1-E1, MED-1-E4"
+     },
+     {
+      "reason": "Thin deal flow: fewer than 15 interesting newsletters across marketplaces and 3 replies to 97 outreach emails.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MED-1-E5"
+     },
+     {
+      "reason": "Absolute profit is small relative to hours: about $400/month of profit for a $10k budget.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MED-1-E1"
+     },
+     {
+      "reason": "All subscriber, open-rate and profit figures are seller-reported and not independently verified.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "MED-1-E2"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Buying small newsletters is a real, priced market (about 2x annual profit; sponsors pay per-issue CPMs), but the price per subscriber ($1.84 on the 8.3k listing) is inside the cost of renting subscribers ($1.50-$2.50), so there is no measurable structural edge, only speed. The market is shallow, absolute profit at a $10k budget is about $400/month, and the only cheaper-per-subscriber list found (30k crypto, $0.57/sub) earns about $0.50 per subscriber per year. Not re-proposed from scan 1: this is an acquisition play, not the sponsor-lead-sheet service."
+  },
+  {
+   "id": "MED-2",
+   "name": "Acquired evergreen podcast back-catalog (10k+ monthly downloads) monetized through ad marketplaces",
+   "family": "media_or_content",
+   "buyer": "Advertisers and sponsors that pay per-thousand-download CPMs on established podcasts (host-read about $18-$30, programmatic from $12)",
+   "pain": "A newcomer cannot produce a 200-episode back-catalog and an installed listener base inside a year, while sellers of small shows list them at roughly 1.1x-1.4x annual profit, below the cost of recreating the catalog.",
+   "wedge": "Buy small podcasts with at least 10,000 monthly downloads and 100+ episodes at <=1.5x annual profit, transfer the RSS feed and directory ownership, keep a light publishing cadence, and sell inventory through existing ad marketplaces.",
+   "referenceEntrant": {
+    "startupCashUsd": 10000,
+    "daysToFirstRevenue": 60,
+    "ownerHoursPerWeek": 8
+   },
+   "entrantEdge": {
+    "type": "acquirable_owned_audience_or_partner_channel",
+    "status": "claimed",
+    "statement": "What accumulates and is exclusive is a 200-episode catalog with a standing monthly download base and its RSS feed and directory listings; a competitor cannot recreate 200 weekly episodes in under about 3.8 years (derived from the listing's episode count, assuming weekly cadence). The price asymmetry is the listed ask: $9,950, reduced to $7,960, for $597/month profit, about 1.1x-1.4x annual profit. Weaknesses: any cash buyer can bid, download figures are seller-reported, and downloads and ad eligibility decay without new episodes.",
+    "evidenceIds": [
+     "MED-2-E1",
+     "MED-2-E3",
+     "MED-2-E4"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Spotify for Creators: free hosting plus Partner Program (Spotify keeps 50% of ad revenue); build your own 200-episode catalog (about 1,400 days at weekly cadence)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://thepodcastconsultant.com/blog/spotify-for-creators",
+      "evidenceRef": "MED-2-E4",
+      "metrics": {
+       "cycle_time": 1400
+      }
+     },
+     {
+      "label": "Libsyn Ads programmatic marketplace (CPM from $12) for ad sales on a show you already have",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.podderapp.com/post/podcast-cpm-benchmarks",
+      "evidenceRef": "MED-2-E2",
+      "metrics": {}
+     },
+     {
+      "label": "Brokered podcast sales (The Podcast Broker requires 10,000+ monthly downloads, deals from $5,000; Flippa ask amortized over 12 months)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 663,
+      "coversWedge": "partial",
+      "sourceLocator": "https://podnews.net/press-release/the-podcast-broker-sales",
+      "evidenceRef": "MED-2-E3",
+      "metrics": {}
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cycle_time",
+    "direction": "lower_is_better",
+    "incumbentValue": 1400,
+    "entrantValue": 30,
+    "falsifier": "No edge if fewer than three comparable listings (10k+ monthly downloads, 100+ episodes, platform-exported stats) can be found at <=1.5x annual profit, if downloads fall more than 40% within 90 days of transfer, or if ads cannot be sold without weekly new episodes. Cycle times are modeled: 1,400 days is 200 weekly episodes; 30 days is an assumed close and feed transfer."
+   },
+   "evidence": [
+    {
+     "id": "MED-2-E1",
+     "url": "https://flippa.com/13925600-active-podcast-with-built-in-ad-sales-11k-mo-downloads-200-episodes-automatic-ad-sales-big-brand-sponsors-priced-below-market-value-at-1-3x-multiple",
+     "quote": "USD $9,950 ... USD $7,960 ... USD $597 /mo ... approximately 11,000 monthly downloads ... over 200 episodes",
+     "kind": "incumbent_price",
+     "publisher": "Flippa (seller listing, figures seller-reported)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-2-E2",
+     "url": "https://www.podderapp.com/post/podcast-cpm-benchmarks",
+     "quote": "host-read mid-rolls average $24 to $26 per thousand downloads",
+     "kind": "demand",
+     "publisher": "Podder (citing the Libsyn Ads rate card)",
+     "date": "2026-08-13",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-2-E3",
+     "url": "https://podnews.net/press-release/the-podcast-broker-sales",
+     "quote": "must have a minimum of 10,000 downloads per month ... from as low as $5,000 to over six-figure deals",
+     "kind": "demand",
+     "publisher": "Podnews (press release by The Podcast Broker)",
+     "date": "2024-02-26",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-2-E4",
+     "url": "https://thepodcastconsultant.com/blog/spotify-for-creators",
+     "quote": "Spotify reserves the right to deactivate this feature if you don't publish an episode in six months or more. ... Spotify takes a 50% cut of ad revenue",
+     "kind": "constraint",
+     "publisher": "The Podcast Consultant",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-2-E5",
+     "url": "https://podcasters.apple.com/support/transfer-ownership-of-a-podcast",
+     "quote": "If the show belongs to a channel, it must be removed from the channel before it can be transferred.",
+     "kind": "constraint",
+     "publisher": "Apple Podcasts for Creators",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-2-E6",
+     "url": "https://thepodcastconsultant.com/blog/spotify-for-creators",
+     "quote": "free podcast hosting platform with unlimited storage ... no monthly fees or storage limits",
+     "kind": "other",
+     "publisher": "The Podcast Consultant",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 3,
+    "customer_problem_or_value": 4,
+    "distribution_advantage": 3,
+    "defensibility": 3,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 5,
+    "repeat_ltv_potential": 4,
+    "competition_adjusted_gap": 5,
+    "market_depth": 3,
+    "end_to_end_automation": 4,
+    "capital_risk": 4,
+    "owner_time_support": 6
+   },
+   "componentReasons": {
+    "entrant_edge": "The back-catalog (200 episodes, about 11k monthly downloads) cannot be recreated quickly and is priced near 1.1x-1.4x annual profit, but the edge is only claimed and any cash buyer can bid (MED-2-E1).",
+    "customer_problem_or_value": "Advertisers pay CPMs on proven download counts, which a new show cannot offer for years, yet the newcomer's pain is soft rather than urgent (MED-2-E2).",
+    "distribution_advantage": "The catalog already sits in Apple and Spotify directories and transfers via support request, but the directories are third-party platforms with transfer rules (MED-2-E5).",
+    "defensibility": "Once bought, the RSS feed and back-catalog are hard to copy, but nothing stops other buyers or the seller launching a competing show (MED-2-E1).",
+    "absolute_gross_profit_potential": "The one priced listing earns $597/month profit for $9,950 ($7,960 after a cut), about $7k a year per $10k deployed (MED-2-E1).",
+    "willingness_to_pay": "Host-read mid-roll CPMs of $24-$26 and programmatic from $12 show sponsors pay, and brokers report $5,000-plus transactions (MED-2-E2, MED-2-E3).",
+    "repeat_ltv_potential": "Sponsorship earns per download every month, but Spotify can switch off dynamic ads after six months without a new episode (MED-2-E4).",
+    "competition_adjusted_gap": "Only one comparable listing surfaced on Flippa, and the broker's 10k-download floor suggests few sellers in range, so the gap is plausible but unmapped (MED-2-E1, MED-2-E3).",
+    "market_depth": "One qualifying listing was found and the broker requires 10,000 downloads a month, so supply at under $10k looks thin (MED-2-E1, MED-2-E3).",
+    "end_to_end_automation": "Programmatic ad insertion and hosting are automatic, but a publishing cadence is needed to keep ads active (MED-2-E4).",
+    "capital_risk": "A single seller-reported asset consumes most of the budget and download decay after sale was not evidenced (MED-2-E1).",
+    "owner_time_support": "The listing describes fully automated ad sales and a light cadence could be outsourced (MED-2-E1)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "MED-2-E5: Apple Podcasts allows ownership transfer through a support request, but the show must be out of any channel and subscriber audio moves to the new owner; the buyer can comply.",
+    "MED-2-E4: Spotify's Partner Program has its own eligibility rules and may deactivate ad features without new episodes; buyer can comply by publishing.",
+    "Copyright in the audio, guest releases, music-bed licences and FTC sponsorship disclosure on transfer were not read; unverified, not legal advice."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Base: $597/mo profit at a 64% margin implies about $933 revenue and $336 cost. Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue about $373 against cost about $504 if costs are fixed, i.e. -$131/mo; it stays positive only if all costs are revenue-share commissions. Cost composition is not stated on the listing."
+    },
+    "killReasons": [
+     {
+      "reason": "Only one comparable listing was found and all download and profit figures are seller-reported, so a repeatable sub-1.5x deal flow is unproven.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MED-2-E1, MED-2-E3"
+     },
+     {
+      "reason": "Revenue needs continued publishing: Spotify can deactivate dynamic ads after six months without an episode, so the catalog is not a pure passive asset.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MED-2-E4"
+     },
+     {
+      "reason": "Absolute profit is about $7k a year per $10k deployed, small for a business.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "MED-2-E1"
+     }
+    ]
+   },
+   "researcherVerdict": "uncertain",
+   "verdictReason": "Open question: whether platform-exported stats and repeat listings (10k+ monthly downloads, 100+ episodes) exist at <=1.5x annual profit, and whether downloads and ad revenue hold after transfer. The one priced listing ($7,960-$9,950 for $597/mo profit) is cheaper relative to profit than newsletters (2x-5x) and the 200-episode catalog is genuinely slow to recreate, but pessimistic economics turn negative if costs are fixed and only one listing was found. Not killed because free hosting does not give an audience."
+  },
+  {
+   "id": "MED-3",
+   "name": "State-qualified weekly newspaper that carries statutory legal notices",
+   "family": "media_or_content",
+   "buyer": "Governments, courts, attorneys and businesses that are legally required to publish public and legal notices in a qualifying local newspaper (priced per line, inch or flat notice)",
+   "pain": "Statutory notices must run in a qualifying newspaper, and the revenue is a stable base for small papers; a newcomer wants a licence-like moat that competitors cannot copy quickly.",
+   "wedge": "Acquire or launch a weekly that meets the state's continuous-publication and postal-entry rules and sell mandatory legal and public notices at statutory or rate-card prices.",
+   "referenceEntrant": {
+    "startupCashUsd": 10000,
+    "daysToFirstRevenue": 400,
+    "ownerHoursPerWeek": 30
+   },
+   "entrantEdge": {
+    "type": "regulatory_license_intrinsic_to_model",
+    "status": "none",
+    "statement": "In Texas a paper must publish weekly, have published regularly and continuously for at least 12 months before the notice, and hold second-class postal entry. That barrier protects existing qualifying papers, not a new entrant: a $10k entrant would wait at least 12 months and still compete with incumbents, while buying an existing paper costs about $154,900. Several states have also moved or debated moving notices to government websites, which erodes the mandate itself.",
+    "evidenceIds": [
+     "MED-3-E2",
+     "MED-3-E1"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Government-website posting where state law allows it (free to the issuer; Florida moved this way)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.courthousenews.com/recent-legislation-threatens-newspapers-public-notice-revenue/",
+      "evidenceRef": "MED-3-E4",
+      "metrics": {
+       "cycle_time": 0
+      }
+     },
+     {
+      "label": "Existing local legal newspapers charging per notice (about $210 for a 7-inch notice at a $10/inch rate, three runs; page rates dated 2002-2014)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 210,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.wa-probate.com/legal-newspapers",
+      "evidenceRef": "MED-3-E5",
+      "metrics": {
+       "cycle_time": 0
+      }
+     },
+     {
+      "label": "Buy an existing weekly with a legal-notice franchise (listed at $154,900; shown amortized over 60 months)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 2582,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.unionbaygroup.com/listings/weekly-community-newspaper",
+      "evidenceRef": "MED-3-E1",
+      "metrics": {
+       "cycle_time": 0
+      }
+     },
+     {
+      "label": "Launch a new weekly and wait 12 continuous months (Texas rule); print and postage cost not sourced, 0 is a placeholder",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "none",
+      "sourceLocator": "https://texas.public.law/statutes/tex._gov't_code_section_2051.044",
+      "evidenceRef": "MED-3-E2",
+      "metrics": {
+       "cycle_time": 365
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cycle_time",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 365,
+    "falsifier": "A state where a brand-new paper can qualify in under 90 days, a county that rotates its official paper to new entrants, or a weekly under $10,000 with legal-notice standing would show an entrant edge. The Texas rule needs 12 months, so the entrant is 365 days behind incumbents."
+   },
+   "evidence": [
+    {
+     "id": "MED-3-E1",
+     "url": "https://www.unionbaygroup.com/listings/weekly-community-newspaper",
+     "quote": "$154,900 (accounts receivable not included) ... This year revenues are expected to be +/- $300,000 ... Seller's Discretionary Earnings (SDE) estimated at $58,767",
+     "kind": "incumbent_price",
+     "publisher": "Union Bay Group (broker listing)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-3-E2",
+     "url": "https://texas.public.law/statutes/tex._gov't_code_section_2051.044",
+     "quote": "have been published regularly and continuously for at least 12 months before the governmental entity or representative publishes notice. ... be entered as second-class postal matter in the county where published",
+     "kind": "constraint",
+     "publisher": "Texas Government Code 2051.044 (public.law mirror)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-3-E3",
+     "url": "https://localnewsinitiative.northwestern.edu/posts/2022/08/18/battles-over-legal-notices-intensify/index.html",
+     "quote": "between $10,000 and $15,000 a year in direct revenue ... small community papers could lose 20-25 percent of their revenue",
+     "kind": "demand",
+     "publisher": "Northwestern Local News Initiative",
+     "date": "2022-08-18",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-3-E4",
+     "url": "https://www.courthousenews.com/recent-legislation-threatens-newspapers-public-notice-revenue/",
+     "quote": "This is an argument about newspapers and newspaper websites versus government websites.",
+     "kind": "constraint",
+     "publisher": "Courthouse News Service",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-3-E5",
+     "url": "https://www.wa-probate.com/legal-newspapers",
+     "quote": "The rates shown above were obtained in December, 2002 (or later)",
+     "kind": "incumbent_price",
+     "publisher": "WA-Probate.com",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-3-E6",
+     "url": "https://mna.org/2025/02/weekly-newspaper-for-sale-5/",
+     "quote": "With a strong advertising base, this free legal paper has been successful year after year.",
+     "kind": "other",
+     "publisher": "Minnesota Newspaper Association listing",
+     "date": "2025-02",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-3-E7",
+     "url": "https://localnewsinitiative.northwestern.edu/posts/2022/08/18/battles-over-legal-notices-intensify/index.html",
+     "quote": "More than a dozen states have introduced legislation",
+     "kind": "constraint",
+     "publisher": "Northwestern Local News Initiative",
+     "date": "2022-08-18",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 6,
+    "distribution_advantage": 2,
+    "defensibility": 4,
+    "absolute_gross_profit_potential": 5,
+    "willingness_to_pay": 7,
+    "repeat_ltv_potential": 7,
+    "competition_adjusted_gap": 2,
+    "market_depth": 4,
+    "end_to_end_automation": 2,
+    "capital_risk": 1,
+    "owner_time_support": 2
+   },
+   "componentReasons": {
+    "entrant_edge": "The qualification barrier (12 continuous months plus second-class mail in Texas) favours incumbents, not a $10k entrant who would be 365 days behind (MED-3-E2).",
+    "customer_problem_or_value": "Issuers are legally required to publish, and losing notices cost one small paper $10,000-$15,000 a year, so the value is real for incumbents (MED-3-E3).",
+    "distribution_advantage": "There is no distribution advantage for a newcomer: counties already use existing papers and notice aggregation sits with the incumbents (MED-3-E6).",
+    "defensibility": "The statutory barrier is durable against copycats in one state, but it is eroding as more than a dozen states have introduced bills moving notices online (MED-3-E7).",
+    "absolute_gross_profit_potential": "The broker listing shows about $58,767 seller's discretionary earnings on roughly $300,000 revenue, so a qualifying paper can earn real profit (MED-3-E1).",
+    "willingness_to_pay": "Notices are mandatory so buyers pay by statute or rate card, but the rate evidence is stale (rates dated 2002-2014) (MED-3-E5).",
+    "repeat_ltv_potential": "Recurring notice flow from the same agencies and courts is repeat revenue, subject to official-paper rotation (MED-3-E3).",
+    "competition_adjusted_gap": "Incumbent papers already hold the qualification and the relationships, and government websites are a free substitute in some states (MED-3-E4).",
+    "market_depth": "A few papers are for sale, but the one priced listing is $154,900 and the market is local and state-specific (MED-3-E1, MED-3-E6).",
+    "end_to_end_automation": "Running a weekly print paper needs editorial, advertising, printing and postal compliance, so little can be automated (MED-3-E2).",
+    "capital_risk": "A $10k entrant cannot fund a $154,900 purchase, and a launch has unsourced print cost and a 12-month wait before notices (MED-3-E1, MED-3-E2).",
+    "owner_time_support": "A weekly paper needs steady staff time and a launch needs about a year before notice revenue (MED-3-E2)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "MED-3-E2: Texas Government Code 2051.044 requires weekly publication, 12 continuous months of publication and second-class postal entry before a paper can carry governmental notices; other states differ and were not read, so unverified.",
+    "MED-3-E7: more than a dozen states have introduced legislation to move notices to government websites; the legal-notice mandate for a given county can change, unverified for current law.",
+    "Periodicals postal permit requirements were not read (unverified); county official-newspaper designation rules were not read (unverified)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Using the listed paper: revenue about $300,000 and SDE $58,767 imply cost about $241,000. Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue about $120,000 against cost about $361,000, deeply negative, and the $154,900 price is also 15x the $10k budget."
+    },
+    "killReasons": [
+     {
+      "reason": "Capital: the only priced qualifying weekly asks $154,900, far above the $10,000 reference budget.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "MED-3-E1"
+     },
+     {
+      "reason": "The regulatory barrier protects incumbents: a launch needs 12 continuous months in Texas, so first notice revenue is after day 365.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "MED-3-E2"
+     },
+     {
+      "reason": "Policy erosion: more than a dozen states have introduced bills to move notices to government websites, and Florida allowed it.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MED-3-E7, MED-3-E4"
+     },
+     {
+      "reason": "A weekly print paper is labour-intensive and cannot be automated end to end.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "MED-3-E2"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "The statutory qualification barrier is real but accrues to incumbent papers: Texas requires 12 months of continuous weekly publication plus second-class mail, so a $10k entrant earns no notice revenue in year one, and the only priced paper listing asks $154,900. Legal-notice mandates are also being debated or moved to government websites in several states. Failed on capital, timing and policy erosion; per-notice rate evidence found is stale (2002-2014 data)."
+  },
+  {
+   "id": "MED-4",
+   "name": "Pooled AI licensing agency for small-publisher archives",
+   "family": "media_or_content",
+   "buyer": "AI developers (answer engines, vertical AI products) that pay publishers for licensed text archives or per-use access",
+   "pain": "Small publishers' articles are used by AI products but earn little or nothing, and AI buyers prefer clean bulk licences to thousands of one-off deals.",
+   "wedge": "Sign small and specialist publishers to licensing-agency terms, package their archives as one licensable pool, and sell access to AI companies for a revenue share.",
+   "referenceEntrant": {
+    "startupCashUsd": 5000,
+    "daysToFirstRevenue": 270,
+    "ownerHoursPerWeek": 20
+   },
+   "entrantEdge": {
+    "type": "exclusive_or_difficult_supply_or_access",
+    "status": "claimed",
+    "statement": "What would accumulate is a bundle of signed publisher licences that an AI buyer can license in one contract. It is not exclusive or hard to copy: ProRata (over 500 publishers), TollBit (publishers keep 100% of their revenue), ScalePost (about 15% cut), Cloudflare (about 30% cut) and Microsoft's marketplace already aggregate supply, and the long tail of publishers is valued near zero by the market.",
+    "evidenceIds": [
+     "MED-4-E1",
+     "MED-4-E3"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "TollBit: publishers set per-scrape prices and keep 100% of revenue (AI companies pay a transaction fee)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://niemanlab.org/2026/05/the-emerging-ai-content-licensing-market-puts-news-publishers-in-a-double-bind-a-new-report-warns",
+      "evidenceRef": "MED-4-E1",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "ProRata / Gist Answers: ad-revenue share with publishers at 50/50, no fee to publishers (over 500 publishers signed)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://mediacopilot.ai/ai-revenue-platforms-comparison/",
+      "evidenceRef": "MED-4-E1",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Cloudflare pay-per-crawl marketplace (about a 30% cut of revenue, no upfront fee)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://niemanlab.org/2026/05/the-emerging-ai-content-licensing-market-puts-news-publishers-in-a-double-bind-a-new-report-warns",
+      "evidenceRef": "MED-4-E1",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Status quo: block AI crawlers or do nothing (no revenue)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://blog.pebblous.ai/blog/ai-content-licensing-market-leverage/en/",
+      "evidenceRef": "MED-4-E3",
+      "metrics": {
+       "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 0,
+    "falsifier": "Publisher-side cost already is $0 upfront at TollBit, ProRata and Cloudflare, so an agency cannot beat them on cost. An edge would only appear if a pooled niche archive (for example specialist journals) were licensed at a documented price by a vertical-AI buyer that the existing marketplaces cannot reach; none was found for small publishers."
+   },
+   "evidence": [
+    {
+     "id": "MED-4-E1",
+     "url": "https://niemanlab.org/2026/05/the-emerging-ai-content-licensing-market-puts-news-publishers-in-a-double-bind-a-new-report-warns",
+     "quote": "over 500 publishers ... 100% of their revenue ... roughly a 15% cut of the revenue earned by ... Cloudflare is taking about a 30% cut of revenue.",
+     "kind": "incumbent_price",
+     "publisher": "Nieman Lab (Harvard)",
+     "date": "2026-05",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-4-E2",
+     "url": "https://blog.pebblous.ai/blog/ai-content-licensing-market-leverage/en/",
+     "quote": "News Corp is reported to have signed a five-year, $250 million deal with OpenAI",
+     "kind": "demand",
+     "publisher": "Pebblous blog",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-4-E3",
+     "url": "https://blog.pebblous.ai/blog/ai-content-licensing-market-leverage/en/",
+     "quote": "Below that, the long tail settles toward a value of zero and remains free training data.",
+     "kind": "constraint",
+     "publisher": "Pebblous blog",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-4-E4",
+     "url": "https://axios.com/2025/09/23/microsoft-ai-marketplace-publishers",
+     "quote": "Microsoft's Copilot assistant will serve as the first AI buyer within the marketplace.",
+     "kind": "constraint",
+     "publisher": "Axios",
+     "date": "2025-09-23",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "MED-4-E5",
+     "url": "https://www.openevidence.com/announcements/openevidence-named-one-of-the-top-100-ai-companies-in-the-world",
+     "quote": "OpenEvidence has signed content agreements with JAMA and The New England Journal of Medicine.",
+     "kind": "demand",
+     "publisher": "OpenEvidence",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 4,
+    "distribution_advantage": 1,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 2,
+    "willingness_to_pay": 3,
+    "repeat_ltv_potential": 3,
+    "competition_adjusted_gap": 1,
+    "market_depth": 3,
+    "end_to_end_automation": 6,
+    "capital_risk": 7,
+    "owner_time_support": 5
+   },
+   "componentReasons": {
+    "entrant_edge": "No exclusivity is evidenced; ProRata, TollBit, ScalePost, Cloudflare and Microsoft already aggregate publishers at 0% upfront (MED-4-E1).",
+    "customer_problem_or_value": "Publishers do lose value to AI, but the headline payments go to a few large rights holders such as News Corp ($250M over five years), not small publishers (MED-4-E2).",
+    "distribution_advantage": "AI buyers are concentrated (Microsoft's pilot has Copilot as first buyer) and already sit inside existing marketplaces, so a newcomer has no privileged path to them (MED-4-E4).",
+    "defensibility": "Licences with small publishers are easily duplicated by free marketplaces, and the long tail is described as worth near zero (MED-4-E1, MED-4-E3).",
+    "absolute_gross_profit_potential": "A pool takes a cut of a long tail priced near zero, with competitors taking 15%-30% and others zero (MED-4-E1, MED-4-E3).",
+    "willingness_to_pay": "AI firms pay large sums to a few rights holders (News Corp, Amazon-NYT, JAMA/NEJM deals), but for most publishers the amount is never disclosed (MED-4-E2, MED-4-E3, MED-4-E5).",
+    "repeat_ltv_potential": "Per-use or subscription licences could repeat, but no small-publisher payout stream was evidenced (MED-4-E3).",
+    "competition_adjusted_gap": "Several free-to-publisher intermediaries already cover the wedge, leaving no gap (MED-4-E1).",
+    "market_depth": "A handful of AI buyers dominate demand, and the long tail of publishers is deep but priced near zero (MED-4-E3, MED-4-E4).",
+    "end_to_end_automation": "Contracting and usage reporting could be largely automated once supply and buyers exist (MED-4-E1).",
+    "capital_risk": "Little capital is needed, but legal and contracting costs and the long time to a first AI buyer deal are unsourced (MED-4-E4).",
+    "owner_time_support": "Signing publishers and negotiating with AI buyers needs sustained effort that cannot be fully automated (MED-4-E4)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "MED-4-E3: AI licensing terms are unsettled and training-data copyright questions are litigated; how rights would be warranted and indemnified by an agency was not researched, unverified.",
+    "MED-4-E1: marketplaces such as TollBit and Cloudflare set their own platform terms; an agency would sit on top of them. Unverified, not legal advice."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "No publisher payout stream for small publishers was evidenced; at competitors' 0%-30% take rates and a long tail 'toward a value of zero', price x0.8, volume x0.5 and cost x1.5 leave no positive margin."
+    },
+    "killReasons": [
+     {
+      "reason": "Free-to-publisher incumbents (TollBit 100% to publisher, ProRata, Cloudflare ~30% cut) already cover the publisher-side wedge.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "MED-4-E1"
+     },
+     {
+      "reason": "The long tail of small publishers is valued near zero by AI buyers, so a pool has little to sell.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "MED-4-E3"
+     },
+     {
+      "reason": "Buyer concentration: Microsoft's marketplace starts with Copilot as the only buyer and a limited set of publishers.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MED-4-E4"
+     },
+     {
+      "reason": "Vertical-AI demand found so far (OpenEvidence) licenses only top journals, not small publishers.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "MED-4-E5"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "AI buyers pay large sums to a few large rights holders, but for the long tail the market 'settles toward a value of zero', and TollBit, ProRata and Cloudflare already offer small publishers free or revenue-share intermediation. No exclusive supply or buyer access was evidenced. A specialist-archive pool for vertical-AI buyers (like the JAMA/NEJM deals) is the only unexplored residual and is unverified for small publishers."
+  }
+ ]
+}

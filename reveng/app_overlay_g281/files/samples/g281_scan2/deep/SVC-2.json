@@ -1,0 +1,433 @@
+{
+  "id": "SVC-2",
+  "verdict": "killed",
+  "verdictReason": "Killed. The licence is no moat: Oregon needs a 5-day course, no experience, a $97.50 fee (D15, D16); Marin Water lists 63 testers from 34 firms (D17); ECUA lists ~57 (SVC2-E5). Utility contracts are experience-weighted and contested (EWEB: experience 40 of 100 pts, 3 bidders, ~$50k/yr, D1-D2; Fresno 2023: ~1,800 assemblies, 7 bids, D5-D6). Bottom-up profit is ~$19.1k (~$10/h); pessimistic is about -$6.3k, and break-even there needs ~1,000 baseline tests, a 1988-established firm's volume (D30).",
+  "answers": [
+    {
+      "question": "Can a new certified tester win utility-run testing contracts at a size that makes the route worth more than a job?",
+      "answer": "No evidence that a first-year stranger can. Contracts that exist are small, contested and experience-weighted. EWEB (Eugene) awarded one contractor a 5-year $250,000 program (about $50k a year) covering ~800 enrolled commercial customers plus non-compliant ones; three bidders were scored on Experience 40, Resources and Responsiveness 35, Pricing 25, and the winner offered the lowest average rate ($68 vs $99 and $171). Fresno's 2023 contract (~1,800 assemblies, up to $165,900 a year, about $92 per assembly) drew seven bids and went to an established Pasadena engineering firm; its 2015 contract was $66,000 for ~1,600 devices with four bids. Medford Water drew a single bid ($185,212.03) although at least four backflow firms pulled the documents. Kitsap's 2026 RFP requires three client references. Even a won EWEB-sized contract is a labor-bound wage of about $50k gross, not a scalable business.",
+      "evidenceIds": ["SVC-2-D1", "SVC-2-D2", "SVC-2-D3", "SVC-2-D4", "SVC-2-D5", "SVC-2-D6", "SVC-2-D7", "SVC-2-D8", "SVC-2-D9", "SVC-2-D10", "SVC-2-D27", "SVC2-E3", "SVC2-E6"]
+    },
+    {
+      "question": "Is the tester certification a barrier that excludes competitors?",
+      "answer": "No. Oregon requires an approved 5-day tester course, lists no experience requirement, and charges a $97.50 certification fee; the licence is required only to test for a fee. One California district (Marin Water) lists 63 testers from 34 organizations and disclaims any quality control, ECUA lists ~57 companies, and a working tester says many local certifiers are weekend workers. Only Texas adds a two-year experience hurdle (SVC2-E2), which makes a stranger's entry harder there, not easier elsewhere.",
+      "evidenceIds": ["SVC-2-D15", "SVC-2-D16", "SVC-2-D17", "SVC-2-D18", "SVC2-E2", "SVC2-E5"]
+    },
+    {
+      "question": "Do free or cheap alternatives already cover the annual-agreement wedge (test, report filing, next-year scheduling)?",
+      "answer": "Largely yes. Utilities themselves send due and overdue notices to owners and run the reporting platform (Sugar Land: BSI Online, with testers filing within 48 hours; Longmont: SwiftComply). Testers can buy scheduling, routing and reminder software (Syncta, price unpublished). Some utilities offer a city-contracted tester at a fixed fee on the utility bill (Longmont $137.50 per assembly). Owners may delegate testing to tenants, site managers or property managers. The scheduling and filing chore is therefore a utility-subsidised, low-value add-on, not an exclusive wedge.",
+      "evidenceIds": ["SVC-2-D11", "SVC-2-D12", "SVC-2-D13", "SVC-2-D14", "SVC-2-D23", "SVC-2-D24"]
+    },
+    {
+      "question": "What does the first-365-days bottom-up economics look like for the reference entrant, and does it survive the pessimistic case?",
+      "answer": "Baseline (all inputs below are sourced or labelled assumption): 400 tests x $110 = $44,000 revenue; variable $45 per visit x 400 = $18,000 plus fixed $6,923 = $24,923 cost; profit about $19,077 over roughly 1,820 owner hours (about $10.5 per hour). Pessimistic (price x0.8 = $88, volume x0.5 = 200, cost x1.5): revenue $17,600, cost $23,884.50, profit about -$6,285. Break-even under pessimistic price and cost needs about 507 tests, i.e. roughly 1,000 baseline tests in year one, equal to the annual volume of a firm testing since 1988. Upfront cash before first revenue is about $3,448 (about $5,172 at x1.5), above the $4,500 startup cash in the pessimistic case. Sensitivity: even at a baseline of 600 tests the pessimistic profit is about -$4,235 with these fixed costs.",
+      "evidenceIds": ["SVC-2-D13", "SVC-2-D15", "SVC-2-D16", "SVC-2-D20", "SVC-2-D21", "SVC-2-D22", "SVC-2-D25", "SVC-2-D29", "SVC-2-D30", "SVC2-E1"]
+    },
+    {
+      "question": "Is there evidence of unmet demand a new tester could fill?",
+      "answer": "Only transient surges. A 2016 Idaho local news report quotes a specialist saying many testers were too swamped to answer the phone after one city began citywide enforcement, with backlogs up to three months in some places. Demand is real and recurring (owners must pay for an annual test, utilities enforce it), but pricing evidence shows heavy compression and low-cost, uninsured competitors, and purveyors send notices to owners, not testers, so the entrant has no list of leads.",
+      "evidenceIds": ["SVC-2-D28", "SVC-2-D12", "SVC-2-D18", "SVC-2-D19", "SVC-2-D23", "SVC2-E4"]
+    },
+    {
+      "question": "What licence, insurance and platform constraints apply?",
+      "answer": "State certification (Oregon 5-day course, $97.50; Texas adds two years of experience), local approved-tester lists with insurance minimums ($500,000 combined single limit at Lincoln, Nebraska; $1,000,000 per occurrence and $2,000,000 aggregate in Kitsap County's contract), reference requirements in RFPs, and mandatory submission of reports to utility platforms (BSI Online within 48 hours at Sugar Land; a $10 per passing test portal charge at Longmont whose payer the page does not state).",
+      "evidenceIds": ["SVC-2-D14", "SVC-2-D11", "SVC-2-D15", "SVC-2-D16", "SVC-2-D26", "SVC-2-D27", "SVC2-E2"]
+    }
+  ],
+  "newEvidence": [
+    {
+      "id": "SVC-2-D1",
+      "url": "https://www.eweb.org/documents/board-meetings/2023/07-11-23/cc2_eugene_backflow_testing_250k.pdf",
+      "quote": "Experience (40 pts), Resources & Responsiveness (35 pts), and Pricing (25 pts).",
+      "kind": "constraint",
+      "publisher": "Eugene Water & Electric Board (EWEB), Oregon",
+      "date": "2023-07-11",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D2",
+      "url": "https://www.eweb.org/documents/board-meetings/2023/07-11-23/cc2_eugene_backflow_testing_250k.pdf",
+      "quote": "Amount this Request: $250,000",
+      "kind": "demand",
+      "publisher": "Eugene Water & Electric Board (EWEB), Oregon",
+      "date": "2023-07-11",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D3",
+      "url": "https://www.eweb.org/documents/board-meetings/2023/07-11-23/cc2_eugene_backflow_testing_250k.pdf",
+      "quote": "Group 1 includes commercial customers that choose to enroll in EWEB's program, currently about 800 customers.",
+      "kind": "demand",
+      "publisher": "Eugene Water & Electric Board (EWEB), Oregon",
+      "date": "2023-07-11",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D4",
+      "url": "https://www.eweb.org/documents/board-meetings/2023/07-11-23/cc2_eugene_backflow_testing_250k.pdf",
+      "quote": "Eugene Backflow Services Eugene, OR $68 1",
+      "kind": "incumbent_price",
+      "publisher": "Eugene Water & Electric Board (EWEB), Oregon (bid table: Offered Price (Average Rate); $68 vs $99 and $171 for the other two bidders)",
+      "date": "2023-07-11",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D5",
+      "url": "https://agendas.fresno.gov/en/legislation/id-23-1365-16797",
+      "quote": "This contract will test approximately 1800 backflow assemblies annually.",
+      "kind": "demand",
+      "publisher": "City of Fresno, California (City Council item 23-1365)",
+      "date": "2023-10-05",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D6",
+      "url": "https://agendas.fresno.gov/en/legislation/id-23-1365-16797",
+      "quote": "Award a requirements contract to ACCO Engineered Systems, Inc. for one year with four optional one-year extensions.",
+      "kind": "other",
+      "publisher": "City of Fresno, California (City Council item 23-1365; page also gives up to $165,900 per year and seven bids received)",
+      "date": "2023-10-05",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D7",
+      "url": "https://agendas.fresno.gov/en/legislation/id-15-698-2757",
+      "quote": "Approve a Requirements Contract with AAA Backflow Prevention Service in the amount of $66,000.00",
+      "kind": "demand",
+      "publisher": "City of Fresno, California (City Council item 15-698; ~1,600 irrigation backflow devices, four sealed bids, bids $57,200 to $163,000)",
+      "date": "2015-08-20",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D8",
+      "url": "https://medfordwater.org/wp-content/uploads/2024/10/Planholders-List-Residential-and-MW-Owned-Backflow-Assembly-Testing-and-Maintenance-Services.pdf",
+      "quote": "INVITATION TO BID: RESIDENTIAL & MW OWNED BACKFLOW ASSEMBLY TESTING",
+      "kind": "other",
+      "publisher": "Medford Water Commission, Oregon (planholders list; includes Rogue Valley Backflow Service, Scott Bradley Backflow & Irrigation, SO Backflow Techs, Precision Backflow)",
+      "date": "2024-10",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D9",
+      "url": "https://medfordwater.org/wp-content/uploads/2024/10/Bid-Tabulation-Residential-and-Medford-Water-Owned-Backflow-Assembly-Testing-and-Maintenance-Services.pdf",
+      "quote": "GRAND TOTAL: $ 185,212.03",
+      "kind": "demand",
+      "publisher": "Medford Water Commission, Oregon (bid tabulation, one bidder: Rogue Valley Backflow Service, bids opened 11/26/2024)",
+      "date": "2024-11-26",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D10",
+      "url": "https://app.govly.com/public/awards/ae79c7867a4e63633d2e93a9f9a31cb0",
+      "quote": "Annual testing of backflow prevention assemblies in residential, park, and city facilities.",
+      "kind": "demand",
+      "publisher": "Govly award record for City of South Jordan, Utah (awarded to Clearwater Backflow Services, $168,820; bid totals $168,820 and $221,900)",
+      "date": "2021-03-30",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D11",
+      "url": "https://sugarlandtx.gov/627/Backflow-Testing-Program",
+      "quote": "All backflow assembly test reports for existing and replacement backflow devices must be submitted via the BSI Online backflow tracking system.",
+      "kind": "constraint",
+      "publisher": "City of Sugar Land, Texas",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D12",
+      "url": "https://sugarlandtx.gov/627/Backflow-Testing-Program",
+      "quote": "Backflow testing is the backflow owner's responsibility and is paid for by the owner.",
+      "kind": "demand",
+      "publisher": "City of Sugar Land, Texas",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D13",
+      "url": "https://longmontcolorado.gov/wp-content/uploads/2026/02/Backflow-Website-FAQs-SC-Edits-2026.pdf",
+      "quote": "the cost of testing backflow assemblies through the city-contracted testing service will be $137.50.",
+      "kind": "incumbent_price",
+      "publisher": "City of Longmont, Colorado (Backflow program FAQ)",
+      "date": "2026-02",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D14",
+      "url": "https://longmontcolorado.gov/wp-content/uploads/2026/02/Backflow-Website-FAQs-SC-Edits-2026.pdf",
+      "quote": "There will be a $10.00 charge for each passing test submitted through the SwiftComply portal.",
+      "kind": "constraint",
+      "publisher": "City of Longmont, Colorado (Backflow program FAQ; payer of the charge not stated)",
+      "date": "2026-02",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D15",
+      "url": "https://oregon.gov/oha/PH/HEALTHYENVIRONMENTS/DRINKINGWATER/CROSSCONNECTION/CERTIFICATION/Pages/certification.aspx",
+      "quote": "Successful completion of an approved 5-day Backflow Assembly Tester course.",
+      "kind": "constraint",
+      "publisher": "Oregon Health Authority, Drinking Water Services",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D16",
+      "url": "https://oregon.gov/oha/PH/HEALTHYENVIRONMENTS/DRINKINGWATER/CROSSCONNECTION/CERTIFICATION/Pages/certification.aspx",
+      "quote": "your certification fee is $97.50.",
+      "kind": "constraint",
+      "publisher": "Oregon Health Authority, Drinking Water Services (certification expires every two years; no experience requirement listed)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D17",
+      "url": "https://www.marinwater.org/testers",
+      "quote": "assumes no liability for the abilities, performance or quality of work performed by individuals listed.",
+      "kind": "other",
+      "publisher": "Marin Water (California), certified testers list (63 testers from 34 organizations by the reader's count)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D18",
+      "url": "https://forum.heatinghelp.com/discussion/comment/770076",
+      "quote": "A lot of backflow certifiers in our area are \"weekend workers\"",
+      "kind": "other",
+      "publisher": "HeatingHelp.com forum (contractor discussion thread; also reports a city contract won at 12.50 per test)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D19",
+      "url": "https://forum.heatinghelp.com/discussion/comment/770076",
+      "quote": "The average cost for a RPZ test around here is 100.00.",
+      "kind": "incumbent_price",
+      "publisher": "HeatingHelp.com forum (contractor discussion thread)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D20",
+      "url": "https://beancount.io/blog/2026/09/17/backflow-testing-business-bookkeeping-certification-contracts-gauge-calibration-guide",
+      "quote": "A solo tester running a tight route can complete 8 to 12 tests a day.",
+      "kind": "other",
+      "publisher": "Beancount.io blog (secondary guide, not a regulator)",
+      "date": "2026-09",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D21",
+      "url": "https://beancount.io/blog/2026/09/17/backflow-testing-business-bookkeeping-certification-contracts-gauge-calibration-guide",
+      "quote": "Many solo testers discover their true cost per visit is $35 to $55 before paying themselves a dime.",
+      "kind": "other",
+      "publisher": "Beancount.io blog (secondary guide, not a regulator)",
+      "date": "2026-09",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D22",
+      "url": "https://beancount.io/blog/2026/09/17/backflow-testing-business-bookkeeping-certification-contracts-gauge-calibration-guide",
+      "quote": "A general liability policy plus commercial auto coverage typically costs a solo tester $500 to $1,500 a year combined",
+      "kind": "other",
+      "publisher": "Beancount.io blog (secondary guide, not a regulator)",
+      "date": "2026-09",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D23",
+      "url": "https://beancount.io/blog/2026/09/17/backflow-testing-business-bookkeeping-certification-contracts-gauge-calibration-guide",
+      "quote": "Water purveyors mail test-due notices to property owners, not to you.",
+      "kind": "other",
+      "publisher": "Beancount.io blog (secondary guide, not a regulator)",
+      "date": "2026-09",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D24",
+      "url": "https://syncta.com/",
+      "quote": "makes scheduling, routing, submitting, and managing backflow tests faster and easier",
+      "kind": "other",
+      "publisher": "Syncta (backflow test management software; pricing not published on the page, free trial offered)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D25",
+      "url": "https://www.syncta.com/blog/how-do-i-become-a-backflow-tester",
+      "quote": "It costs anywhere from $600-$1,000 to take the initial certification classes.",
+      "kind": "other",
+      "publisher": "Syncta blog (vendor guide; also says gauges cost $500-$2600 and the initial certification is 40 hours)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D26",
+      "url": "https://www.lincoln.ne.gov/City/Departments/LTU/Utilities/LWS/Cross-Connection-Control/Backflow-Testing-Resources/Annual-Information",
+      "quote": "The minimum combined single limit of $500,000.00",
+      "kind": "constraint",
+      "publisher": "City of Lincoln, Nebraska (Lincoln Water System, annual backflow tester information; also requires Grade VI tester certificate and gauge calibration records)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D27",
+      "url": "https://kitsap.gov/das/Documents/2026-004%20RFP%20Backflow%20Testing%20and%20Maintenance.pdf",
+      "quote": "At least three (3) references with contact information from recent clients.",
+      "kind": "constraint",
+      "publisher": "Kitsap County, Washington (RFP 2026-004; evaluation: Qualifications and Experience 30%, Cost Proposal 25%; insurance $1,000,000 per occurrence and $2,000,000 aggregate in the sample contract)",
+      "date": "2026",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D28",
+      "url": "https://www.kmvt.com/content/news/Backflow-testing-causes-backlog-384768851.html",
+      "quote": "lot of backflow testers are so swamped they're not even answering the phone anymore",
+      "kind": "demand",
+      "publisher": "KMVT (Twin Falls, Idaho local TV news)",
+      "date": "2016-06-28",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D29",
+      "url": "https://beancount.io/blog/2026/09/17/backflow-testing-business-bookkeeping-certification-contracts-gauge-calibration-guide",
+      "quote": "Typical residential test fees run $70 to $150 per assembly",
+      "kind": "incumbent_price",
+      "publisher": "Beancount.io blog (secondary guide, not a regulator; commercial and fire-line stated as $100 to $300 or more)",
+      "date": "2026-09",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SVC-2-D30",
+      "url": "https://forum.heatinghelp.com/discussion/comment/770076",
+      "quote": "We have done backflow certifications since 1988 and are currently doing about 1,000 tests per year.",
+      "kind": "demand",
+      "publisher": "HeatingHelp.com forum (contractor discussion thread)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    }
+  ],
+  "newAlternatives": [
+    {
+      "label": "Utility-side tracking and notice systems (BSI Online at Sugar Land; SwiftComply at Longmont): the utility sends due and overdue notices to owners and receives test reports, at no charge to the owner for the reminder",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://sugarlandtx.gov/627/Backflow-Testing-Program",
+      "evidenceRef": "SVC-2-D11"
+    },
+    {
+      "label": "Tester scheduling, routing, reminder and report-submission software (Syncta); price not published, a free trial is offered, so 0 is a placeholder",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://syncta.com/",
+      "evidenceRef": "SVC-2-D24"
+    },
+    {
+      "label": "City-contracted tester billed on the utility bill (Longmont: $137.50 per assembly a year, about $11.46 a month per assembly)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 11.46,
+      "coversWedge": "full",
+      "sourceLocator": "https://longmontcolorado.gov/wp-content/uploads/2026/02/Backflow-Website-FAQs-SC-Edits-2026.pdf",
+      "evidenceRef": "SVC-2-D13"
+    },
+    {
+      "label": "Large contracted testing firm serving a municipal program (Fresno: ~1,800 assemblies for up to $165,900 a year, about $92 per assembly, about $7.68 a month per assembly)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 7.68,
+      "coversWedge": "full",
+      "sourceLocator": "https://agendas.fresno.gov/en/legislation/id-23-1365-16797",
+      "evidenceRef": "SVC-2-D5"
+    },
+    {
+      "label": "Low-price local testers, including uninsured or part-time 'weekend workers' (average RPZ test about $100 a year, about $8.33 a month per assembly; some quotes lower)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 8.33,
+      "coversWedge": "full",
+      "sourceLocator": "https://forum.heatinghelp.com/discussion/comment/770076",
+      "evidenceRef": "SVC-2-D19"
+    },
+    {
+      "label": "Free utility approved-tester lists (Marin Water lists 63 testers from 34 organizations) letting any owner pick a tester without an intermediary",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.marinwater.org/testers",
+      "evidenceRef": "SVC-2-D17"
+    }
+  ],
+  "killReasons": [
+    {
+      "reason": "The tester licence is not a barrier: Oregon needs an approved 5-day course, lists no experience requirement and charges $97.50; a single California district lists 63 testers from 34 organizations and disclaims quality control, and price competition from low-cost part-time testers is documented. There is no exclusive or compounding edge, and a rival could copy the entrant by taking a one-week course.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SVC-2-D15"
+    },
+    {
+      "reason": "The utility-contract route cited as the only structural edge is not open to a first-year stranger: EWEB scores Experience 40 of 100 points and Qualifications and Experience is 30% at Kitsap with three client references required; Fresno's 1,800-assembly contract drew seven bids and went to an established firm; the EWEB winner also had the lowest rate. No source shows a first-year entrant winning such a contract.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SVC-2-D1"
+    },
+    {
+      "reason": "Bottom-up economics fail the pessimistic case: baseline profit is about $19,077 for about 1,820 hours (about $10.5 per hour); pessimistic profit is about -$6,285 and break-even there needs roughly 1,000 baseline tests in year one, the annual volume of a firm testing since 1988. Upfront cash also exceeds $4,500 at x1.5 cost.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SVC-2-D30"
+    },
+    {
+      "reason": "The annual-agreement wedge (reminders, filing, scheduling) is already supplied by utilities, which mail due and overdue notices to owners and run the reporting platform, plus tester software; a city-contracted tester at a fixed fee is also offered on the utility bill. The entrant cannot exclusively own the scheduling or filing step.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SVC-2-D11"
+    },
+    {
+      "reason": "Labor-bound field service: a solo tester completes about 8 to 12 tests a day on a tight route, so profit scales with owner hours, not with the business.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "SVC-2-D20"
+    },
+    {
+      "reason": "State and local registration, insurance minimums ($500,000 at Lincoln; $1M/$2M at Kitsap) and utility-specific portals or per-test charges add friction and fixed cost for each new service area; Texas adds a two-year experience requirement.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "SVC-2-D26"
+    }
+  ],
+  "economics": {
+    "revenue365": 44000,
+    "cost365": 24923,
+    "pessimisticProfit365": -6285,
+    "survivesPessimistic": false,
+    "assumptions": [
+      "Entrant is a stranger in an open-entry state (Oregon-style: 5-day course, no experience requirement); start-up cash $4,500, first revenue about day 75, 35 owner hours per week (about 1,820 hours in 365 days).",
+      "Volume 400 paid tests in year one (assumption): roughly 80 to 100 commercial assemblies a month in the last quarter via cold outreach to property managers and plumber referrals; capacity of 8 to 12 tests a day is not the constraint, customer acquisition is. A 600-test sensitivity gives baseline profit about $32,077 but pessimistic about -$4,235.",
+      "Price $110 per test (assumption inside sourced ranges: $85-$180 commercial per SVC2-E1, $100-$300+ commercial and $70-$150 residential per D29, average RPZ about $100 per D19, $137.50 city-contracted in Longmont per D13).",
+      "Variable cost $45 per visit (assumption at the midpoint of the $35 to $55 per-visit cost in D21, which excludes the owner's own pay).",
+      "Fixed costs $6,923: course $850 (D25 $600-$1,000), certification fee $98 (D16), gauge kit $1,200 (assumption within D25 range $500-$2,600), liability and commercial auto insurance $1,000 (D22 $500-$1,500), gauge calibration $75, business formation and licence $300 (assumption), scheduling software $600 (assumption, price unpublished D24), marketing $1,500 (assumption), portal charges $1,000 (assumption: $10 per test on a quarter of tests, per D14, payer unstated), bookkeeping $300 (assumption).",
+      "Pessimistic case applies price x0.8 ($88), volume x0.5 (200 tests) and cost x1.5 to both per-visit ($67.50) and fixed costs ($10,384.50): revenue $17,600, cost $23,884.50, profit -$6,284.50.",
+      "No utility-run contract is assumed won in year one (D1, D6, D27); winning an EWEB-sized program (about $50k a year, D2) would not change the labor-bound nature.",
+      "Upfront outlay before first revenue about $3,448 (course, certification, gauge, insurance, formation), about $5,172 at x1.5, which exceeds the $4,500 start-up cash."
+    ],
+    "sources": ["SVC-2-D1", "SVC-2-D2", "SVC-2-D6", "SVC-2-D13", "SVC-2-D14", "SVC-2-D16", "SVC-2-D19", "SVC-2-D20", "SVC-2-D21", "SVC-2-D22", "SVC-2-D24", "SVC-2-D25", "SVC-2-D27", "SVC-2-D29", "SVC-2-D30", "SVC2-E1"]
+  },
+  "legalNotes": [
+    "Paid testing requires state or local certification: Oregon certifies after an approved 5-day course (license needed to test for a fee), Texas TCEQ adds two years of experience (SVC2-E2), Lincoln NE requires a Grade VI tester certificate with renewal letter (D26). The entrant must pick one open-entry jurisdiction and cannot sell across state lines on one licence.",
+    "Utilities may require tester registration, gauge calibration records and liability insurance (Lincoln: $500,000 combined single limit; Kitsap sample contract: $1,000,000 per occurrence and $2,000,000 aggregate) and may remove testers who omit documents.",
+    "Reports must go through the utility's platform (BSI Online within 48 hours at Sugar Land; SwiftComply with a $10 per passing test charge at Longmont) and fire-line devices in Texas are restricted to state-licensed testers employed by a fireline testing company, per Sugar Land.",
+    "Public bids are won on stated criteria that include references and experience (Kitsap needs three recent client references); no legal barrier to bidding exists, but a new firm may not meet the qualification weighting.",
+    "Research used only public pages read normally with no logins, contact or purchases; no ToS issues arise for the proposed business beyond the licensing and insurance items above."
+  ],
+  "unverified": [
+    "Quotes were taken from the page text returned by the fetch tool; a direct download of the EWEB and Medford PDFs was blocked by the proxy and was not circumvented, so wording was not re-checked against the raw files.",
+    "EWEB bid table unit is shown as 'Average Rate' and the reader described it as hourly; the page also names the contractor both 'Eugene Backflow Testing' and 'Eugene Backflow Services', which may or may not be the same firm.",
+    "Medford contract term, whether the sole bidder (Rogue Valley Backflow Service) is the incumbent, and whether the contract was awarded are not confirmed; South Jordan term and number of bidders are not stated on the page; Fresno 2023 'seven bids' and the 'four finalists' come from the reader's summary of the page.",
+    "Marin Water count of 63 testers from 34 organizations is the reader's count of the table.",
+    "Who pays the $10 SwiftComply charge at Longmont (tester or customer) is not stated; Syncta pricing is not published.",
+    "Highlands Ranch Water's price for commercial devices (SVC2-E3) remains unpublished; the HeatingHelp thread is undated and its $12.50 per test city-contract anecdote is a forum claim.",
+    "Volume of 400 tests in year one, the marketing spend and the customer-acquisition rate are assumptions; no source shows what a first-year stranger actually sells.",
+    "A retailer page listed a Watts TK-99E test kit at $4,298.52 (sold out); it was treated as an outlier and not used. Gauge price rests on vendor and secondary guides ($500-$2,600).",
+    "No evidence either way on whether property managers pay more for a bundled annual agreement than for single tests."
+  ],
+  "nextStep": "None; revisit only if a documented case shows a first-year tester winning a utility-run program, or a property-management firm commits in writing to 200+ assemblies a year."
+}

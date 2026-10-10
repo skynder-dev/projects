@@ -1,0 +1,830 @@
+{
+ "candidates": [
+  {
+   "id": "ECO-1",
+   "name": "Success-fee IEEPA tariff-refund filing service for small e-commerce importers",
+   "family": "ecommerce_or_dropshipping",
+   "buyer": "Small US e-commerce brands and dropshippers that were importer of record (formal or informal entries) on IEEPA-tariffed goods between Feb 2025 and Feb 2026 and have not yet claimed through CBP's CAPE refund process",
+   "pain": "Duties already paid are refundable, but CBP pays only the importer of record through ACE/ACH; small sellers lack ACE access and ACH enrolment, entries sit in different phases (liquidated vs unliquidated, Phase 3 from 6 Oct 2026), and many do not know whether they or their carrier is the IOR.",
+   "wedge": "A percentage-of-recovery concierge that gathers the seller's entry data and walks them through ACE/ACH setup and CAPE declaration filing, charging nothing unless money is refunded.",
+   "referenceEntrant": {
+    "startupCashUsd": 2000,
+    "daysToFirstRevenue": 60,
+    "ownerHoursPerWeek": 30
+   },
+   "entrantEdge": {
+    "type": "unique_recovery_or_outcome_based_economics",
+    "status": "none",
+    "statement": "Outcome-based pricing is the only candidate edge and it is not structural: contingency firms (Ayar Law, Leyton) and FreightRight already sell exactly this, outcome fees of 25-50% are the norm in adjacent refund auditing (E9, E10), nothing exclusive or compounding accumulates, the refund window is one-time, and preparing and filing refund claims for other parties is 'customs business' reserved to licensed brokers (E4), so an unlicensed entrant cannot lawfully own the filing step.",
+    "evidenceIds": [
+     "ECO1-E4",
+     "ECO1-E1"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Importer self-files a CAPE declaration in CBP's ACE portal (free; IOR with ACE access)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://info.redstonegci.com/blog/businesses-can-now-claim-ieepa-tariff-refunds-through-the-new-portal",
+      "evidenceRef": "ECO1-E5",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Carrier pass-through: UPS/FedEx file and pass refunds automatically where they are IOR/broker on the entry",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://support.spaceshipapp.com/en/ieepa-tariff-refund-status",
+      "evidenceRef": "ECO1-E6",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "FreightRight files IEEPA refunds for e-commerce sellers for a 'small one-time fee' (amount undisclosed; free ACE setup guidance)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.freightright.com/solution/ieepa-tariff-refund",
+      "evidenceRef": "ECO1-E2"
+     },
+     {
+      "label": "Contingency specialists (Ayar Law 'pure contingency'; Leyton 'success-based fee'); percentage undisclosed, nothing upfront",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://ayarlaw.com/tariff-refund-attorney",
+      "evidenceRef": "ECO1-E1"
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 1500,
+    "falsifier": "Edge exists only if (a) a lawful route lets an unlicensed firm prepare AND submit CAPE declarations for a fee (a CBP or licensed-broker statement that this is not customs business), and (b) a measurable share (>30%) of small IORs fail to self-file through ACE/ACH. Entrant cost shown is an assumed 15% success fee on an assumed $10,000 refund; it is higher than the free self-file path, so no cost advantage is claimed."
+   },
+   "evidence": [
+    {
+     "id": "ECO1-E1",
+     "url": "https://ayarlaw.com/tariff-refund-attorney",
+     "quote": "Nothing upfront. We work on pure contingency. Our fee is a percentage of the refund we recover.",
+     "kind": "incumbent_price",
+     "publisher": "Ayar Law",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO1-E2",
+     "url": "https://www.freightright.com/solution/ieepa-tariff-refund",
+     "quote": "If Freight Right files the IEEPA refund on your behalf, the service is handled for a small one-time fee.",
+     "kind": "incumbent_price",
+     "publisher": "Freight Right",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO1-E3",
+     "url": "https://leyton.com/us/ieepa-customs-tariff-refund/",
+     "quote": "Our success-based fee approach aligns our interests with yours",
+     "kind": "demand",
+     "publisher": "Leyton",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO1-E4",
+     "url": "https://www.ecfr.gov/current/title-19/chapter-I/part-111/subpart-A/section-111.1",
+     "quote": "the refund, rebate, or drawback of those duties, taxes, or other charges",
+     "kind": "constraint",
+     "publisher": "eCFR, 19 CFR 111.1 (definition of customs business)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO1-E5",
+     "url": "https://info.redstonegci.com/blog/businesses-can-now-claim-ieepa-tariff-refunds-through-the-new-portal",
+     "quote": "Importers of Record and authorized Customs brokers submit CAPE Declarations in the ACE Portal.",
+     "kind": "constraint",
+     "publisher": "Redstone GCI",
+     "date": "2026",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO1-E6",
+     "url": "https://support.spaceshipapp.com/en/ieepa-tariff-refund-status",
+     "quote": "For de minimis and informal entries where UPS is IOR, UPS automatically files and passes refunds through.",
+     "kind": "constraint",
+     "publisher": "Spaceship support",
+     "date": "2026-05-15",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO1-E7",
+     "url": "https://flavorcloud.com/resources/blog/ieepa-tariff-refunds-and-cape-declarations-what-importers-need-to-know-in-2026",
+     "quote": "CBP allows only two parties to submit a CAPE declaration in ACE.",
+     "kind": "constraint",
+     "publisher": "FlavorCloud",
+     "date": "2026-05-01",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO1-E8",
+     "url": "https://www.thompsoncoburn.com/insights/88-september-17-2026-cbp-confirms-launch-of-phase-3-of-ieepa-refund-process/",
+     "quote": "will deploy on October 6, 2026",
+     "kind": "other",
+     "publisher": "Thompson Coburn LLP",
+     "date": "2026-09-17",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO1-E9",
+     "url": "https://www.refundretriever.com/pricing",
+     "quote": "Our pricing is a percentage of successfully disputed and credited refunds. No refund, no charge.",
+     "kind": "incumbent_price",
+     "publisher": "Refund Retriever (parcel refund auditor; adjacent outcome-fee market)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO1-E10",
+     "url": "https://www.shipscience.com/parcel-audit-guide/",
+     "quote": "Industry rates range from 25 to 50 percent of recovered refunds.",
+     "kind": "other",
+     "publisher": "ShipScience (adjacent parcel-audit market)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 5,
+    "distribution_advantage": 1,
+    "defensibility": 1,
+    "absolute_gross_profit_potential": 4,
+    "willingness_to_pay": 5,
+    "repeat_ltv_potential": 1,
+    "competition_adjusted_gap": 1,
+    "market_depth": 5,
+    "end_to_end_automation": 3,
+    "capital_risk": 7,
+    "owner_time_support": 5
+   },
+   "componentReasons": {
+    "entrant_edge": "Outcome-based fees are standard (ECO1-E1, ECO1-E3, ECO1-E9, ECO1-E10) and the filing step is customs business reserved to licensed parties (ECO1-E4), so there is no structural edge for an unlicensed stranger.",
+    "customer_problem_or_value": "The money is real and unclaimed refunds exist, but ECO1-E7 and ECO1-E6 show the refund route is narrow (only IOR or its broker) and carriers already handle many informal entries.",
+    "distribution_advantage": "No privileged channel: the buyer pool is reached the same way by Leyton, Ayar Law and FreightRight (ECO1-E1, ECO1-E2, ECO1-E3).",
+    "defensibility": "Nothing compounds; a refund is claimed once and the Phase 3 window opens 6 Oct 2026 (ECO1-E8), so the service has no lock-in.",
+    "absolute_gross_profit_potential": "Per-client fees could be a few hundred to a few thousand dollars if refunds are large, but a licensed broker or lawyer partner would have to take part of the fee (ECO1-E4); refund size per small seller is unverified.",
+    "willingness_to_pay": "Importers do pay contingency firms (ECO1-E3, ECO1-E1) but a free self-file path and a 'small one-time fee' broker option cap what a stranger can charge (ECO1-E5, ECO1-E2).",
+    "repeat_ltv_potential": "One-time recovery; no recurring need once the refund is paid (ECO1-E8).",
+    "competition_adjusted_gap": "Law firms, brokers, FreightRight and Leyton already serve IORs on contingency and the filing parties are restricted (ECO1-E1, ECO1-E2, ECO1-E7), leaving no gap.",
+    "market_depth": "A large pool of IEEPA duties exists nationally, but the addressable slice for small e-commerce IORs not covered by carrier pass-through is unquantified (ECO1-E6, ECO1-E7).",
+    "end_to_end_automation": "Data intake and tracking can be automated, but the CBP submission must be made by the IOR or a licensed broker (ECO1-E7, ECO1-E4).",
+    "capital_risk": "Little capital is needed because the fee is paid only on recovery, though legal exposure from unlicensed customs business is a tail risk (ECO1-E4).",
+    "owner_time_support": "Each claim needs per-client handholding and broker coordination, so owner time is material (ECO1-E5, ECO1-E7)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "ECO1-E4: 19 CFR 111.1 defines customs business to include the refund, rebate or drawback of duties; conducting it for others generally requires a licensed customs broker (attorneys acting for clients are a separate path). An unlicensed entrant could at most offer education or self-serve tools; whether data-preparation-only is permitted is unverified. Not legal advice.",
+    "ECO1-E7 and ECO1-E5: only the importer of record, or its licensed broker under power of attorney, can submit a CAPE declaration; refunds go to the IOR (and only to an alternate party set up via CBP form).",
+    "ECO1-E8: Phase 3 eligibility was reported by a law-firm alert as limited to IORs with an IEEPA case pending at the Court of International Trade and 'subject to ongoing litigation' (summary of the alert, exact wording not copied); treat as unverified."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "All numbers are assumptions (no sourced refund size): 15% fee x $8,000 average refund x 150 clients = $180k revenue base, with 50% passed to a licensed broker/lawyer plus $30k ops. Pessimistic (fee 12%, 75 clients, costs x1.5) gives $72k revenue vs about $81k cost, so negative; separately the legal gate (E4) makes unlicensed filing unlawful."
+    },
+    "killReasons": [
+     {
+      "reason": "Filing refund claims for third parties is customs business (19 CFR 111.1) and CAPE can only be submitted by the IOR or its licensed broker, so an unlicensed stranger cannot own the revenue-generating step.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "ECO1-E4"
+     },
+     {
+      "reason": "A free path (self-file in ACE) and low-cost or contingency incumbents (FreightRight, Ayar Law, Leyton) already cover the whole wedge; outcome-based pricing is standard and is not an edge.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "ECO1-E5"
+     },
+     {
+      "reason": "Carriers such as UPS automatically file and pass through refunds on de minimis and informal entries where they are IOR, removing much of the small-seller pool.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "ECO1-E6"
+     },
+     {
+      "reason": "One-time, deadline-driven demand with phased eligibility; no repeat revenue or accumulating data.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "ECO1-E8"
+     },
+     {
+      "reason": "Sibling idea (parcel-carrier refund audit for Shopify merchants) was checked and also rejected: Refund Retriever already charges 50% of refunds up to $250k annual shipping and integrates with ShipWorks, and refunds are small relative to spend.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "ECO1-E9"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: the refund-filing step is customs business (ECO1-E4) and CAPE submission is restricted to the IOR or its licensed broker (ECO1-E7), a free self-file path and incumbents (FreightRight, Ayar Law, Leyton) cover the wedge (ECO1-E5, ECO1-E2, ECO1-E1), carriers auto-refund many informal entries (ECO1-E6), and the demand is one-time. Conflicting source noted: Jet Worldwide (23 Apr 2026) says informal-entry refunds go to the consignee as IOR yet also says carriers are expected to refund directly, and does not reconcile the two."
+  },
+  {
+   "id": "ECO-2",
+   "name": "Multi-country EU packaging-EPR authorised-representative subscription for non-EU direct-to-consumer sellers",
+   "family": "ecommerce_or_dropshipping",
+   "buyer": "Non-EU (US) direct-to-consumer sellers on Shopify, Etsy or WooCommerce that ship packaged goods to EU consumers and are not covered by a marketplace's Pay on Behalf programme",
+   "pain": "EU packaging rules (PPWR Article 45, plus national regimes such as Germany's LUCID and France's IDU) require a separate authorised representative established in each member state; providers are fragmented by country and mostly quote-only, and published cost estimates for a small shop reach 18 to 33 times the actual recycling liability.",
+   "wedge": "A flat annual per-country subscription that appoints a locally seated authorised representative, collects packaging data once and files each country's registration and reports.",
+   "referenceEntrant": {
+    "startupCashUsd": 8000,
+    "daysToFirstRevenue": 150,
+    "ownerHoursPerWeek": 25
+   },
+   "entrantEdge": {
+    "type": "regulatory_license_intrinsic_to_model",
+    "status": "claimed",
+    "statement": "The authorised representative must be 'established' in each member state, meaning a registered legal seat there, so supply is capped by the number of local legal seats and the mandate and per-seller packaging data stick once appointed. This is only a claim for the entrant: it holds no seats, the incumbents (Avask, Interzero-type providers, 24hour-AR, Ecocomply, eprrepresentative.com) already have them or resell partners, and the cost of forming and banking an entity per country is unverified.",
+    "evidenceIds": [
+     "ECO2-E4",
+     "ECO2-E6"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Amazon Pay on Behalf (France, Spain, UK): EUR 24.99 annual service fee plus 3% of eco-contributions per category (Amazon sellers only)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 2.1,
+      "coversWedge": "partial",
+      "sourceLocator": "https://avask.com/?p=22170",
+      "evidenceRef": "ECO2-E2",
+      "metrics": {
+       "cash_cost": 25
+      }
+     },
+     {
+      "label": "eprrepresentative.com: France-only authorised representative from EUR 190/year per stream (other countries 'outside our scope')",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 16,
+      "coversWedge": "partial",
+      "sourceLocator": "https://eprrepresentative.com/blog/ppwr-article-45-packaging-exporters-guide",
+      "evidenceRef": "ECO2-E1",
+      "metrics": {
+       "cash_cost": 190
+      }
+     },
+     {
+      "label": "Multi-country providers (Avask, Ecocomply, 24hour-AR): quote-only prices; 24hour-AR covers EPR 'through our partner'",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.24hour-ar.com/eu-ppwr",
+      "evidenceRef": "ECO2-E7"
+     },
+     {
+      "label": "DIY direct registration with national registers (e.g. Germany LUCID, no volume threshold) without a paid representative",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://avask.com/blog/epr-compliance-guide/",
+      "evidenceRef": "ECO2-E6"
+     },
+     {
+      "label": "Stop shipping packaged goods to EU consumers (geoblock) rather than pay for nine-country compliance",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "none",
+      "sourceLocator": "https://ppc.land/role-play-goblin-faces-4-300-euro-epr-bill-for-130-euro-of-eco-fees/",
+      "evidenceRef": "ECO2-E3"
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 25,
+    "entrantValue": 152,
+    "falsifier": "The edge is disproved if (a) forming, domiciling and banking a legal seat in each of the top EU countries costs more than about EUR 190 x the number of subscribers you can realistically win per country, or (b) established representatives already offer a single transparent multi-country price. Values are USD per stream-year: Amazon Pay on Behalf EUR 24.99 (best alternative for Amazon sellers) vs an assumed entrant price of 80% of EUR 190; the entrant is NOT cheaper, so no cost edge is claimed."
+   },
+   "evidence": [
+    {
+     "id": "ECO2-E1",
+     "url": "https://eprrepresentative.com/blog/ppwr-article-45-packaging-exporters-guide",
+     "quote": "our fee starts at €190/year excl. VAT per stream",
+     "kind": "incumbent_price",
+     "publisher": "eprrepresentative.com",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO2-E2",
+     "url": "https://avask.com/?p=22170",
+     "quote": "€24.99 annual service fee",
+     "kind": "incumbent_price",
+     "publisher": "AVASK",
+     "date": "2025-08-12",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO2-E3",
+     "url": "https://ppc.land/role-play-goblin-faces-4-300-euro-epr-bill-for-130-euro-of-eco-fees/",
+     "quote": "the aggregate multiple runs from 18 to 33 times",
+     "kind": "demand",
+     "publisher": "PPC Land",
+     "date": "2026-08-30",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO2-E4",
+     "url": "https://eprrepresentative.com/blog/ppwr-article-45-packaging-exporters-guide",
+     "quote": "a registered legal seat in the Member State, not necessarily staff there",
+     "kind": "constraint",
+     "publisher": "eprrepresentative.com (provider summary of PPWR Art. 45; not checked against the Official Journal)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO2-E5",
+     "url": "https://www.expan.do/post/ppwr-marketplaces-authorised-representative-enforcement",
+     "quote": "Enforcement is therefore concentrated only where the infrastructure has been working for years.",
+     "kind": "constraint",
+     "publisher": "Expando",
+     "date": "2026-09-02",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO2-E6",
+     "url": "https://avask.com/blog/epr-compliance-guide/",
+     "quote": "Without an appointed AR-EPR from 12 August 2026, non-EU sellers lose the right to place packaged goods on those markets.",
+     "kind": "constraint",
+     "publisher": "AVASK",
+     "date": "2026",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO2-E7",
+     "url": "https://www.24hour-ar.com/eu-ppwr",
+     "quote": "We cover the EPR side through our partner.",
+     "kind": "other",
+     "publisher": "24hour-AR",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 3,
+    "customer_problem_or_value": 7,
+    "distribution_advantage": 2,
+    "defensibility": 4,
+    "absolute_gross_profit_potential": 4,
+    "willingness_to_pay": 5,
+    "repeat_ltv_potential": 8,
+    "competition_adjusted_gap": 3,
+    "market_depth": 6,
+    "end_to_end_automation": 4,
+    "capital_risk": 4,
+    "owner_time_support": 5
+   },
+   "componentReasons": {
+    "entrant_edge": "The legal-seat requirement (ECO2-E4) is a real barrier but the entrant holds no seats and incumbents already resell or own them (ECO2-E7), so the edge is only claimed.",
+    "customer_problem_or_value": "The obligation is legal and dated (applies from 12 August 2026, ECO2-E6) and costs can dwarf actual recycling liability for a small shop (ECO2-E3).",
+    "distribution_advantage": "No privileged channel: SEO and content compete with Avask, Ecocomply, 24hour-AR and others, and Amazon's own programme captures marketplace sellers (ECO2-E2, ECO2-E7).",
+    "defensibility": "A signed mandate and stored per-seller packaging data create switching friction, but an incumbent or a cheaper reseller can replicate the service (ECO2-E1, ECO2-E7).",
+    "absolute_gross_profit_potential": "At roughly EUR 190 per stream-year (ECO2-E1) profit per client is small and each country needs fixed legal-seat costs that are unverified.",
+    "willingness_to_pay": "The service is mandatory but sellers are being quoted 18-33x the recycling liability (ECO2-E3) and may simply stop shipping, while state enforcement is so far concentrated in Germany (ECO2-E5).",
+    "repeat_ltv_potential": "The representative role and annual reporting recur every year per country (ECO2-E1, ECO2-E6).",
+    "competition_adjusted_gap": "Single-country providers say other countries are 'outside our scope' (ECO2-E1) which leaves a coverage gap, but multi-country players already exist (ECO2-E7), and 'all-in-one' is not a structural edge.",
+    "market_depth": "Any non-EU packaged-goods seller shipping to EU consumers is in scope under the rule (ECO2-E6), but the fraction who will comply before enforcement is unknown (ECO2-E5).",
+    "end_to_end_automation": "Data collection and document generation can be automated, but each country needs a locally seated legal entity and manual authority filings (ECO2-E4).",
+    "capital_risk": "Incorporating and banking entities in several member states plus liability cover could consume most of the $10,000 budget (ECO2-E4); exact costs are unverified.",
+    "owner_time_support": "Recurring annual filings and multi-jurisdiction coordination are partly automatable but need ongoing attention (ECO2-E6, ECO2-E5)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "ECO2-E4: the representative must be established in the member state (a registered legal seat); this is a provider's summary of PPWR Article 45 and national laws and was not checked against the Official Journal; unverified.",
+    "ECO2-E6: appointing a representative does not remove the producer's own accountability according to the same provider guide; liability exposure of the representative itself is unverified.",
+    "ECO2-E5: marketplace enforcement outside Germany is mostly warnings; state enforcement of the new representative duty is unproven.",
+    "Entity formation, registered office and local bank account requirements per member state were not researched; treat all cost figures as assumptions."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Assumptions (fixed cost per country unverified): EUR 2,750 per country-year for seat, domiciliation and accountant; 40 streams per country at EUR 190 gives EUR 7,600 revenue (positive). Pessimistic (price x0.8 = EUR 152, volume x0.5 = 20 streams, cost x1.5 = EUR 4,125) gives EUR 3,040 revenue, so each country loses money. Reselling a partner's seat avoids the fixed cost but leaves only a thin reseller margin."
+    },
+    "killReasons": [
+     {
+      "reason": "The entrant has no stranger-accessible edge: the scarce input (a registered legal seat per member state) must be built or rented country by country, and incumbents already hold or resell it.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "ECO2-E4"
+     },
+     {
+      "reason": "Amazon Pay on Behalf is a very cheap alternative for marketplace sellers in France, Spain and the UK.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "ECO2-E2"
+     },
+     {
+      "reason": "Enforcement of the representative duty is unproven outside Germany, so willingness to pay may not materialise within the first year.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "ECO2-E5"
+     }
+    ]
+   },
+   "researcherVerdict": "uncertain",
+   "verdictReason": "Uncertain, leaning kill. Open questions: (1) real cost and bankability of forming a legal seat per member state for a non-resident with under $10,000 (not researched); (2) whether state or marketplace enforcement will force small DTC sellers to buy before the entrant's cash runs out (ECO2-E5 says no mass action yet); (3) whether the representative carries liability that insurance would price above the EUR 190 per stream market rate (ECO2-E1). Only the legal-seat requirement is structural, and it currently benefits existing providers, not the entrant. Prices for multi-country providers were not published, so the market rate is based on one France-only quote and one shop's cost estimate."
+  },
+  {
+   "id": "ECO-3",
+   "name": "California Prop 65 notice early-warning feed for online sellers",
+   "family": "ecommerce_or_dropshipping",
+   "buyer": "US Amazon and Shopify sellers of consumer goods (food, bags, beauty, products containing lead or phthalates) who ship to California",
+   "pain": "Prop 65 60-day notices and settlements hit online sellers and marketplaces (one Amazon settlement included $45,000 of fees and costs), and sellers do not know which product types and chemicals are being targeted this month.",
+   "wedge": "A monthly subscription that turns the California AG's 60-day notice register into alerts matched to a seller's product categories and chemicals, with settlement benchmarks and a warning-text generator.",
+   "referenceEntrant": {
+    "startupCashUsd": 1500,
+    "daysToFirstRevenue": 75,
+    "ownerHoursPerWeek": 15
+   },
+   "entrantEdge": {
+    "type": "proprietary_or_compounding_data",
+    "status": "none",
+    "statement": "The underlying data is the AG's free public register from 1988 to present; a structured archive is not exclusive (an Apify actor already offers searchable notices, filer profiles and settlement benchmarks at $0.01 per 1,000 results) and testing labs publish free monthly analyses, so nothing accumulates that a competitor cannot rebuild in days.",
+    "evidenceIds": [
+     "ECO3-E3",
+     "ECO3-E1"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "California AG 60-day notice search (free; filters by product, chemical, defendant, date; no export or email alerts listed)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://oag.ca.gov/prop65/60-day-notice-search",
+      "evidenceRef": "ECO3-E3",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Free monthly Prop 65 60-day notice analyses from testing labs (Intertek bulletins)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.intertek.com/products-retail/insight-bulletins/2021/prop-65-60-day-notices-analysis-11-2021/",
+      "evidenceRef": "ECO3-E6",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Apify actor 'Prop 65 60-Day Notice Search + Settlement Benchmark' (usage-based, from $0.01 per 1,000 results)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 0.01,
+      "coversWedge": "partial",
+      "sourceLocator": "https://apify.com/malekh/prop-65-60-day-notice-settlement-benchmark",
+      "evidenceRef": "ECO3-E1",
+      "metrics": {
+       "cash_cost": 0.01
+      }
+     },
+     {
+      "label": "Prop65Kit Shopify app ($4.99 per month): displays the safe-harbor warning, does not monitor notices",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 4.99,
+      "coversWedge": "none",
+      "sourceLocator": "https://apps.shopify.com/prop65kit",
+      "evidenceRef": "ECO3-E2",
+      "metrics": {
+       "cash_cost": 4.99
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 29,
+    "falsifier": "The idea only has an edge if a sizeable group of sellers demonstrably pays for monitoring rather than using the free register, lab bulletins or the usage-priced Apify actor; ten paying pilot sellers at $29 per month would disprove 'no edge' but no evidence of paid monitoring demand was found. Entrant price of $29 per month is an assumption, not a sourced figure."
+   },
+   "evidence": [
+    {
+     "id": "ECO3-E1",
+     "url": "https://apify.com/malekh/prop-65-60-day-notice-settlement-benchmark",
+     "quote": "from $0.01 / 1,000 results",
+     "kind": "incumbent_price",
+     "publisher": "Apify (actor by malekh)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO3-E2",
+     "url": "https://apps.shopify.com/prop65kit",
+     "quote": "displays the California Proposition 65 safe-harbor warning on your product pages",
+     "kind": "incumbent_price",
+     "publisher": "Shopify App Store (Prop65Kit; $4.99 per month plan per listing)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO3-E3",
+     "url": "https://oag.ca.gov/prop65/60-day-notice-search",
+     "quote": "The database contains records from 1988 to present.",
+     "kind": "other",
+     "publisher": "California Attorney General",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO3-E4",
+     "url": "https://ceh.org/?p=21630",
+     "quote": "As of 7 August, 1,026 notices of intent to sue the company have been recorded since 2000 on California's Justice Department 60-day notice database.",
+     "kind": "demand",
+     "publisher": "Center for Environmental Health",
+     "date": "2019-10-31",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO3-E5",
+     "url": "https://oag.ca.gov/system/files/prop65/settlements/2025-00002S6246.pdf",
+     "quote": "Amazon shall pay a total of $45,000 for fees and costs incurred as a result of investigating",
+     "kind": "constraint",
+     "publisher": "California Attorney General (Prop 65 settlement 2025-00002)",
+     "date": "2025",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO3-E6",
+     "url": "https://www.intertek.com/products-retail/insight-bulletins/2021/prop-65-60-day-notices-analysis-11-2021/",
+     "quote": "there were a total of 257 60-day violation notices served for Prop 65",
+     "kind": "other",
+     "publisher": "Intertek",
+     "date": "2021-11",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 4,
+    "distribution_advantage": 2,
+    "defensibility": 1,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 2,
+    "repeat_ltv_potential": 5,
+    "competition_adjusted_gap": 1,
+    "market_depth": 3,
+    "end_to_end_automation": 8,
+    "capital_risk": 9,
+    "owner_time_support": 8
+   },
+   "componentReasons": {
+    "entrant_edge": "The register is public and already repackaged cheaply (ECO3-E1, ECO3-E3), so no exclusive or compounding data exists.",
+    "customer_problem_or_value": "Enforcement against online sellers is real (ECO3-E4, ECO3-E5) but the value of knowing the notice flow is lower than the value of testing and warnings.",
+    "distribution_advantage": "No privileged channel; sellers find compliance help via labs, Shopify apps and marketplaces (ECO3-E2, ECO3-E6).",
+    "defensibility": "A competitor can rebuild a notice archive from the same register in days (ECO3-E3).",
+    "absolute_gross_profit_potential": "A $29 per month subscription (assumed) needs hundreds of paying sellers to matter and none were evidenced.",
+    "willingness_to_pay": "Free register, free lab analyses and a usage-priced actor cover the data (ECO3-E3, ECO3-E6, ECO3-E1); no evidence of sellers paying for monitoring was found.",
+    "repeat_ltv_potential": "Monitoring is naturally recurring if anyone subscribes, but churn would be high once the first notice scare passes (ECO3-E4).",
+    "competition_adjusted_gap": "The register, bulletins, the Apify actor and Shopify warning apps already cover most of the use cases (ECO3-E3, ECO3-E6, ECO3-E1, ECO3-E2).",
+    "market_depth": "Sellers shipping to California are numerous, but the share needing a notice-monitoring feed (as opposed to testing or legal defence) is small and unevidenced (ECO3-E4).",
+    "end_to_end_automation": "Ingesting a public register and sending alerts is almost fully automatable (ECO3-E3).",
+    "capital_risk": "Needs only hosting and a data pipeline, with minimal cash at risk.",
+    "owner_time_support": "Once built, the feed and alerts run with little attention (ECO3-E3)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "ECO3-E3: the AG register is public; its terms for bulk or automated retrieval were not read, so bulk collection should be treated as unverified. The register page itself lists no export function.",
+    "Explaining what a notice means for a specific seller could shade into legal advice; a service would need to stay informational (unverified, not legal advice).",
+    "ECO3-E5: Prop 65 liability sits with businesses that sell products to California consumers, and settlements name marketplaces as well as sellers."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "Arithmetic only: assumed $29/month x 150 subscribers = $52k/yr vs $6k costs; pessimistic ($23.20 x 75 subscribers = $20.9k vs $9k costs) is still positive because costs are tiny. The subscriber counts are unsupported; the unresolved problem is whether anyone pays, not unit cost."
+    },
+    "killReasons": [
+     {
+      "reason": "Free public register, free lab bulletins and a usage-priced structured actor ($0.01 per 1,000 results) already deliver the data; there is no exclusive or compounding asset.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "ECO3-E1"
+     },
+     {
+      "reason": "No evidence found that sellers pay for notice monitoring; spend goes to testing, warnings and legal defence instead.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "ECO3-E4"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: the data is the AG's free register (ECO3-E3), labs publish free monthly analyses (ECO3-E6), an Apify actor sells the same structured search for $0.01 per 1,000 results (ECO3-E1), warning display apps cost $4.99 per month (ECO3-E2), and I found no evidence that sellers pay for monitoring (ECO3-E4, ECO3-E5 show enforcement but not paid demand)."
+  },
+  {
+   "id": "ECO-4",
+   "name": "Amazon seller liability-insurance agency (certificate-of-insurance placement and renewals)",
+   "family": "ecommerce_or_dropshipping",
+   "buyer": "Amazon third-party sellers above Amazon's $10,000 monthly sales threshold who must carry $1 million liability cover with Amazon named as additional insured",
+   "pain": "Sellers who hit the sales threshold must buy a compliant policy and upload a certificate of insurance or risk suspension, and many are unsure of the exact wording required.",
+   "wedge": "A licensed online agency that places a compliant general-liability policy, issues the certificate with Amazon's additional-insured wording and handles renewals for a commission paid by the carrier.",
+   "referenceEntrant": {
+    "startupCashUsd": 3500,
+    "daysToFirstRevenue": 120,
+    "ownerHoursPerWeek": 20
+   },
+   "entrantEdge": {
+    "type": "regulatory_license_intrinsic_to_model",
+    "status": "none",
+    "statement": "An insurance producer licence is a precondition for selling policies, but any adult can obtain one, so it is a cost of entry rather than a moat (licence requirements unverified). The privileged channel actually belongs to carriers and brokers in Amazon's Insurance Accelerator network built with Marsh, which an entrant cannot join, and carriers sell the same policy direct for about $25 per month.",
+    "evidenceIds": [
+     "ECO4-E3"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Amazon Insurance Accelerator inside Seller Central (free to compare and buy quotes from Chubb, Hiscox, Liberty Mutual, Markel, Travelers, Simply Business, Next and others)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.sellerassistant.app/blog/amazon-insurance-accelerator-program-all-you-need-to-know/",
+      "evidenceRef": "ECO4-E3",
+      "metrics": {
+       "cash_cost": 25
+      }
+     },
+     {
+      "label": "Buy direct from a carrier such as Next Insurance (general liability from about $25 per month; most customers $22 to $33)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 25,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.nextinsurance.com/business/amazon-sellers/cost/",
+      "evidenceRef": "ECO4-E1",
+      "metrics": {
+       "cash_cost": 25
+      }
+     },
+     {
+      "label": "Status quo: wait until Amazon asks for a certificate (proof is required 'when requested by Amazon') and then buy",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://scaleinsights.com/learn/amazon-certificate-of-insurance-requirements",
+      "evidenceRef": "ECO4-E6",
+      "metrics": {
+       "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 25,
+    "entrantValue": 25,
+    "falsifier": "Edge is disproved if the entrant's policy costs the seller the same as buying direct (a broker cannot undercut carrier price because the commission is built into the premium) and Amazon's own Accelerator already presents quotes at no cost; edge would only exist if Amazon admitted small agencies to the Accelerator or sellers paid for a service beyond the policy. Entrant value equals the best alternative, so no advantage is claimed."
+   },
+   "evidence": [
+    {
+     "id": "ECO4-E1",
+     "url": "https://www.nextinsurance.com/business/amazon-sellers/cost/",
+     "quote": "can cost as little as $25 per month",
+     "kind": "incumbent_price",
+     "publisher": "Next Insurance",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO4-E2",
+     "url": "https://www.sellersprite.com/en/blog/amazon-seller-insurance-requirements",
+     "quote": "Once you reach $10,000 in sales in a month, you'll need specific insurance to keep selling on the platform.",
+     "kind": "constraint",
+     "publisher": "SellerSprite",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO4-E3",
+     "url": "https://www.sellerassistant.app/blog/amazon-insurance-accelerator-program-all-you-need-to-know/",
+     "quote": "Amazon has partnered with Marsh, a leading insurance broker, to establish a network of vetted insurance providers.",
+     "kind": "constraint",
+     "publisher": "Seller Assistant",
+     "date": "2025-04-22",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO4-E4",
+     "url": "https://www.nextinsurance.com/business/amazon-sellers/cost/",
+     "quote": "Between $22 and $33 per month",
+     "kind": "demand",
+     "publisher": "Next Insurance (price range most customers pay for general liability)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO4-E5",
+     "url": "https://www.sonant.ai/blog/commission-per-policy",
+     "quote": "commercial lines often run higher, roughly ~10–20%.",
+     "kind": "other",
+     "publisher": "Sonant AI (vendor blog; commission range to confirm with carrier)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "ECO4-E6",
+     "url": "https://scaleinsights.com/learn/amazon-certificate-of-insurance-requirements",
+     "quote": "Amazon.com Services LLC and its affiliates and assignees.",
+     "kind": "constraint",
+     "publisher": "Scale Insights",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 5,
+    "distribution_advantage": 1,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 4,
+    "repeat_ltv_potential": 7,
+    "competition_adjusted_gap": 1,
+    "market_depth": 5,
+    "end_to_end_automation": 5,
+    "capital_risk": 6,
+    "owner_time_support": 5
+   },
+   "componentReasons": {
+    "entrant_edge": "A licence is available to anyone and Amazon's Marsh-built Accelerator network already supplies the privileged channel (ECO4-E3), so the entrant has no edge.",
+    "customer_problem_or_value": "The requirement is mandatory above $10,000 monthly sales with specific additional-insured wording (ECO4-E2, ECO4-E6), but a sub-$35 monthly policy is easy to buy (ECO4-E1, ECO4-E4).",
+    "distribution_advantage": "Sellers are steered to Accelerator participants inside Seller Central (ECO4-E3), leaving an outside agency to buy search traffic.",
+    "defensibility": "Policies renew annually, which gives modest stickiness, but sellers can re-quote anywhere (ECO4-E1, ECO4-E3).",
+    "absolute_gross_profit_potential": "At about $25-$33 per month premium and 10-20% commission (ECO4-E1, ECO4-E4, ECO4-E5) an agency earns roughly $30-$80 per policy-year, so hundreds of policies are needed.",
+    "willingness_to_pay": "Sellers will buy the cover because it is mandatory (ECO4-E2), but they will pay the carrier, not an extra service fee, and prices are commoditised (ECO4-E4).",
+    "repeat_ltv_potential": "Annual renewals recur at a small commission (ECO4-E5) as long as the seller stays above the threshold.",
+    "competition_adjusted_gap": "Carriers, brokers and Amazon's own Accelerator already cover the whole job at no extra cost to the seller (ECO4-E3, ECO4-E1).",
+    "market_depth": "Many Amazon sellers exceed $10,000 per month (ECO4-E2), but the number reachable by a new agency is unknown.",
+    "end_to_end_automation": "Quote forms and certificate issuance are largely automated by carriers, but the entrant would still need a licensed principal and carrier appointments (ECO4-E3).",
+    "capital_risk": "Licensing, errors-and-omissions cover and carrier appointments are modest in cash but nonzero; exact costs unverified.",
+    "owner_time_support": "Onboarding, customer service and renewals demand some owner time (ECO4-E6)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "Soliciting or selling insurance requires a state producer licence (unverified; not researched) and carrier appointments; any adult can generally apply, so the licence is a cost of entry, not a moat.",
+    "ECO4-E2 and ECO4-E6: the Amazon requirement is a platform rule, not law; sources disagree on the threshold wording (one says $10,000 in a month, another says over three consecutive months), so the exact trigger is unverified.",
+    "ECO4-E5: the 10-20% commission figure comes from a vendor blog and is not specific to Amazon-seller policies; confirm with carriers."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Assumptions: premium about $300/yr, commission 12.5% = $37.50 per policy-year; 600 policies = $22.5k revenue vs $10k costs (licence, E&O, software, ads). Pessimistic ($30 per policy-year, 300 policies = $9k vs costs x1.5 = $15k) is negative. Policy counts are unsupported."
+    },
+    "killReasons": [
+     {
+      "reason": "Amazon's Insurance Accelerator, built with Marsh and listing major carriers, already lets sellers compare and buy compliant cover inside Seller Central for free, so a free alternative covers the entire wedge.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "ECO4-E3"
+     },
+     {
+      "reason": "Per-policy economics are tiny (roughly $30-$80 commission per year on a $22-$33 monthly premium) and a broker cannot undercut carrier price.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "ECO4-E4"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: Amazon's Accelerator network (ECO4-E3) and carriers selling direct from about $25 per month (ECO4-E1, ECO4-E4) fully cover the wedge at no extra cost to the seller, the only moat (a producer licence) is open to anyone, and commission of roughly 10-20% on a $300 policy (ECO4-E5) yields about $30-$80 per policy-year. Unverified: Amazon's admission rules for new Accelerator participants (the source did not say) and the exact sales trigger."
+  }
+ ]
+}

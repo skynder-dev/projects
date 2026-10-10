@@ -1,0 +1,382 @@
+{
+ "id": "ECO-2",
+ "verdict": "killed",
+ "verdictReason": "Killed. The wedge is already sold with published prices: Eldris per-country all-in (DE GBP 185), Lizenzero 31 countries with the representative included (EUR 299-499), Ecosistant EUR 250. Local seats are a cost, not an edge: a German UG alone is about EUR 5,500 first-year fixed cost vs EUR 140-300 prices; pessimistic case loses about USD 11,600, above start cash. The representative is itself liable under German guidance, and the duty is under Omnibus review.",
+ "answers": [
+  {
+   "question": "Open Q1: What does it really cost, and how bankable is it, for a non-resident stranger to form a legal seat per member state?",
+   "answer": "Only Germany could be priced from public pages: a UG costs about EUR 531 (standard articles) to EUR 1,171 (custom articles) plus share capital (EUR 1 minimum, EUR 1,000-2,000 typical), needs a valid German business address, notarial steps that are hard for non-residents to do remotely, slower KYC bank onboarding, and accounting of roughly EUR 800-2,000 for even a short first period. The German register authority requires the representative to have a company seat or branch in Germany and a signed German-language contract. One seat covers one country only. Other countries' formation costs and bank access were not verified. Modelled seat-only first-year cost is about EUR 5,500 for Germany, i.e. about 29 subscribers at EUR 190 before any variable cost.",
+   "evidenceIds": [
+    "ECO-2-D9",
+    "ECO-2-D11",
+    "ECO-2-D12",
+    "ECO-2-D13",
+    "ECO-2-D14",
+    "ECO-2-D23"
+   ]
+  },
+  {
+   "question": "Open Q2: Will enforcement force small DTC sellers to buy before the entrant runs out of cash?",
+   "answer": "Partly. Marketplaces collect the registration number and pause sales where it is missing, and Etsy is reported to enforce in Germany and France, but Etsy does not act as representative and Amazon Italy says a missing number does not stop selling. Demand is real in the sense that the duty is mandatory, but a seller quote of 'not financially feasible' and the geoblock option show many will not buy, and buyers anchor on EUR 140-300 per country-year. First revenue is plausible within 365 days but volume is unproven.",
+   "evidenceIds": [
+    "ECO-2-D15",
+    "ECO-2-D16",
+    "ECO-2-D21",
+    "ECO-2-D22"
+   ]
+  },
+  {
+   "question": "Open Q3: Does the representative carry liability that insurance would price above the market rate?",
+   "answer": "Liability is real: in Germany the representative is itself responsible for the obligations it takes over (all producer duties except registration, no partial mandate). No public insurance price was found, so whether cover exceeds the EUR 140-300 market price is unverified; the exposure alone is a major risk for a thinly capitalised newcomer.",
+   "evidenceIds": [
+    "ECO-2-D10",
+    "ECO-2-D11"
+   ]
+  },
+  {
+   "question": "Do multi-country providers publish transparent prices (the entrant edge falsifier b)?",
+   "answer": "Yes. Eldris publishes an all-in per-country price list with a multi-country discount, Lizenzero publishes about EUR 499/299 per country and integrates the representative in 31 countries, Ecosistant publishes EUR 250 for Germany, and a freelancer lists USD 179 per country. Falsifier (b) is met: the quote-only picture in the original scan was incomplete.",
+   "evidenceIds": [
+    "ECO-2-D1",
+    "ECO-2-D2",
+    "ECO-2-D3",
+    "ECO-2-D4",
+    "ECO-2-D5",
+    "ECO-2-D6"
+   ]
+  },
+  {
+   "question": "Is the duty itself stable for non-EU sellers?",
+   "answer": "Not yet settled. The Council did not proceed with suspending the representative duty, the ENVI draft would limit any suspension to EU-established micro and small firms, EXPRA says Member States may still mandate representatives for non-EU producers, while another summary says the draft deletes the option to require one for third-country producers. Committee vote planned for October 2026; Etsy petitions for a low-volume pathway. Outcome unknown as of 2026-10-10.",
+   "evidenceIds": [
+    "ECO-2-D17",
+    "ECO-2-D18",
+    "ECO-2-D19",
+    "ECO-2-D20"
+   ]
+  }
+ ],
+ "newEvidence": [
+  {
+   "id": "ECO-2-D1",
+   "url": "https://epr.eldris.ai/data-centre/epr-registration-guides/ppwr-packaging-epr-cost-by-country-2026/",
+   "quote": "Each price covers the registration, the annual reporting and the authorised representative where the law requires one",
+   "kind": "incumbent_price",
+   "publisher": "Eldris (epr.eldris.ai) price list, 2026",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D2",
+   "url": "https://epr.eldris.ai/data-centre/epr-registration-guides/ppwr-packaging-epr-cost-by-country-2026/",
+   "quote": "pays £1,740 a year after the automatic 5% multi-country discount (£1,830 before it)",
+   "kind": "incumbent_price",
+   "publisher": "Eldris (epr.eldris.ai) price list, 2026",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D3",
+   "url": "https://www.compliancegate.com/authorised-representatives-eu-packaging-regulation-ppwr/",
+   "quote": "pricing starts at 499 Euros per country (299 from the second year)",
+   "kind": "incumbent_price",
+   "publisher": "ComplianceGate guide quoting Lizenzero's website (second-hand price)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D4",
+   "url": "https://www.interzero.de/en/services/licensing/lizenzero",
+   "quote": "Authorised Representative: We handle communication with the relevant EPR systems for your evidence and take care of the authorised representative in each country.",
+   "kind": "other",
+   "publisher": "Interzero / Lizenzero (31 countries)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D5",
+   "url": "https://www.ecosistant.eu/en/services/packaging-authorized-representative/",
+   "quote": "covers all responsibilities we perform as your authorized representative",
+   "kind": "incumbent_price",
+   "publisher": "Ecosistant (EUR 250/year Germany, up to 1 tonne; page shows price separately)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D6",
+   "url": "https://fiverr.com/maki_novko/be-your-divid-authorized-representative-for-epr-single-single-use-plastics",
+   "quote": "$179 per country for registration costs and declaration for year 1.",
+   "kind": "incumbent_price",
+   "publisher": "Fiverr gig listing (freelancer maki_novko); scope is EPR registration/declaration incl. single-use plastics",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D7",
+   "url": "https://apps.shopify.com/ppwr-epr-compliance",
+   "quote": "Unlimited orders, flat price",
+   "kind": "incumbent_price",
+   "publisher": "Shopify App Store, Hawkins.Tech Inc. (USD 14.99/month, reporting/data only)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D8",
+   "url": "https://apps.shopify.com/packaging-epr",
+   "quote": "Generate LUCID, SYDEREP and UK EPR reports from paid orders and packaging mappings.",
+   "kind": "other",
+   "publisher": "Shopify App Store, MiniSage Tech (USD 29/month 1 country, USD 49/month all countries)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D9",
+   "url": "https://www.verpackungsregister.org/ppwr/bevollmaechtigung",
+   "quote": "die einen Unternehmenssitz oder eine Niederlassung in Deutschland hat",
+   "kind": "constraint",
+   "publisher": "Zentrale Stelle Verpackungsregister (official German register authority)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D10",
+   "url": "https://verpackungsregister.org/fileadmin/files/Erklaermaterialien/Bevollmaechtigung_Hinweise_zur_Vertragsgestaltung.pdf",
+   "quote": "Der Bevollmächtigte ist somit auch selbst für die Erfüllung der übernommenen Pflichten nach dem VerpackG verantwortlich.",
+   "kind": "constraint",
+   "publisher": "Zentrale Stelle Verpackungsregister (official guidance on Bevollmaechtigung contracts)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D11",
+   "url": "https://verpackungsregister.org/fileadmin/files/Erklaermaterialien/Bevollmaechtigung_Hinweise_zur_Vertragsgestaltung.pdf",
+   "quote": "Der Vertrag muss in deutscher Sprache abgefasst sein",
+   "kind": "constraint",
+   "publisher": "Zentrale Stelle Verpackungsregister (official guidance on Bevollmaechtigung contracts)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D12",
+   "url": "https://www.firma.de/en/company-formation/how-to-start-a-ug-company-the-ultimate-formation-checklist/",
+   "quote": "approx. €1,171 + share capital",
+   "kind": "other",
+   "publisher": "firma.de (UG formation checklist; custom articles, solo founder)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D13",
+   "url": "https://www.firma.de/en/company-formation/how-to-start-a-ug-company-the-ultimate-formation-checklist/",
+   "quote": "accounting expenses of roughly €800 to €2,000",
+   "kind": "other",
+   "publisher": "firma.de (UG formation checklist; estimate for a UG formed shortly before year-end)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D14",
+   "url": "https://www.firma.de/en/company-formation/how-to-start-a-ug-company-the-ultimate-formation-checklist/",
+   "quote": "a valid German business address",
+   "kind": "constraint",
+   "publisher": "firma.de (UG formation checklist; non-residents)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D15",
+   "url": "https://www.listadum.com/blog/eu-packaging-regulations-for-etsy-sellers",
+   "quote": "Etsy only collects your number. You still register yourself, join a scheme, and pay.",
+   "kind": "demand",
+   "publisher": "Listadum blog (Etsy seller guide)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D16",
+   "url": "https://www.listadum.com/blog/eu-packaging-regulations-for-etsy-sellers",
+   "quote": "Marketplaces have to check your registration, so the usual enforcement is your sales to that country getting paused.",
+   "kind": "demand",
+   "publisher": "Listadum blog (Etsy seller guide)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D17",
+   "url": "https://erp-recycling.org/news-and-events/2026/08/environmental-omnibus-council-adopts-position-and-envi-drafts-epr-simplification-reports/",
+   "quote": "Votes are planned for October (AR) and November (reporting frequency).",
+   "kind": "constraint",
+   "publisher": "ERP Recycling (Environmental Omnibus update)",
+   "date": "2026-08-07",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D18",
+   "url": "https://erp-recycling.org/news-and-events/2026/08/environmental-omnibus-council-adopts-position-and-envi-drafts-epr-simplification-reports/",
+   "quote": "deletes the provision that would allow Member States to require an AR for producers based in third countries",
+   "kind": "constraint",
+   "publisher": "ERP Recycling (Environmental Omnibus update)",
+   "date": "2026-08-07",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D19",
+   "url": "https://expra.eu/2026/06/29/parliament-takes-a-more-targeted-approach-to-the-epr-authorised-representative-suspension/",
+   "quote": "Member States may still mandate authorised representatives for non-EU producers",
+   "kind": "constraint",
+   "publisher": "EXPRA (producer responsibility organisations' association)",
+   "date": "2026-06-29",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D20",
+   "url": "https://www.valueaddedresource.net/etsy-petition-eu-packaging-rules/",
+   "quote": "introduce a simplified pathway for low-volume sellers",
+   "kind": "constraint",
+   "publisher": "Value Added Resource (reporting Etsy's September 2026 petition)",
+   "date": "2026-09-11",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D21",
+   "url": "https://ppc.land/eu-packaging-law-forces-sellers-to-register-in-up-to-27-countries/",
+   "quote": "Registration and representation are fixed costs per market, independent of volume.",
+   "kind": "demand",
+   "publisher": "PPC Land",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D22",
+   "url": "https://www.expan.do/post/authorised-representative-epr-obligation-from-12-august-2026",
+   "quote": "Amazon has stated explicitly that a missing number does not affect the ability to sell.",
+   "kind": "constraint",
+   "publisher": "Expando",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-2-D23",
+   "url": "https://www.expan.do/post/authorised-representative-epr-obligation-from-12-august-2026",
+   "quote": "The representative has to be established in that specific country — one for the whole EU is not enough.",
+   "kind": "constraint",
+   "publisher": "Expando",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  }
+ ],
+ "newAlternatives": [
+  {
+   "label": "Eldris: published per-country all-in price list (registration + annual reporting + authorised representative where required); Germany GBP 185/yr, France GBP 295/yr, 5-country bundle GBP 1,740/yr with 5% multi-country discount (USD/month at assumed 1 GBP = 1.30 USD, Germany only)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 20.04,
+   "coversWedge": "full",
+   "sourceLocator": "https://epr.eldris.ai/data-centre/epr-registration-guides/ppwr-packaging-epr-cost-by-country-2026/",
+   "evidenceRef": "ECO-2-D1"
+  },
+  {
+   "label": "Lizenzero (Interzero): digital one-stop shop for 31 countries with authorised representative integrated; EUR 499 per country in year 1, EUR 299 from year 2 (second-hand price; USD/month at assumed 1 EUR = 1.15 USD, first-year, one country)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 47.82,
+   "coversWedge": "full",
+   "sourceLocator": "https://www.interzero.de/en/services/licensing/lizenzero",
+   "evidenceRef": "ECO-2-D4"
+  },
+  {
+   "label": "Ecosistant: Germany-only authorised representative, EUR 250/year up to 1 tonne, covers dual-system agreement, LUCID reporting and declarations (other countries by quote)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 23.96,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.ecosistant.eu/en/services/packaging-authorized-representative/",
+   "evidenceRef": "ECO-2-D5"
+  },
+  {
+   "label": "Freelancer gig (Fiverr): EPR authorised representative registration and declaration, USD 179 per country in year 1, USD 139 later (DE/FR/SE/AT/BE); legal sufficiency and scope for general packaging not verified",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 14.92,
+   "coversWedge": "partial",
+   "sourceLocator": "https://fiverr.com/maki_novko/be-your-divid-authorized-representative-for-epr-single-single-use-plastics",
+   "evidenceRef": "ECO-2-D6"
+  },
+  {
+   "label": "Shopify reporting apps (Hawkins.Tech USD 14.99/month flat; MiniSage Packaging EPR USD 29 or 49/month) that compute per-country packaging declarations and export LUCID/SYDEREP files; no authorised representative",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 14.99,
+   "coversWedge": "partial",
+   "sourceLocator": "https://apps.shopify.com/ppwr-epr-compliance",
+   "evidenceRef": "ECO-2-D7"
+  }
+ ],
+ "killReasons": [
+  {
+   "reason": "The wedge (flat annual per-country subscription with a locally seated representative, registration and reporting) is already sold with published prices: Eldris all-in per-country list (DE GBP 185, FR GBP 295), Lizenzero 31 countries with the representative integrated (EUR 299-499 per country), Ecosistant EUR 250 Germany. The coverage gap noted earlier (single-country providers) is closed and the edge falsifier (b) is triggered.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "ECO-2-D1"
+  },
+  {
+   "reason": "Seat economics do not work for a stranger: a German UG alone costs about EUR 1,171 to form plus about EUR 2,000/yr accounting, needs a German business address and a German-language signed mandate, against retail prices of EUR 140-300 per country-year; Germany alone needs roughly 29 subscribers just to cover the seat (assumption-based). Pessimistic case loses more than the entire USD 8,000 start cash.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "ECO-2-D12"
+  },
+  {
+   "reason": "The representative is itself legally responsible for all producer duties except registration (all-or-nothing), per the German register authority; an under-capitalised micro-company would carry that exposure for clients' unverifiable packaging data, and no insurance price was found.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "ECO-2-D10"
+  },
+  {
+   "reason": "Legislative risk: the Environmental Omnibus is reopening the representative duty with committee votes planned for October 2026, and Etsy is petitioning for a simplified low-volume pathway; sources conflict on whether third-country producers stay covered.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "ECO-2-D17"
+  },
+  {
+   "reason": "No structural edge: the local-seat requirement is the same for everyone and incumbents already hold seats; for the entrant it is a cost to build, not a moat.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "ECO-2-D9"
+  }
+ ],
+ "economics": {
+  "revenue365": 13110,
+  "cost365": 13744,
+  "pessimisticProfit365": -11645,
+  "survivesPessimistic": false,
+  "assumptions": [
+   "All figures in USD; assumed FX 1 EUR = 1.15 USD and 1 GBP = 1.30 USD (assumption).",
+   "Reference entrant builds one German UG seat and resells partner seats elsewhere; price EUR 190 per country-year (ECO-2-D1/ECO-2-D3 retail range EUR 140-300; ECO-2 earlier E1 EUR 190).",
+   "Volume: 60 prepaid country-subscriptions sold between day 150 and day 365 (assumption: 25 customers x ~2.4 countries; no source, no network).",
+   "Revenue base = 60 x EUR 190 = EUR 11,400 = USD 13,110.",
+   "Costs base (EUR): UG formation 1,171 (ECO-2-D12); German registered address 360 (assumption); accounting 2,000 (upper end of ECO-2-D13, assumption for a full year); liability insurance 1,000 (assumption, unverified); German-language mandate contract by a lawyer 1,000 (assumption, ECO-2-D11); website and tools 600 (assumption); marketing 1,500 (assumption); partner-seat wholesale for 36 non-German subscriptions x EUR 120 = 4,320 (assumption, wholesale price unverified). Total EUR 11,951 = USD 13,744. Share capital of about EUR 1,500 is tied up, not counted as cost.",
+   "Base profit about -USD 634 (break-even at best).",
+   "Pessimistic: price x0.8 = EUR 152, volume x0.5 = 30 subscriptions, revenue EUR 4,560; fixed costs EUR 7,631 plus variable EUR 2,160, all x1.5 = EUR 14,687; profit -EUR 10,127 = -USD 11,645, which exceeds the USD 8,000 reference start cash.",
+   "Per-country formation, banking and insurance costs outside Germany were not researched; treated as at least the German level."
+  ],
+  "sources": [
+   "ECO-2-D1",
+   "ECO-2-D3",
+   "ECO-2-D12",
+   "ECO-2-D13",
+   "ECO-2-D11"
+  ]
+ },
+ "legalNotes": [
+  "Germany (official register authority): the representative must be an external person or company with a seat or branch in Germany, appointed under a signed German-language written contract, effective only once confirmed in LUCID; the producer's own registration stays its personal duty; no exemption (ECO-2-D9, ECO-2-D11).",
+  "The German representative is itself responsible for the producer duties it takes over (all except registration, no partial mandate), so a thin company would carry regulatory and fine exposure (ECO-2-D10); fine amounts (up to EUR 100,000 / 200,000) come from secondary pages and were not checked against the statute.",
+  "Per-country establishment: provider summaries say one representative per Member State, established there (ECO-2-D23); PPWR Article 45 text itself could not be read (EUR-Lex page was truncated), so scope for third-country producers is taken from secondary sources that partly conflict (ECO-2-D18, ECO-2-D19).",
+  "Legislative flux: Environmental Omnibus votes on the representative duty planned for October 2026 (ECO-2-D17); the duty could be narrowed or reshaped during the first year.",
+  "Owner-independence: forming a UG as a non-resident needs a German business address, notary steps and bank KYC (ECO-2-D14); other countries unresearched. No ToS issues arose; only public pages were read (24 page reads, no logins or contact)."
+ ],
+ "unverified": [
+  "Text of PPWR Article 45(3) from the Official Journal (EUR-Lex fetch was truncated); whether non-EU producers must appoint a representative in every Member State or only where Member States require it (secondary sources conflict).",
+  "Outcome of the October 2026 ENVI vote on the representative suspension and whether third-country producers stay in scope.",
+  "Wholesale price at which an existing seat holder would white-label a representative to a reseller (assumed EUR 120).",
+  "Liability insurance price for a representative; formation, address, accounting and bank-account costs outside Germany.",
+  "Eldris, Lizenzero (second-hand via ComplianceGate), Ecosistant and Fiverr price pages are undated; fetched text was summarised by a fetch tool so quotes are as returned by it.",
+  "Fine amounts and Etsy enforcement in Germany/France come from secondary seller-guide pages.",
+  "Real conversion and acquisition cost for small DTC sellers (volume 60 is an assumption)."
+ ],
+ "nextStep": ""
+}

@@ -1,0 +1,140 @@
+{
+ "results": [
+  {
+   "candidateId": "DAT-1",
+   "evidenceId": "DAT-1-E1",
+   "url": "https://infotechinc.com/bid-x-fee-schedule",
+   "status": "confirmed",
+   "note": "Monthly Core pricing lists Competitive Analysis Suite for $60/month. Yearly option is $648/year ($54/mo); not contradictory.",
+   "pageSnippet": "Competitive Analysis Suite for $60/month (monthly pricing); Competitive Analysis Suite for $648/year (yearly pricing)"
+  },
+  {
+   "candidateId": "DAT-1",
+   "evidenceId": "DAT-1-E2",
+   "url": "https://www.omanco.com/",
+   "status": "confirmed",
+   "note": "Fragment is verbatim; on the page the sentence continues ('to price work, manage crews, and track production...'), so the quote's period is truncation only.",
+   "pageSnippet": "Contractors, subcontractors, and DOTs in many states rely on Oman Systems to price work, manage crews, and track production"
+  },
+  {
+   "candidateId": "DAT-2",
+   "evidenceId": "DAT-2-E4",
+   "url": "https://ladmf.ntis.gov/",
+   "status": "confirmed",
+   "note": "Bullet lists the $2,930.00 annual fee exactly. Page also lists $247.00 (3-yearly ACAB attestation) and $268.00 (firewalled in-house) fees, which are separate.",
+   "pageSnippet": "Annually pay the $2,930.00 LADMF Subscriber Certification Form processing fee at"
+  },
+  {
+   "candidateId": "DAT-2",
+   "evidenceId": "DAT-2-E6",
+   "url": "https://streamlineverify.com/death-master-files/",
+   "status": "confirmed",
+   "note": "Sentence is verbatim, but it sits in a 2017 article ('New NTIS Guidelines Limit Access To the Death Master File'), so the claim may be dated.",
+   "pageSnippet": "Streamline Verify is already a certified subscriber of the LADMF."
+  },
+  {
+   "candidateId": "DAT-3",
+   "evidenceId": "DAT-3-E3",
+   "url": "https://redica.com/who-can-see-form-fda-483s-and-where-do-i-get-them/",
+   "status": "confirmed",
+   "note": "Wording matches (page reads 'you may end up paying hundreds of dollars and waiting hundreds of days before getting it'), in the section on requesting unpublished 483s.",
+   "pageSnippet": "you may end up paying hundreds of dollars and waiting hundreds of days before getting it."
+  },
+  {
+   "candidateId": "DAT-3",
+   "evidenceId": "DAT-3-E5",
+   "url": "https://datadashboard.fda.gov/oii/cd/inspections.htm",
+   "status": "confirmed",
+   "note": "Exact sentence appears in the Caveats section.",
+   "pageSnippet": "The datasets are updated weekly and only include final actions."
+  },
+  {
+   "candidateId": "DAT-4",
+   "evidenceId": "DAT-4-E4",
+   "url": "https://www.cslb.ca.gov/onlineservices/dataportal/ContractorList.aspx",
+   "status": "confirmed",
+   "note": "Under 'Fee' heading for download of Master List of California Licensed Contractors (License Master, Workers' Comp, Personnel files; Excel/CSV).",
+   "pageSnippet": "There is no charge for this service."
+  },
+  {
+   "candidateId": "DAT-4",
+   "evidenceId": "DAT-4-E1",
+   "url": "https://www.insurance-forums.com/community/threads/business-x-dates.53254/latest",
+   "status": "confirmed",
+   "note": "Forum post by a user says a vendor (possibly Beacon Marketing) quoted $7,000.00 for an annual subscription to lists. Anecdotal user post, not a vendor price page.",
+   "pageSnippet": "Is it Beacon Marketing? They quoted me $7,000.00 for an annual subscription to have access to lists."
+  },
+  {
+   "candidateId": "ECO-1",
+   "evidenceId": "ECO1-E4",
+   "url": "https://www.ecfr.gov/current/title-19/chapter-I/part-111/subpart-A/section-111.1",
+   "status": "confirmed",
+   "note": "Phrase appears in the 'customs business' definition in 19 CFR 111.1 (the refund, rebate, or drawback of duties, taxes, or other charges). Quote is a fragment of a longer sentence.",
+   "pageSnippet": "the refund, rebate, or drawback of those duties, taxes, or other charges"
+  },
+  {
+   "candidateId": "ECO-1",
+   "evidenceId": "ECO1-E5",
+   "url": "https://info.redstonegci.com/blog/businesses-can-now-claim-ieepa-tariff-refunds-through-the-new-portal",
+   "status": "confirmed",
+   "note": "Appears as a bullet under 'Requesting refunds of IEEPA duties requires only the following summarized actions'; page lacks the final period but wording is identical.",
+   "pageSnippet": "Importers of Record and authorized Customs brokers submit CAPE Declarations in the ACE Portal"
+  },
+  {
+   "candidateId": "ECO-2",
+   "evidenceId": "ECO2-E4",
+   "url": "https://eprrepresentative.com/blog/ppwr-article-45-packaging-exporters-guide",
+   "status": "confirmed",
+   "note": "Clause appears verbatim in section 'What does Article 45 mean for EPR providers, VAT firms and 3PLs?' as the meaning of 'established'.",
+   "pageSnippet": "\"established\" means a registered legal seat in the Member State, not necessarily staff there."
+  },
+  {
+   "candidateId": "ECO-2",
+   "evidenceId": "ECO2-E2",
+   "url": "https://avask.com/?p=22170",
+   "status": "confirmed",
+   "note": "Bullet: EUR 24.99 annual service fee plus 3% of eco-contributions, per category, for France/Spain (auto-enrolled non-compliant sellers). UK is a separate GBP 20 fee.",
+   "pageSnippet": "€24.99 annual service fee plus 3% of eco‑contributions, per category."
+  },
+  {
+   "candidateId": "ECO-2",
+   "evidenceId": "ECO2-E7",
+   "url": "https://www.24hour-ar.com/eu-ppwr",
+   "status": "confirmed",
+   "note": "Sentence is verbatim but is a reply in the comments (by Inma Antequera, dated Sept 10, 2026), not main page copy.",
+   "pageSnippet": "We cover the EPR side through our partner."
+  },
+  {
+   "candidateId": "ECO-3",
+   "evidenceId": "ECO3-E1",
+   "url": "https://apify.com/malekh/prop-65-60-day-notice-settlement-benchmark",
+   "status": "confirmed",
+   "note": "Pricing header shows from $0.01 / 1,000 results. No conflicting price for this Actor (other $ figures belong to other actors or a competitor).",
+   "pageSnippet": "from $0.01 / 1,000 results"
+  },
+  {
+   "candidateId": "ECO-3",
+   "evidenceId": "ECO3-E4",
+   "url": "https://ceh.org/?p=21630",
+   "status": "confirmed",
+   "note": "Count 1,026 and 'since 2000' match; page gives '7 August' with no year (page dated Oct 31, 2019, so likely 2019). Data is old.",
+   "pageSnippet": "As of 7 August, 1,026 notices of intent to sue the company have been recorded since 2000 on California's Justice Department 60-day notice database."
+  },
+  {
+   "candidateId": "ECO-4",
+   "evidenceId": "ECO4-E3",
+   "url": "https://www.sellerassistant.app/blog/amazon-insurance-accelerator-program-all-you-need-to-know/",
+   "status": "confirmed",
+   "note": "Exact sentence appears in the 'List of Insurance Accelerator Providers' section.",
+   "pageSnippet": "Amazon has partnered with Marsh, a leading insurance broker, to establish a network of vetted insurance providers."
+  },
+  {
+   "candidateId": "ECO-4",
+   "evidenceId": "ECO4-E4",
+   "url": "https://www.nextinsurance.com/business/amazon-sellers/cost/",
+   "status": "confirmed",
+   "note": "'Between $22 and $33 per month' is verbatim in the General Liability list, but the page's own intro sentence says '63% of our customers between $21 to $33' (internal $21 vs $22 mismatch).",
+   "pageSnippet": "Between $22 and $33 per month. (intro: General liability insurance costs 63% of our customers between $21 to $33 per month.)"
+  }
+ ]
+}

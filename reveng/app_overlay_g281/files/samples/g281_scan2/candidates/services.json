@@ -1,0 +1,863 @@
+{
+ "candidates": [
+  {
+   "id": "SVC-1",
+   "name": "Flat-fee health-lien reduction desk for small personal-injury firms",
+   "family": "services",
+   "buyer": "Solo and small personal-injury law firms (1-10 attorneys) that settle cases carrying ERISA, Medicaid, hospital and private health-plan liens",
+   "pain": "Lien negotiation delays disbursement, ties up staff and (for Medicare) carries double-damages exposure; firms either handle it in-house or pay a specialist a flat fee of up to about $1,800 per case",
+   "wedge": "Outsourced negotiation of private-plan, Medicaid and hospital liens for a flat per-case fee, with the Medicare conditional-payment steps run through CMS's own portal",
+   "referenceEntrant": {
+    "startupCashUsd": 3500,
+    "daysToFirstRevenue": 90,
+    "ownerHoursPerWeek": 30
+   },
+   "entrantEdge": {
+    "type": "proprietary_or_compounding_data",
+    "status": "claimed",
+    "statement": "Each negotiated lien would add a record of payer-specific reduction outcomes (plan type, formula used, adjuster response) that makes the next negotiation faster and better, but this accrues only after volume and incumbents (Garretson/Epiq, ZipLiens) already hold far larger case histories, so the entrant has no data lead at launch. The other candidate edge, outcome-based pricing (percent of reduction), is restricted for non-lawyer vendors by the Utah opinion and capped to at-cost pass-through in New York.",
+    "evidenceIds": [
+     "SVC1-E2",
+     "SVC1-E3",
+     "SVC1-E4"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "CMS Medicare Secondary Payer Recovery Portal (conditional payment, dispute, waiver and compromise requests; no fee stated on the page; Medicare liens only)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.cms.gov/medicare/coordination-benefits-recovery/overview/secondary-payer-recovery-portal",
+      "evidenceRef": "SVC1-E6",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "In-house lien coordinator or paralegal with a spreadsheet or case-management lien module (no incremental cash cost; staff time)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://casepacer.com/resources/lien-tracking-for-personal-injury-firms-best-practices-and-tools",
+      "evidenceRef": "SVC1-E7",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Garretson Resolution Group (now part of Epiq): flat fee up to $1,800 per case, shown as one case per month",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 1800,
+      "coversWedge": "full",
+      "sourceLocator": "https://web.garretsongroup.com/blog/bid/53379/Medicare-Lien-Resolution-Service-Fees",
+      "evidenceRef": "SVC1-E1",
+      "metrics": {
+       "cash_cost": 1800
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 600,
+    "falsifier": "If small firms already close liens with in-house staff at zero incremental cash cost and decline a per-lien fee (assumed $600 flat for the entrant), or if a non-lawyer vendor cannot lawfully take a percent-of-reduction fee in the target state, there is no edge. Measured per lien case in USD cash; the in-house route is the best alternative."
+   },
+   "evidence": [
+    {
+     "id": "SVC1-E1",
+     "url": "https://web.garretsongroup.com/blog/bid/53379/Medicare-Lien-Resolution-Service-Fees",
+     "quote": "On single event cases where your firm is handing off one case at a time to us, we generally charge $1,800 per case.",
+     "kind": "incumbent_price",
+     "publisher": "Garretson Resolution Group",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC1-E2",
+     "url": "https://ezel.ai/ethics-opinions/utahbar/14-01-outsourcing-lien-resolution-cost-or-fee",
+     "quote": "the lawyer cannot treat the lien resolution fee as a cost to the client",
+     "kind": "constraint",
+     "publisher": "Utah State Bar Ethics Advisory Opinion 14-01 (via Ezel)",
+     "date": "2014-01",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC1-E3",
+     "url": "https://ezel.ai/ethics-opinions/utahbar/14-01-outsourcing-lien-resolution-cost-or-fee",
+     "quote": "charges a contingency fee based upon percentage of saving in cases that are more complex",
+     "kind": "incumbent_price",
+     "publisher": "Utah State Bar Ethics Advisory Opinion 14-01 (via Ezel)",
+     "date": "2014-01",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC1-E4",
+     "url": "https://www.nycla.org/resource/ethics-opinion/nycla-professional-ethics-committee-opinion-on-fees-for-specialized-counsel-retained-to-negotiate-a-docx/",
+     "quote": "the actual charges are passed on to the client at cost (without any overage or surcharge)",
+     "kind": "constraint",
+     "publisher": "NYCLA Professional Ethics Committee Opinion 739",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC1-E5",
+     "url": "https://attorneyatlawmagazine.com/public-articles/health-law/untangling-the-complexities-of-healthcare-lien-resolution",
+     "quote": "Delays from lienholders can jeopardize disbursement of funds, frustrate clients, and tie up law firm resources.",
+     "kind": "demand",
+     "publisher": "Attorney at Law Magazine (article by a lien-resolution firm principal)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC1-E6",
+     "url": "https://www.cms.gov/medicare/coordination-benefits-recovery/overview/secondary-payer-recovery-portal",
+     "quote": "Obtain the current conditional payment amount",
+     "kind": "other",
+     "publisher": "CMS (Medicare Secondary Payer Recovery Portal page)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC1-E7",
+     "url": "https://casepacer.com/resources/lien-tracking-for-personal-injury-firms-best-practices-and-tools",
+     "quote": "begin by assigning responsibility to a dedicated member or department, who tracks negotiation status and deadlines.",
+     "kind": "other",
+     "publisher": "CasePacer (case-management vendor)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC1-E8",
+     "url": "https://www.remoterocketship.com/us/company/zipliens/",
+     "quote": "ZipLiens is a company that specializes in personal injury lien resolution services.",
+     "kind": "other",
+     "publisher": "Remote Rocketship (company profile aggregator)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 2,
+    "customer_problem_or_value": 6,
+    "distribution_advantage": 2,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 4,
+    "willingness_to_pay": 6,
+    "repeat_ltv_potential": 6,
+    "competition_adjusted_gap": 2,
+    "market_depth": 6,
+    "end_to_end_automation": 3,
+    "capital_risk": 8,
+    "owner_time_support": 3
+   },
+   "componentReasons": {
+    "entrant_edge": "The only candidate edge is outcome data that accrues with volume, which a new entrant lacks at launch while the percent-of-reduction pricing route is restricted for non-lawyer vendors (SVC1-E2, SVC1-E4).",
+    "customer_problem_or_value": "Lien handling genuinely delays disbursement and consumes firm resources, per the lien-resolution article (SVC1-E5).",
+    "distribution_advantage": "No privileged channel was found; incumbents already sell to law firms directly and the entrant has no trigger list or partner (SVC1-E8).",
+    "defensibility": "Nothing stops a competitor or the firm's own paralegal from doing the same work, and the in-house route is the described status quo (SVC1-E7).",
+    "absolute_gross_profit_potential": "Flat fees of roughly $750 to $1,800 per case set a ceiling and each case needs hours of skilled negotiation (SVC1-E1).",
+    "willingness_to_pay": "Firms demonstrably pay a specialist, with a stated fee of $1,800 per single-event case and lower fees on smaller cases (SVC1-E1).",
+    "repeat_ltv_potential": "A successful firm relationship recurs with each new settlement, but there is no contractual obligation to keep buying (SVC1-E5).",
+    "competition_adjusted_gap": "Garretson/Epiq, ZipLiens and in-house staff already cover the wedge, and the Medicare step has a CMS portal (SVC1-E1, SVC1-E6, SVC1-E8).",
+    "market_depth": "Personal-injury settlements with health-plan liens are common across all US states, though fee structures are constrained by state ethics rules (SVC1-E2).",
+    "end_to_end_automation": "Negotiation with plan administrators is mostly human back-and-forth; only tracking and letters can be templated (SVC1-E7).",
+    "capital_risk": "Startup spend is small because the service is labor and software only, with no inventory.",
+    "owner_time_support": "Each case needs a skilled negotiator and attorney-facing communication, so owner or staff time scales with volume (SVC1-E5)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "SVC1-E2: Utah opinion (2014, may have changed) says a lien-resolution fee can be passed to the client as a cost only if the work is accountant/appraiser-like and disclosed; if it is legal practice the lawyer cannot charge it as a cost and fee-splitting rules apply; contingency fees were described as proper only where the company is qualified to practice law. Other states unverified.",
+    "SVC1-E4: NYCLA Opinion 739 allows a specialist fee as a disbursement only at cost with a net benefit to the client on each lien and the referring attorney remaining responsible; so markups and pure outcome fees are constrained in New York.",
+    "Unauthorized practice of law and HIPAA business-associate duties would apply to a vendor handling client health information: unverified, not researched in depth; assume an attorney-supervised B2B structure."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "Illustrative assumptions: $600 flat fee, 10 cases a month, about 6 hours of contractor time at $25 per hour per case, $300 a month fixed costs. Pessimistic (price x0.8 = $480, 5 cases, cost x1.5) still leaves about $825 a month, which is far below a wage for the 30 hours a week of owner or staff time implied."
+    },
+    "killReasons": [
+     {
+      "reason": "An in-house lien coordinator or spreadsheet is the status quo at zero incremental cash cost, and the Medicare piece runs through a CMS portal with no fee stated; the wedge is covered for firms with any staff capacity.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "SVC1-E7"
+     },
+     {
+      "reason": "Percent-of-reduction (outcome) pricing is restricted for non-lawyer vendors in the Utah opinion and pass-through is capped at cost in New York, removing the one outcome-based edge.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SVC1-E2"
+     },
+     {
+      "reason": "Entrenched specialists (Garretson now under Epiq, ZipLiens) hold larger case histories; the data edge has no head start for a new entrant.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SVC1-E8"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: no structural edge. The Medicare step is a CMS portal (SVC1-E6), in-house staff already do the rest (SVC1-E7), specialists already sell flat-fee resolution up to about $1,800 per case (SVC1-E1, SVC1-E8), and the outcome-based pricing that could have been the edge is restricted for non-lawyer vendors (SVC1-E2, SVC1-E4)."
+  },
+  {
+   "id": "SVC-2",
+   "name": "Utility-program backflow assembly testing and annual-agreement route",
+   "family": "services",
+   "buyer": "Commercial properties, HOAs and property managers in water-utility service areas that require annual testing of backflow assemblies, plus water utilities that contract out their testing programs",
+   "pain": "A certified tester must test every commercial assembly each year and a report must reach the utility; managers juggle vendors and deadlines, and a commercial device test costs roughly $85 to $180",
+   "wedge": "A certified tester sells annual test agreements (test, report filing, next-year scheduling) to commercial properties and bids on utility-run contracted testing programs",
+   "referenceEntrant": {
+    "startupCashUsd": 4500,
+    "daysToFirstRevenue": 75,
+    "ownerHoursPerWeek": 35
+   },
+   "entrantEdge": {
+    "type": "regulatory_license_intrinsic_to_model",
+    "status": "claimed",
+    "statement": "State or utility tester certification is legally required, which excludes uncertified firms and makes the annual test a mandatory repeat purchase. However the certification is open to anyone who passes a 40-hour course and exam (Texas adds two years of experience), and one Florida utility alone lists about 57 registered testing companies, so the licence is a ticket to compete rather than a moat. A structural upside exists only where a utility contracts a single firm for all commercial devices, as Highlands Ranch Water does with Morrison; winning such a contract is unproven for a new entrant.",
+    "evidenceIds": [
+     "SVC2-E2",
+     "SVC2-E3",
+     "SVC2-E5"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Existing local certified testers and plumbers at $85-$180 per commercial device (about 12 devices at roughly $120 a year each shown per month)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 120,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.tommycool.com/blog/backflow-preventer-testing-cost",
+      "evidenceRef": "SVC2-E1",
+      "metrics": {
+       "channel_reach": 2
+      }
+     },
+     {
+      "label": "Utility-engaged single tester for all commercial devices (Highlands Ranch Water with Morrison; price not published on the page, market range assumed)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 120,
+      "coversWedge": "full",
+      "sourceLocator": "https://centennialwater.specialdistrict.org/commercial-backflow-testing",
+      "evidenceRef": "SVC2-E3",
+      "metrics": {
+       "channel_reach": 100
+      }
+     },
+     {
+      "label": "Do-it-yourself: property maintenance staff gets certified and buys a gauge kit (course $695-$1,650 plus kit $800-$1,200, amortized over a 3-year certification plus annual calibration)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 62,
+      "coversWedge": "partial",
+      "sourceLocator": "https://beancount.io/blog/2026/09/17/backflow-testing-business-bookkeeping-certification-contracts-gauge-calibration-guide",
+      "evidenceRef": "SVC2-E7",
+      "metrics": {
+       "channel_reach": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "channel_reach",
+    "direction": "higher_is_better",
+    "incumbentValue": 100,
+    "entrantValue": 0,
+    "falsifier": "channel_reach = percent of a utility district's commercial devices a tester can reach without paid acquisition (about 2 percent for one of roughly 57 listed testers, 100 for a utility-engaged sole tester). If the entrant wins no utility-run testing contract in its first 12 months of bidding, or the contracts on offer are tiny (one RFP covers 64 assemblies a year), there is no distribution edge and the business is a labor-bound route."
+   },
+   "evidence": [
+    {
+     "id": "SVC2-E1",
+     "url": "https://www.tommycool.com/blog/backflow-preventer-testing-cost",
+     "quote": "the cost is generally higher, usually falling somewhere between $85 and $180 per device.",
+     "kind": "incumbent_price",
+     "publisher": "Tommy Cool (Corpus Christi plumbing company blog)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC2-E2",
+     "url": "https://www.tceq.texas.gov/permitting/licensing/licenses/bpatlic",
+     "quote": "two years of experience",
+     "kind": "constraint",
+     "publisher": "Texas Commission on Environmental Quality",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC2-E3",
+     "url": "https://centennialwater.specialdistrict.org/commercial-backflow-testing",
+     "quote": "Highlands Ranch Water has engaged the services of Morrison Backflow Testing (Morrison)",
+     "kind": "other",
+     "publisher": "Centennial Water and Sanitation District (Highlands Ranch Water)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC2-E4",
+     "url": "https://centennialwater.specialdistrict.org/commercial-backflow-testing",
+     "quote": "requires all commercial backflow devices to be tested once per year",
+     "kind": "demand",
+     "publisher": "Centennial Water and Sanitation District (citing Colorado Dept of Public Health and Environment)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC2-E5",
+     "url": "https://assets.ecua.fl.gov/BPA-Testers-by-Company-2025.pdf",
+     "quote": "Companies with Certified Backflow Prevention Testers Registered with ECUA",
+     "kind": "other",
+     "publisher": "Emerald Coast Utilities Authority (Florida)",
+     "date": "2025",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC2-E6",
+     "url": "https://www.unalaska.gov/sites/default/files/fileattachments/Public%20Works/page/10014/052722_backflow_rfp.pdf",
+     "quote": "testing and certifying 64 backflow preventers on an annual basis",
+     "kind": "demand",
+     "publisher": "City of Unalaska, Alaska (RFP)",
+     "date": "2022-05",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC2-E7",
+     "url": "https://beancount.io/blog/2026/09/17/backflow-testing-business-bookkeeping-certification-contracts-gauge-calibration-guide",
+     "quote": "private training centers charge $695 to $1,650 including exam fees",
+     "kind": "other",
+     "publisher": "Beancount.io blog (secondary guide, not a regulator)",
+     "date": "2026-09",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC2-E8",
+     "url": "https://www.austintexas.gov/department/backflow-prevention-assembly-tester-information",
+     "quote": "As of July 25, 2022, all TMRs must be submitted online through the WEIRS database",
+     "kind": "constraint",
+     "publisher": "City of Austin (Austin Water)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 3,
+    "customer_problem_or_value": 6,
+    "distribution_advantage": 3,
+    "defensibility": 3,
+    "absolute_gross_profit_potential": 4,
+    "willingness_to_pay": 6,
+    "repeat_ltv_potential": 8,
+    "competition_adjusted_gap": 3,
+    "market_depth": 6,
+    "end_to_end_automation": 2,
+    "capital_risk": 8,
+    "owner_time_support": 2
+   },
+   "componentReasons": {
+    "entrant_edge": "Certification is legally required but open to any course graduate, and only the exclusive-utility-contract route could be structural and it is unproven for an entrant (SVC2-E2, SVC2-E3, SVC2-E5).",
+    "customer_problem_or_value": "Annual testing by a certified tester is mandatory and owners must produce reports to the utility, a real compliance chore (SVC2-E4, SVC2-E8).",
+    "distribution_advantage": "Utilities publish lists of registered testers and some engage one tester for all commercial devices, but a new entrant is one of about 57 listed firms with no preferred access (SVC2-E3, SVC2-E5).",
+    "defensibility": "Annual agreements and route density create some stickiness, but any certified tester can quote the same property next year (SVC2-E1, SVC2-E5).",
+    "absolute_gross_profit_potential": "A solo tester at $85 to $180 per device earns a decent wage but the profit is capped by one person's visits per day, and one municipal contract covered only 64 assemblies (SVC2-E1, SVC2-E6).",
+    "willingness_to_pay": "Property managers must buy the test and pay market rates of $85 to $180 per commercial device (SVC2-E1).",
+    "repeat_ltv_potential": "The test is required every year, so a captured property recurs for as long as it stays (SVC2-E4).",
+    "competition_adjusted_gap": "Dozens of certified testers already compete in one utility area, so there is no unserved gap (SVC2-E5).",
+    "market_depth": "Every water utility with a cross-connection program creates demand, from small districts to cities (SVC2-E4, SVC2-E6).",
+    "end_to_end_automation": "The test is a physical visit with a gauge kit, so only scheduling and report submission can be automated (SVC2-E8).",
+    "capital_risk": "A course, a gauge kit and insurance cost a few thousand dollars in total (SVC2-E7).",
+    "owner_time_support": "The certified tester must be on site for each visit, so the model is labor-bound unless additional certified staff are hired (SVC2-E2, SVC2-E7)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "SVC2-E2: Texas requires a TCEQ BPAT licence with two years of qualifying experience (partly substitutable), a 40-hour course and a $111 application fee, so a stranger cannot enter Texas within a year; open-entry states or counties (a California county page lists a 40-hour approved course and renewal every 3 years) are required.",
+    "SVC2-E8: Austin Water requires test reports to be submitted online through the WEIRS database within five calendar days; each utility has its own reporting platform and registration steps.",
+    "Fire-line assemblies may be restricted to approved fireline contractors in some states (Texas), and liability insurance is needed: insurance price and fire-line rules are from secondary sources and unverified for other states."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "Illustrative assumptions: 600 tests a year at $110, $45 cost per visit (a secondary source gives $35-$55 and does not say whether it includes the tester's own pay), $2,000 a year fixed costs. Baseline profit about $37,000. Pessimistic (price x0.8 = $88, 300 tests, cost x1.5 = $67.50, fixed x1.5) leaves about $3,100, which is near zero per hour of the tester's time."
+    },
+    "killReasons": [
+     {
+      "reason": "Certification is open (course plus exam) and about 57 companies are registered with a single utility, so the licence does not exclude competitors.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SVC2-E5"
+     },
+     {
+      "reason": "Labor-bound field service: the certified tester must visit each device, so profit scales with owner or hired-tester hours, not with the business.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SVC2-E7"
+     },
+     {
+      "reason": "Texas requires two years of experience before licensing, so the reference entrant must pick an open-entry state or county.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "SVC2-E2"
+     }
+    ]
+   },
+   "researcherVerdict": "uncertain",
+   "verdictReason": "Open question: can a new certified tester win utility-run testing contracts (a utility engaging one firm for all commercial devices, as Highlands Ranch Water does) at a size that makes the route worth more than a job? The licence alone is not a moat (about 57 registered firms at one utility, SVC2-E5) and the one municipal RFP found covered only 64 assemblies a year (SVC2-E6). Demand and recurrence are real (SVC2-E1, SVC2-E4)."
+  },
+  {
+   "id": "SVC-3",
+   "name": "EU responsible-person subscription for non-EU product sellers (GPSR)",
+   "family": "services",
+   "buyer": "Non-EU brands and marketplace sellers (Amazon, eBay, Etsy) that ship consumer products to EU buyers and have no EU importer or distributor",
+   "pain": "Since the General Product Safety Regulation applied on 13 December 2024, listings without a named EU responsible person are suppressed or removed; sellers report marketplace-listed providers at EUR 650 to 2,000 a year",
+   "wedge": "An annual subscription in which an EU-established company acts as the product's responsible person, keeps the technical documentation and label data, and is the authority contact",
+   "referenceEntrant": {
+    "startupCashUsd": 8500,
+    "daysToFirstRevenue": 150,
+    "ownerHoursPerWeek": 20
+   },
+   "entrantEdge": {
+    "type": "embedded_workflow_or_system_of_record",
+    "status": "claimed",
+    "statement": "The responsible person's name and address must appear on the product label and match the seller's marketplace record, and technical documentation must be kept for 10 years, so changing provider means relabeling stock; that lock-in raises retention once a customer is won. It gives no acquisition edge, and every incumbent has the same lock-in: EAS already claims 4,000+ businesses at EUR 199 a year and up, and an EU importer or distributor often costs nothing extra.",
+    "evidenceIds": [
+     "SVC3-E6",
+     "SVC3-E5",
+     "SVC3-E7"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Use an EU-based importer or distributor as responsible person (often no additional cost per the cost guide)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://euverify.com/resource/authorised-representative-costs-guide/",
+      "evidenceRef": "SVC3-E2",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "EAS GPSR Compliance Service: EUR 199 a year for 1 product type (about $18 a month at roughly 1.10 USD per EUR, approximate)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 18,
+      "coversWedge": "full",
+      "sourceLocator": "https://help.easproject.com/eas-gpsr-compliance-service",
+      "evidenceRef": "SVC3-E1",
+      "metrics": {
+       "cash_cost": 18
+      }
+     },
+     {
+      "label": "Amazon-listed service providers quoted by a seller at EUR 650-2,000 a year (midpoint EUR 1,325, about $120 a month, approximate)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 120,
+      "coversWedge": "full",
+      "sourceLocator": "https://sellercentral-europe.amazon.com/seller-forums/discussions/t/d2c4b0b5-7e83-4d6d-9dd6-2d6254a65375",
+      "evidenceRef": "SVC3-E3",
+      "metrics": {
+       "cash_cost": 120
+      }
+     },
+     {
+      "label": "Form the seller's own EU company: EUR 2,000-10,000 to form plus EUR 1,000-5,000 a year (mid-range about $275 a month, approximate)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 275,
+      "coversWedge": "full",
+      "sourceLocator": "https://euverify.com/resource/authorised-representative-costs-guide/",
+      "evidenceRef": "SVC3-E8",
+      "metrics": {
+       "cash_cost": 275
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 15,
+    "falsifier": "If sellers with an EU importer or distributor pay nothing extra and the rest can buy EAS or another provider at about EUR 199 a year, a new provider at about $15 a month (assumed entrant price) has no cost edge, and the lock-in only retains customers that were already won. Measured as monthly cash cost to the seller."
+   },
+   "evidence": [
+    {
+     "id": "SVC3-E1",
+     "url": "https://help.easproject.com/eas-gpsr-compliance-service",
+     "quote": "GPSR1: €199/year for 1 product type.",
+     "kind": "incumbent_price",
+     "publisher": "EAS (GPSR compliance vendor)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC3-E2",
+     "url": "https://euverify.com/resource/authorised-representative-costs-guide/",
+     "quote": "Often zero additional cost, since the importer already has obligations under the GPSR.",
+     "kind": "other",
+     "publisher": "Euverify (GPSR compliance vendor)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC3-E3",
+     "url": "https://sellercentral-europe.amazon.com/seller-forums/discussions/t/d2c4b0b5-7e83-4d6d-9dd6-2d6254a65375",
+     "quote": "The service providers on Amazon came back very expensive (650 - 2000 EUR per year).",
+     "kind": "demand",
+     "publisher": "Amazon Seller Central Europe seller forum (seller post)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC3-E4",
+     "url": "https://www.flexfulfillment.eu/gpsr-and-eu-product-safety-what-non-eu-brands-must-know-in-2026/",
+     "quote": "Missing or incorrect responsible person information results in listing suppression.",
+     "kind": "demand",
+     "publisher": "Flex Fulfillment (logistics provider blog)",
+     "date": "2026",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC3-E5",
+     "url": "https://euverify.com/resource/eu-responsible-person-under-gpsr/",
+     "quote": "Regularly check that the product complies with the technical documentation required under Article 9(2).",
+     "kind": "constraint",
+     "publisher": "Euverify (quoting Regulation (EU) 2023/988 Article 16(2))",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC3-E6",
+     "url": "https://lappa.org/blog/gpsr/amazon-gpsr-requirements-for-sellers/",
+     "quote": "The label name must match Seller Central exactly.",
+     "kind": "constraint",
+     "publisher": "Lappa (GPSR compliance vendor blog)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC3-E7",
+     "url": "https://easproject.com/gpsr/",
+     "quote": "Trusted by thousands of businesses selling to Europe",
+     "kind": "other",
+     "publisher": "EAS (GPSR compliance vendor)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC3-E8",
+     "url": "https://euverify.com/resource/authorised-representative-costs-guide/",
+     "quote": "Typical cost: EUR 2,000 to EUR 10,000 for company formation",
+     "kind": "constraint",
+     "publisher": "Euverify (GPSR compliance vendor)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC3-E9",
+     "url": "https://www.flexfulfillment.eu/gpsr-and-eu-product-safety-what-non-eu-brands-must-know-in-2026/",
+     "quote": "assumes real legal liability",
+     "kind": "constraint",
+     "publisher": "Flex Fulfillment (logistics provider blog)",
+     "date": "2026",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 2,
+    "customer_problem_or_value": 7,
+    "distribution_advantage": 2,
+    "defensibility": 4,
+    "absolute_gross_profit_potential": 4,
+    "willingness_to_pay": 4,
+    "repeat_ltv_potential": 8,
+    "competition_adjusted_gap": 2,
+    "market_depth": 7,
+    "end_to_end_automation": 5,
+    "capital_risk": 4,
+    "owner_time_support": 6
+   },
+   "componentReasons": {
+    "entrant_edge": "Label-and-documentation lock-in helps retention only after a customer is won and is shared by every provider, so the entrant has no acquisition edge (SVC3-E6, SVC3-E7).",
+    "customer_problem_or_value": "Missing responsible-person data gets listings suppressed or removed, a serious, regulation-driven problem for non-EU sellers (SVC3-E4).",
+    "distribution_advantage": "No privileged channel exists: marketplaces list approved providers and EAS already claims thousands of customers (SVC3-E3, SVC3-E7).",
+    "defensibility": "Relabeling cost and 10-year documentation retention make customers sticky, but the provider's regulatory duties also create liability (SVC3-E6, SVC3-E9).",
+    "absolute_gross_profit_potential": "At EUR 199 and up per year, hundreds of customers are needed to cover an EU entity and document review (SVC3-E1, SVC3-E8).",
+    "willingness_to_pay": "Prices have compressed to about EUR 199 a year at the low end while some marketplace-listed providers quote EUR 650 to 2,000 (SVC3-E1, SVC3-E3).",
+    "repeat_ltv_potential": "The obligation recurs annually and switching means relabeling, so churn should be low (SVC3-E6).",
+    "competition_adjusted_gap": "EAS, Euverify and others already sell the same service and an EU importer may cost nothing extra (SVC3-E1, SVC3-E2, SVC3-E7).",
+    "market_depth": "Thousands of non-EU sellers on EU marketplaces need a responsible person, as the vendors' customer counts suggest (SVC3-E7).",
+    "end_to_end_automation": "Intake, label data and listing guidance can be automated, but the provider must review technical documentation for each product category (SVC3-E5).",
+    "capital_risk": "An EU company costs EUR 2,000 to 10,000 to form and the provider assumes legal liability, with insurance cost unknown (SVC3-E8, SVC3-E9).",
+    "owner_time_support": "Subscription operations are mostly document handling, but authority contact and product-safety questions need responsive human attention (SVC3-E5)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "SVC3-E5: Regulation (EU) 2023/988 Article 16 (as summarized by Euverify; the EUR-Lex text could not be fetched, so the exact wording is unverified) requires the responsible person to check technical documentation and labelling and show evidence to market surveillance authorities.",
+    "SVC3-E9: A logistics-provider blog says the responsible person assumes real legal liability; another vendor page does not say whether liability transfers. Liability and the cost of insurance are unverified and could make a bootstrapped entrant uninsurable.",
+    "SVC3-E8: The provider must be established in the EU with a genuine address; forming an EU company costs EUR 2,000 to 10,000 per a vendor guide (unverified), and a non-resident founder's tax and licensing duties were not researched."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "Illustrative assumptions in EUR: 300 customers at EUR 250, EU entity EUR 3,000 a year, 2 hours of review at EUR 30 per customer. Baseline profit about EUR 54,000 before insurance. Pessimistic (EUR 200, 150 customers, costs x1.5) leaves about EUR 12,000 but excludes liability insurance, which is unpriced and unverified; acquiring even 150 customers against EAS's 4,000+ is the real risk."
+    },
+    "killReasons": [
+     {
+      "reason": "No acquisition edge: EAS and other providers already sell at EUR 199 a year and up with thousands of customers, and an EU importer or distributor often costs nothing extra.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "SVC3-E7"
+     },
+     {
+      "reason": "The responsible person is described as assuming real legal liability for products it cannot control, and the insurance cost is unknown.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SVC3-E9"
+     },
+     {
+      "reason": "Needs an EU-established entity (EUR 2,000 to 10,000 to form) before the first sale.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "SVC3-E8"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: the demand is real and recurring (SVC3-E3, SVC3-E4) and the relabeling lock-in is real (SVC3-E6), but a new provider has no acquisition edge against EAS (4,000+ businesses at EUR 199 a year and up, SVC3-E1, SVC3-E7) or a free EU importer route (SVC3-E2), and it would carry legal liability (SVC3-E9)."
+  },
+  {
+   "id": "SVC-4",
+   "name": "Contingency-fee duty-drawback and IEEPA tariff-refund recovery for small importers",
+   "family": "services",
+   "buyer": "Small and mid-size US importers and exporters that paid IEEPA duties or export goods they imported duty-paid, and have no in-house customs staff",
+   "pain": "Duties already paid are refundable (IEEPA through CBP's CAPE process, drawback through ACE) but filing needs ACE access, entry-level data and discipline; protest deadlines began expiring from June 2026",
+   "wedge": "Recover tariff and drawback refunds for importers on a percent-of-recovery fee, filing through the entrant's licensed customs broker or a partner broker",
+   "referenceEntrant": {
+    "startupCashUsd": 8000,
+    "daysToFirstRevenue": 330,
+    "ownerHoursPerWeek": 35
+   },
+   "entrantEdge": {
+    "type": "regulatory_license_intrinsic_to_model",
+    "status": "claimed",
+    "statement": "Under 19 CFR 111.1, refunds and drawback for others are customs business, and for IEEPA only the importer of record or the licensed broker that filed the entries can file a CAPE declaration, so a licensed broker holds the legal right to file for third parties. But the licence is open to any US citizen who passes an 80-question exam, importers can self-file for free, the IEEPA right sits with the broker that filed the entries (not the entrant), and incumbents such as GingerControl (15 to 30 percent) and large law firms with contingency offers already operate.",
+    "evidenceIds": [
+     "SVC4-E3",
+     "SVC4-E4",
+     "SVC4-E7"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "CBP CAPE self-filing in ACE for IEEPA refunds (entry numbers in a CSV, no fee mentioned on the page; IEEPA only, not drawback)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.supplychain247.com/article/tariff-refund-process-goes-live-april-20-for-ieepa-tariffs",
+      "evidenceRef": "SVC4-E5",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Carrier or broker auto-filing and pass-through of IEEPA refunds where the carrier was importer of record (DHL Express)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.dhl.com/discover/en-us/global-logistics-advice/logistics-insights/navigating-us-trade-uncertainty/IEEPA-Trump-Tariff-Refunds",
+      "evidenceRef": "SVC4-E6",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Drawback service providers on contingency at 15-30 percent of recovered amounts (22.5 percent of $10,000 recovered a month shown)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 2250,
+      "coversWedge": "full",
+      "sourceLocator": "https://gingercontrol.com/blog/duty-drawback-service-how-to-choose-provider",
+      "evidenceRef": "SVC4-E1",
+      "metrics": {
+       "cash_cost": 2250
+      }
+     },
+     {
+      "label": "In-house drawback filing in ACE by the importer (described as possible but rarely matching a specialist's recovery)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://gingercontrol.com/blog/duty-drawback-service-how-to-choose-provider",
+      "evidenceRef": "SVC4-E1",
+      "metrics": {
+       "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 2000,
+    "falsifier": "For IEEPA the free CAPE self-filing route and carrier auto-filing cost the importer nothing, and for drawback the 15-30 percent incumbents already work on contingency; an entrant fee of about 20 percent (assumed, $2,000 on $10,000 recovered a month) is not cheaper, and the licence gives no exclusive right because importers may file for themselves. Measured as monthly cash cost to the importer."
+   },
+   "evidence": [
+    {
+     "id": "SVC4-E1",
+     "url": "https://gingercontrol.com/blog/duty-drawback-service-how-to-choose-provider",
+     "quote": "The market rate sits between 15% and 30% of recovered amounts",
+     "kind": "incumbent_price",
+     "publisher": "GingerControl (drawback provider blog)",
+     "date": "2026",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC4-E2",
+     "url": "https://www.cooley.com/news/insight/2026/2026-03-23-us-tariff-refunds-how-we-got-here-and-why-this-is-the-moment-to-act",
+     "quote": "Cooley is offering a contingency-based recovery option in coordination with Susman Godfrey",
+     "kind": "demand",
+     "publisher": "Cooley LLP",
+     "date": "2026-03-23",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC4-E3",
+     "url": "https://www.cohnreznick.com/insights/ieepa-tariffs-refund-request-process-open",
+     "quote": "Only the Importer of Record (IOR) or the licensed customs broker who filed the entries can file a CAPE Declaration",
+     "kind": "constraint",
+     "publisher": "CohnReznick",
+     "date": "2026-04-28",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC4-E4",
+     "url": "https://www.ecfr.gov/current/title-19/chapter-I/part-111/subpart-A/section-111.1",
+     "quote": "the refund, rebate, or drawback of those duties, taxes, or other charges.",
+     "kind": "constraint",
+     "publisher": "eCFR, 19 CFR 111.1 (customs business definition)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC4-E5",
+     "url": "https://www.supplychain247.com/article/tariff-refund-process-goes-live-april-20-for-ieepa-tariffs",
+     "quote": "only requires entry numbers, uploaded as a CSV file through the ACE Portal.",
+     "kind": "other",
+     "publisher": "Supply Chain 24/7",
+     "date": "2026-04",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC4-E6",
+     "url": "https://www.dhl.com/discover/en-us/global-logistics-advice/logistics-insights/navigating-us-trade-uncertainty/IEEPA-Trump-Tariff-Refunds",
+     "quote": "DHL Express will automatically file refund claims for eligible Phase 1 entries in accordance with CBP guidance",
+     "kind": "other",
+     "publisher": "DHL Express (US)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC4-E7",
+     "url": "https://www.cbp.gov/trade/programs-administration/customs-brokers/license-examination-notice-examination/general-cble-information",
+     "quote": "The CBLE consists of 80 multiple-choice questions, and a score of 75 percent is required to pass the exam.",
+     "kind": "constraint",
+     "publisher": "U.S. Customs and Border Protection",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SVC4-E8",
+     "url": "https://www.cbp.gov/trade/programs-administration/entry-summary/drawback-overview",
+     "quote": "all drawback claims must be filed electronically in ACE",
+     "kind": "constraint",
+     "publisher": "U.S. Customs and Border Protection",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 2,
+    "customer_problem_or_value": 7,
+    "distribution_advantage": 2,
+    "defensibility": 3,
+    "absolute_gross_profit_potential": 6,
+    "willingness_to_pay": 6,
+    "repeat_ltv_potential": 5,
+    "competition_adjusted_gap": 2,
+    "market_depth": 6,
+    "end_to_end_automation": 4,
+    "capital_risk": 6,
+    "owner_time_support": 4
+   },
+   "componentReasons": {
+    "entrant_edge": "The broker licence is legally meaningful (SVC4-E4) but open to any US citizen who passes the exam (SVC4-E7), and the IEEPA filing right sits with the importer or the broker that filed the entries, not with a new entrant (SVC4-E3).",
+    "customer_problem_or_value": "Refunds are real money, protest deadlines were expiring from June 2026 and law firms are selling contingency recovery for them (SVC4-E2).",
+    "distribution_advantage": "No privileged access: the original brokers and carriers file for their own customers and law firms already market to importers (SVC4-E2, SVC4-E6).",
+    "defensibility": "The licence excludes unlicensed consultants from filing for others, but importers can file themselves and rivals can hire or become licensed brokers (SVC4-E3, SVC4-E4).",
+    "absolute_gross_profit_potential": "A 15 to 30 percent share of recovered duties can be large per client, though recoveries are lumpy and the IEEPA window is temporary (SVC4-E1).",
+    "willingness_to_pay": "Importers pay 15 to 30 percent contingency fees to drawback specialists, and large firms offer contingency recovery for IEEPA refunds (SVC4-E1, SVC4-E2).",
+    "repeat_ltv_potential": "Drawback is a standing program that recurs for exporters, while IEEPA refunds are a one-time wave (SVC4-E1, SVC4-E5).",
+    "competition_adjusted_gap": "The free CAPE route, carrier auto-filing, specialist providers and major law firms cover the wedge (SVC4-E5, SVC4-E6, SVC4-E1, SVC4-E2).",
+    "market_depth": "Many importers paid IEEPA duties and drawback applies to every duty-paid import later exported, so the pool is deep (SVC4-E2, SVC4-E8).",
+    "end_to_end_automation": "ACE data matching and claim preparation can be partly automated, but CBP rules and filing by a licensed broker require human oversight (SVC4-E4, SVC4-E8).",
+    "capital_risk": "Exam, licence, tooling and insurance fit in the cap, but no fee is earned until claims are paid and rejections earn nothing (SVC4-E1).",
+    "owner_time_support": "A licensed individual must supervise filings and answer CBP queries, which limits delegation (SVC4-E4)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "SVC4-E4: 19 CFR 111.1 defines customs business to include refunds, rebates and drawback of duties, so doing this for others generally requires a customs broker licence (or the importer filing itself); exceptions were not researched and are unverified.",
+    "SVC4-E3: for IEEPA refunds only the importer of record or the licensed broker that filed the entries can file a CAPE declaration, and attorneys cannot file for importers per CohnReznick; this blocks an unrelated third-party recovery firm.",
+    "SVC4-E7: the broker exam requires US citizenship, age 18 and a score of 75 percent on 80 questions; exam fee, licence application and filer-code steps were not verified, and a licensed individual is needed for a corporate broker."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Illustrative assumptions: 10 clients recovering $60,000 a year each at a 20 percent fee gives $120,000; tooling, errors-and-omissions and filing costs about $15,000. Pessimistic (fee x0.8 = 16 percent, 5 clients, cost x1.5) gives about $48,000 less $22,500 = $25,500 on paper, but this ignores claim rejections, unpaid contingency and a 330-day path to first revenue, so it is treated as failing."
+    },
+    "killReasons": [
+     {
+      "reason": "For IEEPA refunds the free CAPE portal needs only entry numbers and carriers such as DHL file automatically; only the importer of record or the filing broker may file, so an outside recovery firm cannot file.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "SVC4-E3"
+     },
+     {
+      "reason": "Drawback is already sold by specialists on 15 to 30 percent contingency and by large law firms for IEEPA; a licensed-broker entrant has no exclusive right, because importers may file for themselves.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SVC4-E1"
+     },
+     {
+      "reason": "The IEEPA refund wave is temporary and the entrant needs a customs broker licence (80-question exam, US citizen) before it can file for others, which pushes first revenue to roughly 11 months.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SVC4-E7"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: the IEEPA refund wedge is covered by the free CAPE portal and carrier auto-filing (SVC4-E5, SVC4-E6) and filing rights sit with the importer or the broker that filed the entries (SVC4-E3); drawback is already sold at 15 to 30 percent contingency (SVC4-E1) and the broker licence is open to any citizen who passes the exam (SVC4-E7), so there is no structural edge."
+  }
+ ]
+}

@@ -1,0 +1,100 @@
+{
+ "results": [
+  {
+   "candidateId": "PHY-1",
+   "evidenceId": "PHY-1-D1",
+   "url": "https://www.navsup.navy.mil/Portals/65/NAVSUP%20ENTERPRISE/NAVSUP%20Weapon%20Systems%20Support/Documents/sar_aviation_spares.pdf",
+   "status": "confirmed",
+   "note": "Both fragments appear verbatim. Full sentence adds that distributors may submit SARs on a manufacturer's behalf but are not thereby approved. No figures involved.",
+   "pageSnippet": "SARs are intended for actual manufacturers only. ... distributors will not be considered approved."
+  },
+  {
+   "candidateId": "PHY-1",
+   "evidenceId": "PHY-1-D2",
+   "url": "https://www.navsup.navy.mil/Portals/65/NAVSUP%20ENTERPRISE/NAVSUP%20Weapon%20Systems%20Support/Documents/sar_aviation_spares.pdf",
+   "status": "confirmed",
+   "note": "All three fragments verbatim (3 yrs CSI / 5 yrs CAI; Cat III not accepted; data from actual manufacturer). Another paragraph says Cat III 'will not be reviewed' instead of 'accepted'; same substance.",
+   "pageSnippet": "within the past 3 years for CSIs or past 5 years for CAIs ... Category III SARs will not be accepted by the Navy. ... The data provided must be from the actual manufacturer."
+  },
+  {
+   "candidateId": "PHY-1",
+   "evidenceId": "PHY-1-D6",
+   "url": "https://ndia.dtic.mil/wp-content/uploads/2018/dla/C171_DoingBusinesswithDLA.pdf",
+   "status": "confirmed",
+   "note": "Both fragments on page but on different slides: 'Average award is <$4,000' (slide 13, RFQs) and 'Source controlled via approved sources' (slide 17, a buy method). Figure <$4,000 matches; no conflicting amount.",
+   "pageSnippet": "Most common type - Average award is <$4,000 ... Fully Competitive / Source controlled via approved sources"
+  },
+  {
+   "candidateId": "PHY-2",
+   "evidenceId": "PHY-2-D1",
+   "url": "https://bhgs.dca.ca.gov/forms_pubs/sb_244_industry_advisory_english.pdf",
+   "status": "confirmed",
+   "note": "Verbatim, but it is the second half of a sentence: 'Manufacturers DO NOT have to comply with SB 244 if they provide, at no charge to the consumer, a replacement product ...' (Limitations section).",
+   "pageSnippet": "Manufacturers DO NOT have to comply with SB 244 if they provide, at no charge to the consumer, a replacement product that is equivalent or better and is readily available."
+  },
+  {
+   "candidateId": "PHY-2",
+   "evidenceId": "PHY-2-D11",
+   "url": "https://legislation.nysenate.gov/pdf/bills/2021/S4104A",
+   "status": "confirmed",
+   "note": "Phrase matches exactly; appears in section 2, proposed GBL 399-nn subd. 1(d)(iii), part of a longer sentence on parts availability to independent repair providers and owners.",
+   "pageSnippet": "at costs and terms that are equivalent to the most favorable costs and terms"
+  },
+  {
+   "candidateId": "PHY-2",
+   "evidenceId": "PHY-2-D2",
+   "url": "https://www.faegredrinker.com/zh/insights/publications/2026/7/unlocking-the-right-to-repair-the-expanding-compliance-landscape",
+   "status": "confirmed",
+   "note": "Matches; Texas section, H.B. 2963 (effective Sept 1, 2026): AG has exclusive enforcement authority 'subject to a mandatory 30-day written cure notice before any enforcement action may be brought'. 30 days matches.",
+   "pageSnippet": "holds exclusive enforcement authority, subject to a mandatory 30-day written cure notice before any enforcement action may be brought"
+  },
+  {
+   "candidateId": "SAS-4",
+   "evidenceId": "SAS-4-D2",
+   "url": "https://prospershow.com/news/are-you-ready-for-cpsc-efiling-on-july-8/40234/",
+   "status": "confirmed",
+   "note": "Word-for-word in 'Key Capabilities' list; describes Comply PRO+ in a guest-authored promotional piece by its founder/CEO, not a neutral source.",
+   "pageSnippet": "Supplier login to capture production data and tracking from your suppliers for each shipment."
+  },
+  {
+   "candidateId": "SAS-4",
+   "evidenceId": "SAS-4-D5",
+   "url": "https://www.compliancegate.com/cpsc-efiling-registration/",
+   "status": "confirmed",
+   "note": "'Starting from $199 per year' appears once in the Features section (link text followed by 'Click here to compare the pricing plans'). No other price on page.",
+   "pageSnippet": "Starting from $199 per year"
+  },
+  {
+   "candidateId": "SAS-4",
+   "evidenceId": "SAS-4-D8",
+   "url": "https://cps.bureauveritas.com/newsroom/bureau-veritas-new-efiling-data-capture-solution",
+   "status": "confirmed",
+   "note": "Verbatim in FAQ answer to 'What is the fee?'. $20/report after August 31 matches; page year not confirmed by fetch.",
+   "pageSnippet": "No cost until August 31. After this time it will be $20/report"
+  },
+  {
+   "candidateId": "SVC-2",
+   "evidenceId": "SVC-2-D15",
+   "url": "https://oregon.gov/oha/PH/HEALTHYENVIRONMENTS/DRINKINGWATER/CROSSCONNECTION/CERTIFICATION/Pages/certification.aspx",
+   "status": "confirmed",
+   "note": "Appears in Prerequisites for New Backflow Assembly Tester Certification. 5-day matches. (Recert course is 1-2 day; Cross Connection Specialist course is 4-day, different certs.)",
+   "pageSnippet": "Successful completion of an approved 5-day Backflow Assembly Tester course."
+  },
+  {
+   "candidateId": "SVC-2",
+   "evidenceId": "SVC-2-D1",
+   "url": "https://www.eweb.org/documents/board-meetings/2023/07-11-23/cc2_eugene_backflow_testing_250k.pdf",
+   "status": "confirmed",
+   "note": "Verbatim in Purchasing Process section; 40/35/25 points sum to 100 as stated. No differing values.",
+   "pageSnippet": "The maximum number of possible points for evaluation was 100, including the following criteria: Experience (40 pts), Resources & Responsiveness (35 pts), and Pricing (25 pts)."
+  },
+  {
+   "candidateId": "SVC-2",
+   "evidenceId": "SVC-2-D30",
+   "url": "https://forum.heatinghelp.com/discussion/comment/770076",
+   "status": "confirmed",
+   "note": "Verbatim in post by user Heatermon (also in meta description). 1988 and about 1,000 tests/year match. Single forum post, self-reported.",
+   "pageSnippet": "We have done backflow certifications since 1988 and are currently doing about 1,000 tests per year."
+  }
+ ]
+}

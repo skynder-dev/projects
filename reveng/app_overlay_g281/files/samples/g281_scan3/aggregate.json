@@ -1,0 +1,1368 @@
+{
+ "scanId": "g281_scan3",
+ "protocol": "scan3_manual_edge_first_agent_reported",
+ "generatedAt": "2026-10-10T23:32:25.130Z",
+ "scan": {
+  "contract": "reveng_global_scan_v6_v1",
+  "valid": false,
+  "reasons": [
+   "families 6<8",
+   "required_families_underrepresented(<3):games,saas_or_micro_saas,ecommerce_or_dropshipping,services,marketplaces,digital_or_data_products,physical_products,media_or_content"
+  ],
+  "rawCandidates": 30,
+  "familiesRepresented": 6,
+  "byFamily": {
+   "affiliate_or_referral": 5,
+   "b2b_api_devtools": 5,
+   "b2b_operations": 5,
+   "consumer_products": 5,
+   "education_training": 5,
+   "local_businesses": 5
+  },
+  "thinFamilies": [
+   "games",
+   "saas_or_micro_saas",
+   "ecommerce_or_dropshipping",
+   "services",
+   "marketplaces",
+   "digital_or_data_products",
+   "physical_products",
+   "media_or_content"
+  ]
+ },
+ "decision": {
+  "verdict": "no_winner",
+  "leader": null,
+  "unmet_conditions": [
+   "scan_not_valid:families 6<8|required_families_underrepresented(<3):games,saas_or_micro_saas,ecommerce_or_dropshipping,services,marketplaces,digital_or_data_products,physical_products,media_or_content",
+   "provisional_run:evidence_not_engine_verified",
+   "no_candidate_survived_hard_gates"
+  ],
+  "hard_blockers": [
+   "scan_not_valid:families 6<8|required_families_underrepresented(<3):games,saas_or_micro_saas,ecommerce_or_dropshipping,services,marketplaces,digital_or_data_products,physical_products,media_or_content",
+   "provisional_run:evidence_not_engine_verified",
+   "no_candidate_survived_hard_gates"
+  ],
+  "margin_adjusted_points": null,
+  "survivors": 0,
+  "ranking": [],
+  "integrity_violations": []
+ },
+ "counts": {
+  "killed": 26,
+  "uncertain": 4
+ },
+ "combinedWithScan2": {
+  "withScan": 2,
+  "valid": true,
+  "reasons": [],
+  "rawCandidates": 62,
+  "familiesRepresented": 14
+ },
+ "candidates": [
+  {
+   "id": "AFF-1",
+   "name": "Acquired sub-$10k Amazon-Associates content site (marketplace purchase, links re-pointed to the buyer's own Associates account)",
+   "family": "affiliate_or_referral",
+   "verdict": "killed",
+   "verdictReason": "Sub-$10k affiliate sites do exist and sell (a $10,000-reserve Amazon site sold on Flippa), but at 25-38x monthly profit they pay back in about 28-34 months on seller-reported numbers, the Amazon commission relationship cannot be assigned and is terminable at will, and traffic is rented from Google; no structural edge beyond what any other bidder can buy.",
+   "raw": 29.9,
+   "adjusted": 17.94,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "acquirable_owned_audience_or_partner_channel",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Flippa larger listing with hidden price (11024041: $2,299.85/month income, 2.3x revenue multiple shown; price amortised over 36 months is derived from those two figures)",
+   "unresolved": 0,
+   "evidenceCount": 10,
+   "altCount": 3,
+   "altFull": [],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "Priced at market multiples: the comparable $10,000 reserve is 25-33x monthly earnings and Flippa cites 28-38x, so payback is about 28-34 months on seller numbers and negative in the pessimistic case; there is no discount for a stranger to capture.",
+     "ref": "AFF-1-E1,AFF-1-E2"
+    },
+    {
+     "severity": "major",
+     "reason": "The revenue relationship is not part of the asset: Amazon's agreement cannot be assigned without its approval and can be terminated by either side at any time, so the buyer must be re-approved and re-point links.",
+     "ref": "AFF-1-E5,AFF-1-E6,AFF-1-E7"
+    },
+    {
+     "severity": "minor",
+     "reason": "Traffic is rented from Google: a small review site lost 91% of its Google traffic in one core update, and the comparable listing is 90%+ organic.",
+     "ref": "AFF-1-E3,AFF-1-E8"
+    }
+   ]
+  },
+  {
+   "id": "AFF-2",
+   "name": "Independent franchise-broker practice earning franchisor-paid commission on each franchise sold (free to the prospective buyer)",
+   "family": "affiliate_or_referral",
+   "verdict": "killed",
+   "verdictReason": "Franchisors do pay brokers only on a closed sale, but entry is open (1,000+ association members keeping 100% of commissions, 68+ FranNet consultants), the buyer pays nothing anywhere so price is no edge, a stranger has no evidenced prospect channel, and registration duties already apply in New York and Washington and arrive in California in July 2027.",
+   "raw": 29.8,
+   "adjusted": 17.88,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_type_not_an_edge:niche_focus",
+   "edgeType": "niche_focus",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "FranNet franchise consultants (franchisor-paid, no charge to the buyer; page lists 68+ consultants)",
+   "unresolved": 2,
+   "evidenceCount": 7,
+   "altCount": 3,
+   "altFull": [
+    "FranNet franchise consultants (franchisor-paid, no charge to the buyer; page lists 68+ consultants)",
+    "Members of the International Franchise Professionals Group (1,000+ members who keep 100% of their commissions; no charge to buyers)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "No structural edge: the commission is identical for every broker, an association with 1,000+ members lets brokers keep 100%, and FranNet alone lists 68+ consultants.",
+     "ref": "AFF-2-E1,AFF-2-E5,AFF-2-E6"
+    },
+    {
+     "severity": "major",
+     "reason": "A stranger has no named way to reach prospective franchise buyers without an existing audience or paid acquisition, so the first closed sale within 365 days is unevidenced.",
+     "ref": "AFF-2-E2,AFF-2-E5"
+    },
+    {
+     "severity": "minor",
+     "reason": "Registration duties (New York, Washington now; California from July 2027) add cost and disclosure obligations before contacting prospects.",
+     "ref": "AFF-2-E3,AFF-2-E4"
+    }
+   ]
+  },
+  {
+   "id": "AFF-3",
+   "name": "Freight-factoring referral partner for newly authorised US truckers (published bounties from factoring companies), sourced from the public FMCSA new-authority data",
+   "family": "affiliate_or_referral",
+   "verdict": "killed",
+   "verdictReason": "Published bounties are real (Outgo $500 per truck up to $2,500, Summar 15% per load) and lead data is nearly free, which is exactly why there is no edge: any dispatcher, rival referrer or the factoring companies' own sales teams use the same feed and terms. The open question is the cold-outreach conversion rate, which public pages cannot settle.",
+   "raw": 36.2,
+   "adjusted": 21.72,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_type_not_an_edge:automation",
+   "edgeType": "automation",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "FMCSA open data on carriers and operating authority, free from the regulator (needs the entrant to write code; contact-use terms not stated on the page read)",
+   "unresolved": 1,
+   "evidenceCount": 10,
+   "altCount": 4,
+   "altFull": [
+    "FMCSA open data on carriers and operating authority, free from the regulator (needs the entrant to write code; contact-use terms not stated on the page read)",
+    "Ready-made FMCSA new-authority feed on Apify, listed from $20 per 1,000 carrier leads (the page was marked 'Under maintenance' when read)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "No exclusive edge: the same free regulator data, a $20-per-1,000 ready-made feed and the same programme terms are open to every competitor, including factoring sales teams that are a named user of the feed.",
+     "ref": "AFF-3-E3,AFF-3-E4,AFF-3-E9"
+    },
+    {
+     "severity": "major",
+     "reason": "Conversion from cold outreach to a qualified carrier (5 invoices in 60 days) is unobserved, and the pessimistic case is negative, so the first-year result rests on an unsourced assumption.",
+     "ref": "AFF-3-E6"
+    },
+    {
+     "severity": "minor",
+     "reason": "Outreach carries per-email CAN-SPAM exposure and possible state broker disclosure or registration duties, and the programme owner can change terms at will.",
+     "ref": "AFF-3-E5,AFF-3-E7"
+    }
+   ]
+  },
+  {
+   "id": "AFF-4",
+   "name": "Niche shopping-assistant Chrome extension (price-drop alerts or coupon finder) earning affiliate commission on user-initiated purchases",
+   "family": "affiliate_or_referral",
+   "verdict": "killed",
+   "verdictReason": "Affiliate extensions are lawful only with a transparent user benefit and a user action per link, Amazon forbids its links in extensions, and free incumbents (Honey, CamelCamelCamel, Keepa) already cover price tracking with far larger audiences; no structural edge or evidenced newcomer distribution.",
+   "raw": 26.1,
+   "adjusted": 15.66,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_type_not_an_edge:niche_focus",
+   "edgeType": "niche_focus",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "PayPal Honey (free browser extension with Droplist price tracking; 17M+ members claimed on its Firefox listing)",
+   "unresolved": 2,
+   "evidenceCount": 10,
+   "altCount": 3,
+   "altFull": [
+    "PayPal Honey (free browser extension with Droplist price tracking; 17M+ members claimed on its Firefox listing)",
+    "CamelCamelCamel (free Amazon price-history tracker with price-drop emails and a Camelizer extension)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "Free incumbents cover the wedge: Honey (17M+ members claimed, Droplist price tracking) and CamelCamelCamel are free, and CamelCamelCamel and Honey are themselves funded by affiliate commissions.",
+     "ref": "AFF-4-E5,AFF-4-E7,AFF-4-E8"
+    },
+    {
+     "severity": "major",
+     "reason": "Programme and store rules restrict the model: Amazon bars its Special Links in browser extensions, and the Chrome Web Store requires a direct user benefit and a user action before each affiliate link.",
+     "ref": "AFF-4-E1,AFF-4-E2,AFF-4-E4"
+    },
+    {
+     "severity": "minor",
+     "reason": "No evidence that the store sends installs to newcomers; distribution for a stranger is unproven.",
+     "ref": "AFF-4-E7"
+    }
+   ]
+  },
+  {
+   "id": "AFF-5",
+   "name": "Small merchant-services residual portfolio bought from an exiting sales agent (processor-approved assignment of recurring card-processing residuals)",
+   "family": "affiliate_or_referral",
+   "verdict": "killed",
+   "verdictReason": "Residuals are recurring and portfolios trade at 20-40x monthly residuals, but $10,000 buys only about $500 a month (about 22-25 month payback, negative in the pessimistic case), the stream is controlled by processor consent and unilateral split changes, and no small-lot market was found.",
+   "raw": 31.5,
+   "adjusted": 18.9,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "acquirable_owned_audience_or_partner_channel",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Buy a larger brokered portfolio at 20-40x monthly net residuals (derived: 20 x $500 a month, amortised over 36 months)",
+   "unresolved": 0,
+   "evidenceCount": 9,
+   "altCount": 3,
+   "altFull": [],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "Capital payback is about 22-25 months at the quoted 20x multiple and the pessimistic case loses about $9,550 in year one; $10,000 buys only about six or seven merchants' residuals, a concentrated stream.",
+     "ref": "AFF-5-E1,AFF-5-E5"
+    },
+    {
+     "severity": "major",
+     "reason": "The asset is controlled by a counterparty: transfer depends on the ISO or agent agreement and processor approval, and acquirers can cut agents out of residuals while larger processors cut compensation.",
+     "ref": "AFF-5-E3,AFF-5-E4,AFF-5-E6"
+    },
+    {
+     "severity": "minor",
+     "reason": "No seller or marketplace for a stream this small was found; the only listing read is about $720,000 a year of net profit, so availability at this budget is unverified.",
+     "ref": "AFF-5-E9"
+    }
+   ]
+  },
+  {
+   "id": "API-1",
+   "name": "Pay-per-event SEC EDGAR Form 4 insider-transaction data Actor sold through the Apify Store",
+   "family": "b2b_api_devtools",
+   "verdict": "killed",
+   "verdictReason": "Killed: the cheapest credible alternative is $0 and covers the wedge (official SEC API plus MIT edgartools), a paid convenience layer already exists at $49/month (sec-api.io), and the only edge is a claimed Apify Store position that any copycat can contest. Not verified: the web-search budget was exhausted, so I could not enumerate existing EDGAR Actors on the Apify Store, read Apify's revenue-share terms, or read other paid SEC-data APIs; those gaps could only matter if a large no-code buyer group refuses free tools.",
+   "raw": 30.7,
+   "adjusted": 18.42,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "privileged_or_low_cac_distribution",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "SEC EDGAR official APIs and nightly bulk archives (free, no key, 10 requests/second cap)",
+   "unresolved": 1,
+   "evidenceCount": 9,
+   "altCount": 4,
+   "altFull": [
+    "edgartools (MIT, 2.6k GitHub stars): parses Form 3/4/5 insider transactions into pandas DataFrames",
+    "sec-api.io Personal & Startups plan ($49/month; first 100 API calls free)"
+   ],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "A free, keyless official API (SEC) plus an MIT-licensed library (edgartools) already return Form 4 transactions as structured data, so a $0 alternative covers the wedge for any developer.",
+     "ref": "API-1-E1,API-1-E3,API-1-E9"
+    },
+    {
+     "severity": "major",
+     "reason": "No structural edge: the source is freely redistributable, history is not lost by the source, and a copycat Actor needs days; any Apify Store position effect accrues to whoever lists and earns reviews first.",
+     "ref": "API-1-E5,API-1-E8"
+    },
+    {
+     "severity": "minor",
+     "reason": "Revenue ceiling: platform payouts of $1.6M a month over 4,500 developers imply a few hundred dollars per developer on average (estimate), and I could not read any existing EDGAR Actor's price or usage because store search could not be used.",
+     "ref": "API-1-E4,API-1-E7"
+    }
+   ]
+  },
+  {
+   "id": "API-2",
+   "name": "Stripe Dashboard app that benchmarks a merchant's subscription metrics against a panel built from the accounts that install it",
+   "family": "b2b_api_devtools",
+   "verdict": "killed",
+   "verdictReason": "Killed: the compounding-data edge is prohibited by Stripe's own app rules (cannot resell or publish Stripe-user data) and already provided first-party by Stripe Billing analytics. Not verified: the web-search budget was exhausted and Baremetrics, ChartMogul and the Stripe marketplace listing pages could not be read, so third-party benchmark pricing and Stripe marketplace install volumes are unknown; neither could rescue a data product the platform forbids.",
+   "raw": 28.4,
+   "adjusted": 17.04,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_none",
+   "edgeType": "proprietary_or_compounding_data",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Stripe Billing analytics built into the Dashboard, including benchmarking against similar businesses on Stripe (no separate fee stated on the page; Billing itself is priced per transaction)",
+   "unresolved": 1,
+   "evidenceCount": 8,
+   "altCount": 3,
+   "altFull": [
+    "Stripe Billing analytics built into the Dashboard, including benchmarking against similar businesses on Stripe (no separate fee stated on the page; Billing itself is priced per transaction)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "Stripe's app rules forbid reselling or publishing data obtained from Stripe users through an app, which removes the cross-merchant panel that is the whole edge.",
+     "ref": "API-2-E1"
+    },
+    {
+     "severity": "fatal",
+     "reason": "Stripe Billing analytics already offers benchmarking against similar businesses on Stripe, built from the whole network that a new panel can never match.",
+     "ref": "API-2-E2"
+    },
+    {
+     "severity": "minor",
+     "reason": "One public app per Stripe account and a review gate for each change limit iteration; no evidence was found that merchants pay for benchmarks.",
+     "ref": "API-2-E4,API-2-E6"
+    }
+   ]
+  },
+  {
+   "id": "API-3",
+   "name": "Paid GitHub Marketplace app that flags abandoned or maintainer-changed dependencies",
+   "family": "b2b_api_devtools",
+   "verdict": "killed",
+   "verdictReason": "Killed: the free Scorecard API and dataset and free Marketplace apps with tens of thousands of installs cover the wedge's signals, the history asset is not exclusive, and GitHub's paid-listing gate (about 100 installations plus verified publisher) blocks a stranger's early revenue. Not verified: the web-search budget was exhausted, so I could not confirm whether Socket's free plan or Renovate flags abandoned packages, read Socket's paid prices, or read GitHub's Marketplace fee terms.",
+   "raw": 28,
+   "adjusted": 16.8,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_none",
+   "edgeType": "proprietary_or_compounding_data",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "OpenSSF Scorecard (Apache-2.0, 5.7k stars): free REST API and public BigQuery dataset with a Maintained check",
+   "unresolved": 0,
+   "evidenceCount": 9,
+   "altCount": 3,
+   "altFull": [],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "Free tools with large install bases (Socket free plan 24,662 installs, free hosted Renovate 75,985) and a free public Scorecard API and dataset already cover most of the maintenance-signal wedge.",
+     "ref": "API-3-E3,API-3-E4,API-3-E5,API-3-E6"
+    },
+    {
+     "severity": "major",
+     "reason": "GitHub requires roughly 100 installations and a verified publisher before a paid plan, and the Marketplace front page is a small curated set with no seller guidance, so a stranger has no evidenced channel to the first ten payers.",
+     "ref": "API-3-E1,API-3-E2,API-3-E7"
+    },
+    {
+     "severity": "minor",
+     "reason": "No willingness-to-pay evidence for abandonment alerts; installs observed are for free plans.",
+     "ref": "API-3-E8,API-3-E9"
+    }
+   ]
+  },
+  {
+   "id": "API-4",
+   "name": "Adopted abandoned WordPress.org plugin monetised with a paid add-on or hosted service",
+   "family": "b2b_api_devtools",
+   "verdict": "killed",
+   "verdictReason": "Killed: adopting is a genuine, free way to inherit an audience that a new plugin cannot get (new listings show fewer than 10 installs), but the adoptable supply is only 18 plugins topped at 1,000+ installs, free substitutes exist, and the directory's rules limit monetisation, so revenue is a few hundred dollars a year at best. Not verified: the web-search budget was exhausted, so I did not read the Plugin Team's adoption process, any commercial plugin price list, or other platforms' (Chrome, Shopify, Atlassian) transfer markets, which could hold larger acquirable audiences.",
+   "raw": 25.6,
+   "adjusted": 15.36,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "acquirable_owned_audience_or_partner_channel",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Yoast SEO built-in REST meta (the adoptable WP REST Yoast Meta plugin's function is now part of Yoast SEO; 10+ million active installs)",
+   "unresolved": 1,
+   "evidenceCount": 9,
+   "altCount": 4,
+   "altFull": [
+    "Yoast SEO built-in REST meta (the adoptable WP REST Yoast Meta plugin's function is now part of Yoast SEO; 10+ million active installs)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "Adoptable supply is tiny: 18 plugins on the adopt-me tag, the largest at 1,000+ active installs and about half at 10+ and most under 100, so the acquirable audience cannot support meaningful revenue.",
+     "ref": "API-4-E1,API-4-E2"
+    },
+    {
+     "severity": "major",
+     "reason": "Free alternatives already cover the functions seen: Yoast SEO built in (10+ million installs) for the REST meta plugin, and Automattic ActivityPub and Jetpack Social for Mastodon and social sharing.",
+     "ref": "API-4-E3,API-4-E7,API-4-E8,API-4-E9"
+    },
+    {
+     "severity": "major",
+     "reason": "Directory guidelines forbid locked paid functionality and restrict upgrade notices, and no paid price or conversion data was found for adoptable plugins.",
+     "ref": "API-4-E5,API-4-E6"
+    }
+   ]
+  },
+  {
+   "id": "API-5",
+   "name": "Long-retention Stripe webhook-event archive with replay, offered as a Stripe App",
+   "family": "b2b_api_devtools",
+   "verdict": "killed",
+   "verdictReason": "Killed: Stripe documents a free recovery path (event-ID log plus the Events API, resend for 15 to 30 days) that fully covers the wedge at $0, Hookdeck's free plan and open-source Svix and Convoy cover queueing and retries, and the claimed system-of-record edge is a table anyone can keep. Not verified: the web-search budget was exhausted, so I could not read other webhook vendors' pricing, Stripe marketplace listings or install counts, or find any evidence of teams needing events older than 30 days.",
+   "raw": 30.8,
+   "adjusted": 18.48,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "embedded_workflow_or_system_of_record",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Stripe built-in delivery: 3-day automatic retries, Dashboard resend up to 15 days, CLI resend up to 30 days, Workbench event-delivery log",
+   "unresolved": 1,
+   "evidenceCount": 10,
+   "altCount": 6,
+   "altFull": [
+    "Own event-log table plus Stripe Events API, as Stripe's docs instruct (log processed event IDs, retrieve missing objects via the API)"
+   ],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "A free DIY alternative fully covers the wedge: Stripe's own docs tell integrators to log processed event IDs and to retrieve missing objects through the API, and Stripe resends events for 15 days in the Dashboard and 30 days with the CLI.",
+     "ref": "API-5-E2,API-5-E3,API-5-E9"
+    },
+    {
+     "severity": "major",
+     "reason": "Open-source gateways (Svix MIT, Convoy) and Hookdeck's free plan already queue, retry and redrive webhooks, so the archive has no exclusive element.",
+     "ref": "API-5-E4,API-5-E6,API-5-E7"
+    },
+    {
+     "severity": "major",
+     "reason": "No evidence that any team pays for retention beyond 30 days; only Hookdeck's 30-day tier at $499 was seen as a paid price point, and storing payment events adds data-protection duties.",
+     "ref": "API-5-E5,API-5-E10"
+    }
+   ]
+  },
+  {
+   "id": "B2B-1",
+   "name": "Acquired WooCommerce B2B/wholesale plugin business with renewing annual licences",
+   "family": "b2b_operations",
+   "verdict": "uncertain",
+   "verdictReason": "Open question: do sub-$10k WooCommerce/WordPress B2B-operations plugin businesses with at least 12 months of verifiable renewing licences exist for sale, and what are their install counts and renewal rates? Public listings seen were $170k-$2.5M (B2B-1-E6/E7) and detailed financials need a paid membership (B2B-1-E8/E9), so only seller data under NDA can settle it. Even if supply exists, base profit is about $2.6k/yr and the pessimistic case is negative, so the ceiling is low.",
+   "raw": 34.3,
+   "adjusted": 20.58,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "acquirable_owned_audience_or_partner_channel",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Adopt an abandoned plugin tagged adopt-me on WordPress.org (free; top results 1,000+ installs, none B2B)",
+   "unresolved": 0,
+   "evidenceCount": 14,
+   "altCount": 5,
+   "altFull": [],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "Thin economics: a $10k budget buys about $3.7k-$4.8k ARR at about 70% margin, and the pessimistic case is negative.",
+     "ref": "B2B-1-E6"
+    },
+    {
+     "severity": "major",
+     "reason": "Plugin code is GPL-compatible and free cores with large installs exist, so rivals can fork or out-feature it; lock-in is only habit and renewals.",
+     "ref": "B2B-1-E13"
+    },
+    {
+     "severity": "minor",
+     "reason": "Seller financials, install counts and renewal rates are behind a paid membership or NDA, so supply at the $10k level cannot be verified from public pages.",
+     "ref": "B2B-1-E8"
+    }
+   ]
+  },
+  {
+   "id": "B2B-2",
+   "name": "Annual FTC Safeguards Rule evidence pack for non-bank financial firms (scans, board report, training, breach-notice log)",
+   "family": "b2b_operations",
+   "verdict": "killed",
+   "verdictReason": "Killed: no structural edge (portable record; open-source scanner and AGPL compliance platform exist: B2B-2-E7/E8/E9; the Qualified Individual may be any employee, affiliate or provider: B2B-2-E5) and the recurring testing and board-report duties do not bind firms holding data on fewer than 5,000 consumers (B2B-2-E1/E2). Not checked: prices of paid compliance vendors or MSP packages (web search was unavailable).",
+   "raw": 30.4,
+   "adjusted": 18.24,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_type_not_an_edge:generic_managed_service",
+   "edgeType": "generic_managed_service",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "The rule text and FTC guide, applied by the firm's own Qualified Individual (DIY)",
+   "unresolved": 0,
+   "evidenceCount": 9,
+   "altCount": 3,
+   "altFull": [],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "The testing, incident-response and board-report items do not apply to firms with fewer than 5,000 consumers, which removes the smallest buyers.",
+     "ref": "B2B-2-E2"
+    },
+    {
+     "severity": "major",
+     "reason": "An open-source scanner and an open-source compliance platform cover scans and the evidence record for free.",
+     "ref": "B2B-2-E8"
+    },
+    {
+     "severity": "major",
+     "reason": "No structural edge: the record is portable and the Qualified Individual role needs no licence.",
+     "ref": "B2B-2-E5"
+    }
+   ]
+  },
+  {
+   "id": "B2B-3",
+   "name": "Medicare enrollment-revalidation desk for small provider and supplier practices",
+   "family": "b2b_operations",
+   "verdict": "killed",
+   "verdictReason": "Killed: no structural edge (the due-date list is public and CMS itself notifies providers: B2B-3-E3/E4), a free guided CMS tool covers the filing (B2B-3-E7), and a 5-year cycle (B2B-3-E1/E6) leaves no repeat revenue. Not checked: whether any consultants charge for this and at what price (web search was unavailable); whether PECOS lets a vendor act for a provider.",
+   "raw": 27.1,
+   "adjusted": 16.26,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_type_not_an_edge:niche_focus",
+   "edgeType": "niche_focus",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "CMS Medicare Revalidation List (public due-date search)",
+   "unresolved": 1,
+   "evidenceCount": 9,
+   "altCount": 4,
+   "altFull": [
+    "PECOS online enrollment application with CMS video and print tutorials"
+   ],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "Free official path covers the wedge: public Revalidation List, direct email/post notice, and a guided PECOS application.",
+     "ref": "B2B-3-E7"
+    },
+    {
+     "severity": "major",
+     "reason": "No exclusive or compounding data: the due-date list is public to every competitor and to the provider.",
+     "ref": "B2B-3-E3"
+    },
+    {
+     "severity": "major",
+     "reason": "Five-year cycle (three for DMEPOS) gives almost no repeat revenue per customer.",
+     "ref": "B2B-3-E1"
+    }
+   ]
+  },
+  {
+   "id": "B2B-4",
+   "name": "Open Payments (Sunshine Act) annual reporting service for small drug and device makers",
+   "family": "b2b_operations",
+   "verdict": "killed",
+   "verdictReason": "Killed: no structural edge (CMS runs the submission system and publishes the data: B2B-4-E4/E7; the ledger is portable), and nothing shows a stranger can reach small makers or that they pay outsiders. Penalty exposure (B2B-4-E1/E3) is real, so a stronger entrant with an existing reporting-entity audience might differ. Not checked: prices of paid aggregate-spend vendors and consultants, and the count of small reporting entities (web search was unavailable).",
+   "raw": 35.8,
+   "adjusted": 21.48,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_type_not_an_edge:generic_managed_service",
+   "edgeType": "generic_managed_service",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "CMS Open Payments System (reporting entities submit data to CMS; no fee stated on the pages read)",
+   "unresolved": 1,
+   "evidenceCount": 9,
+   "altCount": 3,
+   "altFull": [
+    "CMS Open Payments System (reporting entities submit data to CMS; no fee stated on the pages read)"
+   ],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "The CMS Open Payments System is the free official channel and covers submission; the service would only repackage data entry.",
+     "ref": "B2B-4-E7"
+    },
+    {
+     "severity": "major",
+     "reason": "No structural edge: program data are public to all (B2B-4-E4) and the ledger is portable.",
+     "ref": "B2B-4-E4"
+    },
+    {
+     "severity": "minor",
+     "reason": "No price, paying customer or lead channel for small makers was found.",
+     "ref": "B2B-4-E9"
+    }
+   ]
+  },
+  {
+   "id": "B2B-5",
+   "name": "SEC-registered transfer agent and shareholder-ledger service for micro-cap and private issuers",
+   "family": "b2b_operations",
+   "verdict": "uncertain",
+   "verdictReason": "Open question: what do micro-issuers pay existing registered transfer agents, what does the annual independent-accountant report (B2B-5-E5) plus insurance cost a new agent, and how many micro-issuers switch agents each year? Public pages read give the rules but no prices or counts, so only quotes from accountants and agents can settle it. On assumed numbers the idea loses money at under about 15 issuers, and a stranger has no track record, so treat as unlikely without that data.",
+   "raw": 37,
+   "adjusted": 22.2,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "regulatory_license_intrinsic_to_model",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Issuer acts as its own transfer agent (self-transfer; the annual accountant-report rule has exemptions for agents serving only their own securities, per the page summary)",
+   "unresolved": 0,
+   "evidenceCount": 10,
+   "altCount": 3,
+   "altFull": [],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "Fixed regulatory stack (30-day registration, fingerprinting, annual independent-accountant report, TA-2, 3-day/90% turnaround) is carried before any micro-issuer fee base exists; amount unquantified.",
+     "ref": "B2B-5-E5"
+    },
+    {
+     "severity": "major",
+     "reason": "No evidence a newcomer without track record can win its first 10 issuers in 365 days; registration is open to anyone, so incumbent agents are plentiful (count not found).",
+     "ref": "B2B-5-E7"
+    },
+    {
+     "severity": "minor",
+     "reason": "No fee schedule or paying customer found; the accountant fee and agent prices are unknown.",
+     "ref": "B2B-5-E3"
+    }
+   ]
+  },
+  {
+   "id": "CON-1",
+   "name": "Acquired sub-$10k consumer subscription iOS app (marketplace purchase, App Store transfer) with US web-checkout billing",
+   "family": "consumer_products",
+   "verdict": "uncertain",
+   "verdictReason": "The edge (an exclusive, transferable paying subscriber base) is real in kind but unproven for a stranger's budget: the open question is whether any listing under $10,000 has at least $300/month of verifiable subscription revenue and a clean Apple transfer. On the page read, disclosed-MRR listings start at $18,000 and the only cheap subscription listing earns about $154/month, giving payback of 21 months or more even before haircuts.",
+   "raw": 38.8,
+   "adjusted": 23.28,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "acquirable_owned_audience_or_partner_channel",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": null,
+   "unresolved": 0,
+   "evidenceCount": 13,
+   "altCount": 3,
+   "altFull": [
+    "Buy a larger Flippa listing that discloses MRR (AI Video Maker, asking $21,150; amortised over 36 months)"
+   ],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "Listings that disclose MRR start at $18,000-$25,000 on the page read, and the only listing under $10,000 that mentions subscriptions earns about $154/month of revenue, so the stated budget buys almost no verified recurring revenue.",
+     "ref": "CON-1-E2,CON-1-E3"
+    },
+    {
+     "severity": "major",
+     "reason": "Buyer-side due diligence is structurally weak: Apple gives the recipient sales data only after the transfer and the seller supplies the code, so seller-reported MRR cannot be audited from Apple's side.",
+     "ref": "CON-1-E6"
+    },
+    {
+     "severity": "minor",
+     "reason": "Organic App Store rank and subscriber bases of AI-wrapper or utility apps may decay after a change of owner; no retention evidence was readable.",
+     "ref": "CON-1-E4"
+    }
+   ]
+  },
+  {
+   "id": "CON-2",
+   "name": "Paid personal-data-broker removal subscription for US consumers",
+   "family": "consumer_products",
+   "verdict": "killed",
+   "verdictReason": "Killed: a free official deletion channel (DROP, mandatory broker processing from August 1, 2026, California residents), a free maintained opt-out list and more than a dozen paid services already cover the wedge, and a stranger has no exclusive input. Paid-service prices were not readable, so the economics are assumption-based.",
+   "raw": 32.9,
+   "adjusted": 19.74,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_type_not_an_edge:generic_managed_service",
+   "edgeType": "generic_managed_service",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "California DROP (state-run single deletion request to all registered brokers)",
+   "unresolved": 0,
+   "evidenceCount": 7,
+   "altCount": 3,
+   "altFull": [],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "No structural edge: a free state deletion channel (California, with broker processing mandatory from August 1, 2026), a free self-service list, and more than a dozen paid services already cover the wedge; an entrant can only be a generic managed service.",
+     "ref": "CON-2-E1,CON-2-E2,CON-2-E4,CON-2-E5"
+    },
+    {
+     "severity": "major",
+     "reason": "Third-party removal is structurally incomplete (some brokers do not allow third-party requests) and agent requests may need proof of signed permission, which caps service quality.",
+     "ref": "CON-2-E6,CON-2-E7"
+    },
+    {
+     "severity": "minor",
+     "reason": "Incumbent prices and traction could not be read, so the entrant price and demand are assumptions only.",
+     "ref": "CON-2-E4"
+    }
+   ]
+  },
+  {
+   "id": "CON-3",
+   "name": "Hosted campsite-cancellation alert subscription for non-technical campers (Recreation.gov and state-park systems)",
+   "family": "consumer_products",
+   "verdict": "killed",
+   "verdictReason": "Killed: free MIT-licensed camply already provides continuous cancellation search across Recreation.gov and state systems with SMS, Slack, Telegram and push alerts, newer free watchers are appearing, and the claimed cancellation-history edge is unevidenced. Paid competitors and Recreation.gov terms could not be read, so this is a kill on edge and visible alternatives, not a measured market sizing.",
+   "raw": 34.4,
+   "adjusted": 20.64,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "proprietary_or_compounding_data",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "camply (MIT-licensed open-source campsite finder and notifier)",
+   "unresolved": 1,
+   "evidenceCount": 5,
+   "altCount": 3,
+   "altFull": [
+    "camply (MIT-licensed open-source campsite finder and notifier)"
+   ],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "No structural edge: an MIT-licensed tool supports Recreation.gov, state-park systems, continuous search and SMS/Slack/Telegram/push alerts for free, and newer free watchers keep appearing; the hosted-convenience layer is only a generic managed service.",
+     "ref": "CON-3-E1,CON-3-E2,CON-3-E3"
+    },
+    {
+     "severity": "major",
+     "reason": "Paying demand for alerts was not evidenced anywhere in the pages read, and camping demand is seasonal.",
+     "ref": "CON-3-E4"
+    },
+    {
+     "severity": "minor",
+     "reason": "Dependence on a single government-run data source whose terms on automated access were unreadable.",
+     "ref": "CON-3-E5"
+    }
+   ]
+  },
+  {
+   "id": "CON-4",
+   "name": "Contingency-fee residential property-tax appeal service for homeowners, re-filed every year",
+   "family": "consumer_products",
+   "verdict": "killed",
+   "verdictReason": "Killed: Ownwell already sells the same contingency-fee annual appeal service, publishes free DIY guides and cites $774 average savings, so the entrant has no exclusive input beyond a lower percentage; Texas registration is open to any qualified applicant. No acquisition channel for a newcomer was evidenced.",
+   "raw": 36.1,
+   "adjusted": 21.66,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_type_not_an_edge:cheaper",
+   "edgeType": "cheaper",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": null,
+   "unresolved": 0,
+   "evidenceCount": 7,
+   "altCount": 3,
+   "altFull": [
+    "Ownwell (contingency fee, 25% in its pricing example; about $16/month averaged over a year at $774 average savings)"
+   ],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "No structural edge: Ownwell sells the identical pay-only-if-you-save model, claims the largest customer base and publishes free guides; an entrant can only undercut on percentage.",
+     "ref": "CON-4-E1,CON-4-E2,CON-4-E3"
+    },
+    {
+     "severity": "major",
+     "reason": "The free DIY route (county e-file) is explicitly documented, so the wedge is optional convenience for the owner.",
+     "ref": "CON-4-E5"
+    },
+    {
+     "severity": "major",
+     "reason": "Licensing is not a moat: Texas registration is obtainable by any applicant with the required education and experience and several professions are exempt, so it adds cost without exclusivity.",
+     "ref": "CON-4-E6,CON-4-E7"
+    }
+   ]
+  },
+  {
+   "id": "CON-5",
+   "name": "Class-action settlement and refund claim-discovery subscription app for consumers",
+   "family": "consumer_products",
+   "verdict": "killed",
+   "verdictReason": "Killed: demand is proven by one incumbent app at $1.2M ARR, but it is a one-year-old leader out of reach at its $2.655M asking price, the claimed data edge is not exclusive, and official refund programs are free (some automatic) while the FTC warns against paying for refund help. Evidence is thin on private class-action sites, which were not readable.",
+   "raw": 36.1,
+   "adjusted": 21.66,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "proprietary_or_compounding_data",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "FTC refund programs (automatic payments or administrator-run claims, free)",
+   "unresolved": 0,
+   "evidenceCount": 6,
+   "altCount": 3,
+   "altFull": [],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "No structural edge for a newcomer: an incumbent app with $1.2M ARR (listed for sale at $2.655M, far over the budget) holds the head start, and settlement and refund data is public.",
+     "ref": "CON-5-E1,CON-5-E2"
+    },
+    {
+     "severity": "major",
+     "reason": "Official refund programs pay some eligible consumers automatically and tell them not to pay anyone for refund help, which undercuts a fee-for-refund subscription and adds trust risk.",
+     "ref": "CON-5-E3,CON-5-E4"
+    },
+    {
+     "severity": "minor",
+     "reason": "Claim-processing rules differ by case and courts scrutinise them, so an automated filing layer carries unverified compliance risk.",
+     "ref": "CON-5-E5"
+    }
+   ]
+  },
+  {
+   "id": "EDU-1",
+   "name": "Florida condo/HOA board-member certification and annual-CE online course (DBPR-approved provider)",
+   "family": "education_training",
+   "verdict": "killed",
+   "verdictReason": "Killed: a free regulator course (EDU1-E2) and a free large-manager course (EDU1-E1) already cover the 4-hour certification, about 320 provider entries are approved (EDU1-E5), and approval is open to any applicant (EDU1-E4). Not verified: any paid price in this market, the number of Florida directors, and the HOA 8-hour CE track. Quotes captured through WebFetch page summaries.",
+   "raw": 22.4,
+   "adjusted": 13.44,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_none",
+   "edgeType": "regulatory_license_intrinsic_to_model",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "FirstService Residential free on-demand Florida board certification course (a property manager gives it away to attract board members)",
+   "unresolved": 1,
+   "evidenceCount": 6,
+   "altCount": 3,
+   "altFull": [
+    "FirstService Residential free on-demand Florida board certification course (a property manager gives it away to attract board members)",
+    "Becker law firm: 30+ DBPR-approved on-demand classes (price not found on the page; 0 entered as an unverified placeholder)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "A free official course (DBPR) and a free commercial course from a large property manager already deliver the same certification, so there is nothing for a paid entrant to sell.",
+     "ref": "EDU1-E1"
+    },
+    {
+     "severity": "major",
+     "reason": "Roughly 320 approved-provider entries (page summary) and 30+ approved classes from one law firm; approval is a commodity, not an exclusive licence.",
+     "ref": "EDU1-E5"
+    },
+    {
+     "severity": "major",
+     "reason": "No sourced way for a stranger to reach the first 10 paying associations when the manager-run free course reaches the same directors.",
+     "ref": "EDU1-E6"
+    }
+   ]
+  },
+  {
+   "id": "EDU-2",
+   "name": "Florida court-approved online parenting / divorce-education course (DCF-approved provider, fee per parent)",
+   "family": "education_training",
+   "verdict": "killed",
+   "verdictReason": "Killed: a one-time $14 to $30 purchase (EDU2-E1, EDU2-E2) sold by dozens of approved online providers (EDU2-E5, a 2014 snapshot) with open DCF approval (EDU2-E4) and no recurring revenue. Not verified: current DCF approved-provider count (the DCF table did not render), Florida case volume, approval fee. Only Florida was tested; other states may differ. Quotes captured through WebFetch page summaries.",
+   "raw": 30.1,
+   "adjusted": 18.06,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_none",
+   "edgeType": "regulatory_license_intrinsic_to_model",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Reduced-fee or waived course that approved providers must offer to parents who cannot afford the standard price (free for qualifying parents)",
+   "unresolved": 0,
+   "evidenceCount": 8,
+   "altCount": 4,
+   "altFull": [
+    "Pensacola State College online DCF-approved parenting course, $25.00 for 4 hours (one-time, per parent)",
+    "Statewide online providers charging about $20 to $30 per parent, with court-acceptance guarantees (for example Certevia, DCF approved since 1990 per its FAQ)",
+    "Low-price brands on the circuit list (names such as 14DollarParentEducation and Lowest Price Parenting CLASS.com; price implied by the names only, on a 2014 list, unverified today)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "One-time purchase with a price war: roughly 45 statewide online providers on an older circuit list (including low-price brands) and a public college at $25; a newcomer has no structural way to win learners.",
+     "ref": "EDU2-E5"
+    },
+    {
+     "severity": "major",
+     "reason": "No structural edge: DCF approval is open to any applicant (about 30 working days), so it protects nobody and gives no channel.",
+     "ref": "EDU2-E4"
+    },
+    {
+     "severity": "minor",
+     "reason": "Required fee waivers for indigent parents and live-class orders in some counties cut the reachable paying volume.",
+     "ref": "EDU2-E8"
+    }
+   ]
+  },
+  {
+   "id": "EDU-3",
+   "name": "State-approved cannabis responsible-vendor (RVT) worker-training provider (Maryland rolling approval; Illinois odd-year window)",
+   "family": "education_training",
+   "verdict": "killed",
+   "verdictReason": "Killed: a $21 approved course already exists (EDU3-E1) among 8 Maryland and 18 Illinois approved providers (EDU3-E5, EDU3-E8), approval is open to anyone for $500 (EDU3-E3), Illinois is closed until August 2027 (EDU3-E6), and New York is free (EDU3-E9). Not verified: agent counts per state, other newly legal states (Ohio, Minnesota, Delaware, Missouri), Maryland review time. Quotes captured through WebFetch page summaries.",
+   "raw": 31.9,
+   "adjusted": 19.14,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_none",
+   "edgeType": "regulatory_license_intrinsic_to_model",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "New York OCM/NYSDOL Responsible Workforce Training: free state-run online modules for cannabis workers (covers part of the New York requirement; not Maryland or Illinois)",
+   "unresolved": 0,
+   "evidenceCount": 9,
+   "altCount": 3,
+   "altFull": [
+    "Bud Education: Maryland dispensary, cultivation and processor RVT, $21 per person, listed as approved by MCA"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "Crowded and price-anchored: 8 approved Maryland providers (page summary) and 18 Illinois providers, one course at $21 and a regulator expectation of $50 or less per person; a newcomer only matches.",
+     "ref": "EDU3-E1"
+    },
+    {
+     "severity": "major",
+     "reason": "Approval is open to any qualified applicant ($500, rolling) so it is a table stake; Illinois is closed until the August 2027 window and approvals do not transfer.",
+     "ref": "EDU3-E6"
+    },
+    {
+     "severity": "major",
+     "reason": "New York, a large new market, provides free state-run training for its core modules.",
+     "ref": "EDU3-E9"
+    }
+   ]
+  },
+  {
+   "id": "EDU-4",
+   "name": "Acquired small online continuing-education / exam-prep school bought on a business marketplace, run for renewal-cycle learners",
+   "family": "education_training",
+   "verdict": "killed",
+   "verdictReason": "Killed: the profitable approved school found costs $1.85 million (EDU4-E1), sub-$25,000 education listings earn at most $500 a month or lose money (EDU4-E2, EDU4-E5), and provider approvals are non-transferable where checked (EDU4-E3, EDU4-E4) and cheap to get from scratch (EDU4-E6). Not verified: financials behind marketplace sign-ups, other states approval-transfer rules, BizQuest and BusinessBroker listings (errors). Quotes captured through WebFetch page summaries.",
+   "raw": 27.6,
+   "adjusted": 16.56,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_none",
+   "edgeType": "acquirable_owned_audience_or_partner_channel",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Apply for provider approval yourself and build courses from scratch (no fee in Washington per its OSPI page; no fee mentioned on the Pennsylvania guidelines page; $500 for three years in Maryland cannabis RVT)",
+   "unresolved": 1,
+   "evidenceCount": 6,
+   "altCount": 3,
+   "altFull": [
+    "Apply for provider approval yourself and build courses from scratch (no fee in Washington per its OSPI page; no fee mentioned on the Pennsylvania guidelines page; $500 for three years in Maryland cannabis RVT)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "Budget: profitable approved schools are priced at multiples of earnings ($1.85 million for about $380,000 cash flow; $24,000 for $500 a month) while the $10,600 listing loses money, so $10,000 buys no earning asset.",
+     "ref": "EDU4-E1"
+    },
+    {
+     "severity": "major",
+     "reason": "Provider approvals, the asset that matters, do not carry to a new owner (North Carolina statute; Illinois rule) and are free or cheap to obtain from scratch, so acquisition adds nothing structural.",
+     "ref": "EDU4-E3"
+    },
+    {
+     "severity": "minor",
+     "reason": "Diligence data on traffic and financials is gated behind sign-up and was not seen; any buyer relies on seller claims.",
+     "ref": "EDU4-E2"
+    }
+   ]
+  },
+  {
+   "id": "EDU-5",
+   "name": "Pennsylvania Act 48 approved-provider online teacher professional-development courses (per-hour, five-year renewal cycle)",
+   "family": "education_training",
+   "verdict": "killed",
+   "verdictReason": "Killed: open approval (EDU5-E4), rivals already selling the same hours at $165 per 45 hours (EDU5-E1, EDU5-E6), free state courses and district in-service (EDU5-E3, EDU5-E5), and no sourced channel for a stranger. Real demand and a recurring five-year cycle exist (EDU5-E2, EDU5-E7). Not verified: the size of the free SAS catalog, Pennsylvania educator count, Texas and other states clock-hour rules. Quotes captured through WebFetch page summaries.",
+   "raw": 39.2,
+   "adjusted": 23.52,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_none",
+   "edgeType": "regulatory_license_intrinsic_to_model",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Pennsylvania Standards Aligned System (SAS) PD Center: free Act 48 eligible self-paced courses (catalog size unverified, so scored partial)",
+   "unresolved": 0,
+   "evidenceCount": 8,
+   "altCount": 4,
+   "altFull": [
+    "For Teachers By Teachers: $165 for a 45-hour Act 48 course (about $3.67 per Act 48 hour; one-time per course)",
+    "Model Teaching: PDE-approved online PD courses (price not found on the page)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "No structural edge: approval is open to any business entity, rivals already sell Act 48 hours (about $3.67 per hour), and the state supplies free courses and presumes districts approved.",
+     "ref": "EDU5-E4"
+    },
+    {
+     "severity": "major",
+     "reason": "No sourced channel to reach the first 10 paying educators without an audience; free state courses and district hours compete for the same need.",
+     "ref": "EDU5-E3"
+    },
+    {
+     "severity": "minor",
+     "reason": "Washington, the second state checked, does not list for-profit companies as eligible providers, limiting replication.",
+     "ref": "EDU5-E8"
+    }
+   ]
+  },
+  {
+   "id": "LOC-1",
+   "name": "Owner-operated small pool-service route bought from an exiting operator (under 25 accounts, seller note, 90-day retention holdback)",
+   "family": "local_businesses",
+   "verdict": "killed",
+   "verdictReason": "Killed: the smallest routes ask a median $33K with seller financing on about 3% of listings (LOC1-E3, LOC1-E4), the purchased account base is month-to-month with 5-20% early churn and already priced in (LOC1-E1, LOC1-E6), and the buyer ends up doing about 14 hours a week of the pool work for a modest wage. Not verified: current small-route asking prices, state-by-state service licensing.",
+   "raw": 32.7,
+   "adjusted": 19.62,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "acquirable_owned_audience_or_partner_channel",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Homeowner does the work: chemicals only, about $23 per month (derived: chemicals run 12-18% of revenue, applied to $153; labour is the homeowner's own time)",
+   "unresolved": 0,
+   "evidenceCount": 11,
+   "altCount": 3,
+   "altFull": [
+    "Existing local pool-service companies at the median stated billing of $153 per pool per month",
+    "Lower-priced incumbents at the industry average of $75-$125 per residential account per month (midpoint shown)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "Capital and financing: the smallest routes (under 25 accounts) ask a median $33K, a 20-30% down payment is $6.6K-$9.9K before insurance and chemicals, and only 8 of 240+ listings offer seller financing, so a $10K entrant usually cannot close; all-cash it buys only about 5 accounts at $1,850 each.",
+     "ref": "LOC1-E4"
+    },
+    {
+     "severity": "major",
+     "reason": "No structural edge: the account base is month-to-month, 5-20% leave within 90 days, and the price already capitalizes it, so the buyer is purchasing a job (about $12 per hour of own labour net of the note, about $30 after it) rather than a moat.",
+     "ref": "LOC1-E6"
+    },
+    {
+     "severity": "major",
+     "reason": "Pessimistic economics are negative once note payments are included (about -$870 a month).",
+     "ref": "LOC1-E1"
+    },
+    {
+     "severity": "minor",
+     "reason": "Supply is concentrated in a few Sun Belt states (the page counts about 109 Florida, 78 California and 36 Texas listings out of 240+, read through a page summary), so the model does not transfer to the US generally.",
+     "ref": "LOC1-E3"
+    }
+   ]
+  },
+  {
+   "id": "LOC-2",
+   "name": "Used-cooking-oil free-pickup collection route (locked containers, vacuum truck, month-to-month restaurant accounts)",
+   "family": "local_businesses",
+   "verdict": "killed",
+   "verdictReason": "Killed: an $80K-$150K truck-based business (LOC2-E1, LOC2-E4) selling a service rivals already give away on month-to-month, cancel-anytime terms (LOC2-E6), with thin per-stop profit and an 18-24 month ramp. Not verified: a current yellow-grease price per pound (no current price was found), state-by-state hauler registration.",
+   "raw": 19.9,
+   "adjusted": 11.94,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_none",
+   "edgeType": "exclusive_or_difficult_supply_or_access",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "reference_entrant",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Incumbent hauler or renderer takes the oil with free pickup, no rebate and no contract (the standard arrangement for most restaurants)",
+   "unresolved": 1,
+   "evidenceCount": 13,
+   "altCount": 3,
+   "altFull": [
+    "Incumbent hauler or renderer takes the oil with free pickup, no rebate and no contract (the standard arrangement for most restaurants)",
+    "Collector pays the restaurant per gallon (arrangement three of three; applies mainly to high-volume stops)",
+    "Collector charges the restaurant a flat monthly fee (1997 Spokane example, $30 per month; historical, shown only to document that a pay-to-haul arrangement exists)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "Capital: the guide puts startup at $80K-$150K including a collection truck, and oil is moved by vacuum truck, against a $10K ceiling.",
+     "ref": "LOC2-E1"
+    },
+    {
+     "severity": "fatal",
+     "reason": "No lock-in and no exclusivity: incumbent offers are free, month-to-month and cancel-anytime, so a stranger cannot obtain exclusive access to oil that rivals will not simply offer for free too.",
+     "ref": "LOC2-E6"
+    },
+    {
+     "severity": "major",
+     "reason": "Per-stop economics are thin ($15-40 for low-volume stops per a page summary) and breakeven needs about 100 accounts over 18-24 months (page summary), which is beyond the 365-day window.",
+     "ref": "LOC2-E9"
+    },
+    {
+     "severity": "major",
+     "reason": "State hauler registration, bonding and insurance plus widespread oil theft add fixed cost and loss risk.",
+     "ref": "LOC2-E3"
+    }
+   ]
+  },
+  {
+   "id": "LOC-3",
+   "name": "Restaurant kitchen-exhaust (hood and duct) cleaning on recurring NFPA 96 cycles, sold on contract with digital service certificates",
+   "family": "local_businesses",
+   "verdict": "uncertain",
+   "verdictReason": "Uncertain, leaning to kill: the strongest demand evidence in this family (code-mandated recurring cycle with insurer and fire-marshal proof, LOC3-E3, LOC3-E6, LOC3-E7) and published prices of $475-$1,100 per hood (LOC3-E1), but no structural edge for a stranger (certification is open, LOC3-E4). Open questions public pages did not settle: certification, insurance and equipment cost for a new firm, and whether strangers win accounts from incumbents. The price source is a small cleaning company's booking page and the other cost source is a vendor blog.",
+   "raw": 48.7,
+   "adjusted": 27,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "regulatory_license_intrinsic_to_model",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Kitchen staff degrease filters and surfaces in house (basic checks only; duct and certification cannot be done by untrained staff)",
+   "unresolved": 0,
+   "evidenceCount": 12,
+   "altCount": 3,
+   "altFull": [
+    "Existing certified hood cleaner with published prices (example: $600 for a medium hood, cleaned quarterly, shown per month)",
+    "Premium providers for full-service hotel restaurants ($1,200-$3,500 per service, quarterly shown per month at the low end)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "No structural edge found: certification is open to anyone who completes it and incumbents already hold it; the recurring cycle is demand, which every incumbent shares.",
+     "ref": "LOC3-E4"
+    },
+    {
+     "severity": "major",
+     "reason": "First-customer channel unevidenced: no source shows how a stranger without relationships wins restaurants that already have a cleaner.",
+     "ref": "LOC3-E1"
+    },
+    {
+     "severity": "minor",
+     "reason": "Pessimistic economics are negative when both crew members are paid and cost inputs are unsourced assumptions.",
+     "ref": "LOC3-E3"
+    }
+   ]
+  },
+  {
+   "id": "LOC-4",
+   "name": "Leveraged 50-account pool-service route (SBA or seller-note financed) run by hired technicians so the entrant does not work the pools",
+   "family": "local_businesses",
+   "verdict": "killed",
+   "verdictReason": "Killed: stated SDE margins of 76-79% (LOC4-E6) include the owner's own labour; replacing that labour with a hired technician and adding about $860 a month of debt service leaves almost nothing on the baseline and a loss under the pessimistic case, with no structural edge (LOC4-E8). Not verified: technician wage (assumed $22 per hour), SBA or seller-note approval for a first-time buyer, equity-injection minimums.",
+   "raw": 32.1,
+   "adjusted": 19.26,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_none",
+   "edgeType": "acquirable_owned_audience_or_partner_channel",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Homeowner does the work: chemicals only, about $21 per month (derived: chemicals run 12-18% of revenue, applied to $141)",
+   "unresolved": 0,
+   "evidenceCount": 11,
+   "altCount": 3,
+   "altFull": [
+    "Existing local pool-service companies at the median stated billing of $153 per pool per month",
+    "Lower-priced incumbents at the industry average of $75-$125 per residential account (midpoint shown)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "Thin economics: with a hired technician the route clears only about $450 a month after debt service on the baseline, and goes deeply negative under the pessimistic case; the 76-79% SDE margin in listings assumes the owner's own free labour.",
+     "ref": "LOC4-E5"
+    },
+    {
+     "severity": "major",
+     "reason": "Financing for a stranger is unevidenced: goodwill is poor collateral, and nothing read shows an SBA lender or seller will fund a first-time buyer with $10K and no operating history.",
+     "ref": "LOC4-E9"
+    },
+    {
+     "severity": "major",
+     "reason": "No structural edge: the purchased base is month-to-month, priced at market and open to any bidder; 5-20% leave within 90 days.",
+     "ref": "LOC4-E8"
+    },
+    {
+     "severity": "minor",
+     "reason": "Supply of routes is concentrated in a few Sun Belt states (read through a page summary), so the model does not transfer to the US generally.",
+     "ref": "LOC4-E2"
+    }
+   ]
+  },
+  {
+   "id": "LOC-5",
+   "name": "Restaurant back-of-house route bundle: free used-cooking-oil pickup as the door-opener, hood cleaning as the paid recurring service (composite hypothesis)",
+   "family": "local_businesses",
+   "verdict": "killed",
+   "verdictReason": "Killed: a composite hypothesis that depends on an $80K-$150K oil-collection truck (LOC5-E2) to win a door-opener that restaurants can cancel at any time (LOC5-E1), with no evidence that oil-pickup accounts buy hood cleaning. The hood-cleaning half is carried in LOC-3. Not verified: conversion rate from oil accounts to cleaning contracts.",
+   "raw": 29.3,
+   "adjusted": 17.58,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "privileged_or_low_cac_distribution",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "reference_entrant",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Restaurant keeps the incumbent hauler's free pickup and buys hood cleaning separately (status quo; both services exist today)",
+   "unresolved": 1,
+   "evidenceCount": 9,
+   "altCount": 3,
+   "altFull": [
+    "Restaurant keeps the incumbent hauler's free pickup and buys hood cleaning separately (status quo; both services exist today)",
+    "Existing certified hood cleaner with published prices (example: $600 for a medium hood, cleaned quarterly, shown per month)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "Capital: the oil route needs an $80K-$150K truck-based setup, an order of magnitude above $10K, and the hood side needs separate certification and equipment.",
+     "ref": "LOC5-E2"
+    },
+    {
+     "severity": "major",
+     "reason": "The distribution edge is unevidenced and free month-to-month pickup creates no lock-in; no source shows pickup accounts converting to cleaning contracts.",
+     "ref": "LOC5-E1"
+    },
+    {
+     "severity": "major",
+     "reason": "Rivals can copy the bundle with a truck and certification, and haulers already provide locked containers and compete heavily.",
+     "ref": "LOC5-E8"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,1041 @@
+{
+ "candidates": [
+  {
+   "id": "CON-1",
+   "name": "Acquired sub-$10k consumer subscription iOS app (marketplace purchase, App Store transfer) with US web-checkout billing",
+   "family": "consumer_products",
+   "buyer": "Individual iPhone users who already pay a recurring subscription to a small utility, AI-photo or privacy app; the entrant buys the app and its subscriber base from a marketplace seller instead of building one",
+   "pain": "A new subscription app starts with zero paying users, no ratings and no App Store keyword rank; buying a transferable app that already has subscribers removes that cold start, but marketplace prices are roughly 14x-42x monthly revenue and only seller-reported numbers are visible before purchase.",
+   "wedge": "Buy a small iOS subscription app with disclosed MRR for about $10,000 all-in through an escrowed marketplace, transfer it through App Store Connect with the subscription shared secret, and steer new US purchases to Stripe web checkout via the US link-out rule.",
+   "referenceEntrant": {
+    "startupCashUsd": 10000,
+    "daysToFirstRevenue": 30,
+    "ownerHoursPerWeek": 10
+   },
+   "entrantEdge": {
+    "type": "acquirable_owned_audience_or_partner_channel",
+    "status": "claimed",
+    "statement": "What is exclusive is the acquired asset itself: the paying subscriber base, the App Store listing history, ratings and keyword rank, and the bundle ID, which Apple lets transfer together with auto-renewable subscriptions via an app-specific shared secret. A competitor cannot copy an existing subscriber base or review history quickly. Claimed only: every metric is seller-reported, Apple gives the recipient sales data only for transactions after the transfer, listings that disclose MRR start at about $18,000-$25,000 on the page read, and organic rank can decay after a change of owner.",
+    "evidenceIds": [
+     "CON-1-E4",
+     "CON-1-E5",
+     "CON-1-E6"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Build an equivalent subscription app from scratch (Apple Developer Program membership only)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 8.25,
+      "coversWedge": "partial",
+      "sourceLocator": "https://developer.apple.com/programs/",
+      "evidenceRef": "CON-1-E10",
+      "metrics": {
+        "days_to_first_subscription_revenue": 180
+      }
+     },
+     {
+      "label": "Buy a larger Flippa listing that discloses MRR (AI Video Maker, asking $21,150; amortised over 36 months)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 587.5,
+      "coversWedge": "full",
+      "sourceLocator": "https://flippa.com/buy/apps",
+      "evidenceRef": "CON-1-E2",
+      "metrics": {
+        "days_to_first_subscription_revenue": 30
+      }
+     },
+     {
+      "label": "Acquire.com mobile-app category (alternative marketplace; buyer fee not stated on page read)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://acquire.com/",
+      "evidenceRef": "CON-1-E13",
+      "metrics": {
+        "days_to_first_subscription_revenue": 30
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "days_to_first_subscription_revenue",
+    "direction": "lower_is_better",
+    "incumbentValue": 180,
+    "entrantValue": 30,
+    "falsifier": "The 180-day figure for a from-scratch build (build, App Review, first ranking and first paying subscribers) is an ESTIMATE, not sourced; the 30-day figure assumes the transfer completes in about a month. The edge is disproved if the seller's MRR cannot be reproduced live in App Store Connect, RevenueCat or Stripe dashboards before payment, if the app cannot pass the Apple transfer criteria, or if subscriptions fall by more than half within 90 days after the transfer."
+   },
+   "evidence": [
+    {
+     "id": "CON-1-E1",
+     "url": "https://flippa.com/buy/apps",
+     "quote": "98% profit margin, $1,500+ MRR, 4,500+ monthly installs, and viral AI video engagement",
+     "kind": "demand",
+     "publisher": "Flippa (listing card, AI Video Maker - Hug & Dance, iOS)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-1-E2",
+     "url": "https://flippa.com/buy/apps",
+     "quote": "USD $21,150 USD $23,500",
+     "kind": "incumbent_price",
+     "publisher": "Flippa (asking price on the AI Video Maker - Hug & Dance card, marked Reduced 10%)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-1-E3",
+     "url": "https://flippa.com/buy/apps",
+     "quote": "Monetized through subscriptions and in-app purchases.",
+     "kind": "demand",
+     "publisher": "Flippa (listing card, Pika: Create, Edit & Inspire, iOS, asking USD $3,500; cheapest listing on the page that mentions subscriptions)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-1-E4",
+     "url": "https://flippa.com/buy/apps",
+     "quote": "High-Momentum iOS Security App – $4K+ MRR, Dominating Key App Store Keywords with 100% Organic Growth",
+     "kind": "demand",
+     "publisher": "Flippa (listing card, MFA Authenticator: Secure 2FA, asking USD $145,000)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-1-E5",
+     "url": "https://developer.apple.com/help/app-store-connect/transfer-an-app/overview-of-app-transfer/",
+     "quote": "Apps that offer auto-renewable subscriptions must use an app-specific shared secret.",
+     "kind": "constraint",
+     "publisher": "Apple Developer",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-1-E6",
+     "url": "https://developer.apple.com/help/app-store-connect/transfer-an-app/overview-of-app-transfer/",
+     "quote": "The recipient of the transferred app will only receive payment and sales information for transactions that occurred after the transfer.",
+     "kind": "constraint",
+     "publisher": "Apple Developer",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-1-E7",
+     "url": "https://developer.apple.com/app-store/small-business-program/",
+     "quote": "reduced commission rate of 15% on paid apps and Apple In-App Purchases",
+     "kind": "incumbent_price",
+     "publisher": "Apple Developer (App Store Small Business Program)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-1-E8",
+     "url": "https://developer.apple.com/app-store/review/guidelines/",
+     "quote": "These entitlements are not required for developers to include buttons, external links, or other calls to action in their United States storefront apps.",
+     "kind": "other",
+     "publisher": "Apple Developer (App Review Guidelines 3.1.1(a))",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-1-E9",
+     "url": "https://stripe.com/pricing",
+     "quote": "2.9% + 30¢ per successful transaction for domestic cards.",
+     "kind": "incumbent_price",
+     "publisher": "Stripe (card processing rate; Billing pay-as-you-go adds 0.7% of Billing volume)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-1-E10",
+     "url": "https://developer.apple.com/programs/",
+     "quote": "$99 annual membership",
+     "kind": "incumbent_price",
+     "publisher": "Apple Developer (Apple Developer Program)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-1-E11",
+     "url": "https://support.flippa.com/hc/en-us/articles/360000774276",
+     "quote": "$0 – $5,000 | 3.25% ($10.00 minimum)",
+     "kind": "other",
+     "publisher": "Flippa Support (Escrow.com fee table row)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-1-E12",
+     "url": "https://flippa.com/buy/apps",
+     "quote": "Showing 1-50 of 366",
+     "kind": "demand",
+     "publisher": "Flippa (mobile-app listings header)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-1-E13",
+     "url": "https://acquire.com/",
+     "quote": "Buy and sell SaaS, ecommerce, agencies, content, newsletters, mobile apps and crypto businesses.",
+     "kind": "other",
+     "publisher": "Acquire.com",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 3,
+    "customer_problem_or_value": 4,
+    "distribution_advantage": 3,
+    "defensibility": 3,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 5,
+    "repeat_ltv_potential": 6,
+    "competition_adjusted_gap": 4,
+    "market_depth": 5,
+    "end_to_end_automation": 5,
+    "capital_risk": 3,
+    "owner_time_support": 5
+   },
+   "componentReasons": {
+    "entrant_edge": "The inherited subscriber base and bundle ID can legitimately transfer with subscriptions (CON-1-E5) but the edge is claimed only because buyer-side verification is limited to seller-supplied data (CON-1-E6).",
+    "customer_problem_or_value": "Listings show people paying monthly for thin utility, AI-photo and privacy apps (CON-1-E1, CON-1-E3, CON-1-E4), but each app solves a narrow problem and no retention data was readable.",
+    "distribution_advantage": "A seller claims 100% organic growth from App Store keywords (CON-1-E4), which is unverified and may decay after a change of owner, so distribution is claimed only.",
+    "defensibility": "Anyone can buy or build a similar app; the only moat is the inherited base and reviews, which Apple's transfer rules do not protect from decay (CON-1-E5, CON-1-E6).",
+    "absolute_gross_profit_potential": "The cheapest listing mentioning subscriptions asks $3,500 for about $154/month of revenue (CON-1-E3) and disclosed-MRR listings ask $21,150 or more (CON-1-E2), so a $10k budget buys small cash flow.",
+    "willingness_to_pay": "Several listings disclose paying subscribers and MRR figures ($1,500+ MRR, $4K+ MRR) (CON-1-E1, CON-1-E4), but all are seller-reported and unaudited.",
+    "repeat_ltv_potential": "Auto-renewing App Store subscriptions recur by construction (CON-1-E5), while churn after transfer is unknown.",
+    "competition_adjusted_gap": "Asking prices of roughly 14x-42x monthly revenue on disclosed-MRR listings (CON-1-E1/E2, CON-1-E4) mean the seller already captures most of the value, leaving a thin gap for the buyer.",
+    "market_depth": "One marketplace shows 366 mobile-app listings (CON-1-E12) and a second marketplace lists a mobile-app category (CON-1-E13), but few are priced under $10,000 with disclosed subscriptions.",
+    "end_to_end_automation": "Billing and renewals run through Apple or Stripe (CON-1-E7, CON-1-E9) but OS updates, support and code hand-over need a person (CON-1-E6).",
+    "capital_risk": "The whole budget is spent up front on seller-reported figures, with escrow fees on top (CON-1-E11) and no access to historical Apple sales data (CON-1-E6).",
+    "owner_time_support": "A small app needs regular iOS-update maintenance and customer support, assumed around 10 hours per week (CON-1-E5)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "CON-1-E5/E6: Apple allows transfer of apps with auto-renewable subscriptions only with an app-specific shared secret, gives the buyer sales data only for transactions after the transfer, and the seller must hand over code and build assets directly; both accounts must be in good standing (transfer criteria page, unverified in practice). Verify live dashboards before paying.",
+    "CON-1-E8: the guideline text read says US-storefront apps need no entitlement to show external purchase links; court rulings and Apple's position on any commission on linked purchases were NOT verified and may change. Not legal advice.",
+    "Acquired apps may carry children's-privacy (COPPA), platform-policy or subscription-disclosure obligations (for example a children's games listing); none of this was verified. Stripe web billing adds payment-processing and sales-tax obligations (CON-1-E9)."
+   ],
+   "unverified": [
+    "Web search quota was exhausted and many commercial pages were blocked, so alternatives were checked only by direct page reads.",
+    "No listing detail page was readable: subscriber retention, churn, ownership of source code and the exact store accounts for any single listing are unverified.",
+    "Whether a listing under $10,000 with at least $300/month of verified subscription revenue exists on the 316 listings not shown is unknown."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "Seller-reported Flippa figures for Jawsi (monetization not stated): price $10,000, monthly revenue $1.34K, monthly profit $1.3K. Base profit $1,300/month. Pessimistic (price x0.8, volume x0.5 gives revenue about $536/month; cost of $40/month x1.5 = $60; plus $8.25/month Apple membership): about +$468/month = $5.6k/year, a payback of roughly 21 months on $10,000. Pika ($3,500, $154/month revenue) stays positive at about +$49/month but pays back in about 6 years. Positive cash flow but weak return; all inputs are seller-reported."
+    },
+    "killReasons": [
+     {
+      "reason": "Listings that disclose MRR start at $18,000-$25,000 on the page read, and the only listing under $10,000 that mentions subscriptions earns about $154/month of revenue, so the stated budget buys almost no verified recurring revenue.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "CON-1-E2,CON-1-E3"
+     },
+     {
+      "reason": "Buyer-side due diligence is structurally weak: Apple gives the recipient sales data only after the transfer and the seller supplies the code, so seller-reported MRR cannot be audited from Apple's side.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "CON-1-E6"
+     },
+     {
+      "reason": "Organic App Store rank and subscriber bases of AI-wrapper or utility apps may decay after a change of owner; no retention evidence was readable.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "CON-1-E4"
+     }
+    ]
+   },
+   "researcherVerdict": "uncertain",
+   "verdictReason": "The edge (an exclusive, transferable paying subscriber base) is real in kind but unproven for a stranger's budget: the open question is whether any listing under $10,000 has at least $300/month of verifiable subscription revenue and a clean Apple transfer. On the page read, disclosed-MRR listings start at $18,000 and the only cheap subscription listing earns about $154/month, giving payback of 21 months or more even before haircuts."
+  },
+  {
+   "id": "CON-2",
+   "name": "Paid personal-data-broker removal subscription for US consumers",
+   "family": "consumer_products",
+   "buyer": "US individuals and families who want their personal listings removed from people-search sites and data brokers and will pay a yearly fee to have the requests filed and re-filed for them",
+   "pain": "Personal profiles are listed on dozens of broker and people-search sites, each requiring a separate opt-out request that must be repeated as records reappear.",
+   "wedge": "A subscription that files and re-files opt-out and deletion requests on the customer's behalf and reports proof of removal.",
+   "referenceEntrant": {
+    "startupCashUsd": 3000,
+    "daysToFirstRevenue": 120,
+    "ownerHoursPerWeek": 20
+   },
+   "entrantEdge": {
+    "type": "generic_managed_service",
+    "status": "none",
+    "statement": "Attempted type: proprietary_or_compounding_data (broker-by-broker opt-out procedures and re-listing history). It is not an edge: the procedures are published free in a maintained volunteer list, California residents get a free one-request deletion channel that registered brokers must process from August 1, 2026, and there are already more than a dozen paid opt-out services. Nothing accumulates or is exclusive for a new entrant; what remains is a managed filing service.",
+    "evidenceIds": [
+     "CON-2-E1",
+     "CON-2-E4",
+     "CON-2-E5"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "California DROP (state-run single deletion request to all registered brokers)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://privacy.ca.gov/drop/",
+      "evidenceRef": "CON-2-E1",
+      "metrics": {
+        "cash_cost": 0
+      }
+     },
+     {
+      "label": "Big-Ass Data Broker Opt-Out List (BADBOOL), free self-service instructions per broker",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://github.com/yaelwrites/Big-Ass-Data-Broker-Opt-Out-List",
+      "evidenceRef": "CON-2-E5",
+      "metrics": {
+        "cash_cost": 0
+      }
+     },
+     {
+      "label": "File CCPA deletion requests directly with each business (or via an authorized agent)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://oag.ca.gov/privacy/ccpa",
+      "evidenceRef": "CON-2-E7",
+      "metrics": {
+        "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 8,
+    "falsifier": "Metric is USD per month to the consumer. Free routes (DROP for California residents, BADBOOL and direct requests for everyone) cost $0; the entrant's $8/month is an ASSUMPTION because no paid service's price page was readable. The idea would only be reopened if DROP and the free list were shown to leave most non-California consumers unserved AND a paid service were shown to remove records the free routes cannot reach."
+   },
+   "evidence": [
+    {
+     "id": "CON-2-E1",
+     "url": "https://privacy.ca.gov/drop/",
+     "quote": "Free — we will never charge you to use DROP",
+     "kind": "incumbent_price",
+     "publisher": "California Privacy Protection Agency / privacy.ca.gov",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-2-E2",
+     "url": "https://privacy.ca.gov/drop/",
+     "quote": "Starting August 1, 2026, data brokers must access DROP at least once every 45 days",
+     "kind": "constraint",
+     "publisher": "California Privacy Protection Agency / privacy.ca.gov",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-2-E3",
+     "url": "https://privacy.ca.gov/drop/",
+     "quote": "To be eligible to submit a deletion request in DROP, you must be a California resident.",
+     "kind": "constraint",
+     "publisher": "California Privacy Protection Agency / privacy.ca.gov",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-2-E4",
+     "url": "https://github.com/yaelwrites/Big-Ass-Data-Broker-Opt-Out-List",
+     "quote": "over a dozen different data broker opt-out services",
+     "kind": "demand",
+     "publisher": "BADBOOL (GitHub)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-2-E5",
+     "url": "https://github.com/yaelwrites/Big-Ass-Data-Broker-Opt-Out-List",
+     "quote": "is and will always be free",
+     "kind": "incumbent_price",
+     "publisher": "BADBOOL (GitHub)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-2-E6",
+     "url": "https://github.com/yaelwrites/Big-Ass-Data-Broker-Opt-Out-List",
+     "quote": "are not comprehensive",
+     "kind": "constraint",
+     "publisher": "BADBOOL (GitHub), describing paid removal services",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-2-E7",
+     "url": "https://oag.ca.gov/privacy/ccpa",
+     "quote": "proof that you gave that agent signed permission to submit the request.",
+     "kind": "constraint",
+     "publisher": "California Attorney General (CCPA FAQ)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 5,
+    "distribution_advantage": 2,
+    "defensibility": 1,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 4,
+    "repeat_ltv_potential": 6,
+    "competition_adjusted_gap": 1,
+    "market_depth": 6,
+    "end_to_end_automation": 5,
+    "capital_risk": 8,
+    "owner_time_support": 5
+   },
+   "componentReasons": {
+    "entrant_edge": "No exclusive input exists: the procedures are published free and maintained by volunteers (CON-2-E5) and the state offers a free deletion channel (CON-2-E1).",
+    "customer_problem_or_value": "The problem is real enough that more than a dozen paid services exist (CON-2-E4), but the value of each removal is limited because brokers re-list and services are incomplete (CON-2-E6).",
+    "distribution_advantage": "No distribution evidence for a stranger was found; the incumbents number over a dozen (CON-2-E4) and the free list ranks inside the same privacy-minded audience (CON-2-E5).",
+    "defensibility": "Nothing stops a competitor from copying opt-out procedures that are public (CON-2-E5), and the state channel makes the core action free for California residents (CON-2-E1).",
+    "absolute_gross_profit_potential": "Price points of paid services could not be read, and the free alternatives cap what a new service can charge (CON-2-E1, CON-2-E5).",
+    "willingness_to_pay": "The existence of over a dozen paid services indicates some payers (CON-2-E4), while a free state channel and a free list directly undercut willingness to pay (CON-2-E1, CON-2-E5).",
+    "repeat_ltv_potential": "Opt-outs must be repeated as records reappear, which supports an annual subscription, but customers can leave once a free channel covers them (CON-2-E1).",
+    "competition_adjusted_gap": "Free official, free DIY and over a dozen paid options leave no visible gap (CON-2-E1, CON-2-E4, CON-2-E5).",
+    "market_depth": "The pool of US adults with broker listings is large, but California residents get DROP free from August 2026 (CON-2-E2, CON-2-E3).",
+    "end_to_end_automation": "Requests can be templated, yet brokers that block third parties and agent-proof requirements force manual handling (CON-2-E6, CON-2-E7).",
+    "capital_risk": "Startup cash is small because the service is mostly labour and software, so little capital is at risk.",
+    "owner_time_support": "Re-filing, broker follow-ups and identity-verification exceptions need ongoing attention (CON-2-E6, CON-2-E7)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "CON-2-E7: California's CCPA FAQ says a business or authorized agent may submit requests but businesses can ask for proof of signed permission; the entrant would need documented customer authorisation per request. Unverified for other states.",
+    "CON-2-E2/E3: DROP is free and open only to California residents, and broker obligations start August 1, 2026; other states' laws and any federal rule were not checked (unverified).",
+    "Handling customers' identity data creates privacy and security duties (breach law, FTC Act); not reviewed. Not legal advice."
+   ],
+   "unverified": [
+    "Prices, customer counts and removal quality of paid services (DeleteMe, Incogni, Optery, EasyOptOuts and others) were NOT read: their pages were blocked and web search quota was exhausted, so the entrant price is an assumption.",
+    "Whether DROP works in practice after August 1, 2026 was not verified."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Assumption-based because no paid price was readable: $8/month x 150 customers = $14.4k/year, cost $5,000/year (labour tooling and broker follow-up). Pessimistic: price x0.8 = $76.80/year x 75 customers = $5.8k, cost x1.5 = $7.5k, giving about -$1.7k/year. Free DROP and a free list also cap the price."
+    },
+    "killReasons": [
+     {
+      "reason": "No structural edge: a free state deletion channel (California, with broker processing mandatory from August 1, 2026), a free self-service list, and more than a dozen paid services already cover the wedge; an entrant can only be a generic managed service.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "CON-2-E1,CON-2-E2,CON-2-E4,CON-2-E5"
+     },
+     {
+      "reason": "Third-party removal is structurally incomplete (some brokers do not allow third-party requests) and agent requests may need proof of signed permission, which caps service quality.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "CON-2-E6,CON-2-E7"
+     },
+     {
+      "reason": "Incumbent prices and traction could not be read, so the entrant price and demand are assumptions only.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "CON-2-E4"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: a free official deletion channel (DROP, mandatory broker processing from August 1, 2026, California residents), a free maintained opt-out list and more than a dozen paid services already cover the wedge, and a stranger has no exclusive input. Paid-service prices were not readable, so the economics are assumption-based."
+  },
+  {
+   "id": "CON-3",
+   "name": "Hosted campsite-cancellation alert subscription for non-technical campers (Recreation.gov and state-park systems)",
+   "family": "consumer_products",
+   "buyer": "US recreational campers and RV travellers who want sold-out campgrounds and will pay a small monthly fee for automatic cancellation alerts",
+   "pain": "Popular campgrounds sell out when the booking window opens and cancelled sites reappear for minutes, so manual refreshing is a losing race.",
+   "wedge": "A subscription that polls reservation systems continuously and pushes SMS or app alerts for cancellations matching saved searches, with per-campground cancellation history.",
+   "referenceEntrant": {
+    "startupCashUsd": 2000,
+    "daysToFirstRevenue": 120,
+    "ownerHoursPerWeek": 15
+   },
+   "entrantEdge": {
+    "type": "proprietary_or_compounding_data",
+    "status": "claimed",
+    "statement": "Claimed: continuous polling accumulates a per-campground history of when and how often cancellations appear, which a later entrant cannot backfill. Not evidenced and weak: the same polling is available free in an MIT-licensed tool that already supports Recreation.gov, many state-park systems and SMS, Slack, Telegram and push alerts, newer free watchers keep appearing, and no paid competitor's traction or price could be read, so the history advantage may already be held by others.",
+    "evidenceIds": [
+     "CON-3-E1",
+     "CON-3-E2",
+     "CON-3-E3"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "camply (MIT-licensed open-source campsite finder and notifier)",
+      "kind": "open_source",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://github.com/juftin/camply",
+      "evidenceRef": "CON-3-E1",
+      "metrics": {
+        "cash_cost": 0
+      }
+     },
+     {
+      "label": "open-campsite-watcher (free zero-dependency Python watcher, updated 2026)",
+      "kind": "open_source",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://github.com/topics/campsite",
+      "evidenceRef": "CON-3-E3",
+      "metrics": {
+        "cash_cost": 0
+      }
+     },
+     {
+      "label": "Manual refreshing of the booking site (status quo)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://github.com/juftin/camply",
+      "evidenceRef": "CON-3-E4",
+      "metrics": {
+        "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 5,
+    "falsifier": "Metric is USD per month to the camper. Free open-source tools cost $0 (cash only; they need technical setup); the entrant's $5/month is an ASSUMPTION because no paid alert service's price was readable. The idea is disproved if non-technical campers can already get hosted alerts free or for very little, and it would only be reopened if hosted alerts were shown to be paid for at scale and the cancellation-history data proved to change booking success."
+   },
+   "evidence": [
+    {
+     "id": "CON-3-E1",
+     "url": "https://github.com/juftin/camply",
+     "quote": "camply, the campsite finder ⛺️ - a tool to find campsites at sold out campgrounds through sites like recreation.gov",
+     "kind": "incumbent_price",
+     "publisher": "GitHub (juftin/camply, MIT licence, 656 stars at time of reading)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-3-E2",
+     "url": "https://github.com/juftin/camply",
+     "quote": "once a campsite becomes available, camply sends you a notification to book your spot!",
+     "kind": "other",
+     "publisher": "GitHub (juftin/camply README)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-3-E3",
+     "url": "https://github.com/topics/campsite",
+     "quote": "Zero-dependency Python watcher that snags sold-out recreation.gov campsites the moment someone cancels.",
+     "kind": "demand",
+     "publisher": "GitHub topics page (Pdesolmi/open-campsite-watcher, updated Jun 27, 2026, 0 stars)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-3-E4",
+     "url": "https://github.com/juftin/camply",
+     "quote": "continuously checks for cancellations and availabilities to pop up.",
+     "kind": "constraint",
+     "publisher": "GitHub (juftin/camply README, describing the problem and the continuous search mode)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-3-E5",
+     "url": "https://github.com/juftin/camply",
+     "quote": "Recreation data provided by Recreation.gov",
+     "kind": "constraint",
+     "publisher": "GitHub (juftin/camply README)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 2,
+    "customer_problem_or_value": 5,
+    "distribution_advantage": 2,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 3,
+    "repeat_ltv_potential": 4,
+    "competition_adjusted_gap": 2,
+    "market_depth": 5,
+    "end_to_end_automation": 7,
+    "capital_risk": 8,
+    "owner_time_support": 6
+   },
+   "componentReasons": {
+    "entrant_edge": "The history-data edge is only claimed, and a free MIT-licensed tool already performs the same polling (CON-3-E1).",
+    "customer_problem_or_value": "The problem (sold-out sites that reappear briefly) is described by free tools built for exactly that purpose (CON-3-E1, CON-3-E3).",
+    "distribution_advantage": "No channel evidence for a stranger exists; free open-source alternatives are what campers searching GitHub find first (CON-3-E1, CON-3-E3).",
+    "defensibility": "The data source is the public Recreation.gov feed (CON-3-E5) and anyone can run the same polling free (CON-3-E1), so nothing blocks a copy.",
+    "absolute_gross_profit_potential": "No paid price or traction was readable, and free tools cap what a hosted service can charge (CON-3-E1).",
+    "willingness_to_pay": "No evidence of campers paying for alerts was read; the visible demand is for free tools (CON-3-E1, CON-3-E3).",
+    "repeat_ltv_potential": "Camping demand is seasonal and a camper can unsubscribe after booking, so recurring revenue is weak (CON-3-E4).",
+    "competition_adjusted_gap": "Free tools cover notification, search-forever mode and multiple booking systems (CON-3-E1, CON-3-E2, CON-3-E4).",
+    "market_depth": "Recreation.gov and many state systems are covered by one free tool, showing broad camper demand (CON-3-E1), but the paying share is unknown.",
+    "end_to_end_automation": "Polling, matching and notification can be fully automated, as the free tools show (CON-3-E1, CON-3-E2).",
+    "capital_risk": "Hosting and SMS costs are small, so little capital is at risk.",
+    "owner_time_support": "Booking-system changes would break scrapers or API calls (CON-3-E5), requiring occasional maintenance."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "CON-3-E5: availability data comes from Recreation.gov; its terms of use on automated access and commercial reuse were NOT readable (page blocked), so legality of a commercial polling service is unverified.",
+    "SMS alerts need consumer opt-in and carrier compliance (TCPA/10DLC); unverified. Not legal advice."
+   ],
+   "unverified": [
+    "Paid competitors (for example hosted campsite-alert apps) and their prices, users and retention were NOT read: pages were blocked and web search quota was exhausted.",
+    "Recreation.gov terms on bots and rate limits were not read, so the legal and technical durability of the data source is unknown."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "Assumption-based (no paid price readable): $5/month x 200 subscribers = $12k/year, cost $1.5k/year (hosting, SMS). Pessimistic: price x0.8 = $4 x 100 subscribers = $4.8k, cost x1.5 = $2.25k, giving about +$2.5k/year. Arithmetically positive but tiny and based on unevidenced demand."
+    },
+    "killReasons": [
+     {
+      "reason": "No structural edge: an MIT-licensed tool supports Recreation.gov, state-park systems, continuous search and SMS/Slack/Telegram/push alerts for free, and newer free watchers keep appearing; the hosted-convenience layer is only a generic managed service.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "CON-3-E1,CON-3-E2,CON-3-E3"
+     },
+     {
+      "reason": "Paying demand for alerts was not evidenced anywhere in the pages read, and camping demand is seasonal.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "CON-3-E4"
+     },
+     {
+      "reason": "Dependence on a single government-run data source whose terms on automated access were unreadable.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "CON-3-E5"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: free MIT-licensed camply already provides continuous cancellation search across Recreation.gov and state systems with SMS, Slack, Telegram and push alerts, newer free watchers are appearing, and the claimed cancellation-history edge is unevidenced. Paid competitors and Recreation.gov terms could not be read, so this is a kill on edge and visible alternatives, not a measured market sizing."
+  },
+  {
+   "id": "CON-4",
+   "name": "Contingency-fee residential property-tax appeal service for homeowners, re-filed every year",
+   "family": "consumer_products",
+   "buyer": "US homeowners in states with assessment appeal or protest processes (Texas first) who would rather pay a share of savings than file themselves",
+   "pain": "Assessed values can exceed market value, deadlines are short and most owners never protest: the incumbent's own blog says 74% of homeowners have never appealed.",
+   "wedge": "Pay-only-if-you-save appeal filing: the owner e-signs an authorisation, the service files the protest with comparable-sales evidence, charges a percentage of first-year savings and re-files annually.",
+   "referenceEntrant": {
+    "startupCashUsd": 8000,
+    "daysToFirstRevenue": 150,
+    "ownerHoursPerWeek": 25
+   },
+   "entrantEdge": {
+    "type": "cheaper",
+    "status": "none",
+    "statement": "Attempted type: unique_recovery_or_outcome_based_economics (earn only from realised savings). Not an edge: Ownwell already runs exactly this pay-only-if-you-save model with a stated 25% example fee, claims to be trusted by more homeowners than anyone else, and publishes free DIY guides; Texas registration (education and experience) is open to any applicant and attorneys, CPAs and some brokers are exempt. The only remaining lever is a lower percentage, which is 'cheaper'.",
+    "evidenceIds": [
+     "CON-4-E1",
+     "CON-4-E2",
+     "CON-4-E6"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "File the protest yourself through the county appraisal district e-file system",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.ownwell.com/blog",
+      "evidenceRef": "CON-4-E5",
+      "metrics": {
+        "fee_pct_of_savings": 0
+      }
+     },
+     {
+      "label": "Ownwell (contingency fee, 25% in its pricing example; about $16/month averaged over a year at $774 average savings)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 16.1,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.ownwell.com/pricing",
+      "evidenceRef": "CON-4-E1",
+      "metrics": {
+        "fee_pct_of_savings": 25
+      }
+     },
+     {
+      "label": "Free how-to guides and evidence checklists published by the incumbent blog (county-specific, 23 posts listed)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.ownwell.com/blog",
+      "evidenceRef": "CON-4-E4",
+      "metrics": {
+        "fee_pct_of_savings": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "fee_pct_of_savings",
+    "direction": "lower_is_better",
+    "incumbentValue": 25,
+    "entrantValue": 20,
+    "falsifier": "Metric is the percentage of first-year tax savings charged. Ownwell's pricing example uses 25%; DIY costs 0%. An entrant at 20% (assumption) is only 'cheaper', not structural. The idea would only be reopened if a channel were shown that delivers homeowners to a newcomer at a cost per signed customer well below one year of fees (about $190 at the incumbent's $774 average savings and 25%), which nothing read supports."
+   },
+   "evidence": [
+    {
+     "id": "CON-4-E1",
+     "url": "https://www.ownwell.com/pricing",
+     "quote": "We charge nothing up front and only charge a contingency fee after we save you money on your property taxes.",
+     "kind": "incumbent_price",
+     "publisher": "Ownwell",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-4-E2",
+     "url": "https://www.ownwell.com/pricing",
+     "quote": "Our fee is applied to actual property tax savings in the year we appeal.",
+     "kind": "incumbent_price",
+     "publisher": "Ownwell (pricing example on the page uses a 25% fee)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-4-E3",
+     "url": "https://www.ownwell.com/",
+     "quote": "Average savings of customers who saved on at least one property in 2025 as of 12/31/2025.",
+     "kind": "demand",
+     "publisher": "Ownwell (footnote to its $774 average annual savings statistic; page also claims $400M+ saved since 2020 and Trusted By More Homeowners Than Anyone Else)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-4-E4",
+     "url": "https://www.ownwell.com/blog",
+     "quote": "74% of homeowners have never appealed their property taxes.",
+     "kind": "demand",
+     "publisher": "Ownwell blog (post summary)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-4-E5",
+     "url": "https://www.ownwell.com/blog",
+     "quote": "Step-by-step guide to the Travis CAD e-file system",
+     "kind": "other",
+     "publisher": "Ownwell blog (post summary showing owners can e-file themselves; another post says protest and appeal are the same process with different names by state)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-4-E6",
+     "url": "https://statutes.capitol.texas.gov/Docs/OC/htm/OC.1152.htm",
+     "quote": "A person may not perform property tax consulting services for compensation unless the person holds a certificate of registration issued under this chapter.",
+     "kind": "constraint",
+     "publisher": "Texas Occupations Code Sec. 1152.151(a)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-4-E7",
+     "url": "https://www.tdlr.texas.gov/ptc/",
+     "quote": "must be licensed by TDLR and complete specific education and experience requirements.",
+     "kind": "constraint",
+     "publisher": "Texas Department of Licensing and Regulation",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 6,
+    "distribution_advantage": 2,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 4,
+    "willingness_to_pay": 5,
+    "repeat_ltv_potential": 6,
+    "competition_adjusted_gap": 1,
+    "market_depth": 7,
+    "end_to_end_automation": 4,
+    "capital_risk": 6,
+    "owner_time_support": 3
+   },
+   "componentReasons": {
+    "entrant_edge": "The outcome-based model is already sold by the incumbent (CON-4-E1, CON-4-E2) and only a lower fee remains, which is not structural.",
+    "customer_problem_or_value": "Average savings of $774 per saving customer and a 74% never-appealed rate show a real, repeatable problem (CON-4-E3, CON-4-E4).",
+    "distribution_advantage": "The incumbent's page describes no outreach method and nothing shows a channel that delivers homeowners to a newcomer (CON-4-E3).",
+    "defensibility": "Free DIY e-file and a licensing regime open to any registrant protect no one (CON-4-E5, CON-4-E6, CON-4-E7).",
+    "absolute_gross_profit_potential": "At a 25% fee the incumbent earns roughly $190 per average saving customer per year (CON-4-E2, CON-4-E3), so a small book yields modest profit.",
+    "willingness_to_pay": "Homeowners pay a contingency share to the incumbent (CON-4-E1), but a DIY route is free (CON-4-E5).",
+    "repeat_ltv_potential": "Appeals can be re-filed each tax year and fees are annual (CON-4-E2, CON-4-E4).",
+    "competition_adjusted_gap": "The incumbent covers the same states with the same fee model and free guides (CON-4-E1, CON-4-E4, CON-4-E5).",
+    "market_depth": "Most homeowners have never appealed (CON-4-E4) and many states have processes, so the pool is deep.",
+    "end_to_end_automation": "Evidence packets can be generated from public sales data, but hearings, deadlines and state-specific rules need people (CON-4-E5, CON-4-E6).",
+    "capital_risk": "Mailers, data and registration are modest, but fees arrive only after savings are realised (CON-4-E1, CON-4-E7).",
+    "owner_time_support": "Customer onboarding, exceptions and hearings across counties need substantial hours (CON-4-E5, CON-4-E6)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "CON-4-E6/E7: in Texas, compensated property tax consulting requires a TDLR registration with education and experience requirements; exemptions include attorneys, CPAs and some licensed brokers or appraisers for single-family residences (Sec. 1152.002 as summarised). Other states' rules were NOT checked.",
+    "Contingency fees and authorisation forms (powers of attorney or agent forms) are state-specific; unverified outside Texas. Not legal advice."
+   ],
+   "unverified": [
+    "Other incumbents (for example large Texas protest firms) and their fee schedules were not read; web search quota was exhausted.",
+    "No evidence that direct mail or any other channel acquires homeowners for a newcomer at an acceptable cost."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "Assumptions: 200 signed customers x $774 average savings x 25% = about $38.7k/year; cost $8,000 per year. Pessimistic: fee 20% (price x0.8), 100 customers (volume x0.5): 100 x $774 x 0.20 = $15.5k, cost x1.5 = $12k, giving about +$3.5k/year. Arithmetically positive but thin, and the volume has no supporting evidence because acquisition cost per signed customer is unknown."
+    },
+    "killReasons": [
+     {
+      "reason": "No structural edge: Ownwell sells the identical pay-only-if-you-save model, claims the largest customer base and publishes free guides; an entrant can only undercut on percentage.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "CON-4-E1,CON-4-E2,CON-4-E3"
+     },
+     {
+      "reason": "The free DIY route (county e-file) is explicitly documented, so the wedge is optional convenience for the owner.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "CON-4-E5"
+     },
+     {
+      "reason": "Licensing is not a moat: Texas registration is obtainable by any applicant with the required education and experience and several professions are exempt, so it adds cost without exclusivity.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "CON-4-E6,CON-4-E7"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: Ownwell already sells the same contingency-fee annual appeal service, publishes free DIY guides and cites $774 average savings, so the entrant has no exclusive input beyond a lower percentage; Texas registration is open to any qualified applicant. No acquisition channel for a newcomer was evidenced."
+  },
+  {
+   "id": "CON-5",
+   "name": "Class-action settlement and refund claim-discovery subscription app for consumers",
+   "family": "consumer_products",
+   "buyer": "US consumers who want to find open class-action settlements and refund programs they may be eligible for and have claims pre-filled",
+   "pain": "Open settlements and refund programs are scattered across administrator websites with deadlines, and most consumers never find or file them.",
+   "wedge": "A subscription app that matches a user's profile and purchase history to open settlements and pre-fills claim forms.",
+   "referenceEntrant": {
+    "startupCashUsd": 8000,
+    "daysToFirstRevenue": 150,
+    "ownerHoursPerWeek": 35
+   },
+   "entrantEdge": {
+    "type": "proprietary_or_compounding_data",
+    "status": "claimed",
+    "statement": "Claimed: a curated database of settlement eligibility rules and deadlines matched with user-supplied purchase data would improve with each user. Weak: a one-year-old incumbent app already shows $1.2M ARR and is for sale at $2.655M (out of budget), official refund programs pay some eligible people automatically and publish their rules free, and the FTC explicitly tells people not to pay anyone who promises a refund for a fee.",
+    "evidenceIds": [
+     "CON-5-E1",
+     "CON-5-E2",
+     "CON-5-E4"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "FTC refund programs (automatic payments or administrator-run claims, free)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.ftc.gov/enforcement/refunds",
+      "evidenceRef": "CON-5-E3",
+      "metrics": {
+        "cash_cost": 0
+      }
+     },
+     {
+      "label": "Search settlement administrator websites and file claims manually (status quo)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.ftc.gov/enforcement/refunds/amazon-refunds",
+      "evidenceRef": "CON-5-E4",
+      "metrics": {
+        "cash_cost": 0
+      }
+     },
+     {
+      "label": "Build an equivalent app from scratch (Apple Developer Program membership only)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 8.25,
+      "coversWedge": "partial",
+      "sourceLocator": "https://developer.apple.com/programs/",
+      "evidenceRef": "CON-5-E6",
+      "metrics": {
+        "cash_cost": 8.25
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 5,
+    "falsifier": "Metric is USD per month to the consumer. Official refund programs and manual claim filing cost $0; the entrant's $5/month is an ASSUMPTION (the listed incumbent's subscription price was not readable). The idea is disproved if the free routes already reach most eligible people, and it would only be reopened if claim-filing was shown to be allowed for subscription services and the incumbent's paying base was shown to be reachable by a newcomer at low cost."
+   },
+   "evidence": [
+    {
+     "id": "CON-5-E1",
+     "url": "https://flippa.com/buy/apps",
+     "quote": "Mobile app helping users discover and claim money from class action lawsuits. Award-winning, 71% margins with $1.2M ARR.",
+     "kind": "demand",
+     "publisher": "Flippa (listing card, iOS app, asking USD $2,655,000 reduced from USD $2,950,000)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-5-E2",
+     "url": "https://flippa.com/buy/apps",
+     "quote": "USD $2,655,000 USD $2,950,000",
+     "kind": "incumbent_price",
+     "publisher": "Flippa (asking price of the class-action claims app, marked Reduced 10%)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-5-E3",
+     "url": "https://www.ftc.gov/enforcement/refunds/amazon-refunds",
+     "quote": "No action is needed to receive a refund. You do not have to file a claim, respond to a notice, or complete any forms.",
+     "kind": "incumbent_price",
+     "publisher": "US Federal Trade Commission (Amazon refunds page)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-5-E4",
+     "url": "https://www.ftc.gov/enforcement/refunds/amazon-refunds",
+     "quote": "Don't pay anyone who promises you a refund in exchange for a fee.",
+     "kind": "constraint",
+     "publisher": "US Federal Trade Commission (Amazon refunds page)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-5-E5",
+     "url": "https://www.law.cornell.edu/rules/frcp/rule_23",
+     "quote": "the method of processing class-member claims",
+     "kind": "constraint",
+     "publisher": "Federal Rules of Civil Procedure Rule 23(e)(2)(C)(ii) (Cornell LII)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "CON-5-E6",
+     "url": "https://developer.apple.com/programs/",
+     "quote": "$99 annual membership",
+     "kind": "incumbent_price",
+     "publisher": "Apple Developer (Apple Developer Program)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 2,
+    "customer_problem_or_value": 5,
+    "distribution_advantage": 2,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 4,
+    "willingness_to_pay": 5,
+    "repeat_ltv_potential": 5,
+    "competition_adjusted_gap": 2,
+    "market_depth": 6,
+    "end_to_end_automation": 5,
+    "capital_risk": 5,
+    "owner_time_support": 4
+   },
+   "componentReasons": {
+    "entrant_edge": "The compounding-data edge is only claimed and a one-year-old incumbent already holds the head start (CON-5-E1).",
+    "customer_problem_or_value": "An app that helps users claim money from class actions reached $1.2M ARR in about a year per its listing, so the problem resonates (CON-5-E1), but some official refunds need no action at all (CON-5-E3).",
+    "distribution_advantage": "No channel for a newcomer was evidenced, and the FTC warns people against paying for refund help (CON-5-E4).",
+    "defensibility": "Settlement information is public and the incumbent is itself for sale (CON-5-E1, CON-5-E2), so no barrier protects a newcomer.",
+    "absolute_gross_profit_potential": "One app shows 71% margins on $1.2M ARR (CON-5-E1), but that is a single seller-reported result for a different team and not available at the entrant's budget (CON-5-E2).",
+    "willingness_to_pay": "A listing with $1.2M ARR indicates paying users (CON-5-E1), seller-reported and unaudited, against free official routes (CON-5-E3).",
+    "repeat_ltv_potential": "New settlements appear continually, supporting subscriptions, but a user can cancel after filing the few claims they qualify for (CON-5-E1).",
+    "competition_adjusted_gap": "An established incumbent plus free official refund routes leave little gap (CON-5-E1, CON-5-E3).",
+    "market_depth": "Class-action and refund programs are numerous and recurring, as the FTC refund list alone shows (CON-5-E3).",
+    "end_to_end_automation": "Matching and pre-filling can be automated, but claim-form rules and court scrutiny of claims processing vary by case (CON-5-E5).",
+    "capital_risk": "App build and data curation fit a small budget, but the risk is the owner's time and the unproven fee-for-refund positioning (CON-5-E4, CON-5-E6).",
+    "owner_time_support": "Maintaining a settlement database with deadlines and eligibility rules is continuous work (CON-5-E5)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "CON-5-E4: the FTC page advises against paying anyone who promises a refund for a fee; a subscription positioned around refunds could attract scrutiny or user distrust (unverified how it applies to a software subscription).",
+    "CON-5-E5: Rule 23 requires court scrutiny of how class-member claims are processed; individual settlements may restrict who can submit claims or how (bulk or third-party submissions); no settlement notice was read, so this is unverified.",
+    "Handling users' purchase history and identity data creates privacy duties; not reviewed. Not legal advice."
+   ],
+   "unverified": [
+    "The incumbent app's subscription price, user counts and retention were not readable; Flippa figures are seller-reported.",
+    "Private class-action settlement websites (as opposed to FTC refund programs) were not read, so whether they allow third-party filing and are free to use is assumed from general practice, not verified.",
+    "Web search quota was exhausted, so no paid or free competitor beyond the Flippa listing was identified."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Assumption-based: $5/month x 300 subscribers = $18k/year, cost $6k/year (data curation, hosting, compliance review). Pessimistic: price x0.8 = $4 x 150 subscribers = $7.2k, cost x1.5 = $9k, giving about -$1.8k/year. Subscriber volume and CAC have no supporting evidence for a newcomer."
+    },
+    "killReasons": [
+     {
+      "reason": "No structural edge for a newcomer: an incumbent app with $1.2M ARR (listed for sale at $2.655M, far over the budget) holds the head start, and settlement and refund data is public.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "CON-5-E1,CON-5-E2"
+     },
+     {
+      "reason": "Official refund programs pay some eligible consumers automatically and tell them not to pay anyone for refund help, which undercuts a fee-for-refund subscription and adds trust risk.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "CON-5-E3,CON-5-E4"
+     },
+     {
+      "reason": "Claim-processing rules differ by case and courts scrutinise them, so an automated filing layer carries unverified compliance risk.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "CON-5-E5"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: demand is proven by one incumbent app at $1.2M ARR, but it is a one-year-old leader out of reach at its $2.655M asking price, the claimed data edge is not exclusive, and official refund programs are free (some automatic) while the FTC warns against paying for refund help. Evidence is thin on private class-action sites, which were not readable."
+  }
+ ]
+}

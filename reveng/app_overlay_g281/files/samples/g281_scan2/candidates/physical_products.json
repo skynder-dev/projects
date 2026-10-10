@@ -1,0 +1,824 @@
+{
+ "candidates": [
+  {
+   "id": "PHY-1",
+   "name": "Approved second-source supplier of simple spare parts to the Defense Logistics Agency (Source Approval route, 40% split award)",
+   "family": "physical_products",
+   "buyer": "US Defense Logistics Agency buying offices that purchase spare parts by National Stock Number from a single approved source; the payer is the federal government through public DIBBS solicitations",
+   "pain": "On roughly a quarter of DIBBS solicitations DLA lists exactly one approved supplier and takes no other quotes, so there is no price competition; a 2013 DoD IG review found DLA Aviation paid about $13.7M above fair and reasonable prices on sole-source orders, and DLA guidance rewards newly approved second sources with 40% of the award.",
+   "wedge": "Choose simple drawing-supported single-source NSNs, have contract machine shops build them, win openly competable small purchases first to build a Government delivery record, then file Source Approval Requests so each approved NSN returns a 40% split award and leaves auto-solicitation for at least a year.",
+   "referenceEntrant": {
+    "startupCashUsd": 8000,
+    "daysToFirstRevenue": 150,
+    "ownerHoursPerWeek": 25
+   },
+   "entrantEdge": {
+    "type": "regulatory_license_intrinsic_to_model",
+    "status": "claimed",
+    "statement": "Approved-source status is a per-NSN position granted by DLA: quotes from CAGEs not on the approved list are not evaluated, and a newly approved second source gets 40% of a fair-and-reasonable award, a split-award clause for at least one year, and removal of the NSN from auto-solicitation. A rival must repeat the same review (minimum 180 days for Navy and Army) and show Government production history, so approvals accumulate NSN by NSN and cannot be copied quickly. Caveat: the entrant has no Government track record on day one, so the edge stays claimed until a first SAR is approved.",
+    "evidenceIds": [
+     "PHY1-E1",
+     "PHY1-E2",
+     "PHY1-E3"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "DIBBS direct quoting on openly competable RFQs (free vendor registrations)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.dla.mil/Portals/104/Documents/SmallBusiness/DIBBS%20Pocket%20Guide.pdf",
+      "evidenceRef": "PHY1-E8",
+      "metrics": {
+       "channel_reach": 75
+      }
+     },
+     {
+      "label": "cleat.ai public NSN directory (shows approved-source counts, free, no account)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://cleat.ai/government/nsn",
+      "evidenceRef": "PHY1-E9",
+      "metrics": {
+       "channel_reach": 75
+      }
+     },
+     {
+      "label": "HigherGov subscription (DIBBS search, historical pricing; $500/year = $41.67/month)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 41.67,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.highergov.com/alt/dibbs/",
+      "evidenceRef": "PHY1-E7",
+      "metrics": {
+       "channel_reach": 75
+      }
+     },
+     {
+      "label": "Any rival's own Source Approval Request via DLA reverse-engineering programme (supplier pays)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.dla.mil/Aviation/Offers/Engineering/RPPOB/New-Source-Contract-Step-by-Step/",
+      "evidenceRef": "PHY1-E2",
+      "metrics": {
+       "channel_reach": 75
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "channel_reach",
+    "direction": "higher_is_better",
+    "incumbentValue": 75,
+    "entrantValue": 100,
+    "falsifier": "channel_reach = share of DIBBS solicitations on which the supplier's quote can be evaluated (75 = all but the roughly one quarter that are single-source, per PHY1-E3); 100 applies only to NSNs the entrant is approved for. Falsified if no SAR is approved within about 12 months of starting (DLA wants a significant Government production history, PHY1-E2), or if openly competable awards leave under 5% gross margin so no delivery record can be built."
+   },
+   "evidence": [
+    {
+     "id": "PHY1-E1",
+     "url": "https://www.dla.mil/Portals/104/Documents/LandAndMaritime/V/VE/VESARBriefing.pdf",
+     "quote": "If not low, but fair and reasonable…40% of the award will ... NSNs will be removed for Auto-Solicitation and Long ... New DLA guidance has come out to reward companies who put forth the work to become a second source",
+     "kind": "other",
+     "publisher": "Defense Logistics Agency (Land and Maritime) Source Approval Request briefing",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY1-E2",
+     "url": "https://www.dla.mil/Aviation/Offers/Engineering/RPPOB/New-Source-Contract-Step-by-Step/",
+     "quote": "you must have a significant history of producing items for the Government to achieve SAR approval. ... The Navy and the Army now require a minimum of 180 days to evaluate any new sources. ... you conduct the reverse engineering at your own expense.",
+     "kind": "constraint",
+     "publisher": "Defense Logistics Agency Aviation (RPPOB new-source page)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY1-E3",
+     "url": "https://www.cleat.ai/blog/dibbs-dla-internet-bid-board-system-guide",
+     "quote": "DIBBS posts thousands of parts solicitations a day ... On roughly a quarter of them, DLA lists exactly one approved supplier and will not take a quote from anybody else. ... obligated $55.4 billion in FY2025 alone. ... All DIBBS, cFolders, and JCP registrations are free.",
+     "kind": "demand",
+     "publisher": "CLEATUS (cleat.ai) DIBBS guide",
+     "date": "2026-03-05",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY1-E4",
+     "url": "https://www.dodig.mil/reports.html/Article/1118940/improved-guidance-needed-to-obtain-fair-and-reasonable-prices-for-sole-source-s/",
+     "quote": "As a result, DLA Aviation paid approximately $13.7 million in excess of fair and reasonable prices for 1,469 delivery orders.",
+     "kind": "incumbent_price",
+     "publisher": "DoD Office of Inspector General, DODIG-2013-090",
+     "date": "2013-06-07",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY1-E5",
+     "url": "https://www.cleat.ai/blog/dibbs-dla-internet-bid-board-system-guide",
+     "quote": "If your CAGE is not on it, DLA will not evaluate your quote no matter what number you put on it. ... a missing or stale NIST SP 800-171 score can cost you a DLA award with no CMMC involved at all.",
+     "kind": "constraint",
+     "publisher": "CLEATUS (cleat.ai) DIBBS guide",
+     "date": "2026-03-05",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY1-E6",
+     "url": "https://alicorp.com/GovBids.htm",
+     "quote": "Professional contractors rapidly quote Directed, NPD, and any of the more than 2,000 daily RFQs using ALI's Quoting System.",
+     "kind": "other",
+     "publisher": "American Logistics Corp (ALI)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY1-E7",
+     "url": "https://www.highergov.com/alt/dibbs/",
+     "quote": "HigherGov starts at $500/year for an individual subscription and $2,500/year for a team subscription.",
+     "kind": "incumbent_price",
+     "publisher": "HigherGov",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY1-E8",
+     "url": "https://www.dla.mil/Portals/104/Documents/SmallBusiness/DIBBS%20Pocket%20Guide.pdf",
+     "quote": "Vendors must be registered in the SAM to acquire a DIBBS account. ... Users must be registered and logged into DIBBS in order to submit quotes.",
+     "kind": "constraint",
+     "publisher": "Defense Logistics Agency Small Business Office, DIBBS Pocket Guide",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY1-E9",
+     "url": "https://cleat.ai/government/nsn",
+     "quote": "one CAGE means an incumbent, and a long list means real competition. ... 17M+",
+     "kind": "other",
+     "publisher": "CLEATUS (cleat.ai) NSN directory",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 3,
+    "customer_problem_or_value": 6,
+    "distribution_advantage": 3,
+    "defensibility": 4,
+    "absolute_gross_profit_potential": 4,
+    "willingness_to_pay": 7,
+    "repeat_ltv_potential": 6,
+    "competition_adjusted_gap": 4,
+    "market_depth": 8,
+    "end_to_end_automation": 3,
+    "capital_risk": 5,
+    "owner_time_support": 3
+   },
+   "componentReasons": {
+    "entrant_edge": "Approved-source status and the 40% split award are government-granted per-NSN positions (PHY1-E1, PHY1-E3) but the entrant lacks the required Government production history and the 180-day review (PHY1-E2), so the edge is only claimed.",
+    "customer_problem_or_value": "DLA lists one approved supplier on about a quarter of solicitations and a DoD IG review found about $13.7M above fair price on sole-source orders (PHY1-E3, PHY1-E4), though a second source mainly lowers price rather than solving an unmet need.",
+    "distribution_advantage": "Demand arrives on a free public board with free registrations (PHY1-E3, PHY1-E8) but every rival sees the same feed and professional services quote 2,000+ daily RFQs (PHY1-E6).",
+    "defensibility": "An approved NSN gets a split-award clause for at least a year and leaves auto-solicitation (PHY1-E1) but protection is per NSN and time-limited, and rivals can file their own SAR (PHY1-E2).",
+    "absolute_gross_profit_potential": "DLA obligated $55.4B in FY2025 (PHY1-E3) so the ceiling is high, but per-NSN award size, margin and the entrant's number of approved NSNs in year one are unobserved.",
+    "willingness_to_pay": "The payer is the federal government with $55.4B obligated and a documented record of paying above fair price on sole-source parts (PHY1-E3, PHY1-E4).",
+    "repeat_ltv_potential": "Approved NSNs are removed from auto-solicitation and re-bought (PHY1-E1), so repeat awards are plausible, but reorder frequency per NSN was not observed.",
+    "competition_adjusted_gap": "Only about a quarter of RFQs are single-source (PHY1-E3) and the rest are crowded with professional quoters (PHY1-E6), while NSNs with one CAGE have little rivalry (PHY1-E9).",
+    "market_depth": "Thousands of RFQs a day and a catalogue of 17M+ stock numbers (PHY1-E3, PHY1-E9).",
+    "end_to_end_automation": "Drawing review, sample reverse engineering, test plans, quality paperwork and delivery need human engineering work (PHY1-E2); only alerts and quote entry automate (PHY1-E7).",
+    "capital_risk": "Registrations are free (PHY1-E3) and reverse engineering is at the supplier's own expense (PHY1-E2), but each NSN needs samples, first-article work and inventory that is lost if the package is rejected.",
+    "owner_time_support": "SAR packages, quote batches, supplier QA and delivery paperwork are continuing manual tasks (PHY1-E2, PHY1-E8)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "PHY1-E5: SAM.gov registration with UEI and CAGE is mandatory, a missing or stale NIST SP 800-171 score can cost a DLA award, and DFARS 252.204-7012 plus JCP access to export-controlled drawings may apply; specialty-metals, counterfeit-parts and Buy American clauses were not read (unverified).",
+    "PHY1-E2: SAR approval is not guaranteed, needs significant Government production history, and reverse engineering is at the supplier's own expense; whether a non-manufacturing broker can qualify is unverified.",
+    "PHY1-E8: Quoting needs a logged-in vendor account; this research read only public pages and did not register, log in or contact DLA."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Pessimistic test (price x0.8, volume x0.5, cost x1.5): margin stays positive only if landed cost C <= 0.8P/1.5 = 53% of the price P DLA pays. The DoD IG found about $13.7M excess on about $81.1M of sole-source orders (PHY1-E4, roughly 17%), which does not show a 47% cost gap; award size, win rate and machine-shop landed cost were not observed, so survival is unproven."
+    },
+    "killReasons": [
+     {
+      "reason": "SAR approval needs a significant Government production history and at least 180 days of Navy or Army review; the entrant has neither on day one, so the structural edge is unavailable in year one.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "PHY1-E2"
+     },
+     {
+      "reason": "Openly competable RFQs are quoted by professional contractors across 2,000+ daily RFQs, so pre-approval revenue is price-only competition with unobserved margin.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "PHY1-E6"
+     },
+     {
+      "reason": "Compliance load (NIST SP 800-171 score, DFARS safeguarding, export-controlled drawings via JCP) and nonconforming-part liability are unquantified.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "PHY1-E5"
+     }
+    ]
+   },
+   "researcherVerdict": "uncertain",
+   "verdictReason": "Open question: can a stranger with no Government delivery record reach an approved SAR within roughly 12-18 months, and earn positive margin on openly competable RFQs in the meantime? Evidence confirms the 40% split-award rule, the roughly one-quarter single-source share and zero-cost registrations, but not margins, win rates, SAR timing for a non-manufacturer, or reorder frequency."
+  },
+  {
+   "id": "PHY-2",
+   "name": "Managed right-to-repair parts-and-tools desk for small consumer-hardware brands (official parts store plus price-parity compliance log)",
+   "family": "physical_products",
+   "buyer": "Consumer-electronics and appliance brands with products over $50 sold into California, New York, Minnesota and Oregon that have no parts operation, for example startups and small importers with outsourced manufacturing",
+   "pain": "State right-to-repair laws require documentation, tools and parts for owners and independent repairers on the same terms given authorized providers (at cost if there is no authorized network), for 3 to 7 years in California; California penalties rise from $1,000 to $5,000 per day and small brands with custom components must secure small-quantity parts supply for years after production ends.",
+   "wedge": "Run the brand's official parts store, price-parity record, tool and document links and per-state availability log for a monthly retainer plus a per-order fee, shipping from the brand's consigned stock or a 3PL.",
+   "referenceEntrant": {
+    "startupCashUsd": 3000,
+    "daysToFirstRevenue": 120,
+    "ownerHoursPerWeek": 15
+   },
+   "entrantEdge": {
+    "type": "embedded_workflow_or_system_of_record",
+    "status": "claimed",
+    "statement": "The per-SKU, per-state record of parts availability, price parity against the authorized-provider price, and fulfilment history would become the brand's compliance evidence and parts ordering system, so leaving means rebuilding that record and the parts supply. This is only claimed: no source shows small brands paying for it and the record itself is easy to copy.",
+    "evidenceIds": [
+     "PHY2-E1",
+     "PHY2-E2"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Brand runs its own Shopify Basic parts store (DIY, $39/month + 2.9% + 30c)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 39,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.shopify.com/pricing",
+      "evidenceRef": "PHY2-E6",
+      "metrics": {
+       "cash_cost": 39
+      }
+     },
+     {
+      "label": "Status quo: brand support desk posts manuals and sells parts by email at authorized-provider terms",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://bhgs.dca.ca.gov/forms_pubs/sb_244_industry_advisory_english.pdf",
+      "evidenceRef": "PHY2-E1",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "iFixit manufacturer parts operations and right-to-repair compliance (custom plan; price not published, 0 is a placeholder not free)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.ifixit.com/solutions",
+      "evidenceRef": "PHY2-E5"
+     },
+     {
+      "label": "Encompass outsourced parts logistics for large consumer-electronics brands (price not published, 0 is a placeholder not free)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.globenewswire.com/news-release/2017/06/21/1027162/12552/en/Funai-Renews-Agreement-with-Encompass-to-be-Exclusive-Provider-of-Parts-Logistics-Services-for-Philips-Branded-Consumer-Electronics.html",
+      "evidenceRef": "PHY2-E4"
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 39,
+    "falsifier": "The best alternative costs $0 (an email parts desk) and a store costs $39/month (PHY2-E6), so the entrant cannot win on cash cost; any edge must be time or risk saved. Falsified if no sub-$10M brand will pay a retainer above the $39/month DIY floor plus per-order fees in outreach-free evidence such as public vendor listings, or if enforcement stays absent (Oregon penalties start 2027, PHY2-E3)."
+   },
+   "evidence": [
+    {
+     "id": "PHY2-E1",
+     "url": "https://bhgs.dca.ca.gov/forms_pubs/sb_244_industry_advisory_english.pdf",
+     "quote": "Manufacturers must provide these materials even if no warranty was made. ... must provide the materials for at least 7 years after the last manufacturing date",
+     "kind": "constraint",
+     "publisher": "California Department of Consumer Affairs, Bureau of Household Goods and Services (SB 244 industry advisory)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY2-E2",
+     "url": "https://perkinscoie.com/insights/update/californias-digital-fair-repair-act-sb-244",
+     "quote": "If a manufacturer does not use an authorized repair provider, then documentation, tools, and parts must be offered at cost ... (not including research and development (R&D) expenses).",
+     "kind": "constraint",
+     "publisher": "Perkins Coie LLP",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY2-E3",
+     "url": "https://blog.promise.legal/right-to-repair-compliance-hardware-startups/",
+     "quote": "Penalties escalate: up to $1,000 per day for the first violation, $2,000 per day for the second, ... $5,000 per day for the third and subsequent violations. ... Penalties begin in 2027.",
+     "kind": "constraint",
+     "publisher": "Promise Legal Insights",
+     "date": "2026-07-07",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY2-E4",
+     "url": "https://www.globenewswire.com/news-release/2017/06/21/1027162/12552/en/Funai-Renews-Agreement-with-Encompass-to-be-Exclusive-Provider-of-Parts-Logistics-Services-for-Philips-Branded-Consumer-Electronics.html",
+     "quote": "will continue to procure, warehouse and distribute replacement parts ... has managed the parts supply chain for the Philips brand since 2008",
+     "kind": "demand",
+     "publisher": "Funai / Encompass press release (GlobeNewswire)",
+     "date": "2017-06-21",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY2-E5",
+     "url": "https://www.ifixit.com/solutions",
+     "quote": "we can support your parts operations from inventory planning to distribution and sales. ... Right to Repair compliance? ... Odds are we've done it before.",
+     "kind": "other",
+     "publisher": "iFixit (manufacturer solutions page)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY2-E6",
+     "url": "https://www.shopify.com/pricing",
+     "quote": "Pay monthly$39 USD/mo ... Card rates from 2.9% + 30¢ USD",
+     "kind": "incumbent_price",
+     "publisher": "Shopify (Basic plan pricing)",
+     "date": "2026-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY2-E7",
+     "url": "https://www.ifixit.com/Info/Our_Partnerships",
+     "quote": "We sell parts for products from the following companies.",
+     "kind": "demand",
+     "publisher": "iFixit (partnerships page: HTC Vive, Fairphone, Motorola, Samsung, Google, Teenage Engineering, Vaude, Valve)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 2,
+    "customer_problem_or_value": 5,
+    "distribution_advantage": 2,
+    "defensibility": 3,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 3,
+    "repeat_ltv_potential": 6,
+    "competition_adjusted_gap": 3,
+    "market_depth": 4,
+    "end_to_end_automation": 5,
+    "capital_risk": 8,
+    "owner_time_support": 5
+   },
+   "componentReasons": {
+    "entrant_edge": "A per-SKU, per-state parts and price-parity record could become the brand's compliance file (PHY2-E1, PHY2-E2) but that record is easy to rebuild and no source shows brands paying for it at small scale.",
+    "customer_problem_or_value": "Laws require parts, tools and documents for 3-7 years with escalating penalties (PHY2-E1, PHY2-E3), which is a real duty for sub-scale brands, though the duty can be met cheaply.",
+    "distribution_advantage": "No owned or low-cost channel to reach hardware brands was found; large brands already sit with iFixit and Encompass (PHY2-E4, PHY2-E5, PHY2-E7).",
+    "defensibility": "The compliance record creates mild switching cost, but parts must be sold at authorized-provider terms or at cost (PHY2-E2), leaving no parts-margin lock-in.",
+    "absolute_gross_profit_potential": "Revenue would be a retainer plus per-order fee because parts are sold at cost (PHY2-E2); no sourced price point exists above the $39/month DIY floor (PHY2-E6).",
+    "willingness_to_pay": "Brands do outsource parts logistics at scale (PHY2-E4, PHY2-E7), but nothing shows a sub-$10M brand paying when a $39/month store and an email desk exist (PHY2-E6).",
+    "repeat_ltv_potential": "Compliance and parts duties recur for 3-7 years per product (PHY2-E1), which suits a monthly retainer.",
+    "competition_adjusted_gap": "iFixit already offers parts operations and right-to-repair compliance to brands (PHY2-E5) and DIY is nearly free (PHY2-E6).",
+    "market_depth": "Covered states and product categories are broad (PHY2-E1, PHY2-E3), but the buyer segment able and willing to pay is not sized.",
+    "end_to_end_automation": "Store set-up, price-parity logs and ordering can be automated, though parts storage and shipping stay physical (PHY2-E5).",
+    "capital_risk": "A Shopify store costs $39/month (PHY2-E6) and parts can be consigned from the brand, so cash at risk is small.",
+    "owner_time_support": "Brand onboarding, returns and exceptions need continuing attention, though less than hands-on prep (PHY2-E5)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "PHY2-E1: California SB 244 duties sit on the manufacturer; exemptions include no obligation to disclose trade secrets or license IP, and none if an equivalent or better replacement is provided free; the desk would act as the brand's agent and the brand stays liable (unverified).",
+    "PHY2-E2: Parts must be offered on the most favourable terms given authorized providers, or at cost without an authorized network, so the desk cannot rely on parts mark-up.",
+    "PHY2-E3: New York, Minnesota and Oregon rules differ in scope and Oregon penalties begin in 2027; other states' laws and any B2B exemptions were not read (unverified)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "No sourced price point exists above the $39/month DIY store floor (PHY2-E6) and parts are sold at cost (PHY2-E2), so revenue per brand is an unobserved retainer plus per-order fee; with price x0.8, volume x0.5 and cost x1.5 a positive result cannot be shown from evidence."
+    },
+    "killReasons": [
+     {
+      "reason": "A free email parts desk or a $39/month store can meet the statutory minimum for a small brand, so willingness to pay is unproven.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "PHY2-E6"
+     },
+     {
+      "reason": "Parts must be sold at authorized-provider terms or at cost, so parts mark-up cannot fund the service.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "PHY2-E2"
+     },
+     {
+      "reason": "iFixit and Encompass already serve brands that want parts operations; the small-brand segment has no demonstrated payer and an unknown acquisition cost.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "PHY2-E5"
+     }
+    ]
+   },
+   "researcherVerdict": "uncertain",
+   "verdictReason": "Open question: will any sub-$10M hardware brand pay more than the $39/month DIY floor for a managed parts and compliance desk, given that parts must be sold at cost or authorized-provider terms and Oregon penalties only begin in 2027? Evidence shows the legal duty and large-brand outsourcing but no small-brand payer."
+  },
+  {
+   "id": "PHY-3",
+   "name": "UL 2271-certified drop-in replacement battery packs for CPSC-warned Rad Power e-bike batteries",
+   "family": "physical_products",
+   "buyer": "Owners of Rad Power e-bikes with warned batteries (model numbers RP-1304, RAD-S1304Y, HL-RP-S1304), told to stop using them while the maker says it cannot supply replacements",
+   "pain": "CPSC documents 31 fire reports and $734,500 of damage and urges owners to remove the battery; Rad says it cannot offer replacements or refunds, the OEM Safe Shield pack is $499 and out of stock, and California now requires lab-tested e-bikes.",
+   "wedge": "Sell a UL 2271-certified, Rad-compatible replacement pack built by a contract manufacturer under the entrant's own brand, pre-sold against a registration waitlist.",
+   "referenceEntrant": {
+    "startupCashUsd": 10000,
+    "daysToFirstRevenue": 150,
+    "ownerHoursPerWeek": 15
+   },
+   "entrantEdge": {
+    "type": "niche_focus",
+    "status": "none",
+    "statement": "Tried exclusive_or_difficult_supply_or_access via UL 2271 certification, but the listing belongs to whichever manufacturer built and tested the pack, an estimated $34,000-$56,000+ per pack design (PHY3-E5, low-authority blog), and Zen Energy already announces certified Rad replacement packs (PHY3-E7). A private-label seller adds only a Rad-specific niche, which is not a structural edge.",
+    "evidenceIds": [
+     "PHY3-E5",
+     "PHY3-E7"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Rad Power Bikes Safe Shield 14 Ah OEM pack, UL 2271 (one-time price shown as $499, currency not named; out of stock)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 499,
+      "coversWedge": "full",
+      "sourceLocator": "https://support.radpowerbikes.com/products/rad-battery-pack-2021",
+      "evidenceRef": "PHY3-E3",
+      "metrics": {
+       "cash_cost": 499
+      }
+     },
+     {
+      "label": "YOSE Power Rad-compatible 48V 14Ah pack, UL2271 claimed (one-time $474.05)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 474.05,
+      "coversWedge": "partial",
+      "sourceLocator": "https://nstem.org/item/rad-power-ebike-battery-48v-14ah-radcity/",
+      "evidenceRef": "PHY3-E4",
+      "metrics": {
+       "cash_cost": 474.05
+      }
+     },
+     {
+      "label": "Stop using the battery as CPSC urges (no e-bike use)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "none",
+      "sourceLocator": "https://cpsc.gov/Warnings/2026/CPSC-Warns-Consumers-to-Immediately-Stop-Using-Batteries-for-E-Bikes-from-Rad-Power-Bikes-Due-to-Fire-Hazard-Risk-of-Serious-Injury-or-Death",
+      "evidenceRef": "PHY3-E1",
+      "metrics": {
+       "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 474.05,
+    "entrantValue": 474.05,
+    "falsifier": "No measured advantage: unit prices are $474.05-$499 (PHY3-E3, PHY3-E4) and certification alone is $340-$560 per unit at 100 units (PHY3-E5). Falsified-as-edge unless a contract manufacturer will list the entrant's brand on an existing UL 2271 file at no per-design fee with landed cost at or below $355 (25% under $474.05)."
+   },
+   "evidence": [
+    {
+     "id": "PHY3-E1",
+     "url": "https://cpsc.gov/Warnings/2026/CPSC-Warns-Consumers-to-Immediately-Stop-Using-Batteries-for-E-Bikes-from-Rad-Power-Bikes-Due-to-Fire-Hazard-Risk-of-Serious-Injury-or-Death",
+     "quote": "CPSC is aware of 31 reports of fire, including 12 reports of property damage totaling approximately $734,500. ... CPSC urges consumers to immediately remove the battery from the e-bike.",
+     "kind": "demand",
+     "publisher": "U.S. Consumer Product Safety Commission",
+     "date": "2025-11-24",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY3-E2",
+     "url": "https://bicycleretailer.com/industry-news/2025/12/16/rad-power-bikes-files-bankruptcy-protection",
+     "quote": "the brand told the agency that given its financial situation, it can't offer replacement batteries or refunds to consumers.",
+     "kind": "demand",
+     "publisher": "Bicycle Retailer and Industry News",
+     "date": "2025-12-16",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY3-E3",
+     "url": "https://support.radpowerbikes.com/products/rad-battery-pack-2021",
+     "quote": "Safe Shield™ External Battery (14 Ah) ... $499 ... Out of Stock ... Safe Shield Batteries are UL Certified to UL 2271",
+     "kind": "incumbent_price",
+     "publisher": "Rad Power Bikes support store",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY3-E4",
+     "url": "https://nstem.org/item/rad-power-ebike-battery-48v-14ah-radcity/",
+     "quote": "Rad Power Ebike Battery 48V 14Ah RadCity 5 Plus RadRover 6 Plus RadRunner 3 Plus ... USD 474.05 USD ... Condition: New ... CertificateUL2271",
+     "kind": "incumbent_price",
+     "publisher": "nstem.org marketplace listing (brand YOSE POWER; certificate claim unverified)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY3-E5",
+     "url": "https://eathealthy365.com/cost-of-battery-pack-certification/",
+     "quote": "| **Estimated Total Cost** | **$9,500 – $17,500** | **$34,000 – $56,000+** |",
+     "kind": "constraint",
+     "publisher": "eathealthy365.com blog (low-authority estimate; right-hand column is the e-bike pack scenario with IEC 62133, UL 2271 and UN 38.3)",
+     "date": "2026-03-04",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY3-E6",
+     "url": "https://biketips.com/california-e-bike-lab-certification-ul-2849-2026-law/",
+     "quote": "every e-bike sold or leased in California must be tested by an accredited laboratory ... owners of budget e-bikes may face challenges sourcing compatible replacements",
+     "kind": "constraint",
+     "publisher": "BikeTips",
+     "date": "2026-03-29",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY3-E7",
+     "url": "https://forums.electricbikereview.com/posts/718756/",
+     "quote": "We build UL 2271 certified replacement battery packs for Rad, Juiced, Igo and other ebike brands. ... The first production run is limited, and allocation follows registration order. ... Deliveries begin early October.",
+     "kind": "other",
+     "publisher": "Electric Bike Forums post by a Zen Energy representative",
+     "date": "2026-07-29",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 8,
+    "distribution_advantage": 2,
+    "defensibility": 1,
+    "absolute_gross_profit_potential": 4,
+    "willingness_to_pay": 7,
+    "repeat_ltv_potential": 2,
+    "competition_adjusted_gap": 2,
+    "market_depth": 5,
+    "end_to_end_automation": 4,
+    "capital_risk": 2,
+    "owner_time_support": 5
+   },
+   "componentReasons": {
+    "entrant_edge": "The only possible moat is UL 2271 listing, which is per pack design at an estimated $34,000-$56,000+ (PHY3-E5) and already held by Zen Energy and Rad itself (PHY3-E3, PHY3-E7), so a private-label reseller has no exclusive position.",
+    "customer_problem_or_value": "CPSC documents 31 fires and tells owners to remove the battery while Rad says it cannot supply replacements (PHY3-E1, PHY3-E2), a severe unmet need.",
+    "distribution_advantage": "Owners search forums where a certified-pack maker already pre-sells by registration (PHY3-E7); no owned or partner channel exists for a new entrant.",
+    "defensibility": "A reseller's pack can be copied and the certification belongs to the manufacturer's file (PHY3-E5, PHY3-E7).",
+    "absolute_gross_profit_potential": "At roughly $474-$499 per pack (PHY3-E3, PHY3-E4) gross profit per unit could be meaningful, but the installed base of affected owners was not quantified.",
+    "willingness_to_pay": "Buyers already pay $499 for the OEM pack and $474 for a third-party listing (PHY3-E3, PHY3-E4).",
+    "repeat_ltv_potential": "A pack is a one-time purchase tied to a finite, shrinking orphaned installed base (PHY3-E1, PHY3-E2).",
+    "competition_adjusted_gap": "OEM, a marketplace seller and Zen Energy already supply certified or claimed-certified packs (PHY3-E3, PHY3-E4, PHY3-E7).",
+    "market_depth": "The warned models are popular (PHY3-E1) but the total owner count and replacement rate were not found.",
+    "end_to_end_automation": "A contract-built pack can be pre-sold by waitlist and drop-shipped with little handling (PHY3-E7), though lithium shipping rules were not read.",
+    "capital_risk": "Per-design certification alone of $34,000-$56,000+ exceeds a $10,000 budget (PHY3-E5), and a fire-hazard product carries liability.",
+    "owner_time_support": "Waitlist handling and fit confirmation of each bike take support time (PHY3-E7)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "PHY3-E1: CPSC issued a warning, not a recall, for RP-1304, RAD-S1304Y and HL-RP-S1304; a seller of replacement packs for a hazard-warned product faces product-liability exposure and possible CPSC reporting duties (applicability unverified).",
+    "PHY3-E6: California requires lab testing for e-bikes sold or leased; whether separately sold replacement batteries need UL 2271 or UL 2849 in each state, and UN 38.3 / DOT lithium shipping rules, were not read (unverified).",
+    "PHY3-E5: The per-design certification cost comes from a low-authority blog; UL's own price list was not found (unverified)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Certification alone: $34,000-$56,000+ (PHY3-E5) over 100 units (volume x0.5 of 200) is $340-$560 per unit, versus price x0.8 = $379.24 (0.8 x $474.05, PHY3-E4) before pack cost, so the pessimistic case is negative."
+    },
+    "killReasons": [
+     {
+      "reason": "UL 2271 certification is per pack design at an estimated $34,000-$56,000+ and 8-12+ weeks, beyond a $10,000 budget; the entrant would depend on someone else's listing.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "PHY3-E5"
+     },
+     {
+      "reason": "Certified Rad replacement packs already exist or are pre-selling (Rad Safe Shield, YOSE listing, Zen Energy), so there is no gap to hold.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "PHY3-E7"
+     },
+     {
+      "reason": "Fire-hazard product with a CPSC warning creates liability the reference entrant cannot insure on $10,000.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "PHY3-E1"
+     },
+     {
+      "reason": "One-time purchase against a finite installed base, no recurring revenue.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "PHY3-E2"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: the demand is real (31 fires, no OEM remedy; PHY3-E1, PHY3-E2) but certification of a pack design is an estimated $34,000-$56,000+ (PHY3-E5), certified Rad-fit packs already exist or are pre-selling (PHY3-E3, PHY3-E4, PHY3-E7), and no structural edge is available to a $10,000 private-label seller."
+  },
+  {
+   "id": "PHY-4",
+   "name": "Hazmat-trained dangerous-goods prep and ship service for small Amazon sellers (lithium, aerosols, flammables)",
+   "family": "physical_products",
+   "buyer": "Small Amazon and marketplace sellers whose products are classed as dangerous goods (lithium batteries, aerosols, flammable liquids) and who need compliant prep, labels and ground-only shipping",
+   "pain": "Amazon discontinued its own FBA prep and labelling on 2026-01-01; hazmat units must ship on their own shipments with purchased postage, carriers add roughly $15-$50 per domestic hazmat parcel, and DOT requires trained hazmat employees.",
+   "wedge": "Offer DOT-trained prep, labelling and ground shipping of dangerous goods with segregated storage for micro-volume sellers.",
+   "referenceEntrant": {
+    "startupCashUsd": 2500,
+    "daysToFirstRevenue": 60,
+    "ownerHoursPerWeek": 30
+   },
+   "entrantEdge": {
+    "type": "generic_managed_service",
+    "status": "none",
+    "statement": "Tried regulatory_license_intrinsic_to_model via DOT hazmat-employee training, but the credential is a $299 course (PHY4-E3) and 36 prep centers already list hazmat capability (PHY4-E2), so what remains is a generic managed service.",
+    "evidenceIds": [
+     "PHY4-E2",
+     "PHY4-E3"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "406 Premier Prep hazmat-capable prep (from $1.10/unit small batch; 500 units/month = $550)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 550,
+      "coversWedge": "full",
+      "sourceLocator": "https://ecomcircles.com/prep-centers/hazmat/",
+      "evidenceRef": "PHY4-E2",
+      "metrics": {
+       "cash_cost": 550
+      }
+     },
+     {
+      "label": "Above All Prep and Ship (from $1.25/unit + $50 setup; 500 units/month = $625)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 625,
+      "coversWedge": "full",
+      "sourceLocator": "https://ecomcircles.com/prep-centers/hazmat/",
+      "evidenceRef": "PHY4-E2",
+      "metrics": {
+       "cash_cost": 625
+      }
+     },
+     {
+      "label": "Seller does own DG prep after a $299 online DOT course ($299 / 12 months = $24.92/month, excluding time)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 24.92,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.lion.com/catalog/courses/shipping-lithium-batteries",
+      "evidenceRef": "PHY4-E3",
+      "metrics": {
+       "cash_cost": 24.92
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 24.92,
+    "entrantValue": 550,
+    "falsifier": "At 500 units/month the cheapest do-it-yourself route costs $24.92/month and hazmat centers charge from $550 (PHY4-E2, PHY4-E3), so an entrant matching centers is dearer than DIY and no cheaper than 36 incumbents. Falsified-as-edge unless a documented exclusive carrier or storage permit makes hazmat volume available only to the entrant."
+   },
+   "evidence": [
+    {
+     "id": "PHY4-E1",
+     "url": "https://www.sellersprite.com/en/blog/amazon-ends-fba-prep-services-2026",
+     "quote": "As of January 1, 2026, Amazon discontinued all FBA prep and labelling services in the US ... Professional prep centres typically charge $0.50 to $0.80 per unit",
+     "kind": "demand",
+     "publisher": "SellerSprite",
+     "date": "2026-06-19",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY4-E2",
+     "url": "https://ecomcircles.com/prep-centers/hazmat/",
+     "quote": "We list 36 hazmat prep centers ... from $1.10 for small batches down to $0.50 above 8,001 units ... lists pricing from $1.25 down to $0.40 per unit with a $50 one-time setup fee ... Accepts HazMat items with no additional processing fees",
+     "kind": "incumbent_price",
+     "publisher": "Ecom Circles prep-center directory",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY4-E3",
+     "url": "https://www.lion.com/catalog/courses/shipping-lithium-batteries",
+     "quote": "US DOT requires training for all \"hazmat employees,\" including any person who performs or directs ... $299 each",
+     "kind": "constraint",
+     "publisher": "Lion Technology (hazmat training provider)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY4-E4",
+     "url": "https://mckenzieservices.com/wp/?p=2685",
+     "quote": "Yes, we absolutely can ... Amazon will separate hazmat units onto their own shipment(s).",
+     "kind": "other",
+     "publisher": "McKenzie Services (Oregon FBA prep center)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY4-E5",
+     "url": "https://www.fulfill.com/3pl/specialty/dangerous-goods",
+     "quote": "The roughly fifteen-to-fifty-dollar domestic parcel hazmat fee",
+     "kind": "other",
+     "publisher": "Fulfill.com dangerous-goods 3PL directory",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "PHY4-E6",
+     "url": "https://racklify.com/encyclopedia/costs-compliance-and-best-practices-for-nail-polish-fulfillment/",
+     "quote": "Fixed costs include facility modifications (ventilation, cabinets) and one-time training ... Track aggregate liters/gallons per storage area versus regulatory thresholds.",
+     "kind": "constraint",
+     "publisher": "Racklify encyclopedia",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 5,
+    "distribution_advantage": 2,
+    "defensibility": 1,
+    "absolute_gross_profit_potential": 2,
+    "willingness_to_pay": 4,
+    "repeat_ltv_potential": 6,
+    "competition_adjusted_gap": 1,
+    "market_depth": 5,
+    "end_to_end_automation": 2,
+    "capital_risk": 6,
+    "owner_time_support": 2
+   },
+   "componentReasons": {
+    "entrant_edge": "DOT hazmat-employee training is a $299 course (PHY4-E3), so the compliance credential is not exclusive and 36 hazmat prep centers already hold it (PHY4-E2).",
+    "customer_problem_or_value": "Amazon ended its own prep and labelling on 2026-01-01 and hazmat units ship separately (PHY4-E1, PHY4-E4), a real but already-served need.",
+    "distribution_advantage": "No owned or partner channel was found; sellers choose from a directory of 36 centers (PHY4-E2).",
+    "defensibility": "Training, labels and carrier hazmat accounts can all be bought by any rival (PHY4-E3, PHY4-E5).",
+    "absolute_gross_profit_potential": "Posted prices are $0.40-$1.25 per unit (PHY4-E2) so gross profit per hour of hands-on work is low.",
+    "willingness_to_pay": "Sellers pay about $0.50-$0.80 per unit for ordinary prep (PHY4-E1) and $0.40-$1.25 at hazmat centers, while one center charges no extra for hazmat (PHY4-E2).",
+    "repeat_ltv_potential": "Replenishment shipments repeat as long as the seller sells, supporting recurring volume (PHY4-E1).",
+    "competition_adjusted_gap": "36 competing centers, some with no hazmat surcharge, leave no gap (PHY4-E2).",
+    "market_depth": "Many DG categories exist (lithium, aerosols, flammables) and carriers charge $15-$50 per hazmat parcel (PHY4-E5), so demand is wide.",
+    "end_to_end_automation": "Receiving, labelling, packing and storing flammables is hands-on physical work (PHY4-E6).",
+    "capital_risk": "Training is $299 per person (PHY4-E3) but facility modifications and fire-code storage limits add fixed cost (PHY4-E6).",
+    "owner_time_support": "Per-unit handling is manual, and storage compliance needs tracking (PHY4-E6)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "PHY4-E3: 49 CFR 172.704 hazmat-employee training applies to people who package, mark and label dangerous goods; the entrant can comply for $299 per person but the credential is not exclusive.",
+    "PHY4-E6: Aggregate storage thresholds for flammables and facility modifications apply; local fire-code and insurance limits for a home-based operation were not read (unverified).",
+    "PHY4-E2: The seller's own Amazon account must be approved for dangerous-goods products; Amazon's own DG help page could not be read, so its current documentation rules are unverified."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Posted prices are $0.40-$1.25 per unit (PHY4-E2). With price x0.8 and volume x0.5 that is $0.32-$1.00 per unit on half the units, against hands-on labour, $299 per trained person (PHY4-E3) and facility modifications (PHY4-E6); nothing in the evidence shows a positive margin."
+    },
+    "killReasons": [
+     {
+      "reason": "36 hazmat-capable prep centers already list pricing from $0.40-$1.25 per unit and one charges no extra for hazmat.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "PHY4-E2"
+     },
+     {
+      "reason": "The DOT training credential costs $299 per person, so it is not an exclusive barrier.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "PHY4-E3"
+     },
+     {
+      "reason": "Storing flammables needs facility modifications and threshold tracking that a $2,500 home-based entrant likely cannot meet.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "PHY4-E6"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: no structural edge. The compliance credential is a $299 course (PHY4-E3), 36 hazmat prep centers already compete at $0.40-$1.25 per unit and one charges no hazmat surcharge (PHY4-E2), and a DIY route is cheaper for sellers who prefer to self-prep."
+  }
+ ]
+}

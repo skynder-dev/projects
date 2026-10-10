@@ -1,0 +1,1105 @@
+{
+ "candidates": [
+  {
+   "id": "AFF-1",
+   "name": "Acquired sub-$10k Amazon-Associates content site (marketplace purchase, links re-pointed to the buyer's own Associates account)",
+   "family": "affiliate_or_referral",
+   "buyer": "Online shoppers who reach product-review and buying-guide pages from Google; the party that pays the entrant is Amazon, through the Associates commission programme",
+   "pain": "A new review site has no rankings and earns nothing for months; a ranked site that already earns skips that cold start, but the marketplace prices it at roughly 25-38x monthly profit, the commission relationship with Amazon cannot be assigned to the buyer, and one Google update can remove most of the traffic.",
+   "wedge": "Buy a small Amazon-affiliate content site listed at about $10,000 with Google-Analytics-verified organic traffic and seller-reported profit of a few hundred dollars a month, then apply for the buyer's own Associates account and re-point the existing links.",
+   "referenceEntrant": {
+    "startupCashUsd": 10000,
+    "daysToFirstRevenue": 60,
+    "ownerHoursPerWeek": 8
+   },
+   "entrantEdge": {
+    "type": "acquirable_owned_audience_or_partner_channel",
+    "status": "claimed",
+    "statement": "What is exclusive is the acquired asset: the indexed pages, their Google rankings, backlinks and domain history (a comparable sold listing advertises 90 posts and 100 referring domains), which a competitor cannot copy quickly. Claimed only: every figure is seller-reported, any other buyer can bid for the same site, search rankings are not an owned audience and can decay after a change of owner, and the commission relationship with Amazon does not transfer, so the buyer must be approved separately.",
+    "evidenceIds": [
+     "AFF-1-E2",
+     "AFF-1-E3",
+     "AFF-1-E7"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Build a new affiliate content site from scratch (domain and hosting only; cost and time are estimates, unsourced)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 10,
+      "coversWedge": "partial",
+      "sourceLocator": "https://affiliate-program.amazon.com/help/operating/agreement",
+      "evidenceRef": "AFF-1-E5",
+      "metrics": {
+       "cycle_time": 180
+      }
+     },
+     {
+      "label": "Empire Flippers vetted affiliate-site listings (page says they start at $25k; 130-day average sale duration is a seller-side figure from its scoreboard page, read via summary); amortised over 36 months",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 694,
+      "coversWedge": "partial",
+      "sourceLocator": "https://empireflippers.com/scoreboard/",
+      "evidenceRef": "AFF-1-E4",
+      "metrics": {
+       "cycle_time": 130
+      }
+     },
+     {
+      "label": "Flippa larger listing with hidden price (11024041: $2,299.85/month income, 2.3x revenue multiple shown; price amortised over 36 months is derived from those two figures)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 1763,
+      "coversWedge": "partial",
+      "sourceLocator": "https://flippa.com/11024041-beginner-friendly-top-10-site-making-2-299-85-monthly-with-amazon-associates",
+      "evidenceRef": "AFF-1-E3",
+      "metrics": {
+       "cycle_time": 60
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cycle_time",
+    "direction": "lower_is_better",
+    "incumbentValue": 130,
+    "entrantValue": 60,
+    "falsifier": "Disproved if the seller's profit cannot be reproduced from Amazon earnings reports plus Google Analytics and Search Console exports before payment, if the buyer's own Associates application is rejected or the re-pointed links earn materially less, or if organic traffic falls by more than half within 90 days of transfer. The 60-day figure for a small Flippa purchase is an assumption; the 130-day figure is a seller-side statistic."
+   },
+   "evidence": [
+    {
+     "id": "AFF-1-E1",
+     "url": "https://flippa.com/blog/how-much-can-you-sell-your-website-for/",
+     "quote": "Content sites with strong SEO average 28×–38× multiples, while SaaS businesses can reach 40×–60×",
+     "kind": "incumbent_price",
+     "publisher": "Flippa",
+     "date": "2025-10-10",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-1-E2",
+     "url": "https://flippa.com/9816778-1-5-y-o-amazon-affiliate-site-w-90-posts-100-ref-domains-steady-400-mo",
+     "quote": "The asking reserve price for the sale is $10,000, based on a valuation multiple of monthly earnings",
+     "kind": "demand",
+     "publisher": "Flippa (listing 9816778, status SOLD; description says 'Earning steady $300-400 monthly', page field shows 'USD $773 /mo')",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-1-E3",
+     "url": "https://flippa.com/11024041-beginner-friendly-top-10-site-making-2-299-85-monthly-with-amazon-associates",
+     "quote": "receiving 90.4% organic traffic",
+     "kind": "demand",
+     "publisher": "Flippa (listing 11024041, price shown only as 'Contact Flippa for Price')",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-1-E4",
+     "url": "https://empireflippers.com/scoreboard/",
+     "quote": "from $25k affiliate sites to multi-million-dollar ecommerce operations",
+     "kind": "incumbent_price",
+     "publisher": "Empire Flippers",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-1-E5",
+     "url": "https://affiliate-program.amazon.com/help/operating/agreement",
+     "quote": "You may not assign this Agreement, by operation of law or otherwise, without our express prior written approval.",
+     "kind": "constraint",
+     "publisher": "Amazon Associates Program",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-1-E6",
+     "url": "https://affiliate-program.amazon.com/help/operating/agreement",
+     "quote": "Either you or we may terminate this Agreement at any time, with or without cause.",
+     "kind": "constraint",
+     "publisher": "Amazon Associates Program",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-1-E7",
+     "url": "https://www.feinternational.com/blog/how-the-amazon-associates-program-works-and-how-to-transfer-an-amazon-associates-account",
+     "quote": "Sellers are at risk of losing a few affiliate links depending on the way they do the transfer.",
+     "kind": "constraint",
+     "publisher": "FE International",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-1-E8",
+     "url": "https://searchengineland.com/review-site-google-traffic-affiliate-seo-content-440143",
+     "quote": "has lost 91% of its Google traffic following the March 2024 core update.",
+     "kind": "other",
+     "publisher": "Search Engine Land",
+     "date": "2024-05-02",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-1-E9",
+     "url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+     "quote": "You should disclose your relationship to the retailer clearly and conspicuously on your site",
+     "kind": "constraint",
+     "publisher": "US Federal Trade Commission",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-1-E10",
+     "url": "https://flippa.com/blog/how-to-find-good-website-deals-on-flippa/",
+     "quote": "don't have to rely on what a seller reports",
+     "kind": "other",
+     "publisher": "Flippa",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 2,
+    "customer_problem_or_value": 4,
+    "distribution_advantage": 2,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 4,
+    "repeat_ltv_potential": 3,
+    "competition_adjusted_gap": 2,
+    "market_depth": 5,
+    "end_to_end_automation": 3,
+    "capital_risk": 3,
+    "owner_time_support": 6
+   },
+   "componentReasons": {
+    "entrant_edge": "The only exclusive element is the acquired ranking and content, which is seller-reported and open to any other bidder, and Amazon's no-assignment clause means the revenue relationship does not come with the site (AFF-1-E2, AFF-1-E5).",
+    "customer_problem_or_value": "Skipping the months of zero traffic is real, but the reader-facing value is generic review content and the buyer inherits Google dependence (AFF-1-E8).",
+    "distribution_advantage": "Traffic is 90%+ organic Google on the comparable listing, which is rented from a search engine, not owned or privileged (AFF-1-E3, AFF-1-E8).",
+    "defensibility": "Nothing stops a rival publishing equivalent pages, and a core update removed 91% of one small review site's Google traffic (AFF-1-E8).",
+    "absolute_gross_profit_potential": "A $10,000 reserve buys about $300-$400 a month of reported profit (about $4,200 a year), which does not cover the purchase price within 365 days (AFF-1-E2).",
+    "willingness_to_pay": "Buyers do pay Flippa multiples of 28-38x and Amazon does pay commissions, but only on seller-reported figures that the buyer cannot audit from Amazon's side (AFF-1-E1, AFF-1-E10).",
+    "repeat_ltv_potential": "Commissions recur only while rankings hold and Amazon keeps the account active; either side can terminate at any time (AFF-1-E6).",
+    "competition_adjusted_gap": "The marketplace is priced at market multiples, so there is no discount to capture and no gap left for a stranger with no content or SEO record (AFF-1-E1).",
+    "market_depth": "Many listings exist at many price points, but those under $10,000 with verified traffic are a thin slice and Empire Flippers starts at $25k (AFF-1-E4).",
+    "end_to_end_automation": "Content upkeep, link maintenance and compliance review remain manual work after the transfer.",
+    "capital_risk": "The full $10,000 goes to one asset whose earnings are seller-reported and whose revenue source can be terminated on seven days' notice (AFF-1-E6, AFF-1-E7).",
+    "owner_time_support": "A maintained small content site needs only a few hours a week once transferred, which is the one dimension that favours the model (AFF-1-E2)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "AFF-1-E5/E6: Amazon's Associates agreement bars assigning the agreement without Amazon's written approval and lets either side terminate at any time; the buyer must hold their own approved account and Amazon may reject the application (rejection risk unverified).",
+    "AFF-1-E7: the transfer guide says sellers can lose affiliate links depending on how the account hand-over is done; no listing read said how the Associates account is handled.",
+    "AFF-1-E9: the FTC says affiliate relationships must be disclosed clearly and conspicuously near the recommendation, so the buyer takes on that duty for every inherited page. Not legal advice; the FTC rule on fake reviews was not read (unverified)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Base: $10,000 reserve for about $350/month reported profit (listing text says $300-400, page field shows $773, which conflicts): revenue about $4,242/year, cost $10,000 price plus about $900 hosting, escrow and upkeep (assumption), so about -$6,658 after the purchase price; payback is about 28 months on the seller's profit figure and about 34 months after the assumed upkeep. Pessimistic (commission x0.8, traffic x0.5, running cost x1.5): revenue about $1,697 vs cost about $11,350, so about -$9,653 after purchase (+$347 before counting the purchase). All earnings inputs are seller-reported."
+    },
+    "killReasons": [
+     {
+      "reason": "Priced at market multiples: the comparable $10,000 reserve is 25-33x monthly earnings and Flippa cites 28-38x, so payback is about 28-34 months on seller numbers and negative in the pessimistic case; there is no discount for a stranger to capture.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "AFF-1-E1,AFF-1-E2"
+     },
+     {
+      "reason": "The revenue relationship is not part of the asset: Amazon's agreement cannot be assigned without its approval and can be terminated by either side at any time, so the buyer must be re-approved and re-point links.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "AFF-1-E5,AFF-1-E6,AFF-1-E7"
+     },
+     {
+      "reason": "Traffic is rented from Google: a small review site lost 91% of its Google traffic in one core update, and the comparable listing is 90%+ organic.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "AFF-1-E3,AFF-1-E8"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Sub-$10k affiliate sites do exist and sell (a $10,000-reserve Amazon site sold on Flippa), but at 25-38x monthly profit they pay back in about 28-34 months on seller-reported numbers, the Amazon commission relationship cannot be assigned and is terminable at will, and traffic is rented from Google; no structural edge beyond what any other bidder can buy."
+  },
+  {
+   "id": "AFF-2",
+   "name": "Independent franchise-broker practice earning franchisor-paid commission on each franchise sold (free to the prospective buyer)",
+   "family": "affiliate_or_referral",
+   "buyer": "Franchisors, who pay the broker a share of the initial franchise fee only when a prospect signs; the prospective franchisee pays the broker nothing",
+   "pain": "Franchisors need qualified buyers and pay large commissions for closed sales, but a stranger has no prospect flow and enters a field where brokers are plentiful, keep full commissions and, in some states, must register.",
+   "wedge": "Join an open franchise-broker association, register where the law requires it (New York, Washington, and California from July 2027), and place prospective buyers with franchisors for a share of the franchise fee.",
+   "referenceEntrant": {
+    "startupCashUsd": 3000,
+    "daysToFirstRevenue": 240,
+    "ownerHoursPerWeek": 20
+   },
+   "entrantEdge": {
+    "type": "niche_focus",
+    "status": "none",
+    "statement": "Tried: a niche-vertical franchise broker. No structural edge found: the commission is the same for every broker, an association of 1,000+ members lets brokers keep 100% of it, FranNet alone lists 68+ consultants, and what would accumulate (a prospect list) needs an audience the entrant does not have.",
+    "evidenceIds": [
+     "AFF-2-E1",
+     "AFF-2-E5",
+     "AFF-2-E6"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "FranNet franchise consultants (franchisor-paid, no charge to the buyer; page lists 68+ consultants)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://franzy.com/franchises/frannet",
+      "evidenceRef": "AFF-2-E6",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Members of the International Franchise Professionals Group (1,000+ members who keep 100% of their commissions; no charge to buyers)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.franchising.com/amp/news/20191029_the_international_franchise_professionals_group_ce.html",
+      "evidenceRef": "AFF-2-E5",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Prospect reads the Franchise Disclosure Document and contacts franchisors directly",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.ftc.gov/business-guidance/resources/consumers-guide-buying-franchise",
+      "evidenceRef": "AFF-2-E7",
+      "metrics": {
+       "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 0,
+    "falsifier": "Cost to the prospective buyer is $0 for the entrant and for every alternative read, so price cannot be an edge. An edge would exist only if the entrant could show a prospect source competitors cannot reach (for example a documented channel that supplies qualified buyers at near-zero cost); none was found."
+   },
+   "evidence": [
+    {
+     "id": "AFF-2-E1",
+     "url": "https://franzy.com/blog/franchise-broker/",
+     "quote": "The commission is typically between 50 and 70% of the franchise fee you pay the franchisor.",
+     "kind": "incumbent_price",
+     "publisher": "Franzy",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-2-E2",
+     "url": "https://www.ftc.gov/business-guidance/resources/consumers-guide-buying-franchise",
+     "quote": "Brokers often work for franchisors, and are paid only if a sale is made.",
+     "kind": "demand",
+     "publisher": "US Federal Trade Commission",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-2-E3",
+     "url": "https://www.ubglaw.com/news-and-media/california-franchise-broker-registration-law-takes-effect-july-1-2027-what-franchisors-franchise-brokers-and-franchise-sales-organizations-need-to-know",
+     "quote": "Offering or selling a franchise without an effective registration will be unlawful.",
+     "kind": "constraint",
+     "publisher": "Umberger Brown Gerlach law firm",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-2-E4",
+     "url": "https://www.franchisetimes.com/franchise_legal/broker-laws-franchisee-protections-face-funding-issues-at-state-level/article_86653c93-00f3-415e-8640-81cdbef7a583.html",
+     "quote": "They require brokers to register with state authorities as a means to protect potential investors from unethical sales",
+     "kind": "constraint",
+     "publisher": "Franchise Times",
+     "date": "2026-03-31",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-2-E5",
+     "url": "https://www.franchising.com/amp/news/20191029_the_international_franchise_professionals_group_ce.html",
+     "quote": "has exceeded 1,000 active franchise industry professionals",
+     "kind": "other",
+     "publisher": "Franchising.com (IFPG press release)",
+     "date": "2019-10-29",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-2-E6",
+     "url": "https://franzy.com/franchises/frannet",
+     "quote": "68+ active franchise consultants nationwide",
+     "kind": "other",
+     "publisher": "Franzy",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-2-E7",
+     "url": "https://www.ftc.gov/business-guidance/resources/consumers-guide-buying-franchise",
+     "quote": "Before you invest in any franchise, get a copy of the franchisor’s Franchise Disclosure Document (FDD).",
+     "kind": "other",
+     "publisher": "US Federal Trade Commission",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 5,
+    "distribution_advantage": 1,
+    "defensibility": 1,
+    "absolute_gross_profit_potential": 5,
+    "willingness_to_pay": 6,
+    "repeat_ltv_potential": 2,
+    "competition_adjusted_gap": 2,
+    "market_depth": 5,
+    "end_to_end_automation": 2,
+    "capital_risk": 6,
+    "owner_time_support": 2
+   },
+   "componentReasons": {
+    "entrant_edge": "No edge: commissions are identical for every broker and entry is open to anyone who joins an association whose members keep 100% (AFF-2-E1, AFF-2-E5).",
+    "customer_problem_or_value": "Prospects do need guidance through the disclosure process and franchisors do pay for closed sales, but the guidance is already free from many brokers (AFF-2-E2, AFF-2-E7).",
+    "distribution_advantage": "No prospect channel for a stranger was found; the 1,000+ member association and 68+ FranNet consultants already compete for the same buyers (AFF-2-E5, AFF-2-E6).",
+    "defensibility": "Nothing is exclusive: the commission terms, the brands and the association memberships are open to all (AFF-2-E5).",
+    "absolute_gross_profit_potential": "One closed sale pays a share of the initial franchise fee (reported at 50-70%), so a few closings a year could be material, but closings are unproven for a newcomer (AFF-2-E1).",
+    "willingness_to_pay": "Franchisors demonstrably pay brokers only on a completed sale, which is real but conditional and slow (AFF-2-E2).",
+    "repeat_ltv_potential": "Each sale is one-off; only some franchisors add a royalty share and the page gives no volumes (AFF-2-E1).",
+    "competition_adjusted_gap": "The market already has 1,000+ association members and national networks, leaving no gap for a stranger without prospects (AFF-2-E5, AFF-2-E6).",
+    "market_depth": "Hundreds of franchise brands pay brokers, so the supply side is deep (AFF-2-E5).",
+    "end_to_end_automation": "Advising and closing prospects through months of diligence is human-intensive work (AFF-2-E2).",
+    "capital_risk": "Cash at risk is small, but registration and disclosure duties add legal cost and the first commission may take many months (AFF-2-E3, AFF-2-E4).",
+    "owner_time_support": "Sales cycles need continuous prospect contact, so the entrant's time is the main input (AFF-2-E2)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "AFF-2-E3: California's franchise-broker registration law is scheduled to take effect on 1 July 2027, with annual registration and a broker disclosure document before any prospect contact; selling without registration will be unlawful.",
+    "AFF-2-E4: New York and Washington already require franchise brokers to register with state authorities (the article gives no fees; unverified).",
+    "AFF-2-E2/E7: the federal franchise disclosure process applies to franchisors; brokers may use other job titles, so the entrant must not misdescribe a commission role. Not legal advice."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Assumptions: one closed franchise in 365 days with an initial fee of $30,000 and a 50% broker share = $15,000 (50% is the low end of the reported 50-70%, AFF-2-E1); cost $6,000 for registration, insurance, tools and prospect acquisition. Base about +$9,000. Pessimistic (price x0.8, volume x0.5, cost x1.5): $15,000 x 0.8 x 0.5 = $6,000 revenue vs $9,000 cost, about -$3,000. The one-sale volume is an assumption with no source."
+    },
+    "killReasons": [
+     {
+      "reason": "No structural edge: the commission is identical for every broker, an association with 1,000+ members lets brokers keep 100%, and FranNet alone lists 68+ consultants.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "AFF-2-E1,AFF-2-E5,AFF-2-E6"
+     },
+     {
+      "reason": "A stranger has no named way to reach prospective franchise buyers without an existing audience or paid acquisition, so the first closed sale within 365 days is unevidenced.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "AFF-2-E2,AFF-2-E5"
+     },
+     {
+      "reason": "Registration duties (New York, Washington now; California from July 2027) add cost and disclosure obligations before contacting prospects.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "AFF-2-E3,AFF-2-E4"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Franchisors do pay brokers only on a closed sale, but entry is open (1,000+ association members keeping 100% of commissions, 68+ FranNet consultants), the buyer pays nothing anywhere so price is no edge, a stranger has no evidenced prospect channel, and registration duties already apply in New York and Washington and arrive in California in July 2027."
+  },
+  {
+   "id": "AFF-3",
+   "name": "Freight-factoring referral partner for newly authorised US truckers (published bounties from factoring companies), sourced from the public FMCSA new-authority data",
+   "family": "affiliate_or_referral",
+   "buyer": "Freight-factoring companies, which pay a published referral bounty or revenue share; the referred party is a small carrier that needs cash flow and pays nothing extra",
+   "pain": "New motor carriers have no receivables history and need cash flow; factoring companies pay referrers $500 per truck (Outgo) or a recurring 15% of fees (Summar), but every competitor can use the same public carrier data and the same programmes.",
+   "wedge": "Contact newly granted US motor carriers found in the free FMCSA authority data with a compliant introduction to a factoring company's partner programme and earn the published bounty or revenue share when the carrier qualifies.",
+   "referenceEntrant": {
+    "startupCashUsd": 1500,
+    "daysToFirstRevenue": 75,
+    "ownerHoursPerWeek": 15
+   },
+   "entrantEdge": {
+    "type": "automation",
+    "status": "none",
+    "statement": "Tried: automated outreach built on the daily FMCSA new-authority data. Not an edge: the data is free from the regulator, a ready-made feed costs $20 per 1,000 records, factoring sales teams are a named use case of that feed, and the programmes are open to any dispatcher, vendor or carrier. Nothing accumulates that a rival cannot copy in days.",
+    "evidenceIds": [
+     "AFF-3-E3",
+     "AFF-3-E4",
+     "AFF-3-E9"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "FMCSA open data on carriers and operating authority, free from the regulator (needs the entrant to write code; contact-use terms not stated on the page read)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.fmcsa.dot.gov/registration/fmcsa-data-dissemination-program",
+      "evidenceRef": "AFF-3-E9",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Ready-made FMCSA new-authority feed on Apify, listed from $20 per 1,000 carrier leads (the page was marked 'Under maintenance' when read)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 20,
+      "coversWedge": "full",
+      "sourceLocator": "https://apify.com/jobito/fmcsa-new-authority-feed",
+      "evidenceRef": "AFF-3-E4",
+      "metrics": {
+       "cash_cost": 20
+      }
+     },
+     {
+      "label": "Dispatchers, associations and brokers already referring carriers to factoring companies (the programmes' stated target audience)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://outgo.com/blog/get-paid-with-the-outgo-affiliate-partnership-program",
+      "evidenceRef": "AFF-3-E10",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Carrier applies directly to a factoring company such as Summar or Outgo, with no referrer involved",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://summar.com/freight-factoring-referrals",
+      "evidenceRef": "AFF-3-E2",
+      "metrics": {
+       "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 0,
+    "falsifier": "Metric is USD per 1,000 new-carrier lead records: free regulator data = 0, ready-made feed = 20, entrant = 0 because it can use the same free data. Zero advantage. An edge would exist only if the entrant held a lawful lead source competitors could not obtain; none was found."
+   },
+   "evidence": [
+    {
+     "id": "AFF-3-E1",
+     "url": "https://outgo.com/blog/get-paid-with-the-outgo-affiliate-partnership-program",
+     "quote": "Earn $500 for each truck referral—up to $2,500 per carrier.",
+     "kind": "incumbent_price",
+     "publisher": "Outgo (a DAT company)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-3-E2",
+     "url": "https://summar.com/freight-factoring-referrals",
+     "quote": "Join Summar Partner Hub, our referral and affiliate program, and earn a 15% commission on our fees.",
+     "kind": "incumbent_price",
+     "publisher": "Summar",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-3-E3",
+     "url": "https://apify.com/jobito/fmcsa-new-authority-feed",
+     "quote": "Freight factoring — new carriers have no receivables history and need cash flow.",
+     "kind": "demand",
+     "publisher": "Apify (FMCSA new-authority feed listing)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-3-E4",
+     "url": "https://apify.com/jobito/fmcsa-new-authority-feed",
+     "quote": "from $20.00 / 1,000 carrier lead delivereds",
+     "kind": "incumbent_price",
+     "publisher": "Apify (FMCSA new-authority feed listing)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-3-E5",
+     "url": "https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business",
+     "quote": "The law makes no exception for business-to-business email.",
+     "kind": "constraint",
+     "publisher": "US Federal Trade Commission",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-3-E6",
+     "url": "https://outgo.com/blog/get-paid-with-the-outgo-affiliate-partnership-program",
+     "quote": "All referrals must submit at least 5 invoices within 60 days to qualify.",
+     "kind": "constraint",
+     "publisher": "Outgo (a DAT company)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-3-E7",
+     "url": "https://beancount.io/blog/2026/08/13/state-commercial-financing-disclosure-laws-2026-guide",
+     "quote": "Several states impose disclosure duties on brokers who arrange financing, not just funders.",
+     "kind": "constraint",
+     "publisher": "Beancount.io",
+     "date": "2026-08-13",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-3-E8",
+     "url": "https://www.bobtail.com/blog/trucking-factoring-cost/",
+     "quote": "most trucking companies pay a factoring fee between 1% and 5% per invoice",
+     "kind": "other",
+     "publisher": "Bobtail",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-3-E9",
+     "url": "https://www.fmcsa.dot.gov/registration/fmcsa-data-dissemination-program",
+     "quote": "shares the FMCSA regulated entity census and safety performance information at no charge to the public",
+     "kind": "other",
+     "publisher": "US FMCSA",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-3-E10",
+     "url": "https://outgo.com/blog/get-paid-with-the-outgo-affiliate-partnership-program",
+     "quote": "It’s a great way for associations, brokers, and dispatchers to earn more income by",
+     "kind": "other",
+     "publisher": "Outgo (a DAT company)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 5,
+    "distribution_advantage": 2,
+    "defensibility": 1,
+    "absolute_gross_profit_potential": 4,
+    "willingness_to_pay": 6,
+    "repeat_ltv_potential": 5,
+    "competition_adjusted_gap": 2,
+    "market_depth": 6,
+    "end_to_end_automation": 6,
+    "capital_risk": 8,
+    "owner_time_support": 6
+   },
+   "componentReasons": {
+    "entrant_edge": "No edge: the carrier data is free from the regulator, a ready-made feed costs $20 per 1,000 records and the bounties are open to any referrer (AFF-3-E1, AFF-3-E4, AFF-3-E9).",
+    "customer_problem_or_value": "New carriers genuinely need cash flow, but they can apply to the same factoring companies directly at no cost, so the referrer adds little (AFF-3-E3, AFF-3-E2).",
+    "distribution_advantage": "The entrant has no channel beyond cold outreach that every factoring sales team can run from the same data (AFF-3-E3, AFF-3-E5).",
+    "defensibility": "Nothing proprietary accumulates; the data, programmes and outreach methods are public (AFF-3-E9, AFF-3-E10).",
+    "absolute_gross_profit_potential": "A $500-per-truck bounty (up to $2,500 per carrier) or 15% of fees could add up, but only at carrier volumes with no sourced conversion rate (AFF-3-E1, AFF-3-E2).",
+    "willingness_to_pay": "Two factoring companies publish what they pay referrers, so someone demonstrably pays, subject to the carrier qualifying (AFF-3-E1, AFF-3-E2, AFF-3-E6).",
+    "repeat_ltv_potential": "Summar pays 15% on every load and Outgo offers 10% for the life of the account, which recurs while the carrier keeps factoring (AFF-3-E2, AFF-3-E1).",
+    "competition_adjusted_gap": "Factoring sales teams are a named user of the same new-authority feed, so new carriers are already a contested lead source (AFF-3-E3).",
+    "market_depth": "The FMCSA publishes data on all registered carriers and factoring fees of 1-5% per invoice make each active carrier worth a recurring amount (AFF-3-E8, AFF-3-E9).",
+    "end_to_end_automation": "Lead sourcing, email outreach and partner-link tracking can be mostly automated, though qualification and replies need a human (AFF-3-E4).",
+    "capital_risk": "Cash outlay is small (data at $20 per 1,000 records, email tooling and a legal check), though compliance fines are per email (AFF-3-E4, AFF-3-E5).",
+    "owner_time_support": "After setup the pipeline needs periodic monitoring and reply handling, a few hours a week (AFF-3-E4)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "AFF-3-E5: CAN-SPAM covers business-to-business email with no exception, so each message needs an opt-out and a valid postal address; the FTC quotes penalties of up to $53,088 per violating email.",
+    "AFF-3-E7: the article says several states impose disclosure duties on brokers who arrange financing and lists factoring among covered transactions, and says Florida and Georgia add registration or notification; whether a referral-only partner is a covered broker is unverified.",
+    "AFF-3-E9: the FMCSA page says the data is shared at no charge but states no rule for solicitation use; phone and text outreach rules (TCPA, state telemarketing) were not read and are unverified.",
+    "AFF-3-E6: Outgo pays only when the referred carrier submits at least 5 invoices within 60 days; programme terms are the factoring company's to change (no contract was read)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "All volume inputs are assumptions: 36,000 compliant cold emails a year to new carriers, 12 carriers qualifying (about 0.033%), average payout $750 (1.5 trucks x the $500 per-truck bounty, AFF-3-E1) = $9,000. Cost $3,220 (data $720 at $20 per 1,000, email tooling and domains $1,500, legal review $1,000). Base about +$5,780. Pessimistic (price x0.8, volume x0.5, cost x1.5): $3,600 revenue vs $4,830 cost, about -$1,230."
+    },
+    "killReasons": [
+     {
+      "reason": "No exclusive edge: the same free regulator data, a $20-per-1,000 ready-made feed and the same programme terms are open to every competitor, including factoring sales teams that are a named user of the feed.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "AFF-3-E3,AFF-3-E4,AFF-3-E9"
+     },
+     {
+      "reason": "Conversion from cold outreach to a qualified carrier (5 invoices in 60 days) is unobserved, and the pessimistic case is negative, so the first-year result rests on an unsourced assumption.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "AFF-3-E6"
+     },
+     {
+      "reason": "Outreach carries per-email CAN-SPAM exposure and possible state broker disclosure or registration duties, and the programme owner can change terms at will.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "AFF-3-E5,AFF-3-E7"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Published bounties are real (Outgo $500 per truck up to $2,500, Summar 15% per load) and lead data is nearly free, which is exactly why there is no edge: any dispatcher, rival referrer or the factoring companies' own sales teams use the same feed and terms. The open question is the cold-outreach conversion rate, which public pages cannot settle."
+  },
+  {
+   "id": "AFF-4",
+   "name": "Niche shopping-assistant Chrome extension (price-drop alerts or coupon finder) earning affiliate commission on user-initiated purchases",
+   "family": "affiliate_or_referral",
+   "buyer": "Online shoppers who install the extension free; the entrant is paid by retailers through affiliate programmes when a shopper buys after a user-initiated action",
+   "pain": "Shoppers want price-drop alerts and discounts, and free extensions already fund themselves from affiliate commissions, but store rules and the largest programme's terms restrict how affiliate links may be attached.",
+   "wedge": "Publish a niche shopping extension in the Chrome Web Store, describe the affiliate programme on its listing, and attach affiliate links only after a user action that delivers a discount, cashback or price alert.",
+   "referenceEntrant": {
+    "startupCashUsd": 800,
+    "daysToFirstRevenue": 120,
+    "ownerHoursPerWeek": 12
+   },
+   "entrantEdge": {
+    "type": "niche_focus",
+    "status": "none",
+    "statement": "Tried: a niche shopping extension discovered through the Chrome Web Store's own search. No evidence was found that the store sends installs to newcomers, free incumbents with millions of members already do price tracking, and nothing accumulates that a rival cannot copy.",
+    "evidenceIds": [
+     "AFF-4-E5",
+     "AFF-4-E7",
+     "AFF-4-E8"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "PayPal Honey (free browser extension with Droplist price tracking; 17M+ members claimed on its Firefox listing)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://addons.mozilla.org/firefox/addon/honey",
+      "evidenceRef": "AFF-4-E5",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "CamelCamelCamel (free Amazon price-history tracker with price-drop emails and a Camelizer extension)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://ecomcircles.com/blog/how-to-use-camelcamelcamel/",
+      "evidenceRef": "AFF-4-E8",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Keepa extension (price-history charts and price watches; the Firefox listing says 'No account required to start' and states no price)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://addons.mozilla.org/mn/firefox/addon/keepa",
+      "evidenceRef": "AFF-4-E10",
+      "metrics": {
+       "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 0,
+    "falsifier": "Free incumbents cost the shopper $0, as would the entrant, so price and features are no edge. An edge would exist only if a niche (a retailer or product class) had no price-tracking extension and a store search term demonstrably sent installs to new extensions; neither was verified."
+   },
+   "evidence": [
+    {
+     "id": "AFF-4-E1",
+     "url": "https://developer.chrome.com/docs/webstore/program-policies/affiliate-ads",
+     "quote": "Affiliate links, codes, or cookies must only be included when the extension provides a direct and transparent user benefit",
+     "kind": "constraint",
+     "publisher": "Chrome Web Store program policies (Google)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-4-E2",
+     "url": "https://developer.chrome.com/docs/webstore/program-policies/affiliate-ads",
+     "quote": "It is not permitted to inject affiliate links without related user action",
+     "kind": "constraint",
+     "publisher": "Chrome Web Store program policies (Google)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-4-E3",
+     "url": "https://hellopartner.com/google-introduces-new-rules-for-affiliate-browser-extensions/",
+     "quote": "the enforcement of this policy will be actioned from June 10th 2025.",
+     "kind": "constraint",
+     "publisher": "Hello Partner",
+     "date": "2025-03-12",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-4-E4",
+     "url": "https://affiliate-program.amazon.com/gp/associates/help/operating/participation/",
+     "quote": "any client-side software application (e.g., a browser plug-in, helper object, toolbar, extension, component",
+     "kind": "constraint",
+     "publisher": "Amazon Associates Program",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-4-E5",
+     "url": "https://www.makingsenseofcents.com/2024/02/honey-review.html",
+     "quote": "Adding Honey to your browser is completely free.",
+     "kind": "incumbent_price",
+     "publisher": "Making Sense of Cents",
+     "date": "2024-02",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-4-E6",
+     "url": "https://www.makingsenseofcents.com/2024/02/honey-review.html",
+     "quote": "PayPal Honey makes money in ways such as through affiliate commissions",
+     "kind": "demand",
+     "publisher": "Making Sense of Cents",
+     "date": "2024-02",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-4-E7",
+     "url": "https://addons.mozilla.org/firefox/addon/honey",
+     "quote": "Join 17M+ members using PayPal Honey to find deals, earn rewards, and compare prices while you shop.",
+     "kind": "other",
+     "publisher": "Mozilla Add-ons (PayPal Honey listing)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-4-E8",
+     "url": "https://ecomcircles.com/blog/how-to-use-camelcamelcamel/",
+     "quote": "CamelCamelCamel is a free Amazon price history tracker.",
+     "kind": "incumbent_price",
+     "publisher": "EcomCircles",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-4-E9",
+     "url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+     "quote": "You should disclose your relationship to the retailer clearly and conspicuously on your site",
+     "kind": "constraint",
+     "publisher": "US Federal Trade Commission",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-4-E10",
+     "url": "https://addons.mozilla.org/mn/firefox/addon/keepa",
+     "quote": "No account required to start.",
+     "kind": "other",
+     "publisher": "Mozilla Add-ons (Keepa listing)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 3,
+    "distribution_advantage": 2,
+    "defensibility": 1,
+    "absolute_gross_profit_potential": 2,
+    "willingness_to_pay": 2,
+    "repeat_ltv_potential": 4,
+    "competition_adjusted_gap": 1,
+    "market_depth": 5,
+    "end_to_end_automation": 7,
+    "capital_risk": 8,
+    "owner_time_support": 5
+   },
+   "componentReasons": {
+    "entrant_edge": "No edge: free incumbents already cover price tracking and nothing about a new extension is exclusive (AFF-4-E5, AFF-4-E8).",
+    "customer_problem_or_value": "Shoppers do want price-drop alerts, but two free tools already provide them (AFF-4-E5, AFF-4-E8).",
+    "distribution_advantage": "No evidence was found that the Chrome Web Store sends installs to new extensions, while Honey claims 17M+ members (AFF-4-E7).",
+    "defensibility": "Extension code and affiliate links are trivially copied, and store policy can remove any extension (AFF-4-E3).",
+    "absolute_gross_profit_potential": "Commission on user-initiated purchases from a small install base is likely to be a few hundred to a few thousand dollars a year on the stated assumptions (AFF-4-E6).",
+    "willingness_to_pay": "Shoppers pay nothing; retailers pay commission only on conversions, and Honey's model shows it works only at scale (AFF-4-E5, AFF-4-E6).",
+    "repeat_ltv_potential": "Installed users generate repeat purchases, but retention of a niche extension is unevidenced (AFF-4-E6).",
+    "competition_adjusted_gap": "Free tools with millions of users cover the use case, leaving no gap (AFF-4-E7, AFF-4-E8).",
+    "market_depth": "Online shopping is large, but programme rules cut the addressable retailers, and the largest programme bars its links in extensions (AFF-4-E4).",
+    "end_to_end_automation": "Once published, an extension runs without operator involvement apart from store compliance and link maintenance (AFF-4-E1).",
+    "capital_risk": "Cash outlay is minimal, but store removal or programme termination would end revenue (AFF-4-E3, AFF-4-E4).",
+    "owner_time_support": "Build and store-review upkeep need some ongoing engineering time (AFF-4-E1)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "AFF-4-E1/E2/E3: the Chrome Web Store allows affiliate links in extensions only with a direct and transparent user benefit, a prominent description on the listing and a related user action before each link; injection without user action is prohibited and the policy has been enforced since 10 June 2025.",
+    "AFF-4-E4: Amazon's participation requirements bar using its Special Links in client-side software including browser plug-ins and extensions, so the largest affiliate programme is unavailable for this wedge (other programmes' extension rules were not read).",
+    "AFF-4-E9: the FTC says an affiliate relationship should be disclosed clearly and conspicuously, so the extension needs a clear disclosure in addition to the store-listing description; privacy-policy obligations for a browser extension were not researched (unverified)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "All inputs are assumptions: average 3,000 active users over the year, 1.5% of users buying through an affiliate link each month, $60 average order, 4% commission = about $1,296 revenue; cost about $545 (hosting $240, store account and privacy policy about $300, misc). Base about +$751. Pessimistic (price x0.8, volume x0.5, cost x1.5): $518 revenue vs $818 cost, about -$300. No input is sourced."
+    },
+    "killReasons": [
+     {
+      "reason": "Free incumbents cover the wedge: Honey (17M+ members claimed, Droplist price tracking) and CamelCamelCamel are free, and CamelCamelCamel and Honey are themselves funded by affiliate commissions.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "AFF-4-E5,AFF-4-E7,AFF-4-E8"
+     },
+     {
+      "reason": "Programme and store rules restrict the model: Amazon bars its Special Links in browser extensions, and the Chrome Web Store requires a direct user benefit and a user action before each affiliate link.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "AFF-4-E1,AFF-4-E2,AFF-4-E4"
+     },
+     {
+      "reason": "No evidence that the store sends installs to newcomers; distribution for a stranger is unproven.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "AFF-4-E7"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Affiliate extensions are lawful only with a transparent user benefit and a user action per link, Amazon forbids its links in extensions, and free incumbents (Honey, CamelCamelCamel, Keepa) already cover price tracking with far larger audiences; no structural edge or evidenced newcomer distribution."
+  },
+  {
+   "id": "AFF-5",
+   "name": "Small merchant-services residual portfolio bought from an exiting sales agent (processor-approved assignment of recurring card-processing residuals)",
+   "family": "affiliate_or_referral",
+   "buyer": "Small card-accepting merchants who already process through an ISO or processor; the party that pays the entrant is the processor, which pays a monthly residual on each merchant's card volume",
+   "pain": "A residual book built from zero takes years of merchant selling; buying an existing book gives residuals from day one, but only if the processor consents to the assignment, the merchants stay, and the processor does not cut the split.",
+   "wedge": "Buy a statement-verified portfolio of roughly $400-$600 a month in net residuals for about $10,000, obtain the processor's written consent to assign the residual rights, and collect the monthly residuals.",
+   "referenceEntrant": {
+    "startupCashUsd": 10000,
+    "daysToFirstRevenue": 60,
+    "ownerHoursPerWeek": 4
+   },
+   "entrantEdge": {
+    "type": "acquirable_owned_audience_or_partner_channel",
+    "status": "claimed",
+    "statement": "What is exclusive is the acquired stream: existing merchant relationships and processing agreements with provable monthly statements, which a competitor cannot replicate without selling to the same merchants. Claimed only: the assignment depends on the ISO or agent agreement and processor consent, every listing read is far larger than this budget, acquirers can cut agents out of residuals, and no lot this small was found.",
+    "evidenceIds": [
+     "AFF-5-E3",
+     "AFF-5-E4",
+     "AFF-5-E9"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Become a referral partner of a processor and earn revenue on merchants the entrant brings in (Helcim: 'Earn revenue on every merchant you refer who starts processing with us'; time to first residual is an estimate)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.helcim.com/affiliate-partners/",
+      "evidenceRef": "AFF-5-E8",
+      "metrics": {
+       "cycle_time": 180
+      }
+     },
+     {
+      "label": "Sign as a sales agent with an ISO/MSP and build a book from zero (Tidal Commerce example: $70.25 a month in residuals from a merchant processing $15,000 a month; time estimate unsourced)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://tidalcommerce.com/learn/become-a-credit-card-processing-agent",
+      "evidenceRef": "AFF-5-E5",
+      "metrics": {
+       "cycle_time": 180
+      }
+     },
+     {
+      "label": "Buy a larger brokered portfolio at 20-40x monthly net residuals (derived: 20 x $500 a month, amortised over 36 months)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 278,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.ctacquisitions.com/sell-your-business/payment-processing/",
+      "evidenceRef": "AFF-5-E1",
+      "metrics": {
+       "cycle_time": 60
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cycle_time",
+    "direction": "lower_is_better",
+    "incumbentValue": 60,
+    "entrantValue": 60,
+    "falsifier": "No advantage over buying a larger brokered portfolio on time to first residual, and the entrant's 60-day figure is an assumption. The edge is disproved if no seller of a stream this small exists, if the processor refuses or conditions consent, or if the merchants' volume or the split falls after assignment."
+   },
+   "evidence": [
+    {
+     "id": "AFF-5-E1",
+     "url": "https://www.ctacquisitions.com/sell-your-business/payment-processing/",
+     "quote": "and is valued on a multiple of monthly net residuals, typically 20x to 40x.",
+     "kind": "incumbent_price",
+     "publisher": "CT Acquisitions (buyer-side marketing page)",
+     "date": "2026",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-5-E2",
+     "url": "https://www.ctacquisitions.com/sell-your-business/payment-processing/",
+     "quote": "Annual attrition above 18% triggers material discount; under 12% with documented merchant tenure",
+     "kind": "other",
+     "publisher": "CT Acquisitions (buyer-side marketing page)",
+     "date": "2026",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-5-E3",
+     "url": "https://www.ctacquisitions.com/sell-your-business/payment-processing/",
+     "quote": "Your ISO or agent agreement decides whether the residuals can transfer and whether the processor must approve the buyer.",
+     "kind": "constraint",
+     "publisher": "CT Acquisitions (buyer-side marketing page)",
+     "date": "2026",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-5-E4",
+     "url": "https://greensheet.com/emagazine&article_id=603",
+     "quote": "Most processors will agree to some kind of permission to effect an assignment",
+     "kind": "constraint",
+     "publisher": "The Green Sheet (article 'Portfolio sale pitfalls')",
+     "date": "2008-02-02",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-5-E5",
+     "url": "https://tidalcommerce.com/learn/become-a-credit-card-processing-agent",
+     "quote": "$70.25/month in residuals",
+     "kind": "incumbent_price",
+     "publisher": "Tidal Commerce",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-5-E6",
+     "url": "https://www.digitaltransactions.net/magazine_articles/splitting-the-difference/",
+     "quote": "could effectively cut the agent out of the mix",
+     "kind": "constraint",
+     "publisher": "Digital Transactions",
+     "date": "2025-07-01",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-5-E7",
+     "url": "https://www.digitaltransactions.net/magazine_articles/splitting-the-difference/",
+     "quote": "the revenue-share model continues to dominate.",
+     "kind": "demand",
+     "publisher": "Digital Transactions",
+     "date": "2025-07-01",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-5-E8",
+     "url": "https://www.helcim.com/affiliate-partners/",
+     "quote": "Earn revenue on every merchant you refer who starts processing with us.",
+     "kind": "other",
+     "publisher": "Helcim",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "AFF-5-E9",
+     "url": "https://www.bizbuysell.com/business-opportunity/growing-nj-ny-merchant-processing-portfolio-3-599-000-00/2415205",
+     "quote": "Processor Agreement: Agreement and residual rights transfer with sale.",
+     "kind": "demand",
+     "publisher": "BizBuySell (listing 2415205)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 2,
+    "customer_problem_or_value": 3,
+    "distribution_advantage": 2,
+    "defensibility": 3,
+    "absolute_gross_profit_potential": 2,
+    "willingness_to_pay": 4,
+    "repeat_ltv_potential": 6,
+    "competition_adjusted_gap": 2,
+    "market_depth": 3,
+    "end_to_end_automation": 6,
+    "capital_risk": 3,
+    "owner_time_support": 8
+   },
+   "componentReasons": {
+    "entrant_edge": "The acquired residual stream is exclusive in kind, but the transfer needs processor consent and the only listing read is vastly larger than the budget (AFF-5-E3, AFF-5-E9).",
+    "customer_problem_or_value": "Merchants are unaffected by who holds the residuals, so the entrant adds no merchant-facing value and only buys an income stream (AFF-5-E7).",
+    "distribution_advantage": "The entrant gets existing merchants but no way to add new ones, and no source of small lots was found (AFF-5-E1, AFF-5-E9).",
+    "defensibility": "Merchants and processing agreements cannot be copied, but acquirers can cut agents out and attrition above 18% is discounted by buyers (AFF-5-E2, AFF-5-E6).",
+    "absolute_gross_profit_potential": "At 20x, $10,000 buys about $500 a month, which is about six to seven merchants of the $70.25-a-month example (AFF-5-E1, AFF-5-E5).",
+    "willingness_to_pay": "Buyers pay 20-40x monthly residuals and revenue sharing is the dominant agent pay model, so residuals are real money for someone (AFF-5-E1, AFF-5-E7).",
+    "repeat_ltv_potential": "Residuals recur monthly for as long as merchants keep processing, which is the model's strongest feature (AFF-5-E7, AFF-5-E5).",
+    "competition_adjusted_gap": "Brokers and acquirers already price portfolios by multiple and by attrition, leaving no discount for a small stranger (AFF-5-E1, AFF-5-E2).",
+    "market_depth": "Brokered and listed portfolios exist, but the only one read is $720,000 a year of net profit, nowhere near this budget (AFF-5-E9).",
+    "end_to_end_automation": "Residual statements arrive monthly and need only reconciliation, with no merchant service duties if the processor services the accounts (AFF-5-E3).",
+    "capital_risk": "The full $10,000 buys a small concentrated stream whose transfer depends on a counterparty and whose payback is about 22 months or more (AFF-5-E3, AFF-5-E6).",
+    "owner_time_support": "A purchased passive stream needs very little owner time (AFF-5-E5)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "AFF-5-E3/E4: whether residuals can be assigned depends on the ISO or agent agreement; processors usually consent in some form but the process can be slow and may carry exit fees (2008 source, dated).",
+    "AFF-5-E6: larger processors are reducing compensation and acquisitions can cut agents out of residuals; the purchase does not protect the buyer from a unilateral change by the processor.",
+    "Whether the buyer must be registered as an ISO or sales agent with a sponsor bank and the card networks (Tidal describes itself as a registered ISO/MSP of a bank) and any state rules for selling payment services were not verified."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Base: $10,000 buys about $500/month in residuals (20x, bottom of the 20-40x quoted range, AFF-5-E1): $6,000 a year less roughly 9% average attrition drag (assumption from the 18% discount threshold, AFF-5-E2) = about $5,460; cost $10,000 purchase plus $1,300 legal, assignment and accounting (assumption) = $11,300, so about -$5,840 and a payback of about 22-25 months. Pessimistic (residual x0.8, volume x0.5, cost x1.5): $2,400 revenue vs $11,950 cost, about -$9,550 (+$450 before the purchase)."
+    },
+    "killReasons": [
+     {
+      "reason": "Capital payback is about 22-25 months at the quoted 20x multiple and the pessimistic case loses about $9,550 in year one; $10,000 buys only about six or seven merchants' residuals, a concentrated stream.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "AFF-5-E1,AFF-5-E5"
+     },
+     {
+      "reason": "The asset is controlled by a counterparty: transfer depends on the ISO or agent agreement and processor approval, and acquirers can cut agents out of residuals while larger processors cut compensation.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "AFF-5-E3,AFF-5-E4,AFF-5-E6"
+     },
+     {
+      "reason": "No seller or marketplace for a stream this small was found; the only listing read is about $720,000 a year of net profit, so availability at this budget is unverified.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "AFF-5-E9"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Residuals are recurring and portfolios trade at 20-40x monthly residuals, but $10,000 buys only about $500 a month (about 22-25 month payback, negative in the pessimistic case), the stream is controlled by processor consent and unilateral split changes, and no small-lot market was found."
+  }
+ ]
+}

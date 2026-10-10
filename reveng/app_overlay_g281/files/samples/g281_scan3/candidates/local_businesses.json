@@ -1,0 +1,1200 @@
+{
+ "candidates": [
+  {
+   "id": "LOC-1",
+   "name": "Owner-operated small pool-service route bought from an exiting operator (under 25 accounts, seller note, 90-day retention holdback)",
+   "family": "local_businesses",
+   "buyer": "Homeowners with residential pools who pay a monthly service fee (median stated billing about $153 per pool per month), reached by buying an existing monthly account list from a seller who is exiting",
+   "pain": "A new pool-service business starts with zero recurring accounts, and the market sells existing accounts at roughly 10-12 times monthly billing (about $1,850 per account); the smallest routes already ask a median $33K and seller financing is rare, so a low-cash stranger cannot buy recurring revenue quickly",
+   "wedge": "Buy a 10-25 account residential pool route through a broker or listing site with a 20-30% down payment, a seller note and a 90-day retention holdback, then service the pools personally each week",
+   "referenceEntrant": {
+    "startupCashUsd": 10000,
+    "daysToFirstRevenue": 90,
+    "ownerHoursPerWeek": 15
+   },
+   "entrantEdge": {
+    "type": "acquirable_owned_audience_or_partner_channel",
+    "status": "claimed",
+    "statement": "What is exclusive is the transferred monthly account list, which is recurring billing that exists today. The edge is weak: accounts are month-to-month, buyers plan for 5-20% customer loss in the first 90 days, the seller can be bound only by non-compete terms, any rival can bid on the same listing, and the price (about 12x monthly billing, 11 months to recoup each account) already capitalizes the asset, so nothing accumulates beyond what cash buys.",
+    "evidenceIds": [
+     "LOC1-E1",
+     "LOC1-E3",
+     "LOC1-E6"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Existing local pool-service companies at the median stated billing of $153 per pool per month",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 153,
+      "coversWedge": "full",
+      "sourceLocator": "https://bigideasdb.com/buying-a-pool-route",
+      "evidenceRef": "LOC1-E1",
+      "metrics": {
+       "cash_cost": 153
+      }
+     },
+     {
+      "label": "Lower-priced incumbents at the industry average of $75-$125 per residential account per month (midpoint shown)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 100,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.pooldial.com/resources/articles/general/how-to-buy-a-pool-route",
+      "evidenceRef": "LOC1-E10",
+      "metrics": {
+       "cash_cost": 100
+      }
+     },
+     {
+      "label": "Homeowner does the work: chemicals only, about $23 per month (derived: chemicals run 12-18% of revenue, applied to $153; labour is the homeowner's own time)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 23,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.pooldial.com/resources/articles/general/how-to-buy-a-pool-route",
+      "evidenceRef": "LOC1-E7",
+      "metrics": {
+       "cash_cost": 23
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 23,
+    "entrantValue": 153,
+    "falsifier": "cash_cost is the monthly bill of a pool owner. The entrant would sell the same weekly service at market price (about $153 median billing, $75-$125 average) while the cheapest alternative is the homeowner's own chemicals (about $23), so there is no price or quality advantage by construction. The only possible edge is buying accounts below the market multiple; it is falsified if listings under 25 accounts cannot be bought at under 8x monthly billing with at most 30% cash down and a seller note (check about 20 current small-route listings)."
+   },
+   "evidence": [
+    {
+     "id": "LOC1-E1",
+     "url": "https://bigideasdb.com/buying-a-pool-route",
+     "quote": "The median US route listing asks $1,850 per account on $153 of monthly billing per account",
+     "kind": "incumbent_price",
+     "publisher": "Big Ideas DB (Main Street Index research)",
+     "date": "2026-10-05",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC1-E2",
+     "url": "https://pooldial.com/resources/articles/business/pool-route-sale-prices-2026",
+     "quote": "Nationally, the median route had 50 accounts, sold for $70,800, and priced at 10 months of recurring service revenue.",
+     "kind": "demand",
+     "publisher": "Pooldial (pool-route marketplace and valuation site)",
+     "date": "2026",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC1-E3",
+     "url": "https://bigideasdb.com/buying-a-pool-route",
+     "quote": "Most pool routes are bought with cash: only 8 of 240+ US route listings offer seller financing",
+     "kind": "constraint",
+     "publisher": "Big Ideas DB (Main Street Index research)",
+     "date": "2026-10-05",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC1-E4",
+     "url": "https://bigideasdb.com/buying-a-pool-route",
+     "quote": "the smallest routes (under 25 accounts) ask $33K.",
+     "kind": "constraint",
+     "publisher": "Big Ideas DB (Main Street Index research)",
+     "date": "2026-10-05",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC1-E5",
+     "url": "https://www.pooldial.com/resources/articles/general/how-to-buy-a-pool-route",
+     "quote": "Buyers typically pay a down payment of 20-30% of the purchase price at closing.",
+     "kind": "constraint",
+     "publisher": "Pooldial (pool-route marketplace and valuation site)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC1-E6",
+     "url": "https://www.getskimmer.com/blog/how-to-buy-a-pool-route-101",
+     "quote": "Buyers often plan for 5–20% customer loss in the first 90 days, depending on how rates and expectations align.",
+     "kind": "constraint",
+     "publisher": "Skimmer (pool-service software vendor)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC1-E7",
+     "url": "https://www.pooldial.com/resources/articles/general/how-to-buy-a-pool-route",
+     "quote": "Chemicals typically run 12-18% of revenue, vehicle fuel and maintenance account for 10-15% of revenue",
+     "kind": "other",
+     "publisher": "Pooldial (pool-route marketplace and valuation site)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC1-E8",
+     "url": "https://bigideasdb.com/buying-a-pool-route",
+     "quote": "any repair or equipment replacement needs a pool and spa contractor licence",
+     "kind": "constraint",
+     "publisher": "Big Ideas DB (Main Street Index research)",
+     "date": "2026-10-05",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC1-E9",
+     "url": "https://bigideasdb.com/buying-a-pool-route",
+     "quote": "About 30 minutes per pool and 15 minutes travel per stop.",
+     "kind": "other",
+     "publisher": "Big Ideas DB (Main Street Index research)",
+     "date": "2026-10-05",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC1-E10",
+     "url": "https://www.pooldial.com/resources/articles/general/how-to-buy-a-pool-route",
+     "quote": "the industry average of $75-$125 per residential account",
+     "kind": "incumbent_price",
+     "publisher": "Pooldial (pool-route marketplace and valuation site)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC1-E11",
+     "url": "https://www.pooldial.com/resources/articles/general/how-to-buy-a-pool-route",
+     "quote": "free buyer matching services with no upfront fees",
+     "kind": "other",
+     "publisher": "Pooldial (pool-route marketplace and valuation site)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 2,
+    "customer_problem_or_value": 5,
+    "distribution_advantage": 2,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 6,
+    "repeat_ltv_potential": 6,
+    "competition_adjusted_gap": 2,
+    "market_depth": 4,
+    "end_to_end_automation": 1,
+    "capital_risk": 3,
+    "owner_time_support": 2
+   },
+   "componentReasons": {
+    "entrant_edge": "The only claimed edge is a purchased month-to-month account list that any cash buyer can also bid for and whose price already capitalizes it (LOC1-E1, LOC1-E6).",
+    "customer_problem_or_value": "Pool owners demonstrably pay a recurring monthly fee for weekly service, with median billing of $153 per pool (LOC1-E1, LOC1-E2).",
+    "distribution_advantage": "Buying accounts is a way to obtain customers without an audience, but it is open to anyone with cash and brokers match buyers for free, so it is not a privileged channel (LOC1-E11, LOC1-E5).",
+    "defensibility": "Customers can leave at any time and 5-20% typically do within 90 days, and the seller may keep working nearby unless a non-compete holds (LOC1-E6).",
+    "absolute_gross_profit_potential": "A roughly 18-account route bills about $2,750 a month, leaving about $1,800 before debt service and nothing near a full income for a 15-hour week (LOC1-E1, LOC1-E7).",
+    "willingness_to_pay": "Median stated billing of $153 per pool per month and a 10-12x monthly-billing market multiple show customers and buyers pay (LOC1-E1, LOC1-E2).",
+    "repeat_ltv_potential": "Monthly recurring billing is the core appeal, and each account must stay about 11 months just to repay its price (LOC1-E1, LOC1-E6).",
+    "competition_adjusted_gap": "Incumbents already serve the same homeowners at $75-$153 and the buyer pays the market multiple for them, leaving no measured gap (LOC1-E1, LOC1-E10).",
+    "market_depth": "More than 240 route listings exist nationally, but the page counts are concentrated in a few Sun Belt states, and the model must work in the US generally (LOC1-E3).",
+    "end_to_end_automation": "Weekly chemical balancing and cleaning is physical work done pool by pool at about 45 minutes including travel, so nothing is automatable (LOC1-E9).",
+    "capital_risk": "A median $33K small-route ask against $10K of cash, with a 20-30% down payment and seller notes on only about 3% of listings, puts a large debt on a thin base (LOC1-E3, LOC1-E4, LOC1-E5).",
+    "owner_time_support": "About 45 minutes per pool means roughly 14 hours a week for 18 pools, all of it the buyer's own labour, plus any repair licence limits (LOC1-E8, LOC1-E9)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "LOC1-E8: repairs and equipment replacement need a pool and spa contractor licence (the page cites Florida); routine chemical service licensing varies by state and was not verified for most states.",
+    "LOC1-E5: seller financing, holdbacks and non-compete or non-solicit terms are contract matters that need a lawyer; the retention guarantee terms are negotiated, not standard (unverified).",
+    "General liability and vehicle insurance are needed per the Pooldial buying guide; premiums were not found and are unverified."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Baseline: 18 accounts (ask about $33K, LOC1-E4) at $153 (LOC1-E1) is $2,754 a month; chemicals and vehicle cost about 27.5% (midpoint of LOC1-E7); insurance and other fixed cost about $200 (assumption) leaves about $1,800 a month. Down payment 20% ($6,600, LOC1-E5), seller note $26,400 over 24 months at 0% (assumption) is $1,100 a month, so about $700 a month net for about 14 hours a week. Pessimistic (price x0.8 = $122, 9 accounts, variable cost x1.5, fixed $300) leaves about $230 before the $1,100 note, so it is negative by about $870 a month."
+    },
+    "killReasons": [
+     {
+      "reason": "Capital and financing: the smallest routes (under 25 accounts) ask a median $33K, a 20-30% down payment is $6.6K-$9.9K before insurance and chemicals, and only 8 of 240+ listings offer seller financing, so a $10K entrant usually cannot close; all-cash it buys only about 5 accounts at $1,850 each.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "LOC1-E4"
+     },
+     {
+      "reason": "No structural edge: the account base is month-to-month, 5-20% leave within 90 days, and the price already capitalizes it, so the buyer is purchasing a job (about $12 per hour of own labour net of the note, about $30 after it) rather than a moat.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "LOC1-E6"
+     },
+     {
+      "reason": "Pessimistic economics are negative once note payments are included (about -$870 a month).",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "LOC1-E1"
+     },
+     {
+      "reason": "Supply is concentrated in a few Sun Belt states (the page counts about 109 Florida, 78 California and 36 Texas listings out of 240+, read through a page summary), so the model does not transfer to the US generally.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "LOC1-E3"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: the smallest routes ask a median $33K with seller financing on about 3% of listings (LOC1-E3, LOC1-E4), the purchased account base is month-to-month with 5-20% early churn and already priced in (LOC1-E1, LOC1-E6), and the buyer ends up doing about 14 hours a week of the pool work for a modest wage. Not verified: current small-route asking prices, state-by-state service licensing."
+  },
+  {
+   "id": "LOC-2",
+   "name": "Used-cooking-oil free-pickup collection route (locked containers, vacuum truck, month-to-month restaurant accounts)",
+   "family": "local_businesses",
+   "buyer": "Restaurants and commercial kitchens that produce spent fryer oil, with renderers, grease brokers and biodiesel producers as the downstream buyers of the collected oil",
+   "pain": "Restaurants must get rid of spent fryer oil (a South Carolina study cited by Advanced Biofuels USA found the average restaurant uses about 44 gallons per week) and prefer free, locked-container pickup; the commodity value is captured by whoever aggregates volume",
+   "wedge": "Offer restaurants free pickup with locked containers on a dense weekly or monthly route and sell the collected oil to a renderer or biodiesel buyer, earning the spread and paying rebates only on high-volume stops",
+   "referenceEntrant": {
+    "startupCashUsd": 80000,
+    "daysToFirstRevenue": 60,
+    "ownerHoursPerWeek": 35
+   },
+   "entrantEdge": {
+    "type": "exclusive_or_difficult_supply_or_access",
+    "status": "none",
+    "statement": "The tested claim is exclusive rights to each restaurant's oil, granted in exchange for free service on low-volume stops. The evidence reads against it: the free-pickup offers read advertise month-to-month terms with no contract and cancel-anytime, hauler registration and the vacuum truck are fixed costs that bind every hauler equally, and incumbents already hold the dense routes, so nothing exclusive or compounding is obtainable by a stranger.",
+    "evidenceIds": [
+     "LOC2-E6",
+     "LOC2-E3"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Incumbent hauler or renderer takes the oil with free pickup, no rebate and no contract (the standard arrangement for most restaurants)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://oilguyz.com/blog/used-cooking-oil-value-yellow-grease-prices-2026",
+      "evidenceRef": "LOC2-E6",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Collector pays the restaurant per gallon (arrangement three of three; applies mainly to high-volume stops)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://advancedbiofuelsusa.info/uploads/old/US-Grease-Collection-Article_9-2-15-FINAL2.pdf",
+      "evidenceRef": "LOC2-E11",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Collector charges the restaurant a flat monthly fee (1997 Spokane example, $30 per month; historical, shown only to document that a pay-to-haul arrangement exists)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 30,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.spokanejournal.com/articles/14298-grease-prices-take-slide",
+      "evidenceRef": "LOC2-E12",
+      "metrics": {
+       "cash_cost": 30
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 0,
+    "falsifier": "cash_cost is the restaurant's monthly cost of oil removal. The status quo is already $0 (free pickup, no contract), so the entrant cannot be cheaper. The edge would be real only if a stranger could lock restaurants into multi-year exclusive agreements that rivals honour; it is falsified by the incumbent offers reading no contract and cancel anytime (LOC2-E6) and by 15-20% yearly account turnover reported by the bookkeeping guide (read through a page summary, not copied verbatim)."
+   },
+   "evidence": [
+    {
+     "id": "LOC2-E1",
+     "url": "https://beancount.io/blog/2026/07/16/used-cooking-oil-collection-business-bookkeeping-guide",
+     "quote": "typically runs $80,000-$150,000 once you include a collection truck",
+     "kind": "constraint",
+     "publisher": "Beancount.io (bookkeeping software blog)",
+     "date": "2026-07-16",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC2-E2",
+     "url": "https://beancount.io/blog/2026/07/16/used-cooking-oil-collection-business-bookkeeping-guide",
+     "quote": "High-volume accounts can net $100-150 in monthly profit per stop",
+     "kind": "incumbent_price",
+     "publisher": "Beancount.io (bookkeeping software blog)",
+     "date": "2026-07-16",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC2-E3",
+     "url": "https://oilguyz.com/blog/yellow-grease-buyer-how-to-sell-used-cooking-oil",
+     "quote": "In California, anyone who transports inedible kitchen grease must be registered with the CDFA as an IKG hauler.",
+     "kind": "constraint",
+     "publisher": "OilGuyz (used-cooking-oil collector, vendor blog)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC2-E4",
+     "url": "https://advancedbiofuelsusa.info/64895-2",
+     "quote": "Oil is usually pumped out using a vacuum truck.",
+     "kind": "constraint",
+     "publisher": "Advanced Biofuels USA (non-profit education site)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC2-E5",
+     "url": "https://advancedbiofuelsusa.info/uploads/old/US-Grease-Collection-Article_9-2-15-FINAL2.pdf",
+     "quote": "Not a lot of data exists on the grease collection industry; one possible reason is the highly competitive nature of the business.",
+     "kind": "other",
+     "publisher": "Advanced Biofuels USA (non-profit education site)",
+     "date": "2015-09",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC2-E6",
+     "url": "https://oilguyz.com/blog/used-cooking-oil-value-yellow-grease-prices-2026",
+     "quote": "free pickup service, month-to-month agreements, no contracts.",
+     "kind": "other",
+     "publisher": "OilGuyz (used-cooking-oil collector, vendor blog)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC2-E7",
+     "url": "https://oilguyz.com/blog/yellow-grease-buyer-how-to-sell-used-cooking-oil",
+     "quote": "The price they can offer you is whatever the commodity market will pay, minus everything it costs them to come get it.",
+     "kind": "demand",
+     "publisher": "OilGuyz (used-cooking-oil collector, vendor blog)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC2-E8",
+     "url": "https://beancount.io/blog/2026/07/16/used-cooking-oil-collection-business-bookkeeping-guide",
+     "quote": "has quietly become one of the most stolen commodities in the food-service supply chain",
+     "kind": "constraint",
+     "publisher": "Beancount.io (bookkeeping software blog)",
+     "date": "2026-07-16",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC2-E9",
+     "url": "https://beancount.io/blog/2026/07/16/used-cooking-oil-collection-business-bookkeeping-guide",
+     "quote": "Lower-volume accounts are frequently serviced for free,",
+     "kind": "other",
+     "publisher": "Beancount.io (bookkeeping software blog)",
+     "date": "2026-07-16",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC2-E10",
+     "url": "https://advancedbiofuelsusa.info/64895-2",
+     "quote": "grease collectors to register with the Georgia Environmental Protection Division or the local governing authority.",
+     "kind": "constraint",
+     "publisher": "Advanced Biofuels USA (non-profit education site)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC2-E11",
+     "url": "https://advancedbiofuelsusa.info/uploads/old/US-Grease-Collection-Article_9-2-15-FINAL2.pdf",
+     "quote": "Pay the restaurant per gallon of oil collected",
+     "kind": "other",
+     "publisher": "Advanced Biofuels USA (non-profit education site)",
+     "date": "2015-09",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC2-E13",
+     "url": "https://advancedbiofuelsusa.info/64895-2",
+     "quote": "the average restaurant uses about 44 gallons per week.",
+     "kind": "demand",
+     "publisher": "Advanced Biofuels USA (non-profit education site)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC2-E12",
+     "url": "https://www.spokanejournal.com/articles/14298-grease-prices-take-slide",
+     "quote": "recently started charging restaurants a flat fee of $30 a month for grease recycling",
+     "kind": "other",
+     "publisher": "Spokane Journal of Business",
+     "date": "1997-02-26",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 0,
+    "customer_problem_or_value": 3,
+    "distribution_advantage": 1,
+    "defensibility": 1,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 2,
+    "repeat_ltv_potential": 5,
+    "competition_adjusted_gap": 1,
+    "market_depth": 5,
+    "end_to_end_automation": 1,
+    "capital_risk": 0,
+    "owner_time_support": 3
+   },
+   "componentReasons": {
+    "entrant_edge": "No exclusive or compounding asset: incumbent offers are free, month-to-month and cancel-anytime (LOC2-E6, LOC2-E9).",
+    "customer_problem_or_value": "Restaurants do need oil removed (about 44 gallons a week on average) but the service is already offered free, so the value to them is near zero beyond convenience (LOC2-E13, LOC2-E6).",
+    "distribution_advantage": "No channel evidence for a stranger to reach 100 accounts; the only route is canvassing against established haulers (LOC2-E5).",
+    "defensibility": "Accounts can cancel anytime and theft of containers or oil is endemic, so nothing protects the route (LOC2-E6, LOC2-E8).",
+    "absolute_gross_profit_potential": "High-volume stops net $100-150 a month but low-volume stops only $15-40 and the guide puts breakeven at 18-24 months (LOC2-E2, LOC2-E9; the $15-40 and 18-24 month figures were read through a page summary).",
+    "willingness_to_pay": "The restaurant pays nothing; the only payer is the downstream commodity buyer at a market-set price (LOC2-E7).",
+    "repeat_ltv_potential": "Pickups recur weekly to monthly, but the bookkeeping guide reports 15-20% yearly account turnover (page summary) and there is no contract lock-in (LOC2-E6).",
+    "competition_adjusted_gap": "The industry is described as highly competitive and incumbents give the service away (LOC2-E5, LOC2-E6).",
+    "market_depth": "Every restaurant produces oil, about 44 gallons a week on average, so the pool of accounts is large (LOC2-E13, LOC2-E7).",
+    "end_to_end_automation": "Pickup requires a driver, a vacuum truck and physical container handling (LOC2-E4).",
+    "capital_risk": "The guide puts startup at $80K-$150K with a truck, an order of magnitude above $10K, plus registration and bonding (LOC2-E1, LOC2-E3).",
+    "owner_time_support": "A route day of 15-40 stops needs the owner or a paid driver on the truck; a hired driver would consume the thin per-stop margin (LOC2-E2, LOC2-E4)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "LOC2-E3: California requires registration with the CDFA as an inedible kitchen grease hauler; a competitor's page claims registration, permits, insurance and bonding cost over $20,000 per year (unverified, marketing claim).",
+    "LOC2-E10: Georgia requires grease collectors to register with its Environmental Protection Division or the local authority; the page says other states and localities regulate too, state by state requirements were not verified.",
+    "LOC2-E8: oil theft is widespread; collecting from a container the restaurant has contracted to another hauler is a legal exposure, and the entrant must secure written container-ownership terms (unverified)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Baseline at about 100 accounts (the guide's breakeven size): 70 low-volume stops at about $27 and 30 high-volume stops at about $125 (midpoints of the guide's ranges; the 70/30 mix is an assumption) is about $5,700 a month contribution before fixed cost; fixed cost is a truck loan of about $1,700 (assumption, $80K over 5 years) plus about $1,700 registration and insurance (competitor claim of over $20,000 a year), leaving about $2,300. Pessimistic (price x0.8, 50 accounts, fixed cost x1.5) is about $2,300 contribution against about $5,100 of fixed cost, so roughly -$2,800 a month, and the ramp from zero accounts takes the 18-24 months the guide cites."
+    },
+    "killReasons": [
+     {
+      "reason": "Capital: the guide puts startup at $80K-$150K including a collection truck, and oil is moved by vacuum truck, against a $10K ceiling.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "LOC2-E1"
+     },
+     {
+      "reason": "No lock-in and no exclusivity: incumbent offers are free, month-to-month and cancel-anytime, so a stranger cannot obtain exclusive access to oil that rivals will not simply offer for free too.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "LOC2-E6"
+     },
+     {
+      "reason": "Per-stop economics are thin ($15-40 for low-volume stops per a page summary) and breakeven needs about 100 accounts over 18-24 months (page summary), which is beyond the 365-day window.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "LOC2-E9"
+     },
+     {
+      "reason": "State hauler registration, bonding and insurance plus widespread oil theft add fixed cost and loss risk.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "LOC2-E3"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: an $80K-$150K truck-based business (LOC2-E1, LOC2-E4) selling a service rivals already give away on month-to-month, cancel-anytime terms (LOC2-E6), with thin per-stop profit and an 18-24 month ramp. Not verified: a current yellow-grease price per pound (no current price was found), state-by-state hauler registration."
+  },
+  {
+   "id": "LOC-3",
+   "name": "Restaurant kitchen-exhaust (hood and duct) cleaning on recurring NFPA 96 cycles, sold on contract with digital service certificates",
+   "family": "local_businesses",
+   "buyer": "Independent restaurants and commercial kitchens that must clean their hood, duct and fan on a code cycle and show proof to the fire marshal and their insurer",
+   "pain": "NFPA 96 sets cleaning cycles from monthly to annual by cooking volume, and failing to keep certified records can bring fire-marshal citations and insurer problems; a duct cannot be cleaned to code by kitchen staff alone, and published prices are $475-$1,100 per hood per cleaning",
+   "wedge": "A certified two-person crew cleans hoods and ducts on a contract cycle (quarterly for most high-volume kitchens), leaves a service certificate with before and after photos, and books the next cycle at the visit",
+   "referenceEntrant": {
+    "startupCashUsd": 9000,
+    "daysToFirstRevenue": 60,
+    "ownerHoursPerWeek": 30
+   },
+   "entrantEdge": {
+    "type": "regulatory_license_intrinsic_to_model",
+    "status": "claimed",
+    "statement": "NFPA 96 calls for cleaning by a trained, qualified and certified company acceptable to the local authority, and most authorities accept IKECA-type certification, so uncertified cleaners are excluded and the cleaning is a mandatory repeat purchase. This is a ticket to compete, not a moat: certification is open to anyone who completes the programme (cost not verified), many incumbents hold it, and no source shows a stranger can win accounts from them. A weak, unproven secondary edge is that the cleaner holds each hood's dated certificate and photo history, which new digital-documentation expectations make more valuable to the restaurant.",
+    "evidenceIds": [
+     "LOC3-E4",
+     "LOC3-E5",
+     "LOC3-E11"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Existing certified hood cleaner with published prices (example: $600 for a medium hood, cleaned quarterly, shown per month)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 200,
+      "coversWedge": "full",
+      "sourceLocator": "https://goldys-sparkle-booking.lovable.app/services/hood",
+      "evidenceRef": "LOC3-E1",
+      "metrics": {
+       "cash_cost": 200
+      }
+     },
+     {
+      "label": "Kitchen staff degrease filters and surfaces in house (basic checks only; duct and certification cannot be done by untrained staff)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://hvacprosales.com/es-419/hvac-pm-checklists/kitchen-exhaust-checklist/",
+      "evidenceRef": "LOC3-E10",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Premium providers for full-service hotel restaurants ($1,200-$3,500 per service, quarterly shown per month at the low end)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 400,
+      "coversWedge": "full",
+      "sourceLocator": "https://oxmaint.com/industries/hospitality/restaurant-exhaust-ventilation-cleaning-schedule",
+      "evidenceRef": "LOC3-E2",
+      "metrics": {
+       "cash_cost": 400
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 200,
+    "falsifier": "cash_cost is the restaurant's monthly bill. In-house staff already cover the basic checks at $0 and certified incumbents publish prices of $475-$1,100 per hood, so the entrant has no price edge by construction. The model is falsified if the entrant cannot sign 10 recurring restaurant accounts within 120 days of quoting at incumbent prices, or if the certification, insurance and equipment cannot be put together for under $10,000 (both unverified here)."
+   },
+   "evidence": [
+    {
+     "id": "LOC3-E1",
+     "url": "https://goldys-sparkle-booking.lovable.app/services/hood",
+     "quote": "Transparent pricing by hood size — starting at $475.",
+     "kind": "incumbent_price",
+     "publisher": "Goldy's Maids (cleaning company, Georgia and Florida)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC3-E2",
+     "url": "https://oxmaint.com/industries/hospitality/restaurant-exhaust-ventilation-cleaning-schedule",
+     "quote": "Professional exhaust duct cleaning for a full-service hotel restaurant typically costs $1,200-$3,500 per service",
+     "kind": "incumbent_price",
+     "publisher": "Oxmaint (compliance software vendor blog)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC3-E3",
+     "url": "https://pyebarkerfs.com/?p=2971",
+     "quote": "NFPA 96 dictates that the majority of commercial hoods should be cleaned on a quarterly basis.",
+     "kind": "demand",
+     "publisher": "Pye-Barker Fire & Safety (FAQ page, domain pyebarkerfs.com)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC3-E4",
+     "url": "https://oxmaint.com/industries/facility-management/commercial-kitchen-hood-exhaust-nfpa96-maintenance",
+     "quote": "In practice, most AHJs require companies certified under ANSI/IKECA C10 or equivalent programmes.",
+     "kind": "constraint",
+     "publisher": "Oxmaint (compliance software vendor blog)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC3-E5",
+     "url": "https://oxmaint.com/industries/facility-management/commercial-kitchen-hood-exhaust-nfpa96-maintenance",
+     "quote": "properly trained, qualified, and certified company acceptable to the AHJ",
+     "kind": "constraint",
+     "publisher": "Oxmaint (compliance software vendor blog)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC3-E6",
+     "url": "https://fireprotectionfinder.com/compliance/nfpa-96",
+     "quote": "Many insurance carriers now require proof of NFPA 96 compliance as a condition of coverage.",
+     "kind": "demand",
+     "publisher": "Fire Protection Finder",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC3-E7",
+     "url": "https://fireprotectionfinder.com/compliance/nfpa-96",
+     "quote": "Many jurisdictions require that the cleaning company provide a certificate of service with before-and-after photographs.",
+     "kind": "constraint",
+     "publisher": "Fire Protection Finder",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC3-E8",
+     "url": "https://cityofdavis.org/home/showpublisheddocument/19194/638496475642370000",
+     "quote": "Exhaust hood cleaning must be performed by trained personnel.",
+     "kind": "constraint",
+     "publisher": "City of Davis, California (kitchen exhaust guidance)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC3-E9",
+     "url": "https://goldys-sparkle-booking.lovable.app/services/hood",
+     "quote": "Systems not cleaned per NFPA 96 schedule are subject to a 1.5× neglected system surcharge.",
+     "kind": "other",
+     "publisher": "Goldy's Maids (cleaning company, Georgia and Florida)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC3-E10",
+     "url": "https://hvacprosales.com/es-419/hvac-pm-checklists/kitchen-exhaust-checklist/",
+     "quote": "full testing, recharge, and certification must be performed by licensed professionals.",
+     "kind": "constraint",
+     "publisher": "HVAC Pro Sales (maintenance checklist page)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC3-E12",
+     "url": "https://pyebarkerfs.com/?p=2971",
+     "quote": "cook top to roof top",
+     "kind": "other",
+     "publisher": "Pye-Barker Fire & Safety (FAQ page, domain pyebarkerfs.com)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC3-E11",
+     "url": "https://oxmaint.com/industries/facility-management/commercial-kitchen-hood-exhaust-nfpa96-maintenance",
+     "quote": "A paper sticker on the hood is no longer sufficient evidence of compliance",
+     "kind": "other",
+     "publisher": "Oxmaint (compliance software vendor blog)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 3,
+    "customer_problem_or_value": 8,
+    "distribution_advantage": 2,
+    "defensibility": 3,
+    "absolute_gross_profit_potential": 6,
+    "willingness_to_pay": 7,
+    "repeat_ltv_potential": 8,
+    "competition_adjusted_gap": 3,
+    "market_depth": 7,
+    "end_to_end_automation": 1,
+    "capital_risk": 6,
+    "owner_time_support": 3
+   },
+   "componentReasons": {
+    "entrant_edge": "Certification is a legal ticket open to anyone who completes it and the cleaner-held record is an unproven secondary edge, so the edge is only claimed (LOC3-E4, LOC3-E5, LOC3-E11).",
+    "customer_problem_or_value": "The cleaning is a code obligation with citations and insurer proof attached to it, not a discretionary purchase (LOC3-E6, LOC3-E7, LOC3-E3).",
+    "distribution_advantage": "No source shows a channel that sends restaurant buyers to a new cleaner; first accounts would come from cold quoting against established firms (LOC3-E1).",
+    "defensibility": "Once a restaurant has a cleaner the cycle repeats, but switching is easy and the certificate history can be handed over (LOC3-E7).",
+    "absolute_gross_profit_potential": "At $475-$1,100 per hood per cleaning and 3-4 hours of work, a modest book of restaurants produces real revenue per labour hour (LOC3-E1, LOC3-E12; the 3-4 hour figure was read through a page summary).",
+    "willingness_to_pay": "Published price lists exist and an overdue-cleaning surcharge shows operators price the obligation (LOC3-E1, LOC3-E9).",
+    "repeat_ltv_potential": "Quarterly cycles for most high-volume hoods make each account a recurring annual contract that exists today (LOC3-E3).",
+    "competition_adjusted_gap": "Local certified cleaners and national fire-safety firms already sell this, and the free alternative covers only basic checks (LOC3-E1, LOC3-E10).",
+    "market_depth": "Every commercial kitchen with a hood needs the cycle, in every state, with local authorities enforcing (LOC3-E8, LOC3-E6).",
+    "end_to_end_automation": "Cleaning ducts and hoods is physical on-site work done at night; only scheduling and certificates could be automated (LOC3-E7).",
+    "capital_risk": "No source gives equipment, certification or insurance costs; the assumed $9K is unverified, but the outlay is small relative to a vending or vehicle business (LOC3-E4).",
+    "owner_time_support": "At about 3.5 hours per visit (page summary of LOC3-E12) and night scheduling the owner is on the crew, and sales time comes on top (LOC3-E12)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "LOC3-E5: NFPA 96 calls for a trained, qualified and certified company acceptable to the authority having jurisdiction; whether an entrant can obtain IKECA or equivalent certification within budget and time is unverified.",
+    "LOC3-E8: a city page requires cleaning by trained personnel and a business licence on file, so local business licensing applies; requirements differ by jurisdiction and were verified for one city only.",
+    "LOC3-E10: fire-suppression system inspection is a separate licensed activity and is not part of this wedge; hood cleaners must not touch the suppression system without that licence (unverified for most states)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Price and visit time are sourced (LOC3-E1 medium hood $600, 3-4 hours per cleaning from LOC3-E12's source page, read through a summary); cost inputs are ALL assumptions: two-person crew 3.5 hours each at $25 per hour plus $60 consumables and fuel is $235 per visit; fixed cost $9,000 a year (insurance, equipment wear, marketing, renewals). Baseline 40 restaurants x 3 visits a year (ASSUMED mix of monthly, quarterly, semiannual and annual cycles) x $600 is $72,000 revenue against $28,200 variable and $9,000 fixed, about $34,800 profit. Pessimistic (price $480, 20 restaurants = 60 visits, cost x1.5) is $28,800 revenue against $21,150 variable and $13,500 fixed, about -$5,800 if both crew members are paid; it is about +$2,000 only if the owner is one unpaid crew member. Cost inputs are unverified, so this is a reading of structure, not a forecast."
+    },
+    "killReasons": [
+     {
+      "reason": "No structural edge found: certification is open to anyone who completes it and incumbents already hold it; the recurring cycle is demand, which every incumbent shares.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "LOC3-E4"
+     },
+     {
+      "reason": "First-customer channel unevidenced: no source shows how a stranger without relationships wins restaurants that already have a cleaner.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "LOC3-E1"
+     },
+     {
+      "reason": "Pessimistic economics are negative when both crew members are paid and cost inputs are unsourced assumptions.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "LOC3-E3"
+     }
+    ]
+   },
+   "researcherVerdict": "uncertain",
+   "verdictReason": "Uncertain, leaning to kill: the strongest demand evidence in this family (code-mandated recurring cycle with insurer and fire-marshal proof, LOC3-E3, LOC3-E6, LOC3-E7) and published prices of $475-$1,100 per hood (LOC3-E1), but no structural edge for a stranger (certification is open, LOC3-E4). Open questions public pages did not settle: certification, insurance and equipment cost for a new firm, and whether strangers win accounts from incumbents. The price source is a small cleaning company's booking page and the other cost source is a vendor blog."
+  },
+  {
+   "id": "LOC-4",
+   "name": "Leveraged 50-account pool-service route (SBA or seller-note financed) run by hired technicians so the entrant does not work the pools",
+   "family": "local_businesses",
+   "buyer": "Homeowners with residential pools who pay about $141 per pool per month, served through an existing route bought with leverage and staffed by paid technicians",
+   "pain": "A route of about 50 accounts is the market median and is large enough to be worth running, but it costs about $70,800 and needs about 37 technician-hours a week; a stranger with $10K can reach it only through SBA-type or seller financing, and only if the hired-labour version still clears the debt",
+   "wedge": "Buy a median 50-account route with about 10% down and a bank or seller note, hire one technician to service the pools, and manage billing and retention part-time",
+   "referenceEntrant": {
+    "startupCashUsd": 10000,
+    "daysToFirstRevenue": 120,
+    "ownerHoursPerWeek": 10
+   },
+   "entrantEdge": {
+    "type": "acquirable_owned_audience_or_partner_channel",
+    "status": "none",
+    "statement": "Leverage and hired labour do not create an edge: the account base is the same month-to-month base any buyer can bid for, the price is about 10-12 months of billing and already capitalizes it, retention can fall 5-20% in 90 days, and no source shows a lender will fund a buyer with no operating history. Nothing exclusive or compounding is obtained beyond the purchased list.",
+    "evidenceIds": [
+     "LOC4-E2",
+     "LOC4-E8",
+     "LOC4-E9"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Existing local pool-service companies at the median stated billing of $153 per pool per month",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 153,
+      "coversWedge": "full",
+      "sourceLocator": "https://bigideasdb.com/buying-a-pool-route",
+      "evidenceRef": "LOC4-E1",
+      "metrics": {
+       "cash_cost": 153
+      }
+     },
+     {
+      "label": "Lower-priced incumbents at the industry average of $75-$125 per residential account (midpoint shown)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 100,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.pooldial.com/resources/articles/general/how-to-buy-a-pool-route",
+      "evidenceRef": "LOC4-E7",
+      "metrics": {
+       "cash_cost": 100
+      }
+     },
+     {
+      "label": "Homeowner does the work: chemicals only, about $21 per month (derived: chemicals run 12-18% of revenue, applied to $141)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 21,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.pooldial.com/resources/articles/general/how-to-buy-a-pool-route",
+      "evidenceRef": "LOC4-E7",
+      "metrics": {
+       "cash_cost": 21
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 21,
+    "entrantValue": 141,
+    "falsifier": "cash_cost is the pool owner's monthly bill; the entrant sells the same service at market price, so there is no customer-side edge by construction. The model is falsified (as an investment) if a hired-technician route does not clear its debt service: operating profit after technician wages must exceed the roughly $860 monthly payment on $63,700 at 10.5% over 10 years with margin for the 5-20% early customer loss."
+   },
+   "evidence": [
+    {
+     "id": "LOC4-E1",
+     "url": "https://bigideasdb.com/buying-a-pool-route",
+     "quote": "The median US route listing asks $1,850 per account on $153 of monthly billing per account",
+     "kind": "incumbent_price",
+     "publisher": "Big Ideas DB (Main Street Index research)",
+     "date": "2026-10-05",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC4-E2",
+     "url": "https://pooldial.com/resources/articles/business/pool-route-sale-prices-2026",
+     "quote": "Nationally, the median route had 50 accounts, sold for $70,800, and priced at 10 months of recurring service revenue.",
+     "kind": "demand",
+     "publisher": "Pooldial (pool-route marketplace and valuation site)",
+     "date": "2026",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC4-E3",
+     "url": "https://neumannassociates.com/?p=100022",
+     "quote": "Acquisitions are commonly financed in part through SBA 7(a) loans or a seller note.",
+     "kind": "other",
+     "publisher": "A. Neumann & Associates (M&A advisory and business brokerage)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC4-E4",
+     "url": "https://bigideasdb.com/buying-a-pool-route",
+     "quote": "These are our assumptions (10% down, 10.5% fixed, 10-year term, base = the ask)",
+     "kind": "other",
+     "publisher": "Big Ideas DB (Main Street Index research)",
+     "date": "2026-10-05",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC4-E5",
+     "url": "https://bigideasdb.com/buying-a-pool-route",
+     "quote": "If you plan to hire a tech, subtract that cost first.",
+     "kind": "constraint",
+     "publisher": "Big Ideas DB (Main Street Index research)",
+     "date": "2026-10-05",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC4-E6",
+     "url": "https://bigideasdb.com/buying-a-pool-route",
+     "quote": "Route SDE margins sit in a narrow band, 76.3% to 79.2% for the middle half",
+     "kind": "other",
+     "publisher": "Big Ideas DB (Main Street Index research)",
+     "date": "2026-10-05",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC4-E7",
+     "url": "https://www.pooldial.com/resources/articles/general/how-to-buy-a-pool-route",
+     "quote": "Chemicals typically run 12-18% of revenue, vehicle fuel and maintenance account for 10-15% of revenue",
+     "kind": "other",
+     "publisher": "Pooldial (pool-route marketplace and valuation site)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC4-E8",
+     "url": "https://www.getskimmer.com/blog/how-to-buy-a-pool-route-101",
+     "quote": "Buyers often plan for 5–20% customer loss in the first 90 days, depending on how rates and expectations align.",
+     "kind": "constraint",
+     "publisher": "Skimmer (pool-service software vendor)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC4-E9",
+     "url": "https://www.getskimmer.com/resources/buying-selling-routes-toolkit",
+     "quote": "Because goodwill doesn't serve as traditional collateral, buyers typically explore SBA loans",
+     "kind": "constraint",
+     "publisher": "Skimmer (pool-service software vendor)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC4-E10",
+     "url": "https://neumannassociates.com/?p=100022",
+     "quote": "a hold-back or earnout tied to account retention so the buyer can underwrite churn",
+     "kind": "other",
+     "publisher": "A. Neumann & Associates (M&A advisory and business brokerage)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC4-E11",
+     "url": "https://bigideasdb.com/buying-a-pool-route",
+     "quote": "About 30 minutes per pool and 15 minutes travel per stop.",
+     "kind": "other",
+     "publisher": "Big Ideas DB (Main Street Index research)",
+     "date": "2026-10-05",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 5,
+    "distribution_advantage": 2,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 6,
+    "repeat_ltv_potential": 6,
+    "competition_adjusted_gap": 2,
+    "market_depth": 4,
+    "end_to_end_automation": 2,
+    "capital_risk": 1,
+    "owner_time_support": 6
+   },
+   "componentReasons": {
+    "entrant_edge": "Leverage and hired labour do not make the purchased list exclusive or compounding (LOC4-E2, LOC4-E8).",
+    "customer_problem_or_value": "Pool owners pay a recurring monthly fee for weekly service, with median billing around $141-$153 (LOC4-E1, LOC4-E2).",
+    "distribution_advantage": "Buying a route is open to any funded buyer, and brokers and listings are public (LOC4-E3).",
+    "defensibility": "Month-to-month accounts and 5-20% early loss leave nothing protective (LOC4-E8).",
+    "absolute_gross_profit_potential": "Operating profit after an assumed technician wage is about $1,300 a month and about $450 after debt service on the baseline, thin for a $64K debt (LOC4-E2, LOC4-E5, LOC4-E7).",
+    "willingness_to_pay": "Buyers pay roughly 10-12 months of billing for routes and customers pay $75-$153 a month (LOC4-E1, LOC4-E2).",
+    "repeat_ltv_potential": "Monthly recurring billing with roughly 11 months to recoup each account price (LOC4-E1).",
+    "competition_adjusted_gap": "Incumbent route owners already serve these accounts and the buyer pays for them at market (LOC4-E1).",
+    "market_depth": "The 50-account median route is the largest visible bucket, but listings are concentrated in a few states (LOC4-E2).",
+    "end_to_end_automation": "Scheduling, billing and retention messaging can be automated, but pool service itself is manual labour at about 45 minutes per pool (LOC4-E11).",
+    "capital_risk": "About $64K of debt secured by goodwill that is not traditional collateral, on a base that can lose 5-20% in 90 days, with a personal guarantee likely (unverified) (LOC4-E4, LOC4-E8, LOC4-E9).",
+    "owner_time_support": "With a hired technician the entrant spends about 10 hours a week on billing and retention, but the margin is thin and the technician is a single point of failure (LOC4-E5, LOC4-E11)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "LOC4-E3: SBA 7(a) and seller-note financing are mentioned by a broker; SBA eligibility, equity-injection minimums and personal-guarantee terms for a first-time buyer with no industry experience were not found on any page read and are unverified.",
+    "Hiring a technician brings employer obligations (payroll tax, workers' compensation, vehicle insurance); these were not researched and are unverified.",
+    "LOC4-E9: goodwill does not serve as traditional collateral, which is why lenders may require personal guarantees or additional security (unverified detail)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Baseline: 50 accounts, $70,800 price at 10 months of billing (LOC4-E2) means $7,080 a month billing; chemicals and vehicle about 27.5% (LOC4-E7) is $1,947; technician 37 hours a week (LOC4-E11 time per pool, 50 pools) is about 160 hours a month at an ASSUMED $22 per hour loaded is $3,520; other fixed cost ASSUMED $300; operating profit about $1,313. Financing: 10% down $7,080, $63,720 at 10.5% over 10 years (LOC4-E4 assumptions) is about $860 a month, so about $450 a month net with the entrant working about 10 hours a week. Pessimistic (price x0.8, 25 accounts, variable cost x1.5, technician cost x1.5 on half the hours, fixed x1.5): revenue about $2,830, costs about $4,550, profit about -$1,700 before the $860 payment, about -$2,600 after. Technician wage and the lender's approval are unsourced."
+    },
+    "killReasons": [
+     {
+      "reason": "Thin economics: with a hired technician the route clears only about $450 a month after debt service on the baseline, and goes deeply negative under the pessimistic case; the 76-79% SDE margin in listings assumes the owner's own free labour.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "LOC4-E5"
+     },
+     {
+      "reason": "Financing for a stranger is unevidenced: goodwill is poor collateral, and nothing read shows an SBA lender or seller will fund a first-time buyer with $10K and no operating history.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "LOC4-E9"
+     },
+     {
+      "reason": "No structural edge: the purchased base is month-to-month, priced at market and open to any bidder; 5-20% leave within 90 days.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "LOC4-E8"
+     },
+     {
+      "reason": "Supply of routes is concentrated in a few Sun Belt states (read through a page summary), so the model does not transfer to the US generally.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "LOC4-E2"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: stated SDE margins of 76-79% (LOC4-E6) include the owner's own labour; replacing that labour with a hired technician and adding about $860 a month of debt service leaves almost nothing on the baseline and a loss under the pessimistic case, with no structural edge (LOC4-E8). Not verified: technician wage (assumed $22 per hour), SBA or seller-note approval for a first-time buyer, equity-injection minimums."
+  },
+  {
+   "id": "LOC-5",
+   "name": "Restaurant back-of-house route bundle: free used-cooking-oil pickup as the door-opener, hood cleaning as the paid recurring service (composite hypothesis)",
+   "family": "local_businesses",
+   "buyer": "Independent restaurants that already accept free fryer-oil pickup and must also buy code-mandated hood and duct cleaning on a recurring cycle",
+   "pain": "Restaurants juggle separate vendors for oil removal and for code-mandated hood cleaning; a stranger has no restaurant relationships, and the free oil pickup would give a recurring visit to the back door of every account at no cost to the restaurant",
+   "wedge": "Run a free oil-pickup route to reach 15-40 restaurants per route day and sell each of them a certified quarterly hood cleaning on contract, using the oil route as the zero-price customer acquisition channel",
+   "referenceEntrant": {
+    "startupCashUsd": 90000,
+    "daysToFirstRevenue": 75,
+    "ownerHoursPerWeek": 40
+   },
+   "entrantEdge": {
+    "type": "privileged_or_low_cac_distribution",
+    "status": "claimed",
+    "statement": "The hypothesised edge is that a free recurring oil pickup keeps the entrant's face and container at every restaurant's back door, lowering the cost of selling hood cleaning. It is unevidenced: no source shows oil haulers converting pickup accounts into cleaning contracts, the free pickup is month-to-month with no contract so it creates no lock-in, and the truck and hauler registration needed to run the oil route cost far more than the $10K ceiling. Rivals can copy the bundle by buying a truck.",
+    "evidenceIds": [
+     "LOC5-E1",
+     "LOC5-E2",
+     "LOC5-E4"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Restaurant keeps the incumbent hauler's free pickup and buys hood cleaning separately (status quo; both services exist today)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://oilguyz.com/blog/used-cooking-oil-value-yellow-grease-prices-2026",
+      "evidenceRef": "LOC5-E1",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Existing certified hood cleaner with published prices (example: $600 for a medium hood, cleaned quarterly, shown per month)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 200,
+      "coversWedge": "full",
+      "sourceLocator": "https://goldys-sparkle-booking.lovable.app/services/hood",
+      "evidenceRef": "LOC5-E3",
+      "metrics": {
+       "cash_cost": 200
+      }
+     },
+     {
+      "label": "Restaurant staff do basic hood and filter checks in house, no oil outsourcing change",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://hvacprosales.com/es-419/hvac-pm-checklists/kitchen-exhaust-checklist/",
+      "evidenceRef": "LOC5-E6",
+      "metrics": {
+       "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 200,
+    "falsifier": "cash_cost is the restaurant's monthly bill for the two services. Oil pickup is already free and the hood cleaning is sold at incumbent prices, so there is no cost edge. The bundle edge is falsified if fewer than 1 in 10 restaurants on an oil route will take a hood-cleaning quote, which no page read measured; and it is falsified outright by the capital needed for the oil truck (LOC5-E2)."
+   },
+   "evidence": [
+    {
+     "id": "LOC5-E1",
+     "url": "https://oilguyz.com/blog/used-cooking-oil-value-yellow-grease-prices-2026",
+     "quote": "free pickup service, month-to-month agreements, no contracts.",
+     "kind": "other",
+     "publisher": "OilGuyz (used-cooking-oil collector, vendor blog)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC5-E2",
+     "url": "https://beancount.io/blog/2026/07/16/used-cooking-oil-collection-business-bookkeeping-guide",
+     "quote": "typically runs $80,000-$150,000 once you include a collection truck",
+     "kind": "constraint",
+     "publisher": "Beancount.io (bookkeeping software blog)",
+     "date": "2026-07-16",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC5-E3",
+     "url": "https://goldys-sparkle-booking.lovable.app/services/hood",
+     "quote": "Transparent pricing by hood size — starting at $475.",
+     "kind": "incumbent_price",
+     "publisher": "Goldy's Maids (cleaning company, Georgia and Florida)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC5-E4",
+     "url": "https://oilguyz.com/blog/used-cooking-oil-value-yellow-grease-prices-2026",
+     "quote": "consolidates pickups across 15 to 40 restaurants on a single route day",
+     "kind": "demand",
+     "publisher": "OilGuyz (used-cooking-oil collector, vendor blog)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC5-E5",
+     "url": "https://fireprotectionfinder.com/compliance/nfpa-96",
+     "quote": "Many insurance carriers now require proof of NFPA 96 compliance as a condition of coverage.",
+     "kind": "demand",
+     "publisher": "Fire Protection Finder",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC5-E6",
+     "url": "https://hvacprosales.com/es-419/hvac-pm-checklists/kitchen-exhaust-checklist/",
+     "quote": "full testing, recharge, and certification must be performed by licensed professionals.",
+     "kind": "constraint",
+     "publisher": "HVAC Pro Sales (maintenance checklist page)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC5-E7",
+     "url": "https://oxmaint.com/industries/facility-management/commercial-kitchen-hood-exhaust-nfpa96-maintenance",
+     "quote": "In practice, most AHJs require companies certified under ANSI/IKECA C10 or equivalent programmes.",
+     "kind": "constraint",
+     "publisher": "Oxmaint (compliance software vendor blog)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC5-E8",
+     "url": "https://advancedbiofuelsusa.info/uploads/old/US-Grease-Collection-Article_9-2-15-FINAL2.pdf",
+     "quote": "Due to the competition, many haulers provide locked containers",
+     "kind": "other",
+     "publisher": "Advanced Biofuels USA (non-profit education site)",
+     "date": "2015-09",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "LOC5-E9",
+     "url": "https://oilguyz.com/blog/yellow-grease-buyer-how-to-sell-used-cooking-oil",
+     "quote": "In California, anyone who transports inedible kitchen grease must be registered with the CDFA as an IKG hauler.",
+     "kind": "constraint",
+     "publisher": "OilGuyz (used-cooking-oil collector, vendor blog)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 2,
+    "customer_problem_or_value": 4,
+    "distribution_advantage": 2,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 4,
+    "willingness_to_pay": 4,
+    "repeat_ltv_potential": 6,
+    "competition_adjusted_gap": 1,
+    "market_depth": 5,
+    "end_to_end_automation": 1,
+    "capital_risk": 0,
+    "owner_time_support": 1
+   },
+   "componentReasons": {
+    "entrant_edge": "The bundle edge is a hypothesis with no supporting source, and free month-to-month pickup creates no lock-in (LOC5-E1).",
+    "customer_problem_or_value": "The oil service is free and cleaning is already sold by certified firms, so bundling adds convenience at best (LOC5-E1, LOC5-E3).",
+    "distribution_advantage": "A route of 15-40 stops per day gives repeat access, but no source shows pickup accounts converting to cleaning contracts and the access costs a truck (LOC5-E4, LOC5-E2).",
+    "defensibility": "Any rival with a truck and a certification can run the same bundle, and the oil accounts can cancel at any time (LOC5-E1, LOC5-E8).",
+    "absolute_gross_profit_potential": "Hood revenue is attractive ($475-$1,100 per cleaning) but the oil route adds fixed cost that the thin per-stop oil margin does not cover (LOC5-E3, LOC5-E2).",
+    "willingness_to_pay": "Restaurants pay for cleaning but pay nothing for oil removal (LOC5-E3, LOC5-E1).",
+    "repeat_ltv_potential": "Both services recur, weekly to monthly for oil and quarterly for cleaning, but only cleaning is contracted by code (LOC5-E5).",
+    "competition_adjusted_gap": "Free oil pickup and certified hood cleaning are both already sold separately to the same restaurants (LOC5-E1, LOC5-E3).",
+    "market_depth": "Every commercial kitchen is a potential account for both services (LOC5-E4, LOC5-E5).",
+    "end_to_end_automation": "Both services are manual field work requiring a truck and a certified crew (LOC5-E2, LOC5-E7).",
+    "capital_risk": "A truck-based oil route at $80K-$150K plus cleaning equipment is roughly nine times the $10K ceiling (LOC5-E2).",
+    "owner_time_support": "The entrant would drive the oil route and also clean hoods at night, which exceeds a part-time week (LOC5-E4, LOC5-E7)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "LOC5-E9: California requires registration with the CDFA as an inedible kitchen grease hauler; other states (the Advanced Biofuels page cites Georgia) have their own registration, unverified for most states.",
+    "LOC5-E7: hood cleaning must be done by a trained, qualified and certified company acceptable to the local authority; certification cost and time for a new firm are unverified.",
+    "LOC5-E6: fire-suppression inspection is a separate licensed activity and is not part of this bundle."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "Composite of LOC-2 and LOC-3 economics. Capital alone breaks the model: $80K-$150K for the oil route (LOC5-E2) plus hood equipment, against a $10K ceiling. Even if the oil route were run at break-even as pure marketing cost, the pessimistic hood economics from LOC-3 (about -$5,800 a year with a paid crew, unsourced cost inputs) do not cover the oil route's fixed cost of roughly $3,400 a month (truck loan and registration/insurance assumptions from LOC-2). Conversion of oil accounts to hood contracts is an unmeasured assumption."
+    },
+    "killReasons": [
+     {
+      "reason": "Capital: the oil route needs an $80K-$150K truck-based setup, an order of magnitude above $10K, and the hood side needs separate certification and equipment.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "LOC5-E2"
+     },
+     {
+      "reason": "The distribution edge is unevidenced and free month-to-month pickup creates no lock-in; no source shows pickup accounts converting to cleaning contracts.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "LOC5-E1"
+     },
+     {
+      "reason": "Rivals can copy the bundle with a truck and certification, and haulers already provide locked containers and compete heavily.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "LOC5-E8"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: a composite hypothesis that depends on an $80K-$150K oil-collection truck (LOC5-E2) to win a door-opener that restaurants can cancel at any time (LOC5-E1), with no evidence that oil-pickup accounts buy hood cleaning. The hood-cleaning half is carried in LOC-3. Not verified: conversion rate from oil accounts to cleaning contracts."
+  }
+ ]
+}

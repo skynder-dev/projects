@@ -1,0 +1,912 @@
+{
+ "candidates": [
+  {
+   "id": "SAS-1",
+   "name": "Success-fee late-delivery refund auditor for small UPS/FedEx shippers",
+   "family": "saas_or_micro_saas",
+   "buyer": "US e-commerce and small B2B shippers with UPS/FedEx accounts and roughly $2k-$20k per month of carrier spend, too small to get attention from a freight-audit firm",
+   "pain": "UPS and FedEx do not refund late guaranteed deliveries automatically: the shipper must identify each late package and request a credit inside a 15-day window, so many refunds go unclaimed. Refund Retriever's own marketing example puts recoverable late-package refunds at about 1.2%-3.3% of carrier spend (single vendor-reported example, not independent).",
+   "wedge": "Self-serve SaaS that ingests carrier invoice files, compares scheduled and actual delivery, flags refund-eligible packages and prepares the credit requests, charging a share of refunds actually recovered.",
+   "referenceEntrant": {
+    "startupCashUsd": 1500,
+    "daysToFirstRevenue": 120,
+    "ownerHoursPerWeek": 15
+   },
+   "entrantEdge": {
+    "type": "cheaper",
+    "status": "none",
+    "statement": "Attempted type: unique_recovery_or_outcome_based_economics (earn only from recovered refunds). It is not an edge here because the incumbents already run the same model: Refund Retriever is '100% performance based' at 50% of refunds, and Lojistic lists a 29% contingency tier plus a $0 bundle. Nothing accumulates or is exclusive for a new entrant (carrier guarantee rules and claim windows are identical for everyone); the only remaining lever is a lower percentage, which is 'cheaper', not an edge.",
+    "evidenceIds": [
+     "SAS-1-E1",
+     "SAS-1-E2"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Manual claims in the carrier billing portals (UPS Billing Center / FedEx Billing Online)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://beancount.io/blog/2026/09/15/fedex-ups-invoice-audit-late-delivery-refunds-duplicate-charges-guide",
+      "evidenceRef": "SAS-1-E6",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Lojistic 'All Inclusive. Zero Cost.' bundle (invoice audit plus refund recovery)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://lojistic.com/pricing",
+      "evidenceRef": "SAS-1-E2",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Lojistic Audit & Recovery Starter ($99/month plus 19% of recovered refunds; 29% contingency tier also listed)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 99,
+      "coversWedge": "full",
+      "sourceLocator": "https://lojistic.com/pricing",
+      "evidenceRef": "SAS-1-E2",
+      "metrics": {
+       "cash_cost": 120
+      }
+     },
+     {
+      "label": "Refund Retriever (FedEx/UPS, no monthly fee, 50% of refunds, also a BigCommerce app)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.refundretriever.com/questions",
+      "evidenceRef": "SAS-1-E1",
+      "metrics": {
+       "cash_cost": 56
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 22,
+    "falsifier": "Metric is USD per month for a reference shipper with $5,000/month carrier spend and refunds of about 2.25% (assumption inside the 1.17%-3.33% vendor-reported range) = about $112/month of refunds: Refund Retriever 50% = $56, Lojistic Starter = $99 + 19% = about $120, entrant at 20% = about $22, DIY and the Lojistic bundle = $0. Best alternative is already $0, so there is no measured advantage. The only observation that would reopen the idea: Lojistic's bundle terms (unstated on the pricing page; the +PAY slider starts at $500K annual spend) exclude small shippers AND DIY filing proves unworkable for shippers under about 500 parcels/week."
+   },
+   "evidence": [
+    {
+     "id": "SAS-1-E1",
+     "url": "https://www.refundretriever.com/questions",
+     "quote": "Our fee is 50% of whatever refunds we obtain on your shipping accounts.",
+     "kind": "incumbent_price",
+     "publisher": "Refund Retriever",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-1-E2",
+     "url": "https://lojistic.com/pricing",
+     "quote": "Never pay Lojistic ... No fees. No limits.",
+     "kind": "incumbent_price",
+     "publisher": "Lojistic",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-1-E3",
+     "url": "https://lojistic.com/blog/ups-and-fedex-service-guarantees-and-your-shipping-audit",
+     "quote": "Both UPS and FedEx require you the shipper to first, identify the refund eligible shipment and second, request a credit. ... You have a fifteen-day window to do this.",
+     "kind": "constraint",
+     "publisher": "Lojistic",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-1-E4",
+     "url": "https://www.bigcommerce.com/apps/refund-retriever",
+     "quote": "4.90 out of 5 stars with 10 reviews",
+     "kind": "demand",
+     "publisher": "BigCommerce App Marketplace (Refund Retriever listing)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-1-E5",
+     "url": "https://www.refundretriever.com/blog/howwecompare",
+     "quote": "$12,486 in late package guaranteed service refunds",
+     "kind": "demand",
+     "publisher": "Refund Retriever (own marketing example, single client)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-1-E6",
+     "url": "https://beancount.io/blog/2026/09/15/fedex-ups-invoice-audit-late-delivery-refunds-duplicate-charges-guide",
+     "quote": "You do not need software to start.",
+     "kind": "other",
+     "publisher": "Beancount.io",
+     "date": "2026-09",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-1-E7",
+     "url": "https://beancount.io/blog/2026/09/15/fedex-ups-invoice-audit-late-delivery-refunds-duplicate-charges-guide",
+     "quote": "Only late-shipment refund requests can typically be filed online one at a time",
+     "kind": "constraint",
+     "publisher": "Beancount.io",
+     "date": "2026-09",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 5,
+    "distribution_advantage": 2,
+    "defensibility": 1,
+    "absolute_gross_profit_potential": 2,
+    "willingness_to_pay": 4,
+    "repeat_ltv_potential": 4,
+    "competition_adjusted_gap": 1,
+    "market_depth": 5,
+    "end_to_end_automation": 4,
+    "capital_risk": 9,
+    "owner_time_support": 5
+   },
+   "componentReasons": {
+    "entrant_edge": "Outcome-based pricing is already the incumbents' model (SAS-1-E1 50% of refunds, SAS-1-E2 $0 bundle and contingency tiers), so nothing is exclusive or accumulating for a new entrant.",
+    "customer_problem_or_value": "The refund is real money the carriers do not pay automatically (SAS-1-E3, 15-day window), but vendor-reported size is only about 1-3% of spend (SAS-1-E5).",
+    "distribution_advantage": "The only marketplace channel seen is Refund Retriever's own BigCommerce listing with 10 reviews (SAS-1-E4); no privileged channel is available to a new entrant.",
+    "defensibility": "A copycat can match any fee and the claim rules are public carrier rules (SAS-1-E3), so there is no lock-in beyond ordinary switching cost.",
+    "absolute_gross_profit_potential": "At 20% of about $1,350 of refunds per small shipper per year the revenue is about $270 per customer-year (assumption built on SAS-1-E5 range), so profit stays small.",
+    "willingness_to_pay": "Shippers pay only out of recovered money (SAS-1-E1, SAS-1-E2) and free routes exist (SAS-1-E6), so willingness to pay a fixed fee is low.",
+    "repeat_ltv_potential": "Refunds recur monthly while the shipper ships, but per-customer amounts are tens of dollars a month, so LTV is limited.",
+    "competition_adjusted_gap": "A $0 bundle, a 29% contingency tier and a 50% incumbent already serve the gap (SAS-1-E1, SAS-1-E2), leaving no uncovered segment shown by evidence.",
+    "market_depth": "Many small e-commerce shippers use UPS/FedEx, but most are below the roughly 500 parcels a week where software pays off per the guide (SAS-1-E6).",
+    "end_to_end_automation": "Invoice ingestion and eligibility checks automate, but claims are filed one at a time in the carrier portal (SAS-1-E7), so filing needs the customer or a credentialed workaround.",
+    "capital_risk": "Software only; under $2k to build and run a pilot.",
+    "owner_time_support": "Claim preparation and support need regular attention while filing stays semi-manual (SAS-1-E7)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "SAS-1-E7: claims are filed inside the shipper's own carrier billing account; acting with a customer's carrier login or automating carrier portals may breach carrier terms (unverified, not checked); use official tracking APIs and have the customer submit, or obtain explicit authorisation.",
+    "SAS-1-E3: carriers state the claim window (15 days) and exclude fuel surcharge per the Lojistic article; rules differ by carrier service and peak-season blackout dates (unverified for current year).",
+    "Pages read as a normal reader only; Lojistic bundle eligibility terms are not shown on the pricing page (unverified)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "Base (assumptions): 40 shippers x $60k/yr spend x 2.25% refunds = $1,350 refunds each; 20% share = $10.8k/yr revenue; cost $100/month = $1.2k/yr. Pessimistic: share 16% (price x0.8), 20 shippers (volume x0.5), cost $150/month (x1.5) = 20 x $1,350 x 0.16 = $4.3k - $1.8k = about +$2.5k/yr. Arithmetically positive but far too small to justify any owner hours, and base volume has no supporting evidence."
+    },
+    "killReasons": [
+     {
+      "reason": "No structural edge: Refund Retriever (50% of refunds, 100% performance based) and Lojistic (29% contingency, $99/month + 19%, and a $0 bundle that includes refund recovery) already run the identical outcome-based model; an entrant can only undercut on percentage, which is 'cheaper'.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "SAS-1-E1,SAS-1-E2"
+     },
+     {
+      "reason": "DIY covers the low-volume segment: carriers accept late-shipment credit requests online one at a time and the guide says software is not needed to start (pays off around 500 parcels per week), so small shippers have little reason to pay.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SAS-1-E6,SAS-1-E7"
+     },
+     {
+      "reason": "Unit economics per small shipper are roughly a few hundred dollars a year at the vendor-reported 1-3% recovery rate, which cannot carry paid acquisition.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SAS-1-E5"
+     },
+     {
+      "reason": "Claim filing cannot be bulk-automated from public interfaces; using a customer's carrier login may breach carrier terms (unverified).",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "SAS-1-E7"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: same success-fee model is already sold by Refund Retriever (50%) and Lojistic (29% contingency, $0 bundle), DIY manual claims cover low-volume shippers, and a lower percentage is 'cheaper', not an edge (SAS-1-E1, SAS-1-E2, SAS-1-E6). Only unresolved item: whether Lojistic's $0 bundle excludes small shippers (terms not stated)."
+  },
+  {
+   "id": "SAS-2",
+   "name": "HFC refrigerant leak-rate log and repair clock for small HVAC/refrigeration contractors",
+   "family": "saas_or_micro_saas",
+   "buyer": "US HVAC and commercial refrigeration contractors (1-8 technician shops) and facility operators who service or own appliances with a 15 lb or larger HFC charge",
+   "pain": "Since January 1, 2026 owners/operators and certified technicians must follow EPA leak-repair requirements for covered appliances and keep records for three years; shops need per-appliance charge, refrigerant added and leak rate history, repair deadlines and exportable records.",
+   "wedge": "Subscription app that logs refrigerant additions per appliance, calculates the leak rate after each service event, starts the repair clock and produces three-year audit-ready exports.",
+   "referenceEntrant": {
+    "startupCashUsd": 2000,
+    "daysToFirstRevenue": 150,
+    "ownerHoursPerWeek": 20
+   },
+   "entrantEdge": {
+    "type": "niche_focus",
+    "status": "none",
+    "statement": "Attempted type: embedded_workflow_or_system_of_record (per-appliance history as the contractor's compliance record). Not structural: the records belong to the contractor and are exported as CSV/PDF by existing apps, at least four dedicated or bundled competitors already exist, and no data accumulates across customers that a later competitor could not also collect. What remains is niche focus.",
+    "evidenceIds": [
+     "SAS-2-E2",
+     "SAS-2-E7"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Ref LeakLog (dedicated micro-SaaS, $29 Independent / $59 Crew / $89 Business per month)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 29,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.getapp.com/compliance-software/a/ref-leaklog/",
+      "evidenceRef": "SAS-2-E2",
+      "metrics": {
+       "cash_cost": 29
+      }
+     },
+     {
+      "label": "Plyrium contractor platform with refrigerant tracking (from $149/month per page metadata; leak-rate calculation 'coming')",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 149,
+      "coversWedge": "partial",
+      "sourceLocator": "https://plyrium.com/kb/refrigerant-tracking",
+      "evidenceRef": "SAS-2-E4",
+      "metrics": {
+       "cash_cost": 149
+      }
+     },
+     {
+      "label": "ServiceTitan Refrigerant Tracking custom form (included in the platform; add-on price not stated; no leak-rate calculation described)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://help.servicetitan.com/docs/set-up-and-use-refrigerant-tracking-for-epa-recordkeeping",
+      "evidenceRef": "SAS-2-E5",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "MangoApps free EPA 608 leak-rate calculation form template (single comfort-cooling appliance)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.mangoapps.com/templates/forms/epa-section-608-leak-rate-calculation-sheet",
+      "evidenceRef": "SAS-2-E6",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Paper or spreadsheet log (EPA fact sheet accepts paper or electronic records kept three years)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.epa.gov/system/files/documents/2026-01/er-r-fact-sheet-leak-repair-2026-01-13_1.pdf",
+      "evidenceRef": "SAS-2-E8",
+      "metrics": {
+       "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 39,
+    "falsifier": "Metric is USD per month. Free routes (template, spreadsheet, ServiceTitan form) cost $0 and Ref LeakLog sells the same feature set from $29; an entrant at about $39 is not cheaper. The idea would only be reopened if a paying segment (for example 3+ technician shops) were shown to be unable to use Ref LeakLog, TechBench, Plyrium or ServiceTitan, which no evidence found suggests."
+   },
+   "evidence": [
+    {
+     "id": "SAS-2-E1",
+     "url": "https://www.epa.gov/system/files/documents/2026-01/er-r-fact-sheet-leak-repair-2026-01-13_1.pdf",
+     "quote": "Beginning January 1, 2026, owners or operators and certified technicians must comply with leak repair requirements.",
+     "kind": "constraint",
+     "publisher": "U.S. EPA",
+     "date": "2026-01",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-2-E2",
+     "url": "https://www.indiehackers.com/product/ref-leaklog",
+     "quote": "priced for small shops: $29–$89/mo, 14-day free trial, no credit card.",
+     "kind": "incumbent_price",
+     "publisher": "Indie Hackers (Ref LeakLog launch post)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-2-E3",
+     "url": "https://www.indiehackers.com/product/ref-leaklog",
+     "quote": "Revenue $0/mo ... Everything shown is a product demo running on a fictional fleet (Copper Ridge Mechanical).",
+     "kind": "demand",
+     "publisher": "Indie Hackers (Ref LeakLog product page)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-2-E4",
+     "url": "https://plyrium.com/kb/refrigerant-tracking",
+     "quote": "14-day free trial, no card charged for 14 days, cancel anytime.",
+     "kind": "incumbent_price",
+     "publisher": "Plyrium",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-2-E5",
+     "url": "https://help.servicetitan.com/docs/set-up-and-use-refrigerant-tracking-for-epa-recordkeeping",
+     "quote": "recommended way to capture refrigerant activity — amounts added, recovered, recycled, or disposed of",
+     "kind": "other",
+     "publisher": "ServiceTitan Help",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-2-E6",
+     "url": "https://www.mangoapps.com/templates/forms/epa-section-608-leak-rate-calculation-sheet",
+     "quote": "Calculate the monthly refrigerant leak rate for a comfort cooling appliance.",
+     "kind": "other",
+     "publisher": "MangoApps",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-2-E7",
+     "url": "https://nexasphere.io/blog/epa-608-refrigerant-log-phone-audit-ready",
+     "quote": "TechBench is an iPhone app built for solo and small HVAC and plumbing shops.",
+     "kind": "other",
+     "publisher": "Nexasphere",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-2-E8",
+     "url": "https://www.epa.gov/system/files/documents/2026-01/er-r-fact-sheet-leak-repair-2026-01-13_1.pdf",
+     "quote": "maintain certain records for three years",
+     "kind": "constraint",
+     "publisher": "U.S. EPA",
+     "date": "2026-01",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-2-E9",
+     "url": "https://www.getapp.com/compliance-software/a/ref-leaklog/",
+     "quote": "a cloud-based refrigerant leak tracking and EPA compliance platform",
+     "kind": "other",
+     "publisher": "GetApp (Ref LeakLog listing)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 6,
+    "distribution_advantage": 2,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 3,
+    "willingness_to_pay": 4,
+    "repeat_ltv_potential": 6,
+    "competition_adjusted_gap": 1,
+    "market_depth": 5,
+    "end_to_end_automation": 6,
+    "capital_risk": 9,
+    "owner_time_support": 6
+   },
+   "componentReasons": {
+    "entrant_edge": "Records are the contractor's own and exportable, and four competing products exist (SAS-2-E2, SAS-2-E4, SAS-2-E5, SAS-2-E7), so there is no structural edge.",
+    "customer_problem_or_value": "A legal duty with three-year recordkeeping applies from January 2026 (SAS-2-E1, SAS-2-E8), so the problem is real for covered appliances.",
+    "distribution_advantage": "No channel evidence for a new entrant; competitors reach shops through app stores, trials and platform bundling (SAS-2-E5, SAS-2-E7).",
+    "defensibility": "CSV/PDF export and a simple calculation make the record easy to move or copy (SAS-2-E9, SAS-2-E6).",
+    "absolute_gross_profit_potential": "Visible pricing is $29-$89 per month (SAS-2-E2), so even 100 shops would be roughly $3-9k per month before acquisition cost.",
+    "willingness_to_pay": "The only competitor page with public revenue shows $0/mo and demo-only data (SAS-2-E3), and free/bundled options exist (SAS-2-E5, SAS-2-E6).",
+    "repeat_ltv_potential": "The duty is annual and continuing and records accumulate per appliance (SAS-2-E8), which supports subscription retention if anyone pays.",
+    "competition_adjusted_gap": "Dedicated products at $29-$149 plus a free template already fill the gap (SAS-2-E2, SAS-2-E4, SAS-2-E6).",
+    "market_depth": "Covered appliances are limited to 15 lb or larger HFC charges and exclude residential and light commercial AC (SAS-2-E1), so the buyer pool is narrower than all HVAC shops.",
+    "end_to_end_automation": "Logging, calculation, reminders and exports can be automated end to end; EPA notifications still need user action.",
+    "capital_risk": "Software only with under $2k of cash at risk.",
+    "owner_time_support": "Support is mostly onboarding and rule questions; the product is mostly self-serve."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "SAS-2-E1: binding text is 40 CFR 84.106 (the EPA fact sheet says not to rely on the fact sheet); a tool must not claim to make users compliant. Whether EPA later changed dates or scope after the January 2026 fact sheet was not checked (unverified).",
+    "SAS-2-E8: records must be kept three years in paper or electronic form; the entrant must provide retention and export so the contractor keeps the records.",
+    "Pages read as a normal reader only; no pricing for TechBench or ServiceTitan's add-on was available (unverified)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "Base (assumption): 60 shops x $39/month = $2.3k MRR, cost $100/month. Pessimistic: price $31 (x0.8), 30 shops (x0.5), cost $150/month (x1.5) = $930 MRR - $150 = about +$780/month. Positive arithmetically, but the base volume is unevidenced: the only competitor with public revenue shows $0/mo (SAS-2-E3)."
+    },
+    "killReasons": [
+     {
+      "reason": "No structural edge: at least four existing products (Ref LeakLog $29-$89, Plyrium $149 platform, TechBench iPhone app, ServiceTitan built-in form) plus a free MangoApps template and the paper/spreadsheet option already cover the wedge.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "SAS-2-E2,SAS-2-E4,SAS-2-E5,SAS-2-E6,SAS-2-E7"
+     },
+     {
+      "reason": "Demand for paid micro-SaaS is unproven: the only dedicated competitor page that shows revenue lists $0/mo and a demo-only fleet.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SAS-2-E3"
+     },
+     {
+      "reason": "Low lock-in: records belong to the contractor and competitors export them (CSV/PDF), so a customer can switch with little cost.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SAS-2-E9,SAS-2-E8"
+     },
+     {
+      "reason": "Regulatory timing risk not checked beyond the January 2026 fact sheet (later EPA changes unverified).",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "SAS-2-E1"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: a real EPA duty exists (SAS-2-E1) but at least four products plus a free template already cover the wedge at $0-$149 per month, records are exportable so lock-in is weak, and the one competitor with public revenue shows $0/mo (SAS-2-E2, SAS-2-E3, SAS-2-E5, SAS-2-E6)."
+  },
+  {
+   "id": "SAS-3",
+   "name": "Pre-built vendor sub-processor change monitor with change history",
+   "family": "saas_or_micro_saas",
+   "buyer": "Privacy, security or operations leads at 20-500 person B2B/SaaS companies that sign data-processing agreements with 30-100 vendors and must respond to vendor sub-processor changes inside the DPA objection window",
+   "pain": "DPAs often give only 14-30 days to object to a vendor's new sub-processor, and tracking dozens of vendor pages by hand is ad hoc; the cost of a missed change is a contractual or compliance gap, not direct revenue loss.",
+   "wedge": "Subscription catalog of vendor sub-processor pages, pre-configured and normalised, that sends alerts on added/removed sub-processors and stores dated diffs as audit evidence.",
+   "referenceEntrant": {
+    "startupCashUsd": 1000,
+    "daysToFirstRevenue": 90,
+    "ownerHoursPerWeek": 15
+   },
+   "entrantEdge": {
+    "type": "proprietary_or_compounding_data",
+    "status": "claimed",
+    "statement": "Claimed: a shared catalog of normalised vendor sub-processor lists plus a dated change history accumulates with each customer-requested vendor, and history cannot be backfilled by a later entrant except from the Wayback-style archives. Weak in practice: PageCrawl, Visualping and an Apify actor already capture diffs for any URL a customer supplies, ConductAtlas already archives policy documents for 352+ platforms, and a URL catalog is cheap for them to copy.",
+    "evidenceIds": [
+     "SAS-3-E6",
+     "SAS-3-E3"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "PageCrawl free plan (6 pages, 220 checks, 60-minute checks)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://pagecrawl.io/pricing",
+      "evidenceRef": "SAS-3-E1",
+      "metrics": {
+       "cycle_time": 120
+      }
+     },
+     {
+      "label": "PageCrawl Standard ($13.33/month, 200 pages) with its own subprocessor-monitoring guide and template",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 13.33,
+      "coversWedge": "full",
+      "sourceLocator": "https://pagecrawl.io/blog/subprocessor-list-monitoring-saas-compliance",
+      "evidenceRef": "SAS-3-E1",
+      "metrics": {
+       "cycle_time": 120
+      }
+     },
+     {
+      "label": "changedetection.io (Apache-2.0 open source, self-hosted; hosted plan $8.99/month)",
+      "kind": "open_source",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://github.com/dgtlmoon/changedetection.io",
+      "evidenceRef": "SAS-3-E7",
+      "metrics": {
+       "cycle_time": 150
+      }
+     },
+     {
+      "label": "Vendor-side free 'subprocessor update' notification buttons (Visualping 1-Click Button, installed on 6,000+ sites)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://visualping.io/subprocessor",
+      "evidenceRef": "SAS-3-E3",
+      "metrics": {
+       "cycle_time": 120
+      }
+     },
+     {
+      "label": "Apify 'Subprocessor Change Monitor' actor ($0.05 per URL checked; about $11/month for 50 vendors checked weekly, estimate)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 11,
+      "coversWedge": "partial",
+      "sourceLocator": "https://apify.com/virtual-constructs/subprocessor-change-monitor.md",
+      "evidenceRef": "SAS-3-E4",
+      "metrics": {
+       "cycle_time": 120
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cycle_time",
+    "direction": "lower_is_better",
+    "incumbentValue": 120,
+    "entrantValue": 10,
+    "falsifier": "Metric is minutes of setup to start monitoring a 40-vendor stack. The 120-minute figure for existing tools (about 3 minutes per vendor to find and paste the sub-processor URL) and the 10-minute entrant figure are ESTIMATES, not sourced. If a buyer can locate and paste 40 vendor URLs in under 15 minutes, or a competitor ships a prebuilt vendor list (PageCrawl already publishes dedicated sub-processor pages), the catalog edge is gone. One-time setup saving is also not a recurring edge."
+   },
+   "evidence": [
+    {
+     "id": "SAS-3-E1",
+     "url": "https://pagecrawl.io/pricing",
+     "quote": "\"$13.33 / month\" or \"$160 billed annually.\" Up to 200 pages",
+     "kind": "incumbent_price",
+     "publisher": "PageCrawl",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-3-E2",
+     "url": "https://pagecrawl.io/blog/subprocessor-list-monitoring-saas-compliance",
+     "quote": "Some DPAs give you 30 days to object. Some give 14. Some give no specific period.",
+     "kind": "constraint",
+     "publisher": "PageCrawl",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-3-E3",
+     "url": "https://visualping.io/subprocessor",
+     "quote": "Installed on more than 6,000 websites worldwide",
+     "kind": "demand",
+     "publisher": "Visualping",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-3-E4",
+     "url": "https://apify.com/virtual-constructs/subprocessor-change-monitor.md",
+     "quote": "$0.05 per URL checked",
+     "kind": "incumbent_price",
+     "publisher": "Apify (virtual-constructs actor)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-3-E5",
+     "url": "https://apify.com/virtual-constructs/subprocessor-change-monitor.md",
+     "quote": "2 total users, 1 monthly users",
+     "kind": "demand",
+     "publisher": "Apify (virtual-constructs actor)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-3-E6",
+     "url": "https://conductatlas.com/platform/stripe/stripe-service-providers-sub-processors/email-notification-subscription-for-sub-processor-updates/",
+     "quote": "352+ platforms monitored worldwide",
+     "kind": "other",
+     "publisher": "ConductAtlas",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-3-E7",
+     "url": "https://github.com/dgtlmoon/changedetection.io",
+     "quote": "Monitor websites for updates — get notified via Discord, Email, Slack, Telegram, Webhook and many more.",
+     "kind": "other",
+     "publisher": "changedetection.io (GitHub)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 2,
+    "customer_problem_or_value": 4,
+    "distribution_advantage": 2,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 2,
+    "willingness_to_pay": 3,
+    "repeat_ltv_potential": 6,
+    "competition_adjusted_gap": 1,
+    "market_depth": 4,
+    "end_to_end_automation": 7,
+    "capital_risk": 10,
+    "owner_time_support": 6
+   },
+   "componentReasons": {
+    "entrant_edge": "The compounding-history claim is weak because free and cheap monitors already keep diffs and ConductAtlas already archives 352+ platforms (SAS-3-E1, SAS-3-E6, SAS-3-E7).",
+    "customer_problem_or_value": "DPA objection windows of 14-30 days make a missed change a real contractual gap (SAS-3-E2), but the cost is compliance risk rather than lost revenue.",
+    "distribution_advantage": "No privileged channel: the closest distribution seen is vendor-side buttons on 6,000+ sites owned by Visualping (SAS-3-E3).",
+    "defensibility": "A prebuilt URL catalog and diff history can be copied by PageCrawl or Visualping, which already publish dedicated sub-processor pages (SAS-3-E1, SAS-3-E3).",
+    "absolute_gross_profit_potential": "Competing paid monitoring sells at $13.33 for 200 pages (SAS-3-E1), which caps what a catalog layer can charge.",
+    "willingness_to_pay": "The one dedicated paid actor shows 2 total users (SAS-3-E5) and free tiers cover small stacks (SAS-3-E1).",
+    "repeat_ltv_potential": "Monitoring is continuous and history accumulates, which would support retention if customers pay (SAS-3-E2).",
+    "competition_adjusted_gap": "Free, open-source and $0.05-per-check tools already cover monitoring, alerts and diffs (SAS-3-E1, SAS-3-E4, SAS-3-E7).",
+    "market_depth": "Buyers are companies with 30-100 DPA vendors (SAS-3-E2), a reasonable pool but one that mostly gets the same signal free from vendors and generic monitors.",
+    "end_to_end_automation": "Fetching, diffing and alerting are fully automatable, though JavaScript-only trust centers and PDFs need handling (SAS-3-E4).",
+    "capital_risk": "Under $1k of hosting and fetch costs.",
+    "owner_time_support": "Catalog quality assurance needs periodic human review of heterogeneous pages."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "SAS-3-E2: contractual notice and objection duties belong to the vendor and customer under each DPA; the tool is informational, not legal advice (unverified).",
+    "Reads only public vendor pages at low frequency; each vendor's robots.txt and terms must be respected and pages that block automated reads skipped (not checked per vendor, unverified).",
+    "SAS-3-E7: changedetection.io is Apache-2.0 per its repository page; any reuse must respect that licence."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "Base (assumption): 40 customers x $29/month = $1.2k MRR, cost $80/month. Pessimistic: $23 price (x0.8), 20 customers (x0.5), cost $120/month (x1.5) = $464 - $120 = about +$344/month. Positive arithmetically but tiny, and free tiers (6 pages) and $13.33/200 pages sit far below $29."
+    },
+    "killReasons": [
+     {
+      "reason": "Free and cheap tools already cover monitoring, diffs, alerts and history for any URL (PageCrawl free/$13.33, changedetection.io open source, Visualping, Apify $0.05 per URL); the only increment is a prebuilt URL catalog that these vendors can copy and already market for this use case.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "SAS-3-E1,SAS-3-E4,SAS-3-E7,SAS-3-E3"
+     },
+     {
+      "reason": "Demand for a dedicated paid tool is unproven: the Apify actor built for this shows 2 total users and 1 monthly user.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SAS-3-E5"
+     },
+     {
+      "reason": "Vendors increasingly publish their own subscribe-to-updates mechanisms (Visualping button on 6,000+ sites), which moves the alerting job to the source.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SAS-3-E3"
+     },
+     {
+      "reason": "Catalog upkeep across thousands of heterogeneous, sometimes JavaScript-only pages is continuing manual work that erodes margin at a $29 price point.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "SAS-3-E4"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: compounding-history edge is only claimed and every piece of the wedge except a prebuilt URL list is already free or under $14 per month (PageCrawl, changedetection.io, Visualping, Apify), and the dedicated actor shows 2 total users (SAS-3-E1, SAS-3-E4, SAS-3-E5, SAS-3-E7)."
+  },
+  {
+   "id": "SAS-4",
+   "name": "Lab-neutral SKU certificate register for CPSC eFiling (small consumer-product importers)",
+   "family": "saas_or_micro_saas",
+   "buyer": "US importers of CPSC-regulated consumer products (Amazon/Shopify/retail brands) with roughly 20-500 SKUs, several suppliers and more than one test lab, who file through a customs broker",
+   "pain": "Since July 8, 2026 every import entry of a regulated consumer product needs certificate data (seven data elements) eFiled through ACE, with no de minimis exemption; certificates and test reports sit as PDFs across suppliers and labs, and non-compliant entries risk shipment-release delays.",
+   "wedge": "Subscription SKU-level register that collects supplier and lab certificates, checks the seven required elements and test-date currency, flags stale or missing certificates, and exports broker-ready and CPSC Product Registry CSV data.",
+   "referenceEntrant": {
+    "startupCashUsd": 3000,
+    "daysToFirstRevenue": 150,
+    "ownerHoursPerWeek": 25
+   },
+   "entrantEdge": {
+    "type": "embedded_workflow_or_system_of_record",
+    "status": "claimed",
+    "statement": "Claimed only: a SKU-level register that suppliers upload to and the broker's Reference PGA IDs point at becomes the operating record for each import SKU (certificate, lab, last test date, cited rules), raising switching cost; a normalised product-type to cited-rule mapping and supplier document templates would also improve with each customer's SKUs. Not evidenced: the CPSC Product Registry is the regulator's own optional store that accepts manual, CSV and API entry, and labs (Eurofins, Intertek, TUV SUD) already push certificate data into it, so nothing exclusive is shown.",
+    "evidenceIds": [
+     "SAS-4-E2",
+     "SAS-4-E4"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "CPSC Product Registry (regulator's optional repository; manual, CSV or API entry; cost not stated on pages read)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://cpsc.gov/s3fs-public/2024_07_08_eFiling_Quick_Start_Guide_FINAL_Draft.pdf",
+      "evidenceRef": "SAS-4-E2",
+      "metrics": {
+       "cycle_time": 15
+      }
+     },
+     {
+      "label": "Syntera Systems 'CPSC eFiling Readiness & Certificate Data Control Kit' Excel workbook ($199 one-time, about $17/month over 12 months)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 17,
+      "coversWedge": "partial",
+      "sourceLocator": "https://payhip.com/b/4prBk",
+      "evidenceRef": "SAS-4-E3",
+      "metrics": {
+       "cycle_time": 15
+      }
+     },
+     {
+      "label": "Eurofins CPSC eFiling digital solution (generates CPC/GCC and submits data to the Product Registry; 'no set-up fees', ongoing price not stated)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.eurofins.com/en/consumer-product-testing/softlines-hardlines/regulatory-compliance/global-market-access/cpsc-efiling-digital-solution/",
+      "evidenceRef": "SAS-4-E4",
+      "metrics": {
+       "cycle_time": 10
+      }
+     },
+     {
+      "label": "Intertek InterLink 2.0 (digitises certificate data, CSV export and API to the Product Registry; price not published)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://intertek.com/interlink2/cpsc-efiling",
+      "evidenceRef": "SAS-4-E5",
+      "metrics": {
+       "cycle_time": 10
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cycle_time",
+    "direction": "lower_is_better",
+    "incumbentValue": 10,
+    "entrantValue": 4,
+    "falsifier": "Metric is minutes of importer staff time per new SKU to reach validated, broker-ready certificate data when certificates arrive as PDFs from several suppliers and labs. All figures are ESTIMATES, not sourced (Registry manual entry about 15, Excel kit about 15, lab portals about 10 but only for that lab's own reports, entrant about 4 via extraction). If importers with 20-500 SKUs find the Registry CSV template, a lab portal or the $199 workbook sufficient, or no one will pay a recurring fee, there is no edge. Direct test: sell or pre-sell the register to ten importers and see whether any pay more than $199 once."
+   },
+   "evidence": [
+    {
+     "id": "SAS-4-E1",
+     "url": "https://www.cpsc.gov/CPC",
+     "quote": "Beginning July 8, 2026, importers of most regulated consumer products will be required to electronically file",
+     "kind": "constraint",
+     "publisher": "U.S. Consumer Product Safety Commission",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-4-E2",
+     "url": "https://cpsc.gov/s3fs-public/2024_07_08_eFiling_Quick_Start_Guide_FINAL_Draft.pdf",
+     "quote": "The CPSC Product Registry is a new and optional system for entering and storing product certificate data.",
+     "kind": "constraint",
+     "publisher": "U.S. Consumer Product Safety Commission",
+     "date": "2024-07",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-4-E3",
+     "url": "https://payhip.com/b/4prBk",
+     "quote": "One-time purchase: $199. No subscription.",
+     "kind": "incumbent_price",
+     "publisher": "Syntera Systems (Payhip)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-4-E4",
+     "url": "https://www.eurofins.com/en/consumer-product-testing/softlines-hardlines/regulatory-compliance/global-market-access/cpsc-efiling-digital-solution/",
+     "quote": "We manage the submission of your certificate data into the CPSC Product Registry.",
+     "kind": "other",
+     "publisher": "Eurofins",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-4-E5",
+     "url": "https://intertek.com/interlink2/cpsc-efiling",
+     "quote": "Intertek's Interlink solution digitizes certificate data to support your eFiling options",
+     "kind": "other",
+     "publisher": "Intertek",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-4-E6",
+     "url": "https://www.tuvsud.com/en-gb/-/media/regions/uk/pdf-files/brochures-and-infosheets/cpsc-efiling-infosheet.pdf",
+     "quote": "CPC/GCC data structuring and validation.",
+     "kind": "other",
+     "publisher": "TUV SUD",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-4-E7",
+     "url": "https://www.eshipper.com/?p=41897",
+     "quote": "our platform will introduce additional fields that allow customers to provide the required compliance information.",
+     "kind": "demand",
+     "publisher": "eShipper",
+     "date": "2026",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-4-E8",
+     "url": "https://www.gdlsk.com/new-cpsc-efiling-rule-for-imported-consumer-products-effective-july-8-2026/",
+     "quote": "will likely experience delays in the release of their shipments",
+     "kind": "demand",
+     "publisher": "GDLSK",
+     "date": "2026",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "SAS-4-E9",
+     "url": "https://cpsc.gov/s3fs-public/2024_07_08_eFiling_Quick_Start_Guide_FINAL_Draft.pdf",
+     "quote": "There is no de minimis exemption for eFiling.",
+     "kind": "constraint",
+     "publisher": "U.S. Consumer Product Safety Commission",
+     "date": "2024-07",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 3,
+    "customer_problem_or_value": 7,
+    "distribution_advantage": 2,
+    "defensibility": 3,
+    "absolute_gross_profit_potential": 4,
+    "willingness_to_pay": 3,
+    "repeat_ltv_potential": 5,
+    "competition_adjusted_gap": 3,
+    "market_depth": 6,
+    "end_to_end_automation": 6,
+    "capital_risk": 8,
+    "owner_time_support": 5
+   },
+   "componentReasons": {
+    "entrant_edge": "A system-of-record claim only: the regulator's own Product Registry and the labs' portals already hold the same data, so no exclusive or accumulating asset is evidenced (SAS-4-E2, SAS-4-E4, SAS-4-E5).",
+    "customer_problem_or_value": "A mandatory federal filing applies to every regulated import regardless of shipment size, with delay risk for non-compliance (SAS-4-E1, SAS-4-E9, SAS-4-E8).",
+    "distribution_advantage": "Labs, brokers and shipping platforms already sit in front of importers and are adding eFiling fields (SAS-4-E4, SAS-4-E5, SAS-4-E7); no channel is open to a new entrant.",
+    "defensibility": "Supplier-uploaded history and a rule mapping could raise switching cost, but labs bundle the same data flow into the Registry (SAS-4-E4, SAS-4-E6).",
+    "absolute_gross_profit_potential": "Price anchor is a $199 one-time workbook and unpublished lab fees (SAS-4-E3), so a subscription in the $30-50 range from a few hundred importers is a modest business.",
+    "willingness_to_pay": "The only visible paid price point is a $199 one-time spreadsheet (SAS-4-E3); no evidence found of importers paying a recurring fee.",
+    "repeat_ltv_potential": "New SKUs, supplier changes and retesting recur, but first-wave setup demand is concentrated around the July 8, 2026 deadline (SAS-4-E1).",
+    "competition_adjusted_gap": "Labs, brokers and the free Registry cover storage and submission; the open gap is multi-lab supplier collection and validation (SAS-4-E4, SAS-4-E5, SAS-4-E6).",
+    "market_depth": "The rule covers most regulated consumer product imports with no value threshold (SAS-4-E9), but no importer count was found (unverified).",
+    "end_to_end_automation": "Extraction, validation, reminders and CSV/API export can be automated; the customs broker still performs the ACE filing (SAS-4-E4).",
+    "capital_risk": "Under $3k for development and hosting, with legal review of what the product may claim.",
+    "owner_time_support": "Rules mapping needs upkeep and onboarding support for messy supplier documents."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "SAS-4-E1/E9: the eFiling duty falls on the importer and is transmitted through ACE by the importer or its customs broker; the entrant must not file with CBP or act as a customs broker and must not give legal advice on which rules or tests apply.",
+    "SAS-4-E2: the Quick Start guide refers to identifying a 'software developer trade partner for API integration'; registration terms for software developers to use the Product Registry API were not read (unverified).",
+    "SAS-4-E7: penalty figures quoted by secondary sources vary (about $120,000 per eShipper); the controlling text is 16 CFR Part 1110 and CPSC guidance (unverified)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "Base (assumption): 60 importers x $39/month = $2.3k MRR, cost $300/month (extraction, hosting, support tooling). Pessimistic: price $31 (x0.8), 30 importers (x0.5), cost $450/month (x1.5) = $936 - $450 = about +$486/month. Positive but thin, and the willingness-to-pay assumption is the open question: the only paid price seen is $199 one-time (SAS-4-E3)."
+    },
+    "killReasons": [
+     {
+      "reason": "The regulator's own optional Product Registry accepts manual, CSV and API entry, labs (Eurofins, Intertek, TUV SUD) bundle certificate digitisation and submission, and a $199 workbook exists, so storage and submission are already covered; only supplier collection and validation across several labs is open.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SAS-4-E2,SAS-4-E3,SAS-4-E4,SAS-4-E5,SAS-4-E6"
+     },
+     {
+      "reason": "Event-driven demand: the July 8, 2026 deadline has passed, so first-wave setup demand may already be spent, and no evidence shows importers pay a recurring fee.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SAS-4-E1,SAS-4-E3"
+     },
+     {
+      "reason": "Cost of Product Registry use and any developer-partner terms were not stated on pages read, so the free-alternative gate is unresolved.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "SAS-4-E2"
+     }
+    ]
+   },
+   "researcherVerdict": "uncertain",
+   "verdictReason": "Open question: will importers with about 20-500 SKUs across several suppliers and labs pay a recurring fee for a lab-neutral certificate register when the regulator's Product Registry, lab services (Eurofins, Intertek, TUV SUD) and a $199 workbook cover storage and submission, and the July 8, 2026 deadline has already passed? The edge is claimed, not evidenced, and only one price point (SAS-4-E3) exists; resolve by checking Product Registry cost and developer terms and pre-selling to ten importers."
+  }
+ ]
+}

@@ -1,0 +1,1459 @@
+{
+ "scanId": "g281_scan2",
+ "protocol": "scan2_manual_edge_first_agent_reported",
+ "generatedAt": "2026-10-10T23:32:25.016Z",
+ "scan": {
+  "contract": "reveng_global_scan_v6_v1",
+  "valid": true,
+  "reasons": [],
+  "rawCandidates": 32,
+  "familiesRepresented": 8,
+  "byFamily": {
+   "digital_or_data_products": 4,
+   "ecommerce_or_dropshipping": 4,
+   "games": 4,
+   "marketplaces": 4,
+   "media_or_content": 4,
+   "physical_products": 4,
+   "saas_or_micro_saas": 4,
+   "services": 4
+  },
+  "thinFamilies": []
+ },
+ "decision": {
+  "verdict": "no_winner",
+  "leader": null,
+  "unmet_conditions": [
+   "provisional_run:evidence_not_engine_verified",
+   "no_candidate_survived_hard_gates"
+  ],
+  "hard_blockers": [
+   "provisional_run:evidence_not_engine_verified",
+   "no_candidate_survived_hard_gates"
+  ],
+  "margin_adjusted_points": null,
+  "survivors": 0,
+  "ranking": [],
+  "integrity_violations": []
+ },
+ "counts": {
+  "killed": 24,
+  "uncertain": 8
+ },
+ "combinedWithScan2": null,
+ "candidates": [
+  {
+   "id": "DAT-1",
+   "name": "Cross-state normalized highway pay-item unit-price benchmark built from state DOT bid tabulations",
+   "family": "digital_or_data_products",
+   "verdict": "killed",
+   "verdictReason": "Killed: the multi-agency incumbent (Bid Express, $54-60/mo) and free DOT tools cover most of the wedge, the cross-state crosswalk is copyable labor over public records, and the price ceiling caps gross profit; no structural edge is evidenced.",
+   "raw": 35.6,
+   "adjusted": 21.36,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "proprietary_or_compounding_data",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Bid Express Competitive Analysis Suite (Bid Tab Analysis + Competitor Insights; $648/yr billed yearly)",
+   "unresolved": 0,
+   "evidenceCount": 7,
+   "altCount": 3,
+   "altFull": [],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "Bid Express already sells multi-agency historical bid-tab analysis for $54-60/month and DOTs publish free search tools, so the buyer's price ceiling is about $60/month and the wedge is partly covered for free.",
+     "ref": "DAT-1-E1"
+    },
+    {
+     "severity": "major",
+     "reason": "No exclusive supply: every input is a public record and Oman Systems already serves contractors and DOTs in many states.",
+     "ref": "DAT-1-E2"
+    },
+    {
+     "severity": "major",
+     "reason": "Gross profit ceiling is low at the $54-60/month anchor and reaching estimators is manual B2B selling, not automated.",
+     "ref": "DAT-1-E1"
+    },
+    {
+     "severity": "minor",
+     "reason": "The item-ID mismatch evidence is from 2003 and may be out of date (AASHTO item lists may have converged).",
+     "ref": "DAT-1-E3"
+    }
+   ]
+  },
+  {
+   "id": "DAT-2",
+   "name": "Death Master File match API / batch service run as a certified LADMF licensee for small pension plans, insurers and credit unions",
+   "family": "digital_or_data_products",
+   "verdict": "killed",
+   "verdictReason": "Killed: licence-intrinsic edge exists but is purchasable and already held by certified incumbents, and the documented fixed NTIS costs (about $19k in year one plus assessor and security) break the $10k reference-entrant capital limit.",
+   "raw": 42.1,
+   "adjusted": 25.26,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "regulatory_license_intrinsic_to_model",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "reference_entrant",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Certified commercial death-match vendors (Streamline Verify, Berwyn Group CertiDeath) - price UNPUBLISHED, quote-only; 0 here means unknown, not free",
+   "unresolved": 0,
+   "evidenceCount": 9,
+   "altCount": 3,
+   "altFull": [
+    "Buyer certifies directly with NTIS and buys weekly LADMF updates ($2,930/yr certification + $12,762/yr weekly updates, about $1,308/month)",
+    "Certified commercial death-match vendors (Streamline Verify, Berwyn Group CertiDeath) - price UNPUBLISHED, quote-only; 0 here means unknown, not free"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "Documented NTIS fees ($2,930 certification + $3,105 base file + $12,762 weekly updates + $247 attestation, about $19k) exceed the $10,000 reference budget before the unpublished accredited-assessor fee.",
+     "ref": "DAT-2-E4"
+    },
+    {
+     "severity": "major",
+     "reason": "Certified vendors (Streamline Verify, Berwyn Group) already sell DMF matching without the buyer certifying, so the licence barrier protects incumbents, not the entrant.",
+     "ref": "DAT-2-E6"
+    },
+    {
+     "severity": "major",
+     "reason": "Ongoing compliance (annual recertification, 3-year attestation, unscheduled audits, fines up to $250,000) makes owner time and liability heavy for a solo entrant.",
+     "ref": "DAT-2-E7"
+    }
+   ]
+  },
+  {
+   "id": "DAT-3",
+   "name": "A la carte FDA Form 483 / EIR archive and citation-trend subscription for small FDA-regulated manufacturers and consultants",
+   "family": "digital_or_data_products",
+   "verdict": "killed",
+   "verdictReason": "Killed: the only differentiator is a lower price, FOIA supply is slow and non-exclusive, and the incumbent (47,000+ documents, instant access) plus FDA's free reading room and dashboard cover the wedge.",
+   "raw": 38.3,
+   "adjusted": 22.98,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_type_not_an_edge:cheaper",
+   "edgeType": "cheaper",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "FDA OII FOIA Electronic Reading Room (posted 483s/EIRs, RSS feed)",
+   "unresolved": 0,
+   "evidenceCount": 7,
+   "altCount": 4,
+   "altFull": [
+    "Redica Systems (Document Store + analytics; Vendr median $212,000/yr)"
+   ],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "No supply edge: un-posted 483s/EIRs require FOIA taking 'hundreds of days' while the incumbent already holds 47,000+ documents on demand, so a new entrant cannot get ahead on exclusive supply within 365 days.",
+     "ref": "DAT-3-E3"
+    },
+    {
+     "severity": "major",
+     "reason": "FDA's reading room and Data Dashboard publish a free subset and weekly datasets, covering much of what a small buyer needs.",
+     "ref": "DAT-3-E5"
+    },
+    {
+     "severity": "major",
+     "reason": "The surviving proposition is only a cheaper tier, which is not a structural edge, and the buyer segment's willingness to pay is unverified.",
+     "ref": "DAT-3-E1"
+    },
+    {
+     "severity": "minor",
+     "reason": "FDA appears to post FOIA'd documents once requested repeatedly, which would erode any exclusivity (rule wording unverified).",
+     "ref": "DAT-3-E4"
+    }
+   ]
+  },
+  {
+   "id": "DAT-4",
+   "name": "Contractor insurance and bond expiry (x-date) calendar with carrier-switch history, built from open state contractor-licence registers",
+   "family": "digital_or_data_products",
+   "verdict": "killed",
+   "verdictReason": "Killed: free state files and pay-per-record packagers already supply the expiry dates; the compounding carrier-switch history is a real but unvalidated and slow-to-build add-on that cannot produce differentiated revenue within 365 days.",
+   "raw": 42.3,
+   "adjusted": 25.38,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "proprietary_or_compounding_data",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "California CSLB Master List + Workers' Compensation free download (policy company, number and dates)",
+   "unresolved": 2,
+   "evidenceCount": 7,
+   "altCount": 4,
+   "altFull": [
+    "California CSLB Master List + Workers' Compensation free download (policy company, number and dates)",
+    "Washington L&I contractor licence, bond and insurance open datasets on data.wa.gov (CSV/JSON)",
+    "Apify packaged WA contractor bonds and insurance actor (from $0.06 per 1,000 records; about $6/month at 100k records)"
+   ],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "The free CSLB download and the free WA open datasets already contain the policy and bond end dates the wedge sells, and pay-per-record packagers exist at $0.06 per 1,000 records, so the core expiry-calendar wedge is covered for free.",
+     "ref": "DAT-4-E4"
+    },
+    {
+     "severity": "major",
+     "reason": "The only non-copyable asset, carrier-switch history, needs 12+ months of snapshots before it exists and no evidence shows agents will pay for it.",
+     "ref": "DAT-4-E1"
+    },
+    {
+     "severity": "major",
+     "reason": "Distribution to agencies is manual and unadvantaged; other packagers can snapshot the same registers.",
+     "ref": "DAT-4-E5"
+    },
+    {
+     "severity": "minor",
+     "reason": "Only some states publish bulk policy dates (CA, WA confirmed), so multi-state coverage is limited and uncertain.",
+     "ref": "DAT-4-E6"
+    }
+   ]
+  },
+  {
+   "id": "ECO-1",
+   "name": "Success-fee IEEPA tariff-refund filing service for small e-commerce importers",
+   "family": "ecommerce_or_dropshipping",
+   "verdict": "killed",
+   "verdictReason": "Killed: the refund-filing step is customs business (ECO1-E4) and CAPE submission is restricted to the IOR or its licensed broker (ECO1-E7), a free self-file path and incumbents (FreightRight, Ayar Law, Leyton) cover the wedge (ECO1-E5, ECO1-E2, ECO1-E1), carriers auto-refund many informal entries (ECO1-E6), and the demand is one-time. Conflicting source noted: Jet Worldwide (23 Apr 2026) says informal-entry refunds go to the consignee as IOR yet also says carriers are expected to refund directly, and does not reconcile the two.",
+   "raw": 28,
+   "adjusted": 16.8,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_none",
+   "edgeType": "unique_recovery_or_outcome_based_economics",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Importer self-files a CAPE declaration in CBP's ACE portal (free; IOR with ACE access)",
+   "unresolved": 1,
+   "evidenceCount": 10,
+   "altCount": 4,
+   "altFull": [
+    "Importer self-files a CAPE declaration in CBP's ACE portal (free; IOR with ACE access)",
+    "FreightRight files IEEPA refunds for e-commerce sellers for a 'small one-time fee' (amount undisclosed; free ACE setup guidance)",
+    "Contingency specialists (Ayar Law 'pure contingency'; Leyton 'success-based fee'); percentage undisclosed, nothing upfront"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "Filing refund claims for third parties is customs business (19 CFR 111.1) and CAPE can only be submitted by the IOR or its licensed broker, so an unlicensed stranger cannot own the revenue-generating step.",
+     "ref": "ECO1-E4"
+    },
+    {
+     "severity": "fatal",
+     "reason": "A free path (self-file in ACE) and low-cost or contingency incumbents (FreightRight, Ayar Law, Leyton) already cover the whole wedge; outcome-based pricing is standard and is not an edge.",
+     "ref": "ECO1-E5"
+    },
+    {
+     "severity": "major",
+     "reason": "Carriers such as UPS automatically file and pass through refunds on de minimis and informal entries where they are IOR, removing much of the small-seller pool.",
+     "ref": "ECO1-E6"
+    },
+    {
+     "severity": "major",
+     "reason": "One-time, deadline-driven demand with phased eligibility; no repeat revenue or accumulating data.",
+     "ref": "ECO1-E8"
+    },
+    {
+     "severity": "minor",
+     "reason": "Sibling idea (parcel-carrier refund audit for Shopify merchants) was checked and also rejected: Refund Retriever already charges 50% of refunds up to $250k annual shipping and integrates with ShipWorks, and refunds are small relative to spend.",
+     "ref": "ECO1-E9"
+    }
+   ]
+  },
+  {
+   "id": "ECO-2",
+   "name": "Multi-country EU packaging-EPR authorised-representative subscription for non-EU direct-to-consumer sellers",
+   "family": "ecommerce_or_dropshipping",
+   "verdict": "uncertain",
+   "verdictReason": "Uncertain, leaning kill. Open questions: (1) real cost and bankability of forming a legal seat per member state for a non-resident with under $10,000 (not researched); (2) whether state or marketplace enforcement will force small DTC sellers to buy before the entrant's cash runs out (ECO2-E5 says no mass action yet); (3) whether the representative carries liability that insurance would price above the EUR 190 per stream market rate (ECO2-E1). Only the legal-seat requirement is structural, and it currently benefits existing providers, not the entrant. Prices for multi-country providers were not published, so the market rate is based on one France-only quote and one shop's cost estimate.",
+   "raw": 45.3,
+   "adjusted": 27,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "regulatory_license_intrinsic_to_model",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Multi-country providers (Avask, Ecocomply, 24hour-AR): quote-only prices; 24hour-AR covers EPR 'through our partner'",
+   "unresolved": 0,
+   "evidenceCount": 7,
+   "altCount": 5,
+   "altFull": [
+    "Multi-country providers (Avask, Ecocomply, 24hour-AR): quote-only prices; 24hour-AR covers EPR 'through our partner'"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "The entrant has no stranger-accessible edge: the scarce input (a registered legal seat per member state) must be built or rented country by country, and incumbents already hold or resell it.",
+     "ref": "ECO2-E4"
+    },
+    {
+     "severity": "major",
+     "reason": "Amazon Pay on Behalf is a very cheap alternative for marketplace sellers in France, Spain and the UK.",
+     "ref": "ECO2-E2"
+    },
+    {
+     "severity": "minor",
+     "reason": "Enforcement of the representative duty is unproven outside Germany, so willingness to pay may not materialise within the first year.",
+     "ref": "ECO2-E5"
+    }
+   ]
+  },
+  {
+   "id": "ECO-3",
+   "name": "California Prop 65 notice early-warning feed for online sellers",
+   "family": "ecommerce_or_dropshipping",
+   "verdict": "killed",
+   "verdictReason": "Killed: the data is the AG's free register (ECO3-E3), labs publish free monthly analyses (ECO3-E6), an Apify actor sells the same structured search for $0.01 per 1,000 results (ECO3-E1), warning display apps cost $4.99 per month (ECO3-E2), and I found no evidence that sellers pay for monitoring (ECO3-E4, ECO3-E5 show enforcement but not paid demand).",
+   "raw": 29.7,
+   "adjusted": 17.82,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_none",
+   "edgeType": "proprietary_or_compounding_data",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "California AG 60-day notice search (free; filters by product, chemical, defendant, date; no export or email alerts listed)",
+   "unresolved": 0,
+   "evidenceCount": 6,
+   "altCount": 4,
+   "altFull": [],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "Free public register, free lab bulletins and a usage-priced structured actor ($0.01 per 1,000 results) already deliver the data; there is no exclusive or compounding asset.",
+     "ref": "ECO3-E1"
+    },
+    {
+     "severity": "major",
+     "reason": "No evidence found that sellers pay for notice monitoring; spend goes to testing, warnings and legal defence instead.",
+     "ref": "ECO3-E4"
+    }
+   ]
+  },
+  {
+   "id": "ECO-4",
+   "name": "Amazon seller liability-insurance agency (certificate-of-insurance placement and renewals)",
+   "family": "ecommerce_or_dropshipping",
+   "verdict": "killed",
+   "verdictReason": "Killed: Amazon's Accelerator network (ECO4-E3) and carriers selling direct from about $25 per month (ECO4-E1, ECO4-E4) fully cover the wedge at no extra cost to the seller, the only moat (a producer licence) is open to anyone, and commission of roughly 10-20% on a $300 policy (ECO4-E5) yields about $30-$80 per policy-year. Unverified: Amazon's admission rules for new Accelerator participants (the source did not say) and the exact sales trigger.",
+   "raw": 32.5,
+   "adjusted": 19.5,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_none",
+   "edgeType": "regulatory_license_intrinsic_to_model",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Status quo: wait until Amazon asks for a certificate (proof is required 'when requested by Amazon') and then buy",
+   "unresolved": 0,
+   "evidenceCount": 6,
+   "altCount": 3,
+   "altFull": [
+    "Amazon Insurance Accelerator inside Seller Central (free to compare and buy quotes from Chubb, Hiscox, Liberty Mutual, Markel, Travelers, Simply Business, Next and others)",
+    "Buy direct from a carrier such as Next Insurance (general liability from about $25 per month; most customers $22 to $33)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "Amazon's Insurance Accelerator, built with Marsh and listing major carriers, already lets sellers compare and buy compliant cover inside Seller Central for free, so a free alternative covers the entire wedge.",
+     "ref": "ECO4-E3"
+    },
+    {
+     "severity": "major",
+     "reason": "Per-policy economics are tiny (roughly $30-$80 commission per year on a $22-$33 monthly premium) and a broker cannot undercut carrier price.",
+     "ref": "ECO4-E4"
+    }
+   ]
+  },
+  {
+   "id": "GAM-1",
+   "name": "Steam sales-actuals benchmark panel for indie developers",
+   "family": "games",
+   "verdict": "killed",
+   "verdictReason": "Killed: the data edge is real in principle (Steamworks actuals are private and sharing is allowed, GAM-1-E3), but free survey benchmarks cover the headline metric (GAM-1-E6), the only demonstrated collector of developer actuals needed a large newsletter audience to get 50 responses and says bigger developers hesitate (GAM-1-E4, GAM-1-E5), and buyers already have $0-$25/month estimators (GAM-1-E1, GAM-1-E8). A stranger with no audience cannot seed the panel.",
+   "raw": 40.9,
+   "adjusted": 24.54,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "proprietary_or_compounding_data",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "impress.games Steam Wishlists To Sales Calculator (free; GameDiscoverCo survey medians)",
+   "unresolved": 0,
+   "evidenceCount": 9,
+   "altCount": 5,
+   "altFull": [],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "Cold start: contributors must hand private revenue data to an unknown panel; the largest collector (GameDiscoverCo) reached only 50 survey responses and notes bigger developers hesitate (GAM-1-E4, GAM-1-E5).",
+     "ref": "GAM-1-E5"
+    },
+    {
+     "severity": "major",
+     "reason": "Free survey-based benchmarks and calculators already cover the headline wishlist-to-sales metric (GAM-1-E6, GAM-1-E7).",
+     "ref": "GAM-1-E6"
+    },
+    {
+     "severity": "minor",
+     "reason": "Incumbents can copy the mechanism by adding an upload form; the edge is a data race the entrant starts from zero in (GAM-1-E7).",
+     "ref": "GAM-1-E7"
+    }
+   ]
+  },
+  {
+   "id": "GAM-2",
+   "name": "Success-fee royalty statement review for developers on publisher deals",
+   "family": "games",
+   "verdict": "killed",
+   "verdictReason": "Killed: demand exists (day rates of GBP 500-1,000, GAM-2-E1; about $16m recovered by two firms since 2002, GAM-2-E2) but the market is small and episodic (GAM-2-E3, GAM-2-E4), success-fee terms are not exclusive to an entrant (GAM-2-E6), books access runs through accountants under the developer's contract right (GAM-2-E7), and pessimistic economics are negative. A stranger without audit expertise would pre-fund audits for a handful of cases a year.",
+   "raw": 36.8,
+   "adjusted": 22.08,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "unique_recovery_or_outcome_based_economics",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Developer self-review of statements against contract definitions and own platform data (DIY)",
+   "unresolved": 0,
+   "evidenceCount": 9,
+   "altCount": 3,
+   "altFull": [
+    "Boutique royalty-audit firms (GHJ, Media Forensics): GBP 500-1,000 per man-day; a 5-day audit is roughly $4,900 (FX approximate), amortised over 12 months"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "Outcome-based pricing is not exclusive: audit firms already negotiate higher contingency in place of day rates (GAM-2-E6).",
+     "ref": "GAM-2-E6"
+    },
+    {
+     "severity": "major",
+     "reason": "Audit rights are described as fairly rare to exercise and audits cost several thousand dollars, so demand is thin and episodic (GAM-2-E3, GAM-2-E4).",
+     "ref": "GAM-2-E3"
+    },
+    {
+     "severity": "major",
+     "reason": "Pessimistic economics are negative because audit days must be pre-funded under a success-fee model (GAM-2-E1).",
+     "ref": "GAM-2-E1"
+    },
+    {
+     "severity": "minor",
+     "reason": "Could not confirm that Media Forensics or Loxley still operate; only 2010-era pages surfaced, so the current competitor set is unverified.",
+     "ref": "GAM-2-E2"
+    }
+   ]
+  },
+  {
+   "id": "GAM-3",
+   "name": "Premium Godot add-ons sold through the official Godot Asset Store",
+   "family": "games",
+   "verdict": "uncertain",
+   "verdictReason": "Open question: when, and on what eligibility and fee terms, will the Godot Asset Store open paid listings beyond a select creator group (GAM-3-E3, GAM-3-E4, GAM-3-E5), and do Godot developers buy add-ons at volume? Demand for paid Godot add-ons is evidenced only by itch.io listings (GAM-3-E1, GAM-3-E2), with no sales data; free alternatives partly cover the need (GAM-3-E10). Not killable on evidence, not a survivor: re-check once paid listings go live.",
+   "raw": 38.3,
+   "adjusted": 22.98,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "privileged_or_low_cac_distribution",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Free open-source add-ons in the Godot Asset Library and the new store (free community assets)",
+   "unresolved": 0,
+   "evidenceCount": 10,
+   "altCount": 3,
+   "altFull": [],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "Paid listings are not live and will first go to a select group of creators; eligibility, fee and timing are unpublished (GAM-3-E3, GAM-3-E4, GAM-3-E5).",
+     "ref": "GAM-3-E4"
+    },
+    {
+     "severity": "major",
+     "reason": "Free open-source add-ons are the Godot norm and no purchase volumes for paid add-ons were found (GAM-3-E10, GAM-3-E1).",
+     "ref": "GAM-3-E10"
+    },
+    {
+     "severity": "minor",
+     "reason": "Closest live analogue (Roblox plugin store) shows USD-only payment friction and piracy that would also hit a code-based add-on (GAM-3-E8).",
+     "ref": "GAM-3-E8"
+    }
+   ]
+  },
+  {
+   "id": "GAM-4",
+   "name": "Curated pay-what-you-want tabletop RPG bundle storefront",
+   "family": "games",
+   "verdict": "killed",
+   "verdictReason": "Killed: buyers do pay (GAM-4-E1, GAM-4-E3) but the compounding asset is a buyer list and publisher trust that the incumbent built over 13 years (GAM-4-E4); organizer guidance says bundles depend on people who already know and trust you (GAM-4-E5), the tool is open to everyone (GAM-4-E2), the leader is flat (GAM-4-E9) and larger platforms run bundles weekly (GAM-4-E10). A stranger has no channel to the first 100 buyers.",
+   "raw": 32.7,
+   "adjusted": 19.62,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "network_effect_or_marketplace_liquidity",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Bundle of Holding (average paid per copy $24.61 in 2017; per-bundle buyer cost)",
+   "unresolved": 0,
+   "evidenceCount": 10,
+   "altCount": 4,
+   "altFull": [],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "Cold start: bundles depend on a pre-existing circle of people who know and trust the organizer (GAM-4-E5); the leader built 86,000 customers over 13 years (GAM-4-E4) and social media is under 2% of its traffic (GAM-4-E6).",
+     "ref": "GAM-4-E5"
+    },
+    {
+     "severity": "major",
+     "reason": "Leader sales are flat and Humble, DriveThruRPG and itch.io already run weekly bundles (GAM-4-E9, GAM-4-E10).",
+     "ref": "GAM-4-E9"
+    },
+    {
+     "severity": "minor",
+     "reason": "No organizer fee exists on itch.io; income is a negotiated revenue weight, and Humble keeps at least 30% (GAM-4-E2, GAM-4-E7).",
+     "ref": "GAM-4-E7"
+    }
+   ]
+  },
+  {
+   "id": "MKT-1",
+   "name": "Open-slot exchange for small-farm meat processing (inspected plants)",
+   "family": "marketplaces",
+   "verdict": "killed",
+   "verdictReason": "Killed: the scarce resource is plant capacity, which a booking layer cannot create; plants already buy scheduling software with customer portals (MKT-1-E4, MKT-1-E5, MKT-1-E6) and discovery is free (MKT-1-E3), so no structural edge or payer was found. Not verified: whether any plant would share open slots with a third party (no contact allowed), and the prices of Finer Butcher and Smart Locker (not published on the pages read).",
+   "raw": 32.1,
+   "adjusted": 19.26,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_none",
+   "edgeType": "embedded_workflow_or_system_of_record",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Plant-run booking portal or phone (e.g. plants using finerbutcher.com scheduling)",
+   "unresolved": 0,
+   "evidenceCount": 7,
+   "altCount": 4,
+   "altFull": [],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "No payer: plants are over capacity and already pay for their own scheduling software, and nothing shows producers or plants paying a third party to move slots.",
+     "ref": "MKT-1-E2"
+    },
+    {
+     "severity": "major",
+     "reason": "The scheduling system-of-record layer is occupied by processor software vendors with customer portals.",
+     "ref": "MKT-1-E5"
+    },
+    {
+     "severity": "major",
+     "reason": "A free university-run directory already covers processor discovery.",
+     "ref": "MKT-1-E3"
+    }
+   ]
+  },
+  {
+   "id": "MKT-2",
+   "name": "Lab-bid exchange for children's-product compliance testing",
+   "family": "marketplaces",
+   "verdict": "killed",
+   "verdictReason": "Killed: ComplianceGate already sells a booking and price-comparison platform from 199 USD a year (MKT-2-E1, MKT-2-E3), and free lab lists exist (MKT-2-E4, MKT-2-E5); a quote dataset is not an exclusive asset. Not verified: ComplianceGate's lab count or revenue model, and whether labs would pay referral fees.",
+   "raw": 37.7,
+   "adjusted": 22.62,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_none",
+   "edgeType": "proprietary_or_compounding_data",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "ComplianceGate platform (subscription from 199 USD per year, about 16.6 per month; lab fees paid separately)",
+   "unresolved": 0,
+   "evidenceCount": 7,
+   "altCount": 4,
+   "altFull": [
+    "ComplianceGate platform (subscription from 199 USD per year, about 16.6 per month; lab fees paid separately)"
+   ],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "An incumbent already operates 'Book testing and compare prices' with named lab partners, and free lab lists exist from the CPSC and Amazon.",
+     "ref": "MKT-2-E3"
+    },
+    {
+     "severity": "major",
+     "reason": "Labs bill sellers directly, and no evidence was found that labs pay referral fees to an exchange.",
+     "ref": "MKT-2-E6"
+    }
+   ]
+  },
+  {
+   "id": "MKT-3",
+   "name": "Acquired niche hobby forum with paid seller membership classifieds",
+   "family": "marketplaces",
+   "verdict": "uncertain",
+   "verdictReason": "Uncertain, with a low prior: the only evidence of sellers paying comes from long-established forums (MKT-3-E1, MKT-3-E3), while purchasable forums are mostly dead (MKT-3-E5) and fee evasion is documented (MKT-3-E4). Open question: whether any acquirable forum has at least about 100 live sale threads a month with feedback history; this could not be checked from listing pages read, and no actual sale prices were disclosed.",
+   "raw": 38.3,
+   "adjusted": 22.98,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "acquirable_owned_audience_or_partner_channel",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Facebook Marketplace and groups (local pickup free; shipped sales 10 percent)",
+   "unresolved": 0,
+   "evidenceCount": 8,
+   "altCount": 4,
+   "altFull": [],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "Fee evasion to free channels is documented on a forum that tried a mandatory seller fee.",
+     "ref": "MKT-3-E4"
+    },
+    {
+     "severity": "major",
+     "reason": "Adverse selection: forum advisers say most forums offered for sale are dead.",
+     "ref": "MKT-3-E5"
+    },
+    {
+     "severity": "minor",
+     "reason": "Moderation and dispute handling make owner time high.",
+     "ref": "MKT-3-E8"
+    }
+   ]
+  },
+  {
+   "id": "MKT-4",
+   "name": "Price-listed booking directory for immigration medical exams (Form I-693 civil surgeons)",
+   "family": "marketplaces",
+   "verdict": "killed",
+   "verdictReason": "Killed: easyIME already offers a free, price-listed, online-booking directory for civil-surgeon exams (MKT-4-E3, MKT-4-E4), the supply list is a public USCIS registry (MKT-4-E1), and exams are one-time purchases. Not verified: easyIME's clinic count, traffic and whether clinics pay it; per-exam referral fees; the legality of clinic-paid referral fees by state.",
+   "raw": 30.7,
+   "adjusted": 18.42,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_none",
+   "edgeType": "exclusive_or_difficult_supply_or_access",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "USCIS Find a Civil Surgeon tool",
+   "unresolved": 1,
+   "evidenceCount": 6,
+   "altCount": 3,
+   "altFull": [
+    "easyIME price-listed booking directory (free to applicants)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "A free competitor already offers price-listed online booking of civil-surgeon exams.",
+     "ref": "MKT-4-E3"
+    },
+    {
+     "severity": "major",
+     "reason": "Supply is a public registry and the exam is a one-time purchase, so no exclusive supply or repeat revenue accrues.",
+     "ref": "MKT-4-E1"
+    }
+   ]
+  },
+  {
+   "id": "MED-1",
+   "name": "Marketplace-bought niche newsletter (1k-10k subscribers) held for sponsor income",
+   "family": "media_or_content",
+   "verdict": "killed",
+   "verdictReason": "Buying small newsletters is a real, priced market (about 2x annual profit; sponsors pay per-issue CPMs), but the price per subscriber ($1.84 on the 8.3k listing) is inside the cost of renting subscribers ($1.50-$2.50), so there is no measurable structural edge, only speed. The market is shallow, absolute profit at a $10k budget is about $400/month, and the only cheaper-per-subscriber list found (30k crypto, $0.57/sub) earns about $0.50 per subscriber per year. Not re-proposed from scan 1: this is an acquisition play, not the sponsor-lead-sheet service.",
+   "raw": 30.5,
+   "adjusted": 18.3,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "acquirable_owned_audience_or_partner_channel",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Rent subscribers through paid recommendation/partner networks (about $1.50-$2.50 per subscriber; cost shown assumes 500 new subscribers a month at $1.50)",
+   "unresolved": 0,
+   "evidenceCount": 8,
+   "altCount": 4,
+   "altFull": [],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "No per-subscriber discount versus renting: the 8.3k list asks about $1.84 per subscriber against a $1.50-$2.50 default rental range, and 'faster' is not an edge.",
+     "ref": "MED-1-E1, MED-1-E4"
+    },
+    {
+     "severity": "major",
+     "reason": "Thin deal flow: fewer than 15 interesting newsletters across marketplaces and 3 replies to 97 outreach emails.",
+     "ref": "MED-1-E5"
+    },
+    {
+     "severity": "major",
+     "reason": "Absolute profit is small relative to hours: about $400/month of profit for a $10k budget.",
+     "ref": "MED-1-E1"
+    },
+    {
+     "severity": "minor",
+     "reason": "All subscriber, open-rate and profit figures are seller-reported and not independently verified.",
+     "ref": "MED-1-E2"
+    }
+   ]
+  },
+  {
+   "id": "MED-2",
+   "name": "Acquired evergreen podcast back-catalog (10k+ monthly downloads) monetized through ad marketplaces",
+   "family": "media_or_content",
+   "verdict": "uncertain",
+   "verdictReason": "Open question: whether platform-exported stats and repeat listings (10k+ monthly downloads, 100+ episodes) exist at <=1.5x annual profit, and whether downloads and ad revenue hold after transfer. The one priced listing ($7,960-$9,950 for $597/mo profit) is cheaper relative to profit than newsletters (2x-5x) and the 200-episode catalog is genuinely slow to recreate, but pessimistic economics turn negative if costs are fixed and only one listing was found. Not killed because free hosting does not give an audience.",
+   "raw": 37,
+   "adjusted": 22.2,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "acquirable_owned_audience_or_partner_channel",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Spotify for Creators: free hosting plus Partner Program (Spotify keeps 50% of ad revenue); build your own 200-episode catalog (about 1,400 days at weekly cadence)",
+   "unresolved": 0,
+   "evidenceCount": 6,
+   "altCount": 3,
+   "altFull": [],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "Only one comparable listing was found and all download and profit figures are seller-reported, so a repeatable sub-1.5x deal flow is unproven.",
+     "ref": "MED-2-E1, MED-2-E3"
+    },
+    {
+     "severity": "major",
+     "reason": "Revenue needs continued publishing: Spotify can deactivate dynamic ads after six months without an episode, so the catalog is not a pure passive asset.",
+     "ref": "MED-2-E4"
+    },
+    {
+     "severity": "minor",
+     "reason": "Absolute profit is about $7k a year per $10k deployed, small for a business.",
+     "ref": "MED-2-E1"
+    }
+   ]
+  },
+  {
+   "id": "MED-3",
+   "name": "State-qualified weekly newspaper that carries statutory legal notices",
+   "family": "media_or_content",
+   "verdict": "killed",
+   "verdictReason": "The statutory qualification barrier is real but accrues to incumbent papers: Texas requires 12 months of continuous weekly publication plus second-class mail, so a $10k entrant earns no notice revenue in year one, and the only priced paper listing asks $154,900. Legal-notice mandates are also being debated or moved to government websites in several states. Failed on capital, timing and policy erosion; per-notice rate evidence found is stale (2002-2014 data).",
+   "raw": 37.9,
+   "adjusted": 22.74,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_none",
+   "edgeType": "regulatory_license_intrinsic_to_model",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "reference_entrant",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Government-website posting where state law allows it (free to the issuer; Florida moved this way)",
+   "unresolved": 0,
+   "evidenceCount": 7,
+   "altCount": 4,
+   "altFull": [
+    "Existing local legal newspapers charging per notice (about $210 for a 7-inch notice at a $10/inch rate, three runs; page rates dated 2002-2014)",
+    "Buy an existing weekly with a legal-notice franchise (listed at $154,900; shown amortized over 60 months)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "Capital: the only priced qualifying weekly asks $154,900, far above the $10,000 reference budget.",
+     "ref": "MED-3-E1"
+    },
+    {
+     "severity": "fatal",
+     "reason": "The regulatory barrier protects incumbents: a launch needs 12 continuous months in Texas, so first notice revenue is after day 365.",
+     "ref": "MED-3-E2"
+    },
+    {
+     "severity": "major",
+     "reason": "Policy erosion: more than a dozen states have introduced bills to move notices to government websites, and Florida allowed it.",
+     "ref": "MED-3-E7, MED-3-E4"
+    },
+    {
+     "severity": "minor",
+     "reason": "A weekly print paper is labour-intensive and cannot be automated end to end.",
+     "ref": "MED-3-E2"
+    }
+   ]
+  },
+  {
+   "id": "MED-4",
+   "name": "Pooled AI licensing agency for small-publisher archives",
+   "family": "media_or_content",
+   "verdict": "killed",
+   "verdictReason": "AI buyers pay large sums to a few large rights holders, but for the long tail the market 'settles toward a value of zero', and TollBit, ProRata and Cloudflare already offer small publishers free or revenue-share intermediation. No exclusive supply or buyer access was evidenced. A specialist-archive pool for vertical-AI buyers (like the JAMA/NEJM deals) is the only unexplored residual and is unverified for small publishers.",
+   "raw": 25.6,
+   "adjusted": 15.36,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "exclusive_or_difficult_supply_or_access",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "TollBit: publishers set per-scrape prices and keep 100% of revenue (AI companies pay a transaction fee)",
+   "unresolved": 2,
+   "evidenceCount": 5,
+   "altCount": 4,
+   "altFull": [
+    "TollBit: publishers set per-scrape prices and keep 100% of revenue (AI companies pay a transaction fee)",
+    "ProRata / Gist Answers: ad-revenue share with publishers at 50/50, no fee to publishers (over 500 publishers signed)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "Free-to-publisher incumbents (TollBit 100% to publisher, ProRata, Cloudflare ~30% cut) already cover the publisher-side wedge.",
+     "ref": "MED-4-E1"
+    },
+    {
+     "severity": "fatal",
+     "reason": "The long tail of small publishers is valued near zero by AI buyers, so a pool has little to sell.",
+     "ref": "MED-4-E3"
+    },
+    {
+     "severity": "major",
+     "reason": "Buyer concentration: Microsoft's marketplace starts with Copilot as the only buyer and a limited set of publishers.",
+     "ref": "MED-4-E4"
+    },
+    {
+     "severity": "minor",
+     "reason": "Vertical-AI demand found so far (OpenEvidence) licenses only top journals, not small publishers.",
+     "ref": "MED-4-E5"
+    }
+   ]
+  },
+  {
+   "id": "PHY-1",
+   "name": "Approved second-source supplier of simple spare parts to the Defense Logistics Agency (Source Approval route, 40% split award)",
+   "family": "physical_products",
+   "verdict": "uncertain",
+   "verdictReason": "Open question: can a stranger with no Government delivery record reach an approved SAR within roughly 12-18 months, and earn positive margin on openly competable RFQs in the meantime? Evidence confirms the 40% split-award rule, the roughly one-quarter single-source share and zero-cost registrations, but not margins, win rates, SAR timing for a non-manufacturer, or reorder frequency.",
+   "raw": 46.2,
+   "adjusted": 27,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "regulatory_license_intrinsic_to_model",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "DIBBS direct quoting on openly competable RFQs (free vendor registrations)",
+   "unresolved": 0,
+   "evidenceCount": 9,
+   "altCount": 4,
+   "altFull": [],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "SAR approval needs a significant Government production history and at least 180 days of Navy or Army review; the entrant has neither on day one, so the structural edge is unavailable in year one.",
+     "ref": "PHY1-E2"
+    },
+    {
+     "severity": "major",
+     "reason": "Openly competable RFQs are quoted by professional contractors across 2,000+ daily RFQs, so pre-approval revenue is price-only competition with unobserved margin.",
+     "ref": "PHY1-E6"
+    },
+    {
+     "severity": "minor",
+     "reason": "Compliance load (NIST SP 800-171 score, DFARS safeguarding, export-controlled drawings via JCP) and nonconforming-part liability are unquantified.",
+     "ref": "PHY1-E5"
+    }
+   ]
+  },
+  {
+   "id": "PHY-2",
+   "name": "Managed right-to-repair parts-and-tools desk for small consumer-hardware brands (official parts store plus price-parity compliance log)",
+   "family": "physical_products",
+   "verdict": "uncertain",
+   "verdictReason": "Open question: will any sub-$10M hardware brand pay more than the $39/month DIY floor for a managed parts and compliance desk, given that parts must be sold at cost or authorized-provider terms and Oregon penalties only begin in 2027? Evidence shows the legal duty and large-brand outsourcing but no small-brand payer.",
+   "raw": 36.1,
+   "adjusted": 21.66,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "embedded_workflow_or_system_of_record",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Status quo: brand support desk posts manuals and sells parts by email at authorized-provider terms",
+   "unresolved": 0,
+   "evidenceCount": 7,
+   "altCount": 4,
+   "altFull": [
+    "iFixit manufacturer parts operations and right-to-repair compliance (custom plan; price not published, 0 is a placeholder not free)",
+    "Encompass outsourced parts logistics for large consumer-electronics brands (price not published, 0 is a placeholder not free)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "A free email parts desk or a $39/month store can meet the statutory minimum for a small brand, so willingness to pay is unproven.",
+     "ref": "PHY2-E6"
+    },
+    {
+     "severity": "major",
+     "reason": "Parts must be sold at authorized-provider terms or at cost, so parts mark-up cannot fund the service.",
+     "ref": "PHY2-E2"
+    },
+    {
+     "severity": "minor",
+     "reason": "iFixit and Encompass already serve brands that want parts operations; the small-brand segment has no demonstrated payer and an unknown acquisition cost.",
+     "ref": "PHY2-E5"
+    }
+   ]
+  },
+  {
+   "id": "PHY-3",
+   "name": "UL 2271-certified drop-in replacement battery packs for CPSC-warned Rad Power e-bike batteries",
+   "family": "physical_products",
+   "verdict": "killed",
+   "verdictReason": "Killed: the demand is real (31 fires, no OEM remedy; PHY3-E1, PHY3-E2) but certification of a pack design is an estimated $34,000-$56,000+ (PHY3-E5), certified Rad-fit packs already exist or are pre-selling (PHY3-E3, PHY3-E4, PHY3-E7), and no structural edge is available to a $10,000 private-label seller.",
+   "raw": 35.3,
+   "adjusted": 21.18,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_type_not_an_edge:niche_focus",
+   "edgeType": "niche_focus",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "YOSE Power Rad-compatible 48V 14Ah pack, UL2271 claimed (one-time $474.05)",
+   "unresolved": 0,
+   "evidenceCount": 7,
+   "altCount": 3,
+   "altFull": [
+    "Rad Power Bikes Safe Shield 14 Ah OEM pack, UL 2271 (one-time price shown as $499, currency not named; out of stock)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "UL 2271 certification is per pack design at an estimated $34,000-$56,000+ and 8-12+ weeks, beyond a $10,000 budget; the entrant would depend on someone else's listing.",
+     "ref": "PHY3-E5"
+    },
+    {
+     "severity": "major",
+     "reason": "Certified Rad replacement packs already exist or are pre-selling (Rad Safe Shield, YOSE listing, Zen Energy), so there is no gap to hold.",
+     "ref": "PHY3-E7"
+    },
+    {
+     "severity": "major",
+     "reason": "Fire-hazard product with a CPSC warning creates liability the reference entrant cannot insure on $10,000.",
+     "ref": "PHY3-E1"
+    },
+    {
+     "severity": "minor",
+     "reason": "One-time purchase against a finite installed base, no recurring revenue.",
+     "ref": "PHY3-E2"
+    }
+   ]
+  },
+  {
+   "id": "PHY-4",
+   "name": "Hazmat-trained dangerous-goods prep and ship service for small Amazon sellers (lithium, aerosols, flammables)",
+   "family": "physical_products",
+   "verdict": "killed",
+   "verdictReason": "Killed: no structural edge. The compliance credential is a $299 course (PHY4-E3), 36 hazmat prep centers already compete at $0.40-$1.25 per unit and one charges no hazmat surcharge (PHY4-E2), and a DIY route is cheaper for sellers who prefer to self-prep.",
+   "raw": 28.6,
+   "adjusted": 17.16,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_type_not_an_edge:generic_managed_service",
+   "edgeType": "generic_managed_service",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Seller does own DG prep after a $299 online DOT course ($299 / 12 months = $24.92/month, excluding time)",
+   "unresolved": 0,
+   "evidenceCount": 6,
+   "altCount": 3,
+   "altFull": [
+    "406 Premier Prep hazmat-capable prep (from $1.10/unit small batch; 500 units/month = $550)",
+    "Above All Prep and Ship (from $1.25/unit + $50 setup; 500 units/month = $625)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "36 hazmat-capable prep centers already list pricing from $0.40-$1.25 per unit and one charges no extra for hazmat.",
+     "ref": "PHY4-E2"
+    },
+    {
+     "severity": "major",
+     "reason": "The DOT training credential costs $299 per person, so it is not an exclusive barrier.",
+     "ref": "PHY4-E3"
+    },
+    {
+     "severity": "minor",
+     "reason": "Storing flammables needs facility modifications and threshold tracking that a $2,500 home-based entrant likely cannot meet.",
+     "ref": "PHY4-E6"
+    }
+   ]
+  },
+  {
+   "id": "SAS-1",
+   "name": "Success-fee late-delivery refund auditor for small UPS/FedEx shippers",
+   "family": "saas_or_micro_saas",
+   "verdict": "killed",
+   "verdictReason": "Killed: same success-fee model is already sold by Refund Retriever (50%) and Lojistic (29% contingency, $0 bundle), DIY manual claims cover low-volume shippers, and a lower percentage is 'cheaper', not an edge (SAS-1-E1, SAS-1-E2, SAS-1-E6). Only unresolved item: whether Lojistic's $0 bundle excludes small shippers (terms not stated).",
+   "raw": 29.6,
+   "adjusted": 17.76,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_type_not_an_edge:cheaper",
+   "edgeType": "cheaper",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Manual claims in the carrier billing portals (UPS Billing Center / FedEx Billing Online)",
+   "unresolved": 2,
+   "evidenceCount": 7,
+   "altCount": 4,
+   "altFull": [
+    "Manual claims in the carrier billing portals (UPS Billing Center / FedEx Billing Online)",
+    "Lojistic 'All Inclusive. Zero Cost.' bundle (invoice audit plus refund recovery)",
+    "Lojistic Audit & Recovery Starter ($99/month plus 19% of recovered refunds; 29% contingency tier also listed)",
+    "Refund Retriever (FedEx/UPS, no monthly fee, 50% of refunds, also a BigCommerce app)"
+   ],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "No structural edge: Refund Retriever (50% of refunds, 100% performance based) and Lojistic (29% contingency, $99/month + 19%, and a $0 bundle that includes refund recovery) already run the identical outcome-based model; an entrant can only undercut on percentage, which is 'cheaper'.",
+     "ref": "SAS-1-E1,SAS-1-E2"
+    },
+    {
+     "severity": "major",
+     "reason": "DIY covers the low-volume segment: carriers accept late-shipment credit requests online one at a time and the guide says software is not needed to start (pays off around 500 parcels per week), so small shippers have little reason to pay.",
+     "ref": "SAS-1-E6,SAS-1-E7"
+    },
+    {
+     "severity": "major",
+     "reason": "Unit economics per small shipper are roughly a few hundred dollars a year at the vendor-reported 1-3% recovery rate, which cannot carry paid acquisition.",
+     "ref": "SAS-1-E5"
+    },
+    {
+     "severity": "minor",
+     "reason": "Claim filing cannot be bulk-automated from public interfaces; using a customer's carrier login may breach carrier terms (unverified).",
+     "ref": "SAS-1-E7"
+    }
+   ]
+  },
+  {
+   "id": "SAS-2",
+   "name": "HFC refrigerant leak-rate log and repair clock for small HVAC/refrigeration contractors",
+   "family": "saas_or_micro_saas",
+   "verdict": "killed",
+   "verdictReason": "Killed: a real EPA duty exists (SAS-2-E1) but at least four products plus a free template already cover the wedge at $0-$149 per month, records are exportable so lock-in is weak, and the one competitor with public revenue shows $0/mo (SAS-2-E2, SAS-2-E3, SAS-2-E5, SAS-2-E6).",
+   "raw": 35.7,
+   "adjusted": 21.42,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_type_not_an_edge:niche_focus",
+   "edgeType": "niche_focus",
+   "edgeStatus": "none",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "ServiceTitan Refrigerant Tracking custom form (included in the platform; add-on price not stated; no leak-rate calculation described)",
+   "unresolved": 0,
+   "evidenceCount": 9,
+   "altCount": 5,
+   "altFull": [
+    "Ref LeakLog (dedicated micro-SaaS, $29 Independent / $59 Crew / $89 Business per month)"
+   ],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "No structural edge: at least four existing products (Ref LeakLog $29-$89, Plyrium $149 platform, TechBench iPhone app, ServiceTitan built-in form) plus a free MangoApps template and the paper/spreadsheet option already cover the wedge.",
+     "ref": "SAS-2-E2,SAS-2-E4,SAS-2-E5,SAS-2-E6,SAS-2-E7"
+    },
+    {
+     "severity": "major",
+     "reason": "Demand for paid micro-SaaS is unproven: the only dedicated competitor page that shows revenue lists $0/mo and a demo-only fleet.",
+     "ref": "SAS-2-E3"
+    },
+    {
+     "severity": "major",
+     "reason": "Low lock-in: records belong to the contractor and competitors export them (CSV/PDF), so a customer can switch with little cost.",
+     "ref": "SAS-2-E9,SAS-2-E8"
+    },
+    {
+     "severity": "minor",
+     "reason": "Regulatory timing risk not checked beyond the January 2026 fact sheet (later EPA changes unverified).",
+     "ref": "SAS-2-E1"
+    }
+   ]
+  },
+  {
+   "id": "SAS-3",
+   "name": "Pre-built vendor sub-processor change monitor with change history",
+   "family": "saas_or_micro_saas",
+   "verdict": "killed",
+   "verdictReason": "Killed: compounding-history edge is only claimed and every piece of the wedge except a prebuilt URL list is already free or under $14 per month (PageCrawl, changedetection.io, Visualping, Apify), and the dedicated actor shows 2 total users (SAS-3-E1, SAS-3-E4, SAS-3-E5, SAS-3-E7).",
+   "raw": 32.8,
+   "adjusted": 19.68,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "proprietary_or_compounding_data",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "PageCrawl free plan (6 pages, 220 checks, 60-minute checks)",
+   "unresolved": 0,
+   "evidenceCount": 7,
+   "altCount": 5,
+   "altFull": [
+    "PageCrawl Standard ($13.33/month, 200 pages) with its own subprocessor-monitoring guide and template"
+   ],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "Free and cheap tools already cover monitoring, diffs, alerts and history for any URL (PageCrawl free/$13.33, changedetection.io open source, Visualping, Apify $0.05 per URL); the only increment is a prebuilt URL catalog that these vendors can copy and already market for this use case.",
+     "ref": "SAS-3-E1,SAS-3-E4,SAS-3-E7,SAS-3-E3"
+    },
+    {
+     "severity": "major",
+     "reason": "Demand for a dedicated paid tool is unproven: the Apify actor built for this shows 2 total users and 1 monthly user.",
+     "ref": "SAS-3-E5"
+    },
+    {
+     "severity": "major",
+     "reason": "Vendors increasingly publish their own subscribe-to-updates mechanisms (Visualping button on 6,000+ sites), which moves the alerting job to the source.",
+     "ref": "SAS-3-E3"
+    },
+    {
+     "severity": "minor",
+     "reason": "Catalog upkeep across thousands of heterogeneous, sometimes JavaScript-only pages is continuing manual work that erodes margin at a $29 price point.",
+     "ref": "SAS-3-E4"
+    }
+   ]
+  },
+  {
+   "id": "SAS-4",
+   "name": "Lab-neutral SKU certificate register for CPSC eFiling (small consumer-product importers)",
+   "family": "saas_or_micro_saas",
+   "verdict": "uncertain",
+   "verdictReason": "Open question: will importers with about 20-500 SKUs across several suppliers and labs pay a recurring fee for a lab-neutral certificate register when the regulator's Product Registry, lab services (Eurofins, Intertek, TUV SUD) and a $199 workbook cover storage and submission, and the July 8, 2026 deadline has already passed? The edge is claimed, not evidenced, and only one price point (SAS-4-E3) exists; resolve by checking Product Registry cost and developer terms and pre-selling to ten importers.",
+   "raw": 42.3,
+   "adjusted": 25.38,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "embedded_workflow_or_system_of_record",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Eurofins CPSC eFiling digital solution (generates CPC/GCC and submits data to the Product Registry; 'no set-up fees', ongoing price not stated)",
+   "unresolved": 0,
+   "evidenceCount": 9,
+   "altCount": 4,
+   "altFull": [],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "The regulator's own optional Product Registry accepts manual, CSV and API entry, labs (Eurofins, Intertek, TUV SUD) bundle certificate digitisation and submission, and a $199 workbook exists, so storage and submission are already covered; only supplier collection and validation across several labs is open.",
+     "ref": "SAS-4-E2,SAS-4-E3,SAS-4-E4,SAS-4-E5,SAS-4-E6"
+    },
+    {
+     "severity": "major",
+     "reason": "Event-driven demand: the July 8, 2026 deadline has passed, so first-wave setup demand may already be spent, and no evidence shows importers pay a recurring fee.",
+     "ref": "SAS-4-E1,SAS-4-E3"
+    },
+    {
+     "severity": "minor",
+     "reason": "Cost of Product Registry use and any developer-partner terms were not stated on pages read, so the free-alternative gate is unresolved.",
+     "ref": "SAS-4-E2"
+    }
+   ]
+  },
+  {
+   "id": "SVC-1",
+   "name": "Flat-fee health-lien reduction desk for small personal-injury firms",
+   "family": "services",
+   "verdict": "killed",
+   "verdictReason": "Killed: no structural edge. The Medicare step is a CMS portal (SVC1-E6), in-house staff already do the rest (SVC1-E7), specialists already sell flat-fee resolution up to about $1,800 per case (SVC1-E1, SVC1-E8), and the outcome-based pricing that could have been the edge is restricted for non-lawyer vendors (SVC1-E2, SVC1-E4).",
+   "raw": 38.9,
+   "adjusted": 23.34,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "proprietary_or_compounding_data",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "CMS Medicare Secondary Payer Recovery Portal (conditional payment, dispute, waiver and compromise requests; no fee stated on the page; Medicare liens only)",
+   "unresolved": 1,
+   "evidenceCount": 8,
+   "altCount": 3,
+   "altFull": [
+    "In-house lien coordinator or paralegal with a spreadsheet or case-management lien module (no incremental cash cost; staff time)",
+    "Garretson Resolution Group (now part of Epiq): flat fee up to $1,800 per case, shown as one case per month"
+   ],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "An in-house lien coordinator or spreadsheet is the status quo at zero incremental cash cost, and the Medicare piece runs through a CMS portal with no fee stated; the wedge is covered for firms with any staff capacity.",
+     "ref": "SVC1-E7"
+    },
+    {
+     "severity": "major",
+     "reason": "Percent-of-reduction (outcome) pricing is restricted for non-lawyer vendors in the Utah opinion and pass-through is capped at cost in New York, removing the one outcome-based edge.",
+     "ref": "SVC1-E2"
+    },
+    {
+     "severity": "major",
+     "reason": "Entrenched specialists (Garretson now under Epiq, ZipLiens) hold larger case histories; the data edge has no head start for a new entrant.",
+     "ref": "SVC1-E8"
+    }
+   ]
+  },
+  {
+   "id": "SVC-2",
+   "name": "Utility-program backflow assembly testing and annual-agreement route",
+   "family": "services",
+   "verdict": "uncertain",
+   "verdictReason": "Open question: can a new certified tester win utility-run testing contracts (a utility engaging one firm for all commercial devices, as Highlands Ranch Water does) at a size that makes the route worth more than a job? The licence alone is not a moat (about 57 registered firms at one utility, SVC2-E5) and the one municipal RFP found covered only 64 assemblies a year (SVC2-E6). Demand and recurrence are real (SVC2-E1, SVC2-E4).",
+   "raw": 44.2,
+   "adjusted": 26.52,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "regulatory_license_intrinsic_to_model",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Utility-engaged single tester for all commercial devices (Highlands Ranch Water with Morrison; price not published on the page, market range assumed)",
+   "unresolved": 0,
+   "evidenceCount": 8,
+   "altCount": 3,
+   "altFull": [
+    "Existing local certified testers and plumbers at $85-$180 per commercial device (about 12 devices at roughly $120 a year each shown per month)",
+    "Utility-engaged single tester for all commercial devices (Highlands Ranch Water with Morrison; price not published on the page, market range assumed)"
+   ],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "major",
+     "reason": "Certification is open (course plus exam) and about 57 companies are registered with a single utility, so the licence does not exclude competitors.",
+     "ref": "SVC2-E5"
+    },
+    {
+     "severity": "major",
+     "reason": "Labor-bound field service: the certified tester must visit each device, so profit scales with owner or hired-tester hours, not with the business.",
+     "ref": "SVC2-E7"
+    },
+    {
+     "severity": "minor",
+     "reason": "Texas requires two years of experience before licensing, so the reference entrant must pick an open-entry state or county.",
+     "ref": "SVC2-E2"
+    }
+   ]
+  },
+  {
+   "id": "SVC-3",
+   "name": "EU responsible-person subscription for non-EU product sellers (GPSR)",
+   "family": "services",
+   "verdict": "killed",
+   "verdictReason": "Killed: the demand is real and recurring (SVC3-E3, SVC3-E4) and the relabeling lock-in is real (SVC3-E6), but a new provider has no acquisition edge against EAS (4,000+ businesses at EUR 199 a year and up, SVC3-E1, SVC3-E7) or a free EU importer route (SVC3-E2), and it would carry legal liability (SVC3-E9).",
+   "raw": 43.4,
+   "adjusted": 26.04,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "embedded_workflow_or_system_of_record",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "Use an EU-based importer or distributor as responsible person (often no additional cost per the cost guide)",
+   "unresolved": 1,
+   "evidenceCount": 9,
+   "altCount": 4,
+   "altFull": [
+    "Use an EU-based importer or distributor as responsible person (often no additional cost per the cost guide)",
+    "EAS GPSR Compliance Service: EUR 199 a year for 1 product type (about $18 a month at roughly 1.10 USD per EUR, approximate)",
+    "Amazon-listed service providers quoted by a seller at EUR 650-2,000 a year (midpoint EUR 1,325, about $120 a month, approximate)",
+    "Form the seller's own EU company: EUR 2,000-10,000 to form plus EUR 1,000-5,000 a year (mid-range about $275 a month, approximate)"
+   ],
+   "pessimisticOk": true,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "No acquisition edge: EAS and other providers already sell at EUR 199 a year and up with thousands of customers, and an EU importer or distributor often costs nothing extra.",
+     "ref": "SVC3-E7"
+    },
+    {
+     "severity": "major",
+     "reason": "The responsible person is described as assuming real legal liability for products it cannot control, and the insurance cost is unknown.",
+     "ref": "SVC3-E9"
+    },
+    {
+     "severity": "minor",
+     "reason": "Needs an EU-established entity (EUR 2,000 to 10,000 to form) before the first sale.",
+     "ref": "SVC3-E8"
+    }
+   ]
+  },
+  {
+   "id": "SVC-4",
+   "name": "Contingency-fee duty-drawback and IEEPA tariff-refund recovery for small importers",
+   "family": "services",
+   "verdict": "killed",
+   "verdictReason": "Killed: the IEEPA refund wedge is covered by the free CAPE portal and carrier auto-filing (SVC4-E5, SVC4-E6) and filing rights sit with the importer or the broker that filed the entries (SVC4-E3); drawback is already sold at 15 to 30 percent contingency (SVC4-E1) and the broker licence is open to any citizen who passes the exam (SVC4-E7), so there is no structural edge.",
+   "raw": 42.6,
+   "adjusted": 25.56,
+   "grade": "D",
+   "cap": "entrant_edge_hard_gate:edge_status_claimed",
+   "edgeType": "regulatory_license_intrinsic_to_model",
+   "edgeStatus": "claimed",
+   "gatesFailed": [
+    "cheapest_alternative",
+    "entrant_edge",
+    "evidence_depth"
+   ],
+   "cheapestAlternative": "CBP CAPE self-filing in ACE for IEEPA refunds (entry numbers in a CSV, no fee mentioned on the page; IEEPA only, not drawback)",
+   "unresolved": 0,
+   "evidenceCount": 8,
+   "altCount": 4,
+   "altFull": [
+    "Drawback service providers on contingency at 15-30 percent of recovered amounts (22.5 percent of $10,000 recovered a month shown)"
+   ],
+   "pessimisticOk": false,
+   "killReasons": [
+    {
+     "severity": "fatal",
+     "reason": "For IEEPA refunds the free CAPE portal needs only entry numbers and carriers such as DHL file automatically; only the importer of record or the filing broker may file, so an outside recovery firm cannot file.",
+     "ref": "SVC4-E3"
+    },
+    {
+     "severity": "major",
+     "reason": "Drawback is already sold by specialists on 15 to 30 percent contingency and by large law firms for IEEPA; a licensed-broker entrant has no exclusive right, because importers may file for themselves.",
+     "ref": "SVC4-E1"
+    },
+    {
+     "severity": "major",
+     "reason": "The IEEPA refund wave is temporary and the entrant needs a customs broker licence (80-question exam, US citizen) before it can file for others, which pushes first revenue to roughly 11 months.",
+     "ref": "SVC4-E7"
+    }
+   ]
+  }
+ ]
+}

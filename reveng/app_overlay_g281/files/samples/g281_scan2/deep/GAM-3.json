@@ -1,0 +1,395 @@
+{
+ "id": "GAM-3",
+ "verdict": "killed",
+ "verdictReason": "Edge not real: official paid listings are not live (free-only beta, selected creators first, no date, fee set per upload and unpublished) and the in-editor store is open to any approved seller, while itch.io and Getly already sell Godot add-ons. Demand is thin: best paid editor tool found has 24 itch ratings since 2023, 86.8% of poll respondents are hobbyists, mainstream add-ons are free MIT. Year 1 bottom-up: ~$1.4k gross, ~+$150 profit for ~1,300 h; pessimistic -$1.1k.",
+ "answers": [
+  {
+   "question": "When, and on what eligibility and fee terms, will the official Godot Asset Store open paid listings beyond a select group?",
+   "answer": "No date is published. The roadmap page read on 2026-10-10 still says the beta allows only free assets, that paid assets start with a certain group of creators, and that charging will later open to everyone. Godot 4.7 shipped the store on 2026-06-19 and about 3.7 months later paid listings were still not described as open. The store's Terms of Service already contemplate selling (Foundation takes a net commission 'specified when uploading the content', sellers use third-party payment providers), but no commission rate or eligibility rule is published; a 5-20% figure is only a community suggestion. Public pages cannot give a date, so an entrant cannot plan revenue from this channel within 365 days.",
+   "evidenceIds": [
+    "GAM-3-D1",
+    "GAM-3-D2",
+    "GAM-3-D3",
+    "GAM-3-D4",
+    "GAM-3-D5",
+    "GAM-3-D6",
+    "GAM-3-D7",
+    "GAM-3-E3",
+    "GAM-3-E4"
+   ]
+  },
+  {
+   "question": "Do Godot developers buy paid add-ons at volume?",
+   "answer": "No evidence of volume was found, and the little there is points small. The most prominent paid Godot editor tool found on the itch.io top sellers page (AssetPlacer, $26.99, devlogs since Sep 2023) shows 24 total ratings. If 5-20% of buyers rate (assumption, unverified) that is roughly 4-15 sales per month for the flagship. 86.8% of 2025 poll respondents are hobbyists and only 4.7% are studio employees. A developer of a paid Unity tool says he is unsure users will pay for Godot assets, and a $5 Godot AI add-on reported about 200 downloads with a commenter preferring a free open-source rival.",
+   "evidenceIds": [
+    "GAM-3-D11",
+    "GAM-3-D12",
+    "GAM-3-D13",
+    "GAM-3-D15",
+    "GAM-3-D16",
+    "GAM-3-D17",
+    "GAM-3-D18",
+    "GAM-3-D19"
+   ]
+  },
+  {
+   "question": "Do free or cheap alternatives already cover the wedge (paid editor tools and gameplay systems)?",
+   "answer": "Largely yes for mainstream categories. The Asset Library lists over 5,000 add-ons; a 2026 roundup of the best Godot plugins lists ten free MIT plugins (LimboAI, Dialogic 2, GUT, Phantom Camera, Terrain3D and others) and one AI product with a free tier. A free MIT 'Godot Asset Placer' duplicates the function of the paid AssetPlacer. A free open-source MCP server competes with a paid one. AI coding assistants ($20/month) make in-house DIY cheaper. Paid add-ons survive only where a buyer values time over price.",
+   "evidenceIds": [
+    "GAM-3-D14",
+    "GAM-3-D17",
+    "GAM-3-D20",
+    "GAM-3-D21",
+    "GAM-3-E10"
+   ]
+  },
+  {
+   "question": "Is the claimed edge (in-editor discovery plus accumulated ratings) exclusive or compounding for a new entrant?",
+   "answer": "Not exclusive: every approved seller gets the same in-editor listing, and paid sales already work on itch.io (10% default share) and Getly (80-90% seller share, no approval queue, marketing claim). The compounding part (ratings, update history) favours incumbents with years of ratings (AssetPlacer since 2023), not a 150-day-late entrant. Access for an unknown entrant is unconfirmed because the first paid group is selected. Falsifier: official terms published with open enrolment and a public sales datapoint showing several hundred dollars per month per mid-tier add-on.",
+   "evidenceIds": [
+    "GAM-3-D6",
+    "GAM-3-D8",
+    "GAM-3-D9",
+    "GAM-3-D13",
+    "GAM-3-D4"
+   ]
+  },
+  {
+   "question": "What do bottom-up first-365-days economics look like for the reference entrant (150 days to first revenue, 25 h/week, $3,000)?",
+   "answer": "Base: 3 add-ons live from day 150 and 5 from day 250 (about 28.8 add-on-months), 4 sales per add-on-month (low end of the flagship-derived range, so generous to a new unrated seller), $12 realised price, 15.4% fees (itch 10% + 2.9% + $0.30), $1,020 fixed cash costs. Gross $1,381, costs $1,233, profit about +$148 for about 1,300 owner hours. Pessimistic (price x0.8, volume x0.5, costs x1.5): gross $552, costs $1,663, profit about -$1,110. An optimistic sensitivity (10 sales per add-on-month, $15) gives about +$2,650, still low for 1,300 hours.",
+   "evidenceIds": [
+    "GAM-3-D9",
+    "GAM-3-D10",
+    "GAM-3-D11",
+    "GAM-3-D13",
+    "GAM-3-D22"
+   ]
+  }
+ ],
+ "newEvidence": [
+  {
+   "id": "GAM-3-D1",
+   "url": "https://store.godotengine.org/roadmap",
+   "quote": "At the current beta stage, we only allow to publish free assets.",
+   "kind": "constraint",
+   "publisher": "Godot Asset Store (roadmap)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D2",
+   "url": "https://store.godotengine.org/roadmap",
+   "quote": "we'll start offering the option to charge for assets published in the store to everyone.",
+   "kind": "constraint",
+   "publisher": "Godot Asset Store (roadmap)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D3",
+   "url": "https://github.com/godotengine/godot-asset-store-tracker/issues/14",
+   "quote": "Anything between 5-20% for the Godot foundation from each sale would be reasonable in my opinion.",
+   "kind": "other",
+   "publisher": "GitHub godot-asset-store-tracker issue 14 (community comment, not official)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D4",
+   "url": "https://store.godotengine.org/terms/",
+   "quote": "the Godot Foundation receives a net commission, in the amount specified when uploading the content",
+   "kind": "constraint",
+   "publisher": "Godot Asset Store Terms of Service",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D5",
+   "url": "https://store.godotengine.org/terms/",
+   "quote": "they shall use the payment services of third party providers (such a Paypal or Stripe)",
+   "kind": "constraint",
+   "publisher": "Godot Asset Store Terms of Service",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D6",
+   "url": "https://www.oflight.co.jp/en/columns/godot-asset-store-launch-2026",
+   "quote": "Paid assets aren't open yet; planned first for selected creators, then community-wide",
+   "kind": "constraint",
+   "publisher": "oflight",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D7",
+   "url": "https://www.gamingonlinux.com/2026/06/godot-engine-4-7-is-out-bringing-a-new-asset-store-hdr-support-steam-frame-support/",
+   "quote": "The brand new Asset Store has launched.",
+   "kind": "other",
+   "publisher": "GamingOnLinux",
+   "date": "2026-06-19",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D8",
+   "url": "https://www.getly.store/sell/godot-assets",
+   "quote": "90% your first 3 months and on your own traffic; 80% base, dropping with volume.",
+   "kind": "incumbent_price",
+   "publisher": "Getly (seller marketing claim)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D9",
+   "url": "https://itch.io/docs/creators/payments",
+   "quote": "we'll assume the default rate, 10%, and that we're working in USD.",
+   "kind": "incumbent_price",
+   "publisher": "itch.io Creator Docs",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D10",
+   "url": "https://itch.io/docs/creators/payments",
+   "quote": "For most credit card transactions, Stripe takes a fee of $0.30 + 2.9%.",
+   "kind": "constraint",
+   "publisher": "itch.io Creator Docs",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D11",
+   "url": "https://itch.io/tools/top-sellers/tag-godot",
+   "quote": "Level modeling inside Godot 4: draw, edit, UV and paint level geometry without leaving the viewport",
+   "kind": "other",
+   "publisher": "itch.io (Godot tools, top sellers page; Unibuilder listed at $24.99, 20 tools priced about $3 to $33)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D12",
+   "url": "https://cookiebadger.itch.io/assetplacer",
+   "quote": "$26.99 USD or more",
+   "kind": "incumbent_price",
+   "publisher": "itch.io (AssetPlacer listing by CookieBadger)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D13",
+   "url": "https://cookiebadger.itch.io/assetplacer",
+   "quote": "Rated 4.9 out of 5 stars (24 total ratings)",
+   "kind": "demand",
+   "publisher": "itch.io (AssetPlacer listing by CookieBadger; devlogs dated Sep 06, 2023 to May 13, 2026)",
+   "date": "2026-05-13",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D14",
+   "url": "https://www.godotengine.org/asset-library/asset/edit/22799",
+   "quote": "a free and open-source Godot Engine plugin that lets you easily manage, organize, and place assets into your 3D scenes",
+   "kind": "other",
+   "publisher": "Godot Asset Library (Godot Asset Placer, MIT)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D15",
+   "url": "https://ziva.sh/blogs/godot-community-poll-2025",
+   "quote": "86.8% identify as hobbyists, 71.5% work alone.",
+   "kind": "demand",
+   "publisher": "Ziva (analysis of Godot Community Poll 2025)",
+   "date": "2025",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D16",
+   "url": "https://forum.godotengine.org/t/godot-mcp-pro-162-tools-for-ai-powered-godot-development/135467",
+   "quote": "$5 one-time (lifetime updates for v1.x). No subscription.",
+   "kind": "incumbent_price",
+   "publisher": "Godot Forum (author post for Godot MCP Pro)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D17",
+   "url": "https://forum.godotengine.org/t/godot-mcp-pro-162-tools-for-ai-powered-godot-development/135467",
+   "quote": "Im not convinced it's better than my Free open-source mcp server.",
+   "kind": "demand",
+   "publisher": "Godot Forum (reply to Godot MCP Pro launch post)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D18",
+   "url": "https://forum.godotengine.org/t/godot-mcp-pro-162-tools-for-ai-powered-godot-development/135467",
+   "quote": "~200 people have downloaded it so far.",
+   "kind": "demand",
+   "publisher": "Godot Forum (author post for Godot MCP Pro)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D19",
+   "url": "https://itch.io/post/9363470",
+   "quote": "I’m not sure about the current asset ecosystem and whether users are willing to pay for assets.",
+   "kind": "demand",
+   "publisher": "itch.io (comment by developer of Unity tool Edgar PRO)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D20",
+   "url": "https://ziva.sh/blogs/best-godot-plugins-2026",
+   "quote": "There are over 5,000 add-ons on the Godot Asset Library and several maintained marketplaces beyond it.",
+   "kind": "other",
+   "publisher": "Ziva",
+   "date": "2026",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D21",
+   "url": "https://ziva.sh/blogs/best-godot-plugins-2026",
+   "quote": "$20/month Pro unlocks unlimited calls on frontier models.",
+   "kind": "incumbent_price",
+   "publisher": "Ziva",
+   "date": "2026",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D22",
+   "url": "https://userjot.com/blog/stripe-polar-lemon-squeezy-gumroad-transaction-fees",
+   "quote": "Lemon Squeezy charges a base fee of 5% + 50¢ per transaction.",
+   "kind": "incumbent_price",
+   "publisher": "UserJot",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-3-D23",
+   "url": "https://godotengine.org/article/godot-growth-stats-2026/",
+   "quote": "We seem to be getting pretty consistently up to the 2ish million download mark with each release.",
+   "kind": "demand",
+   "publisher": "Godot Engine",
+   "date": "2026",
+   "evidenceClass": "agent_reported"
+  }
+ ],
+ "newAlternatives": [
+  {
+   "label": "Getly marketplace: paid Godot 3.x/4.x and GDExtension add-on listings, free to list, no approval queue (seller share 80-90%, company claim)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 1,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.getly.store/sell/godot-assets",
+   "evidenceRef": "GAM-3-D8"
+  },
+  {
+   "label": "Free MIT Godot Asset Placer in the Godot Asset Library (duplicates the paid AssetPlacer at $26.99)",
+   "kind": "open_source",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.godotengine.org/asset-library/asset/edit/22799",
+   "evidenceRef": "GAM-3-D14"
+  },
+  {
+   "label": "Mainstream free MIT Godot plugins (LimboAI, Dialogic 2, GUT, Phantom Camera, Terrain3D, Beehave and others) within 5,000+ Asset Library add-ons",
+   "kind": "open_source",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://ziva.sh/blogs/best-godot-plugins-2026",
+   "evidenceRef": "GAM-3-D20"
+  },
+  {
+   "label": "Free open-source MCP server for Godot (competes with the paid Godot MCP Pro)",
+   "kind": "open_source",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://forum.godotengine.org/t/godot-mcp-pro-162-tools-for-ai-powered-godot-development/135467",
+   "evidenceRef": "GAM-3-D17"
+  },
+  {
+   "label": "DIY with an AI coding/Godot assistant (Ziva Pro $20/month, free tier available)",
+   "kind": "diy_or_status_quo",
+   "costUsdPerMonth": 20,
+   "coversWedge": "partial",
+   "sourceLocator": "https://ziva.sh/blogs/best-godot-plugins-2026",
+   "evidenceRef": "GAM-3-D21"
+  }
+ ],
+ "killReasons": [
+  {
+   "reason": "The claimed edge is not available: official paid listings are not live (free-only beta, selected creators first, no date), the commission is set per upload and unpublished, and the same in-editor listing would go to every approved seller, so it is neither exclusive nor confirmed for an unknown entrant within 365 days. Paid sales already work off-store (itch.io, Getly).",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "GAM-3-D1"
+  },
+  {
+   "reason": "Demand and volume are thin: the best paid Godot editor tool found has 24 total ratings since 2023, 86.8% of poll respondents are hobbyists, and a paid-tool developer doubts users will pay for Godot assets.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "GAM-3-D13"
+  },
+  {
+   "reason": "Free or near-free alternatives cover the mainstream categories: the leading plugins are free MIT, a free MIT clone exists for the paid AssetPlacer, and a free MCP server rivals the paid one; AI assistants cheapen DIY.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "GAM-3-D14"
+  },
+  {
+   "reason": "Bottom-up economics fail the pessimistic case (about -$1,110) and the base case is about +$148 for roughly 1,300 owner hours, so even the base case is not a viable income.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "GAM-3-D12"
+  },
+  {
+   "reason": "Pirating or redistributing GDScript add-ons is trivial (source is shipped), and the Foundation's ToS gives it a broad licence over listed content, may remove content at its discretion and is not the seller, leaving payment processing and tax to the provider.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "GAM-3-D5"
+  }
+ ],
+ "economics": {
+  "revenue365": 1381,
+  "cost365": 1233,
+  "pessimisticProfit365": -1110,
+  "survivesPessimistic": false,
+  "assumptions": [
+   "assumption: first revenue at day 150, so a 215-day selling window; 3 add-ons live from day 150 and 5 from day 250 (about 150 h each at 25 h/week), giving about 28.8 add-on-months.",
+   "assumption: only itch.io (and similar) revenue counts; official-store paid revenue is excluded because no date, fee or eligibility is published.",
+   "assumption: 4 sales per add-on-month in the base case. Anchor: the flagship AssetPlacer shows 24 ratings over about 32 months (GAM-3-D13); if 5-20% of buyers rate (assumption, unverified) it sells about 4-15 per month, so 4 is the low end for a flagship and generous for a new unrated seller.",
+   "assumption: realised price $12 (observed itch.io list prices about $3-$33, frequent discounts; GAM-3-D11, D12, D16).",
+   "sourced: fees 10% itch default (D9) plus 2.9% + $0.30 card processing (D10) = 15.4% at $12; assumption that these stack as modelled.",
+   "assumption: fixed cash costs $1,020 = $60/month (AI assistant ~$20 (D21), domain/hosting, tooling) plus $300 one-off bookkeeping/tax setup.",
+   "revenue365 is gross sales ($1,381); cost365 includes platform/processor fees ($213) plus fixed costs ($1,020); owner labour of about 1,300 h is unpaid and not costed.",
+   "pessimistic: price x0.8 = $9.60, volume x0.5 = 2 per add-on-month, costs x1.5: gross $552, costs $1,663, profit about -$1,110.",
+   "sensitivity (not used for verdict): 10 sales per add-on-month at $15 gives gross $4,315 and profit about +$2,650."
+  ],
+  "sources": [
+   "GAM-3-D9",
+   "GAM-3-D10",
+   "GAM-3-D11",
+   "GAM-3-D12",
+   "GAM-3-D13",
+   "GAM-3-D16",
+   "GAM-3-D21",
+   "GAM-3-D22"
+  ]
+ },
+ "legalNotes": [
+  "Godot Asset Store ToS (GAM-3-D4, D5): Foundation takes a net commission specified at upload (rate unpublished, non-refundable), providers must use third-party payment services (PayPal/Stripe), the Foundation is not the seller, may withhold taxes and may remove content at its sole discretion; providers grant it a broad worldwide sublicensable licence. Paid listing is available only 'if the Foundation offers that option'.",
+  "Seller tax and VAT/sales-tax duties for a stranger selling digital goods internationally are not settled on public pages read here; the ToS says VAT is deducted from amounts due to providers. Treat as an unquantified compliance cost.",
+  "itch.io: 10% default share (adjustable 0-100%), card fees $0.30 + 2.9%, revenue held 7 days, $5 minimum payout, payout review typically 10-14 days (GAM-3-D9, D10). Getly terms are the company's own marketing claims; its own page warns that marketplaces change terms.",
+  "Godot is MIT licensed, so selling add-ons is permitted, but GDScript add-ons ship as readable source and licence enforcement against redistribution is impractical; any reused third-party code must be compatible with commercial resale.",
+  "No logins, signups, purchases or contact were made; all findings are from public pages read once each."
+ ],
+ "unverified": [
+  "Date, fee and eligibility rules for official paid listings (not published on any page read).",
+  "Any real sales or revenue figure for a paid Godot add-on; the 4-15 per month flagship range depends on an unverified 5-20% rating rate.",
+  "Whether itch.io ratings are limited to purchasers, and how many ratings a typical sale produces.",
+  "Getly's real Godot traffic and sales (only marketing claims read) and how itch.io, Getly and the Godot store handle VAT and sales tax for the seller.",
+  "Quotes were taken from page-fetch extractions; the roadmap and ToS pages are undated, so the status 'free-only' is as of the read on 2026-10-10 but not date-stamped by the site.",
+  "Whether the new store shows download counts for listings (the one listing read showed none)."
+ ],
+ "nextStep": "Do not pursue unless the Godot Foundation publishes open paid-listing enrolment with a fee rate and a public seller-revenue datapoint; re-check store.godotengine.org/roadmap then."
+}

@@ -1,0 +1,284 @@
+{
+ "id": "MED-2",
+ "verdict": "killed",
+ "verdictReason": "The only qualifying listing (Flippa, 11k downloads/mo, $7,960-$9,950) is cheap because it is decaying: seller-reported revenue fell from $32,852 (2022) to a projected $8,887 (2026). That revenue (~$67 per 1,000 downloads) is about 4x what open ad marketplaces would pay this show and rests on an undisclosed external ad team; financials are gated. No second listing surfaced. Pessimistic year-1 cash result is about -$10k and base is -$3.9k.",
+ "answers": [
+  {
+   "question": "Do repeat listings of 10k+ monthly download, 100+ episode podcasts at <=1.5x annual profit exist (deal flow)?",
+   "answer": "Not demonstrated. About 10 differently worded searches (Flippa, brokers, BizBuySell/Quiet Light, Acquire/Empire Flippers wording) returned the same single Flippa listing (13925600) and one much larger broker listing (Website Closers, $15.5M ask on $2.25M cash flow, about 6.9x, sold flag, owner-dependent), which is a different tier and a healthy-multiple data point. The Podcast Broker's inventory is not publicly indexable, so public pages cannot enumerate supply. The one cheap listing's 1.1x multiple coincides with a 73% revenue decline, which suggests the low multiple is the market price for decay rather than a mispricing.",
+   "evidenceIds": [
+    "MED-2-E1",
+    "MED-2-D1",
+    "MED-2-D12",
+    "MED-2-E3"
+   ]
+  },
+  {
+   "question": "Do downloads and ad revenue hold after transfer?",
+   "answer": "No public evidence that they do. The sole listing reports revenue falling from $32,852.10 gross in 2022 to a projected $8,887.62 in 2026 while claiming a consistent listener base, and attributes it to the owner not pursuing growth beyond ad sales (an upside claim the buyer cannot verify). The technical feed move is supported by Apple (301 redirect, followers migrate), but audience loss on a host/format change is documented at 50% of monthly downloads for a different show (first-person account, not a transfer statistic).",
+   "evidenceIds": [
+    "MED-2-D1",
+    "MED-2-D4",
+    "MED-2-D14",
+    "MED-2-D13"
+   ]
+  },
+  {
+   "question": "Can a new owner earn the seller's reported revenue with open ad marketplaces?",
+   "answer": "Probably not. Seller revenue of $8,887.62 over about 132,000 downloads/year (11,000 x 12, seller-reported) is about $67 per 1,000 downloads. Open back-catalog dynamic ads are $14-$16 CPM with a 50-60% creator share on Libsyn automatic ads; at an assumed 2 ad breaks, 100% fill and $15 CPM x 55% that is about $2,180/year, roughly a quarter of the seller figure. Libsyn's host-read marketplace requires 20,000 downloads per episode, which this show does not appear to meet. The gap must therefore come from the external team's direct or brand deals, whose terms, commission and transferability are not disclosed and sit behind a sign-up wall.",
+   "evidenceIds": [
+    "MED-2-D2",
+    "MED-2-D3",
+    "MED-2-D5",
+    "MED-2-D6",
+    "MED-2-D7"
+   ]
+  },
+  {
+   "question": "Is there a legal and platform path to transfer and monetize?",
+   "answer": "Yes in principle. Apple Podcasts supports ownership transfer (show must leave any channel) and hosting moves via 301 redirect; Spotify's Partner Program requires a legal address in an eligible market, Spotify hosting, and at least one published episode and $10 earned per 6 months, so a light publishing cadence is mandatory, not optional. Flippa escrow is a buyer-paid fee.",
+   "evidenceIds": [
+    "MED-2-E5",
+    "MED-2-D14",
+    "MED-2-D8",
+    "MED-2-D9",
+    "MED-2-D15"
+   ]
+  }
+ ],
+ "newEvidence": [
+  {
+   "id": "MED-2-D1",
+   "url": "https://flippa.com/13925600-active-podcast-with-built-in-ad-sales-11k-mo-downloads-200-episodes-automatic-ad-sales-big-brand-sponsors-priced-below-market-value-at-1-3x-multiple",
+   "quote": "revenue has progressively decreased from $32,852.10 gross in 2022 to a projected $8,887.62 in 2026",
+   "kind": "other",
+   "publisher": "Flippa (seller listing, figures seller-reported)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-2-D2",
+   "url": "https://flippa.com/13925600-active-podcast-with-built-in-ad-sales-11k-mo-downloads-200-episodes-automatic-ad-sales-big-brand-sponsors-priced-below-market-value-at-1-3x-multiple",
+   "quote": "fully automated ad sales managed by an external team",
+   "kind": "other",
+   "publisher": "Flippa (seller listing, figures seller-reported)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-2-D3",
+   "url": "https://flippa.com/13925600-active-podcast-with-built-in-ad-sales-11k-mo-downloads-200-episodes-automatic-ad-sales-big-brand-sponsors-priced-below-market-value-at-1-3x-multiple",
+   "quote": "Create your account to view detailed information, including traffic, financials and seller notes.",
+   "kind": "constraint",
+   "publisher": "Flippa (seller listing)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-2-D4",
+   "url": "https://flippa.com/13925600-active-podcast-with-built-in-ad-sales-11k-mo-downloads-200-episodes-automatic-ad-sales-big-brand-sponsors-priced-below-market-value-at-1-3x-multiple",
+   "quote": "revenue has declined due to the current owner's lack in pursuing growth opportunities beyond ad sales",
+   "kind": "other",
+   "publisher": "Flippa (seller listing, seller's own explanation)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-2-D5",
+   "url": "https://www.podderapp.com/post/best-podcast-advertising-platforms",
+   "quote": "requires a minimum of 20,000 downloads per episode and runs a 70/30 revenue split in the podcaster's favour",
+   "kind": "constraint",
+   "publisher": "Podder (on Libsyn Ads host-read marketplace)",
+   "date": "2026-08-10",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-2-D6",
+   "url": "https://www.podderapp.com/post/best-podcast-advertising-platforms",
+   "quote": "open to shows of any size at a 50% to 60% share depending on monthly volume",
+   "kind": "incumbent_price",
+   "publisher": "Podder (on Libsyn automatic ads)",
+   "date": "2026-08-10",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-2-D7",
+   "url": "https://www.podderapp.com/post/podcast-cpm-rates-2026",
+   "quote": "Back-catalog inventory trades freshness for more available reach.",
+   "kind": "demand",
+   "publisher": "Podder (citing Libsyn Ads rate card; back-catalog dynamic CPM $14-$16 in its table)",
+   "date": "2026-08-12",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-2-D8",
+   "url": "https://support.spotify.com/ca-en/creators/article/spotify-partner-program/",
+   "quote": "your show must, in any given 6 month period, have published an episode and have earned at least $10",
+   "kind": "constraint",
+   "publisher": "Spotify for Creators Support",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-2-D9",
+   "url": "https://support.spotify.com/ca-en/creators/article/spotify-partner-program/",
+   "quote": "Have a legal address in one of the above eligible markets.",
+   "kind": "constraint",
+   "publisher": "Spotify for Creators Support",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-2-D10",
+   "url": "https://www.acast.com/blog/how-many-listeners-do-you-need-to-monetize-a-podcast",
+   "quote": "You can start monetizing a podcast at around 1,000 monthly listeners.",
+   "kind": "demand",
+   "publisher": "Acast blog",
+   "date": "2026-07-02",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-2-D11",
+   "url": "https://www.podcastnewsdaily.com/news/no-minimums-libsyn-expands-access-to-automatic-ads/article_c7117b63-f088-45c1-b6a0-aeda0c35d885.html",
+   "quote": "Although there is no minimum audience size or download requirement to apply.",
+   "kind": "other",
+   "publisher": "Podcast News Daily (on Libsyn automatic ads)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-2-D12",
+   "url": "https://websiteclosers.com/businesses/award-winning-daily-entrepreneurial-podcast-11-years-established-145m-listens-3-500-interviews-to-date-15-yoy-growth-long-term-contracts/106023",
+   "quote": "Since the owner has been the driving force behind the podcast for 11 years",
+   "kind": "other",
+   "publisher": "Website Closers (broker listing, sold flag shown; asking $15,500,000, cash flow $2,247,290)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-2-D13",
+   "url": "https://podnews.net/article/selling-a-podcast",
+   "quote": "by June of 2024, I’d lost 50% of my monthly download numbers.",
+   "kind": "other",
+   "publisher": "Podnews (Tanner Campbell, first-person account)",
+   "date": "2025-01-14",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-2-D14",
+   "url": "https://podcasters.apple.com/support/3965-how-to-change-hosting-providers",
+   "quote": "Most hosting providers can help you migrate your old RSS feed URL to a different feed URL by implementing a 301 redirect.",
+   "kind": "constraint",
+   "publisher": "Apple Podcasts for Creators",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-2-D15",
+   "url": "https://support.flippa.com/hc/en-us/articles/360000774276",
+   "quote": "paid by the Buyer when initiating an Escrow.com transaction via Flippa",
+   "kind": "constraint",
+   "publisher": "Flippa Help Center (fee table dated 2019-02-16, may be stale)",
+   "date": "2019-02-16",
+   "evidenceClass": "agent_reported"
+  }
+ ],
+ "newAlternatives": [
+  {
+   "label": "Libsyn automatic (programmatic) ads on any show you own: no minimum, 50-60% creator share; a newcomer could host a thin catalog and monetize from day one at low volume",
+   "kind": "free_tool",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.podderapp.com/post/best-podcast-advertising-platforms",
+   "evidenceRef": "MED-2-D6"
+  },
+  {
+   "label": "Acast marketplace ads: monetization possible from about 1,000 monthly listeners (no purchase of an existing show needed)",
+   "kind": "free_tool",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.acast.com/blog/how-many-listeners-do-you-need-to-monetize-a-podcast",
+   "evidenceRef": "MED-2-D10"
+  },
+  {
+   "label": "Libsyn Ads host-read marketplace (70/30 split) for shows with 20,000+ downloads per episode; the 11k/month target show likely sits below this threshold",
+   "kind": "paid_incumbent",
+   "costUsdPerMonth": 0,
+   "coversWedge": "none",
+   "sourceLocator": "https://www.podderapp.com/post/best-podcast-advertising-platforms",
+   "evidenceRef": "MED-2-D5"
+  }
+ ],
+ "killReasons": [
+  {
+   "reason": "The only cheap listing is a decaying asset: seller-reported revenue fell 73% in four years ($32,852 to a projected $8,887) and the claimed ~$67 per 1,000 downloads is about 4x what open marketplaces pay a show this size; the gap rests on an undisclosed external ad team and gated financials, so the profit the price is based on is neither verifiable nor shown to transfer.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "MED-2-D1"
+  },
+  {
+   "reason": "No repeatable deal flow: repeated searches across Flippa, broker and other marketplace wording surfaced one qualifying listing; the only other priced podcast found is a $15.5M, owner-dependent show at about 6.9x, so a 1.1x-1.4x multiple appears to be the price of decline, not a systematic mispricing.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "MED-2-D12"
+  },
+  {
+   "reason": "Pessimistic economics fail in every view that includes the purchase: base year-1 cash result about -$3.9k and pessimistic about -$10.0k; even excluding the purchase, fixed costs make the pessimistic operating result about -$1.8k (positive about +$1.4k only if all costs are revenue commissions, which the listing does not say).",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "MED-2-D1"
+  },
+  {
+   "reason": "Host/ownership-change risk: audience loss after a format or host change is documented at 50% of monthly downloads for a comparable independent show, and an interview show's value is attached to its host; no retention data exists for a stranger taking over.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "MED-2-D13"
+  },
+  {
+   "reason": "Passive income is not passive: Spotify's Partner Program requires an episode and at least $10 earned every 6 months, and the entrant's 8 h/week would go into guest-driven publishing at an operating profit of roughly $4-6k a year on about $8k deployed.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "MED-2-D8"
+  }
+ ],
+ "economics": {
+  "revenue365": 7427,
+  "cost365": 11330,
+  "pessimisticProfit365": -10044,
+  "survivesPessimistic": false,
+  "assumptions": [
+   "Purchase price $7,960 = current Flippa ask after the 20% reduction (MED-2-E1); no further negotiation assumed.",
+   "Base revenue = seller's projected 2026 gross $8,887.62 (MED-2-D1, seller-reported, unverified) x 305/365 because assumption: no revenue for the first 60 days (reference entrant daysToFirstRevenue = 60) = $7,427. Assumes downloads, the external ad team and sponsor deals transfer intact.",
+   "Operating cost $3,200/yr = 36% of $8,887.62, derived from the listing's stated 64% profit margin (MED-2-E1 fetch). Note the listing is internally inconsistent: $597/mo profit would be 80.6% of $8,887.62 and the meta text says 1.3x while the page says 1.1x; the more conservative 64% basis is used. Cost composition (hosting vs ad-team commission) is not disclosed; treated as fixed.",
+   "Escrow fee $170 = $162.50 + 0.26% x ($7,960 - $5,000) from Flippa's 2019 Escrow.com table (MED-2-D15), without the 20% discount; assumption that current fees are similar.",
+   "cost365 = $3,200 operating + $170 escrow + $7,960 purchase = $11,330 (cash view). Operating-only base profit = $4,227.",
+   "Pessimistic per brief: price x0.8, volume x0.5 -> revenue $7,427 x 0.4 = $2,971; operating cost x1.5 = $4,800; escrow x1.5 = $255; purchase unchanged -> cash profit = 2,971 - 4,800 - 255 - 7,960 = -$10,044. Operating-only pessimistic = -$1,829 if costs are fixed, +$1,367 if all costs are commissions (36% x 1.5 of revenue).",
+   "Cross-check: 11,000 downloads/month x 12 = 132,000/yr (seller-reported); open-market programmatic estimate = 132 x $15 CPM x 2 breaks x 55% share = about $2,178/yr (CPM range from MED-2-D7/D5, share from MED-2-D6; breaks and fill are assumptions).",
+   "Owner time (8 h/week) is not costed in cash; no cash cost assumed for producing new episodes beyond the operating cost above (assumption)."
+  ],
+  "sources": [
+   "MED-2-E1",
+   "MED-2-D1",
+   "MED-2-D5",
+   "MED-2-D6",
+   "MED-2-D7",
+   "MED-2-D15"
+  ]
+ },
+ "legalNotes": [
+  "Apple Podcasts ownership transfer needs the show out of any channel (MED-2-E5); a hosting move should use a 301 redirect and keep episode GUIDs unchanged (MED-2-D14).",
+  "Spotify Partner Program: legal address in an eligible market, hosting on Spotify for Creators, at least one published episode and $10 earned every 6 months (MED-2-D8, MED-2-D9); a US/EU/Oceania buyer can comply.",
+  "Flippa financials, traffic and seller notes are visible only after creating an account (MED-2-D3); not done here under the no-signup rule, so the seller's numbers could not be inspected.",
+  "Not read and unverified: ownership of audio copyright, guest releases, music-bed licences, trademark in the show name, FTC sponsorship disclosure obligations, and the assignability of the external ad team's sponsor contracts. Not legal advice."
+ ],
+ "unverified": [
+  "Seller's gated Flippa financials (monthly revenue, expense lines, ad-team commission), download history and whether the listing is still unsold.",
+  "Whether the seller-reported 11,000 monthly downloads are platform-exported and how stable they were across 2022-2026.",
+  "Whether the external ad team and brand sponsors transfer to a new owner, and on what terms.",
+  "The Podcast Broker's current inventory, fees and typical multiples (site not publicly indexable; one page fetch was blocked by permission).",
+  "Any statistic on download retention after a podcast ownership transfer; none was found.",
+  "Whether Flippa's 2019 escrow fee schedule is current.",
+  "Current Libsyn automatic ads CPM-to-creator payout for a show of this size."
+ ],
+ "nextStep": "Revisit only if a gated broker or Flippa data room shows three or more comparable shows with platform-exported 24-month download history, stable or rising revenue and a contractually transferable ad arrangement."
+}

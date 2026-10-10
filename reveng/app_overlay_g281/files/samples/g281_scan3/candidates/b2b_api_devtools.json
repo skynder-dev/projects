@@ -1,0 +1,1137 @@
+{
+ "candidates": [
+  {
+   "id": "API-1",
+   "name": "Pay-per-event SEC EDGAR Form 4 insider-transaction data Actor sold through the Apify Store",
+   "family": "b2b_api_devtools",
+   "buyer": "Indie quant developers, fintech-newsletter writers and no-code automation builders (Make, n8n, Zapier users) who want structured SEC Form 4 insider-transaction records inside an automation workflow without writing an EDGAR parser",
+   "pain": "Form 4 filings are published as raw XML in EDGAR; turning them into clean JSON rows needs a parser and polite rate-limited fetching. Buyer cost today is a few hours of developer time or a paid API plan.",
+   "wedge": "A pay-per-result Actor on the Apify Store that returns normalised Form 3/4/5 insider transactions (issuer, insider, code, shares, price) as JSON, priced per 1,000 records.",
+   "referenceEntrant": {
+    "startupCashUsd": 500,
+    "daysToFirstRevenue": 45,
+    "ownerHoursPerWeek": 8
+   },
+   "entrantEdge": {
+    "type": "privileged_or_low_cac_distribution",
+    "status": "claimed",
+    "statement": "Claimed only: the Apify Store is a platform channel where newly listed Actors reach hundreds to a few thousand users without an audience (the front page 'Rising stars' row shows Actors with 372 to 2.1K users and 1 to 4 reviews), and usage and reviews then raise store position. This is not structural for this wedge: the SEC data may be copied and redistributed by anyone, the official API is free and keyless, an MIT-licensed Python library already parses Form 4, and a copycat Actor can be listed in days, so store position would belong to whoever lists first or reviews best, not to the entrant by design.",
+    "evidenceIds": [
+     "API-1-E4",
+     "API-1-E8",
+     "API-1-E5"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "SEC EDGAR official APIs and nightly bulk archives (free, no key, 10 requests/second cap)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces",
+      "evidenceRef": "API-1-E1",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "edgartools (MIT, 2.6k GitHub stars): parses Form 3/4/5 insider transactions into pandas DataFrames",
+      "kind": "open_source",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://github.com/dgunning/edgartools",
+      "evidenceRef": "API-1-E3",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "secedgar / sec-edgar downloader (Apache-2.0, 1.4k stars): bulk filing download",
+      "kind": "open_source",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://github.com/sec-edgar/sec-edgar",
+      "evidenceRef": "API-1-E9",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "sec-api.io Personal & Startups plan ($49/month; first 100 API calls free)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 49,
+      "coversWedge": "full",
+      "sourceLocator": "https://sec-api.io/pricing",
+      "evidenceRef": "API-1-E2",
+      "metrics": {
+       "cash_cost": 49
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 12,
+    "falsifier": "Metric is monthly cash cost to the buyer for structured Form 4 data. The best covering alternative is $0 (official SEC API E1 plus MIT edgartools E3), so no entrant price can beat it; the $12 entrant figure is an ESTIMATE, not sourced. There is an edge only if a measurable group (for example no-code users who cannot run Python) pays anything at all. Direct test: list a free-trial Actor and see whether ten buyers pay above $0 within 60 days; if not, there is no edge."
+   },
+   "evidence": [
+    {
+     "id": "API-1-E1",
+     "url": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces",
+     "quote": "These APIs do not require any authentication or API keys to access.",
+     "kind": "incumbent_price",
+     "publisher": "U.S. Securities and Exchange Commission",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-1-E2",
+     "url": "https://sec-api.io/pricing",
+     "quote": "Personal & Startups: $49/month, or $588 billed yearly.",
+     "kind": "incumbent_price",
+     "publisher": "sec-api.io",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-1-E3",
+     "url": "https://github.com/dgunning/edgartools",
+     "quote": "Read and analyze SEC EDGAR filings in Python.",
+     "kind": "other",
+     "publisher": "edgartools (GitHub, MIT licence)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-1-E4",
+     "url": "https://apify.com/store",
+     "quote": "$1.6M paid out last month",
+     "kind": "demand",
+     "publisher": "Apify",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-1-E5",
+     "url": "https://www.sec.gov/about/privacy-information",
+     "quote": "Information presented on sec.gov is considered public information and may be copied or further distributed",
+     "kind": "constraint",
+     "publisher": "U.S. Securities and Exchange Commission",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-1-E6",
+     "url": "https://www.sec.gov/search-filings/edgar-search-assistance/accessing-edgar-data",
+     "quote": "Current max request rate: 10 requests/second.",
+     "kind": "constraint",
+     "publisher": "U.S. Securities and Exchange Commission",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-1-E7",
+     "url": "https://apify.com/partners/actor-developers",
+     "quote": "4,500 community developers.",
+     "kind": "demand",
+     "publisher": "Apify",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-1-E8",
+     "url": "https://apify.com/store",
+     "quote": "$0.06 per domain + $0.14 per verified contact",
+     "kind": "demand",
+     "publisher": "Apify (Store front page, Pequod Actor in the Rising stars row)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-1-E9",
+     "url": "https://github.com/sec-edgar/sec-edgar",
+     "quote": "download all of a company’s periodic reports, filings and forms from the EDGAR database with a single command.",
+     "kind": "other",
+     "publisher": "sec-edgar (GitHub, Apache-2.0 licence)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 2,
+    "customer_problem_or_value": 4,
+    "distribution_advantage": 3,
+    "defensibility": 1,
+    "absolute_gross_profit_potential": 2,
+    "willingness_to_pay": 3,
+    "repeat_ltv_potential": 4,
+    "competition_adjusted_gap": 1,
+    "market_depth": 3,
+    "end_to_end_automation": 8,
+    "capital_risk": 9,
+    "owner_time_support": 6
+   },
+   "componentReasons": {
+    "entrant_edge": "Only a claimed Apify Store channel effect (API-1-E4, API-1-E8); the data are free to copy (API-1-E5) and the best alternative costs $0 (API-1-E1, API-1-E3).",
+    "customer_problem_or_value": "Form 4 XML parsing is a real chore, but the MIT edgartools library already turns it into DataFrames (API-1-E3) and a $49 API exists (API-1-E2), so the remaining pain is small.",
+    "distribution_advantage": "Apify reports $1.6M paid out last month (API-1-E4) across 4,500 community developers (API-1-E7) and its front page shows newcomers with hundreds of users (API-1-E8), but the user numbers are unlabelled and I could not see how EDGAR Actors rank.",
+    "defensibility": "No exclusive data, no switching cost, and a competing Actor takes days to build from the same free source (API-1-E1, API-1-E5, API-1-E9).",
+    "absolute_gross_profit_potential": "Spread evenly, $1.6M a month over 4,500 developers is roughly $356 each (my arithmetic on API-1-E4 and API-1-E7, an estimate), so one niche Actor plausibly earns hundreds of dollars a month at best.",
+    "willingness_to_pay": "sec-api.io proves a $49 to $199 price point exists (API-1-E2) but free official access (API-1-E1) and an MIT parser (API-1-E3) cover the same records.",
+    "repeat_ltv_potential": "Pay-per-event pricing is usage-based and recurs if embedded in a customer workflow (API-1-E8), but churn is unknown and one-off lookups are likely.",
+    "competition_adjusted_gap": "A free full-coverage alternative exists (API-1-E3) so the gap against the cheapest option is about zero.",
+    "market_depth": "The buyer pool for structured Form 4 feeds is a niche of the SEC-data user base; no market size was found.",
+    "end_to_end_automation": "The Actor runs on Apify infrastructure and the platform handles billing and payout, so the product runs unattended apart from schema fixes (API-1-E4).",
+    "capital_risk": "Under $500 of cash is needed because the Actor is code on a hosted platform and the source API is free (API-1-E1).",
+    "owner_time_support": "Maintenance is limited to SEC schema changes and support tickets, but unlike a pure subscription it needs steady reviews and ranking work (API-1-E8)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "API-1-E5: SEC says sec.gov content may be copied or further distributed with a citation; the SEC seal and logos may not be used, and EDGAR names cannot be used in a trade name, trademark or domain of an EDGAR-related business, so name the Actor generically (the full page also bars implying SEC affiliation).",
+    "API-1-E6: fair-access limit of 10 requests per second and a declared User-Agent are required; the Actor must throttle and identify itself.",
+    "Apify terms, revenue-share percentage and payout rules for Actor developers were NOT stated on the pages read (apify.com/partners/actor-developers gives no percentage): unverified.",
+    "Marketing the data as trading signals could raise securities-law questions: unverified, I am not a lawyer."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "ALL INPUTS ARE ESTIMATES. Base: 40 paying users x $12/month = $480 gross, 20% assumed platform share (Apify percentage unverified) = $384, minus $60 of compute and tools = about $324/month. Pessimistic: price x0.8, volume x0.5, cost x1.5 = $192 x 0.8 - $90 = about +$64/month. Cash-positive but at 8 h/week that is under $2/hour, so it is not a viable business, only a hobby-scale side income."
+    },
+    "killReasons": [
+     {
+      "reason": "A free, keyless official API (SEC) plus an MIT-licensed library (edgartools) already return Form 4 transactions as structured data, so a $0 alternative covers the wedge for any developer.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "API-1-E1,API-1-E3,API-1-E9"
+     },
+     {
+      "reason": "No structural edge: the source is freely redistributable, history is not lost by the source, and a copycat Actor needs days; any Apify Store position effect accrues to whoever lists and earns reviews first.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "API-1-E5,API-1-E8"
+     },
+     {
+      "reason": "Revenue ceiling: platform payouts of $1.6M a month over 4,500 developers imply a few hundred dollars per developer on average (estimate), and I could not read any existing EDGAR Actor's price or usage because store search could not be used.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "API-1-E4,API-1-E7"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: the cheapest credible alternative is $0 and covers the wedge (official SEC API plus MIT edgartools), a paid convenience layer already exists at $49/month (sec-api.io), and the only edge is a claimed Apify Store position that any copycat can contest. Not verified: the web-search budget was exhausted, so I could not enumerate existing EDGAR Actors on the Apify Store, read Apify's revenue-share terms, or read other paid SEC-data APIs; those gaps could only matter if a large no-code buyer group refuses free tools."
+  },
+  {
+   "id": "API-2",
+   "name": "Stripe Dashboard app that benchmarks a merchant's subscription metrics against a panel built from the accounts that install it",
+   "family": "b2b_api_devtools",
+   "buyer": "Founders and finance leads of small Stripe-billed subscription businesses (under about $1M ARR) who want to know whether their churn, MRR growth and trial conversion are normal",
+   "pain": "Small SaaS operators have their own numbers in Stripe but no way to judge them against peers, so pricing and retention decisions are made blind; the cost is mis-set pricing or misdiagnosed churn rather than a direct fee.",
+   "wedge": "A public Stripe App that reads each installer's subscription metrics, pools them anonymously, and shows percentile benchmarks by segment for a monthly subscription.",
+   "referenceEntrant": {
+    "startupCashUsd": 1000,
+    "daysToFirstRevenue": 120,
+    "ownerHoursPerWeek": 15
+   },
+   "entrantEdge": {
+    "type": "proprietary_or_compounding_data",
+    "status": "none",
+    "statement": "The imagined edge is a cross-merchant data panel that grows with every install and cannot be backfilled by a later entrant. It fails on three points: Stripe's own rules say an app cannot resell or publish data obtained from Stripe users, Stripe Billing analytics already lets merchants benchmark against similar businesses on Stripe using the whole network, and a stranger's panel starts at zero installs, so any benchmark is statistically empty for months.",
+    "evidenceIds": [
+     "API-2-E1",
+     "API-2-E2"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Stripe Billing analytics built into the Dashboard, including benchmarking against similar businesses on Stripe (no separate fee stated on the page; Billing itself is priced per transaction)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://docs.stripe.com/billing/subscriptions/analytics",
+      "evidenceRef": "API-2-E2",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "profitable Ruby gem (MIT, 97 stars): MRR, ARR, churn, LTV, ARPU dashboard for Rails apps using the pay gem; no peer benchmark",
+      "kind": "open_source",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://github.com/rameerez/profitable",
+      "evidenceRef": "API-2-E7",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Synapsr SaaS-Monitor (open-source real-time Stripe dashboard, 4 stars); own metrics only",
+      "kind": "open_source",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://github.com/topics/mrr",
+      "evidenceRef": "API-2-E6",
+      "metrics": {
+       "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 19,
+    "falsifier": "Metric is monthly cash cost to the merchant for peer benchmarks. The best covering alternative is Stripe's own built-in benchmarking (API-2-E2) at no separate fee on the page read, so the $19 entrant price (an ESTIMATE) is higher, not lower. Direct test: if Stripe's built-in benchmark lacks the segments a buyer needs (which I could not check because the Dashboard requires a login) and a buyer pays anyway, there is an edge; otherwise there is none. Separately, API-2-E1 bars publishing or reselling Stripe-user data, so the panel itself cannot be sold."
+   },
+   "evidence": [
+    {
+     "id": "API-2-E1",
+     "url": "https://docs.stripe.com/stripe-apps/review-requirements.md",
+     "quote": "You can’t resell or publish any data obtained from Stripe users through your app.",
+     "kind": "constraint",
+     "publisher": "Stripe",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-2-E2",
+     "url": "https://docs.stripe.com/billing/subscriptions/analytics",
+     "quote": "Benchmark your metrics against similar businesses on Stripe",
+     "kind": "other",
+     "publisher": "Stripe",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-2-E3",
+     "url": "https://stripe.com/billing/pricing",
+     "quote": "Billing transactions processed on and off Stripe.",
+     "kind": "incumbent_price",
+     "publisher": "Stripe",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-2-E4",
+     "url": "https://docs.stripe.com/stripe-apps/publish-app",
+     "quote": "You can only publish one app per account.",
+     "kind": "constraint",
+     "publisher": "Stripe",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-2-E5",
+     "url": "https://docs.stripe.com/stripe-apps/analytics",
+     "quote": "We define “leads” as logged-in merchants who visit the marketplace.",
+     "kind": "other",
+     "publisher": "Stripe",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-2-E6",
+     "url": "https://github.com/topics/mrr",
+     "quote": "Open-source, real-time Stripe dashboard for SaaS founders.",
+     "kind": "demand",
+     "publisher": "GitHub topic page 'mrr' (Synapsr/SaaS-Monitor description)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-2-E7",
+     "url": "https://github.com/rameerez/profitable",
+     "quote": "allows you to calculate the MRR, ARR, churn, LTV, ARPU, total revenue & estimated valuation",
+     "kind": "other",
+     "publisher": "profitable (GitHub, MIT licence)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-2-E8",
+     "url": "https://docs.stripe.com/stripe-apps/publish-app",
+     "quote": "Any Stripe account user can install and use your app.",
+     "kind": "other",
+     "publisher": "Stripe",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 4,
+    "distribution_advantage": 3,
+    "defensibility": 1,
+    "absolute_gross_profit_potential": 2,
+    "willingness_to_pay": 2,
+    "repeat_ltv_potential": 5,
+    "competition_adjusted_gap": 1,
+    "market_depth": 3,
+    "end_to_end_automation": 7,
+    "capital_risk": 8,
+    "owner_time_support": 6
+   },
+   "componentReasons": {
+    "entrant_edge": "The claimed cross-install data panel is barred by Stripe's data rule (API-2-E1) and duplicated by Stripe's own network-wide benchmark (API-2-E2).",
+    "customer_problem_or_value": "Peer comparison is a genuine question for founders, but Stripe already answers it in the Dashboard (API-2-E2) and the visible open-source activity is own-metrics dashboards (API-2-E6, API-2-E7).",
+    "distribution_advantage": "Any Stripe account user can install a published app (API-2-E8) and Stripe provides install and listing-view analytics (API-2-E5), but I could not read marketplace install counts to show newcomers get installs.",
+    "defensibility": "A panel would be the only moat and the platform rule forbids selling it (API-2-E1); the app code is otherwise easy to copy.",
+    "absolute_gross_profit_potential": "Without a permissible data product the revenue base is a small-ticket dashboard add-on; Stripe's own pricing shows merchants already pay a percentage for Billing (API-2-E3), leaving little room for a paid layer.",
+    "willingness_to_pay": "The only demand seen is for free self-built dashboards (API-2-E6, API-2-E7); no evidence shows merchants pay for peer benchmarks.",
+    "repeat_ltv_potential": "A monthly benchmark subscription would recur if useful, but nothing read shows retention or a paying base.",
+    "competition_adjusted_gap": "Stripe's built-in benchmark (API-2-E2) leaves essentially no gap for the same data on Stripe's own platform.",
+    "market_depth": "Many small Stripe-billed businesses exist, but the number who would pay for benchmarks was not found.",
+    "end_to_end_automation": "A Stripe App runs inside the Dashboard and ingests data through the API, so it can run unattended once the panel exists (API-2-E4).",
+    "capital_risk": "Build cost is mostly time and the platform has no listed fee in the pages read (API-2-E4), but the cold-start period without revenue is long.",
+    "owner_time_support": "Stripe re-reviews every app change (API-2-E4 notes review and resubmission), adding periodic owner work."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "API-2-E1: Stripe prohibits reselling or publishing data obtained from Stripe users through an app, and limits app data use to functionality clearly communicated to users; a pooled cross-merchant benchmark product conflicts with this on its face (my reading, unverified legally; I am not a lawyer).",
+    "API-2-E4: one public app per Stripe account and a review before each publication.",
+    "Privacy law (GDPR, state privacy statutes) for pooling customers' subscription data was not researched: unverified."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "ALL INPUTS ARE ESTIMATES. The product cannot lawfully sell a pooled panel under API-2-E1, so volume of the benchmark product is effectively zero. Even for a non-pooled version: base 100 installs x $19 = $1,900/month, cost $300; pessimistic 50 x $15.2 = $760 - $450 = +$310, but that version is just another own-metrics dashboard that Stripe's built-in analytics and free open-source dashboards already provide, so the volume assumption is unsupported. Treated as failing."
+    },
+    "killReasons": [
+     {
+      "reason": "Stripe's app rules forbid reselling or publishing data obtained from Stripe users through an app, which removes the cross-merchant panel that is the whole edge.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "API-2-E1"
+     },
+     {
+      "reason": "Stripe Billing analytics already offers benchmarking against similar businesses on Stripe, built from the whole network that a new panel can never match.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "API-2-E2"
+     },
+     {
+      "reason": "One public app per Stripe account and a review gate for each change limit iteration; no evidence was found that merchants pay for benchmarks.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "API-2-E4,API-2-E6"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: the compounding-data edge is prohibited by Stripe's own app rules (cannot resell or publish Stripe-user data) and already provided first-party by Stripe Billing analytics. Not verified: the web-search budget was exhausted and Baremetrics, ChartMogul and the Stripe marketplace listing pages could not be read, so third-party benchmark pricing and Stripe marketplace install volumes are unknown; neither could rescue a data product the platform forbids."
+  },
+  {
+   "id": "API-3",
+   "name": "Paid GitHub Marketplace app that flags abandoned or maintainer-changed dependencies",
+   "family": "b2b_api_devtools",
+   "buyer": "Engineering leads and security owners at 10 to 200 developer companies with a GitHub organisation who want early warning that a dependency has stopped being maintained",
+   "pain": "Unmaintained or abandoned dependencies are discovered when a vulnerability or breaking release arrives, forcing an emergency migration; the cost is unplanned engineering time and delayed security fixes.",
+   "wedge": "A GitHub App listed on GitHub Marketplace with per-organisation monthly plans that opens issues when a repository's dependencies show abandonment signals (no releases, archived, maintainer or ownership change), backed by its own accumulating snapshot history.",
+   "referenceEntrant": {
+    "startupCashUsd": 1500,
+    "daysToFirstRevenue": 150,
+    "ownerHoursPerWeek": 15
+   },
+   "entrantEdge": {
+    "type": "proprietary_or_compounding_data",
+    "status": "none",
+    "statement": "The imagined edge is a snapshot history of dependency maintainer and release signals that grows over time and cannot be backfilled. In practice the OpenSSF Scorecard project already publishes weekly scan results as a free public BigQuery dataset and a free REST API that includes a Maintained check, and package registries expose release timestamps, so the history can be reconstructed and is not exclusive; nothing read shows data a competitor could not obtain.",
+    "evidenceIds": [
+     "API-3-E5",
+     "API-3-E6"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "OpenSSF Scorecard (Apache-2.0, 5.7k stars): free REST API and public BigQuery dataset with a Maintained check",
+      "kind": "open_source",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://github.com/ossf/scorecard",
+      "evidenceRef": "API-3-E5",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Socket free plan on GitHub Marketplace (24,662 installs; dependency risk scanning; abandonment coverage not verified)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://github.com/marketplace/socket-security",
+      "evidenceRef": "API-3-E3",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Free hosted Renovate by Mend.io on GitHub Marketplace (75,985 installs); dependency-update automation, not abandonment alerts",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://github.com/marketplace/renovate",
+      "evidenceRef": "API-3-E4",
+      "metrics": {
+       "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 15,
+    "falsifier": "Metric is monthly cash cost per organisation for dependency-abandonment warnings. The cheapest partially covering alternatives are all $0 (Scorecard API, Socket free plan, free hosted Renovate), and the $15 entrant price is an ESTIMATE, so the entrant is dearer, not cheaper. The idea has an edge only if buyers say these free tools miss abandonment events and pay anyway; I could not verify whether Socket's free plan flags abandoned packages, which is the open question. Direct test: pre-sell to ten organisations before building."
+   },
+   "evidence": [
+    {
+     "id": "API-3-E1",
+     "url": "https://github.com/github/docs/blob/main/content/apps/github-marketplace/creating-apps-for-github-marketplace/requirements-for-listing-an-app.md",
+     "quote": "should have a minimum of 100 installations",
+     "kind": "constraint",
+     "publisher": "GitHub Docs (source file in github/docs)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-3-E2",
+     "url": "https://github.com/github/docs/blob/main/content/apps/github-marketplace/creating-apps-for-github-marketplace/requirements-for-listing-an-app.md",
+     "quote": "must be owned by an organization that is a verified publisher",
+     "kind": "constraint",
+     "publisher": "GitHub Docs (source file in github/docs)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-3-E3",
+     "url": "https://github.com/marketplace/socket-security",
+     "quote": "Free. Socket Free for personal and organization accounts plan available.",
+     "kind": "incumbent_price",
+     "publisher": "GitHub Marketplace (Socket listing)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-3-E4",
+     "url": "https://github.com/marketplace/renovate",
+     "quote": "Free, hosted Renovate by Mend.io",
+     "kind": "incumbent_price",
+     "publisher": "GitHub Marketplace (Renovate listing)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-3-E5",
+     "url": "https://github.com/ossf/scorecard",
+     "quote": "To query pre-calculated scores of OSS projects, use the REST API",
+     "kind": "other",
+     "publisher": "OpenSSF Scorecard (GitHub, Apache-2.0)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-3-E6",
+     "url": "https://github.com/ossf/scorecard",
+     "quote": "Data provided by the REST API is licensed under the CDLA Permissive 2.0.",
+     "kind": "other",
+     "publisher": "OpenSSF Scorecard (GitHub, Apache-2.0)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-3-E7",
+     "url": "https://github.com/marketplace",
+     "quote": "Tools from the community and partners to simplify tasks and automate processes",
+     "kind": "other",
+     "publisher": "GitHub Marketplace front page",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-3-E8",
+     "url": "https://github.com/marketplace/zenhub",
+     "quote": "Free. Zenhub offers a free plan designed for small teams and Teams and Enterprise plans for organizations looking to scale.",
+     "kind": "demand",
+     "publisher": "GitHub Marketplace (Zenhub listing)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-3-E9",
+     "url": "https://github.com/marketplace/gitguardian",
+     "quote": "Secrets Security Platform - The most downloaded GitHub app lets you find and fix hardcoded API keys in code",
+     "kind": "demand",
+     "publisher": "GitHub Marketplace (GitGuardian listing)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 1,
+    "customer_problem_or_value": 4,
+    "distribution_advantage": 2,
+    "defensibility": 1,
+    "absolute_gross_profit_potential": 2,
+    "willingness_to_pay": 2,
+    "repeat_ltv_potential": 5,
+    "competition_adjusted_gap": 1,
+    "market_depth": 4,
+    "end_to_end_automation": 7,
+    "capital_risk": 8,
+    "owner_time_support": 6
+   },
+   "componentReasons": {
+    "entrant_edge": "The claimed history asset is already published weekly and free by OpenSSF Scorecard (API-3-E5, API-3-E6), so nothing exclusive accumulates.",
+    "customer_problem_or_value": "Unmaintained dependencies are a real risk, but free tools with large install bases already surface related signals (API-3-E3, API-3-E4, API-3-E5).",
+    "distribution_advantage": "A paid plan needs at least 100 installations and a verified publisher (API-3-E1, API-3-E2), and the Marketplace front page shows a small curated set with no selling guidance (API-3-E7), so the channel does not send buyers to newcomers by evidence.",
+    "defensibility": "No exclusive data (API-3-E6) and a free incumbent with 75,985 installs (API-3-E4) can add the feature.",
+    "absolute_gross_profit_potential": "The best-known listings are free (API-3-E3, API-3-E4, API-3-E9), so paid per-organisation revenue is thin; Zenhub shows paid tiers exist only alongside a free plan (API-3-E8).",
+    "willingness_to_pay": "The installs seen are for free plans (API-3-E3, API-3-E4, API-3-E9); only Zenhub shows paid Teams and Enterprise tiers, and no abandonment-specific payment evidence exists (API-3-E8).",
+    "repeat_ltv_potential": "A monitoring subscription would recur by nature, but retention is unevidenced (API-3-E8).",
+    "competition_adjusted_gap": "Three free partial alternatives and a vendor with 24,662 installs already compete (API-3-E3, API-3-E4, API-3-E5).",
+    "market_depth": "Every GitHub organisation with dependencies is a prospect, but the paying slice is unknown (API-3-E8, API-3-E9).",
+    "end_to_end_automation": "A GitHub App runs unattended once installed and the platform handles purchase events (API-3-E1).",
+    "capital_risk": "Low build and hosting cost, but months of free-install growth are needed before the first paid plan (API-3-E1).",
+    "owner_time_support": "Support, false-positive handling and ecosystem coverage need ongoing effort (API-3-E5)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "API-3-E1, API-3-E2: GitHub says paid GitHub Apps should have a minimum of 100 installations and the owning organisation must be a verified publisher; GitHub's full Marketplace developer agreement and fee terms were NOT read: unverified.",
+    "API-3-E6: Scorecard REST API data is licensed under CDLA Permissive 2.0, which permits reuse; the licence of package-registry metadata used for a history was not checked: unverified.",
+    "Using package-registry or GitHub APIs for snapshots is subject to each service's rate limits and terms, which I did not read: unverified; I am not a lawyer."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "ALL INPUTS ARE ESTIMATES. Base: reach 100 free installs first (API-3-E1), assume 5% convert to a paid plan = 5 organisations x $15/month = $75/month against $40/month of hosting and monitoring = +$35. Pessimistic: price x0.8 = $12, volume x0.5 = 2.5 organisations = $30 against cost x1.5 = $60 = about -$30/month. Fails."
+    },
+    "killReasons": [
+     {
+      "reason": "Free tools with large install bases (Socket free plan 24,662 installs, free hosted Renovate 75,985) and a free public Scorecard API and dataset already cover most of the maintenance-signal wedge.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "API-3-E3,API-3-E4,API-3-E5,API-3-E6"
+     },
+     {
+      "reason": "GitHub requires roughly 100 installations and a verified publisher before a paid plan, and the Marketplace front page is a small curated set with no seller guidance, so a stranger has no evidenced channel to the first ten payers.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "API-3-E1,API-3-E2,API-3-E7"
+     },
+     {
+      "reason": "No willingness-to-pay evidence for abandonment alerts; installs observed are for free plans.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "API-3-E8,API-3-E9"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: the free Scorecard API and dataset and free Marketplace apps with tens of thousands of installs cover the wedge's signals, the history asset is not exclusive, and GitHub's paid-listing gate (about 100 installations plus verified publisher) blocks a stranger's early revenue. Not verified: the web-search budget was exhausted, so I could not confirm whether Socket's free plan or Renovate flags abandoned packages, read Socket's paid prices, or read GitHub's Marketplace fee terms."
+  },
+  {
+   "id": "API-4",
+   "name": "Adopted abandoned WordPress.org plugin monetised with a paid add-on or hosted service",
+   "family": "b2b_api_devtools",
+   "buyer": "Site owners and small agencies that already run an unmaintained WordPress.org plugin (for example a Mastodon cross-poster or a REST API meta plugin) and would pay for a maintained version or an add-on",
+   "pain": "Plugins offered for adoption stop receiving updates, so site owners risk compatibility and security problems; the buyer cost is migration effort or running unpatched code.",
+   "wedge": "Take over maintainership of a plugin listed on the WordPress.org adopt-me tag, inherit its install base through the plugin's update channel, and sell a premium add-on or hosted feature to those installs.",
+   "referenceEntrant": {
+    "startupCashUsd": 300,
+    "daysToFirstRevenue": 120,
+    "ownerHoursPerWeek": 10
+   },
+   "entrantEdge": {
+    "type": "acquirable_owned_audience_or_partner_channel",
+    "status": "claimed",
+    "statement": "What is real: a plugin offered for adoption comes with an existing installed base reached through the directory's update channel, so a stranger can start with an audience instead of building one (a brand-new plugin lists with fewer than 10 active installations). What undermines it: the adoptable supply seen on the adopt-me tag page is 18 plugins with the largest at 1,000+ active installs and about half at 10+ and most under 100, one adoptable plugin's function is already built into Yoast SEO, and the directory's guidelines bar locked paid features and limit upgrade notices.",
+    "evidenceIds": [
+     "API-4-E1",
+     "API-4-E2",
+     "API-4-E4"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Yoast SEO built-in REST meta (the adoptable WP REST Yoast Meta plugin's function is now part of Yoast SEO; 10+ million active installs)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://wordpress.org/plugins/wp-rest-yoast-meta/",
+      "evidenceRef": "API-4-E3",
+      "metrics": {
+       "channel_reach": 10000000
+      }
+     },
+     {
+      "label": "Automattic ActivityPub plugin (free, 6,000+ active installs): federates posts to Mastodon, not a cross-poster",
+      "kind": "open_source",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://wordpress.org/plugins/activitypub/",
+      "evidenceRef": "API-4-E8",
+      "metrics": {
+       "channel_reach": 6000
+      }
+     },
+     {
+      "label": "Jetpack Social (free plugin, 30,000+ active installs; a separate Jetpack Social plan is paid, price not listed on the page)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://wordpress.org/plugins/jetpack-social/",
+      "evidenceRef": "API-4-E7",
+      "metrics": {
+       "channel_reach": 30000
+      }
+     },
+     {
+      "label": "Build a new plugin from scratch (new directory listings show fewer than 10 active installations)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "none",
+      "sourceLocator": "https://wordpress.org/plugins/browse/new/",
+      "evidenceRef": "API-4-E4",
+      "metrics": {
+       "channel_reach": 9
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "channel_reach",
+    "direction": "higher_is_better",
+    "incumbentValue": 10000000,
+    "entrantValue": 1000,
+    "falsifier": "Metric is active installations reachable through the directory. The best covering free alternative reaches 10+ million installs (Yoast SEO, API-4-E3 with the install figure read on the plugins front page, API-4-E9) against about 1,000 for the largest adoptable plugin (API-4-E2); entrant value 1,000 is read from the adopt-me tag page. The edge exists only if adopted installs convert to paid at a rate that makes about 1,000 installs worth maintaining, which I could not source: a tested conversion below roughly 1% at a $50 annual price means under $500 a year, i.e. no edge."
+   },
+   "evidence": [
+    {
+     "id": "API-4-E1",
+     "url": "https://wordpress.org/plugins/tags/adopt-me/",
+     "quote": "** this plugin is no longer being update. Please feel free to adopt me! **",
+     "kind": "other",
+     "publisher": "WordPress.org Plugin Directory (adopt-me tag page, 18 plugins listed, largest 1,000+ active installs)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-4-E2",
+     "url": "https://wordpress.org/plugins/share-on-mastodon/",
+     "quote": "This plugin is seeking new, active, developers. Are you interested in assuming that responsibility?",
+     "kind": "demand",
+     "publisher": "WordPress.org Plugin Directory (Share on Mastodon, 1,000+ active installs, no premium version mentioned)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-4-E3",
+     "url": "https://wordpress.org/plugins/wp-rest-yoast-meta/",
+     "quote": "is no longer updated, but is open for adoption",
+     "kind": "other",
+     "publisher": "WordPress.org Plugin Directory (WP REST Yoast Meta, 1,000+ active installs; function now part of Yoast SEO since 16.7)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-4-E4",
+     "url": "https://wordpress.org/plugins/browse/new/",
+     "quote": "Fewer than 10 active installations",
+     "kind": "constraint",
+     "publisher": "WordPress.org Plugin Directory (Newest plugins listing; all 20 shown had this count)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-4-E5",
+     "url": "https://developer.wordpress.org/plugins/wordpress-org/detailed-plugin-guidelines/",
+     "quote": "Plugins may not contain functionality that is restricted or locked, only to be made available by payment or upgrade.",
+     "kind": "constraint",
+     "publisher": "WordPress.org (Detailed Plugin Guidelines)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-4-E6",
+     "url": "https://developer.wordpress.org/plugins/wordpress-org/detailed-plugin-guidelines/",
+     "quote": "Upgrade prompts, notices, alerts, and the like must be limited in scope and used sparingly",
+     "kind": "constraint",
+     "publisher": "WordPress.org (Detailed Plugin Guidelines)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-4-E7",
+     "url": "https://wordpress.org/plugins/jetpack-social/",
+     "quote": "Write once, publish everywhere.",
+     "kind": "demand",
+     "publisher": "WordPress.org Plugin Directory (Jetpack Social, 30,000+ active installs; paid Jetpack Social plan features)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-4-E8",
+     "url": "https://wordpress.org/plugins/activitypub/",
+     "quote": "broadcasting your blog to a wider audience",
+     "kind": "other",
+     "publisher": "WordPress.org Plugin Directory (ActivityPub by Automattic, 6,000+ active installs)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-4-E9",
+     "url": "https://wordpress.org/plugins/",
+     "quote": "10+ million active installations",
+     "kind": "other",
+     "publisher": "WordPress.org Plugin Directory front page (Elementor and Yoast SEO each shown with this count)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 3,
+    "customer_problem_or_value": 3,
+    "distribution_advantage": 3,
+    "defensibility": 1,
+    "absolute_gross_profit_potential": 1,
+    "willingness_to_pay": 2,
+    "repeat_ltv_potential": 3,
+    "competition_adjusted_gap": 1,
+    "market_depth": 1,
+    "end_to_end_automation": 5,
+    "capital_risk": 9,
+    "owner_time_support": 5
+   },
+   "componentReasons": {
+    "entrant_edge": "A real but tiny acquirable audience: the adopt-me list holds 18 plugins and the largest, Share on Mastodon, has 1,000+ installs (API-4-E1, API-4-E2), versus fewer than 10 installs for any brand-new listing (API-4-E4).",
+    "customer_problem_or_value": "Abandoned plugins are a genuine risk to site owners (API-4-E1), but one adoptable plugin's function now ships inside Yoast SEO (API-4-E3) and others have free substitutes (API-4-E8).",
+    "distribution_advantage": "Adoption inherits an update channel that new plugins lack (API-4-E4), but with at most about 1,000 installs it is not a channel that sends buyers (API-4-E1).",
+    "defensibility": "Plugins are GPL-style open code that anyone can fork, and Automattic and Yoast offer free alternatives (API-4-E3, API-4-E8).",
+    "absolute_gross_profit_potential": "About 1,000 installs at an assumed 1% paid conversion and $50 a year is roughly $500 a year (my arithmetic, an estimate), far below any useful profit (API-4-E2).",
+    "willingness_to_pay": "The adoptable plugin has no premium version mentioned (API-4-E2) and the guidelines bar locked paid features (API-4-E5); the only paid plan seen is Jetpack's, with no price listed (API-4-E7).",
+    "repeat_ltv_potential": "Annual licences would recur, but the guidelines limit upgrade prompts (API-4-E6), so conversion and renewal are both hard to engineer.",
+    "competition_adjusted_gap": "Free built-in or large-vendor alternatives cover the main functions (API-4-E3, API-4-E7, API-4-E8).",
+    "market_depth": "Supply on the adopt-me tag is 18 plugins, most with fewer than 100 installs (API-4-E1).",
+    "end_to_end_automation": "Licence delivery can be automated but support, compatibility updates and review responses stay manual (API-4-E5).",
+    "capital_risk": "Adoption is free of charge and the build is mostly time (API-4-E1).",
+    "owner_time_support": "Maintaining someone else's code for thousands of sites carries ongoing security and support duties (API-4-E2)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "API-4-E5: WordPress.org guidelines bar functionality that is locked until payment or upgrade, so the paid layer must be a separate add-on or a hosted service rather than gated plugin features.",
+    "API-4-E6: upgrade prompts and notices must be limited and used sparingly, restricting in-dashboard selling.",
+    "The Plugin Team's adoption approval process and the plugins' licence terms were not read in detail: unverified; I am not a lawyer. Taking over code that runs on many sites also creates security liability."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": false,
+     "note": "ALL INPUTS ARE ESTIMATES (conversion and price are unsourced). Base: 1,000 installs x 1% x $50 per year = $500/year = about $42/month against $10/month of hosting and licence tooling = about +$32. Pessimistic: price x0.8 and volume x0.5 give about $17/month against cost x1.5 = $15 = about +$2/month, which is nil after any owner time. Treated as failing."
+    },
+    "killReasons": [
+     {
+      "reason": "Adoptable supply is tiny: 18 plugins on the adopt-me tag, the largest at 1,000+ active installs and about half at 10+ and most under 100, so the acquirable audience cannot support meaningful revenue.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "API-4-E1,API-4-E2"
+     },
+     {
+      "reason": "Free alternatives already cover the functions seen: Yoast SEO built in (10+ million installs) for the REST meta plugin, and Automattic ActivityPub and Jetpack Social for Mastodon and social sharing.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "API-4-E3,API-4-E7,API-4-E8,API-4-E9"
+     },
+     {
+      "reason": "Directory guidelines forbid locked paid functionality and restrict upgrade notices, and no paid price or conversion data was found for adoptable plugins.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "API-4-E5,API-4-E6"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: adopting is a genuine, free way to inherit an audience that a new plugin cannot get (new listings show fewer than 10 installs), but the adoptable supply is only 18 plugins topped at 1,000+ installs, free substitutes exist, and the directory's rules limit monetisation, so revenue is a few hundred dollars a year at best. Not verified: the web-search budget was exhausted, so I did not read the Plugin Team's adoption process, any commercial plugin price list, or other platforms' (Chrome, Shopify, Atlassian) transfer markets, which could hold larger acquirable audiences."
+  },
+  {
+   "id": "API-5",
+   "name": "Long-retention Stripe webhook-event archive with replay, offered as a Stripe App",
+   "family": "b2b_api_devtools",
+   "buyer": "Developers and technical founders at small Stripe-billed software businesses and Connect platforms who need to recover or audit payment events beyond what Stripe retains",
+   "pain": "Stripe retries a failed webhook delivery for three days and lets you resend an event for 15 days from the Dashboard or 30 days from the CLI, so events missed longer ago must be rebuilt by hand from API objects; the cost is engineering hours and reconciliation errors after an outage.",
+   "wedge": "A Stripe App and ingest endpoint that stores every event indefinitely, de-duplicates and lets the customer replay any stored event to their own endpoint, priced monthly by event volume.",
+   "referenceEntrant": {
+    "startupCashUsd": 1000,
+    "daysToFirstRevenue": 90,
+    "ownerHoursPerWeek": 12
+   },
+   "entrantEdge": {
+    "type": "embedded_workflow_or_system_of_record",
+    "status": "claimed",
+    "statement": "Claimed only: once a customer routes events through the archive it becomes the retained log of their payment events and a replay tool they rely on, creating switching cost. The weak point is that the same log is a single database table any developer can keep (Stripe tells integrators to log processed event IDs and to use the API to retrieve missing objects), and open-source gateways (Svix, Convoy) plus Hookdeck's free tier already queue, retry and redrive events, so the record is not exclusive and a customer can export and leave.",
+    "evidenceIds": [
+     "API-5-E1",
+     "API-5-E9"
+    ]
+   },
+   "alternativesSurvey": {
+    "freeSearchPerformed": true,
+    "searchedAt": "2026-10-10",
+    "alternatives": [
+     {
+      "label": "Stripe built-in delivery: 3-day automatic retries, Dashboard resend up to 15 days, CLI resend up to 30 days, Workbench event-delivery log",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://docs.stripe.com/webhooks",
+      "evidenceRef": "API-5-E1",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Own event-log table plus Stripe Events API, as Stripe's docs instruct (log processed event IDs, retrieve missing objects via the API)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://docs.stripe.com/webhooks",
+      "evidenceRef": "API-5-E9",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Hookdeck Developer plan ($0/month: 10,000 events, 3-day retention, 1 user)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.hookdeck.com/pricing",
+      "evidenceRef": "API-5-E4",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Hookdeck Growth plan (from $499/month, 30-day retention)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 499,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.hookdeck.com/pricing",
+      "evidenceRef": "API-5-E5",
+      "metrics": {
+       "cash_cost": 499
+      }
+     },
+     {
+      "label": "Svix open-source webhooks service (MIT, 3.4k stars), self-hosted; dead-letter-queue redrive",
+      "kind": "open_source",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://github.com/svix/svix-webhooks",
+      "evidenceRef": "API-5-E6",
+      "metrics": {
+       "cash_cost": 0
+      }
+     },
+     {
+      "label": "Convoy webhooks gateway (Elastic License 2.0, source-available, 2.9k stars): ingest, persist, retry",
+      "kind": "open_source",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://github.com/frain-dev/convoy",
+      "evidenceRef": "API-5-E7",
+      "metrics": {
+       "cash_cost": 0
+      }
+     }
+    ]
+   },
+   "edgeMeasurement": {
+    "criterionKey": "cash_cost",
+    "direction": "lower_is_better",
+    "incumbentValue": 0,
+    "entrantValue": 19,
+    "falsifier": "Metric is monthly cash cost for retaining and replaying Stripe events beyond 30 days. The best covering alternatives cost $0 (own event-log table E9, Stripe built-in E1, Hookdeck free plan E4, self-hosted Svix E6), and the $19 entrant price is an ESTIMATE, so the entrant is dearer. The edge exists only if buyers who already keep a table still pay for a hosted archive with replay UI; nothing read shows that. Direct test: ask ten Stripe-integrating teams whether they have ever needed an event older than 30 days."
+   },
+   "evidence": [
+    {
+     "id": "API-5-E1",
+     "url": "https://docs.stripe.com/webhooks",
+     "quote": "Stripe attempts to deliver events to your destination for up to three days with an exponential back off in live mode.",
+     "kind": "constraint",
+     "publisher": "Stripe",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-5-E2",
+     "url": "https://docs.stripe.com/webhooks",
+     "quote": "This works for up to 15 days after the event creation.",
+     "kind": "constraint",
+     "publisher": "Stripe",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-5-E3",
+     "url": "https://docs.stripe.com/webhooks",
+     "quote": "This works for up to 30 days after the event creation.",
+     "kind": "constraint",
+     "publisher": "Stripe",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-5-E4",
+     "url": "https://www.hookdeck.com/pricing",
+     "quote": "Developer | $0/month | 10,000 events, 3-day retention, 1 user",
+     "kind": "incumbent_price",
+     "publisher": "Hookdeck",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-5-E5",
+     "url": "https://www.hookdeck.com/pricing",
+     "quote": "Growth | From $499/month | 30-day retention, uptime and latency SLAs, HIPAA",
+     "kind": "incumbent_price",
+     "publisher": "Hookdeck",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-5-E6",
+     "url": "https://github.com/svix/svix-webhooks",
+     "quote": "The open source and enterprise-ready webhooks service",
+     "kind": "demand",
+     "publisher": "Svix (GitHub, MIT licence, 3.4k stars)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-5-E7",
+     "url": "https://github.com/frain-dev/convoy",
+     "quote": "Convoy supports two retry algorithms; constant time and exponential backoff with jitter.",
+     "kind": "other",
+     "publisher": "Convoy (GitHub, Elastic License 2.0, 2.9k stars)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-5-E8",
+     "url": "https://github.com/supabase/stripe-sync-engine",
+     "quote": "Sync your Stripe account to you Postgres database.",
+     "kind": "other",
+     "publisher": "Supabase stripe-sync-engine (GitHub, Apache-2.0, 1.1k stars)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-5-E9",
+     "url": "https://docs.stripe.com/webhooks",
+     "quote": "and then not processing already-logged events.",
+     "kind": "other",
+     "publisher": "Stripe (best-practice advice to log processed event IDs; same page: You can also use the API to retrieve any missing objects.)",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    },
+    {
+     "id": "API-5-E10",
+     "url": "https://docs.stripe.com/stripe-apps/review-requirements.md",
+     "quote": "Your app can only use user data and API endpoints that are required for existing app functionality that you clearly communicate to users.",
+     "kind": "constraint",
+     "publisher": "Stripe",
+     "date": "undated",
+     "evidenceClass": "agent_reported"
+    }
+   ],
+   "componentScores": {
+    "entrant_edge": 2,
+    "customer_problem_or_value": 3,
+    "distribution_advantage": 3,
+    "defensibility": 2,
+    "absolute_gross_profit_potential": 2,
+    "willingness_to_pay": 2,
+    "repeat_ltv_potential": 6,
+    "competition_adjusted_gap": 1,
+    "market_depth": 3,
+    "end_to_end_automation": 8,
+    "capital_risk": 8,
+    "owner_time_support": 6
+   },
+   "componentReasons": {
+    "entrant_edge": "A system-of-record archive is only claimed; the log is a table any integrator can keep (API-5-E9) and customers can export it, so no exclusive asset builds up.",
+    "customer_problem_or_value": "Stripe's window is real (3 days of retries, 15 or 30 days of resend, API-5-E1 to API-5-E3), but the docs tell integrators how to recover with an event-ID log and the API (API-5-E9), so the pain is occasional.",
+    "distribution_advantage": "Any Stripe account user can install a published app and Stripe supplies install analytics, but I could not read marketplace listings to show newcomers receive installs, and apps are limited to one per account (API-5-E10 and Stripe publish rules).",
+    "defensibility": "The archive creates mild switching cost once adopted, but open-source Svix and Convoy and Hookdeck's free plan are close substitutes (API-5-E4, API-5-E6, API-5-E7).",
+    "absolute_gross_profit_potential": "Hookdeck's entry paid tier is $39 and its 30-day tier $499 (API-5-E5), but the free alternatives cap what a newcomer can charge for retention under 30 days.",
+    "willingness_to_pay": "No evidence that teams pay for retention beyond 30 days; the visible demand is for free or open-source gateways (API-5-E4, API-5-E6).",
+    "repeat_ltv_potential": "Event archiving is naturally a recurring, volume-based service once embedded in a customer's recovery process (API-5-E5).",
+    "competition_adjusted_gap": "A free DIY table (API-5-E9) fully covers the stated wedge, so the gap is about zero.",
+    "market_depth": "Stripe-integrating software teams are numerous, but those with a recurring need for events older than 30 days are unmeasured.",
+    "end_to_end_automation": "Ingest, store, dedupe and replay can run unattended on standard cloud storage and a queue.",
+    "capital_risk": "Storage and compute are small at low volume, but payment-event data brings security and audit obligations (API-5-E10).",
+    "owner_time_support": "Reliability, data-access support and incident response for a payment-adjacent service need continuing attention (API-5-E10)."
+   },
+   "confidenceGrade": "D",
+   "legalNotes": [
+    "API-5-E10: Stripe limits app use of user data to functionality clearly communicated to users and forbids reselling or publishing it (see the same Stripe review page); an archive that stores a customer's own events for that customer fits the stated purpose, but the contract and data-protection terms were not read in detail: unverified.",
+    "Stored Stripe events contain customer personal data (names, emails, amounts), so a hosted archive would act as a processor under privacy laws such as GDPR; requirements not researched: unverified, I am not a lawyer.",
+    "API-5-E7: Convoy is licensed under the Elastic License 2.0 (source-available, not OSI open source), which limits offering it as a hosted service; Svix is MIT (API-5-E6)."
+   ],
+   "deep": {
+    "done": true,
+    "complete": true,
+    "economics": {
+     "survivesPessimistic": true,
+     "note": "ALL INPUTS ARE ESTIMATES and the volume assumption is unsupported by evidence. Base: 30 teams x $19/month = $570 against $100/month of storage, compute and tooling = +$470. Pessimistic: price x0.8 = $15.2, volume x0.5 = 15 teams = $228 against cost x1.5 = $150 = about +$78/month. Cash-positive on paper, but it presumes ten-plus paying teams exist, which nothing read shows."
+    },
+    "killReasons": [
+     {
+      "reason": "A free DIY alternative fully covers the wedge: Stripe's own docs tell integrators to log processed event IDs and to retrieve missing objects through the API, and Stripe resends events for 15 days in the Dashboard and 30 days with the CLI.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "API-5-E2,API-5-E3,API-5-E9"
+     },
+     {
+      "reason": "Open-source gateways (Svix MIT, Convoy) and Hookdeck's free plan already queue, retry and redrive webhooks, so the archive has no exclusive element.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "API-5-E4,API-5-E6,API-5-E7"
+     },
+     {
+      "reason": "No evidence that any team pays for retention beyond 30 days; only Hookdeck's 30-day tier at $499 was seen as a paid price point, and storing payment events adds data-protection duties.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "API-5-E5,API-5-E10"
+     }
+    ]
+   },
+   "researcherVerdict": "killed",
+   "verdictReason": "Killed: Stripe documents a free recovery path (event-ID log plus the Events API, resend for 15 to 30 days) that fully covers the wedge at $0, Hookdeck's free plan and open-source Svix and Convoy cover queueing and retries, and the claimed system-of-record edge is a table anyone can keep. Not verified: the web-search budget was exhausted, so I could not read other webhook vendors' pricing, Stripe marketplace listings or install counts, or find any evidence of teams needing events older than 30 days."
+  }
+ ]
+}
