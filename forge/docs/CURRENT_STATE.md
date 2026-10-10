@@ -1,42 +1,34 @@
-# CURRENT STATE — Merch Forge (after migration session 01)
+# CURRENT STATE — Merch Forge
 
-## Authoritative release
-`055_Merch_Forge_RESEARCH_DRAFT_RC.zip`
-SHA-256 `82783210db73ddfcdc579dd4bcbd148f92931c4a9bf03e30a71bb23fb57e97d8` · 289,737 bytes · one top-level folder · deterministic rebuild exact.
+## Current release: 056_Merch_Forge_WINDOWS_FIXES_RC
+`forge/releases/056_Merch_Forge_WINDOWS_FIXES_RC.zip` (SHA-256 in the `.sha256` file next to it). App `2.9.1-forge-windows-fixes`, backend minimum `forge-app 0.2.70` (unchanged). Rollback: 055 (releases/), 054 and frozen 050 (archive/).
 
-- Desktop `2.9.0-research-draft`; backend minimum unchanged `forge-app 0.2.70` (no backend change, no deployment).
-- installer_generation `00000000000000100238` (054 was …100237), so it installs over 054 without the downgrade guard firing.
-- Rollback: 054 (`c6ea5f50…8383`), then frozen 050 (`13aaf21c…187d`). Both untouched.
+## How proof works now
+Every push that touches `forge/` runs the **forge-windows** GitHub workflow on a real Windows machine (free for this public repo):
+1. the app's own startup preflight, exactly as the launcher runs it (integrity, PowerShell parser, real WPF XAML load);
+2. the research-draft self-test under **Windows PowerShell 5.1**, including the 054 rollback reading 055+ state;
+3. the **real app window driven by button clicks** in two processes (create, then restart), with screenshots.
 
-## What 055 adds
-Discover → select niche → **Create concept draft**:
-- Creates a LOCAL draft (`forge.research_concept_draft.v1`, key `rd-…`) in LocalCore state `research_drafts[]`.
-- Provenance: contract, snapshot time, backend version, niche id field + value, SHA-256 of the exact niche row, raw row, score/confidence/category/audience, concept count, **only notes explicitly linked to the niche**, and snapshot-wide sources (labelled as such).
-- Draft appears in Ideas with status "Research draft" (new filter entry) and uses the normal KEEP/EDIT/REGEN/SKIP owner review.
-- Hook and visual direction are left empty and never invented. The Overview lists what is still missing.
-- Edit tab saves local revisions (id + SHA-256 over all creative fields). A new revision resets the owner decision to UNDECIDED. Stale saves are rejected.
-- A second click on identical research reuses the existing draft.
-- Export brief (no dispatch) works and is bound to the current draft revision.
-- Blocked for drafts: Generate (button disabled + handler guard), live Accept/Reopen/New iteration/Cancel, delivery/social/owner packages, server publication save. Load-Concept never sends an `rd-` key to the API.
-- Local owner gates that already existed (local artwork import, exact local accept) work as for offline concepts. Nothing in them was widened.
+Results (JSON, screenshots, app logs) are published to the branch **`forge-ci-results`** (`latest/`), and failures also appear as annotations on the run.
+The app gets a labelled fixture only for `discover_snapshot`; every other backend or network call fails by construction. No secrets, no paid calls.
 
-## Proof — what is proven and how
-| Item | Result | Environment |
-|---|---|---|
-| 054 restore: outer SHA, inner integrity 50/50, all .ps1 parse | PASS | Linux, PowerShell 7.4.6 |
-| 052 Set-Busy owner-control refresh, 053 RU/ES labels intact | PASS (static + executed) | same |
-| Static/package acceptance | **49/49 PASS** | same |
-| Research-draft self-test (real Forge functions, stubbed WPF, isolated state, 3 processes: create / restart / 054 rollback) | **67/67 PASS**, 0 API calls, 0 network calls | same |
-| Mutation check of the test (3 injected regressions: 052 refresh removed, Generate guard removed, constant revision id) | all 3 caught | same |
-| Independent code review (separate agent) | 8 findings → all fixed and covered by tests | — |
-| Integrity of final ZIP from fresh extraction | 52/52, no unlisted files | — |
+## Proven on real Windows (run 38018060642, commit 707a704)
+| Step | Result |
+|---|---|
+| Startup preflight as the launcher runs it | PASS (52 integrity files, 28 PowerShell files, XAML load OK) |
+| Research-draft self-test, Windows PowerShell 5.1 | 67/67 |
+| WPF window: Discover → Create draft → KEEP → edit/save rev 2 → brief → RU | 38/38 |
+| WPF window after restart: draft listed, rev 2, KEEP and RU kept | 12/12 |
 
-## NOT proven (boundaries)
-- **Native Windows PowerShell 5.1 + WPF execution of 055 is not proven.** No XamlReader load, no real clicks, no rendering check. XAML was only checked for well-formed XML, unique names and existing style keys.
-- PowerShell 5.1–specific JSON behaviour (array serialization) was mitigated in code and is checked at the raw-JSON level, but only on PS 7.
-- The provider-pipeline self-test (run by the Windows preflight) needs WPF and was not executed. Its inputs (LocalCore, GenerationProvider, WorkerBridge, Media, ImageValidation and the self-test script itself) are byte-identical to 054.
-- No live Discover data was used. Tests use a labelled fixture with the forge.discover_snapshot.v1 shape. Real field names for niche ids and note→niche links are matched defensively (`niche_id`/`id`/`niche_key`/`key`/`slug`, notes by `niche_id`/`niche_key`/`niche_slug`/`niche_name`). If the live contract uses other names, drafts still work but match **zero** notes (fail-closed, never fuzzy).
-- 051–054 native click/persistence proof is still outstanding, as before.
+## Features in the app (055 + 056)
+- Discover → select niche → **Create concept draft**: a LOCAL draft bound to its research (niche id, row SHA-256, snapshot time, explicitly linked notes only). It appears in Ideas with KEEP/EDIT/REGEN/SKIP, supports local revisions (a new revision resets the decision) and a no-dispatch brief. Generate and live server actions are blocked for drafts.
+- 056 fixes found by the first Windows run: a language switch no longer resets live screens; the status bar no longer sticks on "Working…"; PS 5.1 spool cleanup works.
 
-## Authority
-No backend deployment, Supabase mutation, paid provider call, generation, acceptance, publication or external contact was performed or newly authorized.
+## Known, not yet fixed
+- **The optional provider pipeline self-test fails on Windows** ("Valid owner-attested Amazon profile did not produce a policy profile binding"). The launcher does not run it, so the app starts. The code is byte-identical since ≤054, so this predates migration. It points at the local Amazon policy-profile check (Checks/Publish stage). It is reported as a non-gating warning on every CI run.
+- At the CI window width (~1024 px), the Discover header text wraps into a narrow column, and the Discover title appears twice (header + page). Cosmetic, pre-existing.
+- Forge.PrintChecks.ps1 has non-ASCII text without a BOM (pre-existing).
+- Live `discover_snapshot` field names for niche id and note links are not yet confirmed against real data. Matching is defensive and fail-closed (0 notes rather than wrong notes).
+
+## Not authorized / not done
+No backend deployment, Supabase write, paid generation, acceptance on the owner's behalf, publication or external contact.

@@ -24,3 +24,10 @@
 ## Not done
 - Native Windows smoke (needs the owner's PC or a linked session).
 - Stage 4 Portfolio/Performance (by plan, only after Stage 3; next session).
+
+## Session continuation — GitHub + Windows CI (2026-10-09 evening)
+- The owner pointed out that GitHub was given so releases would not be installed by hand. Moved the project into the repo (`forge/`, PR #1 merged by the owner) and built the **forge-windows** workflow: preflight, PS 5.1 self-test, and a real-window click test with screenshots.
+- Artifacts and logs live on blob storage that this session cannot reach, so CI now publishes results to the git branch `forge-ci-results` plus annotations.
+- First Windows run: draft path 34/34 in the real window. It found 3 pre-existing defects (locale switch resetting live labels, "Working…" status stuck after Discover, PS 5.1 Measure-Object `Sum` in spool cleanup) and 1 CI-driver issue (a background worker holding inherited handles). All fixed in 056. It also exposed the pre-existing provider-pipeline self-test failure (not run by the launcher; tracked).
+- Added `forge/tools/build_release.py` (repeatable release build from `forge/app`).
+- 056 on Windows: preflight PASS, self-test 67/67, window 38/38, restart 12/12.

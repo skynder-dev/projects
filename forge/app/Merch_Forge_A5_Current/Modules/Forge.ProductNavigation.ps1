@@ -44,6 +44,17 @@ function Update-DiscoverDetail {
     if($null -ne $dims){foreach($p in $dims.PSObject.Properties | Sort-Object Name){if($null -ne $p.Value){$label=($p.Name -replace '_',' ');[void]$parts.Add(('{0}: {1:0.#}' -f $label,[double]$p.Value))}}}
     $DiscoverDetailDimensions.Text=($parts -join '  ·  ')
 }
+function Render-DiscoverSnapshot($r,[string]$SelectIdentity='') {
+    # Pure rendering of an already-loaded snapshot (also used to re-render after a language switch).
+        $stats=Get-DiscoverProp $r 'stats' $null
+    $DiscoverNichesValue.Text=[string](Get-DiscoverProp $stats 'niches' 0);$DiscoverNotesValue.Text=[string](Get-DiscoverProp $stats 'research_notes' 0);$DiscoverSourcesValue.Text=[string](Get-DiscoverProp $stats 'active_sources' 0);$DiscoverConceptsValue.Text=[string](Get-DiscoverProp $stats 'concepts' 0)
+    $rows=@(Add-DiscoverDisplayProperties @(Get-DiscoverProp $r 'niches' @()))
+    $DiscoverNicheList.ItemsSource=$rows
+    $sel=0; if($SelectIdentity){for($i=0;$i -lt $rows.Count;$i++){$id=Get-DiscoverNicheIdentity $rows[$i];if($null -ne $id -and [string]$id.value -eq $SelectIdentity){$sel=$i;break}}}
+    if($rows.Count -gt 0){$DiscoverNicheList.SelectedIndex=$sel;Update-DiscoverDetail}else{Update-DiscoverDetail}
+    $notes=@(Get-DiscoverProp $r 'notes' @());$noteLines=New-Object System.Collections.Generic.List[string];foreach($x in $notes | Select-Object -First 7){$topic=[string](Get-DiscoverProp $x 'topic' '');$conclusion=[string](Get-DiscoverProp $x 'conclusion' '');if($conclusion.Length -gt 180){$conclusion=$conclusion.Substring(0,177)+'...'};[void]$noteLines.Add(('• {0}: {1}' -f $topic,$conclusion))};$DiscoverRecentText.Text=if($noteLines.Count){$noteLines -join [Environment]::NewLine}else{'—'}
+    $sources=@(Get-DiscoverProp $r 'sources' @());$sourceLines=New-Object System.Collections.Generic.List[string];foreach($x in $sources | Select-Object -First 8){$name=[string](Get-DiscoverProp $x 'name' '');$class=[string](Get-DiscoverProp $x 'source_class' '');[void]$sourceLines.Add(('• {0} · {1}' -f $name,$class))};$DiscoverSourcesText.Text=if($sourceLines.Count){$sourceLines -join [Environment]::NewLine}else{'—'}
+}
 function Load-DiscoverSnapshot([bool]$Force=$false) {
     if($script:Busy){return}
     if($script:OfflineMode -or [string]::IsNullOrWhiteSpace($script:OwnerKey)){
@@ -54,17 +65,11 @@ function Load-DiscoverSnapshot([bool]$Force=$false) {
     try {
         $r=Invoke-ForgeApi 'discover_snapshot' @{}
         $script:DiscoverSnapshot=$r; $script:DiscoverLoadedAt=[datetime]::UtcNow
-        $stats=Get-DiscoverProp $r 'stats' $null
-        $DiscoverNichesValue.Text=[string](Get-DiscoverProp $stats 'niches' 0);$DiscoverNotesValue.Text=[string](Get-DiscoverProp $stats 'research_notes' 0);$DiscoverSourcesValue.Text=[string](Get-DiscoverProp $stats 'active_sources' 0);$DiscoverConceptsValue.Text=[string](Get-DiscoverProp $stats 'concepts' 0)
-        $rows=@(Add-DiscoverDisplayProperties @(Get-DiscoverProp $r 'niches' @()))
-        $DiscoverNicheList.ItemsSource=$rows
-        if($rows.Count -gt 0){$DiscoverNicheList.SelectedIndex=0}else{Update-DiscoverDetail}
-        $notes=@(Get-DiscoverProp $r 'notes' @());$noteLines=New-Object System.Collections.Generic.List[string];foreach($x in $notes | Select-Object -First 7){$topic=[string](Get-DiscoverProp $x 'topic' '');$conclusion=[string](Get-DiscoverProp $x 'conclusion' '');if($conclusion.Length -gt 180){$conclusion=$conclusion.Substring(0,177)+'...'};[void]$noteLines.Add(('• {0}: {1}' -f $topic,$conclusion))};$DiscoverRecentText.Text=if($noteLines.Count){$noteLines -join [Environment]::NewLine}else{'—'}
-        $sources=@(Get-DiscoverProp $r 'sources' @());$sourceLines=New-Object System.Collections.Generic.List[string];foreach($x in $sources | Select-Object -First 8){$name=[string](Get-DiscoverProp $x 'name' '');$class=[string](Get-DiscoverProp $x 'source_class' '');[void]$sourceLines.Add(('• {0} · {1}' -f $name,$class))};$DiscoverSourcesText.Text=if($sourceLines.Count){$sourceLines -join [Environment]::NewLine}else{'—'}
+        Render-DiscoverSnapshot $r
         $DiscoverStatusText.Text=('{0} · {1:HH:mm} UTC' -f (Get-UiText 'discover.ready' 'Live research loaded'),[datetime]$script:DiscoverLoadedAt)
     } catch {
         $DiscoverStatusText.Text=Get-UiText 'discover.offline' 'Live research is unavailable. No market data is fabricated.';Write-AppLog 'WARN' ('Discover load failed: '+$_.Exception.Message)
-    } finally {Set-Busy $false; try{Update-DiscoverDraftControls}catch{}}
+    } finally {Set-Busy $false ([string]$DiscoverStatusText.Text); try{Update-DiscoverDraftControls}catch{}}
 }
 
 function Set-SectionLanding([string]$Section) {
