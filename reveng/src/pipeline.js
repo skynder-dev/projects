@@ -6,6 +6,8 @@ const { scoreCandidate, rank, GLOBAL_PROFILE, SCORING_VERSION } = require('./sco
 const { decide } = require('./decide');
 const { discoverFamily, DiscoveryAborted } = require('./discover');
 const { deepScreen } = require('./deep');
+const { SpendNotAuthorized, BudgetExceeded } = require('./budget');
+const FATAL_PROVIDER = /credit balance|anthropic_http_(401|403)|invalid x-api-key|authentication_error|permission_error/i;
 const { collect } = require('./sources');
 const { buildSnapshot, markdown } = require('./report');
 const { FAMILIES_REQUIRED, FAMILIES_EXTRA } = require('./schema');
@@ -71,22 +73,31 @@ async function run({ runDir, cfg, provider = null, fetcher = null, candidates = 
   // 3 gate + score
   let { gateById, scored } = evaluateAll(ver, cfg, provisional);
   writeJson(P('03_gates.json'), gateById); writeJson(P('04_scored.json'), scored); done('gate_score');
-  // 4 deep screen (equal depth)
-  let cand = ver;
+  // 4 deep screen (equal depth). Resumable per candidate: only pool members without a COMPLETE deep screen are (re)run, best pre-score first.
+  let cand = has('05_deep.json') ? readJson(P('05_deep.json')) : ver;
   const dcfg = cfg.deep || {};
-  if (has('05_deep.json')) { cand = readJson(P('05_deep.json')); ({ gateById, scored } = evaluateAll(cand, cfg, provisional)); writeJson(P('03_gates.json'), gateById); writeJson(P('04_scored.json'), scored); }
-  else if (provider && !provisional && dcfg.enabled !== false) {
+  if (provider && !provisional && dcfg.enabled !== false) {
     const pool = deepPool(ver, gateById, scored, dcfg.top_k || 8).map(c => c.id);
-    log(`deep screen pool: ${pool.join(',')}`);
-    const out = [];
-    for (const c of ver) {
-      if (!pool.includes(c.id)) { out.push(c); continue; }
-      try { out.push(await deepScreen({ provider, candidate: c, minVerified: dcfg.min_verified || 3, maxUses: (cfg.llm || {}).web_search_max_uses })); }
-      catch (e) { log(`deep FAILED ${c.id}: ${e.message}`); chk.blockers.push(`deep_failed:${c.id}:${e.message}`); out.push(c); }
+    const byId = Object.fromEntries(cand.map(c => [c.id, c]));
+    const pending = pool.filter(id => !(byId[id] && byId[id].deep && byId[id].deep.done));
+    log(`deep screen pool: ${pool.join(',')}${pending.length < pool.length ? ` (pending: ${pending.join(',') || 'none'})` : ''}`);
+    chk.blockers = (chk.blockers || []).filter(x => !x.startsWith('deep_failed:'));
+    let fatal = null;
+    for (const id of pending) {
+      try { byId[id] = await deepScreen({ provider, candidate: byId[id], minVerified: dcfg.min_verified || 3, maxUses: (cfg.llm || {}).web_search_max_uses }); }
+      catch (e) {
+        log(`deep FAILED ${id}: ${e.message}`); chk.blockers.push(`deep_failed:${id}:${e.message}`);
+        if (e instanceof SpendNotAuthorized || e instanceof BudgetExceeded) fatal = e;
+        else if (FATAL_PROVIDER.test(e.message)) { chk.blockers.push('deep_stopped_provider_fatal'); break; } // out of credits / bad key: further calls cannot succeed
+        if (fatal) break;
+      }
+      cand = cand.map(c => byId[c.id] || c); writeJson(P('05_deep.json'), cand);
     }
-    cand = out; writeJson(P('05_deep.json'), cand); done('deep');
-    ({ gateById, scored } = evaluateAll(cand, cfg, provisional)); writeJson(P('03_gates.json'), gateById); writeJson(P('04_scored.json'), scored);
+    cand = cand.map(c => byId[c.id] || c); writeJson(P('05_deep.json'), cand);
+    if (fatal) { chk.updated_at = nowIso(); writeJson(P('checkpoint.json'), chk); throw fatal; }
+    if (pool.every(id => byId[id] && byId[id].deep && byId[id].deep.done)) done('deep'); else { chk.updated_at = nowIso(); writeJson(P('checkpoint.json'), chk); }
   }
+  ({ gateById, scored } = evaluateAll(cand, cfg, provisional)); writeJson(P('03_gates.json'), gateById); writeJson(P('04_scored.json'), scored);
   // 5 decide + report
   const decision = decide({ candidates: cand, scored, gateById, cfg: cfg.decide, provisional });
   writeJson(P('06_decision.json'), decision); done('decide');
@@ -102,7 +113,7 @@ async function run({ runDir, cfg, provider = null, fetcher = null, candidates = 
   chk.verdict = decision.verdict; chk.leader = decision.leader; chk.unmet = decision.unmet_conditions; chk.usage = usage;
   chk.next_exact_action = decision.verdict === 'no_winner' ? ('Resolve hard blockers: ' + decision.hard_blockers.join(' | ')) : 'Phase E: build smallest internal prototype for leader and measure entrant edge with G280 entrant_advantage.evaluate';
   done('report');
-  const files = fs.readdirSync(runDir).filter(f => !f.endsWith('.tmp') && f !== 'MANIFEST.json').sort();
+  const files = fs.readdirSync(runDir).filter(f => !f.endsWith('.tmp') && f !== 'MANIFEST.json' && fs.statSync(P(f)).isFile()).sort();
   writeJson(P('MANIFEST.json'), Object.fromEntries(files.map(f => [f, sha256File(P(f))])));
   return { runId, decision, snapshots, candidates: cand, scored, gateById };
 }

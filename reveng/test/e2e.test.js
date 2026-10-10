@@ -121,3 +121,31 @@ test('decide(): tampered score rows are a hard blocker', () => {
   const ok = decide({ candidates: cs, scored: sc, gateById: g }); assert.deepEqual(ok.integrity_violations, []);
   sc[0].raw += 10; const bad = decide({ candidates: cs, scored: sc, gateById: g }); assert.equal(bad.verdict, 'no_winner'); assert.ok(bad.hard_blockers.some(x => /score_integrity/.test(x)));
 });
+test('credits run out mid deep-screen: stop calling, keep finished work, report anyway; resume deep-screens ONLY the pending ones', async () => {
+  const w = await world(); const p = provider(w.base), dir = tmp();
+  try {
+    const orig = p.handler; let deepN = 0;
+    p.handler = (req, n) => { if (req.webSearch && /deep-screen stage/.test(req.system) && ++deepN > 2) throw new Error('anthropic_http_400:Your credit balance is too low to access the Anthropic API.'); return orig(req, n); };
+    const a = await run({ runDir: dir, cfg: cfg(), provider: p, fetcher: mkFetch() });
+    const deepCalls = p.calls.filter(c => /deep-screen stage|convert deep-screen/.test(c.system)).length;
+    assert.ok(deepCalls <= 5, 'stopped after the first fatal provider error, not one failure per candidate: ' + deepCalls);
+    assert.notEqual(a.decision.verdict, 'winner'); assert.equal(fs.existsSync(path.join(dir, 'REPORT.md')), true);
+    const chk = JSON.parse(fs.readFileSync(path.join(dir, 'checkpoint.json'), 'utf8')); assert.ok(chk.blockers.includes('deep_stopped_provider_fatal')); assert.ok(!chk.stages_done.includes('deep'));
+    fs.mkdirSync(path.join(dir, 'cache')); fs.writeFileSync(path.join(dir, 'cache', 'x'), '1');     // a cache dir must not break MANIFEST hashing (EISDIR regression)
+    const before = JSON.parse(fs.readFileSync(path.join(dir, '05_deep.json'), 'utf8')), doneBefore = before.filter(c => c.deep && c.deep.done).map(c => c.id);
+    assert.ok(doneBefore.length >= 1 && doneBefore.length < 8);
+    const p2 = provider(w.base); const b = await run({ runDir: dir, cfg: cfg(), provider: p2, fetcher: mkFetch() });
+    const second = new Set(p2.calls.filter(c => /deep-screen stage/.test(c.system)).map(c => c.user.match(/Candidate ([A-Z]+-\d+)/)[1]));
+    assert.equal(p2.calls.filter(c => !/deep/.test(c.system)).length, 0, 'no discovery calls on resume'); assert.ok(second.size > 0);
+    for (const id of doneBefore) assert.ok(!second.has(id), id + ' was already deep-screened and must not be paid for again');
+    assert.equal(b.decision.verdict, 'winner'); const chk2 = JSON.parse(fs.readFileSync(path.join(dir, 'checkpoint.json'), 'utf8')); assert.ok(chk2.stages_done.includes('deep')); assert.ok(!chk2.blockers.some(x => x.startsWith('deep_failed')));
+  } finally { await w.close(); }
+});
+test('spend-cap hit during deep screen propagates (never swallowed) after saving finished work', async () => {
+  const { Budget, BudgetExceeded } = require('../src/budget'); const w = await world(); const p = provider(w.base), dir = tmp();
+  try {
+    p.budget = new Budget({ allow_spend: true, max_calls: 28 });      // 20 discovery calls + a few deep calls
+    await assert.rejects(run({ runDir: dir, cfg: cfg(), provider: p, fetcher: mkFetch() }), BudgetExceeded);
+    assert.ok(fs.existsSync(path.join(dir, '05_deep.json')) && fs.existsSync(path.join(dir, '01_raw.json')));
+  } finally { await w.close(); }
+});

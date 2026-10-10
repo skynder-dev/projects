@@ -8,6 +8,9 @@ on:
       per_family:
         description: candidates per family
         default: "4"
+      resume:
+        description: "optional: run folder name on the results branch to continue (e.g. run_20261010_031655); finished work is not paid for again"
+        default: ""
 permissions:
   contents: write
 jobs:
@@ -31,9 +34,15 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p runs
+          RESUME="${{ github.event.inputs.resume }}"
+          if [ -n "$RESUME" ]; then
+            git fetch --depth 1 origin results:refs/remotes/origin/results
+            git checkout origin/results -- "runs/$RESUME"
+          fi
           echo "key_present=$([ -n "$ANTHROPIC_API_KEY" ] && echo yes || echo no)" > runs/console.log
           if [ "${{ github.event.inputs.mode }}" = "full" ]; then
-            node src/cli.js run --config config.json --per-family "${{ github.event.inputs.per_family }}" --out runs 2>&1 | tee -a runs/console.log
+            RESUME_ARG=""; [ -n "$RESUME" ] && RESUME_ARG="--resume runs/$RESUME"
+            node src/cli.js run --config config.json --per-family "${{ github.event.inputs.per_family }}" --out runs $RESUME_ARG 2>&1 | tee -a runs/console.log
           else
             node src/cli.js smoke --config config.json --out runs 2>&1 | tee -a runs/console.log
           fi
