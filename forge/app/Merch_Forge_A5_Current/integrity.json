@@ -104,8 +104,8 @@
     },
     {
       "path": "MerchForgeAutoDataCopy.ps1",
-      "sha256": "e6498c05a3816de0c990f7d3ce7b72ef11896dc302d457ee228d65e8c1e6cedf",
-      "size_bytes": 2200
+      "sha256": "beeb40f0837e761ba6a0b02461a86f03f8e31e5e1786c301fe331c9cad664d03",
+      "size_bytes": 2203
     },
     {
       "path": "MerchForgeCheckWorker.ps1",

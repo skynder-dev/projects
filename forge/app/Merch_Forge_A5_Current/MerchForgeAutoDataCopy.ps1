@@ -1,4 +1,4 @@
-# Merch Forge · automatic daily data copy (runs hidden, in its own process, so the window never waits)
+﻿# Merch Forge · automatic daily data copy (runs hidden, in its own process, so the window never waits)
 # Same format and checks as Home -> My data -> Save a copy. Keeps the newest copies in <data>\backups\auto-*.zip.
 param([string]$StateRoot=(Join-Path $env:LOCALAPPDATA 'MerchForge'),[int]$Keep=7)
 Set-StrictMode -Version 2.0
