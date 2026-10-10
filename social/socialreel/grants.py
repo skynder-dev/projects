@@ -218,6 +218,7 @@ def clean_agency(name: str | None) -> str | None:
     if not name:
         return None
     n = " ".join(str(name).split())
+    n = re.sub(r"\s+-\s+[A-Z]{2,8}$", "", n)          # "Centers for Disease Control and Prevention - ERA"
     if "\n" in str(name).strip() or re.search(r"\bgrantor\b|@|\d{3}[-.)\s]\d{3}", n, re.I):
         return None
     if re.match(r"^[0-9A-Z]{4,}\s", n) or len(n) < 3 or n.isupper() and len(n) > 12:
