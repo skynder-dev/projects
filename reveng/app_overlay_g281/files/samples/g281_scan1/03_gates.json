@@ -1,0 +1,1064 @@
+{
+  "DAT-01": {
+    "failed": [
+      "entrant_edge",
+      "evidence_depth"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "improvement_below_threshold(0.06451612903225806)"
+      },
+      "evidence_depth": {
+        "passed": false,
+        "reason": "missing_verified_kinds:constraint"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "DAT-02": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "no_measured_advantage(inc=80,ent=108)"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "DAT-03": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.81"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "DAT-04": {
+    "failed": [
+      "evidence_depth"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=1.00"
+      },
+      "evidence_depth": {
+        "passed": false,
+        "reason": "missing_verified_kinds:constraint"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "DEV-01": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.94"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "DEV-02": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.87"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "DEV-03": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.83"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "DEV-04": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.94"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "ECO-01": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "no_measured_advantage(inc=162,ent=191)"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "ECO-02": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.55"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "ECO-03": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "bad_criterion"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "ECO-04": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.55"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "EDU-01": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=1.00"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "EDU-02": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "no_measured_advantage(inc=19,ent=19)"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "EDU-03": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.89"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "EDU-04": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.90"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "GAM-01": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.72"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "GAM-02": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.94"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "GAM-03": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.81"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "GAM-04": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.74"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "MED-01": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.75"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "MED-02": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.63"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "MED-03": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.83"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "MED-04": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.37"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "MKT-01": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.71"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "MKT-02": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.53"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "MKT-03": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.35"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "MKT-04": {
+    "failed": [
+      "entrant_edge",
+      "evidence_depth"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "incumbent_source_not_https"
+      },
+      "evidence_depth": {
+        "passed": false,
+        "reason": "missing_verified_kinds:incumbent_price"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "PHY-01": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.88"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "PHY-02": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "no_measured_advantage(inc=12.99,ent=12.99)"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "PHY-03": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "improvement_below_threshold(0.2)"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "PHY-04": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=1.00"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "SAS-01": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.60"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "SAS-02": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.52"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "SAS-03": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.92"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "SAS-04": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.94"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "SVC-01": {
+    "failed": [
+      "entrant_edge"
+    ],
+    "gates": {
+      "entrant_edge": {
+        "passed": false,
+        "reason": "bad_criterion"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": false
+  },
+  "SVC-02": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.57"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "SVC-03": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.67"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  },
+  "SVC-04": {
+    "failed": [],
+    "gates": {
+      "entrant_edge": {
+        "passed": true,
+        "reason": "relative_improvement=0.62"
+      },
+      "evidence_depth": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "owner_leak": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "reference_entrant": {
+        "passed": true,
+        "reason": "ok"
+      },
+      "schema": {
+        "passed": true,
+        "reason": "ok"
+      }
+    },
+    "passed": true
+  }
+}

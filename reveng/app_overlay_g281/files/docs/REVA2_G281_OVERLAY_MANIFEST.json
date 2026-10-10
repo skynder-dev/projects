@@ -1,0 +1,190 @@
+{
+ "contract": "reveng_g281_overlay_manifest_v1",
+ "baseline": {
+  "artifact": "RevEng_Working_REVA2_G280_FINAL.zip",
+  "sourceSha256": "7a5e70220b46d04d3f8ea305bdd32c6a8cdeccbd5a65d76e235aeb118d8fe39b",
+  "manifest": "docs/REVA2_POST_G280_WINDOWS_CLOSURE_MANIFEST.json",
+  "fileCount": 2958
+ },
+ "removed": [],
+ "added": [
+  {
+   "path": "app/data/g281_scan1_view.js",
+   "size": 154941,
+   "sha256": "1dfcd456ed598bc54a6e3d3b97601570d607192284d3851b2ee46b38164f67c7"
+  },
+  {
+   "path": "app/evidence_protocol_v6.js",
+   "size": 6228,
+   "sha256": "7f0e594479fa54bc6d0805d67b9befb1c49bf20b449c356c02de722026a29684"
+  },
+  {
+   "path": "app/global_gates_v6.js",
+   "size": 13183,
+   "sha256": "3a02092974929eb0a56908f7c2f67f4fa303e03cfa4dd4ff45d49f1354fc4b28"
+  },
+  {
+   "path": "app/global_ranking.css",
+   "size": 2911,
+   "sha256": "c28b0cceb7138aa8323b54a70ee3b8d48cbb9917a6ee8e7984d6016918147a95"
+  },
+  {
+   "path": "app/global_ranking.html",
+   "size": 1717,
+   "sha256": "5f52a49ec60ff2f85c60b72aeb4b23f0b910a4d9bc0f03de0e919fc4eaeddd42"
+  },
+  {
+   "path": "app/global_ranking_page.js",
+   "size": 5088,
+   "sha256": "bb560a824ef030e3cc971a8b09d8e28fde0465f469dca7bac08b6684cb0de6da"
+  },
+  {
+   "path": "app/global_ranking_v6.js",
+   "size": 10299,
+   "sha256": "915c1f89f4664ac51bcb62132866823ae7a456fd49d459fca72fbb0b71e34035"
+  },
+  {
+   "path": "app/global_ranking_view.js",
+   "size": 4494,
+   "sha256": "e88030a8dbec18a643b6f2f5cfb43b92a48ec57ae24b99c59675575185a35291"
+  },
+  {
+   "path": "app/global_scan_v6.js",
+   "size": 3532,
+   "sha256": "a6b0086195626fde3d2c453efb8b0838fed2b91d7d1d21756269c5944bfc1030"
+  },
+  {
+   "path": "app/spend_guard_v6.js",
+   "size": 5895,
+   "sha256": "400aa74701a256564c6d0aebb6d74696d72870e057437a4f48f2533f0d90ce9f"
+  },
+  {
+   "path": "diagnostics/tests/fixtures/g281_v6_db_snapshot.json",
+   "size": 4793,
+   "sha256": "1bca35b59fa74a3143928a5bef55e6ac09e1b136d856e2c0ee5b8995e2a383a5"
+  },
+  {
+   "path": "diagnostics/tests/reva2_g281_evidence_spend_v6.mjs",
+   "size": 8538,
+   "sha256": "0c75c4b3299b0cce99ae44ba9cd06104a00d891fa0e50ce4333b6a5f16b249fb"
+  },
+  {
+   "path": "diagnostics/tests/reva2_g281_global_gates_scan_v6.mjs",
+   "size": 11265,
+   "sha256": "8eb3187bf50fe5d971d15e737e1e2ce3c69a7b288af6850892652d63a537fcd9"
+  },
+  {
+   "path": "diagnostics/tests/reva2_g281_global_ranking_v6.mjs",
+   "size": 7035,
+   "sha256": "ed8ee62b0665e75ecaf1176413d8fc17913fb86572ba0d90a119934a65e29199"
+  },
+  {
+   "path": "diagnostics/tests/reva2_g281_global_ranking_view.mjs",
+   "size": 2740,
+   "sha256": "1eb7482fc8d8126cb2252a40295e811f6767786cce8727e44aea1f0c50e2ffdd"
+  },
+  {
+   "path": "diagnostics/tests/test_reva2_g281_global_ranking_page.py",
+   "size": 6565,
+   "sha256": "2b508117b6ca34d412e60255d221ae6315f19c3efa5e693c010927f695c39c5e"
+  },
+  {
+   "path": "diagnostics/tests/verify_reva2_g281_overlay.py",
+   "size": 3046,
+   "sha256": "652dbe327a59dc36d3d27cedef39557dd32426a64cd571d13acc9991c5f50039"
+  },
+  {
+   "path": "diagnostics/tools/build_g281_overlay_manifest.py",
+   "size": 1911,
+   "sha256": "8cd29ece6f2937100d97614c08bfb7118ba22ea164b900b91a20852d33a5e143"
+  },
+  {
+   "path": "diagnostics/tools/build_scan_import_g281.py",
+   "size": 8241,
+   "sha256": "9dd01a2bb070a2470e56445155db27f15ac2d39ad24349947211ba5f115c3456"
+  },
+  {
+   "path": "diagnostics/tools/dryrun_scan_import_g281.sh",
+   "size": 2432,
+   "sha256": "f9e736fcf113069a485070d224cc872e195f90f07a44b15319f8020ef00c6042"
+  },
+  {
+   "path": "diagnostics/tools/g281_local_schema/inbox_private_metadata_guard.sql",
+   "size": 1249,
+   "sha256": "eed45f6d85099079526a73f0f8af938a4824025a3d26948c60f4ae990932c5eb"
+  },
+  {
+   "path": "diagnostics/tools/g281_local_schema/inbox_tables.sql",
+   "size": 1934,
+   "sha256": "cf5fef553c110c5bab6526fa0ffeb4c1536fd15d4360fe15a08226e591945f26"
+  },
+  {
+   "path": "docs/REVA2_G281_GLOBAL_PATH.md",
+   "size": 5834,
+   "sha256": "b4a4662b1514ee0f6c640e5b1d23f47998e5749f18f35a973f3a873b36a4e001"
+  },
+  {
+   "path": "samples/g281_scan1/01_raw.json",
+   "size": 400177,
+   "sha256": "f9c8e4f1c00ba09ce89fc567713cc2959d75a69a87b3345f602c703e62bfbc09"
+  },
+  {
+   "path": "samples/g281_scan1/03_gates.json",
+   "size": 20452,
+   "sha256": "5168c36b1012f07ee80687ffc8b51589921e6579e7a887a8bc498d4e34c32a15"
+  },
+  {
+   "path": "samples/g281_scan1/04_scored.json",
+   "size": 38159,
+   "sha256": "1acfd210c707803c0347c5e10ebb8dae6a612e8dda59d8f283eaa70d8e36a371"
+  },
+  {
+   "path": "samples/g281_scan1/05_deep.json",
+   "size": 499206,
+   "sha256": "56b90a7e7b61f1c1707fcd7bdd3b5c01fb324c7136b89a3b7741538a1b8aabc1"
+  },
+  {
+   "path": "samples/g281_scan1/06_decision.json",
+   "size": 4159,
+   "sha256": "3c9bec012c58fb2253c0c41495f625178d6e883a3b3beaa795a030f73889c5e7"
+  },
+  {
+   "path": "samples/g281_scan1/checkpoint.json",
+   "size": 1343,
+   "sha256": "ae637394d415b69a84b5326077f043b35a9ec5734d179c29e4ef65c260ed1dc7"
+  },
+  {
+   "path": "samples/g281_scan1/manual_deep_screen_2026-10-10.md",
+   "size": 2897,
+   "sha256": "dba8a4fd945e95be3b7074f9590040e1b884a2108d7dd4ca476230d74e033a20"
+  },
+  {
+   "path": "server/REVA2_G281_SCAN1_IMPORT.json",
+   "size": 175952,
+   "sha256": "dcf2fad69704ab258d2bc0d1b9b119140a3ba18f5c3dc7aab175768cdcdd0030"
+  },
+  {
+   "path": "server/REVA2_G281_SCAN1_IMPORT_DRYRUN.sql",
+   "size": 163909,
+   "sha256": "0873c8745f9aa86a4cc2f406ff731dafce925ef4f0dad600a114ea4bd9d3c7ec"
+  },
+  {
+   "path": "server/REVA2_G281_SOURCE_POLICY_SNAPSHOT.json",
+   "size": 4136,
+   "sha256": "933e13d5d959ea8bd3fac1c3570a218ca7bf07011a12869570212ed2af240059"
+  }
+ ],
+ "modified": [
+  {
+   "path": "app/index.html",
+   "size": 22478,
+   "sha256": "c63219e22a8b509eff517875b340979afbb03a7e36435e0744cda9c70eec3102",
+   "baselineSha256": "6eba61512e0cd4c9671cd1fbf874a31a915f74cdf523a1e600f9c8c081ef45ba"
+  }
+ ],
+ "counts": {
+  "added": 33,
+  "modified": 1,
+  "removed": 0
+ }
+}

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RevEng · Global ranking (v6)</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="global_ranking.css" />
+</head>
+<body class="gr-body">
+  <header class="gr-top">
+    <a class="btn ghost" href="index.html">← Back to RevEng</a>
+    <div>
+      <div class="eyebrow">Global ranking</div>
+      <h1 id="grTitle" tabindex="-1">reveng_v6_independent</h1>
+    </div>
+  </header>
+  <main class="gr-main" id="grMain">
+    <section id="grVerdict" class="gr-banner" role="status" aria-live="polite"></section>
+    <section class="gr-grid" aria-label="Scan summary">
+      <article class="gr-card" id="grScan"></article>
+      <article class="gr-card" id="grCounts"></article>
+      <article class="gr-card" id="grSpend"></article>
+    </section>
+    <section class="gr-card" aria-label="Candidates">
+      <div class="gr-filters">
+        <label>Family <select id="grFamily"></select></label>
+        <label>Status <select id="grStatus"></select></label>
+        <label class="gr-search">Search <input id="grSearch" type="search" autocomplete="off" placeholder="Name, buyer, id" /></label>
+      </div>
+      <p class="gr-note" id="grNote"></p>
+      <p class="gr-count" id="grCount" role="status" aria-live="polite"></p>
+      <div id="grList" class="gr-list"></div>
+    </section>
+  </main>
+  <script src="global_scan_v6.js"></script>
+  <script src="spend_guard_v6.js"></script>
+  <script src="global_ranking_view.js"></script>
+  <script src="data/g281_scan1_view.js"></script>
+  <script src="global_ranking_page.js"></script>
+</body>
+</html>

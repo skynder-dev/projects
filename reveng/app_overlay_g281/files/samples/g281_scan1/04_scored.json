@@ -1,0 +1,1591 @@
+[
+  {
+    "adjusted": 57.6,
+    "dimensions": {
+      "acquisition_efficiency": 2,
+      "automation": 3,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 3,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 4,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 2,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [
+      "scale_without_hiring",
+      "fulfillment_simplicity"
+    ],
+    "evidence_confidence": 1,
+    "family": "games",
+    "id": "GAM-01",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 62.4,
+        "raw": 62.4
+      },
+      "balanced": {
+        "adjusted": 57.6,
+        "raw": 57.6
+      },
+      "defensibility_growth": {
+        "adjusted": 52.2,
+        "raw": 52.2
+      }
+    },
+    "profile": "balanced",
+    "raw": 57.6,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 55.6,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 3,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 3,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [
+      "platform_resilience",
+      "fulfillment_simplicity"
+    ],
+    "evidence_confidence": 1,
+    "family": "games",
+    "id": "GAM-02",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 59.8,
+        "raw": 59.8
+      },
+      "balanced": {
+        "adjusted": 55.6,
+        "raw": 55.6
+      },
+      "defensibility_growth": {
+        "adjusted": 51.6,
+        "raw": 51.6
+      }
+    },
+    "profile": "balanced",
+    "raw": 55.6,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 49.6,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 3,
+      "capital_efficiency": 3,
+      "competition_gap": 1,
+      "contribution_economics": 4,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [
+      "fulfillment_simplicity"
+    ],
+    "evidence_confidence": 1,
+    "family": "games",
+    "id": "GAM-03",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 54.4,
+        "raw": 54.4
+      },
+      "balanced": {
+        "adjusted": 49.6,
+        "raw": 49.6
+      },
+      "defensibility_growth": {
+        "adjusted": 46.4,
+        "raw": 46.4
+      }
+    },
+    "profile": "balanced",
+    "raw": 49.6,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 56.2,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 4,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 3,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 2,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [
+      "platform_resilience",
+      "scale_without_hiring",
+      "fulfillment_simplicity"
+    ],
+    "evidence_confidence": 1,
+    "family": "games",
+    "id": "GAM-04",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 61.6,
+        "raw": 61.6
+      },
+      "balanced": {
+        "adjusted": 56.2,
+        "raw": 56.2
+      },
+      "defensibility_growth": {
+        "adjusted": 51.6,
+        "raw": 51.6
+      }
+    },
+    "profile": "balanced",
+    "raw": 56.2,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 55.542874,
+    "dimensions": {
+      "acquisition_efficiency": 2,
+      "automation": 4,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 4,
+      "defensibility": 1,
+      "demand_signal": 3,
+      "fulfillment_simplicity": 4,
+      "launch_speed": 4,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 0,
+      "regulatory_simplicity": 4,
+      "scale_without_hiring": 4
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 0.964286,
+    "family": "saas_or_micro_saas",
+    "id": "SAS-01",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 62.485733,
+        "raw": 64.8
+      },
+      "balanced": {
+        "adjusted": 55.542874,
+        "raw": 57.6
+      },
+      "defensibility_growth": {
+        "adjusted": 50.142872,
+        "raw": 52
+      }
+    },
+    "profile": "balanced",
+    "raw": 57.6,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 57.6,
+    "dimensions": {
+      "acquisition_efficiency": 2,
+      "automation": 4,
+      "capital_efficiency": 3,
+      "competition_gap": 1,
+      "contribution_economics": 5,
+      "defensibility": 2,
+      "demand_signal": 3,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 1,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "saas_or_micro_saas",
+    "id": "SAS-02",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 60.8,
+        "raw": 60.8
+      },
+      "balanced": {
+        "adjusted": 57.6,
+        "raw": 57.6
+      },
+      "defensibility_growth": {
+        "adjusted": 54.4,
+        "raw": 54.4
+      }
+    },
+    "profile": "balanced",
+    "raw": 57.6,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 54.669252,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 4,
+      "capital_efficiency": 4,
+      "competition_gap": 0,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 4,
+      "launch_speed": 3,
+      "owner_time_efficiency": 5,
+      "platform_resilience": 2,
+      "regulatory_simplicity": 2,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 0.990385,
+    "family": "saas_or_micro_saas",
+    "id": "SAS-03",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 64.176948,
+        "raw": 64.8
+      },
+      "balanced": {
+        "adjusted": 54.669252,
+        "raw": 55.2
+      },
+      "defensibility_growth": {
+        "adjusted": 47.934634,
+        "raw": 48.4
+      }
+    },
+    "profile": "balanced",
+    "raw": 55.2,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 51.50002,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 3,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 4,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 1,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 0.990385,
+    "family": "saas_or_micro_saas",
+    "id": "SAS-04",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 58.036561,
+        "raw": 58.6
+      },
+      "balanced": {
+        "adjusted": 51.50002,
+        "raw": 52
+      },
+      "defensibility_growth": {
+        "adjusted": 46.151941,
+        "raw": 46.6
+      }
+    },
+    "profile": "balanced",
+    "raw": 52,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 55.2,
+    "dimensions": {
+      "acquisition_efficiency": 2,
+      "automation": 3,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 4,
+      "launch_speed": 4,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 2,
+      "regulatory_simplicity": 2,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "ecommerce_or_dropshipping",
+    "id": "ECO-01",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 60.8,
+        "raw": 60.8
+      },
+      "balanced": {
+        "adjusted": 55.2,
+        "raw": 55.2
+      },
+      "defensibility_growth": {
+        "adjusted": 49.6,
+        "raw": 49.6
+      }
+    },
+    "profile": "balanced",
+    "raw": 55.2,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 56.606918,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 3,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 4,
+      "owner_time_efficiency": 5,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 0.982759,
+    "family": "ecommerce_or_dropshipping",
+    "id": "ECO-02",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 64.665542,
+        "raw": 65.8
+      },
+      "balanced": {
+        "adjusted": 56.606918,
+        "raw": 57.6
+      },
+      "defensibility_growth": {
+        "adjusted": 50.906916,
+        "raw": 51.8
+      }
+    },
+    "profile": "balanced",
+    "raw": 57.6,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 54.2,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 3,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 4,
+      "launch_speed": 4,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 2,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "ecommerce_or_dropshipping",
+    "id": "ECO-03",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 60.4,
+        "raw": 60.4
+      },
+      "balanced": {
+        "adjusted": 54.2,
+        "raw": 54.2
+      },
+      "defensibility_growth": {
+        "adjusted": 49,
+        "raw": 49
+      }
+    },
+    "profile": "balanced",
+    "raw": 54.2,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 56.2,
+    "dimensions": {
+      "acquisition_efficiency": 2,
+      "automation": 3,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 3,
+      "fulfillment_simplicity": 4,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 1,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "ecommerce_or_dropshipping",
+    "id": "ECO-04",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 60.6,
+        "raw": 60.6
+      },
+      "balanced": {
+        "adjusted": 56.2,
+        "raw": 56.2
+      },
+      "defensibility_growth": {
+        "adjusted": 50.8,
+        "raw": 50.8
+      }
+    },
+    "profile": "balanced",
+    "raw": 56.2,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 49.199976,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 2,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 3,
+      "fulfillment_simplicity": 2,
+      "launch_speed": 4,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 1,
+      "regulatory_simplicity": 2,
+      "scale_without_hiring": 2
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 0.991935,
+    "family": "services",
+    "id": "SVC-01",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 53.762877,
+        "raw": 54.2
+      },
+      "balanced": {
+        "adjusted": 49.199976,
+        "raw": 49.6
+      },
+      "defensibility_growth": {
+        "adjusted": 43.64514,
+        "raw": 44
+      }
+    },
+    "profile": "balanced",
+    "raw": 49.6,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 54.8,
+    "dimensions": {
+      "acquisition_efficiency": 2,
+      "automation": 2,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 3,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 4,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 1,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [
+      "regulatory_simplicity"
+    ],
+    "evidence_confidence": 1,
+    "family": "services",
+    "id": "SVC-02",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 58.8,
+        "raw": 58.8
+      },
+      "balanced": {
+        "adjusted": 54.8,
+        "raw": 54.8
+      },
+      "defensibility_growth": {
+        "adjusted": 49.6,
+        "raw": 49.6
+      }
+    },
+    "profile": "balanced",
+    "raw": 54.8,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 52.2,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 2,
+      "capital_efficiency": 4,
+      "competition_gap": 2,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 3,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 4,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 1,
+      "regulatory_simplicity": 2,
+      "scale_without_hiring": 2
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "services",
+    "id": "SVC-03",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 56.2,
+        "raw": 56.2
+      },
+      "balanced": {
+        "adjusted": 52.2,
+        "raw": 52.2
+      },
+      "defensibility_growth": {
+        "adjusted": 46.8,
+        "raw": 46.8
+      }
+    },
+    "profile": "balanced",
+    "raw": 52.2,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 47.2,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 3,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 4,
+      "defensibility": 0,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 1,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "services",
+    "id": "SVC-04",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 53.6,
+        "raw": 53.6
+      },
+      "balanced": {
+        "adjusted": 47.2,
+        "raw": 47.2
+      },
+      "defensibility_growth": {
+        "adjusted": 42.2,
+        "raw": 42.2
+      }
+    },
+    "profile": "balanced",
+    "raw": 47.2,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 50.8,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 3,
+      "capital_efficiency": 2,
+      "competition_gap": 2,
+      "contribution_economics": 3,
+      "defensibility": 1,
+      "demand_signal": 4,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 3,
+      "owner_time_efficiency": 2,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "marketplaces",
+    "id": "MKT-01",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 52,
+        "raw": 52
+      },
+      "balanced": {
+        "adjusted": 50.8,
+        "raw": 50.8
+      },
+      "defensibility_growth": {
+        "adjusted": 49.4,
+        "raw": 49.4
+      }
+    },
+    "profile": "balanced",
+    "raw": 50.8,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 54.4,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 3,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 4
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "marketplaces",
+    "id": "MKT-02",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 59.4,
+        "raw": 59.4
+      },
+      "balanced": {
+        "adjusted": 54.4,
+        "raw": 54.4
+      },
+      "defensibility_growth": {
+        "adjusted": 51.4,
+        "raw": 51.4
+      }
+    },
+    "profile": "balanced",
+    "raw": 54.4,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 44.6,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 3,
+      "capital_efficiency": 3,
+      "competition_gap": 1,
+      "contribution_economics": 4,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 2,
+      "owner_time_efficiency": 2,
+      "platform_resilience": 2,
+      "regulatory_simplicity": 2,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "marketplaces",
+    "id": "MKT-03",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 47.8,
+        "raw": 47.8
+      },
+      "balanced": {
+        "adjusted": 44.6,
+        "raw": 44.6
+      },
+      "defensibility_growth": {
+        "adjusted": 42.2,
+        "raw": 42.2
+      }
+    },
+    "profile": "balanced",
+    "raw": 44.6,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 47.8,
+    "dimensions": {
+      "acquisition_efficiency": 2,
+      "automation": 3,
+      "capital_efficiency": 2,
+      "competition_gap": 2,
+      "contribution_economics": 5,
+      "defensibility": 2,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 1,
+      "launch_speed": 3,
+      "owner_time_efficiency": 2,
+      "platform_resilience": 1,
+      "regulatory_simplicity": 2,
+      "scale_without_hiring": 2
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "marketplaces",
+    "id": "MKT-04",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 49,
+        "raw": 49
+      },
+      "balanced": {
+        "adjusted": 47.8,
+        "raw": 47.8
+      },
+      "defensibility_growth": {
+        "adjusted": 45.2,
+        "raw": 45.2
+      }
+    },
+    "profile": "balanced",
+    "raw": 47.8,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 54.8,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 3,
+      "capital_efficiency": 4,
+      "competition_gap": 2,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [
+      "fulfillment_simplicity"
+    ],
+    "evidence_confidence": 1,
+    "family": "digital_or_data_products",
+    "id": "DAT-01",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 59.2,
+        "raw": 59.2
+      },
+      "balanced": {
+        "adjusted": 54.8,
+        "raw": 54.8
+      },
+      "defensibility_growth": {
+        "adjusted": 51.2,
+        "raw": 51.2
+      }
+    },
+    "profile": "balanced",
+    "raw": 54.8,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 56.4,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 4,
+      "capital_efficiency": 4,
+      "competition_gap": 2,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [
+      "scale_without_hiring",
+      "fulfillment_simplicity"
+    ],
+    "evidence_confidence": 1,
+    "family": "digital_or_data_products",
+    "id": "DAT-02",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 62,
+        "raw": 62
+      },
+      "balanced": {
+        "adjusted": 56.4,
+        "raw": 56.4
+      },
+      "defensibility_growth": {
+        "adjusted": 52.2,
+        "raw": 52.2
+      }
+    },
+    "profile": "balanced",
+    "raw": 56.4,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 50,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 3,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 2,
+      "regulatory_simplicity": 1,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "digital_or_data_products",
+    "id": "DAT-03",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 55.4,
+        "raw": 55.4
+      },
+      "balanced": {
+        "adjusted": 50,
+        "raw": 50
+      },
+      "defensibility_growth": {
+        "adjusted": 45.6,
+        "raw": 45.6
+      }
+    },
+    "profile": "balanced",
+    "raw": 50,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 54,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 4,
+      "capital_efficiency": 4,
+      "competition_gap": 2,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 1,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [
+      "fulfillment_simplicity"
+    ],
+    "evidence_confidence": 1,
+    "family": "digital_or_data_products",
+    "id": "DAT-04",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 60.4,
+        "raw": 60.4
+      },
+      "balanced": {
+        "adjusted": 54,
+        "raw": 54
+      },
+      "defensibility_growth": {
+        "adjusted": 49.8,
+        "raw": 49.8
+      }
+    },
+    "profile": "balanced",
+    "raw": 54,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 50.8,
+    "dimensions": {
+      "acquisition_efficiency": 2,
+      "automation": 2,
+      "capital_efficiency": 3,
+      "competition_gap": 2,
+      "contribution_economics": 4,
+      "defensibility": 2,
+      "demand_signal": 3,
+      "fulfillment_simplicity": 2,
+      "launch_speed": 4,
+      "owner_time_efficiency": 2,
+      "platform_resilience": 2,
+      "regulatory_simplicity": 2,
+      "scale_without_hiring": 2
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "physical_products",
+    "id": "PHY-01",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 51.4,
+        "raw": 51.4
+      },
+      "balanced": {
+        "adjusted": 50.8,
+        "raw": 50.8
+      },
+      "defensibility_growth": {
+        "adjusted": 48.4,
+        "raw": 48.4
+      }
+    },
+    "profile": "balanced",
+    "raw": 50.8,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 40.8,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 3,
+      "capital_efficiency": 3,
+      "competition_gap": 0,
+      "contribution_economics": 2,
+      "defensibility": 0,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 3,
+      "owner_time_efficiency": 4,
+      "platform_resilience": 1,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [
+      "regulatory_simplicity"
+    ],
+    "evidence_confidence": 1,
+    "family": "physical_products",
+    "id": "PHY-02",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 50,
+        "raw": 50
+      },
+      "balanced": {
+        "adjusted": 40.8,
+        "raw": 40.8
+      },
+      "defensibility_growth": {
+        "adjusted": 35.2,
+        "raw": 35.2
+      }
+    },
+    "profile": "balanced",
+    "raw": 40.8,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 41.42,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 2,
+      "capital_efficiency": 3,
+      "competition_gap": 1,
+      "contribution_economics": 4,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 2,
+      "launch_speed": 4,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 1,
+      "regulatory_simplicity": 2,
+      "scale_without_hiring": 2
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 0.95,
+    "family": "physical_products",
+    "id": "PHY-03",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 46.36,
+        "raw": 48.8
+      },
+      "balanced": {
+        "adjusted": 41.42,
+        "raw": 43.6
+      },
+      "defensibility_growth": {
+        "adjusted": 36.86,
+        "raw": 38.8
+      }
+    },
+    "profile": "balanced",
+    "raw": 43.6,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 42.8,
+    "dimensions": {
+      "acquisition_efficiency": 2,
+      "automation": 1,
+      "capital_efficiency": 3,
+      "competition_gap": 2,
+      "contribution_economics": 3,
+      "defensibility": 1,
+      "demand_signal": 3,
+      "fulfillment_simplicity": 1,
+      "launch_speed": 4,
+      "owner_time_efficiency": 2,
+      "platform_resilience": 1,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 1
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "physical_products",
+    "id": "PHY-04",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 44,
+        "raw": 44
+      },
+      "balanced": {
+        "adjusted": 42.8,
+        "raw": 42.8
+      },
+      "defensibility_growth": {
+        "adjusted": 38.8,
+        "raw": 38.8
+      }
+    },
+    "profile": "balanced",
+    "raw": 42.8,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 49.8,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 3,
+      "capital_efficiency": 4,
+      "competition_gap": 2,
+      "contribution_economics": 4,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 3,
+      "owner_time_efficiency": 2,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 2,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "media_or_content",
+    "id": "MED-01",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 53.4,
+        "raw": 53.4
+      },
+      "balanced": {
+        "adjusted": 49.8,
+        "raw": 49.8
+      },
+      "defensibility_growth": {
+        "adjusted": 47.2,
+        "raw": 47.2
+      }
+    },
+    "profile": "balanced",
+    "raw": 49.8,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 58,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 4,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 4,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 4,
+      "scale_without_hiring": 4
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "media_or_content",
+    "id": "MED-02",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 64.2,
+        "raw": 64.2
+      },
+      "balanced": {
+        "adjusted": 58,
+        "raw": 58
+      },
+      "defensibility_growth": {
+        "adjusted": 54.2,
+        "raw": 54.2
+      }
+    },
+    "profile": "balanced",
+    "raw": 58,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 40.2,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 2,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 3,
+      "defensibility": 0,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 4,
+      "owner_time_efficiency": 2,
+      "platform_resilience": 1,
+      "regulatory_simplicity": 2,
+      "scale_without_hiring": 2
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "media_or_content",
+    "id": "MED-03",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 46.2,
+        "raw": 46.2
+      },
+      "balanced": {
+        "adjusted": 40.2,
+        "raw": 40.2
+      },
+      "defensibility_growth": {
+        "adjusted": 34.4,
+        "raw": 34.4
+      }
+    },
+    "profile": "balanced",
+    "raw": 40.2,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 61.8,
+    "dimensions": {
+      "acquisition_efficiency": 2,
+      "automation": 4,
+      "capital_efficiency": 4,
+      "competition_gap": 2,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 4,
+      "launch_speed": 4,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 4
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "media_or_content",
+    "id": "MED-04",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 67.6,
+        "raw": 67.6
+      },
+      "balanced": {
+        "adjusted": 61.8,
+        "raw": 61.8
+      },
+      "defensibility_growth": {
+        "adjusted": 57.4,
+        "raw": 57.4
+      }
+    },
+    "profile": "balanced",
+    "raw": 61.8,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 62.4,
+    "dimensions": {
+      "acquisition_efficiency": 2,
+      "automation": 4,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 3,
+      "fulfillment_simplicity": 4,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 4,
+      "scale_without_hiring": 4
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "education_training",
+    "id": "EDU-01",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 67.2,
+        "raw": 67.2
+      },
+      "balanced": {
+        "adjusted": 62.4,
+        "raw": 62.4
+      },
+      "defensibility_growth": {
+        "adjusted": 58.2,
+        "raw": 58.2
+      }
+    },
+    "profile": "balanced",
+    "raw": 62.4,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 59.6,
+    "dimensions": {
+      "acquisition_efficiency": 2,
+      "automation": 3,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 3,
+      "fulfillment_simplicity": 4,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 4,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "education_training",
+    "id": "EDU-02",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 63.2,
+        "raw": 63.2
+      },
+      "balanced": {
+        "adjusted": 59.6,
+        "raw": 59.6
+      },
+      "defensibility_growth": {
+        "adjusted": 55,
+        "raw": 55
+      }
+    },
+    "profile": "balanced",
+    "raw": 59.6,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 56.2,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 4,
+      "capital_efficiency": 4,
+      "competition_gap": 2,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 4,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 2,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "education_training",
+    "id": "EDU-03",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 62.2,
+        "raw": 62.2
+      },
+      "balanced": {
+        "adjusted": 56.2,
+        "raw": 56.2
+      },
+      "defensibility_growth": {
+        "adjusted": 51.4,
+        "raw": 51.4
+      }
+    },
+    "profile": "balanced",
+    "raw": 56.2,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 61.2,
+    "dimensions": {
+      "acquisition_efficiency": 2,
+      "automation": 4,
+      "capital_efficiency": 4,
+      "competition_gap": 2,
+      "contribution_economics": 5,
+      "defensibility": 2,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 4,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 2,
+      "scale_without_hiring": 4
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "education_training",
+    "id": "EDU-04",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 65.2,
+        "raw": 65.2
+      },
+      "balanced": {
+        "adjusted": 61.2,
+        "raw": 61.2
+      },
+      "defensibility_growth": {
+        "adjusted": 58.8,
+        "raw": 58.8
+      }
+    },
+    "profile": "balanced",
+    "raw": 61.2,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 55.8,
+    "dimensions": {
+      "acquisition_efficiency": 2,
+      "automation": 4,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 2,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "b2b_api_devtools",
+    "id": "DEV-01",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 61.4,
+        "raw": 61.4
+      },
+      "balanced": {
+        "adjusted": 55.8,
+        "raw": 55.8
+      },
+      "defensibility_growth": {
+        "adjusted": 50.8,
+        "raw": 50.8
+      }
+    },
+    "profile": "balanced",
+    "raw": 55.8,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 57.2,
+    "dimensions": {
+      "acquisition_efficiency": 2,
+      "automation": 4,
+      "capital_efficiency": 5,
+      "competition_gap": 1,
+      "contribution_economics": 5,
+      "defensibility": 2,
+      "demand_signal": 1,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 3,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [
+      "scale_without_hiring",
+      "fulfillment_simplicity"
+    ],
+    "evidence_confidence": 1,
+    "family": "b2b_api_devtools",
+    "id": "DEV-02",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 63.2,
+        "raw": 63.2
+      },
+      "balanced": {
+        "adjusted": 57.2,
+        "raw": 57.2
+      },
+      "defensibility_growth": {
+        "adjusted": 53.2,
+        "raw": 53.2
+      }
+    },
+    "profile": "balanced",
+    "raw": 57.2,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 54.8,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 3,
+      "capital_efficiency": 4,
+      "competition_gap": 2,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 3,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 2,
+      "regulatory_simplicity": 3,
+      "scale_without_hiring": 2
+    },
+    "evidence_capped_dimensions": [],
+    "evidence_confidence": 1,
+    "family": "b2b_api_devtools",
+    "id": "DEV-03",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 58.8,
+        "raw": 58.8
+      },
+      "balanced": {
+        "adjusted": 54.8,
+        "raw": 54.8
+      },
+      "defensibility_growth": {
+        "adjusted": 49.8,
+        "raw": 49.8
+      }
+    },
+    "profile": "balanced",
+    "raw": 54.8,
+    "scoring_version": "reveng_v6_independent"
+  },
+  {
+    "adjusted": 52.6,
+    "dimensions": {
+      "acquisition_efficiency": 1,
+      "automation": 4,
+      "capital_efficiency": 4,
+      "competition_gap": 1,
+      "contribution_economics": 5,
+      "defensibility": 1,
+      "demand_signal": 2,
+      "fulfillment_simplicity": 3,
+      "launch_speed": 3,
+      "owner_time_efficiency": 3,
+      "platform_resilience": 2,
+      "regulatory_simplicity": 2,
+      "scale_without_hiring": 3
+    },
+    "evidence_capped_dimensions": [
+      "scale_without_hiring",
+      "fulfillment_simplicity"
+    ],
+    "evidence_confidence": 1,
+    "family": "b2b_api_devtools",
+    "id": "DEV-04",
+    "per_profile": {
+      "autonomy_first": {
+        "adjusted": 59.2,
+        "raw": 59.2
+      },
+      "balanced": {
+        "adjusted": 52.6,
+        "raw": 52.6
+      },
+      "defensibility_growth": {
+        "adjusted": 47.6,
+        "raw": 47.6
+      }
+    },
+    "profile": "balanced",
+    "raw": 52.6,
+    "scoring_version": "reveng_v6_independent"
+  }
+]

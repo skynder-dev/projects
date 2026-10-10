@@ -1,0 +1,157 @@
+{
+ "_source": "read-only copy of reveng.pilot_allowed_sources where pilot_key='real_evidence_v1' (project media-business-projects), captured 2026-10-10; data only",
+ "pilot_key": "real_evidence_v1",
+ "sources": [
+  {
+   "source_key": "official_docs",
+   "access_class": "public_uncredentialed",
+   "activation_state": "available",
+   "evidence_eligibility": "real_evidence",
+   "permitted_use": [
+    "search",
+    "open_public_docs",
+    "cite",
+    "capture_minimal_claim_support"
+   ],
+   "prohibited_use": [
+    "credential_bypass",
+    "paywall_bypass",
+    "bulk_copy",
+    "automated_scraping_without_provider_review"
+   ]
+  },
+  {
+   "source_key": "public_company_pricing",
+   "access_class": "public_uncredentialed",
+   "activation_state": "available",
+   "evidence_eligibility": "real_evidence",
+   "permitted_use": [
+    "search",
+    "open_public_pricing",
+    "cite",
+    "capture_minimal_price_facts"
+   ],
+   "prohibited_use": [
+    "credential_bypass",
+    "paywall_bypass",
+    "bulk_copy",
+    "automated_scraping_without_provider_review"
+   ]
+  },
+  {
+   "source_key": "public_web_search",
+   "access_class": "public_uncredentialed",
+   "activation_state": "available",
+   "evidence_eligibility": "review_required",
+   "permitted_use": [
+    "search",
+    "open_public_pages",
+    "cite",
+    "discover_candidate_sources"
+   ],
+   "prohibited_use": [
+    "treat_search_snippet_as_final_evidence",
+    "credential_bypass",
+    "paywall_bypass",
+    "automated_scraping_without_provider_review"
+   ]
+  },
+  {
+   "source_key": "public_reviews_forums",
+   "access_class": "public_uncredentialed",
+   "activation_state": "available",
+   "evidence_eligibility": "review_required",
+   "permitted_use": [
+    "search",
+    "read_public_discussion",
+    "cite_minimal_public_excerpt",
+    "discover_pain_or_substitutes"
+   ],
+   "prohibited_use": [
+    "bulk_copy",
+    "automated_scraping_without_provider_review",
+    "treat_single_post_as_market_measurement"
+   ]
+  },
+  {
+   "source_key": "public_marketplace_review",
+   "access_class": "manual_public_review",
+   "activation_state": "manual_only",
+   "evidence_eligibility": "review_required",
+   "permitted_use": [
+    "manual_review",
+    "public_search",
+    "record_minimal_visible_facts"
+   ],
+   "prohibited_use": [
+    "automated_scraping",
+    "account_farming",
+    "policy_evasion",
+    "bulk_copy"
+   ]
+  },
+  {
+   "source_key": "official_api",
+   "access_class": "credentialed_authorized",
+   "activation_state": "not_configured",
+   "evidence_eligibility": "review_required",
+   "permitted_use": [
+    "read_per_documented_api_after_authorization"
+   ],
+   "prohibited_use": [
+    "use_without_credentials",
+    "undocumented_endpoint_use",
+    "rate_limit_evasion",
+    "paid_activation_without_owner_approval"
+   ]
+  },
+  {
+   "source_key": "provided_input",
+   "access_class": "user_provided_private",
+   "activation_state": "workspace_only",
+   "evidence_eligibility": "workspace_private_only",
+   "permitted_use": [
+    "analyze_user_provided_content",
+    "extract_workspace_private_claims",
+    "store_minimal_private_provenance"
+   ],
+   "prohibited_use": [
+    "implicit_global_catalog_export",
+    "public_web_lookup_for_private_project_file",
+    "cross_workspace_export"
+   ]
+  },
+  {
+   "source_key": "connector_input",
+   "access_class": "connector_authorized_private",
+   "activation_state": "workspace_only",
+   "evidence_eligibility": "workspace_private_only",
+   "permitted_use": [
+    "read_with_user_authorization",
+    "extract_workspace_private_claims",
+    "store_minimal_private_provenance"
+   ],
+   "prohibited_use": [
+    "read_without_user_authorization",
+    "implicit_global_catalog_export",
+    "cross_workspace_export"
+   ]
+  },
+  {
+   "source_key": "internal_synthesis",
+   "access_class": "internal_only",
+   "activation_state": "internal_only",
+   "evidence_eligibility": "hypothesis_only",
+   "permitted_use": [
+    "generate_hypothesis",
+    "draft_research_question",
+    "propose_gap"
+   ],
+   "prohibited_use": [
+    "count_as_external_evidence",
+    "make_claim_decision_ready",
+    "cite_as_real_source"
+   ]
+  }
+ ]
+}

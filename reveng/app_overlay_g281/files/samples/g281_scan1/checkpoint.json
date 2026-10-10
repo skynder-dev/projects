@@ -1,0 +1,36 @@
+{
+  "assumptions": [],
+  "blockers": [
+    "deep_failed:MED-04:anthropic_http_400:Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.",
+    "deep_failed:EDU-01:anthropic_http_400:Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.",
+    "deep_failed:EDU-04:anthropic_http_400:Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."
+  ],
+  "leader": null,
+  "next_exact_action": "Resolve hard blockers: top_candidate_not_deep_screened_to_equal_depth(EDU-01)",
+  "objective": "reveng_v6_independent broad scan -> gates -> score -> deep screen -> decision",
+  "provisional": false,
+  "run_id": "run_20261010_031655",
+  "scoring_version": "reveng_v6_independent",
+  "stages_done": [
+    "discover",
+    "verify",
+    "gate_score",
+    "deep",
+    "decide",
+    "report"
+  ],
+  "unmet": [
+    "top_candidate_not_deep_screened_to_equal_depth(EDU-01)",
+    "margin_over_runner_up 0.6<5",
+    "top_fails_or_lacks_pessimistic_economics"
+  ],
+  "updated_at": "2026-10-10T03:46:05Z",
+  "usage": {
+    "calls": 30,
+    "input_tokens": 1595644,
+    "output_tokens": 250633,
+    "search_requests": 90,
+    "usd": 6.597618
+  },
+  "verdict": "no_winner"
+}

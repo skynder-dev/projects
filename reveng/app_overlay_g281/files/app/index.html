@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RevEng Internal RC 0.3.5 Candidate</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <section class="auth-gate" id="authGate">
+    <div class="auth-card">
+      <div class="brand-row auth-brand">
+        <div class="brand-mark">R</div>
+        <div><div class="brand">RevEng</div><div class="brand-sub">Opportunity discovery & validation</div></div>
+      </div>
+      <div class="auth-tabs" role="tablist" aria-label="Account access">
+        <button class="auth-tab active" id="signInTab" type="button" role="tab" aria-selected="true" aria-controls="signInForm">Sign in</button>
+        <button class="auth-tab" id="registerTab" type="button" role="tab" aria-selected="false" aria-controls="registerForm">Create account</button>
+      </div>
+      <div class="auth-flow-copy" data-signin-copy>
+        <div class="eyebrow">Existing account</div>
+        <h1>Sign in</h1>
+        <p>Use an existing account. This flow never creates a new account.</p>
+      </div>
+      <div class="auth-flow-copy" data-register-copy hidden>
+        <div class="eyebrow">New account</div>
+        <h1>Create account</h1>
+        <p>Create a new account. Email confirmation may be required before the first sign in.</p>
+      </div>
+      <form id="signInForm" class="auth-form" aria-labelledby="signInTab" novalidate>
+        <div data-fixture-auth>
+          <label for="signInHandle">Local review account</label>
+          <input id="signInHandle" autocomplete="off" placeholder="e.g. clean-user" />
+        </div>
+        <div data-backend-auth hidden>
+          <label for="signInEmail">Email</label>
+          <input id="signInEmail" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required />
+          <label for="signInPassword">Password</label>
+          <input id="signInPassword" type="password" autocomplete="current-password" required />
+        </div>
+        <button class="btn full" id="signInSubmit" type="submit">Sign in to existing account</button>
+      </form>
+      <form id="registerForm" class="auth-form" aria-labelledby="registerTab" novalidate hidden>
+        <div data-fixture-auth>
+          <label for="registerHandle">New local review account</label>
+          <input id="registerHandle" autocomplete="off" placeholder="e.g. clean-user" />
+          <label for="registerWorkspace">Workspace label</label>
+          <input id="registerWorkspace" autocomplete="off" placeholder="e.g. Workspace C" />
+        </div>
+        <div data-backend-auth hidden>
+          <label for="registerEmail">Email</label>
+          <input id="registerEmail" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required />
+          <label for="registerPassword">Password</label>
+          <input id="registerPassword" type="password" autocomplete="new-password" minlength="8" required aria-describedby="registerPasswordHint" />
+          <small id="registerPasswordHint" class="auth-field-hint">At least 8 characters.</small>
+          <label for="registerPasswordConfirm">Confirm password</label>
+          <input id="registerPasswordConfirm" type="password" autocomplete="new-password" minlength="8" required />
+        </div>
+        <button class="btn full" id="registerSubmit" type="submit">Create new account</button>
+      </form>
+      <div class="auth-note"><span data-fixture-auth>Local review identity. </span><span data-backend-auth hidden>Backend mode uses Supabase Auth. </span>No spend, publication, outreach, or RevEng client-gateway mutation is enabled by signing in or registering.</div>
+      <div class="auth-notice" id="authNotice" role="status" aria-live="polite"></div>
+      <div class="auth-error" id="authError" role="alert" aria-live="assertive"></div>
+    </div>
+  </section>
+
+  <div class="app-shell" id="appShell" hidden>
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-row">
+        <div class="brand-mark">R</div>
+        <div>
+          <div class="brand">RevEng</div>
+          <div class="brand-sub">Internal RC 0.3.5 Candidate</div>
+        </div>
+      </div>
+      <nav id="nav" class="nav"></nav>
+      <div class="sidebar-footer">
+        <div class="mode-pill" id="modePill"><span class="dot"></span> Local review workspace</div>
+        <a class="btn ghost full" id="globalRankingLink" href="global_ranking.html" style="display:block;text-align:center;text-decoration:none;margin-bottom:8px">Global ranking (v6)</a>
+        <button class="btn ghost full" id="resetFixtureBtn">Reset review data</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-btn mobile-only" id="menuBtn" aria-label="Open navigation">☰</button>
+        <div>
+          <div class="eyebrow" id="routeEyebrow">Workspace</div>
+          <h1 id="routeTitle" tabindex="-1">Opportunity Inbox</h1>
+        </div>
+        <div class="top-actions">
+          <div class="profile-select-wrap" id="scoreProfileWrap">
+            <span class="profile-label" id="scoreProfileLabel">Score profile</span>
+            <span class="sr-only" id="scoreProfileHelp">Score profile is a ranking lens. Changing it can change scores and order; raw opportunity facts stay unchanged. On the three-button selector, use Left and Right arrow keys, or Home and End, to change lens.</span>
+            <div class="profile-segments" role="group" aria-labelledby="scoreProfileLabel" aria-describedby="scoreProfileHelp">
+              <button type="button" data-score-profile="autonomy_first" aria-pressed="false">Autonomy First</button>
+              <button type="button" data-score-profile="balanced" aria-pressed="false">Balanced</button>
+              <button type="button" data-score-profile="defensibility_growth" aria-pressed="false">Defensibility + Growth</button>
+            </div>
+            <select id="scoreProfileSelect" aria-label="Score profile" aria-describedby="scoreProfileHelp">
+              <option value="autonomy_first">Autonomy First</option>
+              <option value="balanced">Balanced</option>
+              <option value="defensibility_growth">Defensibility + Growth</option>
+            </select>
+            <div class="profile-context" id="scoreProfileContext" role="status" aria-live="polite">
+              <strong id="scoreProfileContextTitle">Autonomy First</strong>
+              <span id="scoreProfileContextText">Favors automation, low owner time, and faster launch. Ranking lens only — raw opportunity facts stay unchanged.</span>
+              <div class="profile-weight-row" id="scoreProfileWeights" aria-label="Top score-profile weights"></div>
+              <div class="profile-ranking-preview" id="scoreProfileRankingPreview" aria-label="Score-profile ranking preview"></div>
+            </div>
+            <span class="sr-only" id="scoreProfileAnnouncement" role="status" aria-live="polite" aria-atomic="true"></span>
+          </div>
+          <div class="appearance-control" id="appearanceControl">
+            <button class="btn ghost appearance-launcher" id="appearanceBtn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="appearancePanel">
+              <span class="appearance-launcher-label">Appearance</span>
+              <span class="appearance-launcher-summary" id="appearanceSummary">Dark · Graphite</span>
+            </button>
+            <div class="appearance-panel" id="appearancePanel" role="dialog" aria-label="Appearance settings" hidden>
+              <div class="appearance-panel-head">
+                <div>
+                  <strong>Appearance</strong>
+                  <span>Workspace display only</span>
+                </div>
+                <button class="appearance-close" id="appearanceClose" type="button" aria-label="Close appearance settings">×</button>
+              </div>
+              <div class="appearance-group" data-appearance-group="mode">
+                <div class="appearance-group-label">Mode</div>
+                <div class="appearance-options" role="group" aria-label="Display mode">
+                  <button type="button" data-appearance-key="mode" data-appearance-value="dark">Dark</button>
+                  <button type="button" data-appearance-key="mode" data-appearance-value="light">Light</button>
+                  <button type="button" data-appearance-key="mode" data-appearance-value="system">System</button>
+                </div>
+              </div>
+              <div class="appearance-group" data-appearance-group="palette">
+                <div class="appearance-group-label">Palette</div>
+                <div class="appearance-options" role="group" aria-label="Palette">
+                  <button type="button" data-appearance-key="palette" data-appearance-value="graphite">Graphite</button>
+                  <button type="button" data-appearance-key="palette" data-appearance-value="slate">Slate</button>
+                  <button type="button" data-appearance-key="palette" data-appearance-value="charcoal">Charcoal</button>
+                  <button type="button" data-appearance-key="palette" data-appearance-value="paper">Paper</button>
+                </div>
+              </div>
+              <div class="appearance-group" data-appearance-group="accent">
+                <div class="appearance-group-label">Accent</div>
+                <div class="appearance-options" role="group" aria-label="Accent">
+                  <button type="button" data-appearance-key="accent" data-appearance-value="orange">Orange</button>
+                  <button type="button" data-appearance-key="accent" data-appearance-value="blue">Blue</button>
+                  <button type="button" data-appearance-key="accent" data-appearance-value="green">Green</button>
+                  <button type="button" data-appearance-key="accent" data-appearance-value="violet">Violet</button>
+                </div>
+              </div>
+              <div class="appearance-group" data-appearance-group="density">
+                <div class="appearance-group-label">Density</div>
+                <div class="appearance-options" role="group" aria-label="Density">
+                  <button type="button" data-appearance-key="density" data-appearance-value="compact">Compact</button>
+                  <button type="button" data-appearance-key="density" data-appearance-value="comfortable">Comfortable</button>
+                  <button type="button" data-appearance-key="density" data-appearance-value="large">Large</button>
+                </div>
+              </div>
+              <div class="appearance-panel-foot">
+                <span>Saved on this device</span>
+                <button class="btn ghost" id="appearanceReset" type="button">Reset appearance</button>
+              </div>
+            </div>
+          </div>
+          <button class="btn ghost" id="fixtureTenantBtn" title="Current review account">Account</button>
+          <button class="btn ghost" id="signOutBtn">Sign out</button>
+        </div>
+      </header>
+
+      <section class="task-composer" id="taskComposer" aria-labelledby="taskInputLabel" data-task-available="false">
+        <div class="task-composer-copy">
+          <div class="eyebrow">Current task</div>
+          <label id="taskInputLabel" for="taskInput">Describe what you want RevEng to find or evaluate</label>
+          <span id="taskScope">Waiting for an active workspace session</span>
+        </div>
+        <form class="task-input-form" id="taskInputForm">
+          <textarea id="taskInput" rows="2" maxlength="2000" autocomplete="off" spellcheck="true" placeholder="Example: Find a low-touch US business I can launch with $20k and under 10 owner-hours per week." aria-describedby="taskScope taskInputStatus taskInputCount" disabled></textarea>
+          <button class="btn task-submit" id="taskSubmitBtn" type="submit" disabled>Submit task</button>
+        </form>
+        <div class="task-composer-meta">
+          <span id="taskInputStatus" role="status" aria-live="polite">Task input becomes available after the current workspace session is ready.</span>
+          <span id="taskInputCount">0/2000</span>
+        </div>
+      </section>
+
+      <section class="task-interpretation" id="taskInterpretation" data-interpretation-available="false" aria-labelledby="taskInterpretationTitle">
+        <div class="task-interpretation-head">
+          <div>
+            <div class="eyebrow">Task interpretation</div>
+            <h2 id="taskInterpretationTitle">What the deterministic parsers read</h2>
+          </div>
+          <span class="task-interpretation-badge">Not AI inference</span>
+        </div>
+        <div class="task-interpretation-source-wrap">
+          <div class="task-interpretation-label">Original Current task</div>
+          <div class="task-interpretation-source" id="taskInterpretationSource">Submit a Current task to inspect the deterministic parser output.</div>
+        </div>
+        <div class="task-interpretation-fields" id="taskInterpretationFields" aria-live="polite"></div>
+        <div class="task-interpretation-issues" id="taskInterpretationIssues" data-issue-state="none">
+          <div class="task-interpretation-label">Unknowns & conflicts</div>
+          <div class="task-issue-status" id="taskInterpretationIssueStatus">No unresolved task issues yet.</div>
+          <div class="task-issue-list" id="taskInterpretationIssueList" aria-live="polite"></div>
+        </div>
+        <div class="task-interpretation-status" id="taskInterpretationStatus">No interpretation yet · session only · read-only</div>
+      </section>
+
+      <section class="mandate-corrections" id="mandateCorrections" data-mandate-draft-available="false" aria-labelledby="mandateCorrectionsTitle">
+        <div class="mandate-corrections-head">
+          <div>
+            <div class="eyebrow">Current Mandate draft</div>
+            <h2 id="mandateCorrectionsTitle">Correct the limits RevEng should use</h2>
+          </div>
+          <span class="mandate-corrections-badge" id="mandateSnapshotBadge" data-snapshot-state="unsaved">Not saved</span>
+        </div>
+        <div class="mandate-correction-grid">
+          <label class="mandate-correction-field" for="mandateCapitalInput">
+            <span>Available capital (USD)</span>
+            <div class="mandate-correction-control"><input id="mandateCapitalInput" type="number" min="0" max="1000000000" step="100" inputmode="decimal" disabled /><button class="btn ghost" id="mandateCapitalUseParsed" type="button" disabled>Use parsed</button></div>
+            <small id="mandateCapitalMeta">Unknown in task · enter a correction</small>
+          </label>
+          <label class="mandate-correction-field" for="mandateOwnerTimeInput">
+            <span>Owner time cap (hours/week)</span>
+            <div class="mandate-correction-control"><input id="mandateOwnerTimeInput" type="number" min="0" max="168" step="0.5" inputmode="decimal" disabled /><button class="btn ghost" id="mandateOwnerTimeUseParsed" type="button" disabled>Use parsed</button></div>
+            <small id="mandateOwnerTimeMeta">Unknown in task · enter a correction</small>
+          </label>
+        </div>
+        <div class="mandate-correction-actions"><button class="btn good" id="mandateSnapshotSave" type="button" disabled>Save snapshot</button><span id="mandateSnapshotStatus" role="status" aria-live="polite">Current Mandate snapshot becomes available with an active workspace.</span></div>
+        <details class="mandate-history" id="mandateHistory">
+          <summary><span>Mandate history</span><span class="mandate-history-count" id="mandateHistoryCount">No history</span></summary>
+          <div class="mandate-history-status" id="mandateHistoryStatus" role="status" aria-live="polite">History becomes available with an active workspace.</div>
+          <div class="mandate-history-list" id="mandateHistoryList"></div>
+        </details>
+        <div class="mandate-correction-status" id="mandateCorrectionStatus" role="status" aria-live="polite">Submit a Current task before editing mandate fields.</div>
+      </section>
+
+      <section class="fixture-banner" id="fixtureBanner">
+        <strong>Local review mode:</strong> this build is isolated from live accounts, spend, publishing, outreach, and private data from another workspace.
+        Every control below changes only this local review workspace.
+      </section>
+
+      <section id="appView" class="view"></section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="config.js"></script>
+  <script src="appearance.js"></script>
+  <script src="appearance_ui.js"></script>
+  <script src="native_secure_store.js"></script>
+  <script src="data_adapter.js"></script>
+  <script src="economics_contract.js"></script>
+  <script src="economics_metric_descriptors.js"></script>
+  <script src="economics_explanations.js"></script>
+  <script src="economics_formatter.js"></script>
+  <script src="economics_surface_snapshot.js"></script>
+  <script src="economics_reproducible_snapshot.js"></script>
+  <script src="economics_scenario_adapter.js"></script>
+  <script src="economics_input_provenance.js"></script>
+  <script src="economics_cash_buckets.js"></script>
+  <script src="economics_monthly_contribution_reference.js"></script>
+  <script src="economics_owner_time_valuation.js"></script>
+  <script src="economics_roi_payback_limits.js"></script>
+  <script src="economics_scenario_versioning.js"></script>
+  <script src="economics_scenario_comparison.js"></script>
+  <script src="economics_sales_volume_sensitivity.js"></script>
+  <script src="economics_cac_sensitivity.js"></script>
+  <script src="economics_owner_time_sensitivity.js"></script>
+  <script src="economics_milestone_acceptance.js"></script>
+  <script src="economics_pre_receipt_cash_need.js"></script>
+  <script src="requirement_evidence.js"></script>
+  <script src="requirement_record.js"></script>
+  <script src="requirements_readonly.js"></script>
+  <script src="equipment_requirement_fields.js"></script>
+  <script src="versioned_requirements.js"></script>
+  <script src="readiness_summary.js"></script>
+  <script src="critical_blocker_check.js"></script>
+  <script src="premises_requirement_fields.js"></script>
+  <script src="scoped_requirement_editor.js"></script>
+  <script src="software_requirement_fields.js"></script>
+  <script src="requirement_write_authority.js"></script>
+  <script src="inventory_requirement_fields.js"></script>
+  <script src="task_budget_parser.js"></script>
+  <script src="working_capital_requirement_fields.js"></script>
+  <script src="task_time_parser.js"></script>
+  <script src="compliance_requirement_fields.js"></script>
+  <script src="task_geo_parser.js"></script>
+  <script src="staff_requirement_fields.js"></script>
+  <script src="task_constraints_parser.js"></script>
+  <script src="geography_requirement_fields.js"></script>
+  <script src="task_interpretation.js"></script>
+  <script src="owner_time_launch_requirement_fields.js"></script>
+  <script src="mandate_corrections.js"></script>
+  <script src="mandate_snapshot.js"></script>
+  <script src="recurring_cost_requirement_fields.js"></script>
+  <script src="real_source_g084.js"></script>
+  <script src="source_locator.js"></script>
+  <script src="shortlist_freshness.js"></script>
+  <script src="real_package_shortlist.js"></script>
+  <script src="opportunity_hierarchy.js"></script>
+  <script src="discovery_scope.js"></script>
+  <script src="discovery_candidate.js"></script>
+  <script src="discovery_lanes.js"></script>
+  <script src="entrant_advantage.js"></script>
+  <script src="mandate_fit.js"></script>
+  <script src="economics_mandate_compliance.js"></script>
+  <script src="economics_dated_fee_currency.js"></script>
+  <script src="economics_uncovered_expenses.js"></script>
+  <script src="shortlist_sensitivity.js"></script>
+  <script src="scoring_profiles.js"></script>
+  <script src="scoring_signals.js"></script>
+  <script src="ranking_explanations.js"></script>
+  <script src="compare_snapshot.js"></script>
+  <script src="decision_actions.js"></script>
+  <script src="task_session.js"></script>
+  <script src="discovery_acceptance.js"></script>
+  <script src="ai_prompt_context.js"></script>
+  <script src="ai_quick_variant_result.js"></script>
+  <script src="ai_revision_diff.js"></script>
+  <script src="deep_analysis_task.js"></script>
+  <script src="deep_analysis_queue.js"></script>
+  <script src="deep_analysis_resume.js"></script>
+  <script src="untrusted_source_isolation.js"></script>
+  <script src="deep_evidence_reassessment.js"></script>
+  <script src="deep_economics_recalculation.js"></script>
+  <script src="deep_requirements_review.js"></script>
+  <script src="deep_score_update.js"></script>
+  <script src="deep_analysis_proposal_summary.js"></script>
+  <script src="ai_provider_official_contract.js"></script>
+  <script src="ai_provider.js"></script>
+  <script src="ai_quick_deep_flow.js"></script>
+  <script src="ai_milestone_evidence_matrix.js"></script>
+  <script src="decision_snapshot.js"></script>
+  <script src="decision_snapshot_workspace.js"></script>
+  <script src="decision_snapshot_basis.js"></script>
+  <script src="decision_snapshot_traceability.js"></script>
+  <script src="decision_snapshot_downside.js"></script>
+  <script src="decision_snapshot_export.js"></script>
+  <script src="decision_snapshot_mobile.js"></script>
+  <script src="owner_instruction_mobile.js"></script>
+  <script src="business_build_blueprint.js"></script>
+  <script src="blueprint_mobile_review.js"></script>
+  <script src="preaccept_version_summary.js"></script>
+  <script src="internal_acceptance_boundary.js"></script>
+  <script src="mobile_exact_acceptance.js"></script>
+  <script src="workspace_current_summary.js"></script>
+  <script src="workspace_evidence_freshness.js"></script>
+  <script src="workspace_job_states.js"></script>
+  <script src="workspace_cost_reporting.js"></script>
+  <script src="workspace_duration_progress.js"></script>
+  <script src="workspace_user_action_journal.js"></script>
+  <script src="workspace_connection_diagnostics.js"></script>
+  <script src="workspace_unfinished_operation_recovery.js"></script>
+  <script src="workspace_business_results.js"></script>
+  <script src="bootstrap.js"></script>
+</body>
+</html>

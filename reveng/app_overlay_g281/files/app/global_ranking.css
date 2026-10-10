@@ -1,0 +1,35 @@
+/* Global ranking page (G281). Uses the app's appearance tokens from styles.css; adds only layout. */
+.gr-body{margin:0;background:var(--bg);color:var(--text);font-family:inherit;min-height:100vh}
+.gr-top{display:flex;gap:16px;align-items:center;padding:16px;border-bottom:1px solid var(--border);background:var(--appearance-topbar,var(--panel))}
+.gr-top h1{margin:0;font-size:1.25rem}
+.gr-main{max-width:1180px;margin:0 auto;padding:16px;display:grid;gap:16px}
+.gr-banner{border:1px solid var(--border);border-left:6px solid var(--warn);border-radius:12px;background:var(--panel);padding:16px}
+.gr-banner h2{margin:0 0 6px;font-size:1.4rem}
+.gr-banner ul{margin:8px 0 0;padding-left:20px;color:var(--muted)}
+.gr-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.gr-card{border:1px solid var(--border);border-radius:12px;background:var(--panel);padding:16px;min-width:0}
+.gr-card h3{margin:0 0 8px;font-size:1rem}
+.gr-kv{display:grid;grid-template-columns:1fr auto;gap:4px 12px;margin:0}
+.gr-kv dt{color:var(--muted)} .gr-kv dd{margin:0;font-variant-numeric:tabular-nums;text-align:right}
+.gr-filters{display:flex;flex-wrap:wrap;gap:12px;align-items:end}
+.gr-filters label{display:grid;gap:4px;color:var(--muted);font-size:.85rem}
+.gr-filters select,.gr-filters input{background:var(--appearance-input,var(--panel-2));color:var(--text);border:1px solid var(--border);border-radius:8px;padding:8px;min-height:36px;max-width:100%}
+.gr-search{flex:1 1 220px}
+.gr-note,.gr-count{color:var(--muted);margin:8px 0}
+.gr-list{display:grid;gap:8px}
+.gr-item{border:1px solid var(--border);border-radius:10px;background:var(--panel-2)}
+.gr-item summary{display:grid;grid-template-columns:auto 1fr auto;gap:8px 12px;align-items:center;padding:10px 12px;cursor:pointer;list-style:none}
+.gr-item summary::-webkit-details-marker{display:none}
+.gr-item summary:focus-visible{outline:2px solid var(--appearance-accent);outline-offset:2px}
+.gr-id{font-family:ui-monospace,monospace;color:var(--muted)}
+.gr-name{min-width:0;overflow-wrap:anywhere}
+.gr-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+.gr-chip{display:inline-block;border:1px solid var(--border);border-radius:999px;padding:2px 8px;font-size:.78rem;white-space:nowrap}
+.gr-chip.good{border-color:var(--good);color:var(--good)} .gr-chip.warn{border-color:var(--warn);color:var(--warn)}
+.gr-chip.bad{border-color:var(--bad);color:var(--bad)} .gr-chip.info{border-color:var(--appearance-accent);color:var(--appearance-accent-text,var(--text))}
+.gr-body-in{padding:0 12px 12px;display:grid;gap:8px;overflow-wrap:anywhere}
+.gr-body-in h4{margin:4px 0 0;font-size:.85rem;color:var(--muted)}
+.gr-body-in p{margin:0}
+.gr-ev{margin:0;padding-left:18px}
+.gr-ev a{color:var(--appearance-accent-text,var(--text))}
+@media (max-width:640px){.gr-item summary{grid-template-columns:1fr}.gr-chips{justify-content:flex-start}}

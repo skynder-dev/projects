@@ -1,0 +1,187 @@
+{
+ "_source": "read-only copy of reveng.score_runs where algorithm_version='reveng_v6_independent' (project media-business-projects), captured 2026-10-10; data only",
+ "weights": {
+  "capital_risk": 3,
+  "entrant_edge": 16,
+  "market_depth": 6,
+  "defensibility": 10,
+  "owner_time_support": 3,
+  "willingness_to_pay": 8,
+  "repeat_ltv_potential": 8,
+  "end_to_end_automation": 4,
+  "distribution_advantage": 10,
+  "competition_adjusted_gap": 8,
+  "customer_problem_or_value": 14,
+  "absolute_gross_profit_potential": 10
+ },
+ "confidence_multipliers": {
+  "A": 1,
+  "B": 0.9,
+  "C": 0.75,
+  "D": 0.6
+ },
+ "hard_gate_cap": 45,
+ "rows": [
+  {
+   "id": 87,
+   "algorithm_version": "reveng_v6_independent",
+   "component_scores": {
+    "capital_risk": 9,
+    "entrant_edge": 0,
+    "market_depth": 8,
+    "defensibility": 3,
+    "owner_time_support": 7,
+    "willingness_to_pay": 9,
+    "repeat_ltv_potential": 9,
+    "end_to_end_automation": 8,
+    "distribution_advantage": 0,
+    "competition_adjusted_gap": 4,
+    "customer_problem_or_value": 8,
+    "absolute_gross_profit_potential": 7
+   },
+   "raw_score": 51.6,
+   "confidence_grade": "B",
+   "confidence_multiplier": 0.9,
+   "capped_score": 45,
+   "adjusted_score": 40.5
+  },
+  {
+   "id": 88,
+   "algorithm_version": "reveng_v6_independent",
+   "component_scores": {
+    "capital_risk": 9,
+    "entrant_edge": 0,
+    "market_depth": 9,
+    "defensibility": 4,
+    "owner_time_support": 6,
+    "willingness_to_pay": 9,
+    "repeat_ltv_potential": 6,
+    "end_to_end_automation": 4,
+    "distribution_advantage": 0,
+    "competition_adjusted_gap": 5,
+    "customer_problem_or_value": 9,
+    "absolute_gross_profit_potential": 8
+   },
+   "raw_score": 52.1,
+   "confidence_grade": "C",
+   "confidence_multiplier": 0.75,
+   "capped_score": 45,
+   "adjusted_score": 33.75
+  },
+  {
+   "id": 89,
+   "algorithm_version": "reveng_v6_independent",
+   "component_scores": {
+    "capital_risk": 10,
+    "entrant_edge": 0,
+    "market_depth": 8,
+    "defensibility": 2,
+    "owner_time_support": 10,
+    "willingness_to_pay": 8,
+    "repeat_ltv_potential": 8,
+    "end_to_end_automation": 9,
+    "distribution_advantage": 0,
+    "competition_adjusted_gap": 5,
+    "customer_problem_or_value": 7,
+    "absolute_gross_profit_potential": 6
+   },
+   "raw_score": 49,
+   "confidence_grade": "C",
+   "confidence_multiplier": 0.75,
+   "capped_score": 45,
+   "adjusted_score": 33.75
+  },
+  {
+   "id": 90,
+   "algorithm_version": "reveng_v6_independent",
+   "component_scores": {
+    "capital_risk": 9,
+    "entrant_edge": 0,
+    "market_depth": 7,
+    "defensibility": 4,
+    "owner_time_support": 6,
+    "willingness_to_pay": 8,
+    "repeat_ltv_potential": 5,
+    "end_to_end_automation": 6,
+    "distribution_advantage": 0,
+    "competition_adjusted_gap": 6,
+    "customer_problem_or_value": 8,
+    "absolute_gross_profit_potential": 8
+   },
+   "raw_score": 49.5,
+   "confidence_grade": "B",
+   "confidence_multiplier": 0.9,
+   "capped_score": 45,
+   "adjusted_score": 40.5
+  },
+  {
+   "id": 91,
+   "algorithm_version": "reveng_v6_independent",
+   "component_scores": {
+    "capital_risk": 6,
+    "entrant_edge": 0,
+    "market_depth": 8,
+    "defensibility": 6,
+    "owner_time_support": 5,
+    "willingness_to_pay": 9,
+    "repeat_ltv_potential": 9,
+    "end_to_end_automation": 5,
+    "distribution_advantage": 0,
+    "competition_adjusted_gap": 5,
+    "customer_problem_or_value": 9,
+    "absolute_gross_profit_potential": 9
+   },
+   "raw_score": 56.1,
+   "confidence_grade": "B",
+   "confidence_multiplier": 0.9,
+   "capped_score": 45,
+   "adjusted_score": 40.5
+  },
+  {
+   "id": 92,
+   "algorithm_version": "reveng_v6_independent",
+   "component_scores": {
+    "capital_risk": 9,
+    "entrant_edge": 0,
+    "market_depth": 8,
+    "defensibility": 4,
+    "owner_time_support": 7,
+    "willingness_to_pay": 9,
+    "repeat_ltv_potential": 9,
+    "end_to_end_automation": 7,
+    "distribution_advantage": 0,
+    "competition_adjusted_gap": 2,
+    "customer_problem_or_value": 9,
+    "absolute_gross_profit_potential": 7
+   },
+   "raw_score": 52,
+   "confidence_grade": "B",
+   "confidence_multiplier": 0.9,
+   "capped_score": 45,
+   "adjusted_score": 40.5
+  },
+  {
+   "id": 93,
+   "algorithm_version": "reveng_v6_independent",
+   "component_scores": {
+    "capital_risk": 8,
+    "entrant_edge": 0,
+    "market_depth": 8,
+    "defensibility": 4,
+    "owner_time_support": 5,
+    "willingness_to_pay": 9,
+    "repeat_ltv_potential": 9,
+    "end_to_end_automation": 6,
+    "distribution_advantage": 0,
+    "competition_adjusted_gap": 3,
+    "customer_problem_or_value": 8,
+    "absolute_gross_profit_potential": 8
+   },
+   "raw_score": 51.1,
+   "confidence_grade": "B",
+   "confidence_multiplier": 0.9,
+   "capped_score": 45,
+   "adjusted_score": 40.5
+  }
+ ]
+}

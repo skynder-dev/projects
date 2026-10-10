@@ -30,6 +30,14 @@
 - Gaps vs v6: app scoring is v1 (default `autonomy_first`); discovery capped at 12 candidates / 5 classes and tied to the owner mandate; no cheapest-alternative gate; OpenAI-only provider contract, never live-verified; no cumulative spend ledger; results of the 40-idea scan are not in `catalog_candidate_inbox`.
 - Supabase advisory (not reveng schema): RLS disabled on 5 `public.godog_gdconst_*` tables. Not changed; owner decides.
 
+## G281 overlay (work on the EXISTING app) - done 2026-10-10
+- Location in repo: `reveng/app_overlay_g281/` (README there). `apply_overlay.sh <extracted G280> <new dir>` rebuilds the G281 tree and runs `verify_reva2_g281_overlay.py` (13/13). Frozen G280 is never modified.
+- New modules: global_ranking_v6, global_gates_v6, global_scan_v6, evidence_protocol_v6, spend_guard_v6, global_ranking page (standalone, linked from sidebar). Tests: 79+39+55+15 (node), 28 (Chromium), local Postgres 16 dry-run of the import.
+- Details and the baseline numbers: `reveng/app_overlay_g281/files/docs/REVA2_G281_GLOBAL_PATH.md`.
+- IMPORTANT correction: scan #1 scores were computed with G280 v1 balanced weights under a v6 label. They are stored as `g280_balanced_v1_lens_NOT_reveng_v6`. No candidate has v6 component scores; there is no v6 ranking and no winner. Kills rest on uncited provider claims (5) or manual agent reading (3).
+- Import package for the app's inbox: `server/REVA2_G281_SCAN1_IMPORT_DRYRUN.sql` (ends in ROLLBACK). Writing it = owner "yes".
+- Next ($0): judge the 24 queued ideas by manual public reading (cheapest/free alternative, legal limits, willingness to pay), then judge v6 components; triage g151/g152 + g133/g144/g146; run the 85 JS tests and closure verifier on the final tree.
+
 ## NOT done
 - Live smoke of the two-phase protocol not yet confirmed (need `excerpts_returned>0` and `verified>0`). Earlier smoke (old single-call design) returned 0 citations -> redesign.
 - Fresh 30+ candidate / 8+ family live scan not run => no valid global winner.
