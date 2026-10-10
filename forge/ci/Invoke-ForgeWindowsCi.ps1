@@ -9,7 +9,11 @@ $app = Join-Path $RepoForge 'app\Merch_Forge_A5_Current'
 New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
 $ps = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
 $summary = [ordered]@{ schema='forge.windows_ci.v1'; powershell=$PSVersionTable.PSVersion.ToString(); os=[Environment]::OSVersion.VersionString; executed_at=[DateTime]::UtcNow.ToString('o'); steps=[ordered]@{} }
-function Step([string]$Name,[bool]$Ok,$Detail) { $summary.steps[$Name]=[ordered]@{pass=$Ok;detail=$Detail}; Write-Output ("[{0}] {1}" -f $(if($Ok){'PASS'}else{'FAIL'}),$Name) }
+function Step([string]$Name,[bool]$Ok,$Detail) {
+    $summary.steps[$Name]=[ordered]@{pass=$Ok;detail=$Detail}; Write-Output ("[{0}] {1}" -f $(if($Ok){'PASS'}else{'FAIL'}),$Name)
+    $d=($Detail | ConvertTo-Json -Depth 6 -Compress); if($d.Length -gt 3500){$d=$d.Substring(0,3500)+'...'}; $d=$d.Replace('%','%25').Replace("`r",'').Replace("`n",'%0A')
+    if($Ok){ Write-Output ("::notice title=PASS {0}::{1}" -f $Name,$d) } else { Write-Output ("::error title=FAIL {0}::{1}" -f $Name,$d) }
+}
 function Run-Child([string[]]$Arguments,[int]$TimeoutSec=600) {
     $p = Start-Process -FilePath $ps -ArgumentList $Arguments -PassThru -NoNewWindow -RedirectStandardOutput (Join-Path $OutDir 'child.out.txt') -RedirectStandardError (Join-Path $OutDir 'child.err.txt')
     if(-not $p.WaitForExit($TimeoutSec*1000)){ try{$p.Kill()}catch{}; return [pscustomobject]@{code=-1;out='TIMEOUT';err=''} }

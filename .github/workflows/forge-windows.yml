@@ -8,7 +8,7 @@ on:
       - '.github/workflows/forge-windows.yml'
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write   # only to publish CI results to branch forge-ci-results
 concurrency:
   group: forge-windows-${{ github.ref }}
   cancel-in-progress: true
@@ -32,3 +32,21 @@ jobs:
             ${{ runner.temp }}/forge-ci/child.*.txt
             ${{ runner.temp }}/forge-ci/localappdata/MerchForge/logs/**
           if-no-files-found: warn
+      - name: Publish results to branch forge-ci-results
+        if: always()
+        shell: bash
+        env:
+          SRC_REF: ${{ github.ref_name }}
+          SRC_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -e
+          out="$RUNNER_TEMP/forge-ci"; pub="$RUNNER_TEMP/forge-ci-pub"
+          rm -rf "$pub"; mkdir -p "$pub/latest"
+          cp "$out"/*.png "$out"/*.json "$out"/child.*.txt "$pub/latest/" 2>/dev/null || true
+          if [ -d "$out/localappdata/MerchForge/logs" ]; then cp -r "$out/localappdata/MerchForge/logs" "$pub/latest/app-logs"; fi
+          printf 'ref=%s\nsha=%s\nrun=%s\n' "$SRC_REF" "$SRC_SHA" "$RUN_ID" > "$pub/latest/RUN.txt"
+          cd "$pub"; git init -q; git checkout -q -b forge-ci-results
+          git config user.name "forge-ci"; git config user.email "forge-ci@users.noreply.github.com"
+          git add -A; git commit -q -m "forge windows ci results run $RUN_ID ($SRC_REF $SRC_SHA)"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" forge-ci-results
