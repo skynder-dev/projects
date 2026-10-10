@@ -16,6 +16,10 @@
 - 40 candidates / 10 families, 30 passed gates, $6.60, scoring v6. Deep screen interrupted: Anthropic credit balance too low (owner must top up). 5/8 deep-screened (old protocol), top 3 (EDU-01, MED-04, EDU-04) not screened -> verdict NO_WINNER (correct: unmet hard blocker).
 - Findings fixed after run: kill reasons were narrative-only -> now structured (fatal/major/minor + cited ref) with a `deep_kill` gate (fatal + verified excerpt kills); killed leaders are replaced (deep screen continues down the ranking until top-2 survivors are screened, cap deep.max_total=16); deep revised-edge schema slips keep the original edge; deep resumable per candidate (workflow input `resume=run_...`); MANIFEST EISDIR fixed.
 
+## Manual (free) deep screen of top-3, 2026-10-10 -> `manual/deep_screen_2026-10-10.md`
+- EDU-01, MED-04, EDU-04 all KILLED (free/cheaper incumbents: TutorTab $0, free sponsor lists/DBs, SPED Goals app free/$2.99). Evidence class agent-reported. Still NO winner.
+- Engine fix to do ($0): gate edge against the CHEAPEST credible alternative (incl. free), not the incumbent the LLM names.
+
 ## NOT done
 - Live smoke of the two-phase protocol not yet confirmed (need `excerpts_returned>0` and `verified>0`). Earlier smoke (old single-call design) returned 0 citations -> redesign.
 - Fresh 30+ candidate / 8+ family live scan not run => no valid global winner.
