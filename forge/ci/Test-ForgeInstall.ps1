@@ -76,7 +76,7 @@ function Test-StartAndClose([string]$Label,[string]$Vbs,[string]$Lad){
     if(-not $helper.HasExited){ try{$helper.Kill()}catch{} }
     Check ($Label+'_no_error_dialog') ($dlg.Count -eq 0) ((@($dlg | ForEach-Object { $_.title+': '+$_.text })) -join ' | ')
     $launch=@(Get-ChildItem -Path (Join-Path $logs 'MerchForge-launch-*.log') -ErrorAction SilentlyContinue)
-    if($launch.Count){ $Report.notes+=($Label+' launch log tail: '+(([string](Get-Content -LiteralPath $launch[0].FullName -Raw)) -replace '\s+',' ').Substring(0,[Math]::Min(400,([string](Get-Content -LiteralPath $launch[0].FullName -Raw)).Length))) }
+    if($launch.Count){ $lt=(([string](Get-Content -LiteralPath $launch[0].FullName -Raw)) -replace '\s+',' ').Trim(); $Report.notes+=($Label+' launch log tail: '+$lt.Substring([Math]::Max(0,$lt.Length-400))) }
 }
 function Get-Installed([string]$Lad){ $m=Join-Path $Lad 'Programs\MerchForge\app\candidate_manifest.json'; if(Test-Path -LiteralPath $m){ return (Get-Content -LiteralPath $m -Raw -Encoding UTF8 | ConvertFrom-Json) }; return $null }
 

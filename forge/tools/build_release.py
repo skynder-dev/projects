@@ -40,6 +40,7 @@ starts = [f for f in os.listdir(APP) if re.match(r'START_\d+_MERCH_FORGE\.vbs$',
 assert len(starts) == 1, starts
 start_new = 'START_%s_MERCH_FORGE.vbs' % a.number
 b = open(os.path.join(APP, starts[0]), 'rb').read()
+if b.startswith(b'\xef\xbb\xbf'): b = b[3:]   # Windows Script Host cannot read a UTF-8 BOM ("Invalid character", line 1 char 1)
 b = re.sub(rb'Merch Forge \d+ is not fully extracted', b'Merch Forge ' + a.number.encode() + b' is not fully extracted', b)
 os.remove(os.path.join(APP, starts[0])); open(os.path.join(APP, start_new), 'wb').write(b)
 for f in os.listdir(APP):
@@ -103,6 +104,8 @@ with zipfile.ZipFile(ARCHIVE_054) as z: z.extractall(tmp)
 old = os.path.join(tmp, '054_Merch_Forge_DISCOVER_RESEARCH_RC', 'Merch_Forge_A5_Current')
 for f in ['Start Merch Forge.vbs', 'MerchForgeLauncher.cmd', 'MerchForgePreflight.ps1', 'Install Merch Forge.vbs']:
     C['byte_equal_054_' + os.path.basename(f).replace(' ', '_')] = sha(os.path.join(INNER, f)) == sha(os.path.join(old, f))
+vbs = [os.path.join(dp, f) for dp, dn, fn in os.walk(APP) for f in fn if f.lower().endswith('.vbs')]
+C['vbs_no_utf8_bom_ascii_only'] = all(not open(v, 'rb').read().startswith(b'\xef\xbb\xbf') and all(x < 128 for x in open(v, 'rb').read()) for v in vbs)
 C['integrity_all_pass'] = all(sha(os.path.join(INNER, f['path'].replace('\\', '/'))) == f['sha256'] for f in integ['files'])
 C['manifest_workbench_sha'] = json.loads(rd(mp))['desktop']['workbench_sha256'] == sha(os.path.join(INNER, 'MerchForgeWorkbench.ps1'))
 C['manifest_authority_all_false'] = all(v is False for v in m['authority'].values())
