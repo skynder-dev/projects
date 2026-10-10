@@ -24,6 +24,12 @@
 - Owner never approved a specific amount; ~$20 API balance was exhausted (incl. my failed first live run). `allow_spend` is now **false** in config.json: every paid call is blocked until the owner explicitly authorizes a stated amount.
 - Known flaw: Budget cap is per process (resets each run), knows nothing of the real account balance. To do: cumulative ledger across runs + ask owner for a dollar figure before ANY paid run.
 
+## Owner correction 2026-10-10: work on the EXISTING app
+- The product is the owner's G280 app (browser JS + `server/` contracts + Supabase `reveng` schema + desktop csproj). My Node engine (`reveng/src`) is a reference implementation, not the product. See `ROADMAP.md` (A0–A7) for the 10-hour plan to improve the app.
+- Audit of G280 baseline (offline, $0): post-G280 closure verifier 41/41; old g280-final verifier 69/77 (manifest/stage drift only); runtime .mjs tests 82/85 standalone (g271 passes with REVENG_ROOT; g151/g152 fail, cause not established); 492 python tests not run yet.
+- Gaps vs v6: app scoring is v1 (default `autonomy_first`); discovery capped at 12 candidates / 5 classes and tied to the owner mandate; no cheapest-alternative gate; OpenAI-only provider contract, never live-verified; no cumulative spend ledger; results of the 40-idea scan are not in `catalog_candidate_inbox`.
+- Supabase advisory (not reveng schema): RLS disabled on 5 `public.godog_gdconst_*` tables. Not changed; owner decides.
+
 ## NOT done
 - Live smoke of the two-phase protocol not yet confirmed (need `excerpts_returned>0` and `verified>0`). Earlier smoke (old single-call design) returned 0 citations -> redesign.
 - Fresh 30+ candidate / 8+ family live scan not run => no valid global winner.
