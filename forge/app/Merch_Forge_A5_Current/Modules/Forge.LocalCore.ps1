@@ -602,11 +602,12 @@ function ConvertFrom-ForgeMoney($Raw) {
     $v=0.0; if(-not [double]::TryParse($s,[Globalization.NumberStyles]::AllowDecimalPoint,[Globalization.CultureInfo]::InvariantCulture,[ref]$v)){return $null}
     if($neg){$v=-$v}; return $v
 }
-function ConvertFrom-ForgeSalesDate($Raw) {
+function ConvertFrom-ForgeSalesDate($Raw,[string]$SlashOrder='mdy') {
     # ISO dates first; slashes are read as US month/day (Amazon.com reports); dots as day.month. Anything else -> $null (counted as undated).
     $s=([string]$Raw).Trim(); if(-not $s){return $null}
-    if($s -match '^\d{4}-\d{2}-\d{2}T'){ try{ return [DateTime]::Parse($s,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind) }catch{ return $null } }
-    $fmts=[string[]]@('yyyy-MM-dd','yyyy-MM-dd HH:mm:ss','yyyy-MM-dd HH:mm','yyyy/MM/dd','yyyy.MM.dd','M/d/yyyy','M/d/yyyy H:mm','M/d/yyyy h:mm tt','M/d/yyyy H:mm:ss','d.M.yyyy','d.M.yyyy H:mm')
+    if($s -match '^\d{4}-\d{2}-\d{2}T'){ try{ return ([DateTimeOffset]::Parse($s,[Globalization.CultureInfo]::InvariantCulture)).DateTime.Date }catch{ return $null } }   # the date as written, not moved to this PC's time zone
+    $slash=if($SlashOrder -eq 'dmy'){@('d/M/yyyy','d/M/yyyy H:mm','d/M/yyyy H:mm:ss')}else{@('M/d/yyyy','M/d/yyyy H:mm','M/d/yyyy h:mm tt','M/d/yyyy H:mm:ss')}
+    $fmts=[string[]](@('yyyy-MM-dd','yyyy-MM-dd HH:mm:ss','yyyy-MM-dd HH:mm','yyyy/MM/dd','yyyy.MM.dd','d.M.yyyy','d.M.yyyy H:mm')+$slash)
     $d=[DateTime]::MinValue
     if([DateTime]::TryParseExact($s,$fmts,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::AllowWhiteSpaces,[ref]$d)){ return $d }
     return $null
@@ -614,13 +615,53 @@ function ConvertFrom-ForgeSalesDate($Raw) {
 function Import-LocalSalesCsv {
     $dlg=New-Object Microsoft.Win32.OpenFileDialog;$dlg.Title='Import sales / royalty CSV';$dlg.Filter='CSV files (*.csv)|*.csv';if($dlg.ShowDialog() -ne $true){return};Import-LocalSalesCsvFromPath $dlg.FileName
 }
+function Find-CsvColumn([string[]]$Names,[string[]]$Aliases) {
+    # Exact names first; an alias ending in * matches a prefix, but never rate / currency / percent columns ("Royalty Rate", "Royalties Currency").
+    foreach($a in $Aliases){ if($a.EndsWith('*')){continue}; $want=ConvertTo-CsvKey $a; foreach($n in $Names){ if((ConvertTo-CsvKey $n) -eq $want){ return $n } } }
+    foreach($a in $Aliases){ if(-not $a.EndsWith('*')){continue}; $want=ConvertTo-CsvKey $a.TrimEnd('*'); foreach($n in $Names){ $k=ConvertTo-CsvKey $n; if($k.StartsWith($want) -and $k -notmatch 'rate|currency|percent|pct|code|type'){ return $n } } }
+    return $null
+}
+function Get-CsvSlashDateOrder([string[]]$Values,[string]$Delimiter) {
+    # One order per file: a first part above 12 means day/month, a second part above 12 means month/day; if the file never says, ';' files (European Excel) are day/month.
+    $dmy=$false; $mdy=$false
+    foreach($v in $Values){ $m=[regex]::Match(([string]$v).Trim(),'^(\d{1,2})/(\d{1,2})/\d{4}'); if(-not $m.Success){continue}; if([int]$m.Groups[1].Value -gt 12){$dmy=$true}; if([int]$m.Groups[2].Value -gt 12){$mdy=$true} }
+    if($dmy -and -not $mdy){ return 'dmy' }; if($mdy -and -not $dmy){ return 'mdy' }
+    if($Delimiter -eq ';'){ return 'dmy' }; return 'mdy'
+}
 function Import-LocalSalesCsvFromPath([string]$Path) {
     if([string]::IsNullOrWhiteSpace($Path) -or -not(Test-Path -LiteralPath $Path -PathType Leaf)){Show-Error 'File not found.';return}
     try {
-        $first='';try{$first=[string](Get-Content -LiteralPath $Path -TotalCount 1 -Encoding UTF8)}catch{};$delim=if(($first.Split(';').Count) -gt ($first.Split(',').Count)){';'}else{','};$rows=@(Import-Csv -LiteralPath $Path -Delimiter $delim);if($rows.Count -eq 0){throw 'CSV contains no data rows.'};$normalized=@();foreach($row in $rows){
-            $dateRaw=Get-FirstCsvProperty $row @('date','purchase date','order date','sale date','transaction date','shipment date','period','period start','day');$unitsRaw=Get-FirstCsvProperty $row @('units','units sold','net units','quantity','qty','items sold','purchased','sold');$royRaw=Get-FirstCsvProperty $row @('royalty','royalties','net earnings','earnings','amount','royalt*','earning*');$revRaw=Get-FirstCsvProperty $row @('revenue','sales revenue','gross sales','gross','revenue*');$title=Get-FirstCsvProperty $row @('title','product title','design title','name');$id=Get-FirstCsvProperty $row @('asin','product asin','product id','listing id','sku','asin*');$d=ConvertFrom-ForgeSalesDate $dateRaw;[double]$units=0;[double]$roy=0;[double]$rev=0;[void][double]::TryParse(([string]$unitsRaw),[Globalization.NumberStyles]::Any,[Globalization.CultureInfo]::InvariantCulture,[ref]$units);$royV=ConvertFrom-ForgeMoney $royRaw;if($null -ne $royV){$roy=[double]$royV};$revV=ConvertFrom-ForgeMoney $revRaw;if($null -ne $revV){$rev=[double]$revV};$normalized+=[pscustomobject]@{date=if($null-ne$d){$d.ToString('yyyy-MM-dd')}else{''};units=$units;royalty=$roy;revenue=$rev;title=[string]$title;product_id=([string]$id).Trim();source_file=[IO.Path]::GetFileName($Path);linked=$false;linked_product_key=''}
+        $first=''; try{$first=[string](Get-Content -LiteralPath $Path -TotalCount 1 -Encoding UTF8)}catch{}
+        $delim=if(($first.Split(';').Count) -gt ($first.Split(',').Count)){';'}else{','}
+        $rows=@(Import-Csv -LiteralPath $Path -Delimiter $delim); if($rows.Count -eq 0){throw 'CSV contains no data rows.'}
+        $names=@($rows[0].PSObject.Properties | ForEach-Object { [string]$_.Name })
+        $cDate=Find-CsvColumn $names @('date','purchase date','order date','sale date','transaction date','shipment date','period','period start','day')
+        $cUnits=Find-CsvColumn $names @('units','units sold','net units','quantity','qty','items sold','purchased','sold','units*')
+        $cRoy=Find-CsvColumn $names @('royalty','royalties','net earnings','earnings','amount','royalt*','earning*')
+        $cRev=Find-CsvColumn $names @('revenue','sales revenue','gross sales','gross','revenue*')
+        $cTitle=Find-CsvColumn $names @('title','product title','design title','name')
+        $cId=Find-CsvColumn $names @('asin','product asin','product id','listing id','sku','asin*')
+        if($null -eq $cUnits -and $null -eq $cRoy){ throw ('This sales CSV has no units or royalty column. Columns found: {0}.' -f ($names -join ', ')) }
+        $order=Get-CsvSlashDateOrder @($rows | ForEach-Object { if($cDate){ [string]$_.$cDate } }) $delim
+        $normalized=@(); $badAmount=0
+        foreach($row in $rows){
+            $dateRaw=if($cDate){$row.$cDate}else{$null}; $unitsRaw=if($cUnits){$row.$cUnits}else{$null}; $royRaw=if($cRoy){$row.$cRoy}else{$null}; $revRaw=if($cRev){$row.$cRev}else{$null}; $title=if($cTitle){$row.$cTitle}else{''}; $id=if($cId){$row.$cId}else{''}
+            $d=ConvertFrom-ForgeSalesDate $dateRaw $order
+            [double]$units=0; [double]$roy=0; [double]$rev=0
+            $uV=ConvertFrom-ForgeMoney $unitsRaw; if($null -ne $uV){$units=[double]$uV}else{$badAmount++}
+            $royV=ConvertFrom-ForgeMoney $royRaw; if($null -ne $royV){$roy=[double]$royV}else{$badAmount++}
+            $revV=ConvertFrom-ForgeMoney $revRaw; if($null -ne $revV){$rev=[double]$revV}
+            $normalized+=[pscustomobject]@{date=if($null-ne$d){$d.ToString('yyyy-MM-dd')}else{''};units=$units;royalty=$roy;revenue=$rev;title=[string]$title;product_id=([string]$id).Trim();source_file=[IO.Path]::GetFileName($Path);linked=$false;linked_product_key=''}
         }
-        $s=Read-LocalCoreState;$fileSha=Get-FileSha256Hex $Path;$existing=$false;foreach($imp in @($s.sales_imports)){if([string]$imp.sha256 -eq $fileSha){$existing=$true;break}};if(-not $existing){$s.sales_rows=@($s.sales_rows)+@($normalized);$s.sales_imports=@($s.sales_imports)+@([pscustomobject]@{file=[IO.Path]::GetFileName($Path);sha256=$fileSha;rows=$rows.Count;imported_at=[DateTime]::UtcNow.ToString('o')});Reconcile-LocalSalesLinks $s;Write-LocalCoreState $s};Update-LocalCoreBusinessSurfaces;$m=Get-LocalSalesMetrics;$noId=@($normalized|Where-Object{[string]::IsNullOrWhiteSpace([string]$_.product_id)}).Count;$noDate=@($normalized|Where-Object{[string]::IsNullOrWhiteSpace([string]$_.date)}).Count;$StatusText.Text=if($existing){'This sales CSV was already imported; no duplicate rows were added.'}else{("Imported {0} row(s): {1} linked to verified Forge products, {2} unlinked." -f $rows.Count,$m.linked_rows,$m.unlinked_rows)};if(-not $existing -and ($noId+$noDate) -gt 0){$StatusText.Text=("Imported {0} row(s): {1} linked to verified Forge products, {2} unlinked. Not readable: {3} without a product ID (ASIN), {4} without a date." -f $rows.Count,$m.linked_rows,$m.unlinked_rows,$noId,$noDate)}
+        $s=Read-LocalCoreState; $fileSha=Get-FileSha256Hex $Path; $existing=$false
+        foreach($imp in @($s.sales_imports)){ if([string]$imp.sha256 -eq $fileSha){$existing=$true;break} }
+        if(-not $existing){ $s.sales_rows=@($s.sales_rows)+@($normalized); $s.sales_imports=@($s.sales_imports)+@([pscustomobject]@{file=[IO.Path]::GetFileName($Path);sha256=$fileSha;rows=$rows.Count;imported_at=[DateTime]::UtcNow.ToString('o')}); Reconcile-LocalSalesLinks $s; Write-LocalCoreState $s }
+        Update-LocalCoreBusinessSurfaces
+        $linked=@($normalized | Where-Object { [bool]$_.linked }).Count; $unlinked=$normalized.Count-$linked
+        $noId=@($normalized | Where-Object { [string]::IsNullOrWhiteSpace([string]$_.product_id) }).Count; $noDate=@($normalized | Where-Object { [string]::IsNullOrWhiteSpace([string]$_.date) }).Count
+        if($existing){ $StatusText.Text='This sales CSV was already imported; no duplicate rows were added.' }
+        elseif(($noId+$noDate+$badAmount) -gt 0){ $StatusText.Text=("Imported {0} row(s): {1} linked to verified Forge products, {2} unlinked. Not readable: {3} without a product ID (ASIN), {4} without a date, {5} unreadable amount(s)." -f $rows.Count,$linked,$unlinked,$noId,$noDate,$badAmount) }
+        else { $StatusText.Text=("Imported {0} row(s): {1} linked to verified Forge products, {2} unlinked." -f $rows.Count,$linked,$unlinked) }
     } catch {Show-Error $_.Exception.Message;$StatusText.Text='Sales CSV import failed.'}
 }
 function Get-LocalSalesMetrics {
@@ -642,7 +683,7 @@ function Update-LocalCoreBusinessSurfaces {
 }
 function Update-LocalCoreStatusUi {
     if($null -eq $script:Current){return};$lc=Get-LocalCoreConcept ([string]$script:Current.concept.concept_key);if($null -eq $lc){return};$identity=Get-LocalCurrentRevisionIdentity $script:Current.concept;$acc=Get-PropertyValue $lc 'active_acceptance';$accepted=($null-ne$acc -and [string](Get-PropertyValue $acc 'concept_revision_id') -eq $identity.id -and [string](Get-PropertyValue $acc 'revision_hash') -eq $identity.hash)
-    $v=@(Get-LocalCoreVariantsForCurrent).Count;$validPackages=@($lc.packages|Where-Object{[bool](Get-PropertyValue $_ 'valid')}).Count;$text=("Local core · artwork: {0} · accepted: {1} · valid packages: {2}" -f $v,$(if($accepted){'yes'}else{'no'}),$validPackages)
+    $v=@(Get-LocalCoreVariantsForCurrent).Count;$validPackages=@($lc.packages|Where-Object{[bool](Get-PropertyValue $_ 'valid')}).Count;$text=((Get-UiText 'lc.status' 'Artwork: {0} · accepted: {1} · ready packages: {2}') -f $v,$(if($accepted){Get-UiText 'lc.yes' 'yes'}else{Get-UiText 'lc.no' 'no'}),$validPackages)
     if($null-ne$LocalCoreStatusText){$LocalCoreStatusText.Text=$text};if($null-ne$LocalAcceptButton){$LocalAcceptButton.IsEnabled=($VariantList.SelectedItems.Count -eq 1 -and [bool](Get-PropertyValue $VariantList.SelectedItems[0] 'local_only'))};if($null-ne$LocalBuildPackageButton){$LocalBuildPackageButton.IsEnabled=$accepted}
 }
 function Enter-LocalCoreSection([string]$Section) {

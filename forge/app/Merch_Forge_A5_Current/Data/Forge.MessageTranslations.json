@@ -1492,11 +1492,6 @@
    "es": "El texto de la ficha pertenece a otro diseño. Guárdalo de nuevo."
   },
   {
-   "en": "Imported {0} row(s): {1} linked to verified Forge products, {2} unlinked. Not readable: {3} without a product ID (ASIN), {4} without a date.",
-   "ru": "Импортировано строк: {0}; связано с проверенными товарами Forge: {1}; не связано: {2}. Не прочитано: без ID товара (ASIN) — {3}, без даты — {4}.",
-   "es": "Importadas {0} fila(s): {1} vinculadas a productos verificados de Forge, {2} sin vincular. Sin leer: {3} sin ID de producto (ASIN), {4} sin fecha."
-  },
-  {
    "en": "Valid local package(s): {0}",
    "ru": "Готовых локальных пакетов: {0}",
    "es": "Paquetes locales válidos: {0}"
@@ -1518,7 +1513,7 @@
   },
   {
    "en": "No royalty amount is fabricated locally. Import verified commerce data after publication.",
-   "ru": "Роялти не придумываются. После публикации импортируйте данные о продажах.",
+   "ru": "Роялти не придумываются. После публикации импортируйте проверенные данные о продажах.",
    "es": "No se inventan regalías. Importa datos de ventas verificados después de publicar."
   },
   {
@@ -1610,6 +1605,16 @@
    "en": "No generation runs or variants yet.",
    "ru": "Генераций и вариантов пока нет.",
    "es": "Aún no hay generaciones ni variantes."
+  },
+  {
+   "en": "Imported {0} row(s): {1} linked to verified Forge products, {2} unlinked. Not readable: {3} without a product ID (ASIN), {4} without a date, {5} unreadable amount(s).",
+   "ru": "Импортировано строк: {0}; связано с проверенными товарами Forge: {1}; не связано: {2}. Не прочитано: без ID товара (ASIN) — {3}, без даты — {4}, непонятных сумм — {5}.",
+   "es": "Importadas {0} fila(s): {1} vinculadas a productos verificados de Forge, {2} sin vincular. Sin leer: {3} sin ID de producto (ASIN), {4} sin fecha, {5} importe(s) ilegible(s)."
+  },
+  {
+   "en": "This sales CSV has no units or royalty column. Columns found: {0}.",
+   "ru": "В этом CSV продаж нет колонки со штуками или роялти. Найдены колонки: {0}.",
+   "es": "Este CSV de ventas no tiene columna de unidades ni de regalías. Columnas encontradas: {0}."
   }
  ]
 }

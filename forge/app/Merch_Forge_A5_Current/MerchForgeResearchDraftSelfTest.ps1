@@ -308,6 +308,9 @@ if($Phase -eq 'restart'){
     if($hasDataBackup){
         $js='{"p":"C:\\Users\\a\\AppData\\Local\\MerchForge\\local-core-v1\\x.png","q":"C:\\Users\\a\\AppData\\Local\\MerchForge2\\y","r":"c:\\users\\A\\appdata\\local\\merchforge"}'
         $mv=Convert-BackupJsonRoot $js 'C:\Users\a\AppData\Local\MerchForge' 'D:\U\b\MerchForge' | ConvertFrom-Json
+        $apo=Convert-BackupJsonRoot ((@{p="C:\Users\O'Brien\AppData\Local\MerchForge\a.png"} | ConvertTo-Json -Compress)) "C:\Users\O'Brien\AppData\Local\MerchForge" 'D:\X\MerchForge' | ConvertFrom-Json
+        Check 'backup_paths_moved_apostrophe' ($apo.p -eq 'D:\X\MerchForge\a.png') ([string]$apo.p)
+        Check 'backup_rejects_tricky_names' (-not (Test-BackupRelativePath 'local-core-v1/state.json.') -and -not (Test-BackupRelativePath 'local-core-v1/STATE~1.JSO') -and -not (Test-BackupRelativePath 'local-core-v1/../owner.key') -and -not (Test-BackupRelativePath 'owner.key') -and -not (Test-BackupRelativePath 'local-core-v1/a.png:zone') -and (Test-BackupRelativePath 'local-core-v1/artwork/final art (2).png')) ''
         Check 'backup_paths_moved_to_this_computer' ($mv.p -eq 'D:\U\b\MerchForge\local-core-v1\x.png' -and $mv.q -eq 'C:\Users\a\AppData\Local\MerchForge2\y' -and $mv.r -eq 'D:\U\b\MerchForge') ($mv | ConvertTo-Json -Compress)
         if($env:OS -eq 'Windows_NT'){
             $bk=Join-Path ([IO.Path]::GetTempPath()) ('forge-bk-'+[Guid]::NewGuid().ToString('N')+'.zip')
@@ -317,7 +320,11 @@ if($Phase -eq 'restart'){
             Add-Type -AssemblyName System.IO.Compression.FileSystem; $z=[System.IO.Compression.ZipFile]::OpenRead($bk); $names=@($z.Entries | ForEach-Object { $_.FullName }); $z.Dispose()
             Check 'backup_contains_state_not_keys' ($b.file_count -gt 0 -and $names -contains 'data/local-core-v1/state.json' -and @($names | Where-Object { $_ -like '*owner.key*' -or $_ -like '*provider-secrets*' -or $_ -like '*/logs/*' }).Count -eq 0) ([string]$b.file_count+' files')
             $s0=Read-LocalCoreState; Set-ResearchDraftList $s0 @(); Write-LocalCoreState $s0
+            $probe=@(Get-ChildItem -LiteralPath $script:LocalCoreRoot -Recurse -File | Where-Object { $_.Name -notlike 'state*' -and $_.Name -notlike '*.lock' } | Select-Object -First 1)
+            $probePath=if($probe.Count){$probe[0].FullName}else{''}; if($probePath){ Remove-Item -LiteralPath $probePath -Force }
+            $extra=Join-Path $script:LocalCoreRoot 'exports\added-after-copy.txt'; New-Item -ItemType Directory -Path (Split-Path -Parent $extra) -Force | Out-Null; [IO.File]::WriteAllText($extra,'x')
             $res=Restore-ForgeDataBackupFromPath $bk
+            Check 'backup_restore_brings_files_back_and_matches_copy' ($probePath -ne '' -and (Test-Path -LiteralPath $probePath) -and -not (Test-Path -LiteralPath $extra)) ('probe '+$probePath)
             $draftsAfter=@(Get-ResearchDraftList (Read-LocalCoreState)).Count
             Check 'backup_restore_brings_data_back' ($res.ok -and $draftsBefore -gt 0 -and $draftsAfter -eq $draftsBefore -and (Test-Path -LiteralPath $res.previous)) ('before '+$draftsBefore+', after '+$draftsAfter+', prev '+$res.previous)
             $bad=$bk+'.bad.zip'; $z=[System.IO.Compression.ZipFile]::Open($bk,[System.IO.Compression.ZipArchiveMode]::Update); try{ $en=$z.GetEntry('data/local-core-v1/state.json'); $sw=New-Object IO.StreamWriter($en.Open()); try{ $sw.BaseStream.SetLength(0); $sw.Write('{"tampered":true}') } finally { $sw.Dispose() } } finally { $z.Dispose() }
@@ -328,14 +335,23 @@ if($Phase -eq 'restart'){
     }
     # sales CSV as Amazon-like exports write it: other column names, ';' delimiter, decimal commas, a row without ASIN and one without a date
     $csvP=Join-Path ([IO.Path]::GetTempPath()) ('forge-sales-'+[Guid]::NewGuid().ToString('N')+'.csv')
-    [IO.File]::WriteAllText($csvP,("Purchase Date;ASIN;Units Sold;Royalty (USD);Marketplace`r`n2026-10-01;B0TESTCSV1;2;`"3,10`";amazon.com`r`n10/2/2026;B0TESTCSV1;1;1,55;amazon.com`r`n2026-10-03;;4;8,00;amazon.com`r`nsoon;B0TESTCSV2;1;2,00;amazon.com`r`n"),(New-Object Text.UTF8Encoding($false)))
+    [IO.File]::WriteAllText($csvP,("Purchase Date;ASIN;Units Sold;Royalty (USD);Marketplace`r`n2026-10-01;B0TESTCSV1;2;`"3,10`";amazon.com`r`n2/10/2026;B0TESTCSV1;1;1,55;amazon.com`r`n2026-10-03;;4;8,00;amazon.com`r`nsoon;B0TESTCSV2;1;2,00;amazon.com`r`n"),(New-Object Text.UTF8Encoding($false)))
     $nBefore=@((Read-LocalCoreState).sales_rows).Count
     Import-LocalSalesCsvFromPath $csvP
     $rowsNew=@(@((Read-LocalCoreState).sales_rows) | Select-Object -Skip $nBefore)
     $r1=@($rowsNew | Where-Object { $_.product_id -eq 'B0TESTCSV1' })
     Check 'sales_csv_amazon_like_columns' ($rowsNew.Count -eq 4 -and $r1.Count -eq 2 -and [double]$r1[0].royalty -eq 3.1 -and [double]$r1[1].royalty -eq 1.55 -and $r1[1].date -eq '2026-10-02' -and [double]$r1[0].units -eq 2) ($rowsNew | ConvertTo-Json -Compress -Depth 3)
-    Check 'sales_csv_reports_unreadable_rows' ($StatusText.Text -like '*Not readable: 1 without a product ID (ASIN), 1 without a date.') $StatusText.Text
+    Check 'sales_csv_reports_unreadable_rows' ($StatusText.Text -like '*Not readable: 1 without a product ID (ASIN), 1 without a date, 0 unreadable amount(s).') $StatusText.Text
     Remove-Item -LiteralPath $csvP -Force -ErrorAction SilentlyContinue
+    $colPick=Find-CsvColumn @('Date','Royalty Rate','Royalties Currency','Royalty Amount','Units Ordered') @('royalty','royalties','royalt*')
+    $unitPick=Find-CsvColumn @('Date','Royalty Rate','Units Ordered') @('units','units sold','units*')
+    Check 'sales_csv_skips_rate_and_currency_columns' ($colPick -eq 'Royalty Amount' -and $unitPick -eq 'Units Ordered') ([string]$colPick+' / '+[string]$unitPick)
+    $o1=Get-CsvSlashDateOrder @('03/10/2026','25/09/2026') ','; $o2=Get-CsvSlashDateOrder @('10/03/2026','09/25/2026') ';'; $o3=Get-CsvSlashDateOrder @('03/10/2026') ';'; $o4=Get-CsvSlashDateOrder @('03/10/2026') ','
+    Check 'sales_csv_date_order_per_file' ($o1 -eq 'dmy' -and $o2 -eq 'mdy' -and $o3 -eq 'dmy' -and $o4 -eq 'mdy' -and (ConvertFrom-ForgeSalesDate '03/10/2026' 'dmy').ToString('yyyy-MM-dd') -eq '2026-10-03') ($o1+','+$o2+','+$o3+','+$o4)
+    $csvN=Join-Path ([IO.Path]::GetTempPath()) ('forge-sales-'+[Guid]::NewGuid().ToString('N')+'.csv'); [IO.File]::WriteAllText($csvN,"Date,ASIN,Title`r`n2026-10-01,B0X,Shirt`r`n",(New-Object Text.UTF8Encoding($false)))
+    $eb=$script:Errors.Count; Import-LocalSalesCsvFromPath $csvN
+    Check 'sales_csv_without_units_or_royalty_refused' ($script:Errors.Count -eq $eb+1 -and [string]$script:Errors[$script:Errors.Count-1] -like 'This sales CSV has no units or royalty column*') $(if($script:Errors.Count){[string]$script:Errors[$script:Errors.Count-1]}else{''})
+    Remove-Item -LiteralPath $csvN -Force -ErrorAction SilentlyContinue
     # Amazon print profile: status wording and the owner form -> attestation (the standalone tool re-validates)
     if($hasAmazonProfile){
         $now=[DateTime]::UtcNow

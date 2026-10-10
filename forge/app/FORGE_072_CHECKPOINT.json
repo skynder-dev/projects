@@ -1,9 +1,9 @@
 {
   "schema": "forge.release_checkpoint.v1",
-  "package": "071_Merch_Forge_DATA_COPY_RC",
-  "previous_package": "070_Merch_Forge_DRAFT_CHECKS_TEXT_RC",
-  "app_version": "2.20.0-forge-data-copy-ru",
-  "installer_generation": "00000000000000100254",
+  "package": "072_Merch_Forge_SECOND_REVIEW_RC",
+  "previous_package": "071_Merch_Forge_DATA_COPY_RC",
+  "app_version": "2.20.1-forge-second-review",
+  "installer_generation": "00000000000000100255",
   "static": "14/14",
   "checks": {
     "xaml_xml_parse": true,
@@ -21,7 +21,7 @@
     "manifest_authority_all_false": true,
     "headless_selftest_pass": true
   },
-  "headless_selftest": "PASS 100/100 (PowerShell 7, Linux)",
+  "headless_selftest": "PASS 105/105 (PowerShell 7, Linux)",
   "integrity": "58 files",
   "windows_proof": "see GitHub workflow forge-windows (branch forge-ci-results)",
   "authority": {

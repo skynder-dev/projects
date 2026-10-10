@@ -92,7 +92,7 @@ function Ci-ClickAll([string]$Where,[scriptblock]$Return,[bool]$IncludeGlobal=$f
 function Ci-StubModalEntryPoints {
     # These open file pickers, modal windows, Explorer/Notepad or a blocking MessageBox; their file-processing parts are covered in other phases.
     # Win32 file pickers, Explorer/Notepad and blocking MessageBoxes cannot be answered from here: stub those entry points only.
-    foreach($n in @('Import-AmazonPrintProfileFile','Open-LocalChecksFolder','Open-DiagnosticLogSafe','Import-LocalArtwork','Import-LocalCheckEvidence','Import-LocalPublicationReceipt','Import-LocalSalesCsv','Queue-Generation','Save-PublicationMetadata')){
+    foreach($n in @('Import-AmazonPrintProfileFile','Open-LocalChecksFolder','Open-DiagnosticLogSafe','Import-LocalArtwork','Import-LocalCheckEvidence','Import-LocalPublicationReceipt','Import-LocalSalesCsv','Queue-Generation','Save-PublicationMetadata','Invoke-DataBackupSave','Invoke-DataBackupRestore')){
         Set-Item -Path ('function:script:'+$n) -Value ([scriptblock]::Create("`$script:Ci.confirms += 'modal stub: $n'"))
     }
     # WPF dialogs (Confirm checks, Amazon profile) run for real: a timer presses their OK button (empty form -> validation text), then closes them.
@@ -144,7 +144,7 @@ function Ci-EnglishUiStrings {
     return ,$set
 }
 $script:CiBrandTexts=@('Merch Forge','MERCH FORGE','Amazon','Amazon Merch')
-$script:CiDataControls=@('DiscoverDetailAudience','DiscoverDetailDimensions','DiscoverRecentText','DiscoverSourcesText','ConceptTitle','PerformanceLeadersText','DiscoverDetailName','DiscoverDetailMeta','DiscoverDetailSummary','OverviewHook','OverviewConcept','OverviewBuyer','OverviewWhy','OverviewDifferent','OverviewVisual','OverviewMeaning','AnalysisPurchase','AnalysisContext','AnalysisMeaning','GenerationBriefText','OverviewWarnings','LocalCoreStatusText')
+$script:CiDataControls=@('DiscoverDetailAudience','DiscoverDetailDimensions','DiscoverRecentText','DiscoverSourcesText','ConceptTitle','PerformanceLeadersText','DiscoverDetailName','DiscoverDetailMeta','DiscoverDetailSummary','OverviewHook','OverviewConcept','OverviewBuyer','OverviewWhy','OverviewDifferent','OverviewVisual','OverviewMeaning','AnalysisPurchase','AnalysisContext','AnalysisMeaning','GenerationBriefText','OverviewWarnings')
 function Ci-FindUntranslated($EnSet,[string]$Where) {
     $strict=New-Object System.Collections.Generic.List[string]; $loose=New-Object System.Collections.Generic.List[string]
     $stack=New-Object System.Collections.Stack; $stack.Push($Window)

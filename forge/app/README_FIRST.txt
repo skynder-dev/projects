@@ -1,22 +1,25 @@
-﻿MERCH FORGE 071 Merch Forge DATA COPY RC
+﻿MERCH FORGE 072 Merch Forge SECOND REVIEW RC
 
 ПО-РУССКИ
 1. Распакуйте всю папку: правый клик по ZIP -> «Извлечь все».
-2. Запустите START_071_MERCH_FORGE.vbs двойным щелчком.
+2. Запустите START_072_MERCH_FORGE.vbs двойным щелчком.
 3. Как пользоваться (1 страница): HOW_TO_USE_RU.txt
 
 START
 1. Extract the whole folder.
-2. Run START_071_MERCH_FORGE.vbs.
+2. Run START_072_MERCH_FORGE.vbs.
 
-WHAT IS NEW (071)
-- Home -> "My data": "Save a copy..." writes one ZIP with your drafts, decisions, artwork, checks,
-  packages, receipts, sales, Amazon profile and generation results (never the access key, provider secrets
-  or logs). "Restore from a copy..." checks every file, saves your current data first
-  (backups\before-restore-*.zip) and moves file paths to this computer, so a copy works on another PC too.
-- Sales CSV: column names are matched loosely (Purchase Date, Units Sold, Royalty (USD), ASIN...),
-  ";" separated files work, and the status says how many rows had no ASIN or no date.
-- Russian/Spanish: the remaining English texts on Artwork, Checks and Publish (package readiness,
-  acceptance, artwork count, listing notes) and the header subtitle are translated.
-- Windows tests now fail if any English sentence is left on a Russian screen.
-- Includes 070 and earlier (055-069).
+WHAT IS NEW (072) - fixes from the second independent review
+- Data copy: each file is fingerprinted exactly as it goes into the ZIP (a file changing while saving can no
+  longer make the copy unrestorable); temp files and earlier copies are left out; unusual file names are
+  skipped and counted. Restore checks the saved state before changing anything, makes your data equal to the
+  copy (files not in the copy are removed - they stay in the before-restore copy), and if anything fails
+  half-way it puts your previous data back automatically. Copies from a newer version are refused.
+  Only plain file names are accepted (no trailing dots, 8.3 aliases or streams). Last 5 before-restore copies kept.
+- Sales CSV: columns are chosen once per file ("Royalty Rate" / "Royalties Currency" are never taken as royalties);
+  a file without a units or royalty column is refused with the column list; unreadable amounts are counted;
+  slash dates are read per file (day/month when the file shows it or uses ";"); ISO dates keep the written date;
+  the import message counts only this file's rows.
+- "No sales for 30 days" also requires zero royalties.
+- Status line on Artwork/Checks translated.
+- Includes 071 and earlier (055-070).

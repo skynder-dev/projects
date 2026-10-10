@@ -21,6 +21,7 @@ function Register-PipelineUiText {
             'biz.perf.linked'='Verified linked sales rows: {0}. 30-day units: {1}; royalties: ${2:0.00}.'; 'biz.perf.unlinked'='No imported sales rows match a verified Forge product ID. Unlinked rows: {0}.'; 'biz.perf.none'='No local sales CSV imported yet.';
             'biz.sales.some'='Imported: {0} · linked: {1} · unlinked: {2} · undated linked: {3} · future linked: {4}'; 'biz.sales.none'='No local sales data imported.';
             'pipe.go'='Click to open: {0}';
+            'lc.status'='Artwork: {0} · accepted: {1} · ready packages: {2}'; 'lc.yes'='yes'; 'lc.no'='no';
             'metric.hint.receipts'='From imported publication receipts'; 'metric.hint.sales'='From imported sales linked to your products'; 'metric.hint.attention'='Details in Performance';
             'perf.leaders.none'='No verified sales yet.'; 'perf.leader.line'='30 days: {2} pcs, ${3:0.00} · 90 days: {4} pcs, ${5:0.00}';
             'perf.att.none'='Nothing needs attention.'; 'perf.att.nosales'='No sales for 30 days: {0} ({1}), published {2}.';
@@ -46,6 +47,7 @@ function Register-PipelineUiText {
             'biz.perf.linked'='Проверенных строк продаж: {0}. Продаж за 30 дней: {1}; роялти: ${2:0.00}.'; 'biz.perf.unlinked'='Ни одна строка продаж не совпала с проверенным товаром Forge. Несвязанных строк: {0}.'; 'biz.perf.none'='CSV с продажами ещё не импортирован.';
             'biz.sales.some'='Импортировано: {0} · связано: {1} · не связано: {2} · без даты: {3} · с будущей датой: {4}'; 'biz.sales.none'='Данные о продажах не импортированы.';
             'pipe.go'='Нажмите, чтобы открыть: {0}';
+            'lc.status'='Макетов: {0} · принят: {1} · готовых пакетов: {2}'; 'lc.yes'='да'; 'lc.no'='нет';
             'metric.hint.receipts'='По импортированным квитанциям публикации'; 'metric.hint.sales'='По импортированным продажам ваших товаров'; 'metric.hint.attention'='Подробности — в «Результатах»';
             'perf.leaders.none'='Проверенных продаж пока нет.'; 'perf.leader.line'='30 дн.: {2} шт., ${3:0.00} · 90 дн.: {4} шт., ${5:0.00}';
             'perf.att.none'='Ничего не требует внимания.'; 'perf.att.nosales'='Нет продаж 30 дней: {0} ({1}), опубликован {2}.';
@@ -71,6 +73,7 @@ function Register-PipelineUiText {
             'biz.perf.linked'='Filas de ventas verificadas: {0}. Unidades en 30 días: {1}; regalías: ${2:0.00}.'; 'biz.perf.unlinked'='Ninguna fila de ventas coincide con un producto verificado de Forge. Filas sin vincular: {0}.'; 'biz.perf.none'='Aún no se ha importado ningún CSV de ventas.';
             'biz.sales.some'='Importadas: {0} · vinculadas: {1} · sin vincular: {2} · sin fecha: {3} · con fecha futura: {4}'; 'biz.sales.none'='No hay datos de ventas importados.';
             'pipe.go'='Haz clic para abrir: {0}';
+            'lc.status'='Diseños: {0} · aceptado: {1} · paquetes listos: {2}'; 'lc.yes'='sí'; 'lc.no'='no';
             'metric.hint.receipts'='Según los recibos de publicación importados'; 'metric.hint.sales'='Según las ventas importadas de tus productos'; 'metric.hint.attention'='Detalles en Rendimiento';
             'perf.leaders.none'='Aún no hay ventas verificadas.'; 'perf.leader.line'='30 días: {2} uds., ${3:0.00} · 90 días: {4} uds., ${5:0.00}';
             'perf.att.none'='Nada requiere atención.'; 'perf.att.nosales'='Sin ventas en 30 días: {0} ({1}), publicado {2}.';
@@ -228,7 +231,7 @@ function Get-ForgePerformanceInsights($State,[datetime]$NowUtc=([DateTime]::UtcN
     $att=New-Object System.Collections.Generic.List[object]
     # "No sales" is a claim about data: only make it when the imported sales data reaches the last 7 days.
     $fresh=($null -ne $newest -and ($today-$newest).TotalDays -le 7)
-    if($fresh){ foreach($p in $products.Values){ if($p.units30 -le 0 -and $null -ne $p.published_at -and ($NowUtc-$p.published_at).TotalDays -ge 30){ $att.Add([pscustomobject]@{kind='nosales';args=@($p.title,$p.product_id,$p.published_at.ToString('yyyy-MM-dd'))}) } } }
+    if($fresh){ foreach($p in $products.Values){ if($p.units30 -le 0 -and $p.roy30 -le 0 -and $null -ne $p.published_at -and ($NowUtc-$p.published_at).TotalDays -ge 30){ $att.Add([pscustomobject]@{kind='nosales';args=@($p.title,$p.product_id,$p.published_at.ToString('yyyy-MM-dd'))}) } } }
     elseif($products.Count -gt 0){ if($null -eq $newest){ $att.Add([pscustomobject]@{kind='nodata';args=@()}) } else { $att.Add([pscustomobject]@{kind='stale';args=@($newest.ToString('yyyy-MM-dd'))}) } }
     foreach($k in ($unknown.Keys | Sort-Object)){ $att.Add([pscustomobject]@{kind='unknown';args=@($k,$unknown[$k])}) }
     $prof=$null; try{$prof=Get-LocalAmazonPrintProfile}catch{}
