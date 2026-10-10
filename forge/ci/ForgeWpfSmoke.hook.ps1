@@ -27,12 +27,13 @@ function Ci-Click($Button,[string]$Label) {
     $Button.RaiseEvent((New-Object System.Windows.RoutedEventArgs ([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent)))
     Ci-Flush
 }
-function Ci-Shot([string]$Name) {
+function Ci-Shot([string]$Name,$Target=$null) {
     try {
         Ci-Flush
-        $w=[int][Math]::Max(1,$Window.ActualWidth); $h=[int][Math]::Max(1,$Window.ActualHeight)
+        if($null -eq $Target){$Target=$Window}
+        $w=[int][Math]::Max(1,$Target.ActualWidth); $h=[int][Math]::Max(1,$Target.ActualHeight)
         $rtb=New-Object System.Windows.Media.Imaging.RenderTargetBitmap($w,$h,96,96,[System.Windows.Media.PixelFormats]::Pbgra32)
-        $rtb.Render($Window)
+        $rtb.Render($Target)
         $enc=New-Object System.Windows.Media.Imaging.PngBitmapEncoder; $enc.Frames.Add([System.Windows.Media.Imaging.BitmapFrame]::Create($rtb))
         $path=Join-Path $env:FORGE_CI_OUT ($script:Ci.phase+'-'+$Name+'.png'); $fs=[IO.File]::Create($path); try{$enc.Save($fs)}finally{$fs.Close()}
         $script:Ci.screenshots += (Split-Path $path -Leaf)
@@ -177,14 +178,13 @@ $Window.Add_ContentRendered({
             $lc=Get-LocalCoreConcept $key
             Ci-Check 'pkg_listing_saved' ($null -ne $lc.publication -and [string]$lc.publication.listing_title -like 'Night Shift Nurse*') ''
             Ci-Check 'pkg_print_check_pass_by_worker' ([string]$lc.checks.print.state -eq 'pass' -and [string]$lc.checks.print.source -eq 'trusted_local_check_worker') ([string]$lc.checks.print.state+' / '+[string]$lc.checks.print.note)
-            # 4) owner evidence for IP / policy / metadata, filled from the app's own evidence template
+            # 4) owner confirms IP / policy / listing text through the in-app checklist form (writes v3 evidence, normal importer)
             $tplDir=Join-Path $script:LocalCoreExportRoot (Join-Path (Get-LocalCoreSafeKey $key) 'checks')
-            $tpl=@(Get-ChildItem -LiteralPath $tplDir -Filter 'check-evidence-*.template.json' | Sort-Object LastWriteTimeUtc -Descending)[0]
-            $ev=Get-Content -LiteralPath $tpl.FullName -Raw -Encoding UTF8 | ConvertFrom-Json
-            foreach($n in @('visual','print')){ $ev.PSObject.Properties.Remove($n) }
-            foreach($n in @('ip','policy','metadata')){ $c=$ev.$n; $c.state='pass'; $c.source='ci-owner-attestation'; $c.note='CI fixture attestation (not a real legal or policy review).'; $c.checked_at=[DateTime]::UtcNow.AddMinutes(-1).ToString('o'); $c.authority_kind='owner_attested_external'; $c.attested=$true; $c.evidence_refs=@('https://merch.amazon.com/resource/Y28FFE5NLRYJG4V') }
-            $evPath=Join-Path $env:FORGE_CI_OUT 'ci-check-evidence.json'; [IO.File]::WriteAllText($evPath,($ev|ConvertTo-Json -Depth 20),(New-Object Text.UTF8Encoding($false)))
             Ci-Click $NavChecksButton 'NavChecksButton'
+            $cl=@(Get-ChildItem -LiteralPath $tplDir -Filter 'check-evidence-*.CHECKLIST.txt' -ErrorAction SilentlyContinue | Sort-Object LastWriteTimeUtc -Descending)
+            $clText=if($cl.Count){Get-Content -LiteralPath $cl[0].FullName -Raw -Encoding UTF8}else{''}
+            Ci-Check 'chk_checklist_file_next_to_template' ($cl.Count -ge 1 -and $clText -like '*ЧЕК-ЛИСТ*' -and $clText -like '*tmsearch.uspto.gov*' -and $clText -like '*.template.json*') $(if($cl.Count){$cl[0].Name}else{'missing in '+$tplDir})
+            Ci-Check 'chk_buttons_ru' ([string]$LocalConfirmChecksButton.Content -eq 'Подтвердить проверки…' -and [string]$LocalOpenChecksFolderButton.Content -eq 'Открыть папку проверок' -and $LocalConfirmChecksButton.IsVisible) ([string]$LocalConfirmChecksButton.Content+' | '+[string]$LocalOpenChecksFolderButton.Content)
             # A real local error in the RU UI must reach the owner as a readable Russian message
             $badPath=Join-Path $env:FORGE_CI_OUT 'ci-bad-evidence.json'; [IO.File]::WriteAllText($badPath,'{"schema":"forge.local_check_evidence.v0"}',(New-Object Text.UTF8Encoding($false)))
             $before=$script:Ci.errors.Count; Import-LocalCheckEvidenceFromPath $badPath
@@ -192,7 +192,17 @@ $Window.Add_ContentRendered({
             $shown=if((Test-KnownUiMessage $raw)){Translate-UiMessage $raw}else{Translate-UiMessage (Get-HumanErrorMessage $raw)}
             Ci-Check 'msg_error_readable_ru' ($raw -eq 'Unsupported check evidence schema.' -and $shown -eq 'Неподдерживаемый формат файла подтверждений.') ($raw+' => '+$shown)
             $script:Ci.errors=@($script:Ci.errors | Select-Object -First $before)
-            $before=$script:Ci.errors.Count; Import-LocalCheckEvidenceFromPath $evPath; Ci-Flush
+            $dlg=New-ConfirmChecksDialog; $dlg.Show(); Ci-Flush
+            foreach($n in @('ip','policy','metadata')){ $dlg.FindName('State_'+$n).SelectedIndex=1; $dlg.FindName('Ref_'+$n).Text='https://merch.amazon.com/resource/Y28FFE5NLRYJG4V'; $dlg.FindName('Note_'+$n).Text='CI fixture attestation (not a real legal or policy review).' }
+            Ci-Flush
+            $first=Complete-ConfirmChecksDialog $dlg $false; Ci-Flush
+            Ci-Check 'chk_dialog_requires_confirm_ru' (-not $first -and [string]$dlg.FindName('ErrorText').Text -like 'Поставьте галочку*') ([string]$dlg.FindName('ErrorText').Text)
+            $dlg.FindName('ConfirmBox').IsChecked=$true; Ci-Flush
+            Ci-Shot '11a-confirm-checks-dialog' $dlg
+            $second=Complete-ConfirmChecksDialog $dlg $false; $answers=$dlg.Tag; $dlg.Close(); Ci-Flush
+            Ci-Check 'chk_dialog_accepts' ($second -and $null -ne $answers) ''
+            $before=$script:Ci.errors.Count; $ok=$false; if($null -ne $answers){ $ok=Submit-OwnerCheckAnswers $answers.answers $answers.confirmed }; Ci-Flush
+            Ci-Check 'chk_saved_status_ru' ($ok -and $StatusText.Text -like 'Проверки сохранены:*') $StatusText.Text
             $lc=Get-LocalCoreConcept $key; $gate=Get-LocalCheckGateSnapshot $lc
             Ci-Check 'pkg_evidence_imported' ($script:Ci.errors.Count -eq $before) (($script:Ci.errors | Select-Object -Last 1))
             Ci-Check 'pkg_all_checks_ready' ([bool]$gate.all_ready) (($gate.checks | ConvertTo-Json -Depth 4 -Compress))

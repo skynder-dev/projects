@@ -74,6 +74,8 @@ $hasDraftModule = Test-Path -LiteralPath (Join-Path $mod 'Forge.ResearchDrafts.p
 if($hasDraftModule){ . (Join-Path $mod 'Forge.ResearchDrafts.ps1') }
 $hasPipelineModule = Test-Path -LiteralPath (Join-Path $mod 'Forge.Pipeline.ps1')
 if($hasPipelineModule){ . (Join-Path $mod 'Forge.Pipeline.ps1') }
+$hasCheckAttestation = Test-Path -LiteralPath (Join-Path $mod 'Forge.CheckAttestation.ps1')
+if($hasCheckAttestation){ . (Join-Path $mod 'Forge.MessageLocalization.ps1'); . (Join-Path $mod 'Forge.CheckAttestation.ps1'); Register-CheckAttestationUiText }
 
 # state root isolation
 $script:StateRoot=$StateRoot; $script:LogRoot=Join-Path $StateRoot 'logs'; $script:RuntimeLogPath=Join-Path $script:LogRoot 'runtime.log'
@@ -252,6 +254,30 @@ if($Phase -eq 'restart'){
         Check 'perf_unknown_counted_by_id' ($unk.Count -eq 1 -and $unk[0].args[0] -eq 'ASIN-OTHER' -and $unk[0].args[1] -eq 2) ($unk | ConvertTo-Json -Compress -Depth 3)
         $ins2=& { function Test-LocalPublicationReceiptAuthority($State,$Receipt){ return $false }; function Get-LocalAmazonPrintProfile { return $null }; Get-ForgePerformanceInsights $ps $now }
         Check 'perf_unverified_receipts_ignored' (@($ins2.leaders).Count -eq 0 -and (@($ins2.attention | ForEach-Object { $_.kind }) -join ',') -eq 'unknown,unknown,noprofile,unpublished') (@($ins2.attention | ForEach-Object { $_.kind }) -join ',')
+    }
+    # owner check confirmation (pure part: evidence built from answers; import validation stays the normal importer)
+    if($hasCheckAttestation){
+        function New-Tpl { return ('{"schema":"forge.local_check_evidence.v3","concept_key":"k","ip":{"state":"","evidence_refs":[]},"visual":{"state":"pass"},"print":{"state":"pass"},"policy":{"state":"","marketplace":"amazon.com_us","evidence_refs":[]},"metadata":{"state":"","evidence_refs":[]}}' | ConvertFrom-Json) }
+        $chkAns=@{ip=[pscustomobject]@{state='pass';ref='https://tmsearch.uspto.gov/ (no live mark)';note='n'};policy=[pscustomobject]@{state='needs_review';ref='';note=''};metadata=[pscustomobject]@{state='unchanged';ref='';note=''}}
+        $chkEv=New-OwnerCheckEvidence (New-Tpl) $chkAns $true
+        $names=@($chkEv.evidence.PSObject.Properties | ForEach-Object { $_.Name }) -join ','
+        Check 'chk_evidence_sections' ($names -eq 'schema,concept_key,ip,policy' -and (@($chkEv.saved) -join ',') -eq 'ip,policy') $names
+        Check 'chk_pass_is_owner_attested' ($chkEv.evidence.ip.state -eq 'pass' -and $chkEv.evidence.ip.attested -eq $true -and $chkEv.evidence.ip.authority_kind -eq 'owner_attested_external' -and $chkEv.evidence.ip.evidence_refs -is [array] -and @($chkEv.evidence.ip.evidence_refs).Count -eq 1 -and ($chkEv.evidence | ConvertTo-Json -Depth 5 -Compress).Contains('"evidence_refs":["https://tmsearch') -and $chkEv.evidence.ip.source -eq 'owner_in_app_checklist') ($chkEv.evidence.ip | ConvertTo-Json -Compress)
+        Check 'chk_review_not_attested' ($chkEv.evidence.policy.state -eq 'needs_review' -and $chkEv.evidence.policy.attested -eq $false -and $chkEv.evidence.policy.authority_kind -eq 'none' -and $chkEv.evidence.policy.marketplace -eq 'amazon.com_us') ($chkEv.evidence.policy | ConvertTo-Json -Compress)
+        $e1=''; try{ $null=New-OwnerCheckEvidence (New-Tpl) $chkAns $false }catch{ $e1=$_.Exception.Message }
+        Check 'chk_pass_needs_confirm' ($e1 -like 'Tick*') $e1
+        $chkAns2=@{ip=[pscustomobject]@{state='pass';ref=' ';note=''}}
+        $e2=''; try{ $null=New-OwnerCheckEvidence (New-Tpl) $chkAns2 $true }catch{ $e2=$_.Exception.Message }
+        Check 'chk_pass_needs_reference' ($e2 -like '*: ip.') $e2
+        $e3=''; try{ $null=New-OwnerCheckEvidence (New-Tpl) @{} $true }catch{ $e3=$_.Exception.Message }
+        Check 'chk_nothing_chosen' ($e3 -like 'Choose a result*') $e3
+        $prevLoc=$script:Locale; $script:Locale='ru'
+        $txt=Get-CheckChecklistText 'Тест' 'check-evidence-x.template.json'
+        $ruErr=''; try{ $null=New-OwnerCheckEvidence (New-Tpl) $chkAns2 $true }catch{ $ruErr=$_.Exception.Message }
+        $script:Locale=$prevLoc
+        Check 'chk_checklist_ru' ($txt -like '*ЧЕК-ЛИСТ ДЛЯ «Тест»*' -and $txt -like '*tmsearch.uspto.gov*' -and $txt -like '*check-evidence-x.template.json*' -and $txt -like "*`r`n*") ($txt.Substring(0,[Math]::Min(120,$txt.Length)))
+        Check 'chk_ru_error_is_known_message' ($ruErr -like 'Для «всё в порядке»*' -and (Test-KnownUiMessage $ruErr)) $ruErr
+        Check 'chk_server_error_not_known' (-not (Test-KnownUiMessage 'HTTP 500 database exploded')) ''
     }
     # no-dispatch artwork preparation
     Export-LocalGenerationBrief

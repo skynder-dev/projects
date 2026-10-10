@@ -1017,9 +1017,9 @@
    "es": "El estado de Forge cambió en otra ventana (se esperaba la versión {0}, pero falta el archivo). No se sobrescribió nada; actualiza e inténtalo de nuevo."
   },
   {
-   "en": "{0} evidence listing_hash does not match the current listing revision.",
-   "ru": "Подтверждение «{0}» относится к другой версии карточки.",
-   "es": "La evidencia «{0}» corresponde a otra versión de la ficha."
+   "en": "{0} evidence listing_hash does not match the current listing revision. Use the newest template from the checks folder, or press Confirm checks.",
+   "ru": "Подтверждение «{0}» относится к другой версии карточки. Возьмите самый новый шаблон из папки проверок или нажмите «Подтвердить проверки».",
+   "es": "La evidencia «{0}» corresponde a otra versión de la ficha. Usa la plantilla más reciente de la carpeta de revisiones o pulsa Confirmar revisiones."
   },
   {
    "en": "{0} authority_kind is not allowed for state {1}.",
@@ -1032,14 +1032,14 @@
    "es": "Para «{0}» la fecha de revisión (checked_at) debe ser válida y no futura."
   },
   {
-   "en": "{0} evidence artwork SHA does not match the exact accepted artwork.",
-   "ru": "Подтверждение «{0}» относится к другому макету, не к принятому.",
-   "es": "La evidencia «{0}» corresponde a otro arte, no al aceptado."
+   "en": "{0} evidence artwork SHA does not match the exact accepted artwork. Use the newest template from the checks folder, or press Confirm checks.",
+   "ru": "Подтверждение «{0}» относится к другому макету, не к принятому. Возьмите самый новый шаблон из папки проверок или нажмите «Подтвердить проверки».",
+   "es": "La evidencia «{0}» corresponde a otro arte, no al aceptado. Usa la plantilla más reciente de la carpeta de revisiones o pulsa Confirmar revisiones."
   },
   {
-   "en": "{0} evidence revision does not match the current idea revision.",
-   "ru": "Подтверждение «{0}» относится к другой ревизии идеи.",
-   "es": "La evidencia «{0}» corresponde a otra revisión de la idea."
+   "en": "{0} evidence revision does not match the current idea revision. Use the newest template from the checks folder, or press Confirm checks.",
+   "ru": "Подтверждение «{0}» относится к другой ревизии идеи. Возьмите самый новый шаблон из папки проверок или нажмите «Подтвердить проверки».",
+   "es": "La evidencia «{0}» corresponde a otra revisión de la idea. Usa la plantilla más reciente de la carpeta de revisiones o pulsa Confirmar revisiones."
   },
   {
    "en": "{0} owner_attested_external evidence requires attested=true.",
@@ -1097,9 +1097,9 @@
    "es": "No se puede comparar el estado de forma segura antes de escribir: {0}"
   },
   {
-   "en": "Evidence belongs to a different concept.",
-   "ru": "Подтверждение относится к другой идее.",
-   "es": "La evidencia pertenece a otra idea."
+   "en": "Evidence belongs to a different concept. Use the newest template from the checks folder, or press Confirm checks.",
+   "ru": "Подтверждение относится к другой идее. Возьмите самый новый шаблон из папки проверок или нажмите «Подтвердить проверки».",
+   "es": "La evidencia pertenece a otra idea. Usa la plantilla más reciente de la carpeta de revisiones o pulsa Confirmar revisiones."
   },
   {
    "en": "Exact package ZIP does not contain an authority-valid READY preupload gate matching the local package lineage.",
@@ -1197,9 +1197,9 @@
    "es": "Para aprobar la política se requiere un perfil de impresión de Amazon vigente."
   },
   {
-   "en": "Policy evidence Amazon profile binding does not match the current owner-attested print profile.",
-   "ru": "Подтверждение политики сделано для другого Amazon-профиля. Выгрузите шаблон заново.",
-   "es": "La evidencia de política es de otro perfil de Amazon. Exporta la plantilla de nuevo."
+   "en": "Policy evidence Amazon profile binding does not match the current owner-attested print profile. Use the newest template from the checks folder, or press Confirm checks.",
+   "ru": "Подтверждение политики сделано для другого Amazon-профиля. Возьмите самый новый шаблон из папки проверок или нажмите «Подтвердить проверки».",
+   "es": "La evidencia de política es de otro perfil de Amazon. Exporta la plantilla de nuevo. Usa la plantilla más reciente de la carpeta de revisiones o pulsa Confirmar revisiones."
   },
   {
    "en": "Publication receipt concept is not present in local Forge state.",
@@ -1345,6 +1345,21 @@
    "en": "Accepted artwork failed exact SHA verification.",
    "ru": "Принятый макет не прошёл проверку SHA.",
    "es": "El arte aceptado no pasó la verificación SHA."
+  },
+  {
+   "en": "The evidence file is not valid JSON. Open it in Notepad and check quotes and commas, or use Confirm checks.",
+   "ru": "Файл подтверждений — не корректный JSON. Откройте его в Блокноте и проверьте кавычки и запятые или используйте «Подтвердить проверки».",
+   "es": "El archivo de evidencias no es un JSON válido. Ábrelo en el Bloc de notas y revisa comillas y comas, o usa Confirmar revisiones."
+  },
+  {
+   "en": "The evidence template has no {0} section. Accept the artwork again to refresh it.",
+   "ru": "В шаблоне подтверждений нет раздела {0}. Примите макет ещё раз, чтобы обновить шаблон.",
+   "es": "La plantilla de evidencias no tiene la sección {0}. Acepta el diseño otra vez para actualizarla."
+  },
+  {
+   "en": "Local checks are evidence for workflow continuity only. IP pass is not a legal opinion; marketplace policy and print requirements must be revalidated before external publication.",
+   "ru": "Локальные проверки — это только отметки для рабочего процесса. «IP пройдено» — не юридическое заключение; правила площадки и требования печати нужно перепроверить перед публикацией.",
+   "es": "Las revisiones locales solo sirven para el flujo de trabajo. Una PI aprobada no es una opinión legal; la política del mercado y los requisitos de impresión deben revalidarse antes de publicar."
   }
  ]
 }

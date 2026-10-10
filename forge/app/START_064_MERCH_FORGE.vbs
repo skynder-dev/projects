@@ -6,7 +6,7 @@ baseDir = fso.GetParentFolderName(WScript.ScriptFullName)
 startPath = baseDir & "\Merch_Forge_A5_Current\Start Merch Forge.vbs"
 preflightPath = baseDir & "\Merch_Forge_A5_Current\MerchForgePreflight.ps1"
 If Not fso.FileExists(startPath) Or Not fso.FileExists(preflightPath) Then
-  MsgBox "Merch Forge 063 is not fully extracted." & vbCrLf & vbCrLf & _
+  MsgBox "Merch Forge 064 is not fully extracted." & vbCrLf & vbCrLf & _
          "Use Extract All, then run this entrypoint from the extracted folder.", 16, "Merch Forge - Extract First"
   WScript.Quit 2
 End If

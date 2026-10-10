@@ -4,8 +4,8 @@
   "files": [
     {
       "path": "candidate_manifest.json",
-      "sha256": "c7e3440d9374da2d5090068ee2d4988c0f4bcf1e87daf1aeffe7223f335a853f",
-      "size_bytes": 77184
+      "sha256": "ab5a48b42fa2bdbbc6b8b1a4f3424a4aa92542008a9d5041619dd469c6fdbebe",
+      "size_bytes": 77404
     },
     {
       "path": "Configure Image Provider.ps1",
@@ -34,8 +34,8 @@
     },
     {
       "path": "Data\\Forge.MessageTranslations.json",
-      "sha256": "8759c9177fd1523aff3a0ed26d30633320745214a756db4d21d26384c1cf09b6",
-      "size_bytes": 69593
+      "sha256": "923b49fc96ebfaa562339efc837fec8f5ee1b41ebe283fabd4ccdca86c74cb1a",
+      "size_bytes": 72782
     },
     {
       "path": "Data\\GenerationJob.example.json",
@@ -129,18 +129,23 @@
     },
     {
       "path": "MerchForgeResearchDraftSelfTest.ps1",
-      "sha256": "2b68b2c508bad30d23e60b34da1f227f2cc18261b3efc2fdf3d7962683b72102",
-      "size_bytes": 28033
+      "sha256": "6f35150a81ed4d9a83eb8cad6bded0cbf3ff1c5d0ef7ed52d46fc324663fc1c6",
+      "size_bytes": 31474
     },
     {
       "path": "MerchForgeWorkbench.ps1",
-      "sha256": "e3d03e6e84de1a3c5ee47d7e9dc6c9c7be5ea99ecb6dec39978e046c5952ae72",
-      "size_bytes": 254201
+      "sha256": "e900bedb4901837a3d8e5667901798f8c04dd7aefb822e689348a1a34c27982f",
+      "size_bytes": 254743
     },
     {
       "path": "Modules\\Forge.BackendStatus.ps1",
       "sha256": "f6b96825281fdd37e13e8a7740c2b7d47cba35a74330a464c280c6de6fff23b9",
       "size_bytes": 2114
+    },
+    {
+      "path": "Modules\\Forge.CheckAttestation.ps1",
+      "sha256": "99b71c68a78417b178a4340f518ce42192d8738d76a61c75ef160d1ddbae94fb",
+      "size_bytes": 23084
     },
     {
       "path": "Modules\\Forge.DataAdapter.ps1",
@@ -194,8 +199,8 @@
     },
     {
       "path": "Modules\\Forge.LocalCore.ps1",
-      "sha256": "98119e1f51051e3ce6bbc3c761abf0a7d1da85de6a67054cc299e2da15610637",
-      "size_bytes": 119770
+      "sha256": "5518394d1256383bc22bbffc855c905c713a6fb9b66cb1db7e2a447dd2f31b10",
+      "size_bytes": 120593
     },
     {
       "path": "Modules\\Forge.Localization.ps1",
@@ -209,8 +214,8 @@
     },
     {
       "path": "Modules\\Forge.MessageLocalization.ps1",
-      "sha256": "7c9f5c9cbdfdae3f64a4495a92791b710a33697a6d42993536ee59e8e5dc5014",
-      "size_bytes": 3921
+      "sha256": "74a83d09aefc57c0f7da843ad2c1d5bcdb40d6778ef4dce94d6f54768435a46d",
+      "size_bytes": 5110
     },
     {
       "path": "Modules\\Forge.Pipeline.ps1",

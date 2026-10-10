@@ -1,9 +1,9 @@
 {
   "schema": "forge.release_checkpoint.v1",
-  "package": "063_Merch_Forge_NEXT_STEP_RC",
-  "previous_package": "062_Merch_Forge_PERFORMANCE_INSIGHTS_RC",
-  "app_version": "2.14.0-forge-next-step",
-  "installer_generation": "00000000000000100246",
+  "package": "064_Merch_Forge_CONFIRM_CHECKS_RC",
+  "previous_package": "063_Merch_Forge_NEXT_STEP_RC",
+  "app_version": "2.15.0-forge-confirm-checks",
+  "installer_generation": "00000000000000100247",
   "static": "13/13",
   "checks": {
     "xaml_xml_parse": true,
@@ -20,8 +20,8 @@
     "manifest_authority_all_false": true,
     "headless_selftest_pass": true
   },
-  "headless_selftest": "PASS 77/77 (PowerShell 7, Linux)",
-  "integrity": "55 files",
+  "headless_selftest": "PASS 86/86 (PowerShell 7, Linux)",
+  "integrity": "56 files",
   "windows_proof": "see GitHub workflow forge-windows (branch forge-ci-results)",
   "authority": {
     "generate_authorized": false,

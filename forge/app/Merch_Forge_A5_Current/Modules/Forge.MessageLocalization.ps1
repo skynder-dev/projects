@@ -3,6 +3,7 @@
 # concatenations). Instead of touching every call site, known English templates are translated where they are shown.
 # Data: Data\Forge.MessageTranslations.json ({en, ru, es}; {0}.. mark variable parts that are carried over unchanged).
 $script:MessageExact = @{}
+$script:UiTextMessageIndex = $null
 $script:MessagePatterns = @()
 $script:TranslatingUiMessage = $false
 
@@ -39,13 +40,27 @@ function Test-KnownUiMessage([string]$Text) {
     # Server/network failures keep the friendly generic mapping.
     if([string]::IsNullOrWhiteSpace($Text)){ return $false }
     if($Text -match 'HTTP [0-9]{3}|API_ERROR|EMPTY_RESPONSE|timed out|unable to connect|name resolution|No such host'){ return $false }
-    $hit=$null; if($null -ne $script:MessageExact -and $script:MessageExact.TryGetValue($Text,[ref]$hit)){ return $true }
+    if($null -ne $script:MessageExact -and $script:MessageExact.ContainsKey($Text)){ return $true }
     foreach($p in @($script:MessagePatterns)){ $en=[string](Get-PropertyValue $p.entry 'en'); if($en.StartsWith('{0}')){ continue }; if($p.rx.IsMatch($Text)){ return $true } }
+    return (Test-UiTextMessage $Text)
+}
+function Test-UiTextMessage([string]$Text) {
+    # Messages built from the app's own UI texts (any language) are already written for people.
+    if([string]::IsNullOrWhiteSpace($Text) -or $null -eq $script:UiText){ return $false }
+    if($null -eq $script:UiTextMessageIndex){
+        $exact=New-Object 'System.Collections.Generic.HashSet[string]'; $rx=New-Object System.Collections.Generic.List[regex]
+        foreach($loc in @($script:UiText.Keys)){ $tbl=$script:UiText[$loc]; if($null -eq $tbl){continue}
+            foreach($v in @($tbl.Values)){ $s=[string]$v; if($s.Length -lt 12){continue}
+                if($s -match '\{\d'){ $pat='^'+([regex]::Replace([regex]::Escape($s),'\\\{\d+(?::[^}]*)?\}','(.+?)'))+'$'; try{$rx.Add((New-Object regex($pat,[Text.RegularExpressions.RegexOptions]::Singleline)))}catch{} } else { [void]$exact.Add($s) } } }
+        $script:UiTextMessageIndex=[pscustomobject]@{exact=$exact;rx=$rx}
+    }
+    if($script:UiTextMessageIndex.exact.Contains($Text)){ return $true }
+    foreach($r in $script:UiTextMessageIndex.rx){ if($r.IsMatch($Text)){ return $true } }
     return $false
 }
 function Register-MessageLocalizationSinks {
     $dpd = [System.ComponentModel.DependencyPropertyDescriptor]::FromProperty([System.Windows.Controls.TextBlock]::TextProperty,[System.Windows.Controls.TextBlock])
-    foreach($tb in @($StatusText,$BusyText,$LocalCoreStatusText)){
+    foreach($tb in @($StatusText,$BusyText,$LocalCoreStatusText,$LocalCheckStatusText,$AnalysisWarnings)){
         if($null -eq $tb){ continue }
         $dpd.AddValueChanged($tb,[EventHandler]{
             param($sender,$e)

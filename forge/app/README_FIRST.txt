@@ -1,13 +1,16 @@
-MERCH FORGE 063 Merch Forge NEXT STEP RC
+MERCH FORGE 064 Merch Forge CONFIRM CHECKS RC
 
 START
 1. Extract the whole folder.
-2. Run START_063_MERCH_FORGE.vbs.
+2. Run START_064_MERCH_FORGE.vbs.
 
-WHAT IS NEW (063)
-- Portfolio -> "Next actions": clicking an idea now opens the tab where work continues:
-  KEEP without artwork or REGEN -> Artwork; artwork accepted -> Checks;
-  checks passed, package ready or published -> Publish; no decision / EDIT -> the idea itself.
-  Each row says which tab it will open.
-- Performance -> Winners: product name on one line, numbers on the next.
-- Includes 062 and earlier (055-061).
+WHAT IS NEW (064)
+- Checks -> new "Confirm checks..." button: a form with a plain checklist for IP (trademarks/copyright),
+  Amazon Merch content policy and listing text. For each one choose: all good / needs more checking /
+  problem / leave as is. "All good" needs a link or a short note and the "I checked this myself" tick.
+  The form writes the same evidence file as before and imports it through the same validation.
+- A plain-language CHECKLIST.txt is written next to the JSON evidence template (in the app language).
+- "Open checks folder" button.
+- Clearer import errors: broken JSON, and "evidence is for another revision/artwork/listing" now say what to do.
+- Error messages built from the app's own texts (any language) are shown as-is, not as a generic error.
+- Includes 063 and earlier (055-062).

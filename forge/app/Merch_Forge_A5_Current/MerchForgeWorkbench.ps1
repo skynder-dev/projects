@@ -1,6 +1,6 @@
 ﻿# Merch Forge Workbench
 # Native WPF desktop UI. Internal alpha build; not owner-accepted visual design.
-# Version: 2.14.0-next-step
+# Version: 2.15.0-confirm-checks
 
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
@@ -12,7 +12,7 @@ Add-Type -AssemblyName System.Security
 
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
 
-$script:AppVersion = '2.14.0-forge-next-step'
+$script:AppVersion = '2.15.0-forge-confirm-checks'
 $script:MinimumBackendVersion = [version]'0.2.70'
 $script:ApiUrl = 'https://ldlhnedbqeqcbqelhuhm.supabase.co/functions/v1/forge-app'
 $script:OwnerKey = $null
@@ -80,6 +80,7 @@ $script:ModuleRoot = Join-Path $PSScriptRoot 'Modules'
 . (Join-Path $script:ModuleRoot 'Forge.ResearchDrafts.ps1')
 . (Join-Path $script:ModuleRoot 'Forge.Pipeline.ps1')
 . (Join-Path $script:ModuleRoot 'Forge.MessageLocalization.ps1')
+. (Join-Path $script:ModuleRoot 'Forge.CheckAttestation.ps1')
 . (Join-Path $script:ModuleRoot 'Forge.ProductNavigation.ps1')
 . (Join-Path $script:ModuleRoot 'Forge.BackendStatus.ps1')
 . (Join-Path $script:ModuleRoot 'Forge.Localization.ps1')
@@ -1242,7 +1243,7 @@ function Clear-GenerationIdempotencyKey { $script:GenerationIdempotencyKey=$null
                 <TextBlock Text="Evidence &amp; IP readiness" Style="{StaticResource SectionTitleText}"/><TextBlock x:Name="AnalysisEvidence" TextWrapping="Wrap" Margin="0,8,0,14"/>
                 <TextBlock Text="Score dimensions" Style="{StaticResource SectionTitleText}"/><TextBox x:Name="AnalysisScores" Margin="0,8,0,12" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" BorderThickness="0" Background="Transparent"/>
                 <Expander Header="Technical details" IsExpanded="False" Margin="0,0,0,14"><TextBox x:Name="AnalysisAdvanced" Margin="0,8,0,0" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Consolas" FontSize="11" MinHeight="100"/></Expander>
-                <TextBlock Text="Warnings / blockers" Style="{StaticResource SectionTitleText}"/><TextBlock x:Name="AnalysisWarnings" TextWrapping="Wrap" Margin="0,8,0,14"/><Border Style="{StaticResource CardSurfaceBorder}" Padding="12" Margin="0,4,0,0"><StackPanel><TextBlock Text="Local check evidence" Style="{StaticResource SubsectionTitleText}"/><Button x:Name="LocalImportCheckEvidenceButton" Content="Import check evidence…" HorizontalAlignment="Left" Margin="0,8,0,0"/><TextBlock x:Name="LocalCheckStatusText" Text="No local check evidence imported." Style="{StaticResource MetaText}" TextWrapping="Wrap" Margin="0,6,0,0"/></StackPanel></Border>
+                <TextBlock Text="Warnings / blockers" Style="{StaticResource SectionTitleText}"/><TextBlock x:Name="AnalysisWarnings" TextWrapping="Wrap" Margin="0,8,0,14"/><Border Style="{StaticResource CardSurfaceBorder}" Padding="12" Margin="0,4,0,0"><StackPanel><TextBlock Text="Local check evidence" Style="{StaticResource SubsectionTitleText}"/><WrapPanel Margin="0,8,0,0"><Button x:Name="LocalConfirmChecksButton" Content="Confirm checks…" Margin="0,0,8,6"/><Button x:Name="LocalImportCheckEvidenceButton" Content="Import check evidence…" Margin="0,0,8,6"/><Button x:Name="LocalOpenChecksFolderButton" Content="Open checks folder" Margin="0,0,0,6"/></WrapPanel><TextBlock x:Name="LocalCheckStatusText" Text="No local check evidence imported." Style="{StaticResource MetaText}" TextWrapping="Wrap" Margin="0,6,0,0"/></StackPanel></Border>
               </StackPanel></ScrollViewer></TabItem>
 
 <TabItem Tag="delivery" Header="Delivery"><ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><StackPanel Margin="16">
@@ -1361,6 +1362,7 @@ $reader=New-Object System.Xml.XmlNodeReader $xaml
 $Window=[Windows.Markup.XamlReader]::Load($reader)
 Register-ResearchDraftUiText
 Register-PipelineUiText
+Register-CheckAttestationUiText
 function X([string]$Name){return $Window.FindName($Name)}
 $LoginGrid=X 'LoginGrid'; $AppGrid=X 'AppGrid'; $OwnerKeyBox=X 'OwnerKeyBox'; $RememberBox=X 'RememberBox'; $LoginLanguageLabel=X 'LoginLanguageLabel'; $LoginLanguageBox=X 'LoginLanguageBox'; $LoginLanguageStatusText=X 'LoginLanguageStatusText'; $LoginLangEn=X 'LoginLangEn'; $LoginLangRu=X 'LoginLangRu'; $LoginLangEs=X 'LoginLangEs'; $ConnectButton=X 'ConnectButton'; $ActorText=X 'ActorText'; $HeaderIdentity=X 'HeaderIdentity'; $CompactConceptBox=X 'CompactConceptBox'; $WorkAreaGrid=X 'WorkAreaGrid'; $QueueColumn=X 'QueueColumn'; $QueueGapColumn=X 'QueueGapColumn'; $ConceptPane=X 'ConceptPane';
 $AboutButton=X 'AboutButton'; $DiagnosticsButton=X 'DiagnosticsButton'; $RefreshButton=X 'RefreshButton'; $ForgetButton=X 'ForgetButton'; $BackendBanner=X 'BackendBanner'; $BackendBannerText=X 'BackendBannerText'; $BackendRetryButton=X 'BackendRetryButton'; $LanguageLabel=X 'LanguageLabel'; $LanguageBox=X 'LanguageBox'; $LanguageStatusText=X 'LanguageStatusText'; $HeaderLanguageSegment=X 'HeaderLanguageSegment'; $HeaderLangEn=X 'HeaderLangEn'; $HeaderLangRu=X 'HeaderLangRu'; $HeaderLangEs=X 'HeaderLangEs'; $SavedAccessText=X 'SavedAccessText'; $ConceptsLabel=X 'ConceptsLabel'; $SearchLabel=X 'SearchLabel'; $StatusLabel=X 'StatusLabel'; $SortLabel=X 'SortLabel'; $UtilityOverlay=X 'UtilityOverlay'; $UtilityKicker=X 'UtilityKicker'; $UtilityTitle=X 'UtilityTitle'; $UtilitySummaryText=X 'UtilitySummaryText'; $UtilityBodyText=X 'UtilityBodyText'; $UtilityTechnicalExpander=X 'UtilityTechnicalExpander'; $UtilityTechnicalText=X 'UtilityTechnicalText'; $UtilityCopyButton=X 'UtilityCopyButton'; $UtilityOpenLogButton=X 'UtilityOpenLogButton'; $UtilityCloseButton=X 'UtilityCloseButton'; $UtilityCloseTopButton=X 'UtilityCloseTopButton'; $SearchBox=X 'SearchBox'; $SearchPlaceholder=X 'SearchPlaceholder'; $QueueCountText=X 'QueueCountText'; $FilterBox=X 'FilterBox'; $SortBox=X 'SortBox'; $ConceptList=X 'ConceptList'; $ConceptTitle=X 'ConceptTitle'; $ConceptMeta=X 'ConceptMeta'; $DirtyLabel=X 'DirtyLabel'; $SaveButton=X 'SaveButton';
@@ -1661,7 +1663,7 @@ $OwnerKeepButton.Add_Click({[void](Set-LocalOwnerDecision 'KEEP')});$OwnerEditDe
 $HomeButton.Add_Click({Go-Home}); $NavHomeButton.Add_Click({Show-ProductSection 'home'}); $NavDiscoverButton.Add_Click({Show-ProductSection 'discover'}); $NavIdeasButton.Add_Click({Show-ProductSection 'ideas'}); $NavArtworkButton.Add_Click({Show-ProductSection 'artwork'}); $NavChecksButton.Add_Click({Show-ProductSection 'checks'}); $NavPublishButton.Add_Click({Show-ProductSection 'publish'}); $NavPortfolioButton.Add_Click({Show-ProductSection 'portfolio'}); $NavPerformanceButton.Add_Click({Show-ProductSection 'performance'}); $ContextHistoryButton.Add_Click({if($null -ne $script:Current){$MainTabs.Visibility='Visible';Select-MainTab 'History';Update-MainTabUi}}); $ContextDeliveryButton.Add_Click({if($null -ne $script:Current){$MainTabs.Visibility='Visible';Select-MainTab 'Delivery';Update-MainTabUi}}); $ContextEditButton.Add_Click({if($null -ne $script:Current){$MainTabs.Visibility='Visible';Select-MainTab 'Edit';Update-MainTabUi}}); $AboutButton.Add_Click({Show-About}); $DiagnosticsButton.Add_Click({Show-Diagnostics}); $RefreshButton.Add_Click({Refresh-Workbench}); $BackendRetryButton.Add_Click({Connect-Workbench $true})
 $DiscoverCreateDraftButton=X 'DiscoverCreateDraftButton'; $DiscoverDraftStatusText=X 'DiscoverDraftStatusText'
 $PortfolioPipelineTitle=X 'PortfolioPipelineTitle'; $PortfolioPipelineSummary=X 'PortfolioPipelineSummary'; $PortfolioNextTitle=X 'PortfolioNextTitle'; $PortfolioPipelineList=X 'PortfolioPipelineList'; $PortfolioNicheTitle=X 'PortfolioNicheTitle'; $PortfolioNicheText=X 'PortfolioNicheText'; $PipeUndecidedLabel=X 'PipeUndecidedLabel'; $PipeUndecidedValue=X 'PipeUndecidedValue'; $PipeKeepLabel=X 'PipeKeepLabel'; $PipeKeepValue=X 'PipeKeepValue'; $PipeArtworkLabel=X 'PipeArtworkLabel'; $PipeArtworkValue=X 'PipeArtworkValue'; $PipeChecksLabel=X 'PipeChecksLabel'; $PipeChecksValue=X 'PipeChecksValue'; $PipePackageLabel=X 'PipePackageLabel'; $PipePackageValue=X 'PipePackageValue'; $PipePublishedLabel=X 'PipePublishedLabel'; $PipePublishedValue=X 'PipePublishedValue'
-$PerformanceLeadersText=X 'PerformanceLeadersText'; $PerformanceAttentionText=X 'PerformanceAttentionText'
+$LocalConfirmChecksButton=X 'LocalConfirmChecksButton'; $LocalOpenChecksFolderButton=X 'LocalOpenChecksFolderButton'; $LocalConfirmChecksButton.Add_Click({Invoke-ConfirmChecks}); $LocalOpenChecksFolderButton.Add_Click({Open-LocalChecksFolder}); $PerformanceLeadersText=X 'PerformanceLeadersText'; $PerformanceAttentionText=X 'PerformanceAttentionText'
 $PortfolioPipelineList.Add_SelectionChanged({Open-PortfolioPipelineSelection})
 try{Initialize-MessageTranslations;Register-MessageLocalizationSinks}catch{Write-AppLog 'WARN' ('Message localization unavailable: '+$_.Exception.Message)}
 $DiscoverRefreshButton.Add_Click({Load-DiscoverSnapshot $true})
