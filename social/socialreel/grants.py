@@ -6,6 +6,7 @@ the snapshot file and the JSON field it came from.
 from __future__ import annotations
 
 import json
+import re
 import time
 import urllib.request
 from pathlib import Path
@@ -170,7 +171,10 @@ def normalize(hit: dict, detail: dict | None) -> dict:
         "number": pick("number", ("detail.opportunityNumber", detail.get("opportunityNumber")), ("hit.number", hit.get("number"))),
         "title": pick("title", ("detail.opportunityTitle", detail.get("opportunityTitle")), ("hit.title", hit.get("title"))),
         "agency_code": pick("agency_code", ("detail.owningAgencyCode", detail.get("owningAgencyCode")), ("hit.agencyCode", hit.get("agencyCode"))),
-        "agency_name": pick("agency_name", (f"{srcname}.agencyName", src.get("agencyName")), ("hit.agency", hit.get("agency")), ("hit.agencyName", hit.get("agencyName"))),
+        # NB: synopsis.agencyName is NOT reliable (it often holds the contact person, e.g. "Lynn Bailey Grantor").
+        "agency_name": pick("agency_name", ("detail.agencyDetails.agencyName", (detail.get("agencyDetails") or {}).get("agencyName")),
+                            ("hit.agency", hit.get("agency"))),
+        "top_agency_name": pick("top_agency_name", ("detail.topAgencyDetails.agencyName", (detail.get("topAgencyDetails") or {}).get("agencyName"))),
         "status": pick("status", ("hit.oppStatus", hit.get("oppStatus"))),
         "doc_type": pick("doc_type", ("hit.docType", hit.get("docType")), ("detail.docType", detail.get("docType"))),
         "open_date": pick("open_date", ("hit.openDate", hit.get("openDate")), (f"{srcname}.postingDate", src.get("postingDate"))),
@@ -183,11 +187,16 @@ def normalize(hit: dict, detail: dict | None) -> dict:
         "award_ceiling": _num(pick("award_ceiling", (f"{srcname}.awardCeiling", src.get("awardCeiling")))),
         "award_floor": _num(pick("award_floor", (f"{srcname}.awardFloor", src.get("awardFloor")))),
         "estimated_total_program_funding": _num(pick("estimated_total_program_funding", (f"{srcname}.estimatedFunding", src.get("estimatedFunding")))),
-        "expected_number_of_awards": _num(pick("expected_number_of_awards", (f"{srcname}.expectedNumberOfAwards", src.get("expectedNumberOfAwards")))),
+        "expected_number_of_awards": _num(pick("expected_number_of_awards", (f"{srcname}.expectedNumberOfAwards", src.get("expectedNumberOfAwards")),
+                                               (f"{srcname}.numberOfAwards", src.get("numberOfAwards")))),
         "cost_sharing": _bool(pick("cost_sharing", (f"{srcname}.costSharing", src.get("costSharing")))),
         "detail_fetched": bool(detail),
     }
-    rec["top_agency"] = top_agency(rec["agency_code"])
+    rec["top_agency"] = clean_agency(rec.get("top_agency_name")) or top_agency(rec["agency_code"])
+    if not rec.get("top_agency_name") and rec["top_agency"]:
+        fields["top_agency"] = "agency_code prefix map"
+    elif rec["top_agency"]:
+        fields["top_agency"] = fields.get("top_agency_name", "")
     rec["source_url"] = PUBLIC_URL.format(id=oid)
     rec["fields"] = fields
     return rec
@@ -202,6 +211,18 @@ def from_fixture(row: dict) -> dict:
     nf["source_url"] = row.get("source_url") or PUBLIC_URL.format(id=nf["opportunity_id"])
     nf["fields"] = {k: f"supabase_export.normalized_facts.{k}" for k in nf if k not in ("fields",)}
     return nf
+
+
+def clean_agency(name: str | None) -> str | None:
+    """Readable agency name or None (rejects codes like '69A350 OSDBU' and multi-line contact blocks)."""
+    if not name:
+        return None
+    n = " ".join(str(name).split())
+    if "\n" in str(name).strip() or re.search(r"\bgrantor\b|@|\d{3}[-.)\s]\d{3}", n, re.I):
+        return None
+    if re.match(r"^[0-9A-Z]{4,}\s", n) or len(n) < 3 or n.isupper() and len(n) > 12:
+        return None
+    return n
 
 
 def is_closing_after(rec: dict, min_date) -> bool:

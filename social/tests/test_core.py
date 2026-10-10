@@ -123,7 +123,9 @@ class Normalize(unittest.TestCase):
                "openDate": "10/01/2026", "closeDate": "12/01/2026", "oppStatus": "posted", "docType": "synopsis"}
         det = {"id": 999001, "opportunityNumber": "ABC-123", "opportunityTitle": "Test Program",
                "owningAgencyCode": "DOT-FTA",
-               "synopsis": {"agencyName": "Federal Transit Administration", "synopsisDesc": "<p>Funds buses.</p>",
+               "agencyDetails": {"agencyName": "Federal Transit Administration", "agencyCode": "DOT-FTA"},
+               "topAgencyDetails": {"agencyName": "Department of Transportation", "agencyCode": "DOT"},
+               "synopsis": {"agencyName": "Jane  Doe\nGrantor", "synopsisDesc": "<p>Funds buses.</p>",
                             "awardCeiling": "1000000", "awardFloor": "0", "estimatedFunding": "5000000",
                             "expectedNumberOfAwards": "5", "costSharing": False,
                             "applicantTypes": [{"id": "05", "description": "Small businesses"}],
@@ -132,9 +134,37 @@ class Normalize(unittest.TestCase):
         self.assertEqual(r["award_ceiling"], 1000000)
         self.assertIsNone(r["award_floor"])                 # "0" means not listed
         self.assertEqual(r["applicant_types"], ["Small businesses"])
-        self.assertEqual(r["top_agency"], "U.S. Department of Transportation")
+        self.assertEqual(r["agency_name"], "Federal Transit Administration")   # never the contact person
+        self.assertEqual(r["top_agency"], "Department of Transportation")
+        self.assertEqual(r["fields"]["agency_name"], "detail.agencyDetails.agencyName")
         self.assertEqual(r["fields"]["award_ceiling"], "synopsis.awardCeiling")
         self.assertEqual(r["description"], "Funds buses.")
+
+
+class Hardening(unittest.TestCase):
+    def test_clean_agency(self):
+        self.assertIsNone(grants.clean_agency("Lynn  Bailey\nGrantor"))
+        self.assertIsNone(grants.clean_agency("69A350 OSDBU"))
+        self.assertEqual(grants.clean_agency("National Institute of Food and Agriculture"),
+                         "National Institute of Food and Agriculture")
+
+    def test_contact_name_never_becomes_agency_claim(self):
+        rec = recs()["363996"]
+        rec["agency_name"] = "Lynn  Bailey\nGrantor"
+        c = {x["key"]: x for x in build_claims(rec, SNAP, TODAY)}
+        self.assertNotIn("Bailey", c["agency"]["statement"])
+
+    def test_purpose_skips_boilerplate(self):
+        from socialreel.claims import first_sentence
+        t = ("This is a notice of funding opportunity (NOFO) for the Youth Program. "
+             "The program funds schools and community groups to prevent youth drug use through evidence-based education.")
+        self.assertTrue(first_sentence(t, title="Youth Program").startswith("The program funds"))
+
+    def test_family_dedupe(self):
+        from socialreel.pipeline import family
+        self.assertEqual(family("Small Business Transportation Technical Assistance Center (Region 1)"),
+                         family("Region 4 Small Business Transportation Technical Assistance Center (SBTTAC)"))
+        self.assertNotEqual(family("Inspire Grants for Small Museums (2027)"), family("National Leadership Grants for Libraries"))
 
 
 class RenderSmoke(unittest.TestCase):

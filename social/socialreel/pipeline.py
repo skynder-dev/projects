@@ -4,6 +4,7 @@ from __future__ import annotations
 import datetime as dt
 import json
 import os
+import re
 import shutil
 from pathlib import Path
 
@@ -12,12 +13,20 @@ from .claims import audience_score, build_claims, validate_script
 from .common import (CONTRACT, PACKAGE_SCHEMA, PipelineError, ROOT, human_date, parse_date, read_json,
                      sha256_file, slug, utc_now, write_json, write_text)
 from .render import build_audio, render_video
-from .verify import verify_video
+from .verify import asr_check, verify_video
 from .voice import make_voice, speech_text, wav_duration
 from .writer import write_script
 
 
 # ------------------------------------------------------------------ topic selection
+
+def family(title: str) -> str:
+    """Same program in another region / fiscal year counts as the same topic."""
+    t = re.sub(r"\([A-Z0-9&/-]{2,12}\)", " ", title or "").lower()   # drop acronyms like (SBTTAC)
+    t = re.sub(r"\((?:region|area|zone)?\s*[\divx]+\)|\b(?:region|area|zone)\s*[\divx]+\b", " ", t)
+    t = re.sub(r"\bfy\s*\d{2,4}\b|\bfiscal year\b|\(\d{4}\)|\b(19|20)\d{2}\b", " ", t)
+    return " ".join(re.findall(r"[a-z]+", t))
+
 
 def score_record(rec: dict, today: dt.date, min_days: int) -> tuple[int, list[str]]:
     why = []
@@ -63,7 +72,7 @@ def discover_live(cfg: dict, src_dir: Path, today: dt.date, seen: set, forced: s
     # pre-filter on search-hit fields before spending detail calls
     pre = []
     for hid, h in hits.items():
-        if hid in seen and not forced:
+        if not forced and (hid in seen or family(h.get("title", "")) in seen):
             continue
         cd = parse_date(h.get("closeDate"))
         if not forced and (not cd or (cd - today).days < int(cfg["selection"]["min_days_left"])):
@@ -88,7 +97,7 @@ def discover_fixture(path: Path, today: dt.date, cfg: dict, seen: set, forced: s
         rec = grants.from_fixture(row)
         if forced and rec["opportunity_id"] != forced:
             continue
-        if rec["opportunity_id"] in seen and not forced:
+        if not forced and (rec["opportunity_id"] in seen or family(rec["title"]) in seen):
             continue
         s, why = score_record(rec, today, int(cfg["selection"]["min_days_left"]))
         meta = {"file": f"fixture:{path.name}", "sha256": fsha, "url": rec["source_url"],
@@ -105,7 +114,8 @@ def run(cfg: dict, out_root: Path, fixture: Path | None = None, opportunity: str
     now = utc_now()
     today = now.date()
     history = read_json(history_path) if history_path and history_path.exists() else {"runs": []}
-    seen = {r["opportunity_id"] for r in history.get("runs", [])}
+    seen = {r["opportunity_id"] for r in history.get("runs", [])} | \
+           {family(r["title"]) for r in history.get("runs", []) if r.get("title")}
     tmp = out_root / f"_incomplete_{now.strftime('%Y%m%dT%H%M%S')}"
     if tmp.exists():
         shutil.rmtree(tmp)
@@ -129,6 +139,8 @@ def run(cfg: dict, out_root: Path, fixture: Path | None = None, opportunity: str
     write_json(tmp / "topic.json", {"run_id": run_id, "selected": {k: v for k, v in rec.items()},
                                      "score": score, "found": n_hits, "considered": considered,
                                      "excluded_previously_used": sorted(seen), "selected_at": now.isoformat()})
+    # same-family siblings found in this run are not repeated later either
+
 
     # 2. claims
     claims = build_claims(rec, snap, today)
@@ -199,6 +211,13 @@ def run(cfg: dict, out_root: Path, fixture: Path | None = None, opportunity: str
     # 6. verification of the actual file
     mids = [(x["start_s"] + x["end_s"]) / 2 for x in timing]
     ver = verify_video(mp4, t, tmp / "review", mids)
+    asr = asr_check(narration, " ".join(speech))
+    if asr:
+        write_text(tmp / "review" / "narration_transcript.txt", asr.pop("transcript") + "\n")
+        ver["checks"].append(asr)
+        ver["pass"] = ver["pass"] and asr["pass"]
+    else:
+        log["notes"].append("ASR check skipped: faster-whisper not installed")
     if voice.test_only:
         ver["checks"].append({"check": "real_voice", "pass": False, "detail": "silent_test voice is test-only"})
         ver["pass"] = False
@@ -236,6 +255,7 @@ def run(cfg: dict, out_root: Path, fixture: Path | None = None, opportunity: str
     tmp.rename(dest)
     if history_path and result["accepted"]:
         history.setdefault("runs", []).append({"run_id": run_id, "opportunity_id": rec["opportunity_id"],
+                                               "title": rec["title"],
                                                "date": today.isoformat(), "package_id": package_id,
                                                "video_sha256": video_sha, "writer": result["writer"]})
         write_json(history_path, history)

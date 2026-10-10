@@ -73,3 +73,26 @@ def contact_sheet(frames: list[Path], out: Path, cols: int = 4, tw: int = 270, t
         sheet.paste(im, (12 + (i % cols) * (tw + 12), 12 + (i // cols) * (th + 12)))
     sheet.save(out, quality=88)
     return out
+
+
+def asr_check(narration: Path, expected: str, model_name: str = "base.en") -> dict | None:
+    """Transcribe the narration and confirm it actually says the script. None if ASR is not installed."""
+    try:
+        from faster_whisper import WhisperModel
+    except ImportError:
+        return None
+    model = WhisperModel(model_name, device="cpu", compute_type="int8")
+    segs, _ = model.transcribe(str(narration), language="en", beam_size=5)
+    text = " ".join(s.text for s in segs).strip()
+
+    def words(t):
+        return [w for w in re.findall(r"[a-z]+", t.lower()) if len(w) >= 4]
+
+    exp, got = words(expected), set(words(text))
+    recall = sum(1 for w in exp if w in got) / max(1, len(exp))
+    nums_exp = set(re.findall(r"\d[\d,]*", expected.replace(",", "")))
+    nums_got = set(re.findall(r"\d[\d,]*", text.replace(",", "")))
+    return {"check": "narration_asr_matches_script", "pass": recall >= 0.85,
+            "detail": f"content-word recall {recall:.2f} (model {model_name}); numbers heard "
+                      f"{sorted(nums_exp & nums_got)} of {sorted(nums_exp)}",
+            "transcript": text}
