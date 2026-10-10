@@ -20,6 +20,10 @@
 - EDU-01, MED-04, EDU-04 all KILLED (free/cheaper incumbents: TutorTab $0, free sponsor lists/DBs, SPED Goals app free/$2.99). Evidence class agent-reported. Still NO winner.
 - Engine fix to do ($0): gate edge against the CHEAPEST credible alternative (incl. free), not the incumbent the LLM names.
 
+## Spend policy (owner correction 2026-10-10)
+- Owner never approved a specific amount; ~$20 API balance was exhausted (incl. my failed first live run). `allow_spend` is now **false** in config.json: every paid call is blocked until the owner explicitly authorizes a stated amount.
+- Known flaw: Budget cap is per process (resets each run), knows nothing of the real account balance. To do: cumulative ledger across runs + ask owner for a dollar figure before ANY paid run.
+
 ## NOT done
 - Live smoke of the two-phase protocol not yet confirmed (need `excerpts_returned>0` and `verified>0`). Earlier smoke (old single-call design) returned 0 citations -> redesign.
 - Fresh 30+ candidate / 8+ family live scan not run => no valid global winner.

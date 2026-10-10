@@ -6,7 +6,7 @@
     "web_search_max_uses": 6
   },
   "budget": {
-    "allow_spend": true,
+    "allow_spend": false,
     "max_calls": 120,
     "max_usd": 15,
     "price_in_per_mtok": 2,
