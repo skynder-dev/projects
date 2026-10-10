@@ -1,8 +1,15 @@
 # NEXT ACTION
 
-Owner: nothing required. One optional yes/no is open: may the forge-app server be changed so research notes are linked to niches? (Without it, drafts carry 0 linked notes. Nothing breaks.)
+Owner: nothing required.
 
-Autonomous queue: see `ROADMAP.md` → "Ход работы" (10-hour plan, blocks 1–10).
+Optional decision (yes/no, nothing breaks without it): may the forge-app server be changed so research notes are linked to niches? Without it, research drafts carry 0 linked notes.
+
+Current release: 077 (`forge/releases/077_Merch_Forge_FOURTH_REVIEW_RC.zip`). Main is green on Windows; `forge-last-green` = main.
+
+Possible next work (not started, owner may reprioritise):
+- First real use by the owner: one real idea through artwork → checks → package → manual upload → receipt → sales CSV; fix whatever real data shows.
+- Real Amazon Merch sales export sample → confirm the column names (CSV import is tolerant, but unverified on a real file).
+- Remaining rare English technical notes in RU/ES.
 
 Owner-only gates (unchanged): paid generation, publishing/submission, backend writes, creative acceptance.
 
