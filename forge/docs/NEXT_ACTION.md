@@ -3,9 +3,10 @@
 Owner: nothing required.
 
 Autonomous queue (in order):
-1. **Provider pipeline self-test failure on Windows** — find why the owner-attested Amazon profile produces no policy-profile binding on PS 5.1 (probably date/culture or JSON shape). It affects the Checks → Publish path that comes after artwork.
-2. **Stage 4 Portfolio/Performance** — the first useful read/decision surface: owner decisions per niche (KEEP/EDIT/REGEN/SKIP, drafts vs server ideas) and receipt-verified sales. Add CI window checks + screenshots for it.
-3. Cosmetic: Discover header layout at ~1024 px and the duplicated title (only if cheap; functional work first).
+1. **Sweep for the dictionary pattern**: find every function that returns or stores `[ordered]@{}` and is later read via Get-PropertyValue. Fix and test.
+2. **Stage 4 Portfolio/Performance**: the first useful read/decision surface. It shows owner decisions per niche (KEEP/EDIT/REGEN/SKIP, drafts vs server ideas) and receipt-verified sales. Add CI window checks and screenshots for it.
+3. Confirm the live `discover_snapshot` field names (read-only) when a safe read path is available.
+4. Cosmetic: the Discover header layout at ~1024 px and the duplicated title.
 
 Owner-only gates (unchanged): paid generation, publishing/submission, backend write contract for promoting KEEP'd drafts to server ideas.
 

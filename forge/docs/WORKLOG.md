@@ -31,3 +31,7 @@
 - First Windows run: draft path 34/34 in the real window. It found 3 pre-existing defects (locale switch resetting live labels, "Working…" status stuck after Discover, PS 5.1 Measure-Object `Sum` in spool cleanup) and 1 CI-driver issue (a background worker holding inherited handles). All fixed in 056. It also exposed the pre-existing provider-pipeline self-test failure (not run by the launcher; tracked).
 - Added `forge/tools/build_release.py` (repeatable release build from `forge/app`).
 - 056 on Windows: preflight PASS, self-test 67/67, window 38/38, restart 12/12.
+
+## 057 — making the provider pipeline self-test pass on Windows (2026-10-09 night)
+- The owner decided to work directly on main, with no PRs. CI saves `forge-last-green` after each green run. Another session (reveng) also pushes to main, so always `pull --rebase` before pushing.
+- The provider self-test was peeled layer by layer, adding diagnostics wherever a failure was silent: `$host` read-only (profile + importer) → backtick-quoted worker args (self-test) → comma/minus precedence in PNG border sampling → empty ExitCode on PS 5.1 (check worker) → fresh check request returned as a dictionary → spool report returned as a dictionary. All fixed. Commit 3d42f5c: every CI step is green and the provider pipeline self-test passes on Windows for the first time.
