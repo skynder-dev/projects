@@ -94,7 +94,7 @@ def build_claims(rec: dict, snap: dict, today: dt.date) -> list[dict]:
             {"estimated_total_program_funding": tot}, "estimated_total_program_funding")
     n = rec.get("expected_number_of_awards")
     if n and n == int(n):
-        add("expected_awards", f"Grants.gov lists {int(n)} expected awards.",
+        add("expected_awards", f"Grants.gov lists {int(n)} expected award{'s' if int(n) != 1 else ''}.",
             {"expected_number_of_awards": int(n)}, "expected_number_of_awards")
     apps = rec.get("applicant_types") or []
     specific = [a for a in apps if not a.lower().startswith("others")]

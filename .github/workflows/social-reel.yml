@@ -57,7 +57,7 @@ jobs:
       - name: Make Reels
         id: make
         env:
-          COUNT: ${{ inputs.count || '2' }}
+          COUNT: ${{ inputs.count || '1' }}
           OPP: ${{ inputs.opportunity }}
         run: |
           set +e
@@ -90,7 +90,9 @@ jobs:
         run: |
           set -e
           out="$RUNNER_TEMP/runs"; pub="$RUNNER_TEMP/pub"; rm -rf "$pub"; mkdir -p "$pub"
-          if git fetch -q origin social-results 2>/dev/null; then git archive FETCH_HEAD | tar -x -C "$pub"; fi
+          # git archive must run from the repo root (from a subdirectory it archives only that subdirectory)
+          if git fetch -q origin social-results 2>/dev/null; then (cd "$GITHUB_WORKSPACE" && git archive FETCH_HEAD) | tar -x -C "$pub"; fi
+          test -f "$pub/history.json" || echo "results branch empty or new"
           cp "$RUNNER_TEMP/history.json" "$pub/history.json"
           for d in $(ls -trd "$out"/*/ 2>/dev/null); do
             name=$(basename "$d")
@@ -106,19 +108,7 @@ jobs:
               rm -rf "$pub/last_failed"; mkdir -p "$pub/last_failed"; cp -r "$d/." "$pub/last_failed/"
             fi
           done
-          python - "$pub" <<'PY'
-          import json, os, sys
-          pub = sys.argv[1]
-          rows = []
-          for name in sorted(os.listdir(os.path.join(pub, "runs")) if os.path.isdir(os.path.join(pub, "runs")) else [], reverse=True):
-              p = os.path.join(pub, "runs", name, "result.json")
-              if os.path.exists(p):
-                  r = json.load(open(p))
-                  rows.append(f"| [{name}](runs/{name}/REVIEW.md) | {r['verification'].get('duration_s')} s | {r['writer']} | `{r['video']['sha256'][:16]}` | [mp4](runs/{name}/reel.mp4) |")
-          open(os.path.join(pub, "README.md"), "w").write(
-              "# Social Reels — results\n\nAccepted Reels (newest first). Full packages: Actions artifacts of each run.\n\n"
-              "| Run | Length | Writer | Video SHA-256 | Video |\n|---|---|---|---|---|\n" + "\n".join(rows) + "\n")
-          PY
+          python -m socialreel index "$pub"
           cd "$pub"
           printf 'workflow_run=%s\nsource_sha=%s\n' "$RUN_ID" "$SRC_SHA" > RUN.txt
           git init -q; git checkout -q -b social-results

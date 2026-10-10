@@ -21,12 +21,17 @@ def main(argv=None):
     b = sub.add_parser("rebuild", help="re-render a finished run and compare hashes")
     b.add_argument("run_dir")
     sub.add_parser("selftest", help="run unit tests")
+    ix = sub.add_parser("index", help="write README.md index for a results folder")
+    ix.add_argument("results_dir")
     a = ap.parse_args(argv)
 
     if a.cmd == "selftest":
         suite = unittest.defaultTestLoader.discover(str(ROOT / "tests"), top_level_dir=str(ROOT))
         res = unittest.TextTestRunner(verbosity=2).run(suite)
         return 0 if res.wasSuccessful() else 1
+    if a.cmd == "index":
+        write_index(Path(a.results_dir))
+        return 0
     if a.cmd == "rebuild":
         from .pipeline import rebuild
         res = rebuild(Path(a.run_dir))
@@ -50,6 +55,21 @@ def main(argv=None):
                       "duration_s": res["verification"].get("duration_s"), "writer": res["writer"],
                       "failed_checks": [c["check"] for c in res["verification"]["checks"] if not c["pass"]]}, indent=2))
     return 0 if res["accepted"] else 1
+
+
+def write_index(pub: Path):
+    rows = []
+    runs = pub / "runs"
+    found = [(read_json(d / "result.json"), d) for d in (runs.iterdir() if runs.is_dir() else []) if (d / "result.json").exists()]
+    for r, d in sorted(found, key=lambda x: x[0].get("finished_at", ""), reverse=True):
+        if True:
+            rows.append(f"| [{d.name}](runs/{d.name}/REVIEW.md) | {r['verification'].get('duration_s')} s | {r['writer']} "
+                        f"| `{r['video']['sha256'][:16]}` | [mp4](runs/{d.name}/reel.mp4) |")
+    extra = "\nRetracted runs: see [RETRACTED.md](RETRACTED.md).\n" if (pub / "RETRACTED.md").exists() else ""
+    (pub / "README.md").write_text(
+        "# Social Reels — results\n\nAccepted Reels (newest first). `latest/` = full package of the newest one; "
+        "full packages of every run are in that run's Actions artifact.\n" + extra + "\n"
+        "| Run | Length | Writer | Video SHA-256 | Video |\n|---|---|---|---|---|\n" + "\n".join(rows) + "\n")
 
 
 if __name__ == "__main__":

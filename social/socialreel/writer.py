@@ -15,7 +15,9 @@ from .claims import validate_script
 from .common import PipelineError, human_date, money, parse_date
 
 SHORT_APPLICANT = [
+    (r"^unrestricted", "Unrestricted (any applicant type)"),
     (r"^small businesses?", "Small businesses"),
+    (r"^individuals", "Individuals"),
     (r"^nonprofits having a 501\(c\)\(3\)", "Nonprofits (501(c)(3))"),
     (r"^nonprofits that do not have a 501\(c\)\(3\)", "Other nonprofits"),
     (r"^private institutions of higher education", "Private colleges & universities"),
@@ -29,8 +31,6 @@ SHORT_APPLICANT = [
     (r"^native american tribal organizations", "Tribal organizations"),
     (r"^public housing authorities", "Public housing authorities"),
     (r"^for profit organizations other than small businesses", "For-profit companies"),
-    (r"^individuals", "Individuals"),
-    (r"^unrestricted", "Unrestricted (any applicant type)"),
 ]
 
 
@@ -92,9 +92,9 @@ def template_script(rec: dict, claims: list[dict]) -> dict:
         keys = ["total_funding", money_key]
         sub = f"Awards: {money(lo)} – {money(hi)}" if lo else f"Up to {money(hi)} per award"
         if n:
-            vo += f" Grants.gov expects {n} awards."
+            vo += f" Grants.gov expects {n} award{'s' if n != 1 else ''}."
             keys.append("expected_awards")
-            sub += f" · {n} expected awards"
+            sub += f" · {n} expected award{'s' if n != 1 else ''}"
         segs.append(dict(role="money", visual="stat", voiceover=vo,
                          on_screen={"kicker": "THE MONEY", "big": money(tot), "headline": "estimated total funding",
                                     "sub": sub}, claim_keys=keys))
@@ -106,8 +106,9 @@ def template_script(rec: dict, claims: list[dict]) -> dict:
 
     # 4 who
     if "eligibility" in by:
-        types = [short_applicant(a) for a in v("eligibility", "applicant_types")]
-        types = list(dict.fromkeys(types))
+        types = list(dict.fromkeys(short_applicant(a) for a in v("eligibility", "applicant_types")))
+        prio = [x[1] for x in SHORT_APPLICANT]          # broad, familiar audiences first
+        types.sort(key=lambda t: prio.index(t) if t in prio else len(prio))
         spoken = [t if i == 0 or t[:2].isupper() else t[0].lower() + t[1:] for i, t in enumerate(types[:4])]
         if len(types) > 4:
             vo = "Who can apply? " + ", ".join(spoken) + ", and other listed types."
