@@ -4,7 +4,7 @@
   "files": [
     {
       "path": "candidate_manifest.json",
-      "sha256": "fb0a17d0eb28a60b0ab8e4b0cd8fd686641e2011ce3d89a43006641571ce8dd9",
+      "sha256": "8c43cf2799ef1b30e8ca977f2c017bee0b21ec13c31a440154b5d2734048fdfe",
       "size_bytes": 77004
     },
     {
@@ -169,8 +169,8 @@
     },
     {
       "path": "Modules\\Forge.GenerationMaintenance.ps1",
-      "sha256": "90fcf8d3bc2679430790c4a1fad01b989dc38d0743e77cf96559ac747e09e228",
-      "size_bytes": 4456
+      "sha256": "6391a41dd9585d3d04f9585689550d26affcefd1c2332297dd3eee8c72f4b4fe",
+      "size_bytes": 4472
     },
     {
       "path": "Modules\\Forge.GenerationProvider.ps1",
