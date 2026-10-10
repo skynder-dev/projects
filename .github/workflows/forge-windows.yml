@@ -1,0 +1,34 @@
+name: forge-windows
+# Runs Merch Forge on a real Windows machine: startup preflight, PowerShell 5.1 self-test,
+# and a WPF window smoke with screenshots. No secrets, no network calls from the app, no cost.
+on:
+  push:
+    paths:
+      - 'forge/**'
+      - '.github/workflows/forge-windows.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: forge-windows-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Forge Windows CI
+        shell: powershell
+        run: powershell -NoLogo -NoProfile -ExecutionPolicy Bypass -File forge/ci/Invoke-ForgeWindowsCi.ps1 -OutDir "$env:RUNNER_TEMP\forge-ci"
+      - name: Upload screenshots and reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: forge-windows-ci
+          path: |
+            ${{ runner.temp }}/forge-ci/*.png
+            ${{ runner.temp }}/forge-ci/*.json
+            ${{ runner.temp }}/forge-ci/child.*.txt
+            ${{ runner.temp }}/forge-ci/localappdata/MerchForge/logs/**
+          if-no-files-found: warn
