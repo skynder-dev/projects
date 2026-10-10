@@ -18,7 +18,7 @@ Every push to `forge/**` runs the **forge-windows** workflow on a real Windows m
 
 Results (JSON, screenshots, logs) → branch **`forge-ci-results`** (`latest/`) and run annotations. CI data are labelled fixtures; nothing is uploaded or published; "owner attestations" in CI are fixtures, not real reviews.
 
-## What the app does now (055–073)
+## What the app does now (055–074)
 - Discover → **Create concept draft** (local, bound to its research). Ideas: KEEP / EDIT / REGEN / SKIP, local revisions, brief export. Live server actions blocked for drafts.
 - Artwork import → exact Accept → **Amazon print profile form** (PNG template fills size + fingerprint; status and days left; warning 7 days before expiry) → **Confirm checks form** (plain checklist for IP, Amazon policy, listing text; PASS needs a reference and the owner's tick; same importer/validation as JSON) → listing → READY package → receipt → sales.
 - **Portfolio pipeline**: counters, next actions; a click opens the tab where work continues.
