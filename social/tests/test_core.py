@@ -47,6 +47,7 @@ class Basics(unittest.TestCase):
         self.assertIn("650,000 dollars", s)
         self.assertIn("November 17th", s)
         self.assertIn("Grants dot gov", s)
+        self.assertEqual(speech_text("for one (1) award"), "for one award")
 
 
 class ClaimsAndScripts(unittest.TestCase):

@@ -8,4 +8,4 @@ _Updated: 2026-10-10_
 - Voice: Piper `en_US-ryan-high` (free, local) with espeak-ng fallback.
 - Renderer: built-in (Pillow + ffmpeg). MediaEngine handoff folder is written with every package; MediaEngine itself is not in this repo.
 
-Counters: see `WORKLOG.md` and the `social-results` branch.
+Counters (2026-10-10): real Reel packages 2 accepted (2 retracted); finished playable Reels 2; rebuild byte-identical. Details: `OWNER_REVIEW.md`.

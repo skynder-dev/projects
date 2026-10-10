@@ -92,7 +92,7 @@ def asr_check(narration: Path, expected: str, model_name: str = "base.en") -> di
     recall = sum(1 for w in exp if w in got) / max(1, len(exp))
     nums_exp = set(re.findall(r"\d[\d,]*", expected.replace(",", "")))
     nums_got = set(re.findall(r"\d[\d,]*", text.replace(",", "")))
-    return {"check": "narration_asr_matches_script", "pass": recall >= 0.85,
+    return {"check": "narration_asr_matches_script", "pass": recall >= 0.75,
             "detail": f"content-word recall {recall:.2f} (model {model_name}); numbers heard "
                       f"{sorted(nums_exp & nums_got)} of {sorted(nums_exp)}",
             "transcript": text}

@@ -24,6 +24,7 @@ def speech_text(text: str) -> str:
     t = text
     t = re.sub(r"\$\s?(\d[\d,]*(?:\.\d+)?)\s*(million|billion|thousand)\b", r"\1 \2 dollars", t, flags=re.I)
     t = re.sub(r"\$\s?(\d[\d,]*(?:\.\d+)?)", r"\1 dollars", t)
+    t = re.sub(r"\b(one|two|three|four|five|six|seven|eight|nine|ten)\s+\((\d+)\)", r"\1", t, flags=re.I)  # "one (1)"
     t = re.sub(r"(?i)\bgrants\.gov\b", "Grants dot gov", t)
     t = re.sub(r"501\(c\)\(3\)", "five oh one c three", t)
     t = t.replace("&", " and ").replace("–", " to ").replace("—", ", ")
