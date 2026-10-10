@@ -328,3 +328,19 @@ function Invoke-DiscoverCreateDraft {
         $StatusText.Text=if($r.created){(Get-UiText 'draft.created' 'Draft created: {0}') -f [string](Get-PropertyValue $r.draft 'niche_name')}else{(Get-UiText 'draft.exists' 'A draft from this exact research already exists: {0}') -f [string](Get-PropertyValue $r.draft 'niche_name')}
     } catch { Write-AppLog 'ERROR' ('Research draft creation failed: '+$_.Exception.Message); Show-Error ('Draft was not created: '+$_.Exception.Message) }
 }
+
+function Restore-DynamicSurfacesAfterLocale {
+    # Apply-StaticLocaleUi rewrites every TextBlock with the text captured at startup ("—", "Select a niche"...).
+    # Re-render the live surfaces from current data so a language switch never shows stale placeholders.
+    if($null -ne $script:DiscoverSnapshot -and $null -ne $DiscoverNicheList){
+        $selId=''; try{$cur=$DiscoverNicheList.SelectedItem;if($null -ne $cur){$i=Get-DiscoverNicheIdentity $cur;if($null -ne $i){$selId=[string]$i.value}}}catch{}
+        Render-DiscoverSnapshot $script:DiscoverSnapshot $selId
+        if($null -ne $DiscoverStatusText -and $null -ne $script:DiscoverLoadedAt){$DiscoverStatusText.Text=('{0} · {1:HH:mm} UTC' -f (Get-UiText 'discover.ready' 'Live research loaded'),[datetime]$script:DiscoverLoadedAt)}
+        Update-DiscoverDraftControls
+    }
+    if((Test-CurrentIsResearchDraft) -and -not $script:Dirty){
+        $key=[string](Get-PropertyValue $script:Current.concept 'concept_key'); $section=$script:ProductSection
+        Open-ResearchDraftItem ([pscustomobject]@{concept_key=$key}) $true
+        if($section -ne $script:ProductSection -and $section -in @('discover','home','portfolio','performance')){Show-ProductSection $section}
+    }
+}

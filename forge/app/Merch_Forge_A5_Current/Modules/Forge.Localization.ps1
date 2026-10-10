@@ -224,6 +224,7 @@ function Apply-LocaleUi {
     try { if($null -ne $script:Publication -and [bool](Get-PropertyValue $script:Publication 'local_core')){Load-LocalPublicationUi} } catch {}
     try { Update-LocalCoreBusinessSurfaces } catch {}
     try { Update-OwnerDecisionControls } catch {}
+    try { Restore-DynamicSurfacesAfterLocale } catch { Write-AppLog 'WARN' ('Dynamic surface restore after locale change failed: '+$_.Exception.Message) }
     try { if(@($script:Queue).Count -gt 0){[void](Add-QueueDisplayProperties $script:Queue);Apply-Filter}else{Set-QueueEmptyState 0} } catch {}
     Update-ResponsiveLayout
 }

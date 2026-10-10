@@ -1,6 +1,6 @@
 ﻿# Merch Forge Workbench
 # Native WPF desktop UI. Internal alpha build; not owner-accepted visual design.
-# Version: 2.9.0-research-draft
+# Version: 2.9.1-windows-fixes
 
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
@@ -12,7 +12,7 @@ Add-Type -AssemblyName System.Security
 
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
 
-$script:AppVersion = '2.9.0-forge-research-draft'
+$script:AppVersion = '2.9.1-forge-windows-fixes'
 $script:MinimumBackendVersion = [version]'0.2.70'
 $script:ApiUrl = 'https://ldlhnedbqeqcbqelhuhm.supabase.co/functions/v1/forge-app'
 $script:OwnerKey = $null

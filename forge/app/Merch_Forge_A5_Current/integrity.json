@@ -4,8 +4,8 @@
   "files": [
     {
       "path": "candidate_manifest.json",
-      "sha256": "268cf72568342d80e07a44986a5c8d5dbc0ca742abe4f54a0c8fbab947a14bd8",
-      "size_bytes": 77040
+      "sha256": "a6aa4790e6da4b640d293e4433dbe306040d0aef99ffd4f2d24e71c9005df3da",
+      "size_bytes": 76987
     },
     {
       "path": "Configure Image Provider.ps1",
@@ -129,8 +129,8 @@
     },
     {
       "path": "MerchForgeWorkbench.ps1",
-      "sha256": "56e40929408955be27f39efdf44575e707d88992fd38445604bf64dcf58f2fbe",
-      "size_bytes": 248741
+      "sha256": "61a88b479d3cddc3f261674724502d89f834169eb2060feb214778bed04e1c06",
+      "size_bytes": 248739
     },
     {
       "path": "Modules\\Forge.BackendStatus.ps1",
@@ -169,8 +169,8 @@
     },
     {
       "path": "Modules\\Forge.GenerationMaintenance.ps1",
-      "sha256": "518013132654681ec5a8cc15ca30c454096aad1775b91e7acf5518b9e574333c",
-      "size_bytes": 4446
+      "sha256": "90fcf8d3bc2679430790c4a1fad01b989dc38d0743e77cf96559ac747e09e228",
+      "size_bytes": 4456
     },
     {
       "path": "Modules\\Forge.GenerationProvider.ps1",
@@ -194,8 +194,8 @@
     },
     {
       "path": "Modules\\Forge.Localization.ps1",
-      "sha256": "01175b77e7f6ed8a93b0511e53e3c141baae5a9bf7f71cb8b44643c0fb41bbd7",
-      "size_bytes": 19287
+      "sha256": "5c29798b89cacef69a5ec65edd06a4f4705347b242af783f75f715ea982a8afd",
+      "size_bytes": 19442
     },
     {
       "path": "Modules\\Forge.Media.ps1",
@@ -209,13 +209,13 @@
     },
     {
       "path": "Modules\\Forge.ProductNavigation.ps1",
-      "sha256": "1b86e2193ee71ea2f082943f3e62fa7bee710169d816c538ee85c294fdff43ee",
-      "size_bytes": 12906
+      "sha256": "64fb8eb1ca1391b248c7c180c28366f6d150893d84cb7307e4a372c21ef1e92b",
+      "size_bytes": 13330
     },
     {
       "path": "Modules\\Forge.ResearchDrafts.ps1",
-      "sha256": "a741cc9d4c059a470fc582be076dafd6e3dbb364a90dda93df82e04199d044c4",
-      "size_bytes": 31072
+      "sha256": "ef8f67582233d4a978115bb7374963263bc2fd93e6ab0215c6ca6dfce23e1f10",
+      "size_bytes": 32314
     },
     {
       "path": "Modules\\Forge.UI.Layout.ps1",

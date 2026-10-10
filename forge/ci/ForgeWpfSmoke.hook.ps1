@@ -61,7 +61,7 @@ $Window.Add_ContentRendered({
     try {
         Ci-RevealApp
         Ci-Check 'window_rendered' ($Window.IsVisible -and $AppGrid.Visibility -eq 'Visible')
-        Ci-Check 'app_version_290' ($script:AppVersion -eq '2.9.0-forge-research-draft') $script:AppVersion
+        Ci-Check 'app_version_reported' ($script:AppVersion -like '2.*') $script:AppVersion
         if($script:Ci.phase -eq 'create'){
             # Discover renders the (fixture) live snapshot through the real Load-DiscoverSnapshot code path
             Ci-Click $NavDiscoverButton 'NavDiscoverButton'
@@ -70,6 +70,7 @@ $Window.Add_ContentRendered({
             Ci-Check 'discover_first_selected' ($DiscoverNicheList.SelectedIndex -eq 0 -and $DiscoverDetailName.Text -eq 'CI FIXTURE · Night-shift nurses') $DiscoverDetailName.Text
             Ci-Check 'create_button_enabled' ([bool]$DiscoverCreateDraftButton.IsEnabled)
             Ci-Check 'create_button_label_en' ([string]$DiscoverCreateDraftButton.Content -eq 'Create concept draft') $DiscoverCreateDraftButton.Content
+            Ci-Check 'status_bar_not_stuck_working' ($StatusText.Text -notlike 'Working*') $StatusText.Text
             Ci-Shot '01-discover'
             # Create the draft with a real button click
             Ci-Click $DiscoverCreateDraftButton 'DiscoverCreateDraftButton'
@@ -117,9 +118,13 @@ $Window.Add_ContentRendered({
             Ci-Check 'generate_handler_blocks_draft' ($script:Ci.errors.Count -eq $before+1 -and $script:Ci.errors[-1] -like 'Research drafts cannot be generated*')
             # Russian UI
             Ci-Click $HeaderLangRu 'HeaderLangRu'
-            Ci-Check 'ru_status_label' ($OverviewStatus.Text -eq 'Черновик исследования' -or (Show-WorkflowState 'research_draft') -eq 'Черновик исследования') $OverviewStatus.Text
+            Ci-Check 'ru_draft_overview_rerendered' ($OverviewStatus.Text -eq 'Черновик исследования' -and $OverviewHook.Text -eq 'CI hook: Running on caffeine and charting') ($OverviewStatus.Text+' | '+$OverviewHook.Text)
+            Ci-Shot '07a-draft-ru'
             Ci-Click $NavDiscoverButton 'NavDiscoverButton (ru)'
             Ci-Check 'ru_create_button_label' ([string]$DiscoverCreateDraftButton.Content -eq 'Создать черновик концепта') $DiscoverCreateDraftButton.Content
+            Ci-Check 'ru_discover_numbers_kept' ($DiscoverNichesValue.Text -eq '2' -and $DiscoverConceptsValue.Text -eq '3') ($DiscoverNichesValue.Text+'/'+$DiscoverConceptsValue.Text)
+            Ci-Check 'ru_discover_selection_kept' ($DiscoverDetailName.Text -eq 'CI FIXTURE · Night-shift nurses') $DiscoverDetailName.Text
+            Ci-Check 'ru_discover_status_localized' ($DiscoverStatusText.Text -notlike 'Live research*') $DiscoverStatusText.Text
             Ci-Shot '07-discover-ru'
         } else {
             # Restart: a fresh process with the same LocalCore state

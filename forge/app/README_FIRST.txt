@@ -1,23 +1,20 @@
-MERCH FORGE 055 - RESEARCH -> CONCEPT DRAFT RC
+MERCH FORGE 056 Merch Forge WINDOWS FIXES RC
 
 START
 1. Extract the whole folder.
-2. Run START_055_MERCH_FORGE.vbs.
-3. Open Discover, select a niche, click "Create concept draft".
+2. Run START_056_MERCH_FORGE.vbs.
 
-WHAT IS NEW
-- Discover can now create a LOCAL concept draft from the selected niche.
-- The draft is bound to its research provenance: niche id, exact niche row SHA-256,
-  snapshot time, contract forge.discover_snapshot.v1, explicitly linked research notes.
-- The draft appears in Ideas (status "Research draft") and uses the normal
-  KEEP / EDIT / REGEN / SKIP owner review.
-- Hook and visual direction are left empty on purpose (creative choice, never invented).
-  Fill them in the Edit tab; saving creates a new local revision and clears any older decision.
-- Artwork: Export brief (no dispatch), then import the finished image.
-- Generate, live Accept, delivery packages and server actions are blocked for drafts.
+WHAT IS NEW (056 = 055 + fixes found by the first run on real Windows)
+- Language switch no longer resets live screens: Discover keeps its numbers and the selected niche,
+  an open research draft re-renders in the new language.
+- Status bar no longer says "Working..." after Discover has finished loading.
+- Windows PowerShell 5.1: generation spool cleanup no longer fails on an empty folder ("property 'Sum'").
+- Everything from 055: Discover > select niche > "Create concept draft" makes a LOCAL draft bound to its research,
+  shown in Ideas, with KEEP / EDIT / REGEN / SKIP, local revisions and a no-dispatch brief.
 
-SAFETY / STATUS
-- No backend change. Drafts are local only (LocalCore state on this Windows account).
-- No paid provider call, no publishing, no Supabase mutation.
-- Headless self-test: Merch_Forge_A5_Current\MerchForgeResearchDraftSelfTest.ps1 (no network).
-- Native Windows WPF execution of 055 is NOT claimed yet.
+PROOF
+- Every change is tested automatically on a real Windows machine by the GitHub workflow "forge-windows":
+  startup preflight, PowerShell 5.1 self-test, and the real app window driven by clicks, with screenshots.
+
+SAFETY
+- No backend change, no paid provider call, no publishing, no Supabase mutation.
