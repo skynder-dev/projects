@@ -112,21 +112,21 @@ function Start-LocalCheckWorker($Queued) {
 }
 function Get-ValidatedLocalCheckWorkerResult($Queued,[string]$ResultPath,$Identity,$Acceptance) {
     if($null-eq$Queued -or -not(Test-Path -LiteralPath $ResultPath -PathType Leaf)){return $null}
-    try{$r=Get-Content -LiteralPath $ResultPath -Raw -Encoding UTF8|ConvertFrom-Json}catch{return $null}
-    if([string](Get-PropertyValue $r 'schema')-ne'forge.check_worker_result.v1'){return $null}
+    try{$r=Get-Content -LiteralPath $ResultPath -Raw -Encoding UTF8|ConvertFrom-Json}catch{Write-AppLog 'WARN' ('Local check worker result unreadable: '+$_.Exception.Message);return $null}
+    if([string](Get-PropertyValue $r 'schema')-ne'forge.check_worker_result.v1'){Write-AppLog 'WARN' ('Local check worker result rejected: schema mismatch');return $null}
     $worker=Join-Path (Split-Path -Parent $script:ModuleRoot) 'MerchForgeCheckWorker.ps1'
-    if(-not(Test-Path -LiteralPath $worker -PathType Leaf)){return $null}
-    if([string](Get-PropertyValue $r 'worker_sha256') -ne (Get-FileSha256Hex $worker)){return $null}
-    if([string](Get-PropertyValue $r 'request_sha256') -ne [string](Get-PropertyValue $Queued 'sha256')){return $null}
+    if(-not(Test-Path -LiteralPath $worker -PathType Leaf)){Write-AppLog 'WARN' ('Local check worker result rejected: worker file missing');return $null}
+    if([string](Get-PropertyValue $r 'worker_sha256') -ne (Get-FileSha256Hex $worker)){Write-AppLog 'WARN' ('Local check worker result rejected: worker_sha256 mismatch');return $null}
+    if([string](Get-PropertyValue $r 'request_sha256') -ne [string](Get-PropertyValue $Queued 'sha256')){Write-AppLog 'WARN' ('Local check worker result rejected: request_sha256 mismatch');return $null}
     $queuedRequest=Get-PropertyValue $Queued 'request'
-    if([string](Get-PropertyValue $r 'request_id') -ne [string](Get-PropertyValue $queuedRequest 'request_id')){return $null}
-    if([string](Get-PropertyValue $r 'concept_key') -ne [string](Get-PropertyValue $queuedRequest 'concept_key')){return $null}
-    if([string](Get-PropertyValue $r 'listing_hash') -ne [string](Get-PropertyValue $queuedRequest 'listing_hash')){return $null}
-    if([bool](Get-PropertyValue $r 'external_submission_authorized')){return $null}
-    if([string](Get-PropertyValue $r 'concept_revision_id') -ne [string](Get-PropertyValue $Identity 'id')){return $null}
-    if([string](Get-PropertyValue $r 'revision_hash') -ne [string](Get-PropertyValue $Identity 'hash')){return $null}
-    if([string](Get-PropertyValue $r 'acceptance_fingerprint') -ne [string](Get-PropertyValue $Acceptance 'lineage_fingerprint')){return $null}
-    if([string](Get-PropertyValue $r 'artwork_sha256') -ne [string](Get-PropertyValue $Acceptance 'asset_sha256')){return $null}
+    if([string](Get-PropertyValue $r 'request_id') -ne [string](Get-PropertyValue $queuedRequest 'request_id')){Write-AppLog 'WARN' ('Local check worker result rejected: request_id mismatch');return $null}
+    if([string](Get-PropertyValue $r 'concept_key') -ne [string](Get-PropertyValue $queuedRequest 'concept_key')){Write-AppLog 'WARN' ('Local check worker result rejected: concept_key mismatch');return $null}
+    if([string](Get-PropertyValue $r 'listing_hash') -ne [string](Get-PropertyValue $queuedRequest 'listing_hash')){Write-AppLog 'WARN' ('Local check worker result rejected: listing_hash mismatch');return $null}
+    if([bool](Get-PropertyValue $r 'external_submission_authorized')){Write-AppLog 'WARN' ('Local check worker result rejected: external submission flag set');return $null}
+    if([string](Get-PropertyValue $r 'concept_revision_id') -ne [string](Get-PropertyValue $Identity 'id')){Write-AppLog 'WARN' ('Local check worker result rejected: concept_revision_id mismatch');return $null}
+    if([string](Get-PropertyValue $r 'revision_hash') -ne [string](Get-PropertyValue $Identity 'hash')){Write-AppLog 'WARN' ('Local check worker result rejected: revision_hash mismatch');return $null}
+    if([string](Get-PropertyValue $r 'acceptance_fingerprint') -ne [string](Get-PropertyValue $Acceptance 'lineage_fingerprint')){Write-AppLog 'WARN' ('Local check worker result rejected: acceptance_fingerprint mismatch');return $null}
+    if([string](Get-PropertyValue $r 'artwork_sha256') -ne [string](Get-PropertyValue $Acceptance 'asset_sha256')){Write-AppLog 'WARN' ('Local check worker result rejected: artwork_sha256 mismatch');return $null}
     return $r
 }
 function Sync-LocalCheckWorkerResult($Lc,$Identity,$Acceptance) {
