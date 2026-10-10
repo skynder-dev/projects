@@ -1,8 +1,8 @@
 {
   "schema": "forge.release_checkpoint.v1",
   "package": "072_Merch_Forge_SECOND_REVIEW_RC",
-  "previous_package": "071_Merch_Forge_DATA_COPY_RC",
-  "app_version": "2.20.1-forge-second-review",
+  "previous_package": "072_Merch_Forge_SECOND_REVIEW_RC",
+  "app_version": "2.20.2-forge-second-review",
   "installer_generation": "00000000000000100255",
   "static": "14/14",
   "checks": {

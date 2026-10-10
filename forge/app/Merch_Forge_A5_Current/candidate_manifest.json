@@ -13,7 +13,7 @@
     "status": "ACTIVE"
   },
   "desktop": {
-    "app_version": "2.20.1-second-review",
+    "app_version": "2.20.2-second-review",
     "native_windows_runtime_verified": false,
     "orange_semantic_palette": true,
     "overview_first": true,
@@ -28,10 +28,10 @@
       "ru",
       "es"
     ],
-    "workbench_sha256": "622bb5cce86e017a1b1e3c268b556bbad30cff3feb7eb6b7c93ab81e35b9d61f",
+    "workbench_sha256": "13c6ecda120d1c6733ae90bb8d9930042c730593e4aac320442960e4bb3000b8",
     "workbench_size_bytes": 257486,
     "native_windows_parser_verified": false,
-    "native_windows_parser_target_sha256": "622bb5cce86e017a1b1e3c268b556bbad30cff3feb7eb6b7c93ab81e35b9d61f",
+    "native_windows_parser_target_sha256": "13c6ecda120d1c6733ae90bb8d9930042c730593e4aac320442960e4bb3000b8",
     "native_windows_parser_result_sha256": null,
     "product_home_dashboard": true,
     "brand_home_navigation": "dedicated_home_dashboard",

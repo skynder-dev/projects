@@ -316,15 +316,15 @@ if($Phase -eq 'restart'){
             $bk=Join-Path ([IO.Path]::GetTempPath()) ('forge-bk-'+[Guid]::NewGuid().ToString('N')+'.zip')
             $draftsBefore=@(Get-ResearchDraftList (Read-LocalCoreState)).Count
             $null=New-Item -ItemType Directory -Path $script:StateRoot -Force; [IO.File]::WriteAllText((Join-Path $script:StateRoot 'owner.key'),'not-a-real-key')
+            $probePath=Join-Path $script:LocalCoreRoot 'exports\probe-in-copy.txt'; New-Item -ItemType Directory -Path (Split-Path -Parent $probePath) -Force | Out-Null; [IO.File]::WriteAllText($probePath,'probe')
             $b=New-ForgeDataBackup $script:StateRoot $bk
             Add-Type -AssemblyName System.IO.Compression.FileSystem; $z=[System.IO.Compression.ZipFile]::OpenRead($bk); $names=@($z.Entries | ForEach-Object { $_.FullName }); $z.Dispose()
             Check 'backup_contains_state_not_keys' ($b.file_count -gt 0 -and $names -contains 'data/local-core-v1/state.json' -and @($names | Where-Object { $_ -like '*owner.key*' -or $_ -like '*provider-secrets*' -or $_ -like '*/logs/*' }).Count -eq 0) ([string]$b.file_count+' files')
             $s0=Read-LocalCoreState; Set-ResearchDraftList $s0 @(); Write-LocalCoreState $s0
-            $probe=@(Get-ChildItem -LiteralPath $script:LocalCoreRoot -Recurse -File | Where-Object { $_.Name -notlike 'state*' -and $_.Name -notlike '*.lock' } | Select-Object -First 1)
-            $probePath=if($probe.Count){$probe[0].FullName}else{''}; if($probePath){ Remove-Item -LiteralPath $probePath -Force }
+            Remove-Item -LiteralPath $probePath -Force
             $extra=Join-Path $script:LocalCoreRoot 'exports\added-after-copy.txt'; New-Item -ItemType Directory -Path (Split-Path -Parent $extra) -Force | Out-Null; [IO.File]::WriteAllText($extra,'x')
             $res=Restore-ForgeDataBackupFromPath $bk
-            Check 'backup_restore_brings_files_back_and_matches_copy' ($probePath -ne '' -and (Test-Path -LiteralPath $probePath) -and -not (Test-Path -LiteralPath $extra)) ('probe '+$probePath)
+            Check 'backup_restore_brings_files_back_and_matches_copy' ((Test-Path -LiteralPath $probePath) -and [IO.File]::ReadAllText($probePath) -eq 'probe' -and -not (Test-Path -LiteralPath $extra)) ('probe '+$probePath)
             $draftsAfter=@(Get-ResearchDraftList (Read-LocalCoreState)).Count
             Check 'backup_restore_brings_data_back' ($res.ok -and $draftsBefore -gt 0 -and $draftsAfter -eq $draftsBefore -and (Test-Path -LiteralPath $res.previous)) ('before '+$draftsBefore+', after '+$draftsAfter+', prev '+$res.previous)
             $bad=$bk+'.bad.zip'; $z=[System.IO.Compression.ZipFile]::Open($bk,[System.IO.Compression.ZipArchiveMode]::Update); try{ $en=$z.GetEntry('data/local-core-v1/state.json'); $sw=New-Object IO.StreamWriter($en.Open()); try{ $sw.BaseStream.SetLength(0); $sw.Write('{"tampered":true}') } finally { $sw.Dispose() } } finally { $z.Dispose() }

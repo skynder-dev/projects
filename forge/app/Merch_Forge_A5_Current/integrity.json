@@ -4,7 +4,7 @@
   "files": [
     {
       "path": "candidate_manifest.json",
-      "sha256": "988eb11d1a9291f520ee410898bc23162de54ad5bcc755b0b6dd4c6481ef7f0a",
+      "sha256": "3f79bb9153f4a6f21b5d0ef94992f7feac0a09bbde23a1fa0c3596fd4d3d7aae",
       "size_bytes": 77733
     },
     {
@@ -129,12 +129,12 @@
     },
     {
       "path": "MerchForgeResearchDraftSelfTest.ps1",
-      "sha256": "f5fc4e2d0590ad70deee2a4e72c63c564c0113f1766860399af9e530b94af512",
-      "size_bytes": 46136
+      "sha256": "fe3476d5022da7209915102e83f3e6cf97ee84d5e271ead7b8b5bf7a70207042",
+      "size_bytes": 46117
     },
     {
       "path": "MerchForgeWorkbench.ps1",
-      "sha256": "622bb5cce86e017a1b1e3c268b556bbad30cff3feb7eb6b7c93ab81e35b9d61f",
+      "sha256": "13c6ecda120d1c6733ae90bb8d9930042c730593e4aac320442960e4bb3000b8",
       "size_bytes": 257486
     },
     {
