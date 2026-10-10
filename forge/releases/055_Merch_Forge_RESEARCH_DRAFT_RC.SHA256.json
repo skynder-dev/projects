@@ -1,0 +1,13 @@
+{
+  "zip": "055_Merch_Forge_RESEARCH_DRAFT_RC.zip",
+  "sha256": "82783210db73ddfcdc579dd4bcbd148f92931c4a9bf03e30a71bb23fb57e97d8",
+  "size_bytes": 289737,
+  "deterministic_rebuild_exact": true,
+  "top_level_folders": [
+    "055_Merch_Forge_RESEARCH_DRAFT_RC"
+  ],
+  "static": "49/49 PASS",
+  "selftest": "67/67 PASS",
+  "integrity": "52/52",
+  "failed_static": []
+}

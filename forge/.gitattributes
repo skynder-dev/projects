@@ -1,0 +1,2 @@
+# Forge ships hash-verified Windows files (integrity.json). Never let git rewrite line endings.
+* -text

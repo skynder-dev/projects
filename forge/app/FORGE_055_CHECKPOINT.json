@@ -1,0 +1,35 @@
+{
+  "schema": "forge.compact_checkpoint.v1",
+  "project_route": "FORGE",
+  "release_family": "055",
+  "title": "055 research -> local concept draft",
+  "artifact": "055_Merch_Forge_RESEARCH_DRAFT_RC.zip",
+  "source_release": "054_Merch_Forge_DISCOVER_RESEARCH_RC.zip",
+  "source_sha256": "c6ea5f5071310848010a3a3f4e23fb75f4128e985a211ced86a61d61358b8383",
+  "completed": [
+    "Restored and audited exact 054 (outer SHA verified, inner integrity 50/50, all PowerShell parses).",
+    "Verified 052 Set-Busy owner-control refresh and 053 RU/ES owner labels are intact.",
+    "Added Discover \"Create concept draft\" producing a provenance-bound local draft (forge.research_concept_draft.v1).",
+    "Draft enters normal Ideas list, owner review KEEP/EDIT/REGEN/SKIP and no-dispatch Export brief.",
+    "Local draft revisions with SHA-256 binding; new revision resets stale owner decision.",
+    "Generate and all live server actions blocked for drafts; no authority broadened.",
+    "Headless self-test (real Forge functions, isolated state, 3 processes incl. restart and 054 rollback read): PASS 67/67, 0 network calls."
+  ],
+  "unfinished": [
+    "Native Windows WPF startup/click smoke of exact 055 bytes.",
+    "Owner creative review of real drafts from live research.",
+    "Portfolio/Performance enrichment (Stage 4)."
+  ],
+  "authority": {
+    "backend_deployment": false,
+    "supabase_mutation": false,
+    "generation_authorized": false,
+    "accept_authorized": false,
+    "paid_provider_authorized": false,
+    "external_submission_authorized": false
+  },
+  "static_acceptance": "49/49 PASS",
+  "research_draft_selftest": "67/67 PASS",
+  "package_integrity": "52/52",
+  "next_exact_action": "Owner (or a session linked to the Windows PC) runs START_055_MERCH_FORGE.vbs: Discover > select niche > Create concept draft > draft opens in Ideas > KEEP > restart > KEEP persists. Optionally run MerchForgeResearchDraftSelfTest.ps1 under Windows PowerShell 5.1."
+}

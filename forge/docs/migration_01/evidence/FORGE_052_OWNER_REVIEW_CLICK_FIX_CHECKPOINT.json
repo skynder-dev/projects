@@ -1,0 +1,52 @@
+{
+  "schema": "forge.compact_checkpoint.v1",
+  "project_route": "FORGE",
+  "release_family": "052",
+  "title": "052 owner review click runtime repair",
+  "artifact": "052_Merch_Forge_OWNER_REVIEW_CLICK_FIX_RC.zip",
+  "source_release": "051_Merch_Forge_IN_APP_OWNER_REVIEW_RC.zip",
+  "completed": [
+    "Root cause isolated: owner controls refreshed while Busy=true during live Load-Concept, then never refreshed after Busy=false.",
+    "Patched Set-Busy to refresh owner-decision controls after Busy transition.",
+    "Static regression checks 20/20 PASS.",
+    "Owner decision LocalCore revision-binding semantics unchanged.",
+    "050 rollback baseline untouched; startup chain content unchanged."
+  ],
+  "unfinished": [
+    "Exact 052 native Windows click/persistence retest by owner.",
+    "Discover/Research product-scope repair after this gate passes."
+  ],
+  "authority": {
+    "supabase_mutation": false,
+    "generation_authorized": false,
+    "accept_authorized": false,
+    "paid_provider_authorized": false,
+    "external_submission_authorized": false,
+    "state_sync_executed": false
+  },
+  "next_exact_action": "Owner runs 052, opens a live concept, verifies KEEP is clickable, persists across concept switches and restart. On PASS, continue Discover/Research in-app roadmap.",
+  "artifact_sha256": "cb3f627760ffa169efdecc902460c8d1a25875ff47ab30cb963eaa447b469aa7",
+  "package_integrity": "50/50 PASS",
+  "deterministic_rebuild": true,
+  "zip_top_level_folder_count": 1,
+  "startup_chain_byte_equal_to_051": {
+    "Start Merch Forge.vbs": {
+      "same": true,
+      "sha256": "013e9dcfbfb4c2a42c12b4f6ee208767d80509be9e877160f088a9d2984f51a1"
+    },
+    "MerchForgeLauncher.cmd": {
+      "same": true,
+      "sha256": "a25dfc71cc8f126c472eb21ecefa731e46f7b123b2a0c438c9acf0240aff6abd"
+    },
+    "MerchForgePreflight.ps1": {
+      "same": true,
+      "sha256": "b7dedaeade34b2ac607c80f71f44709ec5f98b321ecac281cc61a8df9758b2e1"
+    },
+    "Install Merch Forge.vbs": {
+      "same": true,
+      "sha256": "e6be4eb6ffd2e148136b2d75ec130e96d8df85241d88c9dbaac9c1007dfbd91f"
+    }
+  },
+  "static_acceptance": "20/20 PASS",
+  "artifact_size_bytes": 267433
+}

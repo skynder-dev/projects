@@ -1,0 +1,20 @@
+{
+  "schema": "forge.amazon_print_profile_attestation.v1",
+  "attested": false,
+  "marketplace": "amazon.com_us",
+  "product_type_key": "",
+  "template_key": "",
+  "canvas_width_px": 0,
+  "canvas_height_px": 0,
+  "dpi": 300,
+  "file_format": "png",
+  "background": "transparent",
+  "captured_at": "",
+  "valid_until": "",
+  "template_file_sha256": "",
+  "source_refs": [
+    "https://developer.amazon.com/apps-and-games/merch",
+    "https://merch.amazon.com/resource/Y28FFE5NLRYJG4V"
+  ],
+  "note": "Fill exact values from the current Amazon Merch on Demand product template. attested=true means the owner confirms the values came from that exact current template. Forge does not infer dimensions from historical guidance."
+}

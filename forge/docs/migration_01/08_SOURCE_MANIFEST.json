@@ -1,0 +1,99 @@
+{
+  "schema": "forge.claude_migration_manifest.v1",
+  "bundle": "02_FORGE_CLAUDE_MIGRATION_01",
+  "authoritative_release": "canonical/054_Merch_Forge_DISCOVER_RESEARCH_RC.zip",
+  "authoritative_release_sha256": "c6ea5f5071310848010a3a3f4e23fb75f4128e985a211ced86a61d61358b8383",
+  "rollback_release": "rollback/050_Merch_Forge_CORE_WORKING_RC.zip",
+  "files": [
+    {
+      "path": "00_START_HERE.md",
+      "size_bytes": 1990,
+      "sha256": "8c8a4e223917e313f985b3cde607159fc0ef6fb206533aca9693b1f7f3cac624"
+    },
+    {
+      "path": "01_PRODUCT_SPEC.md",
+      "size_bytes": 1350,
+      "sha256": "469d5ce55c4a285ae598654af800398e52de50bdd8f49b78924aaeb71e6804b2"
+    },
+    {
+      "path": "02_CURRENT_STATE.md",
+      "size_bytes": 1671,
+      "sha256": "aaa99c982c9d34443e9566abf71e1ba9135244c3e0ac12cf40ba0bcd852f9448"
+    },
+    {
+      "path": "03_DONE_DEFINITION.md",
+      "size_bytes": 1303,
+      "sha256": "e88bf4b0f472f47ce31e62f6a973c47ef601501f8244f7b7d34b25c804b80d2d"
+    },
+    {
+      "path": "04_OWNER_RULES.md",
+      "size_bytes": 807,
+      "sha256": "91e618c95559b23153fe1d82d448d6018801cde4622f1119159e3690b53345b9"
+    },
+    {
+      "path": "05_KNOWN_FAILURES.md",
+      "size_bytes": 1149,
+      "sha256": "c4bdaf82f3654d360af52ba597230d020bec50cbcc5c882f4a5ad886e03ef42f"
+    },
+    {
+      "path": "06_DECISIONS.md",
+      "size_bytes": 621,
+      "sha256": "1b4f24acfbcb18d508abb8f494fedc805b29fc99a2eb30e501b5b1fb06b3dcf5"
+    },
+    {
+      "path": "07_NEXT_WORK.md",
+      "size_bytes": 1464,
+      "sha256": "7859728419c94a61a7a245a0a9714bd25a6479fd53cc0db6b1dfd7f9f651a9a1"
+    },
+    {
+      "path": "09_CLAUDE_START_PROMPT.md",
+      "size_bytes": 1100,
+      "sha256": "e79f5e23a88a963b946acc9f391dedd16d99fda1ace7c58c26da42ec2d5a9984"
+    },
+    {
+      "path": "ALEX_AUTONOMOUS_WORK_CONTRACT.md",
+      "size_bytes": 1422,
+      "sha256": "f7a484b30b54d2f4f6702c13066e563569d958ca2842fc29c3af8ebdcc76882e"
+    },
+    {
+      "path": "canonical/054_Merch_Forge_DISCOVER_RESEARCH_RC.zip",
+      "size_bytes": 269429,
+      "sha256": "c6ea5f5071310848010a3a3f4e23fb75f4128e985a211ced86a61d61358b8383"
+    },
+    {
+      "path": "evidence/FORGE_051_IN_APP_OWNER_REVIEW_CHECKPOINT.json",
+      "size_bytes": 1607,
+      "sha256": "8b58506280c925000cd146dec6bc2c988e7e9265fb35f6a0bd0f0e5a75217bca"
+    },
+    {
+      "path": "evidence/FORGE_052_OWNER_REVIEW_CLICK_FIX_CHECKPOINT.json",
+      "size_bytes": 2170,
+      "sha256": "74512ba17730fa4703bf350e44707409fa38fe1d2c6bbe3b0ff5c7f63b1f78b1"
+    },
+    {
+      "path": "evidence/FORGE_053_OWNER_REVIEW_RUNTIME_CHECKPOINT.json",
+      "size_bytes": 2066,
+      "sha256": "2d529ec901aa9cf6ca61eadc2cd949875b4ed940fc650631d28acc49cdcba9ac"
+    },
+    {
+      "path": "prep/050_NO_DISPATCH_ARTWORK_STAGING.zip",
+      "size_bytes": 55859,
+      "sha256": "d63dd3f9a27efaa1f0418a91de695b95a725f3fd0d290f8581321754febd21f7"
+    },
+    {
+      "path": "prep/050_OWNER_REVIEW_SELECTION_PACKET.zip",
+      "size_bytes": 96729,
+      "sha256": "d4be257d8252daf93f6abd0b1fd6eddbd357f273f1b5e2ffa93a338bd91abd69"
+    },
+    {
+      "path": "prep/050_REAL_PRODUCT_READINESS_MANIFEST.zip",
+      "size_bytes": 26718,
+      "sha256": "1fcbd89b87825d2e2826d82daa907a8bf862c488b825e31b4da40a133f58d11d"
+    },
+    {
+      "path": "rollback/050_Merch_Forge_CORE_WORKING_RC.zip",
+      "size_bytes": 262109,
+      "sha256": "13aaf21c9bf5f5383dfce6589c6849b20ba6ffa2228ae1efcd38b3123783187d"
+    }
+  ]
+}

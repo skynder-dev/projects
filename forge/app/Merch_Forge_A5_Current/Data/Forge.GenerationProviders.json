@@ -1,0 +1,249 @@
+{
+  "schema": "forge.generation_providers.v6",
+  "updated_for": "first-live-authority-v2",
+  "providers": [
+    {
+      "provider_key": "manual_artwork_bridge",
+      "available": true,
+      "enabled_by_default": true,
+      "mode": "export_brief_then_import_artwork",
+      "external_dispatch": false,
+      "requires_api_credentials": false,
+      "production_image_generation": false,
+      "contract_version": "3",
+      "note": "Operational fallback. No external service call.",
+      "prompt_template_sha256": "8f5e3bbdd3d8ec3e1205c6bf2d18e541a6b34532a82539c29320ae02e12efdd4"
+    },
+    {
+      "provider_key": "openai_image_api",
+      "available": true,
+      "enabled_by_default": false,
+      "mode": "local_worker_api",
+      "external_dispatch": true,
+      "requires_api_credentials": true,
+      "production_image_generation": true,
+      "contract_version": "5",
+      "endpoint": "https://api.openai.com/v1/images/generations",
+      "model": "gpt-image-2.5-flare-2026-09-08",
+      "size": "1024x1024",
+      "quality": "medium",
+      "background": "transparent",
+      "output_format": "png",
+      "output_count": 1,
+      "allowed_models": [
+        "gpt-image-2.5-sunburst-2026-09-08",
+        "gpt-image-2.5-flare-2026-09-08",
+        "gpt-image-2.5-sunburst",
+        "gpt-image-2.5-flare"
+      ],
+      "allowed_quality": [
+        "low",
+        "medium",
+        "high",
+        "xhigh",
+        "max",
+        "auto"
+      ],
+      "allowed_output_format": [
+        "png"
+      ],
+      "note": "Adapter is packaged but fail-closed until the owner explicitly stores a local API credential and enables it. Before the first exact completed billable live attempt, only Smoke (Flare / 1024 / medium / 1) with a 1-request daily ceiling is permitted. Draft/Final unlock only after that milestone.",
+      "api_contract_notes": [
+        "direct Image API generation endpoint",
+        "base64 image output",
+        "transparent background requires PNG/WebP",
+        "owner explicit Generate click required",
+        "one paid provider request maximum per job",
+        "no automatic retry after dispatch begins",
+        "HTTP redirects denied before sending authorization to another location"
+      ],
+      "allowed_background": [
+        "transparent"
+      ],
+      "size_policy": {
+        "width_height_multiple": 16,
+        "max_edge_px": 3840,
+        "min_total_pixels": 655360,
+        "max_total_pixels": 8294400,
+        "aspect_ratio_min": 0.3333333333333333,
+        "aspect_ratio_max": 3
+      },
+      "endpoint_host": "api.openai.com",
+      "profiles": [
+        {
+          "profile_key": "smoke",
+          "label": "Smoke — Flare / 1024 / medium / 1",
+          "model": "gpt-image-2.5-flare-2026-09-08",
+          "size": "1024x1024",
+          "quality": "medium",
+          "background": "transparent",
+          "output_format": "png",
+          "output_count": 1,
+          "purpose": "first-live safety: one image / one paid request before Draft or Final unlock"
+        },
+        {
+          "profile_key": "draft",
+          "label": "Draft — Flare / 1024 / medium / 2",
+          "model": "gpt-image-2.5-flare-2026-09-08",
+          "size": "1024x1024",
+          "quality": "medium",
+          "background": "transparent",
+          "output_format": "png",
+          "output_count": 2,
+          "purpose": "lower-cost fast review directions"
+        },
+        {
+          "profile_key": "final",
+          "label": "Final — Sunburst / 2048 / high / 3",
+          "model": "gpt-image-2.5-sunburst-2026-09-08",
+          "size": "2048x2048",
+          "quality": "high",
+          "background": "transparent",
+          "output_format": "png",
+          "output_count": 3,
+          "purpose": "higher-detail final candidate directions"
+        }
+      ],
+      "default_profile": "smoke",
+      "model_probe_endpoint_template": "https://api.openai.com/v1/models/{model}",
+      "online_probe_method": "GET",
+      "online_probe_generates_image": false,
+      "daily_request_limit_policy": {
+        "min": 1,
+        "max": 20,
+        "default": 1,
+        "ambiguous_attempt_counts": true
+      },
+      "response_audit": {
+        "capture_request_id": true,
+        "capture_response_parameters": true,
+        "capture_usage_if_present": true,
+        "compute_pre_request_dollar_cost": false,
+        "capture_model_snapshot": true,
+        "capture_revised_prompt_per_asset": true,
+        "capture_result_sha256": true
+      },
+      "stable_model_policy": {
+        "default": "dated_snapshot",
+        "draft_snapshot": "gpt-image-2.5-flare-2026-09-08",
+        "final_snapshot": "gpt-image-2.5-sunburst-2026-09-08",
+        "moving_aliases_allowed_for_legacy_migration_only": true,
+        "reason": "reproducible provider behavior and exact provenance",
+        "smoke_snapshot": "gpt-image-2.5-flare-2026-09-08"
+      },
+      "image_validation_contract": "transparent_png_exact_dimensions_plus_transparent_border_v3",
+      "prompt_compiler_contract": "forge.prompt.apparel.v2",
+      "prompt_template_sha256": "8f5e3bbdd3d8ec3e1205c6bf2d18e541a6b34532a82539c29320ae02e12efdd4"
+    },
+    {
+      "provider_key": "internal_mock_image",
+      "available": true,
+      "enabled_by_default": false,
+      "internal_test_only": true,
+      "mode": "isolated_fixture_worker",
+      "external_dispatch": false,
+      "requires_api_credentials": false,
+      "production_image_generation": false,
+      "contract_version": "3",
+      "allowed_models": [
+        "internal-mock-v1"
+      ],
+      "allowed_quality": [
+        "medium"
+      ],
+      "allowed_output_format": [
+        "png"
+      ],
+      "allowed_background": [
+        "transparent"
+      ],
+      "endpoint": "",
+      "endpoint_host": "",
+      "model": "internal-mock-v1",
+      "size": "1024x1024",
+      "quality": "medium",
+      "background": "transparent",
+      "output_format": "png",
+      "output_count": 2,
+      "profiles": [
+        {
+          "profile_key": "selftest",
+          "label": "Internal self-test",
+          "model": "internal-mock-v1",
+          "size": "1024x1024",
+          "quality": "medium",
+          "background": "transparent",
+          "output_format": "png",
+          "output_count": 2,
+          "purpose": "isolated no-network provider pipeline regression"
+        }
+      ],
+      "note": "Internal regression provider. Cannot be enabled through owner configuration and is rejected unless the standalone worker is launched with -InternalMock.",
+      "fixture_files": [
+        "Data\\SelfTest\\mock-01.png",
+        "Data\\SelfTest\\mock-02.png"
+      ],
+      "image_validation_contract": "transparent_png_exact_dimensions_plus_transparent_border_v3",
+      "prompt_compiler_contract": "forge.prompt.apparel.v2",
+      "prompt_template_sha256": "8f5e3bbdd3d8ec3e1205c6bf2d18e541a6b34532a82539c29320ae02e12efdd4"
+    }
+  ],
+  "job_contract": "forge.generation_job.v4",
+  "result_contract": "forge.generation_result.v4",
+  "dispatch_policy": "explicit_owner_configuration_plus_explicit_generate_click",
+  "validated_at": "2026-10-01",
+  "source_refs": [
+    "https://developers.openai.com/api/docs/guides/image-generation",
+    "https://developers.openai.com/api/reference/resources/models/methods/retrieve",
+    "https://developers.openai.com/api/docs/pricing"
+  ],
+  "attempt_contract": "forge.generation_attempt.v1",
+  "worker_policy": {
+    "max_paid_requests_per_job": 1,
+    "automatic_paid_retry": false,
+    "redirects_allowed": false,
+    "ambiguous_dispatch_requires_new_owner_action": true,
+    "result_import_requires_attempt_journal": true,
+    "local_daily_request_limit_required": true,
+    "single_dispatch_lock": true,
+    "usage_snapshot_recorded_if_returned": true,
+    "first_live_guard": {
+      "provider_key": "openai_image_api",
+      "requires_prior_completed_billable_nonmock_attempt": true,
+      "required_profile_before_unlock": "smoke",
+      "required_output_count_before_unlock": 1,
+      "required_daily_request_limit_before_unlock": 1,
+      "unlocks_profiles": [
+        "draft",
+        "final"
+      ],
+      "requires_exact_import_receipt": true,
+      "unlock_condition": "exact Smoke generation_job.v4 envelope + exact SHA-bound completed billable nonmock result/attempt/import receipt provenance + unique exact asset set + matching LocalCore artwork generation provenance + verified local-file SHA",
+      "requires_exact_generation_job": true,
+      "requires_exact_job_result_attempt_receipt_lineage": true,
+      "requires_local_core_artwork_authority": true,
+      "requires_local_artwork_file_sha": true,
+      "authority_validator": "Modules\\Forge.GenerationAuthority.ps1::Test-ForgeFirstLiveAuthority"
+    },
+    "pre_dispatch_job_expiry_minutes": 30,
+    "completed_result_requires_import_before_new_paid_job": true,
+    "imported_status_requires_full_receipt_revalidation": true,
+    "owner_action_creation_lock": true,
+    "owner_action_lock_scope": "per_windows_user_generation_root",
+    "owner_action_lock_wait_policy": "fail_fast_no_job_created"
+  },
+  "import_receipt_contract": "forge.generation_import_receipt.v4",
+  "prompt_compiler_contract": "forge.prompt.apparel.v2",
+  "prompt_template_sha256": "8f5e3bbdd3d8ec3e1205c6bf2d18e541a6b34532a82539c29320ae02e12efdd4",
+  "spool_policy": {
+    "schema": "forge.generation_spool_policy.v1",
+    "max_asset_bytes": 2147483648,
+    "imported_asset_retention_days": 30,
+    "minimum_asset_retention_days": 7,
+    "delete_unimported_assets": false,
+    "delete_ambiguous_assets": false,
+    "metadata_json_retention": "indefinite",
+    "maintenance_on_start": true,
+    "prune_requires_verified_import_and_local_artwork_copy": true
+  }
+}
