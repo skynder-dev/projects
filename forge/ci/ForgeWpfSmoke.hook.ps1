@@ -143,7 +143,8 @@ function Ci-EnglishUiStrings {
     foreach($b in @($script:StaticLocaleRegistry)){ $s=([string]$b.Source).Trim(); if($s.Length -ge 3){ [void]$set.Add($s) } }
     return ,$set
 }
-$script:CiDataControls=@('ConceptTitle','PerformanceLeadersText','DiscoverDetailName','DiscoverDetailMeta','DiscoverDetailSummary','OverviewHook','OverviewConcept','OverviewBuyer','OverviewWhy','OverviewDifferent','OverviewVisual','OverviewMeaning','AnalysisPurchase','AnalysisContext','AnalysisMeaning','GenerationBriefText','OverviewWarnings','LocalCoreStatusText')
+$script:CiBrandTexts=@('Merch Forge','MERCH FORGE','Amazon','Amazon Merch')
+$script:CiDataControls=@('DiscoverDetailAudience','DiscoverDetailDimensions','DiscoverRecentText','DiscoverSourcesText','ConceptTitle','PerformanceLeadersText','DiscoverDetailName','DiscoverDetailMeta','DiscoverDetailSummary','OverviewHook','OverviewConcept','OverviewBuyer','OverviewWhy','OverviewDifferent','OverviewVisual','OverviewMeaning','AnalysisPurchase','AnalysisContext','AnalysisMeaning','GenerationBriefText','OverviewWarnings','LocalCoreStatusText')
 function Ci-FindUntranslated($EnSet,[string]$Where) {
     $strict=New-Object System.Collections.Generic.List[string]; $loose=New-Object System.Collections.Generic.List[string]
     $stack=New-Object System.Collections.Stack; $stack.Push($Window)
@@ -155,7 +156,7 @@ function Ci-FindUntranslated($EnSet,[string]$Where) {
         elseif($n -is [System.Windows.Controls.ContentControl] -and $n.Content -is [string]){ $txt=[string]$n.Content; $nm=[string]$n.Name }
         if($null -ne $txt){
             $tt=$txt.Trim()
-            if($tt -and $tt -notmatch '[А-Яа-яЁё]' -and $tt -match '[A-Za-z]{3}'){
+            if($tt -and $tt -notmatch '[А-Яа-яЁё]' -and $tt -match '[A-Za-z]{3}' -and $script:CiBrandTexts -notcontains $tt){
                 if($EnSet.Contains($tt)){ [void]$strict.Add($Where+': '+$(if($nm){$nm+'='}else{''})+$tt.Substring(0,[Math]::Min(70,$tt.Length))) }
                 elseif(-not (Ci-IsInsideListItem $n) -and $script:CiDataControls -notcontains $nm -and @([regex]::Matches($tt,'[A-Za-z]{3,}')).Count -ge 3){ [void]$loose.Add($Where+': '+$(if($nm){$nm+'='}else{''})+$tt.Substring(0,[Math]::Min(70,$tt.Length))) }
             }
@@ -374,6 +375,17 @@ $Window.Add_ContentRendered({
                 Ci-Check 'home_attention_count' ($HomeMetricAttentionValue.Text -eq '1') $HomeMetricAttentionValue.Text
                 Ci-Check 'home_hints_name_the_source_ru' ($HomeMetricSalesHint.Text -eq 'По импортированным продажам ваших товаров' -and $HomeMetricPublishedHint.Text -eq 'По импортированным квитанциям публикации') ($HomeMetricSalesHint.Text+' | '+$HomeMetricPublishedHint.Text)
                 Ci-Shot '14-performance'
+                # 8) data copy: save -> lose a draft -> restore -> everything (incl. the published product) is back
+                Ci-Click $NavHomeButton 'NavHomeButton (data copy)'
+                Ci-Check 'backup_buttons_ru' ([string]$DataBackupButton.Content -eq 'Сохранить копию…' -and [string]$DataRestoreButton.Content -eq 'Восстановить из копии…' -and $DataBackupButton.IsVisible) ([string]$DataBackupButton.Content+' | '+[string]$DataRestoreButton.Content)
+                $bkz=Join-Path $env:FORGE_CI_OUT 'ci-data-copy.zip'; $bk=New-ForgeDataBackup $script:StateRoot $bkz
+                $s0=Read-LocalCoreState; $nDrafts=@(Get-ResearchDraftList $s0).Count; Set-ResearchDraftList $s0 @(); Write-LocalCoreState $s0
+                $before=$script:Ci.errors.Count; $okR=Complete-DataBackupRestore $bkz; Ci-Flush
+                $s1=Read-LocalCoreState
+                Ci-Check 'backup_restore_roundtrip' ($okR -and $script:Ci.errors.Count -eq $before -and @(Get-ResearchDraftList $s1).Count -eq $nDrafts -and $nDrafts -ge 1 -and $StatusText.Text -like 'Восстановлено файлов из копии:*') ([string]$bk.file_count+' files; drafts '+$nDrafts+' -> '+@(Get-ResearchDraftList $s1).Count+'; '+$StatusText.Text)
+                $ins=Get-ForgePerformanceInsights $s1
+                Ci-Check 'backup_restore_keeps_verified_product' (@($ins.leaders).Count -eq 1 -and [string]@($ins.leaders)[0].product_id -eq 'CI-ASIN-0001') (@($ins.leaders).Count)
+                Ci-Shot '15-home-data-copy'
             }
         } elseif($script:Ci.phase -eq 'layout') {
             $draft=$null; foreach($i in @($ConceptList.Items)){ if([bool](Get-PropertyValue $i 'is_local_draft')){$draft=$i} }
@@ -406,7 +418,7 @@ $Window.Add_ContentRendered({
             $strictAll=@($strictAll | Sort-Object -Unique); $looseAll=@($looseAll | Sort-Object -Unique)
             $script:Ci['untranslated_strict']=$strictAll; $script:Ci['untranslated_loose']=$looseAll
             Ci-Check 'ru_no_untranslated_ui_text' ($strictAll.Count -eq 0) ($strictAll -join ' || ')
-            Ci-Check 'ru_english_text_info' $true ((@($looseAll) | Select-Object -First 40) -join ' || ')
+            Ci-Check 'ru_no_english_sentences' ($looseAll.Count -eq 0) ((@($looseAll) | Select-Object -First 40) -join ' || ')
             Ci-Check 'layout_widths_reached' (@($reached | Where-Object { [int](($_ -split '->')[1]) -lt ([int](($_ -split '->')[0])-24) }).Count -eq 0) ('screen '+[string]$screen+'; '+($reached -join ', '))
             $wide=@($clip.Keys | Where-Object { $_ -notlike '1024-*' })
             Ci-Check 'layout_no_clipped_text_1366_1920' ($wide.Count -eq 0) ((@($wide | ForEach-Object { $_+': '+$clip[$_] })) -join ' || ')

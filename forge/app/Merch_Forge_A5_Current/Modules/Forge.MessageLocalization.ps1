@@ -25,7 +25,7 @@ function Translate-UiMessage([string]$Text,[int]$Depth=0) {
     if([string]::IsNullOrEmpty($Text)){ return $Text }
     $loc = [string]$script:Locale; if($loc -notin @('ru','es')){ return $Text }
     $hit = $null
-    if($null -ne $script:MessageExact -and $script:MessageExact.TryGetValue($Text,[ref]$hit)){ $v=[string](Get-PropertyValue $hit $loc); if($v){ return $v }; return $Text }
+    if($null -ne $script:MessageExact -and $script:MessageExact.ContainsKey($Text)){ $hit=$script:MessageExact[$Text]; $v=[string](Get-PropertyValue $hit $loc); if($v){ return $v }; return $Text }
     foreach($p in @($script:MessagePatterns)){
         $m = $p.rx.Match($Text); if(-not $m.Success){ continue }
         $out = [string](Get-PropertyValue $p.entry $loc); if([string]::IsNullOrEmpty($out)){ return $Text }
@@ -60,7 +60,7 @@ function Test-UiTextMessage([string]$Text) {
 }
 function Register-MessageLocalizationSinks {
     $dpd = [System.ComponentModel.DependencyPropertyDescriptor]::FromProperty([System.Windows.Controls.TextBlock]::TextProperty,[System.Windows.Controls.TextBlock])
-    foreach($tb in @($StatusText,$BusyText,$LocalCoreStatusText,$LocalCheckStatusText,$AnalysisWarnings)){
+    foreach($tb in @($StatusText,$BusyText,$LocalCoreStatusText,$LocalCheckStatusText,$AnalysisWarnings,$DeliveryStatus,$PublicationCreativeStatus,$PublicationEconomics,$PublicationExternal,$PublicationPreflight,$AcceptanceStatus,$GenerationStatus,$VariantImageStatusA,$VariantImageStatusB,$LocalSalesStatusText)){
         if($null -eq $tb){ continue }
         $dpd.AddValueChanged($tb,[EventHandler]{
             param($sender,$e)

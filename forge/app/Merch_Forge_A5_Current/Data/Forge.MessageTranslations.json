@@ -1490,6 +1490,126 @@
    "en": "Blocked: listing metadata belongs to another accepted artwork.",
    "ru": "Текст карточки сохранён для другого макета. Сохраните его заново.",
    "es": "El texto de la ficha pertenece a otro diseño. Guárdalo de nuevo."
+  },
+  {
+   "en": "Imported {0} row(s): {1} linked to verified Forge products, {2} unlinked. Not readable: {3} without a product ID (ASIN), {4} without a date.",
+   "ru": "Импортировано строк: {0}; связано с проверенными товарами Forge: {1}; не связано: {2}. Не прочитано: без ID товара (ASIN) — {3}, без даты — {4}.",
+   "es": "Importadas {0} fila(s): {1} vinculadas a productos verificados de Forge, {2} sin vincular. Sin leer: {3} sin ID de producto (ASIN), {4} sin fecha."
+  },
+  {
+   "en": "Valid local package(s): {0}",
+   "ru": "Готовых локальных пакетов: {0}",
+   "es": "Paquetes locales válidos: {0}"
+  },
+  {
+   "en": "No valid local manual-upload package created yet.",
+   "ru": "Готового пакета для ручной загрузки ещё нет.",
+   "es": "Aún no hay un paquete válido para subida manual."
+  },
+  {
+   "en": "Exact local artwork is accepted for the current revision. Listing edits remain local until packaged.",
+   "ru": "Макет принят для текущей ревизии. Правки карточки хранятся локально, пока не собран пакет.",
+   "es": "El diseño está aceptado para la revisión actual. Los cambios de la ficha quedan locales hasta crear el paquete."
+  },
+  {
+   "en": "Accept exact artwork for the current idea revision before preparing the listing.",
+   "ru": "Сначала примите макет для текущей ревизии идеи, потом готовьте карточку.",
+   "es": "Acepta el diseño para la revisión actual antes de preparar la ficha."
+  },
+  {
+   "en": "No royalty amount is fabricated locally. Import verified commerce data after publication.",
+   "ru": "Роялти не придумываются. После публикации импортируйте данные о продажах.",
+   "es": "No se inventan regalías. Importa datos de ventas verificados después de publicar."
+  },
+  {
+   "en": "External submission remains manual and locked inside Merch Forge. Local package creation never submits anything.",
+   "ru": "Загрузка на Amazon — только вручную; из Merch Forge отправка закрыта. Сборка пакета ничего не отправляет.",
+   "es": "La subida a Amazon es manual y está bloqueada en Merch Forge. Crear el paquete no envía nada."
+  },
+  {
+   "en": "READY for manual-upload package creation. Exact revision/artwork/listing lineage is verified locally.",
+   "ru": "ГОТОВО к сборке пакета для ручной загрузки. Связь ревизии, макета и карточки проверена.",
+   "es": "LISTO para crear el paquete de subida manual. La relación revisión/diseño/ficha está verificada."
+  },
+  {
+   "en": "DRAFT package only. Exact-lineage checks need attention: {0}.",
+   "ru": "Пока только черновик пакета. Нужно пройти проверки: {0}.",
+   "es": "Solo paquete borrador. Revisiones pendientes: {0}."
+  },
+  {
+   "en": "Blocked: accept exact artwork first.",
+   "ru": "Сначала примите макет.",
+   "es": "Primero acepta el diseño."
+  },
+  {
+   "en": "Blocked: local acceptance belongs to an older idea revision.",
+   "ru": "Принятый макет относится к старой ревизии идеи. Примите макет заново.",
+   "es": "El diseño aceptado pertenece a una revisión anterior. Acéptalo de nuevo."
+  },
+  {
+   "en": "Current revision {0} is not accepted.",
+   "ru": "Ревизия {0} ещё не принята.",
+   "es": "La revisión {0} aún no está aceptada."
+  },
+  {
+   "en": "Accepted exact revision {0}.",
+   "ru": "Принята ревизия {0}.",
+   "es": "Revisión {0} aceptada."
+  },
+  {
+   "en": "Local artwork: {0} file(s).",
+   "ru": "Локальных макетов: {0}.",
+   "es": "Diseños locales: {0}."
+  },
+  {
+   "en": "No local artwork yet. Export the generation brief or import a finished PNG/JPG.",
+   "ru": "Макетов пока нет. Экспортируйте бриф генерации или импортируйте готовый PNG/JPG.",
+   "es": "Aún no hay diseños. Exporta el brief de generación o importa un PNG/JPG terminado."
+  },
+  {
+   "en": "Production image provider ready. Use Generate, then revisit Artwork or Refresh to import completed variants.",
+   "ru": "Генератор картинок настроен. Нажмите «Сгенерировать», затем вернитесь в «Макеты» или нажмите «Обновить», чтобы подтянуть готовые варианты.",
+   "es": "El generador de imágenes está listo. Usa Generar y vuelve a Diseños o pulsa Actualizar para importar las variantes terminadas."
+  },
+  {
+   "en": "Select local artwork",
+   "ru": "Выберите макет",
+   "es": "Elige un diseño"
+  },
+  {
+   "en": "Select a second artwork",
+   "ru": "Выберите второй макет",
+   "es": "Elige un segundo diseño"
+  },
+  {
+   "en": "Local package created: {0}\nStatus: {1}\nSHA-256: {2}\nPublication receipt template: {3}",
+   "ru": "Локальный пакет создан: {0}\nСтатус: {1}\nSHA-256: {2}\nШаблон квитанции публикации: {3}",
+   "es": "Paquete local creado: {0}\nEstado: {1}\nSHA-256: {2}\nPlantilla del recibo de publicación: {3}"
+  },
+  {
+   "en": "Package readiness could not be loaded. Refresh and try again.",
+   "ru": "Не удалось загрузить готовность пакета. Нажмите «Обновить» и попробуйте снова.",
+   "es": "No se pudo cargar el estado del paquete. Actualiza e inténtalo de nuevo."
+  },
+  {
+   "en": "Publication details could not be loaded. Refresh and try again.",
+   "ru": "Не удалось загрузить данные публикации. Нажмите «Обновить» и попробуйте снова.",
+   "es": "No se pudieron cargar los datos de publicación. Actualiza e inténtalo de nuevo."
+  },
+  {
+   "en": "No concept loaded.",
+   "ru": "Идея не открыта.",
+   "es": "No hay ninguna idea abierta."
+  },
+  {
+   "en": "Concept details are unavailable.",
+   "ru": "Данные идеи недоступны.",
+   "es": "Los datos de la idea no están disponibles."
+  },
+  {
+   "en": "No generation runs or variants yet.",
+   "ru": "Генераций и вариантов пока нет.",
+   "es": "Aún no hay generaciones ni variantes."
   }
  ]
 }

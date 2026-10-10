@@ -13,7 +13,7 @@
     "status": "ACTIVE"
   },
   "desktop": {
-    "app_version": "2.18.2-draft-checks-text",
+    "app_version": "2.20.0-data-copy-ru",
     "native_windows_runtime_verified": false,
     "orange_semantic_palette": true,
     "overview_first": true,
@@ -28,10 +28,10 @@
       "ru",
       "es"
     ],
-    "workbench_sha256": "ac41d7897700c47929e951c97dae25ecf2591eca94e699ec22f2df611c1cdacf",
-    "workbench_size_bytes": 256626,
+    "workbench_sha256": "330376636512970c404a18bd27679c426dd6445e9984f63d3b343a14fb55af87",
+    "workbench_size_bytes": 257484,
     "native_windows_parser_verified": false,
-    "native_windows_parser_target_sha256": "ac41d7897700c47929e951c97dae25ecf2591eca94e699ec22f2df611c1cdacf",
+    "native_windows_parser_target_sha256": "330376636512970c404a18bd27679c426dd6445e9984f63d3b343a14fb55af87",
     "native_windows_parser_result_sha256": null,
     "product_home_dashboard": true,
     "brand_home_navigation": "dedicated_home_dashboard",
@@ -74,6 +74,11 @@
         "path": "Modules\\Forge.DataAdapter.ps1",
         "sha256": "f23d240f6feffa0043f695ac5a8c964925837ef014ee19b430aef276f45c08d7",
         "size_bytes": 1167
+      },
+      {
+        "path": "Modules\\Forge.DataBackup.ps1",
+        "sha256": "90b3b5dc782dc4988ab0a16cb70be2166564c07483e40b29a2e5d2ea1c1554a8",
+        "size_bytes": 14136
       },
       {
         "path": "Modules\\Forge.DataViews.ps1",
@@ -122,8 +127,8 @@
       },
       {
         "path": "Modules\\Forge.LocalCore.ps1",
-        "sha256": "4d19d2a3342d221c125c3346b1f5675e2ab893776e09141bc5ad310c5571291a",
-        "size_bytes": 122717
+        "sha256": "1af2618d7b0dd53ec59d8ca4e2be97b3de495eadd1110756532fe80ff9e5144f",
+        "size_bytes": 123882
       },
       {
         "path": "Modules\\Forge.Localization.ps1",
@@ -137,8 +142,8 @@
       },
       {
         "path": "Modules\\Forge.MessageLocalization.ps1",
-        "sha256": "74a83d09aefc57c0f7da843ad2c1d5bcdb40d6778ef4dce94d6f54768435a46d",
-        "size_bytes": 5110
+        "sha256": "be475b3f55ef538381a7993d844cbc214fb6a74fd824364f0b8548936a4991b5",
+        "size_bytes": 5342
       },
       {
         "path": "Modules\\Forge.Pipeline.ps1",
@@ -166,7 +171,7 @@
         "size_bytes": 9674
       }
     ],
-    "runtime_module_count": 22,
+    "runtime_module_count": 23,
     "architecture_contract": "forge.product_architecture.v1",
     "design_baseline_contract": "forge.design_baseline.v1",
     "design_baseline_status": "candidate_pending_owner_visual_freeze",
@@ -320,7 +325,7 @@
     "trusted_local_check_worker": "MerchForgeCheckWorker.ps1",
     "generation_spool_policy": "forge.generation_spool_policy.v1",
     "publication_receipt_print_binding": true,
-    "current_release": "070_Merch_Forge_DRAFT_CHECKS_TEXT_RC",
+    "current_release": "071_Merch_Forge_DATA_COPY_RC",
     "generation_authority_module": "Modules\\Forge.GenerationAuthority.ps1",
     "generation_temporal_authority": "future generation job/attempt timestamps beyond 10-minute clock-skew tolerance fail closed before paid dispatch/readiness; shared first-live authority also revalidates non-future ordered attempt/result/import timestamps",
     "amazon_print_profile_temporal_authority": "valid_until must be strictly later than captured_at; captured_at remains bounded by 10-minute future-skew tolerance and 120-day horizon",
@@ -483,11 +488,11 @@
     "owner_separate_parser_zip_required": false,
     "current_release": "044_Merch_Forge_PACKAGE_ROOT_RC"
   },
-  "package_name": "070_Merch_Forge_DRAFT_CHECKS_TEXT_RC",
-  "package_number": 70,
-  "result_intent": "Draft reasoning shown in Checks",
+  "package_name": "071_Merch_Forge_DATA_COPY_RC",
+  "package_number": 71,
+  "result_intent": "Data copy/restore; Amazon-like sales CSV; RU texts",
   "schema": "forge.reconciled_candidate_manifest.v1",
-  "stage": "FORGE-070-DRAFT-CHECKS-TEXT-RC",
+  "stage": "FORGE-071-DATA-COPY-RC",
   "startup_baseline": {
     "immutable_exact": false,
     "inner_start_sha256": "013e9dcfbfb4c2a42c12b4f6ee208767d80509be9e877160f088a9d2984f51a1",
@@ -647,7 +652,7 @@
     "exact_043_native_windows_stage": "integrity",
     "package_root_native_argv_repair": true
   },
-  "installer_generation": "00000000000000100253",
+  "installer_generation": "00000000000000100254",
   "installer_generation_format": "fixed_width_decimal_v1",
   "installer_guard": {
     "single_writer_lock": "install.lock",

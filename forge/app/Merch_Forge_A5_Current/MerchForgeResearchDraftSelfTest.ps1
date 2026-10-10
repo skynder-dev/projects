@@ -76,6 +76,8 @@ $hasPipelineModule = Test-Path -LiteralPath (Join-Path $mod 'Forge.Pipeline.ps1'
 if($hasPipelineModule){ . (Join-Path $mod 'Forge.Pipeline.ps1') }
 $hasCheckAttestation = Test-Path -LiteralPath (Join-Path $mod 'Forge.CheckAttestation.ps1')
 if($hasCheckAttestation){ . (Join-Path $mod 'Forge.MessageLocalization.ps1'); . (Join-Path $mod 'Forge.CheckAttestation.ps1'); Register-CheckAttestationUiText }
+$hasDataBackup = Test-Path -LiteralPath (Join-Path $mod 'Forge.DataBackup.ps1')
+if($hasDataBackup){ . (Join-Path $mod 'Forge.DataBackup.ps1'); Register-DataBackupUiText }
 $hasAmazonProfile = Test-Path -LiteralPath (Join-Path $mod 'Forge.AmazonProfile.ps1')
 if($hasAmazonProfile){ . (Join-Path $mod 'Forge.AmazonProfile.ps1'); Register-AmazonProfileUiText }
 
@@ -302,6 +304,38 @@ if($Phase -eq 'restart'){
     foreach($f in @(Get-ChildItem -LiteralPath $root -Recurse -Filter *.ps1)){ $tk=$null;$er=$null; $a=[System.Management.Automation.Language.Parser]::ParseFile($f.FullName,[ref]$tk,[ref]$er)
         foreach($as in $a.FindAll({param($n) $n -is [System.Management.Automation.Language.AssignmentStatementAst]},$true)){ $l=$as.Left; if($l -is [System.Management.Automation.Language.ConvertExpressionAst]){$l=$l.Child}; if($l -is [System.Management.Automation.Language.VariableExpressionAst] -and $ro -contains $l.VariablePath.UserPath.ToLowerInvariant()){ $roHits+=($f.Name+':'+$as.Extent.StartLineNumber+' $'+$l.VariablePath.UserPath) } } }
     Check 'no_readonly_automatic_variable_assignment' ($roHits.Count -eq 0) ($roHits -join ', ')
+    # data copy: path move between computers (everywhere) and a full save -> damage -> restore round trip (Windows paths only)
+    if($hasDataBackup){
+        $js='{"p":"C:\\Users\\a\\AppData\\Local\\MerchForge\\local-core-v1\\x.png","q":"C:\\Users\\a\\AppData\\Local\\MerchForge2\\y","r":"c:\\users\\A\\appdata\\local\\merchforge"}'
+        $mv=Convert-BackupJsonRoot $js 'C:\Users\a\AppData\Local\MerchForge' 'D:\U\b\MerchForge' | ConvertFrom-Json
+        Check 'backup_paths_moved_to_this_computer' ($mv.p -eq 'D:\U\b\MerchForge\local-core-v1\x.png' -and $mv.q -eq 'C:\Users\a\AppData\Local\MerchForge2\y' -and $mv.r -eq 'D:\U\b\MerchForge') ($mv | ConvertTo-Json -Compress)
+        if($env:OS -eq 'Windows_NT'){
+            $bk=Join-Path ([IO.Path]::GetTempPath()) ('forge-bk-'+[Guid]::NewGuid().ToString('N')+'.zip')
+            $draftsBefore=@(Get-ResearchDraftList (Read-LocalCoreState)).Count
+            $null=New-Item -ItemType Directory -Path $script:StateRoot -Force; [IO.File]::WriteAllText((Join-Path $script:StateRoot 'owner.key'),'not-a-real-key')
+            $b=New-ForgeDataBackup $script:StateRoot $bk
+            Add-Type -AssemblyName System.IO.Compression.FileSystem; $z=[System.IO.Compression.ZipFile]::OpenRead($bk); $names=@($z.Entries | ForEach-Object { $_.FullName }); $z.Dispose()
+            Check 'backup_contains_state_not_keys' ($b.file_count -gt 0 -and $names -contains 'data/local-core-v1/state.json' -and @($names | Where-Object { $_ -like '*owner.key*' -or $_ -like '*provider-secrets*' -or $_ -like '*/logs/*' }).Count -eq 0) ([string]$b.file_count+' files')
+            $s0=Read-LocalCoreState; Set-ResearchDraftList $s0 @(); Write-LocalCoreState $s0
+            $res=Restore-ForgeDataBackupFromPath $bk
+            $draftsAfter=@(Get-ResearchDraftList (Read-LocalCoreState)).Count
+            Check 'backup_restore_brings_data_back' ($res.ok -and $draftsBefore -gt 0 -and $draftsAfter -eq $draftsBefore -and (Test-Path -LiteralPath $res.previous)) ('before '+$draftsBefore+', after '+$draftsAfter+', prev '+$res.previous)
+            $bad=$bk+'.bad.zip'; $z=[System.IO.Compression.ZipFile]::Open($bk,[System.IO.Compression.ZipArchiveMode]::Update); try{ $en=$z.GetEntry('data/local-core-v1/state.json'); $sw=New-Object IO.StreamWriter($en.Open()); try{ $sw.BaseStream.SetLength(0); $sw.Write('{"tampered":true}') } finally { $sw.Dispose() } } finally { $z.Dispose() }
+            $errBefore=$script:Errors.Count; $res2=Restore-ForgeDataBackupFromPath $bk
+            Check 'backup_damaged_copy_refused' (-not $res2.ok -and $script:Errors.Count -gt $errBefore -and [string]$script:Errors[$script:Errors.Count-1] -like '*checksum mismatch*' -and @(Get-ResearchDraftList (Read-LocalCoreState)).Count -eq $draftsBefore) ([string]$(if($script:Errors.Count){$script:Errors[$script:Errors.Count-1]}else{''}))
+            Remove-Item -LiteralPath $bk -Force -ErrorAction SilentlyContinue; Remove-Item -LiteralPath (Join-Path $script:StateRoot 'owner.key') -Force -ErrorAction SilentlyContinue
+        }
+    }
+    # sales CSV as Amazon-like exports write it: other column names, ';' delimiter, decimal commas, a row without ASIN and one without a date
+    $csvP=Join-Path ([IO.Path]::GetTempPath()) ('forge-sales-'+[Guid]::NewGuid().ToString('N')+'.csv')
+    [IO.File]::WriteAllText($csvP,("Purchase Date;ASIN;Units Sold;Royalty (USD);Marketplace`r`n2026-10-01;B0TESTCSV1;2;`"3,10`";amazon.com`r`n10/2/2026;B0TESTCSV1;1;1,55;amazon.com`r`n2026-10-03;;4;8,00;amazon.com`r`nsoon;B0TESTCSV2;1;2,00;amazon.com`r`n"),(New-Object Text.UTF8Encoding($false)))
+    $nBefore=@((Read-LocalCoreState).sales_rows).Count
+    Import-LocalSalesCsvFromPath $csvP
+    $rowsNew=@(@((Read-LocalCoreState).sales_rows) | Select-Object -Skip $nBefore)
+    $r1=@($rowsNew | Where-Object { $_.product_id -eq 'B0TESTCSV1' })
+    Check 'sales_csv_amazon_like_columns' ($rowsNew.Count -eq 4 -and $r1.Count -eq 2 -and [double]$r1[0].royalty -eq 3.1 -and [double]$r1[1].royalty -eq 1.55 -and $r1[1].date -eq '2026-10-02' -and [double]$r1[0].units -eq 2) ($rowsNew | ConvertTo-Json -Compress -Depth 3)
+    Check 'sales_csv_reports_unreadable_rows' ($StatusText.Text -like '*Not readable: 1 without a product ID (ASIN), 1 without a date.') $StatusText.Text
+    Remove-Item -LiteralPath $csvP -Force -ErrorAction SilentlyContinue
     # Amazon print profile: status wording and the owner form -> attestation (the standalone tool re-validates)
     if($hasAmazonProfile){
         $now=[DateTime]::UtcNow
