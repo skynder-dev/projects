@@ -5,11 +5,11 @@ Set-StrictMode -Version 2.0
 $ErrorActionPreference='Stop'
 function Get-PropertyValue($Object,[string]$Name){if($null-eq$Object){return $null};$p=$Object.PSObject.Properties[$Name];if($null-eq$p){return $null};return $p.Value}
 function Ensure-Dir([string]$Path){if(-not(Test-Path -LiteralPath $Path)){New-Item -ItemType Directory -Path $Path -Force|Out-Null}}
-function Write-AppLog([string]$Level,[string]$Message){}
+$script:LastAppLog='';function Write-AppLog([string]$Level,[string]$Message){if($Level -in @('WARN','ERROR')){$script:LastAppLog=($Level+': '+$Message)}}
 function Show-Error([string]$Message){throw $Message}
 function Confirm([string]$Message,[string]$Title='Merch Forge'){return $true}
 $script:LastChildDiag=''
-function Fail([string]$Message){if($script:LastChildDiag){$Message=$Message+' | last child: '+$script:LastChildDiag};throw $Message}
+function Fail([string]$Message){if($script:LastAppLog){$Message=$Message+' | last app log: '+$script:LastAppLog};if($script:LastChildDiag){$Message=$Message+' | last child: '+$script:LastChildDiag};throw $Message}
 function Invoke-SelfTestProcess([string]$FilePath,[string]$ArgumentList,[int]$TimeoutMs=15000){
   $diagBase=Join-Path ([IO.Path]::GetTempPath()) ('MerchForge-selftest-child-'+[Guid]::NewGuid().ToString('N'))
   $p=Start-Process -FilePath $FilePath -ArgumentList $ArgumentList -WindowStyle Hidden -PassThru -RedirectStandardOutput ($diagBase+'.out') -RedirectStandardError ($diagBase+'.err')

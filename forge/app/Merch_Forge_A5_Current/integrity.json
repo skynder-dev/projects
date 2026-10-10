@@ -4,7 +4,7 @@
   "files": [
     {
       "path": "candidate_manifest.json",
-      "sha256": "ad67fa1d9839fb448f2dfe75a0ec6a3cc71c016d2d8070676406a37f51deb387",
+      "sha256": "e28538fd392084171a6f960f11e1c6dca3e2ff0113ab539c00423b9bc29a6a62",
       "size_bytes": 77004
     },
     {
@@ -119,8 +119,8 @@
     },
     {
       "path": "MerchForgeProviderPipelineSelfTest.ps1",
-      "sha256": "83e4facd880733f0160d6293b4fb691c05ba9f170d0681a58a0b9004ee6bebdf",
-      "size_bytes": 85888
+      "sha256": "66edccba3c1ba580dd8c5c40a4fd8fa4935d4f0153f8ef7666b0382ce777cb6a",
+      "size_bytes": 86066
     },
     {
       "path": "MerchForgeResearchDraftSelfTest.ps1",
@@ -204,8 +204,8 @@
     },
     {
       "path": "Modules\\Forge.PrintChecks.ps1",
-      "sha256": "c7f803ef10ce0741dba87e05c7e151e10a2f3ad88f23ec6886f154d2ee164f7d",
-      "size_bytes": 16920
+      "sha256": "02cb5f5d77b1dcb926fb4d3c101e332594c6f32de8ffea2d7689d2c0ef93ebc1",
+      "size_bytes": 16953
     },
     {
       "path": "Modules\\Forge.ProductNavigation.ps1",
