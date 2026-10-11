@@ -150,6 +150,7 @@ jobs:
           foreach ($d in @($pkg, $pkg2)) { New-Item -ItemType Directory -Force (Split-Path $d) | Out-Null; Copy-Item -Recurse $src.FullName $d }
           $log = "$env:OUT\package_smoke.txt"
           "release: $($src.Name)" | Tee-Object $log
+          $filesBefore = @(Get-ChildItem -Recurse -File $pkg | ForEach-Object { $_.FullName.Substring($pkg.Length) })
           $desk = [Environment]::GetFolderPath('Desktop')
           $hadArchivistLnk = Test-Path "$desk\Archivist.lnk"
           $H = @{Origin='http://127.0.0.1:8775'}
@@ -220,6 +221,11 @@ jobs:
           Remove-Item Env:MEDIAENGINE_SWITCH_ANSWER
           "switched from the running release to the next one: $switched" | Tee-Object -Append $log
           if (-not $switched) { $fail += 'switch to next release' }
+          # the first release ran three times; its folder must hold exactly the files it was unpacked with
+          $known = [System.Collections.Generic.HashSet[string]]::new([string[]]$filesBefore, [System.StringComparer]::OrdinalIgnoreCase)
+          $added = @(Get-ChildItem -Recurse -File $pkg | ForEach-Object { $_.FullName.Substring($pkg.Length) } | Where-Object { -not $known.Contains($_) })
+          "files added to the release folder by running it: $($added.Count) $(($added | Select-Object -First 10) -join ' ; ')" | Tee-Object -Append $log
+          if ($added.Count) { $fail += 'release folder written' }
           if (-not (WaitUp 180)) { $fail += 'next release start' } else {
             $home2 = (Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8775/auto).Content
             $seen = $home2.Contains("/auto/p/1")
@@ -290,6 +296,7 @@ jobs:
           function Ping { try { (Invoke-WebRequest -UseBasicParsing -TimeoutSec 3 http://127.0.0.1:8775/api/ping).Content } catch { $null } }
           try {
             $p = Start-Process $setup.FullName -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART',"/DIR=`"$base`"","/LOG=`"$env:OUT\setup_install.log`"" -PassThru -Wait
+            $installedAt = Get-Date
             "setup: $($setup.Name) $([math]::Round($setup.Length/1MB,1)) MB; exit code $($p.ExitCode)" | Tee-Object $log
             "build folder: $(Test-Path "$rel\Start MediaEngine.vbs"); Start-menu shortcut: $(Test-Path $lnk); uninstaller: $(Test-Path "$base\unins000.exe")" | Tee-Object -Append $log
             if ($p.ExitCode -ne 0 -or -not (Test-Path "$rel\Start MediaEngine.vbs") -or -not (Test-Path $lnk) -or -not (Test-Path "$base\unins000.exe")) { $fail += 'install' }
@@ -320,9 +327,16 @@ jobs:
             }
             try { Invoke-WebRequest -UseBasicParsing -Method Post -Uri http://127.0.0.1:8775/api/app-control -Headers @{Origin='http://127.0.0.1:8775'} -ContentType 'application/json' -Body '{"mode":"stop","force":true}' | Out-Null } catch {}
             for ($i = 0; $i -lt 30 -and (Ping); $i++) { Start-Sleep 1 }
+            # Quit = the server stops answering; its processes may need a few more seconds to exit
+            for ($i = 0; $i -lt 30 -and (Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.Path -and $_.Path.StartsWith($rel) }); $i++) { Start-Sleep 1 }
+            $left = @(Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.Path -and $_.Path.StartsWith($rel) } | ForEach-Object { "$($_.Name) $($_.Id)" })
+            "processes of the build still running after Quit: $($left -join ', ')" | Tee-Object -Append $log
+            $newFiles = @(Get-ChildItem -Recurse -File $rel | Where-Object { $_.LastWriteTime -gt $installedAt } | Select-Object -First 15 | ForEach-Object { $_.FullName.Substring($rel.Length) })
+            "files written into the build folder while it ran: $($newFiles.Count) $($newFiles -join ' ; ')" | Tee-Object -Append $log
             if (Test-Path "$base\unins000.exe") { Start-Process "$base\unins000.exe" -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -Wait }
             for ($i = 0; $i -lt 90 -and ((Test-Path $rel) -or (Test-Path "$base\unins000.exe")); $i++) { Start-Sleep 1 }   # finishes in a copy of itself
             "after Quit + uninstall: build removed: $(-not (Test-Path $rel)); shortcut removed: $(-not (Test-Path $lnk)); data kept: $(Test-Path "$data\data\archivist.db")" | Tee-Object -Append $log
+            if (Test-Path $rel) { "left in the build folder: $(@(Get-ChildItem -Recurse $rel | Select-Object -First 15 | ForEach-Object { $_.FullName.Substring($rel.Length) }) -join ' ; ')" | Tee-Object -Append $log }
             if ((Test-Path $rel) -or (Test-Path $lnk) -or -not (Test-Path "$data\data\archivist.db")) { $fail += 'uninstall' }
           } finally {
             Remove-Item Env:MEDIAENGINE_NO_BROWSER -ErrorAction SilentlyContinue

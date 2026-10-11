@@ -801,7 +801,8 @@ def _engine_env() -> dict:
     env = {k: v for k, v in os.environ.items() if not k.upper().startswith("PYTHON")}
     ff = _ffmpeg() or "ffmpeg"
     env.update({"MEDENG_FFMPEG": ff, "MEDENG_FFPROBE": ff, "MEDENG_P11_MODEL_ROOT": str(model_root()),
-                "MEDENG_P11_ADAPTER_ROOT": str(ENGINE_DIR), "PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1"})
+                "MEDENG_P11_ADAPTER_ROOT": str(ENGINE_DIR), "PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1",
+                "PYTHONDONTWRITEBYTECODE": "1"})   # engine helpers started without -E: nothing written into the program folder
     return env
 
 
@@ -859,7 +860,7 @@ def engine_command(folder: Path, out_dir: Path, work_dir: Path, progress_file: P
                    skip_sha_file: Path | None = None, input_list: Path | None = None) -> list[str]:
     f = FORMATS[s["format"]]
     src = ["--input-list", str(input_list)] if input_list is not None else ["--input-dir", str(folder)]
-    cmd = [engine_python(), "-s", "-E", "-X", "utf8", str(ORCHESTRATOR), *src, "--output-dir", str(out_dir),
+    cmd = [engine_python(), "-B", "-s", "-E", "-X", "utf8", str(ORCHESTRATOR), *src, "--output-dir", str(out_dir),
            "--work-dir", str(work_dir), "--runtime-dir", str(ENGINE_DIR), "--target-seconds", str(float(s["length"])),
            "--audio", s["sound"], "--semantic", "required" if s["mode"] == "semantic" else "off",
            "--profile", f["profile"], "--resolution", f["resolution"], "--progress-file", str(progress_file)]
@@ -1174,7 +1175,7 @@ def system_check() -> list[dict]:
     add("AI model (FAST_LOCAL)", ms["ready"], ms["path"] if ms["ready"] else
         ("not found - only 'Technical only' reels" if ms["reason"] == "MODEL_MISSING" else "files changed or incomplete - not used"))
     try:
-        cp = subprocess.run([engine_python(), "-s", "-E", "-c",
+        cp = subprocess.run([engine_python(), "-B", "-s", "-E", "-c",
                              "import numpy, cv2, onnxruntime; print('numpy', numpy.__version__, '| opencv', cv2.__version__, '| onnxruntime', onnxruntime.__version__)"],
                             **process_kwargs({"capture_output": True, "text": True, "timeout": 120}))
         add("Engine libraries load (numpy, OpenCV, ONNX Runtime)", cp.returncode == 0,

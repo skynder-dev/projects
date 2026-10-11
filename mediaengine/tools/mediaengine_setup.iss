@@ -67,8 +67,9 @@ Name: "{userprograms}\MediaEngine"; Filename: "{sys}\wscript.exe"; Parameters: "
 Filename: "{sys}\wscript.exe"; Parameters: """{app}\{#PkgName}\Start MediaEngine.vbs"""; WorkingDir: "{app}\{#PkgName}"; Description: "{cm:LaunchProgram,MediaEngine}"; Flags: nowait postinstall skipifsilent
 
 [UninstallDelete]
-; files the app may create inside a build folder at run time (the build folders themselves are removed with their files)
-Type: filesandordirs; Name: "{app}\{#PkgName}\__pycache__"
+; the whole build folder this setup made, including anything created in it at run time (the data folder
+; "MediaEngine Data" next to it is never touched)
+Type: filesandordirs; Name: "{app}\{#PkgName}"
 Type: files; Name: "{userdesktop}\MediaEngine RC.lnk"
 
 [Code]

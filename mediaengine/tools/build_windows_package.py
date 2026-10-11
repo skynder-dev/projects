@@ -91,7 +91,10 @@ def main(out_dir: Path, evidence_dir: Path) -> None:
     shutil.copy2(ROOT / "requirements.txt", pkg / "requirements.txt")
     shutil.copy2(ROOT / "app" / "archivist" / "launcher_v2.py", pkg / "launcher.py")
     # compiled once here: faster first start, and Python never has to write into the release folder later
-    subprocess.run([str(py), "-m", "compileall", "-q", str(pkg / "app"), str(pkg / "launcher.py")], check=True)
+    # everything, the runtime too: MediaEngine runs with -B (never writes bytecode), so what is not compiled here
+    # would be compiled again at every start
+    subprocess.run([str(py), "-m", "compileall", "-q", "-j", "0", str(pkg / "app"), str(pkg / "launcher.py"), str(pkg / ".venv" / "Lib")],
+                   check=False)
     (pkg / "version.txt").write_text(ver, encoding="utf-8")
     (pkg / "port.txt").write_text(str(PORT), encoding="utf-8")
     (pkg / "shortcut_name.txt").write_text(SHORTCUT, encoding="utf-8")

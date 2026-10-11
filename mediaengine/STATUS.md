@@ -122,7 +122,7 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 | Row | Status | Note |
 | --- | --- | --- |
-| I01 clean launch without terminal | PARTIAL | `Start MediaEngine.vbs` on CI runner |
+| I01 clean launch without terminal | PARTIAL | Setup → Start-menu "MediaEngine" and `Start MediaEngine.vbs`, both started on the CI runner (Cyrillic folders) |
 | I02 2 and 7 files, skip damaged | PARTIAL | synthetic fixtures; still video skipped |
 | I03 adaptive default, Length/Format/Sound only | PARTIAL | |
 | I04 R2 semantic=required started from the GUI | NOT_STARTED | needs owner PC (model not in git); one click: Check this PC → test reel with the AI model; AI glue tested with a labelled stub |
@@ -141,9 +141,9 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 | I17 restart keeps projects | PARTIAL | |
 | I18 originals unchanged, path safety, absent drive | PARTIAL | unplugged source drive tested (project says so, nothing deleted, export works, builds again when back) |
 | I19 offline, no Supabase/GoDog | PARTIAL | app process blocked from non-loopback in tests; packaged Python behind a firewall rule on Windows CI |
-| I20 clean package, no Python in user's hands | PARTIAL | |
+| I20 clean package, no Python in user's hands | PARTIAL | per-user Setup.exe (no admin) and ZIP; uninstall keeps the data; switching builds; old builds removable |
 | I21 full-video convert | PARTIAL | Windows CI: 1440p60 → 1080p keeps fps and every frame; portrait upright; HDR colours |
-| I22 other real media | PARTIAL | synthetic phone/camera files (rotation, HEVC, VFR, HDR, camcorder MTS, 4K, 5-min 1080p); real camera footage pending |
+| I22 other real media | PARTIAL | synthetic phone/camera files (rotation, HEVC, VFR, HDR, camcorder MTS, 4K, 5-min 1080p, HDV/DVD wide pixels, 18 more formats); real camera footage pending |
 | I23 public git clean | PARTIAL | |
 
 ## Deferred / waiting

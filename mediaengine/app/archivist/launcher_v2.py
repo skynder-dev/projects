@@ -344,7 +344,8 @@ def spawn_app(no_browser=False):
     if no_browser: env['ARCHIVIST_SUPPRESS_BROWSER']='1'
     else: env.pop('ARCHIVIST_SUPPRESS_BROWSER',None)
     # -s -E: the bundled runtime ignores a user site-packages folder and PYTHON* variables of other Python installs
-    return subprocess.Popen([str(exe),'-s','-E',str(main),'--no-browser' if no_browser else '--open-browser'],cwd=str(HOME),env=env,close_fds=True,**hidden_kwargs())
+    env['PYTHONDONTWRITEBYTECODE']='1'   # -B too: the program folder stays exactly as installed
+    return subprocess.Popen([str(exe),'-B','-s','-E',str(main),'--no-browser' if no_browser else '--open-browser'],cwd=str(HOME),env=env,close_fds=True,**hidden_kwargs())
 
 def main():
     raw_args=list(sys.argv[1:]); args=set(raw_args); force_browser='--browser' in args; force='--update' in args; restart='--restart' in args

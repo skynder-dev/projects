@@ -88,10 +88,11 @@ def set_background_priority() -> None:
 
 
 def launcher_vbs_text() -> str:
-    """Start the launcher with the bundled runtime, no console. -s -E: ignore other Python installs' settings."""
+    """Start the launcher with the bundled runtime, no console. -s -E: ignore other Python installs' settings.
+    -B: never write bytecode into the program folder (compiled at build time; the folder stays as installed)."""
     return ('Set s=CreateObject("WScript.Shell")\r\n'
             'root=CreateObject("Scripting.FileSystemObject").GetParentFolderName(WScript.ScriptFullName)\r\n'
-            's.Run Chr(34) & root & "\\.venv\\Scripts\\pythonw.exe" & Chr(34) & " -s -E " & Chr(34) & root & "\\launcher.py" & Chr(34),0,False\r\n')
+            's.Run Chr(34) & root & "\\.venv\\Scripts\\pythonw.exe" & Chr(34) & " -B -s -E " & Chr(34) & root & "\\launcher.py" & Chr(34),0,False\r\n')
 
 
 # ---- Windows shortcuts (.lnk) through IShellLinkW --------------------------------------------------------------
@@ -275,7 +276,7 @@ def detach_from_legacy_console_if_needed(home: Path) -> bool:
     env["ARCHIVIST_V2_CHILD"] = "1"
     env["ARCHIVIST_HOME"] = str(home)
     main = Path(__file__).resolve().parents[1] / "main.py"
-    args = [str(pyw), "-s", "-E", str(main)]
+    args = [str(pyw), "-B", "-s", "-E", str(main)]
     if os.environ.get("ARCHIVIST_SUPPRESS_BROWSER") == "1":
         args.append("--no-browser")
     else:
@@ -293,7 +294,7 @@ def spawn_app_launcher(home: Path, mode: str) -> None:
     if not exe.exists() or not launcher.exists():
         raise RuntimeError("Permanent launcher is missing")
     subprocess.Popen(
-        [str(exe), "-s", "-E", str(launcher), "--no-browser", "--update" if mode == "update" else "--restart"],
+        [str(exe), "-B", "-s", "-E", str(launcher), "--no-browser", "--update" if mode == "update" else "--restart"],
         cwd=str(home),
         close_fds=True,
         **process_kwargs(detached=True),
