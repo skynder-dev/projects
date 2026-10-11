@@ -8,7 +8,9 @@ Uses <fixtures_dir>/static (2 clips + 1 still video). Checks, technical mode (th
     (R2 rescanned every item ever analysed and failed);
   - too little footage for the requested length gives an honest shorter reel with LIMITED_TOTAL_FOOTAGE;
   - a damaged segment cache entry is rebuilt instead of failing the project forever;
-  - Social HD is vertical only.
+  - Social HD is vertical only;
+  - phone/camera files (<fixtures_dir>/phone): rotated portrait, HEVC .MOV 60 fps, VFR, no audio track, very short clip,
+    Cyrillic names build a reel, and the rotated clip comes out upright in every format.
 """
 from __future__ import annotations
 
@@ -21,6 +23,21 @@ R3 = ROOT / "app" / "archivist" / "engine_p11"
 
 def sha(p):
     return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+
+
+def upright_rows(ff, path):
+    """16 horizontal bands of a frame 2.5 s in: R = red, B = blue, - = other."""
+    cp = subprocess.run([ff, "-v", "error", "-ss", "2.5", "-i", str(path), "-frames:v", "1", "-vf", "scale=90:160",
+                         "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], capture_output=True)
+    raw = cp.stdout
+    if len(raw) != 90 * 160 * 3:
+        return "no-frame"
+    out = ""
+    for i in range(16):
+        band = raw[i * 10 * 90 * 3:(i + 1) * 10 * 90 * 3]
+        r, b = sum(band[0::3]) / (len(band) / 3), sum(band[2::3]) / (len(band) / 3)
+        out += "R" if r > b + 60 else ("B" if b > r + 60 else "-")
+    return out
 
 
 def main():
@@ -78,6 +95,42 @@ def main():
 
     r, cp = run("e", 15, ["--profile", "16x9", "--resolution", "social_hd"], expect_ok=False)
     check("social_hd_is_vertical_only", r is None and "PRESET_NOT_ACCEPTED" in (cp.stdout + cp.stderr), cp.stderr[-300:])
+
+    # phone / camera files: rotated portrait, HEVC .MOV 60 fps, VFR, no audio, very short, Cyrillic names
+    phone = fx / "phone"
+    out = work_root / "out_phone"
+    cmd = [sys.executable, str(R3 / "p11_folder_to_reel_r3.py"), "--input-dir", str(phone), "--output-dir", str(out),
+           "--work-dir", str(work_root / "work_phone"), "--runtime-dir", str(R3), "--target-seconds", "30", "--semantic", "off",
+           "--profile", "9x16", "--resolution", "social_hd"]
+    cp = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", env=env)
+    r = json.loads((out / "MediaEngine Result.json").read_text(encoding="utf-8")) if cp.returncode == 0 else None
+    if r is None:
+        print(cp.stdout[-1500:], cp.stderr[-2500:])
+    used = set((r or {}).get("selected_sources", []))
+    skipped = {x["name"]: x["reason"] for x in (r or {}).get("skipped_inputs", [])}
+    check("phone_files_build", r and r["output"]["width"] == 1080 and r["output"]["height"] == 1920
+          and {"Отпуск — пляж.mp4", "IMG_0042.MOV", "переменная частота.mp4", "no_audio.mp4"} <= used, (used, skipped))
+    check("phone_short_clip_reported", r and (("short.mp4" in used) or skipped.get("short.mp4", "").startswith(("TOO_SHORT", "ANALYSIS"))), skipped)
+    if r:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from media_measure import av_durations
+        vd, ad = av_durations(out / "MediaEngine Reel.mp4", ff)
+        if r["audio"]["applied"] == "mute":
+            check("phone_reel_audio_video_same_length", vd > 5 and (ad is None or abs(vd - ad) <= 0.1), (vd, ad))
+        else:
+            check("phone_reel_audio_video_same_length", vd > 5 and ad is not None and abs(vd - ad) <= 0.1, (vd, ad))
+    # the rotated clip alone: must come out upright (red band on top, blue at the bottom) in every format
+    rot_dir = work_root / "rot_in"
+    rot_dir.mkdir(exist_ok=True)
+    shutil.copy2(phone / "Отпуск — пляж.mp4", rot_dir / "Отпуск — пляж.mp4")
+    for prof, res in (("9x16", "social_hd"), ("9x16", "standard"), ("16x9", "standard")):
+        out = work_root / f"out_rot_{prof}_{res}"
+        cp = subprocess.run([sys.executable, str(R3 / "p11_folder_to_reel_r3.py"), "--input-dir", str(rot_dir), "--output-dir", str(out),
+                             "--work-dir", str(work_root / "work_rot"), "--runtime-dir", str(R3), "--target-seconds", "5", "--semantic", "off",
+                             "--profile", prof, "--resolution", res], capture_output=True, text=True, encoding="utf-8", errors="replace", env=env)
+        rows = upright_rows(ff, out / "MediaEngine Reel.mp4") if cp.returncode == 0 else "failed"
+        check(f"rotated_phone_video_upright_{prof}_{res}", rows.startswith("R") and rows.endswith("B") and "B" not in rows[:4]
+              and "R" not in rows[-4:], rows)
 
     print(json.dumps({"passed": sum(ok for _, ok in checks), "total": len(checks)}))
     return 0 if all(ok for _, ok in checks) else 1

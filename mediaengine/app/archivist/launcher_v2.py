@@ -5,8 +5,28 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 LAUNCHER_VERSION = "3.8.0"
-HOME = Path(__file__).resolve().parent
-DATA = HOME / "data"
+HOME = Path(__file__).resolve().parent          # program folder of this release
+SIDE_BY_SIDE = (HOME / "port.txt").exists()
+
+def data_root():
+    """Same rule as archivist.config.data_root_for (kept here so the launcher works even if app/ is broken):
+    a side-by-side release keeps user data OUTSIDE its own folder, remembered in %LOCALAPPDATA%\\MediaEngine."""
+    if not SIDE_BY_SIDE: return HOME
+    env=os.environ.get('MEDIAENGINE_DATA')
+    if env: return Path(env).resolve()
+    ptr=Path(os.environ.get('LOCALAPPDATA') or str(Path.home()/'.local'/'share'))/'MediaEngine'/'data_root.txt'
+    try:
+        remembered=Path(ptr.read_text(encoding='utf-8-sig').strip())
+        if remembered.is_absolute() and remembered.is_dir(): return remembered.resolve()
+        if remembered.is_absolute(): return (HOME.parent/'MediaEngine Data').resolve()
+    except Exception: pass
+    root=(HOME.parent/'MediaEngine Data').resolve()
+    try:
+        root.mkdir(parents=True,exist_ok=True); ptr.parent.mkdir(parents=True,exist_ok=True); ptr.write_text(str(root),encoding='utf-8')
+    except Exception: pass
+    return root
+
+DATA = data_root() / "data"
 VERSION_PATH = HOME / "version.txt"
 CONFIG_PATH = HOME / "updater_config.json"
 STATUS_PATH = DATA / "update_status.json"

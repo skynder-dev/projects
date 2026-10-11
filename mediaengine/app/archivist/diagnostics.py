@@ -9,7 +9,7 @@ import base64, ctypes, hashlib, json, os, shutil, socket, subprocess, sys, tempf
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .config import APP_PORT, DATA, HOME, VERSION
+from .config import APP_PORT, DATA, HOME, INSTALL, VERSION
 from .db import db
 from .media import _ffmpeg_exe, make_storyboard, technical_quality
 from .media_brain import interpolate_crop_keyframes, validate_crop_keyframes
@@ -27,7 +27,7 @@ def _hidden():
 
 def _windows_hidden_subprocess_contract():
     if os.name!='nt': return {'platform':os.name,'skipped':True}
-    py=HOME/'.venv'/'Scripts'/'python.exe'
+    py=INSTALL/'.venv'/'Scripts'/'python.exe'
     if not py.exists(): raise RuntimeError('python.exe missing for hidden subprocess contract')
     code="import ctypes;print(int(ctypes.windll.kernel32.GetConsoleWindow() or 0))"
     r=subprocess.run([str(py),'-c',code],capture_output=True,text=True,timeout=15,**_hidden())
@@ -106,7 +106,7 @@ def _full_sandbox_pipeline():
     with tempfile.TemporaryDirectory(prefix='archivist_full_sandbox_') as td:
         fixture=Path(td)/'fixture.mp4';shutil.copy2(src,fixture)
         env=os.environ.copy();env['ARCHIVIST_HOME']=str(Path(td)/'home');env['ARCHIVIST_SUPPRESS_BROWSER']='1';env['PYTHONPATH']=str(HOME/'app');env['ARCHIVIST_SMART_CROP_V2_TRACKING']='1'
-        py=HOME/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
+        py=INSTALL/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
         r=subprocess.run([str(py),'-m','archivist.diagnostic_worker',str(fixture)],cwd=str(HOME),env=env,capture_output=True,text=True,timeout=210,errors='replace',**_hidden())
         if r.returncode!=0: raise RuntimeError((r.stderr or r.stdout)[-900:])
         lines=[x for x in r.stdout.splitlines() if x.strip()]
@@ -167,7 +167,7 @@ def _watchdog_real_process_restart():
     with tempfile.TemporaryDirectory(prefix='archivist_watchdog_process_') as td:
         env=os.environ.copy();env['ARCHIVIST_HOME']=str(Path(td)/'home');env['ARCHIVIST_SUPPRESS_BROWSER']='1';env['PYTHONPATH']=str(HOME/'app')
         env['ARCHIVIST_WATCHDOG_DISABLE_APP_RESTART']='1';env['ARCHIVIST_WATCHDOG_NO_REMOTE']='1'
-        py=HOME/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
+        py=INSTALL/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
         r=subprocess.run([str(py),'-m','archivist.watchdog_process_diag_worker',str(fixture)],cwd=str(HOME),env=env,
                          capture_output=True,text=True,timeout=120,errors='replace',**_hidden())
         if r.returncode!=0:raise RuntimeError((r.stderr or r.stdout)[-1200:])
@@ -183,7 +183,7 @@ def _watchdog_policy_and_exhaustion():
     with tempfile.TemporaryDirectory(prefix='archivist_watchdog_diag_') as td:
         env=os.environ.copy();env['ARCHIVIST_HOME']=str(Path(td)/'home');env['ARCHIVIST_SUPPRESS_BROWSER']='1';env['PYTHONPATH']=str(HOME/'app')
         env['ARCHIVIST_WATCHDOG_DISABLE_APP_RESTART']='1';env['ARCHIVIST_WATCHDOG_NO_REMOTE']='1'
-        py=HOME/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
+        py=INSTALL/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
         r=subprocess.run([str(py),'-m','archivist.watchdog_diag_worker'],cwd=str(HOME),env=env,capture_output=True,text=True,timeout=30,errors='replace',**_hidden())
         if r.returncode!=0:raise RuntimeError((r.stderr or r.stdout)[-900:])
         lines=[x for x in r.stdout.splitlines() if x.strip()]
@@ -197,7 +197,7 @@ def _converter_restart_recovery():
     fixture=ASSETS/'browser_fixture_h264.mp4'; assert fixture.exists()
     with tempfile.TemporaryDirectory(prefix='archivist_convert_recovery_') as td:
         env=os.environ.copy();env['ARCHIVIST_HOME']=str(Path(td)/'home');env['ARCHIVIST_SUPPRESS_BROWSER']='1';env['PYTHONPATH']=str(HOME/'app')
-        py=HOME/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
+        py=INSTALL/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
         r=subprocess.run([str(py),'-m','archivist.convert_recovery_diag',str(fixture)],cwd=str(HOME),env=env,
                          capture_output=True,text=True,timeout=60,errors='replace',**_hidden())
         if r.returncode!=0: raise RuntimeError((r.stderr or r.stdout)[-900:])
@@ -931,7 +931,7 @@ def _platform_subprocess_helper_contract():
     return {'platform':'portable-neutral','windows_only_keys':[]}
 
 def _m10_social_lab_contract():
-    py=HOME/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
+    py=INSTALL/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
     with tempfile.TemporaryDirectory(prefix='archivist_m10_') as td:
         env=os.environ.copy();env['ARCHIVIST_HOME']=str(Path(td)/'home');env['ARCHIVIST_SUPPRESS_BROWSER']='1';env['PYTHONPATH']=str(HOME/'app')
         r=subprocess.run([str(py),'-m','archivist.social_lab_diag_worker'],cwd=str(HOME),env=env,capture_output=True,text=True,timeout=45,errors='replace',**_hidden())
@@ -943,7 +943,7 @@ def _m10_social_lab_contract():
         return out
 
 def _m10_content_queue_contract():
-    py=HOME/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
+    py=INSTALL/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
     with tempfile.TemporaryDirectory(prefix='archivist_m10q_') as td:
         env=os.environ.copy();env['ARCHIVIST_HOME']=str(Path(td)/'home');env['ARCHIVIST_SUPPRESS_BROWSER']='1';env['PYTHONPATH']=str(HOME/'app')
         code="from archivist.config import ensure_dirs;from archivist.db import init_db;ensure_dirs();init_db();from archivist.social_lab_diag_worker import queue_contract;import json;print(json.dumps(queue_contract(),sort_keys=True))"
@@ -989,7 +989,7 @@ def _m10_audio_novelty_contract():
         return {'model':AUDIO_MODEL,'near':near,'far':far,'near_state':'similar_review','far_state':'new','audio_alone_blocks':False}
 
 def _m11_experiment_engine_contract():
-    py=HOME/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
+    py=INSTALL/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
     with tempfile.TemporaryDirectory(prefix='archivist_m11_') as td:
         env=os.environ.copy();env['ARCHIVIST_HOME']=str(Path(td)/'home');env['ARCHIVIST_SUPPRESS_BROWSER']='1';env['PYTHONPATH']=str(HOME/'app')
         code="from archivist.config import ensure_dirs;from archivist.db import init_db;ensure_dirs();init_db();from archivist.experiments import *;import json;e=create_experiment('Test',None,'retention');a=add_variant(e,'A','Hook A','Caption A','cover:a',15,[3,2,1]);b=add_variant(e,'B','Hook B','Caption B','cover:b',20,[1,2,3]);record_result(a,'manual',views=1000,likes=100,comments=12,shares=8,saves=5,watch_time_s=5000,avg_view_duration_s=5,retention_3s_pct=72,completion_pct=31);d=experiment_detail(e);s=experiment_stats();assert len(d['variants'])==2 and len(d['variants'][0]['results'])==1 and s['experiments']==1 and s['variants']==2 and s['results']==1;print(json.dumps({'experiments':s['experiments'],'variants':s['variants'],'results':s['results'],'clip_order':d['variants'][0]['clip_order'],'sources':[x['source'] for x in d['variants'][0]['results']]},sort_keys=True))"
@@ -1002,7 +1002,7 @@ def _m11_experiment_engine_contract():
         return out
 
 def _m11_summary_csv_contract():
-    py=HOME/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
+    py=INSTALL/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
     with tempfile.TemporaryDirectory(prefix='archivist_m11x_') as td:
         env=os.environ.copy();env['ARCHIVIST_HOME']=str(Path(td)/'home');env['ARCHIVIST_SUPPRESS_BROWSER']='1';env['PYTHONPATH']=str(HOME/'app')
         code="""from archivist.config import ensure_dirs
@@ -1036,7 +1036,7 @@ print(json.dumps({'summary_model':sa['summary_model'],'views':sa['views'],'engag
         return out
 
 def _m12_connector_foundation_contract():
-    py=HOME/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
+    py=INSTALL/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
     with tempfile.TemporaryDirectory(prefix='archivist_m12_') as td:
         env=os.environ.copy();env['ARCHIVIST_HOME']=str(Path(td)/'home');env['ARCHIVIST_SUPPRESS_BROWSER']='1';env['PYTHONPATH']=str(HOME/'app')
         code="""from pathlib import Path
@@ -1078,7 +1078,7 @@ print(json.dumps({'providers':len(rows),'documentation_contracts_verified':s['do
 
 
 def _m12_oauth_core_contract():
-    py=HOME/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
+    py=INSTALL/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
     with tempfile.TemporaryDirectory(prefix='archivist_m12oauth_') as td:
         env=os.environ.copy();env['ARCHIVIST_HOME']=str(Path(td)/'home');env['ARCHIVIST_SUPPRESS_BROWSER']='1';env['PYTHONPATH']=str(HOME/'app')
         code="""from pathlib import Path
@@ -1284,7 +1284,7 @@ def _m13_100_analytics_store_contract():
 
 
 def _m13_120_provider_bridge_contract():
-    py = HOME/'.venv'/'Scripts'/'python.exe' if os.name == 'nt' else Path(sys.executable)
+    py = INSTALL/'.venv'/'Scripts'/'python.exe' if os.name == 'nt' else Path(sys.executable)
     with tempfile.TemporaryDirectory(prefix='archivist_m13_bridge_') as td:
         env = os.environ.copy()
         env['ARCHIVIST_HOME'] = str(Path(td)/'home')
@@ -1409,7 +1409,7 @@ def _beta100_readiness_contract():
 
 
 def _relart140_launcher_contract():
-    launcher=HOME/'launcher.py'
+    launcher=INSTALL/'launcher.py'
     if not launcher.exists():
         raise RuntimeError('root launcher.py missing')
     source=launcher.read_text(encoding='utf-8',errors='replace')
@@ -1511,7 +1511,7 @@ def _api140_loopback_guard_contract():
 
 
 def _priv150_composition_privacy_contract():
-    py=HOME/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
+    py=INSTALL/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
     env=os.environ.copy();env['PYTHONPATH']=str(HOME/'app');env['ARCHIVIST_SUPPRESS_BROWSER']='1'
     r=subprocess.run([str(py),'-m','archivist.social_lab_diag_worker','priv150'],cwd=str(HOME),env=env,
                      capture_output=True,text=True,timeout=30,errors='replace',**_hidden())
@@ -1532,7 +1532,7 @@ def _priv150_composition_privacy_contract():
 
 
 def _ingest160_staging_integrity_contract():
-    py=HOME/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
+    py=INSTALL/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
     with tempfile.TemporaryDirectory(prefix='archivist_ingest160_') as td:
         env=os.environ.copy();env['ARCHIVIST_HOME']=str(Path(td)/'home')
         env['ARCHIVIST_SUPPRESS_BROWSER']='1';env['PYTHONPATH']=str(HOME/'app')
@@ -1548,7 +1548,7 @@ def _ingest160_staging_integrity_contract():
 
 
 def _medbuf003_metadata_fuzz_contract():
-    py=HOME/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
+    py=INSTALL/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
     with tempfile.TemporaryDirectory(prefix='archivist_medbuf003_') as td:
         env=os.environ.copy();env['ARCHIVIST_HOME']=str(Path(td)/'home')
         env['ARCHIVIST_SUPPRESS_BROWSER']='1';env['PYTHONPATH']=str(HOME/'app')
@@ -1563,7 +1563,7 @@ def _medbuf003_metadata_fuzz_contract():
 
 
 def _medbuf004_clip_reframe_determinism_contract():
-    py=HOME/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
+    py=INSTALL/'.venv'/'Scripts'/'python.exe' if os.name=='nt' else Path(sys.executable)
     with tempfile.TemporaryDirectory(prefix='archivist_medbuf004_') as td:
         env=os.environ.copy();env['ARCHIVIST_HOME']=str(Path(td)/'home')
         env['ARCHIVIST_SUPPRESS_BROWSER']='1';env['PYTHONPATH']=str(HOME/'app')

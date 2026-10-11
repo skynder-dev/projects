@@ -30,6 +30,9 @@ PAGE_CSS = r"""
 .ae-seg.on{background:#d7a34a14}
 .ae-files td,.ae-files th{padding:6px 10px;border-bottom:1px solid var(--line);text-align:left}
 .ae-path{font-family:Consolas,monospace;font-size:13px;word-break:break-all}
+.ae-done{border:1px solid var(--orange);box-shadow:0 0 0 1px var(--orange) inset;margin-bottom:14px}
+.ae-strip.film{height:64px}.ae-strip.film button{background-size:cover;background-position:center;color:#fff;
+ text-shadow:0 1px 3px #000;font-weight:800;display:flex;align-items:flex-end;justify-content:flex-start;padding:3px 5px}
 </style>
 """
 
@@ -68,7 +71,7 @@ def register(app, layout, e, human_bytes):
             preset = ae.FORMATS.get(ref["settings"]["format"], {}).get("short", "") if ref else ""
             length = f"{ref['settings']['length']} s" if ref else ""
             exp = ae.export_row(p["last_export_id"]) if p.get("last_export_id") else None
-            n_src = len(ae.list_videos(Path(p["folder"]))) if p["source_present"] else 0
+            n_src = len(ae.project_inputs(p)) if p["source_present"] else 0
             acts = f"<a class='btn btn2' href='/auto/p/{p['id']}'>{'Review' if p['revisions'] else 'Open'}</a>"
             if p["accepted_revision_id"]:
                 acts += f"<form method='post' action='/auto/p/{p['id']}/export'><button class='btn2'>Export</button></form>"
@@ -78,9 +81,9 @@ def register(app, layout, e, human_bytes):
             acts += f"<form method='post' action='/auto/p/{p['id']}/archive'><button class='btn2'>{'Unarchive' if p['archived'] else 'Archive'}</button></form>"
             cards += (f"<div class='card'><a href='/auto/p/{p['id']}' style='display:block'>"
                       f"<div class='row space'><b style='font-size:17px'>{e(p['title'])}</b><span class='ae-state {p['state']}'>{p['state']}</span></div>"
-                      f"<div class='muted' style='margin-top:6px'>{n_src} video file(s) in folder · {e(preset)} {e(length)} · {len(p['revisions'])} revision(s)</div>"
+                      f"<div class='muted' style='margin-top:6px'>{n_src} {'chosen video(s)' if p.get('files') else 'video file(s) in folder'} · {e(preset)} {e(length)} · {len(p['revisions'])} revision(s)</div>"
                       f"<div class='muted'>{('Last export: ' + e(Path(exp['path']).name)) if exp else 'Not exported yet'}</div></a>"
-                      + ("" if p["source_present"] else "<div class='errbox' style='margin-top:6px'>Source folder is not available</div>")
+                      + ("" if p["source_present"] else "<div class='errbox' style='margin-top:6px'>Source videos are not available (drive disconnected?)</div>")
                       + f"<div class='row' style='margin-top:10px;flex-wrap:wrap;gap:6px'>{acts}</div></div>")
         if not cards:
             cards = "<div class='card muted'>No Auto Edit projects yet. Choose a folder with your videos to make the first one.</div>"
@@ -91,11 +94,12 @@ def register(app, layout, e, human_bytes):
                       f"<div class='row' style='margin-top:8px'><button type='button' class='btn2' id='modelBtn'>Choose model folder…</button>"
                       f"<span class='muted' id='modelMsg'></span></div></div>")
         body = f"""<div class='pagehead'><div class='eyebrow'>MediaEngine</div><h1>Auto Edit</h1>
-<div class='lead'>Choose a folder of videos, pick length, format and sound, and MediaEngine builds a reel from the best moments.
+<div class='lead'>Choose a folder of videos (or single videos), pick length, format and sound, and MediaEngine builds a reel from the best moments.
 Your original files are only read, never changed.</div></div>
 <div class='card'><h2 style='margin-top:0'>New reel</h2>
 <form method='get' action='/auto/new' class='row' style='flex-wrap:wrap'>
 <button type='button' class='ae-big' id='pickBtn'>Choose folder…</button>
+<button type='button' class='btn2 ae-big' id='pickFilesBtn'>Choose videos…</button>
 <input name='folder' id='folderInput' placeholder='or paste a folder path, e.g. D:\\Videos\\Trip' style='flex:1;min-width:280px'>
 <button class='btn btn2 ae-big'>Continue</button></form>
 <div class='muted' id='pickMsg' style='margin-top:6px'></div></div>{model_note}
@@ -108,7 +112,11 @@ if(mb)mb.onclick=async()=>{const m=document.getElementById('modelMsg');m.textCon
 document.getElementById('pickBtn').onclick=async()=>{const m=document.getElementById('pickMsg');m.textContent='A Windows folder window is open — it may be behind this window.';
  try{const r=await fetch('/api/auto/pick-folder',{method:'POST'});const x=await r.json();
  if(x.path){document.getElementById('folderInput').value=x.path;m.textContent='';location.href='/auto/new?folder='+encodeURIComponent(x.path)}
- else m.textContent=x.error||'No folder chosen.'}catch(e){m.textContent='Folder window failed: '+e}};"""
+ else m.textContent=x.error||'No folder chosen.'}catch(e){m.textContent='Folder window failed: '+e}};
+document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getElementById('pickMsg');m.textContent='A Windows window is open — it may be behind this window. Ctrl+click to choose several videos.';
+ try{const r=await fetch('/api/auto/pick-files',{method:'POST'});const x=await r.json();
+ if(x.files&&x.files.length){m.textContent='';location.href='/auto/new?'+x.files.map(f=>'file='+encodeURIComponent(f)).join('&')}
+ else m.textContent=x.error||'No videos chosen.'}catch(e){m.textContent='Window failed: '+e}};"""
         return page("Auto Edit", body, script)
 
     @app.post("/api/auto/model/import")
@@ -121,6 +129,13 @@ document.getElementById('pickBtn').onclick=async()=>{const m=document.getElement
         except Exception as exc:
             return jsonify({"ok": False, "error": str(exc)})
         return jsonify({"ok": True, **res})
+
+    @app.post("/api/auto/pick-files")
+    def ae_pick_files():
+        files = ae.pick_files()
+        if files:
+            return jsonify({"files": files})
+        return jsonify({"files": [], "error": "No videos chosen."})
 
     @app.post("/api/auto/pick-folder")
     def ae_pick_folder():
@@ -138,12 +153,13 @@ document.getElementById('pickBtn').onclick=async()=>{const m=document.getElement
         if request.headers.get("Sec-Fetch-Site", "same-origin") not in ("same-origin", "none"):
             return err_page("This page can only be opened from MediaEngine itself.")
         folder = request.args.get("folder", "")
+        chosen = request.args.getlist("file")
         try:
-            scan = ae.scan_folder(folder)
+            scan = ae.scan_files(chosen) if chosen else ae.scan_folder(folder)
         except Exception as exc:
             return err_page(str(exc))
         if not scan["usable"]:
-            return err_page("No readable videos in this folder.")
+            return err_page("No readable videos " + ("among the chosen files." if chosen else "in this folder."))
         ms = ae.model_status()
         def file_row(r):
             status = "<span class='badge'>ok</span>" if r["ok"] else "<span class='badge error'>skipped: " + e(r["reason"]) + "</span>"
@@ -168,12 +184,15 @@ document.getElementById('pickBtn').onclick=async()=>{const m=document.getElement
                      "Build with Technical only</label></div>")
         warn = ("<div class='callout card' style='margin-top:10px'>Only "
                 f"{_fmt_s(total)} of usable video — a short reel is recommended (LIMITED_TOTAL_FOOTAGE).</div>" if total < 30 else "")
+        src_hidden = ("".join(f"<input type='hidden' name='file' value='{e(x)}'>" for x in scan["files_chosen"]) if scan["files_chosen"]
+                      else f"<input type='hidden' name='folder' value='{e(scan['folder'])}'>")
+        where = (f"{len(scan['files_chosen'])} chosen video(s) · from {scan['folder']}" if scan["files_chosen"] else scan["folder"])
         body = f"""<div class='pagehead'><div class='eyebrow'>Auto Edit · new reel</div><h1>{e(Path(scan['folder']).name or scan['folder'])}</h1>
-<div class='lead ae-path'>{e(scan['folder'])}</div></div>
+<div class='lead ae-path'>{e(where)}</div></div>
 <div class='card'><b>{scan['usable']} usable video(s)</b>, total {_fmt_s(total)} · {human_bytes(scan['total_bytes'])}{(' · ' + str(scan['skipped']) + ' skipped') if scan['skipped'] else ''}
 <details style='margin-top:8px'><summary class='muted'>Show files</summary><table class='ae-files'><tr><th>File</th><th>Size</th><th>Length</th><th>Frame</th><th></th></tr>{rows}</table></details>{warn}</div>
 <form method='post' action='/auto/create' class='card' style='margin-top:14px' onsubmit="this.querySelector('button').disabled=true">
-<input type='hidden' name='folder' value='{e(scan['folder'])}'>
+{src_hidden}
 <h2 style='margin-top:0'>Length</h2><div class='ae-choices'>{lengths}</div>
 <h2>Format</h2><div class='ae-choices'>{formats}</div>
 <h2>Sound</h2><div class='ae-choices'>{sounds}</div>{mode_html}
@@ -188,7 +207,7 @@ document.getElementById('pickBtn').onclick=async()=>{const m=document.getElement
                 raise ValueError("Without the AI model, tick 'Build with Technical only' to continue.")
             ae.normalize_settings({"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode")},
                                   model_ready=ae.model_status()["ready"])
-            pid = ae.create_project(f.get("folder"), f.get("title"))
+            pid = ae.create_project(f.get("folder"), f.get("title"), files=f.getlist("file") or None)
             ae.start_job(pid, {"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode")})
         except Exception as exc:
             return err_page(str(exc))
@@ -210,13 +229,13 @@ document.getElementById('pickBtn').onclick=async()=>{const m=document.getElement
         if cur and int(cur["project_id"]) != int(pid):
             cur = None
         parts = [f"""<div class='pagehead row space'><div><div class='eyebrow'>Auto Edit · <span class='ae-state {p['state']}'>{p['state']}</span></div>
-<h1>{e(p['title'])}</h1><div class='lead ae-path'>{e(p['folder'])}</div></div>
+<h1>{e(p['title'])}</h1><div class='lead ae-path'>{e((str(len(p['files'])) + ' chosen video(s) · from ' + p['folder']) if p.get('files') else p['folder'])}</div></div>
 <div class='row' style='flex-wrap:wrap'><a class='btn btn2' href='/auto'>All projects</a>
 <form method='post' action='/auto/p/{pid}/rename' class='row' style='gap:6px'><input name='title' value='{e(p['title'])}' maxlength='80' style='width:200px'><button class='btn2'>Rename</button></form>
 <form method='post' action='/auto/p/{pid}/archive'><button class='btn2'>{'Unarchive' if p['archived'] else 'Archive'}</button></form></div></div>"""]
         if not p["source_present"]:
-            parts.append("<div class='errbox'>The source folder is not available (drive disconnected?). Revisions and exports are kept; "
-                         "new builds are possible when the folder is back.</div>")
+            parts.append("<div class='errbox'>The source videos are not available (drive disconnected?). Revisions and exports are kept; "
+                         "new builds are possible when they are back.</div>")
         if active:
             parts.append(f"""<div class='card' id='jobCard' data-job='{active['id']}'><div class='row space'><b id='jobStage'>{e(ae.STAGE_LABEL.get(active['stage'] or 'queued', ''))}</b>
 <form method='post' action='/auto/job/{active['id']}/cancel'><button class='btn2'>Cancel</button></form></div>
@@ -231,6 +250,14 @@ document.getElementById('pickBtn').onclick=async()=>{const m=document.getElement
             parts.append(f"""<div class='card'><b>{'Build failed' if last_job['status']=='failed' else 'Build cancelled'}</b>
 <div class='{'errbox' if last_job['status']=='failed' else 'muted'}' style='margin:8px 0'>{e(last_job.get('error') or last_job.get('message') or '')}</div>
 <form method='post' action='/auto/job/{last_job['id']}/retry'><button>Retry</button></form></div>""")
+        done_x = ae.export_row(request.args.get("exported", type=int) or 0)
+        if done_x and int(done_x["project_id"]) == int(pid):
+            parts.append(f"""<div class='card ae-done'><div class='eyebrow'>Done</div><h2 style='margin:4px 0'>Your reel is saved</h2>
+<div class='ae-path'>{e(done_x['path'])}</div><div class='muted'>{human_bytes(done_x['bytes'])} · checked against the accepted version (SHA-256)</div>
+<div class='row' style='margin-top:10px;flex-wrap:wrap'><form method='post' action='/auto/export/{done_x['id']}/open'><button class='ae-big'>Open video</button></form>
+<form method='post' action='/auto/export/{done_x['id']}/reveal'><button class='btn2'>Show in folder</button></form>
+<button type='button' class='btn2' id='copyDone' data-path='{e(done_x['path'])}'>Copy path</button>
+<a class='btn btn2' href='/auto'>All projects</a></div></div>""")
         if cur:
             parts.append(_review_html(p, cur, e))
         elif not active:
@@ -252,7 +279,11 @@ document.querySelectorAll('[data-move]').forEach(b=>b.onclick=()=>{const row=b.c
  if(b.dataset.move==='up'&&row.previousElementSibling)list.insertBefore(row,row.previousElementSibling);
  if(b.dataset.move==='down'&&row.nextElementSibling)list.insertBefore(row.nextElementSibling,row);
  list.querySelectorAll('.ae-edit .pos').forEach((x,i)=>x.textContent=i+1)});
-const cp=document.getElementById('copyPath');if(cp)cp.onclick=async()=>{const t=cp.dataset.path;try{await navigator.clipboard.writeText(t);cp.textContent='Copied'}catch(e){prompt('Copy this path:',t)}};
+['copyPath','copyDone'].forEach(id=>{const cp=document.getElementById(id);if(cp)cp.onclick=async()=>{const t=cp.dataset.path;try{await navigator.clipboard.writeText(t);cp.textContent='Copied'}catch(e){prompt('Copy this path:',t)}}});
+const xb=document.getElementById('exportToBtn');
+if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textContent='A Windows folder window is open — it may be behind this window.';
+ try{const r=await fetch('/api/auto/pick-folder',{method:'POST'});const x=await r.json();
+ if(x.path){document.getElementById('exportDest').value=x.path;document.getElementById('exportForm').submit()}else m.textContent='No folder chosen.'}catch(e){m.textContent='Folder window failed: '+e}};
 """
         return page(p["title"], "".join(parts), script)
 
@@ -364,7 +395,8 @@ const cp=document.getElementById('copyPath');if(cp)cp.onclick=async()=>{const t=
     @app.post("/auto/p/<int:pid>/export")
     def ae_export(pid):
         try:
-            res = ae.export_accepted(pid)
+            dest = (request.form.get("dest") or "").strip()
+            res = ae.export_accepted(pid, dest or None, remember=bool(dest))
         except Exception as exc:
             return err_page(str(exc), f"/auto/p/{pid}")
         return redirect(f"/auto/p/{pid}?exported={res['export_id']}")
@@ -400,6 +432,13 @@ const cp=document.getElementById('copyPath');if(cp)cp.onclick=async()=>{const t=
             return "not found", 404
         return send_file(r["video_path"], mimetype="video/mp4", conditional=True)
 
+    @app.get("/auto/rev/<int:rid>/thumb/<int:pos>.jpg")
+    def ae_rev_thumb(rid, pos):
+        t = ae.revision_thumb(rid, pos)
+        if not t:
+            return "not found", 404
+        return send_file(t, mimetype="image/jpeg", max_age=86400)
+
     @app.get("/auto/p/<int:pid>/source")
     def ae_source(pid):
         src = ae.source_file(pid, request.args.get("name", ""))
@@ -427,9 +466,15 @@ def _variant_form(pid, rev, e, first=False, model_ready=True):
 
 
 def _sound_label(requested, res):
-    applied = ((res or {}).get("audio") or {}).get("applied")
-    if requested == "auto" and applied in ("source", "mute"):
-        return "Auto → " + ("original sound" if applied == "source" else "muted (no useful sound found)")
+    audio = (res or {}).get("audio") or {}
+    applied, reason = audio.get("applied"), str((audio.get("decision") or {}).get("reason") or "")
+    if requested == "auto" and applied == "source":
+        return "Auto → original sound"
+    if requested == "auto" and applied == "mute":
+        if "mixed" in reason:
+            # accepted P11 rule: no jumps between sound and silence; the user can force the sound
+            return "Auto → muted (some moments have no sound; choose Source to keep the sound)"
+        return "Auto → muted (no useful sound found)"
     return requested.title()
 
 
@@ -441,7 +486,8 @@ def _review_html(p, rev, e):
     fmt = ae.FORMATS.get(rev["settings"]["format"], {})
     strip = "".join(
         f"<button data-seek='{s['reel_in_s']}' data-seg data-in='{s['reel_in_s']}' data-out='{s['reel_out_s']}' "
-        f"style='flex:{max(0.2, s['reel_out_s'] - s['reel_in_s']):.3f}' title='{e(s['source_name'])} {_fmt_s(s['source_in_s'])}–{_fmt_s(s['source_out_s'])}'>{s['position']}</button>"
+        f"style=\"flex:{max(0.2, s['reel_out_s'] - s['reel_in_s']):.3f};background-image:url('/auto/rev/{rev['id']}/thumb/{s['position']}.jpg')\" "
+        f"title='{e(s['source_name'])} {_fmt_s(s['source_in_s'])}–{_fmt_s(s['source_out_s'])}'>{s['position']}</button>"
         for s in segs)
     in_reel = {s["event_id"] for s in segs}
     pool = [c for c in (res.get("candidate_pool") or []) if c["event_id"] not in in_reel][:40]
@@ -474,7 +520,12 @@ def _review_html(p, rev, e):
     exp_html = ""
     if is_acc:
         last = next((x for x in p["exports"] if x["revision_id"] == rev["id"]), None)
-        exp_html = f"<form method='post' action='/auto/p/{p['id']}/export' style='margin-top:10px'><button class='ae-big'>Export MP4</button></form>"
+        exp_html = (f"<form method='post' action='/auto/p/{p['id']}/export' id='exportForm' style='margin-top:10px'>"
+                    f"<input type='hidden' name='dest' id='exportDest' value=''>"
+                    f"<div class='row' style='flex-wrap:wrap'><button class='ae-big'>Export MP4</button>"
+                    f"<button type='button' class='btn2' id='exportToBtn'>Export to another folder…</button></div>"
+                    f"<div class='muted' style='margin-top:4px'>Saves to {e(str(ae.default_export_dir()))}</div>"
+                    f"<div class='muted' id='exportMsg'></div></form>")
         if last:
             exp_html += (f"<div class='card' style='margin-top:10px'><b>Exported</b><div class='ae-path'>{e(last['path'])}</div>"
                          f"<div class='row' style='margin-top:8px;flex-wrap:wrap'><form method='post' action='/auto/export/{last['id']}/open'><button>Open video</button></form>"
@@ -485,7 +536,7 @@ def _review_html(p, rev, e):
     excl_hidden = "".join(f"<input type='hidden' name='exclude' value='{e(x)}'>" for x in rev["settings"].get("exclude", []))
     return f"""<div class='ae-player' style='margin-top:14px'>
 <div class='card'><video id='reel' class='ae-video' controls preload='metadata' src='/auto/rev/{rev['id']}/video'></video>
-<div class='ae-strip'>{strip}</div>
+<div class='ae-strip film'>{strip}</div>
 <div class='muted'>Revision R{int(rev['number']):03d} · {e(fmt.get('short',''))} {rev['width']}×{rev['height']} · {total:.2f} s · sound {e(_sound_label(rev['settings']['sound'], res))} · {e(mode)}</div>{short_html}{skipped_html}
 <div class='row' style='margin-top:12px;flex-wrap:wrap'>{actions}</div>{exp_html}</div>
 <form class='card' method='post' action='/auto/p/{p['id']}/edit' id='editForm'><h2 style='margin-top:0'>Moments in this reel</h2>

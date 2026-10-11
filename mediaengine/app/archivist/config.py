@@ -6,19 +6,55 @@ import os
 from pathlib import Path
 
 APP_DIR = Path(__file__).resolve().parents[1]
+INSTALL = APP_DIR.parent.resolve()      # program files: app/, .venv/, launcher.py, version.txt, port.txt
+# A side-by-side release (it ships port.txt next to app/) is one folder per build; the user's data lives outside it.
+SIDE_BY_SIDE = (INSTALL / "port.txt").exists()
+
+
+def _pointer_file() -> Path:
+    base = os.environ.get("LOCALAPPDATA") or str(Path.home() / ".local" / "share")
+    return Path(base) / "MediaEngine" / "data_root.txt"
+
+
+def data_root_for(install: Path) -> Path:
+    """Where a side-by-side release keeps projects, database, caches and exports.
+
+    Every release is a new folder (never extracted over the old one), so data must not live inside it.
+    First start: "<folder that holds the release>\\MediaEngine Data", remembered in %LOCALAPPDATA%\\MediaEngine\\data_root.txt,
+    so a later release extracted anywhere finds the same projects. MEDIAENGINE_DATA overrides (tests).
+    The launcher (launcher_v2.py) repeats this logic because it must work even when app/ is broken."""
+    env = os.environ.get("MEDIAENGINE_DATA")
+    if env:
+        return Path(env).resolve()
+    ptr = _pointer_file()
+    try:
+        remembered = Path(ptr.read_text(encoding="utf-8-sig").strip())
+        if remembered.is_absolute() and remembered.is_dir():
+            return remembered.resolve()
+        if remembered.is_absolute():
+            # remembered drive not connected right now: use the default without forgetting the old place
+            return (Path(install).resolve().parent / "MediaEngine Data").resolve()
+    except Exception:
+        pass
+    root = (Path(install).resolve().parent / "MediaEngine Data").resolve()
+    try:
+        root.mkdir(parents=True, exist_ok=True)
+        ptr.parent.mkdir(parents=True, exist_ok=True)
+        ptr.write_text(str(root), encoding="utf-8")
+    except Exception:
+        pass
+    return root
 
 
 def _home() -> Path:
-    pkg = APP_DIR.parent.resolve()
+    if SIDE_BY_SIDE:
+        # never another install's data, whatever ARCHIVIST_HOME says (for example the stable D:\\Archivist)
+        return data_root_for(INSTALL)
     env = os.environ.get("ARCHIVIST_HOME")
-    # A side-by-side package (it ships port.txt next to app/) always runs on its own folder: a stray
-    # ARCHIVIST_HOME (for example pointing at the stable D:\\Archivist) must never make it use another install's data.
-    if (pkg / "port.txt").exists():
-        return pkg
-    return Path(env).resolve() if env else pkg
+    return Path(env).resolve() if env else INSTALL
 
 
-HOME = _home()
+HOME = _home()     # user data root (equals INSTALL for the stable single-folder install)
 DATA = HOME / "data"
 DB_PATH = DATA / "archivist.db"
 CACHE = DATA / "cache"
@@ -38,10 +74,10 @@ def _app_port() -> int:
     Fails closed: a present but unreadable port.txt stops the app instead of silently taking the stable
     install's port 8765 (which would mix the two installs)."""
     raw = os.environ.get("ARCHIVIST_PORT")
-    if not raw and (HOME / "port.txt").exists():
-        raw = (HOME / "port.txt").read_text(encoding="utf-8-sig").strip()
+    if not raw and SIDE_BY_SIDE:
+        raw = (INSTALL / "port.txt").read_text(encoding="utf-8-sig").strip()
         if not raw.isdigit() or not 1024 <= int(raw) <= 65535:
-            raise SystemExit(f"Invalid port.txt in {HOME}: {raw[:20]!r}")
+            raise SystemExit(f"Invalid port.txt in {INSTALL}: {raw[:20]!r}")
     if not raw:
         return 8765
     try:
@@ -57,7 +93,7 @@ VERSION = "3.13.0-rc1"
 
 def _default_archive_root() -> str:
     # A side-by-side install (it ships port.txt) keeps its own archive so it never mixes with the stable one.
-    if (HOME / "port.txt").exists():
+    if SIDE_BY_SIDE:
         return str(HOME / "MediaArchive")
     return default_archive_root()
 

@@ -14,7 +14,7 @@ from __future__ import annotations
 import hashlib, json, os, re, shutil, signal, subprocess, sys, threading, time
 from pathlib import Path
 
-from .config import DATA, HOME, load_config
+from .config import DATA, HOME, INSTALL, load_config
 from .db import db, now_iso
 from .platform_adapter import process_kwargs
 
@@ -99,8 +99,11 @@ def model_root() -> Path:
 
 def model_search_roots() -> list[Path]:
     """This install first, then a stable Archivist installed next to it (read only)."""
-    roots = [HOME / "models", HOME / "sidecars" / "auto_edit" / "models",
-             HOME.parent / "Archivist" / "sidecars" / "auto_edit" / "models"]
+    roots = [HOME / "models", HOME / "sidecars" / "auto_edit" / "models"]
+    if INSTALL != HOME:
+        roots += [INSTALL / "models", INSTALL / "sidecars" / "auto_edit" / "models"]
+    roots += [HOME.parent / "Archivist" / "sidecars" / "auto_edit" / "models",
+              INSTALL.parent / "Archivist" / "sidecars" / "auto_edit" / "models"]
     if os.name == "nt":  # a stable install at the root of any local drive, e.g. D:\Archivist
         for letter in "CDEFGH":
             roots.append(Path(f"{letter}:/") / "Archivist" / "sidecars" / "auto_edit" / "models")
@@ -223,6 +226,8 @@ def ensure_schema() -> None:
               path TEXT NOT NULL, sha256 TEXT NOT NULL, bytes INTEGER NOT NULL, created_at TEXT NOT NULL);
             """
         )
+        if "files_json" not in [r[1] for r in con.execute("PRAGMA table_info(ae_projects)").fetchall()]:
+            con.execute("ALTER TABLE ae_projects ADD COLUMN files_json TEXT")   # chosen files instead of a whole folder
         # A job that was queued/running when the previous app process stopped has no live process any more.
         con.execute("UPDATE ae_jobs SET status='failed',stage='failed',error=?,finished_at=? WHERE status IN ('queued','running')",
                     ("Interrupted: the app was closed. Press Retry - finished analysis is reused.", now_iso()))
@@ -269,10 +274,27 @@ def _probe(path: Path) -> dict:
 def scan_folder(folder) -> dict:
     """What the user sees before starting: usable files, problems, total footage."""
     folder = check_folder(folder)
+    return _scan_paths(list_videos(folder)[: MAX_INPUTS + 1], str(folder), None)
+
+
+def scan_files(files) -> dict:
+    """Same as scan_folder for individually chosen files (they stay where they are)."""
+    paths = check_files(files)
+    return _scan_paths(paths, str(_common_parent(paths)), [str(x) for x in paths])
+
+
+def _common_parent(paths) -> Path:
+    try:
+        return Path(os.path.commonpath([str(Path(x).parent) for x in paths]))
+    except ValueError:              # different drives
+        return Path(paths[0]).parent
+
+
+def _scan_paths(paths, folder_label: str, files) -> dict:
     rows = []
     total = 0.0
     seen: dict[str, str] = {}
-    for p in list_videos(folder)[: MAX_INPUTS + 1]:
+    for p in paths:
         row = {"name": p.name, "bytes": 0, "ok": False, "reason": "", "duration_s": 0.0, "width": 0, "height": 0}
         try:
             row["bytes"] = p.stat().st_size
@@ -301,9 +323,49 @@ def scan_folder(folder) -> dict:
             row["reason"] = "damaged or not a video"
         rows.append(row)
     usable = [r for r in rows if r["ok"]]
-    return {"folder": str(folder), "files": rows, "usable": len(usable), "skipped": len(rows) - len(usable),
+    return {"folder": folder_label, "files_chosen": files, "files": rows, "usable": len(usable), "skipped": len(rows) - len(usable),
             "too_many": len(rows) > MAX_INPUTS, "total_s": round(total, 2), "total_bytes": sum(r["bytes"] for r in usable),
             "recommended_length": recommend_length(total)}
+
+
+def _guard_private(f: Path) -> None:
+    from .config import PRIVATE, REJECTED
+    rf = Path(f).resolve()
+    for guarded in (PRIVATE, REJECTED):
+        g = Path(guarded).resolve()
+        if rf == g or g in rf.parents:
+            raise ValueError("Private and Rejected media cannot be used in a reel")
+
+
+def check_files(files) -> list[Path]:
+    """Individually chosen videos: absolute, existing, supported, unique names (the reel refers to sources by name)."""
+    out, names = [], set()
+    for raw in files or []:
+        raw = str(raw or "").strip().strip('"')
+        if not raw:
+            continue
+        f = Path(raw)
+        if not f.is_absolute() or not f.is_file():
+            raise ValueError(f"File not found: {raw}")
+        if f.suffix.lower() not in SUPPORTED or f.name.startswith("._"):
+            raise ValueError(f"Not a supported video file: {f.name} (.mp4 .mov .m4v .avi .mkv .webm)")
+        _guard_private(f)
+        if f.name.lower() in names:
+            raise ValueError(f"Two chosen files have the same name ({f.name}). Rename one of them, or choose a folder.")
+        names.add(f.name.lower())
+        out.append(f.resolve())
+    if not out:
+        raise ValueError("No video files chosen")
+    if len(out) > MAX_INPUTS:
+        raise ValueError(f"Choose at most {MAX_INPUTS} videos for one reel.")
+    return sorted(out, key=lambda x: x.name.lower())
+
+
+def project_inputs(p: dict) -> list[Path]:
+    """The project's source videos: the chosen files, or the supported videos in its folder."""
+    if p.get("files"):
+        return [Path(x) for x in p["files"] if Path(x).is_file()]
+    return list_videos(Path(p["folder"]))
 
 
 def check_folder(folder) -> Path:
@@ -313,11 +375,7 @@ def check_folder(folder) -> Path:
     f = Path(raw)
     if not raw or not f.is_absolute() or not folder_available(f):
         raise ValueError("Folder not found")
-    rf = f.resolve()
-    for guarded in (PRIVATE, REJECTED):
-        g = Path(guarded).resolve()
-        if rf == g or g in rf.parents:
-            raise ValueError("Private and Rejected media cannot be used in a reel")
+    _guard_private(f)
     if len(list_videos(f)) > MAX_INPUTS:
         raise ValueError(f"This folder has more than {MAX_INPUTS} videos. Choose a folder with up to {MAX_INPUTS} videos "
                          "(for example, copy the clips for one reel into their own folder).")
@@ -350,6 +408,8 @@ def friendly_skip(reason: str) -> str:
         return "no usable moments found"
     if r == "STATIC_VIDEO":
         return "almost no movement (still image)"
+    if r == "TOO_SHORT_FOR_ANALYSIS":
+        return "too short to analyse"
     if r == "ANALYSIS_TIMEOUT":
         return "analysis took too long"
     if r.startswith("ANALYSIS_FAILED"):
@@ -369,15 +429,22 @@ def recommend_length(total_s: float) -> int:
 
 # ---------------------------------------------------------------- projects
 
-def create_project(folder, title="") -> int:
+def create_project(folder, title="", files=None) -> int:
     ensure_schema()
-    folder = check_folder(folder)
-    if not list_videos(folder):
-        raise ValueError("This folder has no supported video files (.mp4 .mov .m4v .avi .mkv .webm)")
+    chosen = None
+    if files:
+        paths = check_files(files)
+        chosen = json.dumps([str(x) for x in paths])
+        folder = _common_parent(paths)
+    else:
+        folder = check_folder(folder)
+        if not list_videos(folder):
+            raise ValueError("This folder has no supported video files (.mp4 .mov .m4v .avi .mkv .webm)")
     ts = now_iso()
     name = str(title or "").strip()[:80] or folder.name or "Auto Edit"
     with db() as con:
-        cur = con.execute("INSERT INTO ae_projects(title,folder,created_at,updated_at) VALUES(?,?,?,?)", (name, str(folder.resolve()), ts, ts))
+        cur = con.execute("INSERT INTO ae_projects(title,folder,files_json,created_at,updated_at) VALUES(?,?,?,?,?)",
+                          (name, str(folder.resolve()), chosen, ts, ts))
         con.commit()
         return int(cur.lastrowid)
 
@@ -402,7 +469,8 @@ def project(pid: int) -> dict | None:
     for j in d["jobs"]:
         j["settings"] = json.loads(j["settings_json"])
         j["percent"] = job_percent(j)
-    d["source_present"] = folder_available(d["folder"])
+    d["files"] = json.loads(d.get("files_json") or "null") or None
+    d["source_present"] = all(Path(x).is_file() for x in d["files"]) if d["files"] else folder_available(d["folder"])
     d["state"] = project_state(d)
     return d
 
@@ -502,9 +570,9 @@ def parse_seconds(v) -> float:
     return x
 
 
-def _folder_fingerprint(folder: Path) -> list:
+def _inputs_fingerprint(p: dict) -> list:
     out = []
-    for p in list_videos(folder):
+    for p in project_inputs(p):
         try:
             st = p.stat()
             out.append([p.name, st.st_size, st.st_mtime_ns])
@@ -529,8 +597,9 @@ def engine_identity() -> str:
     return _ENGINE_ID["value"]
 
 
-def _request_key(pid: int, folder: Path, settings: dict) -> str:
-    raw = json.dumps({"project": int(pid), "inputs": _folder_fingerprint(folder), "settings": settings,
+def _request_key(p: dict, settings: dict) -> str:
+    pid = int(p["id"])
+    raw = json.dumps({"project": int(pid), "inputs": _inputs_fingerprint(p), "settings": settings,
                       "engine": engine_identity(), "model": model_identity() if settings.get("mode") == "semantic" else "off",
                       # marking a file Private later must never reuse a reel that contains it
                       "private": hashlib.sha256("\n".join(_private_hashes()).encode()).hexdigest()},
@@ -544,11 +613,11 @@ def start_job(pid: int, raw_settings: dict, *, retry=False) -> int:
     p = project(pid)
     if not p:
         raise ValueError("Project not found")
-    folder = Path(p["folder"])
-    if not folder_available(folder):
-        raise ValueError("The source folder is not available (disconnected drive?)")
+    if not p["source_present"]:
+        raise ValueError("The source videos are not available (disconnected drive?)" if p["files"] else
+                         "The source folder is not available (disconnected drive?)")
     settings = normalize_settings(raw_settings, model_ready=model_status()["ready"])
-    key = _request_key(pid, folder, settings)
+    key = _request_key(p, settings)
     with db() as con:
         con.execute("BEGIN IMMEDIATE")  # lookup + insert as one step: a double click never queues twice
         same = con.execute("SELECT * FROM ae_jobs WHERE project_id=? AND request_key=? ORDER BY id DESC LIMIT 1", (int(pid), key)).fetchone()
@@ -733,9 +802,10 @@ def _attach_job_object(proc: subprocess.Popen) -> None:
 
 
 def engine_command(folder: Path, out_dir: Path, work_dir: Path, progress_file: Path, s: dict, edits_file: Path | None = None,
-                   skip_sha_file: Path | None = None) -> list[str]:
+                   skip_sha_file: Path | None = None, input_list: Path | None = None) -> list[str]:
     f = FORMATS[s["format"]]
-    cmd = [engine_python(), "-s", "-E", "-X", "utf8", str(ORCHESTRATOR), "--input-dir", str(folder), "--output-dir", str(out_dir),
+    src = ["--input-list", str(input_list)] if input_list is not None else ["--input-dir", str(folder)]
+    cmd = [engine_python(), "-s", "-E", "-X", "utf8", str(ORCHESTRATOR), *src, "--output-dir", str(out_dir),
            "--work-dir", str(work_dir), "--runtime-dir", str(ENGINE_DIR), "--target-seconds", str(float(s["length"])),
            "--audio", s["sound"], "--semantic", "required" if s["mode"] == "semantic" else "off",
            "--profile", f["profile"], "--resolution", f["resolution"], "--progress-file", str(progress_file)]
@@ -780,7 +850,11 @@ def _run_job(jid: int) -> None:
     edits_file.write_text(json.dumps({"selection": s.get("selection") or [], "trims": s.get("trims") or {}}), encoding="utf-8")
     skip_file = jobs_dir / f"j{jid}.private_sha.txt"
     skip_file.write_text("\n".join(_private_hashes()), encoding="utf-8")
-    cmd = engine_command(Path(p["folder"]), out_dir, work_dir, progress_file, s, edits_file, skip_file)
+    input_list = None
+    if p.get("files"):
+        input_list = jobs_dir / f"j{jid}.inputs.txt"
+        input_list.write_text("\n".join(p["files"]) + "\n", encoding="utf-8")
+    cmd = engine_command(Path(p["folder"]), out_dir, work_dir, progress_file, s, edits_file, skip_file, input_list)
     kw = process_kwargs(below_normal=True) if os.name == "nt" else {"start_new_session": True}
     with log_file.open("w", encoding="utf-8", errors="replace") as log:
         proc = subprocess.Popen(cmd, stdout=log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, env=_engine_env(), cwd=str(ENGINE_DIR), **kw)
@@ -971,17 +1045,79 @@ def revert(pid: int) -> int | None:
 
 # ---------------------------------------------------------------- export
 
-def export_accepted(pid: int, dest_dir: Path | None = None) -> dict:
+def revision_thumb(rid: int, pos: int) -> Path | None:
+    """Small JPEG of a moment in a revision (filmstrip). Cached next to the project's data; never touches sources."""
+    r = revision(rid)
+    if not r:
+        return None
+    seg = next((x for x in ((r.get("result") or {}).get("segments") or []) if int(x.get("position", 0)) == int(pos)), None)
+    if not seg:
+        return None
+    out = _project_dir(r["project_id"]) / "thumbs" / f"r{int(rid)}_{int(pos)}.jpg"
+    if out.is_file() and out.stat().st_size > 0:
+        return out
+    out.parent.mkdir(parents=True, exist_ok=True)
+    t = (float(seg["reel_in_s"]) + float(seg["reel_out_s"])) / 2.0
+    tmp = out.with_suffix(f".{os.getpid()}.{threading.get_ident()}.part.jpg")
+    try:
+        subprocess.run([_ffmpeg() or "ffmpeg", "-v", "error", "-y", "-ss", f"{t:.3f}", "-i", str(r["video_path"]), "-frames:v", "1",
+                        "-vf", "scale=-2:120", "-q:v", "4", str(tmp)], **process_kwargs({"capture_output": True, "timeout": 60}))
+        if tmp.is_file() and tmp.stat().st_size > 0:
+            os.replace(tmp, out)
+            return out
+    except Exception:
+        pass
+    finally:
+        tmp.unlink(missing_ok=True)
+    return None
+
+
+def default_export_dir() -> Path:
+    """The folder the user exported to last time (if it still exists), otherwise <data>/Exports."""
+    try:
+        d = Path(str(load_config().get("auto_edit", {}).get("export_dir") or ""))
+        if d.is_absolute() and d.is_dir():
+            return d
+    except Exception:
+        pass
+    return EXPORTS
+
+
+def check_export_dir(p: dict, dest) -> Path:
+    raw = str(dest or "").strip().strip('"')
+    d = Path(raw)
+    if not raw or not d.is_absolute() or not d.is_dir():
+        raise ValueError("Export folder not found: " + (raw or "(empty)"))
+    rd = d.resolve()
+    try:
+        _guard_private(rd)
+    except ValueError:
+        raise ValueError("Choose a folder outside Private / Rejected for exports")
+    # an export inside the source folder would become an input of the next build of this reel
+    srcs = [Path(p["folder"]).resolve()] if not p.get("files") else []
+    if any(rd == s_ for s_ in srcs):
+        raise ValueError("Choose a different folder: the source folder of this reel would then contain the reel itself")
+    return rd
+
+
+def export_accepted(pid: int, dest_dir: Path | None = None, remember: bool = False) -> dict:
     p = project(pid)
     if not p:
         raise ValueError("Project not found")
+    if dest_dir:
+        dest_dir = check_export_dir(p, dest_dir)
+        if remember:
+            from .config import save_config
+            cfg = load_config()
+            cfg.setdefault("auto_edit", {})["export_dir"] = str(dest_dir)
+            save_config(cfg)
     if not p["accepted_revision_id"]:
         raise ValueError("Accept a revision before exporting")
     r = revision(p["accepted_revision_id"])
     src = Path(r["video_path"])
     if sha256_file(src) != r["video_sha256"]:
         raise ValueError("Accepted revision changed on disk; export refused")
-    dest_dir = Path(dest_dir) if dest_dir else EXPORTS
+    dest_dir = Path(dest_dir) if dest_dir else default_export_dir()
     dest_dir.mkdir(parents=True, exist_ok=True)
     fmt = FORMATS.get(r["settings"]["format"], {}).get("short", "Reel")
     base = safe_filename(f"{p['title']} - {fmt} - R{int(r['number']):03d}")
@@ -1050,6 +1186,12 @@ def source_file(pid: int, name: str) -> Path | None:
     p = project(pid)
     if not p:
         return None
+    if p.get("files"):
+        allowed = {str(Path(x).resolve()) for x in p["files"]}
+        for v in project_inputs(p):
+            if v.name == name and str(v.resolve()) in allowed:
+                return v.resolve()
+        return None
     folder = Path(p["folder"]).resolve()
     for v in list_videos(folder):
         if v.name == name:
@@ -1059,7 +1201,53 @@ def source_file(pid: int, name: str) -> Path | None:
     return None
 
 
-# ---------------------------------------------------------------- Windows folder picker
+# ---------------------------------------------------------------- Windows file / folder pickers
+
+def pick_files(title="Choose videos for one reel") -> list[str] | None:
+    """Native Windows Open dialog with multi-select (GetOpenFileNameW)."""
+    if os.name != "nt":
+        return None
+    box: dict = {}
+
+    def run():
+        import ctypes
+        from ctypes import wintypes
+
+        class OPENFILENAMEW(ctypes.Structure):
+            _fields_ = [("lStructSize", wintypes.DWORD), ("hwndOwner", wintypes.HWND), ("hInstance", wintypes.HINSTANCE),
+                        ("lpstrFilter", wintypes.LPCWSTR), ("lpstrCustomFilter", wintypes.LPWSTR), ("nMaxCustFilter", wintypes.DWORD),
+                        ("nFilterIndex", wintypes.DWORD), ("lpstrFile", wintypes.LPWSTR), ("nMaxFile", wintypes.DWORD),
+                        ("lpstrFileTitle", wintypes.LPWSTR), ("nMaxFileTitle", wintypes.DWORD), ("lpstrInitialDir", wintypes.LPCWSTR),
+                        ("lpstrTitle", wintypes.LPCWSTR), ("Flags", wintypes.DWORD), ("nFileOffset", wintypes.WORD),
+                        ("nFileExtension", wintypes.WORD), ("lpstrDefExt", wintypes.LPCWSTR), ("lCustData", wintypes.LPARAM),
+                        ("lpfnHook", ctypes.c_void_p), ("lpTemplateName", wintypes.LPCWSTR), ("pvReserved", ctypes.c_void_p),
+                        ("dwReserved", wintypes.DWORD), ("FlagsEx", wintypes.DWORD)]
+
+        size = 65536
+        buf = ctypes.create_unicode_buffer(size)
+        flt = "Videos\0*.mp4;*.mov;*.m4v;*.avi;*.mkv;*.webm\0All files\0*.*\0\0"
+        ofn = OPENFILENAMEW()
+        ofn.lStructSize = ctypes.sizeof(OPENFILENAMEW)
+        ofn.hwndOwner = ctypes.windll.user32.GetForegroundWindow()
+        ofn.lpstrFilter = flt
+        ofn.lpstrFile = ctypes.cast(buf, wintypes.LPWSTR)
+        ofn.nMaxFile = size
+        ofn.lpstrTitle = title
+        # OFN_ALLOWMULTISELECT | OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR
+        ofn.Flags = 0x200 | 0x80000 | 0x1000 | 0x800 | 0x8
+        if ctypes.windll.comdlg32.GetOpenFileNameW(ctypes.byref(ofn)):
+            parts = ctypes.wstring_at(ctypes.addressof(buf), size).split("\0")
+            parts = parts[: parts.index("")] if "" in parts else parts
+            if len(parts) == 1:
+                box["files"] = parts
+            elif parts:
+                box["files"] = [str(Path(parts[0]) / n) for n in parts[1:]]
+
+    t = threading.Thread(target=run, name="file-picker", daemon=True)
+    t.start()
+    t.join(600)
+    return box.get("files")
+
 
 def pick_folder(title="Choose a folder with your videos") -> str | None:
     """Native Windows folder dialog (SHBrowseForFolderW). Runs on a COM STA thread."""

@@ -58,6 +58,26 @@ jobs:
         run: |
           python mediaengine/tests/engine_robustness.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\rob" 2>&1 | Tee-Object "$env:OUT\engine_robustness.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Audio/video sync at every cut (flash + beep sources)
+        shell: pwsh
+        run: |
+          python mediaengine/tests/av_sync_check.py "$env:RUNNER_TEMP\sync" 2>&1 | Tee-Object "$env:OUT\av_sync.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Auto Edit E2E - phone/camera files (rotated, HEVC .MOV, VFR, no audio, Cyrillic names)
+        shell: pwsh
+        run: |
+          python mediaengine/tests/e2e_auto_edit.py --folder "$env:RUNNER_TEMP\fx\phone" --home "$env:RUNNER_TEMP\home-phone" --mode technical --skip-cancel --out "$env:OUT\e2e_phone.json" 2>&1 | Tee-Object "$env:OUT\e2e_phone.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Full-video Convert (1440p60, rotated phone clip, VFR)
+        shell: pwsh
+        run: |
+          python mediaengine/tests/convert_check.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\conv" 2>&1 | Tee-Object "$env:OUT\convert_check.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Unplugged source drive and no network (app process)
+        shell: pwsh
+        run: |
+          python mediaengine/tests/reliability_checks.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\relchk" 2>&1 | Tee-Object "$env:OUT\reliability_checks.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Auto Edit E2E - 7 videos (+ broken + duplicate)
         shell: pwsh
         run: |
@@ -66,7 +86,7 @@ jobs:
       - name: Auto Edit E2E - 2 videos
         shell: pwsh
         run: |
-          python mediaengine/tests/e2e_auto_edit.py --folder "$env:RUNNER_TEMP\fx\two" --home "$env:RUNNER_TEMP\home2" --mode technical --skip-cancel --out "$env:OUT\e2e_two.json" 2>&1 | Tee-Object "$env:OUT\e2e_two.txt"
+          python mediaengine/tests/e2e_auto_edit.py --folder "$env:RUNNER_TEMP\fx\two" --home "$env:RUNNER_TEMP\home2" --mode technical --skip-cancel --files-check --out "$env:OUT\e2e_two.json" 2>&1 | Tee-Object "$env:OUT\e2e_two.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Screenshots of the real pages in Edge
         if: always()
@@ -89,42 +109,51 @@ jobs:
         if: success()
         shell: pwsh
         run: |
-          python mediaengine/tools/build_windows_package.py "$env:RUNNER_TEMP\pkg" 2>&1 | Tee-Object "$env:OUT\package_build.txt"
+          python mediaengine/tools/build_windows_package.py "$env:RUNNER_TEMP\pkg" "$env:OUT" 2>&1 | Tee-Object "$env:OUT\package_build.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
-          Copy-Item "$env:RUNNER_TEMP\pkg\*.manifest.json" $env:OUT
-      - name: Package smoke - start like a user (Start MediaEngine.vbs), restart, second copy refused, quit
+      - name: Package smoke - start like a user, data outside the release, next release sees the projects, quit
         if: success()
         shell: pwsh
         run: |
-          # Work on a copy: the uploaded package must stay exactly as built (no CI data, logs or shortcuts inside).
+          # Work on copies: the uploaded package must stay exactly as built (no CI data, logs or shortcuts inside).
           $src = Get-ChildItem "$env:RUNNER_TEMP\pkg" -Directory | Select-Object -First 1
-          $pkg = "$env:RUNNER_TEMP\pkg-test\MediaEngine Тест"   # non-ASCII path on purpose
-          New-Item -ItemType Directory -Force (Split-Path $pkg) | Out-Null
-          Copy-Item -Recurse $src.FullName $pkg
+          $pkg = "$env:RUNNER_TEMP\pkg-test\MediaEngine Тест"      # non-ASCII path on purpose
+          $pkg2 = "$env:RUNNER_TEMP\pkg-test2\MediaEngine Тест 2"  # the "next release", extracted somewhere else
+          $data = "$env:RUNNER_TEMP\pkg-test\MediaEngine Data"
+          foreach ($d in @($pkg, $pkg2)) { New-Item -ItemType Directory -Force (Split-Path $d) | Out-Null; Copy-Item -Recurse $src.FullName $d }
           $log = "$env:OUT\package_smoke.txt"
-          "package copy: $pkg" | Tee-Object $log
+          "release: $($src.Name)" | Tee-Object $log
           $desk = [Environment]::GetFolderPath('Desktop')
           $hadArchivistLnk = Test-Path "$desk\Archivist.lnk"
+          $H = @{Origin='http://127.0.0.1:8775'}
           function Ping { try { (Invoke-WebRequest -UseBasicParsing -TimeoutSec 3 http://127.0.0.1:8775/api/ping).Content } catch { $null } }
           function WaitUp($sec) { for ($i=0; $i -lt $sec; $i++) { $p = Ping; if ($p) { return $p }; Start-Sleep 1 }; return $null }
+          function Ctl($mode) { try { Invoke-WebRequest -UseBasicParsing -Method Post -Uri http://127.0.0.1:8775/api/app-control -Headers $H -ContentType 'application/json' -Body ('{"mode":"' + $mode + '","force":true}') | Out-Null } catch {} }
           $fail = @()
           $env:MEDIAENGINE_NO_BROWSER = '1'
           Start-Process wscript.exe -ArgumentList "`"$pkg\Start MediaEngine.vbs`""
           $ping = WaitUp 180
-          if (-not $ping) { Get-Content "$pkg\data\update_status.json" -ErrorAction SilentlyContinue | Tee-Object -Append $log; exit 1 }
+          if (-not $ping) { Get-ChildItem -Recurse $data -ErrorAction SilentlyContinue | Select-Object -First 30 FullName | Tee-Object -Append $log; exit 1 }
           "ping: $ping" | Tee-Object -Append $log
           if (-not $ping.Contains('3.13.0')) { $fail += 'version' }
           $auto = Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8775/auto
           "auto page: HTTP $($auto.StatusCode), Quit button: $($auto.Content.Contains('quitBtn'))" | Tee-Object -Append $log
           if ($auto.StatusCode -ne 200 -or -not $auto.Content.Contains('quitBtn')) { $fail += 'auto page' }
           Start-Sleep 2
-          $st = Get-Content "$pkg\data\update_status.json" -Raw | ConvertFrom-Json
+          $st = Get-Content "$data\data\update_status.json" -Raw -ErrorAction SilentlyContinue | ConvertFrom-Json
           "status: $($st.status) update_check: $($st.update_check)" | Tee-Object -Append $log
           if ($st.status -ne 'running' -or $st.update_check -ne 'updates_off') { $fail += 'update status' }
+          "data outside the release: db=$(Test-Path "$data\data\archivist.db") release\data=$(Test-Path "$pkg\data")" | Tee-Object -Append $log
+          if (-not (Test-Path "$data\data\archivist.db") -or (Test-Path "$pkg\data")) { $fail += 'data location' }
           $lnk = Test-Path "$desk\MediaEngine RC.lnk"
           "desktop shortcut 'MediaEngine RC': $lnk; stable shortcut touched: $((Test-Path "$desk\Archivist.lnk") -and -not $hadArchivistLnk)" | Tee-Object -Append $log
           if (-not $lnk -or ((Test-Path "$desk\Archivist.lnk") -and -not $hadArchivistLnk)) { $fail += 'shortcut' }
           if ((Test-Path "$pkg\Archivist.vbs") -or (Test-Path "$pkg\launcher")) { $fail += 'stable launcher files created' }
+          # a project made in this release
+          $folder = "$env:RUNNER_TEMP\fx\two"
+          $r = Invoke-WebRequest -UseBasicParsing -Method Post -Uri http://127.0.0.1:8775/auto/create -Headers $H -Body @{folder=$folder; length='5'; format='social_hd'; sound='auto'; mode='technical'} -MaximumRedirection 0 -SkipHttpErrorCheck
+          "create project: HTTP $($r.StatusCode) -> $($r.Headers.Location)" | Tee-Object -Append $log
+          if ($r.StatusCode -ne 302) { $fail += 'create project' }
           # second copy of the app on the same port must refuse to start (no second set of workers)
           $env:ARCHIVIST_V2_CHILD = '1'
           $p2 = Start-Process "$pkg\.venv\Scripts\python.exe" -ArgumentList '-s','-E',"`"$pkg\app\main.py`"",'--no-browser' -PassThru -RedirectStandardError "$env:OUT\second_copy_stderr.txt" -WindowStyle Hidden
@@ -134,39 +163,62 @@ jobs:
           if (-not $exited -or $p2.ExitCode -eq 0 -or -not (Ping)) { $fail += 'second copy' }
           Remove-Item Env:ARCHIVIST_V2_CHILD
           # restart through the app (same path as the Restart button)
-          try { Invoke-WebRequest -UseBasicParsing -Method Post -Uri http://127.0.0.1:8775/api/app-control -Headers @{Origin='http://127.0.0.1:8775'} -ContentType 'application/json' -Body '{"mode":"restart","force":true}' | Out-Null } catch {}
-          Start-Sleep 3
+          Ctl 'restart'; Start-Sleep 3
           $again = WaitUp 120
           "restart: $([bool]$again)" | Tee-Object -Append $log
           if (-not $again) { $fail += 'restart' }
-          try { Invoke-WebRequest -UseBasicParsing -Method Post -Uri http://127.0.0.1:8775/api/app-control -Headers @{Origin='http://127.0.0.1:8775'} -ContentType 'application/json' -Body '{"mode":"stop","force":true}' | Out-Null } catch {}
-          Start-Sleep 4
+          Ctl 'stop'; Start-Sleep 4
           "stopped: $(-not (Ping))" | Tee-Object -Append $log
           if (Ping) { $fail += 'quit' }
+          # the next release, extracted elsewhere, opens the same projects
+          Start-Process wscript.exe -ArgumentList "`"$pkg2\Start MediaEngine.vbs`""
+          if (-not (WaitUp 180)) { $fail += 'next release start' } else {
+            $home2 = (Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8775/auto).Content
+            $seen = $home2.Contains("/auto/p/1")
+            "next release sees the project: $seen; its own data folder created: $(Test-Path "$env:RUNNER_TEMP\pkg-test2\MediaEngine Data")" | Tee-Object -Append $log
+            if (-not $seen -or (Test-Path "$env:RUNNER_TEMP\pkg-test2\MediaEngine Data")) { $fail += 'next release data' }
+            Ctl 'stop'; Start-Sleep 4
+          }
           Remove-Item "$desk\MediaEngine RC.lnk" -ErrorAction SilentlyContinue
           if ($fail.Count) { "FAILED: $($fail -join ', ')" | Tee-Object -Append $log; exit 1 }
           "package smoke PASS" | Tee-Object -Append $log
-      - name: Package runtime runs the engine end to end (packaged Python, copy)
+      - name: Package runtime runs the engine end to end, with the packaged Python blocked from the internet
         if: success()
         shell: pwsh
         run: |
           $pkg = "$env:RUNNER_TEMP\pkg-test\MediaEngine Тест"
-          & "$pkg\.venv\Scripts\python.exe" -s -E -X utf8 mediaengine/tests/e2e_auto_edit.py --folder "$env:RUNNER_TEMP\fx\seven" --home "$env:RUNNER_TEMP\home-pkg" --mode technical --length 15 --skip-cancel --out "$env:OUT\e2e_packaged_python.json" 2>&1 | Tee-Object "$env:OUT\e2e_packaged_python.txt"
-          if ($LASTEXITCODE -ne 0) { exit 1 }
+          $py = "$pkg\.venv\Scripts\python.exe"; $pyw = "$pkg\.venv\Scripts\pythonw.exe"
+          $profiles = Get-NetFirewallProfile | Select-Object Name, Enabled
+          Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True
+          New-NetFirewallRule -DisplayName 'MediaEngine CI offline' -Direction Outbound -Program $py -Action Block | Out-Null
+          New-NetFirewallRule -DisplayName 'MediaEngine CI offline w' -Direction Outbound -Program $pyw -Action Block | Out-Null
+          try {
+            & $py -s -E -c "import urllib.request; urllib.request.urlopen('https://www.microsoft.com', timeout=10)" 2>$null
+            $blocked = ($LASTEXITCODE -ne 0)
+            "internet blocked for the packaged Python: $blocked" | Tee-Object "$env:OUT\offline.txt"
+            & $py -s -E -X utf8 mediaengine/tests/e2e_auto_edit.py --folder "$env:RUNNER_TEMP\fx\seven" --home "$env:RUNNER_TEMP\home-pkg" --mode technical --length 15 --skip-cancel --out "$env:OUT\e2e_packaged_python.json" 2>&1 | Tee-Object "$env:OUT\e2e_packaged_python.txt"
+            $code = $LASTEXITCODE
+          } finally {
+            Remove-NetFirewallRule -DisplayName 'MediaEngine CI offline' -ErrorAction SilentlyContinue
+            Remove-NetFirewallRule -DisplayName 'MediaEngine CI offline w' -ErrorAction SilentlyContinue
+            foreach ($p in $profiles) { Set-NetFirewallProfile -Profile $p.Name -Enabled $p.Enabled }
+          }
+          if (-not $blocked) { "WARNING: the firewall did not block; the offline claim is NOT proven by this run" | Tee-Object -Append "$env:OUT\offline.txt" }
+          if ($code -ne 0) { exit 1 }
       - name: Package is unchanged by the checks
         if: success()
         shell: pwsh
         run: |
           $src = Get-ChildItem "$env:RUNNER_TEMP\pkg" -Directory | Select-Object -First 1
-          $extra = @('data','launcher','Archivist.vbs','MediaArchive','Exports','Staging') | Where-Object { Test-Path (Join-Path $src.FullName $_) }
+          $extra = @('data','launcher','Archivist.vbs','MediaArchive','Exports','Staging','Private','Rejected','config.json') | Where-Object { Test-Path (Join-Path $src.FullName $_) }
           if ($extra) { "created by running: $($extra -join ', ')"; exit 1 }
           "pristine" | Tee-Object "$env:OUT\package_pristine.txt"
-      - name: Upload installable package
+      - name: Upload installable package (one ZIP named like the release folder inside it)
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: MediaEngine-windows-package-${{ github.run_number }}-${{ github.sha }}
-          path: ${{ runner.temp }}/pkg/MediaEngine-*/
+          name: ${{ env.PKG_NAME }}
+          path: ${{ runner.temp }}/pkg/
           include-hidden-files: true
           if-no-files-found: error
       - name: Upload reports

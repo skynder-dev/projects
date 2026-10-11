@@ -48,10 +48,22 @@ def load_module(name,path):
         raise RuntimeError("MODULE_LOAD_FAILED:"+name)
     mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod); return mod
 
-def discover_input(folder, probe=None, skipped=None, skip_sha=None):
-    folder=Path(folder).resolve()
-    if not folder.is_dir(): raise RuntimeError("INPUT_FOLDER_MISSING")
-    vids=sorted([p for p in folder.iterdir() if not p.name.startswith("._") and p.suffix.lower() in SUPPORTED and p.is_file()],key=lambda p:p.name.lower())
+def discover_input(folder, probe=None, skipped=None, skip_sha=None, paths=None):
+    """Input videos: every supported file in <folder>, or exactly <paths> (files the user chose; names must be unique)."""
+    if paths is not None:
+        vids=[]
+        for raw in paths:
+            p=Path(raw).resolve()
+            if not p.is_file():
+                if skipped is not None: skipped.append({"name":p.name,"reason":"MISSING"})
+                continue
+            if p.suffix.lower() in SUPPORTED: vids.append(p)
+        vids=sorted(vids,key=lambda p:p.name.lower())
+        if len({p.name.lower() for p in vids})!=len(vids): raise RuntimeError("INPUT_NAMES_NOT_UNIQUE")
+    else:
+        folder=Path(folder).resolve()
+        if not folder.is_dir(): raise RuntimeError("INPUT_FOLDER_MISSING")
+        vids=sorted([p for p in folder.iterdir() if not p.name.startswith("._") and p.suffix.lower() in SUPPORTED and p.is_file()],key=lambda p:p.name.lower())
     if not vids: raise RuntimeError("NO_SUPPORTED_VIDEO_FILES")
     if len(vids)>64: raise RuntimeError("TOO_MANY_INPUT_FILES")
     rows=[]; seen={}
@@ -271,6 +283,7 @@ def _analysis_skip_reason(r):
     err=str((r or {}).get("error") or (r or {}).get("status") or "NOT_ANALYSED")
     if "NO_CLIPS" in err: return "NO_MOMENTS"
     if "DUPLICATE_FRAME_RATIO" in err: return "STATIC_VIDEO"
+    if "INSUFFICIENT_FRAMES" in err: return "TOO_SHORT_FOR_ANALYSIS"
     if "TIMEOUT" in err.upper() or "TIMED_OUT" in err.upper(): return "ANALYSIS_TIMEOUT"
     codes=re.findall(r"(?:Error|Exception):\s*([A-Z][A-Z0-9_]{3,})",err)
     return "ANALYSIS_FAILED:"+(codes[-1] if codes else err.split(":",1)[0])[:60]
@@ -500,7 +513,9 @@ def run(args):
     trims={str(k):(float(v[0]),float(v[1])) for k,v in (edits.get("trims") or {}).items()}
     runtime=Path(args.runtime_dir).resolve()
     if str(runtime) not in sys.path: sys.path.insert(0,str(runtime))
-    input_dir=Path(args.input_dir).resolve(); output_dir=Path(args.output_dir).resolve(); work_dir=Path(args.work_dir).resolve()
+    input_list=[x.strip() for x in Path(args.input_list).read_text(encoding="utf-8-sig").splitlines() if x.strip()] if args.input_list else None
+    if (input_list is None)==(not args.input_dir): raise RuntimeError("GIVE_EXACTLY_ONE_OF_INPUT_DIR_OR_INPUT_LIST")
+    input_dir=Path(args.input_dir or Path(input_list[0]).parent).resolve(); output_dir=Path(args.output_dir).resolve(); work_dir=Path(args.work_dir).resolve()
     output_dir.mkdir(parents=True,exist_ok=True); work_dir.mkdir(parents=True,exist_ok=True)
     final_video=output_dir/"MediaEngine Reel.mp4"; final_result=output_dir/"MediaEngine Result.json"
     if final_video.exists() or final_result.exists(): raise RuntimeError("OUTPUT_ALREADY_EXISTS")
@@ -509,7 +524,7 @@ def run(args):
         raise RuntimeError("PRESET_NOT_ACCEPTED:social_hd is vertical 1080x1920 only")
     v52=load_module("medeng_targeted_auto_edit_v26",runtime/"medeng_targeted_auto_edit_v26.py")
     skipped_inputs=[]; warnings=[]
-    input_rows=discover_input(input_dir,probe=v52.ffprobe,skipped=skipped_inputs,skip_sha=load_skip_sha(args.skip_sha_file)); fingerprint=input_fingerprint(input_rows)
+    input_rows=discover_input(input_dir,probe=v52.ffprobe,skipped=skipped_inputs,skip_sha=load_skip_sha(args.skip_sha_file),paths=input_list); fingerprint=input_fingerprint(input_rows)
     seqmod=load_module("p11_montage_sequence_shadow_v4",runtime/"p11_montage_sequence_shadow_v4.py")
     pacemod=load_module("p11_montage_pacing_shadow_v1",runtime/"p11_montage_pacing_shadow_v1.py")
     audiomod=load_module("p11_audio_coherence_shadow_v2",runtime/"p11_audio_coherence_shadow_v2.py")
@@ -602,6 +617,8 @@ def run(args):
     if temp_final.exists(): temp_final.unlink()
     render_mixed(v52,segs,durs,pace["transitions"],temp_final,render_dir/(fingerprint+"_render"))
     fpr=v52.ffprobe(temp_final); actual=float(fpr["format"]["duration"]); video_sha=sha256_file(temp_final)
+    if actual < float(args.target_seconds)-1.0 and "LIMITED_TOTAL_FOOTAGE" not in warnings:
+        warnings.append("SHORTER_THAN_REQUESTED")
     fvs=[x for x in fpr["streams"] if x.get("codec_type")=="video"][0]; out_w,out_h=int(fvs["width"]),int(fvs["height"])
     if (out_w,out_h)!=tuple(v52.output_dimensions(profile,resolution)): raise RuntimeError("OUTPUT_DIMENSIONS_MISMATCH:%dx%d"%(out_w,out_h))
     os.replace(temp_final,final_video)
@@ -628,7 +645,7 @@ def run(args):
         "segments":timeline,"candidate_pool":pool_rows,"excluded_event_ids":sorted(exclude),"manual_edits":edits,
         "skipped_inputs":skipped_inputs,"warnings":warnings,
         "engine":{"orchestrator_sha256":sha256_file(Path(__file__)),"semantic_hook_sha256":SEMANTIC_HOOK_SHA},
-        "input_folder":str(input_dir),"input_fingerprint":fingerprint,"input_count":len(input_rows),
+        "input_folder":str(input_dir),"input_list":input_list,"input_fingerprint":fingerprint,"input_count":len(input_rows),
         "inputs":[{"name":r["name"],"bytes":r["bytes"],"sha256":r["sha256"]} for r in input_rows],
         "target_seconds":float(args.target_seconds),"actual_duration_s":round(actual,3),
         "target_error_s":round(abs(actual-float(args.target_seconds)),3),
@@ -670,7 +687,8 @@ def run(args):
 
 def main():
     ap=argparse.ArgumentParser()
-    ap.add_argument("--input-dir",required=True); ap.add_argument("--output-dir",required=True)
+    ap.add_argument("--input-dir",default=""); ap.add_argument("--output-dir",required=True)
+    ap.add_argument("--input-list",default="",help="text file, one video path per line (instead of --input-dir)")
     ap.add_argument("--work-dir",required=True); ap.add_argument("--runtime-dir",required=True)
     ap.add_argument("--target-seconds",type=float,default=30.0)
     ap.add_argument("--audio",choices=("auto","source","mute"),default="auto")

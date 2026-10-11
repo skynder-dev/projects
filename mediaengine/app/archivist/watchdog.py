@@ -5,7 +5,7 @@ import json, os, subprocess, threading, time, urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .config import DATA, HOME, VERSION
+from .config import DATA, HOME, INSTALL, VERSION
 from .db import db, init_db, now_iso
 
 REMOTE_CONFIG=DATA/"remote_lab.json"
@@ -76,8 +76,8 @@ def _request_app_restart():
     if _RESTARTING.is_set():return True
     _RESTARTING.set()
     try:
-        pyw=HOME/".venv"/"Scripts"/"pythonw.exe";py=HOME/".venv"/"Scripts"/"python.exe";exe=pyw if pyw.exists() else py
-        launcher=HOME/"launcher.py"
+        pyw=INSTALL/".venv"/"Scripts"/"pythonw.exe";py=INSTALL/".venv"/"Scripts"/"python.exe";exe=pyw if pyw.exists() else py
+        launcher=INSTALL/"launcher.py"
         if not exe.exists() or not launcher.exists():raise RuntimeError("launcher unavailable")
         subprocess.Popen([str(exe),str(launcher),"--no-browser","--restart"],cwd=str(HOME),close_fds=True,**_hidden())
         def leave():

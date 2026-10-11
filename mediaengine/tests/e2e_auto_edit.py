@@ -15,6 +15,7 @@ import argparse, hashlib, json, os, subprocess, sys, time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 
 def sha(p):
@@ -42,6 +43,7 @@ def main():
     ap.add_argument("--length", default="auto", help="seconds or auto (= the length the app recommends)")
     ap.add_argument("--out", default="")
     ap.add_argument("--skip-cancel", action="store_true")
+    ap.add_argument("--files-check", action="store_true", help="also build a reel from two individually chosen files")
     a = ap.parse_args()
     home = Path(a.home).resolve()
     home.mkdir(parents=True, exist_ok=True)
@@ -120,8 +122,9 @@ def main():
         check("revision_is_social_hd_1080x1920", v and int(v[0]["width"]) == 1080 and int(v[0]["height"]) == 1920, v)
         check("revision_has_audio", bool(au))
         if v and au:
-            vd, ad = float(v[0].get("duration") or 0), float(au[0].get("duration") or 0)
-            check("audio_video_same_length", abs(vd - ad) <= 0.1, (vd, ad))
+            from media_measure import av_durations
+            vd, ad = av_durations(rev["video_path"])
+            check("audio_video_same_length", vd > 1 and ad is not None and abs(vd - ad) <= 0.1, (vd, ad))
         dur = float(pr.get("format", {}).get("duration") or 0)
         r_short = c.get(f"/auto/p/{pid}", headers=H).data.decode("utf-8", "replace")
         check("duration_near_target_or_shortfall_shown", abs(dur - a.length) <= 1.5 or (dur < a.length and f"Requested {a.length} s" in r_short), dur)
@@ -152,6 +155,19 @@ def main():
         n_before = len(list(exports_dir.glob("*.mp4")))
         c.post(f"/auto/p/{pid}/export", headers=H)
         check("repeat_export_idempotent", len(list(exports_dir.glob("*.mp4"))) == n_before and not list(exports_dir.glob("*.part")))
+        r = c.get(f"/auto/p/{pid}?exported={ex['export_id'] if 'export_id' in ex else ex['id']}", headers=H)
+        check("completion_screen", r.status_code == 200 and b"Your reel is saved" in r.data and b"Show in folder" in r.data)
+        # export to a folder the user chooses; it becomes the default; never into the source folder
+        mine = home / "My reels Мои"
+        mine.mkdir(exist_ok=True)
+        r = c.post(f"/auto/p/{pid}/export", data={"dest": str(mine)}, headers=H)
+        got_mine = list(mine.glob("*.mp4"))
+        check("export_to_chosen_folder", r.status_code == 302 and len(got_mine) == 1 and sha(got_mine[0]) == rev["video_sha256"]
+              and ae.default_export_dir().resolve() == mine.resolve(), [x.name for x in got_mine])
+        r = c.post(f"/auto/p/{pid}/export", data={"dest": str(folder)}, headers=H)
+        check("export_into_source_folder_refused", r.status_code == 400 and not [x for x in folder.iterdir() if x.name not in before], r.status_code)
+        r = c.get(f"/auto/rev/{rev['id']}/thumb/1.jpg", headers=H)
+        check("filmstrip_frame", r.status_code == 200 and r.mimetype == "image/jpeg" and len(r.data) > 500, (r.status_code, len(r.data)))
 
         # same request again -> no new job
         again = ae.start_job(pid, {"length": a.length, "format": "social_hd", "sound": "auto", "mode": a.mode})
@@ -301,6 +317,27 @@ def main():
         revp = ae.revision(jpd.get("revision_id") or 0) if jpd["status"] == "done" else None
         check("private_file_never_used", revp and src_name not in [s_["source_name"] for s_ in revp["result"]["segments"]]
               and any(x["name"] == src_name and x["reason"] == "PRIVATE" for x in revp["result"].get("skipped_inputs", [])), jpd if not revp else revp["result"].get("skipped_inputs"))
+
+        if a.files_check:
+            usable = [f["name"] for f in scan["files"] if f["ok"]][:2]
+            chosen = [str(folder / n) for n in usable]
+            r = c.get("/auto/new", query_string=[("file", x) for x in chosen], headers=H)
+            check("files_setup_renders", r.status_code == 200 and "2 chosen video(s)" in r.data.decode("utf-8", "replace"), r.status_code)
+            r = c.post("/auto/create", data={"file": chosen, "length": "5", "format": "vertical", "sound": "auto", "mode": a.mode}, headers=H)
+            okc = r.status_code == 302 and "/auto/p/" in r.headers.get("Location", "")
+            check("files_create", okc, r.status_code)
+            if okc:
+                fpid = int(r.headers["Location"].rstrip("/").split("/")[-1])
+                fj, _, _ = wait_job(c, ae.project(fpid)["jobs"][0]["id"])
+                frev = ae.revision(fj.get("revision_id") or 0) if fj["status"] == "done" else None
+                srcs = {s_["source_name"] for s_ in (frev or {}).get("result", {}).get("segments", [])}
+                check("files_reel_uses_only_chosen", frev and srcs and srcs <= set(usable), (fj.get("status"), srcs, usable))
+                r = c.get(f"/auto/p/{fpid}/source", query_string={"name": usable[0]}, headers={**H, "Range": "bytes=0-9"})
+                check("files_source_preview", r.status_code == 206, r.status_code)
+                others = [x.name for x in folder.iterdir() if x.is_file() and x.name not in usable]
+                if others:
+                    r = c.get(f"/auto/p/{fpid}/source", query_string={"name": others[0]}, headers=H)
+                    check("files_other_file_not_served", r.status_code == 404, r.status_code)
 
     after = {p.name: sha(p) for p in folder.iterdir() if p.is_file()}
     check("sources_unchanged", before == after)

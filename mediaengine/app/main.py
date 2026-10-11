@@ -3,7 +3,7 @@ from __future__ import annotations
 import os, re, shutil, subprocess, sys, threading, time, webbrowser
 from pathlib import Path
 
-from archivist.config import APP_PORT, HOME, VERSION, ensure_dirs
+from archivist.config import APP_PORT, HOME, INSTALL, VERSION, ensure_dirs
 from archivist.platform_adapter import detach_from_legacy_console_if_needed, install_launchers, set_background_priority
 
 HOST, PORT = "127.0.0.1", APP_PORT
@@ -22,7 +22,7 @@ def _version_tuple(value):
 
 def sync_packaged_launcher():
     packaged=Path(__file__).resolve().parent/'archivist'/'launcher_v2.py'
-    target=HOME/'launcher.py'
+    target=INSTALL/'launcher.py'
     if not packaged.exists():
         raise RuntimeError('Packaged launcher is missing')
     source=packaged.read_text(encoding='utf-8')
@@ -111,7 +111,7 @@ def port_taken(wait_s=20.0):
 
 
 def main():
-    ensure_dirs(); set_background_priority(); install_launchers(HOME); sync_packaged_launcher()
+    ensure_dirs(); set_background_priority(); install_launchers(INSTALL); sync_packaged_launcher()
     if detach_from_legacy_console_if_needed(HOME): return
     if port_taken():
         # Never start a second set of workers on the same database: the running copy keeps serving.

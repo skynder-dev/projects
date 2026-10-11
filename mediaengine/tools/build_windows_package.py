@@ -1,19 +1,21 @@
 """Assemble a self-contained Windows package of the MediaEngine candidate (run on Windows, CPython 3.11).
 
-  python mediaengine/tools/build_windows_package.py <out_dir>
+  python mediaengine/tools/build_windows_package.py <out_dir> [<evidence_dir>]
 
 Layout (side-by-side with a stable D:\\Archivist install; nothing outside its own folder is touched except
 its own desktop shortcut "MediaEngine RC"):
 
-  MediaEngine-<version>/
+  MediaEngine-<version>-b<build>/
     Start MediaEngine.vbs      one obvious launch (no console)
     README.txt  BUILD.txt      what this is / exact source commit
     launcher.py  app/  requirements.txt  version.txt  port.txt (8775)  shortcut_name.txt
     .venv/Scripts/             relocatable CPython 3.11 + pinned packages (python.exe / pythonw.exe)
                                + app-local Microsoft VC++ runtime DLLs (OpenCV / onnxruntime need them)
 
-The folder name has no build id on purpose: extracting a newer build over the old folder keeps data/,
-projects and exports. The build id is in BUILD.txt and in the CI artifact name.
+Every build is its own folder with a unique name (contract §16: never extract over an old one). User data
+(projects, database, caches, exports, library) lives OUTSIDE the release folder, by default in
+"<parent folder>\MediaEngine Data", remembered in %LOCALAPPDATA%\MediaEngine\data_root.txt, so the next
+release sees the same projects and the previous release folder is the rollback.
 
 Model weights are NOT included; the app finds FAST_LOCAL in a neighbouring Archivist install or lets the
 user choose the folder (exact hashes verified before use).
@@ -36,13 +38,15 @@ def version() -> str:
     raise SystemExit("VERSION not found")
 
 
-def main(out_dir: Path) -> None:
+def main(out_dir: Path, evidence_dir: Path) -> None:
     if os.name != "nt":
         raise SystemExit("Build on Windows (relocatable CPython is copied from the running interpreter)")
     if sys.version_info[:2] != (3, 11):
         raise SystemExit("Build with CPython 3.11 (the pinned 3.12.42 environment)")
     ver = version()
-    pkg = out_dir / f"MediaEngine-{ver}"
+    build = os.environ.get("GITHUB_RUN_NUMBER") or "local"
+    name = f"MediaEngine-{ver}-b{build}"
+    pkg = out_dir / name
     if pkg.exists():
         shutil.rmtree(pkg)
     pkg.mkdir(parents=True)
@@ -85,8 +89,9 @@ Start: double-click "Start MediaEngine.vbs". A MediaEngine window opens; a deskt
 "{SHORTCUT}" is created for next time. No console, no Python install needed. The first start
 can take a minute (Windows checks the new files). "Quit" in the top bar stops MediaEngine.
 
-Newer build: Quit MediaEngine, then extract the new zip over this folder. Your projects,
-data and exports stay.
+Your projects, settings and exports are kept OUTSIDE this folder, in "MediaEngine Data" next to it
+(the exact place is shown under Settings). Newer build: extract it next to this one (a new folder),
+start it; it opens the same projects. If the new build has a problem, start the old folder again.
 
 Auto Edit: open "Auto Edit", choose a folder with your videos, pick Length / Format / Sound, press
 "Create reel". Review the result, Accept it, then Export MP4 (saved to the Exports folder here).
@@ -95,9 +100,9 @@ AI model: if this folder sits next to an existing Archivist install (for example
 the FAST_LOCAL model is found automatically. Otherwise use "Choose model folder" on the Auto Edit page.
 Without the model the app offers the clearly labelled "Technical only" mode.
 
-This candidate runs on port {PORT} and keeps its own data, archive and exports inside this folder.
-It does not change a stable Archivist install. To remove it: close the window and delete this folder
-and the "{SHORTCUT}" desktop shortcut.
+This candidate runs on port {PORT} and keeps its own data, archive and exports in "MediaEngine Data".
+It does not change a stable Archivist install. To remove it: Quit, delete this folder, the
+"MediaEngine Data" folder (your exported videos are inside it) and the "{SHORTCUT}" desktop shortcut.
 """, encoding="utf-8")
 
     # 3. manifest (outside the package folder: evidence, not user-facing)
@@ -110,9 +115,14 @@ and the "{SHORTCUT}" desktop shortcut.
     frozen = subprocess.run([str(py), "-m", "pip", "freeze"], capture_output=True, text=True).stdout.split()
     manifest = {"product": "MediaEngine", "version": ver, "commit": sha, "port": PORT, "shortcut": SHORTCUT, "python": sys.version.split()[0],
                 "python_source": str(base), "vc_runtime_app_local": vc, "packages": frozen, "app_files": files, "venv_bytes": venv_bytes}
-    (out_dir / f"MediaEngine-{ver}.manifest.json").write_text(json.dumps(manifest, indent=1), encoding="utf-8")
-    print(json.dumps({"package": str(pkg), "version": ver, "app_files": len(files), "venv_mb": round(venv_bytes / 1e6, 1)}))
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / f"{name}.manifest.json").write_text(json.dumps(manifest, indent=1), encoding="utf-8")
+    if os.environ.get("GITHUB_ENV"):
+        with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as fh:
+            fh.write(f"PKG_NAME={name}\n")
+    print(json.dumps({"package": str(pkg), "name": name, "version": ver, "app_files": len(files), "venv_mb": round(venv_bytes / 1e6, 1)}))
 
 
 if __name__ == "__main__":
-    main(Path(sys.argv[1]).resolve())
+    out = Path(sys.argv[1]).resolve()
+    main(out, Path(sys.argv[2]).resolve() if len(sys.argv) > 2 else out.parent / (out.name + "-evidence"))
