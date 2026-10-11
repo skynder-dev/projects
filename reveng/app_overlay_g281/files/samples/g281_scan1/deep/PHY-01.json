@@ -1,0 +1,258 @@
+{
+ "id": "PHY-01",
+ "verdict": "uncertain",
+ "verdictReason": "Uncertain. The decisive input, orders per model-specific SKU per month, and today's listings by model number, could not be read (Etsy, Printables, RepairClinic/PartSelect and eBay search were refused, search budget gone). What was verified cuts both ways: real willingness to pay ($60 for a 3D-printed discontinued Thermador knob, Dec 2016) and Etsy now forbidding template-based 3D prints, but a measured catalog has no moat and eBay alone takes about 15.6% of a $20 knob. Under labelled assumptions year 1 is +$4.4k base (about $5/h) and -$1.3k pessimistic.",
+ "answers": [
+  {
+   "question": "(1) What free/cheap alternative covers the wedge?",
+   "answer": "Verified in this pass: only the 2016 eBay history, where a buyer had two options, a spindle-fit generic knob that did not match, or a used OEM knob at $289.95 (D4, D5), and a model-specific 3D-printed replacement already sold on eBay at $60.00 by 2016 (D6, D7). That shows the model-specific 3D-printed knob wedge pre-dates the entrant by years. Not re-verified (pages refused): the free Printables CC BY-SA knob pack with an 8-step DIY route (PHY-01-E4, E6, E7) and the Etsy $40 'replacement part from photo' service (PHY-01-E3). Current Etsy/eBay listings by model number at or below $25 (the case file's own falsifier) could not be checked, so whether a cheap model-number listing already exists remains open.",
+   "evidenceIds": [
+    "PHY-01-D4",
+    "PHY-01-D5",
+    "PHY-01-D6",
+    "PHY-01-D7",
+    "PHY-01-E3",
+    "PHY-01-E4",
+    "PHY-01-E6"
+   ]
+  },
+  {
+   "question": "(2) What structural edge exists and who could copy it?",
+   "answer": "The only candidate is the accumulated catalog of fit-tested models by appliance model and part number. It compounds only if each model is costly to reproduce; in practice any rival with calipers and a printer can re-measure the same knob, and a model-specific 3D-printed knob was already on sale in 2016 (D6). Etsy's new rule that 3D-printed items must be produced from the seller's original design and that items from commercial patterns are removed (D1, D2, D3) cuts both ways: it forces the entrant to model every knob itself (cannot remix free packs on Etsy), and it removes template-based competitors from Etsy, but that tailwind is available to any seller willing to do original CAD. No exclusive input (licence, data, supplier) exists. Falsifier: a current Etsy/eBay search showing several sellers already listing knobs by exact model number at or below $25 with fast shipping.",
+   "evidenceIds": [
+    "PHY-01-D1",
+    "PHY-01-D2",
+    "PHY-01-D3",
+    "PHY-01-D6"
+   ]
+  },
+  {
+   "question": "(3) Who demonstrably pays and how much?",
+   "answer": "One verified buyer paid $60.00 for a single 3D-printed Thermador knob in Dec 2016 ('Pricey for a knob, but I will pay it.', D7), against $289.95 asked for used OEM knobs (D5). Today's price level, number of buyers and per-SKU volume were not found; the case file's $15-25 target price and the $40 Etsy custom service (PHY-01-E3) were not re-verified, so a $20 price is an assumption.",
+   "evidenceIds": [
+    "PHY-01-D5",
+    "PHY-01-D6",
+    "PHY-01-D7",
+    "PHY-01-E3"
+   ]
+  },
+  {
+   "question": "(4) Legal/platform constraints?",
+   "answer": "Etsy: 3D-printed items must come from the seller's original design (D1, D2); the entrant's own CAD from measured parts complies, downloaded or remixed designs do not. eBay: final value fee 13.6% plus $0.30/$0.40 per order for most categories (D9, D10). Safety: section 15(b) of the Consumer Product Safety Act obliges manufacturers, distributors and retailers who obtain information that a product is defective or creates a substantial risk to inform the CPSC immediately (D8); a heat-exposed gas or electric range control is an obvious place for that duty and for product-liability claims; liability insurance cost was not found. Not verified: whether Etsy/eBay restrict gas-appliance control parts, OEM part-number and trademark use, and the CC BY-SA terms (PHY-01-E7, page refused).",
+   "evidenceIds": [
+    "PHY-01-D1",
+    "PHY-01-D2",
+    "PHY-01-D8",
+    "PHY-01-D9",
+    "PHY-01-D10",
+    "PHY-01-E7"
+   ]
+  },
+  {
+   "question": "(5) Year-1 numbers?",
+   "answer": "Base (all inputs labelled assumptions except eBay fees): 12 new models listed per month (about 54 h/month of measuring, CAD and test prints), 0.5 orders per live model per month = 468 orders at $20 = $9,360 revenue; variable cost per order about $6.30 (eBay fee on $25 incl. $5 shipping $3.80, material and packaging $1.50, refunds $1.00); fixed $2,060 (printers $900, spares $200, calipers $60, insurance $600, registration $150, photo/packing $150); cost $5,008; profit about $4,352, roughly $5 per owner hour over about 850 h. Pessimistic (price $16, 234 orders, cost x1.5): revenue $3,744, cost about $5,040, profit about -$1,296. Valuing the owner's 850 h at $10/h makes the base case about -$4.1k.",
+   "evidenceIds": [
+    "PHY-01-D9",
+    "PHY-01-D10"
+   ]
+  }
+ ],
+ "newEvidence": [
+  {
+   "id": "PHY-01-D1",
+   "url": "https://www.shopifreaks.com/etsy-cracks-down-on-3d-and-laser-printed-items/",
+   "quote": "must be produced based on a seller’s original design",
+   "kind": "constraint",
+   "publisher": "Shopifreaks (Etsy creativity standards effective June 10, 2025)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-01-D2",
+   "url": "https://www.valueaddedresource.net/etsy-creativity-standards-update-june-2025/",
+   "quote": "3D printed items made from a commercial pattern get removed from the site",
+   "kind": "constraint",
+   "publisher": "Value Added Resource",
+   "date": "2025-06-10",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-01-D3",
+   "url": "https://www.patreon.com/posts/131323500",
+   "quote": "would appear to kill all the 3D-printed shops",
+   "kind": "constraint",
+   "publisher": "Patreon post: Etsy Updated The Creativity Standards Without Notice (author's reading of the new rule for shops using others' templates)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-01-D4",
+   "url": "https://www.ebay.com/usr/rggion",
+   "quote": "Two options existed - buy a knob that fit the spindle but was ugly and did not match the other knobs OR",
+   "kind": "demand",
+   "publisher": "eBay feedback page for seller account rggion (review of a Thermador oven knob, dated Dec 19, 2016)",
+   "date": "2016-12-19",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-01-D5",
+   "url": "https://www.ebay.com/usr/rggion",
+   "quote": "Until now, the used market was a monopoly and there was one source charging $289.95 per knob, sheer market arrogance.",
+   "kind": "incumbent_price",
+   "publisher": "eBay feedback page for seller account rggion (review dated Dec 19, 2016)",
+   "date": "2016-12-19",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-01-D6",
+   "url": "https://www.ebay.com/usr/rggion",
+   "quote": "Now, with sharpeibear there is an alternative at $60.00 per knob,",
+   "kind": "incumbent_price",
+   "publisher": "eBay feedback page for seller account rggion (review dated Dec 19, 2016; continues 'a replacement built via 3D Printing.')",
+   "date": "2016-12-19",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-01-D7",
+   "url": "https://www.ebay.com/usr/rggion",
+   "quote": "Pricey for a knob, but I will pay it.",
+   "kind": "demand",
+   "publisher": "eBay feedback page for seller account rggion (same 2016 review: buyer paid $60 for a 3D-printed discontinued oven knob)",
+   "date": "2016-12-19",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-01-D8",
+   "url": "https://www.law.cornell.edu/uscode/text/15/2064",
+   "quote": "and every distributor and retailer of such product, who obtains information",
+   "kind": "constraint",
+   "publisher": "Cornell LII: 15 U.S.C. 2064 (Consumer Product Safety Act section 15(b))",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-01-D9",
+   "url": "https://www.ebay.com/help/selling/fees-credits-invoices/selling-fees?id=4822",
+   "quote": "13.6% on total amount of the sale up to $7,500 calculated per item",
+   "kind": "incumbent_price",
+   "publisher": "eBay selling fees help page (most categories)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-01-D10",
+   "url": "https://www.ebay.com/help/selling/fees-credits-invoices/selling-fees?id=4822",
+   "quote": "For orders $10.00 or less the per order fee is $0.30, for orders over $10.00 the per order fee is $0.40.",
+   "kind": "incumbent_price",
+   "publisher": "eBay selling fees help page (most categories)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  }
+ ],
+ "newAlternatives": [
+  {
+   "label": "Free Printables parametric knob pack, CC BY-SA 4.0 (DIY: Fusion 360 customization, print, glue; about 8 steps)",
+   "kind": "open_source",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.printables.com/model/580299-ultimate-diy-replacement-knob-pack-for-samsung-sme",
+   "evidenceRef": "PHY-01-E6"
+  },
+  {
+   "label": "Etsy custom 3D-printed replacement part from photo or drawing (about $40 one-time, per the earlier scan; not re-read)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 40,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.etsy.com/market/replacement_part_3d_printed",
+   "evidenceRef": "PHY-01-E3"
+  },
+  {
+   "label": "eBay seller of 3D-printed model-specific replacement knob ($60.00 each in Dec 2016; current status unknown)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 60,
+   "coversWedge": "full",
+   "sourceLocator": "https://www.ebay.com/usr/rggion",
+   "evidenceRef": "PHY-01-D6"
+  },
+  {
+   "label": "Used OEM discontinued knob on eBay ($289.95 in Dec 2016)",
+   "kind": "paid_incumbent",
+   "costUsdPerMonth": 289.95,
+   "coversWedge": "full",
+   "sourceLocator": "https://www.ebay.com/usr/rggion",
+   "evidenceRef": "PHY-01-D5"
+  },
+  {
+   "label": "Generic knob that fits the spindle but does not match the other knobs (status quo)",
+   "kind": "diy_or_status_quo",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.ebay.com/usr/rggion",
+   "evidenceRef": "PHY-01-D4"
+  }
+ ],
+ "killReasons": [
+  {
+   "reason": "No moat: a catalog of measured knob models is rebuilt by any rival with calipers and a printer, and a model-specific 3D-printed knob was already on sale on eBay in 2016 at $60; the case file's own falsifier (existing model-number listings at or below $25) could not be checked and stays open.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "PHY-01-D6"
+  },
+  {
+   "reason": "Thin economics under labelled assumptions: eBay alone takes 13.6% plus $0.40 per order (about $3.80 on a $20 knob plus $5 shipping), and with about 850 owner hours the base case earns about $5 per hour and the pessimistic case loses about $1.3k; the result depends on an unsourced demand of 0.5 orders per model per month.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "PHY-01-D9"
+  },
+  {
+   "reason": "Etsy's original-design rule means every catalog entry must be the entrant's own CAD; free remixable packs cannot be reused there, which raises per-SKU effort (assumed 4.5 h per model).",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "PHY-01-D1"
+  },
+  {
+   "reason": "Consumer Product Safety Act section 15(b) reporting duties apply to manufacturers, distributors and retailers, and a heat-exposed range control carries product-liability exposure; insurance cost unknown.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "PHY-01-D8"
+  }
+ ],
+ "economics": {
+  "revenue365": 9360,
+  "cost365": 5008,
+  "pessimisticProfit365": -1296,
+  "survivesPessimistic": false,
+  "assumptions": [
+   "assumption: price $20 per knob (case-file target $15-25, not re-verified); buyer pays shipping, which is pass-through at about $5 (not sourced)",
+   "assumption: catalog grows by 12 models per month at about 4.5 h each (measure, CAD, test print, photograph) = 54 h/month; remaining hours go to listing, printing, packing and support within about 18 h/week",
+   "assumption: 0.5 orders per live model per month (no source; this is the decisive unknown); orders = 0.5 x 12 x (1+2+...+12) = 468 in year 1",
+   "sourced: eBay fee 13.6% of the sale up to $7,500 plus $0.30 per order up to $10 or $0.40 above $10 (PHY-01-D9, D10), applied to price + shipping = $25: fee $3.80 per order; Etsy fees were not re-verified",
+   "assumption: material, power, packaging and failed prints $1.50 per order; refunds/replacements 5% of price ($1.00)",
+   "assumption: fixed costs $2,060 = two printers $900, spare parts/filament stock $200, calipers and gauges $60, product-liability insurance $600/year (no quote found), business registration $150, photo and packing supplies $150; CAD with free software",
+   "base: revenue 468 x $20 = $9,360; variable 468 x $6.30 = $2,948; fixed $2,060; cost $5,008; profit about $4,352 (about $5 per owner hour over about 850 h)",
+   "pessimistic: price x0.8 = $16, volume x0.5 = 234 orders, cost x1.5: revenue $3,744; cost (234 x $5.56 + $2,060) x 1.5 = about $5,040; profit about -$1,296",
+   "valuing owner time at $10/h (850 h) turns the base case into about -$4,150"
+  ],
+  "sources": [
+   "PHY-01-D9",
+   "PHY-01-D10"
+  ]
+ },
+ "legalNotes": [
+  "Etsy creativity standards (effective June 10, 2025) require 3D-printed items to be produced from the seller's original design; items from commercial patterns or others' templates are removed (PHY-01-D1, D2, D3). Original CAD from measured parts fits; remixing free CC BY-SA files for Etsy does not.",
+  "Consumer Product Safety Act section 15(b) (15 U.S.C. 2064(b)): manufacturers, distributors and retailers must inform the CPSC immediately on information that a product is defective or poses a substantial risk (PHY-01-D8). Whether a replacement range knob is a 'consumer product' in scope and what recall/liability exposure it creates were not analysed beyond this.",
+  "Product-liability exposure for knobs on gas ranges and heaters (heat deformation, misfit causing unintended gas flow) is not quantified; insurance quote not found. Heat resistance of PETG/ASA/nylon (from the earlier notes) was not re-verified.",
+  "OEM part numbers and brand names: nominative use for compatibility is a general-knowledge assumption, not verified; the Printables pack is CC BY-SA 4.0 (PHY-01-E7, page refused in this pass), so copying it commercially needs attribution and share-alike.",
+  "No logins, signups, purchases or contact were made; page text was read as data only."
+ ],
+ "unverified": [
+  "Per-SKU demand: no public sold/search-volume data could be read (eBay search page and Etsy market page refused or returned only a category directory).",
+  "Current Etsy/eBay listings by model number at or below $25 with fast shipping (the case file's falsifier), current OEM prices on RepairClinic/PartSelect/Sears Parts Direct: all fetches refused.",
+  "Printables pack engagement numbers and DIY steps (PHY-01-E4, E6, E7) and the Etsy $40 custom service (PHY-01-E3): printables.com and etsy.com fetches were refused, so these old items remain agent_reported and unverified by me.",
+  "The brief asks for at least 3 new alternative searches: only 2 searches ran (both about Etsy digital-download sellers and policy, run for MKT-03; none about knobs) before the shared WebSearch budget was exhausted.",
+  "Whether the 2016 eBay 3D-printed knob seller (sharpeibear) still exists: the eBay profile fetch returned 'this user was not found', which proves nothing either way.",
+  "Heat-resistance requirements and print material cost; liability insurance cost; Etsy fees and shipping rates; Etsy/eBay rules on gas appliance control parts.",
+  "Quotes were taken from the WebFetch extractor's output (the eBay review came back in segments of up to 125 characters), not from raw HTML."
+ ],
+ "nextStep": "A human should look up sold/completed listings and Etsy sales counts for about 10 range-knob model numbers (not automated) to measure orders per SKU per month; kill if the median is well below 0.3 per month or if cheap model-number listings already exist."
+}

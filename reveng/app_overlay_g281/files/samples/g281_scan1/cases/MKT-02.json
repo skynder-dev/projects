@@ -1,0 +1,135 @@
+{
+ "id": "MKT-02",
+ "name": "Flat-fee exit marketplace for sub-$10K directories and micro-sites",
+ "family": "marketplaces",
+ "buyer": "Owners of small sites or directories selling a roughly $1K-$10K asset, plus indie buyers",
+ "pain": "Stacked fees (listing, commission, add-ons) take a meaningful chunk of small sales, and tiny assets have a thin buyer pool.",
+ "wedge": "A niche-directory-only exit marketplace with a flat or very low fee, using a third-party escrow provider rather than holding funds.",
+ "referenceEntrant": {
+  "startupCashUsd": 1000,
+  "daysToFirstRevenue": 90,
+  "ownerHoursPerWeek": 12
+ },
+ "scan1Edge": {
+  "criterion": "cash_cost",
+  "direction": "lower_is_better",
+  "entrant_basis": "A flat 5% fee on a $5K sale gives $250. The incumbent figure is derived as 10% of $5,000 plus the $29 listing fee (C10, C11). Vertos and ExitBid already claim comparable prices.",
+  "entrant_value": 250,
+  "falsifier": "If sellers can already list at roughly $0-$250 on Vertos or ExitBid, the price advantage over those rivals is zero. Price alone is not a defensible edge.",
+  "incumbent_source_url": "https://hackceleration.com/labs/flippa-pricing",
+  "incumbent_value": 529,
+  "unit": "USD seller cost on a $5,000 sale"
+ },
+ "substitutesNoted": [
+  {
+   "name": "Flippa",
+   "price_point": "10% commission plus listing from $29; ~$529 on a $5K sale",
+   "url": "https://hackceleration.com/labs/flippa-pricing"
+  },
+  {
+   "name": "Vertos",
+   "price_point": "Free listing, flat 5% on sale (vendor claim)",
+   "url": "https://vertosmarket.com/blog/vertos-vs-flippa-acquire-little-exits"
+  },
+  {
+   "name": "ExitBid",
+   "price_point": "$199 flat, zero commission (vendor claim)",
+   "url": "https://exitbid.io/blog/flippa-review-2026"
+  },
+  {
+   "name": "Acquire.com",
+   "price_point": "Buyer subscription $390-$780/year",
+   "url": "https://vertosmarket.com/blog/vertos-vs-flippa-acquire-little-exits"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 70,
+  "notes": "ESTIMATE: 5% of a $5K deal gives $250; the margin is from the notes. Volume would be very low and escrow provider fees are not included.",
+  "price_usd": 250,
+  "variable_cost_usd": null
+ },
+ "majorUncertainty": "Whether any buyer pool for sub-$10K directories can be assembled when several cheaper or free rivals already exist.",
+ "unknowns": [
+  "Whether Acquire.com sellers pay or list free (sources disagree)",
+  "Actual deal volume of Vertos and ExitBid",
+  "Escrow provider terms and fees",
+  "Whether buyers are reachable in a niche-directory segment",
+  "The Hacker News 'Show HN: Acquire Directory' signal (2 points, 0 comments) is not in the excerpt lists, so it is not cited"
+ ],
+ "regulatoryOrPlatformDependency": "Escrow and payment handling raises money-transmission risk, so it would need to use an existing escrow provider. Buyer-side fraud and fake revenue claims need handling.",
+ "evidence": [
+  {
+   "id": "MKT-02-E1",
+   "url": "https://hackceleration.com/labs/flippa-pricing",
+   "publisher": "How Much Does Flippa Cost? 2026 Fees, Commission Explained",
+   "kind": "incumbent_price",
+   "shows": "Flippa: joining, browsing and buying are free; sellers pay a 10% selling commission",
+   "quote": "Short answer: joining, browsing and buying on Flippa is **free**. For sellers, the real cost is the **selling commission**: **10%** of the price under...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-02-E2",
+   "url": "https://hackceleration.com/labs/flippa-pricing",
+   "publisher": "How Much Does Flippa Cost? 2026 Fees, Commission Explained",
+   "kind": "incumbent_price",
+   "shows": "Non-refundable Flippa listing fees start at $29, plus optional add-ons",
+   "quote": "On top sit **non-refundable listing fees** from **$29**, plus optional add-ons. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-02-E3",
+   "url": "https://hackceleration.com/labs/flippa-pricing",
+   "publisher": "How Much Does Flippa Cost? 2026 Fees, Commission Explained",
+   "kind": "incumbent_price",
+   "shows": "Flippa tier for assets under $10K: $29 listing (60 days), Boosted $49, Premium $199",
+   "quote": "## What each Flippa tier costs\n### Asset under $10K\nSmall sites, domains, apps\n\n$29 listing (60 days)\n\nBoosted $49 · Premium $199\n\n- **Entry** listing...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-02-E4",
+   "url": "https://vertosmarket.com/blog/vertos-vs-flippa-acquire-little-exits",
+   "publisher": "Flippa vs Acquire vs Little Exits: 2026 Fees Compared",
+   "kind": "incumbent_price",
+   "shows": "Acquire.com buyers pay a subscription of $390/year (mid tier) or $780/year (top tier) to message founders",
+   "quote": "To message founders and see the private details, buyers pay a subscription — **$390/year** for the mid tier, **$780/year** for the top one. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-02-E5",
+   "url": "https://dupple.com/reviews/flippa",
+   "publisher": "Flippa Review 2026: Features, Pricing & Alternatives",
+   "kind": "demand",
+   "shows": "Listing, success fee and optional services can take a meaningful chunk out of a small transaction",
+   "quote": "Fees compound: Listing + success fee + optional services can take a meaningful chunk out of a small transaction.\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-02-E6",
+   "url": "https://vertosmarket.com/blog/vertos-vs-flippa-acquire-little-exits",
+   "publisher": "Flippa vs Acquire vs Little Exits: 2026 Fees Compared",
+   "kind": "constraint",
+   "shows": "Vertos already claims free listing and a flat 5% on sale (vendor claim), so a low flat fee is already offered",
+   "quote": "For the lowest fees and for early-stage or AI projects, Vertos leads — free to list, a flat 5% on sale, and free access for buyers. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-02-E7",
+   "url": "https://exitbid.io/blog/flippa-review-2026",
+   "publisher": "Flippa Reviews 2026: Does Flippa Work? The 10% Fee Verdict",
+   "kind": "constraint",
+   "shows": "ExitBid claims $199 with zero commission (vendor claim), another existing undercutter",
+   "quote": "Sellers seeking lower fees should consider ExitBid ($199, zero commission) or Acquire.com ($0 seller-side). ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-02-E8",
+   "url": "https://exitbid.io/blog/flippa-vs-acquire-com-2026",
+   "publisher": "Flippa vs Acquire.com 2026: Which Sells Your SaaS Faster? [Compared]",
+   "kind": "other",
+   "shows": "Acquire.com is described as buyer-pays, SaaS-focused, with a 55% rejection rate. This points to a gap for non-SaaS micro-sites but is a vendor claim.",
+   "quote": "Acquire.com: buyer-pays model, SaaS-focused, 55% rejection rate. ",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

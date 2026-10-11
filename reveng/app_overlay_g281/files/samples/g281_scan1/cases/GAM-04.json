@@ -1,0 +1,112 @@
+{
+ "id": "GAM-04",
+ "name": "Simple flat-priced live-quiz tool for teachers and small trainers",
+ "family": "games",
+ "buyer": "Individual teacher, tutor or small-business trainer who pays personally or from a small budget",
+ "pain": "Free-tier player caps (Kahoot's free plan allows 10 players per game, 3 on a business signup), confusing plans, and billing and cancellation complaints.",
+ "wedge": "A live-quiz game with no player accounts, a free tier at 100 players, one-click cancellation and a flat $5/month or $29/year plan. The notes call it weak because free alternatives already exist and a solo entrant has no teacher distribution.",
+ "referenceEntrant": {
+  "startupCashUsd": 1000,
+  "daysToFirstRevenue": 65,
+  "ownerHoursPerWeek": 12
+ },
+ "scan1Edge": {
+  "criterion": "cash_cost",
+  "direction": "lower_is_better",
+  "entrant_basis": "Flat $5/month tier with near-zero marginal cost for a software-only product. This is a price edge only, and the notes' 85-90% saving depends on which Kahoot price is correct.",
+  "entrant_value": 5,
+  "falsifier": "Blooket and Trivia Anywhere already offer free tiers (C31), so if teachers take free alternatives or Kahoot's $3 entry plan, the paid price gives no edge.",
+  "incumbent_source_url": "https://kinescope.com/edtech-map/kahoot",
+  "incumbent_value": 19,
+  "unit": "USD per month for a paid teacher plan"
+ },
+ "substitutesNoted": [
+  {
+   "name": "Kahoot",
+   "price_point": "Free (capped); teacher plans $3-$19/mo billed yearly; business $19-$79 per licence/mo",
+   "url": "https://kinescope.com/edtech-map/kahoot"
+  },
+  {
+   "name": "Blooket",
+   "price_point": "Free (60-player limit per owner notes)",
+   "url": "https://triviaeverywhere.com/blog/kahoot-free-plan-guide/"
+  },
+  {
+   "name": "Trivia Anywhere",
+   "price_point": "Claims free with no limits (unverified)",
+   "url": "https://triviaeverywhere.com/blog/kahoot-free-plan-guide/"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 85,
+  "notes": "Model: $5/month (or $29/year) with ~85% margin per the owner's estimate. Revenue per user is low and seasonal.",
+  "price_usd": 5,
+  "variable_cost_usd": 0.75
+ },
+ "majorUncertainty": "Whether teachers will pay when Blooket, Trivia Anywhere and Kahoot's free tier exist, and whether a solo founder can reach teachers at all.",
+ "unknowns": [
+  "Kahoot pricing is inconsistent across sources",
+  "Trivia Anywhere's 'no limits' claim is unverified",
+  "Compliance cost for student data laws",
+  "Distribution channel to teachers",
+  "Whether Kahoot's reported billing complaints translate into switching"
+ ],
+ "regulatoryOrPlatformDependency": "Student data laws (FERPA, COPPA, state laws) apply if minors use the product. School procurement is slow.",
+ "evidence": [
+  {
+   "id": "GAM-04-E1",
+   "url": "https://www.triviaanywhere.com/blog/kahoot-free-player-limit",
+   "publisher": "Kahoot Free Player Limit in 2026: How to Get Past the Cap",
+   "kind": "demand",
+   "shows": "Kahoot's free plan limits you to 10 players per game in 2026 and only 3 with a business account (per a competitor's blog).",
+   "quote": "Kahoot's free plan limits you to just 10 players per game in 2026, and only 3 if you signed up with a business account. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-04-E2",
+   "url": "https://kinescope.com/edtech-map/kahoot",
+   "publisher": "Kahoot! Alternatives, Pricing and Reviews 2026",
+   "kind": "incumbent_price",
+   "shows": "Kahoot US teacher plans cost $3 to $19 a month billed yearly, depending on players per game.",
+   "quote": "On 6 October 2026 in the US, teacher plans cost $3 to $19 a month billed yearly, depending on players per game. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-04-E3",
+   "url": "https://kinescope.com/edtech-map/kahoot",
+   "publisher": "Kahoot! Alternatives, Pricing and Reviews 2026",
+   "kind": "incumbent_price",
+   "shows": "Kahoot business plans cost $19 to $79 per licence a month.",
+   "quote": "Business plans cost $19 to $79 per licence a month.\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-04-E4",
+   "url": "https://kinescope.com/edtech-map/kahoot",
+   "publisher": "Kahoot! Alternatives, Pricing and Reviews 2026",
+   "kind": "demand",
+   "shows": "38% of 1,106 Trustpilot reviews give one star, many about charges and cancelling.",
+   "quote": "### What users criticise\n- 38% of Trustpilot reviews give one star, many about charges and cancelling.Trustpilot, 1,106 reviews\n\n\n- A college teacher ...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-04-E5",
+   "url": "https://www.myengineeringbuddy.com/blog/kahoot-reviews-alternatives-pricing-offerings/",
+   "publisher": "Kahoot Review 2025: Pricing, Features & Alternatives",
+   "kind": "demand",
+   "shows": "Capterra review summaries describe the limits as frustrating and the tiered pricing as confusing.",
+   "quote": "Summaries of user reviews on Capterra indicate that users find these limits frustrating and the tiered pricing confusing: one summary says users felt ...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-04-E6",
+   "url": "https://triviaeverywhere.com/blog/kahoot-free-plan-guide/",
+   "publisher": "Kahoot Free Plan in 2026 — Player Limits, Pricing, and Best Free Alternatives",
+   "kind": "constraint",
+   "shows": "A free alternative with no limits (Trivia Anywhere) is promoted against Kahoot, setting a $0 anchor. The claim is unverified.",
+   "quote": "For a truly free alternative with no limits, try Trivia Anywhere.\n\n",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

@@ -1,0 +1,123 @@
+{
+ "id": "PHY-01",
+ "name": "Model-specific replacement knobs for discontinued appliances",
+ "family": "physical_products",
+ "buyer": "Homeowners, small landlords and property managers with a range, oven or heater whose control knob or dial is broken and no longer sold",
+ "pain": "The OEM part is discontinued, generic knobs don't match, and the only exact match is a used part at a high price. Free DIY files exist but need CAD, printing and gluing.",
+ "wedge": "Sell by appliance model and part number with a pre-modeled, fit-tested catalog in heat-resistant filament. The buyer does one step: order by model number. There is no CAD, photo matching or gluing.",
+ "referenceEntrant": {
+  "startupCashUsd": 2500,
+  "daysToFirstRevenue": 21,
+  "ownerHoursPerWeek": 18
+ },
+ "scan1Edge": {
+  "criterion": "step_count",
+  "direction": "lower_is_better",
+  "entrant_basis": "The entrant pre-models knobs by appliance model and part number, so the buyer picks the model and orders. This needs a catalog-building grind using calipers and a basic printer, with no licences or network.",
+  "entrant_value": 1,
+  "falsifier": "If Etsy or eBay sellers already list knobs by model number at or below $25 with ship times of 3 days or less, or if the catalog can't reach enough models to get repeat orders, the edge disappears.",
+  "incumbent_source_url": "https://www.printables.com/model/580299-ultimate-diy-replacement-knob-pack-for-samsung-sme",
+  "incumbent_value": 8,
+  "unit": "buyer steps to a working knob"
+ },
+ "substitutesNoted": [
+  {
+   "name": "Free Printables parametric knob pack (DIY)",
+   "price_point": "Free plus printer and CAD time",
+   "url": "https://www.printables.com/model/580299-ultimate-diy-replacement-knob-pack-for-samsung-sme"
+  },
+  {
+   "name": "Etsy custom replacement part from photo",
+   "price_point": "$40.00",
+   "url": "https://www.etsy.com/market/replacement_part_3d_printed"
+  },
+  {
+   "name": "Used OEM knob on eBay (2016 example)",
+   "price_point": "$289.95",
+   "url": "https://www.ebay.com/usr/rggion"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 60,
+  "notes": "The $15-25 target price and the 60-75% material margin are the notes' own estimates. Marketplace fees, labor and shipping are not modeled, so real margin is lower.",
+  "price_usd": 20,
+  "variable_cost_usd": null
+ },
+ "majorUncertainty": "Whether enough buyers will search by model or part number and pay $15-25, and whether the entrant can build a fit-tested catalog fast enough.",
+ "unknowns": [
+  "Current eBay and new OEM prices (RepairClinic etc.) were not retrieved",
+  "Heat resistance needs (PETG, ASA or nylon) are from the notes, not from the excerpts",
+  "The November 2025 tenant thermostat-dial example is not backed by a retrieved excerpt",
+  "Which Printables engagement number is downloads",
+  "Per-SKU demand volume",
+  "Liability insurance cost",
+  "Shaft and D-slot fit data per model"
+ ],
+ "regulatoryOrPlatformDependency": "Depends on Etsy and eBay for discovery. There is product-liability exposure on gas range controls, and care is needed with OEM part numbers and trademarks.",
+ "evidence": [
+  {
+   "id": "PHY-01-E1",
+   "url": "https://www.ebay.com/usr/rggion",
+   "publisher": "Shop by category",
+   "kind": "incumbent_price",
+   "shows": "A 2016 eBay review says the used market charged $289.95 per discontinued Thermador knob. The price is old.",
+   "quote": "Until now, the used market was a monopoly and there was one source charging $289.95 per knob, sheer market arrogance. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-01-E2",
+   "url": "https://www.ebay.com/usr/rggion",
+   "publisher": "Shop by category",
+   "kind": "incumbent_price",
+   "shows": "The same 2016 review says a 3D-printed replacement knob was available at $60.00. It shows the pattern, not today's price.",
+   "quote": "Now, with sharpeibear there is an alternative at $60.00 per knob, a replacement built via 3D Printing. \n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-01-E3",
+   "url": "https://www.etsy.com/market/replacement_part_3d_printed",
+   "publisher": "Replacement Part 3d Printed - Etsy",
+   "kind": "incumbent_price",
+   "shows": "An Etsy 'Replacement Part from Photo or Drawing' custom print service is listed at $40.00 with 4.9k reviews.",
+   "quote": "Custom 3D Printed Part \\| Prototype Design & Printing Service \\| Replacement Part from Photo or Drawing (4.9k) $40.00\n- May include: A 3D model of a p...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-01-E4",
+   "url": "https://www.printables.com/model/580299-ultimate-diy-replacement-knob-pack-for-samsung-sme",
+   "publisher": "Ultimate DIY Replacement Knob Pack (for Samsung, Smeg, Toyota & More!)",
+   "kind": "demand",
+   "shows": "The Printables replacement knob pack (Replacement Parts contest entry) shows engagement numbers of 4,662, 4884 and 41 k. It is unclear which are likes and which are downloads.",
+   "quote": "In the contest Replacement parts\n4,662\n4884\n22\n41 k\nupdated October 22, 2023\n\nDescription\n\nPDF\n\nI originally designed a replacement 3D printed knob fo...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-01-E5",
+   "url": "https://www.printables.com/model/320894-samsung-stove-knob",
+   "publisher": "Samsung Stove Knob",
+   "kind": "demand",
+   "shows": "The author of a free Samsung stove knob model says all of the original knobs were cracked or broken to some degree, so the pain is real.",
+   "quote": "All of the knobs are cracked or broken to some degree, so I ventured to reproduce the item from the ground up in Fusion 360. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-01-E6",
+   "url": "https://www.printables.com/model/580299-ultimate-diy-replacement-knob-pack-for-samsung-sme",
+   "publisher": "Ultimate DIY Replacement Knob Pack (for Samsung, Smeg, Toyota & More!)",
+   "kind": "other",
+   "shows": "The free DIY route requires customizing in Fusion 360, printing the knob and insert, then gluing them. The notes count about 8 steps.",
+   "quote": "Glue the Knob and Insert together\n  8. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-01-E7",
+   "url": "https://www.printables.com/model/580299-ultimate-diy-replacement-knob-pack-for-samsung-sme",
+   "publisher": "Ultimate DIY Replacement Knob Pack (for Samsung, Smeg, Toyota & More!)",
+   "kind": "constraint",
+   "shows": "The free knob designs are CC BY-SA 4.0. An entrant must make original designs or comply with attribution and share-alike.",
+   "quote": "My designs are also open source (CC BY-SA 4.0), so please feel free to remix and adjust the models to your exact needs.\n\n",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

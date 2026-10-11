@@ -1,0 +1,113 @@
+{
+ "id": "GAM-03",
+ "name": "One-time-priced session-prep kit for a single TTRPG system",
+ "family": "games",
+ "buyer": "Weekly or biweekly D&D or Pathfinder game master who dreads prep and subscription-tool stacks",
+ "pain": "About four hours of prep for a two-hour session. One roundup says the tool stack can reach $60-150 per month, and another notes AI tools create tool fatigue.",
+ "wedge": "A narrow prep kit for one system (e.g. Pathfinder 2e or one OSR game) at a one-time $29-39, with a prep-time target under 45 minutes. The notes doubt it beats funded competitors.",
+ "referenceEntrant": {
+  "startupCashUsd": 1750,
+  "daysToFirstRevenue": 45,
+  "ownerHoursPerWeek": 12.5
+ },
+ "scan1Edge": {
+  "criterion": "owner_time",
+  "direction": "lower_is_better",
+  "entrant_basis": "A single-system kit with pre-structured prep output, targeting under 45 minutes. This is an unvalidated owner target.",
+  "entrant_value": 0.75,
+  "falsifier": "If user tests show prep time above ~2 hours with the kit, or funded AI-for-DM tools already deliver the same reduction, there is no edge.",
+  "incumbent_source_url": "https://arcanumrpgs.com/blog/ai-tools-for-dungeon-masters/",
+  "incumbent_value": 4,
+  "unit": "GM prep hours per session"
+ },
+ "substitutesNoted": [
+  {
+   "name": "Roll20",
+   "price_point": "Free tier; $5.99-$9.99/mo per one comparison (other sources conflict)",
+   "url": "https://saga20.com/blog/roll20-vs-foundry-vtt-2026/"
+  },
+  {
+   "name": "Foundry VTT",
+   "price_point": "One-time $50",
+   "url": "https://saga20.com/blog/roll20-vs-foundry-vtt-2026/"
+  },
+  {
+   "name": "CharGen / Archivist / ZapGM / Dungeon Alchemist",
+   "price_point": "Not verified",
+   "url": "https://www.myarchivist.ai/ai-dungeon-master/best-dm-tools-2026"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 60,
+  "notes": "Model: one-time $29-39, ~55-65% margin per the owner's estimate after AI inference costs.",
+  "price_usd": 34,
+  "variable_cost_usd": 13.6
+ },
+ "majorUncertainty": "Whether a solo entrant can differentiate in the most crowded of the four markets, where many AI-for-DM tools launched in 2026.",
+ "unknowns": [
+  "Competitor AI tool prices (unverified)",
+  "Roll20 prices conflict across sources",
+  "Whether the one-time pricing preference translates into purchases",
+  "GM opposition to AI-generated content",
+  "Inference cost per kit",
+  "Whether the claimed prep reduction is achievable"
+ ],
+ "regulatoryOrPlatformDependency": "Wizards of the Coast content is a licensing risk, so stay with the SRD or system-neutral content. Depends on AI inference providers.",
+ "evidence": [
+  {
+   "id": "GAM-03-E1",
+   "url": "https://arcanumrpgs.com/blog/ai-tools-for-dungeon-masters/",
+   "publisher": "AI Tools for Dungeon Masters (2026): What Actually Saves Prep Time",
+   "kind": "demand",
+   "shows": "Game masters dislike the four hours of prep that a two-hour session demands.",
+   "quote": "What they don’t love is the four hours of prep that a two-hour session demands.\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-03-E2",
+   "url": "https://aivexify.com/ai-dungeon-master-tools-2026/",
+   "publisher": "AI Dungeon Master Tools Compared (2026): Which AI DM Assistant Is Actually Worth Using? - aivexify.com",
+   "kind": "demand",
+   "shows": "A roundup says AI-assisted DMing can push a 'cheap hobby' to $60-150 per month.",
+   "quote": "### Best AI Prompts for Dungeon Masters\n#### The Hidden Cost of AI-Assisted DMing\nSuddenly the “cheap hobby” becomes $60–150 per month. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-03-E3",
+   "url": "https://saga20.com/blog/roll20-vs-foundry-vtt-2026/",
+   "publisher": "Roll20 vs Foundry VTT 2026: Price, Maps and Setup Time",
+   "kind": "incumbent_price",
+   "shows": "Roll20 is a free tier / $5.99-$9.99 per month and Foundry VTT is a one-time $50 licence.",
+   "quote": "## The comparison at a glance\n| Feature | Roll20 | Foundry VTT |\n| --- | --- | --- |\n| Pricing | Free tier / $5.99-$9.99 per month | One-time $50 lice...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-03-E4",
+   "url": "https://app.roll20.net/forum/post/7553285/one-time-purchase",
+   "publisher": "Roll20 - Virtual Tabletop for Playing D&D, Pathfinder, Call of Cthulhu, TTRPGs",
+   "kind": "demand",
+   "shows": "A Roll20 forum poster says many people hold out against subscriptions and would prefer a one-time payment.",
+   "quote": "This kind of one-time payment system could benefit Roll20 a lot, because there might be many people holding out against paying for subscription and wo...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-03-E5",
+   "url": "https://help.roll20.net/hc/en-us/articles/360037774633-Feature-Breakdown",
+   "publisher": "Feature Breakdown",
+   "kind": "constraint",
+   "shows": "All Roll20 users get online hosting with unlimited players, so core tooling already has a free baseline.",
+   "quote": "**\n\nAll users regardless of subscription recieve the following benefits while using Roll20:\n\n- Dedicated Online Hosting with unlimited players and gam...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-03-E6",
+   "url": "https://aivexify.com/ai-dungeon-master-tools-2026/",
+   "publisher": "AI Dungeon Master Tools Compared (2026): Which AI DM Assistant Is Actually Worth Using? - aivexify.com",
+   "kind": "constraint",
+   "shows": "AI tools can create tool fatigue fast, so another tool is a hard sell.",
+   "quote": "But it can also create tool fatigue fast.",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

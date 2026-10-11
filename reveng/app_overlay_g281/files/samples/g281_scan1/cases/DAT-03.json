@@ -1,0 +1,121 @@
+{
+ "id": "DAT-03",
+ "name": "DROP companion: California data-broker deletion verification report",
+ "family": "digital_or_data_products",
+ "buyer": "Privacy-conscious California residents, especially those who work with the public (streamers, agents, landlords)",
+ "pain": "Paid removal services are recurring and opaque. DROP now offers a free request channel, but users have no dated verification that their data actually disappeared from people-search sites.",
+ "wedge": "Do not compete on removal. Walk a user through the DROP submission, re-check major people-search sites about 45 days later, and produce a dated listed/not-listed report.",
+ "referenceEntrant": {
+  "startupCashUsd": 1000,
+  "daysToFirstRevenue": 45,
+  "ownerHoursPerWeek": 15
+ },
+ "scan1Edge": {
+  "criterion": "cash_cost",
+  "direction": "lower_is_better",
+  "entrant_basis": "A one-time fee of $15-$25 for a guided DROP submission and a re-check report, compared with DeleteMe's $129/year. The removal itself is free via DROP, so the entrant sells only guidance and verification.",
+  "entrant_value": 25,
+  "falsifier": "If consumers will not pay for a free government service plus a verification report, or if people-search sites are not covered by registered brokers, there is no revenue.",
+  "incumbent_source_url": "https://privacyinsightsolutions.com/blog/best-data-broker-removal-service-us",
+  "incumbent_value": 129,
+  "unit": "USD in first year for removal verification"
+ },
+ "substitutesNoted": [
+  {
+   "name": "California DROP",
+   "price_point": "Free",
+   "url": "https://www.clym.io/blog/california-drop-platform-delete-your-data-from-data-brokers"
+  },
+  {
+   "name": "DeleteMe",
+   "price_point": "$129/year for one person",
+   "url": "https://privacyinsightsolutions.com/blog/best-data-broker-removal-service-us"
+  },
+  {
+   "name": "Incogni",
+   "price_point": "$7.99/month annual (Standard); $14.99/month (Unlimited)",
+   "url": "https://surfshark.com/blog/incogni-vs-deleteme"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 75,
+  "notes": "Model: one-time $15-$25 fee. Re-check scrapers break often. Handling personal data adds liability and legal review cost.",
+  "price_usd": 20,
+  "variable_cost_usd": 5
+ },
+ "majorUncertainty": "Whether anyone will pay a fee for a free government process, and whether an anonymous founder can earn the trust needed to handle personal data.",
+ "unknowns": [
+  "Which people-search sites are registered brokers covered by DROP",
+  "Rules for authorized agents outside California",
+  "Willingness to pay for verification reports (no direct evidence)",
+  "Legal review cost",
+  "Number of consumers using DROP (one vendor claims 325,000 requests, but this is not in the excerpts)"
+ ],
+ "regulatoryOrPlatformDependency": "Depends on California's DROP and the Delete Act. Rules for authorized agents in other states are unverified. Handling sensitive personal data as an anonymous founder is a trust and liability problem.",
+ "evidence": [
+  {
+   "id": "DAT-03-E1",
+   "url": "https://privacyinsightsolutions.com/blog/best-data-broker-removal-service-us",
+   "publisher": "Best Data Broker Removal Services 2026: Prices & Tests",
+   "kind": "incumbent_price",
+   "shows": "DeleteMe costs $129 a year for one person, $229 for two and $329 for a household of four.",
+   "quote": "It costs $129 a year for one person, $229 for two and $329 for a household of four. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DAT-03-E2",
+   "url": "https://surfshark.com/blog/incogni-vs-deleteme",
+   "publisher": "Incogni vs. DeleteMe: which data removal service wins?",
+   "kind": "incumbent_price",
+   "shows": "Incogni Standard is $7.99/month billed annually ($95.88/year).",
+   "quote": "Standard annual plan · $7.99/month, billed $95.88/year · $10.75/month, billed about $129/year (1-year individual plan)\nMulti-year plan · Not currently...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DAT-03-E3",
+   "url": "https://surfshark.com/blog/incogni-vs-deleteme",
+   "publisher": "Incogni vs. DeleteMe: which data removal service wins?",
+   "kind": "incumbent_price",
+   "shows": "Incogni Unlimited is $14.99/month, and Family Unlimited is $22.99/month.",
+   "quote": "If you also want unlimited custom removals from the 2,000+ additional sites, you need an Unlimited plan, which is $14.99/month (or Family Unlimited at...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DAT-03-E4",
+   "url": "https://surfshark.com/blog/incogni-vs-deleteme",
+   "publisher": "Incogni vs. DeleteMe: which data removal service wins?",
+   "kind": "demand",
+   "shows": "DeleteMe's free scan only shows which data brokers have your info, which suggests a gap in verification reporting.",
+   "quote": "DeleteMe offers a free scan, but this only shows which data brokers have your info. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DAT-03-E5",
+   "url": "https://www.clym.io/blog/california-drop-platform-delete-your-data-from-data-brokers",
+   "publisher": "California DROP: Delete Your Data From All Brokers",
+   "kind": "constraint",
+   "shows": "California's DROP is a free, government-operated deletion request system, which undercuts willingness to pay for removal.",
+   "quote": "Quick definition DROP (Delete Request and Opt-Out Platform) is a free, government-operated system run by the California Privacy Protection Agency (CPP...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DAT-03-E6",
+   "url": "https://www.unsubcentral.com/california-drop-and-the-delete-act-operational-guide-for-data-brokers/",
+   "publisher": "California DROP & Delete Act Guide for Data Brokers",
+   "kind": "constraint",
+   "shows": "Penalties can reach $200 per day per unprocessed deletion request, which pushes brokers to comply and reduces need for private removal services.",
+   "quote": "Penalties can reach $200 per day for failure to register and $200 per day per unprocessed deletion request, plus investigation and administrative cost...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DAT-03-E7",
+   "url": "https://www.datagrail.io/glossary/what-are-the-delete-act-and-drop/",
+   "publisher": "Delete Act",
+   "kind": "constraint",
+   "shows": "A consumer or an authorized agent can submit a DROP request, so an agent-style service is legally possible in California.",
+   "quote": "Through DROP, a consumer (or an authorized agent) can submit one free deletion request that applies to all registered data brokers. ",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

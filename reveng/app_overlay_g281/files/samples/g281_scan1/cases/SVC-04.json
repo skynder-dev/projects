@@ -1,0 +1,117 @@
+{
+ "id": "SVC-04",
+ "name": "Flat-fee human-reviewed dispute packs for non-drug medical bills (ER and ambulance)",
+ "family": "services",
+ "buyer": "Individual patients with a large hospital bill, an EOB error or a denied claim",
+ "pain": "Few denials are appealed (less than 0.5% per an interested party) though 20-40% of appeals succeed. Appeals require policy knowledge, records and tight deadlines.",
+ "wedge": "A flat $49 human-reviewed package for non-drug bill disputes such as ER and ambulance bills, where Claimable focuses on medications. The researcher says candidly that no wedge is strong and free tools may crush it.",
+ "referenceEntrant": {
+  "startupCashUsd": 1000,
+  "daysToFirstRevenue": 45,
+  "ownerHoursPerWeek": 12
+ },
+ "scan1Edge": {
+  "criterion": "cash_cost",
+  "direction": "lower_is_better",
+  "entrant_basis": "A templated, AI-assisted dispute letter with brief human review lets a solo founder charge $49 flat.",
+  "entrant_value": 49,
+  "falsifier": "If free tools (Counterforce, Counterclaim, Dollar For) already handle ER and ambulance disputes, or a $49 price cannot cover acquisition costs, there is no edge.",
+  "incumbent_source_url": "https://mediloop.ai/blog/mediloop-vs-goodbill",
+  "incumbent_value": 129,
+  "unit": "USD per bill dispute"
+ },
+ "substitutesNoted": [
+  {
+   "name": "Counterforce Health",
+   "price_point": "free",
+   "url": "https://www.counterforcehealth.org/"
+  },
+  {
+   "name": "Claimable",
+   "price_point": "$39.95 + shipping",
+   "url": "https://www.getclaimable.com/"
+  },
+  {
+   "name": "mediloop",
+   "price_point": "$129 per bill",
+   "url": "https://mediloop.ai/blog/mediloop-vs-goodbill"
+  },
+  {
+   "name": "CareRoute",
+   "price_point": "18-25% of savings, capped at $1,000",
+   "url": "https://www.careroute.ai/bill-defense/medical-bill-negotiation-cost"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 60,
+  "notes": "The researcher estimates 50-75% margin before acquisition cost, which is described as high. Free competitors weaken pricing.",
+  "price_usd": 49,
+  "variable_cost_usd": null
+ },
+ "majorUncertainty": "Whether any paid wedge survives free AI tools and a nonprofit, and whether customer acquisition is affordable at $49.",
+ "unknowns": [
+  "HIPAA and state rules on bill negotiation (not researched)",
+  "Whether free tools cover ER and ambulance disputes",
+  "The acquisition channel and CAC for patients",
+  "Accuracy and hallucination risk in letters",
+  "Whether mediloop's $129 is current"
+ ],
+ "regulatoryOrPlatformDependency": "Likely health-data privacy and liability burden if records are handled (the researcher did not research HIPAA). Possible state rules on who may negotiate bills (not researched).",
+ "evidence": [
+  {
+   "id": "SVC-04-E1",
+   "url": "https://mediloop.ai/blog/mediloop-vs-goodbill",
+   "publisher": "mediloop vs Goodbill (2026): Fees, Guarantees & Which to Pick",
+   "kind": "incumbent_price",
+   "shows": "mediloop charges a flat $129 per bill with a 100% money-back guarantee.",
+   "quote": "# mediloop vs Goodbill (2026): Fees, Guarantees & Which to Pick\n**mediloop** charges a flat fee ($129 per bill) with a 100% money-back guarantee and h...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-04-E2",
+   "url": "https://www.careroute.ai/bill-defense/medical-bill-negotiation-cost",
+   "publisher": "How Much Do Medical Bill Negotiation Services Cost?",
+   "kind": "incumbent_price",
+   "shows": "CareRoute charges 18-25% of savings capped at $1,000, with nothing owed unless the bill is reduced.",
+   "quote": "CareRoute Bill Defense charges **18% to 25% of savings, capped at $1,000**, and you pay nothing unless your bill is actually reduced.\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-04-E3",
+   "url": "https://www.getclaimable.com/",
+   "publisher": "Claimable",
+   "kind": "incumbent_price",
+   "shows": "Claimable charges $39.95 plus shipping if the patient is not eligible for a no-cost appeal.",
+   "quote": "If you aren't eligible for a no cost appeal, Claimable charges a flat fee of $39.95 + shipping. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-04-E4",
+   "url": "https://www.counterforcehealth.org/post/how-do-i-appeal-a-denied-health-insurance-claim-a-step-by-step-guide/",
+   "publisher": "How Do I Appeal a Denied Health Insurance Claim? A Step-by-Step Guide",
+   "kind": "demand",
+   "shows": "Less than 0.5% of denials are formally appealed although 20-40% of appeals succeed (Counterforce, an interested party).",
+   "quote": "concerning, less than 0.5% of these denials are formally appealed—despite data showing that 20-40% of appeals ultimately succeed. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-04-E5",
+   "url": "https://www.counterforcehealth.org/",
+   "publisher": "Counterforce Health",
+   "kind": "other",
+   "shows": "Counterforce Health says it is and will always be completely free for individuals.",
+   "quote": "## Our Commitment to Patients\nCounterforce Health is and will **always be completely free** for individuals.",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-04-E6",
+   "url": "https://www.pymnts.com/artificial-intelligence-2/2026/insurance-denials-meet-their-match-in-ai-powered-appeals/",
+   "publisher": "Insurance Denials Meet Their Match in AI-Powered Appeals",
+   "kind": "constraint",
+   "shows": "One early investor said the direct-to-consumer model alone does not work at scale, a warning on acquisition cost and economics.",
+   "quote": "One early investor told Bloomberg that the direct-to-consumer model alone doesn’t work at scale. ",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

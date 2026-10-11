@@ -1,0 +1,214 @@
+{
+ "id": "EDU-03",
+ "verdict": "uncertain",
+ "verdictReason": "Leans kill but I could not re-verify the two facts a kill needs: seller earnings (case file says most TPT sellers earn $0-$100/month) and any existing migration tool. Verified: sellers own their IP and keep their own files, TPT can close accounts and withhold payouts, Payhip pages show single-file upload with no import link. No structural edge: any dev or Payhip could copy it; sale is one-off, no discovery off TPT. Assumption-only model is negative when pessimistic.",
+ "answers": [
+  {
+   "question": "(1) What free/cheap alternative covers the wedge?",
+   "answer": "Manual relisting is the free status quo: Payhip's signup is free and its digital-download flow is single-file upload; the pages I read show no import or bulk-migration link (absence on a few pages, not proof that none exists). Destination alternatives are Payhip (case file: 5% per sale, not re-verified), Gumroad (10% + $0.50 on direct sales, 30% on marketplace-discovered sales) and a Stripe-direct store (2.9% + 30c per card transaction). Sellers also already hold their own source files, so the 'takes TPT product files' step is largely unnecessary; the real labour is re-creating titles, descriptions, covers and bundles. I could not search for existing paid migration tools because the search budget was exhausted.",
+   "evidenceIds": [
+    "EDU-03-D1",
+    "EDU-03-D4",
+    "EDU-03-D5",
+    "EDU-03-D6",
+    "EDU-03-D8"
+   ]
+  },
+  {
+   "question": "(2) What structural edge exists and who could copy it?",
+   "answer": "None identified. The scan-1 edge is Payhip's 5% fee against TPT's take, which belongs to Payhip and not the entrant (the case file concedes this). A listing-migration utility has no exclusive data, licence or compounding asset: Payhip, Gumroad, a Shopify-style importer, a freelancer or a seller-community member could copy it quickly. Falsifier: a measured paid conversion from TPT sellers above about 2% at $19 with repeat/referral purchases, or evidence that no platform offers any import and sellers are asking for one.",
+   "evidenceIds": [
+    "EDU-03-D1",
+    "EDU-03-D5",
+    "EDU-03-D6"
+   ]
+  },
+  {
+   "question": "(3) Who demonstrably pays and how much?",
+   "answer": "Nobody demonstrated. The pain is real: TPT's terms allow closing any account 'at any time for any reason, with or without notice' and withholding payouts at its discretion (the case file adds a Trustpilot seller reporting $300 withheld, not re-read), and the marketplace is large (7M+ educators). But I found no listing, price or sale of a paid migration tool, and the case file's income data (most sellers earn $0-$100/month, E5) was not re-verified. The buyer is a low-revenue seller facing a one-off task, which caps price and repeat revenue.",
+   "evidenceIds": [
+    "EDU-03-D2",
+    "EDU-03-D3",
+    "EDU-03-D7",
+    "EDU-03-E3",
+    "EDU-03-E5"
+   ]
+  },
+  {
+   "question": "(4) Legal/platform constraints?",
+   "answer": "TPT's terms (updated 2025-12-08) say sellers own and maintain the intellectual property in their Resources, and I found no exclusivity clause in the text I read, so a seller relisting their own work is not barred by what I read. TPT may suspend accounts and withhold payouts at its discretion, which is the pain but also means a seller using an outside tool could lose their TPT account if TPT objects (unverified). I did not find a clause on automated access in the text I read (the page was truncated and not fully checked); a tool should work from files the seller supplies, never scrape TPT. Third-party clipart/font licences inside covers, buyer-licensed resources, Payhip's terms and API limits (no API read) are unverified.",
+   "evidenceIds": [
+    "EDU-03-D1",
+    "EDU-03-D2",
+    "EDU-03-D3"
+   ]
+  },
+  {
+   "question": "(5) Year-1 numbers",
+   "answer": "Reference entrant, all assumptions: price $19 one-time per shop migration; 60 paid migrations in year 1 (first revenue about day 60, then about 6 per month); revenue $1,140. Cost $391: domain/hosting $60, support email/tools $60, acquisition test $100, per-sale cost $2.85 (card fees 2.9% + 30c on $19 is $0.85, AI/API $2.00). Base profit about $749 for about 470 hours (9 h/week), under $2/hour. Pessimistic (price x0.8 = $15.20, volume x0.5 = 30, cost x1.5): revenue $456, cost $587, profit -$131. Volume has no source; reaching sellers with no audience is the unresolved cost.",
+   "evidenceIds": [
+    "EDU-03-D4"
+   ]
+  }
+ ],
+ "newEvidence": [
+  {
+   "id": "EDU-03-D1",
+   "url": "https://www.teacherspayteachers.com/Terms-of-Service",
+   "quote": "TPT Sellers own and maintain the intellectual property rights in their Resources",
+   "kind": "constraint",
+   "publisher": "Teachers Pay Teachers Terms of Service (last updated 12/08/2025)",
+   "date": "2025-12-08",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "EDU-03-D2",
+   "url": "https://www.teacherspayteachers.com/Terms-of-Service",
+   "quote": "We may, in our discretion, close or suspend the Account of any Member at any time for any reason, with or without notice.",
+   "kind": "constraint",
+   "publisher": "Teachers Pay Teachers Terms of Service, Section 1.F",
+   "date": "2025-12-08",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "EDU-03-D3",
+   "url": "https://www.teacherspayteachers.com/Terms-of-Service",
+   "quote": "We may, at our sole discretion, withhold or delay a Payout due to any Seller",
+   "kind": "demand",
+   "publisher": "Teachers Pay Teachers Terms of Service, Section 5.B",
+   "date": "2025-12-08",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "EDU-03-D4",
+   "url": "https://stripe.com/pricing",
+   "quote": "per successful transaction for domestic cards",
+   "kind": "incumbent_price",
+   "publisher": "Stripe (standard rate shown as 2.9% + 30c per successful domestic card transaction)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "EDU-03-D5",
+   "url": "https://payhip.com/",
+   "quote": "Get started for free",
+   "kind": "other",
+   "publisher": "Payhip homepage (also shows 'No card required'; footer links list no import or migrate page)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "EDU-03-D6",
+   "url": "https://payhip.com/features/sell-digital-downloads",
+   "quote": "Upload any type of file (ebooks, software, video etc)",
+   "kind": "other",
+   "publisher": "Payhip digital downloads feature page (no bulk upload or import mentioned)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "EDU-03-D7",
+   "url": "https://www.teacherspayteachers.com/About-Us",
+   "quote": "7M+ educators worldwide",
+   "kind": "demand",
+   "publisher": "Teachers Pay Teachers About page (footer credits IXL Learning)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "EDU-03-D8",
+   "url": "https://gumroad.com/pricing",
+   "quote": "Per transaction when new customers find and buy from you through our discover marketplace.",
+   "kind": "incumbent_price",
+   "publisher": "Gumroad pricing (direct sales shown as 10% + $0.50; marketplace sales 30%; no monthly fee)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  }
+ ],
+ "newAlternatives": [
+  {
+   "label": "Manual relisting on Payhip using the seller's own files (single-file upload, no import link seen)",
+   "kind": "diy_or_status_quo",
+   "costUsdPerMonth": 0,
+   "coversWedge": "full",
+   "sourceLocator": "https://payhip.com/features/sell-digital-downloads",
+   "evidenceRef": "EDU-03-D6"
+  },
+  {
+   "label": "Gumroad as an alternative destination (10% + $0.50 direct, 30% via its marketplace, no monthly fee; no TPT importer seen)",
+   "kind": "free_tool",
+   "costUsdPerMonth": 0,
+   "coversWedge": "none",
+   "sourceLocator": "https://gumroad.com/pricing",
+   "evidenceRef": "EDU-03-D8"
+  },
+  {
+   "label": "Stripe-direct store (2.9% + 30c per card transaction; seller builds the listing and checkout)",
+   "kind": "diy_or_status_quo",
+   "costUsdPerMonth": 0,
+   "coversWedge": "none",
+   "sourceLocator": "https://stripe.com/pricing",
+   "evidenceRef": "EDU-03-D4"
+  }
+ ],
+ "killReasons": [
+  {
+   "reason": "Buyer cannot pay much: case-file evidence says most TPT sellers earn $0-$100/month, so a one-off migration tool is a rounding error for the median seller and has no recurring revenue (E5 not re-verified, so held at major, not fatal).",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "EDU-03-E5"
+  },
+  {
+   "reason": "Sellers own their IP and keep their source files (so the 'take TPT product files' step adds little) and Payhip's flow is a plain file upload; the paid value reduces to a one-time listing-copy and bundle task that a rival, Payhip or a freelancer could copy, with no exclusive asset.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "EDU-03-D1"
+  },
+  {
+   "reason": "Pain is real but it is the platform risk, not relisting labour: TPT can close accounts and withhold payouts at its discretion, yet leaving TPT also means losing its marketplace traffic (7M+ educators), so the migration tool does not solve discovery.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "EDU-03-D7"
+  },
+  {
+   "reason": "Platform dependency: any workflow touching a seller's TPT or Payhip account may break either platform's terms; no Payhip API or terms were read.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "EDU-03-D2"
+  }
+ ],
+ "economics": {
+  "revenue365": 1140,
+  "cost365": 391,
+  "pessimisticProfit365": -131,
+  "survivesPessimistic": false,
+  "assumptions": [
+   "ASSUMPTION: price $19 one-time per shop migration (no price in case file); chosen against sellers earning $0-$100/month",
+   "ASSUMPTION: 60 paid migrations in year 1, first revenue about day 60, then about 6 per month; no source for volume or conversion",
+   "ASSUMPTION: fixed cost $220 = domain/hosting $60 + support email/tools $60 + acquisition test $100",
+   "ASSUMPTION: per-sale cost $2.85 = card fees 2.9% + 30c on $19 (about $0.85, rate from Stripe's page) + AI/API $2.00",
+   "Cost exceeds the $350 reference cash by $41 and would be funded from revenue; owner time (about 470 hours at 9 h/week) is not costed",
+   "Pessimistic: price x0.8 = $15.20, volume x0.5 = 30 sales, cost x1.5 = $586.50 gives revenue $456 and profit -$130.50",
+   "Case-file 85% margin and 2-vs-10 hours relisting claims were not used: no price and no time source"
+  ],
+  "sources": [
+   "EDU-03-D4"
+  ]
+ },
+ "legalNotes": [
+  "TPT terms (2025-12-08): sellers own their resources' IP; I found no exclusivity clause in the text read, but the page was long and partly summarised, so a full read of terms is still needed (EDU-03-D1).",
+  "TPT may close accounts and withhold payouts at its discretion; a seller using an outside tool could be exposed if TPT objects (EDU-03-D2, EDU-03-D3).",
+  "Not verified: automated-access/scraping clauses in TPT terms, Payhip terms and API capabilities, third-party licences for clipart, fonts and covers, and buyer-licensed resources that sellers must not relist.",
+  "Design implication if pursued: only handle files the seller uploads and certifies as their own; do not scrape TPT."
+ ],
+ "unverified": [
+  "TPT seller earnings distribution (seolumina page fetch was blocked; E5 is case-file evidence only)",
+  "Payhip fee level and plan structure (payhip.com/pricing could not be fetched; 5% figure is from the case file via learningmole, not re-read)",
+  "Whether any paid or free TPT-to-Payhip/Etsy migration tool already exists: WebSearch budget was exhausted before any search for it",
+  "Existence of Payhip product-creation API or import feature (help center and API pages could not be fetched)",
+  "Willingness to pay of TPT sellers, and any channel/CAC for reaching them without an audience",
+  "Trustpilot withheld-earnings report (E3), Quickshops pricing and relisting-time estimates: not re-read",
+  "TPT terms: only about 100k of 125k characters were summarised and automated-access language was not found, which is not proof it is absent"
+ ],
+ "nextStep": "Re-run with search access to find existing TPT migration tools and TPT seller income data; if sellers earning above $500/month and no importer exist, test a $19 landing page before building anything."
+}

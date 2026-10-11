@@ -1,0 +1,126 @@
+{
+ "id": "SVC-02",
+ "name": "Google Business Profile suspension evidence-pack reinstatement",
+ "family": "services",
+ "buyer": "Locksmiths, plumbers, towing firms and other local service businesses whose Google Maps listing was suspended",
+ "pain": "The listing vanishes from Search and Maps overnight, cutting off calls. The free appeal form is confusing and the evidence requirements are unclear.",
+ "wedge": "A $149 flat evidence-pack generator for the most common suspension causes, aiming to cut owner time per case to under 30 minutes. The researcher honestly describes this wedge as thin.",
+ "referenceEntrant": {
+  "startupCashUsd": 350,
+  "daysToFirstRevenue": 15,
+  "ownerHoursPerWeek": 12
+ },
+ "scan1Edge": {
+  "criterion": "cash_cost",
+  "direction": "lower_is_better",
+  "entrant_basis": "A templated evidence pack built with AI tools keeps per-case labor low enough to price at $149 flat.",
+  "entrant_value": 149,
+  "falsifier": "If a templated pack does not get listings reinstated (Google rejects it) or Fiverr gigs at around $100 already satisfy buyers, the $149 price has no edge.",
+  "incumbent_source_url": "https://www.greenthumblocal.com/gmb-reinstatement",
+  "incumbent_value": 349,
+  "unit": "USD per reinstatement case"
+ },
+ "substitutesNoted": [
+  {
+   "name": "Green Thumb Local",
+   "price_point": "$349 standard, pay on success",
+   "url": "https://www.greenthumblocal.com/gmb-reinstatement"
+  },
+  {
+   "name": "Reinstatement Experts",
+   "price_point": "$450 on success",
+   "url": "https://reinstatementexperts.com/products/reinstatement-services"
+  },
+  {
+   "name": "Reputation Arm",
+   "price_point": "$600 flat, money-back guarantee",
+   "url": "https://reputationarm.com/local-seo-services/google-business-profile-suspension-help/"
+  },
+  {
+   "name": "Fiverr GBP gigs",
+   "price_point": "from $100",
+   "url": "https://block.fiverr.com/gigs/google-profile"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 70,
+  "notes": "The researcher estimates 60-80% margin when cases succeed. Failed cases and refunds erode it. Pay-on-success terms would mean unpaid labor.",
+  "price_usd": 149,
+  "variable_cost_usd": null
+ },
+ "majorUncertainty": "Whether a templated evidence pack actually produces reinstatements, and whether an unknown entrant with no case history or reviews can earn trust.",
+ "unknowns": [
+  "Success rate of templated packs (unproven)",
+  "The platform-change risk is stated in the notes but not supported by an excerpt",
+  "Whether buyers will pay $149 versus pay-on-success competitors",
+  "Customer acquisition channel for suspended-listing owners",
+  "Whether the vendor success claims (295/300, 2,000+) are accurate"
+ ],
+ "regulatoryOrPlatformDependency": "Fully dependent on Google's appeal flow and policies, which can change at any time. Requires the client to grant Business Profile access.",
+ "evidence": [
+  {
+   "id": "SVC-02-E1",
+   "url": "https://www.greenthumblocal.com/gmb-reinstatement",
+   "publisher": "No Upfront Payment — Google My Business Reinstatement —GBP Reinstatement — Green Thumb Local",
+   "kind": "incumbent_price",
+   "shows": "Green Thumb Local charges $349 for standard reinstatement.",
+   "quote": "$349.\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-E2",
+   "url": "https://reinstatementexperts.com/products/reinstatement-services",
+   "publisher": "Google Reinstatement Services - You're 1 step away from recovering you",
+   "kind": "incumbent_price",
+   "shows": "Reinstatement Experts charges $450 only upon successful reinstatement.",
+   "quote": "**Our total price is $450, upon successful reinstatement.",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-E3",
+   "url": "https://reputationarm.com/local-seo-services/google-business-profile-suspension-help/",
+   "publisher": "Google Business Profile Suspension Reinstatement Service",
+   "kind": "incumbent_price",
+   "shows": "Reputation Arm charges a flat $600 with a money-back guarantee.",
+   "quote": "**The service is a flat $600 and comes with a guaranteed reinstatement or your money back. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-E4",
+   "url": "https://www.sterlingsky.ca/google-business-profile-suspension-help/",
+   "publisher": "BEST Google Business Profile Suspension Help - Google My Business Suspension - Only Pay if We Succeed",
+   "kind": "demand",
+   "shows": "The listing vanishes overnight, cutting off the flow of calls and leads (vendor marketing).",
+   "quote": "Overnight, your business listing vanishes from Google Search and Maps, cutting off the critical flow of calls and leads from local customers. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-E5",
+   "url": "https://searchscope.com.au/google-business-profile-reinstatement/",
+   "publisher": "Google Business Profile Recovery. - Search Scope",
+   "kind": "demand",
+   "shows": "For high-lead-value trades, the opportunity cost of a 2-3 week appeal cycle is argued to exceed reinstatement fees (vendor claim).",
+   "quote": "For service businesses with a high average lead value, locksmiths, towing, trades, home services, the opportunity cost over a 2 to 3 week appeal cycle...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-E6",
+   "url": "https://searchscope.com.au/google-business-profile-reinstatement/",
+   "publisher": "Google Business Profile Recovery. - Search Scope",
+   "kind": "demand",
+   "shows": "Search Scope claims 295 of 300 recovered since early 2025 at a flat $550 upfront, an indication of paid volume (self-reported).",
+   "quote": "Flat $550 upfront, founder-led, 295 of 300 recovered since early 2025. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-E7",
+   "url": "https://birdeye.com/blog/how-to-reinstate-suspended-google-business-profiles/",
+   "publisher": "How to reinstate a suspended Google Business Profile",
+   "kind": "constraint",
+   "shows": "Google does not charge for reinstatement, so the entrant competes against a free official path. There may be costs to gather evidence such as licenses.",
+   "quote": "Google doesn't charge for reinstatement, but there may be costs associated with gathering evidence like licenses.\n",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

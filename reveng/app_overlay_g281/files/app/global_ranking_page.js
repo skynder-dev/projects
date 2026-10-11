@@ -64,6 +64,7 @@
           r.deep.economics?h('p',{class:'gr-note',text:`Year-1 model (assumption-based): revenue ${usd0(r.deep.economics.revenue365_usd)}, cost ${usd0(r.deep.economics.cost365_usd)}, pessimistic profit ${usd0(r.deep.economics.pessimistic_profit365_usd)}; survives pessimistic case: ${r.deep.economics.survives_pessimistic?'yes':'no'}.`}):null,
           r.deep.answers.length?h('ul',{class:'gr-ev'},r.deep.answers.map(a=>h('li',{},h('strong',{text:a.question+' '}),h('span',{text:a.answer})))):null,
           r.deep.unverified.length?[h('h4',{text:'Not verified'}),h('ul',{class:'gr-ev'},r.deep.unverified.map(u=>h('li',{text:u})))]:null]:null,
+        r.deepNotScreened?[h('h4',{text:'Deep screen not done'}),h('p',{text:r.deepNotScreened})]:null,
         r.alternatives.length?[h('h4',{text:'Cheapest alternatives checked'}),h('ul',{class:'gr-ev'},r.alternatives.map(a=>{const u=View.safeUrl(a.url);return h('li',{},u?h('a',{href:u,target:'_blank',rel:'noopener noreferrer',text:a.label}):h('span',{text:a.label}),h('span',{text:` – ${a.usdPerMonth===null?'price n/a':(a.usdPerMonth===0?'free':'$'+a.usdPerMonth+'/mo')}, covers wedge: ${a.covers}`}));}))]:null,
         r.killReasons.length?[h('h4',{text:'Kill reasons (agent reported)'}),h('ul',{class:'gr-ev'},r.killReasons.map(k=>h('li',{text:`[${k.severity}] ${k.reason}`})))]:null,
         r.legalNotes.length?[h('h4',{text:'Legal notes'}),h('ul',{class:'gr-ev'},r.legalNotes.map(n=>h('li',{text:n})))]:null,

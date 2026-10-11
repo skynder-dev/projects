@@ -1,0 +1,221 @@
+{
+ "id": "GAM-04",
+ "verdict": "killed",
+ "verdictReason": "The wedge is a price/limit edge and both halves are already covered: Blooket hosts live games free for up to 60 players (class size) and sells Plus at about $4.99/mo billed annually ($2.99 on other pages) with a 300-player cap, so $5/mo flat or $29/yr saves a few dollars a year at most. Free hosting and a claimed 10M-user incumbent leave a stranger with no teacher distribution. Pessimistic year 1 is about -$700. Kahoot's own prices could not be checked.",
+ "answers": [
+  {
+   "question": "(1) What free/cheap alternative covers the wedge?",
+   "answer": "Blooket. Four independent pages (a directory, a competitor blog, an app-store listing, a council blog) agree that Blooket's free plan hosts games for up to 60 players: 'Creating sets and hosting games is free with up to 60 players.' A normal class fits under 60, so the entrant's '100 free players' only matters for larger groups (trainers, assemblies). Paid Blooket Plus is $4.99/mo billed annually ($59.88/yr) per four pages, $2.99/mo ($35.88/yr) per two others, with 300 players; Plus Flex is $9.99/mo monthly on three pages (a council page says $4.99). The entrant's flat $5/mo is therefore not cheaper than Blooket's annual price, and $29/yr is $7-$31/yr below it; only month-to-month ($5 vs $9.99 Flex) shows a clear gap on two sources. A directory page says Blooket 'stands out with its strong free plan and lower entry pricing' versus Kahoot and Quizizz. Case-file claims that Kahoot costs $3-$19/mo and Trivia Anywhere is free with no limits (GAM-04-E2, E6) were not re-verified; Kahoot, Gimkit, Quizizz and Mentimeter primary pages could not be opened.",
+  "evidenceIds": ["GAM-04-D1", "GAM-04-D2", "GAM-04-D3", "GAM-04-D4", "GAM-04-D5", "GAM-04-D6", "GAM-04-D10", "GAM-04-E2", "GAM-04-E6"]
+ },
+ {
+  "question": "(2) What structural edge exists and who could copy it?",
+  "answer": "None. 'Free tier at 100 players', 'flat $5' and 'one-click cancellation' are price and policy choices any funded rival can copy in a week (Blooket could lift its 60 cap or shorten cancellation); a live-quiz engine, question sets and teacher base are not exclusive to a new entrant. 'No player accounts' is already the norm: a Blooket listing says 'with the game ID code, students join in on their own devices' (it does not state whether any sign-up is needed). The billing-complaint pain (38% one-star on Trustpilot) comes only from the case file and was not re-checked. Incumbents have scale: Blooket is stated to have more than 10 million users (publisher claim). Scan-1's own falsifier (teachers take free alternatives) is met.",
+  "evidenceIds": ["GAM-04-D1", "GAM-04-D8", "GAM-04-D9", "GAM-04-E4"]
+ },
+ {
+  "question": "(3) Who demonstrably pays and how much?",
+  "answer": "Individual teachers can pay $2.99-$4.99/mo billed annually for Blooket Plus (extra players, reports, audio questions), but no page read shows how many do. Institutions pay more: Blooket's Group plan is $550 per year (ten teachers) on one aggregator page last updated 03/12/2024, with higher tiers up to $3,000/yr. Whether solo teachers pay personally in volume, and whether Kahoot's billing complaints cause switching, is unverified. Kahoot's $3-$19/mo teacher and $19-$79 business plans are from the case file only.",
+  "evidenceIds": ["GAM-04-D2", "GAM-04-D4", "GAM-04-D7", "GAM-04-E2", "GAM-04-E3"]
+ },
+ {
+  "question": "(4) Legal/platform constraints?",
+  "answer": "COPPA: operators 'must obtain verifiable parental consent before collecting any personal information from a child' under 13, 'The Rule defines personal information to include persistent identifiers', and a school can consent on the parent's behalf only 'limited to the educational context' and 'for no other commercial purpose'. A solo teacher buying with a personal card may not be able to give school-level consent, so classroom use of cookies, IP logs or analytics by an unvetted vendor raises district-approval problems; avoiding player accounts reduces but does not remove this. FERPA, state student-privacy laws and district procurement (DPAs) were not researched in this pass (sources blocked). Real-time hosting and nickname moderation for minors are further unsourced obligations.",
+  "evidenceIds": ["GAM-04-D11", "GAM-04-D12", "GAM-04-D13", "GAM-04-D14"]
+ },
+ {
+  "question": "(5) Year-1 numbers?",
+  "answer": "Base (all inputs assumptions except price and the cash figure): 150 paying teachers, blended $27.80 first-year revenue each (70% annual at $29, 30% monthly at $5 kept 5 months) = $4,170; costs $1,709 ($1,000 startup cash, $500 hosting, 5% payment fees) = +$2,461 profit, about $3.90 per owner hour over ~624 hours. Pessimistic (price x0.8, volume x0.5, costs x1.5): revenue $1,668, costs $2,375, profit about -$707. Volume is the unknown: no source gives a freemium conversion rate or a path to 150 payers for a stranger competing with free tools; the pessimistic case fails.",
+  "evidenceIds": ["GAM-04-D2", "GAM-04-D4", "GAM-04-D1"]
+ }
+ ],
+ "newEvidence": [
+  {
+   "id": "GAM-04-D1",
+   "url": "https://tooldirectory.ai/tools/blooket",
+   "quote": "Creating sets and hosting games is free with up to 60 players.",
+   "kind": "incumbent_price",
+   "publisher": "Tool Directory (tooldirectory.ai), Blooket listing",
+   "date": "2026-07-25 (reviewed, per listing)",
+   "evidenceClass": "agent_reported",
+   "shows": "Blooket's free plan covers hosting up to 60 players per game; Plus raises the cap to 300 and adds reports and audio questions."
+  },
+  {
+   "id": "GAM-04-D2",
+   "url": "https://nibble-app.com/blog/blooket-pricing",
+   "quote": "Blooket Plus: 4.99 per month, billed annually at 59.88 per year.",
+   "kind": "incumbent_price",
+   "publisher": "Nibble blog (competing app), Blooket Pricing",
+   "date": "2026-08-18 (updated 2026-09-15)",
+   "evidenceClass": "agent_reported",
+   "shows": "Blooket Plus at $4.99/mo billed annually; a competitor-authored page that itself says to check Blooket's site."
+  },
+  {
+   "id": "GAM-04-D3",
+   "url": "https://nibble-app.com/blog/blooket-pricing",
+   "quote": "on the free plan, games are limited to up to 60 players.",
+   "kind": "incumbent_price",
+   "publisher": "Nibble blog (competing app), Blooket Pricing",
+   "date": "2026-08-18 (updated 2026-09-15)",
+   "evidenceClass": "agent_reported",
+   "shows": "Same 60-player free cap as the directory, a council blog and an app-store listing; 'No cost for core game hosting, ever' appears on the page."
+  },
+  {
+   "id": "GAM-04-D4",
+   "url": "https://www.blockchain-council.org/blogs/blooket/",
+   "quote": "Priced at $2.99 per month when billed annually (totaling $35.88 per year),",
+   "kind": "incumbent_price",
+   "publisher": "Blockchain Council, Blooket",
+   "date": "2026 (title; page undated)",
+   "evidenceClass": "agent_reported",
+   "shows": "Lower Blooket Plus price ($35.88/yr, 300 players) than the $59.88/yr on other pages; the same page says Plus Flex is $4.99/mo and the free plan allows up to 60 players. Sources conflict."
+  },
+  {
+   "id": "GAM-04-D5",
+   "url": "https://subger.com/en/service/blooket",
+   "quote": "Blooket Plus USD 2.99/month or USD 35.88/year for teachers.",
+   "kind": "incumbent_price",
+   "publisher": "Subger, Blooket overview and pricing",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "A second page giving $2.99/mo ($35.88/yr); the same page also lists a $7.99/mo monthly plan and says to confirm live pricing."
+  },
+  {
+   "id": "GAM-04-D6",
+   "url": "https://www.saasworthy.com/product/blooket/pricing",
+   "quote": "Compared to tools like Kahoot and Quizizz, Blooket stands out with its strong free plan and lower entry pricing.",
+   "kind": "other",
+   "publisher": "SaaSworthy, Blooket pricing",
+   "date": "undated (page says pricing last updated 03/12/2024)",
+   "evidenceClass": "agent_reported",
+   "shows": "An aggregator states Blooket's free plan and entry price undercut Kahoot and Quizizz; also lists Plus at $4.99/mo ($59.88/yr) and Plus Flex at $9.99/mo."
+  },
+  {
+   "id": "GAM-04-D7",
+   "url": "https://www.saasworthy.com/product/blooket/pricing",
+   "quote": "$550.00 per year,",
+   "kind": "incumbent_price",
+   "publisher": "SaaSworthy, Blooket pricing",
+   "date": "undated (page says pricing last updated 03/12/2024)",
+   "evidenceClass": "agent_reported",
+   "shows": "Blooket's Group plan is $550/year, with tiers listed up to $3,000/year; institutional budgets are the larger spend in this category."
+  },
+  {
+   "id": "GAM-04-D8",
+   "url": "https://tooldirectory.ai/tools/blooket",
+   "quote": "more than 10 million users",
+   "kind": "demand",
+   "publisher": "Tool Directory (tooldirectory.ai), Blooket listing",
+   "date": "2026-07-25 (reviewed, per listing)",
+   "evidenceClass": "agent_reported",
+   "shows": "Blooket is stated to have passed 10 million users after its 2020 launch (unsourced publisher claim), evidence of an entrenched free incumbent."
+  },
+  {
+   "id": "GAM-04-D9",
+   "url": "https://www.educationalappstore.com/website/blooket",
+   "quote": "with the game ID code, students join in on their own devices.",
+   "kind": "other",
+   "publisher": "Educational App Store, Blooket review",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Students join with a code on their own devices; the page does not say whether student sign-up is required. Also: free hosting limited to 60 students per session."
+  },
+  {
+   "id": "GAM-04-D10",
+   "url": "https://nibble-app.com/blog/blooket-pricing",
+   "quote": "Plus Flex: 9.99 per month, for teachers who'd rather pay monthly.",
+   "kind": "incumbent_price",
+   "publisher": "Nibble blog (competing app), Blooket Pricing",
+   "date": "2026-08-18 (updated 2026-09-15)",
+   "evidenceClass": "agent_reported",
+   "shows": "Blooket's month-to-month price is $9.99 on this page; the only visible gap versus a flat $5/mo is monthly billing (sources conflict, $4.99 on one)."
+  },
+  {
+   "id": "GAM-04-D11",
+   "url": "https://www.ftc.gov/business-guidance/resources/complying-coppa-frequently-asked-questions",
+   "quote": "must obtain verifiable parental consent before collecting any personal information from a child",
+   "kind": "constraint",
+   "publisher": "FTC, Complying with COPPA: Frequently Asked Questions",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "COPPA consent requirement for services collecting personal information from children under 13."
+  },
+  {
+   "id": "GAM-04-D12",
+   "url": "https://www.ftc.gov/business-guidance/resources/complying-coppa-frequently-asked-questions",
+   "quote": "the schools may act as the parent's agent and can consent under COPPA",
+   "kind": "constraint",
+   "publisher": "FTC, Complying with COPPA: Frequently Asked Questions",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "School consent is the COPPA route for classroom tools, so a vendor sold to individual teachers still needs school-level authorisation; the same section says consent is 'limited to the educational context'."
+  },
+  {
+   "id": "GAM-04-D13",
+   "url": "https://www.ftc.gov/business-guidance/resources/complying-coppa-frequently-asked-questions",
+   "quote": "The Rule defines “personal information” to include persistent identifiers",
+   "kind": "constraint",
+   "publisher": "FTC, Complying with COPPA: Frequently Asked Questions",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Cookies and device identifiers count, so 'no player accounts' does not by itself take a live-quiz service outside COPPA; the FAQ also says persistent identifiers used solely for internal operations may fall outside the disclosure requirement."
+  },
+  {
+   "id": "GAM-04-D14",
+   "url": "https://www.ftc.gov/business-guidance/resources/complying-coppa-frequently-asked-questions",
+   "quote": "for the use and benefit of the school, and for no other commercial purpose",
+   "kind": "constraint",
+   "publisher": "FTC, Complying with COPPA: Frequently Asked Questions",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Student data collected under school consent cannot be used for other commercial purposes (ads, profiling), limiting freemium monetisation levers."
+  }
+ ],
+ "newAlternatives": [
+  {"label": "Blooket free plan (hosting up to 60 players)", "kind": "free_tool", "costUsdPerMonth": 0, "coversWedge": "partial", "sourceLocator": "https://tooldirectory.ai/tools/blooket", "evidenceRef": "GAM-04-D1"},
+  {"label": "Blooket Plus ($4.99/mo billed annually; $2.99/mo per other pages; 300 players)", "kind": "cheap_paid", "costUsdPerMonth": 4.99, "coversWedge": "partial", "sourceLocator": "https://nibble-app.com/blog/blooket-pricing", "evidenceRef": "GAM-04-D2"},
+  {"label": "Blooket Plus Flex (monthly billing, $9.99/mo on two pages, $4.99 on one)", "kind": "cheap_paid", "costUsdPerMonth": 9.99, "coversWedge": "partial", "sourceLocator": "https://nibble-app.com/blog/blooket-pricing", "evidenceRef": "GAM-04-D10"},
+  {"label": "Kahoot teacher plans $3-$19/mo billed yearly (case file claim, not re-verified)", "kind": "paid_incumbent", "costUsdPerMonth": 3, "coversWedge": "partial", "sourceLocator": "https://kinescope.com/edtech-map/kahoot", "evidenceRef": "GAM-04-E2"},
+  {"label": "Trivia Anywhere (promoted as free, no limits; unverified)", "kind": "free_tool", "costUsdPerMonth": 0, "coversWedge": "partial", "sourceLocator": "https://triviaeverywhere.com/blog/kahoot-free-plan-guide/", "evidenceRef": "GAM-04-E6"}
+ ],
+ "killReasons": [
+  {"reason": "A free incumbent already covers the core buyer: Blooket hosts live games free for up to 60 players (a typical class), reported consistently by four pages, so the entrant's 100-player free tier only matters above 60 players and there is no unmet need for an individual teacher.", "severity": "major", "refClass": "agent_reported", "ref": "GAM-04-D1"},
+  {"reason": "No price edge: Blooket Plus is $4.99/mo billed annually ($59.88/yr) or $2.99/mo ($35.88/yr) with a 300-player cap, so a flat $5/mo is no cheaper and $29/yr saves $7-$31 a year; the only clear gap is monthly billing (Flex $9.99). Cheaper/flat pricing and easy cancellation are copyable policies, not exclusive assets.", "severity": "major", "refClass": "agent_reported", "ref": "GAM-04-D2"},
+  {"reason": "Entrenched incumbent scale (Blooket stated at 10M+ users) and no sourced channel for a stranger to reach teachers; the case file's own notes call distribution the weakness.", "severity": "minor", "refClass": "agent_reported", "ref": "GAM-04-D8"},
+  {"reason": "Pessimistic year 1 is about -$707 under stated assumptions (price x0.8, volume x0.5, cost x1.5); revenue per customer is $29/yr or less with no sourced conversion rate.", "severity": "minor", "refClass": "agent_reported", "ref": "GAM-04-D4"},
+  {"reason": "COPPA and school consent: persistent identifiers are personal information and school consent is limited to educational use, so a vendor selling to individual teachers faces district-approval friction and data-use limits.", "severity": "minor", "refClass": "agent_reported", "ref": "GAM-04-D12"}
+ ],
+ "economics": {
+  "revenue365": 4170,
+  "cost365": 1709,
+  "pessimisticProfit365": -707,
+  "survivesPessimistic": false,
+  "assumptions": [
+   "Prices $5/mo and $29/yr come from the case file's wedge; plan mix 70% annual / 30% monthly, monthly subscribers kept 5 months on average (assumption), so blended first-year revenue per payer = 0.7 x 29 + 0.3 x 25 = $27.80.",
+   "150 paying teachers in year 1 (assumption; no sourced conversion rate or acquisition channel; stranger, no audience, free incumbents).",
+   "Payment fees 5% of revenue (assumption).",
+   "Hosting/infrastructure $50/month for 10 months = $500 (assumption for real-time games with 100-player free sessions).",
+   "Fixed startup cash $1,000 = reference entrant figure from the case file, treated as spent in year 1 (tools, domain, privacy/legal templates).",
+   "Base: revenue 150 x 27.80 = 4,170; cost 1,000 + 500 + 208.50 = 1,709; profit +2,461, about $3.90 per owner hour over ~624 hours (12 h/week).",
+   "Pessimistic (price x0.8 = $22.24, volume x0.5 = 75, all costs x1.5): revenue 1,668; cost (1,000 + 500 + 83.40) x 1.5 = 2,375; profit -707.",
+   "Teacher-plan income only; no school/district sales (slow procurement per case file)."
+  ],
+  "sources": ["GAM-04-D2", "GAM-04-D4", "GAM-04-D1"]
+ },
+ "legalNotes": [
+  "COPPA (FTC FAQ): verifiable parental consent is required before collecting personal information from under-13s; persistent identifiers count as personal information; schools may consent for the parent only within the educational context and for no other commercial purpose.",
+  "No-player-accounts design reduces but does not remove COPPA exposure (cookies, IPs, analytics); adult teacher accounts and billing data need a normal privacy policy.",
+  "FERPA, state student-privacy laws (e.g. California SOPIPA-style rules) and district data-privacy agreements were not researched in this pass; schools may block unvetted tools.",
+  "Real-time hosting for minors implies nickname moderation and abuse handling; obligations not sourced."
+ ],
+ "unverified": [
+  "Kahoot's own pricing and free player cap (kahoot.com plans pages could not be opened: permission request withdrawn); the case file's $3-$19 teacher plans, 10-player free cap and Trustpilot 38% one-star figures are agent_reported and unchecked.",
+  "Gimkit, Quizizz/Wayground, Mentimeter, Slido and Plickers prices and free limits (pages blocked; web search budget exhausted), so other free alternatives are likely more numerous than listed.",
+  "Blooket's own site: all Blooket data comes from third-party pages that conflict (Plus $4.99 vs $2.99 per month billed annually; Flex $9.99 vs $4.99; one page lists $7.99 and $95.88/yr).",
+  "Trivia Anywhere's 'free with no limits' claim (pages blocked).",
+  "Whether individual teachers pay personally in volume, and whether Kahoot's billing complaints cause switching.",
+  "FERPA and state student-privacy requirements; whether Blooket requires student sign-up.",
+  "Any real freemium conversion rate or teacher acquisition channel; the 150-payer volume is an assumption."
+ ],
+ "nextStep": "Drop it; if the owner wants one more check, read Kahoot's, Gimkit's and Quizizz's own pricing pages and look for any free tool that hosts more than 60 players without accounts, because only that over-60 niche (trainers, events) is not covered by Blooket's free tier."
+}

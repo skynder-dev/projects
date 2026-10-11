@@ -1,0 +1,302 @@
+{
+  "id": "GAM-01",
+  "verdict": "killed",
+  "verdictReason": "Killed on two majors. (1) The wedge (genre-matched creators with recent activity, no email/key chores) is already covered at $0: Steam Curator Connect (active-only list, 'No need to mess with e-mails or keys'), SullyGnome/LetsPlayIndex, and key platforms that verify active channels. (2) Freshness from public data is not exclusive; a data vendor already refreshes monthly and a free 10-streamer list is being given away. No evidence anyone pays $15-69 one-time. Pessimistic year-1 model is about -$305 before owner time. gameoutreach.co and platform ToS could not be read.",
+  "answers": [
+    {
+      "question": "(1) What free/cheap alternative covers the wedge?",
+      "answer": "Several, at $0 cash. Steam's own Curator Connect lets a developer send offers to up to 100 curators from a list limited to profiles still active in the Steam Community, with no emails or keys (D1, D2); the Steamworks page mentions no fee, and a third-party guide calls it free (not re-quoted, see unverified). SullyGnome is described as the best free tool for finding Twitch creators by game with followers/viewership (D3, D5). LetsPlayIndex shows which creators cover which game on YouTube (D4; its price and freshness were not checked). Key-request platforms are described as verifying that requestors have real, active channels (D6) and as mostly free (D7). Manual research is the DIY baseline: 'two full days minimum' (D11). A free curated list of 10 streamers per genre is being offered by an indie tool-builder in exchange for a survey (D12). Paid options exist but at different price points: a data vendor from EUR 189/month (D9) and a 'Find relevant creators' service at 350 USD/month in a 2021 article (D8). The per-launch recent-upload lookup for one game is therefore mostly a convenience bundle of free tools.",
+      "evidenceIds": ["GAM-01-D1", "GAM-01-D2", "GAM-01-D3", "GAM-01-D4", "GAM-01-D5", "GAM-01-D6", "GAM-01-D7", "GAM-01-D8", "GAM-01-D9", "GAM-01-D11", "GAM-01-D12"]
+    },
+    {
+      "question": "(2) What structural edge exists and who could copy it?",
+      "answer": "None found. 'Data freshness' comes from public creator pages/APIs that any rival can re-pull: a generic creator-data vendor already states its database 'is refreshed monthly' (D10), free tools already expose recent coverage per game (D3, D4), and the earlier-scan claim that gameoutreach.co already sells packs from $15 (E5, unverified) means the one-time-pack position is occupied. The scan-1 edge is price (cash_cost), which is not an edge. The only plausible compounding asset is a proprietary outcome dataset (which creators answered and actually posted for paying customers), but that needs paying volume a stranger does not have on day 0 (inference). Falsifier: if paying developers who know Curator Connect, SullyGnome and LetsPlayIndex still buy a ready list at $15-69 and renew for later launches, a convenience edge would exist; nothing read shows that.",
+      "evidenceIds": ["GAM-01-D3", "GAM-01-D4", "GAM-01-D10", "GAM-01-E5"]
+    },
+    {
+      "question": "(3) Who demonstrably pays and how much?",
+      "answer": "Demonstrated payers are vendors' subscription customers at much higher price points: EUR 189/month (D9) and 350 USD/month (D8, dated 2021). I found no first-hand evidence that indie developers pay $15-69 one-time for a creator list; gameoutreach.co and Keymailer prices come only from the earlier scan (E2, E5, agent_reported, not re-verified) and its blocked page could not be read. Counter-signals: the guide author says he has never paid for coverage (not quoted here) and a community manager says teams rarely budget for marketing (E7, unverified); the fraud pain is real (D13) but has a free fix (D14). A free list of 10 streamers is offered as a survey incentive (D12).",
+      "evidenceIds": ["GAM-01-D8", "GAM-01-D9", "GAM-01-D12", "GAM-01-D13", "GAM-01-D14", "GAM-01-E2", "GAM-01-E5", "GAM-01-E7"]
+    },
+    {
+      "question": "(4) Legal / platform constraints?",
+      "answer": "Not settled from primary sources: the YouTube API Developer Policies and Twitch developer terms could not be fetched (permission/provenance refused), so whether a resold, API-derived creator dataset is allowed is unverified. Creator contact emails are exposed on YouTube only through the channel About tab 'Show email' action (D15), so bulk harvesting would mean automating a gated UI element, which is a ToS risk (inference). Emailing/selling creators' personal contact data raises CAN-SPAM and GDPR-type exposure (general knowledge, not verified here). Key fraud is a developer-side risk (D13); a list-only seller never handles keys, but a list containing impostor channels would be blamed for losses.",
+      "evidenceIds": ["GAM-01-D13", "GAM-01-D15"]
+    },
+    {
+      "question": "(5) Year-1 numbers?",
+      "answer": "Bottom-up, every volume input is an assumption (no sourced conversion data exists). Base: $39/pack (earlier-scan model midpoint), 81 packs (2/month months 1-3, 5/month months 4-6, 10/month months 7-12) = $3,159 revenue; cost $1,362 = $550 startup (reference entrant) + $632 variable ($7.80/pack, earlier-scan model) + $180 hosting/tools ($15/month, assumption); profit about $1,797 on ~520 owner hours (about $3.5/hour). Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue $1,264, cost $1,569, profit about -$305; break-even needs about 56 packs at $31.20. Does not survive pessimistic.",
+      "evidenceIds": ["GAM-01-D8", "GAM-01-D9", "GAM-01-D11"]
+    }
+  ],
+  "newEvidence": [
+    {
+      "id": "GAM-01-D1",
+      "url": "https://partner.steamgames.com/doc/marketing/curators",
+      "quote": "We limit the Curator Connect list to those profiles that continue to be active in the Steam Community.",
+      "kind": "other",
+      "publisher": "Valve, Steamworks Documentation: Curators and Curator Connect",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "GAM-01-D2",
+      "url": "https://partner.steamgames.com/doc/marketing/curators",
+      "quote": "No need to mess with e-mails or keys.",
+      "kind": "other",
+      "publisher": "Valve, Steamworks Documentation: Curators and Curator Connect",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "GAM-01-D3",
+      "url": "https://reverbinc.com/influencer-marketing-tools-game-launch/",
+      "quote": "Sullygnome is the best free tool for finding Twitch creators and analytics.",
+      "kind": "incumbent_price",
+      "publisher": "Reverb Inc, Influencer Marketing Tools for Game Launches",
+      "date": "2026-05-08",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "GAM-01-D4",
+      "url": "https://reverbinc.com/influencer-marketing-tools-game-launch/",
+      "quote": "Similar to sullygnome, LetsPlayIndex lets you see what creators are covering what game on YouTube.",
+      "kind": "other",
+      "publisher": "Reverb Inc, Influencer Marketing Tools for Game Launches",
+      "date": "2026-05-08",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "GAM-01-D5",
+      "url": "https://www.steampageanalyzer.com/blog/how-to-get-streamers-to-play-your-game",
+      "quote": "SullyGnome is still the workhorse for this.",
+      "kind": "other",
+      "publisher": "Steam Page Analyzer blog, How to get streamers to play your game",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "GAM-01-D6",
+      "url": "https://abratabia.com/game-marketing/game-influencer-marketing.php",
+      "quote": "These platforms verify that requestors have real, active channels.",
+      "kind": "other",
+      "publisher": "Abratabia, Game influencer marketing guide",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "GAM-01-D7",
+      "url": "https://xsolla.com/blog/how-to-distribute-game-keys-among-video-influencers",
+      "quote": "These services will (mostly for free) help you find creators and inform them about your game.",
+      "kind": "incumbent_price",
+      "publisher": "Xsolla blog, How to distribute game keys among video influencers",
+      "date": "2021-10-11",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "GAM-01-D8",
+      "url": "https://xsolla.com/blog/how-to-distribute-game-keys-among-video-influencers",
+      "quote": "There is also a paid option called \"Find relevant creators\" for 350 USD per month",
+      "kind": "incumbent_price",
+      "publisher": "Xsolla blog, How to distribute game keys among video influencers",
+      "date": "2021-10-11",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "GAM-01-D9",
+      "url": "https://influencers.club/indie-game-developers-email-list/",
+      "quote": "plans starting at €189/month",
+      "kind": "incumbent_price",
+      "publisher": "influencers.club, Indie Game Developers Email Database",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "GAM-01-D10",
+      "url": "https://influencers.club/indie-game-developers-email-list/",
+      "quote": "is refreshed monthly",
+      "kind": "other",
+      "publisher": "influencers.club, Indie Game Developers Email Database",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "GAM-01-D11",
+      "url": "https://presskit.gg/field-guides/next-fest-content-creator-outreach",
+      "quote": "Budget two full days for it, minimum.",
+      "kind": "demand",
+      "publisher": "presskit.gg field guide, Next Fest content creator outreach",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "GAM-01-D12",
+      "url": "https://reddit.sudovanilla.org/r/gameDevMarketing",
+      "quote": "I'll send you a free list of 10 streamers who play games in your genre/style.",
+      "kind": "other",
+      "publisher": "r/gameDevMarketing (reddit mirror), post 'Help Me Improve My Tool for Indie Devs + Get a Free List of Streamers!'",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "GAM-01-D13",
+      "url": "https://www.gamedeveloper.com/business/how-to-get-every-game-on-steam-for-free",
+      "quote": "roughly 70% of the keys we had given out were taken under false pretenses, or to use a more direct term, stolen.",
+      "kind": "demand",
+      "publisher": "Game Developer, How to get every game on Steam for free",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "GAM-01-D14",
+      "url": "https://www.gamedeveloper.com/business/how-to-get-every-game-on-steam-for-free",
+      "quote": "In future, every youtuber that applied for a STEAM key would have to send us a message using their YouTube channel.",
+      "kind": "other",
+      "publisher": "Game Developer, How to get every game on Steam for free",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "GAM-01-D15",
+      "url": "https://xsolla.com/blog/how-to-distribute-game-keys-among-video-influencers",
+      "quote": "Channel->About ->Show email.",
+      "kind": "constraint",
+      "publisher": "Xsolla blog, How to distribute game keys among video influencers",
+      "date": "2021-10-11",
+      "evidenceClass": "agent_reported"
+    }
+  ],
+  "newAlternatives": [
+    {
+      "label": "Steam Curator Connect (Steamworks, active-only curator list, up to 100 curators per request, no keys/emails)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://partner.steamgames.com/doc/marketing/curators",
+      "evidenceRef": "GAM-01-D1"
+    },
+    {
+      "label": "SullyGnome (Twitch creators by game, followers, viewership)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://reverbinc.com/influencer-marketing-tools-game-launch/",
+      "evidenceRef": "GAM-01-D3"
+    },
+    {
+      "label": "LetsPlayIndex (which YouTube creators cover which game; price not checked)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://reverbinc.com/influencer-marketing-tools-game-launch/",
+      "evidenceRef": "GAM-01-D4"
+    },
+    {
+      "label": "Key-request platforms that verify real, active channels (Keymailer, Woovit, Terminals.io; free tiers)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://abratabia.com/game-marketing/game-influencer-marketing.php",
+      "evidenceRef": "GAM-01-D6"
+    },
+    {
+      "label": "Manual research on YouTube/Twitch into a spreadsheet (about two days of owner time)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://presskit.gg/field-guides/next-fest-content-creator-outreach",
+      "evidenceRef": "GAM-01-D11"
+    },
+    {
+      "label": "Free curated list of 10 streamers per genre offered by a tool-builder (survey incentive)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://reddit.sudovanilla.org/r/gameDevMarketing",
+      "evidenceRef": "GAM-01-D12"
+    },
+    {
+      "label": "influencers.club creator database (price in EUR, monthly refresh)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 189,
+      "coversWedge": "partial",
+      "sourceLocator": "https://influencers.club/indie-game-developers-email-list/",
+      "evidenceRef": "GAM-01-D9"
+    },
+    {
+      "label": "'Find relevant creators' paid service (2021 article)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 350,
+      "coversWedge": "partial",
+      "sourceLocator": "https://xsolla.com/blog/how-to-distribute-game-keys-among-video-influencers",
+      "evidenceRef": "GAM-01-D8"
+    }
+  ],
+  "killReasons": [
+    {
+      "reason": "The wedge is already covered at $0 cash: Steam Curator Connect gives an active-only, tag-filterable curator list with no emails or keys, SullyGnome and LetsPlayIndex show who covers which game on Twitch/YouTube, and key platforms verify active channels. A $15-69 pack would only bundle free lookups.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "GAM-01-D1"
+    },
+    {
+      "reason": "No structural edge: data freshness is re-pullable from public data by anyone (a data vendor already advertises a monthly refresh; free tools already show recent coverage). The scan-1 edge is price, which is not an edge, and nothing exclusive or compounding is available to a stranger on day 0.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "GAM-01-D10"
+    },
+    {
+      "reason": "No evidence that developers pay $15-69 one-time for creator lists, while the same deliverable (a curated streamer list) is being given away free; verified paid price points are subscriptions of EUR 189-350 per month aimed at larger buyers.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "GAM-01-D12"
+    },
+    {
+      "reason": "Pessimistic year-1 model is negative (about -$305, break-even about 56 packs) and the base case pays about $3.5 per owner hour; volume inputs are unsourced assumptions.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "GAM-01-D9"
+    },
+    {
+      "reason": "Earlier-scan claim (not re-verified): gameoutreach.co already sells one-time packs from $15 after a free preview, so the one-time-pack position is occupied.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "GAM-01-E5"
+    }
+  ],
+  "economics": {
+    "revenue365": 3159,
+    "cost365": 1362,
+    "pessimisticProfit365": -305,
+    "survivesPessimistic": false,
+    "assumptions": [
+      "Price $39 per pack = midpoint of the $15-69 range from the earlier-scan model (assumption, not verified).",
+      "Volume 81 packs in year 1 (2/month months 1-3, 5/month months 4-6, 10/month months 7-12): assumption for a stranger with no audience; no conversion data was found, and this input dominates the result.",
+      "Startup cash $550 per the case-file reference entrant (assumption); owner time 10 h/week about 520 h not costed.",
+      "Variable cost $7.80 per pack = 20% of $39 per the earlier-scan model (API quota, payment fees, refunds); assumption.",
+      "Hosting/domain/tools $15/month = $180/year (assumption).",
+      "Base: revenue 81 x $39 = $3,159; cost 550 + 632 + 180 = $1,362; profit about $1,797.",
+      "Pessimistic (price x0.8, volume x0.5, cost x1.5): 40.5 packs x $31.20 = $1,264 revenue; cost (550+180) x1.5 + 40.5 x $11.70 = $1,569; profit about -$305; break-even about 56 packs at $31.20.",
+      "Price context: paid comparators are EUR 189/month (D9) and 350 USD/month (D8, 2021); free substitutes exist (D1, D3, D4, D12)."
+    ],
+    "sources": ["GAM-01-D8", "GAM-01-D9", "GAM-01-D11", "GAM-01-D12"]
+  },
+  "legalNotes": [
+    "Read-only research: only public pages fetched, no logins, signups or contact. Roughly 14 distinct pages were read (19 fetch calls, some repeats to copy verbatim quotes), slightly above the ~18-read budget when counting repeats.",
+    "YouTube API Developer Policies and Twitch developer terms were NOT read (fetch refused), so API retention, resale and contact-data rules for a creator dataset are unverified; a scraping route would also need SullyGnome/LetsPlayIndex terms checked.",
+    "Creator emails sit behind the channel About tab 'Show email' action (D15); automating that is a likely ToS problem (inference, unverified).",
+    "Unsolicited commercial email to creators implies CAN-SPAM and, for EU creators, GDPR/ePrivacy exposure when selling lists of personal contact data (general knowledge, not verified in this pass).",
+    "Key fraud is a developer-side risk (D13); a list-only seller never touches keys but could be blamed if a list includes impostor channels."
+  ],
+  "unverified": [
+    "gameoutreach.co page content, pack contents, creator counts and freshness (fetch refused: URL not permitted); the $15 one-time pack claim rests only on earlier-scan evidence E5.",
+    "Keymailer prices (free 10 requests/mo, $24.99/mo, boosts from $249, $149 vs $249 annual): only earlier-scan E2; keymailer.co fetch was refused.",
+    "LetsPlayIndex and SullyGnome themselves (price, freshness, export or email data): only third-party descriptions read; both sites refused.",
+    "Whether Curator Connect is free: the Steamworks page mentions no fee and a third-party guide calls it free, but that was not quoted verbatim; one read mentioned follower-count filters and a re-read said follower counts only rank/display, so do not rely on a follower filter.",
+    "YouTube/Twitch API terms, CAN-SPAM and GDPR treatment (not read).",
+    "Gamosy (KeyVault) pricing and Lurkit: Gamosy's Indie Hackers page lists no prices; Lurkit not found.",
+    "Real conversion and volume for a no-audience seller; price evidence from xsolla is from 2021.",
+    "Only 2 web searches ran before the shared search budget was exhausted, so the 'at least 3 new alternative queries' step was not fully completed."
+  ],
+  "nextStep": "Drop GAM-01 unless a paying-customer signal appears that developers who already know Curator Connect, SullyGnome and LetsPlayIndex still buy a ready list at $15-69 and renew (gameoutreach.co's sales and refund data would settle it, not public pages)."
+}

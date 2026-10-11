@@ -1,0 +1,129 @@
+{
+ "id": "MKT-03",
+ "name": "Low-commission niche storefront and marketplace for fee-squeezed Etsy sellers",
+ "family": "marketplaces",
+ "buyer": "Small craft, vintage or pattern sellers whose margin is squeezed by Etsy fees and policy tightening",
+ "pain": "Stacked fees, mandatory offsite ads for sellers above $10K, and policy tightening that orphans some listings.",
+ "wedge": "A flat 5-8% all-in take rate for one orphaned niche, such as vintage digital ephemera, with SEO-led catalog pages to bring buyers.",
+ "referenceEntrant": {
+  "startupCashUsd": 2500,
+  "daysToFirstRevenue": 100,
+  "ownerHoursPerWeek": 17
+ },
+ "scan1Edge": {
+  "criterion": "cash_cost",
+  "direction": "lower_is_better",
+  "entrant_basis": "A flat take rate of ~6.5% all-in. The incumbent ~10% on a $50 sale is from the notes; the excerpt's table is truncated.",
+  "entrant_value": 6.5,
+  "falsifier": "If the entrant cannot bring buyer traffic comparable to what sellers get from Etsy, the lower fee is irrelevant because net revenue to sellers falls.",
+  "incumbent_source_url": "https://craftybase.com/blog/the-complete-guide-to-etsy-fees",
+  "incumbent_value": 10,
+  "unit": "percent of sale price taken in fees (base fees, no ads)"
+ },
+ "substitutesNoted": [
+  {
+   "name": "Etsy",
+   "price_point": "~10% base fees on a $50 sale; 12-15% Offsite Ads where applicable",
+   "url": "https://craftybase.com/blog/the-complete-guide-to-etsy-fees"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 60,
+  "notes": "ESTIMATE from the notes: 50-70% margin on a tiny gross merchandise value. Payment processing cost is not netted out.",
+  "price_usd": null,
+  "variable_cost_usd": null
+ },
+ "majorUncertainty": "Chicken-and-egg: no buyer traffic means no reason for sellers to move, regardless of fee level.",
+ "unknowns": [
+  "Marketplace-facilitator sales-tax obligations in relevant states",
+  "Whether orphaned vintage-digital sellers exist in meaningful numbers",
+  "Buyer SEO acquisition cost for the niche",
+  "Stripe Connect terms for a marketplace",
+  "Total all-in Etsy cost percentage (22-26% in the notes) is truncated in the excerpts"
+ ],
+ "regulatoryOrPlatformDependency": "Payments through Stripe Connect or similar. Marketplace-facilitator sales-tax collection may apply (not verified).",
+ "evidence": [
+  {
+   "id": "MKT-03-E1",
+   "url": "https://craftybase.com/blog/the-complete-guide-to-etsy-fees",
+   "publisher": "Etsy Seller Fees 2026: Complete Breakdown + Calculator",
+   "kind": "incumbent_price",
+   "shows": "Etsy fee stack on a $50 sale: $0.20 listing, 6.5% transaction fee, plus payment processing (the excerpt is truncated; the ~10% total comes from the notes)",
+   "quote": "# Etsy Seller Fees 2026: Complete Breakdown + Calculator\n**Quick reference — what Etsy takes on a $50 sale:**\n\n| Fee | Rate | On a $50 sale |\n| --- | ...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-E2",
+   "url": "https://craftybase.com/blog/the-complete-guide-to-etsy-fees",
+   "publisher": "Etsy Seller Fees 2026: Complete Breakdown + Calculator",
+   "kind": "incumbent_price",
+   "shows": "Offsite Ads fee is 15% (under $10K/year, opt-out available) or 12% (over $10K/year, mandatory)",
+   "quote": "|\n| Offsite ads fees | 15% (under $10K/year, opt-out available) or 12% (over $10K/year, mandatory). ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-E3",
+   "url": "https://craftybase.com/blog/the-complete-guide-to-etsy-fees",
+   "publisher": "Etsy Seller Fees 2026: Complete Breakdown + Calculator",
+   "kind": "incumbent_price",
+   "shows": "$15-$29 one-time setup fee for new shops, introduced September 2024",
+   "quote": "|\n| Shop setup fee | $15–$29 one-time fee for new shops (introduced September 2024). ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-E4",
+   "url": "https://news.seonib.com/articles/2026-07-11/etsy-sellers-2026-key-changes-to-fees-ai-tools-and-policies.html",
+   "publisher": "Etsy Sellers 2026: Key Changes to Fees, AI Tools, and Policies",
+   "kind": "demand",
+   "shows": "All-in cost including listing, transaction, processing and mandatory Offsite Ads is high for sellers earning over $10K/year (the exact figure is truncated in the excerpt)",
+   "quote": "Inclusive of listing fees, transaction fees, payment processing, and mandatory Offsite Ads for sellers earning over $10,000 per year, the all-in cost ...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-E5",
+   "url": "https://news.seonib.com/articles/2026-07-11/etsy-sellers-2026-key-changes-to-fees-ai-tools-and-policies.html",
+   "publisher": "Etsy Sellers 2026: Key Changes to Fees, AI Tools, and Policies",
+   "kind": "demand",
+   "shows": "Etsy's 'Listing Strategies' ad tool requires a minimum daily ad budget (the figure is truncated in the excerpt)",
+   "quote": "## Frequently Asked Questions\nEtsy's 'Listing Strategies' ad tool, which allows per-listing goal setting, now requires a minimum daily ad budget of $2...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-E6",
+   "url": "https://www.selfemployed.com/news/etsy-seller-ai-disclosure-fees-2026/",
+   "publisher": "Etsy's 2026 Rules Tighten On AI Products And Seller Fees - Self Employed",
+   "kind": "demand",
+   "shows": "Etsy has pulled back on some listings it once allowed, including digital scans of vintage material",
+   "quote": "The platform has also pulled back on some listings it once allowed, including digital scans of vintage material.\n\n\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-E7",
+   "url": "https://www.selfemployed.com/news/etsy-seller-ai-disclosure-fees-2026/",
+   "publisher": "Etsy's 2026 Rules Tighten On AI Products And Seller Fees - Self Employed",
+   "kind": "demand",
+   "shows": "Etsy strengthened transparency rules, pressing sellers to disclose production partners and AI-made products",
+   "quote": "## What Is Changing\nEtsy has strengthened its transparency rules, pressing sellers to disclose production partners and to be clear when a product is A...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-E8",
+   "url": "https://www.selfemployed.com/news/etsy-seller-ai-disclosure-fees-2026/",
+   "publisher": "Etsy's 2026 Rules Tighten On AI Products And Seller Fees - Self Employed",
+   "kind": "demand",
+   "shows": "Fee pressure is unlikely to ease, and many independent sellers are spreading risk across channels",
+   "quote": "Fee pressure is unlikely to ease, which is why many independent sellers are spreading risk across channels.",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-E9",
+   "url": "https://www.selfemployed.com/news/etsy-seller-ai-disclosure-fees-2026/",
+   "publisher": "Etsy's 2026 Rules Tighten On AI Products And Seller Fees - Self Employed",
+   "kind": "constraint",
+   "shows": "Sellers diversify rather than leave, so Etsy stays the main traffic source. An entrant without buyer traffic gives sellers little reason to move.",
+   "quote": "Fee pressure is unlikely to ease, which is why many independent sellers are spreading risk across channels.",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

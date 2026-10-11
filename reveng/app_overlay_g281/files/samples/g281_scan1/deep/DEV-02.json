@@ -1,0 +1,226 @@
+{
+ "id": "DEV-02",
+ "verdict": "killed",
+ "verdictReason": "Killed on edge and alternatives; payment is unproven. For vendors that publish OpenAPI specs, free open-source tools already diff, flag breaking changes and alert (oasdiff, openapi-changes, apibreak CI action), and the CC0 APIs.guru directory auto-updates a curated spec collection weekly with RSS, so curation is copyable in days. For HTML-only vendors, free page-change monitors (changedetection.io, hosted $8.99/mo) cover the alert. No page shows anyone paying $19/mo. Pessimistic cash +$91 on ~520 owner hours. Not verified: paid rivals' pricing pages, vendor ToS.",
+ "answers": [
+  {
+   "question": "(1) What free/cheap alternative covers the wedge?",
+   "answer": "For API vendors that publish a machine-readable spec (the large majority of the payments-style verticals the idea names): oasdiff is an Apache-2.0 'Command-line tool to compare and detect breaking changes in OpenAPI specs' whose changelog command lists changes 'breaking or not, in human-readable form', runs in CI via a GitHub Action and has a hosted layer at oasdiff.com (D1). pb33f's openapi-changes (Apache-2.0) is 'The world's most powerful OpenAPI breaking changes detector' (D3). apibreak (MIT) already targets the exact consumer-side job: 'Fails your CI build when a third-party API you actually call changes in a way that can break you', filtered to the endpoints you declare, free (D4). APIs.guru's openapi-directory (CC0) holds curated specs that are 'automatically updated from their original source' and offers RSS feeds for updated APIs (D2). Vendors such as Stripe publish their spec with a Releases changelog and Plaid a CHANGELOG.md in public repos (D6, D8). For vendors with only HTML changelogs: changedetection.io (Apache-2.0) 'Detect changes and monitor data in JSON API's' and alerts to email/Slack/webhook, self-hosted free or '$8.99/month subscription' hosted (D5). Case-file paid rivals (not re-verified): API Drift Alert $149+/mo (DEV-02-E1), Apify API Breaking Change Radar (DEV-02-E5), Deprecatr AI (DEV-02-E6). Gap left: severity-classified, per-field summaries of prose-only changelogs; no free tool read does that well, but a rival could add it.",
+   "evidenceIds": ["DEV-02-D1", "DEV-02-D2", "DEV-02-D3", "DEV-02-D4", "DEV-02-D5", "DEV-02-D6", "DEV-02-D8", "DEV-02-E1", "DEV-02-E5", "DEV-02-E6"]
+  },
+  {
+   "question": "(2) What structural edge exists and who could copy it?",
+   "answer": "None found. The input is public (vendor specs, changelogs) and the output is a list of watched APIs plus a diff; no exclusive data, licence, network effect or switching cost. A rival can copy a vertical list quickly: APIs.guru already ingests specs weekly under CC0 (D2) and the diff/classify engines are open source (D1, D3, D4). Maintaining 30-50 vertical sources is labour, not an edge, and breaks whenever a vendor changes a page. What would falsify this conclusion: a vertical where the vendors publish no spec or changelog feed at all, curated sources that no tool covers, AND buyers visibly paying for it.",
+   "evidenceIds": ["DEV-02-D1", "DEV-02-D2", "DEV-02-D3", "DEV-02-D4"]
+  },
+  {
+   "question": "(3) Who demonstrably pays and how much?",
+   "answer": "Nothing read shows a buyer paying for curated vertical API-change alerts. Price signals are: an idea site's opinion of $19-49/month that it calls a 'card-swipe decision' (DEV-02-E4, not observed purchasing), a $149/mo+ enterprise rival (DEV-02-E1, not re-verified), the generic page monitor's $8.99/month hosted subscription (D5), and an early-access project's proposed hosted tier of $49 per org per month, per WebFetch's summary of apibreak's README (not a verbatim quote; D4). Optic, an MIT-licensed OpenAPI diff tool, was archived by its owner on 2026-01-12 after Optic Labs joined Atlassian (D7), which says little about demand but shows no standalone paying base was visible. Case-file pain evidence (DEV-02-E2, E3) is blog posts from vendors of competing tools.",
+   "evidenceIds": ["DEV-02-D4", "DEV-02-D5", "DEV-02-D7", "DEV-02-E1", "DEV-02-E2", "DEV-02-E3", "DEV-02-E4"]
+  },
+  {
+   "question": "(4) Legal and platform constraints?",
+   "answer": "Spec-based monitoring is low-risk: APIs.guru states definitions acquired from public sources fall under fair use and uses CC0 for contributed ones (D2); Stripe's spec is MIT (not quoted, per page summary) (D6). Scraping HTML changelogs and docs can breach vendor terms of service and robots rules (not checked per vendor; general knowledge). Prose changelogs have no stable format, so each source needs maintenance. Many vendors publish no OpenAPI spec (case-file note). No licence is needed to run the service; the entrant should avoid redistributing vendor docs verbatim.",
+   "evidenceIds": ["DEV-02-D2", "DEV-02-D6", "DEV-02-D8"]
+  },
+  {
+   "question": "(5) Year-1 numbers?",
+   "answer": "Bottom-up (inputs are assumptions unless cited): price $19/month for 10 watched APIs; first revenue month 4 (reference entrant: day 90); 1.5 new payers per month with 10% monthly churn (alert-once users) gives ~52 customer-months; revenue365 about $994. Costs: small server and cron $10/month ($120), classification/LLM variable cost $1.90 per customer-month (the case-file estimate, ~$99), card fees 2.9% + $0.30 (~$44), domain $15; total about $279; base profit about $715, about $1.4 per owner hour over ~520 hours. Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue about $397, cost about $306, profit about +$91, about $0.17 per hour, i.e. nominally positive but effectively zero return. Price anchor: changedetection.io hosted $8.99/month (D5).",
+   "evidenceIds": ["DEV-02-D5"]
+  }
+ ],
+ "newEvidence": [
+  {
+   "id": "DEV-02-D1",
+   "url": "https://github.com/oasdiff/oasdiff",
+   "quote": "Command-line tool to compare and detect breaking changes in OpenAPI specs. | breaking or not, in human-readable form | hosted PR review workflow",
+   "kind": "constraint",
+   "publisher": "GitHub: oasdiff/oasdiff (README)",
+   "date": "undated (live page read 2026-10-10)",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-02-D2",
+   "url": "https://github.com/APIs-guru/openapi-directory",
+   "quote": "Wikipedia for Web APIs. Directory of REST API definitions in OpenAPI 2.0/3.x format. | All definitions are automatically updated from their original source. | at least weekly",
+   "kind": "constraint",
+   "publisher": "GitHub: APIs-guru/openapi-directory (README)",
+   "date": "undated (live page read 2026-10-10)",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-02-D3",
+   "url": "https://github.com/pb33f/openapi-changes",
+   "quote": "The world's most powerful OpenAPI breaking changes detector.",
+   "kind": "constraint",
+   "publisher": "GitHub: pb33f/openapi-changes (README)",
+   "date": "undated (live page read 2026-10-10)",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-02-D4",
+   "url": "https://github.com/Skyblueballykid/apibreak",
+   "quote": "Fails your CI build when a third-party API you actually call changes in a way that can break you.",
+   "kind": "constraint",
+   "publisher": "GitHub: Skyblueballykid/apibreak (README)",
+   "date": "undated (live page read 2026-10-10)",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-02-D5",
+   "url": "https://github.com/dgtlmoon/changedetection.io",
+   "quote": "Detect changes and monitor data in JSON API's | $8.99/month subscription",
+   "kind": "incumbent_price",
+   "publisher": "GitHub: dgtlmoon/changedetection.io (README)",
+   "date": "undated (live page read 2026-10-10)",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-02-D6",
+   "url": "https://github.com/stripe/openapi",
+   "quote": "An OpenAPI specification for the Stripe API. | still updated every release",
+   "kind": "constraint",
+   "publisher": "GitHub: stripe/openapi (README)",
+   "date": "undated (live page read 2026-10-10)",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-02-D7",
+   "url": "https://github.com/opticdev/optic",
+   "quote": "This repository was archived by the owner on Jan 12, 2026. It is now read-only. | Optic Labs is now part of Atlassian",
+   "kind": "other",
+   "publisher": "GitHub: opticdev/optic (README)",
+   "date": "undated (live page read 2026-10-10)",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-02-D8",
+   "url": "https://github.com/plaid/plaid-openapi",
+   "quote": "API version 2020-09-14. Contribute to plaid/plaid-openapi development by creating an account on GitHub.",
+   "kind": "constraint",
+   "publisher": "GitHub: plaid/plaid-openapi",
+   "date": "undated (live page read 2026-10-10)",
+   "evidenceClass": "agent_reported"
+  }
+ ],
+ "newAlternatives": [
+  {
+   "label": "oasdiff CLI + GitHub Action (Apache-2.0): diff, breaking-only and human-readable changelog",
+   "kind": "open_source",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://github.com/oasdiff/oasdiff",
+   "evidenceRef": "DEV-02-D1"
+  },
+  {
+   "label": "pb33f openapi-changes (Apache-2.0): breaking-change detector and reports over git history",
+   "kind": "open_source",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://github.com/pb33f/openapi-changes",
+   "evidenceRef": "DEV-02-D3"
+  },
+  {
+   "label": "apibreak GitHub Action (MIT): fails CI when a third-party API you call changes; endpoints declared by the user",
+   "kind": "open_source",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://github.com/Skyblueballykid/apibreak",
+   "evidenceRef": "DEV-02-D4"
+  },
+  {
+   "label": "APIs.guru openapi-directory (CC0): curated, auto-updated spec collection with git history and RSS",
+   "kind": "free_tool",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://github.com/APIs-guru/openapi-directory",
+   "evidenceRef": "DEV-02-D2"
+  },
+  {
+   "label": "Vendor-published specs and release changelogs (e.g. Stripe openapi Releases, Plaid CHANGELOG.md) watched via GitHub",
+   "kind": "diy_or_status_quo",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://github.com/stripe/openapi",
+   "evidenceRef": "DEV-02-D6"
+  },
+  {
+   "label": "changedetection.io self-hosted (Apache-2.0): page/JSON change alerts via email, Slack, webhook",
+   "kind": "open_source",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://github.com/dgtlmoon/changedetection.io",
+   "evidenceRef": "DEV-02-D5"
+  },
+  {
+   "label": "changedetection.io hosted subscription ($8.99/month)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 8.99,
+   "coversWedge": "partial",
+   "sourceLocator": "https://github.com/dgtlmoon/changedetection.io",
+   "evidenceRef": "DEV-02-D5"
+  }
+ ],
+ "killReasons": [
+  {
+   "reason": "For vendors that publish OpenAPI specs, free open-source tools already diff, separate breaking from non-breaking changes and alert the consumer (oasdiff, openapi-changes, apibreak, which targets exactly 'a third-party API you actually call'); the wedge reduces to who maintains the vendor list.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "DEV-02-D4"
+  },
+  {
+   "reason": "No exclusive or compounding edge: curation inputs are public and a CC0 directory already ingests specs 'automatically updated from their original source' at least weekly with RSS feeds; a rival can copy a 30-50 API vertical list in days and the engines are open source.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "DEV-02-D2"
+  },
+  {
+   "reason": "For vendors without specs the job is page-change detection, which free self-hosted and $8.99/month hosted monitors already cover for web pages and JSON; the entrant's added value (per-field severity from prose changelogs) needs LLM reading with unverified accuracy and ToS exposure.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "DEV-02-D5"
+  },
+  {
+   "reason": "No evidence anyone pays $19/month: price signals are an idea site's opinion, an enterprise rival at $149+, and a proposed hosted tier of an early-access project; the MIT-licensed Optic diff tool was archived in January 2026 (reason not stated).",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "DEV-02-D7"
+  },
+  {
+   "reason": "Large vendors already publish their own specs and changelogs in public repos (Stripe Releases, Plaid CHANGELOG.md), so a free watch is the status quo for the biggest integration risks.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "DEV-02-D6"
+  }
+ ],
+ "economics": {
+  "revenue365": 994,
+  "cost365": 279,
+  "pessimisticProfit365": 91,
+  "survivesPessimistic": true,
+  "assumptions": [
+   "Assumption: price $19/month for 10 watched APIs (case-file wedge price from an idea site, DEV-02-E4; no purchase observed).",
+   "Assumption: first revenue in month 4 (reference entrant: day 90); 1.5 new paying customers per month from month 4 and 10% monthly churn because many users need an alert only once; about 52 customer-months in year 1. No source supports the rate.",
+   "Assumption: server and cron $10/month ($120/year); LLM/classification variable cost $1.90 per customer-month (the case-file estimate, about $99); card fees 2.9% + $0.30 per charge (about $44); domain $15; total cash cost about $279.",
+   "Excluded: owner time (10 h/week, about 520 h; about $1.4/hour at base profit, about $0.17/hour pessimistic), time spent fixing breaking scrapers, legal review, and any marketing spend.",
+   "Pessimistic = price x0.8, volume x0.5, cost x1.5 applied to the base model: revenue about $397, cost about $306, profit about +$91. Nominally positive but effectively zero return on time, and it assumes the 1.5 payers/month base rate with no evidence.",
+   "Price comparison read: changedetection.io hosted $8.99/month (D5)."
+  ],
+  "sources": ["DEV-02-D5", "DEV-02-E4"]
+ },
+ "legalNotes": [
+  "Spec-based monitoring is low-risk: APIs.guru licenses contributed definitions CC0 and treats definitions acquired from public sources as fair use (D2, per page summary); check each vendor's spec licence before redistributing a spec.",
+  "Scraping vendor HTML changelogs or docs can breach website terms of service or robots rules (not checked per vendor; general knowledge); use only published feeds, specs and release pages and respect robots.",
+  "Alert text derived from vendor documentation should be summarised rather than copied verbatim to avoid copyright issues (general knowledge).",
+  "Many vendors publish no OpenAPI spec (case-file note), so a coverage promise to buyers needs careful wording and an SLA-free disclaimer."
+ ],
+ "unverified": [
+  "Pricing and features of paid rivals (API Drift Alert, FlareCanary, Apify actor, Deprecatr AI, oasdiff.com hosted tier, ApiNotes): WebFetch to non-GitHub domains was refused (permission request unanswered) and WebSearch budget was exhausted, so DEV-02-E1..E6 were NOT re-checked.",
+  "Whether anyone pays for curated vertical API-change alerts at $19/month, and the true churn; no public page can settle this, the rivals' own customer/revenue data would.",
+  "Vendor-by-vendor ToS on scraping changelogs, and which healthcare, tax or shipping vendors publish no spec or feed.",
+  "apibreak's proposed $49 hosted tier comes from WebFetch's summary of its README, not a verbatim quote; Stripe MIT licence and APIs.guru fair-use wording are also from WebFetch summaries.",
+  "Quotes come from WebFetch's processed text of GitHub pages, not raw HTML; robots.txt blocked GitHub tree pages (skipped, not circumvented).",
+  "Why Optic was archived; it may reflect the Atlassian acquisition rather than weak demand."
+ ],
+ "nextStep": "Drop this idea; reopen only if a specific vertical is found where vendors publish no spec or feed and paying customers of a rival (revenue or customer counts) are visible."
+}

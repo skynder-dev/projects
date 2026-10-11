@@ -1,0 +1,235 @@
+{
+  "id": "MED-02",
+  "verdict": "killed",
+  "verdictReason": "The only claimed edge is price ($15 vs $40), which is not structural. Topic-level agenda alerts already exist free or near-free across the same cities (Voterheads: free for 5 orgs, $2.50/org beyond, 1,500+ cities; Legistar native keyword alerts), the data layer is a commodity, and verified payers are professionals at $200-800/month sold by phone/association, not $15 hosts reachable cold. Cash-positive on paper but ~$1/hour of owner time.",
+  "answers": [
+    {
+      "question": "(1) What free/cheap alternative covers the wedge?",
+      "answer": "Three verified in this pass. (a) Legistar's own alerts: a user can create an alert that emails when search terms are added to the Agenda Items page, so a host in a Legistar city can watch 'short-term rental' for free per city (no fee mentioned on the guide page). (b) Voterheads: topic-level tracking of council meetings, free for up to five organizations, $2.50/month per organization beyond that, active in 1,500+ cities and counties in 41 states. (c) An Apify Legistar actor with a title keywordFilter, billed per city queried (about $5.50 per 1,000 city queries per the page), for the DIY route. Not re-verified by me (pages could not be fetched): City Watch free tier, Locunity free tier, AgendaWire $40 watchlist with an STR example (old ids MED-02-E1/E3/E4/E5). What the free tools do NOT do: a pre-built STR bundle, so the entrant's only difference is skipping a few minutes of per-city setup (board-level city notifications, e.g. Louisville, are not topic-aware, which is the one gap).",
+      "evidenceIds": ["MED-02-D3", "MED-02-D4", "MED-02-D7", "MED-02-D11", "MED-02-E1", "MED-02-E3", "MED-02-E4", "MED-02-E5"]
+    },
+    {
+      "question": "(2) What structural edge exists and who could copy it?",
+      "answer": "None. The scan-1 edge is cash_cost only (shared pipeline lets a $15 price). Cheaper/automation/niche focus is not an edge under the brief, and the pipeline is copyable in days: the Legistar data layer is a commodity (D7), and Voterheads/Topic Watch already run user-defined topic engines across many councils (D3, D5); AgendaWire's own homepage already demos an STR watchlist (E4, unverified by me). A vertical preset is a configuration of an existing engine. A defensible edge would need an exclusive or compounding asset (e.g. a verified STR-ordinance outcome database nobody else has) and none is part of the idea. Falsifier of this verdict: documented STR hosts, solar installers or liquor licensees paying >= $15/month for agenda alerts with no free tool in their city.",
+      "evidenceIds": ["MED-02-D3", "MED-02-D5", "MED-02-D7", "MED-02-E4"]
+    },
+    {
+      "question": "(3) Who demonstrably pays and how much?",
+      "answer": "Professionals and organizations, at much higher prices and through sales-led channels: Agenda Discovery (Colorado Politics, 2017) was 'available now for $200 to $800 a month, depending on the number of users' (originally reported for 2016); OrdinanceWatch sells to law firms ('Designed for lawyers as a client retention tool') and associations with pricing by phone; Topic Watch (UK) lists GBP 250 and GBP 450 per month for unlimited councils; Stateside sells analyst-curated 'concierge' monitoring. At the low end Voterheads is free up to 5 orgs and $2.50/org. I found no evidence that individual STR hosts, solar installers or liquor-license holders pay $15/month for agenda alerts. The paying segment (lawyers, associations, lobbyists) is reached via relationships, which the stranger rule excludes.",
+      "evidenceIds": ["MED-02-D2", "MED-02-D3", "MED-02-D5", "MED-02-D6", "MED-02-D8"]
+    },
+    {
+      "question": "(4) Legal/platform constraints?",
+      "answer": "Agendas and ordinances are public records, so reading them is low legal risk, but the entrant depends on each city's portal: the Apify actor page itself warns 'Not every city runs Legistar'; PDF-only and PrimeGov towns need fragile scraping (maintenance cost uncosted). I could not read the Legistar Web API terms or PrimeGov API terms (fetch refused on provenance), so API rate limits, per-client access rules and any redistribution limits are unverified. Summaries must link to source documents and must not be presented as legal advice (rules are jurisdiction-specific; OrdinanceWatch positions itself for lawyers). Email sending needs CAN-SPAM-compliant unsubscribe and a physical address (general knowledge, not sourced here).",
+      "evidenceIds": ["MED-02-D7", "MED-02-D2"]
+    },
+    {
+      "question": "(5) Year-1 numbers?",
+      "answer": "Reference entrant per case file: $400 startup, 45 days to first revenue, 12 h/week. Base case (all inputs assumptions except the $15 price from the case file): paying subscribers ramp linearly +5/month to 60 at month 12 = 390 subscriber-months x $15 = $5,850 revenue; cost = $400 startup + $40/month hosting and summarization x 12 + $50 domain + payment fees (2.9% + $0.30) = about $1,217; profit about $4,633. Pessimistic (price x0.8 = $12, volume x0.5 = 195 subscriber-months, cost x1.5): revenue $2,340, cost about $1,585, profit about $755, so technically positive. But the base volume (60 paying subscribers at $15 against free/$2.50 alternatives and no audience) is unsupported by any evidence; 12 h/week x 52 = 624 h at $755 is about $1.2/hour; and the model excludes scraping upkeep. Cash-positive is not the problem; the problem is that the price is above the free tier of the alternatives.",
+      "evidenceIds": ["MED-02-D3", "MED-02-D7"]
+    }
+  ],
+  "newEvidence": [
+    {
+      "id": "MED-02-D1",
+      "url": "https://ordinancewatch.com/",
+      "quote": "OrdinanceWatch® is the leader in providing advance notice on pending local government council and commission action.",
+      "kind": "other",
+      "publisher": "OrdinanceWatch (Local Government Monitoring)",
+      "date": "undated",
+      "evidenceClass": "agent_reported",
+      "shows": "An incumbent already sells topic-based advance notice with 128 issue categories including Short Term Rentals, for Florida (67 counties, 326 cities, Georgia mentioned); so a vertical STR alert product exists in at least one state."
+    },
+    {
+      "id": "MED-02-D2",
+      "url": "https://ordinancewatch.com/",
+      "quote": "Designed for lawyers as a client retention tool",
+      "kind": "demand",
+      "publisher": "OrdinanceWatch (Local Government Monitoring)",
+      "date": "undated",
+      "evidenceClass": "agent_reported",
+      "shows": "The payers are law firms and associations ('Alert association members about pending local issues'); the page lists no prices: 'Any questions about our pricing? Call us at +1-850-701-3099 or email info@ordinancewatch.com' (sales-led)."
+    },
+    {
+      "id": "MED-02-D3",
+      "url": "https://govfresh.com/signal/voterheads-wants-make-easier-follow-government-council-meetings",
+      "quote": "free for anyone monitoring five organizations or less",
+      "kind": "incumbent_price",
+      "publisher": "GovFresh (article on Voterheads)",
+      "date": "undated",
+      "evidenceClass": "agent_reported",
+      "shows": "Voterheads 'lets anyone keep track of any council meeting, down to the specific topic'; paid plans for advocacy/trade groups 'start at $2.50/month for each organization they monitor'; 'active in over 1,500 cities and counties across 41 states'. Undercuts the $15 price. Article date not visible to me; current pricing not re-checked on voterheads' own site."
+    },
+    {
+      "id": "MED-02-D4",
+      "url": "https://bridgeportct.legistar.com/Page.aspx?M=D",
+      "quote": "Any alerts you create will send you emails if your search terms are added to the Agenda Items page.",
+      "kind": "other",
+      "publisher": "Legistar (Granicus) user guide hosted by City of Bridgeport, CT",
+      "date": "undated",
+      "evidenceClass": "agent_reported",
+      "shows": "Legistar itself offers keyword/search-term email alerts on agenda items per city (sender alerts-noreply@legistar.com); no fee is mentioned on the guide page; I did not test sign-up or whether a login is required."
+    },
+    {
+      "id": "MED-02-D5",
+      "url": "https://opengovernment.network/about/business/topic-watch",
+      "quote": "Monitor every council meeting across 175+ English councils and deliver a focused summary of what was said",
+      "kind": "incumbent_price",
+      "publisher": "Open Government Network (Topic Watch, UK)",
+      "date": "undated",
+      "evidenceClass": "agent_reported",
+      "shows": "Topic-watch pricing precedent (UK, not US): Supporter 'From £3.50/mo' for '1 watch, up to 3 councils'; Standard '£250/month' for '1 watch, unlimited councils'; Pro '£450/month' for '3 watches, unlimited councils'. Shows the topic-watch product is a 'copyable engine' and that professional buyers pay far above $15."
+    },
+    {
+      "id": "MED-02-D6",
+      "url": "https://www.coloradopolitics.com/2017/07/05/new-transparency-tool-gives-a-leg-up-to-colorado-lobbyists-and-public-but-it-aint-free-2ed161a8-3c68-5210-b069-c9604a212da9",
+      "quote": "available now for $200 to $800 a month, depending on the number of users.",
+      "kind": "incumbent_price",
+      "publisher": "Colorado Politics",
+      "date": "2017-07-05",
+      "evidenceClass": "agent_reported",
+      "shows": "Agenda Discovery, a keyword scanner of municipal agendas that emails the user, was priced $200-$800/month (attributed to a 2016 Phoenix Business Journal profile); the article says 'It's not free and not exactly cheap, either.' Dated: 2016-2017 pricing, current status unknown."
+    },
+    {
+      "id": "MED-02-D7",
+      "url": "https://apify.com/m_ctim/city-council-watch",
+      "quote": "Billed per city queried, not per matter or meeting returned.",
+      "kind": "incumbent_price",
+      "publisher": "Apify (City Council Watch actor)",
+      "date": "undated",
+      "evidenceClass": "agent_reported",
+      "shows": "A pay-per-use actor pulls Legistar ordinances and upcoming agendas with a title keywordFilter ('Only keep matters whose title contains one of these'); price 'from $5.50 / 1,000 city' queries per the page; warns 'Not every city runs Legistar'. Shows the Legistar data layer is a commodity and the DIY route costs cents."
+    },
+    {
+      "id": "MED-02-D8",
+      "url": "https://stateside.com/locality-monitoring",
+      "quote": "delivers real-time, curated intelligence on city and county activity",
+      "kind": "other",
+      "publisher": "Stateside (Local Government Monitoring)",
+      "date": "undated",
+      "evidenceClass": "agent_reported",
+      "shows": "Premium B2B incumbent: analysts 'read, filter, and synthesize local activity – agendas, minutes, and ordinances'; Enhanced Insights is 'a premium, concierge-level experience'; no price listed. Confirms paying buyers sit in the professional/concierge tier."
+    },
+    {
+      "id": "MED-02-D9",
+      "url": "https://tampamonitor.com/?p=3458",
+      "quote": "Email notification only if keyword appears on the agenda.",
+      "kind": "other",
+      "publisher": "The Tampa Monitor",
+      "date": "undated",
+      "evidenceClass": "agent_reported",
+      "shows": "A local-news site offers a (public beta) keyword agenda alert for Tampa City Council; price not stated on the page. Illustrates that local newsrooms and civic projects add keyword agenda alerts as a side feature."
+    },
+    {
+      "id": "MED-02-D10",
+      "url": "https://newspapers.org/stories/agenda-watch-platform-will-help-journalists-keep-watch-on-local-government,4163083",
+      "quote": "subscribe to receive alerts when similar items crop up in new documents",
+      "kind": "other",
+      "publisher": "Newspapers.org (story on Agenda Watch)",
+      "date": "undated",
+      "evidenceClass": "agent_reported",
+      "shows": "Agenda Watch 'harvests those documents on a daily basis from agencies across the country' for journalists and offers alerts on similar items; pricing not stated. Another alerts-on-agenda-documents product aimed at reporters (also states 'many of us have missed important public meetings because there simply are too many to cover', which supports the pain but not payment)."
+    },
+    {
+      "id": "MED-02-D11",
+      "url": "https://www.louisvilleco.gov/news/posts/sign-up-for-agenda-packet-notifications-through-our-agenda-portal/",
+      "quote": "You’ll receive an email notification when agendas, packets, or minutes are posted.",
+      "kind": "other",
+      "publisher": "City of Louisville, CO",
+      "date": "undated",
+      "evidenceClass": "agent_reported",
+      "shows": "Example of city-native alerts: subscriptions are by 'Boards, Committees, and Commissions', not by topic; no keyword alerts mentioned; cost not stated. This is the one gap in the free/native route that a topic bundle could fill."
+    }
+  ],
+  "newAlternatives": [
+    {
+      "label": "Legistar native search-term alerts (per city)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://bridgeportct.legistar.com/Page.aspx?M=D",
+      "evidenceRef": "MED-02-D4"
+    },
+    {
+      "label": "Voterheads topic tracking (free up to 5 orgs, $2.50/org/month beyond)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 2.5,
+      "coversWedge": "partial",
+      "sourceLocator": "https://govfresh.com/signal/voterheads-wants-make-easier-follow-government-council-meetings",
+      "evidenceRef": "MED-02-D3"
+    },
+    {
+      "label": "Apify City Council Watch actor (Legistar, keywordFilter; about $5.50 per 1,000 city queries, so roughly $0.17/month for one city queried daily)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 0.2,
+      "coversWedge": "partial",
+      "sourceLocator": "https://apify.com/m_ctim/city-council-watch",
+      "evidenceRef": "MED-02-D7"
+    },
+    {
+      "label": "Agenda Discovery keyword agenda scanner (2016-17 price, low end)",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 200,
+      "coversWedge": "partial",
+      "sourceLocator": "https://www.coloradopolitics.com/2017/07/05/new-transparency-tool-gives-a-leg-up-to-colorado-lobbyists-and-public-but-it-aint-free-2ed161a8-3c68-5210-b069-c9604a212da9",
+      "evidenceRef": "MED-02-D6"
+    }
+  ],
+  "killReasons": [
+    {
+      "reason": "Topic-level agenda alerts already exist free or near-free in the same cities (Voterheads: free for 5 orgs, $2.50/org beyond, 1,500+ cities/41 states; Legistar native search-term alerts; DIY Apify actor at cents). The entrant's $15 price sits above these, and its only difference is a pre-built STR bundle that saves a few minutes of setup.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MED-02-D3"
+    },
+    {
+      "reason": "No structural edge: the scan-1 edge is price only, powered by a commodity data layer (Legistar actor, D7) and a topic engine that rivals already run (Voterheads D3, Topic Watch D5, AgendaWire STR watchlist E4); a vertical preset is a config change any incumbent can ship, so the entrant has nothing exclusive or compounding.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MED-02-D7"
+    },
+    {
+      "reason": "Verified payers are professionals and associations at $200-$800/month or by phone quote (Agenda Discovery, OrdinanceWatch, Topic Watch, Stateside); no evidence that individual STR hosts, solar installers or liquor licensees pay $15/month, and the professional segment is reached through relationships, which the stranger rule excludes.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "MED-02-D2"
+    },
+    {
+      "reason": "OrdinanceWatch already sells Short Term Rentals as one of 128 issue categories in Florida, so a vertical STR alert exists at least regionally; the wedge is not novel there.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "MED-02-D1"
+    }
+  ],
+  "economics": {
+    "revenue365": 5850,
+    "cost365": 1217,
+    "pessimisticProfit365": 755,
+    "survivesPessimistic": true,
+    "assumptions": [
+      "Price $15 per topic bundle per month: taken from the case file (itself an estimate, not a sourced willingness to pay).",
+      "ASSUMPTION: paying subscribers ramp linearly +5 per month to 60 at month 12 = 390 subscriber-months; no evidence supports this volume given free/$2.50 alternatives and no audience.",
+      "ASSUMPTION costs: $400 startup (case file) + $40/month hosting and LLM summaries x 12 + $50 domain/misc + payment fees 2.9% + $0.30 per charge (about $287 base) = about $1,217; scraping upkeep for PDF-only towns not costed in cash, absorbed in owner hours.",
+      "Pessimistic: price x0.8 = $12; volume x0.5 = 195 subscriber-months => revenue $2,340; non-fee fixed costs $930 + fees $126 = $1,056, x1.5 = about $1,585; profit about $755.",
+      "Owner time: 12 h/week x 52 = 624 h, so pessimistic return is about $1.2 per hour; owner labour is not in cost365.",
+      "Churn and refunds ignored (would lower revenue)."
+    ],
+    "sources": ["MED-02-D3", "MED-02-D7"]
+  },
+  "legalNotes": [
+    "Agendas and ordinances are public records; reading them is low risk, but the entrant depends on each city's portal and its terms.",
+    "Legistar Web API and PrimeGov API terms (rate limits, redistribution, per-client access) were NOT verified; the fetch was refused on provenance, so do not assume bulk pulls are permitted.",
+    "Apify page notes 'Not every city runs Legistar'; PDF-only towns need scraping that may breach a portal's ToS or robots rules and is fragile.",
+    "Summaries are not legal advice and must link to source documents; jurisdiction-specific rules (STR, liquor, solar) are a liability if a summary is wrong.",
+    "Email delivery needs CAN-SPAM unsubscribe and a postal address (general knowledge, not sourced in this pass)."
+  ],
+  "unverified": [
+    "AgendaWire, City Watch, LocalLens and Locunity pages could not be re-fetched in this pass (WebFetch returned PROVENANCE_REQUIRED for URLs not surfaced by a search, and the shared WebSearch budget ran out): their prices, tiers, STR preset and the City Watch $19 Advocate tier remain agent_reported and unchecked.",
+    "Voterheads' own pricing page and current prices (I only read a news article of unknown date); whether its topic tracking covers agenda items in the cities STR hosts care about.",
+    "Whether Legistar alerts require a login or fee, and whether they work for all Legistar cities.",
+    "PrimeGov/Legistar API terms and coverage counts for a state.",
+    "Any willingness-to-pay evidence from individual STR hosts, solar installers or liquor-license holders (no relevant forum thread or survey found; WebSearch budget exhausted before searching for this).",
+    "Whether AgendaWire and City Watch have already added vertical presets (falsifier from scan 1)."
+  ],
+  "nextStep": "Drop this idea; only revisit if a verified source shows STR hosts or similar small operators paying at least $15/month for agenda alerts while the Voterheads/Legistar free routes are unavailable in their cities."
+}

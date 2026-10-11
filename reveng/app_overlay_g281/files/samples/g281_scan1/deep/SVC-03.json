@@ -1,0 +1,283 @@
+{
+ "id": "SVC-03",
+ "verdict": "killed",
+ "verdictReason": "Killed, moderate confidence: the only edge is price ($495 vs $1,500), which is not an edge. An attorney incumbent offers a free review and free advice (covers the $99 review tier), sells 'human attorney review only' with about 610 reviews, calls non-law-firm plans 'unprivileged' and says not to pay non-lawyers for IP; other law-firm blogs say a lawyer is not required. Trust gap for a no-record entrant; assumption-based pessimistic year-1 profit about -$6.3k. Not verified: UPL exposure, cheap-consultant tier, free template.",
+ "answers": [
+  {
+   "question": "(1) What free/cheap alternative covers the wedge?",
+   "answer": "The $99 review tier is covered free: AMZ Sellers Attorney says its review is free and starts the same business day and its service pages offer a free evaluation and 'free advice' (a funnel to the paid appeal). DIY is explicitly viable: one law-firm blog says a lawyer is not required, and another law firm's blog calls the plan 'an exercise in persuasive writing' and lists writing it yourself or hiring an online consultant as routes. A free reusable plan-of-action template exists (amzbase, scan-1 evidence SVC-03-E4/E5, not re-fetched: the page was refused). The $495 tier is a cheaper substitute for $1,500 attorney flat fees, so the buyer's alternative set is free template + free attorney review at the bottom, $1,500 attorneys at the top.",
+   "evidenceIds": [
+    "SVC-03-D2",
+    "SVC-03-D5",
+    "SVC-03-D8",
+    "SVC-03-D11",
+    "SVC-03-D13",
+    "SVC-03-E5"
+   ]
+  },
+  {
+   "question": "(2) What structural edge exists and who could copy it?",
+   "answer": "None. A single-category scope, flat fee and AI-assisted drafting are not edges: any consultant or attorney firm can quote a narrower scope, and the incumbents already concede that metric cases are often within reach of a competent plan-of-action service. The only potentially compounding asset is a private archive of accepted plans by notice type, which needs many paid cases first, and a no-case-history stranger has none. Trust is the scarce input and incumbents hold it (about 610 reviews, attorney privilege framing, 'human attorney review only'). Falsifier: 30+ real simple-category cases at $495 with a reinstatement rate at or above attorney claims and refund rate under 15% would show a durable cheap-tier niche; nothing public shows this.",
+   "evidenceIds": [
+    "SVC-03-D3",
+    "SVC-03-D4",
+    "SVC-03-D9",
+    "SVC-03-D10"
+   ]
+  },
+  {
+   "question": "(3) Who demonstrably pays and how much?",
+   "answer": "Sellers with frozen accounts pay attorney firms flat fees of $1,500 (most appeals) and $2,300 (IP and related), and the leading firm cites about 610 third-party reviews (self-reported); The Appeal Guru $1,495 per appeal with repeat appeals free (scan-1 evidence SVC-03-E2, not re-fetched) and Amazon Global Appeals about 495 GBP (SVC-03-E3, unclear, old). I found no public evidence of buyers paying $495 to an unknown non-lawyer; the paying segment is buying credibility and legal framing the entrant lacks.",
+   "evidenceIds": [
+    "SVC-03-D1",
+    "SVC-03-D10",
+    "SVC-03-E2",
+    "SVC-03-E3"
+   ]
+  },
+  {
+   "question": "(4) Legal/platform constraints?",
+   "answer": "Unauthorised practice of law was not verifiable: primary sources (Nolo, Wikipedia) were refused by the fetch tool and the search budget ran out, so exposure by state is unknown. Verified signals: an Amazon-seller attorney tells sellers not to pay anyone who is not an admitted lawyer for intellectual property issues (so the entrant must exclude IP, safety and anything legal-sounding), and incumbents market that a non-law-firm plan of action is an unprivileged document. Amazon decides appeals through Seller Performance and rules change; no Amazon terms about third-party preparers were read. The owner would have to submit the plan from their own account; the entrant should never take credentials. Unrecoverable cases (fraud, forged documents, repeated violations) per scan-1 evidence SVC-03-E6 not re-fetched.",
+   "evidenceIds": [
+    "SVC-03-D7",
+    "SVC-03-D3",
+    "SVC-03-E6"
+   ]
+  },
+  {
+   "question": "(5) Year-1 numbers (reference entrant: $650 start, 12 h/week)?",
+   "answer": "Base: 22 cases (assumption: about 2/month from month 2) x 70% net of refunds x $495 plus 16 reviews x $99 = $9,207 revenue; costs $6,683 (startup $650, tools $360, ads $4,800 at an assumed $400/month, one-time legal review of terms and disclaimers $500, payment fees $373) = about $2.5k profit before roughly 600 owner hours. Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue $3,683, cost $10,025, profit about -$6,342. All volumes, refund rates and ad costs are assumptions; no public source gives conversion or CPC for this niche.",
+   "evidenceIds": [
+    "SVC-03-D1",
+    "SVC-03-D2"
+   ]
+  }
+ ],
+ "newEvidence": [
+  {
+   "id": "SVC-03-D1",
+   "url": "https://www.amazonsellers.attorney/amazon-appeals.html",
+   "quote": "$1,500 flat for most appeals, $2,300 for IP and related accounts.",
+   "kind": "incumbent_price",
+   "publisher": "AMZ Sellers Attorney (Amazon appeals page)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-03-D2",
+   "url": "https://www.amazonsellers.attorney/amazon-appeals.html",
+   "quote": "Review is free and begins the same business day in most matters.",
+   "kind": "incumbent_price",
+   "publisher": "AMZ Sellers Attorney (Amazon appeals page)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-03-D3",
+   "url": "https://www.amazonsellers.attorney/amazon-appeals.html",
+   "quote": "produces an unprivileged document with no destination beyond the Seller Performance queue",
+   "kind": "other",
+   "publisher": "AMZ Sellers Attorney (Amazon appeals page, describing non-law-firm services)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-03-D4",
+   "url": "https://www.amazonsellers.attorney/amazon-appeals.html",
+   "quote": "often within reach of a competent Amazon plan of action service",
+   "kind": "other",
+   "publisher": "AMZ Sellers Attorney (Amazon appeals page, on metric cases)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-03-D5",
+   "url": "https://revisionlegal.com/internet-law/how-to-appeal-suspension-from-amazon/",
+   "quote": "It is not required that you hire an Amazon seller's lawyer.",
+   "kind": "other",
+   "publisher": "Revision Legal (law-firm blog)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-03-D6",
+   "url": "https://amazonsellerslawyer.com/blog/suspended-amz-seller-success-using-appeal-button",
+   "quote": "Where many people get held up is actually writing the Plan of Action.",
+   "kind": "demand",
+   "publisher": "Amazon Sellers Lawyer (law-firm blog)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-03-D7",
+   "url": "https://amazonsellerslawyer.com/blog/suspended-amz-seller-success-using-appeal-button",
+   "quote": "you should not pay anybody who is not an admitted lawyer to deal with that issue.",
+   "kind": "constraint",
+   "publisher": "Amazon Sellers Lawyer (law-firm blog, on intellectual property issues)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-03-D8",
+   "url": "https://amazonsellerslawyer.com/blog/suspended-amz-seller-success-using-appeal-button",
+   "quote": "nothing more than an exercise in persuasive writing",
+   "kind": "other",
+   "publisher": "Amazon Sellers Lawyer (law-firm blog)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-03-D9",
+   "url": "https://www.amazonsellers.attorney/amazon-attorney-reviews.html",
+   "quote": "No automated appeals - human attorney review only",
+   "kind": "other",
+   "publisher": "AMZ Sellers Attorney (reviews page, meta description)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-03-D10",
+   "url": "https://www.amazonsellers.attorney/amazon-attorney-reviews.html",
+   "quote": "Rated 4.5/5 across 609 third-party reviews",
+   "kind": "demand",
+   "publisher": "AMZ Sellers Attorney (reviews page, self-reported)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-03-D11",
+   "url": "https://www.amazonsellers.attorney/template-814577-319011-786552-290755.html",
+   "quote": "Consult us for free advice on your Amazon seller suspension appeal!",
+   "kind": "incumbent_price",
+   "publisher": "AMZ Sellers Attorney (Amazon appeal service page)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-03-D12",
+   "url": "https://www.amazonsellers.attorney/template-814577-319011-786552-290755.html",
+   "quote": "Reinstating your Amazon Seller Account is not something you should try to do yourself.",
+   "kind": "other",
+   "publisher": "AMZ Sellers Attorney (Amazon appeal service page)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-03-D13",
+   "url": "https://amazonsellerslawyer.com/?p=9974",
+   "quote": "There are plenty of routes that may be taken when your Amazon selling privileges are suspended.",
+   "kind": "other",
+   "publisher": "Amazon Sellers Lawyer (law-firm page)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  }
+ ],
+ "newAlternatives": [
+  {
+   "label": "Free attorney initial review of the suspension notice (AMZ Sellers Attorney)",
+   "kind": "free_tool",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.amazonsellers.attorney/amazon-appeals.html",
+   "evidenceRef": "SVC-03-D2"
+  },
+  {
+   "label": "Free consultation and evaluation (AMZ Sellers Attorney service page)",
+   "kind": "free_tool",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.amazonsellers.attorney/template-814577-319011-786552-290755.html",
+   "evidenceRef": "SVC-03-D11"
+  },
+  {
+   "label": "Free reusable Plan of Action template (amzbase; scan-1 evidence, not re-fetched)",
+   "kind": "free_tool",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://amzbase.com/guides/amazon-account-suspension-appeal/",
+   "evidenceRef": "SVC-03-E5"
+  },
+  {
+   "label": "Write the Plan of Action yourself (status quo; law-firm blogs say a lawyer is not required)",
+   "kind": "diy_or_status_quo",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://revisionlegal.com/internet-law/how-to-appeal-suspension-from-amazon/",
+   "evidenceRef": "SVC-03-D5"
+  },
+  {
+   "label": "AMZ Sellers Attorney flat fee, $1,500 most appeals (one-off, per case)",
+   "kind": "paid_incumbent",
+   "costUsdPerMonth": 1500,
+   "coversWedge": "full",
+   "sourceLocator": "https://www.amazonsellers.attorney/amazon-appeals.html",
+   "evidenceRef": "SVC-03-D1"
+  }
+ ],
+ "killReasons": [
+  {
+   "reason": "The $99 review tier is covered free: an attorney incumbent gives a free review that starts the same business day and free advice, using it as a funnel; the DIY route is endorsed by law-firm blogs and a free template exists.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "SVC-03-D2"
+  },
+  {
+   "reason": "The $495 tier has no edge beyond price: incumbents already market 'human attorney review only', a non-law-firm plan as an 'unprivileged document', and about 610 reviews, while the entrant has no reviews, no case history and no attorney; buyers with frozen funds pay for credibility. A discount is not an edge.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "SVC-03-D9"
+  },
+  {
+   "reason": "Legal exposure: an attorney source says not to pay non-lawyers for IP matters and UPL by state was not researched; this limits the entrant to the narrowest categories where the incumbent concedes plans are cheap to produce.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "SVC-03-D7"
+  },
+  {
+   "reason": "Pessimistic year-1 model (price x0.8, volume x0.5, cost x1.5) is negative (about -$6.3k), and base profit is about $2.5k for roughly 600 owner hours; inputs are assumptions.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "SVC-03-D1"
+  },
+  {
+   "reason": "Some suspensions are unrecoverable (repeated violations, fraud, forged documents), so a low price risks adverse selection into refund-heavy cases (scan-1 evidence, not re-fetched).",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "SVC-03-E6"
+  }
+ ],
+ "economics": {
+  "revenue365": 9207,
+  "cost365": 6683,
+  "pessimisticProfit365": -6342,
+  "survivesPessimistic": false,
+  "assumptions": [
+   "Prices $495 per appeal and $99 per Plan of Action review (given in the case file).",
+   "Cases: 22 in year 1 (about 2/month from month 2) and 16 reviews (about 1.5/month); assumption, no public conversion or lead data.",
+   "30% of appeal cases are refunded or unrecoverable (assumption; no public simple-category success rate for a new entrant). Reviews are non-refundable.",
+   "Revenue = 22 x 0.70 x $495 + 16 x $99 = $9,207.",
+   "Costs: startup $650 (reference entrant), tools/hosting $360, paid ads $400/month = $4,800 (assumption; CPC for suspension keywords unverified and likely contested by attorney firms), one-time lawyer review of terms and disclaimers $500 (assumption), payment fees 2.9% + $0.30 = $373 (assumption on standard card rates); total $6,683, excludes owner labour (about 600 h).",
+   "Pessimistic: price x0.8 ($396 / $79), volume x0.5 (11 cases, 8 reviews), revenue $3,683; base cost x1.5 = $10,025; profit about -$6,342."
+  ],
+  "sources": [
+   "SVC-03-D1",
+   "SVC-03-D2",
+   "SVC-03-D10"
+  ]
+ },
+ "legalNotes": [
+  "Unauthorised practice of law (UPL) was not verifiable: Nolo and Wikipedia pages were refused by the fetch tool and the web-search budget was exhausted; exposure varies by state and is unknown.",
+  "An Amazon-seller law firm states 'you should not pay anybody who is not an admitted lawyer' for intellectual property issues (D7); incumbents also describe a non-law-firm plan of action as an unprivileged document (D3). The entrant would have to exclude IP, legal-notice, safety and anything legal-sounding, and avoid giving legal advice.",
+  "Platform dependency: Amazon controls the appeal channel (Seller Performance, account health) and can change rules; no Amazon terms about third-party preparers were read. The seller should submit under their own account; the entrant must never take seller credentials.",
+  "Some cases (fraud, forged documents, repeated violations per scan-1 SVC-03-E6) are unrecoverable; refund and marketing claims must avoid promising reinstatement, as incumbents do ('No result is guaranteed').",
+  "Budget about $500 in the model for a lawyer review of terms and disclaimers; not validated with any bar or attorney."
+ ],
+ "unverified": [
+  "Unauthorised-practice-of-law exposure by state (primary sources refused; no search budget left).",
+  "The Appeal Guru ($1,495, 50-70% refund guarantee), Amazon Global Appeals (UK package, price and age), amzbase free template content and SupplyKick unrecoverable-case claim: these pages were refused by the fetch tool, so they remain scan-1 agent_reported evidence (E2, E3, E4, E5, E6) and were not re-verified.",
+  "Whether a cheap consultant tier ($300-$800) already exists in volume, and its prices; only one web search was possible before the search budget ran out, so the 'at least 3 new alternative queries' work-plan step was not met for this idea.",
+  "Success rate on simple categories for a new entrant; ad costs for 'amazon suspended' keywords; Amazon terms on third-party appeal writers.",
+  "Review counts and success claims on law-firm pages are self-reported marketing; one page shows blank success table values."
+ ],
+ "nextStep": "Drop it unless a lawyer-reviewed model shows a compliant, credentialed path to the cheap-tier segment; do not spend on it as a stranger with no track record."
+}

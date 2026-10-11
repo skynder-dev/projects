@@ -1,0 +1,131 @@
+{
+ "id": "MED-03",
+ "name": "Non-Amazon AI audiobook proofing and finishing service for indie authors",
+ "family": "media_or_content",
+ "buyer": "Self-published authors with a backlist who cannot afford human narration and want audiobooks outside Amazon",
+ "pain": "Human narration averages about $150/hour on ACX, so an 8-hour book costs over $1,000. Developer TTS tools leave chapter splitting, voice assignment and audio assembly to the author.",
+ "wedge": "A done-for-you service that fixes pronunciation of names and jargon, checks chapters, and delivers upload-ready files for platforms that accept third-party files, such as YouTube, direct sales and Kobo.",
+ "referenceEntrant": {
+  "startupCashUsd": 550,
+  "daysToFirstRevenue": 22,
+  "ownerHoursPerWeek": 17
+ },
+ "scan1Edge": {
+  "criterion": "cash_cost",
+  "direction": "lower_is_better",
+  "entrant_basis": "Using AI voices plus a done-for-you proofing pass at a flat $149-199 per book (an estimate) against human narration of about $150/hour times 8 hours.",
+  "entrant_value": 199,
+  "falsifier": "Authors comparing against the $99 ElevenLabs plan plus their own labor, not human narration, would see the entrant as more expensive, and there would be no cash edge.",
+  "incumbent_source_url": "https://www.creativindie.com/free-ai-audiobooks-narration-elevenlabs-vs-audible-virtual-voice/",
+  "incumbent_value": 1200,
+  "unit": "USD per finished 8-hour audiobook"
+ },
+ "substitutesNoted": [
+  {
+   "name": "ElevenLabs",
+   "price_point": "$5-330/month; about $99/month Scale for a book",
+   "url": "https://notevibes.com/best-ai-voice-generator-for-audiobooks"
+  },
+  {
+   "name": "Amazon/Audible AI narration",
+   "price_point": "free via KDP, Amazon only",
+   "url": "https://notevibes.com/best-ai-voice-generator-for-audiobooks"
+  },
+  {
+   "name": "Notevibes",
+   "price_point": "$19/month",
+   "url": "https://notevibes.com/best-ai-voice-generator-for-audiobooks"
+  },
+  {
+   "name": "Raw TTS (Polly / OpenAI)",
+   "price_point": "about $2.64-$7.50 per 100k-word book",
+   "url": "https://texttolab.com/blog/best-tts-for-audiobooks"
+  },
+  {
+   "name": "Human narrator via ACX",
+   "price_point": "about $150/hour; $1,000+ per 8-hour book",
+   "url": "https://www.creativindie.com/free-ai-audiobooks-narration-elevenlabs-vs-audible-virtual-voice/"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 50,
+  "notes": "Price is the midpoint of an estimated $149-199 per book. Margin is the midpoint of the 40-60% estimate after voice costs. Each book needs listening QA time.",
+  "price_usd": 174,
+  "variable_cost_usd": null
+ },
+ "majorUncertainty": "Whether authors will pay $149-199 for proofing when ElevenLabs sells the whole flow itself and the main distribution channel restricts third-party files.",
+ "unknowns": [
+  "The author DIY time estimate of 20-30 hours is unsourced",
+  "No firm complaint thread was found",
+  "Which platforms accept third-party AI-narrated files",
+  "Voice licensing terms for resale services",
+  "Per-book QA time"
+ ],
+ "regulatoryOrPlatformDependency": "Depends on ElevenLabs or other TTS voice providers. Distribution channels restrict third-party AI-narrated files, and voice consent and AI-disclosure rules are shifting.",
+ "evidence": [
+  {
+   "id": "MED-03-E1",
+   "url": "https://www.creativindie.com/free-ai-audiobooks-narration-elevenlabs-vs-audible-virtual-voice/",
+   "publisher": "AI Audiobook Narration: Free Tools Tested (2026)",
+   "kind": "demand",
+   "shows": "ACX narration averages about $150/hour and most audiobooks run about 8 hours, so human narration is costly",
+   "quote": "Basically, hiring a professional narrator through ACX to narrate your book costs an average of $150 per hour, and most audiobooks are around 8 hours (...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-03-E2",
+   "url": "https://www.inkfluenceai.com/blog/best-ai-voice-generators-audiobooks-2026",
+   "publisher": "Best AI Voice Generators for Audiobooks 2026: 11 Tools Compared",
+   "kind": "incumbent_price",
+   "shows": "A full book likely needs the ElevenLabs Scale plan at $99/month",
+   "quote": "At the volumes needed for a full audiobook (60,000-80,000 words), you will likely need the Scale plan ($99/month) to avoid running out of characters. ...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-03-E3",
+   "url": "https://www.aimagicx.com/blog/ai-audiobook-narration-self-publishing-guide-2026",
+   "publisher": "AI Audiobook Narration: How to Turn Your Book Into a Professional Audiobook Without a Recording Studio (2026)",
+   "kind": "demand",
+   "shows": "Developer-focused TTS lacks audiobook workflows, so the author must handle chapter splitting, voice assignment and assembly",
+   "quote": "They lack the purpose-built audiobook workflows of ElevenLabs or Speechify, meaning you need to handle chapter splitting, voice assignment, and audio ...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-03-E4",
+   "url": "https://www.inkfluenceai.com/blog/best-ai-voice-generators-audiobooks-2026",
+   "publisher": "Best AI Voice Generators for Audiobooks 2026: 11 Tools Compared",
+   "kind": "constraint",
+   "shows": "The Findaway/Spotify channel accepts AI-narrated audio only in restricted form, which blocks a third-party finishing layer there",
+   "quote": "Findaway Voices (now Voices by INaudio) / Spotify distributes to 40+ platforms including Spotify, Apple Books, Google Play, and Kobo, but it takes AI-...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-03-E5",
+   "url": "https://notevibes.com/best-ai-voice-generator-for-audiobooks",
+   "publisher": "11 Best AI Voice Generators for Audiobooks in October 2026 (Tested)",
+   "kind": "constraint",
+   "shows": "ACX restricts AI narration, and ElevenLabs partnered with Findaway/INaudio for direct distribution, so the platform supplying the voices also owns the flow",
+   "quote": "Because ACX restricts AI narration, ElevenLabs partnered with Findaway/INaudio to create a direct distribution pipeline. Authors can publish AI-narrat...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-03-E6",
+   "url": "https://notevibes.com/best-ai-voice-generator-for-audiobooks",
+   "publisher": "11 Best AI Voice Generators for Audiobooks in October 2026 (Tested)",
+   "kind": "incumbent_price",
+   "shows": "Amazon/Audible AI narration is free via KDP but only on Amazon",
+   "quote": "Amazon/Audible AI Narration | Largest audiobook marketplace | Free (via KDP) | KDP manuscript |  | Audible, Amazon, iTunes (63% US market) | 4 |\n\n## H...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-03-E7",
+   "url": "https://texttolab.com/blog/best-tts-for-audiobooks",
+   "publisher": "Best TTS for Audiobooks 2026: 7 AI Narrators Ranked & Priced",
+   "kind": "incumbent_price",
+   "shows": "Raw TTS costs about $2.64-$7.50 for a 100,000-word book, leaving assembly work to the author",
+   "quote": "\",\"acceptedAnswer\":{\"text\":\"A 100,000-word audiobook (about 500,000 characters) costs approximately $7.50 with OpenAI TTS-1, $2.64 with Amazon Polly S...",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

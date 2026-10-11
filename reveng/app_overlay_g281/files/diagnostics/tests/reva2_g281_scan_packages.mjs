@@ -85,4 +85,39 @@ for(const N of [2,3]){
 // across both scans: no id reused, 62 distinct ideas, 14 families, nothing survives
 t(Object.keys(srcAll).length===62,'62 distinct candidate ids over scans 2+3');
 t(Object.values(srcAll).every(c=>c.researcherVerdict!=='survives'),'no first-pass survivor');
+
+// ---- scan 1: second pass (manual deep screen of the 24 queued ideas, agent_reported)
+{
+  const rows=pkg1.candidates, tag='scan1 deep: ', base='samples/g281_scan1/';
+  const st=rd(base+'deep_status.json');
+  const deeps=Object.fromEntries(fs.readdirSync(ROOT+base+'deep').filter(f=>f.endsWith('.json')).map(f=>[f.replace('.json',''),rd(base+'deep/'+f)]));
+  const byEng=Object.fromEntries(rows.map(r=>[r.metadata.engine_id,r]));
+  t(rows.length===40&&Object.keys(deeps).length===22,tag+'40 candidates, 22 deep results');
+  const kv={killed:0,uncertain:0,survives:0};
+  for(const [id,d] of Object.entries(deeps)){
+    const r=byEng[id]; t(r,tag+id+' present'); kv[d.verdict]++;
+    t(r.metadata.deep_screen.second_pass===true&&r.metadata.deep_screen.done&&r.metadata.deep_screen.complete&&r.metadata.deep_screen.method==='manual_reading_agent_reported',tag+id+' deep_screen flags');
+    t(r.metadata.final_verdict===d.verdict&&r.metadata.deep_screen.verdict===d.verdict,tag+id+' final verdict mirrors source');
+    t(r.metadata.deep_screen.economics.pessimistic_profit365_usd===d.economics.pessimisticProfit365&&r.metadata.deep_screen.economics.survives_pessimistic===d.economics.survivesPessimistic,tag+id+' economics mirror source');
+    if(d.verdict==='killed'){
+      t(r.status==='rejected'&&r.rejection_reason.startsWith('KILLED_AFTER_DEEP_SCREEN (agent_reported)')&&r.metadata.rejection_basis==='independent_manual_reading_agent_reported',tag+id+' killed → rejected, agent_reported basis');
+      t(r.metadata.kill_reasons.length>=1&&r.metadata.alternatives.length>=1,tag+id+' kill reasons and alternatives kept');
+      t(d.economics.survivesPessimistic===false||d.killReasons.some(k=>k.severity==='major'||k.severity==='critical'),tag+id+' killed on economics or on a major/critical reason');
+      t(r.metadata.kill_reasons.length===d.killReasons.length,tag+id+' all kill reasons carried over');
+    } else { t(r.status==='research_queue',tag+id+' uncertain stays queued'); }
+    const dv=r.evidence_hints.filter(e=>e.stage==='deep');
+    t(dv.length===d.newEvidence.length&&dv.every(e=>e.evidence_class==='agent_reported'&&/^https:\/\//.test(e.url)),tag+id+' deep evidence all agent_reported https, never promoted');
+    t(r.evidence_hints.filter(e=>e.stage!=='deep').every(e=>e.evidence_class==='verified'||e.evidence_class==='search_confirmed')&&r.metadata.rejection_basis!=='verified_provider_citation',tag+id+' first-pass provider evidence untouched, kill basis never claims verified');
+  }
+  t(kv.killed===19&&kv.uncertain===3&&kv.survives===0,tag+'19 killed / 3 uncertain / 0 survive: '+JSON.stringify(kv));
+  t(JSON.stringify(Object.keys(st.not_screened).sort())===JSON.stringify(['GAM-02','MED-03']),tag+'two unscreened ideas recorded');
+  for(const id of Object.keys(st.not_screened)){ const r=byEng[id]; t(r.status==='research_queue'&&!r.metadata.deep_screen.second_pass&&typeof r.metadata.deep_screen_not_screened==='string'&&!r.metadata.final_verdict,tag+id+' stays queued, not screened, no invented verdict'); }
+  const cnt={}; for(const r of rows) cnt[r.status]=(cnt[r.status]||0)+1;
+  t(cnt.rejected===35&&cnt.research_queue===5,tag+'35 rejected / 5 queued '+JSON.stringify(cnt));
+  t(pkg1.run.metadata.deep_screened===22&&pkg1.run.metadata.final_verdicts_after_deep_screen.killed===19&&pkg1.run.metadata.final_verdicts_after_deep_screen.uncertain===3&&pkg1.run.metadata.deep_screen_not_screened.length===2,tag+'run metadata');
+  t(rows.every(r=>Object.keys(r.metadata).every(k=>!bad(k))),tag+'metadata keys pass the global-catalog privacy guard');
+  const sql=fs.readFileSync(ROOT+'server/REVA2_G281_SCAN1_IMPORT_DRYRUN.sql','utf8');
+  t(/\nROLLBACK;\n?$/.test(sql)&&!/^\s*(COMMIT|END)\s*;/im.test(sql)&&/35 rejected, 5 research_queue/.test(sql),tag+'SQL ends with ROLLBACK, expectation line matches');
+  const m=View.build(pkg1); t(m.counts.queued===5&&m.counts.rejected_unverified===27&&m.counts.gate_rejected===8&&View.filter(m,{status:'queued'}).length===5,tag+'view counts');
+}
 console.log(`reva2_g281_scan_packages PASS ${checks} checks`);

@@ -5,7 +5,7 @@
 set -euo pipefail
 MODE="${1:-1}"
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"; BIN=/usr/lib/postgresql/16/bin; W="${G281_PG_WORKDIR:-/home/claude/pg_dryrun_run}"
-case "$MODE" in 1) SCANS="1"; EXP="1,40,16,24,40";; 2) SCANS="2"; EXP="1,32,32,0,32";; 3) SCANS="3"; EXP="1,30,30,0,30";; all|both) SCANS="1 2 3"; EXP="3,102,78,24,102";; *) echo "usage: $0 [1|2|3|all]"; exit 2;; esac
+case "$MODE" in 1) SCANS="1"; EXP="1,40,35,5,40";; 2) SCANS="2"; EXP="1,32,32,0,32";; 3) SCANS="3"; EXP="1,30,30,0,30";; all|both) SCANS="1 2 3"; EXP="3,102,97,5,102";; *) echo "usage: $0 [1|2|3|all]"; exit 2;; esac
 rm -rf "$W"; mkdir -p "$W"; chown postgres:postgres "$W"; chmod a+rx "$W"
 cp "$ROOT"/diagnostics/tools/g281_local_schema/*.sql "$W"/
 for n in $SCANS; do cp "$ROOT/server/REVA2_G281_SCAN${n}_IMPORT_DRYRUN.sql" "$W"/; done; chmod a+r "$W"/*.sql

@@ -1,0 +1,127 @@
+{
+ "id": "SAS-01",
+ "name": "GummySearch exit migration monitor",
+ "family": "saas_or_micro_saas",
+ "buyer": "Bootstrapped founders and indie marketers who used GummySearch for Reddit audience research and lead-finding",
+ "pain": "GummySearch stopped new signups and payments on 2025-11-30 and shuts down fully on 2026-12-01, so users must rebuild saved audiences and keyword monitors elsewhere.",
+ "wedge": "A time-boxed 'GummySearch exit' tool that rebuilds a user's exported audiences or keyword lists as monitors at about $8/mo. It would be a thin importer on top of existing data sources. The window closes with the Dec 2026 shutdown.",
+ "referenceEntrant": {
+  "startupCashUsd": 550,
+  "daysToFirstRevenue": 17,
+  "ownerHoursPerWeek": 12
+ },
+ "scan1Edge": {
+  "criterion": "cash_cost",
+  "direction": "lower_is_better",
+  "entrant_basis": "Price a thin monitor and importer at about $8/mo. Compute cost is small, but the data-source and API cost is unverified.",
+  "entrant_value": 8,
+  "falsifier": "RedNudge already sells at $7/month (C11), and if GummySearch exports are unavailable there is nothing to import. Either one means no real edge.",
+  "incumbent_source_url": "https://redditgrow.ai/alternatives/gummysearch",
+  "incumbent_value": 19.95,
+  "unit": "USD per month list price"
+ },
+ "substitutesNoted": [
+  {
+   "name": "Syften",
+   "price_point": "from $19.95/mo (other sources say $29.95/mo)",
+   "url": "https://redditgrow.ai/alternatives/gummysearch"
+  },
+  {
+   "name": "RedNudge",
+   "price_point": "$7/month",
+   "url": "https://reddgrow.ai/alternatives/gummysearch/"
+  },
+  {
+   "name": "ReddGrow",
+   "price_point": "$99/mo, or $79/mo billed annually",
+   "url": "https://reddgrow.ai/alternatives/gummysearch/"
+  },
+  {
+   "name": "F5Bot",
+   "price_point": "free tier",
+   "url": "https://redship.io/blog/gummysearch-shut-down-alternatives"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 65,
+  "notes": "ESTIMATE from the research notes: 60-70% gross margin, driven by data-source costs. Not a sourced figure.",
+  "price_usd": 8,
+  "variable_cost_usd": 2.8
+ },
+ "majorUncertainty": "Whether GummySearch exports exist and whether a window remains before the Dec 2026 shutdown, given that several competitors already target these users.",
+ "unknowns": [
+  "Whether GummySearch audiences or keyword lists can be exported",
+  "Syften price conflict: $19.95 vs $29.95 vs $29.95-119.95",
+  "The 60-70% conversation-miss claim is a vendor claim and unverified",
+  "Real data-source cost per customer",
+  "No direct user complaints were found",
+  "The $35K MRR figure comes from one source only"
+ ],
+ "regulatoryOrPlatformDependency": "Heavy dependence on Reddit API terms and pricing, the same cause as GummySearch's closure.",
+ "evidence": [
+  {
+   "id": "SAS-01-E1",
+   "url": "https://reddgrow.ai/alternatives/gummysearch/",
+   "publisher": "GummySearch Alternative for Reddit + AI Visibility",
+   "kind": "demand",
+   "shows": "GummySearch stopped accepting new signups and payments on Nov 30, 2025 and shuts down entirely on Dec 1, 2026, leaving its users to migrate",
+   "quote": "GummySearch stopped accepting new signups and payments on November 30, 2025, and shuts down entirely on December 1, 2026, at which ...\n\n# GummySearch ...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-01-E2",
+   "url": "https://prems.ai/blog/gummysearch-is-dead-best-alternative",
+   "publisher": "GummySearch Is Dead — 10 Alternatives Tested (Only 3 Work)",
+   "kind": "incumbent_price",
+   "shows": "GummySearch itself was priced at $29-199/month for Reddit-only research",
+   "quote": "If you're comparing GummySearch pricing against alternatives: GummySearch was $29-199/month for Reddit-only research.\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-01-E3",
+   "url": "https://redditgrow.ai/alternatives/gummysearch",
+   "publisher": "7 Best GummySearch Alternatives (2026) — After the Shutdown",
+   "kind": "incumbent_price",
+   "shows": "Syften, a live keyword monitor, lists from $19.95/mo, and OctoLens is free, then from $19/mo",
+   "quote": "### OctoLens\nFree, then from $19/mo\n\n### Syften\nFrom $19.95/mo\n\nLive keyword monitoring across Reddit, HN, Indie Hackers, Slack, Discourse, and more.",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-01-E4",
+   "url": "https://reddgrow.ai/alternatives/gummysearch/",
+   "publisher": "GummySearch Alternative for Reddit + AI Visibility",
+   "kind": "incumbent_price",
+   "shows": "RedNudge at $7/month already covers the narrow job of finding threads to reply to",
+   "quote": "If your GummySearch use was finding threads to reply to, RedNudge at $7/month covers that specific job.",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-01-E5",
+   "url": "https://prowlo.com/blog/gummysearch-shut-down-what-now",
+   "publisher": "GummySearch Alternatives (2026): 9 Replacements Compared",
+   "kind": "constraint",
+   "shows": "GummySearch shut down because Reddit's commercial API pricing (about $0.24 per 1,000 calls) made it unsustainable",
+   "quote": "GummySearch shut down because Reddit's commercial API pricing (roughly $0.24 per 1,000 API calls) made it economically unsustainable. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-01-E6",
+   "url": "https://www.simular.ai/alternatives/gummy-search-alternatives",
+   "publisher": "9 Best GummySearch Alternatives in 2026",
+   "kind": "constraint",
+   "shows": "Reddit has restricted API access repeatedly since 2023, so any Reddit-dependent successor carries the same risk",
+   "quote": "If Reddit further restricts API access (as it has done repeatedly since 2023), RedditMaster faces the same risk that killed GummySearch. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-01-E7",
+   "url": "https://www.simular.ai/alternatives/gummy-search-alternatives",
+   "publisher": "9 Best GummySearch Alternatives in 2026",
+   "kind": "other",
+   "shows": "Many 'GummySearch alternatives' pages exist, which indicates a crowded field and live search interest",
+   "quote": null,
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

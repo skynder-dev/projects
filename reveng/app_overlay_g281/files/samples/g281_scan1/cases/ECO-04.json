@@ -1,0 +1,144 @@
+{
+ "id": "ECO-04",
+ "name": "Flat-fee chargeback evidence packets with human review for tiny Shopify stores",
+ "family": "ecommerce_or_dropshipping",
+ "buyer": "Shopify, Stripe or PayPal merchants with a handful of disputes per month and no dedicated staff.",
+ "pain": "Each dispute costs the merchant the sale plus a $15 fee on US Shopify Payments, which is returned only if the merchant wins. Shopify Protect covers fraud chargebacks on eligible Shop Pay orders, but non-fraud disputes and building the evidence are left to the merchant. Chargeflow users complain about not being able to review evidence before submission and an uncapped 25% fee.",
+ "wedge": "A flat $9/month packet builder with a mandatory human-review step before the merchant submits. It targets merchants who dislike uncapped success fees and automatic submission with no review. Price and review control are the only differences, not a new capability.",
+ "referenceEntrant": {
+  "startupCashUsd": 500,
+  "daysToFirstRevenue": 45,
+  "ownerHoursPerWeek": 11
+ },
+ "scan1Edge": {
+  "criterion": "cash_cost",
+  "direction": "lower_is_better",
+  "entrant_basis": "The nearest flat-fee competitor is $19.99/month from the research notes, and the entrant would charge $9/month (ESTIMATE). That saves about $11/month, a minor edge. Versus 25% of $1,000 recovered ($250) the gap is larger, but a flat-fee rival already exists.",
+  "entrant_value": 9,
+  "falsifier": "If merchants do not value review control or $11/month savings, or a flat-fee competitor drops its price, there is no edge.",
+  "incumbent_source_url": "https://startupstash.com/top-ai-chargeback-and-dispute-management-platforms/",
+  "incumbent_value": 19.99,
+  "unit": "USD per month"
+ },
+ "substitutesNoted": [
+  {
+   "name": "Chargeflow",
+   "price_point": "25% of recovered disputes, uncapped",
+   "url": "https://www.chargeback.io/blog/best-shopify-chargeback-prevention-app"
+  },
+  {
+   "name": "Disputifier",
+   "price_point": "20% capped at $250 per won case",
+   "url": "https://redo.com/resources/articles/comparisons/best-chargeback-management-software"
+  },
+  {
+   "name": "ChargePay (flat-fee)",
+   "price_point": "flat monthly from $19.99, no success fee",
+   "url": "https://startupstash.com/top-ai-chargeback-and-dispute-management-platforms/"
+  },
+  {
+   "name": "Chargeback alerts (Ethoca/Visa RDR/CDRN)",
+   "price_point": "$29 per Ethoca alert; $15 per Visa alert",
+   "url": "https://www.chargeback.io/blog/best-shopify-chargeback-prevention-app"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 85,
+  "notes": "Modelled: flat $9/month at about 85% margin. Not sourced. Support effort for evidence disputes is not included.",
+  "price_usd": 9,
+  "variable_cost_usd": 1.35
+ },
+ "majorUncertainty": "Whether merchants will trust an unknown tool with payment and customer data when established vendors already offer flat-fee and success-fee models.",
+ "unknowns": [
+  "No evidence found of how many tiny merchants pay for chargeback help, versus handling disputes themselves.",
+  "Whether Shopify app review can be passed by an anonymous solo entrant, and the timeline.",
+  "Whether a manual-review model works at $9/month once support effort is counted.",
+  "ChargePay's name and price are only in the notes and in the C52 excerpt without the name.",
+  "Win rates for evidence packets built by the entrant are unknown."
+ ],
+ "regulatoryOrPlatformDependency": "Needs Shopify, Stripe and PayPal API access and app review (about 30-60 days is an estimate). Win rates depend on card-network rules and deadlines, so outcomes cannot be promised. The tool would handle customer and payment data, so trust is hard for an unknown entrant.",
+ "evidence": [
+  {
+   "id": "ECO-04-E1",
+   "url": "https://redo.com/resources/articles/comparisons/best-chargeback-management-software",
+   "publisher": "The best chargeback software for Shopify, by fees and win rate",
+   "kind": "incumbent_price",
+   "shows": "Chargeflow publishes a 25% success fee on recovered chargebacks, and Disputifier publishes 20% capped at $250 per won case.",
+   "quote": "Chargeflow publishes a 25% success fee on recovered chargebacks, and Disputifier publishes 20% capped at $250 per won case (both checked July 22, 2026...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-04-E2",
+   "url": "https://startupstash.com/top-ai-chargeback-and-dispute-management-platforms/",
+   "publisher": "Top AI Chargeback & Dispute Management Platforms - Startup Stash",
+   "kind": "incumbent_price",
+   "shows": "A flat-fee competitor (ChargePay, per the research notes) offers flat monthly pricing from $19.99 across four plans, with no per-dispute or success fees.",
+   "quote": "- Flat monthly pricing from $19.99 across four plans aligned to Shopify tiers, with no per-dispute or success fees so merchants keep all recovered rev...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-04-E3",
+   "url": "https://www.chargeback.io/blog/best-shopify-chargeback-prevention-app",
+   "publisher": "Best Shopify Chargeback Prevention App in 2026",
+   "kind": "incumbent_price",
+   "shows": "Chargeback's pricing page lists Ethoca alerts at $29 each and Visa RDR/CDRN at $15 each, with no monthly minimum.",
+   "quote": "According to Chargeback's pricing page, Ethoca alerts run $29 each and both Visa networks (RDR and CDRN) run $15 each, with no monthly minimum.\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-04-E4",
+   "url": "https://startupstash.com/top-ai-chargeback-and-dispute-management-platforms/",
+   "publisher": "Top AI Chargeback & Dispute Management Platforms - Startup Stash",
+   "kind": "demand",
+   "shows": "Documented complaints: merchants cannot review evidence before submission and the 25% fee is uncapped, so high-AOV stores pay proportionally more.",
+   "quote": "- Full automation means limited control: merchants cannot review evidence before submission, and the 25% fee is uncapped, so high-AOV stores pay propo...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-04-E5",
+   "url": "https://startupstash.com/top-ai-chargeback-and-dispute-management-platforms/",
+   "publisher": "Top AI Chargeback & Dispute Management Platforms - Startup Stash",
+   "kind": "demand",
+   "shows": "Some users note that auto-refund in Alerts can refund already-satisfied customers if not carefully configured.",
+   "quote": "- Some users note the auto-refund behavior in Alerts can refund already-satisfied customers if not carefully configured, and want more transparency in...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-04-E6",
+   "url": "https://www.chargeflow.io/blog/shopify-chargebacks-guide",
+   "publisher": "Shopify Chargebacks: How to Manage, Fight and Win (2026)",
+   "kind": "demand",
+   "shows": "In the US Shopify Payments context the fee is $15 per dispute, so each dispute has a direct cost.",
+   "quote": "In the documented US Shopify Payments context the fee is $15 per dispute, and fee treatment varies by country.\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-04-E7",
+   "url": "https://www.chargeflow.io/blog/best-chargeback-solutions-for-shopify-2026",
+   "publisher": "Best Shopify Chargeback Apps 2026: Prevention & Recovery",
+   "kind": "constraint",
+   "shows": "Shopify Protect covers fraud chargebacks on eligible Shop Pay orders, and the $15 dispute fee is returned when the merchant wins. This limits the addressable dispute types.",
+   "quote": "- **Know Shopify’s baseline first:** Shopify Protect covers fraud chargebacks on eligible Shop Pay orders, and the $15 US dispute fee is returned when...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-04-E8",
+   "url": "https://www.chargeflow.io/blog/best-chargeback-solutions-for-shopify-2026",
+   "publisher": "Best Shopify Chargeback Apps 2026: Prevention & Recovery",
+   "kind": "constraint",
+   "shows": "Merchants in network dispute resolution programs have disputes auto-refunded with a fee and cannot contest them.",
+   "quote": "Keeping your dispute rate low is what keeps you out of network dispute resolution programs, where disputes auto-refund with a fee and cannot be contes...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "ECO-04-E9",
+   "url": "https://www.chargeback.io/blog/best-shopify-chargeback-prevention-app",
+   "publisher": "Best Shopify Chargeback Prevention App in 2026",
+   "kind": "other",
+   "shows": "The uncapped success fee means a large recovered chargeback carries a large fee, which explains the incumbent complaint.",
+   "quote": "Unlike a capped success fee, it has no upper limit, so a large recovered chargeback carries a large fee.\n\n",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

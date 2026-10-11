@@ -1,0 +1,224 @@
+{
+  "id": "MED-01",
+  "verdict": "killed",
+  "verdictReason": "Three major problems. (1) A free path covers the wedge: YouTube publishes automatic captions on its own and owners can edit them in YouTube Studio at no fee; Whisper is MIT-licensed, so there is no moat. (2) A back catalog created before the compliance date is the content the Title II 'archived web content' exception targets, so the forcing function applies mainly to future meetings (subscription territory). (3) Small entities and special districts now have until April 26, 2028, past the 365-day window. Pessimistic year 1 is about -$0.8k.",
+  "answers": [
+    {
+      "question": "(1) What free/cheap alternative covers the wedge?",
+      "answer": "Free: YouTube already creates automatic captions and publishes them on the video when available, and a channel owner can open them in YouTube Studio, edit the text and republish at no stated fee, which is the 'short human review pass'. Open source: OpenAI Whisper (code and weights MIT-licensed) can transcribe an archive locally. Legal status quo: moving pre-deadline videos into a clearly labelled archive section may qualify for the archived-content exception (conditional). Paid: BoardBreeze, ClerkMinutes and City Transcripts per the case file (prices not re-verified here). The wedge is only partly covered for free, because accuracy of auto-captions varies and staff must do the review, but the cost of the alternative is staff time, not a fee.",
+      "evidenceIds": ["MED-01-D5", "MED-01-D6", "MED-01-D7", "MED-01-D2", "MED-01-E1", "MED-01-E2", "MED-01-E7"]
+    },
+    {
+      "question": "(2) What structural edge exists and who could copy it?",
+      "answer": "None. The method (speech-to-text then a review pass) uses MIT-licensed open-source models and YouTube's own caption tools, so any subscription vendor, caption vendor (3Play, AI-Media) or the clerk could copy or replace it immediately. The scan-1 'owner_time' edge also conflates two products: the cited 8-24 hours per meeting is for writing minutes, while the wedge sells video captions and transcripts. What would falsify this kill: a named set of small entities that have budget for a one-time archive captioning purchase and are not covered by the archived-content exception (for example because their videos sit in an unlabelled channel and a complaint or accommodation request is pending).",
+      "evidenceIds": ["MED-01-D7", "MED-01-D5", "MED-01-D10"]
+    },
+    {
+      "question": "(3) Who demonstrably pays and how much?",
+      "answer": "A one-time backlog fee is not demonstrated by any page read. What was found: monthly subscription prices from the case file (BoardBreeze Pro $99/month, ClerkMinutes $99-249/month, not re-verified) and a vendor claim of 'High costs of human captioners and describers for every meeting or recording' (marketing). One compliance guide describes archived video as request-driven: captions are added and the captioned file is shared with the requestor, i.e. per video, not for a whole archive. The buyer base, procurement route and willingness to pay $300-600 are unverified.",
+      "evidenceIds": ["MED-01-D4", "MED-01-D11", "MED-01-E1", "MED-01-E2", "MED-01-E3"]
+    },
+    {
+      "question": "(4) Legal/platform constraints?",
+      "answer": "DOJ's interim final rule moved compliance to April 26, 2027 (population 50,000+) and April 26, 2028 (under 50,000 and special districts); only dates changed. DOJ cited resource constraints, staffing limits, slower-than-expected technology and litigation risk. The core obligation is unchanged and enforcement under existing laws continues (counter-evidence to low urgency). Prerecorded video needs accurate synchronized captions; live council meetings need real-time captions, which the entrant would not serve. Archived-content exception: content created before the compliance date, retained only for reference, research or recordkeeping, in a labelled archive area, not altered; DOJ guidance warns that merely labelling content as archived does not circumvent obligations, and requests for access still have to be handled. Local procurement thresholds and vendor registration were not verified. YouTube is the platform; no contract with YouTube is needed for owner-side caption upload.",
+      "evidenceIds": ["MED-01-D1", "MED-01-D2", "MED-01-D3", "MED-01-D8", "MED-01-D9", "MED-01-D10", "MED-01-E5"]
+    },
+    {
+      "question": "(5) Year-1 numbers?",
+      "answer": "Base: 12 entities x $450 one-time = $5,400 revenue against $1,990 cost (startup $650, speech-to-text compute $240, outreach tooling $600, insurance $500), about $3,400 before roughly 100 hours of review plus outreach time. Pessimistic (price x0.8 = $360, volume x0.5 = 6 entities, cost x1.5): revenue $2,160, cost $2,985, profit about -$825. Volume, price and costs are assumptions: no page confirmed a one-time price or a buyer count. Each entity is a one-off sale with no recurring revenue, so year 2 restarts from zero.",
+      "evidenceIds": ["MED-01-D1", "MED-01-D8"]
+    }
+  ],
+  "newEvidence": [
+    {
+      "id": "MED-01-D1",
+      "url": "https://www.lmc.org/?p=47484",
+      "quote": "April 26, 2028, for entities with populations under 50,000 and special districts.",
+      "kind": "constraint",
+      "publisher": "League of Minnesota Cities: DOJ extends web accessibility compliance deadlines for local governments",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MED-01-D2",
+      "url": "https://it.nc.gov/documents/doj-deep-dive-part-2/open",
+      "quote": "The images and videos would likely be covered by the exception (if it meets all other requirements).",
+      "kind": "constraint",
+      "publisher": "North Carolina Department of Information Technology: DOJ deep dive part 2",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MED-01-D3",
+      "url": "https://www.sog.unc.edu/blogs/coates-canons/understanding-new-ada-web-accessibility-requirements-state-and-local-governments-1",
+      "quote": "public entities may not circumvent their accessibility obligations by merely labeling their web content as 'archived'",
+      "kind": "constraint",
+      "publisher": "UNC School of Government, Coates' Canons blog",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MED-01-D4",
+      "url": "https://accessible.org/how-to-archive-web-content-ada-title-ii/",
+      "quote": "adding captions to the video and sharing the captioned file with the requestor",
+      "kind": "demand",
+      "publisher": "Accessible.org: how to archive web content to meet the ADA Title II exception",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MED-01-D5",
+      "url": "https://support.google.com/youtube/answer/2734796",
+      "quote": "If automatic captions are available, they'll automatically be published on the video.",
+      "kind": "other",
+      "publisher": "YouTube Help",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MED-01-D6",
+      "url": "https://support.google.com/youtube/answer/2734705",
+      "quote": "If you're editing captions created automatically, a new caption track that includes your revisions will be generated.",
+      "kind": "other",
+      "publisher": "YouTube Help (edit captions in YouTube Studio; page mentions no fee)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MED-01-D7",
+      "url": "https://github.com/openai/whisper",
+      "quote": "Whisper's code and model weights are released under the MIT License.",
+      "kind": "other",
+      "publisher": "OpenAI Whisper repository (GitHub)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MED-01-D8",
+      "url": "https://www.consumerfinancialserviceslawmonitor.com/2026/04/doj-extends-title-ii-ada-web-accessibility-rule-compliance-deadlines-for-state-and-local-governments/",
+      "quote": "resource constraints, staffing limitations, slower-than-expected technological solutions",
+      "kind": "constraint",
+      "publisher": "Consumer Financial Services Law Monitor (law-firm blog)",
+      "date": "2026-04",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MED-01-D9",
+      "url": "https://www.levelaccess.com/blog/the-ada-title-ii-extension-what-it-doesnt-change/",
+      "quote": "the core obligation hasn't changed",
+      "kind": "constraint",
+      "publisher": "Level Access (accessibility vendor blog)",
+      "date": "2026",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MED-01-D10",
+      "url": "https://www.3playmedia.com/?p=18962",
+      "quote": "all need accurate captions, and many need audio description.",
+      "kind": "demand",
+      "publisher": "3Play Media (caption vendor) Title II legislation page; also lists 'live captioning for public meetings'",
+      "date": "2026",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "MED-01-D11",
+      "url": "https://www.ai-media.tv/knowledge-hub/insights/ada-title-ii-goes-digital-what-public-entities-need-to-know/",
+      "quote": "High costs of human captioners and describers for every meeting or recording",
+      "kind": "demand",
+      "publisher": "AI-Media (captioning vendor marketing)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    }
+  ],
+  "newAlternatives": [
+    {
+      "label": "YouTube automatic captions plus free caption editing in YouTube Studio (clerk reviews and republishes)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://support.google.com/youtube/answer/2734705",
+      "evidenceRef": "MED-01-D6"
+    },
+    {
+      "label": "OpenAI Whisper, MIT-licensed open-source speech recognition run locally",
+      "kind": "open_source",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://github.com/openai/whisper",
+      "evidenceRef": "MED-01-D7"
+    },
+    {
+      "label": "Relabel the pre-deadline video archive as a dedicated archive section and rely on the archived-content exception (conditional, request-driven fallback)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://it.nc.gov/documents/doj-deep-dive-part-2/open",
+      "evidenceRef": "MED-01-D2"
+    }
+  ],
+  "killReasons": [
+    {
+      "reason": "Free path covers the captioning-plus-review wedge: YouTube auto-publishes automatic captions and the owner can edit and republish them in YouTube Studio at no stated fee; the only cost is staff time, which is the same review the wedge asks the clerk to do.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MED-01-D5"
+    },
+    {
+      "reason": "The backlog (videos created before the compliance date and kept for reference) is the content class the archived-web-content exception addresses, so the legal forcing function falls mainly on future meetings, which subscription incumbents already serve; the archive itself is request-driven (caption one video on request).",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MED-01-D2"
+    },
+    {
+      "reason": "No urgency inside the 365-day window: small entities (under 50,000) and special districts now have until April 26, 2028, and DOJ cited resource constraints in extending, so buyers are unlikely to pay a cold, unreferenced vendor for a backlog in 2026-2027.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MED-01-D1"
+    },
+    {
+      "reason": "No moat: the core method uses MIT-licensed models, so incumbents (BoardBreeze, ClerkMinutes, City Transcripts, caption vendors) or the clerk can replicate it at once; the owner_time edge cited for minutes does not transfer to a captions product.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "MED-01-D7"
+    },
+    {
+      "reason": "Pessimistic year-1 economics are negative (about -$825) and there is no recurring revenue; no page confirmed a buyer for a one-time fee.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "MED-01-D8"
+    }
+  ],
+  "economics": {
+    "revenue365": 5400,
+    "cost365": 1990,
+    "pessimisticProfit365": -825,
+    "survivesPessimistic": false,
+    "assumptions": [
+      "Price $450 one-time per entity (case-file midpoint of an estimated $300-600; not confirmed by any source)",
+      "Volume: 12 entities in year 1 (assumption; cold outreach, no references, no source for conversion)",
+      "Archive of about 48 video hours per entity (assumption: 24 meetings x 2 hours)",
+      "Speech-to-text compute about $20 per entity = $240 (assumption; Whisper is MIT-licensed, D7)",
+      "Startup $650 from the case-file reference entrant; outreach tooling $600 and insurance/E&O $500 are assumptions",
+      "Owner review/spot-check about 8 hours per entity = 96 hours, plus outreach time, not costed; base profit of about $3,400 is roughly $10/hour",
+      "Pessimistic: price x0.8 = $360, volume x0.5 = 6 entities, revenue $2,160; cost x1.5 = $2,985",
+      "No recurring revenue assumed; live meeting captions excluded"
+    ],
+    "sources": ["MED-01-D1", "MED-01-D7", "MED-01-D8"]
+  },
+  "legalNotes": [
+    "Compliance dates: April 26, 2027 for populations of 50,000+, April 26, 2028 for under 50,000 and special districts; only the timeline changed (D1, D8).",
+    "Archived web content exception requires content created before the compliance date, kept exclusively for reference/research/recordkeeping, in a clearly labelled archive area, and unaltered; DOJ guidance warns that merely labelling content as archived does not avoid obligations, and a request for access must still be addressed (D2, D3, D4).",
+    "Live council meetings need real-time captions (case file E5); the entrant would sell only prerecorded captions, which is a narrower and riskier product.",
+    "Local procurement thresholds, vendor registration and insurance requirements for selling to small governments were not verified.",
+    "The core ADA Title II obligation and enforcement under existing laws were described as unchanged by the extension (D9), so low urgency is not zero risk for buyers."
+  ],
+  "unverified": [
+    "Paid prices of BoardBreeze, ClerkMinutes, City Transcripts and Rev/3Play (the appboardbreeze.com, citytranscripts.com, rev.com and 3playmedia pricing pages could not be fetched: permission requests were not answered); case-file prices MED-01-E1 to E3 remain agent_reported",
+    "WebSearch budget ran out after 2 new queries, so the search for further free/cheap alternatives and municipal procurement thresholds was incomplete",
+    "Actual willingness of small municipalities to buy a one-time backlog; procurement rules for unregistered vendors",
+    "Whether typical municipal YouTube meeting archives meet the 'dedicated archive area' condition, and whether adding captions counts as altering archived content",
+    "Real-world accuracy of YouTube auto-captions or Whisper on council meeting audio",
+    "Quotes in this file were returned by the fetch tool's page extraction rather than read in a browser; DOJ's primary ada.gov page could not be fetched"
+  ],
+  "nextStep": "Do not pursue as a one-time backlog service; if revisited, first confirm from a few municipalities' public procurement pages that anyone buys archive captioning at all."
+}

@@ -1,0 +1,218 @@
+{
+  "id": "PHY-04",
+  "verdict": "killed",
+  "verdictReason": "The wedge (no monthly minimum, flat per-unit price) is already sold: one directory lists 60 no-minimum prep centers and Honeybee publishes a flat $1/unit all-in rate with no minimum, which triggers the case's own falsifier. Underpricing at $0.70 is 'cheaper', not an edge. Under the pessimistic model (price x0.8, volume x0.5, cost x1.5) year 1 is about -$5.5k, and a home-based operation carries zoning and warehouser-liability exposure.",
+  "answers": [
+    {
+      "question": "(1) What free/cheap alternative covers the wedge?",
+      "answer": "Prep centers that already advertise no minimum: Ecom Circles lists 60 'no-minimum' centers, e.g. Honeybee Fulfillment (flat $1/unit all-in, month-to-month), USURI Prep and Ship (three-tier per-unit, no minimum), NFNOW Fulfillment ('No subscriptions, startup fees, or minimum quantities') and AMZ Prep (no minimum monthly order volume). Published market rates below 500 units/month are $1.00-$1.50/unit, so a 300-unit seller pays about $300-$450/month with no commitment. DIY prep costs $0.05-$0.15/unit in materials and a practiced person preps 40-80 units/hour. Wedge coverage: full.",
+      "evidenceIds": ["PHY-04-D1", "PHY-04-D2", "PHY-04-D3", "PHY-04-D4", "PHY-04-D5", "PHY-04-E1"]
+    },
+    {
+      "question": "(2) What structural edge exists and who could copy it?",
+      "answer": "None found. A flat per-unit price with no minimum is not exclusive or compounding: dozens of centers already do it, and any prep center can match a lower price by editing a rate card. A $0.70 price undercuts the $1.00 flat market rate, but price is not an edge. The scan-1 falsifier ('existing prep shops already offer no-minimum small-seller plans') is already true. What would falsify this kill: evidence that the 60 'no-minimum' listings are mostly per-SKU or per-shipment minimums that still exclude 300-unit sellers (the directory itself notes the label may not specify which minimum), plus verified seller complaints about being turned away.",
+      "evidenceIds": ["PHY-04-D1", "PHY-04-D2", "PHY-04-D5"]
+    },
+    {
+      "question": "(3) Who demonstrably pays and how much?",
+      "answer": "Small sellers pay prep centers about $1.00-$1.50/unit below 500 units/month and $0.75-$1.25 at 500-2,500 (one 2026 rate survey). Amazon's reason for ending its own prep service was that 'the vast majority' of sellers already prep their own inventory, so the paying segment is a minority, and one trade site says only that newer or smaller sellers face higher costs and operational adjustments. No direct complaints about minimums were found. The entrant's assumed $0.70 is below every published small-volume rate found.",
+      "evidenceIds": ["PHY-04-D3", "PHY-04-D6", "PHY-04-D7"]
+    },
+    {
+      "question": "(4) Legal/platform constraints?",
+      "answer": "Platform: Amazon no longer preps or labels in the US (shipments from Jan 1, 2026); non-compliant inventory is treated as defective and a source reports inbound defect fees of $0.32-$1.74 per standard unit and up to $5.72 per bulky unit (this reconciles the two figures in the case file: standard vs bulky). The prep shop bears chargeback and credit risk for errors it makes. Legal: a home-based warehouser is exposed to presumed negligence for loss or damage to third-party goods, homeowner policies may leave gaps, and local zoning can prohibit keeping goods for sale or rent; commercial coverage must include third-party inventory and errors and omissions. No licence requirement was found in the pages read.",
+      "evidenceIds": ["PHY-04-D8", "PHY-04-D9", "PHY-04-D10"]
+    },
+    {
+      "question": "(5) Year-1 numbers?",
+      "answer": "Base case: 18,000 units in year 1 (about 5 clients averaging 300 units/month, ramping to about 10), $0.70/unit = $12,600 revenue against $7,010 cost (startup $2,750, materials $1,800, insurance $1,200, marketing $600, software $300, error credits $360) = about $5,590 before the owner's roughly 1,000 hours, i.e. about $5/hour. Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue $5,040, cost $10,515, profit about -$5,475. Even at the $1.00 market price the pessimistic case is negative ($7,200 vs $10,515). Volume and insurance are assumptions; throughput 40-80 units/hour is sourced.",
+      "evidenceIds": ["PHY-04-D3", "PHY-04-D4", "PHY-04-D11"]
+    }
+  ],
+  "newEvidence": [
+    {
+      "id": "PHY-04-D1",
+      "url": "https://ecomcircles.com/prep-centers/no-minimum/",
+      "quote": "the 60 no-minimum prep centers in our directory",
+      "kind": "incumbent_price",
+      "publisher": "Ecom Circles prep center directory (no-minimum filter)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-04-D2",
+      "url": "https://ecomcircles.com/prep-centers/honeybee-fulfillment/",
+      "quote": "A flat $1 per unit all-in FBA prep rate",
+      "kind": "incumbent_price",
+      "publisher": "Ecom Circles listing for Honeybee Fulfillment (Plano, TX)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-04-D3",
+      "url": "https://www.freightfigures.com/articles/fba-prep-center-vs-diy",
+      "quote": "$1.00–$1.50 per unit below 500 units a month",
+      "kind": "incumbent_price",
+      "publisher": "FreightFigures: FBA prep center vs DIY",
+      "date": "2026",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-04-D4",
+      "url": "https://www.freightfigures.com/articles/fba-prep-center-vs-diy",
+      "quote": "A practiced person preps 40–80 simple units per hour.",
+      "kind": "other",
+      "publisher": "FreightFigures: FBA prep center vs DIY",
+      "date": "2026",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-04-D5",
+      "url": "https://amzprep.com/best-fulfillment-center-small-business/",
+      "quote": "AMZ Prep does not require a minimum monthly order volume.",
+      "kind": "incumbent_price",
+      "publisher": "AMZ Prep: small business fulfillment page",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-04-D6",
+      "url": "https://www.fulfill.com/blog-posts/amazon-fba-prep-shutdown",
+      "quote": "The vast majority of Amazon sellers now handle their own packaging, including prep and item labeling.",
+      "kind": "demand",
+      "publisher": "Fulfill.com: Amazon FBA prep shutdown (quoting Amazon's stated reason)",
+      "date": "2026",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-04-D7",
+      "url": "https://myamazonguy.com/news/end-of-fba-prep-services/",
+      "quote": "For newer or smaller sellers, the removal of in-house support means higher costs and operational adjustments.",
+      "kind": "demand",
+      "publisher": "MyAmazonGuy: Amazon confirms end of FBA prep services",
+      "date": "2026",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-04-D8",
+      "url": "https://feedvisor.com/university/stickerless-commingled-inventory/",
+      "quote": "without proper barcodes will be treated as defective",
+      "kind": "constraint",
+      "publisher": "Feedvisor University: stickerless commingled inventory",
+      "date": "2026",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-04-D9",
+      "url": "https://rcbizjournal.com/2021/03/25/in-home-warehousing-is-a-growing-trend-but-with-legal-implications/",
+      "quote": "the home warehouser would be presumed guilty of negligence for any loss or damage to the goods",
+      "kind": "constraint",
+      "publisher": "Rockland County Business Journal: in-home warehousing legal implications (New York law, Clarkstown code)",
+      "date": "2021-03-25",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-04-D10",
+      "url": "https://www.cleverence.com/articles/3pl-business/become-amazon-fba-prep-center-3pl-4827/",
+      "quote": "Ensure your insurance covers third-party inventory, product handling, and errors & omissions where appropriate.",
+      "kind": "constraint",
+      "publisher": "Cleverence: how to become an Amazon FBA prep center",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "PHY-04-D11",
+      "url": "https://www.wizard-industries.com/fba-labor-calculator",
+      "quote": "About 25 sec / unit",
+      "kind": "other",
+      "publisher": "Wizard Industries FBA labor calculator (poly wrapping time per unit; labeling is 'About 8 sec / unit')",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    }
+  ],
+  "newAlternatives": [
+    {
+      "label": "Honeybee Fulfillment: flat $1/unit all-in FBA prep, no minimum, month-to-month (cost shown at 300 units/month)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 300,
+      "coversWedge": "full",
+      "sourceLocator": "https://ecomcircles.com/prep-centers/honeybee-fulfillment/",
+      "evidenceRef": "PHY-04-D2"
+    },
+    {
+      "label": "USURI Prep and Ship and other directory-listed no-minimum centers (three-tier all-in per-unit rate, listed $1.00/$0.90/$0.80; cost shown at the top $1.00 tier for 300 units/month)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 300,
+      "coversWedge": "full",
+      "sourceLocator": "https://ecomcircles.com/prep-centers/no-minimum/",
+      "evidenceRef": "PHY-04-D1"
+    },
+    {
+      "label": "Seller preps own units: materials $0.05-$0.15/unit (shown at $0.10 x 300 units) plus about 5 hours at 40-80 units/hour",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 30,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.freightfigures.com/articles/fba-prep-center-vs-diy",
+      "evidenceRef": "PHY-04-D4"
+    }
+  ],
+  "killReasons": [
+    {
+      "reason": "The wedge (no monthly minimum, flat per-unit price) is already offered by many prep centers, including a published flat $1/unit all-in no-minimum rate; the case's own falsifier is already true and there is no exclusive or compounding edge.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "PHY-04-D1"
+    },
+    {
+      "reason": "Pessimistic year-1 economics are negative (about -$5.5k) and base-case owner earnings are about $5/hour; the only lever is a $0.70 price, 30% below the $1.00 small-volume market rate, which is price competition, not an edge.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "PHY-04-D3"
+    },
+    {
+      "reason": "Home-based operation exposes the owner to presumed-negligence warehouser liability, insurance gaps and zoning bans on keeping goods for sale; a compliant commercial setup raises fixed costs beyond the $2,750 startup budget.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "PHY-04-D9"
+    },
+    {
+      "reason": "Amazon says the vast majority of sellers already prep their own inventory, so the addressable segment created by the prep shutdown is a minority; DIY at 40-80 units/hour is a credible substitute below 500 units/month.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "PHY-04-D6"
+    }
+  ],
+  "economics": {
+    "revenue365": 12600,
+    "cost365": 7010,
+    "pessimisticProfit365": -5475,
+    "survivesPessimistic": false,
+    "assumptions": [
+      "Price $0.70/unit flat (case-file estimate; published small-volume market rates are $1.00-$1.50, D3)",
+      "Volume assumption: 18,000 units in year 1 (about 5 average clients x 300 units/month x 12; no source for client acquisition rate)",
+      "Startup $2,750 taken from the case file reference entrant (printer, scale, shelving, bags)",
+      "Materials $0.10/unit = midpoint of $0.05-$0.15 (D3 source), 18,000 units = $1,800",
+      "Insurance $1,200/year (assumption; not found in sources); marketing/directory listings $600 (assumption); software/accounting $300 (assumption); error credits $0.02/unit = $360 (assumption)",
+      "Space: assumes home/garage at $0 and ignores zoning risk; renting a small unit at an assumed $300/month would cut base profit by $3,600",
+      "Throughput 40-80 units/hour (D4) so about 3,600 units/month capacity at 20 h/week with 70% productive time (assumption); demand, not capacity, binds",
+      "Owner labor not costed (about 1,000 hours/year)",
+      "Pessimistic: price x0.8 = $0.56, volume x0.5 = 9,000 units, cost x1.5 = $10,515; revenue $5,040"
+    ],
+    "sources": ["PHY-04-D3", "PHY-04-D4", "PHY-04-D11"]
+  },
+  "legalNotes": [
+    "Amazon US inbound requirements apply to every unit; units arriving without proper barcodes are treated as defective and incur inbound defect fees (D8).",
+    "Home warehousing: New York law presumes a warehouser negligent for loss or damage; homeowner policies may not cover business storage; local zoning (example: Clarkstown) can prohibit keeping goods for sale or rent (D9). Other jurisdictions differ.",
+    "Commercial insurance should cover third-party inventory, product handling and errors and omissions (D10).",
+    "No professional licence requirement was found in the pages read; local business licence and sales-tax registration were not researched."
+  ],
+  "unverified": [
+    "Whether the 60 'no-minimum' directory listings include per-SKU or per-shipment minimums that would still exclude a 300-unit seller (the directory does not say which minimum it means)",
+    "Direct seller complaints about prep minimums (none found)",
+    "Actual insurance quotes and local zoning rules for a home or small-unit prep operation",
+    "Client acquisition rate and conversion for an unreviewed new prep shop (volume is an assumption)",
+    "Whether Brand Registry manufacturer barcodes still remove FNSKU labeling after the 2026 commingling change (the source page was internally ambiguous)",
+    "fbaprepfinder.com (Cloud Peak $1.00/unit claim) could not be fetched in this session (permission request not answered); quotes in this file were returned by the fetch tool's page extraction, not read in a browser"
+  ],
+  "nextStep": "Do not pursue; if revisited, first verify with a few public rate cards whether the 'no-minimum' prep centers actually accept sub-300-unit sellers."
+}

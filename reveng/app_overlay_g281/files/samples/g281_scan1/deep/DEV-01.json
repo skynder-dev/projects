@@ -1,0 +1,217 @@
+{
+ "id": "DEV-01",
+ "verdict": "killed",
+ "verdictReason": "Killed. Outbound webhooks with retries, signing and a customer portal are already free and permissively licensed (Svix MIT, Hookdeck Outpost Apache-2.0, which also sells a managed tier from $10 per million events with SOC 2), and a DPA is a free CC BY 4.0 template, so a $29 flat bundle has no exclusive or compounding edge: any host or incumbent copies it by editing a price page. Pessimistic year 1 is -$281 cash on ~680 owner hours. Not verified: Svix/Hook Mesh/EventDock/Hook0 pricing pages (fetch blocked), whether any small vendor pays for a DPA plan.",
+ "answers": [
+  {
+   "question": "(1) What free/cheap alternative covers the wedge?",
+   "answer": "Several, all read on GitHub. Svix's own server is open source under MIT and self-hostable (D1). Hookdeck Outpost is Apache-2.0 'infrastructure for sending webhooks ... to your customers' systems' with retries, tenant isolation and an end-user portal, and Hookdeck sells a managed version with SOC 2 and 'usage-based pricing starting at $10 per million events' (D2), i.e. about $1 per 100k messages versus the entrant's $29. Convoy has a free community tier with a customer-facing webhook dashboard and signing (D3). Hook0 offers a free cloud tier with event-based pricing (D4). For one-stack teams, MIT libraries such as spatie/laravel-webhook-server give HMAC signing and exponential-backoff retries for free (D7). The Standard Webhooks spec removes design cost (D5). The 'DPA included' piece is not scarce: Common Paper publishes a DPA free to use and modify under CC BY 4.0 (D6). The case file (not re-verified, fetch blocked) also lists Svix Basic $20 with a 99.9% SLA (DEV-01-E1), Hook Mesh $39 (DEV-01-E5) and EventDock $29, i.e. near-identical flat plans already exist. Not confirmed: whether Outpost managed has a minimum fee or signs DPAs.",
+   "evidenceIds": ["DEV-01-D1", "DEV-01-D2", "DEV-01-D3", "DEV-01-D4", "DEV-01-D5", "DEV-01-D6", "DEV-01-D7", "DEV-01-E1", "DEV-01-E5"]
+  },
+  {
+   "question": "(2) What structural edge exists and who could copy it?",
+   "answer": "None identified. The wedge is a price point plus a bundled DPA. Both are copyable in days: the delivery code is MIT (Svix) or Apache-2.0 (Outpost), so any host can run the same stack (D1, D2); the DPA is a free template (D6); Svix could move its DPA to a lower tier or Hookdeck could cut its managed minimum without cost. There is no data network effect or lock-in in delivery, and the entrant's anonymity is a handicap for a processor of customers' payloads. Note Hook0 (SSPL, 'You may not provide the products to others as a managed service', D4) and Convoy (Elastic License v2, D3) cannot be resold as a managed service, so the entrant would have to use Svix/Outpost code or build its own. Falsifier that would reopen the idea: evidence that Svix, Hookdeck and the $29-59 flat-plan vendors all refuse DPAs below ~$490 AND that small vendors pay $29 to get one.",
+   "evidenceIds": ["DEV-01-D1", "DEV-01-D2", "DEV-01-D3", "DEV-01-D4", "DEV-01-D6"]
+  },
+  {
+   "question": "(3) Who demonstrably pays and how much?",
+   "answer": "Payment for hosted webhook infrastructure by larger buyers is plausible (Hookdeck sells a managed Outpost with SOC 2, SSO and RBAC at usage-based prices, D2; Svix pricing in the case file, DEV-01-E1, not re-verified). No page I could read shows a small API vendor paying $29/mo specifically for a DPA-included plan. The pain evidence in the case file (DEV-01-E2, E3, E4) is third-party blog/review complaints about the $490 step, and DEV-01-E2/E3 come from webhooker.eu, which itself appears to sell a competing product (not re-verified). Complaint is not payment.",
+   "evidenceIds": ["DEV-01-D2", "DEV-01-E1", "DEV-01-E2", "DEV-01-E3", "DEV-01-E4"]
+  },
+  {
+   "question": "(4) Legal and platform constraints?",
+   "answer": "The entrant would be a GDPR Article 28 processor of its customers' webhook payloads (which can carry personal data), so it needs a DPA, a sub-processor list and breach duties; the template itself is free (D6) but being a credible processor as an anonymous solo operator is the hard part. Buyers may ask for SOC 2 (Hookdeck's managed Outpost already advertises it, D2); a SOC 2 audit is not budgeted here. Delivery to customer-supplied URLs creates SSRF and abuse risk (mitigation cost not sourced). Licence limits: Hook0 SSPL bars offering it as a managed service (D4); Convoy's ELv2 is generally understood to bar the same (general knowledge, not read on the page); Svix MIT and Outpost Apache-2.0 allow hosting, with Outpost logos/trademarks excluded (D1, D2). Depends on a cloud host and a payment processor.",
+   "evidenceIds": ["DEV-01-D1", "DEV-01-D2", "DEV-01-D3", "DEV-01-D4", "DEV-01-D6"]
+  },
+  {
+   "question": "(5) Year-1 numbers?",
+   "answer": "Bottom-up (all inputs assumptions except where cited): price $29/mo; first revenue month 3 (reference entrant: day 70); 1.2 new payers per month with 3% monthly churn gives ~60 customer-months; revenue365 about $1,752. Costs: hosting/DB/queue $40/mo ($480), card fees 2.9% + $0.30 (~$69), one-off $145 (domain, terms/privacy generator, status/monitoring), total about $694; profit about $1,058 before owner time, about $1.6/hour over ~676 hours. Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue about $701, cost about $982, profit about -$281. Price pressure anchor: Outpost managed at $10 per million events (D2).",
+   "evidenceIds": ["DEV-01-D2", "DEV-01-D6"]
+  }
+ ],
+ "newEvidence": [
+  {
+   "id": "DEV-01-D1",
+   "url": "https://github.com/svix/svix-webhooks",
+   "quote": "The open source and enterprise-ready webhooks service | Distributed under the MIT License. | The hosted Svix service, however, is quite complex due to our scale and the infrastructure it requires.",
+   "kind": "constraint",
+   "publisher": "GitHub: svix/svix-webhooks (README)",
+   "date": "undated (live page read 2026-10-10)",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-01-D2",
+   "url": "https://github.com/hookdeck/outpost",
+   "quote": "Production-ready infrastructure for sending webhooks and delivering events from your platform to your customers' systems. | usage-based pricing starting at $10 per million events.",
+   "kind": "incumbent_price",
+   "publisher": "GitHub: hookdeck/outpost (README)",
+   "date": "undated (live page read 2026-10-10)",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-01-D3",
+   "url": "https://github.com/frain-dev/convoy",
+   "quote": "payload signing to ensure message integrity | customer facing webhooks dashboard | one user, one organisation, and two projects",
+   "kind": "constraint",
+   "publisher": "GitHub: frain-dev/convoy (README)",
+   "date": "undated (live page read 2026-10-10)",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-01-D4",
+   "url": "https://github.com/hook0/hook0",
+   "quote": "You may not provide the products to others as a managed service. | Free Community Cloud Tier: Available (no credit card required)",
+   "kind": "constraint",
+   "publisher": "GitHub: hook0/hook0 (README)",
+   "date": "undated (live page read 2026-10-10)",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-01-D5",
+   "url": "https://github.com/standard-webhooks/standard-webhooks",
+   "quote": "Open source tools and guidelines for sending webhooks easily, securely, and reliably.",
+   "kind": "other",
+   "publisher": "GitHub: standard-webhooks/standard-webhooks",
+   "date": "undated (live page read 2026-10-10)",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-01-D6",
+   "url": "https://github.com/CommonPaper/DPA",
+   "quote": "Common Paper agreements are free to use and modify under CC BY 4.0.",
+   "kind": "other",
+   "publisher": "GitHub: CommonPaper/DPA (README)",
+   "date": "undated (live page read 2026-10-10)",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-01-D7",
+   "url": "https://github.com/spatie/laravel-webhook-server",
+   "quote": "Send webhooks from Laravel apps. | The MIT License (MIT).",
+   "kind": "constraint",
+   "publisher": "GitHub: spatie/laravel-webhook-server (README)",
+   "date": "undated (live page read 2026-10-10)",
+   "evidenceClass": "agent_reported"
+  }
+ ],
+ "newAlternatives": [
+  {
+   "label": "Self-hosted Svix open-source server (MIT)",
+   "kind": "open_source",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://github.com/svix/svix-webhooks",
+   "evidenceRef": "DEV-01-D1"
+  },
+  {
+   "label": "Hookdeck Outpost self-hosted (Apache-2.0, includes end-user portal)",
+   "kind": "open_source",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://github.com/hookdeck/outpost",
+   "evidenceRef": "DEV-01-D2"
+  },
+  {
+   "label": "Hookdeck Outpost managed (usage-based from $10 per million events; ~$1 per 100k, minimum fee and DPA availability not confirmed)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 1,
+   "coversWedge": "partial",
+   "sourceLocator": "https://github.com/hookdeck/outpost",
+   "evidenceRef": "DEV-01-D2"
+  },
+  {
+   "label": "Convoy community self-hosted (Elastic License v2, customer-facing webhook dashboard)",
+   "kind": "open_source",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://github.com/frain-dev/convoy",
+   "evidenceRef": "DEV-01-D3"
+  },
+  {
+   "label": "Hook0 Cloud free community tier",
+   "kind": "free_tool",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://github.com/hook0/hook0",
+   "evidenceRef": "DEV-01-D4"
+  },
+  {
+   "label": "spatie/laravel-webhook-server (MIT) or similar in-app sending library: DIY signing and retries",
+   "kind": "diy_or_status_quo",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://github.com/spatie/laravel-webhook-server",
+   "evidenceRef": "DEV-01-D7"
+  },
+  {
+   "label": "Common Paper DPA template (CC BY 4.0) signed by the vendor itself",
+   "kind": "free_tool",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://github.com/CommonPaper/DPA",
+   "evidenceRef": "DEV-01-D6"
+  }
+ ],
+ "killReasons": [
+  {
+   "reason": "Free and cheap alternatives already cover the wedge: permissively licensed open-source senders with retries, signing and portals (Svix MIT, Outpost Apache-2.0), plus a managed Outpost from $10 per million events (about $1 per 100k messages) with SOC 2, versus a $29 flat price.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "DEV-01-D2"
+  },
+  {
+   "reason": "No structural edge: the wedge is a price plus a bundled DPA. The delivery code is MIT/Apache so any host can run the same stack, the DPA is a free CC BY 4.0 template, and an incumbent can add a DPA to a lower tier at no cost. Nothing is exclusive or compounding.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "DEV-01-D6"
+  },
+  {
+   "reason": "Pessimistic year-1 model is negative (about -$281 cash; base about $1.6 per owner hour over ~676 hours) because the price anchor is far below $29 for volume buyers and there is no demonstrated flow of small vendors paying for a DPA plan.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "DEV-01-D2"
+  },
+  {
+   "reason": "Hook0 (SSPL) bars offering it as a managed service and Convoy uses the Elastic License v2, narrowing which existing code the entrant can legally host; only MIT/Apache stacks (Svix, Outpost) are clean starting points.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "DEV-01-D4"
+  },
+  {
+   "reason": "Trust handicap: an anonymous solo operator is the processor of customers' payloads while Hookdeck's managed offering already advertises SOC 2; whether target buyers require SOC 2 is unverified.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "DEV-01-D2"
+  }
+ ],
+ "economics": {
+  "revenue365": 1752,
+  "cost365": 694,
+  "pessimisticProfit365": -281,
+  "survivesPessimistic": false,
+  "assumptions": [
+   "Assumption: price $29/month per customer (the case-file wedge price, not validated by any purchase).",
+   "Assumption: first revenue in month 3 (reference entrant: day 70); 1.2 new paying customers per month from month 3; 3% monthly churn; about 60 customer-months in year 1. No audience, so growth comes from search and developer communities; no source supports the rate.",
+   "Assumption: hosting, managed database and queue $40/month ($480/year); open-source Svix/Outpost code gives $0 licence cost (D1, D2).",
+   "Assumption: card fees 2.9% + $0.30 per charge (about $69/year); one-off costs $145 (domain, terms/privacy generator, status page/monitoring); DPA from the free Common Paper template, $0 (D6).",
+   "Excluded: SOC 2 audit, SSRF/abuse-mitigation engineering time, paid legal review, owner time (13 h/week, about 676 h, about $1.6/hour at base profit).",
+   "Pessimistic = price x0.8, volume x0.5, cost x1.5 applied to the base model: revenue about $701, cost about $982, profit about -$281.",
+   "Price anchor read: Outpost managed from $10 per million events (D2), so 100k messages is about $1."
+  ],
+  "sources": ["DEV-01-D1", "DEV-01-D2", "DEV-01-D6"]
+ },
+ "legalNotes": [
+  "GDPR Article 28: a webhook sender that relays customers' payloads is a processor and needs a DPA, sub-processor list and breach-notice terms (general knowledge, not read on a page); a free template exists (D6) but the credibility of an anonymous solo processor is the issue.",
+  "Delivering to customer-supplied URLs carries SSRF and abuse risk (internal-address blocking, rate limiting); engineering and liability cost not sourced.",
+  "Licences: Hook0 SSPL forbids offering it as a managed service (D4); Convoy is Elastic License v2 (D3; the managed-service restriction is general knowledge, not read on the page); Svix is MIT (D1); Outpost is Apache-2.0 with logos and trademarks excluded (D2).",
+  "Depends on a cloud host and a card processor; buyers may request an uptime SLA and SOC 2 (not verified)."
+ ],
+ "unverified": [
+  "Svix, Hook Mesh, EventDock, Hook0 and Hookdeck pricing and DPA gating on vendor pages: WebFetch to non-GitHub domains was refused (permission request unanswered) and WebSearch budget was exhausted, so DEV-01-E1..E6 were NOT re-checked and the $490 DPA claim is unconfirmed.",
+  "Whether Hookdeck's managed Outpost has a minimum monthly fee, a DPA, or a 100k-message price near $1 (only 'starting at $10 per million events' was read).",
+  "Whether any small API vendor has paid for a DPA-included plan; whether target buyers actually require SOC 2 or an SLA.",
+  "Quotes come from WebFetch's processed text of each GitHub page, not raw HTML; robots.txt blocked GitHub tree pages (skipped, not circumvented).",
+  "All volume, churn, hosting and legal-cost inputs in the economics are assumptions."
+ ],
+ "nextStep": "Drop this idea; reopen only if a vendor-page check shows Svix, Hookdeck and the flat-plan vendors all refuse DPAs below about $490 and a small vendor is seen paying for one."
+}

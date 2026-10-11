@@ -1,0 +1,126 @@
+{
+ "id": "MED-01",
+ "name": "Flat-fee caption and transcript backlog for small-government meeting video",
+ "family": "media_or_content",
+ "buyer": "Clerks or IT contacts at small municipalities, special districts and school boards that post council or board meeting video",
+ "pain": "Public video needs accurate synchronized captions under the DOJ Title II rule. Small entities now have until April 2028, and manual minute-writing still takes 8-24 staff hours per meeting.",
+ "wedge": "Caption and transcribe a district's whole prerecorded YouTube meeting archive for a one-time fee instead of a monthly plan, with a short human review pass.",
+ "referenceEntrant": {
+  "startupCashUsd": 650,
+  "daysToFirstRevenue": 80,
+  "ownerHoursPerWeek": 17
+ },
+ "scan1Edge": {
+  "criterion": "owner_time",
+  "direction": "lower_is_better",
+  "entrant_basis": "Speech-to-text drafts the captions and transcript, and the clerk only reviews them, which the notes estimate at 1-2 hours. This is an estimate and has not been tested.",
+  "entrant_value": 2,
+  "falsifier": "If buyers already get automated drafts from BoardBreeze or ClerkMinutes with a similar review time, or procurement rules block a one-time purchase from an unregistered vendor, there is no edge.",
+  "incumbent_source_url": "https://appboardbreeze.com/blog/city-council-meeting-minutes-software",
+  "incumbent_value": 8,
+  "unit": "staff hours per meeting"
+ },
+ "substitutesNoted": [
+  {
+   "name": "BoardBreeze",
+   "price_point": "$29.99-499/month; Pro $99/month",
+   "url": "https://appboardbreeze.com/blog/city-council-meeting-minutes-software"
+  },
+  {
+   "name": "ClerkMinutes",
+   "price_point": "$99-249/month",
+   "url": "https://appboardbreeze.com/blog/city-council-meeting-minutes-software"
+  },
+  {
+   "name": "City Transcripts",
+   "price_point": "free two-week trial; paid price not found",
+   "url": "https://citytranscripts.com/"
+  },
+  {
+   "name": "Manual minutes by staff",
+   "price_point": "$25-50/hour, 8-24 hours per meeting",
+   "url": "https://appboardbreeze.com/blog/city-council-meeting-minutes-software"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 67,
+  "notes": "The price is the midpoint of an estimated $300-600 one-time fee per entity. The margin is the midpoint of the 60-75% estimate. Compare BoardBreeze Pro at about $1,188/year. Accuracy QA time is unverified.",
+  "price_usd": 450,
+  "variable_cost_usd": null
+ },
+ "majorUncertainty": "Whether small government buyers can be reached cold and will pay for a one-time backlog while the deadline is extended, with no references.",
+ "unknowns": [
+  "City Transcripts paid price",
+  "Actual procurement and vendor-registration thresholds for small entities",
+  "Caption accuracy achievable without human editing",
+  "No named complaint threads were found",
+  "Whether a one-time fee is wanted over a subscription"
+ ],
+ "regulatoryOrPlatformDependency": "Depends on the DOJ Title II timeline. The caption accuracy standard applies, and local procurement or vendor registration may apply. Source video usually sits on YouTube.",
+ "evidence": [
+  {
+   "id": "MED-01-E1",
+   "url": "https://appboardbreeze.com/blog/city-council-meeting-minutes-software",
+   "publisher": "City Council Meeting Minutes Software - Compare Top Vendors (2026)",
+   "kind": "incumbent_price",
+   "shows": "BoardBreeze Pro costs $99/month for up to 8 hours and 5 users",
+   "quote": "The Pro plan ($99/mo) handles up to 8 hours and 5 users — ideal for most city councils. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-01-E2",
+   "url": "https://appboardbreeze.com/blog/city-council-meeting-minutes-software",
+   "publisher": "City Council Meeting Minutes Software - Compare Top Vendors (2026)",
+   "kind": "incumbent_price",
+   "shows": "ClerkMinutes costs $99-249/month with a 4-hour maximum recording",
+   "quote": "### ClerkMinutes\n**Price:** $99-249/month **Max recording:** 4 hours\n\nClerkMinutes targets municipal clerks specifically with a focus on city governme...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-01-E3",
+   "url": "https://appboardbreeze.com/blog/city-council-meeting-minutes-software",
+   "publisher": "City Council Meeting Minutes Software - Compare Top Vendors (2026)",
+   "kind": "demand",
+   "shows": "Manual minutes cost staff time at $25-50/hour and take 8-24 hours per meeting, and remain the most common approach",
+   "quote": "### Manual Minutes Writing\n**Price:** Staff time ($25-50/hour) **Processing time:** 8-24 hours per meeting\n\nStill the most common approach. \n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-01-E4",
+   "url": "https://blog.usablenet.com/title-ii-compliance-deadline-2026",
+   "publisher": "Title II Compliance Timeline: Key Dates and Deadlines",
+   "kind": "constraint",
+   "shows": "DOJ extended both compliance dates by one year through an Interim Final Rule effective April 2026, which lowers urgency",
+   "quote": "## Latest Updates and Legal Risks\n- **April 2026 deadline extension:** DOJ extended both compliance dates by one year via an Interim Final Rule effect...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-01-E5",
+   "url": "https://www.ai-media.tv/knowledge-hub/insights/ada-title-ii-goes-digital-what-public-entities-need-to-know/",
+   "publisher": "ADA Title II Digital Compliance Guide for Public Entities",
+   "kind": "constraint",
+   "shows": "Live council meetings and hearings need real-time captions. This is a harder product, so the entrant would stay with prerecorded video.",
+   "quote": "council meetings, public hearings, livestreams) must include real-time captions (Level AA).\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-01-E6",
+   "url": "https://www.transcribr.io/blog/ada-title-ii-video-compliance-2026",
+   "publisher": "ADA Title II Deadline April 2026: Is Your Video Content Compliant?",
+   "kind": "demand",
+   "shows": "A vendor blog says many compliance teams had not heard of the rule. This is marketing, so it is weak evidence of awareness.",
+   "quote": "And yet, we started asking around in late 2025, and the number of compliance teams who hadn't even heard of the new rule was staggering.\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-01-E7",
+   "url": "https://citytranscripts.com/",
+   "publisher": "City council meetings, searchable and summarized",
+   "kind": "other",
+   "shows": "City Transcripts offers a free two-week trial of transcription, so the low end has free trials",
+   "quote": "We'll transcribe your last two weeks of meetings for free so you can see the results before committing.",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

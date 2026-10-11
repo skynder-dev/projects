@@ -1,0 +1,223 @@
+{
+ "id": "DEV-04",
+ "verdict": "killed",
+ "verdictReason": "Both pitched niches are first-party or free elsewhere: Stripe documents metered billing, prepaid credit grants (real-time drawdown via its own Metronome) and agent pay-per-call 'Machine payments' (MPP/x402) with starter code, and Zuplo lists API monetization (keys, real-time metering, quotas, Stripe invoicing) on a free plan and $25/mo Builder, below the entrant's $29; open-source Flexprice/Lago also cover credits. No structural edge, no verified paying seller; pessimistic year-1 profit is about -$133.",
+ "answers": [
+  {
+   "question": "(1) What free/cheap alternative covers the wedge?",
+   "answer": "Several. Stripe itself: Billing Meters (usage recording, alerts) with up to 100M events/month included in Billing pricing (0.7% of Billing volume, no recurring fee), billing credit grants for prepayment, Metronome (now part of Stripe) for real-time prepaid drawdown, and 'Machine payments' that let agents pay per call via MPP and x402 with starter code. Zuplo: free plan (100K requests/month, developer portal) and Builder $25/month with API monetization (subscriptions, plan-scoped keys, real-time metering, quotas, Stripe invoices; monetization docs out of beta June 2026). Open source: Lago (AGPLv3 billing), Flexprice ('Credits & top-ups', works on top of Stripe, AGPLv3 core), Unkey (API keys, rate limiting). The case file's ReqKey ($25 flat, vendor claim) could not be re-read. One real gap: Stripe's basic meters reconcile credits only at invoice time (customers can exceed balance) and real-time prepaid drawdown sits in Metronome, which is contact-sales; but Zuplo (real-time metering, hard quotas) and Flexprice (credits/top-ups) fill it.",
+   "evidenceIds": ["DEV-04-D1", "DEV-04-D2", "DEV-04-D3", "DEV-04-D5", "DEV-04-D7", "DEV-04-D8", "DEV-04-D9", "DEV-04-D10", "DEV-04-D11", "DEV-04-D12", "DEV-04-D13", "DEV-04-D14"]
+  },
+  {
+   "question": "(2) What structural edge exists and who could copy it?",
+   "answer": "None. A metering layer with Stripe-connected keys has no exclusive data, licence or compounding network; the pitched niches (Stripe-native credit top-ups, agent per-call payments) are features Stripe documents and supports directly, and Zuplo already ships the keys+metering+Stripe flow. Open-source projects (Lago, Flexprice, Unkey) can be self-hosted free, so a $29/mo wrapper is copyable in days by them or by Zuplo/ReqKey. Price is not an edge: the entrant at $29 is above Zuplo Builder $25 and ReqKey ~$25. Falsifier: a documented cohort of indie API sellers who left Rapid and pay for a metering tool that Zuplo/Stripe/Flexprice did not satisfy.",
+   "evidenceIds": ["DEV-04-D1", "DEV-04-D5", "DEV-04-D9", "DEV-04-D10", "DEV-04-D11", "DEV-04-D12", "DEV-04-D13"]
+  },
+  {
+   "question": "(3) Who demonstrably pays and how much?",
+   "answer": "Not shown. This screen found no named indie seller paying for a metering layer, no seller complaints about the marketplace fee, and no traction data for ReqKey; the pages carrying the case file's Rapid 25% fee, ReqKey pricing and Apify earnings claims (geekflare, buildmvpfast, reqkey.com, proxies.sx) could not be fetched, so those figures are untested. What is verified is supply-side: Stripe sells billing at 0.7% of billing volume with no recurring fee, Zuplo Builder is $25/month, and vendors are building agent per-call billing (Zuplo post, July 2026), which shows suppliers but not paying sellers.",
+   "evidenceIds": ["DEV-04-D7", "DEV-04-D9", "DEV-04-D11"]
+  },
+  {
+   "question": "(4) Legal/platform constraints?",
+   "answer": "Stripe's credit-grant rules prohibit using billing credits as stored value or for payments to third parties, so a 'credit top-up' product must stay inside the seller's own Stripe account and the entrant must not hold buyer funds (money-transmission risk, assumption). Stripe machine payments: card payments via Shared Payment Tokens have a $0.50 minimum, stablecoin payments a 0.01 USDC minimum, and stablecoin acceptance is available to US businesses except New York (others request access). Lago/Flexprice/Unkey are AGPL, which constrains building a hosted service on their code. Dependence on Stripe and on whichever marketplace's terms govern off-platform billing (Rapid terms could not be read). The layer sits in the request path, so uptime and data-protection duties apply (assumption).",
+   "evidenceIds": ["DEV-04-D4", "DEV-04-D6", "DEV-04-D12", "DEV-04-D13", "DEV-04-D14"]
+  },
+  {
+   "question": "(5) Year-1 numbers?",
+   "answer": "Base case (assumptions): first revenue at day 90, linear ramp to 25 paying customers by day 365 = 112.5 customer-months at $29 = $3,263 revenue; cost $958 (hosting $480, tools/domain $200, Stripe fees on own charges $128, misc $150); profit about $2.3k before 624 owner hours. Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue $1,305, cost $1,438, profit about -$133: does not survive. Even the base case assumes 25 customers with no demonstrated payer and two substitutes at or below $25.",
+   "evidenceIds": ["DEV-04-D7", "DEV-04-D9"]
+  }
+ ],
+ "newEvidence": [
+  {
+   "id": "DEV-04-D1",
+   "url": "https://docs.stripe.com/billing/subscriptions/usage-based/compare-metronome",
+   "quote": "Credits are only reconciled at invoice time. Customers can exceed their balance during the cycle.",
+   "kind": "constraint",
+   "publisher": "Stripe documentation",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Gap in Stripe's basic Billing Meters: no real-time prepaid drawdown; the same page lists prepaid credits/drawdown and real-time credit burndown as supported by Metronome."
+  },
+  {
+   "id": "DEV-04-D2",
+   "url": "https://docs.stripe.com/billing/subscriptions/usage-based/compare-metronome",
+   "quote": "Metronome is Stripe’s primary usage-based billing platform for all new integrations.",
+   "kind": "other",
+   "publisher": "Stripe documentation",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Stripe owns the real-time prepaid-credit metering niche itself (high-volume ingestion, prepaid drawdown); Metronome price is not public (contact sales)."
+  },
+  {
+   "id": "DEV-04-D3",
+   "url": "https://docs.stripe.com/billing/subscriptions/usage-based/billing-credits",
+   "quote": "Grant billing credits to your customers that they can use to pay for usage-based products or services",
+   "kind": "other",
+   "publisher": "Stripe documentation",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Stripe-native prepaid credits ('Prepayment' use case) apply to metered prices reported through Meters, so 'Stripe-native credit top-ups' is already a Stripe feature."
+  },
+  {
+   "id": "DEV-04-D4",
+   "url": "https://docs.stripe.com/billing/subscriptions/usage-based/billing-credits",
+   "quote": "You can’t offer billing credits as stored value to your customers.",
+   "kind": "constraint",
+   "publisher": "Stripe documentation",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Prohibited uses also include credits for payments to third parties and linking credits to digital wallets, constraining any credit/top-up design."
+  },
+  {
+   "id": "DEV-04-D5",
+   "url": "https://docs.stripe.com/payments/machine",
+   "quote": "Machine payments let agents pay for APIs and services programmatically.",
+   "kind": "other",
+   "publisher": "Stripe documentation (Machine payments)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Page subtitle: 'Allow agents to pay-per-call using MPP and x402'; payments settle to the seller's Stripe balance; Stripe links starter code (stripe-samples/machine-payments), so the agent-micropayment niche is a first-party Stripe feature."
+  },
+  {
+   "id": "DEV-04-D6",
+   "url": "https://docs.stripe.com/payments/machine",
+   "quote": "Stablecoin payments are available to businesses in all US states, except New York.",
+   "kind": "constraint",
+   "publisher": "Stripe documentation (Machine payments)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Availability limits: outside the US, access is by email request (30+ countries); card payments via Shared Payment Tokens have a $0.50 minimum, stablecoin 0.01 USDC."
+  },
+  {
+   "id": "DEV-04-D7",
+   "url": "https://stripe.com/billing/pricing",
+   "quote": "Only pay for what you use, with no recurring fees.",
+   "kind": "incumbent_price",
+   "publisher": "Stripe (Billing pricing)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Pay-as-you-go Billing is 0.7% of Billing volume; footnote says basic usage-based features via the Meters API are included 'with up to 100M events per month included'; no per-event price listed."
+  },
+  {
+   "id": "DEV-04-D8",
+   "url": "https://www.everydev.ai/tools/zuplo",
+   "quote": "Free forever for individuals. Includes 100K requests/month, developer portal, MCP gateway, and AI gateway.",
+   "kind": "incumbent_price",
+   "publisher": "EveryDev.ai listing for Zuplo (second-hand, listed Jul 2026)",
+   "date": "2026-07",
+   "evidenceClass": "agent_reported",
+   "shows": "Zuplo Free tier; the listing also names 'API monetization' as a core capability (subscriptions, plan-scoped API keys, real-time metering, quotas, self-serve pricing page) and Stripe in integrations."
+  },
+  {
+   "id": "DEV-04-D9",
+   "url": "https://www.everydev.ai/tools/zuplo",
+   "quote": "Builder: $25/mo.",
+   "kind": "incumbent_price",
+   "publisher": "EveryDev.ai listing for Zuplo (second-hand, listed Jul 2026)",
+   "date": "2026-07",
+   "evidenceClass": "agent_reported",
+   "shows": "Builder plan $25/month flat plus $100 per additional 100K requests; undercuts the entrant's $29 flat fee. zuplo.com/pricing itself could not be fetched."
+  },
+  {
+   "id": "DEV-04-D10",
+   "url": "https://zuplo.com/changelog/2026/06/01/monthly-changelog",
+   "quote": "beta labels removed across all monetization docs, signaling general availability",
+   "kind": "other",
+   "publisher": "Zuplo changelog (May 2026 edition)",
+   "date": "2026-06-01",
+   "evidenceClass": "agent_reported",
+   "shows": "Zuplo's monetization feature is out of beta (plan duplication, meter slugs, invoice retry actions); the page has no pricing or Stripe items."
+  },
+  {
+   "id": "DEV-04-D11",
+   "url": "https://zuplo.com/blog/charge-agents-for-mcp-tool-calls",
+   "quote": "Zuplo issues a Stripe invoice per subscriber:",
+   "kind": "other",
+   "publisher": "Zuplo blog",
+   "date": "2026-07-14",
+   "evidenceClass": "agent_reported",
+   "shows": "Per-tool-call metering for AI agents with an API key tied to a subscription; same post: 'You do not push usage records or reconcile two systems.' No Zuplo plan prices on the post."
+  },
+  {
+   "id": "DEV-04-D12",
+   "url": "https://github.com/getlago/lago",
+   "quote": "Lago is the open-source billing platform for usage-based, subscription-based, and hybrid pricing models.",
+   "kind": "other",
+   "publisher": "GitHub (getlago/lago README)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Open-source usage-based billing, AGPLv3, with a hosted Lago Cloud (prices not read)."
+  },
+  {
+   "id": "DEV-04-D13",
+   "url": "https://github.com/flexprice/flexprice",
+   "quote": "Flexprice lets AI-native and SaaS teams operate usage-based, credit-based, and hybrid pricing",
+   "kind": "other",
+   "publisher": "GitHub (flexprice/flexprice README)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Open-core (99% AGPLv3) metering with 'Credits & top-ups' that builds on Stripe or Chargebee, cloud or self-hosted; directly overlaps the 'credit top-ups' niche."
+  },
+  {
+   "id": "DEV-04-D14",
+   "url": "https://github.com/unkeyed/unkey",
+   "quote": "issue, verify, and revoke keys with fast global verification.",
+   "kind": "other",
+   "publisher": "GitHub (unkeyed/unkey README)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Open-source API key management, rate limiting and per-key analytics (AGPL); hosted pricing not read."
+  }
+ ],
+ "newAlternatives": [
+  {"label": "Stripe Billing Meters + credit grants (basic usage-based billing), 0.7% of Billing volume (about $14/mo at $2,000/mo of seller revenue, assumed)", "kind": "cheap_paid", "costUsdPerMonth": 14, "coversWedge": "partial", "sourceLocator": "https://stripe.com/billing/pricing", "evidenceRef": "DEV-04-D7"},
+  {"label": "Stripe Metronome (real-time prepaid credit drawdown); price not public, contact sales", "kind": "paid_incumbent", "costUsdPerMonth": 0, "coversWedge": "partial", "sourceLocator": "https://docs.stripe.com/billing/subscriptions/usage-based/compare-metronome", "evidenceRef": "DEV-04-D2"},
+  {"label": "Stripe Machine payments (MPP/x402 pay-per-call for agents)", "kind": "free_tool", "costUsdPerMonth": 0, "coversWedge": "full", "sourceLocator": "https://docs.stripe.com/payments/machine", "evidenceRef": "DEV-04-D5"},
+  {"label": "Zuplo Free (API monetization, keys, metering; 100K requests/month)", "kind": "free_tool", "costUsdPerMonth": 0, "coversWedge": "full", "sourceLocator": "https://www.everydev.ai/tools/zuplo", "evidenceRef": "DEV-04-D8"},
+  {"label": "Zuplo Builder (flat $25/month + $100 per extra 100K requests)", "kind": "cheap_paid", "costUsdPerMonth": 25, "coversWedge": "full", "sourceLocator": "https://www.everydev.ai/tools/zuplo", "evidenceRef": "DEV-04-D9"},
+  {"label": "Lago open-source billing (self-host)", "kind": "open_source", "costUsdPerMonth": 0, "coversWedge": "partial", "sourceLocator": "https://github.com/getlago/lago", "evidenceRef": "DEV-04-D12"},
+  {"label": "Flexprice open-core credits and top-ups on Stripe (self-host)", "kind": "open_source", "costUsdPerMonth": 0, "coversWedge": "partial", "sourceLocator": "https://github.com/flexprice/flexprice", "evidenceRef": "DEV-04-D13"},
+  {"label": "Unkey open-source API keys and rate limiting (self-host)", "kind": "open_source", "costUsdPerMonth": 0, "coversWedge": "partial", "sourceLocator": "https://github.com/unkeyed/unkey", "evidenceRef": "DEV-04-D14"},
+  {"label": "ReqKey flat-fee API monetization (vendor claim of ~$25/mo; not re-read in this screen)", "kind": "cheap_paid", "costUsdPerMonth": 25, "coversWedge": "full", "sourceLocator": "https://www.reqkey.com/alternatives/rapidapi", "evidenceRef": "DEV-04-E4"}
+ ],
+ "killReasons": [
+  {"reason": "A cheaper or equal-priced incumbent already covers the wedge in full: Zuplo ships API monetization (plan-scoped keys, real-time metering, quotas, Stripe invoicing, out of beta) on a free plan and Builder at $25/mo, below the entrant's $29 flat fee; ReqKey (vendor claim) is also ~$25. Price is not an edge and the scan-1 comparison against Rapid's 25% ignored these.", "severity": "major", "refClass": "agent_reported", "ref": "DEV-04-D9"},
+  {"reason": "Both niches that were supposed to justify an entrant are first-party features of the payment platform: Stripe provides billing credit grants for prepayment, Metronome for real-time prepaid drawdown, and Machine payments (MPP/x402) for agents paying per call with starter code; open-source Flexprice adds credits/top-ups on top of Stripe. The platform can absorb it and rivals can copy a wrapper in days.", "severity": "major", "refClass": "agent_reported", "ref": "DEV-04-D5"},
+  {"reason": "No paying demand verified: no named seller, no complaint, no ReqKey traction; the case-file claims (25% Rapid fee, Apify earnings, ReqKey price) could not be re-read and the sellers are reachable only through the marketplace that serves them.", "severity": "minor", "refClass": "agent_reported", "ref": "DEV-04-E6"},
+  {"reason": "Pessimistic year-1 profit is negative (about -$133) even from a base case assuming 25 customers at $29/mo by day 365.", "severity": "minor", "refClass": "agent_reported", "ref": "DEV-04-D7"}
+ ],
+ "economics": {
+  "revenue365": 3263,
+  "cost365": 958,
+  "pessimisticProfit365": -133,
+  "survivesPessimistic": false,
+  "assumptions": [
+   "Reference entrant per case file: $400 start cash, first revenue at day 90, 12 h/week owner time (624 h unpaid, not costed).",
+   "Price $29/month flat per seller (case-file proposal; assumption). Competing anchors read: Zuplo Free $0, Zuplo Builder $25/mo, Stripe Billing 0.7% of billing volume.",
+   "Customer ramp: linear from 0 at day 90 to 25 paying sellers at day 365 (assumption, no source) = 25/2 x 9 months = 112.5 customer-months; zero churn.",
+   "Revenue = 112.5 x $29 = $3,262.50 (rounded to 3,263).",
+   "Costs (all assumptions): metering proxy/hosting $40/month x 12 = $480; tools/domain $200; Stripe card fees on the entrant's own charges 2.9% + $0.30 (standard card rate assumed, not read in this screen) = $128; misc terms/legal templates $150; total $958.",
+   "Pessimistic = revenue x0.8 price x0.5 volume = $1,305 minus cost x1.5 = $1,438, i.e. about -$133; cost multiplier applied to the full base cost (conservative).",
+   "Does not include the seller's own payment-processor fees (paid by sellers) or any support burden for an in-request-path service."
+  ],
+  "sources": ["DEV-04-D7", "DEV-04-D8", "DEV-04-D9"]
+ },
+ "legalNotes": [
+  "Stripe billing-credit rules prohibit stored value, payments to third parties and wallet linking; a credit/top-up product must run inside the seller's own Stripe account and the entrant must not take custody of buyer funds (money-transmission risk; assumption beyond the Stripe text).",
+  "Stripe machine payments: stablecoin acceptance is available to US businesses except New York, others by email request; card SPT payments have a $0.50 minimum, stablecoin 0.01 USDC.",
+  "Lago, Flexprice (core) and Unkey are AGPL: building a hosted service on their code carries copyleft obligations (needs legal check, assumption).",
+  "Marketplace (Rapid) terms on off-platform billing and customer solicitation were not read; a seller leaving a marketplace may face its terms (unverified).",
+  "A metering layer in the request path carries uptime, data-protection and VAT/sales-tax duties for subscription sales (assumption). Nothing was purchased, no one was contacted, and only public pages were read."
+ ],
+ "unverified": [
+  "No web search for this idea succeeded: the shared WebSearch budget was exhausted before the DEV-04 queries, so the >= 3 alternative searches required by the brief were NOT run; alternatives were found only by direct fetches of Stripe docs, Zuplo pages and GitHub READMEs, so other incumbents (Moesif, Tyk, Autumn, OpenMeter, Apify's own billing, RapidAPI-side tooling) were not surveyed.",
+  "Case-file pages for the Rapid 25% fee, the Nov 2025 fee change, PayPal payouts, ReqKey pricing/traction, Postman API Network, Apify earnings (geekflare, buildmvpfast, reqkey.com, proxies.sx) were refused by the fetch tool and could not be re-checked; ReqKey is listed only as a vendor claim.",
+  "Zuplo Builder $25 and Free-tier limits come from a second-hand listing (everydev.ai, Jul 2026); zuplo.com/pricing could not be fetched, and whether monetization/Stripe billing is included on the Free plan is not confirmed.",
+  "Metronome pricing (contact sales), Lago Cloud pricing and Unkey/Flexprice hosted pricing were not found.",
+  "Whether any indie API seller pays for a metering layer, and how many have left a marketplace; Stripe's per-event overage beyond the included 100M.",
+  "Fetched text came through a summarising tool; quoted fragments are copied from its output and were not checked against raw HTML."
+ ],
+ "nextStep": "Drop it; revisit only if a named cohort of indie API sellers is shown paying for a metering layer after trying Zuplo, Stripe Meters or ReqKey."
+}

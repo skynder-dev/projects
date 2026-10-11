@@ -1,0 +1,118 @@
+{
+ "id": "DEV-03",
+ "name": "Fixed-price hosted MCP server for small API/SaaS vendors",
+ "family": "b2b_api_devtools",
+ "buyer": "Small SaaS or API company with an existing REST API and no AI-integration engineer that wants its product to work inside Claude/ChatGPT",
+ "pain": "A custom MCP server costs thousands of dollars and requires OAuth work.",
+ "wedge": "Productized package that turns an OpenAPI spec into a hosted MCP server with generic OAuth handling, e.g. $499 one-time plus $49/mo, delivered in about 48 hours.",
+ "referenceEntrant": {
+  "startupCashUsd": 1000,
+  "daysToFirstRevenue": 45,
+  "ownerHoursPerWeek": 10
+ },
+ "scan1Edge": {
+  "criterion": "cash_cost",
+  "direction": "lower_is_better",
+  "entrant_basis": "Automate OpenAPI-to-MCP generation and a reusable OAuth 2.1/PKCE layer with AI coding tools, so each customer needs little bespoke work.",
+  "entrant_value": 499,
+  "falsifier": "If OAuth cannot be solved generically and each build still takes days of manual work, the price cannot hold. The edge also fails if vendors ship their own hosted MCP or buyers ignore cold outreach.",
+  "incumbent_source_url": "https://satekk.com/blog/mcp-server-development-cost",
+  "incumbent_value": 3000,
+  "unit": "USD one-time build cost for a simple hosted MCP server"
+ },
+ "substitutesNoted": [
+  {
+   "name": "Agencies and freelancers",
+   "price_point": "$3,000-$8,000 simple; $8,000-$25,000 production",
+   "url": "https://satekk.com/blog/mcp-server-development-cost"
+  },
+  {
+   "name": "Managed MCP providers (Truto etc.)",
+   "price_point": "managed product price not found",
+   "url": "https://truto.one/blog/build-vs-buy-the-hidden-costs-of-custom-mcp-servers/"
+  },
+  {
+   "name": "Self-hosted on VPS",
+   "price_point": "under 10 EUR/month",
+   "url": "https://dev.to/hostingsift/mcp-server-hosting-where-to-actually-deploy-in-2026-279e"
+  },
+  {
+   "name": "Firecrawl hosted MCP (scraping niche)",
+   "price_point": "free plan 1,000 credits/month",
+   "url": "https://geekflare.com/guides/web-scraping-mcp-servers/"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 75,
+  "notes": "ESTIMATE from research notes: margin ~70-80%. $499 one-time plus $49/mo is a proposed package price, unvalidated. Early owner hours 15-20/week, falling to ~10.",
+  "price_usd": 499,
+  "variable_cost_usd": 125
+ },
+ "majorUncertainty": "Whether small vendors will buy from an unknown anonymous seller via cold outreach, and whether the OpenAPI-to-MCP pipeline plus OAuth can be truly automated.",
+ "unknowns": [
+  "Timeline of the quoted 1-2 week agency builds (excerpt truncated)",
+  "Whether small vendors pay a fixed-price productized offer",
+  "Evidence that vendors like Attio ship their own hosted MCP (in notes, no excerpt id)",
+  "Pricing of managed MCP products",
+  "Reliability of agency price pages as indicators of actual purchases",
+  "Credential-handling security liability"
+ ],
+ "regulatoryOrPlatformDependency": "Depends on the MCP spec and on AI clients (Claude/ChatGPT) accepting remote servers. OAuth 2.1 security obligations apply. Vendors may ship their own hosted MCP and platforms may absorb the feature.",
+ "evidence": [
+  {
+   "id": "DEV-03-E1",
+   "url": "https://satekk.com/blog/mcp-server-development-cost",
+   "publisher": "MCP Server Development Cost in 2026: What You Will Actually Pay",
+   "kind": "incumbent_price",
+   "shows": "In 2026 a simple single-tool MCP server costs $3,000-$8,000 and a production integration with authentication runs $8,000-$25,000",
+   "quote": "**In 2026, a simple single-tool MCP server costs $3,000-$8,000, a production integration with authentication and permissions runs $8,000-$25,000, and ...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-03-E2",
+   "url": "https://a8gent.com/blog/sell-mcp-servers-monetize-guide",
+   "publisher": "Sell MCP Servers: 4 Models, Real Pricing (2026)",
+   "kind": "demand",
+   "shows": "Custom client MCP builds run $8,000 to $50,000, and under 5% of 20,000+ published servers earn anything, so the money is in services",
+   "quote": "Four ways to sell MCP servers, with real numbers: custom client builds run $8,000 to $50,000, and under 5% of 20,000+ published servers earn anything....",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-03-E3",
+   "url": "https://truto.one/blog/build-vs-buy-the-hidden-costs-of-custom-mcp-servers/",
+   "publisher": "Build vs. Buy: The Hidden Costs of Custom MCP Servers",
+   "kind": "incumbent_price",
+   "shows": "Truto claims custom MCP servers cost $50K-$150K per integration per year. This is a vendor's self-serving claim.",
+   "quote": "# Build vs. Buy: The Hidden Costs of Custom MCP Servers\nCustom MCP servers cost $50K–$150K per integration per year. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-03-E4",
+   "url": "https://dev.to/hostingsift/mcp-server-hosting-where-to-actually-deploy-in-2026-279e",
+   "publisher": "MCP Server Hosting: Where to Actually Deploy in 2026 - DEV Community",
+   "kind": "incumbent_price",
+   "shows": "Self-hosting an MCP server costs under 10 EUR per month on a small VPS",
+   "quote": "Total cost: under 10 EUR per month.\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-03-E5",
+   "url": "https://a8gent.com/blog/sell-mcp-servers-monetize-guide",
+   "publisher": "Sell MCP Servers: 4 Models, Real Pricing (2026)",
+   "kind": "constraint",
+   "shows": "Remote MCP servers are expected to implement OAuth 2.1 with PKCE, and major clients increasingly reject static API keys",
+   "quote": "revision, remote MCP servers accessible over the internet are expected to implement OAuth 2.1 with PKCE, and major clients increasingly reject static ...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-03-E6",
+   "url": "https://en.wikipedia.org/wiki/Model_Context_Protocol",
+   "publisher": "Model Context Protocol",
+   "kind": "constraint",
+   "shows": "MCP's maintainers finalized a major spec revision on July 28, 2026, which implies ongoing maintenance burden",
+   "quote": "[[20]](./Model_Context_Protocol#cite_note-register-2026-stateless-20)\nOn July 28, 2026, MCP's maintainers finalized a major revision of the specificat...",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

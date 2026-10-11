@@ -1,0 +1,123 @@
+{
+ "id": "DEV-01",
+ "name": "Flat-price outbound webhooks with DPA included for small API vendors",
+ "family": "b2b_api_devtools",
+ "buyer": "Seed-stage SaaS or API company with 1-2 engineers that must send signed, retried webhooks to its own customers, with a customer portal and GDPR paperwork",
+ "pain": "Cost steps up sharply after the free tier, and the DPA (GDPR processor paperwork) sits behind Svix's $490/mo Professional plan.",
+ "wedge": "Flat ~$29/mo plan that includes a signed DPA and 100k messages, aimed at EU-leaning small API vendors who only need outbound webhooks.",
+ "referenceEntrant": {
+  "startupCashUsd": 500,
+  "daysToFirstRevenue": 70,
+  "ownerHoursPerWeek": 13
+ },
+ "scan1Edge": {
+  "criterion": "cash_cost",
+  "direction": "lower_is_better",
+  "entrant_basis": "Sell a flat $29/mo plan with a templated DPA bundled, using cheap managed hosting and a queue. No sales or enterprise tier is needed.",
+  "entrant_value": 29,
+  "falsifier": "Hook0, Hook Mesh and EventDock already sell near-identical flat plans at $29-59. If a buyer can get a DPA from them at similar prices, or Svix adds DPA to Basic, the edge disappears.",
+  "incumbent_source_url": "https://webhooker.eu/blog/svix-alternatives",
+  "incumbent_value": 490,
+  "unit": "USD per month for a plan that includes a DPA (~100k messages)"
+ },
+ "substitutesNoted": [
+  {
+   "name": "Svix Basic / Professional",
+   "price_point": "$20/mo Basic; $490/mo Professional (DPA documented from Professional)",
+   "url": "https://www.svix.com/pricing/"
+  },
+  {
+   "name": "Hook Mesh",
+   "price_point": "$39/mo Starter (notes also list $99 and $249 tiers)",
+   "url": "https://gethookmesh.io/blog/hookmesh-vs-svix/"
+  },
+  {
+   "name": "Hook0",
+   "price_point": "from EUR 59 (per research notes)",
+   "url": "https://www.hook0.com/webhook-cost-comparison"
+  },
+  {
+   "name": "EventDock",
+   "price_point": "$29/mo for 20k events (per research notes)",
+   "url": "https://dev.to/eventdock/hookdeck-vs-eventdock-pricing-features-real-tests-2026-5cf8"
+  },
+  {
+   "name": "Hookdeck",
+   "price_point": "Team $39/mo + $0.33/100k events (sources conflict; mainly inbound)",
+   "url": "https://www.stackscored.com/pricing/api-platforms/hookdeck/"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 80,
+  "notes": "ESTIMATE from research notes: margin ~75-85% at low volume. Price is the proposed wedge price, not validated.",
+  "price_usd": 29,
+  "variable_cost_usd": 5.8
+ },
+ "majorUncertainty": "Whether anonymous solo-run delivery infrastructure can earn trust (SLA, SOC 2) when at least four cheaper entrants already exist.",
+ "unknowns": [
+  "Whether Svix, Hookdeck and the cheaper entrants verified prices on vendor pages match the third-party comparison pages",
+  "Real willingness to pay for DPA-included small plans",
+  "Whether a solo founder can credibly promise an uptime SLA",
+  "SSRF and abuse mitigation cost",
+  "Actual SOC 2 requirement among target buyers",
+  "Svix free-tier limits are disputed (50 vs 200 msg/s)"
+ ],
+ "regulatoryOrPlatformDependency": "Depends on cloud hosting. GDPR/DPA expectations apply. Buyers may ask for SOC 2 and an uptime SLA. Delivery to customer-supplied endpoints carries abuse and SSRF risk.",
+ "evidence": [
+  {
+   "id": "DEV-01-E1",
+   "url": "https://www.svix.com/pricing/",
+   "publisher": "Pricing · Svix",
+   "kind": "incumbent_price",
+   "shows": "Svix free tier is 50 msg/s and 50k messages/month; Basic is from $20/month with a 99.9% SLA and pay-as-you-go usage",
+   "quote": "Svix pricing — free tier with 50 messages/sec and 50k messages/month. Basic from $20/month with a 99.9% uptime SLA and pay-as-you-go usage. Profession...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-01-E2",
+   "url": "https://webhooker.eu/blog/svix-alternatives",
+   "publisher": "Svix Alternatives: Send and Receive Webhooks — Webhooker",
+   "kind": "incumbent_price",
+   "shows": "On Svix a DPA starts at $490/month, so a team sending ~100,000 webhooks/month that needs a DPA pays for Professional (third-party blog claim)",
+   "quote": "A DPA is how you document a processor under GDPR, and on Svix it starts at $490 a month. A team that sends 100,000 webhooks a month and needs a DPA pa...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-01-E3",
+   "url": "https://webhooker.eu/blog/svix-alternatives",
+   "publisher": "Svix Alternatives: Send and Receive Webhooks — Webhooker",
+   "kind": "demand",
+   "shows": "A third-party blog says most teams look for Svix alternatives because of the free-tier-to-$490 Professional step. This is a complaint, not a payment signal.",
+   "quote": "# Svix Alternatives for Sending and Receiving Webhooks\nMost teams start looking because of the step from Svix’s free tier to Professional at $490 a mo...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-01-E4",
+   "url": "https://toolradar.com/tools/svix",
+   "publisher": "Svix Reviews, Pricing & Alternatives (2026)",
+   "kind": "demand",
+   "shows": "Toolradar calls the jump to the $490/month Professional tier 'significant'",
+   "quote": "Svix offers a generous Free tier for basic webhook needs, but the jump to the Professional tier at $490/month is significant.\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-01-E5",
+   "url": "https://gethookmesh.io/blog/hookmesh-vs-svix/",
+   "publisher": "Hook Mesh vs Svix: Which Webhook Service is Right for You?",
+   "kind": "incumbent_price",
+   "shows": "Hook Mesh already sells an entry paid plan at $39/mo, so cheaper alternatives to Svix exist",
+   "quote": "| Plan | Hook Mesh | Svix |\n| --- | --- | --- |\n| Free Tier | Yes (limited) | Community (self-hosted only) |\n| Entry Paid | $39/mo (Starter) | $490/mo...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-01-E6",
+   "url": "https://www.hook0.com/webhook-cost-comparison",
+   "publisher": "Webhook Cost Comparison: Hook0 vs Svix vs Hookdeck vs Convoy",
+   "kind": "constraint",
+   "shows": "Hook0 appears to bundle an EU-hosted data plane (France) on every plan. This suggests existing EU-leaning competitors; the excerpt is truncated, so what exactly 'it' covers is unclear.",
+   "quote": "… Hook0 includes it on every plan, free tier included: the data plane runs on Clever Cloud in France, and Cloudflare (a US company) serves ...\n\nWhat a...",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

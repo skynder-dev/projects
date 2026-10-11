@@ -1,0 +1,131 @@
+{
+ "id": "MED-02",
+ "name": "Vertical-specific city-agenda alert digest (e.g. short-term-rental rules)",
+ "family": "media_or_content",
+ "buyer": "Small operators hit by local rule changes, such as short-term rental hosts, small developers, solar installers and liquor-license holders",
+ "pain": "Agendas are scattered across city portals, run to hundreds of pages, and are posted days before votes.",
+ "wedge": "Sell one pre-built vertical bundle, such as STR-rule alerts for every Legistar/PrimeGov city in one state, so the buyer sets up no per-city watchlists.",
+ "referenceEntrant": {
+  "startupCashUsd": 400,
+  "daysToFirstRevenue": 45,
+  "ownerHoursPerWeek": 12
+ },
+ "scan1Edge": {
+  "criterion": "cash_cost",
+  "direction": "lower_is_better",
+  "entrant_basis": "One shared pipeline over official Legistar/PrimeGov data serves many subscribers of one vertical, so the price per topic can be $15. This price is an estimate.",
+  "entrant_value": 15,
+  "falsifier": "If City Watch's $19 Advocate tier or an incumbent topic preset already covers the vertical, or buyers will not pay $15, the edge disappears.",
+  "incumbent_source_url": "https://www.agendawire.com/",
+  "incumbent_value": 40,
+  "unit": "USD per month per topic watchlist"
+ },
+ "substitutesNoted": [
+  {
+   "name": "AgendaWire",
+   "price_point": "$40 per watchlist slot; 14-day free trial",
+   "url": "https://www.agendawire.com/"
+  },
+  {
+   "name": "City Watch",
+   "price_point": "free tier; paid tiers from $9/month",
+   "url": "https://citywatch.io/"
+  },
+  {
+   "name": "LocalLens",
+   "price_point": "$20/month for 6 meetings; $38/month for 13",
+   "url": "https://locallens.io/"
+  },
+  {
+   "name": "Locunity",
+   "price_point": "free for residents",
+   "url": "https://www.locunity.com/"
+  },
+  {
+   "name": "Apify city council agenda scraper",
+   "price_point": "$0.001 per agenda item",
+   "url": "https://apify.com/transparent_meteorite/city-council-agendas"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 85,
+  "notes": "The $15/month price and the 80-90% margin are estimates. Costs would be data pulls and summaries. Scraping upkeep for PDF-only towns is not costed.",
+  "price_usd": 15,
+  "variable_cost_usd": null
+ },
+ "majorUncertainty": "Whether operators will pay $15/month and be reached cold when the category is crowded and a free tier exists.",
+ "unknowns": [
+  "No specific user complaints were found",
+  "Full City Watch tier pricing was not confirmed in the excerpt",
+  "Willingness to pay for a vertical alert",
+  "Scraping maintenance cost for small towns",
+  "Whether incumbents will add vertical presets"
+ ],
+ "regulatoryOrPlatformDependency": "Depends on city portals and their APIs (Legistar, PrimeGov). PDF-only towns need fragile scraping. Summaries must link to source documents.",
+ "evidence": [
+  {
+   "id": "MED-02-E1",
+   "url": "https://www.agendawire.com/",
+   "publisher": "AgendaWire: local government agenda alerts before the meeting",
+   "kind": "incumbent_price",
+   "shows": "AgendaWire sells watchlists at $40 each",
+   "quote": "REC 03 Garland · City Council Oct 8, 2026, 6:00 PM · Live match Short-term rental rules 90%confidence Open the Garland City Council document\n\n## $40 a...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-02-E2",
+   "url": "https://locallens.io/",
+   "publisher": "LocalLens",
+   "kind": "incumbent_price",
+   "shows": "LocalLens costs $20/month for up to 6 meetings",
+   "quote": "Try It Out For FREE\n\n# Simple Transparent Pricing\n## $20\n#### /month\n##### What's included:\n- Search for and follow up to 6 local government meetings\\...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-02-E3",
+   "url": "https://citywatch.io/",
+   "publisher": "City Watch - City Council Meeting Transparency",
+   "kind": "incumbent_price",
+   "shows": "City Watch has a free tier with 1 city included, plus paid tiers",
+   "quote": "Know what's happening in your city\n\nFree\n\n- See all meetings & dates\n- View speaker attendance\n- Browse meeting archives\n- 1 city included\n- AI summar...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-02-E4",
+   "url": "https://www.agendawire.com/",
+   "publisher": "AgendaWire: local government agenda alerts before the meeting",
+   "kind": "demand",
+   "shows": "AgendaWire shows live matches for a short-term rental rules watchlist on an Oct 2026 meeting. This implies an active product but is not a paying-behavior signal.",
+   "quote": "REC 03 Garland · City Council Oct 8, 2026, 6:00 PM · Live match Short-term rental rules 90%confidence Open the Garland City Council document\n\n## $40 a...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-02-E5",
+   "url": "https://www.locunity.com/",
+   "publisher": "Locunity",
+   "kind": "constraint",
+   "shows": "Locunity gives residents a free city council and county tier, which caps the low end of pricing",
+   "quote": "Residential\n\nFree Forever\n\nIncludes your city council and county, so you never miss local decisions that impact your life.\n\n- ✓Get clear summaries aft...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-02-E6",
+   "url": "https://apify.com/transparent_meteorite/city-council-agendas",
+   "publisher": "City Council Agenda Scraper: Legistar Items & Votes",
+   "kind": "constraint",
+   "shows": "An Apify actor pulls city council agenda items at $0.001 per item, a cheap DIY route that compresses prices",
+   "quote": "- **Price:** $0.001 per agenda item. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MED-02-E7",
+   "url": "https://www.agendawire.com/",
+   "publisher": "AgendaWire: local government agenda alerts before the meeting",
+   "kind": "other",
+   "shows": "AgendaWire offers one watchlist on a 14-day free trial",
+   "quote": "One watchlist starts with a 14-day free trial.\n\n",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

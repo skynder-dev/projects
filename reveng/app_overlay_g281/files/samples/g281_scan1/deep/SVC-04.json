@@ -1,0 +1,232 @@
+{
+ "id": "SVC-04",
+ "verdict": "killed",
+ "verdictReason": "No structural edge: human review of a templated letter is labour any rival can copy. Free or near-free substitutes cover most of the wedge: Dollar For (free, human advocates, hospital bills, 36,000+ patients), a free AI appeal-letter tool, a $20 denial-letter kit, and free CMS action-plan, helpdesk and complaint routes. The $49 price sits between $0-$20 and a listed (unchecked) $129 with only labour as the differentiator. Pessimistic year-1 model is negative. Not re-verified: Counterforce, Claimable, mediloop, CAC.",
+ "answers": [
+  {
+   "question": "(1) What free/cheap alternative covers the wedge?",
+   "answer": "Several cover parts of it, none the whole. Dollar For is a free donor-funded nonprofit with human patient advocates that prepares and submits hospital financial-assistance (charity care) applications and appeals; it is hospital-bill focused and income-limited, and hospitals decide. River offers a free AI insurance-appeal letter drafter. ExactaDoc sells a $20 denial-letter kit (appeal letters, review requests, regulator complaints, document analyzer). CMS offers a free 5-minute billing action plan, a free No Surprises helpdesk and a complaint route. Generic letter templates also exist. What remains uncovered: a human-checked, bill-specific package for private ground-ambulance bills and insured patients above charity-care income limits. That slice is real but thin.",
+   "evidenceIds": ["SVC-04-D1", "SVC-04-D2", "SVC-04-D3", "SVC-04-D4", "SVC-04-D5", "SVC-04-D7", "SVC-04-D8", "SVC-04-D9", "SVC-04-D10"]
+  },
+  {
+   "question": "(2) What structural edge exists and who could copy it?",
+   "answer": "None found. A human reviewing an AI-drafted letter is labour; price ($49), speed, AI and niche focus are not edges under the brief. No exclusive data, licence or compounding asset is identified. Anyone can copy it: Claimable, mediloop, CareRoute (from the case file, not re-verified), a free tool adding ER/ambulance templates, or a freelancer. Falsifier: evidence of a repeatable source of ground-ambulance or ER bills the entrant could access exclusively, or a measured conversion above 3% from paid traffic at $49.",
+   "evidenceIds": ["SVC-04-D4", "SVC-04-D5", "SVC-04-E1", "SVC-04-E3"]
+  },
+  {
+   "question": "(3) Who demonstrably pays and how much?",
+   "answer": "Not demonstrated by anything I could read. I confirmed only listed prices and a free-service volume: ExactaDoc lists a $20 kit with one 5-star rating (no sales volume); Dollar For reports helping 36,000+ patients at no cost to them. The case-file prices (mediloop $129 per bill, Claimable $39.95 plus shipping, CareRoute 18-25% of savings capped at $1,000) are list prices from agent_reported evidence that I could not fetch to re-check, and a list price is not proof of paying customers. The case file also cites an investor saying direct-to-consumer does not work at scale (E6, not re-verified).",
+   "evidenceIds": ["SVC-04-D3", "SVC-04-D4", "SVC-04-E1", "SVC-04-E2", "SVC-04-E3", "SVC-04-E6"]
+  },
+  {
+   "question": "(4) Legal/platform constraints?",
+   "answer": "Federal law already protects insured patients from out-of-network ER surprise bills and gives a free complaint route, which shrinks the paid dispute surface for ER bills; private ground ambulances are expressly not covered by No Surprises Act billing protections (state law may apply), which is the one genuine gap. Handling patient bills and records raises privacy/liability questions (HIPAA applicability to a patient-initiated service, state rules on who may negotiate or advocate on bills, advice disclaimers); I could not read an authoritative source on these, so they are open. Letter-tool vendors disclaim legal advice, which sets the market norm.",
+   "evidenceIds": ["SVC-04-D6", "SVC-04-D11", "SVC-04-D8", "SVC-04-D9"]
+  },
+  {
+   "question": "(5) Year-1 numbers",
+   "answer": "Reference entrant, bottom-up, every input an assumption: 78 orders in year 1 at $49 = $3,822 revenue; cost $1,377 (fixed $820: domain/hosting/email $120, ToS and disclaimer review $300, acquisition tests $400; variable $7.14 per order: AI $1.50, card fees 2.9%+30c, refunds 8%). Base profit about $2,445 before owner time, for roughly 600 hours (12 h/week), about $4/hour. Pessimistic (price x0.8 = $39.20, volume x0.5 = 39 orders, cost x1.5): revenue $1,529, cost $2,065, profit -$537. Volume is the unsourced driver; no CAC evidence was available.",
+   "evidenceIds": []
+  }
+ ],
+ "newEvidence": [
+  {
+   "id": "SVC-04-D1",
+   "url": "https://triagecancer.org/dollar-for-charity-care",
+   "quote": "And their services are entirely free.",
+   "kind": "other",
+   "publisher": "Triage Cancer",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-04-D2",
+   "url": "https://clearhealthcosts.com/blog/2023/06/free-or-discounted-medical-care-dollarfor-and-hospital-bill-relief/",
+   "quote": "We will never charge patients for the work we do. All of our services are completely free.",
+   "kind": "other",
+   "publisher": "Clear Health Costs (interview with Dollar For founder)",
+   "date": "2023-06-15",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-04-D3",
+   "url": "https://www.causeartist.com/companies/dollar-for",
+   "quote": "previously reported helping 36,000+ patients navigate hospital financial assistance",
+   "kind": "demand",
+   "publisher": "Causeartist",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-04-D4",
+   "url": "https://exactadoc.gumroad.com/l/insurance",
+   "quote": "calm, professional letters written in insurer-approved language",
+   "kind": "incumbent_price",
+   "publisher": "ExactaDoc on Gumroad (listing prices the Insurance Denials Module at $20)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-04-D5",
+   "url": "https://rivereditor.com/tools/appeal-letter",
+   "quote": "Healthcare·Free ... Start free.",
+   "kind": "incumbent_price",
+   "publisher": "River Labs, Inc. (Insurance Appeal Letter tool)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-04-D6",
+   "url": "https://www.cms.gov/initiatives/your-patient-rights/medical-bill-rights/know-your-rights/insurance",
+   "quote": "Currently, ground ambulance services aren't covered by billing protections in the No Surprises Act.",
+   "kind": "constraint",
+   "publisher": "CMS (No Surprises Act: know your rights when using insurance)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-04-D7",
+   "url": "https://www.cms.gov/initiatives/your-patient-rights/medical-bill-rights/get-help/find-action-plan",
+   "quote": "Take 5 minutes to answer a few general questions about your medical billing issue.",
+   "kind": "other",
+   "publisher": "CMS (medical bill rights: find an action plan)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-04-D8",
+   "url": "https://www.cms.gov/medical-bill-rights/help",
+   "quote": "Call our Help Desk at 1-800-985-3059.",
+   "kind": "other",
+   "publisher": "CMS (medical bill rights: help)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-04-D9",
+   "url": "https://www.texta.ai/api/md/legacy-seo/letter-generator-example-for/insurance",
+   "quote": "do not replace legal advice",
+   "kind": "constraint",
+   "publisher": "Texta (insurance and medical billing letter templates; page lists medical billing and lien negotiations)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-04-D10",
+   "url": "https://firstaidkit.substack.com/p/advanced-tips-for-getting-financial",
+   "quote": "The staff at Dollar For offer individual help, for free.",
+   "kind": "other",
+   "publisher": "First Aid Kit (Substack)",
+   "date": "2025-08-21",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-04-D11",
+   "url": "https://www.cms.gov/nosurprises",
+   "quote": "The No Surprises Act protects you from unexpected out-of-network medical bills for emergency room visits.",
+   "kind": "constraint",
+   "publisher": "CMS (No Surprises Act: consumers)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  }
+ ],
+ "newAlternatives": [
+  {
+   "label": "Dollar For (nonprofit; free charity-care applications and appeals with patient advocates; hospital bills, income-limited)",
+   "kind": "free_tool",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://triagecancer.org/dollar-for-charity-care",
+   "evidenceRef": "SVC-04-D1"
+  },
+  {
+   "label": "River Insurance Appeal Letter tool (free AI-drafted denial appeal letters; no human review)",
+   "kind": "free_tool",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://rivereditor.com/tools/appeal-letter",
+   "evidenceRef": "SVC-04-D5"
+  },
+  {
+   "label": "ExactaDoc Insurance Denials Module (one-time $20 letter kit with document analyzer; shown as a $20 one-off, not per month)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 20,
+   "coversWedge": "partial",
+   "sourceLocator": "https://exactadoc.gumroad.com/l/insurance",
+   "evidenceRef": "SVC-04-D4"
+  },
+  {
+   "label": "CMS No Surprises Help Desk, billing action plan and complaint form (free, self-serve)",
+   "kind": "free_tool",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.cms.gov/medical-bill-rights/help",
+   "evidenceRef": "SVC-04-D8"
+  },
+  {
+   "label": "Self-service dispute using generic insurer/medical-billing letter templates",
+   "kind": "diy_or_status_quo",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.texta.ai/api/md/legacy-seo/letter-generator-example-for/insurance",
+   "evidenceRef": "SVC-04-D9"
+  }
+ ],
+ "killReasons": [
+  {
+   "reason": "Free human-assisted help already serves the largest, most sympathetic segment (hospital ER bills for income-qualified patients): Dollar For prepares and submits applications and appeals at no cost and reports 36,000+ patients, so a paid entrant faces a free nonprofit with a funded brand and track record.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "SVC-04-D2"
+  },
+  {
+   "reason": "The letter itself is commoditised at $0-$20: a free AI appeal-letter tool and a $20 denial kit with a document analyzer cover the drafting step, so $49 is justified only by brief human review, which is labour and not a structural edge anyone could not copy.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "SVC-04-D4"
+  },
+  {
+   "reason": "Federal rules already protect insured patients from out-of-network ER bills and provide a free helpdesk, action plan and complaint route, shrinking the paid dispute surface for ER bills; the real gap is private ground ambulances.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "SVC-04-D11"
+  },
+  {
+   "reason": "Acquisition economics: an investor quoted in the case file says direct-to-consumer does not work at scale; with no audience, paid acquisition against free substitutes makes $49 unlikely to cover CAC (not re-verified).",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "SVC-04-E6"
+  }
+ ],
+ "economics": {
+  "revenue365": 3822,
+  "cost365": 1377,
+  "pessimisticProfit365": -537,
+  "survivesPessimistic": false,
+  "assumptions": [
+   "ASSUMPTION: price $49 flat per dispute pack (from the case-file wedge)",
+   "ASSUMPTION: 78 paid orders in year 1 (2 in month 2, 4 in month 3, about 8 per month months 4-12); no source for this volume, it is the weakest input",
+   "ASSUMPTION: variable cost per order $7.14 = AI/API $1.50 + card fees 2.9% + 30c ($1.72) + refunds/guarantee 8% of price ($3.92)",
+   "ASSUMPTION: fixed cost $820 = domain/hosting/email $120 + terms and disclaimer review $300 + acquisition tests $400",
+   "ASSUMPTION: no E&O insurance, no health-data compliance spend and no owner wages costed; owner time about 600 hours at 12 h/week",
+   "Pessimistic: price x0.8 = $39.20, volume x0.5 = 39 orders, cost x1.5: revenue $1,529, cost $2,065, profit -$537",
+   "Card-fee rate used (2.9% + 30c) is the standard rate, not confirmed against the entrant's actual processor"
+  ],
+  "sources": ["SVC-04-D4", "SVC-04-D5"]
+ },
+ "legalNotes": [
+  "Ground ambulance services are not covered by No Surprises Act billing protections (state law may apply), so state-by-state rules would shape any ambulance offer (SVC-04-D6).",
+  "Federal ER protections and a free complaint route exist for insured patients (SVC-04-D11, SVC-04-D8); not a barrier but a free substitute.",
+  "Not verified: whether HIPAA applies to a patient-initiated paid service handling bills and records, whether any state requires a licence to advocate or negotiate on a patient's bill, and unauthorised-practice-of-law exposure for 'dispute packs'. Letter vendors disclaim legal advice (SVC-04-D9).",
+  "AI-drafted letters carry accuracy and hallucination risk (case-file unknown); refund guarantees are the market norm per the case file (not re-verified)."
+ ],
+ "unverified": [
+  "Counterforce Health free-for-individuals claim and whether it covers non-drug denials (page fetch was blocked; only the case-file claim)",
+  "Claimable $39.95 plus shipping, mediloop $129 per bill (and whether current), CareRoute fee structure: fetches blocked; case-file evidence only",
+  "Investor quote that direct-to-consumer does not work at scale (E6): not re-read",
+  "Any paying-customer volume for these services; real CAC or CPC for medical-billing patient keywords",
+  "HIPAA applicability and state licensing/advocate rules; HHS and state sources were not readable",
+  "WebSearch budget was exhausted early, so no further free/cheap alternative queries could be run beyond two searches; DIY alternatives list is therefore incomplete"
+ ],
+ "nextStep": ""
+}

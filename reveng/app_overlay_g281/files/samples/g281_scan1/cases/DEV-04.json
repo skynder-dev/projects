@@ -1,0 +1,132 @@
+{
+ "id": "DEV-04",
+ "name": "Direct API monetization layer for indie API sellers leaving marketplace fees",
+ "family": "b2b_api_devtools",
+ "buyer": "Solo developer or tiny team selling a data, scraping or AI API on Rapid (RapidAPI) or similar marketplaces and earning roughly $500-$5,000/month",
+ "pain": "A 25% marketplace cut, slow PayPal payouts, and no ownership of the customer relationship.",
+ "wedge": "Metering-only layer with Stripe-connected keys and credit flow, set up in under 30 minutes, at a flat ~$29/mo. It would need a niche such as Stripe-native credit top-ups or per-call micropayments for AI agents, because ReqKey already sells a flat fee.",
+ "referenceEntrant": {
+  "startupCashUsd": 400,
+  "daysToFirstRevenue": 90,
+  "ownerHoursPerWeek": 12
+ },
+ "scan1Edge": {
+  "criterion": "cash_cost",
+  "direction": "lower_is_better",
+  "entrant_basis": "Flat monthly fee for a metering-only layer on top of the seller's own Stripe account, with no revenue share.",
+  "entrant_value": 29,
+  "falsifier": "ReqKey already offers about $25 flat. If sellers will not leave a marketplace that supplies buyers, or the niche (agent micropayments, credit top-ups) shows no paying demand, there is no edge.",
+  "incumbent_source_url": "https://www.reqkey.com/alternatives/rapidapi",
+  "incumbent_value": 500,
+  "unit": "USD per month in platform fees at $2,000/month of API revenue"
+ },
+ "substitutesNoted": [
+  {
+   "name": "Rapid (RapidAPI) marketplace",
+   "price_point": "25% of revenue + 2.9% + $0.30 processing",
+   "url": "https://www.reqkey.com/alternatives/rapidapi"
+  },
+  {
+   "name": "ReqKey",
+   "price_point": "$25/mo flat Pro at $2,000/mo revenue (vendor claim); free for 5M requests/month",
+   "url": "https://www.reqkey.com/alternatives/rapidapi"
+  },
+  {
+   "name": "Postman API Network",
+   "price_point": "free to list, no commission, no billing",
+   "url": "https://www.buildmvpfast.com/alternatives/rapidapi"
+  },
+  {
+   "name": "AWS Marketplace",
+   "price_point": "3% for SaaS listing, 20% for server-based products",
+   "url": "https://geekflare.com/guides/sell-apis/"
+  },
+  {
+   "name": "Zuplo / Moesif / Lago",
+   "price_point": "pricing not stated in results",
+   "url": "https://geekflare.com/guides/sell-apis/"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 85,
+  "notes": "ESTIMATE from research notes: margin ~85%. Assumes the seller already has customers. Processor fees are charged by the seller's own payment processor.",
+  "price_usd": 29,
+  "variable_cost_usd": 4.35
+ },
+ "majorUncertainty": "Whether sellers will leave marketplaces that bring them buyers, and whether any niche beyond ReqKey's existing flat-fee offer has paying demand.",
+ "unknowns": [
+  "Named public complaints from sellers about the 25% fee (none found)",
+  "Paying demand for per-call micropayments for AI agents",
+  "ReqKey's real traction and verified pricing (vendor claim)",
+  "How a solo entrant would reach sellers",
+  "Whether Apify scraper earnings figures are accurate",
+  "Payout-speed complaints"
+ ],
+ "regulatoryOrPlatformDependency": "Depends on Stripe or another payment processor. Taking payments brings processor and sales-tax rules, so a metering-only design is safer. The metering layer sits in the request path, so uptime matters.",
+ "evidence": [
+  {
+   "id": "DEV-04-E1",
+   "url": "https://geekflare.com/guides/sell-apis/",
+   "publisher": "8 Best Platforms to Sell and Monetize Your API in 2026",
+   "kind": "incumbent_price",
+   "shows": "Rapid takes a flat 25% of every subscription and overage payment",
+   "quote": "Rapid takes a flat 25% of every subscription and overage payment. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-04-E2",
+   "url": "https://www.buildmvpfast.com/alternatives/rapidapi",
+   "publisher": "Best RapidAPI Alternatives (2026): API Marketplace Pricing",
+   "kind": "incumbent_price",
+   "shows": "On top of the 25% commission, payment processing fees of 2.9% + $0.30 per transaction apply (per one source)",
+   "quote": "The tradeoff is the commission: RapidAPI keeps 25% of your revenue, plus payment processing fees of 2.9% + $0.30 per transaction.\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-04-E3",
+   "url": "https://www.reqkey.com/alternatives/rapidapi",
+   "publisher": "RapidAPI alternative: sell your API and keep 100% of revenue",
+   "kind": "demand",
+   "shows": "The marketplace fee rose from 20% to 25% on November 15, 2025, with payouts via PayPal (competitor ReqKey's page)",
+   "quote": "A 25% marketplace fee on all payments since November 15, 2025, up from 20%, with payouts via PayPal.",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-04-E4",
+   "url": "https://www.reqkey.com/alternatives/rapidapi",
+   "publisher": "RapidAPI alternative: sell your API and keep 100% of revenue",
+   "kind": "incumbent_price",
+   "shows": "ReqKey claims a $25 flat fee versus RapidAPI's $500 at $2,000/month in API revenue. This is a vendor's own comparison and shows a flat-fee competitor already occupies the position.",
+   "quote": "At $2,000 a month in API revenue\n\n$25 fee\n\nReqKey\n\n$500 fee\n\nRapidAPI’s 25% marketplace fee vs ReqKey Pro’s flat price (payment-processor fees apply t...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-04-E5",
+   "url": "https://www.proxies.sx/blog/how-to-sell-web-scraping-api-2026",
+   "publisher": "How to Sell a Web Scraping API in 2026: Developer Revenue Guide",
+   "kind": "demand",
+   "shows": "A single well-built scraper on the Apify Store typically earns $500-$3,000/month in rental fees (source claim, unverified)",
+   "quote": "A single well-built scraper on the Apify Store typically earns $500-$3,000/month in rental fees. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-04-E6",
+   "url": "https://geekflare.com/guides/sell-apis/",
+   "publisher": "8 Best Platforms to Sell and Monetize Your API in 2026",
+   "kind": "constraint",
+   "shows": "Monetization platforms like Zuplo, Moesif or Lago keep full margin and the direct relationship but require the seller to bring their own buyers",
+   "quote": "A monetization platform like Zuplo, Moesif, or Lago keeps the full margin and the direct relationship but requires you to bring your own buyers.\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-04-E7",
+   "url": "https://www.buildmvpfast.com/alternatives/rapidapi",
+   "publisher": "Best RapidAPI Alternatives (2026): API Marketplace Pricing",
+   "kind": "constraint",
+   "shows": "Postman's API Network has no revenue share or listing fee, but does not handle billing, so sellers must manage monetization themselves",
+   "quote": "There's no revenue share or listing fee, though Postman doesn't handle billing, so you need to manage monetization yourself through Stripe or another ...",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

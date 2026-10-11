@@ -38,6 +38,7 @@
         alternatives:(Array.isArray(m.alternatives)?m.alternatives:[]).map(a=>freeze({label:a.label||'',usdPerMonth:typeof a.usd_per_month==='number'?a.usd_per_month:null,covers:a.covers_wedge||'',url:a.url||null})),
         killReasons:(Array.isArray(m.kill_reasons)?m.kill_reasons:[]).map(k=>freeze({severity:k.severity||'minor',reason:k.reason||'',ref:k.ref||null})),
         legalNotes:Array.isArray(m.legal_notes)?freeze(m.legal_notes.map(String)):freeze([]),
+        deepNotScreened:(m.deep_screen_not_screened&&typeof m.deep_screen_not_screened==='object')?String(m.deep_screen_not_screened.reason||'').slice(0,400):(typeof m.deep_screen_not_screened==='string'?m.deep_screen_not_screened.slice(0,400):null),
         deepDone:!!(m.deep_screen&&m.deep_screen.done&&m.deep_screen.complete),
         evidence:hints.map(h=>freeze({url:h.url||null,signal:h.signal||'',source:h.source||'',evidenceClass:h.evidence_class||'unverified',kind:h.kind||'other',stage:h.stage||'scan',recheck:h.recheck&&h.recheck.status?freeze({status:String(h.recheck.status),note:String(h.recheck.note||'')}):null})),
         verifiedCount:hints.filter(h=>h.evidence_class==='verified').length,nextStep:m.next_step||null

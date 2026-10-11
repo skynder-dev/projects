@@ -1,0 +1,243 @@
+{
+  "id": "DAT-03",
+  "verdict": "killed",
+  "verdictReason": "The state already gives each DROP user a free status page where brokers must report DELETED/EXEMPT/OPTED-OUT/RECORD NOT FOUND; Consumer Reports tells users to re-check sites themselves; Optery's paid plans include before/after screenshots and EasyOptOuts removal is $19.99/yr, the same price as a verification-only report. No payer for DROP help is evidenced, brokers have up to 90 days to report and may lawfully keep exempt data, so a 45-day re-check often shows 'listed'. Pessimistic year-1 profit is about -$1,600.",
+  "answers": [
+    {
+      "question": "(1) What free/cheap alternative covers the wedge?",
+      "answer": "DROP itself: free ('we will never charge you'), and the consumer can check their DROP status at any time; brokers report one of DELETED, EXEMPT, OPTED-OUT or RECORD NOT FOUND (plus PENDING) through the platform. For an independent re-check, Consumer Reports' free guide says to go back to the same sites to confirm removal, check again weeks or months later and repeat about twice a year, and lists the 13 main people-search sites and a 50+ broker list. Optery's paid plans (Core $3.25/month billed yearly per a March 2026 review) include removal reports with before and after screenshots, and Optery has a free basic plan with an exposure scan and report. EasyOptOuts costs $19.99/year with removals every 4 months (one user notes it gives no screenshots, a possible gap). Case-file price anchors: DeleteMe $129/year, Incogni $95.88/year. A one-time $15-$25 guide plus one re-check is priced about the same as a full removal subscription that also does the removal.",
+      "evidenceIds": ["DAT-03-D1", "DAT-03-D5", "DAT-03-D7", "DAT-03-D8", "DAT-03-D9", "DAT-03-D10", "DAT-03-E1", "DAT-03-E2"]
+    },
+    {
+      "question": "(2) What structural edge exists and who could copy it?",
+      "answer": "None found. The product is a guide to a free government form plus a periodic listed/not-listed check of public search pages: no exclusive data, licence or integration. DROP has no consumer API and the consumer must complete California residency verification before an agent may aid the request (reg section 7621(a)), so the entrant cannot own the submission step. Optery, DeleteMe, Incogni or EasyOptOuts could add a 'DROP companion' report or screenshots in days, and CalPrivacy could add reporting itself. A re-check dataset could compound only if it becomes proprietary and valued, with no sign anyone pays for it. Falsifier: evidence that consumers pay for verification-only reports, or that brokers' reported DROP statuses are unreliable enough to demand independent proof; neither was found.",
+      "evidenceIds": ["DAT-03-D5", "DAT-03-D8", "DAT-03-D11", "DAT-03-E7"]
+    },
+    {
+      "question": "(3) Who demonstrably pays and how much?",
+      "answer": "People pay for full removal subscriptions: DeleteMe $129/year (one person), Incogni $7.99/month annual ($95.88), Optery Core $3.25/month annual, EasyOptOuts $19.99/year (a user calls it 'for $20 a year, I am satisfied'). Nobody was found paying for DROP guidance or verification-only reports; DROP says it will never charge, Consumer Reports found free manual opt-outs outperformed paid services in the first week (70% gone), and the 2024 Consumer Reports test itself shows the verification step being done by a consumer organisation, not sold. The case file's DROP request count (325,000) is not in any page I read.",
+      "evidenceIds": ["DAT-03-D1", "DAT-03-D6", "DAT-03-D8", "DAT-03-D9", "DAT-03-E1", "DAT-03-E2", "DAT-03-E3"]
+    },
+    {
+      "question": "(4) Legal / platform constraints?",
+      "answer": "DROP: California residents only, free; brokers must start processing from 2026-08-01, check DROP at least every 45 days, and have up to 90 days to report status, so a status can legitimately stay pending when a 45-day re-check runs. Brokers may keep data under statutory exemptions and public/first-party data is outside deletion, so listings on people-search sites built from public records can remain lawfully ('EXEMPT'). Authorized agents may aid a request only after the consumer's own California residency verification (reg section 7621(a)); the entrant cannot run the identity step. Handling a customer's name, address and date of birth needs privacy policy, security and breach-notice compliance; people-search sites' terms of use and anti-bot controls on automated lookups were not verified and the brief forbids me from testing them. Selling 'proof of removal' without guaranteeing results invites refund and misrepresentation risk.",
+      "evidenceIds": ["DAT-03-D2", "DAT-03-D3", "DAT-03-D4", "DAT-03-D11", "DAT-03-D12", "DAT-03-E5", "DAT-03-E7"]
+    },
+    {
+      "question": "(5) Year-1 numbers (reference entrant: $1,000, 15 h/week, first revenue day 45)?",
+      "answer": "Base case (assumptions except price anchor): site live month 1, first sale month 2; organic visitors 100 in month 2 rising by 100 a month to 1,100 in month 12 (6,600 visits), 2% buy at $20 = 132 sales = $2,640 revenue. Cash cost $1,771: hosting $180, domain $15, legal review of terms/privacy/authorized-agent wording $500, cyber/E&O insurance $300, re-check cost $5 per customer ($660, the case-file variable cost for proxies and scraper upkeep), payment fees $116. Base profit about $869. Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue $1,056, cost $2,656.74, profit about -$1,600.74. Does not survive; $800 of fixed legal and insurance cost would also consume most of the $1,000 start cash.",
+      "evidenceIds": ["DAT-03-D1", "DAT-03-D8", "DAT-03-D9", "DAT-03-E1"]
+    }
+  ],
+  "newEvidence": [
+    {
+      "id": "DAT-03-D1",
+      "url": "https://privacy.ca.gov/drop/",
+      "quote": "Free — we will never charge you to use DROP",
+      "kind": "constraint",
+      "publisher": "California Privacy Protection Agency (CalPrivacy) - DROP",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "DAT-03-D2",
+      "url": "https://privacy.ca.gov/drop/",
+      "quote": "It could take up to 90 days to see your status updated in DROP.",
+      "kind": "constraint",
+      "publisher": "California Privacy Protection Agency (CalPrivacy) - DROP",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "DAT-03-D3",
+      "url": "https://privacy.ca.gov/drop/how-drop-works",
+      "quote": "permitted by law to keep all of it due to one or more statutory exemptions.",
+      "kind": "constraint",
+      "publisher": "California Privacy Protection Agency (CalPrivacy) - How DROP works (Exempted status; page also lists publicly available data as not deleted)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "DAT-03-D4",
+      "url": "https://privacy.ca.gov/drop/how-drop-works",
+      "quote": "Starting August 1, 2026, data brokers are legally required to begin processing requests.",
+      "kind": "constraint",
+      "publisher": "California Privacy Protection Agency (CalPrivacy) - How DROP works (brokers re-check at least every 45 days, up to 90 days to report)",
+      "date": "2026",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "DAT-03-D5",
+      "url": "https://legislature.vermont.gov/Documents/2026/Workgroups/Senate%20Economic%20Development/Bills/H.211/Witness%20Testimony/H.211~Maureen%20Mahoney~CalPrivacy%20Testimony%20~5-6-2026.pdf",
+      "quote": "check their DROP status or edit or add more information to their request, anytime",
+      "kind": "other",
+      "publisher": "CalPrivacy testimony to Vermont Senate Economic Development (H.211) - brokers report DELETED, EXEMPT, OPTED-OUT or RECORD NOT FOUND",
+      "date": "2026-05-06",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "DAT-03-D6",
+      "url": "https://advocacy.consumerreports.org/press_release/consumer-reports-evaluation-of-people-search-site-removal-services-finds-that-they-are-largely-ineffective/",
+      "quote": "Manual opt-outs were more effective than people search removal services and had quicker results, with 70% gone within a week",
+      "kind": "demand",
+      "publisher": "Consumer Reports advocacy - evaluation of people-search site removal services (services cost $19.99 to $249 per year)",
+      "date": "2024-08-08",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "DAT-03-D7",
+      "url": "https://www.consumerreports.org/electronics/personal-information/how-to-delete-your-information-from-people-search-sites-a6926856917",
+      "quote": "You’ll want to go back to the same sites that removed your data to make sure it’s gone.",
+      "kind": "other",
+      "publisher": "Consumer Reports - How to delete your information from people-search sites (free DIY guide; check again weeks or months later; repeat about twice a year)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "DAT-03-D8",
+      "url": "https://cyberinsider.com/data-removal/optery-review/",
+      "quote": "removal reports that include 'before' and 'after' screenshots showing where your private information was previously posted.",
+      "kind": "incumbent_price",
+      "publisher": "CyberInsider - Optery review (free Basic plan; Core $3.25/month on 1-year billing, Extended $12.42, Ultimate $20.79 per the review's table)",
+      "date": "2026-03-11",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "DAT-03-D9",
+      "url": "https://discuss.privacyguides.net/t/easyoptouts-com-a-short-overview/20041",
+      "quote": "$19.99 a year, removals every 4 months",
+      "kind": "incumbent_price",
+      "publisher": "Privacy Guides community - EasyOptOuts.com: a short overview",
+      "date": "2024-08-13",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "DAT-03-D10",
+      "url": "https://discuss.privacyguides.net/t/easyoptouts-com-a-short-overview/20041",
+      "quote": "no screenshots of data they found, no estimate of how much time they saved me.",
+      "kind": "demand",
+      "publisher": "Privacy Guides community - EasyOptOuts.com: a short overview (one user's complaint: possible unmet need for proof)",
+      "date": "2024-08-13",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "DAT-03-D11",
+      "url": "https://cppa.ca.gov/regulations/pdf/drop_fosr.pdf",
+      "quote": "allows an authorized agent to aid a consumer with a deletion request",
+      "kind": "constraint",
+      "publisher": "CPPA - DROP final statement of reasons (section 7621: consumer's California residency must be verified before an agent may aid)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "DAT-03-D12",
+      "url": "https://www.clym.io/blog/california-drop-platform-delete-your-data-from-data-brokers",
+      "quote": "Certain data cannot legally be deleted under a statutory exception. The broker must explain which exception applies.",
+      "kind": "constraint",
+      "publisher": "Clym (compliance vendor) - California DROP",
+      "date": "2026-04-20",
+      "evidenceClass": "agent_reported"
+    }
+  ],
+  "newAlternatives": [
+    {
+      "label": "DROP 'Check DROP status' page (free, broker-reported DELETED/EXEMPT/OPTED-OUT/RECORD NOT FOUND)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://privacy.ca.gov/drop/",
+      "evidenceRef": "DAT-03-D5"
+    },
+    {
+      "label": "Consumer Reports free DIY guide: re-check the same people-search sites after weeks/months (13 sites named, 50+ broker list)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://www.consumerreports.org/electronics/personal-information/how-to-delete-your-information-from-people-search-sites-a6926856917",
+      "evidenceRef": "DAT-03-D7"
+    },
+    {
+      "label": "Optery Core (removal plus before/after screenshot reports; about $3.25/month on yearly billing)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 3.25,
+      "coversWedge": "full",
+      "sourceLocator": "https://cyberinsider.com/data-removal/optery-review/",
+      "evidenceRef": "DAT-03-D8"
+    },
+    {
+      "label": "Optery free Basic plan (exposure scan and exposure report, manual opt-out)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://cyberinsider.com/data-removal/optery-review/",
+      "evidenceRef": "DAT-03-D8"
+    },
+    {
+      "label": "EasyOptOuts ($19.99/year, removals every 4 months; user reports no screenshots)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 1.67,
+      "coversWedge": "partial",
+      "sourceLocator": "https://discuss.privacyguides.net/t/easyoptouts-com-a-short-overview/20041",
+      "evidenceRef": "DAT-03-D9"
+    }
+  ],
+  "killReasons": [
+    {
+      "reason": "Verification is already available free or bundled cheaper: DROP shows consumers broker-reported status for free, Consumer Reports gives a free re-check recipe, Optery paid plans include before/after screenshot reports along with removal (about $39/year), and EasyOptOuts removal is $19.99/year. A one-time $15-$25 guide plus one re-check is priced like a full removal subscription and rivals could add a DROP report in days. No structural edge.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "DAT-03-D8"
+    },
+    {
+      "reason": "No demonstrated payer for DROP guidance or verification-only reports. CalPrivacy states it will never charge for DROP, and Consumer Reports found free manual opt-outs worked better and faster than paid services (70% gone in a week); the only 'gap' evidence is one user noting EasyOptOuts gives no screenshots.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "DAT-03-D1"
+    },
+    {
+      "reason": "Product design flaw: brokers have up to 90 days to report and re-check only every 45 days, and may lawfully retain exempt or public data, so the promised 'dated listed/not-listed report' at about 45 days will often show 'listed' for legitimate reasons, creating refund and complaint exposure and weak proof value.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "DAT-03-D2"
+    },
+    {
+      "reason": "The entrant cannot run the identity step: an authorized agent may aid only after the consumer's own California residency verification. Handling name/address/DOB and automated lookups of people-search sites adds privacy, security and terms-of-use risk (site terms not verified).",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "DAT-03-D11"
+    }
+  ],
+  "economics": {
+    "revenue365": 2640,
+    "cost365": 1771.16,
+    "pessimisticProfit365": -1600.74,
+    "survivesPessimistic": false,
+    "assumptions": [
+      "assumption: price $20 one-time per customer (midpoint of the case-file $15-$25 range; not market-validated)",
+      "assumption: organic visitors 100 in month 2, +100 per month, 1,100 in month 12 = 6,600 visits with no audience or paid acquisition; no source for traffic",
+      "assumption: 2% of visitors buy = 132 sales = $2,640 revenue; no sourced conversion data",
+      "assumption: fixed cash costs: hosting $180, domain $15, legal review $500, cyber/E&O insurance $300",
+      "variable cost $5 per customer for re-check infrastructure (case-file model value, unsourced) = $660",
+      "assumption: payment fees 2.9% + $0.30 per sale = $115.56 rounded to $116 in the total",
+      "owner labour 15 h/week x 52 = 780 h is not counted as cash; manual re-check fallbacks would add hours per customer",
+      "pessimistic: price x0.8, volume x0.5 gives revenue $1,056; cost x1.5 gives $2,656.74; profit -$1,600.74"
+    ],
+    "sources": ["DAT-03-D1", "DAT-03-D8", "DAT-03-D9"]
+  },
+  "legalNotes": [
+    "DROP is free and open only to California residents; the consumer must verify residency through the state's identity gateway, and an authorized agent may aid only after that (reg section 7621(a) per the final statement of reasons).",
+    "Brokers must process from 2026-08-01, check DROP at least every 45 days and have up to 90 days to report; exempt, first-party and publicly available data is not deleted, so a 'still listed' result can be lawful.",
+    "Storing and processing customers' name, address and date of birth needs a privacy policy, security controls and breach-notice readiness; CCPA/CPRA thresholds and California rules on service providers were not analysed.",
+    "Automated re-checks of people-search sites may breach their terms of use or hit anti-bot controls; not verified (Spokeo terms page could not be fetched) and the entrant would need to avoid circumvention.",
+    "A report that implies a legal conclusion ('your data was removed') or guarantees results risks misrepresentation claims; wording would need legal review."
+  ],
+  "unverified": [
+    "Which people-search sites are registered brokers and therefore covered by DROP (the CPPA registry page could not be fetched; Spokeo, Whitepages, BeenVerified and Radaris were not checked).",
+    "Number of consumers using DROP; the CalPrivacy testimony metrics were blank in the fetched text and the 325,000 figure was not found.",
+    "DeleteMe's own removal/verification reports and EasyOptOuts/Optery current prices (their sites and pricing pages could not be fetched, only third-party reviews).",
+    "People-search sites' terms of use on automated lookups.",
+    "Whether DROP exposes any consumer-facing API or agent workflow beyond the web form; whether authorized-agent rules differ for out-of-state agents.",
+    "No evidence of willingness to pay for verification-only reports; the WebSearch budget was exhausted mid-session, which prevented further searches for competitors that sell DROP assistance."
+  ],
+  "nextStep": ""
+}

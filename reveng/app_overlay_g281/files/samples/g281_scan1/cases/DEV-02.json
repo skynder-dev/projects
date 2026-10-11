@@ -1,0 +1,123 @@
+{
+ "id": "DEV-02",
+ "name": "Curated third-party API change alerts for a niche vertical",
+ "family": "b2b_api_devtools",
+ "buyer": "Engineering lead or agency running integrations against several partner APIs in a vertical such as payments, logistics, EHR, tax or shipping",
+ "pain": "Integrations break and the team learns about it from a customer; raw commit emails on large specs bury the real changes.",
+ "wedge": "Curate 30-50 vertical APIs that generic tools ignore (e.g. healthcare, tax or shipping vendors) and send per-field, severity-classified alerts at a flat $19/mo for 10 watched APIs.",
+ "referenceEntrant": {
+  "startupCashUsd": 200,
+  "daysToFirstRevenue": 90,
+  "ownerHoursPerWeek": 10
+ },
+ "scan1Edge": {
+  "criterion": "cash_cost",
+  "direction": "lower_is_better",
+  "entrant_basis": "Flat self-serve $19/mo with pre-curated vertical API coverage built from public specs and changelogs, automated via diffing pipelines.",
+  "entrant_value": 19,
+  "falsifier": "Free oasdiff-based tools and free tiers like FlareCanary cover the same need; if target buyers don't pay $19/mo for curated coverage over free tools, the edge fails.",
+  "incumbent_source_url": "https://dev.to/flarecanary/how-to-detect-api-breaking-changes-before-they-hit-production-257p",
+  "incumbent_value": 149,
+  "unit": "USD per month for monitoring ~10 APIs"
+ },
+ "substitutesNoted": [
+  {
+   "name": "API Drift Alert",
+   "price_point": "$149/mo+",
+   "url": "https://dev.to/flarecanary/how-to-detect-api-breaking-changes-before-they-hit-production-257p"
+  },
+  {
+   "name": "FlareCanary",
+   "price_point": "free for 5 endpoints (per research notes)",
+   "url": "https://dev.to/flarecanary/how-to-detect-api-breaking-changes-before-they-hit-production-257p"
+  },
+  {
+   "name": "Apify API Breaking Change Radar",
+   "price_point": "price not stated in results",
+   "url": "https://apify.com/travelmonitorlab/api-breaking-change-radar"
+  },
+  {
+   "name": "Deprecatr AI",
+   "price_point": "price not stated in results",
+   "url": "https://www.deprecatrai.com/"
+  },
+  {
+   "name": "Generic page monitors (PageCrawl) / vendor RSS / GitHub emails",
+   "price_point": "price not stated; DIY",
+   "url": "https://pagecrawl.io/blog/api-monitoring-track-changes-alerts"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 90,
+  "notes": "ESTIMATE from research notes: ~90% margin. Price taken from an idea-site suggestion, not observed purchases. Churn is expected to be high since a user may need an alert only once.",
+  "price_usd": 19,
+  "variable_cost_usd": 1.9
+ },
+ "majorUncertainty": "Whether anyone pays for curated coverage given free substitutes and no evidence of payment for manual versions.",
+ "unknowns": [
+  "Whether any buyer pays for this (no payment evidence found)",
+  "Which verticals have enough un-served API vendors",
+  "Churn rate for one-off-alert users",
+  "Vendor ToS on scraping changelogs",
+  "FlareCanary free-tier details are only in research notes (excerpt did not show it)",
+  "Search demand rated 'Low' by one idea site (not in cited excerpt)"
+ ],
+ "regulatoryOrPlatformDependency": "Scraping vendor changelogs may breach vendor terms of service. Many vendors publish no OpenAPI spec.",
+ "evidence": [
+  {
+   "id": "DEV-02-E1",
+   "url": "https://dev.to/flarecanary/how-to-detect-api-breaking-changes-before-they-hit-production-257p",
+   "publisher": "How to Detect API Breaking Changes Before They Hit Production - DEV Community",
+   "kind": "incumbent_price",
+   "shows": "API Drift Alert is a similar concept with enterprise pricing of $149/mo and up",
+   "quote": "- **API Drift Alert** — similar concept, enterprise pricing ($149/mo+).\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-02-E2",
+   "url": "https://apinotes.io/blog/how-to-monitor-third-party-api-changes",
+   "publisher": "How to Monitor Third-Party API Changes (Without Reading Release Notes) - ApiNotes Blog",
+   "kind": "demand",
+   "shows": "Raw commit diffs on a 40,000-line YAML spec bury the signal, including formatting churn and description edits (pain, not payment)",
+   "quote": "The problem is signal: you get raw commit diffs on a 40,000-line YAML file, including formatting churn and description edits, with no indication of wh...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-02-E3",
+   "url": "https://apinotes.io/blog/how-to-monitor-third-party-api-changes",
+   "publisher": "How to Monitor Third-Party API Changes (Without Reading Release Notes) - ApiNotes Blog",
+   "kind": "demand",
+   "shows": "A source claims most contract changes are never announced",
+   "quote": "Most contract changes are never announced.",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-02-E4",
+   "url": "https://appideas.ai/ideas/openapi-breaking-change-watch/",
+   "publisher": "Breaking change alerts for third-party APIs — appideas.ai",
+   "kind": "demand",
+   "shows": "A market-idea site suggests $19-49/month per watch tier as a card-swipe purchase. This is an idea-site opinion, not observed purchasing.",
+   "quote": "Priced at 19 to 49 dollars a month per watch tier, it is a card-swipe decision, no procurement. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-02-E5",
+   "url": "https://apify.com/travelmonitorlab/api-breaking-change-radar",
+   "publisher": "API Breaking Change Radar — OpenAPI diff & changelog monitor · Apify",
+   "kind": "constraint",
+   "shows": "An Apify actor already diffs OpenAPI specs with oasdiff and classifies GitHub releases and RSS changelogs, so free and cheap substitutes exist",
+   "quote": "Diffs OpenAPI specs with oasdiff, classifies GitHub releases and RSS changelogs into audit-ready impact events. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "DEV-02-E6",
+   "url": "https://www.deprecatrai.com/",
+   "publisher": "Deprecatr AI — Never Get Blindsided by API Breaking Changes",
+   "kind": "other",
+   "shows": "Deprecatr AI already scans codebases for API calls and monitors documentation for breaking changes",
+   "quote": "Deprecatr AI scans your codebase for API calls, monitors documentation for breaking changes, and alerts your team before production goes down.\n\n",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

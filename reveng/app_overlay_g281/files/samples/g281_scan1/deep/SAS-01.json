@@ -1,0 +1,330 @@
+{
+  "id": "SAS-01",
+  "verdict": "killed",
+  "verdictReason": "The only differentiator (an importer for GummySearch data) expires when GummySearch deletes all data on 2026-12-01, about 7 weeks from today (2026-10-10), leaving ~5 weeks after the entrant's day-17 launch; afterwards it is an undifferentiated $8 Reddit monitor against free F5Bot and $7 RedNudge. Reddit commercial API use needs a separate Reddit agreement, which GummySearch itself failed to get. Pessimistic year-1 profit is about -$1,070.",
+  "answers": [
+    {
+      "question": "(1) What free/cheap alternative covers the wedge?",
+      "answer": "The monitoring job is covered at $0 by F5Bot (free forever tier; Reddit, Hacker News and Lobsters keyword emails) and by re-typing the exported keyword/subreddit lists by hand (diy). RedNudge sells 5 keywords for $7/month, Syften is $29.95/month on a 2026-09 page (the scan-1 figure of $19.95 is stale), and a DIY Apify actor reads Reddit search RSS from $1.00 per 1,000 new matches. A redship comparison of seven alternatives (2026-09-14) describes none as importing GummySearch data, so an importer is not offered by others, but it only automates re-entering a short keyword/subreddit list.",
+      "evidenceIds": [
+        "SAS-01-D8",
+        "SAS-01-D9",
+        "SAS-01-D10",
+        "SAS-01-D11",
+        "SAS-01-D12",
+        "SAS-01-D13"
+      ]
+    },
+    {
+      "question": "(2) What structural edge exists and who could copy it?",
+      "answer": "None that is exclusive or compounding. The importer is a one-time convenience that any of the 9+ listed alternatives could add in days, and it vanishes with the data on 2026-12-01 (all user data permanently deleted). The $8 price is not an edge: RedNudge is $7 and F5Bot is free. A licensed buyer could also absorb GummySearch users, because the founder says his preference is a buyer that is Reddit or holds a Reddit commercial API licence. Falsifier already met: the exported file is documented only as 'account data' with no mention of audiences or keyword lists.",
+      "evidenceIds": [
+        "SAS-01-D3",
+        "SAS-01-D4",
+        "SAS-01-D12",
+        "SAS-01-D14",
+        "SAS-01-D10",
+        "SAS-01-D8"
+      ]
+    },
+    {
+      "question": "(3) Who demonstrably pays and how much?",
+      "answer": "GummySearch had paying customers (list prices reported as $29-199/month in SAS-01-E2) and one post says it served 'over 140,000 founders, marketers, and investors', but that is a cumulative count including free users, with no paying-user or MRR figure disclosed (the $35K MRR claim in the case file is single-source and not re-verified). Remaining paying access is limited to annual-plan holders and lifetime-deal holders until 2026-11-30. Demonstrated willingness to pay for Reddit monitors exists at $7-$29.95/month from other vendors, but nothing shows a stranger can capture migrating users.",
+      "evidenceIds": [
+        "SAS-01-D16",
+        "SAS-01-D3",
+        "SAS-01-D10",
+        "SAS-01-D11",
+        "SAS-01-E2"
+      ]
+    },
+    {
+      "question": "(4) Legal/platform constraints?",
+      "answer": "Reddit Data API Terms s3.1: commercial use of the Data APIs needs a separate agreement with Reddit, at Reddit's discretion on fees; Reddit's FAQ defines commercial as any use by a business. Self-service Data API access was closed in Nov 2025 and requires approval under the Responsible Builder Policy. GummySearch, an established product, could not reach an agreement and chose to close. Reddit sued SerpApi, Oxylabs, AWMProxy and Perplexity in Oct 2025 for scraping, so an unlicensed scraper-based data path carries litigation and ToS risk. The only no-login path found, public search RSS, returns about 100 recent results per query and no engagement metrics, and whether it is permitted for a commercial service was not verified.",
+      "evidenceIds": [
+        "SAS-01-D1",
+        "SAS-01-D2",
+        "SAS-01-D5",
+        "SAS-01-D6",
+        "SAS-01-D7",
+        "SAS-01-D13",
+        "SAS-01-D15",
+        "SAS-01-D17"
+      ]
+    },
+    {
+      "question": "(5) Year-1 numbers?",
+      "answer": "Bottom-up (all volumes are assumptions): 15 paying customers acquired in the first two months (7 + 8) at $8/mo, then 1 new/month organic, 8%/month churn. Baseline revenue about $1,272 and cost about $1,320 (incl. $550 startup, $20/mo hosting, $2.80 variable cost per customer, Stripe 2.9% + $0.30), profit about -$48 before owner time. Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue about $509, cost about $1,577, profit about -$1,068. Data cost anchors: third-party Reddit data runs $0.12-$8.13 per 1,000 calls/records, not the binding constraint; licence and legality are.",
+      "evidenceIds": [
+        "SAS-01-D15",
+        "SAS-01-D13",
+        "SAS-01-D10"
+      ]
+    }
+  ],
+  "newEvidence": [
+    {
+      "id": "SAS-01-D1",
+      "url": "https://gummysearch.com/closing-time",
+      "quote": "shutting down to comply with Reddit's API policies, which forbid commercial applications.",
+      "kind": "constraint",
+      "publisher": "GummySearch (first party closure notice)",
+      "date": "2025-11-30",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-01-D2",
+      "url": "https://gummysearch.com/final-chapter",
+      "quote": "we were not able to reach an agreement that aligns with Reddit's Data API Usage policies.",
+      "kind": "constraint",
+      "publisher": "GummySearch (founder post, The Final Chapter)",
+      "date": "undated (c. Nov 2025)",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-01-D3",
+      "url": "https://gummysearch.com/docs/articles/gummysearch-is-now-closed-6533h",
+      "quote": "All user data will be permanently deleted on December 1, 2026.",
+      "kind": "constraint",
+      "publisher": "GummySearch (account and billing docs)",
+      "date": "undated (c. Nov 2025)",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-01-D4",
+      "url": "https://gummysearch.com/closing-time",
+      "quote": "Free tier users can still log in and download an export of their account data or delete their account.",
+      "kind": "other",
+      "publisher": "GummySearch (first party closure notice)",
+      "date": "2025-11-30",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-01-D5",
+      "url": "https://web-archive.nli.org.il/National_Library/mp_/https://redditinc.com/policies/data-api-terms",
+      "quote": "then you will need to enter into a separate agreement with Reddit.",
+      "kind": "constraint",
+      "publisher": "Reddit Inc., Data API Terms (web-archive copy, effective June 19, 2023)",
+      "date": "2023-06-19",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-01-D6",
+      "url": "https://r.datuan.dev/r/redditdev/comments/1oug31u/introducing_the_responsible_builder_policy_new/npnaxhk/?context=3",
+      "quote": "self-service access to Reddit's public data API will be closed.",
+      "kind": "constraint",
+      "publisher": "r/redditdev, Introducing the Responsible Builder Policy (third-party mirror of the Reddit thread)",
+      "date": "2025-11-11",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-01-D7",
+      "url": "https://ny1.com/nyc/all-boroughs/ap-top-news/2025/10/22/reddit-sues-ai-company-perplexity-and-others-for-industrial-scale-scraping-of-user-comments",
+      "quote": "circumventing Google's controls and scraping Reddit content directly from Google's search engine results.",
+      "kind": "constraint",
+      "publisher": "NY1 / Associated Press",
+      "date": "2025-10-22",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-01-D8",
+      "url": "https://f5bot.com/",
+      "quote": "F5Bot monitors Reddit, Hacker News, and Lobsters for your keywords",
+      "kind": "incumbent_price",
+      "publisher": "F5Bot (first party; free tier listed at $0, Silver $9.99/mo, Gold $49.99/mo)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-01-D9",
+      "url": "https://www.xpoz.ai/blog/comparisons/best-gummysearch-alternatives-2026/",
+      "quote": "F5Bot is free, has run since 2017.",
+      "kind": "incumbent_price",
+      "publisher": "Xpoz blog (vendor, lists itself among alternatives)",
+      "date": "2026-08-26",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-01-D10",
+      "url": "https://aisotools.com/pricing/rednudge",
+      "quote": "Starter is $7/month for 5 keywords, 300 AI-scored matches per month,",
+      "kind": "incumbent_price",
+      "publisher": "AISOTools (third-party pricing summary of RedNudge)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-01-D11",
+      "url": "https://redship.io/reddit-tool/syften",
+      "quote": "$29.95 per month.",
+      "kind": "incumbent_price",
+      "publisher": "RedShip (competitor review page for Syften Entry tier; page says tiers move often)",
+      "date": "2026-09-14",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-01-D12",
+      "url": "https://redship.io/best-gummysearch-alternatives.md",
+      "quote": "| 3 | F5Bot | Solo founders watching a brand name for free | Free |",
+      "kind": "incumbent_price",
+      "publisher": "RedShip (vendor ranking seven GummySearch alternatives; none described as importing GummySearch data)",
+      "date": "2026-09-14",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-01-D13",
+      "url": "https://apify.com/signalengine/reddit-keyword-monitor",
+      "quote": "Reads public Reddit search RSS only, identifies itself, and never logs in, posts, votes, or messages.",
+      "kind": "other",
+      "publisher": "Apify Store, Reddit Keyword Monitor actor (pay-per-event from $1.00 / 1,000 matches)",
+      "date": "2026-06-07",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-01-D14",
+      "url": "https://gummysearch.com/final-chapter",
+      "quote": "my preference is to Reddit or a company that has a Reddit Commercial API license.",
+      "kind": "other",
+      "publisher": "GummySearch (founder post, The Final Chapter)",
+      "date": "undated (c. Nov 2025)",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-01-D15",
+      "url": "https://apiserpent.com/blog/best-reddit-api-providers-2026",
+      "quote": "$0.12 per 1,000 calls; a 100-item listing is 4 units ($0.48 per 1,000 calls)",
+      "kind": "other",
+      "publisher": "Serpent API blog (vendor; published per-1,000 prices of third-party Reddit data providers, $0.12 to about $8.13)",
+      "date": "2026-09-09",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-01-D16",
+      "url": "https://syncsuptech.substack.com/p/gummysearch-shuts-down",
+      "quote": "over 140,000 founders, marketers, and investors",
+      "kind": "demand",
+      "publisher": "Syncsup Tech (Substack newsletter; cumulative users served, no paying count or MRR)",
+      "date": "2025-12-03",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-01-D17",
+      "url": "https://www.redditapis.com/blogs/reddit-api-commercial-use-licensing-explained-2026",
+      "quote": "any use of Reddit's developer tools and services by a business",
+      "kind": "constraint",
+      "publisher": "redditapis.com blog (vendor quoting Reddit's FAQ definition of commercial use)",
+      "date": "2026-08-19",
+      "evidenceClass": "agent_reported"
+    }
+  ],
+  "newAlternatives": [
+    {
+      "label": "F5Bot (free keyword alerts for Reddit, HN, Lobsters)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://f5bot.com/",
+      "evidenceRef": "SAS-01-D8"
+    },
+    {
+      "label": "Re-enter exported keywords/subreddits by hand into any monitor (status quo)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://gummysearch.com/closing-time",
+      "evidenceRef": "SAS-01-D4"
+    },
+    {
+      "label": "RedNudge Starter (5 keywords, daily digests)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 7,
+      "coversWedge": "partial",
+      "sourceLocator": "https://aisotools.com/pricing/rednudge",
+      "evidenceRef": "SAS-01-D10"
+    },
+    {
+      "label": "Apify Reddit Keyword Monitor actor (pay per new match, reads public search RSS)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 5,
+      "coversWedge": "partial",
+      "sourceLocator": "https://apify.com/signalengine/reddit-keyword-monitor",
+      "evidenceRef": "SAS-01-D13"
+    },
+    {
+      "label": "Syften Entry tier",
+      "kind": "paid_incumbent",
+      "costUsdPerMonth": 29.95,
+      "coversWedge": "full",
+      "sourceLocator": "https://redship.io/reddit-tool/syften",
+      "evidenceRef": "SAS-01-D11"
+    }
+  ],
+  "killReasons": [
+    {
+      "reason": "The wedge is time-boxed to a window that is almost gone: GummySearch deletes all user data on 2026-12-01 (today is 2026-10-10), paid access for annual/lifetime holders ends by 2026-11-30, and the reference entrant's first revenue is day 17 (about 2026-10-27), leaving roughly 5 weeks. After that there is no import source, and the product is a generic $8 Reddit monitor with no edge versus free F5Bot or $7 RedNudge.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "SAS-01-D3"
+    },
+    {
+      "reason": "No lawful data source for a stranger: commercial use of Reddit's Data API needs a separate Reddit agreement, self-service API access was closed in Nov 2025, and GummySearch, an established product, failed to get a licence and shut down. The alternatives are unlicensed scraping (Reddit sued SerpApi, Oxylabs, AWMProxy and Perplexity over scraping) or public search RSS capped near 100 results per query with no engagement data.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SAS-01-D2"
+    },
+    {
+      "reason": "Free or cheaper options already cover the monitoring job and re-entering a keyword list takes minutes: F5Bot is free, RedNudge is $7/month, and seven or more vendors compete for GummySearch refugees; the $8 price is not an edge. The exported GummySearch file is described only as 'account data', so the importer's input is unverified.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SAS-01-D10"
+    },
+    {
+      "reason": "The founder is open to selling to a buyer with a Reddit commercial API licence, so a licensed acquirer could absorb the migrating users and make an importer irrelevant.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "SAS-01-D14"
+    },
+    {
+      "reason": "Syften's list price conflict is resolved against the scan-1 comparator: a 2026-09 page shows $29.95 for the entry tier, not $19.95, so the claimed price gap versus Syften is not the real comparison; the real comparators are F5Bot (free) and RedNudge ($7).",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "SAS-01-D11"
+    }
+  ],
+  "economics": {
+    "revenue365": 1272,
+    "cost365": 1320,
+    "pessimisticProfit365": -1068,
+    "survivesPessimistic": false,
+    "assumptions": [
+      "Price $8/month (scan-1 wedge). Assumption: 7 + 8 = 15 paying customers acquired in months 1-2 from migrating GummySearch users, then 1 new customer per month organic; no audience or network, so low volumes are assumed.",
+      "Assumption: 8% monthly churn for a $8 monitoring tool; first revenue about day 17.",
+      "Assumption: variable cost $2.80 per customer per month (the scan-1 model figure, not sourced), plus Stripe fees 2.9% + $0.30 per charge (assumption), plus $20/month hosting (assumption).",
+      "Startup cash $550 counted as year-1 cost (reference entrant); owner time (12 h/week) is not costed.",
+      "Pessimistic case: price x0.8 ($6.40), volume x0.5, all costs x1.5 gives revenue about $509 and cost about $1,577.",
+      "Third-party Reddit data prices ($0.12 to about $8.13 per 1,000 calls/records) show data cost is small; the unmodelled risk is licence/legal exposure, not compute cost."
+    ],
+    "sources": [
+      "SAS-01-D15",
+      "SAS-01-D13",
+      "SAS-01-D10",
+      "SAS-01-D3"
+    ]
+  },
+  "legalNotes": [
+    "Reddit Data API Terms s3.1: commercial purposes require a separate agreement with Reddit; fees are at Reddit's sole discretion; Reddit's FAQ defines commercial as use by a business.",
+    "Self-service API access closed (Responsible Builder Policy, Nov 2025); approval wait times are unpublished and reported as slow, and a poster quotes a denial for non-compliance with that policy.",
+    "Reddit filed suit in Oct 2025 against SerpApi, Oxylabs, AWMProxy and Perplexity over scraping Reddit content; a scraper-based product by a solo founder inherits that risk.",
+    "Importing a user's own exported GummySearch data is likely fine, but the exported content may include Reddit user content that GummySearch's own terms or Reddit's deletion rules restrict; not verified.",
+    "GummySearch will delete all user data on 2026-12-01, so any imported dataset has a hard end date."
+  ],
+  "unverified": [
+    "What the GummySearch account-data export actually contains (audiences, keyword lists, CSV or JSON); the closure pages only say 'account data' and no help-centre export article was found.",
+    "How many GummySearch customers still pay and have not already migrated, and what GummySearch's MRR was (the $35K MRR claim stays single-source).",
+    "Whether Syften, RedNudge or the other alternatives hold a Reddit commercial licence or use RSS or scraping; none of their pages say.",
+    "Whether Reddit's terms permit use of public search RSS in a paid product; reddit.com/robots.txt could not be fetched (permission request unanswered).",
+    "Whether any competitor already offers a GummySearch import (searches and the RedShip comparison found none, but absence is not proof).",
+    "RedNudge's price is from a third-party summary page, not RedNudge's own pricing page (the reddgrow.ai page was not fetchable)."
+  ],
+  "nextStep": "Drop this idea; the only open item is what a GummySearch export contains, which public pages did not settle."
+}

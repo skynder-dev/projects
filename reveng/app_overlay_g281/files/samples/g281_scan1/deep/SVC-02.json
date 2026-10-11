@@ -1,0 +1,330 @@
+{
+ "id": "SVC-02",
+ "verdict": "killed",
+ "verdictReason": "Killed, no structural edge. Google's own appeal tool and free guides already list the evidence documents; one guide says most straightforward suspensions can be self-filed and paid help is mainly worth it for account-level cases, which a $149 template cannot fix. Done-for-you rivals are cheaper or riskless for the buyer (freelance bids avg $120; pay-after-completion agency with a 4.9 rating; plans with no reinstatement fee). Assumption-based pessimistic year-1 profit is about -$3.5k. Unverified: template success rate, ad costs.",
+ "answers": [
+  {
+   "question": "(1) What free/cheap alternative covers the wedge?",
+   "answer": "Google runs the appeal itself at no charge through a self-serve tool and publishes the optional document list (registration, licence, tax certificate, utility bills) with the rule that evidence must be uploaded within 60 minutes. Free guides add the checklist: one lists 10-16 documents and says name/address must match character-for-character, one says most straightforward suspensions can be self-filed and that paid help is mainly worth it for account-level suspensions. Google Business Profile Community Product Experts can escalate for manual review at no charge. On the done-for-you side, a freelance posting for combined Ads+GBP reinstatement had 52 bids averaging $120 against a $30-250 budget, an agency plan charges $79/location/month with no reinstatement fee, and a Green Thumb Local listing shows a flat fee with reviewers saying payment was not requested until completion. A generic evidence checklist is therefore free; what remains for sale is done-for-you outcome, already priced at or below $149 or with the risk on the seller.",
+   "evidenceIds": [
+    "SVC-02-D1",
+    "SVC-02-D5",
+    "SVC-02-D6",
+    "SVC-02-D7",
+    "SVC-02-D8",
+    "SVC-02-D9",
+    "SVC-02-D10",
+    "SVC-02-D11",
+    "SVC-02-D13",
+    "SVC-02-D14",
+    "SVC-02-E7"
+   ]
+  },
+  {
+   "question": "(2) What structural edge exists and who could copy it?",
+   "answer": "None found. A pack generator uses the owner's own licences, utility bills, signage photos and registrations; it adds no exclusive data, licence, or distribution, and a rival or any free guide can copy a template in an afternoon (several already publish the checklist). 'Cheaper', 'AI-built' and 'under 30 minutes' are not edges. The only potentially compounding asset is a private outcome dataset (which pack content gets which suspension type reinstated), but it needs hundreds of cases and rivals already claim 250+ to 295 recoveries. Reinstatement outcome depends mainly on whether the owner has real proof ('tons of proof their business is legit'), not on packaging. Falsifier: a controlled batch of 30+ real cases where the template pack reinstates at least 85% at $149 with refunds under 10% while free-guide DIY filers do materially worse would show a real packaging effect; no public page shows this.",
+   "evidenceIds": [
+    "SVC-02-D15",
+    "SVC-02-D12",
+    "SVC-02-E6",
+    "SVC-02-D14"
+   ]
+  },
+  {
+   "question": "(3) Who demonstrably pays and how much?",
+   "answer": "Paid demand exists but sits with done-for-you providers. Vendor-reported figures (self-reported, unaudited): Search Scope 295 of 300 recovered at a flat $550 upfront; a DesignRush agency profile claims 250+ successful reinstatements; Green Thumb Local shows a 4.9 rating from 206 reviews with reviewers describing payment only after completion; Reputation Arm $600 flat, Reinstatement Experts $450 on success, Green Thumb $349. The only buyer-side price signal I could read is a Freelancer posting for a Google Ads plus GBP reinstatement: budget $30-250, 52 bids, average bid $120. So the buyer anchor is $120-$350 for a done-for-you outcome; nothing shows anyone paying $149 for a do-it-yourself pack.",
+   "evidenceIds": [
+    "SVC-02-D7",
+    "SVC-02-D11",
+    "SVC-02-D12",
+    "SVC-02-E2",
+    "SVC-02-E3",
+    "SVC-02-E6"
+   ]
+  },
+  {
+   "question": "(4) Legal/platform constraints?",
+   "answer": "Fully dependent on Google's process: evidence must be uploaded within 60 minutes of filing, duplicate appeals are discouraged, and a BrightLocal article says a new process (EU first) gives a single opportunity to apply for reinstatement, so a failed pack can burn the owner's only shot. Service-area rules (hide the address, no virtual offices, no lead-gen agents) mean some suspended listings are genuinely ineligible and no pack fixes that; locksmith/towing are spam-heavy categories so helping them risks assisting policy-violating listings. The pack must never contain fabricated or borrowed documents. Google charges nothing for reinstatement, so the service is sold against a free official path. No UPL-type regime identified for this service.",
+   "evidenceIds": [
+    "SVC-02-D1",
+    "SVC-02-D2",
+    "SVC-02-D4",
+    "SVC-02-D16",
+    "SVC-02-E7"
+   ]
+  },
+  {
+   "question": "(5) Year-1 numbers (reference entrant: $350 start, 12 h/week)?",
+   "answer": "Base: 55 orders (assumption: about 5/month from month 2) x 75% net of refunds/failures x $149 = $6,146 revenue; costs $3,964 (startup $350, tools $360, ads $3,000 at an assumed $250/month, payment fees $254) = about $2.2k profit before about 600 owner hours (roughly $3.5/hour). Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue $2,459, cost $5,946, profit about -$3,488. Every volume, refund-rate and ad-spend input is an assumption: no public source gives conversion or CPC for this niche.",
+   "evidenceIds": [
+    "SVC-02-D7",
+    "SVC-02-D11"
+   ]
+  }
+ ],
+ "newEvidence": [
+  {
+   "id": "SVC-02-D1",
+   "url": "https://support.google.com/business/answer/4569145?hl=en",
+   "quote": "Once you open the evidence form, you must submit it within 60 minutes or it won't be attached to your appeal.",
+   "kind": "constraint",
+   "publisher": "Google Business Profile Help",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-D2",
+   "url": "https://support.google.com/business/answer/13597551?hl=en-AU",
+   "quote": "Do not submit multiple appeals for the same issue before receiving a decision.",
+   "kind": "constraint",
+   "publisher": "Google Business Profile Help",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-D3",
+   "url": "https://support.google.com/business/answer/13597551?hl=en-AU",
+   "quote": "Appeal reviews and decisions can take up to five working days.",
+   "kind": "other",
+   "publisher": "Google Business Profile Help",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-D4",
+   "url": "https://www.brightlocal.com/blog/upcoming-changes-reinstating-suspended-google-business-profiles/",
+   "quote": "You now have a single opportunity to apply for reinstatement.",
+   "kind": "constraint",
+   "publisher": "BrightLocal",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-D5",
+   "url": "https://slashpost.ai/blogs/google-business-profile/google-business-profile-suspended-reinstatement-guide",
+   "quote": "For a single straightforward suspension, most businesses can self-file successfully using the process above.",
+   "kind": "other",
+   "publisher": "Slashpost (Google Business Profile Suspended? How to Get Reinstated, 2026 Guide)",
+   "date": "2026",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-D6",
+   "url": "https://slashpost.ai/blogs/google-business-profile/google-business-profile-suspended-reinstatement-guide",
+   "quote": "Paid reinstatement services are mainly worth it for account-level suspensions",
+   "kind": "other",
+   "publisher": "Slashpost (Google Business Profile Suspended? How to Get Reinstated, 2026 Guide)",
+   "date": "2026",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-D7",
+   "url": "https://www.freelancer.in/projects/google-ads/google-ads-gbp-reinstatement",
+   "quote": "52 freelancers are bidding on average $120 USD for this job",
+   "kind": "incumbent_price",
+   "publisher": "Freelancer.com (project: Google Ads & GBP Reinstatement, budget $30-250, closed)",
+   "date": "2026",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-D8",
+   "url": "https://steadydemand.com/reinstatement.html",
+   "quote": "There is a no reinstatement fee, if you are suspended.",
+   "kind": "incumbent_price",
+   "publisher": "SteadyDemand",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-D9",
+   "url": "https://steadydemand.com/reinstatement.html",
+   "quote": "The monthly fee is $79 per location.",
+   "kind": "incumbent_price",
+   "publisher": "SteadyDemand",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-D10",
+   "url": "https://robbenmedia.com/google-business-profile-denied-appeal-your-2025-reinstatement-playbook/",
+   "quote": "Google expects 10 – 16 documents",
+   "kind": "other",
+   "publisher": "Robben Media",
+   "date": "2025",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-D11",
+   "url": "https://reportgarden.com/agencies/green-thumb-local",
+   "quote": "didn't ask for money until the job was completed",
+   "kind": "incumbent_price",
+   "publisher": "ReportGarden (agency listing for Green Thumb Local, reviewer comment)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-D12",
+   "url": "https://www.designrush.com/agency/profile/gbp-suspensions",
+   "quote": "250+ successful reinstatements",
+   "kind": "demand",
+   "publisher": "DesignRush (agency profile, self-reported)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-D13",
+   "url": "https://www.brightlocal.com/learn/google-business-profile-forum-help/",
+   "quote": "may escalate issues to the Google team for manual review",
+   "kind": "other",
+   "publisher": "BrightLocal",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-D14",
+   "url": "https://www.theedigital.com/blog/how-to-reinstate-a-suspended-google-business-profile",
+   "quote": "The business name on documents must match your GBP listing character-for-character.",
+   "kind": "other",
+   "publisher": "TheeDigital",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-D15",
+   "url": "https://www.brightlocal.com/blog/google-business-profile-suspension/",
+   "quote": "tons of proof their business is legit and located where they say they are",
+   "kind": "other",
+   "publisher": "BrightLocal (expert roundup, as of October 2022)",
+   "date": "2022-10",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-02-D16",
+   "url": "https://support.google.com/business/answer/3038177?hl=en",
+   "quote": "If you're a service-area business, you should hide your business address from customers.",
+   "kind": "constraint",
+   "publisher": "Google Business Profile Help",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  }
+ ],
+ "newAlternatives": [
+  {
+   "label": "Google's own Business Profile appeals tool and published evidence list",
+   "kind": "free_tool",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://support.google.com/business/answer/4569145?hl=en",
+   "evidenceRef": "SVC-02-D1"
+  },
+  {
+   "label": "Free DIY reinstatement guides with document checklists (Slashpost, TheeDigital, Robben Media)",
+   "kind": "diy_or_status_quo",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://slashpost.ai/blogs/google-business-profile/google-business-profile-suspended-reinstatement-guide",
+   "evidenceRef": "SVC-02-D5"
+  },
+  {
+   "label": "Google Business Profile Community Product Expert escalation",
+   "kind": "free_tool",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.brightlocal.com/learn/google-business-profile-forum-help/",
+   "evidenceRef": "SVC-02-D13"
+  },
+  {
+   "label": "Freelance marketplace reinstatement bids (avg $120 on one posting)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 120,
+   "coversWedge": "full",
+   "sourceLocator": "https://www.freelancer.in/projects/google-ads/google-ads-gbp-reinstatement",
+   "evidenceRef": "SVC-02-D7"
+  },
+  {
+   "label": "SteadyDemand monitoring plan, $79/location/month, no reinstatement fee",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 79,
+   "coversWedge": "full",
+   "sourceLocator": "https://steadydemand.com/reinstatement.html",
+   "evidenceRef": "SVC-02-D9"
+  },
+  {
+   "label": "Green Thumb Local flat fee paid after completion (reviewers); listed at $349 in scan-1 evidence",
+   "kind": "paid_incumbent",
+   "costUsdPerMonth": 349,
+   "coversWedge": "full",
+   "sourceLocator": "https://reportgarden.com/agencies/green-thumb-local",
+   "evidenceRef": "SVC-02-D11"
+  }
+ ],
+ "killReasons": [
+  {
+   "reason": "The wedge (evidence checklist) is free: Google publishes the document list and a free appeal tool, several free guides give 10-16 document checklists, and one says most straightforward suspensions can be self-filed with paid help mainly worth it for account-level cases. A $149 template targets the buyer least willing to pay and cannot fix the hard cases that do pay.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "SVC-02-D5"
+  },
+  {
+   "reason": "Price is the only differentiator and it is not an edge: done-for-you alternatives already sit at or below $149 (freelancer bids averaging $120, a plan with no reinstatement fee) or shift risk to the seller (flat fee paid after completion, 4.9 rating); an unreviewed stranger asking $149 upfront for a DIY pack is in the worst trust position.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "SVC-02-D7"
+  },
+  {
+   "reason": "Reinstatement hinges on the owner's genuine proof and listing eligibility, not on packaging, so a template has no demonstrable success-rate advantage and no data moat; success of templated packs is unproven.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "SVC-02-D15"
+  },
+  {
+   "reason": "Google's reported move to a single reinstatement opportunity (EU first) raises the cost of a failed pack and refund exposure for an entrant with no case history.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "SVC-02-D4"
+  },
+  {
+   "reason": "Pessimistic year-1 model (price x0.8, volume x0.5, cost x1.5) is negative (about -$3.5k) and base profit is only about $2.2k for roughly 600 owner hours; inputs are assumptions.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "SVC-02-D7"
+  }
+ ],
+ "economics": {
+  "revenue365": 6146,
+  "cost365": 3964,
+  "pessimisticProfit365": -3488,
+  "survivesPessimistic": false,
+  "assumptions": [
+   "Price $149 flat, charged upfront (given in the case file).",
+   "Orders: 55 in year 1 (about 5/month from month 2; assumption, no source for conversion or lead volume).",
+   "25% of orders end up refunded or unrecoverable (assumption; no public success rate for templated packs).",
+   "Revenue = 55 x 0.75 x $149 = $6,146.",
+   "Costs: startup $350 (reference entrant), tools/hosting/domain $30/month = $360, paid ads $250/month = $3,000 (assumption; CPC for this niche not verified), payment fees 2.9% + $0.30 on all orders = $254 (assumption on standard card rates); total $3,964, excludes owner labour (about 600 h).",
+   "Pessimistic: price x0.8 = $119, orders x0.5 = 27.5, revenue $2,459; base cost x1.5 = $5,946; profit about -$3,488.",
+   "Pessimistic uses base cost x1.5 (not scaled down with volume) as the conservative reading of the rule."
+  ],
+  "sources": [
+   "SVC-02-D7",
+   "SVC-02-D8",
+   "SVC-02-D9",
+   "SVC-02-D11"
+  ]
+ },
+ "legalNotes": [
+  "Google Business Profile reinstatement is free and run through Google's appeal tool; the service sells assistance against a free official path (SVC-02-E7).",
+  "Evidence must be genuine; never fabricate, borrow or alter licences, utility bills or registrations. Misrepresentation could harm the client and expose the seller.",
+  "Google guidelines exclude virtual offices, mailing-address-only listings and lead-gen agents (D16 and Google guidelines page); a pack cannot legitimately fix an ineligible listing. Locksmith/towing/trade categories are spam-heavy, so reinstating them risks helping policy-violating listings.",
+  "Platform dependency: appeal rules, the 60-minute evidence window and the number of attempts change (EU-first single-opportunity process reported by BrightLocal); no contractual protection for the entrant.",
+  "The client must grant Business Profile manager access if the entrant files for them; Google's terms for third-party access were not read. No unauthorised-practice-of-law regime identified for this service, but not researched exhaustively."
+ ],
+ "unverified": [
+  "Success rate of templated evidence packs; no public source found and none can be established without paid cases.",
+  "Green Thumb Local $349 price page, Search Scope $550/295-of-300, Sterling Sky pay-on-success terms, and the Reinstatement Experts ($450) and Reputation Arm ($600) prices: these pages were refused by the fetch tool (permission request unanswered) or not re-read, so those figures stay as scan-1 agent_reported evidence (E1, E2, E3, E6) and were not re-verified.",
+  "Fiverr GBP reinstatement gig prices (block.fiverr.com refused; the Fiverr listing fetched showed only citation and local-SEO gigs).",
+  "Whether the single-opportunity reinstatement process applies in the US or is EU-only so far (BrightLocal and DBA Platform describe EU first).",
+  "CPC or organic reach for 'google business profile suspended' keywords; the web-search budget ran out during the work, so only about 5 search queries were possible.",
+  "Vendor review counts and recovery claims are self-reported and unaudited."
+ ],
+ "nextStep": "Drop it unless a public source shows a high-volume, paying segment (account-level or repeat suspensions) that a template-assisted flat-fee service can reinstate profitably."
+}

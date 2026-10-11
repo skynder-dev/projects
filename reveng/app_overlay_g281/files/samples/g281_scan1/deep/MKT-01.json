@@ -1,0 +1,343 @@
+{
+ "id": "MKT-01",
+ "verdict": "killed",
+ "verdictReason": "Killed on three major reasons: (1) paid homeowner traffic (~$149/lead non-branded, 25-40% booking) costs far more per booked job than the $100 fee, triggering the scan-1 falsifier; (2) the only cheaper route is SEO/rank-and-rent, 3-6 months and copyable, so no exclusive/compounding edge and no day-45 revenue; (3) pay-on-contact Thumbtack, exclusive-lead vendors, Takl and Google LSA already cover the wedge. Pessimistic year-1 model loses ~$1.9k.",
+ "answers": [
+  {
+   "question": "(1) What free/cheap alternative covers the wedge?",
+   "answer": "Several partly do. Thumbtack is free to join and bills when a customer contacts or hires the pro, with a weekly budget cap (D1, D2, D3). Google LSA bills only valid leads at roughly $18-$45 per house-cleaning lead and $15-$30 per handyman lead per agency blogs (D6, D17; D16 says cleaners spend $60-70). Takl already charges only on completed jobs, 10%-30% (D4). Exclusive leads are sold by vendors at 2-3x shared price (D10, D11). Cleaning/handyman lead prices are already low (D9), so the per-booking saving vs a $100 fee is small or zero. The scan-1 ~$350 per booked job incumbent figure came from a blog (E4) that I could not re-read (fetch refused), so it stays unverified.",
+   "evidenceIds": [
+    "MKT-01-D1",
+    "MKT-01-D2",
+    "MKT-01-D3",
+    "MKT-01-D4",
+    "MKT-01-D6",
+    "MKT-01-D9",
+    "MKT-01-D10",
+    "MKT-01-D11",
+    "MKT-01-D16",
+    "MKT-01-D17",
+    "MKT-01-E4"
+   ]
+  },
+  {
+   "question": "(2) What structural edge exists, and who could copy it?",
+   "answer": "None identified. Single-pro routing and pay-on-outcome pricing are product choices that Thumbtack, Takl, lead vendors or any rank-and-rent operator could copy (D4, D10, D11). The only possible compounding asset is a locally ranked site, but ranking takes 3-6 months, is not exclusive, and Google Business Profile access is restricted to genuine service providers (D12, D14). Falsifier: evidence that a zero-audience entrant can rank for \"trade + metro\" within ~4 months at <$1,500 and that pros will pay a per-booking fee to an unknown intermediary; no such evidence found.",
+   "evidenceIds": [
+    "MKT-01-D4",
+    "MKT-01-D10",
+    "MKT-01-D11",
+    "MKT-01-D12",
+    "MKT-01-D14"
+   ]
+  },
+  {
+   "question": "(3) Who demonstrably pays and how much?",
+   "answer": "Pros demonstrably pay per lead: Thumbtack $10-$100+ per lead by pro self-report (D5; scan-1 E1 $15-$80), Google LSA $15-$45 for cleaning/handyman (D6, D17) and ~$53-$149 per lead in Google Search/LSA for home services overall (D8). Nothing found shows pros paying a pay-on-booking fee to a new intermediary; the only analogue is Takl taking 10%-30% of completed jobs (D4).",
+   "evidenceIds": [
+    "MKT-01-D4",
+    "MKT-01-D5",
+    "MKT-01-D6",
+    "MKT-01-D8",
+    "MKT-01-D17",
+    "MKT-01-E1"
+   ]
+  },
+  {
+   "question": "(4) Legal/platform constraints?",
+   "answer": "Google Business Profile limits listings to genuine, staffed service businesses and bars virtual offices (D14); LSA verifies the advertiser's licence, insurance and background (D15), so a non-provider entrant likely cannot use either channel in its own name (not confirmed). Lead-gen carries TCPA exposure of $500-$1,500 per call/text per one vendor blog (not independently confirmed). State contractor-licence rules for handyman work, and whether a percentage-of-job referral fee is allowed in a given state, could not be verified (state licensing pages refused/errored); restrict to licence-free house cleaning and have counsel review.",
+   "evidenceIds": [
+    "MKT-01-D14",
+    "MKT-01-D15",
+    "MKT-01-D13"
+   ]
+  },
+  {
+   "question": "(5) Year-1 numbers (reference entrant: $3,500, 17 h/week)?",
+   "answer": "Model for house cleaning in one metro, SEO-led, $100 fee per booked job (assumption). Base: no revenue months 1-3 (D12), requests ramp 5 to 45/month over months 4-12 = 225 requests (assumption), 40% book (upper end of D7), 70% of fees actually collected (assumption: 30% off-platform leakage), giving revenue ~$6,300; cost ~$2,980 (site $300, content/links $1,200, tools $480, legal $700, tests $300, all assumptions); profit ~+$3,300. Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue ~$2,520, cost ~$4,470, profit ~-$1,950. Paid-traffic variant: $149/lead (D8) at 40% booking = ~$372 per booked job vs $100 fee, a loss on every job; even at LSA-level $18-$45/lead and 25-40% booking, cost is $45-$180 per booked job, with no margin at the high end. The base case rests on an unsourced demand ramp; the pessimistic case fails.",
+   "evidenceIds": [
+    "MKT-01-D6",
+    "MKT-01-D7",
+    "MKT-01-D8",
+    "MKT-01-D12"
+   ]
+  }
+ ],
+ "newEvidence": [
+  {
+   "id": "MKT-01-D1",
+   "url": "https://www.thumbtack.com/pro/jobs",
+   "quote": "You pay when a new customer contacts or hires you.",
+   "kind": "incumbent_price",
+   "publisher": "Thumbtack (Jobs on Thumbtack, pro-facing page)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Thumbtack itself now bills the pro when a customer contacts or hires them (customer-initiated), which weakens the scan-1 pain that pros are billed whether or not the homeowner replies."
+  },
+  {
+   "id": "MKT-01-D2",
+   "url": "https://www.thumbtack.com/pro/jobs",
+   "quote": "Creating an account is free. There's no signup or subscription fee.",
+   "kind": "incumbent_price",
+   "publisher": "Thumbtack (Jobs on Thumbtack, pro-facing page)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Answers the scan-1 unknown \"does Thumbtack have a free tier\": free to join, pay per contact, weekly budget set by the pro."
+  },
+  {
+   "id": "MKT-01-D3",
+   "url": "https://community.thumbtack.com/discussion/1802/pricing",
+   "quote": "You will be charged for a lead the moment the customer reaches out.",
+   "kind": "other",
+   "publisher": "Thumbtack Community forum (pricing thread)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "A Thumbtack administrator states the charge trigger is the customer reaching out to the pro, i.e. the lead is not billed on a pro-initiated message to a silent homeowner."
+  },
+  {
+   "id": "MKT-01-D4",
+   "url": "https://www.housecallpro.com/learn/thumbtack-vs-takl/",
+   "quote": "Takl will take a 10%-30% cut from each job you complete",
+   "kind": "incumbent_price",
+   "publisher": "Housecall Pro: Thumbtack vs Takl (competitor-published)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "An existing marketplace (Takl) already charges the pro only on completed jobs (10%-30% cut, plus $2.99/month access fee per the same page), i.e. the pay-on-outcome wedge is not new. Publisher is a Thumbtack competitor, so treat as secondary."
+  },
+  {
+   "id": "MKT-01-D5",
+   "url": "https://www.housecallpro.com/resources/what-is-thumbtack-how-it-works/",
+   "quote": "If a lead doesn't turn into a job, you don't get your money back.",
+   "kind": "other",
+   "publisher": "Housecall Pro: What is Thumbtack (competitor-published)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Pro complaint about non-refunded leads on Thumbtack persists (pain is real), but figures are pro self-reports from a competitor-published page."
+  },
+  {
+   "id": "MKT-01-D6",
+   "url": "https://www.plyrium.com/academy/all-trades/google-local-services-ads-burn-3k-before-leads",
+   "quote": "| House Cleaning   | $18-$45  |",
+   "kind": "incumbent_price",
+   "publisher": "Plyrium Academy: Google LSA cost article (agency blog)",
+   "date": "2026-05-27",
+   "evidenceClass": "agent_reported",
+   "shows": "Google Local Services Ads average cost per lead for house cleaning is $18-$45 (agency blog, secondary). A cheap per-lead alternative to the entrant for cleaning pros that qualify for LSA."
+  },
+  {
+   "id": "MKT-01-D7",
+   "url": "https://www.plyrium.com/academy/all-trades/google-local-services-ads-burn-3k-before-leads",
+   "quote": "Most service trades book 25-40% of qualified leads.",
+   "kind": "demand",
+   "publisher": "Plyrium Academy: Google LSA cost article (agency blog)",
+   "date": "2026-05-27",
+   "evidenceClass": "agent_reported",
+   "shows": "Booking share of qualified leads is 25-40%, used to convert cost per lead into cost per booked job."
+  },
+  {
+   "id": "MKT-01-D8",
+   "url": "https://cubecreative.design/blog/small-business-marketing/google-local-service-ads-worth-it",
+   "quote": "The SearchLight breakdown put branded search at a $34 cost per lead, non-branded search at $149, and Performance Max at $72,",
+   "kind": "incumbent_price",
+   "publisher": "Cube Creative: Google Local Service Ads worth it? (agency blog)",
+   "date": "2026-08-24",
+   "evidenceClass": "agent_reported",
+   "shows": "Home-services Google Search Ads cost ~$149 per lead on non-branded terms (the terms a new lead-gen site must buy). Same page: blended $104 per lead; LSA ~ $53. Secondary source quoting a third-party dataset."
+  },
+  {
+   "id": "MKT-01-D9",
+   "url": "https://clicksgeek.com/pay-per-lead-services-pricing/",
+   "quote": "typically see the lowest lead costs, ranging from $15 to $50,",
+   "kind": "incumbent_price",
+   "publisher": "ClicksGeek: Pay per lead services pricing (vendor blog)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Local-service/cleaning lead costs are the lowest of the trades at $15-$50 per lead (vendor blog; not trade-specific): a low per-lead price anchor that the entrant must beat per booking."
+  },
+  {
+   "id": "MKT-01-D10",
+   "url": "https://clicksgeek.com/pay-per-lead-services-pricing/",
+   "quote": "often two to three times the price of shared leads,",
+   "kind": "other",
+   "publisher": "ClicksGeek: Pay per lead services pricing (vendor blog)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Exclusive leads are an established product that command 2-3x the shared price; exclusivity is therefore already sold by existing lead vendors and priced into the market."
+  },
+  {
+   "id": "MKT-01-D11",
+   "url": "https://viewmedia.com/insights/exclusive-home-services-leads-guide",
+   "quote": "An exclusive lead is sold to one business. A shared lead is sold to several at the same time.",
+   "kind": "other",
+   "publisher": "View Media: exclusive home services leads guide (vendor)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Another vendor already sells exclusive home-services leads; the single-pro routing idea is not exclusive to the entrant."
+  },
+  {
+   "id": "MKT-01-D12",
+   "url": "https://prospeo.io/s/lead-gen-business-model",
+   "quote": "Expect 3-6 months before you're ranking consistently.",
+   "kind": "constraint",
+   "publisher": "Prospeo: Lead gen business model explained (vendor blog)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Rank-and-rent depends on SEO and needs 3-6 months before consistent ranking, so first revenue at day 45 (reference entrant) is not credible from SEO alone."
+  },
+  {
+   "id": "MKT-01-D13",
+   "url": "https://prospeo.io/s/lead-gen-business-model",
+   "quote": "you'll spend half your time arguing about refunds.",
+   "kind": "constraint",
+   "publisher": "Prospeo: Lead gen business model explained (vendor blog)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Lead-quality disputes with buyers are a known operating cost of lead-gen without written acceptance criteria."
+  },
+  {
+   "id": "MKT-01-D14",
+   "url": "https://support.google.com/business/answer/3038177",
+   "quote": "Service-area businesses can't list a \"virtual\" office unless that office is staffed during business hours.",
+   "kind": "constraint",
+   "publisher": "Google Business Profile Help: guidelines for representing your business",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Google Business Profile (the map-pack channel that drives local home-service leads) is restricted to businesses that really operate at/serve from the address; a non-provider lead-gen entrant cannot plainly hold such a listing for the trade. Page does not ban lead-gen outright (it addresses individual practitioners and virtual offices)."
+  },
+  {
+   "id": "MKT-01-D15",
+   "url": "https://www.enrichlabs.ai/blog/local-services-ads-complete-guide-2026",
+   "quote": "Google screens businesses that advertise directly.",
+   "kind": "constraint",
+   "publisher": "Enrich Labs: Local Services Ads complete guide 2026 (agency blog)",
+   "date": "2026",
+   "evidenceClass": "agent_reported",
+   "shows": "LSA verification (licence/registration, insurance, background checks) applies to the advertiser itself; whether a non-provider lead-gen entrant could buy LSA is not established, so the cheap LSA lead price ($18-$45 cleaning) may not be available to the entrant (unverified)."
+  },
+  {
+   "id": "MKT-01-D16",
+   "url": "https://www.zenmaid.com/magazine/google-local-services-ads-for-cleaning-businesses-2026-guide-with-real-screenshots/",
+   "quote": "You only pay when someone contacts you through the ad.",
+   "kind": "incumbent_price",
+   "publisher": "ZenMaid: Google LSA for cleaning businesses 2026 (vendor blog)",
+   "date": "2026",
+   "evidenceClass": "agent_reported",
+   "shows": "Pay-on-contact already exists on Google LSA for cleaners; same page says cleaning companies spend around $60-70 per lead, so sources disagree with D6 ($18-$45)."
+  },
+  {
+   "id": "MKT-01-D17",
+   "url": "https://adaptdigitalsolutions.com/articles/google-local-service-ads-for-contractors/",
+   "quote": "Handyman work tends to come in at $15–$30 per lead.",
+   "kind": "incumbent_price",
+   "publisher": "Adapt Digital Solutions: Google LSA for contractors (agency blog)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Handyman is the low-ticket trade the idea targets, and its Google LSA per-lead cost is only $15-$30, so pro lead cost is already small relative to a $100 per-booking fee."
+  }
+ ],
+ "newAlternatives": [
+  {
+   "label": "Thumbtack pro account: free to join, pay when a customer contacts/hires, weekly budget cap (cost varies; $0 fixed)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.thumbtack.com/pro/jobs",
+   "evidenceRef": "MKT-01-D2"
+  },
+  {
+   "label": "Google Local Services Ads (pay per valid lead; house cleaning $18-$45/lead, handyman $15-$30/lead per agency blogs)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.plyrium.com/academy/all-trades/google-local-services-ads-burn-3k-before-leads",
+   "evidenceRef": "MKT-01-D6"
+  },
+  {
+   "label": "Takl: $2.99/month access fee plus 10%-30% cut of completed jobs (pay-on-outcome marketplace)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 2.99,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.housecallpro.com/learn/thumbtack-vs-takl/",
+   "evidenceRef": "MKT-01-D4"
+  },
+  {
+   "label": "Vendor-sold exclusive home-services leads (priced 2-3x shared leads; no per-booking terms found)",
+   "kind": "paid_incumbent",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://viewmedia.com/insights/exclusive-home-services-leads-guide",
+   "evidenceRef": "MKT-01-D11"
+  },
+  {
+   "label": "Rank-and-rent / own local site (pro builds own SEO presence; rank-and-rent sites quoted at $1,000-$2,000/month by a vendor blog)",
+   "kind": "diy_or_status_quo",
+   "costUsdPerMonth": 1000,
+   "coversWedge": "partial",
+   "sourceLocator": "https://prospeo.io/s/lead-gen-business-model",
+   "evidenceRef": "MKT-01-D12"
+  }
+ ],
+ "killReasons": [
+  {
+   "reason": "Paid homeowner traffic costs more per booked job than the $100 fee the entrant would charge: non-branded home-services Google Search Ads run ~$149 per lead (D8) and only 25-40% of qualified leads book (D7), i.e. roughly $370-$600 per booked job before the entrant takes any margin; break-even fee on this route is >$500. The scan-1 falsifier (traffic cost per booked job above ~$100) is triggered on the paid route.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "MKT-01-D8"
+  },
+  {
+   "reason": "The only route that could undercut paid traffic is organic SEO / rank-and-rent, which needs 3-6 months to rank (D12), so the reference entrant's 45-day first revenue does not hold, and rankings are not an exclusive or compounding asset a rival could not copy (anyone can build a competing site; Google Business Profile access is limited to real providers, D14). No structural edge survives.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "MKT-01-D12"
+  },
+  {
+   "reason": "Each element of the wedge is already available: Thumbtack is free to join with a weekly budget and bills when a customer contacts or hires the pro (D1, D2, D3); exclusive leads are sold by lead vendors at 2-3x shared price (D10, D11); Takl already takes a cut only on completed jobs (D4); Google LSA bills only valid leads at $15-$45 for handyman/cleaning (D6, D17). The scan-1 premise that pros pay whether or not homeowners reply is partly stale (D1, D3).",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "MKT-01-D1"
+  },
+  {
+   "reason": "Pay-on-confirmed-booking cannot be verified unless homeowner payment runs through the entrant; no source shows pros accept a fee from an unknown intermediary, and quality disputes consume time (D13). Off-platform leakage rate could not be sourced.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "MKT-01-D13"
+  }
+ ],
+ "economics": {
+  "revenue365": 6300,
+  "cost365": 2980,
+  "pessimisticProfit365": -1950,
+  "survivesPessimistic": false,
+  "assumptions": [
+   "Trade: house cleaning (licence-free in most places; not verified), one metro; fee $100 per confirmed booked job (scan-1 assumption, not an observed price).",
+   "No revenue months 1-3 because SEO needs 3-6 months (D12); monthly homeowner requests ramp 5,10,15,20,25,30,35,40,45 over months 4-12 = 225 (assumption, unsourced).",
+   "Booking rate 40% of requests routed to the single pro (top of 25-40% range, D7); fee collection rate 70% (assumption: 30% off-platform leakage).",
+   "Cost: domain/site $300, content/links/citations $1,200, call/SMS/CRM/payment tools $40/month, legal/LLC/terms $700, tests $300 = $2,980 (all assumptions); owner time unpaid (17 h/week).",
+   "Pessimistic: price x0.8 ($80), volume x0.5 (112 requests), cost x1.5 ($4,470) gives revenue $2,520 and profit -$1,950.",
+   "Paid variant: Google non-branded $149/lead (D8) / 40% booking = $372 per booked job; break-even fee about $532 after 30% leakage."
+  ],
+  "sources": [
+   "MKT-01-D6",
+   "MKT-01-D7",
+   "MKT-01-D8",
+   "MKT-01-D12"
+  ]
+ },
+ "legalNotes": [
+  "Google Business Profile guidelines restrict listings to businesses that operate at or serve from the address and bar unstaffed virtual offices (D14).",
+  "Google LSA screens the advertiser (licence/registration, insurance, background) (D15); a lead-gen entrant that is not itself the provider may not be eligible (unconfirmed).",
+  "TCPA penalties of $500-$1,500 per unconsented call/text are cited by a vendor blog (D13 page); homeowner consent capture needed if the entrant routes calls/texts (not independently confirmed).",
+  "State contractor-licence thresholds for handyman work and rules on referral/percentage fees to licensed contractors not verified; restrict to licence-free trades and obtain counsel review.",
+  "Holding homeowner payments (to verify bookings) may trigger money-transmission rules; use a licensed processor/escrow rather than holding funds (not researched)."
+ ],
+ "unverified": [
+  "Scan-1 ~$350 per booked job Thumbtack figure (E4 on thebookingflow.com): page fetch refused (provenance), not re-checked.",
+  "Local SEO ranking difficulty and cost per homeowner request in any specific metro; the 225-request year-1 ramp is an unsourced assumption.",
+  "Share of bookings leaking off-platform; whether pros accept a pay-on-booking fee from an unknown intermediary.",
+  "Whether a non-provider lead-gen business can buy Google LSA or hold a Business Profile.",
+  "State licence thresholds and referral-fee rules; the CSLB (California) pages errored.",
+  "Google CPL figures (D6, D8, D9, D16, D17) are agency/vendor blogs quoting third-party datasets and disagree with each other (cleaning $18-$45 vs $60-70); not primary data.",
+  "WebSearch budget was exhausted mid-task, so fewer new-alternative queries than the brief asks were run; no search for TaskRabbit/Angi/Bark pay-on-booking terms."
+ ],
+ "nextStep": "Do not pursue; revisit only if a primary source shows a zero-audience site ranking for a trade+metro query within ~4 months and pros accepting a verified per-booking fee."
+}

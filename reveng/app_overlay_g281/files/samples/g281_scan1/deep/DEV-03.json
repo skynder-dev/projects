@@ -1,0 +1,232 @@
+{
+ "id": "DEV-03",
+ "verdict": "killed",
+ "verdictReason": "The wedge (OpenAPI spec to hosted MCP server with generic OAuth) is already sold self-serve by funded vendors at $0-$41/month (Gram free tier, API to MCP $0/$6.99, Zuplo incl. free plan), OAuth is available as an open-source Cloudflare library, and Fiverr offers done-for-you builds from $90. At $499 + $49/mo with no exclusive asset, nothing stops copying, and no payer for the fixed-price package was found. Pessimistic year-1 profit is negative (about -$1.0k).",
+ "answers": [
+  {
+   "question": "(1) What free/cheap alternative covers the wedge?",
+   "answer": "Self-serve hosted OpenAPI-to-MCP products with OAuth already exist: Gram by Speakeasy (upload OpenAPI, 'every toolset ... immediately available as a hosted MCP server', OAuth 2.1 proxy with DCR/PKCE, free tier of 1K tool calls), 'API to MCP' (free plan with 1 server and 3,000 calls/month, Starter $6.99/month, OAuth Authorization Code on paid plans), Zuplo (OpenAPI to remote MCP server on all plans including free), liblab (first 100 calls free), Stainless (free plan, up to 5 generators), plus open-source generators and Cloudflare's OAuth provider library. Done-for-you supply is also cheap: a Fiverr gig sells a remote MCP server (up to 10 tools) from $90 in 7 days. The only part not covered by a $0-$41/month tool is white-glove labour for a vendor that will not click through a self-serve tool; no evidence was found that such a segment pays $499 + $49/mo.",
+   "evidenceIds": ["DEV-03-D1", "DEV-03-D2", "DEV-03-D3", "DEV-03-D4", "DEV-03-D5", "DEV-03-D6", "DEV-03-D7", "DEV-03-D8", "DEV-03-D9", "DEV-03-D10", "DEV-03-D11"]
+  },
+  {
+   "question": "(2) What structural edge exists and who could copy it?",
+   "answer": "None found. Every component the entrant would automate (spec to tools, OAuth proxy, hosting) is already a free or cheap productised feature at funded companies (Speakeasy/Gram, Zuplo, Cloudflare, API to MCP), so AI-assisted automation is not an edge and anyone, including those vendors and any freelancer, can copy a done-for-you wrapper in days. The entrant has no exclusive data, distribution or compounding asset. Falsifier: evidence that several small API vendors pay a fixed $499 + $49/mo for done-for-you builds despite $0-$7 self-serve options, and that they stay (retention) once the MCP spec shifts.",
+   "evidenceIds": ["DEV-03-D1", "DEV-03-D3", "DEV-03-D5", "DEV-03-D7", "DEV-03-D8"]
+  },
+  {
+   "question": "(3) Who demonstrably pays and how much?",
+   "answer": "Not demonstrated for this offer. What was read: agencies/guides quote multi-week builds (3-5 weeks, authentication adding 4-6 weeks in one guide), Fiverr lists $90 for a basic remote MCP server, self-serve tools list $0-$41.30/month, and larger vendors build their own (Attio runs its own hosted OAuth MCP server; a Forrester forecast cited by a blog expects 30% of enterprise application vendors to ship native MCP servers by end of 2026). No receipt, review count or named buyer shows small SaaS companies paying a productised $499 + $49/mo to a stranger. The earlier agency price ranges ($3k-$8k, $8k-$25k) could not be re-read (fetch blocked) and are not relied on.",
+   "evidenceIds": ["DEV-03-D3", "DEV-03-D11", "DEV-03-D12", "DEV-03-D13", "DEV-03-D14", "DEV-03-D15"]
+  },
+  {
+   "question": "(4) Legal/platform constraints?",
+   "answer": "Platform dependency: value exists only while Claude/ChatGPT and other clients accept remote MCP servers and the spec keeps its OAuth model; platforms themselves (Cloudflare, Speakeasy, Zuplo) are productising exactly this layer. Hosting a customer's OAuth credentials/tokens makes the entrant a security-liability and data-processor party (assumption, no primary source read). Cold outreach to vendors is subject to email/spam rules (assumption). No licence is needed to build MCP servers, and no scraping or contact was done in this screen.",
+   "evidenceIds": ["DEV-03-D7", "DEV-03-D8", "DEV-03-D6"]
+  },
+  {
+   "question": "(5) Year-1 numbers?",
+   "answer": "Base case (assumptions, not data): 12 customers won by cold outreach in 12 months, $499 one-time plus $49/mo, average 5.5 paying months each: revenue about $9,222; cost about $3,150 (build labour/AI tokens $125 per customer, $5/mo hosting per customer, $85/mo tools/outreach, $300 set-up); profit about $6.1k before 520 owner hours. Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue about $3,689, cost about $4,725, profit about -$1,036, so it does not survive. The 12-customer base case itself is unsupported: the cheapest self-serve alternatives cost $0-$41/month.",
+   "evidenceIds": ["DEV-03-D3", "DEV-03-D4", "DEV-03-D11"]
+  }
+ ],
+ "newEvidence": [
+  {
+   "id": "DEV-03-D1",
+   "url": "https://www.speakeasy.com/blog/release-gram-beta",
+   "quote": "Every toolset in Gram is immediately available as a hosted MCP server.",
+   "kind": "other",
+   "publisher": "Speakeasy (Gram beta launch post)",
+   "date": "2025-09-09",
+   "evidenceClass": "agent_reported",
+   "shows": "Gram turns an uploaded API definition into tools and hosts them as an MCP server, with an optional OAuth 2.1 proxy (DCR + PKCE) per the same post."
+  },
+  {
+   "id": "DEV-03-D2",
+   "url": "https://www.speakeasy.com/blog/release-gram-beta",
+   "quote": "Pricing is usage-based with a generous free tier (1K tool calls) to encourage teams to experiment and iterate quickly.",
+   "kind": "incumbent_price",
+   "publisher": "Speakeasy (Gram beta launch post)",
+   "date": "2025-09-09",
+   "evidenceClass": "agent_reported",
+   "shows": "A funded vendor offers hosted OpenAPI-to-MCP with a free tier; current Gram paid prices were not found (public pricing page lists only an Enterprise 'Tailored' plan)."
+  },
+  {
+   "id": "DEV-03-D3",
+   "url": "https://toolradar.com/tools/api-to-mcp",
+   "quote": "$0 / month | $6.99 / month | $20.99 / month | $41.30 / month",
+   "kind": "incumbent_price",
+   "publisher": "Toolradar listing for 'API to MCP' (apitomcp.ai)",
+   "date": "2026-06-19",
+   "evidenceClass": "agent_reported",
+   "shows": "Free plan (1 active MCP server, 3,000 API calls/month, 15 tools), Starter $6.99, Professional $20.99, Business $41.30 per month (pricing checked 2026-09-28 per the page); quote is the price fragments as returned by the fetch tool."
+  },
+  {
+   "id": "DEV-03-D4",
+   "url": "https://toolradar.com/tools/api-to-mcp",
+   "quote": "Hosted MCP server deployment",
+   "kind": "incumbent_price",
+   "publisher": "Toolradar listing for 'API to MCP' (apitomcp.ai)",
+   "date": "2026-06-19",
+   "evidenceClass": "agent_reported",
+   "shows": "A hosted REST/GraphQL-to-remote-MCP product; OAuth Client Credentials on all plans and OAuth Authorization Code on Starter and above (user-connection limits 30/300/3,000), so the OAuth part of the wedge is sold at $6.99+/month."
+  },
+  {
+   "id": "DEV-03-D5",
+   "url": "https://dev.to/zuplo/quickly-create-remote-mcp-servers-for-apis-with-zuplo-18o6",
+   "quote": "available immediately across all Zuplo plans, including our free tier",
+   "kind": "incumbent_price",
+   "publisher": "Zuplo on DEV Community",
+   "date": "2025-06-10",
+   "evidenceClass": "agent_reported",
+   "shows": "Zuplo builds a remote MCP server from the API's OpenAPI document in seconds on the free tier."
+  },
+  {
+   "id": "DEV-03-D6",
+   "url": "https://zuplo.com/features/mcp-servers",
+   "quote": "Turn any OpenAPI spec into a remote MCP server in your Zuplo gateway.",
+   "kind": "other",
+   "publisher": "Zuplo (MCP servers feature page)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Zuplo runs the MCP server on its edge network and lists OAuth among policies; it serves MCP-spec OAuth resource metadata (oAuthResourceMetadataEnabled). Requires the API to sit behind the Zuplo gateway."
+  },
+  {
+   "id": "DEV-03-D7",
+   "url": "https://blog.cloudflare.com/remote-model-context-protocol-servers-mcp/",
+   "quote": "You can now build and deploy remote MCP servers to Cloudflare.",
+   "kind": "other",
+   "publisher": "Cloudflare blog",
+   "date": "2025-03-25",
+   "evidenceClass": "agent_reported",
+   "shows": "A platform provider ships remote MCP hosting as a first-party capability."
+  },
+  {
+   "id": "DEV-03-D8",
+   "url": "https://blog.cloudflare.com/remote-model-context-protocol-servers-mcp/",
+   "quote": "a new TypeScript library that wraps your Worker’s code, adding authorization to API endpoints.",
+   "kind": "constraint",
+   "publisher": "Cloudflare blog",
+   "date": "2025-03-25",
+   "evidenceClass": "agent_reported",
+   "shows": "workers-oauth-provider handles MCP-spec OAuth (dynamic client registration, metadata) generically and for free, so OAuth is a solved, copyable component rather than an entrant edge."
+  },
+  {
+   "id": "DEV-03-D9",
+   "url": "https://www.fast.io/resources/best-mcp-server-generator-tools.md",
+   "quote": "Pay-per-use. First 100 calls/month free. No setup fees.",
+   "kind": "incumbent_price",
+   "publisher": "Fast.io, Best MCP Server Generator Tools for 2026",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Listing of seven generators from OpenAPI (Stainless, Speakeasy, FastMCP, Gram, liblab, openapi-mcp-generator, AWS Labs); liblab hosts a cloud server with a public URL pay-per-use; openapi-mcp-generator and FastMCP are free/open source; Gram lists OAuth 2.1 with DCR and PKCE."
+  },
+  {
+   "id": "DEV-03-D10",
+   "url": "https://www.stainless.com/pricing",
+   "quote": "any single SDK, Docs site or MCP server",
+   "kind": "incumbent_price",
+   "publisher": "Stainless (pricing page)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Page defines a 'generator' as including an MCP server and lists a Free plan at $0 with up to 5 generators; paid plan prices not shown, and whether the free plan covers private APIs is unclear."
+  },
+  {
+   "id": "DEV-03-D11",
+   "url": "https://fiverr.com/amama_fatimadev/create-custom-mcp-client-and-server",
+   "quote": "Fully functional remote or local mcp server with up to 10 tools.",
+   "kind": "incumbent_price",
+   "publisher": "Fiverr gig listing",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Basic package from $90, 7-day delivery, 2 revisions; gig has 1 review and showed an 'On Hold' notice, so it is a weak but real price anchor for done-for-you builds."
+  },
+  {
+   "id": "DEV-03-D12",
+   "url": "https://attio.com/apps/mcp",
+   "quote": "Attio provides a hosted MCP server that gives AI tools secure access to your Attio workspace.",
+   "kind": "constraint",
+   "publisher": "Attio",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "A SaaS vendor ships its own hosted OAuth MCP server for Claude/ChatGPT (https://mcp.attio.com/mcp); vendors with engineers build it themselves."
+  },
+  {
+   "id": "DEV-03-D13",
+   "url": "https://agentmarketcap.ai/blog/2026/04/17/forrester-30-percent-enterprise-vendors-ship-mcp-servers-2026",
+   "quote": "calls for 30% of them to ship one by year-end",
+   "kind": "demand",
+   "publisher": "AgentMarketCap blog citing Forrester Predictions 2026 (second-hand)",
+   "date": "2026-04-17",
+   "evidenceClass": "agent_reported",
+   "shows": "Native vendor-built MCP servers are expected to spread among enterprise application vendors; the post gives no small-vendor breakdown and contrasts it with third-party connector platforms (Zapier, Workato) for the long tail."
+  },
+  {
+   "id": "DEV-03-D14",
+   "url": "https://amitkoth.com/mcp-server-development-cost/",
+   "quote": "It typically adds 4-6 weeks to any project, regardless of what comes before it.",
+   "kind": "other",
+   "publisher": "Amit Kothari, MCP server development cost",
+   "date": "2026-09-02",
+   "evidenceClass": "agent_reported",
+   "shows": "Authentication is described as the long pole in custom MCP builds (same page: API integration 150-250 hours over 3-5 weeks); supports the pain, but not a price for a productised package and gives no USD figures."
+  },
+  {
+   "id": "DEV-03-D15",
+   "url": "https://lember.io/how-to-build-and-roll-out-mcp-in-saas-projects/",
+   "quote": "A small development team can complete this process in three to five weeks.",
+   "kind": "other",
+   "publisher": "Lember (MCP in SaaS projects)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Agency-style estimates: pilot of 2-3 servers 8,000-15,000, production 20,000-40,000, maintenance 10-15% per year (currency not stated on the page); no AI-coding-tool or OAuth-specific content."
+  }
+ ],
+ "newAlternatives": [
+  {"label": "Gram by Speakeasy (hosted MCP from OpenAPI, OAuth 2.1 proxy)", "kind": "free_tool", "costUsdPerMonth": 0, "coversWedge": "full", "sourceLocator": "https://www.speakeasy.com/blog/release-gram-beta", "evidenceRef": "DEV-03-D2"},
+  {"label": "API to MCP (apitomcp.ai) hosted, Starter plan with OAuth Authorization Code", "kind": "cheap_paid", "costUsdPerMonth": 6.99, "coversWedge": "full", "sourceLocator": "https://toolradar.com/tools/api-to-mcp", "evidenceRef": "DEV-03-D3"},
+  {"label": "Zuplo gateway MCP server from OpenAPI (free plan)", "kind": "free_tool", "costUsdPerMonth": 0, "coversWedge": "partial", "sourceLocator": "https://dev.to/zuplo/quickly-create-remote-mcp-servers-for-apis-with-zuplo-18o6", "evidenceRef": "DEV-03-D5"},
+  {"label": "Cloudflare Workers remote MCP + workers-oauth-provider (DIY, open source library)", "kind": "open_source", "costUsdPerMonth": 0, "coversWedge": "partial", "sourceLocator": "https://blog.cloudflare.com/remote-model-context-protocol-servers-mcp/", "evidenceRef": "DEV-03-D8"},
+  {"label": "liblab hosted MCP from OpenAPI (pay-per-use, first 100 calls free)", "kind": "cheap_paid", "costUsdPerMonth": 0, "coversWedge": "partial", "sourceLocator": "https://www.fast.io/resources/best-mcp-server-generator-tools.md", "evidenceRef": "DEV-03-D9"},
+  {"label": "openapi-mcp-generator / FastMCP OpenAPI provider (self-hosted open source)", "kind": "open_source", "costUsdPerMonth": 0, "coversWedge": "partial", "sourceLocator": "https://www.fast.io/resources/best-mcp-server-generator-tools.md", "evidenceRef": "DEV-03-D9"},
+  {"label": "Stainless free plan (MCP server is a generator, up to 5)", "kind": "free_tool", "costUsdPerMonth": 0, "coversWedge": "partial", "sourceLocator": "https://www.stainless.com/pricing", "evidenceRef": "DEV-03-D10"},
+  {"label": "Fiverr done-for-you remote MCP server, $90 one-time (amortised over 12 months)", "kind": "cheap_paid", "costUsdPerMonth": 7.5, "coversWedge": "partial", "sourceLocator": "https://fiverr.com/amama_fatimadev/create-custom-mcp-client-and-server", "evidenceRef": "DEV-03-D11"}
+ ],
+ "killReasons": [
+  {"reason": "Wedge capability and price are dominated: hosted OpenAPI-to-MCP with OAuth is sold self-serve at $0-$41.30/month (Gram free tier, API to MCP Starter $6.99 with OAuth Authorization Code, Zuplo free plan), versus the entrant's $499 + $49/mo; the scan-1 'edge' compared against $3k agency builds, not these.", "severity": "major", "refClass": "agent_reported", "ref": "DEV-03-D3"},
+  {"reason": "No structural edge and the layer is being absorbed by platforms: OAuth is a free open-source Cloudflare library, hosting is built into Gram/Zuplo/Cloudflare, so any rival (or the platforms) can copy a done-for-you wrapper quickly; AI-assisted automation is not exclusive.", "severity": "major", "refClass": "agent_reported", "ref": "DEV-03-D8"},
+  {"reason": "No demonstrated payer for a fixed-price productised package from an unknown seller; done-for-you supply is priced from $90, and vendors with engineers build their own (Attio) while enterprise vendors are forecast to ship native servers.", "severity": "minor", "refClass": "agent_reported", "ref": "DEV-03-D11"},
+  {"reason": "Pessimistic year-1 model is negative (about -$1.0k) even from a generous base case that assumes 12 cold-outreach customers.", "severity": "minor", "refClass": "agent_reported", "ref": "DEV-03-D14"}
+ ],
+ "economics": {
+  "revenue365": 9222,
+  "cost365": 3150,
+  "pessimisticProfit365": -1036,
+  "survivesPessimistic": false,
+  "assumptions": [
+   "Reference entrant per case file: $1,000 start cash, first revenue ~day 45, 10 h/week owner time (520 h unpaid, not costed).",
+   "Price $499 one-time + $49/month per customer (proposed package price from case file; unvalidated, assumption).",
+   "12 paying customers won in year 1 via cold outreach (assumption; no source; sets base-case volume), acquired evenly from month 2, average 5.5 paying months each, zero churn.",
+   "Variable cost $125 per customer build (AI tokens and rework; from case-file estimate, assumption) and $5/month hosting per customer (assumption; self-hosting small VPS was reported under 10 EUR/month in an earlier unverified source).",
+   "Fixed cost $85/month for tools, domain, monitoring and outreach software plus $300 one-off terms/entity set-up (assumption).",
+   "Base revenue = 12*499 + 12*49*5.5 = 9,222; base cost = 1,500 + 330 + 1,020 + 300 = 3,150.",
+   "Pessimistic = revenue x0.8 price x0.5 volume (3,689) minus cost x1.5 (4,725) = about -1,036; cost multiplier applied to the full base cost without reducing it for lower volume (conservative).",
+   "Competing price anchors read in this screen: $0 (Gram, Zuplo, Stainless free), $6.99-$41.30/month (API to MCP), $90 one-time (Fiverr)."
+  ],
+  "sources": ["DEV-03-D2", "DEV-03-D3", "DEV-03-D4", "DEV-03-D5", "DEV-03-D11"]
+ },
+ "legalNotes": [
+  "Hosting customers' OAuth client secrets and tokens creates a security-liability and data-processor role (assumption; no primary source read) that a solo anonymous seller must contract for.",
+  "Platform dependency: the offer exists only while Claude/ChatGPT accept remote MCP servers and the MCP authorization spec stays compatible; earlier case-file notes on a July 2026 spec revision and OAuth 2.1/PKCE expectations were not re-verified.",
+  "Cold outreach to vendors is subject to anti-spam and privacy rules (assumption); this screen contacted nobody and read only public pages.",
+  "No licence is required to build or host MCP servers; open-source generators noted (FastMCP MIT per fast.io, openapi-mcp-generator, AWS Labs Apache 2.0) can be used commercially subject to their licences."
+ ],
+ "unverified": [
+  "Earlier evidence DEV-03-E1 (agency prices $3k-$8k / $8k-$25k), E2/E5 (a8gent), E3 (Truto) and E6 (Wikipedia) could not be re-fetched in this session (fetch refused those URLs); none of the kill reasons depend on them.",
+  "All fetched text came through a summarising fetch tool; quoted fragments are copied from its output and were not checked against raw HTML. The Toolradar price quote is a list of fragments, and its Toolradar figures are second-hand (apitomcp.ai itself was not read).",
+  "Current paid prices of Gram, Stainless Starter/Pro and mcp-builder.ai were not found (pages show no figures).",
+  "Whether any small SaaS vendor has paid a stranger for a productised MCP build (no review or order data found beyond one Fiverr gig with 1 review).",
+  "Whether Claude/ChatGPT connector directories add review requirements that favour or block third-party-hosted servers.",
+  "Web search budget ended mid-screen (shared limit), so fewer alternative/incumbent queries were run than planned for the second idea; for this idea at least five distinct alternative searches were done."
+ ],
+ "nextStep": "Drop it; revisit only if a named cohort of small API vendors is shown paying for done-for-you MCP builds despite the $0-$41/month self-serve tools."
+}

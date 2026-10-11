@@ -1,0 +1,117 @@
+{
+ "id": "SVC-03",
+ "name": "Amazon seller suspension Plan of Action drafting (simple categories)",
+ "family": "services",
+ "buyer": "Small Amazon third-party sellers whose accounts are suspended or deactivated and who cannot sell while the appeal is pending",
+ "pain": "Sellers need a Plan of Action with root cause, corrective actions and preventive measures. Thin or generic appeals fail and repeated thin submissions can slow the process.",
+ "wedge": "A $495 flat offer for one simple category, such as account-health or performance notices, plus a $99 Plan of Action review. The researcher rates this weak for a no-credibility entrant.",
+ "referenceEntrant": {
+  "startupCashUsd": 650,
+  "daysToFirstRevenue": 30,
+  "ownerHoursPerWeek": 12
+ },
+ "scan1Edge": {
+  "criterion": "cash_cost",
+  "direction": "lower_is_better",
+  "entrant_basis": "A narrow single-category scope with templated drafting using AI tools lets a solo founder charge $495 flat.",
+  "entrant_value": 495,
+  "falsifier": "If sellers refuse an unknown, anonymous provider at any price, or the cheap tier attracts only unrecoverable cases, the price edge does not convert to revenue.",
+  "incumbent_source_url": "https://www.amazonsellers.attorney/amazon-appeals.html",
+  "incumbent_value": 1500,
+  "unit": "USD per appeal"
+ },
+ "substitutesNoted": [
+  {
+   "name": "AMZ Sellers Attorney",
+   "price_point": "$1,500 / $2,300 flat",
+   "url": "https://www.amazonsellers.attorney/amazon-appeals.html"
+  },
+  {
+   "name": "The Appeal Guru",
+   "price_point": "$1,495 per appeal",
+   "url": "https://theappealguru.com/"
+  },
+  {
+   "name": "Amazon Global Appeals",
+   "price_point": "UK package (about £495 + VAT per notes)",
+   "url": "https://www.amazonglobalappeals.com/"
+  },
+  {
+   "name": "Free Plan of Action templates (amzbase)",
+   "price_point": "free",
+   "url": "https://amzbase.com/guides/amazon-account-suspension-appeal/"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 75,
+  "notes": "The researcher estimates 70-85% margin per case, but revenue is lumpy and trust is a barrier. No measured variable cost.",
+  "price_usd": 495,
+  "variable_cost_usd": null
+ },
+ "majorUncertainty": "Trust: an anonymous entrant with no track record must persuade sellers with frozen revenue to pay, and the cheap tier may attract the least recoverable cases.",
+ "unknowns": [
+  "Unauthorized-practice-of-law exposure (not researched)",
+  "Success rate on simple categories for a new entrant",
+  "Whether $495 attracts mostly unwinnable cases",
+  "The Amazon Global Appeals price (the page is old and the excerpt omits the figure)",
+  "Acquisition channel for suspended sellers"
+ ],
+ "regulatoryOrPlatformDependency": "Depends on Amazon's rules and appeal channels, which change. Some competitors are attorney-run and legal-sounding work by a non-lawyer could raise unauthorized-practice-of-law concerns (not researched).",
+ "evidence": [
+  {
+   "id": "SVC-03-E1",
+   "url": "https://www.amazonsellers.attorney/amazon-appeals.html",
+   "publisher": "Best Amazon Suspension Appeal Service (2026)",
+   "kind": "incumbent_price",
+   "shows": "AMZ Sellers Attorney charges flat fees of $1,500 for most appeals and $2,300 for IP and related accounts.",
+   "quote": "93774 · Last reviewed August 5, 2026 · Flat fees: $1,500 most appeals, $2,300 IP and related accounts How do I appeal an Amazon suspension? ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-03-E2",
+   "url": "https://theappealguru.com/",
+   "publisher": "Amazon Suspension Appeal Services, seller suspension letter specialists",
+   "kind": "incumbent_price",
+   "shows": "The Appeal Guru charges $1,495 per appeal with repeat appeals free and a 50-70% refund guarantee.",
+   "quote": "Get YourSeller Account Reinstated Refund Guarantee50% to 70% Any Appealsfor $1495 USD Repeat Appealsfor the same case = Free Best ReviewedAmazon Servi...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-03-E3",
+   "url": "https://www.amazonglobalappeals.com/",
+   "publisher": "Home",
+   "kind": "incumbent_price",
+   "shows": "Amazon Global Appeals publishes a pricing package (UK; the notes put it at about £495 plus VAT on a page about 573 days old).",
+   "quote": "## We help you gain stability as a Seller\n### Repeat Appeals\n\nRepeat Appeals for the Same Case is Free\n\n## Our Pricing Package\nHere Is Our Pricing Pla...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-03-E4",
+   "url": "https://amzbase.com/guides/amazon-account-suspension-appeal/",
+   "publisher": "Amazon Suspension Appeal: A Reusable Plan of Action Template (2026)",
+   "kind": "demand",
+   "shows": "Repeated thin submissions do not strengthen a seller's position and can slow the process, so quality appeals matter.",
+   "quote": "Repeated thin submissions do not strengthen your position and can slow the process. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-03-E5",
+   "url": "https://amzbase.com/guides/amazon-account-suspension-appeal/",
+   "publisher": "Amazon Suspension Appeal: A Reusable Plan of Action Template (2026)",
+   "kind": "other",
+   "shows": "A reusable Plan of Action template is published free, a free substitute for the cheap review idea.",
+   "quote": "# Amazon Suspension Appeal: A Reusable Plan of Action Template (2026)\nIf your Amazon seller account was deactivated, the appeal that gets it back is a...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SVC-03-E6",
+   "url": "https://www.supplykick.com/blog/amazon-account-suspension",
+   "publisher": "Amazon Account Suspended? What to Do and How to Appeal",
+   "kind": "constraint",
+   "shows": "Repeated violations, fraud, safety issues or forged documentation can make suspensions unrecoverable, so some clients will be bad cases.",
+   "quote": "Yes, in cases of repeated violations, fraud, safety issues, or forged documentation. ",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

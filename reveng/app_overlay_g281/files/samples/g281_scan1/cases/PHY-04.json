@@ -1,0 +1,122 @@
+{
+ "id": "PHY-04",
+ "name": "No-minimum micro-volume FBA prep for small Amazon sellers",
+ "family": "physical_products",
+ "buyer": "Small US Amazon sellers moving a few hundred units a month who are below prep-center minimums",
+ "pain": "Amazon ended its in-house FBA prep service in January 2026, so sellers must label, polybag and package themselves. Prep errors that cost cents can now cost several dollars.",
+ "wedge": "Offer no monthly minimum and a flat per-unit price for label plus bag. A seller at 300 units a month pays an effective $0.67-$1.67 per unit at the cited minimums, which is simple division.",
+ "referenceEntrant": {
+  "startupCashUsd": 2750,
+  "daysToFirstRevenue": 22,
+  "ownerHoursPerWeek": 20
+ },
+ "scan1Edge": {
+  "criterion": "cash_cost",
+  "direction": "lower_is_better",
+  "entrant_basis": "The entrant sells pay-per-unit with no monthly minimum, at a flat $0.60-$0.80 (estimate). It needs a thermal label printer, poly bags, a scale and shelving, and no licences.",
+  "entrant_value": 0,
+  "falsifier": "If existing prep shops already offer no-minimum small-seller plans, or the entrant can't process units fast enough to profit at the flat price, the edge fails.",
+  "incumbent_source_url": "https://hermeslines.com/amazon-fba-prep-cost-2026/",
+  "incumbent_value": 200,
+  "unit": "USD monthly minimum commitment"
+ },
+ "substitutesNoted": [
+  {
+   "name": "Cloud Peak Prep and Ship",
+   "price_point": "from $1.00 per unit for up to 1,000 units",
+   "url": "https://fbaprepfinder.com/amazon-ended-fba-prep/"
+  },
+  {
+   "name": "Typical prep centers with monthly minimums",
+   "price_point": "$200 to $500 monthly minimum",
+   "url": "https://hermeslines.com/amazon-fba-prep-cost-2026/"
+  },
+  {
+   "name": "DIY prep by the seller",
+   "price_point": "about $1.25 per unit in labor at 800 units a month",
+   "url": "https://goaura.com/blog/amazon-fba-prep-service-fees-how-to-save-money"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 45,
+  "notes": "The $0.60-$0.80 flat price and the 35-55% margin are the notes' own estimates and depend on throughput near 100 units an hour. Labor, materials and insurance are not itemized.",
+  "price_usd": 0.7,
+  "variable_cost_usd": null
+ },
+ "majorUncertainty": "Whether the entrant can process units fast enough, earn seller trust without reviews, and stay within the 20-hour weekly limit.",
+ "unknowns": [
+  "Conflicting defect-fee figures ($0.32-$1.74 versus $0.32-$5.72 per unit) were not resolved",
+  "Direct seller complaints about minimums were not found",
+  "Zoning limits for home operation",
+  "Insurance cost",
+  "Throughput per hour is an estimate",
+  "Whether some prep shops already offer no-minimum plans"
+ ],
+ "regulatoryOrPlatformDependency": "Depends on Amazon inbound and labeling rules. Needs a US address that can receive cartons and inventory insurance. Home operation may hit zoning limits.",
+ "evidence": [
+  {
+   "id": "PHY-04-E1",
+   "url": "https://hermeslines.com/amazon-fba-prep-cost-2026/",
+   "publisher": "How Much Does Amazon FBA Prep Cost in 2026? (Real Rates) - HermesLines",
+   "kind": "incumbent_price",
+   "shows": "Most prep centers set a $200 to $500 monthly minimum for sellers below roughly 1,000 units a month, which raises the effective per-unit cost for small sellers.",
+   "quote": "Industry reporting suggests most prep centers set a $200 to $500 monthly minimum for sellers below roughly 1,000 units a month, which quietly raises t...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-04-E2",
+   "url": "https://www.prepvia.com/blogs/amazon-fba-prep-service-fees-2026",
+   "publisher": "Amazon FBA Prep Service Fees 2026: Market Rates by Service",
+   "kind": "incumbent_price",
+   "shows": "Typical prep service ranges are FNSKU labeling $0.20 to $0.55 and polybagging $0.30 to $0.60.",
+   "quote": "**The service ranges:** FNSKU labeling $0.20 to $0.55, polybagging $0.30 to $0.60, bubble wrap $0.50 to $1.00, bundling $0.50 to $1.50 per bundle, sto...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-04-E3",
+   "url": "https://fbaprepfinder.com/amazon-ended-fba-prep/",
+   "publisher": "Amazon FBA prep discontinued: what sellers do (2026)",
+   "kind": "incumbent_price",
+   "shows": "Cloud Peak lists per-unit prep pricing from $1.00 for up to 1,000 units.",
+   "quote": "### Cloud Peak Prep and Ship\nPricing is published per unit by monthly volume, from $1.00 for up to 1,000 units down to $0.60 above 10,000, with labeli...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-04-E4",
+   "url": "https://www.prepvia.com/fba-prep-pricing",
+   "publisher": "Amazon FBA Prep Fees 2026: PrepVia Price Sheet, Per Unit",
+   "kind": "demand",
+   "shows": "In January 2026 Amazon ended its in-house FBA Prep Service, which previously handled labeling and poly bagging, creating a trigger.",
+   "quote": "In January 2026, Amazon officially ended its in-house FBA Prep Service, which previously handled labeling and poly bagging for sellers at a per-unit f...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-04-E5",
+   "url": "https://goaura.com/blog/amazon-fba-prep-service-fees-how-to-save-money",
+   "publisher": "Amazon FBA Prep Service Fees: What They Cost in 2026",
+   "kind": "demand",
+   "shows": "DIY prep labor is about $1.25 per unit for a seller moving 800 units per month, plus packaging materials.",
+   "quote": "For a seller moving 800 units per month, that works out to **$1.25 per unit** in labor, plus the additional cost of packaging materials and supplies.\n...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-04-E6",
+   "url": "https://www.flairox.com/blogs/amazon-fba-packaging-requirements-guide/",
+   "publisher": "Amazon FBA Packaging Requirements: 2026 Seller Guide",
+   "kind": "demand",
+   "shows": "A guide says a mistake that cost cents can now cost several dollars a unit, and Amazon no longer fixes it.",
+   "quote": "In 2026, it can cost you several dollars a unit, and Amazon is no longer the one fixing it for you.\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "PHY-04-E7",
+   "url": "https://e.sellersprite.com/en/blog/amazon-tariffs-2026-fba-sellers-guide",
+   "publisher": "Amazon FBA Tariffs 2026: How US-China Trade Policy Is Hitting Your Margins and What to Do About It - Seller Sprite",
+   "kind": "constraint",
+   "shows": "A tariff peak of 145% in 2025 is now suspended through Nov 2026, so seller volumes depend on tariff and import volatility.",
+   "quote": "145%\n\nPeak tariff rate in 2025 — now suspended through Nov 2026\n\n20–30%\n\nEffective tariff rate on most FBA goods from China in 2026\n\n$0\n\nDe minimis th...",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

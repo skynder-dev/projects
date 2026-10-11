@@ -1,0 +1,297 @@
+{
+  "id": "ECO-04",
+  "verdict": "killed",
+  "verdictReason": "No edge. Review-before-submit and low price are already offered free or cheap: DisputePack has a free plan, Chargeback Copilot gives 3 free evidence PDFs a month, Chargeback Protector charges $4.99 a report, ChargebackWiz lets the merchant review and submit; Shopify pre-fills the evidence form natively and Stripe bills Smart Disputes only on a win. At least six such Shopify listings launched Jan-Aug 2026. Tiny stores gain little at $9, Shopify review/PCD is a real gate, and pessimistic year-1 profit is about -$250.",
+  "answers": [
+    {
+      "question": "(1) What free/cheap alternative covers the wedge?",
+      "answer": "Several. DisputePack (Shopify listing, launched 2026-08-21) has a free plan with AI rebuttal drafts and PDF evidence packs; its listing summary says the merchant reviews, edits and submits. Chargeback Copilot has a free tier of 3 evidence PDFs/month, then $19/month. Chargeback Protector charges $4.99 per generated report, first report free, no subscription. Evidkit is $29/month and drafts for merchant approval. ChargebackWiz lets the merchant 'review and submit in one click' and charges 18% only on recovered chargebacks. Shopify itself auto-populates the chargeback response form and sends it on the due date. Stripe Smart Disputes bills a fee only if you win and auto-submit can be turned off. ChargePay is flat $19.99-$99.99. A flat $9 packet builder with review adds nothing these do not already offer at $0-$29.",
+      "evidenceIds": [
+        "ECO-04-D1",
+        "ECO-04-D2",
+        "ECO-04-D3",
+        "ECO-04-D4",
+        "ECO-04-D5",
+        "ECO-04-D6",
+        "ECO-04-D7",
+        "ECO-04-D9",
+        "ECO-04-E2"
+      ]
+    },
+    {
+      "question": "(2) What structural edge exists and who could copy it?",
+      "answer": "None. Price ($9) and a review step are the only differences and are product settings, not exclusive assets: any of the six 2026 entrants (incl. Paidback, 15% capped at $250, launched 2026-05-11) or ChargePay can add a review toggle or a cheaper tier in one release, and Shopify/Stripe are bundling native tooling. No exclusive data (win-rate history, processor access) is available to a stranger with $10k. Possible compounding asset would be a Shopify app-store review base, but incumbents (e.g. ChargePay, listed since 2020 with a 4.5 rating from 27 reviews on the fetched page) already hold it. Falsifier: evidence that merchant-reviewed packets win materially more than auto-built packets AND that rivals refuse to add review; none found, and the reverse is observed.",
+      "evidenceIds": [
+        "ECO-04-D1",
+        "ECO-04-D2",
+        "ECO-04-D6",
+        "ECO-04-D9"
+      ]
+    },
+    {
+      "question": "(3) Who demonstrably pays and how much?",
+      "answer": "Merchants with enough disputes pay: ChargePay flat $19.99-$99.99/month (no success fee), Chargeflow 25% and Disputifier 20% (capped $250) of recoveries (case-file evidence E1-E2). A roundup says ChargePay at $19.99 pays back once you recover one or two chargebacks a month and that smaller stores often cannot justify setup cost for heavier tools. There is no evidence that stores with a handful of disputes a month pay anything for a packet builder, and several free options exist. At $9/month ($108/year) a store must recover roughly two extra disputes a year (assuming about $50-65 each incl. the $15 fee; assumption), but Shopify already pre-fills evidence free, so the marginal win uplift of a $9 builder is unproven.",
+      "evidenceIds": [
+        "ECO-04-D8",
+        "ECO-04-D9",
+        "ECO-04-D6",
+        "ECO-04-E1",
+        "ECO-04-E2"
+      ]
+    },
+    {
+      "question": "(4) Legal / platform constraints?",
+      "answer": "Shopify App Store review is a gate: one developer reports a posted 8-10 day SLA but no update for over 30 days after submission (submitted Jan 2026, posted Mar 2026); the same thread reports a rejection caused by a reviewer misreading a support email link. Reading customer name/address/email requires protected-customer-data Level 2 access: data-protection details, encryption, access logging, incident response policy, and Shopify may request a detailed review. Shopify Payments disputes are handled in the Shopify admin; apps submit or package evidence under card-network deadlines and cannot promise outcomes. Fee refund on a win is Shopify's rule, not the app's. Anonymous entrant handling payment/customer data is a trust problem for a 0-review app. Stripe and PayPal APIs add further integration and review work.",
+      "evidenceIds": [
+        "ECO-04-D10",
+        "ECO-04-D11",
+        "ECO-04-D12",
+        "ECO-04-D7",
+        "ECO-04-E7",
+        "ECO-04-E8"
+      ]
+    },
+    {
+      "question": "(5) Year-1 numbers (reference entrant: $500, 11 h/week, first revenue day 45)?",
+      "answer": "Base case (all inputs assumptions except price): live and paid from month 3 (allowing for the reported 30+ day review), 2 paying merchants at end of month 3 growing by 3 a month to 29 at month 12 = 155 merchant-months x $9 = $1,395 revenue. Cash cost $539 (hosting/email $180, domain/site $30, partner/listing fee $19 assumption, legal templates/DPA $250, monitoring $60) = profit about $856 for roughly 570 owner hours (about $1.5/hour). Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue $558, cost $808.50, profit about -$250.50. Does not survive. Support effort per dispute and any manual review labour are not priced.",
+      "evidenceIds": [
+        "ECO-04-D3",
+        "ECO-04-D8",
+        "ECO-04-D10"
+      ]
+    }
+  ],
+  "newEvidence": [
+    {
+      "id": "ECO-04-D1",
+      "url": "https://apps.shopify.com/disputepack",
+      "quote": "Free plan available.",
+      "kind": "incumbent_price",
+      "publisher": "Shopify App Store - DisputePack by Ollfy",
+      "date": "2026-08-21 (listing launch date)",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "ECO-04-D2",
+      "url": "https://apps.shopify.com/chargebackwiz",
+      "quote": "review and submit in one click",
+      "kind": "incumbent_price",
+      "publisher": "Shopify App Store - ChargebackWiz by Wizovia (free plan charges 18% of each recovered chargeback)",
+      "date": "2026-07-03 (listing launch date)",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "ECO-04-D3",
+      "url": "https://apps.shopify.com/countercase",
+      "quote": "$29/month. Free trial available.",
+      "kind": "incumbent_price",
+      "publisher": "Shopify App Store - Evidkit by Velun Labs",
+      "date": "2026-08-25 (listing launch date)",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "ECO-04-D4",
+      "url": "https://apps.shopify.com/chargeback-copilot",
+      "quote": "3 PDF di prove al mese",
+      "kind": "incumbent_price",
+      "publisher": "Shopify App Store - Chargeback Copilot by loftvex (Italian-locale listing; free tier 3 evidence PDFs/month, Starter $19)",
+      "date": "2026-05-11 (listing launch date)",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "ECO-04-D5",
+      "url": "https://apps.shopify.com/chargeback-protector",
+      "quote": "4,99 $ za vygenerovanou zprávu",
+      "kind": "incumbent_price",
+      "publisher": "Shopify App Store - Chargeback Protector (Czech-locale listing; $4.99 per report, no subscription, first report free)",
+      "date": "2026-01-05 (listing launch date)",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "ECO-04-D6",
+      "url": "https://apps.shopify.com/chargepay",
+      "quote": "Flat pricing, no success fees.",
+      "kind": "incumbent_price",
+      "publisher": "Shopify App Store - ChargePay (plans $19.99/$39.99/$79.99/$99.99 per month; 4.5 from 27 reviews on fetched page; listed 2020-04-16)",
+      "date": "2020-04-16 (listing launch date)",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "ECO-04-D7",
+      "url": "https://docs.stripe.com/disputes/smart-disputes",
+      "quote": "we only bill you a Smart Disputes fee if you win. You incur no Smart Dispute fee on lost disputes.",
+      "kind": "incumbent_price",
+      "publisher": "Stripe Documentation - Smart Disputes",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "ECO-04-D8",
+      "url": "https://easysellapp.com/blogs/wiki/best-shopify-chargeback-apps-2026",
+      "quote": "you only need to recover one or two chargebacks to break even",
+      "kind": "demand",
+      "publisher": "EasySell - Best Shopify Chargeback Protection Apps (2026) (about ChargePay at $19.99/month; also says smaller stores may find heavier tools' economics do not justify setup)",
+      "date": "2026",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "ECO-04-D9",
+      "url": "https://help.shopify.com/en/manual/payments/chargebacks/resolve-chargeback",
+      "quote": "Shopify tools automatically populate available data that's used to send a response to the credit card company for you on the due date.",
+      "kind": "other",
+      "publisher": "Shopify Help Center - Resolving a chargeback or inquiry",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "ECO-04-D10",
+      "url": "https://community.shopify.dev/t/warning-shopify-app-store-review-process/32259",
+      "quote": "We did not receive any update until over 30 days after submission (3x the SLA).",
+      "kind": "constraint",
+      "publisher": "Shopify Developer Community - WARNING: Shopify App Store Review Process (developer report, posted by CMC)",
+      "date": "2026-03-15",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "ECO-04-D11",
+      "url": "https://shopify.dev/docs/apps/launch/protected-customer-data",
+      "quote": "Process only the minimum personal data required to provide app functionality to merchants.",
+      "kind": "constraint",
+      "publisher": "Shopify Developer Docs - Work with protected customer data (Level 2 for name/address/phone/email adds encryption, access-log and incident-response requirements per page summary)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "ECO-04-D12",
+      "url": "https://help.shopify.com/en/manual/payments/chargebacks/resolve-chargeback",
+      "quote": "the full chargeback amount plus the chargeback fee is returned in your next payout.",
+      "kind": "constraint",
+      "publisher": "Shopify Help Center - Resolving a chargeback or inquiry",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "ECO-04-D13",
+      "url": "https://apps.shopify.com/paidback",
+      "quote": "Free to install. Additional charges may apply.",
+      "kind": "incumbent_price",
+      "publisher": "Shopify App Store - Paidback (success fee 15% of recovered amount capped at $250 per dispute per listing text; Shopify Payments only)",
+      "date": "2026-05-11 (listing launch date)",
+      "evidenceClass": "agent_reported"
+    }
+  ],
+  "newAlternatives": [
+    {
+      "label": "DisputePack free plan (AI rebuttal drafts, PDF evidence packs; merchant reviews and submits per listing summary)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://apps.shopify.com/disputepack",
+      "evidenceRef": "ECO-04-D1"
+    },
+    {
+      "label": "ChargebackWiz (merchant can review and submit in one click; 18% only on recovered)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 0,
+      "coversWedge": "full",
+      "sourceLocator": "https://apps.shopify.com/chargebackwiz",
+      "evidenceRef": "ECO-04-D2"
+    },
+    {
+      "label": "Evidkit (merchant approves each draft before submission)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 29,
+      "coversWedge": "full",
+      "sourceLocator": "https://apps.shopify.com/countercase",
+      "evidenceRef": "ECO-04-D3"
+    },
+    {
+      "label": "Chargeback Copilot free tier (3 evidence PDFs per month)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://apps.shopify.com/chargeback-copilot",
+      "evidenceRef": "ECO-04-D4"
+    },
+    {
+      "label": "Chargeback Protector ($4.99 per report, first free, no subscription)",
+      "kind": "cheap_paid",
+      "costUsdPerMonth": 4.99,
+      "coversWedge": "partial",
+      "sourceLocator": "https://apps.shopify.com/chargeback-protector",
+      "evidenceRef": "ECO-04-D5"
+    },
+    {
+      "label": "Stripe Smart Disputes (built in; fee only on a win; auto-submit can be turned off)",
+      "kind": "free_tool",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://docs.stripe.com/disputes/smart-disputes",
+      "evidenceRef": "ECO-04-D7"
+    },
+    {
+      "label": "Shopify native chargeback form with auto-populated order, tracking and address data",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://help.shopify.com/en/manual/payments/chargebacks/resolve-chargeback",
+      "evidenceRef": "ECO-04-D9"
+    }
+  ],
+  "killReasons": [
+    {
+      "reason": "The only differences (flat low price, merchant review before submit) are already offered free or at $0-$29 by multiple live Shopify listings (DisputePack free plan, ChargebackWiz, Evidkit, Chargeback Copilot, Chargeback Protector), plus Shopify's native pre-filled form and Stripe's win-only Smart Disputes. At least six of these launched Jan-Aug 2026, so any rival can also copy or undercut a $9 offer in one release. No exclusive or compounding asset exists.",
+      "severity": "fatal",
+      "refClass": "agent_reported",
+      "ref": "ECO-04-D1"
+    },
+    {
+      "reason": "Pessimistic year-1 economics are negative (about -$250 on about $558 revenue) and the base case is about $856 for roughly 570 owner hours. Target stores with a handful of disputes per month have little to gain: heavier flat-fee tools are justified only by stores with more than a few disputes, and Shopify already pre-fills evidence free.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "ECO-04-D8"
+    },
+    {
+      "reason": "Distribution/trust gate for an anonymous solo entrant: Shopify App Store review reported at 30+ days against a posted 8-10 day SLA, and customer name/address/email requires protected-customer-data approval with Level 2 security controls and a possible detailed review. A 0-review app handling payment/customer data competes with listings that already have reviews.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "ECO-04-D10"
+    }
+  ],
+  "economics": {
+    "revenue365": 1395,
+    "cost365": 539,
+    "pessimisticProfit365": -250.5,
+    "survivesPessimistic": false,
+    "assumptions": [
+      "assumption: app approved and charging from month 3 (reported review delay of 30+ days vs the 45-day reference start)",
+      "assumption: paying merchants at end of month = 2 in month 3, +3 per month, 29 in month 12 (155 merchant-months); no sourced install or conversion data exists",
+      "price $9 per month flat (entrant's own wedge price, not market-validated)",
+      "assumption: no Shopify revenue share, no refunds, no churn modelling beyond the net-growth ramp",
+      "assumption cash costs: hosting/database/email $180, domain and site $30, Shopify partner/listing registration $19 (unverified), privacy policy/DPA/terms legal review $250, monitoring and misc tools $60 = $539",
+      "owner labour about 11 h/week x 52 = 572 h is not counted as cash; support and human-review effort per dispute are not priced",
+      "pessimistic: price x0.8, volume x0.5, cost x1.5 gives revenue $558, cost $808.50, profit -$250.50"
+    ],
+    "sources": [
+      "ECO-04-D3",
+      "ECO-04-D8",
+      "ECO-04-D10"
+    ]
+  },
+  "legalNotes": [
+    "Shopify App Store review is mandatory for a public listing; the review page gives no timeframe, a developer reports 30+ days against an 8-10 day SLA.",
+    "Access to customer name, address, phone or email needs protected-customer-data approval; Level 2 requires encrypted backups, separated test/production data, access logs, staff-access limits and an incident response policy, and Shopify may run a detailed data protection review.",
+    "Merchants and apps cannot promise dispute outcomes; the issuer decides, and merchants in network dispute resolution programs cannot contest (case-file evidence E8).",
+    "Processing payment and customer data as an anonymous entrant creates privacy-law and contract exposure; privacy policy and merchant data processing agreement are needed (Level 1 requirement)."
+  ],
+  "unverified": [
+    "Chargeflow and Disputifier Shopify listing pages could not be fetched (permission request withdrawn), so their review counts and install base were not checked.",
+    "That DisputePack and Evidkit force or allow a merchant review step comes from fetched page summaries, not a verbatim quote; ChargebackWiz 'review and submit in one click' is quoted.",
+    "Whether Shopify's API lets a third-party app submit dispute evidence programmatically for Shopify Payments (Evidkit's page says it packages a PDF for Shopify's dispute form, which suggests manual upload).",
+    "Whether the free tiers stay free, and the real install/review counts of the 2026 entrants (all show 0-1 reviews).",
+    "Typical dispute volume and win-rate uplift for stores with a handful of disputes a month; no source found.",
+    "Shopify partner registration fee and revenue-share terms; PayPal dispute tooling and PayPal API access were not checked.",
+    "Paidback's 15%-capped-at-$250 fee and any merchant review mode come from the fetched listing summary; the review mode was described on the page only as a screenshot caption."
+  ],
+  "nextStep": ""
+}

@@ -1,0 +1,277 @@
+{
+ "id": "MKT-02",
+ "verdict": "killed",
+ "verdictReason": "Killed on three major reasons: (1) ExitBid's primary page confirms a flat $199 with 0% commission (4% of a $5K sale), under the entrant's 5% = $250, triggering the scan-1 falsifier; (2) escrow and niche focus are not edges, since directories already have categories on Flippa (1.9M+ claimed buyers) and Microns and escrow is already provided; (3) ~$200 per deal at thin volume gives ~$700 base profit (~$1/owner-hour) and about -$710 pessimistic.",
+ "answers": [
+  {
+   "question": "(1) What free/cheap alternative covers the wedge?",
+   "answer": "ExitBid: flat $199, 0% commission, Escrow.com (D1, D3). Vertos: free listing plus 5%, vendor claim only (E6; primary page not fetchable). Flippa: $29 flat entry listing plus 10%, with a Directory category (D7, D9, D6). Microns: Directory Websites for Sale category from about $1,200 (D8). Acquire.com: 8% plus $25/month, free escrow (D4, D5), though a homepage testimonial says sellers pay nothing (D11). Free DIY posting on communities is plausible but I did not read any page on it (unverified). None is a directory-only marketplace, so coverage of the wedge is partial, but all cover price and escrow.",
+   "evidenceIds": [
+    "MKT-02-D1",
+    "MKT-02-D3",
+    "MKT-02-D4",
+    "MKT-02-D5",
+    "MKT-02-D6",
+    "MKT-02-D7",
+    "MKT-02-D8",
+    "MKT-02-D9",
+    "MKT-02-D11",
+    "MKT-02-E6"
+   ]
+  },
+  {
+   "question": "(2) What structural edge exists, and who could copy it?",
+   "answer": "None. Price is already matched or beaten (D1), escrow is a commodity used by rivals (D3, D5), and niche focus is copyable: Flippa and Microns already expose directory categories (D6, D8) and could add a directory landing page overnight. The only compounding asset would be a directory-specific buyer list, which the entrant starts at zero against Flippa's claimed 1.9M buyers (D6). Falsifier: evidence of a sizeable group of sub-$10K directory buyers or sellers that these platforms demonstrably fail to serve, e.g. listings that expire unsold in the directory category; I found none.",
+   "evidenceIds": [
+    "MKT-02-D1",
+    "MKT-02-D3",
+    "MKT-02-D5",
+    "MKT-02-D6",
+    "MKT-02-D8"
+   ]
+  },
+  {
+   "question": "(3) Who demonstrably pays and how much?",
+   "answer": "Sellers pay Flippa a $29 listing fee plus 10% (about $529 on a $5,000 sale) (D7, D9); Acquire.com sellers pay 8% plus $25/month (D4); ExitBid sellers pay $199 flat (D1); Acquire buyers pay subscriptions from $390 (old E4; Acquire pricing page lists Buyer membership from $390). So sellers do pay, but the lowest verified rate is $199 on a flat basis. No page I read shows how many sub-$10K directories actually sell or any deal count for the directory category.",
+   "evidenceIds": [
+    "MKT-02-D1",
+    "MKT-02-D4",
+    "MKT-02-D7",
+    "MKT-02-D9",
+    "MKT-02-E4"
+   ]
+  },
+  {
+   "question": "(4) Legal/platform constraints?",
+   "answer": "Using Escrow.com (as ExitBid and Acquire.com do, D3, D5) avoids holding funds; Flippa lists Escrow.com from 1.2% (D7). I could not read Escrow.com's marketplace/partner terms (fetch refused), so whether a new marketplace can use it with an own fee layer is unverified. Buyer-side fraud and fake revenue claims need a verification process (not researched). Consumer-protection/money-transmission treatment depends on never touching funds.",
+   "evidenceIds": [
+    "MKT-02-D3",
+    "MKT-02-D5",
+    "MKT-02-D7"
+   ]
+  },
+  {
+   "question": "(5) Year-1 numbers (reference entrant: $1,000, 12 h/week, first revenue by day 90)?",
+   "answer": "Assumptions: fee 5% of an average $4,000 sale = $200 per deal (the Microns/ExitBid listings start around $1,000-$1,200, D8, so $4,000 is a guess); 8 closed deals between months 4 and 12 (assumption; incumbents show 14 live listings and 6 recent sales, D2, D8); costs $900 (site $150, legal $250, outreach $300, tools $200; assumptions; escrow fees paid by the parties). Base: revenue $1,600, profit ~$700 over ~620 owner hours (~$1/hour). Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue $640, cost $1,350, profit ~-$710. To undercut ExitBid the fee must stay below $199, which caps revenue per deal.",
+   "evidenceIds": [
+    "MKT-02-D1",
+    "MKT-02-D2",
+    "MKT-02-D8"
+   ]
+  }
+ ],
+ "newEvidence": [
+  {
+   "id": "MKT-02-D1",
+   "url": "https://exitbid.io/",
+   "quote": "Bidding is free after one-time verification; sellers pay a flat $199 listing fee, 0% commission.",
+   "kind": "incumbent_price",
+   "publisher": "ExitBid (primary, vendor homepage)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Primary-page confirmation that ExitBid sells a flat $199, zero-commission listing: 4% of a $5,000 sale, i.e. below the entrant's 5% = $250 (scan-1 falsifier: rivals already at $0-$250)."
+  },
+  {
+   "id": "MKT-02-D2",
+   "url": "https://exitbid.io/",
+   "quote": "Only 14 at a Time",
+   "kind": "other",
+   "publisher": "ExitBid (primary, vendor homepage)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "ExitBid caps live auctions at 14 at a time (page text), a sign of the small deal flow in this segment; the page gives no total deals completed."
+  },
+  {
+   "id": "MKT-02-D3",
+   "url": "https://exitbid.io/",
+   "quote": "Built-in Escrow.com protection available for every deal.",
+   "kind": "constraint",
+   "publisher": "ExitBid (primary, vendor homepage)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Rival already uses third-party escrow (Escrow.com), so the entrant's planned escrow-provider design is not differentiating."
+  },
+  {
+   "id": "MKT-02-D4",
+   "url": "https://acquire.com/seller-pricing/",
+   "quote": "You only pay the closing fee if you sell your business.",
+   "kind": "incumbent_price",
+   "publisher": "Acquire.com seller pricing (primary)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Primary page: Acquire.com closing fee 8% for asking price below $250k plus $25/month listing fee (table); so a $5,000 sale costs the seller about $400 plus monthly fees. Contradicts ExitBid's claim of \"$0 seller-side\" for Acquire.com (old E7)."
+  },
+  {
+   "id": "MKT-02-D5",
+   "url": "https://acquire.com/seller-pricing/",
+   "quote": "Who pays for escrow? We do!",
+   "kind": "constraint",
+   "publisher": "Acquire.com seller pricing (primary)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Acquire.com pays for Escrow.com itself, so escrow cost is not a price lever for the entrant."
+  },
+  {
+   "id": "MKT-02-D6",
+   "url": "https://flippa.com/",
+   "quote": "1.9M+ buyers globally, including PE firms, family offices, search funds, and operators with capital ready to deploy.",
+   "kind": "demand",
+   "publisher": "Flippa (primary, homepage)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "The incumbent already holds the buyer liquidity (self-reported); a zero-audience entrant cannot match this and no source shows buyers of sub-$10K directories exist outside it. Homepage also lists Directory among content categories (no count)."
+  },
+  {
+   "id": "MKT-02-D7",
+   "url": "https://flippa.com/pricing",
+   "quote": "$29 Flat Fee 60-day term",
+   "kind": "incumbent_price",
+   "publisher": "Flippa pricing page (primary)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Flippa self-service entry listing for assets under $10K is a $29 flat fee, 60-day term; same page lists Escrow.com from 1.2% for deal payments (old E2/E3 consistent). Commission 10% under $50K per hackceleration (D9)."
+  },
+  {
+   "id": "MKT-02-D8",
+   "url": "https://www.microns.io/",
+   "quote": "Directory Websites for Sale",
+   "kind": "other",
+   "publisher": "Microns (primary, homepage)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Another marketplace (Microns) already has a dedicated Directory Websites for Sale category with asking prices from about $1,200 (page text); homepage shows 15 latest listings and 6 recently sold. A directory-only vertical is already a category on two platforms. Seller fees were not stated."
+  },
+  {
+   "id": "MKT-02-D9",
+   "url": "https://hackceleration.com/labs/flippa-pricing",
+   "quote": "Listing fees are non-refundable: no sale, still owed.",
+   "kind": "incumbent_price",
+   "publisher": "Hackceleration: How much does Flippa cost (review site)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Flippa non-refundable listing fee plus 10% commission under $50K; about $529 on a $5,000 sale (page states the estimate), no sell-through rate given."
+  },
+  {
+   "id": "MKT-02-D10",
+   "url": "https://exitbid.io/blog/flippa-review-2026",
+   "quote": "a large percentage of Flippa listings expire without receiving a single serious offer.",
+   "kind": "demand",
+   "publisher": "ExitBid blog: Flippa review 2026 (competitor-published)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Competitor blog claims many Flippa listings get no serious offer, and says $10,000-$300,000 businesses with documented financials draw most buyer interest, so sub-$10K assets are the thin end of the buyer pool. Biased source (ExitBid sells against Flippa)."
+  },
+  {
+   "id": "MKT-02-D11",
+   "url": "https://acquire.com/",
+   "quote": "Sellers don't have to pay a fee, and every project/startup I've listed has been sold within a week or two.",
+   "kind": "other",
+   "publisher": "Acquire.com (primary, homepage)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "A reviewer testimonial on the Acquire homepage says sellers do not pay, conflicting with the seller pricing page (D4); sources disagree, so seller cost on Acquire is not reliably known."
+  }
+ ],
+ "newAlternatives": [
+  {
+   "label": "ExitBid: flat $199 per listing, 0% commission, Escrow.com available (one-off fee, not monthly)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 199,
+   "coversWedge": "partial",
+   "sourceLocator": "https://exitbid.io/",
+   "evidenceRef": "MKT-02-D1"
+  },
+  {
+   "label": "Flippa: $29 flat entry listing for assets under $10K plus 10% commission (about $529 on a $5,000 sale); has a Directory category",
+   "kind": "paid_incumbent",
+   "costUsdPerMonth": 29,
+   "coversWedge": "partial",
+   "sourceLocator": "https://flippa.com/pricing",
+   "evidenceRef": "MKT-02-D7"
+  },
+  {
+   "label": "Acquire.com: 8% closing fee below $250k plus $25/month listing; free escrow; buyers pay a subscription from $390",
+   "kind": "paid_incumbent",
+   "costUsdPerMonth": 25,
+   "coversWedge": "partial",
+   "sourceLocator": "https://acquire.com/seller-pricing/",
+   "evidenceRef": "MKT-02-D4"
+  },
+  {
+   "label": "Microns: has Directory Websites for Sale category, asks from about $1,200 (seller fees not stated on the page read; cost 0 is a placeholder)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.microns.io/",
+   "evidenceRef": "MKT-02-D8"
+  },
+  {
+   "label": "Vertos: free listing, flat 5% on sale (vendor claim only; primary page fetch refused)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://vertosmarket.com/blog/vertos-vs-flippa-acquire-little-exits",
+   "evidenceRef": "MKT-02-E6"
+  }
+ ],
+ "killReasons": [
+  {
+   "reason": "The price edge is already taken: ExitBid charges a flat $199 with 0% commission (primary page), 4% of a $5,000 sale, which is below the entrant's 5% = $250; Vertos also claims free listing + flat 5% (vendor claim, old E6, primary page could not be fetched). Scan-1's own falsifier (rivals already at roughly $0-$250) is met, and price alone is not an edge.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "MKT-02-D1"
+  },
+  {
+   "reason": "The only differentiators left are niche focus and a third-party escrow, neither exclusive: escrow is already used or paid for by ExitBid and Acquire.com (D3, D5), and directories already have a dedicated category on Microns and on Flippa, which holds a claimed 1.9M+ buyer pool (D6, D8). A zero-audience entrant has no buyer pool and no way to assemble one cheaper than these incumbents.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "MKT-02-D6"
+  },
+  {
+   "reason": "Revenue ceiling is tiny: a 5% fee on a ~$4,000 average sub-$10K sale is ~$200 per deal, and visible deal flow in this segment is small (ExitBid shows 14 live listings at a time, Microns shows 6 recently sold; D2, D8) with sub-$10K assets the thin end of the market (D10). A pessimistic year-1 model loses money (~-$710) and the base case earns about $1 per owner hour.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "MKT-02-D2"
+  },
+  {
+   "reason": "Seller-side competitor pricing is itself disputed (Acquire.com testimonial says sellers pay nothing; pricing page shows 8% + $25/month), so the scan-1 $529 vs $250 comparison rests on unreliable inputs; this does not rescue the idea since ExitBid's $199 is confirmed.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "MKT-02-D11"
+  }
+ ],
+ "economics": {
+  "revenue365": 1600,
+  "cost365": 900,
+  "pessimisticProfit365": -710,
+  "survivesPessimistic": false,
+  "assumptions": [
+   "Fee 5% of an average $4,000 sale = $200 per closed deal (average sale price is an assumption; scan-1 used $5,000 = $250).",
+   "8 closed deals in year 1, none before month 4 (assumption; no source for deal volume in the directory category).",
+   "Costs $900: site/hosting $150, legal terms $250, outreach/marketing $300, tools $200 (assumptions); escrow fees paid by buyer/seller, not the entrant.",
+   "Pessimistic: fee x0.8 ($160), deals x0.5 (4), cost x1.5 ($1,350): revenue $640, profit -$710.",
+   "Owner hours 12/week for 52 weeks = 624 hours; base profit $700 is about $1.1 per hour."
+  ],
+  "sources": [
+   "MKT-02-D1",
+   "MKT-02-D2",
+   "MKT-02-D8"
+  ]
+ },
+ "legalNotes": [
+  "Do not hold funds: use a third-party escrow (Escrow.com is used by ExitBid and Acquire.com per D3, D5); partner/marketplace terms not verified.",
+  "Escrow.com cost on Flippa is listed as from 1.2% (D7); who bears it in the entrant model is a design choice.",
+  "Seller representations (traffic/revenue of the directory) can be fabricated; the marketplace needs verification and terms limiting liability (not researched).",
+  "Vertos terms and fees (primary page) could not be fetched, so the \"flat 5%, free listing\" claim remains a vendor claim."
+ ],
+ "unverified": [
+  "Vertos primary pricing/terms and deal volume (vertosmarket.com fetches refused).",
+  "Actual deal volume for directories on Flippa, Microns, ExitBid and Vertos (no counts on pages read).",
+  "Escrow.com marketplace/partner terms and fees (escrow.com fetch refused).",
+  "Microns seller fees (pricing page fetch refused).",
+  "Free DIY alternatives (communities, forums, social posts) and the Hacker News \"Acquire Directory\" signal: not read.",
+  "Whether Acquire.com seller cost is $0 (testimonial, D11) or 8% + $25/month (pricing page, D4): sources disagree; the pricing page is treated as authoritative.",
+  "WebSearch budget was exhausted mid-task, so the brief's three new searches for alternatives could not be run; alternatives come from page reads only."
+ ],
+ "nextStep": "Do not pursue; revisit only if primary data shows many sub-$10K directory listings expiring unsold on Flippa/Microns and a named buyer group willing to pay for a directory-specific channel."
+}

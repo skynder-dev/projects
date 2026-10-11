@@ -1,0 +1,103 @@
+{
+ "id": "EDU-03",
+ "name": "Teachers Pay Teachers listing migration utility",
+ "family": "education_training",
+ "buyer": "Small teacher-sellers of worksheets and units who want to relist products outside TPT",
+ "pain": "High platform cuts, sudden account closures with withheld earnings, and no ownership of the customer relationship.",
+ "wedge": "A migration utility that takes TPT product files and covers and relists them on Payhip or Stripe, with SEO-optimised titles and an automatic bundle builder.",
+ "referenceEntrant": {
+  "startupCashUsd": 350,
+  "daysToFirstRevenue": 60,
+  "ownerHoursPerWeek": 9
+ },
+ "scan1Edge": {
+  "criterion": "cash_cost",
+  "direction": "lower_is_better",
+  "entrant_basis": "Sellers relist on Payhip at a 5% per-sale fee (C19). The 45% TPT take is derived from the 55% royalty (inference). The 5% is Payhip's fee, not the entrant's own advantage.",
+  "entrant_value": 5,
+  "falsifier": "Sellers can already relist manually on Payhip. If the tool saves little time or sellers lack discovery off TPT, nobody pays. Average sellers earn under $100/month.",
+  "incumbent_source_url": "https://tptsale.com/blog/etsy-alternative-for-teachers",
+  "incumbent_value": 45,
+  "unit": "percent of sale revenue taken by platform"
+ },
+ "substitutesNoted": [
+  {
+   "name": "Payhip",
+   "price_point": "5% per sale, no monthly fee",
+   "url": "https://learningmole.com/teachers-pay-teachers-alternatives/"
+  },
+  {
+   "name": "Quickshops",
+   "price_point": "0% platform fee, €29/month Pro (per research notes)",
+   "url": "https://quickshops.app/alternatives/teachers-pay-teachers-alternatives"
+  },
+  {
+   "name": "Staying on TPT (free Basic account)",
+   "price_point": "55% royalty, free to join",
+   "url": "https://tptsale.com/blog/etsy-alternative-for-teachers"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 85,
+  "notes": "Model: the notes estimate about 85% gross margin, but no price is specified. Willingness to pay is low because sellers earn little.",
+  "price_usd": null,
+  "variable_cost_usd": null
+ },
+ "majorUncertainty": "Whether sellers earning under $100/month will pay for a migration tool when the real problem is discovery.",
+ "unknowns": [
+  "Willingness to pay",
+  "The 2 hours versus 10 hours relisting time (estimate only)",
+  "TPT terms on exporting or relisting content",
+  "Payhip fee conflict (the notes mention an 85% revenue-share snippet)",
+  "How an unknown entrant would reach sellers"
+ ],
+ "regulatoryOrPlatformDependency": "Depends on access to TPT product files and on Payhip or Stripe. Copyright and ownership issues are widespread. There is no discovery without TPT's marketplace.",
+ "evidence": [
+  {
+   "id": "EDU-03-E1",
+   "url": "https://tptsale.com/blog/etsy-alternative-for-teachers",
+   "publisher": "The Best Etsy Alternative for Teachers: Selling on TPT (2026 Guide)",
+   "kind": "incumbent_price",
+   "shows": "TPT pays a 55% royalty on the free Basic account, or 80% on Premium with an annual fee.",
+   "quote": "TPT: 55% royalty (free Basic account) or 80% royalty (Premium seller account, annual fee). ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "EDU-03-E2",
+   "url": "https://learningmole.com/teachers-pay-teachers-alternatives/",
+   "publisher": "Teachers Pay Teachers Alternatives: Top Sites & Tips",
+   "kind": "incumbent_price",
+   "shows": "Payhip charges a 5% per-sale fee with no monthly costs, which is an alternative the utility would target.",
+   "quote": "Payhip charges only a 5% per-sale fee with no monthly costs, so you keep 95% of your earnings. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "EDU-03-E3",
+   "url": "https://www.trustpilot.com/review/teacherspayteachers.com",
+   "publisher": "TeachersPayTeachers Reviews",
+   "kind": "demand",
+   "shows": "A Trustpilot seller reports TPT suspended and closed the account without warning and withheld $300 of earnings.",
+   "quote": "A few days ago, TPT abruptly and without any prior warning suspended and closed my account. To make matters worse, they are withholding $300 of my fin...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "EDU-03-E4",
+   "url": "https://quickshops.app/alternatives/teachers-pay-teachers-alternatives",
+   "publisher": "Best Teachers Pay Teachers alternatives for digital sellers - Quickshops",
+   "kind": "demand",
+   "shows": "Quickshops lists platform fees scaling with revenue as a trigger for creators leaving TPT.",
+   "quote": "## Why creators leave Teachers Pay Teachers\nCommon triggers we hear from digital product sellers:\n\n- Platform fees scale with revenue faster than subs...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "EDU-03-E5",
+   "url": "https://seolumina.com/blog/how-much-do-tpt-sellers-make-in-2026-real-data-income-breakdown",
+   "publisher": "How Much Do TPT Sellers Make in 2026? Real Data & Income Breakdown",
+   "kind": "constraint",
+   "shows": "Most TPT sellers earn $0-$100/month, which limits what they can pay for tools.",
+   "quote": "In 2026, most Teachers Pay Teachers (TPT) sellers earn “side money” - often $0–$100/month, while a smaller group earns $100–$1,000/month, and a tiny m...",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

@@ -1,0 +1,121 @@
+{
+ "id": "GAM-01",
+ "name": "Verified-active creator lists for indie Steam launches",
+ "family": "games",
+ "buyer": "Solo or tiny-team indie developer with a demo or launch, no marketing budget and no creator contacts",
+ "pain": "Finding creators who are real and active, then emailing keys and tracking results. One comparison page estimates 10-40 hours per 100 keys. Some creator lists are stale.",
+ "wedge": "Sell per-launch lists of creators verified as active, filtered by genre and recent upload date, at a one-time $15-69. The entrant cannot replicate Keymailer's network. The wedge is data freshness only, and gameoutreach.co already occupies the one-time-pack position.",
+ "referenceEntrant": {
+  "startupCashUsd": 550,
+  "daysToFirstRevenue": 25,
+  "ownerHoursPerWeek": 10
+ },
+ "scan1Edge": {
+  "criterion": "cash_cost",
+  "direction": "lower_is_better",
+  "entrant_basis": "One-time pack priced at the top of the $15-69 range, using public data APIs whose costs are small (owner estimate). It is built and sold by a solo founder with no creator network.",
+  "entrant_value": 69,
+  "falsifier": "gameoutreach.co already sells packs from $15, so if its packs have the same freshness and no developers pay for the entrant's lists, there is no edge.",
+  "incumbent_source_url": "https://gameoutreach.co/keymailer-alternative/",
+  "incumbent_value": 249,
+  "unit": "USD per launch campaign"
+ },
+ "substitutesNoted": [
+  {
+   "name": "Keymailer / Partnier",
+   "price_point": "Free (10 requests/mo); from $24.99/mo; boosts from $249",
+   "url": "https://gameoutreach.co/keymailer-alternative/"
+  },
+  {
+   "name": "gameoutreach.co",
+   "price_point": "One-time packs from $15 after a free preview",
+   "url": "https://gameoutreach.co/keymailer-alternative/"
+  },
+  {
+   "name": "Gamosy KeyVault / Lurkit / manual outreach",
+   "price_point": "Not verified",
+   "url": "https://gamosy.com/blog/keymailer-alternatives-2026"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 80,
+  "notes": "Model: midpoint of the $15-69 one-time range, with ~80% gross margin per the owner's estimate because data-API costs are small. Developers launch seasonally and few will pay more than ~$70 per game.",
+  "price_usd": 39,
+  "variable_cost_usd": 7.8
+ },
+ "majorUncertainty": "Whether developers will pay for verified-active lists when a $15 direct competitor exists and Keymailer has a free tier.",
+ "unknowns": [
+  "Whether Keymailer annual pricing is $149 or $249 (sources conflict)",
+  "Whether the 2-5 hours per 100 keys estimate is achievable",
+  "Whether the data APIs allow this use under their terms",
+  "Actual conversion of developers to paying customers",
+  "gameoutreach.co's actual list quality and volume"
+ ],
+ "regulatoryOrPlatformDependency": "Depends on YouTube/Twitch data access and terms of service. Contact scraping carries CAN-SPAM exposure and Steam key handling carries fraud risk.",
+ "evidence": [
+  {
+   "id": "GAM-01-E1",
+   "url": "https://gamosy.com/blog/keymailer-alternatives-2026",
+   "publisher": "Keymailer Alternatives in 2026: Where Indie Devs Send Steam Keys Now",
+   "kind": "demand",
+   "shows": "Manual key outreach is estimated at 10-40 hours of developer time per 100 keys (a vendor blog estimate, not primary user data).",
+   "quote": "Somewhere between 10 and 40 hours of your time per 100 keys, once you count research, writing, follow-ups, and bookkeeping.\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-01-E2",
+   "url": "https://gameoutreach.co/keymailer-alternative/",
+   "publisher": "Keymailer Alternative for Indie Devs",
+   "kind": "incumbent_price",
+   "shows": "Keymailer has a free plan capped at 10 network campaign requests a month, paid plans from $24.99/mo and promoted boosts from $249.",
+   "quote": "Free plan capped at 10 network campaign requests a month; paid plans from $24.99/mo; promoted boosts from $249.\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-01-E3",
+   "url": "https://itch.io/profile/interestick",
+   "publisher": "itch.io",
+   "kind": "demand",
+   "shows": "An itch.io developer reports creator accounts whose last stream was 8 years ago, which points to stale lists.",
+   "quote": "There were accounts that had their last streaming 8 years ago. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-01-E4",
+   "url": "https://itch.io/profile/interestick",
+   "publisher": "itch.io",
+   "kind": "demand",
+   "shows": "A developer applied for Keymailer membership and got no response for a week, so the incumbent is slow to onboard.",
+   "quote": "https://interestick.itch.io/cs\n\nI applied for Keymailer membership, but it has been a week and I haven’t received any response. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-01-E5",
+   "url": "https://gameoutreach.co/keymailer-alternative/",
+   "publisher": "Keymailer Alternative for Indie Devs",
+   "kind": "constraint",
+   "shows": "gameoutreach.co already sells a free preview, then one-time packs from $15 with no subscription, so the one-time-pack wedge is taken.",
+   "quote": "Free preview first, one-time packs from $15, no subscription.\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-01-E6",
+   "url": "https://gamosy.com/blog/keymailer-alternatives-2026",
+   "publisher": "Keymailer Alternatives in 2026: Where Indie Devs Send Steam Keys Now",
+   "kind": "other",
+   "shows": "Woovit no longer distributes keys, so a former competitor has exited.",
+   "quote": "Publisher records were archived and remain retrievable by email, but the platform no longer distributes keys. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "GAM-01-E7",
+   "url": "https://itch.io/post/10712",
+   "publisher": "itch.io",
+   "kind": "constraint",
+   "shows": "A community manager says it is hard to find teams that have budgeted for marketing at all, which limits willingness to pay.",
+   "quote": "In my experience as a Community Manager, it's difficult to find teams that have budgeted for marketing at all.",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

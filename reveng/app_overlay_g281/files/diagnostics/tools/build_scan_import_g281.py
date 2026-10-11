@@ -20,6 +20,13 @@ gates = json.load(open(S / '03_gates.json'))
 scored = {r['id']: r for r in json.load(open(S / '04_scored.json'))}
 deep = {c['id']: (c.get('deep') or {}) for c in json.load(open(S / '05_deep.json'))}
 decision = json.load(open(S / '06_decision.json'))
+# second pass (2026-10-10): manual deep screen of the 24 queued ideas, agent_reported; two ideas could not be screened (see deep_status.json)
+deeps = {f.stem: json.load(open(f)) for f in sorted((S / 'deep').glob('*.json'))} if (S / 'deep').exists() else {}
+dstat = json.load(open(S / 'deep_status.json')) if (S / 'deep_status.json').exists() else {}
+rechecks = {}
+for f in sorted((S / 'verify').glob('deep_result_*.json')) if (S / 'verify').exists() else []:
+    for r in json.load(open(f))['results']: rechecks[(r['candidateId'], r['evidenceId'])] = r
+def clip(x, n): x = str(x or ''); return x if len(x) <= n else x[:n - 1] + '…'
 
 def sha(*parts): return hashlib.sha256('|'.join(parts).encode('utf-8')).hexdigest()
 rows = []
@@ -35,9 +42,17 @@ for cid, c in raw.items():
         status = 'rejected'
         reason = 'HARD_GATE_FAILED: ' + '; '.join(f"{k}={g['gates'][k]['reason']}" for k in g['failed'])
         basis = 'engine_hard_gate'
+    dp = deeps.get(cid) if status == 'research_queue' else None
+    if dp and dp['verdict'] == 'killed':
+        status, reason, basis = 'rejected', 'KILLED_AFTER_DEEP_SCREEN (agent_reported): ' + clip(dp['verdictReason'], 880), 'independent_manual_reading_agent_reported'
     s = scored[cid]
     hints = [{'url': e.get('url'), 'signal': (e.get('shows') or '')[:240], 'source': e.get('publisher'),
               'evidence_class': (e.get('verify') or {}).get('status', 'unverified'), 'kind': e.get('kind')} for e in ev]
+    if dp:
+        for e in dp['newEvidence']:
+            rc = rechecks.get((cid, e['id']))
+            hints.append({'url': e['url'], 'signal': clip(e['quote'], 240), 'source': e.get('publisher'), 'evidence_class': 'agent_reported', 'kind': e['kind'], 'date': e.get('date'), 'stage': 'deep',
+                          'recheck': ({'status': rc['status'], 'note': clip(rc['note'], 220)} if rc else None)})
     rows.append({
         'candidate_key': f'G281-SCAN1-{cid}', 'fingerprint': sha('niche', c['name'], c['buyer']), 'analysis_level': 'niche',
         'raw_name': c['name'], 'normalized_name': c['name'], 'buyer_segment': c['buyer'], 'core_job': c['pain'], 'primary_outcome': c['entrant_wedge'],
@@ -48,8 +63,16 @@ for cid, c in raw.items():
             'engine_score': {'label': 'g280_balanced_v1_lens_NOT_reveng_v6', 'adjusted': round(s['adjusted'], 1), 'raw': round(s['raw'], 1),
                              'note': 'Computed with the G280 v1 balanced weights, not with reveng_v6_independent weights; not comparable with score_runs.'},
             'v6_component_scores': None, 'hard_gates_passed': g['passed'],
-            'deep_screen': {'done': bool(cid in MANUAL or deep.get(cid, {}).get('done')), 'complete': bool(cid in MANUAL or deep.get(cid, {}).get('complete')),
-                            'method': 'manual_reading_agent_reported' if cid in MANUAL else ('provider_search_uncited_claims' if deep.get(cid, {}).get('done') else None)},
+            'deep_screen': {'done': bool(cid in MANUAL or deep.get(cid, {}).get('done') or dp), 'complete': bool(cid in MANUAL or deep.get(cid, {}).get('complete') or dp),
+                            'method': 'manual_reading_agent_reported' if (cid in MANUAL or dp) else ('provider_search_uncited_claims' if deep.get(cid, {}).get('done') else None),
+                            **({'second_pass': True, 'verdict': dp['verdict'], 'reason': clip(dp['verdictReason'], 700),
+                                'economics': {'revenue365_usd': dp['economics']['revenue365'], 'cost365_usd': dp['economics']['cost365'], 'pessimistic_profit365_usd': dp['economics']['pessimisticProfit365'], 'survives_pessimistic': dp['economics']['survivesPessimistic']},
+                                'answers': [{'question': clip(a['question'], 220), 'answer': clip(a['answer'], 420)} for a in dp['answers'][:6]],
+                                'unverified': [clip(u, 200) for u in dp.get('unverified', [])[:6]]} if dp else {})},
+            **({'final_verdict': dp['verdict'], 'alternatives': [{'label': a['label'], 'kind': a['kind'], 'usd_per_month': a['costUsdPerMonth'], 'covers_wedge': a['coversWedge'], 'url': a['sourceLocator']} for a in dp.get('newAlternatives', [])],
+                'kill_reasons': [{'severity': k['severity'], 'reason': clip(k['reason'], 400), 'ref': k.get('ref'), 'ref_class': 'agent_reported'} for k in dp['killReasons']],
+                'legal_notes': [clip(n, 400) for n in dp.get('legalNotes', [])], 'verdict_reason': clip(dp['verdictReason'], 1200)} if dp else {}),
+            **({'deep_screen_not_screened': dstat['not_screened'][cid]} if cid in dstat.get('not_screened', {}) else {}),
             'next_step': None if status == 'rejected' else 'verify cheapest/free alternative, legal limits and willingness to pay by manual public reading, then judge v6 components',
         }})
 fams = sorted({r['metadata']['family'] for r in rows})
@@ -58,6 +81,8 @@ run = {'run_key': RUN_KEY, 'objective': 'Global, owner-independent broad scan (r
        'status': 'completed', 'candidate_count': len(rows), 'normalized_count': sum(r['status'] != 'rejected' for r in rows), 'rejected_count': sum(r['status'] == 'rejected' for r in rows),
        'started_at': '2026-10-10T03:16:55Z', 'completed_at': '2026-10-10T03:58:00Z',
        'metadata': {'verdict': 'no_winner', 'survivors_after_gates': decision.get('survivors'), 'hard_blockers': decision.get('hard_blockers'),
+                    'deep_screened': len(deeps), 'deep_screen_completed_at': dstat.get('deep_screen_completed_at'), 'deep_screen_not_screened': sorted(dstat.get('not_screened', {})),
+                    'final_verdicts_after_deep_screen': {v: sum(1 for r in rows if r['metadata'].get('final_verdict') == v) for v in ('killed', 'uncertain', 'survives')},
                     'caveat': 'Kills rest on uncited provider claims or manual reading (agent_reported), not on engine-verified quotes. Scores use G280 v1 balanced weights, not v6.'}}
 pkg = {'contract': 'reveng_scan_import_dryrun_g281_v1', 'target_tables': ['reveng.catalog_discovery_runs', 'reveng.catalog_candidate_inbox', 'reveng.catalog_discovery_run_candidates'],
        'owner_gated_write': True, 'run': run, 'candidates': rows}
@@ -84,7 +109,7 @@ cols = ['candidate_key', 'fingerprint', 'analysis_level', 'raw_name', 'normalize
 for r in rows:
     L.append(f"INSERT INTO reveng.catalog_candidate_inbox ({', '.join(cols)}) VALUES ({', '.join(q(r[c]) for c in cols)}) ON CONFLICT (candidate_key) DO NOTHING;")
 L.append("INSERT INTO reveng.catalog_discovery_run_candidates (run_id, candidate_id) SELECT r.id, c.id FROM reveng.catalog_discovery_runs r JOIN reveng.catalog_candidate_inbox c ON c.candidate_key LIKE 'G281-SCAN1-%' WHERE r.run_key = " + q(RUN_KEY) + ' ON CONFLICT DO NOTHING;')
-L.append('-- expected after a COMMIT: 1 run, 40 candidates (16 rejected, 24 research_queue), 40 run-candidate links')
+L.append(f"-- expected after a COMMIT: 1 run, {len(rows)} candidates ({run['rejected_count']} rejected, {run['normalized_count']} research_queue), {len(rows)} run-candidate links")
 L.append('ROLLBACK;')
 (OUT / 'REVA2_G281_SCAN1_IMPORT_DRYRUN.sql').write_text('\n'.join(L) + '\n', encoding='utf-8')
 print('candidates', len(rows), 'rejected', run['rejected_count'], 'research_queue', run['normalized_count'])

@@ -1,0 +1,263 @@
+{
+  "id": "SAS-02",
+  "verdict": "uncertain",
+  "verdictReason": "Mandatory need is verified (Rule 204-2: keep a copy of each advertisement for 5 years), but the pages that decide the idea (Patrina, Smarsh, Archive Intel pricing, social platform ToS) could not be re-fetched and search budget ran out. Free OSS (ArchiveBox, Browsertrix) covers capture at $0, Meta terms force deletion of platform data, and email must be archived anyway, so a $29 web/social-only add-on has no verified edge. Year-1 profit ~+$25, pessimistic ~-$2.7k. Leaning kill; not provable on verified evidence.",
+  "answers": [
+    {
+      "question": "(1) What free/cheap alternative covers the wedge?",
+      "answer": "Technically, free open-source tools: ArchiveBox (self-hosted, MIT, saves HTML/PNG/PDF/WARC and social post content) and Browsertrix (AGPLv3, self-host or hosted). The rule itself names no vendor: it requires a copy of each advertisement kept 5 years in an accessible place with safeguard procedures, so a manual PDF/screenshot routine is a legal status quo. Paid incumbents from the case file (Patrina from $60/mo with no auto-renewing annual contract, Smarsh $15-35/seat, Archive Intel no retrieval fees) could NOT be re-verified this session, so whether they already neutralise 'flat price, no lock-in, free export' is open. Hosted Browsertrix pricing was not read.",
+      "evidenceIds": [
+        "SAS-02-D1",
+        "SAS-02-D2",
+        "SAS-02-D3",
+        "SAS-02-D6",
+        "SAS-02-D7",
+        "SAS-02-D8",
+        "SAS-02-E2",
+        "SAS-02-E3",
+        "SAS-02-E7"
+      ]
+    },
+    {
+      "question": "(2) What structural edge exists and who could copy it?",
+      "answer": "No exclusive or compounding edge is verified. Price and narrow scope are not edges, and any incumbent (Patrina, Archive Intel, ArchiveSocial) could ship a web/social-only tier. A weak compounding element is the accumulated 5-year archive (switching cost) and an exam-ready export, but that is copyable and needs trust a nameless founder lacks. The buyer must archive client email anyway (Rule 204-2(a)(7)), so a web/social-only product is an add-on to a tool they must already buy, which weakens the case. Falsifier: RIAs that already pay for an email/text archive refuse a second vendor, or an incumbent offers web+social at or below $29.",
+      "evidenceIds": [
+        "SAS-02-D12",
+        "SAS-02-D2",
+        "SAS-02-D6",
+        "SAS-02-E2"
+      ]
+    },
+    {
+      "question": "(3) Who demonstrably pays and how much?",
+      "answer": "Need is mandatory and verified: an SEC-registered adviser must keep a copy of each advertisement for 5 years, and the advertisement definition covers any communication to more than one person offering advisory services. No primary price or payment evidence was read this session. The only price data are the unverified case-file items (Smarsh $15-35/seat with annual minimum, Patrina from $60/mo, advisor-website vendor referring archiving to third parties). SEC registration starts at $100M AUM, so SEC-registered solo/small RIAs are a subset; smaller advisers register with states (state rule differences not verified).",
+      "evidenceIds": [
+        "SAS-02-D1",
+        "SAS-02-D2",
+        "SAS-02-D4",
+        "SAS-02-D5",
+        "SAS-02-E1",
+        "SAS-02-E2"
+      ]
+    },
+    {
+      "question": "(4) Legal/platform constraints?",
+      "answer": "Rule 204-2(g)(3) puts the duty to safeguard electronic records on the adviser, so a vendor that claims it is 'compliant' without an audit takes on exposure; claims must be limited to describing capture features. Social capture is the hard half: Meta's Platform Terms require App Review for apps used by anyone outside the app's own roles and require deleting Platform Data when no longer needed for a legitimate business purpose or when the operator stops operating the product, which clashes with a promise to keep records for 5 years and with solo-founder exit risk. LinkedIn, X and Instagram terms and API access could not be fetched. Scraping social pages instead of using APIs was not assessed and is likely a ToS breach.",
+      "evidenceIds": [
+        "SAS-02-D3",
+        "SAS-02-D9",
+        "SAS-02-D10",
+        "SAS-02-D11"
+      ]
+    },
+    {
+      "question": "(5) Year-1 numbers?",
+      "answer": "Bottom-up, all volumes are assumptions: first revenue day 65 (month 3), 2 new firms per month from month 3 (20 signed by month 12), 2% monthly churn, $29/mo, variable cost $7.25 per firm-month (case-file model, unsourced), $40/mo fixed tools, $1,750 startup cash counted as year-1 cost. Base: revenue about $3,006, cost about $2,982, profit about +$25 before 12 h/week of owner time. Pessimistic (price x0.8, volume x0.5, cost x1.5): revenue about $1,202, cost about $3,909, profit about -$2,706. Not viable inside year 1 even before owner time.",
+      "evidenceIds": [
+        "SAS-02-D2"
+      ]
+    }
+  ],
+  "newEvidence": [
+    {
+      "id": "SAS-02-D1",
+      "url": "https://law.cornell.edu/cfr/text/17/275.204-2",
+      "quote": "Advertisement (as defined in § 275.206(4)-1(e)(1) of this chapter)",
+      "kind": "demand",
+      "publisher": "Cornell LII, 17 CFR 275.204-2(a)(11)(i)(A) (adviser must keep a copy of each advertisement it disseminates)",
+      "date": "undated (current CFR)",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-02-D2",
+      "url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.204-2",
+      "quote": "shall be maintained and preserved in an easily accessible place for a period of not less than five years",
+      "kind": "demand",
+      "publisher": "eCFR, 17 CFR 275.204-2(e)(1)",
+      "date": "undated (current CFR)",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-02-D3",
+      "url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.204-2",
+      "quote": "To maintain and preserve the records, so as to reasonably safeguard them from loss, alteration, or destruction;",
+      "kind": "constraint",
+      "publisher": "eCFR, 17 CFR 275.204-2(g)(3)(i) (adviser must keep procedures for electronic storage)",
+      "date": "undated (current CFR)",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-02-D4",
+      "url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.206(4)-1",
+      "quote": "Any direct or indirect communication an investment adviser makes to more than one person,",
+      "kind": "constraint",
+      "publisher": "eCFR, 17 CFR 275.206(4)-1(e)(1)(i) (definition of advertisement)",
+      "date": "undated (current CFR)",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-02-D5",
+      "url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.203A-1",
+      "quote": "you have assets under management of at least $100,000,000 but less than $110,000,000",
+      "kind": "constraint",
+      "publisher": "eCFR, 17 CFR 275.203A-1(a)(1) (SEC registration threshold; smaller advisers are outside the SEC regime)",
+      "date": "undated (current CFR)",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-02-D6",
+      "url": "https://github.com/ArchiveBox/ArchiveBox",
+      "quote": "ArchiveBox is a self-hosted app that lets you preserve content from websites in a variety of formats.",
+      "kind": "other",
+      "publisher": "GitHub, ArchiveBox README (free, MIT-licensed open source)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-02-D7",
+      "url": "https://github.com/ArchiveBox/ArchiveBox",
+      "quote": "post content TXT, comments, title, author, images",
+      "kind": "other",
+      "publisher": "GitHub, ArchiveBox README (listed outputs for social media and news sources)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-02-D8",
+      "url": "https://github.com/webrecorder/browsertrix",
+      "quote": "Install Browsertrix to self host, or access hosted Browsertrix from app.browsertrix.com.",
+      "kind": "other",
+      "publisher": "GitHub, Webrecorder Browsertrix README (AGPLv3 browser-based crawling service)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-02-D9",
+      "url": "https://developers.facebook.com/terms/",
+      "quote": "When retaining the Platform Data is no longer necessary for a legitimate business purpose",
+      "kind": "constraint",
+      "publisher": "Meta Platform Terms, s3.d.i.2.a (duty to delete Platform Data)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-02-D10",
+      "url": "https://developers.facebook.com/terms/",
+      "quote": "When you stop operating the product or service through which the Platform Data was acquired;",
+      "kind": "constraint",
+      "publisher": "Meta Platform Terms, s3.d.i.2.b (duty to delete Platform Data when the operator stops)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-02-D11",
+      "url": "https://developers.facebook.com/docs/resp-plat-initiatives/individual-processes/app-review",
+      "quote": "it must first undergo App Review.",
+      "kind": "constraint",
+      "publisher": "Meta for Developers, App Review (apps used by anyone without a role on the app)",
+      "date": "undated",
+      "evidenceClass": "agent_reported"
+    },
+    {
+      "id": "SAS-02-D12",
+      "url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.204-2",
+      "quote": "Originals of all written communications received and copies of all written communications sent",
+      "kind": "demand",
+      "publisher": "eCFR, 17 CFR 275.204-2(a)(7) (written communications must also be kept, so email archiving is needed anyway)",
+      "date": "undated (current CFR)",
+      "evidenceClass": "agent_reported"
+    }
+  ],
+  "newAlternatives": [
+    {
+      "label": "ArchiveBox (self-hosted open-source web and social post archiver)",
+      "kind": "open_source",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://github.com/ArchiveBox/ArchiveBox",
+      "evidenceRef": "SAS-02-D6"
+    },
+    {
+      "label": "Browsertrix (open-source browser-based crawler, self-host or hosted)",
+      "kind": "open_source",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://github.com/webrecorder/browsertrix",
+      "evidenceRef": "SAS-02-D8"
+    },
+    {
+      "label": "Manual PDF/screenshot of each web page and post filed in retained storage (status quo)",
+      "kind": "diy_or_status_quo",
+      "costUsdPerMonth": 0,
+      "coversWedge": "partial",
+      "sourceLocator": "https://law.cornell.edu/cfr/text/17/275.204-2",
+      "evidenceRef": "SAS-02-D1"
+    }
+  ],
+  "killReasons": [
+    {
+      "reason": "Free open-source capture tools (ArchiveBox, Browsertrix) already cover the technical wedge at $0 and the rule names no required vendor, so willingness to pay $29/mo depends entirely on convenience and trust for non-technical RIAs, which is unevidenced.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SAS-02-D6"
+    },
+    {
+      "reason": "The social half depends on platform terms that conflict with the product promise: Meta requires App Review for third-party apps and requires deleting Platform Data when no longer needed or when the operator stops operating the product, against a 5-year retention promise by a solo operator.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SAS-02-D10"
+    },
+    {
+      "reason": "Email and written communications must be archived as well (Rule 204-2(a)(7)), so the buyer needs a full archiving tool anyway and a web/social-only product is at best an add-on second vendor.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "SAS-02-D12"
+    },
+    {
+      "reason": "Buyer pool is the SEC-registered subset (starts at $100M AUM); smaller advisers are state-registered and follow state rules that were not checked.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "SAS-02-D5"
+    },
+    {
+      "reason": "The adviser carries the safeguard duty for electronic records, so vendor 'compliant' claims create liability and the entrant may only describe capture features.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "SAS-02-D3"
+    }
+  ],
+  "economics": {
+    "revenue365": 3006,
+    "cost365": 2982,
+    "pessimisticProfit365": -2706,
+    "survivesPessimistic": false,
+    "assumptions": [
+      "Price $29/month flat per firm (scan-1 wedge). Assumption: first revenue at day 65 (reference entrant), then 2 new firms per month from month 3 (20 signed by month 12) with no audience or network.",
+      "Assumption: 2% monthly churn once a firm has archived records (switching cost).",
+      "Variable cost $7.25 per firm-month is the scan-1 model figure (not sourced); fixed tools $40/month is an assumption; startup cash $1,750 (reference entrant) counted as year-1 cost; owner time (12 h/week) not costed.",
+      "Pessimistic: price x0.8 ($23.20), volume x0.5 (1 new firm/month), costs x1.5, giving revenue about $1,202 and cost about $3,909.",
+      "No incumbent price was re-verified this session, so the $29 price point is unbenchmarked against Patrina ($60) or per-seat tools."
+    ],
+    "sources": [
+      "SAS-02-D1",
+      "SAS-02-D2",
+      "SAS-02-D5"
+    ]
+  },
+  "legalNotes": [
+    "17 CFR 275.204-2(a)(11)(i)(A) and (e)(1): an SEC-registered adviser must keep a copy of each advertisement it disseminates for at least 5 years in an easily accessible place; 204-2(g)(3)(i): the adviser must keep procedures to safeguard electronic records from loss, alteration or destruction.",
+    "17 CFR 275.206(4)-1(e)(1): an advertisement is any direct or indirect communication to more than one person that offers advisory services, so website and social posts are in scope.",
+    "Do not claim the product is SEC- or 17a-4-compliant or exam-proof; describe only capture, timestamping and export features. Whether a legal review would allow stronger claims was not assessed.",
+    "Meta Platform Terms: App Review for third-party apps; delete Platform Data when no longer needed or when the product stops operating; LinkedIn, X and Instagram terms were not readable.",
+    "State-registered advisers (below $100M AUM) are governed by state books-and-records rules, which were not read."
+  ],
+  "unverified": [
+    "Current prices, contract terms and scope of Patrina, Smarsh, Global Relay, Archive Intel, ArchiveSocial and PageFreezer: those pages were blocked for fetching this session (permission not granted) and WebSearch budget was exhausted, so case-file evidence SAS-02-E1 to E7 stays unverified.",
+    "Whether RIAs actually pay for or want a standalone website/social archive, and at what price; no demand or complaint evidence read.",
+    "Whether SEC exam staff expect website and social archives in a specific form; the SEC marketing FAQ and the adopting release excerpt read did not address it.",
+    "Social platform capture feasibility and ToS for LinkedIn, X, Instagram and YouTube; hosted Browsertrix pricing.",
+    "Number of SEC-registered small and solo RIAs (market size) and what share are customers of an archiving vendor already.",
+    "State-law equivalents for advisers under $100M AUM."
+  ],
+  "nextStep": "Re-run once the incumbent pricing pages (Patrina, Archive Intel, ArchiveSocial) and the social platform terms can be fetched, then test whether any incumbent already sells a web/social-only tier near $29."
+}

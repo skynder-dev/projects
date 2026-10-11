@@ -1,0 +1,8 @@
+{
+ "deep_screen_completed_at": "2026-10-11T00:51:04Z",
+ "not_screened": {
+  "GAM-02": "web search budget exhausted and WebFetch refused every case-file URL (provenance); no new evidence read",
+  "MED-03": "web search budget exhausted and WebFetch refused every case-file URL (provenance); no new evidence read"
+ },
+ "note": "These two stay in the research queue; their deep-screen attempts produced no evidence and are not stored as results."
+}

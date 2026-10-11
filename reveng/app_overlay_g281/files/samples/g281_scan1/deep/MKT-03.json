@@ -1,0 +1,366 @@
+{
+ "id": "MKT-03",
+ "verdict": "killed",
+ "verdictReason": "Killed on three major reasons. (1) A 5-8% all-in take cannot fund itself: Stripe lists 2.9% + 30c per charge, $2 per active connected account per month and 0.25% + 25c per payout, leaving about $0.24 of a $15 order (model). (2) The low-fee wedge already exists without a marketplace (Lemon Squeezy/Fungies 5% + $0.50 as merchant of record, Payhip free plan 5%, Gumroad 10% + $0.50); what only a marketplace adds is buyer traffic, which Gumroad prices at 30%. (3) Marketplace status brings facilitator sales-tax duty and chargeback liability. Orphaned-seller pain is real (Etsy dropped scanned-vintage language); demand size unverified.",
+ "answers": [
+  {
+   "question": "(1) What free/cheap alternative covers the wedge?",
+   "answer": "The fee half of the wedge is already covered by standalone storefronts that need no marketplace: Lemon Squeezy and Fungies at 5% + $0.50 per transaction with no monthly fee and merchant-of-record status (D7), Payhip free plan at 5% or $29/month at 0% (D8), Sellfy $29/month at 0% (D16), Shopify + Digitally about $39-89/month with 0% platform fee (D9), and Gumroad at 10% + $0.50 on direct sales, with sales tax handled as merchant of record (D15, D5). A seller can therefore already sell at or below the entrant's 5-8% in their own shop. The only thing these do not give is buyer traffic, which Gumroad's marketplace line charges 30% to deliver (D6). The 'orphaned' pain is confirmed: Etsy removed the language that allowed digital files of scanned vintage content (D1, D2, D14), so the pull is to leave Etsy, but the destination alternatives above exist today.",
+   "evidenceIds": [
+    "MKT-03-D7",
+    "MKT-03-D8",
+    "MKT-03-D16",
+    "MKT-03-D9",
+    "MKT-03-D15",
+    "MKT-03-D5",
+    "MKT-03-D6",
+    "MKT-03-D1",
+    "MKT-03-D2",
+    "MKT-03-D14"
+   ]
+  },
+  {
+   "question": "(2) What structural edge exists and who could copy it?",
+   "answer": "None found. A lower fee is not an edge (any rival or any of the platforms in D7-D9 can set 5%). An SEO-led catalog is the only compounding asset, but a stranger starts at zero domain authority and zero buyers, and the incumbent marketplace-style discovery product is priced at 30% (D6), so a 5-8% take leaves no budget for buyer acquisition. The earlier scan's own falsifier (no comparable buyer traffic means the lower fee is irrelevant) is not refuted by anything found, and the old evidence that sellers diversify across channels rather than leave Etsy (MKT-03-E8, not re-verified) points the same way. Falsifier for this verdict: evidence that a new niche marketplace reached meaningful organic buyer traffic with under $2k of marketing in under 12 months.",
+   "evidenceIds": [
+    "MKT-03-D6",
+    "MKT-03-D7",
+    "MKT-03-D8",
+    "MKT-03-D9",
+    "MKT-03-E8"
+   ]
+  },
+  {
+   "question": "(3) Who demonstrably pays and how much?",
+   "answer": "Sellers of scanned vintage digital files demonstrably lost a channel (D1, D2, D14) but no page read shows them paying any new marketplace anything; what they pay today elsewhere is 0-10% + $0.30-0.50 per sale (D5-D9, D15). Buyers' willingness to pay for the niche, and the number of affected sellers, were not found (unverified). Platform revenue for the entrant is 5-8% of GMV only, and GMV at day 365 is the unknown that dominates.",
+   "evidenceIds": [
+    "MKT-03-D1",
+    "MKT-03-D2",
+    "MKT-03-D14",
+    "MKT-03-D5",
+    "MKT-03-D15",
+    "MKT-03-D7"
+   ]
+  },
+  {
+   "question": "(4) Legal/platform constraints?",
+   "answer": "Running a marketplace that collects customer payments puts the platform, not the seller, on the hook for sales tax: Stripe states that many countries and US states require marketplace operators to collect sales tax and VAT on facilitated sales (D12) and that facilitators must collect on behalf of third-party sellers (D13); Stripe also notes 1099 reporting can apply to Connect platforms (page read; detail not quoted). With indirect charges, which marketplaces typically use, refunds and chargebacks hit the platform's balance (D10) and Stripe may hold reserves. Stripe's restricted-business list places platforms that let creators sell digital goods under extra due diligence (D11). IP: Etsy's own change shows scans of third-party material are the contested category (D1, D2), so the entrant would host IP-risk listings (DMCA handling, takedown workload).",
+   "evidenceIds": [
+    "MKT-03-D12",
+    "MKT-03-D13",
+    "MKT-03-D10",
+    "MKT-03-D11",
+    "MKT-03-D1",
+    "MKT-03-D2"
+   ]
+  },
+  {
+   "question": "(5) Year-1 numbers?",
+   "answer": "Generous base case: 400 orders at $15 AOV = $6,000 GMV, 6.5% all-in take = $390 revenue; cost about $3,015 (Stripe processing $294, Connect $450 + payouts $71, fixed $2,200 assumed); profit about -$2,625. Pessimistic (take x0.8, volume x0.5, cost x1.5): revenue $156, cost about $4,291, profit about -$4,135. Break-even needs about 11,300 orders per year (about $170k GMV) if 6.5% includes processing, or about 2,800 orders (about $42k GMV) if the seller also pays processing on top, in which case the seller's all-in price is about 11% at $15 AOV and there is no clear fee edge over Etsy.",
+   "evidenceIds": [
+    "MKT-03-D3",
+    "MKT-03-D4"
+   ]
+  }
+ ],
+ "newEvidence": [
+  {
+   "id": "MKT-03-D1",
+   "url": "https://www.valueaddedresource.net/etsy-creativity-standards-update-june-2025/",
+   "quote": "digital files of scanned vintage content like photographs, books, or patterns",
+   "kind": "demand",
+   "publisher": "Value Added Resource",
+   "date": "2025-06-10",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-D2",
+   "url": "https://www.patreon.com/posts/131323500",
+   "quote": "That would include scans of old photos, ads or posters, and vintage books and patterns.",
+   "kind": "demand",
+   "publisher": "Patreon post: Etsy Updated The Creativity Standards Without Notice",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-D3",
+   "url": "https://stripe.com/connect/pricing",
+   "quote": "Starts at 2.9% + 30¢ per successful card charge",
+   "kind": "incumbent_price",
+   "publisher": "Stripe (Connect pricing page)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-D4",
+   "url": "https://stripe.com/connect/pricing",
+   "quote": "$2 per monthly active account.",
+   "kind": "incumbent_price",
+   "publisher": "Stripe (Connect pricing page)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-D5",
+   "url": "https://gumroad.com/pricing",
+   "quote": "Gumroad handles sales tax worldwide as Merchant of Record, at no extra cost.",
+   "kind": "incumbent_price",
+   "publisher": "Gumroad (pricing page)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-D6",
+   "url": "https://gumroad.com/pricing",
+   "quote": "Per transaction when new customers find and buy from you through our discover marketplace.",
+   "kind": "incumbent_price",
+   "publisher": "Gumroad (pricing page; the fee heading above this line reads 30%)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-D7",
+   "url": "https://fungies.io/best-gumroad-alternatives-2026/",
+   "quote": "Pricing: 5% + $0.50 per transaction, no monthly fee",
+   "kind": "incumbent_price",
+   "publisher": "Fungies comparison article (lines for Lemon Squeezy and Fungies, both listed as Merchant of Record)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-D8",
+   "url": "https://fungies.io/best-gumroad-alternatives-2026/",
+   "quote": "Pricing: Free (5% fee) or $29/month (0% transaction fee) + payment processing",
+   "kind": "incumbent_price",
+   "publisher": "Fungies comparison article (Payhip line)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-D9",
+   "url": "https://fungies.io/best-gumroad-alternatives-2026/",
+   "quote": "Pricing: ~$39-89/month total, ~2.9% + 30¢ payment processing, 0% platform fee",
+   "kind": "incumbent_price",
+   "publisher": "Fungies comparison article (Shopify + Digitally line)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-D10",
+   "url": "https://docs.stripe.com/connect/risk-management",
+   "quote": "Indirect charges occur on the platform, so negative transactions for indirect charges affect the platform’s balance.",
+   "kind": "constraint",
+   "publisher": "Stripe docs: Risk and liability management with Connect (page also says: Marketplaces typically use indirect charges.)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-D11",
+   "url": "https://stripe.com/legal/restricted-businesses",
+   "quote": "Sell exclusive content or digital goods",
+   "kind": "constraint",
+   "publisher": "Stripe restricted businesses list (listed under 'Content creation platforms' as restricted, needing additional due diligence)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-D12",
+   "url": "https://docs.stripe.com/tax/tax-for-marketplaces.md",
+   "quote": "Many countries and US states require marketplace operators to collect sales tax and VAT on their facilitated sales.",
+   "kind": "constraint",
+   "publisher": "Stripe docs: Tax for marketplaces",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-D13",
+   "url": "https://stripe.com/en-nl/guides/guide-to-sales-tax-and-vat-for-marketplace-sellers",
+   "quote": "marketplace facilitators are required to collect sales tax on behalf of third-party sellers",
+   "kind": "constraint",
+   "publisher": "Stripe guide to sales tax and VAT for marketplace sellers",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-D14",
+   "url": "https://www.shopifreaks.com/etsy-quietly-tightens-creativity-standards-targeting-3d-prints-digital-vintage-files-and-generic-goods/",
+   "quote": "restricting the sale of certain 3D printed items made from third-party templates, scanned vintage digital files, generic resold goods, and more",
+   "kind": "demand",
+   "publisher": "Shopifreaks",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-D15",
+   "url": "https://gumroad.com/pricing",
+   "quote": "Per transaction for all sales through your profile or direct links to your customers.",
+   "kind": "incumbent_price",
+   "publisher": "Gumroad (pricing page; the fee heading above this line reads 10% + $0.50)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-03-D16",
+   "url": "https://fungies.io/best-gumroad-alternatives-2026/",
+   "quote": "Starting cost: $29/month (0% transaction fees)",
+   "kind": "incumbent_price",
+   "publisher": "Fungies comparison article (Sellfy line; SendOwl is listed at $15/month with 0% transaction fees)",
+   "date": "undated",
+   "evidenceClass": "agent_reported"
+  }
+ ],
+ "newAlternatives": [
+  {
+   "label": "Lemon Squeezy (5% + $0.50 per transaction, no monthly fee, merchant of record)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://fungies.io/best-gumroad-alternatives-2026/",
+   "evidenceRef": "MKT-03-D7"
+  },
+  {
+   "label": "Fungies (5% + $0.50 per transaction, no monthly fee, merchant of record)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://fungies.io/best-gumroad-alternatives-2026/",
+   "evidenceRef": "MKT-03-D7"
+  },
+  {
+   "label": "Payhip (free plan 5% fee, or $29/month at 0% plus processing)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://fungies.io/best-gumroad-alternatives-2026/",
+   "evidenceRef": "MKT-03-D8"
+  },
+  {
+   "label": "Sellfy ($29/month, 0% transaction fees)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 29,
+   "coversWedge": "partial",
+   "sourceLocator": "https://fungies.io/best-gumroad-alternatives-2026/",
+   "evidenceRef": "MKT-03-D16"
+  },
+  {
+   "label": "Shopify Basic + Digitally app (about $39-89/month, 0% platform fee, about 2.9% + 30c processing)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 39,
+   "coversWedge": "partial",
+   "sourceLocator": "https://fungies.io/best-gumroad-alternatives-2026/",
+   "evidenceRef": "MKT-03-D9"
+  },
+  {
+   "label": "Gumroad direct sales (10% + $0.50, merchant of record handles sales tax)",
+   "kind": "cheap_paid",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://gumroad.com/pricing",
+   "evidenceRef": "MKT-03-D15"
+  },
+  {
+   "label": "Gumroad Discover marketplace (30% when a new customer finds the seller there)",
+   "kind": "paid_incumbent",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://gumroad.com/pricing",
+   "evidenceRef": "MKT-03-D6"
+  },
+  {
+   "label": "Etsy (status quo; scanned vintage digital files now restricted)",
+   "kind": "paid_incumbent",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://www.valueaddedresource.net/etsy-creativity-standards-update-june-2025/",
+   "evidenceRef": "MKT-03-D1"
+  }
+ ],
+ "killReasons": [
+  {
+   "reason": "The flat 5-8% all-in take cannot cover payment processing and Connect fees at low order values: Stripe's card rate is 2.9% + 30c per charge (about $0.74 on a $15 order) against a 6.5% take of $0.98, before the $2 per active connected account per month and payout fees. Modeled take after processing is about $0.24 per order; break-even is about 11,000 orders per year.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "MKT-03-D3"
+  },
+  {
+   "reason": "The low-fee wedge is already sold without a marketplace: Lemon Squeezy and Fungies take 5% + $0.50 as merchant of record with no monthly fee, Payhip's free plan is 5%, so sellers can already sit at or below the entrant's fee in their own shop. The entrant's only possible addition is buyer traffic, which a stranger with no audience does not have.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "MKT-03-D7"
+  },
+  {
+   "reason": "The incumbent digital marketplace prices discovery at 30% (Gumroad Discover) versus 10% + $0.50 on direct sales, showing buyer acquisition costs several times a 5-8% take; a marketplace without traffic has no reason for sellers to move and no budget to buy it.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "MKT-03-D6"
+  },
+  {
+   "reason": "Operating as a marketplace makes the entrant responsible for facilitator sales-tax collection and remittance and for chargebacks on indirect charges, a compliance and loss exposure out of proportion to a few hundred dollars of year-1 take revenue.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "MKT-03-D12"
+  },
+  {
+   "reason": "Chargeback and negative-balance liability sits with the platform under the charge type marketplaces typically use.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "MKT-03-D10"
+  },
+  {
+   "reason": "Stripe's restricted-business list places platforms hosting third-party digital goods under additional due diligence; approval is not guaranteed for a new marketplace.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "MKT-03-D11"
+  },
+  {
+   "reason": "The orphaned niche is scans of third-party vintage material, the category whose Etsy permission was conditional on IP compliance and has now been removed; hosting it creates DMCA and takedown workload and uncertain seller supply.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "MKT-03-D1"
+  },
+  {
+   "reason": "Sellers diversify across channels rather than leave Etsy (old agent-reported evidence, not re-verified), so a marketplace without buyers gets little supply.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "MKT-03-E8"
+  }
+ ],
+ "economics": {
+  "revenue365": 390,
+  "cost365": 3015,
+  "pessimisticProfit365": -4135,
+  "survivesPessimistic": false,
+  "assumptions": [
+   "assumption: average order value $15 for vintage digital ephemera bundles (no source found)",
+   "assumption: SEO-led buyer traffic starts converting at month 4 (first revenue by day ~100, per the case file) and reaches about 26,000 cumulative visits at 1.5% conversion = 400 orders in year 1; this is generous for a new domain",
+   "assumption: take rate 6.5% all-in (case file entrant value) is gross of payment processing; platform revenue = 6.5% x GMV = $390",
+   "sourced: card processing 2.9% + 30c per charge (MKT-03-D3) = $294 on 400 orders at $15",
+   "sourced: Stripe Connect $2 per monthly active account (MKT-03-D4) and payouts 0.25% + 25c per payout (read on the same Stripe page; not quoted as its own evidence item); assumption: 25 active sellers on average for 9 months = $450 plus payouts about $71 (monthly payout per seller)",
+   "assumption: fixed costs $2,200: hosting/domain $300, marketplace terms/DMCA/privacy legal templates and review $800, sales-tax registration and accountant $600, SEO content/tools $500; no figure for Stripe Tax or state registration fees was found",
+   "year-1 base profit = 390 - 3,015 = about -$2,625 (about 17 h/week x 52 = 884 owner hours unpaid)",
+   "pessimistic: price x0.8 applied to take rate (5.2%), volume x0.5 (200 orders, $3,000 GMV), cost x1.5 = revenue $156, cost about $4,291, profit about -$4,135",
+   "break-even: net per order after processing = 6.5% x $15 - (2.9% x $15 + $0.30) = $0.24, so about (2,200 + 450 + 71) / 0.24 = 11,300 orders; if processing is charged to the seller on top of the 6.5%, net per order is $0.98 and break-even is about 2,800 orders, but then the seller pays about 11% all-in at $15 AOV"
+  ],
+  "sources": [
+   "MKT-03-D3",
+   "MKT-03-D4"
+  ]
+ },
+ "legalNotes": [
+  "Marketplace facilitator duty: platforms that collect payment for third-party sellers may have to collect and remit sales tax once they hit economic nexus; Stripe's guide gives no threshold (MKT-03-D12, D13). Thresholds, registration costs and filing frequency by state were not verified.",
+  "Chargebacks and refunds on indirect charges land on the platform balance (MKT-03-D10); Stripe may hold reserves if the platform assumes negative-balance liability.",
+  "Stripe restricted-business list puts platforms that let creators sell digital goods under additional due diligence (MKT-03-D11); approval for a brand-new marketplace is an open item.",
+  "Etsy's removal of the language allowing digital files of scanned vintage content (MKT-03-D1, D2, D14) signals IP risk for this exact niche; the entrant would need DMCA agent registration and a takedown process (general knowledge, not verified in this pass).",
+  "No logins, signups, purchases or contact were made; page text was read as data only."
+ ],
+ "unverified": [
+  "Etsy's current all-in fee percentage and the offsite-ads terms: the Craftybase page and etsy.com were refused by the fetch tool (provenance), so the earlier scan's 10% figure and the 22-26% all-in figure were not re-checked.",
+  "Free public-domain sources that compete with a paid vintage-ephemera catalog (Library of Congress, NYPL, museum open-access sets, Rawpixel): fetches were refused and the WebSearch budget ran out after 2 queries, so none is cited; the 'buyers can get the images free' risk is therefore not evidenced here.",
+  "The brief asks for at least 3 new alternative searches: only 2 searches ran before the shared WebSearch budget was exhausted; alternatives came from fetched comparison and pricing pages instead.",
+  "Number of sellers actually orphaned by Etsy's change and their sales volume; buyer demand and buyer-side SEO acquisition cost for the niche.",
+  "Quotes were taken from the WebFetch extractor's output, not from raw HTML; the extractor may have normalized spacing or punctuation. Gumroad's 30% and 10% + $0.50 figures are the headings above the quoted lines.",
+  "Payhip and Lemon Squeezy first-party pricing pages were refused; their fees come from a third-party comparison (Fungies, a competitor with a commercial interest).",
+  "Stripe Tax pricing and per-state facilitator thresholds."
+ ],
+ "nextStep": "No further spend; if revisited, only a human check of whether any niche vintage-digital marketplace already has organic buyer traffic would change the verdict."
+}

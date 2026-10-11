@@ -1,0 +1,233 @@
+{
+ "id": "GAM-03",
+ "verdict": "killed",
+ "verdictReason": "Free or near-free tools already cover the wedge (Session Zero Labs: free forever, premium from $5/mo; free ChatGPT; pay-what-you-want GM sheets; $8 Lazy DM ebook; $5 prewritten Paizo bounties), and the 4-hour prep pain is overstated (43% of 3,663 DMs prep <=1 hour), so a 45-minute target is the status quo, not an edge. No exclusive asset; zero audience; pessimistic year 1 is about -$2.6k. PF2e commercial licensing is also narrow.",
+ "answers": [
+  {
+   "question": "(1) What free/cheap alternative covers the wedge?",
+   "answer": "Most of it, at $0 to ~$20/month. Session Zero Labs (itch.io, in development) is a free AI-assisted GM toolkit with NPC creator, encounter balancer, loot tables and creature creator, tagged D&D and Pathfinder, 'Free forever ... Premium from $5/mo'. A GM can use free ChatGPT for brainstorming (Gnome Stew: 'You can access ChatGPT for free', though it needs an editorial eye). The Busy Nerd GM planning sheets are pay-what-you-want including free and system agnostic (D&D 5e, Pathfinder). Sly Flourish's Return of the Lazy Dungeon Master is $8 and teaches a short-prep checklist; he says he preps a 3-hour game in 30-60 minutes. Paid AI tools: Archivist $10-$60/mo (30-day trial), Friends & Fables $19.95-$39.95/mo. Prewritten Paizo content removes prep altogether for PF2e: Bounties/Quests and Adventure Paths price rows were $2.99->$4.99 and $17.99->$19.99 on Paizo's PDF price-change post (year not stated). A free community Foundry PF2e Encounter Builder module exists (page states no price). A one-time $29-39 kit competes against $0, $5/mo and $8 anchors.",
+  "evidenceIds": ["GAM-03-D3", "GAM-03-D4", "GAM-03-D5", "GAM-03-D6", "GAM-03-D7", "GAM-03-D10", "GAM-03-D11", "GAM-03-D12", "GAM-03-D15"]
+ },
+ {
+  "question": "(2) What structural edge exists and who could copy it?",
+  "answer": "None found. The scan-1 edge is an unvalidated owner target (45 min vs 4 h), and the baseline is weak: a 3,663-response poll shows 10% prep <=30 min, 33% about an hour, 28% about two hours, 29% three or more, so 43% already prep within an hour, and the best-known lazy-prep author reports 30-60 minutes. Rules text for PF2e is public (Archives of Nethys, ORC) and AI inference is bought from the same providers by every rival, so nothing is exclusive or compounding (no data, audience, licence or network for a stranger). Funded rivals (Archivist, Friends & Fables, Session Zero Labs) or any publisher could ship a PF2e prep template in days. One-time pricing is copyable and, if inference is bundled, is a liability because cost scales with use while revenue is fixed. Falsifier from scan 1 is already met in part: funded AI GM tools exist and the 'four hours' premise is not typical.",
+  "evidenceIds": ["GAM-03-D1", "GAM-03-D2", "GAM-03-D3", "GAM-03-D4", "GAM-03-D5"]
+ },
+ {
+  "question": "(3) Who demonstrably pays and how much?",
+  "answer": "GMs pay small amounts for prewritten or method content ($8 Lazy DM ebook; ~$5 Paizo bounties; ~$20 Paizo Adventure Path PDFs) and $5-$20/mo for AI tools (Session Zero Labs premium, Archivist Casual $10/mo, Friends & Fables Starter $19.95/mo). Whether GMs prefer one-time pricing rests on one Roll20 forum poster (GAM-03-E4), which is anecdotal. Indie TTRPG income is thin: one creator with several titles reports about $2,400 gross for 2025, with itch.io the biggest channel (43.8%). No source found showing a $29-39 one-time prep kit selling in volume.",
+  "evidenceIds": ["GAM-03-D5", "GAM-03-D7", "GAM-03-D11", "GAM-03-D12", "GAM-03-D13", "GAM-03-D4", "GAM-03-D3"]
+ },
+ {
+  "question": "(4) Legal/platform constraints?",
+  "answer": "Paizo's Community Use Policy covers only non-commercial content that is not behind a paywall, so a paid PF2e product cannot use it. A paid product can rely on the ORC licence for game rules only (not Paizo characters, locations, art or trademarks), or on Pathfinder Infinite, which restricts distribution to pathfinderinfinite.com/starfinderinfinite.com and bars combining other licences. A 2023 DriveThruRPG / DMs Guild policy (as reported by a forum quoting Gizmodo) barred content 'primarily' AI-generated writing and required AI art labels; the current policy was not verified. D&D content: stay on the SRD (from case file, not re-verified). Inference providers' terms and cost are an unquantified dependency.",
+  "evidenceIds": ["GAM-03-D8", "GAM-03-D9", "GAM-03-D14"]
+ },
+ {
+  "question": "(5) Year-1 numbers?",
+  "answer": "Base: 150 units x $34 = $5,100 revenue (volume is an assumption, deliberately generous against the $2,400 gross a whole indie catalogue earned in 2025); costs $4,555 (inference $13.60 per kit per the case model, 15% platform/payment fee assumed, $1,750 startup cash) = +$545 profit for roughly 650 owner hours, about $0.84/hour. Pessimistic (price x0.8, volume x0.5, costs x1.5): revenue $2,040, costs $4,614, profit -$2,574. If the kit is a static PDF with no inference cost, pessimistic profit is still about -$1,044. Fails the pessimistic test either way.",
+  "evidenceIds": ["GAM-03-D13", "GAM-03-D2", "GAM-03-D3"]
+ }
+ ],
+ "newEvidence": [
+  {
+   "id": "GAM-03-D1",
+   "url": "https://slyflourish.com/how_long_to_prep.html",
+   "quote": "Personally, it takes me about 30 minutes to an hour to prepare for a 3 hour game.",
+   "kind": "demand",
+   "publisher": "Sly Flourish (Michael E. Shea), How long to prep",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "A prominent lazy-prep author preps in 30-60 minutes, so a 45-minute target is the status quo for experienced DMs."
+  },
+  {
+   "id": "GAM-03-D2",
+   "url": "https://slyflourish.com/how_long_to_prep.html",
+   "quote": "Here are the results from 3,663 responses:",
+   "kind": "demand",
+   "publisher": "Sly Flourish (Michael E. Shea), How long to prep",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Poll table on that page: about 30 minutes or less 10%, about an hour 33%, about two hours 28%, about three hours or more 29% (prep for roughly a four-hour game per the page text). 43% already prep within an hour."
+  },
+  {
+   "id": "GAM-03-D3",
+   "url": "https://sessionzerolabs.itch.io/session-zero-labs",
+   "quote": "Free forever. No credit card needed. Premium from $5/mo.",
+   "kind": "incumbent_price",
+   "publisher": "Session Zero Labs (itch.io)",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "A free AI-assisted GM toolkit (NPC creator, encounter balancer, loot tables, creature creator; tags include Dungeons & Dragons and Pathfinder; status In development) with premium from $5/mo."
+  },
+  {
+   "id": "GAM-03-D4",
+   "url": "https://fables.gg/blog/everweave-vs-friends--fables-plan--feature-comparison",
+   "quote": "$19.95/month ($16.63/month with a yearly subscription).",
+   "kind": "incumbent_price",
+   "publisher": "Friends & Fables blog, Everweave vs Friends & Fables plan comparison",
+   "date": "2025 (late 2025 per page)",
+   "evidenceClass": "agent_reported",
+   "shows": "Friends & Fables Starter plan $19.95/mo; Pro $29.95/mo; Legend $39.95/mo; free tier of 5-25 AI turns/day; Everweave Adventurer $5.99/mo. A funded vendor blog, competitor-authored."
+  },
+  {
+   "id": "GAM-03-D5",
+   "url": "https://www.myarchivist.ai/pricing",
+   "quote": "Full access. No card needed.",
+   "kind": "incumbent_price",
+   "publisher": "Archivist (myarchivist.ai) pricing page",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "30-day trial; paid plans Casual $10/mo (1 campaign, 4 sessions), Seasoned $20/mo, Pro $35/mo, Legend $60/mo (table cells on the page)."
+  },
+  {
+   "id": "GAM-03-D6",
+   "url": "https://thebusynerd.itch.io/essentials",
+   "quote": "pay what you want (including free)",
+   "kind": "incumbent_price",
+   "publisher": "The Busy Nerd (itch.io), Busy Nerd: Essentials",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "A print-ready pack of session prep and tracking sheets, system agnostic (D&D 5e, Pathfinder), priced pay-what-you-want including free; paid add-on packs exist."
+  },
+  {
+   "id": "GAM-03-D7",
+   "url": "https://slyflourish.com/return_of_the_lazy_dm.html",
+   "quote": "I kept the price of Return of the Lazy Dungeon Master low—$8 for the ebook package",
+   "kind": "incumbent_price",
+   "publisher": "Sly Flourish, Return of the Lazy Dungeon Master",
+   "date": "2018 (release; page undated)",
+   "evidenceClass": "agent_reported",
+   "shows": "The best-known short-prep method book sells as an $8 ebook; centred on a lazy DM checklist."
+  },
+  {
+   "id": "GAM-03-D8",
+   "url": "https://paizo.com/licenses/",
+   "quote": "Such content must be non-commercial and can't be behind a paywall.",
+   "kind": "constraint",
+   "publisher": "Paizo, Licenses",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "The Community Use Policy cannot be used for a paid PF2e kit; ORC covers game rules only, not Paizo trademarks or non-rules content."
+  },
+  {
+   "id": "GAM-03-D9",
+   "url": "https://paizo.com/licenses/",
+   "quote": "so long as it is distributed solely at pathfinderinfinite.com or starfinderinfinite.com.",
+   "kind": "constraint",
+   "publisher": "Paizo, Licenses",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "Pathfinder Infinite (the licence that covers Paizo IP) restricts sales to Paizo's own marketplace and bars combining other licences."
+  },
+  {
+   "id": "GAM-03-D10",
+   "url": "https://gnomestew.com/campaign-prep-with-chatgpt/",
+   "quote": "You can access ChatGPT for free,",
+   "kind": "other",
+   "publisher": "Gnome Stew, Campaign prep with ChatGPT",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "A GM site recommends free ChatGPT for prep brainstorming ('a solid tool for generating content'), with caveats: results 'need an editorial eye' and it is only 'a passable tool for plotting adventures'. Free DIY substitute."
+  },
+  {
+   "id": "GAM-03-D11",
+   "url": "https://paizo.com/blog/paizo-pdf-pricing-changes",
+   "quote": "Bounties | $2.99 | $4.99",
+   "kind": "incumbent_price",
+   "publisher": "Paizo blog, Paizo PDF Pricing Changes",
+   "date": "undated (effective Oct 26 / Nov 1, year not stated)",
+   "evidenceClass": "agent_reported",
+   "shows": "Row from Paizo's PDF price-change table; Quests show the same $2.99 to $4.99. Prewritten PF2e adventures at about $5 remove prep entirely."
+  },
+  {
+   "id": "GAM-03-D12",
+   "url": "https://paizo.com/blog/paizo-pdf-pricing-changes",
+   "quote": "Adventure Paths | $17.99 | $19.99",
+   "kind": "incumbent_price",
+   "publisher": "Paizo blog, Paizo PDF Pricing Changes",
+   "date": "undated (effective Oct 26 / Nov 1, year not stated)",
+   "evidenceClass": "agent_reported",
+   "shows": "Adventure Path PDF volumes move from $17.99 to $19.99, a ready-to-run alternative for PF2e GMs."
+  },
+  {
+   "id": "GAM-03-D13",
+   "url": "https://monstermind.substack.com/p/2025-a-year-in-review",
+   "quote": "My gross income was about $2400.",
+   "kind": "other",
+   "publisher": "Monstermind (Substack), 2025 - A year in review",
+   "date": "2025",
+   "evidenceClass": "agent_reported",
+   "shows": "Indie TTRPG creator: about $2,400 gross and about $2,200 net for 2025; itch.io 43.8% of income; both 2025 releases pay-what-you-want. Anchor for how thin indie TTRPG revenue is."
+  },
+  {
+   "id": "GAM-03-D14",
+   "url": "https://www.enworld.org/threads/dms-guild-and-drivethrurpg-ban-ai-written-works-requires-labels-for-ai-generated-art.698936/",
+   "quote": "any content that is made of \"primarily\" of AI-generated writing will not be allowed.",
+   "kind": "constraint",
+   "publisher": "EN World forum (quoting Gizmodo), DMs Guild and DriveThruRPG AI policy",
+   "date": "2023-07-25",
+   "evidenceClass": "agent_reported",
+   "shows": "2023 marketplace policy barring primarily AI-written works and requiring AI art labels; may have changed since."
+  },
+  {
+   "id": "GAM-03-D15",
+   "url": "https://foundryvtt.com/packages/pf2e-encounter-builder",
+   "quote": "reads all active player-owned characters and calculates party level and size automatically",
+   "kind": "other",
+   "publisher": "Foundry VTT package listing, PF2e Encounter Builder",
+   "date": "undated",
+   "evidenceClass": "agent_reported",
+   "shows": "A community Foundry module already automates PF2e encounter building (XP budgets, one-click random encounter); the page does not state a price."
+  }
+ ],
+ "newAlternatives": [
+  {"label": "Session Zero Labs free AI GM toolkit (premium from $5/mo)", "kind": "free_tool", "costUsdPerMonth": 0, "coversWedge": "partial", "sourceLocator": "https://sessionzerolabs.itch.io/session-zero-labs", "evidenceRef": "GAM-03-D3"},
+  {"label": "Free ChatGPT for DIY prep brainstorming", "kind": "free_tool", "costUsdPerMonth": 0, "coversWedge": "partial", "sourceLocator": "https://gnomestew.com/campaign-prep-with-chatgpt/", "evidenceRef": "GAM-03-D10"},
+  {"label": "Busy Nerd Essentials GM planning sheets (pay what you want)", "kind": "free_tool", "costUsdPerMonth": 0, "coversWedge": "partial", "sourceLocator": "https://thebusynerd.itch.io/essentials", "evidenceRef": "GAM-03-D6"},
+  {"label": "Return of the Lazy Dungeon Master ebook ($8 one-time, shown as $8/12 per month)", "kind": "cheap_paid", "costUsdPerMonth": 0.67, "coversWedge": "partial", "sourceLocator": "https://slyflourish.com/return_of_the_lazy_dm.html", "evidenceRef": "GAM-03-D7"},
+  {"label": "Paizo Bounties/Quests PDFs (about $4.99 one-time, shown as $4.99/12 per month)", "kind": "cheap_paid", "costUsdPerMonth": 0.42, "coversWedge": "partial", "sourceLocator": "https://paizo.com/blog/paizo-pdf-pricing-changes", "evidenceRef": "GAM-03-D11"},
+  {"label": "Archivist Casual plan", "kind": "cheap_paid", "costUsdPerMonth": 10, "coversWedge": "partial", "sourceLocator": "https://www.myarchivist.ai/pricing", "evidenceRef": "GAM-03-D5"},
+  {"label": "Friends & Fables Starter plan", "kind": "paid_incumbent", "costUsdPerMonth": 19.95, "coversWedge": "partial", "sourceLocator": "https://fables.gg/blog/everweave-vs-friends--fables-plan--feature-comparison", "evidenceRef": "GAM-03-D4"}
+ ],
+ "killReasons": [
+  {"reason": "Free or near-free tools already cover most of the wedge: Session Zero Labs is a free AI GM toolkit (Pathfinder-tagged) with premium from $5/mo, plus free ChatGPT, pay-what-you-want GM sheets and an $8 Lazy DM ebook. A $29-39 one-time kit must beat $0.", "severity": "major", "refClass": "agent_reported", "ref": "GAM-03-D3"},
+  {"reason": "The edge premise fails: in a 3,663-response poll 43% of DMs already prep within an hour (10% <=30 min, 33% about an hour) and a leading lazy-prep author preps in 30-60 minutes, so the 45-minute target is the status quo and not a differentiator. No exclusive asset, data or audience exists for a stranger and rivals can copy a PF2e template quickly.", "severity": "major", "refClass": "agent_reported", "ref": "GAM-03-D2"},
+  {"reason": "Pessimistic year 1 is negative (about -$2,574 with inference cost, about -$1,044 as a static PDF) and indie TTRPG revenue is thin (one multi-title creator: about $2,400 gross in 2025), with no evidence that a $29-39 one-time prep kit sells in volume.", "severity": "major", "refClass": "agent_reported", "ref": "GAM-03-D13"},
+  {"reason": "Paizo's free policy excludes paid products; a paid PF2e kit is limited to ORC rules text or store-locked Pathfinder Infinite, so Pathfinder-flavoured content cannot be used freely.", "severity": "minor", "refClass": "agent_reported", "ref": "GAM-03-D8"},
+  {"reason": "Marketplace AI policies (2023: primarily AI-written works barred) and GM opposition to AI content add platform risk for an AI-generated kit; current policy unverified.", "severity": "minor", "refClass": "agent_reported", "ref": "GAM-03-D14"}
+ ],
+ "economics": {
+  "revenue365": 5100,
+  "cost365": 4555,
+  "pessimisticProfit365": -2574,
+  "survivesPessimistic": false,
+  "assumptions": [
+   "Price $34 = midpoint of the case file's $29-39 range (assumption).",
+   "Units 150 in year 1 for a stranger with no audience (assumption); deliberately generous versus about $2,400 gross a year for a whole indie catalogue (GAM-03-D13).",
+   "Variable cost $13.60 per sale = owner's AI-inference model from the case file (not verified).",
+   "Platform/payment fee 15% of revenue (assumption; marketplace fee schedules not checked).",
+   "Fixed cost $1,750 = reference entrant startup cash from the case file, treated as spent in year 1.",
+   "Base: revenue 150 x 34 = 5,100; cost 2,040 + 765 + 1,750 = 4,555; profit +545, about $0.84 per owner hour over ~650 hours (12.5 h/week).",
+   "Pessimistic (price x0.8 = $27.20, volume x0.5 = 75, all costs x1.5): revenue 2,040; cost (1,020 + 306 + 1,750) x 1.5 = 4,614; profit -2,574.",
+   "Static-PDF variant (no inference): pessimistic cost (306 + 1,750) x 1.5 = 3,084 against revenue 2,040 = -1,044."
+  ],
+  "sources": ["GAM-03-D13", "GAM-03-D3", "GAM-03-D7"]
+ },
+ "legalNotes": [
+  "Paizo Community Use Policy is non-commercial and cannot sit behind a paywall; a paid PF2e product must rely on ORC (rules only, not Paizo trademarks, characters, locations or art) or on Pathfinder Infinite (sold only on Paizo's Infinite sites, no combining with other licences).",
+  "Wizards of the Coast material: stay on the SRD or system-neutral content (from the case file; not re-verified here).",
+  "DriveThruRPG/DMs Guild 2023 policy as reported: primarily AI-written content barred and AI art must be labelled; current policy not verified.",
+  "AI inference providers' terms and per-kit cost are a dependency; a fixed one-time price with bundled inference leaves unbounded cost per buyer."
+ ],
+ "unverified": [
+  "The myarchivist.ai best-DM-tools-2026 page could not be read (permission request withdrawn), so CharGen, ZapGM and Dungeon Alchemist prices remain unverified.",
+  "Roll20 price conflict (free / $5.99-$9.99 per month) was not re-checked.",
+  "Whether the Foundry PF2e Encounter Builder and similar modules are free (the page states no price).",
+  "Current DriveThruRPG/itch.io AI-content policies and fee schedules.",
+  "A University of Waterloo study of GM attitudes to AI tools and a Boing Boing survey on AI attitudes could not be fetched, so GM opposition to AI content is unquantified.",
+  "No source found showing a $29-39 one-time prep kit selling; units sold and conversion rates are unknown.",
+  "The 'four hours of prep' claim (GAM-03-E1) was not re-read; the poll is of D&D DMs, not PF2e specifically."
+ ],
+ "nextStep": "Drop it; if the owner still wants to test demand, release a static non-AI PF2e prep checklist as pay-what-you-want on itch.io and count real purchases before building anything."
+}

@@ -60,10 +60,17 @@ with sync_playwright() as p:
     check('scan_valid_40_raw_10_families', all(s in pg.inner_text('#grScan') for s in ['Yes', '40 (need ≥30)', '10 (need ≥8)', '0 of 40']), pg.inner_text('#grScan'))
     check('no_stray_null_text', 'null' not in pg.inner_text('#grMain').lower().replace('nullable',''), pg.inner_text('#grScan'))
     check('forty_items', pg.locator('.gr-item').count() == 40)
-    check('counts_card', all(s in pg.inner_text('#grCounts') for s in ['24', '8']), pg.inner_text('#grCounts'))
+    check('counts_card', 'Queued for verification 5' in pg.inner_text('#grCounts').replace('\n', ' ') and 'Rejected (basis not engine-verified) 27' in pg.inner_text('#grCounts').replace('\n', ' ') and 'Rejected by hard gate 8' in pg.inner_text('#grCounts').replace('\n', ' '), pg.inner_text('#grCounts'))
     check('spend_blocked_and_estimate', 'Blocked' in pg.inner_text('#grSpend') and '$6.60' in pg.inner_text('#grSpend') and '$0.00' in pg.inner_text('#grSpend'), pg.inner_text('#grSpend'))
     check('lens_not_v6_note', 'NOT a v6 score' in pg.inner_text('#grNote'))
-    pg.select_option('#grStatus', 'queued'); check('filter_status_queued_24', pg.locator('.gr-item').count() == 24 and '24 of 40' in pg.inner_text('#grCount'))
+    pg.select_option('#grStatus', 'queued'); check('filter_status_queued_5_after_second_pass', pg.locator('.gr-item').count() == 5 and '5 of 40' in pg.inner_text('#grCount'))
+    pg.evaluate('''document.querySelectorAll('.gr-item').forEach(d=>d.open=true)''')
+    qt = pg.locator('#grList').inner_text() if pg.locator('#grList').count() else pg.locator('main').inner_text()
+    check('scan1_uncertain_after_deep_shown', qt.count('Deep screen (first pass') >= 3 and qt.lower().count('deep screen not done') == 2, str(qt.count('Deep screen (first pass')) + ' / ' + str(qt.lower().count('deep screen not done')))
+    pg.select_option('#grStatus', 'rejected_unverified'); check('scan1_deep_killed_chip_19', pg.locator('.gr-item .gr-chip', has_text='deep screened').count() == 19, str(pg.locator('.gr-item .gr-chip', has_text='deep screened').count()))
+    pg.evaluate('''document.querySelectorAll('.gr-item').forEach(d=>d.open=true)''')
+    dt = pg.locator('.gr-item', has_text='KILLED_AFTER_DEEP_SCREEN').first.inner_text()
+    check('scan1_deep_killed_detail', 'Deep screen' in dt and 'Cheapest alternatives' in dt and 'Kill reasons' in dt, dt[:400])
     pg.select_option('#grStatus', ''); pg.select_option('#grFamily', 'games'); check('filter_family_games_4', pg.locator('.gr-item').count() == 4)
     pg.select_option('#grFamily', ''); pg.fill('#grSearch', 'zzzz-no-match'); check('search_no_match_0', pg.locator('.gr-item').count() == 0 and '0 of 40' in pg.inner_text('#grCount'))
     pg.fill('#grSearch', 'GAM-01'); check('search_by_id', pg.locator('.gr-item').count() == 1)
@@ -93,6 +100,7 @@ with sync_playwright() as p:
         c['rejection_reason'] = '<script>window.__xss=2</script>'
         c['evidence_hints'] = [{'url': 'javascript:window.__xss=3', 'signal': '<b>bold</b>', 'source': '<i>src</i>', 'evidence_class': 'verified', 'kind': 'demand'},
                                {'url': 'http://insecure.example', 'signal': 's', 'source': 'x', 'evidence_class': 'verified', 'kind': 'demand'}]
+        c['metadata']['alternatives'] = [{'label': '<b>alt</b>', 'kind': 'free', 'usd_per_month': 0, 'covers_wedge': 'full', 'url': 'javascript:window.__xss=4'}, {'label': 'alt2', 'kind': 'paid', 'usd_per_month': 9, 'covers_wedge': 'full', 'url': 'http://insecure.example'}]
         (tmp / 'data' / 'g281_scan1_view.js').write_text('window.REVENG_GLOBAL_VIEW_DATA=' + json.dumps(pkg) + ';', encoding='utf-8')
         pg, errs, _ = open_page(browser, tmp)
         pg.evaluate('''document.querySelectorAll('.gr-item').forEach(d=>d.open=true)''')

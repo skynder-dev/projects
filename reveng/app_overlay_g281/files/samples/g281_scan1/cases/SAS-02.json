@@ -1,0 +1,123 @@
+{
+ "id": "SAS-02",
+ "name": "Website and social archive for solo/small RIAs",
+ "family": "saas_or_micro_saas",
+ "buyer": "Solo and small SEC-registered investment advisers who must retain website and social marketing content",
+ "pain": "Per-seat archiving suites are priced and contracted for larger firms, while SEC Rule 204-2 requires 5-year retention and quick retrieval.",
+ "wedge": "Archive public website pages and social posts only, with no email or text, at about $29/mo flat per firm with free export and no annual lock-in. The edge is price and narrow scope, and it is unproven.",
+ "referenceEntrant": {
+  "startupCashUsd": 1750,
+  "daysToFirstRevenue": 65,
+  "ownerHoursPerWeek": 12
+ },
+ "scan1Edge": {
+  "criterion": "cash_cost",
+  "direction": "lower_is_better",
+  "entrant_basis": "Flat $29/mo for a scoped product covering websites and social only. The notes estimate snapshot compute and storage under $5/month per client, which is unverified.",
+  "entrant_value": 29,
+  "falsifier": "If RIAs need email and text archiving in the same tool, or require a compliance-audited 'compliant' claim the entrant cannot make, a website-only product at $29 will not be bought.",
+  "incumbent_source_url": "https://patrina.com/",
+  "incumbent_value": 60,
+  "unit": "USD per month per firm"
+ },
+ "substitutesNoted": [
+  {
+   "name": "Patrina",
+   "price_point": "from $60/month, no annual contract",
+   "url": "https://patrina.com/"
+  },
+  {
+   "name": "Smarsh",
+   "price_point": "$15-35 per seat/month, annual minimum (per one 2026 comparison)",
+   "url": "https://ustechautomations.com/resources/blog/automate-best-compliance-archiving-tools-for-ria-firms-2026"
+  },
+  {
+   "name": "Archive Intel",
+   "price_point": "no storage fees up to 1TB (price not given)",
+   "url": "https://archiveintel.com/"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 75,
+  "notes": "ESTIMATE from the notes: 75% gross margin and under $5/month compute and storage per client. Legal review of claims is included in startup cash.",
+  "price_usd": 29,
+  "variable_cost_usd": 7.25
+ },
+ "majorUncertainty": "Whether a website-and-social-only archive satisfies advisers' compliance needs and whether an anonymous founder can earn trust without a network or compliance background.",
+ "unknowns": [
+  "Whether website/social-only archiving satisfies SEC exam expectations",
+  "Real willingness to pay $29/mo",
+  "Social platform capture feasibility and ToS",
+  "PageFreezer and ArchiveSocial prices are stale and were not used",
+  "The per-seat price ranges come from a single 2026 comparison and the excerpt is truncated",
+  "The entrant has no compliance background and no advisor network",
+  "Legal review cost and what claims are permissible"
+ ],
+ "regulatoryOrPlatformDependency": "The product must hold up in an SEC exam, and claiming '17a-4 compliant' without an audit is a liability. Social platforms may restrict capture access.",
+ "evidence": [
+  {
+   "id": "SAS-02-E1",
+   "url": "https://ustechautomations.com/resources/blog/automate-best-compliance-archiving-tools-for-ria-firms-2026",
+   "publisher": "5 Best Compliance Archiving Tools for RIA Firms 2026",
+   "kind": "incumbent_price",
+   "shows": "A 2026 comparison lists per-seat monthly starting prices for archiving tools (the notes cite Smarsh $15-35 with an annual minimum, Global Relay $20-45, MyRepChat $30, Proofpoint Essentials FS $10-25)",
+   "quote": "## Head-to-Head Comparison: Pricing, Retention, and Retrieval\n| Tool | Starting Price (Per Seat/Month) | Email Archiving | Text Archiving | Social Med...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-02-E2",
+   "url": "https://patrina.com/",
+   "publisher": "Compliance & Archiving Solutions - Patrina.com",
+   "kind": "incumbent_price",
+   "shows": "Patrina offers 17a-4-aligned archiving for as little as $60/month",
+   "quote": "Your data archived in accordance with 17a-4 requirements for as little as $60/month.\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-02-E3",
+   "url": "https://patrina.com/",
+   "publisher": "Compliance & Archiving Solutions - Patrina.com",
+   "kind": "incumbent_price",
+   "shows": "Patrina has no auto-renewing annual contracts, so a month-to-month option already exists",
+   "quote": "No auto-renewing annual contracts.\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-02-E4",
+   "url": "https://ustechautomations.com/resources/blog/automate-best-compliance-archiving-tools-for-ria-firms-2026",
+   "publisher": "5 Best Compliance Archiving Tools for RIA Firms 2026",
+   "kind": "demand",
+   "shows": "SEC Rule 204-2 requires 5-year retention of client correspondence, which creates a mandatory need",
+   "quote": "# 5 Best Compliance Archiving Tools for RIA Firms 2026\n## Key Takeaways\n- SEC Rule 204-2 requires 5-year retention of all client correspondence and 2-...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-02-E5",
+   "url": "https://presults.com/archiving/financial-advisor-archiving-solution/",
+   "publisher": "What Financial Advisors Should Seek in an Archiving Solution - Presults",
+   "kind": "demand",
+   "shows": "A vendor warns of hidden storage, import/export fees and setup costs, which is vendor marketing and not independent complaint evidence",
+   "quote": "Consider additional hidden charges like storage, import/export fees, and setup costs. Importantly, scrutinize export fees, as they can become signific...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-02-E6",
+   "url": "https://www.advisordesigns.com/pricing/",
+   "publisher": "Website Pricing for Financial Advisors",
+   "kind": "other",
+   "shows": "Website vendor Advisor Designs sends archiving to third-party providers such as Global Relay, Presults or Smarsh, which points to a referral channel",
+   "quote": "Archiving for regulatory purposes (SEC, FINRA, or broker-dealer requirements) should be handled through a third-party provider, such as **Global Relay...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "SAS-02-E7",
+   "url": "https://archiveintel.com/",
+   "publisher": "Communications Archiving for SEC and FINRA Firms",
+   "kind": "constraint",
+   "shows": "Archive Intel advertises no retrieval fees and no storage fees up to 1TB, so competitors already address export-fee complaints",
+   "quote": "No retrieval fees. ",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}

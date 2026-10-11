@@ -1,0 +1,135 @@
+{
+ "id": "MKT-01",
+ "name": "Exclusive-lead, pay-on-booking exchange for one home-service trade in one metro",
+ "family": "marketplaces",
+ "buyer": "Solo or very small handyman, house-cleaning or similar crews that pay per lead on Thumbtack or Angi today",
+ "pain": "Shared pay-per-lead pricing: each lead goes to 3-5 pros and is billed whether or not the homeowner replies. Lead cost eats a large share of small-ticket jobs.",
+ "wedge": "One licence-free trade in one metro. Each lead goes to one pro only, and the pro is charged only when the job is booked or confirmed. Homeowner traffic comes from local SEO, in a rank-and-rent style.",
+ "referenceEntrant": {
+  "startupCashUsd": 3500,
+  "daysToFirstRevenue": 45,
+  "ownerHoursPerWeek": 17
+ },
+ "scan1Edge": {
+  "criterion": "cash_cost",
+  "direction": "lower_is_better",
+  "entrant_basis": "Exclusive single-pro routing with a pay-on-confirmed-booking fee, so the pro pays nothing for no-reply or just-exploring leads. The $100 figure is a model assumption, not an observed price.",
+  "entrant_value": 100,
+  "falsifier": "If the entrant's own homeowner-traffic cost per booked job (SEO plus ads) exceeds roughly $100, or pros take bookings off-platform and avoid the fee, the edge disappears.",
+  "incumbent_source_url": "https://thebookingflow.com/blog/lead-generation/thumbtack-for-contractors/",
+  "incumbent_value": 350,
+  "unit": "USD charged to the pro per booked job"
+ },
+ "substitutesNoted": [
+  {
+   "name": "Thumbtack",
+   "price_point": "$15-$80 per shared lead; ~$350 per booked job",
+   "url": "https://auto-respond.com/blog/thumbtack-lead-cost-wasted-slow-response/"
+  },
+  {
+   "name": "Angi",
+   "price_point": "$300-$3,000+ per month packages; $10-$100 per contact",
+   "url": "https://www.baadigi.com/compare/thumbtack-vs-angi"
+  }
+ ],
+ "unitEconomicsNoted": {
+  "class": "model",
+  "contribution_margin_pct": 50,
+  "notes": "ESTIMATE from the notes: 40-60% gross margin if the entrant owns the traffic, falling quickly if paid ads are required. No per-booking price has been validated.",
+  "price_usd": null,
+  "variable_cost_usd": null
+ },
+ "majorUncertainty": "Whether the entrant can get homeowner demand at a cost per booked job below what pros pay Thumbtack. This is the cold start on both sides.",
+ "unknowns": [
+  "Local SEO ranking difficulty and cost per homeowner request in a chosen metro",
+  "Share of bookings that leak off-platform after first contact",
+  "State licence rules for the chosen trade",
+  "Whether pros will accept a pay-on-booking fee that is verifiable",
+  "Whether Thumbtack has a free tier (not verified)",
+  "BBB complaint figures are only a secondary blog summary"
+ ],
+ "regulatoryOrPlatformDependency": "Depends on Google organic and paid traffic. Some trades need state licences, so restrict to licence-free trades or verify licences (legal specifics not researched).",
+ "evidence": [
+  {
+   "id": "MKT-01-E1",
+   "url": "https://auto-respond.com/blog/thumbtack-lead-cost-wasted-slow-response/",
+   "publisher": "Thumbtack Lead Cost in 2026: $15-$80 Per Lead and Why Slow Replies Waste It",
+   "kind": "incumbent_price",
+   "shows": "Thumbtack charges $15 to $80 per lead depending on trade and market",
+   "quote": "# Thumbtack lead cost: how slow responses waste your budget\nThumbtack charges $15 to $80 per lead depending on your trade and market. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-01-E2",
+   "url": "https://auto-respond.com/blog/thumbtack-lead-cost-wasted-slow-response/",
+   "publisher": "Thumbtack Lead Cost in 2026: $15-$80 Per Lead and Why Slow Replies Waste It",
+   "kind": "demand",
+   "shows": "Each Thumbtack lead is sent to 3-5 competing pros at the same time (shared, not exclusive)",
+   "quote": "Here’s what service businesses typically pay per lead in 2026: Thumbtack sends each lead to 3-5 competing pros at the same time. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-01-E3",
+   "url": "https://www.baadigi.com/compare/thumbtack-vs-angi",
+   "publisher": "Thumbtack vs Angi (2026): Real Lead Costs",
+   "kind": "demand",
+   "shows": "Thumbtack bills per contact ($10-$100) whether or not the homeowner replies; Angi packages run $300-$3,000+ per month (C4 on the same page)",
+   "quote": "Thumbtack bills per contact: $10–$100 every time you message a homeowner, whether or not they ever reply.\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-01-E4",
+   "url": "https://thebookingflow.com/blog/lead-generation/thumbtack-for-contractors/",
+   "publisher": "Thumbtack for Contractors: Honest Review and Real Costs",
+   "kind": "incumbent_price",
+   "shows": "Thumbtack cost per lead ~$35-$50, close rate 10-30%, average cost per booked job ~$350",
+   "quote": "cost per lead: ~$35–$50\n- Thumbtack close rate: 10–30%\n- Thumbtack avg. cost per booked job: ~$350\n- Angi Leads avg. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-01-E5",
+   "url": "https://savullc.com/thumbtack-pro-reviews/",
+   "publisher": "Thumbtack Pro Review 2026: Pros, Cons & Lead Costs",
+   "kind": "demand",
+   "shows": "One review blog reports 1,000+ BBB complaints, including active filings from January 2026 about $30.31 lead charges. This is a secondary summary, not primary BBB data.",
+   "quote": "- **Better Business Bureau (BBB):** 1,000+ complaints on file, including active filings from January 2026 describing charges of $30.31 per lead for co...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-01-E6",
+   "url": "https://ch.trustpilot.com/review/thumbtack.com",
+   "publisher": "Thumbtack Bewertungen 6’386",
+   "kind": "demand",
+   "shows": "Trustpilot reviewer says pros are charged for leads even when the customer is not ready to hire",
+   "quote": "Even in those cases, professionals are still charged for the lead, even though the customer may not actually be ready to hire anyone.\n\n",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-01-E7",
+   "url": "https://thebookingflow.com/blog/lead-generation/thumbtack-for-contractors/",
+   "publisher": "Thumbtack for Contractors: Honest Review and Real Costs",
+   "kind": "other",
+   "shows": "Thumbtack updates lead pricing weekly based on supply, demand and market conditions, so cost is unpredictable for pros",
+   "quote": "Thumbtack updates lead pricing weekly based on supply, demand, and market conditions. ",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-01-E8",
+   "url": "https://handymancan.org/blog/is-thumbtack-worth-it",
+   "publisher": "Is Thumbtack Worth It in 2026? An Honest Breakdown for Pros",
+   "kind": "constraint",
+   "shows": "Lead cost is negligible on $5,000-$15,000+ jobs, so the pain is concentrated in low-ticket trades (this is the target segment)",
+   "quote": "| Trade | Typical ticket | Thumbtack math |\n| --- | --- | --- |\n| Roofing / HVAC install | $5,000–$15,000+ | Lead cost is a rounding error — works wel...",
+   "evidenceClass": "agent_reported"
+  },
+  {
+   "id": "MKT-01-E9",
+   "url": "https://thebookingflow.com/blog/lead-generation/thumbtack-for-contractors/",
+   "publisher": "Thumbtack for Contractors: Honest Review and Real Costs",
+   "kind": "constraint",
+   "shows": "The ~$35-$50 per lead and 10-30% close rate are the benchmark the entrant's own homeowner-traffic cost per booked job must beat. The entrant has no traffic of its own.",
+   "quote": "cost per lead: ~$35–$50\n- Thumbtack close rate: 10–30%\n- Thumbtack avg. cost per booked job: ~$350\n- Angi Leads avg. ",
+   "evidenceClass": "agent_reported"
+  }
+ ]
+}
