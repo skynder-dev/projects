@@ -23,6 +23,9 @@ APP_PHRASES: dict[str, str] = {
     "Add to Library": "Добавить в библиотеку", "or": "или", "Add + Analyze": "Добавить + анализ",
     ". Local-folder files stay in place; Android/SD files copy to Staging. Private and Rejected media never appear in Library.":
         ". Файлы из папок остаются на месте; файлы с Android/SD копируются в Staging. Private и Rejected никогда не попадают в библиотеку.",
+    "This is a separate MediaEngine install.": "Это отдельная установка MediaEngine.",
+    "The library of your working Archivist is not shown here and is not changed. To make a reel from a folder of videos, use Auto Edit.":
+        "Библиотека твоего рабочего Archivist здесь не показывается и не меняется. Чтобы сделать ролик из папки с видео, открой «Автомонтаж».",
     "ADB not installed": "ADB не установлен", "not connected": "не подключён", "Working…": "Работаю…",
     # ---- activity, jobs
     "Activity": "Активность", "Operations": "Работа", "Jobs & errors": "Задачи и ошибки",

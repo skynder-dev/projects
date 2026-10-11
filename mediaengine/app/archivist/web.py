@@ -12,7 +12,7 @@ from pathlib import Path
 from flask import Flask, Response, jsonify, redirect, render_template, request, send_file
 
 from . import android
-from .config import APP_PORT, BUILD, HOME, INSTALL, PRIVATE, REJECTED, STAGING, STORYBOARDS, THUMBS, VERSION, load_config, save_config
+from .config import APP_PORT, BUILD, HOME, INSTALL, SIDE_BY_SIDE, PRIVATE, REJECTED, STAGING, STORYBOARDS, THUMBS, VERSION, load_config, save_config
 from .db import db, init_db
 from .media_brain import (best_clips, build_tracked_trajectory, clip_by_id, clips_for_inventory,
                           ensure_schema as ensure_media_brain_schema, save_crop_trajectory,
@@ -322,10 +322,13 @@ def create_app():
             total=int(metrics['total'] or 0);imported=int(metrics['imported'] or 0);videos=int(metrics['videos'] or 0)
             waiting=int(metrics['waiting'] or 0);review=int(metrics['review'] or 0);rights=int(metrics['rights_review'] or 0);errs=int(metrics['errs'] or 0)
         phone=phone_snapshot(); phone_text=(phone.get('model') or phone.get('serial') or 'Android')+' connected' if phone['connected'] else (phone.get('error') or 'not connected')
+        side_note=("<div class='card callout' style='margin-top:14px'><b>This is a separate MediaEngine install.</b> "
+                   "<span class='muted'>The library of your working Archivist is not shown here and is not changed. To make a reel from a folder of videos, use Auto Edit.</span>"
+                   "<div class='row' style='margin-top:8px'><a class='btn' href='/auto'>Auto Edit</a></div></div>") if (SIDE_BY_SIDE and not total) else ""
         body=f"""<div class='pagehead row space'><div><div class='eyebrow'>Local-first media workspace</div><h1>Your footage, ready to work.</h1><div class='lead'>Browse Android, SD/USB and local folders in one place. Library stays clean: only media you explicitly add becomes part of the working collection.</div></div><div class='row'><a class='btn' href='/auto'>Auto Edit</a><a class='btn btn2' href='/auto/check'>Check this PC</a><a class='btn btn2' href='/welcome'>Start here</a><a class='btn btn2' href='/import'>Import new media</a><a class='btn btn2' href='/library'>Open Library</a></div></div>
 <div class='hero'><div class='card metric tone-blue'><span class='muted'>On sources</span><b>{total}</b></div><div class='card metric tone-amber'><span class='muted'>Waiting to import</span><b>{waiting}</b></div><div class='card metric tone-mint'><span class='muted'>In Library</span><b>{imported}</b></div><div class='card metric tone-cyan'><span class='muted'>Library videos</span><b>{videos}</b></div><div class='card metric tone-rose'><span class='muted'>Privacy review</span><b>{review}</b></div><div class='card metric tone-violet'><span class='muted'>Rights review</span><b>{rights}</b></div></div>
 <div class='card source-card'><div class='device'><span class='device-dot {'online' if phone['connected'] else ''}' data-phone-dot></span><div><div class='device-status'>Android source</div><div class='muted' data-phone-text>{e(phone_text)}</div></div></div><div class='row'><span class='badge {'error' if errs else 'safe'}'>{errs} errors</span><a class='btn btn2' href='/jobs'>Jobs</a></div></div>
-<div class='section-title'>How it works</div><div class='card callout'>Browse every source in <b>Import</b> → select what you want → <b>Add to Library</b> or <b>Add + Analyze</b>. Local-folder files stay in place; Android/SD files copy to Staging. Private and Rejected media never appear in Library.</div>"""
+{side_note}<div class='section-title'>How it works</div><div class='card callout'>Browse every source in <b>Import</b> → select what you want → <b>Add to Library</b> or <b>Add + Analyze</b>. Local-folder files stay in place; Android/SD files copy to Staging. Private and Rejected media never appear in Library.</div>"""
         return layout('Dashboard',body)
 
 
