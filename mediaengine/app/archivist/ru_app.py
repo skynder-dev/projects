@@ -62,6 +62,9 @@ APP_PHRASES: dict[str, str] = {
     "About update safety": "О безопасных обновлениях",
     "Update health checks can restore the previous build when a new release fails to start. Recovery does not weaken privacy settings and never deletes source originals.":
         "Если новая версия не запускается, проверка при обновлении возвращает прежнюю. Восстановление не ослабляет приватность и никогда не удаляет оригиналы.",
+    "Support bundle ready": "Пакет для поддержки готов", "Support bundle created locally": "Пакет для поддержки создан на компьютере",
+    "Location: Archivist local data/support folder. Nothing was uploaded.": "Где: папка data/support в данных программы. Ничего не отправлено.",
+    "Back to Help": "Назад в помощь",
     "Support data": "Данные для поддержки", "Beta support": "Поддержка (бета)",
     "Create a local support bundle": "Собрать пакет для поддержки на этом компьютере", "Create support bundle": "Собрать пакет для поддержки",
     "Creates a bounded, sanitized ZIP on this PC only. It is never uploaded automatically and excludes raw media, credentials, database contents and full personal paths.":
@@ -326,6 +329,16 @@ APP_PHRASES: dict[str, str] = {
         "Планируй варианты и записывай результаты на компьютере. Соцсети не используются.",
     "Experiment title": "Название эксперимента", "Objective / hypothesis": "Цель / гипотеза", "Create": "Создать",
     "No experiments yet.": "Экспериментов пока нет.", "Back to Social Lab": "Назад в Social Lab",
+    "Experiment": "Эксперимент", "M11 / Experiment": "Эксперимент", "Add variant": "Добавить вариант", "Record manual result": "Записать результат вручную",
+    "Derived metric summaries": "Сводка показателей", "Descriptive totals and rates only. Archivist does not rank variants or choose a winner.":
+        "Только суммы и доли. Программа не ранжирует варианты и не выбирает победителя.",
+    "CSV import preview": "Предпросмотр импорта CSV",
+    "Required: variant_id plus at least one metric column. Preview never writes data; confirm import is a separate step. Max 200 rows / 128 KiB.":
+        "Нужно: variant_id и хотя бы один столбец с показателем. Предпросмотр ничего не записывает; импорт — отдельным шагом. До 200 строк / 128 КБ.",
+    "Validate & preview": "Проверить и показать", "Back to Experiments": "Назад к экспериментам", "Variant label": "Название варианта",
+    "Hook": "Начало", "Caption": "Подпись", "Cover ref": "Обложка", "Duration s": "Длительность, с", "Clip order: 3,2,1": "Порядок клипов: 3,2,1",
+    "Views": "Просмотры", "Likes": "Лайки", "Comments": "Комментарии", "Shares": "Репосты", "Saves": "Сохранения", "Avg view s": "Средний просмотр, с",
+    "3s retention %": "Удержание 3 с, %", "Completion %": "Досмотры, %",
     "Manual social handoff": "Ручная передача в соцсети", "M12 / Safe fallback": "Безопасный ручной вариант",
     "Generate a local JSON manifest beside your workflow. Archivist does not upload media, call a provider API or use credentials.":
         "Создаёт JSON-описание на компьютере. Программа не загружает видео и не использует пароли.",
@@ -409,6 +422,10 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"(16:9|9:16|1:1|4:5) · not rendered", r"\1 · не собран"), (r"(16:9|9:16|1:1|4:5) · (\d+) clips · draft", r"\1 · клипов: \2 · черновик"),
     (r"(16:9|9:16|1:1|4:5) · (\d+) clips · rendered", r"\1 · клипов: \2 · собран"), (r"(16:9|9:16|1:1|4:5) · (\d+) clips · (\w+)", r"\1 · клипов: \2 · \3"),
     (r"variants · (\d+) result rows", r"вариантов · строк результатов: \1"),
+    (r"(draft|planned|published) · duration (.+) · order (.+)", r"⟦\1⟧ · длительность \2 · порядок \3"), (r"(\d+) results?", r"результатов: \1"),
+    (r"Hook: (.*) · Caption: (.*) · Cover: (.*)", r"Начало: \1 · Подпись: \2 · Обложка: \3"),
+    (r"(\d+) rows · (\d+) views · (\d+) engagements", r"строк: \1 · просмотров: \2 · реакций: \3"),
+    (r"ER (.*) · avg (.*) · 3s (.*) · completion (.*)", r"ER \1 · средн. \2 · 3 с \3 · досмотры \4"),
     (r"(16:9|9:16|1:1|4:5) Smart Crop", r"\1 умное кадрирование"),
     (r"Job #(\d+)", r"Задача №\1"), (r"Job (\d+)", r"Задача \1"), (r"Converter job #(\d+)", r"Конвертация №\1"), (r"· Elapsed (.+)", r"· Длительность \1"),
     (r"Converted (\d+) files?", r"Сконвертировано: \1"), (r"Converted (\d+); failed (\d+)", r"Сконвертировано: \1; ошибок: \2"),
