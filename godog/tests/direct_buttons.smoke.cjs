@@ -6,7 +6,7 @@ const src=fs.readFileSync(require('node:path').join(__dirname,'..','GoDog_PC_LOC
 for(const required of [
   '// @name         GoDog GDCONST-010 DEFAULT-DISABLED canary',
   '// @namespace    GoDog.constitution',
-  '// @version      7.0.2',
+  '// @version      7.0.3',
   '// @grant        none',
   '// @updateURL    http://127.0.0.1:43129/godog.meta.js',
   '// @downloadURL  http://127.0.0.1:43129/godog.user.js'
