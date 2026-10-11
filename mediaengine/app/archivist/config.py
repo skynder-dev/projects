@@ -94,6 +94,10 @@ def _app_port() -> int:
 
 APP_PORT = _app_port()
 VERSION = "3.13.0-rc1"
+# Build number of this release folder ("MediaEngine-3.13.0-rc1-b21" -> "b21"); every CI build of one version is its
+# own folder, so the build is what tells two of them apart. Empty when run from source.
+_bm = __import__("re").search(r"-b(\d+)$", INSTALL.name)
+BUILD = f"b{_bm.group(1)}" if _bm else ""
 
 
 def _default_archive_root() -> str:

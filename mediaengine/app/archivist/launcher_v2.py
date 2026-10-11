@@ -4,7 +4,7 @@ import base64, hashlib, json, os, shutil, subprocess, sys, tempfile, time, urlli
 from datetime import datetime, timezone
 from pathlib import Path
 
-LAUNCHER_VERSION = "3.8.0"
+LAUNCHER_VERSION = "3.9.0"
 HOME = Path(__file__).resolve().parent          # program folder of this release
 SIDE_BY_SIDE = (HOME / "port.txt").exists()
 
@@ -92,6 +92,36 @@ def server_alive(timeout=.35):
     try:
         with urllib.request.urlopen(f'http://{HOST}:{PORT}/api/ping',timeout=timeout) as r: return r.status==200
     except Exception: return False
+
+def running_install():
+    """Program folder of the MediaEngine answering on our port ('' = an older build that does not say)."""
+    try:
+        with urllib.request.urlopen(f'http://{HOST}:{PORT}/api/ping',timeout=2) as r:
+            return str(json.loads(r.read().decode('utf-8','replace')).get('install') or '')
+    except Exception:
+        return None
+
+def same_folder(a,b):
+    try: return os.path.normcase(str(Path(a).resolve()))==os.path.normcase(str(Path(b).resolve()))
+    except Exception: return False
+
+def message_box(text,yes_no=False):
+    """Plain Windows message (the launcher has no console and no window of its own). Returns True for Yes/OK."""
+    try:
+        import ctypes
+        flags=(0x4|0x20) if yes_no else 0x40    # MB_YESNO|MB_ICONQUESTION or MB_ICONINFORMATION
+        return ctypes.windll.user32.MessageBoxW(None,str(text),'MediaEngine',flags|0x40000|0x10000) in (1,6)   # TOPMOST|SETFOREGROUND
+    except Exception:
+        return False
+
+def stop_running():
+    """Ask the running MediaEngine to quit (same request as its Quit button). False when it is busy building."""
+    req=urllib.request.Request(f'http://{HOST}:{PORT}/api/app-control',data=b'{"mode":"stop"}',method='POST',
+                               headers={'Content-Type':'application/json','Origin':f'http://{HOST}:{PORT}'})
+    try:
+        with urllib.request.urlopen(req,timeout=10) as r: return r.status==200
+    except Exception:
+        return False
 
 def edge_candidates():
     candidates = []
@@ -326,10 +356,29 @@ def main():
         # another launcher of this install is already starting it (double click): just show the window
         if wait_server_up(START_WAIT_S) and not no_browser: open_user_interface(force_browser=force_browser)
         return 0
-    # Manual launch while already running should only focus/open the existing web app.
+    # Manual launch while already running should only focus/open the existing web app - unless the running one is
+    # ANOTHER build (e.g. the previous version after installing a new one): then offer to switch.
     if server_alive() and not (force or restart or install_version):
-        if not no_browser: open_user_interface(force_browser=force_browser)
-        return 0
+        other=running_install()
+        answer=os.environ.get('MEDIAENGINE_SWITCH_ANSWER','').lower()     # automated checks answer instead of a person
+        if other is None or (other and same_folder(other,HOME)) or (no_browser and not answer):
+            if not no_browser: open_user_interface(force_browser=force_browser)
+            return 0
+        here=HOME.name; there=Path(other).name if other else 'an older build'
+        yes=(answer=='yes') if answer else message_box(
+            f'Another MediaEngine is running: {there}.\nSwitch to {here}? (Your projects stay the same.)\n\n'
+            f'Уже запущен другой MediaEngine: {there}.\nПереключиться на {here}? (Проекты останутся те же.)',yes_no=True)
+        if not yes:
+            if not no_browser: open_user_interface(force_browser=force_browser)
+            return 0
+        if not stop_running():
+            write_status(status='switch_refused_busy',version=current_version(),running=other)
+            if not answer:
+                message_box('The running MediaEngine is busy (a reel is being built). Try again when it has finished.\n\n'
+                            'Запущенный MediaEngine занят (собирается ролик). Попробуй снова, когда он закончит.')
+            if not no_browser: open_user_interface(force_browser=force_browser)
+            return 0
+        wait_server_down(60)
     if force or restart or install_version: wait_server_down()
     before=current_version()
     if install_version:

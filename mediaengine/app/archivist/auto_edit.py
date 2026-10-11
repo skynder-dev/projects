@@ -1251,6 +1251,9 @@ def other_builds(install: Path | None = None) -> list[dict]:
         sibs = [d for d in here.parent.iterdir() if d.is_dir() and d.name.startswith("MediaEngine-") and d.resolve() != here]
     except OSError:
         return []
+    for d in [d for d in sibs if d.name.endswith(".removing")]:   # left over from an interrupted removal
+        shutil.rmtree(d, ignore_errors=True)
+        sibs.remove(d)
     for d in sorted(sibs, key=lambda d: d.name.lower()):
         if not all((d / n).is_file() for n in BUILD_MARKERS):
             continue
@@ -1269,9 +1272,13 @@ def delete_build(name: str, install: Path | None = None) -> int:
     b = next((x for x in other_builds(install) if x["name"] == str(name or "")), None)
     if not b:
         raise ValueError("That is not another MediaEngine version next to this one.")
-    shutil.rmtree(b["path"], ignore_errors=True)
-    if Path(b["path"]).exists():
+    src = Path(b["path"])
+    gone = src.with_name(src.name + ".removing")
+    try:
+        os.rename(src, gone)          # fails while something inside is open: then nothing is half-deleted
+    except OSError:
         raise ValueError("Some files of that version are in use. Close anything opened from that folder and try again.")
+    shutil.rmtree(gone, ignore_errors=True)
     return int(b["bytes"])
 
 

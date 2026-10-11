@@ -206,8 +206,20 @@ jobs:
           Ctl 'stop'; Start-Sleep 4
           "stopped: $(-not (Ping))" | Tee-Object -Append $log
           if (Ping) { $fail += 'quit' }
-          # the next release, extracted elsewhere, opens the same projects
+          # the next release, extracted elsewhere, started while this one still runs: it offers to switch (answered
+          # "yes" here), stops this one and starts itself; then it opens the same projects
+          Start-Process wscript.exe -ArgumentList "`"$pkg\Start MediaEngine.vbs`""
+          if (-not (WaitUp 180)) { $fail += 'start again' }
+          $env:MEDIAENGINE_SWITCH_ANSWER = 'yes'
           Start-Process wscript.exe -ArgumentList "`"$pkg2\Start MediaEngine.vbs`""
+          $switched = $false
+          for ($i = 0; $i -lt 180 -and -not $switched; $i++) {
+            try { $pj = (Invoke-WebRequest -UseBasicParsing -TimeoutSec 3 http://127.0.0.1:8775/api/ping).Content | ConvertFrom-Json; $switched = ($pj.install -eq $pkg2) } catch {}
+            if (-not $switched) { Start-Sleep 1 }
+          }
+          Remove-Item Env:MEDIAENGINE_SWITCH_ANSWER
+          "switched from the running release to the next one: $switched" | Tee-Object -Append $log
+          if (-not $switched) { $fail += 'switch to next release' }
           if (-not (WaitUp 180)) { $fail += 'next release start' } else {
             $home2 = (Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8775/auto).Content
             $seen = $home2.Contains("/auto/p/1")
