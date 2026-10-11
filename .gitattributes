@@ -1,0 +1,2 @@
+# MediaEngine files are hash-pinned (engine, adapter, accepted V52): keep exact bytes on every OS
+mediaengine/** -text

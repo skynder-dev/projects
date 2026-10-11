@@ -38,6 +38,11 @@ def main():
         checks.append((f"module_identical:{p.name}", sha(p) == sha(R3 / p.name)))
     for name in ("p11_fast_onnx_adapter.py", "validate_p11_model_contract.py"):
         checks.append((f"adapter_identical:{name}", sha(ROOT / "engine" / "p11_adapter" / name) == sha(R3 / name)))
+    pinned = {"medeng_event_semantic_v7.py": "2b15303eba5b02b7f949cb560e58b2dbee09ff4576e21ad4b25b2d3111b02d5c",
+              "p11_fast_onnx_adapter.py": "d7ef56b5b67e90179cecca366206eddd3b5ae4222ed4bc2f145a8b3f755eff36",
+              "validate_p11_model_contract.py": "00e14d0d69b7f06cb5ef0841bee6c12809c6950a4ea3a677db9f7f715a107a22"}
+    for name, want in pinned.items():   # exact bytes as checked by the semantic preflight on the user's PC
+        checks.append((f"pinned_sha:{name}", sha(R3 / name) == want))
     checks.append(("r2_orchestrator_is_windows_proven", sha(R2 / "p11_folder_to_reel_shadow_v2.py") == "5c45fd8e3c86eda55d6f8a663ec723c823ef63f4b799e31022acc65f090ae99d"))
     env = dict(os.environ)
     try:
