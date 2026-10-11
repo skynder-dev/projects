@@ -105,6 +105,17 @@ def same_folder(a,b):
     try: return os.path.normcase(str(Path(a).resolve()))==os.path.normcase(str(Path(b).resolve()))
     except Exception: return False
 
+def ui_ru():
+    """Interface language chosen in the app (config.json in the data folder); first start: the Windows language."""
+    try:
+        v=str(json.loads((data_root()/'config.json').read_text(encoding='utf-8')).get('ui_language') or '').lower()
+        if v in ('ru','en'): return v=='ru'
+    except Exception: pass
+    try:
+        import ctypes
+        return (ctypes.windll.kernel32.GetUserDefaultUILanguage() & 0x3FF)==0x19
+    except Exception: return False
+
 def message_box(text,yes_no=False):
     """Plain Windows message (the launcher has no console and no window of its own). Returns True for Yes/OK."""
     try:
@@ -367,23 +378,23 @@ def main():
             return 0
         here=HOME.name; there=Path(other).name if other else 'an older build'
         yes=(answer=='yes') if answer else message_box(
-            f'Another MediaEngine is running: {there}.\nSwitch to {here}? (Your projects stay the same.)\n\n'
-            f'Уже запущен другой MediaEngine: {there}.\nПереключиться на {here}? (Проекты останутся те же.)',yes_no=True)
+            f'Уже запущен другой MediaEngine: {there}.\nПереключиться на {here}? (Проекты останутся те же.)' if ui_ru() else
+            f'Another MediaEngine is running: {there}.\nSwitch to {here}? (Your projects stay the same.)',yes_no=True)
         if not yes:
             if not no_browser: open_user_interface(force_browser=force_browser)
             return 0
         if not stop_running():
             write_status(status='switch_refused_busy',version=current_version(),running=other)
             if not answer:
-                message_box('The running MediaEngine is busy (a reel is being built). Try again when it has finished.\n\n'
-                            'Запущенный MediaEngine занят (собирается ролик). Попробуй снова, когда он закончит.')
+                message_box('Запущенный MediaEngine занят (собирается ролик). Попробуй снова, когда он закончит.' if ui_ru() else
+                            'The running MediaEngine is busy (a reel is being built). Try again when it has finished.')
             if not no_browser: open_user_interface(force_browser=force_browser)
             return 0
         wait_server_down(60)
         if server_alive():
             write_status(status='switch_failed_still_running',version=current_version(),running=other)
-            if not answer: message_box('The other MediaEngine did not close. Press Quit in its window, then start this one again.\n\n'
-                                       'Другой MediaEngine не закрылся. Нажми Quit в его окне и запусти этот снова.')
+            if not answer: message_box('Другой MediaEngine не закрылся. Нажми «Выход» в его окне и запусти этот снова.' if ui_ru() else
+                                       'The other MediaEngine did not close. Press Quit in its window, then start this one again.')
             return 1
     if force or restart or install_version: wait_server_down()
     before=current_version()
