@@ -1,12 +1,12 @@
 # GoDog PC LOCAL 01
 
-**Версия:** 7.0.0. **Источник:** восстановленная точная разметка и CSS панели GoDog 6.0.26 (сохранены в `ui/6.0.26_PANEL_ORIGINAL.json`). Контроллер кнопок переписан полностью.
+**Версия:** 7.0.1. **Источник:** восстановленная точная разметка и CSS панели GoDog 6.0.26 (сохранены в `ui/6.0.26_PANEL_ORIGINAL.json`). Контроллер кнопок переписан полностью.
 
 ## Установка
 
-1. В Tampermonkey **выключи все старые GoDog scripts** (в том числе 6.0.26, loader, canary). Иначе они конфликтуют и могут продолжить запросы к Supabase.
-2. Открой [GoDog_PC_LOCAL_01.user.js](GoDog_PC_LOCAL_01.user.js?raw=1) и установи один новый userscript в Tampermonkey.
-3. Перезагрузи открытую страницу ChatGPT. Интерфейс тот же, версия `7.0.0 · PC`.
+1. Открой [прямую ссылку userscript](https://raw.githubusercontent.com/skynder-dev/projects/main/godog/GoDog_PC_LOCAL_01.user.js) и подтверди **Update/Install** в Tampermonkey. В новой версии сохранены `@name` и `@namespace` исходного GoDog 6.0.26, чтобы Tampermonkey мог предложить обновление существующего скрипта.
+2. В Tampermonkey отключи **другие** GoDog loaders/canaries со своими отдельными идентификаторами. Нельзя оставлять два инжектора одновременно.
+3. Обнови ChatGPT и проверь отображаемую версию `7.0.1 · PC`.
 4. Тест: GO в чате, STOP, AUTO, NEW на тестовом чате. Убедись, что старый клиент выключен.
 
 ## Семантика кнопок
