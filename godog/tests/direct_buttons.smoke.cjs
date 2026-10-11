@@ -6,11 +6,13 @@ const src=fs.readFileSync(require('node:path').join(__dirname,'..','GoDog_PC_LOC
 for(const required of [
   '// @name         GoDog GDCONST-010 DEFAULT-DISABLED canary',
   '// @namespace    GoDog.constitution',
-  '// @version      7.0.1',
+  '// @version      7.0.2',
   '// @grant        none',
-  'https://raw.githubusercontent.com/skynder-dev/projects/main/godog/GoDog_PC_LOCAL_01.user.js'
+  '// @updateURL    http://127.0.0.1:43129/godog.meta.js',
+  '// @downloadURL  http://127.0.0.1:43129/godog.user.js'
 ]) assert.ok(src.includes(required),'missing metadata '+required);
 assert.ok(!src.includes('supabase.co'),'Supabase URL must not exist');
+assert.ok(!src.includes('raw.githubusercontent.com'),'no GitHub client updates');
 assert.ok(!/\bset(?:Interval|Timeout)\s*\(/.test(src),'No wait timers');
 assert.ok(!/\b(?:fetch|XMLHttpRequest|GM_xmlhttpRequest)\s*\(/.test(src),'No network APIs');
 new vm.Script(src,{filename:'GoDog_PC_LOCAL_01.user.js'});
