@@ -13,7 +13,8 @@
 
 (() => {
   'use strict';
-  // Retain legacy Tampermonkey script identity from 6.0.26 to permit one-click replacement.\n  // LOCAL ONLY. No fetch, XMLHttpRequest, GM_xmlhttpRequest, WebSocket, heartbeat or cloud endpoint.
+  // Retain legacy Tampermonkey script identity from 6.0.26 to permit one-click replacement.
+  // LOCAL ONLY. No fetch, XMLHttpRequest, GM_xmlhttpRequest, WebSocket, heartbeat or cloud endpoint.
   // Direct controls: GO -> native submit, STOP -> local AUTO off,
   // NEW -> same-tab native new chat with local handoff, AUTO -> event-driven next GO.
   const VERSION = '7.0.1';
