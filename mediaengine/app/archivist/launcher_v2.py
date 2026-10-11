@@ -108,7 +108,7 @@ def edge_candidates():
         if p.exists(): yield p
 
 def open_user_interface(force_browser=False):
-    url=f'http://{HOST}:{PORT}/'
+    url=f'http://{HOST}:{PORT}/'+('auto' if SIDE_BY_SIDE else '')   # MediaEngine opens on its projects (Auto Edit)
     if not force_browser and os.name=='nt':
         for edge in edge_candidates():
             try:

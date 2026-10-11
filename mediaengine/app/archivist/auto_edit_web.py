@@ -53,7 +53,7 @@ def register(app, layout, e, human_bytes):
         return layout(title, PAGE_CSS + body, script)
 
     def err_page(msg, back="/auto"):
-        return page("Auto Edit", f"<div class='card'><h2>Could not continue</h2><div class='errbox'>{e(msg)}</div>"
+        return page("Auto Edit", f"<div class='card'><h2>Could not continue</h2><div class='errbox' style='margin-bottom:12px'>{e(msg)}</div>"
                                  f"<a class='btn btn2' href='{e(back)}'>Back</a></div>"), 400
 
     # ------------------------------------------------------------ home
@@ -81,7 +81,7 @@ def register(app, layout, e, human_bytes):
             acts += f"<form method='post' action='/auto/p/{p['id']}/archive'><button class='btn2'>{'Unarchive' if p['archived'] else 'Archive'}</button></form>"
             cards += (f"<div class='card'><a href='/auto/p/{p['id']}' style='display:block'>"
                       f"<div class='row space'><b style='font-size:17px'>{e(p['title'])}</b><span class='ae-state {p['state']}'>{p['state']}</span></div>"
-                      f"<div class='muted' style='margin-top:6px'>{n_src} {'chosen video(s)' if p.get('files') else 'video file(s) in folder'} · {e(preset)} {e(length)} · {len(p['revisions'])} revision(s)</div>"
+                      f"<div class='muted' style='margin-top:6px'>{' · '.join(x for x in (str(n_src) + (' chosen video(s)' if p.get('files') else ' video file(s) in folder'), e((preset + ' ' + length).strip()), str(len(p['revisions'])) + ' revision(s)') if x)}</div>"
                       f"<div class='muted'>{('Last export: ' + e(Path(exp['path']).name)) if exp else 'Not exported yet'}</div></a>"
                       + ("" if p["source_present"] else "<div class='errbox' style='margin-top:6px'>Source videos are not available (drive disconnected?)</div>")
                       + f"<div class='row' style='margin-top:10px;flex-wrap:wrap;gap:6px'>{acts}</div></div>")
@@ -267,8 +267,8 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         du = ae.project_disk_usage(pid)
         if du["cache_bytes"] or du["versions_bytes"]:
             parts.append(f"<div class='card row space' style='margin-top:14px;flex-wrap:wrap'><span class='muted'>Space used: versions "
-                         f"{human_bytes(du['versions_bytes'])} · analysis cache {human_bytes(du['cache_bytes'])} "
-                         f"(can be freed; the next build then analyses the videos again)</span>"
+                         f"{human_bytes(du['versions_bytes'])} · analysis cache {human_bytes(du['cache_bytes'])}"
+                         f"{' (can be freed; the next build then analyses the videos again)' if du['cache_bytes'] else ''}</span>"
                          + (f"<form method='post' action='/auto/p/{pid}/free-cache'><button class='btn2'>Free cache</button></form>" if du["cache_bytes"] else "")
                          + "</div>")
         script = """
@@ -479,7 +479,7 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
                 return f"R{int(r['number']):03d} ({e(f)} · {r['settings']['length']} s · {'edited by you' if r['settings'].get('selection') else 'automatic'})"
             verdict = {"left": f"You preferred A = {who(L)} over B = {who(R)}.", "right": f"You preferred B = {who(R)} over A = {who(L)}.",
                        "same": f"You found them about the same: A = {who(L)}, B = {who(R)}."}[rv["choice"]]
-            bottom = (f"<div class='card ae-done'><b>Result</b><div style='margin-top:6px'>{verdict}</div>"
+            bottom = (f"<div class='card ae-done' style='margin-top:14px'><b>Result</b><div style='margin-top:6px'>{verdict}</div>"
                       + (f"<div class='muted' style='margin-top:4px'>Note: {e(rv['note'])}</div>" if rv.get("note") else "")
                       + f"<div class='row' style='margin-top:10px'><a class='btn btn2' href='/auto/p/{pid}'>Back to the project</a></div></div>")
         else:

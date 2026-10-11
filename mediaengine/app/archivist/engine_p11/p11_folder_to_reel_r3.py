@@ -36,8 +36,15 @@ def atomic_json(path,obj):
     os.replace(tmp,path)
 
 _PROGRESS_PATH=None
+_STAGE_T={"stage":None,"t":None,"seconds":{}}
 def progress(stage,done=0,total=0,message=""):
-    """Write the current stage for the app. Never raises: progress must not break a render."""
+    """Write the current stage for the app. Never raises: progress must not break a render.
+    Also keeps the time spent per stage (result.stage_seconds) so slow steps on a real PC can be seen."""
+    now=time.perf_counter()
+    if _STAGE_T["stage"]!=stage:
+        if _STAGE_T["stage"] is not None:
+            sec=_STAGE_T["seconds"]; sec[_STAGE_T["stage"]]=round(sec.get(_STAGE_T["stage"],0.0)+now-_STAGE_T["t"],2)
+        _STAGE_T["stage"]=stage; _STAGE_T["t"]=now
     if _PROGRESS_PATH is None: return
     try: atomic_json(_PROGRESS_PATH,{"stage":stage,"done":int(done),"total":int(total),"message":str(message)[:300],"at":time.time()})
     except Exception: pass
@@ -288,6 +295,60 @@ def _analysis_skip_reason(r):
     codes=re.findall(r"(?:Error|Exception):\s*([A-Z][A-Z0-9_]{3,})",err)
     return "ANALYSIS_FAILED:"+(codes[-1] if codes else err.split(":",1)[0])[:60]
 
+def _short_path_windows(path):
+    """8.3 short form of an existing path (None if the volume has no short names)."""
+    if os.name!="nt": return None
+    try:
+        import ctypes
+        buf=ctypes.create_unicode_buffer(32768)
+        n=ctypes.windll.kernel32.GetShortPathNameW(str(path),buf,32768)
+        sp=buf.value if 0<n<32768 else ""
+        return sp if sp and sp!=str(path) and len(Path(sp).name)<=12 else None
+    except Exception:
+        return None
+
+def short_aliases(rows,work_dir):
+    """Windows without long-path support (the default) cannot reach the analysis files of a video with a long
+    name: the accepted pipeline names its folders after the video (up to ~330 characters, limit 260). Such videos are
+    analysed under a short name - a hard link (same drive), else the 8.3 short path, else a copy (up to 4 GB) - and
+    mapped back to the real name afterwards. Returns (rows for the analysis, {short name: original row})."""
+    force=os.environ.get("MEDENG_FORCE_SHORT_ALIAS")=="1"
+    realmedia=work_dir/"realmedia"; adir=work_dir/"in"
+    out=[]; back={}; wanted=set()
+    for r in rows:
+        name=r["name"]
+        projected=len(str(realmedia))+7+min(len(name),100)+14+10+len(name)+45
+        if not force and (os.name!="nt" or projected<=240):
+            out.append(r); continue
+        alias_name=f"v_{r['sha256'][:12]}{Path(name).suffix.lower()}"
+        alias=adir/alias_name; use=None
+        try:
+            adir.mkdir(parents=True,exist_ok=True)
+            if alias.is_file() and alias.stat().st_size==int(r["bytes"]):
+                use=str(alias)
+            else:
+                alias.unlink(missing_ok=True)
+                try:
+                    os.link(r["path"],alias); use=str(alias)
+                except OSError:
+                    sp=_short_path_windows(r["path"])
+                    if sp: use=sp
+                    elif int(r["bytes"])<=(4<<30):
+                        shutil.copyfile(r["path"],alias); use=str(alias)
+        except OSError:
+            use=None
+        if use:
+            wanted.add(alias_name)
+            a=dict(r,name=Path(use).name,path=use); out.append(a); back[a["name"]]=r
+        else:
+            out.append(r)
+    try:
+        for f in adir.iterdir():
+            if f.name not in wanted: f.unlink(missing_ok=True)   # e.g. a video since marked Private or removed
+    except OSError:
+        pass
+    return out,back
+
 def build_event_library(runtime_dir,input_rows,work_dir,skipped=None):
     """Technical analysis (accepted V52 path). Returns (library path, library, cache status, analysed input rows).
 
@@ -421,7 +482,9 @@ def video_seconds(ffmpeg,path,fps=30.0):
 # its picture (silence pad / trim), cross-fades with the same durations as the picture, and joins blocks with the
 # concat filter, which keeps both streams aligned.
 def _fit_audio(i,dur):
-    return f"[{i}:a]aresample=48000,apad,atrim=end={dur:.6f},asetpts=N/SR/TB[n{i}]"
+    # sample-exact: time-based apad/atrim left the sound up to ~60 ms short per segment
+    n=max(1,int(round(float(dur)*48000)))
+    return f"[{i}:a]aresample=48000,asetpts=N/SR/TB,apad=whole_len={n},atrim=end_sample={n},asetpts=N/SR/TB[n{i}]"
 
 # HDR phone video (iPhone HLG / Dolby Vision 8.4, Android HDR10 PQ) shown on a normal screen: convert, do not just
 # re-encode the 10-bit numbers as if they were normal video (that looks grey and dark).
@@ -469,7 +532,7 @@ def full_quality_clip(v52,e,work_dir,hdr=None):
         tmp=d/f".{key}.tmp.mp4"
         conv=(["-vf",HDR_TO_SDR[hdr],"-color_primaries","bt709","-color_trc","bt709","-colorspace","bt709"] if hdr in HDR_TO_SDR else [])
         cp=subprocess.run([v52.FFMPEG,"-hide_banner","-loglevel","error","-y","-ss",f"{a:.3f}","-i",str(src),"-t",f"{b-a:.3f}",
-                           "-map","0:v:0","-map","0:a?",*conv,"-c:v","libx264","-preset","fast","-crf","18","-pix_fmt","yuv420p",
+                           "-map","0:v:0","-map","0:a?",*conv,"-c:v","libx264","-preset","veryfast","-crf","16","-pix_fmt","yuv420p",
                            "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(tmp)],capture_output=True,text=True)
         if cp.returncode!=0:
             tmp.unlink(missing_ok=True); return e      # keep the preview clip rather than fail the reel
@@ -495,13 +558,13 @@ def render_dissolve_block(v52,segs,durs,trans,out):
     for i in range(1,len(segs)):
         td=float(trans[i-1]["duration_s"]); vl=f"v{i}"; al=f"a{i}"; off=max(0.0,cum-td)
         if td<=0:
-            # hard cut inside a block is not produced by the pacing plan, but keep it exact if it ever is
+            # hard cut: plain join, sound and picture of both sides already have equal lengths
             filters.append(f"[{vprev}][w{i}]concat=n=2:v=1:a=0[{vl}]")
             filters.append(f"[{aprev}][n{i}]concat=n=2:v=0:a=1[{al}]")
         else:
             # 6 decimals and a hair earlier: "9.467" for 9.4667 s made xfade start one frame late (sound 33 ms early)
             filters.append(f"[{vprev}][w{i}]xfade=transition=fade:duration={td:.6f}:offset={max(0.0,off-0.0005):.6f}[{vl}]")
-            filters.append(f"[{aprev}][n{i}]acrossfade=d={td:.6f}:c1=tri:c2=tri[{al}]")
+            filters.append(f"[{aprev}][n{i}]acrossfade=ns={max(1,int(round(td*48000)))}:c1=tri:c2=tri[{al}]")
         vprev=vl; aprev=al; cum+=float(durs[i])-max(0.0,td)
     args += ["-filter_complex",";".join(filters),"-map",f"[{vprev}]","-map",f"[{aprev}]",
              "-c:v","libx264","-preset","medium","-crf","18","-pix_fmt","yuv420p",
@@ -511,28 +574,12 @@ def render_dissolve_block(v52,segs,durs,trans,out):
     return cum
 
 def render_mixed(v52,segs,durs,transitions,out,work):
-    blocks=[]; start=0
-    for i,tr in enumerate(transitions):
-        if tr["kind"]=="HARD_CUT": blocks.append((start,i+1)); start=i+1
-    blocks.append((start,len(segs)))
-    bdir=Path(work)/"blocks"; bdir.mkdir(parents=True,exist_ok=True)
-    bfs=[]; bds=[]
-    for bi,(a,b) in enumerate(blocks,1):
-        bp=bdir/f"block_{bi:02d}.mp4"
-        dur=render_dissolve_block(v52,segs[a:b],durs[a:b],transitions[a:b-1] if b-a>1 else [],bp)
-        bfs.append(bp); bds.append(dur)
-    args=[v52.FFMPEG,"-hide_banner","-loglevel","error","-y"]
-    for bp in bfs: args += ["-i",str(bp)]
-    fc=("".join(f"[{k}:v]setsar=1,format=yuv420p,settb=AVTB[v{k}];[{k}:a]aresample=48000[a{k}];" for k in range(len(bfs)))
-        +"".join(f"[v{k}][a{k}]" for k in range(len(bfs)))+f"concat=n={len(bfs)}:v=1:a=1[v][a]")
-    cp=subprocess.run(args+["-filter_complex",fc,"-map","[v]","-map","[a]",
-                            "-c:v","libx264","-preset","medium","-crf","18","-pix_fmt","yuv420p",
-                            "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(out)],
-                      capture_output=True,text=True)
-    if cp.returncode!=0: raise RuntimeError("FINAL_RENDER_FAILED:"+cp.stderr[-800:])
+    """Whole reel in ONE encode: dissolves (xfade/acrossfade) and hard cuts (concat) in a single filter graph.
+    R2 encoded every dissolve block and then the joined reel again (two full encodes, about twice the time)."""
+    total=render_dissolve_block(v52,segs,durs,transitions,out)
     dec=subprocess.run([v52.FFMPEG,"-hide_banner","-loglevel","error","-i",str(out),"-f","null","-"],capture_output=True,text=True)
     if dec.returncode!=0: raise RuntimeError("FINAL_DECODE_FAILED:"+dec.stderr[-800:])
-    return sum(bds)
+    return total
 
 def resolve_profile(v52,requested,selected):
     requested=str(requested).lower()
@@ -635,8 +682,16 @@ def run(args):
         event_count=len(candidates); cache_status="semantic_candidate_cache"
     else:
         progress("analyze",0,len(input_rows),"technical analysis")
-        libpath,lib,cache_status,input_rows=build_event_library(runtime,input_rows,work_dir,skipped_inputs)
+        analysis_rows,alias_back=short_aliases(input_rows,work_dir)
+        skipped_analysis=[]
+        libpath,lib,cache_status,analysed=build_event_library(runtime,analysis_rows,work_dir,skipped_analysis)
+        for x in skipped_analysis:
+            skipped_inputs.append(dict(x,name=alias_back[x["name"]]["name"]) if x["name"] in alias_back else x)
+        input_rows=[alias_back.get(r["name"],r) for r in analysed]
         _,events=v52.load_library(libpath)
+        for ev in events:
+            o=alias_back.get(str(ev.get("source_name")))
+            if o: ev["source_name"]=o["name"]; ev["source_path"]=o["path"]
         scored=v52.score_events(events,work_dir/"V22_SCORE_CACHE.json")
         pool=scored
         progress("select",0,1,"choosing moments")
@@ -776,6 +831,7 @@ def run(args):
         "semantic_best_moment_claim":bool(use_semantic),
         "claim_scope":"current run only; shadow prototype",
         "elapsed_s":round(time.perf_counter()-started,3),
+        "stage_seconds":dict(_STAGE_T["seconds"],**({_STAGE_T["stage"]:round(_STAGE_T["seconds"].get(_STAGE_T["stage"],0.0)+time.perf_counter()-_STAGE_T["t"],2)} if _STAGE_T["stage"] else {})),
     }
     atomic_json(final_result,result)
     names=sorted(p.name for p in output_dir.iterdir() if p.is_file())

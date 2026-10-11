@@ -45,6 +45,11 @@ What a user can do (code: `app/archivist/auto_edit.py`, `auto_edit_web.py`, engi
   `%LOCALAPPDATA%\MediaEngine\data_root.txt`), so a new release opens the same projects. **Rollback** = start the
   previous release folder's `Start MediaEngine.vbs`. Settings and About show the data and program folders.
 - Full-video **Convert** (existing feature) checked: whole video, original frame rate, every frame, portrait upright.
+- **HDR phone video** (iPhone HLG / Dolby Vision 8.4, HDR10 PQ) comes out in normal colours (reel and Convert).
+- **Blind comparison** of two versions (sides random, versions hidden until the person decides) for the human
+  quality review; results listed on the project. **Free cache** per project; estimate of time left while building.
+- Library: re-analysing a video keeps clips used in compositions and hand-made crops (before: deleted by cascade).
+- Short Russian guide `ПРОЧТИ.txt` in the package.
 
 ### Engine R3 vs Windows-proven R2 (documented differences)
 
@@ -63,6 +68,9 @@ The 11 runtime modules, adapter and validator are byte-identical to R2 (CI-check
 | Damaged cache entries are rebuilt | R2 failed the project permanently |
 | Social HD only as vertical 1080×1920 | acceptance presets |
 | `--input-list` (chosen files) as well as `--input-dir` | individual videos |
+| Technical mode renders from the ORIGINAL at the same source interval (decisions still made on the V12 previews) | R2 rendered from 960-px, 25-fps previews whose sound was re-zeroed separately (soft, juddery, sound up to 45 ms early); AI mode in R2 already cut from the original |
+| Each segment's sound fitted to its picture; fades with whole-frame lengths and exact offsets; blocks joined with the concat filter after normalising pixel aspect / time base | R2 let sound drift at every join (0.39 s at the end of a 30 s reel on Windows) and a 3-decimal fade offset could start a fade one frame late |
+| HDR sources converted (HLG direct, PQ tone-mapped) when cutting from the original | grey/dark colours from 10-bit HDR phone video |
 
 ## Evidence
 
@@ -85,8 +93,12 @@ uploaded package pristine (69 app files, runtime 442 MB). Checks in every run:
 
 Local Linux run 2026-10-11: engine regression 28/28, robustness 6/6, E2E 7 videos 54/54, 2 videos 47/47.
 
-Not proven by CI: semantic (AI) mode, selection quality judged by a person, real long/4K footage, A/V sync measured on
-real footage, absent drive, network disabled.
+Also in CI: A/V sync at every cut (flash + beep sources), phone/camera files incl. HDR, Convert, unplugged drive,
+no network (app process + packaged Python behind a firewall rule), 64 files with long names on Windows with long
+paths OFF, chosen files, export folder, blind comparison, library re-analysis, AI-mode glue with a labelled stub,
+4K/long footage build time (measured, not a pass/fail gate).
+
+Not proven by CI: AI selection with the real model, selection quality judged by a person, real camera footage.
 
 ## Acceptance matrix (MIGRATION/mediaengine/ACCEPTANCE_MATRIX_RU.md)
 
@@ -120,9 +132,7 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Deferred (known, not fixed yet)
 
-- Media Brain rebuild can cascade over the whole library (D7); `/media` file routes still serve Private items to the
-  local UI (D17).
+- `/media` file routes serve Private items to the local owner UI only (loopback + Host check) — kept by design (D17).
 - UI polish from the contract §10: accent colour, completion screen, real filmstrip thumbnails.
-- A/V sync at every cut on real footage (total audio/video length differs by ~3 ms on a 30 s synthetic reel, now
-  checked in E2E; per-cut sync on real footage not measured yet).
+- Per-cut sync on real camera footage (synthetic flash/beep: within ±7 ms on Linux; Windows numbers in CI).
 - Owner-PC run with the AI model; human review of selection quality.

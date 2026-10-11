@@ -73,6 +73,11 @@ jobs:
         run: |
           python mediaengine/tests/e2e_auto_edit.py --folder "$env:RUNNER_TEMP\fx\phone" --home "$env:RUNNER_TEMP\home-phone" --mode technical --skip-cancel --out "$env:OUT\e2e_phone.json" 2>&1 | Tee-Object "$env:OUT\e2e_phone.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: AI-mode glue with a labelled STUB ranking (not an AI quality test)
+        shell: pwsh
+        run: |
+          python mediaengine/tests/semantic_glue_check.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\semglue" 2>&1 | Tee-Object "$env:OUT\semantic_glue.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Full-video Convert (1440p60, rotated phone clip, VFR)
         shell: pwsh
         run: |

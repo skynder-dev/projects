@@ -3,7 +3,7 @@ from __future__ import annotations
 import os, re, shutil, subprocess, sys, threading, time, webbrowser
 from pathlib import Path
 
-from archivist.config import APP_PORT, HOME, INSTALL, VERSION, ensure_dirs
+from archivist.config import APP_PORT, HOME, INSTALL, SIDE_BY_SIDE, VERSION, ensure_dirs
 from archivist.platform_adapter import detach_from_legacy_console_if_needed, install_launchers, set_background_priority
 
 HOST, PORT = "127.0.0.1", APP_PORT
@@ -120,7 +120,7 @@ def main():
     from archivist.converter import recover_convert_jobs
     from archivist.watchdog import start_watchdog
     from archivist.web import create_app
-    start_workers(); recover_convert_jobs(); start_watchdog(); app=create_app(); startup_self_check(app); url=f"http://{HOST}:{PORT}/"
+    start_workers(); recover_convert_jobs(); start_watchdog(); app=create_app(); startup_self_check(app); url=f"http://{HOST}:{PORT}/"+("auto" if SIDE_BY_SIDE else "")
     # Extended Windows diagnostics report to the old Remote Lab; run them only on a PC enrolled there.
     if (HOME/"data"/"remote_lab.json").exists():
         from archivist.diagnostics import run_once_and_report
