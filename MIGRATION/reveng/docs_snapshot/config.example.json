@@ -1,0 +1,51 @@
+{
+  "llm": {
+    "provider": "anthropic",
+    "model": "claude-sonnet-5-5",
+    "max_tokens": 16000,
+    "web_search_max_uses": 6
+  },
+  "budget": {
+    "allow_spend": false,
+    "max_calls": 120,
+    "max_usd": 15,
+    "price_in_per_mtok": null,
+    "price_out_per_mtok": null,
+    "price_per_search": null,
+    "_note": "allow_spend=false (default) blocks every paid call. To authorize: set true, fill the three prices from your provider's current price page (the engine never guesses prices), keep a cap."
+  },
+  "families": [
+    "games",
+    "saas_or_micro_saas",
+    "ecommerce_or_dropshipping",
+    "services",
+    "marketplaces",
+    "digital_or_data_products",
+    "physical_products",
+    "media_or_content",
+    "education_training",
+    "b2b_api_devtools"
+  ],
+  "per_family": 4,
+  "deep": {
+    "top_k": 8,
+    "min_verified": 3
+  },
+  "sources": {
+    "enabled": true
+  },
+  "http": {
+    "user_agent": "RevEng-research/0.1 (public-API research; contact: YOUR_EMAIL)"
+  },
+  "gates": {},
+  "decide": {
+    "min_raw": 30,
+    "min_families": 8,
+    "min_per_family": 3,
+    "min_margin": 5,
+    "min_deep": 5
+  },
+  "discovery": {
+    "max_consecutive_failures": 2
+  }
+}

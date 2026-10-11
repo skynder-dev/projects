@@ -43,6 +43,8 @@
 - Triage done: g151/g152 fail-closed on the G156 guard (same on pristine G280, not a bug). g133/g144/g146 contract tests are stale-stage snapshot assertions: they match exact text of `test_rc_0_3.py` and of an acceptance sentence that later stages changed in `backend_app.js`; g146 only cascades from g144. App behaviour unaffected; frozen history tests left untouched. (Lesson: run the python tests in a COPY; they rewrite reports/screenshots in the tree.)
 - Next ($0): manual deep screen of the 24 queued scan-1 ideas (same protocol) if the owner wants; keep all import packages ROLLBACK until the owner says yes.
 
+- **Migration to ChatGPT (2026-10-10):** handoff for all three projects (reveng, forge, social) lives in `MIGRATION/` at the repo root (`README.md`, `CHATGPT_PROJECT_INSTRUCTIONS.md`, `OWNER_DECISIONS_ALL.md`, per-project `HANDOFF` files). RevEng handoff: `MIGRATION/reveng/HANDOFF_FOR_CHATGPT_RU.md`; all 102 ideas: `MIGRATION/reveng/ideas_102.csv`.
+
 ## NOT done
 - Live smoke of the two-phase protocol not yet confirmed (need `excerpts_returned>0` and `verified>0`). Earlier smoke (old single-call design) returned 0 citations -> redesign.
 - Fresh 30+ candidate / 8+ family live scan not run => no valid global winner.
