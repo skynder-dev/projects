@@ -1,0 +1,12 @@
+{
+  "shell": "Microsoft Edge app-mode",
+  "fixes": [
+    "Convert preselected inaccessible rows filtered out",
+    "skipped-selection warning",
+    "robust multi-seek video thumbnails",
+    "30s local thumbnail retry",
+    "Convert startup route check",
+    "bundled real thumbnail startup probe"
+  ],
+  "base": "3.0.0"
+}

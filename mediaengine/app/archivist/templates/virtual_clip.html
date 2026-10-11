@@ -1,0 +1,58 @@
+<script id="clipConfig" type="application/json">{{ clip_config|safe }}</script>
+<div class="pagehead row space">
+  <div>
+    <div class="eyebrow">Virtual clip</div>
+    <h1 style="margin-bottom:5px">{{ filename }}</h1>
+    <div class="lead">{{ start_label }}–{{ end_label }} · {{ '%.1f'|format(clip_len) }}s · score {{ score }} · {{ label }}</div>
+  </div>
+  <div class="row">
+    <a class="btn btn2" href="{{ back_url }}">← {{ back_label }}</a>
+    <a class="btn btn2" href="/item/{{ inv_id }}">Full video</a>
+  </div>
+</div>
+<div class="card">
+  <div id="cropViewport" style="position:relative;overflow:hidden;background:#000 url('/clip-preview/{{ clip_id }}') center/cover no-repeat;margin:0 auto;border-radius:14px;width:100%;max-width:900px;aspect-ratio:{{ '%.6f'|format(src_ratio) }}">
+    <canvas id="clipCanvas" style="display:block;width:100%;height:100%"></canvas>
+    <video id="clipVideo" preload="auto" playsinline src="/media/{{ inv_id }}" style="position:absolute;width:2px;height:2px;opacity:0.001;pointer-events:none;left:0;top:0"></video>
+  </div>
+  <div class="toolbar" style="justify-content:center;margin-top:12px">
+    <button id="playClip">Play</button>
+    <button id="replayClip" class="btn2">Replay clip</button>
+    <div id="clipSeekWrap" style="position:relative;min-width:260px;flex:1;max-width:520px;height:26px">
+      <div style="position:absolute;left:0;right:0;top:11px;height:4px;border-radius:999px;background:#263244;overflow:hidden"><div id="clipSeekFill" style="height:100%;width:0;background:#8dd6ff"></div></div>
+      <div id="clipSeekThumb" style="position:absolute;left:0;top:5px;width:16px;height:16px;border-radius:50%;background:#eaf7ff;box-shadow:0 0 0 2px #243244;pointer-events:none"></div>
+      <input id="clipSeek" type="range" min="0" max="1000" value="0" aria-label="Virtual clip position" style="position:absolute;inset:0;width:100%;height:26px;opacity:0;cursor:pointer;margin:0;padding:0">
+    </div>
+    <span id="clipClock" class="muted">0:00 / {{ length_label }}</span>
+  </div>
+  <div class="toolbar" style="justify-content:center;margin-top:4px">
+    <button class="btn2 cropBtn" data-aspect="original">Original</button>
+    {% for aspect in ['16:9','4:5','1:1','9:16'] %}{% if aspect in plans %}<button class="btn2 cropBtn" data-aspect="{{ aspect }}">{{ aspect }}</button>{% endif %}{% endfor %}
+  </div>
+  <div id="cropInfo" class="muted" style="text-align:center;margin-top:7px"></div>
+  {% if smart_crop_v2 %}
+  <div id="cropEditor" class="toolpanel" style="margin-top:12px;text-align:center">
+    <div class="eyebrow">Smart Crop v2 editor</div>
+    <div class="toolbar" style="justify-content:center">
+      <button id="buildTrajectory" class="btn2">Build tracked path</button>
+      <button class="btn2 cropNudge" data-dx="-0.02" data-dy="0">←</button><button class="btn2 cropNudge" data-dx="0.02" data-dy="0">→</button>
+      <button class="btn2 cropNudge" data-dx="0" data-dy="-0.02">↑</button><button class="btn2 cropNudge" data-dx="0" data-dy="0.02">↓</button>
+      <button id="cropZoomIn" class="btn2">Zoom +</button><button id="cropZoomOut" class="btn2">Zoom −</button>
+      <button id="saveKeyframe">Lock keyframe here</button>
+    </div>
+    <div class="toolbar" style="justify-content:center"><button class="btn2 trajectoryStatus" data-status="draft">Draft</button><button class="ok trajectoryStatus" data-status="approved">Approve</button><button class="danger trajectoryStatus" data-status="rejected">Reject</button></div>
+    <div id="editorMessage" class="muted">Choose a crop format, build a path, then nudge and lock corrections at the current playhead.</div>
+  </div>
+  {% else %}<div style="text-align:center;margin-top:10px"><a class="btn btn2" href="{{ review_url }}">Open Smart Crop v2 review</a></div>{% endif %}
+</div>
+<div class="about-grid" style="margin-top:14px">
+  <div class="card">
+    <div class="eyebrow">Why this clip</div><b>{{ reason }}</b>
+    <div class="muted" style="margin-top:7px">Only this virtual interval is played. The source video is not cut or rewritten.</div>
+  </div>
+  <div class="card">
+    <div class="eyebrow">{{ 'Smart Crop v2 preview' if smart_crop_v2 else 'Smart Crop v1' }}</div><b>Preset: {{ preset }}</b>
+    <div class="muted" style="margin-top:7px">{% if smart_crop_v2 %}Dynamic non-destructive crop trajectories are enabled for this preview. Drafts never rewrite the source video.{% else %}The selected crop is static per virtual clip. Smart Crop v2 remains behind its feature flag until Windows acceptance.{% endif %}</div>
+    {% if show_car_rebuild %}<div style="margin-top:10px"><form method="post" action="/item/{{ inv_id }}/media-brain" style="display:inline"><input type="hidden" name="preset" value="car"><button class="btn2">Rebuild as Car / dashboard</button></form></div>{% endif %}
+  </div>
+</div>

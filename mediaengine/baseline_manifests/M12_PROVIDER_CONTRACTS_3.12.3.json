@@ -1,0 +1,13 @@
+{
+  "schema": "archivist_provider_contracts_v1",
+  "reviewed_on": "2026-09-22",
+  "release": "3.12.3",
+  "base": "3.12.2",
+  "safeguards": {
+    "official_connections_enabled": false,
+    "real_credentials": false,
+    "provider_network_calls": false,
+    "auto_publish": false
+  },
+  "notes": "Provider documentation capability contracts only. No OAuth implementation or provider network activity."
+}

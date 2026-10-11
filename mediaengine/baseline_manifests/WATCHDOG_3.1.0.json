@@ -1,0 +1,16 @@
+{
+  "base": "3.0.3",
+  "process_restarts_per_cycle": 3,
+  "app_restarts_max": 2,
+  "convert_stall_seconds": 90,
+  "generic_stall_seconds": 300,
+  "incident_reporting": "watchdog_incident via existing Remote Lab; job id/kind/action only, no filenames/paths/media",
+  "behavior": [
+    "track progress_at/heartbeat_at for foreground jobs",
+    "restart stalled Convert FFmpeg process automatically",
+    "persist successful/failed Convert items so restart resumes remaining work",
+    "escalate repeated stalls to automatic Archivist restart",
+    "prevent infinite restart loops and fail explicitly after recovery budget",
+    "record local watchdog_incidents and remote sanitized incidents"
+  ]
+}

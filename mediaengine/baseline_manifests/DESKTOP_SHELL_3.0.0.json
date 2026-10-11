@@ -1,0 +1,7 @@
+{
+  "shell": "Microsoft Edge app-mode",
+  "fallback": "default browser",
+  "backend": "unchanged localhost 127.0.0.1:8765",
+  "remote_lab": "--no-browser preserved",
+  "browser_override": "--browser"
+}

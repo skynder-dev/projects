@@ -1,0 +1,72 @@
+{
+  "contract": "P11_FOLDER_TO_REEL_SHADOW_V2_RC2_TECHNICAL_PROMINENCE_FIX_R1",
+  "runtime_files": [
+    {
+      "name": "medeng_batch_supervisor_v10.py",
+      "bytes": 9851,
+      "sha256": "0034649ba66ec0964c2da7e03b55d278617fe05548c6a32d2f1697a7ca4e19d3"
+    },
+    {
+      "name": "medeng_event_export_v12.py",
+      "bytes": 8251,
+      "sha256": "36711fdd79cf563375dfc2ed9a8ea95a14abe9c0e1b913f7b7f29bc8f0ae08b3"
+    },
+    {
+      "name": "medeng_event_library_v20.py",
+      "bytes": 6249,
+      "sha256": "bdf252ceabf58a6d33f65f7179a96afa6d7a84fb00feae30899bef8a3f06cba0"
+    },
+    {
+      "name": "medeng_event_semantic_v7.py",
+      "bytes": 15203,
+      "sha256": "2b15303eba5b02b7f949cb560e58b2dbee09ff4576e21ad4b25b2d3111b02d5c"
+    },
+    {
+      "name": "medeng_media_probe_v41.py",
+      "bytes": 3099,
+      "sha256": "24b6ffb43d4991a3a3854f75ea8c085ccebbea6655516d4b7a7dacec07578a78"
+    },
+    {
+      "name": "medeng_realmedia_pipeline_v14.py",
+      "bytes": 9095,
+      "sha256": "ee138b67c8decb534ceaa44e5416bbdee9e172bcf69aa3f3a581ca243c365052"
+    },
+    {
+      "name": "medeng_targeted_auto_edit_v26.py",
+      "bytes": 31691,
+      "sha256": "325c41c01e796981cba2b07e93745da3f5de333847f3851a6f3ae7be497c4e1d"
+    },
+    {
+      "name": "p11_audio_coherence_shadow_v2.py",
+      "bytes": 3094,
+      "sha256": "a6ce8227c320ce1d179c6db3368cd2bdb640a03667e801a7cbe1dcde795214df"
+    },
+    {
+      "name": "p11_camera_drop_trim_shadow_v1.py",
+      "bytes": 4620,
+      "sha256": "4b0a2c86e2d72502bfb389453ed4cf98a6c38b53930ec08907a7b6b7a6e1a8cb"
+    },
+    {
+      "name": "p11_montage_pacing_shadow_v1.py",
+      "bytes": 7767,
+      "sha256": "ac3bae0f7686fff6c8e7fdb113f8267659116083cfe2c30d6248a239d7b6a99a"
+    },
+    {
+      "name": "p11_montage_sequence_shadow_v4.py",
+      "bytes": 8186,
+      "sha256": "1084b497d9e3b01e7d1a84a91265b73149fbbc0a2955174e9448d2e90d222877"
+    }
+  ],
+  "orchestrator": {
+    "name": "p11_folder_to_reel_shadow_v2.py",
+    "bytes": 25191,
+    "sha256": "af6f431979c2c0f56c5563d7ea3b591147db54b87e0ac0218c9524aaf129a1fe"
+  },
+  "delta": {
+    "audio_probe": "external ffprobe removed; uses accepted medeng_media_probe_v41 ffmpeg-only backend",
+    "selection_logic_changed": false,
+    "semantic_logic_changed": false,
+    "boundary_logic_changed": false,
+    "technical_prominence_contract_fix": "exact event_export_v12 prominence formula: .50 eventness + .35 novelty + .15 quality"
+  }
+}

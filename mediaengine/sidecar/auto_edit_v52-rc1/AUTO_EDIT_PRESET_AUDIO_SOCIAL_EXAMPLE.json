@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "target_seconds": 30,
+  "clip_seconds": 5.0,
+  "transition_seconds": 0.25,
+  "audio_lufs": -16.0,
+  "audio_true_peak_db": -1.5,
+  "approval_mode": "auto",
+  "max_attempts": 1,
+  "retry_backoff_seconds": 30
+}

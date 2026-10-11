@@ -1,0 +1,26 @@
+{
+  "project_route": "MEDIAENGINE",
+  "stage": "AUTO_EDIT_V52_VIDEO_QUALITY",
+  "candidate": "MEDENG_AUTO_EDIT_V52_VIDEO_QUALITY_SIDECAR_RC1",
+  "slot": "v52-rc1",
+  "status": "SOURCE_PASS_PACKAGE_PENDING",
+  "focus": "Per-job video_quality standard|high; default standard is V51-compatible; high quality objectively improves PSNR.",
+  "completed": [
+    "Inherited V42-V51 stack PASS.",
+    "V52 quality self-test 12/12 PASS with +0.849 dB PSNR.",
+    "Exact V51 default byte compatibility 6/6 PASS.",
+    "Real queue standard/high identity + policy-only reuse PASS 10/10.",
+    "Human override video_quality=high propagation PASS 3/3."
+  ],
+  "unfinished": [
+    "Deterministic package/extracted gates.",
+    "Windows acceptance when shared Remote Lab lease is free."
+  ],
+  "blockers": [
+    "Shared Remote Lab may be leased by another project; do not preempt."
+  ],
+  "next_exact_action": "Seal deterministic V52 package; then Windows-accept newest candidate only when shared lease is free.",
+  "windows_install_proven": false,
+  "stable_mediaengine_mutated": false,
+  "semantic_best_moment_claim": false
+}

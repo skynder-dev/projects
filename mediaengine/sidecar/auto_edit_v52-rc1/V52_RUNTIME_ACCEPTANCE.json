@@ -1,0 +1,87 @@
+{
+  "candidate": "MEDENG_AUTO_EDIT_V52_VIDEO_QUALITY_SIDECAR_RC1",
+  "status": "PASS",
+  "passed": 219,
+  "total": 219,
+  "parts": [
+    {
+      "name": "v42_logic_selftest",
+      "passed": 38,
+      "total": 38
+    },
+    {
+      "name": "v42_pacing_selftest",
+      "passed": 14,
+      "total": 14
+    },
+    {
+      "name": "v43_audio_selftest",
+      "passed": 15,
+      "total": 15
+    },
+    {
+      "name": "v44_vertical_framing_selftest",
+      "passed": 22,
+      "total": 22
+    },
+    {
+      "name": "v45_vertical_focus_selftest",
+      "passed": 19,
+      "total": 19
+    },
+    {
+      "name": "v46_resolution_selftest",
+      "passed": 14,
+      "total": 14
+    },
+    {
+      "name": "v47_audio_content_selftest",
+      "passed": 12,
+      "total": 12
+    },
+    {
+      "name": "v48_cover_selftest",
+      "passed": 8,
+      "total": 8
+    },
+    {
+      "name": "v49_approved_cover_selftest",
+      "passed": 18,
+      "total": 18
+    },
+    {
+      "name": "v50_cover_position_selftest",
+      "passed": 14,
+      "total": 14
+    },
+    {
+      "name": "v51_output_fps_selftest",
+      "passed": 14,
+      "total": 14
+    },
+    {
+      "name": "v52_video_quality_selftest",
+      "passed": 12,
+      "total": 12
+    },
+    {
+      "name": "v52_v51_compat_test",
+      "passed": 6,
+      "total": 6
+    },
+    {
+      "name": "v52_real_queue_test",
+      "passed": 10,
+      "total": 10
+    },
+    {
+      "name": "v52_override_test",
+      "passed": 3,
+      "total": 3
+    }
+  ],
+  "default_v51_byte_compatible": true,
+  "high_psnr_improvement_proven": true,
+  "policy_only_no_rerender": true,
+  "override_high_quality_proven": true
+}

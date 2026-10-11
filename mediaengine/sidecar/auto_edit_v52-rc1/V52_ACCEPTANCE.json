@@ -1,0 +1,25 @@
+{
+  "candidate": "MEDENG_AUTO_EDIT_V52_VIDEO_QUALITY_SIDECAR_RC1",
+  "slot": "v52-rc1",
+  "verdict": "PASS_SOURCE_V52_PACKAGE_PENDING",
+  "static": {
+    "passed": 20,
+    "total": 20
+  },
+  "runtime": {
+    "passed": 219,
+    "total": 219
+  },
+  "passed": 239,
+  "total": 239,
+  "material_addition": "PER_JOB_VIDEO_QUALITY_V52",
+  "default_video_quality": "standard",
+  "alternate_video_quality": "high",
+  "default_v51_byte_compatible": true,
+  "high_crf": 16,
+  "standard_crf": 20,
+  "high_psnr_delta_db": 0.849,
+  "windows_install_proven": false,
+  "stable_mediaengine_mutated": false,
+  "semantic_best_moment_claim": false
+}

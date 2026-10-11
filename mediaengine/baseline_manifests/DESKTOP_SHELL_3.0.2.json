@@ -1,0 +1,9 @@
+{
+  "base": "3.0.1",
+  "changes": [
+    "CDP execution-context retry",
+    "correct explicit Share preset regression",
+    "real accessible-vs-unavailable Convert regression",
+    "privacy-safe thumbnail inventory health counts"
+  ]
+}

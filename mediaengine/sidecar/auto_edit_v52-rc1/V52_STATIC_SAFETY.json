@@ -1,0 +1,110 @@
+{
+  "candidate": "MEDENG_AUTO_EDIT_V52_VIDEO_QUALITY_SIDECAR_RC1",
+  "status": "PASS",
+  "passed": 20,
+  "total": 20,
+  "checks": [
+    {
+      "name": "product_file_count_17",
+      "pass": true,
+      "detail": 17
+    },
+    {
+      "name": "exact_four_product_modules_changed",
+      "pass": true,
+      "detail": [
+        "medeng_auto_variants_v36.py",
+        "medeng_drop_queue_v40.py",
+        "medeng_review_override_v36.py",
+        "medeng_targeted_auto_edit_v26.py"
+      ]
+    },
+    {
+      "name": "other_13_byte_identical",
+      "pass": true,
+      "detail": [
+        "medeng_approval_v36.py",
+        "medeng_auto_approval_v39.py",
+        "medeng_batch_supervisor_v10.py",
+        "medeng_delivery_bundle_v36.py",
+        "medeng_event_export_v12.py",
+        "medeng_event_library_v20.py",
+        "medeng_event_semantic_v7.py",
+        "medeng_media_probe_v41.py",
+        "medeng_queue_supervisor_v40.py",
+        "medeng_realmedia_pipeline_v14.py",
+        "medeng_review_decision_v39.py",
+        "medeng_variant_comparison_v37.py",
+        "medeng_video_to_reel_v26.py"
+      ]
+    },
+    {
+      "name": "compile_medeng_auto_variants_v36.py",
+      "pass": true
+    },
+    {
+      "name": "compile_medeng_drop_queue_v40.py",
+      "pass": true
+    },
+    {
+      "name": "compile_medeng_review_override_v36.py",
+      "pass": true
+    },
+    {
+      "name": "compile_medeng_targeted_auto_edit_v26.py",
+      "pass": true
+    },
+    {
+      "name": "queue_default_standard",
+      "pass": true
+    },
+    {
+      "name": "queue_allows_quality",
+      "pass": true
+    },
+    {
+      "name": "quality_render_identity_nondefault",
+      "pass": true
+    },
+    {
+      "name": "engine_env_quality",
+      "pass": true
+    },
+    {
+      "name": "mute_policy_preserved",
+      "pass": true
+    },
+    {
+      "name": "renderer_default_standard",
+      "pass": true
+    },
+    {
+      "name": "renderer_validates_standard_high",
+      "pass": true
+    },
+    {
+      "name": "standard_encode_contract",
+      "pass": true
+    },
+    {
+      "name": "high_encode_contract",
+      "pass": true
+    },
+    {
+      "name": "resume_pins_quality",
+      "pass": true
+    },
+    {
+      "name": "variants_propagate_quality",
+      "pass": true
+    },
+    {
+      "name": "override_propagate_quality",
+      "pass": true
+    },
+    {
+      "name": "semantic_claim_false",
+      "pass": true
+    }
+  ]
+}

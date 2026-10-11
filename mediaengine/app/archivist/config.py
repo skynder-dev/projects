@@ -1,0 +1,94 @@
+from __future__ import annotations
+from .platform_adapter import default_archive_root
+
+import json
+import os
+from pathlib import Path
+
+APP_DIR = Path(__file__).resolve().parents[1]
+HOME = Path(os.environ.get("ARCHIVIST_HOME") or APP_DIR.parent).resolve()
+DATA = HOME / "data"
+DB_PATH = DATA / "archivist.db"
+CACHE = DATA / "cache"
+THUMBS = CACHE / "thumbnails"
+STORYBOARDS = CACHE / "storyboards"
+TEMP = DATA / "temp"
+STAGING = HOME / "Staging"
+PRIVATE = HOME / "Private"
+REJECTED = HOME / "Rejected"
+LOGS = DATA / "logs"
+CONFIG_PATH = HOME / "config.json"
+VERSION = "3.12.42"
+
+
+def _default_archive_root() -> str:
+    return default_archive_root()
+
+DEFAULT_CONFIG = {
+    "config_version": 3,
+    "installation": {"profile_version": 1, "product_mode": "desktop_local_first"},
+    "connections": {"cloud_vault": {"enabled": False}, "social": {"enabled": False, "providers": {"youtube": {"client_id": ""}}}, "online_ai": {"enabled": False}},
+    "archive_root": _default_archive_root(),
+    "sources": [],
+    "auto_removable": True,
+    "android": {"enabled": True},
+    "filters": {
+        "ignore_noise": True,
+        "min_image_bytes": 120 * 1024,
+        "min_video_bytes": 256 * 1024,
+    },
+    "privacy": {
+        "enabled": True,
+        "review_threshold": 0.42,
+        "video_samples": 10,
+    },
+    "ingest": {
+        "min_free_gb": 10,
+        "keep_failed_partials": False,
+        "analyze_after_import": True,
+        "keep_rejected": True,
+    },
+    "analysis": {
+        "technical_quality": True,
+        "quality_review_below": 55,
+        "ffmpeg_threads": 2,
+        "storyboard_frames": 8,
+    },
+}
+
+
+def ensure_dirs() -> None:
+    for p in (HOME, DATA, CACHE, THUMBS, STORYBOARDS, TEMP, STAGING, PRIVATE, REJECTED, LOGS):
+        p.mkdir(parents=True, exist_ok=True)
+
+
+def _deep_defaults(dst: dict, src: dict) -> dict:
+    for key, value in src.items():
+        if key not in dst:
+            dst[key] = value
+        elif isinstance(value, dict) and isinstance(dst.get(key), dict):
+            _deep_defaults(dst[key], value)
+    return dst
+
+
+def load_config() -> dict:
+    ensure_dirs()
+    cfg = {}
+    if CONFIG_PATH.exists():
+        try:
+            cfg = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+        except Exception:
+            cfg = {}
+    cfg = _deep_defaults(cfg, json.loads(json.dumps(DEFAULT_CONFIG)))
+    if cfg.get("config_version", 1) < 3:
+        cfg["config_version"] = 3
+    return cfg
+
+
+def save_config(cfg: dict) -> None:
+    ensure_dirs()
+    cfg = _deep_defaults(cfg, json.loads(json.dumps(DEFAULT_CONFIG)))
+    cfg["config_version"] = 3
+    tmp = CONFIG_PATH.with_suffix(".tmp")
+    tmp.write_text(json.dumps(cfg, indent=2, ensure_ascii=False), encoding="utf-8")
+    tmp.replace(CONFIG_PATH)

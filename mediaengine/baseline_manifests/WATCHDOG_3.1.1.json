@@ -1,0 +1,4 @@
+{
+  "base": "3.1.0",
+  "added_gate": "real FFmpeg process is forcibly terminated and automatically restarted to a finished output"
+}

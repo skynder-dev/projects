@@ -1,0 +1,8 @@
+{
+  "base": "3.1.1",
+  "model": "signals_v1",
+  "privacy": "local only",
+  "ui": "/search",
+  "api": "/api/search",
+  "future": "optional local visual embeddings"
+}

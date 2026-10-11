@@ -1,0 +1,1 @@
+{"schema_version":1,"target_seconds":30,"ready_mode":"settle","approval_mode":"auto","max_attempts":3,"retry_backoff_seconds":30}

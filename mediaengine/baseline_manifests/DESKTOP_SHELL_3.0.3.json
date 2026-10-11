@@ -1,0 +1,11 @@
+{
+  "base": "3.0.2",
+  "fixes": [
+    "convert jobs excluded from generic recovery",
+    "durable convert inventory_ids persisted",
+    "convert jobs resume after restart",
+    "legacy Unknown job kind convert repaired to explicit interrupted state",
+    "generic jobs wait while converter is running",
+    "terminal converter jobs no longer render as active progress"
+  ]
+}
