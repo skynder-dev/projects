@@ -386,8 +386,31 @@ def normalize_settings(raw: dict, *, model_ready: bool | None = None) -> dict:
         raise ValueError("Unknown selection mode")
     if mode == "semantic" and model_ready is False:
         raise ValueError("The AI model (FAST_LOCAL) is not available on this computer. Choose 'Technical only' explicitly or install the model.")
-    exclude = sorted({x for x in (raw.get("exclude") or []) if re.fullmatch(r"[0-9a-f]{8,64}", str(x))})
-    return {"format": fmt, "sound": sound, "length": length, "mode": mode, "exclude": exclude}
+    is_id = lambda x: re.fullmatch(r"[0-9a-f]{8,64}", str(x)) is not None
+    exclude = sorted({str(x) for x in (raw.get("exclude") or []) if is_id(x)})
+    out = {"format": fmt, "sound": sound, "length": length, "mode": mode, "exclude": exclude}
+    # Manual edit: an explicit list of moments in the user's order, optional source-time trims.
+    selection = [str(x) for x in (raw.get("selection") or []) if is_id(x)]
+    if len(set(selection)) != len(selection):
+        raise ValueError("The same moment is used twice")
+    if len(selection) > 30:
+        raise ValueError("At most 30 moments in one reel")
+    trims = {}
+    for k, v in (raw.get("trims") or {}).items():
+        if not is_id(k) or k not in selection:
+            continue
+        a, b = round(float(v[0]), 1), round(float(v[1]), 1)
+        if a < 0 or b - a < 0.5:
+            raise ValueError("A trimmed moment must be at least 0.5 s long")
+        if b - a > 60:
+            raise ValueError("A single moment can be at most 60 s")
+        trims[str(k)] = [a, b]
+    if selection:
+        out["selection"] = selection
+        out["exclude"] = []
+    if trims:
+        out["trims"] = trims
+    return out
 
 
 def _folder_fingerprint(folder: Path) -> list:
@@ -513,12 +536,14 @@ def _engine_env() -> dict:
     return env
 
 
-def engine_command(folder: Path, out_dir: Path, work_dir: Path, progress_file: Path, s: dict) -> list[str]:
+def engine_command(folder: Path, out_dir: Path, work_dir: Path, progress_file: Path, s: dict, edits_file: Path | None = None) -> list[str]:
     f = FORMATS[s["format"]]
     cmd = [sys.executable, str(ORCHESTRATOR), "--input-dir", str(folder), "--output-dir", str(out_dir),
            "--work-dir", str(work_dir), "--runtime-dir", str(ENGINE_DIR), "--target-seconds", str(float(s["length"])),
            "--audio", s["sound"], "--semantic", "required" if s["mode"] == "semantic" else "off",
            "--profile", f["profile"], "--resolution", f["resolution"], "--progress-file", str(progress_file)]
+    if edits_file is not None and (s.get("selection") or s.get("trims")):
+        cmd += ["--edits", str(edits_file)]
     if s.get("exclude"):
         cmd += ["--exclude-events", ",".join(s["exclude"])]
     return cmd
@@ -549,7 +574,9 @@ def _run_job(jid: int) -> None:
         shutil.rmtree(out_dir)
     progress_file.unlink(missing_ok=True)
     _set(jid, status="running", stage="starting", done=0, total=0, message="", error=None, started_at=now_iso())
-    cmd = engine_command(Path(p["folder"]), out_dir, work_dir, progress_file, s)
+    edits_file = jobs_dir / f"j{jid}.edits.json"
+    edits_file.write_text(json.dumps({"selection": s.get("selection") or [], "trims": s.get("trims") or {}}), encoding="utf-8")
+    cmd = engine_command(Path(p["folder"]), out_dir, work_dir, progress_file, s, edits_file)
     kw = process_kwargs() if os.name == "nt" else {"start_new_session": True}
     with log_file.open("w", encoding="utf-8", errors="replace") as log:
         proc = subprocess.Popen(cmd, stdout=log, stderr=subprocess.STDOUT, env=_engine_env(), cwd=str(ENGINE_DIR), **kw)
@@ -591,6 +618,9 @@ def _pump_progress(jid: int, progress_file: Path) -> None:
 _FRIENDLY = {
     "SEMANTIC_RUNTIME_REQUIRED_BUT_NOT_EXACT": "The AI model files are missing or not the exact pinned version.",
     "NO_SUPPORTED_VIDEO_FILES": "No supported video files in the folder.",
+    "EDIT_UNKNOWN_MOMENT": "A chosen moment no longer exists (the source files changed). Start a new build.",
+    "EDIT_SOURCE_MISSING": "The source file of a trimmed moment is not available.",
+    "EDIT_TRIM_TOO_SHORT": "A trimmed moment is shorter than 0.5 s.",
     "NO_READABLE_VIDEO_FILES": "None of the videos in the folder could be read.",
     "INPUT_FOLDER_MISSING": "The source folder is not available.",
     "NO_DIVERSE_TARGET_COMBINATION": "Not enough different moments for this length. Try a shorter length.",

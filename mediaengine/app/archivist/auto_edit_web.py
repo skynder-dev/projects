@@ -226,6 +226,10 @@ const v=document.getElementById('reel');
 function seekTo(t){if(v){v.currentTime=t;v.play()}}
 document.querySelectorAll('[data-seek]').forEach(b=>b.onclick=()=>seekTo(parseFloat(b.dataset.seek)));
 if(v){v.ontimeupdate=()=>{document.querySelectorAll('[data-seg]').forEach(x=>{const a=parseFloat(x.dataset.in),b=parseFloat(x.dataset.out);x.classList.toggle('on',v.currentTime>=a&&v.currentTime<b)})}}
+document.querySelectorAll('[data-move]').forEach(b=>b.onclick=()=>{const row=b.closest('.ae-edit');const list=row.parentNode;
+ if(b.dataset.move==='up'&&row.previousElementSibling)list.insertBefore(row,row.previousElementSibling);
+ if(b.dataset.move==='down'&&row.nextElementSibling)list.insertBefore(row.nextElementSibling,row);
+ list.querySelectorAll('.ae-edit .pos').forEach((x,i)=>x.textContent=i+1)});
 const cp=document.getElementById('copyPath');if(cp)cp.onclick=async()=>{const t=cp.dataset.path;try{await navigator.clipboard.writeText(t);cp.textContent='Copied'}catch(e){prompt('Copy this path:',t)}};
 """
         return page(p["title"], "".join(parts), script)
@@ -259,10 +263,41 @@ const cp=document.getElementById('copyPath');if(cp)cp.onclick=async()=>{const t=
         f = request.form
         settings = {"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"),
                     "mode": f.get("mode") or ("semantic" if ae.model_status()["ready"] else "technical"),
-                    "exclude": f.getlist("exclude")}
+                    "exclude": f.getlist("exclude") + f.getlist("remove")}
         try:
             ae.start_job(pid, settings)
         except Exception as exc:
+            return err_page(str(exc), f"/auto/p/{pid}")
+        return redirect(f"/auto/p/{pid}")
+
+    @app.post("/auto/p/<int:pid>/edit")
+    def ae_edit(pid):
+        f = request.form
+        removed = set(f.getlist("remove"))
+        selection, trims = [], {}
+        try:
+            for eid in f.getlist("row"):
+                if eid in removed:
+                    continue
+                rep_id = f.get(f"replace_{eid}") or ""
+                use = rep_id or eid
+                if use in selection:
+                    continue
+                selection.append(use)
+                if not rep_id:
+                    a, b = float(f.get(f"in_{eid}") or 0), float(f.get(f"out_{eid}") or 0)
+                    da, db = float(f.get(f"def_in_{eid}") or 0), float(f.get(f"def_out_{eid}") or 0)
+                    if abs(a - da) > 0.05 or abs(b - db) > 0.05:
+                        trims[use] = [a, b]
+            add = f.get("add") or ""
+            if add and add not in selection:
+                selection.append(add)
+            if not selection:
+                return err_page("Keep at least one moment.", f"/auto/p/{pid}")
+            settings = {"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode"),
+                        "selection": selection, "trims": trims}
+            ae.start_job(pid, settings)
+        except ValueError as exc:
             return err_page(str(exc), f"/auto/p/{pid}")
         return redirect(f"/auto/p/{pid}")
 
@@ -348,14 +383,28 @@ def _review_html(p, rev, e):
         f"<button data-seek='{s['reel_in_s']}' data-seg data-in='{s['reel_in_s']}' data-out='{s['reel_out_s']}' "
         f"style='flex:{max(0.2, s['reel_out_s'] - s['reel_in_s']):.3f}' title='{e(s['source_name'])} {_fmt_s(s['source_in_s'])}–{_fmt_s(s['source_out_s'])}'>{s['position']}</button>"
         for s in segs)
-    rows = "".join(
-        f"<div class='ae-seg' data-seg data-in='{s['reel_in_s']}' data-out='{s['reel_out_s']}'><b>{s['position']}</b>"
-        f"<div><div>{e(s['source_name'])} <span class='muted'>· source {_fmt_s(s['source_in_s'])}–{_fmt_s(s['source_out_s'])}"
-        f"{' · edge trimmed' if s.get('camera_drop_trim') else ''}</span></div>"
-        f"<div class='row' style='gap:8px;margin-top:4px'><button type='button' class='btn2' data-seek='{s['reel_in_s']}'>Play in reel</button>"
-        f"<a class='btn btn2' style='font-size:13px' target='_blank' href='/auto/p/{p['id']}/source?name={e(s['source_name'])}#t={s['source_in_s']},{s['source_out_s']}'>View in source</a></div></div>"
-        f"<label class='muted'><input type='checkbox' name='exclude' value='{e(s['event_id'])}' form='rebuildForm'> exclude</label></div>"
-        for s in segs)
+    in_reel = {s["event_id"] for s in segs}
+    pool = [c for c in (res.get("candidate_pool") or []) if c["event_id"] not in in_reel][:40]
+    opts = "".join(f"<option value='{e(c['event_id'])}'>{e(c['source_name'])} {_fmt_s(c['start_s'])}–{_fmt_s(c['end_s'])} · score {float(c['score']):.2f}</option>" for c in pool)
+
+    def edit_row(s):
+        eid = e(s["event_id"])
+        badge = " · edge trimmed" if s.get("camera_drop_trim") else (" · your trim" if s.get("manual_trim") else "")
+        repl = (f"<label class='muted'>replace with <select name='replace_{eid}' style='max-width:260px'><option value=''>— keep —</option>{opts}</select></label>"
+                if opts else "")
+        return (f"<div class='ae-seg ae-edit' data-seg data-in='{s['reel_in_s']}' data-out='{s['reel_out_s']}'><b class='pos'>{s['position']}</b>"
+                f"<div><div>{e(s['source_name'])} <span class='muted'>· source {_fmt_s(s['source_in_s'])}–{_fmt_s(s['source_out_s'])}{badge}</span></div>"
+                f"<div class='row' style='gap:8px;margin-top:4px;flex-wrap:wrap'><button type='button' class='btn2' data-seek='{s['reel_in_s']}'>Play in reel</button>"
+                f"<a class='btn btn2' style='font-size:13px' target='_blank' href='/auto/p/{p['id']}/source?name={e(s['source_name'])}#t={s['source_in_s']},{s['source_out_s']}'>View in source</a></div>"
+                f"<div class='row' style='gap:8px;margin-top:6px;flex-wrap:wrap'><label class='muted'>from <input name='in_{eid}' value='{s['source_in_s']:.1f}' inputmode='decimal' style='width:72px'></label>"
+                f"<label class='muted'>to <input name='out_{eid}' value='{s['source_out_s']:.1f}' inputmode='decimal' style='width:72px'> s</label>{repl}</div>"
+                f"<input type='hidden' name='row' value='{eid}'><input type='hidden' name='def_in_{eid}' value='{s['source_in_s']:.1f}'><input type='hidden' name='def_out_{eid}' value='{s['source_out_s']:.1f}'></div>"
+                f"<div class='row' style='gap:4px'><button type='button' class='btn2' data-move='up' title='Move up'>↑</button>"
+                f"<button type='button' class='btn2' data-move='down' title='Move down'>↓</button>"
+                f"<label class='muted'><input type='checkbox' name='remove' value='{eid}'> remove</label></div></div>")
+    rows = "".join(edit_row(s) for s in segs)
+    add_html = (f"<div class='row' style='margin-top:10px;flex-wrap:wrap'><label class='muted'>add a moment <select name='add' style='max-width:320px'>"
+                f"<option value=''>—</option>{opts}</select></label></div>") if opts else ""
     target = float(rev["settings"].get("length") or 0)
     short_html = (f"<div class='callout card' style='margin-top:8px'>Requested {target:.0f} s, got {total:.1f} s: "
                   f"there were not enough different moments in this footage for a longer reel.</div>") if target and total < target - 1.0 else ""
@@ -379,11 +428,14 @@ def _review_html(p, rev, e):
 <div class='ae-strip'>{strip}</div>
 <div class='muted'>Revision R{int(rev['number']):03d} · {e(fmt.get('short',''))} {rev['width']}×{rev['height']} · {total:.2f} s · sound {e(rev['settings']['sound'])} · {e(mode)}</div>{short_html}{skipped_html}
 <div class='row' style='margin-top:12px;flex-wrap:wrap'>{actions}</div>{exp_html}</div>
-<div class='card'><h2 style='margin-top:0'>Moments in this reel</h2>{rows or "<div class='muted'>No segment details for this revision.</div>"}
-<form method='post' action='/auto/p/{p['id']}/variant' id='rebuildForm' style='margin-top:10px'>
+<form class='card' method='post' action='/auto/p/{p['id']}/edit' id='editForm'><h2 style='margin-top:0'>Moments in this reel</h2>
+<input type='hidden' name='revision_id' value='{rev['id']}'>
 <input type='hidden' name='length' value='{rev['settings']['length']}'><input type='hidden' name='format' value='{e(rev['settings']['format'])}'>
 <input type='hidden' name='sound' value='{e(rev['settings']['sound'])}'><input type='hidden' name='mode' value='{e(rev['settings']['mode'])}'>{excl_hidden}
-<button class='btn2'>Rebuild without the excluded moments</button></form></div></div>
+<div id='segList'>{rows or "<div class='muted'>No segment details for this revision.</div>"}</div>{add_html}
+<div class='muted' style='margin-top:8px'>Times are in the source file. Every change makes a new version; this one stays as it is.</div>
+<div class='row' style='margin-top:10px;flex-wrap:wrap'><button>Apply my edits</button>
+<button class='btn2' formaction='/auto/p/{p['id']}/variant'>Let MediaEngine choose again without removed moments</button></div></form></div>
 {_variant_form(p['id'], rev, e)}"""
 
 
@@ -397,6 +449,6 @@ def _revisions_html(p, cur, e):
         here = " <span class='badge'>viewing</span>" if cur and r["id"] == cur["id"] else ""
         ex = len(r["settings"].get("exclude", []))
         rows += (f"<a class='ae-seg' style='grid-template-columns:70px 1fr auto' href='/auto/p/{p['id']}?rev={r['id']}'><b>R{int(r['number']):03d}</b>"
-                 f"<span>{e(f)} · {r['settings']['length']} s · sound {e(r['settings']['sound'])}{(' · ' + str(ex) + ' excluded') if ex else ''}"
+                 f"<span>{e(f)} · {r['settings']['length']} s · sound {e(r['settings']['sound'])}{(' · ' + str(ex) + ' excluded') if ex else ''}{' · edited by you' if r['settings'].get('selection') else ''}"
                  f" <span class='muted'>· {e(r['created_at'])}</span></span><span>{tag}{here}</span></a>")
     return f"<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Revisions</h2>{rows}</div>"

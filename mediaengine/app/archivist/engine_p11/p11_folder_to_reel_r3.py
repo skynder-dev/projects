@@ -206,6 +206,32 @@ def valid_event_cache(path,input_rows):
         if not cp.is_file() or cp.stat().st_size!=int(e.get("clip_bytes",0)): return False,None
     return True,lib
 
+def apply_manual_trims(v52,selected,trims,work_dir):
+    """User mark-in/mark-out in SOURCE time. Re-extracted from the source so a moment can also be widened."""
+    out=[]; tdir=work_dir/"manual_trims"; tdir.mkdir(parents=True,exist_ok=True)
+    for e in selected:
+        eid=str(e["event_id"])
+        if eid not in trims: out.append(e); continue
+        a,b=trims[eid]; src=Path(e.get("source_path") or "")
+        if not src.is_file(): raise RuntimeError("EDIT_SOURCE_MISSING:"+eid)
+        dur=float(v52.ffprobe(src)["format"]["duration"])
+        a=max(0.0,min(float(a),dur)); b=max(0.0,min(float(b),dur))
+        if b-a<0.5: raise RuntimeError("EDIT_TRIM_TOO_SHORT:"+eid)
+        key=hashlib.sha256(f'{e.get("source_sha256")}|{a:.3f}|{b:.3f}|MANUALTRIM1'.encode()).hexdigest()[:20]
+        clip=tdir/f"{key}.mp4"
+        if not clip.is_file():
+            tmp=tdir/f".{key}.tmp.mp4"
+            cp=subprocess.run([v52.FFMPEG,"-hide_banner","-loglevel","error","-y","-ss",f"{a:.3f}","-i",str(src),"-t",f"{b-a:.3f}",
+                               "-map","0:v:0","-map","0:a?","-c:v","libx264","-preset","fast","-crf","18","-pix_fmt","yuv420p",
+                               "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(tmp)],capture_output=True,text=True)
+            if cp.returncode!=0: raise RuntimeError("EDIT_TRIM_FAILED:"+cp.stderr[-600:])
+            os.replace(tmp,clip)
+        x=dict(e); x["clip_path"]=str(clip); x["clip_bytes"]=clip.stat().st_size; x["clip_sha256"]=sha256_file(clip)
+        x["duration_s"]=float(v52.ffprobe(clip)["format"]["duration"]); x["start_s"]=round(a,3); x["end_s"]=round(a+x["duration_s"],3)
+        x["manual_trim"]=[round(a,3),round(b,3)]
+        out.append(x)
+    return out
+
 def build_event_library(runtime_dir,input_rows,work_dir):
     realmedia=work_dir/"realmedia"; eventdir=work_dir/"event_library"; libpath=eventdir/"EVENT_LIBRARY.json"
     ok,lib=valid_event_cache(libpath,input_rows)
@@ -338,11 +364,21 @@ def resolve_profile(v52,requested,selected):
     if portrait*2>len(selected): return "9x16","auto_majority_portrait_%d_of_%d"%(portrait,len(selected))
     return "16x9","auto_majority_landscape_%d_of_%d"%(len(selected)-portrait,len(selected))
 
+def manual_selection(pool,ids):
+    byid={str(e["event_id"]):e for e in pool}
+    missing=[i for i in ids if i not in byid]
+    if missing: raise RuntimeError("EDIT_UNKNOWN_MOMENT:"+",".join(missing[:5]))
+    if len(set(ids))!=len(ids): raise RuntimeError("EDIT_DUPLICATE_MOMENT")
+    return [byid[i] for i in ids]
+
 def run(args):
     global _PROGRESS_PATH
     started=time.perf_counter()
     _PROGRESS_PATH=Path(args.progress_file).resolve() if getattr(args,"progress_file",None) else None
     exclude={x.strip() for x in str(getattr(args,"exclude_events","") or "").split(",") if x.strip()}
+    edits=json.loads(Path(args.edits).read_text(encoding="utf-8")) if getattr(args,"edits","") else {}
+    manual=[str(x) for x in (edits.get("selection") or [])]
+    trims={str(k):(float(v[0]),float(v[1])) for k,v in (edits.get("trims") or {}).items()}
     runtime=Path(args.runtime_dir).resolve()
     if str(runtime) not in sys.path: sys.path.insert(0,str(runtime))
     input_dir=Path(args.input_dir).resolve(); output_dir=Path(args.output_dir).resolve(); work_dir=Path(args.work_dir).resolve()
@@ -371,7 +407,7 @@ def run(args):
         candidates,semantic_reports=build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter_root)
         pool=candidates
         progress("select",0,1,"choosing moments")
-        selected=v52.choose_for_target([e for e in candidates if str(e["event_id"]) not in exclude],float(args.target_seconds),5.0,.25)
+        selected=manual_selection(pool,manual) if manual else v52.choose_for_target([e for e in candidates if str(e["event_id"]) not in exclude],float(args.target_seconds),5.0,.25)
         selection_mode="FAST_LOCAL_SEMANTIC_SHADOW_V1"
         event_count=len(candidates); cache_status="semantic_candidate_cache"
     else:
@@ -381,17 +417,23 @@ def run(args):
         scored=v52.score_events(events,work_dir/"V22_SCORE_CACHE.json")
         pool=scored
         progress("select",0,1,"choosing moments")
-        selected=v52.choose_for_target([e for e in scored if str(e["event_id"]) not in exclude],float(args.target_seconds),5.0,.25)
+        selected=manual_selection(pool,manual) if manual else v52.choose_for_target([e for e in scored if str(e["event_id"]) not in exclude],float(args.target_seconds),5.0,.25)
         selection_mode="ACCEPTED_V52_TECHNICAL_AESTHETIC"
         event_count=int(lib["event_count"])
     if not selected: raise RuntimeError("NO_EVENTS_SELECTED")
 
     progress("trim",0,1,"checking clip boundaries")
-    selected,boundary_decisions=apply_camera_drop(v52,dropmod,selected,work_dir)
+    auto_part=[e for e in selected if str(e["event_id"]) not in trims]
+    auto_part,boundary_decisions=apply_camera_drop(v52,dropmod,auto_part,work_dir)
+    fixed={str(e["event_id"]):e for e in auto_part}
+    selected=apply_manual_trims(v52,[fixed.get(str(e["event_id"]),e) for e in selected],trims,work_dir)
     profile,profile_reason=resolve_profile(v52,args.profile,selected)
     resolution=str(args.resolution)
     baseline=v52.order_continuity(selected); p=pairwise(v52,selected)
-    seq=seqmod.plan_sequence(baseline,p,min_improvement=.025)
+    if manual:
+        seq={"algorithm":"MANUAL_ORDER","changed":False,"reason":"user_order","improvement":0.0,"guards":None,"order":[str(e["event_id"]) for e in selected]}
+    else:
+        seq=seqmod.plan_sequence(baseline,p,min_improvement=.025)
     by={str(e["event_id"]):e for e in selected}; order=[by[eid] for eid in seq["order"]]
     if sorted(seq["order"])!=sorted(str(e["event_id"]) for e in selected): raise RuntimeError("SEQUENCE_MEMBERSHIP_CHANGED")
 
@@ -402,6 +444,9 @@ def run(args):
     audio_decision=audiomod.plan_audio(audio_rows,args.audio); audio_mode=audio_decision["mode"]
     pace=pacemod.plan_pacing(order,float(args.target_seconds),p)
     if pace["event_ids"]!=[str(e["event_id"]) for e in order]: raise RuntimeError("PACING_ORDER_CHANGED")
+    if trims:
+        pace["durations_s"]=[round(float(e["duration_s"]),3) if str(e["event_id"]) in trims else d for e,d in zip(order,pace["durations_s"])]
+        pace["manual_trim_ids"]=sorted(trims)
 
     segcache=work_dir/"segment_cache_v2"; segcache.mkdir(parents=True,exist_ok=True)
     segs=[]; durs=[]; seg_meta=[]
@@ -440,7 +485,7 @@ def run(args):
         timeline.append({"position":i+1,"event_id":str(e["event_id"]),"source_name":e["source_name"],
                          "source_in_s":round(src_in,3),"source_out_s":round(src_in+use,3),
                          "reel_in_s":round(max(0.0,t),3),"reel_out_s":round(t+use,3),
-                         "score":round(float(e["v22_score"]),6),
+                         "score":round(float(e["v22_score"]),6),"manual_trim":e.get("manual_trim"),
                          "camera_drop_trim":bool(e.get("camera_drop_trim",{}).get("trim")) if isinstance(e.get("camera_drop_trim"),dict) else False})
         t+=use
     chosen={x["event_id"] for x in timeline}
@@ -450,7 +495,7 @@ def run(args):
                        "excluded":str(e["event_id"]) in exclude} for e in pool],key=lambda r:-r["score"])
     result={
         "contract":CONTRACT_VERSION,"status":"PASS",
-        "segments":timeline,"candidate_pool":pool_rows,"excluded_event_ids":sorted(exclude),
+        "segments":timeline,"candidate_pool":pool_rows,"excluded_event_ids":sorted(exclude),"manual_edits":edits,
         "skipped_inputs":skipped_inputs,
         "engine":{"orchestrator_sha256":sha256_file(Path(__file__)),"semantic_hook_sha256":SEMANTIC_HOOK_SHA},
         "input_folder":str(input_dir),"input_fingerprint":fingerprint,"input_count":len(input_rows),
@@ -504,6 +549,7 @@ def main():
     ap.add_argument("--resolution",choices=("standard","social_hd"),default="standard")
     ap.add_argument("--progress-file",default="")
     ap.add_argument("--exclude-events",default="")
+    ap.add_argument("--edits",default="",help="JSON file: {selection:[event ids in order], trims:{id:[source_in_s,source_out_s]}}")
     a=ap.parse_args()
     try: run(a)
     except Exception as exc:

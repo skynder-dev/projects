@@ -176,7 +176,48 @@ def main():
         c.post(f"/auto/p/{pid}/revert", headers=H)
         check("revert_restores_previous_accept", ae.project(pid)["accepted_revision_id"] == rev["id"], ae.project(pid)["accepted_revision_id"])
 
+        # manual editor: reverse order, trim the (new) first moment, replace one, remove one, add one
+        segs = rev["result"]["segments"]
+        pool = [c for c in rev["result"].get("candidate_pool", []) if not c["selected"]]
+        rows = [s_["event_id"] for s_ in reversed(segs)]
+        form = {"revision_id": rev["id"], "length": a.length, "format": "social_hd", "sound": "auto", "mode": a.mode, "row": rows}
+        for s_ in segs:
+            form[f"in_{s_['event_id']}"] = f"{s_['source_in_s']:.1f}"; form[f"out_{s_['event_id']}"] = f"{s_['source_out_s']:.1f}"
+            form[f"def_in_{s_['event_id']}"] = f"{s_['source_in_s']:.1f}"; form[f"def_out_{s_['event_id']}"] = f"{s_['source_out_s']:.1f}"
+        first = rows[0]
+        src_first = next(s_ for s_ in segs if s_["event_id"] == first)
+        t_in = round(max(0.0, src_first["source_in_s"] - 0.5), 1); t_out = round(t_in + 3.0, 1)
+        form[f"in_{first}"] = f"{t_in:.1f}"; form[f"out_{first}"] = f"{t_out:.1f}"
+        expected = list(rows)
+        replaced = removed = added = None
+        if len(rows) >= 2 and pool:
+            replaced = (rows[-1], pool[0]["event_id"]); form[f"replace_{rows[-1]}"] = pool[0]["event_id"]; expected[-1] = pool[0]["event_id"]
+        if len(rows) >= 3:
+            removed = rows[1]; form["remove"] = [removed]; expected.remove(removed)
+        if len(pool) >= 2:
+            added = pool[1]["event_id"]; form["add"] = added; expected.append(added)
+        r = c.post(f"/auto/p/{pid}/edit", data=form, headers=H)
+        check("edit_submits", r.status_code == 302, r.status_code)
+        jid_e = ae.project(pid)["jobs"][0]["id"]
+        je, _, _ = wait_job(c, jid_e)
+        check("edit_build_done", je["status"] == "done", je)
+        if je["status"] == "done":
+            reve = ae.revision(ae.project(pid)["revisions"][-1]["id"])
+            got = [s_["event_id"] for s_ in reve["result"]["segments"]]
+            check("edit_order_and_membership_as_requested", got == expected, (got, expected))
+            tseg = next((s_ for s_ in reve["result"]["segments"] if s_["event_id"] == first), None)
+            check("edit_trim_applied_in_source_time", tseg and abs((tseg["source_out_s"] - tseg["source_in_s"]) - (t_out - t_in)) <= 0.15
+                  and abs(tseg["source_in_s"] - t_in) <= 0.15, tseg)
+            if replaced:
+                check("edit_replacement_used", replaced[0] not in got and replaced[1] in got)
+            if removed:
+                check("edit_removed_absent", removed not in got)
+            check("edit_keeps_accepted_pointer", ae.project(pid)["accepted_revision_id"] == rev["id"])
+            r = c.get(f"/auto/p/{pid}?rev={reve['id']}", headers=H)
+            check("edited_revision_reviewable", r.status_code == 200 and b"your trim" in r.data)
+
         if not a.skip_cancel:
+            n_before_cancel = len(ae.project(pid)["revisions"])
             r = c.post(f"/auto/p/{pid}/variant", data={"length": a.length, "format": "vertical", "sound": "mute", "mode": a.mode}, headers=H)
             jid4 = ae.project(pid)["jobs"][0]["id"]
             t0 = time.time()
@@ -189,7 +230,7 @@ def main():
             j4, _, _ = wait_job(c, jid4, 120)
             n_rev = len(ae.project(pid)["revisions"])
             check("cancel_stops_job", j4["status"] == "cancelled", j4)
-            check("cancel_publishes_nothing", n_rev == 3, n_rev)
+            check("cancel_publishes_nothing", n_rev == n_before_cancel, (n_rev, n_before_cancel))
             r = c.post(f"/auto/job/{jid4}/retry", headers=H)
             jid5 = ae.project(pid)["jobs"][0]["id"]
             j5, _, _ = wait_job(c, jid5)
