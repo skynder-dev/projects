@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GoDog GDCONST-010 DEFAULT-DISABLED canary
 // @namespace    GoDog.constitution
-// @version      7.0.3
+// @version      7.0.4
 // @description  Local-only direct controls, PC-hosted Tampermonkey updates, original 6.0.26 UI.
 // @match        https://chatgpt.com/*
 // @run-at       document-idle
@@ -17,7 +17,7 @@
   // LOCAL ONLY. No fetch, XMLHttpRequest, GM_xmlhttpRequest, WebSocket, heartbeat or cloud endpoint.
   // Direct controls: GO -> native submit, STOP -> local AUTO off,
   // NEW -> same-tab native new chat with local handoff, AUTO -> event-driven next GO.
-  const VERSION = '7.0.3';
+  const VERSION = '7.0.4';
   const STATE_KEY = 'godog-pc-local-v7-session';
   const NEW_KEY = 'godog-pc-local-v7-handoff';
   const VERSION_KEY = 'godog-pc-local-v7-version-seen';
@@ -59,20 +59,78 @@
   function status(text) {
     if (statusNode && statusNode.textContent !== text) statusNode.textContent = text;
     root.dataset.status = text === 'ALEX NEEDED' ? 'alex_needed' : '';
+    // Existing 6.0.26 CSS controls status glow, without any new style rules.
+    root.dataset.statusTone = /ALEX NEEDED|FAILED|CHAT BUSY|NO COMPOSER/i.test(text)
+      ? 'danger' : /AUTO|SENT|GO|NEW/i.test(text) ? 'active' : 'idle';
+  }
+  function projectLabel() {
+    const title = String(document.title || '');
+    const match = title.match(/\b(GoDog|Forge|RevEng|Social|TownLabel|MedEng|MediaEngine)\b/i);
+    if (!match) return 'GoDog';
+    const key=match[1].toLowerCase();
+    return {godog:'GoDog',forge:'Forge',reveng:'RevEng',social:'Social',townlabel:'TownLabel',medeng:'MedEng',mediaengine:'MedEng'}[key] || 'GoDog';
   }
   function paint() {
     if (autoButton) {
-      autoButton.classList.toggle('on',auto);
-      autoButton.textContent = auto ? 'AUTO ON' : 'AUTO';
+      autoButton.classList.toggle('on', auto);
+      autoButton.textContent = 'AUTO'; // Exact original label even when AUTO is on.
+      autoButton.setAttribute('aria-pressed',auto?'true':'false');
     }
-    const vn=$('.cg-version'); if(vn) vn.textContent='v'+VERSION;
-    const pn=$('.cg-project'); if(pn) pn.textContent='PC';
-    const tm=$('.cg-timer'); if(tm) {tm.textContent='LOCAL'; tm.dataset.mode='local';}
-    root.dataset.meta='GoDog '+VERSION+' · PC';
+    const vn=$('.cg-version'); if(vn) vn.textContent='GoDog '+VERSION;
+    const pn=$('.cg-project'); if(pn) pn.textContent=projectLabel();
+    const tm=$('.cg-timer'); if(tm) {
+      tm.textContent='';
+      tm.style.setProperty('display','none','important');
+      tm.setAttribute('aria-hidden','true');
+    }
+    root.dataset.meta='GoDog '+VERSION;
   }
   function mount() {
     if (!style.isConnected) document.documentElement.appendChild(style);
     if (!root.isConnected && document.body) document.body.appendChild(root);
+  }
+  // UI-only restoration: the 6.0.26 panel was placed directly under
+  // the ChatGPT composer. The original 35 KB CSS is unchanged.
+  let lastDock = '';
+  function alignDockToComposer() {
+    if (!root.isConnected) return;
+    const editor=composer();
+    let surface=editor?.closest?.('[data-type="unified-composer"]') || editor?.closest?.('form');
+    if (!surface && editor) {
+      for(let el=editor.parentElement, i=0;el && i<8;el=el.parentElement,i++) {
+        const r=el.getBoundingClientRect();
+        if(r.width>=240 && r.width<window.innerWidth*0.98 && r.height>=42 && r.height<=260) {
+          surface=el; break;
+        }
+      }
+    }
+    if (!surface) {
+      root.style.setProperty('visibility','hidden','important');
+      lastDock='';
+      return;
+    }
+    const r=surface.getBoundingClientRect();
+    if (!(r.width>=240 && r.width<=window.innerWidth*0.98 && r.height>=38)) {
+      root.style.setProperty('visibility','hidden','important');
+      lastDock='';
+      return;
+    }
+    const send=getSendButton();
+    const sr=send?.getBoundingClientRect?.();
+    const dockHeight=Math.max(33,Math.round(root.getBoundingClientRect().height||36));
+    const desiredTop=Math.max(r.bottom-1,(sr?.width>8 && sr?.height>8) ? sr.bottom+2 : r.bottom-1);
+    const top=Math.max(0,Math.min(Math.round(desiredTop),window.innerHeight-dockHeight-3));
+    const left=Math.max(0,Math.round(r.left));
+    const right=Math.max(0,Math.round(window.innerWidth-r.right));
+    const signature=[left,right,top].join(':');
+    if(signature!==lastDock) {
+      lastDock=signature;
+      root.style.setProperty('left',left+'px','important');
+      root.style.setProperty('right',right+'px','important');
+      root.style.setProperty('top',top+'px','important');
+      root.style.setProperty('bottom','auto','important');
+    }
+    root.style.setProperty('visibility','visible','important');
   }
   function getSendButton() {
     return document.querySelector('[data-testid="send-button"], button[aria-label="Send prompt"], button[aria-label="Send message"], button[aria-label="Send"], button[title="Send"]');
@@ -270,6 +328,7 @@
   }
   function tick() {
     mount();
+    alignDockToComposer();
     if(newHandoff) maybeSendHandoff();
     maybeConfirm();
     if(auto) maybeContinueAuto();
@@ -304,7 +363,8 @@
     const ed=composer();
     if(ed && (ed===event.target || ed.contains(event.target))) pauseAuto('USER TYPING');
   },true);
-  mount(); paint();status(auto?'AUTO ON':'PC LOCAL');
+  mount(); paint();status(auto?'AUTO':'DISARMED');
+  window.addEventListener('resize',requestTick,{passive:true});
   try {
     const last=localStorage.getItem(VERSION_KEY);
     if(last && last!==VERSION) {
