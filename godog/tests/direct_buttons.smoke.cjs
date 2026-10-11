@@ -21,6 +21,7 @@ class Element {
   getAttribute(name) {return this.attributes[name]??null;}
   addEventListener(name,fn) {this.listeners[name]=fn;}
   focus() {}
+  closest() {return null;}
   click() {this.listeners.click?.({ctrlKey:false});}
   querySelector() {return null;}
   appendChild(el) {el.isConnected=true;}
