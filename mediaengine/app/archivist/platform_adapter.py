@@ -140,7 +140,8 @@ def install_launchers(home: Path) -> None:
             'sc.Arguments=Chr(34) & "' + str(vbs).replace('"', '""') + '" & Chr(34)\r\n'
             'sc.WorkingDirectory="' + str(home).replace('"', '""') + '"\r\n'
             'sc.Description="' + name + '"\r\n'
-            'sc.Save\r\n',
+            + (('sc.IconLocation="' + str(home / "MediaEngine.ico").replace('"', '""') + ',0"\r\n') if (home / "MediaEngine.ico").is_file() else '')
+            + 'sc.Save\r\n',
             encoding="utf-16",
         )
         try:

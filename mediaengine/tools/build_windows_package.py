@@ -15,7 +15,7 @@ its own desktop shortcut "MediaEngine RC"):
 
 Every build is its own folder with a unique name (contract §16: never extract over an old one). User data
 (projects, database, caches, exports, library) lives OUTSIDE the release folder, by default in
-"<parent folder>\MediaEngine Data", remembered in %LOCALAPPDATA%\MediaEngine\data_root.txt, so the next
+"<parent folder>\\MediaEngine Data", remembered in %LOCALAPPDATA%\\MediaEngine\\data_root.txt, so the next
 release sees the same projects and the previous release folder is the rollback.
 
 Model weights are NOT included; the app finds FAST_LOCAL in a neighbouring Archivist install or lets the
@@ -30,6 +30,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]          # mediaengine/
 PORT = 8775
 SHORTCUT = "MediaEngine RC"
+
+
+def make_icon(dst: Path) -> None:
+    """MediaEngine's own simple icon (drawn here, no outside artwork): a play mark on a dark tile with a strip
+    of frames. Used by the shortcuts and the installer."""
+    from PIL import Image, ImageDraw
+    big = 512
+    im = Image.new("RGBA", (big, big), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((16, 16, big - 16, big - 16), radius=96, fill=(28, 39, 64, 255))
+    for i in range(5):                                  # frame strip along the bottom
+        x0 = 72 + i * 76
+        d.rounded_rectangle((x0, 388, x0 + 56, 436), radius=10, fill=(255, 166, 43, 255))
+    d.polygon([(190, 110), (190, 330), (370, 220)], fill=(255, 255, 255, 255))
+    im.save(dst, format="ICO", sizes=[(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)], bitmap_format="bmp")
 
 
 def version() -> str:
@@ -84,12 +99,17 @@ def main(out_dir: Path, evidence_dir: Path) -> None:
     from archivist.platform_adapter import launcher_vbs_text   # the same file the app repairs at start
     (pkg / "Start MediaEngine.vbs").write_text(launcher_vbs_text(), encoding="utf-16")
     sha = os.environ.get("GITHUB_SHA") or subprocess.run(["git", "-C", str(ROOT), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+    make_icon(pkg / "MediaEngine.ico")
     (pkg / "BUILD.txt").write_text(f"MediaEngine {ver}\ncommit {sha}\nbuilt {datetime.now(timezone.utc).isoformat(timespec='seconds')}\n"
                                    f"run {os.environ.get('GITHUB_RUN_ID', 'local')}\n", encoding="utf-8")
     (pkg / "README.txt").write_text(f"""MediaEngine {ver} (release candidate)
 
-Before extracting: right-click the downloaded ZIP -> Properties -> tick "Unblock" -> OK (otherwise Windows
-asks about every start). Start: double-click "Start MediaEngine.vbs". A MediaEngine window opens; a desktop shortcut
+Installer: run "{name}-Setup.exe" (if Windows SmartScreen warns: "More info" -> "Run anyway"). It installs for
+this Windows user only (no administrator rights) into D:\\MediaEngine (if D:\\Archivist exists) or your user folder,
+adds "MediaEngine" to the Start menu, and can be removed in Settings -> Apps (your projects and exports stay).
+
+ZIP instead: before extracting, right-click the downloaded ZIP -> Properties -> tick "Unblock" -> OK (otherwise
+Windows asks about every start). Start: double-click "Start MediaEngine.vbs". A MediaEngine window opens; a desktop shortcut
 "{SHORTCUT}" is created for next time. No console, no Python install needed. The first start
 can take a minute (Windows checks the new files). "Quit" in the top bar stops MediaEngine.
 
@@ -114,7 +134,13 @@ It does not change a stable Archivist install. To remove it: Quit, delete this f
 
     (pkg / "ПРОЧТИ.txt").write_text(f"""MediaEngine {ver} — кандидат (тестовая версия)
 
-ПЕРЕД РАСПАКОВКОЙ
+УСТАНОВКА (проще)
+  Запусти "{name}-Setup.exe". Если Windows покажет «Windows защитил ваш компьютер» — нажми
+  «Подробнее» → «Выполнить в любом случае». Права администратора не нужны. Программа ставится в
+  D:\\MediaEngine (если есть D:\\Archivist) или в папку пользователя, в меню Пуск появится «MediaEngine».
+  Удалить: Параметры → Приложения → MediaEngine (проекты и ролики остаются).
+
+ИЛИ ZIP: ПЕРЕД РАСПАКОВКОЙ
   Правый щелчок по скачанному ZIP → Свойства → галочка «Разблокировать» → ОК. Иначе Windows будет
   спрашивать разрешение при каждом запуске. Если всё же спросит — нажми «Открыть» / «Выполнить».
 
@@ -177,7 +203,7 @@ It does not change a stable Archivist install. To remove it: Quit, delete this f
     (evidence_dir / f"{name}.manifest.json").write_text(json.dumps(manifest, indent=1), encoding="utf-8")
     if os.environ.get("GITHUB_ENV"):
         with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as fh:
-            fh.write(f"PKG_NAME={name}\n")
+            fh.write(f"PKG_NAME={name}\nPKG_VERSION={ver}\n")
     print(json.dumps({"package": str(pkg), "name": name, "version": ver, "app_files": len(files), "venv_mb": round(venv_bytes / 1e6, 1)}))
 
 

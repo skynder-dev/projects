@@ -155,5 +155,6 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-Owner: download the newest `MediaEngine-3.13.0-rc1-b<N>` artifact, unblock + extract next to `D:\Archivist`,
-start, open "Check this PC" → "Build a test reel with the AI model", then make a reel from a real folder.
+Owner: download the newest `MediaEngine-3.13.0-rc1-b<N>-Setup` artifact and run the Setup (or the ZIP: unblock +
+extract next to `D:\Archivist`), start "MediaEngine" from the Start menu, open "Check this PC" → "Build a test reel
+with the AI model", then make a reel from a real folder.

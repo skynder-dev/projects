@@ -11,6 +11,15 @@ blind comparison → Accept → Export one MP4. Runs locally, no network, no pai
 
 ## Install / update / rollback (owner PC)
 
+**Installer** (CI artifact `MediaEngine-3.13.0-rc1-b<N>-Setup`): run `MediaEngine-3.13.0-rc1-b<N>-Setup.exe`
+(unsigned: SmartScreen → "More info" → "Run anyway"). Per-user, no administrator rights; installs into
+`D:\MediaEngine\MediaEngine-3.13.0-rc1-b<N>\` when `D:\Archivist` exists (else `%USERPROFILE%\MediaEngine\`), adds
+Start-menu "MediaEngine". A newer Setup adds its own build folder next to the old one (rollback = start the old
+folder's `Start MediaEngine.vbs`). Uninstall (Settings → Apps → MediaEngine) refuses while MediaEngine runs, removes
+the build folders and shortcuts, keeps `MediaEngine Data`. CI: silent install into a Cyrillic folder, start from the
+Start-menu shortcut, data next to the builds, uninstall refused while running, then removes the build, keeps the data.
+
+**ZIP** (same files):
 1. Download the CI artifact `MediaEngine-3.13.0-rc1-b<N>` (one ZIP with one folder of the same name).
 2. Extract it next to the stable install, e.g. `D:\MediaEngine\MediaEngine-3.13.0-rc1-b<N>\` (never over an older
    build). Start `Start MediaEngine.vbs`. Desktop shortcut: "MediaEngine RC". Port 8775 (stable keeps 8765).

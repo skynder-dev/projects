@@ -243,6 +243,68 @@ jobs:
           $extra = @('data','launcher','Archivist.vbs','MediaArchive','Exports','Staging','Private','Rejected','config.json') | Where-Object { Test-Path (Join-Path $src.FullName $_) }
           if ($extra) { "created by running: $($extra -join ', ')"; exit 1 }
           "pristine" | Tee-Object "$env:OUT\package_pristine.txt"
+      - name: Build the installer (Inno Setup, per-user, no administrator rights)
+        if: success()
+        shell: pwsh
+        run: |
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $iscc)) { choco install innosetup --no-progress -y | Out-Null }
+          if (-not (Test-Path $iscc)) { "Inno Setup is not available on this runner"; exit 1 }
+          $src = Get-ChildItem "$env:RUNNER_TEMP\pkg" -Directory | Select-Object -First 1
+          New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\setup" | Out-Null
+          & $iscc /Q "/DPkgName=$env:PKG_NAME" "/DAppVer=$env:PKG_VERSION" "/DSrcDir=$($src.FullName)" "/DOutDir=$env:RUNNER_TEMP\setup" mediaengine\tools\mediaengine_setup.iss 2>&1 | Tee-Object "$env:OUT\setup_build.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          Get-ChildItem "$env:RUNNER_TEMP\setup" | ForEach-Object { "$($_.Name) $([math]::Round($_.Length/1MB,1)) MB" } | Tee-Object -Append "$env:OUT\setup_build.txt"
+      - name: Installer smoke - silent install into a Cyrillic folder, start from the Start-menu shortcut, uninstall keeps the data
+        if: success()
+        shell: pwsh
+        run: |
+          $log = "$env:OUT\setup_smoke.txt"
+          $setup = Get-ChildItem "$env:RUNNER_TEMP\setup\*-Setup.exe" | Select-Object -First 1
+          $base = "$env:RUNNER_TEMP\inst\Мои программы\MediaEngine"
+          $rel = Join-Path $base $env:PKG_NAME
+          $data = Join-Path $base 'MediaEngine Data'
+          $lnk = Join-Path ([Environment]::GetFolderPath('Programs')) 'MediaEngine.lnk'
+          # a first-time user: no remembered data folder (the package smoke left one; put it back afterwards)
+          $ptr = "$env:LOCALAPPDATA\MediaEngine\data_root.txt"
+          if (Test-Path $ptr) { Move-Item $ptr "$ptr.ci-bak" -Force }
+          $fail = @()
+          function Ping { try { (Invoke-WebRequest -UseBasicParsing -TimeoutSec 3 http://127.0.0.1:8775/api/ping).Content } catch { $null } }
+          try {
+            $p = Start-Process $setup.FullName -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART',"/DIR=`"$base`"","/LOG=`"$env:OUT\setup_install.log`"" -PassThru -Wait
+            "setup: $($setup.Name) $([math]::Round($setup.Length/1MB,1)) MB; exit code $($p.ExitCode)" | Tee-Object $log
+            "build folder: $(Test-Path "$rel\Start MediaEngine.vbs"); Start-menu shortcut: $(Test-Path $lnk); uninstaller: $(Test-Path "$base\unins000.exe")" | Tee-Object -Append $log
+            if ($p.ExitCode -ne 0 -or -not (Test-Path "$rel\Start MediaEngine.vbs") -or -not (Test-Path $lnk) -or -not (Test-Path "$base\unins000.exe")) { $fail += 'install' }
+            # start exactly as the Start-menu shortcut does
+            $sc = (New-Object -ComObject WScript.Shell).CreateShortcut($lnk)
+            "shortcut: $($sc.TargetPath) $($sc.Arguments) icon: $($sc.IconLocation)" | Tee-Object -Append $log
+            $env:MEDIAENGINE_NO_BROWSER = '1'
+            Start-Process $sc.TargetPath -ArgumentList $sc.Arguments -WorkingDirectory $sc.WorkingDirectory
+            $up = $null; for ($i = 0; $i -lt 180 -and -not $up; $i++) { $up = Ping; if (-not $up) { Start-Sleep 1 } }
+            "started from the shortcut: $([bool]$up) $up" | Tee-Object -Append $log
+            if (-not $up) { $fail += 'start' }
+            $auto = try { (Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8775/auto).StatusCode } catch { 0 }
+            "auto page: $auto; data next to the build: $(Test-Path "$data\data\archivist.db"); build folder untouched: $(-not (Test-Path "$rel\data"))" | Tee-Object -Append $log
+            if ($auto -ne 200 -or -not (Test-Path "$data\data\archivist.db") -or (Test-Path "$rel\data")) { $fail += 'first start' }
+            # uninstall while MediaEngine runs: refused (silent mode answers Cancel), nothing removed
+            $u = Start-Process "$base\unins000.exe" -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -PassThru -Wait
+            Start-Sleep 5
+            "uninstall while running: exit $($u.ExitCode); build kept: $(Test-Path "$rel\Start MediaEngine.vbs")" | Tee-Object -Append $log
+            if (-not (Test-Path "$rel\Start MediaEngine.vbs")) { $fail += 'uninstall did not wait for Quit' }
+            try { Invoke-WebRequest -UseBasicParsing -Method Post -Uri http://127.0.0.1:8775/api/app-control -Headers @{Origin='http://127.0.0.1:8775'} -ContentType 'application/json' -Body '{"mode":"stop","force":true}' | Out-Null } catch {}
+            for ($i = 0; $i -lt 30 -and (Ping); $i++) { Start-Sleep 1 }
+            Start-Process "$base\unins000.exe" -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -Wait
+            for ($i = 0; $i -lt 90 -and ((Test-Path $rel) -or (Test-Path "$base\unins000.exe")); $i++) { Start-Sleep 1 }   # finishes in a copy of itself
+            "after Quit + uninstall: build removed: $(-not (Test-Path $rel)); shortcut removed: $(-not (Test-Path $lnk)); data kept: $(Test-Path "$data\data\archivist.db")" | Tee-Object -Append $log
+            if ((Test-Path $rel) -or (Test-Path $lnk) -or -not (Test-Path "$data\data\archivist.db")) { $fail += 'uninstall' }
+          } finally {
+            Remove-Item Env:MEDIAENGINE_NO_BROWSER -ErrorAction SilentlyContinue
+            Remove-Item $ptr -ErrorAction SilentlyContinue
+            if (Test-Path "$ptr.ci-bak") { Move-Item "$ptr.ci-bak" $ptr -Force }
+            Remove-Item "$([Environment]::GetFolderPath('Desktop'))\MediaEngine RC.lnk" -ErrorAction SilentlyContinue
+          }
+          if ($fail.Count) { "FAILED: $($fail -join ', ')" | Tee-Object -Append $log; exit 1 }
+          "installer smoke PASS" | Tee-Object -Append $log
       - name: Large phone-like footage (4K H.264, 4K HEVC, 5 min 1080p) - build time measured
         if: success()
         continue-on-error: true
@@ -259,6 +321,13 @@ jobs:
           path: ${{ runner.temp }}/pkg/
           include-hidden-files: true
           if-no-files-found: error
+      - name: Upload installer (Setup.exe, per-user, keeps data on uninstall)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.PKG_NAME }}-Setup
+          path: ${{ runner.temp }}/setup/
+          compression-level: 0
       - name: Upload reports
         if: always()
         uses: actions/upload-artifact@v4
