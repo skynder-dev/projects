@@ -67,7 +67,7 @@ jobs:
         continue-on-error: true
         run: |
           $env:ARCHIVIST_HOME = "$env:RUNNER_TEMP\home7"
-          $srv = Start-Process python -ArgumentList '-c',"import sys; sys.path.insert(0,'mediaengine/app'); from archivist.web import create_app; create_app().run(host='127.0.0.1',port=8765,threaded=True)" -PassThru -WindowStyle Hidden
+          $srv = Start-Process python -ArgumentList 'mediaengine/tests/serve.py','8765' -PassThru -WindowStyle Hidden
           for ($i=0; $i -lt 60; $i++) { try { Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8765/api/ping | Out-Null; break } catch { Start-Sleep 1 } }
           $edge = "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe"
           if (-not (Test-Path $edge)) { $edge = "$env:ProgramFiles\Microsoft\Edge\Application\msedge.exe" }
