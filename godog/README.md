@@ -1,53 +1,12 @@
-# GoDog PC LOCAL 01
+# GoDog PC LOCAL 7.0.2
 
-**Версия:** 7.0.1. **Канал обновлений после миграции:** GitHub, без Supabase. **Источник:** восстановленная точная разметка и CSS панели GoDog 6.0.26 (сохранены в `ui/6.0.26_PANEL_ORIGINAL.json`). Контроллер кнопок переписан полностью.
+**Runtime and update source are PC-local.** `@updateURL http://127.0.0.1:43129/godog.meta.js`, `@downloadURL http://127.0.0.1:43129/godog.user.js`. GoDog itself does not make Supabase or GitHub calls. GitHub stores source as a backup/release lineage, not a live update backend.
 
-## Состояние автоматического переключения (10 октября 2026)
+The offline installer bundle `08_GODOG_PC_LOCAL_03_OFFLINE.zip` contains exact `current.user.js`, `server.py` (Python stdlib local read-only HTTP server), one-time `INSTALL_LOCAL.cmd` and `CHECK_LOCAL.cmd`. The bundle was delivered in the GoDog conversation. **The local server is not confirmed installed on the owner's PC; no claims about completed PC setup.** Installer copies the embedded source to `%LOCALAPPDATA%\\GoDog\\current.user.js` without any download, creates a hidden Windows Startup launcher for the local server. `UPDATE_FROM_FILE.cmd` accepts a new local file and does not contact the cloud.
 
-- Исходный URL Tampermonkey на Supabase для GoDog 6.0.22–6.0.26 переведён на userscript 7.0.1, SHA-256 `f636c89ba3ca68f9b212a4fa2c56df92d2a623bb68ff9565bc2eb14fb1f02820`.
-- Через существующий GoDog Relay штатно применена одноразовая управляемая Tampermonkey policy (command `1003106b-5810-4997-93a5-dce91ee832c4`, status done, event `tampermonkey_policy`, `present=true`). Новая policy содержит 3 записи: новый GoDog enabled, прежний stable disabled, Background Keepalive disabled. Не открывались новые окна/вкладки по параметрам команды.
-- Параметры нового скрипта: `@updateURL` и `@downloadURL` напрямую указывают на `raw.githubusercontent.com`, нет запросов к Supabase и Relay.
-- GitHub Actions [mock DOM smoke](https://github.com/skynder-dev/projects/actions/runs/38111243604): PASS. Это не доказательство работы в конкретном Chrome.
-- ПРИМЕЧАНИЕ: policy applied / source served не означает, что открытая вкладка ChatGPT уже переподключила скрипт. Фактическая версия в браузере и реальная отправка GO должны быть проверены отдельно. Если страница была открыта ещё до обновления, старый JS остаётся в её памяти до навигации/обновления.
+The old Supabase `godog-relay` was used **once** to replace the managed Tampermonkey policy with 7.0.2. Relay command `a011e2a3-4316-401e-8c3e-f3e4f1347179` finished DONE with apply event and `present=true`. Managed script policy has 7.0.2 enabled and old Continuous Runner and Background Keepalive disabled. This is a policy response, not an observed Chrome DOM click proof. Old separate Relay processes may still poll Supabase: the entire former infrastructure has NOT been proven offline or stopped.
 
-## Установка
+CI: https://github.com/skynder-dev/projects/actions/runs/38111959685 (direct buttons mock DOM PASS at 7.0.2). Local updater Python self-test `6/6 PASS` and actual loopback `/godog.meta.js`, `/godog.user.js`, `/health` PASS. The updater serves from loopback only, has no POST/write endpoint, no remote requests and no timers. The user-facing GO/AUTO/NEW/STOP implementation is in `GoDog_PC_LOCAL_01.user.js`; old layout CSS is preserved in `ui/6.0.26_PANEL_ORIGINAL.json`.
 
-1. Открой [прямую ссылку userscript](https://raw.githubusercontent.com/skynder-dev/projects/main/godog/GoDog_PC_LOCAL_01.user.js) и подтверди **Update/Install** в Tampermonkey. В новой версии сохранены `@name` и `@namespace` исходного GoDog 6.0.26, чтобы Tampermonkey мог предложить обновление существующего скрипта.
-2. В Tampermonkey отключи **другие** GoDog loaders/canaries со своими отдельными идентификаторами. Нельзя оставлять два инжектора одновременно.
-3. Обнови ChatGPT и проверь отображаемую версию `7.0.1 · PC`.
-4. Тест: GO в чате, STOP, AUTO, NEW на тестовом чате. Убедись, что старый клиент выключен.
+Constraints: ChatGPT itself still uses ChatGPT servers; only GoDog orchestration and updates are local. An isolated Windows PC cannot receive remote assistant code changes with zero communication; future updates must be placed in the PC's local folder by user-controlled file transfer or a separately authorized, infrequent remote channel. Never claim autonomous unattended remote delivery while disconnected.
 
-## Семантика кнопок
-
-| Кнопка | Немедленное действие |
-|---|---|
-| GO | Однократно заполняет composer словом GO и вызывает нативную кнопку Send |
-| AUTO | Включает AUTO и сразу вызывает GO, если чат не генерирует. После завершения нового assistant-turn запускает следующий GO по MutationObserver, без отсчётов и таймеров |
-| STOP | Только выключает AUTO. НЕ нажимает Stop generation, не закрывает чат и не трогает вкладки |
-| NEW | Сохраняет короткий локальный handoff из последних видимых реплик и немедленно создаёт новый чат **в этой же вкладке**. При готовности нового composer отправляет handoff один раз, затем AUTO продолжается |
-
-**Важно:** по требованию владельца не предусмотрена фоновая очередь отправки, timeout или ожидание. Если ChatGPT занят, GO показывает `CHAT BUSY`; не ждёт и не пытается повторить сам. AUTO, включённый во время генерации, остаётся ARMED до конца ответа. Отправка зависит от DOM интерфейса ChatGPT, а не от Supabase.
-
-Текст непустого черновика перед отправкой сохраняется в `sessionStorage` (`godog-pc-local-v7-saved-draft`), а не отправляется на сервер GoDog. Существующий черновик в поле при ручном GO пока может заменяться ради прямого действия кнопки. Это известное ограничение RC; для сохранения нетронутого черновика следует сначала отправить/скопировать его вручную.
-
-**Ограничения:** это локальный userscript контроллер вкладки Chrome, **не автономный AI-процесс на Windows** и не полноценное восстановление Constitution/Telegram/auto-restore. Не выдавай его за круглосуточный агент. NEW переносит короткий snapshot, а не весь durable history. Режим AUTO может упереться в настоящие лимиты ChatGPT или изменение DOM. Native generation остановится только от native кнопки ChatGPT, не от GoDog STOP.
-
-## Техническая чистота
-
-- `@grant none`, нет `@connect`, отсутствуют URL Supabase или Relay.
-- Нет `fetch`, `XMLHttpRequest`, `GM_xmlhttpRequest`, `WebSocket`.
-- Нет `setTimeout` или `setInterval`. `MutationObserver` локальный.
-- Одно событие click = одна непосредственная попытка.
-- Не запускает другие приложения/вкладки и ничего не записывает в Supabase.
-- Данные: только sessionStorage и ключ версии в localStorage.
-- Не устанавливали на пользовательский Windows/Chrome из этой сессии, живой DOM не тестировали.
-
-## Исходные артефакты
-
-Реконструкция основана на реально найденном v6.0.26 из legacy `godog-localhub-canary-001`, ранее существовавшей 4.42.9 и локальном прототипе `07_GODOG_LOCAL_02_JOB_CONTROL.zip`. Старый Python SQLite прототип не исполнял ChatGPT и в этой версии не нужен.
-
-Если старая собака продолжает отправлять запросы, проблема именно в **старом установленном userscript или Relay**. Отключение двух cron-заданий Supabase не может отключить устаревший клиент на ПК.
-
-## Дальнейшие действия
-
-После доказанного ручного клика на Chrome: исправлять строго по одному реально воспроизведённому дефекту, без новых таймеров и инфраструктуры. Затем отдельно, по решению пользователя, перенести durable state и функции Constitution в локальную базу Windows, сохранив этот маленький и простой контроллер.
