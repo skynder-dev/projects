@@ -55,6 +55,9 @@ What a user can do (code: `app/archivist/auto_edit.py`, `auto_edit_web.py`, engi
   (numpy / OpenCV / ONNX Runtime load test), long-path setting, and a 5-second test reel from generated clips.
 - If an AI-mode build fails, the project offers "Build without AI (Technical only)" instead of leaving the user stuck.
 - MediaEngine opens on the Auto Edit projects page; whole reel rendered in one encode (faster); stage times recorded.
+- Optional **Russian interface** for the Auto Edit pages (English default); only visible text is translated.
+- "Check this PC" can build the test reel **with the AI model** (semantic=required) - one click proves AI mode on a PC.
+- Support bundle includes a redacted Auto Edit summary; friendly messages for disk full / access denied / memory.
 
 ### Engine R3 vs Windows-proven R2 (documented differences)
 

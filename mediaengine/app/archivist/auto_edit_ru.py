@@ -105,7 +105,34 @@ PHRASES = {
     "reel from two generated clips · stages:": "ролик из двух сгенерированных клипов · этапы:", "Test reel failed after": "Тестовый ролик не собрался за",
     "The source videos are not available (drive disconnected?). Revisions and exports are kept; new builds are possible when they are back.":
         "Исходные видео недоступны (диск отключён?). Версии и экспорт сохранены; новые сборки — когда видео вернутся.",
+    "The disk is full. Free some space (for example 'Free cache' on old projects) and press Retry.":
+        "Диск заполнен. Освободи место (например, «Очистить кэш» в старых проектах) и нажми «Повторить».",
+    "Windows refused access to a file (another program may be using it). Close it and press Retry.":
+        "Windows не дал доступ к файлу (его может держать другая программа). Закрой её и нажми «Повторить».",
+    "The PC ran out of memory. Close other programs or choose fewer / shorter videos, then Retry.":
+        "Не хватило памяти. Закрой другие программы или возьми меньше / короче видео и нажми «Повторить».",
+    "Interrupted: the app was closed. Press Retry - finished analysis is reused.":
+        "Прервано: программа была закрыта. Нажми «Повторить» — готовый анализ используется снова.",
+    "Русский": "Русский", "English": "English",
+    "available": "есть", "missing - HDR video will look grey": "нет — HDR-видео будет серым",
+    "not found - only 'Technical only' reels": "не найдена — только режим «Только техника»",
+    "files changed or incomplete - not used": "файлы изменены или неполные — не используется",
+    "logical cores": "логических ядер", "on": "включены",
+    "off (handled: long-named videos are analysed under short names)": "выключены (учтено: видео с длинными именами анализируются под короткими)",
+    "Without the AI model, tick 'Build with Technical only' to continue.": "Без ИИ-модели поставь галочку «Собрать без ИИ (только техника)».",
+    "Wait until the current build has finished": "Дождись окончания текущей сборки",
+    "Folder not found": "Папка не найдена", "No video files chosen": "Видео не выбраны",
+    "Private and Rejected media cannot be used in a reel": "Видео из Private и Rejected нельзя использовать в ролике",
+    "Accept a revision before exporting": "Сначала прими версию (Accept), потом экспорт",
+    "This page can only be opened from MediaEngine itself.": "Эту страницу можно открыть только из самого MediaEngine.",
 }
+
+import html as _html
+# the pages escape quotes (' -> &#x27;): look for both spellings
+for _en, _ru in list(PHRASES.items()):
+    _esc = _html.escape(_en, quote=True)
+    if _esc != _en:
+        PHRASES[_esc] = _html.escape(_ru, quote=True)
 
 _WORD_LIKE = re.compile(r"^[A-Za-z]+$")
 # plain single words ("Export", "Home") only when they are the whole text of an element - so a project title,
