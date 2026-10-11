@@ -26,6 +26,8 @@ APP_PHRASES: dict[str, str] = {
     "This is a separate MediaEngine install.": "Это отдельная установка MediaEngine.",
     "The library of your working Archivist is not shown here and is not changed. To make a reel from a folder of videos, use Auto Edit.":
         "Библиотека твоего рабочего Archivist здесь не показывается и не меняется. Чтобы сделать ролик из папки с видео, открой «Автомонтаж».",
+    "Memory (RAM)": "Память (ОЗУ)", "MediaEngine version": "Версия MediaEngine",
+    "Free space on the data drive": "Свободно на диске данных", "Program folder": "Папка программы",
     "ADB not installed": "ADB не установлен", "not connected": "не подключён", "Working…": "Работаю…",
     # ---- activity, jobs
     "Activity": "Активность", "Operations": "Работа", "Jobs & errors": "Задачи и ошибки",
@@ -378,7 +380,8 @@ APP_PHRASES: dict[str, str] = {
 }
 
 APP_PATTERNS: list[tuple[str, str]] = [
-    (r"(\d+) errors?", r"ошибок: \1"), (r"Credentials: ([a-z_]+)", r"Пароли: ⟦\1⟧"),
+    (r"(\d+) errors?", r"ошибок: \1"), (r"(\d+) GB - less than 6 GB, long 4K videos may be slow", r"\1 ГБ — меньше 6 ГБ, длинные 4K-видео могут обрабатываться медленно"),
+    (r"(\d+) GB", r"\1 ГБ"), (r"([\d.]+) GB - less than 5 GB, builds may fail", r"\1 ГБ — меньше 5 ГБ, сборка может не пройти"), (r"Credentials: ([a-z_]+)", r"Пароли: ⟦\1⟧"),
     (r"(\d+) folder source\(s\) configured", r"источников-папок: \1"),
     (r"v(\d+\.\d+\.\d+[\w.-]*)( b\d+)?", r"v\1\2"),
     (r"MediaEngine v(\d+\.\d+\.\d+[\w.-]*)( b\d+)?", r"MediaEngine v\1\2"),

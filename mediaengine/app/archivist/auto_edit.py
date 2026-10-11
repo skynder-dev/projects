@@ -1191,6 +1191,23 @@ def system_check() -> list[dict]:
         except Exception:
             lp = 0
         add("Windows long paths", True, "on" if lp else "off (handled: long-named videos are analysed under short names)")
+        try:
+            import ctypes
+
+            class MEMORYSTATUSEX(ctypes.Structure):
+                _fields_ = [("dwLength", ctypes.c_ulong), ("dwMemoryLoad", ctypes.c_ulong), ("ullTotalPhys", ctypes.c_ulonglong),
+                            ("ullAvailPhys", ctypes.c_ulonglong), ("ullTotalPageFile", ctypes.c_ulonglong), ("ullAvailPageFile", ctypes.c_ulonglong),
+                            ("ullTotalVirtual", ctypes.c_ulonglong), ("ullAvailVirtual", ctypes.c_ulonglong), ("ullAvailExtendedVirtual", ctypes.c_ulonglong)]
+            ms_ = MEMORYSTATUSEX(); ms_.dwLength = ctypes.sizeof(ms_)
+            if ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(ms_)):
+                tot = ms_.ullTotalPhys / 1e9
+                add("Memory (RAM)", tot >= 6, f"{tot:.0f} GB" + ("" if tot >= 6 else " - less than 6 GB, long 4K videos may be slow"))
+        except Exception:
+            pass
+    import platform
+    from .config import BUILD, VERSION
+    add("MediaEngine version", True, f"{VERSION} {BUILD}".strip())
+    add("Windows", True, platform.platform() if os.name == "nt" else platform.system())
     return rows
 
 
