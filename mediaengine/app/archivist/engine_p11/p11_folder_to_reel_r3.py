@@ -827,9 +827,10 @@ def run(args):
                 hdr=None
                 if "HDR_NOT_CONVERTED" not in warnings: warnings.append("HDR_NOT_CONVERTED")
         sq=bool(probe_src) and is_anamorphic(v52.FFMPEG,probe_src)
-        if sq: widened[str(e["source_name"])]=round(pixel_aspect(v52.FFMPEG,probe_src),4)
         if hdr or deint or sq or (not use_semantic and str(e["event_id"]) not in trims):   # manual trims are already cut from the original
-            e=full_quality_clip(v52,e,work_dir,hdr,deint,sq)
+            e2=full_quality_clip(v52,e,work_dir,hdr,deint,sq)
+            if sq and e2 is not e: widened[str(e["source_name"])]=round(pixel_aspect(v52.FFMPEG,probe_src),4)
+            e=e2
         key=hashlib.sha256(json.dumps({"clip_sha256":e["clip_sha256"],"use_s":round(float(use),3),
                                      "audio":audio_mode,"profile":profile,"resolution":resolution,"fps":30,"quality":"high"},
                                     sort_keys=True,separators=(",",":")).encode()).hexdigest()[:20]

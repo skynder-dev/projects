@@ -17,7 +17,8 @@ blind comparison → Accept → Export one MP4. Runs locally, no network, no pai
 Start-menu "MediaEngine". A newer Setup adds its own build folder next to the old one; starting it while the old
 one runs asks "Switch to …?" (never while a reel is being built). Rollback = start the old folder's
 `Start MediaEngine.vbs`. Old builds can be removed on "Check this PC". The header shows the build (e.g. `b21`). Uninstall (Settings → Apps → MediaEngine) refuses while MediaEngine runs, removes
-the build folders and shortcuts, keeps `MediaEngine Data`. CI: silent install into a Cyrillic folder, start from the
+all build folders installed by Setup and the shortcuts, keeps `MediaEngine Data`. Re-running the Setup of the build
+that is running is refused (quit first); a newer build can be installed while an older one runs. CI: silent install into a Cyrillic folder, start from the
 Start-menu shortcut, data next to the builds, uninstall refused while running, then removes the build, keeps the data.
 
 **ZIP** (same files):
@@ -52,9 +53,12 @@ FLV, DVD VOB, JVC MOD/TOD, HDV .m2t, DV tape) · A/V sync
 at every cut · phone-file E2E · AI-mode glue with a labelled stub · full-video Convert · library re-analysis ·
 unplugged drive + no network · 64 long-named videos with Windows long paths OFF · E2E 7 and 2 videos (incl. chosen
 files, export folder, blind comparison, free cache, Russian interface, Check this PC) · package smoke (start via
-VBS from a Cyrillic folder, data outside the release, next release sees the projects, restart, second copy refused,
-Quit) · packaged-Python E2E with the firewall blocking it · release folder unchanged by the checks · 4K/long
-footage build time (measured).
+VBS from a Cyrillic folder, desktop shortcut points exactly there, data outside the release, restart, second copy
+refused, Quit, the next release started while this one runs takes over and opens the same projects, running a
+release adds no files to it) · packaged-Python E2E with the firewall blocking it · release folder unchanged by the
+checks · Setup: silent install into a Cyrillic folder, start from the Start-menu shortcut, data next to the
+builds, uninstall refused while running, after Quit removes the build and keeps the data · 4K/long footage build
+time (measured).
 
 ## Known limitations
 

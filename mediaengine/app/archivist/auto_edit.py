@@ -1240,6 +1240,26 @@ def _tree_bytes(root: Path) -> int:
 BUILD_MARKERS = ("BUILD.txt", "port.txt", "Start MediaEngine.vbs")
 
 
+def _holds_user_data(d: Path) -> bool:
+    """Early 3.13 candidates kept projects, database and exports INSIDE the release folder, and the data folder,
+    the export folder or the archive may have been chosen inside one: such a folder is never offered for removal."""
+    if any((d / n).exists() for n in ("data", "Exports", "MediaArchive", "Staging", "Private")):
+        return True
+    try:
+        rd = d.resolve()
+        places = [HOME, DATA, EXPORTS, default_export_dir()]
+        arch = str(load_config().get("archive_root") or "")
+        if arch:
+            places.append(Path(arch))
+        for x in places:
+            rx = Path(x).resolve()
+            if rx == rd or rd in rx.parents:
+                return True
+    except Exception:
+        return True                       # unsure: keep it
+    return False
+
+
 def other_builds(install: Path | None = None) -> list[dict]:
     """Other MediaEngine build folders next to this one. Every update adds a folder (the old one is the rollback),
     so they pile up (~0.5 GB each) unless the user removes the ones they no longer need."""
@@ -1252,11 +1272,9 @@ def other_builds(install: Path | None = None) -> list[dict]:
         sibs = [d for d in here.parent.iterdir() if d.is_dir() and d.name.startswith("MediaEngine-") and d.resolve() != here]
     except OSError:
         return []
-    for d in [d for d in sibs if d.name.endswith(".removing")]:   # left over from an interrupted removal
-        shutil.rmtree(d, ignore_errors=True)
-        sibs.remove(d)
+    sibs = [d for d in sibs if not d.name.endswith(".removing")]
     for d in sorted(sibs, key=lambda d: d.name.lower()):
-        if not all((d / n).is_file() for n in BUILD_MARKERS):
+        if not all((d / n).is_file() for n in BUILD_MARKERS) or _holds_user_data(d):
             continue
         try:
             built = next((ln.split(None, 1)[1][:10] for ln in (d / "BUILD.txt").read_text(encoding="utf-8", errors="replace").splitlines()
@@ -1274,6 +1292,9 @@ def delete_build(name: str, install: Path | None = None) -> int:
     if not b:
         raise ValueError("That is not another MediaEngine version next to this one.")
     src = Path(b["path"])
+    for left in src.parent.glob("MediaEngine-*.removing"):   # an earlier removal that was interrupted
+        if not _holds_user_data(left):
+            shutil.rmtree(left, ignore_errors=True)
     gone = src.with_name(src.name + ".removing")
     try:
         os.rename(src, gone)          # fails while something inside is open: then nothing is half-deleted

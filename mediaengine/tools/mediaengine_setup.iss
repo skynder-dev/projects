@@ -20,6 +20,9 @@
 #ifndef OutDir
   #define OutDir "."
 #endif
+#ifndef Port
+  #define Port "8775"
+#endif
 
 [Setup]
 AppId={{6E0B7F3A-2C55-4D8E-9A41-1F7C3B9D5E20}
@@ -39,7 +42,7 @@ MinVersion=10.0
 OutputDir={#OutDir}
 OutputBaseFilename={#PkgName}-Setup
 SetupIconFile={#SrcDir}\MediaEngine.ico
-UninstallDisplayIcon={app}\{#PkgName}\MediaEngine.ico
+UninstallDisplayIcon={app}\MediaEngine.ico
 UninstallDisplayName=MediaEngine
 Compression=lzma2
 SolidCompression=yes
@@ -56,9 +59,13 @@ en.DataKept=Your projects and exported videos stay in "MediaEngine Data" (they a
 ru.DataKept=Проекты и экспортированные ролики остаются в папке «MediaEngine Data» (удаление программы их не трогает).
 en.Running=MediaEngine is running. Press Quit in its window first, then continue.
 ru.Running=MediaEngine запущен. Сначала нажми Quit в его окне, потом продолжай.
+en.SameRunning=This very build of MediaEngine is running right now. Press Quit in its window, then run Setup again.
+ru.SameRunning=Именно эта сборка MediaEngine сейчас запущена. Нажми Quit в её окне и запусти Setup снова.
 
 [Files]
 Source: "{#SrcDir}\*"; DestDir: "{app}\{#PkgName}"; Flags: ignoreversion recursesubdirs createallsubdirs
+; one icon for the Apps list that does not depend on any single build folder
+Source: "{#SrcDir}\MediaEngine.ico"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{userprograms}\MediaEngine"; Filename: "{sys}\wscript.exe"; Parameters: """{app}\{#PkgName}\Start MediaEngine.vbs"""; WorkingDir: "{app}\{#PkgName}"; IconFilename: "{app}\{#PkgName}\MediaEngine.ico"; Comment: "MediaEngine {#AppVer}"
@@ -87,8 +94,27 @@ var
 begin
   // the app answers on its own port while it runs; checked with the built-in PowerShell, no network beyond 127.0.0.1
   Result := Exec(ExpandConstant('{sys}\WindowsPowerShell\v1.0\powershell.exe'),
-    '-NoProfile -NonInteractive -Command "try { Invoke-WebRequest -UseBasicParsing -TimeoutSec 2 http://127.0.0.1:8775/api/ping | Out-Null; exit 0 } catch { exit 1 }"',
+    '-NoProfile -NonInteractive -Command "try { Invoke-WebRequest -UseBasicParsing -TimeoutSec 2 http://127.0.0.1:{#Port}/api/ping | Out-Null; exit 0 } catch { exit 1 }"',
     '', SW_HIDE, ewWaitUntilTerminated, ResultCode) and (ResultCode = 0);
+end;
+
+function SameBuildRunning(Folder: String): Boolean;
+var
+  ResultCode: Integer;
+begin
+  // a NEW build goes into its own folder and can be installed while an older one runs (it offers to switch when
+  // started); only re-installing the very build that is running would hit files in use
+  StringChangeEx(Folder, '''', '''''', True);
+  Result := Exec(ExpandConstant('{sys}\WindowsPowerShell\v1.0\powershell.exe'),
+    '-NoProfile -NonInteractive -Command "try { $p = (Invoke-WebRequest -UseBasicParsing -TimeoutSec 2 http://127.0.0.1:{#Port}/api/ping).Content | ConvertFrom-Json; if ($p.install -eq ''' + Folder + ''') { exit 0 } else { exit 1 } } catch { exit 1 }"',
+    '', SW_HIDE, ewWaitUntilTerminated, ResultCode) and (ResultCode = 0);
+end;
+
+function PrepareToInstall(var NeedsRestart: Boolean): String;
+begin
+  Result := '';
+  if SameBuildRunning(ExpandConstant('{app}\{#PkgName}')) then
+    Result := CustomMessage('SameRunning');
 end;
 
 function InitializeUninstall(): Boolean;

@@ -111,7 +111,8 @@ def main(out_dir: Path, evidence_dir: Path) -> None:
 
 Installer: run "{name}-Setup.exe" (if Windows SmartScreen warns: "More info" -> "Run anyway"). It installs for
 this Windows user only (no administrator rights) into D:\\MediaEngine (if D:\\Archivist exists) or your user folder,
-adds "MediaEngine" to the Start menu, and can be removed in Settings -> Apps (your projects and exports stay).
+adds "MediaEngine" to the Start menu. Settings -> Apps -> MediaEngine removes all builds installed by Setup
+(your projects and exports stay).
 
 ZIP instead: before extracting, right-click the downloaded ZIP -> Properties -> tick "Unblock" -> OK (otherwise
 Windows asks about every start). Start: double-click "Start MediaEngine.vbs". A MediaEngine window opens; a desktop shortcut
@@ -136,7 +137,7 @@ Without the model the app offers the clearly labelled "Technical only" mode.
 
 This candidate runs on port {PORT} and keeps its own data, archive and exports in "MediaEngine Data".
 It does not change a stable Archivist install. To remove it: installed with Setup -> Settings -> Apps ->
-MediaEngine (keeps "MediaEngine Data"); from the ZIP -> Quit, delete this folder, the "MediaEngine Data" folder
+MediaEngine (all Setup builds; keeps "MediaEngine Data"); from the ZIP -> Quit, delete this folder, the "MediaEngine Data" folder
 (your exported videos are inside it) and the "{SHORTCUT}" desktop shortcut.
 """, encoding="utf-8")
 
@@ -146,7 +147,8 @@ MediaEngine (keeps "MediaEngine Data"); from the ZIP -> Quit, delete this folder
   Запусти "{name}-Setup.exe". Если Windows покажет «Windows защитил ваш компьютер» — нажми
   «Подробнее» → «Выполнить в любом случае». Права администратора не нужны. Программа ставится в
   D:\\MediaEngine (если есть D:\\Archivist) или в папку пользователя, в меню Пуск появится «MediaEngine».
-  Удалить: Параметры → Приложения → MediaEngine (проекты и ролики остаются).
+  Удалить: Параметры → Приложения → MediaEngine — удаляет все сборки, поставленные Setup'ом
+  (проекты и ролики остаются).
 
 ИЛИ ZIP: ПЕРЕД РАСПАКОВКОЙ
   Правый щелчок по скачанному ZIP → Свойства → галочка «Разблокировать» → ОК. Иначе Windows будет

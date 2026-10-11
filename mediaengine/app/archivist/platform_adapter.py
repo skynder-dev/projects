@@ -226,14 +226,19 @@ def install_launchers(home: Path) -> None:
             if desk is None:
                 raise OSError("desktop folder not found")
             write_shell_link(desk / f"{name}.lnk", wscript, f'"{vbs}"', str(home), str(icon) if icon.is_file() else "", name)
-            if side_by_side:
-                # the Start-menu entry made by the installer follows the build started last, like the desktop shortcut
-                progs = shell_folder(0x02)                              # CSIDL_PROGRAMS
-                if progs is not None and (progs / "MediaEngine.lnk").is_file():
-                    write_shell_link(progs / "MediaEngine.lnk", wscript, f'"{vbs}"', str(home), str(icon) if icon.is_file() else "", "MediaEngine")
-            return
         except Exception:
-            pass                                                        # fall back to the script (ANSI paths only)
+            desk = None                                                 # fall back to the script below (ANSI paths only)
+        if desk is not None:
+            if side_by_side:
+                # the Start-menu entry made by the installer follows the build started last, like the desktop shortcut;
+                # a failure here must not send the (good) desktop shortcut through the ANSI fallback
+                try:
+                    progs = shell_folder(0x02)                          # CSIDL_PROGRAMS
+                    if progs is not None and (progs / "MediaEngine.lnk").is_file():
+                        write_shell_link(progs / "MediaEngine.lnk", wscript, f'"{vbs}"', str(home), str(icon) if icon.is_file() else "", "MediaEngine")
+                except Exception:
+                    pass
+            return
         # temp folder, not <home>\data: a side-by-side release folder must stay exactly as it was unpacked
         import tempfile
         maker = Path(tempfile.gettempdir()) / f"MediaEngine_make_shortcut_{os.getpid()}.vbs"

@@ -362,7 +362,7 @@ def main():
     if server_alive() and not (force or restart or install_version):
         other=running_install()
         answer=os.environ.get('MEDIAENGINE_SWITCH_ANSWER','').lower()     # automated checks answer instead of a person
-        if other is None or (other and same_folder(other,HOME)) or (no_browser and not answer):
+        if not SIDE_BY_SIDE or other is None or (other and same_folder(other,HOME)) or (no_browser and not answer):
             if not no_browser: open_user_interface(force_browser=force_browser)
             return 0
         here=HOME.name; there=Path(other).name if other else 'an older build'
@@ -380,6 +380,11 @@ def main():
             if not no_browser: open_user_interface(force_browser=force_browser)
             return 0
         wait_server_down(60)
+        if server_alive():
+            write_status(status='switch_failed_still_running',version=current_version(),running=other)
+            if not answer: message_box('The other MediaEngine did not close. Press Quit in its window, then start this one again.\n\n'
+                                       'Другой MediaEngine не закрылся. Нажми Quit в его окне и запусти этот снова.')
+            return 1
     if force or restart or install_version: wait_server_down()
     before=current_version()
     if install_version:

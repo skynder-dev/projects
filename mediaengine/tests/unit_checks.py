@@ -85,6 +85,13 @@ def main():
     check("delete_build refuses this build and the data folder", raises(ae.delete_build, cur.name, cur) and raises(ae.delete_build, "MediaEngine Data", cur))
     check("delete_build removes an older build", ae.delete_build(old.name, cur) > 0 and not old.exists() and cur.exists()
           and (base / "MediaEngine Data").exists())
+    early = base / "MediaEngine-3.13.0-rc1"          # early candidates kept projects and exports inside the release
+    early.mkdir(exist_ok=True)
+    for n in ae.BUILD_MARKERS:
+        (early / n).write_text("x", encoding="utf-8")
+    (early / "data").mkdir(exist_ok=True); (early / "data" / "archivist.db").write_bytes(b"db")
+    check("a build folder holding projects is never offered for removal", early.name not in [b["name"] for b in ae.other_builds(cur)]
+          and raises(ae.delete_build, early.name, cur) and (early / "data" / "archivist.db").exists())
     # shortcuts keep any characters (WScript.Shell stored "?" for Cyrillic on an English Windows)
     if os.name == "nt":
         from archivist.platform_adapter import read_shell_link, write_shell_link, shell_folder
