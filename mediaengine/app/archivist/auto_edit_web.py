@@ -56,11 +56,7 @@ def register(app, layout, e, human_bytes):
     """Attach Auto Edit routes to the existing app (called from web.create_app)."""
 
     def page(title, body, script=""):
-        html = layout(title, PAGE_CSS + body, script)
-        if ae.ui_language() == "ru":
-            from .auto_edit_ru import translate_html
-            html = translate_html(html)
-        return html
+        return layout(title, PAGE_CSS + body, script)      # translated (if Russian) for every page in i18n.install
 
     def err_page(msg, back="/auto"):
         return page("Auto Edit", f"<div class='card'><h2>Could not continue</h2><div class='errbox' style='margin-bottom:12px'>{e(msg)}</div>"
@@ -103,9 +99,8 @@ def register(app, layout, e, human_bytes):
                       f"If you have the model (for example in an existing Archivist install), choose its folder: the exact files are verified and copied here.</span>"
                       f"<div class='row' style='margin-top:8px'><button type='button' class='btn2' id='modelBtn'>Choose model folder…</button>"
                       f"<span class='muted' id='modelMsg'></span></div></div>")
-        lang_btn = (f"<form method='post' action='/auto/lang' style='float:right'><button class='btn2' translate='no'>"
-                    f"{'English' if ae.ui_language() == 'ru' else 'Русский'}</button></form>")
-        body = f"""<div class='pagehead'>{lang_btn}<div class='eyebrow'>MediaEngine</div><h1>Auto Edit</h1>
+        check_btn = "<a class='btn btn2' href='/auto/check' style='float:right'>Check this PC</a>"
+        body = f"""<div class='pagehead'>{check_btn}<div class='eyebrow'>MediaEngine</div><h1>Auto Edit</h1>
 <div class='lead'>Choose a folder of videos (or single videos), pick length, format and sound, and MediaEngine builds a reel from the best moments.
 Your original files are only read, never changed.</div></div>
 <div class='card'><h2 style='margin-top:0'>New reel</h2>
@@ -573,7 +568,7 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
             verdict = {"left": f"You preferred A = {who(L)} over B = {who(R)}.", "right": f"You preferred B = {who(R)} over A = {who(L)}.",
                        "same": f"You found them about the same: A = {who(L)}, B = {who(R)}."}[rv["choice"]]
             bottom = (f"<div class='card ae-done' style='margin-top:14px'><b>Result</b><div style='margin-top:6px'>{verdict}</div>"
-                      + (f"<div class='muted' style='margin-top:4px'>Note: {e(rv['note'])}</div>" if rv.get("note") else "")
+                      + (f"<div class='muted' style='margin-top:4px'>Note: <span translate='no'>{e(rv['note'])}</span></div>" if rv.get("note") else "")
                       + f"<div class='row' style='margin-top:10px'><a class='btn btn2' href='/auto/p/{pid}'>Back to the project</a></div></div>")
         else:
             bottom = (f"<form method='post' action='/auto/review/{rid}/decide' class='card' style='margin-top:14px'>"
@@ -758,8 +753,9 @@ def _reviews_html(p, e):
         a, b = num.get(r["left_revision_id"], 0), num.get(r["right_revision_id"], 0)
         txt = (f"R{a:03d} preferred over R{b:03d}" if r["choice"] == "left" else
                f"R{b:03d} preferred over R{a:03d}" if r["choice"] == "right" else f"R{a:03d} and R{b:03d} about the same")
+        note = (" · <span translate='no'>" + e(r["note"]) + "</span>") if r.get("note") else ""
         rows += (f"<a class='ae-seg' style='grid-template-columns:1fr auto' href='/auto/review/{r['id']}'><span>{txt}"
-                 f"{(' · ' + e(r['note'])) if r.get('note') else ''}</span><span class='muted'>{e(_when(r['decided_at']))}</span></a>")
+                 f"{note}</span><span class='muted'>{e(_when(r['decided_at']))}</span></a>")
     return f"<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Blind comparisons</h2>{rows}</div>"
 
 

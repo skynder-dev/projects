@@ -1360,17 +1360,13 @@ def decide_review(review_id: int, choice: str, note: str = "") -> dict:
 
 
 def ui_language() -> str:
-    try:
-        return "ru" if str(load_config().get("ui_language") or "").lower() == "ru" else "en"
-    except Exception:
-        return "en"
+    from .i18n import ui_language as _ui
+    return _ui()
 
 
 def set_ui_language(lang: str) -> None:
-    from .config import save_config
-    cfg = load_config()
-    cfg["ui_language"] = "ru" if lang == "ru" else "en"
-    save_config(cfg)
+    from .i18n import set_ui_language as _set
+    _set(lang)
 
 
 def default_export_dir() -> Path:
