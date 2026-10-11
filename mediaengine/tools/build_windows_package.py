@@ -93,8 +93,10 @@ def main(out_dir: Path, evidence_dir: Path) -> None:
     # compiled once here: faster first start, and Python never has to write into the release folder later
     # everything, the runtime too: MediaEngine runs with -B (never writes bytecode), so what is not compiled here
     # would be compiled again at every start
-    subprocess.run([str(py), "-m", "compileall", "-q", "-j", "0", str(pkg / "app"), str(pkg / "launcher.py"), str(pkg / ".venv" / "Lib")],
-                   check=False)
+    # unchecked-hash: valid whatever timestamps the files get (a ZIP keeps them only to 2 s, which would make every
+    # timestamp-checked .pyc stale and Python would compile again at each start); release files never change
+    subprocess.run([str(py), "-m", "compileall", "-q", "-j", "0", "--invalidation-mode", "unchecked-hash",
+                    str(pkg / "app"), str(pkg / "launcher.py"), str(pkg / ".venv" / "Lib")], check=False)
     (pkg / "version.txt").write_text(ver, encoding="utf-8")
     (pkg / "port.txt").write_text(str(PORT), encoding="utf-8")
     (pkg / "shortcut_name.txt").write_text(SHORTCUT, encoding="utf-8")
