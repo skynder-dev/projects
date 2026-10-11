@@ -26,6 +26,7 @@ APP_PHRASES: dict[str, str] = {
     "This is a separate MediaEngine install.": "Это отдельная установка MediaEngine.",
     "The library of your working Archivist is not shown here and is not changed. To make a reel from a folder of videos, use Auto Edit.":
         "Библиотека твоего рабочего Archivist здесь не показывается и не меняется. Чтобы сделать ролик из папки с видео, открой «Автомонтаж».",
+    "analysis": "анализ", "cutting": "нарезка", "joining": "склейка", "reel": "ролик",
     "Memory (RAM)": "Память (ОЗУ)", "MediaEngine version": "Версия MediaEngine",
     "Free space on the data drive": "Свободно на диске данных", "Program folder": "Папка программы",
     "ADB not installed": "ADB не установлен", "not connected": "не подключён", "Working…": "Работаю…",
@@ -411,7 +412,7 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"Converting (\d+)/(\d+) · (.*)", r"Конвертирую \1/\2 · \3"), (r"Importing (.*)", r"Импортирую \1"), (r"Job crashed: (.*)", r"Задача упала: \1"),
     (r"Media Brain: (.*)", r"Анализ: \1"), (r"Preparing (\d+) video\(s\)…", r"Готовлю видео: \1…"), (r"Skipped missing local file: (.*)", r"Пропущен отсутствующий файл: \1"),
     (r"Converter stalled; process restarted automatically · (\d+)/(\d+)", r"Конвертация зависла; процесс перезапущен · \1/\2"),
-    (r"(\d+(?:\.\d+)?) s", r"\1 с"), (r"(\d+) s · recommended", r"\1 с · рекомендуется"),
+    (r"(\d+(?:\.\d+)?) s", r"\1 с"), (r"· (\d+(?:\.\d+)?) s", r"· \1 с"), (r"(\d+) s · recommended", r"\1 с · рекомендуется"),
     (r"Job #(\d+) · (.+)", r"Задача №\1 · \2"),
     (r"quality (\S+)( [\d.]+)?", r"качество ⟦\1⟧\2"), (r"rights (\S+)", r"права ⟦\1⟧"),
     (r"(.+) connected", r"\1 подключён"), (r"Discovering · (.*)", r"Поиск · \1"), (r"(\d+) found", r"найдено: \1"),

@@ -129,6 +129,8 @@ PHRASES = {
     "The source folder is not available.": "Папка с исходниками недоступна.",
     "Not enough different moments for this length. Try a shorter length.": "Для такой длины не хватает разных моментов. Выбери длину покороче.",
     "No usable moments were found. Try a shorter length or other footage.": "Пригодных моментов не найдено. Выбери длину покороче или другие видео.",
+    "Test reel built": "Тестовый ролик собран", "Test reel failed": "Тестовый ролик не собрался",
+    "with the AI model (FAST_LOCAL)": "с ИИ-моделью (FAST_LOCAL)", "The AI mode works on this PC.": "ИИ-режим на этом компьютере работает.",
     "Blind comparisons": "Слепые сравнения", "preferred over": "лучше, чем", "about the same": "примерно одинаково",
     "Space used: versions": "Занято: версии", "analysis cache": "кэш анализа", "Free cache": "Очистить кэш",
     "(can be freed; the next build then analyses the videos again)": "(можно очистить; следующая сборка заново проанализирует видео)",

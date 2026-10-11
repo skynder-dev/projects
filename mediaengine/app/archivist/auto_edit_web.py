@@ -146,11 +146,16 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
             t = ae.quick_selftest(mode="semantic" if want_ai else "technical")
             ae._remember_selftest(t)
             if t["ok"]:
-                kind = "with the AI model (FAST_LOCAL)" if str(t.get("selection_mode", "")).startswith("FAST_LOCAL") else "Technical only"
-                test_html = (f"<div class='card ae-done' style='margin-top:14px'><b>Test reel built {kind} in {t['seconds']} s</b>"
-                             f"<div class='muted'>{t.get('duration_s')} s reel from two generated clips · stages: {e(json.dumps(t.get('stages')))}</div></div>")
+                ai = str(t.get("selection_mode", "")).startswith("FAST_LOCAL")
+                st = t.get("stages") or {}
+                stage_txt = " · ".join(f"<span>{lbl}</span> {float(st[k]):.1f} s" for k, lbl in
+                                       (("analyze", "analysis"), ("render", "cutting"), ("finish", "joining")) if k in st)
+                test_html = (f"<div class='card ae-done' style='margin-top:14px'><b>Test reel built</b> · "
+                             f"<span>{'with the AI model (FAST_LOCAL)' if ai else 'Technical only'}</span> · {t['seconds']} s"
+                             f"<div class='muted' style='margin-top:4px'><span>reel</span> {t.get('duration_s')} s · {stage_txt}</div>"
+                             + ("<div style='margin-top:6px'>The AI mode works on this PC.</div>" if ai else "") + "</div>")
             else:
-                test_html = (f"<div class='card' style='margin-top:14px'><b>Test reel failed after {t['seconds']} s</b>"
+                test_html = (f"<div class='card' style='margin-top:14px'><b>Test reel failed</b> · {t['seconds']} s"
                              f"<div class='errbox' style='margin-top:6px'>{e(t['error'])}</div></div>")
         from .config import INSTALL
         builds = ae.other_builds()
