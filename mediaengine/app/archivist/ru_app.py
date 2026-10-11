@@ -169,7 +169,13 @@ APP_PHRASES: dict[str, str] = {
         "Ручная передача и CSV-аналитика доступны, пока официальный вход сервиса не настроен.",
     "Connect": "Подключить", "Blocked": "Заблокировано", "Client ID: Missing": "Client ID: нет", "Official OAuth: Not enabled": "Официальный вход: выключен",
     "Preflight: Blocked": "Проверка: заблокировано", "Credentials: blocked_until_os_secret_store": "Пароли: нужен защищённый склад Windows",
-    "os_secret_store_unavailable": "защищённый склад паролей недоступен",
+    "os_secret_store_unavailable": "защищённый склад паролей недоступен", "not_configured": "не настроено",
+    "backend_token_broker_not_configured": "сервер ключей не настроен", "meta_secret_flow_not_enabled": "вход Meta не включён",
+    "youtube_client_id_missing": "нет Client ID для YouTube", "verifier_missing": "нет проверки входа",
+    "Preflight: Ready": "Проверка: готово", "Official OAuth: Enabled": "Официальный вход: включён", "Client ID: Configured": "Client ID: настроен",
+    "ffmpeg_unavailable": "FFmpeg недоступен", "privacy_detector_unavailable": "проверка приватности недоступна",
+    "preview_unavailable": "превью недоступно", "storyboard_unavailable": "раскадровка недоступна", "source_missing": "исходника нет",
+    "composition_sources_missing": "исходников монтажа нет", "optional_unavailable": "необязательное недоступно",
     # ---- media hub, library, import, convert, search, best
     "Media": "Медиа", "Media workspace": "Медиа",
     "Ingest, understand, find, convert and compose from the local working library. Existing media routes remain unchanged under this section.":
@@ -369,7 +375,7 @@ APP_PHRASES: dict[str, str] = {
 }
 
 APP_PATTERNS: list[tuple[str, str]] = [
-    (r"(\d+) errors?", r"ошибок: \1"),
+    (r"(\d+) errors?", r"ошибок: \1"), (r"Credentials: ([a-z_]+)", r"Пароли: ⟦\1⟧"),
     (r"(\d+) folder source\(s\) configured", r"источников-папок: \1"),
     (r"v(\d+\.\d+\.\d+[\w.-]*)( b\d+)?", r"v\1\2"),
     (r"MediaEngine v(\d+\.\d+\.\d+[\w.-]*)( b\d+)?", r"MediaEngine v\1\2"),
