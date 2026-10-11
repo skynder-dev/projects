@@ -116,6 +116,7 @@ def main():
             return finish(a, checks, timings, 1)
         p = ae.project(pid)
         rev = ae.revision(p["revisions"][0]["id"])
+        timings["first_build_stage_s"] = rev["result"].get("stage_seconds")
         pr = probe(rev["video_path"])
         v = [s for s in pr.get("streams", []) if s.get("codec_type") == "video"]
         au = [s for s in pr.get("streams", []) if s.get("codec_type") == "audio"]
@@ -377,7 +378,8 @@ def finish(a, checks, timings, code):
     rep = {"passed": sum(x["pass"] for x in checks), "total": len(checks), "timings": timings, "checks": checks}
     print(json.dumps({k: rep[k] for k in ("passed", "total", "timings")}))
     if a.out:
-        Path(a.out).write_text(json.dumps(rep, indent=2), encoding="utf-8")
+        Path(a.out).write_text(json.dumps(rep, indent=2, default=lambda o: sorted(o) if isinstance(o, (set, frozenset)) else str(o)),
+                               encoding="utf-8")
     return code
 
 

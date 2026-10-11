@@ -317,7 +317,7 @@ def short_aliases(rows,work_dir):
     out=[]; back={}; wanted=set()
     for r in rows:
         name=r["name"]
-        projected=len(str(realmedia))+7+min(len(name),100)+14+10+len(name)+45
+        projected=len(str(realmedia))+10+min(len(name),100)+14+10+len(name)+45   # realmedia\gN\items\<item>\previews\<name>\...
         if not force and (os.name!="nt" or projected<=240):
             out.append(r); continue
         alias_name=f"v_{r['sha256'][:12]}{Path(name).suffix.lower()}"
@@ -361,32 +361,48 @@ def build_event_library(runtime_dir,input_rows,work_dir,skipped=None):
     realmedia=work_dir/"realmedia"; eventdir=work_dir/"event_library"; libpath=eventdir/"EVENT_LIBRARY.json"
     ok,lib=valid_event_cache(libpath,input_rows)
     if ok: return libpath,lib,"reused_exact_cache",input_rows
-    (realmedia/"items").mkdir(parents=True,exist_ok=True)
-    batch_path=realmedia/"BATCH_RESULT.json"; batch_path.unlink(missing_ok=True)
     longest=max([float(r.get("duration_s") or 0) for r in input_rows]+[0.0])
     timeout=max(120.0,min(3600.0,3.0*longest))
-    names=[realmedia_item_name(r["path"],r["sha256"]) for r in input_rows]
-    cmd=[sys.executable,str(runtime_dir/"medeng_realmedia_pipeline_v14.py"),*[r["path"] for r in input_rows],
-         "--output-root",str(realmedia),"--per-file-timeout-s",f"{timeout:g}","--max-width","960"]
-    with (work_dir/"realmedia.stdout.log").open("w",encoding="utf-8",errors="replace") as log:
-        proc=subprocess.Popen(cmd,stdout=log,stderr=subprocess.STDOUT,stdin=subprocess.DEVNULL)
-        try:
-            while True:
-                try: rc=proc.wait(timeout=1.0)
-                except subprocess.TimeoutExpired: rc=None
-                done=sum((realmedia/"items"/n).is_dir() for n in names)
-                if rc is not None: break
-                i=min(done,len(names)-1)
-                progress("analyze",i,len(names),input_rows[i]["name"])
-        except BaseException:
-            proc.kill(); raise
-    try: batch=json.loads(batch_path.read_text(encoding="utf-8"))
-    except Exception: batch=None
-    if rc not in (0,2) or not batch: raise RuntimeError("REALMEDIA_PIPELINE_FAILED")
+    # Several analysis processes in parallel (R2: one after another). A video always goes to the same group
+    # (by its SHA-256), so a later build reuses its finished analysis.
+    try: k_env=int(os.environ.get("MEDENG_ANALYSIS_WORKERS") or 0)
+    except ValueError: k_env=0
+    K=max(1,min(len(input_rows),k_env or max(1,min(4,(os.cpu_count() or 2)//2))))
+    groups=[[] for _ in range(K)]
+    for r in input_rows: groups[int(r["sha256"][:8],16)%K].append(r)
+    names=[(realmedia/f"g{int(r['sha256'][:8],16)%K}"/"items"/realmedia_item_name(r["path"],r["sha256"])) for r in input_rows]
+    procs=[]; logs=[]
+    try:
+        for k,g in enumerate(groups):
+            if not g: continue
+            root=realmedia/f"g{k}"; (root/"items").mkdir(parents=True,exist_ok=True)
+            (root/"BATCH_RESULT.json").unlink(missing_ok=True)
+            cmd=[sys.executable,str(runtime_dir/"medeng_realmedia_pipeline_v14.py"),*[r["path"] for r in g],
+                 "--output-root",str(root),"--per-file-timeout-s",f"{timeout:g}","--max-width","960"]
+            log=(work_dir/f"realmedia.g{k}.log").open("w",encoding="utf-8",errors="replace"); logs.append(log)
+            procs.append((root,subprocess.Popen(cmd,stdout=log,stderr=subprocess.STDOUT,stdin=subprocess.DEVNULL)))
+        while True:
+            running=[pr for _,pr in procs if pr.poll() is None]
+            done=sum(n.is_dir() for n in names)
+            if not running: break
+            i=min(done,len(names)-1)
+            progress("analyze",i,len(names),"analysing videos" if K>1 else input_rows[i]["name"])
+            time.sleep(1.0)
+    except BaseException:
+        for _,pr in procs:
+            try: pr.kill()
+            except Exception: pass
+        raise
+    finally:
+        for log in logs: log.close()
     by_src={}
-    for r in batch.get("results",[]):
-        try: by_src[str(Path(r["source"]).resolve())]=r
-        except Exception: pass
+    for root,pr in procs:
+        try: batch=json.loads((root/"BATCH_RESULT.json").read_text(encoding="utf-8"))
+        except Exception: batch=None
+        if pr.returncode not in (0,2) or not batch: raise RuntimeError("REALMEDIA_PIPELINE_FAILED")
+        for r in batch.get("results",[]):
+            try: by_src[str(Path(r["source"]).resolve())]=r
+            except Exception: pass
     kept=[]; results=[]
     for row in input_rows:
         r=by_src.get(str(Path(row["path"]).resolve()))

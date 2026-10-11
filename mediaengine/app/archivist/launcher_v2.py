@@ -21,8 +21,12 @@ def data_root():
         if remembered.is_absolute(): return (HOME.parent/'MediaEngine Data').resolve()
     except Exception: pass
     root=(HOME.parent/'MediaEngine Data').resolve()
-    try:
-        root.mkdir(parents=True,exist_ok=True); ptr.parent.mkdir(parents=True,exist_ok=True); ptr.write_text(str(root),encoding='utf-8')
+    try: root.mkdir(parents=True,exist_ok=True)
+    except Exception:
+        root=(ptr.parent/'Data').resolve()          # read-only release location: data in the user's profile
+        try: root.mkdir(parents=True,exist_ok=True)
+        except Exception: pass
+    try: ptr.parent.mkdir(parents=True,exist_ok=True); ptr.write_text(str(root),encoding='utf-8')
     except Exception: pass
     return root
 

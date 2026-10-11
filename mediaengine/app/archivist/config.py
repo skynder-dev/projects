@@ -39,6 +39,11 @@ def data_root_for(install: Path) -> Path:
     root = (Path(install).resolve().parent / "MediaEngine Data").resolve()
     try:
         root.mkdir(parents=True, exist_ok=True)
+    except Exception:
+        # the release sits somewhere read-only (e.g. Program Files): keep the data in the user's profile
+        root = (ptr.parent / "Data").resolve()
+        root.mkdir(parents=True, exist_ok=True)
+    try:
         ptr.parent.mkdir(parents=True, exist_ok=True)
         ptr.write_text(str(root), encoding="utf-8")
     except Exception:
