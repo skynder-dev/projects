@@ -31,6 +31,14 @@ Start-menu shortcut, data next to the builds, uninstall refused while running, t
    was started last). Delete a build folder only when it is not running.
 5. Uninstall: Quit, delete the build folder(s), `MediaEngine Data` (contains exports) and the shortcut.
 
+## Language
+
+English or Russian for the whole program: "Русский / English" at the top right of every page (and Settings →
+Interface language); the first start follows the Windows display language. Texts are translated as whole
+phrases, so file names, folder names and titles typed by the user are never changed. CI opens every page in
+Russian and fails if English is left (`tests/i18n_coverage.py`). "Check this PC" is on Home, in Settings and on
+Auto Edit; until a test reel has been built on the PC, Auto Edit suggests it first.
+
 ## AI model provenance (not in the ZIP, not in git)
 
 FAST_LOCAL is taken from the owner's stable install (`<drive>:\Archivist\sidecars\auto_edit\models`) or imported

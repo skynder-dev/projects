@@ -415,7 +415,7 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"(\d+(?:\.\d+)?) s", r"\1 с"), (r"· (\d+(?:\.\d+)?) s", r"· \1 с"), (r"(\d+) s · recommended", r"\1 с · рекомендуется"),
     (r"Job #(\d+) · (.+)", r"Задача №\1 · \2"),
     (r"quality (\S+)( [\d.]+)?", r"качество ⟦\1⟧\2"), (r"rights (\S+)", r"права ⟦\1⟧"),
-    (r"(.+) connected", r"\1 подключён"), (r"Discovering · (.*)", r"Поиск · \1"), (r"(\d+) found", r"найдено: \1"),
+    (r"([\w .()-]{1,40}) connected", r"\1 подключён"), (r"Discovering · (.*)", r"Поиск · \1"), (r"(\d+) found", r"найдено: \1"),
     (r"Updating Archivist… current tab will reconnect\.", r"Обновляю MediaEngine… вкладка переподключится сама."),
     (r"Restarting Archivist… current tab will reconnect\.", r"Перезапускаю MediaEngine… вкладка переподключится сама."),
     (r"SOURCE SAFE TO DISCONNECT · (.*)", r"ИСТОЧНИК МОЖНО ОТКЛЮЧИТЬ · \1"), (r"(.*) · (\d+) error\(s\)", r"\1 · ошибок: \2"),
