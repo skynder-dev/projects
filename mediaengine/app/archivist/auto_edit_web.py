@@ -110,7 +110,7 @@ Your original files are only read, never changed.</div></div>
 <input name='folder' id='folderInput' placeholder='or paste a folder path, e.g. D:\\Videos\\Trip' style='flex:1;min-width:280px'>
 <button class='btn btn2 ae-big'>Continue</button></form>
 <div class='muted' id='pickMsg' style='margin-top:6px'></div></div>{model_note}
-<div class='muted' style='margin-top:8px'><a href='/auto/check'>Check this PC</a> — model, video tools and a 5-second test reel</div>
+
 <div class='section-title row space'><span>My projects</span><a class='muted' href='/auto?archived={'0' if request.args.get('archived')=='1' else '1'}'>{'Hide' if request.args.get('archived')=='1' else 'Show'} archived</a></div>
 <div class='ae-grid'>{cards}</div>"""
         script = """

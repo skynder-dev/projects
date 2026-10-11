@@ -360,6 +360,16 @@ def main():
               and ae.project(pid)["title"] in txt[f"/auto/p/{pid}"], {u: x.status_code for u, x in ru.items()})
         c.post("/auto/lang", headers=H)
         check("english_again", b"My projects" in c.get("/auto", headers=H).data)
+        # the language switch is on every page (top bar) and the whole app follows it; Check this PC is on Home
+        home_en = c.get("/", headers=H).data.decode("utf-8", "replace")
+        r = c.post("/lang", data={"lang": "ru", "back": "/settings"}, headers=H)
+        pages_ru = {u: c.get(u, headers=H).data.decode("utf-8", "replace") for u in ("/", "/settings", "/library", "/jobs")}
+        c.post("/lang", data={"lang": "en", "back": "/"}, headers=H)
+        check("language_switch_everywhere", r.status_code == 302 and r.headers.get("Location", "").endswith("/settings")
+              and "action='/lang'" in home_en and "href='/auto/check'" in home_en
+              and "Проверка компьютера" in pages_ru["/"] and "Язык интерфейса" in pages_ru["/settings"]
+              and "Библиотека" in pages_ru["/library"] and "<html lang='ru'>" in pages_ru["/jobs"]
+              and b"Your footage" in c.get("/", headers=H).data, {u: len(t) for u, t in pages_ru.items()})
 
         r = c.get("/auto/check", headers=H)
         check("check_this_pc_page", r.status_code == 200 and b"Engine libraries load" in r.data and "⚠️</td><td><b>Engine".encode() not in r.data)
