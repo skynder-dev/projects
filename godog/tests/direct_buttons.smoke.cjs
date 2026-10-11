@@ -97,10 +97,7 @@ assert.equal(buttons['.cg-version'].textContent,'GoDog 7.0.4','restored original
 assert.equal(buttons['.cg-project'].textContent,'GoDog','restored original project chip');
 assert.equal(buttons['.cg-auto'].textContent,'AUTO','restored original AUTO label');
 assert.equal(buttons['.cg-timer'].textContent,'','no fake LOCAL timer');
-assert.equal(root.style.props.left,'130px','dock aligned to composer left');
-assert.equal(root.style.props.right,'130px','dock aligned to composer right');
-assert.equal(root.style.props.top,'160px','dock directly under composer');
-assert.equal(root.style.props.bottom,'auto','dock not full-width bottom bar');
+
 
 // Direct GO is fully synchronous, one native click, zero waits.
 buttons['.cg-go'].click();
@@ -116,6 +113,10 @@ generating=true;observerCb();
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 (async()=>{
   await flush();
+  assert.equal(root.style.props.left,'130px','dock aligned to composer left');
+assert.equal(root.style.props.right,'130px','dock aligned to composer right');
+assert.equal(root.style.props.top,'160px','dock directly under composer');
+assert.equal(root.style.props.bottom,'auto','dock not full-width bottom bar');
   assert.deepEqual(submitted,['GO','GO'],'must not send while generating');
   generating=false;
   assistantMessages.push(Object.assign(new Element(),{innerText:'Step completed',attributes:{'data-message-id':'A1'}}));
