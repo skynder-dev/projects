@@ -13,6 +13,13 @@ def guide_path() -> Path:
 
 
 def guide_text() -> str:
+    try:
+        from .i18n import ui_language
+        ru = guide_path().with_name("BETA_GUIDE.ru.md")
+        if ui_language() == "ru" and ru.exists():
+            return ru.read_text(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
     return guide_path().read_text(encoding="utf-8", errors="replace")
 
 

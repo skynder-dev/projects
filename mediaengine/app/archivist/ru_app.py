@@ -70,7 +70,7 @@ APP_PHRASES: dict[str, str] = {
     "Diagnostics stay local by default. They are for local troubleshooting and release acceptance unless you explicitly choose to share diagnostic information.":
         "Диагностика остаётся на компьютере. Она нужна для разбора проблем и проверки версий, пока ты сам не решишь ею поделиться.",
     "Review Connections": "Проверить подключения", "Open bundled Beta Guide": "Открыть руководство (бета)",
-    "Archivist Beta Guide": "Руководство Archivist (бета)", "Beta guide": "Руководство (бета)",
+    "Archivist Beta Guide": "Руководство MediaEngine (бета)", "Beta guide": "Руководство (бета)",
     "Bundled local-first beta guidance from this installed build.": "Руководство, встроенное в эту версию.",
     # ---- welcome
     "First run": "Первый запуск", "Start local. Add only what you need.": "Начни на компьютере. Добавляй только нужное.",

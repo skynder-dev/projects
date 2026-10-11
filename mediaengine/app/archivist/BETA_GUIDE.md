@@ -21,3 +21,14 @@ Diagnostics stay local by default. Use Activity > Jobs & errors to inspect durab
 Update health checks can restore the previous build if a new release fails to start. Recovery never silently weakens privacy settings and never deletes source originals.
 
 Support export/upload is explicit opt-in only. This beta does not auto-upload support data. Raw media and tokens are excluded by default.
+
+## Making a reel (Auto Edit)
+
+1. Auto Edit -> "Choose folder..." (a folder of videos on this computer) or "Choose videos..." (single files).
+   Phone videos: copy them to the computer first.
+2. Pick Length, Format and Sound -> "Create reel". Analysis of new videos takes a while; later builds reuse it.
+3. Review: remove, replace, trim or reorder moments; every change is a new version, older ones stay.
+4. "Accept this version" -> "Export MP4" (or "Export to another folder...").
+
+Your original files are only read, never changed. "Check this PC" (Home, Settings, Auto Edit) shows whether the
+AI model and video tools are found and builds a 5-second test reel. The language switch is at the top right.
