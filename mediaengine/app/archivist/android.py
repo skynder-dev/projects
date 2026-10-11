@@ -123,7 +123,9 @@ def _content_query(adb: str, serial: str, uri: str, projections: list[list[str]]
         try:
             args = [adb, "-s", serial, "shell", "content", "query", "--uri", uri, "--projection", ":".join(columns)]
             r = _run(args, capture_output=True, text=True, timeout=timeout, errors="replace")
-            if r.returncode == 0 and "Error while accessing provider" not in r.stdout and "Exception" not in r.stdout:
+            # Error banners start a line; a media file or folder merely named "...Exception..." must not fail the listing.
+            failed_banner = any(ln.lstrip().startswith(("Error while accessing provider", "java.lang.", "Exception")) for ln in (r.stdout or "").splitlines()[:5])
+            if r.returncode == 0 and not failed_banner:
                 return parse_content_rows(r.stdout), None
             last_err = (r.stderr or r.stdout).strip()[-1000:]
         except Exception as e:
@@ -239,7 +241,7 @@ def list_media(adb: str, serial: str) -> tuple[list[dict], list[str]]:
         # One shell process gathers size + mtime; no media bytes are copied.
         try:
             cmd = r"""find /sdcard -type f 2>/dev/null | while IFS= read -r f; do case "${f##*.}" in mp4|MP4|mov|MOV|mkv|MKV|avi|AVI|webm|WEBM|m4v|M4V|3gp|3GP|mts|MTS|m2ts|M2TS|wmv|WMV|mpg|MPG|mpeg|MPEG|jpg|JPG|jpeg|JPEG|png|PNG|webp|WEBP|heic|HEIC|heif|HEIF) toybox stat -c '%s\t%Y\t%n' "$f" 2>/dev/null ;; esac; done"""
-            r = _run([adb, "-s", serial, "shell", "sh", "-c", cmd], capture_output=True, text=True, timeout=300, errors="replace")
+            r = _run([adb, "-s", serial, "shell", cmd], capture_output=True, text=True, timeout=300, errors="replace", stdin=subprocess.DEVNULL)
             for line in r.stdout.splitlines():
                 parts = line.rstrip('\r').split('\t', 2)
                 if len(parts) != 3:
@@ -288,7 +290,7 @@ def _legacy_thumb_for_item(adb: str, serial: str, media_type: str, media_id: str
         r = _run([adb, "-s", serial, "shell", "content", "query", "--uri", uri,
                   "--projection", "_id:_data", "--where", f"{link_col}={media_id}"],
                  capture_output=True, text=True, timeout=30, errors="replace")
-        rows = _parse_content_rows(r.stdout or "")
+        rows = parse_content_rows(r.stdout or "")
         if rows:
             tid = rows[0].get("_id")
             path = rows[0].get("_data")
@@ -385,7 +387,9 @@ def remote_sha256(adb: str, serial: str, remote_path: str | None) -> str | None:
     q = shlex.quote(remote_path)
     cmd = f"sha256sum {q} 2>/dev/null || toybox sha256sum {q} 2>/dev/null"
     try:
-        r = _run([adb, "-s", serial, "shell", "sh", "-c", cmd], capture_output=True, text=True, timeout=600, errors="replace")
+        # adb joins extra arguments with spaces WITHOUT quoting, so "sh -c <cmd>" would run
+        # sha256sum on stdin. Pass the whole command as one string to the device shell.
+        r = _run([adb, "-s", serial, "shell", cmd], capture_output=True, text=True, timeout=600, errors="replace", stdin=subprocess.DEVNULL)
         m = re.search(r"\b([0-9a-fA-F]{64})\b", r.stdout)
         return m.group(1).lower() if m else None
     except Exception:

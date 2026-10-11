@@ -26,7 +26,9 @@ def _age_seconds(raw):
     if not raw:return 10**9
     try:
         dt=datetime.fromisoformat(str(raw).replace("Z","+00:00"))
-        if dt.tzinfo is None:dt=dt.replace(tzinfo=timezone.utc)
+        # db.now_iso() writes LOCAL naive time; treating it as UTC made every job look hours
+        # old (or never stalled) depending on the timezone, e.g. UTC-5 -> app restarts mid-import.
+        if dt.tzinfo is None:dt=dt.astimezone()
         return max(0.0,(datetime.now(timezone.utc)-dt.astimezone(timezone.utc)).total_seconds())
     except Exception:return 10**9
 

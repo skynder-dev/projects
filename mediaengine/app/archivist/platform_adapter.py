@@ -148,9 +148,18 @@ def spawn_app_launcher(home: Path, mode: str) -> None:
     )
 
 
+def _is_fixed_drive(root: str) -> bool:
+    """True only for a fixed local disk (never an SD card / USB stick / network drive)."""
+    try:
+        import ctypes
+        return int(ctypes.windll.kernel32.GetDriveTypeW(str(root))) == 3  # DRIVE_FIXED
+    except Exception:
+        return False
+
+
 def default_archive_root() -> str:
     """Return the platform default only; user configuration remains authoritative."""
-    if is_windows() and Path("D:/").exists():
+    if is_windows() and Path("D:/").exists() and _is_fixed_drive("D:\\"):
         return r"D:\\MediaArchive"
     return str(Path.home() / "Videos" / "MediaArchive")
 

@@ -287,6 +287,19 @@ def upsert_inventory(con: sqlite3.Connection, row: dict) -> None:
         "remote_thumb_path": row.get("remote_thumb_path"),
         "source_fingerprint": source_fp,
     }
+    forked = False
+    if payload["source_kind"] in ("removable", "android"):
+        # Cards and phones reuse paths (DCIM/100CANON/IMG_0001.JPG after a counter reset or on another
+        # card). A different file at a known path must NOT inherit the old row's local copy, or it would
+        # look imported while only the old picture exists in Staging.
+        old = con.execute("SELECT id,size_bytes,mtime,staging_path,archive_path,private_path,sha256 FROM inventory WHERE source_key=?",
+                          (payload["source_key"],)).fetchone()
+        if old is not None and (old["staging_path"] or old["archive_path"] or old["private_path"] or old["sha256"]):
+            def _differs(a, b):
+                return a is not None and b is not None and str(a) != str(b)
+            if _differs(old["size_bytes"], payload["size_bytes"]) or _differs(old["mtime"], payload["mtime"]):
+                con.execute("UPDATE inventory SET source_key=? WHERE id=?", (f'{payload["source_key"]}#superseded:{int(old["id"])}', int(old["id"])))
+                forked = True
     cols = list(payload)
     updates = ",".join(
         f"{c}=COALESCE(excluded.{c},inventory.{c})" if c in {
@@ -300,11 +313,12 @@ def upsert_inventory(con: sqlite3.Connection, row: dict) -> None:
         f"ON CONFLICT(source_key) DO UPDATE SET {updates}",
         [payload[c] for c in cols],
     )
-    con.execute(
-        "UPDATE inventory SET analysis_status='private',privacy_reason='private_forever' "
-        "WHERE source_key=? AND EXISTS(SELECT 1 FROM ignored_source_keys WHERE source_key=?)",
-        (payload["source_key"], payload["source_key"]),
-    )
+    if not forked:  # a new file at a reused path is judged by its own content hash, not the old path
+        con.execute(
+            "UPDATE inventory SET analysis_status='private',privacy_reason='private_forever' "
+            "WHERE source_key=? AND EXISTS(SELECT 1 FROM ignored_source_keys WHERE source_key=?)",
+            (payload["source_key"], payload["source_key"]),
+        )
 
 
 def create_job(kind: str, ids: list[int], options: dict | None = None) -> int:
@@ -315,7 +329,8 @@ def create_job(kind: str, ids: list[int], options: dict | None = None) -> int:
         raise ValueError("No files selected")
     with db() as con:
         rows = con.execute(
-            f"SELECT id,size_bytes,source_kind,staging_path,archive_path,private_path,path FROM inventory WHERE excluded=0 AND id IN ({','.join('?' for _ in ids)}) ORDER BY id",
+            f"SELECT id,size_bytes,source_kind,staging_path,archive_path,private_path,path FROM inventory WHERE excluded=0 AND id IN ({','.join('?' for _ in ids)})"
+            + ("" if kind in ("private", "reject") else " AND COALESCE(analysis_status,'')<>'private'") + " ORDER BY id",
             ids,
         ).fetchall()
         existing = {int(r["id"]): r for r in rows}

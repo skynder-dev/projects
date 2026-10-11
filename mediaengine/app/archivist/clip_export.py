@@ -34,9 +34,12 @@ def _unique_output(clip_id,aspect):
     EXPORTS.mkdir(parents=True,exist_ok=True)
     stem=f"clip_{int(clip_id)}_{str(aspect).replace(':','x')}"
     p=EXPORTS/(stem+".mp4");n=2
-    while p.exists():
-        p=EXPORTS/(stem+f"_{n}.mp4");n+=1
-    return p
+    while True:
+        try:
+            with open(p,"xb"):pass   # reserve the name atomically: two exports never share a file
+            return p
+        except FileExistsError:
+            p=EXPORTS/(stem+f"_{n}.mp4");n+=1
 
 def _render_source(source:Path,start_s:float,end_s:float,out:Path,plan=None,aspect="original"):
     exe=_ffmpeg_exe()
@@ -54,13 +57,18 @@ def _render_source(source:Path,start_s:float,end_s:float,out:Path,plan=None,aspe
         vf=["scale='min(1920,iw)':'min(1920,ih)':force_original_aspect_ratio=decrease:force_divisible_by=2"]
     out.parent.mkdir(parents=True,exist_ok=True)
     flags,si=_flags()
+    tmp=out.with_name(out.stem+f".{os.getpid()}.part.mp4")
     cmd=[str(exe),"-y","-hide_banner","-loglevel","error","-ss",f"{start:.3f}","-t",f"{dur:.3f}","-i",str(source),
          "-map","0:v:0","-map","0:a?","-vf",vf[0],"-c:v","libx264","-preset","veryfast","-crf","22","-pix_fmt","yuv420p",
-         "-c:a","aac","-b:a","128k","-movflags","+faststart","-shortest",str(out)]
-    rr=subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding="utf-8",errors="replace",
-                      timeout=max(90,int(dur*8)+60),creationflags=flags,startupinfo=si,close_fds=True)
-    if rr.returncode!=0 or not out.exists() or out.stat().st_size<1024:
-        out.unlink(missing_ok=True);raise RuntimeError(("FFmpeg export failed: "+(rr.stderr or ""))[-900:])
+         "-c:a","aac","-b:a","128k","-movflags","+faststart","-shortest",str(tmp)]
+    try:
+        rr=subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding="utf-8",errors="replace",
+                          timeout=max(90,int(dur*8)+60),creationflags=flags,startupinfo=si,close_fds=True)
+        if rr.returncode!=0 or not tmp.exists() or tmp.stat().st_size<1024:
+            raise RuntimeError(("FFmpeg export failed: "+(rr.stderr or ""))[-900:])
+        os.replace(tmp,out)   # never leave a half-written file under the final name
+    except BaseException:
+        tmp.unlink(missing_ok=True);out.unlink(missing_ok=True);raise
     return {"output":str(out),"output_bytes":int(out.stat().st_size),"duration_s":dur,"aspect":aspect}
 
 def export_clip(clip_id:int,aspect:str="original"):

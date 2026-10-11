@@ -129,20 +129,26 @@ def _render_segment(source,start_s,end_s,out,plan,aspect):
 def _concat_segments(parts,out):
     exe=_ffmpeg_exe()
     if not exe:raise RuntimeError("FFmpeg is not available")
-    flags,si=_flags();lst=out.parent/"concat.txt"
+    # The list lives next to the parts (per-render temp dir), not in the shared Exports folder.
+    flags,si=_flags();lst=Path(parts[0]).parent/"concat.txt";tmp=out.with_name(out.stem+f".{os.getpid()}.part.mp4")
     lst.write_text("".join("file '"+Path(p).resolve().as_posix().replace("'","'\\''")+"'\n" for p in parts),encoding="utf-8")
-    rr=subprocess.run([str(exe),"-y","-hide_banner","-loglevel","error","-f","concat","-safe","0","-i",str(lst),"-c","copy","-movflags","+faststart",str(out)],
-      stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding="utf-8",errors="replace",timeout=120,creationflags=flags,startupinfo=si,close_fds=True)
-    if rr.returncode!=0 or not out.exists() or out.stat().st_size<1024:raise RuntimeError(("composition concat failed: "+(rr.stderr or ""))[-700:])
+    try:
+        rr=subprocess.run([str(exe),"-y","-hide_banner","-loglevel","error","-f","concat","-safe","0","-i",str(lst),"-c","copy","-movflags","+faststart",str(tmp)],
+          stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding="utf-8",errors="replace",timeout=120,creationflags=flags,startupinfo=si,close_fds=True)
+        if rr.returncode!=0 or not tmp.exists() or tmp.stat().st_size<1024:raise RuntimeError(("composition concat failed: "+(rr.stderr or ""))[-700:])
+        os.replace(tmp,out)
+    finally:
+        tmp.unlink(missing_ok=True)
 
 def _unique_output(cid,aspect):
-    EXPORTS.mkdir(parents=True,exist_ok=True);base=EXPORTS/f"composition_{int(cid)}_{aspect.replace(':','x')}.mp4"
-    if not base.exists():return base
-    n=2
+    EXPORTS.mkdir(parents=True,exist_ok=True);n=1
     while True:
-        p=EXPORTS/f"composition_{int(cid)}_{aspect.replace(':','x')}_{n}.mp4"
-        if not p.exists():return p
-        n+=1
+        p=EXPORTS/(f"composition_{int(cid)}_{aspect.replace(':','x')}"+(f"_{n}" if n>1 else "")+".mp4")
+        try:
+            with open(p,"xb"):pass   # atomic name reservation
+            return p
+        except FileExistsError:
+            n+=1
 
 def render_composition(composition_id):
     ensure_schema();cid=int(composition_id)

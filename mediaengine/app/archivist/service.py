@@ -164,7 +164,8 @@ def run_discovery():
                             STATE.discovery["found"] += count
                             STATE.discovery["per_source"][label] = {"count": count, "size": total, "status": "connected"}
                         # Never delete locally-imported history when a phone is disconnected later. Only stale, never-imported catalog rows are removed.
-                        con.execute("DELETE FROM inventory WHERE source_kind='android' AND source_id=? AND last_seen_at < ? AND staging_path IS NULL AND archive_path IS NULL AND private_path IS NULL AND rejected_path IS NULL", (serial, started))
+                        if not errs:
+                            con.execute("DELETE FROM inventory WHERE source_kind='android' AND source_id=? AND last_seen_at < ? AND staging_path IS NULL AND archive_path IS NULL AND private_path IS NULL AND rejected_path IS NULL AND COALESCE(work_selected,0)=0", (serial, started))
                         con.commit()
 
             filt = cfg.get("filters", {})
@@ -178,7 +179,9 @@ def run_discovery():
                 with STATE.lock:
                     STATE.discovery["current_source"] = label; STATE.discovery["per_source"][label] = {"count": 0, "size": 0, "status": "scanning"}
                 count = total = 0
-                for f in walk_media(p, bool(filt.get("ignore_noise", True)), int(filt.get("min_image_bytes", 0)), int(filt.get("min_video_bytes", 0))):
+                walk_errors: list = []
+                last_commit = time.monotonic()
+                for f in walk_media(p, bool(filt.get("ignore_noise", True)), int(filt.get("min_image_bytes", 0)), int(filt.get("min_video_bytes", 0)), errors=walk_errors):
                     try: st = f.stat()
                     except Exception: continue
                     mt = media_type_for(f); source_key = "local:" + os.path.normcase(os.path.abspath(str(f)))
@@ -187,11 +190,19 @@ def run_discovery():
                            "date_taken": None, "duration_ms": None, "width": None, "height": None,
                            "source_fingerprint": f"{source_key}|{st.st_size}|{st.st_mtime}"}
                     upsert_inventory(con, row); count += 1; total += st.st_size
-                    if count % 250 == 0: con.commit()
+                    # Commit by count AND by time so a slow/large walk never holds the DB write lock
+                    # long enough for UI actions or import progress to hit "database is locked".
+                    if count % 250 == 0 or time.monotonic() - last_commit > 1.0:
+                        con.commit(); last_commit = time.monotonic()
                 con.commit()
                 with STATE.lock:
                     STATE.discovery["found"] += count; STATE.discovery["per_source"][label] = {"count": count, "size": total, "status": "done"}
-                con.execute("DELETE FROM inventory WHERE source_kind IN ('fixed','removable') AND source_id=? AND last_seen_at < ? AND staging_path IS NULL AND archive_path IS NULL AND private_path IS NULL AND rejected_path IS NULL", (str(p), started))
+                # Prune unseen rows only after a complete, error-free walk, and never Library items
+                # (fixed-folder Library items have no local copy path because they stay in place).
+                if not walk_errors:
+                    con.execute("DELETE FROM inventory WHERE source_kind IN ('fixed','removable') AND source_id=? AND last_seen_at < ? AND staging_path IS NULL AND archive_path IS NULL AND private_path IS NULL AND rejected_path IS NULL AND COALESCE(work_selected,0)=0", (str(p), started))
+                else:
+                    log(f"discovery {label}: {len(walk_errors)} unreadable folder(s); keeping unseen rows")
                 con.commit()
         with STATE.lock: STATE.discovery.update({"running": False, "message": "Discovery finished", "current_source": "", "finished": now_iso()})
     except Exception as exc:
@@ -645,10 +656,17 @@ def _same_size_duplicate_candidates(row: dict) -> list[dict]:
         return []
     with db() as con:
         rows = con.execute(
-            "SELECT id,sha256 FROM inventory WHERE id<>? AND size_bytes=? AND sha256 IS NOT NULL AND sha256<>'' AND excluded=0 LIMIT 20",
+            "SELECT id,sha256,source_kind,path,staging_path,archive_path FROM inventory WHERE id<>? AND size_bytes=? AND sha256 IS NOT NULL AND sha256<>'' AND excluded=0 LIMIT 20",
             (row["id"], size),
         ).fetchall()
-    return [_row_dict(r) for r in rows]
+    out = []
+    for r in map(_row_dict, rows):
+        # A duplicate only counts if a local copy really exists now; otherwise skipping the
+        # transfer would leave zero copies after the user wipes the phone/card.
+        local = [r.get("staging_path"), r.get("archive_path")] + ([r.get("path")] if r.get("source_kind") == "fixed" else [])
+        if any(x and Path(x).is_file() and Path(x).stat().st_size == size for x in local):
+            out.append(r)
+    return out
 
 
 def _preflight_duplicate(row: dict) -> tuple[int | None, str | None]:
@@ -1036,7 +1054,10 @@ def _run_import_analyze_job(job: dict):
         return
 
     if not analyze_after:
-        _job_update(job_id, source_releasable=1, import_completed_at=now_iso(), message="Import complete — source can be disconnected")
+        with db() as con:
+            errs = con.execute("SELECT COUNT(*) n FROM job_items WHERE job_id=? AND status='error'", (job_id,)).fetchone()["n"]
+        _job_update(job_id, source_releasable=0 if errs else 1, import_completed_at=now_iso(),
+                    message=(f"Import finished with {errs} error(s) — keep the source connected" if errs else "Import complete — source can be disconnected"))
         _finish_job(job_id)
         return
 
@@ -1044,9 +1065,10 @@ def _run_import_analyze_job(job: dict):
         ok_imports = con.execute("SELECT COUNT(*) n FROM job_items WHERE job_id=? AND phase='imported' AND status='ready'", (job_id,)).fetchone()["n"]
         import_errors = con.execute("SELECT COUNT(*) n FROM job_items WHERE job_id=? AND status='error'", (job_id,)).fetchone()["n"]
     _job_update(
-        job_id, stage="analyze", source_releasable=1, import_completed_at=now_iso(), bytes_done=_job_bytes_done(job_id),
+        job_id, stage="analyze", source_releasable=0 if import_errors else 1, import_completed_at=now_iso(), bytes_done=_job_bytes_done(job_id),
         current_inventory_id=None, current_filename=None,
-        message=f"Import complete — source can be disconnected. Analyzing {ok_imports} local file(s){f'; {import_errors} import error(s)' if import_errors else ''}.",
+        message=(f"Analyzing {ok_imports} local file(s); {import_errors} import error(s) — keep the source connected." if import_errors
+                 else f"Import complete — source can be disconnected. Analyzing {ok_imports} local file(s)."),
     )
 
     # Phase 2: local-only analysis. The Android/SD source can now disappear safely.
@@ -1250,6 +1272,33 @@ def _run_archive_job(job: dict):
     _finish_job(job_id)
 
 
+def _owned_copy(row: dict) -> Path | None:
+    """The Archivist-owned copy of an item (Staging or archive), never the source original."""
+    roots = [STAGING.resolve()]
+    try:
+        roots.append(Path(load_config()["archive_root"]).resolve())
+    except Exception:
+        pass
+    original = None
+    try:
+        original = Path(row["path"]).resolve() if row.get("path") else None
+    except Exception:
+        pass
+    for key in ("staging_path", "archive_path"):
+        if not row.get(key):
+            continue
+        p = Path(row[key])
+        try:
+            rp = p.resolve()
+        except Exception:
+            continue
+        if not p.is_file() or (original is not None and rp == original):
+            continue
+        if any(rp == r or r in rp.parents for r in roots):
+            return p
+    return None
+
+
 def _mark_private_one(inv_id: int) -> str:
     with db() as con:
         rr = con.execute("SELECT * FROM inventory WHERE id=?", (inv_id,)).fetchone()
@@ -1259,11 +1308,12 @@ def _mark_private_one(inv_id: int) -> str:
     local = next((Path(row[k]) for k in ("staging_path", "archive_path", "private_path", "path") if row.get(k) and Path(row[k]).exists()), None)
     sha = row.get("sha256") or (sha256_file(local) if local else None)
     private_path = row.get("private_path")
-    # Never move the user's original from a configured fixed folder. Staged/archive
-    # copies may move into the private area because Archivist owns those copies.
-    if local and (row.get("staging_path") or row.get("archive_path")) and not private_path:
-        dest = _private_dest(row, local, sha or "unknown")
-        _verified_move(local, dest, sha)
+    # Never move the user's original (phone, card, fixed folder). Only a copy Archivist owns
+    # (an existing file inside Staging or the archive root) may move into the private area.
+    owned = _owned_copy(row)
+    if owned and not private_path:
+        dest = _private_dest(row, owned, sha or "unknown")
+        _verified_move(owned, dest, sha)
         private_path = str(dest)
     with db() as con:
         con.execute("INSERT OR REPLACE INTO ignored_source_keys(source_key,reason,created_at) VALUES(?,?,?)", (row["source_key"], "private_forever", now_iso()))
@@ -1364,9 +1414,12 @@ def _finish_job(job_id: int):
 
 def _job_worker():
     while not STOP_EVENT.is_set():
-        with db() as con:
-            convert_running = con.execute("SELECT 1 FROM jobs WHERE status='running' AND kind='convert' LIMIT 1").fetchone()
-            r = None if convert_running else con.execute("SELECT * FROM jobs WHERE status='queued' AND cancel_requested=0 AND kind<>'convert' ORDER BY id LIMIT 1").fetchone()
+        try:
+            with db() as con:
+                convert_running = con.execute("SELECT 1 FROM jobs WHERE status='running' AND kind='convert' LIMIT 1").fetchone()
+                r = None if convert_running else con.execute("SELECT * FROM jobs WHERE status='queued' AND cancel_requested=0 AND kind<>'convert' ORDER BY id LIMIT 1").fetchone()
+        except Exception as exc:  # e.g. "database is locked": never let the worker thread die
+            log(f"job worker poll failed: {exc}"); time.sleep(2); continue
         if not r:
             time.sleep(0.5); continue
         job = _row_dict(r)
@@ -1387,13 +1440,18 @@ def _job_worker():
                 _job_update(job["id"], status="failed", stage="done", message="Unknown job kind", error=f"Unknown job kind {job['kind']}", finished_at=now_iso())
         except Exception as exc:
             log(f"job {job['id']} crashed: {exc}")
-            _job_update(job["id"], status="failed", stage="done", message=f"Job crashed: {exc}", error=str(exc), finished_at=now_iso())
+            try:
+                _job_update(job["id"], status="failed", stage="done", message=f"Job crashed: {exc}", error=str(exc), finished_at=now_iso())
+            except Exception as exc2:
+                log(f"job {job['id']} could not be marked failed: {exc2}"); time.sleep(2)
 
 def start_workers() -> None:
     global JOB_WORKER_STARTED
-    init_db(); recover_jobs()
     with JOB_WORKER_LOCK:
         if not JOB_WORKER_STARTED:
+            # Recovery only once per process: running it on every queue_job() reset the job that
+            # was actually running to 'queued' (breaking the restart guard and the watchdog).
+            init_db(); recover_jobs()
             threading.Thread(target=_job_worker,daemon=True,name="ArchivistJobWorker").start(); JOB_WORKER_STARTED=True
 
 
@@ -1453,7 +1511,8 @@ def set_excluded(ids:list[int], excluded=True):
 def remove_from_library(ids:list[int]) -> dict:
     """Remove items from the working Library without blacklisting their source.
 
-    Archivist-owned Staging copies are deleted. Source originals, Archive,
+    Archivist-owned Staging copies are moved to Rejected/Removed from Library (never
+    hard-deleted). Source originals, Archive,
     Private, Rejected and ordinary fixed-local files are never deleted.
     Analysis/Media Brain metadata is preserved so re-adding the source does
     not throw away work already done.
@@ -1475,11 +1534,17 @@ def remove_from_library(ids:list[int]) -> dict:
                         result["errors"].append(f"{r['filename']}: invalid Staging path")
                         continue
                     if p.exists():
-                        p.unlink()
+                        # Never hard-delete: the phone/card original may already be gone. The copy goes
+                        # to a quarantine folder the user can empty deliberately.
+                        qdir = REJECTED / "Removed from Library"; qdir.mkdir(parents=True, exist_ok=True)
+                        dest = qdir / p.name
+                        if dest.exists():
+                            dest = qdir / f"{p.stem}_{inv_id}{p.suffix}"
+                        shutil.move(str(p), str(dest))
                         result["staging_deleted"]+=1
                 except Exception as exc:
                     log(f"remove library staging {inv_id}: {exc}")
-                    result["errors"].append(f"{r['filename']}: could not delete Staging copy")
+                    result["errors"].append(f"{r['filename']}: could not move the Staging copy")
                     continue
             removable.append(inv_id)
         if removable:

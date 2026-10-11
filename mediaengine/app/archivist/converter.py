@@ -42,7 +42,8 @@ def _local_path(row):
 
 def _unique_output(source: Path, preset: str, target_mb: int | None, output_dir: Path | None = None) -> Path:
     cfg = PRESETS[preset]
-    folder = output_dir or (source.parent / "Archivist Converted")
+    # Never write next to the source: it may be an SD card, a phone folder or another app's archive.
+    folder = output_dir or (HOME / "Converted")
     try:
         folder.mkdir(parents=True, exist_ok=True)
     except Exception:
@@ -153,59 +154,67 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
     except Exception:
         pass
 
-    cfg = PRESETS[preset]
-    common = [
-        str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-i", str(source),
-        "-map", "0:v:0", "-map", "0:a?", *_scale_args(preset),
-        "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "veryfast",
-    ]
-
-    if target_mb:
-        audio_k = int(cfg["audio_k"])
-        total_bits = float(target_mb) * 1024 * 1024 * 8 * 0.94
-        video_k = max(250, int(total_bits / duration / 1000.0 - audio_k))
-        passlog = str((HOME / "data" / f"ffmpeg2pass-{os.getpid()}-{threading.get_ident()}").resolve())
-        pass1 = [
+    try:
+        cfg = PRESETS[preset]
+        common = [
             str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-i", str(source),
-            "-map", "0:v:0", *_scale_args(preset),
+            "-map", "0:v:0", "-map", "0:a?", *_scale_args(preset),
             "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "veryfast",
-            "-b:v", f"{video_k}k", "-maxrate", f"{int(video_k*1.25)}k", "-bufsize", f"{int(video_k*2)}k",
-            "-pass", "1", "-passlogfile", passlog, "-an", "-f", "null", os.devnull
         ]
-        _run_progress(pass1, duration, progress_cb, cancel_cb, 0.0, 0.48, job_id=job_id)
-        pass2 = common + [
-            "-b:v", f"{video_k}k", "-maxrate", f"{int(video_k*1.25)}k", "-bufsize", f"{int(video_k*2)}k",
-            "-pass", "2", "-passlogfile", passlog,
-            "-c:a", "aac", "-b:a", f"{audio_k}k", "-movflags", "+faststart", str(part)
-        ]
-        _run_progress(pass2, duration, progress_cb, cancel_cb, 0.50, 0.50, job_id=job_id)
-        for extra in ("-0.log", "-0.log.mbtree", ".log", ".log.mbtree"):
-            try:
-                Path(passlog + extra).unlink(missing_ok=True)
-            except Exception:
-                pass
-    else:
-        cmd = common + [
-            "-crf", str(int(cfg["crf"])),
-            "-c:a", "aac", "-b:a", f"{int(cfg['audio_k'])}k",
-            "-movflags", "+faststart", str(part)
-        ]
-        _run_progress(cmd, duration, progress_cb, cancel_cb, job_id=job_id)
 
-    if cancel_cb and cancel_cb():
-        raise RuntimeError("cancelled")
-    part.replace(out)
-    src_size = source.stat().st_size
-    out_size = out.stat().st_size
-    return {
-        "source": str(source),
-        "output": str(out),
-        "source_bytes": src_size,
-        "output_bytes": out_size,
-        "saved_percent": round(max(0.0, (1.0 - out_size / max(1, src_size)) * 100.0), 1),
-        "preset": preset,
-        "target_mb": target_mb,
-    }
+        if target_mb:
+            audio_k = int(cfg["audio_k"])
+            total_bits = float(target_mb) * 1024 * 1024 * 8 * 0.94
+            video_k = max(250, int(total_bits / duration / 1000.0 - audio_k))
+            passlog = str((HOME / "data" / f"ffmpeg2pass-{os.getpid()}-{threading.get_ident()}").resolve())
+            pass1 = [
+                str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-i", str(source),
+                "-map", "0:v:0", *_scale_args(preset),
+                "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "veryfast",
+                "-b:v", f"{video_k}k", "-maxrate", f"{int(video_k*1.25)}k", "-bufsize", f"{int(video_k*2)}k",
+                "-pass", "1", "-passlogfile", passlog, "-an", "-f", "null", os.devnull
+            ]
+            _run_progress(pass1, duration, progress_cb, cancel_cb, 0.0, 0.48, job_id=job_id)
+            pass2 = common + [
+                "-b:v", f"{video_k}k", "-maxrate", f"{int(video_k*1.25)}k", "-bufsize", f"{int(video_k*2)}k",
+                "-pass", "2", "-passlogfile", passlog,
+                "-c:a", "aac", "-b:a", f"{audio_k}k", "-movflags", "+faststart", str(part)
+            ]
+            _run_progress(pass2, duration, progress_cb, cancel_cb, 0.50, 0.50, job_id=job_id)
+            for extra in ("-0.log", "-0.log.mbtree", ".log", ".log.mbtree"):
+                try:
+                    Path(passlog + extra).unlink(missing_ok=True)
+                except Exception:
+                    pass
+        else:
+            cmd = common + [
+                "-crf", str(int(cfg["crf"])),
+                "-c:a", "aac", "-b:a", f"{int(cfg['audio_k'])}k",
+                "-movflags", "+faststart", str(part)
+            ]
+            _run_progress(cmd, duration, progress_cb, cancel_cb, job_id=job_id)
+
+        if cancel_cb and cancel_cb():
+            raise RuntimeError("cancelled")
+        part.replace(out)
+        src_size = source.stat().st_size
+        out_size = out.stat().st_size
+        return {
+            "source": str(source),
+            "output": str(out),
+            "source_bytes": src_size,
+            "output_bytes": out_size,
+            "saved_percent": round(max(0.0, (1.0 - out_size / max(1, src_size)) * 100.0), 1),
+            "preset": preset,
+            "target_mb": target_mb,
+        }
+    except BaseException:
+        # never leave a half-written .part file behind (it would be re-discovered as media)
+        try:
+            part.unlink(missing_ok=True)
+        except Exception:
+            pass
+        raise
 
 
 def _job_update(job_id, **fields):
@@ -264,7 +273,7 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
     try:
         with db() as con:
             rows = con.execute(
-                f"SELECT * FROM inventory WHERE id IN ({','.join('?' for _ in inventory_ids)}) AND excluded=0 AND media_type='video'",
+                f"SELECT * FROM inventory WHERE id IN ({','.join('?' for _ in inventory_ids)}) AND excluded=0 AND media_type='video' AND COALESCE(analysis_status,'')<>'private' AND private_path IS NULL",
                 inventory_ids,
             ).fetchall()
         by_id = {int(r["id"]): r for r in rows}
@@ -465,6 +474,12 @@ def start_convert_job(inventory_ids, preset="share_1080p", target_mb=None):
     if target_mb is not None and not (50 <= target_mb <= 100000):
         raise ValueError("Target size must be between 50 MB and 100000 MB")
     with db() as con:
+        ok_ids = {int(r["id"]) for r in con.execute(
+            f"SELECT id FROM inventory WHERE id IN ({','.join('?' for _ in ids)}) AND excluded=0 AND media_type='video' "
+            "AND COALESCE(analysis_status,'')<>'private' AND private_path IS NULL AND rejected_path IS NULL", ids).fetchall()}
+        ids = [i for i in ids if i in ok_ids]
+        if not ids:
+            raise ValueError("None of the selected videos can be converted (private, rejected or removed)")
         busy = con.execute("SELECT id,kind FROM jobs WHERE status IN ('running','queued') ORDER BY id LIMIT 1").fetchone()
         if busy:
             raise RuntimeError(f"Job #{busy['id']} ({busy['kind']}) is already running")

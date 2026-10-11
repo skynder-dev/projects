@@ -44,7 +44,7 @@ def should_skip_dir(path: Path, ignore_noise: bool) -> bool:
     return any(seg in parts for seg in NOISE_SEGMENTS)
 
 
-def walk_media(root: Path, ignore_noise=True, min_image_bytes=0, min_video_bytes=0):
+def walk_media(root: Path, ignore_noise=True, min_image_bytes=0, min_video_bytes=0, errors: list | None = None):
     if root.is_file():
         mt = media_type_for(root)
         if mt:
@@ -56,10 +56,12 @@ def walk_media(root: Path, ignore_noise=True, min_image_bytes=0, min_video_bytes
                 return
             yield root
         return
-    for dirpath, dirnames, filenames in os.walk(root):
+    for dirpath, dirnames, filenames in os.walk(root, onerror=(errors.append if errors is not None else None)):
         dp = Path(dirpath)
         if ignore_noise:
-            dirnames[:] = [d for d in dirnames if not should_skip_dir(dp / d, True)]
+            # Only the folder's own name matters: a source root such as D:\Games\Clips or a path
+            # under a "Temp" parent must not hide everything below it.
+            dirnames[:] = [d for d in dirnames if not should_skip_dir(Path(d), True)]
         for name in filenames:
             p = dp / name
             mt = media_type_for(p)
@@ -344,19 +346,45 @@ def _score(detections):
     return best, kept
 
 
-def _detect_path(detector, image_path: Path):
+def _read_image_array(image_path: Path):
+    """Decode an image to a BGR array; works for non-ASCII Windows paths and HEIC when pillow_heif exists."""
+    import numpy as np
     try:
-        # NudeNet v3 accepts a file path directly.
-        return detector.detect(str(image_path))
+        import cv2
+        data = np.fromfile(str(image_path), dtype=np.uint8)
+        arr = cv2.imdecode(data, cv2.IMREAD_COLOR) if data.size else None
+        if arr is not None:
+            return arr
     except Exception:
+        pass
+    try:
         try:
-            import cv2
-            arr = cv2.imread(str(image_path))
-            if arr is None:
-                return []
-            return detector.detect(arr)
+            import pillow_heif  # optional
+            pillow_heif.register_heif_opener()
         except Exception:
-            return []
+            pass
+        from PIL import Image
+        with Image.open(str(image_path)) as im:
+            rgb = np.asarray(im.convert("RGB"))
+        return rgb[:, :, ::-1].copy()
+    except Exception:
+        return None
+
+
+def _detect_path(detector, image_path: Path):
+    """Detections for one image, or None when the image could not be examined (privacy must then fail closed)."""
+    arr = _read_image_array(image_path)
+    if arr is not None:
+        try:
+            return detector.detect(arr) or []
+        except Exception:
+            pass
+    try:
+        # NudeNet v3 also accepts a file path (fails on some non-ASCII paths on Windows).
+        res = detector.detect(str(image_path))
+        return res or []
+    except Exception:
+        return None
 
 
 def analyze_privacy(path: Path, media_type: str, samples: int = 10) -> tuple[float | None, list, str | None]:
@@ -366,6 +394,8 @@ def analyze_privacy(path: Path, media_type: str, samples: int = 10) -> tuple[flo
     if media_type == "image":
         try:
             det = _detect_path(detector, path)
+            if det is None:
+                return None, [], "privacy_unreadable"
             score, kept = _score(det)
             return score, kept, None
         except Exception as e:
@@ -393,12 +423,18 @@ def analyze_privacy(path: Path, media_type: str, samples: int = 10) -> tuple[flo
                 return None, [], "video_decode_failed"
             best = 0.0
             all_kept = []
+            failed = 0
             for i, frame in enumerate(frames):
                 det = _detect_path(detector, frame)
+                if det is None:
+                    failed += 1
+                    continue
                 sc, kept = _score(det)
                 best = max(best, sc)
                 for k in kept:
                     all_kept.append({**k, "sample": i + 1})
+            if failed:
+                return None, [], f"privacy_unreadable:{failed}/{len(frames)}"
             return best, all_kept[:40], None
         except subprocess.TimeoutExpired:
             return None, [], "video_decode_timeout"
@@ -577,17 +613,24 @@ def analyze_combined(path: Path, media_type: str, privacy_enabled: bool = True,
         if privacy_enabled and detector is not None:
             best = 0.0
             limit = min(len(frames), max(1, int(privacy_samples)))
+            unreadable = 0
             for idx, frame in enumerate(frames[:limit], 1):
                 if cancel_cb and cancel_cb():
                     raise RuntimeError("cancelled")
                 det = _detect_path(detector, frame)
+                if det is None:
+                    unreadable += 1
+                    continue
                 sc, _ = _score(det)
                 best = max(best, sc)
                 if progress_cb:
                     try: progress_cb(idx, limit, "privacy")
                     except Exception: pass
             result["privacy_score"] = best
-            if best >= float(privacy_threshold):
+            if unreadable:
+                # Fail closed: an image we could not examine is never declared safe.
+                result["privacy_status"] = "review"; result["privacy_reason"] = f"privacy_unavailable:{unreadable}/{limit}"
+            elif best >= float(privacy_threshold):
                 result["privacy_status"] = "review"; result["privacy_reason"] = "privacy_candidate"
             else:
                 result["privacy_status"] = "safe"; result["privacy_reason"] = "privacy_clear"

@@ -254,7 +254,7 @@ def _convert_ui_storyboard_mount():
     with urllib.request.urlopen('http://127.0.0.1:8765/convert',timeout=8) as r:
         body=r.read().decode('utf-8','replace')
         code=int(r.status)
-    if code!=200 or 'Share 1080p' not in body or 'Convert selected' not in body or 'Archivist Converted' not in body:
+    if code!=200 or 'Share 1080p' not in body or 'Convert selected' not in body or 'Converted' not in body:
         raise RuntimeError('Convert page markers missing')
     with db() as con:
         row=con.execute("""SELECT id FROM inventory WHERE excluded=0 AND media_type='video'

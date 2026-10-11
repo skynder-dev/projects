@@ -282,7 +282,7 @@ def _scene_cuts(path: Path, duration: float, progress_cb=None) -> list[float]:
     try:
         # Scene detection does not need 4K pixels or every source frame.
         # Decode once, shrink early, and compare a few frames per second.
-        vf = r"scale=320:-2:flags=fast_bilinear,fps=3,select=gt(scene\\,0.30),showinfo"
+        vf = r"scale=320:-2:flags=fast_bilinear,fps=3,select=gt(scene\,0.30),showinfo"
         r = subprocess.run(
             [exe, "-hide_banner", "-loglevel", "info", "-i", str(path),
              "-an", "-sn", "-dn", "-filter:v", vf, "-f", "null", "-"],
@@ -291,7 +291,7 @@ def _scene_cuts(path: Path, duration: float, progress_cb=None) -> list[float]:
             **_hidden_kwargs()
         )
         cuts = []
-        for m in re.finditer(r"pts_time:([0-9]+(?:\\.[0-9]+)?)", r.stderr or ""):
+        for m in re.finditer(r"pts_time:([0-9]+(?:\.[0-9]+)?)", r.stderr or ""):
             t = float(m.group(1))
             if 0.5 < t < duration - 0.5:
                 cuts.append(t)
