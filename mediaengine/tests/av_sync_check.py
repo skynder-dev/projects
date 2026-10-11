@@ -4,8 +4,9 @@
 
 Makes 4 synthetic sources in which a white flash frame and a 1 kHz beep happen at the same instant every second,
 builds a reel with the app's engine (technical mode), then measures in the reel: for every flash, the time from the
-flash to the nearest beep onset (negative = sound early). Pass = inside the ITU-R BT.1359 detectability window:
-sound at most 45 ms early and at most 125 ms late, at every cut.
+flash to the nearest beep onset (negative = sound early). Pass = at every cut the sound is at most 25 ms early and
+40 ms late (well inside the ITU-R BT.1359 detectability window of 45 ms early / 125 ms late), and the reel's sound is
+as long as its picture (±50 ms).
 """
 from __future__ import annotations
 
@@ -95,16 +96,18 @@ def main():
         rows.append({"flash_s": round(t, 3), "beep_offset_ms": None if near is None else round((near - t) * 1000, 1), "segment": seg})
     offs = [r["beep_offset_ms"] for r in rows if r["beep_offset_ms"] is not None and abs(r["beep_offset_ms"]) < 400]
     worst = max((abs(x) for x in offs), default=None)
+    from media_measure import av_durations
+    vd, ad = av_durations(reel, ff)
     by_seg = {}
     for r in rows:
         if r["beep_offset_ms"] is not None and abs(r["beep_offset_ms"]) < 400:
             by_seg.setdefault(r["segment"], []).append(r["beep_offset_ms"])
     report = {"reel_s": res["actual_duration_s"], "segments": len(res["segments"]), "flashes": len(fl), "beeps": len(bp),
-              "matched": len(offs), "worst_abs_ms": worst, "sound_early_max_ms": -min(offs, default=0), "sound_late_max_ms": max(offs, default=0), "per_segment_ms": {str(k): v for k, v in sorted(by_seg.items(), key=lambda x: str(x[0]))}}
+              "matched": len(offs), "picture_s": round(vd, 3), "sound_s": round(ad or 0, 3), "worst_abs_ms": worst, "sound_early_max_ms": -min(offs, default=0), "sound_late_max_ms": max(offs, default=0), "per_segment_ms": {str(k): v for k, v in sorted(by_seg.items(), key=lambda x: str(x[0]))}}
     print(json.dumps(report, indent=1))
     early = min(offs, default=None)
     late = max(offs, default=None)
-    report_ok = offs and early >= -45 and late <= 125
+    report_ok = offs and early >= -25 and late <= 40 and ad is not None and abs(vd - ad) <= 0.05
     ok = bool(report_ok) and len(by_seg) >= max(2, len(res["segments"]) - 1)
     print("PASS av_sync_every_cut" if ok else "FAIL av_sync_every_cut")
     return 0 if ok else 1

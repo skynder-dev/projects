@@ -21,22 +21,30 @@ filter never matched; partial export/convert files could be left or overwritten.
 
 What a user can do (code: `app/archivist/auto_edit.py`, `auto_edit_web.py`, engine `engine_p11/p11_folder_to_reel_r3.py`):
 
-- **Auto Edit** page (nav, Media hub, Home): choose a folder (Windows dialog or pasted path); scan shows usable /
-  damaged / duplicate files, total footage and size; adaptive length default; only Length / Format / Sound.
+- **Auto Edit** page (nav, Media hub, Home): choose a folder (Windows dialog or pasted path) **or individual videos**
+  (multi-select); scan shows usable / damaged / duplicate files, total footage and size; adaptive length default;
+  only Length / Format / Sound. Phone/camera files work: rotated portrait (comes out upright), HEVC .MOV, 60 fps,
+  variable frame rate, no audio track, Cyrillic names; too-short or still clips are skipped with a reason.
 - Without the AI model the user must tick **Technical only** explicitly — no silent fallback, also not for variants.
 - Background build with real stage progress (per file during analysis), elapsed time, Cancel, Retry, queued jobs listed.
   Restart/Quit of the app is refused while a reel builds (unless forced).
-- Review: player, segment strip, every moment with source file and source time. **Editor**: reorder (↑↓), trim in
+- Review: player, filmstrip with real frames, every moment with source file and source time. **Editor**: reorder (↑↓), trim in
   source time, replace with another candidate, remove, add; every change is a new immutable revision.
   Variants (length / format / sound) keep the base revision's removed moments and manual edits.
-- Accept / Revert pointer; Export only the accepted, verified revision (Windows-safe name, never overwrites, repeat = no-op);
-  Open video / Show in folder / Copy path, also from the project cards on the Auto Edit home page. Rename / Archive.
+- Accept / Revert pointer; Export only the accepted, verified revision to the default folder or **a folder the user picks**
+  (remembered; never into the reel's own source folder); Windows-safe name, never overwrites, repeat = no-op;
+  completion screen with Open video / Show in folder / Copy path, also on the project cards. Rename / Archive.
 - Files marked **Private** in the library are never used in a reel (also not via an older cached build).
 - Side-by-side safety: port 8775 (stable keeps 8765; an unreadable `port.txt` stops the app instead of taking 8765),
   own desktop shortcut "MediaEngine RC", own archive/exports, the package ignores a stray `ARCHIVIST_HOME`,
   no update server contact without `updater_config.json`, Remote Lab diagnostics only on an enrolled PC.
 - Self-contained Windows package (CPython 3.11.9 + pinned 3.12.42 packages + app-local VC++ runtime), start with
   `Start MediaEngine.vbs`; Quit button; a double start opens the running copy; a second server on the same port refuses to start.
+- **One folder per release** (`MediaEngine-<version>-b<build>`, never extracted over an old one). Projects, database,
+  exports and library live outside it in `MediaEngine Data` (next to the first release, remembered in
+  `%LOCALAPPDATA%\MediaEngine\data_root.txt`), so a new release opens the same projects. **Rollback** = start the
+  previous release folder's `Start MediaEngine.vbs`. Settings and About show the data and program folders.
+- Full-video **Convert** (existing feature) checked: whole video, original frame rate, every frame, portrait upright.
 
 ### Engine R3 vs Windows-proven R2 (documented differences)
 
@@ -54,6 +62,7 @@ The 11 runtime modules, adapter and validator are byte-identical to R2 (CI-check
 | Two windows of one source overlapping >50 % → keep the better one | avoid showing the same moment twice (affects semantic mode) |
 | Damaged cache entries are rebuilt | R2 failed the project permanently |
 | Social HD only as vertical 1080×1920 | acceptance presets |
+| `--input-list` (chosen files) as well as `--input-dir` | individual videos |
 
 ## Evidence
 

@@ -1,4 +1,7 @@
-"""R3 (app engine) must reproduce R2 (Windows-proven) byte for byte when called with R2's arguments.
+"""R3 (app engine) must make exactly the same editing decisions as R2 (Windows-proven) when called with R2's arguments.
+
+Reel bytes differ since R3 fixed R2's audio/video drift at joins (every segment's sound is fitted to its picture);
+the check below proves R3's sound and picture have the same length and reports R2's mismatch.
 
   python tests/engine_regression.py <clean_video_folder> <work_root> [--semantic off|required]
 
@@ -59,7 +62,13 @@ def main():
     for key in ("selected_event_ids", "selected_scores", "selected_sources", "event_count", "boundary", "sequence", "pacing", "selection_mode"):
         checks.append((f"same_decision:{key}", a.get(key) == b.get(key)))
     checks.append(("same_audio_decision", a["audio"]["decision"] == b["audio"]["decision"]))
-    checks.append(("same_duration", abs(float(a["actual_duration_s"]) - float(b["actual_duration_s"])) < 0.05))
+    checks.append(("same_duration", abs(float(a["actual_duration_s"]) - float(b["actual_duration_s"])) < 0.1))
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from media_measure import av_durations
+    r2v, r2a = av_durations(work_root / "r2" / "out" / "MediaEngine Reel.mp4", ff)
+    r3v, r3a = av_durations(work_root / "r3" / "out" / "MediaEngine Reel.mp4", ff)
+    print(f"A/V length: R2 picture {r2v:.3f} s sound {r2a or 0:.3f} s | R3 picture {r3v:.3f} s sound {r3a or 0:.3f} s")
+    checks.append(("r3_sound_as_long_as_picture", r3a is not None and abs(r3v - r3a) <= 0.05))
     byte_equal = a["output"]["sha256"] == b["output"]["sha256"]
     if "--strict-bytes" in sys.argv:
         checks.append(("same_reel_bytes", byte_equal))

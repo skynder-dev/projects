@@ -407,18 +407,66 @@ def apply_camera_drop(v52,dropmod,selected,work_dir):
     # and transition signatures, but it must not change the already-frozen selection score.
     return out,decisions
 
+def video_seconds(ffmpeg,path,fps=30.0):
+    """Exact length of a constant-30-fps segment's picture, by counting decoded frames (no ffprobe needed)."""
+    cp=subprocess.run([ffmpeg,"-hide_banner","-loglevel","error","-i",str(path),"-map","0:v:0","-vf","scale=8:8",
+                       "-f","rawvideo","-pix_fmt","gray","-"],capture_output=True)
+    n=len(cp.stdout)//64
+    if cp.returncode!=0 or n<=0: raise RuntimeError("SEGMENT_DECODE_FAILED:"+str(path))
+    return n/float(fps)
+
+# R3 render assembly (R2 had A/V drift): the accepted V52 segments can carry up to ~0.1 s more or less sound than
+# picture. R2 laid the sound of the next segment right after the previous sound, so the difference added up at every
+# join (measured 0.39 s at the end of a 30 s reel on Windows). R3 first makes every segment's sound exactly as long as
+# its picture (silence pad / trim), cross-fades with the same durations as the picture, and joins blocks with the
+# concat filter, which keeps both streams aligned.
+def _fit_audio(i,dur):
+    return f"[{i}:a]aresample=48000,apad,atrim=end={dur:.6f},asetpts=N/SR/TB[n{i}]"
+
+def full_quality_clip(v52,e,work_dir):
+    """Technical mode: moments are found and scored on the accepted V12 preview clips (max 960 px wide, re-timed to
+    25 fps, sound and picture re-zeroed separately -> sound up to ~45 ms early). The reel itself is cut from the
+    ORIGINAL at the same source interval (as R2 already does in AI mode), so it keeps full resolution, the source
+    frame rate and exact sync. Selection, order, pacing and boundary decisions are unchanged."""
+    src=Path(e.get("source_path") or "")
+    a=float(e.get("start_s") or 0.0); b=float(e.get("end_s") or 0.0)
+    if not src.is_file() or b-a<0.3: return e
+    key=hashlib.sha256(f'{e.get("source_sha256")}|{a:.3f}|{b:.3f}|FULLRES1'.encode()).hexdigest()[:20]
+    d=work_dir/"full_quality"; d.mkdir(parents=True,exist_ok=True)
+    clip=d/f"{key}.mp4"
+    if not clip.is_file():
+        tmp=d/f".{key}.tmp.mp4"
+        cp=subprocess.run([v52.FFMPEG,"-hide_banner","-loglevel","error","-y","-ss",f"{a:.3f}","-i",str(src),"-t",f"{b-a:.3f}",
+                           "-map","0:v:0","-map","0:a?","-c:v","libx264","-preset","fast","-crf","18","-pix_fmt","yuv420p",
+                           "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(tmp)],capture_output=True,text=True)
+        if cp.returncode!=0:
+            tmp.unlink(missing_ok=True); return e      # keep the preview clip rather than fail the reel
+        os.replace(tmp,clip)
+    x=dict(e); x["preview_clip_path"]=e.get("clip_path"); x["clip_path"]=str(clip)
+    x["clip_bytes"]=clip.stat().st_size; x["clip_sha256"]=sha256_file(clip)
+    return x
+
 def render_dissolve_block(v52,segs,durs,trans,out):
     out=Path(out); out.parent.mkdir(parents=True,exist_ok=True)
-    if len(segs)==1:
-        shutil.copy2(segs[0],out); return float(durs[0])
     args=[v52.FFMPEG,"-hide_banner","-loglevel","error","-y"]
     for p in segs: args += ["-i",str(p)]
-    filters=[]; vprev="0:v"; aprev="0:a"; cum=float(durs[0])
+    if len(segs)==1:
+        args += ["-filter_complex",_fit_audio(0,float(durs[0])),"-map","0:v","-map","[n0]","-c:v","copy",
+                 "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(out)]
+        cp=subprocess.run(args,capture_output=True,text=True)
+        if cp.returncode!=0: raise RuntimeError("DISSOLVE_BLOCK_RENDER_FAILED:"+cp.stderr[-800:])
+        return float(durs[0])
+    filters=[_fit_audio(i,float(d)) for i,d in enumerate(durs)]; vprev="0:v"; aprev="n0"; cum=float(durs[0])
     for i in range(1,len(segs)):
         td=float(trans[i-1]["duration_s"]); vl=f"v{i}"; al=f"a{i}"; off=max(0.0,cum-td)
-        filters.append(f"[{vprev}][{i}:v]xfade=transition=fade:duration={td:.3f}:offset={off:.3f}[{vl}]")
-        filters.append(f"[{aprev}][{i}:a]acrossfade=d={td:.3f}:c1=tri:c2=tri[{al}]")
-        vprev=vl; aprev=al; cum+=float(durs[i])-td
+        if td<=0:
+            # hard cut inside a block is not produced by the pacing plan, but keep it exact if it ever is
+            filters.append(f"[{vprev}][{i}:v]concat=n=2:v=1:a=0[{vl}]")
+            filters.append(f"[{aprev}][n{i}]concat=n=2:v=0:a=1[{al}]")
+        else:
+            filters.append(f"[{vprev}][{i}:v]xfade=transition=fade:duration={td:.3f}:offset={off:.3f}[{vl}]")
+            filters.append(f"[{aprev}][n{i}]acrossfade=d={td:.3f}:c1=tri:c2=tri[{al}]")
+        vprev=vl; aprev=al; cum+=float(durs[i])-max(0.0,td)
     args += ["-filter_complex",";".join(filters),"-map",f"[{vprev}]","-map",f"[{aprev}]",
              "-c:v","libx264","-preset","medium","-crf","18","-pix_fmt","yuv420p",
              "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(out)]
@@ -437,10 +485,12 @@ def render_mixed(v52,segs,durs,transitions,out,work):
         bp=bdir/f"block_{bi:02d}.mp4"
         dur=render_dissolve_block(v52,segs[a:b],durs[a:b],transitions[a:b-1] if b-a>1 else [],bp)
         bfs.append(bp); bds.append(dur)
-    lp=bdir/"concat.txt"; lp.write_text("\n".join("file '"+str(p).replace("'","'\\''")+"'" for p in bfs)+"\n",encoding="utf-8")
-    cp=subprocess.run([v52.FFMPEG,"-hide_banner","-loglevel","error","-y","-f","concat","-safe","0","-i",str(lp),
-                       "-c:v","libx264","-preset","medium","-crf","18","-pix_fmt","yuv420p",
-                       "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(out)],
+    args=[v52.FFMPEG,"-hide_banner","-loglevel","error","-y"]
+    for bp in bfs: args += ["-i",str(bp)]
+    fc="".join(f"[{k}:v][{k}:a]" for k in range(len(bfs)))+f"concat=n={len(bfs)}:v=1:a=1[v][a]"
+    cp=subprocess.run(args+["-filter_complex",fc,"-map","[v]","-map","[a]",
+                            "-c:v","libx264","-preset","medium","-crf","18","-pix_fmt","yuv420p",
+                            "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(out)],
                       capture_output=True,text=True)
     if cp.returncode!=0: raise RuntimeError("FINAL_RENDER_FAILED:"+cp.stderr[-800:])
     dec=subprocess.run([v52.FFMPEG,"-hide_banner","-loglevel","error","-i",str(out),"-f","null","-"],capture_output=True,text=True)
@@ -589,8 +639,11 @@ def run(args):
 
     segcache=work_dir/"segment_cache_v2"; segcache.mkdir(parents=True,exist_ok=True)
     segs=[]; durs=[]; seg_meta=[]
+    render_source="AI_CANDIDATE_CLIPS_FROM_ORIGINAL" if use_semantic else "ORIGINAL_FULL_QUALITY_RECUT"
     for si,(e,use) in enumerate(zip(order,pace["durations_s"])):
         progress("render",si,len(order),str(e["source_name"]))
+        if not use_semantic and str(e["event_id"]) not in trims:   # manual trims are already cut from the original
+            e=full_quality_clip(v52,e,work_dir)
         key=hashlib.sha256(json.dumps({"clip_sha256":e["clip_sha256"],"use_s":round(float(use),3),
                                      "audio":audio_mode,"profile":profile,"resolution":resolution,"fps":30,"quality":"high"},
                                     sort_keys=True,separators=(",",":")).encode()).hexdigest()[:20]
@@ -609,7 +662,7 @@ def run(args):
             meta=v52.make_segment(e,tmp,profile,float(use),audio_content=audio_mode,
                                   output_resolution=resolution,output_fps=30,video_quality="high")
             os.replace(tmp,seg); meta["sha256"]=sha256_file(seg); atomic_json(meta_path,meta)
-        segs.append(seg); durs.append(float(meta["duration_s"])); seg_meta.append(meta)
+        segs.append(seg); durs.append(video_seconds(v52.FFMPEG,seg)); seg_meta.append(meta)
 
     progress("finish",0,1,"joining segments and verifying")
     render_dir=work_dir/"final_v2"; render_dir.mkdir(parents=True,exist_ok=True)
@@ -643,7 +696,7 @@ def run(args):
     result={
         "contract":CONTRACT_VERSION,"status":"PASS",
         "segments":timeline,"candidate_pool":pool_rows,"excluded_event_ids":sorted(exclude),"manual_edits":edits,
-        "skipped_inputs":skipped_inputs,"warnings":warnings,
+        "skipped_inputs":skipped_inputs,"warnings":warnings,"render_source":render_source,
         "engine":{"orchestrator_sha256":sha256_file(Path(__file__)),"semantic_hook_sha256":SEMANTIC_HOOK_SHA},
         "input_folder":str(input_dir),"input_list":input_list,"input_fingerprint":fingerprint,"input_count":len(input_rows),
         "inputs":[{"name":r["name"],"bytes":r["bytes"],"sha256":r["sha256"]} for r in input_rows],

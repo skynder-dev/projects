@@ -78,6 +78,18 @@ jobs:
         run: |
           python mediaengine/tests/reliability_checks.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\relchk" 2>&1 | Tee-Object "$env:OUT\reliability_checks.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: 64 videos with long names, Windows long-path support OFF (the default on a normal PC)
+        shell: pwsh
+        run: |
+          $key = 'HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem'
+          $old = (Get-ItemProperty $key -Name LongPathsEnabled -ErrorAction SilentlyContinue).LongPathsEnabled
+          "LongPathsEnabled on the runner: $old -> 0 for this test" | Tee-Object "$env:OUT\scale_paths.txt"
+          Set-ItemProperty $key -Name LongPathsEnabled -Value 0
+          try {
+            python mediaengine/tests/scale_paths_check.py "D:\me-sc" --count 64 2>&1 | Tee-Object -Append "$env:OUT\scale_paths.txt"
+            $code = $LASTEXITCODE
+          } finally { if ($null -ne $old) { Set-ItemProperty $key -Name LongPathsEnabled -Value $old } }
+          if ($code -ne 0) { exit 1 }
       - name: Auto Edit E2E - 7 videos (+ broken + duplicate)
         shell: pwsh
         run: |
