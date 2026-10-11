@@ -58,6 +58,7 @@ const storage=(map)=>({getItem(k){return map.get(k)??null;},setItem(k,v){map.set
 const loc={href:'https://chatgpt.com/c/1234abcd-abcd-1234-abcd-1234abcdabcd', pathname:'/c/1234abcd-abcd-1234-abcd-1234abcdabcd',
   assign(url){navCount++;this.href=url;this.pathname='/';assistantMessages=[];userMessages=[];}};
 const document={
+  title:'GoDog test project',
   documentElement:new Element('HTML'),body:new Element('BODY'),
   getElementById(){return null;},
   createElement(tag){return tag==='div' ? root : new Element(tag.toUpperCase());},
