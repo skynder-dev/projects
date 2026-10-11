@@ -6,7 +6,7 @@ const src=fs.readFileSync(require('node:path').join(__dirname,'..','GoDog_PC_LOC
 for(const required of [
   '// @name         GoDog GDCONST-010 DEFAULT-DISABLED canary',
   '// @namespace    GoDog.constitution',
-  '// @version      7.0.3',
+  '// @version      7.0.4',
   '// @grant        none',
   '// @updateURL    http://127.0.0.1:43129/godog.meta.js',
   '// @downloadURL  http://127.0.0.1:43129/godog.user.js'
@@ -18,9 +18,11 @@ assert.ok(!/\b(?:fetch|XMLHttpRequest|GM_xmlhttpRequest)\s*\(/.test(src),'No net
 new vm.Script(src,{filename:'GoDog_PC_LOCAL_01.user.js'});
 
 class Element {
-  constructor(name='DIV') {this.tagName=name;this.listeners={};this.dataset={};this.value=undefined;this.innerText='';this.textContent='';this.isConnected=false;this.disabled=false;this.attributes={};this.classList={toggle(){}};}
+  constructor(name='DIV') {this.tagName=name;this.listeners={};this.dataset={};this.value=undefined;this.innerText='';this.textContent='';this.isConnected=false;this.disabled=false;this.attributes={};this.classList={toggle(){}};this.style={props:{},setProperty(n,v){this.props[n]=v;},removeProperty(n){delete this.props[n];}};this.rect={left:0,right:1200,top:0,bottom:36,width:1200,height:36};}
   removeAttribute(name) {delete this.attributes[name];}
   getAttribute(name) {return this.attributes[name]??null;}
+  setAttribute(name,value) {this.attributes[name]=String(value);}
+  getBoundingClientRect(){return this.rect;}
   addEventListener(name,fn) {this.listeners[name]=fn;}
   focus() {}
   closest() {return null;}
@@ -46,7 +48,12 @@ const buttons={
 const root=new Element('DIV');
 root.querySelector=key=>buttons[key]??null;
 const editor=new Element('DIV'); editor.attributes['aria-disabled']='false';
+const composerSurface=new Element('DIV');
+composerSurface.rect={left:130,right:1090,top:69,bottom:161,width:960,height:92};
+editor.closest=selector=>selector==='[data-type="unified-composer"]' ? composerSurface : null;
+
 const send=new Element('BUTTON');
+send.rect={left:1030,right:1070,top:117,bottom:157,width:40,height:40};
 let submitted=[],stopNativeClicked=0,generating=false,observerCb=null,navCount=0;
 let assistantMessages=[],userMessages=[];
 send.click=()=>{
@@ -79,13 +86,21 @@ const document={
   },
   addEventListener(){}
 };
-const win={};win.top=win;win.self=win;win.getSelection=()=>({removeAllRanges(){},addRange(){}});
+const win={innerWidth:1220,innerHeight:250,addEventListener(){}};win.top=win;win.self=win;win.getSelection=()=>({removeAllRanges(){},addRange(){}});
 const ctx={window:win,document,location:loc,sessionStorage:storage(session),localStorage:storage(local),
   queueMicrotask,MutationObserver:class{constructor(fn){observerCb=fn;}observe(){}},
   Event:class{},InputEvent:class{},KeyboardEvent:class{},console,
   HTMLTextAreaElement:class{},HTMLInputElement:class{}};
 vm.runInNewContext(src,ctx,{timeout:3000});
-assert.equal(buttons['.cg-status'].textContent,'PC LOCAL','script mounted');
+assert.equal(buttons['.cg-status'].textContent,'DISARMED','restored original initial status');
+assert.equal(buttons['.cg-version'].textContent,'GoDog 7.0.4','restored original version chip');
+assert.equal(buttons['.cg-project'].textContent,'GoDog','restored original project chip');
+assert.equal(buttons['.cg-auto'].textContent,'AUTO','restored original AUTO label');
+assert.equal(buttons['.cg-timer'].textContent,'','no fake LOCAL timer');
+assert.equal(root.style.props.left,'130px','dock aligned to composer left');
+assert.equal(root.style.props.right,'130px','dock aligned to composer right');
+assert.equal(root.style.props.top,'160px','dock directly under composer');
+assert.equal(root.style.props.bottom,'auto','dock not full-width bottom bar');
 
 // Direct GO is fully synchronous, one native click, zero waits.
 buttons['.cg-go'].click();
