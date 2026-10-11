@@ -88,14 +88,18 @@ The 11 runtime modules, adapter and validator are byte-identical to R2 (CI-check
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38136023399 on `202cd0f` — all green** (results branch `mediaengine-ci-results`, artifact
-`MediaEngine-3.13.0-rc1-b<N>`): fast checks 42/42 · R3 = R2 decisions 29/29 · robustness 15/15 (incl. HDR HLG/PQ
-colours, rotated phone video, camcorder 1080i .MTS de-interlaced) · A/V sync at every cut, worst 20 ms · AI glue 6/6 ·
-Convert 20/20 · library 4/4 · unplugged/no network 9/9 · 64 long-named videos with long paths OFF 4/4 (99 s) ·
-E2E 7 videos 66/66, 2 videos 64/64, phone files 61/61, packaged Python behind the firewall 62/62 (internet blocked:
-True) · package smoke PASS (Cyrillic folder, data outside the release, next release extracted elsewhere sees the
-project, restart, second copy refused, Quit) · release folder pristine · 4K H.264 60 s + 4K HEVC 45 s + 5-min 1080p
-→ 30 s Social HD reel in 398 s on the 4-core runner. Checks in every run:
+Latest full run: **38152191898 on `9e00fd5` — all green, build b27** (results branch `mediaengine-ci-results`,
+artifacts `MediaEngine-3.13.0-rc1-b27-Setup` (129 MB) and `MediaEngine-3.13.0-rc1-b27` (ZIP, 181 MB)):
+fast checks 52/52 (incl. Unicode shortcuts on Windows) · R3 = R2 decisions 29/29 · robustness 24/24 (HDR HLG/PQ,
+rotated phone, camcorder .MTS de-interlaced + hand trim, HDV/DVD wide pixels keep their shape in 16:9 and 9:16,
+11 modern formats, 7 older formats WMV/FLV/VOB/MOD/TOD/m2t/DV, quiet+loud clips evened out) · A/V sync worst 20 ms ·
+AI glue 6/6 · Convert 20/20 · library 4/4 · unplugged/no network 9/9 · 64 long-named videos, long paths OFF 5/5
+(cut from the originals) · E2E 7 videos 67/67, 2 videos 66/66, phone 62/62, packaged Python behind the firewall
+63/63 (internet blocked: True) · package smoke PASS (Cyrillic folder, desktop shortcut points exactly there, data
+outside, restart, second copy refused, Quit, next release started while this one runs takes over, 0 files added
+to the release by running it) · Setup smoke PASS (silent install into "Мои программы", start from the Start-menu
+shortcut, data next to the build, uninstall refused while running, after Quit: build and shortcut removed, data
+kept) · 4K H.264 + 4K HEVC + 5-min 1080p → 30 s Social HD reel in 462 s on the 4-core runner. Checks in every run:
 
 | Check | What it proves |
 | --- | --- |

@@ -194,8 +194,8 @@ def install_launchers(home: Path) -> None:
     try:
         src = Path(__file__).resolve().parent / "launcher_v2.py"
         root_launcher = home / "launcher.py"
-        if src.exists():
-            shutil.copy2(src, root_launcher)
+        if src.exists() and not (root_launcher.is_file() and root_launcher.read_bytes() == src.read_bytes()):
+            shutil.copy2(src, root_launcher)          # only when it differs: an installed folder stays untouched
         if side_by_side:
             # A side-by-side install (release candidate) has exactly one start file and never creates the
             # stable install's Archivist.vbs / launcher folder names.
@@ -209,7 +209,9 @@ def install_launchers(home: Path) -> None:
                 encoding="utf-8",
             )
             vbs = home / "Archivist.vbs"
-        vbs.write_text(launcher_vbs_text(), encoding="utf-16")
+        want = launcher_vbs_text().encode("utf-16")
+        if not (vbs.is_file() and vbs.read_bytes() == want):
+            vbs.write_bytes(want)
         # A side-by-side install ships shortcut_name.txt so it never repoints the stable "Archivist" shortcut.
         try:
             name = (home / "shortcut_name.txt").read_text(encoding="utf-8-sig").strip()

@@ -102,7 +102,7 @@ def main(out_dir: Path, evidence_dir: Path) -> None:
     (pkg / "shortcut_name.txt").write_text(SHORTCUT, encoding="utf-8")
     sys.path.insert(0, str(ROOT / "app"))
     from archivist.platform_adapter import launcher_vbs_text   # the same file the app repairs at start
-    (pkg / "Start MediaEngine.vbs").write_text(launcher_vbs_text(), encoding="utf-16")
+    (pkg / "Start MediaEngine.vbs").write_bytes(launcher_vbs_text().encode("utf-16"))   # exact CRLF, same bytes the app checks
     sha = os.environ.get("GITHUB_SHA") or subprocess.run(["git", "-C", str(ROOT), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
     make_icon(pkg / "MediaEngine.ico")
     (pkg / "BUILD.txt").write_text(f"MediaEngine {ver}\ncommit {sha}\nbuilt {datetime.now(timezone.utc).isoformat(timespec='seconds')}\n"
