@@ -25,6 +25,10 @@ What a user can do (code: `app/archivist/auto_edit.py`, `auto_edit_web.py`, engi
   (multi-select); scan shows usable / damaged / duplicate files, total footage and size; adaptive length default;
   only Length / Format / Sound. Phone/camera files work: rotated portrait (comes out upright), HEVC .MOV, 60 fps,
   variable frame rate, no audio track, Cyrillic names; too-short or still clips are skipped with a reason.
+- **Language**: English or Russian for the whole program — "Русский / English" at the top right of every page and in
+  Settings; first start follows the language chosen in Setup, else the Windows language (`i18n.py`, `ru_app.py`,
+  `auto_edit_ru.py`; whole-phrase translation so file names/titles are never changed; CI coverage check).
+- **Check this PC** on Home, in Settings and on Auto Edit (Auto Edit suggests it until a test reel was built here).
 - Without the AI model the user must tick **Technical only** explicitly — no silent fallback, also not for variants.
 - Background build with real stage progress (per file during analysis), elapsed time, Cancel, Retry, queued jobs listed.
   Restart/Quit of the app is refused while a reel builds (unless forced).

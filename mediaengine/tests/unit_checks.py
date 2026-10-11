@@ -112,6 +112,19 @@ def main():
     ru_title = ae._dialog_title("Choose videos for one reel")
     ae.set_ui_language("en")
     check("dialog titles follow the language", ru_title.startswith("Выбери видео") and ae._dialog_title("Choose videos for one reel") == "Choose videos for one reel")
+    # Russian page translation never touches user content, values, scripts' logic or protected text
+    page = ("<html><head><title>Settings · MediaEngine</title></head><body><a href='/x'>Open Library</a><b translate='no'>Open Library</b>"
+            "<div>Library videos.mp4</div><input value='Remove' placeholder='Search Library'><span class='ae-path'>D:\\Videos\\Library</span>"
+            "<button onclick=\"if(!confirm('Mark selected Private forever?'))return\">Remove</button>"
+            "<script>if(x.status==='done'){toast('Select files first')}</script><span>quality good 81.5</span><span>3 errors</span></body></html>")
+    out = i18n.translate_page(page, "/library")
+    check("ru page: phrases and patterns translated", "Открыть библиотеку</a>" in out and "<title>Настройки · MediaEngine</title>" in out
+          and "качество хорошее 81.5" in out and "ошибок: 3" in out and "placeholder='Поиск в библиотеке'" in out, out[:300])
+    check("ru page: user content, values, protected text and code untouched", "<b translate='no'>Open Library</b>" in out
+          and "<div>Library videos.mp4</div>" in out and "value='Remove'" in out and "D:\\Videos\\Library" in out
+          and "x.status==='done'" in out and "href='/x'" in out)
+    check("ru page: confirm texts in handlers; script-made texts via the in-page dictionary",
+          "confirm('Отметить выбранное как Private навсегда?')" in out and "window.ME_I18N" in out and "Сначала выбери файлы" in out)
     # Windows must not sleep while a reel is built (no-op elsewhere)
     from archivist.platform_adapter import keep_awake
     with keep_awake() as k:
