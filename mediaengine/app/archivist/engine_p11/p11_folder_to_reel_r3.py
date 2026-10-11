@@ -423,7 +423,38 @@ def video_seconds(ffmpeg,path,fps=30.0):
 def _fit_audio(i,dur):
     return f"[{i}:a]aresample=48000,apad,atrim=end={dur:.6f},asetpts=N/SR/TB[n{i}]"
 
-def full_quality_clip(v52,e,work_dir):
+# HDR phone video (iPhone HLG / Dolby Vision 8.4, Android HDR10 PQ) shown on a normal screen: convert, do not just
+# re-encode the 10-bit numbers as if they were normal video (that looks grey and dark).
+HDR_TO_SDR={
+    "HLG":"zscale=tin=arib-std-b67:t=bt709:pin=bt2020:p=bt709:min=bt2020nc:m=bt709:r=tv,format=yuv420p",
+    "PQ":"zscale=t=linear:npl=203,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=mobius:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p",
+}
+_HDR_CACHE={}; _ZSCALE=[]
+
+def zscale_available(ffmpeg):
+    if not _ZSCALE:
+        try:
+            cp=subprocess.run([ffmpeg,"-hide_banner","-filters"],capture_output=True,text=True,timeout=60)
+            _ZSCALE.append(" zscale " in (cp.stdout or ""))
+        except Exception:
+            _ZSCALE.append(False)
+    return _ZSCALE[0]
+
+def hdr_kind(ffmpeg,src):
+    """'HLG', 'PQ' or None, from the transfer characteristic ffmpeg reports for the first video stream."""
+    key=str(src)
+    if key not in _HDR_CACHE:
+        kind=None
+        try:
+            cp=subprocess.run([ffmpeg,"-hide_banner","-i",key],capture_output=True,text=True,encoding="utf-8",errors="replace",timeout=60)
+            line=next((l for l in (cp.stderr or "").splitlines() if "Video:" in l),"")
+            kind="HLG" if "arib-std-b67" in line else ("PQ" if "smpte2084" in line else None)
+        except Exception:
+            kind=None
+        _HDR_CACHE[key]=kind
+    return _HDR_CACHE[key]
+
+def full_quality_clip(v52,e,work_dir,hdr=None):
     """Technical mode: moments are found and scored on the accepted V12 preview clips (max 960 px wide, re-timed to
     25 fps, sound and picture re-zeroed separately -> sound up to ~45 ms early). The reel itself is cut from the
     ORIGINAL at the same source interval (as R2 already does in AI mode), so it keeps full resolution, the source
@@ -431,13 +462,14 @@ def full_quality_clip(v52,e,work_dir):
     src=Path(e.get("source_path") or "")
     a=float(e.get("start_s") or 0.0); b=float(e.get("end_s") or 0.0)
     if not src.is_file() or b-a<0.3: return e
-    key=hashlib.sha256(f'{e.get("source_sha256")}|{a:.3f}|{b:.3f}|FULLRES1'.encode()).hexdigest()[:20]
+    key=hashlib.sha256(f'{e.get("source_sha256")}|{a:.3f}|{b:.3f}|FULLRES1|{hdr or "SDR"}'.encode()).hexdigest()[:20]
     d=work_dir/"full_quality"; d.mkdir(parents=True,exist_ok=True)
     clip=d/f"{key}.mp4"
     if not clip.is_file():
         tmp=d/f".{key}.tmp.mp4"
+        conv=(["-vf",HDR_TO_SDR[hdr],"-color_primaries","bt709","-color_trc","bt709","-colorspace","bt709"] if hdr in HDR_TO_SDR else [])
         cp=subprocess.run([v52.FFMPEG,"-hide_banner","-loglevel","error","-y","-ss",f"{a:.3f}","-i",str(src),"-t",f"{b-a:.3f}",
-                           "-map","0:v:0","-map","0:a?","-c:v","libx264","-preset","fast","-crf","18","-pix_fmt","yuv420p",
+                           "-map","0:v:0","-map","0:a?",*conv,"-c:v","libx264","-preset","fast","-crf","18","-pix_fmt","yuv420p",
                            "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(tmp)],capture_output=True,text=True)
         if cp.returncode!=0:
             tmp.unlink(missing_ok=True); return e      # keep the preview clip rather than fail the reel
@@ -464,8 +496,9 @@ def render_dissolve_block(v52,segs,durs,trans,out):
             filters.append(f"[{vprev}][{i}:v]concat=n=2:v=1:a=0[{vl}]")
             filters.append(f"[{aprev}][n{i}]concat=n=2:v=0:a=1[{al}]")
         else:
-            filters.append(f"[{vprev}][{i}:v]xfade=transition=fade:duration={td:.3f}:offset={off:.3f}[{vl}]")
-            filters.append(f"[{aprev}][n{i}]acrossfade=d={td:.3f}:c1=tri:c2=tri[{al}]")
+            # 6 decimals and a hair earlier: "9.467" for 9.4667 s made xfade start one frame late (sound 33 ms early)
+            filters.append(f"[{vprev}][{i}:v]xfade=transition=fade:duration={td:.6f}:offset={max(0.0,off-0.0005):.6f}[{vl}]")
+            filters.append(f"[{aprev}][n{i}]acrossfade=d={td:.6f}:c1=tri:c2=tri[{al}]")
         vprev=vl; aprev=al; cum+=float(durs[i])-max(0.0,td)
     args += ["-filter_complex",";".join(filters),"-map",f"[{vprev}]","-map",f"[{aprev}]",
              "-c:v","libx264","-preset","medium","-crf","18","-pix_fmt","yuv420p",
@@ -640,10 +673,17 @@ def run(args):
     segcache=work_dir/"segment_cache_v2"; segcache.mkdir(parents=True,exist_ok=True)
     segs=[]; durs=[]; seg_meta=[]
     render_source="AI_CANDIDATE_CLIPS_FROM_ORIGINAL" if use_semantic else "ORIGINAL_FULL_QUALITY_RECUT"
+    hdr_sources={}
     for si,(e,use) in enumerate(zip(order,pace["durations_s"])):
         progress("render",si,len(order),str(e["source_name"]))
-        if not use_semantic and str(e["event_id"]) not in trims:   # manual trims are already cut from the original
-            e=full_quality_clip(v52,e,work_dir)
+        hdr=hdr_kind(v52.FFMPEG,e["source_path"]) if e.get("source_path") else None
+        if hdr:
+            hdr_sources[str(e["source_name"])]=hdr
+            if not zscale_available(v52.FFMPEG):
+                hdr=None
+                if "HDR_NOT_CONVERTED" not in warnings: warnings.append("HDR_NOT_CONVERTED")
+        if hdr or (not use_semantic and str(e["event_id"]) not in trims):   # manual trims are already cut from the original
+            e=full_quality_clip(v52,e,work_dir,hdr)
         key=hashlib.sha256(json.dumps({"clip_sha256":e["clip_sha256"],"use_s":round(float(use),3),
                                      "audio":audio_mode,"profile":profile,"resolution":resolution,"fps":30,"quality":"high"},
                                     sort_keys=True,separators=(",",":")).encode()).hexdigest()[:20]
@@ -668,7 +708,11 @@ def run(args):
     render_dir=work_dir/"final_v2"; render_dir.mkdir(parents=True,exist_ok=True)
     temp_final=render_dir/(fingerprint+".mp4")
     if temp_final.exists(): temp_final.unlink()
-    render_mixed(v52,segs,durs,pace["transitions"],temp_final,render_dir/(fingerprint+"_render"))
+    # Dissolves are rendered with whole-frame lengths: a 0.25 s fade (7.5 frames) made the picture start up to half a
+    # frame after its sound at every dissolve. The pacing decision itself is kept as planned (result.pacing).
+    render_trans=[dict(t,duration_s=(max(1,round(float(t["duration_s"])*30))/30.0 if t["kind"]!="HARD_CUT" and float(t["duration_s"])>0 else 0.0))
+                  for t in pace["transitions"]]
+    render_mixed(v52,segs,durs,render_trans,temp_final,render_dir/(fingerprint+"_render"))
     fpr=v52.ffprobe(temp_final); actual=float(fpr["format"]["duration"]); video_sha=sha256_file(temp_final)
     if actual < float(args.target_seconds)-1.0 and "LIMITED_TOTAL_FOOTAGE" not in warnings:
         warnings.append("SHORTER_THAN_REQUESTED")
@@ -681,7 +725,7 @@ def run(args):
     for i,(e,meta,d) in enumerate(zip(order,seg_meta,durs)):
         clip_dur=float(e.get("duration_s") or d); use=float(d)
         src_in=float(e.get("start_s") or 0.0)+max(0.0,(clip_dur-use)/2.0)
-        if i>0: t-=float(pace["transitions"][i-1]["duration_s"])
+        if i>0: t-=float(render_trans[i-1]["duration_s"])
         timeline.append({"position":i+1,"event_id":str(e["event_id"]),"source_name":e["source_name"],
                          "source_in_s":round(src_in,3),"source_out_s":round(src_in+use,3),
                          "reel_in_s":round(max(0.0,t),3),"reel_out_s":round(t+use,3),
@@ -696,7 +740,8 @@ def run(args):
     result={
         "contract":CONTRACT_VERSION,"status":"PASS",
         "segments":timeline,"candidate_pool":pool_rows,"excluded_event_ids":sorted(exclude),"manual_edits":edits,
-        "skipped_inputs":skipped_inputs,"warnings":warnings,"render_source":render_source,
+        "skipped_inputs":skipped_inputs,"warnings":warnings,"render_source":render_source,"hdr_sources":hdr_sources,
+        "rendered_transition_s":[round(float(x["duration_s"]),6) for x in render_trans],
         "engine":{"orchestrator_sha256":sha256_file(Path(__file__)),"semantic_hook_sha256":SEMANTIC_HOOK_SHA},
         "input_folder":str(input_dir),"input_list":input_list,"input_fingerprint":fingerprint,"input_count":len(input_rows),
         "inputs":[{"name":r["name"],"bytes":r["bytes"],"sha256":r["sha256"]} for r in input_rows],

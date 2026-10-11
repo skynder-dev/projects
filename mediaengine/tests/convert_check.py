@@ -78,6 +78,14 @@ def main():
             top, bot = raw[: 90 * 10 * 3], raw[-90 * 10 * 3:]
             red_top = sum(top[0::3]) > sum(top[2::3]) + 60 * 900 and sum(bot[2::3]) > sum(bot[0::3]) + 60 * 900
             check(f"convert_{tag}_upright", red_top)
+    hlg = fx / "hdr" / "hlg" / "hlg.mov"
+    if hlg.is_file():
+        res = convert_file(hlg, "share_1080p", output_dir=out_dir)
+        raw = subprocess.run([ff, "-v", "error", "-ss", "2", "-i", res["output"], "-frames:v", "1", "-vf", "scale=128:72", "-f", "rawvideo",
+                              "-pix_fmt", "rgb24", "-"], capture_output=True).stdout
+        px = lambda x, y: tuple(raw[(y * 128 + x) * 3:(y * 128 + x) * 3 + 3]) if len(raw) == 128 * 72 * 3 else None
+        red, grey = px(12, 8), px(115, 8)
+        check("convert_hdr_hlg_normal_colours", red and grey and red[0] >= 160 and red[1] <= 70 and 100 <= grey[1] <= 160, (red, grey))
     check("convert_no_part_files", not list(out_dir.glob("*.part*")))
     print(json.dumps({"passed": sum(checks), "total": len(checks)}))
     return 0 if all(checks) else 1

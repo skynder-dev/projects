@@ -40,6 +40,18 @@ def upright_rows(ff, path):
     return out
 
 
+def patch_colours(ff, path):
+    """RGB at the centre of the red and grey patches (fixtures: top-left red C81E1E, top-right grey 808080) in a
+    16x9 reel frame 2.5 s in (the 1280x720 source is shown whole, scaled)."""
+    cp = subprocess.run([ff, "-v", "error", "-ss", "2.5", "-i", str(path), "-frames:v", "1", "-vf", "scale=128:72",
+                         "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], capture_output=True)
+    a = cp.stdout
+    if len(a) != 128 * 72 * 3:
+        return None, None
+    px = lambda x, y: tuple(a[(y * 128 + x) * 3:(y * 128 + x) * 3 + 3])
+    return px(12, 8), px(115, 8)
+
+
 def main():
     fx, work_root = Path(sys.argv[1]).resolve(), Path(sys.argv[2]).resolve()
     folder = fx / "static"
@@ -131,6 +143,22 @@ def main():
         rows = upright_rows(ff, out / "MediaEngine Reel.mp4") if cp.returncode == 0 else "failed"
         check(f"rotated_phone_video_upright_{prof}_{res}", rows.startswith("R") and rows.endswith("B") and "B" not in rows[:4]
               and "R" not in rows[-4:], rows)
+
+    # HDR phone video (HLG like iPhone, PQ like HDR10): the reel must show normal colours, not grey/dark HDR numbers
+    for kind in ("hlg", "pq"):
+        d = fx / "hdr" / kind
+        if not d.is_dir():
+            print(f"SKIP hdr_{kind}: fixture not made (no zscale in the fixture ffmpeg)")
+            continue
+        out = work_root / f"out_hdr_{kind}"
+        cp = subprocess.run([sys.executable, str(R3 / "p11_folder_to_reel_r3.py"), "--input-dir", str(d), "--output-dir", str(out),
+                             "--work-dir", str(work_root / f"work_hdr_{kind}"), "--runtime-dir", str(R3), "--target-seconds", "5",
+                             "--semantic", "off", "--profile", "16x9"], capture_output=True, text=True, encoding="utf-8", errors="replace", env=env)
+        r = json.loads((out / "MediaEngine Result.json").read_text(encoding="utf-8")) if cp.returncode == 0 else None
+        red, grey = patch_colours(ff, out / "MediaEngine Reel.mp4") if r else (None, None)
+        ok = (r and r.get("hdr_sources") and "HDR_NOT_CONVERTED" not in r.get("warnings", []) and red and grey
+              and red[0] >= 160 and red[1] <= 70 and red[2] <= 70 and 100 <= grey[1] <= 160)
+        check(f"hdr_{kind}_normal_colours", ok, (cp.stderr[-400:] if not r else (r.get("hdr_sources"), r.get("warnings"), red, grey)))
 
     print(json.dumps({"passed": sum(ok for _, ok in checks), "total": len(checks)}))
     return 0 if all(ok for _, ok in checks) else 1

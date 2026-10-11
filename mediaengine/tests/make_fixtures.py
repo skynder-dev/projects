@@ -56,6 +56,7 @@ def main(out: Path) -> None:
                         "anullsrc=r=48000:cl=stereo", "-t", "8", "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p",
                         "-c:a", "aac", "-shortest", str(static / "still.mp4")], check=True)
     make_phone(ff, out / "phone")
+    make_hdr(ff, out / "hdr")
     print("fixtures ready:", sorted(p.name for p in seven.iterdir()), sorted(p.name for p in two.iterdir()))
 
 
@@ -96,6 +97,32 @@ def make_phone(ff: str, phone: Path) -> None:
         run("-f", "lavfi", "-i", "rgbtestsrc=size=640x360:rate=30", "-f", "lavfi", "-i", "sine=frequency=700:sample_rate=48000",
             "-t", "1.5", "-vf", "rotate=0.4*t", "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest", str(short))
     shutil.rmtree(tmp, ignore_errors=True)
+
+
+PATCHES = "drawbox=x=0:y=0:w=320:h=180:color=0xC81E1E:t=fill,drawbox=x=960:y=0:w=320:h=180:color=0x808080:t=fill"
+
+
+def make_hdr(ff: str, hdr: Path) -> None:
+    """HDR phone-style clips made from SDR content with known patches (top-left red C81E1E, top-right grey 808080):
+    hlg/hlg.mov = 10-bit HEVC HLG (iPhone / Dolby Vision 8.4 style), pq/pq.mp4 = 10-bit HEVC PQ (HDR10 style).
+    A correct conversion back to normal video shows the patches close to their original colours."""
+    filt = subprocess.run([ff, "-hide_banner", "-filters"], capture_output=True, text=True).stdout
+    if " zscale " not in filt:
+        print("HDR fixtures skipped: this ffmpeg has no zscale")
+        return
+    for kind, trc, name in (("hlg", "arib-std-b67", "hlg.mov"), ("pq", "smpte2084", "pq.mp4")):
+        d = hdr / kind
+        d.mkdir(parents=True, exist_ok=True)
+        dst = d / name
+        if dst.exists():
+            continue
+        npl = ":npl=203" if kind == "pq" else ""
+        subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=1280x720:rate=30", "-f", "lavfi", "-i",
+                        "sine=frequency=400:sample_rate=48000", "-t", "8", "-vf",
+                        f"{PATCHES},format=gbrpf32le,zscale=tin=bt709:t={trc}:pin=bt709:p=bt2020:min=bt709:m=bt2020nc:r=tv{npl},format=yuv420p10le",
+                        "-c:v", "libx265", "-x265-params", f"log-level=error:colorprim=bt2020:transfer={trc}:colormatrix=bt2020nc",
+                        "-color_primaries", "bt2020", "-color_trc", trc, "-colorspace", "bt2020nc", "-tag:v", "hvc1",
+                        "-c:a", "aac", "-shortest", str(dst)], check=True)
 
 
 if __name__ == "__main__":

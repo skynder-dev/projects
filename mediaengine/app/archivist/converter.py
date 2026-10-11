@@ -61,13 +61,38 @@ def _unique_output(source: Path, preset: str, target_mb: int | None, output_dir:
         n += 1
 
 
-def _scale_args(preset: str):
+HDR_TO_SDR = {   # same conversion as the Auto Edit engine (engine_p11/p11_folder_to_reel_r3.py)
+    "HLG": "zscale=tin=arib-std-b67:t=bt709:pin=bt2020:p=bt709:min=bt2020nc:m=bt709:r=tv,format=yuv420p",
+    "PQ": "zscale=t=linear:npl=203,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=mobius:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p",
+}
+
+
+def _hdr_kind(ffmpeg, source) -> str | None:
+    """'HLG' / 'PQ' for HDR phone video, else None. A normal H.264 file must not keep the HDR numbers as-is (grey, dark)."""
+    try:
+        cp = subprocess.run([str(ffmpeg), "-hide_banner", "-i", str(source)], capture_output=True, text=True, encoding="utf-8",
+                            errors="replace", timeout=60, **process_kwargs())
+        line = next((l for l in (cp.stderr or "").splitlines() if "Video:" in l), "")
+        kind = "HLG" if "arib-std-b67" in line else ("PQ" if "smpte2084" in line else None)
+        if kind:
+            filt = subprocess.run([str(ffmpeg), "-hide_banner", "-filters"], capture_output=True, text=True, timeout=60, **process_kwargs())
+            if " zscale " not in (filt.stdout or ""):
+                return None
+        return kind
+    except Exception:
+        return None
+
+
+def _scale_args(preset: str, hdr: str | None = None):
     cap = PRESETS[preset]["cap"]
-    if not cap:
+    parts = [HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []
+    if cap:
+        # Cap the long edge. 1920 => 1920x1080 landscape or 1080x1920 portrait.
+        parts.append(f"scale='min({int(cap)},iw)':'min({int(cap)},ih)':force_original_aspect_ratio=decrease:force_divisible_by=2")
+    if not parts:
         return []
-    # Cap the long edge. 1920 => 1920x1080 landscape or 1080x1920 portrait.
-    vf = f"scale='min({int(cap)},iw)':'min({int(cap)},ih)':force_original_aspect_ratio=decrease:force_divisible_by=2"
-    return ["-vf", vf]
+    tags = ["-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709"] if hdr in HDR_TO_SDR else []
+    return ["-vf", ",".join(parts), *tags]
 
 
 def _cancelled(job_id: int | None):
@@ -145,6 +170,7 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
     duration = float(probe_duration(source) or 0.0)
     if duration <= 0:
         raise RuntimeError("Could not read video duration")
+    hdr = _hdr_kind(ffmpeg, source)
     target_mb = int(target_mb) if target_mb else None
     out = _unique_output(source, preset, target_mb, Path(output_dir) if output_dir else None)
     part = out.with_name(out.stem + ".part.mp4")
@@ -158,7 +184,7 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
         cfg = PRESETS[preset]
         common = [
             str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-i", str(source),
-            "-map", "0:v:0", "-map", "0:a?", *_scale_args(preset),
+            "-map", "0:v:0", "-map", "0:a?", *_scale_args(preset, hdr),
             "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "veryfast",
         ]
 
@@ -169,7 +195,7 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
             passlog = str((HOME / "data" / f"ffmpeg2pass-{os.getpid()}-{threading.get_ident()}").resolve())
             pass1 = [
                 str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-i", str(source),
-                "-map", "0:v:0", *_scale_args(preset),
+                "-map", "0:v:0", *_scale_args(preset, hdr),
                 "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "veryfast",
                 "-b:v", f"{video_k}k", "-maxrate", f"{int(video_k*1.25)}k", "-bufsize", f"{int(video_k*2)}k",
                 "-pass", "1", "-passlogfile", passlog, "-an", "-f", "null", os.devnull
