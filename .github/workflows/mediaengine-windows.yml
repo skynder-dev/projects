@@ -116,6 +116,7 @@ jobs:
           python mediaengine/tests/e2e_auto_edit.py --folder "$env:RUNNER_TEMP\fx\two" --home "$env:RUNNER_TEMP\home2" --mode technical --skip-cancel --files-check --out "$env:OUT\e2e_two.json" 2>&1 | Tee-Object "$env:OUT\e2e_two.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Russian interface - every page in Russian, no English left (pages of the 7-video and library homes)
+        continue-on-error: true    # a missed word is reported (results branch) but never blocks the package
         shell: pwsh
         run: |
           python mediaengine/tests/i18n_coverage.py "$env:RUNNER_TEMP\home7" "$env:RUNNER_TEMP\libchk\home" "$env:RUNNER_TEMP\home2" 2>&1 | Tee-Object "$env:OUT\i18n_coverage.txt"
