@@ -438,3 +438,15 @@ APP_JS: dict[str, str] = {
     "Remove this item from Library? Its imported Staging copy moves to the Rejected / Removed from Library folder (delete it there when you are sure); the source original stays untouched.":
         "Убрать из библиотеки? Копия из Staging переносится в папку Rejected / Removed from Library (удали её там, когда будешь уверен); оригинал не трогается.",
 }
+
+# Auto Edit pages (phrase-inside-text mode): counted nouns, before the phrase replacements; ⟪n|1|2-4|5+⟫ = plural
+APP_COUNT_SUBS: list[tuple[str, str]] = [
+    (r"\b(\d+) revision\(s\)", r"\1 ⟪\1|версия|версии|версий⟫"),
+    (r"\b(\d+) usable video\(s\)", r"\1 ⟪\1|пригодное видео|пригодных видео|пригодных видео⟫"),
+    (r"\b(\d+) chosen video\(s\)", r"\1 ⟪\1|выбранное видео|выбранных видео|выбранных видео⟫"),
+    (r"\b(\d+) video file\(s\) in folder", r"\1 видео в папке"),
+    (r"\b(\d+) overlapping moment\(s\) of the same video were left out so nothing repeats",
+     r"\1 ⟪\1|пересекающийся момент одного видео убран|пересекающихся момента одного видео убраны|пересекающихся моментов одного видео убраны⟫, чтобы ничего не повторялось"),
+    (r"\b(\d+) skipped\b", r"\1 ⟪\1|пропущено|пропущено|пропущено⟫"),
+]
+

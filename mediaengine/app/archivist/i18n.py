@@ -19,7 +19,7 @@ import re
 from .auto_edit_ru import JS_PHRASES as _AE_JS
 from .auto_edit_ru import PHRASES as _AE_PHRASES
 from .auto_edit_ru import _ORDERED as _AE_ORDERED
-from .ru_app import APP_JS, APP_PATTERNS, APP_PHRASES
+from .ru_app import APP_COUNT_SUBS, APP_JS, APP_PATTERNS, APP_PHRASES
 
 LANGS = ("en", "ru")
 
@@ -62,6 +62,7 @@ def _with_escaped(d: dict) -> dict:
 
 EXACT = _with_escaped({**_AE_PHRASES, **APP_PHRASES})
 PATTERNS = [(re.compile(p), r) for p, r in APP_PATTERNS]
+COUNT_SUBS = [(re.compile(p), r) for p, r in APP_COUNT_SUBS]
 
 
 def _quoted(d: dict) -> dict:
@@ -89,7 +90,7 @@ def _client_script() -> str:
         data = json.dumps({"d": d, "p": pats}, ensure_ascii=False).replace("</", "<\\/")
         _CLIENT = ("<script>window.ME_I18N=" + data + ";(function(){const D=ME_I18N.d,P=ME_I18N.p.map(x=>[new RegExp('^(?:'+x[0]+')$'),x[1]]);"
                    "function tr(s){const m=/^(\\s*)([\\s\\S]*?)(\\s*)$/.exec(s),c=m[2];if(!c||!/[A-Za-z]/.test(c))return null;"
-                   "if(Object.prototype.hasOwnProperty.call(D,c))return m[1]+D[c]+m[3];for(const [r,x] of P){if(r.test(c))return m[1]+c.replace(r,x).replace(/⟦([^⟧]*)⟧/g,(a,b)=>Object.prototype.hasOwnProperty.call(D,b)?D[b]:b)+m[3]}return null}"
+                   "if(Object.prototype.hasOwnProperty.call(D,c))return m[1]+D[c]+m[3];for(const [r,x] of P){if(r.test(c))return m[1]+c.replace(r,x).replace(/⟦([^⟧]*)⟧/g,(a,b)=>Object.prototype.hasOwnProperty.call(D,b)?D[b]:b).replace(/⟪(\\d+)\\|([^|⟫]*)\\|([^|⟫]*)\\|([^|⟫]*)⟫/g,(a,n,o,f,m2)=>{n=+n;return (n%10==1&&n%100!=11)?o:((n%10>=2&&n%10<=4&&!(n%100>=12&&n%100<=14))?f:m2)})+m[3]}return null}"
                    "function skip(n){const p=n.parentElement;return !p||!!p.closest(\"[translate='no'],.ae-path,.path,.mono,script,style,textarea,code,pre\")}"
                    "function one(t){if(skip(t))return;const r=tr(t.data);if(r!==null&&r!==t.data)t.data=r}"
                    "function walk(root){const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const a=[];let n;while(n=w.nextNode())a.push(n);a.forEach(one)}"
@@ -121,12 +122,32 @@ def translate_text(t: str, substring: bool = False) -> str:
     for rx, rep in PATTERNS:
         mm = rx.fullmatch(core)
         if mm:   # ⟦x⟧ in a replacement = look x up too ("quality good" -> "качество хорошее")
-            return lead + _LOOKUP.sub(lambda k: EXACT.get(k.group(1), k.group(1)), mm.expand(rep)) + tail
+            return lead + _finish(mm.expand(rep)) + tail
     if substring:
+        for rx, rep in COUNT_SUBS:            # counted nouns first, with Russian plural forms
+            t = rx.sub(rep, t)
         for en, ru in _AE_ORDERED:
             if en in t:
                 t = t.replace(en, ru)
+        t = _finish(t)
     return t
+
+
+_PLURAL = re.compile(r"⟪(\d+)\|([^|⟫]*)\|([^|⟫]*)\|([^|⟫]*)⟫")
+
+
+def ru_plural(n: int, one: str, few: str, many: str) -> str:
+    """1 версия, 2 версии, 5 версий, 11 версий, 21 версия."""
+    if n % 10 == 1 and n % 100 != 11:
+        return one
+    if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14:
+        return few
+    return many
+
+
+def _finish(text: str) -> str:
+    text = _LOOKUP.sub(lambda k: EXACT.get(k.group(1), k.group(1)), text)
+    return _PLURAL.sub(lambda k: ru_plural(int(k.group(1)), k.group(2), k.group(3), k.group(4)), text)
 
 
 def translate_script(block: str) -> str:

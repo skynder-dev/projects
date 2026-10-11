@@ -128,8 +128,10 @@ build has a problem, start the old folder again. Old builds can be removed on "C
 Auto Edit: choose a folder with your videos (or single videos), pick Length / Format / Sound, press
 "Create reel". Review the result, Accept it, then Export MP4 (to the Exports folder in "MediaEngine Data",
 or "Export to another folder..."). Phone and camera files work: MP4/MOV (also HEVC and HDR), camcorder
-MTS/M2TS/MOD/TOD, HDV/DV tape captures, DVD VOB/MPG, older WMV/FLV/3GP. "Check this PC" (on the Auto Edit page) shows what is installed and builds a test reel
-(also with the AI model). The Auto Edit pages can be switched to Russian (button "Русский").
+MTS/M2TS/MOD/TOD, HDV/DV tape captures, DVD VOB/MPG, older WMV/FLV/3GP. "Check this PC" (button on Home, in
+Settings and on Auto Edit) shows what is installed and builds a test reel (also with the AI model).
+Language: the "Русский" / "English" button at the top right of every page switches the whole program (also under
+Settings -> Interface language). On a Russian Windows it starts in Russian.
 
 AI model: if this folder sits next to an existing Archivist install (for example D:\\Archivist),
 the FAST_LOCAL model is found automatically. Otherwise use "Choose model folder" on the Auto Edit page.
@@ -159,24 +161,26 @@ MediaEngine (all Setup builds; keeps "MediaEngine Data"); from the ZIP -> Quit, 
   ярлык "{SHORTCUT}" — дальше запускай с него. Первый запуск может занять минуту.
   Python, консоль и браузер отдельно не нужны. Закрыть программу: кнопка Quit вверху.
 
-РОЛИК ИЗ СВОИХ ВИДЕО (Auto Edit)
-  1. Auto Edit → "Choose folder…" (папка с видео) или "Choose videos…" (отдельные файлы).
-  2. Выбери длину (Length), формат (Format) и звук (Sound) → "Create reel".
+РОЛИК ИЗ СВОИХ ВИДЕО (Автомонтаж)
+  1. Автомонтаж → «Выбрать папку…» (папка с видео) или «Выбрать видео…» (отдельные файлы).
+  2. Выбери длину, формат и звук → «Создать ролик».
   3. Посмотри результат. Можно убрать, заменить, обрезать, переставить моменты — каждая правка
      сохраняется как новая версия, старые не теряются.
-  4. "Accept this version" → "Export MP4" (или "Export to another folder…").
+  4. «Принять эту версию» → «Экспорт MP4» (или «Экспорт в другую папку…»).
+  (В английском интерфейсе: Auto Edit → Choose folder… → Create reel → Accept → Export MP4.)
   Оригиналы только читаются и никогда не меняются.
   Подходят видео с телефона и камер: MP4/MOV (в том числе HEVC и HDR), MTS/M2TS/MOD/TOD с видеокамер,
   оцифровки кассет HDV/DV, DVD (VOB/MPG), старые WMV/FLV/3GP.
 
 ЯЗЫК
-  Кнопка "Русский" справа вверху на странице Auto Edit переводит страницы автомонтажа на русский
-  ("English" — обратно).
+  Кнопка "Русский" / "English" справа вверху на любой странице переключает всю программу
+  (то же — в Настройках → Язык интерфейса). На русской Windows программа сразу открывается по-русски.
 
 ПРОВЕРКА КОМПЬЮТЕРА
-  На странице Auto Edit ссылка "Check this PC": видно, найдена ли ИИ-модель, работают ли библиотеки,
-  сколько места на диске, и можно собрать тестовый ролик из сгенерированных клипов (твои видео не трогает),
-  в том числе с ИИ-моделью — так видно, что ИИ-режим работает на этом компьютере.
+  Кнопка "Проверка компьютера" (Check this PC) — на главной, в Настройках и на странице автомонтажа:
+  видно, найдена ли ИИ-модель, работают ли библиотеки, сколько места на диске, и можно собрать тестовый
+  ролик из сгенерированных клипов (твои видео не трогает), в том числе с ИИ-моделью — так видно, что
+  ИИ-режим работает на этом компьютере.
 
 ИИ-МОДЕЛЬ
   Если рядом стоит рабочий Archivist (например D:\\Archivist), модель найдётся сама.
@@ -191,7 +195,7 @@ MediaEngine (all Setup builds; keeps "MediaEngine Data"); from the ZIP -> Quit, 
   Новую версию поставь её Setup'ом (или распакуй ZIP в новую папку рядом, не поверх старой) и запусти —
   она откроет те же проекты. Если старая ещё запущена, MediaEngine спросит, переключиться ли на новую.
   Если с новой что-то не так: Quit и запусти "Start MediaEngine.vbs" из старой папки. Ненужные старые
-  версии можно удалить на странице "Check this PC" (проекты и ролики не трогаются).
+  версии можно удалить на странице «Проверка компьютера» (проекты и ролики не трогаются).
   Номер сборки (например b21) виден вверху рядом с версией.
 
 РЯДОМ С РАБОЧИМ ARCHIVIST
