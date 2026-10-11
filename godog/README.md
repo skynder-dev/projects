@@ -1,3 +1,15 @@
+## 2026-10-11, managed Tampermonkey Base64 contract fix
+
+**Actual bug:** the managed `jsonImport` export stored enabled GoDog `source` as literal JavaScript. Per official Tampermonkey Deployment documentation, exported script `source` must be Base64. This explains why prior Relay registry `DONE` did not prove installation. The existing script `uuid` was preserved (`c2a87b53-42be-4ee1-9ca8-602200000001`) so repeated provisioning targets the same managed identity, not a new copy.
+
+**One-time bridge executed, no owner steps:** `godog-tm-provision-localhub-canary-001` updated to Base64-encoded GoDog 7.0.4. Decoded source SHA256 is `953e9735013f97c596547d67892957802ab727e18439bf829e14394627ed5448`, byte-identical to the original 7.0.4 code. Provision SHA256 `1ed6f00da44f4810451f2477d493df246ae1344ceb15d89e6b6aa40ee0f16b45`. Exactly one provision script remains enabled; existing legacy runner and Background Keepalive remain disabled.
+
+Relay apply command `f240256c-d673-40be-838d-5b2132cc4ad9` completed `DONE`; subsequent separate read-only `tampermonkey_policy query` event #78 confirms installed registry hash `1:1ed6f00d...` (`present=true`). **This is registry-policy proof, not proof of live Chrome runtime 7.0.4.**
+
+Tampermonkey documentation (https://www.tampermonkey.net/documentation.php?q=deploying) says managed JSON is fetched at extension startup. A currently running chat tab may still show 7.0.2 until normal startup/navigation. Do not claim Chrome installation success or force restart Chrome, terminate extension renderers, refresh existing user tabs or open new tabs. The separate Remote Lab agent was last seen 2026-10-08 and is currently unavailable; do not queue disruptive operations for a later surprise execution.
+
+The goal remains GoDog local-first and one-time migration only. This is not yet evidence that `127.0.0.1:43129` updater is installed or running. No new userscript revision, ZIP or UI changes were made for this Base64 encoding fix.
+
 # GoDog PC LOCAL 7.0.4, UI restoration
 
 - 2026-10-11: restored **original composer-aligned dock geometry**. Original 6.0.26 HTML and CSS are unchanged; only missing layout positioning and labels restored. GO/AUTO/NEW/STOP still use local direct controls, no timers, no Supabase inside userscript.
