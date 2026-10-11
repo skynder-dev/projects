@@ -103,7 +103,8 @@ PHRASES = {
     "You preferred B =": "Ты выбрал B =", "over B =": "вместо B =", "over A =": "вместо A =", "· automatic)": "· автоматически)",
     "· edited by you)": "· с твоими правками)", "Blind comparison": "Слепое сравнение", "Note:": "Заметка:",
     "Project not found": "Проект не найден", "Comparison not found": "Сравнение не найдено",
-    " s · ": " с · ", " s ·": " с ·",
+    " s · ": " с · ", " s ·": " с ·", "· Vertical ": "· Вертикально ", "· Landscape ": "· Горизонтально ",
+    "Vertical ·": "Вертикально ·", "Landscape ·": "Горизонтально ·", "· Horizontal ": "· Горизонтально ", "Horizontal ·": "Горизонтально ·",
     "First time on this PC?": "Первый раз на этом компьютере?",
     "Check this PC first: it shows whether the AI model and video tools are found and builds a 5-second test reel (about a minute; your videos are not used).":
         "Сначала проверь компьютер: видно, найдены ли ИИ-модель и видеоинструменты, и собирается тестовый ролик на 5 секунд (около минуты; твои видео не используются).",
