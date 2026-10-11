@@ -21,7 +21,6 @@ jobs:
     timeout-minutes: 75
     env:
       PYTHONUTF8: '1'
-      OUT: ${{ runner.temp }}\me-ci
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -30,6 +29,8 @@ jobs:
       - name: Install pinned 3.12.42 environment
         shell: pwsh
         run: |
+          "OUT=$env:RUNNER_TEMP\me-ci" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          $env:OUT = "$env:RUNNER_TEMP\me-ci"
           python -m pip install --disable-pip-version-check -q -r mediaengine/requirements.txt
           New-Item -ItemType Directory -Force $env:OUT | Out-Null
           python --version
