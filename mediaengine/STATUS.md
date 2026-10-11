@@ -50,6 +50,11 @@ What a user can do (code: `app/archivist/auto_edit.py`, `auto_edit_web.py`, engi
   quality review; results listed on the project. **Free cache** per project; estimate of time left while building.
 - Library: re-analysing a video keeps clips used in compositions and hand-made crops (before: deleted by cascade).
 - Short Russian guide `ПРОЧТИ.txt` in the package.
+- Camcorder files: AVCHD `.MTS`/`.M2TS`, `.TS`, `.MPG`, `.3GP` accepted; interlaced video is de-interlaced (Convert too).
+- **Check this PC** page: data/program folders, free space, FFmpeg (+ HDR support), AI model, engine libraries
+  (numpy / OpenCV / ONNX Runtime load test), long-path setting, and a 5-second test reel from generated clips.
+- If an AI-mode build fails, the project offers "Build without AI (Technical only)" instead of leaving the user stuck.
+- MediaEngine opens on the Auto Edit projects page; whole reel rendered in one encode (faster); stage times recorded.
 
 ### Engine R3 vs Windows-proven R2 (documented differences)
 
@@ -71,6 +76,8 @@ The 11 runtime modules, adapter and validator are byte-identical to R2 (CI-check
 | Technical mode renders from the ORIGINAL at the same source interval (decisions still made on the V12 previews) | R2 rendered from 960-px, 25-fps previews whose sound was re-zeroed separately (soft, juddery, sound up to 45 ms early); AI mode in R2 already cut from the original |
 | Each segment's sound fitted to its picture; fades with whole-frame lengths and exact offsets; blocks joined with the concat filter after normalising pixel aspect / time base | R2 let sound drift at every join (0.39 s at the end of a 30 s reel on Windows) and a 3-decimal fade offset could start a fade one frame late |
 | HDR sources converted (HLG direct, PQ tone-mapped) when cutting from the original | grey/dark colours from 10-bit HDR phone video |
+| Long-named videos (Windows long paths off) analysed under a short stand-in name; camcorder transport streams analysed as an MP4 remux; interlaced video de-interlaced | analysis failed (FileNotFoundError / too few frames) or combed picture |
+| Technical analysis in parallel groups; whole reel in one encode; sound fitted sample-exactly | speed; exact A/V length |
 
 ## Evidence
 

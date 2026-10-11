@@ -103,8 +103,9 @@ def install_launchers(home: Path) -> None:
         if side_by_side and (not name or name.lower() == "archivist"):
             name = "MediaEngine RC"
         name = name or "Archivist"
-        maker = home / "data" / "make_shortcut.vbs"
-        maker.parent.mkdir(parents=True, exist_ok=True)
+        # temp folder, not <home>\data: a side-by-side release folder must stay exactly as it was unpacked
+        import tempfile
+        maker = Path(tempfile.gettempdir()) / f"MediaEngine_make_shortcut_{os.getpid()}.vbs"
         # UTF-16 with BOM: wscript reads it as Unicode, so a folder like D:\\Видео\\MediaEngine works.
         maker.write_text(
             'Set sh=CreateObject("WScript.Shell")\r\n'
@@ -117,7 +118,10 @@ def install_launchers(home: Path) -> None:
             'sc.Save\r\n',
             encoding="utf-16",
         )
-        subprocess.run(["wscript.exe", str(maker)], timeout=15, **process_kwargs(detached=True))
+        try:
+            subprocess.run(["wscript.exe", str(maker)], timeout=15, **process_kwargs(detached=True))
+        finally:
+            maker.unlink(missing_ok=True)
     except Exception:
         pass
 

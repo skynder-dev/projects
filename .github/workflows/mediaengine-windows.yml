@@ -178,9 +178,12 @@ jobs:
           if ((Test-Path "$pkg\Archivist.vbs") -or (Test-Path "$pkg\launcher")) { $fail += 'stable launcher files created' }
           # a project made in this release
           $folder = "$env:RUNNER_TEMP\fx\two"
-          $r = Invoke-WebRequest -UseBasicParsing -Method Post -Uri http://127.0.0.1:8775/auto/create -Headers $H -Body @{folder=$folder; length='5'; format='social_hd'; sound='auto'; mode='technical'} -MaximumRedirection 0 -SkipHttpErrorCheck
-          "create project: HTTP $($r.StatusCode) -> $($r.Headers.Location)" | Tee-Object -Append $log
-          if ($r.StatusCode -ne 302) { $fail += 'create project' }
+          try {
+            $r = Invoke-WebRequest -UseBasicParsing -Method Post -Uri http://127.0.0.1:8775/auto/create -Headers $H -Body @{folder=$folder; length='5'; format='social_hd'; sound='auto'; mode='technical'}
+            $made = $r.StatusCode -eq 200 -and $r.Content.Contains('/auto/p/1/')
+          } catch { $made = $false; "create project error: $_" | Tee-Object -Append $log }
+          "create project: $made" | Tee-Object -Append $log
+          if (-not $made) { $fail += 'create project' }
           # second copy of the app on the same port must refuse to start (no second set of workers)
           $env:ARCHIVIST_V2_CHILD = '1'
           $p2 = Start-Process "$pkg\.venv\Scripts\python.exe" -ArgumentList '-s','-E',"`"$pkg\app\main.py`"",'--no-browser' -PassThru -RedirectStandardError "$env:OUT\second_copy_stderr.txt" -WindowStyle Hidden

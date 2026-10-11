@@ -22,7 +22,7 @@ ENGINE_DIR = Path(__file__).resolve().parent / "engine_p11"
 ORCHESTRATOR = ENGINE_DIR / "p11_folder_to_reel_r3.py"
 AE_ROOT = DATA / "auto_edit"
 EXPORTS = HOME / "Exports"
-SUPPORTED = {".mp4", ".mov", ".m4v", ".avi", ".mkv", ".webm"}
+SUPPORTED = {".mp4", ".mov", ".m4v", ".avi", ".mkv", ".webm", ".mts", ".m2ts", ".ts", ".3gp", ".mpg", ".mpeg"}
 MAX_INPUTS = 64
 
 # One output preset per run (contract 2026-10-03). Keys are what the UI submits.
@@ -351,7 +351,7 @@ def check_files(files) -> list[Path]:
         if not f.is_absolute() or not f.is_file():
             raise ValueError(f"File not found: {raw}")
         if f.suffix.lower() not in SUPPORTED or f.name.startswith("._"):
-            raise ValueError(f"Not a supported video file: {f.name} (.mp4 .mov .m4v .avi .mkv .webm)")
+            raise ValueError(f"Not a supported video file: {f.name} (.mp4 .mov .m4v .avi .mkv .webm .mts .m2ts .ts .3gp .mpg)")
         _guard_private(f)
         if f.name.lower() in names:
             raise ValueError(f"Two chosen files have the same name ({f.name}). Rename one of them, or choose a folder.")
@@ -442,7 +442,7 @@ def create_project(folder, title="", files=None) -> int:
     else:
         folder = check_folder(folder)
         if not list_videos(folder):
-            raise ValueError("This folder has no supported video files (.mp4 .mov .m4v .avi .mkv .webm)")
+            raise ValueError("This folder has no supported video files (.mp4 .mov .m4v .avi .mkv .webm .mts .m2ts .ts .3gp .mpg)")
     ts = now_iso()
     name = str(title or "").strip()[:80] or folder.name or "Auto Edit"
     with db() as con:
@@ -1096,6 +1096,90 @@ def revision_thumb(rid: int, pos: int) -> Path | None:
     return None
 
 
+# ---------------------------------------------------------------- "Check this PC"
+
+def system_check() -> list[dict]:
+    """What the user (or support) needs to know about this PC before blaming a reel. Read-only."""
+    rows = []
+
+    def add(name, ok, detail, level="ok"):
+        rows.append({"name": name, "ok": bool(ok), "detail": str(detail), "level": level if ok else "bad"})
+    from .config import INSTALL
+    add("Program folder", True, INSTALL)
+    try:
+        DATA.mkdir(parents=True, exist_ok=True)
+        probe = DATA / f".write_test_{os.getpid()}"
+        probe.write_text("ok", encoding="utf-8"); probe.unlink()
+        add("Data folder (projects, exports)", True, HOME)
+    except OSError as exc:
+        add("Data folder (projects, exports)", False, f"{HOME}: not writable ({exc})")
+    try:
+        free = shutil.disk_usage(HOME).free
+        add("Free space on the data drive", free > 5e9, f"{free / 1e9:.1f} GB" + ("" if free > 5e9 else " - less than 5 GB, builds may fail"))
+    except OSError as exc:
+        add("Free space on the data drive", False, exc)
+    ff = _ffmpeg()
+    if ff:
+        try:
+            ver = subprocess.run([ff, "-hide_banner", "-version"], **process_kwargs({"capture_output": True, "text": True, "timeout": 30})).stdout.splitlines()[0]
+            filt = subprocess.run([ff, "-hide_banner", "-filters"], **process_kwargs({"capture_output": True, "text": True, "timeout": 30})).stdout
+            add("FFmpeg", True, ver)
+            add("HDR phone video conversion (zscale)", " zscale " in filt, "available" if " zscale " in filt else "missing - HDR video will look grey")
+        except Exception as exc:
+            add("FFmpeg", False, exc)
+    else:
+        add("FFmpeg", False, "not found")
+    ms = model_status()
+    add("AI model (FAST_LOCAL)", ms["ready"], ms["path"] if ms["ready"] else
+        ("not found - only 'Technical only' reels" if ms["reason"] == "MODEL_MISSING" else "files changed or incomplete - not used"))
+    try:
+        cp = subprocess.run([engine_python(), "-s", "-E", "-c",
+                             "import numpy, cv2, onnxruntime; print('numpy', numpy.__version__, '| opencv', cv2.__version__, '| onnxruntime', onnxruntime.__version__)"],
+                            **process_kwargs({"capture_output": True, "text": True, "timeout": 120}))
+        add("Engine libraries load (numpy, OpenCV, ONNX Runtime)", cp.returncode == 0,
+            cp.stdout.strip() or (cp.stderr.strip().splitlines() or ["failed"])[-1][:300])
+    except Exception as exc:
+        add("Engine libraries load (numpy, OpenCV, ONNX Runtime)", False, exc)
+    add("Processor", True, f"{os.cpu_count() or '?'} logical cores")
+    if os.name == "nt":
+        try:
+            import winreg
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\FileSystem") as k:
+                lp = winreg.QueryValueEx(k, "LongPathsEnabled")[0]
+        except Exception:
+            lp = 0
+        add("Windows long paths", True, "on" if lp else "off (handled: long-named videos are analysed under short names)")
+    return rows
+
+
+def quick_selftest(timeout_s: int = 600) -> dict:
+    """Build a 5 s reel from two generated clips with the real engine (Technical only). Never touches user media."""
+    import time as _t
+    ff = _ffmpeg() or "ffmpeg"
+    root = DATA / "selftest"
+    shutil.rmtree(root, ignore_errors=True)
+    src = root / "in"; src.mkdir(parents=True, exist_ok=True)
+    for i, lav in enumerate(("testsrc2=size=640x360:rate=30", "mandelbrot=size=640x360:rate=30"), 1):
+        subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", lav, "-f", "lavfi", "-i", f"sine=frequency={300 + 100 * i}:sample_rate=48000",
+                        "-t", "8", "-vf", f"hue=h=t*{20 * i}", "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p",
+                        "-c:a", "aac", "-shortest", str(src / f"test_{i}.mp4")], **process_kwargs({"capture_output": True, "timeout": 120}))
+    s = {"length": 5, "format": "vertical", "sound": "auto", "mode": "technical"}
+    cmd = engine_command(src, root / "out", root / "work", root / "progress.json", s)
+    t0 = _t.time()
+    try:
+        cp = subprocess.run(cmd, env=_engine_env(), cwd=str(ENGINE_DIR), stdin=subprocess.DEVNULL,
+                            **process_kwargs({"capture_output": True, "text": True, "timeout": timeout_s, "encoding": "utf-8", "errors": "replace"}))
+        ok = cp.returncode == 0 and (root / "out" / "MediaEngine Reel.mp4").is_file()
+        err = "" if ok else (cp.stdout + cp.stderr)[-600:]
+    except subprocess.TimeoutExpired:
+        ok, err = False, f"no result within {timeout_s} s"
+    res = {"ok": ok, "seconds": round(_t.time() - t0, 1), "error": err}
+    if ok:
+        r = json.loads((root / "out" / "MediaEngine Result.json").read_text(encoding="utf-8"))
+        res.update(video=str(root / "out" / "MediaEngine Reel.mp4"), duration_s=r.get("actual_duration_s"), stages=r.get("stage_seconds"))
+    return res
+
+
 # ---------------------------------------------------------------- disk space
 
 def _tree_bytes(root: Path) -> int:
@@ -1317,7 +1401,7 @@ def pick_files(title="Choose videos for one reel") -> list[str] | None:
 
         size = 65536
         buf = ctypes.create_unicode_buffer(size)
-        flt = "Videos\0*.mp4;*.mov;*.m4v;*.avi;*.mkv;*.webm\0All files\0*.*\0\0"
+        flt = "Videos\0*.mp4;*.mov;*.m4v;*.avi;*.mkv;*.webm;*.mts;*.m2ts;*.ts;*.3gp;*.mpg;*.mpeg\0All files\0*.*\0\0"
         ofn = OPENFILENAMEW()
         ofn.lStructSize = ctypes.sizeof(OPENFILENAMEW)
         ofn.hwndOwner = ctypes.windll.user32.GetForegroundWindow()

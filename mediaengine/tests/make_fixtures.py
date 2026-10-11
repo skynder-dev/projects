@@ -57,6 +57,7 @@ def main(out: Path) -> None:
                         "-c:a", "aac", "-shortest", str(static / "still.mp4")], check=True)
     make_phone(ff, out / "phone")
     make_hdr(ff, out / "hdr")
+    make_camcorder(ff, out / "camcorder", seven)
     print("fixtures ready:", sorted(p.name for p in seven.iterdir()), sorted(p.name for p in two.iterdir()))
 
 
@@ -123,6 +124,19 @@ def make_hdr(ff: str, hdr: Path) -> None:
                         "-c:v", "libx265", "-x265-params", f"log-level=error:colorprim=bt2020:transfer={trc}:colormatrix=bt2020nc",
                         "-color_primaries", "bt2020", "-color_trc", trc, "-colorspace", "bt2020nc", "-tag:v", "hvc1",
                         "-c:a", "aac", "-shortest", str(dst)], check=True)
+
+
+def make_camcorder(ff: str, cam: Path, seven: Path) -> None:
+    """AVCHD-style camcorder file: 1080i50 H.264 in MPEG-TS (.MTS) with AC-3 sound, plus one normal clip."""
+    cam.mkdir(parents=True, exist_ok=True)
+    mts = cam / "00012.MTS"
+    if not mts.exists():
+        subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=1920x1080:rate=50", "-f", "lavfi", "-i",
+                        "sine=frequency=500:sample_rate=48000", "-t", "10", "-vf", "hue=h=t*15,interlace=scan=tff,setfield=tff",
+                        "-c:v", "libx264", "-preset", "ultrafast", "-flags", "+ildct+ilme", "-x264-params", "tff=1", "-pix_fmt", "yuv420p",
+                        "-c:a", "ac3", "-f", "mpegts", str(mts)], check=True)
+    if not (cam / "clip_3.mp4").exists():
+        shutil.copyfile(seven / "clip_3.mp4", cam / "clip_3.mp4")
 
 
 if __name__ == "__main__":

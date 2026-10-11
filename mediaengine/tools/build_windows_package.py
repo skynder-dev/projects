@@ -94,8 +94,10 @@ Your projects, settings and exports are kept OUTSIDE this folder, in "MediaEngin
 (the exact place is shown under Settings). Newer build: extract it next to this one (a new folder),
 start it; it opens the same projects. If the new build has a problem, start the old folder again.
 
-Auto Edit: open "Auto Edit", choose a folder with your videos, pick Length / Format / Sound, press
-"Create reel". Review the result, Accept it, then Export MP4 (saved to the Exports folder here).
+Auto Edit: choose a folder with your videos (or single videos), pick Length / Format / Sound, press
+"Create reel". Review the result, Accept it, then Export MP4 (to the Exports folder in "MediaEngine Data",
+or "Export to another folder..."). Phone and camera files work: MP4/MOV (also HEVC and HDR), camcorder
+MTS/M2TS, MPG, 3GP. "Check this PC" (on the Auto Edit page) shows what is installed and builds a test reel.
 
 AI model: if this folder sits next to an existing Archivist install (for example D:\\Archivist),
 the FAST_LOCAL model is found automatically. Otherwise use "Choose model folder" on the Auto Edit page.
@@ -120,6 +122,11 @@ It does not change a stable Archivist install. To remove it: Quit, delete this f
      сохраняется как новая версия, старые не теряются.
   4. "Accept this version" → "Export MP4" (или "Export to another folder…").
   Оригиналы только читаются и никогда не меняются.
+  Подходят видео с телефона и камер: MP4/MOV (в том числе HEVC и HDR), MTS/M2TS с видеокамеры, MPG, 3GP.
+
+ПРОВЕРКА КОМПЬЮТЕРА
+  На странице Auto Edit ссылка "Check this PC": видно, найдена ли ИИ-модель, работают ли библиотеки,
+  сколько места на диске, и можно собрать тестовый ролик из сгенерированных клипов (твои видео не трогает).
 
 ИИ-МОДЕЛЬ
   Если рядом стоит рабочий Archivist (например D:\\Archivist), модель найдётся сама.

@@ -342,7 +342,12 @@ def main():
         check("free_cache", r.status_code == 302 and before_cache > 0 and ae.project_disk_usage(pid)["cache_bytes"] == 0
               and r2v.status_code == 206, (r.status_code, before_cache))
 
+        r = c.get("/auto/check", headers=H)
+        check("check_this_pc_page", r.status_code == 200 and b"Engine libraries load" in r.data and "⚠️</td><td><b>Engine".encode() not in r.data)
+
         if a.files_check:
+            r = c.post("/auto/check", headers=H)
+            check("check_this_pc_test_reel", r.status_code == 200 and b"Test reel built" in r.data, r.data[-600:])
             usable = [f["name"] for f in scan["files"] if f["ok"]][:2]
             chosen = [str(folder / n) for n in usable]
             r = c.get("/auto/new", query_string=[("file", x) for x in chosen], headers=H)

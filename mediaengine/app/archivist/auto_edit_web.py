@@ -103,6 +103,7 @@ Your original files are only read, never changed.</div></div>
 <input name='folder' id='folderInput' placeholder='or paste a folder path, e.g. D:\\Videos\\Trip' style='flex:1;min-width:280px'>
 <button class='btn btn2 ae-big'>Continue</button></form>
 <div class='muted' id='pickMsg' style='margin-top:6px'></div></div>{model_note}
+<div class='muted' style='margin-top:8px'><a href='/auto/check'>Check this PC</a> — model, video tools and a 5-second test reel</div>
 <div class='section-title row space'><span>My projects</span><a class='muted' href='/auto?archived={'0' if request.args.get('archived')=='1' else '1'}'>{'Hide' if request.args.get('archived')=='1' else 'Show'} archived</a></div>
 <div class='ae-grid'>{cards}</div>"""
         script = """
@@ -118,6 +119,27 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
  if(x.files&&x.files.length){m.textContent='';location.href='/auto/new?'+x.files.map(f=>'file='+encodeURIComponent(f)).join('&')}
  else m.textContent=x.error||'No videos chosen.'}catch(e){m.textContent='Window failed: '+e}};"""
         return page("Auto Edit", body, script)
+
+    @app.route("/auto/check", methods=["GET", "POST"])
+    def ae_check():
+        rows = ae.system_check()
+        table = "".join(f"<tr><td>{'✅' if r['ok'] else '⚠️'}</td><td><b>{e(r['name'])}</b></td><td class='ae-path'>{e(r['detail'])}</td></tr>" for r in rows)
+        test_html = ""
+        if request.method == "POST":
+            t = ae.quick_selftest()
+            if t["ok"]:
+                test_html = (f"<div class='card ae-done' style='margin-top:14px'><b>Test reel built in {t['seconds']} s</b>"
+                             f"<div class='muted'>{t.get('duration_s')} s reel from two generated clips · stages: {e(json.dumps(t.get('stages')))}</div></div>")
+            else:
+                test_html = (f"<div class='card' style='margin-top:14px'><b>Test reel failed after {t['seconds']} s</b>"
+                             f"<div class='errbox' style='margin-top:6px'>{e(t['error'])}</div></div>")
+        body = (f"<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Check this PC</h1>"
+                f"<div class='lead'>What MediaEngine needs, and a 5-second test reel made from generated clips (your videos are not used).</div></div>"
+                f"<div class='card'><table class='ae-files'>{table}</table></div>"
+                f"<form method='post' class='card' style='margin-top:14px' onsubmit=\"this.querySelector('button').disabled=true;this.querySelector('span').textContent='Building the test reel… (up to a minute)'\">"
+                f"<button>Build a test reel</button> <span class='muted'></span></form>{test_html}"
+                f"<div class='row' style='margin-top:14px'><a class='btn btn2' href='/auto'>Back</a></div>")
+        return page("Check this PC", body)
 
     @app.post("/api/auto/model/import")
     def ae_model_import():
@@ -247,9 +269,17 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
                              f"{q['settings']['length']} s · sound {e(q['settings']['sound'])}</span>"
                              f"<form method='post' action='/auto/job/{q['id']}/cancel'><button class='btn2'>Cancel</button></form></div>")
         elif last_job and last_job["status"] in ("failed", "cancelled") and (not revs or last_job["id"] > max(r["job_id"] for r in revs)):
+            ls_ = last_job["settings"]
+            no_ai = ""
+            if last_job["status"] == "failed" and ls_.get("mode") == "semantic":
+                # an AI-mode failure must not leave the user stuck: offer the clearly labelled technical build
+                no_ai = (f"<form method='post' action='/auto/p/{pid}/variant'>"
+                         f"<input type='hidden' name='length' value='{ls_['length']}'><input type='hidden' name='format' value='{e(ls_['format'])}'>"
+                         f"<input type='hidden' name='sound' value='{e(ls_['sound'])}'><input type='hidden' name='mode' value='technical'>"
+                         f"<button class='btn2'>Build without AI (Technical only)</button></form>")
             parts.append(f"""<div class='card'><b>{'Build failed' if last_job['status']=='failed' else 'Build cancelled'}</b>
 <div class='{'errbox' if last_job['status']=='failed' else 'muted'}' style='margin:8px 0'>{e(last_job.get('error') or last_job.get('message') or '')}</div>
-<form method='post' action='/auto/job/{last_job['id']}/retry'><button>Retry</button></form></div>""")
+<div class='row' style='flex-wrap:wrap'><form method='post' action='/auto/job/{last_job['id']}/retry'><button>Retry</button></form>{no_ai}</div></div>""")
         done_x = ae.export_row(request.args.get("exported", type=int) or 0)
         if done_x and int(done_x["project_id"]) == int(pid):
             parts.append(f"""<div class='card ae-done'><div class='eyebrow'>Done</div><h2 style='margin:4px 0'>Your reel is saved</h2>
@@ -596,6 +626,19 @@ def _review_html(p, rev, e):
     skipped = res.get("skipped_inputs") or []
     skipped_html = ("<div class='muted' style='margin-top:6px'>Skipped: " + e(", ".join(f"{x['name']} ({ae.friendly_skip(x['reason'])})" for x in skipped)) + "</div>") if skipped else ""
     mode = "AI moments (FAST_LOCAL)" if res.get("selection_mode", "").startswith("FAST_LOCAL") else "Technical only (no AI)"
+    notes = []
+    for w in res.get("warnings") or []:
+        if w.startswith("OVERLAPPING_MOMENTS_DROPPED"):
+            notes.append(f"{w.split(':')[-1]} overlapping moment(s) of the same video were left out so nothing repeats")
+        elif w.startswith("SELECTION_SEARCH_TOP_"):
+            notes.append(f"for this length the best {w.rsplit('_', 1)[-1]} moments were compared")
+        elif w == "HDR_NOT_CONVERTED":
+            notes.append("HDR video could not be converted on this PC: colours may look grey")
+    if res.get("hdr_sources"):
+        notes.append("HDR video converted to normal colours: " + ", ".join(res["hdr_sources"]))
+    if res.get("deinterlaced_sources"):
+        notes.append("camcorder video de-interlaced: " + ", ".join(res["deinterlaced_sources"]))
+    skipped_html_extra = ("<div class='muted' style='margin-top:4px'>" + e(" · ".join(notes)) + "</div>") if notes else ""
     exp_html = ""
     if is_acc:
         last = next((x for x in p["exports"] if x["revision_id"] == rev["id"]), None)
@@ -624,7 +667,7 @@ def _review_html(p, rev, e):
     return f"""<div class='ae-player' style='margin-top:14px'>
 <div class='card'><video id='reel' class='ae-video' controls preload='metadata' src='/auto/rev/{rev['id']}/video'></video>
 <div class='ae-strip film'>{strip}</div>
-<div class='muted'>Revision R{int(rev['number']):03d} · {e(fmt.get('short',''))} {rev['width']}×{rev['height']} · {total:.2f} s · sound {e(_sound_label(rev['settings']['sound'], res))} · {e(mode)}</div>{short_html}{skipped_html}
+<div class='muted'>Revision R{int(rev['number']):03d} · {e(fmt.get('short',''))} {rev['width']}×{rev['height']} · {total:.2f} s · sound {e(_sound_label(rev['settings']['sound'], res))} · {e(mode)}</div>{short_html}{skipped_html}{skipped_html_extra}
 <div class='row' style='margin-top:12px;flex-wrap:wrap'>{actions}</div>{compare_html}{exp_html}</div>
 <form class='card' method='post' action='/auto/p/{p['id']}/edit' id='editForm'><h2 style='margin-top:0'>Moments in this reel</h2>
 <input type='hidden' name='revision_id' value='{rev['id']}'><input type='hidden' name='base_revision_id' value='{rev['id']}'>

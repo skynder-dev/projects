@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 
 CONTRACT_VERSION = "P11_FOLDER_TO_REEL_R3"
-SUPPORTED = {".mp4",".mov",".m4v",".avi",".mkv",".webm"}
+SUPPORTED = {".mp4",".mov",".m4v",".avi",".mkv",".webm",".mts",".m2ts",".ts",".3gp",".mpg",".mpeg"}   # + camcorder / old phone
 
 SEMANTIC_HOOK_SHA = "2b15303eba5b02b7f949cb560e58b2dbee09ff4576e21ad4b25b2d3111b02d5c"
 MODEL_SHA = "844d1a46ab18acf50c989e541b12fe3b6dc7f8d6004725b4e992d142788e0600"
@@ -307,24 +307,51 @@ def _short_path_windows(path):
     except Exception:
         return None
 
-def short_aliases(rows,work_dir):
-    """Windows without long-path support (the default) cannot reach the analysis files of a video with a long
-    name: the accepted pipeline names its folders after the video (up to ~330 characters, limit 260). Such videos are
-    analysed under a short name - a hard link (same drive), else the 8.3 short path, else a copy (up to 4 GB) - and
-    mapped back to the real name afterwards. Returns (rows for the analysis, {short name: original row})."""
+REMUX_EXT={".mts",".m2ts",".ts",".mpg",".mpeg"}
+
+def _remux_alias(r,alias):
+    """Camcorder transport streams (.MTS/.M2TS/.TS/.MPG): OpenCV inside the accepted analysis cannot count or seek their
+    frames (the scout reports too few frames), so they are analysed as an MP4 with the same pictures (video stream
+    copied; sound to AAC). The reel itself is still cut from the original."""
+    ff=os.environ.get("MEDENG_FFMPEG","ffmpeg")
+    tmp=alias.with_name(alias.stem+".part.mp4"); tmp.unlink(missing_ok=True)
+    for vcodec in (["-c:v","copy"],["-c:v","libx264","-preset","veryfast","-crf","16","-pix_fmt","yuv420p"]):
+        cp=subprocess.run([ff,"-hide_banner","-loglevel","error","-y","-i",r["path"],"-map","0:v:0","-map","0:a:0?",*vcodec,
+                           "-c:a","aac","-b:a","192k","-movflags","+faststart",str(tmp)],capture_output=True,text=True)
+        if cp.returncode==0 and tmp.is_file() and tmp.stat().st_size>1024:
+            os.replace(tmp,alias); return True
+    tmp.unlink(missing_ok=True); return False
+
+def analysis_aliases(rows,work_dir,long_names=True):
+    """Stand-ins the accepted analysis can handle, mapped back to the real files afterwards.
+    - Windows without long-path support (the default) cannot reach the analysis files of a video with a long name:
+      the accepted pipeline names its folders after the video (up to ~330 characters, limit 260). Such videos are
+      analysed under a short name: a hard link (same drive), else the 8.3 short path, else a copy (up to 4 GB).
+    - Camcorder transport streams are analysed as an MP4 remux (see _remux_alias).
+    Returns (rows for the analysis, {stand-in name: original row})."""
     force=os.environ.get("MEDENG_FORCE_SHORT_ALIAS")=="1"
     realmedia=work_dir/"realmedia"; adir=work_dir/"in"
     out=[]; back={}; wanted=set()
     for r in rows:
-        name=r["name"]
+        name=r["name"]; ext=Path(name).suffix.lower()
         projected=len(str(realmedia))+10+min(len(name),100)+14+10+len(name)+45   # realmedia\gN\items\<item>\previews\<name>\...
-        if not force and (os.name!="nt" or projected<=240):
+        remux=ext in REMUX_EXT
+        if not remux and not (long_names and (force or (os.name=="nt" and projected>240))):
             out.append(r); continue
-        alias_name=f"v_{r['sha256'][:12]}{Path(name).suffix.lower()}"
-        alias=adir/alias_name; use=None
+        alias_name=f"v_{r['sha256'][:12]}{'.mp4' if remux else ext}"
+        alias=adir/alias_name; use=None; sha=r["sha256"]; size=int(r["bytes"])
         try:
             adir.mkdir(parents=True,exist_ok=True)
-            if alias.is_file() and alias.stat().st_size==int(r["bytes"]):
+            if remux:
+                side=alias.with_name(alias.name+".sha256")
+                if not (alias.is_file() and side.is_file()):
+                    side.unlink(missing_ok=True)
+                    if _remux_alias(r,alias):
+                        side.write_text(sha256_file(alias),encoding="utf-8")
+                if alias.is_file() and side.is_file():
+                    use=str(alias); sha=side.read_text(encoding="utf-8").strip(); size=alias.stat().st_size
+                    wanted.add(side.name)
+            elif alias.is_file() and alias.stat().st_size==int(r["bytes"]):
                 use=str(alias)
             else:
                 alias.unlink(missing_ok=True)
@@ -339,7 +366,7 @@ def short_aliases(rows,work_dir):
             use=None
         if use:
             wanted.add(alias_name)
-            a=dict(r,name=Path(use).name,path=use); out.append(a); back[a["name"]]=r
+            a=dict(r,name=Path(use).name,path=use,sha256=sha,bytes=size); out.append(a); back[a["name"]]=r
         else:
             out.append(r)
     try:
@@ -519,38 +546,45 @@ def zscale_available(ffmpeg):
             _ZSCALE.append(False)
     return _ZSCALE[0]
 
-def hdr_kind(ffmpeg,src):
-    """'HLG', 'PQ' or None, from the transfer characteristic ffmpeg reports for the first video stream."""
+def _video_line(ffmpeg,src):
     key=str(src)
     if key not in _HDR_CACHE:
-        kind=None
         try:
             cp=subprocess.run([ffmpeg,"-hide_banner","-i",key],capture_output=True,text=True,encoding="utf-8",errors="replace",timeout=60)
-            line=next((l for l in (cp.stderr or "").splitlines() if "Video:" in l),"")
-            kind="HLG" if "arib-std-b67" in line else ("PQ" if "smpte2084" in line else None)
+            _HDR_CACHE[key]=next((l for l in (cp.stderr or "").splitlines() if "Video:" in l),"")
         except Exception:
-            kind=None
-        _HDR_CACHE[key]=kind
+            _HDR_CACHE[key]=""
     return _HDR_CACHE[key]
 
-def full_quality_clip(v52,e,work_dir,hdr=None):
+def hdr_kind(ffmpeg,src):
+    """'HLG', 'PQ' or None, from the transfer characteristic ffmpeg reports for the first video stream."""
+    line=_video_line(ffmpeg,src)
+    return "HLG" if "arib-std-b67" in line else ("PQ" if "smpte2084" in line else None)
+
+def is_interlaced(ffmpeg,src):
+    """Camcorder (AVCHD .MTS, DV, broadcast) video stored as fields: shown on a computer it needs de-interlacing."""
+    line=_video_line(ffmpeg,src)
+    return any(x in line for x in ("top first","bottom first","top coded first","bottom coded first"))
+
+def full_quality_clip(v52,e,work_dir,hdr=None,deinterlace=False):
     """Technical mode: moments are found and scored on the accepted V12 preview clips (max 960 px wide, re-timed to
     25 fps, sound and picture re-zeroed separately -> sound up to ~45 ms early). The reel itself is cut from the
     ORIGINAL at the same source interval (as R2 already does in AI mode), so it keeps full resolution, the source
     frame rate and exact sync. Selection, order, pacing and boundary decisions are unchanged."""
-    src=Path(e.get("source_path") or "")
+    src=Path(e.get("recut_path") or e.get("source_path") or "")   # recut_path: MP4 stand-in of a camcorder stream
     a=float(e.get("start_s") or 0.0); b=float(e.get("end_s") or 0.0)
     if not src.is_file() or b-a<0.3: return e
-    key=hashlib.sha256(f'{e.get("source_sha256")}|{a:.3f}|{b:.3f}|FULLRES1|{hdr or "SDR"}'.encode()).hexdigest()[:20]
+    key=hashlib.sha256(f'{e.get("source_sha256")}|{a:.3f}|{b:.3f}|FULLRES1|{hdr or "SDR"}{"|DEINT" if deinterlace else ""}'.encode()).hexdigest()[:20]
     d=work_dir/"full_quality"; d.mkdir(parents=True,exist_ok=True)
     clip=d/f"{key}.mp4"
     if not clip.is_file():
         tmp=d/f".{key}.tmp.mp4"
-        conv=(["-vf",HDR_TO_SDR[hdr],"-color_primaries","bt709","-color_trc","bt709","-colorspace","bt709"] if hdr in HDR_TO_SDR else [])
+        chain=(["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if deinterlace else [])+([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else [])
+        conv=(["-vf",",".join(chain)] if chain else [])+(["-color_primaries","bt709","-color_trc","bt709","-colorspace","bt709"] if hdr in HDR_TO_SDR else [])
         cp=subprocess.run([v52.FFMPEG,"-hide_banner","-loglevel","error","-y","-ss",f"{a:.3f}","-i",str(src),"-t",f"{b-a:.3f}",
                            "-map","0:v:0","-map","0:a?",*conv,"-c:v","libx264","-preset","veryfast","-crf","16","-pix_fmt","yuv420p",
                            "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(tmp)],capture_output=True,text=True)
-        if cp.returncode!=0:
+        if cp.returncode!=0 or "Video:" not in _video_line(v52.FFMPEG,tmp):
             tmp.unlink(missing_ok=True); return e      # keep the preview clip rather than fail the reel
         os.replace(tmp,clip)
     x=dict(e); x["preview_clip_path"]=e.get("clip_path"); x["clip_path"]=str(clip)
@@ -690,7 +724,17 @@ def run(args):
 
     semantic_reports=[]
     if use_semantic:
-        candidates,semantic_reports,input_rows=build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter_root,skipped_inputs)
+        sem_rows,sem_back=analysis_aliases(input_rows,work_dir,long_names=False)   # camcorder streams only
+        sem_skipped=[]
+        candidates,semantic_reports,kept=build_semantic_candidates(runtime,sem_rows,work_dir,v52,model_root,adapter_root,sem_skipped)
+        for x in sem_skipped:
+            skipped_inputs.append(dict(x,name=sem_back[x["name"]]["name"]) if x["name"] in sem_back else x)
+        input_rows=[sem_back.get(r["name"],r) for r in kept]
+        for c in list(candidates)+list(semantic_reports):
+            o=sem_back.get(str(c.get("source_name")))
+            if o:
+                c["source_name"]=o["name"]
+                if "source_path" in c: c["recut_path"]=c["source_path"]; c["source_path"]=o["path"]
         pool=candidates
         progress("select",0,1,"choosing moments")
         selected=manual_selection(pool,manual) if manual else choose_moments(v52,candidates,float(args.target_seconds),warnings,exclude)
@@ -698,7 +742,7 @@ def run(args):
         event_count=len(candidates); cache_status="semantic_candidate_cache"
     else:
         progress("analyze",0,len(input_rows),"technical analysis")
-        analysis_rows,alias_back=short_aliases(input_rows,work_dir)
+        analysis_rows,alias_back=analysis_aliases(input_rows,work_dir)
         skipped_analysis=[]
         libpath,lib,cache_status,analysed=build_event_library(runtime,analysis_rows,work_dir,skipped_analysis)
         for x in skipped_analysis:
@@ -707,7 +751,9 @@ def run(args):
         _,events=v52.load_library(libpath)
         for ev in events:
             o=alias_back.get(str(ev.get("source_name")))
-            if o: ev["source_name"]=o["name"]; ev["source_path"]=o["path"]
+            if o:
+                if Path(o["name"]).suffix.lower() in REMUX_EXT: ev["recut_path"]=ev.get("source_path")
+                ev["source_name"]=o["name"]; ev["source_path"]=o["path"]
         scored=v52.score_events(events,work_dir/"V22_SCORE_CACHE.json")
         pool=scored
         progress("select",0,1,"choosing moments")
@@ -748,17 +794,20 @@ def run(args):
     segcache=work_dir/"segment_cache_v2"; segcache.mkdir(parents=True,exist_ok=True)
     segs=[]; durs=[]; seg_meta=[]
     render_source="AI_CANDIDATE_CLIPS_FROM_ORIGINAL" if use_semantic else "ORIGINAL_FULL_QUALITY_RECUT"
-    hdr_sources={}
+    hdr_sources={}; deinterlaced=[]
     for si,(e,use) in enumerate(zip(order,pace["durations_s"])):
         progress("render",si,len(order),str(e["source_name"]))
-        hdr=hdr_kind(v52.FFMPEG,e["source_path"]) if e.get("source_path") else None
+        probe_src=e.get("recut_path") or e.get("source_path")
+        hdr=hdr_kind(v52.FFMPEG,probe_src) if probe_src else None
+        deint=bool(probe_src) and is_interlaced(v52.FFMPEG,probe_src)
+        if deint and str(e["source_name"]) not in deinterlaced: deinterlaced.append(str(e["source_name"]))
         if hdr:
             hdr_sources[str(e["source_name"])]=hdr
             if not zscale_available(v52.FFMPEG):
                 hdr=None
                 if "HDR_NOT_CONVERTED" not in warnings: warnings.append("HDR_NOT_CONVERTED")
-        if hdr or (not use_semantic and str(e["event_id"]) not in trims):   # manual trims are already cut from the original
-            e=full_quality_clip(v52,e,work_dir,hdr)
+        if hdr or deint or (not use_semantic and str(e["event_id"]) not in trims):   # manual trims are already cut from the original
+            e=full_quality_clip(v52,e,work_dir,hdr,deint)
         key=hashlib.sha256(json.dumps({"clip_sha256":e["clip_sha256"],"use_s":round(float(use),3),
                                      "audio":audio_mode,"profile":profile,"resolution":resolution,"fps":30,"quality":"high"},
                                     sort_keys=True,separators=(",",":")).encode()).hexdigest()[:20]
@@ -816,7 +865,7 @@ def run(args):
     result={
         "contract":CONTRACT_VERSION,"status":"PASS",
         "segments":timeline,"candidate_pool":pool_rows,"excluded_event_ids":sorted(exclude),"manual_edits":edits,
-        "skipped_inputs":skipped_inputs,"warnings":warnings,"render_source":render_source,"hdr_sources":hdr_sources,
+        "skipped_inputs":skipped_inputs,"warnings":warnings,"render_source":render_source,"hdr_sources":hdr_sources,"deinterlaced_sources":deinterlaced,
         "rendered_transition_s":[round(float(x["duration_s"]),6) for x in render_trans],
         "engine":{"orchestrator_sha256":sha256_file(Path(__file__)),"semantic_hook_sha256":SEMANTIC_HOOK_SHA},
         "input_folder":str(input_dir),"input_list":input_list,"input_fingerprint":fingerprint,"input_count":len(input_rows),

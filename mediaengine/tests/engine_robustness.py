@@ -160,6 +160,24 @@ def main():
               and red[0] >= 160 and red[1] <= 70 and red[2] <= 70 and 100 <= grey[1] <= 160)
         check(f"hdr_{kind}_normal_colours", ok, (cp.stderr[-400:] if not r else (r.get("hdr_sources"), r.get("warnings"), red, grey)))
 
+    # camcorder: interlaced 1080i AVCHD .MTS must be read and de-interlaced
+    cam = fx / "camcorder"
+    mts = cam / "00012.MTS"
+    readable = False
+    if mts.is_file():
+        pr = subprocess.run([ff, "-hide_banner", "-i", str(mts)], capture_output=True, text=True, encoding="utf-8", errors="replace")
+        readable = pr.returncode >= 0 and "Video:" in (pr.stderr or "")
+    if not readable:
+        print("SKIP camcorder: fixture missing or this ffmpeg build cannot read MPEG-TS (.MTS)")
+    else:
+        out = work_root / "out_cam"
+        cp = subprocess.run([sys.executable, str(R3 / "p11_folder_to_reel_r3.py"), "--input-dir", str(cam), "--output-dir", str(out),
+                             "--work-dir", str(work_root / "work_cam"), "--runtime-dir", str(R3), "--target-seconds", "15",
+                             "--semantic", "off", "--profile", "16x9"], capture_output=True, text=True, encoding="utf-8", errors="replace", env=env)
+        r = json.loads((out / "MediaEngine Result.json").read_text(encoding="utf-8")) if cp.returncode == 0 else None
+        check("camcorder_mts_used_and_deinterlaced", r and "00012.MTS" in r["selected_sources"] and "00012.MTS" in r.get("deinterlaced_sources", []),
+              cp.stderr[-500:] if not r else (r["selected_sources"], r.get("deinterlaced_sources"), r.get("skipped_inputs")))
+
     print(json.dumps({"passed": sum(ok for _, ok in checks), "total": len(checks)}))
     return 0 if all(ok for _, ok in checks) else 1
 

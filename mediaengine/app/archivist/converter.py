@@ -67,6 +67,16 @@ HDR_TO_SDR = {   # same conversion as the Auto Edit engine (engine_p11/p11_folde
 }
 
 
+def _is_interlaced(ffmpeg, source) -> bool:
+    try:
+        cp = subprocess.run([str(ffmpeg), "-hide_banner", "-i", str(source)], capture_output=True, text=True, encoding="utf-8",
+                            errors="replace", timeout=60, **process_kwargs())
+        line = next((l for l in (cp.stderr or "").splitlines() if "Video:" in l), "")
+        return any(x in line for x in ("top first", "bottom first", "top coded first", "bottom coded first"))
+    except Exception:
+        return False
+
+
 def _hdr_kind(ffmpeg, source) -> str | None:
     """'HLG' / 'PQ' for HDR phone video, else None. A normal H.264 file must not keep the HDR numbers as-is (grey, dark)."""
     try:
@@ -83,9 +93,10 @@ def _hdr_kind(ffmpeg, source) -> str | None:
         return None
 
 
-def _scale_args(preset: str, hdr: str | None = None):
+def _scale_args(preset: str, hdr: str | None = None, interlaced: bool = False):
     cap = PRESETS[preset]["cap"]
-    parts = [HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []
+    parts = ["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if interlaced else []   # camcorder fields -> frames
+    parts += [HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []
     if cap:
         # Cap the long edge. 1920 => 1920x1080 landscape or 1080x1920 portrait.
         parts.append(f"scale='min({int(cap)},iw)':'min({int(cap)},ih)':force_original_aspect_ratio=decrease:force_divisible_by=2")
@@ -171,6 +182,7 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
     if duration <= 0:
         raise RuntimeError("Could not read video duration")
     hdr = _hdr_kind(ffmpeg, source)
+    interlaced = _is_interlaced(ffmpeg, source)
     target_mb = int(target_mb) if target_mb else None
     out = _unique_output(source, preset, target_mb, Path(output_dir) if output_dir else None)
     part = out.with_name(out.stem + ".part.mp4")
@@ -184,7 +196,7 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
         cfg = PRESETS[preset]
         common = [
             str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-i", str(source),
-            "-map", "0:v:0", "-map", "0:a?", *_scale_args(preset, hdr),
+            "-map", "0:v:0", "-map", "0:a?", *_scale_args(preset, hdr, interlaced),
             "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "veryfast",
         ]
 
@@ -195,7 +207,7 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
             passlog = str((HOME / "data" / f"ffmpeg2pass-{os.getpid()}-{threading.get_ident()}").resolve())
             pass1 = [
                 str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-i", str(source),
-                "-map", "0:v:0", *_scale_args(preset, hdr),
+                "-map", "0:v:0", *_scale_args(preset, hdr, interlaced),
                 "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "veryfast",
                 "-b:v", f"{video_k}k", "-maxrate", f"{int(video_k*1.25)}k", "-bufsize", f"{int(video_k*2)}k",
                 "-pass", "1", "-passlogfile", passlog, "-an", "-f", "null", os.devnull

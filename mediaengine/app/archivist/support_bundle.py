@@ -85,6 +85,34 @@ def _update_summary() -> dict:
     except Exception:
         return {"status": "update_status_unreadable"}
 
+def _auto_edit_summary() -> dict:
+    """Last Auto Edit builds (status, stage, error, settings, stage times) + the tail of the newest failed build's
+    engine log, redacted and bounded. No media, no file contents."""
+    out: dict = {"jobs": [], "failed_log_tail": "", "check": []}
+    try:
+        from . import auto_edit as ae
+        from .db import db
+        ae.ensure_schema()
+        with db() as con:
+            rows = [dict(r) for r in con.execute("SELECT * FROM ae_jobs ORDER BY id DESC LIMIT 8").fetchall()]
+        for j in rows:
+            rev = ae.revision(j["revision_id"]) if j.get("revision_id") else None
+            res = (rev or {}).get("result") or {}
+            out["jobs"].append({k: (_redact_text(str(j.get(k)))[:400] if j.get(k) is not None else None)
+                                for k in ("id", "status", "stage", "error", "settings_json", "created_at", "started_at", "finished_at")}
+                               | {"stage_seconds": res.get("stage_seconds"), "warnings": res.get("warnings"),
+                                  "skipped": [x.get("reason") for x in res.get("skipped_inputs", [])][:20]})
+        failed = next((j for j in rows if j["status"] == "failed"), None)
+        if failed:
+            log = ae._project_dir(failed["project_id"]) / "jobs" / f"j{failed['id']}.log"
+            if log.is_file():
+                out["failed_log_tail"] = _redact_text(log.read_bytes()[-16384:].decode("utf-8", "replace"))[-16384:]
+        out["check"] = [{"name": r["name"], "ok": r["ok"], "detail": _redact_text(r["detail"])[:200]} for r in ae.system_check()]
+    except Exception as exc:
+        out["error"] = _redact_text(f"{type(exc).__name__}: {exc}")[:300]
+    return out
+
+
 def _bundle_parts(log_path: Path) -> dict[str, bytes]:
     manifest = {
         "schema_version": 1,
@@ -99,7 +127,7 @@ def _bundle_parts(log_path: Path) -> dict[str, bytes]:
         "log_input_max_bytes": MAX_LOG_INPUT_BYTES,
         "log_output_max_bytes": MAX_LOG_OUTPUT_BYTES,
         "bundle_uncompressed_max_bytes": MAX_BUNDLE_UNCOMPRESSED_BYTES,
-        "entries": ["manifest.json", "health.json", "sanitized.log"],
+        "entries": ["manifest.json", "health.json", "sanitized.log", "auto_edit.json"],
     }
     health = _health_summary()
     health["update"] = _update_summary()
@@ -107,6 +135,7 @@ def _bundle_parts(log_path: Path) -> dict[str, bytes]:
         "manifest.json": json.dumps(manifest, indent=2, sort_keys=True).encode("utf-8"),
         "health.json": json.dumps(health, indent=2, sort_keys=True).encode("utf-8"),
         "sanitized.log": _safe_log_tail(log_path).encode("utf-8"),
+        "auto_edit.json": json.dumps(_auto_edit_summary(), indent=1, default=str).encode("utf-8")[:96 * 1024],
     }
     total = sum(len(v) for v in parts.values())
     if total > MAX_BUNDLE_UNCOMPRESSED_BYTES:
@@ -121,7 +150,7 @@ def create_support_bundle(output_dir: Path | None = None) -> Path:
     temp = final.with_suffix(".zip.__new__")
     parts = _bundle_parts(LOGS / "archivist.log")
     with zipfile.ZipFile(temp, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=6) as zf:
-        for name in ("manifest.json", "health.json", "sanitized.log"):
+        for name in ("manifest.json", "health.json", "sanitized.log", "auto_edit.json"):
             zf.writestr(name, parts[name])
     if temp.stat().st_size > MAX_BUNDLE_UNCOMPRESSED_BYTES:
         temp.unlink(missing_ok=True)
@@ -165,7 +194,7 @@ def run_contract_self_test() -> dict:
                 zf.writestr(name, data)
         with zipfile.ZipFile(final) as zf:
             names = sorted(zf.namelist())
-            if names != ["health.json", "manifest.json", "sanitized.log"]:
+            if names != ["auto_edit.json", "health.json", "manifest.json", "sanitized.log"]:
                 raise RuntimeError("unexpected support bundle entries")
             manifest = json.loads(zf.read("manifest.json").decode("utf-8"))
         return {
