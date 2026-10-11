@@ -210,6 +210,9 @@ def apply_release(rel,installed):
 def check_update(force=False):
     installed=current_version()
     if not force and os.environ.get('ARCHIVIST_SKIP_UPDATE')=='1': return installed
+    if not CONFIG_PATH.exists():
+        # No update channel configured (e.g. a side-by-side release candidate): never contact a server.
+        write_status(status='updates_off',version=installed); return installed
     try:
         cfg=json.loads(CONFIG_PATH.read_text(encoding='utf-8')); latest=fetch_latest(cfg)
         if latest and version_tuple(latest['version'])>version_tuple(installed): apply_release(latest,installed); return str(latest['version'])
