@@ -94,6 +94,96 @@ def launcher_vbs_text() -> str:
             's.Run Chr(34) & root & "\\.venv\\Scripts\\pythonw.exe" & Chr(34) & " -s -E " & Chr(34) & root & "\\launcher.py" & Chr(34),0,False\r\n')
 
 
+# ---- Windows shortcuts (.lnk) through IShellLinkW --------------------------------------------------------------
+# WScript.Shell's CreateShortcut stores paths in the ANSI code page: a release in a folder such as
+# "D:\\Видео\\MediaEngine" got a shortcut to "D:\\?????\\MediaEngine" on an English Windows (seen in CI).
+# The shell's own Unicode interface has no such limit.
+_CLSID_SHELLLINK = "{00021401-0000-0000-C000-000000000046}"
+_IID_ISHELLLINKW = "{000214F9-0000-0000-C000-000000000046}"
+_IID_IPERSISTFILE = "{0000010B-0000-0000-C000-000000000046}"
+
+
+def _com_call(obj, index: int, restype, *args):
+    import ctypes
+    vtbl = ctypes.cast(obj, ctypes.POINTER(ctypes.POINTER(ctypes.c_void_p)))[0]
+    proto = ctypes.WINFUNCTYPE(restype, ctypes.c_void_p, *[type(a) for a in args])
+    return proto(vtbl[index])(obj, *args)
+
+
+def _shell_link_session(fn):
+    import ctypes
+    from ctypes import wintypes
+
+    class GUID(ctypes.Structure):
+        _fields_ = [("a", wintypes.DWORD), ("b", wintypes.WORD), ("c", wintypes.WORD), ("d", ctypes.c_ubyte * 8)]
+
+    ole32 = ctypes.OleDLL("ole32")
+
+    def guid(text):
+        g = GUID()
+        ole32.CLSIDFromString(ctypes.c_wchar_p(text), ctypes.byref(g))
+        return g
+    init = ctypes.windll.ole32.CoInitializeEx(None, 2)          # STA; S_FALSE if this thread already has COM
+    link = ctypes.c_void_p()
+    pf = ctypes.c_void_p()
+    try:
+        clsid, iid_link, iid_file = guid(_CLSID_SHELLLINK), guid(_IID_ISHELLLINKW), guid(_IID_IPERSISTFILE)
+        ole32.CoCreateInstance(ctypes.byref(clsid), None, 1, ctypes.byref(iid_link), ctypes.byref(link))   # CLSCTX_INPROC_SERVER
+        _com_call(link, 0, ctypes.HRESULT, ctypes.c_void_p(ctypes.addressof(iid_file)), ctypes.c_void_p(ctypes.addressof(pf)))  # QueryInterface
+        return fn(link, pf)
+    finally:
+        for o in (pf, link):
+            if o.value:
+                _com_call(o, 2, ctypes.c_ulong)              # Release
+        if init in (0, 1):
+            ctypes.windll.ole32.CoUninitialize()
+
+
+def write_shell_link(lnk: Path, target: str, arguments: str = "", workdir: str = "", icon: str = "", description: str = "") -> None:
+    """Create or replace a Windows shortcut with full Unicode paths."""
+    import ctypes
+
+    def go(link, pf):
+        W = ctypes.c_wchar_p
+        _com_call(link, 20, ctypes.HRESULT, W(str(target)))                     # SetPath
+        _com_call(link, 11, ctypes.HRESULT, W(str(arguments)))                  # SetArguments
+        if workdir:
+            _com_call(link, 9, ctypes.HRESULT, W(str(workdir)))                 # SetWorkingDirectory
+        if description:
+            _com_call(link, 7, ctypes.HRESULT, W(str(description)))             # SetDescription
+        if icon:
+            _com_call(link, 17, ctypes.HRESULT, W(str(icon)), ctypes.c_int(0))  # SetIconLocation
+        _com_call(pf, 6, ctypes.HRESULT, W(str(lnk)), ctypes.c_int(1))          # IPersistFile::Save
+    _shell_link_session(go)
+
+
+def read_shell_link(lnk: Path) -> dict:
+    """{'target', 'arguments', 'workdir'} of a shortcut, read through the same Unicode interface."""
+    import ctypes
+
+    def go(link, pf):
+        _com_call(pf, 5, ctypes.HRESULT, ctypes.c_wchar_p(str(lnk)), ctypes.c_ulong(0))   # IPersistFile::Load, STGM_READ
+        out = {}
+        for key, idx, extra in (("target", 3, True), ("workdir", 8, False), ("arguments", 10, False)):
+            buf = ctypes.create_unicode_buffer(32768)
+            if extra:   # GetPath(buf, cch, WIN32_FIND_DATAW* = NULL, SLGP_RAWPATH = 4)
+                _com_call(link, idx, ctypes.HRESULT, ctypes.cast(buf, ctypes.c_void_p), ctypes.c_int(32768), ctypes.c_void_p(), ctypes.c_ulong(4))
+            else:
+                _com_call(link, idx, ctypes.HRESULT, ctypes.cast(buf, ctypes.c_void_p), ctypes.c_int(32768))
+            out[key] = buf.value
+        return out
+    return _shell_link_session(go)
+
+
+def shell_folder(csidl: int) -> Path | None:
+    """Desktop (0x10) or Start-menu Programs (0x02) of this user, wherever Windows / OneDrive put them."""
+    import ctypes
+    buf = ctypes.create_unicode_buffer(32768)
+    if ctypes.windll.shell32.SHGetFolderPathW(None, csidl, None, 0, buf) != 0 or not buf.value:
+        return None
+    return Path(buf.value)
+
+
 def install_launchers(home: Path) -> None:
     """Repair the current platform launcher. Windows is the only validated desktop adapter today."""
     if not is_windows():
@@ -128,11 +218,25 @@ def install_launchers(home: Path) -> None:
         if side_by_side and (not name or name.lower() == "archivist"):
             name = "MediaEngine RC"
         name = name or "Archivist"
+        icon = home / "MediaEngine.ico"
+        wscript = str(Path(os.environ.get("SystemRoot") or r"C:\Windows") / "System32" / "wscript.exe")
+        try:
+            desk = shell_folder(0x10)                                   # CSIDL_DESKTOPDIRECTORY
+            if desk is None:
+                raise OSError("desktop folder not found")
+            write_shell_link(desk / f"{name}.lnk", wscript, f'"{vbs}"', str(home), str(icon) if icon.is_file() else "", name)
+            if side_by_side:
+                # the Start-menu entry made by the installer follows the build started last, like the desktop shortcut
+                progs = shell_folder(0x02)                              # CSIDL_PROGRAMS
+                if progs is not None and (progs / "MediaEngine.lnk").is_file():
+                    write_shell_link(progs / "MediaEngine.lnk", wscript, f'"{vbs}"', str(home), str(icon) if icon.is_file() else "", "MediaEngine")
+            return
+        except Exception:
+            pass                                                        # fall back to the script (ANSI paths only)
         # temp folder, not <home>\data: a side-by-side release folder must stay exactly as it was unpacked
         import tempfile
         maker = Path(tempfile.gettempdir()) / f"MediaEngine_make_shortcut_{os.getpid()}.vbs"
-        # UTF-16 with BOM: wscript reads it as Unicode, so a folder like D:\\Видео\\MediaEngine works.
-        icon = home / "MediaEngine.ico"
+        # UTF-16 with BOM: wscript reads the script as Unicode (its shortcut object still stores ANSI paths).
 
         def point(var: str) -> str:
             return ('{0}.TargetPath="wscript.exe"\r\n'

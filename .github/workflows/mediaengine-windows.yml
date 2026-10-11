@@ -175,6 +175,12 @@ jobs:
           $lnk = Test-Path "$desk\MediaEngine RC.lnk"
           "desktop shortcut 'MediaEngine RC': $lnk; stable shortcut touched: $((Test-Path "$desk\Archivist.lnk") -and -not $hadArchivistLnk)" | Tee-Object -Append $log
           if (-not $lnk -or ((Test-Path "$desk\Archivist.lnk") -and -not $hadArchivistLnk)) { $fail += 'shortcut' }
+          # the shortcut must point at THIS folder, Cyrillic name included (read through the Unicode shell interface)
+          $readLnk = "import sys, json, importlib.util as u; s = u.spec_from_file_location('pa', sys.argv[2]); m = u.module_from_spec(s); s.loader.exec_module(m); print(json.dumps(m.read_shell_link(sys.argv[1])))"
+          $sc = (& "$pkg\.venv\Scripts\python.exe" -s -E -c $readLnk "$desk\MediaEngine RC.lnk" "$pkg\app\archivist\platform_adapter.py") | ConvertFrom-Json
+          $want = "`"$pkg\Start MediaEngine.vbs`""
+          "desktop shortcut runs: $($sc.target) $($sc.arguments) (expected $want)" | Tee-Object -Append $log
+          if ($sc.arguments -ne $want) { $fail += 'shortcut target' }
           if ((Test-Path "$pkg\Archivist.vbs") -or (Test-Path "$pkg\launcher")) { $fail += 'stable launcher files created' }
           # a project made in this release
           $folder = "$env:RUNNER_TEMP\fx\two"
@@ -275,25 +281,34 @@ jobs:
             "setup: $($setup.Name) $([math]::Round($setup.Length/1MB,1)) MB; exit code $($p.ExitCode)" | Tee-Object $log
             "build folder: $(Test-Path "$rel\Start MediaEngine.vbs"); Start-menu shortcut: $(Test-Path $lnk); uninstaller: $(Test-Path "$base\unins000.exe")" | Tee-Object -Append $log
             if ($p.ExitCode -ne 0 -or -not (Test-Path "$rel\Start MediaEngine.vbs") -or -not (Test-Path $lnk) -or -not (Test-Path "$base\unins000.exe")) { $fail += 'install' }
-            # start exactly as the Start-menu shortcut does
-            $sc = (New-Object -ComObject WScript.Shell).CreateShortcut($lnk)
-            "shortcut: $($sc.TargetPath) $($sc.Arguments) icon: $($sc.IconLocation)" | Tee-Object -Append $log
+            # start exactly as the Start-menu shortcut does (read through the Unicode shell interface: the WScript
+            # object would turn the Cyrillic folder into "???")
+            $readLnk = "import sys, json, importlib.util as u; s = u.spec_from_file_location('pa', sys.argv[2]); m = u.module_from_spec(s); s.loader.exec_module(m); print(json.dumps(m.read_shell_link(sys.argv[1])))"
+            $pa = "$env:GITHUB_WORKSPACE\mediaengine\app\archivist\platform_adapter.py"
+            $sc = (& python -c $readLnk $lnk $pa) | ConvertFrom-Json
+            "Start-menu shortcut: $($sc.target) $($sc.arguments) in $($sc.workdir)" | Tee-Object -Append $log
+            if ($sc.arguments -ne "`"$rel\Start MediaEngine.vbs`"") { $fail += 'start-menu shortcut target' }
             $env:MEDIAENGINE_NO_BROWSER = '1'
-            Start-Process $sc.TargetPath -ArgumentList $sc.Arguments -WorkingDirectory $sc.WorkingDirectory
+            Start-Process $sc.target -ArgumentList $sc.arguments -WorkingDirectory $sc.workdir
             $up = $null; for ($i = 0; $i -lt 180 -and -not $up; $i++) { $up = Ping; if (-not $up) { Start-Sleep 1 } }
             "started from the shortcut: $([bool]$up) $up" | Tee-Object -Append $log
             if (-not $up) { $fail += 'start' }
             $auto = try { (Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8775/auto).StatusCode } catch { 0 }
             "auto page: $auto; data next to the build: $(Test-Path "$data\data\archivist.db"); build folder untouched: $(-not (Test-Path "$rel\data"))" | Tee-Object -Append $log
             if ($auto -ne 200 -or -not (Test-Path "$data\data\archivist.db") -or (Test-Path "$rel\data")) { $fail += 'first start' }
+            # after the first start the Start-menu entry still points at this build (the app re-saves it)
+            $sc2 = (& python -c $readLnk $lnk $pa) | ConvertFrom-Json
+            if ($sc2.arguments -ne "`"$rel\Start MediaEngine.vbs`"") { $fail += 'start-menu shortcut after start' }
             # uninstall while MediaEngine runs: refused (silent mode answers Cancel), nothing removed
-            $u = Start-Process "$base\unins000.exe" -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -PassThru -Wait
-            Start-Sleep 5
-            "uninstall while running: exit $($u.ExitCode); build kept: $(Test-Path "$rel\Start MediaEngine.vbs")" | Tee-Object -Append $log
-            if (-not (Test-Path "$rel\Start MediaEngine.vbs")) { $fail += 'uninstall did not wait for Quit' }
+            if ($up) {
+              $u = Start-Process "$base\unins000.exe" -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -PassThru -Wait
+              Start-Sleep 5
+              "uninstall while running: exit $($u.ExitCode); build kept: $(Test-Path "$rel\Start MediaEngine.vbs")" | Tee-Object -Append $log
+              if (-not (Test-Path "$rel\Start MediaEngine.vbs")) { $fail += 'uninstall did not wait for Quit' }
+            }
             try { Invoke-WebRequest -UseBasicParsing -Method Post -Uri http://127.0.0.1:8775/api/app-control -Headers @{Origin='http://127.0.0.1:8775'} -ContentType 'application/json' -Body '{"mode":"stop","force":true}' | Out-Null } catch {}
             for ($i = 0; $i -lt 30 -and (Ping); $i++) { Start-Sleep 1 }
-            Start-Process "$base\unins000.exe" -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -Wait
+            if (Test-Path "$base\unins000.exe") { Start-Process "$base\unins000.exe" -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -Wait }
             for ($i = 0; $i -lt 90 -and ((Test-Path $rel) -or (Test-Path "$base\unins000.exe")); $i++) { Start-Sleep 1 }   # finishes in a copy of itself
             "after Quit + uninstall: build removed: $(-not (Test-Path $rel)); shortcut removed: $(-not (Test-Path $lnk)); data kept: $(Test-Path "$data\data\archivist.db")" | Tee-Object -Append $log
             if ((Test-Path $rel) -or (Test-Path $lnk) -or -not (Test-Path "$data\data\archivist.db")) { $fail += 'uninstall' }

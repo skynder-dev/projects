@@ -85,6 +85,18 @@ def main():
     check("delete_build refuses this build and the data folder", raises(ae.delete_build, cur.name, cur) and raises(ae.delete_build, "MediaEngine Data", cur))
     check("delete_build removes an older build", ae.delete_build(old.name, cur) > 0 and not old.exists() and cur.exists()
           and (base / "MediaEngine Data").exists())
+    # shortcuts keep any characters (WScript.Shell stored "?" for Cyrillic on an English Windows)
+    if os.name == "nt":
+        from archivist.platform_adapter import read_shell_link, write_shell_link, shell_folder
+        d = work / "Видео 視頻 é"
+        d.mkdir(parents=True, exist_ok=True)
+        tgt = str(Path(os.environ.get("SystemRoot", r"C:\Windows")) / "System32" / "wscript.exe")
+        arg = f'"{d / "Start MediaEngine.vbs"}"'
+        write_shell_link(d / "Ярлык.lnk", tgt, arg, str(d), "", "проверка")
+        back = read_shell_link(d / "Ярлык.lnk")
+        check("unicode shortcut round trip", back["arguments"] == arg and back["workdir"] == str(d)
+              and back["target"].lower() == tgt.lower(), back)
+        check("desktop and start-menu folders found", shell_folder(0x10) is not None and shell_folder(0x02) is not None)
     # Windows must not sleep while a reel is built (no-op elsewhere)
     from archivist.platform_adapter import keep_awake
     with keep_awake() as k:
