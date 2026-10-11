@@ -23,7 +23,8 @@ KEEP = {  # stays English in Russian too (names, units, formats)
     "SHA", "Runtime", "MP", "rc", "ZIP", "zscale", "iPhone", "iOS", "Share", "Lab", "OAuth", "Client", "API", "AAC", "Reel", "MediaStore",
 }
 SKIP_PREFIX = ("/api/", "/static", "/media/", "/thumb/", "/storyboard/", "/clip-preview/", "/export-file/", "/composition-file/",
-               "/diagnostics/fixture", "/auto/rev/", "/auto/review/")
+               "/diagnostics/fixture", "/auto/rev/")
+SKIP_PART = ("/video", "/thumb", ".jpg", "/source")      # files, not pages
 _PROTECT = re.compile(r"""<(\w+)\b[^>]*(?:translate=['"]no['"]|class=['"][^'"]*\b(?:ae-path|path|mono)\b[^'"]*['"])[^>]*>.*?</\1>""", re.S)
 _DROP = re.compile(r"<(script|style|code|pre|textarea)\b.*?</\1>", re.S | re.I)
 _TAG = re.compile(r"""<(?:[^>"']|"[^"]*"|'[^']*')+>""")
@@ -60,6 +61,10 @@ def page_texts(html: str):
     yield from attrs
 
 
+def _has(con, table):
+    return bool(con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (table,)).fetchone())
+
+
 def urls_for(app, con):
     def ids(sql):
         try:
@@ -75,21 +80,27 @@ def urls_for(app, con):
     }
     out = []
     for rule in app.url_map.iter_rules():
-        if "GET" not in rule.methods or rule.rule.startswith(SKIP_PREFIX) or rule.endpoint == "static":
+        if "GET" not in rule.methods or rule.rule.startswith(SKIP_PREFIX) or rule.endpoint == "static" or any(x in rule.rule for x in SKIP_PART):
             continue
+        local = dict(fill)
+        if rule.rule.startswith("/auto/review/"):
+            local["rid"] = ids("SELECT id FROM ae_reviews ORDER BY id")
         args = list(rule.arguments)
         if not args:
             out.append(rule.rule)
             continue
-        if any(not fill.get(a) for a in args):
+        if any(not local.get(a) for a in args):
             continue
-        for k in range(max(len(fill[a]) for a in args)):
+        for k in range(max(len(local[a]) for a in args)):
             url = rule.rule
             for a in args:
-                v = fill[a][min(k, len(fill[a]) - 1)]
+                v = local[a][min(k, len(local[a]) - 1)]
                 url = re.sub(r"<(?:\w+:)?" + a + ">", str(v), url)
             out.append(url)
-    out += ["/auto/check", "/library?view=grid", "/import?source=all", "/jobs?status=all", "/help/guide", "/welcome"]
+    out += ["/auto/check", "/library?view=grid", "/import?source=all", "/jobs?status=all", "/help/guide", "/welcome",
+            "/auto/new?folder=Z:/no/such/folder", "/auto/p/999999"]
+    for pid, eid in con.execute("SELECT project_id, id FROM ae_exports ORDER BY id LIMIT 2").fetchall() if _has(con, "ae_exports") else []:
+        out.append(f"/auto/p/{pid}?exported={eid}")
     return sorted(set(out))
 
 
@@ -112,7 +123,9 @@ def main():
         with app.test_client() as c, db() as con:
             for url in urls_for(app, con):
                 r = c.get(url, headers=H)
-                if r.mimetype != "text/html":
+                if r.mimetype != "text/html" or r.status_code >= 500:
+                    if r.status_code >= 500:
+                        left.setdefault(f"HTTP {r.status_code} on {url}", url)
                     continue
                 pages += 1
                 for t in page_texts(r.get_data(as_text=True)):

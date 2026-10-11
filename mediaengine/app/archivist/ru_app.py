@@ -399,6 +399,7 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"Converting (\d+)/(\d+) · (.*)", r"Конвертирую \1/\2 · \3"), (r"Importing (.*)", r"Импортирую \1"), (r"Job crashed: (.*)", r"Задача упала: \1"),
     (r"Media Brain: (.*)", r"Анализ: \1"), (r"Preparing (\d+) video\(s\)…", r"Готовлю видео: \1…"), (r"Skipped missing local file: (.*)", r"Пропущен отсутствующий файл: \1"),
     (r"Converter stalled; process restarted automatically · (\d+)/(\d+)", r"Конвертация зависла; процесс перезапущен · \1/\2"),
+    (r"(\d+(?:\.\d+)?) s", r"\1 с"), (r"(\d+) s · recommended", r"\1 с · рекомендуется"),
     (r"Job #(\d+) · (.+)", r"Задача №\1 · \2"),
     (r"quality (\S+)( [\d.]+)?", r"качество ⟦\1⟧\2"), (r"rights (\S+)", r"права ⟦\1⟧"),
     (r"(.+) connected", r"\1 подключён"), (r"Discovering · (.*)", r"Поиск · \1"), (r"(\d+) found", r"найдено: \1"),
