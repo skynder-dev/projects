@@ -82,9 +82,11 @@ def main():
         scan = ae.scan_folder(folder)
         a.length = int(scan["recommended_length"]) if str(a.length) == "auto" else int(a.length)
         print("length:", a.length, "usable:", scan["usable"], "total_s:", scan["total_s"], flush=True)
-        check("scan_skips_broken_and_duplicates",
-              all(any(f["name"] == n and not f["ok"] for f in scan["files"]) for n in before if n.startswith("broken") or " copy" in n),
-              [(f["name"], f["reason"]) for f in scan["files"] if not f["ok"]])
+        bad = {f["name"]: f["reason"] for f in scan["files"] if not f["ok"]}
+        dups = [n for n in before if " copy" in n]
+        ok_broken = all(n in bad for n in before if n.startswith("broken"))
+        ok_dups = all(sum(1 for m in (d, d.replace(" copy", "")) if m in bad and bad[m].startswith("duplicate")) == 1 for d in dups)
+        check("scan_skips_broken_and_one_of_each_duplicate", ok_broken and ok_dups, bad)
         check("setup_shows_only_length_format_sound", all(x in page for x in ("Length", "Format", "Sound")) and "semantic=required" not in page)
 
         form = {"folder": str(folder), "length": str(a.length), "format": "social_hd", "sound": "auto", "mode": a.mode, "title": "E2E: Trip/2026?"}
