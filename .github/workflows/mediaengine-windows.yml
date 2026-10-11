@@ -308,7 +308,7 @@ jobs:
           $fail = @()
           function Ping { try { (Invoke-WebRequest -UseBasicParsing -TimeoutSec 3 http://127.0.0.1:8775/api/ping).Content } catch { $null } }
           try {
-            $p = Start-Process $setup.FullName -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART',"/DIR=`"$base`"","/LOG=`"$env:OUT\setup_install.log`"" -PassThru -Wait
+            $p = Start-Process $setup.FullName -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/LANG=ru',"/DIR=`"$base`"","/LOG=`"$env:OUT\setup_install.log`"" -PassThru -Wait
             $installedAt = Get-Date
             "setup: $($setup.Name) $([math]::Round($setup.Length/1MB,1)) MB; exit code $($p.ExitCode)" | Tee-Object $log
             "build folder: $(Test-Path "$rel\Start MediaEngine.vbs"); Start-menu shortcut: $(Test-Path $lnk); uninstaller: $(Test-Path "$base\unins000.exe")" | Tee-Object -Append $log
@@ -326,6 +326,10 @@ jobs:
             "started from the shortcut: $([bool]$up) $up" | Tee-Object -Append $log
             if (-not $up) { $fail += 'start' }
             $auto = try { (Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8775/auto).StatusCode } catch { 0 }
+            # Setup was run in Russian: the program starts in Russian (until switched in the program)
+            $home_ru = try { (Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8775/).Content } catch { '' }
+            "first start in the Setup language (Russian): $($home_ru.Contains('Проверка компьютера'))" | Tee-Object -Append $log
+            if (-not $home_ru.Contains('Проверка компьютера')) { $fail += 'setup language' }
             "auto page: $auto; data next to the build: $(Test-Path "$data\data\archivist.db"); build folder untouched: $(-not (Test-Path "$rel\data"))" | Tee-Object -Append $log
             if ($auto -ne 200 -or -not (Test-Path "$data\data\archivist.db") -or (Test-Path "$rel\data")) { $fail += 'first start' }
             # after the first start the Start-menu entry still points at this build (the app re-saves it)

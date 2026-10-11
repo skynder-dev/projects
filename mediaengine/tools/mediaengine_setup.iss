@@ -47,7 +47,7 @@ UninstallDisplayName=MediaEngine
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
-ShowLanguageDialog=auto
+ShowLanguageDialog=yes
 CloseApplications=no
 
 [Languages]
@@ -66,6 +66,10 @@ ru.SameRunning=Именно эта сборка MediaEngine сейчас зап�
 Source: "{#SrcDir}\*"; DestDir: "{app}\{#PkgName}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; one icon for the Apps list that does not depend on any single build folder
 Source: "{#SrcDir}\MediaEngine.ico"; DestDir: "{app}"; Flags: ignoreversion
+
+[Registry]
+; the language chosen for Setup is the program's first interface language (it can be switched in the program)
+Root: HKCU; Subkey: "Software\MediaEngine"; ValueType: string; ValueName: "Language"; ValueData: "{language}"; Flags: uninsdeletekey
 
 [Icons]
 Name: "{userprograms}\MediaEngine"; Filename: "{sys}\wscript.exe"; Parameters: """{app}\{#PkgName}\Start MediaEngine.vbs"""; WorkingDir: "{app}\{#PkgName}"; IconFilename: "{app}\{#PkgName}\MediaEngine.ico"; Comment: "MediaEngine {#AppVer}"

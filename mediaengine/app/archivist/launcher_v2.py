@@ -112,6 +112,12 @@ def ui_ru():
         if v in ('ru','en'): return v=='ru'
     except Exception: pass
     try:
+        import winreg
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER,r'Software\MediaEngine') as k:
+            v=str(winreg.QueryValueEx(k,'Language')[0] or '').lower()
+        if v in ('ru','en'): return v=='ru'
+    except Exception: pass
+    try:
         import ctypes
         return (ctypes.windll.kernel32.GetUserDefaultUILanguage() & 0x3FF)==0x19
     except Exception: return False

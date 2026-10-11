@@ -32,7 +32,19 @@ def ui_language() -> str:
         return "en"
     if v in LANGS:
         return v
-    return "ru" if _windows_is_russian() else "en"     # first start: follow the Windows display language
+    setup = _setup_language()                          # first start: the language chosen in Setup,
+    if setup in LANGS:
+        return setup
+    return "ru" if _windows_is_russian() else "en"     # else the Windows display language
+
+
+def _setup_language() -> str:
+    try:
+        import winreg
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\MediaEngine") as k:
+            return str(winreg.QueryValueEx(k, "Language")[0] or "").lower()
+    except Exception:
+        return ""
 
 
 def set_ui_language(lang: str) -> None:
