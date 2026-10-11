@@ -95,8 +95,8 @@ def main(out_dir: Path, evidence_dir: Path) -> None:
     # would be compiled again at every start
     # unchecked-hash: valid whatever timestamps the files get (a ZIP keeps them only to 2 s, which would make every
     # timestamp-checked .pyc stale and Python would compile again at each start); release files never change
-    subprocess.run([str(py), "-m", "compileall", "-q", "-j", "0", "--invalidation-mode", "unchecked-hash",
-                    str(pkg / "app"), str(pkg / "launcher.py"), str(pkg / ".venv" / "Lib")], check=False)
+    subprocess.run([str(py), "-m", "compileall", "-q", "-f", "-j", "0", "--invalidation-mode", "unchecked-hash",
+                    str(pkg / "app"), str(pkg / "launcher.py"), str(pkg / ".venv")], check=False)   # runtime: .venv\\Scripts\\Lib
     (pkg / "version.txt").write_text(ver, encoding="utf-8")
     (pkg / "port.txt").write_text(str(PORT), encoding="utf-8")
     (pkg / "shortcut_name.txt").write_text(SHORTCUT, encoding="utf-8")

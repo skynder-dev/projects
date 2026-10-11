@@ -178,7 +178,7 @@ jobs:
           if (-not $lnk -or ((Test-Path "$desk\Archivist.lnk") -and -not $hadArchivistLnk)) { $fail += 'shortcut' }
           # the shortcut must point at THIS folder, Cyrillic name included (read through the Unicode shell interface)
           $readLnk = "import sys, json, importlib.util as u; s = u.spec_from_file_location('pa', sys.argv[2]); m = u.module_from_spec(s); s.loader.exec_module(m); print(json.dumps(m.read_shell_link(sys.argv[1])))"
-          $sc = (& "$pkg\.venv\Scripts\python.exe" -s -E -c $readLnk "$desk\MediaEngine RC.lnk" "$pkg\app\archivist\platform_adapter.py") | ConvertFrom-Json
+          $sc = (& "$pkg\.venv\Scripts\python.exe" -B -s -E -c $readLnk "$desk\MediaEngine RC.lnk" "$pkg\app\archivist\platform_adapter.py") | ConvertFrom-Json
           $want = "`"$pkg\Start MediaEngine.vbs`""
           "desktop shortcut runs: $($sc.target) $($sc.arguments) (expected $want)" | Tee-Object -Append $log
           if ($sc.arguments -ne $want) { $fail += 'shortcut target' }
@@ -193,7 +193,7 @@ jobs:
           if (-not $made) { $fail += 'create project' }
           # second copy of the app on the same port must refuse to start (no second set of workers)
           $env:ARCHIVIST_V2_CHILD = '1'
-          $p2 = Start-Process "$pkg\.venv\Scripts\python.exe" -ArgumentList '-s','-E',"`"$pkg\app\main.py`"",'--no-browser' -PassThru -RedirectStandardError "$env:OUT\second_copy_stderr.txt" -WindowStyle Hidden
+          $p2 = Start-Process "$pkg\.venv\Scripts\python.exe" -ArgumentList '-B','-s','-E',"`"$pkg\app\main.py`"",'--no-browser' -PassThru -RedirectStandardError "$env:OUT\second_copy_stderr.txt" -WindowStyle Hidden
           $exited = $p2.WaitForExit(90000)
           $err2 = Get-Content "$env:OUT\second_copy_stderr.txt" -Raw -ErrorAction SilentlyContinue
           "second copy exited: $exited code: $($p2.ExitCode) message: $($err2 -replace '\s+',' ')" | Tee-Object -Append $log
