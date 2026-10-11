@@ -262,6 +262,61 @@ def main():
             check("other_formats_sound_as_long_as_picture", vd > 30 and ad is not None and abs(vd - ad) <= 0.1, (vd, ad, r["audio"]["applied"]))
         print("formats:", len(have), "used:", len(used), "stage seconds:", (r or {}).get("stage_seconds"))
 
+    # older formats (Windows Media, Flash, DVD VOB, JVC MOD/TOD, HDV tape, DV tape); MPEG-TS needs a build that reads it
+    old = fx / "older"
+    have = sorted(p.name for p in old.iterdir()) if old.is_dir() else []
+    if have and not readable:
+        print("SKIP older TS formats: this ffmpeg build cannot read MPEG-TS")
+        have = [n for n in have if Path(n).suffix.lower() not in (".tod", ".m2t")]
+        old2 = work_root / "older_no_ts"
+        old2.mkdir(exist_ok=True)
+        for n in have:
+            shutil.copyfile(old / n, old2 / n)
+        old = old2
+    if have:
+        out = work_root / "out_older"
+        cp = subprocess.run([sys.executable, str(R3 / "p11_folder_to_reel_r3.py"), "--input-dir", str(old), "--output-dir", str(out),
+                             "--work-dir", str(work_root / "work_older"), "--runtime-dir", str(R3), "--target-seconds", "60",
+                             "--semantic", "off", "--profile", "16x9"], capture_output=True, text=True, encoding="utf-8", errors="replace", env=env)
+        r = json.loads((out / "MediaEngine Result.json").read_text(encoding="utf-8")) if cp.returncode == 0 else None
+        used = set((r or {}).get("selected_sources", []))
+        skipped = {x["name"]: x["reason"] for x in (r or {}).get("skipped_inputs", [])}
+        check("older_formats_analysed_and_used", r and not skipped and len(used) >= len(have) - 1,
+              cp.stderr[-800:] if not r else (skipped, sorted(set(have) - used)))
+        wide = set((r or {}).get("widened_sources", {}))
+        check("older_formats_wide_ones_widened", r and {"MOV001.MOD", "tape.dv"} & used <= wide, (wide, used))
+        print("older formats:", len(have), "used:", len(used), "widened:", sorted(wide))
+
+    # a quiet and a loud clip (like a phone next to a camera): the accepted render brings every moment to the same
+    # loudness (loudnorm per segment) - the reel must not jump in volume between them
+    lv = fx / "levels"
+    if lv.is_dir():
+        import re
+
+        def mean_db(path, a=None, t=None):
+            cmd = [ff, "-hide_banner", "-nostats"] + (["-ss", f"{a:.3f}", "-t", f"{t:.3f}"] if a is not None else []) + \
+                  ["-i", str(path), "-map", "0:a:0", "-af", "volumedetect", "-f", "null", "-"]
+            m = re.search(r"mean_volume:\s*(-?[\d.]+) dB", subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8",
+                                                                          errors="replace").stderr or "")
+            return float(m.group(1)) if m else None
+        src = [mean_db(x) for x in sorted(lv.glob("*.mp4"))]
+        out = work_root / "out_levels"
+        cp = subprocess.run([sys.executable, str(R3 / "p11_folder_to_reel_r3.py"), "--input-dir", str(lv), "--output-dir", str(out),
+                             "--work-dir", str(work_root / "work_levels"), "--runtime-dir", str(R3), "--target-seconds", "15",
+                             "--semantic", "off", "--profile", "16x9", "--audio", "source"],
+                            capture_output=True, text=True, encoding="utf-8", errors="replace", env=env)
+        r = json.loads((out / "MediaEngine Result.json").read_text(encoding="utf-8")) if cp.returncode == 0 else None
+        reel = {}
+        for sg in (r or {}).get("segments", []):
+            a, b = sg["reel_in_s"] + 0.4, sg["reel_out_s"] - 0.4
+            if b - a >= 0.5:
+                reel.setdefault(sg["source_name"], mean_db(out / "MediaEngine Reel.mp4", a, b - a))
+        before = max(src) - min(src) if len(src) == 2 and None not in src else None
+        after = max(reel.values()) - min(reel.values()) if len(reel) == 2 and None not in reel.values() else None
+        check("sound_levels_evened_out", before and after is not None and before > 15 and after <= 4,
+              cp.stderr[-500:] if not r else (src, reel))
+        print("levels: sources", before and round(before, 1), "dB apart; in the reel", after is not None and round(after, 1), "dB")
+
     print(json.dumps({"passed": sum(ok for _, ok in checks), "total": len(checks)}))
     return 0 if all(ok for _, ok in checks) else 1
 

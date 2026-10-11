@@ -83,6 +83,17 @@ PHRASES = {
     "This folder has more than 64 videos. Use 'Choose videos…' to pick up to 64 of them, or choose a folder with fewer videos.":
         "В папке больше 64 видео. Нажми «Выбрать видео…» и выбери до 64 из них, или возьми папку, где видео меньше.",
     "Choose at most 64 videos for one reel.": "Для одного ролика можно выбрать не больше 64 видео.",
+    "Other MediaEngine versions on this PC": "Другие версии MediaEngine на этом компьютере",
+    "This one:": "Эта:",
+    "Older versions are kept so you can go back to one; remove the ones you no longer need (projects and exports stay).":
+        "Старые версии остаются, чтобы можно было вернуться; удали ненужные (проекты и ролики не пострадают).",
+    "Remove this version? Your projects and exports are not affected.": "Удалить эту версию? Проекты и ролики не пострадают.",
+    "Remove": "Удалить", "Removed": "Удалено", "· built": "· собрана",
+    "That is not another MediaEngine version next to this one.": "Это не другая версия MediaEngine рядом с этой.",
+    "Some files of that version are in use. Close anything opened from that folder and try again.":
+        "Часть файлов этой версии занята. Закрой всё, что открыто из той папки, и попробуй снова.",
+    "This folder has no supported video files": "В папке нет видео поддерживаемых форматов",
+    "Not a supported video file:": "Неподдерживаемый файл:",
     "No videos directly in this folder.": "В самой папке видео нет.", "video(s)": "видео",
     "These folders inside it have videos — open one (or use Choose videos… to pick from several):":
         "Видео есть во вложенных папках — открой одну (или нажми «Выбрать видео…», чтобы взять из нескольких):",

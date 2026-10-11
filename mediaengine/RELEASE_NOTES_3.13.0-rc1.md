@@ -46,7 +46,8 @@ Runtime modules, adapter and validator byte-identical to R2. Editing decisions i
 Fast helper checks · startup self-check · R3 = R2 decisions · robustness (still video, Private file, short footage,
 damaged cache, presets, phone files incl. rotation/HEVC/VFR/no audio, HDR HLG+PQ colours, camcorder MTS incl. a hand
 trim, HDV/DVD wide pictures in narrow pixels keep their shape, 11 other formats: 5.1 sound, 120 fps HEVC, square,
-odd size 4:4:4, MJPEG AVI + PCM, VP9/Opus WebM, 10-bit H.264, two sound tracks, late sound, ProRes, 3GP) · A/V sync
+odd size 4:4:4, MJPEG AVI + PCM, VP9/Opus WebM, 10-bit H.264, two sound tracks, late sound, ProRes, 3GP; older WMV,
+FLV, DVD VOB, JVC MOD/TOD, HDV .m2t, DV tape) · A/V sync
 at every cut · phone-file E2E · AI-mode glue with a labelled stub · full-video Convert · library re-analysis ·
 unplugged drive + no network · 64 long-named videos with Windows long paths OFF · E2E 7 and 2 videos (incl. chosen
 files, export folder, blind comparison, free cache, Russian interface, Check this PC) · package smoke (start via

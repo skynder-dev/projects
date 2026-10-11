@@ -71,6 +71,20 @@ def main():
     check("full drive refuses a build", raises(ae.check_free_space))
     ae.MIN_FREE_BYTES = old_min
     check("normal drive allows a build", not raises(ae.check_free_space))
+    # older versions next to this one can be listed and removed; never this one, never the data folder
+    base = work / "builds"
+    cur, old, other = base / "MediaEngine-3.13.0-b2", base / "MediaEngine-3.13.0-b1", base / "MediaEngine-notes"
+    for d in (cur, old, other, base / "MediaEngine Data"):
+        d.mkdir(parents=True, exist_ok=True)
+    for d in (cur, old):
+        for n in ae.BUILD_MARKERS:
+            (d / n).write_text(f"MediaEngine {d.name}\n", encoding="utf-8")
+    (other / "BUILD.txt").write_text("x", encoding="utf-8")
+    lst = ae.other_builds(cur)
+    check("other_builds lists only real other builds", [b["name"] for b in lst] == [old.name], lst)
+    check("delete_build refuses this build and the data folder", raises(ae.delete_build, cur.name, cur) and raises(ae.delete_build, "MediaEngine Data", cur))
+    check("delete_build removes an older build", ae.delete_build(old.name, cur) > 0 and not old.exists() and cur.exists()
+          and (base / "MediaEngine Data").exists())
     # Windows must not sleep while a reel is built (no-op elsewhere)
     from archivist.platform_adapter import keep_awake
     with keep_awake() as k:

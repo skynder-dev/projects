@@ -60,6 +60,8 @@ def main(out: Path) -> None:
     make_camcorder(ff, out / "camcorder", seven)
     make_anamorphic(ff, out / "anamorphic")
     make_formats(ff, out / "formats")
+    make_older(ff, out / "older")
+    make_levels(ff, out / "levels")
     print("fixtures ready:", sorted(p.name for p in seven.iterdir()), sorted(p.name for p in two.iterdir()))
 
 
@@ -196,6 +198,43 @@ def make_formats(ff: str, d: Path) -> None:
         if cp.returncode != 0:
             dst.unlink(missing_ok=True)
             print(f"format fixture skipped (this ffmpeg cannot write it): {name}: {cp.stderr.strip()[-200:]}")
+
+
+def make_older(ff: str, d: Path) -> None:
+    """Older formats: Windows Media, Flash video, DVD .VOB, JVC camcorder .MOD (PS, wide in narrow pixels) and .TOD
+    (TS, HDV-like), HDV tape .m2t, DV tape .dv. A format this ffmpeg build cannot WRITE is skipped (and reported)."""
+    d.mkdir(parents=True, exist_ok=True)
+    src = lambda size, rate, h, f, sr=48000: ["-f", "lavfi", "-i", f"testsrc2=size={size}:rate={rate},hue=h=t*{h}",
+                                              "-f", "lavfi", "-i", f"sine=frequency={f}:sample_rate={sr}"]
+    specs = {
+        "old_clip.wmv": [*src("640x480", 30, 40, 440, 44100), "-c:v", "wmv2", "-b:v", "2M", "-c:a", "wmav2"],
+        "web.flv": [*src("640x360", 30, 90, 340, 44100), "-c:v", "flv1", "-c:a", "aac", "-f", "flv"],
+        "VTS_01_1.VOB": [*src("720x576", 25, -40, 540), "-c:v", "mpeg2video", "-b:v", "5M", "-c:a", "ac3", "-f", "vob"],
+        "MOV001.MOD": [*src("720x576", 25, 60, 640), "-vf", "setsar=64/45", "-c:v", "mpeg2video", "-b:v", "6M", "-c:a", "ac3", "-f", "vob"],
+        "MOV002.TOD": [*src("1440x1080", 25, 20, 740), "-vf", "setsar=4/3", "-c:v", "mpeg2video", "-b:v", "15M", "-c:a", "mp2", "-f", "mpegts"],
+        "hdv_tape.m2t": [*src("1440x1080", 25, -20, 840), "-vf", "setsar=4/3", "-c:v", "mpeg2video", "-b:v", "15M", "-c:a", "mp2", "-f", "mpegts"],
+        "tape.dv": [*src("720x576", 25, 70, 940), "-c:v", "dvvideo", "-pix_fmt", "yuv420p", "-c:a", "pcm_s16le", "-ac", "2", "-f", "dv"],
+    }
+    for name, args in specs.items():
+        dst = d / name
+        if dst.exists():
+            continue
+        cp = subprocess.run([ff, "-v", "error", "-y", *args, "-t", "8", str(dst)], capture_output=True, text=True)
+        if cp.returncode != 0:
+            dst.unlink(missing_ok=True)
+            print(f"older-format fixture skipped (this ffmpeg cannot write it): {name}: {cp.stderr.strip()[-200:]}")
+
+
+def make_levels(ff: str, d: Path) -> None:
+    """A very quiet clip and a loud clip (like a phone next to a camera): the reel should even them out."""
+    d.mkdir(parents=True, exist_ok=True)
+    for name, vol, h in (("quiet_phone.mp4", 0.08, 50), ("loud_camera.mp4", 1.0, -50)):
+        dst = d / name
+        if dst.exists():
+            continue
+        subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", f"testsrc2=size=1280x720:rate=30,hue=h=t*{h}", "-f", "lavfi", "-i",
+                        "anoisesrc=color=pink:sample_rate=48000:amplitude=0.5", "-t", "12", "-af", f"volume={vol}",
+                        "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p", "-c:a", "aac", "-ac", "2", str(dst)], check=True)
 
 
 if __name__ == "__main__":

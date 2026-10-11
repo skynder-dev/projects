@@ -22,7 +22,9 @@ ENGINE_DIR = Path(__file__).resolve().parent / "engine_p11"
 ORCHESTRATOR = ENGINE_DIR / "p11_folder_to_reel_r3.py"
 AE_ROOT = DATA / "auto_edit"
 EXPORTS = HOME / "Exports"
-SUPPORTED = {".mp4", ".mov", ".m4v", ".avi", ".mkv", ".webm", ".mts", ".m2ts", ".ts", ".3gp", ".mpg", ".mpeg"}
+SUPPORTED = {".mp4", ".mov", ".m4v", ".avi", ".mkv", ".webm", ".mts", ".m2ts", ".ts", ".3gp", ".mpg", ".mpeg",
+             ".wmv", ".asf", ".flv", ".vob", ".mod", ".tod", ".m2t", ".dv"}   # + older Windows, web, DVD, tape camcorders
+SUPPORTED_TEXT = ".mp4 .mov .m4v .avi .mkv .webm .mts .m2ts .ts .3gp .mpg .wmv .flv .vob .mod .tod .m2t .dv"
 MAX_INPUTS = 64
 
 # One output preset per run (contract 2026-10-03). Keys are what the UI submits.
@@ -369,7 +371,7 @@ def check_files(files) -> list[Path]:
         if not f.is_absolute() or not f.is_file():
             raise ValueError(f"File not found: {raw}")
         if f.suffix.lower() not in SUPPORTED or f.name.startswith("._"):
-            raise ValueError(f"Not a supported video file: {f.name} (.mp4 .mov .m4v .avi .mkv .webm .mts .m2ts .ts .3gp .mpg)")
+            raise ValueError(f"Not a supported video file: {f.name} ({SUPPORTED_TEXT})")
         _guard_private(f)
         if f.name.lower() in names:
             raise ValueError(f"Two chosen files have the same name ({f.name}). Rename one of them, or choose a folder.")
@@ -460,7 +462,7 @@ def create_project(folder, title="", files=None) -> int:
     else:
         folder = check_folder(folder)
         if not list_videos(folder):
-            raise ValueError("This folder has no supported video files (.mp4 .mov .m4v .avi .mkv .webm .mts .m2ts .ts .3gp .mpg)")
+            raise ValueError(f"This folder has no supported video files ({SUPPORTED_TEXT})")
     ts = now_iso()
     name = str(title or "").strip()[:80] or folder.name or "Auto Edit"
     with db() as con:
@@ -1234,6 +1236,45 @@ def _tree_bytes(root: Path) -> int:
     return total
 
 
+BUILD_MARKERS = ("BUILD.txt", "port.txt", "Start MediaEngine.vbs")
+
+
+def other_builds(install: Path | None = None) -> list[dict]:
+    """Other MediaEngine build folders next to this one. Every update adds a folder (the old one is the rollback),
+    so they pile up (~0.5 GB each) unless the user removes the ones they no longer need."""
+    from .config import INSTALL
+    here = Path(install or INSTALL).resolve()
+    if not (here / "port.txt").is_file():          # only side-by-side releases
+        return []
+    out = []
+    try:
+        sibs = [d for d in here.parent.iterdir() if d.is_dir() and d.name.startswith("MediaEngine-") and d.resolve() != here]
+    except OSError:
+        return []
+    for d in sorted(sibs, key=lambda d: d.name.lower()):
+        if not all((d / n).is_file() for n in BUILD_MARKERS):
+            continue
+        try:
+            built = next((ln.split(None, 1)[1][:10] for ln in (d / "BUILD.txt").read_text(encoding="utf-8", errors="replace").splitlines()
+                          if ln.startswith("built ")), "")
+        except OSError:
+            built = ""
+        out.append({"name": d.name, "path": str(d), "built": built, "bytes": _tree_bytes(d),
+                    "mtime": (d / "BUILD.txt").stat().st_mtime})
+    return out
+
+
+def delete_build(name: str, install: Path | None = None) -> int:
+    """Remove one OTHER build folder (never the running one, never the data folder). Returns bytes freed."""
+    b = next((x for x in other_builds(install) if x["name"] == str(name or "")), None)
+    if not b:
+        raise ValueError("That is not another MediaEngine version next to this one.")
+    shutil.rmtree(b["path"], ignore_errors=True)
+    if Path(b["path"]).exists():
+        raise ValueError("Some files of that version are in use. Close anything opened from that folder and try again.")
+    return int(b["bytes"])
+
+
 def project_disk_usage(pid: int) -> dict:
     d = _project_dir(pid)
     return {"cache_bytes": _tree_bytes(d / "work"), "versions_bytes": _tree_bytes(d / "revisions")}
@@ -1456,7 +1497,7 @@ def pick_files(title="Choose videos for one reel") -> list[str] | None:
 
         size = 65536
         buf = ctypes.create_unicode_buffer(size)
-        flt = "Videos\0*.mp4;*.mov;*.m4v;*.avi;*.mkv;*.webm;*.mts;*.m2ts;*.ts;*.3gp;*.mpg;*.mpeg\0All files\0*.*\0\0"
+        flt = "Videos\0" + ";".join("*" + x for x in sorted(SUPPORTED)) + "\0All files\0*.*\0\0"
         ofn = OPENFILENAMEW()
         ofn.lStructSize = ctypes.sizeof(OPENFILENAMEW)
         ofn.hwndOwner = ctypes.windll.user32.GetForegroundWindow()

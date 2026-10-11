@@ -132,18 +132,25 @@ def install_launchers(home: Path) -> None:
         import tempfile
         maker = Path(tempfile.gettempdir()) / f"MediaEngine_make_shortcut_{os.getpid()}.vbs"
         # UTF-16 with BOM: wscript reads it as Unicode, so a folder like D:\\Видео\\MediaEngine works.
-        maker.write_text(
-            'Set sh=CreateObject("WScript.Shell")\r\n'
-            'desktop=sh.SpecialFolders("Desktop")\r\n'
-            'Set sc=sh.CreateShortcut(desktop & "\\' + name + '.lnk")\r\n'
-            'sc.TargetPath="wscript.exe"\r\n'
-            'sc.Arguments=Chr(34) & "' + str(vbs).replace('"', '""') + '" & Chr(34)\r\n'
-            'sc.WorkingDirectory="' + str(home).replace('"', '""') + '"\r\n'
-            'sc.Description="' + name + '"\r\n'
-            + (('sc.IconLocation="' + str(home / "MediaEngine.ico").replace('"', '""') + ',0"\r\n') if (home / "MediaEngine.ico").is_file() else '')
-            + 'sc.Save\r\n',
-            encoding="utf-16",
-        )
+        icon = home / "MediaEngine.ico"
+
+        def point(var: str) -> str:
+            return ('{0}.TargetPath="wscript.exe"\r\n'
+                    '{0}.Arguments=Chr(34) & "{1}" & Chr(34)\r\n'
+                    '{0}.WorkingDirectory="{2}"\r\n'.format(var, str(vbs).replace('"', '""'), str(home).replace('"', '""'))
+                    + ('{0}.IconLocation="{1},0"\r\n'.format(var, str(icon).replace('"', '""')) if icon.is_file() else '')
+                    + var + '.Save\r\n')
+        text = ('Set sh=CreateObject("WScript.Shell")\r\n'
+                'desktop=sh.SpecialFolders("Desktop")\r\n'
+                'Set sc=sh.CreateShortcut(desktop & "\\' + name + '.lnk")\r\n'
+                'sc.Description="' + name + '"\r\n' + point("sc"))
+        if side_by_side:
+            # the Start-menu entry made by the installer follows the build started last, like the desktop shortcut
+            text += ('Set fso=CreateObject("Scripting.FileSystemObject")\r\n'
+                     'sm=sh.SpecialFolders("Programs") & "\\MediaEngine.lnk"\r\n'
+                     'If fso.FileExists(sm) Then\r\n'
+                     'Set s2=sh.CreateShortcut(sm)\r\n' + point("s2") + 'End If\r\n')
+        maker.write_text(text, encoding="utf-16")
         try:
             subprocess.run(["wscript.exe", str(maker)], timeout=15, **process_kwargs(detached=True))
         finally:

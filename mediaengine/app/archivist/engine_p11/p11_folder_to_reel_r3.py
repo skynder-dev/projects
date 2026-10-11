@@ -5,7 +5,8 @@ import cv2
 import numpy as np
 
 CONTRACT_VERSION = "P11_FOLDER_TO_REEL_R3"
-SUPPORTED = {".mp4",".mov",".m4v",".avi",".mkv",".webm",".mts",".m2ts",".ts",".3gp",".mpg",".mpeg"}   # + camcorder / old phone
+SUPPORTED = {".mp4",".mov",".m4v",".avi",".mkv",".webm",".mts",".m2ts",".ts",".3gp",".mpg",".mpeg",   # + camcorder / old phone
+             ".wmv",".asf",".flv",".vob",".mod",".tod",".m2t",".dv"}                               # + older Windows, web, DVD, tape
 
 SEMANTIC_HOOK_SHA = "2b15303eba5b02b7f949cb560e58b2dbee09ff4576e21ad4b25b2d3111b02d5c"
 MODEL_SHA = "844d1a46ab18acf50c989e541b12fe3b6dc7f8d6004725b4e992d142788e0600"
@@ -308,7 +309,7 @@ def _short_path_windows(path):
     except Exception:
         return None
 
-REMUX_EXT={".mts",".m2ts",".ts",".mpg",".mpeg"}
+REMUX_EXT={".mts",".m2ts",".ts",".mpg",".mpeg",".vob",".mod",".tod",".m2t"}   # MPEG-2 program/transport streams
 
 def _remux_alias(r,alias):
     """Camcorder transport streams (.MTS/.M2TS/.TS/.MPG): OpenCV inside the accepted analysis cannot count or seek their

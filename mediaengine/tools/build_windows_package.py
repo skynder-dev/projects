@@ -120,7 +120,7 @@ start it; it opens the same projects. If the new build has a problem, start the 
 Auto Edit: choose a folder with your videos (or single videos), pick Length / Format / Sound, press
 "Create reel". Review the result, Accept it, then Export MP4 (to the Exports folder in "MediaEngine Data",
 or "Export to another folder..."). Phone and camera files work: MP4/MOV (also HEVC and HDR), camcorder
-MTS/M2TS, MPG, 3GP. "Check this PC" (on the Auto Edit page) shows what is installed and builds a test reel
+MTS/M2TS/MOD/TOD, HDV/DV tape captures, DVD VOB/MPG, older WMV/FLV/3GP. "Check this PC" (on the Auto Edit page) shows what is installed and builds a test reel
 (also with the AI model). The Auto Edit pages can be switched to Russian (button "Русский").
 
 AI model: if this folder sits next to an existing Archivist install (for example D:\\Archivist),
@@ -156,7 +156,8 @@ It does not change a stable Archivist install. To remove it: Quit, delete this f
      сохраняется как новая версия, старые не теряются.
   4. "Accept this version" → "Export MP4" (или "Export to another folder…").
   Оригиналы только читаются и никогда не меняются.
-  Подходят видео с телефона и камер: MP4/MOV (в том числе HEVC и HDR), MTS/M2TS с видеокамеры, MPG, 3GP.
+  Подходят видео с телефона и камер: MP4/MOV (в том числе HEVC и HDR), MTS/M2TS/MOD/TOD с видеокамер,
+  оцифровки кассет HDV/DV, DVD (VOB/MPG), старые WMV/FLV/3GP.
 
 ЯЗЫК
   Кнопка "Русский" справа вверху на странице Auto Edit переводит страницы автомонтажа на русский

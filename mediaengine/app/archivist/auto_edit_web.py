@@ -37,6 +37,12 @@ PAGE_CSS = r"""
 """
 
 
+def _when(iso) -> str:
+    """'2026-10-11T08:12:55' -> '2026-10-11 08:12' (local time, as stored)."""
+    t = str(iso or "")
+    return t[:16].replace("T", " ") if len(t) >= 16 and t[10:11] == "T" else t
+
+
 def _fmt_s(x) -> str:
     try:
         x = float(x)
@@ -145,15 +151,39 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
             else:
                 test_html = (f"<div class='card' style='margin-top:14px'><b>Test reel failed after {t['seconds']} s</b>"
                              f"<div class='errbox' style='margin-top:6px'>{e(t['error'])}</div></div>")
+        from .config import INSTALL
+        builds = ae.other_builds()
+        done = request.args.get("removed", "")
+        brows = "".join(f"<tr><td><b translate='no'>{e(b['name'])}</b>{(' · built ' + e(b['built'])) if b['built'] else ''}"
+                        f"<div class='muted ae-path'>{e(b['path'])}</div></td>"
+                        f"<td>{human_bytes(b['bytes'])}</td><td><form method='post' action='/auto/check/remove-build' "
+                        f"onsubmit=\"return confirm(document.getElementById('rmq').textContent)\">"
+                        f"<input type='hidden' name='name' value='{e(b['name'])}'><button class='btn2'>Remove</button></form></td></tr>"
+                        for b in builds)
+        builds_html = (f"<div class='card' style='margin-top:14px'><b>Other MediaEngine versions on this PC</b>"
+                       f"<div class='muted'>This one: <span class='ae-path'>{e(str(INSTALL))}</span>. Older versions are kept so you can go "
+                       f"back to one; remove the ones you no longer need (projects and exports stay).</div>"
+                       f"<span id='rmq' hidden>Remove this version? Your projects and exports are not affected.</span>"
+                       f"<table class='ae-files' style='margin-top:8px'>{brows}</table></div>") if builds else ""
+        if done:
+            builds_html = f"<div class='card ae-done' style='margin-top:14px'>Removed {e(done)}.</div>" + builds_html
         body = (f"<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Check this PC</h1>"
                 f"<div class='lead'>What MediaEngine needs, and a 5-second test reel made from generated clips (your videos are not used).</div></div>"
                 f"<div class='card'><table class='ae-files'>{table}</table></div>"
                 f"<form method='post' class='card' style='margin-top:14px' onsubmit=\"const f=this;f.querySelector('span').textContent='Building the test reel… (up to a few minutes)';setTimeout(()=>f.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
                 f"<button name='mode' value='technical'>Build a test reel</button> "
                 + (f"<button name='mode' value='semantic' class='btn2'>Build a test reel with the AI model</button> " if ai_ready else "")
-                + f"<span class='muted'></span></form>{test_html}"
+                + f"<span class='muted'></span></form>{test_html}{builds_html}"
                 f"<div class='row' style='margin-top:14px'><a class='btn btn2' href='/auto'>Back</a></div>")
         return page("Check this PC", body)
+
+    @app.post("/auto/check/remove-build")
+    def ae_remove_build():
+        try:
+            freed = ae.delete_build(request.form.get("name", ""))
+        except Exception as exc:
+            return err_page(str(exc))
+        return redirect("/auto/check?removed=" + urllib.parse.quote(request.form.get("name", "") + f" ({human_bytes(freed)})"))
 
     @app.post("/auto/lang")
     def ae_lang():
@@ -729,7 +759,7 @@ def _reviews_html(p, e):
         txt = (f"R{a:03d} preferred over R{b:03d}" if r["choice"] == "left" else
                f"R{b:03d} preferred over R{a:03d}" if r["choice"] == "right" else f"R{a:03d} and R{b:03d} about the same")
         rows += (f"<a class='ae-seg' style='grid-template-columns:1fr auto' href='/auto/review/{r['id']}'><span>{txt}"
-                 f"{(' · ' + e(r['note'])) if r.get('note') else ''}</span><span class='muted'>{e(r['decided_at'])}</span></a>")
+                 f"{(' · ' + e(r['note'])) if r.get('note') else ''}</span><span class='muted'>{e(_when(r['decided_at']))}</span></a>")
     return f"<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Blind comparisons</h2>{rows}</div>"
 
 
@@ -744,5 +774,5 @@ def _revisions_html(p, cur, e):
         ex = len(r["settings"].get("exclude", []))
         rows += (f"<a class='ae-seg' style='grid-template-columns:70px 1fr auto' href='/auto/p/{p['id']}?rev={r['id']}'><b>R{int(r['number']):03d}</b>"
                  f"<span>{e(f)} · {r['settings']['length']} s · sound {e(r['settings']['sound'])}{(' · ' + str(ex) + ' excluded') if ex else ''}{' · edited by you' if r['settings'].get('selection') else ''}"
-                 f" <span class='muted'>· {e(r['created_at'])}</span></span><span>{tag}{here}</span></a>")
+                 f" <span class='muted'>· {e(_when(r['created_at']))}</span></span><span>{tag}{here}</span></a>")
     return f"<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Revisions</h2>{rows}</div>"
