@@ -101,12 +101,14 @@ end;
 function SameBuildRunning(Folder: String): Boolean;
 var
   ResultCode: Integer;
+  F: String;
 begin
   // a NEW build goes into its own folder and can be installed while an older one runs (it offers to switch when
   // started); only re-installing the very build that is running would hit files in use
-  StringChangeEx(Folder, '''', '''''', True);
+  F := Folder;
+  StringChangeEx(F, '''', '''''', True);
   Result := Exec(ExpandConstant('{sys}\WindowsPowerShell\v1.0\powershell.exe'),
-    '-NoProfile -NonInteractive -Command "try { $p = (Invoke-WebRequest -UseBasicParsing -TimeoutSec 2 http://127.0.0.1:{#Port}/api/ping).Content | ConvertFrom-Json; if ($p.install -eq ''' + Folder + ''') { exit 0 } else { exit 1 } } catch { exit 1 }"',
+    '-NoProfile -NonInteractive -Command "try { $p = (Invoke-WebRequest -UseBasicParsing -TimeoutSec 2 http://127.0.0.1:{#Port}/api/ping).Content | ConvertFrom-Json; if ($p.install -eq ''' + F + ''') { exit 0 } else { exit 1 } } catch { exit 1 }"',
     '', SW_HIDE, ewWaitUntilTerminated, ResultCode) and (ResultCode = 0);
 end;
 
