@@ -1,0 +1,188 @@
+{
+ "items": [
+  {
+   "id": "DAT-03",
+   "checks": [
+    {
+     "evidenceId": "DAT-03-D8",
+     "url": "https://cyberinsider.com/data-removal/optery-review/",
+     "kind": "incumbent_price",
+     "quote": "removal reports that include 'before' and 'after' screenshots showing where your private information was previously posted."
+    },
+    {
+     "evidenceId": "DAT-03-D1",
+     "url": "https://privacy.ca.gov/drop/",
+     "kind": "constraint",
+     "quote": "Free — we will never charge you to use DROP"
+    },
+    {
+     "evidenceId": "DAT-03-D2",
+     "url": "https://privacy.ca.gov/drop/",
+     "kind": "constraint",
+     "quote": "It could take up to 90 days to see your status updated in DROP."
+    }
+   ]
+  },
+  {
+   "id": "DEV-01",
+   "checks": [
+    {
+     "evidenceId": "DEV-01-D2",
+     "url": "https://github.com/hookdeck/outpost",
+     "kind": "incumbent_price",
+     "quote": "Production-ready infrastructure for sending webhooks and delivering events from your platform to your customers' systems. | usage-based pricing starting at $10 per million events."
+    },
+    {
+     "evidenceId": "DEV-01-D6",
+     "url": "https://github.com/CommonPaper/DPA",
+     "kind": "other",
+     "quote": "Common Paper agreements are free to use and modify under CC BY 4.0."
+    },
+    {
+     "evidenceId": "DEV-01-D4",
+     "url": "https://github.com/hook0/hook0",
+     "kind": "constraint",
+     "quote": "You may not provide the products to others as a managed service. | Free Community Cloud Tier: Available (no credit card required)"
+    }
+   ]
+  },
+  {
+   "id": "DEV-02",
+   "checks": [
+    {
+     "evidenceId": "DEV-02-D4",
+     "url": "https://github.com/Skyblueballykid/apibreak",
+     "kind": "constraint",
+     "quote": "Fails your CI build when a third-party API you actually call changes in a way that can break you."
+    },
+    {
+     "evidenceId": "DEV-02-D2",
+     "url": "https://github.com/APIs-guru/openapi-directory",
+     "kind": "constraint",
+     "quote": "Wikipedia for Web APIs. Directory of REST API definitions in OpenAPI 2.0/3.x format. | All definitions are automatically updated from their original source. | at least weekly"
+    },
+    {
+     "evidenceId": "DEV-02-D5",
+     "url": "https://github.com/dgtlmoon/changedetection.io",
+     "kind": "incumbent_price",
+     "quote": "Detect changes and monitor data in JSON API's | $8.99/month subscription"
+    }
+   ]
+  },
+  {
+   "id": "DEV-03",
+   "checks": [
+    {
+     "evidenceId": "DEV-03-D3",
+     "url": "https://toolradar.com/tools/api-to-mcp",
+     "kind": "incumbent_price",
+     "quote": "$0 / month | $6.99 / month | $20.99 / month | $41.30 / month"
+    },
+    {
+     "evidenceId": "DEV-03-D8",
+     "url": "https://blog.cloudflare.com/remote-model-context-protocol-servers-mcp/",
+     "kind": "constraint",
+     "quote": "a new TypeScript library that wraps your Worker’s code, adding authorization to API endpoints."
+    },
+    {
+     "evidenceId": "DEV-03-D2",
+     "url": "https://www.speakeasy.com/blog/release-gram-beta",
+     "kind": "incumbent_price",
+     "quote": "Pricing is usage-based with a generous free tier (1K tool calls) to encourage teams to experiment and iterate quickly."
+    }
+   ]
+  },
+  {
+   "id": "DEV-04",
+   "checks": [
+    {
+     "evidenceId": "DEV-04-D9",
+     "url": "https://www.everydev.ai/tools/zuplo",
+     "kind": "incumbent_price",
+     "quote": "Builder: $25/mo."
+    },
+    {
+     "evidenceId": "DEV-04-D5",
+     "url": "https://docs.stripe.com/payments/machine",
+     "kind": "other",
+     "quote": "Machine payments let agents pay for APIs and services programmatically."
+    },
+    {
+     "evidenceId": "DEV-04-D8",
+     "url": "https://www.everydev.ai/tools/zuplo",
+     "kind": "incumbent_price",
+     "quote": "Free forever for individuals. Includes 100K requests/month, developer portal, MCP gateway, and AI gateway."
+    }
+   ]
+  },
+  {
+   "id": "ECO-04",
+   "checks": [
+    {
+     "evidenceId": "ECO-04-D1",
+     "url": "https://apps.shopify.com/disputepack",
+     "kind": "incumbent_price",
+     "quote": "Free plan available."
+    },
+    {
+     "evidenceId": "ECO-04-D8",
+     "url": "https://easysellapp.com/blogs/wiki/best-shopify-chargeback-apps-2026",
+     "kind": "demand",
+     "quote": "you only need to recover one or two chargebacks to break even"
+    },
+    {
+     "evidenceId": "ECO-04-D10",
+     "url": "https://community.shopify.dev/t/warning-shopify-app-store-review-process/32259",
+     "kind": "constraint",
+     "quote": "We did not receive any update until over 30 days after submission (3x the SLA)."
+    }
+   ]
+  },
+  {
+   "id": "EDU-03",
+   "checks": [
+    {
+     "evidenceId": "EDU-03-D1",
+     "url": "https://www.teacherspayteachers.com/Terms-of-Service",
+     "kind": "constraint",
+     "quote": "TPT Sellers own and maintain the intellectual property rights in their Resources"
+    },
+    {
+     "evidenceId": "EDU-03-D6",
+     "url": "https://payhip.com/features/sell-digital-downloads",
+     "kind": "other",
+     "quote": "Upload any type of file (ebooks, software, video etc)"
+    },
+    {
+     "evidenceId": "EDU-03-D7",
+     "url": "https://www.teacherspayteachers.com/About-Us",
+     "kind": "demand",
+     "quote": "7M+ educators worldwide"
+    }
+   ]
+  },
+  {
+   "id": "GAM-01",
+   "checks": [
+    {
+     "evidenceId": "GAM-01-D1",
+     "url": "https://partner.steamgames.com/doc/marketing/curators",
+     "kind": "other",
+     "quote": "We limit the Curator Connect list to those profiles that continue to be active in the Steam Community."
+    },
+    {
+     "evidenceId": "GAM-01-D10",
+     "url": "https://influencers.club/indie-game-developers-email-list/",
+     "kind": "other",
+     "quote": "is refreshed monthly"
+    },
+    {
+     "evidenceId": "GAM-01-D12",
+     "url": "https://reddit.sudovanilla.org/r/gameDevMarketing",
+     "kind": "other",
+     "quote": "I'll send you a free list of 10 streamers who play games in your genre/style."
+    }
+   ]
+  }
+ ]
+}

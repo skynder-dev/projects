@@ -1,0 +1,142 @@
+{
+ "items": [
+  {
+   "id": "PHY-04",
+   "checks": [
+    {
+     "evidenceId": "PHY-04-D1",
+     "url": "https://ecomcircles.com/prep-centers/no-minimum/",
+     "kind": "incumbent_price",
+     "quote": "the 60 no-minimum prep centers in our directory"
+    },
+    {
+     "evidenceId": "PHY-04-D3",
+     "url": "https://www.freightfigures.com/articles/fba-prep-center-vs-diy",
+     "kind": "incumbent_price",
+     "quote": "$1.00–$1.50 per unit below 500 units a month"
+    },
+    {
+     "evidenceId": "PHY-04-D9",
+     "url": "https://rcbizjournal.com/2021/03/25/in-home-warehousing-is-a-growing-trend-but-with-legal-implications/",
+     "kind": "constraint",
+     "quote": "the home warehouser would be presumed guilty of negligence for any loss or damage to the goods"
+    }
+   ]
+  },
+  {
+   "id": "SAS-01",
+   "checks": [
+    {
+     "evidenceId": "SAS-01-D3",
+     "url": "https://gummysearch.com/docs/articles/gummysearch-is-now-closed-6533h",
+     "kind": "constraint",
+     "quote": "All user data will be permanently deleted on December 1, 2026."
+    },
+    {
+     "evidenceId": "SAS-01-D2",
+     "url": "https://gummysearch.com/final-chapter",
+     "kind": "constraint",
+     "quote": "we were not able to reach an agreement that aligns with Reddit's Data API Usage policies."
+    },
+    {
+     "evidenceId": "SAS-01-D10",
+     "url": "https://aisotools.com/pricing/rednudge",
+     "kind": "incumbent_price",
+     "quote": "Starter is $7/month for 5 keywords, 300 AI-scored matches per month,"
+    }
+   ]
+  },
+  {
+   "id": "SAS-02",
+   "checks": [
+    {
+     "evidenceId": "SAS-02-D6",
+     "url": "https://github.com/ArchiveBox/ArchiveBox",
+     "kind": "other",
+     "quote": "ArchiveBox is a self-hosted app that lets you preserve content from websites in a variety of formats."
+    },
+    {
+     "evidenceId": "SAS-02-D10",
+     "url": "https://developers.facebook.com/terms/",
+     "kind": "constraint",
+     "quote": "When you stop operating the product or service through which the Platform Data was acquired;"
+    },
+    {
+     "evidenceId": "SAS-02-D12",
+     "url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.204-2",
+     "kind": "demand",
+     "quote": "Originals of all written communications received and copies of all written communications sent"
+    }
+   ]
+  },
+  {
+   "id": "SVC-02",
+   "checks": [
+    {
+     "evidenceId": "SVC-02-D5",
+     "url": "https://slashpost.ai/blogs/google-business-profile/google-business-profile-suspended-reinstatement-guide",
+     "kind": "other",
+     "quote": "For a single straightforward suspension, most businesses can self-file successfully using the process above."
+    },
+    {
+     "evidenceId": "SVC-02-D7",
+     "url": "https://www.freelancer.in/projects/google-ads/google-ads-gbp-reinstatement",
+     "kind": "incumbent_price",
+     "quote": "52 freelancers are bidding on average $120 USD for this job"
+    },
+    {
+     "evidenceId": "SVC-02-D9",
+     "url": "https://steadydemand.com/reinstatement.html",
+     "kind": "incumbent_price",
+     "quote": "The monthly fee is $79 per location."
+    }
+   ]
+  },
+  {
+   "id": "SVC-03",
+   "checks": [
+    {
+     "evidenceId": "SVC-03-D2",
+     "url": "https://www.amazonsellers.attorney/amazon-appeals.html",
+     "kind": "incumbent_price",
+     "quote": "Review is free and begins the same business day in most matters."
+    },
+    {
+     "evidenceId": "SVC-03-D9",
+     "url": "https://www.amazonsellers.attorney/amazon-attorney-reviews.html",
+     "kind": "other",
+     "quote": "No automated appeals - human attorney review only"
+    },
+    {
+     "evidenceId": "SVC-03-D1",
+     "url": "https://www.amazonsellers.attorney/amazon-appeals.html",
+     "kind": "incumbent_price",
+     "quote": "$1,500 flat for most appeals, $2,300 for IP and related accounts."
+    }
+   ]
+  },
+  {
+   "id": "SVC-04",
+   "checks": [
+    {
+     "evidenceId": "SVC-04-D2",
+     "url": "https://clearhealthcosts.com/blog/2023/06/free-or-discounted-medical-care-dollarfor-and-hospital-bill-relief/",
+     "kind": "other",
+     "quote": "We will never charge patients for the work we do. All of our services are completely free."
+    },
+    {
+     "evidenceId": "SVC-04-D4",
+     "url": "https://exactadoc.gumroad.com/l/insurance",
+     "kind": "incumbent_price",
+     "quote": "calm, professional letters written in insurer-approved language"
+    },
+    {
+     "evidenceId": "SVC-04-D11",
+     "url": "https://www.cms.gov/nosurprises",
+     "kind": "constraint",
+     "quote": "The No Surprises Act protects you from unexpected out-of-network medical bills for emergency room visits."
+    }
+   ]
+  }
+ ]
+}

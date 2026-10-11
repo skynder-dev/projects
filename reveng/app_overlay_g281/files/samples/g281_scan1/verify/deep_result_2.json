@@ -1,0 +1,196 @@
+{
+ "results": [
+  {
+   "candidateId": "GAM-03",
+   "evidenceId": "GAM-03-D3",
+   "url": "https://sessionzerolabs.itch.io/session-zero-labs",
+   "status": "confirmed",
+   "note": "Exact sentence appears in the main description after the 'Everything connects' paragraph.",
+   "pageSnippet": "Free forever. No credit card needed. Premium from $5/mo."
+  },
+  {
+   "candidateId": "GAM-03",
+   "evidenceId": "GAM-03-D2",
+   "url": "https://slyflourish.com/how_long_to_prep.html",
+   "status": "confirmed",
+   "note": "Exact sentence present.",
+   "pageSnippet": "Here are the results from 3,663 responses:"
+  },
+  {
+   "candidateId": "GAM-03",
+   "evidenceId": "GAM-03-D13",
+   "url": "https://monstermind.substack.com/p/2025-a-year-in-review",
+   "status": "confirmed",
+   "note": "Sentence present; context is a 'low action year' with no big crowdfunding campaigns, figures juggled across euro, dollar and pound.",
+   "pageSnippet": "My gross income was about $2400."
+  },
+  {
+   "candidateId": "GAM-04",
+   "evidenceId": "GAM-04-D1",
+   "url": "https://tooldirectory.ai/tools/blooket",
+   "status": "confirmed",
+   "note": "Found in the FAQ; page also says Plus ($4.99/month annual) adds a 300-player cap.",
+   "pageSnippet": "Creating sets and hosting games is free with up to 60 players."
+  },
+  {
+   "candidateId": "GAM-04",
+   "evidenceId": "GAM-04-D2",
+   "url": "https://nibble-app.com/blog/blooket-pricing",
+   "status": "confirmed",
+   "note": "Found in the 'Blooket pricing at a glance' section; page also lists Plus Flex at 9.99 per month.",
+   "pageSnippet": "Blooket Plus: 4.99 per month, billed annually at 59.88 per year."
+  },
+  {
+   "candidateId": "GAM-04",
+   "evidenceId": "GAM-04-D8",
+   "url": "https://tooldirectory.ai/tools/blooket",
+   "status": "confirmed",
+   "note": "Found in 'How Blooket differentiates' section; page says launched publicly October 2020 and grew to more than 10 million users.",
+   "pageSnippet": "...launched publicly in October 2020, riding the remote-learning wave to more than 10 million users..."
+  },
+  {
+   "candidateId": "MED-01",
+   "evidenceId": "MED-01-D5",
+   "url": "https://support.google.com/youtube/answer/2734796",
+   "status": "confirmed",
+   "note": "Appears under the 'Auto-translate' heading, right after the sentence that YouTube uses speech recognition to automatically create captions.",
+   "pageSnippet": "If automatic captions are available, they'll automatically be published on the video."
+  },
+  {
+   "candidateId": "MED-01",
+   "evidenceId": "MED-01-D2",
+   "url": "https://it.nc.gov/documents/doj-deep-dive-part-2/open",
+   "status": "confirmed",
+   "note": "Slide 'Ex: archived web content' (town's annual parade page with archived photos/videos from past years); sentence present verbatim.",
+   "pageSnippet": "The images and videos would likely be covered by the exception (if it meets all other requirements)."
+  },
+  {
+   "candidateId": "MED-01",
+   "evidenceId": "MED-01-D1",
+   "url": "https://www.lmc.org/?p=47484",
+   "status": "confirmed",
+   "note": "Sentence present; it gives the ADA Title II web/mobile accessibility compliance date for smaller entities and special districts.",
+   "pageSnippet": "April 26, 2028, for entities with populations under 50,000 and special districts."
+  },
+  {
+   "candidateId": "MED-02",
+   "evidenceId": "MED-02-D3",
+   "url": "https://govfresh.com/signal/voterheads-wants-make-easier-follow-government-council-meetings",
+   "status": "confirmed",
+   "note": "Page wording is 'Voterheads is free for anyone monitoring five organizations or less.' Quote is a verbatim fragment.",
+   "pageSnippet": "Voterheads is free for anyone monitoring five organizations or less."
+  },
+  {
+   "candidateId": "MED-02",
+   "evidenceId": "MED-02-D7",
+   "url": "https://apify.com/m_ctim/city-council-watch",
+   "status": "confirmed",
+   "note": "Appears in the Pricing note section; page continues that a city with 50 new ordinances this month costs the same as one with 2. Source has no trailing period after 'returned' in the snippet shown (trivial).",
+   "pageSnippet": "Billed per city queried, not per matter or meeting returned — a city with 50 new ordinances this month costs the same as one with 2."
+  },
+  {
+   "candidateId": "MED-02",
+   "evidenceId": "MED-02-D2",
+   "url": "https://ordinancewatch.com/",
+   "status": "confirmed",
+   "note": "Phrase appears in the Premium+ Subscription package description. It describes a package feature/positioning, not a verified customer-demand statistic.",
+   "pageSnippet": "Designed for lawyers as a client retention tool"
+  },
+  {
+   "candidateId": "MKT-01",
+   "evidenceId": "MKT-01-D8",
+   "url": "https://cubecreative.design/blog/small-business-marketing/google-local-service-ads-worth-it",
+   "status": "confirmed",
+   "note": "Found in 'How Does LSA Cost Compare to Google Search Ads?'; sentence continues 'for that $104 blended average'. Figures are attributed to a SearchLight breakdown.",
+   "pageSnippet": "The SearchLight breakdown put branded search at a $34 cost per lead, non-branded search at $149, and Performance Max at $72,"
+  },
+  {
+   "candidateId": "MKT-01",
+   "evidenceId": "MKT-01-D12",
+   "url": "https://prospeo.io/s/lead-gen-business-model",
+   "status": "confirmed",
+   "note": "Found in the 'Drive Traffic' section; the timeline is for local SEO, the primary channel for rank-and-rent sites.",
+   "pageSnippet": "build local backlinks, and optimize your Google Business Profile. Expect 3-6 months before you're ranking consistently."
+  },
+  {
+   "candidateId": "MKT-01",
+   "evidenceId": "MKT-01-D1",
+   "url": "https://www.thumbtack.com/pro/jobs",
+   "status": "confirmed",
+   "note": "Appears in the pricing section after the sentence about Thumbtack matching pros with customers by criteria.",
+   "pageSnippet": "You pay when a new customer contacts or hires you."
+  },
+  {
+   "candidateId": "MKT-02",
+   "evidenceId": "MKT-02-D1",
+   "url": "https://exitbid.io/",
+   "status": "confirmed",
+   "note": "Sentence present below the Live Auctions list; the next sentence says 'Pre-revenue projects are accepted.'",
+   "pageSnippet": "Bidding is free after one-time verification; sellers pay a flat $199 listing fee, 0% commission."
+  },
+  {
+   "candidateId": "MKT-02",
+   "evidenceId": "MKT-02-D6",
+   "url": "https://flippa.com/",
+   "status": "confirmed",
+   "note": "Sentence present in the 'A buyer pool with depth and intent.' section; this is Flippa's own marketing claim.",
+   "pageSnippet": "1.9M+ buyers globally, including PE firms, family offices, search funds, and operators with capital ready to deploy."
+  },
+  {
+   "candidateId": "MKT-02",
+   "evidenceId": "MKT-02-D2",
+   "url": "https://exitbid.io/",
+   "status": "confirmed",
+   "note": "Present as a section heading in the 'Why exitbid' area; body text says every listing gets full buyer attention.",
+   "pageSnippet": "Only 14 at a Time. Every listing gets full buyer attention. If it's here - people will see it."
+  },
+  {
+   "candidateId": "MKT-03",
+   "evidenceId": "MKT-03-D3",
+   "url": "https://stripe.com/connect/pricing",
+   "status": "confirmed",
+   "note": "Appears in the Payments section, in bold on the page. Note this is the Stripe Connect pricing page (Payments product headline rate).",
+   "pageSnippet": "Starts at 2.9% + 30¢ per successful card charge"
+  },
+  {
+   "candidateId": "MKT-03",
+   "evidenceId": "MKT-03-D7",
+   "url": "https://fungies.io/best-gumroad-alternatives-2026/",
+   "status": "confirmed",
+   "note": "The exact line appears twice on the page: once under Fungies (section 1) and once under Lemon Squeezy (section 3). The quote is on the page but is ambiguous about which product it refers to; both are listed at 5% + $0.50.",
+   "pageSnippet": "Pricing: 5% + $0.50 per transaction, no monthly fee"
+  },
+  {
+   "candidateId": "MKT-03",
+   "evidenceId": "MKT-03-D6",
+   "url": "https://gumroad.com/pricing",
+   "status": "confirmed",
+   "note": "Quote is a verbatim fragment; the page text begins with the fee amount '30%' immediately before it, so the full line is the 30% discover-marketplace fee.",
+   "pageSnippet": "30% Per transaction when new customers find and buy from you through our discover marketplace."
+  },
+  {
+   "candidateId": "PHY-01",
+   "evidenceId": "PHY-01-D6",
+   "url": "https://www.ebay.com/usr/rggion",
+   "status": "confirmed",
+   "note": "Found in a feedback review on the eBay profile for rggion dated Dec 19, 2016; page text continues 'a replacement built via 3D Printing.'",
+   "pageSnippet": "Now, with sharpeibear there is an alternative at $60.00 per knob, a replacement built via 3D Printing."
+  },
+  {
+   "candidateId": "PHY-01",
+   "evidenceId": "PHY-01-D9",
+   "url": "https://www.ebay.com/help/selling/fees-credits-invoices/selling-fees?id=4822",
+   "status": "confirmed",
+   "note": "Appears once, in the basic fees table row for 'Most categories' (includes eBay Motors > Parts & Accessories); row reads '$0.35 per listing - 13.6% ... up to $7,500 calculated per item'; a lower rate of 2.35% applies above $7,500.",
+   "pageSnippet": "$0.35 per listing - 13.6% on total amount of the sale up to $7,500 calculated per item"
+  },
+  {
+   "candidateId": "PHY-01",
+   "evidenceId": "PHY-01-D5",
+   "url": "https://www.ebay.com/usr/rggion",
+   "status": "confirmed",
+   "note": "Same Dec 19, 2016 review on the rggion eBay profile; sentence present verbatim.",
+   "pageSnippet": "Until now, the used market was a monopoly and there was one source charging $289.95 per knob, sheer market arrogance."
+  }
+ ]
+}

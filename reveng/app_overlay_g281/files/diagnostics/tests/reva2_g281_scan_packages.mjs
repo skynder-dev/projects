@@ -93,6 +93,15 @@ t(Object.values(srcAll).every(c=>c.researcherVerdict!=='survives'),'no first-pas
   const deeps=Object.fromEntries(fs.readdirSync(ROOT+base+'deep').filter(f=>f.endsWith('.json')).map(f=>[f.replace('.json',''),rd(base+'deep/'+f)]));
   const byEng=Object.fromEntries(rows.map(r=>[r.metadata.engine_id,r]));
   t(rows.length===40&&Object.keys(deeps).length===22,tag+'40 candidates, 22 deep results');
+  // second attempt (deep2/): appended evidence, later verdict/economics win
+  const deep2=Object.fromEntries(fs.readdirSync(ROOT+base+'deep2').filter(f=>f.endsWith('.json')).map(f=>[f.replace('.json',''),rd(base+'deep2/'+f)]));
+  t(JSON.stringify(Object.keys(deep2).sort())===JSON.stringify(['PHY-01','SAS-02']),tag+'two second-attempt results merged');
+  for(const [id,b] of Object.entries(deep2)){ const a=deeps[id]; a.newEvidence=a.newEvidence.concat(b.newEvidence); a.economics=b.economics; a.verdict=b.verdict; a.killReasons=a.killReasons.concat(b.killReasons.filter(k=>!a.killReasons.some(x=>x.reason===k.reason))); t(b.newEvidence.every(e=>new RegExp('^'+id+'-D2\\d+$|^'+id+'-D[3-9]\\d$').test(e.id)),tag+id+' second-attempt evidence ids do not collide'); }
+  // independent quote re-read (66 checks: 65 confirmed, 1 not_found = minor SVC-04-D11)
+  const rr=fs.readdirSync(ROOT+base+'verify').filter(f=>/^deep_result_\d+\.json$/.test(f)).flatMap(f=>rd(base+'verify/'+f).results);
+  t(rr.length===66&&rr.filter(x=>x.status==='confirmed').length===65&&rr.filter(x=>x.status==='not_found').length===1&&rr.every(x=>['confirmed','not_found','partially_supported','contradicted','unreachable'].includes(x.status)),tag+'quote re-read 66 checks');
+  const nf=rr.find(x=>x.status==='not_found'); const nfk=deeps[nf.candidateId].killReasons.find(k=>k.ref===nf.evidenceId); t(nfk&&nfk.severity==='minor'&&deeps[nf.candidateId].killReasons.filter(k=>k.severity==='major').length>=2,tag+'not_found quote only backs a minor reason, kill keeps two major reasons');
+  for(const x of rr){ const h=byEng[x.candidateId].evidence_hints.find(e=>e.stage==='deep'&&e.url===x.url&&e.recheck&&e.recheck.status===x.status); t(h,tag+x.evidenceId+' recheck attached to evidence, class unchanged'); t(h.evidence_class==='agent_reported',tag+x.evidenceId+' re-read does not promote evidence'); }
   const kv={killed:0,uncertain:0,survives:0};
   for(const [id,d] of Object.entries(deeps)){
     const r=byEng[id]; t(r,tag+id+' present'); kv[d.verdict]++;

@@ -1,0 +1,104 @@
+{
+  "id": "MED-03",
+  "verdict": "uncertain",
+  "verdictReason": "Second attempt also could not be screened: WebSearch budget was exhausted and WebFetch returned PROVENANCE_REQUIRED for all 9 URLs tried (case-file pages, ElevenLabs pricing/terms, ACX help), so no page was read and no new evidence exists. Scan-1 evidence (agent_reported, not re-read) points against the idea (labour service priced against a $99 tool; ElevenLabs/Findaway own the non-Amazon flow), but no kill is claimed without a quote I read.",
+  "answers": [
+    {
+      "question": "(1) What free/cheap alternative covers the wedge?",
+      "answer": "Per scan-1 evidence only (NOT re-verified by me): Amazon/Audible AI narration is free via KDP but Amazon-only (E6); ElevenLabs Scale at about $99/month for a full book (E2) and, per E5, ElevenLabs has its own distribution pipeline with Findaway/INaudio (so the voice supplier also sells the flow); raw TTS costs roughly $2.64-$7.50 per 100k-word book but leaves chapter splitting, voice assignment and assembly to the author (E3, E7). The wedge (pronunciation proofing, chapter checks, upload-ready files) is therefore a DIY task that the author can do with a $99 tool plus their own hours; whether authors value that labour at $149-199 is untested. I could not search for done-for-you AI audiobook production services (a likely direct competitor class) because search was exhausted.",
+      "evidenceIds": [
+        "MED-03-E2",
+        "MED-03-E3",
+        "MED-03-E5",
+        "MED-03-E6",
+        "MED-03-E7"
+      ]
+    },
+    {
+      "question": "(2) What structural edge exists and who could copy it?",
+      "answer": "None identified. The scan-1 edge is cash_cost versus human narration (about $1,200 for 8 hours, E1), but the buyer's realistic comparison is the $99 tool plus their time (the idea's own falsifier). A done-for-you proofing pass is labour plus a pronunciation dictionary: anything an AI plus service wrapper offers can be copied by any freelancer or by the TTS vendor (ElevenLabs already bundles audiobook workflow and distribution, E5). A compounding asset (e.g. a reusable names/jargon pronunciation library, an author customer base) is not part of the idea. What would falsify 'no edge': evidence of an exclusive distribution channel or licence that a stranger can access and ElevenLabs/Findaway cannot or will not offer.",
+      "evidenceIds": [
+        "MED-03-E1",
+        "MED-03-E2",
+        "MED-03-E5"
+      ]
+    },
+    {
+      "question": "(3) Who demonstrably pays and how much?",
+      "answer": "Not established. The only demonstrated spend in the case file is on human narration (ACX average about $150/hour, about 8 hours per book, E1, undated claim from a blog) and on TTS subscriptions ($99/month, E2). No evidence was found of authors paying a third party $149-199 per book for AI-narration finishing; the case file itself says 'no firm complaint thread was found'. Not verified by me.",
+      "evidenceIds": [
+        "MED-03-E1",
+        "MED-03-E2"
+      ]
+    },
+    {
+      "question": "(4) Legal/platform constraints?",
+      "answer": "Per scan-1 evidence only: ACX restricts AI narration and Findaway/Spotify accepts AI audio only in restricted form (E4, E5), leaving YouTube, direct sales and Kobo as the third-party-file outlets named by the idea; I could not read any platform's current policy, so which platforms actually accept third-party AI-narrated files, and under what disclosure rules, is unverified. Unverified as well: ElevenLabs (and other TTS) commercial-use and resale terms for a done-for-you service run on the entrant's account versus the author's account, AI-voice disclosure rules, and copyright/consent for manuscripts supplied by clients.",
+      "evidenceIds": [
+        "MED-03-E4",
+        "MED-03-E5"
+      ]
+    },
+    {
+      "question": "(5) Year-1 numbers?",
+      "answer": "Assumption-only model (no input verified in this pass). Price $174 per book (midpoint of the case file's $149-199 estimate); books ramp linearly to 8 per month at month 12 = 52 books; revenue $9,048. Cost = $550 startup (case file) + ElevenLabs Scale $99/month x 12 (E2, not re-read) + payment fees (2.9% + $0.30) about $278 = about $2,016; profit about $7,032. Pessimistic (price x0.8 = $139, volume x0.5 = 26 books, cost x1.5): revenue about $3,619, cost about $2,776, profit about $843, technically positive. Labour check: a proofing pass means listening to a long audio file; assuming 6 owner hours per book (assumption, the case file lists per-book QA time as unknown) this is roughly 312 h in the base case and about $29/hour gross, and the pessimistic case is about 156 h for $843 (about $5/hour). Volume is unsupported by any evidence and acquiring authors cold with no audience is the real constraint.",
+      "evidenceIds": [
+        "MED-03-E2"
+      ]
+    }
+  ],
+  "newEvidence": [],
+  "newAlternatives": [],
+  "killReasons": [
+    {
+      "reason": "UNVERIFIED (scan-1 evidence, not re-read by me): the idea's own falsifier likely holds, because authors compare against the roughly $99/month ElevenLabs plan plus their own hours, not against human narration; a $149-199 per-book labour service has no cash edge over that.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MED-03-E2"
+    },
+    {
+      "reason": "UNVERIFIED (scan-1 evidence, not re-read by me): the main non-Amazon channel is controlled by the voice vendor itself (ElevenLabs partnered with Findaway/INaudio for direct distribution) and Findaway takes AI audio only in restricted form, which narrows the outlets where a third-party finishing layer matters.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "MED-03-E5"
+    },
+    {
+      "reason": "Developer-focused raw TTS leaves assembly to the author but costs only a few dollars per book (UNVERIFIED, scan-1 evidence), so the only paid value is saved labour, which the idea has not shown that authors will pay for.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "MED-03-E7"
+    }
+  ],
+  "economics": {
+    "revenue365": 9048,
+    "cost365": 2016,
+    "pessimisticProfit365": 843,
+    "survivesPessimistic": true,
+    "assumptions": [
+      "Price $174 per book: midpoint of the case file's own $149-199 estimate; no willingness-to-pay evidence.",
+      "ASSUMPTION: books ramp linearly to 8 per month at month 12 = 52 books in year 1; no evidence supports this volume for a cold, audience-less entrant.",
+      "ASSUMPTION costs: $550 startup (case file) + ElevenLabs Scale $99/month x 12 = $1,188 (taken from scan-1 evidence E2, not re-read) + payment fees 2.9% + $0.30 per book about $278; extra voice/character overage and refunds not modelled.",
+      "ASSUMPTION: 6 owner hours of listening QA per book (case file lists QA time as unknown); the base case needs about 312 h of the roughly 884 h/year the 17 h/week reference allows.",
+      "Pessimistic: price x0.8 = $139.2, volume x0.5 = 26 books => revenue about $3,619; costs (fixed $1,738 + fees about $113) x1.5 = about $2,776; profit about $843.",
+      "Owner labour is not in cost365; pessimistic return is about $5 per hour."
+    ],
+    "sources": [
+      "MED-03-E2"
+    ]
+  },
+  "legalNotes": [
+    "Platform policy on AI-narrated audio (ACX restrictive, Findaway/Spotify restricted, per scan-1 evidence E4/E5) was not re-read; any distribution step must follow each platform's current AI-disclosure and file-acceptance rules.",
+    "ElevenLabs and other TTS vendors' commercial-use and resale terms for running a service on clients' behalf were not read; a done-for-you service may need the client's own account or an enterprise licence.",
+    "Client manuscripts raise copyright-ownership and confidentiality questions; voice-consent and AI-disclosure rules are described as shifting in the case file and were not checked."
+  ],
+  "unverified": [
+    "Attempt 2: WebSearch refused (shared budget used up) and WebFetch refused with PROVENANCE_REQUIRED on creativindie, notevibes, inkfluenceai, texttolab, aimagicx, elevenlabs.io/pricing, elevenlabs.io/terms-of-use and the ACX help article; zero pages read, so newEvidence is empty and the validator's >= 4 new evidence rule cannot be met honestly.",
+    "All scan-1 evidence for this idea (E1-E7) was not re-read: WebFetch returned PROVENANCE_REQUIRED for the case-file URLs and the shared WebSearch budget was exhausted, so no new page was read for MED-03.",
+    "Whether done-for-you AI audiobook production services already exist and at what price (not searched).",
+    "Which platforms (YouTube, Kobo, direct sales, Findaway/Spotify, Google, Apple) accept third-party AI-narrated files now, and their disclosure rules.",
+    "ElevenLabs commercial and resale licence terms and current plan prices.",
+    "Whether indie authors with backlists pay a third party for audiobook finishing, and how much revenue non-Amazon audiobooks earn them.",
+    "The 20-30 hour author DIY time estimate and per-book QA time."
+  ],
+  "nextStep": "Re-run when WebFetch permission is granted (user supplies/approves the URLs) and WebSearch budget is available: ElevenLabs terms and pricing, ACX/Findaway/Kobo/YouTube AI-audio policies, and a search for existing done-for-you AI audiobook services and their prices."
+}

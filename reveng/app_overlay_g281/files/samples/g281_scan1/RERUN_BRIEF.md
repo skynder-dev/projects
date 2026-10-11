@@ -1,0 +1,9 @@
+# Scan 1: second deep-screen attempt for ONE idea (read-only public research, $0)
+
+Read `/home/claude/reveng/scan1deep/DEEP_BRIEF_S1.md` and `/home/claude/reveng/scan2/DEEP_BRIEF.md` first: rules, work plan, evidence format, verdict definitions and output schema apply. Differences:
+- Your idea id is given in the task. Case file: `/home/claude/reveng/scan1deep/cases/<ID>.json`. If an earlier result exists at `/home/claude/reveng/app_work/G281/samples/g281_scan1/deep/<ID>.json`, read it first: its `unverified` list is what the first attempt could NOT check; start there. For ideas with no earlier result the first attempt got zero evidence (search budget gone), so do the full screen.
+- New evidence ids start at `<ID>-D21` (`<ID>-D21`, `<ID>-D22`, ...) so they never collide with the earlier attempt. You may cite old case-file ids.
+- Output: `/home/claude/reveng/scan1deep/out2/<ID>.json`. Validate with `node /home/claude/reveng/scan1deep/validate_deep_s1.mjs /home/claude/reveng/scan1deep/out2/<ID>.json` until it prints OK.
+- Budget: at most ~18 page reads and at most 12 WebSearch calls. Prefer WebFetch on exact URLs. Search budget is shared with other agents, so do not waste searches.
+- Rules unchanged: read public pages as a normal reader only (no logins, no software scraping, no contacting anyone). Never invent evidence: every quote must be copied verbatim from a page you actually opened. If WebFetch/WebSearch is refused or out of budget, write only what you verified; a `killed` verdict needs a fatal reason or two major reasons, each backed by a real quote; otherwise `uncertain`, and list what is missing in `unverified`. Do not use `survives` unless you tried hard to kill the idea and could not.
+- Final reply: at most 5 lines: id, verdict, one phrase of why, what you could not verify.

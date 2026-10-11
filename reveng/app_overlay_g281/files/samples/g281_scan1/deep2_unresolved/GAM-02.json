@@ -1,0 +1,95 @@
+{
+  "id": "GAM-02",
+  "verdict": "uncertain",
+  "verdictReason": "Second attempt also blocked: WebFetch on the case-file URLs (Trivia Flow, Trivnow, Cheap Trivia, Buzztime) timed out on a permission request and WebSearch reported the shared budget used up, so no page was opened and no new evidence exists. On earlier-scan evidence only (untrusted), a $0 Trivia Flow tier with ready packs and $25 Trivnow already sit at the wedge price, and an assumption-only pessimistic model is negative, but that is not enough to kill. Needs a real re-run.",
+  "answers": [
+    {
+      "question": "(1) What free/cheap alternative covers the wedge?",
+      "answer": "UNVERIFIED in this second pass; earlier-scan evidence only. Trivia Flow reportedly has a free-forever tier with ready-to-play packages and automatic AI grading (E7); Trivnow is reportedly $25/month with unlimited question creation (E5); Cheap Trivia weekly pack is reportedly $1 first month then $60/month (E2); Buzztime from $199/month (E3); Geeks Who Drink about $200/night (E4); DIY with staff 4-6 hours per night (E1). No new alternatives could be searched because the search budget was exhausted.",
+      "evidenceIds": [
+        "GAM-02-E1",
+        "GAM-02-E2",
+        "GAM-02-E3",
+        "GAM-02-E4",
+        "GAM-02-E5",
+        "GAM-02-E7"
+      ]
+    },
+    {
+      "question": "(2) What structural edge exists and who could copy it?",
+      "answer": "None established. The scan-1 edge is owner/staff time saved through automation, which is not an edge by the rules, and a 'local' pack (city events, venue name, menu) can be copied by any pack seller or any venue with an LLM. A plausible compounding asset would be a curated per-city local-knowledge dataset plus venue relationships and retention data, which a stranger does not have at day 0 (inference). Falsifier: venues renew a $20-29 local pack at a clearly lower churn than generic $0-29 products; no evidence either way was found.",
+      "evidenceIds": [
+        "GAM-02-E5",
+        "GAM-02-E7"
+      ]
+    },
+    {
+      "question": "(3) Who demonstrably pays and how much?",
+      "answer": "UNVERIFIED. A vendor blog says most independent venues spend $30-100/month (E6) and list prices of $25-$199/month exist (E2, E3, E5), which suggests venues pay for trivia, but nobody was shown paying for a localised pack, and E6 comes from a vendor that sells packs. Churn is likely high because venues drop trivia nights (earlier-scan note).",
+      "evidenceIds": [
+        "GAM-02-E2",
+        "GAM-02-E3",
+        "GAM-02-E5",
+        "GAM-02-E6"
+      ]
+    },
+    {
+      "question": "(4) Legal / platform constraints?",
+      "answer": "No platform dependency. Content rights are the open point: image and audio rounds raise copyright questions and question accuracy matters (earlier-scan note). Nothing was read in this second pass to confirm how existing pack sellers handle licensing, so treat as unverified.",
+      "evidenceIds": []
+    },
+    {
+      "question": "(5) Year-1 numbers?",
+      "answer": "Bottom-up, built only from assumptions plus the earlier-scan model ($25/month, $6.25 variable per venue-month, $1,000 startup). Base: paying venue-months ramp 0,1,3,5,8,10,12,14,16,18,20,22 = 129 venue-months x $25 = $3,225 revenue; cost $1,000 startup + $806 variable + $600 outreach/tools ($50/month) = $2,406; profit about $819 on ~700 owner hours. Pessimistic (price x0.8, volume x0.5, cost x1.5): 64.5 venue-months x $20 = $1,290 revenue; cost (1,000+600) x1.5 + 64.5 x $9.375 = $3,005; profit about -$1,715. Does not survive pessimistic, but every volume input is an unsourced assumption and no venue-acquisition cost per sale was found.",
+      "evidenceIds": [
+        "GAM-02-E5",
+        "GAM-02-E6"
+      ]
+    }
+  ],
+  "newEvidence": [],
+  "newAlternatives": [],
+  "killReasons": [
+    {
+      "reason": "Earlier-scan claim, NOT re-verified: Trivia Flow offers a free-forever tier with ready-to-play packages and automatic AI grading, which gives venues a $0 anchor for the same weekly-prep problem.",
+      "severity": "major",
+      "refClass": "agent_reported",
+      "ref": "GAM-02-E7"
+    },
+    {
+      "reason": "Earlier-scan claim, NOT re-verified: Trivnow already sells at $25/month with unlimited question creation, the same price as the wedge, so a localised pack would have to win on local relevance alone, which is unproven.",
+      "severity": "minor",
+      "refClass": "agent_reported",
+      "ref": "GAM-02-E5"
+    }
+  ],
+  "economics": {
+    "revenue365": 3225,
+    "cost365": 2406,
+    "pessimisticProfit365": -1715,
+    "survivesPessimistic": false,
+    "assumptions": [
+      "Price $25 per venue-month = earlier-scan model (not verified in this pass).",
+      "Paying venue-months by month 1-12: 0,1,3,5,8,10,12,14,16,18,20,22 = 129 venue-months: assumption for cold outreach by a stranger with no network; no acquisition-cost or churn data was found.",
+      "Variable cost $6.25 per venue-month (25% of price) per the earlier-scan model; assumption.",
+      "Startup cash $1,000 per the case-file reference entrant; outreach/tools $50/month = $600/year (assumption); owner time 13.5 h/week about 700 h not costed.",
+      "Base: revenue 129 x $25 = $3,225; cost 1,000 + 806 + 600 = $2,406; profit about $819.",
+      "Pessimistic (price x0.8, volume x0.5, cost x1.5): 64.5 x $20 = $1,290 revenue; cost (1,000+600) x1.5 + 64.5 x $9.375 = $3,005; profit about -$1,715.",
+      "No new sourced inputs were obtained; this section rests on earlier-scan evidence and assumptions only."
+    ],
+    "sources": []
+  },
+  "legalNotes": [
+    "Read-only research; no page could be read in either attempt (every WebFetch for the GAM-02 URLs ended in a permission request that was never answered, and WebSearch reported the shared budget used up). No workaround via curl, archives or third-party readers was attempted.",
+    "Copyright treatment of image and audio rounds and accuracy/liability of question content: unverified, noted as an open question in the case file.",
+    "No platform/ToS dependency is known; selling to venues by email would raise ordinary CAN-SPAM-type obligations (general knowledge, not verified)."
+  ],
+  "unverified": [
+    "All earlier-scan evidence (E1-E7): prices of Cheap Trivia ($1 then $60/month), Buzztime (from $199/month), Geeks Who Drink (~$200/night), Trivnow ($25/month), Trivia Flow (free tier, Premium $29/month) and the 4-6 staff-hours-per-night figure were not re-read.",
+    "Whether existing pack sellers already offer localised or venue-branded packs, and how they handle image/audio licensing.",
+    "Real venue churn, venue acquisition cost per sale for a stranger with no network, and willingness to pay for a local angle.",
+    "Alternatives search (at least 3 new queries) could not be done: search budget exhausted; none of the case-file URLs passed the fetch permission check.",
+    "Validator note: newEvidence is empty because no quote could be read; the validator requires at least 4 new evidence items, so this file fails validation by design rather than fabricate quotes."
+  ],
+  "nextStep": "Re-run GAM-02 once WebFetch permission for triviaflow.io, trivnow.com, cheaptrivia.com and buzztime.com is granted (or the URLs are pasted by the user) and search budget is available, starting with the Trivia Flow free tier and a search for localised or venue-branded trivia packs."
+}

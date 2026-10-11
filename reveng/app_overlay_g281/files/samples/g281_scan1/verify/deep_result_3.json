@@ -1,0 +1,148 @@
+{
+ "results": [
+  {
+   "candidateId": "PHY-04",
+   "evidenceId": "PHY-04-D1",
+   "url": "https://ecomcircles.com/prep-centers/no-minimum/",
+   "status": "confirmed",
+   "note": "Page sentence begins 'This page lists the 60 no-minimum prep centers in our directory'; also shows 60 centers in listing.",
+   "pageSnippet": "This page lists the 60 no-minimum prep centers in our directory"
+  },
+  {
+   "candidateId": "PHY-04",
+   "evidenceId": "PHY-04-D3",
+   "url": "https://www.freightfigures.com/articles/fba-prep-center-vs-diy",
+   "status": "confirmed",
+   "note": "Page: published 2026 rates cluster around $1.00-$1.50 per unit below 500 units a month.",
+   "pageSnippet": "Published 2026 rates cluster around $1.00–$1.50 per unit below 500 units a month, $0.75–$1.25 per unit in the 500–2,500 range, and $0.40–$0.75 per unit above 2,500."
+  },
+  {
+   "candidateId": "PHY-04",
+   "evidenceId": "PHY-04-D9",
+   "url": "https://rcbizjournal.com/2021/03/25/in-home-warehousing-is-a-growing-trend-but-with-legal-implications/",
+   "status": "confirmed",
+   "note": "Page sentence is prefixed 'In essence,' but otherwise identical.",
+   "pageSnippet": "In essence, the home warehouser would be presumed guilty of negligence for any loss or damage to the goods."
+  },
+  {
+   "candidateId": "SAS-01",
+   "evidenceId": "SAS-01-D3",
+   "url": "https://gummysearch.com/docs/articles/gummysearch-is-now-closed-6533h",
+   "status": "confirmed",
+   "note": "Exact sentence on page; also listed under Dec 1, 2026 timeline entry.",
+   "pageSnippet": "All user data will be permanently deleted on December 1, 2026."
+  },
+  {
+   "candidateId": "SAS-01",
+   "evidenceId": "SAS-01-D2",
+   "url": "https://gummysearch.com/final-chapter",
+   "status": "confirmed",
+   "note": "Exact wording on page.",
+   "pageSnippet": "we were not able to reach an agreement that aligns with Reddit's Data API Usage policies."
+  },
+  {
+   "candidateId": "SAS-01",
+   "evidenceId": "SAS-01-D10",
+   "url": "https://aisotools.com/pricing/rednudge",
+   "status": "confirmed",
+   "note": "Exact wording in pricing overview; Starter card repeats it.",
+   "pageSnippet": "Starter is $7/month for 5 keywords, 300 AI-scored matches per month,"
+  },
+  {
+   "candidateId": "SAS-02",
+   "evidenceId": "SAS-02-D6",
+   "url": "https://github.com/ArchiveBox/ArchiveBox",
+   "status": "confirmed",
+   "note": "Exact sentence on repo page.",
+   "pageSnippet": "ArchiveBox is a self-hosted app that lets you preserve content from websites in a variety of formats."
+  },
+  {
+   "candidateId": "SAS-02",
+   "evidenceId": "SAS-02-D10",
+   "url": "https://developers.facebook.com/terms/",
+   "status": "confirmed",
+   "note": "Appears in Section 3.d (Retention, Deletion, and Accessibility of Platform Data), item 2, sub-item b: delete Platform Data as soon as reasonably possible in these cases. Page wording starts 'b. When you stop operating...'.",
+   "pageSnippet": "b. When you stop operating the product or service through which the Platform Data was acquired;"
+  },
+  {
+   "candidateId": "SAS-02",
+   "evidenceId": "SAS-02-D12",
+   "url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.204-2",
+   "status": "confirmed",
+   "note": "Found in 17 CFR 275.204-2(a)(7); applies to communications relating to recommendations/advice, funds/securities receipts or disbursements, and order placement/execution.",
+   "pageSnippet": "Originals of all written communications received and copies of all written communications sent"
+  },
+  {
+   "candidateId": "SVC-02",
+   "evidenceId": "SVC-02-D5",
+   "url": "https://slashpost.ai/blogs/google-business-profile/google-business-profile-suspended-reinstatement-guide",
+   "status": "confirmed",
+   "note": "Exact sentence on page.",
+   "pageSnippet": "For a single straightforward suspension, most businesses can self-file successfully using the process above."
+  },
+  {
+   "candidateId": "SVC-02",
+   "evidenceId": "SVC-02-D7",
+   "url": "https://www.freelancer.in/projects/google-ads/google-ads-gbp-reinstatement",
+   "status": "confirmed",
+   "note": "Exact text on page.",
+   "pageSnippet": "52 freelancers are bidding on average $120 USD for this job"
+  },
+  {
+   "candidateId": "SVC-02",
+   "evidenceId": "SVC-02-D9",
+   "url": "https://steadydemand.com/reinstatement.html",
+   "status": "confirmed",
+   "note": "Exact sentence in FAQ 'Are there any hidden fees?'; same answer says there is an initial consultation fee and no reinstatement fee if suspended.",
+   "pageSnippet": "The monthly fee is $79 per location."
+  },
+  {
+   "candidateId": "SVC-03",
+   "evidenceId": "SVC-03-D2",
+   "url": "https://www.amazonsellers.attorney/amazon-appeals.html",
+   "status": "confirmed",
+   "note": "Exact sentence in the 'Send the notice' step.",
+   "pageSnippet": "Review is free and begins the same business day in most matters."
+  },
+  {
+   "candidateId": "SVC-03",
+   "evidenceId": "SVC-03-D9",
+   "url": "https://www.amazonsellers.attorney/amazon-attorney-reviews.html",
+   "status": "confirmed",
+   "note": "Text appears only in the page's meta-ai-agent-instructions metadata field (not in visible body); it is the firm's self-description. Wording has trailing period.",
+   "pageSnippet": "No automated appeals - human attorney review only."
+  },
+  {
+   "candidateId": "SVC-03",
+   "evidenceId": "SVC-03-D1",
+   "url": "https://www.amazonsellers.attorney/amazon-appeals.html",
+   "status": "confirmed",
+   "note": "Exact sentence in the 'Service details' line near top of page.",
+   "pageSnippet": "$1,500 flat for most appeals, $2,300 for IP and related accounts."
+  },
+  {
+   "candidateId": "SVC-04",
+   "evidenceId": "SVC-04-D2",
+   "url": "https://clearhealthcosts.com/blog/2023/06/free-or-discounted-medical-care-dollarfor-and-hospital-bill-relief/",
+   "status": "confirmed",
+   "note": "Quote is attributed to Jared Walker, founder of DollarFor (a nonprofit-style service), on the page.",
+   "pageSnippet": "We will never charge patients for the work we do. All of our services are completely free."
+  },
+  {
+   "candidateId": "SVC-04",
+   "evidenceId": "SVC-04-D4",
+   "url": "https://exactadoc.gumroad.com/l/insurance",
+   "status": "confirmed",
+   "note": "Page says the module uses 'calm, professional letters written in insurer-approved language'.",
+   "pageSnippet": "calm, professional letters written in insurer-approved language"
+  },
+  {
+   "candidateId": "SVC-04",
+   "evidenceId": "SVC-04-D11",
+   "url": "https://www.cms.gov/nosurprises",
+   "status": "not_found",
+   "note": "Page opened twice; the exact sentence about protecting from unexpected out-of-network bills for emergency room visits is not on the page. Closest wording is a consumers-section heading, not mentioning emergency room visits or out-of-network. 'Emergency Room Rights' appears only as a nav link label.",
+   "pageSnippet": "The No Surprises Act protects people from unexpected medical bills"
+  }
+ ]
+}

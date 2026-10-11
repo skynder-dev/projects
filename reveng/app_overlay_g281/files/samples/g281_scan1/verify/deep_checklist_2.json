@@ -1,0 +1,188 @@
+{
+ "items": [
+  {
+   "id": "GAM-03",
+   "checks": [
+    {
+     "evidenceId": "GAM-03-D3",
+     "url": "https://sessionzerolabs.itch.io/session-zero-labs",
+     "kind": "incumbent_price",
+     "quote": "Free forever. No credit card needed. Premium from $5/mo."
+    },
+    {
+     "evidenceId": "GAM-03-D2",
+     "url": "https://slyflourish.com/how_long_to_prep.html",
+     "kind": "demand",
+     "quote": "Here are the results from 3,663 responses:"
+    },
+    {
+     "evidenceId": "GAM-03-D13",
+     "url": "https://monstermind.substack.com/p/2025-a-year-in-review",
+     "kind": "other",
+     "quote": "My gross income was about $2400."
+    }
+   ]
+  },
+  {
+   "id": "GAM-04",
+   "checks": [
+    {
+     "evidenceId": "GAM-04-D1",
+     "url": "https://tooldirectory.ai/tools/blooket",
+     "kind": "incumbent_price",
+     "quote": "Creating sets and hosting games is free with up to 60 players."
+    },
+    {
+     "evidenceId": "GAM-04-D2",
+     "url": "https://nibble-app.com/blog/blooket-pricing",
+     "kind": "incumbent_price",
+     "quote": "Blooket Plus: 4.99 per month, billed annually at 59.88 per year."
+    },
+    {
+     "evidenceId": "GAM-04-D8",
+     "url": "https://tooldirectory.ai/tools/blooket",
+     "kind": "demand",
+     "quote": "more than 10 million users"
+    }
+   ]
+  },
+  {
+   "id": "MED-01",
+   "checks": [
+    {
+     "evidenceId": "MED-01-D5",
+     "url": "https://support.google.com/youtube/answer/2734796",
+     "kind": "other",
+     "quote": "If automatic captions are available, they'll automatically be published on the video."
+    },
+    {
+     "evidenceId": "MED-01-D2",
+     "url": "https://it.nc.gov/documents/doj-deep-dive-part-2/open",
+     "kind": "constraint",
+     "quote": "The images and videos would likely be covered by the exception (if it meets all other requirements)."
+    },
+    {
+     "evidenceId": "MED-01-D1",
+     "url": "https://www.lmc.org/?p=47484",
+     "kind": "constraint",
+     "quote": "April 26, 2028, for entities with populations under 50,000 and special districts."
+    }
+   ]
+  },
+  {
+   "id": "MED-02",
+   "checks": [
+    {
+     "evidenceId": "MED-02-D3",
+     "url": "https://govfresh.com/signal/voterheads-wants-make-easier-follow-government-council-meetings",
+     "kind": "incumbent_price",
+     "quote": "free for anyone monitoring five organizations or less"
+    },
+    {
+     "evidenceId": "MED-02-D7",
+     "url": "https://apify.com/m_ctim/city-council-watch",
+     "kind": "incumbent_price",
+     "quote": "Billed per city queried, not per matter or meeting returned."
+    },
+    {
+     "evidenceId": "MED-02-D2",
+     "url": "https://ordinancewatch.com/",
+     "kind": "demand",
+     "quote": "Designed for lawyers as a client retention tool"
+    }
+   ]
+  },
+  {
+   "id": "MKT-01",
+   "checks": [
+    {
+     "evidenceId": "MKT-01-D8",
+     "url": "https://cubecreative.design/blog/small-business-marketing/google-local-service-ads-worth-it",
+     "kind": "incumbent_price",
+     "quote": "The SearchLight breakdown put branded search at a $34 cost per lead, non-branded search at $149, and Performance Max at $72,"
+    },
+    {
+     "evidenceId": "MKT-01-D12",
+     "url": "https://prospeo.io/s/lead-gen-business-model",
+     "kind": "constraint",
+     "quote": "Expect 3-6 months before you're ranking consistently."
+    },
+    {
+     "evidenceId": "MKT-01-D1",
+     "url": "https://www.thumbtack.com/pro/jobs",
+     "kind": "incumbent_price",
+     "quote": "You pay when a new customer contacts or hires you."
+    }
+   ]
+  },
+  {
+   "id": "MKT-02",
+   "checks": [
+    {
+     "evidenceId": "MKT-02-D1",
+     "url": "https://exitbid.io/",
+     "kind": "incumbent_price",
+     "quote": "Bidding is free after one-time verification; sellers pay a flat $199 listing fee, 0% commission."
+    },
+    {
+     "evidenceId": "MKT-02-D6",
+     "url": "https://flippa.com/",
+     "kind": "demand",
+     "quote": "1.9M+ buyers globally, including PE firms, family offices, search funds, and operators with capital ready to deploy."
+    },
+    {
+     "evidenceId": "MKT-02-D2",
+     "url": "https://exitbid.io/",
+     "kind": "other",
+     "quote": "Only 14 at a Time"
+    }
+   ]
+  },
+  {
+   "id": "MKT-03",
+   "checks": [
+    {
+     "evidenceId": "MKT-03-D3",
+     "url": "https://stripe.com/connect/pricing",
+     "kind": "incumbent_price",
+     "quote": "Starts at 2.9% + 30¢ per successful card charge"
+    },
+    {
+     "evidenceId": "MKT-03-D7",
+     "url": "https://fungies.io/best-gumroad-alternatives-2026/",
+     "kind": "incumbent_price",
+     "quote": "Pricing: 5% + $0.50 per transaction, no monthly fee"
+    },
+    {
+     "evidenceId": "MKT-03-D6",
+     "url": "https://gumroad.com/pricing",
+     "kind": "incumbent_price",
+     "quote": "Per transaction when new customers find and buy from you through our discover marketplace."
+    }
+   ]
+  },
+  {
+   "id": "PHY-01",
+   "checks": [
+    {
+     "evidenceId": "PHY-01-D6",
+     "url": "https://www.ebay.com/usr/rggion",
+     "kind": "incumbent_price",
+     "quote": "Now, with sharpeibear there is an alternative at $60.00 per knob,"
+    },
+    {
+     "evidenceId": "PHY-01-D9",
+     "url": "https://www.ebay.com/help/selling/fees-credits-invoices/selling-fees?id=4822",
+     "kind": "incumbent_price",
+     "quote": "13.6% on total amount of the sale up to $7,500 calculated per item"
+    },
+    {
+     "evidenceId": "PHY-01-D5",
+     "url": "https://www.ebay.com/usr/rggion",
+     "kind": "incumbent_price",
+     "quote": "Until now, the used market was a monopoly and there was one source charging $289.95 per knob, sheer market arrogance."
+    }
+   ]
+  }
+ ]
+}

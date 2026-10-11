@@ -10,8 +10,8 @@
  "added": [
   {
    "path": "app/data/g281_scan1_view.js",
-   "size": 435874,
-   "sha256": "1785c25a44449636a3104beea2bb52471a672e38e7b459f07354cf24f50be207"
+   "size": 461216,
+   "sha256": "5e0b33df741673681207cac7cb74b06fabe2755b3bc8704dbdc3fc9115ef7b53"
   },
   {
    "path": "app/data/g281_scan2_view.js",
@@ -95,8 +95,8 @@
   },
   {
    "path": "diagnostics/tests/reva2_g281_scan_packages.mjs",
-   "size": 13301,
-   "sha256": "444eca14056c9188ee4f89eb5c3161dae8dea3578551af4118425a26680412eb"
+   "size": 15175,
+   "sha256": "4f34111ea07f96d021db481795d037444e427d5dce61deca3b5f9fac6fd9e45f"
   },
   {
    "path": "diagnostics/tests/test_reva2_g281_global_ranking_page.py",
@@ -125,8 +125,8 @@
   },
   {
    "path": "diagnostics/tools/build_scan_import_g281.py",
-   "size": 11341,
-   "sha256": "72efdef8c11554f8b8a1d7e664dece3e0c6036d40b4bc62e51b248bc4d577287"
+   "size": 12128,
+   "sha256": "e4fbb7d1c29cb51c8b2f948430bc78d7aecefe93e61aa4a6df1f85f4a94a3c6e"
   },
   {
    "path": "diagnostics/tools/dryrun_scan_import_g281.sh",
@@ -160,8 +160,8 @@
   },
   {
    "path": "docs/REVA2_G281_SCAN2_REPORT_RU.md",
-   "size": 16494,
-   "sha256": "049b88ab7629746a7cfa4da7402d180d05e8cb275241580859e4f1e343f026ed"
+   "size": 17415,
+   "sha256": "b9afd748efeaf6a63e1d9d9bdc407002291c1cd211909a019693a5717270239b"
   },
   {
    "path": "samples/g281_scan1/01_raw.json",
@@ -197,6 +197,16 @@
    "path": "samples/g281_scan1/DEEP_BRIEF_BASE.md",
    "size": 3574,
    "sha256": "93759afe5d329ccb2602425572c647d6ec350db33821e09a0009494fd36aa429"
+  },
+  {
+   "path": "samples/g281_scan1/RERUN_BRIEF.md",
+   "size": 1812,
+   "sha256": "eda3028f37eb3c401b812b95f26bb888ee167903beb3bf2ec86705afb202cd37"
+  },
+  {
+   "path": "samples/g281_scan1/VERIFY_BRIEF.md",
+   "size": 1482,
+   "sha256": "752da81b6046f5ce9e787915129cf6493d8a5eaeab6837c8d2f3db36fabbb94b"
   },
   {
    "path": "samples/g281_scan1/cases/DAT-03.json",
@@ -434,14 +444,69 @@
    "sha256": "c65357df0d4b6f39a2ccfacf5ed0190cd1c3cea770b914ac2626e176f8906354"
   },
   {
+   "path": "samples/g281_scan1/deep2/PHY-01.json",
+   "size": 16032,
+   "sha256": "a0a1687d5fd8e092f4f65ab7e3abe978dc509525081df0f0d3e408af4abcf077"
+  },
+  {
+   "path": "samples/g281_scan1/deep2/SAS-02.json",
+   "size": 20053,
+   "sha256": "b34f7b7badadfcfdda5472dbfb1efe7628807f0b8bb1549932fe69f74d4a73bd"
+  },
+  {
+   "path": "samples/g281_scan1/deep2_unresolved/EDU-03.json",
+   "size": 7196,
+   "sha256": "d5acc9a36d9fba9f9056e5c92d4af30078953f1a6cbabd1f1598fe391894ed39"
+  },
+  {
+   "path": "samples/g281_scan1/deep2_unresolved/GAM-02.json",
+   "size": 7399,
+   "sha256": "c394f6a76ef2a36c35d313194b80168522e4dfe9b524c9224fbc7e77f1d32eeb"
+  },
+  {
+   "path": "samples/g281_scan1/deep2_unresolved/MED-03.json",
+   "size": 9324,
+   "sha256": "f4b024883d7ea2dd035c6c61fff6abdafbe010e0f7ea8a118e27ab7eadc10b11"
+  },
+  {
    "path": "samples/g281_scan1/deep_status.json",
-   "size": 444,
-   "sha256": "a6d06b5fe48c4f287f1d2985cb7ed1a77d22cf9573feae76ec43b0d8e9902e68"
+   "size": 1098,
+   "sha256": "13792d70783c91b81e4982104c901d833c34bba41bd1c33423f4f18225ea4484"
   },
   {
    "path": "samples/g281_scan1/manual_deep_screen_2026-10-10.md",
    "size": 2897,
    "sha256": "dba8a4fd945e95be3b7074f9590040e1b884a2108d7dd4ca476230d74e033a20"
+  },
+  {
+   "path": "samples/g281_scan1/verify/deep_checklist_1.json",
+   "size": 5945,
+   "sha256": "19e7e94ec1eb4648914392632263a0aa588cf7adb5ce310776d45446f3f28adf"
+  },
+  {
+   "path": "samples/g281_scan1/verify/deep_checklist_2.json",
+   "size": 5590,
+   "sha256": "c8f4386f277429f8be8af9d872ecde9795cb58894fa0197206d7b3da7e2de383"
+  },
+  {
+   "path": "samples/g281_scan1/verify/deep_checklist_3.json",
+   "size": 4624,
+   "sha256": "abf6ac96476516d95f096e5eb9d296835334f4fe64b6fe9c374dc2d5f6a7e03e"
+  },
+  {
+   "path": "samples/g281_scan1/verify/deep_result_1.json",
+   "size": 7960,
+   "sha256": "ebcd15dcc44205dee1aee902d777dcb4c4a4bfc206f8cd856af3fc2b8b759c86"
+  },
+  {
+   "path": "samples/g281_scan1/verify/deep_result_2.json",
+   "size": 9533,
+   "sha256": "096145bbb2c14027ab7c8a520f41a6f23bdc38ab7687a7bc83d60d97646f7256"
+  },
+  {
+   "path": "samples/g281_scan1/verify/deep_result_3.json",
+   "size": 6916,
+   "sha256": "507836061eae8af8e74e17e76d4e235cd23d87104c8d6ff14902f778540b65f4"
   },
   {
    "path": "samples/g281_scan2/BRIEF.md",
@@ -665,13 +730,13 @@
   },
   {
    "path": "server/REVA2_G281_SCAN1_IMPORT.json",
-   "size": 494119,
-   "sha256": "18b58caf955e0c9469f47efd636de6c4f7b0175a39d130052c3cd79dcda2a397"
+   "size": 523161,
+   "sha256": "748538780db1117e82330a9e8b854809605627ea198ef05c7190a585a412fa7a"
   },
   {
    "path": "server/REVA2_G281_SCAN1_IMPORT_DRYRUN.sql",
-   "size": 452967,
-   "sha256": "c54a47f48cd8df9c7a70efef5d6b19befafef8e64d511c50a4c4b0ab050ff0be"
+   "size": 479080,
+   "sha256": "1b08b5293ef6846b0b7d97fe4a101b440440341243f185a249c779d0332c60ff"
   },
   {
    "path": "server/REVA2_G281_SCAN2_IMPORT.json",
@@ -708,7 +773,7 @@
   }
  ],
  "counts": {
-  "added": 138,
+  "added": 151,
   "modified": 1,
   "removed": 0
  }

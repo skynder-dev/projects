@@ -23,6 +23,13 @@ decision = json.load(open(S / '06_decision.json'))
 # second pass (2026-10-10): manual deep screen of the 24 queued ideas, agent_reported; two ideas could not be screened (see deep_status.json)
 deeps = {f.stem: json.load(open(f)) for f in sorted((S / 'deep').glob('*.json'))} if (S / 'deep').exists() else {}
 dstat = json.load(open(S / 'deep_status.json')) if (S / 'deep_status.json').exists() else {}
+# second attempt (deep2/): evidence, alternatives and kill reasons are appended; verdict, reason, economics, answers-unverified and next step come from the later attempt
+for f in sorted((S / 'deep2').glob('*.json')) if (S / 'deep2').exists() else []:
+    b = json.load(open(f)); a = deeps[b['id']]
+    a['newEvidence'] = a['newEvidence'] + b['newEvidence']; a['newAlternatives'] = a['newAlternatives'] + b['newAlternatives']
+    seen = {k['reason'] for k in a['killReasons']}; a['killReasons'] = a['killReasons'] + [k for k in b['killReasons'] if k['reason'] not in seen]
+    a['legalNotes'] = list(dict.fromkeys(a['legalNotes'] + b['legalNotes'])); a['answers'] = a['answers'] + b['answers']
+    for k in ('verdict', 'verdictReason', 'economics', 'unverified', 'nextStep'): a[k] = b[k]
 rechecks = {}
 for f in sorted((S / 'verify').glob('deep_result_*.json')) if (S / 'verify').exists() else []:
     for r in json.load(open(f))['results']: rechecks[(r['candidateId'], r['evidenceId'])] = r

@@ -1,8 +1,29 @@
 {
  "deep_screen_completed_at": "2026-10-11T00:51:04Z",
  "not_screened": {
-  "GAM-02": "web search budget exhausted and WebFetch refused every case-file URL (provenance); no new evidence read",
-  "MED-03": "web search budget exhausted and WebFetch refused every case-file URL (provenance); no new evidence read"
+  "GAM-02": "two attempts: web search budget exhausted and WebFetch refused every URL (provenance/permission not answered); no new evidence read",
+  "MED-03": "two attempts: web search budget exhausted and WebFetch refused every URL (provenance/permission not answered); no new evidence read"
  },
- "note": "These two stay in the research queue; their deep-screen attempts produced no evidence and are not stored as results."
+ "note": "GAM-02 and MED-03 stay in the research queue; their deep-screen attempts produced no evidence and are not stored as results (see deep2_unresolved/).",
+ "second_attempt": {
+  "date": "2026-10-10",
+  "merged": [
+   "SAS-02",
+   "PHY-01"
+  ],
+  "no_new_evidence": [
+   "GAM-02",
+   "MED-03",
+   "EDU-03"
+  ],
+  "note": "SAS-02 and PHY-01 second attempts (deep2/) add evidence D21+ and stay uncertain. EDU-03 second attempt read no pages (WebFetch refused); its first-attempt result stands."
+ },
+ "quote_reread": {
+  "checks": 66,
+  "statuses": {
+   "confirmed": 65,
+   "not_found": 1
+  },
+  "method": "independent agents re-opened each URL with WebFetch (tool returns a model-written page summary); text check only"
+ }
 }

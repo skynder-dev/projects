@@ -1,0 +1,92 @@
+{
+ "id": "EDU-03",
+ "verdict": "uncertain",
+ "verdictReason": "No new evidence obtained: WebFetch was refused for every URL (PROVENANCE_REQUIRED: URL not in the allowed set / permission unanswered) and WebSearch budget was exhausted, so zero page reads and zero searches succeeded. Seller earnings, any existing TPT migration tool and Payhip fees remain unverified. Case-file evidence (untrusted) and the earlier attempt lean kill: low seller income, no structural edge, negative pessimistic model. Too thin to kill.",
+ "answers": [
+  {
+   "question": "(1) What free/cheap alternative covers the wedge?",
+   "answer": "Not re-checked this run (fetch and search refused). Per untrusted case-file evidence, Payhip charges 5% per sale with no monthly cost (E2), so manual relisting on Payhip is the free status quo; Quickshops is another destination (E4, pricing not read). Whether any paid or free TPT-to-Payhip migration/import tool already exists is UNVERIFIED: the one search I attempted was refused for budget.",
+   "evidenceIds": ["EDU-03-E2", "EDU-03-E4"]
+  },
+  {
+   "question": "(2) What structural edge exists and who could copy it?",
+   "answer": "None identified. The scan-1 edge (5% Payhip fee vs 45% TPT take, E1/E2) belongs to Payhip, not the entrant, and the case file concedes this. A listing-migration utility has no exclusive data, licence or compounding asset; Payhip, a freelancer or a seller-community member could copy it. Falsifier: paid conversion from TPT sellers at a stated price with repeat or referral purchases, or proof that no platform offers import and sellers are asking for one. Not tested this run.",
+   "evidenceIds": ["EDU-03-E1", "EDU-03-E2"]
+  },
+  {
+   "question": "(3) Who demonstrably pays and how much?",
+   "answer": "Nobody demonstrated. Pain evidence (untrusted, not re-read): a Trustpilot seller reports account closure and $300 withheld (E3), and Quickshops lists fee scaling as a reason creators leave TPT (E4). Case-file income evidence says most TPT sellers earn $0-$100/month (E5), which caps willingness to pay for a one-off migration. No price or sale of a migration tool seen; E5 could not be re-opened.",
+   "evidenceIds": ["EDU-03-E3", "EDU-03-E4", "EDU-03-E5"]
+  },
+  {
+   "question": "(4) Legal/platform constraints?",
+   "answer": "Not re-checked this run. The earlier attempt read TPT's Terms (updated 2025-12-08) and reported that sellers own their resources' IP, that TPT may close accounts and withhold payouts at its discretion, and that no exclusivity clause was found in the part read; automated-access language, Payhip terms/API and third-party clipart or font licences were not checked. I did not re-open any of it, so I cite none of it as evidence here. Design implication if pursued: work only from files the seller supplies, never scrape TPT.",
+   "evidenceIds": []
+  },
+  {
+   "question": "(5) Year-1 numbers",
+   "answer": "All inputs are assumptions (no price, volume or conversion source). Base: $19 one-time per shop migration, 60 paid migrations in year 1 (first revenue about day 60), revenue $1,140; fixed cost $220 (domain/hosting $60, support tools $60, acquisition test $100) plus $2.85 per sale (card fees about $0.85, AI/API about $2.00) = $391; profit about $749 for roughly 470 owner hours. Pessimistic (price x0.8 = $15.20, volume x0.5 = 30, cost x1.5 = $586.50): revenue $456, profit -$130.50. Volume depends on reaching sellers with no audience, which is unresolved.",
+   "evidenceIds": ["EDU-03-E5"]
+  }
+ ],
+ "newEvidence": [],
+ "newAlternatives": [
+  {
+   "label": "Manual relisting on Payhip by the seller (Payhip: 5% per sale, no monthly cost per learningmole; not re-verified; whether it covers the wedge is unconfirmed)",
+   "kind": "diy_or_status_quo",
+   "costUsdPerMonth": 0,
+   "coversWedge": "partial",
+   "sourceLocator": "https://learningmole.com/teachers-pay-teachers-alternatives/",
+   "evidenceRef": "EDU-03-E2"
+  }
+ ],
+ "killReasons": [
+  {
+   "reason": "Buyer cannot pay much: case-file evidence says most TPT sellers earn $0-$100/month, so a one-off migration tool has little recurring revenue. Held at major only because E5 is untrusted and could not be re-opened this run.",
+   "severity": "major",
+   "refClass": "agent_reported",
+   "ref": "EDU-03-E5"
+  },
+  {
+   "reason": "Pain is platform risk (account closure, withheld payouts), not relisting labour, and leaving TPT also means losing its marketplace traffic; the tool does not solve discovery. Case-file evidence only, not re-read.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "EDU-03-E3"
+  },
+  {
+   "reason": "The 5% Payhip fee is Payhip's feature, not an entrant edge; a migration utility has no exclusive asset and anyone, including Payhip, could copy it.",
+   "severity": "minor",
+   "refClass": "agent_reported",
+   "ref": "EDU-03-E2"
+  }
+ ],
+ "economics": {
+  "revenue365": 1140,
+  "cost365": 391,
+  "pessimisticProfit365": -130.5,
+  "survivesPessimistic": false,
+  "assumptions": [
+    "ASSUMPTION: price $19 one-time per shop migration (no price in case file or sourced)",
+    "ASSUMPTION: 60 paid migrations in year 1, first revenue about day 60, then about 6 per month; no source for volume or conversion",
+    "ASSUMPTION: fixed cost $220 = domain/hosting $60 + support tools $60 + acquisition test $100",
+    "ASSUMPTION: per-sale cost $2.85 = card fees about $0.85 + AI/API $2.00 (rates not re-verified this run)",
+    "Owner time (about 470 hours at 9 h/week) is not costed; cost exceeds the $350 reference cash by $41 and would be funded from revenue",
+    "Pessimistic: price x0.8 = $15.20, volume x0.5 = 30 sales, cost x1.5 = $586.50 gives revenue $456 and profit -$130.50",
+    "Case-file 85% margin and 2-vs-10 hours relisting claims not used: no price and no time source"
+  ],
+  "sources": ["EDU-03-E5"]
+ },
+ "legalNotes": [
+  "Not verified this run: TPT terms on exporting, relisting, exclusivity and automated access; Payhip terms and API; third-party licences inside covers and buyer-licensed resources.",
+  "Design implication if pursued: only handle files the seller uploads and certifies as their own; never scrape TPT or log in to a seller's account."
+ ],
+ "unverified": [
+  "TPT seller earnings distribution: seolumina page fetch refused (PROVENANCE_REQUIRED); E5 is case-file evidence only",
+  "Whether any paid or free TPT-to-Payhip/Etsy/Gumroad migration tool already exists: WebSearch budget exhausted, the one attempt returned no results",
+  "Payhip fee level, plan structure and any import or bulk-upload feature: payhip.com/pricing fetch refused",
+  "Trustpilot withheld-earnings report (E3) and Quickshops pricing and migration features (E4): fetches refused",
+  "TPT Terms of Service (exclusivity, automated access, Premium royalty): fetch refused (URL not in provenance set)",
+  "Willingness to pay of TPT sellers and any channel or CAC for reaching them without an audience"
+ ],
+ "nextStep": "Re-run once WebFetch accepts these URLs (seolumina earnings page, payhip.com/pricing, TPT Terms of Service, Quickshops page) and a search budget exists for existing TPT migration tools; if the median seller earns under $100/month and an importer already exists, kill."
+}

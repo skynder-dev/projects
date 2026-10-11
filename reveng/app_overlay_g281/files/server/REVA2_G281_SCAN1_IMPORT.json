@@ -124,7 +124,10 @@
      "kind": "other",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "In the FAQ under 'Why can't I find Curator ... in Curator Connect?'."
+     }
     },
     {
      "url": "https://partner.steamgames.com/doc/marketing/curators",
@@ -214,7 +217,10 @@
      "kind": "other",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Vendor marketing claim about its own database."
+     }
     },
     {
      "url": "https://presskit.gg/field-guides/next-fest-content-creator-outreach",
@@ -234,7 +240,10 @@
      "kind": "other",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Present in the post (curly apostrophe in page); the offer is in exchange for completing the poster's survey."
+     }
     },
     {
      "url": "https://www.gamedeveloper.com/business/how-to-get-every-game-on-steam-for-free",
@@ -512,7 +521,7 @@
      "complete": false,
      "method": null
     },
-    "deep_screen_not_screened": "web search budget exhausted and WebFetch refused every case-file URL (provenance); no new evidence read",
+    "deep_screen_not_screened": "two attempts: web search budget exhausted and WebFetch refused every URL (provenance/permission not answered); no new evidence read",
     "next_step": "verify cheapest/free alternative, legal limits and willingness to pay by manual public reading, then judge v6 components"
    }
   },
@@ -590,7 +599,10 @@
      "kind": "demand",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Exact sentence present."
+     }
     },
     {
      "url": "https://sessionzerolabs.itch.io/session-zero-labs",
@@ -600,7 +612,10 @@
      "kind": "incumbent_price",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Exact sentence appears in the main description after the 'Everything connects' paragraph."
+     }
     },
     {
      "url": "https://fables.gg/blog/everweave-vs-friends--fables-plan--feature-comparison",
@@ -700,7 +715,10 @@
      "kind": "other",
      "date": "2025",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Sentence present; context is a 'low action year' with no big crowdfunding campaigns, figures juggled across euro, dollar and pound."
+     }
     },
     {
      "url": "https://www.enworld.org/threads/dms-guild-and-drivethrurpg-ban-ai-written-works-requires-labels-for-ai-generated-art.698936/",
@@ -940,7 +958,10 @@
      "kind": "incumbent_price",
      "date": "2026-07-25 (reviewed, per listing)",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Found in the FAQ; page also says Plus ($4.99/month annual) adds a 300-player cap."
+     }
     },
     {
      "url": "https://nibble-app.com/blog/blooket-pricing",
@@ -950,7 +971,10 @@
      "kind": "incumbent_price",
      "date": "2026-08-18 (updated 2026-09-15)",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Found in the 'Blooket pricing at a glance' section; page also lists Plus Flex at 9.99 per month."
+     }
     },
     {
      "url": "https://nibble-app.com/blog/blooket-pricing",
@@ -1010,7 +1034,10 @@
      "kind": "demand",
      "date": "2026-07-25 (reviewed, per listing)",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Found in 'How Blooket differentiates' section; page says launched publicly October 2020 and grew to more than 10 million users."
+     }
     },
     {
      "url": "https://www.educationalappstore.com/website/blooket",
@@ -1293,7 +1320,10 @@
      "kind": "constraint",
      "date": "undated (c. Nov 2025)",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Exact wording on page."
+     }
     },
     {
      "url": "https://gummysearch.com/docs/articles/gummysearch-is-now-closed-6533h",
@@ -1303,7 +1333,10 @@
      "kind": "constraint",
      "date": "undated (c. Nov 2025)",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Exact sentence on page; also listed under Dec 1, 2026 timeline entry."
+     }
     },
     {
      "url": "https://gummysearch.com/closing-time",
@@ -1373,7 +1406,10 @@
      "kind": "incumbent_price",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Exact wording in pricing overview; Starter card repeats it."
+     }
     },
     {
      "url": "https://redship.io/reddit-tool/syften",
@@ -1707,7 +1743,10 @@
      "kind": "other",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Exact sentence on repo page."
+     }
     },
     {
      "url": "https://github.com/ArchiveBox/ArchiveBox",
@@ -1747,7 +1786,10 @@
      "kind": "constraint",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Appears in Section 3.d (Retention, Deletion, and Accessibility of Platform Data), item 2, sub-item b: delete Platform Data as soon as reasonably possible in these cases. Page wording starts 'b. When you stop operating..…"
+     }
     },
     {
      "url": "https://developers.facebook.com/docs/resp-plat-initiatives/individual-processes/app-review",
@@ -1766,6 +1808,159 @@
      "evidence_class": "agent_reported",
      "kind": "demand",
      "date": "undated (current CFR)",
+     "stage": "deep",
+     "recheck": {
+      "status": "confirmed",
+      "note": "Found in 17 CFR 275.204-2(a)(7); applies to communications relating to recommendations/advice, funds/securities receipts or disbursements, and order placement/execution."
+     }
+    },
+    {
+     "url": "https://law.cornell.edu/cfr/text/17/275.204-2",
+     "signal": "(i) A copy of each (A) Advertisement (as defined in § 275.206(4)-1(e)(1) of this chapter)",
+     "source": "Cornell LII, 17 CFR 275.204-2(a)(11)(i)(A): adviser must keep a copy of each advertisement it disseminates",
+     "evidence_class": "agent_reported",
+     "kind": "demand",
+     "date": "undated (current CFR)",
+     "stage": "deep",
+     "recheck": null
+    },
+    {
+     "url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.204-2",
+     "signal": "shall be maintained and preserved in an easily accessible place for a period of not less than five years,",
+     "source": "eCFR, 17 CFR 275.204-2(e) (retention period; fetch summary attributed this phrase to (e)(3)(i), the paragraph for advertisements)",
+     "evidence_class": "agent_reported",
+     "kind": "demand",
+     "date": "undated (current CFR)",
+     "stage": "deep",
+     "recheck": null
+    },
+    {
+     "url": "https://law.cornell.edu/cfr/text/17/275.204-2",
+     "signal": "that the investment adviser disseminates, directly or indirectly, to ten or more persons",
+     "source": "Cornell LII, 17 CFR 275.204-2(a)(11)(i)(B): notices, circulars, letters and other communications to ten or more persons must be kept; the rule names no vendor or format",
+     "evidence_class": "agent_reported",
+     "kind": "demand",
+     "date": "undated (current CFR)",
+     "stage": "deep",
+     "recheck": null
+    },
+    {
+     "url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.204-2",
+     "signal": "Originals of all written communications received and copies of all written communications sent",
+     "source": "eCFR, 17 CFR 275.204-2(a)(7): written communications must also be kept, so an email archive is needed alongside a web/social one",
+     "evidence_class": "agent_reported",
+     "kind": "constraint",
+     "date": "undated (current CFR)",
+     "stage": "deep",
+     "recheck": null
+    },
+    {
+     "url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.204-2",
+     "signal": "To maintain and preserve the records, so as to reasonably safeguard them from loss, alteration, or destruction;",
+     "source": "eCFR, 17 CFR 275.204-2(g)(3)(i): the adviser must keep procedures to safeguard electronically stored records",
+     "evidence_class": "agent_reported",
+     "kind": "constraint",
+     "date": "undated (current CFR)",
+     "stage": "deep",
+     "recheck": null
+    },
+    {
+     "url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.206(4)-1",
+     "signal": "Any direct or indirect communication an investment adviser makes to more than one person,",
+     "source": "eCFR, 17 CFR 275.206(4)-1(e)(1)(i): definition of advertisement (website and social posts that offer advisory services fall inside it; extemporaneous live oral communications are excluded)",
+     "evidence_class": "agent_reported",
+     "kind": "constraint",
+     "date": "undated (current CFR)",
+     "stage": "deep",
+     "recheck": null
+    },
+    {
+     "url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.203A-1",
+     "signal": "if you have assets under management of at least $100,000,000 but less than $110,000,000",
+     "source": "eCFR, 17 CFR 275.203A-1(a)(1): SEC registration threshold, which limits the buyer pool to advisers around $100M+ AUM",
+     "evidence_class": "agent_reported",
+     "kind": "constraint",
+     "date": "undated (current CFR)",
+     "stage": "deep",
+     "recheck": null
+    },
+    {
+     "url": "https://developers.facebook.com/terms/",
+     "signal": "Delete all Platform Data as soon as reasonably possible in the following cases:",
+     "source": "Meta Platform Terms, s3.d.i.2: duty to delete Platform Data",
+     "evidence_class": "agent_reported",
+     "kind": "constraint",
+     "date": "undated",
+     "stage": "deep",
+     "recheck": null
+    },
+    {
+     "url": "https://developers.facebook.com/terms/",
+     "signal": "When you stop operating the product or service through which the Platform Data was acquired;",
+     "source": "Meta Platform Terms, s3.d.i.2(b): deletion trigger when the operator stops the product (solo exit risk against a 5-year retention promise)",
+     "evidence_class": "agent_reported",
+     "kind": "constraint",
+     "date": "undated",
+     "stage": "deep",
+     "recheck": null
+    },
+    {
+     "url": "https://developers.facebook.com/docs/resp-plat-initiatives/individual-processes/app-review",
+     "signal": "If your app will be used by anyone without a Role on the app or a role in a Business that has claimed the app,",
+     "source": "Meta for Developers, App Review: such an app must first pass App Review",
+     "evidence_class": "agent_reported",
+     "kind": "constraint",
+     "date": "undated",
+     "stage": "deep",
+     "recheck": null
+    },
+    {
+     "url": "https://developers.facebook.com/docs/instagram-platform/overview",
+     "signal": "This access level requires App Review and Business Verification.",
+     "source": "Meta for Developers, Instagram Platform overview: Advanced Access, needed to serve accounts you do not own or manage",
+     "evidence_class": "agent_reported",
+     "kind": "constraint",
+     "date": "undated",
+     "stage": "deep",
+     "recheck": null
+    },
+    {
+     "url": "https://developers.facebook.com/docs/instagram-platform/overview",
+     "signal": "a permission only allows access to data created by the app user who granted the permission.",
+     "source": "Meta for Developers, Instagram Platform overview: scope of data access per permission",
+     "evidence_class": "agent_reported",
+     "kind": "constraint",
+     "date": "undated",
+     "stage": "deep",
+     "recheck": null
+    },
+    {
+     "url": "https://developers.facebook.com/docs/instagram-platform/overview",
+     "signal": "allows your app to access data for Instagram professional accounts including both businesses and creators.",
+     "source": "Meta for Developers, Instagram Platform overview: only professional accounts, so personal Instagram accounts of advisers are outside the API",
+     "evidence_class": "agent_reported",
+     "kind": "constraint",
+     "date": "undated",
+     "stage": "deep",
+     "recheck": null
+    },
+    {
+     "url": "https://developers.facebook.com/docs/features-reference/page-public-content-access",
+     "signal": "This permission or feature is only available with business verification.",
+     "source": "Meta for Developers, Page Public Content Access feature reference",
+     "evidence_class": "agent_reported",
+     "kind": "constraint",
+     "date": "undated",
+     "stage": "deep",
+     "recheck": null
+    },
+    {
+     "url": "https://developers.facebook.com/docs/features-reference/page-public-content-access",
+     "signal": "requires successful completion of the App Review process before your app can access live data.",
+     "source": "Meta for Developers, Page Public Content Access feature reference: app cannot read live Page data before review passes",
+     "evidence_class": "agent_reported",
+     "kind": "constraint",
+     "date": "undated",
      "stage": "deep",
      "recheck": null
     }
@@ -1791,11 +1986,11 @@
      "method": "manual_reading_agent_reported",
      "second_pass": true,
      "verdict": "uncertain",
-     "reason": "Mandatory need is verified (Rule 204-2: keep a copy of each advertisement for 5 years), but the pages that decide the idea (Patrina, Smarsh, Archive Intel pricing, social platform ToS) could not be re-fetched and search budget ran out. Free OSS (ArchiveBox, Browsertrix) covers capture at $0, Meta terms force deletion of platform data, and email must be archived anyway, so a $29 web/social-only add-on has no verified edge. Year-1 profit ~+$25, pessimistic ~-$2.7k. Leaning kill; not provable on verified evidence.",
+     "reason": "Need is real (Rule 204-2: copy of each advertisement kept 5 years), but the deciding facts could not be read: Patrina, Smarsh, Archive Intel, ArchiveSocial and PageFreezer pages were blocked this session and search budget was spent, so no incumbent price or web/social-only tier is verified. Verified: written communications must also be kept (email needed anyway), Meta social capture needs App Review plus Business Verification, only SEC-registered advisers ($100M+ AUM) are in scope, base year-1 profit about -$13, pessimistic about -$2.7k. Price/scope is not an edge. Leaning kill, not provable.",
      "economics": {
-      "revenue365_usd": 3006,
-      "cost365_usd": 2982,
-      "pessimistic_profit365_usd": -2706,
+      "revenue365_usd": 2957,
+      "cost365_usd": 2969,
+      "pessimistic_profit365_usd": -2717,
       "survives_pessimistic": false
      },
      "answers": [
@@ -1818,15 +2013,19 @@
       {
        "question": "(5) Year-1 numbers?",
        "answer": "Bottom-up, all volumes are assumptions: first revenue day 65 (month 3), 2 new firms per month from month 3 (20 signed by month 12), 2% monthly churn, $29/mo, variable cost $7.25 per firm-month (case-file model, unsourced), $40/mo fixed tools, $1,750 startup cash counted as year-1 cost. Base: revenue about $3,006, cost about $2,982, profit about +$25 before 12 h/week of owner time. Pessimistic (price x0.8, volume x0.…"
+      },
+      {
+       "question": "(1) What free/cheap alternative covers the wedge?",
+       "answer": "Not re-verified this session: GitHub (ArchiveBox, Browsertrix) and all vendor pages (Patrina, Archive Intel, Smarsh, ArchiveSocial, PageFreezer, ustechautomations) were refused by the fetch tool (permission/provenance errors) and WebSearch budget was exhausted. What the rule text does show: it requires a copy of each advertisement kept in an easily accessible place for five years and names no vendor or format, so a …"
       }
      ],
      "unverified": [
-      "Current prices, contract terms and scope of Patrina, Smarsh, Global Relay, Archive Intel, ArchiveSocial and PageFreezer: those pages were blocked for fetching this session (permission not granted) an…",
-      "Whether RIAs actually pay for or want a standalone website/social archive, and at what price; no demand or complaint evidence read.",
-      "Whether SEC exam staff expect website and social archives in a specific form; the SEC marketing FAQ and the adopting release excerpt read did not address it.",
-      "Social platform capture feasibility and ToS for LinkedIn, X, Instagram and YouTube; hosted Browsertrix pricing.",
-      "Number of SEC-registered small and solo RIAs (market size) and what share are customers of an archiving vendor already.",
-      "State-law equivalents for advisers under $100M AUM."
+      "Current prices, contract terms and scope of Patrina, Smarsh, Archive Intel, ArchiveSocial, PageFreezer and Global Relay: WebFetch refused every vendor URL (permission/provenance errors) and WebSearch…",
+      "Whether any incumbent already sells a web+social-only tier at or below $29/month with free export and no annual lock-in.",
+      "ArchiveBox and Browsertrix capabilities and hosted pricing: GitHub fetch refused this session; only the first attempt's reading exists.",
+      "Whether RIAs actually pay for a standalone website/social archive and at what price; no demand or complaint evidence read.",
+      "LinkedIn, X, YouTube and Instagram user-facing terms and API access for capturing a third party's posts.",
+      "Number of SEC-registered small and solo RIAs and their current archiving vendors; state rules for advisers under the SEC threshold."
      ]
     },
     "final_verdict": "uncertain",
@@ -1851,6 +2050,41 @@
       "usd_per_month": 0,
       "covers_wedge": "partial",
       "url": "https://law.cornell.edu/cfr/text/17/275.204-2"
+     },
+     {
+      "label": "Manual PDF/screenshot of each web page and post, filed in retained storage (legal status quo; the rule names no vendor)",
+      "kind": "diy_or_status_quo",
+      "usd_per_month": 0,
+      "covers_wedge": "partial",
+      "url": "https://law.cornell.edu/cfr/text/17/275.204-2"
+     },
+     {
+      "label": "ArchiveBox (self-hosted open-source web and social archiver; read in first attempt, not re-opened this session)",
+      "kind": "open_source",
+      "usd_per_month": 0,
+      "covers_wedge": "partial",
+      "url": "https://github.com/ArchiveBox/ArchiveBox"
+     },
+     {
+      "label": "Browsertrix (open-source browser crawler, self-host or hosted; read in first attempt, not re-opened this session)",
+      "kind": "open_source",
+      "usd_per_month": 0,
+      "covers_wedge": "partial",
+      "url": "https://github.com/webrecorder/browsertrix"
+     },
+     {
+      "label": "Patrina (from $60/mo, no auto-renewing annual contract; case-file claim, page not re-fetched)",
+      "kind": "paid_incumbent",
+      "usd_per_month": 60,
+      "covers_wedge": "partial",
+      "url": "https://patrina.com/"
+     },
+     {
+      "label": "Smarsh ($15-35 per seat/month with annual minimum per one 2026 comparison; case-file claim, page not re-fetched)",
+      "kind": "paid_incumbent",
+      "usd_per_month": 15,
+      "covers_wedge": "partial",
+      "url": "https://ustechautomations.com/resources/blog/automate-best-compliance-archiving-tools-for-ria-firms-2026"
      }
     ],
     "kill_reasons": [
@@ -1883,6 +2117,36 @@
       "reason": "The adviser carries the safeguard duty for electronic records, so vendor 'compliant' claims create liability and the entrant may only describe capture features.",
       "ref": "SAS-02-D3",
       "ref_class": "agent_reported"
+     },
+     {
+      "severity": "major",
+      "reason": "Written communications must be kept as well, so the buyer needs an email archive anyway and a web/social-only product is at best a second-vendor add-on; this is an inference from the rule text, whether buyers accept a second vendor is unverified.",
+      "ref": "SAS-02-D24",
+      "ref_class": "agent_reported"
+     },
+     {
+      "severity": "major",
+      "reason": "Social capture depends on platform gates: Instagram Advanced Access needs App Review and Business Verification, covers only professional accounts and only data the granting user created; Facebook Page content needs the same; Meta requires deleting Platform Data when the operator stops the product. A nameless solo entrant must pass these before first revenue at day 65 and incumbents already have, …",
+      "ref": "SAS-02-D31",
+      "ref_class": "agent_reported"
+     },
+     {
+      "severity": "major",
+      "reason": "Pessimistic year-1 economics are clearly negative (about -$2.7k) and base case is about break-even before about 620 owner hours; volumes are assumptions, not sourced.",
+      "ref": "SAS-02-D27",
+      "ref_class": "agent_reported"
+     },
+     {
+      "severity": "minor",
+      "reason": "Buyer pool is the SEC-registered subset (threshold about $100M AUM); smaller advisers follow state rules that were not checked.",
+      "ref": "SAS-02-D27",
+      "ref_class": "agent_reported"
+     },
+     {
+      "severity": "minor",
+      "reason": "The adviser carries the duty to safeguard electronic records, so a vendor 'compliant' claim creates liability and the entrant can only describe capture features, which weakens trust-based selling.",
+      "ref": "SAS-02-D25",
+      "ref_class": "agent_reported"
      }
     ],
     "legal_notes": [
@@ -1890,9 +2154,15 @@
      "17 CFR 275.206(4)-1(e)(1): an advertisement is any direct or indirect communication to more than one person that offers advisory services, so website and social posts are in scope.",
      "Do not claim the product is SEC- or 17a-4-compliant or exam-proof; describe only capture, timestamping and export features. Whether a legal review would allow stronger claims was not assessed.",
      "Meta Platform Terms: App Review for third-party apps; delete Platform Data when no longer needed or when the product stops operating; LinkedIn, X and Instagram terms were not readable.",
-     "State-registered advisers (below $100M AUM) are governed by state books-and-records rules, which were not read."
+     "State-registered advisers (below $100M AUM) are governed by state books-and-records rules, which were not read.",
+     "17 CFR 275.204-2(a)(11)(i): an SEC-registered adviser must keep a copy of each advertisement it disseminates, and communications sent to ten or more persons; five-year retention in an easily accessible place; the rule names no vendor.",
+     "17 CFR 275.204-2(g)(3)(i): the adviser must keep procedures to safeguard electronic records from loss, alteration or destruction, so the vendor must not claim SEC, 17a-4 or exam-proof compliance; describe only capture, timestamp and export features. A lawyer's view on permissible claims was not obtained.",
+     "17 CFR 275.206(4)-1(e)(1): an advertisement is a communication to more than one person offering advisory services; website and social posts fall in scope, extemporaneous live oral communications do not.",
+     "Meta: apps used by anyone without a role need App Review; Instagram Advanced Access needs App Review and Business Verification and reaches professional accounts only; Platform Data must be deleted when the operator stops the product. Whether a 5-year records purpose counts as a legitimate business purpose was not settled.",
+     "LinkedIn, X and YouTube terms and API access were not readable this session; scraping instead of API capture was not assessed and is likely a ToS breach.",
+     "State-registered advisers (below the SEC threshold) are governed by state books-and-records rules, which were not read."
     ],
-    "verdict_reason": "Mandatory need is verified (Rule 204-2: keep a copy of each advertisement for 5 years), but the pages that decide the idea (Patrina, Smarsh, Archive Intel pricing, social platform ToS) could not be re-fetched and search budget ran out. Free OSS (ArchiveBox, Browsertrix) covers capture at $0, Meta terms force deletion of platform data, and email must be archived anyway, so a $29 web/social-only add-on has no verified edge. Year-1 profit ~+$25, pessimistic ~-$2.7k. Leaning kill; not provable on verified evidence.",
+    "verdict_reason": "Need is real (Rule 204-2: copy of each advertisement kept 5 years), but the deciding facts could not be read: Patrina, Smarsh, Archive Intel, ArchiveSocial and PageFreezer pages were blocked this session and search budget was spent, so no incumbent price or web/social-only tier is verified. Verified: written communications must also be kept (email needed anyway), Meta social capture needs App Review plus Business Verification, only SEC-registered advisers ($100M+ AUM) are in scope, base year-1 profit about -$13, pessimistic about -$2.7k. Price/scope is not an edge. Leaning kill, not provable.",
     "next_step": "verify cheapest/free alternative, legal limits and willingness to pay by manual public reading, then judge v6 components"
    }
   },
@@ -2493,7 +2763,10 @@
      "kind": "incumbent_price",
      "date": "2026-08-21 (listing launch date)",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Page says 'Free plan available. Free trial available.' Free plan limits: 2 disputes per month, 1 upload per dispute; paid tiers from $39/month."
+     }
     },
     {
      "url": "https://apps.shopify.com/chargebackwiz",
@@ -2563,7 +2836,10 @@
      "kind": "demand",
      "date": "2026",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Sentence is tied to a specific plan price in the page's wording."
+     }
     },
     {
      "url": "https://help.shopify.com/en/manual/payments/chargebacks/resolve-chargeback",
@@ -2583,7 +2859,10 @@
      "kind": "constraint",
      "date": "2026-03-15",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Exact sentence in the first post by CMC."
+     }
     },
     {
      "url": "https://shopify.dev/docs/apps/launch/protected-customer-data",
@@ -2969,7 +3248,10 @@
      "kind": "other",
      "date": "2026",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Exact sentence on page."
+     }
     },
     {
      "url": "https://slashpost.ai/blogs/google-business-profile/google-business-profile-suspended-reinstatement-guide",
@@ -2989,7 +3271,10 @@
      "kind": "incumbent_price",
      "date": "2026",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Exact text on page."
+     }
     },
     {
      "url": "https://steadydemand.com/reinstatement.html",
@@ -3009,7 +3294,10 @@
      "kind": "incumbent_price",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Exact sentence in FAQ 'Are there any hidden fees?'; same answer says there is an initial consultation fee and no reinstatement fee if suspended."
+     }
     },
     {
      "url": "https://robbenmedia.com/google-business-profile-denied-appeal-your-2025-reinstatement-playbook/",
@@ -3293,7 +3581,10 @@
      "kind": "incumbent_price",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Exact sentence in the 'Service details' line near top of page."
+     }
     },
     {
      "url": "https://www.amazonsellers.attorney/amazon-appeals.html",
@@ -3303,7 +3594,10 @@
      "kind": "incumbent_price",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Exact sentence in the 'Send the notice' step."
+     }
     },
     {
      "url": "https://www.amazonsellers.attorney/amazon-appeals.html",
@@ -3373,7 +3667,10 @@
      "kind": "other",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Text appears only in the page's meta-ai-agent-instructions metadata field (not in visible body); it is the firm's self-description. Wording has trailing period."
+     }
     },
     {
      "url": "https://www.amazonsellers.attorney/amazon-attorney-reviews.html",
@@ -3629,7 +3926,10 @@
      "kind": "other",
      "date": "2023-06-15",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Quote is attributed to Jared Walker, founder of DollarFor (a nonprofit-style service), on the page."
+     }
     },
     {
      "url": "https://www.causeartist.com/companies/dollar-for",
@@ -3649,7 +3949,10 @@
      "kind": "incumbent_price",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Page says the module uses 'calm, professional letters written in insurer-approved language'."
+     }
     },
     {
      "url": "https://rivereditor.com/tools/appeal-letter",
@@ -3719,7 +4022,10 @@
      "kind": "constraint",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "not_found",
+      "note": "Page opened twice; the exact sentence about protecting from unexpected out-of-network bills for emergency room visits is not on the page. Closest wording is a consumers-section heading, not mentioning emergency room vis…"
+     }
     }
    ],
    "rejection_reason": "KILLED_AFTER_DEEP_SCREEN (agent_reported): No structural edge: human review of a templated letter is labour any rival can copy. Free or near-free substitutes cover most of the wedge: Dollar For (free, human advocates, hospital bills, 36,000+ patients), a free AI appeal-letter tool, a $20 denial-letter kit, and free CMS action-plan, helpdesk and complaint routes. The $49 price sits between $0-$20 and a listed (unchecked) $129 with only labour as the differentiator. Pessimistic year-1 model is negative. Not re-verified: Counterforce, Claimable, mediloop, CAC.",
@@ -3940,7 +4246,10 @@
      "kind": "incumbent_price",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Appears in the pricing section after the sentence about Thumbtack matching pros with customers by criteria."
+     }
     },
     {
      "url": "https://www.thumbtack.com/pro/jobs",
@@ -4010,7 +4319,10 @@
      "kind": "incumbent_price",
      "date": "2026-08-24",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Found in 'How Does LSA Cost Compare to Google Search Ads?'; sentence continues 'for that $104 blended average'. Figures are attributed to a SearchLight breakdown."
+     }
     },
     {
      "url": "https://clicksgeek.com/pay-per-lead-services-pricing/",
@@ -4050,7 +4362,10 @@
      "kind": "constraint",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Found in the 'Drive Traffic' section; the timeline is for local SEO, the primary channel for rank-and-rent sites."
+     }
     },
     {
      "url": "https://prospeo.io/s/lead-gen-business-model",
@@ -4315,7 +4630,10 @@
      "kind": "incumbent_price",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Sentence present below the Live Auctions list; the next sentence says 'Pre-revenue projects are accepted.'"
+     }
     },
     {
      "url": "https://exitbid.io/",
@@ -4325,7 +4643,10 @@
      "kind": "other",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Present as a section heading in the 'Why exitbid' area; body text says every listing gets full buyer attention."
+     }
     },
     {
      "url": "https://exitbid.io/",
@@ -4365,7 +4686,10 @@
      "kind": "demand",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Sentence present in the 'A buyer pool with depth and intent.' section; this is Flippa's own marketing claim."
+     }
     },
     {
      "url": "https://flippa.com/pricing",
@@ -4656,7 +4980,10 @@
      "kind": "incumbent_price",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Appears in the Payments section, in bold on the page. Note this is the Stripe Connect pricing page (Payments product headline rate)."
+     }
     },
     {
      "url": "https://stripe.com/connect/pricing",
@@ -4686,7 +5013,10 @@
      "kind": "incumbent_price",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Quote is a verbatim fragment; the page text begins with the fee amount '30%' immediately before it, so the full line is the 30% discover-marketplace fee."
+     }
     },
     {
      "url": "https://fungies.io/best-gumroad-alternatives-2026/",
@@ -4696,7 +5026,10 @@
      "kind": "incumbent_price",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "The exact line appears twice on the page: once under Fungies (section 1) and once under Lemon Squeezy (section 3). The quote is on the page but is ambiguous about which product it refers to; both are listed at 5% + $0.5…"
+     }
     },
     {
      "url": "https://fungies.io/best-gumroad-alternatives-2026/",
@@ -5272,7 +5605,10 @@
      "kind": "constraint",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Exact text on the page."
+     }
     },
     {
      "url": "https://privacy.ca.gov/drop/",
@@ -5282,7 +5618,10 @@
      "kind": "constraint",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Exact text on the page."
+     }
     },
     {
      "url": "https://privacy.ca.gov/drop/how-drop-works",
@@ -5342,7 +5681,10 @@
      "kind": "incumbent_price",
      "date": "2026-03-11",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Found in the Removals report section."
+     }
     },
     {
      "url": "https://discuss.privacyguides.net/t/easyoptouts-com-a-short-overview/20041",
@@ -5696,7 +6038,10 @@
      "kind": "incumbent_price",
      "date": "2016-12-19",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Same Dec 19, 2016 review on the rggion eBay profile; sentence present verbatim."
+     }
     },
     {
      "url": "https://www.ebay.com/usr/rggion",
@@ -5706,7 +6051,10 @@
      "kind": "incumbent_price",
      "date": "2016-12-19",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Found in a feedback review on the eBay profile for rggion dated Dec 19, 2016; page text continues 'a replacement built via 3D Printing.'"
+     }
     },
     {
      "url": "https://www.ebay.com/usr/rggion",
@@ -5736,7 +6084,10 @@
      "kind": "incumbent_price",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Appears once, in the basic fees table row for 'Most categories' (includes eBay Motors > Parts & Accessories); row reads '$0.35 per listing - 13.6% ... up to $7,500 calculated per item'; a lower rate of 2.35% applies abo…"
+     }
     },
     {
      "url": "https://www.ebay.com/help/selling/fees-credits-invoices/selling-fees?id=4822",
@@ -5744,6 +6095,46 @@
      "source": "eBay selling fees help page (most categories)",
      "evidence_class": "agent_reported",
      "kind": "incumbent_price",
+     "date": "undated",
+     "stage": "deep",
+     "recheck": null
+    },
+    {
+     "url": "https://www.valueaddedresource.net/etsy-creativity-standards-update-june-2025/",
+     "signal": "These items must be produced based on a seller’s original design",
+     "source": "Value Added Resource (Etsy creativity standards update, effective June 10, 2025; heading 'Items Produced Using Computerized Tools')",
+     "evidence_class": "agent_reported",
+     "kind": "constraint",
+     "date": "undated",
+     "stage": "deep",
+     "recheck": null
+    },
+    {
+     "url": "https://www.shopifreaks.com/etsy-cracks-down-on-3d-and-laser-printed-items/",
+     "signal": "restricting the sale of 3D and laser printed items made from other people's templates",
+     "source": "Shopifreaks (Etsy cracks down on 3D and laser printed items)",
+     "evidence_class": "agent_reported",
+     "kind": "constraint",
+     "date": "undated",
+     "stage": "deep",
+     "recheck": null
+    },
+    {
+     "url": "https://www.patreon.com/posts/131323500",
+     "signal": "would appear to kill all the 3D-printed shops who only use templates from other creators.",
+     "source": "Patreon post on the Etsy creativity standards change (author's own reading, not an Etsy statement)",
+     "evidence_class": "agent_reported",
+     "kind": "constraint",
+     "date": "undated",
+     "stage": "deep",
+     "recheck": null
+    },
+    {
+     "url": "https://www.law.cornell.edu/uscode/text/15/2064",
+     "signal": "Every manufacturer of a consumer product, or other product or substance over which the Commission has jurisdiction",
+     "source": "Cornell LII: 15 U.S.C. 2064, Consumer Product Safety Act section 15(b) (opening words of the reporting duty; the page text extends it to distributors and retailers)",
+     "evidence_class": "agent_reported",
+     "kind": "constraint",
      "date": "undated",
      "stage": "deep",
      "recheck": null
@@ -5770,7 +6161,7 @@
      "method": "manual_reading_agent_reported",
      "second_pass": true,
      "verdict": "uncertain",
-     "reason": "Uncertain. The decisive input, orders per model-specific SKU per month, and today's listings by model number, could not be read (Etsy, Printables, RepairClinic/PartSelect and eBay search were refused, search budget gone). What was verified cuts both ways: real willingness to pay ($60 for a 3D-printed discontinued Thermador knob, Dec 2016) and Etsy now forbidding template-based 3D prints, but a measured catalog has no moat and eBay alone takes about 15.6% of a $20 knob. Under labelled assumptions year 1 is +$4.4k base (about $5/h) and -$1.3k pessimistic.",
+     "reason": "Uncertain, leaning negative. The two decisive checks (orders per model-specific SKU; today's Etsy/eBay/RepairClinic listings by model number at or below $25) could not be done: WebSearch budget was gone and every Etsy, eBay-listing, Printables, RepairClinic, PartSelect fetch was refused. Verified this pass: Etsy now requires 3D prints to be the seller's original design (own CAD per knob) and CPSA 15(b) duties reach retailers. Earlier-scan quotes show a $60 3D-printed model-specific knob already sold in 2016, so no moat. Labelled-assumption year 1: +$4.4k base, -$1.3k pessimistic.",
      "economics": {
       "revenue365_usd": 9360,
       "cost365_usd": 5008,
@@ -5797,15 +6188,19 @@
       {
        "question": "(5) Year-1 numbers?",
        "answer": "Base (all inputs labelled assumptions except eBay fees): 12 new models listed per month (about 54 h/month of measuring, CAD and test prints), 0.5 orders per live model per month = 468 orders at $20 = $9,360 revenue; variable cost per order about $6.30 (eBay fee on $25 incl. $5 shipping $3.80, material and packaging $1.50, refunds $1.00); fixed $2,060 (printers $900, spares $200, calipers $60, insurance $600, registr…"
+      },
+      {
+       "question": "(1) What free/cheap alternative covers the wedge?",
+       "answer": "Not newly verified: no search could run and the Printables, Etsy-listing and eBay-listing pages were refused. From the case file (earlier scan, agent_reported, not re-read by me): a free CC BY-SA Printables knob pack with an 8-step DIY route (E4, E6, E7) that covers the wedge only partially because the buyer must customise, print and glue; an Etsy 'replacement part from photo or drawing' service at $40 (E3); and an …"
       }
      ],
      "unverified": [
-      "Per-SKU demand: no public sold/search-volume data could be read (eBay search page and Etsy market page refused or returned only a category directory).",
-      "Current Etsy/eBay listings by model number at or below $25 with fast shipping (the case file's falsifier), current OEM prices on RepairClinic/PartSelect/Sears Parts Direct: all fetches refused.",
-      "Printables pack engagement numbers and DIY steps (PHY-01-E4, E6, E7) and the Etsy $40 custom service (PHY-01-E3): printables.com and etsy.com fetches were refused, so these old items remain agent_rep…",
-      "The brief asks for at least 3 new alternative searches: only 2 searches ran (both about Etsy digital-download sellers and policy, run for MKT-03; none about knobs) before the shared WebSearch budget …",
-      "Whether the 2016 eBay 3D-printed knob seller (sharpeibear) still exists: the eBay profile fetch returned 'this user was not found', which proves nothing either way.",
-      "Heat-resistance requirements and print material cost; liability insurance cost; Etsy fees and shipping rates; Etsy/eBay rules on gas appliance control parts."
+      "Per-SKU demand (orders per model per month): no public sold or search-volume data could be read; this is the decisive input.",
+      "Current Etsy/eBay/Amazon listings by model number at or below $25 with fast shipping (the case file's falsifier): WebSearch budget exhausted; Etsy search/market pages, eBay search and user pages (lis…",
+      "Current OEM prices and availability on RepairClinic/PartSelect for discontinued range knobs: refused.",
+      "The case-file items E1-E7 (2016 eBay $289.95 and $60 review, Etsy $40 custom service, Printables pack engagement, 8 DIY steps, CC BY-SA licence) were not re-read in this pass, because those pages wer…",
+      "The brief asks for at least 3 new alternative searches: none could run (search budget gone); only the 4 policy/statute pages above could be fetched.",
+      "Whether sharpeibear, the 2016 eBay printed-knob seller, still sells; whether Etsy/eBay restrict gas-appliance control parts; Etsy fee schedule and shipping rates; liability insurance cost; heat-resis…"
      ]
     },
     "final_verdict": "uncertain",
@@ -5844,6 +6239,34 @@
       "usd_per_month": 0,
       "covers_wedge": "partial",
       "url": "https://www.ebay.com/usr/rggion"
+     },
+     {
+      "label": "Free Printables parametric knob pack, CC BY-SA 4.0 (DIY: Fusion 360 customisation, print, glue; about 8 steps; earlier-scan quote, not re-read)",
+      "kind": "open_source",
+      "usd_per_month": 0,
+      "covers_wedge": "partial",
+      "url": "https://www.printables.com/model/580299-ultimate-diy-replacement-knob-pack-for-samsung-sme"
+     },
+     {
+      "label": "Etsy custom 3D-printed replacement part from photo or drawing ($40.00, 4.9k reviews per the earlier scan; not re-read)",
+      "kind": "cheap_paid",
+      "usd_per_month": 40,
+      "covers_wedge": "partial",
+      "url": "https://www.etsy.com/market/replacement_part_3d_printed"
+     },
+     {
+      "label": "eBay seller of a model-specific 3D-printed replacement knob ($60.00 each in Dec 2016 per the earlier scan; current status unknown)",
+      "kind": "cheap_paid",
+      "usd_per_month": 60,
+      "covers_wedge": "full",
+      "url": "https://www.ebay.com/usr/rggion"
+     },
+     {
+      "label": "Used OEM discontinued knob on eBay ($289.95 in Dec 2016 per the earlier scan; not re-read)",
+      "kind": "paid_incumbent",
+      "usd_per_month": 289.95,
+      "covers_wedge": "full",
+      "url": "https://www.ebay.com/usr/rggion"
      }
     ],
     "kill_reasons": [
@@ -5870,6 +6293,30 @@
       "reason": "Consumer Product Safety Act section 15(b) reporting duties apply to manufacturers, distributors and retailers, and a heat-exposed range control carries product-liability exposure; insurance cost unknown.",
       "ref": "PHY-01-D8",
       "ref_class": "agent_reported"
+     },
+     {
+      "severity": "major",
+      "reason": "No moat, with prior art: a model-specific 3D-printed knob for a discontinued appliance was already on sale on eBay in 2016 at $60 (earlier-scan quote, not re-read by me), and a catalog of measured knob models can be rebuilt by any rival with calipers and a printer. The case file's own falsifier (existing model-number listings at or below $25) could not be checked, so this is major but conditional.",
+      "ref": "PHY-01-E2",
+      "ref_class": "agent_reported"
+     },
+     {
+      "severity": "minor",
+      "reason": "A scaled custom-part competitor already exists on Etsy (about $40, 4.9k reviews per the earlier scan, not re-read) and covers send-a-photo replacement parts, so the entrant must win on price and convenience of ordering by model number, which is not an exclusive edge.",
+      "ref": "PHY-01-E3",
+      "ref_class": "agent_reported"
+     },
+     {
+      "severity": "minor",
+      "reason": "Etsy's original-design rule means every catalog entry on Etsy must be the entrant's own CAD; free remixable packs (CC BY-SA, E7) cannot be repackaged and sold there, which raises per-SKU effort (assumed 4.5 h per model) and limits how fast the catalog can reach enough models for repeat orders.",
+      "ref": "PHY-01-D21",
+      "ref_class": "agent_reported"
+     },
+     {
+      "severity": "minor",
+      "reason": "Consumer Product Safety Act section 15(b) reporting duties reach manufacturers, and per the page distributors and retailers, and a heat-exposed gas or electric range control carries product-liability exposure; insurance cost unknown.",
+      "ref": "PHY-01-D24",
+      "ref_class": "agent_reported"
      }
     ],
     "legal_notes": [
@@ -5877,9 +6324,14 @@
      "Consumer Product Safety Act section 15(b) (15 U.S.C. 2064(b)): manufacturers, distributors and retailers must inform the CPSC immediately on information that a product is defective or poses a substantial risk (PHY-01-D8). Whether a replacement range knob is a 'consumer product' in scope and what recall/liability exposure it creates were not analysed beyond this.",
      "Product-liability exposure for knobs on gas ranges and heaters (heat deformation, misfit causing unintended gas flow) is not quantified; insurance quote not found. Heat resistance of PETG/ASA/nylon (from the earlier notes) was not re-verified.",
      "OEM part numbers and brand names: nominative use for compatibility is a general-knowledge assumption, not verified; the Printables pack is CC BY-SA 4.0 (PHY-01-E7, page refused in this pass), so copying it commercially needs attribution and share-alike.",
-     "No logins, signups, purchases or contact were made; page text was read as data only."
+     "No logins, signups, purchases or contact were made; page text was read as data only.",
+     "Etsy creativity standards (effective June 10, 2025): 3D-printed items must be produced from the seller's original design and sales of 3D prints made from other people's templates are restricted (PHY-01-D21, D22, D23). Original CAD from measured parts fits; remixing the free CC BY-SA 4.0 knob pack for sale on Etsy does not.",
+     "Consumer Product Safety Act section 15(b) (15 U.S.C. 2064(b)): the reporting duty applies to every manufacturer of a consumer product and, per the page, to distributors and retailers who obtain information about a defect or risk (PHY-01-D24). Whether a replacement range knob is in scope and what recall/liability exposure it creates were not analysed.",
+     "Product-liability exposure for knobs on gas ranges and heaters (heat deformation, misfit causing unintended gas flow) is not quantified; no insurance quote found; heat resistance of PETG/ASA/nylon is from the earlier notes and not verified.",
+     "OEM part numbers and brand names: nominative use for compatibility is a general-knowledge assumption, not verified. The Printables pack is CC BY-SA 4.0 (PHY-01-E7, not re-read), so copying it commercially needs attribution and share-alike.",
+     "No logins, signups, purchases or contact were made; page text was read as data only; no search-engine workarounds were used after the WebSearch budget ran out."
     ],
-    "verdict_reason": "Uncertain. The decisive input, orders per model-specific SKU per month, and today's listings by model number, could not be read (Etsy, Printables, RepairClinic/PartSelect and eBay search were refused, search budget gone). What was verified cuts both ways: real willingness to pay ($60 for a 3D-printed discontinued Thermador knob, Dec 2016) and Etsy now forbidding template-based 3D prints, but a measured catalog has no moat and eBay alone takes about 15.6% of a $20 knob. Under labelled assumptions year 1 is +$4.4k base (about $5/h) and -$1.3k pessimistic.",
+    "verdict_reason": "Uncertain, leaning negative. The two decisive checks (orders per model-specific SKU; today's Etsy/eBay/RepairClinic listings by model number at or below $25) could not be done: WebSearch budget was gone and every Etsy, eBay-listing, Printables, RepairClinic, PartSelect fetch was refused. Verified this pass: Etsy now requires 3D prints to be the seller's original design (own CAD per knob) and CPSA 15(b) duties reach retailers. Earlier-scan quotes show a $60 3D-printed model-specific knob already sold in 2016, so no moat. Labelled-assumption year 1: +$4.4k base, -$1.3k pessimistic.",
     "next_step": "verify cheapest/free alternative, legal limits and willingness to pay by manual public reading, then judge v6 components"
    }
   },
@@ -6107,7 +6559,10 @@
      "kind": "incumbent_price",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Page sentence begins 'This page lists the 60 no-minimum prep centers in our directory'; also shows 60 centers in listing."
+     }
     },
     {
      "url": "https://ecomcircles.com/prep-centers/honeybee-fulfillment/",
@@ -6127,7 +6582,10 @@
      "kind": "incumbent_price",
      "date": "2026",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Page: published 2026 rates cluster around $1.00-$1.50 per unit below 500 units a month."
+     }
     },
     {
      "url": "https://www.freightfigures.com/articles/fba-prep-center-vs-diy",
@@ -6187,7 +6645,10 @@
      "kind": "constraint",
      "date": "2021-03-25",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Page sentence is prefixed 'In essence,' but otherwise identical."
+     }
     },
     {
      "url": "https://www.cleverence.com/articles/3pl-business/become-amazon-fba-prep-center-3pl-4827/",
@@ -6400,7 +6861,10 @@
      "kind": "constraint",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Sentence present; it gives the ADA Title II web/mobile accessibility compliance date for smaller entities and special districts."
+     }
     },
     {
      "url": "https://it.nc.gov/documents/doj-deep-dive-part-2/open",
@@ -6410,7 +6874,10 @@
      "kind": "constraint",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Slide 'Ex: archived web content' (town's annual parade page with archived photos/videos from past years); sentence present verbatim."
+     }
     },
     {
      "url": "https://www.sog.unc.edu/blogs/coates-canons/understanding-new-ada-web-accessibility-requirements-state-and-local-governments-1",
@@ -6440,7 +6907,10 @@
      "kind": "other",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Appears under the 'Auto-translate' heading, right after the sentence that YouTube uses speech recognition to automatically create captions."
+     }
     },
     {
      "url": "https://support.google.com/youtube/answer/2734705",
@@ -6710,7 +7180,10 @@
      "kind": "demand",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Phrase appears in the Premium+ Subscription package description. It describes a package feature/positioning, not a verified customer-demand statistic."
+     }
     },
     {
      "url": "https://govfresh.com/signal/voterheads-wants-make-easier-follow-government-council-meetings",
@@ -6720,7 +7193,10 @@
      "kind": "incumbent_price",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Page wording is 'Voterheads is free for anyone monitoring five organizations or less.' Quote is a verbatim fragment."
+     }
     },
     {
      "url": "https://bridgeportct.legistar.com/Page.aspx?M=D",
@@ -6760,7 +7236,10 @@
      "kind": "incumbent_price",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Appears in the Pricing note section; page continues that a city with 50 new ordinances this month costs the same as one with 2. Source has no trailing period after 'returned' in the snippet shown (trivial)."
+     }
     },
     {
      "url": "https://stateside.com/locality-monitoring",
@@ -7014,7 +7493,7 @@
      "complete": false,
      "method": null
     },
-    "deep_screen_not_screened": "web search budget exhausted and WebFetch refused every case-file URL (provenance); no new evidence read",
+    "deep_screen_not_screened": "two attempts: web search budget exhausted and WebFetch refused every URL (provenance/permission not answered); no new evidence read",
     "next_step": "verify cheapest/free alternative, legal limits and willingness to pay by manual public reading, then judge v6 components"
    }
   },
@@ -7329,7 +7808,10 @@
      "kind": "constraint",
      "date": "2025-12-08",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Section 3.A 'In General' under License; sentence continues with 'and grant Members licenses...' (rest not captured by fetch tool)."
+     }
     },
     {
      "url": "https://www.teacherspayteachers.com/Terms-of-Service",
@@ -7379,7 +7861,10 @@
      "kind": "other",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Exact text on the page."
+     }
     },
     {
      "url": "https://www.teacherspayteachers.com/About-Us",
@@ -7389,7 +7874,10 @@
      "kind": "demand",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Statistics section shows '7M+' heading followed by 'educators worldwide'."
+     }
     },
     {
      "url": "https://gumroad.com/pricing",
@@ -7675,7 +8163,10 @@
      "kind": "incumbent_price",
      "date": "undated (live page read 2026-10-10)",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Both parts present; the pricing text is in the managed-service description (serverless scaling, SOC 2, SSO, RBAC, usage-based pricing)."
+     }
     },
     {
      "url": "https://github.com/frain-dev/convoy",
@@ -7695,7 +8186,10 @@
      "kind": "constraint",
      "date": "undated (live page read 2026-10-10)",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Both parts present: License section restriction and Hook0 Cloud section free tier."
+     }
     },
     {
      "url": "https://github.com/standard-webhooks/standard-webhooks",
@@ -7715,7 +8209,10 @@
      "kind": "other",
      "date": "undated (live page read 2026-10-10)",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Exact text on the page."
+     }
     },
     {
      "url": "https://github.com/spatie/laravel-webhook-server",
@@ -7954,7 +8451,10 @@
      "kind": "constraint",
      "date": "undated (live page read 2026-10-10)",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "All three fragments present. Page wording for cadence: 'We run our update script at least weekly and automatically revalidate before committing.'"
+     }
     },
     {
      "url": "https://github.com/pb33f/openapi-changes",
@@ -7974,7 +8474,10 @@
      "kind": "constraint",
      "date": "undated (live page read 2026-10-10)",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "In README intro and meta description."
+     }
     },
     {
      "url": "https://github.com/dgtlmoon/changedetection.io",
@@ -7984,7 +8487,10 @@
      "kind": "incumbent_price",
      "date": "undated (live page read 2026-10-10)",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Heading 'JSON API Monitoring' contains the first fragment; the $8.99/month appears in the call-to-action near the top."
+     }
     },
     {
      "url": "https://github.com/stripe/openapi",
@@ -8244,7 +8750,10 @@
      "kind": "incumbent_price",
      "date": "2025-09-09",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Exact sentence on the page."
+     }
     },
     {
      "url": "https://toolradar.com/tools/api-to-mcp",
@@ -8254,7 +8763,10 @@
      "kind": "incumbent_price",
      "date": "2026-06-19",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Pricing Plans table: Free $0, Starter $6.99, Professional $20.99, Business $41.30 per month (table dated Sep 28, 2026)."
+     }
     },
     {
      "url": "https://toolradar.com/tools/api-to-mcp",
@@ -8304,7 +8816,10 @@
      "kind": "constraint",
      "date": "2025-03-25",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Phrase present within a longer sentence."
+     }
     },
     {
      "url": "https://www.fast.io/resources/best-mcp-server-generator-tools.md",
@@ -8642,7 +9157,10 @@
      "kind": "other",
      "date": "undated",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Exact sentence on the page (Machine payments page, MPP/x402)."
+     }
     },
     {
      "url": "https://docs.stripe.com/payments/machine",
@@ -8672,7 +9190,10 @@
      "kind": "incumbent_price",
      "date": "2026-07",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Appears in At a Glance and in the Free pricing tier."
+     }
     },
     {
      "url": "https://www.everydev.ai/tools/zuplo",
@@ -8682,7 +9203,10 @@
      "kind": "incumbent_price",
      "date": "2026-07",
      "stage": "deep",
-     "recheck": null
+     "recheck": {
+      "status": "confirmed",
+      "note": "Appears once, in the At a Glance section."
+     }
     },
     {
      "url": "https://zuplo.com/changelog/2026/06/01/monthly-changelog",
