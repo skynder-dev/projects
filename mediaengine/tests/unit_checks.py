@@ -104,6 +104,14 @@ def main():
         check("unicode shortcut round trip", back["arguments"] == arg and back["workdir"] == str(d)
               and back["target"].lower() == tgt.lower(), back)
         check("desktop and start-menu folders found", shell_folder(0x10) is not None and shell_folder(0x02) is not None)
+    # Russian: plural forms; native window titles follow the interface language
+    from archivist import i18n
+    check("ru plural forms", [i18n.ru_plural(n, "версия", "версии", "версий") for n in (1, 2, 5, 11, 21, 22, 112)]
+          == ["версия", "версии", "версий", "версий", "версия", "версии", "версий"])
+    ae.set_ui_language("ru")
+    ru_title = ae._dialog_title("Choose videos for one reel")
+    ae.set_ui_language("en")
+    check("dialog titles follow the language", ru_title.startswith("Выбери видео") and ae._dialog_title("Choose videos for one reel") == "Choose videos for one reel")
     # Windows must not sleep while a reel is built (no-op elsewhere)
     from archivist.platform_adapter import keep_awake
     with keep_awake() as k:

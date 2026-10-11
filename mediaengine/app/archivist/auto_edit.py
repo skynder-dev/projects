@@ -1523,6 +1523,19 @@ def source_file(pid: int, name: str) -> Path | None:
 
 # ---------------------------------------------------------------- Windows file / folder pickers
 
+def _dialog_title(en: str) -> str:
+    """Native Windows dialogs are not HTML pages: their titles follow the interface language here."""
+    ru = {"Choose videos for one reel": "Выбери видео для одного ролика (Ctrl+щелчок — несколько)",
+          "Choose a folder with your videos on this computer (copy phone videos to the computer first)":
+              "Выбери папку с видео на этом компьютере (видео с телефона сначала скопируй на компьютер)",
+          "Choose the folder that contains the FAST_LOCAL model": "Выбери папку, в которой лежит модель FAST_LOCAL",
+          "Choose a folder for the exported reel": "Выбери папку для готового ролика"}
+    try:
+        return ru.get(en, en) if ui_language() == "ru" else en
+    except Exception:
+        return en
+
+
 def pick_files(title="Choose videos for one reel") -> list[str] | None:
     """Native Windows Open dialog with multi-select (GetOpenFileNameW)."""
     if os.name != "nt":
@@ -1552,7 +1565,7 @@ def pick_files(title="Choose videos for one reel") -> list[str] | None:
         ofn.lpstrFilter = flt
         ofn.lpstrFile = ctypes.cast(buf, wintypes.LPWSTR)
         ofn.nMaxFile = size
-        ofn.lpstrTitle = title
+        ofn.lpstrTitle = _dialog_title(title)
         # OFN_ALLOWMULTISELECT | OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR
         ofn.Flags = 0x200 | 0x80000 | 0x1000 | 0x800 | 0x8
         if ctypes.windll.comdlg32.GetOpenFileNameW(ctypes.byref(ofn)):
@@ -1569,7 +1582,7 @@ def pick_files(title="Choose videos for one reel") -> list[str] | None:
     return box.get("files")
 
 
-def pick_folder(title="Choose a folder with your videos") -> str | None:
+def pick_folder(title="Choose a folder with your videos on this computer (copy phone videos to the computer first)") -> str | None:
     """Native Windows folder dialog (SHBrowseForFolderW). Runs on a COM STA thread."""
     if os.name != "nt":
         return None
@@ -1596,7 +1609,7 @@ def pick_folder(title="Choose a folder with your videos") -> str | None:
         bi = BROWSEINFOW()
         bi.hwndOwner = user32.GetForegroundWindow()
         bi.pszDisplayName = ctypes.cast(display, wintypes.LPWSTR)
-        bi.lpszTitle = title
+        bi.lpszTitle = _dialog_title(title)
         bi.ulFlags = 0x0001 | 0x0040 | 0x0200  # RETURNONLYFSDIRS | NEWDIALOGSTYLE | NONEWFOLDERBUTTON
         pidl = shell32.SHBrowseForFolderW(ctypes.byref(bi))
         if pidl:

@@ -212,7 +212,9 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
 
     @app.post("/api/auto/pick-folder")
     def ae_pick_folder():
-        path = ae.pick_folder()
+        purpose = (request.get_json(silent=True) or {}).get("purpose")
+        path = ae.pick_folder("Choose a folder for the exported reel" if purpose == "export" else
+                              "Choose a folder with your videos on this computer (copy phone videos to the computer first)")
         if path:
             return jsonify({"path": path})
         return jsonify({"path": None, "error": "No folder chosen. You can also paste the path."})
@@ -384,7 +386,7 @@ document.querySelectorAll('[data-move]').forEach(b=>b.onclick=()=>{const row=b.c
 ['copyPath','copyDone'].forEach(id=>{const cp=document.getElementById(id);if(cp)cp.onclick=async()=>{const t=cp.dataset.path;try{await navigator.clipboard.writeText(t);cp.textContent='Copied'}catch(e){prompt('Copy this path:',t)}}});
 const xb=document.getElementById('exportToBtn');
 if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textContent='A Windows folder window is open — it may be behind this window.';
- try{const r=await fetch('/api/auto/pick-folder',{method:'POST'});const x=await r.json();
+ try{const r=await fetch('/api/auto/pick-folder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({purpose:'export'})});const x=await r.json();
  if(x.path){document.getElementById('exportDest').value=x.path;document.getElementById('exportForm').submit()}else m.textContent='No folder chosen.'}catch(e){m.textContent='Folder window failed: '+e}};
 """
         return page(p["title"], "".join(parts), script)
