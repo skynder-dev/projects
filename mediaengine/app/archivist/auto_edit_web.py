@@ -695,7 +695,12 @@ def _review_html(p, rev, e):
     short_html = (f"<div class='callout card' style='margin-top:8px'>Requested {target:.0f} s, got {total:.1f} s: "
                   f"there were not enough different moments in this footage for a longer reel.</div>") if target and total < target - 1.0 else ""
     skipped = res.get("skipped_inputs") or []
-    skipped_html = ("<div class='muted' style='margin-top:6px'>Skipped: " + ", ".join(f"<span translate='no'>{e(x['name'])}</span> ({e(ae.friendly_skip(x['reason']))})" for x in skipped) + "</div>") if skipped else ""
+    def skip_reason(r):
+        r = ae.friendly_skip(r)
+        if r.startswith("duplicate of "):        # the other file's name stays as it is in both languages
+            return "duplicate of <span translate='no'>" + e(r[len("duplicate of "):]) + "</span>"
+        return e(r)
+    skipped_html = ("<div class='muted' style='margin-top:6px'>Skipped: " + ", ".join(f"<span translate='no'>{e(x['name'])}</span> ({skip_reason(x['reason'])})" for x in skipped) + "</div>") if skipped else ""
     mode = "AI moments (FAST_LOCAL)" if res.get("selection_mode", "").startswith("FAST_LOCAL") else "Technical only (no AI)"
     notes = []
     for w in res.get("warnings") or []:

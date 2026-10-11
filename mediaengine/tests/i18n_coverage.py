@@ -20,7 +20,7 @@ KEEP = {  # stays English in Russian too (names, units, formats)
     "OK", "ID", "GB", "MB", "KB", "TB", "fps", "px", "Edge", "Windows", "USB", "SD", "SD/USB", "ADB", "JSON", "CSV", "ONNX",
     "OpenCV", "numpy", "YouTube", "TikTok", "Instagram", "Facebook", "Telegram", "VK", "Google", "Supabase", "GoDog",
     "English", "Русский", "MOV", "MTS", "WebM", "Private", "Rejected", "Staging", "Exports", "HD", "Social", "FAST", "LOCAL",
-    "SHA", "Runtime", "MP", "rc", "ZIP", "zscale", "iPhone", "iOS", "Share", "Lab", "OAuth", "Client", "API", "AAC", "Reel", "MediaStore",
+    "SHA", "Runtime", "MP", "rc", "ZIP", "zscale", "iPhone", "iOS", "Share", "Lab", "OAuth", "Client", "API", "AAC", "Reel", "MediaStore", "Meta",
 }
 SKIP_PREFIX = ("/api/", "/static", "/media/", "/thumb/", "/storyboard/", "/clip-preview/", "/export-file/", "/composition-file/",
                "/diagnostics/fixture", "/auto/rev/")
