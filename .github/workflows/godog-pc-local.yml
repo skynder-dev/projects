@@ -1,0 +1,23 @@
+name: godog-pc-local
+on:
+  push:
+    branches: [main]
+    paths:
+      - "godog/**"
+      - ".github/workflows/godog-pc-local.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  syntax-and-direct-controls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: JavaScript syntax
+        run: node --check godog/GoDog_PC_LOCAL_01.user.js
+      - name: Direct button behavior (mock DOM)
+        run: node godog/tests/direct_buttons.smoke.cjs
