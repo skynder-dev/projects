@@ -88,8 +88,9 @@ The 11 runtime modules, adapter and validator are byte-identical to R2 (CI-check
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38152191898 on `9e00fd5` — all green, build b27** (results branch `mediaengine-ci-results`,
-artifacts `MediaEngine-3.13.0-rc1-b27-Setup` (129 MB) and `MediaEngine-3.13.0-rc1-b27` (ZIP, 181 MB)):
+Latest full run: **38156678815 on `f593844` — all green, build b28** (results branch `mediaengine-ci-results`,
+artifacts `MediaEngine-3.13.0-rc1-b28-Setup` (129 MB) and `MediaEngine-3.13.0-rc1-b28` (ZIP, 181 MB); same checks as
+b27 below, plus: nothing at all written into the installed build folder while it ran; 4K/long footage 296 s):
 fast checks 52/52 (incl. Unicode shortcuts on Windows) · R3 = R2 decisions 29/29 · robustness 24/24 (HDR HLG/PQ,
 rotated phone, camcorder .MTS de-interlaced + hand trim, HDV/DVD wide pixels keep their shape in 16:9 and 9:16,
 11 modern formats, 7 older formats WMV/FLV/VOB/MOD/TOD/m2t/DV, quiet+loud clips evened out) · A/V sync worst 20 ms ·
