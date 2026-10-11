@@ -1,0 +1,31 @@
+name: godog-local-source-package
+on:
+  push:
+    paths:
+      - "godog/GoDog_PC_LOCAL_01.user.js"
+      - ".github/workflows/godog-local-source-package.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify fully local Tampermonkey metadata
+        run: |
+          grep -q '^// @version      7.0.2' godog/GoDog_PC_LOCAL_01.user.js
+          grep -q '^// @updateURL    http://127.0.0.1:43129/godog.meta.js' godog/GoDog_PC_LOCAL_01.user.js
+          grep -q '^// @downloadURL  http://127.0.0.1:43129/godog.user.js' godog/GoDog_PC_LOCAL_01.user.js
+          ! grep -qi 'supabase.co' godog/GoDog_PC_LOCAL_01.user.js
+          node --check godog/GoDog_PC_LOCAL_01.user.js
+          mkdir -p source
+          cp godog/GoDog_PC_LOCAL_01.user.js source/current.user.js
+          sha256sum source/current.user.js
+      - name: Store offline source for owner release ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: godog-pc-local-7-0-2-source
+          path: source/current.user.js
+          if-no-files-found: error
