@@ -44,6 +44,10 @@ PHRASES = {
     "Waiting": "В очереди", "Starting": "Запуск", "Checking files": "Проверка файлов", "Finding moments": "Поиск моментов",
     "Choosing moments": "Выбор моментов", "Checking clip edges": "Проверка краёв клипов", "Rendering segments": "Рендер кусков",
     "Joining and verifying": "Склейка и проверка", "Ready": "Готово", "Failed": "Ошибка", "Cancelled": "Отменено",
+    # what the engine reports while it works (job message line)
+    "building moment library": "собираю библиотеку моментов", "checking clip boundaries": "проверяю границы моментов",
+    "joining segments and verifying": "склеиваю куски и проверяю", "choosing moments": "выбираю моменты",
+    "analysing videos": "анализирую видео", "technical analysis": "технический анализ",
     "Cancel": "Отменить", "Retry": "Повторить", "Build failed": "Сборка не удалась", "Build cancelled": "Сборка отменена",
     "Build without AI (Technical only)": "Собрать без ИИ (только техника)",
     # project / review
@@ -107,7 +111,7 @@ PHRASES = {
     "Vertical ·": "Вертикально ·", "Landscape ·": "Горизонтально ·", "· Horizontal ": "· Горизонтально ", "Horizontal ·": "Горизонтально ·",
     "First time on this PC?": "Первый раз на этом компьютере?",
     "Check this PC first: it shows whether the AI model and video tools are found and builds a 5-second test reel (about a minute; your videos are not used).":
-        "Сначала проверь компьютер: видно, найдены ли ИИ-модель и видеоинструменты, и собирается тестовый ролик на 5 секунд (около минуты; твои видео не используются).",
+        "Сначала нажми «Проверка компьютера»: она покажет, найдены ли ИИ-модель и видеоинструменты, и соберёт тестовый ролик на 5 секунд (около минуты; твои видео не используются).",
     # skip reasons (inside "Skipped: name (reason)") and why a build stopped
     "marked Private in the library": "отмечено как Private в библиотеке", "no usable moments found": "не найдено пригодных моментов",
     "almost no movement (still image)": "почти нет движения (застывшая картинка)", "too short to analyse": "слишком короткое для анализа",

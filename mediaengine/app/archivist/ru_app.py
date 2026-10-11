@@ -85,7 +85,7 @@ APP_PHRASES: dict[str, str] = {
         "Всё работает на компьютере. Твои видео остаются здесь, пока ты сам не подключишь сервис или облако.",
     "1 · Add a media source": "1 · Добавь источник видео", "2 · Review optional connections": "2 · Посмотри необязательные подключения",
     "3 · Help & recovery": "3 · Помощь и восстановление", "Manage sources": "Источники", "Review privacy": "Приватность",
-    "Required vs optional": "Обязательное и необязательное", "Required": "Обязательно", "Optional": "Необязательно", "Included": "Входит",
+    "Required vs optional": "Обязательное и необязательное", "Required": "Обязательно", "Optional": "Необязательно", "Included": "Бесплатно, входит в программу",
     "Core & Local AI": "Основное и локальный ИИ", "Local ingest, search, analysis, conversion and composition.":
         "Загрузка, поиск, анализ, конвертация и монтаж — на компьютере.",
     "Media Sources": "Источники видео", "Folders, removable media and supported phone ingest.": "Папки, съёмные носители и телефоны.",
@@ -399,6 +399,7 @@ APP_PHRASES: dict[str, str] = {
     "Discovery": "Поиск", "Discovery started": "Поиск запущен", "Saved": "Сохранено", "Copied": "Скопировано",
     "Blocked Novelty Guard items cannot generate a handoff. Similar-review items require this explicit manual action.":
         "Заблокированные проверкой на повторы ролики передать нельзя; похожие — только вручную.",
+    "s": "сек",          # the unit after a time field ("from [0.0] to [5.5] s")
 }
 
 APP_PATTERNS: list[tuple[str, str]] = [
@@ -486,5 +487,6 @@ APP_COUNT_SUBS: list[tuple[str, str]] = [
     (r"\b(\d+) overlapping moment\(s\) of the same video were left out so nothing repeats",
      r"\1 ⟪\1|пересекающийся момент одного видео убран|пересекающихся момента одного видео убраны|пересекающихся моментов одного видео убраны⟫, чтобы ничего не повторялось"),
     (r"\b(\d+) skipped\b", r"\1 ⟪\1|пропущено|пропущено|пропущено⟫"),
+    (r"\bRequested (\d+) s, got ([\d.]+) s:", r"Выбрано \1 с, получилось \2 с:"),
 ]
 

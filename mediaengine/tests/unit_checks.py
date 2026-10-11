@@ -125,6 +125,17 @@ def main():
           and "x.status==='done'" in out and "href='/x'" in out)
     check("ru page: confirm texts in handlers; script-made texts via the in-page dictionary",
           "confirm('Отметить выбранное как Private навсегда?')" in out and "window.ME_I18N" in out and "Сначала выбери файлы" in out)
+    # every fixed message the engine reports while it works has a Russian text (job line under the progress bar)
+    import re as _re
+    eng = (Path(__file__).resolve().parents[1] / "app" / "archivist" / "engine_p11" / "p11_folder_to_reel_r3.py").read_text(encoding="utf-8")
+    msgs = set()
+    for call in _re.findall(r'progress\("\w+",(.*)\)', eng):          # stage first, then the message literals
+        msgs |= set(_re.findall(r'(?<!\[)"([A-Za-z][^"]*)"', call))
+    from archivist import i18n as _i18n
+    missing = sorted(m for m in msgs if _i18n.translate_json({"message": m})["message"] == m)
+    check("ru: every engine progress message translated", bool(msgs) and not missing, missing or len(msgs))
+    long = _i18n.translate_text("Requested 15 s, got 9.7 s: there were not enough different moments in this footage for a longer reel.", True)
+    check("ru: short-reel note fully Russian", not _re.search(r"[A-Za-z]{3,}", long), long)
     # Windows must not sleep while a reel is built (no-op elsewhere)
     from archivist.platform_adapter import keep_awake
     with keep_awake() as k:

@@ -23,8 +23,44 @@ def guide_text() -> str:
     return guide_path().read_text(encoding="utf-8", errors="replace")
 
 
+def guide_html(text: str) -> str:
+    """The guide's small Markdown (## headings, numbered steps, paragraphs) as readable HTML."""
+    out, para, items = [], [], []
+
+    def flush():
+        if para:
+            out.append("<p>" + _e(" ".join(para)) + "</p>")
+            para.clear()
+        if items:
+            out.append("<ol>" + "".join("<li>" + _e(" ".join(i)) + "</li>" for i in items) + "</ol>")
+            items.clear()
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line:
+            flush()
+        elif line.startswith("# "):           # the page already has this title
+            flush()
+        elif line.startswith("## "):
+            flush()
+            out.append("<h2>" + _e(line[3:]) + "</h2>")
+        elif line[:1].isdigit() and ". " in line[:4]:
+            if para:
+                flush()
+            items.append([line.split(". ", 1)[1]])
+        elif items and raw[:1] in (" ", "\t"):   # continuation of a step
+            items[-1].append(line)
+        else:
+            if items:
+                flush()
+            para.append(line)
+    flush()
+    return "".join(out)
+
+
 def guide_body() -> str:
-    return """<div class='pagehead'><div class='eyebrow'>Beta guide</div><h1>Archivist Beta Guide</h1><div class='lead'>Bundled local-first beta guidance from this installed build.</div></div><div class='card'><pre style='white-space:pre-wrap;margin:0'>""" + _e(guide_text()) + "</pre></div>"
+    return ("<div class='pagehead'><div class='eyebrow'>Beta guide</div><h1>Archivist Beta Guide</h1>"
+            "<div class='lead'>Bundled local-first beta guidance from this installed build.</div></div>"
+            "<div class='card guide' style='max-width:900px;line-height:1.6'>" + guide_html(guide_text()) + "</div>")
 
 
 def welcome_body(catalog: list[dict]) -> str:

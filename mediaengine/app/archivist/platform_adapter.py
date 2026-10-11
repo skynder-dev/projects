@@ -320,7 +320,7 @@ def _is_fixed_drive(root: str) -> bool:
 def default_archive_root() -> str:
     """Return the platform default only; user configuration remains authoritative."""
     if is_windows() and Path("D:/").exists() and _is_fixed_drive("D:\\"):
-        return r"D:\\MediaArchive"
+        return "D:\\MediaArchive"
     return str(Path.home() / "Videos" / "MediaArchive")
 
 
