@@ -379,6 +379,10 @@ APP_PHRASES: dict[str, str] = {
     "Archivist is taking longer than expected. Start it again from the desktop shortcut; startup health-check will roll back a bad release.":
         "MediaEngine запускается дольше обычного. Запусти его снова с ярлыка; если новая версия не поднимется, вернётся прежняя.",
     "Preview generation is temporarily unavailable for this file. Archivist will retry later.": "Превью для этого файла пока не получилось. Программа попробует позже.",
+    "No folder chosen. You can also paste the path.": "Папка не выбрана. Можно вставить путь вручную.", "No folder chosen.": "Папка не выбрана.",
+    "No videos chosen.": "Видео не выбраны.", "Build or save a trajectory first": "Сначала построй или сохрани траекторию",
+    "Clip or crop plan not found": "Клип или план кадрирования не найден", "Local video file is unavailable": "Видеофайл на компьютере недоступен",
+    "No files selected": "Файлы не выбраны", "Unknown action": "Неизвестное действие",
     "Discovery": "Поиск", "Discovery started": "Поиск запущен", "Saved": "Сохранено", "Copied": "Скопировано",
     "Blocked Novelty Guard items cannot generate a handoff. Similar-review items require this explicit manual action.":
         "Заблокированные проверкой на повторы ролики передать нельзя; похожие — только вручную.",
