@@ -1,3 +1,12 @@
+# GoDog PC LOCAL 7.0.4, UI restoration
+
+- 2026-10-11: restored **original composer-aligned dock geometry**. Original 6.0.26 HTML and CSS are unchanged; only missing layout positioning and labels restored. GO/AUTO/NEW/STOP still use local direct controls, no timers, no Supabase inside userscript.
+- Before: 7.0.2 rendered full viewport width (from user's screenshot). After: real Chromium preview at 1220px and 2048px showed dock exactly matching composer left/right and situated underneath it.
+- Browser mock smoke [PASS](https://github.com/skynder-dev/projects/actions/runs/38174008054); exact original CSS/HTML identities verified.
+- One-time managed Tampermonkey policy for 7.0.4 applied by existing Relay: command `12cc7c66-25f7-4111-a0cf-9e4e4dbdaeb5` DONE; policy event #74 `present=true`; underlying provision SHA256 `0c6f4c650610223824dc89bd243eac94b92fe610f842f18e17b692be43799b7f`. Does NOT independently prove installed userscript in currently open Chrome tab.
+- Do not forcibly reload or restart Chrome. The new JS can run only in a newly loaded ChatGPT document. The current tab may continue showing 7.0.2 until ordinary page navigation.
+- No new ZIP required. If version does not appear after ordinary navigation, inspect Tampermonkey runtime state; do not publish another blind variant.
+
 # GoDog PC LOCAL 7.0.2
 
 **Runtime and update source are PC-local.** `@updateURL http://127.0.0.1:43129/godog.meta.js`, `@downloadURL http://127.0.0.1:43129/godog.user.js`. GoDog itself does not make Supabase or GitHub calls. GitHub stores source as a backup/release lineage, not a live update backend.
