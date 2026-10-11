@@ -103,7 +103,7 @@ def register(app, layout, e, human_bytes):
 <div class='lead'>Choose a folder of videos (or single videos), pick length, format and sound, and MediaEngine builds a reel from the best moments.
 Your original files are only read, never changed.</div></div>
 <div class='card'><h2 style='margin-top:0'>New reel</h2>
-<form method='get' action='/auto/new' class='row' style='flex-wrap:wrap'>
+<form method='get' action='/auto/new' class='row' style='flex-wrap:wrap' onsubmit="document.getElementById('pickMsg').textContent='Checking the videos… (a few seconds per video)'">
 <button type='button' class='ae-big' id='pickBtn'>Choose folder…</button>
 <button type='button' class='btn2 ae-big' id='pickFilesBtn'>Choose videos…</button>
 <input name='folder' id='folderInput' placeholder='or paste a folder path, e.g. D:\\Videos\\Trip' style='flex:1;min-width:280px'>
@@ -118,11 +118,11 @@ if(mb)mb.onclick=async()=>{const m=document.getElementById('modelMsg');m.textCon
  const r=await fetch('/api/auto/model/import',{method:'POST'});const x=await r.json();m.textContent=x.ok?'Model installed.':(x.error||'Not installed');if(x.ok)setTimeout(()=>location.reload(),800)};
 document.getElementById('pickBtn').onclick=async()=>{const m=document.getElementById('pickMsg');m.textContent='A Windows folder window is open — it may be behind this window.';
  try{const r=await fetch('/api/auto/pick-folder',{method:'POST'});const x=await r.json();
- if(x.path){document.getElementById('folderInput').value=x.path;m.textContent='';location.href='/auto/new?folder='+encodeURIComponent(x.path)}
+ if(x.path){document.getElementById('folderInput').value=x.path;m.textContent='Checking the videos… (a few seconds per video)';location.href='/auto/new?folder='+encodeURIComponent(x.path)}
  else m.textContent=x.error||'No folder chosen.'}catch(e){m.textContent='Folder window failed: '+e}};
 document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getElementById('pickMsg');m.textContent='A Windows window is open — it may be behind this window. Ctrl+click to choose several videos.';
  try{const r=await fetch('/api/auto/pick-files',{method:'POST'});const x=await r.json();
- if(x.files&&x.files.length){m.textContent='';location.href='/auto/new?'+x.files.map(f=>'file='+encodeURIComponent(f)).join('&')}
+ if(x.files&&x.files.length){m.textContent='Checking the videos…';location.href='/auto/new?'+x.files.map(f=>'file='+encodeURIComponent(f)).join('&')}
  else m.textContent=x.error||'No videos chosen.'}catch(e){m.textContent='Window failed: '+e}};"""
         return page("Auto Edit", body, script)
 
@@ -355,6 +355,9 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
             return jsonify({"error": "not found"}), 404
         out = {k: j[k] for k in ("id", "status", "stage", "stage_label", "done", "total", "message", "percent", "error", "revision_id")}
         out["elapsed_s"] = ae.job_elapsed_s(j)
+        if ae.ui_language() == "ru":
+            from .auto_edit_ru import PHRASES
+            out["stage_label"] = PHRASES.get(out["stage_label"], out["stage_label"])
         return jsonify(out)
 
     @app.post("/auto/job/<int:jid>/cancel")

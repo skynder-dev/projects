@@ -75,6 +75,8 @@ def main(out_dir: Path, evidence_dir: Path) -> None:
     shutil.copytree(ROOT / "app", pkg / "app", ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
     shutil.copy2(ROOT / "requirements.txt", pkg / "requirements.txt")
     shutil.copy2(ROOT / "app" / "archivist" / "launcher_v2.py", pkg / "launcher.py")
+    # compiled once here: faster first start, and Python never has to write into the release folder later
+    subprocess.run([str(py), "-m", "compileall", "-q", str(pkg / "app"), str(pkg / "launcher.py")], check=True)
     (pkg / "version.txt").write_text(ver, encoding="utf-8")
     (pkg / "port.txt").write_text(str(PORT), encoding="utf-8")
     (pkg / "shortcut_name.txt").write_text(SHORTCUT, encoding="utf-8")
@@ -86,7 +88,8 @@ def main(out_dir: Path, evidence_dir: Path) -> None:
                                    f"run {os.environ.get('GITHUB_RUN_ID', 'local')}\n", encoding="utf-8")
     (pkg / "README.txt").write_text(f"""MediaEngine {ver} (release candidate)
 
-Start: double-click "Start MediaEngine.vbs". A MediaEngine window opens; a desktop shortcut
+Before extracting: right-click the downloaded ZIP -> Properties -> tick "Unblock" -> OK (otherwise Windows
+asks about every start). Start: double-click "Start MediaEngine.vbs". A MediaEngine window opens; a desktop shortcut
 "{SHORTCUT}" is created for next time. No console, no Python install needed. The first start
 can take a minute (Windows checks the new files). "Quit" in the top bar stops MediaEngine.
 
@@ -110,6 +113,10 @@ It does not change a stable Archivist install. To remove it: Quit, delete this f
 """, encoding="utf-8")
 
     (pkg / "ПРОЧТИ.txt").write_text(f"""MediaEngine {ver} — кандидат (тестовая версия)
+
+ПЕРЕД РАСПАКОВКОЙ
+  Правый щелчок по скачанному ZIP → Свойства → галочка «Разблокировать» → ОК. Иначе Windows будет
+  спрашивать разрешение при каждом запуске. Если всё же спросит — нажми «Открыть» / «Выполнить».
 
 ЗАПУСК
   Дважды щёлкни "Start MediaEngine.vbs". Откроется окно MediaEngine. На рабочем столе появится

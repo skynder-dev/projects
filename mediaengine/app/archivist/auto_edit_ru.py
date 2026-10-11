@@ -156,6 +156,29 @@ def _translate_text(t: str) -> str:
     return t
 
 
+# messages written by the page scripts (only these exact quoted strings are replaced inside <script>)
+JS_PHRASES = {
+    "' elapsed'": "' прошло'", "' · about '": "' · примерно '", "' min left'": "' мин осталось'",
+    "' · less than a minute left'": "' · меньше минуты осталось'",
+    "'A Windows folder window is open — it may be behind this window.'": "'Открыто окно выбора папки Windows — оно может быть за этим окном.'",
+    "'A Windows window is open — it may be behind this window. Ctrl+click to choose several videos.'":
+        "'Открыто окно Windows — оно может быть за этим окном. Ctrl+щелчок — выбрать несколько видео.'",
+    "'Checking the videos… (a few seconds per video)'": "'Проверяю видео… (несколько секунд на каждое)'",
+    "'Checking the videos…'": "'Проверяю видео…'", "'Building the test reel… (up to a few minutes)'": "'Собираю тестовый ролик… (до нескольких минут)'",
+    "'Choose the folder that contains FAST_LOCAL…'": "'Выбери папку, в которой лежит FAST_LOCAL…'",
+    "'Model installed.'": "'Модель установлена.'", "'Not installed'": "'Не установлена'",
+    "'Copied'": "'Скопировано'", "'Copy this path:'": "'Скопируй путь:'", "'Folder window failed: '": "'Окно выбора папки не открылось: '",
+    "'No folder chosen.'": "'Папка не выбрана.'", "'No videos chosen.'": "'Видео не выбраны.'", "'Window failed: '": "'Окно не открылось: '",
+    "' of '": "' из '",
+}
+
+
+def _translate_script(block: str) -> str:
+    for en, ru in JS_PHRASES.items():
+        block = block.replace(en, ru)
+    return block
+
+
 def translate_html(html: str) -> str:
     kept = []
 
@@ -169,7 +192,9 @@ def translate_html(html: str) -> str:
             continue
         if part.startswith("<"):
             low = part[:8].lower()
-            if low.startswith("<script") or low.startswith("<style"):
+            if low.startswith("<script"):
+                out.append(_translate_script(part))
+            elif low.startswith("<style"):
                 out.append(part)
             else:
                 out.append(_ATTR.sub(lambda m: m.group(1) + m.group(2) + _translate_text(m.group(3)) + m.group(2), part))

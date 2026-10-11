@@ -372,6 +372,8 @@ def main():
                 frev = ae.revision(fj.get("revision_id") or 0) if fj["status"] == "done" else None
                 srcs = {s_["source_name"] for s_ in (frev or {}).get("result", {}).get("segments", [])}
                 check("files_reel_uses_only_chosen", frev and srcs and srcs <= set(usable), (fj.get("status"), srcs, usable))
+                fv = [x for x in probe(frev["video_path"]).get("streams", []) if x.get("codec_type") == "video"] if frev else []
+                check("vertical_is_540x960", fv and (int(fv[0]["width"]), int(fv[0]["height"])) == (540, 960), fv[:1])
                 r = c.get(f"/auto/p/{fpid}/source", query_string={"name": usable[0]}, headers={**H, "Range": "bytes=0-9"})
                 check("files_source_preview", r.status_code == 206, r.status_code)
                 others = [x.name for x in folder.iterdir() if x.is_file() and x.name not in usable]

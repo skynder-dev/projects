@@ -85,11 +85,14 @@ The 11 runtime modules, adapter and validator are byte-identical to R2 (CI-check
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38120803177 on `10efff3` — all green** (results branch `mediaengine-ci-results`, artifact
-`MediaEngine-windows-package-<run>-<commit>`): engine regression 28/28 (reel bytes identical to R2), robustness 6/6,
-E2E 7 videos 55/55, 2 videos 48/48, packaged Python 51/51, package smoke PASS (started via `Start MediaEngine.vbs` from
-`…\MediaEngine Тест`, updates off, own shortcut, stable shortcut untouched, second copy refused, restart, Quit),
-uploaded package pristine (69 app files, runtime 442 MB). Checks in every run:
+Latest full run: **38136023399 on `202cd0f` — all green** (results branch `mediaengine-ci-results`, artifact
+`MediaEngine-3.13.0-rc1-b<N>`): fast checks 42/42 · R3 = R2 decisions 29/29 · robustness 15/15 (incl. HDR HLG/PQ
+colours, rotated phone video, camcorder 1080i .MTS de-interlaced) · A/V sync at every cut, worst 20 ms · AI glue 6/6 ·
+Convert 20/20 · library 4/4 · unplugged/no network 9/9 · 64 long-named videos with long paths OFF 4/4 (99 s) ·
+E2E 7 videos 66/66, 2 videos 64/64, phone files 61/61, packaged Python behind the firewall 62/62 (internet blocked:
+True) · package smoke PASS (Cyrillic folder, data outside the release, next release extracted elsewhere sees the
+project, restart, second copy refused, Quit) · release folder pristine · 4K H.264 60 s + 4K HEVC 45 s + 5-min 1080p
+→ 30 s Social HD reel in 398 s on the 4-core runner. Checks in every run:
 
 | Check | What it proves |
 | --- | --- |
@@ -119,8 +122,8 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 | I01 clean launch without terminal | PARTIAL | `Start MediaEngine.vbs` on CI runner |
 | I02 2 and 7 files, skip damaged | PARTIAL | synthetic fixtures; still video skipped |
 | I03 adaptive default, Length/Format/Sound only | PARTIAL | |
-| I04 R2 semantic=required started from the GUI | NOT_STARTED | needs owner PC (model not in git) |
-| I05 960×540 / 540×960 / 1080×1920 | PARTIAL | 540×960 rendered, not probed |
+| I04 R2 semantic=required started from the GUI | NOT_STARTED | needs owner PC (model not in git); one click: Check this PC → test reel with the AI model; AI glue tested with a labelled stub |
+| I05 960×540 / 540×960 / 1080×1920 | PARTIAL | all three probed in E2E |
 | I06 one preset per run | PARTIAL | |
 | I07 15/30/60 and 5 for short footage | PARTIAL | 60 s bounded search unit-checked; shortfall shown |
 | I08 Sound Source/Auto/Mute | PARTIAL | applied sound shown; no loudness listening test |
@@ -133,16 +136,22 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 | I15 idempotent repeat, input change isolated | PARTIAL | Private change forces a new build |
 | I16 export verified accepted only, safe name, no overwrite | PARTIAL | |
 | I17 restart keeps projects | PARTIAL | |
-| I18 originals unchanged, path safety, absent drive | PARTIAL | absent drive not tested |
-| I19 offline, no Supabase/GoDog | PARTIAL | no network in Auto Edit; not run with network disabled |
+| I18 originals unchanged, path safety, absent drive | PARTIAL | unplugged source drive tested (project says so, nothing deleted, export works, builds again when back) |
+| I19 offline, no Supabase/GoDog | PARTIAL | app process blocked from non-loopback in tests; packaged Python behind a firewall rule on Windows CI |
 | I20 clean package, no Python in user's hands | PARTIAL | |
-| I21 full-video convert | NOT_STARTED | existing Convert feature fixed, not re-verified on Windows |
-| I22 other real media | NOT_STARTED | |
+| I21 full-video convert | PARTIAL | Windows CI: 1440p60 → 1080p keeps fps and every frame; portrait upright; HDR colours |
+| I22 other real media | PARTIAL | synthetic phone/camera files (rotation, HEVC, VFR, HDR, camcorder MTS, 4K, 5-min 1080p); real camera footage pending |
 | I23 public git clean | PARTIAL | |
 
-## Deferred (known, not fixed yet)
+## Deferred / waiting
 
 - `/media` file routes serve Private items to the local owner UI only (loopback + Host check) — kept by design (D17).
-- UI polish from the contract §10: accent colour, completion screen, real filmstrip thumbnails.
-- Per-cut sync on real camera footage (synthetic flash/beep: within ±7 ms on Linux; Windows numbers in CI).
-- Owner-PC run with the AI model; human review of selection quality.
+- Per-cut sync on real camera footage (synthetic flash/beep: within ±7 ms; also checked on Windows CI).
+- Owner-PC run with the AI model and human review of selection quality (blind comparison is built in).
+- Owner decisions: private repo with the model for CI (AI mode in CI); publishing builds as GitHub Releases
+  (public) instead of 90-day CI artifacts.
+
+## Next exact action
+
+Owner: download the newest `MediaEngine-3.13.0-rc1-b<N>` artifact, unblock + extract next to `D:\Archivist`,
+start, open "Check this PC" → "Build a test reel with the AI model", then make a reel from a real folder.
