@@ -7,7 +7,8 @@ its own desktop shortcut "MediaEngine RC"):
 
   MediaEngine-<version>-b<build>/
     Start MediaEngine.vbs      one obvious launch (no console)
-    README.txt  BUILD.txt      what this is / exact source commit
+    README.txt  ПРОЧТИ.txt     short guide (English / Russian)
+    BUILD.txt                  exact source commit
     launcher.py  app/  requirements.txt  version.txt  port.txt (8775)  shortcut_name.txt
     .venv/Scripts/             relocatable CPython 3.11 + pinned packages (python.exe / pythonw.exe)
                                + app-local Microsoft VC++ runtime DLLs (OpenCV / onnxruntime need them)
@@ -104,6 +105,43 @@ This candidate runs on port {PORT} and keeps its own data, archive and exports i
 It does not change a stable Archivist install. To remove it: Quit, delete this folder, the
 "MediaEngine Data" folder (your exported videos are inside it) and the "{SHORTCUT}" desktop shortcut.
 """, encoding="utf-8")
+
+    (pkg / "ПРОЧТИ.txt").write_text(f"""MediaEngine {ver} — кандидат (тестовая версия)
+
+ЗАПУСК
+  Дважды щёлкни "Start MediaEngine.vbs". Откроется окно MediaEngine. На рабочем столе появится
+  ярлык "{SHORTCUT}" — дальше запускай с него. Первый запуск может занять минуту.
+  Python, консоль и браузер отдельно не нужны. Закрыть программу: кнопка Quit вверху.
+
+РОЛИК ИЗ СВОИХ ВИДЕО (Auto Edit)
+  1. Auto Edit → "Choose folder…" (папка с видео) или "Choose videos…" (отдельные файлы).
+  2. Выбери длину (Length), формат (Format) и звук (Sound) → "Create reel".
+  3. Посмотри результат. Можно убрать, заменить, обрезать, переставить моменты — каждая правка
+     сохраняется как новая версия, старые не теряются.
+  4. "Accept this version" → "Export MP4" (или "Export to another folder…").
+  Оригиналы только читаются и никогда не меняются.
+
+ИИ-МОДЕЛЬ
+  Если рядом стоит рабочий Archivist (например D:\\Archivist), модель найдётся сама.
+  Без модели работает только режим "Technical only" (резкость, движение, свет) — его надо
+  выбрать явно галочкой.
+
+ГДЕ МОИ ДАННЫЕ
+  Проекты, настройки и экспорт лежат НЕ в этой папке, а в папке "MediaEngine Data" рядом с ней.
+  Точное место видно в Settings.
+
+НОВАЯ ВЕРСИЯ / ОТКАТ
+  Новую версию распакуй в новую папку рядом (не поверх старой) и запусти её — она откроет те же
+  проекты. Если с новой что-то не так: Quit и запусти "Start MediaEngine.vbs" из старой папки.
+
+РЯДОМ С РАБОЧИМ ARCHIVIST
+  Эта версия работает на своём порту ({PORT}), со своим ярлыком и своими данными. Рабочий
+  Archivist (D:\\Archivist) она не меняет.
+
+УДАЛИТЬ
+  Quit → удали эту папку, папку "MediaEngine Data" (в ней и экспортированные ролики) и ярлык
+  "{SHORTCUT}".
+""", encoding="utf-8-sig")
 
     # 3. manifest (outside the package folder: evidence, not user-facing)
     files = []

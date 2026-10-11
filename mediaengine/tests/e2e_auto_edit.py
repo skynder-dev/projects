@@ -187,6 +187,22 @@ def main():
         check("variant_same_moments", [s["event_id"] for s in rev2["result"]["segments"]] == [s["event_id"] for s in rev["result"]["segments"]])
         check("variant_faster_than_first_build", dt2 < timings["first_build_s"], (dt2, timings["first_build_s"]))
         check("accepted_pointer_unchanged_by_variant", p["accepted_revision_id"] == rev["id"] and sha(rev["video_path"]) == rev["video_sha256"])
+        # blind comparison: versions hidden until the person decides, then revealed and listed on the project
+        r = c.post(f"/auto/p/{pid}/compare", data={"a": rev2["id"], "b": rev["id"]}, headers=H)
+        okr = r.status_code == 302 and "/auto/review/" in r.headers.get("Location", "")
+        check("blind_compare_starts", okr, r.status_code)
+        if okr:
+            rvid = int(r.headers["Location"].rstrip("/").split("/")[-1])
+            page_ = c.get(f"/auto/review/{rvid}", headers=H).data.decode("utf-8", "replace")
+            vids = [c.get(f"/auto/review/{rvid}/video/{sd}", headers={**H, "Range": "bytes=0-9"}).status_code for sd in ("left", "right")]
+            check("blind_compare_hides_versions", "A is better" in page_ and "R00" not in page_ and f"/auto/rev/{rev['id']}/" not in page_
+                  and vids == [206, 206], vids)
+            c.post(f"/auto/review/{rvid}/decide", data={"choice": "left", "note": "steadier start"}, headers=H)
+            page_ = c.get(f"/auto/review/{rvid}", headers=H).data.decode("utf-8", "replace")
+            again = c.post(f"/auto/review/{rvid}/decide", data={"choice": "right"}, headers=H).status_code
+            proj_ = c.get(f"/auto/p/{pid}", headers=H).data.decode("utf-8", "replace")
+            check("blind_compare_reveals_and_records", "You preferred A" in page_ and "R00" in page_ and again == 400
+                  and "Blind comparisons" in proj_ and "steadier start" in proj_, again)
 
         # manual override: exclude the first moment and rebuild
         excl = seg0["event_id"]
@@ -317,6 +333,13 @@ def main():
         revp = ae.revision(jpd.get("revision_id") or 0) if jpd["status"] == "done" else None
         check("private_file_never_used", revp and src_name not in [s_["source_name"] for s_ in revp["result"]["segments"]]
               and any(x["name"] == src_name and x["reason"] == "PRIVATE" for x in revp["result"].get("skipped_inputs", [])), jpd if not revp else revp["result"].get("skipped_inputs"))
+
+        # free the analysis cache: versions and exports stay playable
+        before_cache = ae.project_disk_usage(pid)["cache_bytes"]
+        r = c.post(f"/auto/p/{pid}/free-cache", headers=H)
+        r2v = c.get(f"/auto/rev/{rev['id']}/video", headers={**H, "Range": "bytes=0-9"})
+        check("free_cache", r.status_code == 302 and before_cache > 0 and ae.project_disk_usage(pid)["cache_bytes"] == 0
+              and r2v.status_code == 206, (r.status_code, before_cache))
 
         if a.files_check:
             usable = [f["name"] for f in scan["files"] if f["ok"]][:2]

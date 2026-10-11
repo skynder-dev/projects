@@ -263,12 +263,23 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         elif not active:
             parts.append(_variant_form(pid, None, e, first=True, model_ready=ae.model_status()["ready"]))
         parts.append(_revisions_html(p, cur, e))
+        parts.append(_reviews_html(p, e))
+        du = ae.project_disk_usage(pid)
+        if du["cache_bytes"] or du["versions_bytes"]:
+            parts.append(f"<div class='card row space' style='margin-top:14px;flex-wrap:wrap'><span class='muted'>Space used: versions "
+                         f"{human_bytes(du['versions_bytes'])} · analysis cache {human_bytes(du['cache_bytes'])} "
+                         f"(can be freed; the next build then analyses the videos again)</span>"
+                         + (f"<form method='post' action='/auto/p/{pid}/free-cache'><button class='btn2'>Free cache</button></form>" if du["cache_bytes"] else "")
+                         + "</div>")
         script = """
 const card=document.getElementById('jobCard');
 async function pollJob2(){if(!card)return;try{const r=await fetch('/api/auto/job/'+card.dataset.job,{cache:'no-store'});const j=await r.json();
  document.getElementById('jobBar').style.width=j.percent+'%';document.getElementById('jobStage').textContent=j.stage_label+' · '+j.percent+'%';
  const counted=j.total>1&&(j.stage==='render'||j.done>0);const el=Math.round(j.elapsed_s||0);
- document.getElementById('jobMsg').textContent=(counted?(Math.min(j.done+1,j.total)+' of '+j.total+' · '):'')+(j.message||'')+' · '+Math.floor(el/60)+':'+String(el%60).padStart(2,'0')+' elapsed';
+ // estimate only from real progress, only once there is enough of it (no invented timer)
+ let eta='';if(j.status==='running'&&j.percent>=15&&j.percent<100&&el>=20){const left=Math.round(el*(100-j.percent)/j.percent);
+  eta=left<60?' · less than a minute left':' · about '+Math.round(left/60)+' min left'}
+ document.getElementById('jobMsg').textContent=(counted?(Math.min(j.done+1,j.total)+' of '+j.total+' · '):'')+(j.message||'')+' · '+Math.floor(el/60)+':'+String(el%60).padStart(2,'0')+' elapsed'+eta;
  if(['done','failed','cancelled'].includes(j.status)){location.reload();return}}catch(e){}setTimeout(pollJob2,1000)}
 pollJob2();
 const v=document.getElementById('reel');
@@ -410,6 +421,14 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
             return err_page("The exported file is not available any more: " + x["path"], f"/auto/p/{x['project_id']}")
         return redirect(f"/auto/p/{x['project_id']}")
 
+    @app.post("/auto/p/<int:pid>/free-cache")
+    def ae_free_cache(pid):
+        try:
+            ae.clear_work_cache(pid)
+        except Exception as exc:
+            return err_page(str(exc), f"/auto/p/{pid}")
+        return redirect(f"/auto/p/{pid}")
+
     @app.post("/auto/p/<int:pid>/rename")
     def ae_rename(pid):
         try:
@@ -431,6 +450,66 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
         if not r or not Path(r["video_path"]).is_file():
             return "not found", 404
         return send_file(r["video_path"], mimetype="video/mp4", conditional=True)
+
+    # ------------------------------------------------------------ blind comparison
+
+    @app.post("/auto/p/<int:pid>/compare")
+    def ae_compare_start(pid):
+        try:
+            rid = ae.start_review(pid, int(request.form.get("a") or 0), int(request.form.get("b") or 0))
+        except Exception as exc:
+            return err_page(str(exc), f"/auto/p/{pid}")
+        return redirect(f"/auto/review/{rid}")
+
+    @app.get("/auto/review/<int:rid>")
+    def ae_review_page(rid):
+        rv = ae.review(rid)
+        if not rv:
+            return err_page("Comparison not found")
+        pid = rv["project_id"]
+        p = ae.project(pid)
+        L, R = ae.revision(rv["left_revision_id"]), ae.revision(rv["right_revision_id"])
+
+        def player(side):
+            return (f"<div class='card'><h2 style='margin-top:0'>{'A' if side == 'left' else 'B'}</h2>"
+                    f"<video class='ae-video' controls preload='metadata' src='/auto/review/{rid}/video/{side}'></video></div>")
+        if rv["decided_at"]:
+            def who(r):
+                f = ae.FORMATS.get(r["settings"]["format"], {}).get("short", "")
+                return f"R{int(r['number']):03d} ({e(f)} · {r['settings']['length']} s · {'edited by you' if r['settings'].get('selection') else 'automatic'})"
+            verdict = {"left": f"You preferred A = {who(L)} over B = {who(R)}.", "right": f"You preferred B = {who(R)} over A = {who(L)}.",
+                       "same": f"You found them about the same: A = {who(L)}, B = {who(R)}."}[rv["choice"]]
+            bottom = (f"<div class='card ae-done'><b>Result</b><div style='margin-top:6px'>{verdict}</div>"
+                      + (f"<div class='muted' style='margin-top:4px'>Note: {e(rv['note'])}</div>" if rv.get("note") else "")
+                      + f"<div class='row' style='margin-top:10px'><a class='btn btn2' href='/auto/p/{pid}'>Back to the project</a></div></div>")
+        else:
+            bottom = (f"<form method='post' action='/auto/review/{rid}/decide' class='card' style='margin-top:14px'>"
+                      f"<div class='muted'>Watch both. Which one would you rather publish? Versions and settings are hidden until you decide.</div>"
+                      f"<input name='note' maxlength='500' placeholder='Why? (optional, e.g. better start, fewer shaky shots)' style='width:100%;margin:10px 0'>"
+                      f"<div class='row' style='flex-wrap:wrap'><button name='choice' value='left' class='ae-big'>A is better</button>"
+                      f"<button name='choice' value='right' class='ae-big'>B is better</button>"
+                      f"<button name='choice' value='same' class='btn2'>About the same</button></div></form>")
+        body = (f"<div class='pagehead'><div class='eyebrow'>Auto Edit · blind comparison</div><h1>{e(p['title'])}</h1></div>"
+                f"<div class='ae-player'>{player('left')}{player('right')}</div>{bottom}")
+        return page("Blind comparison", body)
+
+    @app.get("/auto/review/<int:rid>/video/<side>")
+    def ae_review_video(rid, side):
+        rv = ae.review(rid)
+        if not rv or side not in ("left", "right"):
+            return "not found", 404
+        r = ae.revision(rv["left_revision_id" if side == "left" else "right_revision_id"])
+        if not r or not Path(r["video_path"]).is_file():
+            return "not found", 404
+        return send_file(r["video_path"], mimetype="video/mp4", conditional=True)
+
+    @app.post("/auto/review/<int:rid>/decide")
+    def ae_review_decide(rid):
+        try:
+            ae.decide_review(rid, request.form.get("choice", ""), request.form.get("note", ""))
+        except Exception as exc:
+            return err_page(str(exc), f"/auto/review/{rid}")
+        return redirect(f"/auto/review/{rid}")
 
     @app.get("/auto/rev/<int:rid>/thumb/<int:pos>.jpg")
     def ae_rev_thumb(rid, pos):
@@ -534,11 +613,19 @@ def _review_html(p, rev, e):
     actions = (f"<span class='badge ready'>Accepted</span><form method='post' action='/auto/p/{p['id']}/revert'><button class='btn2'>Revert</button></form>" if is_acc else
                f"<form method='post' action='/auto/p/{p['id']}/accept'><input type='hidden' name='revision_id' value='{rev['id']}'><button class='ae-big'>Accept this version</button></form>")
     excl_hidden = "".join(f"<input type='hidden' name='exclude' value='{e(x)}'>" for x in rev["settings"].get("exclude", []))
+    others = [r for r in p["revisions"] if r["id"] != rev["id"]]
+    compare_html = ""
+    if others:
+        default_other = p["accepted_revision_id"] if p["accepted_revision_id"] and p["accepted_revision_id"] != rev["id"] else others[-1]["id"]
+        opts_c = "".join(f"<option value='{r['id']}' {'selected' if r['id'] == default_other else ''}>R{int(r['number']):03d}</option>" for r in others)
+        compare_html = (f"<form method='post' action='/auto/p/{p['id']}/compare' class='row' style='margin-top:10px;gap:6px;flex-wrap:wrap'>"
+                        f"<input type='hidden' name='a' value='{rev['id']}'><span class='muted'>Compare blind with</span>"
+                        f"<select name='b'>{opts_c}</select><button class='btn2'>Compare</button></form>")
     return f"""<div class='ae-player' style='margin-top:14px'>
 <div class='card'><video id='reel' class='ae-video' controls preload='metadata' src='/auto/rev/{rev['id']}/video'></video>
 <div class='ae-strip film'>{strip}</div>
 <div class='muted'>Revision R{int(rev['number']):03d} · {e(fmt.get('short',''))} {rev['width']}×{rev['height']} · {total:.2f} s · sound {e(_sound_label(rev['settings']['sound'], res))} · {e(mode)}</div>{short_html}{skipped_html}
-<div class='row' style='margin-top:12px;flex-wrap:wrap'>{actions}</div>{exp_html}</div>
+<div class='row' style='margin-top:12px;flex-wrap:wrap'>{actions}</div>{compare_html}{exp_html}</div>
 <form class='card' method='post' action='/auto/p/{p['id']}/edit' id='editForm'><h2 style='margin-top:0'>Moments in this reel</h2>
 <input type='hidden' name='revision_id' value='{rev['id']}'><input type='hidden' name='base_revision_id' value='{rev['id']}'>
 <input type='hidden' name='length' value='{rev['settings']['length']}'><input type='hidden' name='format' value='{e(rev['settings']['format'])}'>
@@ -548,6 +635,21 @@ def _review_html(p, rev, e):
 <div class='row' style='margin-top:10px;flex-wrap:wrap'><button>Apply my edits</button>
 <button class='btn2' formaction='/auto/p/{p['id']}/variant' name='rechoose' value='1'>Let MediaEngine choose again without removed moments</button></div></form></div>
 {_variant_form(p['id'], rev, e)}"""
+
+
+def _reviews_html(p, e):
+    done = [r for r in p.get("reviews", []) if r.get("decided_at")]
+    if not done:
+        return ""
+    num = {r["id"]: int(r["number"]) for r in p["revisions"]}
+    rows = ""
+    for r in done:
+        a, b = num.get(r["left_revision_id"], 0), num.get(r["right_revision_id"], 0)
+        txt = (f"R{a:03d} preferred over R{b:03d}" if r["choice"] == "left" else
+               f"R{b:03d} preferred over R{a:03d}" if r["choice"] == "right" else f"R{a:03d} and R{b:03d} about the same")
+        rows += (f"<a class='ae-seg' style='grid-template-columns:1fr auto' href='/auto/review/{r['id']}'><span>{txt}"
+                 f"{(' · ' + e(r['note'])) if r.get('note') else ''}</span><span class='muted'>{e(r['decided_at'])}</span></a>")
+    return f"<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Blind comparisons</h2>{rows}</div>"
 
 
 def _revisions_html(p, cur, e):

@@ -527,6 +527,10 @@ def _save_preview(frame: np.ndarray, inv_id: int, start_ms: int, end_ms: int) ->
         return None
 
 
+def _table_exists(con, name: str) -> bool:
+    return con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",(name,)).fetchone() is not None
+
+
 def analyze_video_into_clips(inv_id: int, path: Path, duration_ms: int | None = None, preset: str = "general", cancel_cb=None, progress_cb=None) -> dict:
     ensure_schema()
     preset = "car" if preset=="car" else "general"
@@ -543,8 +547,19 @@ def analyze_video_into_clips(inv_id: int, path: Path, duration_ms: int | None = 
         except Exception:
             pass
     with db() as con:
-        old=con.execute("SELECT preview_path FROM virtual_clips WHERE inventory_id=?",(int(inv_id),)).fetchall()
-        con.execute("DELETE FROM virtual_clips WHERE inventory_id=?",(int(inv_id),))
+        # Re-analysis must not destroy the user's work: clips used in a composition or carrying an approved / hand-made
+        # crop are kept as they are (deleting them cascaded into compositions and crops). Only unused clips are replaced.
+        kept=con.execute("""SELECT id,start_ms,end_ms FROM virtual_clips v WHERE inventory_id=? AND (
+                EXISTS(SELECT 1 FROM composition_items ci WHERE ci.clip_id=v.id)
+                OR EXISTS(SELECT 1 FROM crop_trajectories t WHERE t.clip_id=v.id AND (t.status='approved' OR t.source='manual')))""",
+                (int(inv_id),)).fetchall() if _table_exists(con,"composition_items") else con.execute(
+                """SELECT id,start_ms,end_ms FROM virtual_clips v WHERE inventory_id=? AND
+                EXISTS(SELECT 1 FROM crop_trajectories t WHERE t.clip_id=v.id AND (t.status='approved' OR t.source='manual'))""",(int(inv_id),)).fetchall()
+        kept_ids=[int(r["id"]) for r in kept]
+        kept_spans={(int(r["start_ms"]),int(r["end_ms"])) for r in kept}
+        q=",".join("?"*len(kept_ids))
+        old=con.execute("SELECT preview_path FROM virtual_clips WHERE inventory_id=?"+(f" AND id NOT IN ({q})" if kept_ids else ""),(int(inv_id),*kept_ids)).fetchall()
+        con.execute("DELETE FROM virtual_clips WHERE inventory_id=?"+(f" AND id NOT IN ({q})" if kept_ids else ""),(int(inv_id),*kept_ids))
         con.commit()
     for r in old:
         try:
@@ -558,6 +573,8 @@ def analyze_video_into_clips(inv_id: int, path: Path, duration_ms: int | None = 
         frames=_clip_frames(path,start,end,duration)
         metrics=_score_clip(frames,end-start)
         sm=int(round(start*1000)); em=int(round(end*1000))
+        if (sm,em) in kept_spans:      # the user's kept clip already covers exactly this moment
+            continue
         preview=_save_preview(frames[len(frames)//2],inv_id,sm,em) if frames else None
         ts=now_iso()
         with db() as con:

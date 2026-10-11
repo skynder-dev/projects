@@ -76,9 +76,9 @@ def safe_filename(name: str, fallback: str = "MediaEngine Reel") -> str:
     s = re.sub(r"\s+", " ", s).strip().rstrip(". ")
     if not s:
         s = fallback
-    if s.split(".")[0].upper() in _WIN_RESERVED:
+    if s.split(".")[0].strip().upper() in _WIN_RESERVED:
         s = "_" + s
-    return s[:120]
+    return s[:120].rstrip(". ") or fallback
 
 
 def model_root() -> Path:
@@ -224,6 +224,9 @@ def ensure_schema() -> None:
             CREATE TABLE IF NOT EXISTS ae_exports(
               id INTEGER PRIMARY KEY AUTOINCREMENT, project_id INTEGER NOT NULL, revision_id INTEGER NOT NULL,
               path TEXT NOT NULL, sha256 TEXT NOT NULL, bytes INTEGER NOT NULL, created_at TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS ae_reviews(
+              id INTEGER PRIMARY KEY AUTOINCREMENT, project_id INTEGER NOT NULL, left_revision_id INTEGER NOT NULL,
+              right_revision_id INTEGER NOT NULL, choice TEXT, note TEXT, created_at TEXT NOT NULL, decided_at TEXT);
             """
         )
         if "files_json" not in [r[1] for r in con.execute("PRAGMA table_info(ae_projects)").fetchall()]:
@@ -464,6 +467,7 @@ def project(pid: int) -> dict | None:
         d["jobs"] = [dict(r) for r in con.execute("SELECT * FROM ae_jobs WHERE project_id=? ORDER BY id DESC", (int(pid),)).fetchall()]
         d["exports"] = [dict(r) for r in con.execute("SELECT * FROM ae_exports WHERE project_id=? ORDER BY id DESC", (int(pid),)).fetchall()]
         d["accept_log"] = [dict(r) for r in con.execute("SELECT * FROM ae_accept_log WHERE project_id=? ORDER BY id", (int(pid),)).fetchall()]
+        d["reviews"] = [dict(r) for r in con.execute("SELECT * FROM ae_reviews WHERE project_id=? ORDER BY id DESC", (int(pid),)).fetchall()]
     for r in d["revisions"]:
         r["settings"] = json.loads(r["settings_json"])
     for j in d["jobs"]:
@@ -562,11 +566,25 @@ def normalize_settings(raw: dict, *, model_ready: bool | None = None) -> dict:
 
 
 def parse_seconds(v) -> float:
-    """'12.5', '12,5' -> 12.5; rejects empty, NaN and infinity."""
+    """'12.5', '12,5', '0:12.5', '1:05', '1:02:03' -> seconds. Rejects empty, negative, NaN and infinity."""
     import math
-    x = float(str(v).strip().replace(",", "."))
-    if not math.isfinite(x):
-        raise ValueError("Times must be numbers of seconds")
+    raw = str(v).strip().replace(",", ".")
+    try:
+        if ":" in raw:
+            parts = raw.split(":")
+            if len(parts) > 3 or any(not x.strip() for x in parts):
+                raise ValueError
+            x = 0.0
+            for part in parts:
+                x = x * 60 + float(part)
+            if any(float(part) >= 60 for part in parts[1:]):
+                raise ValueError
+        else:
+            x = float(raw)
+    except ValueError:
+        raise ValueError(f"Not a time: {str(v)[:20]!r} (use seconds like 12.5 or minutes like 1:05)")
+    if not math.isfinite(x) or x < 0:
+        raise ValueError("Times must be zero or more seconds")
     return x
 
 
@@ -930,7 +948,13 @@ _FRIENDLY = {
     "NO_SUPPORTED_VIDEO_FILES": "No supported video files in the folder.",
     "TOO_MANY_INPUT_FILES": f"The folder has more than {MAX_INPUTS} videos.",
     "REALMEDIA_PIPELINE_FAILED": "Analysis of the footage failed.",
-    "EDIT_UNKNOWN_MOMENT": "A chosen moment no longer exists (the source files changed). Start a new build.",
+    "EDIT_UNKNOWN_MOMENT": "A chosen moment no longer exists (the source files changed or the cache was freed). "
+                           "Use 'Let MediaEngine choose again' or make a new reel.",
+    "NO_ANALYZABLE_VIDEO_FILES": "None of the videos could be analysed (too short, still images or damaged).",
+    "NO_MOMENTS_LEFT_AFTER_EXCLUSIONS": "All moments were removed. Remove fewer moments or let MediaEngine choose again.",
+    "PRESET_NOT_ACCEPTED": "This format is not available.",
+    "INPUT_NAMES_NOT_UNIQUE": "Two chosen videos have the same file name. Rename one of them.",
+    "SEGMENT_DECODE_FAILED": "A rendered piece could not be read back. Try again; if it repeats, free the cache.",
     "EDIT_SOURCE_MISSING": "The source file of a trimmed moment is not available.",
     "EDIT_TRIM_TOO_SHORT": "A trimmed moment is shorter than 0.5 s.",
     "NO_READABLE_VIDEO_FILES": "None of the videos in the folder can be used (damaged, duplicate or marked Private).",
@@ -1070,6 +1094,74 @@ def revision_thumb(rid: int, pos: int) -> Path | None:
     finally:
         tmp.unlink(missing_ok=True)
     return None
+
+
+# ---------------------------------------------------------------- disk space
+
+def _tree_bytes(root: Path) -> int:
+    total = 0
+    for dirpath, _dirs, files in os.walk(root):
+        for f in files:
+            try:
+                total += (Path(dirpath) / f).stat().st_size
+            except OSError:
+                pass
+    return total
+
+
+def project_disk_usage(pid: int) -> dict:
+    d = _project_dir(pid)
+    return {"cache_bytes": _tree_bytes(d / "work"), "versions_bytes": _tree_bytes(d / "revisions")}
+
+
+def clear_work_cache(pid: int) -> int:
+    """Delete the project's analysis/render cache (versions and exports stay). The next build analyses again."""
+    p = project(pid)
+    if not p:
+        raise ValueError("Project not found")
+    if any(j["status"] in ("queued", "running") for j in p["jobs"]):
+        raise ValueError("Wait until the current build has finished")
+    work = _project_dir(pid) / "work"
+    freed = _tree_bytes(work)
+    shutil.rmtree(work, ignore_errors=True)
+    return freed
+
+
+# ---------------------------------------------------------------- blind comparison (human quality review)
+
+def start_review(pid: int, rev_a: int, rev_b: int) -> int:
+    """Two revisions of one project shown side by side in random order, without numbers or settings."""
+    import secrets
+    a, b = revision(rev_a), revision(rev_b)
+    if not a or not b or int(a["project_id"]) != int(pid) or int(b["project_id"]) != int(pid):
+        raise ValueError("Choose two versions of this project")
+    if int(a["id"]) == int(b["id"]):
+        raise ValueError("Choose two different versions")
+    left, right = (a, b) if secrets.randbelow(2) == 0 else (b, a)
+    with db() as con:
+        rid = int(con.execute("INSERT INTO ae_reviews(project_id,left_revision_id,right_revision_id,created_at) VALUES(?,?,?,?)",
+                              (int(pid), int(left["id"]), int(right["id"]), now_iso())).lastrowid)
+        con.commit()
+    return rid
+
+
+def review(review_id: int) -> dict | None:
+    ensure_schema()
+    with db() as con:
+        r = con.execute("SELECT * FROM ae_reviews WHERE id=?", (int(review_id),)).fetchone()
+    return dict(r) if r else None
+
+
+def decide_review(review_id: int, choice: str, note: str = "") -> dict:
+    if choice not in ("left", "right", "same"):
+        raise ValueError("Unknown choice")
+    with db() as con:
+        cur = con.execute("UPDATE ae_reviews SET choice=?,note=?,decided_at=? WHERE id=? AND decided_at IS NULL",
+                          (choice, str(note or "")[:500], now_iso(), int(review_id)))
+        con.commit()
+    if not cur.rowcount:
+        raise ValueError("This comparison was already decided")
+    return review(review_id)
 
 
 def default_export_dir() -> Path:

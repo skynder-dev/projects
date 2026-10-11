@@ -488,16 +488,19 @@ def render_dissolve_block(v52,segs,durs,trans,out):
         cp=subprocess.run(args,capture_output=True,text=True)
         if cp.returncode!=0: raise RuntimeError("DISSOLVE_BLOCK_RENDER_FAILED:"+cp.stderr[-800:])
         return float(durs[0])
-    filters=[_fit_audio(i,float(d)) for i,d in enumerate(durs)]; vprev="0:v"; aprev="n0"; cum=float(durs[0])
+    # segments of different sources can differ in pixel aspect (e.g. SAR 404:405 after a crop) and time base;
+    # fades and joins need them identical
+    filters=[_fit_audio(i,float(d)) for i,d in enumerate(durs)]+[f"[{i}:v]setsar=1,format=yuv420p,settb=AVTB[w{i}]" for i in range(len(segs))]
+    vprev="w0"; aprev="n0"; cum=float(durs[0])
     for i in range(1,len(segs)):
         td=float(trans[i-1]["duration_s"]); vl=f"v{i}"; al=f"a{i}"; off=max(0.0,cum-td)
         if td<=0:
             # hard cut inside a block is not produced by the pacing plan, but keep it exact if it ever is
-            filters.append(f"[{vprev}][{i}:v]concat=n=2:v=1:a=0[{vl}]")
+            filters.append(f"[{vprev}][w{i}]concat=n=2:v=1:a=0[{vl}]")
             filters.append(f"[{aprev}][n{i}]concat=n=2:v=0:a=1[{al}]")
         else:
             # 6 decimals and a hair earlier: "9.467" for 9.4667 s made xfade start one frame late (sound 33 ms early)
-            filters.append(f"[{vprev}][{i}:v]xfade=transition=fade:duration={td:.6f}:offset={max(0.0,off-0.0005):.6f}[{vl}]")
+            filters.append(f"[{vprev}][w{i}]xfade=transition=fade:duration={td:.6f}:offset={max(0.0,off-0.0005):.6f}[{vl}]")
             filters.append(f"[{aprev}][n{i}]acrossfade=d={td:.6f}:c1=tri:c2=tri[{al}]")
         vprev=vl; aprev=al; cum+=float(durs[i])-max(0.0,td)
     args += ["-filter_complex",";".join(filters),"-map",f"[{vprev}]","-map",f"[{aprev}]",
@@ -520,7 +523,8 @@ def render_mixed(v52,segs,durs,transitions,out,work):
         bfs.append(bp); bds.append(dur)
     args=[v52.FFMPEG,"-hide_banner","-loglevel","error","-y"]
     for bp in bfs: args += ["-i",str(bp)]
-    fc="".join(f"[{k}:v][{k}:a]" for k in range(len(bfs)))+f"concat=n={len(bfs)}:v=1:a=1[v][a]"
+    fc=("".join(f"[{k}:v]setsar=1,format=yuv420p,settb=AVTB[v{k}];[{k}:a]aresample=48000[a{k}];" for k in range(len(bfs)))
+        +"".join(f"[v{k}][a{k}]" for k in range(len(bfs)))+f"concat=n={len(bfs)}:v=1:a=1[v][a]")
     cp=subprocess.run(args+["-filter_complex",fc,"-map","[v]","-map","[a]",
                             "-c:v","libx264","-preset","medium","-crf","18","-pix_fmt","yuv420p",
                             "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(out)],
@@ -720,6 +724,7 @@ def run(args):
     if (out_w,out_h)!=tuple(v52.output_dimensions(profile,resolution)): raise RuntimeError("OUTPUT_DIMENSIONS_MISMATCH:%dx%d"%(out_w,out_h))
     os.replace(temp_final,final_video)
     if sha256_file(final_video)!=video_sha: raise RuntimeError("FINAL_COPY_VERIFY_FAILED")
+    shutil.rmtree(render_dir/(fingerprint+"_render"),ignore_errors=True)   # join blocks are temporary, never reused
 
     timeline=[]; t=0.0
     for i,(e,meta,d) in enumerate(zip(order,seg_meta,durs)):

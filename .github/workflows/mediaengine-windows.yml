@@ -18,7 +18,7 @@ concurrency:
 jobs:
   windows:
     runs-on: windows-latest
-    timeout-minutes: 75
+    timeout-minutes: 150
     env:
       PYTHONUTF8: '1'
     steps:
@@ -39,6 +39,11 @@ jobs:
       - name: Compile all sources (CPython 3.11)
         shell: pwsh
         run: python -m compileall -q mediaengine/app mediaengine/engine mediaengine/tests
+      - name: Fast helper checks (times, file names, lengths, versions, chosen files)
+        shell: pwsh
+        run: |
+          python mediaengine/tests/unit_checks.py "$env:RUNNER_TEMP\unit" 2>&1 | Tee-Object "$env:OUT\unit_checks.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: App startup self-check (same check the launcher uses before accepting a release)
         shell: pwsh
         run: |
@@ -72,6 +77,11 @@ jobs:
         shell: pwsh
         run: |
           python mediaengine/tests/convert_check.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\conv" 2>&1 | Tee-Object "$env:OUT\convert_check.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Library - re-analysis keeps compositions and hand-made crops
+        shell: pwsh
+        run: |
+          python mediaengine/tests/library_checks.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\libchk" 2>&1 | Tee-Object "$env:OUT\library_checks.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Unplugged source drive and no network (app process)
         shell: pwsh
@@ -225,6 +235,14 @@ jobs:
           $extra = @('data','launcher','Archivist.vbs','MediaArchive','Exports','Staging','Private','Rejected','config.json') | Where-Object { Test-Path (Join-Path $src.FullName $_) }
           if ($extra) { "created by running: $($extra -join ', ')"; exit 1 }
           "pristine" | Tee-Object "$env:OUT\package_pristine.txt"
+      - name: Large phone-like footage (4K H.264, 4K HEVC, 5 min 1080p) - build time measured
+        if: success()
+        continue-on-error: true
+        timeout-minutes: 45
+        shell: pwsh
+        run: |
+          python mediaengine/tests/heavy_media_check.py "D:\me-heavy" 2>&1 | Tee-Object "$env:OUT\heavy_media.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Upload installable package (one ZIP named like the release folder inside it)
         if: success()
         uses: actions/upload-artifact@v4
