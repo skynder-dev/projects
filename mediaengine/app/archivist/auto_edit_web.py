@@ -135,8 +135,8 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
     @app.route("/auto/check", methods=["GET", "POST"])
     def ae_check():
         rows = ae.system_check()
-        def looks_like_path(t):
-            return ":\\" in t or t.startswith("/") or "version" in t or "|" in t
+        def looks_like_path(t):   # paths, versions, system names: shown exactly as they are
+            return ":\\" in t or t.startswith("/") or "version" in t or "|" in t or t.startswith(("Windows-", "Linux", "Darwin", "3.1"))
         table = "".join(f"<tr><td>{'✅' if r['ok'] else '⚠️'}</td><td><b>{e(r['name'])}</b></td>"
                         f"<td class='{'ae-path' if looks_like_path(r['detail']) else 'muted'}'>{e(r['detail'])}</td></tr>" for r in rows)
         test_html = ""

@@ -27,6 +27,8 @@ APP_PHRASES: dict[str, str] = {
     "The library of your working Archivist is not shown here and is not changed. To make a reel from a folder of videos, use Auto Edit.":
         "Библиотека твоего рабочего Archivist здесь не показывается и не меняется. Чтобы сделать ролик из папки с видео, открой «Автомонтаж».",
     "analysis": "анализ", "cutting": "нарезка", "joining": "склейка", "reel": "ролик",
+    "on": "включены", "files changed or incomplete - not used": "файлы изменены или неполные — не используются",
+    "missing - HDR video will look grey": "нет — HDR-видео будет серым",
     "Memory (RAM)": "Память (ОЗУ)", "MediaEngine version": "Версия MediaEngine",
     "Free space on the data drive": "Свободно на диске данных", "Program folder": "Папка программы",
     "ADB not installed": "ADB не установлен", "not connected": "не подключён", "Working…": "Работаю…",
@@ -73,6 +75,8 @@ APP_PHRASES: dict[str, str] = {
     "Archivist Beta Guide": "Руководство MediaEngine (бета)", "Beta guide": "Руководство (бета)",
     "Bundled local-first beta guidance from this installed build.": "Руководство, встроенное в эту версию.",
     # ---- welcome
+    "A reel from your own videos:": "Ролик из своих видео:",
+    "open Auto Edit, choose a folder (or single videos), pick length, format and sound.": "открой «Автомонтаж», выбери папку (или отдельные видео), длину, формат и звук.",
     "First run": "Первый запуск", "Start local. Add only what you need.": "Начни на компьютере. Добавляй только нужное.",
     "Archivist is local-first. Your media stays on this PC unless you explicitly connect a provider or enable an optional cloud workflow.":
         "Всё работает на компьютере. Твои видео остаются здесь, пока ты сам не подключишь сервис или облако.",

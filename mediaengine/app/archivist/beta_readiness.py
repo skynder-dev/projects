@@ -46,6 +46,7 @@ def welcome_body(catalog: list[dict]) -> str:
     return """<div class='pagehead'><div class='eyebrow'>First run</div><h1>Start local. Add only what you need.</h1>
 <div class='lead'>Archivist is local-first. Your media stays on this PC unless you explicitly connect a provider or enable an optional cloud workflow.</div>
 <div class='row' style='margin-top:12px'><a class='btn' href='/import'>1 · Add a media source</a><a class='btn btn2' href='/settings/connections'>2 · Review optional connections</a><a class='btn btn2' href='/help'>3 · Help & recovery</a></div></div>
+<div class='card callout'><b>A reel from your own videos:</b> <span class='muted'>open Auto Edit, choose a folder (or single videos), pick length, format and sound.</span><div class='row' style='margin-top:8px'><a class='btn' href='/auto'>Auto Edit</a><a class='btn btn2' href='/auto/check'>Check this PC</a></div></div>
 <div class='card callout'><b>No external account or billing is required for local use.</b><div class='muted' style='margin-top:4px'>Cloud, social-provider and online-AI features are optional. They stay off or unconfigured until you explicitly enable or connect them.</div></div>
 <div class='section-title'>What can leave this PC</div>
 <div class='card'><p class='lead' style='font-size:15px'>Nothing leaves this PC by default. If you explicitly connect a provider or start an optional upload, authentication data, selected uploads, and provider analytics can be sent to that service.</p>
