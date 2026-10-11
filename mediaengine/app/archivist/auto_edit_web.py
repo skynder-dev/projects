@@ -50,7 +50,11 @@ def register(app, layout, e, human_bytes):
     """Attach Auto Edit routes to the existing app (called from web.create_app)."""
 
     def page(title, body, script=""):
-        return layout(title, PAGE_CSS + body, script)
+        html = layout(title, PAGE_CSS + body, script)
+        if ae.ui_language() == "ru":
+            from .auto_edit_ru import translate_html
+            html = translate_html(html)
+        return html
 
     def err_page(msg, back="/auto"):
         return page("Auto Edit", f"<div class='card'><h2>Could not continue</h2><div class='errbox' style='margin-bottom:12px'>{e(msg)}</div>"
@@ -80,7 +84,7 @@ def register(app, layout, e, human_bytes):
                          f"<form method='post' action='/auto/export/{exp['id']}/reveal'><button class='btn2'>Show in folder</button></form>")
             acts += f"<form method='post' action='/auto/p/{p['id']}/archive'><button class='btn2'>{'Unarchive' if p['archived'] else 'Archive'}</button></form>"
             cards += (f"<div class='card'><a href='/auto/p/{p['id']}' style='display:block'>"
-                      f"<div class='row space'><b style='font-size:17px'>{e(p['title'])}</b><span class='ae-state {p['state']}'>{p['state']}</span></div>"
+                      f"<div class='row space'><b style='font-size:17px' translate='no'>{e(p['title'])}</b><span class='ae-state {p['state']}'>{p['state']}</span></div>"
                       f"<div class='muted' style='margin-top:6px'>{' · '.join(x for x in (str(n_src) + (' chosen video(s)' if p.get('files') else ' video file(s) in folder'), e((preset + ' ' + length).strip()), str(len(p['revisions'])) + ' revision(s)') if x)}</div>"
                       f"<div class='muted'>{('Last export: ' + e(Path(exp['path']).name)) if exp else 'Not exported yet'}</div></a>"
                       + ("" if p["source_present"] else "<div class='errbox' style='margin-top:6px'>Source videos are not available (drive disconnected?)</div>")
@@ -93,7 +97,9 @@ def register(app, layout, e, human_bytes):
                       f"If you have the model (for example in an existing Archivist install), choose its folder: the exact files are verified and copied here.</span>"
                       f"<div class='row' style='margin-top:8px'><button type='button' class='btn2' id='modelBtn'>Choose model folder…</button>"
                       f"<span class='muted' id='modelMsg'></span></div></div>")
-        body = f"""<div class='pagehead'><div class='eyebrow'>MediaEngine</div><h1>Auto Edit</h1>
+        lang_btn = (f"<form method='post' action='/auto/lang' style='float:right'><button class='btn2' translate='no'>"
+                    f"{'English' if ae.ui_language() == 'ru' else 'Русский'}</button></form>")
+        body = f"""<div class='pagehead'>{lang_btn}<div class='eyebrow'>MediaEngine</div><h1>Auto Edit</h1>
 <div class='lead'>Choose a folder of videos (or single videos), pick length, format and sound, and MediaEngine builds a reel from the best moments.
 Your original files are only read, never changed.</div></div>
 <div class='card'><h2 style='margin-top:0'>New reel</h2>
@@ -125,10 +131,13 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         rows = ae.system_check()
         table = "".join(f"<tr><td>{'✅' if r['ok'] else '⚠️'}</td><td><b>{e(r['name'])}</b></td><td class='ae-path'>{e(r['detail'])}</td></tr>" for r in rows)
         test_html = ""
+        ai_ready = ae.model_status()["ready"]
         if request.method == "POST":
-            t = ae.quick_selftest()
+            want_ai = request.form.get("mode") == "semantic" and ai_ready
+            t = ae.quick_selftest(mode="semantic" if want_ai else "technical")
             if t["ok"]:
-                test_html = (f"<div class='card ae-done' style='margin-top:14px'><b>Test reel built in {t['seconds']} s</b>"
+                kind = "with the AI model (FAST_LOCAL)" if str(t.get("selection_mode", "")).startswith("FAST_LOCAL") else "Technical only"
+                test_html = (f"<div class='card ae-done' style='margin-top:14px'><b>Test reel built {kind} in {t['seconds']} s</b>"
                              f"<div class='muted'>{t.get('duration_s')} s reel from two generated clips · stages: {e(json.dumps(t.get('stages')))}</div></div>")
             else:
                 test_html = (f"<div class='card' style='margin-top:14px'><b>Test reel failed after {t['seconds']} s</b>"
@@ -136,10 +145,18 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         body = (f"<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Check this PC</h1>"
                 f"<div class='lead'>What MediaEngine needs, and a 5-second test reel made from generated clips (your videos are not used).</div></div>"
                 f"<div class='card'><table class='ae-files'>{table}</table></div>"
-                f"<form method='post' class='card' style='margin-top:14px' onsubmit=\"this.querySelector('button').disabled=true;this.querySelector('span').textContent='Building the test reel… (up to a minute)'\">"
-                f"<button>Build a test reel</button> <span class='muted'></span></form>{test_html}"
+                f"<form method='post' class='card' style='margin-top:14px' onsubmit=\"const f=this;f.querySelector('span').textContent='Building the test reel… (up to a few minutes)';setTimeout(()=>f.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
+                f"<button name='mode' value='technical'>Build a test reel</button> "
+                + (f"<button name='mode' value='semantic' class='btn2'>Build a test reel with the AI model</button> " if ai_ready else "")
+                + f"<span class='muted'></span></form>{test_html}"
                 f"<div class='row' style='margin-top:14px'><a class='btn btn2' href='/auto'>Back</a></div>")
         return page("Check this PC", body)
+
+    @app.post("/auto/lang")
+    def ae_lang():
+        ae.set_ui_language("en" if ae.ui_language() == "ru" else "ru")
+        back = request.form.get("back") or "/auto"
+        return redirect(back if back.startswith("/auto") else "/auto")
 
     @app.post("/api/auto/model/import")
     def ae_model_import():
@@ -187,7 +204,7 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
             status = "<span class='badge'>ok</span>" if r["ok"] else "<span class='badge error'>skipped: " + e(r["reason"]) + "</span>"
             dims = (str(r["width"]) + "×" + str(r["height"])) if r["ok"] else ""
             dur = _fmt_s(r["duration_s"]) if r["ok"] else ""
-            return f"<tr><td>{e(r['name'])}</td><td>{human_bytes(r['bytes'])}</td><td>{dur}</td><td>{dims}</td><td>{status}</td></tr>"
+            return f"<tr><td translate='no'>{e(r['name'])}</td><td>{human_bytes(r['bytes'])}</td><td>{dur}</td><td>{dims}</td><td>{status}</td></tr>"
         rows = "".join(file_row(r) for r in scan["files"])
         rec = scan["recommended_length"]
         total = scan["total_s"]
@@ -209,7 +226,7 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         src_hidden = ("".join(f"<input type='hidden' name='file' value='{e(x)}'>" for x in scan["files_chosen"]) if scan["files_chosen"]
                       else f"<input type='hidden' name='folder' value='{e(scan['folder'])}'>")
         where = (f"{len(scan['files_chosen'])} chosen video(s) · from {scan['folder']}" if scan["files_chosen"] else scan["folder"])
-        body = f"""<div class='pagehead'><div class='eyebrow'>Auto Edit · new reel</div><h1>{e(Path(scan['folder']).name or scan['folder'])}</h1>
+        body = f"""<div class='pagehead'><div class='eyebrow'>Auto Edit · new reel</div><h1 translate='no'>{e(Path(scan['folder']).name or scan['folder'])}</h1>
 <div class='lead ae-path'>{e(where)}</div></div>
 <div class='card'><b>{scan['usable']} usable video(s)</b>, total {_fmt_s(total)} · {human_bytes(scan['total_bytes'])}{(' · ' + str(scan['skipped']) + ' skipped') if scan['skipped'] else ''}
 <details style='margin-top:8px'><summary class='muted'>Show files</summary><table class='ae-files'><tr><th>File</th><th>Size</th><th>Length</th><th>Frame</th><th></th></tr>{rows}</table></details>{warn}</div>
@@ -251,7 +268,7 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         if cur and int(cur["project_id"]) != int(pid):
             cur = None
         parts = [f"""<div class='pagehead row space'><div><div class='eyebrow'>Auto Edit · <span class='ae-state {p['state']}'>{p['state']}</span></div>
-<h1>{e(p['title'])}</h1><div class='lead ae-path'>{e((str(len(p['files'])) + ' chosen video(s) · from ' + p['folder']) if p.get('files') else p['folder'])}</div></div>
+<h1 translate='no'>{e(p['title'])}</h1><div class='lead ae-path'>{e((str(len(p['files'])) + ' chosen video(s) · from ' + p['folder']) if p.get('files') else p['folder'])}</div></div>
 <div class='row' style='flex-wrap:wrap'><a class='btn btn2' href='/auto'>All projects</a>
 <form method='post' action='/auto/p/{pid}/rename' class='row' style='gap:6px'><input name='title' value='{e(p['title'])}' maxlength='80' style='width:200px'><button class='btn2'>Rename</button></form>
 <form method='post' action='/auto/p/{pid}/archive'><button class='btn2'>{'Unarchive' if p['archived'] else 'Archive'}</button></form></div></div>"""]
@@ -519,7 +536,7 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
                       f"<div class='row' style='flex-wrap:wrap'><button name='choice' value='left' class='ae-big'>A is better</button>"
                       f"<button name='choice' value='right' class='ae-big'>B is better</button>"
                       f"<button name='choice' value='same' class='btn2'>About the same</button></div></form>")
-        body = (f"<div class='pagehead'><div class='eyebrow'>Auto Edit · blind comparison</div><h1>{e(p['title'])}</h1></div>"
+        body = (f"<div class='pagehead'><div class='eyebrow'>Auto Edit · blind comparison</div><h1 translate='no'>{e(p['title'])}</h1></div>"
                 f"<div class='ae-player'>{player('left')}{player('right')}</div>{bottom}")
         return page("Blind comparison", body)
 
@@ -600,7 +617,7 @@ def _review_html(p, rev, e):
         for s in segs)
     in_reel = {s["event_id"] for s in segs}
     pool = [c for c in (res.get("candidate_pool") or []) if c["event_id"] not in in_reel][:40]
-    opts = "".join(f"<option value='{e(c['event_id'])}'>{e(c['source_name'])} {_fmt_s(c['start_s'])}–{_fmt_s(c['end_s'])} · score {float(c['score']):.2f}</option>" for c in pool)
+    opts = "".join(f"<option value='{e(c['event_id'])}' translate='no'>{e(c['source_name'])} {_fmt_s(c['start_s'])}–{_fmt_s(c['end_s'])} · score {float(c['score']):.2f}</option>" for c in pool)
 
     def edit_row(s):
         eid = e(s["event_id"])
@@ -608,7 +625,7 @@ def _review_html(p, rev, e):
         repl = (f"<label class='muted'>replace with <select name='replace_{eid}' style='max-width:260px'><option value=''>— keep —</option>{opts}</select></label>"
                 if opts else "")
         return (f"<div class='ae-seg ae-edit' data-seg data-in='{s['reel_in_s']}' data-out='{s['reel_out_s']}'><b class='pos'>{s['position']}</b>"
-                f"<div><div>{e(s['source_name'])} <span class='muted'>· source {_fmt_s(s['source_in_s'])}–{_fmt_s(s['source_out_s'])}{badge}</span></div>"
+                f"<div><div><span translate='no'>{e(s['source_name'])}</span> <span class='muted'>· source {_fmt_s(s['source_in_s'])}–{_fmt_s(s['source_out_s'])}{badge}</span></div>"
                 f"<div class='row' style='gap:8px;margin-top:4px;flex-wrap:wrap'><button type='button' class='btn2' data-seek='{s['reel_in_s']}'>Play in reel</button>"
                 f"<a class='btn btn2' style='font-size:13px' target='_blank' href='/auto/p/{p['id']}/source?name={e(urllib.parse.quote(s['source_name']))}#t={s['source_in_s']},{s['source_out_s']}'>View in source</a></div>"
                 f"<div class='row' style='gap:8px;margin-top:6px;flex-wrap:wrap'><label class='muted'>from <input name='in_{eid}' value='{s['source_in_s']:.1f}' inputmode='decimal' style='width:72px'></label>"

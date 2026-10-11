@@ -11,7 +11,7 @@ Exit code 0 only if every check passes.
 """
 from __future__ import annotations
 
-import argparse, hashlib, json, os, subprocess, sys, time
+import argparse, urllib.parse, hashlib, json, os, subprocess, sys, time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -341,6 +341,17 @@ def main():
         r2v = c.get(f"/auto/rev/{rev['id']}/video", headers={**H, "Range": "bytes=0-9"})
         check("free_cache", r.status_code == 302 and before_cache > 0 and ae.project_disk_usage(pid)["cache_bytes"] == 0
               and r2v.status_code == 206, (r.status_code, before_cache))
+
+        # Russian interface: same pages, same forms, Russian text; user content untouched
+        c.post("/auto/lang", headers=H)
+        ru = {u: c.get(u, headers=H) for u in ("/auto", f"/auto/p/{pid}", f"/auto/new?folder={urllib.parse.quote(str(folder))}")}
+        okru = all(x.status_code == 200 for x in ru.values())
+        txt = {u: x.data.decode("utf-8", "replace") for u, x in ru.items()}
+        check("russian_interface", okru and "Мои проекты" in txt["/auto"] and "Создать ролик" in list(txt.values())[2]
+              and "value='social_hd'" in list(txt.values())[2] and "Моменты в ролике" in txt[f"/auto/p/{pid}"]
+              and ae.project(pid)["title"] in txt[f"/auto/p/{pid}"], {u: x.status_code for u, x in ru.items()})
+        c.post("/auto/lang", headers=H)
+        check("english_again", b"My projects" in c.get("/auto", headers=H).data)
 
         r = c.get("/auto/check", headers=H)
         check("check_this_pc_page", r.status_code == 200 and b"Engine libraries load" in r.data and "⚠️</td><td><b>Engine".encode() not in r.data)

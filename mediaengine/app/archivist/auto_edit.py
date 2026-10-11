@@ -1152,8 +1152,9 @@ def system_check() -> list[dict]:
     return rows
 
 
-def quick_selftest(timeout_s: int = 600) -> dict:
-    """Build a 5 s reel from two generated clips with the real engine (Technical only). Never touches user media."""
+def quick_selftest(timeout_s: int = 900, mode: str = "technical") -> dict:
+    """Build a 5 s reel from two generated clips with the real engine. mode='semantic' runs the AI model
+    (semantic=required, the same pinned check as a normal AI build). Never touches user media."""
     import time as _t
     ff = _ffmpeg() or "ffmpeg"
     root = DATA / "selftest"
@@ -1163,7 +1164,7 @@ def quick_selftest(timeout_s: int = 600) -> dict:
         subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", lav, "-f", "lavfi", "-i", f"sine=frequency={300 + 100 * i}:sample_rate=48000",
                         "-t", "8", "-vf", f"hue=h=t*{20 * i}", "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p",
                         "-c:a", "aac", "-shortest", str(src / f"test_{i}.mp4")], **process_kwargs({"capture_output": True, "timeout": 120}))
-    s = {"length": 5, "format": "vertical", "sound": "auto", "mode": "technical"}
+    s = {"length": 5, "format": "vertical", "sound": "auto", "mode": "semantic" if mode == "semantic" else "technical"}
     cmd = engine_command(src, root / "out", root / "work", root / "progress.json", s)
     t0 = _t.time()
     try:
@@ -1176,7 +1177,8 @@ def quick_selftest(timeout_s: int = 600) -> dict:
     res = {"ok": ok, "seconds": round(_t.time() - t0, 1), "error": err}
     if ok:
         r = json.loads((root / "out" / "MediaEngine Result.json").read_text(encoding="utf-8"))
-        res.update(video=str(root / "out" / "MediaEngine Reel.mp4"), duration_s=r.get("actual_duration_s"), stages=r.get("stage_seconds"))
+        res.update(video=str(root / "out" / "MediaEngine Reel.mp4"), duration_s=r.get("actual_duration_s"), stages=r.get("stage_seconds"),
+                   selection_mode=r.get("selection_mode"))
     return res
 
 
@@ -1246,6 +1248,20 @@ def decide_review(review_id: int, choice: str, note: str = "") -> dict:
     if not cur.rowcount:
         raise ValueError("This comparison was already decided")
     return review(review_id)
+
+
+def ui_language() -> str:
+    try:
+        return "ru" if str(load_config().get("ui_language") or "").lower() == "ru" else "en"
+    except Exception:
+        return "en"
+
+
+def set_ui_language(lang: str) -> None:
+    from .config import save_config
+    cfg = load_config()
+    cfg["ui_language"] = "ru" if lang == "ru" else "en"
+    save_config(cfg)
 
 
 def default_export_dir() -> Path:
