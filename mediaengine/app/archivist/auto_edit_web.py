@@ -100,9 +100,14 @@ def register(app, layout, e, human_bytes):
                       f"<div class='row' style='margin-top:8px'><button type='button' class='btn2' id='modelBtn'>Choose model folder…</button>"
                       f"<span class='muted' id='modelMsg'></span></div></div>")
         check_btn = "<a class='btn btn2' href='/auto/check' style='float:right'>Check this PC</a>"
+        first = "" if ae.selftest_passed() else (
+            "<div class='card callout' style='margin-bottom:14px'><b>First time on this PC?</b> "
+            "<span class='muted'>Check this PC first: it shows whether the AI model and video tools are found and builds a 5-second test reel "
+            "(about a minute; your videos are not used).</span>"
+            "<div class='row' style='margin-top:8px'><a class='btn' href='/auto/check'>Check this PC</a></div></div>")
         body = f"""<div class='pagehead'>{check_btn}<div class='eyebrow'>MediaEngine</div><h1>Auto Edit</h1>
 <div class='lead'>Choose a folder of videos (or single videos), pick length, format and sound, and MediaEngine builds a reel from the best moments.
-Your original files are only read, never changed.</div></div>
+Your original files are only read, never changed.</div></div>{first}
 <div class='card'><h2 style='margin-top:0'>New reel</h2>
 <form method='get' action='/auto/new' class='row' style='flex-wrap:wrap' onsubmit="document.getElementById('pickMsg').textContent='Checking the videos… (a few seconds per video)'">
 <button type='button' class='ae-big' id='pickBtn'>Choose folder…</button>
@@ -139,6 +144,7 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         if request.method == "POST":
             want_ai = request.form.get("mode") == "semantic" and ai_ready
             t = ae.quick_selftest(mode="semantic" if want_ai else "technical")
+            ae._remember_selftest(t)
             if t["ok"]:
                 kind = "with the AI model (FAST_LOCAL)" if str(t.get("selection_mode", "")).startswith("FAST_LOCAL") else "Technical only"
                 test_html = (f"<div class='card ae-done' style='margin-top:14px'><b>Test reel built {kind} in {t['seconds']} s</b>"

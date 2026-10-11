@@ -375,8 +375,10 @@ def main():
         check("check_this_pc_page", r.status_code == 200 and b"Engine libraries load" in r.data and "⚠️</td><td><b>Engine".encode() not in r.data)
 
         if a.files_check:
+            banner_before = b"First time on this PC?" in c.get("/auto", headers=H).data
             r = c.post("/auto/check", headers=H)
             check("check_this_pc_test_reel", r.status_code == 200 and b"Test reel built" in r.data, r.data[-600:])
+            check("first_time_banner_until_test_passes", banner_before and b"First time on this PC?" not in c.get("/auto", headers=H).data)
             usable = [f["name"] for f in scan["files"] if f["ok"]][:2]
             chosen = [str(folder / n) for n in usable]
             r = c.get("/auto/new", query_string=[("file", x) for x in chosen], headers=H)

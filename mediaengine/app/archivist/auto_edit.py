@@ -1194,6 +1194,29 @@ def system_check() -> list[dict]:
     return rows
 
 
+def selftest_passed() -> bool:
+    """A test reel was built on this PC at least once ("Check this PC")."""
+    try:
+        return bool((load_config().get("auto_edit") or {}).get("selftest_ok_at"))
+    except Exception:
+        return False
+
+
+def _remember_selftest(res: dict) -> None:
+    if not res.get("ok"):
+        return
+    try:
+        from .config import save_config
+        cfg = load_config()
+        a = dict(cfg.get("auto_edit") or {})
+        a["selftest_ok_at"] = now_iso()
+        a["selftest_mode"] = str(res.get("selection_mode") or "")
+        cfg["auto_edit"] = a
+        save_config(cfg)
+    except Exception:
+        pass
+
+
 def quick_selftest(timeout_s: int = 900, mode: str = "technical") -> dict:
     """Build a 5 s reel from two generated clips with the real engine. mode='semantic' runs the AI model
     (semantic=required, the same pinned check as a normal AI build). Never touches user media."""
