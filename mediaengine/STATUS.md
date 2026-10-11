@@ -57,8 +57,12 @@ The 11 runtime modules, adapter and validator are byte-identical to R2 (CI-check
 
 ## Evidence
 
-Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git):
-see the latest run on branch `mediaengine-ci-results` (`latest/RUN.txt`). Checks in every run:
+Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
+Latest full run: **38120803177 on `10efff3` — all green** (results branch `mediaengine-ci-results`, artifact
+`MediaEngine-windows-package-<run>-<commit>`): engine regression 28/28 (reel bytes identical to R2), robustness 6/6,
+E2E 7 videos 55/55, 2 videos 48/48, packaged Python 51/51, package smoke PASS (started via `Start MediaEngine.vbs` from
+`…\MediaEngine Тест`, updates off, own shortcut, stable shortcut untouched, second copy refused, restart, Quit),
+uploaded package pristine (69 app files, runtime 442 MB). Checks in every run:
 
 | Check | What it proves |
 | --- | --- |
@@ -70,7 +74,7 @@ see the latest run on branch `mediaengine-ci-results` (`latest/RUN.txt`). Checks
 | E2E with the packaged Python | packaged runtime renders reels |
 | Package unchanged by the checks | the uploaded artifact contains no CI data |
 
-Local Linux run 2026-10-11 of the same tests: engine regression 28/28, robustness 6/6, E2E 2 videos 47/47 (7-video run see CI).
+Local Linux run 2026-10-11: engine regression 28/28, robustness 6/6, E2E 7 videos 54/54, 2 videos 47/47.
 
 Not proven by CI: semantic (AI) mode, selection quality judged by a person, real long/4K footage, A/V sync measured on
 real footage, absent drive, network disabled.
