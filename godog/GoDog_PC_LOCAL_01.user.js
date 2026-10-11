@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GoDog GDCONST-010 DEFAULT-DISABLED canary
 // @namespace    GoDog.constitution
-// @version      7.0.2
+// @version      7.0.3
 // @description  Local-only direct controls, PC-hosted Tampermonkey updates, original 6.0.26 UI.
 // @match        https://chatgpt.com/*
 // @run-at       document-idle
@@ -17,7 +17,7 @@
   // LOCAL ONLY. No fetch, XMLHttpRequest, GM_xmlhttpRequest, WebSocket, heartbeat or cloud endpoint.
   // Direct controls: GO -> native submit, STOP -> local AUTO off,
   // NEW -> same-tab native new chat with local handoff, AUTO -> event-driven next GO.
-  const VERSION = '7.0.2';
+  const VERSION = '7.0.3';
   const STATE_KEY = 'godog-pc-local-v7-session';
   const NEW_KEY = 'godog-pc-local-v7-handoff';
   const VERSION_KEY = 'godog-pc-local-v7-version-seen';
