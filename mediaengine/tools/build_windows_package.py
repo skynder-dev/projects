@@ -135,8 +135,9 @@ the FAST_LOCAL model is found automatically. Otherwise use "Choose model folder"
 Without the model the app offers the clearly labelled "Technical only" mode.
 
 This candidate runs on port {PORT} and keeps its own data, archive and exports in "MediaEngine Data".
-It does not change a stable Archivist install. To remove it: Quit, delete this folder, the
-"MediaEngine Data" folder (your exported videos are inside it) and the "{SHORTCUT}" desktop shortcut.
+It does not change a stable Archivist install. To remove it: installed with Setup -> Settings -> Apps ->
+MediaEngine (keeps "MediaEngine Data"); from the ZIP -> Quit, delete this folder, the "MediaEngine Data" folder
+(your exported videos are inside it) and the "{SHORTCUT}" desktop shortcut.
 """, encoding="utf-8")
 
     (pkg / "ПРОЧТИ.txt").write_text(f"""MediaEngine {ver} — кандидат (тестовая версия)
@@ -196,7 +197,8 @@ It does not change a stable Archivist install. To remove it: Quit, delete this f
   Archivist (D:\\Archivist) она не меняет.
 
 УДАЛИТЬ
-  Quit → удали эту папку, папку "MediaEngine Data" (в ней и экспортированные ролики) и ярлык
+  Ставил Setup'ом: Параметры → Приложения → MediaEngine (папка "MediaEngine Data" остаётся).
+  Из ZIP: Quit → удали эту папку, папку "MediaEngine Data" (в ней и экспортированные ролики) и ярлык
   "{SHORTCUT}".
 """, encoding="utf-8-sig")
 
