@@ -4,13 +4,20 @@ import base64, hashlib, json, os, shutil, subprocess, sys, tempfile, time, urlli
 from datetime import datetime, timezone
 from pathlib import Path
 
-LAUNCHER_VERSION = "3.6.0"
+LAUNCHER_VERSION = "3.7.0"
 HOME = Path(__file__).resolve().parent
 DATA = HOME / "data"
 VERSION_PATH = HOME / "version.txt"
 CONFIG_PATH = HOME / "updater_config.json"
 STATUS_PATH = DATA / "update_status.json"
-HOST, PORT = "127.0.0.1", 8765
+def _port():
+    try:
+        p=int((HOME/"port.txt").read_text(encoding="utf-8").strip())
+        return p if 1024<=p<=65535 else 8765
+    except Exception:
+        return 8765
+
+HOST, PORT = "127.0.0.1", _port()
 
 
 def version_tuple(v):

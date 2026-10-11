@@ -12,7 +12,7 @@ from pathlib import Path
 from flask import Flask, Response, jsonify, redirect, render_template, request, send_file
 
 from . import android
-from .config import HOME, PRIVATE, REJECTED, STAGING, STORYBOARDS, THUMBS, VERSION, load_config, save_config
+from .config import APP_PORT, HOME, PRIVATE, REJECTED, STAGING, STORYBOARDS, THUMBS, VERSION, load_config, save_config
 from .db import db, init_db
 from .media_brain import (best_clips, build_tracked_trajectory, clip_by_id, clips_for_inventory,
                           ensure_schema as ensure_media_brain_schema, save_crop_trajectory,
@@ -27,6 +27,7 @@ from .composer import EXPORTS as COMPOSER_EXPORTS, composition_detail, create_co
 from .product_foundation import platform_snapshot, setup_catalog
 from .beta_readiness import welcome_body, help_body, guide_body, connection_disclosure_html
 from .platform_adapter import spawn_app_launcher
+from .auto_edit_web import register as register_auto_edit
 
 
 def e(v): return html.escape(str(v if v is not None else ""), quote=True)
@@ -130,6 +131,7 @@ def layout(title,body,script="",script_srcs=()):
     settings_active=(path.startswith('/settings') or path.startswith('/about'))
     nav=''.join([
         _nav_link('/','Home',path=='/'),
+        _nav_link('/auto','Auto Edit',path.startswith('/auto')),
         _nav_link('/media','Media',media_active),
         _nav_link('/social','Social Lab',social_active),
         _nav_link('/devices','Devices',devices_active),
@@ -138,8 +140,8 @@ def layout(title,body,script="",script_srcs=()):
         _nav_link('/settings','Settings',settings_active),
     ])
     external_scripts=''.join(f"<script src='{e(src)}'></script>" for src in script_srcs)
-    return f"""<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>{e(title)} · Archivist</title><style>{CSS}</style></head><body>
-<nav><div class='navin'><span class='brand'>Archivist <span class='version'>v{VERSION}</span></span>{nav}<span class='spacer'></span><button id='restartBtn' class='btn2'>Restart</button><button id='updateBtn' class='ok'>Update</button></div></nav>
+    return f"""<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>{e(title)} · MediaEngine</title><style>{CSS}</style></head><body>
+<nav><div class='navin'><span class='brand'>MediaEngine <span class='version'>v{VERSION}</span></span>{nav}<span class='spacer'></span><button id='restartBtn' class='btn2'>Restart</button><button id='updateBtn' class='ok'>Update</button></div></nav>
 <div id='jobbar' class='jobbar'><div class='jobinner'><div class='row space'><b id='jobtext'>Working…</b><a href='/activity' class='muted'>Open activity</a></div><div id='jobsub' class='muted'></div><div class='progress'><i id='jobpct'></i></div></div></div>
 <div class='wrap'>{body}</div><div id='toast' class='toast'></div><script>{GLOBAL_JS}\n{script}</script>{external_scripts}</body></html>"""
 
@@ -179,7 +181,7 @@ def _spawn_launcher(mode):
 def _exit_soon(): time.sleep(.8); os._exit(0)
 
 
-_ALLOWED_LOOPBACK_HOSTS = frozenset(('127.0.0.1:8765','localhost:8765'))
+_ALLOWED_LOOPBACK_HOSTS = frozenset((f'127.0.0.1:{APP_PORT}',f'localhost:{APP_PORT}'))
 _MUTATING_METHODS = frozenset(('POST','PUT','PATCH','DELETE'))
 
 def _exact_loopback_origin(value):
@@ -192,7 +194,7 @@ def _exact_loopback_origin(value):
     except (TypeError, ValueError):
         return None
     host=(parsed.hostname or '').lower()
-    if parsed.scheme.lower()!='http' or host not in ('127.0.0.1','localhost') or port!=8765:
+    if parsed.scheme.lower()!='http' or host not in ('127.0.0.1','localhost') or port!=APP_PORT:
         return None
     if parsed.username or parsed.password:
         return None
@@ -299,7 +301,7 @@ def create_app():
             total=int(metrics['total'] or 0);imported=int(metrics['imported'] or 0);videos=int(metrics['videos'] or 0)
             waiting=int(metrics['waiting'] or 0);review=int(metrics['review'] or 0);rights=int(metrics['rights_review'] or 0);errs=int(metrics['errs'] or 0)
         phone=phone_snapshot(); phone_text=(phone.get('model') or phone.get('serial') or 'Android')+' connected' if phone['connected'] else (phone.get('error') or 'not connected')
-        body=f"""<div class='pagehead row space'><div><div class='eyebrow'>Local-first media workspace</div><h1>Your footage, ready to work.</h1><div class='lead'>Browse Android, SD/USB and local folders in one place. Library stays clean: only media you explicitly add becomes part of the working collection.</div></div><div class='row'><a class='btn' href='/welcome'>Start here</a><a class='btn btn2' href='/import'>Import new media</a><a class='btn btn2' href='/library'>Open Library</a></div></div>
+        body=f"""<div class='pagehead row space'><div><div class='eyebrow'>Local-first media workspace</div><h1>Your footage, ready to work.</h1><div class='lead'>Browse Android, SD/USB and local folders in one place. Library stays clean: only media you explicitly add becomes part of the working collection.</div></div><div class='row'><a class='btn' href='/auto'>Auto Edit</a><a class='btn btn2' href='/welcome'>Start here</a><a class='btn btn2' href='/import'>Import new media</a><a class='btn btn2' href='/library'>Open Library</a></div></div>
 <div class='hero'><div class='card metric tone-blue'><span class='muted'>On sources</span><b>{total}</b></div><div class='card metric tone-amber'><span class='muted'>Waiting to import</span><b>{waiting}</b></div><div class='card metric tone-mint'><span class='muted'>In Library</span><b>{imported}</b></div><div class='card metric tone-cyan'><span class='muted'>Library videos</span><b>{videos}</b></div><div class='card metric tone-rose'><span class='muted'>Privacy review</span><b>{review}</b></div><div class='card metric tone-violet'><span class='muted'>Rights review</span><b>{rights}</b></div></div>
 <div class='card source-card'><div class='device'><span class='device-dot {'online' if phone['connected'] else ''}' data-phone-dot></span><div><div class='device-status'>Android source</div><div class='muted' data-phone-text>{e(phone_text)}</div></div></div><div class='row'><span class='badge {'error' if errs else 'safe'}'>{errs} errors</span><a class='btn btn2' href='/jobs'>Jobs</a></div></div>
 <div class='section-title'>How it works</div><div class='card callout'>Browse every source in <b>Import</b> → select what you want → <b>Add to Library</b> or <b>Add + Analyze</b>. Local-folder files stay in place; Android/SD files copy to Staging. Private and Rejected media never appear in Library.</div>"""
@@ -314,6 +316,7 @@ def create_app():
 <a class='card hubcard tone-mint' href='/library'><b>Library</b><span>The media you explicitly selected for work.</span></a>
 <a class='card hubcard tone-violet' href='/search'><b>Search</b><span>Local semantic signals and Find Similar.</span></a>
 <a class='card hubcard tone-amber' href='/best'><b>Best Moments</b><span>Review Media Brain virtual clips.</span></a>
+<a class='card hubcard tone-amber' href='/auto'><b>Auto Edit</b><span>Folder of videos → finished reel from the best moments.</span></a>
 <a class='card hubcard tone-cyan' href='/composer'><b>Composer</b><span>Build nondestructive multi-clip compositions.</span></a>
 <a class='card hubcard tone-rose' href='/convert'><b>Convert</b><span>Create local derived copies without altering originals.</span></a>
 </div>"""
@@ -1542,4 +1545,5 @@ async function jobAction(btn,url,mode){
         except Exception:pass
         cfg['privacy']['enabled']='privacy' in request.form;cfg['analysis']['technical_quality']='quality' in request.form;save_config(cfg);return redirect('/settings')
 
+    register_auto_edit(app, layout, e, human_bytes)
     return app

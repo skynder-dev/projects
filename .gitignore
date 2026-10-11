@@ -2,3 +2,6 @@ node_modules/
 *.tmp
 reveng/runs/*
 !reveng/runs/.gitkeep
+
+# mediaengine
+mediaengine/**/__pycache__/

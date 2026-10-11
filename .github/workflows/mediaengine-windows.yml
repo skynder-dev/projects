@@ -1,0 +1,144 @@
+name: mediaengine-windows
+# MediaEngine candidate checks on a real Windows machine (GitHub hosted, not the owner PC):
+# compile, app startup self-check, engine R3 == R2 byte regression, full Auto Edit E2E through the app
+# routes on synthetic 2- and 7-video folders, page screenshots. No owner media, no secrets, no network calls
+# from the app under test, no paid services. The FAST_LOCAL model is not in git, so CI covers the
+# labelled Technical mode; semantic=required is checked on the owner PC.
+on:
+  push:
+    paths:
+      - 'mediaengine/**'
+      - '.github/workflows/mediaengine-windows.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: mediaengine-windows-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 75
+    env:
+      PYTHONUTF8: '1'
+      OUT: ${{ runner.temp }}\me-ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned 3.12.42 environment
+        shell: pwsh
+        run: |
+          python -m pip install --disable-pip-version-check -q -r mediaengine/requirements.txt
+          New-Item -ItemType Directory -Force $env:OUT | Out-Null
+          python --version
+      - name: Compile all sources (CPython 3.11)
+        shell: pwsh
+        run: python -m compileall -q mediaengine/app mediaengine/engine mediaengine/tests
+      - name: App startup self-check (same check the launcher uses before accepting a release)
+        shell: pwsh
+        run: |
+          $env:ARCHIVIST_HOME = "$env:RUNNER_TEMP\home-selfcheck"
+          python -c "import sys; sys.path.insert(0,'mediaengine/app'); import main; from archivist.web import create_app; main.startup_self_check(create_app()); print('startup self-check PASS')" 2>&1 | Tee-Object "$env:OUT\startup_selfcheck.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Make synthetic fixtures
+        shell: pwsh
+        run: python mediaengine/tests/make_fixtures.py "$env:RUNNER_TEMP\fx"
+      - name: Engine regression R3 == R2 (Windows-proven bytes path)
+        shell: pwsh
+        run: |
+          python mediaengine/tests/engine_regression.py "$env:RUNNER_TEMP\fx\two" "$env:RUNNER_TEMP\reg" 2>&1 | Tee-Object "$env:OUT\engine_regression.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Auto Edit E2E - 7 videos (+ broken + duplicate)
+        shell: pwsh
+        run: |
+          python mediaengine/tests/e2e_auto_edit.py --folder "$env:RUNNER_TEMP\fx\seven" --home "$env:RUNNER_TEMP\home7" --mode technical --out "$env:OUT\e2e_seven.json" 2>&1 | Tee-Object "$env:OUT\e2e_seven.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Auto Edit E2E - 2 videos
+        shell: pwsh
+        run: |
+          python mediaengine/tests/e2e_auto_edit.py --folder "$env:RUNNER_TEMP\fx\two" --home "$env:RUNNER_TEMP\home2" --mode technical --skip-cancel --out "$env:OUT\e2e_two.json" 2>&1 | Tee-Object "$env:OUT\e2e_two.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Screenshots of the real pages in Edge
+        if: always()
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          $env:ARCHIVIST_HOME = "$env:RUNNER_TEMP\home7"
+          $srv = Start-Process python -ArgumentList '-c',"import sys; sys.path.insert(0,'mediaengine/app'); from archivist.web import create_app; create_app().run(host='127.0.0.1',port=8765,threaded=True)" -PassThru -WindowStyle Hidden
+          for ($i=0; $i -lt 60; $i++) { try { Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8765/api/ping | Out-Null; break } catch { Start-Sleep 1 } }
+          $edge = "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe"
+          if (-not (Test-Path $edge)) { $edge = "$env:ProgramFiles\Microsoft\Edge\Application\msedge.exe" }
+          $pages = @{ 'auto_home'='/auto'; 'auto_project'='/auto/p/1'; 'auto_setup'=('/auto/new?folder=' + [uri]::EscapeDataString("$env:RUNNER_TEMP\fx\seven")) }
+          foreach ($k in $pages.Keys) {
+            & $edge --headless=new --disable-gpu --hide-scrollbars --window-size=1600,1500 --virtual-time-budget=4000 "--screenshot=$env:OUT\$k.png" ("http://127.0.0.1:8765" + $pages[$k]) | Out-Null
+            Start-Sleep 2
+          }
+          Stop-Process -Id $srv.Id -Force
+          Get-ChildItem $env:OUT
+      - name: Build the installable candidate package
+        if: success()
+        shell: pwsh
+        run: |
+          python mediaengine/tools/build_windows_package.py "$env:RUNNER_TEMP\pkg" 2>&1 | Tee-Object "$env:OUT\package_build.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          Copy-Item "$env:RUNNER_TEMP\pkg\*.manifest.json" $env:OUT
+      - name: Package smoke - start like a user (launcher, no console), open Auto Edit, stop
+        if: success()
+        shell: pwsh
+        run: |
+          $pkg = Get-ChildItem "$env:RUNNER_TEMP\pkg" -Directory | Select-Object -First 1
+          "package: $($pkg.FullName)" | Tee-Object "$env:OUT\package_smoke.txt"
+          $p = Start-Process "$($pkg.FullName)\.venv\Scripts\pythonw.exe" -ArgumentList "`"$($pkg.FullName)\launcher.py`"","--no-browser" -PassThru
+          $ok = $false
+          for ($i=0; $i -lt 90; $i++) { try { $r = Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8775/api/ping; if ($r.StatusCode -eq 200) { $ok = $true; break } } catch { Start-Sleep 1 } }
+          if (-not $ok) { Get-Content "$($pkg.FullName)\data\update_status.json" -ErrorAction SilentlyContinue; Get-ChildItem "$($pkg.FullName)\data\logs" -ErrorAction SilentlyContinue; exit 1 }
+          $ping = (Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8775/api/ping).Content
+          $auto = Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8775/auto
+          "ping: $ping" | Tee-Object -Append "$env:OUT\package_smoke.txt"
+          "auto page: HTTP $($auto.StatusCode), contains 'Auto Edit': $($auto.Content.Contains('Auto Edit'))" | Tee-Object -Append "$env:OUT\package_smoke.txt"
+          "status: " + (Get-Content "$($pkg.FullName)\data\update_status.json" -Raw) | Tee-Object -Append "$env:OUT\package_smoke.txt"
+          try { Invoke-WebRequest -UseBasicParsing -Method Post -Uri http://127.0.0.1:8775/api/app-control -Headers @{Origin='http://127.0.0.1:8775'} -ContentType 'application/json' -Body '{"mode":"stop","force":true}' | Out-Null } catch {}
+          Start-Sleep 3
+          if (-not $ping.Contains('3.13.0') -or $auto.StatusCode -ne 200) { exit 1 }
+      - name: Package runtime runs the engine end to end (packaged Python)
+        if: success()
+        shell: pwsh
+        run: |
+          $pkg = Get-ChildItem "$env:RUNNER_TEMP\pkg" -Directory | Select-Object -First 1
+          & "$($pkg.FullName)\.venv\Scripts\python.exe" mediaengine/tests/e2e_auto_edit.py --folder "$env:RUNNER_TEMP\fx\seven" --home "$env:RUNNER_TEMP\home-pkg" --mode technical --length 15 --skip-cancel --out "$env:OUT\e2e_packaged_python.json" 2>&1 | Tee-Object "$env:OUT\e2e_packaged_python.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Upload installable package
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: MediaEngine-windows-package
+          path: ${{ runner.temp }}/pkg/MediaEngine-*/
+          include-hidden-files: true
+          if-no-files-found: error
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mediaengine-windows-ci
+          path: ${{ runner.temp }}/me-ci/*
+          if-no-files-found: warn
+      - name: Publish results to branch mediaengine-ci-results
+        if: always()
+        shell: bash
+        env:
+          SRC_REF: ${{ github.ref_name }}
+          SRC_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          set -e
+          out="$RUNNER_TEMP/me-ci"; pub="$RUNNER_TEMP/me-ci-pub"
+          rm -rf "$pub"; mkdir -p "$pub/latest"
+          cp "$out"/* "$pub/latest/" 2>/dev/null || true
+          printf 'ref=%s\nsha=%s\nrun=%s\nstatus=%s\n' "$SRC_REF" "$SRC_SHA" "$RUN_ID" "$JOB_STATUS" > "$pub/latest/RUN.txt"
+          cd "$pub"; git init -q; git checkout -q -b mediaengine-ci-results
+          git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
+          git add -A; git commit -q -m "mediaengine windows ci run $RUN_ID ($SRC_REF $SRC_SHA) $JOB_STATUS"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" mediaengine-ci-results

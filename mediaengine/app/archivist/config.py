@@ -18,10 +18,31 @@ PRIVATE = HOME / "Private"
 REJECTED = HOME / "Rejected"
 LOGS = DATA / "logs"
 CONFIG_PATH = HOME / "config.json"
-VERSION = "3.12.42"
+
+
+def _app_port() -> int:
+    """Local UI port. 8765 for the stable install; a side-by-side candidate ships port.txt (e.g. 8775)."""
+    raw = os.environ.get("ARCHIVIST_PORT")
+    if not raw:
+        try:
+            raw = (HOME / "port.txt").read_text(encoding="utf-8").strip()
+        except Exception:
+            raw = ""
+    try:
+        port = int(raw)
+    except Exception:
+        return 8765
+    return port if 1024 <= port <= 65535 else 8765
+
+
+APP_PORT = _app_port()
+VERSION = "3.13.0-rc1"
 
 
 def _default_archive_root() -> str:
+    # A side-by-side install (it ships port.txt) keeps its own archive so it never mixes with the stable one.
+    if (HOME / "port.txt").exists():
+        return str(HOME / "MediaArchive")
     return default_archive_root()
 
 DEFAULT_CONFIG = {

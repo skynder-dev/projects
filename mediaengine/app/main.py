@@ -3,10 +3,10 @@ from __future__ import annotations
 import os, re, shutil, subprocess, sys, threading, time, webbrowser
 from pathlib import Path
 
-from archivist.config import HOME, VERSION, ensure_dirs
+from archivist.config import APP_PORT, HOME, VERSION, ensure_dirs
 from archivist.platform_adapter import detach_from_legacy_console_if_needed, install_launchers, set_background_priority
 
-HOST, PORT = "127.0.0.1", 8765
+HOST, PORT = "127.0.0.1", APP_PORT
 
 
 def _launcher_version_from_source(source):
@@ -54,8 +54,8 @@ def startup_self_check(app):
     restore the previous backup instead of accepting a partially broken release.
     """
     with app.test_client() as client:
-        startup_headers={"Host":"127.0.0.1:8765"}
-        for path in ("/api/ping", "/", "/media", "/social", "/devices", "/cloud", "/activity", "/settings/connections", "/library", "/search", "/convert", "/jobs", "/best", "/about"):
+        startup_headers={"Host":f"127.0.0.1:{PORT}"}
+        for path in ("/api/ping", "/", "/media", "/social", "/devices", "/cloud", "/activity", "/settings/connections", "/library", "/search", "/convert", "/jobs", "/best", "/about", "/auto"):
             response = client.get(path,headers=startup_headers)
             if response.status_code != 200:
                 raise RuntimeError(f"Startup self-check failed: {path} -> HTTP {response.status_code}")
@@ -87,8 +87,10 @@ def main():
     from archivist.watchdog import start_watchdog
     from archivist.web import create_app
     start_workers(); recover_convert_jobs(); start_watchdog(); app=create_app(); startup_self_check(app); url=f"http://{HOST}:{PORT}/"
-    from archivist.diagnostics import run_once_and_report
-    threading.Thread(target=lambda:(time.sleep(2.0),run_once_and_report()),daemon=True).start()
+    # Extended Windows diagnostics report to the old Remote Lab; run them only on a PC enrolled there.
+    if (HOME/"data"/"remote_lab.json").exists():
+        from archivist.diagnostics import run_once_and_report
+        threading.Thread(target=lambda:(time.sleep(2.0),run_once_and_report()),daemon=True).start()
     suppress=os.environ.get("ARCHIVIST_SUPPRESS_BROWSER")=="1" or "--no-browser" in sys.argv
     if not suppress:
         threading.Thread(target=lambda:(time.sleep(1.0),webbrowser.open(url)),daemon=True).start()

@@ -86,16 +86,23 @@ def install_launchers(home: Path) -> None:
             's.Run Chr(34) & root & "\\.venv\\Scripts\\pythonw.exe" & Chr(34) & " " & Chr(34) & root & "\\launcher.py" & Chr(34),0,False\r\n',
             encoding="utf-8",
         )
+        # A side-by-side install (e.g. a release candidate) ships shortcut_name.txt so it never
+        # repoints the stable "Archivist" desktop shortcut.
+        try:
+            name = (home / "shortcut_name.txt").read_text(encoding="utf-8").strip()
+        except Exception:
+            name = ""
+        name = "".join(ch for ch in name if ch.isalnum() or ch in " ._-")[:60].strip() or "Archivist"
         maker = home / "data" / "make_shortcut.vbs"
         maker.parent.mkdir(parents=True, exist_ok=True)
         maker.write_text(
             'Set sh=CreateObject("WScript.Shell")\r\n'
             'desktop=sh.SpecialFolders("Desktop")\r\n'
-            'Set sc=sh.CreateShortcut(desktop & "\\Archivist.lnk")\r\n'
+            'Set sc=sh.CreateShortcut(desktop & "\\' + name + '.lnk")\r\n'
             'sc.TargetPath="wscript.exe"\r\n'
             'sc.Arguments=Chr(34) & "' + str(vbs).replace('"', '""') + '" & Chr(34)\r\n'
             'sc.WorkingDirectory="' + str(home).replace('"', '""') + '"\r\n'
-            'sc.Description="Archivist"\r\n'
+            'sc.Description="' + name + '"\r\n'
             'sc.Save\r\n',
             encoding="utf-8",
         )
