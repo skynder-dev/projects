@@ -11,7 +11,7 @@ Exit code 0 only if every check passes.
 """
 from __future__ import annotations
 
-import argparse, urllib.parse, hashlib, json, os, subprocess, sys, time
+import argparse, urllib.parse, hashlib, json, os, shutil, subprocess, sys, time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -90,6 +90,14 @@ def main():
         ok_dups = all(sum(1 for m in (d, d.replace(" copy", "")) if m in bad and bad[m].startswith("duplicate")) == 1 for d in dups)
         check("scan_skips_broken_and_one_of_each_duplicate", ok_broken and ok_dups, bad)
         check("setup_shows_only_length_format_sound", all(x in page for x in ("Length", "Format", "Sound")) and "semantic=required" not in page)
+        # a folder with only subfolders of videos (D:\\Videos\\2023, 2024 ...) points to them instead of a dead end
+        parent = home / "parent_of_videos"
+        (parent / "2024 trip").mkdir(parents=True, exist_ok=True)
+        first = next(p for p in sorted(folder.iterdir()) if p.suffix.lower() == ".mp4")
+        shutil.copyfile(first, parent / "2024 trip" / first.name)
+        r = c.get("/auto/new", query_string={"folder": str(parent)}, headers=H)
+        check("folder_with_subfolders_lists_them", r.status_code == 200 and b"No videos directly in this folder" in r.data
+              and urllib.parse.quote(str(parent / "2024 trip")).encode() in r.data, r.data[-400:])
         r = c.get("/auto/new", query_string={"folder": str(folder)}, headers={**H, "Sec-Fetch-Site": "cross-site"})
         check("setup_refuses_other_sites", r.status_code == 400, r.status_code)
         if not ae.model_status()["ready"]:

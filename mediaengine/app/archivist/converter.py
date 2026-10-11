@@ -1,5 +1,5 @@
 from __future__ import annotations
-from .platform_adapter import process_kwargs
+from .platform_adapter import keep_awake, process_kwargs
 
 import json, os, shutil, subprocess, threading, time
 from datetime import datetime, timezone
@@ -115,6 +115,11 @@ def _cancelled(job_id: int | None):
 
 
 def _run_progress(cmd, duration_s: float, progress_cb=None, cancel_cb=None, phase_base=0.0, phase_span=1.0, job_id=None):
+    with keep_awake():   # a long conversion must not be cut by Windows going to sleep
+        return _run_progress_inner(cmd, duration_s, progress_cb, cancel_cb, phase_base, phase_span, job_id)
+
+
+def _run_progress_inner(cmd, duration_s: float, progress_cb=None, cancel_cb=None, phase_base=0.0, phase_span=1.0, job_id=None):
     global _CURRENT_PROCESS, _CURRENT_PROCESS_JOB_ID
     flags, si = _flags()
     full = [str(x) for x in cmd[:-1]] + ["-progress", "pipe:1", "-nostats", str(cmd[-1])]

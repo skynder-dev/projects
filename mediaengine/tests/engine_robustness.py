@@ -10,7 +10,11 @@ Uses <fixtures_dir>/static (2 clips + 1 still video). Checks, technical mode (th
   - a damaged segment cache entry is rebuilt instead of failing the project forever;
   - Social HD is vertical only;
   - phone/camera files (<fixtures_dir>/phone): rotated portrait, HEVC .MOV 60 fps, VFR, no audio track, very short clip,
-    Cyrillic names build a reel, and the rotated clip comes out upright in every format.
+    Cyrillic names build a reel, and the rotated clip comes out upright in every format;
+  - HDR (HLG/PQ) shows normal colours; camcorder 1080i .MTS is read, de-interlaced and can be trimmed by hand;
+  - wide pictures stored in narrow pixels (HDV 1440x1080, DVD 16:9) keep their shape (a square stays square);
+  - other formats (5.1 sound, 120 fps HEVC, square, odd size 4:4:4, MJPEG AVI + PCM, VP9/Opus WebM, 10-bit H.264,
+    two sound tracks, sound starting late, ProRes, old 3GP) are all analysed and used.
 """
 from __future__ import annotations
 
@@ -19,6 +23,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 R3 = ROOT / "app" / "archivist" / "engine_p11"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 
 def sha(p):
@@ -38,6 +43,26 @@ def upright_rows(ff, path):
         r, b = sum(band[0::3]) / (len(band) / 3), sum(band[2::3]) / (len(band) / 3)
         out += "R" if r > b + 60 else ("B" if b > r + 60 else "-")
     return out
+
+
+def box_aspect(ff, path, t):
+    """Width/height of the white square (fixtures: anamorphic/) as shown in the reel frame at t seconds."""
+    pr = subprocess.run([ff, "-hide_banner", "-i", str(path)], capture_output=True, text=True, encoding="utf-8", errors="replace").stderr
+    import re
+    m = re.search(r"Video:.*?(\d{2,5})x(\d{2,5})", pr or "")
+    if not m:
+        return None
+    w, h = int(m.group(1)), int(m.group(2))
+    raw = subprocess.run([ff, "-v", "error", "-ss", str(t), "-i", str(path), "-frames:v", "1", "-f", "rawvideo", "-pix_fmt", "gray", "-"],
+                         capture_output=True).stdout
+    if len(raw) < w * h:
+        return None
+    rows = [raw[y * w:(y + 1) * w] for y in range(h)]
+    ys = [y for y, r in enumerate(rows) if max(r) > 235]
+    if not ys:
+        return None
+    xs = [x for x in range(w) if any(rows[y][x] > 235 for y in ys[::max(1, len(ys) // 40)])]
+    return round((max(xs) - min(xs) + 1) / (max(ys) - min(ys) + 1), 3)
 
 
 def patch_colours(ff, path):
@@ -177,6 +202,65 @@ def main():
         r = json.loads((out / "MediaEngine Result.json").read_text(encoding="utf-8")) if cp.returncode == 0 else None
         check("camcorder_mts_used_and_deinterlaced", r and "00012.MTS" in r["selected_sources"] and "00012.MTS" in r.get("deinterlaced_sources", []),
               cp.stderr[-500:] if not r else (r["selected_sources"], r.get("deinterlaced_sources"), r.get("skipped_inputs")))
+
+        if r and "00012.MTS" in r["selected_sources"]:
+            # a hand trim of the camcorder clip must be cut from the readable stand-in (a cut straight from the stream
+            # gave sound without picture on Windows)
+            ev = next(s for s in r["segments"] if s["source_name"] == "00012.MTS")
+            edits = work_root / "cam_edits.json"
+            edits.write_text(json.dumps({"selection": [s["event_id"] for s in r["segments"]], "trims": {ev["event_id"]: [1.0, 5.0]}}),
+                             encoding="utf-8")
+            out = work_root / "out_cam_trim"
+            cp = subprocess.run([sys.executable, str(R3 / "p11_folder_to_reel_r3.py"), "--input-dir", str(cam), "--output-dir", str(out),
+                                 "--work-dir", str(work_root / "work_cam"), "--runtime-dir", str(R3), "--target-seconds", "15",
+                                 "--semantic", "off", "--profile", "16x9", "--edits", str(edits)],
+                                capture_output=True, text=True, encoding="utf-8", errors="replace", env=env)
+            r2 = json.loads((out / "MediaEngine Result.json").read_text(encoding="utf-8")) if cp.returncode == 0 else None
+            seg = next((s for s in (r2 or {}).get("segments", []) if s["source_name"] == "00012.MTS"), None)
+            frame = None
+            if seg:
+                fcp = subprocess.run([ff, "-v", "error", "-ss", str(seg["reel_in_s"] + 1.0), "-i", str(out / "MediaEngine Reel.mp4"),
+                                      "-frames:v", "1", "-vf", "scale=32:18", "-f", "rawvideo", "-pix_fmt", "gray", "-"], capture_output=True)
+                frame = max(fcp.stdout) if fcp.stdout else None
+            check("camcorder_mts_hand_trim_has_picture", seg and seg.get("manual_trim") and frame and frame > 60,
+                  cp.stderr[-500:] if not r2 else (seg, frame))
+
+    # wide pictures in narrow pixels: the white square must stay square (it came out 0.70 wide before)
+    ana = fx / "anamorphic"
+    if ana.is_dir():
+        for prof, res in (("16x9", "standard"), ("9x16", "social_hd")):
+            out = work_root / f"out_ana_{prof}"
+            cp = subprocess.run([sys.executable, str(R3 / "p11_folder_to_reel_r3.py"), "--input-dir", str(ana), "--output-dir", str(out),
+                                 "--work-dir", str(work_root / "work_ana"), "--runtime-dir", str(R3), "--target-seconds", "15",
+                                 "--semantic", "off", "--profile", prof, "--resolution", res],
+                                capture_output=True, text=True, encoding="utf-8", errors="replace", env=env)
+            r = json.loads((out / "MediaEngine Result.json").read_text(encoding="utf-8")) if cp.returncode == 0 else None
+            shapes = []
+            for s in (r or {}).get("segments", []):
+                mid = (s["reel_in_s"] + s["reel_out_s"]) / 2
+                shapes.append((s["source_name"], box_aspect(ff, out / "MediaEngine Reel.mp4", mid)))
+            check(f"anamorphic_keeps_shape_{prof}", r and set(r.get("widened_sources", {})) == {"HDV_1440.mp4", "DVD_169.mpg"}
+                  and len(shapes) >= 2 and all(a and 0.96 <= a <= 1.04 for _, a in shapes),
+                  cp.stderr[-500:] if not r else (r.get("widened_sources"), shapes))
+
+    # other formats people have on disk
+    fmt = fx / "formats"
+    have = sorted(p.name for p in fmt.iterdir()) if fmt.is_dir() else []
+    if have:
+        out = work_root / "out_formats"
+        cp = subprocess.run([sys.executable, str(R3 / "p11_folder_to_reel_r3.py"), "--input-dir", str(fmt), "--output-dir", str(out),
+                             "--work-dir", str(work_root / "work_formats"), "--runtime-dir", str(R3), "--target-seconds", "60",
+                             "--semantic", "off", "--profile", "16x9"], capture_output=True, text=True, encoding="utf-8", errors="replace", env=env)
+        r = json.loads((out / "MediaEngine Result.json").read_text(encoding="utf-8")) if cp.returncode == 0 else None
+        used = set((r or {}).get("selected_sources", []))
+        skipped = {x["name"]: x["reason"] for x in (r or {}).get("skipped_inputs", [])}
+        check("other_formats_analysed", r and not skipped, cp.stderr[-800:] if not r else skipped)
+        check("other_formats_used", r and len(used) >= len(have) - 2, (sorted(set(have) - used), len(have)))
+        if r:
+            from media_measure import av_durations
+            vd, ad = av_durations(out / "MediaEngine Reel.mp4", ff)
+            check("other_formats_sound_as_long_as_picture", vd > 30 and ad is not None and abs(vd - ad) <= 0.1, (vd, ad, r["audio"]["applied"]))
+        print("formats:", len(have), "used:", len(used), "stage seconds:", (r or {}).get("stage_seconds"))
 
     print(json.dumps({"passed": sum(ok for _, ok in checks), "total": len(checks)}))
     return 0 if all(ok for _, ok in checks) else 1

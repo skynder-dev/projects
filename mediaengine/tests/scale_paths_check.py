@@ -72,6 +72,8 @@ def main():
             check("reel_uses_several_sources", len({s["source_name"] for s in rev["result"]["segments"]}) >= 3)
             check("no_input_skipped_for_path_length", not [x for x in rev["result"].get("skipped_inputs", []) if "ANALYSIS" in x["reason"]],
                   rev["result"].get("skipped_inputs"))
+            check("long_names_cut_from_original", rev["result"].get("render_source") == "ORIGINAL_FULL_QUALITY_RECUT"
+                  and not any(w.startswith("PREVIEW_QUALITY_USED") for w in rev["result"].get("warnings", [])), rev["result"].get("warnings"))
         else:
             log = home / "data" / "auto_edit" / f"p{pid}" / "jobs" / f"j{jid}.log"
             print(log.read_text(encoding="utf-8", errors="replace")[-2500:] if log.exists() else "no log")

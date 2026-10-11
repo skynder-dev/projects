@@ -14,6 +14,31 @@ def is_windows() -> bool:
     return os.name == "nt"
 
 
+class keep_awake:
+    """While a long build or conversion runs, Windows must not go to sleep (the screen may still turn off).
+    Per-thread flag (SetThreadExecutionState): set and cleared in the thread that does the work. No-op elsewhere."""
+    ES_CONTINUOUS, ES_SYSTEM_REQUIRED = 0x80000000, 0x00000001
+
+    def __enter__(self):
+        self.ok = False
+        if os.name == "nt":
+            try:
+                import ctypes
+                self.ok = bool(ctypes.windll.kernel32.SetThreadExecutionState(self.ES_CONTINUOUS | self.ES_SYSTEM_REQUIRED))
+            except Exception:
+                self.ok = False
+        return self
+
+    def __exit__(self, *exc):
+        if self.ok:
+            try:
+                import ctypes
+                ctypes.windll.kernel32.SetThreadExecutionState(self.ES_CONTINUOUS)
+            except Exception:
+                pass
+        return False
+
+
 def process_kwargs(existing: dict | None = None, *, detached: bool = False, below_normal: bool = True, hidden: bool = True) -> dict:
     kw = dict(existing or {})
     if not is_windows():

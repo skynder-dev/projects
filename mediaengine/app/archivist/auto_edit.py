@@ -16,7 +16,7 @@ from pathlib import Path
 
 from .config import DATA, HOME, INSTALL, load_config
 from .db import db, now_iso
-from .platform_adapter import process_kwargs
+from .platform_adapter import keep_awake, process_kwargs
 
 ENGINE_DIR = Path(__file__).resolve().parent / "engine_p11"
 ORCHESTRATOR = ENGINE_DIR / "p11_folder_to_reel_r3.py"
@@ -258,6 +258,24 @@ def list_videos(folder: Path) -> list[Path]:
     return sorted(vids, key=lambda p: p.name.lower())
 
 
+def subfolders_with_videos(folder, limit: int = 40) -> list[tuple[str, int]]:
+    """For a folder with no videos of its own (e.g. D:\\Videos with one folder per year): its subfolders that do
+    have videos, with how many, so the user can open one instead of guessing."""
+    out = []
+    try:
+        subs = sorted((d for d in Path(folder).iterdir() if d.is_dir() and not d.name.startswith((".", "$"))),
+                      key=lambda d: d.name.lower())
+    except OSError:
+        return out
+    for d in subs[:400]:
+        n = len(list_videos(d))
+        if n:
+            out.append((str(d), n))
+            if len(out) >= limit:
+                break
+    return out
+
+
 def _probe(path: Path) -> dict:
     if str(ENGINE_DIR) not in sys.path:
         sys.path.insert(0, str(ENGINE_DIR))
@@ -380,8 +398,8 @@ def check_folder(folder) -> Path:
         raise ValueError("Folder not found")
     _guard_private(f)
     if len(list_videos(f)) > MAX_INPUTS:
-        raise ValueError(f"This folder has more than {MAX_INPUTS} videos. Choose a folder with up to {MAX_INPUTS} videos "
-                         "(for example, copy the clips for one reel into their own folder).")
+        raise ValueError(f"This folder has more than {MAX_INPUTS} videos. Use 'Choose videos…' to pick up to {MAX_INPUTS} of them, "
+                         "or choose a folder with fewer videos.")
     return f
 
 
@@ -625,6 +643,21 @@ def _request_key(p: dict, settings: dict) -> str:
     return hashlib.sha256(raw.encode()).hexdigest()
 
 
+MIN_FREE_BYTES = 1_000_000_000
+
+
+def check_free_space() -> None:
+    """Refuse to start a build that would surely fail half-way on a full data drive."""
+    try:
+        AE_ROOT.mkdir(parents=True, exist_ok=True)
+        free = shutil.disk_usage(AE_ROOT).free
+    except OSError:
+        return
+    if free < MIN_FREE_BYTES:
+        raise ValueError(f"Not enough free space on the data drive: {free / 1e9:.1f} GB. "
+                         "A reel needs at least 1 GB to work in. Free some space (for example 'Free cache' on old projects) and try again.")
+
+
 def start_job(pid: int, raw_settings: dict, *, retry=False) -> int:
     """Queue a reel build. Same project + same inputs + same settings never builds twice."""
     ensure_schema()
@@ -641,6 +674,7 @@ def start_job(pid: int, raw_settings: dict, *, retry=False) -> int:
         same = con.execute("SELECT * FROM ae_jobs WHERE project_id=? AND request_key=? ORDER BY id DESC LIMIT 1", (int(pid), key)).fetchone()
         if same and (same["status"] in ("queued", "running", "done")):
             return int(same["id"])
+        check_free_space()
         ts = now_iso()
         cur = con.execute("INSERT INTO ae_jobs(project_id,request_key,settings_json,status,stage,created_at) VALUES(?,?,?,?,?,?)",
                           (int(pid), key, json.dumps(settings, sort_keys=True), "queued", "queued", ts))
@@ -874,7 +908,7 @@ def _run_job(jid: int) -> None:
         input_list.write_text("\n".join(p["files"]) + "\n", encoding="utf-8")
     cmd = engine_command(Path(p["folder"]), out_dir, work_dir, progress_file, s, edits_file, skip_file, input_list)
     kw = process_kwargs(below_normal=True) if os.name == "nt" else {"start_new_session": True}
-    with log_file.open("w", encoding="utf-8", errors="replace") as log:
+    with log_file.open("w", encoding="utf-8", errors="replace") as log, keep_awake():
         proc = subprocess.Popen(cmd, stdout=log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, env=_engine_env(), cwd=str(ENGINE_DIR), **kw)
         _attach_job_object(proc)
         with _LOCK:

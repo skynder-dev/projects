@@ -61,7 +61,8 @@ def main():
         check("heavy_nothing_timed_out", not [x for x in r.get("skipped_inputs", []) if "TIMEOUT" in x["reason"] or "ANALYSIS" in x["reason"]],
               r.get("skipped_inputs"))
         check("heavy_social_hd", (r["output"]["width"], r["output"]["height"]) == (1080, 1920))
-        check("heavy_cut_from_original", r.get("render_source") == "ORIGINAL_FULL_QUALITY_RECUT")
+        check("heavy_cut_from_original", r.get("render_source") == "ORIGINAL_FULL_QUALITY_RECUT"
+              and not any(w.startswith("PREVIEW_QUALITY_USED") for w in r.get("warnings", [])), r.get("warnings"))
         check("heavy_uses_several_sources", len(set(r["selected_sources"])) >= 2, r["selected_sources"])
     print(json.dumps({"build_s": round(dt, 1), "reel_s": r and r["actual_duration_s"], "passed": sum(checks), "total": len(checks)}))
     return 0 if all(checks) else 1

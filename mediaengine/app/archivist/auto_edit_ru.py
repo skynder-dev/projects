@@ -68,6 +68,24 @@ PHRASES = {
     "Auto → muted (some moments have no sound; choose Source to keep the sound)":
         "Авто → без звука (в части моментов нет звука; выбери «Исходный», чтобы оставить звук)",
     "Auto → muted (no useful sound found)": "Авто → без звука (полезного звука нет)",
+    "overlapping moment(s) of the same video were left out so nothing repeats":
+        "пересекающихся моментов одного видео убрано, чтобы ничего не повторялось",
+    "for this length the best": "для такой длины сравнивались лучшие", "moments were compared": "моментов",
+    "HDR video could not be converted on this PC: colours may look grey": "HDR-видео не удалось перевести на этом компьютере: цвета могут быть серыми",
+    "lower quality (analysis preview) used for:": "пониженное качество (копия для анализа) использовано для:",
+    "- the original could not be re-cut": "— оригинал не удалось обработать",
+    "HDR video converted to normal colours:": "HDR-видео переведено в обычные цвета:",
+    "camcorder video de-interlaced:": "видео с камеры (чересстрочное) преобразовано в обычное:",
+    "wide picture stored in narrow pixels shown in its real shape:": "широкая картинка из «узких» пикселей показана в правильных пропорциях:",
+    "Not enough free space on the data drive:": "Мало места на диске с данными:", "GB.": "ГБ.",
+    "A reel needs at least 1 GB to work in. Free some space (for example 'Free cache' on old projects) and try again.":
+        "Для монтажа нужен хотя бы 1 ГБ. Освободи место (например, «Очистить кэш» в старых проектах) и попробуй снова.",
+    "This folder has more than 64 videos. Use 'Choose videos…' to pick up to 64 of them, or choose a folder with fewer videos.":
+        "В папке больше 64 видео. Нажми «Выбрать видео…» и выбери до 64 из них, или возьми папку, где видео меньше.",
+    "Choose at most 64 videos for one reel.": "Для одного ролика можно выбрать не больше 64 видео.",
+    "No videos directly in this folder.": "В самой папке видео нет.", "video(s)": "видео",
+    "These folders inside it have videos — open one (or use Choose videos… to pick from several):":
+        "Видео есть во вложенных папках — открой одну (или нажми «Выбрать видео…», чтобы взять из нескольких):",
     "Skipped:": "Пропущено:", "Requested": "Запрошено", "got": "получилось",
     "there were not enough different moments in this footage for a longer reel.": "в этом материале не хватило разных моментов на более длинный ролик.",
     "Blind comparisons": "Слепые сравнения", "preferred over": "лучше, чем", "about the same": "примерно одинаково",

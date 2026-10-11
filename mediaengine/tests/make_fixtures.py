@@ -58,6 +58,8 @@ def main(out: Path) -> None:
     make_phone(ff, out / "phone")
     make_hdr(ff, out / "hdr")
     make_camcorder(ff, out / "camcorder", seven)
+    make_anamorphic(ff, out / "anamorphic")
+    make_formats(ff, out / "formats")
     print("fixtures ready:", sorted(p.name for p in seven.iterdir()), sorted(p.name for p in two.iterdir()))
 
 
@@ -137,6 +139,63 @@ def make_camcorder(ff: str, cam: Path, seven: Path) -> None:
                         "-c:a", "ac3", "-f", "mpegts", str(mts)], check=True)
     if not (cam / "clip_3.mp4").exists():
         shutil.copyfile(seven / "clip_3.mp4", cam / "clip_3.mp4")
+
+
+BOX = "eq=brightness=-0.35,drawbox=x=iw/2-ih*0.185:y=ih*0.315:w=ih*0.37:h=ih*0.37:color=white:t=fill"
+
+
+def make_anamorphic(ff: str, d: Path) -> None:
+    """Wide pictures stored in narrow pixels, with a white SQUARE in the middle (must stay square in the reel):
+    HDV/AVCHD-style 1440x1080 (pixel aspect 4:3) and DVD-style 16:9 MPEG-2 720x576 (pixel aspect 64:45)."""
+    d.mkdir(parents=True, exist_ok=True)
+    for name, size, store, sar, codec in (("HDV_1440.mp4", "1920x1080", "1440:1080", "4/3", ["-c:v", "libx264", "-preset", "ultrafast"]),
+                                          ("DVD_169.mpg", "1024x576", "720:576", "64/45", ["-c:v", "mpeg2video", "-b:v", "6M"])):
+        dst = d / name
+        if dst.exists():
+            continue
+        subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", f"testsrc2=size={size}:rate=25", "-f", "lavfi", "-i",
+                        "sine=frequency=440:sample_rate=48000", "-t", "12", "-vf", f"hue=h=t*40,{BOX},scale={store},setsar={sar}",
+                        *codec, "-pix_fmt", "yuv420p", "-c:a", "aac" if name.endswith(".mp4") else "mp2", "-shortest", str(dst)], check=True)
+
+
+def make_formats(ff: str, d: Path) -> None:
+    """Other formats people have on disk. A format this ffmpeg build cannot WRITE is skipped (and reported)."""
+    d.mkdir(parents=True, exist_ok=True)
+    tone = lambda f, sr=48000: ["-f", "lavfi", "-i", f"sine=frequency={f}:sample_rate={sr}"]
+    specs = {
+        "surround_51.mp4": ["-f", "lavfi", "-i", "testsrc2=size=1920x1080:rate=25,hue=h=t*40", *tone(440), "-filter_complex",
+                            "[1:a]pan=5.1|FL=c0|FR=c0|FC=c0|LFE=c0|BL=c0|BR=c0[a]", "-map", "0:v", "-map", "[a]",
+                            "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p", "-c:a", "aac"],
+        "slowmo_120.MOV": ["-f", "lavfi", "-i", "testsrc=size=1280x720:rate=120,hue=h=t*90", *tone(600), "-c:v", "libx265",
+                           "-x265-params", "log-level=error", "-preset", "ultrafast", "-tag:v", "hvc1", "-pix_fmt", "yuv420p", "-c:a", "aac"],
+        "square.mp4": ["-f", "lavfi", "-i", "mandelbrot=size=1080x1080:rate=30", *tone(500), "-c:v", "libx264", "-preset", "ultrafast",
+                       "-pix_fmt", "yuv420p", "-c:a", "aac"],
+        "odd_size_444.mkv": ["-f", "lavfi", "-i", "testsrc2=size=853x479:rate=30000/1001,hue=s=t", *tone(700), "-c:v", "libx264",
+                             "-preset", "ultrafast", "-pix_fmt", "yuv444p", "-c:a", "aac"],
+        "OLDCAM01.AVI": ["-f", "lavfi", "-i", "life=size=640x480:rate=15:mold=10:ratio=0.2", *tone(350, 22050), "-c:v", "mjpeg",
+                         "-q:v", "4", "-pix_fmt", "yuvj420p", "-c:a", "pcm_s16le", "-ac", "1"],
+        "screen.webm": ["-f", "lavfi", "-i", "testsrc2=size=1280x720:rate=30,hue=h=t*60", *tone(800), "-c:v", "libvpx-vp9",
+                        "-deadline", "realtime", "-cpu-used", "8", "-b:v", "1M", "-c:a", "libopus"],
+        "ten_bit.mov": ["-f", "lavfi", "-i", "testsrc2=size=1920x1080:rate=50,hue=h=t*30", *tone(900), "-c:v", "libx264",
+                        "-preset", "ultrafast", "-pix_fmt", "yuv420p10le", "-c:a", "aac"],
+        "two_tracks.mp4": ["-f", "lavfi", "-i", "testsrc2=size=1280x720:rate=30,hue=h=-t*50", *tone(300), *tone(1200), "-map", "0:v",
+                           "-map", "1:a", "-map", "2:a", "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p", "-c:a", "aac"],
+        "late_sound.mp4": ["-f", "lavfi", "-i", "testsrc2=size=1280x720:rate=30,hue=h=t*20", *tone(1000), "-filter_complex",
+                           "[1:a]adelay=2000|2000,atrim=0:10[a]", "-map", "0:v", "-map", "[a]", "-c:v", "libx264", "-preset", "ultrafast",
+                           "-pix_fmt", "yuv420p", "-c:a", "aac"],
+        "prores.mov": ["-f", "lavfi", "-i", "testsrc2=size=1920x1080:rate=24000/1001,hue=h=t*70", *tone(650), "-c:v", "prores_ks",
+                       "-profile:v", "0", "-c:a", "pcm_s24le"],
+        "oldphone.3gp": ["-f", "lavfi", "-i", "testsrc2=size=176x144:rate=15,hue=h=t*80", *tone(450, 8000), "-c:v", "mpeg4",
+                         "-c:a", "aac", "-ar", "8000", "-ac", "1"],
+    }
+    for name, args in specs.items():
+        dst = d / name
+        if dst.exists():
+            continue
+        cp = subprocess.run([ff, "-v", "error", "-y", *args, "-t", "8", str(dst)], capture_output=True, text=True)
+        if cp.returncode != 0:
+            dst.unlink(missing_ok=True)
+            print(f"format fixture skipped (this ffmpeg cannot write it): {name}: {cp.stderr.strip()[-200:]}")
 
 
 if __name__ == "__main__":

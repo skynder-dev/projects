@@ -60,6 +60,21 @@ def main():
     check("check_files refuses missing", raises(ae.check_files, [str(d / "nope.mp4")]))
     check("check_files refuses relative", raises(ae.check_files, ["a.mp4"]))
     check("check_files accepts one", [p.name for p in ae.check_files([str(d / "a.mp4")])] == ["a.mp4"])
+    # a folder of year folders: the subfolders with videos are offered
+    yrs = work / "years"; (yrs / "2023").mkdir(parents=True, exist_ok=True); (yrs / "2024").mkdir(exist_ok=True); (yrs / "docs").mkdir(exist_ok=True)
+    (yrs / "2023" / "a.mp4").write_bytes(b"0" * 2048); (yrs / "2024" / "b.MOV").write_bytes(b"0" * 2048); (yrs / "docs" / "c.txt").write_text("c")
+    check("subfolders_with_videos", [(Path(x).name, n) for x, n in ae.subfolders_with_videos(yrs)] == [("2023", 1), ("2024", 1)],
+          ae.subfolders_with_videos(yrs))
+    # a nearly full data drive refuses a new build up front (not half-way)
+    old_min = ae.MIN_FREE_BYTES
+    ae.MIN_FREE_BYTES = 1 << 62
+    check("full drive refuses a build", raises(ae.check_free_space))
+    ae.MIN_FREE_BYTES = old_min
+    check("normal drive allows a build", not raises(ae.check_free_space))
+    # Windows must not sleep while a reel is built (no-op elsewhere)
+    from archivist.platform_adapter import keep_awake
+    with keep_awake() as k:
+        check("keep_awake set on Windows", k.ok == (os.name == "nt"), k.ok)
     print({"passed": sum(checks), "total": len(checks)})
     return 0 if all(checks) else 1
 

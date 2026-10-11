@@ -260,7 +260,7 @@ def apply_manual_trims(v52,selected,trims,work_dir):
     for e in selected:
         eid=str(e["event_id"])
         if eid not in trims: out.append(e); continue
-        a,b=trims[eid]; src=Path(e.get("source_path") or "")
+        a,b=trims[eid]; src=Path(e.get("recut_path") or e.get("source_path") or "")   # recut_path: MP4 stand-in of a camcorder stream
         if not src.is_file(): raise RuntimeError("EDIT_SOURCE_MISSING:"+eid)
         dur=float(v52.ffprobe(src)["format"]["duration"])
         a=max(0.0,min(float(a),dur)); b=max(0.0,min(float(b),dur))
@@ -272,7 +272,8 @@ def apply_manual_trims(v52,selected,trims,work_dir):
             cp=subprocess.run([v52.FFMPEG,"-hide_banner","-loglevel","error","-y","-ss",f"{a:.3f}","-i",str(src),"-t",f"{b-a:.3f}",
                                "-map","0:v:0","-map","0:a?","-c:v","libx264","-preset","fast","-crf","18","-pix_fmt","yuv420p",
                                "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(tmp)],capture_output=True,text=True)
-            if cp.returncode!=0: raise RuntimeError("EDIT_TRIM_FAILED:"+cp.stderr[-600:])
+            if cp.returncode!=0 or "Video:" not in _video_line(v52.FFMPEG,tmp):
+                tmp.unlink(missing_ok=True); raise RuntimeError("EDIT_TRIM_FAILED:"+(cp.stderr or "no picture in the cut")[-600:])
             os.replace(tmp,clip)
         x=dict(e); x["clip_path"]=str(clip); x["clip_bytes"]=clip.stat().st_size; x["clip_sha256"]=sha256_file(clip)
         x["duration_s"]=float(v52.ffprobe(clip)["format"]["duration"]); x["start_s"]=round(a,3); x["end_s"]=round(a+x["duration_s"],3)
@@ -389,7 +390,7 @@ def build_event_library(runtime_dir,input_rows,work_dir,skipped=None):
     ok,lib=valid_event_cache(libpath,input_rows)
     if ok: return libpath,lib,"reused_exact_cache",input_rows
     longest=max([float(r.get("duration_s") or 0) for r in input_rows]+[0.0])
-    timeout=max(120.0,min(3600.0,3.0*longest))
+    timeout=max(120.0,min(6*3600.0,3.0*longest))   # an hour-long 4K 60 fps video can take over an hour on a slow PC
     # Several analysis processes in parallel (R2: one after another). A video always goes to the same group
     # (by its SHA-256), so a later build reuses its finished analysis.
     try: k_env=int(os.environ.get("MEDENG_ANALYSIS_WORKERS") or 0)
@@ -566,26 +567,44 @@ def is_interlaced(ffmpeg,src):
     line=_video_line(ffmpeg,src)
     return any(x in line for x in ("top first","bottom first","top coded first","bottom coded first"))
 
-def full_quality_clip(v52,e,work_dir,hdr=None,deinterlace=False):
+def pixel_aspect(ffmpeg,src):
+    """Sample (pixel) aspect ratio of the first video stream, 1.0 = square pixels. Camcorder and disc video often
+    stores a wide picture in narrow pixels: HDV/AVCHD 1440x1080 (4:3 -> 16:9), DVD/DV 720x576 or 720x480
+    (16:15, 64:45, 8:9, 32:27). The accepted render scales stored pixels, so such video came out squeezed."""
+    m=re.search(r"SAR (\d+):(\d+)",_video_line(ffmpeg,src))
+    if not m: return 1.0
+    a,b=int(m.group(1)),int(m.group(2))
+    return a/b if a>0 and b>0 else 1.0
+
+def is_anamorphic(ffmpeg,src):
+    return abs(pixel_aspect(ffmpeg,src)-1.0)>0.02     # 404:405 after a phone crop is not worth a re-encode
+
+SQUARE_PIXELS="scale=w=trunc(iw*sar/2+0.5)*2:h=ih,setsar=1"   # widen to the picture's real shape (1440x1080 4:3 -> 1920x1080)
+
+_FQ_FALLBACK=[]   # sources whose moments had to stay at analysis-preview quality (reported, not hidden)
+
+def full_quality_clip(v52,e,work_dir,hdr=None,deinterlace=False,square=False):
     """Technical mode: moments are found and scored on the accepted V12 preview clips (max 960 px wide, re-timed to
     25 fps, sound and picture re-zeroed separately -> sound up to ~45 ms early). The reel itself is cut from the
     ORIGINAL at the same source interval (as R2 already does in AI mode), so it keeps full resolution, the source
     frame rate and exact sync. Selection, order, pacing and boundary decisions are unchanged."""
     src=Path(e.get("recut_path") or e.get("source_path") or "")   # recut_path: MP4 stand-in of a camcorder stream
     a=float(e.get("start_s") or 0.0); b=float(e.get("end_s") or 0.0)
-    if not src.is_file() or b-a<0.3: return e
-    key=hashlib.sha256(f'{e.get("source_sha256")}|{a:.3f}|{b:.3f}|FULLRES1|{hdr or "SDR"}{"|DEINT" if deinterlace else ""}'.encode()).hexdigest()[:20]
+    if b-a<0.3: return e
+    if not src.is_file():
+        _FQ_FALLBACK.append(str(e.get("source_name"))); return e
+    key=hashlib.sha256(f'{e.get("source_sha256")}|{a:.3f}|{b:.3f}|FULLRES1|{hdr or "SDR"}{"|DEINT" if deinterlace else ""}{"|SQ" if square else ""}'.encode()).hexdigest()[:20]
     d=work_dir/"full_quality"; d.mkdir(parents=True,exist_ok=True)
     clip=d/f"{key}.mp4"
     if not clip.is_file():
         tmp=d/f".{key}.tmp.mp4"
-        chain=(["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if deinterlace else [])+([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else [])
+        chain=(["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if deinterlace else [])+([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else [])+([SQUARE_PIXELS] if square else [])
         conv=(["-vf",",".join(chain)] if chain else [])+(["-color_primaries","bt709","-color_trc","bt709","-colorspace","bt709"] if hdr in HDR_TO_SDR else [])
         cp=subprocess.run([v52.FFMPEG,"-hide_banner","-loglevel","error","-y","-ss",f"{a:.3f}","-i",str(src),"-t",f"{b-a:.3f}",
                            "-map","0:v:0","-map","0:a?",*conv,"-c:v","libx264","-preset","veryfast","-crf","16","-pix_fmt","yuv420p",
                            "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(tmp)],capture_output=True,text=True)
         if cp.returncode!=0 or "Video:" not in _video_line(v52.FFMPEG,tmp):
-            tmp.unlink(missing_ok=True); return e      # keep the preview clip rather than fail the reel
+            tmp.unlink(missing_ok=True); _FQ_FALLBACK.append(str(e.get("source_name"))); return e   # keep the preview clip rather than fail the reel
         os.replace(tmp,clip)
     x=dict(e); x["preview_clip_path"]=e.get("clip_path"); x["clip_path"]=str(clip)
     x["clip_bytes"]=clip.stat().st_size; x["clip_sha256"]=sha256_file(clip)
@@ -752,7 +771,7 @@ def run(args):
         for ev in events:
             o=alias_back.get(str(ev.get("source_name")))
             if o:
-                if Path(o["name"]).suffix.lower() in REMUX_EXT: ev["recut_path"]=ev.get("source_path")
+                ev["recut_path"]=ev.get("source_path")   # stand-in: camcorder remux, or a short name Windows can open
                 ev["source_name"]=o["name"]; ev["source_path"]=o["path"]
         scored=v52.score_events(events,work_dir/"V22_SCORE_CACHE.json")
         pool=scored
@@ -794,7 +813,7 @@ def run(args):
     segcache=work_dir/"segment_cache_v2"; segcache.mkdir(parents=True,exist_ok=True)
     segs=[]; durs=[]; seg_meta=[]
     render_source="AI_CANDIDATE_CLIPS_FROM_ORIGINAL" if use_semantic else "ORIGINAL_FULL_QUALITY_RECUT"
-    hdr_sources={}; deinterlaced=[]
+    hdr_sources={}; deinterlaced=[]; widened={}
     for si,(e,use) in enumerate(zip(order,pace["durations_s"])):
         progress("render",si,len(order),str(e["source_name"]))
         probe_src=e.get("recut_path") or e.get("source_path")
@@ -806,8 +825,10 @@ def run(args):
             if not zscale_available(v52.FFMPEG):
                 hdr=None
                 if "HDR_NOT_CONVERTED" not in warnings: warnings.append("HDR_NOT_CONVERTED")
-        if hdr or deint or (not use_semantic and str(e["event_id"]) not in trims):   # manual trims are already cut from the original
-            e=full_quality_clip(v52,e,work_dir,hdr,deint)
+        sq=bool(probe_src) and is_anamorphic(v52.FFMPEG,probe_src)
+        if sq: widened[str(e["source_name"])]=round(pixel_aspect(v52.FFMPEG,probe_src),4)
+        if hdr or deint or sq or (not use_semantic and str(e["event_id"]) not in trims):   # manual trims are already cut from the original
+            e=full_quality_clip(v52,e,work_dir,hdr,deint,sq)
         key=hashlib.sha256(json.dumps({"clip_sha256":e["clip_sha256"],"use_s":round(float(use),3),
                                      "audio":audio_mode,"profile":profile,"resolution":resolution,"fps":30,"quality":"high"},
                                     sort_keys=True,separators=(",",":")).encode()).hexdigest()[:20]
@@ -828,6 +849,8 @@ def run(args):
             os.replace(tmp,seg); meta["sha256"]=sha256_file(seg); atomic_json(meta_path,meta)
         segs.append(seg); durs.append(video_seconds(v52.FFMPEG,seg)); seg_meta.append(meta)
 
+    if _FQ_FALLBACK:
+        warnings.append("PREVIEW_QUALITY_USED:"+",".join(sorted(set(_FQ_FALLBACK))))
     progress("finish",0,1,"joining segments and verifying")
     render_dir=work_dir/"final_v2"; render_dir.mkdir(parents=True,exist_ok=True)
     temp_final=render_dir/(fingerprint+".mp4")
@@ -865,7 +888,7 @@ def run(args):
     result={
         "contract":CONTRACT_VERSION,"status":"PASS",
         "segments":timeline,"candidate_pool":pool_rows,"excluded_event_ids":sorted(exclude),"manual_edits":edits,
-        "skipped_inputs":skipped_inputs,"warnings":warnings,"render_source":render_source,"hdr_sources":hdr_sources,"deinterlaced_sources":deinterlaced,
+        "skipped_inputs":skipped_inputs,"warnings":warnings,"render_source":render_source,"hdr_sources":hdr_sources,"deinterlaced_sources":deinterlaced,"widened_sources":widened,
         "rendered_transition_s":[round(float(x["duration_s"]),6) for x in render_trans],
         "engine":{"orchestrator_sha256":sha256_file(Path(__file__)),"semantic_hook_sha256":SEMANTIC_HOOK_SHA},
         "input_folder":str(input_dir),"input_list":input_list,"input_fingerprint":fingerprint,"input_count":len(input_rows),

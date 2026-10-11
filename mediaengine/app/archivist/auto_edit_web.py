@@ -201,6 +201,15 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         except Exception as exc:
             return err_page(str(exc))
         if not scan["usable"]:
+            subs = [] if chosen or scan["files"] else ae.subfolders_with_videos(scan["folder"])
+            if subs:
+                links = "".join(f"<li><a href='/auto/new?folder={urllib.parse.quote(p_)}' translate='no'>{e(Path(p_).name)}</a> "
+                                f"<span class='muted'>· {n} video(s)</span></li>" for p_, n in subs)
+                return page("New reel", f"<div class='pagehead'><div class='eyebrow'>Auto Edit · new reel</div>"
+                                        f"<h1 translate='no'>{e(Path(scan['folder']).name or scan['folder'])}</h1>"
+                                        f"<div class='lead ae-path'>{e(scan['folder'])}</div></div>"
+                                        f"<div class='card'><b>No videos directly in this folder.</b> These folders inside it have videos — "
+                                        f"open one (or use Choose videos… to pick from several):<ul style='margin:8px 0 0'>{links}</ul></div>")
             return err_page("No readable videos " + ("among the chosen files." if chosen else "in this folder."))
         ms = ae.model_status()
         def file_row(r):
@@ -249,6 +258,7 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
                 raise ValueError("Without the AI model, tick 'Build with Technical only' to continue.")
             ae.normalize_settings({"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode")},
                                   model_ready=ae.model_status()["ready"])
+            ae.check_free_space()
             pid = ae.create_project(f.get("folder"), f.get("title"), files=f.getlist("file") or None)
             ae.start_job(pid, {"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode")})
         except Exception as exc:
@@ -655,12 +665,17 @@ def _review_html(p, rev, e):
             notes.append(f"{w.split(':')[-1]} overlapping moment(s) of the same video were left out so nothing repeats")
         elif w.startswith("SELECTION_SEARCH_TOP_"):
             notes.append(f"for this length the best {w.rsplit('_', 1)[-1]} moments were compared")
+        elif w.startswith("PREVIEW_QUALITY_USED:"):
+            notes.append("lower quality (analysis preview) used for: " + w.split(":", 1)[1].replace(",", ", ")
+                         + " - the original could not be re-cut")
         elif w == "HDR_NOT_CONVERTED":
             notes.append("HDR video could not be converted on this PC: colours may look grey")
     if res.get("hdr_sources"):
         notes.append("HDR video converted to normal colours: " + ", ".join(res["hdr_sources"]))
     if res.get("deinterlaced_sources"):
         notes.append("camcorder video de-interlaced: " + ", ".join(res["deinterlaced_sources"]))
+    if res.get("widened_sources"):
+        notes.append("wide picture stored in narrow pixels shown in its real shape: " + ", ".join(res["widened_sources"]))
     skipped_html_extra = ("<div class='muted' style='margin-top:4px'>" + e(" · ".join(notes)) + "</div>") if notes else ""
     exp_html = ""
     if is_acc:

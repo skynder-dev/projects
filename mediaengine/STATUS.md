@@ -69,7 +69,7 @@ The 11 runtime modules, adapter and validator are byte-identical to R2 (CI-check
 | Damaged / duplicate / Private inputs skipped and reported | R2 failed or used them |
 | A file the analysis cannot use (e.g. a still video) is skipped and reported | R2 failed the whole reel |
 | Technical library built only from the current inputs | R2 rescanned every item ever analysed in the work folder → any removed/replaced/Private file broke all later builds (reproduced) |
-| Per-file analysis timeout grows with the longest video (≥120 s, ≤1 h) | R2 fixed 120 s would skip long videos |
+| Per-file analysis timeout grows with the longest video (≥120 s, ≤6 h) | R2 fixed 120 s would skip long videos; an hour of 4K 60 fps can take over an hour on a slow PC |
 | Selection search bounded (≤10 M combinations) | R2/V52 search for a 60 s reel with ≥30 moments would run for hours; ≤30 s reels are searched exactly as in R2 |
 | Too little footage → shorter reel + `LIMITED_TOTAL_FOOTAGE` | R2 stopped with `NO_DIVERSE_TARGET_COMBINATION` |
 | Two windows of one source overlapping >50 % → keep the better one | avoid showing the same moment twice (affects semantic mode) |
@@ -81,6 +81,8 @@ The 11 runtime modules, adapter and validator are byte-identical to R2 (CI-check
 | HDR sources converted (HLG direct, PQ tone-mapped) when cutting from the original | grey/dark colours from 10-bit HDR phone video |
 | Long-named videos (Windows long paths off) analysed under a short stand-in name; camcorder transport streams analysed as an MP4 remux; interlaced video de-interlaced | analysis failed (FileNotFoundError / too few frames) or combed picture |
 | Technical analysis in parallel groups; whole reel in one encode; sound fitted sample-exactly | speed; exact A/V length |
+| Wide pictures stored in narrow pixels (HDV/AVCHD 1440×1080, DVD/DV 720×576/480) widened to square pixels when cut from the original | the accepted render scales stored pixels: a square came out 0.70–0.75 as wide (measured) |
+| Hand trims and full-quality recuts read the same stand-in the analysis used (camcorder remux, short name) | a trim cut straight from an .MTS stream gave sound without picture; a long Windows path fell back to the 960-px preview |
 
 ## Evidence
 

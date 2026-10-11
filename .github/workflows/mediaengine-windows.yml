@@ -58,7 +58,7 @@ jobs:
         run: |
           python mediaengine/tests/engine_regression.py "$env:RUNNER_TEMP\fx\two" "$env:RUNNER_TEMP\reg" 2>&1 | Tee-Object "$env:OUT\engine_regression.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
-      - name: Engine robustness (still video, Private file, short footage, damaged cache, presets)
+      - name: Engine robustness (still video, Private, short footage, damaged cache, presets, phone, HDR, camcorder, wide pixels, 11 other formats)
         shell: pwsh
         run: |
           python mediaengine/tests/engine_robustness.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\rob" 2>&1 | Tee-Object "$env:OUT\engine_robustness.txt"
