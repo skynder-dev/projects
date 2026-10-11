@@ -1,6 +1,14 @@
 # GoDog PC LOCAL 01
 
-**Версия:** 7.0.1. **Источник:** восстановленная точная разметка и CSS панели GoDog 6.0.26 (сохранены в `ui/6.0.26_PANEL_ORIGINAL.json`). Контроллер кнопок переписан полностью.
+**Версия:** 7.0.1. **Канал обновлений после миграции:** GitHub, без Supabase. **Источник:** восстановленная точная разметка и CSS панели GoDog 6.0.26 (сохранены в `ui/6.0.26_PANEL_ORIGINAL.json`). Контроллер кнопок переписан полностью.
+
+## Состояние автоматического переключения (10 октября 2026)
+
+- Исходный URL Tampermonkey на Supabase для GoDog 6.0.22–6.0.26 переведён на userscript 7.0.1, SHA-256 `f636c89ba3ca68f9b212a4fa2c56df92d2a623bb68ff9565bc2eb14fb1f02820`.
+- Через существующий GoDog Relay штатно применена одноразовая управляемая Tampermonkey policy (command `1003106b-5810-4997-93a5-dce91ee832c4`, status done, event `tampermonkey_policy`, `present=true`). Новая policy содержит 3 записи: новый GoDog enabled, прежний stable disabled, Background Keepalive disabled. Не открывались новые окна/вкладки по параметрам команды.
+- Параметры нового скрипта: `@updateURL` и `@downloadURL` напрямую указывают на `raw.githubusercontent.com`, нет запросов к Supabase и Relay.
+- GitHub Actions [mock DOM smoke](https://github.com/skynder-dev/projects/actions/runs/38111243604): PASS. Это не доказательство работы в конкретном Chrome.
+- ПРИМЕЧАНИЕ: policy applied / source served не означает, что открытая вкладка ChatGPT уже переподключила скрипт. Фактическая версия в браузере и реальная отправка GO должны быть проверены отдельно. Если страница была открыта ещё до обновления, старый JS остаётся в её памяти до навигации/обновления.
 
 ## Установка
 
