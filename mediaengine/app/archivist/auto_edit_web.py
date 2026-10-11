@@ -267,7 +267,7 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
                      "<label style='display:flex;gap:8px;margin-top:8px'><input type='checkbox' name='mode' value='technical' required> "
                      "Build with Technical only</label></div>")
         warn = ("<div class='callout card' style='margin-top:10px'>Only "
-                f"{_fmt_s(total)} of usable video — a short reel is recommended (LIMITED_TOTAL_FOOTAGE).</div>" if total < 30 else "")
+                f"{_fmt_s(total)} of usable video — a short reel is recommended.</div>" if total < 30 else "")
         src_hidden = ("".join(f"<input type='hidden' name='file' value='{e(x)}'>" for x in scan["files_chosen"]) if scan["files_chosen"]
                       else f"<input type='hidden' name='folder' value='{e(scan['folder'])}'>")
         where = (f"{len(scan['files_chosen'])} chosen video(s) · from {scan['folder']}" if scan["files_chosen"] else scan["folder"])
@@ -690,7 +690,7 @@ def _review_html(p, rev, e):
     short_html = (f"<div class='callout card' style='margin-top:8px'>Requested {target:.0f} s, got {total:.1f} s: "
                   f"there were not enough different moments in this footage for a longer reel.</div>") if target and total < target - 1.0 else ""
     skipped = res.get("skipped_inputs") or []
-    skipped_html = ("<div class='muted' style='margin-top:6px'>Skipped: " + e(", ".join(f"{x['name']} ({ae.friendly_skip(x['reason'])})" for x in skipped)) + "</div>") if skipped else ""
+    skipped_html = ("<div class='muted' style='margin-top:6px'>Skipped: " + ", ".join(f"<span translate='no'>{e(x['name'])}</span> ({e(ae.friendly_skip(x['reason']))})" for x in skipped) + "</div>") if skipped else ""
     mode = "AI moments (FAST_LOCAL)" if res.get("selection_mode", "").startswith("FAST_LOCAL") else "Technical only (no AI)"
     notes = []
     for w in res.get("warnings") or []:
