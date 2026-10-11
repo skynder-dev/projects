@@ -7,9 +7,13 @@ its own desktop shortcut "MediaEngine RC"):
 
   MediaEngine-<version>/
     Start MediaEngine.vbs      one obvious launch (no console)
-    README.txt
+    README.txt  BUILD.txt      what this is / exact source commit
     launcher.py  app/  requirements.txt  version.txt  port.txt (8775)  shortcut_name.txt
     .venv/Scripts/             relocatable CPython 3.11 + pinned packages (python.exe / pythonw.exe)
+                               + app-local Microsoft VC++ runtime DLLs (OpenCV / onnxruntime need them)
+
+The folder name has no build id on purpose: extracting a newer build over the old folder keeps data/,
+projects and exports. The build id is in BUILD.txt and in the CI artifact name.
 
 Model weights are NOT included; the app finds FAST_LOCAL in a neighbouring Archivist install or lets the
 user choose the folder (exact hashes verified before use).
@@ -17,6 +21,7 @@ user choose the folder (exact hashes verified before use).
 from __future__ import annotations
 
 import hashlib, json, os, shutil, subprocess, sys, sysconfig
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]          # mediaengine/
@@ -46,7 +51,15 @@ def main(out_dir: Path) -> None:
     base = Path(sys.base_prefix)
     py_dir = pkg / ".venv" / "Scripts"
     shutil.copytree(base, py_dir, ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "Doc", "test", "tests", "idlelib", "turtledemo",
-                                                                 "site-packages"))
+                                                                 "tcl", "tkinter", "Tools", "site-packages"))
+    # app-local VC++ runtime: a clean Windows PC without the redistributable cannot load cv2 / onnxruntime
+    sysdir = Path(os.environ.get("SystemRoot", r"C:\Windows")) / "System32"
+    vc = []
+    for dll in ("vcruntime140.dll", "vcruntime140_1.dll", "msvcp140.dll", "msvcp140_1.dll", "msvcp140_2.dll", "concrt140.dll"):
+        if not (py_dir / dll).exists() and (sysdir / dll).exists():
+            shutil.copy2(sysdir / dll, py_dir / dll)
+        if (py_dir / dll).exists():
+            vc.append(dll)
     (py_dir / "Lib" / "site-packages").mkdir(parents=True, exist_ok=True)
     py = py_dir / "python.exe"
     subprocess.run([str(py), "-m", "ensurepip", "--default-pip"], check=True, capture_output=True)
@@ -60,15 +73,20 @@ def main(out_dir: Path) -> None:
     (pkg / "version.txt").write_text(ver, encoding="utf-8")
     (pkg / "port.txt").write_text(str(PORT), encoding="utf-8")
     (pkg / "shortcut_name.txt").write_text(SHORTCUT, encoding="utf-8")
-    (pkg / "Start MediaEngine.vbs").write_text(
-        'Set s=CreateObject("WScript.Shell")\r\n'
-        'root=CreateObject("Scripting.FileSystemObject").GetParentFolderName(WScript.ScriptFullName)\r\n'
-        's.Run Chr(34) & root & "\\.venv\\Scripts\\pythonw.exe" & Chr(34) & " " & Chr(34) & root & "\\launcher.py" & Chr(34),0,False\r\n',
-        encoding="utf-8")
+    sys.path.insert(0, str(ROOT / "app"))
+    from archivist.platform_adapter import launcher_vbs_text   # the same file the app repairs at start
+    (pkg / "Start MediaEngine.vbs").write_text(launcher_vbs_text(), encoding="utf-16")
+    sha = os.environ.get("GITHUB_SHA") or subprocess.run(["git", "-C", str(ROOT), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+    (pkg / "BUILD.txt").write_text(f"MediaEngine {ver}\ncommit {sha}\nbuilt {datetime.now(timezone.utc).isoformat(timespec='seconds')}\n"
+                                   f"run {os.environ.get('GITHUB_RUN_ID', 'local')}\n", encoding="utf-8")
     (pkg / "README.txt").write_text(f"""MediaEngine {ver} (release candidate)
 
 Start: double-click "Start MediaEngine.vbs". A MediaEngine window opens; a desktop shortcut
-"{SHORTCUT}" is created for next time. No console, no Python install needed.
+"{SHORTCUT}" is created for next time. No console, no Python install needed. The first start
+can take a minute (Windows checks the new files). "Quit" in the top bar stops MediaEngine.
+
+Newer build: Quit MediaEngine, then extract the new zip over this folder. Your projects,
+data and exports stay.
 
 Auto Edit: open "Auto Edit", choose a folder with your videos, pick Length / Format / Sound, press
 "Create reel". Review the result, Accept it, then Export MP4 (saved to the Exports folder here).
@@ -90,8 +108,8 @@ and the "{SHORTCUT}" desktop shortcut.
                           "sha256": hashlib.sha256(p.read_bytes()).hexdigest()})
     venv_bytes = sum(p.stat().st_size for p in (pkg / ".venv").rglob("*") if p.is_file())
     frozen = subprocess.run([str(py), "-m", "pip", "freeze"], capture_output=True, text=True).stdout.split()
-    manifest = {"product": "MediaEngine", "version": ver, "port": PORT, "shortcut": SHORTCUT, "python": sys.version.split()[0],
-                "python_source": str(base), "packages": frozen, "app_files": files, "venv_bytes": venv_bytes}
+    manifest = {"product": "MediaEngine", "version": ver, "commit": sha, "port": PORT, "shortcut": SHORTCUT, "python": sys.version.split()[0],
+                "python_source": str(base), "vc_runtime_app_local": vc, "packages": frozen, "app_files": files, "venv_bytes": venv_bytes}
     (out_dir / f"MediaEngine-{ver}.manifest.json").write_text(json.dumps(manifest, indent=1), encoding="utf-8")
     print(json.dumps({"package": str(pkg), "version": ver, "app_files": len(files), "venv_mb": round(venv_bytes / 1e6, 1)}))
 

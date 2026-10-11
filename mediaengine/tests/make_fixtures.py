@@ -1,7 +1,8 @@
 """Make small synthetic test folders (no personal media). Uses the ffmpeg the app itself uses.
 
   python tests/make_fixtures.py <out_dir>
-creates <out_dir>/two (2 clips) and <out_dir>/seven (7 clips + 1 broken file + 1 duplicate, one portrait clip).
+creates <out_dir>/two (2 clips), <out_dir>/seven (7 clips + 1 broken file + 1 duplicate, one portrait clip) and
+<out_dir>/static (2 clips + 1 still video).
 """
 from __future__ import annotations
 
@@ -44,6 +45,15 @@ def main(out: Path) -> None:
     shutil.copyfile(seven / "clip_2.mp4", seven / "clip_2 copy.mp4")
     for n in (1, 3):
         shutil.copyfile(seven / f"clip_{n}.mp4", two / f"clip_{n}.mp4")
+    # "static": two normal clips + a still (black) video the technical analysis cannot use
+    static = out / "static"
+    static.mkdir(parents=True, exist_ok=True)
+    for n in (1, 3):
+        shutil.copyfile(seven / f"clip_{n}.mp4", static / f"clip_{n}.mp4")
+    if not (static / "still.mp4").exists():
+        subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "color=c=black:s=640x360:r=30", "-f", "lavfi", "-i",
+                        "anullsrc=r=48000:cl=stereo", "-t", "8", "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p",
+                        "-c:a", "aac", "-shortest", str(static / "still.mp4")], check=True)
     print("fixtures ready:", sorted(p.name for p in seven.iterdir()), sorted(p.name for p in two.iterdir()))
 
 

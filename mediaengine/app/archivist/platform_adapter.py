@@ -62,39 +62,50 @@ def set_background_priority() -> None:
     os.environ.setdefault("NUMEXPR_NUM_THREADS", "2")
 
 
+def launcher_vbs_text() -> str:
+    """Start the launcher with the bundled runtime, no console. -s -E: ignore other Python installs' settings."""
+    return ('Set s=CreateObject("WScript.Shell")\r\n'
+            'root=CreateObject("Scripting.FileSystemObject").GetParentFolderName(WScript.ScriptFullName)\r\n'
+            's.Run Chr(34) & root & "\\.venv\\Scripts\\pythonw.exe" & Chr(34) & " -s -E " & Chr(34) & root & "\\launcher.py" & Chr(34),0,False\r\n')
+
+
 def install_launchers(home: Path) -> None:
     """Repair the current platform launcher. Windows is the only validated desktop adapter today."""
     if not is_windows():
         return
     home = Path(home)
+    side_by_side = (home / "port.txt").exists()
     try:
         src = Path(__file__).resolve().parent / "launcher_v2.py"
         root_launcher = home / "launcher.py"
         if src.exists():
             shutil.copy2(src, root_launcher)
-        wrapper_dir = home / "launcher"
-        wrapper_dir.mkdir(parents=True, exist_ok=True)
-        wrapper = wrapper_dir / "ArchivistLauncher.pyw"
-        wrapper.write_text(
-            "import runpy, pathlib\nrunpy.run_path(str(pathlib.Path(__file__).resolve().parents[1]/'launcher.py'), run_name='__main__')\n",
-            encoding="utf-8",
-        )
-        vbs = home / "Archivist.vbs"
-        vbs.write_text(
-            'Set s=CreateObject("WScript.Shell")\r\n'
-            'root=CreateObject("Scripting.FileSystemObject").GetParentFolderName(WScript.ScriptFullName)\r\n'
-            's.Run Chr(34) & root & "\\.venv\\Scripts\\pythonw.exe" & Chr(34) & " " & Chr(34) & root & "\\launcher.py" & Chr(34),0,False\r\n',
-            encoding="utf-8",
-        )
-        # A side-by-side install (e.g. a release candidate) ships shortcut_name.txt so it never
-        # repoints the stable "Archivist" desktop shortcut.
+        if side_by_side:
+            # A side-by-side install (release candidate) has exactly one start file and never creates the
+            # stable install's Archivist.vbs / launcher folder names.
+            vbs = home / "Start MediaEngine.vbs"
+        else:
+            wrapper_dir = home / "launcher"
+            wrapper_dir.mkdir(parents=True, exist_ok=True)
+            wrapper = wrapper_dir / "ArchivistLauncher.pyw"
+            wrapper.write_text(
+                "import runpy, pathlib\nrunpy.run_path(str(pathlib.Path(__file__).resolve().parents[1]/'launcher.py'), run_name='__main__')\n",
+                encoding="utf-8",
+            )
+            vbs = home / "Archivist.vbs"
+        vbs.write_text(launcher_vbs_text(), encoding="utf-16")
+        # A side-by-side install ships shortcut_name.txt so it never repoints the stable "Archivist" shortcut.
         try:
-            name = (home / "shortcut_name.txt").read_text(encoding="utf-8").strip()
+            name = (home / "shortcut_name.txt").read_text(encoding="utf-8-sig").strip()
         except Exception:
             name = ""
-        name = "".join(ch for ch in name if ch.isalnum() or ch in " ._-")[:60].strip() or "Archivist"
+        name = "".join(ch for ch in name if ch.isalnum() or ch in " ._-")[:60].strip()
+        if side_by_side and (not name or name.lower() == "archivist"):
+            name = "MediaEngine RC"
+        name = name or "Archivist"
         maker = home / "data" / "make_shortcut.vbs"
         maker.parent.mkdir(parents=True, exist_ok=True)
+        # UTF-16 with BOM: wscript reads it as Unicode, so a folder like D:\\Видео\\MediaEngine works.
         maker.write_text(
             'Set sh=CreateObject("WScript.Shell")\r\n'
             'desktop=sh.SpecialFolders("Desktop")\r\n'
@@ -104,7 +115,7 @@ def install_launchers(home: Path) -> None:
             'sc.WorkingDirectory="' + str(home).replace('"', '""') + '"\r\n'
             'sc.Description="' + name + '"\r\n'
             'sc.Save\r\n',
-            encoding="utf-8",
+            encoding="utf-16",
         )
         subprocess.run(["wscript.exe", str(maker)], timeout=15, **process_kwargs(detached=True))
     except Exception:
@@ -123,7 +134,7 @@ def detach_from_legacy_console_if_needed(home: Path) -> bool:
     env["ARCHIVIST_V2_CHILD"] = "1"
     env["ARCHIVIST_HOME"] = str(home)
     main = Path(__file__).resolve().parents[1] / "main.py"
-    args = [str(pyw), str(main)]
+    args = [str(pyw), "-s", "-E", str(main)]
     if os.environ.get("ARCHIVIST_SUPPRESS_BROWSER") == "1":
         args.append("--no-browser")
     else:
@@ -141,7 +152,7 @@ def spawn_app_launcher(home: Path, mode: str) -> None:
     if not exe.exists() or not launcher.exists():
         raise RuntimeError("Permanent launcher is missing")
     subprocess.Popen(
-        [str(exe), str(launcher), "--no-browser", "--update" if mode == "update" else "--restart"],
+        [str(exe), "-s", "-E", str(launcher), "--no-browser", "--update" if mode == "update" else "--restart"],
         cwd=str(home),
         close_fds=True,
         **process_kwargs(detached=True),

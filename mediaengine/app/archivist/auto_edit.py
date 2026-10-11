@@ -89,6 +89,9 @@ def model_root() -> Path:
     if cfg.get("model_root"):
         return Path(cfg["model_root"])
     for cand in model_search_roots():
+        if _model_valid(cand):
+            return cand
+    for cand in model_search_roots():
         if (cand / "FAST_LOCAL" / "model_int8.onnx").exists():
             return cand
     return HOME / "models"
@@ -96,8 +99,12 @@ def model_root() -> Path:
 
 def model_search_roots() -> list[Path]:
     """This install first, then a stable Archivist installed next to it (read only)."""
-    return [HOME / "models", HOME / "sidecars" / "auto_edit" / "models",
-            HOME.parent / "Archivist" / "sidecars" / "auto_edit" / "models"]
+    roots = [HOME / "models", HOME / "sidecars" / "auto_edit" / "models",
+             HOME.parent / "Archivist" / "sidecars" / "auto_edit" / "models"]
+    if os.name == "nt":  # a stable install at the root of any local drive, e.g. D:\Archivist
+        for letter in "CDEFGH":
+            roots.append(Path(f"{letter}:/") / "Archivist" / "sidecars" / "auto_edit" / "models")
+    return roots
 
 
 def import_model(src) -> dict:
@@ -140,20 +147,43 @@ def import_model(src) -> dict:
 _MODEL_CACHE: dict = {}
 
 
+def _model_valid(root: Path) -> bool:
+    """Same exact-identity check the engine preflight uses (model + tokenizer support files), cached by mtimes."""
+    prof = Path(root) / "FAST_LOCAL"
+    try:
+        if not (prof / "model_int8.onnx").is_file():
+            return False
+        files = sorted([prof / "model_int8.onnx"] + [x for x in prof.glob("support_*/*") if x.is_file()])
+        key = tuple((str(x), x.stat().st_size, x.stat().st_mtime_ns) for x in files)
+    except OSError:
+        return False
+    hit = _MODEL_CACHE.get(str(prof))
+    if hit and hit[0] == key:
+        return hit[1]
+    try:
+        if str(ENGINE_DIR) not in sys.path:
+            sys.path.insert(0, str(ENGINE_DIR))
+        import validate_p11_model_contract as vc
+        vc.validate("FAST_LOCAL", prof)
+        ok = True
+    except Exception:
+        ok = False
+    _MODEL_CACHE[str(prof)] = (key, ok)
+    return ok
+
+
 def model_status() -> dict:
-    """Exact-identity check of the FAST_LOCAL model (cached by size+mtime)."""
     root = model_root()
     model = root / "FAST_LOCAL" / "model_int8.onnx"
     if not model.is_file():
         return {"ready": False, "reason": "MODEL_MISSING", "path": str(model)}
-    st = model.stat()
-    key = (str(model), st.st_size, st.st_mtime_ns)
-    if _MODEL_CACHE.get("key") != key:
-        ok = st.st_size == MODEL_BYTES and sha256_file(model) == MODEL_SHA
-        _MODEL_CACHE.update(key=key, ok=ok)
-    if not _MODEL_CACHE["ok"]:
-        return {"ready": False, "reason": "MODEL_HASH_MISMATCH", "path": str(model)}
+    if not _model_valid(root):
+        return {"ready": False, "reason": "MODEL_FILES_INCOMPLETE_OR_CHANGED", "path": str(model)}
     return {"ready": True, "reason": "", "path": str(model)}
+
+
+def model_identity() -> str:
+    return MODEL_SHA if model_status()["ready"] else "none"
 
 
 # ---------------------------------------------------------------- schema
@@ -202,32 +232,55 @@ def ensure_schema() -> None:
 
 # ---------------------------------------------------------------- folder scan
 
+def folder_available(folder) -> bool:
+    try:
+        return Path(folder).is_dir()
+    except OSError:
+        return False
+
+
 def list_videos(folder: Path) -> list[Path]:
     folder = Path(folder)
-    if not folder.is_dir():
+    try:
+        if not folder.is_dir():
+            return []
+        vids = [p for p in folder.iterdir() if not p.name.startswith("._") and p.suffix.lower() in SUPPORTED and p.is_file()]
+    except OSError:
         return []
-    vids = [p for p in folder.iterdir() if p.is_file() and p.suffix.lower() in SUPPORTED]
     return sorted(vids, key=lambda p: p.name.lower())
 
 
 def _probe(path: Path) -> dict:
     if str(ENGINE_DIR) not in sys.path:
         sys.path.insert(0, str(ENGINE_DIR))
-    from medeng_media_probe_v41 import probe_json  # bundled engine probe (ffmpeg only)
-    return probe_json(path, _ffmpeg() or "ffmpeg", 30)
+    import medeng_media_probe_v41 as probe_mod  # bundled engine probe (ffmpeg only)
+    if not getattr(probe_mod, "_me_hidden", False):
+        class _HiddenSubprocess:  # same API the module uses, but no console window on Windows
+            def __getattr__(self, name):
+                return getattr(subprocess, name)
+            @staticmethod
+            def run(*a, **k):
+                return subprocess.run(*a, **process_kwargs(k))
+        probe_mod.subprocess = _HiddenSubprocess()
+        probe_mod._me_hidden = True
+    return probe_mod.probe_json(path, _ffmpeg() or "ffmpeg", 30)
 
 
 def scan_folder(folder) -> dict:
     """What the user sees before starting: usable files, problems, total footage."""
-    folder = Path(str(folder or "").strip().strip('"'))
-    if not str(folder) or not folder.is_dir():
-        raise ValueError("Folder not found")
+    folder = check_folder(folder)
     rows = []
     total = 0.0
     seen: dict[str, str] = {}
     for p in list_videos(folder)[: MAX_INPUTS + 1]:
-        row = {"name": p.name, "bytes": p.stat().st_size, "ok": False, "reason": "", "duration_s": 0.0, "width": 0, "height": 0}
-        qk = _quick_key(p)
+        row = {"name": p.name, "bytes": 0, "ok": False, "reason": "", "duration_s": 0.0, "width": 0, "height": 0}
+        try:
+            row["bytes"] = p.stat().st_size
+            qk = _quick_key(p)
+        except OSError:
+            row["reason"] = "cannot be read (locked or no access)"
+            rows.append(row)
+            continue
         if qk in seen:
             row["reason"] = "duplicate of " + seen[qk]
             rows.append(row)
@@ -249,7 +302,26 @@ def scan_folder(folder) -> dict:
         rows.append(row)
     usable = [r for r in rows if r["ok"]]
     return {"folder": str(folder), "files": rows, "usable": len(usable), "skipped": len(rows) - len(usable),
-            "too_many": len(rows) > MAX_INPUTS, "total_s": round(total, 2), "recommended_length": recommend_length(total)}
+            "too_many": len(rows) > MAX_INPUTS, "total_s": round(total, 2), "total_bytes": sum(r["bytes"] for r in usable),
+            "recommended_length": recommend_length(total)}
+
+
+def check_folder(folder) -> Path:
+    """A usable source folder: exists, absolute, not inside this app's private/rejected areas, at most 64 videos."""
+    from .config import PRIVATE, REJECTED
+    raw = str(folder or "").strip().strip('"')
+    f = Path(raw)
+    if not raw or not f.is_absolute() or not folder_available(f):
+        raise ValueError("Folder not found")
+    rf = f.resolve()
+    for guarded in (PRIVATE, REJECTED):
+        g = Path(guarded).resolve()
+        if rf == g or g in rf.parents:
+            raise ValueError("Private and Rejected media cannot be used in a reel")
+    if len(list_videos(f)) > MAX_INPUTS:
+        raise ValueError(f"This folder has more than {MAX_INPUTS} videos. Choose a folder with up to {MAX_INPUTS} videos "
+                         "(for example, copy the clips for one reel into their own folder).")
+    return f
 
 
 def _quick_key(p: Path) -> str:
@@ -272,6 +344,16 @@ def friendly_skip(reason: str) -> str:
         return "too short"
     if "NO_VIDEO_STREAM" in r:
         return "no video"
+    if r == "PRIVATE":
+        return "marked Private in the library"
+    if r == "NO_MOMENTS":
+        return "no usable moments found"
+    if r == "STATIC_VIDEO":
+        return "almost no movement (still image)"
+    if r == "ANALYSIS_TIMEOUT":
+        return "analysis took too long"
+    if r.startswith("ANALYSIS_FAILED"):
+        return "could not be analysed"
     return "damaged or not a video"
 
 
@@ -289,9 +371,7 @@ def recommend_length(total_s: float) -> int:
 
 def create_project(folder, title="") -> int:
     ensure_schema()
-    folder = Path(str(folder or "").strip().strip('"'))
-    if not folder.is_dir():
-        raise ValueError("Folder not found")
+    folder = check_folder(folder)
     if not list_videos(folder):
         raise ValueError("This folder has no supported video files (.mp4 .mov .m4v .avi .mkv .webm)")
     ts = now_iso()
@@ -322,7 +402,7 @@ def project(pid: int) -> dict | None:
     for j in d["jobs"]:
         j["settings"] = json.loads(j["settings_json"])
         j["percent"] = job_percent(j)
-    d["source_present"] = Path(d["folder"]).is_dir()
+    d["source_present"] = folder_available(d["folder"])
     d["state"] = project_state(d)
     return d
 
@@ -399,7 +479,7 @@ def normalize_settings(raw: dict, *, model_ready: bool | None = None) -> dict:
     for k, v in (raw.get("trims") or {}).items():
         if not is_id(k) or k not in selection:
             continue
-        a, b = round(float(v[0]), 1), round(float(v[1]), 1)
+        a, b = round(parse_seconds(v[0]), 1), round(parse_seconds(v[1]), 1)
         if a < 0 or b - a < 0.5:
             raise ValueError("A trimmed moment must be at least 0.5 s long")
         if b - a > 60:
@@ -413,13 +493,48 @@ def normalize_settings(raw: dict, *, model_ready: bool | None = None) -> dict:
     return out
 
 
+def parse_seconds(v) -> float:
+    """'12.5', '12,5' -> 12.5; rejects empty, NaN and infinity."""
+    import math
+    x = float(str(v).strip().replace(",", "."))
+    if not math.isfinite(x):
+        raise ValueError("Times must be numbers of seconds")
+    return x
+
+
 def _folder_fingerprint(folder: Path) -> list:
-    return [[p.name, p.stat().st_size, p.stat().st_mtime_ns] for p in list_videos(folder)]
+    out = []
+    for p in list_videos(folder):
+        try:
+            st = p.stat()
+            out.append([p.name, st.st_size, st.st_mtime_ns])
+        except OSError:
+            out.append([p.name, -1, -1])
+    return out
+
+
+_ENGINE_ID: dict = {}
+
+
+def engine_identity() -> str:
+    """Hash of every bundled engine file + the ffmpeg in use: an engine update never reuses old results."""
+    files = sorted(ENGINE_DIR.glob("*.py"))
+    key = tuple((x.name, x.stat().st_size, x.stat().st_mtime_ns) for x in files)
+    if _ENGINE_ID.get("key") != key:
+        h = hashlib.sha256()
+        for x in files:
+            h.update(x.name.encode()); h.update(x.read_bytes())
+        h.update(str(_ffmpeg() or "ffmpeg").encode())
+        _ENGINE_ID.update(key=key, value=h.hexdigest())
+    return _ENGINE_ID["value"]
 
 
 def _request_key(pid: int, folder: Path, settings: dict) -> str:
     raw = json.dumps({"project": int(pid), "inputs": _folder_fingerprint(folder), "settings": settings,
-                      "engine": sha256_file(ORCHESTRATOR)}, sort_keys=True, separators=(",", ":"))
+                      "engine": engine_identity(), "model": model_identity() if settings.get("mode") == "semantic" else "off",
+                      # marking a file Private later must never reuse a reel that contains it
+                      "private": hashlib.sha256("\n".join(_private_hashes()).encode()).hexdigest()},
+                     sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(raw.encode()).hexdigest()
 
 
@@ -430,11 +545,12 @@ def start_job(pid: int, raw_settings: dict, *, retry=False) -> int:
     if not p:
         raise ValueError("Project not found")
     folder = Path(p["folder"])
-    if not folder.is_dir():
+    if not folder_available(folder):
         raise ValueError("The source folder is not available (disconnected drive?)")
     settings = normalize_settings(raw_settings, model_ready=model_status()["ready"])
     key = _request_key(pid, folder, settings)
     with db() as con:
+        con.execute("BEGIN IMMEDIATE")  # lookup + insert as one step: a double click never queues twice
         same = con.execute("SELECT * FROM ae_jobs WHERE project_id=? AND request_key=? ORDER BY id DESC LIMIT 1", (int(pid), key)).fetchone()
         if same and (same["status"] in ("queued", "running", "done")):
             return int(same["id"])
@@ -461,6 +577,19 @@ def job(jid: int) -> dict | None:
     return d
 
 
+def job_elapsed_s(j: dict) -> float:
+    """Seconds since the job started (or its total run time once finished); 0 while queued."""
+    from datetime import datetime
+    try:
+        if not j.get("started_at"):
+            return 0.0
+        t0 = datetime.fromisoformat(j["started_at"])
+        t1 = datetime.fromisoformat(j["finished_at"]) if j.get("finished_at") else datetime.now()
+        return max(0.0, (t1 - t0).total_seconds())
+    except (TypeError, ValueError):
+        return 0.0
+
+
 def job_percent(j: dict) -> int:
     if j.get("status") == "done":
         return 100
@@ -477,9 +606,10 @@ def cancel_job(jid: int) -> bool:
         if not r or r["status"] not in ("queued", "running"):
             return False
         if r["status"] == "queued":
-            con.execute("UPDATE ae_jobs SET status='cancelled',stage='cancelled',finished_at=? WHERE id=?", (now_iso(), jid))
+            cur = con.execute("UPDATE ae_jobs SET status='cancelled',stage='cancelled',finished_at=? WHERE id=? AND status='queued'", (now_iso(), jid))
             con.commit()
-            return True
+            if cur.rowcount:
+                return True
     with _LOCK:
         _CANCEL.add(jid)
         proc = _RUNNING.get(jid)
@@ -489,6 +619,15 @@ def cancel_job(jid: int) -> bool:
 
 
 def _kill_tree(proc: subprocess.Popen) -> None:
+    job = _JOB_HANDLES.get(proc.pid)
+    if job is not None:
+        try:
+            import ctypes
+            from ctypes import wintypes
+            ctypes.windll.kernel32.TerminateJobObject(wintypes.HANDLE(job), 1)   # the engine and every ffmpeg it started
+            return
+        except Exception:
+            pass
     try:
         if os.name == "nt":
             subprocess.run(["taskkill", "/PID", str(proc.pid), "/T", "/F"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
@@ -513,32 +652,90 @@ def _ensure_worker() -> None:
 
 def _worker_loop() -> None:
     while True:
-        with db() as con:
-            r = con.execute("SELECT id FROM ae_jobs WHERE status='queued' ORDER BY id LIMIT 1").fetchone()
-        if not r:
-            _WAKE.wait(5)
-            _WAKE.clear()
-            continue
+        jid = None
         try:
-            _run_job(int(r["id"]))
-        except Exception as exc:  # never let the worker die
             with db() as con:
-                con.execute("UPDATE ae_jobs SET status='failed',error=?,finished_at=? WHERE id=? AND status IN ('queued','running')",
-                            (("Internal error: " + str(exc))[:500], now_iso(), int(r["id"])))
-                con.commit()
+                r = con.execute("SELECT id FROM ae_jobs WHERE status='queued' ORDER BY id LIMIT 1").fetchone()
+            if not r:
+                _WAKE.wait(5)
+                _WAKE.clear()
+                continue
+            jid = int(r["id"])
+            _run_job(jid)
+        except Exception as exc:  # never let the worker die
+            try:
+                if jid is not None:
+                    with db() as con:
+                        con.execute("UPDATE ae_jobs SET status='failed',stage='failed',error=?,finished_at=? WHERE id=? AND status IN ('queued','running')",
+                                    (("Internal error: " + str(exc))[:500], now_iso(), jid))
+                        con.commit()
+            except Exception:
+                pass
+            time.sleep(1)
 
 
 def _engine_env() -> dict:
-    env = dict(os.environ)
+    env = {k: v for k, v in os.environ.items() if not k.upper().startswith("PYTHON")}
     ff = _ffmpeg() or "ffmpeg"
     env.update({"MEDENG_FFMPEG": ff, "MEDENG_FFPROBE": ff, "MEDENG_P11_MODEL_ROOT": str(model_root()),
                 "MEDENG_P11_ADAPTER_ROOT": str(ENGINE_DIR), "PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1"})
     return env
 
 
-def engine_command(folder: Path, out_dir: Path, work_dir: Path, progress_file: Path, s: dict, edits_file: Path | None = None) -> list[str]:
+def engine_python() -> str:
+    """Console python.exe next to pythonw.exe: started with CREATE_NO_WINDOW it owns ONE hidden console that all
+    ffmpeg children inherit. Started from pythonw, every child would open its own visible console window."""
+    exe = Path(sys.executable)
+    if exe.name.lower() == "pythonw.exe":
+        cand = exe.with_name("python.exe")
+        if cand.exists():
+            return str(cand)
+    return str(exe)
+
+
+_JOB_HANDLES: dict = {}
+
+
+def _attach_job_object(proc: subprocess.Popen) -> None:
+    """Windows: the engine dies with the app (no orphan writing into the cache after a crash or restart)."""
+    if os.name != "nt":
+        return
+    try:
+        import ctypes
+        from ctypes import wintypes
+        k32 = ctypes.windll.kernel32
+        k32.CreateJobObjectW.restype = wintypes.HANDLE
+
+        class IO_COUNTERS(ctypes.Structure):
+            _fields_ = [(n, ctypes.c_ulonglong) for n in ("r", "w", "o", "rb", "wb", "ob")]
+
+        class BASIC(ctypes.Structure):
+            _fields_ = [("PerProcessUserTimeLimit", ctypes.c_longlong), ("PerJobUserTimeLimit", ctypes.c_longlong),
+                        ("LimitFlags", wintypes.DWORD), ("MinimumWorkingSetSize", ctypes.c_size_t),
+                        ("MaximumWorkingSetSize", ctypes.c_size_t), ("ActiveProcessLimit", wintypes.DWORD),
+                        ("Affinity", ctypes.c_size_t), ("PriorityClass", wintypes.DWORD), ("SchedulingClass", wintypes.DWORD)]
+
+        class EXTENDED(ctypes.Structure):
+            _fields_ = [("BasicLimitInformation", BASIC), ("IoInfo", IO_COUNTERS), ("ProcessMemoryLimit", ctypes.c_size_t),
+                        ("JobMemoryLimit", ctypes.c_size_t), ("PeakProcessMemoryUsed", ctypes.c_size_t),
+                        ("PeakJobMemoryUsed", ctypes.c_size_t)]
+
+        job = k32.CreateJobObjectW(None, None)
+        if not job:
+            return
+        info = EXTENDED()
+        info.BasicLimitInformation.LimitFlags = 0x2000  # JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE
+        k32.SetInformationJobObject(wintypes.HANDLE(job), 9, ctypes.byref(info), ctypes.sizeof(info))
+        if k32.AssignProcessToJobObject(wintypes.HANDLE(job), wintypes.HANDLE(int(proc._handle))):
+            _JOB_HANDLES[proc.pid] = job   # handle stays open for the app's lifetime of this job
+    except Exception:
+        pass
+
+
+def engine_command(folder: Path, out_dir: Path, work_dir: Path, progress_file: Path, s: dict, edits_file: Path | None = None,
+                   skip_sha_file: Path | None = None) -> list[str]:
     f = FORMATS[s["format"]]
-    cmd = [sys.executable, str(ORCHESTRATOR), "--input-dir", str(folder), "--output-dir", str(out_dir),
+    cmd = [engine_python(), "-s", "-E", "-X", "utf8", str(ORCHESTRATOR), "--input-dir", str(folder), "--output-dir", str(out_dir),
            "--work-dir", str(work_dir), "--runtime-dir", str(ENGINE_DIR), "--target-seconds", str(float(s["length"])),
            "--audio", s["sound"], "--semantic", "required" if s["mode"] == "semantic" else "off",
            "--profile", f["profile"], "--resolution", f["resolution"], "--progress-file", str(progress_file)]
@@ -546,6 +743,8 @@ def engine_command(folder: Path, out_dir: Path, work_dir: Path, progress_file: P
         cmd += ["--edits", str(edits_file)]
     if s.get("exclude"):
         cmd += ["--exclude-events", ",".join(s["exclude"])]
+    if skip_sha_file is not None:
+        cmd += ["--skip-sha-file", str(skip_sha_file)]
     return cmd
 
 
@@ -557,9 +756,13 @@ def _set(jid: int, **fields) -> None:
 
 
 def _run_job(jid: int) -> None:
+    with db() as con:  # claim: a job cancelled while queued is never started
+        cur = con.execute("UPDATE ae_jobs SET status='running',stage='starting',done=0,total=0,message='',error=NULL,started_at=? WHERE id=? AND status='queued'",
+                          (now_iso(), int(jid)))
+        con.commit()
+        if not cur.rowcount:
+            return
     j = job(jid)
-    if not j or j["status"] != "queued":
-        return
     p = project(j["project_id"])
     s = j["settings"]
     pdir = _project_dir(p["id"])
@@ -573,24 +776,46 @@ def _run_job(jid: int) -> None:
     if out_dir.exists():
         shutil.rmtree(out_dir)
     progress_file.unlink(missing_ok=True)
-    _set(jid, status="running", stage="starting", done=0, total=0, message="", error=None, started_at=now_iso())
     edits_file = jobs_dir / f"j{jid}.edits.json"
     edits_file.write_text(json.dumps({"selection": s.get("selection") or [], "trims": s.get("trims") or {}}), encoding="utf-8")
-    cmd = engine_command(Path(p["folder"]), out_dir, work_dir, progress_file, s, edits_file)
-    kw = process_kwargs() if os.name == "nt" else {"start_new_session": True}
+    skip_file = jobs_dir / f"j{jid}.private_sha.txt"
+    skip_file.write_text("\n".join(_private_hashes()), encoding="utf-8")
+    cmd = engine_command(Path(p["folder"]), out_dir, work_dir, progress_file, s, edits_file, skip_file)
+    kw = process_kwargs(below_normal=True) if os.name == "nt" else {"start_new_session": True}
     with log_file.open("w", encoding="utf-8", errors="replace") as log:
-        proc = subprocess.Popen(cmd, stdout=log, stderr=subprocess.STDOUT, env=_engine_env(), cwd=str(ENGINE_DIR), **kw)
+        proc = subprocess.Popen(cmd, stdout=log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, env=_engine_env(), cwd=str(ENGINE_DIR), **kw)
+        _attach_job_object(proc)
         with _LOCK:
             _RUNNING[jid] = proc
         try:
             while proc.poll() is None:
-                _pump_progress(jid, progress_file)
+                with _LOCK:
+                    want_cancel = jid in _CANCEL
+                if want_cancel:
+                    _kill_tree(proc)
+                    proc.wait(30)
+                    break
+                try:
+                    _pump_progress(jid, progress_file)
+                except Exception:
+                    pass
                 time.sleep(0.5)
+        except BaseException:
+            _kill_tree(proc)   # never leave an engine running after the loop fails
+            raise
         finally:
             with _LOCK:
                 _RUNNING.pop(jid, None)
                 cancelled = jid in _CANCEL
                 _CANCEL.discard(jid)
+            h = _JOB_HANDLES.pop(proc.pid, None)
+            if h is not None:
+                try:
+                    import ctypes
+                    from ctypes import wintypes
+                    ctypes.windll.kernel32.CloseHandle(wintypes.HANDLE(h))
+                except Exception:
+                    pass
     _pump_progress(jid, progress_file)
     if cancelled:
         shutil.rmtree(out_dir, ignore_errors=True)   # never advertise a half-made reel
@@ -602,6 +827,17 @@ def _run_job(jid: int) -> None:
         return
     rid = _publish_revision(p["id"], jid, out_dir, s)
     _set(jid, status="done", stage="done", done=1, total=1, revision_id=rid, finished_at=now_iso(), message="Ready")
+
+
+def _private_hashes() -> list[str]:
+    """SHA-256 of media marked Private (forever, or by the privacy check): never used in a reel."""
+    try:
+        with db() as con:
+            rows = con.execute("SELECT sha256 FROM ignored_hashes UNION "
+                               "SELECT sha256 FROM inventory WHERE analysis_status='private' AND sha256 IS NOT NULL").fetchall()
+            return sorted({str(r["sha256"]).lower() for r in rows if r["sha256"]})
+    except Exception:
+        return []
 
 
 def _pump_progress(jid: int, progress_file: Path) -> None:
@@ -618,10 +854,12 @@ def _pump_progress(jid: int, progress_file: Path) -> None:
 _FRIENDLY = {
     "SEMANTIC_RUNTIME_REQUIRED_BUT_NOT_EXACT": "The AI model files are missing or not the exact pinned version.",
     "NO_SUPPORTED_VIDEO_FILES": "No supported video files in the folder.",
+    "TOO_MANY_INPUT_FILES": f"The folder has more than {MAX_INPUTS} videos.",
+    "REALMEDIA_PIPELINE_FAILED": "Analysis of the footage failed.",
     "EDIT_UNKNOWN_MOMENT": "A chosen moment no longer exists (the source files changed). Start a new build.",
     "EDIT_SOURCE_MISSING": "The source file of a trimmed moment is not available.",
     "EDIT_TRIM_TOO_SHORT": "A trimmed moment is shorter than 0.5 s.",
-    "NO_READABLE_VIDEO_FILES": "None of the videos in the folder could be read.",
+    "NO_READABLE_VIDEO_FILES": "None of the videos in the folder can be used (damaged, duplicate or marked Private).",
     "INPUT_FOLDER_MISSING": "The source folder is not available.",
     "NO_DIVERSE_TARGET_COMBINATION": "Not enough different moments for this length. Try a shorter length.",
     "NO_EVENTS_SELECTED": "No usable moments were found. Try a shorter length or other footage.",
@@ -652,10 +890,11 @@ def _publish_revision(pid: int, jid: int, out_dir: Path, settings: dict) -> int:
     rev_dir.mkdir(parents=True, exist_ok=True)
     with db() as con:
         n = int(con.execute("SELECT COALESCE(MAX(number),0)+1 n FROM ae_revisions WHERE project_id=?", (int(pid),)).fetchone()["n"])
+    # Leftover files from an interrupted publish must not block the project: skip past them, never overwrite.
+    while (rev_dir / f"R{n:03d}.mp4").exists() or (rev_dir / f"R{n:03d}.json").exists():
+        n += 1
     vdst = rev_dir / f"R{n:03d}.mp4"
     rdst = rev_dir / f"R{n:03d}.json"
-    if vdst.exists() or rdst.exists():
-        raise RuntimeError("Revision file already exists; refusing to overwrite")
     os.replace(video, vdst)
     os.replace(result, rdst)
     shutil.rmtree(out_dir, ignore_errors=True)
@@ -700,20 +939,30 @@ def accept(pid: int, rid: int) -> None:
         con.commit()
 
 
+def accepted_history(log: list[dict]) -> list[int]:
+    """Stack of accepted revisions: Accept pushes, Revert pops."""
+    stack: list[int] = []
+    for r in log:
+        if r["action"] == "accept" and r["revision_id"] is not None:
+            stack.append(int(r["revision_id"]))
+        elif r["action"] == "revert" and stack:
+            stack.pop()
+    return stack
+
+
 def revert(pid: int) -> int | None:
     """Move the accepted pointer back to the previously accepted revision (files untouched)."""
     with db() as con:
+        con.execute("BEGIN IMMEDIATE")
         cur = con.execute("SELECT accepted_revision_id FROM ae_projects WHERE id=?", (int(pid),)).fetchone()
         if not cur:
+            con.rollback()
             raise ValueError("Project not found")
-        log = [int(r["revision_id"]) for r in con.execute(
-            "SELECT revision_id FROM ae_accept_log WHERE project_id=? AND action='accept' ORDER BY id", (int(pid),)).fetchall()]
-        current = cur["accepted_revision_id"]
-        prev = None
-        if current is not None and current in log:
-            idx = len(log) - 1 - log[::-1].index(current)
-            earlier = [x for x in log[:idx] if x != current]
-            prev = earlier[-1] if earlier else None
+        log = [dict(r) for r in con.execute("SELECT action,revision_id FROM ae_accept_log WHERE project_id=? ORDER BY id", (int(pid),)).fetchall()]
+        stack = accepted_history(log)
+        if stack:
+            stack.pop()
+        prev = stack[-1] if stack else None
         con.execute("UPDATE ae_projects SET accepted_revision_id=?,updated_at=? WHERE id=?", (prev, now_iso(), int(pid)))
         con.execute("INSERT INTO ae_accept_log(project_id,revision_id,action,at) VALUES(?,?,?,?)", (int(pid), prev, "revert", now_iso()))
         con.commit()
@@ -739,17 +988,27 @@ def export_accepted(pid: int, dest_dir: Path | None = None) -> dict:
     n = 1
     while True:
         dst = dest_dir / (base + (f" ({n})" if n > 1 else "") + ".mp4")
-        if not dst.exists():
+        try:
+            with open(dst, "xb"):   # atomic reservation: an existing file is never overwritten
+                pass
             break
-        if dst.stat().st_size == r["bytes"] and sha256_file(dst) == r["video_sha256"]:
-            return _record_export(pid, r, dst, reused=True)      # same export again: no-op
-        n += 1
-    tmp = dst.with_name(dst.name + ".part")
-    shutil.copyfile(src, tmp)
-    if sha256_file(tmp) != r["video_sha256"]:
+        except FileExistsError:
+            try:
+                if dst.stat().st_size == r["bytes"] and sha256_file(dst) == r["video_sha256"]:
+                    return _record_export(pid, r, dst, reused=True)      # same export again: no-op
+            except OSError:
+                pass
+            n += 1
+    tmp = dest_dir / f".{dst.stem}.{os.getpid()}.{threading.get_ident()}.part"
+    try:
+        shutil.copyfile(src, tmp)
+        if sha256_file(tmp) != r["video_sha256"]:
+            raise RuntimeError("Export verification failed")
+        os.replace(tmp, dst)   # replaces only our own empty reservation
+    except BaseException:
         tmp.unlink(missing_ok=True)
-        raise RuntimeError("Export verification failed")
-    os.replace(tmp, dst)
+        dst.unlink(missing_ok=True)
+        raise
     return _record_export(pid, r, dst, reused=False)
 
 

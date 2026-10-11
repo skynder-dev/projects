@@ -88,8 +88,14 @@ def main():
         ok_dups = all(sum(1 for m in (d, d.replace(" copy", "")) if m in bad and bad[m].startswith("duplicate")) == 1 for d in dups)
         check("scan_skips_broken_and_one_of_each_duplicate", ok_broken and ok_dups, bad)
         check("setup_shows_only_length_format_sound", all(x in page for x in ("Length", "Format", "Sound")) and "semantic=required" not in page)
+        r = c.get("/auto/new", query_string={"folder": str(folder)}, headers={**H, "Sec-Fetch-Site": "cross-site"})
+        check("setup_refuses_other_sites", r.status_code == 400, r.status_code)
+        if not ae.model_status()["ready"]:
+            n_proj = len(ae.list_projects(include_archived=True))
+            r = c.post("/auto/create", data={"folder": str(folder), "length": "15", "format": "social_hd", "sound": "auto"}, headers=H)
+            check("no_silent_technical_fallback", r.status_code == 400 and len(ae.list_projects(include_archived=True)) == n_proj, r.status_code)
 
-        form = {"folder": str(folder), "length": str(a.length), "format": "social_hd", "sound": "auto", "mode": a.mode, "title": "E2E: Trip/2026?"}
+        form = {"folder": str(folder), "length": str(a.length), "format": "social_hd", "sound": "auto", "mode": a.mode}
         r = c.post("/auto/create", data=form, headers=H)
         check("create_redirects_to_project", r.status_code == 302 and "/auto/p/" in r.headers.get("Location", ""), r.status_code)
         pid = int(r.headers["Location"].rstrip("/").split("/")[-1])
@@ -100,6 +106,7 @@ def main():
         j, stages, dt = wait_job(c, jid)
         timings["first_build_s"] = round(dt, 1)
         check("first_build_done", j["status"] == "done", j)
+        check("job_reports_elapsed_time", float(j.get("elapsed_s") or 0) > 0, j.get("elapsed_s"))
         check("progress_has_real_stages", len({s for s, _ in stages}) >= 3 and all(p2 >= p1 for (_, p1), (_, p2) in zip(stages, stages[1:])), stages)
         if j["status"] != "done":
             log = (home / "data" / "auto_edit" / f"p{pid}" / "jobs" / f"j{jid}.log")
@@ -112,6 +119,9 @@ def main():
         au = [s for s in pr.get("streams", []) if s.get("codec_type") == "audio"]
         check("revision_is_social_hd_1080x1920", v and int(v[0]["width"]) == 1080 and int(v[0]["height"]) == 1920, v)
         check("revision_has_audio", bool(au))
+        if v and au:
+            vd, ad = float(v[0].get("duration") or 0), float(au[0].get("duration") or 0)
+            check("audio_video_same_length", abs(vd - ad) <= 0.1, (vd, ad))
         dur = float(pr.get("format", {}).get("duration") or 0)
         r_short = c.get(f"/auto/p/{pid}", headers=H).data.decode("utf-8", "replace")
         check("duration_near_target_or_shortfall_shown", abs(dur - a.length) <= 1.5 or (dur < a.length and f"Requested {a.length} s" in r_short), dur)
@@ -164,12 +174,20 @@ def main():
 
         # manual override: exclude the first moment and rebuild
         excl = seg0["event_id"]
-        r = c.post(f"/auto/p/{pid}/variant", data={"length": a.length, "format": "social_hd", "sound": "auto", "mode": a.mode, "exclude": [excl]}, headers=H)
+        r = c.post(f"/auto/p/{pid}/variant", data={"base_revision_id": rev["id"], "rechoose": "1", "remove": [excl],
+                                                     "length": a.length, "format": "social_hd", "sound": "auto", "mode": a.mode}, headers=H)
         jid3 = ae.project(pid)["jobs"][0]["id"]
         j3, _, _ = wait_job(c, jid3)
         check("exclude_rebuild_done", j3["status"] == "done", j3)
         rev3 = ae.revision(ae.project(pid)["revisions"][-1]["id"])
         check("excluded_moment_absent", excl not in [s["event_id"] for s in rev3["result"].get("segments", [])])
+        # a format variant of the override keeps the removed moment out (no silent loss of the user's choice)
+        r = c.post(f"/auto/p/{pid}/variant", data={"base_revision_id": rev3["id"], "length": a.length, "format": "horizontal", "sound": "auto"}, headers=H)
+        j3b, _, _ = wait_job(c, ae.project(pid)["jobs"][0]["id"])
+        rev3b = ae.revision(ae.project(pid)["revisions"][-1]["id"])
+        check("variant_keeps_removed_moments", j3b["status"] == "done" and excl in rev3b["settings"].get("exclude", [])
+              and excl not in [s["event_id"] for s in rev3b["result"].get("segments", [])] and rev3b["settings"]["mode"] == rev3["settings"]["mode"],
+              (j3b.get("status"), rev3b["settings"]))
 
         # accept the override, then revert back to R001
         c.post(f"/auto/p/{pid}/accept", data={"revision_id": rev3["id"]}, headers=H)
@@ -215,6 +233,31 @@ def main():
             check("edit_keeps_accepted_pointer", ae.project(pid)["accepted_revision_id"] == rev["id"])
             r = c.get(f"/auto/p/{pid}?rev={reve['id']}", headers=H)
             check("edited_revision_reviewable", r.status_code == 200 and b"your trim" in r.data)
+            # sound-only variant of the edited version keeps order, membership and the trim
+            r = c.post(f"/auto/p/{pid}/variant", data={"base_revision_id": reve["id"], "length": a.length, "format": "social_hd", "sound": "mute"}, headers=H)
+            jv, _, _ = wait_job(c, ae.project(pid)["jobs"][0]["id"])
+            revv = ae.revision(ae.project(pid)["revisions"][-1]["id"])
+            gotv = [s_["event_id"] for s_ in revv["result"]["segments"]]
+            tv = next((s_ for s_ in revv["result"]["segments"] if s_["event_id"] == first), None)
+            check("variant_keeps_manual_edits", jv["status"] == "done" and gotv == got and tv and abs(tv["source_in_s"] - t_in) <= 0.15, (gotv, got, tv))
+            # editing the edited version again (remove one more) keeps the earlier trim the user did not touch
+            rows2 = [s_["event_id"] for s_ in reve["result"]["segments"]]
+            if len(rows2) >= 3:
+                f2 = {"revision_id": reve["id"], "length": a.length, "format": "social_hd", "sound": "auto", "mode": reve["settings"]["mode"], "row": rows2,
+                      "remove": [rows2[-1]]}
+                for s_ in reve["result"]["segments"]:
+                    for k in ("in", "out"):
+                        f2[f"{k}_{s_['event_id']}"] = f2[f"def_{k}_{s_['event_id']}"] = f"{s_['source_' + k + '_s']:.1f}"
+                c.post(f"/auto/p/{pid}/edit", data=f2, headers=H)
+                j6, _, _ = wait_job(c, ae.project(pid)["jobs"][0]["id"])
+                rev6 = ae.revision(ae.project(pid)["revisions"][-1]["id"])
+                t6 = next((s_ for s_ in rev6["result"]["segments"] if s_["event_id"] == first), None)
+                check("re_edit_keeps_earlier_trim", j6["status"] == "done" and t6 and abs(t6["source_in_s"] - t_in) <= 0.15
+                      and rows2[-1] not in [s_["event_id"] for s_ in rev6["result"]["segments"]], t6)
+        # a revision of another project is never shown here
+        other = ae.create_project(str(folder), "other")
+        r = c.get(f"/auto/p/{other}?rev={rev['id']}", headers=H)
+        check("rev_param_scoped_to_project", r.status_code == 200 and f"/auto/rev/{rev['id']}/video".encode() not in r.data)
 
         if not a.skip_cancel:
             n_before_cancel = len(ae.project(pid)["revisions"])
@@ -226,6 +269,16 @@ def main():
                 if jj["status"] == "running" and jj["stage"] in ("render", "finish", "trim", "select", "analyze", "inputs"):
                     break
                 time.sleep(0.2)
+            import archivist.web as web_mod
+            exits = []
+            real_exit, real_spawn = web_mod._exit_soon, web_mod._spawn_launcher
+            web_mod._exit_soon, web_mod._spawn_launcher = (lambda: exits.append("exit")), (lambda m: exits.append(m))
+            try:
+                r = c.post("/api/app-control", json={"mode": "restart"}, headers=H)
+                time.sleep(0.2)
+                check("restart_refused_while_reel_builds", r.status_code == 409 and not exits, (r.status_code, exits))
+            finally:
+                web_mod._exit_soon, web_mod._spawn_launcher = real_exit, real_spawn
             c.post(f"/auto/job/{jid4}/cancel", headers=H)
             j4, _, _ = wait_job(c, jid4, 120)
             n_rev = len(ae.project(pid)["revisions"])
@@ -235,6 +288,19 @@ def main():
             jid5 = ae.project(pid)["jobs"][0]["id"]
             j5, _, _ = wait_job(c, jid5)
             check("retry_after_cancel_done", j5["status"] == "done" and jid5 != jid4, j5)
+
+        # a file marked Private in the library is never used, and the old build is not reused for it
+        from archivist.db import db as _db, now_iso as _now
+        src_name = seg0["source_name"]
+        with _db() as con:
+            con.execute("INSERT OR REPLACE INTO ignored_hashes(sha256,reason,created_at) VALUES(?,?,?)", (sha(folder / src_name), "private_forever", _now()))
+            con.commit()
+        jp = ae.start_job(pid, {"length": a.length, "format": "social_hd", "sound": "auto", "mode": a.mode})
+        check("private_change_forces_new_build", jp != jid, (jp, jid))
+        jpd, _, _ = wait_job(c, jp)
+        revp = ae.revision(jpd.get("revision_id") or 0) if jpd["status"] == "done" else None
+        check("private_file_never_used", revp and src_name not in [s_["source_name"] for s_ in revp["result"]["segments"]]
+              and any(x["name"] == src_name and x["reason"] == "PRIVATE" for x in revp["result"].get("skipped_inputs", [])), jpd if not revp else revp["result"].get("skipped_inputs"))
 
     after = {p.name: sha(p) for p in folder.iterdir() if p.is_file()}
     check("sources_unchanged", before == after)

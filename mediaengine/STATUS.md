@@ -2,7 +2,7 @@
 
 Updated: 2026-10-11 (UTC). Costs so far: $0 (GitHub-hosted Actions minutes only).
 
-## Baseline (verified on the owner PC, D:\Archivist)
+## Baseline (verified on the owner PC, D:\Archivist) — unchanged
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -12,42 +12,68 @@ Updated: 2026-10-11 (UTC). Costs so far: $0 (GitHub-hosted Actions minutes only)
 | FAST_LOCAL model + adapter + validator on PC | present, exact hashes | `844d1a46…`, `d7ef56b5…`, `00e14d0d…` |
 | P11 shadow UX modules (job/revision/export/home) | MISSING on PC | only JSON acceptance records exist; rebuilt inside the app |
 
-## Candidate 3.13.0-rc1 — Auto Edit inside the app
+Known defects of the **stable** 3.12.42 found by the deep review (stable is not changed; fixed only in the candidate):
+Private forever could move the user's original file; Remove from Library left the copy in place; a duplicate could be
+imported when the first copy no longer existed locally; watchdog ages were wrong in UTC−x time zones; scene detection
+filter never matched; partial export/convert files could be left or overwritten.
 
-What exists now (code in `app/archivist/auto_edit.py`, `auto_edit_web.py`, `engine_p11/`):
+## Candidate 3.13.0-rc1 — Auto Edit inside the existing app
 
-- **Auto Edit** page in the existing app (nav + Media hub + Home): choose folder (Windows folder dialog or pasted path),
-  scan shows usable / damaged / duplicate files and total footage, adaptive length default, only Length / Format / Sound.
-- Background job on the bundled engine **R3** (= Windows-proven R2 + output preset, progress file, exclusions, segment
-  timeline, candidate pool, damaged/duplicate inputs skipped). Real stage progress, Cancel, Retry.
-- Review: player, segment strip, every moment with its source file and source time (Play in reel / View in source),
-  exclude moments and rebuild, Make variant (length/format/sound; format/sound-only variants reuse the analysis),
-  immutable revisions R001…, Accept / Revert pointer, honest "requested X s, got Y s" note.
-- Export only the verified accepted revision: one MP4, Windows-safe name, no overwrite, repeat export is a no-op;
-  Open video / Show in folder / Copy path. Projects survive app restart.
-- AI model: found in a neighbouring Archivist install, or imported by the user after exact hash validation.
-  Without it only the explicitly labelled *Technical only* mode is offered (no silent fallback).
-- Side-by-side safety: port 8775 (stable keeps 8765), own desktop shortcut "MediaEngine RC", own archive/exports,
+What a user can do (code: `app/archivist/auto_edit.py`, `auto_edit_web.py`, engine `engine_p11/p11_folder_to_reel_r3.py`):
+
+- **Auto Edit** page (nav, Media hub, Home): choose a folder (Windows dialog or pasted path); scan shows usable /
+  damaged / duplicate files, total footage and size; adaptive length default; only Length / Format / Sound.
+- Without the AI model the user must tick **Technical only** explicitly — no silent fallback, also not for variants.
+- Background build with real stage progress (per file during analysis), elapsed time, Cancel, Retry, queued jobs listed.
+  Restart/Quit of the app is refused while a reel builds (unless forced).
+- Review: player, segment strip, every moment with source file and source time. **Editor**: reorder (↑↓), trim in
+  source time, replace with another candidate, remove, add; every change is a new immutable revision.
+  Variants (length / format / sound) keep the base revision's removed moments and manual edits.
+- Accept / Revert pointer; Export only the accepted, verified revision (Windows-safe name, never overwrites, repeat = no-op);
+  Open video / Show in folder / Copy path, also from the project cards on the Auto Edit home page. Rename / Archive.
+- Files marked **Private** in the library are never used in a reel (also not via an older cached build).
+- Side-by-side safety: port 8775 (stable keeps 8765; an unreadable `port.txt` stops the app instead of taking 8765),
+  own desktop shortcut "MediaEngine RC", own archive/exports, the package ignores a stray `ARCHIVIST_HOME`,
   no update server contact without `updater_config.json`, Remote Lab diagnostics only on an enrolled PC.
-- Self-contained Windows package (CPython 3.11.9 + pinned 3.12.42 packages, 68 app files, ~449 MB unpacked),
-  start with `Start MediaEngine.vbs`.
+- Self-contained Windows package (CPython 3.11.9 + pinned 3.12.42 packages + app-local VC++ runtime), start with
+  `Start MediaEngine.vbs`; Quit button; a double start opens the running copy; a second server on the same port refuses to start.
 
-### Evidence (Windows, GitHub-hosted runner — not the owner PC)
+### Engine R3 vs Windows-proven R2 (documented differences)
 
-Run 38112423526 on `ac97da3` (results branch `mediaengine-ci-results`, artifact `MediaEngine-windows-package`):
+The 11 runtime modules, adapter and validator are byte-identical to R2 (CI-checked). The orchestrator differs:
 
-| Check | Result |
+| Change | Why |
 | --- | --- |
-| Compile (CPython 3.11) + app startup self-check incl. `/auto` | PASS |
-| Engine R3 vs R2: 11 runtime modules + adapter identical, pinned SHAs, all editing decisions | 28/28, reel bytes identical |
-| E2E through app routes, 7 videos + damaged + duplicate (30 s Social HD) | 36/36 |
-| E2E, 2 videos (adaptive 5 s) | 33/33 |
-| Package: launcher start without console → `/api/ping` 3.13.0-rc1, `/auto` 200 | PASS |
-| E2E with the packaged Python runtime | 33/33 |
-| Screenshots of the real pages in Edge | `auto_home.png`, `auto_setup.png`, `auto_project.png` |
+| Output preset, progress file, exclusions, manual edits, segment timeline, candidate pool | app features |
+| Damaged / duplicate / Private inputs skipped and reported | R2 failed or used them |
+| A file the analysis cannot use (e.g. a still video) is skipped and reported | R2 failed the whole reel |
+| Technical library built only from the current inputs | R2 rescanned every item ever analysed in the work folder → any removed/replaced/Private file broke all later builds (reproduced) |
+| Per-file analysis timeout grows with the longest video (≥120 s, ≤1 h) | R2 fixed 120 s would skip long videos |
+| Selection search bounded (≤10 M combinations) | R2/V52 search for a 60 s reel with ≥30 moments would run for hours; ≤30 s reels are searched exactly as in R2 |
+| Too little footage → shorter reel + `LIMITED_TOTAL_FOOTAGE` | R2 stopped with `NO_DIVERSE_TARGET_COMBINATION` |
+| Two windows of one source overlapping >50 % → keep the better one | avoid showing the same moment twice (affects semantic mode) |
+| Damaged cache entries are rebuilt | R2 failed the project permanently |
+| Social HD only as vertical 1080×1920 | acceptance presets |
 
-Finding: the accepted V52 segment encoder is not bit-reproducible run-to-run on Linux ffmpeg 6.1 (same call, different
-video bytes, same audio); on Windows (imageio-ffmpeg 7.1) R3 and R2 produced identical bytes. Decisions are compared exactly.
+## Evidence
+
+Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git):
+see the latest run on branch `mediaengine-ci-results` (`latest/RUN.txt`). Checks in every run:
+
+| Check | What it proves |
+| --- | --- |
+| Compile (CPython 3.11) + app startup self-check incl. `/auto` | release would start |
+| `tests/engine_regression.py` | runtime modules identical; R3 makes the same decisions as R2 (technical mode, 2 videos, 15 s) |
+| `tests/engine_robustness.py` | still video skipped, Private file ignored with old analysis present, short footage, damaged cache, presets |
+| `tests/e2e_auto_edit.py` (7 videos + damaged + duplicate; 2 videos) | the whole user flow through the app routes |
+| Package smoke on a copy in a non-ASCII folder | start via `Start MediaEngine.vbs`, updates off, own shortcut, restart, second copy refused, Quit |
+| E2E with the packaged Python | packaged runtime renders reels |
+| Package unchanged by the checks | the uploaded artifact contains no CI data |
+
+Local Linux run 2026-10-11 of the same tests: engine regression 28/28, robustness 6/6, E2E 2 videos 47/47 (7-video run see CI).
+
+Not proven by CI: semantic (AI) mode, selection quality judged by a person, real long/4K footage, A/V sync measured on
+real footage, absent drive, network disabled.
 
 ## Acceptance matrix (MIGRATION/mediaengine/ACCEPTANCE_MATRIX_RU.md)
 
@@ -55,32 +81,35 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 | Row | Status | Note |
 | --- | --- | --- |
-| I01 clean launch without terminal | PARTIAL | package launcher on CI runner |
-| I02 2 and 7 files, skip damaged | PARTIAL | synthetic fixtures |
+| I01 clean launch without terminal | PARTIAL | `Start MediaEngine.vbs` on CI runner |
+| I02 2 and 7 files, skip damaged | PARTIAL | synthetic fixtures; still video skipped |
 | I03 adaptive default, Length/Format/Sound only | PARTIAL | |
 | I04 R2 semantic=required started from the GUI | NOT_STARTED | needs owner PC (model not in git) |
-| I05 960×540 / 540×960 / 1080×1920 | PARTIAL | 1080×1920 and 960×540 probed; 540×960 rendered, not probed |
-| I06 one preset per run | PARTIAL | one MP4 per job by construction |
-| I07 15/30/60 and 5 for short footage | PARTIAL | 30 and 5 checked; shortfall shown |
-| I08 Sound Source/Auto/Mute | PARTIAL | auto + mute rendered; no loudness listening test |
-| I09 selection quality, camera-drop | NOT_STARTED | unchanged R2 logic; human blind review pending |
-| I10 player / seek / source links in GUI | PARTIAL | rendered in Edge; user interaction pending |
-| I11 manual override | PARTIAL | exclude + rebuild done; trim / reorder / replace not yet |
-| I12 variant reuses analysis | PARTIAL | format variant 3× faster, same moments |
+| I05 960×540 / 540×960 / 1080×1920 | PARTIAL | 540×960 rendered, not probed |
+| I06 one preset per run | PARTIAL | |
+| I07 15/30/60 and 5 for short footage | PARTIAL | 60 s bounded search unit-checked; shortfall shown |
+| I08 Sound Source/Auto/Mute | PARTIAL | applied sound shown; no loudness listening test |
+| I09 selection quality, camera-drop | NOT_STARTED | human blind review pending |
+| I10 player / seek / source links in GUI | PARTIAL | user interaction pending |
+| I11 manual override | PARTIAL | exclude, trim, reorder, replace, add — through app routes |
+| I12 variant reuses analysis | PARTIAL | keeps removed moments and edits |
 | I13 Accept/Revert, immutable revisions | PARTIAL | |
-| I14 cancel / resume / crash | PARTIAL | cancel + retry tested; restart marks interrupted jobs Retry-able |
-| I15 idempotent repeat, input change isolated | PARTIAL | |
+| I14 cancel / resume / crash | PARTIAL | cancel + retry; restart marks jobs interrupted |
+| I15 idempotent repeat, input change isolated | PARTIAL | Private change forces a new build |
 | I16 export verified accepted only, safe name, no overwrite | PARTIAL | |
-| I17 restart keeps projects | PARTIAL | process restart in CI |
-| I18 originals unchanged, path safety, absent drive | PARTIAL | SHA unchanged, path traversal 404; absent drive not tested |
+| I17 restart keeps projects | PARTIAL | |
+| I18 originals unchanged, path safety, absent drive | PARTIAL | absent drive not tested |
 | I19 offline, no Supabase/GoDog | PARTIAL | no network in Auto Edit; not run with network disabled |
-| I20 clean package, no Python in user's hands | PARTIAL | package built and started on CI |
-| I21 full-video convert | NOT_STARTED | existing Convert feature not re-verified |
+| I20 clean package, no Python in user's hands | PARTIAL | |
+| I21 full-video convert | NOT_STARTED | existing Convert feature fixed, not re-verified on Windows |
 | I22 other real media | NOT_STARTED | |
-| I23 public git clean | PARTIAL | baseline scanned for keys/personal paths |
+| I23 public git clean | PARTIAL | |
 
-## Next
+## Deferred (known, not fixed yet)
 
-1. Owner PC: install the package next to `D:\Archivist`, run Auto Edit on real footage with the AI model (I01–I04, I10).
-2. Editor: trim (mark-in/out), reorder, replace with another candidate from the pool (I11).
-3. Absent-drive and offline tests; 540×960 probe; loudness check (I05, I08, I18, I19).
+- Media Brain rebuild can cascade over the whole library (D7); `/media` file routes still serve Private items to the
+  local UI (D17).
+- UI polish from the contract §10: accent colour, completion screen, real filmstrip thumbnails.
+- A/V sync at every cut on real footage (total audio/video length differs by ~3 ms on a 30 s synthetic reel, now
+  checked in E2E; per-cut sync on real footage not measured yet).
+- Owner-PC run with the AI model; human review of selection quality.

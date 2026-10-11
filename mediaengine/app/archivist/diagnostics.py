@@ -9,7 +9,7 @@ import base64, ctypes, hashlib, json, os, shutil, socket, subprocess, sys, tempf
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .config import DATA, HOME, VERSION
+from .config import APP_PORT, DATA, HOME, VERSION
 from .db import db
 from .media import _ffmpeg_exe, make_storyboard, technical_quality
 from .media_brain import interpolate_crop_keyframes, validate_crop_keyframes
@@ -18,7 +18,7 @@ ASSETS = Path(__file__).resolve().parent / "assets"
 DIAG_DIR = DATA / "diagnostics"
 REMOTE_CONFIG = DATA / "remote_lab.json"
 ENDPOINT = "https://ldlhnedbqeqcbqelhuhm.supabase.co/functions/v1/archivist-remote-lab"
-LOCAL = "http://127.0.0.1:8765"
+LOCAL = f"http://127.0.0.1:{APP_PORT}"
 
 def _now(): return datetime.now(timezone.utc).isoformat()
 
@@ -251,7 +251,7 @@ def _converter_target_smoke():
 def _convert_ui_storyboard_mount():
     import urllib.request
     from .db import db
-    with urllib.request.urlopen('http://127.0.0.1:8765/convert',timeout=8) as r:
+    with urllib.request.urlopen(LOCAL+'/convert',timeout=8) as r:
         body=r.read().decode('utf-8','replace')
         code=int(r.status)
     if code!=200 or 'Share 1080p' not in body or 'Convert selected' not in body or 'Converted' not in body:
@@ -263,7 +263,7 @@ def _convert_ui_storyboard_mount():
     detail={'convert_http':code,'convert_markers':'ok'}
     if row:
         iid=int(row['id'])
-        with urllib.request.urlopen(f'http://127.0.0.1:8765/item/{iid}',timeout=8) as r:
+        with urllib.request.urlopen(LOCAL+f'/item/{iid}',timeout=8) as r:
             item=r.read().decode('utf-8','replace')
         if "storyboardMount" not in item or "loadStoryboard" not in item:
             raise RuntimeError('automatic storyboard mount/script missing')
@@ -282,9 +282,9 @@ def _convert_estimate_bulk_ui():
     if not row:
         return {'skipped':'no video in inventory'}
     iid=int(row['id'])
-    with urllib.request.urlopen(f'http://127.0.0.1:8765/convert?ids={iid}',timeout=8) as r:
+    with urllib.request.urlopen(LOCAL+f'/convert?ids={iid}',timeout=8) as r:
         conv=r.read().decode('utf-8','replace'); conv_code=int(r.status)
-    with urllib.request.urlopen('http://127.0.0.1:8765/library',timeout=8) as r:
+    with urllib.request.urlopen(LOCAL+'/library',timeout=8) as r:
         lib=r.read().decode('utf-8','replace'); lib_code=int(r.status)
     required_convert=('estimateSummary','estimateOutput','data-size=','data-duration-ms=','convertSelected','checked')
     missing=[x for x in required_convert if x not in conv]
@@ -459,14 +459,14 @@ def _convert_library_visibility():
                               WHERE excluded=0 AND work_selected=1 AND media_type='video'
                                 AND private_path IS NULL AND rejected_path IS NULL
                               ORDER BY COALESCE(date_taken,mtime,0) ASC,id ASC LIMIT 1""").fetchone()
-    with urllib.request.urlopen('http://127.0.0.1:8765/convert',timeout=8) as r:
+    with urllib.request.urlopen(LOCAL+'/convert',timeout=8) as r:
         top=r.read().decode('utf-8','replace')
     if 'Accessible on this catalog page' not in top or 'convertTotal' not in top:
         raise RuntimeError('Convert local-video pagination markers missing')
     detail={'library_video_count':total,'top_route':'ok'}
     if oldest:
         iid=int(oldest['id'])
-        with urllib.request.urlopen(f'http://127.0.0.1:8765/convert?ids={iid}',timeout=8) as r:
+        with urllib.request.urlopen(LOCAL+f'/convert?ids={iid}',timeout=8) as r:
             selected=r.read().decode('utf-8','replace')
         if f"value='{iid}'" not in selected:
             raise RuntimeError('Selected Library video missing from Convert route')
@@ -529,7 +529,7 @@ def _convert_drone_metadata():
     m=meta['16111']; kbps=32000 if max(int(m['width']),int(m['height']))>=3000 or int(m['width'])*int(m['height'])>=7000000 else (12000 if int(m['width'])*int(m['height'])>=1800000 else 6000)
     estimate_mb=(kbps*1000/8*(int(m['duration_ms'])/1000))/(1024*1024)
     if estimate_mb<100: raise RuntimeError('Original-resolution estimate guard failed: '+str(estimate_mb))
-    with urllib.request.urlopen('http://127.0.0.1:8765/convert?ids=16111,16110,16109',timeout=8) as r:
+    with urllib.request.urlopen(LOCAL+'/convert?ids=16111,16110,16109',timeout=8) as r:
         body=r.read().decode('utf-8','replace')
     for marker in ("DJI_0067.MP4","DJI_0066.MP4","DJI_0065.MP4","All accessible videos","Local folders","Largest","Longest","Original Resolution"):
         if marker not in body: raise RuntimeError('Convert marker missing: '+marker)
@@ -1471,17 +1471,17 @@ def _api140_loopback_guard_contract():
             headers['Referer']=referer
         return client.post(probe,headers=headers)
 
-    allowed_origin=post('127.0.0.1:8765',origin='http://127.0.0.1:8765')
-    allowed_localhost=post('localhost:8765',origin='http://localhost:8765')
-    allowed_referer=post('127.0.0.1:8765',referer='http://127.0.0.1:8765/help')
-    allowed_service=post('127.0.0.1:8765')
-    evil_prefix=post('127.0.0.1:8765',origin='http://127.0.0.1:8765.evil.test')
-    wrong_port=post('127.0.0.1:8765',origin='http://127.0.0.1:9999')
-    wrong_scheme=post('127.0.0.1:8765',origin='https://127.0.0.1:8765')
-    foreign_referer=post('127.0.0.1:8765',referer='http://evil.test:8765/x')
-    wrong_host=post('evil.test:8765',origin='http://127.0.0.1:8765')
-    get_good=client.get('/api/ping',headers={'Host':'127.0.0.1:8765'})
-    get_bad=client.get('/api/ping',headers={'Host':'evil.test:8765'})
+    allowed_origin=post(f'127.0.0.1:{APP_PORT}',origin=f'http://127.0.0.1:{APP_PORT}')
+    allowed_localhost=post(f'localhost:{APP_PORT}',origin=f'http://localhost:{APP_PORT}')
+    allowed_referer=post(f'127.0.0.1:{APP_PORT}',referer=f'http://127.0.0.1:{APP_PORT}/help')
+    allowed_service=post(f'127.0.0.1:{APP_PORT}')
+    evil_prefix=post(f'127.0.0.1:{APP_PORT}',origin=f'http://127.0.0.1:{APP_PORT}.evil.test')
+    wrong_port=post(f'127.0.0.1:{APP_PORT}',origin='http://127.0.0.1:9999')
+    wrong_scheme=post(f'127.0.0.1:{APP_PORT}',origin=f'https://127.0.0.1:{APP_PORT}')
+    foreign_referer=post(f'127.0.0.1:{APP_PORT}',referer=f'http://evil.test:{APP_PORT}/x')
+    wrong_host=post(f'evil.test:{APP_PORT}',origin=f'http://127.0.0.1:{APP_PORT}')
+    get_good=client.get('/api/ping',headers={'Host':f'127.0.0.1:{APP_PORT}'})
+    get_bad=client.get('/api/ping',headers={'Host':f'evil.test:{APP_PORT}'})
 
     allowed=[allowed_origin.status_code,allowed_localhost.status_code,allowed_referer.status_code,allowed_service.status_code]
     blocked=[evil_prefix.status_code,wrong_port.status_code,wrong_scheme.status_code,foreign_referer.status_code,wrong_host.status_code,get_bad.status_code]

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import urllib.parse
 from pathlib import Path
 
 from flask import jsonify, redirect, request, send_file
@@ -68,12 +69,19 @@ def register(app, layout, e, human_bytes):
             length = f"{ref['settings']['length']} s" if ref else ""
             exp = ae.export_row(p["last_export_id"]) if p.get("last_export_id") else None
             n_src = len(ae.list_videos(Path(p["folder"]))) if p["source_present"] else 0
-            cards += (f"<a class='card' href='/auto/p/{p['id']}' style='display:block'>"
+            acts = f"<a class='btn btn2' href='/auto/p/{p['id']}'>{'Review' if p['revisions'] else 'Open'}</a>"
+            if p["accepted_revision_id"]:
+                acts += f"<form method='post' action='/auto/p/{p['id']}/export'><button class='btn2'>Export</button></form>"
+            if exp:
+                acts += (f"<form method='post' action='/auto/export/{exp['id']}/open'><button class='btn2'>Open video</button></form>"
+                         f"<form method='post' action='/auto/export/{exp['id']}/reveal'><button class='btn2'>Show in folder</button></form>")
+            acts += f"<form method='post' action='/auto/p/{p['id']}/archive'><button class='btn2'>{'Unarchive' if p['archived'] else 'Archive'}</button></form>"
+            cards += (f"<div class='card'><a href='/auto/p/{p['id']}' style='display:block'>"
                       f"<div class='row space'><b style='font-size:17px'>{e(p['title'])}</b><span class='ae-state {p['state']}'>{p['state']}</span></div>"
-                      f"<div class='muted' style='margin-top:6px'>{n_src} video(s) · {e(preset)} {e(length)} · {len(p['revisions'])} revision(s)</div>"
-                      f"<div class='muted'>{('Last export: ' + e(Path(exp['path']).name)) if exp else 'Not exported yet'}</div>"
+                      f"<div class='muted' style='margin-top:6px'>{n_src} video file(s) in folder · {e(preset)} {e(length)} · {len(p['revisions'])} revision(s)</div>"
+                      f"<div class='muted'>{('Last export: ' + e(Path(exp['path']).name)) if exp else 'Not exported yet'}</div></a>"
                       + ("" if p["source_present"] else "<div class='errbox' style='margin-top:6px'>Source folder is not available</div>")
-                      + "</a>")
+                      + f"<div class='row' style='margin-top:10px;flex-wrap:wrap;gap:6px'>{acts}</div></div>")
         if not cards:
             cards = "<div class='card muted'>No Auto Edit projects yet. Choose a folder with your videos to make the first one.</div>"
         model_note = ("" if ms["ready"] else
@@ -125,6 +133,10 @@ document.getElementById('pickBtn').onclick=async()=>{const m=document.getElement
 
     @app.get("/auto/new")
     def ae_new():
+        # Only this app's own pages (or a typed URL) may make the server open a folder: a page on another
+        # site cannot point it at a network share.
+        if request.headers.get("Sec-Fetch-Site", "same-origin") not in ("same-origin", "none"):
+            return err_page("This page can only be opened from MediaEngine itself.")
         folder = request.args.get("folder", "")
         try:
             scan = ae.scan_folder(folder)
@@ -150,29 +162,30 @@ document.getElementById('pickBtn').onclick=async()=>{const m=document.getElement
         sounds = "".join(f"<label><input type='radio' name='sound' value='{k}' {'checked' if k == 'auto' else ''}> {e(v)}</label>"
                          for k, v in ae.SOUNDS.items())
         mode_html = ("<input type='hidden' name='mode' value='semantic'>" if ms["ready"] else
-                     "<div class='callout card' style='margin:6px 0 14px'><b>AI model not available</b> — the reel will use the "
-                     "<b>Technical only</b> selection (sharpness, motion, exposure). It does not understand what happens in the video."
-                     "<input type='hidden' name='mode' value='technical'></div>")
+                     "<div class='callout card' style='margin:6px 0 14px'><b>AI model not available.</b> Without it MediaEngine can only use the "
+                     "<b>Technical only</b> selection (sharpness, motion, exposure); it does not understand what happens in the video."
+                     "<label style='display:flex;gap:8px;margin-top:8px'><input type='checkbox' name='mode' value='technical' required> "
+                     "Build with Technical only</label></div>")
         warn = ("<div class='callout card' style='margin-top:10px'>Only "
                 f"{_fmt_s(total)} of usable video — a short reel is recommended (LIMITED_TOTAL_FOOTAGE).</div>" if total < 30 else "")
         body = f"""<div class='pagehead'><div class='eyebrow'>Auto Edit · new reel</div><h1>{e(Path(scan['folder']).name or scan['folder'])}</h1>
 <div class='lead ae-path'>{e(scan['folder'])}</div></div>
-<div class='card'><b>{scan['usable']} usable video(s)</b>, total {_fmt_s(total)}{(' · ' + str(scan['skipped']) + ' skipped') if scan['skipped'] else ''}
-{'<div class=errbox>More than 64 videos: only the first 64 are used.</div>' if scan['too_many'] else ''}
+<div class='card'><b>{scan['usable']} usable video(s)</b>, total {_fmt_s(total)} · {human_bytes(scan['total_bytes'])}{(' · ' + str(scan['skipped']) + ' skipped') if scan['skipped'] else ''}
 <details style='margin-top:8px'><summary class='muted'>Show files</summary><table class='ae-files'><tr><th>File</th><th>Size</th><th>Length</th><th>Frame</th><th></th></tr>{rows}</table></details>{warn}</div>
-<form method='post' action='/auto/create' class='card' style='margin-top:14px'>
+<form method='post' action='/auto/create' class='card' style='margin-top:14px' onsubmit="this.querySelector('button').disabled=true">
 <input type='hidden' name='folder' value='{e(scan['folder'])}'>
 <h2 style='margin-top:0'>Length</h2><div class='ae-choices'>{lengths}</div>
 <h2>Format</h2><div class='ae-choices'>{formats}</div>
 <h2>Sound</h2><div class='ae-choices'>{sounds}</div>{mode_html}
-<div class='row' style='flex-wrap:wrap'><input name='title' placeholder='Project name (optional)' maxlength='80' style='min-width:260px'>
-<button class='ae-big'>Create reel</button></div></form>"""
+<button class='ae-big'>Create reel</button></form>"""
         return page("New reel", body)
 
     @app.post("/auto/create")
     def ae_create():
         f = request.form
         try:
+            if not f.get("mode"):
+                raise ValueError("Without the AI model, tick 'Build with Technical only' to continue.")
             ae.normalize_settings({"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode")},
                                   model_ready=ae.model_status()["ready"])
             pid = ae.create_project(f.get("folder"), f.get("title"))
@@ -188,14 +201,18 @@ document.getElementById('pickBtn').onclick=async()=>{const m=document.getElement
         p = ae.project(pid)
         if not p:
             return err_page("Project not found")
-        active = next((j for j in p["jobs"] if j["status"] in ("queued", "running")), None)
+        active = next((j for j in p["jobs"] if j["status"] == "running"), None) or next((j for j in reversed(p["jobs"]) if j["status"] == "queued"), None)
+        queued = [j for j in p["jobs"] if j["status"] == "queued" and (not active or j["id"] != active["id"])]
         last_job = p["jobs"][0] if p["jobs"] else None
         revs = p["revisions"]
         sel_id = request.args.get("rev", type=int) or p["accepted_revision_id"] or (revs[-1]["id"] if revs else None)
         cur = ae.revision(sel_id) if sel_id else None
+        if cur and int(cur["project_id"]) != int(pid):
+            cur = None
         parts = [f"""<div class='pagehead row space'><div><div class='eyebrow'>Auto Edit · <span class='ae-state {p['state']}'>{p['state']}</span></div>
 <h1>{e(p['title'])}</h1><div class='lead ae-path'>{e(p['folder'])}</div></div>
-<div class='row'><a class='btn btn2' href='/auto'>All projects</a>
+<div class='row' style='flex-wrap:wrap'><a class='btn btn2' href='/auto'>All projects</a>
+<form method='post' action='/auto/p/{pid}/rename' class='row' style='gap:6px'><input name='title' value='{e(p['title'])}' maxlength='80' style='width:200px'><button class='btn2'>Rename</button></form>
 <form method='post' action='/auto/p/{pid}/archive'><button class='btn2'>{'Unarchive' if p['archived'] else 'Archive'}</button></form></div></div>"""]
         if not p["source_present"]:
             parts.append("<div class='errbox'>The source folder is not available (drive disconnected?). Revisions and exports are kept; "
@@ -206,6 +223,10 @@ document.getElementById('pickBtn').onclick=async()=>{const m=document.getElement
 <div class='ae-bar' style='margin:10px 0'><i id='jobBar' style='width:{active['percent']}%'></i></div>
 <div class='muted' id='jobMsg'>{e(active.get('message') or '')}</div>
 <div class='muted'>{e(ae.FORMATS[active['settings']['format']]['label'])} · {active['settings']['length']} s · sound {e(active['settings']['sound'])}</div></div>""")
+            for q in queued:
+                parts.append(f"<div class='card row space' style='margin-top:8px'><span class='muted'>Waiting: {e(ae.FORMATS[q['settings']['format']]['short'])} · "
+                             f"{q['settings']['length']} s · sound {e(q['settings']['sound'])}</span>"
+                             f"<form method='post' action='/auto/job/{q['id']}/cancel'><button class='btn2'>Cancel</button></form></div>")
         elif last_job and last_job["status"] in ("failed", "cancelled") and (not revs or last_job["id"] > max(r["job_id"] for r in revs)):
             parts.append(f"""<div class='card'><b>{'Build failed' if last_job['status']=='failed' else 'Build cancelled'}</b>
 <div class='{'errbox' if last_job['status']=='failed' else 'muted'}' style='margin:8px 0'>{e(last_job.get('error') or last_job.get('message') or '')}</div>
@@ -213,13 +234,14 @@ document.getElementById('pickBtn').onclick=async()=>{const m=document.getElement
         if cur:
             parts.append(_review_html(p, cur, e))
         elif not active:
-            parts.append(_variant_form(pid, None, e, first=True))
+            parts.append(_variant_form(pid, None, e, first=True, model_ready=ae.model_status()["ready"]))
         parts.append(_revisions_html(p, cur, e))
         script = """
 const card=document.getElementById('jobCard');
 async function pollJob2(){if(!card)return;try{const r=await fetch('/api/auto/job/'+card.dataset.job,{cache:'no-store'});const j=await r.json();
  document.getElementById('jobBar').style.width=j.percent+'%';document.getElementById('jobStage').textContent=j.stage_label+' · '+j.percent+'%';
- document.getElementById('jobMsg').textContent=(j.total?((j.done+1>j.total?j.total:j.done+1)+' of '+j.total+' · '):'')+(j.message||'');
+ const counted=j.total>1&&(j.stage==='render'||j.done>0);const el=Math.round(j.elapsed_s||0);
+ document.getElementById('jobMsg').textContent=(counted?(Math.min(j.done+1,j.total)+' of '+j.total+' · '):'')+(j.message||'')+' · '+Math.floor(el/60)+':'+String(el%60).padStart(2,'0')+' elapsed';
  if(['done','failed','cancelled'].includes(j.status)){location.reload();return}}catch(e){}setTimeout(pollJob2,1000)}
 pollJob2();
 const v=document.getElementById('reel');
@@ -239,7 +261,9 @@ const cp=document.getElementById('copyPath');if(cp)cp.onclick=async()=>{const t=
         j = ae.job(jid)
         if not j:
             return jsonify({"error": "not found"}), 404
-        return jsonify({k: j[k] for k in ("id", "status", "stage", "stage_label", "done", "total", "message", "percent", "error", "revision_id")})
+        out = {k: j[k] for k in ("id", "status", "stage", "stage_label", "done", "total", "message", "percent", "error", "revision_id")}
+        out["elapsed_s"] = ae.job_elapsed_s(j)
+        return jsonify(out)
 
     @app.post("/auto/job/<int:jid>/cancel")
     def ae_cancel(jid):
@@ -261,10 +285,22 @@ const cp=document.getElementById('copyPath');if(cp)cp.onclick=async()=>{const t=
     @app.post("/auto/p/<int:pid>/variant")
     def ae_variant(pid):
         f = request.form
-        settings = {"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"),
-                    "mode": f.get("mode") or ("semantic" if ae.model_status()["ready"] else "technical"),
-                    "exclude": f.getlist("exclude") + f.getlist("remove")}
         try:
+            base = ae.revision(int(f.get("base_revision_id") or f.get("revision_id") or 0))
+            if base and int(base["project_id"]) != int(pid):
+                base = None
+            bs = base["settings"] if base else {}
+            mode = bs.get("mode") or f.get("mode") or ("semantic" if ae.model_status()["ready"] else None)
+            if not mode:
+                raise ValueError("Without the AI model, choose Technical only explicitly on the new-reel screen.")
+            settings = {"length": f.get("length") or bs.get("length"), "format": f.get("format") or bs.get("format"),
+                        "sound": f.get("sound") or bs.get("sound"), "mode": mode}
+            if f.get("rechoose"):
+                # "Let MediaEngine choose again": automatic selection without the removed moments
+                settings["exclude"] = sorted(set(bs.get("exclude", [])) | set(f.getlist("remove")))
+            else:
+                # A preset/length/sound variant keeps the base revision's choices (exclusions, manual edits)
+                settings.update({k: bs[k] for k in ("exclude", "selection", "trims") if bs.get(k)})
             ae.start_job(pid, settings)
         except Exception as exc:
             return err_page(str(exc), f"/auto/p/{pid}")
@@ -276,6 +312,8 @@ const cp=document.getElementById('copyPath');if(cp)cp.onclick=async()=>{const t=
         removed = set(f.getlist("remove"))
         selection, trims = [], {}
         try:
+            base = ae.revision(int(f.get("revision_id") or 0))
+            base_trims = (base["settings"].get("trims") or {}) if base and int(base["project_id"]) == int(pid) else {}
             for eid in f.getlist("row"):
                 if eid in removed:
                     continue
@@ -285,10 +323,14 @@ const cp=document.getElementById('copyPath');if(cp)cp.onclick=async()=>{const t=
                     continue
                 selection.append(use)
                 if not rep_id:
-                    a, b = float(f.get(f"in_{eid}") or 0), float(f.get(f"out_{eid}") or 0)
-                    da, db = float(f.get(f"def_in_{eid}") or 0), float(f.get(f"def_out_{eid}") or 0)
+                    da, db = ae.parse_seconds(f.get(f"def_in_{eid}") or 0), ae.parse_seconds(f.get(f"def_out_{eid}") or 0)
+                    ra, rb = (f.get(f"in_{eid}") or "").strip(), (f.get(f"out_{eid}") or "").strip()
+                    a = ae.parse_seconds(ra) if ra else da   # an emptied field means "unchanged"
+                    b = ae.parse_seconds(rb) if rb else db
                     if abs(a - da) > 0.05 or abs(b - db) > 0.05:
                         trims[use] = [a, b]
+                    elif eid in base_trims:
+                        trims[use] = base_trims[eid]       # keep an earlier trim the user did not touch
             add = f.get("add") or ""
             if add and add not in selection:
                 selection.append(add)
@@ -299,6 +341,8 @@ const cp=document.getElementById('copyPath');if(cp)cp.onclick=async()=>{const t=
             ae.start_job(pid, settings)
         except ValueError as exc:
             return err_page(str(exc), f"/auto/p/{pid}")
+        except Exception as exc:
+            return err_page("Could not apply the edits: " + str(exc), f"/auto/p/{pid}")
         return redirect(f"/auto/p/{pid}")
 
     @app.post("/auto/p/<int:pid>/accept")
@@ -311,7 +355,10 @@ const cp=document.getElementById('copyPath');if(cp)cp.onclick=async()=>{const t=
 
     @app.post("/auto/p/<int:pid>/revert")
     def ae_revert(pid):
-        ae.revert(pid)
+        try:
+            ae.revert(pid)
+        except Exception as exc:
+            return err_page(str(exc), f"/auto/p/{pid}")
         return redirect(f"/auto/p/{pid}")
 
     @app.post("/auto/p/<int:pid>/export")
@@ -361,16 +408,29 @@ const cp=document.getElementById('copyPath');if(cp)cp.onclick=async()=>{const t=
         return send_file(src, conditional=True)
 
 
-def _variant_form(pid, rev, e, first=False):
+def _variant_form(pid, rev, e, first=False, model_ready=True):
     s = rev["settings"] if rev else {"length": 15, "format": "social_hd", "sound": "auto"}
     lengths = "".join(f"<label><input type='radio' name='length' value='{L}' {'checked' if int(s['length']) == L else ''}> {L} s</label>" for L in ae.LENGTHS)
     formats = "".join(f"<label><input type='radio' name='format' value='{k}' {'checked' if s['format'] == k else ''}> {e(v['short'])}</label>" for k, v in ae.FORMATS.items())
     sounds = "".join(f"<label><input type='radio' name='sound' value='{k}' {'checked' if s['sound'] == k else ''}> {e(k.title())}</label>" for k in ae.SOUNDS)
-    return (f"<form method='post' action='/auto/p/{pid}/variant' class='card' style='margin-top:14px'>"
+    base = f"<input type='hidden' name='base_revision_id' value='{rev['id']}'>" if rev else ""
+    mode = ""
+    if not rev and not model_ready:
+        mode = ("<label class='muted' style='display:flex;gap:8px;margin:8px 0'><input type='checkbox' name='mode' value='technical' required> "
+                "AI model not available — build with Technical only (sharpness, motion, exposure)</label>")
+    note = "" if first else "The current revision stays as it is. It keeps its removed moments and your edits; changing only format or sound reuses the analysis."
+    return (f"<form method='post' action='/auto/p/{pid}/variant' class='card' style='margin-top:14px' onsubmit=\"this.querySelector('button').disabled=true\">{base}"
             f"<h2 style='margin-top:0'>{'Build reel' if first else 'Make a variant'}</h2>"
-            f"<div class='muted'>{'' if first else 'The current revision stays as it is. Changing only format or sound reuses the analysis.'}</div>"
-            f"<div class='ae-choices'>{lengths}</div><div class='ae-choices'>{formats}</div><div class='ae-choices'>{sounds}</div>"
+            f"<div class='muted'>{note}</div>"
+            f"<div class='ae-choices'>{lengths}</div><div class='ae-choices'>{formats}</div><div class='ae-choices'>{sounds}</div>{mode}"
             f"<button>{'Build' if first else 'Make variant'}</button></form>")
+
+
+def _sound_label(requested, res):
+    applied = ((res or {}).get("audio") or {}).get("applied")
+    if requested == "auto" and applied in ("source", "mute"):
+        return "Auto → " + ("original sound" if applied == "source" else "muted (no useful sound found)")
+    return requested.title()
 
 
 def _review_html(p, rev, e):
@@ -395,7 +455,7 @@ def _review_html(p, rev, e):
         return (f"<div class='ae-seg ae-edit' data-seg data-in='{s['reel_in_s']}' data-out='{s['reel_out_s']}'><b class='pos'>{s['position']}</b>"
                 f"<div><div>{e(s['source_name'])} <span class='muted'>· source {_fmt_s(s['source_in_s'])}–{_fmt_s(s['source_out_s'])}{badge}</span></div>"
                 f"<div class='row' style='gap:8px;margin-top:4px;flex-wrap:wrap'><button type='button' class='btn2' data-seek='{s['reel_in_s']}'>Play in reel</button>"
-                f"<a class='btn btn2' style='font-size:13px' target='_blank' href='/auto/p/{p['id']}/source?name={e(s['source_name'])}#t={s['source_in_s']},{s['source_out_s']}'>View in source</a></div>"
+                f"<a class='btn btn2' style='font-size:13px' target='_blank' href='/auto/p/{p['id']}/source?name={e(urllib.parse.quote(s['source_name']))}#t={s['source_in_s']},{s['source_out_s']}'>View in source</a></div>"
                 f"<div class='row' style='gap:8px;margin-top:6px;flex-wrap:wrap'><label class='muted'>from <input name='in_{eid}' value='{s['source_in_s']:.1f}' inputmode='decimal' style='width:72px'></label>"
                 f"<label class='muted'>to <input name='out_{eid}' value='{s['source_out_s']:.1f}' inputmode='decimal' style='width:72px'> s</label>{repl}</div>"
                 f"<input type='hidden' name='row' value='{eid}'><input type='hidden' name='def_in_{eid}' value='{s['source_in_s']:.1f}'><input type='hidden' name='def_out_{eid}' value='{s['source_out_s']:.1f}'></div>"
@@ -426,16 +486,16 @@ def _review_html(p, rev, e):
     return f"""<div class='ae-player' style='margin-top:14px'>
 <div class='card'><video id='reel' class='ae-video' controls preload='metadata' src='/auto/rev/{rev['id']}/video'></video>
 <div class='ae-strip'>{strip}</div>
-<div class='muted'>Revision R{int(rev['number']):03d} · {e(fmt.get('short',''))} {rev['width']}×{rev['height']} · {total:.2f} s · sound {e(rev['settings']['sound'])} · {e(mode)}</div>{short_html}{skipped_html}
+<div class='muted'>Revision R{int(rev['number']):03d} · {e(fmt.get('short',''))} {rev['width']}×{rev['height']} · {total:.2f} s · sound {e(_sound_label(rev['settings']['sound'], res))} · {e(mode)}</div>{short_html}{skipped_html}
 <div class='row' style='margin-top:12px;flex-wrap:wrap'>{actions}</div>{exp_html}</div>
 <form class='card' method='post' action='/auto/p/{p['id']}/edit' id='editForm'><h2 style='margin-top:0'>Moments in this reel</h2>
-<input type='hidden' name='revision_id' value='{rev['id']}'>
+<input type='hidden' name='revision_id' value='{rev['id']}'><input type='hidden' name='base_revision_id' value='{rev['id']}'>
 <input type='hidden' name='length' value='{rev['settings']['length']}'><input type='hidden' name='format' value='{e(rev['settings']['format'])}'>
 <input type='hidden' name='sound' value='{e(rev['settings']['sound'])}'><input type='hidden' name='mode' value='{e(rev['settings']['mode'])}'>{excl_hidden}
 <div id='segList'>{rows or "<div class='muted'>No segment details for this revision.</div>"}</div>{add_html}
 <div class='muted' style='margin-top:8px'>Times are in the source file. Every change makes a new version; this one stays as it is.</div>
 <div class='row' style='margin-top:10px;flex-wrap:wrap'><button>Apply my edits</button>
-<button class='btn2' formaction='/auto/p/{p['id']}/variant'>Let MediaEngine choose again without removed moments</button></div></form></div>
+<button class='btn2' formaction='/auto/p/{p['id']}/variant' name='rechoose' value='1'>Let MediaEngine choose again without removed moments</button></div></form></div>
 {_variant_form(p['id'], rev, e)}"""
 
 

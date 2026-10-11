@@ -112,7 +112,13 @@ async function pollSourceStatus(){
   try{const r=await fetch('/api/source-status',{cache:'no-store'}),x=await r.json();for(const d of dots)d.classList.toggle('online',!!x.connected);for(const t of texts)t.textContent=x.connected?((x.model||x.serial||'Android')+' connected'):(x.error||'not connected')}catch(e){for(const d of dots)d.classList.remove('online');for(const t of texts)t.textContent='status unavailable'}
   setTimeout(pollSourceStatus,3000)
 }
-window.addEventListener('DOMContentLoaded',()=>{const r=document.getElementById('restartBtn'),u=document.getElementById('updateBtn');if(r)r.onclick=()=>appControl('restart');if(u)u.onclick=()=>appControl('update');pollJob();pollSourceStatus()});
+async function quitApp(force=false){
+  if(!force&&!confirm('Quit MediaEngine? Running work stops; you can start it again from the desktop shortcut.'))return;
+  try{const r=await fetch('/api/app-control',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'stop',force})});
+    if(r.status===409){const x=await r.json();if(confirm((x.error||'Work is running.')+'\n\nQuit anyway? It will be marked interrupted and can be retried.'))return quitApp(true);return}}catch(e){}
+  document.body.innerHTML="<div style='font:16px system-ui;padding:40px'>MediaEngine is closed. You can close this window.</div>";
+}
+window.addEventListener('DOMContentLoaded',()=>{const r=document.getElementById('restartBtn'),u=document.getElementById('updateBtn'),q=document.getElementById('quitBtn');if(r)r.onclick=()=>appControl('restart');if(u)u.onclick=()=>appControl('update');if(q)q.onclick=()=>quitApp();pollJob();pollSourceStatus()});
 '''
 
 
@@ -141,7 +147,7 @@ def layout(title,body,script="",script_srcs=()):
     ])
     external_scripts=''.join(f"<script src='{e(src)}'></script>" for src in script_srcs)
     return f"""<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>{e(title)} · MediaEngine</title><style>{CSS}</style></head><body>
-<nav><div class='navin'><span class='brand'>MediaEngine <span class='version'>v{VERSION}</span></span>{nav}<span class='spacer'></span><button id='restartBtn' class='btn2'>Restart</button><button id='updateBtn' class='ok'>Update</button></div></nav>
+<nav><div class='navin'><span class='brand'>MediaEngine <span class='version'>v{VERSION}</span></span>{nav}<span class='spacer'></span><button id='restartBtn' class='btn2'>Restart</button>{"<button id='updateBtn' class='ok'>Update</button>" if (HOME/'updater_config.json').exists() else "<button id='quitBtn' class='btn2' title='Stop MediaEngine on this PC'>Quit</button>"}</div></nav>
 <div id='jobbar' class='jobbar'><div class='jobinner'><div class='row space'><b id='jobtext'>Working…</b><a href='/activity' class='muted'>Open activity</a></div><div id='jobsub' class='muted'></div><div class='progress'><i id='jobpct'></i></div></div></div>
 <div class='wrap'>{body}</div><div id='toast' class='toast'></div><script>{GLOBAL_JS}\n{script}</script>{external_scripts}</body></html>"""
 
@@ -265,8 +271,14 @@ def create_app():
         if mode not in ('restart','update','stop'): return jsonify({'ok':False,'error':'bad mode'}),400
         with db() as con:
             busy=con.execute("SELECT id,kind,current_filename FROM jobs WHERE status='running' ORDER BY id LIMIT 1").fetchone()
+            try:
+                reel=con.execute("SELECT id FROM ae_jobs WHERE status IN ('running','queued') ORDER BY id LIMIT 1").fetchone()
+            except Exception:
+                reel=None
         if busy and not force:
             return jsonify({'ok':False,'error':f"Job #{busy['id']} ({busy['kind']}) is running"}),409
+        if reel and not force:
+            return jsonify({'ok':False,'error':f"Auto Edit job #{reel['id']} is building a reel"}),409
         if mode!='stop': _spawn_launcher(mode)
         threading.Thread(target=_exit_soon,daemon=True).start(); return jsonify({'ok':True})
 

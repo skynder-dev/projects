@@ -6,7 +6,19 @@ import os
 from pathlib import Path
 
 APP_DIR = Path(__file__).resolve().parents[1]
-HOME = Path(os.environ.get("ARCHIVIST_HOME") or APP_DIR.parent).resolve()
+
+
+def _home() -> Path:
+    pkg = APP_DIR.parent.resolve()
+    env = os.environ.get("ARCHIVIST_HOME")
+    # A side-by-side package (it ships port.txt next to app/) always runs on its own folder: a stray
+    # ARCHIVIST_HOME (for example pointing at the stable D:\\Archivist) must never make it use another install's data.
+    if (pkg / "port.txt").exists():
+        return pkg
+    return Path(env).resolve() if env else pkg
+
+
+HOME = _home()
 DATA = HOME / "data"
 DB_PATH = DATA / "archivist.db"
 CACHE = DATA / "cache"
@@ -21,13 +33,17 @@ CONFIG_PATH = HOME / "config.json"
 
 
 def _app_port() -> int:
-    """Local UI port. 8765 for the stable install; a side-by-side candidate ships port.txt (e.g. 8775)."""
+    """Local UI port. 8765 for the stable install; a side-by-side candidate ships port.txt (e.g. 8775).
+
+    Fails closed: a present but unreadable port.txt stops the app instead of silently taking the stable
+    install's port 8765 (which would mix the two installs)."""
     raw = os.environ.get("ARCHIVIST_PORT")
+    if not raw and (HOME / "port.txt").exists():
+        raw = (HOME / "port.txt").read_text(encoding="utf-8-sig").strip()
+        if not raw.isdigit() or not 1024 <= int(raw) <= 65535:
+            raise SystemExit(f"Invalid port.txt in {HOME}: {raw[:20]!r}")
     if not raw:
-        try:
-            raw = (HOME / "port.txt").read_text(encoding="utf-8").strip()
-        except Exception:
-            raw = ""
+        return 8765
     try:
         port = int(raw)
     except Exception:

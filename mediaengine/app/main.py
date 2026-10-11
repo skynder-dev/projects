@@ -10,7 +10,7 @@ HOST, PORT = "127.0.0.1", APP_PORT
 
 
 def _launcher_version_from_source(source):
-    m=re.search(r'^LAUNCHER_VERSION\\s*=\\s*["\\\']([^"\\\']+)["\\\']',source,re.MULTILINE)
+    m=re.search(r'^LAUNCHER_VERSION\s*=\s*["\']([^"\']+)["\']',source,re.MULTILINE)
     return m.group(1) if m else '0.0.0'
 
 def _version_tuple(value):
@@ -79,9 +79,43 @@ def startup_self_check(app):
                 raise RuntimeError(f"Startup self-check failed: {path} -> HTTP {response.status_code}")
 
 
+def _bind_fails():
+    import socket
+    s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    try:
+        if os.name!="nt":
+            s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)   # Linux: still refuses a port someone listens on
+        s.bind((HOST,PORT)); return False
+    except OSError:
+        return True
+    finally:
+        s.close()
+
+
+def _ping_ok():
+    import urllib.request
+    try:
+        with urllib.request.urlopen(f"http://{HOST}:{PORT}/api/ping",timeout=.5) as r: return r.status==200
+    except Exception:
+        return False
+
+
+def port_taken(wait_s=20.0):
+    """True if another copy of the app (or another program) holds our port. A port that is only briefly busy
+    (the previous copy is still closing during a restart) is waited for."""
+    end=time.time()+wait_s
+    while True:
+        if not _bind_fails(): return False
+        if _ping_ok() or time.time()>=end: return True
+        time.sleep(.5)
+
+
 def main():
     ensure_dirs(); set_background_priority(); install_launchers(HOME); sync_packaged_launcher()
     if detach_from_legacy_console_if_needed(HOME): return
+    if port_taken():
+        # Never start a second set of workers on the same database: the running copy keeps serving.
+        raise SystemExit(f"Port {PORT} is already in use (MediaEngine already running?)")
     from archivist.service import start_workers
     from archivist.converter import recover_convert_jobs
     from archivist.watchdog import start_watchdog
@@ -94,6 +128,11 @@ def main():
     suppress=os.environ.get("ARCHIVIST_SUPPRESS_BROWSER")=="1" or "--no-browser" in sys.argv
     if not suppress:
         threading.Thread(target=lambda:(time.sleep(1.0),webbrowser.open(url)),daemon=True).start()
+    if os.name=="nt":
+        # Windows SO_REUSEADDR lets a second copy bind the same port silently (two servers, one database).
+        # Without it a second start fails cleanly and the launcher just opens the running one.
+        import werkzeug.serving
+        werkzeug.serving.BaseWSGIServer.allow_reuse_address=False
     app.run(host=HOST,port=PORT,debug=False,threaded=True,use_reloader=False)
 
 if __name__=="__main__": main()

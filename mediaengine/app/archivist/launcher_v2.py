@@ -4,20 +4,40 @@ import base64, hashlib, json, os, shutil, subprocess, sys, tempfile, time, urlli
 from datetime import datetime, timezone
 from pathlib import Path
 
-LAUNCHER_VERSION = "3.7.0"
+LAUNCHER_VERSION = "3.8.0"
 HOME = Path(__file__).resolve().parent
 DATA = HOME / "data"
 VERSION_PATH = HOME / "version.txt"
 CONFIG_PATH = HOME / "updater_config.json"
 STATUS_PATH = DATA / "update_status.json"
+START_WAIT_S = 180       # first start on a slow PC (antivirus scanning a fresh runtime) can take minutes
+
 def _port():
+    """8765 for the stable install. A side-by-side install ships port.txt; if that file is present but
+    unreadable we stop (None) rather than fall back to 8765 and open/mix with the stable install."""
+    f=HOME/"port.txt"
+    if not f.exists(): return 8765
     try:
-        p=int((HOME/"port.txt").read_text(encoding="utf-8").strip())
-        return p if 1024<=p<=65535 else 8765
+        p=int(f.read_text(encoding="utf-8-sig").strip())
+        return p if 1024<=p<=65535 else None
     except Exception:
-        return 8765
+        return None
 
 HOST, PORT = "127.0.0.1", _port()
+_MUTEX = None
+LAST_UPDATE_CHECK = "not_checked"
+
+def single_instance():
+    """True if this is the only launcher for this install/port right now (Windows named mutex)."""
+    global _MUTEX
+    if os.name!='nt': return True
+    try:
+        import ctypes
+        k=ctypes.windll.kernel32
+        _MUTEX=k.CreateMutexW(None,False,f"Local\\MediaEngineLauncher-{PORT}")
+        return k.GetLastError()!=183   # ERROR_ALREADY_EXISTS
+    except Exception:
+        return True
 
 
 def version_tuple(v):
@@ -25,6 +45,14 @@ def version_tuple(v):
     for part in str(v).split('.'):
         n=''.join(c for c in part if c.isdigit()); out.append(int(n or 0))
     return tuple((out+[0,0,0])[:3])
+
+def version_key(v):
+    """Release ordering with pre-releases: 3.13.0-rc1 < 3.13.0-rc2 < 3.13.0 (version_tuple treats them as equal)."""
+    import re
+    m=re.match(r'\s*(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:[-.]?(a|alpha|b|beta|rc)(\d*))?',str(v or ''))
+    if not m: return (0,0,0,0,0)
+    pre={'a':0,'alpha':0,'b':1,'beta':1,'rc':2}.get((m.group(4) or '').lower(),3)
+    return (int(m.group(1) or 0),int(m.group(2) or 0),int(m.group(3) or 0),pre,int(m.group(5) or 0))
 
 def current_version():
     try: return VERSION_PATH.read_text(encoding='utf-8').strip() or '0.0.0'
@@ -64,7 +92,10 @@ def open_user_interface(force_browser=False):
     if not force_browser and os.name=='nt':
         for edge in edge_candidates():
             try:
-                subprocess.Popen([str(edge), f'--app={url}', '--start-maximized'], cwd=str(HOME), close_fds=True, **hidden_kwargs())
+                # normal priority (playback in the review player must not stutter); cwd outside the install
+                # so the folder can be deleted/replaced while the window is open
+                kw={'creationflags':getattr(subprocess,'DETACHED_PROCESS',0)} if os.name=='nt' else {'start_new_session':True}
+                subprocess.Popen([str(edge), f'--app={url}', '--start-maximized'], cwd=str(edge.parent), close_fds=True, **kw)
                 write_status(status='shell_opened', version=current_version(), shell='edge_app')
                 return 'edge_app'
             except Exception:
@@ -86,7 +117,7 @@ def fetch_latest(cfg):
     params={'select':'version,bundle_b64,bundle_sha256,artifact_url,artifact_size_bytes,notes,min_launcher_version,created_at','channel':'eq.'+cfg.get('channel','stable'),'active':'eq.true','order':'created_at.desc','limit':'10'}
     req=urllib.request.Request(base+'?'+urllib.parse.urlencode(params),headers={'apikey':cfg['publishable_key'],'Accept':'application/json','User-Agent':f'ArchivistUpdater/{LAUNCHER_VERSION}'})
     with urllib.request.urlopen(req,timeout=10) as resp: rows=json.loads(resp.read().decode('utf-8'))
-    rows.sort(key=lambda r:version_tuple(r.get('version','0')),reverse=True)
+    rows.sort(key=lambda r:version_key(r.get('version','0')),reverse=True)
     return rows[0] if rows else None
 
 def fetch_version(cfg, version):
@@ -208,16 +239,17 @@ def apply_release(rel,installed):
     finally: shutil.rmtree(stage,ignore_errors=True)
 
 def check_update(force=False):
+    global LAST_UPDATE_CHECK
     installed=current_version()
-    if not force and os.environ.get('ARCHIVIST_SKIP_UPDATE')=='1': return installed
+    if not force and os.environ.get('ARCHIVIST_SKIP_UPDATE')=='1': LAST_UPDATE_CHECK='skipped'; return installed
     if not CONFIG_PATH.exists():
         # No update channel configured (e.g. a side-by-side release candidate): never contact a server.
-        write_status(status='updates_off',version=installed); return installed
+        LAST_UPDATE_CHECK='updates_off'; write_status(status='updates_off',version=installed); return installed
     try:
         cfg=json.loads(CONFIG_PATH.read_text(encoding='utf-8')); latest=fetch_latest(cfg)
-        if latest and version_tuple(latest['version'])>version_tuple(installed): apply_release(latest,installed); return str(latest['version'])
-        write_status(status='up_to_date',version=installed)
-    except Exception as exc: write_status(status='update_failed',version=installed,error=str(exc))
+        if latest and version_key(latest['version'])>version_key(installed): apply_release(latest,installed); LAST_UPDATE_CHECK='updated'; return str(latest['version'])
+        LAST_UPDATE_CHECK='up_to_date'; write_status(status='up_to_date',version=installed)
+    except Exception as exc: LAST_UPDATE_CHECK='update_failed'; write_status(status='update_failed',version=installed,error=str(exc))
     return current_version()
 
 def wait_server_down(seconds=12):
@@ -241,10 +273,13 @@ def restore_latest_backup(version):
     except Exception as exc:
         write_status(status='rollback_failed',version=str(version),error=str(exc)); return False
 
-def wait_server_up(seconds=30):
-    end=time.time()+seconds
-    while time.time()<end:
+def wait_server_up(seconds=30,proc=None):
+    """Wait for /api/ping. With the app process given, keep waiting (up to START_WAIT_S) while it is alive."""
+    end=time.time()+seconds; hard=time.time()+max(seconds,START_WAIT_S)
+    while time.time()<(hard if proc is not None else end):
         if server_alive(timeout=.5): return True
+        if proc is not None and proc.poll() is not None: return server_alive(timeout=.5)
+        if proc is None and time.time()>=end: break
         time.sleep(.35)
     return False
 
@@ -254,11 +289,19 @@ def spawn_app(no_browser=False):
     env=os.environ.copy(); env['ARCHIVIST_HOME']=str(HOME); env['ARCHIVIST_V2_CHILD']='1'
     if no_browser: env['ARCHIVIST_SUPPRESS_BROWSER']='1'
     else: env.pop('ARCHIVIST_SUPPRESS_BROWSER',None)
-    subprocess.Popen([str(exe),str(main),'--no-browser' if no_browser else '--open-browser'],cwd=str(HOME),env=env,close_fds=True,**hidden_kwargs())
+    # -s -E: the bundled runtime ignores a user site-packages folder and PYTHON* variables of other Python installs
+    return subprocess.Popen([str(exe),'-s','-E',str(main),'--no-browser' if no_browser else '--open-browser'],cwd=str(HOME),env=env,close_fds=True,**hidden_kwargs())
 
 def main():
-    raw_args=list(sys.argv[1:]); args=set(raw_args); no_browser='--no-browser' in args; force_browser='--browser' in args; force='--update' in args; restart='--restart' in args
+    raw_args=list(sys.argv[1:]); args=set(raw_args); force_browser='--browser' in args; force='--update' in args; restart='--restart' in args
+    no_browser='--no-browser' in args or os.environ.get('MEDIAENGINE_NO_BROWSER')=='1'   # env: automated checks
     install_version=next((x.split('=',1)[1] for x in raw_args if x.startswith('--install-version=')),None)
+    if PORT is None:
+        write_status(status='start_failed',version=current_version(),error='port.txt is present but not a valid port number'); return 1
+    if not (force or restart or install_version) and not single_instance():
+        # another launcher of this install is already starting it (double click): just show the window
+        if wait_server_up(START_WAIT_S) and not no_browser: open_user_interface(force_browser=force_browser)
+        return 0
     # Manual launch while already running should only focus/open the existing web app.
     if server_alive() and not (force or restart or install_version):
         if not no_browser: open_user_interface(force_browser=force_browser)
@@ -274,15 +317,15 @@ def main():
         except Exception as exc:
             write_status(status='remote_update_failed',version=before,target=install_version,error=str(exc)); return 2
     else: after=before if restart else check_update(force=force)
-    spawn_app(no_browser=True)
-    if wait_server_up(30):
-        write_status(status='running',version=current_version())
+    proc=spawn_app(no_browser=True)
+    if wait_server_up(30,proc):
+        write_status(status='running',version=current_version(),update_check=LAST_UPDATE_CHECK)
         if not no_browser: open_user_interface(force_browser=force_browser)
         return 0
     # A bad release must not strand the user with a dead desktop shortcut.
     if after!=before and restore_latest_backup(before):
-        spawn_app(no_browser=True)
-        if wait_server_up(30):
+        proc=spawn_app(no_browser=True)
+        if wait_server_up(30,proc):
             if not no_browser: open_user_interface(force_browser=force_browser)
             return 0
     write_status(status='start_failed',version=current_version())
