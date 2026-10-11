@@ -14,8 +14,9 @@ blind comparison → Accept → Export one MP4. Runs locally, no network, no pai
 **Installer** (CI artifact `MediaEngine-3.13.0-rc1-b<N>-Setup`): run `MediaEngine-3.13.0-rc1-b<N>-Setup.exe`
 (unsigned: SmartScreen → "More info" → "Run anyway"). Per-user, no administrator rights; installs into
 `D:\MediaEngine\MediaEngine-3.13.0-rc1-b<N>\` when `D:\Archivist` exists (else `%USERPROFILE%\MediaEngine\`), adds
-Start-menu "MediaEngine". A newer Setup adds its own build folder next to the old one (rollback = start the old
-folder's `Start MediaEngine.vbs`). Uninstall (Settings → Apps → MediaEngine) refuses while MediaEngine runs, removes
+Start-menu "MediaEngine". A newer Setup adds its own build folder next to the old one; starting it while the old
+one runs asks "Switch to …?" (never while a reel is being built). Rollback = start the old folder's
+`Start MediaEngine.vbs`. Old builds can be removed on "Check this PC". The header shows the build (e.g. `b21`). Uninstall (Settings → Apps → MediaEngine) refuses while MediaEngine runs, removes
 the build folders and shortcuts, keeps `MediaEngine Data`. CI: silent install into a Cyrillic folder, start from the
 Start-menu shortcut, data next to the builds, uninstall refused while running, then removes the build, keeps the data.
 

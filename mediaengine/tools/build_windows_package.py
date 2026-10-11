@@ -114,8 +114,10 @@ Windows asks about every start). Start: double-click "Start MediaEngine.vbs". A 
 can take a minute (Windows checks the new files). "Quit" in the top bar stops MediaEngine.
 
 Your projects, settings and exports are kept OUTSIDE this folder, in "MediaEngine Data" next to it
-(the exact place is shown under Settings). Newer build: extract it next to this one (a new folder),
-start it; it opens the same projects. If the new build has a problem, start the old folder again.
+(the exact place is shown under Settings). Newer build: run its Setup (or extract it next to this one, a new
+folder) and start it; it opens the same projects, and if this one is still running it asks to switch. If the new
+build has a problem, start the old folder again. Old builds can be removed on "Check this PC". The build number
+(e.g. b21) is shown next to the version at the top.
 
 Auto Edit: choose a folder with your videos (or single videos), pick Length / Format / Sound, press
 "Create reel". Review the result, Accept it, then Export MP4 (to the Exports folder in "MediaEngine Data",
@@ -178,8 +180,11 @@ It does not change a stable Archivist install. To remove it: Quit, delete this f
   Точное место видно в Settings.
 
 НОВАЯ ВЕРСИЯ / ОТКАТ
-  Новую версию распакуй в новую папку рядом (не поверх старой) и запусти её — она откроет те же
-  проекты. Если с новой что-то не так: Quit и запусти "Start MediaEngine.vbs" из старой папки.
+  Новую версию поставь её Setup'ом (или распакуй ZIP в новую папку рядом, не поверх старой) и запусти —
+  она откроет те же проекты. Если старая ещё запущена, MediaEngine спросит, переключиться ли на новую.
+  Если с новой что-то не так: Quit и запусти "Start MediaEngine.vbs" из старой папки. Ненужные старые
+  версии можно удалить на странице "Check this PC" (проекты и ролики не трогаются).
+  Номер сборки (например b21) виден вверху рядом с версией.
 
 РЯДОМ С РАБОЧИМ ARCHIVIST
   Эта версия работает на своём порту ({PORT}), со своим ярлыком и своими данными. Рабочий
