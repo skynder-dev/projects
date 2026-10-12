@@ -117,10 +117,11 @@ def ui_ru():
             lang=str(winreg.QueryValueEx(k,'Language')[0] or '').lower()
             try: build=str(winreg.QueryValueEx(k,'LanguageBuild')[0] or '')
             except OSError: build=''
-        if lang in ('ru','en') and f'{lang}|{build}'!=str(cfg.get('setup_language_applied') or ''): return lang=='ru'
-    except Exception: pass
+        if lang in ('ru','en') and build and f'{lang}|{build}'!=str(cfg.get('setup_language_applied') or ''): return lang=='ru'
+    except Exception: lang=''
     v=str(cfg.get('ui_language') or '').lower()
     if v in ('ru','en'): return v=='ru'
+    if lang in ('ru','en'): return lang=='ru'
     try:
         import ctypes
         return (ctypes.windll.kernel32.GetUserDefaultUILanguage() & 0x3FF)==0x19

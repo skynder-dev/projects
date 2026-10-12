@@ -159,7 +159,11 @@ def main():
         kept = _lang.ui_language()
         _lang._setup_language = lambda: ("ru", "MediaEngine-x-b100")
         again = _lang.ui_language()
-        check("Setup language applies once per Setup run", (first, kept, again) == ("ru", "en", "ru"), (first, kept, again))
+        _lang.set_ui_language("ru")
+        _lang._setup_language = lambda: ("en", "")          # an older Setup without a build mark
+        old_setup = _lang.ui_language()
+        check("Setup language applies once per Setup run", (first, kept, again, old_setup) == ("ru", "en", "ru", "ru"),
+              (first, kept, again, old_setup))
     finally:
         _lang._setup_language = real_setup
         _lang.set_ui_language("en")

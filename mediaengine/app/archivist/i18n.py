@@ -33,7 +33,7 @@ def ui_language() -> str:
     v = str(cfg.get("ui_language") or "").lower()
     setup, build = _setup_language()
     mark = f"{setup}|{build}"
-    if setup in LANGS and mark != str(cfg.get("setup_language_applied") or ""):
+    if setup in LANGS and build and mark != str(cfg.get("setup_language_applied") or ""):
         # each Setup run: the language chosen there becomes the program's language once (also over a language
         # saved by an older build); switching in the program afterwards is kept until the next Setup
         try:
@@ -44,6 +44,8 @@ def ui_language() -> str:
         return setup
     if v in LANGS:
         return v
+    if setup in LANGS:                                 # an older Setup (no build mark): first start only
+        return setup
     return "ru" if _windows_is_russian() else "en"     # no choice anywhere yet: the Windows display language
 
 
