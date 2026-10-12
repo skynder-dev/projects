@@ -40,6 +40,7 @@ PHRASES = {
         "Эти видео лежат только в OneDrive, на компьютере их нет. В Проводнике щёлкни папку правой кнопкой → «Всегда сохранять на этом устройстве», дождись загрузки и выбери папку снова.",
     "skipped": "пропущено", "skipped: ": "пропущено: ", "usable": "годится",
     "very short — may be skipped": "очень короткое — может быть пропущено",
+    "Preparing a recording without a length: ": "Подготовка записи без длины: ",
     "length was not written in the file (browser or screen recording) — a fixed copy is used, the original is not changed":
         "длина не записана в файле (запись из браузера или с экрана) — используется исправленная копия, оригинал не меняется", "Show files": "Показать файлы", "File": "Файл", "Size": "Размер", "Length": "Длина",
     "Frame": "Кадр", "Format": "Формат", "Sound": "Звук", "recommended": "рекомендуется", "Create reel": "Создать ролик",

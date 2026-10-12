@@ -406,6 +406,7 @@ APP_PHRASES: dict[str, str] = {
 }
 
 APP_PATTERNS: list[tuple[str, str]] = [
+    (r"Preparing a recording without a length: (.+)", r"Подготовка записи без длины: \1"),
     (r"(\d+) errors?", r"ошибок: \1"), (r"(\d+) GB - less than 6 GB, long 4K videos may be slow", r"\1 ГБ — меньше 6 ГБ, длинные 4K-видео могут обрабатываться медленно"),
     (r"(\d+) GB", r"\1 ГБ"), (r"([\d.]+) GB - less than 5 GB, builds may fail", r"\1 ГБ — меньше 5 ГБ, сборка может не пройти"), (r"Credentials: ([a-z_]+)", r"Пароли: ⟦\1⟧"),
     (r"(\d+) folder source\(s\) configured", r"источников-папок: \1"),

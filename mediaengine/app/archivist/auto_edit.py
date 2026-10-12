@@ -435,7 +435,7 @@ def length_missing(path: Path) -> bool:
         return False
 
 
-def _with_length(paths, work_dir: Path) -> tuple[list[Path], bool]:
+def _with_length(paths, work_dir: Path, note=None) -> tuple[list[Path], bool]:
     """The build's inputs, with every file that has no written length replaced by a copy (in the project's cache)
     that has it. A file marked Private is never copied: the copy would have another fingerprint."""
     out, changed, private = [], False, None
@@ -457,6 +457,8 @@ def _with_length(paths, work_dir: Path) -> tuple[list[Path], bool]:
             want = {"source": str(p.resolve()), "bytes": st.st_size, "mtime_ns": st.st_mtime_ns}
             ok = dst.exists() and stamp.exists() and json.loads(stamp.read_text(encoding="utf-8")) == want
             if not ok:
+                if note:
+                    note(p.name)
                 fixed_dir.mkdir(parents=True, exist_ok=True)
                 tmp = fixed_dir / ("_tmp_" + p.name)
                 cp = subprocess.run([_ffmpeg() or "ffmpeg", "-v", "error", "-y", "-nostdin", "-i", str(p), "-map", "0:v", "-map", "0:a?",
@@ -1139,13 +1141,14 @@ def _run_job(jid: int) -> None:
     skip_file = jobs_dir / f"j{jid}.private_sha.txt"
     skip_file.write_text("\n".join(_private_hashes()), encoding="utf-8")
     input_list = None
+    note = lambda name: _set(jid, message="Preparing a recording without a length: " + name)
     if p.get("files"):
-        local, _ = _with_length(local_inputs(p["files"]), work_dir)
+        local, _ = _with_length(local_inputs(p["files"]), work_dir, note)
         input_list = jobs_dir / f"j{jid}.inputs.txt"
         input_list.write_text("\n".join(str(x) for x in local) + "\n", encoding="utf-8")
     else:
         vids = list_videos(Path(p["folder"]))
-        local, fixed = _with_length(local_inputs(vids), work_dir)
+        local, fixed = _with_length(local_inputs(vids), work_dir, note)
         if fixed or len(local) != len(vids):   # cloud-only placeholders / fixed copies: give the engine the exact list
             input_list = jobs_dir / f"j{jid}.inputs.txt"
             input_list.write_text("\n".join(str(x) for x in local) + "\n", encoding="utf-8")
