@@ -8,6 +8,8 @@ on:
   push:
     paths:
       - 'mediaengine/**'
+      - '!mediaengine/STATUS.md'             # status / notes are not in the package: no new build for them
+      - '!mediaengine/RELEASE_NOTES_*.md'
       - '.github/workflows/mediaengine-windows.yml'
   workflow_dispatch:
 permissions:

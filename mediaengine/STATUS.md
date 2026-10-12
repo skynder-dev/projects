@@ -50,6 +50,14 @@ What a user can do (code: `app/archivist/auto_edit.py`, `auto_edit_web.py`, engi
   builds ("a new version with your edits"); typed trim times checked against the clip's length ("Момент 3: …");
   real reel lengths on cards and in comparisons; error codes shown small under the message; Russian names for
   Staging/Private/Rejected; About says MediaEngine.
+- **Recordings without a written length** (browser / screen recorder / OBS after a crash; ffmpeg says
+  "Duration: N/A") were listed as damaged and refused by Convert. Now measured by one stream-copy read, listed as
+  usable, and the build uses a stream copy with the length filled in, made once in the project cache (`work/
+  fixed_inputs`, freed with Free cache; Cancel works while it is made; never for Private media; original
+  untouched). Library and Convert read their length the same way.
+- Overnight fixes (2026-10-12): Russian decimal comma for numbers with units (5,00 с, 16,8 МБ) that never touches
+  file names; a running Library job showed its elapsed time off by the UTC offset (5 h in Chicago); elapsed times
+  across a clock change; folder/file names with ' [ ] % & ! # ; = , build fine (E2E).
 - **Folder window**: the Explorer-style one (address bar, Quick access, paste a path), opening next to the last
   reel's videos; the older tree dialog remains as fallback. Driven by window messages in the Windows unit checks.
 - **Check this PC** on Home, in Settings and on Auto Edit (Auto Edit suggests it until a test reel was built here).
