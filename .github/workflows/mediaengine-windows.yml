@@ -92,6 +92,11 @@ jobs:
         run: |
           python mediaengine/tests/library_checks.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\libchk" 2>&1 | Tee-Object "$env:OUT\library_checks.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Library like a user - add a folder, import + analyse, thumbnails, smart clips, Private leaves the Library and is never in a reel
+        shell: pwsh
+        run: |
+          python mediaengine/tests/library_flow_check.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\libflow" 2>&1 | Tee-Object "$env:OUT\library_flow.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Unplugged source drive and no network (app process)
         shell: pwsh
         run: |

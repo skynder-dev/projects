@@ -265,9 +265,14 @@ def _duration_seconds(path: Path, duration_ms: int | None = None) -> float:
     try:
         fps = float(cap.get(cv2.CAP_PROP_FPS) or 0)
         count = float(cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
-        return count / fps if fps > 0 and count > 0 else 0.0
+        if fps > 0 and count > 0:
+            return count / fps
     finally:
         cap.release()
+    # no frame count (a browser / screen recording without a written length, or a path OpenCV cannot open):
+    # FFmpeg reads the length, measuring it when the file has none
+    from .media import probe_duration
+    return float(probe_duration(Path(path)) or 0.0)
 
 
 def _scene_cuts(path: Path, duration: float, progress_cb=None) -> list[float]:
@@ -521,7 +526,12 @@ def _save_preview(frame: np.ndarray, inv_id: int, start_ms: int, end_ms: int) ->
         root=MEDIA_BRAIN_CACHE/str(inv_id)
         root.mkdir(parents=True,exist_ok=True)
         p=root/f"{start_ms}_{end_ms}.jpg"
-        cv2.imwrite(str(p),frame,[int(cv2.IMWRITE_JPEG_QUALITY),82])
+        # imencode + write_bytes: cv2.imwrite cannot write to a folder with non-Latin letters on Windows
+        # (e.g. C:\Users\Дмитрий\...) and fails silently there
+        ok,buf=cv2.imencode(".jpg",frame,[int(cv2.IMWRITE_JPEG_QUALITY),82])
+        if not ok:
+            return None
+        p.write_bytes(buf.tobytes())
         return str(p)
     except Exception:
         return None
