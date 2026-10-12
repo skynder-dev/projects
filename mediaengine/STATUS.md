@@ -141,15 +141,15 @@ The 11 runtime modules, adapter and validator are byte-identical to R2 (CI-check
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38271654976 on `859ae7d` — all green, build b61** (results branch `mediaengine-ci-results`,
-artifacts `MediaEngine-3.13.0-rc1-b61-Setup` and `MediaEngine-3.13.0-rc1-b61` (ZIP)): fast checks 83/83 · R3 = R2
+Latest full run: **38279572931 on `7d24f62` — all green, build b62** (results branch `mediaengine-ci-results`,
+artifacts `MediaEngine-3.13.0-rc1-b62-Setup` and `MediaEngine-3.13.0-rc1-b62` (ZIP)): fast checks 83/83 · R3 = R2
 decisions 29/29 · robustness 32/32 · A/V sync worst 20 ms, late-starting sound in place · E2E 7 videos 72/72,
 2 videos 74/74 (adds a browser recording without a length, in a folder named with ' [ ] % & ! # ; = ,), phone 67/67,
 packaged Python behind the firewall 68/68 · **Library like a user 20/20** (new; data folder with Cyrillic letters) ·
 library re-analysis 4/4 · Convert 20/20 · unplugged/no network 9/9 · 64 long names with long paths OFF 5/5 · AI
 glue 6/6 · **Russian interface: 148 pages, 0 English texts, 0 network attempts** (every page opened with the internet
-blocked) · package smoke PASS · Setup smoke PASS · 4K H.264 + 4K HEVC + 5-min 1080p → 30 s Social HD reel in 397 s.
-Same day: b58 (run 38262901710) all green.
+blocked) · package smoke PASS · Setup smoke PASS · 4K H.264 + 4K HEVC + 5-min 1080p → 30 s Social HD reel in 366 s.
+Same day, all green too: b61 (run 38271654976), b58 (run 38262901710).
 Before: b47 (run 38242920327): fast checks 71/71 · E2E 72/72, 72/72, 67/67 · 4K/long footage 359 s.
 Earlier: b41 (run 38194029514): fast checks 67/67 · E2E 71/71, 71/71, 66/66 · 4K/long footage 503 s.
 Previous green builds: b39 (run 38188906561), b34 (run 38181229982), b28 (run 38156678815), which also showed:
