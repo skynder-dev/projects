@@ -106,6 +106,8 @@ PHRASES = {
     # a folder with more videos than one reel takes: pick a day or tick videos
     "One reel can use up to 64 of them: pick a day, or tick the videos you want.":
         "В один ролик можно взять до 64: выбери день или отметь нужные видео.",
+    "Only the videos directly in this folder are used. Folders inside it with videos: ":
+        "Берутся только видео, лежащие прямо в этой папке. Вложенных папок с видео: ",
     "By day": "По дням", "Use this day": "Взять этот день", "more than 64 — tick them below": "больше 64 — отметь ниже",
     "The day is taken from the file name (e.g. VID_20260714_…), otherwise from the file's date.":
         "День берётся из имени файла (например, VID_20260714_…), иначе — из даты файла.",

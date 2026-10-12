@@ -339,10 +339,15 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         src_hidden = ("".join(f"<input type='hidden' name='file' value='{e(x)}'>" for x in scan["files_chosen"]) if scan["files_chosen"]
                       else f"<input type='hidden' name='folder' value='{e(scan['folder'])}'>")
         where = (f"{len(scan['files_chosen'])} chosen video(s) · from {scan['folder']}" if scan["files_chosen"] else scan["folder"])
+        subs = [] if scan["files_chosen"] else ae.subfolders_with_videos(scan["folder"], limit=20, depth=2, max_dirs=400)
+        inside = (f"<details style='margin-top:6px'><summary class='muted'>Only the videos directly in this folder are used. "
+                  f"Folders inside it with videos: {len(subs)}</summary><ul style='margin:6px 0 0'>"
+                  + "".join(f"<li><a href='/auto/new?folder={urllib.parse.quote(p_)}' translate='no'>{e(_rel(p_, scan['folder']))}</a> "
+                            f"<span class='muted'>· {n} video(s)</span></li>" for p_, n in subs) + "</ul></details>") if subs else ""
         body = f"""<div class='pagehead'><div class='eyebrow'>Auto Edit · new reel</div><h1 translate='no'>{e(Path(scan['folder']).name or scan['folder'])}</h1>
 <div class='lead ae-path'>{e(where)}</div></div>
 <div class='card'><b>{scan['usable']} usable video(s)</b>, total {_fmt_s(total)} · {human_bytes(scan['total_bytes'])}{(' · ' + str(scan['skipped']) + ' skipped') if scan['skipped'] else ''}
-<details style='margin-top:8px'><summary class='muted'>Show files</summary><table class='ae-files'><tr><th>File</th><th>Size</th><th>Length</th><th>Frame</th><th></th></tr>{rows}</table></details>{warn}</div>
+<details style='margin-top:8px'><summary class='muted'>Show files</summary><table class='ae-files'><tr><th>File</th><th>Size</th><th>Length</th><th>Frame</th><th></th></tr>{rows}</table></details>{inside}{warn}</div>
 <form method='post' action='/auto/create' class='card' style='margin-top:14px' onsubmit="this.querySelector('button').disabled=true">
 {src_hidden}
 <h2 style='margin-top:0'>Length</h2><div class='ae-choices'>{lengths}</div>
