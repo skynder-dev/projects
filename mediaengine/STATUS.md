@@ -39,6 +39,12 @@ What a user can do (code: `app/archivist/auto_edit.py`, `auto_edit_web.py`, engi
   folder's day list; "tick the newest" ticks the newest of a day; the self-test's time-out stops its FFmpeg too;
   the AI-model search no longer touches network/card-reader drives; updater rollback never replaces a working
   install with a half-written backup; file names, paths and source labels stay untranslated in Russian.
+- Walk-through as a new Russian user (2026-10-12) fixed: a variant with a new length chooses moments again (a
+  hand-made selection silently kept the old length); "this version already exists" instead of a silent reload;
+  top bar wraps at 1024 px; progress shares follow measured stage times and the final stage says it may take a few
+  minutes; versions show the real length; trim times checked in the page (other edits kept); a pasted video path
+  works; very short clips flagged; Back buttons on setup/day/comparison pages; the comparison result can accept the
+  preferred version; days shown as "14 июля 2026"; Check this PC plays the test reel.
 - **Folder window**: the Explorer-style one (address bar, Quick access, paste a path), opening next to the last
   reel's videos; the older tree dialog remains as fallback. Driven by window messages in the Windows unit checks.
 - **Check this PC** on Home, in Settings and on Auto Edit (Auto Edit suggests it until a test reel was built here).
