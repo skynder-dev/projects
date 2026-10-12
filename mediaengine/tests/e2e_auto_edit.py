@@ -381,7 +381,7 @@ def main():
         txt = {u: x.data.decode("utf-8", "replace") for u, x in ru.items()}
         check("russian_interface", okru and "Мои проекты" in txt["/auto"] and "Создать ролик" in list(txt.values())[2]
               and "value='social_hd'" in list(txt.values())[2] and "Моменты в ролике" in txt[f"/auto/p/{pid}"]
-              and ae.project(pid)["title"] in txt[f"/auto/p/{pid}"], {u: x.status_code for u, x in ru.items()})
+              and ae.project(pid)["title"] in html.unescape(txt[f"/auto/p/{pid}"]), {u: x.status_code for u, x in ru.items()})
         c.post("/auto/lang", headers=H)
         check("english_again", b"My projects" in c.get("/auto", headers=H).data)
         # the language switch is on every page (top bar) and the whole app follows it; Check this PC is on Home
@@ -424,10 +424,11 @@ def main():
                 if others:
                     r = c.get(f"/auto/p/{fpid}/source", query_string={"name": others[0]}, headers=H)
                     check("files_other_file_not_served", r.status_code == 404, r.status_code)
-            # a browser / screen recording without a written length (like Chrome's MediaRecorder): used, not "damaged"
-            rec_dir = home.parent / "recording_without_length"
+            # a browser / screen recording without a written length (like Chrome's MediaRecorder): used, not "damaged";
+            # folder and file names with characters that need care in ffmpeg lists and filters (' [ ] % & ! # ; = ,)
+            rec_dir = home.parent / "Mom's recordings [2026] 100% & co!; =,#"
             rec_dir.mkdir(exist_ok=True)
-            live = rec_dir / "screen recording.webm"
+            live = rec_dir / "it's a 'screen' recording [1] %d #2.webm"
             with live.open("wb") as fh:
                 subprocess.run([ae._ffmpeg() or "ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=1280x720:rate=30,hue=h=t*45",
                                 "-f", "lavfi", "-i", "sine=frequency=520:sample_rate=48000", "-t", "9", "-c:v", "libvpx-vp9", "-deadline",

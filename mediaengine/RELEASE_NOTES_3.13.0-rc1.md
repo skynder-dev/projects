@@ -57,6 +57,13 @@ not read — reading even their first bytes would make Windows download them all
 in the cloud (OneDrive)…"); a folder that is entirely in the cloud says to choose "Always keep on this device"
 first. After the download the same reel is built again with them.
 
+## Recordings without a length
+
+A recording made in a web browser or by a screen recorder (and one stopped by a crash) often has no length written
+in the file; it used to be listed as "damaged". MediaEngine now measures it by reading the file once (no decoding),
+lists it as usable with a note, and the build uses a copy with the length filled in (made once in the project's
+cache, freed with "Free cache"; the original is never changed; media marked Private is never copied).
+
 ## AI model provenance (not in the ZIP, not in git)
 
 FAST_LOCAL is taken from the owner's stable install (`<drive>:\Archivist\sidecars\auto_edit\models`) or imported
