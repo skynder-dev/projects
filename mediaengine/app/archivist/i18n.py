@@ -177,9 +177,15 @@ def ru_plural(n: int, one: str, few: str, many: str) -> str:
     return many
 
 
+# Russian writes a decimal comma: "5,00 с", "16,8 МБ" (only numbers with a unit after them; times like 0:04.2 and
+# versions like 3.13.0 stay as they are)
+_DEC = re.compile(r"(?<![\d.:,])(\d+)\.(\d+)(?=\s?(?:с|сек|Б|КБ|МБ|ГБ|ТБ)(?![А-Яа-яЁёA-Za-z0-9]))")
+
+
 def _finish(text: str) -> str:
     text = _LOOKUP.sub(lambda k: EXACT.get(k.group(1), k.group(1)), text)
-    return _PLURAL.sub(lambda k: ru_plural(int(k.group(1)), k.group(2), k.group(3), k.group(4)), text)
+    text = _PLURAL.sub(lambda k: ru_plural(int(k.group(1)), k.group(2), k.group(3), k.group(4)), text)
+    return _DEC.sub(r"\1,\2", text)
 
 
 def translate_script(block: str) -> str:
