@@ -390,7 +390,7 @@ def _measured_probe(path: Path) -> dict | None:
                                                                     errors="replace", timeout=600, check=False)))
         text = cp.stderr or ""
         head = text
-        for mark in ("Output #", "Stream mapping:"):    # only the input's description
+        for mark in ("\nOutput #", "\nStream mapping:"):    # only the input's description (a path may contain "Output #")
             head = head.split(mark, 1)[0]
         times = _TIME_RE.findall(text)
         dur = (int(times[-1][0]) * 3600 + int(times[-1][1]) * 60 + float(times[-1][2])) if times else 0.0
@@ -426,56 +426,127 @@ def probe_any(path: Path) -> dict:
 
 
 def length_missing(path: Path) -> bool:
-    """True for a usable video whose length is not written in the file (it needs the fixed copy)."""
+    """True for a .webm / .mkv whose length is not written in the file (quick check, the file is not read through)."""
     if Path(path).suffix.lower() not in _LENGTH_MAY_BE_MISSING:
         return False
     try:
-        return bool(probe_any(Path(path)).get("length_measured"))
-    except Exception:
+        _probe(Path(path))
         return False
+    except Exception as exc:
+        return "DURATION_MISSING" in str(exc)
 
 
-def _with_length(paths, work_dir: Path, note=None) -> tuple[list[Path], bool]:
+class _Stopped(Exception):
+    """Cancel pressed while the inputs were being prepared."""
+
+
+def _copy_with_length(src: Path, tmp: Path, jid=None) -> bool:
+    """Stream copy (no re-encoding) into Matroska, which writes the length. Runs like the engine: in the build's job
+    object, killed by Cancel."""
+    cmd = [_ffmpeg() or "ffmpeg", "-v", "error", "-y", "-nostdin", "-i", str(src), "-map", "0:v", "-map", "0:a?", "-c", "copy",
+           "-fflags", "+bitexact", "-f", "matroska", str(tmp)]
+    kw = process_kwargs(below_normal=True) if os.name == "nt" else {"start_new_session": True}
+    proc = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL, **kw)
+    _attach_job_object(proc)
+    if jid is not None:
+        with _LOCK:
+            _RUNNING[jid] = proc
+    try:
+        t0 = time.time()
+        while proc.poll() is None:
+            with _LOCK:
+                stop = jid is not None and jid in _CANCEL
+            if stop or time.time() - t0 > 3600:
+                _kill_tree(proc)
+                proc.wait(30)
+                if stop:
+                    raise _Stopped()
+                return False
+            time.sleep(0.2)
+        return proc.returncode == 0
+    finally:
+        if jid is not None:
+            with _LOCK:
+                if _RUNNING.get(jid) is proc:
+                    _RUNNING.pop(jid, None)
+        h = _JOB_HANDLES.pop(proc.pid, None)
+        if h is not None:
+            try:
+                import ctypes
+                from ctypes import wintypes
+                ctypes.windll.kernel32.CloseHandle(wintypes.HANDLE(h))
+            except Exception:
+                pass
+
+
+def _with_length(paths, work_dir: Path, note=None, jid=None) -> tuple[list[Path], bool]:
     """The build's inputs, with every file that has no written length replaced by a copy (in the project's cache)
-    that has it. A file marked Private is never copied: the copy would have another fingerprint."""
+    that has it. A file marked Private is never copied (the copy would have another fingerprint) and an earlier
+    copy of it is deleted, like copies of files that are no longer among the inputs. Raises _Stopped on Cancel."""
     out, changed, private = [], False, None
     fixed_dir = work_dir / "fixed_inputs"
+    keep: set[str] = set()
     for p in paths:
         p = Path(p)
+        with _LOCK:
+            if jid is not None and jid in _CANCEL:
+                raise _Stopped()
         if not length_missing(p):
             out.append(p)
             continue
         if private is None:
             private = set(_private_hashes())
+        dst = fixed_dir / p.name
+        stamp = fixed_dir / (p.name + ".source.json")
+        tmp = fixed_dir / (p.name + ".part")          # never a video name, so never another input's copy
         try:
             if sha256_file(p) in private:
-                out.append(p)
+                out.append(p)                          # the engine skips it as unusable; it is never copied
                 continue
             st = p.stat()
-            dst = fixed_dir / p.name
-            stamp = fixed_dir / (p.name + ".source.json")
             want = {"source": str(p.resolve()), "bytes": st.st_size, "mtime_ns": st.st_mtime_ns}
-            ok = dst.exists() and stamp.exists() and json.loads(stamp.read_text(encoding="utf-8")) == want
+            try:
+                ok = dst.is_file() and json.loads(stamp.read_text(encoding="utf-8")) == want
+            except (OSError, ValueError):
+                ok = False
             if not ok:
                 if note:
                     note(p.name)
                 fixed_dir.mkdir(parents=True, exist_ok=True)
-                tmp = fixed_dir / ("_tmp_" + p.name)
-                cp = subprocess.run([_ffmpeg() or "ffmpeg", "-v", "error", "-y", "-nostdin", "-i", str(p), "-map", "0:v", "-map", "0:a?",
-                                     "-c", "copy", "-fflags", "+bitexact", "-f", "matroska", str(tmp)],
-                                    **process_kwargs(dict(stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True,
-                                                          errors="replace", timeout=1800, check=False)))
-                if cp.returncode != 0 or not tmp.exists():
+                if not _copy_with_length(p, tmp, jid) or not tmp.is_file():
                     tmp.unlink(missing_ok=True)
-                    out.append(p)      # the engine reports it as unusable
+                    out.append(p)                      # the engine reports it as unusable
                     continue
                 os.replace(tmp, dst)
-                stamp.write_text(json.dumps(want), encoding="utf-8")
+                stamp_tmp = fixed_dir / (p.name + ".source.json.part")
+                stamp_tmp.write_text(json.dumps(want), encoding="utf-8")
+                os.replace(stamp_tmp, stamp)
             out.append(dst)
+            keep.update({dst.name, stamp.name})
             changed = True
-        except OSError:
+        except (OSError, ValueError, subprocess.SubprocessError):
+            try:
+                tmp.unlink(missing_ok=True)
+            except OSError:
+                pass
             out.append(p)
+    if fixed_dir.is_dir():                              # copies of Private, removed or changed files go
+        for x in fixed_dir.iterdir():
+            if x.name not in keep:
+                try:
+                    x.unlink()
+                except OSError:
+                    pass
     return out, changed
+
+
+def fixed_copy_seconds(pid: int, name: str) -> float:
+    """Length of the fixed copy of a recording without a written length (0 when there is none). Quick."""
+    try:
+        cp = _project_dir(int(pid)) / "work" / "fixed_inputs" / name
+        return float(_probe(cp).get("format", {}).get("duration") or 0) if cp.is_file() else 0.0
+    except Exception:
+        return 0.0
 
 
 def scan_folder(folder) -> dict:
@@ -1142,16 +1213,23 @@ def _run_job(jid: int) -> None:
     skip_file.write_text("\n".join(_private_hashes()), encoding="utf-8")
     input_list = None
     note = lambda name: _set(jid, message="Preparing a recording without a length: " + name)
-    if p.get("files"):
-        local, _ = _with_length(local_inputs(p["files"]), work_dir, note)
-        input_list = jobs_dir / f"j{jid}.inputs.txt"
-        input_list.write_text("\n".join(str(x) for x in local) + "\n", encoding="utf-8")
-    else:
-        vids = list_videos(Path(p["folder"]))
-        local, fixed = _with_length(local_inputs(vids), work_dir, note)
-        if fixed or len(local) != len(vids):   # cloud-only placeholders / fixed copies: give the engine the exact list
-            input_list = jobs_dir / f"j{jid}.inputs.txt"
-            input_list.write_text("\n".join(str(x) for x in local) + "\n", encoding="utf-8")
+    try:
+        with keep_awake():
+            if p.get("files"):
+                local, _ = _with_length(local_inputs(p["files"]), work_dir, note, jid)
+                input_list = jobs_dir / f"j{jid}.inputs.txt"
+                input_list.write_text("\n".join(str(x) for x in local) + "\n", encoding="utf-8")
+            else:
+                vids = list_videos(Path(p["folder"]))
+                local, fixed = _with_length(local_inputs(vids), work_dir, note, jid)
+                if fixed or len(local) != len(vids):   # cloud-only placeholders / fixed copies: give the engine the exact list
+                    input_list = jobs_dir / f"j{jid}.inputs.txt"
+                    input_list.write_text("\n".join(str(x) for x in local) + "\n", encoding="utf-8")
+    except _Stopped:
+        with _LOCK:
+            _CANCEL.discard(jid)
+        _set(jid, status="cancelled", stage="cancelled", finished_at=now_iso(), message="Cancelled by user")
+        return
     cmd = engine_command(Path(p["folder"]), out_dir, work_dir, progress_file, s, edits_file, skip_file, input_list)
     kw = process_kwargs(below_normal=True) if os.name == "nt" else {"start_new_session": True}
     with log_file.open("w", encoding="utf-8", errors="replace") as log, keep_awake():

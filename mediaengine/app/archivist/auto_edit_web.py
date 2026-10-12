@@ -57,7 +57,10 @@ def _source_seconds(pid: int, name: str) -> float:
             return 0.0
         key = (str(src), st.st_size, st.st_mtime_ns)
         if key not in _DUR_CACHE:
-            _DUR_CACHE[key] = float(ae.probe_any(src).get("format", {}).get("duration") or 0)
+            try:
+                _DUR_CACHE[key] = float(ae._probe(src).get("format", {}).get("duration") or 0)
+            except Exception:       # a recording without a written length: the build's fixed copy has it (never read
+                _DUR_CACHE[key] = ae.fixed_copy_seconds(pid, name)   # the whole original while a page loads)
         return _DUR_CACHE[key]
     except Exception:
         return 0.0

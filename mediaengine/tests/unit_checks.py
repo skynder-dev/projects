@@ -119,7 +119,7 @@ def main():
     # a browser / screen recording with no length written in the file: measured, used through a fixed copy
     ff = ae._ffmpeg()
     if ff:
-        rec = work / "recording"; rec.mkdir(exist_ok=True)
+        rec = work / "OBS Output #1"; rec.mkdir(exist_ok=True)       # "Output #" in the path must not confuse the reading
         live = rec / "rec.webm"
         with live.open("wb") as fh:
             subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=320x240:rate=25", "-t", "4", "-c:v", "libvpx",
@@ -129,21 +129,42 @@ def main():
             sc = ae.scan_folder(rec)
             check("recording without a length: usable, measured", sc["usable"] == 1 and sc["files"][0].get("length_measured")
                   and 3.5 <= sc["files"][0]["duration_s"] <= 4.1, sc["files"])
-            fixed, changed = ae._with_length([live], work / "rec_work")
-            again, _ = ae._with_length([live], work / "rec_work")
-            check("recording without a length: fixed copy has the length, original untouched, copy reused",
+            notes = []
+            rw = work / "rec_work"
+            (rw / "fixed_inputs").mkdir(parents=True, exist_ok=True)
+            (rw / "fixed_inputs" / "old removed.webm").write_bytes(b"x")       # a copy of a file no longer used
+            fixed, changed = ae._with_length([live], rw, notes.append)
+            m1 = fixed[0].stat().st_mtime_ns if fixed[0].is_file() else 0
+            again, _ = ae._with_length([live], rw, notes.append)
+            check("recording without a length: fixed copy has the length, original untouched, copy reused, old copies gone",
                   changed and fixed[0] != live and 3.5 <= float(ae._probe(fixed[0])["format"]["duration"]) <= 4.1
-                  and live.read_bytes() == orig and again == fixed and fixed[0].name == live.name, (fixed, changed))
+                  and live.read_bytes() == orig and again == fixed and fixed[0].name == live.name and notes == [live.name]
+                  and fixed[0].stat().st_mtime_ns == m1 and not (rw / "fixed_inputs" / "old removed.webm").exists(),
+                  (fixed, changed, notes))
+            (rw / "fixed_inputs" / (live.name + ".source.json")).write_text("", encoding="utf-8")   # damaged stamp (disk was full)
+            third, _ = ae._with_length([live], rw, notes.append)
+            check("recording without a length: a damaged stamp makes a new copy, never a failed build", third == fixed and len(notes) == 2,
+                  (third, notes))
             from archivist import media as _media
             ld = _media.probe_duration(live)
             check("recording without a length: Library and Convert get its length too", ld and 3.5 <= ld <= 4.1, ld)
             real_priv = ae._private_hashes
             ae._private_hashes = lambda: [ae.sha256_file(live)]
             try:
-                kept, ch2 = ae._with_length([live], work / "rec_work2")
-                check("recording without a length marked Private is never copied", kept == [live] and not ch2, kept)
+                kept, ch2 = ae._with_length([live], rw)
+                check("recording without a length marked Private: never copied, the earlier copy deleted",
+                      kept == [live] and not ch2 and not list((rw / "fixed_inputs").iterdir()), kept)
             finally:
                 ae._private_hashes = real_priv
+            ae._CANCEL.add(-7)
+            try:
+                ae._with_length([live], work / "rec_work3", None, -7)
+                stopped = False
+            except ae._Stopped:
+                stopped = True
+            finally:
+                ae._CANCEL.discard(-7)
+            check("recording without a length: Cancel stops the preparation", stopped)
         else:
             print("SKIP recording without a length: this ffmpeg cannot write WebM")
     # times are stored as local wall-clock time: a running job's elapsed time must not be off by the UTC offset
@@ -272,6 +293,11 @@ def main():
     from archivist import i18n as _i18n
     missing = sorted(m for m in msgs if _i18n.translate_json({"message": m})["message"] == m)
     check("ru: every engine progress message translated", bool(msgs) and not missing, missing or len(msgs))
+    for name in ("Дача 15.08 с мамой.webm", "клип 1.5 МБ (копия).mp4"):     # decimal comma never touches a file name
+        got = _i18n.translate_json({"message": "Importing " + name})["message"]
+        check(f"ru: file name kept exactly ({name})", got.endswith(" " + name), got)
+    check("ru: decimal comma with units", _i18n.translate_text("Social HD · 21.9 s (requested 30 s) · sound auto", True)
+          == "Social HD · 21,9 с (выбрано 30 с) · звук авто", _i18n.translate_text("Social HD · 21.9 s (requested 30 s) · sound auto", True))
     prep = _i18n.translate_json({"message": "Preparing a recording without a length: it's [1] 1.5 s.webm"})["message"]
     check("ru: preparing a recording without a length (file name kept)", prep == "Подготовка записи без длины: it's [1] 1.5 s.webm", prep)
     long = _i18n.translate_text("Requested 15 s, got 9.7 s: there were not enough different moments in this footage for a longer reel.", True)

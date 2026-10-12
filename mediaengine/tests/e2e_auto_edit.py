@@ -451,6 +451,8 @@ def main():
                           (lj.get("status"), lj.get("error"), lsrc))
                 else:
                     check("no_length_recording_used", False, r.status_code)
+            else:
+                print("SKIP no_length_recording: this ffmpeg cannot write VP9/Opus WebM")
 
     after = {p.name: sha(p) for p in folder.iterdir() if p.is_file()}
     check("sources_unchanged", before == after)

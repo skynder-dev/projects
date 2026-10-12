@@ -152,7 +152,7 @@ def translate_text(t: str, substring: bool = False) -> str:
     for rx, rep in PATTERNS:
         mm = rx.fullmatch(core)
         if mm:   # ⟦x⟧ in a replacement = look x up too ("quality good" -> "качество хорошее")
-            return lead + _finish(mm.expand(rep)) + tail
+            return lead + _expand(mm, rep) + tail
     if substring:
         for rx, rep in COUNT_SUBS:            # counted nouns first, with Russian plural forms
             t = rx.sub(rep, t)
@@ -177,15 +177,43 @@ def ru_plural(n: int, one: str, few: str, many: str) -> str:
     return many
 
 
-# Russian writes a decimal comma: "5,00 с", "16,8 МБ" (only numbers with a unit after them; times like 0:04.2 and
-# versions like 3.13.0 stay as they are)
-_DEC = re.compile(r"(?<![\d.:,])(\d+)\.(\d+)(?=\s?(?:с|сек|Б|КБ|МБ|ГБ|ТБ)(?![А-Яа-яЁёA-Za-z0-9]))")
+# Russian writes a decimal comma: "5,00 с", "16,8 МБ". Only a number with a unit right after it and then the end of
+# the text or a separator (· , ; ) ( / — →, or a full stop at the end), so times like 0:04.2, versions like 3.13.0
+# and file names ("Дача 15.08 с мамой.mp4", "клип 1.5 с.webm") stay exactly as they are.
+_DEC = re.compile(r"(?<![\d.:,])(\d+)\.(\d+)(?=\s?(?:с|сек|Б|КБ|МБ|ГБ|ТБ)(?:\s*$|\s*[·,;:()/—–→]|\.(?=\s|$)))")
+_KEEP = re.compile("\ue000(\\d+)\ue001")
 
 
 def _finish(text: str) -> str:
     text = _LOOKUP.sub(lambda k: EXACT.get(k.group(1), k.group(1)), text)
     text = _PLURAL.sub(lambda k: ru_plural(int(k.group(1)), k.group(2), k.group(3), k.group(4)), text)
     return _DEC.sub(r"\1,\2", text)
+
+
+def _expand(mm, rep: str) -> str:
+    """A pattern's Russian text with the captured parts put in. A captured part that is not a plain number (a file
+    or folder name, a title, an error text) is put in exactly as it is: the decimal comma never touches it."""
+    kept = []
+
+    def part(k):
+        v = mm.group(int(k.group(1))) or ""
+        if re.fullmatch(r"\d+(?:\.\d+)?", v):
+            return v
+        return keep(v)
+
+    def keep(v):
+        kept.append(v)
+        return "\ue000%d\ue001" % (len(kept) - 1)
+
+    def look(k):     # ⟦…⟧: a known text is translated, anything else is put in as it is (and stays protected)
+        key = _KEEP.sub(lambda q: kept[int(q.group(1))], k.group(1))
+        return EXACT[key] if key in EXACT else keep(key)
+
+    text = re.sub(r"\\(\d)", part, rep)
+    text = _LOOKUP.sub(look, text)
+    text = _PLURAL.sub(lambda k: ru_plural(int(k.group(1)), k.group(2), k.group(3), k.group(4)), text)
+    text = _DEC.sub(r"\1,\2", text)
+    return _KEEP.sub(lambda k: kept[int(k.group(1))], text)
 
 
 def translate_script(block: str) -> str:
