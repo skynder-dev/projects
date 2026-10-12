@@ -277,7 +277,8 @@ APP_PHRASES: dict[str, str] = {
     "Privacy": "Приватность", "Privacy reason": "Причина (приватность)", "Quality": "Качество", "Quality reason": "Причина (качество)",
     "Rights": "Права", "Rights reason": "Причина (права)", "Rights / location risk": "Права / риск места съёмки", "Rights place": "Место",
     "Rights source": "Источник", "Rights notes": "Заметки о правах", "Place / venue": "Место / площадка", "Policy/source URL": "Ссылка на правила",
-    "Notes": "Заметки", "Save rights status": "Сохранить права", "Rejected": "Отклонённые (Rejected)", "Remove source": "Убрать источник", "private_forever": "личное навсегда",
+    "Notes": "Заметки", "Save rights status": "Сохранить права", "Rejected": "Отклонённые (Rejected)", "Remove source": "Убрать источник", "Clip not found": "Клип не найден (видео проанализировано заново или убрано)",
+    "Not found": "Не найдено", "private_forever": "личное навсегда",
     "Build scene/window clips, rank Best Moments and calculate static 16:9 / 4:5 / 1:1 / 9:16 crop suggestions.":
         "Нарезать видео на сцены, найти лучшие моменты и предложить кадрирование 16:9 / 4:5 / 1:1 / 9:16.", "Archive copy": "Копия в архиве",
     # codes the Library item page shows as values (quality / rights reasons)
