@@ -1449,9 +1449,15 @@ def other_builds(install: Path | None = None) -> list[dict]:
                           if ln.startswith("built ")), "")
         except OSError:
             built = ""
-        out.append({"name": d.name, "path": str(d), "built": built, "bytes": _tree_bytes(d),
-                    "mtime": (d / "BUILD.txt").stat().st_mtime})
+        mt = (d / "BUILD.txt").stat().st_mtime
+        hit = _BUILD_BYTES.get(str(d))
+        if not hit or hit[0] != mt:          # a release folder does not change once installed: count its size once
+            hit = _BUILD_BYTES[str(d)] = (mt, _tree_bytes(d))
+        out.append({"name": d.name, "path": str(d), "built": built, "bytes": hit[1], "mtime": mt})
     return out
+
+
+_BUILD_BYTES: dict[str, tuple[float, int]] = {}
 
 
 def delete_build(name: str, install: Path | None = None) -> int:
