@@ -134,6 +134,9 @@ def main():
             check("recording without a length: fixed copy has the length, original untouched, copy reused",
                   changed and fixed[0] != live and 3.5 <= float(ae._probe(fixed[0])["format"]["duration"]) <= 4.1
                   and live.read_bytes() == orig and again == fixed and fixed[0].name == live.name, (fixed, changed))
+            from archivist import media as _media
+            ld = _media.probe_duration(live)
+            check("recording without a length: Library and Convert get its length too", ld and 3.5 <= ld <= 4.1, ld)
             real_priv = ae._private_hashes
             ae._private_hashes = lambda: [ae.sha256_file(live)]
             try:

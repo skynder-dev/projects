@@ -142,9 +142,28 @@ def probe_duration(path: Path) -> float | None:
         r = _run([exe, "-hide_banner", "-i", str(path)], capture_output=True, text=True, timeout=30, errors="replace")
         m = re.search(r"Duration:\s*(\d+):(\d+):(\d+(?:\.\d+)?)", r.stderr)
         if not m:
-            return None
+            return _measured_duration(exe, Path(path)) if Path(path).suffix.lower() in (".webm", ".mkv") else None
         h, mnt, sec = int(m.group(1)), int(m.group(2)), float(m.group(3))
         return h * 3600 + mnt * 60 + sec
+    except Exception:
+        return None
+
+
+_MEASURED: dict = {}
+
+
+def _measured_duration(exe: str, path: Path) -> float | None:
+    """A browser / screen recording often has no length written in the file ("Duration: N/A"): read the file once
+    without decoding and take the time of the last picture. Cached per file state."""
+    try:
+        st = path.stat()
+        key = (str(path), st.st_size, st.st_mtime_ns)
+        if key not in _MEASURED:
+            r = _run([exe, "-hide_banner", "-nostdin", "-i", str(path), "-map", "0:v:0", "-c", "copy", "-f", "null", "-"],
+                     capture_output=True, text=True, timeout=600, errors="replace")
+            t = re.findall(r"time=\s*(\d+):(\d+):(\d+(?:\.\d+)?)", r.stderr or "")
+            _MEASURED[key] = (int(t[-1][0]) * 3600 + int(t[-1][1]) * 60 + float(t[-1][2])) if t and r.returncode == 0 else None
+        return _MEASURED[key] or None
     except Exception:
         return None
 
