@@ -210,7 +210,7 @@ MediaEngine (all Setup builds; keeps "MediaEngine Data"); from the ZIP -> Quit, 
 
 УДАЛИТЬ
   Ставил Setup'ом: Параметры → Приложения → MediaEngine (папка "MediaEngine Data" остаётся).
-  Из ZIP: Quit → удали эту папку, папку "MediaEngine Data" (в ней и экспортированные ролики) и ярлык
+  Из ZIP: «Выход» (Quit) → удали эту папку, папку "MediaEngine Data" (в ней и экспортированные ролики) и ярлык
   "{SHORTCUT}".
 """, encoding="utf-8-sig")
 
