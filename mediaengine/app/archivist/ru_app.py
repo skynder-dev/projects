@@ -278,7 +278,8 @@ APP_PHRASES: dict[str, str] = {
     "Rights": "Права", "Rights reason": "Причина (права)", "Rights / location risk": "Права / риск места съёмки", "Rights place": "Место",
     "Rights source": "Источник", "Rights notes": "Заметки о правах", "Place / venue": "Место / площадка", "Policy/source URL": "Ссылка на правила",
     "Notes": "Заметки", "Save rights status": "Сохранить права", "Rejected": "Отклонённые (Rejected)", "Remove source": "Убрать источник", "Clip not found": "Клип не найден (видео проанализировано заново или убрано)",
-    "Not found": "Не найдено", "private_forever": "личное навсегда",
+    "Not found": "Не найдено",
+    "privacy_clear": "личного не найдено", "privacy_candidate": "возможно личное — проверь", "privacy_disabled": "проверка приватности выключена", "privacy_not_run": "приватность не проверялась", "privacy_unreadable": "не удалось проверить приватность", "preview error": "ошибка превью", "Open item for details": "Подробности — на странице видео", "preview…": "превью…", "private_forever": "личное навсегда",
     "Build scene/window clips, rank Best Moments and calculate static 16:9 / 4:5 / 1:1 / 9:16 crop suggestions.":
         "Нарезать видео на сцены, найти лучшие моменты и предложить кадрирование 16:9 / 4:5 / 1:1 / 9:16.", "Archive copy": "Копия в архиве",
     # codes the Library item page shows as values (quality / rights reasons)

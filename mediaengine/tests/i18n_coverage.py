@@ -40,9 +40,9 @@ def english_left(text: str) -> bool:
         return False
     if re.fullmatch(r"(MediaEngine )?v\d+\.\d+\.\d+[\w.-]*( b\d+)?", t) or re.fullmatch(r"[\w ]+\.mp4 [\d:.–]+", t):
         return False
-    if any(u in t for u in ("· — · —", "/tmp/", ":\\", "0 B/0 B")) or t.startswith("Последний экспорт:") or t.endswith(".mp4 · MediaEngine"):
+    if any(u in t for u in ("· — · —", "/tmp/", ":\\", "0 B/0 B")) or t.startswith("Последний экспорт:") or re.search(r"\.(mp4|mov|webm|mkv|avi|mts|m2ts|3gp|mpg|wmv|flv|vob|mod|tod|m2t|dv) · MediaEngine$", t, re.I):
         return False
-    if re.fullmatch(r"[\w.\- ()]+\.(mp4|mov|mts|m2ts|avi|mkv|jpg|png|json|txt|db|log|zip|vbs|exe)", t, re.I):
+    if re.fullmatch(r"[\w.\- ()\[\]']+\.(mp4|mov|webm|mts|m2ts|avi|mkv|3gp|mpg|wmv|flv|vob|jpg|png|json|txt|db|log|zip|vbs|exe)", t, re.I):
         return False          # a file name
     if re.fullmatch(r"([A-Za-z]:\\|/|\\\\).*", t):
         return False          # a path
