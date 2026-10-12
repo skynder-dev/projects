@@ -104,8 +104,34 @@ def urls_for(app, con):
     return sorted(set(out))
 
 
+NETWORK: list[str] = []
+
+
+def _block_network() -> None:
+    """Every page is opened with the internet blocked: a page load must never contact anything (a 500 or a
+    recorded attempt shows it). Only this machine (127.x / ::1) is allowed."""
+    import socket
+    real_connect, real_gai = socket.socket.connect, socket.getaddrinfo
+    local = lambda h: h in ("127.0.0.1", "::1", "localhost", None) or str(h).startswith("127.")
+
+    def connect(self, addr):
+        host = addr[0] if isinstance(addr, tuple) else str(addr)
+        if not local(host):
+            NETWORK.append(str(host))
+            raise OSError("network blocked by the check")
+        return real_connect(self, addr)
+
+    def gai(host, *a, **k):
+        if not local(host):
+            NETWORK.append("dns:" + str(host))
+            raise OSError("network blocked by the check")
+        return real_gai(host, *a, **k)
+    socket.socket.connect, socket.getaddrinfo = connect, gai
+
+
 def main():
     homes = [a for a in sys.argv[1:] if not a.startswith("--")]
+    _block_network()
     out_json = sys.argv[sys.argv.index("--json") + 1] if "--json" in sys.argv else None
     limit = int(sys.argv[sys.argv.index("--max") + 1]) if "--max" in sys.argv else 0
     left: dict[str, str] = {}
@@ -136,10 +162,12 @@ def main():
         i18n.set_ui_language("en")
     for t, url in sorted(left.items(), key=lambda kv: (kv[1], kv[0])):
         print(f"{url}\t{t}")
-    print(json.dumps({"pages": pages, "english_left": len(left)}))
+    for h in sorted(set(NETWORK)):
+        print(f"NETWORK ATTEMPT\t{h}")
+    print(json.dumps({"pages": pages, "english_left": len(left), "network_attempts": len(NETWORK)}))
     if out_json:
         Path(out_json).write_text(json.dumps(left, ensure_ascii=False, indent=1), encoding="utf-8")
-    return 0 if len(left) <= limit else 1
+    return 0 if len(left) <= limit and not NETWORK else 1
 
 
 if __name__ == "__main__":
