@@ -1643,8 +1643,84 @@ def pick_files(title="Choose videos for one reel") -> list[str] | None:
     return box.get("files")
 
 
-def pick_folder(title="Choose a folder with your videos on this computer (copy phone videos to the computer first)") -> str | None:
-    """Native Windows folder dialog (SHBrowseForFolderW). Runs on a COM STA thread."""
+def last_source_parent() -> str | None:
+    """Where the folder window opens: next to the videos of the last reel (their parent folder), if it is there."""
+    try:
+        ensure_schema()
+        with db() as con:
+            row = con.execute("SELECT folder FROM ae_projects ORDER BY updated_at DESC, id DESC LIMIT 1").fetchone()
+        parent = Path(row[0]).parent if row and row[0] else None
+        return str(parent) if parent and parent.is_dir() else None
+    except Exception:
+        return None
+
+
+def _pick_folder_explorer(title: str, initial: str | None, owner) -> tuple[bool, str | None]:
+    """The Explorer-style folder window (IFileOpenDialog with FOS_PICKFOLDERS: address bar, Quick access, paste a
+    path). Returns (shown, path); shown=False when it is not available, then the older tree dialog is used.
+    Must run on a COM STA thread."""
+    import ctypes
+    from ctypes import wintypes
+    HRESULT = ctypes.c_long
+
+    class GUID(ctypes.Structure):
+        _fields_ = [("Data1", ctypes.c_ulong), ("Data2", ctypes.c_ushort), ("Data3", ctypes.c_ushort), ("Data4", ctypes.c_ubyte * 8)]
+
+    ole32, shell32 = ctypes.windll.ole32, ctypes.windll.shell32
+    ole32.CLSIDFromString.argtypes = [wintypes.LPCWSTR, ctypes.POINTER(GUID)]
+    ole32.CoCreateInstance.argtypes = [ctypes.POINTER(GUID), ctypes.c_void_p, wintypes.DWORD, ctypes.POINTER(GUID), ctypes.POINTER(ctypes.c_void_p)]
+    ole32.CoCreateInstance.restype = HRESULT
+    ole32.CoTaskMemFree.argtypes = [ctypes.c_void_p]
+    shell32.SHCreateItemFromParsingName.argtypes = [wintypes.LPCWSTR, ctypes.c_void_p, ctypes.POINTER(GUID), ctypes.POINTER(ctypes.c_void_p)]
+    shell32.SHCreateItemFromParsingName.restype = HRESULT
+
+    def guid(text):
+        g = GUID()
+        if ole32.CLSIDFromString(text, ctypes.byref(g)) != 0:
+            raise OSError("bad GUID " + text)
+        return g
+
+    def method(obj, index, *argtypes):     # COM call through the object's vtable
+        vtbl = ctypes.cast(obj, ctypes.POINTER(ctypes.POINTER(ctypes.c_void_p))).contents
+        return lambda *a: ctypes.WINFUNCTYPE(HRESULT, ctypes.c_void_p, *argtypes)(vtbl[index])(obj, *a)
+
+    iid_item = guid("{43826d1e-e718-42ee-bc55-a1e261c37bfe}")
+    dlg = ctypes.c_void_p()
+    if ole32.CoCreateInstance(ctypes.byref(guid("{DC1C5A9C-E88A-4dde-A5A1-60F82A20AEF7}")), None, 1,   # CLSCTX_INPROC_SERVER
+                              ctypes.byref(guid("{d57c7288-d4ad-4768-be02-9d969532d960}")), ctypes.byref(dlg)) != 0 or not dlg:
+        return False, None
+    item = ctypes.c_void_p()
+    try:
+        opts = wintypes.DWORD()
+        method(dlg, 10, ctypes.POINTER(wintypes.DWORD))(ctypes.byref(opts))                                  # GetOptions
+        method(dlg, 9, wintypes.DWORD)(opts.value | 0x20 | 0x40 | 0x800 | 0x8)   # SetOptions: PICKFOLDERS FORCEFILESYSTEM PATHMUSTEXIST NOCHANGEDIR
+        method(dlg, 17, wintypes.LPCWSTR)(title)                                                            # SetTitle
+        if initial and Path(initial).is_dir():
+            start = ctypes.c_void_p()
+            if shell32.SHCreateItemFromParsingName(str(initial), None, ctypes.byref(iid_item), ctypes.byref(start)) == 0 and start:
+                method(dlg, 12, ctypes.c_void_p)(start)                                                     # SetFolder
+                method(start, 2)()                                                                          # Release
+        hr = method(dlg, 3, wintypes.HWND)(owner)                                                           # Show
+        if hr != 0:
+            return True, None                      # Cancel (0x800704C7) or closed
+        if method(dlg, 20, ctypes.POINTER(ctypes.c_void_p))(ctypes.byref(item)) != 0 or not item:           # GetResult
+            return True, None
+        name = ctypes.c_void_p()
+        if method(item, 5, wintypes.DWORD, ctypes.POINTER(ctypes.c_void_p))(0x80058000, ctypes.byref(name)) != 0 or not name:  # GetDisplayName(FILESYSPATH)
+            return True, None
+        path = ctypes.wstring_at(name.value)
+        ole32.CoTaskMemFree(name)
+        return True, path
+    finally:
+        if item:
+            method(item, 2)()
+        method(dlg, 2)()
+
+
+def pick_folder(title="Choose a folder with your videos on this computer (copy phone videos to the computer first)",
+                initial: str | None = None) -> str | None:
+    """Native Windows folder window: the Explorer-style one, else the older tree dialog (SHBrowseForFolderW).
+    Runs on a COM STA thread. initial = the folder it opens in (e.g. where the last reel's videos were)."""
     if os.name != "nt":
         return None
     box: dict = {}
@@ -1656,6 +1732,16 @@ def pick_folder(title="Choose a folder with your videos on this computer (copy p
         shell32 = ctypes.windll.shell32
         user32 = ctypes.windll.user32
         ole32.CoInitializeEx(None, 0x2)  # COINIT_APARTMENTTHREADED
+        if os.environ.get("MEDIAENGINE_OLD_FOLDER_DIALOG") != "1":
+            try:
+                shown, path = _pick_folder_explorer(_dialog_title(title), initial, user32.GetForegroundWindow())
+            except Exception:
+                shown, path = False, None
+            if shown:
+                if path:
+                    box["path"] = path
+                ole32.CoUninitialize()
+                return
 
         class BROWSEINFOW(ctypes.Structure):
             _fields_ = [("hwndOwner", wintypes.HWND), ("pidlRoot", ctypes.c_void_p), ("pszDisplayName", wintypes.LPWSTR),

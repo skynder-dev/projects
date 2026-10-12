@@ -178,6 +178,40 @@ def main():
     check("ru: every engine progress message translated", bool(msgs) and not missing, missing or len(msgs))
     long = _i18n.translate_text("Requested 15 s, got 9.7 s: there were not enough different moments in this footage for a longer reel.", True)
     check("ru: short-reel note fully Russian", not _re.search(r"[A-Za-z]{3,}", long), long)
+    # the Explorer-style folder window (Windows): opens in the given folder, "Select Folder" returns it, Cancel returns
+    # nothing; driven by window messages. Without a desktop the window cannot appear: reported, not counted.
+    if os.name == "nt":
+        import ctypes, threading, time as _t
+        user32 = ctypes.windll.user32
+        user32.FindWindowW.restype = ctypes.c_void_p
+        user32.PostMessageW.argtypes = [ctypes.c_void_p, ctypes.c_uint, ctypes.c_size_t, ctypes.c_ssize_t]
+        pick = work / "Папка для выбора"
+        pick.mkdir(exist_ok=True)
+
+        def drive(title, wparam, msg=0x0111):          # WM_COMMAND IDOK = "Select Folder"; WM_CLOSE = cancel
+            box = {}
+            th = threading.Thread(target=lambda: box.update(p=ae.pick_folder(title, initial=str(pick))), daemon=True)
+            th.start()
+            hwnd = None
+            for _ in range(200):
+                hwnd = user32.FindWindowW(None, title)
+                if hwnd:
+                    break
+                _t.sleep(0.1)
+            if not hwnd:
+                return None, False
+            _t.sleep(1.0)                               # let it finish opening the folder
+            user32.PostMessageW(hwnd, msg, wparam, 0)
+            th.join(20)
+            return box.get("p"), not th.is_alive()
+        chosen, ended = drive("MediaEngine folder test OK", 1)
+        if chosen is None and not ended:
+            print("SKIP folder window: no window appeared (no interactive desktop)")
+        else:
+            check("folder window: Select Folder returns the folder it opened in",
+                  ended and chosen and Path(chosen).resolve() == pick.resolve(), (chosen, ended))
+            cancelled, ended = drive("MediaEngine folder test cancel", 0, msg=0x0010)
+            check("folder window: closing it returns nothing", ended and cancelled is None, (cancelled, ended))
     # Windows must not sleep while a reel is built (no-op elsewhere)
     from archivist.platform_adapter import keep_awake
     with keep_awake() as k:

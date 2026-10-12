@@ -271,7 +271,8 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
     def ae_pick_folder():
         purpose = (request.get_json(silent=True) or {}).get("purpose")
         path = ae.pick_folder("Choose a folder for the exported reel" if purpose == "export" else
-                              "Choose a folder with your videos on this computer (copy phone videos to the computer first)")
+                              "Choose a folder with your videos on this computer (copy phone videos to the computer first)",
+                              initial=str(ae.default_export_dir()) if purpose == "export" else ae.last_source_parent())
         if path:
             return jsonify({"path": path})
         return jsonify({"path": None, "error": "No folder chosen. You can also paste the path."})
