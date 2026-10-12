@@ -114,6 +114,23 @@ def model_search_roots() -> list[Path]:
     return roots
 
 
+def model_folder_hint() -> str | None:
+    """Where the model folder window opens: an existing Archivist install's models folder, else the install itself."""
+    for root in model_search_roots():
+        if "Archivist" in root.parts and root.is_dir():
+            return str(root)
+    if os.name == "nt":
+        from .platform_adapter import _is_fixed_drive
+        for letter in "DCEF":
+            a = Path(f"{letter}:/") / "Archivist"
+            try:
+                if _is_fixed_drive(f"{letter}:\\") and a.is_dir():
+                    return str(a)
+            except OSError:
+                pass
+    return None
+
+
 def import_model(src) -> dict:
     """Copy the exact FAST_LOCAL model (verified by the pinned validator) into this install's models folder."""
     src = Path(str(src or "").strip().strip('"'))

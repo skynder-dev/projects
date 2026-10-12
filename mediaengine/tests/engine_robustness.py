@@ -16,7 +16,8 @@ Uses <fixtures_dir>/static (2 clips + 1 still video). Checks, technical mode (th
   - other formats (5.1 sound, 120 fps HEVC, square, odd size 4:4:4, MJPEG AVI + PCM, VP9/Opus WebM, 10-bit H.264,
     two sound tracks, sound starting late, ProRes, old 3GP) are all analysed and used;
   - more camera cases (<fixtures_dir>/camera2): phone held upside down (rotation 180), portrait turned the other way
-    (+90), action camera with a timecode track at 29.97 fps, 25 fps PAL, .MOV with a subtitle track - all used, and
+    (+90), action camera with a timecode track at 29.97 fps, 25 fps PAL, .MOV with a subtitle track, a video with an
+    odd width and height (cropped in a gallery app) - all used, and
     the rotated ones come out upright in 9:16 and 16:9;
   - a vertical reel from a landscape clip whose subject stays at the right edge follows the subject (saliency crop),
     a centre crop would show only flat background (<fixtures_dir>/subject).
@@ -345,6 +346,8 @@ def main():
         skipped = {x["name"]: x["reason"] for x in (r or {}).get("skipped_inputs", [])}
         check("camera_cases_analysed_and_used", r and not skipped and len(used) >= len(have) - 1,
               cp.stderr[-800:] if not r else (skipped, sorted(set(have) - used)))
+        if "cropped_641x361.mp4" in have:   # odd width/height: analysed and cut from an even-size copy
+            check("odd_size_video_used", r and "cropped_641x361.mp4" in used, (skipped, sorted(used)))
         for name in ("upside_down.mp4", "portrait_cw.mp4"):
             if not (cam2 / name).exists():
                 print("SKIP", name, "(fixture not made by this ffmpeg)")

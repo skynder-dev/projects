@@ -78,11 +78,13 @@ def discover_input(folder, probe=None, skipped=None, skip_sha=None, paths=None):
     for i,p in enumerate(vids,1):
         progress("inputs",i-1,len(vids),p.name)
         try:
-            size=p.stat().st_size; dur=0.0
+            size=p.stat().st_size; dur=0.0; wh=(0,0)
             if size<1024: raise RuntimeError("FILE_TOO_SMALL")
             if probe is not None:
                 info=probe(p)
-                if not any(x.get("codec_type")=="video" for x in info.get("streams",[])): raise RuntimeError("NO_VIDEO_STREAM")
+                vs=[x for x in info.get("streams",[]) if x.get("codec_type")=="video"]
+                if not vs: raise RuntimeError("NO_VIDEO_STREAM")
+                wh=(int(vs[0].get("width") or 0),int(vs[0].get("height") or 0))
                 dur=float(info.get("format",{}).get("duration") or 0)
                 if dur<0.5: raise RuntimeError("TOO_SHORT")
             digest=sha256_file(p)
@@ -96,7 +98,7 @@ def discover_input(folder, probe=None, skipped=None, skip_sha=None, paths=None):
             if skipped is not None: skipped.append({"name":p.name,"reason":"DUPLICATE_OF:"+seen[digest]})
             continue
         seen[digest]=p.name
-        rows.append({"name":p.name,"path":str(p),"bytes":size,"sha256":digest,"duration_s":dur})
+        rows.append({"name":p.name,"path":str(p),"bytes":size,"sha256":digest,"duration_s":dur,"width":wh[0],"height":wh[1]})
     if not rows: raise RuntimeError("NO_READABLE_VIDEO_FILES")
     return rows
 
@@ -330,12 +332,25 @@ def _remux_alias(r,alias):
             os.replace(tmp,alias); return True
     tmp.unlink(missing_ok=True); return False
 
+def _even_alias(r,alias):
+    """A picture with an odd width or height (a video cropped in a phone's gallery, 1079x1917): H.264 4:2:0 cannot
+    store it, so the accepted analysis and every cut failed. Analysed and cut from a copy one pixel smaller."""
+    ff=os.environ.get("MEDENG_FFMPEG","ffmpeg")
+    tmp=alias.with_name(alias.stem+".part.mp4"); tmp.unlink(missing_ok=True)
+    cp=subprocess.run([ff,"-hide_banner","-loglevel","error","-y","-i",r["path"],"-map","0:v:0","-map","0:a:0?",
+                       "-vf","scale=trunc(iw/2)*2:trunc(ih/2)*2","-c:v","libx264","-preset","veryfast","-crf","16","-pix_fmt","yuv420p",
+                       "-c:a","aac","-b:a","192k","-movflags","+faststart",str(tmp)],capture_output=True,text=True)
+    if cp.returncode==0 and tmp.is_file() and tmp.stat().st_size>1024:
+        os.replace(tmp,alias); return True
+    tmp.unlink(missing_ok=True); return False
+
 def analysis_aliases(rows,work_dir,long_names=True):
     """Stand-ins the accepted analysis can handle, mapped back to the real files afterwards.
     - Windows without long-path support (the default) cannot reach the analysis files of a video with a long name:
       the accepted pipeline names its folders after the video (up to ~330 characters, limit 260). Such videos are
       analysed under a short name: a hard link (same drive), else a copy (up to 4 GB).
-    - Camcorder transport streams are analysed as an MP4 remux (see _remux_alias).
+    - Camcorder transport streams are analysed as an MP4 remux (see _remux_alias); pictures with an odd width or
+      height as a copy one pixel smaller (see _even_alias).
     Returns (rows for the analysis, {stand-in name: original row})."""
     force=os.environ.get("MEDENG_FORCE_SHORT_ALIAS")=="1"
     realmedia=work_dir/"realmedia"; adir=work_dir/"in"
@@ -343,7 +358,8 @@ def analysis_aliases(rows,work_dir,long_names=True):
     for r in rows:
         name=r["name"]; ext=Path(name).suffix.lower()
         projected=len(str(realmedia))+10+min(len(name),100)+14+10+len(name)+45   # realmedia\gN\items\<item>\previews\<name>\...
-        remux=ext in REMUX_EXT
+        odd=bool(int(r.get("width") or 0)%2 or int(r.get("height") or 0)%2)
+        remux=ext in REMUX_EXT or odd
         if not remux and not (long_names and (force or (os.name=="nt" and projected>240))):
             out.append(r); continue
         alias_name=f"v_{r['sha256'][:12]}{'.mp4' if remux else ext}"
@@ -354,7 +370,7 @@ def analysis_aliases(rows,work_dir,long_names=True):
                 side=alias.with_name(alias.name+".sha256")
                 if not (alias.is_file() and side.is_file()):
                     side.unlink(missing_ok=True)
-                    if _remux_alias(r,alias):
+                    if (_even_alias(r,alias) if odd else _remux_alias(r,alias)):
                         side.write_text(sha256_file(alias),encoding="utf-8")
                 if alias.is_file() and side.is_file():
                     use=str(alias); sha=side.read_text(encoding="utf-8").strip(); size=alias.stat().st_size

@@ -282,7 +282,8 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
 
     @app.post("/api/auto/model/import")
     def ae_model_import():
-        path = (request.get_json(silent=True) or {}).get("path") or ae.pick_folder("Choose the folder that contains the FAST_LOCAL model")
+        path = (request.get_json(silent=True) or {}).get("path") or ae.pick_folder("Choose the folder that contains the FAST_LOCAL model",
+                                                                                  initial=ae.model_folder_hint())
         if not path:
             return jsonify({"ok": False, "error": "No folder chosen."})
         try:

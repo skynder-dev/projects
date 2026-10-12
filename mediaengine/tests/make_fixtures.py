@@ -305,6 +305,14 @@ def make_camera2(ff: str, d: Path) -> None:
                 "-metadata", "creation_time=2026-07-14T10:20:30Z", "-shortest", str(subs))
     except Exception as exc:
         print('FIXTURE NOT MADE', subs.name, str(exc)[-700:])
+    odd = d / "cropped_641x361.mp4"
+    try:   # a video cropped in a gallery app: odd width and height (stored 4:4:4 here; phones use SPS cropping)
+        if not odd.exists():
+            run("-f", "lavfi", "-i", "testsrc2=size=640x360:rate=30", "-f", "lavfi", "-i", "sine=frequency=500:sample_rate=48000",
+                "-t", "8", "-vf", "hue=h=t*20,scale=641:361", "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv444p",
+                "-c:a", "aac", "-shortest", str(odd))
+    except Exception as exc:
+        print('FIXTURE NOT MADE', odd.name, str(exc)[-700:])
     shutil.rmtree(tmp, ignore_errors=True)
 
 
