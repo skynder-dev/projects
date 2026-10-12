@@ -131,7 +131,7 @@ APP_PHRASES: dict[str, str] = {
     "Keep the originals safe": "Оригиналы в сохранности",
     "Phone, SD and camera originals are never automatically deleted or rewritten.": "Оригиналы с телефона, SD и камеры никогда не удаляются и не перезаписываются сами.",
     "Private means private": "Личное — значит личное",
-    "Private Forever stays out of the normal Library and future creative workflows.": "«Private навсегда» не попадает ни в библиотеку, ни в монтаж.",
+    "Private Forever stays out of the normal Library and future creative workflows.": "«Личное навсегда» не попадает ни в библиотеку, ни в монтаж.",
     "AI suggests, we decide": "ИИ предлагает, решаем мы",
     "Quality, privacy and rights checks help us review; they do not silently make destructive decisions.":
         "Проверки качества, приватности и прав помогают, но ничего не удаляют молча.",
@@ -202,7 +202,7 @@ APP_PHRASES: dict[str, str] = {
     "Folder of videos → finished reel from the best moments.": "Папка с видео → готовый ролик из лучших моментов.",
     "Composer": "Монтаж", "Search": "Поиск", "Library": "Библиотека", "Convert": "Конвертация", "Best Moments": "Лучшие моменты",
     "Working collection": "Рабочая коллекция", "Search Library": "Поиск в библиотеке", "Import more": "Импортировать ещё",
-    "Analyze local": "Анализировать", "Apply rights tag": "Отметить права", "Private forever": "Private навсегда",
+    "Analyze local": "Анализировать", "Apply rights tag": "Отметить права", "Private forever": "Личное навсегда",
     "Reject → quarantine": "Отклонить → карантин", "Remove from Library": "Убрать из библиотеки", "Jobs / errors": "Задачи / ошибки",
     "Hover over a video when its storyboard is ready to skim the clip without opening it.":
         "Наведи мышь на видео с готовой раскадровкой, чтобы пролистать его, не открывая.",
@@ -277,7 +277,9 @@ APP_PHRASES: dict[str, str] = {
     "Privacy": "Приватность", "Privacy reason": "Причина (приватность)", "Quality": "Качество", "Quality reason": "Причина (качество)",
     "Rights": "Права", "Rights reason": "Причина (права)", "Rights / location risk": "Права / риск места съёмки", "Rights place": "Место",
     "Rights source": "Источник", "Rights notes": "Заметки о правах", "Place / venue": "Место / площадка", "Policy/source URL": "Ссылка на правила",
-    "Notes": "Заметки", "Save rights status": "Сохранить права", "Rejected": "Отклонённые (Rejected)", "Archive copy": "Копия в архиве",
+    "Notes": "Заметки", "Save rights status": "Сохранить права", "Rejected": "Отклонённые (Rejected)", "Remove source": "Убрать источник", "private_forever": "личное навсегда",
+    "Build scene/window clips, rank Best Moments and calculate static 16:9 / 4:5 / 1:1 / 9:16 crop suggestions.":
+        "Нарезать видео на сцены, найти лучшие моменты и предложить кадрирование 16:9 / 4:5 / 1:1 / 9:16.", "Archive copy": "Копия в архиве",
     # codes the Library item page shows as values (quality / rights reasons)
     "technical_ok": "технически в порядке", "dark": "тёмное", "very_dark": "очень тёмное", "bright": "светлое",
     "very_bright": "пересвечено", "low_detail": "мало деталей", "very_low_detail": "очень мало деталей",
@@ -416,6 +418,7 @@ APP_PHRASES: dict[str, str] = {
 }
 
 APP_PATTERNS: list[tuple[str, str]] = [
+    (r"Folder: (.+) \((\d+)\)", r"Папка: \1 (\2)"),
     (r"(very_dark|dark|very_bright|bright),(very_low_detail|low_detail)", r"⟦\1⟧, ⟦\2⟧"),
     (r"Preparing a recording without a length: (.+)", r"Подготовка записи без длины: \1"),
     (r"(\d+) errors?", r"ошибок: \1"), (r"(\d+) GB - less than 6 GB, long 4K videos may be slow", r"\1 ГБ — меньше 6 ГБ, длинные 4K-видео могут обрабатываться медленно"),
@@ -486,7 +489,7 @@ APP_JS: dict[str, str] = {
     "Work is running.": "Идёт работа.", "A job is running.": "Идёт задача.",
     "\\n\\nQuit anyway? It will be marked interrupted and can be retried.": "\\n\\nВсё равно выйти? Работа будет отмечена как прерванная, её можно повторить.",
     "\\n\\nRestart/update anyway? The current file may need to restart.": "\\n\\nВсё равно перезапустить? Текущий файл, возможно, начнётся заново.",
-    "Mark selected Private forever?": "Отметить выбранное как Private навсегда?",
+    "Mark selected Private forever?": "Отметить выбранное как личное навсегда? Оно уйдёт из библиотеки и никогда не попадёт в ролики.",
     "Archive selected local/staged files? Source-device originals are never deleted.": "Отправить выбранное в архив? Оригиналы на устройствах никогда не удаляются.",
     "Move selected Staging copies to Rejected quarantine and hide them? Phone/SD originals stay untouched.":
         "Перенести выбранные копии из Staging в карантин Rejected и скрыть? Оригиналы на телефоне/SD не трогаются.",

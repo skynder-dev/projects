@@ -751,7 +751,7 @@ if(recheck)recheck.onclick=async()=>{
             analysis=(f"<span class='badge {e(r['analysis_status'])} analysisBadge'>{e(r['analysis_status'])}</span>" if not is_import else '')
             storyboard_err=("<span class='badge error' title='Open item for details'>preview error</span>" if (not is_import and r['media_type']=='video' and r['storyboard_status']=='unavailable') else '')
             story=(f"<span class='storybadge'>{int(r['storyboard_frames'] or 0)}/8 frames</span>" if (not is_import and r['media_type']=='video' and int(r['storyboard_frames'] or 0)>0) else ("<span class='storybadge'>preview…</span>" if (not is_import and r['media_type']=='video') else ''))
-            body+=f"""<div class='media-card' data-id='{r['id']}' data-type='{e(r['media_type'])}'><input class='check itemCheck' type='checkbox' value='{r['id']}'>{story}<div class='thumb'><img class='mediaThumb' data-id='{r['id']}' loading='eager' decoding='async' src='/thumb/{r['id']}'></div><div class='meta'><div class='name' title='{e(r['filename'])}'>{e(r['filename'])}</div><div class='small'>{e(r['source_label'])} · {human_bytes(r['size_bytes'])} · {human_duration(r['duration_ms'])}</div><span class='badge {e(imp)} importBadge'>{e(imp)}</span>{analysis}{extra}{rights_badge}{audio}{storyboard_err}<div><a class='btn btn2 openLink' style='padding:4px 7px;font-size:11px' href='/item/{r['id']}'>Open</a></div></div></div>"""
+            body+=f"""<div class='media-card' data-id='{r['id']}' data-type='{e(r['media_type'])}'><input class='check itemCheck' type='checkbox' value='{r['id']}'>{story}<div class='thumb'><img class='mediaThumb' data-id='{r['id']}' loading='eager' decoding='async' src='/thumb/{r['id']}'></div><div class='meta'><div class='name' title='{e(r['filename'])}'>{e(r['filename'])}</div><div class='small'><span translate='no'>{e(r['source_label'])}</span> · <span>{human_bytes(r['size_bytes'])}</span> · <span>{human_duration(r['duration_ms'])}</span></div><span class='badge {e(imp)} importBadge'>{e(imp)}</span>{analysis}{extra}{rights_badge}{audio}{storyboard_err}<div><a class='btn btn2 openLink' style='padding:4px 7px;font-size:11px' href='/item/{r['id']}'>Open</a></div></div></div>"""
         body+='</div>'
         if not rows: body+="<div class='empty'>Nothing here with the current filters.</div>"
         qs={k:v for k,v in request.args.items() if k!='page'}
@@ -799,7 +799,7 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
                 tags=''.join(f"<span class='badge'>{e(x.replace('_',' '))}</span>" for x in (r.get('tags') or [])[:5])
                 body+=f"""<div class='media-card'><div class='thumb'><img loading='lazy' src='/thumb/{int(r['id'])}'></div><div class='meta'>
 <div class='row space'><span class='badge ready'>match {float(r.get('semantic_score') or 0):.1f}</span><span class='small'>{human_duration(r.get('duration_ms'))}</span></div>
-<div class='name' title='{e(r.get('filename'))}'>{e(r.get('filename'))}</div><div class='small'>{e(r.get('source_label'))} · {human_bytes(r.get('size_bytes'))}</div>
+<div class='name' title='{e(r.get('filename'))}'>{e(r.get('filename'))}</div><div class='small'><span translate='no'>{e(r.get('source_label'))}</span> · <span>{human_bytes(r.get('size_bytes'))}</span></div>
 <div class='small' style='margin-top:5px' title='{e(why)}'>{e(why)}</div><div>{tags}</div>
 <div class='row' style='margin-top:7px'><a class='btn btn2 openLink' style='padding:4px 7px;font-size:11px' href='/item/{int(r['id'])}'>Open</a>{best}</div></div></div>"""
             body+='</div>'
@@ -1065,7 +1065,7 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
 <input type='checkbox' name='ids' value='{int(r['id'])}' class='convertCheck' data-size='{int(r['size_bytes'] or 0)}' data-duration-ms='{int(r['duration_ms'] or 0)}' data-width='{int(r['width'] or 0)}' data-height='{int(r['height'] or 0)}' {prechecked} {disabled}>
 <div class='convertThumbWrap' style='width:92px;height:58px;position:relative'><img class='convertThumb' data-id='{int(r['id'])}' src='/thumb/{int(r['id'])}' style='width:92px;height:58px;object-fit:cover;border-radius:7px;background:#090b0e'><span class='storybadge convertStoryBadge' style='left:4px;top:4px'></span></div>
 <div style='min-width:0'><b style='display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>{e(r['filename'])}</b>
-<div class='small muted'>{e(r['source_label'])} · {human_duration(r['duration_ms'])} · {human_bytes(r['size_bytes'])}</div>{unavailable}</div>
+<div class='small muted'><span translate='no'>{e(r['source_label'])}</span> · <span>{human_duration(r['duration_ms'])}</span> · <span>{human_bytes(r['size_bytes'])}</span></div>{unavailable}</div>
 <div style='text-align:right'><span class='badge'>#{int(r['id'])}</span><div class='small muted estimateOne' style='margin-top:5px'></div></div></label>"""
         if not cards:
             cards=("<div class='card muted'>None of the selected videos are currently accessible. Restore/reconnect the source, or choose another local video.</div>" if preselect_ids else "<div class='card muted'>No accessible videos on this catalog page. Reconnect/restore the source, choose another page, or clear the filter.</div>")
@@ -1480,7 +1480,7 @@ bindStoryFrames();loadStoryboard();""")
         if not d:return 'Not found',404
         j=d['job']
         safe=' · source can be disconnected' if j.get('source_releasable') and j['status']=='running' else ''
-        body=f"<div class='row space'><div><h1>Job #{jid}</h1><div class='muted'>{e(j['kind'])} · {e(j['status'])} · {j['done']}/{j['total']} · {human_bytes(j['bytes_done'])}/{human_bytes(j['bytes_total'])}{safe}</div></div><div class='row'>"
+        body=f"<div class='row space'><div><h1>Job #{jid}</h1><div class='muted'><span>{e(j['kind'])}</span> · <span>{e(j['status'])}</span> · {j['done']}/{j['total']} · <span>{human_bytes(j['bytes_done'])}</span>/<span>{human_bytes(j['bytes_total'])}</span>{safe}</div></div><div class='row'>"
         if j['failed']:
             body += f"<button onclick=\"jobAction(this,'/api/jobs/{jid}/retry','retry')\" class='warn'>Retry failed</button>"
         if j['status'] in ('queued','running'):
@@ -1488,7 +1488,7 @@ bindStoryFrames();loadStoryboard();""")
         body+='</div></div><div class="jobs">'
         for x in d['items']:
             err=f"<div class='errbox'>{e(x['error'])}</div>" if x['error'] else ''
-            body+=f"<div class='card'><div class='row space'><b>{x['seq']}. {e(x['filename'])}</b><span class='badge {e(x['status'])}'>{e(x['phase'])}</span></div><div class='muted'>{e(x['source_label'])} · {human_bytes(x['bytes_done'])}/{human_bytes(x['bytes_total'])} · {e(x['result_status'] or '')}</div>{err}</div>"
+            body+=f"<div class='card'><div class='row space'><b>{x['seq']}. {e(x['filename'])}</b><span class='badge {e(x['status'])}'>{e(x['phase'])}</span></div><div class='muted'><span translate='no'>{e(x['source_label'])}</span> · <span>{human_bytes(x['bytes_done'])}</span>/<span>{human_bytes(x['bytes_total'])}</span> · <span>{e(x['result_status'] or '')}</span></div>{err}</div>"
         body+='</div>'
         script="""window.jobActionBusy=false;
 async function jobAction(btn,url,mode){
