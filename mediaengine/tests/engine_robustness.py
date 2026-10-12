@@ -117,6 +117,11 @@ def main():
     check("still_video_skipped_reel_built", r and r["status"] == "PASS" and skipped.get("still.mp4") in ("STATIC_VIDEO", "NO_MOMENTS")
           and "still.mp4" not in r["selected_sources"], skipped)
     check("skipped_file_not_in_inputs", r and "still.mp4" not in [x["name"] for x in r["inputs"]], r and r["inputs"])
+    # the same build again: the unusable still video must not make the analysis run again for everything
+    r2, _ = run("a2", 15)
+    skipped2 = {x["name"]: x["reason"] for x in (r2 or {}).get("skipped_inputs", [])}
+    check("unusable_file_does_not_break_the_analysis_cache", r2 and str(r2.get("event_cache", "")).startswith("reused")
+          and skipped2.get("still.mp4") == skipped.get("still.mp4"), r2 and (r2.get("event_cache"), skipped2))
 
     priv = work_root / "private.txt"
     priv.write_text(sha(folder / "clip_1.mp4") + "\n", encoding="utf-8")

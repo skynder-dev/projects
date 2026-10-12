@@ -142,6 +142,23 @@ def semantic_runtime_preflight(runtime, model_root, adapter_root):
         "adapter_root":str(adapter_root),
     }
 
+_AUDIO_MAP={}
+
+def sound_args(v52,src,dur):
+    """Sound of a cut from the original: the first audio track FFmpeg can decode (a track it cannot read, e.g. an
+    iPhone "spatial audio" track, must not fail the cut - "-map 0:a?" took every track), padded with silence to the
+    picture's length (sound ending before the moment ends gave an empty or short segment)."""
+    key=str(src)
+    if key not in _AUDIO_MAP:
+        try:
+            st=[x for x in v52.ffprobe(Path(src))["streams"] if x.get("codec_type")=="audio"]
+            ok=[x for x in st if str(x.get("codec_name") or "none") not in ("none","unknown")]
+            _AUDIO_MAP[key]=f"0:{ok[0]['index']}" if ok else None
+        except Exception:
+            _AUDIO_MAP[key]="0:a:0?"
+    m=_AUDIO_MAP[key]
+    return ["-map",m,"-af",f"apad=whole_dur={float(dur):.3f}"] if m else []
+
 def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir):
     start=float(c["start_s"]); end=float(c["end_s"]); dur=max(.25,end-start)
     raw=f"{source_sha}|{start:.3f}|{end:.3f}|SEMANTIC_V2".encode()
@@ -153,7 +170,8 @@ def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir):
         try:
             m=json.loads(meta.read_text())
             if m.get("clip_sha256")==sha256_file(clip) and m.get("source_sha256")==source_sha:
-                return m
+                # same content, maybe under a new name or in a new place: report where it is now
+                return dict(m,source_name=source_name,source_path=str(src))
         except Exception:
             pass
         # damaged cache entry (power loss, disk error): rebuild it instead of failing the project forever
@@ -162,7 +180,7 @@ def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir):
     if tmp.exists(): tmp.unlink()
     cmd=[v52.FFMPEG,"-hide_banner","-loglevel","error","-y",
          "-ss",f"{start:.3f}","-i",str(src),"-t",f"{dur:.3f}",
-         "-map","0:v:0","-map","0:a?","-c:v","libx264","-preset","fast","-crf","18",
+         "-map","0:v:0",*sound_args(v52,src,dur),"-c:v","libx264","-preset","fast","-crf","18",
          "-pix_fmt","yuv420p","-c:a","aac","-b:a","192k","-ar","48000","-ac","2",
          "-movflags","+faststart",str(tmp)]
     cp=subprocess.run(cmd,capture_output=True,text=True)
@@ -271,7 +289,7 @@ def apply_manual_trims(v52,selected,trims,work_dir):
         if not clip.is_file():
             tmp=tdir/f".{key}.tmp.mp4"
             cp=subprocess.run([v52.FFMPEG,"-hide_banner","-loglevel","error","-y","-ss",f"{a:.3f}","-i",str(src),"-t",f"{b-a:.3f}",
-                               "-map","0:v:0","-map","0:a?","-c:v","libx264","-preset","fast","-crf","18","-pix_fmt","yuv420p",
+                               "-map","0:v:0",*sound_args(v52,src,b-a),"-c:v","libx264","-preset","fast","-crf","18","-pix_fmt","yuv420p",
                                "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(tmp)],capture_output=True,text=True)
             if cp.returncode!=0 or "Video:" not in _video_line(v52.FFMPEG,tmp):
                 tmp.unlink(missing_ok=True); raise RuntimeError("EDIT_TRIM_FAILED:"+(cp.stderr or "no picture in the cut")[-600:])
@@ -297,18 +315,6 @@ def _analysis_skip_reason(r):
     codes=re.findall(r"(?:Error|Exception):\s*([A-Z][A-Z0-9_]{3,})",err)
     return "ANALYSIS_FAILED:"+(codes[-1] if codes else err.split(":",1)[0])[:60]
 
-def _short_path_windows(path):
-    """8.3 short form of an existing path (None if the volume has no short names)."""
-    if os.name!="nt": return None
-    try:
-        import ctypes
-        buf=ctypes.create_unicode_buffer(32768)
-        n=ctypes.windll.kernel32.GetShortPathNameW(str(path),buf,32768)
-        sp=buf.value if 0<n<32768 else ""
-        return sp if sp and sp!=str(path) and len(Path(sp).name)<=12 else None
-    except Exception:
-        return None
-
 REMUX_EXT={".mts",".m2ts",".ts",".mpg",".mpeg",".vob",".mod",".tod",".m2t"}   # MPEG-2 program/transport streams
 
 def _remux_alias(r,alias):
@@ -328,7 +334,7 @@ def analysis_aliases(rows,work_dir,long_names=True):
     """Stand-ins the accepted analysis can handle, mapped back to the real files afterwards.
     - Windows without long-path support (the default) cannot reach the analysis files of a video with a long name:
       the accepted pipeline names its folders after the video (up to ~330 characters, limit 260). Such videos are
-      analysed under a short name: a hard link (same drive), else the 8.3 short path, else a copy (up to 4 GB).
+      analysed under a short name: a hard link (same drive), else a copy (up to 4 GB).
     - Camcorder transport streams are analysed as an MP4 remux (see _remux_alias).
     Returns (rows for the analysis, {stand-in name: original row})."""
     force=os.environ.get("MEDENG_FORCE_SHORT_ALIAS")=="1"
@@ -360,9 +366,9 @@ def analysis_aliases(rows,work_dir,long_names=True):
                 try:
                     os.link(r["path"],alias); use=str(alias)
                 except OSError:
-                    sp=_short_path_windows(r["path"])
-                    if sp: use=sp
-                    elif int(r["bytes"])<=(4<<30):
+                    # no 8.3 short path here: the analysis resolves it back to the long name (the long-path problem
+                    # returns and the library no longer matches the input) - a copy is used instead
+                    if int(r["bytes"])<=(4<<30):
                         shutil.copyfile(r["path"],alias); use=str(alias)
         except OSError:
             use=None
@@ -388,15 +394,26 @@ def build_event_library(runtime_dir,input_rows,work_dir,skipped=None):
     - progress is reported per file; the per-file timeout grows with the longest video (R2: fixed 120 s).
     """
     realmedia=work_dir/"realmedia"; eventdir=work_dir/"event_library"; libpath=eventdir/"EVENT_LIBRARY.json"
-    ok,lib=valid_event_cache(libpath,input_rows)
-    if ok: return libpath,lib,"reused_exact_cache",input_rows
+    skipfile=eventdir/"ANALYSIS_SKIPPED.json"   # files the analysis could not use last time (same name + SHA-256)
+    try: before={(x["name"],x["sha256"]):x["reason"] for x in json.loads(skipfile.read_text(encoding="utf-8"))}
+    except Exception: before={}
+    known=[r for r in input_rows if (r["name"],r["sha256"]) not in before]
+    if known:
+        ok,lib=valid_event_cache(libpath,known)
+        if ok:
+            # an unusable file (e.g. a 1 s accidental clip) must not make every later build analyse everything again
+            if skipped is not None:
+                skipped.extend({"name":r["name"],"reason":before[(r["name"],r["sha256"])]} for r in input_rows if (r["name"],r["sha256"]) in before)
+            return libpath,lib,"reused_exact_cache",known
     longest=max([float(r.get("duration_s") or 0) for r in input_rows]+[0.0])
     timeout=max(120.0,min(6*3600.0,3.0*longest))   # an hour-long 4K 60 fps video can take over an hour on a slow PC
     # Several analysis processes in parallel (R2: one after another). A video always goes to the same group
     # (by its SHA-256), so a later build reuses its finished analysis.
     try: k_env=int(os.environ.get("MEDENG_ANALYSIS_WORKERS") or 0)
     except ValueError: k_env=0
-    K=max(1,min(len(input_rows),k_env or max(1,min(4,(os.cpu_count() or 2)//2))))
+    # not limited by the number of inputs: adding or removing a video must not move the others to another group
+    # (that analysed them again); empty groups are simply not started
+    K=max(1,k_env or max(1,min(4,(os.cpu_count() or 2)//2)))
     groups=[[] for _ in range(K)]
     for r in input_rows: groups[int(r["sha256"][:8],16)%K].append(r)
     names=[(realmedia/f"g{int(r['sha256'][:8],16)%K}"/"items"/realmedia_item_name(r["path"],r["sha256"])) for r in input_rows]
@@ -432,13 +449,14 @@ def build_event_library(runtime_dir,input_rows,work_dir,skipped=None):
         for r in batch.get("results",[]):
             try: by_src[str(Path(r["source"]).resolve())]=r
             except Exception: pass
-    kept=[]; results=[]
+    kept=[]; results=[]; unusable=[]
     for row in input_rows:
         r=by_src.get(str(Path(row["path"]).resolve()))
         if r and r.get("status") in ("passed","skipped_exact_completed") and r.get("source_sha256")==row["sha256"] and r.get("item_dir"):
             kept.append(row); results.append(str(Path(r["item_dir"])/"PIPELINE_RESULT.json"))
-        elif skipped is not None:
-            skipped.append({"name":row["name"],"reason":_analysis_skip_reason(r)})
+        else:
+            unusable.append({"name":row["name"],"sha256":row["sha256"],"reason":_analysis_skip_reason(r)})
+            if skipped is not None: skipped.append({"name":row["name"],"reason":unusable[-1]["reason"]})
     if not kept: raise RuntimeError("NO_ANALYZABLE_VIDEO_FILES")
     progress("analyze",len(input_rows),len(input_rows),"building moment library")
     cp=subprocess.run([sys.executable,str(runtime_dir/"medeng_event_library_v20.py"),*results,
@@ -447,6 +465,8 @@ def build_event_library(runtime_dir,input_rows,work_dir,skipped=None):
     if cp.returncode!=0: raise RuntimeError("EVENT_LIBRARY_FAILED")
     ok,lib=valid_event_cache(libpath,kept)
     if not ok: raise RuntimeError("EVENT_LIBRARY_POSTVERIFY_FAILED")
+    # time-outs are not remembered: a slow PC may manage the next time
+    atomic_json(skipfile,[x for x in unusable if x["reason"]!="ANALYSIS_TIMEOUT"])
     return libpath,lib,"built",kept
 
 def pairwise(v52,events):
@@ -498,7 +518,7 @@ def apply_camera_drop(v52,dropmod,selected,work_dir):
             tmp=bdir/f".{key}.tmp.mp4"
             cp=subprocess.run([v52.FFMPEG,"-hide_banner","-loglevel","error","-y",
                                "-i",str(e["clip_path"]),"-t",f"{cut:.3f}",
-                               "-map","0:v:0","-map","0:a?","-c:v","libx264","-preset","fast","-crf","18",
+                               "-map","0:v:0","-map","0:a:0?","-c:v","libx264","-preset","fast","-crf","18",
                                "-pix_fmt","yuv420p","-c:a","aac","-b:a","192k","-ar","48000","-ac","2",
                                "-movflags","+faststart",str(tmp)],capture_output=True,text=True)
             if cp.returncode!=0: raise RuntimeError("CAMERA_DROP_PRETRIM_FAILED:"+cp.stderr[-800:])
@@ -528,8 +548,11 @@ def video_seconds(ffmpeg,path,fps=30.0):
 # concat filter, which keeps both streams aligned.
 def _fit_audio(i,dur):
     # sample-exact: time-based apad/atrim left the sound up to ~60 ms short per segment
+    # async + first_pts=0: sound that starts after the picture (or has a gap) keeps its place in time - silence is put
+    # in front / in the gap. "asetpts=N/SR/TB" alone moved such sound to the start (measured: every beep 336 ms early
+    # for a clip whose sound began 0.378 s after its picture).
     n=max(1,int(round(float(dur)*48000)))
-    return f"[{i}:a]aresample=48000,asetpts=N/SR/TB,apad=whole_len={n},atrim=end_sample={n},asetpts=N/SR/TB[n{i}]"
+    return f"[{i}:a]aresample=48000:async=1:first_pts=0,apad=whole_len={n},atrim=end_sample={n},asetpts=N/SR/TB[n{i}]"
 
 # HDR phone video (iPhone HLG / Dolby Vision 8.4, Android HDR10 PQ) shown on a normal screen: convert, do not just
 # re-encode the 10-bit numbers as if they were normal video (that looks grey and dark).
@@ -602,7 +625,7 @@ def full_quality_clip(v52,e,work_dir,hdr=None,deinterlace=False,square=False):
         chain=(["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if deinterlace else [])+([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else [])+([SQUARE_PIXELS] if square else [])
         conv=(["-vf",",".join(chain)] if chain else [])+(["-color_primaries","bt709","-color_trc","bt709","-colorspace","bt709"] if hdr in HDR_TO_SDR else [])
         cp=subprocess.run([v52.FFMPEG,"-hide_banner","-loglevel","error","-y","-ss",f"{a:.3f}","-i",str(src),"-t",f"{b-a:.3f}",
-                           "-map","0:v:0","-map","0:a?",*conv,"-c:v","libx264","-preset","veryfast","-crf","16","-pix_fmt","yuv420p",
+                           "-map","0:v:0",*sound_args(v52,src,b-a),*conv,"-c:v","libx264","-preset","veryfast","-crf","16","-pix_fmt","yuv420p",
                            "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(tmp)],capture_output=True,text=True)
         if cp.returncode!=0 or "Video:" not in _video_line(v52.FFMPEG,tmp):
             tmp.unlink(missing_ok=True); _FQ_FALLBACK.append(str(e.get("source_name"))); return e   # keep the preview clip rather than fail the reel
@@ -719,6 +742,7 @@ def run(args):
     if str(runtime) not in sys.path: sys.path.insert(0,str(runtime))
     input_list=[x.strip() for x in Path(args.input_list).read_text(encoding="utf-8-sig").splitlines() if x.strip()] if args.input_list else None
     if (input_list is None)==(not args.input_dir): raise RuntimeError("GIVE_EXACTLY_ONE_OF_INPUT_DIR_OR_INPUT_LIST")
+    if input_list is not None and not input_list: raise RuntimeError("NO_SUPPORTED_VIDEO_FILES")   # e.g. all cloud-only
     input_dir=Path(args.input_dir or Path(input_list[0]).parent).resolve(); output_dir=Path(args.output_dir).resolve(); work_dir=Path(args.work_dir).resolve()
     output_dir.mkdir(parents=True,exist_ok=True); work_dir.mkdir(parents=True,exist_ok=True)
     final_video=output_dir/"MediaEngine Reel.mp4"; final_result=output_dir/"MediaEngine Result.json"

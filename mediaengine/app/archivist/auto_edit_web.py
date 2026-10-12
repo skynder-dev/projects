@@ -440,7 +440,8 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
 <form method='post' action='/auto/job/{active['id']}/cancel'><button class='btn2'>Cancel</button></form></div>
 <div class='ae-bar' style='margin:10px 0'><i id='jobBar' style='width:{active['percent']}%'></i></div>
 <div class='muted' id='jobMsg'>{e(active.get('message') or '')}</div>
-<div class='muted'>{e(ae.FORMATS[active['settings']['format']]['label'])} · {active['settings']['length']} s · sound {e(active['settings']['sound'])}</div></div>""")
+<div class='muted'>{e(ae.FORMATS[active['settings']['format']]['label'])} · {active['settings']['length']} s · sound {e(active['settings']['sound'])}</div>
+<div class='muted' style='margin-top:6px'>You can close this window: the reel keeps building and the PC does not go to sleep. Open MediaEngine again to see it.</div></div>""")
             for q in queued:
                 parts.append(f"<div class='card row space' style='margin-top:8px'><span class='muted'>Waiting: {e(ae.FORMATS[q['settings']['format']]['short'])} · "
                              f"{q['settings']['length']} s · sound {e(q['settings']['sound'])}</span>"

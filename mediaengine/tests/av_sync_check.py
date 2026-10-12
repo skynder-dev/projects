@@ -110,7 +110,48 @@ def main():
     report_ok = offs and early >= -25 and late <= 40 and ad is not None and abs(vd - ad) <= 0.05
     ok = bool(report_ok) and len(by_seg) >= max(2, len(res["segments"]) - 1)
     print("PASS av_sync_every_cut" if ok else "FAIL av_sync_every_cut")
-    return 0 if ok else 1
+    ok2 = late_sound_check(ff, work, env)
+    return 0 if ok and ok2 else 1
+
+
+def late_sound_check(ff, work: Path, env) -> bool:
+    """A source whose sound starts 0.6 s after its picture (camera / phone files do this), cut by hand from 0 s:
+    the sound must stay in place (silence first), not slide to the start of the moment."""
+    src = work / "late_sound"
+    src.mkdir(parents=True, exist_ok=True)
+    full, late = work / "late_full.mp4", src / "late_sound.mp4"
+    if not late.exists():
+        subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", SOURCES[0], "-f", "lavfi", "-i",
+                        "aevalsrc='0.3*sin(2*PI*330*t)+if(lt(mod(t-0.2,1),0.04),0.9*sin(2*PI*1000*t),0)':s=48000",
+                        "-t", "12", "-vf", "hue=h=t*9,drawbox=x=0:y=0:w=iw:h=ih:color=white:t=fill:enable='lt(mod(t-0.2,1),0.0333)'",
+                        "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest", str(full)], check=True)
+        # same file, but its sound track begins at 0.6 s (timestamps kept)
+        subprocess.run([ff, "-v", "error", "-y", "-i", str(full), "-map", "0:v", "-map", "0:a", "-c:v", "copy",
+                        "-af", "atrim=start=0.6", "-c:a", "aac", str(late)], check=True)
+    base = [sys.executable, str(R3 / "p11_folder_to_reel_r3.py"), "--input-dir", str(src), "--runtime-dir", str(R3),
+            "--work-dir", str(work / "late_work"), "--target-seconds", "5", "--semantic", "off", "--audio", "source", "--profile", "16x9"]
+    out1, out2 = work / "late_out1", work / "late_out2"
+    for o in (out1, out2):
+        shutil.rmtree(o, ignore_errors=True)
+    cp = subprocess.run(base + ["--output-dir", str(out1)], capture_output=True, text=True, env=env)
+    if cp.returncode != 0:
+        print("FAIL late_sound_stays_in_place", cp.stderr[-800:])
+        return False
+    res = json.loads((out1 / "MediaEngine Result.json").read_text(encoding="utf-8"))
+    eid = res["segments"][0]["event_id"]
+    edits = work / "late_edits.json"
+    edits.write_text(json.dumps({"selection": [eid], "trims": {eid: [0.0, 4.0]}}), encoding="utf-8")
+    cp = subprocess.run(base + ["--output-dir", str(out2), "--edits", str(edits)], capture_output=True, text=True, env=env)
+    if cp.returncode != 0:
+        print("FAIL late_sound_stays_in_place", cp.stderr[-800:])
+        return False
+    reel = out2 / "MediaEngine Reel.mp4"
+    fl, bp = flashes(ff, reel), beeps(ff, reel)
+    offs = [round((min(bp, key=lambda b: abs(b - t)) - t) * 1000, 1) for t in fl if bp and t > 0.7]
+    ok = len(offs) >= 2 and min(offs) >= -25 and max(offs) <= 40
+    print(json.dumps({"late_sound_offsets_ms": offs}))
+    print("PASS late_sound_stays_in_place" if ok else f"FAIL late_sound_stays_in_place {offs}")
+    return ok
 
 
 if __name__ == "__main__":

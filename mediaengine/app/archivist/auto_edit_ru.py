@@ -117,6 +117,8 @@ PHRASES = {
     "Only the videos directly in this folder are used. Folders inside it with videos: ":
         "Берутся только видео, лежащие прямо в этой папке. Вложенных папок с видео: ",
     "Exported reels": "Готовые ролики", "The folder for exported reels is not there yet.": "Папки с готовыми роликами ещё нет.",
+    "You can close this window: the reel keeps building and the PC does not go to sleep. Open MediaEngine again to see it.":
+        "Окно можно закрыть: ролик продолжит собираться, а компьютер не уснёт. Чтобы посмотреть, снова открой MediaEngine.",
     "By day": "По дням", "Use this day": "Взять этот день", "more than 64 — tick them below": "больше 64 — отметь ниже",
     "The day is taken from the file name (e.g. VID_20260714_…), otherwise from the file's date.":
         "День берётся из имени файла (например, VID_20260714_…), иначе — из даты файла.",
