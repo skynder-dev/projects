@@ -1,3 +1,19 @@
+## 2026-10-12, CURRENT REAL WINDOWS ACCEPTANCE BOUNDARY
+
+**NOT COMPLETE. Do not claim the 7.0.4 script is installed/running in user's Chrome.**
+
+- Existing PC GoDog Relay was live. Recovered registered, silent Remote Lab 1.1.169 through the existing authorized fixed-app launcher, with no browser/UI operation.
+- Diagnosed legacy `godog_userscript_update` PowerShell: it only recognizes `@namespace towncousins.local` and copies .user.js files on disk. New GoDog uses `GoDog.constitution`. This updater **cannot install** the new script in Tampermonkey; never try it as a substitute for browser acceptance.
+- Chrome Tampermonkey 5.5.1 in actual Default profile verified, userscripts enabled.
+- Managed `jsonImport` corrected to Base64 and correct existing script UUID (not an invented new script UUID); source JS remains same 7.0.4 SHA. Old runner and Keepalive disabled in managed provision.
+- Managed policy registry applied and separate query readback matched its exact content SHA; signed download key and artifact hash both checked correctly.
+- Live Windows typed `godog_refresh_platform_policy_v1` PASS twice, commands 1230 and 1234; no new tabs/windows or focus changes.
+- Live Windows typed `godog_restart_extension_renderers_v1` PASS twice, commands 1231 and 1235; browser and tabs **not** closed, no pages reloaded.
+- Read-only current Tampermonkey LevelDB probe completed after these operations (commands 1232 and 1236). Last observed GoDog stored version 6.0.26, **no 7.0.2 or 7.0.4 in scanned records**. Earlier owner screenshot showed running GoDog 7.0.2, so this probe does not settle every possible browser runtime/profile; **7.0.4 not proven**.
+- Remote Lab temporary exclusive lease 239 formally released. Do not leave pending/unfenced Windows commands and do not retry the same policy/extension restart indefinitely.
+
+**Do not close/restart Chrome or reload owner's working tabs without a fresh explicit approval.** Tampermonkey's official managed configuration is read at extension startup; restarting extension processes was insufficient to prove update. The next task is to obtain a direct, safe Chrome/Tampermonkey in-browser installation and a live UI version + button behavior proof. STOP releasing more ZIPs or altering UI/CSS while this gate is blocked.
+
 ## 2026-10-11, managed Tampermonkey Base64 contract fix
 
 **Actual bug:** the managed `jsonImport` export stored enabled GoDog `source` as literal JavaScript. Per official Tampermonkey Deployment documentation, exported script `source` must be Base64. This explains why prior Relay registry `DONE` did not prove installation. The existing script `uuid` was preserved (`c2a87b53-42be-4ee1-9ca8-602200000001`) so repeated provisioning targets the same managed identity, not a new copy.
