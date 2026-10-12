@@ -41,8 +41,10 @@ MODEL_SHA = "844d1a46ab18acf50c989e541b12fe3b6dc7f8d6004725b4e992d142788e0600"
 MODEL_BYTES = 24281512
 
 # Honest progress: weight of each real engine stage in the overall bar.
-STAGE_SPAN = {"queued": (0, 0), "starting": (0, 1), "inputs": (1, 5), "analyze": (5, 60), "select": (60, 62),
-              "trim": (62, 65), "render": (65, 95), "finish": (95, 99), "done": (100, 100)}
+# shares of the whole build as measured (CI, 7 videos: analysis 12 %, cutting 34 %, final encode + check 50 %);
+# the final stage has no steps of its own, so it starts well before the end instead of sitting at 95 % for minutes
+STAGE_SPAN = {"queued": (0, 0), "starting": (0, 1), "inputs": (1, 5), "analyze": (5, 50), "select": (50, 51),
+              "trim": (51, 54), "render": (54, 80), "finish": (80, 99), "done": (100, 100)}
 STAGE_LABEL = {"queued": "Waiting", "starting": "Starting", "inputs": "Checking files", "analyze": "Finding moments",
                "select": "Choosing moments", "trim": "Checking clip edges", "render": "Rendering segments",
                "finish": "Joining and verifying", "done": "Ready", "failed": "Failed", "cancelled": "Cancelled"}
@@ -1200,6 +1202,14 @@ def accepted_history(log: list[dict]) -> list[int]:
     return stack
 
 
+def previous_accepted(pid: int) -> int | None:
+    """The revision Revert would go back to (None: Revert only un-accepts)."""
+    with db() as con:
+        log = [dict(r) for r in con.execute("SELECT action,revision_id FROM ae_accept_log WHERE project_id=? ORDER BY id", (int(pid),)).fetchall()]
+    stack = accepted_history(log)
+    return stack[-2] if len(stack) >= 2 else None
+
+
 def revert(pid: int) -> int | None:
     """Move the accepted pointer back to the previously accepted revision (files untouched)."""
     with db() as con:
@@ -1342,6 +1352,11 @@ def _remember_selftest(res: dict) -> None:
         save_config(cfg)
     except Exception:
         pass
+
+
+def selftest_video() -> Path | None:
+    v = DATA / "selftest" / "out" / "MediaEngine Reel.mp4"
+    return v if v.is_file() else None
 
 
 def quick_selftest(timeout_s: int = 900, mode: str = "technical") -> dict:

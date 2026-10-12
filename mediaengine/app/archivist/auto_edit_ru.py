@@ -38,7 +38,8 @@ PHRASES = {
         "только в облаке OneDrive, на компьютере его нет: сначала выбери «Всегда сохранять на этом устройстве»",
     "These videos are only in OneDrive, not on this PC. In Explorer right-click the folder → 'Always keep on this device', wait until the download is done, then choose it again.":
         "Эти видео лежат только в OneDrive, на компьютере их нет. В Проводнике щёлкни папку правой кнопкой → «Всегда сохранять на этом устройстве», дождись загрузки и выбери папку снова.",
-    "skipped": "пропущено", "skipped: ": "пропущено: ", "usable": "годится", "Show files": "Показать файлы", "File": "Файл", "Size": "Размер", "Length": "Длина",
+    "skipped": "пропущено", "skipped: ": "пропущено: ", "usable": "годится",
+    "very short — may be skipped": "очень короткое — может быть пропущено", "Show files": "Показать файлы", "File": "Файл", "Size": "Размер", "Length": "Длина",
     "Frame": "Кадр", "Format": "Формат", "Sound": "Звук", "recommended": "рекомендуется", "Create reel": "Создать ролик",
     "AI model not available.": "ИИ-модель недоступна.", "Build with Technical only": "Собрать без ИИ (только техника)",
     "AI model not available — build with Technical only (sharpness, motion, exposure)":
@@ -119,6 +120,25 @@ PHRASES = {
     "Exported reels": "Готовые ролики", "The folder for exported reels is not there yet.": "Папки с готовыми роликами ещё нет.",
     "You can close this window: the reel keeps building and the PC does not go to sleep. Open MediaEngine again to see it.":
         "Окно можно закрыть: ролик продолжит собираться, а компьютер не уснёт. Чтобы посмотреть, снова открой MediaEngine.",
+    "The current revision stays as it is. Format and sound variants keep its removed moments and your edits and reuse the analysis; a new length chooses the moments again (removed ones stay out).":
+        "Текущая версия не меняется. Варианты с другим форматом или звуком сохраняют убранные моменты и твои правки и используют готовый анализ; при другой длине моменты выбираются заново (убранные так и остаются убранными).",
+    "This version already exists: R": "Такая версия уже есть: R",
+    " (the same settings and moments). Change the length, format or sound, or tick “remove” on a moment.":
+        " (те же настройки и моменты). Измени длину, формат или звук либо отметь «убрать» у момента.",
+    "The reel is shorter than ": "Ролик короче ",
+    " s because you removed or trimmed moments. Add a moment below or let MediaEngine choose again.":
+        " с, потому что ты убрал или обрезал моменты. Добавь момент ниже или нажми «Пусть MediaEngine выберет заново».",
+    " · from ": " · из папки ",
+    "your trim": "твоя обрезка", "edge trimmed": "край подрезан",
+    "That is a file, not a folder. Paste the path of a folder, or press Choose videos….":
+        "Это файл, а не папка. Вставь путь к папке или нажми «Выбрать видео…».",
+    " s (requested ": " с (выбрано ", " s) · ": " с) · ", "Undo accept": "Отменить принятие",
+    "These folders inside it have videos — open one (or use Choose videos… on the Auto Edit page to pick from several):":
+        "Видео есть во вложенных папках — открой одну (или нажми «Выбрать видео…» на странице автомонтажа, чтобы взять из нескольких):",
+    "Accept R": "Принять R",
+    "Other days of this folder": "Другие дни этой папки",
+    "Go to Auto Edit": "Перейти к автомонтажу", "The test reel is not there (build it on Check this PC).":
+        "Тестового ролика нет (собери его в «Проверке компьютера»).",
     "By day": "По дням", "Use this day": "Взять этот день", "more than 64 — tick them below": "больше 64 — отметь ниже",
     "The day is taken from the file name (e.g. VID_20260714_…), otherwise from the file's date.":
         "День берётся из имени файла (например, VID_20260714_…), иначе — из даты файла.",
@@ -271,6 +291,7 @@ def _translate_text(t: str) -> str:
 JS_PHRASES = {
     "' elapsed'": "' прошло'", "' · about '": "' · примерно '", "' min left'": "' мин осталось'",
     "' · less than a minute left'": "' · меньше минуты осталось'",
+    "' · final encode and check of the whole reel, can take a few minutes'": "' · сборка и проверка всего ролика, может занять несколько минут'",
     "'A Windows folder window is open — it may be behind this window.'": "'Открыто окно выбора папки Windows — оно может быть за этим окном.'",
     "'A Windows window is open — it may be behind this window. Ctrl+click to choose several videos.'":
         "'Открыто окно Windows — оно может быть за этим окном. Ctrl+щелчок — выбрать несколько видео.'",
@@ -281,6 +302,9 @@ JS_PHRASES = {
     "'Copied'": "'Скопировано'", "'Copy this path:'": "'Скопируй путь:'", "'Folder window failed: '": "'Окно выбора папки не открылось: '",
     "'No folder chosen.'": "'Папка не выбрана.'", "'No videos chosen.'": "'Видео не выбраны.'", "'Window failed: '": "'Окно не открылось: '",
     "' of '": "' из '",
+    "'write the time as seconds (12.5) or minutes (1:05)'": "'напиши время в секундах (12.5) или минутах (1:05)'",
+    "'“to” must be at least 0.5 s after “from”'": "'«по» должно быть хотя бы на 0,5 с позже, чем «с»'",
+    "'one moment can be at most 60 s long'": "'один момент — не длиннее 60 с'",
 }
 
 

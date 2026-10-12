@@ -347,7 +347,7 @@ APP_PHRASES: dict[str, str] = {
 
 
     # ---- jobs and background work messages
-    "Started": "Начало", "· Finished": "· Конец", "Finished": "Готово", "Cancelled by user": "Отменено пользователем", "Cancelled": "Отменено",
+    "Started": "Начало", "· Finished": "· Конец", "Finished": "Готово", "Cancelled by user": "Ты отменил сборку", "Cancelled": "Отменено",
     "Media Brain failed": "Анализ не удался", "Retry failed": "Повторить неудачные", "Discovering": "Ищу", "Discovery finished": "Поиск закончен",
     "Discovery paused while a foreground job is running": "Поиск на паузе, пока идёт задача", "Idle": "Ожидание", "Excluded": "Исключено",
     "Analyzing local/staged files": "Анализирую файлы", "Archiving": "Архивирую", "Building virtual clips + Smart Crop": "Создаю клипы и кадрирование",
@@ -492,6 +492,7 @@ APP_COUNT_SUBS: list[tuple[str, str]] = [
      r"\1 ⟪\1|пересекающийся момент одного видео убран|пересекающихся момента одного видео убраны|пересекающихся моментов одного видео убраны⟫, чтобы ничего не повторялось"),
     (r"\b(\d+) skipped\b", r"\1 ⟪\1|пропущено|пропущено|пропущено⟫"),
     (r"\b(\d+) videos in this folder\.", r"В этой папке \1 видео."),
+    (r"\b(\d+) logical cores\b", r"\1 ⟪\1|логическое ядро|логических ядра|логических ядер⟫"),
     (r"\bRequested (\d+) s, got ([\d.]+) s:", r"Выбрано \1 с, получилось \2 с:"),
 ]
 
