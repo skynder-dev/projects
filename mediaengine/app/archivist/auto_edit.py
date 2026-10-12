@@ -307,6 +307,12 @@ def subfolders_with_videos(folder, limit: int = 40, depth: int = 4, max_dirs: in
                 seen += 1
                 if seen > max_dirs:
                     return out
+                try:
+                    _guard_private(d)              # Private / Rejected are never offered (nor looked into)
+                except ValueError:
+                    continue
+                except OSError:
+                    pass
                 n = len(list_videos(d))
                 if n:
                     out.append((str(d), n))

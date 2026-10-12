@@ -75,6 +75,12 @@ def main():
     (card / "System Volume Information/x/a.mp4").write_bytes(b"0" * 1024)
     found = sorted(Path(x).relative_to(card).as_posix() for x, _ in ae.subfolders_with_videos(card))
     check("camera card: deep video folders found", found == ["DCIM/100GOPRO", "PRIVATE/AVCHD/BDMV/STREAM", "PRIVATE/M4ROOT/CLIP"], found)
+    from archivist.config import PRIVATE as _PRIV
+    Path(_PRIV).mkdir(parents=True, exist_ok=True)
+    (Path(_PRIV) / "secret.mp4").write_bytes(b"0" * 1024)
+    listed = [Path(x).name for x, _ in ae.subfolders_with_videos(Path(_PRIV).parent)]
+    check("Private folder is never offered as a video folder", Path(_PRIV).name not in listed, listed)
+    (Path(_PRIV) / "secret.mp4").unlink()
     # a phone camera folder with more videos than one reel takes: grouped by shooting day (name first, else file date)
     cam = work / "camera"; cam.mkdir(parents=True, exist_ok=True)
     for i in range(40):
