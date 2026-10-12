@@ -37,14 +37,14 @@ PHRASES = {
     "AI model not available.": "ИИ-модель недоступна.", "Build with Technical only": "Собрать без ИИ (только техника)",
     "Social HD (vertical 1080×1920)": "Social HD (вертикально 1080×1920)", "Vertical (540×960)": "Вертикально (540×960)",
     "Horizontal (960×540)": "Горизонтально (960×540)", "Social HD": "Social HD", "Vertical": "Вертикально",
-    "Horizontal": "Горизонтально", "Auto (keep source sound, mute if it jumps)": "Авто (звук исходника, без звука если скачет)",
+    "Horizontal": "Горизонтально", "Auto (keep source sound, mute if it jumps)": "Авто (звук исходника; без звука, если он есть не везде)",
     "Source sound": "Звук исходника", "Mute": "Без звука", "Auto": "Авто", "Source": "Исходный",
     "a short reel is recommended": "лучше короткий ролик", "of usable video": "пригодного видео",
     "A lot of video. The first build analyses all of it once and can take a long time; later builds and variants reuse that analysis. The PC does not go to sleep while MediaEngine works, and you can keep using it.":
         "Много видео. Первая сборка один раз анализирует всё и может идти долго; следующие сборки и варианты используют готовый анализ. Пока MediaEngine работает, компьютер не уснёт, и им можно пользоваться.",
     # progress
     "Waiting": "В очереди", "Starting": "Запуск", "Checking files": "Проверка файлов", "Finding moments": "Поиск моментов",
-    "Choosing moments": "Выбор моментов", "Checking clip edges": "Проверка краёв клипов", "Rendering segments": "Рендер кусков",
+    "Choosing moments": "Выбор моментов", "Checking clip edges": "Проверка краёв клипов", "Rendering segments": "Нарезка кусков",
     "Joining and verifying": "Склейка и проверка", "Ready": "Готово", "Failed": "Ошибка", "Cancelled": "Отменено",
     # what the engine reports while it works (job message line)
     "building moment library": "собираю библиотеку моментов", "checking clip boundaries": "проверяю границы моментов",
