@@ -1482,7 +1482,7 @@ bindStoryFrames();loadStoryboard();""")
         if not d:return 'Not found',404
         j=d['job']
         safe=' · source can be disconnected' if j.get('source_releasable') and j['status']=='running' else ''
-        body=f"<div class='row space'><div><h1>Job #{jid}</h1><div class='muted'><span>{e(j['kind'])}</span> · <span>{e(j['status'])}</span> · {j['done']}/{j['total']} · <span>{human_bytes(j['bytes_done'])}</span>/<span>{human_bytes(j['bytes_total'])}</span>{safe}</div></div><div class='row'>"
+        body=f"<div class='row space'><div><h1>Job #{jid}</h1><div class='muted'><span>{e(j['kind'])}</span> · <span>{e(j['status'])}</span> · {j['done']}/{j['total']}{(' · <span>'+human_bytes(j['bytes_done'])+'</span>/<span>'+human_bytes(j['bytes_total'])+'</span>') if j['bytes_total'] else ''}{safe}</div></div><div class='row'>"
         if j['failed']:
             body += f"<button onclick=\"jobAction(this,'/api/jobs/{jid}/retry','retry')\" class='warn'>Retry failed</button>"
         if j['status'] in ('queued','running'):
@@ -1490,7 +1490,7 @@ bindStoryFrames();loadStoryboard();""")
         body+='</div></div><div class="jobs">'
         for x in d['items']:
             err=f"<div class='errbox'>{e(x['error'])}</div>" if x['error'] else ''
-            body+=f"<div class='card'><div class='row space'><b>{x['seq']}. <span translate='no'>{e(x['filename'])}</span></b><span class='badge {e(x['status'])}'>{e(x['phase'])}</span></div><div class='muted'><span translate='no'>{e(x['source_label'])}</span> · <span>{human_bytes(x['bytes_done'])}</span>/<span>{human_bytes(x['bytes_total'])}</span> · <span>{e(x['result_status'] or '')}</span></div>{err}</div>"
+            body+=f"<div class='card'><div class='row space'><b>{x['seq']}. <span translate='no'>{e(x['filename'])}</span></b><span class='badge {e(x['status'])}'>{e(x['phase'])}</span></div><div class='muted'><span translate='no'>{e(x['source_label'])}</span> · {('<span>'+human_bytes(x['bytes_total'])+'</span>') if (x['status']=='done' and not x['bytes_done']) else ('<span>'+human_bytes(x['bytes_done'])+'</span>/<span>'+human_bytes(x['bytes_total'])+'</span>')} · <span>{e(x['result_status'] or '')}</span></div>{err}</div>"
         body+='</div>'
         script="""window.jobActionBusy=false;
 async function jobAction(btn,url,mode){
