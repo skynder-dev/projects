@@ -26,8 +26,11 @@ What a user can do (code: `app/archivist/auto_edit.py`, `auto_edit_web.py`, engi
   only Length / Format / Sound. Phone/camera files work: rotated portrait (comes out upright), HEVC .MOV, 60 fps,
   variable frame rate, no audio track, Cyrillic names; too-short or still clips are skipped with a reason.
 - **Language**: English or Russian for the whole program — "Русский / English" at the top right of every page and in
-  Settings; first start follows the language chosen in Setup, else the Windows language (`i18n.py`, `ru_app.py`,
-  `auto_edit_ru.py`; whole-phrase translation so file names/titles are never changed; CI coverage check).
+  Settings; each Setup run applies the language chosen in it once (in-app switch kept until the next Setup), else
+  the Windows language (`i18n.py`, `ru_app.py`, `auto_edit_ru.py`; whole-phrase translation so file names/titles
+  are never changed; CI coverage check; the engine's progress lines and sizes (МБ/ГБ) are Russian too).
+- **Folder window**: the Explorer-style one (address bar, Quick access, paste a path), opening next to the last
+  reel's videos; the older tree dialog remains as fallback. Driven by window messages in the Windows unit checks.
 - **Check this PC** on Home, in Settings and on Auto Edit (Auto Edit suggests it until a test reel was built here).
 - **Big folders**: a folder with more videos than one reel takes (64, e.g. a phone camera roll) shows its shooting
   days (date from names like `VID_20260714_…`, else the file date) — one click per day — and a tick list
