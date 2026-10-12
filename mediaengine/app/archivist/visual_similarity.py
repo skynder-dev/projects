@@ -80,6 +80,11 @@ def rebuild_index():
         return len(alive)
 
 def find_similar(inventory_id,limit=24):
+    try:   # the best-moment columns come from the search index; on a fresh library it may not exist yet (was HTTP 500)
+        from .semantic_search import ensure_schema as _search_schema
+        _search_schema()
+    except Exception:
+        pass
     count=rebuild_index(); iid=int(inventory_id)
     with db() as con:
         t=con.execute("SELECT dhash,hist_json FROM visual_fingerprints WHERE inventory_id=? AND model=?",(iid,MODEL)).fetchone()

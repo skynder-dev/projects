@@ -77,7 +77,7 @@ def main():
 
     H = {"Host": "127.0.0.1:8765", "Origin": "http://127.0.0.1:8765"}
     with app.test_client() as c:
-        r = c.post("/import/add-source", data={"path": str(src), "label": "Test videos"}, headers=H)
+        r = c.post("/import/add-source", data={"path": str(src), "label": "Мои тестовые видео"}, headers=H)
         check("add_folder_source", r.status_code == 302, r.status_code)
         t0 = time.time()
         while time.time() - t0 < 180 and (len(rows()) < len(names) or service.DISCOVERY_LOCK.locked()):
