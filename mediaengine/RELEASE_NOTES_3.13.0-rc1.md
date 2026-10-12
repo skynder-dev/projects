@@ -34,10 +34,19 @@ Start-menu shortcut, data next to the builds, uninstall refused while running, t
 ## Language
 
 English or Russian for the whole program: "Русский / English" at the top right of every page (and Settings →
-Interface language); the first start follows the Windows display language. Texts are translated as whole
-phrases, so file names, folder names and titles typed by the user are never changed. CI opens every page in
-Russian and fails if English is left (`tests/i18n_coverage.py`). "Check this PC" is on Home, in Settings and on
+Interface language); the first start follows the language chosen in Setup, else the Windows display language.
+Texts are translated as whole phrases, so file names, folder names and titles typed by the user are never changed.
+CI opens every page in Russian and lists any English left (`tests/i18n_coverage.py`); the engine's progress lines
+are checked too. "Check this PC" is on Home, in Settings and on
 Auto Edit; until a test reel has been built on the PC, Auto Edit suggests it first.
+
+## Big folders and camera cards
+
+A folder with more than 64 videos (one reel's limit, e.g. a phone camera roll) is not refused: MediaEngine lists
+its shooting days (from names like `VID_20260714_…`, else the file date) with one "Use this day" click each, and a
+tick list ("Tick the newest 64"). A camera card chosen at its root lists the video folders inside it (DCIM,
+AVCHD, M4ROOT; up to 4 levels). Folders with half an hour of video or more get a note that the first build takes
+a while (later builds reuse the analysis; the PC does not sleep while MediaEngine works).
 
 ## AI model provenance (not in the ZIP, not in git)
 

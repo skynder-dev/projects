@@ -29,6 +29,10 @@ What a user can do (code: `app/archivist/auto_edit.py`, `auto_edit_web.py`, engi
   Settings; first start follows the language chosen in Setup, else the Windows language (`i18n.py`, `ru_app.py`,
   `auto_edit_ru.py`; whole-phrase translation so file names/titles are never changed; CI coverage check).
 - **Check this PC** on Home, in Settings and on Auto Edit (Auto Edit suggests it until a test reel was built here).
+- **Big folders**: a folder with more videos than one reel takes (64, e.g. a phone camera roll) shows its shooting
+  days (date from names like `VID_20260714_…`, else the file date) — one click per day — and a tick list
+  ("tick the newest 64"); a day's reel is named after the day. A camera card picked at its root lists the video
+  folders inside (DCIM\100GOPRO, PRIVATE\AVCHD\BDMV\STREAM, PRIVATE\M4ROOT\CLIP; up to 4 levels).
 - Without the AI model the user must tick **Technical only** explicitly — no silent fallback, also not for variants.
 - Background build with real stage progress (per file during analysis), elapsed time, Cancel, Retry, queued jobs listed.
   Restart/Quit of the app is refused while a reel builds (unless forced).
