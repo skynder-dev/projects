@@ -249,7 +249,7 @@ def main():
           and "<div>Library videos.mp4</div>" in out and "value='Remove'" in out and "D:\\Videos\\Library" in out
           and "x.status==='done'" in out and "href='/x'" in out)
     check("ru page: confirm texts in handlers; script-made texts via the in-page dictionary",
-          "confirm('Отметить выбранное как Private навсегда?')" in out and "window.ME_I18N" in out and "Сначала выбери файлы" in out)
+          "confirm('Отметить выбранное как личное навсегда? Оно уйдёт из библиотеки и никогда не попадёт в ролики.')" in out and "window.ME_I18N" in out and "Сначала выбери файлы" in out)
     # a build left "running" by a crashed process is marked interrupted by the first page the new process serves
     # (any page - Quit/Restart/switching builds would otherwise be refused for a job that no longer exists)
     from archivist.db import db as _db, now_iso as _now
