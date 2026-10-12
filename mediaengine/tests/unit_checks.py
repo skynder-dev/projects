@@ -257,6 +257,8 @@ def main():
     from archivist import i18n as _i18n
     missing = sorted(m for m in msgs if _i18n.translate_json({"message": m})["message"] == m)
     check("ru: every engine progress message translated", bool(msgs) and not missing, missing or len(msgs))
+    prep = _i18n.translate_json({"message": "Preparing a recording without a length: it's [1] 1.5 s.webm"})["message"]
+    check("ru: preparing a recording without a length (file name kept)", prep == "Подготовка записи без длины: it's [1] 1.5 s.webm", prep)
     long = _i18n.translate_text("Requested 15 s, got 9.7 s: there were not enough different moments in this footage for a longer reel.", True)
     check("ru: short-reel note fully Russian", not _re.search(r"[A-Za-z]{3,}", long), long)
     # the Explorer-style folder window (Windows): opens in the given folder, "Select Folder" returns it, Cancel returns
