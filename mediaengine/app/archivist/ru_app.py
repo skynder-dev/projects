@@ -400,6 +400,8 @@ APP_PHRASES: dict[str, str] = {
     "Blocked Novelty Guard items cannot generate a handoff. Similar-review items require this explicit manual action.":
         "Заблокированные проверкой на повторы ролики передать нельзя; похожие — только вручную.",
     "s": "сек",          # the unit after a time field ("from [0.0] to [5.5] s")
+    # file sizes ("16.8 MB"): looked up through ⟦unit:…⟧ by the patterns below, never matched as page text
+    "unit:B": "Б", "unit:KB": "КБ", "unit:MB": "МБ", "unit:GB": "ГБ", "unit:TB": "ТБ",
 }
 
 APP_PATTERNS: list[tuple[str, str]] = [
@@ -460,6 +462,7 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"Job #(\d+) accepted\.?", r"Задача №\1 принята"), (r"Could not start source recheck — (.*)", r"Не удалось запустить проверку источников — \1"),
     (r"HTTP (\d+)", r"HTTP \1"),
 
+    (r"(\d+(?:\.\d+)?) (B|KB|MB|GB|TB)", r"\1 ⟦unit:\2⟧"),   # a size on its own ("155.4 GB")
 ]
 
 APP_JS: dict[str, str] = {
@@ -488,6 +491,7 @@ APP_COUNT_SUBS: list[tuple[str, str]] = [
      r"\1 ⟪\1|пересекающийся момент одного видео убран|пересекающихся момента одного видео убраны|пересекающихся моментов одного видео убраны⟫, чтобы ничего не повторялось"),
     (r"\b(\d+) skipped\b", r"\1 ⟪\1|пропущено|пропущено|пропущено⟫"),
     (r"\b(\d+) videos in this folder\.", r"В этой папке \1 видео."),
+    (r"\b(\d+(?:\.\d+)?) (B|KB|MB|GB|TB)\b", r"\1 ⟦unit:\2⟧"),
     (r"\bRequested (\d+) s, got ([\d.]+) s:", r"Выбрано \1 с, получилось \2 с:"),
 ]
 
