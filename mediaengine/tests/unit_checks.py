@@ -147,6 +147,22 @@ def main():
           and "x.status==='done'" in out and "href='/x'" in out)
     check("ru page: confirm texts in handlers; script-made texts via the in-page dictionary",
           "confirm('Отметить выбранное как Private навсегда?')" in out and "window.ME_I18N" in out and "Сначала выбери файлы" in out)
+    # the language chosen in a Setup run applies once (also over an older build's saved choice); a later switch in
+    # the program is kept until the next Setup run
+    from archivist import i18n as _lang
+    real_setup = _lang._setup_language
+    try:
+        _lang.set_ui_language("en")
+        _lang._setup_language = lambda: ("ru", "MediaEngine-x-b99")
+        first = _lang.ui_language()
+        _lang.set_ui_language("en")
+        kept = _lang.ui_language()
+        _lang._setup_language = lambda: ("ru", "MediaEngine-x-b100")
+        again = _lang.ui_language()
+        check("Setup language applies once per Setup run", (first, kept, again) == ("ru", "en", "ru"), (first, kept, again))
+    finally:
+        _lang._setup_language = real_setup
+        _lang.set_ui_language("en")
     # every fixed message the engine reports while it works has a Russian text (job line under the progress bar)
     import re as _re
     eng = (Path(__file__).resolve().parents[1] / "app" / "archivist" / "engine_p11" / "p11_folder_to_reel_r3.py").read_text(encoding="utf-8")

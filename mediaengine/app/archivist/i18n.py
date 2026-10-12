@@ -25,26 +25,41 @@ LANGS = ("en", "ru")
 
 
 def ui_language() -> str:
-    from .config import load_config
+    from .config import load_config, save_config
     try:
-        v = str(load_config().get("ui_language") or "").lower()
+        cfg = load_config()
     except Exception:
         return "en"
+    v = str(cfg.get("ui_language") or "").lower()
+    setup, build = _setup_language()
+    mark = f"{setup}|{build}"
+    if setup in LANGS and mark != str(cfg.get("setup_language_applied") or ""):
+        # each Setup run: the language chosen there becomes the program's language once (also over a language
+        # saved by an older build); switching in the program afterwards is kept until the next Setup
+        try:
+            cfg["ui_language"], cfg["setup_language_applied"] = setup, mark
+            save_config(cfg)
+        except Exception:
+            pass
+        return setup
     if v in LANGS:
         return v
-    setup = _setup_language()                          # first start: the language chosen in Setup,
-    if setup in LANGS:
-        return setup
-    return "ru" if _windows_is_russian() else "en"     # else the Windows display language
+    return "ru" if _windows_is_russian() else "en"     # no choice anywhere yet: the Windows display language
 
 
-def _setup_language() -> str:
+def _setup_language() -> tuple[str, str]:
+    """(language, build) that the last Setup run wrote; ("", "") when not installed with Setup or not on Windows."""
     try:
         import winreg
         with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\MediaEngine") as k:
-            return str(winreg.QueryValueEx(k, "Language")[0] or "").lower()
+            lang = str(winreg.QueryValueEx(k, "Language")[0] or "").lower()
+            try:
+                build = str(winreg.QueryValueEx(k, "LanguageBuild")[0] or "")
+            except OSError:
+                build = ""
+            return lang, build
     except Exception:
-        return ""
+        return "", ""
 
 
 def set_ui_language(lang: str) -> None:

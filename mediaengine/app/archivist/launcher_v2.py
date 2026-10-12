@@ -106,17 +106,21 @@ def same_folder(a,b):
     except Exception: return False
 
 def ui_ru():
-    """Interface language chosen in the app (config.json in the data folder); first start: the Windows language."""
+    """Same choice as the app (i18n.ui_language): a new Setup run's language first, then the language chosen in the
+    app (config.json in the data folder), then the Windows display language."""
     try:
-        v=str(json.loads((data_root()/'config.json').read_text(encoding='utf-8')).get('ui_language') or '').lower()
-        if v in ('ru','en'): return v=='ru'
-    except Exception: pass
+        cfg=json.loads((data_root()/'config.json').read_text(encoding='utf-8'))
+    except Exception: cfg={}
     try:
         import winreg
         with winreg.OpenKey(winreg.HKEY_CURRENT_USER,r'Software\MediaEngine') as k:
-            v=str(winreg.QueryValueEx(k,'Language')[0] or '').lower()
-        if v in ('ru','en'): return v=='ru'
+            lang=str(winreg.QueryValueEx(k,'Language')[0] or '').lower()
+            try: build=str(winreg.QueryValueEx(k,'LanguageBuild')[0] or '')
+            except OSError: build=''
+        if lang in ('ru','en') and f'{lang}|{build}'!=str(cfg.get('setup_language_applied') or ''): return lang=='ru'
     except Exception: pass
+    v=str(cfg.get('ui_language') or '').lower()
+    if v in ('ru','en'): return v=='ru'
     try:
         import ctypes
         return (ctypes.windll.kernel32.GetUserDefaultUILanguage() & 0x3FF)==0x19

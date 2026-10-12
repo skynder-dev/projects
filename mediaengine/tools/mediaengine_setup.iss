@@ -68,8 +68,9 @@ Source: "{#SrcDir}\*"; DestDir: "{app}\{#PkgName}"; Flags: ignoreversion recurse
 Source: "{#SrcDir}\MediaEngine.ico"; DestDir: "{app}"; Flags: ignoreversion
 
 [Registry]
-; the language chosen for Setup is the program's first interface language (it can be switched in the program)
+; the language chosen for Setup becomes the program's language once per Setup run (it can be switched in the program)
 Root: HKCU; Subkey: "Software\MediaEngine"; ValueType: string; ValueName: "Language"; ValueData: "{language}"; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\MediaEngine"; ValueType: string; ValueName: "LanguageBuild"; ValueData: "{#PkgName}"; Flags: uninsdeletekey
 
 [Icons]
 Name: "{userprograms}\MediaEngine"; Filename: "{sys}\wscript.exe"; Parameters: """{app}\{#PkgName}\Start MediaEngine.vbs"""; WorkingDir: "{app}\{#PkgName}"; IconFilename: "{app}\{#PkgName}\MediaEngine.ico"; Comment: "MediaEngine {#AppVer}"
