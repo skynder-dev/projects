@@ -937,10 +937,12 @@ def _review_html(p, rev, e):
     actions = (f"<span class='badge ready'>Accepted</span><form method='post' action='/auto/p/{p['id']}/revert'><button class='btn2'>{undo}</button></form>" if is_acc else
                f"<form method='post' action='/auto/p/{p['id']}/accept' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(b=>b.disabled=true),0)\"><input type='hidden' name='revision_id' value='{rev['id']}'><button class='ae-big'>Accept this version</button></form>")
     excl_hidden = "".join(f"<input type='hidden' name='exclude' value='{e(x)}'>" for x in rev["settings"].get("exclude", []))
-    others = [r for r in p["revisions"] if r["id"] != rev["id"]]
+    # only versions of the same format: a vertical reel next to a horizontal one is not a blind comparison
+    others = [r for r in p["revisions"] if r["id"] != rev["id"] and r["settings"].get("format") == rev["settings"].get("format")]
     compare_html = ""
     if others:
-        default_other = p["accepted_revision_id"] if p["accepted_revision_id"] and p["accepted_revision_id"] != rev["id"] else others[-1]["id"]
+        acc_ok = p["accepted_revision_id"] in [r["id"] for r in others]
+        default_other = p["accepted_revision_id"] if acc_ok else others[-1]["id"]
         opts_c = "".join(f"<option value='{r['id']}' {'selected' if r['id'] == default_other else ''}>R{int(r['number']):03d}</option>" for r in others)
         compare_html = (f"<form method='post' action='/auto/p/{p['id']}/compare' class='row' style='margin-top:10px;gap:6px;flex-wrap:wrap'>"
                         f"<input type='hidden' name='a' value='{rev['id']}'><span class='muted'>Compare blind with</span>"
