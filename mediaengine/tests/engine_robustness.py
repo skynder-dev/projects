@@ -14,7 +14,12 @@ Uses <fixtures_dir>/static (2 clips + 1 still video). Checks, technical mode (th
   - HDR (HLG/PQ) shows normal colours; camcorder 1080i .MTS is read, de-interlaced and can be trimmed by hand;
   - wide pictures stored in narrow pixels (HDV 1440x1080, DVD 16:9) keep their shape (a square stays square);
   - other formats (5.1 sound, 120 fps HEVC, square, odd size 4:4:4, MJPEG AVI + PCM, VP9/Opus WebM, 10-bit H.264,
-    two sound tracks, sound starting late, ProRes, old 3GP) are all analysed and used.
+    two sound tracks, sound starting late, ProRes, old 3GP) are all analysed and used;
+  - more camera cases (<fixtures_dir>/camera2): phone held upside down (rotation 180), portrait turned the other way
+    (+90), action camera with a timecode track at 29.97 fps, 25 fps PAL, .MOV with a subtitle track - all used, and
+    the rotated ones come out upright in 9:16 and 16:9;
+  - a vertical reel from a landscape clip whose subject stays at the right edge follows the subject (saliency crop),
+    a centre crop would show only flat background (<fixtures_dir>/subject).
 """
 from __future__ import annotations
 
@@ -316,6 +321,48 @@ def main():
         check("sound_levels_evened_out", before and after is not None and before > 15 and after <= 4,
               cp.stderr[-500:] if not r else (src, reel))
         print("levels: sources", before and round(before, 1), "dB apart; in the reel", after is not None and round(after, 1), "dB")
+
+    def engine(src_dir, tag, target, *extra):
+        out = work_root / f"out_{tag}"
+        cp = subprocess.run([sys.executable, str(R3 / "p11_folder_to_reel_r3.py"), "--input-dir", str(src_dir), "--output-dir", str(out),
+                             "--work-dir", str(work_root / f"work_{tag}"), "--runtime-dir", str(R3), "--target-seconds", str(target),
+                             "--semantic", "off", *extra], capture_output=True, text=True, encoding="utf-8", errors="replace", env=env)
+        r = json.loads((out / "MediaEngine Result.json").read_text(encoding="utf-8")) if cp.returncode == 0 else None
+        return r, out / "MediaEngine Reel.mp4", cp
+
+    # more phone/camera cases: upside-down phone (rotation 180), portrait turned the other way (+90), action camera
+    # with a timecode track at 29.97 fps, 25 fps PAL, .MOV with a subtitle track
+    cam2 = fx / "camera2"
+    if cam2.is_dir():
+        have = sorted(p.name for p in cam2.iterdir())
+        r, reel, cp = engine(cam2, "camera2", 60, "--profile", "16x9")
+        used = set((r or {}).get("selected_sources", []))
+        skipped = {x["name"]: x["reason"] for x in (r or {}).get("skipped_inputs", [])}
+        check("camera_cases_analysed_and_used", r and not skipped and len(used) >= len(have) - 1,
+              cp.stderr[-800:] if not r else (skipped, sorted(set(have) - used)))
+        for name in ("upside_down.mp4", "portrait_cw.mp4"):
+            one = work_root / f"one_{Path(name).stem}"
+            one.mkdir(exist_ok=True)
+            shutil.copy2(cam2 / name, one / name)
+            for prof, res in (("9x16", "social_hd"), ("16x9", "standard")):
+                r, reel, cp = engine(one, f"{Path(name).stem}_{prof}", 5, "--profile", prof, "--resolution", res)
+                rows = upright_rows(ff, reel) if r else "failed"
+                check(f"{Path(name).stem}_upright_{prof}_{res}", rows.startswith("R") and rows.endswith("B") and "B" not in rows[:4]
+                      and "R" not in rows[-4:], rows if r else cp.stderr[-500:])
+
+    # a vertical reel from a landscape clip whose subject stays at the right edge: the accepted saliency crop must
+    # follow it (a centre crop would show only the flat dark background)
+    subj = fx / "subject"
+    if subj.is_dir():
+        r, reel, cp = engine(subj, "subject", 5, "--profile", "9x16", "--resolution", "social_hd")
+        detail = None
+        if r:
+            raw = subprocess.run([ff, "-v", "error", "-ss", "2.0", "-i", str(reel), "-frames:v", "1", "-vf", "scale=108:192",
+                                  "-f", "rawvideo", "-pix_fmt", "gray", "-"], capture_output=True).stdout
+            if len(raw) == 108 * 192:
+                mean = sum(raw) / len(raw)
+                detail = (sum((v - mean) ** 2 for v in raw) / len(raw)) ** 0.5     # flat background ~0, the subject >> 0
+        check("vertical_crop_follows_the_subject", detail is not None and detail > 25, detail if r else cp.stderr[-500:])
 
     print(json.dumps({"passed": sum(ok for _, ok in checks), "total": len(checks)}))
     return 0 if all(ok for _, ok in checks) else 1

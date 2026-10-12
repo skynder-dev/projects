@@ -81,6 +81,32 @@ def main():
     listed = [Path(x).name for x, _ in ae.subfolders_with_videos(Path(_PRIV).parent)]
     check("Private folder is never offered as a video folder", Path(_PRIV).name not in listed, listed)
     (Path(_PRIV) / "secret.mp4").unlink()
+    # OneDrive cloud-only placeholders: skipped with a reason, never read (reading would download them)
+    cloud = work / "cloud"
+    cloud.mkdir(exist_ok=True)
+    cfiles = [cloud / "VID_1.mp4", cloud / "VID_2.mp4"]
+    for f in cfiles:
+        f.write_bytes(b"0" * 4096)
+    real_cloud = ae.cloud_only
+    if os.name == "nt":
+        import ctypes
+        for f in cfiles:
+            ctypes.windll.kernel32.SetFileAttributesW(str(f), 0x1000)     # FILE_ATTRIBUTE_OFFLINE, as a placeholder has
+    else:
+        ae.cloud_only = lambda p, st=None: Path(p).parent == cloud
+    try:
+        sc = ae.scan_folder(cloud)
+        check("cloud-only files are skipped with their reason, not read",
+              sc["usable"] == 0 and all(r["reason"] == ae.CLOUD_ONLY_REASON for r in sc["files"]) and not ae.local_inputs(cfiles),
+              [r["reason"] for r in sc["files"]])
+    finally:
+        ae.cloud_only = real_cloud
+        if os.name == "nt":
+            for f in cfiles:
+                ctypes.windll.kernel32.SetFileAttributesW(str(f), 0x80)
+    import types as _types
+    check("cloud-only attribute detected", ae.cloud_only("x", _types.SimpleNamespace(st_file_attributes=0x400000))
+          and not ae.cloud_only("x", _types.SimpleNamespace(st_file_attributes=0x20)))
     # a phone camera folder with more videos than one reel takes: grouped by shooting day (name first, else file date)
     cam = work / "camera"; cam.mkdir(parents=True, exist_ok=True)
     for i in range(40):
@@ -92,6 +118,8 @@ def main():
     check("videos_by_day groups a big folder, newest day first",
           [(d["day"], len(d["files"])) for d in days] == [("2026-07-15", 30), ("2026-07-14", 40), (ae.video_day(cam / "clip.mov", 1_600_000_000), 1)],
           [(d["day"], len(d["files"])) for d in days])
+    names14 = [f["name"] for f in days[1]["files"]]
+    check("a day's videos are listed newest first (tick the newest)", names14 == sorted(names14, reverse=True), names14[:3])
     check("big folder is offered as a choice, not refused", len(ae.list_videos(cam)) > ae.MAX_INPUTS and raises(ae.check_folder, str(cam)))
     # a nearly full data drive refuses a new build up front (not half-way)
     old_min = ae.MIN_FREE_BYTES
@@ -153,6 +181,20 @@ def main():
           and "x.status==='done'" in out and "href='/x'" in out)
     check("ru page: confirm texts in handlers; script-made texts via the in-page dictionary",
           "confirm('Отметить выбранное как Private навсегда?')" in out and "window.ME_I18N" in out and "Сначала выбери файлы" in out)
+    # a build left "running" by a crashed process is marked interrupted by the first page the new process serves
+    # (any page - Quit/Restart/switching builds would otherwise be refused for a job that no longer exists)
+    from archivist.db import db as _db, now_iso as _now
+    ae.ensure_schema()
+    with _db() as con:
+        pid_ = con.execute("INSERT INTO ae_projects(title,folder,created_at,updated_at) VALUES('t',?,?,?)", (str(work), _now(), _now())).lastrowid
+        jid_ = con.execute("INSERT INTO ae_jobs(project_id,request_key,settings_json,status,stage,created_at,started_at) "
+                           "VALUES(?,'k','{}','running','analyze',?,?)", (pid_, _now(), _now())).lastrowid
+        con.commit()
+    ae._SCHEMA_READY = False                     # as in a freshly started process
+    from archivist.web import create_app as _ca
+    with _ca().test_client() as _c:
+        _c.get("/api/ping", headers={"Host": "127.0.0.1:8765"})
+    check("crashed build is marked interrupted by the first request", ae.job(jid_)["status"] == "failed", ae.job(jid_)["status"])
     # the language chosen in a Setup run applies once (also over an older build's saved choice); a later switch in
     # the program is kept until the next Setup run
     from archivist import i18n as _lang

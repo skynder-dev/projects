@@ -290,6 +290,10 @@ def apply_release(rel,installed):
     if actual!=expected: raise RuntimeError('Update SHA-256 verification failed')
     DATA.mkdir(parents=True,exist_ok=True); stage=Path(tempfile.mkdtemp(prefix='archivist_update_',dir=str(DATA))); backup=DATA/'update_backups'/f"{installed}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"; backup.mkdir(parents=True,exist_ok=True)
     req=HOME/'requirements.txt'; old_req=req.read_bytes() if req.exists() else None
+    # what has actually been changed so far: a failure before the swap must leave the working app untouched
+    # (restoring from a half-written backup would replace a good install with a broken one)
+    backup_ok=False; swapped=False; req_changed=False
+    new=HOME/'app.__new__'; old=HOME/'app.__old__'
     try:
         zp=stage/'release.zip'; zp.write_bytes(raw); unpack=stage/'unpacked'; unpack.mkdir()
         with zipfile.ZipFile(zp) as z: safe_extract(z,unpack)
@@ -298,18 +302,23 @@ def apply_release(rel,installed):
         cur=HOME/'app'
         if cur.exists(): shutil.copytree(cur,backup/'app')
         if req.exists(): shutil.copy2(req,backup/'requirements.txt')
-        new=HOME/'app.__new__'; old=HOME/'app.__old__'; shutil.rmtree(new,ignore_errors=True); shutil.rmtree(old,ignore_errors=True); shutil.copytree(incoming,new)
+        backup_ok=True
+        shutil.rmtree(new,ignore_errors=True); shutil.rmtree(old,ignore_errors=True); shutil.copytree(incoming,new)
         if cur.exists(): cur.replace(old)
+        swapped=True
         new.replace(cur)
-        if inreq.exists(): shutil.copy2(inreq,req); install_requirements(old_req,req)
+        if inreq.exists(): req_changed=True; shutil.copy2(inreq,req); install_requirements(old_req,req)
         VERSION_PATH.write_text(str(rel['version']),encoding='utf-8'); shutil.rmtree(old,ignore_errors=True)
         write_status(status='updated',from_version=installed,to_version=rel['version'],notes=rel.get('notes')); prune_backups()
     except Exception:
         try:
             cur=HOME/'app'
-            if (backup/'app').exists(): shutil.rmtree(cur,ignore_errors=True); shutil.copytree(backup/'app',cur)
-            if (backup/'requirements.txt').exists(): shutil.copy2(backup/'requirements.txt',req)
-            VERSION_PATH.write_text(installed,encoding='utf-8')
+            if swapped:
+                if old.exists(): shutil.rmtree(cur,ignore_errors=True); old.replace(cur)
+                elif backup_ok and (backup/'app').exists(): shutil.rmtree(cur,ignore_errors=True); shutil.copytree(backup/'app',cur)
+                VERSION_PATH.write_text(installed,encoding='utf-8')
+            if req_changed and backup_ok and (backup/'requirements.txt').exists(): shutil.copy2(backup/'requirements.txt',req)
+            shutil.rmtree(new,ignore_errors=True)
         except Exception: pass
         raise
     finally: shutil.rmtree(stage,ignore_errors=True)
@@ -374,7 +383,11 @@ def main():
     no_browser='--no-browser' in args or os.environ.get('MEDIAENGINE_NO_BROWSER')=='1'   # env: automated checks
     install_version=next((x.split('=',1)[1] for x in raw_args if x.startswith('--install-version=')),None)
     if PORT is None:
-        write_status(status='start_failed',version=current_version(),error='port.txt is present but not a valid port number'); return 1
+        write_status(status='start_failed',version=current_version(),error='port.txt is present but not a valid port number')
+        if not no_browser:   # a double click must not just do nothing
+            message_box('MediaEngine не может запуститься: файл port.txt в папке программы повреждён. Установи эту версию заново.' if ui_ru()
+                        else 'MediaEngine cannot start: the file port.txt in the program folder is damaged. Install this version again.')
+        return 1
     if not (force or restart or install_version) and not single_instance():
         # another launcher of this install is already starting it (double click): just show the window
         if wait_server_up(START_WAIT_S) and not no_browser: open_user_interface(force_browser=force_browser)

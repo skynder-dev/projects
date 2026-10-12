@@ -107,8 +107,10 @@ def model_search_roots() -> list[Path]:
     roots += [HOME.parent / "Archivist" / "sidecars" / "auto_edit" / "models",
               INSTALL.parent / "Archivist" / "sidecars" / "auto_edit" / "models"]
     if os.name == "nt":  # a stable install at the root of any local drive, e.g. D:\Archivist
-        for letter in "CDEFGH":
-            roots.append(Path(f"{letter}:/") / "Archivist" / "sidecars" / "auto_edit" / "models")
+        from .platform_adapter import _is_fixed_drive
+        for letter in "CDEFGH":   # fixed disks only: a mapped network drive or an empty card reader would stall every page
+            if _is_fixed_drive(f"{letter}:\\"):
+                roots.append(Path(f"{letter}:/") / "Archivist" / "sidecars" / "auto_edit" / "models")
     return roots
 
 
@@ -282,7 +284,8 @@ def videos_by_day(folder) -> list[dict]:
         except OSError:
             continue
         days.setdefault(video_day(p, st.st_mtime), []).append({"path": str(p), "name": p.name, "bytes": st.st_size})
-    return [{"day": d, "files": days[d]} for d in sorted(days, reverse=True)]
+    # newest first, also within a day (VID_20260714_183005 before VID_20260714_120001), so "tick the newest" is right
+    return [{"day": d, "files": sorted(days[d], key=lambda f: f["name"].lower(), reverse=True)} for d in sorted(days, reverse=True)]
 
 
 _SYSTEM_DIRS = {"$recycle.bin", "system volume information", "windows", "program files", "program files (x86)", "programdata",
@@ -358,6 +361,26 @@ def _common_parent(paths) -> Path:
         return Path(paths[0]).parent
 
 
+# OneDrive "Files On-Demand" (and other cloud folders): a placeholder that is not on this PC. Reading even its
+# first bytes makes Windows download the whole file - a folder of cloud-only videos would quietly download
+# everything. Such files are skipped with a clear reason; the attribute is read from the folder listing only.
+_CLOUD_ONLY_ATTRS = 0x1000 | 0x40000 | 0x400000      # OFFLINE | RECALL_ON_OPEN | RECALL_ON_DATA_ACCESS
+CLOUD_ONLY_REASON = "only in the cloud (OneDrive), not on this PC: choose 'Always keep on this device' first"
+
+
+def cloud_only(p, st=None) -> bool:
+    try:
+        st = st if st is not None else os.stat(p)
+    except OSError:
+        return False
+    return bool(getattr(st, "st_file_attributes", 0) & _CLOUD_ONLY_ATTRS)
+
+
+def local_inputs(paths) -> list[Path]:
+    """The videos that are really on this PC (cloud-only placeholders left out)."""
+    return [Path(x) for x in paths if not cloud_only(x)]
+
+
 def _scan_paths(paths, folder_label: str, files) -> dict:
     rows = []
     total = 0.0
@@ -365,7 +388,12 @@ def _scan_paths(paths, folder_label: str, files) -> dict:
     for p in paths:
         row = {"name": p.name, "bytes": 0, "ok": False, "reason": "", "duration_s": 0.0, "width": 0, "height": 0}
         try:
-            row["bytes"] = p.stat().st_size
+            st = p.stat()
+            if cloud_only(p, st):
+                row["bytes"], row["reason"] = st.st_size, CLOUD_ONLY_REASON
+                rows.append(row)
+                continue
+            row["bytes"] = st.st_size
             qk = _quick_key(p)
         except OSError:
             row["reason"] = "cannot be read (locked or no access)"
@@ -663,7 +691,8 @@ def _inputs_fingerprint(p: dict) -> list:
     for p in project_inputs(p):
         try:
             st = p.stat()
-            out.append([p.name, st.st_size, st.st_mtime_ns])
+            # a cloud-only file is not used; once it is downloaded the same reel must be built again with it
+            out.append([p.name, st.st_size, st.st_mtime_ns] + (["cloud-only"] if cloud_only(p, st) else []))
         except OSError:
             out.append([p.name, -1, -1])
     return out
@@ -739,6 +768,7 @@ def start_job(pid: int, raw_settings: dict, *, retry=False) -> int:
 
 
 def job(jid: int) -> dict | None:
+    ensure_schema()
     with db() as con:
         r = con.execute("SELECT * FROM ae_jobs WHERE id=?", (int(jid),)).fetchone()
     if not r:
@@ -958,7 +988,13 @@ def _run_job(jid: int) -> None:
     input_list = None
     if p.get("files"):
         input_list = jobs_dir / f"j{jid}.inputs.txt"
-        input_list.write_text("\n".join(p["files"]) + "\n", encoding="utf-8")
+        input_list.write_text("\n".join(str(x) for x in local_inputs(p["files"])) + "\n", encoding="utf-8")
+    else:
+        vids = list_videos(Path(p["folder"]))
+        local = local_inputs(vids)
+        if len(local) != len(vids):   # cloud-only placeholders in the folder: give the engine only the local videos
+            input_list = jobs_dir / f"j{jid}.inputs.txt"
+            input_list.write_text("\n".join(str(x) for x in local) + "\n", encoding="utf-8")
     cmd = engine_command(Path(p["folder"]), out_dir, work_dir, progress_file, s, edits_file, skip_file, input_list)
     kw = process_kwargs(below_normal=True) if os.name == "nt" else {"start_new_session": True}
     with log_file.open("w", encoding="utf-8", errors="replace") as log, keep_awake():
@@ -1124,6 +1160,11 @@ def accept(pid: int, rid: int) -> None:
     if sha256_file(r["video_path"]) != r["video_sha256"]:
         raise ValueError("Revision file changed on disk; it cannot be accepted")
     with db() as con:
+        con.execute("BEGIN IMMEDIATE")
+        cur = con.execute("SELECT accepted_revision_id FROM ae_projects WHERE id=?", (int(pid),)).fetchone()
+        if cur and cur[0] is not None and int(cur[0]) == int(rid):
+            con.rollback()          # already the accepted one (a second click): nothing to record, Revert stays right
+            return
         con.execute("UPDATE ae_projects SET accepted_revision_id=?,updated_at=? WHERE id=?", (int(rid), now_iso(), int(pid)))
         con.execute("INSERT INTO ae_accept_log(project_id,revision_id,action,at) VALUES(?,?,?,?)", (int(pid), int(rid), "accept", now_iso()))
         con.commit()
@@ -1134,6 +1175,8 @@ def accepted_history(log: list[dict]) -> list[int]:
     stack: list[int] = []
     for r in log:
         if r["action"] == "accept" and r["revision_id"] is not None:
+            if stack and stack[-1] == int(r["revision_id"]):
+                continue            # the same one accepted twice in a row (double click in older builds)
             stack.append(int(r["revision_id"]))
         elif r["action"] == "revert" and stack:
             stack.pop()
@@ -1299,13 +1342,31 @@ def quick_selftest(timeout_s: int = 900, mode: str = "technical") -> dict:
     s = {"length": 5, "format": "vertical", "sound": "auto", "mode": "semantic" if mode == "semantic" else "technical"}
     cmd = engine_command(src, root / "out", root / "work", root / "progress.json", s)
     t0 = _t.time()
+    # same handling as a build: on Windows a job object, so a time-out stops the engine AND every ffmpeg it started
+    kw = process_kwargs() if os.name == "nt" else {"start_new_session": True}
+    proc = subprocess.Popen(cmd, env=_engine_env(), cwd=str(ENGINE_DIR), stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace", **kw)
+    _attach_job_object(proc)
     try:
-        cp = subprocess.run(cmd, env=_engine_env(), cwd=str(ENGINE_DIR), stdin=subprocess.DEVNULL,
-                            **process_kwargs({"capture_output": True, "text": True, "timeout": timeout_s, "encoding": "utf-8", "errors": "replace"}))
-        ok = cp.returncode == 0 and (root / "out" / "MediaEngine Reel.mp4").is_file()
-        err = "" if ok else (cp.stdout + cp.stderr)[-600:]
+        out, _ = proc.communicate(timeout=timeout_s)
+        ok = proc.returncode == 0 and (root / "out" / "MediaEngine Reel.mp4").is_file()
+        err = "" if ok else (out or "")[-600:]
     except subprocess.TimeoutExpired:
+        _kill_tree(proc)
+        try:
+            proc.communicate(timeout=30)
+        except Exception:
+            pass
         ok, err = False, f"no result within {timeout_s} s"
+    finally:
+        h = _JOB_HANDLES.pop(proc.pid, None)
+        if h is not None:
+            try:
+                import ctypes
+                from ctypes import wintypes
+                ctypes.windll.kernel32.CloseHandle(wintypes.HANDLE(h))
+            except Exception:
+                pass
     res = {"ok": ok, "seconds": round(_t.time() - t0, 1), "error": err}
     if ok:
         r = json.loads((root / "out" / "MediaEngine Result.json").read_text(encoding="utf-8"))
@@ -1487,7 +1548,19 @@ def check_export_dir(p: dict, dest) -> Path:
     return rd
 
 
+_EXPORT_LOCKS: dict[int, threading.Lock] = {}
+_EXPORT_LOCKS_GUARD = threading.Lock()
+
+
 def export_accepted(pid: int, dest_dir: Path | None = None, remember: bool = False) -> dict:
+    """One export of a project at a time: a double click waits for the first copy and then finds it (no "(2)" copy)."""
+    with _EXPORT_LOCKS_GUARD:
+        lock = _EXPORT_LOCKS.setdefault(int(pid), threading.Lock())
+    with lock:
+        return _export_accepted(pid, dest_dir, remember)
+
+
+def _export_accepted(pid: int, dest_dir: Path | None = None, remember: bool = False) -> dict:
     p = project(pid)
     if not p:
         raise ValueError("Project not found")
@@ -1504,7 +1577,13 @@ def export_accepted(pid: int, dest_dir: Path | None = None, remember: bool = Fal
     src = Path(r["video_path"])
     if sha256_file(src) != r["video_sha256"]:
         raise ValueError("Accepted revision changed on disk; export refused")
-    dest_dir = Path(dest_dir) if dest_dir else default_export_dir()
+    if not dest_dir:
+        dest_dir = default_export_dir()
+        try:                       # the remembered folder may be this reel's own source folder: then the usual one
+            dest_dir = check_export_dir(p, dest_dir) if dest_dir.is_dir() else dest_dir
+        except ValueError:
+            dest_dir = check_export_dir(p, EXPORTS) if Path(EXPORTS).is_dir() else Path(EXPORTS)
+    dest_dir = Path(dest_dir)
     dest_dir.mkdir(parents=True, exist_ok=True)
     fmt = FORMATS.get(r["settings"]["format"], {}).get("short", "Reel")
     base = safe_filename(f"{p['title']} - {fmt} - R{int(r['number']):03d}")

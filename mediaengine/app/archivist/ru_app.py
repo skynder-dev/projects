@@ -462,6 +462,7 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"Job #(\d+) accepted\.?", r"Задача №\1 принята"), (r"Could not start source recheck — (.*)", r"Не удалось запустить проверку источников — \1"),
     (r"HTTP (\d+)", r"HTTP \1"),
 
+    (r"More than (\d+) videos chosen\. One reel can use up to (\d+)\.", r"Выбрано больше \1 видео. В один ролик можно взять до \2."),
     (r"(\d+(?:\.\d+)?) (B|KB|MB|GB|TB)", r"\1 ⟦unit:\2⟧"),   # a size on its own ("155.4 GB")
 ]
 
@@ -491,7 +492,12 @@ APP_COUNT_SUBS: list[tuple[str, str]] = [
      r"\1 ⟪\1|пересекающийся момент одного видео убран|пересекающихся момента одного видео убраны|пересекающихся моментов одного видео убраны⟫, чтобы ничего не повторялось"),
     (r"\b(\d+) skipped\b", r"\1 ⟪\1|пропущено|пропущено|пропущено⟫"),
     (r"\b(\d+) videos in this folder\.", r"В этой папке \1 видео."),
-    (r"\b(\d+(?:\.\d+)?) (B|KB|MB|GB|TB)\b", r"\1 ⟦unit:\2⟧"),
     (r"\bRequested (\d+) s, got ([\d.]+) s:", r"Выбрано \1 с, получилось \2 с:"),
 ]
 
+
+# Auto Edit pages: sizes inside longer texts ("… · 16.8 MB"), after the phrase replacements so a phrase that
+# contains a size ("at least 1 GB") is still matched as a whole first
+APP_UNIT_SUBS: list[tuple[str, str]] = [
+    (r"\b(\d+(?:\.\d+)?) (B|KB|MB|GB|TB)\b", r"\1 ⟦unit:\2⟧"),
+]

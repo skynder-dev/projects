@@ -43,6 +43,15 @@ def _when(iso) -> str:
     return t[:16].replace("T", " ") if len(t) >= 16 and t[10:11] == "T" else t
 
 
+def _skip_reason_html(r: str, e) -> str:
+    """Why a file is skipped (already in words); the other file's name in "duplicate of …" stays exactly as it is
+    in both languages."""
+    r = str(r or "")
+    if r.startswith("duplicate of "):
+        return "duplicate of <span translate='no'>" + e(r[len("duplicate of "):]) + "</span>"
+    return e(r)
+
+
 def _rel(path: str, base: str) -> str:
     """A folder inside the chosen one, shown from there (DCIM\\100GOPRO)."""
     try:
@@ -107,6 +116,16 @@ def _big_folder_page(folder: Path, days: list, e, human_bytes) -> tuple[str, str
 def register(app, layout, e, human_bytes):
     """Attach Auto Edit routes to the existing app (called from web.create_app)."""
 
+    @app.before_request
+    def _ae_recover():
+        # first request served by this process: a build left "running" by a crashed process is marked interrupted
+        # (Retry-able), so Quit / Restart / switching builds are not refused for a job that no longer exists.
+        # Only the process that actually serves pages does this - a second copy that cannot take the port never does.
+        try:
+            ae.ensure_schema()
+        except Exception:
+            pass
+
     def page(title, body, script=""):
         return layout(title, PAGE_CSS + body, script)      # translated (if Russian) for every page in i18n.install
 
@@ -132,15 +151,16 @@ def register(app, layout, e, human_bytes):
             n_src = len(ae.project_inputs(p)) if p["source_present"] else 0
             acts = f"<a class='btn btn2' href='/auto/p/{p['id']}'>{'Review' if p['revisions'] else 'Open'}</a>"
             if p["accepted_revision_id"]:
-                acts += f"<form method='post' action='/auto/p/{p['id']}/export'><button class='btn2'>Export</button></form>"
+                acts += f"<form method='post' action='/auto/p/{p['id']}/export' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(b=>b.disabled=true),0)\"><button class='btn2'>Export</button></form>"
             if exp:
-                acts += (f"<form method='post' action='/auto/export/{exp['id']}/open'><button class='btn2'>Open video</button></form>"
-                         f"<form method='post' action='/auto/export/{exp['id']}/reveal'><button class='btn2'>Show in folder</button></form>")
+                acts += (f"<form method='post' action='/auto/export/{exp['id']}/open'><input type='hidden' name='back' value='/auto'><button class='btn2'>Open video</button></form>"
+                         f"<form method='post' action='/auto/export/{exp['id']}/reveal'><input type='hidden' name='back' value='/auto'><button class='btn2'>Show in folder</button></form>")
             acts += f"<form method='post' action='/auto/p/{p['id']}/archive'><button class='btn2'>{'Unarchive' if p['archived'] else 'Archive'}</button></form>"
+            last_txt = ("Last export: <span translate='no'>" + e(Path(exp["path"]).name) + "</span>") if exp else "Not exported yet"
             cards += (f"<div class='card'><a href='/auto/p/{p['id']}' style='display:block'>"
                       f"<div class='row space'><b style='font-size:17px' translate='no'>{e(p['title'])}</b><span class='ae-state {p['state']}'>{p['state']}</span></div>"
                       f"<div class='muted' style='margin-top:6px'>{' · '.join(x for x in (str(n_src) + (' chosen video(s)' if p.get('files') else ' video file(s) in folder'), e((preset + ' ' + length).strip()), str(len(p['revisions'])) + ' revision(s)') if x)}</div>"
-                      f"<div class='muted'>{('Last export: ' + e(Path(exp['path']).name)) if exp else 'Not exported yet'}</div></a>"
+                      f"<div class='muted'>{last_txt}</div></a>"
                       + ("" if p["source_present"] else "<div class='errbox' style='margin-top:6px'>Source videos are not available (drive disconnected?)</div>")
                       + f"<div class='row' style='margin-top:10px;flex-wrap:wrap;gap:6px'>{acts}</div></div>")
         if not cards:
@@ -189,11 +209,14 @@ document.getElementById('pickBtn').onclick=async()=>{const m=document.getElement
 document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getElementById('pickMsg');m.textContent='A Windows window is open — it may be behind this window. Ctrl+click to choose several videos.';
  try{const r=await fetch('/api/auto/pick-files',{method:'POST'});const x=await r.json();
  if(x.files&&x.files.length){m.textContent='Checking the videos…';location.href='/auto/new?'+x.files.map(f=>'file='+encodeURIComponent(f)).join('&')}
+ else if(x.folder){m.textContent=x.error||'';location.href='/auto/new?folder='+encodeURIComponent(x.folder)}
  else m.textContent=x.error||'No videos chosen.'}catch(e){m.textContent='Window failed: '+e}};"""
         return page("Auto Edit", body, script)
 
     @app.route("/auto/check", methods=["GET", "POST"])
     def ae_check():
+        if request.headers.get("Sec-Fetch-Site", "same-origin") not in ("same-origin", "none"):
+            return err_page("This page can only be opened from MediaEngine itself.")   # it starts the engine and FFmpeg
         rows = ae.system_check()
         def looks_like_path(t):   # paths, versions, system names: shown exactly as they are
             return ":\\" in t or t.startswith("/") or "version" in t or "|" in t or t.startswith(("Windows-", "Linux", "Darwin", "3.1"))
@@ -232,7 +255,7 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
                        f"<span id='rmq' hidden>Remove this version? Your projects and exports are not affected.</span>"
                        f"<table class='ae-files' style='margin-top:8px'>{brows}</table></div>") if builds else ""
         if done:
-            builds_html = f"<div class='card ae-done' style='margin-top:14px'>Removed {e(done)}.</div>" + builds_html
+            builds_html = f"<div class='card ae-done' style='margin-top:14px'>Removed <span translate='no'>{e(done)}</span>.</div>" + builds_html
         body = (f"<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Check this PC</h1>"
                 f"<div class='lead'>What MediaEngine needs, and a 5-second test reel made from generated clips (your videos are not used).</div></div>"
                 f"<div class='card'><table class='ae-files'>{table}</table></div>"
@@ -271,6 +294,11 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
     @app.post("/api/auto/pick-files")
     def ae_pick_files():
         files = ae.pick_files(initial=ae.last_source_folder())
+        if files and len(files) > ae.MAX_INPUTS:
+            # more than one reel takes: open their folder instead (its day / tick list), not a huge address
+            parents = {str(Path(x).parent) for x in files}
+            return jsonify({"files": [], "folder": parents.pop() if len(parents) == 1 else None,
+                            "error": f"More than {ae.MAX_INPUTS} videos chosen. One reel can use up to {ae.MAX_INPUTS}."})
         if files:
             return jsonify({"files": files})
         return jsonify({"files": [], "error": "No videos chosen."})
@@ -316,10 +344,14 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
                                         f"<div class='lead ae-path'>{e(scan['folder'])}</div></div>"
                                         f"<div class='card'><b>No videos directly in this folder.</b> These folders inside it have videos — "
                                         f"open one (or use Choose videos… to pick from several):<ul style='margin:8px 0 0'>{links}</ul></div>")
+            if scan["files"] and all(r["reason"] == ae.CLOUD_ONLY_REASON for r in scan["files"]):
+                return err_page("These videos are only in OneDrive, not on this PC. In Explorer right-click the folder → "
+                                "'Always keep on this device', wait until the download is done, then choose it again.")
             return err_page("No readable videos " + ("among the chosen files." if chosen else "in this folder."))
         ms = ae.model_status()
         def file_row(r):
-            status = "<span class='badge'>ok</span>" if r["ok"] else "<span class='badge error'>skipped: " + e(r["reason"]) + "</span>"
+            status = ("<span class='badge'>usable</span>" if r["ok"] else
+                      "<span class='badge error'>skipped: " + _skip_reason_html(r["reason"], e) + "</span>")
             dims = (str(r["width"]) + "×" + str(r["height"])) if r["ok"] else ""
             dur = _fmt_s(r["duration_s"]) if r["ok"] else ""
             return f"<tr><td translate='no'>{e(r['name'])}</td><td>{human_bytes(r['bytes'])}</td><td>{dur}</td><td>{dims}</td><td>{status}</td></tr>"
@@ -510,7 +542,8 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
             if base and int(base["project_id"]) != int(pid):
                 base = None
             bs = base["settings"] if base else {}
-            mode = bs.get("mode") or f.get("mode") or ("semantic" if ae.model_status()["ready"] else None)
+            # the form's explicit choice first: an AI-built reel can get a Technical-only variant when the model is gone
+            mode = f.get("mode") or bs.get("mode") or ("semantic" if ae.model_status()["ready"] else None)
             if not mode:
                 raise ValueError("Without the AI model, choose Technical only explicitly on the new-reel screen.")
             settings = {"length": f.get("length") or bs.get("length"), "format": f.get("format") or bs.get("format"),
@@ -603,7 +636,8 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
             return err_page("Export not found")
         if not ae.open_path(Path(x["path"]), reveal=(action == "reveal")):
             return err_page("The exported file is not available any more: " + x["path"], f"/auto/p/{x['project_id']}")
-        return redirect(f"/auto/p/{x['project_id']}")
+        back = request.form.get("back") or ""
+        return redirect(back if back in ("/auto", "/auto?archived=1") else f"/auto/p/{x['project_id']}")
 
     @app.post("/auto/p/<int:pid>/free-cache")
     def ae_free_cache(pid):
@@ -717,7 +751,7 @@ def _variant_form(pid, rev, e, first=False, model_ready=True):
     sounds = "".join(f"<label><input type='radio' name='sound' value='{k}' {'checked' if s['sound'] == k else ''}> {e(k.title())}</label>" for k in ae.SOUNDS)
     base = f"<input type='hidden' name='base_revision_id' value='{rev['id']}'>" if rev else ""
     mode = ""
-    if not rev and not model_ready:
+    if not model_ready and (not rev or rev["settings"].get("mode") == "semantic"):
         mode = ("<label class='muted' style='display:flex;gap:8px;margin:8px 0'><input type='checkbox' name='mode' value='technical' required> "
                 "AI model not available — build with Technical only (sharpness, motion, exposure)</label>")
     note = "" if first else "The current revision stays as it is. It keeps its removed moments and your edits; changing only format or sound reuses the analysis."
@@ -750,7 +784,7 @@ def _review_html(p, rev, e):
     strip = "".join(
         f"<button data-seek='{s['reel_in_s']}' data-seg data-in='{s['reel_in_s']}' data-out='{s['reel_out_s']}' "
         f"style=\"flex:{max(0.2, s['reel_out_s'] - s['reel_in_s']):.3f};background-image:url('/auto/rev/{rev['id']}/thumb/{s['position']}.jpg')\" "
-        f"title='{e(s['source_name'])} {_fmt_s(s['source_in_s'])}–{_fmt_s(s['source_out_s'])}'>{s['position']}</button>"
+        f"title='{e(s['source_name'])} {_fmt_s(s['source_in_s'])}–{_fmt_s(s['source_out_s'])}' translate='no'>{s['position']}</button>"
         for s in segs)
     in_reel = {s["event_id"] for s in segs}
     pool = [c for c in (res.get("candidate_pool") or []) if c["event_id"] not in in_reel][:40]
@@ -778,39 +812,37 @@ def _review_html(p, rev, e):
     short_html = (f"<div class='callout card' style='margin-top:8px'>Requested {target:.0f} s, got {total:.1f} s: "
                   f"there were not enough different moments in this footage for a longer reel.</div>") if target and total < target - 1.0 else ""
     skipped = res.get("skipped_inputs") or []
-    def skip_reason(r):
-        r = ae.friendly_skip(r)
-        if r.startswith("duplicate of "):        # the other file's name stays as it is in both languages
-            return "duplicate of <span translate='no'>" + e(r[len("duplicate of "):]) + "</span>"
-        return e(r)
-    skipped_html = ("<div class='muted' style='margin-top:6px'>Skipped: " + ", ".join(f"<span translate='no'>{e(x['name'])}</span> ({skip_reason(x['reason'])})" for x in skipped) + "</div>") if skipped else ""
+    skipped_html = ("<div class='muted' style='margin-top:6px'>Skipped: " + ", ".join(f"<span translate='no'>{e(x['name'])}</span> ({_skip_reason_html(ae.friendly_skip(x['reason']), e)})" for x in skipped) + "</div>") if skipped else ""
     mode = "AI moments (FAST_LOCAL)" if res.get("selection_mode", "").startswith("FAST_LOCAL") else "Technical only (no AI)"
-    notes = []
+    notes = []          # html pieces; file names stay exactly as they are in both languages
+
+    def names(xs):
+        return ", ".join(f"<span translate='no'>{e(str(x).strip())}</span>" for x in xs if str(x).strip())
     for w in res.get("warnings") or []:
         if w.startswith("OVERLAPPING_MOMENTS_DROPPED"):
             notes.append(f"{w.split(':')[-1]} overlapping moment(s) of the same video were left out so nothing repeats")
         elif w.startswith("SELECTION_SEARCH_TOP_"):
             notes.append(f"for this length the best {w.rsplit('_', 1)[-1]} moments were compared")
         elif w.startswith("PREVIEW_QUALITY_USED:"):
-            notes.append("lower quality (analysis preview) used for: " + w.split(":", 1)[1].replace(",", ", ")
-                         + " - the original could not be re-cut")
+            notes.append(e("lower quality (analysis preview) used for: ") + names(w.split(":", 1)[1].split(","))
+                         + e(" - the original could not be re-cut"))
         elif w == "HDR_NOT_CONVERTED":
             notes.append("HDR video could not be converted on this PC: colours may look grey")
     if res.get("hdr_sources"):
-        notes.append("HDR video converted to normal colours: " + ", ".join(res["hdr_sources"]))
+        notes.append(e("HDR video converted to normal colours: ") + names(res["hdr_sources"]))
     if res.get("deinterlaced_sources"):
-        notes.append("camcorder video de-interlaced: " + ", ".join(res["deinterlaced_sources"]))
+        notes.append(e("camcorder video de-interlaced: ") + names(res["deinterlaced_sources"]))
     if res.get("widened_sources"):
-        notes.append("wide picture stored in narrow pixels shown in its real shape: " + ", ".join(res["widened_sources"]))
-    skipped_html_extra = ("<div class='muted' style='margin-top:4px'>" + e(" · ".join(notes)) + "</div>") if notes else ""
+        notes.append(e("wide picture stored in narrow pixels shown in its real shape: ") + names(res["widened_sources"]))
+    skipped_html_extra = ("<div class='muted' style='margin-top:4px'>" + " · ".join(notes) + "</div>") if notes else ""
     exp_html = ""
     if is_acc:
         last = next((x for x in p["exports"] if x["revision_id"] == rev["id"]), None)
-        exp_html = (f"<form method='post' action='/auto/p/{p['id']}/export' id='exportForm' style='margin-top:10px'>"
+        exp_html = (f"<form method='post' action='/auto/p/{p['id']}/export' id='exportForm' style='margin-top:10px' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(b=>b.disabled=true),0)\">"
                     f"<input type='hidden' name='dest' id='exportDest' value=''>"
                     f"<div class='row' style='flex-wrap:wrap'><button class='ae-big'>Export MP4</button>"
                     f"<button type='button' class='btn2' id='exportToBtn'>Export to another folder…</button></div>"
-                    f"<div class='muted' style='margin-top:4px'>Saves to {e(str(ae.default_export_dir()))}</div>"
+                    f"<div class='muted' style='margin-top:4px'>Saves to <span class='ae-path' translate='no'>{e(str(ae.default_export_dir()))}</span></div>"
                     f"<div class='muted' id='exportMsg'></div></form>")
         if last:
             exp_html += (f"<div class='card' style='margin-top:10px'><b>Exported</b><div class='ae-path'>{e(last['path'])}</div>"
@@ -818,7 +850,7 @@ def _review_html(p, rev, e):
                          f"<form method='post' action='/auto/export/{last['id']}/reveal'><button class='btn2'>Show in folder</button></form>"
                          f"<button type='button' class='btn2' id='copyPath' data-path='{e(last['path'])}'>Copy path</button></div></div>")
     actions = (f"<span class='badge ready'>Accepted</span><form method='post' action='/auto/p/{p['id']}/revert'><button class='btn2'>Revert</button></form>" if is_acc else
-               f"<form method='post' action='/auto/p/{p['id']}/accept'><input type='hidden' name='revision_id' value='{rev['id']}'><button class='ae-big'>Accept this version</button></form>")
+               f"<form method='post' action='/auto/p/{p['id']}/accept' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(b=>b.disabled=true),0)\"><input type='hidden' name='revision_id' value='{rev['id']}'><button class='ae-big'>Accept this version</button></form>")
     excl_hidden = "".join(f"<input type='hidden' name='exclude' value='{e(x)}'>" for x in rev["settings"].get("exclude", []))
     others = [r for r in p["revisions"] if r["id"] != rev["id"]]
     compare_html = ""
@@ -841,7 +873,7 @@ def _review_html(p, rev, e):
 <div class='muted' style='margin-top:8px'>Times are in the source file. Every change makes a new version; this one stays as it is.</div>
 <div class='row' style='margin-top:10px;flex-wrap:wrap'><button>Apply my edits</button>
 <button class='btn2' formaction='/auto/p/{p['id']}/variant' name='rechoose' value='1'>Let MediaEngine choose again without removed moments</button></div></form></div>
-{_variant_form(p['id'], rev, e)}"""
+{_variant_form(p['id'], rev, e, model_ready=ae.model_status()['ready'])}"""
 
 
 def _reviews_html(p, e):

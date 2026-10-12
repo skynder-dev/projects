@@ -191,6 +191,13 @@ def main():
               and ae.default_export_dir().resolve() == mine.resolve(), [x.name for x in got_mine])
         r = c.post(f"/auto/p/{pid}/export", data={"dest": str(folder)}, headers=H)
         check("export_into_source_folder_refused", r.status_code == 400 and not [x for x in folder.iterdir() if x.name not in before], r.status_code)
+        # the remembered export folder is this reel's own source folder: plain "Export MP4" falls back to Exports
+        from archivist.config import load_config, save_config
+        cfg_ = load_config(); cfg_.setdefault("auto_edit", {})["export_dir"] = str(folder); save_config(cfg_)
+        r = c.post(f"/auto/p/{pid}/export", headers=H)
+        check("default_export_never_into_source_folder", r.status_code == 302 and not [x for x in folder.iterdir() if x.name not in before],
+              [x.name for x in folder.iterdir() if x.name not in before])
+        cfg_ = load_config(); cfg_["auto_edit"]["export_dir"] = str(mine); save_config(cfg_)
         r = c.get(f"/auto/rev/{rev['id']}/thumb/1.jpg", headers=H)
         check("filmstrip_frame", r.status_code == 200 and r.mimetype == "image/jpeg" and len(r.data) > 500, (r.status_code, len(r.data)))
 
@@ -246,7 +253,8 @@ def main():
               and excl not in [s["event_id"] for s in rev3b["result"].get("segments", [])] and rev3b["settings"]["mode"] == rev3["settings"]["mode"],
               (j3b.get("status"), rev3b["settings"]))
 
-        # accept the override, then revert back to R001
+        # accept the override (double click: twice), then revert back to R001
+        c.post(f"/auto/p/{pid}/accept", data={"revision_id": rev3["id"]}, headers=H)
         c.post(f"/auto/p/{pid}/accept", data={"revision_id": rev3["id"]}, headers=H)
         c.post(f"/auto/p/{pid}/revert", headers=H)
         check("revert_restores_previous_accept", ae.project(pid)["accepted_revision_id"] == rev["id"], ae.project(pid)["accepted_revision_id"])

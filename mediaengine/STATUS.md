@@ -29,6 +29,16 @@ What a user can do (code: `app/archivist/auto_edit.py`, `auto_edit_web.py`, engi
   Settings; each Setup run applies the language chosen in it once (in-app switch kept until the next Setup), else
   the Windows language (`i18n.py`, `ru_app.py`, `auto_edit_ru.py`; whole-phrase translation so file names/titles
   are never changed; CI coverage check; the engine's progress lines and sizes (МБ/ГБ) are Russian too).
+- **OneDrive cloud-only videos** ("Files On-Demand" placeholders) are recognised from the folder listing and skipped
+  with a clear reason instead of being read (reading would make Windows download them); a folder that is only in
+  the cloud says how to keep it on the PC. Once downloaded, the same reel is built again with them.
+- Code review fixes (2026-10-12): a build left "running" by a crashed app no longer blocks Quit/Restart/switching
+  (the first request of the new process marks it interrupted); plain "Export MP4" never writes into the reel's own
+  source folder (falls back to Exports); double-clicking Accept / Export no longer breaks Revert or makes a "(2)"
+  copy; Technical-only variants of an AI-built reel when the model is gone; choosing more than 64 videos opens their
+  folder's day list; "tick the newest" ticks the newest of a day; the self-test's time-out stops its FFmpeg too;
+  the AI-model search no longer touches network/card-reader drives; updater rollback never replaces a working
+  install with a half-written backup; file names, paths and source labels stay untranslated in Russian.
 - **Folder window**: the Explorer-style one (address bar, Quick access, paste a path), opening next to the last
   reel's videos; the older tree dialog remains as fallback. Driven by window messages in the Windows unit checks.
 - **Check this PC** on Home, in Settings and on Auto Edit (Auto Edit suggests it until a test reel was built here).

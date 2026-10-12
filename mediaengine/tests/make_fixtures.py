@@ -62,6 +62,8 @@ def main(out: Path) -> None:
     make_formats(ff, out / "formats")
     make_older(ff, out / "older")
     make_levels(ff, out / "levels")
+    make_camera2(ff, out / "camera2")
+    make_subject(ff, out / "subject")
     print("fixtures ready:", sorted(p.name for p in seven.iterdir()), sorted(p.name for p in two.iterdir()))
 
 
@@ -239,3 +241,65 @@ def make_levels(ff: str, d: Path) -> None:
 
 if __name__ == "__main__":
     main(Path(sys.argv[1]))
+
+
+def make_camera2(ff: str, d: Path) -> None:
+    """More phone/camera cases: a phone held upside down (stored turned 180 degrees with a rotation tag), portrait
+    turned the other way (tag +90), an action-camera file with a timecode track at 29.97 fps, a 25 fps (PAL) clip and
+    a .MOV with a subtitle track. Every clip, shown upright, has a red band at the TOP and a blue band at the BOTTOM."""
+    d.mkdir(parents=True, exist_ok=True)
+    tmp = d.parent / "_camera2_tmp"
+    tmp.mkdir(parents=True, exist_ok=True)
+
+    def run(*args):
+        subprocess.run([ff, "-v", "error", "-y", *args], check=True)
+
+    def bands(w, h):
+        b = max(40, h // 5)
+        return f"drawbox=x=0:y=0:w={w}:h={b}:color=red:t=fill,drawbox=x=0:y={h - b}:w={w}:h={b}:color=blue:t=fill"
+
+    upside = d / "upside_down.mp4"
+    if not upside.exists():
+        stored = tmp / "upside_stored.mp4"
+        run("-f", "lavfi", "-i", "testsrc2=size=1280x720:rate=30", "-f", "lavfi", "-i", "sine=frequency=380:sample_rate=48000",
+            "-t", "10", "-vf", "hue=h=t*25," + bands(1280, 720) + ",hflip,vflip", "-c:v", "libx264", "-preset", "ultrafast",
+            "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest", str(stored))
+        run("-display_rotation", "180", "-i", str(stored), "-c", "copy", str(upside))
+    port = d / "portrait_cw.mp4"
+    if not port.exists():
+        stored = tmp / "portrait_stored.mp4"
+        run("-f", "lavfi", "-i", "testsrc2=size=720x1280:rate=30", "-f", "lavfi", "-i", "sine=frequency=610:sample_rate=48000",
+            "-t", "10", "-vf", "hue=h=t*30," + bands(720, 1280) + ",transpose=1", "-c:v", "libx264", "-preset", "ultrafast",
+            "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest", str(stored))
+        run("-display_rotation", "90", "-i", str(stored), "-c", "copy", str(port))
+    gopro = d / "GX010007.MP4"
+    if not gopro.exists():
+        run("-f", "lavfi", "-i", "mandelbrot=size=1920x1080:rate=30000/1001", "-f", "lavfi", "-i", "sine=frequency=480:sample_rate=48000",
+            "-t", "9", "-vf", "hue=h=t*15," + bands(1920, 1080), "-c:v", "libx264", "-preset", "ultrafast", "-crf", "30", "-pix_fmt", "yuv420p",
+            "-c:a", "aac", "-timecode", "10:20:30;00", "-shortest", str(gopro))
+    pal = d / "PAL_25fps.mp4"
+    if not pal.exists():
+        run("-f", "lavfi", "-i", "life=size=1280x720:rate=25:mold=10:ratio=0.3", "-f", "lavfi", "-i", "sine=frequency=330:sample_rate=48000",
+            "-t", "9", "-vf", "hue=h=t*20:s=2," + bands(1280, 720), "-c:v", "libx264", "-preset", "ultrafast", "-crf", "30", "-pix_fmt", "yuv420p",
+            "-c:a", "aac", "-shortest", str(pal))
+    subs = d / "with_subtitles.mov"
+    if not subs.exists():
+        srt = tmp / "s.srt"
+        srt.write_text("1\n00:00:00,500 --> 00:00:04,000\nhello\n\n2\n00:00:05,000 --> 00:00:08,000\nworld\n", encoding="utf-8")
+        run("-f", "lavfi", "-i", "cellauto=size=1280x720:rate=30:rule=110", "-f", "lavfi", "-i", "sine=frequency=560:sample_rate=48000",
+            "-i", str(srt), "-t", "9", "-map", "0:v", "-map", "1:a", "-map", "2:s", "-vf", "hue=h=t*10," + bands(1280, 720),
+            "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p", "-c:a", "aac", "-c:s", "mov_text",
+            "-metadata", "creation_time=2026-07-14T10:20:30Z", "-shortest", str(subs))
+    shutil.rmtree(tmp, ignore_errors=True)
+
+
+def make_subject(ff: str, d: Path) -> None:
+    """A landscape clip whose only detailed, moving thing (a textured square) stays in the RIGHT fifth of a dark,
+    flat picture: a vertical reel must follow it instead of cutting the middle of the frame."""
+    d.mkdir(parents=True, exist_ok=True)
+    f = d / "subject_right.mp4"
+    if not f.exists():
+        subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "color=c=0x202020:s=1920x1080:r=30",
+                        "-f", "lavfi", "-i", "testsrc2=size=300x300:rate=30", "-f", "lavfi", "-i", "sine=frequency=420:sample_rate=48000",
+                        "-t", "10", "-filter_complex", "[0:v][1:v]overlay=x=1500+40*sin(t*2):y=390+120*sin(t*1.3),format=yuv420p[v]",
+                        "-map", "[v]", "-map", "2:a", "-c:v", "libx264", "-preset", "ultrafast", "-c:a", "aac", "-shortest", str(f)], check=True)

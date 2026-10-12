@@ -50,6 +50,13 @@ a while (later builds reuse the analysis; the PC does not sleep while MediaEngin
 the Explorer-style folder window (address bar, Quick access) next to the last reel's videos; "Choose videos…"
 opens in the last reel's folder. Both are driven by window messages in the Windows CI checks.
 
+## OneDrive and other cloud folders
+
+Videos that OneDrive keeps only in the cloud ("Files On-Demand") are recognised from the folder listing and are
+not read — reading even their first bytes would make Windows download them all. They are listed as skipped ("only
+in the cloud (OneDrive)…"); a folder that is entirely in the cloud says to choose "Always keep on this device"
+first. After the download the same reel is built again with them.
+
 ## AI model provenance (not in the ZIP, not in git)
 
 FAST_LOCAL is taken from the owner's stable install (`<drive>:\Archivist\sidecars\auto_edit\models`) or imported

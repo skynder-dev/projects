@@ -32,9 +32,17 @@ PHRASES = {
     "Copied": "Скопировано",
     # setup
     "Auto Edit · new reel": "Автомонтаж · новый ролик", "usable video(s)": "пригодных видео", "total": "всего",
-    "skipped": "пропущено", "Show files": "Показать файлы", "File": "Файл", "Size": "Размер", "Length": "Длина",
+    "only in the cloud (OneDrive), not on this PC: choose 'Always keep on this device' first":
+        "только в облаке OneDrive, на компьютере его нет: сначала выбери «Всегда сохранять на этом устройстве»",
+    "only in the cloud (OneDrive), not on this PC: choose &#x27;Always keep on this device&#x27; first":
+        "только в облаке OneDrive, на компьютере его нет: сначала выбери «Всегда сохранять на этом устройстве»",
+    "These videos are only in OneDrive, not on this PC. In Explorer right-click the folder → 'Always keep on this device', wait until the download is done, then choose it again.":
+        "Эти видео лежат только в OneDrive, на компьютере их нет. В Проводнике щёлкни папку правой кнопкой → «Всегда сохранять на этом устройстве», дождись загрузки и выбери папку снова.",
+    "skipped": "пропущено", "skipped: ": "пропущено: ", "usable": "годится", "Show files": "Показать файлы", "File": "Файл", "Size": "Размер", "Length": "Длина",
     "Frame": "Кадр", "Format": "Формат", "Sound": "Звук", "recommended": "рекомендуется", "Create reel": "Создать ролик",
     "AI model not available.": "ИИ-модель недоступна.", "Build with Technical only": "Собрать без ИИ (только техника)",
+    "AI model not available — build with Technical only (sharpness, motion, exposure)":
+        "ИИ-модель недоступна — собрать в режиме «Только техника» (резкость, движение, свет)",
     "Social HD (vertical 1080×1920)": "Social HD (вертикально 1080×1920)", "Vertical (540×960)": "Вертикально (540×960)",
     "Horizontal (960×540)": "Горизонтально (960×540)", "Social HD": "Social HD", "Vertical": "Вертикально",
     "Horizontal": "Горизонтально", "Auto (keep source sound, mute if it jumps)": "Авто (звук исходника; без звука, если он есть не везде)",

@@ -19,7 +19,7 @@ import re
 from .auto_edit_ru import JS_PHRASES as _AE_JS
 from .auto_edit_ru import PHRASES as _AE_PHRASES
 from .auto_edit_ru import _ORDERED as _AE_ORDERED
-from .ru_app import APP_COUNT_SUBS, APP_JS, APP_PATTERNS, APP_PHRASES
+from .ru_app import APP_COUNT_SUBS, APP_JS, APP_PATTERNS, APP_PHRASES, APP_UNIT_SUBS
 
 LANGS = ("en", "ru")
 
@@ -92,6 +92,7 @@ def _with_escaped(d: dict) -> dict:
 EXACT = _with_escaped({**_AE_PHRASES, **APP_PHRASES})
 PATTERNS = [(re.compile(p), r) for p, r in APP_PATTERNS]
 COUNT_SUBS = [(re.compile(p), r) for p, r in APP_COUNT_SUBS]
+UNIT_SUBS = [(re.compile(p), r) for p, r in APP_UNIT_SUBS]
 
 
 def _quoted(d: dict) -> dict:
@@ -146,7 +147,7 @@ def translate_text(t: str, substring: bool = False) -> str:
     if core in EXACT:
         return lead + EXACT[core] + tail
     if core.endswith(" · MediaEngine") and core != " · MediaEngine":   # page titles
-        inner = translate_text(core[:-14], substring)
+        inner = translate_text(core[:-14], False)          # a project title in the window title stays as typed unless it is a page name
         return lead + inner + " · MediaEngine" + tail
     for rx, rep in PATTERNS:
         mm = rx.fullmatch(core)
@@ -158,6 +159,8 @@ def translate_text(t: str, substring: bool = False) -> str:
         for en, ru in _AE_ORDERED:
             if en in t:
                 t = t.replace(en, ru)
+        for rx, rep in UNIT_SUBS:
+            t = rx.sub(rep, t)
         t = _finish(t)
     return t
 
