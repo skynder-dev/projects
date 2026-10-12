@@ -174,6 +174,8 @@ def main():
         ex = p["exports"][0] if p["exports"] else None
         check("export_one_mp4", r.status_code == 302 and ex and Path(ex["path"]).is_file() and sha(ex["path"]) == rev["video_sha256"], ex)
         check("export_name_windows_safe", ex and not any(ch in Path(ex["path"]).name for ch in '<>:"/\\|?*'), ex and Path(ex["path"]).name)
+        r = c.get("/auto", headers=H)
+        check("exported_reels_button_after_export", b"/auto/exports/open" in r.data and b"Exported reels" in r.data)
         exports_dir = home / "Exports"
         n_before = len(list(exports_dir.glob("*.mp4")))
         c.post(f"/auto/p/{pid}/export", headers=H)

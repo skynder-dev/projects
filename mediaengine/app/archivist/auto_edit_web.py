@@ -151,7 +151,15 @@ def register(app, layout, e, human_bytes):
                       f"If you have the model (for example in an existing Archivist install), choose its folder: the exact files are verified and copied here.</span>"
                       f"<div class='row' style='margin-top:8px'><button type='button' class='btn2' id='modelBtn'>Choose model folder…</button>"
                       f"<span class='muted' id='modelMsg'></span></div></div>")
-        check_btn = "<a class='btn btn2' href='/auto/check' style='float:right'>Check this PC</a>"
+        try:
+            exp_dir = ae.default_export_dir()
+            has_exports = exp_dir.is_dir() and any(x.suffix.lower() == ".mp4" for x in exp_dir.iterdir())
+        except OSError:
+            has_exports = False
+        check_btn = ("<div class='row' style='float:right;gap:8px'>"
+                     + ("<form method='post' action='/auto/exports/open' style='margin:0'><button class='btn2'>Exported reels</button></form>"
+                        if has_exports else "")
+                     + "<a class='btn btn2' href='/auto/check'>Check this PC</a></div>")
         first = "" if ae.selftest_passed() else (
             "<div class='card callout' style='margin-bottom:14px'><b>First time on this PC?</b> "
             "<span class='muted'>Check this PC first: it shows whether the AI model and video tools are found and builds a 5-second test reel "
@@ -581,6 +589,12 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
         except Exception as exc:
             return err_page(str(exc), f"/auto/p/{pid}")
         return redirect(f"/auto/p/{pid}?exported={res['export_id']}")
+
+    @app.post("/auto/exports/open")
+    def ae_exports_open():
+        if not ae.open_path(ae.default_export_dir()):
+            return err_page("The folder for exported reels is not there yet.")
+        return redirect("/auto")
 
     @app.post("/auto/export/<int:eid>/<action>")
     def ae_export_action(eid, action):
