@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "packageName": "dev.forge.control",
+  "versionCode": 2,
+  "versionName": "0.1.1-review",
+  "minSdk": 26,
+  "apkUrl": "https://raw.githubusercontent.com/skynder-dev/projects/main/forge/android-updates/Forge-Control-0.1.1-test.apk",
+  "sha256": "605de3f5e0a929be56c1f5b13a773cd0eaf56e73b13fbf9d205e40110cada624",
+  "sizeBytes": 57842
+}
