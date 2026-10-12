@@ -58,6 +58,14 @@ What a user can do (code: `app/archivist/auto_edit.py`, `auto_edit_web.py`, engi
 - Overnight fixes (2026-10-12): Russian decimal comma for numbers with units (5,00 с, 16,8 МБ) that never touches
   file names; a running Library job showed its elapsed time off by the UTC offset (5 h in Chicago); elapsed times
   across a clock change; folder/file names with ' [ ] % & ! # ; = , build fine (E2E).
+- **Library checked like a user** (new `tests/library_flow_check.py`, Windows CI, data folder with Cyrillic letters):
+  add a folder on Import → every video found → Import + analyse → Library with thumbnails, lengths and item pages →
+  smart clips → Private (leaves the Library, original untouched, never in a reel) → archive copy → reject; Library
+  pages crawled in Russian. Found and fixed on the way: archive / Staging / Private names lost every Cyrillic letter
+  ('_ _ _/_ _ _.MOV'); "Find similar" gave HTTP 500 on a new library; local videos had no length in the Library;
+  smart clips failed for recordings without a length; previews could not be written into a folder with non-Latin
+  letters on Windows (cv2.imwrite); item page codes (technical_ok, private_forever…) and card sizes (MB) were
+  English; the SHA-256 widened the page.
 - **Folder window**: the Explorer-style one (address bar, Quick access, paste a path), opening next to the last
   reel's videos; the older tree dialog remains as fallback. Driven by window messages in the Windows unit checks.
 - **Check this PC** on Home, in Settings and on Auto Edit (Auto Edit suggests it until a test reel was built here).
