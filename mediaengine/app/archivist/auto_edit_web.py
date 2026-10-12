@@ -262,7 +262,7 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
 
     @app.post("/api/auto/pick-files")
     def ae_pick_files():
-        files = ae.pick_files()
+        files = ae.pick_files(initial=ae.last_source_folder())
         if files:
             return jsonify({"files": files})
         return jsonify({"files": [], "error": "No videos chosen."})

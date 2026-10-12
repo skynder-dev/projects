@@ -1603,8 +1603,8 @@ def _dialog_title(en: str) -> str:
         return en
 
 
-def pick_files(title="Choose videos for one reel") -> list[str] | None:
-    """Native Windows Open dialog with multi-select (GetOpenFileNameW)."""
+def pick_files(title="Choose videos for one reel", initial: str | None = None) -> list[str] | None:
+    """Native Windows Open dialog with multi-select (GetOpenFileNameW). initial = the folder it opens in."""
     if os.name != "nt":
         return None
     box: dict = {}
@@ -1634,6 +1634,8 @@ def pick_files(title="Choose videos for one reel") -> list[str] | None:
         ofn.lpstrFile = ctypes.cast(buf, wintypes.LPWSTR)
         ofn.nMaxFile = size
         ofn.lpstrTitle = _dialog_title(title)
+        if initial and Path(initial).is_dir():
+            ofn.lpstrInitialDir = str(initial)
         # OFN_ALLOWMULTISELECT | OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR
         ofn.Flags = 0x200 | 0x80000 | 0x1000 | 0x800 | 0x8
         if ctypes.windll.comdlg32.GetOpenFileNameW(ctypes.byref(ofn)):
@@ -1650,16 +1652,22 @@ def pick_files(title="Choose videos for one reel") -> list[str] | None:
     return box.get("files")
 
 
-def last_source_parent() -> str | None:
-    """Where the folder window opens: next to the videos of the last reel (their parent folder), if it is there."""
+def last_source_folder() -> str | None:
+    """The folder of the last reel's videos, if it is there (the file window opens in it)."""
     try:
         ensure_schema()
         with db() as con:
             row = con.execute("SELECT folder FROM ae_projects ORDER BY updated_at DESC, id DESC LIMIT 1").fetchone()
-        parent = Path(row[0]).parent if row and row[0] else None
-        return str(parent) if parent and parent.is_dir() else None
+        return row[0] if row and row[0] and Path(row[0]).is_dir() else None
     except Exception:
         return None
+
+
+def last_source_parent() -> str | None:
+    """Where the folder window opens: next to the last reel's videos (their parent folder), if it is there."""
+    f = last_source_folder()
+    parent = Path(f).parent if f else None
+    return str(parent) if parent and parent.is_dir() else None
 
 
 def _pick_folder_explorer(title: str, initial: str | None, owner) -> tuple[bool, str | None]:

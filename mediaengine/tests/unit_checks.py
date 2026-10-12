@@ -218,6 +218,40 @@ def main():
                   ended and chosen and Path(chosen).resolve() == pick.resolve(), (chosen, ended))
             cancelled, ended = drive("MediaEngine folder test cancel", 0, msg=0x0010)
             check("folder window: closing it returns nothing", ended and cancelled is None, (cancelled, ended))
+            # the file window ("Choose videos…"): opens in the given folder; the name typed into its name box is returned
+            vid = pick / "видео 1.mp4"
+            vid.write_bytes(b"0" * 2048)
+            user32.FindWindowExW.restype = ctypes.c_void_p
+            user32.FindWindowExW.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_wchar_p, ctypes.c_wchar_p]
+            user32.SendMessageW.argtypes = [ctypes.c_void_p, ctypes.c_uint, ctypes.c_size_t, ctypes.c_wchar_p]
+            title = "MediaEngine files test"
+            box = {}
+            th = threading.Thread(target=lambda: box.update(f=ae.pick_files(title, initial=str(pick))), daemon=True)
+            th.start()
+            hwnd = None
+            for _ in range(200):
+                hwnd = user32.FindWindowW(None, title)
+                if hwnd:
+                    break
+                _t.sleep(0.1)
+            edit = None
+            if hwnd:
+                _t.sleep(1.0)
+                combo = user32.FindWindowExW(hwnd, None, "ComboBoxEx32", None)
+                inner = user32.FindWindowExW(combo, None, "ComboBox", None) if combo else None
+                edit = user32.FindWindowExW(inner, None, "Edit", None) if inner else None
+                if edit:
+                    user32.SendMessageW(edit, 0x000C, 0, '"' + vid.name + '"')     # WM_SETTEXT
+                    user32.PostMessageW(hwnd, 0x0111, 1, 0)                         # IDOK = Open
+                else:
+                    user32.PostMessageW(hwnd, 0x0010, 0, 0)
+                th.join(20)
+            if not edit:
+                print("SKIP file window: name box not found", bool(hwnd))
+            else:
+                got = box.get("f") or []
+                check("file window: opens in the given folder and returns the chosen video",
+                      len(got) == 1 and Path(got[0]).resolve() == vid.resolve(), got)
     # Windows must not sleep while a reel is built (no-op elsewhere)
     from archivist.platform_adapter import keep_awake
     with keep_awake() as k:
