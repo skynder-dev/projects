@@ -104,6 +104,18 @@ def main():
         if os.name == "nt":
             for f in cfiles:
                 ctypes.windll.kernel32.SetFileAttributesW(str(f), 0x80)
+    # a folder with a wrong / partial model is refused with a clear reason and nothing is copied
+    fake = work / "fake_archivist" / "sidecars" / "auto_edit" / "models" / "FAST_LOCAL"
+    fake.mkdir(parents=True, exist_ok=True)
+    (fake / "model_int8.onnx").write_bytes(b"not the model" * 100)
+    from archivist.config import HOME as _HOME
+    try:
+        ae.import_model(str(work / "fake_archivist"))
+        refused = False
+    except ValueError as exc:
+        refused = "No exact FAST_LOCAL model" in str(exc)
+    check("wrong model folder refused, nothing copied", refused and not (Path(_HOME) / "models" / "FAST_LOCAL").exists()
+          and not ae._model_valid(fake.parent))
     # a browser / screen recording with no length written in the file: measured, used through a fixed copy
     ff = ae._ffmpeg()
     if ff:
