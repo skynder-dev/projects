@@ -101,8 +101,9 @@ def main():
         # a phone camera folder with more videos than one reel takes: pick a day (one click) instead of an error
         cam = home / "camera_roll"
         cam.mkdir(parents=True, exist_ok=True)
+        good = folder / next(f["name"] for f in scan["files"] if f["ok"])      # a readable video (not "broken.mp4")
         for i in range(ae.MAX_INPUTS + 2):
-            shutil.copyfile(first, cam / f"VID_2026071{4 + i % 2}_1200{i:02d}.mp4")
+            shutil.copyfile(good, cam / f"VID_2026071{4 + i % 2}_1200{i:02d}.mp4")
         r = c.get("/auto/new", query_string={"folder": str(cam)}, headers=H)
         cam_page = r.data.decode("utf-8", "replace")
         day_links = re.findall(r"href='(/auto/new\?file=[^']+)'", cam_page)
