@@ -1619,7 +1619,8 @@ def pick_files(title="Choose videos for one reel") -> list[str] | None:
 
         size = 65536
         buf = ctypes.create_unicode_buffer(size)
-        flt = "Videos\0" + ";".join("*" + x for x in sorted(SUPPORTED)) + "\0All files\0*.*\0\0"
+        ru = ui_language() == "ru"
+        flt = ("Видео" if ru else "Videos") + "\0" + ";".join("*" + x for x in sorted(SUPPORTED)) + "\0" + ("Все файлы" if ru else "All files") + "\0*.*\0\0"
         ofn = OPENFILENAMEW()
         ofn.lStructSize = ctypes.sizeof(OPENFILENAMEW)
         ofn.hwndOwner = ctypes.windll.user32.GetForegroundWindow()
