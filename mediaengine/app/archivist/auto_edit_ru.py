@@ -39,7 +39,9 @@ PHRASES = {
     "These videos are only in OneDrive, not on this PC. In Explorer right-click the folder → 'Always keep on this device', wait until the download is done, then choose it again.":
         "Эти видео лежат только в OneDrive, на компьютере их нет. В Проводнике щёлкни папку правой кнопкой → «Всегда сохранять на этом устройстве», дождись загрузки и выбери папку снова.",
     "skipped": "пропущено", "skipped: ": "пропущено: ", "usable": "годится",
-    "very short — may be skipped": "очень короткое — может быть пропущено", "Show files": "Показать файлы", "File": "Файл", "Size": "Размер", "Length": "Длина",
+    "very short — may be skipped": "очень короткое — может быть пропущено",
+    "length was not written in the file (browser or screen recording) — a fixed copy is used, the original is not changed":
+        "длина не записана в файле (запись из браузера или с экрана) — используется исправленная копия, оригинал не меняется", "Show files": "Показать файлы", "File": "Файл", "Size": "Размер", "Length": "Длина",
     "Frame": "Кадр", "Format": "Формат", "Sound": "Звук", "recommended": "рекомендуется", "Create reel": "Создать ролик",
     "AI model not available.": "ИИ-модель недоступна.", "Build with Technical only": "Собрать без ИИ (только техника)",
     "Build without AI (Technical only: sharpness, motion, exposure)":

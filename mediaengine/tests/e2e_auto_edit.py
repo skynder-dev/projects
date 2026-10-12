@@ -424,6 +424,32 @@ def main():
                 if others:
                     r = c.get(f"/auto/p/{fpid}/source", query_string={"name": others[0]}, headers=H)
                     check("files_other_file_not_served", r.status_code == 404, r.status_code)
+            # a browser / screen recording without a written length (like Chrome's MediaRecorder): used, not "damaged"
+            rec_dir = home.parent / "recording_without_length"
+            rec_dir.mkdir(exist_ok=True)
+            live = rec_dir / "screen recording.webm"
+            with live.open("wb") as fh:
+                subprocess.run([ae._ffmpeg() or "ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=1280x720:rate=30,hue=h=t*45",
+                                "-f", "lavfi", "-i", "sine=frequency=520:sample_rate=48000", "-t", "9", "-c:v", "libvpx-vp9", "-deadline",
+                                "realtime", "-cpu-used", "8", "-b:v", "1M", "-c:a", "libopus", "-live", "1", "-f", "webm", "pipe:1"],
+                               stdout=fh, check=False)
+            if live.stat().st_size > 10000:
+                live_sha = sha(live)
+                r = c.get("/auto/new", query_string={"folder": str(rec_dir)}, headers=H)
+                page_ = r.data.decode("utf-8", "replace")
+                check("no_length_recording_offered", r.status_code == 200 and "Create reel" in page_ and "a fixed copy is used" in page_,
+                      r.data[-400:])
+                r = c.post("/auto/create", data={"folder": str(rec_dir), "length": "5", "format": "social_hd", "sound": "auto",
+                                                 "mode": a.mode}, headers=H)
+                if r.status_code == 302 and "/auto/p/" in r.headers.get("Location", ""):
+                    lpid = int(r.headers["Location"].rstrip("/").split("/")[-1])
+                    lj, _, _ = wait_job(c, ae.project(lpid)["jobs"][0]["id"])
+                    lrev = ae.revision(lj.get("revision_id") or 0) if lj["status"] == "done" else None
+                    lsrc = {s_["source_name"] for s_ in (lrev or {}).get("result", {}).get("segments", [])}
+                    check("no_length_recording_used", lrev and lsrc == {live.name} and sha(live) == live_sha,
+                          (lj.get("status"), lj.get("error"), lsrc))
+                else:
+                    check("no_length_recording_used", False, r.status_code)
 
     after = {p.name: sha(p) for p in folder.iterdir() if p.is_file()}
     check("sources_unchanged", before == after)

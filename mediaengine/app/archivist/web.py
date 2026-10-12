@@ -50,13 +50,15 @@ def _job_elapsed(j):
         start = j.get('started_at') or j.get('created_at')
         if not start:
             return ''
+        # times are stored as local wall-clock time (now_iso): a naive time is local, not UTC - read as UTC, a
+        # running job showed hours too much west of Greenwich and 0 s east of it
         a = datetime.fromisoformat(str(start).replace('Z','+00:00'))
         if a.tzinfo is None:
-            a = a.replace(tzinfo=timezone.utc)
+            a = a.astimezone()
         end = j.get('finished_at')
         b = datetime.fromisoformat(str(end).replace('Z','+00:00')) if end else datetime.now(timezone.utc)
         if b.tzinfo is None:
-            b = b.replace(tzinfo=timezone.utc)
+            b = b.astimezone()
         sec = max(0, int((b-a).total_seconds()))
         if sec < 60:
             return f"{sec}s"

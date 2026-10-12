@@ -57,7 +57,7 @@ def _source_seconds(pid: int, name: str) -> float:
             return 0.0
         key = (str(src), st.st_size, st.st_mtime_ns)
         if key not in _DUR_CACHE:
-            _DUR_CACHE[key] = float(ae._probe(src).get("format", {}).get("duration") or 0)
+            _DUR_CACHE[key] = float(ae.probe_any(src).get("format", {}).get("duration") or 0)
         return _DUR_CACHE[key]
     except Exception:
         return 0.0
@@ -423,6 +423,9 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
             status = (("<span class='badge'>usable</span>" if r["duration_s"] >= 3.5 else
                        "<span class='badge review'>very short — may be skipped</span>") if r["ok"] else
                       "<span class='badge error'>skipped: " + _skip_reason_html(r["reason"], e) + "</span>")
+            if r.get("length_measured"):
+                status += (" <span class='muted' style='font-size:12px'>length was not written in the file (browser or screen "
+                           "recording) — a fixed copy is used, the original is not changed</span>")
             dims = (str(r["width"]) + "×" + str(r["height"])) if r["ok"] else ""
             dur = _fmt_s(r["duration_s"]) if r["ok"] else ""
             return f"<tr><td translate='no'>{e(r['name'])}</td><td>{human_bytes(r['bytes'])}</td><td>{dur}</td><td>{dims}</td><td>{status}</td></tr>"

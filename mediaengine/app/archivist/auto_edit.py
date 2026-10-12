@@ -361,6 +361,121 @@ def _probe(path: Path) -> dict:
     return probe_mod.probe_json(path, _ffmpeg() or "ffmpeg", 30)
 
 
+# A recording made in a web browser or by a screen recorder (and one stopped by a crash or a full disk) often has
+# no length written in the file. The pictures and sound are fine, but the engine needs the length. Such a file is
+# measured by reading it once; for a build it is copied once - without re-encoding - into the project's cache with
+# the length filled in, and the engine works on that copy. The original is never changed.
+_LENGTH_MAY_BE_MISSING = {".webm", ".mkv"}
+_MEASURED: dict = {}
+_TIME_RE = re.compile(r"time=\s*(\d+):(\d+):(\d+(?:\.\d+)?)")
+
+
+def _measured_probe(path: Path) -> dict | None:
+    """Probe of a file without a written length, with the length measured by reading the file (no decoding).
+    None when the file really is unreadable."""
+    try:
+        st = path.stat()
+    except OSError:
+        return None
+    key = (str(path), st.st_size, st.st_mtime_ns)
+    if key in _MEASURED:
+        return _MEASURED[key]
+    if str(ENGINE_DIR) not in sys.path:
+        sys.path.insert(0, str(ENGINE_DIR))
+    import medeng_media_probe_v41 as probe_mod
+    res = None
+    try:
+        cp = subprocess.run([_ffmpeg() or "ffmpeg", "-hide_banner", "-nostdin", "-i", str(path), "-map", "0:v:0", "-c", "copy",
+                             "-f", "null", "-"], **process_kwargs(dict(stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True,
+                                                                    errors="replace", timeout=600, check=False)))
+        text = cp.stderr or ""
+        head = text
+        for mark in ("Output #", "Stream mapping:"):    # only the input's description
+            head = head.split(mark, 1)[0]
+        times = _TIME_RE.findall(text)
+        dur = (int(times[-1][0]) * 3600 + int(times[-1][1]) * 60 + float(times[-1][2])) if times else 0.0
+        streams = []
+        for raw in head.splitlines():
+            sm = probe_mod._STREAM_RE.match(raw)
+            if not sm:
+                continue
+            row = {"index": int(sm.group(1)), "codec_type": sm.group(2).lower(), "codec_name": sm.group(3).lower()}
+            zm = probe_mod._SIZE_RE.search(raw) if row["codec_type"] == "video" else None
+            if zm:
+                row["width"], row["height"] = int(zm.group(1)), int(zm.group(2))
+            streams.append(row)
+        if cp.returncode == 0 and dur > 0 and any(x["codec_type"] == "video" for x in streams):
+            res = {"format": {"duration": f"{dur:.6f}"}, "streams": streams, "length_measured": True}
+    except Exception:
+        res = None
+    _MEASURED[key] = res
+    return res
+
+
+def probe_any(path: Path) -> dict:
+    """_probe, but a browser / screen recording without a written length is measured instead of being called
+    damaged. Raises like _probe when the file cannot be used."""
+    try:
+        return _probe(path)
+    except Exception as exc:
+        if Path(path).suffix.lower() in _LENGTH_MAY_BE_MISSING and "DURATION_MISSING" in str(exc):
+            got = _measured_probe(Path(path))
+            if got:
+                return got
+        raise
+
+
+def length_missing(path: Path) -> bool:
+    """True for a usable video whose length is not written in the file (it needs the fixed copy)."""
+    if Path(path).suffix.lower() not in _LENGTH_MAY_BE_MISSING:
+        return False
+    try:
+        return bool(probe_any(Path(path)).get("length_measured"))
+    except Exception:
+        return False
+
+
+def _with_length(paths, work_dir: Path) -> tuple[list[Path], bool]:
+    """The build's inputs, with every file that has no written length replaced by a copy (in the project's cache)
+    that has it. A file marked Private is never copied: the copy would have another fingerprint."""
+    out, changed, private = [], False, None
+    fixed_dir = work_dir / "fixed_inputs"
+    for p in paths:
+        p = Path(p)
+        if not length_missing(p):
+            out.append(p)
+            continue
+        if private is None:
+            private = set(_private_hashes())
+        try:
+            if sha256_file(p) in private:
+                out.append(p)
+                continue
+            st = p.stat()
+            dst = fixed_dir / p.name
+            stamp = fixed_dir / (p.name + ".source.json")
+            want = {"source": str(p.resolve()), "bytes": st.st_size, "mtime_ns": st.st_mtime_ns}
+            ok = dst.exists() and stamp.exists() and json.loads(stamp.read_text(encoding="utf-8")) == want
+            if not ok:
+                fixed_dir.mkdir(parents=True, exist_ok=True)
+                tmp = fixed_dir / ("_tmp_" + p.name)
+                cp = subprocess.run([_ffmpeg() or "ffmpeg", "-v", "error", "-y", "-nostdin", "-i", str(p), "-map", "0:v", "-map", "0:a?",
+                                     "-c", "copy", "-fflags", "+bitexact", "-f", "matroska", str(tmp)],
+                                    **process_kwargs(dict(stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True,
+                                                          errors="replace", timeout=1800, check=False)))
+                if cp.returncode != 0 or not tmp.exists():
+                    tmp.unlink(missing_ok=True)
+                    out.append(p)      # the engine reports it as unusable
+                    continue
+                os.replace(tmp, dst)
+                stamp.write_text(json.dumps(want), encoding="utf-8")
+            out.append(dst)
+            changed = True
+        except OSError:
+            out.append(p)
+    return out, changed
+
+
 def scan_folder(folder) -> dict:
     """What the user sees before starting: usable files, problems, total footage."""
     folder = check_folder(folder)
@@ -423,7 +538,7 @@ def _scan_paths(paths, folder_label: str, files) -> dict:
             rows.append(row)
             continue
         try:
-            info = _probe(p)
+            info = probe_any(p)
             v = [s for s in info.get("streams", []) if s.get("codec_type") == "video"]
             dur = float(info.get("format", {}).get("duration") or 0)
             if not v:
@@ -431,7 +546,8 @@ def _scan_paths(paths, folder_label: str, files) -> dict:
             elif dur < MIN_CLIP_S:      # the analysis needs a few frames a second apart: shorter clips always fail it
                 row["reason"] = "too short (under 2.5 s)"
             else:
-                row.update(ok=True, duration_s=round(dur, 2), width=int(v[0].get("width") or 0), height=int(v[0].get("height") or 0))
+                row.update(ok=True, duration_s=round(dur, 2), width=int(v[0].get("width") or 0), height=int(v[0].get("height") or 0),
+                           length_measured=bool(info.get("length_measured")))
                 total += dur
                 seen[qk] = p.name
         except Exception:  # unreadable / damaged: skipped, never fatal for the folder
@@ -821,8 +937,10 @@ def job_elapsed_s(j: dict) -> float:
     try:
         if not j.get("started_at"):
             return 0.0
-        t0 = datetime.fromisoformat(j["started_at"])
-        t1 = datetime.fromisoformat(j["finished_at"]) if j.get("finished_at") else datetime.now()
+        # stored as local wall-clock time: made zone-aware before subtracting, so a build that runs across a summer /
+        # winter clock change does not show an hour too much or too little
+        t0 = datetime.fromisoformat(j["started_at"]).astimezone()
+        t1 = datetime.fromisoformat(j["finished_at"]).astimezone() if j.get("finished_at") else datetime.now().astimezone()
         return max(0.0, (t1 - t0).total_seconds())
     except (TypeError, ValueError):
         return 0.0
@@ -1022,12 +1140,13 @@ def _run_job(jid: int) -> None:
     skip_file.write_text("\n".join(_private_hashes()), encoding="utf-8")
     input_list = None
     if p.get("files"):
+        local, _ = _with_length(local_inputs(p["files"]), work_dir)
         input_list = jobs_dir / f"j{jid}.inputs.txt"
-        input_list.write_text("\n".join(str(x) for x in local_inputs(p["files"])) + "\n", encoding="utf-8")
+        input_list.write_text("\n".join(str(x) for x in local) + "\n", encoding="utf-8")
     else:
         vids = list_videos(Path(p["folder"]))
-        local = local_inputs(vids)
-        if len(local) != len(vids):   # cloud-only placeholders in the folder: give the engine only the local videos
+        local, fixed = _with_length(local_inputs(vids), work_dir)
+        if fixed or len(local) != len(vids):   # cloud-only placeholders / fixed copies: give the engine the exact list
             input_list = jobs_dir / f"j{jid}.inputs.txt"
             input_list.write_text("\n".join(str(x) for x in local) + "\n", encoding="utf-8")
     cmd = engine_command(Path(p["folder"]), out_dir, work_dir, progress_file, s, edits_file, skip_file, input_list)
