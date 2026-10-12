@@ -67,9 +67,13 @@ def main():
 
     def wait_job(jid, limit=900):
         t0 = time.time()
-        while time.time() - t0 < limit:
+        j = {}
+        while jid and time.time() - t0 < limit:
             with db() as con:
-                j = dict(con.execute("SELECT * FROM jobs WHERE id=?", (jid,)).fetchone())
+                row = con.execute("SELECT * FROM jobs WHERE id=?", (jid,)).fetchone()
+            if row is None:
+                return {}
+            j = dict(row)
             if j["status"] in ("finished", "partial", "failed", "cancelled"):
                 return j
             time.sleep(1)
@@ -118,7 +122,7 @@ def main():
             ok = False
             for _ in range(60):
                 t = c.get(f"/thumb/{r_['id']}", headers=H)
-                if t.status_code == 200 and t.mimetype.startswith("image/") and len(t.data) > 500:
+                if t.status_code == 200 and t.mimetype in ("image/jpeg", "image/png", "image/webp") and len(t.data) > 500:
                     ok = True
                     break
                 time.sleep(1)

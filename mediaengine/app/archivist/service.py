@@ -220,7 +220,8 @@ def start_discovery() -> bool:
 
 def _row_dict(r): return {k: r[k] for k in r.keys()}
 
-_WIN_RESERVED_NAMES = {"CON", "PRN", "AUX", "NUL", *(f"COM{i}" for i in range(1, 10)), *(f"LPT{i}" for i in range(1, 10))}
+_WIN_RESERVED_NAMES = {"CON", "PRN", "AUX", "NUL", "CONIN$", "CONOUT$", *(f"COM{i}" for i in "0123456789¹²³"),
+                       *(f"LPT{i}" for i in "0123456789¹²³")}
 
 
 def re_safe(s: str) -> str:
@@ -228,13 +229,18 @@ def re_safe(s: str) -> str:
     (Cyrillic, accents, CJK): only what Windows does not allow in a name is replaced. It used to keep ASCII only,
     so 'Отпуск на даче.mp4' from the source 'Мои видео' was archived as '_ _ _/_ _ _.mp4'."""
     s = re.sub(r'[<>:"/\\|?*\x00-\x1f]+', "_", str(s)).strip(" .")
-    if not s:
-        return "Source"
+    units = lambda t: len(t.encode("utf-16-le")) // 2      # Windows counts path length in UTF-16 units
+    if units(s) > 90:   # folder + name stay well below the Windows path limit (260) with long paths off
+        suffix = Path(s).suffix if len(Path(s).suffix) <= 10 else ""
+        stem = s[: len(s) - len(suffix)] if suffix else s
+        while stem and units(stem) + units(suffix) > 90:
+            stem = stem[:-1]
+        s = stem.rstrip(" .") + suffix
+    s = s.strip(" .")
+    if not s or s == Path(s).suffix:
+        return "Source" if not s else "Source" + s
     if s.split(".")[0].strip().upper() in _WIN_RESERVED_NAMES:
         s = "_" + s
-    if len(s) > 90:     # folder + name stay well below the Windows path limit (260) with long paths off
-        suffix = Path(s).suffix if len(Path(s).suffix) <= 10 else ""
-        s = s[: 90 - len(suffix)].rstrip(" .") + suffix
     return s
 
 
@@ -1120,7 +1126,7 @@ def _run_import_analyze_job(job: dict):
             # Rights/property/audio risk is separate from privacy/quality and is never
             # treated as a legal conclusion. Manual tags are preserved.
             _write_auto_rights(inv_id, row, local)
-            _fill_video_length(inv_id, row, local)
+            _fill_video_length(inv_id, row, local, job_id, pstatus)
             _item_update(iid, status="done", phase="done", result_status=pstatus, finished_at=now_iso(), error=None)
             if row.get("media_type") == "video": queue_storyboard(inv_id, priority=15)
         except Exception as exc:
@@ -1168,7 +1174,7 @@ def _run_analyze_job(job: dict):
             # Rights/property/audio risk is separate from privacy/quality and is never
             # treated as a legal conclusion. Manual tags are preserved.
             _write_auto_rights(inv_id, row, local)
-            _fill_video_length(inv_id, row, local)
+            _fill_video_length(inv_id, row, local, job_id, pstatus)
             _item_update(iid, status="done", phase="done", result_status=pstatus, finished_at=now_iso(), error=None)
             if row.get("media_type") == "video": queue_storyboard(inv_id, priority=15)
         except Exception as exc:
@@ -1343,12 +1349,14 @@ def _mark_private_one(inv_id: int) -> str:
     return "private"
 
 
-def _fill_video_length(inv_id: int, row: dict, local: Path) -> None:
+def _fill_video_length(inv_id: int, row: dict, local: Path, job_id: int | None = None, status: str = "") -> None:
     """Length of a video for the Library page: videos in a folder on this PC are listed without opening them, so the
     length was never known ("—"). Read once here (measured when the file has none written)."""
-    if row.get("media_type") != "video" or row.get("duration_ms"):
+    if row.get("media_type") != "video" or row.get("duration_ms") or status in ("duplicate", "private"):
         return
     try:
+        if job_id:     # a recording without a written length is read through: tell the watchdog the job is alive
+            _job_update(job_id, message=f"Reading video length: {row.get('filename') or ''}")
         from .media import probe_duration
         d = probe_duration(Path(local))
         if d and d > 0:
