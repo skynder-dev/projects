@@ -19,10 +19,10 @@ APP_PHRASES: dict[str, str] = {
     "On sources": "На источниках", "Waiting to import": "Ждут импорта", "In Library": "В библиотеке", "Library videos": "Видео в библиотеке",
     "Privacy review": "Проверка приватности", "Rights review": "Проверка прав",
     "Android source": "Android-источник", "Jobs": "Задачи", "How it works": "Как это работает",
-    "Browse every source in": "Просмотри любой источник в разделе", "Import": "Импорт", "→ select what you want →": "→ выбери нужное →",
+    "Browse every source in": "Просмотри любой источник в разделе Медиа →", "Import": "Импорт", "→ select what you want →": "→ выбери нужное →",
     "Add to Library": "Добавить в библиотеку", "or": "или", "Add + Analyze": "Добавить + анализ",
     ". Local-folder files stay in place; Android/SD files copy to Staging. Private and Rejected media never appear in Library.":
-        ". Файлы из папок остаются на месте; файлы с Android/SD копируются в Staging. Private и Rejected никогда не попадают в библиотеку.",
+        ". Файлы из папок остаются на месте; файлы с Android/SD копируются в промежуточную папку (Staging). Личное (Private) и отклонённое (Rejected) никогда не попадают в библиотеку.",
     "This is a separate MediaEngine install.": "Это отдельная установка MediaEngine.",
     "The library of your working Archivist is not shown here and is not changed. To make a reel from a folder of videos, use Auto Edit.":
         "Библиотека твоего рабочего Archivist здесь не показывается и не меняется. Чтобы сделать ролик из папки с видео, открой «Автомонтаж».",
@@ -154,7 +154,7 @@ APP_PHRASES: dict[str, str] = {
     "Rights Guard flags risk and context; it does not pretend every venue question has a simple legal yes/no answer.":
         "Проверка прав отмечает риски, но не делает вид, что на любой вопрос есть простой юридический ответ «да/нет».",
     "This installation": "Эта установка", "Version": "Версия", "Data folder": "Папка данных", "Program folder": "Папка программы",
-    "Staging": "Staging", "Update safety": "Безопасные обновления", "Updates should fail safe.": "Неудачное обновление не должно ломать программу.",
+    "Staging": "Промежуточная папка (Staging)", "Update safety": "Безопасные обновления", "Updates should fail safe.": "Неудачное обновление не должно ломать программу.",
     "The permanent launcher now health-checks a newly installed release and can restore the previous backup if the new build does not come up correctly.":
         "Запуск проверяет новую версию и возвращает предыдущую, если новая не поднялась.",
     # ---- settings
@@ -164,7 +164,7 @@ APP_PHRASES: dict[str, str] = {
     "Setup & Connections": "Подключения", "Interface language": "Язык интерфейса",
     "(projects, database, exports — kept outside the program folder, shared by every release)":
         "(проекты, база, экспорт — вне папки программы, общие для всех версий)",
-    "Archive folder": "Папка архива", "Private": "Private", "Rejected quarantine": "Карантин Rejected",
+    "Archive folder": "Папка архива", "Private": "Личное (Private)", "Rejected quarantine": "Карантин отклонённых (Rejected)",
     "Free-space reserve GB": "Запас свободного места, ГБ", "Privacy screening": "Проверка приватности",
     "Technical quality triage": "Отбор по техническому качеству", "Save settings": "Сохранить настройки",
     "Existing local sources": "Источники на компьютере", "Label": "Название", "Add source": "Добавить источник", "Remove": "Удалить",
@@ -399,6 +399,7 @@ APP_PHRASES: dict[str, str] = {
     "Discovery": "Поиск", "Discovery started": "Поиск запущен", "Saved": "Сохранено", "Copied": "Скопировано",
     "Blocked Novelty Guard items cannot generate a handoff. Similar-review items require this explicit manual action.":
         "Заблокированные проверкой на повторы ролики передать нельзя; похожие — только вручную.",
+    "No library jobs yet.": "Задач библиотеки пока нет.", "Reel builds (Auto Edit)": "Сборки роликов (автомонтаж)",
     "s": "сек",          # the unit after a time field ("from [0.0] to [5.5] s")
     # file sizes ("16.8 MB"): looked up through ⟦unit:…⟧ by the patterns below, never matched as page text
     "unit:B": "Б", "unit:KB": "КБ", "unit:MB": "МБ", "unit:GB": "ГБ", "unit:TB": "ТБ",
@@ -463,6 +464,7 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"HTTP (\d+)", r"HTTP \1"),
 
     (r"More than (\d+) videos chosen\. One reel can use up to (\d+)\.", r"Выбрано больше \1 видео. В один ролик можно взять до \2."),
+    (r"· (\d+) s · (\d{4}-\d\d-\d\d \d\d:\d\d)", r"· \1 с · \2"),   # reel builds on the Jobs page
     (r"(\d+(?:\.\d+)?) (B|KB|MB|GB|TB)", r"\1 ⟦unit:\2⟧"),   # a size on its own ("155.4 GB")
 ]
 

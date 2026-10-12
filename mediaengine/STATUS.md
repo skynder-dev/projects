@@ -45,6 +45,11 @@ What a user can do (code: `app/archivist/auto_edit.py`, `auto_edit_web.py`, engi
   minutes; versions show the real length; trim times checked in the page (other edits kept); a pasted video path
   works; very short clips flagged; Back buttons on setup/day/comparison pages; the comparison result can accept the
   preferred version; days shown as "14 июля 2026"; Check this PC plays the test reel.
+  Second walk-through: clips under 2.5 s are skipped up front (2.0 s phone clips always failed the analysis);
+  Activity → Jobs lists reel builds; "Folder above" on the setup page; the editor is hidden while a new version
+  builds ("a new version with your edits"); typed trim times checked against the clip's length ("Момент 3: …");
+  real reel lengths on cards and in comparisons; error codes shown small under the message; Russian names for
+  Staging/Private/Rejected; About says MediaEngine.
 - **Folder window**: the Explorer-style one (address bar, Quick access, paste a path), opening next to the last
   reel's videos; the older tree dialog remains as fallback. Driven by window messages in the Windows unit checks.
 - **Check this PC** on Home, in Settings and on Auto Edit (Auto Edit suggests it until a test reel was built here).

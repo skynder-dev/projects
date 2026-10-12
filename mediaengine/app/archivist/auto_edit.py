@@ -428,8 +428,8 @@ def _scan_paths(paths, folder_label: str, files) -> dict:
             dur = float(info.get("format", {}).get("duration") or 0)
             if not v:
                 row["reason"] = "no video stream"
-            elif dur < 0.5:
-                row["reason"] = "too short"
+            elif dur < MIN_CLIP_S:      # the analysis needs a few frames a second apart: shorter clips always fail it
+                row["reason"] = "too short (under 2.5 s)"
             else:
                 row.update(ok=True, duration_s=round(dur, 2), width=int(v[0].get("width") or 0), height=int(v[0].get("height") or 0))
                 total += dur
@@ -744,6 +744,7 @@ def _request_key(p: dict, settings: dict) -> str:
 
 
 MIN_FREE_BYTES = 1_000_000_000
+MIN_CLIP_S = 2.5   # measured: 2.0 s phone clips are rejected by the accepted analysis (fewer than 3 samples, 1 s apart)
 
 
 def check_free_space() -> None:
@@ -784,6 +785,21 @@ def start_job(pid: int, raw_settings: dict, *, retry=False) -> int:
     _ensure_worker()
     _WAKE.set()
     return jid
+
+
+def recent_jobs(limit: int = 20) -> list[dict]:
+    """Latest reel builds of all projects (for Activity → Jobs)."""
+    ensure_schema()
+    with db() as con:
+        rows = con.execute("SELECT j.id, j.project_id, j.status, j.stage, j.error, j.settings_json, j.created_at, j.finished_at, "
+                           "p.title FROM ae_jobs j JOIN ae_projects p ON p.id=j.project_id ORDER BY j.id DESC LIMIT ?", (int(limit),)).fetchall()
+    out = []
+    for r in rows:
+        d = dict(r)
+        d["settings"] = json.loads(d.pop("settings_json") or "{}")
+        d["label"] = STAGE_LABEL.get(d["status"] if d["status"] in ("failed", "cancelled", "done") else (d.get("stage") or "queued"), d["status"])
+        out.append(d)
+    return out
 
 
 def job(jid: int) -> dict | None:

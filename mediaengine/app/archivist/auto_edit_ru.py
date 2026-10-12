@@ -42,8 +42,8 @@ PHRASES = {
     "very short — may be skipped": "очень короткое — может быть пропущено", "Show files": "Показать файлы", "File": "Файл", "Size": "Размер", "Length": "Длина",
     "Frame": "Кадр", "Format": "Формат", "Sound": "Звук", "recommended": "рекомендуется", "Create reel": "Создать ролик",
     "AI model not available.": "ИИ-модель недоступна.", "Build with Technical only": "Собрать без ИИ (только техника)",
-    "AI model not available — build with Technical only (sharpness, motion, exposure)":
-        "ИИ-модель недоступна — собрать в режиме «Только техника» (резкость, движение, свет)",
+    "Build without AI (Technical only: sharpness, motion, exposure)":
+        "Собрать без ИИ (только техника: резкость, движение, свет)",
     "Social HD (vertical 1080×1920)": "Social HD (вертикально 1080×1920)", "Vertical (540×960)": "Вертикально (540×960)",
     "Horizontal (960×540)": "Горизонтально (960×540)", "Social HD": "Social HD", "Vertical": "Вертикально",
     "Horizontal": "Горизонтально", "Auto (keep source sound, mute if it jumps)": "Авто (звук исходника; без звука, если он есть не везде)",
@@ -63,7 +63,7 @@ PHRASES = {
     "Build without AI (Technical only)": "Собрать без ИИ (только техника)",
     # project / review
     "All projects": "Все проекты", "Rename": "Переименовать", "Done": "Готово", "Your reel is saved": "Ролик сохранён",
-    "checked against the accepted version (SHA-256)": "проверен по принятой версии (SHA-256)",
+    "checked against the accepted version (SHA-256)": "проверен: точно совпадает с принятой версией",
     "Moments in this reel": "Моменты в ролике", "Play in reel": "Показать в ролике", "View in source": "Открыть в исходнике",
     "from": "с", "to": "по", "replace with": "заменить на", "— keep —": "— оставить —", "remove": "убрать",
     "add a moment": "добавить момент", "Move up": "Выше", "Move down": "Ниже",
@@ -136,9 +136,18 @@ PHRASES = {
     "These folders inside it have videos — open one (or use Choose videos… on the Auto Edit page to pick from several):":
         "Видео есть во вложенных папках — открой одну (или нажми «Выбрать видео…» на странице автомонтажа, чтобы взять из нескольких):",
     "Accept R": "Принять R",
-    "Other days of this folder": "Другие дни этой папки",
+    "Other days of this folder": "Другие дни этой папки", "Folder above": "Папка выше",
     "Go to Auto Edit": "Перейти к автомонтажу", "The test reel is not there (build it on Check this PC).":
         "Тестового ролика нет (собери его в «Проверке компьютера»).",
+    "too short (under 2.5 s)": "слишком короткое (меньше 2,5 с)", "no video stream": "нет видеодорожки",
+    "cannot be read (locked or no access)": "не читается (занято другой программой или нет доступа)",
+    "No readable videos among the chosen files.": "Среди выбранных файлов нет читаемых видео.",
+    "No readable videos in this folder.": "В этой папке нет читаемых видео.",
+    "All these videos are shorter than 2.5 seconds - too short to find moments in.":
+        "Все эти видео короче 2,5 секунды — в них не из чего выбрать моменты.",
+    "A new version with your edits.": "Новая версия с твоими правками.",
+    "A new version is being built from your choice. Editing is possible again when it is ready.":
+        "Собирается новая версия по твоему выбору. Править можно будет, когда она будет готова.",
     "By day": "По дням", "Use this day": "Взять этот день", "more than 64 — tick them below": "больше 64 — отметь ниже",
     "The day is taken from the file name (e.g. VID_20260714_…), otherwise from the file's date.":
         "День берётся из имени файла (например, VID_20260714_…), иначе — из даты файла.",
@@ -216,7 +225,7 @@ PHRASES = {
     "Build a test reel": "Собрать тестовый ролик", "Build a test reel with the AI model": "Собрать тестовый ролик с ИИ-моделью",
     "Program folder": "Папка программы", "Data folder (projects, exports)": "Папка данных (проекты, экспорт)",
     "Free space on the data drive": "Свободно на диске данных", "Engine libraries load (numpy, OpenCV, ONNX Runtime)": "Библиотеки движка загружаются (numpy, OpenCV, ONNX Runtime)",
-    "HDR phone video conversion (zscale)": "Перевод HDR-видео с телефона (zscale)", "Processor": "Процессор", "Windows long paths": "Длинные пути Windows",
+    "HDR phone video conversion (zscale)": "Преобразование HDR-видео с телефона (zscale)", "Processor": "Процессор", "Windows long paths": "Длинные пути Windows",
     "Back": "Назад", "Could not continue": "Не получилось продолжить",
     # mixed lines and labels
     "Social HD · vertical 1080×1920": "Social HD · вертикально 1080×1920", "Vertical 540×960": "Вертикально 540×960",
@@ -226,7 +235,7 @@ PHRASES = {
         " (резкость, движение, свет); что происходит в кадре, он не понимает.",
     "Without it reels use the clearly labelled ": "Без неё ролики собираются в явно отмеченном режиме ",
     " selection. If you have the model (for example in an existing Archivist install), choose its folder: the exact files are verified and copied here.":
-        ". Если модель есть (например, в рабочем Archivist), выбери её папку: файлы проверяются по хешам и копируются сюда.",
+        ". Если модель есть (например, в установленном раньше Archivist, D:\\Archivist), выбери её папку: файлы проверяются на точное совпадение и копируются сюда.",
     "· source ": "· исходник ", "Revision R": "Версия R", "Horizontal ·": "Горизонтально ·", "Vertical ·": "Вертикально ·",
     " excluded": " убрано", "· sound auto": "· звук авто", "· sound mute": "· без звука", "· sound source": "· звук исходника",
     "· sound Авто": "· звук Авто", "· sound Auto": "· звук Авто", "· sound Mute": "· без звука", "· sound Source": "· звук исходника",
@@ -305,6 +314,8 @@ JS_PHRASES = {
     "'write the time as seconds (12.5) or minutes (1:05)'": "'напиши время в секундах (12.5) или минутах (1:05)'",
     "'“to” must be at least 0.5 s after “from”'": "'«по» должно быть хотя бы на 0,5 с позже, чем «с»'",
     "'one moment can be at most 60 s long'": "'один момент — не длиннее 60 с'",
+    "'Moment '": "'Момент '", "'the video is only '": "'видео длится всего '",
+    "' s long - “to” cannot be later'": "' с — «по» не может быть позже'",
 }
 
 
