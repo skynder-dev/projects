@@ -150,6 +150,25 @@ def main():
             used = {s["source_name"] for s in (rv or {}).get("result", {}).get("segments", [])}
             check("reel_never_uses_the_private_video", rv and used and names[0] not in used, (aj["status"], aj.get("error"), used))
 
+        # archive a copy (Cyrillic names must survive), reject another: originals stay where they are, unchanged
+        from archivist.config import load_config, save_config
+        cfg = load_config(); cfg["archive_root"] = str(work / "Архив"); save_config(cfg)
+        cyr = next((n for n in names if not n.isascii()), None)
+        if cyr:
+            r = c.post("/api/selection-action", json={"action": "archive", "ids": [inv[cyr]["id"]]}, headers=H)
+            aj = wait_job((r.get_json() or {}).get("job_id") or 0, 300)
+            arow = {r_["filename"]: r_ for r_ in rows()}.get(cyr, {})
+            ap = Path(arow.get("archive_path") or "")
+            check("archive_copy_keeps_the_names", aj.get("status") == "finished" and ap.is_file() and ap.name == cyr
+                  and ap.parent.name == "Мои тестовые видео" and sha(ap) == before[cyr] and sha(src / cyr) == before[cyr],
+                  (aj.get("status"), str(ap)))
+        if rec.exists():
+            r = c.post("/api/selection-action", json={"action": "reject", "ids": [inv[rec.name]["id"]]}, headers=H)
+            rj = wait_job((r.get_json() or {}).get("job_id") or 0, 300)
+            page = html.unescape(c.get("/library", headers=H).data.decode("utf-8", "replace"))
+            check("rejected_leaves_the_library_original_kept", rj.get("status") == "finished" and rec.name not in page
+                  and sha(rec) == before[rec.name], rj.get("status"))
+
         # the same pages in Russian
         c.post("/lang", data={"lang": "ru"}, headers=H)
         ru = {u: c.get(u, headers=H) for u in ("/library", "/import?source_kind=fixed", f"/item/{inv[names[1]]['id']}", "/jobs", "/media")}

@@ -220,8 +220,22 @@ def start_discovery() -> bool:
 
 def _row_dict(r): return {k: r[k] for k in r.keys()}
 
+_WIN_RESERVED_NAMES = {"CON", "PRN", "AUX", "NUL", *(f"COM{i}" for i in range(1, 10)), *(f"LPT{i}" for i in range(1, 10))}
+
+
 def re_safe(s: str) -> str:
-    return re.sub(r"[^A-Za-z0-9._ -]+", "_", str(s)).strip(" .") or "Source"
+    """A folder / file name for Staging, the archive, Private and Rejected that keeps the user's own letters
+    (Cyrillic, accents, CJK): only what Windows does not allow in a name is replaced. It used to keep ASCII only,
+    so 'Отпуск на даче.mp4' from the source 'Мои видео' was archived as '_ _ _/_ _ _.mp4'."""
+    s = re.sub(r'[<>:"/\\|?*\x00-\x1f]+', "_", str(s)).strip(" .")
+    if not s:
+        return "Source"
+    if s.split(".")[0].strip().upper() in _WIN_RESERVED_NAMES:
+        s = "_" + s
+    if len(s) > 90:     # folder + name stay well below the Windows path limit (260) with long paths off
+        suffix = Path(s).suffix if len(Path(s).suffix) <= 10 else ""
+        s = s[: 90 - len(suffix)].rstrip(" .") + suffix
+    return s
 
 
 def cached_thumbnail(inv_id: int) -> Path | None:
