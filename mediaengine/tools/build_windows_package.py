@@ -128,7 +128,8 @@ build has a problem, start the old folder again. Old builds can be removed on "C
 Auto Edit: choose a folder with your videos (or single videos), pick Length / Format / Sound, press
 "Create reel". Review the result, Accept it, then Export MP4 (to the Exports folder in "MediaEngine Data",
 or "Export to another folder..."). Phone and camera files work: MP4/MOV (also HEVC and HDR), camcorder
-MTS/M2TS/MOD/TOD, HDV/DV tape captures, DVD VOB/MPG, older WMV/FLV/3GP. "Check this PC" (button on Home, in
+MTS/M2TS/MOD/TOD, HDV/DV tape captures, DVD VOB/MPG, older WMV/FLV/3GP, screen and browser recordings
+(WebM/MKV, also without a length written in the file). "Check this PC" (button on Home, in
 Settings and on Auto Edit) shows what is installed and builds a test reel (also with the AI model).
 Language: the "Русский" / "English" button at the top right of every page switches the whole program (also under
 Settings -> Interface language). It starts in the language chosen in Setup.
@@ -176,7 +177,8 @@ MediaEngine (all Setup builds; keeps "MediaEngine Data"); from the ZIP -> Quit, 
   или список, где можно отметить нужные видео (до 64 в одном ролике). Карту памяти камеры можно
   выбрать целиком: программа покажет папки с видео внутри (DCIM, AVCHD…).
   Подходят видео с телефона и камер: MP4/MOV (в том числе HEVC и HDR), MTS/M2TS/MOD/TOD с видеокамер,
-  оцифровки кассет HDV/DV, DVD (VOB/MPG), старые WMV/FLV/3GP.
+  оцифровки кассет HDV/DV, DVD (VOB/MPG), старые WMV/FLV/3GP, записи экрана и из браузера (WebM/MKV,
+  даже если в файле не записана длина).
 
 ЯЗЫК
   Кнопка "Русский" / "English" справа вверху на любой странице переключает всю программу
