@@ -99,19 +99,20 @@ The 11 runtime modules, adapter and validator are byte-identical to R2 (CI-check
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38156678815 on `f593844` — all green, build b28** (results branch `mediaengine-ci-results`,
-artifacts `MediaEngine-3.13.0-rc1-b28-Setup` (129 MB) and `MediaEngine-3.13.0-rc1-b28` (ZIP, 181 MB); same checks as
-b27 below, plus: nothing at all written into the installed build folder while it ran; 4K/long footage 296 s):
-fast checks 52/52 (incl. Unicode shortcuts on Windows) · R3 = R2 decisions 29/29 · robustness 24/24 (HDR HLG/PQ,
-rotated phone, camcorder .MTS de-interlaced + hand trim, HDV/DVD wide pixels keep their shape in 16:9 and 9:16,
-11 modern formats, 7 older formats WMV/FLV/VOB/MOD/TOD/m2t/DV, quiet+loud clips evened out) · A/V sync worst 20 ms ·
-AI glue 6/6 · Convert 20/20 · library 4/4 · unplugged/no network 9/9 · 64 long-named videos, long paths OFF 5/5
-(cut from the originals) · E2E 7 videos 67/67, 2 videos 66/66, phone 62/62, packaged Python behind the firewall
-63/63 (internet blocked: True) · package smoke PASS (Cyrillic folder, desktop shortcut points exactly there, data
-outside, restart, second copy refused, Quit, next release started while this one runs takes over, 0 files added
-to the release by running it) · Setup smoke PASS (silent install into "Мои программы", start from the Start-menu
-shortcut, data next to the build, uninstall refused while running, after Quit: build and shortcut removed, data
-kept) · 4K H.264 + 4K HEVC + 5-min 1080p → 30 s Social HD reel in 462 s on the 4-core runner. Checks in every run:
+Latest full run: **38188906561 on `49ce2dc` — all green, build b39** (results branch `mediaengine-ci-results`,
+artifacts `MediaEngine-3.13.0-rc1-b39-Setup` and `MediaEngine-3.13.0-rc1-b39` (ZIP)): fast checks 66/66 (incl. the
+Explorer-style folder window driven by window messages: opens in a Cyrillic folder, "Select Folder" returns it,
+closing returns nothing; Setup language applied once per Setup run; every engine progress line has Russian) ·
+R3 = R2 decisions 29/29 · robustness 24/24 · A/V sync worst 20 ms · E2E 7 videos 70/70, 2 videos 70/70, phone
+65/65 (incl. a 66-video camera roll → days + tick list, one day opens the reel setup), packaged Python behind the
+firewall 66/66 · Russian interface: 107 pages, 0 English texts left · package smoke PASS · Setup smoke PASS (silent
+install in Russian into "Мои программы", first start in Russian, uninstall refused while running, after Quit build
+and shortcut removed, data kept, 0 files written into the build folder) · 4K H.264 + 4K HEVC + 5-min 1080p → 30 s
+Social HD reel in 428 s. Previous green builds: b34 (run 38181229982), b28 (run 38156678815), which also showed:
+AI glue 6/6 · Convert 20/20 · library 4/4 · unplugged/no network 9/9 · 64 long-named videos with long paths OFF
+5/5 (cut from the originals) · package smoke (Cyrillic folder, desktop shortcut points exactly there, data outside,
+restart, second copy refused, Quit, the next release started while this one runs takes over, 0 files added to the
+release by running it) — these steps run in every build. Checks in every run:
 
 | Check | What it proves |
 | --- | --- |
