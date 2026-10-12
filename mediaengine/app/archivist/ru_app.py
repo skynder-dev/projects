@@ -277,7 +277,17 @@ APP_PHRASES: dict[str, str] = {
     "Privacy": "Приватность", "Privacy reason": "Причина (приватность)", "Quality": "Качество", "Quality reason": "Причина (качество)",
     "Rights": "Права", "Rights reason": "Причина (права)", "Rights / location risk": "Права / риск места съёмки", "Rights place": "Место",
     "Rights source": "Источник", "Rights notes": "Заметки о правах", "Place / venue": "Место / площадка", "Policy/source URL": "Ссылка на правила",
-    "Notes": "Заметки", "Save rights status": "Сохранить права", "Rejected": "Rejected",
+    "Notes": "Заметки", "Save rights status": "Сохранить права", "Rejected": "Отклонённые (Rejected)", "Archive copy": "Копия в архиве",
+    # codes the Library item page shows as values (quality / rights reasons)
+    "technical_ok": "технически в порядке", "dark": "тёмное", "very_dark": "очень тёмное", "bright": "светлое",
+    "very_bright": "пересвечено", "low_detail": "мало деталей", "very_low_detail": "очень мало деталей",
+    "quality_disabled": "проверка качества выключена", "quality_not_run": "качество не проверялось",
+    "ffmpeg_unavailable": "FFmpeg недоступен", "video_decode_failed": "видео не читается",
+    "video_decode_timeout": "видео читается слишком долго", "quality_metrics_failed": "не удалось оценить качество",
+    "auto: publishing rights not reviewed": "авто: права на публикацию не проверены",
+    "auto: audio track present; publishing rights not reviewed": "авто: есть звук; права на публикацию не проверены",
+    "auto: audio/metadata may indicate a performance or show; review music, performance and venue permissions before publishing":
+        "авто: по звуку или данным файла похоже на концерт или шоу; перед публикацией проверь права на музыку, выступление и место",
     "Triage only — not a legal determination. Manual tags are never overwritten by automatic analysis.":
         "Только подсказка, не юридическое решение. Ручные отметки анализ не перезаписывает.",
     "no": "нет", "yes": "да", "video": "видео", "photo": "фото", "unknown": "неизвестно", "unreviewed": "не проверено", "not_imported": "не импортировано",
@@ -406,6 +416,7 @@ APP_PHRASES: dict[str, str] = {
 }
 
 APP_PATTERNS: list[tuple[str, str]] = [
+    (r"(very_dark|dark|very_bright|bright),(very_low_detail|low_detail)", r"⟦\1⟧, ⟦\2⟧"),
     (r"Preparing a recording without a length: (.+)", r"Подготовка записи без длины: \1"),
     (r"(\d+) errors?", r"ошибок: \1"), (r"(\d+) GB - less than 6 GB, long 4K videos may be slow", r"\1 ГБ — меньше 6 ГБ, длинные 4K-видео могут обрабатываться медленно"),
     (r"(\d+) GB", r"\1 ГБ"), (r"([\d.]+) GB - less than 5 GB, builds may fail", r"\1 ГБ — меньше 5 ГБ, сборка может не пройти"), (r"Credentials: ([a-z_]+)", r"Пароли: ⟦\1⟧"),

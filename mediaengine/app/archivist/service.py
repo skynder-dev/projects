@@ -1106,6 +1106,7 @@ def _run_import_analyze_job(job: dict):
             # Rights/property/audio risk is separate from privacy/quality and is never
             # treated as a legal conclusion. Manual tags are preserved.
             _write_auto_rights(inv_id, row, local)
+            _fill_video_length(inv_id, row, local)
             _item_update(iid, status="done", phase="done", result_status=pstatus, finished_at=now_iso(), error=None)
             if row.get("media_type") == "video": queue_storyboard(inv_id, priority=15)
         except Exception as exc:
@@ -1153,6 +1154,7 @@ def _run_analyze_job(job: dict):
             # Rights/property/audio risk is separate from privacy/quality and is never
             # treated as a legal conclusion. Manual tags are preserved.
             _write_auto_rights(inv_id, row, local)
+            _fill_video_length(inv_id, row, local)
             _item_update(iid, status="done", phase="done", result_status=pstatus, finished_at=now_iso(), error=None)
             if row.get("media_type") == "video": queue_storyboard(inv_id, priority=15)
         except Exception as exc:
@@ -1325,6 +1327,22 @@ def _mark_private_one(inv_id: int) -> str:
         )
         con.commit()
     return "private"
+
+
+def _fill_video_length(inv_id: int, row: dict, local: Path) -> None:
+    """Length of a video for the Library page: videos in a folder on this PC are listed without opening them, so the
+    length was never known ("—"). Read once here (measured when the file has none written)."""
+    if row.get("media_type") != "video" or row.get("duration_ms"):
+        return
+    try:
+        from .media import probe_duration
+        d = probe_duration(Path(local))
+        if d and d > 0:
+            with db() as con:
+                con.execute("UPDATE inventory SET duration_ms=? WHERE id=? AND (duration_ms IS NULL OR duration_ms<=0)", (int(round(d * 1000)), inv_id))
+                con.commit()
+    except Exception as exc:
+        log(f"video length not read for item {inv_id}: {exc}")
 
 
 def _run_private_job(job: dict):

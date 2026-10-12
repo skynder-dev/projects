@@ -99,6 +99,8 @@ def main():
         inv = {r_["filename"]: r_ for r_ in rows()}
         check("all_in_working_set_and_analysed", all(r_["work_selected"] == 1 and r_.get("analysis_version") == 4 for r_ in inv.values()),
               [(k, v["work_selected"], v.get("analysis_version"), v.get("analysis_status"), v.get("error")) for k, v in inv.items()])
+        check("library_knows_every_length", all(int(r_.get("duration_ms") or 0) > 2000 for r_ in inv.values()),
+              [(k, v.get("duration_ms")) for k, v in inv.items()])
         if rec.exists():     # a screen recording without a written length: analysed and cut into clips like any video
             rr = inv.get(rec.name, {})
             r = c.post("/api/selection-action", json={"action": "media_brain", "ids": [rr.get("id")]}, headers=H)
