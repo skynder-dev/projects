@@ -141,15 +141,15 @@ The 11 runtime modules, adapter and validator are byte-identical to R2 (CI-check
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38242920327 on `6fb8b5e` — all green, build b47** (results branch `mediaengine-ci-results`,
-artifacts `MediaEngine-3.13.0-rc1-b47-Setup` and `MediaEngine-3.13.0-rc1-b47` (ZIP)): fast checks 71/71 (incl. the
-Explorer-style folder and file windows driven by window messages, OneDrive cloud-only files with the real OFFLINE
-attribute, a crashed build marked interrupted by the first request, Setup language once per Setup run, Private
-folders never offered) · R3 = R2 decisions 29/29 · robustness 32/32 (adds: unusable file keeps the analysis cache,
-upside-down and +90 portrait upright, timecode track, 25 fps, subtitle track, odd 641×361 picture used, vertical
-crop follows the subject) · A/V sync worst 20 ms, late-starting sound in place · E2E 7 videos 72/72, 2 videos
-72/72, phone 67/67, packaged Python behind the firewall 68/68 · Russian interface: 107 pages, 0 English texts left
-· package smoke PASS · Setup smoke PASS · 4K H.264 + 4K HEVC + 5-min 1080p → 30 s Social HD reel in 359 s.
+Latest full run: **38262901710 on `50995cc` — all green, build b58** (results branch `mediaengine-ci-results`,
+artifacts `MediaEngine-3.13.0-rc1-b58-Setup` and `MediaEngine-3.13.0-rc1-b58` (ZIP)): fast checks 83/83 · R3 = R2
+decisions 29/29 · robustness 32/32 · A/V sync worst 20 ms, late-starting sound in place · E2E 7 videos 72/72,
+2 videos 74/74 (adds a browser recording without a length, in a folder named with ' [ ] % & ! # ; = ,), phone 67/67,
+packaged Python behind the firewall 68/68 · **Library like a user 20/20** (new; data folder with Cyrillic letters) ·
+library re-analysis 4/4 · Convert 20/20 · unplugged/no network 9/9 · 64 long names with long paths OFF 5/5 · AI
+glue 6/6 · Russian interface: 148 pages, 6 texts left (fixed after this run) · package smoke PASS · Setup smoke PASS
+· 4K H.264 + 4K HEVC + 5-min 1080p → 30 s Social HD reel in 402 s.
+Before: b47 (run 38242920327): fast checks 71/71 · E2E 72/72, 72/72, 67/67 · 4K/long footage 359 s.
 Earlier: b41 (run 38194029514): fast checks 67/67 · E2E 71/71, 71/71, 66/66 · 4K/long footage 503 s.
 Previous green builds: b39 (run 38188906561), b34 (run 38181229982), b28 (run 38156678815), which also showed:
 AI glue 6/6 · Convert 20/20 · library 4/4 · unplugged/no network 9/9 · 64 long-named videos with long paths OFF
