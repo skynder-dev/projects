@@ -285,21 +285,35 @@ def videos_by_day(folder) -> list[dict]:
     return [{"day": d, "files": days[d]} for d in sorted(days, reverse=True)]
 
 
-def subfolders_with_videos(folder, limit: int = 40) -> list[tuple[str, int]]:
-    """For a folder with no videos of its own (e.g. D:\\Videos with one folder per year): its subfolders that do
-    have videos, with how many, so the user can open one instead of guessing."""
-    out = []
-    try:
-        subs = sorted((d for d in Path(folder).iterdir() if d.is_dir() and not d.name.startswith((".", "$"))),
-                      key=lambda d: d.name.lower())
-    except OSError:
-        return out
-    for d in subs[:400]:
-        n = len(list_videos(d))
-        if n:
-            out.append((str(d), n))
-            if len(out) >= limit:
-                break
+_SYSTEM_DIRS = {"$recycle.bin", "system volume information", "windows", "program files", "program files (x86)", "programdata",
+                "appdata", "node_modules", "__pycache__", "thumbnails", ".thumbnails", "misc", "cache", ".cache"}
+
+
+def subfolders_with_videos(folder, limit: int = 40, depth: int = 4, max_dirs: int = 3000) -> list[tuple[str, int]]:
+    """For a folder with no videos of its own: the folders inside it (up to 4 levels: D:\\Videos\\2023, a camera card's
+    DCIM\\100GOPRO or PRIVATE\\AVCHD\\BDMV\\STREAM) that do have videos, with how many, so the user can open one
+    instead of guessing. Only folder listings are read; system folders are skipped."""
+    out: list[tuple[str, int]] = []
+    level, seen = [Path(folder)], 0
+    for _ in range(depth):
+        nxt = []
+        for base in level:
+            try:
+                subs = sorted((d for d in base.iterdir() if d.is_dir() and not d.name.startswith((".", "$"))
+                               and d.name.lower() not in _SYSTEM_DIRS), key=lambda d: d.name.lower())
+            except OSError:
+                continue
+            for d in subs:
+                seen += 1
+                if seen > max_dirs:
+                    return out
+                n = len(list_videos(d))
+                if n:
+                    out.append((str(d), n))
+                    if len(out) >= limit:
+                        return out
+                nxt.append(d)
+        level = nxt
     return out
 
 

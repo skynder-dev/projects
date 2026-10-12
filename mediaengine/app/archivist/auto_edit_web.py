@@ -43,6 +43,14 @@ def _when(iso) -> str:
     return t[:16].replace("T", " ") if len(t) >= 16 and t[10:11] == "T" else t
 
 
+def _rel(path: str, base: str) -> str:
+    """A folder inside the chosen one, shown from there (DCIM\\100GOPRO)."""
+    try:
+        return str(Path(path).relative_to(Path(base)))
+    except ValueError:
+        return Path(path).name
+
+
 def _fmt_s(x) -> str:
     try:
         x = float(x)
@@ -292,7 +300,7 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         if not scan["usable"]:
             subs = [] if chosen or scan["files"] else ae.subfolders_with_videos(scan["folder"])
             if subs:
-                links = "".join(f"<li><a href='/auto/new?folder={urllib.parse.quote(p_)}' translate='no'>{e(Path(p_).name)}</a> "
+                links = "".join(f"<li><a href='/auto/new?folder={urllib.parse.quote(p_)}' translate='no'>{e(_rel(p_, scan['folder']))}</a> "
                                 f"<span class='muted'>· {n} video(s)</span></li>" for p_, n in subs)
                 return page("New reel", f"<div class='pagehead'><div class='eyebrow'>Auto Edit · new reel</div>"
                                         f"<h1 translate='no'>{e(Path(scan['folder']).name or scan['folder'])}</h1>"

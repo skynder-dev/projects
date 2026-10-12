@@ -65,6 +65,16 @@ def main():
     (yrs / "2023" / "a.mp4").write_bytes(b"0" * 2048); (yrs / "2024" / "b.MOV").write_bytes(b"0" * 2048); (yrs / "docs" / "c.txt").write_text("c")
     check("subfolders_with_videos", [(Path(x).name, n) for x, n in ae.subfolders_with_videos(yrs)] == [("2023", 1), ("2024", 1)],
           ae.subfolders_with_videos(yrs))
+    # a camera card picked at its root: the video folders deeper inside are found (system folders skipped)
+    card = work / "card"
+    for sub in ("DCIM/100GOPRO", "PRIVATE/AVCHD/BDMV/STREAM", "PRIVATE/M4ROOT/CLIP", "System Volume Information/x"):
+        (card / sub).mkdir(parents=True, exist_ok=True)
+    (card / "DCIM/100GOPRO/GX010001.MP4").write_bytes(b"0" * 1024)
+    (card / "PRIVATE/AVCHD/BDMV/STREAM/00001.MTS").write_bytes(b"0" * 1024)
+    (card / "PRIVATE/M4ROOT/CLIP/C0001.MP4").write_bytes(b"0" * 1024)
+    (card / "System Volume Information/x/a.mp4").write_bytes(b"0" * 1024)
+    found = sorted(Path(x).relative_to(card).as_posix() for x, _ in ae.subfolders_with_videos(card))
+    check("camera card: deep video folders found", found == ["DCIM/100GOPRO", "PRIVATE/AVCHD/BDMV/STREAM", "PRIVATE/M4ROOT/CLIP"], found)
     # a phone camera folder with more videos than one reel takes: grouped by shooting day (name first, else file date)
     cam = work / "camera"; cam.mkdir(parents=True, exist_ok=True)
     for i in range(40):
