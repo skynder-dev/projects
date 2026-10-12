@@ -10,7 +10,11 @@ No external account or billing is required for local use.
    Phone videos: copy them to the computer first.
 2. Pick Length, Format and Sound -> "Create reel". Analysis of new videos takes a while; later builds reuse it.
 3. Review: remove, replace, trim or reorder moments; every change is a new version, older ones stay.
-4. "Accept this version" -> "Export MP4" (or "Export to another folder...").
+4. "Accept this version" -> "Export MP4" (or "Export to another folder..."). "Exported reels" at the top of the
+   Auto Edit page opens the folder with the finished reels.
+
+One reel takes up to 64 videos. A folder with more (a whole phone, say) shows its shooting days and a tick list.
+A camera card can be chosen at its root: the video folders inside it are listed.
 
 Your original files are only read, never changed. "Check this PC" (Home, Settings, Auto Edit) shows whether the
 AI model and video tools are found and builds a 5-second test reel. The language switch is at the top right.
