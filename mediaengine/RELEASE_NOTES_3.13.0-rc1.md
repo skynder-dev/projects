@@ -64,6 +64,16 @@ in the file; it used to be listed as "damaged". MediaEngine now measures it by r
 lists it as usable with a note, and the build uses a copy with the length filled in (made once in the project's
 cache, freed with "Free cache"; the original is never changed; media marked Private is never copied).
 
+## Library (Media) fixes found by using it like a user
+
+A new Windows CI step adds a folder on Import, imports and analyses its videos, opens the Library, makes smart
+clips, marks one video Private, archives and rejects others, and opens every Library page in Russian - with the data
+folder itself named in Cyrillic. Fixed on the way: archive / Staging / Private copies lost every Cyrillic letter of
+folder and file names ("_ _ _"); "Find similar" failed (HTTP 500) on a library where Search had never been opened;
+videos from folders on this PC showed no length; smart clips failed for recordings without a length; previews
+could not be written into a folder with non-Latin letters; quality / privacy codes and sizes were shown in English.
+The page crawl also runs with the internet blocked: no page contacts anything.
+
 ## AI model provenance (not in the ZIP, not in git)
 
 FAST_LOCAL is taken from the owner's stable install (`<drive>:\Archivist\sidecars\auto_edit\models`) or imported
