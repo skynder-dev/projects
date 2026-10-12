@@ -131,7 +131,9 @@ or "Export to another folder..."). Phone and camera files work: MP4/MOV (also HE
 MTS/M2TS/MOD/TOD, HDV/DV tape captures, DVD VOB/MPG, older WMV/FLV/3GP. "Check this PC" (button on Home, in
 Settings and on Auto Edit) shows what is installed and builds a test reel (also with the AI model).
 Language: the "Русский" / "English" button at the top right of every page switches the whole program (also under
-Settings -> Interface language). On a Russian Windows it starts in Russian.
+Settings -> Interface language). It starts in the language chosen in Setup.
+A folder with more than 64 videos (a whole phone) shows its shooting days ("Use this day") and a tick list;
+a camera card chosen at its root lists the video folders inside (DCIM, AVCHD ...).
 
 AI model: if this folder sits next to an existing Archivist install (for example D:\\Archivist),
 the FAST_LOCAL model is found automatically. Otherwise use "Choose model folder" on the Auto Edit page.
@@ -159,7 +161,7 @@ MediaEngine (all Setup builds; keeps "MediaEngine Data"); from the ZIP -> Quit, 
 ЗАПУСК
   Дважды щёлкни "Start MediaEngine.vbs". Откроется окно MediaEngine. На рабочем столе появится
   ярлык "{SHORTCUT}" — дальше запускай с него. Первый запуск может занять минуту.
-  Python, консоль и браузер отдельно не нужны. Закрыть программу: кнопка Quit вверху.
+  Python, консоль и браузер отдельно не нужны. Закрыть программу: кнопка «Выход» (Quit) вверху.
 
 РОЛИК ИЗ СВОИХ ВИДЕО (Автомонтаж)
   1. Автомонтаж → «Выбрать папку…» (папка с видео) или «Выбрать видео…» (отдельные файлы).
@@ -169,12 +171,15 @@ MediaEngine (all Setup builds; keeps "MediaEngine Data"); from the ZIP -> Quit, 
   4. «Принять эту версию» → «Экспорт MP4» (или «Экспорт в другую папку…»).
   (В английском интерфейсе: Auto Edit → Choose folder… → Create reel → Accept → Export MP4.)
   Оригиналы только читаются и никогда не меняются.
+  Папка, где больше 64 видео (весь телефон): программа покажет дни съёмки — «Взять этот день» —
+  или список, где можно отметить нужные видео (до 64 в одном ролике). Карту памяти камеры можно
+  выбрать целиком: программа покажет папки с видео внутри (DCIM, AVCHD…).
   Подходят видео с телефона и камер: MP4/MOV (в том числе HEVC и HDR), MTS/M2TS/MOD/TOD с видеокамер,
   оцифровки кассет HDV/DV, DVD (VOB/MPG), старые WMV/FLV/3GP.
 
 ЯЗЫК
   Кнопка "Русский" / "English" справа вверху на любой странице переключает всю программу
-  (то же — в Настройках → Язык интерфейса). На русской Windows программа сразу открывается по-русски.
+  (то же — в Настройках → Язык интерфейса). Язык, выбранный в Setup, сразу становится языком программы.
 
 ПРОВЕРКА КОМПЬЮТЕРА
   Кнопка "Проверка компьютера" (Check this PC) — на главной, в Настройках и на странице автомонтажа:
@@ -184,17 +189,17 @@ MediaEngine (all Setup builds; keeps "MediaEngine Data"); from the ZIP -> Quit, 
 
 ИИ-МОДЕЛЬ
   Если рядом стоит рабочий Archivist (например D:\\Archivist), модель найдётся сама.
-  Без модели работает только режим "Technical only" (резкость, движение, свет) — его надо
-  выбрать явно галочкой.
+  Без модели работает только режим «Только техника» (Technical only: резкость, движение, свет) —
+  его надо выбрать явно галочкой.
 
 ГДЕ МОИ ДАННЫЕ
   Проекты, настройки и экспорт лежат НЕ в этой папке, а в папке "MediaEngine Data" рядом с ней.
-  Точное место видно в Settings.
+  Точное место видно в Настройках (Settings).
 
 НОВАЯ ВЕРСИЯ / ОТКАТ
   Новую версию поставь её Setup'ом (или распакуй ZIP в новую папку рядом, не поверх старой) и запусти —
   она откроет те же проекты. Если старая ещё запущена, MediaEngine спросит, переключиться ли на новую.
-  Если с новой что-то не так: Quit и запусти "Start MediaEngine.vbs" из старой папки. Ненужные старые
+  Если с новой что-то не так: «Выход» и запусти "Start MediaEngine.vbs" из старой папки. Ненужные старые
   версии можно удалить на странице «Проверка компьютера» (проекты и ролики не трогаются).
   Номер сборки (например b21) виден вверху рядом с версией.
 
