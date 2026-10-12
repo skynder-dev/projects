@@ -260,6 +260,31 @@ def list_videos(folder: Path) -> list[Path]:
     return sorted(vids, key=lambda p: p.name.lower())
 
 
+# a shooting date in a file name: VID_20260714_123456, PXL_20260714_..., 2026-07-14 12.30.01, IMG-20260714-WA0003
+_DAY_IN_NAME = re.compile(r"(?<!\d)(20\d{2})[-_.]?(0[1-9]|1[0-2])[-_.]?(0[1-9]|[12]\d|3[01])(?=\D|$|\d{6}(?:\D|$))")
+
+
+def video_day(p: Path, mtime: float) -> str:
+    m = _DAY_IN_NAME.search(Path(p).stem)
+    if m:
+        return f"{m.group(1)}-{m.group(2)}-{m.group(3)}"
+    return time.strftime("%Y-%m-%d", time.localtime(mtime))
+
+
+def videos_by_day(folder) -> list[dict]:
+    """A folder with more videos than one reel takes (a phone camera folder): its videos grouped by the day they were
+    shot (date in the file name, else the file's date), newest day first, so the user can pick a day or tick videos.
+    Only file names and sizes are read here - nothing is opened."""
+    days: dict[str, list] = {}
+    for p in list_videos(Path(folder)):
+        try:
+            st = p.stat()
+        except OSError:
+            continue
+        days.setdefault(video_day(p, st.st_mtime), []).append({"path": str(p), "name": p.name, "bytes": st.st_size})
+    return [{"day": d, "files": days[d]} for d in sorted(days, reverse=True)]
+
+
 def subfolders_with_videos(folder, limit: int = 40) -> list[tuple[str, int]]:
     """For a folder with no videos of its own (e.g. D:\\Videos with one folder per year): its subfolders that do
     have videos, with how many, so the user can open one instead of guessing."""
@@ -465,6 +490,11 @@ def create_project(folder, title="", files=None) -> int:
             raise ValueError(f"This folder has no supported video files ({SUPPORTED_TEXT})")
     ts = now_iso()
     name = str(title or "").strip()[:80] or folder.name or "Auto Edit"
+    if files and not str(title or "").strip():      # one shooting day picked from a big folder: "Camera 2026-07-14"
+        picked = [Path(x) for x in json.loads(chosen)]
+        days = {video_day(x, 0) for x in picked}
+        if len(days) == 1 and all(_DAY_IN_NAME.search(x.stem) for x in picked):
+            name = f"{name} {days.pop()}"[:80]
     with db() as con:
         cur = con.execute("INSERT INTO ae_projects(title,folder,files_json,created_at,updated_at) VALUES(?,?,?,?,?)",
                           (name, str(folder.resolve()), chosen, ts, ts))

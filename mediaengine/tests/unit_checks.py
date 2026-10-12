@@ -65,6 +65,18 @@ def main():
     (yrs / "2023" / "a.mp4").write_bytes(b"0" * 2048); (yrs / "2024" / "b.MOV").write_bytes(b"0" * 2048); (yrs / "docs" / "c.txt").write_text("c")
     check("subfolders_with_videos", [(Path(x).name, n) for x, n in ae.subfolders_with_videos(yrs)] == [("2023", 1), ("2024", 1)],
           ae.subfolders_with_videos(yrs))
+    # a phone camera folder with more videos than one reel takes: grouped by shooting day (name first, else file date)
+    cam = work / "camera"; cam.mkdir(parents=True, exist_ok=True)
+    for i in range(40):
+        (cam / f"VID_20260714_1200{i:02d}.mp4").write_bytes(b"0" * 1024)
+    for i in range(30):
+        (cam / f"PXL_20260715_1300{i:02d}123.mp4").write_bytes(b"0" * 1024)
+    (cam / "clip.mov").write_bytes(b"0" * 1024); os.utime(cam / "clip.mov", (1_600_000_000, 1_600_000_000))
+    days = ae.videos_by_day(cam)
+    check("videos_by_day groups a big folder, newest day first",
+          [(d["day"], len(d["files"])) for d in days] == [("2026-07-15", 30), ("2026-07-14", 40), (ae.video_day(cam / "clip.mov", 1_600_000_000), 1)],
+          [(d["day"], len(d["files"])) for d in days])
+    check("big folder is offered as a choice, not refused", len(ae.list_videos(cam)) > ae.MAX_INPUTS and raises(ae.check_folder, str(cam)))
     # a nearly full data drive refuses a new build up front (not half-way)
     old_min = ae.MIN_FREE_BYTES
     ae.MIN_FREE_BYTES = 1 << 62

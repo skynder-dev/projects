@@ -49,7 +49,51 @@ def _fmt_s(x) -> str:
     except Exception:
         return "—"
     m, s = divmod(x, 60)
+    if m >= 60:                       # long camera files: 1:05:03.0
+        h, m = divmod(int(m), 60)
+        return f"{h}:{m:02d}:{s:04.1f}"
     return f"{int(m)}:{s:04.1f}"
+
+
+def _big_folder_page(folder: Path, days: list, e, human_bytes) -> tuple[str, str]:
+    """More videos than one reel takes: choose a day (one click) or tick up to MAX_INPUTS videos."""
+    cap = ae.MAX_INPUTS
+    total = sum(len(d["files"]) for d in days)
+    day_rows, file_rows = [], []
+    for d in days:
+        n, size = len(d["files"]), human_bytes(sum(f["bytes"] for f in d["files"]))
+        use = ("<a class='btn btn2' href='/auto/new?" + "&".join("file=" + urllib.parse.quote(f["path"]) for f in d["files"])
+               + "'>Use this day</a>") if n <= cap else f"<span class='muted'>more than {cap} — tick them below</span>"
+        day_rows.append(f"<tr><td><b translate='no'>{e(d['day'])}</b></td><td>{n} video(s)</td><td>{size}</td><td>{use}</td></tr>")
+        file_rows.append(f"<tr><td colspan='3'><label class='muted'><input type='checkbox' data-day='{e(d['day'])}'> "
+                         f"<b translate='no'>{e(d['day'])}</b> · {n} video(s)</label></td></tr>")
+        file_rows += [f"<tr><td><label><input type='checkbox' name='file' value='{e(f['path'])}' data-in='{e(d['day'])}'> "
+                      f"<span translate='no'>{e(f['name'])}</span></label></td><td>{human_bytes(f['bytes'])}</td><td></td></tr>"
+                      for f in d["files"]]
+    body = (f"<div class='pagehead'><div class='eyebrow'>Auto Edit · new reel</div><h1 translate='no'>{e(folder.name or str(folder))}</h1>"
+            f"<div class='lead ae-path'>{e(str(folder))}</div></div>"
+            f"<div class='card callout'><b>{total} videos in this folder.</b> One reel can use up to {cap} of them: "
+            f"pick a day, or tick the videos you want.</div>"
+            f"<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>By day</h2>"
+            f"<div class='muted'>The day is taken from the file name (e.g. VID_20260714_…), otherwise from the file's date.</div>"
+            f"<table class='ae-files' style='margin-top:8px'>{''.join(day_rows)}</table></div>"
+            f"<form method='get' action='/auto/new' class='card' style='margin-top:14px' id='pickForm'>"
+            f"<h2 style='margin-top:0'>Tick videos</h2>"
+            f"<div class='row' style='flex-wrap:wrap;gap:8px'><button type='button' class='btn2' id='tickNewest'>Tick the newest {cap}</button>"
+            f"<button type='button' class='btn2' id='tickNone'>Untick all</button>"
+            f"<span>Ticked: <b id='tickCount' translate='no'>0 / {cap}</b></span>"
+            f"<button class='ae-big' id='tickGo' disabled>Use the ticked videos</button></div>"
+            f"<div class='errbox' id='tickMax' style='margin-top:8px' hidden>More than {cap} ticked — untick some.</div>"
+            f"<table class='ae-files' style='margin-top:8px'>{''.join(file_rows)}</table></form>")
+    script = ("const CAP=" + str(cap) + ",boxes=[...document.querySelectorAll('input[name=file]')];"
+              "function upd(){const n=boxes.filter(b=>b.checked).length;document.getElementById('tickCount').textContent=n+' / '+CAP;"
+              "document.getElementById('tickGo').disabled=!n||n>CAP;document.getElementById('tickMax').hidden=n<=CAP}"
+              "boxes.forEach(b=>b.onchange=upd);"
+              "document.querySelectorAll('input[data-day]').forEach(d=>d.onchange=()=>{boxes.filter(b=>b.dataset.in===d.dataset.day).forEach(b=>b.checked=d.checked);upd()});"
+              "document.getElementById('tickNewest').onclick=()=>{boxes.forEach((b,i)=>b.checked=i<CAP);upd()};"
+              "document.getElementById('tickNone').onclick=()=>{boxes.forEach(b=>b.checked=false);document.querySelectorAll('input[data-day]').forEach(d=>d.checked=false);upd()};"
+              "document.getElementById('pickForm').onsubmit=()=>{document.getElementById('tickGo').disabled=true};upd();")
+    return body, script
 
 
 def register(app, layout, e, human_bytes):
@@ -234,6 +278,13 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
             return err_page("This page can only be opened from MediaEngine itself.")
         folder = request.args.get("folder", "")
         chosen = request.args.getlist("file")
+        big = Path(folder.strip().strip('"')) if folder.strip() and not chosen else None
+        if big is not None and big.is_absolute() and ae.folder_available(big) and len(ae.list_videos(big)) > ae.MAX_INPUTS:
+            try:   # a phone camera folder: pick a day or tick videos instead of refusing the folder
+                ae._guard_private(big)
+            except ValueError as exc:
+                return err_page(str(exc))
+            return page("New reel", *_big_folder_page(big, ae.videos_by_day(big), e, human_bytes))
         try:
             scan = ae.scan_files(chosen) if chosen else ae.scan_folder(folder)
         except Exception as exc:
@@ -273,6 +324,10 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
                      "Build with Technical only</label></div>")
         warn = ("<div class='callout card' style='margin-top:10px'>Only "
                 f"{_fmt_s(total)} of usable video — a short reel is recommended.</div>" if total < 30 else "")
+        if total >= 1800:   # honest note for big folders (no invented time estimate)
+            warn = ("<div class='callout card' style='margin-top:10px'>A lot of video. The first build analyses all of it once and "
+                    "can take a long time; later builds and variants reuse that analysis. The PC does not go to sleep while "
+                    "MediaEngine works, and you can keep using it.</div>")
         src_hidden = ("".join(f"<input type='hidden' name='file' value='{e(x)}'>" for x in scan["files_chosen"]) if scan["files_chosen"]
                       else f"<input type='hidden' name='folder' value='{e(scan['folder'])}'>")
         where = (f"{len(scan['files_chosen'])} chosen video(s) · from {scan['folder']}" if scan["files_chosen"] else scan["folder"])

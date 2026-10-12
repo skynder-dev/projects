@@ -487,6 +487,7 @@ APP_COUNT_SUBS: list[tuple[str, str]] = [
     (r"\b(\d+) overlapping moment\(s\) of the same video were left out so nothing repeats",
      r"\1 ⟪\1|пересекающийся момент одного видео убран|пересекающихся момента одного видео убраны|пересекающихся моментов одного видео убраны⟫, чтобы ничего не повторялось"),
     (r"\b(\d+) skipped\b", r"\1 ⟪\1|пропущено|пропущено|пропущено⟫"),
+    (r"\b(\d+) videos in this folder\.", r"В этой папке \1 видео."),
     (r"\bRequested (\d+) s, got ([\d.]+) s:", r"Выбрано \1 с, получилось \2 с:"),
 ]
 

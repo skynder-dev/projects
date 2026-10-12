@@ -11,7 +11,7 @@ Exit code 0 only if every check passes.
 """
 from __future__ import annotations
 
-import argparse, urllib.parse, hashlib, json, os, shutil, subprocess, sys, time
+import argparse, html, urllib.parse, hashlib, json, os, re, shutil, subprocess, sys, time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -98,6 +98,19 @@ def main():
         r = c.get("/auto/new", query_string={"folder": str(parent)}, headers=H)
         check("folder_with_subfolders_lists_them", r.status_code == 200 and b"No videos directly in this folder" in r.data
               and urllib.parse.quote(str(parent / "2024 trip")).encode() in r.data, r.data[-400:])
+        # a phone camera folder with more videos than one reel takes: pick a day (one click) instead of an error
+        cam = home / "camera_roll"
+        cam.mkdir(parents=True, exist_ok=True)
+        for i in range(ae.MAX_INPUTS + 2):
+            shutil.copyfile(first, cam / f"VID_2026071{4 + i % 2}_1200{i:02d}.mp4")
+        r = c.get("/auto/new", query_string={"folder": str(cam)}, headers=H)
+        cam_page = r.data.decode("utf-8", "replace")
+        day_links = re.findall(r"href='(/auto/new\?file=[^']+)'", cam_page)
+        check("big_folder_offers_days_and_ticks", r.status_code == 200 and "Use this day" in cam_page and len(day_links) == 2
+              and cam_page.count("name='file'") == ae.MAX_INPUTS + 2, (r.status_code, len(day_links)))
+        if day_links:
+            r = c.get(html.unescape(day_links[0]), headers=H)
+            check("big_folder_day_opens_reel_setup", r.status_code == 200 and b"Create reel" in r.data, r.status_code)
         r = c.get("/auto/new", query_string={"folder": str(folder)}, headers={**H, "Sec-Fetch-Site": "cross-site"})
         check("setup_refuses_other_sites", r.status_code == 400, r.status_code)
         if not ae.model_status()["ready"]:

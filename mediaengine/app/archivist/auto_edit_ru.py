@@ -40,6 +40,8 @@ PHRASES = {
     "Horizontal": "Горизонтально", "Auto (keep source sound, mute if it jumps)": "Авто (звук исходника, без звука если скачет)",
     "Source sound": "Звук исходника", "Mute": "Без звука", "Auto": "Авто", "Source": "Исходный",
     "a short reel is recommended": "лучше короткий ролик", "of usable video": "пригодного видео",
+    "A lot of video. The first build analyses all of it once and can take a long time; later builds and variants reuse that analysis. The PC does not go to sleep while MediaEngine works, and you can keep using it.":
+        "Много видео. Первая сборка один раз анализирует всё и может идти долго; следующие сборки и варианты используют готовый анализ. Пока MediaEngine работает, компьютер не уснёт, и им можно пользоваться.",
     # progress
     "Waiting": "В очереди", "Starting": "Запуск", "Checking files": "Проверка файлов", "Finding moments": "Поиск моментов",
     "Choosing moments": "Выбор моментов", "Checking clip edges": "Проверка краёв клипов", "Rendering segments": "Рендер кусков",
@@ -101,6 +103,15 @@ PHRASES = {
     "No videos directly in this folder.": "В самой папке видео нет.", "video(s)": "видео",
     "These folders inside it have videos — open one (or use Choose videos… to pick from several):":
         "Видео есть во вложенных папках — открой одну (или нажми «Выбрать видео…», чтобы взять из нескольких):",
+    # a folder with more videos than one reel takes: pick a day or tick videos
+    "One reel can use up to 64 of them: pick a day, or tick the videos you want.":
+        "В один ролик можно взять до 64: выбери день или отметь нужные видео.",
+    "By day": "По дням", "Use this day": "Взять этот день", "more than 64 — tick them below": "больше 64 — отметь ниже",
+    "The day is taken from the file name (e.g. VID_20260714_…), otherwise from the file's date.":
+        "День берётся из имени файла (например, VID_20260714_…), иначе — из даты файла.",
+    "Tick videos": "Отметить видео", "Tick the newest 64": "Отметить 64 самых новых", "Untick all": "Снять все отметки",
+    "Ticked: ": "Отмечено: ", "Use the ticked videos": "Взять отмеченные видео",
+    "More than 64 ticked — untick some.": "Отмечено больше 64 — сними лишние.",
     "Skipped:": "Пропущено:", "Requested": "Запрошено", "got": "получилось",
     "there were not enough different moments in this footage for a longer reel.": "в этом материале не хватило разных моментов на более длинный ролик.",
     "You found them about the same: A =": "Для тебя они примерно одинаковы: A =", "You preferred A =": "Ты выбрал A =",
