@@ -52,7 +52,9 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Make synthetic fixtures
         shell: pwsh
-        run: python mediaengine/tests/make_fixtures.py "$env:RUNNER_TEMP\fx"
+        run: |
+          python mediaengine/tests/make_fixtures.py "$env:RUNNER_TEMP\fx" 2>&1 | Tee-Object "$env:OUT\fixtures.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Engine regression R3 == R2 (Windows-proven bytes path)
         shell: pwsh
         run: |

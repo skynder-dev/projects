@@ -333,7 +333,7 @@ def main():
     # more phone/camera cases: upside-down phone (rotation 180), portrait turned the other way (+90), action camera
     # with a timecode track at 29.97 fps, 25 fps PAL, .MOV with a subtitle track
     cam2 = fx / "camera2"
-    if cam2.is_dir():
+    if cam2.is_dir() and any(cam2.iterdir()):
         have = sorted(p.name for p in cam2.iterdir())
         r, reel, cp = engine(cam2, "camera2", 60, "--profile", "16x9")
         used = set((r or {}).get("selected_sources", []))
@@ -341,6 +341,9 @@ def main():
         check("camera_cases_analysed_and_used", r and not skipped and len(used) >= len(have) - 1,
               cp.stderr[-800:] if not r else (skipped, sorted(set(have) - used)))
         for name in ("upside_down.mp4", "portrait_cw.mp4"):
+            if not (cam2 / name).exists():
+                print("SKIP", name, "(fixture not made by this ffmpeg)")
+                continue
             one = work_root / f"one_{Path(name).stem}"
             one.mkdir(exist_ok=True)
             shutil.copy2(cam2 / name, one / name)
@@ -353,7 +356,7 @@ def main():
     # a vertical reel from a landscape clip whose subject stays at the right edge: the accepted saliency crop must
     # follow it (a centre crop would show only the flat dark background)
     subj = fx / "subject"
-    if subj.is_dir():
+    if (subj / "subject_right.mp4").exists():
         r, reel, cp = engine(subj, "subject", 5, "--profile", "9x16", "--resolution", "social_hd")
         detail = None
         if r:
