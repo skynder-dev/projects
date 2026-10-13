@@ -82,6 +82,11 @@ jobs:
         run: |
           python mediaengine/tests/semantic_glue_check.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\semglue" 2>&1 | Tee-Object "$env:OUT\semantic_glue.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: AI+ glue with a stand-in scorer (PE-Core path of the engine, own caches, refused without the model)
+        shell: pwsh
+        run: |
+          python mediaengine/tests/aiplus_glue_check.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\aiplusglue" 2>&1 | Tee-Object "$env:OUT\aiplus_glue.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Full-video Convert (1440p60, rotated phone clip, VFR)
         shell: pwsh
         run: |
@@ -124,6 +129,12 @@ jobs:
         shell: pwsh
         run: |
           python mediaengine/tests/e2e_auto_edit.py --folder "$env:RUNNER_TEMP\fx\two" --home "$env:RUNNER_TEMP\home2" --mode technical --skip-cancel --files-check --out "$env:OUT\e2e_two.json" 2>&1 | Tee-Object "$env:OUT\e2e_two.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Real AI models from Hugging Face - AI and AI+ test reels, an AI+ reel, its AI variant, blind comparison
+        timeout-minutes: 60
+        shell: pwsh
+        run: |
+          python mediaengine/tests/real_models_check.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\home-ai" --out "$env:OUT\real_models.json" 2>&1 | Tee-Object "$env:OUT\real_models.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Russian interface - every page in Russian, no English left, no page contacts the internet (7-video, library and library-flow homes)
         continue-on-error: true    # a missed word is reported (results branch) but never blocks the package
