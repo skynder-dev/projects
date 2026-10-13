@@ -1293,12 +1293,15 @@ pollConvert();"""
             return layout('Find by theme',f"<div class='card'><div class='errbox'>{e(str(exc)[:300])}</div><a class='btn btn2' href='/library'>Back</a> "
                           f"<a class='btn btn2' href='/auto/check#aiplus'>Check this PC</a></div>"),400
         good=[r for r in res if r['score']>0]
+        SHOW=150
         def pic(r):                       # the preview frame of the best moment (the cover if the previews are being redone)
             iid=r['inventory_id']
             return f"/storyboard/{iid}/{r['frame']}" if cached_storyboard(iid) else f"/thumb/{iid}"
         cards="".join(f"<a class='media-card' href='/item/{r['inventory_id']}?t={r['best_s']:.1f}'><div class='thumb'><img loading='lazy' src='{pic(r)}' onerror=\"this.onerror=null;this.src='/thumb/{r['inventory_id']}'\"></div>"
                       f"<div class='meta'><div class='name' translate='no'>{e(r['filename'])}</div><div class='small'><span>best moment</span> "
-                      f"{int(r['best_s']//60)}:{int(r['best_s']%60):02d}</div></div></a>" for r in good)
+                      f"{int(r['best_s']//60)}:{int(r['best_s']%60):02d}</div></div></a>" for r in good[:SHOW])
+        if len(good)>SHOW:                # a big Library: the best ones (the page stays quick)
+            cards+=f"<div class='muted' style='grid-column:1/-1;padding:8px'>The best {SHOW} of {len(good)} are shown.</div>"
         if st['indexed']<st['videos']:
             note=(f"<div class='callout card' style='margin-bottom:12px'><span>Only {st['indexed']} of {st['videos']} video(s) are prepared for the search.</span> "
                   f"<a href='/library'>Prepare the rest</a> <span>on the Library page.</span></div>")

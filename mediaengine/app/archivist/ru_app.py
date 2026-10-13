@@ -432,6 +432,7 @@ APP_PHRASES: dict[str, str] = {
 
 APP_PATTERNS: list[tuple[str, str]] = [
     (r"Ready for (\d+) of (\d+) video\(s\)\.", r"Готово для \1 из \2 видео."),
+    (r"The best (\d+) of (\d+) are shown\.", r"Показаны лучшие \1 из \2."),
     (r"AI\+ speed on this PC: (\d+)\.(\d+) s per frame\. The first analysis looks at up to 48 frames of each video \(about one per second\): "
      r"about (\d+) s for a video of a minute or longer\. Later builds reuse it\.",
      r"Скорость ИИ+ на этом компьютере: \1,\2 с на кадр. При первом анализе модель смотрит до 48 кадров каждого видео (примерно "
