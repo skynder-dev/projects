@@ -311,6 +311,9 @@ PHRASES = {
     "Private and Rejected media cannot be used in a reel": "Видео из Private и Rejected нельзя использовать в ролике",
     "Accept a revision before exporting": "Сначала прими версию (Accept), потом экспорт",
     "This page can only be opened from MediaEngine itself.": "Эту страницу можно открыть только из самого MediaEngine.",
+    "Network folders can only be opened from MediaEngine itself: paste the path on the Auto Edit page.":
+        "Сетевые папки открываются только из самого MediaEngine: вставь путь на странице «Автомонтаж».",
+    "No video of this theme is on this PC now.": "Сейчас на этом компьютере нет видео на эту тему.",
 }
 
 import html as _html

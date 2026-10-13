@@ -1307,23 +1307,8 @@ pollConvert();"""
                   "<a href='/library'>Prepare the rest</a> <span>on the Library page.</span></div>")
         else:
             note=""
-        # a reel about this theme from the matching videos (the best first; one per file name, at most one reel's worth)
-        from .service import _existing_local_path
-        from .auto_edit import MAX_INPUTS
-        picked,seen=[],set()
-        if good:
-            with db() as con:
-                byid={int(r['id']):dict(r) for r in con.execute(
-                    f"SELECT * FROM inventory WHERE id IN ({','.join('?' for _ in good)})",[r['inventory_id'] for r in good]).fetchall()}
-            for r in good:
-                row=byid.get(r['inventory_id'])
-                local=_existing_local_path(row) if row else None
-                if local and local.name.lower() not in seen and len(picked)<MAX_INPUTS:
-                    seen.add(local.name.lower()); picked.append(str(local))
-        reel=(f"<form method='get' action='/auto/new' style='display:inline'>"
-              + "".join(f"<input type='hidden' name='file' value='{e(p_)}'>" for p_ in picked)
-              + f"<input type='hidden' name='mode' value='semantic_plus'><input type='hidden' name='theme' value='{e(theme)}'>"
-              f"<button class='btn'>Make a reel about this theme</button></form>") if picked else ""
+        # a reel about this theme from the matching videos: the new-reel page picks them (no paths in the address)
+        reel=(f"<a class='btn' href='/auto/new?library_theme={e(theme)}'>Make a reel about this theme</a>") if good else ""
         body=(f"<div class='pagehead row space'><div><div class='eyebrow'>Library · AI+</div><h1>{e(name)}</h1>"
               f"<div class='lead'>{len(good)} video(s) match the theme, best first. Open one to start at its best moment.</div></div>"
               f"<div class='row'>{reel}<a class='btn btn2' href='/library'>Back</a></div></div>{note}"

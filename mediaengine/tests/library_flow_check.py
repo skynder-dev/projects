@@ -236,15 +236,33 @@ def main():
                   and (not rec.exists() or rec.name not in names_found), names_found)
             r = c.get("/library/theme", query_string={"theme": "sea"}, headers=H)
             check("library_theme_page", r.status_code == 200 and "/item/" in r.data.decode("utf-8", "replace"), r.status_code)
-            # "Make a reel about this theme": the new-reel page with these videos, AI+ and the theme already chosen
-            import re as _re
+            # "Make a reel about this theme": the new-reel page picks the matching videos itself (no paths in the
+            # address), AI+ and the theme already chosen - also when the AI model is there too (AI is listed first)
             tp = r.data.decode("utf-8", "replace")
-            files = [html.unescape(x) for x in _re.findall(r"<input type='hidden' name='file' value='([^']*)'>", tp)]
-            np_ = c.get("/auto/new", query_string=[("file", x) for x in files] + [("mode", "semantic_plus"), ("theme", "sea")], headers=H)
-            npage = np_.data.decode("utf-8", "replace")
-            check("library_theme_makes_a_reel_setup", "Make a reel about this theme" in tp and files and np_.status_code == 200
-                  and "value='semantic_plus' checked" in npage and "<option value='sea' selected>" in npage
+            real_ms = ae.model_status
+            ae.model_status = lambda: {"ready": True, "reason": "", "path": "STAND-IN"}
+            try:
+                np_ = c.get("/auto/new", query_string={"library_theme": "sea"}, headers={**H, "Sec-Fetch-Site": "same-origin"})
+            finally:
+                ae.model_status = real_ms
+            raw = np_.data.decode("utf-8", "replace")
+            npage = html.unescape(raw)
+            import re as _re
+            files = [html.unescape(x) for x in _re.findall(r"<input type='hidden' name='file' value='([^']*)'>", raw)]
+            check("library_theme_makes_a_reel_setup", "/auto/new?library_theme=sea" in tp and np_.status_code == 200 and files
+                  and "value='semantic' >" in npage.replace("value='semantic' checked", "x") and "value='semantic_plus' checked" in npage
+                  and "<option value='sea' selected>" in npage
                   and all(Path(x).name not in (names[0], rec.name) for x in files), (len(files), np_.status_code, files))
+            # a link from outside the app cannot make this PC open a network share; from the app's pages it can
+            bad = c.get("/auto/new", query_string={"folder": r"\\192.0.2.1\share"}, headers={**H, "Sec-Fetch-Site": "none"})
+            check("network_folder_link_from_outside_refused", "Network folders can only be opened from MediaEngine itself"
+                  in bad.data.decode("utf-8", "replace"), bad.status_code)
+            # time left while preparing: from the pace of this run
+            saved = dict(al._STATE)
+            al._STATE.update(state="running", waiting=False, t0=time.time() - 10, n0=0, done=2, total=6)
+            eta = al.status()["eta_s"]
+            al._STATE.update(saved)
+            check("library_theme_index_time_left", eta is not None and 15 <= eta <= 25, eta)
             # while a reel is being built the search waits (one AI+ model in memory at a time), then goes on
             with db() as con:
                 reel_job = con.execute("SELECT id,status FROM ae_jobs ORDER BY id DESC LIMIT 1").fetchone()

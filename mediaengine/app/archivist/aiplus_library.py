@@ -107,12 +107,13 @@ def status() -> dict:
                         con.execute("SELECT inventory_id,source_fingerprint FROM aiplus_frames WHERE model_key=?", (key,)).fetchall()}
             indexed = sum(1 for v in vids if v["id"] in done and (done[v["id"]] or "") == (v["source_fingerprint"] or ""))
         texts_missing = _texts_missing()
+    snap = dict(_STATE)     # one consistent picture of the running index
     eta = None              # seconds left, from the pace of this run (after the first video)
-    if _STATE["state"] == "running" and not _STATE["waiting"] and _STATE["done"] > _STATE["n0"] and _STATE["t0"]:
-        pace = (time.time() - _STATE["t0"]) / (_STATE["done"] - _STATE["n0"])
-        eta = round(pace * max(0, _STATE["total"] - _STATE["done"]))
+    if snap["state"] == "running" and not snap["waiting"] and snap["t0"] and snap["done"] > snap["n0"]:
+        pace = max(0.0, time.time() - snap["t0"]) / (snap["done"] - snap["n0"])
+        eta = round(pace * max(0, snap["total"] - snap["done"]))
     return {"model_ready": ready, "videos": len(vids), "indexed": indexed, "texts_missing": texts_missing, "eta_s": eta,
-            **{k: _STATE[k] for k in ("state", "done", "total", "error", "file", "waiting")}}
+            **{k: snap[k] for k in ("state", "done", "total", "error", "file", "waiting")}}
 
 
 def needs_preparing(st: dict) -> bool:
@@ -142,10 +143,20 @@ def stop() -> None:
 
 def _scorer():
     _engine_path()
+    import os
     import p13_pe_core_adapter as pa
-    # onnxruntime's own choice (one thread per physical core): measured in the model lab, more threads (hyper-
-    # threading) or two sessions side by side are not faster, and the logical CPUs left keep the app responsive
-    return pa.PECoreScorer(_ae().aiplus_dir(), full_check=False)
+    sc = pa.PECoreScorer(_ae().aiplus_dir(), full_check=False)
+    model_dir = sc.model_dir
+
+    def session(name):
+        # inside the app (normal priority): one CPU left for the app, and idle model threads do not spin
+        import onnxruntime as ort
+        so = ort.SessionOptions()
+        so.intra_op_num_threads = max(1, (os.cpu_count() or 2) - 1)
+        so.add_session_config_entry("session.intra_op.allow_spinning", "0")
+        return ort.InferenceSession(str(model_dir / name), so, providers=["CPUExecutionProvider"])
+    sc._session = session
+    return sc
 
 
 def _load(part: str):
@@ -181,6 +192,9 @@ def _theme_texts(sc) -> None:
 
 
 def _reel_building() -> bool:
+    """A reel build or the AI+ test reel of Check this PC is running."""
+    if getattr(_ae(), "SELFTEST_RUNNING", None) is not None and _ae().SELFTEST_RUNNING.is_set():
+        return True
     try:
         with db() as con:
             return con.execute("SELECT 1 FROM ae_jobs WHERE status='running' LIMIT 1").fetchone() is not None
@@ -305,3 +319,24 @@ def search(theme: str, limit: int | None = None) -> list[dict]:
                     "score": round(float(margin[i]), 3)})
     out.sort(key=lambda x: x["score"], reverse=True)
     return out if limit is None else out[: max(1, int(limit))]
+
+
+def reel_files(theme: str, limit: int = 64) -> list[str]:
+    """The videos of a theme search for a new reel: best first, files that are on this PC, one per file name (a reel
+    refers to its sources by name), at most `limit`. Stops as soon as it has enough (no look at the rest)."""
+    from .service import _existing_local_path
+    good = [r for r in search(theme) if r["score"] > 0]
+    picked, names = [], set()
+    for k in range(0, len(good), 200):
+        part = good[k:k + 200]
+        with db() as con:
+            rows = {int(r["id"]): dict(r) for r in con.execute(
+                f"SELECT * FROM inventory WHERE {_VISIBLE} AND id IN ({','.join('?' for _ in part)})", [r["inventory_id"] for r in part]).fetchall()}
+        for r in part:
+            row = rows.get(r["inventory_id"])
+            local = _existing_local_path(row) if row else None
+            if local and local.name.lower() not in names:
+                names.add(local.name.lower()); picked.append(str(local))
+                if len(picked) >= limit:
+                    return picked
+    return picked

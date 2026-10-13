@@ -414,10 +414,23 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
     def ae_new():
         # Only this app's own pages (or a typed URL) may make the server open a folder: a page on another
         # site cannot point it at a network share.
-        if request.headers.get("Sec-Fetch-Site", "same-origin") not in ("same-origin", "none"):
+        site = request.headers.get("Sec-Fetch-Site", "")
+        if site not in ("same-origin", "none", ""):
             return err_page("This page can only be opened from MediaEngine itself.")
         folder = request.args.get("folder", "")
         chosen = request.args.getlist("file")
+        # a link from outside the app (e-mail, chat, a document) must not make this PC open a network share
+        # (Windows would send its sign-in to that server): network paths only from MediaEngine's own pages
+        if site != "same-origin" and any(str(x).strip().strip('"').replace("/", "\\").startswith("\\\\") for x in [folder, *chosen]):
+            return err_page("Network folders can only be opened from MediaEngine itself: paste the path on the Auto Edit page.")
+        lib_theme = request.args.get("library_theme", "")
+        if lib_theme:            # "Make a reel about this theme" in the Library: its matching videos, AI+ and the theme
+            from . import aiplus_library as al
+            if lib_theme not in ae.THEMES or not ae.aiplus_status()["ready"]:
+                return err_page("The AI+ model is not on this computer yet. Download it once on 'Check this PC'.")
+            chosen = al.reel_files(lib_theme, ae.MAX_INPUTS)
+            if not chosen:
+                return err_page("No video of this theme is on this PC now.")
         if folder.strip() and not chosen:
             fp = Path(folder.strip().strip('"'))
             try:
@@ -483,7 +496,8 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         plus_ready = ae.aiplus_status()["ready"]
         # from the Library's "Find by theme": AI+ and that theme are already chosen
         want_mode = request.args.get("mode") if request.args.get("mode") in ae.MODES else None
-        want_theme = request.args.get("theme") if plus_ready and request.args.get("theme") in ae.THEMES else ""
+        want_theme = request.args.get("theme") or lib_theme
+        want_theme = want_theme if plus_ready and want_theme in ae.THEMES else ""
         if want_theme:
             want_mode = "semantic_plus"
         mode_html = (_mode_choice(ms["ready"], plus_ready, e, current=want_mode)

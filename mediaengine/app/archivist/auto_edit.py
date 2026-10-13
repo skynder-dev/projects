@@ -1782,9 +1782,20 @@ def selftest_video() -> Path | None:
     return v if v.is_file() else None
 
 
+SELFTEST_RUNNING = threading.Event()      # the Library's AI+ search preparation waits for it (one AI+ model at a time)
+
+
 def quick_selftest(timeout_s: int = 900, mode: str = "technical") -> dict:
     """Build a 5 s reel from two generated clips with the real engine. mode='semantic' runs the AI model
     (semantic=required, the same pinned check as a normal AI build). Never touches user media."""
+    SELFTEST_RUNNING.set()
+    try:
+        return _quick_selftest(timeout_s, mode)
+    finally:
+        SELFTEST_RUNNING.clear()
+
+
+def _quick_selftest(timeout_s: int, mode: str) -> dict:
     import time as _t
     ff = _ffmpeg() or "ffmpeg"
     root = DATA / "selftest"
