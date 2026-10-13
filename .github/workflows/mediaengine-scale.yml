@@ -1,0 +1,60 @@
+name: mediaengine-scale
+# MediaEngine with a big Library on a real Windows machine (GitHub hosted, not the owner PC): hundreds of synthetic
+# videos added, imported and analysed through the app routes; page times, AI+ search preparation (stand-in model)
+# and search, a reel from a whole phone folder. Long, so not part of every build: runs when the check changes or by
+# hand. No owner media, no secrets, no network calls from the app. Results: branch mediaengine-scale-results.
+on:
+  workflow_dispatch:
+    inputs:
+      count:
+        description: 'How many videos'
+        default: '600'
+  push:
+    paths:
+      - 'mediaengine/tests/scale_library_check.py'
+      - '.github/workflows/mediaengine-scale.yml'
+permissions:
+  contents: write
+concurrency:
+  group: mediaengine-scale-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 300
+    env:
+      PYTHONUTF8: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned 3.12.42 environment
+        shell: pwsh
+        run: python -m pip install --disable-pip-version-check -q -r mediaengine/requirements.txt psutil
+      - name: Big Library - add, import + analyse, pages, AI+ search preparation, reel from a whole phone folder
+        shell: pwsh
+        timeout-minutes: 280
+        env:
+          COUNT: ${{ github.event.inputs.count || '600' }}
+        run: |
+          New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\out" | Out-Null
+          python mediaengine/tests/scale_library_check.py "D:\me-big" --count $env:COUNT --json "$env:RUNNER_TEMP\out\scale_library.json" 2>&1 | Tee-Object "$env:RUNNER_TEMP\out\scale_library.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Publish results to branch mediaengine-scale-results
+        if: success() || failure()
+        shell: bash
+        env:
+          RUN_ID: ${{ github.run_id }}
+          SRC_SHA: ${{ github.sha }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          pub="$RUNNER_TEMP/pub"; rm -rf "$pub"; mkdir -p "$pub/latest"
+          cp "$RUNNER_TEMP"/out/* "$pub/latest/" 2>/dev/null || true
+          printf 'sha=%s\nrun=%s\nstatus=%s\n' "$SRC_SHA" "$RUN_ID" "$JOB_STATUS" > "$pub/latest/RUN.txt"
+          cd "$pub"; git init -q; git checkout -q -b mediaengine-scale-results
+          git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
+          git add -A; git commit -q -m "mediaengine scale run $RUN_ID ($SRC_SHA) $JOB_STATUS"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" mediaengine-scale-results

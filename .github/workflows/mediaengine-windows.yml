@@ -12,6 +12,7 @@ on:
       - '!mediaengine/RELEASE_NOTES_*.md'
       - '!mediaengine/tests/pe_core_probe.py'    # model-lab only (mediaengine-model-lab.yml)
       - '!mediaengine/tests/theme_eval.py'
+      - '!mediaengine/tests/scale_library_check.py'   # mediaengine-scale.yml
       - '.github/workflows/mediaengine-windows.yml'
   workflow_dispatch:
 permissions:
