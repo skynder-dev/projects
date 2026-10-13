@@ -41,6 +41,34 @@ PHRASES = {
     "skipped": "пропущено", "skipped: ": "пропущено: ", "usable": "годится",
     "very short — may be skipped": "очень короткое — может быть пропущено",
     "Preparing a recording without a length: ": "Подготовка записи без длины: ",
+    # AI+ (optional stronger model)
+    "AI — as before (fast)": "ИИ — как раньше (быстро)",
+    "AI+ — stronger model, first analysis slower": "ИИ+ — модель сильнее, первый анализ дольше",
+    "How moments are chosen": "Как выбирать моменты",
+    "AI+ (a stronger model, PE-Core L/14) can be added once on ": "ИИ+ (модель сильнее, PE-Core L/14) можно один раз добавить на странице ",
+    " (about 650 MB, free).": " (около 650 МБ, бесплатно).", "Stop": "Остановить",
+    "AI+ moments (PE-Core L/14)": "ИИ+-моменты (PE-Core L/14)",
+    "AI+ model is installed": "Модель ИИ+ установлена",
+    "PE-Core L/14 (Meta, Apache-2.0), every file is checked. Choose AI+ when you make a reel or a variant, and compare it with AI using Compare blind.":
+        "PE-Core L/14 (Meta, Apache-2.0), каждый файл проверен. Выбирай ИИ+ при создании ролика или варианта и сравнивай с ИИ кнопкой «Сравнить вслепую».",
+    "AI+ — a stronger model (optional)": "ИИ+ — модель сильнее (по желанию)",
+    "PE-Core L/14 (Meta, Apache-2.0) understands people, places and events much better than the built-in AI model. It works on this PC without internet; the first analysis of new videos is slower (about 1–2 s per checked frame). ":
+        "PE-Core L/14 (Meta, Apache-2.0) намного лучше встроенной модели понимает людей, места и события. Работает на этом компьютере без интернета; первый анализ новых видео дольше (примерно 1–2 с на каждый проверяемый кадр). ",
+    "Download once: ": "Скачать один раз: ", ", from huggingface.co (free); every file is checked.": ", с huggingface.co (бесплатно); каждый файл проверяется.",
+    "Download AI+ model": "Скачать модель ИИ+", "Copy from a folder…": "Скопировать из папки…",
+    "Build a test reel with AI+": "Собрать тестовый ролик с ИИ+",
+    "with the AI+ model (PE-Core L/14)": "с моделью ИИ+ (PE-Core L/14)", "The AI+ mode works on this PC.": "Режим ИИ+ работает на этом компьютере.",
+    "AI+ model (PE-Core L/14, optional)": "Модель ИИ+ (PE-Core L/14, по желанию)",
+    "not downloaded yet (optional) - see AI+ below": "ещё не скачана (по желанию) — см. ИИ+ ниже",
+    "The AI+ model is not on this computer yet. Download it once on 'Check this PC' or choose another mode.":
+        "Модели ИИ+ на этом компьютере пока нет. Скачай её один раз на странице «Проверка компьютера» или выбери другой режим.",
+    "The AI+ model files are missing or changed. Download the AI+ model again on 'Check this PC'.":
+        "Файлов модели ИИ+ нет или они изменены. Скачай модель ИИ+ заново на странице «Проверка компьютера».",
+    "Download cancelled.": "Скачивание остановлено.",
+    "No exact AI+ model there (vision_model_int8.onnx, text_model_int8.onnx, vocab.json, merges.txt).":
+        "Там нет точной модели ИИ+ (vision_model_int8.onnx, text_model_int8.onnx, vocab.json, merges.txt).",
+    "Only from MediaEngine itself.": "Только из самой программы MediaEngine.",
+    "loading the AI+ model": "загрузка модели ИИ+",
     "length was not written in the file (browser or screen recording) — a fixed copy is used, the original is not changed":
         "длина не записана в файле (запись из браузера или с экрана) — используется исправленная копия, оригинал не меняется", "Show files": "Показать файлы", "File": "Файл", "Size": "Размер", "Length": "Длина",
     "Frame": "Кадр", "Format": "Формат", "Sound": "Звук", "recommended": "рекомендуется", "Create reel": "Создать ролик",
@@ -317,7 +345,7 @@ JS_PHRASES = {
     "'write the time as seconds (12.5) or minutes (1:05)'": "'напиши время в секундах (12.5) или минутах (1:05)'",
     "'“to” must be at least 0.5 s after “from”'": "'«по» должно быть хотя бы на 0,5 с позже, чем «с»'",
     "'one moment can be at most 60 s long'": "'один момент — не длиннее 60 с'",
-    "'Moment '": "'Момент '", "'the video is only '": "'видео длится всего '",
+    "'Moment '": "'Момент '", "'Starting…'": "'Запуск…'", "'Installed.'": "'Установлено.'", "'Failed'": "'Не получилось'", "'the video is only '": "'видео длится всего '",
     "' s long - “to” cannot be later'": "' с — «по» не может быть позже'",
 }
 

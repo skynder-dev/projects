@@ -35,7 +35,8 @@ FORMATS = {
 }
 SOUNDS = {"auto": "Auto (keep source sound, mute if it jumps)", "source": "Source sound", "mute": "Mute"}
 LENGTHS = (5, 15, 30, 60)
-MODES = {"semantic": "AI moments (FAST_LOCAL)", "technical": "Technical only (no AI model)"}
+MODES = {"semantic": "AI moments (FAST_LOCAL)", "semantic_plus": "AI+ moments (PE-Core L/14)", "technical": "Technical only (no AI model)"}
+AI_MODES = ("semantic", "semantic_plus")
 
 MODEL_SHA = "844d1a46ab18acf50c989e541b12fe3b6dc7f8d6004725b4e992d142788e0600"
 MODEL_BYTES = 24281512
@@ -196,6 +197,137 @@ def _model_valid(root: Path) -> bool:
         ok = False
     _MODEL_CACHE[str(prof)] = (key, ok)
     return ok
+
+
+# ---------------------------------------------------------------- AI+ model (PE-Core L/14, optional, ~680 MB)
+# Not part of the package: the user downloads it once from Hugging Face (public, pinned commit, every file checked by
+# size and SHA-256) with an explicit button, or copies the four files from another PC. Never downloaded on its own.
+
+def aiplus_dir() -> Path:
+    env = os.environ.get("MEDENG_P13_PE_DIR")
+    return Path(env) if env else HOME / "models" / "PE_CORE_L14"
+
+
+def _pe_contract():
+    if str(ENGINE_DIR) not in sys.path:
+        sys.path.insert(0, str(ENGINE_DIR))
+    import p13_pe_core_contract as pc
+    return pc
+
+
+_AIPLUS_CACHE: dict = {}
+_AIPLUS_DL = {"state": "idle", "done": 0, "total": 0, "error": "", "file": ""}
+_AIPLUS_STOP = threading.Event()
+
+
+def aiplus_status() -> dict:
+    """{ready, reason, path, bytes, download}: ready only with every file exact (SHA-256, cached by size + time)."""
+    pc = _pe_contract()
+    d = aiplus_dir()
+    out = {"ready": False, "reason": "AIPLUS_MISSING", "path": str(d), "bytes": pc.TOTAL_BYTES, "download": dict(_AIPLUS_DL)}
+    try:
+        key = tuple((n, (d / n).stat().st_size, (d / n).stat().st_mtime_ns) for n in pc.ALL_FILES)
+    except OSError:
+        return out
+    hit = _AIPLUS_CACHE.get(str(d))
+    if not hit or hit[0] != key:
+        try:
+            pc.validate(d, True)
+            ok = True
+        except Exception:
+            ok = False
+        _AIPLUS_CACHE[str(d)] = (key, ok)
+    ok = _AIPLUS_CACHE[str(d)][1]
+    out.update(ready=ok, reason="" if ok else "AIPLUS_FILES_CHANGED")
+    return out
+
+
+def aiplus_identity() -> str:
+    pc = _pe_contract()
+    return "PE_CORE_L14|" + pc.MODEL_REVISION + "|" + "|".join(v[2] for v in pc.ALL_FILES.values())
+
+
+def aiplus_download_start() -> bool:
+    """Start the one-time download in the background (False when it is already running)."""
+    with _LOCK:
+        if _AIPLUS_DL["state"] == "running":
+            return False
+        _AIPLUS_DL.update(state="running", done=0, total=0, error="", file="")
+    _AIPLUS_STOP.clear()
+    threading.Thread(target=_aiplus_download, name="aiplus-download", daemon=True).start()
+    return True
+
+
+def aiplus_download_cancel() -> None:
+    _AIPLUS_STOP.set()
+
+
+def _aiplus_download() -> None:
+    import urllib.request
+    pc = _pe_contract()
+    d = aiplus_dir()
+    try:
+        d.mkdir(parents=True, exist_ok=True)
+        need = sum(v[1] for n, v in pc.ALL_FILES.items() if not ((d / n).is_file() and (d / n).stat().st_size == v[1]))
+        if shutil.disk_usage(d).free < need + 500_000_000:
+            raise RuntimeError("Not enough free disk space for the AI+ model (about " + str(round(need / 1e9, 1)) + " GB needed).")
+        _AIPLUS_DL.update(total=pc.TOTAL_BYTES)
+        done = 0
+        for name, (_path, size, sha) in pc.ALL_FILES.items():
+            dst = d / name
+            _AIPLUS_DL.update(file=name)
+            if dst.is_file() and dst.stat().st_size == size and sha256_file(dst) == sha:
+                done += size
+                _AIPLUS_DL.update(done=done)
+                continue
+            part = d / (name + ".part")
+            req = urllib.request.Request(pc.download_url(name), headers={"User-Agent": "MediaEngine"})
+            with urllib.request.urlopen(req, timeout=60) as r, part.open("wb") as fh:
+                while True:
+                    if _AIPLUS_STOP.is_set():
+                        raise RuntimeError("Download cancelled.")
+                    chunk = r.read(1 << 20)
+                    if not chunk:
+                        break
+                    fh.write(chunk)
+                    done += len(chunk)
+                    _AIPLUS_DL.update(done=done)
+            if part.stat().st_size != size or sha256_file(part) != sha:
+                part.unlink(missing_ok=True)
+                raise RuntimeError("A downloaded file is not the exact model file (" + name + "). Try again.")
+            os.replace(part, dst)
+        _AIPLUS_CACHE.clear()
+        _AIPLUS_DL.update(state="done", done=pc.TOTAL_BYTES, file="")
+    except Exception as exc:
+        for x in d.glob("*.part"):
+            x.unlink(missing_ok=True)
+        msg = str(exc)
+        if "urlopen" in msg or "getaddrinfo" in msg or "timed out" in msg or "Errno" in msg:
+            msg = "No connection to huggingface.co. Check the internet connection and try again. [" + msg[:120] + "]"
+        _AIPLUS_DL.update(state="failed", error=msg[:300])
+
+
+def aiplus_import(src) -> dict:
+    """Copy the exact AI+ files from a folder (e.g. copied from another PC): verified before and after copying."""
+    pc = _pe_contract()
+    src = Path(str(src or "").strip().strip('"'))
+    for cand in (src, src / "PE_CORE_L14", src / "models" / "PE_CORE_L14"):
+        try:
+            pc.validate(cand, True)
+        except Exception:
+            continue
+        d = aiplus_dir()
+        if cand.resolve() == d.resolve():
+            return {"path": str(d), "copied": False}
+        d.mkdir(parents=True, exist_ok=True)
+        for name in pc.ALL_FILES:
+            tmp = d / (name + ".part")
+            shutil.copyfile(cand / name, tmp)
+            os.replace(tmp, d / name)
+        pc.validate(d, True)
+        _AIPLUS_CACHE.clear()
+        return {"path": str(d), "copied": True}
+    raise ValueError("No exact AI+ model there (vision_model_int8.onnx, text_model_int8.onnx, vocab.json, merges.txt).")
 
 
 def model_status() -> dict:
@@ -844,6 +976,8 @@ def normalize_settings(raw: dict, *, model_ready: bool | None = None) -> dict:
         raise ValueError("Unknown selection mode")
     if mode == "semantic" and model_ready is False:
         raise ValueError("The AI model (FAST_LOCAL) is not available on this computer. Choose 'Technical only' explicitly or install the model.")
+    if mode == "semantic_plus" and not aiplus_status()["ready"]:
+        raise ValueError("The AI+ model is not on this computer yet. Download it once on 'Check this PC' or choose another mode.")
     is_id = lambda x: re.fullmatch(r"[0-9a-f]{8,64}", str(x)) is not None
     exclude = sorted({str(x) for x in (raw.get("exclude") or []) if is_id(x)})
     out = {"format": fmt, "sound": sound, "length": length, "mode": mode, "exclude": exclude}
@@ -925,7 +1059,8 @@ def engine_identity() -> str:
 def _request_key(p: dict, settings: dict) -> str:
     pid = int(p["id"])
     raw = json.dumps({"project": int(pid), "inputs": _inputs_fingerprint(p), "settings": settings,
-                      "engine": engine_identity(), "model": model_identity() if settings.get("mode") == "semantic" else "off",
+                      "engine": engine_identity(), "model": (model_identity() if settings.get("mode") == "semantic" else
+                                                             aiplus_identity() if settings.get("mode") == "semantic_plus" else "off"),
                       # marking a file Private later must never reuse a reel that contains it
                       "private": hashlib.sha256("\n".join(_private_hashes()).encode()).hexdigest()},
                      sort_keys=True, separators=(",", ":"))
@@ -1106,7 +1241,7 @@ def _worker_loop() -> None:
 def _engine_env() -> dict:
     env = {k: v for k, v in os.environ.items() if not k.upper().startswith("PYTHON")}
     ff = _ffmpeg() or "ffmpeg"
-    env.update({"MEDENG_FFMPEG": ff, "MEDENG_FFPROBE": ff, "MEDENG_P11_MODEL_ROOT": str(model_root()),
+    env.update({"MEDENG_FFMPEG": ff, "MEDENG_FFPROBE": ff, "MEDENG_P11_MODEL_ROOT": str(model_root()), "MEDENG_P13_PE_DIR": str(aiplus_dir()),
                 "MEDENG_P11_ADAPTER_ROOT": str(ENGINE_DIR), "PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1",
                 "PYTHONDONTWRITEBYTECODE": "1"})   # engine helpers started without -E: nothing written into the program folder
     return env
@@ -1168,7 +1303,8 @@ def engine_command(folder: Path, out_dir: Path, work_dir: Path, progress_file: P
     src = ["--input-list", str(input_list)] if input_list is not None else ["--input-dir", str(folder)]
     cmd = [engine_python(), "-B", "-s", "-E", "-X", "utf8", str(ORCHESTRATOR), *src, "--output-dir", str(out_dir),
            "--work-dir", str(work_dir), "--runtime-dir", str(ENGINE_DIR), "--target-seconds", str(float(s["length"])),
-           "--audio", s["sound"], "--semantic", "required" if s["mode"] == "semantic" else "off",
+           "--audio", s["sound"], "--semantic", "required" if s["mode"] in AI_MODES else "off",
+           *(["--semantic-model", "pe_core_l14"] if s["mode"] == "semantic_plus" else []),
            "--profile", f["profile"], "--resolution", f["resolution"], "--progress-file", str(progress_file)]
     if edits_file is not None and (s.get("selection") or s.get("trims")):
         cmd += ["--edits", str(edits_file)]
@@ -1303,6 +1439,7 @@ def _pump_progress(jid: int, progress_file: Path) -> None:
 
 _FRIENDLY = {
     "SEMANTIC_RUNTIME_REQUIRED_BUT_NOT_EXACT": "The AI model files are missing or not the exact pinned version.",
+    "AIPLUS_MODEL_NOT_READY": "The AI+ model files are missing or changed. Download the AI+ model again on 'Check this PC'.",
     "NO_SUPPORTED_VIDEO_FILES": "No supported video files in the folder.",
     "TOO_MANY_INPUT_FILES": f"The folder has more than {MAX_INPUTS} videos.",
     "REALMEDIA_PIPELINE_FAILED": "Analysis of the footage failed.",
@@ -1510,6 +1647,9 @@ def system_check() -> list[dict]:
     ms = model_status()
     add("AI model (FAST_LOCAL)", ms["ready"], ms["path"] if ms["ready"] else
         ("not found - only 'Technical only' reels" if ms["reason"] == "MODEL_MISSING" else "files changed or incomplete - not used"))
+    ap = aiplus_status()
+    add("AI+ model (PE-Core L/14, optional)", ap["ready"], ap["path"] if ap["ready"] else
+        ("not downloaded yet (optional) - see AI+ below" if ap["reason"] == "AIPLUS_MISSING" else "files changed or incomplete - not used"))
     try:
         cp = subprocess.run([engine_python(), "-B", "-s", "-E", "-c",
                              "import numpy, cv2, onnxruntime; print('numpy', numpy.__version__, '| opencv', cv2.__version__, '| onnxruntime', onnxruntime.__version__)"],
@@ -1587,7 +1727,7 @@ def quick_selftest(timeout_s: int = 900, mode: str = "technical") -> dict:
         subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", lav, "-f", "lavfi", "-i", f"sine=frequency={300 + 100 * i}:sample_rate=48000",
                         "-t", "8", "-vf", f"hue=h=t*{20 * i}", "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p",
                         "-c:a", "aac", "-shortest", str(src / f"test_{i}.mp4")], **process_kwargs({"capture_output": True, "timeout": 120}))
-    s = {"length": 5, "format": "vertical", "sound": "auto", "mode": "semantic" if mode == "semantic" else "technical"}
+    s = {"length": 5, "format": "vertical", "sound": "auto", "mode": mode if mode in AI_MODES else "technical"}
     cmd = engine_command(src, root / "out", root / "work", root / "progress.json", s)
     t0 = _t.time()
     # same handling as a build: on Windows a job object, so a time-out stops the engine AND every ffmpeg it started
@@ -1929,7 +2069,8 @@ def _dialog_title(en: str) -> str:
           "Choose a folder with your videos on this computer (copy phone videos to the computer first)":
               "Выбери папку с видео на этом компьютере (видео с телефона сначала скопируй на компьютер)",
           "Choose the folder that contains the FAST_LOCAL model": "Выбери папку, в которой лежит модель FAST_LOCAL",
-          "Choose a folder for the exported reel": "Выбери папку для готового ролика"}
+          "Choose a folder for the exported reel": "Выбери папку для готового ролика",
+          "Choose the folder with the AI+ model files": "Выбери папку с файлами модели ИИ+"}
     try:
         return ru.get(en, en) if ui_language() == "ru" else en
     except Exception:

@@ -271,19 +271,23 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
                         f"<td class='{'ae-path' if looks_like_path(r['detail']) else 'muted'}'>{e(r['detail'])}</td></tr>" for r in rows)
         test_html = ""
         ai_ready = ae.model_status()["ready"]
+        ap = ae.aiplus_status()
         if request.method == "POST":
-            want_ai = request.form.get("mode") == "semantic" and ai_ready
-            t = ae.quick_selftest(mode="semantic" if want_ai else "technical")
+            want = request.form.get("mode")
+            want = want if (want == "semantic" and ai_ready) or (want == "semantic_plus" and ap["ready"]) else "technical"
+            t = ae.quick_selftest(mode=want, timeout_s=1800 if want == "semantic_plus" else 900)
             ae._remember_selftest(t)
             if t["ok"]:
-                ai = str(t.get("selection_mode", "")).startswith("FAST_LOCAL")
+                sm = str(t.get("selection_mode", ""))
+                ai = sm.startswith("FAST_LOCAL") or sm.startswith("PE_CORE")
                 st = t.get("stages") or {}
                 stage_txt = " · ".join(f"<span>{lbl}</span> {float(st[k]):.1f} s" for k, lbl in
                                        (("analyze", "analysis"), ("render", "cutting"), ("finish", "joining")) if k in st)
                 test_html = (f"<div class='card ae-done' style='margin-top:14px'><b>Test reel built</b> · "
-                             f"<span>{'with the AI model (FAST_LOCAL)' if ai else 'Technical only'}</span> · {t['seconds']} s"
+                             f"<span>{'with the AI+ model (PE-Core L/14)' if sm.startswith('PE_CORE') else 'with the AI model (FAST_LOCAL)' if ai else 'Technical only'}</span> · {t['seconds']} s"
                              f"<div class='muted' style='margin-top:4px'><span>reel</span> {t.get('duration_s')} s · {stage_txt}</div>"
-                             + ("<div style='margin-top:6px'>The AI mode works on this PC.</div>" if ai else "")
+                             + (("<div style='margin-top:6px'>The AI+ mode works on this PC.</div>" if sm.startswith("PE_CORE") else
+                                 "<div style='margin-top:6px'>The AI mode works on this PC.</div>") if ai else "")
                              + (f"<video class='ae-video' style='max-height:320px;margin-top:10px' controls preload='metadata' "
                                 f"src='/auto/check/video?t={int(t['seconds'] * 10)}'></video>" if t.get("video") else "")
                              + "<div class='row' style='margin-top:10px'><a class='btn' href='/auto'>Go to Auto Edit</a></div></div>")
@@ -312,7 +316,8 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
                 f"<form method='post' class='card' style='margin-top:14px' onsubmit=\"const f=this;f.querySelector('span').textContent='Building the test reel… (up to a few minutes)';setTimeout(()=>f.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
                 f"<button name='mode' value='technical'>Build a test reel</button> "
                 + (f"<button name='mode' value='semantic' class='btn2'>Build a test reel with the AI model</button> " if ai_ready else "")
-                + f"<span class='muted'></span></form>{test_html}{builds_html}"
+                + (f"<button name='mode' value='semantic_plus' class='btn2'>Build a test reel with AI+</button> " if ap["ready"] else "")
+                + f"<span class='muted'></span></form>{test_html}{_aiplus_card(ap, e, human_bytes)}{builds_html}"
                 f"<div class='row' style='margin-top:14px'><a class='btn btn2' href='/auto'>Back</a></div>")
         return page("Check this PC", body)
 
@@ -348,6 +353,34 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         except Exception as exc:
             return jsonify({"ok": False, "error": str(exc)})
         return jsonify({"ok": True, **res})
+
+    @app.post("/api/auto/aiplus/import")
+    def ae_aiplus_import():
+        path = (request.get_json(silent=True) or {}).get("path") or ae.pick_folder("Choose the folder with the AI+ model files")
+        if not path:
+            return jsonify({"ok": False, "error": "No folder chosen."})
+        try:
+            res = ae.aiplus_import(path)
+        except Exception as exc:
+            return jsonify({"ok": False, "error": str(exc)})
+        return jsonify({"ok": True, **res})
+
+    @app.post("/api/auto/aiplus/download")
+    def ae_aiplus_download():
+        if request.headers.get("Sec-Fetch-Site", "same-origin") not in ("same-origin", "none"):
+            return jsonify({"ok": False, "error": "Only from MediaEngine itself."}), 400
+        if (request.get_json(silent=True) or {}).get("cancel"):
+            ae.aiplus_download_cancel()
+            return jsonify({"ok": True})
+        started = ae.aiplus_download_start()
+        return jsonify({"ok": True, "started": started})
+
+    @app.get("/api/auto/aiplus")
+    def ae_aiplus_state():
+        st = ae.aiplus_status()
+        dl = st["download"]
+        return jsonify({"ready": st["ready"], "state": dl["state"], "done": dl["done"], "total": dl["total"] or st["bytes"],
+                        "error": dl["error"], "message": ""})
 
     @app.post("/api/auto/pick-files")
     def ae_pick_files():
@@ -443,11 +476,7 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
                           for k, v in ae.FORMATS.items())
         sounds = "".join(f"<label><input type='radio' name='sound' value='{k}' {'checked' if k == 'auto' else ''}> {e(v)}</label>"
                          for k, v in ae.SOUNDS.items())
-        mode_html = ("<input type='hidden' name='mode' value='semantic'>" if ms["ready"] else
-                     "<div class='callout card' style='margin:6px 0 14px'><b>AI model not available.</b> Without it MediaEngine can only use the "
-                     "<b>Technical only</b> selection (sharpness, motion, exposure); it does not understand what happens in the video."
-                     "<label style='display:flex;gap:8px;margin-top:8px'><input type='checkbox' name='mode' value='technical' required> "
-                     "Build with Technical only</label></div>")
+        mode_html = _mode_choice(ms["ready"], ae.aiplus_status()["ready"], e)
         warn = ("<div class='callout card' style='margin-top:10px'>Only "
                 f"{_fmt_s(total)} of usable video — a short reel is recommended.</div>" if total < 30 else "")
         if total >= 1800:   # honest note for big folders (no invented time estimate)
@@ -663,7 +692,8 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
                 # needs other moments: they are chosen again (removed ones stay out) - a hand-made selection would
                 # silently keep the old length.
                 same_len = not bs or str(settings["length"]) == str(bs.get("length"))
-                keep = ("exclude", "selection", "trims") if same_len else ("exclude",)
+                same_mode = not bs or settings["mode"] == bs.get("mode")    # AI and AI+ have different moments
+                keep = (("exclude", "selection", "trims") if same_len else ("exclude",)) if same_mode else ()
                 settings.update({k: bs[k] for k in keep if bs.get(k)})
             before = {j["id"] for j in ae.project(pid)["jobs"]}
             jid = ae.start_job(pid, settings)
@@ -870,6 +900,65 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
         return send_file(src, conditional=True)
 
 
+AI_LABEL = "AI — as before (fast)"
+AIPLUS_LABEL = "AI+ — stronger model, first analysis slower"
+AIPLUS_HINT = ("AI+ (a stronger model, PE-Core L/14) can be added once on <a href='/auto/check#aiplus'>Check this PC</a> "
+               "(about 650 MB, free).")
+
+
+def _aiplus_card(ap, e, human_bytes):
+    """Check this PC: the optional AI+ model - state, one-time download (with progress), or copy from a folder."""
+    if ap["ready"]:
+        return ("<div class='card' id='aiplus' style='margin-top:14px'><b>AI+ model is installed</b>"
+                "<div class='muted'>PE-Core L/14 (Meta, Apache-2.0), every file is checked. Choose AI+ when you make a reel or a variant, "
+                "and compare it with AI using Compare blind.</div>"
+                f"<div class='muted ae-path' style='margin-top:4px'>{e(ap['path'])}</div></div>")
+    dl = ap["download"]
+    running = dl["state"] == "running"
+    return ("<div class='card' id='aiplus' style='margin-top:14px'><b>AI+ — a stronger model (optional)</b>"
+            "<div class='muted'>PE-Core L/14 (Meta, Apache-2.0) understands people, places and events much better than the built-in AI "
+            "model. It works on this PC without internet; the first analysis of new videos is slower (about 1–2 s per checked frame). "
+            f"Download once: {human_bytes(ap['bytes'])}, from huggingface.co (free); every file is checked.</div>"
+            "<div class='row' style='margin-top:10px'>"
+            f"<button type='button' id='apDl' {'disabled' if running else ''}>Download AI+ model</button>"
+            f"<button type='button' class='btn2' id='apCancel' {'' if running else 'hidden'}>Stop</button>"
+            "<button type='button' class='btn2' id='apImport'>Copy from a folder…</button>"
+            "<span class='muted' id='apMsg'></span></div>"
+            "<div class='progress' style='margin-top:8px'><i id='apBar' style='width:0%'></i></div>"
+            + (f"<div class='errbox' style='margin-top:8px'>{e(dl['error'])}</div>" if dl["state"] == "failed" and dl["error"] else "")
+            + "</div>"
+            "<script>(function(){const m=document.getElementById('apMsg'),b=document.getElementById('apBar'),d=document.getElementById('apDl'),"
+            "c=document.getElementById('apCancel');"
+            "async function poll(){try{const r=await fetch('/api/auto/aiplus',{cache:'no-store'});const x=await r.json();"
+            "if(x.ready){location.reload();return}const p=x.total?Math.floor(100*x.done/x.total):0;b.style.width=p+'%';"
+            "if(x.state==='running'){m.textContent=p+' %';d.disabled=true;c.hidden=false;setTimeout(poll,1000)}"
+            "else{d.disabled=false;c.hidden=true;if(x.state==='failed')m.textContent=x.error||'Failed';}}catch(e){setTimeout(poll,2000)}}"
+            "d.onclick=async()=>{d.disabled=true;m.textContent='Starting…';await fetch('/api/auto/aiplus/download',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});poll()};"
+            "c.onclick=async()=>{await fetch('/api/auto/aiplus/download',{method:'POST',headers:{'Content-Type':'application/json'},body:'{\"cancel\":1}'})};"
+            "document.getElementById('apImport').onclick=async()=>{m.textContent='A Windows folder window is open — it may be behind this window.';"
+            "const r=await fetch('/api/auto/aiplus/import',{method:'POST'});const x=await r.json();m.textContent=x.ok?'Installed.':(x.error||'Not installed');if(x.ok)setTimeout(()=>location.reload(),800)};"
+            + ("poll();" if running else "") + "})();</script>")
+
+
+def _mode_choice(ai_ready, plus_ready, e, current=None):
+    """How moments are chosen: AI (accepted), AI+ (optional stronger model), or - only without any model - an explicit
+    Technical only. Never a silent fallback."""
+    if not ai_ready and not plus_ready:
+        return ("<div class='callout card' style='margin:6px 0 14px'><b>AI model not available.</b> Without it MediaEngine can only use the "
+                "<b>Technical only</b> selection (sharpness, motion, exposure); it does not understand what happens in the video."
+                "<label style='display:flex;gap:8px;margin-top:8px'><input type='checkbox' name='mode' value='technical' required> "
+                "Build with Technical only</label></div>")
+    opts = []
+    want = current if current in ("semantic", "semantic_plus") else ("semantic" if ai_ready else "semantic_plus")
+    if ai_ready:
+        opts.append(f"<label><input type='radio' name='mode' value='semantic' {'checked' if want == 'semantic' else ''}> {e(AI_LABEL)}</label>")
+    if plus_ready:
+        opts.append(f"<label><input type='radio' name='mode' value='semantic_plus' {'checked' if want == 'semantic_plus' else ''}> {e(AIPLUS_LABEL)}</label>")
+    if len(opts) == 1 and not plus_ready:
+        return f"<input type='hidden' name='mode' value='semantic'><div class='muted' style='margin:4px 0 10px;font-size:13px'>{AIPLUS_HINT}</div>"
+    return f"<h2>How moments are chosen</h2><div class='ae-choices'>{''.join(opts)}</div>"
+
+
 def _variant_form(pid, rev, e, first=False, model_ready=True):
     s = rev["settings"] if rev else {"length": 15, "format": "social_hd", "sound": "auto"}
     lengths = "".join(f"<label><input type='radio' name='length' value='{L}' {'checked' if int(s['length']) == L else ''}> {L} s</label>" for L in ae.LENGTHS)
@@ -878,9 +967,13 @@ def _variant_form(pid, rev, e, first=False, model_ready=True):
     sounds = "".join(f"<label><input type='radio' name='sound' value='{k}' {'checked' if s['sound'] == k else ''}> {e(short_sound.get(k, k.title()))}</label>" for k in ae.SOUNDS)
     base = f"<input type='hidden' name='base_revision_id' value='{rev['id']}'>" if rev else ""
     mode = ""
-    if not model_ready and (not rev or rev["settings"].get("mode") == "semantic"):
+    plus_ready = ae.aiplus_status()["ready"]
+    cur = (rev["settings"].get("mode") if rev else None)
+    if not model_ready and (not rev or cur == "semantic") and not plus_ready:
         mode = ("<label class='muted' style='display:flex;gap:8px;margin:8px 0'><input type='checkbox' name='mode' value='technical' required> "
                 "Build without AI (Technical only: sharpness, motion, exposure)</label>")
+    elif plus_ready and cur != "technical":
+        mode = _mode_choice(model_ready, True, e, cur).replace("<h2>How moments are chosen</h2>", "")
     note = "" if first else ("The current revision stays as it is. Format and sound variants keep its removed moments and your edits "
                              "and reuse the analysis; a new length chooses the moments again (removed ones stay out).")
     return (f"<form method='post' action='/auto/p/{pid}/variant' class='card' style='margin-top:14px' onsubmit=\"this.querySelector('button').disabled=true\">{base}"
@@ -949,7 +1042,9 @@ def _review_html(p, rev, e, building=False):
                       f"there were not enough different moments in this footage for a longer reel.</div>") if target and total < target - 1.0 else ""
     skipped = res.get("skipped_inputs") or []
     skipped_html = ("<div class='muted' style='margin-top:6px'>Skipped: " + ", ".join(f"<span translate='no'>{e(x['name'])}</span> ({_skip_reason_html(ae.friendly_skip(x['reason']), e)})" for x in skipped) + "</div>") if skipped else ""
-    mode = "AI moments (FAST_LOCAL)" if res.get("selection_mode", "").startswith("FAST_LOCAL") else "Technical only (no AI)"
+    sm = str(res.get("selection_mode", ""))
+    mode = ("AI moments (FAST_LOCAL)" if sm.startswith("FAST_LOCAL") else "AI+ moments (PE-Core L/14)" if sm.startswith("PE_CORE")
+            else "Technical only (no AI)")
     notes = []          # html pieces; file names stay exactly as they are in both languages
 
     def names(xs):
