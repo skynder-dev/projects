@@ -13,6 +13,8 @@ on:
       - '!mediaengine/tests/pe_core_probe.py'    # model-lab only (mediaengine-model-lab.yml)
       - '!mediaengine/tests/theme_eval.py'
       - '!mediaengine/tests/scale_library_check.py'   # mediaengine-scale.yml
+      - '!mediaengine/tests/real_footage_check.py'    # mediaengine-realfootage.yml
+      - '!mediaengine/tests/real_footage_manifest.json'
       - '.github/workflows/mediaengine-windows.yml'
   workflow_dispatch:
 permissions:
