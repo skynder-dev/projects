@@ -152,15 +152,19 @@ The 11 runtime modules, adapter and validator are byte-identical to R2 (CI-check
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38370208307 on `2a5d1cf` — all green, build b71** (results branch `mediaengine-ci-results`,
-artifacts `MediaEngine-3.13.0-rc1-b71-Setup` and `MediaEngine-3.13.0-rc1-b71` (ZIP)): fast checks 87/87 · R3 = R2
+Latest full run: **38380700935 on `3993e4b` — all green, build b75** (results branch `mediaengine-ci-results`,
+artifacts `MediaEngine-3.13.0-rc1-b75-Setup` and `MediaEngine-3.13.0-rc1-b75` (ZIP)): fast checks 89/89 · R3 = R2
 decisions 29/29 · robustness 32/32 · A/V sync worst 20 ms · E2E 7 videos 72/72, 2 videos 74/74, phone 67/67,
-packaged Python behind the firewall 68/68 · Library like a user 30/30 (adds AI+ theme search with a stand-in model)
-· library re-analysis 4/4 · Convert 20/20 · unplugged/no network 9/9 · 64 long names 5/5 · AI glue 6/6 · AI+ glue
-15/15 · **real models from Hugging Face 14/14** (AI and AI+ test reels, AI+ reel + AI variant + blind comparison,
-AI+ theme variant, Library index + theme search with the real AI+ model) · **Russian interface: 152 pages, 0 English
-texts, 0 network attempts** · package smoke PASS · Setup smoke PASS · 4K H.264 + 4K HEVC + 5-min 1080p → 30 s reel in
-314 s. Same day, all green too: b69 (run 38359246198), b66.
+packaged Python behind the firewall 68/68 · Library like a user 32/32 (AI+ theme search with a stand-in model,
+reel from a theme, network link from outside refused) · library re-analysis 4/4 · Convert 20/20 · unplugged/no
+network 9/9 · 64 long names 5/5 · AI glue 6/6 · AI+ glue 15/15 · **real models from Hugging Face 14/14** (the app's
+own AI+ download, AI and AI+ test reels (AI+ speed reported: 0.42 s per frame on that runner), AI+ reel + AI variant +
+blind comparison, AI+ theme variant, Library index + theme search with the real AI+ model; 7 videos: first analysis
+AI+ 101 s, AI 63 s) · **Russian interface: 152 pages, 0 English texts, 0 network attempts** · package smoke PASS ·
+Setup smoke PASS · 4K H.264 + 4K HEVC + 5-min 1080p → 30 s reel in 234 s.
+Same day, all green too: b71 (run 38370208307), b69 (run 38359246198), b66.
+Model lab (`mediaengine-model-lab`, run 38373248463): COCO caption→photo R@1 AI+ 0.855 / AI 0.602 / original fp32
+0.858; Intel scenes top-1 theme 0.86 / 0.89 / 0.88; speed matrix (threads, two sessions, batch 2 refused).
 Before: b62 (run 38279572931): fast checks 83/83 · Library 20/20 · Russian 148 pages · 4K/long footage 366 s.
 Before: b47 (run 38242920327): fast checks 71/71 · E2E 72/72, 72/72, 67/67 · 4K/long footage 359 s.
 Earlier: b41 (run 38194029514): fast checks 67/67 · E2E 71/71, 71/71, 66/66 · 4K/long footage 503 s.
