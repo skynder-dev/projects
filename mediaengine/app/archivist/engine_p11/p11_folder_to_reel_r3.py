@@ -161,9 +161,9 @@ def sound_args(v52,src,dur):
     m=_AUDIO_MAP[key]
     return ["-map",m,"-af",f"apad=whole_dur={float(dur):.3f}"] if m else []
 
-def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir):
+def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="SEMANTIC_V2"):
     start=float(c["start_s"]); end=float(c["end_s"]); dur=max(.25,end-start)
-    raw=f"{source_sha}|{start:.3f}|{end:.3f}|SEMANTIC_V2".encode()
+    raw=f"{source_sha}|{start:.3f}|{end:.3f}|{tag}".encode()
     eid=hashlib.sha256(raw).hexdigest()[:24]
     out_dir.mkdir(parents=True,exist_ok=True)
     clip=out_dir/f"{eid}.mp4"
@@ -274,6 +274,74 @@ def valid_event_cache(path,input_rows):
         cp=Path(e.get("clip_path",""))
         if not cp.is_file() or cp.stat().st_size!=int(e.get("clip_bytes",0)): return False,None
     return True,lib
+
+# ---------------------------------------------------------------- AI+ (PE-Core L/14): a separate, optional mode
+def pe_model_dir(model_root):
+    return Path(os.environ.get("MEDENG_P13_PE_DIR") or (Path(model_root)/"PE_CORE_L14"))
+
+def pe_runtime_preflight(pe_dir):
+    """The AI+ model files with their exact sizes and SHA-256 (p13_pe_core_contract)."""
+    try:
+        import p13_pe_core_contract as pc
+        ident=pc.validate(Path(pe_dir),True)
+        return {"pass":True,"model_dir":str(pe_dir),"identity":ident}
+    except Exception as exc:
+        return {"pass":False,"model_dir":str(pe_dir),"error":str(exc)[:200]}
+
+def make_pe_scorer(pe_dir):
+    import p13_pe_core_adapter as pa
+    return pa.PECoreScorer(Path(pe_dir),full_check=False)   # files were checked by the preflight
+
+def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=None):
+    """Like build_semantic_candidates, with the AI+ hook. Own caches and own moment ids, so AI and AI+ never mix."""
+    import p13_event_semantic_pe as hook
+    import p13_pe_core_contract as pc
+    v7=load_module("medeng_event_semantic_v7",runtime/"medeng_event_semantic_v7.py")
+    hook_sha=sha256_file(Path(hook.__file__))+"|"+sha256_file(Path(hook.__file__).with_name("p13_pe_core_adapter.py"))
+    model_key="|".join(v[2] for v in pc.MODEL_FILES.values())
+    reports_dir=work_dir/"semantic_reports_pe"; reports_dir.mkdir(parents=True,exist_ok=True)
+    candidates_dir=work_dir/"semantic_candidates_pe"
+    scorer=None; specs=[]; reports=[]; kept=[]
+    for idx,row in enumerate(input_rows):
+        progress("analyze",idx,len(input_rows),row["name"])
+        rp=reports_dir/(row["sha256"]+".json")
+        report=None
+        if rp.is_file():
+            try:
+                obj=json.loads(rp.read_text())
+                if obj.get("source_sha256")==row["sha256"] and obj.get("hook")==hook_sha and obj.get("model")==model_key:
+                    report=obj["report"]
+            except Exception:
+                report=None
+        try:
+            if report is None:
+                if scorer is None:
+                    progress("analyze",idx,len(input_rows),"loading the AI+ model")
+                    scorer=make_pe_scorer(pe_dir)
+                    progress("analyze",idx,len(input_rows),row["name"])
+                report=hook.analyze_video(v7,scorer,Path(row["path"]),v52.FFMPEG,os.environ.get("MEDENG_FFPROBE","ffprobe"))
+                atomic_json(rp,{"source_sha256":row["sha256"],"hook":hook_sha,"model":model_key,"report":report})
+            row_specs=[]
+            for rank,c in enumerate(report.get("ranked",[]),1):
+                cc=dict(c); cc["_source_rank"]=rank
+                row_specs.append(extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,"SEMANTIC_PE1"))
+        except Exception as exc:
+            if skipped is not None: skipped.append({"name":row["name"],"reason":"ANALYSIS_FAILED:"+(str(exc).split(":",1)[0] or type(exc).__name__)[:60]})
+            continue
+        if not row_specs:
+            if skipped is not None: skipped.append({"name":row["name"],"reason":"NO_MOMENTS"})
+            continue
+        kept.append(row)
+        reports.append({"source_name":row["name"],"source_sha256":row["sha256"],
+                        "rank1":report["ranked"][0] if report.get("ranked") else None})
+        specs.extend(row_specs)
+    if not specs: raise RuntimeError("NO_SEMANTIC_CANDIDATES")
+    technical=v52.score_events(specs,work_dir/"SEMANTIC_PE_CANDIDATE_V22_SCORE_CACHE.json")
+    for e in technical:
+        e["technical_v22_score"]=float(e["v22_score"])
+        e["v22_score"]=round(.80*float(e["semantic_source_final_score"])+.20*float(e["technical_v22_score"]),6)
+        e["selection_score_kind"]="PE_SEMANTIC_80_TECHNICAL_20_V1"
+    return technical,reports,kept
 
 def apply_manual_trims(v52,selected,trims,work_dir):
     """User mark-in/mark-out in SOURCE time. Re-extracted from the source so a moment can also be widened."""
@@ -776,17 +844,28 @@ def run(args):
 
     model_root=Path(os.environ.get("MEDENG_P11_MODEL_ROOT",r"D:\Archivist\sidecars\auto_edit\models"))
     adapter_root=Path(os.environ.get("MEDENG_P11_ADAPTER_ROOT",r"D:\Archivist\sidecars\auto_edit\shadow\P11_FAST_LOCAL_ADAPTER_V1"))
-    semantic_preflight=semantic_runtime_preflight(runtime,model_root,adapter_root)
     semantic_mode=str(args.semantic).lower()
-    if semantic_mode=="required" and not semantic_preflight["pass"]:
-        raise RuntimeError("SEMANTIC_RUNTIME_REQUIRED_BUT_NOT_EXACT")
+    semantic_model=str(getattr(args,"semantic_model","fast_local") or "fast_local").lower()
+    if semantic_model=="pe_core_l14" and semantic_mode!="off":     # AI+: its own model, never a silent fallback
+        pe_dir=pe_model_dir(model_root)
+        semantic_preflight=pe_runtime_preflight(pe_dir)
+        if not semantic_preflight["pass"]:
+            raise RuntimeError("AIPLUS_MODEL_NOT_READY:"+str(semantic_preflight.get("error"))[:160])
+    else:
+        semantic_model="fast_local"
+        semantic_preflight=semantic_runtime_preflight(runtime,model_root,adapter_root)
+        if semantic_mode=="required" and not semantic_preflight["pass"]:
+            raise RuntimeError("SEMANTIC_RUNTIME_REQUIRED_BUT_NOT_EXACT")
     use_semantic=semantic_mode!="off" and semantic_preflight["pass"]
 
     semantic_reports=[]
     if use_semantic:
         sem_rows,sem_back=analysis_aliases(input_rows,work_dir,long_names=False)   # camcorder streams only
         sem_skipped=[]
-        candidates,semantic_reports,kept=build_semantic_candidates(runtime,sem_rows,work_dir,v52,model_root,adapter_root,sem_skipped)
+        if semantic_model=="pe_core_l14":
+            candidates,semantic_reports,kept=build_semantic_candidates_pe(runtime,sem_rows,work_dir,v52,pe_dir,sem_skipped)
+        else:
+            candidates,semantic_reports,kept=build_semantic_candidates(runtime,sem_rows,work_dir,v52,model_root,adapter_root,sem_skipped)
         for x in sem_skipped:
             skipped_inputs.append(dict(x,name=sem_back[x["name"]]["name"]) if x["name"] in sem_back else x)
         input_rows=[sem_back.get(r["name"],r) for r in kept]
@@ -798,7 +877,7 @@ def run(args):
         pool=candidates
         progress("select",0,1,"choosing moments")
         selected=manual_selection(pool,manual) if manual else choose_moments(v52,candidates,float(args.target_seconds),warnings,exclude)
-        selection_mode="FAST_LOCAL_SEMANTIC_SHADOW_V1"
+        selection_mode="PE_CORE_L14_SEMANTIC_V1" if semantic_model=="pe_core_l14" else "FAST_LOCAL_SEMANTIC_SHADOW_V1"
         event_count=len(candidates); cache_status="semantic_candidate_cache"
     else:
         progress("analyze",0,len(input_rows),"technical analysis")
@@ -937,7 +1016,7 @@ def run(args):
         "inputs":[{"name":r["name"],"bytes":r["bytes"],"sha256":r["sha256"]} for r in input_rows],
         "target_seconds":float(args.target_seconds),"actual_duration_s":round(actual,3),
         "target_error_s":round(abs(actual-float(args.target_seconds)),3),
-        "selection_mode":selection_mode,"semantic_requested":semantic_mode,
+        "selection_mode":selection_mode,"semantic_requested":semantic_mode,"semantic_model":semantic_model if use_semantic else None,
         "semantic_runtime":semantic_preflight,"semantic_reports":semantic_reports if use_semantic else [],
         "event_count":event_count,"event_cache":cache_status,
         "selected_count":len(order),"selected_sources":[e["source_name"] for e in order],
@@ -982,6 +1061,7 @@ def main():
     ap.add_argument("--target-seconds",type=float,default=30.0)
     ap.add_argument("--audio",choices=("auto","source","mute"),default="auto")
     ap.add_argument("--semantic",choices=("auto","required","off"),default="auto")
+    ap.add_argument("--semantic-model",choices=("fast_local","pe_core_l14"),default="fast_local",help="AI = fast_local (accepted), AI+ = pe_core_l14")
     ap.add_argument("--profile",choices=("16x9","9x16","auto"),default="16x9")
     ap.add_argument("--resolution",choices=("standard","social_hd"),default="standard")
     ap.add_argument("--progress-file",default="")

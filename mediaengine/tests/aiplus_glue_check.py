@@ -1,0 +1,104 @@
+"""AI+ GLUE test with a STAND-IN scorer (not an AI quality test; the real PE-Core model is tested by
+tests/pe_core_probe.py and, on Windows CI, by a real AI+ build).
+
+  python tests/aiplus_glue_check.py <fixtures_dir> <work_dir>
+
+Runs the R3 orchestrator in-process with --semantic required --semantic-model pe_core_l14. The model preflight and
+the scorer are replaced by a stand-in that prefers colourful frames; everything else is real: the accepted hook's
+scout frames, candidate windows, rerank and dense check (imported unchanged), the AI+ descriptions, candidate clips
+cut from the originals, selection, render. Checks: AI+ label in the result, own caches (AI and AI+ never mix), a
+second build reuses the analysis without loading the model, a missing model is refused (never a silent fallback).
+"""
+from __future__ import annotations
+
+import argparse, importlib.util, json, os, shutil, sys
+from pathlib import Path
+
+import numpy as np
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parent
+R3 = ROOT / "app" / "archivist" / "engine_p11"
+sys.path.insert(0, str(HERE))
+from media_measure import av_durations, ffmpeg_exe  # noqa: E402
+
+LOADS = []
+
+
+class StandInScorer:
+    identity = {"profile": "STAND_IN_NOT_THE_MODEL"}
+
+    def __init__(self, *_a, **_k):
+        LOADS.append(1)
+
+    def logits(self, images, prompts):
+        rows = []
+        for im in images:
+            a = np.asarray(im.convert("RGB"), np.float32) / 255.0
+            colour = float(a.std(axis=2).mean())            # colourful = "good", grey = "bad"
+            pos = [10 * colour + 0.01 * i for i in range(10)]
+            neg = [10 * (0.2 - colour)] * (len(prompts) - 10)
+            rows.append(pos + neg)
+        return np.asarray(rows, np.float32)
+
+
+def main():
+    fx, work = Path(sys.argv[1]).resolve(), Path(sys.argv[2]).resolve()
+    shutil.rmtree(work, ignore_errors=True)
+    work.mkdir(parents=True)
+    ff = ffmpeg_exe()
+    os.environ.update(MEDENG_FFMPEG=ff, MEDENG_FFPROBE=ff, MEDENG_P11_ADAPTER_ROOT=str(R3), MEDENG_P11_MODEL_ROOT=str(work / "models"))
+    spec = importlib.util.spec_from_file_location("r3_under_test", R3 / "p11_folder_to_reel_r3.py")
+    r3 = importlib.util.module_from_spec(spec); spec.loader.exec_module(r3)
+    checks = []
+
+    def check(name, ok, detail=None):
+        checks.append(bool(ok))
+        print(("PASS " if ok else "FAIL ") + name + ("" if ok else f"  {detail}"), flush=True)
+
+    src = work / "in"
+    shutil.copytree(fx / "two", src)
+
+    def args(out, **kw):
+        a = dict(input_dir=str(src), input_list="", output_dir=str(out), work_dir=str(work / "w"), runtime_dir=str(R3),
+                 target_seconds=10.0, audio="auto", semantic="required", semantic_model="pe_core_l14", profile="9x16",
+                 resolution="standard", progress_file="", exclude_events="", edits="", skip_sha_file="")
+        a.update(kw)
+        return argparse.Namespace(**a)
+
+    # the real preflight first: no model files -> refused, nothing built
+    try:
+        r3.run(args(work / "refused"))
+        refused = False
+    except RuntimeError as exc:
+        refused = str(exc).startswith("AIPLUS_MODEL_NOT_READY")
+    check("aiplus_missing_model_refused_no_fallback", refused and not (work / "refused" / "MediaEngine Reel.mp4").exists())
+
+    r3.pe_runtime_preflight = lambda pe_dir: {"pass": True, "model_dir": str(pe_dir), "note": "STAND-IN - not the model"}
+    r3.make_pe_scorer = lambda pe_dir: StandInScorer()
+    r3.run(args(work / "out1"))
+    res = json.loads((work / "out1" / "MediaEngine Result.json").read_text(encoding="utf-8"))
+    check("aiplus_mode_label", res["selection_mode"] == "PE_CORE_L14_SEMANTIC_V1" and res.get("semantic_model") == "pe_core_l14",
+          (res["selection_mode"], res.get("semantic_model")))
+    check("aiplus_own_caches", (work / "w" / "semantic_reports_pe").is_dir() and not (work / "w" / "semantic_reports").exists()
+          and any((work / "w" / "semantic_candidates_pe").glob("*.mp4")))
+    rep = json.loads(next((work / "w" / "semantic_reports_pe").glob("*.json")).read_text(encoding="utf-8"))
+    check("aiplus_report_has_ranked_windows", rep["report"]["hook"] == "P13_EVENT_SEMANTIC_PE_V1" and len(rep["report"]["ranked"]) >= 2,
+          rep["report"].get("hook"))
+    vd, ad = av_durations(work / "out1" / "MediaEngine Reel.mp4", ff)
+    check("aiplus_reel_built_sound_fits", ad is not None and abs(vd - ad) <= 0.05 and vd > 3, (vd, ad))
+    check("aiplus_model_loaded_once", len(LOADS) == 1, len(LOADS))
+    r3.run(args(work / "out2", target_seconds=5.0))
+    res2 = json.loads((work / "out2" / "MediaEngine Result.json").read_text(encoding="utf-8"))
+    check("aiplus_second_build_reuses_analysis", len(LOADS) == 1 and res2["selection_mode"] == "PE_CORE_L14_SEMANTIC_V1", len(LOADS))
+    ids1 = {s["event_id"] for s in res["segments"]}
+    r3.run(args(work / "out3", semantic="off", semantic_model="fast_local"))
+    res3 = json.loads((work / "out3" / "MediaEngine Result.json").read_text(encoding="utf-8"))
+    check("technical_mode_unchanged", res3["selection_mode"] == "ACCEPTED_V52_TECHNICAL_AESTHETIC" and not ids1 & {s["event_id"] for s in res3["segments"]},
+          res3["selection_mode"])
+    print(json.dumps({"passed": sum(checks), "total": len(checks)}))
+    return 0 if all(checks) else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

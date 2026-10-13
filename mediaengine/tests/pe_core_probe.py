@@ -77,6 +77,7 @@ def main():
         report["io_" + name] = {"inputs": [[x.name, x.type, x.shape] for x in s.get_inputs()],
                                 "outputs": [[x.name, x.type, x.shape] for x in s.get_outputs()]}
         del s
+    (out_dir / "pe_core_probe.json").write_text(json.dumps(report, indent=2), encoding="utf-8")   # partial, in case of a failure
     import psutil
     proc = psutil.Process()
     rss0 = proc.memory_info().rss
@@ -141,10 +142,11 @@ def reference(report, sc, imgs, names, te, ie):
         vs = ort.InferenceSession(vp, providers=["CPUExecutionProvider"])
         px = np.stack([A.preprocess(imgs[n]) for n in names])
         outs = [o.name for o in vs.get_outputs()]
-        v = vs.run(None, {vs.get_inputs()[0].name: px})
-        for o, arr in zip(outs, v):
-            if np.asarray(arr).ndim == 2:
-                a = np.asarray(arr, np.float32); a /= np.linalg.norm(a, axis=1, keepdims=True)
+        per = [vs.run(None, {vs.get_inputs()[0].name: px[i:i + 1]}) for i in range(len(px))]
+        for k, o in enumerate(outs):
+            arr = [np.asarray(p[k]) for p in per]
+            if arr[0].ndim == 2:
+                a = np.concatenate(arr, axis=0).astype(np.float32); a /= np.linalg.norm(a, axis=1, keepdims=True)
                 report["cos_image_fp32_vs_ref_" + o] = [round(float(x), 4) for x in (ri * a).sum(1)]
     except Exception as exc:
         report["fp32_check_error"] = str(exc)[:300]

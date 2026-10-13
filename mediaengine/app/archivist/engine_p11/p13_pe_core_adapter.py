@@ -138,22 +138,24 @@ class PECoreScorer:
         x = np.asarray(x, dtype=np.float32)
         return x / np.maximum(np.linalg.norm(x, axis=1, keepdims=True), 1e-12)
 
+    # the published ONNX graphs are exported for one item at a time (a reshape keeps batch 1), so items go one by one
     def encode_text(self, texts) -> np.ndarray:
         key = tuple(texts)
         if key not in self._text_cache:
-            ids = self.tokenizer.batch(texts)
-            feed = {}
-            for name in self.text_ins:
-                feed[name] = ids if "mask" not in name.lower() else (ids != 0).astype(np.int64)
-            self._text_cache[key] = self._norm(self.text.run([self.text_out], feed)[0])
+            rows = []
+            for ids in self.tokenizer.batch(texts):
+                ids = ids[None, :]
+                feed = {name: (ids if "mask" not in name.lower() else (ids != 0).astype(np.int64)) for name in self.text_ins}
+                rows.append(np.asarray(self.text.run([self.text_out], feed)[0], np.float32).reshape(1, -1))
+            self._text_cache[key] = self._norm(np.concatenate(rows, axis=0))
         return self._text_cache[key]
 
-    def encode_images(self, images, batch: int = 8) -> np.ndarray:
-        out = []
-        for i in range(0, len(images), batch):
-            px = np.stack([preprocess(x) for x in images[i:i + batch]], axis=0)
-            out.append(self.vision.run([self.vision_out], {self.vision_in: px})[0])
-        return self._norm(np.concatenate(out, axis=0))
+    def encode_images(self, images) -> np.ndarray:
+        rows = []
+        for im in images:
+            px = preprocess(im)[None, ...]
+            rows.append(np.asarray(self.vision.run([self.vision_out], {self.vision_in: px})[0], np.float32).reshape(1, -1))
+        return self._norm(np.concatenate(rows, axis=0))
 
     def logits(self, images, prompts) -> np.ndarray:
         if not images or not prompts:
