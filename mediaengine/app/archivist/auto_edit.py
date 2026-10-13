@@ -37,6 +37,10 @@ SOUNDS = {"auto": "Auto (keep source sound, mute if it jumps)", "source": "Sourc
 LENGTHS = (5, 15, 30, 60)
 MODES = {"semantic": "AI moments (FAST_LOCAL)", "semantic_plus": "AI+ moments (PE-Core L/14)", "technical": "Technical only (no AI model)"}
 AI_MODES = ("semantic", "semantic_plus")
+# AI+ themes: key -> name shown (English; Russian in auto_edit_ru). The descriptions are in the engine (p13_event_semantic_pe).
+THEMES = {"sea": "Sea and beach", "mountains": "Mountains", "kids": "Children", "family": "Family and friends",
+          "party": "Celebration", "animals": "Animals", "sunset": "Sunset", "nature": "Nature", "snow": "Winter and snow",
+          "city": "City", "food": "Food", "sport": "Sport", "road": "Road trip"}
 
 MODEL_SHA = "844d1a46ab18acf50c989e541b12fe3b6dc7f8d6004725b4e992d142788e0600"
 MODEL_BYTES = 24281512
@@ -1031,9 +1035,16 @@ def normalize_settings(raw: dict, *, model_ready: bool | None = None) -> dict:
         raise ValueError("The AI model (FAST_LOCAL) is not available on this computer. Choose 'Technical only' explicitly or install the model.")
     if mode == "semantic_plus" and not aiplus_status()["ready"]:
         raise ValueError("The AI+ model is not on this computer yet. Download it once on 'Check this PC' or choose another mode.")
+    theme = str(raw.get("theme") or "")
+    if theme and theme not in THEMES:
+        raise ValueError("Unknown theme")
+    if mode != "semantic_plus":
+        theme = ""                       # themes need AI+ (the descriptions of the accepted AI model are fixed)
     is_id = lambda x: re.fullmatch(r"[0-9a-f]{8,64}", str(x)) is not None
     exclude = sorted({str(x) for x in (raw.get("exclude") or []) if is_id(x)})
     out = {"format": fmt, "sound": sound, "length": length, "mode": mode, "exclude": exclude}
+    if theme:
+        out["theme"] = theme
     # Manual edit: an explicit list of moments in the user's order, optional source-time trims.
     selection = [str(x) for x in (raw.get("selection") or []) if is_id(x)]
     if len(set(selection)) != len(selection):
@@ -1358,6 +1369,7 @@ def engine_command(folder: Path, out_dir: Path, work_dir: Path, progress_file: P
            "--work-dir", str(work_dir), "--runtime-dir", str(ENGINE_DIR), "--target-seconds", str(float(s["length"])),
            "--audio", s["sound"], "--semantic", "required" if s["mode"] in AI_MODES else "off",
            *(["--semantic-model", "pe_core_l14"] if s["mode"] == "semantic_plus" else []),
+           *(["--theme", s["theme"]] if s["mode"] == "semantic_plus" and s.get("theme") else []),
            "--profile", f["profile"], "--resolution", f["resolution"], "--progress-file", str(progress_file)]
     if edits_file is not None and (s.get("selection") or s.get("trims")):
         cmd += ["--edits", str(edits_file)]

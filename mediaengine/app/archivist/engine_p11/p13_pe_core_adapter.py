@@ -115,23 +115,40 @@ def _embedding_output(sess) -> str:
 
 
 class PECoreScorer:
+    """Vision and text parts are opened only when needed: a theme for already analysed videos needs the text part
+    only (no frame is encoded again)."""
+
     def __init__(self, model_dir: Path, full_check: bool = True, threads: int | None = None):
-        import onnxruntime as ort
-        model_dir = Path(model_dir)
-        self.identity = dict(contract.validate(model_dir, full_check))
-        self.tokenizer = ClipTokenizer(model_dir)
-        so = ort.SessionOptions()
-        if threads:
-            so.intra_op_num_threads = int(threads)
-        self.vision = ort.InferenceSession(str(model_dir / "vision_model_int8.onnx"), so, providers=["CPUExecutionProvider"])
-        self.text = ort.InferenceSession(str(model_dir / "text_model_int8.onnx"), so, providers=["CPUExecutionProvider"])
-        self.vision_in = self.vision.get_inputs()[0].name
-        self.vision_out = _embedding_output(self.vision)
-        self.text_ins = [x.name for x in self.text.get_inputs()]
-        self.text_out = _embedding_output(self.text)
-        self.identity.update({"adapter": ADAPTER, "vision_io": [self.vision_in, self.vision_out],
-                              "text_io": [self.text_ins, self.text_out]})
+        self.model_dir = Path(model_dir)
+        self.identity = dict(contract.validate(self.model_dir, full_check))
+        self.identity["adapter"] = ADAPTER
+        self.tokenizer = ClipTokenizer(self.model_dir)
+        self.threads = threads
+        self._vision = self._text = None
         self._text_cache: dict[tuple, np.ndarray] = {}
+
+    def _session(self, name: str):
+        import onnxruntime as ort
+        so = ort.SessionOptions()
+        if self.threads:
+            so.intra_op_num_threads = int(self.threads)
+        return ort.InferenceSession(str(self.model_dir / name), so, providers=["CPUExecutionProvider"])
+
+    @property
+    def vision(self):
+        if self._vision is None:
+            self._vision = self._session("vision_model_int8.onnx")
+            self.vision_in = self._vision.get_inputs()[0].name
+            self.vision_out = _embedding_output(self._vision)
+        return self._vision
+
+    @property
+    def text(self):
+        if self._text is None:
+            self._text = self._session("text_model_int8.onnx")
+            self.text_ins = [x.name for x in self._text.get_inputs()]
+            self.text_out = _embedding_output(self._text)
+        return self._text
 
     @staticmethod
     def _norm(x: np.ndarray) -> np.ndarray:
@@ -143,18 +160,20 @@ class PECoreScorer:
         key = tuple(texts)
         if key not in self._text_cache:
             rows = []
+            sess = self.text
             for ids in self.tokenizer.batch(texts):
                 ids = ids[None, :]
                 feed = {name: (ids if "mask" not in name.lower() else (ids != 0).astype(np.int64)) for name in self.text_ins}
-                rows.append(np.asarray(self.text.run([self.text_out], feed)[0], np.float32).reshape(1, -1))
+                rows.append(np.asarray(sess.run([self.text_out], feed)[0], np.float32).reshape(1, -1))
             self._text_cache[key] = self._norm(np.concatenate(rows, axis=0))
         return self._text_cache[key]
 
     def encode_images(self, images) -> np.ndarray:
         rows = []
+        sess = self.vision
         for im in images:
             px = preprocess(im)[None, ...]
-            rows.append(np.asarray(self.vision.run([self.vision_out], {self.vision_in: px})[0], np.float32).reshape(1, -1))
+            rows.append(np.asarray(sess.run([self.vision_out], {self.vision_in: px})[0], np.float32).reshape(1, -1))
         return self._norm(np.concatenate(rows, axis=0))
 
     def logits(self, images, prompts) -> np.ndarray:

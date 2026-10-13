@@ -75,6 +75,14 @@ PHRASES = {
     "The AI+ model could not be started (not enough memory?). Close other programs and press Retry, or use AI.":
         "Модель ИИ+ не запустилась (не хватает памяти?). Закрой другие программы и нажми «Повторить» или используй ИИ.",
     "Technical only (sharpness, motion, exposure)": "Только техника (резкость, движение, яркость)",
+    "Theme (AI+)": "Тема (ИИ+)", "No theme — the best moments": "Без темы — лучшие моменты",
+    "With a theme, AI+ looks through all the videos for moments that match it (for example only the sea).":
+        "С темой ИИ+ ищет во всех видео подходящие моменты (например, только море).",
+    "Sea and beach": "Море и пляж", "Mountains": "Горы", "Children": "Дети", "Family and friends": "Семья и друзья",
+    "Celebration": "Праздник", "Animals": "Животные", "Sunset": "Закат", "Nature": "Природа", "Winter and snow": "Зима и снег",
+    "City": "Город", "Food": "Еда", "Sport": "Спорт", "Road trip": "Дорога и поездки", "theme": "тема",
+    "few moments match the theme, so the reel also uses other good moments": "мало моментов на эту тему, поэтому в ролике есть и другие хорошие моменты",
+    "moments that match the theme: ": "моментов на эту тему: ",
     "length was not written in the file (browser or screen recording) — a fixed copy is used, the original is not changed":
         "длина не записана в файле (запись из браузера или с экрана) — используется исправленная копия, оригинал не меняется", "Show files": "Показать файлы", "File": "Файл", "Size": "Размер", "Length": "Длина",
     "Frame": "Кадр", "Format": "Формат", "Sound": "Звук", "recommended": "рекомендуется", "Create reel": "Создать ролик",

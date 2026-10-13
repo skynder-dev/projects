@@ -295,45 +295,69 @@ def make_pe_scorer(pe_dir):
 class AiplusLoadError(RuntimeError):
     pass
 
-def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=None):
-    """Like build_semantic_candidates, with the AI+ hook. Own caches and own moment ids, so AI and AI+ never mix."""
+def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=None,theme=None,warnings=None):
+    """Like build_semantic_candidates, with the AI+ hook. Own caches and moment ids, so AI and AI+ never mix.
+    Every scout frame is embedded once per video (semantic_scout_pe/<sha>.json + .npy); a ranking per theme is cached
+    on top (semantic_reports_pe/<sha>.<theme>.json) - a new theme for analysed videos needs no frame encoding."""
     import p13_event_semantic_pe as hook
     import p13_pe_core_contract as pc
     v7=load_module("medeng_event_semantic_v7",runtime/"medeng_event_semantic_v7.py")
     here=Path(hook.__file__)
     hook_sha="|".join(sha256_file(here.with_name(n)) for n in ("p13_event_semantic_pe.py","p13_pe_core_adapter.py","p13_pe_core_contract.py"))
     model_key="|".join(v[2] for v in pc.MODEL_FILES.values())
+    scout_key=hashlib.sha256((hook_sha+"|"+model_key).encode()).hexdigest()
+    tkey=theme or "general"
+    rank_key=scout_key+"|"+hook.prompt_key(theme)
+    scout_dir=work_dir/"semantic_scout_pe"; scout_dir.mkdir(parents=True,exist_ok=True)
     reports_dir=work_dir/"semantic_reports_pe"; reports_dir.mkdir(parents=True,exist_ok=True)
     candidates_dir=work_dir/"semantic_candidates_pe"
-    scorer=None; specs=[]; reports=[]; kept=[]
+    state={"scorer":None}
+    def scorer_with(part):
+        try:
+            if state["scorer"] is None:
+                state["scorer"]=make_pe_scorer(pe_dir)
+            getattr(state["scorer"],part)     # opens that part of the model now: a failure is the model, not a video
+        except Exception as exc:     # memory, damaged runtime: one clear error, not "no moments" for every video
+            raise AiplusLoadError("AIPLUS_MODEL_LOAD_FAILED:"+type(exc).__name__+":"+str(exc)[:160]) from exc
+        return state["scorer"]
+    specs=[]; reports=[]; kept=[]
     for idx,row in enumerate(input_rows):
         progress("analyze",idx,len(input_rows),row["name"])
-        rp=reports_dir/(row["sha256"]+".json")
-        report=None
-        if rp.is_file():
-            try:
-                obj=json.loads(rp.read_text())
-                if obj.get("source_sha256")==row["sha256"] and obj.get("hook")==hook_sha and obj.get("model")==model_key:
-                    report=obj["report"]
-            except Exception:
-                report=None
         try:
+            rp=reports_dir/f"{row['sha256']}.{tkey}.json"
+            report=None
+            if rp.is_file():
+                try:
+                    obj=json.loads(rp.read_text())
+                    if obj.get("source_sha256")==row["sha256"] and obj.get("key")==rank_key: report=obj["report"]
+                except Exception:
+                    report=None
             if report is None:
-                if scorer is None:
-                    progress("analyze",idx,len(input_rows),"loading the AI+ model")
+                sj=scout_dir/(row["sha256"]+".json"); sn=scout_dir/(row["sha256"]+".npy")
+                info=emb=None
+                if sj.is_file() and sn.is_file():
                     try:
-                        scorer=make_pe_scorer(pe_dir)
-                    except Exception as exc:     # the model itself (memory, damaged runtime): one clear error, not "no moments"
-                        raise AiplusLoadError("AIPLUS_MODEL_LOAD_FAILED:"+type(exc).__name__+":"+str(exc)[:160]) from exc
+                        obj=json.loads(sj.read_text())
+                        if obj.get("source_sha256")==row["sha256"] and obj.get("key")==scout_key:
+                            info=obj["info"]; emb=np.load(sn).astype(np.float32)
+                            if emb.shape[0]!=len(info["rows"]): info=emb=None
+                    except Exception:
+                        info=emb=None
+                if info is None:
+                    if state["scorer"] is None or state["scorer"]._vision is None:
+                        progress("analyze",idx,len(input_rows),"loading the AI+ model")
+                    sc=scorer_with("vision")
                     progress("analyze",idx,len(input_rows),row["name"])
-                report=hook.analyze_video(v7,scorer,Path(row["path"]),v52.FFMPEG,os.environ.get("MEDENG_FFPROBE","ffprobe"))
-                atomic_json(rp,{"source_sha256":row["sha256"],"hook":hook_sha,"model":model_key,"report":report})
+                    info,emb=hook.scout(v7,sc,Path(row["path"]),v52.FFMPEG,os.environ.get("MEDENG_FFPROBE","ffprobe"))
+                    tmp=scout_dir/(row["sha256"]+".tmp.npy"); np.save(tmp,emb.astype(np.float16)); os.replace(tmp,sn)
+                    atomic_json(sj,{"source_sha256":row["sha256"],"key":scout_key,"info":info})
+                report=hook.rank(v7,scorer_with("text"),Path(row["path"]),info,emb,theme,v52.FFMPEG)
+                atomic_json(rp,{"source_sha256":row["sha256"],"key":rank_key,"report":report})
             row_specs=[]
             for rank,c in enumerate(report.get("ranked",[]),1):
                 cc=dict(c); cc["_source_rank"]=rank
                 spec=extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,"SEMANTIC_PE1")
-                # a cached clip keeps its cut; its scores always come from the current analysis (new descriptions or
-                # model files give new scores for the same windows)
+                # a cached clip keeps its cut; its scores always come from the current ranking (theme, descriptions)
                 spec.update({"semantic_margin_raw":float(cc["semantic_margin_raw"]),"semantic_source_final_score":float(cc["final_score"]),
                              "semantic_scout_score":float(cc["semantic_scout_score"]),"semantic_source_rank":int(rank),
                              "technical_prominence":round(.50*float(cc["scout_eventness"])+.35*float(cc["scout_novelty"])+.15*float(cc["scout_quality"]),6)})
@@ -347,15 +371,31 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
             if skipped is not None: skipped.append({"name":row["name"],"reason":"NO_MOMENTS"})
             continue
         kept.append(row)
-        reports.append({"source_name":row["name"],"source_sha256":row["sha256"],
+        reports.append({"source_name":row["name"],"source_sha256":row["sha256"],"theme":theme or "",
                         "rank1":report["ranked"][0] if report.get("ranked") else None})
         specs.extend(row_specs)
     if not specs: raise RuntimeError("NO_SEMANTIC_CANDIDATES")
     technical=v52.score_events(specs,work_dir/"SEMANTIC_PE_CANDIDATE_V22_SCORE_CACHE.json")
-    for e in technical:
+    if not theme:
+        for e in technical:
+            e["technical_v22_score"]=float(e["v22_score"])
+            e["v22_score"]=round(.80*float(e["semantic_source_final_score"])+.20*float(e["technical_v22_score"]),6)
+            e["selection_score_kind"]="PE_SEMANTIC_80_TECHNICAL_20_V1"
+        return technical,reports,kept
+    # a theme: how well a moment matches is compared across ALL videos (absolute margins), so a folder's sea shots win
+    # over another video's best non-sea moment; moments that do not match at all are left out when enough match
+    tn=robust01([float(e["semantic_margin_raw"]) for e in technical])
+    for e,t in zip(technical,tn):
         e["technical_v22_score"]=float(e["v22_score"])
-        e["v22_score"]=round(.80*float(e["semantic_source_final_score"])+.20*float(e["technical_v22_score"]),6)
-        e["selection_score_kind"]="PE_SEMANTIC_80_TECHNICAL_20_V1"
+        e["theme_match_0_1"]=round(float(t),6)
+        e["v22_score"]=round(.55*float(t)+.25*float(e["semantic_source_final_score"])+.20*float(e["technical_v22_score"]),6)
+        e["selection_score_kind"]="PE_THEME_55_FINAL_25_TECHNICAL_20_V1"
+    matching=[e for e in technical if float(e["semantic_margin_raw"])>0]
+    if warnings is not None:
+        warnings.append("THEME:%s:%d_MATCHING_MOMENTS"%(theme,len(matching)))
+    if len(matching)>=3:
+        return matching,reports,kept
+    if warnings is not None: warnings.append("THEME_FEW_MATCHES:%s"%theme)
     return technical,reports,kept
 
 def apply_manual_trims(v52,selected,trims,work_dir):
@@ -863,6 +903,10 @@ def run(args):
     semantic_model=str(getattr(args,"semantic_model","fast_local") or "fast_local").lower()
     if semantic_model=="pe_core_l14" and semantic_mode!="off":     # AI+: its own model, never a silent fallback
         pe_dir=pe_model_dir(model_root)
+        theme=str(getattr(args,"theme","") or "")
+        if theme:
+            import p13_event_semantic_pe as _hook
+            if theme not in _hook.THEMES: raise RuntimeError("UNKNOWN_THEME:"+theme[:40])
         semantic_preflight=pe_runtime_preflight(pe_dir)
         if not semantic_preflight["pass"]:
             raise RuntimeError("AIPLUS_MODEL_NOT_READY:"+str(semantic_preflight.get("error"))[:160])
@@ -878,7 +922,8 @@ def run(args):
         sem_rows,sem_back=analysis_aliases(input_rows,work_dir,long_names=False)   # camcorder streams only
         sem_skipped=[]
         if semantic_model=="pe_core_l14":
-            candidates,semantic_reports,kept=build_semantic_candidates_pe(runtime,sem_rows,work_dir,v52,pe_dir,sem_skipped)
+            candidates,semantic_reports,kept=build_semantic_candidates_pe(runtime,sem_rows,work_dir,v52,pe_dir,sem_skipped,
+                                                                          theme=(getattr(args,"theme","") or None),warnings=warnings)
         else:
             candidates,semantic_reports,kept=build_semantic_candidates(runtime,sem_rows,work_dir,v52,model_root,adapter_root,sem_skipped)
         for x in sem_skipped:
@@ -1032,6 +1077,7 @@ def run(args):
         "target_seconds":float(args.target_seconds),"actual_duration_s":round(actual,3),
         "target_error_s":round(abs(actual-float(args.target_seconds)),3),
         "selection_mode":selection_mode,"semantic_requested":semantic_mode,"semantic_model":semantic_model if use_semantic else None,
+        "theme":(str(getattr(args,"theme","") or "") or None) if (use_semantic and semantic_model=="pe_core_l14") else None,
         "semantic_runtime":semantic_preflight,"semantic_reports":semantic_reports if use_semantic else [],
         "event_count":event_count,"event_cache":cache_status,
         "selected_count":len(order),"selected_sources":[e["source_name"] for e in order],
@@ -1077,6 +1123,7 @@ def main():
     ap.add_argument("--audio",choices=("auto","source","mute"),default="auto")
     ap.add_argument("--semantic",choices=("auto","required","off"),default="auto")
     ap.add_argument("--semantic-model",choices=("fast_local","pe_core_l14"),default="fast_local",help="AI = fast_local (accepted), AI+ = pe_core_l14")
+    ap.add_argument("--theme",default="",help="AI+ only: a theme key of p13_event_semantic_pe.THEMES (empty = no theme)")
     ap.add_argument("--profile",choices=("16x9","9x16","auto"),default="16x9")
     ap.add_argument("--resolution",choices=("standard","social_hd"),default="standard")
     ap.add_argument("--progress-file",default="")

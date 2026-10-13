@@ -167,6 +167,16 @@ def main():
             check("recording without a length: Cancel stops the preparation", stopped)
         else:
             print("SKIP recording without a length: this ffmpeg cannot write WebM")
+    # AI+ themes: the app's list is the engine's list; a theme needs AI+; an unknown theme is refused
+    sys.path.insert(0, str(ROOT / "app" / "archivist" / "engine_p11"))
+    import p13_event_semantic_pe as _hook
+    check("AI+ themes: app and engine lists are the same", {k: v[0] for k, v in _hook.THEMES.items()} == ae.THEMES)
+    check("AI+ themes: every description is plain English (the model's tokenizer)",
+          all(t.isascii() for _, ps in _hook.THEMES.values() for t in ps) and all(t.isascii() for t in _hook.POSITIVE_PROMPTS + _hook.NEGATIVE_PROMPTS))
+    st = ae.normalize_settings({"length": 15, "format": "social_hd", "sound": "auto", "mode": "technical", "theme": "sea"})
+    check("a theme is dropped without AI+", "theme" not in st, st)
+    check("an unknown theme is refused", raises(ae.normalize_settings, {"length": 15, "format": "social_hd", "sound": "auto",
+                                                                         "mode": "technical", "theme": "moon"}))
     # times are stored as local wall-clock time: a running job's elapsed time must not be off by the UTC offset
     from datetime import datetime as _dt, timedelta as _td
     from archivist import web as _web

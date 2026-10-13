@@ -476,7 +476,8 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
                           for k, v in ae.FORMATS.items())
         sounds = "".join(f"<label><input type='radio' name='sound' value='{k}' {'checked' if k == 'auto' else ''}> {e(v)}</label>"
                          for k, v in ae.SOUNDS.items())
-        mode_html = _mode_choice(ms["ready"], ae.aiplus_status()["ready"], e)
+        plus_ready = ae.aiplus_status()["ready"]
+        mode_html = _mode_choice(ms["ready"], plus_ready, e) + (_theme_choice(e, "", ms["ready"]) if plus_ready else "")
         warn = ("<div class='callout card' style='margin-top:10px'>Only "
                 f"{_fmt_s(total)} of usable video — a short reel is recommended.</div>" if total < 30 else "")
         if total >= 1800:   # honest note for big folders (no invented time estimate)
@@ -525,7 +526,8 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
                                   model_ready=ae.model_status()["ready"])
             ae.check_free_space()
             pid = ae.create_project(f.get("folder"), f.get("title"), files=f.getlist("file") or None)
-            ae.start_job(pid, {"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode")})
+            ae.start_job(pid, {"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode"),
+                               "theme": f.get("theme") or ""})
         except Exception as exc:
             return err_page(str(exc))
         return redirect(f"/auto/p/{pid}")
@@ -683,7 +685,8 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
             if not mode:
                 raise ValueError("Without the AI model, choose Technical only explicitly on the new-reel screen.")
             settings = {"length": f.get("length") or bs.get("length"), "format": f.get("format") or bs.get("format"),
-                        "sound": f.get("sound") or bs.get("sound"), "mode": mode}
+                        "sound": f.get("sound") or bs.get("sound"), "mode": mode,
+                        "theme": f.get("theme") if "theme" in f else (bs.get("theme") or "")}
             if f.get("rechoose"):
                 # "Let MediaEngine choose again": automatic selection without the removed moments
                 settings["exclude"] = sorted(set(bs.get("exclude", [])) | set(f.getlist("remove")))
@@ -692,7 +695,8 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
                 # needs other moments: they are chosen again (removed ones stay out) - a hand-made selection would
                 # silently keep the old length.
                 same_len = not bs or str(settings["length"]) == str(bs.get("length"))
-                same_mode = not bs or settings["mode"] == bs.get("mode")    # AI and AI+ have different moments
+                same_mode = not bs or (settings["mode"] == bs.get("mode")    # AI, AI+ and each theme have their own moments
+                                       and (settings.get("theme") or "") == (bs.get("theme") or ""))
                 keep = (("exclude", "selection", "trims") if same_len else ("exclude",)) if same_mode else ()
                 settings.update({k: bs[k] for k in keep if bs.get(k)})
             before = {j["id"] for j in ae.project(pid)["jobs"]}
@@ -940,6 +944,18 @@ def _aiplus_card(ap, e, human_bytes):
             + ("poll();" if running else "") + "})();</script>")
 
 
+def _theme_choice(e, current="", ai_ready=True):
+    """AI+ only: an optional theme. Hidden while another mode is ticked (a theme needs AI+)."""
+    opts = "".join(f"<option value='{k}' {'selected' if k == current else ''}>{e(v)}</option>" for k, v in ae.THEMES.items())
+    return (f"<div class='ae-theme' data-theme-box style='margin-bottom:14px' {'hidden' if ai_ready and current == '' else ''}>"
+            f"<h2>Theme (AI+)</h2><select name='theme'><option value=''>No theme — the best moments</option>{opts}</select>"
+            "<div class='muted' style='margin-top:4px;font-size:13px'>With a theme, AI+ looks through all the videos for moments that "
+            "match it (for example only the sea).</div></div>"
+            "<script>(function(){const box=document.currentScript.previousElementSibling,f=box.closest('form');if(!f)return;"
+            "function upd(){const r=f.querySelector(\"input[name=mode]:checked\")||f.querySelector(\"input[type=hidden][name=mode]\");"
+            "box.hidden=!(r&&r.value==='semantic_plus')}f.querySelectorAll('input[name=mode]').forEach(x=>x.addEventListener('change',upd));upd()})();</script>")
+
+
 def _mode_choice(ai_ready, plus_ready, e, current=None, allow_technical=False, heading=True):
     """How moments are chosen: AI (accepted), AI+ (optional stronger model), or - only without any model, or for a
     variant whose model is gone - Technical only. The checked option is always one that can be built."""
@@ -974,6 +990,10 @@ def _variant_form(pid, rev, e, first=False, model_ready=True):
                     "Build without AI (Technical only: sharpness, motion, exposure)</label>")
     elif not (rev and cur_ok and not (model_ready and plus_ready)):     # more than one way, or the revision's model is gone
         mode = _mode_choice(model_ready, plus_ready, e, cur, allow_technical=bool(rev) and (cur == "technical" or not cur_ok), heading=False)
+    if plus_ready:
+        if not mode and cur:              # one way only (the revision's): say so, so the theme box knows the mode
+            mode = f"<input type='hidden' name='mode' value='{e(cur)}'>"
+        mode += _theme_choice(e, (rev["settings"].get("theme") or "") if rev else "", model_ready)
     note = "" if first else ("The current revision stays as it is. Format and sound variants keep its removed moments and your edits "
                              "and reuse the analysis; a new length chooses the moments again (removed ones stay out).")
     return (f"<form method='post' action='/auto/p/{pid}/variant' class='card' style='margin-top:14px' onsubmit=\"this.querySelector('button').disabled=true\">{base}"
@@ -1045,6 +1065,7 @@ def _review_html(p, rev, e, building=False):
     sm = str(res.get("selection_mode", ""))
     mode = ("AI moments (FAST_LOCAL)" if sm.startswith("FAST_LOCAL") else "AI+ moments (PE-Core L/14)" if sm.startswith("PE_CORE")
             else "Technical only (no AI)")
+    theme_name = ae.THEMES.get(str(res.get("theme") or ""), "")
     notes = []          # html pieces; file names stay exactly as they are in both languages
 
     def names(xs):
@@ -1059,6 +1080,11 @@ def _review_html(p, rev, e, building=False):
                          + e(" - the original could not be re-cut"))
         elif w == "HDR_NOT_CONVERTED":
             notes.append("HDR video could not be converted on this PC: colours may look grey")
+        elif w.startswith("THEME_FEW_MATCHES"):
+            notes.append("few moments match the theme, so the reel also uses other good moments")
+        elif w.startswith("THEME:") and w.endswith("_MATCHING_MOMENTS"):
+            n = w.split(":")[-1].split("_")[0]
+            notes.append(f"moments that match the theme: {int(n) if n.isdigit() else 0}")
     if res.get("hdr_sources"):
         notes.append(e("HDR video converted to normal colours: ") + names(res["hdr_sources"]))
     if res.get("deinterlaced_sources"):
@@ -1112,7 +1138,7 @@ def _review_html(p, rev, e, building=False):
     return f"""<div class='ae-player' style='margin-top:14px'>
 <div class='card'><video id='reel' class='ae-video' controls preload='metadata' src='/auto/rev/{rev['id']}/video'></video>
 <div class='ae-strip film'>{strip}</div>
-<div class='muted'>Revision R{int(rev['number']):03d} · {e(fmt.get('short',''))} {rev['width']}×{rev['height']} · {total:.2f} s · sound {e(_sound_label(rev['settings']['sound'], res))} · {e(mode)}</div>{short_html}{skipped_html}{skipped_html_extra}
+<div class='muted'>Revision R{int(rev['number']):03d} · {e(fmt.get('short',''))} {rev['width']}×{rev['height']} · {total:.2f} s · sound {e(_sound_label(rev['settings']['sound'], res))} · <span>{e(mode)}</span>{(" · <span>theme</span> <span>" + e(theme_name) + "</span>") if theme_name else ""}</div>{short_html}{skipped_html}{skipped_html_extra}
 <div class='row' style='margin-top:12px;flex-wrap:wrap'>{actions}</div>{compare_html}{exp_html}</div>
 {editor}</div>
 {variant}"""

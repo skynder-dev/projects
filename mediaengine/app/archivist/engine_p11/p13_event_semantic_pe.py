@@ -1,16 +1,23 @@
-"""AI+ moment ranking: the accepted semantic hook's steps (scout frames, candidate windows, rerank, dense check of
-the best three) with the stronger PE-Core L/14 model and descriptions written for personal footage (people, family,
-travel, nature, events) instead of only travel / car b-roll.
+"""AI+ moment ranking with PE-Core L/14.
 
-The accepted hook (medeng_event_semantic_v7) is imported and used as it is - nothing in it is changed; only the
-scorer and the descriptions differ. Weights are the accepted ones (.68 meaning / .32 scout, then .70 / .30 dense).
+Steps (the accepted hook medeng_event_semantic_v7 is imported and used unchanged for scouting, features, technical
+candidate windows and the dense check of the best three):
+  1. scout frames of the video (accepted method, about one per second, at most 48), their technical features, and an
+     AI+ embedding of EVERY scout frame - computed once per video and cached by the engine;
+  2. rank windows for "no theme" (the accepted technical windows, scored by the meaning of all their frames, weights as
+     in the accepted hook: .68 meaning / .32 scout) or for a THEME (windows centred on the frames that match the theme
+     best - any part of the video can be chosen);
+  3. dense check of the best three (accepted), final score .70 / .30 (accepted).
+A theme only needs the cached embeddings and a few text embeddings: no frame is decoded for the model again.
 """
 from __future__ import annotations
 
-import time
+import hashlib, json, time
 from pathlib import Path
 
-HOOK = "P13_EVENT_SEMANTIC_PE_V1"
+import numpy as np
+
+HOOK = "P13_EVENT_SEMANTIC_PE_V2"
 
 # fixed English descriptions (the model was trained on English captions); first the good, then the bad
 POSITIVE_PROMPTS = (
@@ -34,35 +41,126 @@ NEGATIVE_PROMPTS = (
     "a frame with no clear subject",
 )
 
+# key: (English name for reports, descriptions). The interface shows Russian / English names (auto_edit.THEMES).
+THEMES = {
+    "sea": ("Sea and beach", ("the sea or the ocean", "a beach with waves", "people swimming in the sea", "a boat on the water")),
+    "mountains": ("Mountains", ("mountains", "a mountain landscape", "a hiking trail in the mountains", "snowy mountain peaks")),
+    "kids": ("Children", ("children playing", "a small child", "kids laughing", "a baby")),
+    "family": ("Family and friends", ("a family together", "friends together", "people hugging", "a group of people smiling")),
+    "party": ("Celebration", ("a birthday party", "a celebration with friends", "a wedding", "people dancing at a party")),
+    "animals": ("Animals", ("a dog", "a cat", "a pet", "wild animals in nature")),
+    "sunset": ("Sunset", ("a sunset", "a sunrise", "golden hour light", "the sky at dusk")),
+    "nature": ("Nature", ("a forest", "a field with flowers", "a lake or a river", "green nature")),
+    "snow": ("Winter and snow", ("snow", "a winter landscape", "people playing in the snow", "a snowy forest")),
+    "city": ("City", ("a city street", "buildings in a city", "a town square", "city lights at night")),
+    "food": ("Food", ("food on a table", "people eating together", "a meal at a restaurant", "cooking food")),
+    "sport": ("Sport", ("people playing sports", "a person running or cycling", "skiing or snowboarding", "a ball game")),
+    "road": ("Road trip", ("a road trip", "driving on a road", "a view from a car window", "a train or a plane journey")),
+}
 
-def analyze_video(v7, scorer, path: Path, ffmpeg="ffmpeg", ffprobe="ffprobe") -> dict:
-    """SELECT_BEST of the accepted hook, with `scorer` (p13_pe_core_adapter.PECoreScorer or a test stand-in)."""
-    import p13_pe_core_adapter as adapter
 
-    def score_images(images):
-        return adapter.margin(scorer.logits(images, list(POSITIVE_PROMPTS + NEGATIVE_PROMPTS)), len(POSITIVE_PROMPTS))
+def prompts_for(theme: str | None):
+    if theme:
+        return THEMES[theme][1], NEGATIVE_PROMPTS
+    return POSITIVE_PROMPTS, NEGATIVE_PROMPTS
 
-    scout_started = time.perf_counter()
+
+def prompt_key(theme: str | None) -> str:
+    pos, neg = prompts_for(theme)
+    return hashlib.sha256(json.dumps([theme or "", list(pos), list(neg)]).encode()).hexdigest()[:16]
+
+
+def scout(v7, scorer, path: Path, ffmpeg="ffmpeg", ffprobe="ffprobe"):
+    """Scout frames + features (accepted) and an AI+ embedding of every scout frame. Returns (info, embeddings)."""
+    import cv2
+    from PIL import Image
+    started = time.perf_counter()
     probed = v7.ffprobe_duration(path, ffprobe, ffmpeg)
     step = v7.adaptive_scout_step(probed, target_frames=48, min_step=1.0)
     duration, vals, unique_ratio = v7.parallel_scout_frames(path, step=step, ffmpeg=ffmpeg, ffprobe=ffprobe)
-    scout_elapsed = time.perf_counter() - scout_started
-    d = v7.feature_table(vals)
-    candidates = v7.event_candidates(d, duration)
+    rows = v7.feature_table(vals)
+    scout_s = time.perf_counter() - started
     started = time.perf_counter()
-    ranked = v7.semantic_rerank(candidates, vals, score_images)
-    semantic_elapsed = time.perf_counter() - started
+    emb = scorer.encode_images([Image.fromarray(cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)) for _, bgr in vals])
+    info = {"hook": HOOK, "duration_s": round(float(duration), 6), "scout_step_s": round(float(step), 3),
+            "scout_unique_ratio": round(float(unique_ratio), 4), "scout_frame_count": len(vals),
+            "scout_elapsed_s": round(scout_s, 3), "embed_elapsed_s": round(time.perf_counter() - started, 3),
+            "rows": [{k: float(v) for k, v in r.items()} for r in rows]}
+    return info, np.asarray(emb, np.float32)
+
+
+def frame_margins(scorer, emb, theme: str | None) -> np.ndarray:
+    """Per scout frame: mean of the two best matching good descriptions minus the best bad one (as accepted)."""
+    pos, neg = prompts_for(theme)
+    lp = 100.0 * emb @ scorer.encode_text(list(pos)).T
+    ln = 100.0 * emb @ scorer.encode_text(list(neg)).T
+    k = min(2, lp.shape[1])
+    return np.sort(lp, axis=1)[:, -k:].mean(axis=1) - ln.max(axis=1)
+
+
+def _robust01(v7, xs):
+    return v7.robust01(list(xs)) if len(xs) else np.asarray([])
+
+
+def _window_stats(rows, margins, start, end):
+    idx = [i for i, r in enumerate(rows) if start - 1e-6 <= float(r["t"]) <= end + 1e-6]
+    if not idx:                                    # very short window: the nearest scout frame
+        c = (start + end) / 2
+        idx = [int(np.argmin([abs(float(r["t"]) - c) for r in rows]))]
+    m = float(np.mean([margins[i] for i in idx]))
+    q = float(np.mean([rows[i]["quality"] for i in idx]))
+    ev = float(np.mean([rows[i]["eventness"] for i in idx]))
+    nv = float(np.mean([rows[i]["novelty"] for i in idx]))
+    sc = float(np.mean([rows[i]["scout_score"] for i in idx]))
+    return m, q, ev, nv, sc
+
+
+def theme_windows(rows, margins, duration, window=5.5, max_candidates=8):
+    """Windows centred on the scout frames that match the theme best (at least 2 s apart)."""
+    order = np.argsort(-np.asarray(margins))
+    picked = []
+    for i in order:
+        center = float(rows[int(i)]["t"])
+        start = min(max(0.0, center - window / 2), max(0.0, duration - window))
+        start = round(start * 2) / 2
+        end = min(duration, start + window)
+        # 2 s apart by centre AND by start: near the ends of a short video two centres give the same window
+        if all(abs(center - x["center_s"]) >= 2.0 and abs(start - x["start_s"]) >= 2.0 for x in picked):
+            picked.append({"center_s": center, "start_s": round(start, 3), "end_s": round(end, 3)})
+        if len(picked) >= max_candidates:
+            break
+    return picked
+
+
+def rank(v7, scorer, path: Path, info: dict, emb, theme: str | None = None, ffmpeg="ffmpeg") -> dict:
+    """Ranked windows of one video for 'no theme' or a theme (embeddings from scout(); only text is encoded here)."""
+    rows, duration = info["rows"], float(info["duration_s"])
+    margins = frame_margins(scorer, emb, theme)
     started = time.perf_counter()
-    for c in ranked[:3]:
+    if theme:
+        wins = theme_windows(rows, margins, duration)
+    else:
+        wins = [{"center_s": c["center_s"], "start_s": c["start_s"], "end_s": c["end_s"]} for c in v7.event_candidates(rows, duration)]
+    cands = []
+    for w in wins:
+        m, q, ev, nv, sc = _window_stats(rows, margins, w["start_s"], w["end_s"])
+        cands.append({**w, "semantic_margin_raw": round(m, 6), "scout_quality": round(q, 6), "scout_eventness": round(ev, 6),
+                      "scout_novelty": round(nv, 6), "scout_priority": round(.55 * nv + .45 * sc, 6)})
+    if not cands:
+        return {"hook": HOOK, "theme": theme or "", "ranked": []}
+    sem = _robust01(v7, [c["semantic_margin_raw"] for c in cands])
+    scout_n = _robust01(v7, [c["scout_priority"] for c in cands])
+    for c, s, p in zip(cands, sem, scout_n):
+        c["semantic_score_0_1"] = round(float(s), 6)
+        c["semantic_scout_score"] = round(.68 * float(s) + .32 * float(p), 6)
+    cands.sort(key=lambda x: x["semantic_scout_score"], reverse=True)
+    for c in cands[:3]:
         c.update(v7.dense_window_quality(path, c["start_s"], c["end_s"], ffmpeg))
         c["final_score"] = round(.70 * c["semantic_scout_score"] + .30 * c["dense_score"], 6)
-    for c in ranked[3:]:
+    for c in cands[3:]:
         c["final_score"] = round(.70 * c["semantic_scout_score"], 6)
-    ranked.sort(key=lambda x: x["final_score"], reverse=True)
-    return {
-        "video": str(path), "duration_s": round(duration, 6), "scout_frame_count": len(vals), "scout_step_s": round(step, 3),
-        "scout_unique_ratio": round(unique_ratio, 4), "scout_elapsed_s": round(scout_elapsed, 3),
-        "semantic_elapsed_s": round(semantic_elapsed, 3), "dense_refine_elapsed_s": round(time.perf_counter() - started, 3),
-        "hook": HOOK, "semantic_model_identity": getattr(scorer, "identity", None),
-        "mode": "SELECT_BEST", "selection_claim": True, "ranked": ranked,
-    }
+    cands.sort(key=lambda x: x["final_score"], reverse=True)
+    return {"hook": HOOK, "theme": theme or "", "video": str(path), "duration_s": duration,
+            "rank_elapsed_s": round(time.perf_counter() - started, 3), "mode": "SELECT_BEST", "selection_claim": True,
+            "frames_matching_theme": int((np.asarray(margins) > 0).sum()) if theme else None,
+            "semantic_model_identity": getattr(scorer, "identity", None), "ranked": cands}
