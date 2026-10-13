@@ -139,6 +139,42 @@ def main():
             m2 = {s["source_name"] for s in rev2["result"]["segments"]}
             timings["aiplus_sources"] = sorted(m1)
             timings["ai_sources"] = sorted(m2)
+        # Library search by theme with the real AI+ model: import a folder, index it, search
+        from archivist import aiplus_library as al, service
+        from archivist.db import db
+        lib = home.parent / "real_models_library"
+        shutil.rmtree(lib, ignore_errors=True)
+        shutil.copytree(fx / "two", lib)
+        c.post("/import/add-source", data={"path": str(lib), "label": "Library test"}, headers=H)
+        t0 = time.time()
+        rows = []
+        while time.time() - t0 < 120:
+            with db() as con:
+                rows = [r["id"] for r in con.execute("SELECT id FROM inventory WHERE path LIKE ?", (str(lib) + "%",)).fetchall()]
+            if len(rows) >= 2 and not service.DISCOVERY_LOCK.locked():
+                break
+            time.sleep(1)
+        r = c.post("/api/selection-action", json={"action": "import_analyze", "ids": rows}, headers=H)
+        jid = (r.get_json() or {}).get("job_id")
+        t0 = time.time()
+        while jid and time.time() - t0 < 600:
+            with db() as con:
+                stj = con.execute("SELECT status FROM jobs WHERE id=?", (jid,)).fetchone()["status"]
+            if stj in ("finished", "partial", "failed", "cancelled"):
+                break
+            time.sleep(1)
+        t0 = time.time()
+        c.post("/api/aiplus/library-index", json={}, headers=H)
+        while al.status()["state"] == "running" and time.time() - t0 < 900:
+            time.sleep(1)
+        st = al.status()
+        timings["library_index_s"] = round(time.time() - t0, 1)
+        check("library_indexed_with_real_aiplus", st["state"] == "done" and st["indexed"] == st["videos"] >= 2, st)
+        t0 = time.time()
+        res = al.search("sunset")
+        timings["library_search_ms"] = round(1000 * (time.time() - t0), 1)
+        timings["library_search_top"] = res[:3]
+        check("library_theme_search_answers", len(res) >= 2 and all("best_s" in x for x in res), res[:3])
     return finish(checks, timings, out_json)
 
 

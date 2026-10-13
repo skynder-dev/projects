@@ -277,7 +277,18 @@ APP_PHRASES: dict[str, str] = {
     "Privacy": "Приватность", "Privacy reason": "Причина (приватность)", "Quality": "Качество", "Quality reason": "Причина (качество)",
     "Rights": "Права", "Rights reason": "Причина (права)", "Rights / location risk": "Права / риск места съёмки", "Rights place": "Место",
     "Rights source": "Источник", "Rights notes": "Заметки о правах", "Place / venue": "Место / площадка", "Policy/source URL": "Ссылка на правила",
-    "Notes": "Заметки", "Save rights status": "Сохранить права", "Rejected": "Отклонённые (Rejected)", "Remove source": "Убрать источник", "Clip not found": "Клип не найден (видео проанализировано заново или убрано)",
+    "Notes": "Заметки", "Save rights status": "Сохранить права", "Rejected": "Отклонённые (Rejected)", "Remove source": "Убрать источник", "Find by theme (AI+)": "Найти по теме (ИИ+)", "Find": "Найти",
+    "Prepare the search": "Подготовить поиск", "Find by theme": "Поиск по теме", "best moment": "лучший момент",
+    "The AI+ model looks at the preview frames of each video once (about 10-20 s per video on a normal PC); after that every search is instant.":
+        "Модель ИИ+ один раз смотрит кадры превью каждого видео (примерно 10–20 с на видео на обычном компьютере); после этого любой поиск мгновенный.",
+    "No video matches this theme.": "Ни одно видео не подходит под эту тему.", "Library · AI+": "Библиотека · ИИ+", "Choose a theme.": "Выбери тему.",
+    "Sea and beach": "Море и пляж", "Mountains": "Горы", "Children": "Дети", "Family and friends": "Семья и друзья",
+    "Celebration": "Праздник", "Animals": "Животные", "Sunset": "Закат", "Nature": "Природа", "Winter and snow": "Зима и снег",
+    "City": "Город", "Food": "Еда", "Sport": "Спорт", "Road trip": "Дорога и поездки",
+    "Open one to start at its best moment.": "Открой видео — оно начнётся с лучшего момента.",
+    "Stopped.": "Остановлено.", "The AI+ model could not be started (not enough memory?). Close other programs and try again.":
+        "Модель ИИ+ не запустилась (не хватает памяти?). Закрой другие программы и попробуй ещё раз.", "The AI+ model is not on this computer yet. Download it once on 'Check this PC'.":
+        "Модели ИИ+ на этом компьютере пока нет. Скачай её один раз на странице «Проверка компьютера».", "Clip not found": "Клип не найден (видео проанализировано заново или убрано)",
     "Not found": "Не найдено",
     "privacy_clear": "личного не найдено", "privacy_candidate": "возможно личное — проверь", "privacy_disabled": "проверка приватности выключена", "privacy_not_run": "приватность не проверялась", "privacy_unreadable": "не удалось проверить приватность", "preview error": "ошибка превью", "Open item for details": "Подробности — на странице видео", "preview…": "превью…", "private_forever": "личное навсегда",
     "Build scene/window clips, rank Best Moments and calculate static 16:9 / 4:5 / 1:1 / 9:16 crop suggestions.":
@@ -286,7 +297,7 @@ APP_PHRASES: dict[str, str] = {
     "technical_ok": "технически в порядке", "dark": "тёмное", "very_dark": "очень тёмное", "bright": "светлое",
     "very_bright": "пересвечено", "low_detail": "мало деталей", "very_low_detail": "очень мало деталей",
     "quality_disabled": "проверка качества выключена", "quality_not_run": "качество не проверялось",
-    "ffmpeg_unavailable": "FFmpeg недоступен", "video_decode_failed": "видео не читается",
+    "video_decode_failed": "видео не читается",
     "video_decode_timeout": "видео читается слишком долго", "quality_metrics_failed": "не удалось оценить качество",
     "auto: publishing rights not reviewed": "авто: права на публикацию не проверены",
     "auto: audio track present; publishing rights not reviewed": "авто: есть звук; права на публикацию не проверены",
@@ -420,6 +431,11 @@ APP_PHRASES: dict[str, str] = {
 }
 
 APP_PATTERNS: list[tuple[str, str]] = [
+    (r"Ready for (\d+) of (\d+) video\(s\)\.", r"Готово для \1 из \2 видео."),
+    (r"(\d+) video\(s\) match the theme, best first\. Open one to start at its best moment\.",
+     r"Подходящих видео: \1, лучшие первыми. Открой видео — оно начнётся с лучшего момента."),
+    (r"Only (\d+) of (\d+) video\(s\) are prepared for the search\. ", r"Для поиска подготовлено только \1 из \2 видео. "),
+    (r"Prepare the rest", r"Подготовь остальные"), (r" on the Library page\.", r" на странице «Библиотека»."),
     (r"Not enough free disk space for the AI\+ model \(about ([\d.]+) GB needed\)\.", r"Мало места на диске для модели ИИ+ (нужно около \1 ГБ)."),
     (r"A downloaded file is not the exact model file \((.+)\)\. Try again\.", r"Скачанный файл не совпадает с точным файлом модели (\1). Попробуй ещё раз."),
     (r"No connection to huggingface\.co\. Check the internet connection and try again\. \[(.*)\]",

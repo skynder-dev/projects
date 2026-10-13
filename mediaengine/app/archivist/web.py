@@ -299,6 +299,13 @@ def create_app():
             dl=False
         if dl and not force:
             return jsonify({'ok':False,'error':"The AI+ model is being downloaded"}),409
+        try:
+            from . import aiplus_library as _al
+            idx=_al.running()
+        except Exception:
+            idx=False
+        if idx and not force:
+            return jsonify({'ok':False,'error':"The Library search by theme is being prepared"}),409
         if mode!='stop': _spawn_launcher(mode)
         threading.Thread(target=_exit_soon,daemon=True).start(); return jsonify({'ok':True})
 
@@ -745,7 +752,7 @@ if(recheck)recheck.onclick=async()=>{
                 source_options+=opt(source_id,s['source_id'],f"{prefix}: {s['source_label']} ({s['n']})")
             filters=f"""<form method='get' class='toolbar toolpanel'><input name='q' value='{e(q)}' placeholder='Search Library'><select name='media_type'>{opt(media_type,'','Photos + videos')}{opt(media_type,'video','Videos')}{opt(media_type,'image','Photos')}</select><select name='source_kind'>{opt(source_kind,'','Any origin')}{opt(source_kind,'android','From Android')}{opt(source_kind,'removable','From SD/USB')}{opt(source_kind,'fixed','Existing local')}</select><select name='source_id'>{source_options}</select><select name='status'>{opt(status,'','Any privacy state')}{opt(status,'safe','Privacy safe')}{opt(status,'review','Privacy review')}{opt(status,'duplicate','Duplicate')}{opt(status,'error','Error')}</select><select name='rights'>{opt(rights,'','Any rights state')}{opt(rights,'flagged','Rights flagged')}{opt(rights,'unknown','Rights unknown')}{opt(rights,'review','Rights review')}{opt(rights,'permission','Permission needed')}{opt(rights,'cleared','Rights cleared')}{opt(rights,'blocked','Do not publish')}</select><select name='sort'>{opt(sort,'date_desc','Newest')}{opt(sort,'date_asc','Oldest')}{opt(sort,'size_desc','Largest')}{opt(sort,'size_asc','Smallest')}{opt(sort,'duration_desc','Longest')}{opt(sort,'quality_desc','Quality score')}{opt(sort,'name','Name')}</select><button>Apply</button></form>"""
             actions="""<div class='toolbar'><b id='selectedCount'>0 selected</b><span class='badge ready' id='previewCount'>Previews …</span><button class='btn2' id='selectPage'>Select page</button><button class='btn2' id='clearSel'>Clear</button><button id='analyzeBtn' class='btn2'>Analyze local</button><button id='mediaBrainBtn' class='btn2'>Media Brain</button><button id='convertBulkBtn' class='btn2'>Convert</button><button id='privateBtn' class='warn'>Private forever</button><button id='archiveBtn' class='ok'>Archive</button><button id='rejectBtn' class='danger'>Reject → quarantine</button><button id='removeBtn' class='danger'>Remove from Library</button><select id='rightsPreset'><option value=''>Rights…</option><option value='review'>Review rights</option><option value='permission'>Permission needed</option><option value='cleared'>Rights cleared</option><option value='blocked'>Do not publish</option><option value='reset'>Reset rights status</option></select><button id='rightsBtn' class='btn2'>Apply rights tag</button></div><div id='actionMsg' class='mode-note'>Hover over a video when its storyboard is ready to skim the clip without opening it.</div>"""
-        body=head+filters+actions+"<div class='grid'>"
+        body=head+(_aiplus_search_card() if not is_import else "")+filters+actions+"<div class='grid'>"
         for r in rows:
             if is_import:
                 imp='in-library' if r['work_selected'] else ('local-source' if r['source_kind']=='fixed' else 'source')
@@ -1242,6 +1249,72 @@ pollConvert();"""
     def library():
         return gallery('library')
 
+    def _aiplus_search_card():
+        """Library: search the videos by a theme with the AI+ model (only when AI+ is installed)."""
+        try:
+            from . import aiplus_library as al, auto_edit as _ae
+            st=al.status()
+        except Exception:
+            return ""
+        if not st["model_ready"]:
+            return ""
+        opts="".join(f"<option value='{k}'>{e(v)}</option>" for k,v in _ae.THEMES.items())
+        missing=st["videos"]-st["indexed"]
+        prep=(f"<span class='muted'>Ready for {st['indexed']} of {st['videos']} video(s).</span> "
+              f"<button type='button' class='btn2' id='apIdx' {'disabled' if st['state']=='running' else ''}>Prepare the search</button>"
+              f"<span class='muted' id='apIdxMsg'></span>") if missing>0 or st["state"]=="running" else ""
+        return (f"<div class='card' style='margin-bottom:12px'><form method='get' action='/library/theme' class='row'>"
+                f"<b>Find by theme (AI+)</b><select name='theme'>{opts}</select><button>Find</button>{prep}</form>"
+                + ("<div class='muted small' style='margin-top:6px;white-space:normal'>The AI+ model looks at the preview frames of each video once "
+                   "(about 10-20 s per video on a normal PC); after that every search is instant.</div>" if missing>0 else "")
+                + "<script>(function(){const b=document.getElementById('apIdx');if(!b)return;const m=document.getElementById('apIdxMsg');"
+                  "async function poll(){try{const r=await fetch('/api/aiplus/library-index',{cache:'no-store'});const x=await r.json();"
+                  "if(x.state==='running'){b.disabled=true;m.textContent=' '+x.done+' / '+x.total+(x.waiting?' · waiting until the reel is built':'');setTimeout(poll,1500)}"
+                  "else{b.disabled=false;m.textContent=x.error||'';if(x.state==='done')location.href='/library?aiplus='+Date.now()}}catch(e){setTimeout(poll,3000)}}"
+                  "b.onclick=async()=>{b.disabled=true;const r=await fetch('/api/aiplus/library-index',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});"
+                  "const x=await r.json();if(!x.ok){m.textContent=x.error||'';b.disabled=false;return}poll()};"
+                  + ("poll();" if st["state"]=="running" else "") + "})();</script></div>")
+
+    @app.get('/library/theme')
+    def library_theme():
+        from . import aiplus_library as al, auto_edit as _ae
+        theme=request.args.get('theme','')
+        name=_ae.THEMES.get(theme)
+        if not name:                      # no theme chosen: every theme as a button
+            chips="".join(f"<a class='btn btn2' style='margin:0 8px 8px 0' href='/library/theme?theme={k}'>{e(v)}</a>" for k,v in _ae.THEMES.items())
+            return layout('Find by theme',f"<div class='pagehead row space'><div><div class='eyebrow'>Library · AI+</div><h1>Find by theme</h1>"
+                          f"<div class='lead'>Choose a theme.</div></div><a class='btn btn2' href='/library'>Back</a></div><div class='card'>{chips}</div>")
+        try:
+            res=al.search(theme)
+            st=al.status()
+        except Exception as exc:
+            return layout('Find by theme',f"<div class='card'><div class='errbox'>{e(str(exc)[:300])}</div><a class='btn btn2' href='/library'>Back</a></div>"),400
+        good=[r for r in res if r['score']>0]
+        cards="".join(f"<a class='media-card' href='/item/{r['inventory_id']}?t={r['best_s']:.1f}'><div class='thumb'><img loading='lazy' src='/storyboard/{r['inventory_id']}/{r['frame']}' onerror=\"this.onerror=null;this.src='/thumb/{r['inventory_id']}'\"></div>"
+                      f"<div class='meta'><div class='name' translate='no'>{e(r['filename'])}</div><div class='small'><span>best moment</span> "
+                      f"{int(r['best_s']//60)}:{int(r['best_s']%60):02d}</div></div></a>" for r in good)
+        note=("" if st['indexed']>=st['videos'] else
+              f"<div class='callout card' style='margin-bottom:12px'>Only {st['indexed']} of {st['videos']} video(s) are prepared for the search. "
+              f"<a href='/library'>Prepare the rest</a> on the Library page.</div>")
+        body=(f"<div class='pagehead row space'><div><div class='eyebrow'>Library · AI+</div><h1>{e(name)}</h1>"
+              f"<div class='lead'>{len(good)} video(s) match the theme, best first. Open one to start at its best moment.</div></div>"
+              f"<a class='btn btn2' href='/library'>Back</a></div>{note}"
+              + (f"<div class='grid'>{cards}</div>" if good else "<div class='empty'>No video matches this theme.</div>"))
+        return layout('Find by theme',body)
+
+    @app.route('/api/aiplus/library-index',methods=['GET','POST'])
+    def aiplus_library_index():
+        from . import aiplus_library as al
+        if request.method=='POST':
+            if (request.get_json(silent=True) or {}).get('stop'):
+                al.stop(); return jsonify({'ok':True})
+            try:
+                al.start()
+            except Exception as exc:
+                return jsonify({'ok':False,'error':str(exc)})
+            return jsonify({'ok':True})
+        return jsonify(al.status())
+
     @app.post('/api/selection-action')
     def selection_action():
         p=request.get_json(silent=True) or {}; action=p.get('action'); ids=[int(x) for x in p.get('ids',[]) if str(x).isdigit()]
@@ -1398,7 +1471,8 @@ pollConvert();"""
         keep={'Source','Staging','SHA-256','Archive copy','Rejected','Rights place','Rights source','Rights notes'}   # names, paths, hashes: never translated
         no_tr=" translate='no'"
         for k,v in vals:body+=f"<div>{e(k)}</div><div{no_tr if k in keep else ''}>{e(v)}</div>"
-        body+=f"</div><div class='toolbar'><form method='post' action='/item/{inv_id}/remove' onsubmit=\"return confirm('Remove this item from Library? Its imported Staging copy moves to the Rejected / Removed from Library folder (delete it there when you are sure); the source original stays untouched.')\"><button class='danger'>Remove from Library</button></form></div><hr style='border-color:#303842;margin:18px 0'><h3>Rights / location risk</h3><div class='muted'>Triage only — not a legal determination. Manual tags are never overwritten by automatic analysis.</div><form method='post' action='/item/%d/rights' class='toolbar'><select name='status'><option value='unknown'>Unknown</option><option value='review'>Review</option><option value='permission'>Permission needed</option><option value='cleared'>Cleared</option><option value='blocked'>Do not publish</option></select><input name='place' placeholder='Place / venue' value='%s'><input name='source_url' placeholder='Policy/source URL' value='%s'><input name='notes' placeholder='Notes' value='%s'><button>Save rights status</button></form></div></div>" % (inv_id,e(r['rights_place'] or ''),e(r['rights_source_url'] or ''),e(r['rights_notes'] or ''));return layout(r['filename'],body,f"""function bindStoryFrames(){{document.querySelectorAll('#storyboardMount .storyframe').forEach(x=>x.onclick=()=>{{const v=document.getElementById('mainVideo');if(v){{v.currentTime=Number(x.dataset.time||0);v.play().catch(()=>{{}})}}}})}}
+        body+=f"</div><div class='toolbar'><form method='post' action='/item/{inv_id}/remove' onsubmit=\"return confirm('Remove this item from Library? Its imported Staging copy moves to the Rejected / Removed from Library folder (delete it there when you are sure); the source original stays untouched.')\"><button class='danger'>Remove from Library</button></form></div><hr style='border-color:#303842;margin:18px 0'><h3>Rights / location risk</h3><div class='muted'>Triage only — not a legal determination. Manual tags are never overwritten by automatic analysis.</div><form method='post' action='/item/%d/rights' class='toolbar'><select name='status'><option value='unknown'>Unknown</option><option value='review'>Review</option><option value='permission'>Permission needed</option><option value='cleared'>Cleared</option><option value='blocked'>Do not publish</option></select><input name='place' placeholder='Place / venue' value='%s'><input name='source_url' placeholder='Policy/source URL' value='%s'><input name='notes' placeholder='Notes' value='%s'><button>Save rights status</button></form></div></div>" % (inv_id,e(r['rights_place'] or ''),e(r['rights_source_url'] or ''),e(r['rights_notes'] or ''));return layout(r['filename'],body,f"""(function(){{const t=new URLSearchParams(location.search).get('t'),v=document.getElementById('mainVideo');if(t&&v){{v.addEventListener('loadedmetadata',()=>{{v.currentTime=Number(t)||0}},{{once:true}})}}}})();
+function bindStoryFrames(){{document.querySelectorAll('#storyboardMount .storyframe').forEach(x=>x.onclick=()=>{{const v=document.getElementById('mainVideo');if(v){{v.currentTime=Number(x.dataset.time||0);v.play().catch(()=>{{}})}}}})}}
 function fmtTime(t){{t=Math.max(0,Number(t||0));return Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0')}}
 async function loadStoryboard(){{const m=document.getElementById('storyboardMount');if(!m||m.dataset.ready==='1'){{bindStoryFrames();return}};try{{const r=await fetch('/api/storyboard-status?ids={inv_id}',{{cache:'no-store'}}),x=await r.json(),it=(x.items||{{}})['{inv_id}'];if(it&&it.ready&&it.count){{let h="<div id='storyboardMount' class='storystrip' data-ready='1'>";for(let i=0;i<it.count;i++){{const t=(it.times||[])[i]||0;h+="<div class='storyframe' data-time='"+t+"'><img src='/storyboard/{inv_id}/"+i+"?g="+(x.generation||0)+"'><span class='storytime'>"+fmtTime(t)+"</span></div>"}}h+='</div>';m.outerHTML=h;bindStoryFrames();return}}if(it&&it.status==='unavailable'){{m.innerHTML="<b>8 preview frames</b><div class='muted small'>Preview generation is temporarily unavailable for this file. Archivist will retry later.</div>";return}}await fetch('/api/storyboard/{inv_id}/queue',{{method:'POST'}})}}catch(e){{}}setTimeout(loadStoryboard,1200)}}
 bindStoryFrames();loadStoryboard();""")

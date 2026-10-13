@@ -70,6 +70,7 @@ PHRASES = {
     "Only from MediaEngine itself.": "Только из самой программы MediaEngine.",
     "loading the AI+ model": "загрузка модели ИИ+",
     "The AI+ model is being downloaded": "Сейчас скачивается модель ИИ+",
+    "The Library search by theme is being prepared": "Сейчас готовится поиск по темам в библиотеке",
     "The AI+ model is being downloaded right now. Wait until it is finished or stop it first.":
         "Модель ИИ+ сейчас скачивается. Дождись конца или сначала останови скачивание.",
     "The AI+ model could not be started (not enough memory?). Close other programs and press Retry, or use AI.":
@@ -361,6 +362,7 @@ JS_PHRASES = {
     "'one moment can be at most 60 s long'": "'один момент — не длиннее 60 с'",
     "'Moment '": "'Момент '", "'Starting…'": "'Запуск…'", "'Installed.'": "'Установлено.'", "'Failed'": "'Не получилось'", "'the video is only '": "'видео длится всего '",
     "' s long - “to” cannot be later'": "' с — «по» не может быть позже'",
+    "' · waiting until the reel is built'": "' · жду, пока соберётся ролик'",
 }
 
 

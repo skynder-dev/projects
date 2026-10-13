@@ -8,6 +8,8 @@
 - a video marked Private leaves the Library, its original stays where it was, unchanged (a local folder is only
   read), and a reel built from that folder never uses it;
 - the Library pages render in Russian too; no source file is changed by any of this;
+- Library search by theme (AI+, with a stand-in scorer here; the real model on Windows CI in real_models_check.py):
+  index once, search, Private / rejected never shown, Russian pages, the search waits while a reel is built;
 - the data folder itself has Cyrillic letters (as under the Windows user folder of a Cyrillic user name), so previews, caches and the reel
   engine's work folder are all checked under such a path.
 """
@@ -172,6 +174,76 @@ def main():
             page = html.unescape(c.get("/library", headers=H).data.decode("utf-8", "replace"))
             check("rejected_leaves_the_library_original_kept", rj.get("status") == "finished" and rec.name not in page
                   and sha(rec) == before[rec.name], rj.get("status"))
+
+        # Library search by theme (AI+) with a STAND-IN scorer (the real model: tests/real_models_check.py on Windows CI):
+        # index once, search instantly, Private / rejected videos never indexed or shown
+        import numpy as np
+        from archivist import aiplus_library as al
+        real_status, real_ident, real_scorer = ae.aiplus_status, ae.aiplus_identity, al._scorer
+
+        class StandIn:
+            def __init__(self):
+                self._vision = self._text = True
+
+            @staticmethod
+            def _n(a):
+                a = np.asarray(a, np.float32)
+                v = np.zeros((a.shape[0], 1024), np.float32); v[:, :a.shape[1]] = a
+                return v / np.maximum(np.linalg.norm(v, axis=1, keepdims=True), 1e-9)
+
+            def encode_images(self, images):
+                return self._n([[float(np.asarray(i.convert("RGB"), np.float32).std(axis=2).mean() / 255.0), 0.05] for i in images])
+
+            def encode_text(self, texts):
+                import p13_event_semantic_pe as hook
+                return self._n([[0, 1] if t in hook.NEGATIVE_PROMPTS else [1, 0] for t in texts])
+
+        ae.aiplus_status = lambda: {"ready": True, "reason": "", "path": "STAND-IN", "bytes": 0, "download": {}}
+        ae.aiplus_identity = lambda: "STAND_IN_MODEL_KEY"
+        al._scorer = lambda: StandIn()
+        try:
+            page = html.unescape(c.get("/library", headers=H).data.decode("utf-8", "replace"))
+            check("library_offers_theme_search_with_aiplus", "Find by theme (AI+)" in page and "Prepare the search" in page)
+            r = c.post("/api/aiplus/library-index", json={}, headers=H)
+            t0 = time.time()
+            while al.status()["state"] == "running" and time.time() - t0 < 300:
+                time.sleep(0.5)
+            st = al.status()
+            check("library_theme_index_done", st["state"] == "done" and st["indexed"] == st["videos"] > 0, st)
+            res = al.search("sea")
+            names_found = {x["filename"] for x in res}
+            check("library_theme_search_never_shows_private_or_rejected", res and names[0] not in names_found
+                  and (not rec.exists() or rec.name not in names_found), names_found)
+            r = c.get("/library/theme", query_string={"theme": "sea"}, headers=H)
+            check("library_theme_page", r.status_code == 200 and "/item/" in r.data.decode("utf-8", "replace"), r.status_code)
+            # while a reel is being built the search waits (one AI+ model in memory at a time), then goes on
+            with db() as con:
+                reel_job = con.execute("SELECT id,status FROM ae_jobs ORDER BY id DESC LIMIT 1").fetchone()
+            if reel_job:
+                with db() as con:
+                    con.execute("DELETE FROM aiplus_frames"); con.execute("UPDATE ae_jobs SET status='running' WHERE id=?", (reel_job["id"],)); con.commit()
+                al.start()
+                time.sleep(4)
+                st_wait = al.status()
+                with db() as con:
+                    con.execute("UPDATE ae_jobs SET status=? WHERE id=?", (reel_job["status"], reel_job["id"])); con.commit()
+                t0 = time.time()
+                while al.status()["state"] == "running" and time.time() - t0 < 300:
+                    time.sleep(0.5)
+                st = al.status()
+                check("library_index_waits_for_a_reel_then_finishes", st_wait["waiting"] and st_wait["done"] == 0 and st["state"] == "done"
+                      and st["indexed"] == st["videos"], (st_wait, st))
+            # the search card and the results page in Russian: no English left (same rules as tests/i18n_coverage.py)
+            from i18n_coverage import english_left, page_texts
+            c.post("/lang", data={"lang": "ru"}, headers=H)
+            left = []
+            for u in ("/library", "/library/theme?theme=sea", "/library/theme?theme=kids"):
+                body = c.get(u, headers=H).data.decode("utf-8", "replace")
+                left += [f"{u}: {t.strip()[:80]}" for t in page_texts(body) if english_left(html.unescape(t))]
+            c.post("/lang", data={"lang": "en"}, headers=H)
+            check("library_theme_search_in_russian", not left, left[:10])
+        finally:
+            ae.aiplus_status, ae.aiplus_identity, al._scorer = real_status, real_ident, real_scorer
 
         # the same pages in Russian
         c.post("/lang", data={"lang": "ru"}, headers=H)
