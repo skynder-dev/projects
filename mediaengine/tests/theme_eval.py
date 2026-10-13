@@ -28,6 +28,7 @@ DATA_REV = "bbf9f337d6c56ce5c4d31fe1ab4f1852af2a8cfe"
 DATA_FILE = "dataset/OpenScene-Classification.parquet"
 ALLOWED = {"buildings": {"city"}, "forest": {"nature"}, "glacier": {"snow", "mountains"}, "mountain": {"mountains", "snow"},
            "sea": {"sea"}, "street": {"city", "road"}}
+LABELS = ("buildings", "forest", "glacier", "mountain", "sea", "street")
 MAIN = {"buildings": "city", "forest": "nature", "glacier": "snow", "mountain": "mountains", "sea": "sea", "street": "city"}
 
 
@@ -36,8 +37,8 @@ def load_photos(per_class: int, seed: int = 13):
     from huggingface_hub import hf_hub_download
     from PIL import Image
     p = hf_hub_download(DATA_REPO, DATA_FILE, repo_type="dataset", revision=DATA_REV)
-    t = pq.read_table(p, columns=["image", "label_name"])
-    names = t.column("label_name").to_pylist()
+    t = pq.read_table(p, columns=["image", "label"])
+    names = [LABELS[int(x)] for x in t.column("label").to_pylist()]      # the dataset card's label order
     rng = np.random.default_rng(seed)
     picked = []
     for cls in ALLOWED:
