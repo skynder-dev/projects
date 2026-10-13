@@ -1483,6 +1483,10 @@ def _run_job(jid: int) -> None:
     edits_file.write_text(json.dumps({"selection": s.get("selection") or [], "trims": s.get("trims") or {}}), encoding="utf-8")
     skip_file = jobs_dir / f"j{jid}.private_sha.txt"
     skip_file.write_text("\n".join(_private_hashes()), encoding="utf-8")
+    try:
+        tidy_shared_cache(_private_hashes())
+    except Exception:
+        pass
     dress_file = jobs_dir / f"j{jid}.dress.json"
     dress_file.write_text(json.dumps({"title": s.get("title") or "", "subtitle": s.get("subtitle") or "", "music": s.get("music") or "",
                                       "music_mode": s.get("music_mode") or "mix"}, ensure_ascii=False), encoding="utf-8")
@@ -2018,6 +2022,47 @@ def delete_build(name: str, install: Path | None = None) -> int:
 def project_disk_usage(pid: int) -> dict:
     d = _project_dir(pid)
     return {"cache_bytes": _tree_bytes(d / "work"), "versions_bytes": _tree_bytes(d / "revisions")}
+
+
+SHARED = AE_ROOT / "shared"          # what AI+ saw in each video + its text numbers: used by every project
+
+
+def shared_cache_bytes() -> int:
+    return _tree_bytes(SHARED) if SHARED.exists() else 0
+
+
+def tidy_shared_cache(private_hashes=()) -> None:
+    """Before a build: what AI+ saw in videos that are Private now goes, and temp files of a stopped build."""
+    d = SHARED / "semantic_scout_pe"
+    if not d.is_dir():
+        return
+    for sha in private_hashes:
+        for ext in (".json", ".npy"):
+            try:
+                (d / (str(sha) + ext)).unlink(missing_ok=True)
+            except OSError:
+                pass
+    old = time.time() - 6 * 3600
+    for t in d.glob("*.tmp.*"):
+        try:
+            if t.stat().st_mtime < old:
+                t.unlink()
+        except OSError:
+            pass
+
+
+def clear_shared_cache() -> int:
+    """'Free' on Check this PC: the next AI+ build looks at the frames of its videos again."""
+    with db() as con:
+        try:
+            busy = con.execute("SELECT 1 FROM ae_jobs WHERE status IN ('queued','running') LIMIT 1").fetchone()
+        except Exception:
+            busy = None
+    if busy:
+        raise ValueError("Wait until the current build has finished")
+    freed = shared_cache_bytes()
+    shutil.rmtree(SHARED, ignore_errors=True)
+    return freed
 
 
 def clear_work_cache(pid: int) -> int:

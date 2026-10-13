@@ -314,6 +314,13 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
                        f"<table class='ae-files' style='margin-top:8px'>{brows}</table></div>") if builds else ""
         if done:
             builds_html = f"<div class='card ae-done' style='margin-top:14px'>Removed <span translate='no'>{e(done)}</span>.</div>" + builds_html
+        sb = ae.shared_cache_bytes()
+        shared_html = (f"<div class='card row space' style='margin-top:14px;flex-wrap:wrap'><span class='muted'>What AI+ saw in your videos "
+                       f"(kept for every reel, so the same video is never looked at twice): {human_bytes(sb)}</span>"
+                       "<form method='post' action='/auto/check/free-shared'><button class='btn2'>Free</button></form></div>") if sb else ""
+        if request.args.get("freed_shared"):
+            shared_html = "<div class='card ae-done' style='margin-top:14px'>Freed.</div>" + shared_html
+        builds_html = shared_html + builds_html
         body = (f"<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Check this PC</h1>"
                 f"<div class='lead'>What MediaEngine needs, and a 5-second test reel made from generated clips (your videos are not used).</div></div>"
                 f"<div class='card'><table class='ae-files'>{table}</table></div>"
@@ -324,6 +331,14 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
                 + f"<span class='muted'></span></form>{test_html}{_aiplus_card(ap, e, human_bytes)}{builds_html}"
                 f"<div class='row' style='margin-top:14px'><a class='btn btn2' href='/auto'>Back</a></div>")
         return page("Check this PC", body)
+
+    @app.post("/auto/check/free-shared")
+    def ae_free_shared():
+        try:
+            ae.clear_shared_cache()
+        except Exception as exc:
+            return err_page(str(exc), "/auto/check")
+        return redirect("/auto/check?freed_shared=1")
 
     @app.get("/auto/check/video")
     def ae_check_video():
@@ -611,7 +626,9 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
                 no_ai = (f"<form method='post' action='/auto/p/{pid}/variant'>"
                          f"<input type='hidden' name='length' value='{ls_['length']}'><input type='hidden' name='format' value='{e(ls_['format'])}'>"
                          f"<input type='hidden' name='sound' value='{e(ls_['sound'])}'><input type='hidden' name='mode' value='technical'>"
-                         f"<button class='btn2'>Build without AI (Technical only)</button></form>")
+                         + "".join(f"<input type='hidden' name='{fld}' value='{e(ls_.get(key) or '')}'>" for fld, key in
+                                   (("reel_title", "title"), ("reel_subtitle", "subtitle"), ("music", "music"), ("music_mode", "music_mode")))
+                         + "<button class='btn2'>Build without AI (Technical only)</button></form>")
             parts.append(f"""<div class='card'><b>{'Build failed' if last_job['status']=='failed' else 'Build cancelled'}</b>
 <div class='{'errbox' if last_job['status']=='failed' else 'muted'}' style='margin:8px 0'>{_error_html(last_job.get('error') or last_job.get('message') or '', e)}</div>
 <div class='row' style='flex-wrap:wrap'><form method='post' action='/auto/job/{last_job['id']}/retry'><button>Retry</button></form>{no_ai}</div></div>""")
@@ -626,7 +643,8 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         if cur:
             parts.append(_review_html(p, cur, e, building=bool(active)))
         elif not active:
-            parts.append(_variant_form(pid, None, e, first=True, model_ready=ae.model_status()["ready"]))
+            parts.append(_variant_form(pid, None, e, first=True, model_ready=ae.model_status()["ready"],
+                                       prefill=last_job["settings"] if last_job else None))
         parts.append(_revisions_html(p, cur, e))
         parts.append(_reviews_html(p, e))
         du = ae.project_disk_usage(pid)
@@ -1050,7 +1068,7 @@ def _dress_from_form(f, base_settings=None):
             "music_mode": (f.get("music_mode") if "music_mode" in f else bs.get("music_mode")) or "mix"}
 
 
-def _variant_form(pid, rev, e, first=False, model_ready=True):
+def _variant_form(pid, rev, e, first=False, model_ready=True, prefill=None):
     s = rev["settings"] if rev else {"length": 15, "format": "social_hd", "sound": "auto"}
     lengths = "".join(f"<label><input type='radio' name='length' value='{L}' {'checked' if int(s['length']) == L else ''}> {L} s</label>" for L in ae.LENGTHS)
     formats = "".join(f"<label><input type='radio' name='format' value='{k}' {'checked' if s['format'] == k else ''}> {e(v['short'])}</label>" for k, v in ae.FORMATS.items())
@@ -1077,7 +1095,7 @@ def _variant_form(pid, rev, e, first=False, model_ready=True):
             f"<h2 style='margin-top:0'>{'Build reel' if first else 'Make a variant'}</h2>"
             f"<div class='muted'>{note}</div>"
             f"<div class='ae-choices'>{lengths}</div><div class='ae-choices'>{formats}</div><div class='ae-choices'>{sounds}</div>{mode}"
-            f"{_dress_fields(e, rev['settings'] if rev else None)}"
+            f"{_dress_fields(e, rev['settings'] if rev else prefill)}"
             f"<button>{'Build' if first else 'Make variant'}</button></form>")
 
 
@@ -1165,6 +1183,8 @@ def _review_html(p, rev, e, building=False):
             notes.append(f"moments that match the theme: {int(n) if n.isdigit() else 0}")
         elif w == "TITLE_FONT_MISSING":
             notes.append("the title could not be drawn: no suitable font on this PC")
+        elif w == "TITLE_CHARACTERS_LEFT_OUT":
+            notes.append("emoji and symbols the font cannot draw were left out of the title")
     dress = res.get("dress") or {}
     if dress.get("title_shown") and (dress.get("title") or dress.get("subtitle")):
         notes.append(e("title: ") + "<span translate='no'>" + e(" / ".join(x for x in (dress.get("title"), dress.get("subtitle")) if x)) + "</span>")

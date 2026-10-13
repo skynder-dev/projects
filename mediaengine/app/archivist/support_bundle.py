@@ -96,6 +96,14 @@ def _auto_edit_summary() -> dict:
         with db() as con:
             rows = [dict(r) for r in con.execute("SELECT * FROM ae_jobs ORDER BY id DESC LIMIT 8").fetchall()]
         for j in rows:
+            try:      # titles are free text (names, places) and the music is a path: not in a support bundle
+                sj = json.loads(j.get("settings_json") or "{}")
+                for k in ("title", "subtitle", "music"):
+                    if sj.get(k):
+                        sj[k] = "(set)"
+                j["settings_json"] = json.dumps(sj, sort_keys=True)
+            except Exception:
+                j["settings_json"] = None
             rev = ae.revision(j["revision_id"]) if j.get("revision_id") else None
             res = (rev or {}).get("result") or {}
             out["jobs"].append({k: (_redact_text(str(j.get(k)))[:400] if j.get(k) is not None else None)

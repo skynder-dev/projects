@@ -2,11 +2,11 @@
 
   python tests/scale_library_check.py <work_dir> [--count 600] [--json out.json]
 
-Makes <count> short unique videos (one generated stream cut into 3 s pieces, so it is quick) in day folders with
-English and Cyrillic names, then, like a user: adds the folder on the Import page, waits for the scan, "Import +
+Makes <count> short unique videos (one generated stream cut into 3 s pieces, so it is quick) in one camera folder
+with English and Cyrillic names (days in the names), then, like a user: adds the folder on the Import page, waits for the scan, "Import +
 analyse" for all of them, opens the Library pages (first, last, grid, search, filters), the item pages, Activity,
 Home, Media; prepares the AI+ search by theme (a STAND-IN scorer - the real model is checked in real_models_check.py)
-and searches; opens a new reel on the whole folder (more than 64 videos: the day list). Reports the time of every
+and searches; opens a new reel on the whole folder (more than 64 videos: the day list) and on one day's videos. Reports the time of every
 step and the slowest page; fails when a page takes more than --max-page seconds (default 5) or a step fails.
 Not part of the regular build (it takes long); runs in .github/workflows/mediaengine-scale.yml.
 """
@@ -32,11 +32,10 @@ def make_videos(src: Path, count: int, ff: str) -> list[Path]:
                     "-f", "segment", "-segment_time", "3", "-reset_timestamps", "1", str(tmp / "p%05d.mp4")], check=True)
     parts = sorted(tmp.glob("p*.mp4"))[:count]
     out = []
-    for i, p in enumerate(parts):
-        day = src / f"2026-07-{1 + i % 20:02d}"
-        day.mkdir(parents=True, exist_ok=True)
-        name = f"VID_202607{1 + i % 20:02d}_{100000 + i}.mp4" if i % 3 else f"Отпуск {i:04d} пляж.mp4"
-        dst = day / name
+    src.mkdir(parents=True, exist_ok=True)
+    for i, p in enumerate(parts):         # all in one camera folder, like a phone's DCIM/Camera (days in the names)
+        name = f"VID_202607{1 + i % 20:02d}_{100000 + i}.mp4" if i % 3 else f"Отпуск 2026-07-{1 + i % 20:02d} {i:04d} пляж.mp4"
+        dst = src / name
         os.replace(p, dst)
         out.append(dst)
     shutil.rmtree(tmp, ignore_errors=True)
@@ -131,10 +130,14 @@ def main():
         page(c, f"/item/{ids[len(ids) // 2]}", "item_page")
         for u in ("/", "/media", "/jobs", "/import", "/auto", "/settings"):
             page(c, u)
-        r, _ = page(c, "/auto/new?folder=" + str(src / "2026-07-01"), "auto_new_one_day")
-        check("reel_setup_for_one_day", r.status_code == 200, r.status_code)
-        r, _ = page(c, "/auto/new?folder=" + str(work / "Телефон"), "auto_new_whole_phone")
-        check("reel_setup_whole_phone_opens", r.status_code == 200, r.status_code)
+        r, _ = page(c, "/auto/new?folder=" + str(src), "auto_new_whole_phone")
+        body = r.data.decode("utf-8", "replace")
+        check("whole_phone_folder_offers_the_day_list", r.status_code == 200 and "id='pickForm'" in body
+              and body.count("name='file'") == len(vids), (r.status_code, body.count("name='file'")))
+        day_files = [str(v) for v in vids if "20260701" in v.name][:20]
+        r, _ = page(c, "/auto/new?" + "&".join("file=" + __import__("urllib.parse").parse.quote(x) for x in day_files), "auto_new_one_day")
+        check("reel_setup_for_one_day", r.status_code == 200 and f"{len(day_files)} usable video(s)" in r.data.decode("utf-8", "replace"),
+              r.status_code)
 
         # 4. AI+ search by theme over the whole Library (stand-in model: how the app copes with the size)
         import numpy as np

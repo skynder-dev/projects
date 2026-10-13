@@ -850,6 +850,16 @@ def _font_files(bold):
 
 TITLE_SHOW_S=3.2
 
+def music_wav(ffmpeg,music,seconds,out):
+    """The music decoded once (48 kHz stereo PCM, at most `seconds`): loops cleanly (an AAC song repeated straight
+    from the file had a gap of its encoder delay at every repeat). Returns its length in seconds."""
+    cp=subprocess.run([ffmpeg,"-v","error","-y","-i",str(music),"-map","0:a:0","-vn","-ac","2","-ar","48000","-t",f"{seconds:.3f}",
+                       "-c:a","pcm_s16le",str(out)],capture_output=True,text=True,timeout=600)
+    if cp.returncode!=0: raise RuntimeError("MUSIC_FILE_NO_SOUND:"+cp.stderr[-300:])
+    n=(Path(out).stat().st_size-44)//4
+    if n<48000*0.05: raise RuntimeError("MUSIC_FILE_NO_SOUND")
+    return n/48000.0
+
 def load_dress(path,ffmpeg):
     """--dress JSON {title, subtitle, music, music_mode}: nothing set = None (the reel is exactly as without it)."""
     if not path: return None
@@ -861,8 +871,11 @@ def load_dress(path,ffmpeg):
         p=Path(out["music"])
         if not p.is_file(): raise RuntimeError("MUSIC_FILE_MISSING")
         if p.suffix.lower() not in MUSIC_EXT: raise RuntimeError("MUSIC_FILE_NOT_AUDIO")
-        info=subprocess.run([ffmpeg,"-hide_banner","-i",str(p)],capture_output=True,text=True,encoding="utf-8",errors="replace").stderr
-        if "Audio:" not in info: raise RuntimeError("MUSIC_FILE_NO_SOUND")
+        # decode the first second: a file with a header but no sound (or protected, or damaged) is refused now,
+        # not after the whole build (and never loops forever)
+        cp=subprocess.run([ffmpeg,"-v","error","-i",str(p),"-map","0:a:0","-t","1","-ac","1","-ar","8000","-f","s16le","-"],
+                          capture_output=True,timeout=120)
+        if cp.returncode!=0 or len(cp.stdout)<2*400: raise RuntimeError("MUSIC_FILE_NO_SOUND")
         out["music_sha256"]=sha256_file(p); out["music_name"]=p.name
     return out if (out["title"] or out["subtitle"] or out["music"]) else None
 
@@ -874,8 +887,31 @@ def _font(bold,size):
             except Exception: continue
     return None
 
+def title_text(t):
+    """Emoji, pictographs and joiners have no glyph in the title fonts (they became boxes in the picture): left out."""
+    import unicodedata
+    keep=[]
+    for ch in str(t or ""):
+        o=ord(ch)
+        if o>=0x1F000 or 0x2600<=o<=0x27BF or 0x2B00<=o<=0x2BFF or o in (0x200D,0xFE0F,0xFE0E,0x20E3) or 0xE000<=o<=0xF8FF:
+            continue
+        if unicodedata.category(ch) in ("Cc","Cf","Co","Cs"): continue
+        keep.append(ch)
+    return " ".join("".join(keep).split())
+
+def _split_long(draw,word,font,maxw):
+    """A word wider than the line (no spaces in it) is broken by letters."""
+    parts=[]; cur=""
+    for ch in word:
+        if cur and draw.textlength(cur+ch,font=font)>maxw: parts.append(cur); cur=ch
+        else: cur+=ch
+    return parts+([cur] if cur else [])
+
 def _wrap(draw,text,font,maxw):
-    words=text.split(); lines=[]; cur=""
+    words=[]
+    for w in text.split():
+        words+=_split_long(draw,w,font,maxw) if draw.textlength(w,font=font)>maxw else [w]
+    lines=[]; cur=""
     for w in words:
         t=(cur+" "+w).strip()
         if not cur or draw.textlength(t,font=font)<=maxw: cur=t
@@ -896,9 +932,13 @@ def title_png(title,subtitle,w,h,out):
             f=_font(bold,max(10,size))
             if f is None: return False
             lines=_wrap(dr,text,f,maxw)
-            if (len(lines)<=maxlines and all(dr.textlength(x,font=f)<=maxw for x in lines)) or size<=12: break
+            if (len(lines)<=maxlines and all(dr.textlength(x,font=f)<=maxw for x in lines)) or size<=max(12,base//40): break
             size=int(size*.9)
-        blocks.append((lines[:maxlines],f,size))
+        if len(lines)>maxlines:                     # still too long at a readable size: the end is cut with "…"
+            lines=lines[:maxlines]
+            while lines[-1] and dr.textlength(lines[-1]+"…",font=f)>maxw: lines[-1]=lines[-1][:-1]
+            lines[-1]=lines[-1].rstrip()+"…"
+        blocks.append((lines,f,size))
     gap=int(base*.02); heights=[len(ls)*int(sz*1.18) for ls,_,sz in blocks]
     total=sum(heights)+gap*(len(blocks)-1)
     y=y0=int(h*(.70 if h>w else .72))-total//2
@@ -928,18 +968,21 @@ def dress_filters(dress,first_input,vin,ain,total):
         filters.append(f"[{k}:v]format=rgba,fade=t=in:st=0.15:d=0.45:alpha=1,fade=t=out:st={max(.7,show-.55):.3f}:d=0.5:alpha=1[ttl]")
         filters.append(f"[{vin}][ttl]overlay=0:0:eof_action=pass:format=auto,format=yuv420p[vdr]")
         vout="vdr"; k+=1
-    if dress.get("music"):
+    if dress.get("music_wav"):
         n=max(1,int(round(total*48000)))
-        args+=["-stream_loop","-1","-i",str(dress["music"])]
+        loops=max(0,int(math.ceil(total/max(.05,float(dress["music_s"]))))-1)     # a finite number of repeats
+        args+=["-stream_loop",str(loops),"-i",str(dress["music_wav"])]
+        # asetpts after loudnorm: it leaves a gap in the time stamps when it flushes (the sound came out longer
+        # than the picture)
         filters.append(f"[{k}:a]aformat=sample_rates=48000:channel_layouts=stereo,atrim=end_sample={n},asetpts=N/SR/TB,"
-                       f"loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000,afade=t=in:d=0.6,"
+                       f"loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000,asetpts=N/SR/TB,afade=t=in:d=0.6,"
                        f"afade=t=out:st={max(0.0,total-1.8):.3f}:d=1.8,apad=whole_len={n},atrim=end_sample={n}[mus]")
         if dress.get("music_mode")=="music":
             filters.append(f"[{ain}]anullsink")      # the videos' own sound is not used
             aout="mus"
         else:   # music + the videos' own sound, quieter
             filters.append(f"[{ain}]volume=0.35[vsd]")
-            filters.append(f"[vsd][mus]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.95,apad=whole_len={n},atrim=end_sample={n}[amx]")
+            filters.append(f"[vsd][mus]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.95:level=0:latency=1,apad=whole_len={n},atrim=end_sample={n}[amx]")
             aout="amx"
         k+=1
     return args,filters,vout,aout
@@ -1065,6 +1108,7 @@ def run(args):
     if str(args.resolution)=="social_hd" and str(args.profile)=="16x9":
         raise RuntimeError("PRESET_NOT_ACCEPTED:social_hd is vertical 1080x1920 only")
     v52=load_module("medeng_targeted_auto_edit_v26",runtime/"medeng_targeted_auto_edit_v26.py")
+    dress=load_dress(getattr(args,"dress",""),v52.FFMPEG)   # title / own music: a bad music file is refused now, not after the build
     skipped_inputs=[]; warnings=[]
     input_rows=discover_input(input_dir,probe=v52.ffprobe,skipped=skipped_inputs,skip_sha=load_skip_sha(args.skip_sha_file),paths=input_list); fingerprint=input_fingerprint(input_rows)
     seqmod=load_module("p11_montage_sequence_shadow_v4",runtime/"p11_montage_sequence_shadow_v4.py")
@@ -1215,14 +1259,27 @@ def run(args):
     # frame after its sound at every dissolve. The pacing decision itself is kept as planned (result.pacing).
     render_trans=[dict(t,duration_s=(max(1,round(float(t["duration_s"])*30))/30.0 if t["kind"]!="HARD_CUT" and float(t["duration_s"])>0 else 0.0))
                   for t in pace["transitions"]]
-    dress=load_dress(getattr(args,"dress",""),v52.FFMPEG)
+    if dress and dress["music"]:
+        if not Path(dress["music"]).is_file(): raise RuntimeError("MUSIC_FILE_MISSING")
+        wav=render_dir/(fingerprint+"_music.wav")
+        need=sum(float(d) for d in durs)+1.0
+        # the song's own stated length: an AAC file decodes with a little silence of padding at its end (a gap at
+        # every repeat) - cut at the stated length it repeats seamlessly
+        info=subprocess.run([v52.FFMPEG,"-hide_banner","-i",str(dress["music"])],capture_output=True,text=True,encoding="utf-8",errors="replace").stderr
+        m=re.search(r"Duration:\s*(\d+):(\d+):(\d+(?:\.\d+)?)",info)
+        stated=(int(m.group(1))*3600+int(m.group(2))*60+float(m.group(3))) if m else 0.0
+        dress["music_s"]=music_wav(v52.FFMPEG,dress["music"],min(need,stated) if stated>0.2 else need,wav); dress["music_wav"]=str(wav)
     if dress and (dress["title"] or dress["subtitle"]):
+        if title_text(dress["title"])!=dress["title"] or title_text(dress["subtitle"])!=dress["subtitle"]:
+            warnings.append("TITLE_CHARACTERS_LEFT_OUT")
         ow,oh=v52.output_dimensions(profile,resolution)
         png=render_dir/(fingerprint+"_title.png")
-        if title_png(dress["title"],dress["subtitle"],int(ow),int(oh),png): dress["title_png"]=str(png)
+        if not (title_text(dress["title"]) or title_text(dress["subtitle"])): pass
+        elif title_png(title_text(dress["title"]),title_text(dress["subtitle"]),int(ow),int(oh),png): dress["title_png"]=str(png)
         else: warnings.append("TITLE_FONT_MISSING")
     render_mixed(v52,segs,durs,render_trans,temp_final,render_dir/(fingerprint+"_render"),dress)
-    if dress and dress.get("title_png"): Path(dress["title_png"]).unlink(missing_ok=True)
+    for x in ("title_png","music_wav"):
+        if dress and dress.get(x): Path(dress[x]).unlink(missing_ok=True)
     fpr=v52.ffprobe(temp_final); actual=float(fpr["format"]["duration"]); video_sha=sha256_file(temp_final)
     if actual < float(args.target_seconds)-1.0 and "LIMITED_TOTAL_FOOTAGE" not in warnings:
         warnings.append("SHORTER_THAN_REQUESTED")

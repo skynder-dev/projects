@@ -122,6 +122,32 @@ celebrations, pets, action; bad: boring, blurry, accidental, dark, dashboard, no
 - Safety: a link opened from outside the app (e-mail, chat, a document) can no longer make MediaEngine open a
   network share (Windows would send its sign-in to that server); pasting a network path in the app still works.
 
+## Own music and a title (optional)
+
+- "Music and title" on the new-reel page and for every variant: a title and a second line (the shooting date with
+  one click), your own audio file (mp3, m4a, wav, flac, ogg, opus, wma; "Choose music…" or paste the path), music
+  with the videos' quieter sound or only music. Off by default: a reel without them is exactly as before.
+- The title is shown for the first 3 s in the lower third (white text, soft shadow and band - readable on a bright
+  sky; Cyrillic; Windows fonts Segoe UI / Arial; emoji the font cannot draw are left out with a note; a very long
+  word is broken). The music is loudness-normalised, starts softly and fades out at the end; a short song repeats
+  without a gap. Both go into the reel's single final encode (no second generation) and the sound ends exactly
+  with the picture.
+- Changing only the music or the title is a quick new version (no new analysis); the editor and "choose again" keep
+  a version's music, title and theme. A missing, silent or protected music file is refused before the build.
+  Titles and music paths are not put into support bundles.
+
+## Faster AI+ for several reels from the same videos
+
+What AI+ saw in each video is kept once for all projects (by the video's SHA-256, about 100 KB per video): a new
+reel from videos analysed for another reel needs no frame looked at again. Check this PC shows its size with a
+"Free" button; entries of videos marked Private are removed before each build.
+
+## Big Library check
+
+`tests/scale_library_check.py` (own workflow `mediaengine-scale`): 600 videos in one camera folder through the app -
+scan, Import + analyse, Library pages, the day list of a whole phone folder, AI+ search preparation and search,
+reel from a theme; page times, database size, memory.
+
 ## AI model provenance (not in the ZIP, not in git)
 
 FAST_LOCAL is taken from the owner's stable install (`<drive>:\Archivist\sidecars\auto_edit\models`) or imported

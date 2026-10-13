@@ -100,6 +100,14 @@ def main():
     check("music_only_is_the_music_and_loops", abs(peak_hz(mid) - 1000) < 15 and float(np.abs(mid).mean()) > 0.02,
           (peak_hz(mid), float(np.abs(mid).mean())))
     check("music_ends_with_the_picture", ao is not None and abs(vo - ao) <= 0.05 and abs(vo - vb) < 0.05, (vb, vo, ao))
+    check("music_only_result_length_is_the_pictures", abs(float(ro["actual_duration_s"]) - vo) <= 0.05, (ro["actual_duration_s"], vo))
+    # the 4 s AAC song repeats without a gap (its encoder delay used to leave ~26 ms of silence at every repeat)
+    whole = audio(ff, only, 0.0, None)
+    win = 480
+    rms = np.sqrt(np.mean(whole[: len(whole) // win * win].reshape(-1, win) ** 2, axis=1))
+    steady = rms[int(1.0 * 100): int((vo - 2.0) * 100)]
+    check("music_repeats_without_a_gap", steady.size and float(steady.min()) > 0.5 * float(np.median(steady)),
+          (float(steady.min()) if steady.size else None, float(np.median(steady)) if steady.size else None))
     head = audio(ff, only, 0.0, 0.1); body = audio(ff, only, 2.0, 0.1)
     check("music_fades_in", float(np.abs(head).mean()) < 0.6 * float(np.abs(body).mean()),
           (float(np.abs(head).mean()), float(np.abs(body).mean())))
@@ -114,15 +122,27 @@ def main():
     base_x = audio(ff, base, 3.0, 2.0)
     check("music_mix_has_the_music_and_the_videos_sound", tone > 0 and rest > 0.05 * tone and float(np.abs(base_x).mean()) > 0.001,
           (tone, rest))
-    check("music_mix_ends_with_the_picture", am is not None and abs(vm - am) <= 0.05, (vm, am))
+    check("music_mix_ends_with_the_picture", am is not None and abs(vm - am) <= 0.05 and abs(float(rm["actual_duration_s"]) - vm) <= 0.05,
+          (vm, am, rm["actual_duration_s"]))
 
     one, r1 = run("one_moment", {"title": "Один момент", "music": str(music)}, target=3.0)
     v1, a1 = av_durations(one, ff)
     check("one_moment_reel_with_title_and_music", r1["selected_count"] >= 1 and r1["dress"]["title_shown"] and a1 is not None
           and abs(v1 - a1) <= 0.05, (r1["selected_count"], v1, a1))
 
+    # emoji in the title are left out (they would be boxes), a word longer than the frame is broken, not cut off
+    em, re_ = run("emoji_title", {"title": "Лето 2026 🌊☀️🏖", "subtitle": "Ш" * 80})
+    check("emoji_left_out_and_said", re_["dress"]["title_shown"] and "TITLE_CHARACTERS_LEFT_OUT" in re_["warnings"], re_.get("warnings"))
+    from PIL import Image
+    png = work / "long.png"
+    r3.title_png("Ш" * 80, "", 540, 960, png)
+    box = Image.open(png).split()[-1].point(lambda a: 255 if a > 200 else 0).getbbox()
+    check("long_word_stays_in_the_frame", box and box[0] > 5 and box[2] < 535, box)
+    empty = work / "empty.wav"
+    empty.write_bytes(b"RIFF$\x00\x00\x00WAVEfmt \x10\x00\x00\x00\x01\x00\x02\x00\x80\xbb\x00\x00\x00\xee\x02\x00\x04\x00\x10\x00data\x00\x00\x00\x00")
     for name, dress, code in (("missing", {"music": str(work / "nope.mp3")}, "MUSIC_FILE_MISSING"),
-                              ("not_audio", {"music": str(text)}, "MUSIC_FILE_NOT_AUDIO")):
+                              ("not_audio", {"music": str(text)}, "MUSIC_FILE_NOT_AUDIO"),
+                              ("without_sound", {"music": str(empty)}, "MUSIC_FILE_NO_SOUND")):
         try:
             run("bad_" + name, dress)
             err = ""
@@ -186,9 +206,11 @@ def app_part(work, src, music, check):
         j2 = wait(j2[0]["id"]) if j2 else {"status": "missing"}
         rev2 = ae.revision(j2.get("revision_id") or 0) if j2.get("status") == "done" else None
         st2 = (rev2 or {}).get("result", {}).get("stage_seconds") or {}
+        st1 = rev1["result"].get("stage_seconds") or {}
         check("music_change_is_a_quick_new_version", rev2 and rev2["result"]["dress"]["music"]["mode"] == "music"
-              and [s_["event_id"] for s_ in rev2["result"]["segments"]] == [s_["event_id"] for s_ in rev1["result"]["segments"]],
-              (j2.get("status"), j2.get("error"), st2))
+              and [s_["event_id"] for s_ in rev2["result"]["segments"]] == [s_["event_id"] for s_ in rev1["result"]["segments"]]
+              and float(st2.get("analyze", 0)) <= max(3.0, 0.5 * float(st1.get("analyze", 0))),
+              (j2.get("status"), j2.get("error"), st1, st2))
         # the editor (remove one moment) keeps the title and the music
         segs = rev2["result"]["segments"] if rev2 else []
         if len(segs) >= 2:

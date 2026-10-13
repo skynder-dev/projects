@@ -94,6 +94,10 @@ PHRASES = {
         "Если потом поменять музыку или надпись, новая версия соберётся быстро, без нового анализа.",
     "No music chosen. You can also paste the path.": "Музыка не выбрана. Можно вставить путь к файлу.",
     "the title could not be drawn: no suitable font on this PC": "надпись не нарисована: на этом компьютере нет подходящего шрифта",
+    "emoji and symbols the font cannot draw were left out of the title": "эмодзи и значки, которых нет в шрифте, в надпись не вошли",
+    "What AI+ saw in your videos (kept for every reel, so the same video is never looked at twice): ":
+        "Что ИИ+ увидел в твоих видео (хранится для всех роликов, чтобы одно видео не просматривать дважды): ",
+    "Free": "Освободить", "Freed.": "Освобождено.",
     "title: ": "надпись: ", "music: ": "музыка: ", " (only music)": " (только музыка)", " (with the videos' sound)": " (со звуком видео)",
     "A title can be at most 80 characters long": "Надпись — не длиннее 80 знаков",
     "Music file not found:": "Файл музыки не найден:", "Not a music file:": "Это не музыкальный файл:",

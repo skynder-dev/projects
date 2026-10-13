@@ -31,6 +31,10 @@ A new theme for videos already analysed takes seconds. In the **Library**, "Find
 match a theme; "Prepare the search" looks at each video once (Private and rejected videos are never included), then
 every search is instant, and a video opens at its best moment.
 
+**Music and title** (optional, under "Music and title" when you make a reel or a variant): a title and a second line
+for the first 3 seconds, and your own song under the reel (with the videos' quieter sound or only the music). Changing
+them later makes a new version quickly.
+
 ## What can leave this PC
 
 Nothing leaves this PC by default. If you explicitly connect a provider or start an optional upload, authentication data, selected uploads, and provider analytics can be sent to that service.
