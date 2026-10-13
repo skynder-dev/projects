@@ -10,6 +10,11 @@ the 13 AI+ themes the way a themed reel scores a frame (mean of the two best des
 - the theme filter of themed reels (theme score minus the best "bad frame" description > 0): share of photos of a
   class that pass its theme, and share of photos of unrelated classes that pass it (false matches);
 - the same numbers with the accepted AI model (FAST_LOCAL, TinyCLIP) for comparison, when --fast-dir is given.
+With --coco N: image <-> text retrieval on N photos of the public COCO 2014 5k test set (5 human captions each:
+people, children, food, animals, sport, streets...): for each caption, is its own photo the best match (R@1) or among
+the best 5 (R@5) of the N photos; for each photo, is the best caption one of its own. That is the general "does the
+model understand what is in the picture" measure, AI+ vs the accepted AI model; with --reference also the original
+PyTorch PE-Core model (open_clip, full precision) to see what the int8 ONNX files lose.
 This says how well the descriptions and the model fit common scenes; it is not a proof of reel quality on the
 owner's own videos.
 """
@@ -51,6 +56,81 @@ def load_photos(per_class: int, seed: int = 13):
         cell = col[i].as_py()
         photos.append((cls, Image.open(io.BytesIO(cell["bytes"])).convert("RGB")))
     return photos
+
+
+COCO_REPO = "nlphuji/mscoco_2014_5k_test_image_text_retrieval"
+COCO_REV = "551c4f7667f06fa82b4ef0a07617bfc4cf324ac3"
+
+
+def _ascii(t: str) -> str:
+    import unicodedata
+    t = unicodedata.normalize("NFKD", str(t)).encode("ascii", "ignore").decode("ascii")
+    return " ".join(t.split())
+
+
+def load_coco(n: int):
+    """The first n photos of the COCO 2014 5k test set (sorted by file name) and their captions."""
+    import csv, zipfile
+    from huggingface_hub import hf_hub_download
+    from PIL import Image
+    csvp = hf_hub_download(COCO_REPO, "test_5k_mscoco_2014.csv", repo_type="dataset", revision=COCO_REV)
+    zp = hf_hub_download(COCO_REPO, "images_mscoco_2014_5k_test.zip", repo_type="dataset", revision=COCO_REV)
+    with open(csvp, encoding="utf-8", newline="") as fh:
+        rows = sorted(csv.DictReader(fh), key=lambda r: r["filename"])[:n]
+    images, caps, owner = [], [], []
+    with zipfile.ZipFile(zp) as z:
+        where = {Path(x).name: x for x in z.namelist() if not x.endswith("/")}
+        for k, r in enumerate(rows):
+            with z.open(where[r["filename"]]) as fh:
+                images.append(Image.open(io.BytesIO(fh.read())).convert("RGB"))
+            for c in json.loads(r["raw"]):
+                c = _ascii(c)
+                if c:
+                    caps.append(c); owner.append(k)
+    return images, caps, owner
+
+
+def retrieval(logits: np.ndarray, owner) -> dict:
+    """logits: photos x captions."""
+    owner = np.asarray(owner)
+    order = np.argsort(-logits, axis=0)                     # photos ranked for every caption
+    rank = np.array([int(np.where(order[:, j] == owner[j])[0][0]) for j in range(logits.shape[1])])
+    best_cap = np.argmax(logits, axis=1)
+    return {"text_to_photo_R1": round(float(np.mean(rank == 0)), 3), "text_to_photo_R5": round(float(np.mean(rank < 5)), 3),
+            "photo_to_text_R1": round(float(np.mean(owner[best_cap] == np.arange(logits.shape[0]))), 3)}
+
+
+class Reference:
+    """The original PE-Core L/14 (open_clip, PyTorch, full precision) - Linux lab only."""
+
+    def __init__(self):
+        import open_clip, torch
+        self.torch = torch
+        self.model, _, self.pre = open_clip.create_model_and_transforms("hf-hub:timm/PE-Core-L-14-336")
+        self.tok = open_clip.get_tokenizer("hf-hub:timm/PE-Core-L-14-336")
+        self.model.eval()
+
+    def encode_images(self, images):
+        out = []
+        with self.torch.no_grad():
+            for i in range(0, len(images), 8):
+                out.append(self.model.encode_image(self.torch.stack([self.pre(x) for x in images[i:i + 8]])).float().numpy())
+        a = np.concatenate(out); return a / np.linalg.norm(a, axis=1, keepdims=True)
+
+    def encode_text(self, texts):
+        out = []
+        with self.torch.no_grad():
+            for i in range(0, len(texts), 64):
+                out.append(self.model.encode_text(self.tok(list(texts[i:i + 64]))).float().numpy())
+        a = np.concatenate(out); return a / np.linalg.norm(a, axis=1, keepdims=True)
+
+
+def fast_logits(fa, processor, sess, images, texts):
+    rows = []
+    for i in range(0, len(images), 16):
+        rows.append(np.concatenate([fa.semantic_logits(processor, sess, images[i:i + 16], texts[j:j + 256])
+                                    for j in range(0, len(texts), 256)], axis=1))
+    return np.concatenate(rows, axis=0)
 
 
 def evaluate(logits: np.ndarray, classes, themes, prompt_owner, neg_idx):
@@ -114,6 +194,7 @@ def main():
     report["aiplus"] = evaluate(logits, classes, hook.THEMES, owner, neg_idx)
     report["aiplus"]["seconds"] = round(time.time() - t0, 1)
     del sc
+    fa = processor = sess = None
     if fast_dir is not None:
         try:
             import p11_fast_onnx_adapter as fa
@@ -125,6 +206,38 @@ def main():
         except Exception as exc:
             report["ai_fast_local_error"] = f"{type(exc).__name__}: {str(exc)[:300]}"
     (out_dir / "theme_eval.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    if "--coco" in sys.argv:
+        n = int(sys.argv[sys.argv.index("--coco") + 1])
+        t0 = time.time()
+        cimgs, caps, cown = load_coco(n)
+        report["coco"] = {"repo": COCO_REPO, "revision": COCO_REV, "photos": len(cimgs), "captions": len(caps), "load_s": round(time.time() - t0, 1)}
+        t0 = time.time()
+        sc = pa.PECoreScorer(pe_dir, full_check=False)
+        report["coco"]["aiplus"] = retrieval(100.0 * sc.encode_images(cimgs) @ sc.encode_text(caps).T, cown)
+        report["coco"]["aiplus"]["seconds"] = round(time.time() - t0, 1)
+        del sc
+        (out_dir / "theme_eval.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+        if sess is not None:
+            try:
+                t0 = time.time()
+                report["coco"]["ai_fast_local"] = retrieval(fast_logits(fa, processor, sess, cimgs, caps), cown)
+                report["coco"]["ai_fast_local"]["seconds"] = round(time.time() - t0, 1)
+            except Exception as exc:
+                report["coco"]["ai_fast_local_error"] = f"{type(exc).__name__}: {str(exc)[:300]}"
+        (out_dir / "theme_eval.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+        if "--reference" in sys.argv:
+            try:
+                t0 = time.time()
+                ref = Reference()
+                report["coco"]["aiplus_reference_fp32"] = retrieval(100.0 * ref.encode_images(cimgs) @ ref.encode_text(caps).T, cown)
+                report["coco"]["aiplus_reference_fp32"]["seconds"] = round(time.time() - t0, 1)
+                t0 = time.time()
+                lr = 100.0 * ref.encode_images(images) @ ref.encode_text(prompts).T
+                report["aiplus_reference_fp32"] = evaluate(lr, classes, hook.THEMES, owner, neg_idx)
+                report["aiplus_reference_fp32"]["seconds"] = round(time.time() - t0, 1)
+            except Exception as exc:
+                report["reference_error"] = f"{type(exc).__name__}: {str(exc)[:300]}"
+        (out_dir / "theme_eval.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(json.dumps(report, indent=2))
     return 0
 

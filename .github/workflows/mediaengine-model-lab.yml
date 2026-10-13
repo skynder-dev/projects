@@ -20,7 +20,7 @@ concurrency:
 jobs:
   linux:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 130
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,11 +37,11 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/lab"
           python mediaengine/tests/pe_core_probe.py "$RUNNER_TEMP/lab" --reference 2>&1 | tee "$RUNNER_TEMP/lab/probe_linux.txt"
-      - name: Themes on public labelled scene photos (AI+ and the accepted AI model)
+      - name: Themes on public labelled scene photos, COCO photo <-> caption retrieval (AI+, accepted AI, original PE-Core)
         if: success() || failure()
-        timeout-minutes: 20
+        timeout-minutes: 90
         run: |
-          python mediaengine/tests/theme_eval.py "$RUNNER_TEMP/lab" --pe-dir "$RUNNER_TEMP/lab/PE_CORE_L14" --fast-dir "$RUNNER_TEMP/lab/FAST_LOCAL" 2>&1 | tee "$RUNNER_TEMP/lab/theme_eval.txt"
+          python mediaengine/tests/theme_eval.py "$RUNNER_TEMP/lab" --pe-dir "$RUNNER_TEMP/lab/PE_CORE_L14" --fast-dir "$RUNNER_TEMP/lab/FAST_LOCAL" --coco 300 --reference 2>&1 | tee "$RUNNER_TEMP/lab/theme_eval.txt"
       - name: Publish
         if: success() || failure()
         env:
