@@ -1,6 +1,7 @@
 name: mediaengine-model-lab
 # MediaEngine "AI+" model probe: downloads the public PE-Core L/14 ONNX files (Hugging Face, free), checks them,
-# compares our adapter with the original open_clip model (Linux) and measures speed / memory (Linux + Windows).
+# compares our adapter with the original open_clip model (Linux), measures speed / memory (Linux + Windows) and how
+# well the AI+ themes recognise public labelled scene photos (Linux; AI+ vs the accepted AI model).
 # No owner media, no secrets. Results: branch mediaengine-model-lab.
 on:
   workflow_dispatch:
@@ -8,6 +9,8 @@ on:
     paths:
       - 'mediaengine/tests/pe_core_probe.py'
       - 'mediaengine/app/archivist/engine_p11/p13_pe_core_*.py'
+      - 'mediaengine/app/archivist/engine_p11/p13_event_semantic_pe.py'
+      - 'mediaengine/tests/theme_eval.py'
       - '.github/workflows/mediaengine-model-lab.yml'
 permissions:
   contents: write
@@ -29,11 +32,16 @@ jobs:
         run: |
           python -m pip install -q --upgrade pip
           python -m pip install -q torch torchvision --index-url https://download.pytorch.org/whl/cpu
-          python -m pip install -q open_clip_torch timm huggingface_hub psutil onnxruntime==1.30.0 numpy==2.4.6 Pillow==11.3.0
+          python -m pip install -q open_clip_torch timm huggingface_hub psutil pyarrow onnxruntime==1.30.0 numpy==2.4.6 Pillow==11.3.0
       - name: Probe with the reference model
         run: |
           mkdir -p "$RUNNER_TEMP/lab"
           python mediaengine/tests/pe_core_probe.py "$RUNNER_TEMP/lab" --reference 2>&1 | tee "$RUNNER_TEMP/lab/probe_linux.txt"
+      - name: Themes on public labelled scene photos (AI+ and the accepted AI model)
+        if: success() || failure()
+        timeout-minutes: 20
+        run: |
+          python mediaengine/tests/theme_eval.py "$RUNNER_TEMP/lab" --pe-dir "$RUNNER_TEMP/lab/PE_CORE_L14" --fast-dir "$RUNNER_TEMP/lab/FAST_LOCAL" 2>&1 | tee "$RUNNER_TEMP/lab/theme_eval.txt"
       - name: Publish
         if: success() || failure()
         env:

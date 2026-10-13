@@ -10,6 +10,8 @@ on:
       - 'mediaengine/**'
       - '!mediaengine/STATUS.md'             # status / notes are not in the package: no new build for them
       - '!mediaengine/RELEASE_NOTES_*.md'
+      - '!mediaengine/tests/pe_core_probe.py'    # model-lab only (mediaengine-model-lab.yml)
+      - '!mediaengine/tests/theme_eval.py'
       - '.github/workflows/mediaengine-windows.yml'
   workflow_dispatch:
 permissions:
