@@ -90,6 +90,11 @@ jobs:
         run: |
           python mediaengine/tests/aiplus_glue_check.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\aiplusglue" 2>&1 | Tee-Object "$env:OUT\aiplus_glue.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Titles and own music (engine + app, Windows fonts, Cyrillic, music loops and fades, editor keeps them)
+        shell: pwsh
+        run: |
+          python mediaengine/tests/dress_check.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\dress" 2>&1 | Tee-Object "$env:OUT\dress_check.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Full-video Convert (1440p60, rotated phone clip, VFR)
         shell: pwsh
         run: |

@@ -398,6 +398,13 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
             return jsonify({"files": files})
         return jsonify({"files": [], "error": "No videos chosen."})
 
+    @app.post("/api/auto/pick-music")
+    def ae_pick_music():
+        files = ae.pick_files("Choose music for the reel", kind="audio")
+        if files:
+            return jsonify({"path": files[0]})
+        return jsonify({"path": None, "error": "No music chosen. You can also paste the path."})
+
     @app.post("/api/auto/pick-folder")
     def ae_pick_folder():
         purpose = (request.get_json(silent=True) or {}).get("purpose")
@@ -532,11 +539,12 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
 <div class='lead'>{where_html}</div></div>
 <div class='card'><b>{scan['usable']} usable video(s)</b>, total {_fmt_s(total)} · {human_bytes(scan['total_bytes'])}{(' · ' + str(scan['skipped']) + ' skipped') if scan['skipped'] else ''}
 <details style='margin-top:8px'><summary class='muted'>Show files</summary><table class='ae-files'><tr><th>File</th><th>Size</th><th>Length</th><th>Frame</th><th></th></tr>{rows}</table></details>{inside}{warn}</div>
-<form method='post' action='/auto/create' class='card' style='margin-top:14px' onsubmit="this.querySelector('button').disabled=true">
+<form method='post' action='/auto/create' class='card' style='margin-top:14px' onsubmit="this.querySelector('button:not([type=button])').disabled=true">
 {src_hidden}
 <h2 style='margin-top:0'>Length</h2><div class='ae-choices'>{lengths}</div>
 <h2>Format</h2><div class='ae-choices'>{formats}</div>
 <h2>Sound</h2><div class='ae-choices'>{sounds}</div>{mode_html}
+{_dress_fields(e, None, _day_label(next(iter(pdays))) if len(pdays) == 1 else "")}
 <button class='ae-big'>Create reel</button></form>{back_html}"""
         return page("New reel", body)
 
@@ -546,12 +554,13 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         try:
             if not f.get("mode"):
                 raise ValueError("Without the AI model, tick 'Build with Technical only' to continue.")
-            ae.normalize_settings({"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode")},
+            dress = _dress_from_form(f)
+            ae.normalize_settings({"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode"), **dress},
                                   model_ready=ae.model_status()["ready"])
             ae.check_free_space()
             pid = ae.create_project(f.get("folder"), f.get("title"), files=f.getlist("file") or None)
             ae.start_job(pid, {"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode"),
-                               "theme": f.get("theme") or ""})
+                               "theme": f.get("theme") or "", **dress})
         except Exception as exc:
             return err_page(str(exc))
         return redirect(f"/auto/p/{pid}")
@@ -710,7 +719,7 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
                 raise ValueError("Without the AI model, choose Technical only explicitly on the new-reel screen.")
             settings = {"length": f.get("length") or bs.get("length"), "format": f.get("format") or bs.get("format"),
                         "sound": f.get("sound") or bs.get("sound"), "mode": mode,
-                        "theme": f.get("theme") if "theme" in f else (bs.get("theme") or "")}
+                        "theme": f.get("theme") if "theme" in f else (bs.get("theme") or ""), **_dress_from_form(f, bs)}
             if f.get("rechoose"):
                 # "Let MediaEngine choose again": automatic selection without the removed moments
                 settings["exclude"] = sorted(set(bs.get("exclude", [])) | set(f.getlist("remove")))
@@ -763,8 +772,11 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
                 selection.append(add)
             if not selection:
                 return err_page("Keep at least one moment.", f"/auto/p/{pid}")
+            bset = base["settings"] if base and int(base["project_id"]) == int(pid) else {}
             settings = {"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode"),
-                        "selection": selection, "trims": trims}
+                        "selection": selection, "trims": trims,
+                        # an edit keeps the version's theme, music and title (the moments come from its pool)
+                        "theme": f.get("theme") if "theme" in f else (bset.get("theme") or ""), **_dress_from_form(f, bset)}
             before = {j["id"] for j in ae.project(pid)["jobs"]}
             jid = ae.start_job(pid, settings)
             j = ae.job(jid)
@@ -999,6 +1011,45 @@ def _mode_choice(ai_ready, plus_ready, e, current=None, allow_technical=False, h
     return (f"<h2>How moments are chosen</h2>" if heading else "") + f"<div class='ae-choices'>{radios}</div>"
 
 
+def _dress_fields(e, s=None, date_hint=""):
+    """Music and title (optional) on the new-reel page and for a variant: closed unless the reel has them."""
+    s = s or {}
+    has = bool(s.get("title") or s.get("subtitle") or s.get("music"))
+    mode = s.get("music_mode") or "mix"
+    date_btn = (f"<button type='button' class='btn2' data-date='{e(date_hint)}' "
+                f"onclick=\"this.form.reel_subtitle.value=this.dataset.date\">Insert the date</button>") if date_hint else ""
+    return (f"<details class='ae-dress' {'open' if has else ''} style='margin:6px 0 14px'><summary><b>Music and title</b> "
+            "<span class='muted'>(optional)</span></summary>"
+            "<div style='display:grid;gap:10px;margin-top:10px;max-width:760px'>"
+            f"<label>Title at the start<br><input name='reel_title' maxlength='80' value='{e(s.get('title') or '')}' "
+            "placeholder='For example: Summer at the sea' style='width:100%'></label>"
+            f"<label>Second line<br><span class='row' style='gap:6px'><input name='reel_subtitle' maxlength='80' value='{e(s.get('subtitle') or '')}' "
+            f"placeholder='{e(date_hint or 'For example: July 2026')}' style='flex:1'>{date_btn}</span></label>"
+            "<label>Music (your own audio file: mp3, m4a, wav, flac, ogg)<br><span class='row' style='gap:6px'>"
+            f"<input name='music' class='ae-path' translate='no' value='{e(s.get('music') or '')}' placeholder='C:\\Music\\song.mp3' style='flex:1'>"
+            "<button type='button' class='btn2' data-pick-music>Choose music…</button>"
+            "<button type='button' class='btn2' onclick=\"this.form.music.value=''\">No music</button></span></label>"
+            "<div class='ae-choices'>"
+            f"<label><input type='radio' name='music_mode' value='mix' {'checked' if mode != 'music' else ''}> Music and the videos' sound (quieter)</label>"
+            f"<label><input type='radio' name='music_mode' value='music' {'checked' if mode == 'music' else ''}> Only music</label></div>"
+            "<div class='muted' style='font-size:13px'>The title is shown for the first 3 seconds. The music starts softly and fades out "
+            "at the end; a short song is repeated. Changing music or title later makes a new version quickly, without a new analysis.</div>"
+            "<span class='muted' data-music-msg></span></div></details>"
+            "<script>(function(){const d=document.currentScript.previousElementSibling,b=d.querySelector('[data-pick-music]'),"
+            "m=d.querySelector('[data-music-msg]');if(!b)return;b.onclick=async()=>{m.textContent='A Windows window is open — it may be behind this window.';"
+            "try{const r=await fetch('/api/auto/pick-music',{method:'POST'});const x=await r.json();"
+            "if(x.path){d.querySelector('input[name=music]').value=x.path;m.textContent=''}else m.textContent=x.error||''}"
+            "catch(e){m.textContent='Window failed: '+e}}})();</script>")
+
+
+def _dress_from_form(f, base_settings=None):
+    """The form's music / title, or - when the form has no such fields - the base revision's."""
+    bs = base_settings or {}
+    pick = lambda field, key: (f.get(field) or "") if field in f else (bs.get(key) or "")
+    return {"title": pick("reel_title", "title"), "subtitle": pick("reel_subtitle", "subtitle"), "music": pick("music", "music"),
+            "music_mode": (f.get("music_mode") if "music_mode" in f else bs.get("music_mode")) or "mix"}
+
+
 def _variant_form(pid, rev, e, first=False, model_ready=True):
     s = rev["settings"] if rev else {"length": 15, "format": "social_hd", "sound": "auto"}
     lengths = "".join(f"<label><input type='radio' name='length' value='{L}' {'checked' if int(s['length']) == L else ''}> {L} s</label>" for L in ae.LENGTHS)
@@ -1022,10 +1073,11 @@ def _variant_form(pid, rev, e, first=False, model_ready=True):
         mode += _theme_choice(e, (rev["settings"].get("theme") or "") if rev else "", model_ready)
     note = "" if first else ("The current revision stays as it is. Format and sound variants keep its removed moments and your edits "
                              "and reuse the analysis; a new length chooses the moments again (removed ones stay out).")
-    return (f"<form method='post' action='/auto/p/{pid}/variant' class='card' style='margin-top:14px' onsubmit=\"this.querySelector('button').disabled=true\">{base}"
+    return (f"<form method='post' action='/auto/p/{pid}/variant' class='card' style='margin-top:14px' onsubmit=\"this.querySelector('button:not([type=button])').disabled=true\">{base}"
             f"<h2 style='margin-top:0'>{'Build reel' if first else 'Make a variant'}</h2>"
             f"<div class='muted'>{note}</div>"
             f"<div class='ae-choices'>{lengths}</div><div class='ae-choices'>{formats}</div><div class='ae-choices'>{sounds}</div>{mode}"
+            f"{_dress_fields(e, rev['settings'] if rev else None)}"
             f"<button>{'Build' if first else 'Make variant'}</button></form>")
 
 
@@ -1111,6 +1163,14 @@ def _review_html(p, rev, e, building=False):
         elif w.startswith("THEME:") and w.endswith("_MATCHING_MOMENTS"):
             n = w.split(":")[-1].split("_")[0]
             notes.append(f"moments that match the theme: {int(n) if n.isdigit() else 0}")
+        elif w == "TITLE_FONT_MISSING":
+            notes.append("the title could not be drawn: no suitable font on this PC")
+    dress = res.get("dress") or {}
+    if dress.get("title_shown") and (dress.get("title") or dress.get("subtitle")):
+        notes.append(e("title: ") + "<span translate='no'>" + e(" / ".join(x for x in (dress.get("title"), dress.get("subtitle")) if x)) + "</span>")
+    if dress.get("music"):
+        notes.append(e("music: ") + names([dress["music"]["name"]])
+                     + e(" (only music)" if dress["music"].get("mode") == "music" else " (with the videos' sound)"))
     if res.get("hdr_sources"):
         notes.append(e("HDR video converted to normal colours: ") + names(res["hdr_sources"]))
     if res.get("deinterlaced_sources"):

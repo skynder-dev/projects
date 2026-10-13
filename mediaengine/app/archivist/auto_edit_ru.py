@@ -82,6 +82,25 @@ PHRASES = {
     "Sea and beach": "Море и пляж", "Mountains": "Горы", "Children": "Дети", "Family and friends": "Семья и друзья",
     "Celebration": "Праздник", "Animals": "Животные", "Sunset": "Закат", "Nature": "Природа", "Winter and snow": "Зима и снег",
     "City": "Город", "Food": "Еда", "Sport": "Спорт", "Road trip": "Дорога и поездки", "theme": "тема",
+    "Music and title": "Музыка и надпись", "(optional)": "(по желанию)", "Title at the start": "Надпись в начале",
+    "For example: Summer at the sea": "Например: Лето у моря", "Second line": "Вторая строка",
+    "For example: July 2026": "Например: июль 2026", "Insert the date": "Вставить дату",
+    "Music (your own audio file: mp3, m4a, wav, flac, ogg)": "Музыка (твой аудиофайл: mp3, m4a, wav, flac, ogg)",
+    "Choose music…": "Выбрать музыку…", "No music": "Без музыки",
+    "Music and the videos' sound (quieter)": "Музыка и звук видео (тише)", "Only music": "Только музыка",
+    "The title is shown for the first 3 seconds. The music starts softly and fades out at the end; a short song is repeated. "
+    "Changing music or title later makes a new version quickly, without a new analysis.":
+        "Надпись видна первые 3 секунды. Музыка начинается плавно и затихает в конце; короткая песня повторяется. "
+        "Если потом поменять музыку или надпись, новая версия соберётся быстро, без нового анализа.",
+    "No music chosen. You can also paste the path.": "Музыка не выбрана. Можно вставить путь к файлу.",
+    "the title could not be drawn: no suitable font on this PC": "надпись не нарисована: на этом компьютере нет подходящего шрифта",
+    "title: ": "надпись: ", "music: ": "музыка: ", " (only music)": " (только музыка)", " (with the videos' sound)": " (со звуком видео)",
+    "A title can be at most 80 characters long": "Надпись — не длиннее 80 знаков",
+    "Music file not found:": "Файл музыки не найден:", "Not a music file:": "Это не музыкальный файл:",
+    "The music file is not there any more. Choose it again or make the version without music.":
+        "Файла музыки больше нет на месте. Выбери его снова или собери версию без музыки.",
+    "The chosen music is not an audio file (mp3, m4a, wav, flac, ogg...).": "Выбранная музыка — не аудиофайл (mp3, m4a, wav, flac, ogg…).",
+    "The chosen music file has no sound that can be read. Choose another file.": "В выбранном файле музыки нет звука, который можно прочитать. Выбери другой файл.",
     "few moments match the theme, so the reel also uses other good moments": "мало моментов на эту тему, поэтому в ролике есть и другие хорошие моменты",
     "moments that match the theme: ": "моментов на эту тему: ",
     "length was not written in the file (browser or screen recording) — a fixed copy is used, the original is not changed":
@@ -366,6 +385,7 @@ JS_PHRASES = {
     "'Moment '": "'Момент '", "'Starting…'": "'Запуск…'", "'Installed.'": "'Установлено.'", "'Failed'": "'Не получилось'", "'the video is only '": "'видео длится всего '",
     "' s long - “to” cannot be later'": "' с — «по» не может быть позже'",
     "' · waiting until the reel is built'": "' · жду, пока соберётся ролик'",
+    "'A Windows window is open — it may be behind this window.'": "'Открыто окно Windows — оно может быть за этим окном.'",
 }
 
 

@@ -22,6 +22,7 @@ KEEP = {  # stays English in Russian too (names, units, formats)
     "English", "Русский", "MOV", "MTS", "WebM", "Private", "Rejected", "Staging", "Exports", "HD", "Social", "FAST", "LOCAL",
     "SHA", "Runtime", "MP", "rc", "ZIP", "zscale", "iPhone", "iOS", "Share", "Lab", "OAuth", "Client", "API", "AAC", "Reel", "MediaStore", "Meta",
     "PE", "Core", "Apache", "huggingface", "co", "Hugging", "Face", "TinyCLIP",     # AI+ model name, licence and source
+    "mp3", "mp", "m4a", "wav", "flac", "ogg", "opus", "wma", "aac",                 # music file types
 }
 SKIP_PREFIX = ("/api/", "/static", "/media/", "/thumb/", "/storyboard/", "/clip-preview/", "/export-file/", "/composition-file/",
                "/diagnostics/fixture", "/auto/rev/")

@@ -834,11 +834,116 @@ def full_quality_clip(v52,e,work_dir,hdr=None,deinterlace=False,square=False):
     x["clip_bytes"]=clip.stat().st_size; x["clip_sha256"]=sha256_file(clip)
     return x
 
-def render_dissolve_block(v52,segs,durs,trans,out):
+# ---------------------------------------------------------------- titles and own music (optional, the owner's choice)
+MUSIC_EXT={".mp3",".m4a",".aac",".wav",".flac",".ogg",".opus",".wma"}
+def _font_files(bold):
+    """Windows fonts with Cyrillic first (segoeui, arial), then Linux (CI) ones."""
+    win=Path(os.environ.get("WINDIR") or r"C:\Windows")/"Fonts"
+    names=("segoeuib.ttf","arialbd.ttf") if bold else ("segoeui.ttf","arial.ttf")
+    linux=("DejaVuSans-Bold.ttf",) if bold else ("DejaVuSans.ttf",)
+    return [str(win/n) for n in names]+[f"{d}/{n}" for n in linux for d in ("/usr/share/fonts/truetype/dejavu","/usr/share/fonts/dejavu")]
+
+TITLE_SHOW_S=3.2
+
+def load_dress(path,ffmpeg):
+    """--dress JSON {title, subtitle, music, music_mode}: nothing set = None (the reel is exactly as without it)."""
+    if not path: return None
+    d=json.loads(Path(path).read_text(encoding="utf-8"))
+    clean=lambda t:" ".join(str(t or "").replace("\x00"," ").split())[:80]
+    out={"title":clean(d.get("title")),"subtitle":clean(d.get("subtitle")),"music":str(d.get("music") or "").strip(),
+         "music_mode":"music" if d.get("music_mode")=="music" else "mix"}
+    if out["music"]:
+        p=Path(out["music"])
+        if not p.is_file(): raise RuntimeError("MUSIC_FILE_MISSING")
+        if p.suffix.lower() not in MUSIC_EXT: raise RuntimeError("MUSIC_FILE_NOT_AUDIO")
+        info=subprocess.run([ffmpeg,"-hide_banner","-i",str(p)],capture_output=True,text=True,encoding="utf-8",errors="replace").stderr
+        if "Audio:" not in info: raise RuntimeError("MUSIC_FILE_NO_SOUND")
+        out["music_sha256"]=sha256_file(p); out["music_name"]=p.name
+    return out if (out["title"] or out["subtitle"] or out["music"]) else None
+
+def _font(bold,size):
+    from PIL import ImageFont
+    for c in _font_files(bold)+_font_files(not bold):
+        if Path(c).is_file():
+            try: return ImageFont.truetype(c,size)
+            except Exception: continue
+    return None
+
+def _wrap(draw,text,font,maxw):
+    words=text.split(); lines=[]; cur=""
+    for w in words:
+        t=(cur+" "+w).strip()
+        if not cur or draw.textlength(t,font=font)<=maxw: cur=t
+        else: lines.append(cur); cur=w
+    if cur: lines.append(cur)
+    return lines
+
+def title_png(title,subtitle,w,h,out):
+    """The title (and a second line) as a transparent picture of the reel's size: white text with a soft shadow in
+    the lower third. Returns False when no font is found (the reel is made without the title, with a warning)."""
+    from PIL import Image, ImageDraw, ImageFilter
+    base=min(w,h); maxw=int(w*.88)
+    probe=Image.new("RGBA",(8,8)); dr=ImageDraw.Draw(probe)
+    blocks=[]
+    for text,bold,size,maxlines in ((title,True,int(base*.085),2),(subtitle,False,int(base*.05),1)):
+        if not text: continue
+        while True:
+            f=_font(bold,max(10,size))
+            if f is None: return False
+            lines=_wrap(dr,text,f,maxw)
+            if (len(lines)<=maxlines and all(dr.textlength(x,font=f)<=maxw for x in lines)) or size<=12: break
+            size=int(size*.9)
+        blocks.append((lines[:maxlines],f,size))
+    gap=int(base*.02); heights=[len(ls)*int(sz*1.18) for ls,_,sz in blocks]
+    total=sum(heights)+gap*(len(blocks)-1)
+    y=y0=int(h*(.70 if h>w else .72))-total//2
+    pad=int(base*.06)                     # a soft dark band behind the text: readable on a bright sky or snow too
+    band=Image.new("RGBA",(w,h),(0,0,0,0))
+    ImageDraw.Draw(band).rectangle((0,y0-pad,w,y0+total+pad),fill=(0,0,0,85))
+    band=band.filter(ImageFilter.GaussianBlur(max(4,base//28)))
+    shadow=Image.new("RGBA",(w,h),(0,0,0,0)); text_l=Image.new("RGBA",(w,h),(0,0,0,0))
+    ds=ImageDraw.Draw(shadow); dt=ImageDraw.Draw(text_l)
+    for (ls,f,sz),hh in zip(blocks,heights):
+        for i,line in enumerate(ls):
+            lw=dt.textlength(line,font=f); x=int((w-lw)/2); yy=y+i*int(sz*1.18)
+            ds.text((x+max(1,sz//24),yy+max(1,sz//18)),line,font=f,fill=(0,0,0,200))
+            dt.text((x,yy),line,font=f,fill=(255,255,255,255))
+        y+=hh+gap
+    shadow=Image.alpha_composite(band,shadow.filter(ImageFilter.GaussianBlur(max(2,base//160))))
+    Image.alpha_composite(shadow,text_l).save(out)
+    return True
+
+def dress_filters(dress,first_input,vin,ain,total):
+    """Extra inputs and filters that put the title over the first seconds and the music under the reel - in the same
+    single encode as the reel itself (no second generation)."""
+    args=[]; filters=[]; vout,aout=vin,ain; k=first_input
+    if dress.get("title_png"):
+        show=min(TITLE_SHOW_S,max(1.0,total-.4))
+        args+=["-loop","1","-framerate","30","-t",f"{show:.3f}","-i",str(dress["title_png"])]
+        filters.append(f"[{k}:v]format=rgba,fade=t=in:st=0.15:d=0.45:alpha=1,fade=t=out:st={max(.7,show-.55):.3f}:d=0.5:alpha=1[ttl]")
+        filters.append(f"[{vin}][ttl]overlay=0:0:eof_action=pass:format=auto,format=yuv420p[vdr]")
+        vout="vdr"; k+=1
+    if dress.get("music"):
+        n=max(1,int(round(total*48000)))
+        args+=["-stream_loop","-1","-i",str(dress["music"])]
+        filters.append(f"[{k}:a]aformat=sample_rates=48000:channel_layouts=stereo,atrim=end_sample={n},asetpts=N/SR/TB,"
+                       f"loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000,afade=t=in:d=0.6,"
+                       f"afade=t=out:st={max(0.0,total-1.8):.3f}:d=1.8,apad=whole_len={n},atrim=end_sample={n}[mus]")
+        if dress.get("music_mode")=="music":
+            filters.append(f"[{ain}]anullsink")      # the videos' own sound is not used
+            aout="mus"
+        else:   # music + the videos' own sound, quieter
+            filters.append(f"[{ain}]volume=0.35[vsd]")
+            filters.append(f"[vsd][mus]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.95,apad=whole_len={n},atrim=end_sample={n}[amx]")
+            aout="amx"
+        k+=1
+    return args,filters,vout,aout
+
+def render_dissolve_block(v52,segs,durs,trans,out,dress=None):
     out=Path(out); out.parent.mkdir(parents=True,exist_ok=True)
     args=[v52.FFMPEG,"-hide_banner","-loglevel","error","-y"]
     for p in segs: args += ["-i",str(p)]
-    if len(segs)==1:
+    if len(segs)==1 and not dress:
         args += ["-filter_complex",_fit_audio(0,float(durs[0])),"-map","0:v","-map","[n0]","-c:v","copy",
                  "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(out)]
         cp=subprocess.run(args,capture_output=True,text=True)
@@ -859,6 +964,9 @@ def render_dissolve_block(v52,segs,durs,trans,out):
             filters.append(f"[{vprev}][w{i}]xfade=transition=fade:duration={td:.6f}:offset={max(0.0,off-0.0005):.6f}[{vl}]")
             filters.append(f"[{aprev}][n{i}]acrossfade=ns={max(1,int(round(td*48000)))}:c1=tri:c2=tri[{al}]")
         vprev=vl; aprev=al; cum+=float(durs[i])-max(0.0,td)
+    if dress:
+        dargs,dfilt,vprev,aprev=dress_filters(dress,len(segs),vprev,aprev,cum)
+        args += dargs; filters += dfilt
     args += ["-filter_complex",";".join(filters),"-map",f"[{vprev}]","-map",f"[{aprev}]",
              "-c:v","libx264","-preset","medium","-crf","18","-pix_fmt","yuv420p",
              "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(out)]
@@ -866,10 +974,11 @@ def render_dissolve_block(v52,segs,durs,trans,out):
     if cp.returncode!=0: raise RuntimeError("DISSOLVE_BLOCK_RENDER_FAILED:"+cp.stderr[-800:])
     return cum
 
-def render_mixed(v52,segs,durs,transitions,out,work):
+def render_mixed(v52,segs,durs,transitions,out,work,dress=None):
     """Whole reel in ONE encode: dissolves (xfade/acrossfade) and hard cuts (concat) in a single filter graph.
-    R2 encoded every dissolve block and then the joined reel again (two full encodes, about twice the time)."""
-    total=render_dissolve_block(v52,segs,durs,transitions,out)
+    R2 encoded every dissolve block and then the joined reel again (two full encodes, about twice the time).
+    A title and own music (optional) go into the same encode."""
+    total=render_dissolve_block(v52,segs,durs,transitions,out,dress)
     dec=subprocess.run([v52.FFMPEG,"-hide_banner","-loglevel","error","-i",str(out),"-f","null","-"],capture_output=True,text=True)
     if dec.returncode!=0: raise RuntimeError("FINAL_DECODE_FAILED:"+dec.stderr[-800:])
     return total
@@ -1101,7 +1210,14 @@ def run(args):
     # frame after its sound at every dissolve. The pacing decision itself is kept as planned (result.pacing).
     render_trans=[dict(t,duration_s=(max(1,round(float(t["duration_s"])*30))/30.0 if t["kind"]!="HARD_CUT" and float(t["duration_s"])>0 else 0.0))
                   for t in pace["transitions"]]
-    render_mixed(v52,segs,durs,render_trans,temp_final,render_dir/(fingerprint+"_render"))
+    dress=load_dress(getattr(args,"dress",""),v52.FFMPEG)
+    if dress and (dress["title"] or dress["subtitle"]):
+        ow,oh=v52.output_dimensions(profile,resolution)
+        png=render_dir/(fingerprint+"_title.png")
+        if title_png(dress["title"],dress["subtitle"],int(ow),int(oh),png): dress["title_png"]=str(png)
+        else: warnings.append("TITLE_FONT_MISSING")
+    render_mixed(v52,segs,durs,render_trans,temp_final,render_dir/(fingerprint+"_render"),dress)
+    if dress and dress.get("title_png"): Path(dress["title_png"]).unlink(missing_ok=True)
     fpr=v52.ffprobe(temp_final); actual=float(fpr["format"]["duration"]); video_sha=sha256_file(temp_final)
     if actual < float(args.target_seconds)-1.0 and "LIMITED_TOTAL_FOOTAGE" not in warnings:
         warnings.append("SHORTER_THAN_REQUESTED")
@@ -1158,6 +1274,9 @@ def run(args):
                   "profile":profile,"resolution":resolution,"fps":30,
                   "profile_requested":str(args.profile),"profile_reason":profile_reason,
                   "width":out_w,"height":out_h},
+        "dress":({"title":dress["title"] or None,"subtitle":dress["subtitle"] or None,"title_shown":bool(dress.get("title_png")),
+                  "music":({"name":dress["music_name"],"sha256":dress["music_sha256"],"mode":dress["music_mode"]} if dress["music"] else None)}
+                 if dress else None),
         "source_mutated":False,"network_request_performed":False,
         "semantic_best_moment_claim":bool(use_semantic),
         "claim_scope":"current run only; shadow prototype",
@@ -1191,6 +1310,7 @@ def main():
     ap.add_argument("--exclude-events",default="")
     ap.add_argument("--skip-sha-file",default="",help="text file, one SHA-256 per line: inputs never to use (Private)")
     ap.add_argument("--edits",default="",help="JSON file: {selection:[event ids in order], trims:{id:[source_in_s,source_out_s]}}")
+    ap.add_argument("--dress",default="",help="JSON file: {title, subtitle, music (audio file path), music_mode: mix|music}")
     a=ap.parse_args()
     try: run(a)
     except Exception as exc:

@@ -1101,7 +1101,38 @@ def normalize_settings(raw: dict, *, model_ready: bool | None = None) -> dict:
         out["exclude"] = []
     if trims:
         out["trims"] = trims
+    # titles and own music (optional): only stored when set, so a reel without them keeps its old key
+    clean = lambda t: " ".join(str(t or "").replace("\x00", " ").split())
+    title, subtitle = clean(raw.get("title")), clean(raw.get("subtitle"))
+    if len(title) > 80 or len(subtitle) > 80:
+        raise ValueError("A title can be at most 80 characters long")
+    if title:
+        out["title"] = title
+    if subtitle:
+        out["subtitle"] = subtitle
+    music = str(raw.get("music") or "").strip().strip('"')
+    if music:
+        mp = Path(music)
+        if not mp.is_absolute() or not mp.is_file():
+            raise ValueError("Music file not found: " + music)
+        if mp.suffix.lower() not in MUSIC_EXT:
+            raise ValueError("Not a music file: " + mp.name + " (" + ", ".join(sorted(MUSIC_EXT)) + ")")
+        _guard_private(mp)
+        out["music"] = str(mp)
+        out["music_mode"] = "music" if raw.get("music_mode") == "music" else "mix"
     return out
+
+
+MUSIC_EXT = {".mp3", ".m4a", ".aac", ".wav", ".flac", ".ogg", ".opus", ".wma"}
+
+
+def music_identity(path: str) -> str:
+    """A changed music file (same name, new content) must make a new version: name + size + time."""
+    try:
+        st = Path(path).stat()
+        return f"{path}|{st.st_size}|{st.st_mtime_ns}"
+    except OSError:
+        return path + "|missing"
 
 
 def parse_seconds(v) -> float:
@@ -1161,7 +1192,8 @@ def _request_key(p: dict, settings: dict) -> str:
                       "engine": engine_identity(), "model": (model_identity() if settings.get("mode") == "semantic" else
                                                              aiplus_identity() if settings.get("mode") == "semantic_plus" else "off"),
                       # marking a file Private later must never reuse a reel that contains it
-                      "private": hashlib.sha256("\n".join(_private_hashes()).encode()).hexdigest()},
+                      "private": hashlib.sha256("\n".join(_private_hashes()).encode()).hexdigest(),
+                      **({"music_file": music_identity(settings["music"])} if settings.get("music") else {})},
                      sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(raw.encode()).hexdigest()
 
@@ -1398,7 +1430,7 @@ def _attach_job_object(proc: subprocess.Popen) -> None:
 
 
 def engine_command(folder: Path, out_dir: Path, work_dir: Path, progress_file: Path, s: dict, edits_file: Path | None = None,
-                   skip_sha_file: Path | None = None, input_list: Path | None = None) -> list[str]:
+                   skip_sha_file: Path | None = None, input_list: Path | None = None, dress_file: Path | None = None) -> list[str]:
     f = FORMATS[s["format"]]
     src = ["--input-list", str(input_list)] if input_list is not None else ["--input-dir", str(folder)]
     cmd = [engine_python(), "-B", "-s", "-E", "-X", "utf8", str(ORCHESTRATOR), *src, "--output-dir", str(out_dir),
@@ -1413,6 +1445,8 @@ def engine_command(folder: Path, out_dir: Path, work_dir: Path, progress_file: P
         cmd += ["--exclude-events", ",".join(s["exclude"])]
     if skip_sha_file is not None:
         cmd += ["--skip-sha-file", str(skip_sha_file)]
+    if dress_file is not None and (s.get("title") or s.get("subtitle") or s.get("music")):
+        cmd += ["--dress", str(dress_file)]
     return cmd
 
 
@@ -1448,6 +1482,9 @@ def _run_job(jid: int) -> None:
     edits_file.write_text(json.dumps({"selection": s.get("selection") or [], "trims": s.get("trims") or {}}), encoding="utf-8")
     skip_file = jobs_dir / f"j{jid}.private_sha.txt"
     skip_file.write_text("\n".join(_private_hashes()), encoding="utf-8")
+    dress_file = jobs_dir / f"j{jid}.dress.json"
+    dress_file.write_text(json.dumps({"title": s.get("title") or "", "subtitle": s.get("subtitle") or "", "music": s.get("music") or "",
+                                      "music_mode": s.get("music_mode") or "mix"}, ensure_ascii=False), encoding="utf-8")
     input_list = None
     note = lambda name: _set(jid, message="Preparing a recording without a length: " + name)
     try:
@@ -1467,7 +1504,7 @@ def _run_job(jid: int) -> None:
             _CANCEL.discard(jid)
         _set(jid, status="cancelled", stage="cancelled", finished_at=now_iso(), message="Cancelled by user")
         return
-    cmd = engine_command(Path(p["folder"]), out_dir, work_dir, progress_file, s, edits_file, skip_file, input_list)
+    cmd = engine_command(Path(p["folder"]), out_dir, work_dir, progress_file, s, edits_file, skip_file, input_list, dress_file)
     kw = process_kwargs(below_normal=True) if os.name == "nt" else {"start_new_session": True}
     with log_file.open("w", encoding="utf-8", errors="replace") as log, keep_awake():
         proc = subprocess.Popen(cmd, stdout=log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, env=_engine_env(), cwd=str(ENGINE_DIR), **kw)
@@ -1563,6 +1600,9 @@ _FRIENDLY = {
     "INPUT_FOLDER_MISSING": "The source folder is not available.",
     "NO_DIVERSE_TARGET_COMBINATION": "Not enough different moments for this length. Try a shorter length.",
     "NO_EVENTS_SELECTED": "No usable moments were found. Try a shorter length or other footage.",
+    "MUSIC_FILE_MISSING": "The music file is not there any more. Choose it again or make the version without music.",
+    "MUSIC_FILE_NOT_AUDIO": "The chosen music is not an audio file (mp3, m4a, wav, flac, ogg...).",
+    "MUSIC_FILE_NO_SOUND": "The chosen music file has no sound that can be read. Choose another file.",
 }
 
 
@@ -2193,15 +2233,17 @@ def _dialog_title(en: str) -> str:
               "Выбери папку с видео на этом компьютере (видео с телефона сначала скопируй на компьютер)",
           "Choose the folder that contains the FAST_LOCAL model": "Выбери папку, в которой лежит модель FAST_LOCAL",
           "Choose a folder for the exported reel": "Выбери папку для готового ролика",
-          "Choose the folder with the AI+ model files": "Выбери папку с файлами модели ИИ+"}
+          "Choose the folder with the AI+ model files": "Выбери папку с файлами модели ИИ+",
+          "Choose music for the reel": "Выбери музыку для ролика"}
     try:
         return ru.get(en, en) if ui_language() == "ru" else en
     except Exception:
         return en
 
 
-def pick_files(title="Choose videos for one reel", initial: str | None = None) -> list[str] | None:
-    """Native Windows Open dialog with multi-select (GetOpenFileNameW). initial = the folder it opens in."""
+def pick_files(title="Choose videos for one reel", initial: str | None = None, kind: str = "video") -> list[str] | None:
+    """Native Windows Open dialog (GetOpenFileNameW): videos with multi-select, or one music file (kind='audio').
+    initial = the folder it opens in."""
     if os.name != "nt":
         return None
     box: dict = {}
@@ -2223,7 +2265,8 @@ def pick_files(title="Choose videos for one reel", initial: str | None = None) -
         size = 65536
         buf = ctypes.create_unicode_buffer(size)
         ru = ui_language() == "ru"
-        flt = ("Видео" if ru else "Videos") + "\0" + ";".join("*" + x for x in sorted(SUPPORTED)) + "\0" + ("Все файлы" if ru else "All files") + "\0*.*\0\0"
+        exts, what = (MUSIC_EXT, ("Музыка" if ru else "Music")) if kind == "audio" else (SUPPORTED, ("Видео" if ru else "Videos"))
+        flt = what + "\0" + ";".join("*" + x for x in sorted(exts)) + "\0" + ("Все файлы" if ru else "All files") + "\0*.*\0\0"
         ofn = OPENFILENAMEW()
         ofn.lStructSize = ctypes.sizeof(OPENFILENAMEW)
         ofn.hwndOwner = ctypes.windll.user32.GetForegroundWindow()
@@ -2233,8 +2276,8 @@ def pick_files(title="Choose videos for one reel", initial: str | None = None) -
         ofn.lpstrTitle = _dialog_title(title)
         if initial and Path(initial).is_dir():
             ofn.lpstrInitialDir = str(initial)
-        # OFN_ALLOWMULTISELECT | OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR
-        ofn.Flags = 0x200 | 0x80000 | 0x1000 | 0x800 | 0x8
+        # OFN_ALLOWMULTISELECT (videos only) | OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR
+        ofn.Flags = (0x200 if kind != "audio" else 0) | 0x80000 | 0x1000 | 0x800 | 0x8
         if ctypes.windll.comdlg32.GetOpenFileNameW(ctypes.byref(ofn)):
             parts = ctypes.wstring_at(ctypes.addressof(buf), size).split("\0")
             parts = parts[: parts.index("")] if "" in parts else parts
