@@ -84,7 +84,9 @@ stronger model and descriptions written for personal footage (people, children, 
 celebrations, pets, action; bad: boring, blurry, accidental, dark, dashboard, no subject).
 
 - Download once on "Check this PC" (huggingface.co, free, every file checked by size and SHA-256, stop button), or
-  copy the four files from a folder. Never downloaded on its own; analysis never uses the network.
+  copy the four files from a folder. Never downloaded on its own; analysis never uses the network. A dropped
+  connection is continued where it stopped (HTTP Range, a few automatic tries); a stopped download shows
+  "Continue the download".
 - Choose "AI+" on the new-reel page or for a variant; compare with AI using "Compare blind". AI and AI+ keep separate
   caches and moments. A missing or changed AI+ model is refused with a clear message, never a silent fallback.
 - Speed (GitHub Windows runner, 4 logical / 2 physical CPUs - slower than most desktop PCs): 0.9–1.7 s per frame
@@ -117,6 +119,8 @@ celebrations, pets, action; bad: boring, blurry, accidental, dark, dashboard, no
   (Private, rejected and excluded videos are never included); every search after that is instant and opens the video
   at its best moment. The search waits while a reel is being built (one AI+ model in memory at a time).
   "Make a reel about this theme" opens the new-reel page with the matching videos, AI+ and the theme chosen.
+- Safety: a link opened from outside the app (e-mail, chat, a document) can no longer make MediaEngine open a
+  network share (Windows would send its sign-in to that server); pasting a network path in the app still works.
 
 ## AI model provenance (not in the ZIP, not in git)
 

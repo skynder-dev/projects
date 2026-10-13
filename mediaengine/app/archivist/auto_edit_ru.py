@@ -55,7 +55,7 @@ PHRASES = {
     "PE-Core L/14 (Meta, Apache-2.0) understands people, what they do and the things around them much better than the built-in AI model (tested on public photos: it finds the right photo for a description in 86 of 100 cases, the built-in model in 60); for plain landscapes the difference is small. It works on this PC without internet; the first analysis of new videos is slower (about 1–2 s per checked frame). ":
         "PE-Core L/14 (Meta, Apache-2.0) намного лучше встроенной модели понимает людей, что они делают и что вокруг них (проверено на открытых фото: правильное фото по описанию находит в 86 случаях из 100, встроенная модель — в 60); на простых пейзажах разница небольшая. Работает на этом компьютере без интернета; первый анализ новых видео дольше (примерно 1–2 с на каждый проверяемый кадр). ",
     "Download once: ": "Скачать один раз: ", ", from huggingface.co (free); every file is checked.": ", с huggingface.co (бесплатно); каждый файл проверяется.",
-    "Download AI+ model": "Скачать модель ИИ+", "Copy from a folder…": "Скопировать из папки…",
+    "Download AI+ model": "Скачать модель ИИ+", "Continue the download": "Продолжить скачивание", "Copy from a folder…": "Скопировать из папки…",
     "Build a test reel with AI+": "Собрать тестовый ролик с ИИ+",
     "with the AI+ model (PE-Core L/14)": "с моделью ИИ+ (PE-Core L/14)", "The AI+ mode works on this PC.": "Режим ИИ+ работает на этом компьютере.",
     "AI+ model (PE-Core L/14, optional)": "Модель ИИ+ (PE-Core L/14, по желанию)",

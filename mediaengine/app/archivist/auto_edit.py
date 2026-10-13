@@ -244,10 +244,15 @@ def aiplus_status() -> dict:
     (once; remembered by size + modification time). The engine checks every SHA-256 again before each AI+ build."""
     pc = _pe_contract()
     d = aiplus_dir()
-    out = {"ready": False, "reason": "AIPLUS_MISSING", "path": str(d), "bytes": pc.TOTAL_BYTES, "download": dict(_AIPLUS_DL)}
+    out = {"ready": False, "reason": "AIPLUS_MISSING", "path": str(d), "bytes": pc.TOTAL_BYTES, "download": dict(_AIPLUS_DL),
+           "partial": False}
     try:
         key = _aiplus_key(d, pc)
     except OSError:
+        try:      # a download stopped part-way: "Continue the download" goes on from there
+            out["partial"] = any(d.glob("*.part")) and not aiplus_downloading()
+        except OSError:
+            pass
         return out
     with _AIPLUS_LOCK:
         hit = _AIPLUS_CACHE.get(str(d))
@@ -306,15 +311,58 @@ def aiplus_download_cancel() -> None:
     _AIPLUS_STOP.set()
 
 
+def _fetch_resumable(url: str, part: Path, size: int, progress, tries: int = 4) -> None:
+    """Download into `part`, continuing what is already there (HTTP Range); a dropped connection is tried again
+    from where it stopped, a few times, before giving up (the part stays for the next try)."""
+    import http.client, socket, urllib.error, urllib.request
+    for attempt in range(tries):
+        have = part.stat().st_size if part.is_file() else 0
+        if have > size:
+            part.unlink(); have = 0
+        if have == size:
+            return
+        headers = {"User-Agent": "MediaEngine"}
+        if have:
+            headers["Range"] = f"bytes={have}-"
+        try:
+            with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=60) as r:
+                resumed = have and getattr(r, "status", 200) == 206 and str(r.headers.get("Content-Range", "")).startswith(f"bytes {have}-")
+                if have and not resumed:          # the server sent the whole file: start again
+                    have = 0
+                progress(have)
+                with part.open("ab" if resumed else "wb") as fh:
+                    while True:
+                        if _AIPLUS_STOP.is_set():
+                            raise RuntimeError("Download cancelled.")
+                        chunk = r.read(1 << 20)
+                        if not chunk:
+                            break
+                        fh.write(chunk)
+                        have += len(chunk)
+                        progress(have)
+            if have >= size:
+                return
+            raise ConnectionError("the connection ended early")
+        except (urllib.error.URLError, socket.timeout, ConnectionError, TimeoutError, OSError, http.client.HTTPException) as exc:
+            if isinstance(exc, urllib.error.HTTPError) and exc.code not in (408, 429, 500, 502, 503, 504):
+                raise
+            if attempt == tries - 1 or _AIPLUS_STOP.is_set():
+                raise
+            time.sleep(min(20, 3 * (attempt + 1)))
+
+
 def _aiplus_download() -> None:
-    import socket, urllib.error, urllib.request
+    import http.client, socket, urllib.error
     pc = _pe_contract()
     d = aiplus_dir()
     try:
         d.mkdir(parents=True, exist_ok=True)
-        for x in d.glob("*.part"):          # left by an earlier stop, crash or Quit
-            x.unlink(missing_ok=True)
-        need = sum(v[1] for n, v in pc.ALL_FILES.items() if not ((d / n).is_file() and (d / n).stat().st_size == v[1]))
+        parts = {x.name for x in d.glob("*.part")}          # left by an earlier stop or lost connection: continued
+        for x in d.glob("*.part"):
+            if x.name[:-5] not in pc.ALL_FILES:
+                x.unlink(missing_ok=True)
+        need = sum(v[1] - ((d / (n + ".part")).stat().st_size if (n + ".part") in parts else 0)
+                   for n, v in pc.ALL_FILES.items() if not ((d / n).is_file() and (d / n).stat().st_size == v[1]))
         if shutil.disk_usage(d).free < need + 500_000_000:
             raise RuntimeError("Not enough free disk space for the AI+ model (about " + str(round(need / 1e9, 1)) + " GB needed).")
         _AIPLUS_DL.update(total=pc.TOTAL_BYTES)
@@ -327,17 +375,9 @@ def _aiplus_download() -> None:
                 _AIPLUS_DL.update(done=done)
                 continue
             part = d / (name + ".part")
-            req = urllib.request.Request(pc.download_url(name), headers={"User-Agent": "MediaEngine"})
-            with urllib.request.urlopen(req, timeout=60) as r, part.open("wb") as fh:
-                while True:
-                    if _AIPLUS_STOP.is_set():
-                        raise RuntimeError("Download cancelled.")
-                    chunk = r.read(1 << 20)
-                    if not chunk:
-                        break
-                    fh.write(chunk)
-                    done += len(chunk)
-                    _AIPLUS_DL.update(done=done)
+            base = done
+            _fetch_resumable(pc.download_url(name), part, size, lambda have, base=base: _AIPLUS_DL.update(done=base + have))
+            done = base + size
             if part.stat().st_size != size or sha256_file(part) != sha:
                 part.unlink(missing_ok=True)
                 raise RuntimeError("A downloaded file is not the exact model file (" + name + "). Try again.")
@@ -346,13 +386,8 @@ def _aiplus_download() -> None:
             _aiplus_mark_verified(d, pc)      # every file was just checked: no second 650 MB hash
         _AIPLUS_DL.update(state="done", done=pc.TOTAL_BYTES, file="")
     except Exception as exc:
-        try:
-            for x in d.glob("*.part"):
-                x.unlink(missing_ok=True)
-        except OSError:
-            pass
         msg = str(exc)
-        if isinstance(exc, (urllib.error.URLError, socket.timeout, ConnectionError, TimeoutError)):
+        if isinstance(exc, (urllib.error.URLError, socket.timeout, ConnectionError, TimeoutError, http.client.HTTPException)):
             msg = "No connection to huggingface.co. Check the internet connection and try again. [" + msg[:120] + "]"
         _AIPLUS_DL.update(state="failed", error=msg[:300])
 

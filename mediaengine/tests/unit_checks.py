@@ -177,6 +177,46 @@ def main():
     check("a theme is dropped without AI+", "theme" not in st, st)
     check("an unknown theme is refused", raises(ae.normalize_settings, {"length": 15, "format": "social_hd", "sound": "auto",
                                                                          "mode": "technical", "theme": "moon"}))
+    # AI+ download over a bad connection: the connection drops in the middle, the download continues where it stopped
+    # (HTTP Range) instead of starting the 650 MB again; a server without Range support restarts the file cleanly
+    import http.server, socketserver, threading as _th, hashlib as _hl
+    blob = os.urandom(3_000_000)
+    seen = []
+
+    class _H(http.server.BaseHTTPRequestHandler):
+        def log_message(self, *a):
+            pass
+
+        def do_GET(self):
+            rng = self.headers.get("Range")
+            seen.append(rng)
+            ranged = rng and self.path != "/norange"
+            start = int(rng.split("=")[1].split("-")[0]) if ranged else 0
+            body = blob[start:]
+            self.send_response(206 if ranged else 200)
+            if ranged:
+                self.send_header("Content-Range", f"bytes {start}-{len(blob) - 1}/{len(blob)}")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            if len(seen) == 1:                        # the first connection drops after 1 MB
+                self.wfile.write(body[:1_000_000]); self.wfile.flush()
+                self.connection.shutdown(2)
+                return
+            self.wfile.write(body)
+
+    srv = socketserver.ThreadingTCPServer(("127.0.0.1", 0), _H)
+    _th.Thread(target=srv.serve_forever, daemon=True).start()
+    try:
+        part = work / "dl" / "x.part"; part.parent.mkdir(parents=True, exist_ok=True); part.unlink(missing_ok=True)
+        ae._AIPLUS_STOP.clear()
+        ae._fetch_resumable(f"http://127.0.0.1:{srv.server_address[1]}/m", part, len(blob), lambda n: None)
+        check("AI+ download continues after a dropped connection (Range)", part.read_bytes() == blob and len(seen) >= 2
+              and seen[0] is None and str(seen[1]).startswith("bytes=1000000-"), seen)
+        part.write_bytes(blob[:500_000]); seen.clear(); seen.append("skip-drop")
+        ae._fetch_resumable(f"http://127.0.0.1:{srv.server_address[1]}/norange", part, len(blob), lambda n: None)
+        check("AI+ download: a server without Range starts the file again", _hl.sha256(part.read_bytes()).digest() == _hl.sha256(blob).digest(), seen)
+    finally:
+        srv.shutdown()
     # times are stored as local wall-clock time: a running job's elapsed time must not be off by the UTC offset
     from datetime import datetime as _dt, timedelta as _td
     from archivist import web as _web

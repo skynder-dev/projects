@@ -950,7 +950,7 @@ def _aiplus_card(ap, e, human_bytes):
             "of new videos is slower (about 1–2 s per checked frame). "
             f"Download once: {human_bytes(ap['bytes'])}, from huggingface.co (free); every file is checked.</div>"
             "<div class='row' style='margin-top:10px'>"
-            f"<button type='button' id='apDl' {'disabled' if running else ''}>Download AI+ model</button>"
+            f"<button type='button' id='apDl' {'disabled' if running else ''}>{'Continue the download' if ap.get('partial') else 'Download AI+ model'}</button>"
             f"<button type='button' class='btn2' id='apCancel' {'' if running else 'hidden'}>Stop</button>"
             "<button type='button' class='btn2' id='apImport'>Copy from a folder…</button>"
             "<span class='muted' id='apMsg'></span></div>"
