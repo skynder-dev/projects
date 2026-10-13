@@ -77,6 +77,9 @@ def main():
         t = ae.quick_selftest(mode=mode, timeout_s=900 if mode == "semantic" else 1500)
         timings[f"test_reel_{mode}_s"] = t.get("seconds")
         check(f"test_reel_{mode}", t["ok"] and str(t.get("selection_mode", "")).startswith(prefix), (t.get("error"), t.get("selection_mode")))
+        if mode == "semantic_plus":           # "Check this PC" shows the AI+ speed measured on the PC
+            timings["test_reel_aiplus_s_per_frame"] = t.get("aiplus_s_per_frame")
+            check("test_reel_aiplus_reports_speed", float(t.get("aiplus_s_per_frame") or 0) > 0, t.get("aiplus_s_per_frame"))
 
     # 3. a real project: AI+ first, then an AI variant, then a blind comparison
     app = create_app()

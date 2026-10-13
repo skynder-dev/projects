@@ -286,6 +286,10 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
                 test_html = (f"<div class='card ae-done' style='margin-top:14px'><b>Test reel built</b> · "
                              f"<span>{'with the AI+ model (PE-Core L/14)' if sm.startswith('PE_CORE') else 'with the AI model (FAST_LOCAL)' if ai else 'Technical only'}</span> · {t['seconds']} s"
                              f"<div class='muted' style='margin-top:4px'><span>reel</span> {t.get('duration_s')} s · {stage_txt}</div>"
+                             + (f"<div class='muted' style='margin-top:4px'>AI+ speed on this PC: {float(t['aiplus_s_per_frame']):.1f} s per frame. "
+                                f"The first analysis looks at up to 48 frames of each video (about one per second): about "
+                                f"{max(1, round(48 * float(t['aiplus_s_per_frame'])))} s for a video of a minute or longer. Later builds reuse it.</div>"
+                                if t.get("aiplus_s_per_frame") else "")
                              + (("<div style='margin-top:6px'>The AI+ mode works on this PC.</div>" if sm.startswith("PE_CORE") else
                                  "<div style='margin-top:6px'>The AI mode works on this PC.</div>") if ai else "")
                              + (f"<video class='ae-video' style='max-height:320px;margin-top:10px' controls preload='metadata' "

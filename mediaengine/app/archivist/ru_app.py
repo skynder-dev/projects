@@ -432,6 +432,10 @@ APP_PHRASES: dict[str, str] = {
 
 APP_PATTERNS: list[tuple[str, str]] = [
     (r"Ready for (\d+) of (\d+) video\(s\)\.", r"Готово для \1 из \2 видео."),
+    (r"AI\+ speed on this PC: (\d+)\.(\d+) s per frame\. The first analysis looks at up to 48 frames of each video \(about one per second\): "
+     r"about (\d+) s for a video of a minute or longer\. Later builds reuse it\.",
+     r"Скорость ИИ+ на этом компьютере: \1,\2 с на кадр. При первом анализе модель смотрит до 48 кадров каждого видео (примерно "
+     r"один в секунду): около \3 с на видео длиной от минуты. Следующие сборки используют этот анализ."),
     (r"(\d+) video\(s\) match the theme, best first\. Open one to start at its best moment\.",
      r"Подходящих видео: \1, лучшие первыми. Открой видео — оно начнётся с лучшего момента."),
     (r"Only (\d+) of (\d+) video\(s\) are prepared for the search\.", r"Для поиска подготовлено только \1 из \2 видео."),

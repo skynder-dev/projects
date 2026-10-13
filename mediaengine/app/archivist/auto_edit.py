@@ -1827,6 +1827,16 @@ def quick_selftest(timeout_s: int = 900, mode: str = "technical") -> dict:
         r = json.loads((root / "out" / "MediaEngine Result.json").read_text(encoding="utf-8"))
         res.update(video=str(root / "out" / "MediaEngine Reel.mp4"), duration_s=r.get("actual_duration_s"), stages=r.get("stage_seconds"),
                    selection_mode=r.get("selection_mode"))
+        # AI+ speed measured on this PC: seconds per frame the model looked at (model start not included)
+        frames = secs = 0.0
+        for p in (root / "work" / "semantic_scout_pe").glob("*.json"):
+            try:
+                inf = json.loads(p.read_text(encoding="utf-8"))["info"]
+                frames += float(inf["scout_frame_count"]); secs += float(inf["embed_elapsed_s"])
+            except Exception:
+                pass
+        if frames > 0:
+            res["aiplus_s_per_frame"] = round(secs / frames, 3)
     return res
 
 
