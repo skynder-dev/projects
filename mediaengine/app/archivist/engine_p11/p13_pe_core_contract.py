@@ -11,7 +11,7 @@ from pathlib import Path
 
 PROFILE = "PE_CORE_L14"
 MODEL_REPO = "onnx-community/PE-Core-L14-336-ONNX"
-MODEL_REVISION = "main"          # pinned to a commit after the first CI probe (see tests/pe_core_probe.py)
+MODEL_REVISION = "40c36ae81cea6449c590afcafe4a7378f1f26644"   # pinned commit (checked by tests/pe_core_probe.py)
 TOKENIZER_REPO = "onnx-community/TinyCLIP-ViT-8M-16-Text-3M-YFCC15M-ONNX"
 TOKENIZER_REVISION = "9463a9c508a344c837ffefe9d724f3827bf2dc79"
 
