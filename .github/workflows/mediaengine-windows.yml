@@ -1,9 +1,9 @@
 name: mediaengine-windows
 # MediaEngine candidate checks on a real Windows machine (GitHub hosted, not the owner PC):
 # compile, app startup self-check, engine R3 == R2 decision regression, engine robustness, full Auto Edit E2E through the app
-# routes on synthetic 2- and 7-video folders, page screenshots. No owner media, no secrets, no network calls
-# from the app under test, no paid services. The FAST_LOCAL model is not in git, so CI covers the
-# labelled Technical mode; semantic=required is checked on the owner PC.
+# routes on synthetic 2- and 7-video folders, page screenshots. No owner media, no secrets, no paid services, no
+# network calls from the app under test - except one step that downloads the two public AI models (FAST_LOCAL and
+# AI+ PE-Core L/14, pinned commits, SHA-256 checked) from Hugging Face and builds real AI / AI+ reels with them.
 on:
   push:
     paths:
@@ -131,7 +131,8 @@ jobs:
           python mediaengine/tests/e2e_auto_edit.py --folder "$env:RUNNER_TEMP\fx\two" --home "$env:RUNNER_TEMP\home2" --mode technical --skip-cancel --files-check --out "$env:OUT\e2e_two.json" 2>&1 | Tee-Object "$env:OUT\e2e_two.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Real AI models from Hugging Face - AI and AI+ test reels, an AI+ reel, its AI variant, blind comparison
-        timeout-minutes: 60
+        timeout-minutes: 75
+        continue-on-error: true    # needs huggingface.co: an outage there is reported (results branch) but never blocks the package
         shell: pwsh
         run: |
           python mediaengine/tests/real_models_check.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\home-ai" --out "$env:OUT\real_models.json" 2>&1 | Tee-Object "$env:OUT\real_models.txt"

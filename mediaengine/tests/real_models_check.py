@@ -63,7 +63,7 @@ def main():
     t0 = time.time()
     for _attempt in range(2):                       # the app's own download (one retry: a network hiccup is not a bug)
         ae.aiplus_download_start()
-        while ae._AIPLUS_DL["state"] == "running" and time.time() - t0 < 1800:
+        while ae._AIPLUS_DL["state"] == "running" and time.time() - t0 < 900:
             time.sleep(2)
         if ae._AIPLUS_DL["state"] == "done":
             break
@@ -74,7 +74,7 @@ def main():
 
     # 2. Check this PC test reels
     for mode, prefix in (("semantic", "FAST_LOCAL"), ("semantic_plus", "PE_CORE")):
-        t = ae.quick_selftest(mode=mode, timeout_s=1800)
+        t = ae.quick_selftest(mode=mode, timeout_s=900 if mode == "semantic" else 1500)
         timings[f"test_reel_{mode}_s"] = t.get("seconds")
         check(f"test_reel_{mode}", t["ok"] and str(t.get("selection_mode", "")).startswith(prefix), (t.get("error"), t.get("selection_mode")))
 
@@ -103,7 +103,7 @@ def main():
         if not ok:
             return finish(checks, timings, out_json)
         pid = int(r.headers["Location"].rstrip("/").split("/")[-1])
-        j, dt = wait(ae.project(pid)["jobs"][0]["id"])
+        j, dt = wait(ae.project(pid)["jobs"][0]["id"], 2400)
         timings["aiplus_first_build_s"] = round(dt, 1)
         rev = ae.revision(j.get("revision_id") or 0) if j["status"] == "done" else None
         check("aiplus_reel_built", rev and rev["result"].get("selection_mode") == "PE_CORE_L14_SEMANTIC_V1", (j.get("status"), j.get("error")))
@@ -113,7 +113,7 @@ def main():
         r = c.post(f"/auto/p/{pid}/variant", data={"base_revision_id": rev["id"], "length": "15", "format": "social_hd", "sound": "auto",
                                                    "mode": "semantic"}, headers=H)
         jobs = [x for x in ae.project(pid)["jobs"] if x["id"] != j["id"]]
-        j2, dt2 = wait(jobs[0]["id"]) if jobs else ({"status": "missing"}, 0)
+        j2, dt2 = wait(jobs[0]["id"], 1200) if jobs else ({"status": "missing"}, 0)
         timings["ai_variant_build_s"] = round(dt2, 1)
         timings["ai_stage_seconds"] = (ae.revision(j2.get("revision_id") or 0) or {}).get("result", {}).get("stage_seconds") if j2.get("revision_id") else None
         rev2 = ae.revision(j2.get("revision_id") or 0) if j2.get("status") == "done" else None

@@ -69,6 +69,12 @@ PHRASES = {
         "Там нет точной модели ИИ+ (vision_model_int8.onnx, text_model_int8.onnx, vocab.json, merges.txt).",
     "Only from MediaEngine itself.": "Только из самой программы MediaEngine.",
     "loading the AI+ model": "загрузка модели ИИ+",
+    "The AI+ model is being downloaded": "Сейчас скачивается модель ИИ+",
+    "The AI+ model is being downloaded right now. Wait until it is finished or stop it first.":
+        "Модель ИИ+ сейчас скачивается. Дождись конца или сначала останови скачивание.",
+    "The AI+ model could not be started (not enough memory?). Close other programs and press Retry, or use AI.":
+        "Модель ИИ+ не запустилась (не хватает памяти?). Закрой другие программы и нажми «Повторить» или используй ИИ.",
+    "Technical only (sharpness, motion, exposure)": "Только техника (резкость, движение, яркость)",
     "length was not written in the file (browser or screen recording) — a fixed copy is used, the original is not changed":
         "длина не записана в файле (запись из браузера или с экрана) — используется исправленная копия, оригинал не меняется", "Show files": "Показать файлы", "File": "Файл", "Size": "Размер", "Length": "Длина",
     "Frame": "Кадр", "Format": "Формат", "Sound": "Звук", "recommended": "рекомендуется", "Create reel": "Создать ролик",

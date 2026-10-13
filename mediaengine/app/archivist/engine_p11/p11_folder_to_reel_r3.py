@@ -292,12 +292,16 @@ def make_pe_scorer(pe_dir):
     import p13_pe_core_adapter as pa
     return pa.PECoreScorer(Path(pe_dir),full_check=False)   # files were checked by the preflight
 
+class AiplusLoadError(RuntimeError):
+    pass
+
 def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=None):
     """Like build_semantic_candidates, with the AI+ hook. Own caches and own moment ids, so AI and AI+ never mix."""
     import p13_event_semantic_pe as hook
     import p13_pe_core_contract as pc
     v7=load_module("medeng_event_semantic_v7",runtime/"medeng_event_semantic_v7.py")
-    hook_sha=sha256_file(Path(hook.__file__))+"|"+sha256_file(Path(hook.__file__).with_name("p13_pe_core_adapter.py"))
+    here=Path(hook.__file__)
+    hook_sha="|".join(sha256_file(here.with_name(n)) for n in ("p13_event_semantic_pe.py","p13_pe_core_adapter.py","p13_pe_core_contract.py"))
     model_key="|".join(v[2] for v in pc.MODEL_FILES.values())
     reports_dir=work_dir/"semantic_reports_pe"; reports_dir.mkdir(parents=True,exist_ok=True)
     candidates_dir=work_dir/"semantic_candidates_pe"
@@ -317,14 +321,25 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
             if report is None:
                 if scorer is None:
                     progress("analyze",idx,len(input_rows),"loading the AI+ model")
-                    scorer=make_pe_scorer(pe_dir)
+                    try:
+                        scorer=make_pe_scorer(pe_dir)
+                    except Exception as exc:     # the model itself (memory, damaged runtime): one clear error, not "no moments"
+                        raise AiplusLoadError("AIPLUS_MODEL_LOAD_FAILED:"+type(exc).__name__+":"+str(exc)[:160]) from exc
                     progress("analyze",idx,len(input_rows),row["name"])
                 report=hook.analyze_video(v7,scorer,Path(row["path"]),v52.FFMPEG,os.environ.get("MEDENG_FFPROBE","ffprobe"))
                 atomic_json(rp,{"source_sha256":row["sha256"],"hook":hook_sha,"model":model_key,"report":report})
             row_specs=[]
             for rank,c in enumerate(report.get("ranked",[]),1):
                 cc=dict(c); cc["_source_rank"]=rank
-                row_specs.append(extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,"SEMANTIC_PE1"))
+                spec=extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,"SEMANTIC_PE1")
+                # a cached clip keeps its cut; its scores always come from the current analysis (new descriptions or
+                # model files give new scores for the same windows)
+                spec.update({"semantic_margin_raw":float(cc["semantic_margin_raw"]),"semantic_source_final_score":float(cc["final_score"]),
+                             "semantic_scout_score":float(cc["semantic_scout_score"]),"semantic_source_rank":int(rank),
+                             "technical_prominence":round(.50*float(cc["scout_eventness"])+.35*float(cc["scout_novelty"])+.15*float(cc["scout_quality"]),6)})
+                row_specs.append(spec)
+        except AiplusLoadError:
+            raise
         except Exception as exc:
             if skipped is not None: skipped.append({"name":row["name"],"reason":"ANALYSIS_FAILED:"+(str(exc).split(":",1)[0] or type(exc).__name__)[:60]})
             continue

@@ -218,28 +218,68 @@ def _pe_contract():
 _AIPLUS_CACHE: dict = {}
 _AIPLUS_DL = {"state": "idle", "done": 0, "total": 0, "error": "", "file": ""}
 _AIPLUS_STOP = threading.Event()
+_AIPLUS_LOCK = threading.Lock()
+_AIPLUS_STAMP = ".verified.json"     # sizes + times of files whose SHA-256 was checked: no 650 MB hash on every start
+
+
+def _aiplus_key(d: Path, pc) -> tuple:
+    return tuple((n, (d / n).stat().st_size, (d / n).stat().st_mtime_ns) for n in pc.ALL_FILES)
+
+
+def _aiplus_mark_verified(d: Path, pc) -> None:
+    key = _aiplus_key(d, pc)
+    _AIPLUS_CACHE[str(d)] = (key, True)
+    try:
+        (d / _AIPLUS_STAMP).write_text(json.dumps([list(x) for x in key]), encoding="utf-8")
+    except OSError:
+        pass
 
 
 def aiplus_status() -> dict:
-    """{ready, reason, path, bytes, download}: ready only with every file exact (SHA-256, cached by size + time)."""
+    """{ready, reason, path, bytes, download}. Ready = every file has the exact size and was checked by SHA-256
+    (once; remembered by size + modification time). The engine checks every SHA-256 again before each AI+ build."""
     pc = _pe_contract()
     d = aiplus_dir()
     out = {"ready": False, "reason": "AIPLUS_MISSING", "path": str(d), "bytes": pc.TOTAL_BYTES, "download": dict(_AIPLUS_DL)}
     try:
-        key = tuple((n, (d / n).stat().st_size, (d / n).stat().st_mtime_ns) for n in pc.ALL_FILES)
+        key = _aiplus_key(d, pc)
     except OSError:
         return out
-    hit = _AIPLUS_CACHE.get(str(d))
-    if not hit or hit[0] != key:
-        try:
-            pc.validate(d, True)
-            ok = True
-        except Exception:
-            ok = False
-        _AIPLUS_CACHE[str(d)] = (key, ok)
-    ok = _AIPLUS_CACHE[str(d)][1]
+    with _AIPLUS_LOCK:
+        hit = _AIPLUS_CACHE.get(str(d))
+        if not hit or hit[0] != key:
+            try:
+                stamp = [tuple(x) for x in json.loads((d / _AIPLUS_STAMP).read_text(encoding="utf-8"))]
+            except (OSError, ValueError, TypeError):
+                stamp = None
+            ok = stamp == list(key)
+            if not ok:
+                try:
+                    pc.validate(d, True)
+                    _aiplus_mark_verified(d, pc)
+                    ok = True
+                except Exception:
+                    ok = False
+            _AIPLUS_CACHE[str(d)] = (key, ok)
+        ok = _AIPLUS_CACHE[str(d)][1]
     out.update(ready=ok, reason="" if ok else "AIPLUS_FILES_CHANGED")
     return out
+
+
+def aiplus_downloading() -> bool:
+    return _AIPLUS_DL["state"] == "running"
+
+
+def _replace_retry(src: Path, dst: Path, tries: int = 10) -> None:
+    """os.replace that waits for a virus scanner (or an open model) to let go of the file on Windows."""
+    for k in range(tries):
+        try:
+            os.replace(src, dst)
+            return
+        except PermissionError:
+            if k == tries - 1:
+                raise
+            time.sleep(1.0)
 
 
 def aiplus_identity() -> str:
@@ -263,11 +303,13 @@ def aiplus_download_cancel() -> None:
 
 
 def _aiplus_download() -> None:
-    import urllib.request
+    import socket, urllib.error, urllib.request
     pc = _pe_contract()
     d = aiplus_dir()
     try:
         d.mkdir(parents=True, exist_ok=True)
+        for x in d.glob("*.part"):          # left by an earlier stop, crash or Quit
+            x.unlink(missing_ok=True)
         need = sum(v[1] for n, v in pc.ALL_FILES.items() if not ((d / n).is_file() and (d / n).stat().st_size == v[1]))
         if shutil.disk_usage(d).free < need + 500_000_000:
             raise RuntimeError("Not enough free disk space for the AI+ model (about " + str(round(need / 1e9, 1)) + " GB needed).")
@@ -295,14 +337,18 @@ def _aiplus_download() -> None:
             if part.stat().st_size != size or sha256_file(part) != sha:
                 part.unlink(missing_ok=True)
                 raise RuntimeError("A downloaded file is not the exact model file (" + name + "). Try again.")
-            os.replace(part, dst)
-        _AIPLUS_CACHE.clear()
+            _replace_retry(part, dst)
+        with _AIPLUS_LOCK:
+            _aiplus_mark_verified(d, pc)      # every file was just checked: no second 650 MB hash
         _AIPLUS_DL.update(state="done", done=pc.TOTAL_BYTES, file="")
     except Exception as exc:
-        for x in d.glob("*.part"):
-            x.unlink(missing_ok=True)
+        try:
+            for x in d.glob("*.part"):
+                x.unlink(missing_ok=True)
+        except OSError:
+            pass
         msg = str(exc)
-        if "urlopen" in msg or "getaddrinfo" in msg or "timed out" in msg or "Errno" in msg:
+        if isinstance(exc, (urllib.error.URLError, socket.timeout, ConnectionError, TimeoutError)):
             msg = "No connection to huggingface.co. Check the internet connection and try again. [" + msg[:120] + "]"
         _AIPLUS_DL.update(state="failed", error=msg[:300])
 
@@ -310,6 +356,8 @@ def _aiplus_download() -> None:
 def aiplus_import(src) -> dict:
     """Copy the exact AI+ files from a folder (e.g. copied from another PC): verified before and after copying."""
     pc = _pe_contract()
+    if aiplus_downloading():
+        raise ValueError("The AI+ model is being downloaded right now. Wait until it is finished or stop it first.")
     src = Path(str(src or "").strip().strip('"'))
     for cand in (src, src / "PE_CORE_L14", src / "models" / "PE_CORE_L14"):
         try:
@@ -320,12 +368,17 @@ def aiplus_import(src) -> dict:
         if cand.resolve() == d.resolve():
             return {"path": str(d), "copied": False}
         d.mkdir(parents=True, exist_ok=True)
-        for name in pc.ALL_FILES:
-            tmp = d / (name + ".part")
-            shutil.copyfile(cand / name, tmp)
-            os.replace(tmp, d / name)
+        try:
+            for name in pc.ALL_FILES:
+                tmp = d / (name + ".part")
+                shutil.copyfile(cand / name, tmp)
+                _replace_retry(tmp, d / name)
+        finally:
+            for x in d.glob("*.part"):
+                x.unlink(missing_ok=True)
         pc.validate(d, True)
-        _AIPLUS_CACHE.clear()
+        with _AIPLUS_LOCK:
+            _aiplus_mark_verified(d, pc)
         return {"path": str(d), "copied": True}
     raise ValueError("No exact AI+ model there (vision_model_int8.onnx, text_model_int8.onnx, vocab.json, merges.txt).")
 
@@ -1440,6 +1493,7 @@ def _pump_progress(jid: int, progress_file: Path) -> None:
 _FRIENDLY = {
     "SEMANTIC_RUNTIME_REQUIRED_BUT_NOT_EXACT": "The AI model files are missing or not the exact pinned version.",
     "AIPLUS_MODEL_NOT_READY": "The AI+ model files are missing or changed. Download the AI+ model again on 'Check this PC'.",
+    "AIPLUS_MODEL_LOAD_FAILED": "The AI+ model could not be started (not enough memory?). Close other programs and press Retry, or use AI.",
     "NO_SUPPORTED_VIDEO_FILES": "No supported video files in the folder.",
     "TOO_MANY_INPUT_FILES": f"The folder has more than {MAX_INPUTS} videos.",
     "REALMEDIA_PIPELINE_FAILED": "Analysis of the footage failed.",

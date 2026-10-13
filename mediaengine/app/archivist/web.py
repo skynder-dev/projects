@@ -292,6 +292,13 @@ def create_app():
             return jsonify({'ok':False,'error':f"Job #{busy['id']} ({busy['kind']}) is running"}),409
         if reel and not force:
             return jsonify({'ok':False,'error':f"Auto Edit job #{reel['id']} is building a reel"}),409
+        try:
+            from . import auto_edit as _ae
+            dl=_ae.aiplus_downloading()
+        except Exception:
+            dl=False
+        if dl and not force:
+            return jsonify({'ok':False,'error':"The AI+ model is being downloaded"}),409
         if mode!='stop': _spawn_launcher(mode)
         threading.Thread(target=_exit_soon,daemon=True).start(); return jsonify({'ok':True})
 

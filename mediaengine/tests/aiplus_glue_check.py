@@ -96,6 +96,16 @@ def main():
     res3 = json.loads((work / "out3" / "MediaEngine Result.json").read_text(encoding="utf-8"))
     check("technical_mode_unchanged", res3["selection_mode"] == "ACCEPTED_V52_TECHNICAL_AESTHETIC" and not ids1 & {s["event_id"] for s in res3["segments"]},
           res3["selection_mode"])
+    # the model cannot start (e.g. not enough memory): one clear error, not "no moments" for every video
+    def broken(_pe_dir):
+        raise MemoryError("bad allocation")
+    r3.make_pe_scorer = broken
+    try:
+        r3.run(args(work / "out4", work_dir=str(work / "w_new")))
+        load_err = ""
+    except RuntimeError as exc:
+        load_err = str(exc)
+    check("aiplus_model_start_failure_is_one_clear_error", load_err.startswith("AIPLUS_MODEL_LOAD_FAILED:MemoryError"), load_err)
     print(json.dumps({"passed": sum(checks), "total": len(checks)}))
     return 0 if all(checks) else 1
 

@@ -571,7 +571,7 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         elif last_job and last_job["status"] in ("failed", "cancelled") and (not revs or last_job["id"] > max(r["job_id"] for r in revs)):
             ls_ = last_job["settings"]
             no_ai = ""
-            if last_job["status"] == "failed" and ls_.get("mode") == "semantic":
+            if last_job["status"] == "failed" and ls_.get("mode") in ae.AI_MODES:
                 # an AI-mode failure must not leave the user stuck: offer the clearly labelled technical build
                 no_ai = (f"<form method='post' action='/auto/p/{pid}/variant'>"
                          f"<input type='hidden' name='length' value='{ls_['length']}'><input type='hidden' name='format' value='{e(ls_['format'])}'>"
@@ -930,33 +930,31 @@ def _aiplus_card(ap, e, human_bytes):
             "<script>(function(){const m=document.getElementById('apMsg'),b=document.getElementById('apBar'),d=document.getElementById('apDl'),"
             "c=document.getElementById('apCancel');"
             "async function poll(){try{const r=await fetch('/api/auto/aiplus',{cache:'no-store'});const x=await r.json();"
-            "if(x.ready){location.reload();return}const p=x.total?Math.floor(100*x.done/x.total):0;b.style.width=p+'%';"
+            "if(x.ready){location.href='/auto/check?aiplus='+Date.now()+'#aiplus';return}const p=x.total?Math.floor(100*x.done/x.total):0;b.style.width=p+'%';"
             "if(x.state==='running'){m.textContent=p+' %';d.disabled=true;c.hidden=false;setTimeout(poll,1000)}"
             "else{d.disabled=false;c.hidden=true;if(x.state==='failed')m.textContent=x.error||'Failed';}}catch(e){setTimeout(poll,2000)}}"
             "d.onclick=async()=>{d.disabled=true;m.textContent='Starting…';await fetch('/api/auto/aiplus/download',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});poll()};"
             "c.onclick=async()=>{await fetch('/api/auto/aiplus/download',{method:'POST',headers:{'Content-Type':'application/json'},body:'{\"cancel\":1}'})};"
             "document.getElementById('apImport').onclick=async()=>{m.textContent='A Windows folder window is open — it may be behind this window.';"
-            "const r=await fetch('/api/auto/aiplus/import',{method:'POST'});const x=await r.json();m.textContent=x.ok?'Installed.':(x.error||'Not installed');if(x.ok)setTimeout(()=>location.reload(),800)};"
+            "const r=await fetch('/api/auto/aiplus/import',{method:'POST'});const x=await r.json();m.textContent=x.ok?'Installed.':(x.error||'Not installed');if(x.ok)setTimeout(()=>{location.href='/auto/check?aiplus='+Date.now()+'#aiplus'},800)};"
             + ("poll();" if running else "") + "})();</script>")
 
 
-def _mode_choice(ai_ready, plus_ready, e, current=None):
-    """How moments are chosen: AI (accepted), AI+ (optional stronger model), or - only without any model - an explicit
-    Technical only. Never a silent fallback."""
+def _mode_choice(ai_ready, plus_ready, e, current=None, allow_technical=False, heading=True):
+    """How moments are chosen: AI (accepted), AI+ (optional stronger model), or - only without any model, or for a
+    variant whose model is gone - Technical only. The checked option is always one that can be built."""
     if not ai_ready and not plus_ready:
         return ("<div class='callout card' style='margin:6px 0 14px'><b>AI model not available.</b> Without it MediaEngine can only use the "
                 "<b>Technical only</b> selection (sharpness, motion, exposure); it does not understand what happens in the video."
                 "<label style='display:flex;gap:8px;margin-top:8px'><input type='checkbox' name='mode' value='technical' required> "
                 "Build with Technical only</label></div>")
-    opts = []
-    want = current if current in ("semantic", "semantic_plus") else ("semantic" if ai_ready else "semantic_plus")
-    if ai_ready:
-        opts.append(f"<label><input type='radio' name='mode' value='semantic' {'checked' if want == 'semantic' else ''}> {e(AI_LABEL)}</label>")
-    if plus_ready:
-        opts.append(f"<label><input type='radio' name='mode' value='semantic_plus' {'checked' if want == 'semantic_plus' else ''}> {e(AIPLUS_LABEL)}</label>")
-    if len(opts) == 1 and not plus_ready:
+    offered = [m for m, ok in (("semantic", ai_ready), ("semantic_plus", plus_ready)) if ok] + (["technical"] if allow_technical else [])
+    want = current if current in offered else offered[0]
+    if offered == ["semantic"]:
         return f"<input type='hidden' name='mode' value='semantic'><div class='muted' style='margin:4px 0 10px;font-size:13px'>{AIPLUS_HINT}</div>"
-    return f"<h2>How moments are chosen</h2><div class='ae-choices'>{''.join(opts)}</div>"
+    labels = {"semantic": AI_LABEL, "semantic_plus": AIPLUS_LABEL, "technical": "Technical only (sharpness, motion, exposure)"}
+    radios = "".join(f"<label><input type='radio' name='mode' value='{m}' {'checked' if m == want else ''}> {e(labels[m])}</label>" for m in offered)
+    return (f"<h2>How moments are chosen</h2>" if heading else "") + f"<div class='ae-choices'>{radios}</div>"
 
 
 def _variant_form(pid, rev, e, first=False, model_ready=True):
@@ -969,11 +967,13 @@ def _variant_form(pid, rev, e, first=False, model_ready=True):
     mode = ""
     plus_ready = ae.aiplus_status()["ready"]
     cur = (rev["settings"].get("mode") if rev else None)
-    if not model_ready and (not rev or cur == "semantic") and not plus_ready:
-        mode = ("<label class='muted' style='display:flex;gap:8px;margin:8px 0'><input type='checkbox' name='mode' value='technical' required> "
-                "Build without AI (Technical only: sharpness, motion, exposure)</label>")
-    elif plus_ready and cur != "technical":
-        mode = _mode_choice(model_ready, True, e, cur).replace("<h2>How moments are chosen</h2>", "")
+    cur_ok = (cur == "semantic" and model_ready) or (cur == "semantic_plus" and plus_ready)
+    if not model_ready and not plus_ready:
+        if not rev or cur in ae.AI_MODES:
+            mode = ("<label class='muted' style='display:flex;gap:8px;margin:8px 0'><input type='checkbox' name='mode' value='technical' required> "
+                    "Build without AI (Technical only: sharpness, motion, exposure)</label>")
+    elif not (rev and cur_ok and not (model_ready and plus_ready)):     # more than one way, or the revision's model is gone
+        mode = _mode_choice(model_ready, plus_ready, e, cur, allow_technical=bool(rev) and (cur == "technical" or not cur_ok), heading=False)
     note = "" if first else ("The current revision stays as it is. Format and sound variants keep its removed moments and your edits "
                              "and reuse the analysis; a new length chooses the moments again (removed ones stay out).")
     return (f"<form method='post' action='/auto/p/{pid}/variant' class='card' style='margin-top:14px' onsubmit=\"this.querySelector('button').disabled=true\">{base}"
