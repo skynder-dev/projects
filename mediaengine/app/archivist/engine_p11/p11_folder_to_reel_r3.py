@@ -318,10 +318,30 @@ class PeTextCache:
         if missing:
             emb=np.asarray(self.load().encode_text(missing),np.float32)
             for t,row in zip(missing,emb): self.data[self._key(t)]=row
-            self.path.parent.mkdir(parents=True,exist_ok=True)
-            tmp=self.path.with_name(self.path.stem+".tmp.npz")
-            np.savez(tmp,**self.data); os.replace(tmp,self.path)
+            self._save()
         return np.stack([self.data[self._key(t)] for t in texts]).astype(np.float32)
+    def _save(self):
+        """Best effort (a busy or read-only disk only means the text part is opened again next time); merges what
+        another build wrote meanwhile; own temp name, so two builds never write the same temp file."""
+        tmp=self.path.with_name(f"{self.path.stem}.{os.getpid()}.{time.time_ns()}.tmp.npz")
+        try:
+            self.path.parent.mkdir(parents=True,exist_ok=True)
+            try:
+                with np.load(self.path,allow_pickle=False) as z:
+                    for k in z.files: self.data.setdefault(k,np.asarray(z[k],np.float32))
+            except Exception:
+                pass
+            np.savez(tmp,**self.data)
+            for attempt in range(5):
+                try:
+                    os.replace(tmp,self.path); return
+                except PermissionError:
+                    time.sleep(.2*(attempt+1))
+        except Exception:
+            pass
+        finally:
+            try: tmp.unlink(missing_ok=True)
+            except Exception: pass
 
 def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=None,theme=None,warnings=None):
     """Like build_semantic_candidates, with the AI+ hook. Own caches and moment ids, so AI and AI+ never mix.
@@ -356,7 +376,9 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
             except Exception:
                 state["identity"]={"profile":pc.PROFILE}
         return state["identity"]
-    texts=PeTextCache(work_dir/"semantic_text_pe"/(scout_key[:24]+".npz"),lambda: scorer_with("text"),identity)
+    # shared by all projects when the app says where (MEDENG_P13_TEXT_CACHE), else next to the other caches
+    text_dir=Path(os.environ.get("MEDENG_P13_TEXT_CACHE") or (work_dir/"semantic_text_pe"))
+    texts=PeTextCache(text_dir/(scout_key[:24]+".npz"),lambda: scorer_with("text"),identity)
     specs=[]; reports=[]; kept=[]
     for idx,row in enumerate(input_rows):
         progress("analyze",idx,len(input_rows),row["name"])

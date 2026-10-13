@@ -179,11 +179,11 @@ def main():
         # index once, search instantly, Private / rejected videos never indexed or shown
         import numpy as np
         from archivist import aiplus_library as al
+        from i18n_coverage import english_left, page_texts
         real_status, real_ident, real_scorer = ae.aiplus_status, ae.aiplus_identity, al._scorer
 
         class StandIn:
-            def __init__(self):
-                self._vision = self._text = True
+            vision = text = True                     # the parts "open" at once
 
             @staticmethod
             def _n(a):
@@ -198,18 +198,37 @@ def main():
                 import p13_event_semantic_pe as hook
                 return self._n([[0, 1] if t in hook.NEGATIVE_PROMPTS else [1, 0] for t in texts])
 
+        def russian_left(urls):
+            c.post("/lang", data={"lang": "ru"}, headers=H)
+            left = []
+            for u in urls:
+                body = c.get(u, headers=H).data.decode("utf-8", "replace")
+                left += [f"{u}: {t.strip()[:80]}" for t in page_texts(body) if english_left(html.unescape(t))]
+            c.post("/lang", data={"lang": "en"}, headers=H)
+            return left
+
+        def index_and_wait(limit=300):
+            c.post("/api/aiplus/library-index", json={}, headers=H)
+            t0 = time.time()
+            while al.status()["state"] == "running" and time.time() - t0 < limit:
+                time.sleep(0.5)
+            return al.status()
+
+        def frame_ids():
+            with db() as con:
+                return {int(r[0]) for r in con.execute("SELECT inventory_id FROM aiplus_frames").fetchall()}
+
         ae.aiplus_status = lambda: {"ready": True, "reason": "", "path": "STAND-IN", "bytes": 0, "download": {}}
         ae.aiplus_identity = lambda: "STAND_IN_MODEL_KEY"
         al._scorer = lambda: StandIn()
         try:
             page = html.unescape(c.get("/library", headers=H).data.decode("utf-8", "replace"))
             check("library_offers_theme_search_with_aiplus", "Find by theme (AI+)" in page and "Prepare the search" in page)
-            r = c.post("/api/aiplus/library-index", json={}, headers=H)
-            t0 = time.time()
-            while al.status()["state"] == "running" and time.time() - t0 < 300:
-                time.sleep(0.5)
-            st = al.status()
-            check("library_theme_index_done", st["state"] == "done" and st["indexed"] == st["videos"] > 0, st)
+            # before the search is prepared: the card's hint and the results page's note, in Russian
+            left = russian_left(("/library", "/library/theme?theme=sea", "/library/theme"))
+            check("library_theme_search_unprepared_in_russian", not left, left[:10])
+            st = index_and_wait()
+            check("library_theme_index_done", st["state"] == "done" and st["indexed"] == st["videos"] > 0 and st["texts_missing"] == 0, st)
             res = al.search("sea")
             names_found = {x["filename"] for x in res}
             check("library_theme_search_never_shows_private_or_rejected", res and names[0] not in names_found
@@ -219,6 +238,7 @@ def main():
             # while a reel is being built the search waits (one AI+ model in memory at a time), then goes on
             with db() as con:
                 reel_job = con.execute("SELECT id,status FROM ae_jobs ORDER BY id DESC LIMIT 1").fetchone()
+            st_wait = {}
             if reel_job:
                 with db() as con:
                     con.execute("DELETE FROM aiplus_frames"); con.execute("UPDATE ae_jobs SET status='running' WHERE id=?", (reel_job["id"],)); con.commit()
@@ -230,24 +250,35 @@ def main():
                 t0 = time.time()
                 while al.status()["state"] == "running" and time.time() - t0 < 300:
                     time.sleep(0.5)
-                st = al.status()
-                check("library_index_waits_for_a_reel_then_finishes", st_wait["waiting"] and st_wait["done"] == 0 and st["state"] == "done"
-                      and st["indexed"] == st["videos"], (st_wait, st))
-            # the search card and the results page in Russian: no English left (same rules as tests/i18n_coverage.py)
-            from i18n_coverage import english_left, page_texts
-            c.post("/lang", data={"lang": "ru"}, headers=H)
-            left = []
-            for u in ("/library", "/library/theme?theme=sea", "/library/theme?theme=kids"):
-                body = c.get(u, headers=H).data.decode("utf-8", "replace")
-                left += [f"{u}: {t.strip()[:80]}" for t in page_texts(body) if english_left(html.unescape(t))]
-            c.post("/lang", data={"lang": "en"}, headers=H)
+            st = al.status()
+            check("library_index_waits_for_a_reel_then_finishes", reel_job and st_wait.get("waiting") and st_wait.get("state") == "running"
+                  and st["state"] == "done" and st["indexed"] == st["videos"], (dict(reel_job) if reel_job else None, st_wait, st))
+            left = russian_left(("/library", "/library/theme?theme=sea", "/library/theme?theme=kids"))
             check("library_theme_search_in_russian", not left, left[:10])
+            # a video made Private AFTER it was indexed: never shown, and its row goes on the next preparation
+            visible = sorted(frame_ids())
+            late = next((r_ for r_ in rows() if r_["id"] in visible and r_["filename"] != cyr), None)
+            if late:
+                r = c.post("/api/selection-action", json={"action": "private", "ids": [late["id"]]}, headers=H)
+                wait_job((r.get_json() or {}).get("job_id") or 0, 300)
+                gone_from_search = all(x["inventory_id"] != late["id"] for x in al.search("sea"))
+                st = index_and_wait()
+                check("library_theme_private_after_index_never_shown_and_dropped", gone_from_search and late["id"] not in frame_ids()
+                      and st["state"] == "done", (gone_from_search, late["id"], frame_ids(), st))
+            # descriptions changed (a new version): the themes are prepared again, the frames are kept
+            with db() as con:
+                con.execute("UPDATE aiplus_texts SET model_key=model_key||'-old' WHERE theme='sea'"); con.commit()
+            st0 = al.status()
+            frames_before = frame_ids()
+            st = index_and_wait()
+            check("library_theme_new_descriptions_prepared_again", st0["texts_missing"] == 1 and al.needs_preparing(st0)
+                  and st["texts_missing"] == 0 and frame_ids() == frames_before and al.search("sea") is not None, (st0, st))
         finally:
             ae.aiplus_status, ae.aiplus_identity, al._scorer = real_status, real_ident, real_scorer
 
         # the same pages in Russian
         c.post("/lang", data={"lang": "ru"}, headers=H)
-        ru = {u: c.get(u, headers=H) for u in ("/library", "/import?source_kind=fixed", f"/item/{inv[names[1]]['id']}", "/jobs", "/media")}
+        ru = {u: c.get(u, headers=H) for u in ("/library", "/import?source_kind=fixed", f"/item/{inv[cyr or names[1]]['id']}", "/jobs", "/media")}
         check("library_pages_in_russian", all(x.status_code == 200 and "<html lang='ru'>" in x.data.decode("utf-8", "replace") for x in ru.values()),
               {u: x.status_code for u, x in ru.items()})
         c.post("/lang", data={"lang": "en"}, headers=H)

@@ -1259,7 +1259,7 @@ pollConvert();"""
         if not st["model_ready"]:
             return ""
         opts="".join(f"<option value='{k}'>{e(v)}</option>" for k,v in _ae.THEMES.items())
-        missing=st["videos"]-st["indexed"]
+        missing=1 if al.needs_preparing(st) else 0
         prep=(f"<span class='muted'>Ready for {st['indexed']} of {st['videos']} video(s).</span> "
               f"<button type='button' class='btn2' id='apIdx' {'disabled' if st['state']=='running' else ''}>Prepare the search</button>"
               f"<span class='muted' id='apIdxMsg'></span>") if missing>0 or st["state"]=="running" else ""
@@ -1285,17 +1285,28 @@ pollConvert();"""
             return layout('Find by theme',f"<div class='pagehead row space'><div><div class='eyebrow'>Library · AI+</div><h1>Find by theme</h1>"
                           f"<div class='lead'>Choose a theme.</div></div><a class='btn btn2' href='/library'>Back</a></div><div class='card'>{chips}</div>")
         try:
-            res=al.search(theme)
             st=al.status()
+            if not st['model_ready']:
+                raise ValueError("The AI+ model is not on this computer yet. Download it once on 'Check this PC'.")
+            res=al.search(theme)
         except Exception as exc:
-            return layout('Find by theme',f"<div class='card'><div class='errbox'>{e(str(exc)[:300])}</div><a class='btn btn2' href='/library'>Back</a></div>"),400
+            return layout('Find by theme',f"<div class='card'><div class='errbox'>{e(str(exc)[:300])}</div><a class='btn btn2' href='/library'>Back</a> "
+                          f"<a class='btn btn2' href='/auto/check#aiplus'>Check this PC</a></div>"),400
         good=[r for r in res if r['score']>0]
-        cards="".join(f"<a class='media-card' href='/item/{r['inventory_id']}?t={r['best_s']:.1f}'><div class='thumb'><img loading='lazy' src='/storyboard/{r['inventory_id']}/{r['frame']}' onerror=\"this.onerror=null;this.src='/thumb/{r['inventory_id']}'\"></div>"
+        def pic(r):                       # the preview frame of the best moment (the cover if the previews are being redone)
+            iid=r['inventory_id']
+            return f"/storyboard/{iid}/{r['frame']}" if cached_storyboard(iid) else f"/thumb/{iid}"
+        cards="".join(f"<a class='media-card' href='/item/{r['inventory_id']}?t={r['best_s']:.1f}'><div class='thumb'><img loading='lazy' src='{pic(r)}' onerror=\"this.onerror=null;this.src='/thumb/{r['inventory_id']}'\"></div>"
                       f"<div class='meta'><div class='name' translate='no'>{e(r['filename'])}</div><div class='small'><span>best moment</span> "
                       f"{int(r['best_s']//60)}:{int(r['best_s']%60):02d}</div></div></a>" for r in good)
-        note=("" if st['indexed']>=st['videos'] else
-              f"<div class='callout card' style='margin-bottom:12px'>Only {st['indexed']} of {st['videos']} video(s) are prepared for the search. "
-              f"<a href='/library'>Prepare the rest</a> on the Library page.</div>")
+        if st['indexed']<st['videos']:
+            note=(f"<div class='callout card' style='margin-bottom:12px'><span>Only {st['indexed']} of {st['videos']} video(s) are prepared for the search.</span> "
+                  f"<a href='/library'>Prepare the rest</a> <span>on the Library page.</span></div>")
+        elif al.needs_preparing(st):
+            note=("<div class='callout card' style='margin-bottom:12px'><span>The search needs preparing again (new themes).</span> "
+                  "<a href='/library'>Prepare the rest</a> <span>on the Library page.</span></div>")
+        else:
+            note=""
         body=(f"<div class='pagehead row space'><div><div class='eyebrow'>Library · AI+</div><h1>{e(name)}</h1>"
               f"<div class='lead'>{len(good)} video(s) match the theme, best first. Open one to start at its best moment.</div></div>"
               f"<a class='btn btn2' href='/library'>Back</a></div>{note}"

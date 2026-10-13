@@ -1306,6 +1306,7 @@ def _engine_env() -> dict:
     env = {k: v for k, v in os.environ.items() if not k.upper().startswith("PYTHON")}
     ff = _ffmpeg() or "ffmpeg"
     env.update({"MEDENG_FFMPEG": ff, "MEDENG_FFPROBE": ff, "MEDENG_P11_MODEL_ROOT": str(model_root()), "MEDENG_P13_PE_DIR": str(aiplus_dir()),
+                "MEDENG_P13_TEXT_CACHE": str(AE_ROOT / "shared" / "semantic_text_pe"),
                 "MEDENG_P11_ADAPTER_ROOT": str(ENGINE_DIR), "PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1",
                 "PYTHONDONTWRITEBYTECODE": "1"})   # engine helpers started without -E: nothing written into the program folder
     return env
