@@ -92,6 +92,19 @@ celebrations, pets, action; bad: boring, blurry, accidental, dark, dashboard, no
   cos 0.95–0.98 (images) / 0.99+ (texts), identical zero-shot choices. Windows CI downloads both real models and builds
   AI and AI+ test reels, an AI+ reel and its AI variant (reported; a Hugging Face outage never blocks the package).
 
+### AI+ themes and Library search by theme
+
+- **Theme** (AI+ only, on the new-reel page and for a variant): sea and beach, mountains, children, family and
+  friends, celebration, animals, sunset, nature, winter and snow, city, food, sport, road trip. AI+ looks at every
+  scout frame of every video once (about one per second, at most 48 per video, cached), so a theme can pick any part
+  of any video, and a new theme for analysed videos needs no frame to be looked at again (seconds). Matching moments
+  are compared across all videos; when fewer than 3 match, the reel says so and fills up with the best others.
+- The text part of the model is kept as fixed numbers on disk after the first use: later builds do not open it at
+  all (less memory, faster start; same rankings - checked in CI).
+- **Library → "Find by theme (AI+)"**: "Prepare the search" looks at the 8 preview frames of each Library video once
+  (Private, rejected and excluded videos are never included); every search after that is instant and opens the video
+  at its best moment. The search waits while a reel is being built (one AI+ model in memory at a time).
+
 ## AI model provenance (not in the ZIP, not in git)
 
 FAST_LOCAL is taken from the owner's stable install (`<drive>:\Archivist\sidecars\auto_edit\models`) or imported

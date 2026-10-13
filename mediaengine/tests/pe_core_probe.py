@@ -102,10 +102,77 @@ def main():
         e = np.exp(row - row.max()); e /= e.sum()
         probs[n] = {TEXTS[i]: round(float(e[i]), 3) for i in np.argsort(-e)[:3]}
     report["adapter_top3"] = probs
+    (out_dir / "pe_core_probe.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    try:
+        report["speed"] = speed_matrix(model_dir, frames)
+    except Exception as exc:
+        report["speed_error"] = f"{type(exc).__name__}: {str(exc)[:300]}"
+    (out_dir / "pe_core_probe.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
     if "--reference" in sys.argv:
         reference(report, sc, imgs, names, te, ie)
     (out_dir / "pe_core_probe.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(json.dumps(report, indent=2))
+
+
+def speed_matrix(model_dir: Path, frames) -> dict:
+    """Seconds per frame of the vision part with different thread settings, and two sessions side by side
+    (the graph takes one frame per run, so two sessions are the only way to work on two frames at once)."""
+    import threading
+    import numpy as np, onnxruntime as ort, psutil
+    import p13_pe_core_adapter as A
+    px = [A.preprocess(im)[None, ...] for im in frames[:6]]
+    out = {"logical_cpus": psutil.cpu_count(logical=True), "physical_cpus": psutil.cpu_count(logical=False)}
+
+    def session(threads):
+        so = ort.SessionOptions()
+        if threads:
+            so.intra_op_num_threads = int(threads)
+        s = ort.InferenceSession(str(model_dir / "vision_model_int8.onnx"), so, providers=["CPUExecutionProvider"])
+        return s, s.get_inputs()[0].name
+
+    def per_frame(s, name, items):
+        s.run(None, {name: items[0]})                       # warm-up
+        t0 = time.perf_counter()
+        for x in items:
+            s.run(None, {name: x})
+        return (time.perf_counter() - t0) / len(items)
+
+    configs = [("default", None), ("1", 1), ("2", 2), ("physical", out["physical_cpus"]), ("logical", out["logical_cpus"])]
+    seen = set()
+    for label, th in configs:
+        if th in seen:
+            continue
+        seen.add(th)
+        t0 = time.perf_counter()
+        s, name = session(th)
+        load = time.perf_counter() - t0
+        out["threads_" + label] = {"threads": th, "s_per_frame": round(per_frame(s, name, px), 3), "load_s": round(load, 2)}
+        del s
+    # two sessions side by side, half of the logical CPUs each
+    half = max(1, (out["logical_cpus"] or 2) // 2)
+    sessions = [session(half) for _ in range(2)]
+    for s, name in sessions:
+        s.run(None, {name: px[0]})
+    work = px * 2
+    t0 = time.perf_counter()
+
+    def run(k):
+        s, name = sessions[k]
+        for x in work[k::2]:
+            s.run(None, {name: x})
+    ts = [threading.Thread(target=run, args=(k,)) for k in range(2)]
+    for t in ts: t.start()
+    for t in ts: t.join()
+    out["two_sessions_half_threads"] = {"threads_each": half, "s_per_frame": round((time.perf_counter() - t0) / len(work), 3)}
+    # does the graph take two frames in one run?
+    try:
+        s, name = sessions[0]
+        s.run(None, {name: np.concatenate(px[:2], axis=0)})
+        out["batch_2"] = "works"
+    except Exception as exc:
+        out["batch_2"] = f"refused: {type(exc).__name__}: {str(exc)[:200]}"
+    print("speed:", json.dumps(out), flush=True)
+    return out
 
 
 def reference(report, sc, imgs, names, te, ie):

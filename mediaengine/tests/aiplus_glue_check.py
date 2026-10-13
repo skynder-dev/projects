@@ -130,6 +130,15 @@ def main():
     check("aiplus_theme_needs_no_frame_encoding", OPENED["vision"] == vision_before, OPENED)
     check("aiplus_theme_cached_per_theme", any((work / "w" / "semantic_reports_pe").glob("*.sea.json"))
           and any((work / "w" / "semantic_reports_pe").glob("*.general.json")))
+    # the descriptions' text embeddings are kept on disk: ranking again needs no model at all (no load, same result)
+    for p in (work / "w" / "semantic_reports_pe").glob("*.sea.json"):
+        p.unlink()
+    loads_before = len(LOADS)
+    r3.run(args(work / "out_theme2", theme="sea"))
+    rt2 = json.loads((work / "out_theme2" / "MediaEngine Result.json").read_text(encoding="utf-8"))
+    check("aiplus_rerank_needs_no_model_load", len(LOADS) == loads_before and any((work / "w" / "semantic_text_pe").glob("*.npz")), len(LOADS))
+    check("aiplus_rerank_same_moments", [s["event_id"] for s in rt2["segments"]] == [s["event_id"] for s in rt["segments"]],
+          ([s["event_id"] for s in rt2["segments"]], [s["event_id"] for s in rt["segments"]]))
     try:
         r3.run(args(work / "out_bad", theme="no_such_theme"))
         bad = ""

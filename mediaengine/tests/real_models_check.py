@@ -108,6 +108,20 @@ def main():
         rev = ae.revision(j.get("revision_id") or 0) if j["status"] == "done" else None
         check("aiplus_reel_built", rev and rev["result"].get("selection_mode") == "PE_CORE_L14_SEMANTIC_V1", (j.get("status"), j.get("error")))
         timings["aiplus_stage_seconds"] = (rev or {}).get("result", {}).get("stage_seconds")
+        # where the AI+ analysis time goes: frames read (scout), frames looked at by the model (embed), per video
+        per = []
+        for p in home.rglob("semantic_scout_pe/*.json"):
+            try:
+                inf = json.loads(p.read_text(encoding="utf-8"))["info"]
+                per.append((inf["scout_frame_count"], inf["scout_elapsed_s"], inf["embed_elapsed_s"]))
+            except Exception:
+                pass
+        if per:
+            timings["aiplus_videos_embedded"] = len(per)
+            timings["aiplus_frames_embedded"] = sum(x[0] for x in per)
+            timings["aiplus_scout_s_total"] = round(sum(x[1] for x in per), 1)
+            timings["aiplus_embed_s_total"] = round(sum(x[2] for x in per), 1)
+            timings["aiplus_embed_s_per_frame"] = round(sum(x[2] for x in per) / max(1, sum(x[0] for x in per)), 3)
         if not rev:
             return finish(checks, timings, out_json)
         r = c.post(f"/auto/p/{pid}/variant", data={"base_revision_id": rev["id"], "length": "15", "format": "social_hd", "sound": "auto",

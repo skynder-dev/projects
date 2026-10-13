@@ -23,6 +23,12 @@ AI model and video tools are found and builds a 5-second test reel. The language
 when you make a reel or a variant. The first analysis of new videos takes longer. Use "Compare blind" to see which
 mode is better for your videos.
 
+With AI+ you can also pick a **theme** (sea and beach, mountains, children, family, celebration, animals, sunset,
+nature, snow, city, food, sport, road trip): the reel is then made of the moments that match it, from all the videos.
+A new theme for videos already analysed takes seconds. In the **Library**, "Find by theme (AI+)" shows which videos
+match a theme; "Prepare the search" looks at each video once (Private and rejected videos are never included), then
+every search is instant, and a video opens at its best moment.
+
 ## What can leave this PC
 
 Nothing leaves this PC by default. If you explicitly connect a provider or start an optional upload, authentication data, selected uploads, and provider analytics can be sent to that service.

@@ -295,6 +295,34 @@ def make_pe_scorer(pe_dir):
 class AiplusLoadError(RuntimeError):
     pass
 
+class PeTextCache:
+    """Text embeddings of the fixed AI+ descriptions, kept on disk per model and code version: after the first build
+    the text part of the model (355 MB) is not opened again - less memory and a faster start. Exact float32 values,
+    so rankings are the same as with the model."""
+    def __init__(self,path,load,identity):
+        self.path=Path(path); self.load=load; self._identity=identity; self.data={}
+        try:
+            with np.load(self.path,allow_pickle=False) as z:
+                self.data={k:np.asarray(z[k],np.float32) for k in z.files}
+        except Exception:
+            self.data={}
+    @staticmethod
+    def _key(text):
+        return "t"+hashlib.sha256(text.encode("utf-8")).hexdigest()[:24]
+    @property
+    def identity(self):
+        return self._identity()
+    def encode_text(self,texts):
+        texts=list(texts)
+        missing=[t for t in texts if self._key(t) not in self.data]
+        if missing:
+            emb=np.asarray(self.load().encode_text(missing),np.float32)
+            for t,row in zip(missing,emb): self.data[self._key(t)]=row
+            self.path.parent.mkdir(parents=True,exist_ok=True)
+            tmp=self.path.with_name(self.path.stem+".tmp.npz")
+            np.savez(tmp,**self.data); os.replace(tmp,self.path)
+        return np.stack([self.data[self._key(t)] for t in texts]).astype(np.float32)
+
 def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=None,theme=None,warnings=None):
     """Like build_semantic_candidates, with the AI+ hook. Own caches and moment ids, so AI and AI+ never mix.
     Every scout frame is embedded once per video (semantic_scout_pe/<sha>.json + .npy); a ranking per theme is cached
@@ -320,6 +348,15 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
         except Exception as exc:     # memory, damaged runtime: one clear error, not "no moments" for every video
             raise AiplusLoadError("AIPLUS_MODEL_LOAD_FAILED:"+type(exc).__name__+":"+str(exc)[:160]) from exc
         return state["scorer"]
+    def identity():
+        if state["scorer"] is not None: return getattr(state["scorer"],"identity",None)
+        if "identity" not in state:
+            try:
+                state["identity"]=dict(pc.validate(Path(pe_dir),False)); state["identity"]["adapter"]="P13_PE_CORE_ONNX_ADAPTER_V1"
+            except Exception:
+                state["identity"]={"profile":pc.PROFILE}
+        return state["identity"]
+    texts=PeTextCache(work_dir/"semantic_text_pe"/(scout_key[:24]+".npz"),lambda: scorer_with("text"),identity)
     specs=[]; reports=[]; kept=[]
     for idx,row in enumerate(input_rows):
         progress("analyze",idx,len(input_rows),row["name"])
@@ -351,7 +388,7 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
                     info,emb=hook.scout(v7,sc,Path(row["path"]),v52.FFMPEG,os.environ.get("MEDENG_FFPROBE","ffprobe"))
                     tmp=scout_dir/(row["sha256"]+".tmp.npy"); np.save(tmp,emb.astype(np.float16)); os.replace(tmp,sn)
                     atomic_json(sj,{"source_sha256":row["sha256"],"key":scout_key,"info":info})
-                report=hook.rank(v7,scorer_with("text"),Path(row["path"]),info,emb,theme,v52.FFMPEG)
+                report=hook.rank(v7,texts,Path(row["path"]),info,emb,theme,v52.FFMPEG)
                 atomic_json(rp,{"source_sha256":row["sha256"],"key":rank_key,"report":report})
             row_specs=[]
             for rank,c in enumerate(report.get("ranked",[]),1):
