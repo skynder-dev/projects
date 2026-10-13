@@ -20,8 +20,10 @@ Your original files are only read, never changed. "Check this PC" (Home, Setting
 AI model and video tools are found and builds a 5-second test reel. The language switch is at the top right.
 
 **AI+** is a stronger, optional model. Download it once on "Check this PC" (about 650 MB, free), then choose "AI+"
-when you make a reel or a variant. The first analysis of new videos takes longer. Use "Compare blind" to see which
-mode is better for your videos.
+when you make a reel or a variant. The first analysis of new videos takes longer. It understands people and what
+they do much better than AI (on public test photos it finds the right photo for a description in 86 of 100 cases,
+AI in 60); for plain landscapes the difference is small. Use "Compare blind" to see which mode is better for your
+videos.
 
 With AI+ you can also pick a **theme** (sea and beach, mountains, children, family, celebration, animals, sunset,
 nature, snow, city, food, sport, road trip): the reel is then made of the moments that match it, from all the videos.

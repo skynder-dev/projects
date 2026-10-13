@@ -930,8 +930,10 @@ def _aiplus_card(ap, e, human_bytes):
     dl = ap["download"]
     running = dl["state"] == "running"
     return ("<div class='card' id='aiplus' style='margin-top:14px'><b>AI+ — a stronger model (optional)</b>"
-            "<div class='muted'>PE-Core L/14 (Meta, Apache-2.0) understands people, places and events much better than the built-in AI "
-            "model. It works on this PC without internet; the first analysis of new videos is slower (about 1–2 s per checked frame). "
+            "<div class='muted'>PE-Core L/14 (Meta, Apache-2.0) understands people, what they do and the things around them much better than the "
+            "built-in AI model (tested on public photos: it finds the right photo for a description in 86 of 100 cases, the built-in "
+            "model in 60); for plain landscapes the difference is small. It works on this PC without internet; the first analysis "
+            "of new videos is slower (about 1–2 s per checked frame). "
             f"Download once: {human_bytes(ap['bytes'])}, from huggingface.co (free); every file is checked.</div>"
             "<div class='row' style='margin-top:10px'>"
             f"<button type='button' id='apDl' {'disabled' if running else ''}>Download AI+ model</button>"

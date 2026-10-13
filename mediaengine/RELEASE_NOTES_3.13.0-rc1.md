@@ -87,8 +87,20 @@ celebrations, pets, action; bad: boring, blurry, accidental, dark, dashboard, no
   copy the four files from a folder. Never downloaded on its own; analysis never uses the network.
 - Choose "AI+" on the new-reel page or for a variant; compare with AI using "Compare blind". AI and AI+ keep separate
   caches and moments. A missing or changed AI+ model is refused with a clear message, never a silent fallback.
-- Measured on a 4-core CI runner: 1.3–1.8 s per checked frame (24 frames per video) and ~0.8–1 GB more memory.
-  CI compares our adapter with the original open_clip model: identical tokens and preprocessing, int8 embeddings
+- Speed (GitHub Windows runner, 4 logical / 2 physical CPUs - slower than most desktop PCs): 0.9–1.7 s per frame
+  the model looks at (runners differ); the first AI+ analysis looks at up to 48 frames per video (about one per
+  second). 7 videos of 14 s: first AI+ analysis 279 s (AI 97 s); a new theme for the same videos 53 s (no frame
+  looked at again); AI+ test reel 60 s (AI 26 s). About 1 GB more memory. Measured in the model lab: the graph takes
+  one frame per run; all logical CPUs are a bit faster on Windows (used by the engine), two sessions side by side
+  are not worth the memory. "Check this PC" shows the speed measured on the owner's PC after an AI+ test reel.
+- Quality measured in the model lab (public photos, not the owner's videos; `tests/theme_eval.py`):
+  COCO 2014 test photos (300 photos, 1501 human captions: people, children, food, animals, sport, streets) - for a
+  caption, its own photo is the best of the 300: **AI+ 85.5 %, AI (FAST_LOCAL) 60.2 %**; for a photo, the best
+  caption is one of its own: **94.3 % vs 78.3 %**. The int8 files lose almost nothing against the original
+  full-precision model (85.8 % / 95.0 %). Plain landscape photos (Intel scene set, 150 px, 240 photos) with the 13
+  themes: the best theme fits for AI+ 86 %, AI 89 %, original model 88 % - on simple landscapes AI+ is not better;
+  it is clearly better where people and what they do matter.
+- CI compares our adapter with the original open_clip model: identical tokens and preprocessing, int8 embeddings
   cos 0.95–0.98 (images) / 0.99+ (texts), identical zero-shot choices. Windows CI downloads both real models and builds
   AI and AI+ test reels, an AI+ reel and its AI variant (reported; a Hugging Face outage never blocks the package).
 
@@ -104,6 +116,7 @@ celebrations, pets, action; bad: boring, blurry, accidental, dark, dashboard, no
 - **Library → "Find by theme (AI+)"**: "Prepare the search" looks at the 8 preview frames of each Library video once
   (Private, rejected and excluded videos are never included); every search after that is instant and opens the video
   at its best moment. The search waits while a reel is being built (one AI+ model in memory at a time).
+  "Make a reel about this theme" opens the new-reel page with the matching videos, AI+ and the theme chosen.
 
 ## AI model provenance (not in the ZIP, not in git)
 
