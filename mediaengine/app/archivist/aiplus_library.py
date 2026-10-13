@@ -15,7 +15,7 @@ import numpy as np
 
 from .db import db, now_iso
 
-_STATE = {"state": "idle", "done": 0, "total": 0, "error": "", "file": "", "waiting": False}
+_STATE = {"state": "idle", "done": 0, "total": 0, "error": "", "file": "", "waiting": False, "t0": 0.0, "n0": 0}
 _LOCK = threading.Lock()
 _STOP = threading.Event()
 _KEY: dict = {}
@@ -107,7 +107,11 @@ def status() -> dict:
                         con.execute("SELECT inventory_id,source_fingerprint FROM aiplus_frames WHERE model_key=?", (key,)).fetchall()}
             indexed = sum(1 for v in vids if v["id"] in done and (done[v["id"]] or "") == (v["source_fingerprint"] or ""))
         texts_missing = _texts_missing()
-    return {"model_ready": ready, "videos": len(vids), "indexed": indexed, "texts_missing": texts_missing,
+    eta = None              # seconds left, from the pace of this run (after the first video)
+    if _STATE["state"] == "running" and not _STATE["waiting"] and _STATE["done"] > _STATE["n0"] and _STATE["t0"]:
+        pace = (time.time() - _STATE["t0"]) / (_STATE["done"] - _STATE["n0"])
+        eta = round(pace * max(0, _STATE["total"] - _STATE["done"]))
+    return {"model_ready": ready, "videos": len(vids), "indexed": indexed, "texts_missing": texts_missing, "eta_s": eta,
             **{k: _STATE[k] for k in ("state", "done", "total", "error", "file", "waiting")}}
 
 
@@ -126,7 +130,7 @@ def start() -> bool:
     with _LOCK:
         if _STATE["state"] == "running":
             return False
-        _STATE.update(state="running", done=0, total=0, error="", file="", waiting=False)
+        _STATE.update(state="running", done=0, total=0, error="", file="", waiting=False, t0=0.0, n0=0)
     _STOP.clear()
     threading.Thread(target=_run, name="aiplus-library-index", daemon=True).start()
     return True
@@ -228,6 +232,9 @@ def _run() -> None:
                 raise RuntimeError("Stopped.")
             if _wait_for_reel():
                 sc = None
+                _STATE.update(t0=0.0)
+            if not _STATE["t0"]:
+                _STATE.update(t0=time.time(), n0=i)
             _STATE.update(done=i, file=v["filename"])
             try:
                 info = service.cached_storyboard(v["id"]) or service.ensure_storyboard(v["id"])

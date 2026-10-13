@@ -1269,7 +1269,7 @@ pollConvert();"""
                    "(about 10-20 s per video on a normal PC); after that every search is instant.</div>" if missing>0 else "")
                 + "<script>(function(){const b=document.getElementById('apIdx');if(!b)return;const m=document.getElementById('apIdxMsg');"
                   "async function poll(){try{const r=await fetch('/api/aiplus/library-index',{cache:'no-store'});const x=await r.json();"
-                  "if(x.state==='running'){b.disabled=true;m.textContent=' '+x.done+' / '+x.total+(x.waiting?' · waiting until the reel is built':'');setTimeout(poll,1500)}"
+                  "if(x.state==='running'){b.disabled=true;m.textContent=' '+x.done+' / '+x.total+(x.waiting?' · waiting until the reel is built':'')+(x.eta_s?' · about '+Math.max(1,Math.round(x.eta_s/60))+' min left':'');setTimeout(poll,1500)}"
                   "else{b.disabled=false;m.textContent=x.error||'';if(x.state==='done')location.href='/library?aiplus='+Date.now()}}catch(e){setTimeout(poll,3000)}}"
                   "b.onclick=async()=>{b.disabled=true;const r=await fetch('/api/aiplus/library-index',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});"
                   "const x=await r.json();if(!x.ok){m.textContent=x.error||'';b.disabled=false;return}poll()};"

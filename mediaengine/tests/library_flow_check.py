@@ -228,7 +228,8 @@ def main():
             left = russian_left(("/library", "/library/theme?theme=sea", "/library/theme"))
             check("library_theme_search_unprepared_in_russian", not left, left[:10])
             st = index_and_wait()
-            check("library_theme_index_done", st["state"] == "done" and st["indexed"] == st["videos"] > 0 and st["texts_missing"] == 0, st)
+            check("library_theme_index_done", st["state"] == "done" and st["indexed"] == st["videos"] > 0 and st["texts_missing"] == 0
+                  and "eta_s" in st and st["eta_s"] is None, st)
             res = al.search("sea")
             names_found = {x["filename"] for x in res}
             check("library_theme_search_never_shows_private_or_rejected", res and names[0] not in names_found

@@ -1,6 +1,6 @@
 # MediaEngine status
 
-Updated: 2026-10-11 (UTC). Costs so far: $0 (GitHub-hosted Actions minutes only).
+Updated: 2026-10-13 (UTC). Costs so far: $0 (GitHub-hosted Actions minutes only).
 
 ## Baseline (verified on the owner PC, D:\Archivist) — unchanged
 
@@ -61,6 +61,14 @@ What a user can do (code: `app/archivist/auto_edit.py`, `auto_edit_web.py`, engi
 - **AI+ (optional, 2026-10-13)**: a stronger model, PE-Core L/14 (Meta, Apache-2.0, ONNX int8, pinned commit,
   SHA-256 checked), downloaded once on Check this PC; choose AI or AI+ per reel / variant, compare blind. Separate
   engine path (`p13_*`, `--semantic-model pe_core_l14`), the accepted AI path unchanged. See RELEASE_NOTES → AI+.
+  **Themes** (AI+): 13 themes (sea, mountains, children, family, celebration, animals, sunset, nature, snow, city,
+  food, sport, road trip) - a reel of the matching moments of all the videos; a new theme for analysed videos needs
+  no frame looked at again. **Library → Find by theme (AI+)**: each video indexed once from its preview frames,
+  instant search (4 ms in CI), opens at the best moment, "Make a reel about this theme"; Private / rejected never
+  indexed or shown. Check this PC shows the AI+ speed measured on the PC.
+  Measured (model lab, public photos): COCO photo↔caption — AI+ finds the right photo for a caption 85.5 % (AI 60.2 %;
+  original fp32 model 85.8 %, so int8 loses ~nothing); plain landscape scenes — no advantage (86 % vs 89 %).
+  Speed (CI runner): 0.8–1.7 s per frame looked at, up to 48 frames per video; threads tuned from lab measurements.
 - **Library checked like a user** (new `tests/library_flow_check.py`, Windows CI, data folder with Cyrillic letters):
   add a folder on Import → every video found → Import + analyse → Library with thumbnails, lengths and item pages →
   smart clips → Private (leaves the Library, original untouched, never in a reel) → archive copy → reject; Library
@@ -144,15 +152,16 @@ The 11 runtime modules, adapter and validator are byte-identical to R2 (CI-check
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38279572931 on `7d24f62` — all green, build b62** (results branch `mediaengine-ci-results`,
-artifacts `MediaEngine-3.13.0-rc1-b62-Setup` and `MediaEngine-3.13.0-rc1-b62` (ZIP)): fast checks 83/83 · R3 = R2
-decisions 29/29 · robustness 32/32 · A/V sync worst 20 ms, late-starting sound in place · E2E 7 videos 72/72,
-2 videos 74/74 (adds a browser recording without a length, in a folder named with ' [ ] % & ! # ; = ,), phone 67/67,
-packaged Python behind the firewall 68/68 · **Library like a user 20/20** (new; data folder with Cyrillic letters) ·
-library re-analysis 4/4 · Convert 20/20 · unplugged/no network 9/9 · 64 long names with long paths OFF 5/5 · AI
-glue 6/6 · **Russian interface: 148 pages, 0 English texts, 0 network attempts** (every page opened with the internet
-blocked) · package smoke PASS · Setup smoke PASS · 4K H.264 + 4K HEVC + 5-min 1080p → 30 s Social HD reel in 366 s.
-Same day, all green too: b61 (run 38271654976), b58 (run 38262901710).
+Latest full run: **38370208307 on `2a5d1cf` — all green, build b71** (results branch `mediaengine-ci-results`,
+artifacts `MediaEngine-3.13.0-rc1-b71-Setup` and `MediaEngine-3.13.0-rc1-b71` (ZIP)): fast checks 87/87 · R3 = R2
+decisions 29/29 · robustness 32/32 · A/V sync worst 20 ms · E2E 7 videos 72/72, 2 videos 74/74, phone 67/67,
+packaged Python behind the firewall 68/68 · Library like a user 30/30 (adds AI+ theme search with a stand-in model)
+· library re-analysis 4/4 · Convert 20/20 · unplugged/no network 9/9 · 64 long names 5/5 · AI glue 6/6 · AI+ glue
+15/15 · **real models from Hugging Face 14/14** (AI and AI+ test reels, AI+ reel + AI variant + blind comparison,
+AI+ theme variant, Library index + theme search with the real AI+ model) · **Russian interface: 152 pages, 0 English
+texts, 0 network attempts** · package smoke PASS · Setup smoke PASS · 4K H.264 + 4K HEVC + 5-min 1080p → 30 s reel in
+314 s. Same day, all green too: b69 (run 38359246198), b66.
+Before: b62 (run 38279572931): fast checks 83/83 · Library 20/20 · Russian 148 pages · 4K/long footage 366 s.
 Before: b47 (run 38242920327): fast checks 71/71 · E2E 72/72, 72/72, 67/67 · 4K/long footage 359 s.
 Earlier: b41 (run 38194029514): fast checks 67/67 · E2E 71/71, 71/71, 66/66 · 4K/long footage 503 s.
 Previous green builds: b39 (run 38188906561), b34 (run 38181229982), b28 (run 38156678815), which also showed:
