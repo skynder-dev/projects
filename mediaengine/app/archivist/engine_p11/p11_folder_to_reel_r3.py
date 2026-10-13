@@ -358,7 +358,9 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
     scout_key=hashlib.sha256((hook_sha+"|"+model_key).encode()).hexdigest()
     tkey=theme or "general"
     rank_key=scout_key+"|"+hook.prompt_key(theme)
-    scout_dir=work_dir/"semantic_scout_pe"; scout_dir.mkdir(parents=True,exist_ok=True)
+    # what the model saw in each video (by its SHA-256): shared by all projects when the app says where
+    # (MEDENG_P13_SCOUT_CACHE) - a new reel from videos analysed for another reel needs no frame looked at again
+    scout_dir=Path(os.environ.get("MEDENG_P13_SCOUT_CACHE") or (work_dir/"semantic_scout_pe")); scout_dir.mkdir(parents=True,exist_ok=True)
     reports_dir=work_dir/"semantic_reports_pe"; reports_dir.mkdir(parents=True,exist_ok=True)
     candidates_dir=work_dir/"semantic_candidates_pe"
     state={"scorer":None}
@@ -410,8 +412,11 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
                     sc=scorer_with("vision")
                     progress("analyze",idx,len(input_rows),row["name"])
                     info,emb=hook.scout(v7,sc,Path(row["path"]),v52.FFMPEG,os.environ.get("MEDENG_FFPROBE","ffprobe"))
-                    tmp=scout_dir/(row["sha256"]+".tmp.npy"); np.save(tmp,emb.astype(np.float16)); os.replace(tmp,sn)
-                    atomic_json(sj,{"source_sha256":row["sha256"],"key":scout_key,"info":info})
+                    tag=f"{os.getpid()}.{time.time_ns()}"       # own temp names: two builds may analyse the same video
+                    tmp=scout_dir/(row["sha256"]+f".{tag}.tmp.npy"); np.save(tmp,emb.astype(np.float16)); os.replace(tmp,sn)
+                    tj=scout_dir/(row["sha256"]+f".{tag}.tmp.json")
+                    tj.write_text(json.dumps({"source_sha256":row["sha256"],"key":scout_key,"info":info},indent=2,sort_keys=True)+"\n",encoding="utf-8")
+                    os.replace(tj,sj)
                 report=hook.rank(v7,texts,Path(row["path"]),info,emb,theme,v52.FFMPEG)
                 atomic_json(rp,{"source_sha256":row["sha256"],"key":rank_key,"report":report})
             row_specs=[]

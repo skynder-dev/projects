@@ -147,6 +147,18 @@ def main():
     check("aiplus_unknown_theme_refused", bad.startswith("UNKNOWN_THEME"), bad)
     check("technical_mode_unchanged", res3["selection_mode"] == "ACCEPTED_V52_TECHNICAL_AESTHETIC" and not ids1 & {s["event_id"] for s in res3["segments"]},
           res3["selection_mode"])
+    # what the model saw is shared by all projects (the app sets MEDENG_P13_SCOUT_CACHE): a second project on the same
+    # videos looks at no frame again
+    os.environ["MEDENG_P13_SCOUT_CACHE"] = str(work / "shared_scout")
+    r3.run(args(work / "proj_a", work_dir=str(work / "w_a")))
+    vision_before = OPENED["vision"]
+    r3.run(args(work / "proj_b", work_dir=str(work / "w_b")))
+    ra = json.loads((work / "proj_a" / "MediaEngine Result.json").read_text(encoding="utf-8"))
+    rb = json.loads((work / "proj_b" / "MediaEngine Result.json").read_text(encoding="utf-8"))
+    check("aiplus_second_project_reuses_what_the_model_saw", OPENED["vision"] == vision_before
+          and [s["event_id"] for s in ra["segments"]] == [s["event_id"] for s in rb["segments"]]
+          and not (work / "w_b" / "semantic_scout_pe").exists(), (OPENED, vision_before))
+    os.environ.pop("MEDENG_P13_SCOUT_CACHE")
     # the model cannot start (e.g. not enough memory): one clear error, not "no moments" for every video
     def broken(_pe_dir):
         raise MemoryError("bad allocation")

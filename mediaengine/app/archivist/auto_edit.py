@@ -1374,6 +1374,7 @@ def _engine_env() -> dict:
     ff = _ffmpeg() or "ffmpeg"
     env.update({"MEDENG_FFMPEG": ff, "MEDENG_FFPROBE": ff, "MEDENG_P11_MODEL_ROOT": str(model_root()), "MEDENG_P13_PE_DIR": str(aiplus_dir()),
                 "MEDENG_P13_TEXT_CACHE": str(AE_ROOT / "shared" / "semantic_text_pe"),
+                "MEDENG_P13_SCOUT_CACHE": str(AE_ROOT / "shared" / "semantic_scout_pe"),
                 "MEDENG_P11_ADAPTER_ROOT": str(ENGINE_DIR), "PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1",
                 "PYTHONDONTWRITEBYTECODE": "1"})   # engine helpers started without -E: nothing written into the program folder
     return env
@@ -1885,7 +1886,9 @@ def _quick_selftest(timeout_s: int, mode: str) -> dict:
     t0 = _t.time()
     # same handling as a build: on Windows a job object, so a time-out stops the engine AND every ffmpeg it started
     kw = process_kwargs() if os.name == "nt" else {"start_new_session": True}
-    proc = subprocess.Popen(cmd, env=_engine_env(), cwd=str(ENGINE_DIR), stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+    env = _engine_env()
+    env.pop("MEDENG_P13_SCOUT_CACHE", None)     # the test reel measures the AI+ speed: always looks at its frames
+    proc = subprocess.Popen(cmd, env=env, cwd=str(ENGINE_DIR), stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace", **kw)
     _attach_job_object(proc)
     try:
