@@ -477,7 +477,13 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         sounds = "".join(f"<label><input type='radio' name='sound' value='{k}' {'checked' if k == 'auto' else ''}> {e(v)}</label>"
                          for k, v in ae.SOUNDS.items())
         plus_ready = ae.aiplus_status()["ready"]
-        mode_html = _mode_choice(ms["ready"], plus_ready, e) + (_theme_choice(e, "", ms["ready"]) if plus_ready else "")
+        # from the Library's "Find by theme": AI+ and that theme are already chosen
+        want_mode = request.args.get("mode") if request.args.get("mode") in ae.MODES else None
+        want_theme = request.args.get("theme") if plus_ready and request.args.get("theme") in ae.THEMES else ""
+        if want_theme:
+            want_mode = "semantic_plus"
+        mode_html = (_mode_choice(ms["ready"], plus_ready, e, current=want_mode)
+                     + (_theme_choice(e, want_theme, ms["ready"]) if plus_ready else ""))
         warn = ("<div class='callout card' style='margin-top:10px'>Only "
                 f"{_fmt_s(total)} of usable video — a short reel is recommended.</div>" if total < 30 else "")
         if total >= 1800:   # honest note for big folders (no invented time estimate)

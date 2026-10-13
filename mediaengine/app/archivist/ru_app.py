@@ -281,7 +281,7 @@ APP_PHRASES: dict[str, str] = {
     "Prepare the search": "Подготовить поиск", "Find by theme": "Поиск по теме", "best moment": "лучший момент",
     "The AI+ model looks at the preview frames of each video once (about 10-20 s per video on a normal PC); after that every search is instant.":
         "Модель ИИ+ один раз смотрит кадры превью каждого видео (примерно 10–20 с на видео на обычном компьютере); после этого любой поиск мгновенный.",
-    "No video matches this theme.": "Ни одно видео не подходит под эту тему.", "Library · AI+": "Библиотека · ИИ+", "Choose a theme.": "Выбери тему.",
+    "No video matches this theme.": "Ни одно видео не подходит под эту тему.", "Library · AI+": "Библиотека · ИИ+", "Make a reel about this theme": "Собрать ролик на эту тему", "Choose a theme.": "Выбери тему.",
     "Sea and beach": "Море и пляж", "Mountains": "Горы", "Children": "Дети", "Family and friends": "Семья и друзья",
     "Celebration": "Праздник", "Animals": "Животные", "Sunset": "Закат", "Nature": "Природа", "Winter and snow": "Зима и снег",
     "City": "Город", "Food": "Еда", "Sport": "Спорт", "Road trip": "Дорога и поездки",

@@ -235,6 +235,15 @@ def main():
                   and (not rec.exists() or rec.name not in names_found), names_found)
             r = c.get("/library/theme", query_string={"theme": "sea"}, headers=H)
             check("library_theme_page", r.status_code == 200 and "/item/" in r.data.decode("utf-8", "replace"), r.status_code)
+            # "Make a reel about this theme": the new-reel page with these videos, AI+ and the theme already chosen
+            import re as _re
+            tp = r.data.decode("utf-8", "replace")
+            files = [html.unescape(x) for x in _re.findall(r"<input type='hidden' name='file' value='([^']*)'>", tp)]
+            np_ = c.get("/auto/new", query_string=[("file", x) for x in files] + [("mode", "semantic_plus"), ("theme", "sea")], headers=H)
+            npage = np_.data.decode("utf-8", "replace")
+            check("library_theme_makes_a_reel_setup", "Make a reel about this theme" in tp and files and np_.status_code == 200
+                  and "value='semantic_plus' checked" in npage and "<option value='sea' selected>" in npage
+                  and all(Path(x).name not in (names[0], rec.name) for x in files), (len(files), np_.status_code, files))
             # while a reel is being built the search waits (one AI+ model in memory at a time), then goes on
             with db() as con:
                 reel_job = con.execute("SELECT id,status FROM ae_jobs ORDER BY id DESC LIMIT 1").fetchone()
