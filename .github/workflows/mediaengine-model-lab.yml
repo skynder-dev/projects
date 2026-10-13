@@ -1,0 +1,83 @@
+name: mediaengine-model-lab
+# MediaEngine "AI+" model probe: downloads the public PE-Core L/14 ONNX files (Hugging Face, free), checks them,
+# compares our adapter with the original open_clip model (Linux) and measures speed / memory (Linux + Windows).
+# No owner media, no secrets. Results: branch mediaengine-model-lab.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'mediaengine/tests/pe_core_probe.py'
+      - 'mediaengine/app/archivist/engine_p11/p13_pe_core_*.py'
+      - '.github/workflows/mediaengine-model-lab.yml'
+permissions:
+  contents: write
+concurrency:
+  group: mediaengine-model-lab-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install reference (open_clip, CPU torch) and runtime pins
+        run: |
+          python -m pip install -q --upgrade pip
+          python -m pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -q open_clip_torch timm huggingface_hub psutil onnxruntime==1.30.0 numpy==2.4.6 Pillow==11.3.0
+      - name: Probe with the reference model
+        run: |
+          mkdir -p "$RUNNER_TEMP/lab"
+          python mediaengine/tests/pe_core_probe.py "$RUNNER_TEMP/lab" --reference 2>&1 | tee "$RUNNER_TEMP/lab/probe_linux.txt"
+      - name: Publish
+        if: success() || failure()
+        env:
+          RUN_ID: ${{ github.run_id }}
+          SRC_SHA: ${{ github.sha }}
+        run: |
+          pub="$RUNNER_TEMP/pub"; rm -rf "$pub"; mkdir -p "$pub/linux"
+          cp "$RUNNER_TEMP"/lab/*.json "$RUNNER_TEMP"/lab/*.txt "$pub/linux/" 2>/dev/null || true
+          printf 'run=%s\nsha=%s\n' "$RUN_ID" "$SRC_SHA" > "$pub/RUN.txt"
+          cd "$pub"; git init -q; git checkout -q -b mediaengine-model-lab
+          git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
+          git add -A; git commit -q -m "model lab linux $RUN_ID"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" mediaengine-model-lab
+  windows:
+    needs: linux
+    if: always()
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install the packaged runtime pins
+        shell: pwsh
+        run: python -m pip install -q huggingface_hub psutil onnxruntime==1.30.0 numpy==2.4.6 Pillow==11.3.0
+      - name: Probe speed and memory on Windows
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\lab" | Out-Null
+          python mediaengine/tests/pe_core_probe.py "$env:RUNNER_TEMP\lab" 2>&1 | Tee-Object "$env:RUNNER_TEMP\lab\probe_windows.txt"
+      - name: Publish
+        if: success() || failure()
+        shell: bash
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          pub="$RUNNER_TEMP/pubw"; rm -rf "$pub"
+          git clone -q --depth 1 -b mediaengine-model-lab "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "$pub" || { mkdir -p "$pub"; cd "$pub"; git init -q; git checkout -q -b mediaengine-model-lab; cd -; }
+          mkdir -p "$pub/windows"
+          cp "$RUNNER_TEMP"/lab/*.json "$RUNNER_TEMP"/lab/*.txt "$pub/windows/" 2>/dev/null || true
+          cd "$pub"
+          git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
+          git add -A; git commit -q -m "model lab windows $RUN_ID" || true
+          git push -q "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:mediaengine-model-lab
