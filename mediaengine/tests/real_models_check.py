@@ -167,6 +167,8 @@ def main():
                 rows = [r["id"] for r in con.execute("SELECT id FROM inventory WHERE path LIKE ?", (str(lib) + "%",)).fetchall()]
             if len(rows) >= 2 and not service.DISCOVERY_LOCK.locked():
                 break
+            if not service.DISCOVERY_LOCK.locked():
+                service.start_discovery()
             time.sleep(1)
         r = c.post("/api/selection-action", json={"action": "import_analyze", "ids": rows}, headers=H)
         jid = (r.get_json() or {}).get("job_id")
