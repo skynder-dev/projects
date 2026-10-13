@@ -68,7 +68,11 @@ What a user can do (code: `app/archivist/auto_edit.py`, `auto_edit_web.py`, engi
   indexed or shown. Check this PC shows the AI+ speed measured on the PC.
   Measured (model lab, public photos): COCO photo↔caption — AI+ finds the right photo for a caption 85.5 % (AI 60.2 %;
   original fp32 model 85.8 %, so int8 loses ~nothing); plain landscape scenes — no advantage (86 % vs 89 %).
-  Speed (CI runner): 0.8–1.7 s per frame looked at, up to 48 frames per video; threads tuned from lab measurements.
+  Speed (CI runners): 0.4–2.5 s per frame looked at depending on the CPU, up to 48 frames per video; threads tuned
+  from lab measurements; what AI+ saw in a video is kept once for all projects.
+- **Own music and a title (optional, 2026-10-13)**: "Music and title" on the new-reel page and for every variant —
+  title + second line for the first 3 s, your own song (with the videos' quieter sound or only music; loudness-
+  normalised, fades, seamless repeats), all in the reel's single final encode; nothing set = the reel as before.
 - **Library checked like a user** (new `tests/library_flow_check.py`, Windows CI, data folder with Cyrillic letters):
   add a folder on Import → every video found → Import + analyse → Library with thumbnails, lengths and item pages →
   smart clips → Private (leaves the Library, original untouched, never in a reel) → archive copy → reject; Library
@@ -152,17 +156,18 @@ The 11 runtime modules, adapter and validator are byte-identical to R2 (CI-check
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38380700935 on `3993e4b` — all green, build b75** (results branch `mediaengine-ci-results`,
-artifacts `MediaEngine-3.13.0-rc1-b75-Setup` and `MediaEngine-3.13.0-rc1-b75` (ZIP)): fast checks 89/89 · R3 = R2
-decisions 29/29 · robustness 32/32 · A/V sync worst 20 ms · E2E 7 videos 72/72, 2 videos 74/74, phone 67/67,
-packaged Python behind the firewall 68/68 · Library like a user 32/32 (AI+ theme search with a stand-in model,
-reel from a theme, network link from outside refused) · library re-analysis 4/4 · Convert 20/20 · unplugged/no
-network 9/9 · 64 long names 5/5 · AI glue 6/6 · AI+ glue 15/15 · **real models from Hugging Face 14/14** (the app's
-own AI+ download, AI and AI+ test reels (AI+ speed reported: 0.42 s per frame on that runner), AI+ reel + AI variant +
-blind comparison, AI+ theme variant, Library index + theme search with the real AI+ model; 7 videos: first analysis
-AI+ 101 s, AI 63 s) · **Russian interface: 152 pages, 0 English texts, 0 network attempts** · package smoke PASS ·
-Setup smoke PASS · 4K H.264 + 4K HEVC + 5-min 1080p → 30 s reel in 234 s.
-Same day, all green too: b71 (run 38370208307), b69 (run 38359246198), b66.
+Latest full run: **38473749538 on `5d0f288` — all green, build b78** (results branch `mediaengine-ci-results`,
+artifacts `MediaEngine-3.13.0-rc1-b78-Setup` and `MediaEngine-3.13.0-rc1-b78` (ZIP)): fast checks 89/89 · R3 = R2
+decisions 29/29 · robustness 32/32 · E2E 7 videos 72/72, 2 videos 74/74, phone 67/67, packaged Python 68/68 ·
+**titles and own music 29/29** (new: engine + app, Windows fonts, Cyrillic, seamless repeats, exact lengths) ·
+Library like a user 32/32 · library re-analysis 4/4 · Convert 20/20 · unplugged 9/9 · 64 long names 5/5 · AI glue
+6/6 · AI+ glue 16/16 (adds: a second project reuses what AI+ saw) · **real models 14/14** · **Russian interface: 152
+pages, 0 English texts, 0 network attempts** · package smoke PASS · Setup smoke PASS · 4K/long footage → 30 s reel
+in 376 s. AI+ speed differs a lot between runner CPUs: 0.4 s per frame on b75's runner, 2.5 s on b78's.
+**Big Library** (`mediaengine-scale`, run 38473553220, 600 videos in one camera folder): 11/11 — scan 2 s, Import +
+analyse 1.08 s per video, Library pages under 1 s, the whole folder's day list 0.2 s, AI+ search preparation 442 s
+(stand-in model; previews), search 68 ms, database 11.7 MB.
+Same day, all green too: b75 (run 38380700935), b71, b69, b66.
 Model lab (`mediaengine-model-lab`, run 38373248463): COCO caption→photo R@1 AI+ 0.855 / AI 0.602 / original fp32
 0.858; Intel scenes top-1 theme 0.86 / 0.89 / 0.88; speed matrix (threads, two sessions, batch 2 refused).
 Before: b62 (run 38279572931): fast checks 83/83 · Library 20/20 · Russian 148 pages · 4K/long footage 366 s.
