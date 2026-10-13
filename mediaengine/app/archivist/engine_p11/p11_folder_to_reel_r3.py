@@ -290,7 +290,9 @@ def pe_runtime_preflight(pe_dir):
 
 def make_pe_scorer(pe_dir):
     import p13_pe_core_adapter as pa
-    return pa.PECoreScorer(Path(pe_dir),full_check=False)   # files were checked by the preflight
+    # every logical CPU (the engine runs below normal priority): measured in the model lab on Windows,
+    # 1.46 s per frame instead of 1.66 s with onnxruntime's default; never slower on Linux
+    return pa.PECoreScorer(Path(pe_dir),full_check=False,threads=os.cpu_count() or None)   # files were checked by the preflight
 
 class AiplusLoadError(RuntimeError):
     pass

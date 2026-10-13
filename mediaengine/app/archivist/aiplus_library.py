@@ -8,7 +8,7 @@ the PC.
 """
 from __future__ import annotations
 
-import hashlib, json, os, threading, time
+import hashlib, json, threading, time
 from pathlib import Path
 
 import numpy as np
@@ -139,8 +139,9 @@ def stop() -> None:
 def _scorer():
     _engine_path()
     import p13_pe_core_adapter as pa
-    # the app stays responsive while the index runs: one CPU is left for it
-    return pa.PECoreScorer(_ae().aiplus_dir(), full_check=False, threads=max(1, (os.cpu_count() or 2) - 1))
+    # onnxruntime's own choice (one thread per physical core): measured in the model lab, more threads (hyper-
+    # threading) or two sessions side by side are not faster, and the logical CPUs left keep the app responsive
+    return pa.PECoreScorer(_ae().aiplus_dir(), full_check=False)
 
 
 def _load(part: str):
