@@ -19,6 +19,10 @@ A camera card can be chosen at its root: the video folders inside it are listed.
 Your original files are only read, never changed. "Check this PC" (Home, Settings, Auto Edit) shows whether the
 AI model and video tools are found and builds a 5-second test reel. The language switch is at the top right.
 
+**AI+** is a stronger, optional model. Download it once on "Check this PC" (about 650 MB, free), then choose "AI+"
+when you make a reel or a variant. The first analysis of new videos takes longer. Use "Compare blind" to see which
+mode is better for your videos.
+
 ## What can leave this PC
 
 Nothing leaves this PC by default. If you explicitly connect a provider or start an optional upload, authentication data, selected uploads, and provider analytics can be sent to that service.

@@ -58,6 +58,9 @@ What a user can do (code: `app/archivist/auto_edit.py`, `auto_edit_web.py`, engi
 - Overnight fixes (2026-10-12): Russian decimal comma for numbers with units (5,00 с, 16,8 МБ) that never touches
   file names; a running Library job showed its elapsed time off by the UTC offset (5 h in Chicago); elapsed times
   across a clock change; folder/file names with ' [ ] % & ! # ; = , build fine (E2E).
+- **AI+ (optional, 2026-10-13)**: a stronger model, PE-Core L/14 (Meta, Apache-2.0, ONNX int8, pinned commit,
+  SHA-256 checked), downloaded once on Check this PC; choose AI or AI+ per reel / variant, compare blind. Separate
+  engine path (`p13_*`, `--semantic-model pe_core_l14`), the accepted AI path unchanged. See RELEASE_NOTES → AI+.
 - **Library checked like a user** (new `tests/library_flow_check.py`, Windows CI, data folder with Cyrillic letters):
   add a folder on Import → every video found → Import + analyse → Library with thumbnails, lengths and item pages →
   smart clips → Private (leaves the Library, original untouched, never in a reel) → archive copy → reject; Library

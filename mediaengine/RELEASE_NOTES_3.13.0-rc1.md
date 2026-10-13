@@ -74,6 +74,24 @@ videos from folders on this PC showed no length; smart clips failed for recordin
 could not be written into a folder with non-Latin letters; quality / privacy codes and sizes were shown in English.
 The page crawl also runs with the internet blocked: no page contacts anything.
 
+## AI+ — a stronger, optional model (PE-Core L/14)
+
+Asked for by the owner (2026-10-13): the strongest free model that suits the job. AI+ uses PE-Core L/14 (Meta,
+Apache-2.0; ONNX int8 from `onnx-community/PE-Core-L14-336-ONNX`, commit `40c36ae`, 2 files ~677 MB + the CLIP
+tokenizer files of the accepted model). It is a separate mode next to AI: the accepted AI (FAST_LOCAL) path is not
+changed (R3 = R2 decisions in CI). Moments are ranked by the accepted hook's steps (imported unchanged) with the
+stronger model and descriptions written for personal footage (people, children, family, landscapes, travel,
+celebrations, pets, action; bad: boring, blurry, accidental, dark, dashboard, no subject).
+
+- Download once on "Check this PC" (huggingface.co, free, every file checked by size and SHA-256, stop button), or
+  copy the four files from a folder. Never downloaded on its own; analysis never uses the network.
+- Choose "AI+" on the new-reel page or for a variant; compare with AI using "Compare blind". AI and AI+ keep separate
+  caches and moments. A missing or changed AI+ model is refused with a clear message, never a silent fallback.
+- Measured on a 4-core CI runner: 1.3–1.8 s per checked frame (24 frames per video) and ~0.8–1 GB more memory.
+  CI compares our adapter with the original open_clip model: identical tokens and preprocessing, int8 embeddings
+  cos 0.95–0.98 (images) / 0.99+ (texts), identical zero-shot choices. Windows CI downloads both real models and builds
+  AI and AI+ test reels, an AI+ reel and its AI variant (reported; a Hugging Face outage never blocks the package).
+
 ## AI model provenance (not in the ZIP, not in git)
 
 FAST_LOCAL is taken from the owner's stable install (`<drive>:\Archivist\sidecars\auto_edit\models`) or imported
