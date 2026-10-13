@@ -121,6 +121,17 @@ def main():
               (j2.get("status"), j2.get("error")))
         page = c.get(f"/auto/p/{pid}", query_string={"rev": rev["id"]}, headers=H).data.decode("utf-8", "replace")
         check("review_says_aiplus", "AI+ moments (PE-Core L/14)" in page)
+        # an AI+ theme for the analysed videos: only texts are encoded, the frames' embeddings are reused
+        c.post(f"/auto/p/{pid}/variant", data={"base_revision_id": rev["id"], "length": "15", "format": "social_hd", "sound": "auto",
+                                               "mode": "semantic_plus", "theme": "sunset"}, headers=H)
+        tj = [x for x in ae.project(pid)["jobs"] if x["id"] not in (j["id"], (jobs[0]["id"] if jobs else -1))]
+        j3, dt3 = wait(tj[0]["id"], 1200) if tj else ({"status": "missing"}, 0)
+        timings["aiplus_theme_variant_s"] = round(dt3, 1)
+        rev3 = ae.revision(j3.get("revision_id") or 0) if j3.get("status") == "done" else None
+        check("aiplus_theme_variant", rev3 and rev3["result"].get("theme") == "sunset", (j3.get("status"), j3.get("error")))
+        if rev3:
+            timings["aiplus_theme_stage_seconds"] = rev3["result"].get("stage_seconds")
+            timings["aiplus_theme_warnings"] = rev3["result"].get("warnings")
         if rev2:
             r = c.post(f"/auto/p/{pid}/compare", data={"a": rev["id"], "b": rev2["id"]}, headers=H)
             check("blind_compare_ai_vs_aiplus_starts", r.status_code == 302 and "/auto/review/" in r.headers.get("Location", ""), r.status_code)
