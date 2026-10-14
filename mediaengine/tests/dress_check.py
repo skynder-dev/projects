@@ -381,7 +381,7 @@ def app_part(work, src, music, check):
         rev6 = ae.revision(j6.get("revision_id") or 0) if j6.get("status") == "done" else None
         edge = mid = None
         if rev6:
-            f6 = frame(ff, Path(rev6["video_path"]), 2.0)
+            f6 = frame(ae._ffmpeg() or "ffmpeg", Path(rev6["video_path"]), 2.0)
             h6 = f6.shape[0]
             sharp = lambda a: float(np.abs(np.diff(a, axis=1)).mean())
             edge, mid = sharp(f6[: int(h6 * .2)]), sharp(f6[int(h6 * .4): int(h6 * .6)])

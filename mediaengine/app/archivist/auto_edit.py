@@ -662,10 +662,22 @@ def _probe(path: Path) -> dict:
                 return getattr(subprocess, name)
             @staticmethod
             def run(*a, **k):
-                return subprocess.run(*a, **process_kwargs(k))
+                cp = subprocess.run(*a, **process_kwargs(k))
+                _PROBE_TEXT.text = cp.stderr if isinstance(getattr(cp, "stderr", None), str) else ""
+                return cp
         probe_mod.subprocess = _HiddenSubprocess()
         probe_mod._me_hidden = True
-    return probe_mod.probe_json(path, _ffmpeg() or "ffmpeg", 30)
+    _PROBE_TEXT.text = ""
+    info = probe_mod.probe_json(path, _ffmpeg() or "ffmpeg", 30)
+    # a phone video stored lying on its side with "rotate 90" in it: shown (and used by the engine) upright
+    m = _ROTATION_RE.search((getattr(_PROBE_TEXT, "text", "") or "").split("Stream mapping:", 1)[0])
+    if m and isinstance(info, dict):
+        info = {**info, "rotation": int(round(float(m.group(1)))) % 360}
+    return info
+
+
+_PROBE_TEXT = threading.local()
+_ROTATION_RE = re.compile(r"rotation of (-?\d+(?:\.\d+)?) degrees")
 
 
 # A recording made in a web browser or by a screen recorder (and one stopped by a crash or a full disk) often has
@@ -926,8 +938,10 @@ def _scan_paths(paths, folder_label: str, files) -> dict:
             elif dur < MIN_CLIP_S:      # the analysis needs a few frames a second apart: shorter clips always fail it
                 row["reason"] = "too short (under 2.5 s)"
             else:
-                row.update(ok=True, duration_s=round(dur, 2), width=int(v[0].get("width") or 0), height=int(v[0].get("height") or 0),
-                           length_measured=bool(info.get("length_measured")))
+                w_, h_ = int(v[0].get("width") or 0), int(v[0].get("height") or 0)
+                if info.get("rotation") in (90, 270):        # stored on its side, played upright
+                    w_, h_ = h_, w_
+                row.update(ok=True, duration_s=round(dur, 2), width=w_, height=h_, length_measured=bool(info.get("length_measured")))
                 total += dur
                 seen[qk] = p.name
         except Exception:  # unreadable / damaged: skipped, never fatal for the folder

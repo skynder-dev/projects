@@ -58,6 +58,34 @@ not read — reading even their first bytes would make Windows download them all
 in the cloud (OneDrive)…"); a folder that is entirely in the cloud says to choose "Always keep on this device"
 first. After the download the same reel is built again with them.
 
+## Everyday use (2026-10-14 review of the whole program)
+
+- **Save MP4 in one step** on any finished version (it becomes the chosen one); "Accept" is optional.
+- **New reels start like the last one** (format, sound, AI mode, framing). Clearer format names (Vertical Full HD,
+  Horizontal Full HD, small copies "quick to send").
+- **Horizontal videos in a vertical reel**: "Fill the screen" (cropped to the interesting part, as before, the
+  default) or "Whole picture, blurred edges" (the accepted engine's `fit_blur` framing, new `--vertical-framing`).
+- **"The same reel with the original sound"** when Auto muted a reel.
+- **A reel for every day** of a big folder (a trip) in one click; built one after another. Waiting builds say which
+  reel is made first.
+- **Library → "Make a reel"** from the selected videos; item page: Open in player, Show in folder, Make a reel from
+  this video. Folder picker for Import sources.
+- **Recording time from the video header** (MP4/MOV `mvhd`) when the name has no date and the file date is the day
+  of the copy: days of a big folder and Library dates. Never read for OneDrive cloud-only files.
+- **Delete archived projects** (frees versions and cache; saved MP4 files and originals stay).
+- **Check this PC** builds its test reel in the background (the page can be left).
+- **Safety**: a copy of the database and settings before a different build opens them, a daily copy and an
+  integrity check in the background (`MediaEngine Data\data\backups`, 7 daily + 5 build copies); a missing data
+  folder (disk not connected) or a damaged database is said on every page; settings are written to disk before they
+  replace the old file, one writer at a time.
+- **Faster variants, identical reels**: SHA-256 of the sources remembered by size and change time, camera-drop
+  measurements by clip SHA-256, segment lengths with the segment (engine regression: R3 reel byte-identical).
+- **Simpler navigation**: Social Lab, Devices and Cloud behind "More"; no milestone labels; no "rights unknown" on
+  every card; Home shows the reel projects.
+- **Real-browser check in CI (Edge)**: form buttons, the More menu, the framing choice, Create reel, Save MP4, Check
+  this PC — it found that `Referrer-Policy: no-referrer` (added the same day) made every form button fail
+  (`Origin: null`); fixed before any release (`same-origin`).
+
 ## Recordings without a length
 
 A recording made in a web browser or by a screen recorder (and one stopped by a crash) often has no length written

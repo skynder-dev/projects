@@ -119,6 +119,15 @@ def main():
     # a browser / screen recording with no length written in the file: measured, used through a fixed copy
     ff = ae._ffmpeg()
     if ff:
+        # a phone video stored on its side with "rotate 90": listed upright (360x640), a normal one as it is
+        rot = work / "rotated"; rot.mkdir(exist_ok=True)
+        subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=640x360:rate=30", "-t", "3.2", "-c:v", "libx264",
+                        str(rot / "flat.mp4")], check=False)
+        subprocess.run([ff, "-v", "error", "-y", "-display_rotation", "90", "-i", str(rot / "flat.mp4"), "-c", "copy",
+                        str(rot / "side.mp4")], check=False)
+        if (rot / "side.mp4").is_file():
+            dims = {r["name"]: (r["width"], r["height"]) for r in ae.scan_folder(rot)["files"]}
+            check("a video stored on its side is listed upright", dims == {"flat.mp4": (640, 360), "side.mp4": (360, 640)}, dims)
         rec = work / "OBS Output #1"; rec.mkdir(exist_ok=True)       # "Output #" in the path must not confuse the reading
         live = rec / "rec.webm"
         with live.open("wb") as fh:

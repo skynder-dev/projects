@@ -124,8 +124,14 @@ def main():
         check("a_reel_for_every_day", has_form and r.status_code == 302 and len(new_p) == 2
               and all(len(x["jobs"]) == 1 and len(x["files"] or []) == (ae.MAX_INPUTS + 2) // 2 for x in new_p)
               and len({x["title"] for x in new_p}) == 2, (has_form, r.status_code, [(x["title"], len(x["files"] or [])) for x in new_p]))
-        for x in new_p:
+        for x in new_p:              # test projects: archived and deleted for good (frees their space)
             ae.archive_project(x["id"])
+            for _ in range(60):
+                if not any(jj["status"] in ("queued", "running") for jj in ae.project(x["id"])["jobs"]):
+                    break
+                time.sleep(0.5)
+            c.post(f"/auto/p/{x['id']}/delete", headers=H)
+        check("every_day_test_projects_deleted", all(ae.project(x["id"]) is None for x in new_p))
         r = c.get("/auto/new", query_string={"folder": str(folder)}, headers={**H, "Sec-Fetch-Site": "cross-site"})
         check("setup_refuses_other_sites", r.status_code in (400, 403), r.status_code)
         if not ae.model_status()["ready"]:
