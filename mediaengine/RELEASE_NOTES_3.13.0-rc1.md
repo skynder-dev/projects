@@ -122,6 +122,20 @@ celebrations, pets, action; bad: boring, blurry, accidental, dark, dashboard, no
 - Safety: a link opened from outside the app (e-mail, chat, a document) can no longer make MediaEngine open a
   network share (Windows would send its sign-in to that server); pasting a network path in the app still works.
 
+## AI+ tuned on real footage
+
+`tests/real_footage_check.py` (own workflow): 22 public amateur videos from Wikimedia Commons (free licences, pinned
+list with SHA-256; never the owner's videos), AI / AI+ / theme reels through the app on Windows, a contact sheet of the
+chosen moments per reel. What it showed and what changed:
+- general AI+ reels took a video's best window even when the whole video was weak (twigs, a promo graphic): now how
+  clearly a moment shows something worth seeing is compared across all videos (45 %), next to the video's own
+  ranking (35 %) and the accepted technical score (20 %); two more bad-frame descriptions (graphic / logo / text,
+  close-up of ground / branches / leaves). After: mountain view, children, parade, wedding dances, sunset.
+- themes: kids / sea / party already 3 of 3 fitting; animals 2 of 3 → 3 of 3.
+- a new theme decoded and cut moments of every video: now only of moments that match it (the rest only when fewer
+  than 3 match) - 60–117 s instead of 218–345 s for 22 videos. Ranking changes never make AI+ look at frames again.
+- The accepted AI (FAST_LOCAL) path is unchanged.
+
 ## Horizontal Full HD 1920×1080
 
 A fourth format next to Social HD 1080×1920, vertical 540×960 and horizontal 960×540: **horizontal 1920×1080** for a

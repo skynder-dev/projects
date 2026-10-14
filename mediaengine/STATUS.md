@@ -158,14 +158,17 @@ The 11 runtime modules, adapter and validator are byte-identical to R2 (CI-check
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38473749538 on `5d0f288` — all green, build b78** (results branch `mediaengine-ci-results`,
-artifacts `MediaEngine-3.13.0-rc1-b78-Setup` and `MediaEngine-3.13.0-rc1-b78` (ZIP)): fast checks 89/89 · R3 = R2
-decisions 29/29 · robustness 32/32 · E2E 7 videos 72/72, 2 videos 74/74, phone 67/67, packaged Python 68/68 ·
-**titles and own music 29/29** (new: engine + app, Windows fonts, Cyrillic, seamless repeats, exact lengths) ·
-Library like a user 32/32 · library re-analysis 4/4 · Convert 20/20 · unplugged 9/9 · 64 long names 5/5 · AI glue
-6/6 · AI+ glue 16/16 (adds: a second project reuses what AI+ saw) · **real models 14/14** · **Russian interface: 152
-pages, 0 English texts, 0 network attempts** · package smoke PASS · Setup smoke PASS · 4K/long footage → 30 s reel
-in 376 s. AI+ speed differs a lot between runner CPUs: 0.4 s per frame on b75's runner, 2.5 s on b78's.
+Latest full run: **38500250069 on `4d83d31` — all green, build b81** (results branch `mediaengine-ci-results`,
+artifacts `MediaEngine-3.13.0-rc1-b81-Setup` and `MediaEngine-3.13.0-rc1-b81` (ZIP)): fast checks 89/89 · R3 = R2
+29/29 · robustness 32/32 (builds horizontal Full HD 1920×1080) · E2E 72/72, 74/74, 67/67, packaged Python 68/68 ·
+titles and own music 30/30 · Library 32/32 · AI+ glue 16/16 · real models 14/14 · Russian 152 pages, 0 English, 0
+network · package smoke PASS (b80 failed once at "switch to the next release" - timing; passed again in b81) · Setup
+smoke PASS · 4K/long footage 352 s.
+**Real footage** (`mediaengine-realfootage`, 22 pinned public amateur videos from Wikimedia Commons, free licences,
+never the owner's): before / after the AI+ tuning of 2026-10-13 — general AI+ reel: twigs and a promo graphic gone,
+now mountain view, children, parade, two wedding dances, sunset; themes kids / sea / party 3 of 3 fitting, animals
+from 2 of 3 to 3 of 3; a new theme over the 22 videos 60–117 s instead of 218–345 s. Sheets + attribution: branch
+`mediaengine-realfootage-results`; reels: artifact `real-footage-reels`.
 **Big Library** (`mediaengine-scale`, run 38473553220, 600 videos in one camera folder): 11/11 — scan 2 s, Import +
 analyse 1.08 s per video, Library pages under 1 s, the whole folder's day list 0.2 s, AI+ search preparation 442 s
 (stand-in model; previews), search 68 ms, database 11.7 MB.
