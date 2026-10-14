@@ -116,6 +116,9 @@ def daily_check() -> dict:
                 ok = con.execute("PRAGMA quick_check").fetchone()[0]
             finally:
                 con.close()
+        except sqlite3.OperationalError as exc:    # locked, busy, a slow drive: not damage - try again next start
+            out["error"] = str(exc)[:200]
+            return out
         except sqlite3.DatabaseError as exc:       # "file is not a database", "malformed"
             ok = str(exc)
         if str(ok).lower() != "ok":

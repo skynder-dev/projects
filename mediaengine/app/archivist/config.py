@@ -7,7 +7,7 @@ import threading
 import time
 from pathlib import Path
 
-_SAVE_LOCK = threading.Lock()
+_SAVE_LOCK = threading.RLock()     # also held by update_config across read-change-write
 
 APP_DIR = Path(__file__).resolve().parents[1]
 INSTALL = APP_DIR.parent.resolve()      # program files: app/, .venv/, launcher.py, version.txt, port.txt
@@ -161,6 +161,15 @@ def _deep_defaults(dst: dict, src: dict) -> dict:
         elif isinstance(value, dict) and isinstance(dst.get(key), dict):
             _deep_defaults(dst[key], value)
     return dst
+
+
+def update_config(change) -> dict:
+    """Read, change and save the settings as one step (two changes at the same moment never lose one)."""
+    with _SAVE_LOCK:
+        cfg = load_config()
+        change(cfg)
+        save_config(cfg)
+        return cfg
 
 
 def load_config() -> dict:

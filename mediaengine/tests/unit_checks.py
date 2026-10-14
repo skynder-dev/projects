@@ -291,6 +291,11 @@ def main():
     (other / "BUILD.txt").write_text("x", encoding="utf-8")
     lst = ae.other_builds(cur)
     check("other_builds lists only real other builds", [b["name"] for b in lst] == [old.name], lst)
+    (old / "launcher.py").write_text("answer=os.environ.get('MEDIAENGINE_SWITCH_ANSWER','')\n", encoding="utf-8")
+    can = ae.other_builds(cur)
+    check("a build is offered for switching only when its launcher can be asked to", not lst[0]["can_switch"] and can[0]["can_switch"],
+          (lst[0].get("can_switch"), can[0].get("can_switch")))
+    check("switching to a version that is not there is refused", raises(ae.use_build, "MediaEngine-nope"))
     check("delete_build refuses this build and the data folder", raises(ae.delete_build, cur.name, cur) and raises(ae.delete_build, "MediaEngine Data", cur))
     check("delete_build removes an older build", ae.delete_build(old.name, cur) > 0 and not old.exists() and cur.exists()
           and (base / "MediaEngine Data").exists())

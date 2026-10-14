@@ -47,6 +47,7 @@ def main():
         pg = b.new_page()
         pg.on("pageerror", lambda exc: errors.append("pageerror: " + str(exc)))
         pg.on("console", lambda m: errors.append("console: " + m.text) if m.type == "error" else None)
+        pg.on("response", lambda resp: errors.append(f"HTTP {resp.status}: {resp.url}") if resp.status >= 400 else None)
         r = pg.goto(base + "/auto")
         check("auto_page_opens", r and r.status == 200, r and r.status)
         # a form button (the language switch posts a form)
@@ -82,11 +83,12 @@ def main():
         jid = ae.project(pid)["jobs"][0]["id"] if pid else 0
         # the reel being made is shown in the bar at the top of every other page, with a link to it
         pg.goto(base + "/library")
+        running_then = ae.job(jid)["status"] in ("queued", "running")
         try:
-            pg.wait_for_selector("#jobtext:has-text('Making a reel')", timeout=120_000)
+            pg.wait_for_selector("#jobtext:has-text('Making a reel')", timeout=30_000)
             bar_ok = pg.get_attribute("#jobbar a", "href") == f"/auto/p/{pid}"
         except Exception:
-            bar_ok = ae.job(jid)["status"] == "done"          # already built (a fast PC): nothing to show
+            bar_ok = not running_then and ae.job(jid)["status"] == "done"   # built before the page opened (a fast PC)
         check("reel_progress_on_other_pages", bar_ok, pg.inner_text("#jobbar") if pg.query_selector("#jobbar") else None)
         end = time.time() + 900
         while jid and time.time() < end and ae.job(jid)["status"] in ("queued", "running"):

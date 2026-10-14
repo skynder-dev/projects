@@ -392,4 +392,6 @@ def app_part(work, src, music, check):
 
 
 if __name__ == "__main__":
+    import faulthandler      # a hang on a CI runner prints where every thread is, then the check fails
+    faulthandler.dump_traceback_later(1800, exit=True)
     sys.exit(main())

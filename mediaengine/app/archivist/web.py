@@ -187,7 +187,7 @@ def layout(title,body,script="",script_srcs=()):
         _nav_link('/cloud','Cloud',cloud_active,'navextra'),
     ])
     external_scripts=''.join(f"<script src='{e(src)}'></script>" for src in script_srcs)
-    return f"""<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>{e(title)} · MediaEngine</title><style>{CSS}</style></head><body>
+    return f"""<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>{e(title)} · MediaEngine</title><link rel='icon' href='/favicon.ico'><style>{CSS}</style></head><body>
 <nav><div class='navin{" showmore" if more_active else ""}'><span class='brand'>MediaEngine <span class='version' title='{e(str(INSTALL))}'>v{VERSION}{(' ' + BUILD) if BUILD else ''}</span></span>{nav}<span class='spacer'></span>{_lang_button(path)}<button id='restartBtn' class='btn2'>Restart</button>{"<button id='updateBtn' class='ok'>Update</button>" if (INSTALL/'updater_config.json').exists() else "<button id='quitBtn' class='btn2' title='Stop MediaEngine on this PC'>Quit</button>"}</div></nav>
 <div id='jobbar' class='jobbar'><div class='jobinner'><div class='row space'><b id='jobtext'>Working…</b><a href='/activity' class='muted'>Open activity</a></div><div id='jobsub' class='muted'></div><div class='progress'><i id='jobpct'></i></div></div></div>
 <div class='wrap'>{_data_note()}{body}</div><div id='toast' class='toast'></div><script>{GLOBAL_JS}\n{script}</script>{external_scripts}</body></html>"""
@@ -321,6 +321,15 @@ def create_app():
         for(const pair of [[16,9],[4,5],[1,1],[9,16]]){canvas.width=pair[0]*40;canvas.height=pair[1]*40;add('aspect_'+pair.join(':'),Math.abs(canvas.width/canvas.height-pair[0]/pair[1])<.001,{w:canvas.width,h:canvas.height})}
         }catch(e){add('browser_exception',false,String(e))}const pass=checks.every(x=>x.pass);out.dataset.status=pass?'passed':'failed';out.textContent=JSON.stringify({status:pass?'passed':'failed',edge_version:navigator.userAgent,checks});})();
         </script></body></html>"""
+
+    @app.get('/favicon.ico')
+    def favicon():
+        # the tab icon (an asked-for icon that is not there was an error in the browser console)
+        svg=("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>"
+             "<stop offset='0' stop-color='#6d96ff'/><stop offset='1' stop-color='#a78bfa'/></linearGradient></defs>"
+             "<rect width='64' height='64' rx='14' fill='#0f151d'/><circle cx='32' cy='32' r='15' fill='url(#g)'/>"
+             "<path d='M27 24l13 8-13 8z' fill='#fff'/></svg>")
+        return Response(svg,mimetype='image/svg+xml',headers={'Cache-Control':'max-age=86400'})
 
     @app.get('/api/status')
     def status():

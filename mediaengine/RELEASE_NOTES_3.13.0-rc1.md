@@ -80,6 +80,13 @@ first. After the download the same reel is built again with them.
   replace the old file, one writer at a time.
 - **Faster variants, identical reels**: SHA-256 of the sources remembered by size and change time, camera-drop
   measurements by clip SHA-256, segment lengths with the segment (engine regression: R3 reel byte-identical).
+- **Small copy for messengers** next to Save MP4: one quick encode of the version (long side 1280 px) into the export
+  folder. **Reels up to 2 minutes** (120 s: about 25 moments; the engine takes up to 30).
+- **A reel being made is shown at the top of every page** (with a link), its percent in the tab title.
+- **"Use this version"** on Check this PC: switch to another installed build in one click (its launcher asks this one
+  to quit, refused while a reel is being made; projects stay the same). **Free the caches of all projects** at once.
+- Auto Edit: "Find a project" when there are many; "Videos folder" opens the reel's source folder; a one-time "New
+  in this version" card. Home/Import: the phone over USB is shown as optional, not as an error.
 - **Simpler navigation**: Social Lab, Devices and Cloud behind "More"; no milestone labels; no "rights unknown" on
   every card; Home shows the reel projects.
 - **Real-browser check in CI (Edge)**: form buttons, the More menu, the framing choice, Create reel, Save MP4, Check

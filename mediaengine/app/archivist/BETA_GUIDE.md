@@ -10,8 +10,12 @@ No external account or billing is required for local use.
    Phone videos: copy them to the computer first.
 2. Pick Length, Format and Sound -> "Create reel". Analysis of new videos takes a while; later builds reuse it.
 3. Review: remove, replace, trim or reorder moments; every change is a new version, older ones stay.
-4. "Save MP4" (or "Save to another folder...") on any finished version, one click. "Exported reels" at the top of
-   the Auto Edit page opens the folder with the finished reels.
+4. "Save MP4" (or "Save to another folder...") on any finished version, one click. Next to it, "Small copy for
+   messengers" (about 720p, a much smaller file). "Exported reels" at the top of the Auto Edit page opens the folder
+   with the finished reels.
+
+A reel is 5 seconds to 2 minutes long. While a reel is being made, its progress is shown at the top of every page.
+To go back to an earlier version of the program: "Check this PC" -> "Use this version" (projects stay the same).
 
 A new reel starts with the last reel's format, sound and mode. A vertical reel from horizontal videos can "Fill the
 screen" (cropped to the interesting part) or show the "Whole picture, blurred edges". When Auto muted a reel, "The

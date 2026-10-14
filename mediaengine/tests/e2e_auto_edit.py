@@ -521,4 +521,6 @@ def finish(a, checks, timings, code):
 
 
 if __name__ == "__main__":
+    import faulthandler      # a hang on a CI runner prints where every thread is, then the check fails
+    faulthandler.dump_traceback_later(3000, exit=True)
     sys.exit(main())

@@ -1995,10 +1995,8 @@ def whats_new_seen() -> bool:
 
 def mark_whats_new_seen() -> None:
     try:
-        from .config import save_config
-        cfg = load_config()
-        cfg.setdefault("auto_edit", {})["whats_new_seen"] = WHATS_NEW_ID
-        save_config(cfg)
+        from .config import update_config
+        update_config(lambda cfg: cfg.setdefault("auto_edit", {}).__setitem__("whats_new_seen", WHATS_NEW_ID))
     except Exception:
         pass
 
@@ -2015,13 +2013,13 @@ def _remember_selftest(res: dict) -> None:
     if not res.get("ok"):
         return
     try:
-        from .config import save_config
-        cfg = load_config()
-        a = dict(cfg.get("auto_edit") or {})
-        a["selftest_ok_at"] = now_iso()
-        a["selftest_mode"] = str(res.get("selection_mode") or "")
-        cfg["auto_edit"] = a
-        save_config(cfg)
+        from .config import update_config
+
+        def change(cfg):
+            a = cfg.setdefault("auto_edit", {})
+            a["selftest_ok_at"] = now_iso()
+            a["selftest_mode"] = str(res.get("selection_mode") or "")
+        update_config(change)
     except Exception:
         pass
 
@@ -2196,11 +2194,57 @@ def other_builds(install: Path | None = None) -> list[dict]:
         hit = _BUILD_BYTES.get(str(d))
         if not hit or hit[0] != mt:          # a release folder does not change once installed: count its size once
             hit = _BUILD_BYTES[str(d)] = (mt, _tree_bytes(d))
-        out.append({"name": d.name, "path": str(d), "built": built, "bytes": hit[1], "mtime": mt})
+        try:     # older launchers cannot be asked to take over from here (switching came in 2026-10-11)
+            can_switch = "MEDIAENGINE_SWITCH_ANSWER" in (d / "launcher.py").read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            can_switch = False
+        out.append({"name": d.name, "path": str(d), "built": built, "bytes": hit[1], "mtime": mt, "can_switch": can_switch})
     return out
 
 
 _BUILD_BYTES: dict[str, tuple[float, int]] = {}
+
+
+def app_busy() -> str:
+    """What would make this MediaEngine refuse to quit now (the same rules as its Quit button), or ''."""
+    with db() as con:
+        if con.execute("SELECT id FROM ae_jobs WHERE status IN ('queued','running') LIMIT 1").fetchone():
+            return "A reel is being made. Switch when it is ready."
+        try:
+            if con.execute("SELECT id FROM jobs WHERE status='running' LIMIT 1").fetchone():
+                return "A Library task is running (see Activity). Switch when it has finished."
+        except Exception:
+            pass
+    if aiplus_downloading():
+        return "The AI+ model is being downloaded. Switch when it is done."
+    try:
+        from . import aiplus_library as _al
+        if _al.running():
+            return "AI+ is being prepared for the Library. Stop it first (it continues next time)."
+    except Exception:
+        pass
+    return ""
+
+
+def use_build(name: str) -> str:
+    """Go back (or forward) to another installed version: its launcher is started, asks this one to quit (same as its
+    Quit button; refused while a reel is being made) and starts itself on the same port. Projects stay the same."""
+    b = next((x for x in other_builds() if x["name"] == str(name or "")), None)
+    if not b:
+        raise ValueError("That version is not on this PC.")
+    if os.name != "nt":
+        raise ValueError("Only on Windows.")
+    if not b.get("can_switch"):
+        raise ValueError("That version is too old to switch to from here. Start it from its folder.")
+    busy = app_busy()
+    if busy:
+        raise ValueError(busy)
+    env = {k: v for k, v in os.environ.items() if not k.upper().startswith("ARCHIVIST_")}
+    env.update(MEDIAENGINE_SWITCH_ANSWER="yes", MEDIAENGINE_NO_BROWSER="1")
+    subprocess.Popen(["wscript.exe", str(Path(b["path"]) / "Start MediaEngine.vbs")], cwd=b["path"], env=env, close_fds=True,
+                     stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                     **process_kwargs(detached=True, below_normal=False))
+    return b["path"]
 
 
 def delete_build(name: str, install: Path | None = None) -> int:
@@ -2326,10 +2370,9 @@ def clear_work_cache(pid: int) -> int:
 def all_work_cache_bytes() -> int:
     """Analysis and render caches of every project (versions and exports not counted)."""
     total = 0
-    if AE_ROOT.is_dir():
-        for d in AE_ROOT.iterdir():
-            if d.is_dir() and re.fullmatch(r"p\d+", d.name):
-                total += _tree_bytes(d / "work")
+    for p in list_projects(include_archived=True):       # the ones Free can free (not while building)
+        if not any(j["status"] in ("queued", "running") for j in p["jobs"]):
+            total += _tree_bytes(_project_dir(p["id"]) / "work")
     return total
 
 
@@ -2404,10 +2447,9 @@ def last_new_settings() -> dict:
 
 def remember_new_settings(settings: dict) -> None:
     try:
-        from .config import save_config
-        cfg = load_config()
-        cfg.setdefault("auto_edit", {})["last_new"] = {k: settings.get(k) for k in ("format", "sound", "mode", "framing") if settings.get(k)}
-        save_config(cfg)
+        from .config import update_config
+        update_config(lambda cfg: cfg.setdefault("auto_edit", {}).__setitem__(
+            "last_new", {k: settings.get(k) for k in ("format", "sound", "mode", "framing") if settings.get(k)}))
     except Exception:
         pass
 
@@ -2459,10 +2501,8 @@ def _export_accepted(pid: int, dest_dir: Path | None = None, remember: bool = Fa
     if dest_dir:
         dest_dir = check_export_dir(p, dest_dir)
         if remember:
-            from .config import save_config
-            cfg = load_config()
-            cfg.setdefault("auto_edit", {})["export_dir"] = str(dest_dir)
-            save_config(cfg)
+            from .config import update_config
+            update_config(lambda cfg: cfg.setdefault("auto_edit", {}).__setitem__("export_dir", str(dest_dir)))
     if not p["accepted_revision_id"]:
         raise ValueError("Accept a revision before exporting")
     r = revision(p["accepted_revision_id"])
@@ -2511,13 +2551,21 @@ SMALL_LONG_SIDE = 1280        # a copy for messengers: 720p, about a tenth of th
 
 def small_copy(pid: int, rid: int) -> Path:
     """A small copy of a version for messengers (WhatsApp, Telegram): long side at most 1280 px, lower bit rate, in the
-    export folder next to the saved reels. Made from the finished version in one quick encode (no new build)."""
+    export folder next to the saved reels. Made from the finished version in one quick encode (no new build).
+    One at a time per project; an existing file is never replaced (another project may have the same title)."""
+    with _EXPORT_LOCKS_GUARD:
+        lock = _EXPORT_LOCKS.setdefault(int(pid), threading.Lock())
+    with lock:
+        return _small_copy(pid, rid)
+
+
+def _small_copy(pid: int, rid: int) -> Path:
     p, r = project(pid), revision(rid)
     if not p or not r or int(r["project_id"]) != int(pid):
         raise ValueError("Revision not found in this project")
     src = Path(r["video_path"])
     if sha256_file(src) != r["video_sha256"]:
-        raise ValueError("Revision file changed on disk; it cannot be accepted")
+        raise ValueError("The file of this version changed on disk; build the version again")
     dest_dir = default_export_dir()
     try:
         dest_dir = check_export_dir(p, dest_dir) if dest_dir.is_dir() else dest_dir
@@ -2526,34 +2574,54 @@ def small_copy(pid: int, rid: int) -> Path:
     dest_dir = Path(dest_dir)
     dest_dir.mkdir(parents=True, exist_ok=True)
     fmt = FORMATS.get(r["settings"]["format"], {}).get("short", "Reel")
-    dst = dest_dir / (safe_filename(f"{p['title']} - {fmt} - R{int(r['number']):03d} small") + ".mp4")
+    base = safe_filename(f"{p['title']} - {fmt} - R{int(r['number']):03d} small")
     made = AE_ROOT / "small_copies.json"         # which version each small copy was made from (nothing extra in the folder)
-    try:
-        known = json.loads(made.read_text(encoding="utf-8"))
-    except (OSError, ValueError):
-        known = {}
-    if dst.is_file() and known.get(str(dst)) == r["video_sha256"]:
-        return dst                     # made before from this very version
+    with _SMALL_LOCK:
+        try:
+            known = json.loads(made.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            known = {}
+    n = 1
+    while True:                       # the name is reserved first: an existing file (another project's) is never replaced
+        dst = dest_dir / (base + (f" ({n})" if n > 1 else "") + ".mp4")
+        if dst.is_file() and known.get(str(dst)) == r["video_sha256"]:
+            return dst                 # made before from this very version
+        try:
+            with open(dst, "xb"):
+                pass
+            break
+        except FileExistsError:
+            n += 1
     L = SMALL_LONG_SIDE
-    tmp = dest_dir / f".{dst.stem}.{os.getpid()}.part.mp4"
-    cmd = [_ffmpeg() or "ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", str(src), "-map", "0:v:0", "-map", "0:a:0?",
+    tmp = dest_dir / f".{dst.stem}.{os.getpid()}.{threading.get_ident()}.part.mp4"
+    cmd = [_ffmpeg() or "ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin", "-y", "-i", str(src), "-map", "0:v:0", "-map", "0:a:0?",
            "-vf", f"scale='if(gte(iw,ih),min(iw,{L}),-2)':'if(gte(iw,ih),-2,min(ih,{L}))'",
            "-c:v", "libx264", "-preset", "veryfast", "-crf", "26", "-pix_fmt", "yuv420p",
            "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", str(tmp)]
     try:
-        cp = subprocess.run(cmd, **process_kwargs({"capture_output": True, "text": True, "timeout": 1800}))
+        cp = subprocess.run(cmd, **process_kwargs({"capture_output": True, "text": True, "encoding": "utf-8",
+                                                   "errors": "replace", "timeout": 1800}))
         if cp.returncode != 0 or not tmp.is_file() or tmp.stat().st_size < 1000:
             raise RuntimeError("SMALL_COPY_FAILED: " + (cp.stderr or "")[-300:])
-        _replace_retry(tmp, dst)
+        _replace_retry(tmp, dst)      # replaces only our own empty reservation
     except BaseException:
         tmp.unlink(missing_ok=True)
+        dst.unlink(missing_ok=True)
         raise
-    try:
-        known[str(dst)] = r["video_sha256"]
-        made.write_text(json.dumps(known, ensure_ascii=False, indent=1), encoding="utf-8")
-    except OSError:
-        pass
+    with _SMALL_LOCK:
+        try:
+            try:
+                known = json.loads(made.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                known = {}
+            known[str(dst)] = r["video_sha256"]
+            made.write_text(json.dumps(known, ensure_ascii=False, indent=1), encoding="utf-8")
+        except OSError:
+            pass
     return dst
+
+
+_SMALL_LOCK = threading.Lock()
 
 
 def _record_export(pid: int, r: dict, dst: Path, reused: bool) -> dict:

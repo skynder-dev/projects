@@ -386,4 +386,6 @@ def main():
 
 
 if __name__ == "__main__":
+    import faulthandler      # a hang on a CI runner prints where every thread is, then the check fails
+    faulthandler.dump_traceback_later(2400, exit=True)
     sys.exit(main())

@@ -274,7 +274,7 @@ Your original files are only read, never changed.</div></div>{first}{whats_new}
 <button class='btn btn2 ae-big'>Continue</button></form>
 <div class='muted' id='pickMsg' style='margin-top:6px'></div></div>{model_note}
 
-<div class='section-title row space'><span>My projects</span><a class='muted' href='/auto?archived={'0' if request.args.get('archived')=='1' else '1'}'>{'Hide' if request.args.get('archived')=='1' else 'Show'} archived</a></div>
+<div class='section-title row space'><span>My projects</span><span class='row' style='gap:10px'>{"<input id='projFind' placeholder='Find a project' style='width:200px'>" if len(projects) > 6 else ""}<a class='muted' href='/auto?archived={'0' if request.args.get('archived')=='1' else '1'}'>{'Hide' if request.args.get('archived')=='1' else 'Show'} archived</a></span></div>
 <span id='delq' hidden>Delete this project and all its versions for good? Saved MP4 files and your original videos stay.</span>{deleted_html}
 <div class='ae-grid'>{cards}</div>"""
         script = """
@@ -286,7 +286,9 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
  try{const r=await fetch('/api/auto/pick-files',{method:'POST'});const x=await r.json();
  if(x.files&&x.files.length){m.textContent='Checking the videos…';location.href='/auto/new?'+x.files.map(f=>'file='+encodeURIComponent(f)).join('&')}
  else if(x.folder){m.textContent=x.error||'';location.href='/auto/new?folder='+encodeURIComponent(x.folder)}
- else m.textContent=x.error||'No videos chosen.'}catch(e){m.textContent='Window failed: '+e}};"""
+ else m.textContent=x.error||'No videos chosen.'}catch(e){m.textContent='Window failed: '+e}};
+const pf=document.getElementById('projFind');if(pf)pf.oninput=()=>{const q=pf.value.trim().toLowerCase();
+ document.querySelectorAll('.ae-grid>.card').forEach(c=>{c.style.display=(!q||c.textContent.toLowerCase().includes(q))?'':'none'})};"""
         return page("Auto Edit", body, script)
 
     @app.route("/auto/check", methods=["GET", "POST"])
@@ -318,7 +320,11 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         done = request.args.get("removed", "")
         brows = "".join(f"<tr><td><b translate='no'>{e(b['name'])}</b>{(' · built ' + e(b['built'])) if b['built'] else ''}"
                         f"<div class='muted ae-path'>{e(b['path'])}</div></td>"
-                        f"<td>{human_bytes(b['bytes'])}</td><td><form method='post' action='/auto/check/remove-build' "
+                        f"<td>{human_bytes(b['bytes'])}</td><td>"
+                        + (f"<form method='post' action='/auto/check/use-build' style='margin-bottom:6px'>"
+                           f"<input type='hidden' name='name' value='{e(b['name'])}'><button class='btn2' title='Projects stay the same'>Use this version</button></form>"
+                           if b.get("can_switch") else "")
+                        + f"<form method='post' action='/auto/check/remove-build' "
                         f"onsubmit=\"return confirm(document.getElementById('rmq').textContent)\">"
                         f"<input type='hidden' name='name' value='{e(b['name'])}'><button class='btn2'>Remove</button></form></td></tr>"
                         for b in builds)
@@ -390,6 +396,23 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
         if not v:
             return err_page("The test reel is not there (build it on Check this PC).")
         return send_file(str(v), mimetype="video/mp4", conditional=True)
+
+    @app.post("/auto/check/use-build")
+    def ae_use_build():
+        name = request.form.get("name", "")
+        try:
+            target = ae.use_build(name)
+        except Exception as exc:
+            return err_page(str(exc), "/auto/check")
+        body = (f"<div class='card'><h2 style='margin-top:0'><span>Switching to another version…</span> <span translate='no'>{e(name)}</span></h2>"
+                f"<div class='muted'>This MediaEngine closes and the other version starts. This page opens it by itself.</div>"
+                f"<div class='errbox' id='swMsg' style='margin-top:10px' hidden>The other version did not start. Start it from its folder: "
+                f"<span class='ae-path' translate='no'>{e(str(Path(target) / 'Start MediaEngine.vbs'))}</span></div></div>")
+        script = ("const want=" + json.dumps(target.replace("/", "\\").lower()) + ";let n=0;"
+                  "async function t(){n++;try{const r=await fetch('/api/ping',{cache:'no-store'});const x=await r.json();"
+                  "if(String(x.install||'').replace(/\\//g,'\\\\').toLowerCase()===want){location.href='/auto';return}}catch(e){}"
+                  "if(n>150)document.getElementById('swMsg').hidden=false;setTimeout(t,n>150?3000:1000)}setTimeout(t,1500);")
+        return page("Check this PC", body, script)
 
     @app.post("/auto/check/remove-build")
     def ae_remove_build():
@@ -687,6 +710,7 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
         parts = [f"""<div class='pagehead row space'><div><div class='eyebrow'>Auto Edit · <span class='ae-state {p['state']}'>{p['state']}</span></div>
 <h1 translate='no'>{e(p['title'])}</h1><div class='lead'>{(str(len(p['files'])) + ' chosen video(s) · from ') if p.get('files') else ''}<span class='ae-path' translate='no'>{e(p['folder'])}</span></div></div>
 <div class='row' style='flex-wrap:wrap'><a class='btn btn2' href='/auto'>All projects</a>
+<form method='post' action='/auto/p/{pid}/open-folder'><button class='btn2' title='Open the folder of the videos in Explorer'>Videos folder</button></form>
 <form method='post' action='/auto/p/{pid}/rename' class='row' style='gap:6px'><input name='title' value='{e(p['title'])}' maxlength='80' style='width:200px'><button class='btn2'>Rename</button></form>
 <form method='post' action='/auto/p/{pid}/archive'><button class='btn2'>{'Unarchive' if p['archived'] else 'Archive'}</button></form></div></div>"""]
         if request.args.get("same") and cur:
@@ -945,6 +969,15 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
         except Exception as exc:
             return err_page(ae.friendly_error(str(exc)) if "SMALL_COPY_FAILED" in str(exc) else str(exc), f"/auto/p/{pid}")
         return redirect(f"/auto/p/{pid}?rev={rid}&small=" + urllib.parse.quote(dst.name))
+
+    @app.post("/auto/p/<int:pid>/open-folder")
+    def ae_open_folder(pid):
+        p = ae.project(pid)
+        if not p:
+            return err_page("Project not found")
+        if not ae.open_path(Path(p["folder"])):
+            return err_page("The source videos are not available (disconnected drive?)", f"/auto/p/{pid}")
+        return redirect(f"/auto/p/{pid}")
 
     @app.post("/auto/exports/open")
     def ae_exports_open():
