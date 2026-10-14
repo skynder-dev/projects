@@ -250,6 +250,7 @@ def main():
                           "duration_s": res.get("actual_duration_s"),
                           "segments": [{k: s_[k] for k in ("source_name", "source_in_s", "source_out_s", "reel_in_s", "reel_out_s", "score")}
                                        for s_ in res.get("segments", [])]}
+            (outd / f"{key}.result.json").write_text(json.dumps(res, indent=1, ensure_ascii=False), encoding="utf-8")   # scores, pool
             if reel and reel.is_file():
                 shutil.copy2(reel, outd / f"{key}.mp4")
                 contact_sheet(ff, reel, res.get("segments", []), outd / f"{key}.jpg",
