@@ -120,6 +120,8 @@ def model_search_roots() -> list[Path]:
         for letter in "CDEFGH":   # fixed disks only: a mapped network drive or an empty card reader would stall every page
             if _is_fixed_drive(f"{letter}:\\"):
                 roots.append(Path(f"{letter}:/") / "Archivist" / "sidecars" / "auto_edit" / "models")
+        if _is_fixed_drive("D:\\"):   # the owner's project folder
+            roots += [Path("D:/projects/medeng/models"), Path("D:/projects/medeng/sidecars/auto_edit/models")]
     return roots
 
 
