@@ -160,6 +160,7 @@ PHRASES = {
     "Small copy saved:": "Маленькая копия сохранена:",
     "New in this version": "Новое в этой версии",
     "Find a project": "Найти проект",
+    "Recent folders:": "Недавние папки:",
     "Use this version": "Перейти на эту версию", "Projects stay the same": "Проекты останутся те же",
     "Switching to another version…": "Переключаюсь на другую версию…",
     "This MediaEngine closes and the other version starts. This page opens it by itself.": "Этот MediaEngine закроется, и запустится другая версия. Страница откроет её сама.",

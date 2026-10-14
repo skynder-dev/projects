@@ -40,17 +40,17 @@ def main():
     def spy(v52, segs, durs, trans, outp, dress=None, frames=None):
         seen.update(segs=[str(s) for s in segs], durs=[float(d) for d in durs], trans=[float(t["duration_s"]) for t in trans],
                     frames={str(k): int(v) for k, v in (frames or {}).items()})
-        real_run = r3.subprocess.run
+        real_run = r3.run_ffmpeg_watched
 
         def run(args, *a, **k):
             if "-filter_complex" in args:
                 seen["graph"] = args[args.index("-filter_complex") + 1]
             return real_run(args, *a, **k)
-        r3.subprocess.run = run
+        r3.run_ffmpeg_watched = run
         try:
             return real(v52, segs, durs, trans, outp, dress, frames)
         finally:
-            r3.subprocess.run = real_run
+            r3.run_ffmpeg_watched = real_run
     r3.render_dissolve_block = spy
     folder = work / "seven"
     shutil.copytree(fx / "seven", folder)

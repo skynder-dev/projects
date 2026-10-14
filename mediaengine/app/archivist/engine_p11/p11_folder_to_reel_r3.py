@@ -1110,14 +1110,55 @@ def dress_filters(dress,first_input,vin,ain,total):
         k+=1
     return args,filters,vout,aout
 
+FFMPEG_STALL_S=180.0
+
+def run_ffmpeg_watched(args,stall_s=None,tries=2):
+    """An FFmpeg encode that is started again when it stops making progress: the final encode of a reel with cuts on
+    the beat stood still for good now and then on Windows (CI b95/b97, inside FFmpeg). Its own progress report is
+    read; when the encoded time does not move for FFMPEG_STALL_S seconds it is stopped and run once more.
+    The output is the same as from one undisturbed run."""
+    import tempfile,threading
+    stall_s=float(stall_s or FFMPEG_STALL_S)
+    a=list(args); at=a.index("-y")+1 if "-y" in a else 1
+    a[at:at]=["-nostdin","-progress","pipe:1","-nostats"]
+    last=""
+    for attempt in range(max(1,int(tries))):
+        errf=tempfile.TemporaryFile()
+        proc=subprocess.Popen(a,stdout=subprocess.PIPE,stderr=errf,stdin=subprocess.DEVNULL)
+        state={"t":time.monotonic()}
+        def reader():
+            # a report comes every half second even when nothing moves: only a new frame count or encoded time counts
+            for raw in proc.stdout:
+                line=raw.decode("utf-8","replace").strip(); key=line.split("=",1)[0]
+                if key in ("frame","out_time_us") and state.get(key)!=line:
+                    state[key]=line; state["t"]=time.monotonic()
+                elif line=="progress=end":
+                    state["t"]=time.monotonic()
+        th=threading.Thread(target=reader,daemon=True); th.start()
+        stalled=False
+        while proc.poll() is None:
+            if time.monotonic()-state["t"]>stall_s:
+                stalled=True; proc.kill(); break
+            time.sleep(0.5)
+        proc.wait(); th.join(5)
+        errf.seek(0); last=errf.read().decode("utf-8","replace"); errf.close()
+        if not stalled:
+            return subprocess.CompletedProcess(a,proc.returncode,"",last)
+        progress("finish",0,1,"joining segments again (the encoder stood still)")
+    raise RuntimeError("FINAL_RENDER_STALLED:"+last[-400:])
+
 def render_dissolve_block(v52,segs,durs,trans,out,dress=None,frames=None):
     out=Path(out); out.parent.mkdir(parents=True,exist_ok=True)
     args=[v52.FFMPEG,"-hide_banner","-loglevel","error","-y"]
-    for p in segs: args += ["-i",str(p)]
+    for i,p in enumerate(segs):
+        # a segment cut to a number of frames (cuts on the beat): its file is read only a little past them, so FFmpeg
+        # never keeps reading a file whose rest the graph does not take (same frames and sound as before)
+        if frames and i in frames: args += ["-t",f"{(int(frames[i])+2)/30.0:.6f}"]
+        args += ["-i",str(p)]
     if len(segs)==1 and not dress:
         args += ["-filter_complex",_fit_audio(0,float(durs[0])),"-map","0:v","-map","[n0]","-c:v","copy",
                  "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(out)]
-        cp=subprocess.run(args,capture_output=True,text=True)
+        cp=run_ffmpeg_watched(args)
         if cp.returncode!=0: raise RuntimeError("DISSOLVE_BLOCK_RENDER_FAILED:"+cp.stderr[-800:])
         return float(durs[0])
     # segments of different sources can differ in pixel aspect (e.g. SAR 404:405 after a crop) and time base;
@@ -1146,7 +1187,7 @@ def render_dissolve_block(v52,segs,durs,trans,out,dress=None,frames=None):
     args += ["-filter_complex",";".join(filters),"-map",f"[{vprev}]","-map",f"[{aprev}]",
              "-c:v","libx264","-preset","medium","-crf","18","-pix_fmt","yuv420p",
              "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(out)]
-    cp=subprocess.run(args,capture_output=True,text=True)
+    cp=run_ffmpeg_watched(args)
     if cp.returncode!=0: raise RuntimeError("DISSOLVE_BLOCK_RENDER_FAILED:"+cp.stderr[-800:])
     return cum
 
@@ -1188,13 +1229,35 @@ def drop_overlapping(events,limit=.5):
         (removed if clash else keep).append(e)
     return keep,removed
 
-def choose_moments(v52,events,target,warnings,exclude=(),clip=5.0,trans=.25):
+def choose_moments(v52,events,target,warnings,exclude=(),clip=5.0,trans=.25,cache_dir=None):
     """V52 choose_for_target, bounded so a 60 s reel cannot hang for hours, with an honest shorter reel
-    (warning LIMITED_TOTAL_FOOTAGE) when the footage cannot fill the requested length."""
+    (warning LIMITED_TOTAL_FOOTAGE) when the footage cannot fill the requested length.
+    cache_dir: the same choice for the same moments and length is remembered (a format, sound or music variant of a
+    2-minute reel searched about a minute again); the result is exactly what the search gives."""
     events,removed=drop_overlapping(events)   # before exclusions: a removed moment's near-twin never comes back
     if removed: warnings.append("OVERLAPPING_MOMENTS_DROPPED:%d"%len(removed))
     events=[e for e in events if str(e["event_id"]) not in exclude]
     if not events: raise RuntimeError("NO_MOMENTS_LEFT_AFTER_EXCLUSIONS")
+    cf=None
+    if cache_dir is not None:
+        ident=[[str(e["event_id"]),float(e["v22_score"]),str(e["source_name"]),str(e["source_sha256"]),float(e.get("start_s") or 0),
+                float(e.get("end_s") or 0),float(e.get("duration_s") or 0)] for e in events]
+        key=hashlib.sha256(json.dumps({"v":1,"events":ident,"target":float(target),"clip":clip,"trans":trans,
+                                       "budget":SELECTION_COMBINATION_BUDGET},sort_keys=True).encode()).hexdigest()[:24]
+        cf=Path(cache_dir)/f"{key}.json"
+        try:
+            d=json.loads(cf.read_text(encoding="utf-8")); by={str(e["event_id"]):e for e in events}
+            if all(i in by for i in d["ids"]):
+                warnings.extend(d["warnings"]); return [by[i] for i in d["ids"]]
+        except (OSError,ValueError,KeyError,TypeError): pass
+    before=len(warnings)
+    sel=_choose_moments_search(v52,events,target,warnings,clip,trans)
+    if cf is not None:
+        try: atomic_json(cf,{"ids":[str(e["event_id"]) for e in sel],"warnings":warnings[before:]})
+        except OSError: pass
+    return sel
+
+def _choose_moments_search(v52,events,target,warnings,clip,trans):
     t=float(target)
     while True:
         m=min(30,len(events))
@@ -1283,7 +1346,8 @@ def run(args):
                 if "source_path" in c: c["recut_path"]=c["source_path"]; c["source_path"]=o["path"]
         pool=candidates
         progress("select",0,1,"choosing moments")
-        selected=manual_selection(pool,manual) if manual else choose_moments(v52,candidates,float(args.target_seconds),warnings,exclude)
+        selected=manual_selection(pool,manual) if manual else choose_moments(v52,candidates,float(args.target_seconds),warnings,exclude,
+                                                                             cache_dir=work_dir/"selection_cache")
         selection_mode="PE_CORE_L14_SEMANTIC_V1" if semantic_model=="pe_core_l14" else "FAST_LOCAL_SEMANTIC_SHADOW_V1"
         event_count=len(candidates); cache_status="semantic_candidate_cache"
     else:
@@ -1309,7 +1373,8 @@ def run(args):
         scored=v52.score_events(events,work_dir/"V22_SCORE_CACHE.json")
         pool=scored
         progress("select",0,1,"choosing moments")
-        selected=manual_selection(pool,manual) if manual else choose_moments(v52,scored,float(args.target_seconds),warnings,exclude)
+        selected=manual_selection(pool,manual) if manual else choose_moments(v52,scored,float(args.target_seconds),warnings,exclude,
+                                                                             cache_dir=work_dir/"selection_cache")
         selection_mode="ACCEPTED_V52_TECHNICAL_AESTHETIC"
         event_count=int(lib["event_count"])
     if not selected: raise RuntimeError("NO_EVENTS_SELECTED")

@@ -253,6 +253,18 @@ def register(app, layout, e, human_bytes):
                      + ("<form method='post' action='/auto/exports/open' style='margin:0'><button class='btn2'>Exported reels</button></form>"
                         if has_exports else "")
                      + "<a class='btn btn2' href='/auto/check'>Check this PC</a></div>")
+        # folders of the last reels (one click to a new reel from the same place)
+        recent, seen_f = [], set()
+        for rp in ae.list_projects(include_archived=True):
+            f_ = str(rp.get("folder") or "")
+            if f_ and f_.lower() not in seen_f and not rp.get("files") and ae.folder_available(f_):
+                seen_f.add(f_.lower()); recent.append(f_)
+            if len(recent) >= 5:
+                break
+        recent_html = ("<div class='row' style='margin-top:8px;gap:6px;flex-wrap:wrap'><span class='muted'>Recent folders:</span>"
+                       + "".join(f"<a class='btn btn2' style='padding:5px 9px;font-size:13px' title='{e(f_)}' "
+                                 f"href='/auto/new?folder={urllib.parse.quote(f_)}' translate='no'>{e(Path(f_).name or f_)}</a>" for f_ in recent)
+                       + "</div>") if recent else ""
         # what changed in this version, once (only for someone who already used MediaEngine)
         whats_new = "" if (ae.whats_new_seen() or not ae.selftest_passed()) else (
             "<div class='card callout' style='margin-bottom:14px'><div class='row space'><b>New in this version</b>"
@@ -272,7 +284,7 @@ Your original files are only read, never changed.</div></div>{first}{whats_new}
 <button type='button' class='btn2 ae-big' id='pickFilesBtn'>Choose videos…</button>
 <input name='folder' id='folderInput' required placeholder='or paste a folder path, e.g. D:\\Videos\\Trip' style='flex:1;min-width:280px'>
 <button class='btn btn2 ae-big'>Continue</button></form>
-<div class='muted' id='pickMsg' style='margin-top:6px'></div></div>{model_note}
+<div class='muted' id='pickMsg' style='margin-top:6px'></div>{recent_html}</div>{model_note}
 
 <div class='section-title row space'><span>My projects</span><span class='row' style='gap:10px'>{"<input id='projFind' placeholder='Find a project' style='width:200px'>" if len(projects) > 6 else ""}<a class='muted' href='/auto?archived={'0' if request.args.get('archived')=='1' else '1'}'>{'Hide' if request.args.get('archived')=='1' else 'Show'} archived</a></span></div>
 <span id='delq' hidden>Delete this project and all its versions for good? Saved MP4 files and your original videos stay.</span>{deleted_html}

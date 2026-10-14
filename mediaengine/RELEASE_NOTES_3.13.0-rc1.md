@@ -79,7 +79,10 @@ first. After the download the same reel is built again with them.
   folder (disk not connected) or a damaged database is said on every page; settings are written to disk before they
   replace the old file, one writer at a time.
 - **Faster variants, identical reels**: SHA-256 of the sources remembered by size and change time, camera-drop
-  measurements by clip SHA-256, segment lengths with the segment (engine regression: R3 reel byte-identical).
+  measurements by clip SHA-256, segment lengths with the segment, and the choice of moments for the same moments and
+  length (a format variant of a 2-minute reel: the 66 s search is skipped; the same moments, picture and sound
+  identical). Engine regression: R3 reel byte-identical.
+- **Small things**: "Recent folders" on Auto Edit (one click to a new reel from the same place); a tab icon.
 - **Small copy for messengers** next to Save MP4: one quick encode of the version (long side 1280 px) into the export
   folder. **Reels up to 2 minutes** (120 s: about 25 moments; the engine takes up to 30).
 - **A reel being made is shown at the top of every page** (with a link), its percent in the tab title.
