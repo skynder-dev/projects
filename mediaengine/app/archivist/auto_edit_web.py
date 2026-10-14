@@ -320,7 +320,7 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
                 f"<button name='mode' value='technical'>Build a test reel</button> "
                 + (f"<button name='mode' value='semantic' class='btn2'>Build a test reel with the AI model</button> " if ai_ready else "")
                 + (f"<button name='mode' value='semantic_plus' class='btn2'>Build a test reel with AI+</button> " if ap["ready"] else "")
-                + f"<span class='muted'></span></form>{test_html}{_model_card(ae.model_status(), e, back="/auto/check")}{_aiplus_card(ap, e, human_bytes)}{builds_html}"
+                + f"<span class='muted'></span></form>{test_html}{_model_card(ae.model_status(), e, back='/auto/check')}{_aiplus_card(ap, e, human_bytes)}{builds_html}"
                 f"<div class='row' style='margin-top:14px'><a class='btn btn2' href='/auto'>Back</a></div>")
         return page("Check this PC", body)
 
