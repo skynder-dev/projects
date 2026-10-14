@@ -370,7 +370,7 @@ def wait_server_up(seconds=30,proc=None):
 
 def spawn_app(no_browser=False):
     pyw=HOME/'.venv'/'Scripts'/'pythonw.exe'; py=HOME/'.venv'/'Scripts'/'python.exe'; exe=pyw if pyw.exists() else py; main=HOME/'app'/'main.py'
-    if not exe.exists() or not main.exists(): raise RuntimeError('Archivist installation is incomplete')
+    if not exe.exists() or not main.exists(): raise RuntimeError('MediaEngine installation is incomplete')
     env=os.environ.copy(); env['ARCHIVIST_HOME']=str(HOME); env['ARCHIVIST_V2_CHILD']='1'
     if no_browser: env['ARCHIVIST_SUPPRESS_BROWSER']='1'
     else: env.pop('ARCHIVIST_SUPPRESS_BROWSER',None)

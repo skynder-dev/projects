@@ -113,7 +113,7 @@ def recover_job(job_id,reason="stalled",allow_app_restart=True,report=True):
         with db() as con:
             con.execute("""UPDATE jobs SET watchdog_app_restarts=?,watchdog_retry_requested=?,
                            watchdog_last_action='app_restart',watchdog_last_incident_at=?,progress_at=?,heartbeat_at=?,
-                           message='Job stalled repeatedly; restarting Archivist automatically…' WHERE id=?""",
+                           message='Job stalled repeatedly; restarting MediaEngine automatically…' WHERE id=?""",
                         (app_count,retry_code,ts,ts,ts,int(job_id)));con.commit()
         if str(job.get("kind"))=="convert":terminate_current_process(int(job_id))
         _record(job,"app_restart",reason,proc_count,app_count,report)

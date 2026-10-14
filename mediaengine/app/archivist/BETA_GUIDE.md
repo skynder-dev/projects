@@ -1,6 +1,6 @@
-# Archivist Beta Guide
+# MediaEngine Beta Guide
 
-Archivist is local-first. Your media stays on this PC unless you explicitly connect a provider or enable an optional cloud workflow.
+MediaEngine is local-first. Your media stays on this PC unless you explicitly connect a provider or enable an optional cloud workflow.
 
 No external account or billing is required for local use.
 
@@ -41,11 +41,11 @@ they were). Changing them later makes a new version quickly.
 
 Nothing leaves this PC by default. If you explicitly connect a provider or start an optional upload, authentication data, selected uploads, and provider analytics can be sent to that service.
 
-Provider credentials belong in Windows Credential Manager, not Archivist SQLite or Supabase.
+Provider credentials belong in Windows Credential Manager, not MediaEngine SQLite or Supabase.
 
 Cloud Vault is off by default. Its upload modes are exports only, selected media, or full archive mirror. Enabling cloud never deletes local or source originals.
 
-Provider analytics retain source provenance and are descriptive. Archivist does not automatically choose a cross-provider winner or create an opaque ranking.
+Provider analytics retain source provenance and are descriptive. MediaEngine does not automatically choose a cross-provider winner or create an opaque ranking.
 
 ## Recovery and support
 

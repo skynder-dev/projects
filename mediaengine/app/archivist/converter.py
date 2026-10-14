@@ -358,7 +358,7 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
                         _job_update(job_id,stage="watchdog_retry",message=f"Converter stalled; process restarted automatically · {index}/{len(ordered)}",error=None)
                         continue
                     if request==2:
-                        _job_update(job_id,stage="watchdog_app_restart",message="Converter stalled; restarting Archivist automatically…",error=None)
+                        _job_update(job_id,stage="watchdog_app_restart",message="Converter stalled; restarting MediaEngine automatically…",error=None)
                         return
                     failed += 1
                     outputs.append({"source": str(src), "error": str(exc)[:1000]})

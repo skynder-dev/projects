@@ -243,7 +243,7 @@ def create_manual_handoff(media_path,title="",platform_target="",caption_text=""
         "upload_performed":False,
         "official_connector_used":False,
         "credentials_used":False,
-        "instructions":"Use the rendered media path and metadata in this manifest for manual upload. Archivist did not contact a social platform."
+        "instructions":"Use the rendered media path and metadata in this manifest for manual upload. MediaEngine did not contact a social platform."
     }
     tmp=dest.with_suffix(dest.suffix+".tmp")
     tmp.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")

@@ -24,8 +24,9 @@ APP_PHRASES: dict[str, str] = {
     ". Local-folder files stay in place; Android/SD files copy to Staging. Private and Rejected media never appear in Library.":
         ". Файлы из папок остаются на месте; файлы с Android/SD копируются в промежуточную папку (Staging). Личное (Private) и отклонённое (Rejected) никогда не попадают в библиотеку.",
     "This is a separate MediaEngine install.": "Это отдельная установка MediaEngine.",
-    "The library of your working Archivist is not shown here and is not changed. To make a reel from a folder of videos, use Auto Edit.":
-        "Библиотека твоего рабочего Archivist здесь не показывается и не меняется. Чтобы сделать ролик из папки с видео, открой «Автомонтаж».",
+    "The Library is empty.": "Библиотека пуста.",
+    "Add a folder on Import, or make a reel straight from a folder of videos with Auto Edit.":
+        "Добавь папку в «Импорте» или сразу собери ролик из папки с видео в «Автомонтаже».",
     "analysis": "анализ", "cutting": "нарезка", "joining": "склейка", "reel": "ролик",
     "on": "включены", "files changed or incomplete - not used": "файлы изменены или неполные — не используются",
     "missing - HDR video will look grey": "нет — HDR-видео будет серым",
@@ -63,7 +64,7 @@ APP_PHRASES: dict[str, str] = {
     "Update health checks can restore the previous build when a new release fails to start. Recovery does not weaken privacy settings and never deletes source originals.":
         "Если новая версия не запускается, проверка при обновлении возвращает прежнюю. Восстановление не ослабляет приватность и никогда не удаляет оригиналы.",
     "Support bundle ready": "Пакет для поддержки готов", "Support bundle created locally": "Пакет для поддержки создан на компьютере",
-    "Location: Archivist local data/support folder. Nothing was uploaded.": "Где: папка data/support в данных программы. Ничего не отправлено.",
+    "Location: MediaEngine local data/support folder. Nothing was uploaded.": "Где: папка data/support в данных программы. Ничего не отправлено.",
     "Back to Help": "Назад в помощь",
     "Support data": "Данные для поддержки", "Beta support": "Поддержка (бета)",
     "Create a local support bundle": "Собрать пакет для поддержки на этом компьютере", "Create support bundle": "Собрать пакет для поддержки",
@@ -75,13 +76,13 @@ APP_PHRASES: dict[str, str] = {
     "Diagnostics stay local by default. They are for local troubleshooting and release acceptance unless you explicitly choose to share diagnostic information.":
         "Диагностика остаётся на компьютере. Она нужна для разбора проблем и проверки версий, пока ты сам не решишь ею поделиться.",
     "Review Connections": "Проверить подключения", "Open bundled Beta Guide": "Открыть руководство (бета)",
-    "Archivist Beta Guide": "Руководство MediaEngine (бета)", "Beta guide": "Руководство (бета)",
+    "MediaEngine Beta Guide": "Руководство MediaEngine (бета)", "Beta guide": "Руководство (бета)",
     "Bundled local-first beta guidance from this installed build.": "Руководство, встроенное в эту версию.",
     # ---- welcome
     "A reel from your own videos:": "Ролик из своих видео:",
     "open Auto Edit, choose a folder (or single videos), pick length, format and sound.": "открой «Автомонтаж», выбери папку (или отдельные видео), длину, формат и звук.",
     "First run": "Первый запуск", "Start local. Add only what you need.": "Начни на компьютере. Добавляй только нужное.",
-    "Archivist is local-first. Your media stays on this PC unless you explicitly connect a provider or enable an optional cloud workflow.":
+    "MediaEngine is local-first. Your media stays on this PC unless you explicitly connect a provider or enable an optional cloud workflow.":
         "Всё работает на компьютере. Твои видео остаются здесь, пока ты сам не подключишь сервис или облако.",
     "1 · Add a media source": "1 · Добавь источник видео", "2 · Review optional connections": "2 · Посмотри необязательные подключения",
     "3 · Help & recovery": "3 · Помощь и восстановление", "Manage sources": "Источники", "Review privacy": "Приватность",
@@ -94,7 +95,7 @@ APP_PHRASES: dict[str, str] = {
         "Будущие задачи по желанию, которые нельзя или не стоит делать на компьютере.",
     "Optional backup, mirror and cross-device recovery.": "Резервная копия, зеркало и восстановление на другом устройстве — по желанию.",
     "Media-source phones and future Social Device Lab handoff/QA.": "Телефоны как источник видео и будущая проверка публикаций.",
-    "Cost": "Стоимость", "Data": "Данные", "Status": "Состояние", "No Archivist fee": "Программа бесплатна",
+    "Cost": "Стоимость", "Data": "Данные", "Status": "Состояние", "No MediaEngine fee": "Программа бесплатна",
     "Platform/provider rules apply": "Действуют правила платформы", "Provider charges may apply": "Сервис может брать плату",
     "Provider/model charges may apply": "Сервис или модель могут брать плату", "Manage locally": "Управляется на компьютере",
     "Media stays on this device by default.": "Видео остаются на этом устройстве.",
@@ -109,24 +110,24 @@ APP_PHRASES: dict[str, str] = {
     "Cloud, social-provider and online-AI features are optional. They stay off or unconfigured until you explicitly enable or connect them.":
         "Облако, соцсети и онлайн-ИИ — по желанию. Они выключены, пока ты сам их не включишь.",
     "Analytics boundary": "Границы аналитики",
-    "Provider analytics keep their source provenance and remain descriptive. Archivist does not automatically choose a cross-provider winner or create an opaque ranking.":
+    "Provider analytics keep their source provenance and remain descriptive. MediaEngine does not automatically choose a cross-provider winner or create an opaque ranking.":
         "Аналитика сервисов показывается как есть, с указанием источника. Программа сама не выбирает «победителя» и не строит скрытых рейтингов.",
     "Nothing leaves this PC by default. If you explicitly connect a provider or start an optional upload, authentication data, selected uploads, and provider analytics can be sent to that service.":
         "По умолчанию ничего не уходит с компьютера. Если ты подключишь сервис или начнёшь загрузку, этому сервису уйдут данные входа, выбранные файлы и его аналитика.",
-    "Provider credentials belong in Windows Credential Manager, not Archivist SQLite or Supabase. Cloud Vault is off by default and enabling cloud never deletes local or source originals.":
+    "Provider credentials belong in Windows Credential Manager, not MediaEngine SQLite or Supabase. Cloud Vault is off by default and enabling cloud never deletes local or source originals.":
         "Пароли сервисов хранятся в диспетчере учётных данных Windows, а не в базе программы. Облако выключено; его включение никогда не удаляет файлы на компьютере и оригиналы.",
     # ---- about
     "About": "О программе", "Why we built it": "Зачем это сделано", "Who is building it": "Кто делает",
-    "Your footage may already be spread across phones, cameras, cards and old folders while the useful moments stay buried inside thousands of files. Archivist is a private workspace designed to turn that mess into a usable creative library.":
+    "Your footage may already be spread across phones, cameras, cards and old folders while the useful moments stay buried inside thousands of files. MediaEngine is a private workspace designed to turn that mess into a usable creative library.":
         "Съёмки разбросаны по телефонам, камерам, картам и старым папкам, а хорошие моменты теряются в тысячах файлов. Эта программа — личная мастерская, которая превращает этот беспорядок в удобную библиотеку.",
     "local-first": "всё на компьютере", "privacy-first": "приватность прежде всего", "AI-assisted": "с помощью ИИ", "built for video": "для видео",
     "Built local-first": "Сделано для работы на компьютере",
-    "Archivist is being shaped around real mixed-device media workflows: explicit import, source safety, private local analysis, nondestructive editing and clear control over every optional external connection.":
+    "MediaEngine is being shaped around real mixed-device media workflows: explicit import, source safety, private local analysis, nondestructive editing and clear control over every optional external connection.":
         "Программа строится вокруг реальной работы с разными устройствами: явный импорт, сохранность оригиналов, приватный анализ на компьютере, монтаж без порчи файлов и полный контроль над внешними подключениями.",
     "The product identity is installation-neutral: no personal paths, devices, accounts or credentials are built into defaults.":
         "В программу не встроены ничьи личные пути, устройства, аккаунты или пароли.",
     "The idea": "Идея", "One place between the camera and the final story.": "Одно место между камерой и готовой историей.",
-    "We do not want another photo viewer. We want Archivist to remember what we chose, protect what must stay private, understand what is inside long videos, and surface the clips that are actually worth using.":
+    "We do not want another photo viewer. We want MediaEngine to remember what we chose, protect what must stay private, understand what is inside long videos, and surface the clips that are actually worth using.":
         "Нам не нужен ещё один просмотрщик. Программа должна помнить наш выбор, защищать личное, понимать, что внутри длинных видео, и находить моменты, которые действительно стоит использовать.",
     "Keep the originals safe": "Оригиналы в сохранности",
     "Phone, SD and camera originals are never automatically deleted or rewritten.": "Оригиналы с телефона, SD и камеры никогда не удаляются и не перезаписываются сами.",
@@ -149,7 +150,7 @@ APP_PHRASES: dict[str, str] = {
     "A technically beautiful clip can still be private or need a rights review.": "Технически красивый клип может быть личным или требовать проверки прав.",
     "No mystery copies.": "Никаких тайных копий.", "Import is explicit. Library means the local working set.": "Импорт — только явный. Библиотека — это рабочий набор на компьютере.",
     "No automatic source cleanup.": "Источники сами не чистятся.",
-    "Disconnect only after Archivist explicitly says the source is safe to disconnect.": "Отключай носитель только после того, как программа скажет, что можно.",
+    "Disconnect only after MediaEngine explicitly says the source is safe to disconnect.": "Отключай носитель только после того, как программа скажет, что можно.",
     "No fake certainty.": "Никакой ложной уверенности.",
     "Rights Guard flags risk and context; it does not pretend every venue question has a simple legal yes/no answer.":
         "Проверка прав отмечает риски, но не делает вид, что на любой вопрос есть простой юридический ответ «да/нет».",
@@ -175,7 +176,7 @@ APP_PHRASES: dict[str, str] = {
     "Provider connections are local-first. This page never asks ordinary users for API secrets.":
         "Подключения сервисов — под твоим контролем. Эта страница не просит ключей API.",
     "What can leave this PC": "Что может уйти с компьютера",
-    "Connecting a provider can send authentication data, selected uploads, and provider analytics to that service. Provider credentials stay in Windows Credential Manager, not Archivist SQLite or Supabase. Nothing is connected automatically.":
+    "Connecting a provider can send authentication data, selected uploads, and provider analytics to that service. Provider credentials stay in Windows Credential Manager, not MediaEngine SQLite or Supabase. Nothing is connected automatically.":
         "При подключении сервиса ему могут уйти данные входа, выбранные файлы и его аналитика. Пароли хранятся в диспетчере учётных данных Windows, не в базе программы. Само ничего не подключается.",
     "Manual fallback": "Вручную", "Manual handoff": "Ручная передача", "Analytics CSV": "Аналитика из CSV",
     "Manual handoff and Analytics CSV remain available while official provider OAuth is blocked or not registered.":
@@ -239,7 +240,7 @@ APP_PHRASES: dict[str, str] = {
     "Select videos to see estimated output size.": "Выбери видео, чтобы увидеть примерный размер.", "Convert selected": "Конвертировать выбранные",
     "Converted": "Готово",
     "Search your footage": "Поиск по съёмкам", "Local Search / M7": "Поиск на компьютере",
-    "Describe useful properties of the media. Search runs locally and uses Archivist's existing Media Brain and catalog signals.":
+    "Describe useful properties of the media. Search runs locally and uses MediaEngine's existing Media Brain and catalog signals.":
         "Опиши, что ищешь. Поиск идёт на компьютере по данным анализа и каталога.",
     "e.g. best vertical high-motion videos": "например: лучшие вертикальные видео с движением",
     "Best vertical": "Лучшие вертикальные", "Dark / night": "Тёмные / ночь", "Drone": "Дрон", "High motion": "Много движения", "Long Android": "Длинные с Android",
@@ -353,7 +354,7 @@ APP_PHRASES: dict[str, str] = {
     "Create a local manifest for manual upload. No provider API, token or automatic publishing is used.":
         "Создаёт файл-описание для ручной загрузки. Никаких ключей и автопубликаций.",
     "Privacy boundary:": "Граница приватности:",
-    "Publication history and detailed novelty signals stay in the local Archivist database. No raw media or fingerprints are sent to Supabase.":
+    "Publication history and detailed novelty signals stay in the local MediaEngine database. No raw media or fingerprints are sent to Supabase.":
         "История публикаций и данные проверок остаются в базе на компьютере. Видео и отпечатки никуда не отправляются.",
     "Experiments": "Эксперименты", "M11 / Local experiments": "Эксперименты на компьютере",
     "Plan metadata variants and record manual/import performance results locally. No social account or publishing connector is used.":
@@ -361,7 +362,7 @@ APP_PHRASES: dict[str, str] = {
     "Experiment title": "Название эксперимента", "Objective / hypothesis": "Цель / гипотеза", "Create": "Создать",
     "No experiments yet.": "Экспериментов пока нет.", "Back to Social Lab": "Назад в Social Lab",
     "Experiment": "Эксперимент", "M11 / Experiment": "Эксперимент", "Add variant": "Добавить вариант", "Record manual result": "Записать результат вручную",
-    "Derived metric summaries": "Сводка показателей", "Descriptive totals and rates only. Archivist does not rank variants or choose a winner.":
+    "Derived metric summaries": "Сводка показателей", "Descriptive totals and rates only. MediaEngine does not rank variants or choose a winner.":
         "Только суммы и доли. Программа не ранжирует варианты и не выбирает победителя.",
     "CSV import preview": "Предпросмотр импорта CSV",
     "Required: variant_id plus at least one metric column. Preview never writes data; confirm import is a separate step. Max 200 rows / 128 KiB.":
@@ -371,7 +372,7 @@ APP_PHRASES: dict[str, str] = {
     "Views": "Просмотры", "Likes": "Лайки", "Comments": "Комментарии", "Shares": "Репосты", "Saves": "Сохранения", "Avg view s": "Средний просмотр, с",
     "3s retention %": "Удержание 3 с, %", "Completion %": "Досмотры, %",
     "Manual social handoff": "Ручная передача в соцсети", "M12 / Safe fallback": "Безопасный ручной вариант",
-    "Generate a local JSON manifest beside your workflow. Archivist does not upload media, call a provider API or use credentials.":
+    "Generate a local JSON manifest beside your workflow. MediaEngine does not upload media, call a provider API or use credentials.":
         "Создаёт JSON-описание на компьютере. Программа не загружает видео и не использует пароли.",
     "No automatic publishing.": "Никаких автопубликаций.", "Caption / notes": "Подпись / заметки", "Create local handoff manifest": "Создать описание для передачи",
 
@@ -383,10 +384,10 @@ APP_PHRASES: dict[str, str] = {
     "Discovery paused while a foreground job is running": "Поиск на паузе, пока идёт задача", "Idle": "Ожидание", "Excluded": "Исключено",
     "Analyzing local/staged files": "Анализирую файлы", "Archiving": "Архивирую", "Building virtual clips + Smart Crop": "Создаю клипы и кадрирование",
     "Conversion cancelled": "Конвертация отменена", "Conversion interrupted by app restart. Start it again.": "Конвертация прервана перезапуском. Запусти снова.",
-    "Converter stalled; restarting Archivist automatically…": "Конвертация зависла; перезапускаю программу…", "Importing selected files": "Импортирую выбранные файлы",
+    "Converter stalled; restarting MediaEngine automatically…": "Конвертация зависла; перезапускаю программу…", "Importing selected files": "Импортирую выбранные файлы",
     "Moving rejected staging copies to quarantine": "Переношу отклонённые копии в карантин", "Moving/marking private items": "Отмечаю личное",
     "Resuming conversion after restart…": "Продолжаю конвертацию после перезапуска…", "Unknown job kind": "Неизвестный тип задачи",
-    "Cancelling after current operation…": "Отменю после текущего шага…", "Job stalled repeatedly; restarting Archivist automatically…": "Задача несколько раз зависла; перезапускаю программу…",
+    "Cancelling after current operation…": "Отменю после текущего шага…", "Job stalled repeatedly; restarting MediaEngine automatically…": "Задача несколько раз зависла; перезапускаю программу…",
     "Process stalled; restarting automatically…": "Процесс завис; перезапускаю…", "Stopped after automatic recovery attempts": "Остановлено после попыток восстановления",
     # ---- filter / sort options
     "All accessible videos": "Все доступные видео", "All local sources": "Все источники на компьютере", "All source items": "Все файлы источников",
@@ -420,9 +421,9 @@ APP_PHRASES: dict[str, str] = {
         "Оценка появится, когда выберешь видео и пресет.", "No compression preset is selected yet.": "Пресет ещё не выбран.",
     "Rechecking…": "Проверяю…", "Source recheck started": "Проверка источников запущена", "open Help & Recovery": "открой «Помощь и восстановление»",
     "status unavailable": "состояние недоступно", "MediaEngine is closed. You can close this window.": "MediaEngine закрыт. Окно можно закрыть.",
-    "Archivist is taking longer than expected. Start it again from the desktop shortcut; startup health-check will roll back a bad release.":
+    "MediaEngine is taking longer than expected. Start it again from the desktop shortcut; startup health-check will roll back a bad release.":
         "MediaEngine запускается дольше обычного. Запусти его снова с ярлыка; если новая версия не поднимется, вернётся прежняя.",
-    "Preview generation is temporarily unavailable for this file. Archivist will retry later.": "Превью для этого файла пока не получилось. Программа попробует позже.",
+    "Preview generation is temporarily unavailable for this file. MediaEngine will retry later.": "Превью для этого файла пока не получилось. Программа попробует позже.",
     "No folder chosen. You can also paste the path.": "Папка не выбрана. Можно вставить путь вручную.", "No folder chosen.": "Папка не выбрана.",
     "No videos chosen.": "Видео не выбраны.", "Build or save a trajectory first": "Сначала построй или сохрани траекторию",
     "Clip or crop plan not found": "Клип или план кадрирования не найден", "Local video file is unavailable": "Видеофайл на компьютере недоступен",
@@ -499,8 +500,8 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"Job #(\d+) · (.+)", r"Задача №\1 · \2"),
     (r"quality (\S+)( [\d.]+)?", r"качество ⟦\1⟧\2"), (r"rights (\S+)", r"права ⟦\1⟧"),
     (r"([\w .()-]{1,40}) connected", r"\1 подключён"), (r"Discovering · (.*)", r"Поиск · \1"), (r"(\d+) found", r"найдено: \1"),
-    (r"Updating Archivist… current tab will reconnect\.", r"Обновляю MediaEngine… вкладка переподключится сама."),
-    (r"Restarting Archivist… current tab will reconnect\.", r"Перезапускаю MediaEngine… вкладка переподключится сама."),
+    (r"Updating MediaEngine… current tab will reconnect\.", r"Обновляю MediaEngine… вкладка переподключится сама."),
+    (r"Restarting MediaEngine… current tab will reconnect\.", r"Перезапускаю MediaEngine… вкладка переподключится сама."),
     (r"SOURCE SAFE TO DISCONNECT · (.*)", r"ИСТОЧНИК МОЖНО ОТКЛЮЧИТЬ · \1"), (r"(.*) · (\d+) error\(s\)", r"\1 · ошибок: \2"),
     (r"ERROR: (.*)", r"ОШИБКА: \1"), (r"(\d+)/(\d+) clips", r"\1/\2 клипов"),
     (r"(\d+) videos? · ([\d.]+ [KMGT]?B) · choose a preset", r"видео: \1 · \2 · выбери пресет"),

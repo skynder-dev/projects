@@ -1338,7 +1338,7 @@ def _beta100_readiness_contract():
     from . import beta_readiness
     expected = {
         '/welcome': [
-            'Archivist is local-first',
+            'MediaEngine is local-first',
             'No external account or billing is required for local use',
             'Nothing leaves this PC by default',
             'Windows Credential Manager',
@@ -1353,7 +1353,7 @@ def _beta100_readiness_contract():
             'What can leave this PC',
             'authentication data, selected uploads, and provider analytics',
             'Windows Credential Manager',
-            'not Archivist SQLite or Supabase',
+            'not MediaEngine SQLite or Supabase',
             'Manual fallback',
         ],
         '/help': [
@@ -1364,7 +1364,7 @@ def _beta100_readiness_contract():
             'Open bundled Beta Guide',
         ],
         '/help/guide': [
-            'Archivist Beta Guide',
+            'MediaEngine Beta Guide',
             'Nothing leaves this PC by default',
             'Raw media and tokens are excluded by default',
             'does not automatically choose a cross-provider winner',

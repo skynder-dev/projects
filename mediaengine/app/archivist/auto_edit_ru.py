@@ -318,8 +318,6 @@ PHRASES = {
         "ещё не скачана — кнопка «Скачать модель ИИ» ниже (30 МБ); до этого только ролики «Только техника»",
     "files changed or incomplete - not used; download the AI model again below":
         "файлы изменены или неполные — не используется; скачай модель ИИ ещё раз ниже",
-    " selection. If you have the model (for example in an existing Archivist install), choose its folder: the exact files are verified and copied here.":
-        ". Если модель есть (например, в установленном раньше Archivist, D:\\Archivist), выбери её папку: файлы проверяются на точное совпадение и копируются сюда.",
     "· source ": "· исходник ", "Revision R": "Версия R", "Horizontal ·": "Горизонтально ·", "Vertical ·": "Вертикально ·",
     " excluded": " убрано", "· sound auto": "· звук авто", "· sound mute": "· без звука", "· sound source": "· звук исходника",
     "· sound Авто": "· звук Авто", "· sound Auto": "· звук Авто", "· sound Mute": "· без звука", "· sound Source": "· звук исходника",
