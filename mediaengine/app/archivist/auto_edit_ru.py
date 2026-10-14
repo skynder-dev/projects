@@ -298,7 +298,8 @@ PHRASES = {
     "Back": "Назад", "Could not continue": "Не получилось продолжить",
     # mixed lines and labels
     "Social HD · vertical 1080×1920": "Social HD · вертикально 1080×1920", "Vertical 540×960": "Вертикально 540×960",
-    "Horizontal 960×540": "Горизонтально 960×540", " · recommended": " · рекомендуется", ", total ": ", всего ",
+    "Horizontal 960×540": "Горизонтально 960×540",
+    "Horizontal Full HD 1920×1080 (TV, YouTube)": "Горизонтально 1920×1080 (телевизор, YouTube)", "Horizontal HD": "Горизонтально HD", " · recommended": " · рекомендуется", ", total ": ", всего ",
     "Only ": "Всего ", "Without it MediaEngine can only use the ": "Без неё MediaEngine умеет только режим ",
     " selection (sharpness, motion, exposure); it does not understand what happens in the video.":
         " (резкость, движение, свет); что происходит в кадре, он не понимает.",

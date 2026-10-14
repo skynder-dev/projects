@@ -234,6 +234,15 @@ def app_part(work, src, music, check):
         j4 = wait(j4[0]["id"]) if j4 else {"status": "missing"}
         rev4 = ae.revision(j4.get("revision_id") or 0) if j4.get("status") == "done" else None
         check("removing_music_and_title_gives_the_plain_reel", rev4 and rev4["result"].get("dress") is None, (j4.get("status"), j4.get("error")))
+        # horizontal Full HD 1920x1080 (offered since 2026-10-13), with the title drawn for that size
+        before = {x["id"] for x in ae.project(pid)["jobs"]}
+        c.post(f"/auto/p/{pid}/variant", data={"base_revision_id": rev1["id"], "length": "15", "format": "horizontal_hd", "sound": "auto",
+                                               "mode": "technical", "reel_title": "Наше лето", "reel_subtitle": "", "music": "", "music_mode": "mix"}, headers=H)
+        j5 = [x for x in ae.project(pid)["jobs"] if x["id"] not in before]
+        j5 = wait(j5[0]["id"]) if j5 else {"status": "missing"}
+        rev5 = ae.revision(j5.get("revision_id") or 0) if j5.get("status") == "done" else None
+        check("horizontal_full_hd_variant", rev5 and (rev5["width"], rev5["height"]) == (1920, 1080) and rev5["result"]["dress"]["title_shown"],
+              (j5.get("status"), j5.get("error"), rev5 and (rev5["width"], rev5["height"])))
         r = c.post("/auto/create", data={"folder": str(src), "length": "15", "format": "vertical", "sound": "auto", "mode": "technical",
                                          "music": str(work / "nope.mp3")}, headers=H)
         check("missing_music_refused_before_building", r.status_code != 302 and b"Music file not found" in r.data, r.status_code)

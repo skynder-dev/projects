@@ -141,8 +141,9 @@ def main():
     r, _ = run("d", 15)
     check("damaged_segment_cache_rebuilt", segs and r and r["status"] == "PASS", segs[:1])
 
-    r, cp = run("e", 15, ["--profile", "16x9", "--resolution", "social_hd"], expect_ok=False)
-    check("social_hd_is_vertical_only", r is None and "PRESET_NOT_ACCEPTED" in (cp.stdout + cp.stderr), cp.stderr[-300:])
+    r, cp = run("e", 15, ["--profile", "16x9", "--resolution", "social_hd"])
+    check("horizontal_full_hd_1920x1080", r and r["status"] == "PASS" and (r["output"]["width"], r["output"]["height"]) == (1920, 1080),
+          (r and r.get("output"), cp.stderr[-300:]))
 
     # phone / camera files: rotated portrait, HEVC .MOV 60 fps, VFR, no audio, very short, Cyrillic names
     phone = fx / "phone"

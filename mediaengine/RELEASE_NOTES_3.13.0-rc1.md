@@ -122,6 +122,12 @@ celebrations, pets, action; bad: boring, blurry, accidental, dark, dashboard, no
 - Safety: a link opened from outside the app (e-mail, chat, a document) can no longer make MediaEngine open a
   network share (Windows would send its sign-in to that server); pasting a network path in the app still works.
 
+## Horizontal Full HD 1920×1080
+
+A fourth format next to Social HD 1080×1920, vertical 540×960 and horizontal 960×540: **horizontal 1920×1080** for a
+TV and YouTube (the engine's own size; it was refused before because it was not in the accepted list - the owner
+asked for it, 2026-10-13). Titles are drawn for that size too. Checked in CI (robustness + the music/title check).
+
 ## Own music and a title (optional)
 
 - "Music and title" on the new-reel page and for every variant: a title and a second line (the shooting date with

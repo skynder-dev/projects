@@ -1105,8 +1105,7 @@ def run(args):
     final_video=output_dir/"MediaEngine Reel.mp4"; final_result=output_dir/"MediaEngine Result.json"
     if final_video.exists() or final_result.exists(): raise RuntimeError("OUTPUT_ALREADY_EXISTS")
 
-    if str(args.resolution)=="social_hd" and str(args.profile)=="16x9":
-        raise RuntimeError("PRESET_NOT_ACCEPTED:social_hd is vertical 1080x1920 only")
+    # 16x9 + social_hd = horizontal Full HD 1920x1080 (the engine's own size; offered since the owner asked, 2026-10-13)
     v52=load_module("medeng_targeted_auto_edit_v26",runtime/"medeng_targeted_auto_edit_v26.py")
     dress=load_dress(getattr(args,"dress",""),v52.FFMPEG)   # title / own music: a bad music file is refused now, not after the build
     skipped_inputs=[]; warnings=[]

@@ -70,6 +70,8 @@ What a user can do (code: `app/archivist/auto_edit.py`, `auto_edit_web.py`, engi
   original fp32 model 85.8 %, so int8 loses ~nothing); plain landscape scenes — no advantage (86 % vs 89 %).
   Speed (CI runners): 0.4–2.5 s per frame looked at depending on the CPU, up to 48 frames per video; threads tuned
   from lab measurements; what AI+ saw in a video is kept once for all projects.
+- **Horizontal Full HD 1920×1080 (2026-10-13)**: a fourth format (TV, YouTube); the R3 refusal of 16x9 + social_hd
+  is removed (the engine's own size), robustness check builds it.
 - **Own music and a title (optional, 2026-10-13)**: "Music and title" on the new-reel page and for every variant —
   title + second line for the first 3 s, your own song (with the videos' quieter sound or only music; loudness-
   normalised, fades, seamless repeats), all in the reel's single final encode; nothing set = the reel as before.

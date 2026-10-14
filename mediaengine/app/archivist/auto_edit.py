@@ -32,6 +32,8 @@ FORMATS = {
     "social_hd": {"profile": "9x16", "resolution": "social_hd", "label": "Social HD · vertical 1080×1920", "short": "Social HD", "size": (1080, 1920)},
     "vertical": {"profile": "9x16", "resolution": "standard", "label": "Vertical 540×960", "short": "Vertical", "size": (540, 960)},
     "horizontal": {"profile": "16x9", "resolution": "standard", "label": "Horizontal 960×540", "short": "Horizontal", "size": (960, 540)},
+    "horizontal_hd": {"profile": "16x9", "resolution": "social_hd", "label": "Horizontal Full HD 1920×1080 (TV, YouTube)",
+                      "short": "Horizontal HD", "size": (1920, 1080)},
 }
 SOUNDS = {"auto": "Auto (keep source sound, mute if it jumps)", "source": "Source sound", "mute": "Mute"}
 LENGTHS = (5, 15, 30, 60)
