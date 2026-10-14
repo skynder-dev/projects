@@ -394,7 +394,10 @@ def main():
         return 0
     # Manual launch while already running should only focus/open the existing web app - unless the running one is
     # ANOTHER build (e.g. the previous version after installing a new one): then offer to switch.
-    if server_alive() and not (force or restart or install_version):
+    # patient check (2 s): a MediaEngine that has just started (or a busy PC with a virus scanner) can take longer than
+    # a blink to answer - taken for "nothing runs", this launcher started its own app on the busy port, which exited,
+    # and the switch to this build never happened (seen in CI b80 / b88)
+    if (server_alive() or server_alive(timeout=2)) and not (force or restart or install_version):
         other=running_install()
         answer=os.environ.get('MEDIAENGINE_SWITCH_ANSWER','').lower()     # automated checks answer instead of a person
         if not SIDE_BY_SIDE or other is None or (other and same_folder(other,HOME)) or (no_browser and not answer):
@@ -433,6 +436,12 @@ def main():
     else: after=before if restart else check_update(force=force)
     proc=spawn_app(no_browser=True)
     if wait_server_up(30,proc):
+        other=running_install()
+        if proc.poll() is not None and other and not same_folder(other,HOME):
+            # our app could not take the port: another build answers there (it started at the same moment)
+            write_status(status='start_failed_other_running',version=current_version(),running=other)
+            if not no_browser: open_user_interface(force_browser=force_browser)
+            return 1
         write_status(status='running',version=current_version(),update_check=LAST_UPDATE_CHECK)
         if not no_browser: open_user_interface(force_browser=force_browser)
         return 0
