@@ -1,0 +1,50 @@
+name: mediaengine-probe
+# Quick diagnostics on a real Windows runner (manual start only): runs one test script against the synthetic fixtures
+# and publishes its JSON to branch mediaengine-probe-results. No owner media, no secrets.
+on:
+  workflow_dispatch:
+    inputs:
+      script:
+        description: 'script in mediaengine/tests (args: fixtures, work dir, out json)'
+        required: true
+        default: 'beat_probe.py'
+permissions:
+  contents: write
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    env:
+      PYTHONUTF8: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned environment
+        shell: pwsh
+        run: python -m pip install --disable-pip-version-check -q -r mediaengine/requirements.txt
+      - name: Fixtures and the probe
+        shell: pwsh
+        env:
+          SCRIPT: ${{ github.event.inputs.script }}
+        run: |
+          New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\out" | Out-Null
+          python mediaengine/tests/make_fixtures.py "$env:RUNNER_TEMP\fx" | Out-Null
+          python "mediaengine/tests/$env:SCRIPT" "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\probe" "$env:RUNNER_TEMP\out\probe.json" 2>&1 | Tee-Object "$env:RUNNER_TEMP\out\probe.txt"
+      - name: Publish to branch mediaengine-probe-results
+        if: success() || failure()
+        shell: bash
+        env:
+          RUN_ID: ${{ github.run_id }}
+          SRC_SHA: ${{ github.sha }}
+        run: |
+          pub="$RUNNER_TEMP/pub"; rm -rf "$pub"; mkdir -p "$pub/latest"
+          cp "$RUNNER_TEMP"/out/* "$pub/latest/" 2>/dev/null || true
+          printf 'sha=%s\nrun=%s\n' "$SRC_SHA" "$RUN_ID" > "$pub/latest/RUN.txt"
+          cd "$pub"; git init -q; git checkout -q -b mediaengine-probe-results
+          git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
+          git add -A; git commit -q -m "mediaengine probe $RUN_ID ($SRC_SHA)"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" mediaengine-probe-results

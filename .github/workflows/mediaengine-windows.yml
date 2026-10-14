@@ -17,6 +17,7 @@ on:
       - '!mediaengine/tests/real_footage_manifest.json'
       - '!mediaengine/tests/real_music_check.py'      # mediaengine-realmusic.yml
       - '!mediaengine/tests/real_music_manifest.json'
+      - '!mediaengine/tests/beat_probe.py'           # mediaengine-probe.yml (manual)
       - '.github/workflows/mediaengine-windows.yml'
   workflow_dispatch:
 permissions:
