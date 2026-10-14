@@ -12,9 +12,21 @@ def now_iso() -> str:
     return datetime.now().isoformat(timespec="seconds")
 
 
+_DIRS_AT = [0.0]
+
+
+def _fold(x):
+    """Case-insensitive search for every alphabet (SQLite's own LIKE folds only A-Z: "отпуск" did not find "Отпуск")."""
+    return str(x).casefold() if x is not None else None
+
+
 def connect() -> sqlite3.Connection:
-    ensure_dirs()
+    import time as _t
+    if _t.monotonic() - _DIRS_AT[0] > 60:      # the data folders: checked once a minute, not on every query
+        ensure_dirs()
+        _DIRS_AT[0] = _t.monotonic()
     con = sqlite3.connect(DB_PATH, timeout=30, check_same_thread=False)
+    con.create_function("fold", 1, _fold, deterministic=True)
     con.row_factory = sqlite3.Row
     con.execute("PRAGMA journal_mode=WAL")
     con.execute("PRAGMA foreign_keys=ON")

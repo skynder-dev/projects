@@ -44,6 +44,34 @@ def should_skip_dir(path: Path, ignore_noise: bool) -> bool:
     return any(seg in parts for seg in NOISE_SEGMENTS)
 
 
+def _own_folders() -> list[str]:
+    """MediaEngine's own folders (data: staging, private, rejected, exports, caches; the program; the archive): never
+    scanned as new media - a Private video would come back through Import, archived copies would look like duplicates."""
+    out = []
+    try:
+        from .config import HOME, INSTALL, load_config
+        roots = [HOME, INSTALL]
+        try:
+            ar = (load_config() or {}).get("archive_root")
+            if ar:
+                roots.append(Path(ar))
+        except Exception:
+            pass
+        for r in roots:
+            try:
+                out.append(os.path.normcase(str(Path(r).resolve())))
+            except Exception:
+                pass
+    except Exception:
+        pass
+    return out
+
+
+def _inside(path: str, roots: list[str]) -> bool:
+    p = os.path.normcase(path)
+    return any(p == r or p.startswith(r.rstrip("\\/") + os.sep) for r in roots)
+
+
 def walk_media(root: Path, ignore_noise=True, min_image_bytes=0, min_video_bytes=0, errors: list | None = None):
     if root.is_file():
         mt = media_type_for(root)
@@ -56,8 +84,16 @@ def walk_media(root: Path, ignore_noise=True, min_image_bytes=0, min_video_bytes
                 return
             yield root
         return
+    own = _own_folders()
     for dirpath, dirnames, filenames in os.walk(root, onerror=(errors.append if errors is not None else None)):
         dp = Path(dirpath)
+        try:
+            if own and _inside(str(dp.resolve()), own):
+                dirnames[:] = []
+                continue
+            dirnames[:] = [d for d in dirnames if not (own and _inside(str((dp / d).resolve()), own))]
+        except Exception:
+            pass
         if ignore_noise:
             # Only the folder's own name matters: a source root such as D:\Games\Clips or a path
             # under a "Temp" parent must not hide everything below it.
@@ -89,9 +125,25 @@ def sha256_file(path: Path, chunk=8 * 1024 * 1024) -> str:
     return h.hexdigest()
 
 
+_FF: list = []
+
+
 def _ffmpeg_exe() -> str | None:
+    """The FFmpeg that ships with MediaEngine (known version, every filter the engine uses); one found on PATH only
+    when that is missing - an old FFmpeg somewhere on the PC must not break reels at the last step."""
+    if _FF:
+        return _FF[0]
+    try:
+        import imageio_ffmpeg
+        exe = imageio_ffmpeg.get_ffmpeg_exe()
+        if exe and Path(exe).is_file():
+            _FF.append(exe)
+            return exe
+    except Exception:
+        pass
     p = shutil.which("ffmpeg")
     if p:
+        _FF.append(p)
         return p
     try:
         import imageio_ffmpeg
@@ -683,3 +735,57 @@ def analyze_combined(path: Path, media_type: str, privacy_enabled: bool = True,
         if media_type != "image" and tmp is not None:
             try: tmp.cleanup()
             except Exception: pass
+
+
+import time as _time
+
+_MP4_EPOCH = 2082844800          # seconds from 1904-01-01 (MP4 / QuickTime clock) to 1970-01-01
+
+
+def shot_time(p) -> float | None:
+    """When an MP4 / MOV video was recorded, from its own header (the 'mvhd' box), or None. Copying a video to the PC
+    often gives the file a new date; the header keeps the recording time. Reads a few small pieces of the file only."""
+    if Path(p).suffix.lower() not in (".mp4", ".mov", ".m4v", ".3gp"):
+        return None
+    try:
+        with open(p, "rb") as fh:
+            end = os.fstat(fh.fileno()).st_size
+            pos = 0
+            for _ in range(64):                       # top-level boxes: ftyp, mdat, moov, ... (moov may be at the end)
+                if pos + 8 > end:
+                    return None
+                fh.seek(pos)
+                hdr = fh.read(8)
+                size, typ, hl = int.from_bytes(hdr[:4], "big"), hdr[4:8], 8
+                if size == 1:
+                    size, hl = int.from_bytes(fh.read(8), "big"), 16
+                elif size == 0:
+                    size = end - pos
+                if size < hl:
+                    return None
+                if typ == b"moov":
+                    q, mend = pos + hl, min(end, pos + size)
+                    for _ in range(64):
+                        if q + 8 > mend:
+                            return None
+                        fh.seek(q)
+                        h2 = fh.read(8)
+                        s2, t2, hl2 = int.from_bytes(h2[:4], "big"), h2[4:8], 8
+                        if s2 == 1:
+                            s2, hl2 = int.from_bytes(fh.read(8), "big"), 16
+                        if s2 < hl2:
+                            return None
+                        if t2 == b"mvhd":
+                            body = fh.read(12)
+                            if len(body) < 8:
+                                return None
+                            ct = int.from_bytes(body[4:12], "big") if body[0] == 1 else int.from_bytes(body[4:8], "big")
+                            unix = ct - _MP4_EPOCH
+                            # 0 or nonsense (not set by the camera, or a date in the future): no recording time
+                            return float(unix) if 946684800 <= unix <= _time.time() + 86400 else None
+                        q += s2
+                    return None
+                pos += size
+    except (OSError, ValueError):
+        return None
+    return None

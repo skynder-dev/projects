@@ -197,12 +197,15 @@ def register(app, layout, e, human_bytes):
             exp = ae.export_row(p["last_export_id"]) if p.get("last_export_id") else None
             n_src = len(ae.project_inputs(p)) if p["source_present"] else 0
             acts = f"<a class='btn btn2' href='/auto/p/{p['id']}'>{'Review' if p['revisions'] else 'Open'}</a>"
-            if p["accepted_revision_id"]:
-                acts += f"<form method='post' action='/auto/p/{p['id']}/export' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(b=>b.disabled=true),0)\"><button class='btn2'>Export</button></form>"
+            if p["accepted_revision_id"] and not (exp and exp.get("revision_id") == p["accepted_revision_id"]):
+                acts += f"<form method='post' action='/auto/p/{p['id']}/export' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(b=>b.disabled=true),0)\"><button class='btn2'>Save MP4</button></form>"
             if exp:
                 acts += (f"<form method='post' action='/auto/export/{exp['id']}/open'><input type='hidden' name='back' value='/auto'><button class='btn2'>Open video</button></form>"
                          f"<form method='post' action='/auto/export/{exp['id']}/reveal'><input type='hidden' name='back' value='/auto'><button class='btn2'>Show in folder</button></form>")
             acts += f"<form method='post' action='/auto/p/{p['id']}/archive'><button class='btn2'>{'Unarchive' if p['archived'] else 'Archive'}</button></form>"
+            if p["archived"] and not any(j["status"] in ("queued", "running") for j in p["jobs"]):
+                acts += (f"<form method='post' action='/auto/p/{p['id']}/delete' onsubmit=\"return confirm(document.getElementById('delq').textContent)\">"
+                         f"<button class='btn2' title='Saved MP4 files and your original videos stay'>Delete</button></form>")
             last_txt = ("Last export: <span translate='no'>" + e(Path(exp["path"]).name) + "</span>") if exp else "Not exported yet"
             cards += (f"<div class='card'><a href='/auto/p/{p['id']}' style='display:block'>"
                       f"<div class='row space'><b style='font-size:17px' translate='no'>{e(p['title'])}</b><span class='ae-state {p['state']}'>{p['state']}</span></div>"
@@ -213,6 +216,9 @@ def register(app, layout, e, human_bytes):
         if not cards:
             cards = "<div class='card muted'>No Auto Edit projects yet. Choose a folder with your videos to make the first one.</div>"
         model_note = "" if ms["ready"] else _model_card(ms, e, back="/auto")
+        freed = request.args.get("deleted", "")
+        deleted_html = (f"<div class='card ae-done' style='margin-bottom:10px'><span>Project deleted. Freed:</span> {human_bytes(int(freed))}</div>"
+                        if freed.isdigit() else "")
         try:
             exp_dir = ae.default_export_dir()
             has_exports = exp_dir.is_dir() and any(x.suffix.lower() == ".mp4" for x in exp_dir.iterdir())
@@ -239,6 +245,7 @@ Your original files are only read, never changed.</div></div>{first}
 <div class='muted' id='pickMsg' style='margin-top:6px'></div></div>{model_note}
 
 <div class='section-title row space'><span>My projects</span><a class='muted' href='/auto?archived={'0' if request.args.get('archived')=='1' else '1'}'>{'Hide' if request.args.get('archived')=='1' else 'Show'} archived</a></div>
+<span id='delq' hidden>Delete this project and all its versions for good? Saved MP4 files and your original videos stay.</span>{deleted_html}
 <div class='ae-grid'>{cards}</div>"""
         script = """
 document.getElementById('pickBtn').onclick=async()=>{const m=document.getElementById('pickMsg');m.textContent='A Windows folder window is open — it may be behind this window.';
@@ -267,29 +274,15 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         if request.method == "POST":
             want = request.form.get("mode")
             want = want if (want == "semantic" and ai_ready) or (want == "semantic_plus" and ap["ready"]) else "technical"
-            t = ae.quick_selftest(mode=want, timeout_s=1800 if want == "semantic_plus" else 900)
-            ae._remember_selftest(t)
-            if t["ok"]:
-                sm = str(t.get("selection_mode", ""))
-                ai = sm.startswith("FAST_LOCAL") or sm.startswith("PE_CORE")
-                st = t.get("stages") or {}
-                stage_txt = " · ".join(f"<span>{lbl}</span> {float(st[k]):.1f} s" for k, lbl in
-                                       (("analyze", "analysis"), ("render", "cutting"), ("finish", "joining")) if k in st)
-                test_html = (f"<div class='card ae-done' style='margin-top:14px'><b>Test reel built</b> · "
-                             f"<span>{'with the AI+ model (PE-Core L/14)' if sm.startswith('PE_CORE') else 'with the AI model (FAST_LOCAL)' if ai else 'Technical only'}</span> · {t['seconds']} s"
-                             f"<div class='muted' style='margin-top:4px'><span>reel</span> {t.get('duration_s')} s · {stage_txt}</div>"
-                             + (f"<div class='muted' style='margin-top:4px'>AI+ speed on this PC: {float(t['aiplus_s_per_frame']):.1f} s per frame. "
-                                f"The first analysis looks at up to 48 frames of each video (about one per second): about "
-                                f"{max(1, round(48 * float(t['aiplus_s_per_frame'])))} s for a video of a minute or longer. Later builds reuse it.</div>"
-                                if t.get("aiplus_s_per_frame") else "")
-                             + (("<div style='margin-top:6px'>The AI+ mode works on this PC.</div>" if sm.startswith("PE_CORE") else
-                                 "<div style='margin-top:6px'>The AI mode works on this PC.</div>") if ai else "")
-                             + (f"<video class='ae-video' style='max-height:320px;margin-top:10px' controls preload='metadata' "
-                                f"src='/auto/check/video?t={int(t['seconds'] * 10)}'></video>" if t.get("video") else "")
-                             + "<div class='row' style='margin-top:10px'><a class='btn' href='/auto'>Go to Auto Edit</a></div></div>")
-            else:
-                test_html = (f"<div class='card' style='margin-top:14px'><b>Test reel failed</b> · {t['seconds']} s"
-                             f"<div class='errbox' style='margin-top:6px'>{e(t['error'])}</div></div>")
+            ae.selftest_start(want, 1800 if want == "semantic_plus" else 900)
+            return redirect("/auto/check")
+        st = ae.selftest_state()
+        if st["running"]:
+            test_html = (f"<div class='card' id='testRun' data-el='{st['elapsed_s']}' style='margin-top:14px'><b>Building the test reel…</b> "
+                         f"<span id='testSec'>{int(st['elapsed_s'])}</span> s<div class='muted' style='margin-top:4px'>Up to a few minutes. "
+                         f"You can leave this page: the result is shown here when it is ready.</div></div>")
+        elif st["result"]:
+            test_html = _selftest_html(st["result"], e)
         from .config import INSTALL
         builds = ae.other_builds()
         done = request.args.get("removed", "")
@@ -316,13 +309,21 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         body = (f"<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Check this PC</h1>"
                 f"<div class='lead'>What MediaEngine needs, and a 5-second test reel made from generated clips (your videos are not used).</div></div>"
                 f"<div class='card'><table class='ae-files'>{table}</table></div>"
-                f"<form method='post' class='card' style='margin-top:14px' onsubmit=\"const f=this;f.querySelector('span').textContent='Building the test reel… (up to a few minutes)';setTimeout(()=>f.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
-                f"<button name='mode' value='technical'>Build a test reel</button> "
-                + (f"<button name='mode' value='semantic' class='btn2'>Build a test reel with the AI model</button> " if ai_ready else "")
-                + (f"<button name='mode' value='semantic_plus' class='btn2'>Build a test reel with AI+</button> " if ap["ready"] else "")
+                f"<form method='post' class='card' style='margin-top:14px' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
+                f"<button name='mode' value='technical' {'disabled' if st['running'] else ''}>Build a test reel</button> "
+                + (f"<button name='mode' value='semantic' class='btn2' {'disabled' if st['running'] else ''}>Build a test reel with the AI model</button> " if ai_ready else "")
+                + (f"<button name='mode' value='semantic_plus' class='btn2' {'disabled' if st['running'] else ''}>Build a test reel with AI+</button> " if ap["ready"] else "")
                 + f"<span class='muted'></span></form>{test_html}{_model_card(ae.model_status(), e, back='/auto/check')}{_aiplus_card(ap, e, human_bytes)}{builds_html}"
                 f"<div class='row' style='margin-top:14px'><a class='btn btn2' href='/auto'>Back</a></div>")
-        return page("Check this PC", body)
+        script = """const tc=document.getElementById('testRun');
+if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{try{const r=await fetch('/api/auto/selftest',{cache:'no-store'});const x=await r.json();if(!x.running){location.href='/auto/check';return}}catch(e){}
+ document.getElementById('testSec').textContent=Math.round((Date.now()-t0)/1000);setTimeout(tick,2000)};setTimeout(tick,2000)}"""
+        return page("Check this PC", body, script)
+
+    @app.get("/api/auto/selftest")
+    def ae_selftest_state():
+        st = ae.selftest_state()
+        return jsonify({"running": st["running"], "elapsed_s": st["elapsed_s"], "ok": bool((st["result"] or {}).get("ok"))})
 
     @app.post("/auto/check/free-shared")
     def ae_free_shared():
@@ -514,13 +515,15 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
             f"<label class='{'' if L <= max(rec, total * 0.8) else 'off'}'><input type='radio' name='length' value='{L}' "
             f"{'checked' if L == rec else ''} {'' if L <= max(rec, total * 0.8) else 'disabled'}> {L} s"
             f"{' · recommended' if L == rec else ''}</label>" for L in ae.LENGTHS)
-        formats = "".join(f"<label><input type='radio' name='format' value='{k}' {'checked' if k == 'social_hd' else ''}> {e(v['label'])}</label>"
+        last_new = ae.last_new_settings()      # the next reel starts like the last one
+        fmt0, snd0 = last_new.get("format", "social_hd"), last_new.get("sound", "auto")
+        formats = "".join(f"<label><input type='radio' name='format' value='{k}' {'checked' if k == fmt0 else ''}> {e(v['label'])}</label>"
                           for k, v in ae.FORMATS.items())
-        sounds = "".join(f"<label><input type='radio' name='sound' value='{k}' {'checked' if k == 'auto' else ''}> {e(v)}</label>"
+        sounds = "".join(f"<label><input type='radio' name='sound' value='{k}' {'checked' if k == snd0 else ''}> {e(v)}</label>"
                          for k, v in ae.SOUNDS.items())
         plus_ready = ae.aiplus_status()["ready"]
         # from the Library's "Find by theme": AI+ and that theme are already chosen
-        want_mode = request.args.get("mode") if request.args.get("mode") in ae.MODES else None
+        want_mode = request.args.get("mode") if request.args.get("mode") in ae.MODES else last_new.get("mode")
         want_theme = request.args.get("theme") or lib_theme
         want_theme = want_theme if plus_ready and want_theme in ae.THEMES else ""
         if want_theme:
@@ -560,11 +563,11 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
 <form method='post' action='/auto/create' class='card' style='margin-top:14px' onsubmit="this.querySelector('button:not([type=button])').disabled=true">
 {src_hidden}
 <h2 style='margin-top:0'>Length</h2><div class='ae-choices'>{lengths}</div>
-<h2>Format</h2><div class='ae-choices'>{formats}</div>
+<h2>Format</h2><div class='ae-choices'>{formats}</div>{_framing_choice(e, last_new.get("framing", "fill"))}
 <h2>Sound</h2><div class='ae-choices'>{sounds}</div>{mode_html}
 {_dress_fields(e, None, _day_label(next(iter(pdays))) if len(pdays) == 1 else "")}
 <button class='ae-big'>Create reel</button></form>{back_html}"""
-        return page("New reel", body)
+        return page("New reel", body, _FRAMING_JS)
 
     @app.post("/auto/create")
     def ae_create():
@@ -573,12 +576,13 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
             if not f.get("mode"):
                 raise ValueError("Without the AI model, tick 'Build with Technical only' to continue.")
             dress = _dress_from_form(f)
-            ae.normalize_settings({"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode"), **dress},
-                                  model_ready=ae.model_status()["ready"])
+            ae.normalize_settings({"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode"),
+                                   "framing": f.get("framing"), **dress}, model_ready=ae.model_status()["ready"])
             ae.check_free_space()
             pid = ae.create_project(f.get("folder"), f.get("title"), files=f.getlist("file") or None)
             ae.start_job(pid, {"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode"),
-                               "theme": f.get("theme") or "", **dress})
+                               "theme": f.get("theme") or "", "framing": f.get("framing"), **dress})
+            ae.remember_new_settings({"format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode"), "framing": f.get("framing")})
         except Exception as exc:
             return err_page(str(exc))
         return redirect(f"/auto/p/{pid}")
@@ -609,13 +613,19 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         if not p["source_present"]:
             parts.append("<div class='errbox'>The source videos are not available (drive disconnected?). Revisions and exports are kept; "
                          "new builds are possible when they are back.</div>")
+        elif p.get("missing_files"):
+            gone = p["missing_files"]
+            parts.append("<div class='callout card' style='margin-bottom:12px'><span>Some videos of this reel are not there any more (moved or deleted): "
+                         f"{len(gone)} of {len(p['files'])}.</span> <span class='muted' translate='no'>"
+                         + e(", ".join(Path(x).name for x in gone[:8]) + (" …" if len(gone) > 8 else "")) + "</span> "
+                         "<span>New versions are made from the others.</span></div>")
         if active:
             parts.append(f"""<div class='card' id='jobCard' data-job='{active['id']}'><div class='row space'><b id='jobStage'>{e(ae.STAGE_LABEL.get(active['stage'] or 'queued', ''))}</b>
 <form method='post' action='/auto/job/{active['id']}/cancel'><button class='btn2'>Cancel</button></form></div>
 <div class='ae-bar' style='margin:10px 0'><i id='jobBar' style='width:{active['percent']}%'></i></div>
 <div class='muted' id='jobMsg'>{e(active.get('message') or '')}</div>
 <div class='muted'>{e(ae.FORMATS[active['settings']['format']]['label'])} · {active['settings']['length']} s · sound {e(active['settings']['sound'])}</div>
-{"<div style='margin-top:6px'>A new version with your edits.</div>" if active['settings'].get('selection') else ""}
+{"<div style='margin-top:6px'>A new version with your edits.</div>" if active['settings'].get('selection') else ""}{_waiting_html(active, pid, e)}
 <div class='muted' style='margin-top:6px'>You can close this window: the reel keeps building and the PC does not go to sleep. Open MediaEngine again to see it.</div></div>""")
             for q in queued:
                 parts.append(f"<div class='card row space' style='margin-top:8px'><span class='muted'>Waiting: {e(ae.FORMATS[q['settings']['format']]['short'])} · "
@@ -630,7 +640,8 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
                          f"<input type='hidden' name='length' value='{ls_['length']}'><input type='hidden' name='format' value='{e(ls_['format'])}'>"
                          f"<input type='hidden' name='sound' value='{e(ls_['sound'])}'><input type='hidden' name='mode' value='technical'>"
                          + "".join(f"<input type='hidden' name='{fld}' value='{e(ls_.get(key) or '')}'>" for fld, key in
-                                   (("reel_title", "title"), ("reel_subtitle", "subtitle"), ("music", "music"), ("music_mode", "music_mode")))
+                                   (("reel_title", "title"), ("reel_subtitle", "subtitle"), ("music", "music"), ("music_mode", "music_mode"),
+                                    ("framing", "framing")))
                          + "<input type='hidden' name='beat_sync_shown' value='1'>"
                          + ("<input type='hidden' name='beat_sync' value='1'>" if ls_.get("beat_sync") is not False else "")
                          + "<button class='btn2'>Build without AI (Technical only)</button></form>")
@@ -669,6 +680,7 @@ async function pollJob2(){if(!card)return;try{const r=await fetch('/api/auto/job
  else if(j.status==='running'&&j.percent>=15&&j.percent<100&&el>=20){const left=Math.round(el*(100-j.percent)/j.percent);
   eta=left<60?' · less than a minute left':' · about '+Math.round(left/60)+' min left'}
  document.getElementById('jobMsg').textContent=(counted?(Math.min(j.done+1,j.total)+' of '+j.total+' · '):'')+(j.message||'')+' · '+Math.floor(el/60)+':'+String(el%60).padStart(2,'0')+' elapsed'+eta;
+ if(j.status==='done'&&j.revision_id){location.href=location.pathname+'?rev='+j.revision_id;return}   // the new version, not the old accepted one
  if(['done','failed','cancelled'].includes(j.status)){location.reload();return}}catch(e){}setTimeout(pollJob2,1000)}
 pollJob2();
 const ef=document.getElementById('editForm');
@@ -697,7 +709,7 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
  try{const r=await fetch('/api/auto/pick-folder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({purpose:'export'})});const x=await r.json();
  if(x.path){document.getElementById('exportDest').value=x.path;document.getElementById('exportForm').submit()}else m.textContent='No folder chosen.'}catch(e){m.textContent='Folder window failed: '+e}};
 """
-        return page(p["title"], "".join(parts), script)
+        return page(p["title"], "".join(parts), script + "\n" + _FRAMING_JS)
 
     @app.get("/api/auto/job/<int:jid>")
     def ae_job_api(jid):
@@ -742,6 +754,7 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
                 raise ValueError("Without the AI model, choose Technical only explicitly on the new-reel screen.")
             settings = {"length": f.get("length") or bs.get("length"), "format": f.get("format") or bs.get("format"),
                         "sound": f.get("sound") or bs.get("sound"), "mode": mode,
+                        "framing": f.get("framing") if "framing" in f else bs.get("framing"),
                         "theme": f.get("theme") if "theme" in f else (bs.get("theme") or ""), **_dress_from_form(f, bs)}
             if f.get("rechoose"):
                 # "Let MediaEngine choose again": automatic selection without the removed moments
@@ -797,7 +810,7 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
                 return err_page("Keep at least one moment.", f"/auto/p/{pid}")
             bset = base["settings"] if base and int(base["project_id"]) == int(pid) else {}
             settings = {"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode"),
-                        "selection": selection, "trims": trims,
+                        "selection": selection, "trims": trims, "framing": bset.get("framing"),
                         # an edit keeps the version's theme, music and title (the moments come from its pool)
                         "theme": f.get("theme") if "theme" in f else (bset.get("theme") or ""), **_dress_from_form(f, bset)}
             before = {j["id"] for j in ae.project(pid)["jobs"]}
@@ -831,6 +844,11 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
     def ae_export(pid):
         try:
             dest = (request.form.get("dest") or "").strip()
+            rid = request.form.get("revision_id") or ""
+            if rid.isdigit():
+                pr = ae.project(pid)
+                if pr and pr["accepted_revision_id"] != int(rid):
+                    ae.accept(pid, int(rid))         # "Save MP4" on a version that was not chosen yet: choose it
             res = ae.export_accepted(pid, dest or None, remember=bool(dest))
         except Exception as exc:
             return err_page(str(exc), f"/auto/p/{pid}")
@@ -867,6 +885,14 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
         except Exception as exc:
             return err_page(str(exc), f"/auto/p/{pid}")
         return redirect(f"/auto/p/{pid}")
+
+    @app.post("/auto/p/<int:pid>/delete")
+    def ae_delete(pid):
+        try:
+            freed = ae.delete_project(pid)
+        except Exception as exc:
+            return err_page(str(exc), "/auto?archived=1")
+        return redirect("/auto?archived=1&deleted=" + str(int(freed)))
 
     @app.post("/auto/p/<int:pid>/archive")
     def ae_archive(pid):
@@ -1044,6 +1070,39 @@ def _theme_choice(e, current="", ai_ready=True):
             "box.hidden=!(r&&r.value==='semantic_plus')}f.querySelectorAll('input[name=mode]').forEach(x=>x.addEventListener('change',upd));upd()})();</script>")
 
 
+def _waiting_html(active, pid, e):
+    if active["status"] != "queued":
+        return ""
+    other = ae.running_elsewhere(pid)
+    if not other:
+        return ""
+    return (f"<div style='margin-top:6px'><span>Reels are made one at a time. This one starts when this reel is ready:</span> "
+            f"<a href='/auto/p/{int(other['id'])}' translate='no'>{e(other['title'])}</a></div>")
+
+
+def _selftest_html(t, e):
+    if not t.get("ok"):
+        return (f"<div class='card' style='margin-top:14px'><b>Test reel failed</b> · {t.get('seconds', 0)} s"
+                f"<div class='errbox' style='margin-top:6px'>{e(t.get('error') or '')}</div></div>")
+    sm = str(t.get("selection_mode", ""))
+    ai = sm.startswith("FAST_LOCAL") or sm.startswith("PE_CORE")
+    st = t.get("stages") or {}
+    stage_txt = " · ".join(f"<span>{lbl}</span> {float(st[k]):.1f} s" for k, lbl in
+                           (("analyze", "analysis"), ("render", "cutting"), ("finish", "joining")) if k in st)
+    return (f"<div class='card ae-done' style='margin-top:14px'><b>Test reel built</b> · "
+            f"<span>{'with the AI+ model (PE-Core L/14)' if sm.startswith('PE_CORE') else 'with the AI model (FAST_LOCAL)' if ai else 'Technical only'}</span> · {t['seconds']} s"
+            f"<div class='muted' style='margin-top:4px'><span>reel</span> {t.get('duration_s')} s · {stage_txt}</div>"
+            + (f"<div class='muted' style='margin-top:4px'>AI+ speed on this PC: {float(t['aiplus_s_per_frame']):.1f} s per frame. "
+               f"The first analysis looks at up to 48 frames of each video (about one per second): about "
+               f"{max(1, round(48 * float(t['aiplus_s_per_frame'])))} s for a video of a minute or longer. Later builds reuse it.</div>"
+               if t.get("aiplus_s_per_frame") else "")
+            + (("<div style='margin-top:6px'>The AI+ mode works on this PC.</div>" if sm.startswith("PE_CORE") else
+                "<div style='margin-top:6px'>The AI mode works on this PC.</div>") if ai else "")
+            + (f"<video class='ae-video' style='max-height:320px;margin-top:10px' controls preload='metadata' "
+               f"src='/auto/check/video?t={int(t['seconds'] * 10)}'></video>" if t.get("video") else "")
+            + "<div class='row' style='margin-top:10px'><a class='btn' href='/auto'>Go to Auto Edit</a></div></div>")
+
+
 def _mode_choice(ai_ready, plus_ready, e, current=None, allow_technical=False, heading=True):
     """How moments are chosen: AI (accepted), AI+ (optional stronger model), or - only without any model, or for a
     variant whose model is gone - Technical only. The checked option is always one that can be built."""
@@ -1106,7 +1165,13 @@ def _dress_from_form(f, base_settings=None):
 
 
 def _variant_form(pid, rev, e, first=False, model_ready=True, prefill=None):
-    s = rev["settings"] if rev else {"length": 15, "format": "social_hd", "sound": "auto"}
+    s = {"length": 15, "format": "social_hd", "sound": "auto"}
+    if rev:
+        s = rev["settings"]
+    elif prefill and int(prefill.get("length") or 0) in ae.LENGTHS:      # a failed / cancelled first build: its own choices
+        s = {**s, **{k: prefill[k] for k in ("length", "format", "sound", "mode", "theme", "framing") if prefill.get(k)}}
+        if s["format"] not in ae.FORMATS:
+            s["format"] = "social_hd"
     lengths = "".join(f"<label><input type='radio' name='length' value='{L}' {'checked' if int(s['length']) == L else ''}> {L} s</label>" for L in ae.LENGTHS)
     formats = "".join(f"<label><input type='radio' name='format' value='{k}' {'checked' if s['format'] == k else ''}> {e(v['short'])}</label>" for k, v in ae.FORMATS.items())
     short_sound = {"auto": "Auto", "source": "Source sound", "mute": "Mute"}     # the same words as on the new-reel page
@@ -1114,7 +1179,7 @@ def _variant_form(pid, rev, e, first=False, model_ready=True, prefill=None):
     base = f"<input type='hidden' name='base_revision_id' value='{rev['id']}'>" if rev else ""
     mode = ""
     plus_ready = ae.aiplus_status()["ready"]
-    cur = (rev["settings"].get("mode") if rev else None)
+    cur = (rev["settings"].get("mode") if rev else s.get("mode"))
     cur_ok = (cur == "semantic" and model_ready) or (cur == "semantic_plus" and plus_ready)
     if not model_ready and not plus_ready:
         if not rev or cur in ae.AI_MODES:
@@ -1125,15 +1190,29 @@ def _variant_form(pid, rev, e, first=False, model_ready=True, prefill=None):
     if plus_ready:
         if not mode and cur:              # one way only (the revision's): say so, so the theme box knows the mode
             mode = f"<input type='hidden' name='mode' value='{e(cur)}'>"
-        mode += _theme_choice(e, (rev["settings"].get("theme") or "") if rev else "", model_ready)
+        mode += _theme_choice(e, (s.get("theme") or ""), model_ready)
     note = "" if first else ("The current revision stays as it is. Format and sound variants keep its removed moments and your edits "
                              "and reuse the analysis; a new length chooses the moments again (removed ones stay out).")
     return (f"<form method='post' action='/auto/p/{pid}/variant' class='card' style='margin-top:14px' onsubmit=\"this.querySelector('button:not([type=button])').disabled=true\">{base}"
             f"<h2 style='margin-top:0'>{'Build reel' if first else 'Make a variant'}</h2>"
             f"<div class='muted'>{note}</div>"
-            f"<div class='ae-choices'>{lengths}</div><div class='ae-choices'>{formats}</div><div class='ae-choices'>{sounds}</div>{mode}"
+            f"<div class='ae-choices'>{lengths}</div><div class='ae-choices'>{formats}</div>{_framing_choice(e, s.get('framing'))}<div class='ae-choices'>{sounds}</div>{mode}"
             f"{_dress_fields(e, rev['settings'] if rev else prefill)}"
             f"<button>{'Build' if first else 'Make variant'}</button></form>")
+
+
+def _framing_choice(e, current="fill"):
+    """Horizontal videos in a vertical reel: cropped (default) or the whole picture on blurred edges."""
+    radios = "".join(f"<label><input type='radio' name='framing' value='{k}' {'checked' if k == (current or 'fill') else ''}> {e(v)}</label>"
+                     for k, v in ae.FRAMINGS.items())
+    return (f"<div class='ae-framing'><div class='muted' style='margin:6px 0 4px;font-size:13px'>Horizontal videos in a vertical reel:</div>"
+            f"<div class='ae-choices'>{radios}</div></div>")
+
+
+_FRAMING_JS = ("(()=>{const V=%s;const upd=()=>{document.querySelectorAll('form').forEach(f=>{const b=f.querySelector('.ae-framing');"
+               "const c=f.querySelector('input[name=format]:checked');if(b)b.style.display=(!c||V.includes(c.value))?'':'none'})};"
+               "document.querySelectorAll('input[name=format]').forEach(r=>r.addEventListener('change',upd));upd()})();"
+               % json.dumps([k for k, v in ae.FORMATS.items() if v["profile"] == "9x16"]))
 
 
 def _sound_label(requested, res):
@@ -1245,15 +1324,16 @@ def _review_html(p, rev, e, building=False):
     if res.get("widened_sources"):
         notes.append(e("wide picture stored in narrow pixels shown in its real shape: ") + names(res["widened_sources"]))
     skipped_html_extra = ("<div class='muted' style='margin-top:4px'>" + " · ".join(notes) + "</div>") if notes else ""
-    exp_html = ""
+    # one step to a file: "Save MP4" on any finished version (it also becomes the chosen one - Accept is not a
+    # separate chore before saving)
+    last = next((x for x in p["exports"] if x["revision_id"] == rev["id"]), None) if is_acc else None
+    exp_html = (f"<form method='post' action='/auto/p/{p['id']}/export' id='exportForm' style='margin-top:10px' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(b=>b.disabled=true),0)\">"
+                f"<input type='hidden' name='dest' id='exportDest' value=''><input type='hidden' name='revision_id' value='{rev['id']}'>"
+                f"<div class='row' style='flex-wrap:wrap'><button class='ae-big'>Save MP4</button>"
+                f"<button type='button' class='btn2' id='exportToBtn'>Save to another folder…</button></div>"
+                f"<div class='muted' style='margin-top:4px'>Saves to <span class='ae-path' translate='no'>{e(str(ae.default_export_dir()))}</span></div>"
+                f"<div class='muted' id='exportMsg'></div></form>")
     if is_acc:
-        last = next((x for x in p["exports"] if x["revision_id"] == rev["id"]), None)
-        exp_html = (f"<form method='post' action='/auto/p/{p['id']}/export' id='exportForm' style='margin-top:10px' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(b=>b.disabled=true),0)\">"
-                    f"<input type='hidden' name='dest' id='exportDest' value=''>"
-                    f"<div class='row' style='flex-wrap:wrap'><button class='ae-big'>Export MP4</button>"
-                    f"<button type='button' class='btn2' id='exportToBtn'>Export to another folder…</button></div>"
-                    f"<div class='muted' style='margin-top:4px'>Saves to <span class='ae-path' translate='no'>{e(str(ae.default_export_dir()))}</span></div>"
-                    f"<div class='muted' id='exportMsg'></div></form>")
         if last:
             exp_html += (f"<div class='card' style='margin-top:10px'><b>Exported</b><div class='ae-path'>{e(last['path'])}</div>"
                          f"<div class='row' style='margin-top:8px;flex-wrap:wrap'><form method='post' action='/auto/export/{last['id']}/open'><button>Open video</button></form>"
@@ -1261,7 +1341,7 @@ def _review_html(p, rev, e, building=False):
                          f"<button type='button' class='btn2' id='copyPath' data-path='{e(last['path'])}'>Copy path</button></div></div>")
     undo = "Revert" if ae.previous_accepted(p["id"]) else "Undo accept"     # with no earlier one, Revert just un-accepts
     actions = (f"<span class='badge ready'>Accepted</span><form method='post' action='/auto/p/{p['id']}/revert'><button class='btn2'>{undo}</button></form>" if is_acc else
-               f"<form method='post' action='/auto/p/{p['id']}/accept' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(b=>b.disabled=true),0)\"><input type='hidden' name='revision_id' value='{rev['id']}'><button class='ae-big'>Accept this version</button></form>")
+               f"<form method='post' action='/auto/p/{p['id']}/accept' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(b=>b.disabled=true),0)\"><input type='hidden' name='revision_id' value='{rev['id']}'><button class='btn2' title='Mark it as the chosen version without saving a file'>Accept this version</button></form>")
     excl_hidden = "".join(f"<input type='hidden' name='exclude' value='{e(x)}'>" for x in rev["settings"].get("exclude", []))
     # only versions of the same format: a vertical reel next to a horizontal one is not a blind comparison
     others = [r for r in p["revisions"] if r["id"] != rev["id"] and r["settings"].get("format") == rev["settings"].get("format")]
@@ -1288,10 +1368,16 @@ def _review_html(p, rev, e, building=False):
 <div class='row' style='margin-top:10px;flex-wrap:wrap'><button>Apply my edits</button>
 <button class='btn2' formaction='/auto/p/{p['id']}/variant' name='rechoose' value='1'>Let MediaEngine choose again without removed moments</button></div></form>"""
         variant = _variant_form(p['id'], rev, e, model_ready=ae.model_status()['ready'])
+    sound_btn = ""
+    if (not building and rev["settings"].get("sound") == "auto" and ((res.get("audio") or {}).get("applied") == "mute")):
+        # Auto muted the reel: one click for the same reel with the videos' own sound
+        sound_btn = (f"<form method='post' action='/auto/p/{p['id']}/variant' style='margin-top:6px'>"
+                     f"<input type='hidden' name='base_revision_id' value='{rev['id']}'><input type='hidden' name='sound' value='source'>"
+                     f"<button class='btn2' style='font-size:13px;padding:5px 10px'>The same reel with the original sound</button></form>")
     return f"""<div class='ae-player' style='margin-top:14px'>
 <div class='card'><video id='reel' class='ae-video' controls preload='metadata' src='/auto/rev/{rev['id']}/video'></video>
 <div class='ae-strip film'>{strip}</div>
-<div class='muted'>Revision R{int(rev['number']):03d} · {e(fmt.get('short',''))} {rev['width']}×{rev['height']} · {total:.2f} s · sound {e(_sound_label(rev['settings']['sound'], res))} · <span>{e(mode)}</span>{(" · <span>theme</span> <span>" + e(theme_name) + "</span>") if theme_name else ""}</div>{short_html}{skipped_html}{skipped_html_extra}
+<div class='muted'>Revision R{int(rev['number']):03d} · {e(fmt.get('short',''))} {rev['width']}×{rev['height']}{" · <span>blurred edges</span>" if rev['settings'].get('framing') == 'fit_blur' else ""} · {total:.2f} s · sound {e(_sound_label(rev['settings']['sound'], res))} · <span>{e(mode)}</span>{(" · <span>theme</span> <span>" + e(theme_name) + "</span>") if theme_name else ""}</div>{sound_btn}{short_html}{skipped_html}{skipped_html_extra}
 <div class='row' style='margin-top:12px;flex-wrap:wrap'>{actions}</div>{compare_html}{exp_html}</div>
 {editor}</div>
 {variant}"""

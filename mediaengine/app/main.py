@@ -95,7 +95,7 @@ def _bind_fails():
 def _ping_ok():
     import urllib.request
     try:
-        with urllib.request.urlopen(f"http://{HOST}:{PORT}/api/ping",timeout=.5) as r: return r.status==200
+        with urllib.request.build_opener(urllib.request.ProxyHandler({})).open(f"http://{HOST}:{PORT}/api/ping",timeout=.5) as r: return r.status==200
     except Exception:
         return False
 
@@ -111,7 +111,18 @@ def port_taken(wait_s=20.0):
 
 
 def main():
+    import faulthandler
+    try:
+        faulthandler.enable()          # a hard crash leaves its trace in the console log (the launcher keeps it)
+    except Exception:
+        pass
     ensure_dirs(); set_background_priority(); install_launchers(INSTALL); sync_packaged_launcher()
+    try:     # copies of the database and settings: daily, and before a different build uses them
+        from archivist.backup import at_start
+        from archivist.config import BUILD
+        at_start(f"{VERSION}-{BUILD}" if BUILD else VERSION)
+    except Exception:
+        pass
     if detach_from_legacy_console_if_needed(HOME): return
     if port_taken():
         # Never start a second set of workers on the same database: the running copy keeps serving.
@@ -121,10 +132,7 @@ def main():
     from archivist.watchdog import start_watchdog
     from archivist.web import create_app
     start_workers(); recover_convert_jobs(); start_watchdog(); app=create_app(); startup_self_check(app); url=f"http://{HOST}:{PORT}/"+("auto" if SIDE_BY_SIDE else "")
-    # Extended Windows diagnostics report to the old Remote Lab; run them only on a PC enrolled there.
-    if (HOME/"data"/"remote_lab.json").exists():
-        from archivist.diagnostics import run_once_and_report
-        threading.Thread(target=lambda:(time.sleep(2.0),run_once_and_report()),daemon=True).start()
+    # (the old Remote Lab diagnostics upload is gone: MediaEngine sends nothing anywhere)
     suppress=os.environ.get("ARCHIVIST_SUPPRESS_BROWSER")=="1" or "--no-browser" in sys.argv
     if not suppress:
         threading.Thread(target=lambda:(time.sleep(1.0),webbrowser.open(url)),daemon=True).start()

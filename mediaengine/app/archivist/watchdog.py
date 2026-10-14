@@ -42,6 +42,8 @@ def decide_action(kind,process_restarts,app_restarts,has_killable_process):
     return "fail"
 
 def _report_incident(job,action,reason):
+    # MediaEngine sends nothing anywhere (owner: offline, no Supabase). Incidents stay in the local database / log.
+    return
     try:
         cfg=json.loads(REMOTE_CONFIG.read_text(encoding="utf-8"));tok=cfg.get("device_token")
         if not tok:return

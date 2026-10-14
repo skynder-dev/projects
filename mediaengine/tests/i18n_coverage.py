@@ -22,6 +22,7 @@ KEEP = {  # stays English in Russian too (names, units, formats)
     "English", "Русский", "MOV", "MTS", "WebM", "Private", "Rejected", "Staging", "Exports", "HD", "Social", "FAST", "LOCAL",
     "SHA", "Runtime", "MP", "rc", "ZIP", "zscale", "iPhone", "iOS", "Share", "Lab", "OAuth", "Client", "API", "AAC", "Reel", "MediaStore", "Meta",
     "PE", "Core", "Apache", "huggingface", "co", "Hugging", "Face", "TinyCLIP",     # AI+ model name, licence and source
+    "Full", "Reels", "Shorts",                                                      # format names (Full HD, Instagram Reels, YouTube Shorts)
     "mp3", "mp", "m4a", "wav", "flac", "ogg", "opus", "wma", "aac",                 # music file types
 }
 SKIP_PREFIX = ("/api/", "/static", "/media/", "/thumb/", "/storyboard/", "/clip-preview/", "/export-file/", "/composition-file/",
@@ -172,6 +173,22 @@ def main():
                         if "Archivist" in t:
                             left.setdefault("OLD NAME (English): " + re.sub(r"\s+", " ", t).strip()[:200], url)
         i18n.set_ui_language("en")
+    # messages that only appear when something goes wrong (failed builds, skipped files, library jobs): checked
+    # directly, every one of them must have its Russian
+    from archivist import auto_edit as _ae
+    msgs = [_ae.friendly_error(code) for code in _ae._FRIENDLY] + [_ae.friendly_error("SOMETHING_UNKNOWN")]
+    msgs += [_ae.friendly_skip(r) for r in ("MISSING", "NO_MOMENTS", "STATIC_VIDEO", "TOO_SHORT_FOR_ANALYSIS", "ANALYSIS_TIMEOUT",
+                                             "ANALYSIS_FAILED:X", "PRIVATE", "NO_VIDEO_STREAM", "BROKEN")]
+    msgs += ["Import finished with 3 error(s) — keep the source connected", "Import complete — source can be disconnected",
+             "Added. The files stay in their folder — keep that disk connected.", "Finished with 2 error(s)",
+             "Analyzing 4 file(s) where they are — keep that disk connected.", "Local source file is unavailable",
+             "File is not local. Import it first.", "Imported local copy is missing", "SD/USB source file is unavailable"]
+    i18n.set_ui_language("ru")
+    for m in msgs:
+        t = i18n.translate_text(m)
+        if english_left(t.split(" [")[0]):
+            left.setdefault("MESSAGE: " + m, "(message)")
+    i18n.set_ui_language("en")
     for t, url in sorted(left.items(), key=lambda kv: (kv[1], kv[0])):
         print(f"{url}\t{t}")
     for h in sorted(set(NETWORK)):

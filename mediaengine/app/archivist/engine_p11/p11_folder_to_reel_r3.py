@@ -34,7 +34,31 @@ def atomic_json(path,obj):
     path=Path(path); path.parent.mkdir(parents=True,exist_ok=True)
     tmp=path.with_suffix(path.suffix+".part")
     tmp.write_text(json.dumps(obj,indent=2,sort_keys=True)+"\n",encoding="utf-8")
-    os.replace(tmp,path)
+    for k in range(8):     # Windows: a virus scanner or the indexer may hold the file for a moment
+        try:
+            os.replace(tmp,path); return
+        except PermissionError:
+            if k==7: raise
+            time.sleep(0.25*(k+1))
+
+def _reused_sha(clip):
+    """A cached cut is reused only when its bytes are what was written (a power cut or a virus scanner can leave a
+    damaged file of the right size): its SHA-256, or None (then it is made again)."""
+    clip=Path(clip)
+    if not clip.is_file(): return None
+    sha=sha256_file(clip)
+    side=clip.with_name(clip.name+".sha256")
+    try: want=side.read_text(encoding="utf-8").strip()
+    except OSError: want=sha                       # cut before this check existed: taken as it is
+    if sha==want: return sha
+    clip.unlink(missing_ok=True); side.unlink(missing_ok=True)
+    return None
+
+def _made_sha(clip):
+    sha=sha256_file(clip)
+    try: Path(clip).with_name(Path(clip).name+".sha256").write_text(sha,encoding="utf-8")
+    except OSError: pass
+    return sha
 
 _PROGRESS_PATH=None
 _STAGE_T={"stage":None,"t":None,"seconds":{}}
@@ -56,8 +80,23 @@ def load_module(name,path):
         raise RuntimeError("MODULE_LOAD_FAILED:"+name)
     mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod); return mod
 
-def discover_input(folder, probe=None, skipped=None, skip_sha=None, paths=None):
-    """Input videos: every supported file in <folder>, or exactly <paths> (files the user chose; names must be unique)."""
+def _load_sha_cache(path):
+    try: return json.loads(Path(path).read_text(encoding="utf-8")) if path else {}
+    except (OSError,ValueError): return {}
+
+def _cached_sha(p,size,cache):
+    """SHA-256 of a source video, from the work folder's list when its size and change time are as when it was read
+    (a variant or another length of the same reel does not read every video again: minutes on a big folder)."""
+    key=str(p); mt=p.stat().st_mtime_ns; c=cache.get(key) if isinstance(cache,dict) else None
+    if isinstance(c,dict) and c.get("bytes")==size and c.get("mtime_ns")==mt and len(str(c.get("sha256") or ""))==64:
+        return c["sha256"]
+    digest=sha256_file(p)
+    if isinstance(cache,dict): cache[key]={"bytes":size,"mtime_ns":mt,"sha256":digest}
+    return digest
+
+def discover_input(folder, probe=None, skipped=None, skip_sha=None, paths=None, sha_cache=None):
+    """Input videos: every supported file in <folder>, or exactly <paths> (files the user chose; names must be unique).
+    sha_cache: a JSON file in the work folder that remembers the SHA-256 of each source by size and change time."""
     if paths is not None:
         vids=[]
         for raw in paths:
@@ -74,7 +113,7 @@ def discover_input(folder, probe=None, skipped=None, skip_sha=None, paths=None):
         vids=sorted([p for p in folder.iterdir() if not p.name.startswith("._") and p.suffix.lower() in SUPPORTED and p.is_file()],key=lambda p:p.name.lower())
     if not vids: raise RuntimeError("NO_SUPPORTED_VIDEO_FILES")
     if len(vids)>64: raise RuntimeError("TOO_MANY_INPUT_FILES")
-    rows=[]; seen={}
+    rows=[]; seen={}; cache=_load_sha_cache(sha_cache); cache0=json.dumps(cache,sort_keys=True)
     for i,p in enumerate(vids,1):
         progress("inputs",i-1,len(vids),p.name)
         try:
@@ -87,7 +126,7 @@ def discover_input(folder, probe=None, skipped=None, skip_sha=None, paths=None):
                 wh=(int(vs[0].get("width") or 0),int(vs[0].get("height") or 0))
                 dur=float(info.get("format",{}).get("duration") or 0)
                 if dur<0.5: raise RuntimeError("TOO_SHORT")
-            digest=sha256_file(p)
+            digest=_cached_sha(p,size,cache)
         except Exception as exc:
             if skipped is not None: skipped.append({"name":p.name,"reason":type(exc).__name__+":"+str(exc)[:160]})
             continue
@@ -99,6 +138,9 @@ def discover_input(folder, probe=None, skipped=None, skip_sha=None, paths=None):
             continue
         seen[digest]=p.name
         rows.append({"name":p.name,"path":str(p),"bytes":size,"sha256":digest,"duration_s":dur,"width":wh[0],"height":wh[1]})
+    if sha_cache and json.dumps(cache,sort_keys=True)!=cache0:
+        try: atomic_json(sha_cache,cache)
+        except OSError: pass                     # only a speed-up: never a reason to fail the build
     if not rows: raise RuntimeError("NO_READABLE_VIDEO_FILES")
     return rows
 
@@ -260,6 +302,25 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
         e["v22_score"]=round(.80*float(e["semantic_source_final_score"])+.20*float(e["technical_v22_score"]),6)
         e["selection_score_kind"]="SEMANTIC_80_TECHNICAL_20_SHADOW_V1"
     return technical,reports,kept
+
+def _total_ram_gb():
+    """Installed memory (GB); 16 when it cannot be read."""
+    try:
+        if os.name=="nt":
+            import ctypes
+            class MS(ctypes.Structure):
+                _fields_=[("dwLength",ctypes.c_ulong),("dwMemoryLoad",ctypes.c_ulong),("ullTotalPhys",ctypes.c_ulonglong),
+                          ("ullAvailPhys",ctypes.c_ulonglong),("ullTotalPageFile",ctypes.c_ulonglong),("ullAvailPageFile",ctypes.c_ulonglong),
+                          ("ullTotalVirtual",ctypes.c_ulonglong),("ullAvailVirtual",ctypes.c_ulonglong),("ullAvailExtendedVirtual",ctypes.c_ulonglong)]
+            m=MS(); m.dwLength=ctypes.sizeof(MS)
+            if ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(m)): return m.ullTotalPhys/1e9
+        else:
+            with open("/proc/meminfo") as f:
+                for line in f:
+                    if line.startswith("MemTotal:"): return int(line.split()[1])/1e6
+    except Exception:
+        pass
+    return 16.0
 
 def valid_event_cache(path,input_rows):
     p=Path(path)
@@ -491,15 +552,16 @@ def apply_manual_trims(v52,selected,trims,work_dir):
         if b-a<0.5: raise RuntimeError("EDIT_TRIM_TOO_SHORT:"+eid)
         key=hashlib.sha256(f'{e.get("source_sha256")}|{a:.3f}|{b:.3f}|MANUALTRIM1'.encode()).hexdigest()[:20]
         clip=tdir/f"{key}.mp4"
-        if not clip.is_file():
+        sha=_reused_sha(clip)
+        if sha is None:
             tmp=tdir/f".{key}.tmp.mp4"
             cp=subprocess.run([v52.FFMPEG,"-hide_banner","-loglevel","error","-y","-ss",f"{a:.3f}","-i",str(src),"-t",f"{b-a:.3f}",
                                "-map","0:v:0",*sound_args(v52,src,b-a),"-c:v","libx264","-preset","fast","-crf","18","-pix_fmt","yuv420p",
                                "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(tmp)],capture_output=True,text=True)
             if cp.returncode!=0 or "Video:" not in _video_line(v52.FFMPEG,tmp):
                 tmp.unlink(missing_ok=True); raise RuntimeError("EDIT_TRIM_FAILED:"+(cp.stderr or "no picture in the cut")[-600:])
-            os.replace(tmp,clip)
-        x=dict(e); x["clip_path"]=str(clip); x["clip_bytes"]=clip.stat().st_size; x["clip_sha256"]=sha256_file(clip)
+            os.replace(tmp,clip); sha=_made_sha(clip)
+        x=dict(e); x["clip_path"]=str(clip); x["clip_bytes"]=clip.stat().st_size; x["clip_sha256"]=sha
         x["duration_s"]=float(v52.ffprobe(clip)["format"]["duration"]); x["start_s"]=round(a,3); x["end_s"]=round(a+x["duration_s"],3)
         x["manual_trim"]=[round(a,3),round(b,3)]
         out.append(x)
@@ -509,6 +571,8 @@ def realmedia_item_name(path,sha):
     """Item folder name used by medeng_realmedia_pipeline_v14.safe_name (kept in sync; used for progress only)."""
     s=re.sub(r'[^A-Za-z0-9._-]+','_',Path(path).name)[:100] or 'media'
     return f'{s}__{sha[:12]}'
+
+_CONTENT_VERDICTS=("NO_MOMENTS","STATIC_VIDEO","TOO_SHORT_FOR_ANALYSIS")
 
 def _analysis_skip_reason(r):
     """Short machine reason for a file the technical analysis could not use (no paths, no logs)."""
@@ -614,7 +678,10 @@ def build_event_library(runtime_dir,input_rows,work_dir,skipped=None):
     """
     realmedia=work_dir/"realmedia"; eventdir=work_dir/"event_library"; libpath=eventdir/"EVENT_LIBRARY.json"
     skipfile=eventdir/"ANALYSIS_SKIPPED.json"   # files the analysis could not use last time (same name + SHA-256)
-    try: before={(x["name"],x["sha256"]):x["reason"] for x in json.loads(skipfile.read_text(encoding="utf-8"))}
+    # what the video itself is (no moments, a still image, too short) is remembered for good; a failure that may go
+    # away (disk full, out of memory, a locked file, a time-out) only for 6 hours - then it is tried again
+    try: before={(x["name"],x["sha256"]):x["reason"] for x in json.loads(skipfile.read_text(encoding="utf-8"))
+                 if x["reason"] in _CONTENT_VERDICTS or time.time()-float(x.get("at") or 0)<6*3600}
     except Exception: before={}
     known=[r for r in input_rows if (r["name"],r["sha256"]) not in before]
     if known:
@@ -636,20 +703,33 @@ def build_event_library(runtime_dir,input_rows,work_dir,skipped=None):
     groups=[[] for _ in range(K)]
     for r in input_rows: groups[int(r["sha256"][:8],16)%K].append(r)
     names=[(realmedia/f"g{int(r['sha256'][:8],16)%K}"/"items"/realmedia_item_name(r["path"],r["sha256"])) for r in input_rows]
-    procs=[]; logs=[]
+    procs=[]; logs=[]; waiting=[]
+    # how many groups run AT ONCE: each runs 8 FFmpeg readers, a 4K HEVC reader takes ~0.5 GB - on an 8 GB PC four
+    # groups at once swapped or lost frames. The groups themselves (which video goes where) stay the same.
+    at_once=max(1,min(K,int(_total_ram_gb()//4) or 1))
     try:
         for k,g in enumerate(groups):
             if not g: continue
             root=realmedia/f"g{k}"; (root/"items").mkdir(parents=True,exist_ok=True)
             (root/"BATCH_RESULT.json").unlink(missing_ok=True)
+            # a run cancelled earlier may have left a half-made item (".name.part"); the accepted pipeline refuses one
+            # it did not start itself (another path): removed here - nothing else works in this project's folder now
+            for part in (root/"items").glob(".*.part"):
+                shutil.rmtree(part,ignore_errors=True)
+            # --repair-corrupt-completed: a finished analysis that no longer fits (the folder was moved, a file of it
+            # was damaged) is analysed again instead of failing every later build; no effect when all is well
             cmd=[sys.executable,str(runtime_dir/"medeng_realmedia_pipeline_v14.py"),*[r["path"] for r in g],
-                 "--output-root",str(root),"--per-file-timeout-s",f"{timeout:g}","--max-width","960"]
+                 "--output-root",str(root),"--per-file-timeout-s",f"{timeout:g}","--max-width","960","--repair-corrupt-completed"]
+            waiting.append((k,root,cmd))
+        def launch(k,root,cmd):
             log=(work_dir/f"realmedia.g{k}.log").open("w",encoding="utf-8",errors="replace"); logs.append(log)
             procs.append((root,subprocess.Popen(cmd,stdout=log,stderr=subprocess.STDOUT,stdin=subprocess.DEVNULL)))
         while True:
+            while waiting and sum(1 for _,pr in procs if pr.poll() is None)<at_once:
+                launch(*waiting.pop(0))
             running=[pr for _,pr in procs if pr.poll() is None]
             done=sum(n.is_dir() for n in names)
-            if not running: break
+            if not running and not waiting: break
             i=min(done,len(names)-1)
             progress("analyze",i,len(names),"analysing videos" if K>1 else input_rows[i]["name"])
             time.sleep(1.0)
@@ -684,8 +764,10 @@ def build_event_library(runtime_dir,input_rows,work_dir,skipped=None):
     if cp.returncode!=0: raise RuntimeError("EVENT_LIBRARY_FAILED")
     ok,lib=valid_event_cache(libpath,kept)
     if not ok: raise RuntimeError("EVENT_LIBRARY_POSTVERIFY_FAILED")
-    # time-outs are not remembered: a slow PC may manage the next time
-    atomic_json(skipfile,[x for x in unusable if x["reason"]!="ANALYSIS_TIMEOUT"])
+    for root,_ in procs:          # repaired items keep their broken old copy in quarantine: not needed any more
+        shutil.rmtree(root/"quarantine",ignore_errors=True)
+    try: atomic_json(skipfile,[dict(x,at=round(time.time())) for x in unusable if x["reason"]!="ANALYSIS_TIMEOUT"])   # a slow PC may manage next time
+    except OSError: pass
     return libpath,lib,"built",kept
 
 def pairwise(v52,events):
@@ -733,7 +815,8 @@ def apply_camera_drop(v52,dropmod,selected,work_dir):
             out.append(e); continue
         key=hashlib.sha256(f'{e["clip_sha256"]}|{cut:.3f}|CAMDROPV1'.encode()).hexdigest()[:20]
         clip=bdir/f"{key}.mp4"
-        if not clip.is_file():
+        sha=_reused_sha(clip)
+        if sha is None:
             tmp=bdir/f".{key}.tmp.mp4"
             cp=subprocess.run([v52.FFMPEG,"-hide_banner","-loglevel","error","-y",
                                "-i",str(e["clip_path"]),"-t",f"{cut:.3f}",
@@ -741,8 +824,8 @@ def apply_camera_drop(v52,dropmod,selected,work_dir):
                                "-pix_fmt","yuv420p","-c:a","aac","-b:a","192k","-ar","48000","-ac","2",
                                "-movflags","+faststart",str(tmp)],capture_output=True,text=True)
             if cp.returncode!=0: raise RuntimeError("CAMERA_DROP_PRETRIM_FAILED:"+cp.stderr[-800:])
-            os.replace(tmp,clip)
-        x=dict(e); x["clip_path"]=str(clip); x["clip_bytes"]=clip.stat().st_size; x["clip_sha256"]=sha256_file(clip)
+            os.replace(tmp,clip); sha=_made_sha(clip)
+        x=dict(e); x["clip_path"]=str(clip); x["clip_bytes"]=clip.stat().st_size; x["clip_sha256"]=sha
         x["duration_s"]=float(v52.ffprobe(clip)["format"]["duration"])
         x["end_s"]=round(float(x["start_s"])+x["duration_s"],3)
         x["camera_drop_trim"]=dec
@@ -849,7 +932,8 @@ def full_quality_clip(v52,e,work_dir,hdr=None,deinterlace=False,square=False):
     key=hashlib.sha256(f'{e.get("source_sha256")}|{a:.3f}|{b:.3f}|FULLRES1|{hdr or "SDR"}{"|DEINT" if deinterlace else ""}{"|SQ" if square else ""}'.encode()).hexdigest()[:20]
     d=work_dir/"full_quality"; d.mkdir(parents=True,exist_ok=True)
     clip=d/f"{key}.mp4"
-    if not clip.is_file():
+    sha=_reused_sha(clip)
+    if sha is None:
         tmp=d/f".{key}.tmp.mp4"
         chain=(["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if deinterlace else [])+([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else [])+([SQUARE_PIXELS] if square else [])
         conv=(["-vf",",".join(chain)] if chain else [])+(["-color_primaries","bt709","-color_trc","bt709","-colorspace","bt709"] if hdr in HDR_TO_SDR else [])
@@ -858,9 +942,9 @@ def full_quality_clip(v52,e,work_dir,hdr=None,deinterlace=False,square=False):
                            "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(tmp)],capture_output=True,text=True)
         if cp.returncode!=0 or "Video:" not in _video_line(v52.FFMPEG,tmp):
             tmp.unlink(missing_ok=True); _FQ_FALLBACK.append(str(e.get("source_name"))); return e   # keep the preview clip rather than fail the reel
-        os.replace(tmp,clip)
+        os.replace(tmp,clip); sha=_made_sha(clip)
     x=dict(e); x["preview_clip_path"]=e.get("clip_path"); x["clip_path"]=str(clip)
-    x["clip_bytes"]=clip.stat().st_size; x["clip_sha256"]=sha256_file(clip)
+    x["clip_bytes"]=clip.stat().st_size; x["clip_sha256"]=sha
     return x
 
 # ---------------------------------------------------------------- titles and own music (optional, the owner's choice)
@@ -1139,7 +1223,8 @@ def run(args):
     v52=load_module("medeng_targeted_auto_edit_v26",runtime/"medeng_targeted_auto_edit_v26.py")
     dress=load_dress(getattr(args,"dress",""),v52.FFMPEG)   # title / own music: a bad music file is refused now, not after the build
     skipped_inputs=[]; warnings=[]
-    input_rows=discover_input(input_dir,probe=v52.ffprobe,skipped=skipped_inputs,skip_sha=load_skip_sha(args.skip_sha_file),paths=input_list); fingerprint=input_fingerprint(input_rows)
+    input_rows=discover_input(input_dir,probe=v52.ffprobe,skipped=skipped_inputs,skip_sha=load_skip_sha(args.skip_sha_file),paths=input_list,
+                              sha_cache=work_dir/"source_sha256.json"); fingerprint=input_fingerprint(input_rows)
     seqmod=load_module("p11_montage_sequence_shadow_v4",runtime/"p11_montage_sequence_shadow_v4.py")
     pacemod=load_module("p11_montage_pacing_shadow_v1",runtime/"p11_montage_pacing_shadow_v1.py")
     audiomod=load_module("p11_audio_coherence_shadow_v2",runtime/"p11_audio_coherence_shadow_v2.py")
@@ -1196,11 +1281,17 @@ def run(args):
             skipped_inputs.append(dict(x,name=alias_back[x["name"]]["name"]) if x["name"] in alias_back else x)
         input_rows=[alias_back.get(r["name"],r) for r in analysed]
         _,events=v52.load_library(libpath)
+        # where the videos are NOW (a moved data or source folder: the library still has the old paths; same name +
+        # SHA-256 = same video). Nothing moved: the same paths as before.
+        now_at={(r["name"],r["sha256"]):r["path"] for r in analysis_rows}
         for ev in events:
             o=alias_back.get(str(ev.get("source_name")))
+            here=now_at.get((str(ev.get("source_name")),str(ev.get("source_sha256"))))
             if o:
-                ev["recut_path"]=ev.get("source_path")   # stand-in: camcorder remux, or a short name Windows can open
+                ev["recut_path"]=here or ev.get("source_path")   # stand-in: camcorder remux, or a short name Windows can open
                 ev["source_name"]=o["name"]; ev["source_path"]=o["path"]
+            elif here:
+                ev["source_path"]=here
         scored=v52.score_events(events,work_dir/"V22_SCORE_CACHE.json")
         pool=scored
         progress("select",0,1,"choosing moments")
@@ -1275,10 +1366,12 @@ def run(args):
                 warnings.append("MUSIC_NO_CLEAR_BEAT")
     segcache=work_dir/"segment_cache_v2"; segcache.mkdir(parents=True,exist_ok=True)
     segs=[]; durs=[]; seg_meta=[]; on_beat=[]; exact={}; asked={}
+    framing=str(getattr(args,"vertical_framing","fill") or "fill") if profile=="9x16" else "fill"
     def make_seg(e,use):
         """One segment of `use` seconds (cached by clip, length and output settings): (file, meta, picture length)."""
         key=hashlib.sha256(json.dumps({"clip_sha256":e["clip_sha256"],"use_s":round(float(use),3),
-                                     "audio":audio_mode,"profile":profile,"resolution":resolution,"fps":30,"quality":"high"},
+                                     "audio":audio_mode,"profile":profile,"resolution":resolution,"fps":30,"quality":"high",
+                                     **({"framing":framing} if framing!="fill" else {})},
                                     sort_keys=True,separators=(",",":")).encode()).hexdigest()[:20]
         seg=segcache/f"{key}.mp4"; meta_path=segcache/f"{key}.json"
         meta=None
@@ -1293,7 +1386,8 @@ def run(args):
         if meta is None:
             tmp=segcache/f".{key}.tmp.mp4"
             meta=v52.make_segment(e,tmp,profile,float(use),audio_content=audio_mode,
-                                  output_resolution=resolution,output_fps=30,video_quality="high")
+                                  output_resolution=resolution,output_fps=30,video_quality="high",
+                                  **({"vertical_framing":framing} if framing!="fill" else {}))
             os.replace(tmp,seg); meta["sha256"]=sha256_file(seg); atomic_json(meta_path,meta)
         return seg,meta,video_seconds(v52.FFMPEG,seg)
 
@@ -1383,7 +1477,11 @@ def run(args):
         warnings.append("SHORTER_THAN_REQUESTED")
     fvs=[x for x in fpr["streams"] if x.get("codec_type")=="video"][0]; out_w,out_h=int(fvs["width"]),int(fvs["height"])
     if (out_w,out_h)!=tuple(v52.output_dimensions(profile,resolution)): raise RuntimeError("OUTPUT_DIMENSIONS_MISMATCH:%dx%d"%(out_w,out_h))
-    os.replace(temp_final,final_video)
+    for k in range(10):        # a virus scanner may still be reading the new reel
+        try: os.replace(temp_final,final_video); break
+        except PermissionError:
+            if k==9: raise
+            time.sleep(1.0)
     if sha256_file(final_video)!=video_sha: raise RuntimeError("FINAL_COPY_VERIFY_FAILED")
     shutil.rmtree(render_dir/(fingerprint+"_render"),ignore_errors=True)   # join blocks are temporary, never reused
 
@@ -1435,7 +1533,7 @@ def run(args):
         "output":{"name":final_video.name,"bytes":final_video.stat().st_size,"sha256":video_sha,
                   "profile":profile,"resolution":resolution,"fps":30,
                   "profile_requested":str(args.profile),"profile_reason":profile_reason,
-                  "width":out_w,"height":out_h},
+                  "width":out_w,"height":out_h,**({"vertical_framing":framing} if framing!="fill" else {})},
         **({"beat_sync":beat_sync} if beat_sync is not None else {}),
         "dress":({"title":dress["title"] or None,"subtitle":dress["subtitle"] or None,"title_shown":bool(dress.get("title_png")),
                   "music":({"name":dress["music_name"],"sha256":dress["music_sha256"],"mode":dress["music_mode"]} if dress["music"] else None)}
@@ -1468,6 +1566,7 @@ def main():
     ap.add_argument("--semantic-model",choices=("fast_local","pe_core_l14"),default="fast_local",help="AI = fast_local (accepted), AI+ = pe_core_l14")
     ap.add_argument("--theme",default="",help="AI+ only: a theme key of p13_event_semantic_pe.THEMES (empty = no theme)")
     ap.add_argument("--profile",choices=("16x9","9x16","auto"),default="16x9")
+    ap.add_argument("--vertical-framing",choices=("fill","fit_blur"),default="fill")   # vertical reel: crop, or whole picture on blurred edges
     ap.add_argument("--resolution",choices=("standard","social_hd"),default="standard")
     ap.add_argument("--progress-file",default="")
     ap.add_argument("--exclude-events",default="")

@@ -290,6 +290,10 @@ def _run_all() -> None:
         for i, v in enumerate(todo):
             if _STOP.is_set():
                 raise RuntimeError("Stopped.")
+            if _reel_building():
+                sc = None                         # the model's memory back to the reel BEFORE waiting for it
+                import gc
+                gc.collect()
             if _wait_for_reel():
                 sc = None
                 _STATE.update(t0=0.0)

@@ -237,6 +237,25 @@ def main():
     check("videos_by_day groups a big folder, newest day first",
           [(d["day"], len(d["files"])) for d in days] == [("2026-07-15", 30), ("2026-07-14", 40), (ae.video_day(cam / "clip.mov", 1_600_000_000), 1)],
           [(d["day"], len(d["files"])) for d in days])
+    # a copied video keeps its recording time in its header (mvhd): that day, not the day it was copied
+    import time as _tm
+    box = lambda t, body: (8 + len(body)).to_bytes(4, "big") + t + body
+    ct = 1_720_000_000 + 2082844800
+    mvhd0 = box(b"mvhd", bytes(4) + ct.to_bytes(4, "big") + ct.to_bytes(4, "big") + bytes(88))
+    mvhd1 = box(b"mvhd", bytes([1, 0, 0, 0]) + ct.to_bytes(8, "big") + ct.to_bytes(8, "big") + bytes(100))
+    cam2 = work / "copied"; cam2.mkdir(parents=True, exist_ok=True)
+    (cam2 / "trip.mp4").write_bytes(box(b"ftyp", b"isom" + bytes(4) + b"isom") + box(b"mdat", bytes(4000)) + box(b"moov", mvhd0))
+    (cam2 / "trip2.mov").write_bytes(box(b"ftyp", b"qt  " + bytes(4) + b"qt  ") + box(b"moov", box(b"udta", bytes(8)) + mvhd1) + box(b"mdat", bytes(500)))
+    (cam2 / "nodate.mp4").write_bytes(box(b"ftyp", b"isom" + bytes(4) + b"isom") + box(b"moov", box(b"mvhd", bytes(100))))
+    for f in cam2.iterdir():
+        os.utime(f, (1_600_000_000, 1_600_000_000))
+    check("recording time read from the video header (moov at the end or first, 32/64-bit)",
+          ae.shot_time(cam2 / "trip.mp4") == 1_720_000_000.0 and ae.shot_time(cam2 / "trip2.mov") == 1_720_000_000.0
+          and ae.shot_time(cam2 / "nodate.mp4") is None and ae.shot_time(cam / "clip.mov") is None,
+          (ae.shot_time(cam2 / "trip.mp4"), ae.shot_time(cam2 / "trip2.mov"), ae.shot_time(cam2 / "nodate.mp4")))
+    d2 = {d["day"]: len(d["files"]) for d in ae.videos_by_day(cam2)}
+    check("a copied video is grouped by the day it was recorded",
+          d2 == {_tm.strftime("%Y-%m-%d", _tm.localtime(1_720_000_000)): 2, _tm.strftime("%Y-%m-%d", _tm.localtime(1_600_000_000)): 1}, d2)
     names14 = [f["name"] for f in days[1]["files"]]
     check("a day's videos are listed newest first (tick the newest)", names14 == sorted(names14, reverse=True), names14[:3])
     check("big folder is offered as a choice, not refused", len(ae.list_videos(cam)) > ae.MAX_INPUTS and raises(ae.check_folder, str(cam)))
@@ -352,6 +371,24 @@ def main():
     check("ru: preparing a recording without a length (file name kept)", prep == "Подготовка записи без длины: it's [1] 1.5 s.webm", prep)
     long = _i18n.translate_text("Requested 15 s, got 9.7 s: there were not enough different moments in this footage for a longer reel.", True)
     check("ru: short-reel note fully Russian", not _re.search(r"[A-Za-z]{3,}", long), long)
+    # copies of the database and settings: one a day, one before a different build uses them; a missing data folder
+    # and a damaged database are said on every page
+    import sqlite3 as _sq
+    from archivist import backup as _bk, config as _cfg, web as _web
+    _cfg.ensure_dirs()
+    _c = _sq.connect(str(_cfg.DB_PATH)); _c.execute("create table if not exists bk_probe(x)"); _c.commit(); _c.close()
+    first = _bk.at_start("unit-1"); again = _bk.at_start("unit-1"); other = _bk.at_start("unit-2")
+    check("backup: daily copy once, build copy on a different build", "daily" in first and "daily" not in again and "build" not in again
+          and "build" in other and Path(other["build"]).is_file(), (first, again, other))
+    _cfg.DATA_ROOT_NOTE.update(missing="E:\\MediaEngine Data", using="D:\\projects\\medeng\\MediaEngine Data")
+    try:
+        with _web.create_app().test_request_context("/"):
+            page = _web.layout("t", "<p>x</p>")
+        ru = _i18n.translate_text("Connect that disk (or put the folder back) and restart MediaEngine. Until then an empty folder is used:", True)
+        check("missing data folder said on every page", "Your projects are not shown." in page and "E:\\MediaEngine Data" in page
+              and not _re.search(r"[A-Za-z]{3,}", ru.replace("MediaEngine", "")), ru)
+    finally:
+        _cfg.DATA_ROOT_NOTE.clear()
     # the Explorer-style folder window (Windows): opens in the given folder, "Select Folder" returns it, Cancel returns
     # nothing; driven by window messages. Without a desktop the window cannot appear: reported, not counted.
     if os.name == "nt":

@@ -373,6 +373,22 @@ def app_part(work, src, music, check):
         r = c.post("/auto/create", data={"folder": str(src), "length": "15", "format": "vertical", "sound": "auto", "mode": "technical",
                                          "music": str(work / "nope.mp3")}, headers=H)
         check("missing_music_refused_before_building", r.status_code != 302 and b"Music file not found" in r.data, r.status_code)
+        # horizontal videos in a vertical reel: the whole picture on blurred edges (a choice; cropping stays the default)
+        before = {x["id"] for x in ae.project(pid)["jobs"]}
+        c.post(f"/auto/p/{pid}/variant", data={"base_revision_id": rev1["id"], "format": "vertical", "framing": "fit_blur"}, headers=H)
+        j6 = [x for x in ae.project(pid)["jobs"] if x["id"] not in before]
+        j6 = wait(j6[0]["id"]) if j6 else {"status": "missing"}
+        rev6 = ae.revision(j6.get("revision_id") or 0) if j6.get("status") == "done" else None
+        edge = mid = None
+        if rev6:
+            f6 = frame(ff, Path(rev6["video_path"]), 2.0)
+            h6 = f6.shape[0]
+            sharp = lambda a: float(np.abs(np.diff(a, axis=1)).mean())
+            edge, mid = sharp(f6[: int(h6 * .2)]), sharp(f6[int(h6 * .4): int(h6 * .6)])
+        check("vertical_with_blurred_edges", rev6 and rev6["settings"].get("framing") == "fit_blur"
+              and rev6["result"]["output"].get("vertical_framing") == "fit_blur" and rev6["result"].get("segments")
+              and [s_["event_id"] for s_ in rev6["result"]["segments"]] == [s_["event_id"] for s_ in rev1["result"]["segments"]]
+              and edge is not None and edge < mid * 0.5, (j6.get("status"), j6.get("error"), edge, mid))
 
 
 if __name__ == "__main__":

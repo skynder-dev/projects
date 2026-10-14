@@ -16,6 +16,9 @@ def _pointer_file() -> Path:
     return Path(base) / "MediaEngine" / "data_root.txt"
 
 
+DATA_ROOT_NOTE: dict = {}      # {missing, using}: the remembered data folder is not there right now
+
+
 def data_root_for(install: Path) -> Path:
     """Where a side-by-side release keeps projects, database, caches and exports.
 
@@ -32,8 +35,11 @@ def data_root_for(install: Path) -> Path:
         if remembered.is_absolute() and remembered.is_dir():
             return remembered.resolve()
         if remembered.is_absolute():
-            # remembered drive not connected right now: use the default without forgetting the old place
-            return (Path(install).resolve().parent / "MediaEngine Data").resolve()
+            # remembered drive not connected right now: use the default without forgetting the old place - and SAY
+            # so on every page (projects are not lost, they are on the other disk)
+            fallback = (Path(install).resolve().parent / "MediaEngine Data").resolve()
+            DATA_ROOT_NOTE.update(missing=str(remembered), using=str(fallback))
+            return fallback
     except Exception:
         pass
     root = (Path(install).resolve().parent / "MediaEngine Data").resolve()
@@ -172,5 +178,11 @@ def save_config(cfg: dict) -> None:
     cfg = _deep_defaults(cfg, json.loads(json.dumps(DEFAULT_CONFIG)))
     cfg["config_version"] = 3
     tmp = CONFIG_PATH.with_suffix(".tmp")
-    tmp.write_text(json.dumps(cfg, indent=2, ensure_ascii=False), encoding="utf-8")
+    with open(tmp, "w", encoding="utf-8") as fh:      # on disk before it replaces the old one (a power cut left 0 bytes)
+        fh.write(json.dumps(cfg, indent=2, ensure_ascii=False))
+        fh.flush()
+        try:
+            os.fsync(fh.fileno())
+        except OSError:
+            pass
     tmp.replace(CONFIG_PATH)

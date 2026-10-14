@@ -34,7 +34,7 @@ DATA = data_root() / "data"
 VERSION_PATH = HOME / "version.txt"
 CONFIG_PATH = HOME / "updater_config.json"
 STATUS_PATH = DATA / "update_status.json"
-START_WAIT_S = 180       # first start on a slow PC (antivirus scanning a fresh runtime) can take minutes
+START_WAIT_S = 420       # first start on a slow PC (antivirus scanning a fresh runtime) can take minutes
 
 def _port():
     """8765 for the stable install. A side-by-side install ships port.txt; if that file is present but
@@ -88,15 +88,20 @@ def write_status(**fields):
         p={"at":datetime.now(timezone.utc).isoformat(),**fields}; t=STATUS_PATH.with_suffix('.tmp'); t.write_text(json.dumps(p,indent=2),encoding='utf-8'); t.replace(STATUS_PATH)
     except Exception: pass
 
+# calls to our own server never go through a system proxy (with a VPN / proxy tool on, Python sent 127.0.0.1 to the
+# proxy: no answer, the launcher waited and gave up)
+_LOCAL_HTTP = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+
+
 def server_alive(timeout=.35):
     try:
-        with urllib.request.urlopen(f'http://{HOST}:{PORT}/api/ping',timeout=timeout) as r: return r.status==200
+        with _LOCAL_HTTP.open(f'http://{HOST}:{PORT}/api/ping',timeout=timeout) as r: return r.status==200
     except Exception: return False
 
 def running_install():
     """Program folder of the MediaEngine answering on our port ('' = an older build that does not say)."""
     try:
-        with urllib.request.urlopen(f'http://{HOST}:{PORT}/api/ping',timeout=2) as r:
+        with _LOCAL_HTTP.open(f'http://{HOST}:{PORT}/api/ping',timeout=2) as r:
             return str(json.loads(r.read().decode('utf-8','replace')).get('install') or '')
     except Exception:
         return None
@@ -141,7 +146,7 @@ def stop_running():
     req=urllib.request.Request(f'http://{HOST}:{PORT}/api/app-control',data=b'{"mode":"stop"}',method='POST',
                                headers={'Content-Type':'application/json','Origin':f'http://{HOST}:{PORT}'})
     try:
-        with urllib.request.urlopen(req,timeout=10) as r: return r.status==200
+        with _LOCAL_HTTP.open(req,timeout=10) as r: return r.status==200
     except Exception:
         return False
 
@@ -376,7 +381,15 @@ def spawn_app(no_browser=False):
     else: env.pop('ARCHIVIST_SUPPRESS_BROWSER',None)
     # -s -E: the bundled runtime ignores a user site-packages folder and PYTHON* variables of other Python installs
     env['PYTHONDONTWRITEBYTECODE']='1'   # -B too: the program folder stays exactly as installed
-    return subprocess.Popen([str(exe),'-B','-s','-E',str(main),'--no-browser' if no_browser else '--open-browser'],cwd=str(HOME),env=env,close_fds=True,**hidden_kwargs())
+    # what the app prints (an error at start above all) goes to a log in the data folder - under pythonw it was lost
+    out=subprocess.DEVNULL
+    try:
+        logs=DATA/'logs'; logs.mkdir(parents=True,exist_ok=True); log=logs/'app_console.log'
+        if log.is_file() and log.stat().st_size>5_000_000: os.replace(log,logs/'app_console.1.log')
+        out=open(log,'ab'); out.write(f"\n==== {datetime.now().isoformat(timespec='seconds')} start {HOME.name}\n".encode())
+    except Exception: out=subprocess.DEVNULL
+    return subprocess.Popen([str(exe),'-B','-s','-E',str(main),'--no-browser' if no_browser else '--open-browser'],cwd=str(HOME),env=env,close_fds=True,
+                            stdin=subprocess.DEVNULL,stdout=out,stderr=out,**hidden_kwargs())
 
 def main():
     raw_args=list(sys.argv[1:]); args=set(raw_args); force_browser='--browser' in args; force='--update' in args; restart='--restart' in args
@@ -452,6 +465,10 @@ def main():
             if not no_browser: open_user_interface(force_browser=force_browser)
             return 0
     write_status(status='start_failed',version=current_version())
+    if not no_browser:      # never a double click that silently does nothing
+        log=DATA/'logs'/'app_console.log'
+        message_box(f'MediaEngine не запустился. Подробности для поддержки: {log}' if ui_ru() else
+                    f'MediaEngine could not start. Details for support: {log}')
     return 1
 
 if __name__=='__main__': raise SystemExit(main())

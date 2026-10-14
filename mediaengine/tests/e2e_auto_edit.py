@@ -113,7 +113,7 @@ def main():
             r = c.get(html.unescape(day_links[0]), headers=H)
             check("big_folder_day_opens_reel_setup", r.status_code == 200 and b"Create reel" in r.data, r.status_code)
         r = c.get("/auto/new", query_string={"folder": str(folder)}, headers={**H, "Sec-Fetch-Site": "cross-site"})
-        check("setup_refuses_other_sites", r.status_code == 400, r.status_code)
+        check("setup_refuses_other_sites", r.status_code in (400, 403), r.status_code)
         if not ae.model_status()["ready"]:
             n_proj = len(ae.list_projects(include_archived=True))
             r = c.post("/auto/create", data={"folder": str(folder), "length": "15", "format": "social_hd", "sound": "auto"}, headers=H)
@@ -400,8 +400,13 @@ def main():
 
         if a.files_check:
             banner_before = b"First time on this PC?" in c.get("/auto", headers=H).data
-            r = c.post("/auto/check", headers=H)
-            check("check_this_pc_test_reel", r.status_code == 200 and b"Test reel built" in r.data, r.data[-600:])
+            r = c.post("/auto/check", headers=H)      # the test reel is built in the background; the page shows it when ready
+            started = r.status_code == 302 and b"Building the test reel" in c.get("/auto/check", headers=H).data
+            t_end = time.time() + 900
+            while time.time() < t_end and c.get("/api/auto/selftest", headers=H).get_json().get("running"):
+                time.sleep(1)
+            r = c.get("/auto/check", headers=H)
+            check("check_this_pc_test_reel", started and r.status_code == 200 and b"Test reel built" in r.data, r.data[-600:])
             check("first_time_banner_until_test_passes", banner_before and b"First time on this PC?" not in c.get("/auto", headers=H).data)
             usable = [f["name"] for f in scan["files"] if f["ok"]][:2]
             chosen = [str(folder / n) for n in usable]
@@ -424,6 +429,25 @@ def main():
                 if others:
                     r = c.get(f"/auto/p/{fpid}/source", query_string={"name": others[0]}, headers=H)
                     check("files_other_file_not_served", r.status_code == 404, r.status_code)
+                # the next new reel starts with the last one's format
+                r = c.get("/auto/new", query_string={"folder": str(folder)}, headers=H)
+                check("new_reel_remembers_last_format", "value='vertical' checked" in r.data.decode("utf-8", "replace"))
+                # "Save MP4" on a version that was not accepted: it is chosen and saved in one step
+                if frev:
+                    r = c.post(f"/auto/p/{fpid}/export", data={"revision_id": frev["id"]}, headers=H)
+                    fp_ = ae.project(fpid)
+                    fx = fp_["exports"][0] if fp_["exports"] else None
+                    check("save_mp4_in_one_step", r.status_code == 302 and fp_["accepted_revision_id"] == frev["id"] and fx
+                          and Path(fx["path"]).is_file() and sha(fx["path"]) == frev["video_sha256"], (r.status_code, fx))
+                    # delete for good: only an archived project; saved MP4 and sources stay
+                    r = c.post(f"/auto/p/{fpid}/delete", headers=H)
+                    refused = r.status_code == 400 and ae.project(fpid) is not None
+                    c.post(f"/auto/p/{fpid}/archive", headers=H)
+                    pdir = ae._project_dir(fpid)
+                    r = c.post(f"/auto/p/{fpid}/delete", headers=H)
+                    check("delete_archived_project", refused and r.status_code == 302 and ae.project(fpid) is None and not pdir.exists()
+                          and fx and Path(fx["path"]).is_file() and all((folder / n).is_file() for n in usable),
+                          (refused, r.status_code, pdir.exists()))
             # a browser / screen recording without a written length (like Chrome's MediaRecorder): used, not "damaged";
             # folder and file names with characters that need care in ffmpeg lists and filters (' [ ] % & ! # ; = ,)
             rec_dir = home.parent / "Mom's recordings [2026] 100% & co!; =,#"

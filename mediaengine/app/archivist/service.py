@@ -627,9 +627,31 @@ def cancel_job(job_id: int) -> bool:
         r = con.execute("SELECT status FROM jobs WHERE id=?", (job_id,)).fetchone()
         if not r or r["status"] not in ("queued", "running"):
             return False
+        if r["status"] == "queued":
+            # not started yet: cancelled at once (the worker only takes jobs without a cancel request, so a queued
+            # job would otherwise stay "queued" forever and block previews, discovery and Convert)
+            now = now_iso()
+            con.execute("UPDATE job_items SET status='skipped',phase='cancelled',error='cancelled',finished_at=? "
+                        "WHERE job_id=? AND status IN ('queued','running')", (now, job_id))
+            con.execute("UPDATE jobs SET cancel_requested=1,status='cancelled',stage='done',message='Cancelled',finished_at=? "
+                        "WHERE id=? AND status='queued'", (now, job_id))
+            con.commit()
+            return True
         con.execute("UPDATE jobs SET cancel_requested=1,message='Cancelling after current operation…' WHERE id=?", (job_id,))
         con.commit()
     return True
+
+
+def _reads_sources_in_place(job_id: int) -> bool:
+    """Some items of this job are used where they are (a folder added on Import, files not copied): their disk must
+    stay connected, whatever the job does."""
+    try:
+        with db() as con:
+            return con.execute(
+                "SELECT 1 FROM job_items ji JOIN inventory i ON i.id=ji.inventory_id WHERE ji.job_id=? AND i.source_kind='fixed' "
+                "AND i.staging_path IS NULL AND i.archive_path IS NULL LIMIT 1", (job_id,)).fetchone() is not None
+    except Exception:
+        return True
 
 
 def _check_free_space(expected: int):
@@ -1076,18 +1098,23 @@ def _run_import_analyze_job(job: dict):
     if not analyze_after:
         with db() as con:
             errs = con.execute("SELECT COUNT(*) n FROM job_items WHERE job_id=? AND status='error'", (job_id,)).fetchone()["n"]
-        _job_update(job_id, source_releasable=0 if errs else 1, import_completed_at=now_iso(),
-                    message=(f"Import finished with {errs} error(s) — keep the source connected" if errs else "Import complete — source can be disconnected"))
+        inplace = _reads_sources_in_place(job_id)
+        _job_update(job_id, source_releasable=0 if (errs or inplace) else 1, import_completed_at=now_iso(),
+                    message=(f"Import finished with {errs} error(s) — keep the source connected" if errs else
+                             "Added. The files stay in their folder — keep that disk connected." if inplace else
+                             "Import complete — source can be disconnected"))
         _finish_job(job_id)
         return
 
     with db() as con:
         ok_imports = con.execute("SELECT COUNT(*) n FROM job_items WHERE job_id=? AND phase='imported' AND status='ready'", (job_id,)).fetchone()["n"]
         import_errors = con.execute("SELECT COUNT(*) n FROM job_items WHERE job_id=? AND status='error'", (job_id,)).fetchone()["n"]
+    inplace = _reads_sources_in_place(job_id)
     _job_update(
-        job_id, stage="analyze", source_releasable=0 if import_errors else 1, import_completed_at=now_iso(), bytes_done=_job_bytes_done(job_id),
+        job_id, stage="analyze", source_releasable=0 if (import_errors or inplace) else 1, import_completed_at=now_iso(), bytes_done=_job_bytes_done(job_id),
         current_inventory_id=None, current_filename=None,
         message=(f"Analyzing {ok_imports} local file(s); {import_errors} import error(s) — keep the source connected." if import_errors
+                 else f"Analyzing {ok_imports} file(s) where they are — keep that disk connected." if inplace
                  else f"Import complete — source can be disconnected. Analyzing {ok_imports} local file(s)."),
     )
 
@@ -1144,7 +1171,7 @@ def _run_analyze_job(job: dict):
     job_id = int(job["id"])
     with db() as con:
         items = con.execute("SELECT * FROM job_items WHERE job_id=? AND status NOT IN ('done','skipped') ORDER BY seq", (job_id,)).fetchall()
-    _job_update(job_id, status="running", started_at=job.get("started_at") or now_iso(), stage="analyze", message="Analyzing local/staged files", source_releasable=1)
+    _job_update(job_id, status="running", started_at=job.get("started_at") or now_iso(), stage="analyze", message="Analyzing local/staged files", source_releasable=0 if _reads_sources_in_place(job_id) else 1)
     for ji in items:
         iid = int(ji["id"]); inv_id = int(ji["inventory_id"])
         if _cancel_requested(job_id):
@@ -1196,7 +1223,7 @@ def _run_media_brain_job(job: dict):
     preset="car" if options.get("preset")=="car" else "general"
     with db() as con:
         items=con.execute("SELECT * FROM job_items WHERE job_id=? AND status NOT IN ('done','skipped') ORDER BY seq",(job_id,)).fetchall()
-    _job_update(job_id,status="running",started_at=job.get("started_at") or now_iso(),stage="media_brain",message="Building virtual clips + Smart Crop",source_releasable=1)
+    _job_update(job_id,status="running",started_at=job.get("started_at") or now_iso(),stage="media_brain",message="Building virtual clips + Smart Crop",source_releasable=0 if _reads_sources_in_place(job_id) else 1)
     for ji in items:
         iid=int(ji["id"]); inv_id=int(ji["inventory_id"])
         if _cancel_requested(job_id):
@@ -1243,7 +1270,7 @@ def _run_archive_job(job: dict):
     root = Path(os.path.expandvars(load_config()["archive_root"])).expanduser(); root.mkdir(parents=True, exist_ok=True)
     with db() as con:
         items = con.execute("SELECT * FROM job_items WHERE job_id=? AND status NOT IN ('done','skipped') ORDER BY seq", (job_id,)).fetchall()
-    _job_update(job_id, status="running", started_at=job.get("started_at") or now_iso(), stage="archive", message="Archiving", source_releasable=1)
+    _job_update(job_id, status="running", started_at=job.get("started_at") or now_iso(), stage="archive", message="Archiving", source_releasable=0 if _reads_sources_in_place(job_id) else 1)
     for ji in items:
         iid = int(ji["id"]); inv_id = int(ji["inventory_id"])
         if _cancel_requested(job_id):
@@ -1351,7 +1378,18 @@ def _mark_private_one(inv_id: int) -> str:
 
 def _fill_video_length(inv_id: int, row: dict, local: Path, job_id: int | None = None, status: str = "") -> None:
     """Length of a video for the Library page: videos in a folder on this PC are listed without opening them, so the
-    length was never known ("—"). Read once here (measured when the file has none written)."""
+    length was never known ("—"). Read once here (measured when the file has none written).
+    Also the recording time from the video's header (a copied video's file date is the day it was copied)."""
+    if row.get("media_type") == "video" and not row.get("date_taken") and status not in ("duplicate", "private"):
+        try:
+            from .media import shot_time
+            t = shot_time(Path(local))
+            if t:
+                with db() as con:
+                    con.execute("UPDATE inventory SET date_taken=? WHERE id=? AND date_taken IS NULL", (float(t), inv_id))
+                    con.commit()
+        except Exception as exc:
+            log(f"recording time not read for item {inv_id}: {exc}")
     if row.get("media_type") != "video" or row.get("duration_ms") or status in ("duplicate", "private"):
         return
     try:
@@ -1463,6 +1501,8 @@ def _job_worker():
         if not r:
             time.sleep(0.5); continue
         job = _row_dict(r)
+        from .platform_adapter import keep_awake
+        _awake = keep_awake(); _awake.__enter__()       # an overnight import must not stop when the PC goes to sleep
         try:
             if job["kind"] in ("import", "import_analyze"):
                 _run_import_analyze_job(job)
@@ -1484,6 +1524,8 @@ def _job_worker():
                 _job_update(job["id"], status="failed", stage="done", message=f"Job crashed: {exc}", error=str(exc), finished_at=now_iso())
             except Exception as exc2:
                 log(f"job {job['id']} could not be marked failed: {exc2}"); time.sleep(2)
+        finally:
+            _awake.__exit__(None, None, None)
 
 def start_workers() -> None:
     global JOB_WORKER_STARTED

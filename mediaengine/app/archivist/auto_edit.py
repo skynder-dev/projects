@@ -29,12 +29,13 @@ MAX_INPUTS = 64
 
 # One output preset per run (contract 2026-10-03). Keys are what the UI submits.
 FORMATS = {
-    "social_hd": {"profile": "9x16", "resolution": "social_hd", "label": "Social HD · vertical 1080×1920", "short": "Social HD", "size": (1080, 1920)},
-    "vertical": {"profile": "9x16", "resolution": "standard", "label": "Vertical 540×960", "short": "Vertical", "size": (540, 960)},
-    "horizontal": {"profile": "16x9", "resolution": "standard", "label": "Horizontal 960×540", "short": "Horizontal", "size": (960, 540)},
+    "social_hd": {"profile": "9x16", "resolution": "social_hd", "label": "Vertical Full HD 1080×1920 (phone, Reels, Shorts)", "short": "Social HD", "size": (1080, 1920)},
     "horizontal_hd": {"profile": "16x9", "resolution": "social_hd", "label": "Horizontal Full HD 1920×1080 (TV, YouTube)",
                       "short": "Horizontal HD", "size": (1920, 1080)},
+    "vertical": {"profile": "9x16", "resolution": "standard", "label": "Vertical small 540×960 (quick to send)", "short": "Vertical", "size": (540, 960)},
+    "horizontal": {"profile": "16x9", "resolution": "standard", "label": "Horizontal small 960×540 (quick to send)", "short": "Horizontal", "size": (960, 540)},
 }
+FRAMINGS = {"fill": "Fill the screen (cropped to the interesting part)", "fit_blur": "Whole picture, blurred edges"}
 SOUNDS = {"auto": "Auto (keep source sound, mute if it jumps)", "source": "Source sound", "mute": "Mute"}
 LENGTHS = (5, 15, 30, 60)
 MODES = {"semantic": "AI moments (FAST_LOCAL)", "semantic_plus": "AI+ moments (PE-Core L/14)", "technical": "Technical only (no AI model)"}
@@ -575,6 +576,9 @@ def list_videos(folder: Path) -> list[Path]:
 _DAY_IN_NAME = re.compile(r"(?<!\d)(20\d{2})[-_.]?(0[1-9]|1[0-2])[-_.]?(0[1-9]|[12]\d|3[01])(?=\D|$|\d{6}(?:\D|$))")
 
 
+from .media import shot_time  # noqa: E402  (recording time from the video header)
+
+
 def video_day(p: Path, mtime: float) -> str:
     m = _DAY_IN_NAME.search(Path(p).stem)
     if m:
@@ -584,15 +588,15 @@ def video_day(p: Path, mtime: float) -> str:
 
 def videos_by_day(folder) -> list[dict]:
     """A folder with more videos than one reel takes (a phone camera folder): its videos grouped by the day they were
-    shot (date in the file name, else the file's date), newest day first, so the user can pick a day or tick videos.
-    Only file names and sizes are read here - nothing is opened."""
+    shot (date in the file name, else the recording time in the video's header, else the file's date), newest day
+    first, so the user can pick a day or tick videos. Only names, sizes and a few header bytes are read."""
     days: dict[str, list] = {}
     for p in list_videos(Path(folder)):
         try:
             st = p.stat()
         except OSError:
             continue
-        days.setdefault(video_day(p, st.st_mtime), []).append({"path": str(p), "name": p.name, "bytes": st.st_size})
+        days.setdefault(video_day(p, shot_time(p) or st.st_mtime), []).append({"path": str(p), "name": p.name, "bytes": st.st_size})
     # newest first, also within a day (VID_20260714_183005 before VID_20260714_120001), so "tick the newest" is right
     return [{"day": d, "files": sorted(days[d], key=lambda f: f["name"].lower(), reverse=True)} for d in sorted(days, reverse=True)]
 
@@ -1008,6 +1012,8 @@ def friendly_skip(reason: str) -> str:
         return "analysis took too long"
     if r.startswith("ANALYSIS_FAILED"):
         return "could not be analysed"
+    if r in ("MISSING", "NOT_FOUND", "FILE_MISSING"):
+        return "not found (moved or deleted)"
     return "damaged or not a video"
 
 
@@ -1070,7 +1076,9 @@ def project(pid: int) -> dict | None:
         j["settings"] = json.loads(j["settings_json"])
         j["percent"] = job_percent(j)
     d["files"] = json.loads(d.get("files_json") or "null") or None
-    d["source_present"] = all(Path(x).is_file() for x in d["files"]) if d["files"] else folder_available(d["folder"])
+    # chosen videos: one moved or deleted video does not block the project (the rest is still there)
+    d["missing_files"] = [x for x in d["files"] if not Path(x).is_file()] if d["files"] else []
+    d["source_present"] = (len(d["missing_files"]) < len(d["files"])) if d["files"] else folder_available(d["folder"])
     d["state"] = project_state(d)
     return d
 
@@ -1146,6 +1154,13 @@ def normalize_settings(raw: dict, *, model_ready: bool | None = None) -> dict:
     out = {"format": fmt, "sound": sound, "length": length, "mode": mode, "exclude": exclude}
     if theme:
         out["theme"] = theme
+    # horizontal videos in a vertical reel: cropped to the interesting part (default) or the whole picture on blurred
+    # edges; stored only when not the default, so older reels keep their key
+    framing = str(raw.get("framing") or "fill")
+    if framing not in FRAMINGS:
+        raise ValueError("Unknown framing")
+    if framing != "fill" and FORMATS[fmt]["profile"] == "9x16":
+        out["framing"] = framing
     # Manual edit: an explicit list of moments in the user's order, optional source-time trims.
     selection = [str(x) for x in (raw.get("selection") or []) if is_id(x)]
     if len(set(selection)) != len(selection):
@@ -1430,7 +1445,7 @@ def _worker_loop() -> None:
                 if jid is not None:
                     with db() as con:
                         con.execute("UPDATE ae_jobs SET status='failed',stage='failed',error=?,finished_at=? WHERE id=? AND status IN ('queued','running')",
-                                    (("Internal error: " + str(exc))[:500], now_iso(), jid))
+                                    (friendly_error("Internal error: " + str(exc))[:500], now_iso(), jid))
                         con.commit()
             except Exception:
                 pass
@@ -1514,9 +1529,19 @@ def engine_command(folder: Path, out_dir: Path, work_dir: Path, progress_file: P
         cmd += ["--exclude-events", ",".join(s["exclude"])]
     if skip_sha_file is not None:
         cmd += ["--skip-sha-file", str(skip_sha_file)]
+    if s.get("framing") == "fit_blur":
+        cmd += ["--vertical-framing", "fit_blur"]
     if dress_file is not None and (s.get("title") or s.get("subtitle") or s.get("music")):
         cmd += ["--dress", str(dress_file)]
     return cmd
+
+
+def running_elsewhere(pid: int) -> dict | None:
+    """The reel being made now in another project (reels are made one at a time): its id and title."""
+    with db() as con:
+        r = con.execute("SELECT p.id,p.title FROM ae_jobs j JOIN ae_projects p ON p.id=j.project_id "
+                        "WHERE j.status='running' AND j.project_id<>? ORDER BY j.id LIMIT 1", (int(pid),)).fetchone()
+    return dict(r) if r else None
 
 
 def _set(jid: int, **fields) -> None:
@@ -1677,7 +1702,21 @@ _FRIENDLY = {
     "MUSIC_FILE_MISSING": "The music file is not there any more. Choose it again or make the version without music.",
     "MUSIC_FILE_NOT_AUDIO": "The chosen music is not an audio file (mp3, m4a, wav, flac, ogg...).",
     "MUSIC_FILE_NO_SOUND": "The chosen music file has no sound that can be read. Choose another file.",
+    "NO_SEMANTIC_CANDIDATES": "The AI found no usable moments in these videos. Press Retry; if it repeats, build without AI.",
+    "SEMANTIC_CANDIDATE_EXTRACT_FAILED": "A moment could not be cut from one of the videos. Press Retry; if it repeats, build without AI.",
+    "DISSOLVE_BLOCK_RENDER_FAILED": "The final video could not be put together. Press Retry; if it repeats, free the cache of this project.",
+    "FINAL_DECODE_FAILED": "The finished reel could not be read back for the check. Press Retry; if it repeats, free the cache of this project.",
+    "CAMERA_DROP_PRETRIM_FAILED": "A moment could not be prepared. Press Retry; if it repeats, free the cache of this project.",
+    "EDIT_TRIM_FAILED": "A trimmed moment could not be cut. Check its times or let MediaEngine choose again.",
+    "EDIT_DUPLICATE_MOMENT": "The same moment was chosen twice. Choose another one.",
+    "OUTPUT_DIMENSIONS_MISMATCH": "The reel came out in a wrong size. Press Retry; if it repeats, free the cache of this project.",
+    "FINAL_COPY_VERIFY_FAILED": "The finished reel could not be saved correctly. Check the free space and press Retry.",
+    "UNKNOWN_THEME": "This theme is not available. Choose another one.",
+    "Rendered reel does not match": "The finished reel could not be saved correctly. Press Retry.",
 }
+
+# shown when nothing above matches: a plain sentence, the technical code only in small print
+UNKNOWN_FAILURE = "The reel could not be built. Press Retry; if it repeats, build without AI or free the cache of this project."
 
 
 def _engine_error(log_file: Path) -> str:
@@ -1687,10 +1726,16 @@ def _engine_error(log_file: Path) -> str:
         text = ""
     m = re.findall(r'"error":\s*"([^"]+)"', text)
     raw = m[-1] if m else (text.strip().splitlines() or ["Engine stopped without a result"])[-1]
+    return friendly_error(raw)
+
+
+def friendly_error(raw: str) -> str:
+    """A sentence the owner understands, the technical code in [brackets] (shown in small print)."""
+    raw = str(raw or "")
     for code, msg in _FRIENDLY.items():
         if code in raw:
             return msg + " [" + raw[:200] + "]"
-    return raw[:500]
+    return UNKNOWN_FAILURE + " [" + raw[:300] + "]"
 
 
 def _publish_revision(pid: int, jid: int, out_dir: Path, settings: dict) -> int:
@@ -1709,8 +1754,8 @@ def _publish_revision(pid: int, jid: int, out_dir: Path, settings: dict) -> int:
         n += 1
     vdst = rev_dir / f"R{n:03d}.mp4"
     rdst = rev_dir / f"R{n:03d}.json"
-    os.replace(video, vdst)
-    os.replace(result, rdst)
+    _replace_retry(video, vdst)
+    _replace_retry(result, rdst)
     shutil.rmtree(out_dir, ignore_errors=True)
     if sha256_file(vdst) != sha:
         raise RuntimeError("Revision copy verification failed")
@@ -1935,6 +1980,39 @@ def selftest_video() -> Path | None:
 SELFTEST_RUNNING = threading.Event()      # the Library's AI+ search preparation waits for it (one AI+ model at a time)
 
 
+_SELFTEST = {"running": False, "mode": "", "started": 0.0, "result": None}
+_SELFTEST_LOCK = threading.Lock()
+
+
+def selftest_start(mode: str, timeout_s: int) -> bool:
+    """The test reel of Check this PC in the background: the page can be closed or reloaded meanwhile."""
+    import time as _t
+    with _SELFTEST_LOCK:
+        if _SELFTEST["running"]:
+            return False
+        _SELFTEST.update(running=True, mode=mode, started=_t.time(), result=None)
+
+    def run():
+        t0 = _t.time()
+        try:
+            t = quick_selftest(mode=mode, timeout_s=timeout_s)
+        except Exception as exc:
+            t = {"ok": False, "error": friendly_error(str(exc)), "seconds": round(_t.time() - t0, 1)}
+        _remember_selftest(t)
+        with _SELFTEST_LOCK:
+            _SELFTEST.update(running=False, result=t)
+    threading.Thread(target=run, daemon=True, name="selftest").start()
+    return True
+
+
+def selftest_state() -> dict:
+    import time as _t
+    with _SELFTEST_LOCK:
+        st = dict(_SELFTEST)
+    st["elapsed_s"] = round(_t.time() - st["started"], 1) if st["running"] else 0.0
+    return st
+
+
 def quick_selftest(timeout_s: int = 900, mode: str = "technical") -> dict:
     """Build a 5 s reel from two generated clips with the real engine. mode='semantic' runs the AI model
     (semantic=required, the same pinned check as a normal AI build). Never touches user media."""
@@ -2089,6 +2167,35 @@ def delete_build(name: str, install: Path | None = None) -> int:
     return int(b["bytes"])
 
 
+def delete_project(pid: int) -> int:
+    """An archived project removed for good: its versions and cache (this PC's copies made by MediaEngine). Saved MP4
+    files in the user's folders and the original videos are not touched. Returns the bytes freed."""
+    p = project(pid)
+    if not p:
+        raise ValueError("Project not found")
+    if not p["archived"]:
+        raise ValueError("Archive the project first")
+    if any(j["status"] in ("queued", "running") for j in p["jobs"]):
+        raise ValueError("Wait until the current build has finished")
+    d = _project_dir(pid)
+    freed = _tree_bytes(d)
+    gone = d.with_name(d.name + ".deleting")
+    if d.exists():
+        try:
+            shutil.rmtree(gone, ignore_errors=True)
+            os.rename(d, gone)        # fails while a version is open in a player: then nothing is half-deleted
+        except OSError:
+            raise ValueError("A video of this project is open (in a player?). Close it and try again.")
+    with db() as con:
+        con.execute("BEGIN IMMEDIATE")
+        for t in ("ae_reviews", "ae_accept_log", "ae_exports", "ae_revisions", "ae_jobs"):
+            con.execute(f"DELETE FROM {t} WHERE project_id=?", (int(pid),))
+        con.execute("DELETE FROM ae_projects WHERE id=?", (int(pid),))
+        con.commit()
+    shutil.rmtree(gone, ignore_errors=True)
+    return freed
+
+
 def project_disk_usage(pid: int) -> dict:
     d = _project_dir(pid)
     return {"cache_bytes": _tree_bytes(d / "work"), "versions_bytes": _tree_bytes(d / "revisions")}
@@ -2201,6 +2308,25 @@ def set_ui_language(lang: str) -> None:
     _set(lang)
 
 
+def last_new_settings() -> dict:
+    """Format, sound and how moments are chosen of the last reel made: the next new reel starts with them."""
+    try:
+        d = dict(load_config().get("auto_edit", {}).get("last_new") or {})
+    except Exception:
+        return {}
+    return {k: d[k] for k, ok in (("format", FORMATS), ("sound", SOUNDS), ("mode", MODES), ("framing", FRAMINGS)) if d.get(k) in ok}
+
+
+def remember_new_settings(settings: dict) -> None:
+    try:
+        from .config import save_config
+        cfg = load_config()
+        cfg.setdefault("auto_edit", {})["last_new"] = {k: settings.get(k) for k in ("format", "sound", "mode", "framing") if settings.get(k)}
+        save_config(cfg)
+    except Exception:
+        pass
+
+
 def default_export_dir() -> Path:
     """The folder the user exported to last time (if it still exists), otherwise <data>/Exports."""
     try:
@@ -2287,7 +2413,7 @@ def _export_accepted(pid: int, dest_dir: Path | None = None, remember: bool = Fa
         shutil.copyfile(src, tmp)
         if sha256_file(tmp) != r["video_sha256"]:
             raise RuntimeError("Export verification failed")
-        os.replace(tmp, dst)   # replaces only our own empty reservation
+        _replace_retry(tmp, dst)   # replaces only our own empty reservation (a virus scanner may still hold the new file)
     except BaseException:
         tmp.unlink(missing_ok=True)
         dst.unlink(missing_ok=True)
