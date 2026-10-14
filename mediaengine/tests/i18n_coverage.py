@@ -161,6 +161,16 @@ def main():
                     t = re.sub(r"\s+", " ", _h.unescape(t)).strip()
                     if english_left(t):
                         left.setdefault(t, url)
+                    if "Archivist" in t:              # the old name is gone (owner, 2026-10-14)
+                        left.setdefault("OLD NAME: " + t, url)
+            # the same pages in English: the old name nowhere either
+            i18n.set_ui_language("en")
+            for url in urls_for(app, con):
+                r = c.get(url, headers=H)
+                if r.mimetype == "text/html" and r.status_code < 500:
+                    for t in page_texts(r.get_data(as_text=True)):
+                        if "Archivist" in t:
+                            left.setdefault("OLD NAME (English): " + re.sub(r"\s+", " ", t).strip()[:200], url)
         i18n.set_ui_language("en")
     for t, url in sorted(left.items(), key=lambda kv: (kv[1], kv[0])):
         print(f"{url}\t{t}")
