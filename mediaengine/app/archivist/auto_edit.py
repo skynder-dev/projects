@@ -29,7 +29,7 @@ MAX_INPUTS = 64
 
 # One output preset per run (contract 2026-10-03). Keys are what the UI submits.
 FORMATS = {
-    "social_hd": {"profile": "9x16", "resolution": "social_hd", "label": "Vertical Full HD 1080×1920 (phone, Reels, Shorts)", "short": "Social HD", "size": (1080, 1920)},
+    "social_hd": {"profile": "9x16", "resolution": "social_hd", "label": "Vertical Full HD 1080×1920 (phone, Reels, Shorts)", "short": "Vertical HD", "size": (1080, 1920)},
     "horizontal_hd": {"profile": "16x9", "resolution": "social_hd", "label": "Horizontal Full HD 1920×1080 (TV, YouTube)",
                       "short": "Horizontal HD", "size": (1920, 1080)},
     "vertical": {"profile": "9x16", "resolution": "standard", "label": "Vertical small 540×960 (quick to send)", "short": "Vertical", "size": (540, 960)},
@@ -579,6 +579,16 @@ _DAY_IN_NAME = re.compile(r"(?<!\d)(20\d{2})[-_.]?(0[1-9]|1[0-2])[-_.]?(0[1-9]|[
 from .media import shot_time  # noqa: E402  (recording time from the video header)
 
 
+def _header_day_time(p: Path, mtime: float) -> float | None:
+    """The recording time from the video's header, used for its day only when the file's date looks like the day it
+    was copied (later than the recording). Some cameras write local time there instead of UTC: a file date that
+    agrees with it within a day is kept as it is."""
+    t = shot_time(p)
+    if not t:
+        return None
+    return t if mtime - t > 86400 else None
+
+
 def video_day(p: Path, mtime: float) -> str:
     m = _DAY_IN_NAME.search(Path(p).stem)
     if m:
@@ -596,7 +606,10 @@ def videos_by_day(folder) -> list[dict]:
             st = p.stat()
         except OSError:
             continue
-        days.setdefault(video_day(p, shot_time(p) or st.st_mtime), []).append({"path": str(p), "name": p.name, "bytes": st.st_size})
+        # the header is read only when the name has no date, and never for a OneDrive file kept only in the cloud
+        # (reading it would make Windows download the whole video)
+        t = st.st_mtime if (_DAY_IN_NAME.search(p.stem) or cloud_only(p, st)) else (_header_day_time(p, st.st_mtime) or st.st_mtime)
+        days.setdefault(video_day(p, t), []).append({"path": str(p), "name": p.name, "bytes": st.st_size})
     # newest first, also within a day (VID_20260714_183005 before VID_20260714_120001), so "tick the newest" is right
     return [{"day": d, "files": sorted(days[d], key=lambda f: f["name"].lower(), reverse=True)} for d in sorted(days, reverse=True)]
 
@@ -1445,7 +1458,7 @@ def _worker_loop() -> None:
                 if jid is not None:
                     with db() as con:
                         con.execute("UPDATE ae_jobs SET status='failed',stage='failed',error=?,finished_at=? WHERE id=? AND status IN ('queued','running')",
-                                    (friendly_error("Internal error: " + str(exc))[:500], now_iso(), jid))
+                                    (friendly_error("Internal error: " + str(exc)), now_iso(), jid))
                         con.commit()
             except Exception:
                 pass
@@ -2186,12 +2199,20 @@ def delete_project(pid: int) -> int:
             os.rename(d, gone)        # fails while a version is open in a player: then nothing is half-deleted
         except OSError:
             raise ValueError("A video of this project is open (in a player?). Close it and try again.")
-    with db() as con:
-        con.execute("BEGIN IMMEDIATE")
-        for t in ("ae_reviews", "ae_accept_log", "ae_exports", "ae_revisions", "ae_jobs"):
-            con.execute(f"DELETE FROM {t} WHERE project_id=?", (int(pid),))
-        con.execute("DELETE FROM ae_projects WHERE id=?", (int(pid),))
-        con.commit()
+    try:
+        with db() as con:
+            con.execute("BEGIN IMMEDIATE")
+            for t in ("ae_reviews", "ae_accept_log", "ae_exports", "ae_revisions", "ae_jobs"):
+                con.execute(f"DELETE FROM {t} WHERE project_id=?", (int(pid),))
+            con.execute("DELETE FROM ae_projects WHERE id=?", (int(pid),))
+            con.commit()
+    except BaseException:
+        try:                          # the project stays as it was: its files back in place
+            if gone.exists() and not d.exists():
+                os.rename(gone, d)
+        except OSError:
+            pass
+        raise
     shutil.rmtree(gone, ignore_errors=True)
     return freed
 

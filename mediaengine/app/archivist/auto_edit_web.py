@@ -117,6 +117,30 @@ def _day_label(day: str) -> str:
         return day
 
 
+def _every_day_form(folder: Path, days: list, e) -> str:
+    """A trip or a holiday: one reel for each day at once (built one after another)."""
+    usable = [d for d in days if 1 <= len(d["files"]) <= ae.MAX_INPUTS]
+    if len(usable) < 2:
+        return ""
+    last = ae.last_new_settings()
+    fmt0 = last.get("format", "social_hd")
+    lengths = "".join(f"<label><input type='radio' name='length' value='{L}' {'checked' if L == 30 else ''}> {L} s</label>" for L in ae.LENGTHS)
+    formats = "".join(f"<label><input type='radio' name='format' value='{k}' {'checked' if k == fmt0 else ''}> {e(v['short'])}</label>"
+                      for k, v in ae.FORMATS.items())
+    ms = ae.model_status()
+    mode = _mode_choice(ms["ready"], ae.aiplus_status()["ready"], e, current=last.get("mode"), heading=False)
+    skipped = len(days) - len(usable)
+    return (f"<form method='post' action='/auto/create-days' class='card' style='margin-top:14px' "
+            f"onsubmit=\"this.querySelector('button').disabled=true\"><h2 style='margin-top:0'>A reel for every day</h2>"
+            f"<div class='muted'><span>One reel for each of these days, made one after another:</span> {len(usable)}"
+            + (f". <span>Days with more than {ae.MAX_INPUTS} videos are left out (tick their videos below):</span> {skipped}" if skipped else "")
+            + "</div>"
+            f"<input type='hidden' name='folder' value='{e(str(folder))}'><input type='hidden' name='sound' value='{e(last.get('sound', 'auto'))}'>"
+            f"<input type='hidden' name='framing' value='{e(last.get('framing', 'fill'))}'>"
+            f"<div class='ae-choices'>{lengths}</div><div class='ae-choices'>{formats}</div>{mode}"
+            f"<button class='ae-big'>Make {len(usable)} reels</button></form>")
+
+
 def _big_folder_page(folder: Path, days: list, e, human_bytes) -> tuple[str, str]:
     """More videos than one reel takes: choose a day (one click) or tick up to MAX_INPUTS videos."""
     cap = ae.MAX_INPUTS
@@ -137,8 +161,9 @@ def _big_folder_page(folder: Path, days: list, e, human_bytes) -> tuple[str, str
             f"<div class='card callout'><b>{total} videos in this folder.</b> One reel can use up to {cap} of them: "
             f"pick a day, or tick the videos you want.</div>"
             f"<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>By day</h2>"
-            f"<div class='muted'>The day is taken from the file name (e.g. VID_20260714_…), otherwise from the file's date.</div>"
+            f"<div class='muted'>The day is taken from the file name (e.g. VID_20260714_…), otherwise from the recording time in the video, otherwise from the file's date.</div>"
             f"<table class='ae-files' style='margin-top:8px'>{''.join(day_rows)}</table></div>"
+            + _every_day_form(folder, days, e) +
             f"<form method='get' action='/auto/new' class='card' style='margin-top:14px' id='pickForm'>"
             f"<h2 style='margin-top:0'>Tick videos</h2>"
             f"<div style='position:sticky;top:62px;z-index:5;background:#151b24;padding:8px 0;border-bottom:1px solid #2c3744'>"
@@ -568,6 +593,37 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
 {_dress_fields(e, None, _day_label(next(iter(pdays))) if len(pdays) == 1 else "")}
 <button class='ae-big'>Create reel</button></form>{back_html}"""
         return page("New reel", body, _FRAMING_JS)
+
+    @app.post("/auto/create-days")
+    def ae_create_days():
+        f = request.form
+        try:
+            if not f.get("mode"):
+                raise ValueError("Without the AI model, tick 'Build with Technical only' to continue.")
+            folder = Path(str(f.get("folder") or "").strip().strip('"'))
+            if not folder.is_absolute() or not ae.folder_available(folder):
+                raise ValueError("The folder is not available: " + str(folder))
+            ae._guard_private(folder)
+            settings = {"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound") or "auto",
+                        "mode": f.get("mode"), "framing": f.get("framing"), "theme": ""}
+            ae.normalize_settings(settings, model_ready=ae.model_status()["ready"])
+            ae.check_free_space()
+            days = []
+            for d in ae.videos_by_day(folder):     # OneDrive files kept only in the cloud are never read
+                files = [x["path"] for x in d["files"] if not ae.cloud_only(Path(x["path"]))]
+                if 1 <= len(files) <= ae.MAX_INPUTS and len(d["files"]) <= ae.MAX_INPUTS:
+                    days.append({**d, "paths": files})
+            if not days:
+                raise ValueError("No day with videos to use.")
+            if len(days) > 31:
+                raise ValueError("More than 31 days: choose the days one by one.")
+            for d in reversed(days):        # the oldest day first: the list then reads newest on top
+                pid = ae.create_project(str(folder), f"{folder.name} · {_day_label(d['day'])}", files=d["paths"])
+                ae.start_job(pid, settings)
+            ae.remember_new_settings(settings)
+        except Exception as exc:
+            return err_page(str(exc))
+        return redirect("/auto")
 
     @app.post("/auto/create")
     def ae_create():

@@ -10,11 +10,21 @@ No external account or billing is required for local use.
    Phone videos: copy them to the computer first.
 2. Pick Length, Format and Sound -> "Create reel". Analysis of new videos takes a while; later builds reuse it.
 3. Review: remove, replace, trim or reorder moments; every change is a new version, older ones stay.
-4. "Accept this version" -> "Export MP4" (or "Export to another folder..."). "Exported reels" at the top of the
-   Auto Edit page opens the folder with the finished reels.
+4. "Save MP4" (or "Save to another folder...") on any finished version, one click. "Exported reels" at the top of
+   the Auto Edit page opens the folder with the finished reels.
 
-One reel takes up to 64 videos. A folder with more (a whole phone, say) shows its shooting days and a tick list.
-A camera card can be chosen at its root: the video folders inside it are listed.
+A new reel starts with the last reel's format, sound and mode. A vertical reel from horizontal videos can "Fill the
+screen" (cropped to the interesting part) or show the "Whole picture, blurred edges". When Auto muted a reel, "The
+same reel with the original sound" builds it with the sound.
+
+One reel takes up to 64 videos. A folder with more (a whole phone, say) shows its shooting days (from the file name
+or the recording time in the video) and a tick list; "A reel for every day" makes one reel for each day of a trip.
+A camera card can be chosen at its root: the video folders inside it are listed. In the Library, select videos and
+press "Make a reel".
+
+A project you no longer need: "Archive", then "Delete" in the archive frees its space; saved MP4 files and the
+original videos stay. The database and settings are copied automatically (once a day and before a new build first
+runs) to "MediaEngine Data\data\backups".
 
 Your original files are only read, never changed. "Check this PC" (Home, Settings, Auto Edit) shows whether the
 AI model and video tools are found and builds a 5-second test reel. The language switch is at the top right.

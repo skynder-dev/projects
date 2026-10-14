@@ -268,6 +268,10 @@ def create_app():
             return None
         origin=request.headers.get('Origin','')
         referer=request.headers.get('Referer','')
+        # "Origin: null" from this app's own page (a stricter browser setting): Sec-Fetch-Site is set by the browser
+        # itself and cannot be faked by another site
+        if origin=='null' and request.headers.get('Sec-Fetch-Site','')=='same-origin':
+            origin=''
         if origin and _exact_loopback_origin(origin) is None:
             return jsonify({'error':'Cross-origin request blocked'}),403
         if not origin and referer and _exact_loopback_origin(referer) is None:
@@ -280,7 +284,9 @@ def create_app():
         resp.headers.setdefault('X-Frame-Options','DENY')
         resp.headers.setdefault('Content-Security-Policy',"frame-ancestors 'none'")
         resp.headers.setdefault('Cross-Origin-Resource-Policy','same-origin')
-        resp.headers.setdefault('Referrer-Policy','no-referrer')
+        # same-origin, not no-referrer: with no-referrer a browser sends "Origin: null" with every form, and the
+        # guard above refused every button that posts a form (found by a browser check, before any release)
+        resp.headers.setdefault('Referrer-Policy','same-origin')
         resp.headers.setdefault('X-Content-Type-Options','nosniff')
         return resp
 
@@ -380,6 +386,10 @@ def create_app():
                 SUM(CASE WHEN {local_sql} AND rights_status IN ('review','permission','blocked') THEN 1 ELSE 0 END) rights_review,
                 SUM(CASE WHEN excluded=0 AND (import_status='error' OR analysis_status='error') THEN 1 ELSE 0 END) errs
                 FROM inventory""").fetchone()
+            try:     # reels made with Auto Edit (the rights review count meant nothing for home videos)
+                reels=int(con.execute("SELECT COUNT(*) FROM ae_projects WHERE archived=0").fetchone()[0])
+            except Exception:
+                reels=0
             total=int(metrics['total'] or 0);imported=int(metrics['imported'] or 0);videos=int(metrics['videos'] or 0)
             waiting=int(metrics['waiting'] or 0);review=int(metrics['review'] or 0);rights=int(metrics['rights_review'] or 0);errs=int(metrics['errs'] or 0)
         phone=phone_snapshot(); phone_text=(phone.get('model') or phone.get('serial') or 'Android')+' connected' if phone['connected'] else (phone.get('error') or 'not connected')
@@ -387,7 +397,7 @@ def create_app():
                    "<span class='muted'>Add a folder on Import, or make a reel straight from a folder of videos with Auto Edit.</span>"
                    "<div class='row' style='margin-top:8px'><a class='btn' href='/auto'>Auto Edit</a></div></div>") if (SIDE_BY_SIDE and not total) else ""
         body=f"""<div class='pagehead row space'><div><div class='eyebrow'>Local-first media workspace</div><h1>Your footage, ready to work.</h1><div class='lead'>Browse Android, SD/USB and local folders in one place. Library stays clean: only media you explicitly add becomes part of the working collection.</div></div><div class='row'><a class='btn' href='/auto'>Auto Edit</a><a class='btn btn2' href='/auto/check'>Check this PC</a><a class='btn btn2' href='/welcome'>Start here</a><a class='btn btn2' href='/import'>Import new media</a><a class='btn btn2' href='/library'>Open Library</a></div></div>
-<div class='hero'><div class='card metric tone-blue'><span class='muted'>On sources</span><b>{total}</b></div><div class='card metric tone-amber'><span class='muted'>Waiting to import</span><b>{waiting}</b></div><div class='card metric tone-mint'><span class='muted'>In Library</span><b>{imported}</b></div><div class='card metric tone-cyan'><span class='muted'>Library videos</span><b>{videos}</b></div><div class='card metric tone-rose'><span class='muted'>Privacy review</span><b>{review}</b></div><div class='card metric tone-violet'><span class='muted'>Rights review</span><b>{rights}</b></div></div>
+<div class='hero'><div class='card metric tone-blue'><span class='muted'>On sources</span><b>{total}</b></div><div class='card metric tone-amber'><span class='muted'>Waiting to import</span><b>{waiting}</b></div><div class='card metric tone-mint'><span class='muted'>In Library</span><b>{imported}</b></div><div class='card metric tone-cyan'><span class='muted'>Library videos</span><b>{videos}</b></div><div class='card metric tone-rose'><span class='muted'>Privacy review</span><b>{review}</b></div><a class='card metric tone-violet' href='/auto'><span class='muted'>Reel projects</span><b>{reels}</b></a></div>
 <div class='card source-card'><div class='device'><span class='device-dot {'online' if phone['connected'] else ''}' data-phone-dot></span><div><div class='device-status'>Android source</div><div class='muted' data-phone-text>{e(phone_text)}</div></div></div><div class='row'><span class='badge {'error' if errs else 'safe'}'>{errs} errors</span><a class='btn btn2' href='/jobs'>Jobs</a></div></div>
 {side_note}<div class='section-title'>How it works</div><div class='card callout'>Browse every source in <b>Import</b> → select what you want → <b>Add to Library</b> or <b>Add + Analyze</b>. Local-folder files stay in place; Android/SD files copy to Staging. Private and Rejected media never appear in Library.</div>"""
         return layout('Dashboard',body)
@@ -416,7 +426,7 @@ def create_app():
         body+="</div><div class='card' style='margin-top:14px'><h2>Publication history</h2>"
         if not pubs:body+="<div class='muted'>History is empty. A novelty check does not publish anything.</div>"
         for p in pubs:body+=f"<div class='row space' style='padding:8px 0;border-bottom:1px solid #223'><div><b>{e(p.get('title') or 'Untitled')}</b><div class='muted'>{e(p.get('status') or '')} - {e(p.get('platform') or 'local/manual')}</div></div><span class='badge'>{e(p.get('novelty_state') or 'recorded')}</span></div>"
-        body+="</div><div class='card callout' style='margin-top:14px'><b>Privacy boundary:</b><div class='muted'>Publication history and detailed novelty signals stay in the local MediaEngine database. No raw media or fingerprints are sent to Supabase.</div></div>"
+        body+="</div><div class='card callout' style='margin-top:14px'><b>Privacy boundary:</b><div class='muted'>Publication history and detailed novelty signals stay in the local MediaEngine database. Nothing is sent anywhere.</div></div>"
         queue=list_social_queue(30)
         body+="<div class='card' style='margin-top:14px'><h2>Content queue</h2>"
         if not queue:body+="<div class='muted'>Queue is empty.</div>"
@@ -796,7 +806,7 @@ if(recheck)recheck.onclick=async()=>{
                 prefix={'android':'Android','removable':'SD/USB','fixed':'Folder'}.get(s['source_kind'],s['source_kind'])
                 source_options+=opt(source_id,s['source_id'],f"{prefix}: {s['source_label']} ({s['n']})")
             filters=f"""<form method='get' class='toolbar toolpanel'><input name='q' value='{e(q)}' placeholder='Search Library'><select name='media_type'>{opt(media_type,'','Photos + videos')}{opt(media_type,'video','Videos')}{opt(media_type,'image','Photos')}</select><select name='source_kind'>{opt(source_kind,'','Any origin')}{opt(source_kind,'android','From Android')}{opt(source_kind,'removable','From SD/USB')}{opt(source_kind,'fixed','Existing local')}</select><select name='source_id'>{source_options}</select><select name='status'>{opt(status,'','Any privacy state')}{opt(status,'safe','Privacy safe')}{opt(status,'review','Privacy review')}{opt(status,'duplicate','Duplicate')}{opt(status,'error','Error')}</select><select name='rights'>{opt(rights,'','Any rights state')}{opt(rights,'flagged','Rights flagged')}{opt(rights,'unknown','Rights unknown')}{opt(rights,'review','Rights review')}{opt(rights,'permission','Permission needed')}{opt(rights,'cleared','Rights cleared')}{opt(rights,'blocked','Do not publish')}</select><select name='sort'>{opt(sort,'date_desc','Newest')}{opt(sort,'date_asc','Oldest')}{opt(sort,'size_desc','Largest')}{opt(sort,'size_asc','Smallest')}{opt(sort,'duration_desc','Longest')}{opt(sort,'quality_desc','Quality score')}{opt(sort,'name','Name')}</select><button>Apply</button></form>"""
-            actions="""<div class='toolbar'><b id='selectedCount'>0 selected</b><span class='badge ready' id='previewCount'>Previews …</span><button class='btn2' id='selectPage'>Select page</button><button class='btn2' id='clearSel'>Clear</button><button id='analyzeBtn' class='btn2'>Analyze local</button><button id='mediaBrainBtn' class='btn2'>Media Brain</button><button id='convertBulkBtn' class='btn2'>Convert</button><button id='privateBtn' class='warn'>Private forever</button><button id='archiveBtn' class='ok'>Archive</button><button id='rejectBtn' class='danger'>Reject → quarantine</button><button id='removeBtn' class='danger'>Remove from Library</button><select id='rightsPreset'><option value=''>Rights…</option><option value='review'>Review rights</option><option value='permission'>Permission needed</option><option value='cleared'>Rights cleared</option><option value='blocked'>Do not publish</option><option value='reset'>Reset rights status</option></select><button id='rightsBtn' class='btn2'>Apply rights tag</button></div><div id='actionMsg' class='mode-note'>Hover over a video when its storyboard is ready to skim the clip without opening it.</div>"""
+            actions="""<div class='toolbar'><b id='selectedCount'>0 selected</b><span class='badge ready' id='previewCount'>Previews …</span><button class='btn2' id='selectPage'>Select page</button><button class='btn2' id='clearSel'>Clear</button><button id='reelBtn'>Make a reel</button><button id='analyzeBtn' class='btn2'>Analyze local</button><button id='mediaBrainBtn' class='btn2'>Media Brain</button><button id='convertBulkBtn' class='btn2'>Convert</button><button id='privateBtn' class='warn'>Private forever</button><button id='archiveBtn' class='ok'>Archive</button><button id='rejectBtn' class='danger'>Reject → quarantine</button><button id='removeBtn' class='danger'>Remove from Library</button><select id='rightsPreset'><option value=''>Rights…</option><option value='review'>Review rights</option><option value='permission'>Permission needed</option><option value='cleared'>Rights cleared</option><option value='blocked'>Do not publish</option><option value='reset'>Reset rights status</option></select><button id='rightsBtn' class='btn2'>Apply rights tag</button></div><div id='actionMsg' class='mode-note'>Hover over a video when its storyboard is ready to skim the clip without opening it.</div>"""
         body=head+(_aiplus_search_card() if not is_import else "")+filters+actions+"<div class='grid'>"
         for r in rows:
             if is_import:
@@ -825,6 +835,7 @@ function save(){{localStorage.setItem(KEY,JSON.stringify([...selected]))}}functi
 cards.forEach((c,i)=>c.addEventListener('click',ev=>{{if(ev.target.closest('.openLink')||ev.target===checks[i])return;setSel(checks[i],!selected.has(String(checks[i].value)))}}));checks.forEach(ch=>ch.addEventListener('change',()=>setSel(ch,ch.checked)));const sp=document.getElementById('selectPage'),cs=document.getElementById('clearSel');if(sp)sp.onclick=()=>{{checks.forEach(x=>selected.add(String(x.value)));save();sync()}};if(cs)cs.onclick=()=>{{selected.clear();save();sync()}};
 let actionBusy=false;async function act(action,confirmText){{if(actionBusy)return;if(!selected.size){{toast('Select files first');return}}if(confirmText&&!confirm(confirmText))return;actionBusy=true;if(msg)msg.textContent='Creating durable job for '+selected.size+' selected files…';const ids=[...selected].map(Number);try{{let r=await fetch('/api/selection-action',{{method:'POST',headers:{{'Content-Type':'application/json'}},body:JSON.stringify({{action,ids}})}});let x=await r.json();if(!r.ok){{if(msg)msg.textContent='ERROR: '+(x.error||r.statusText);toast('ERROR: '+(x.error||r.statusText));return}}if(x.job_id){{selected.clear();save();sync();if(msg)msg.textContent='Job #'+x.job_id+' accepted.';toast('Job #'+x.job_id+' accepted')}}else{{if(msg)msg.textContent=x.message||'Done';toast(x.message||'Done');location.reload()}}}}finally{{actionBusy=false}}}}
 const ib=document.getElementById('importBtn'),iab=document.getElementById('importAnalyzeBtn'),an=document.getElementById('analyzeBtn'),mb=document.getElementById('mediaBrainBtn'),cb=document.getElementById('convertBulkBtn'),pb=document.getElementById('privateBtn'),ab=document.getElementById('archiveBtn'),rbj=document.getElementById('rejectBtn'),rml=document.getElementById('removeBtn');if(ib)ib.onclick=()=>act('import');if(iab)iab.onclick=()=>act('import_analyze');if(an)an.onclick=()=>act('analyze');if(mb)mb.onclick=()=>act('media_brain');if(cb)cb.onclick=()=>{{const ids=cards.filter(c=>selected.has(c.dataset.id)&&c.dataset.type==='video').map(c=>c.dataset.id);if(!ids.length){{toast('Select local videos first');return}}location.href='/convert?ids='+encodeURIComponent(ids.join(','))}};if(pb)pb.onclick=()=>act('private','Mark selected Private forever?');if(ab)ab.onclick=()=>act('archive','Archive selected local/staged files? Source-device originals are never deleted.');if(rbj)rbj.onclick=()=>act('reject','Move selected Staging copies to Rejected quarantine and hide them? Phone/SD originals stay untouched.');if(rml)rml.onclick=()=>act('remove','Remove selected items from Library? Imported Staging copies move to the Rejected / Removed from Library folder (delete them there when you are sure). Source originals and local/archive files stay untouched.');sync();
+const rlb=document.getElementById('reelBtn');if(rlb)rlb.onclick=()=>{{const all=[...selected];if(!all.length){{toast('Select videos first');return}}location.href='/auto/from-library?ids='+encodeURIComponent(all.join(','))}};
 async function tagRights(){{const el=document.getElementById('rightsPreset');if(!el)return;const preset=el.value;if(!preset){{toast('Choose a rights tag');return}}if(!selected.size){{toast('Select files first');return}}const ids=[...selected].map(Number);const r=await fetch('/api/selection-action',{{method:'POST',headers:{{'Content-Type':'application/json'}},body:JSON.stringify({{action:'rights',ids,preset}})}});const x=await r.json();if(!r.ok){{toast('ERROR: '+(x.error||r.statusText));return}}toast(x.message||'Rights updated');refreshVisible()}}const rbt=document.getElementById('rightsBtn');if(rbt)rbt.onclick=tagRights;
 async function refreshVisible(){{try{{const ids=cards.map(c=>c.dataset.id).join(',');if(!ids)return;const r=await fetch('/api/items?ids='+ids,{{cache:'no-store'}}),data=await r.json();for(const c of cards){{const d=data[c.dataset.id];if(!d)continue;const ib=c.querySelector('.importBadge'),ab=c.querySelector('.analysisBadge');if(ib){{ib.textContent=(window.ME_L?ME_L(d.import_state):d.import_state);ib.className='badge importBadge '+d.import_state}}if(ab){{ab.textContent=(window.ME_L?ME_L(d.analysis_status):d.analysis_status);ab.className='badge analysisBadge '+d.analysis_status}}let qb=c.querySelector('.qualityBadge');if(d.quality_status&&d.quality_status!=='unreviewed'&&MODE==='library'){{if(!qb&&ab){{qb=document.createElement('span');qb.className='badge qualityBadge';ab.insertAdjacentElement('afterend',qb)}}if(qb){{qb.textContent='quality '+d.quality_status+(d.quality_score!=null?' '+d.quality_score:'');qb.className='badge qualityBadge quality-'+d.quality_status}}}}let rr=c.querySelector('.rightsBadge');if(rr){{rr.textContent='rights '+(d.rights_status||'unknown');rr.className='badge rightsBadge rights-'+(d.rights_status||'unknown')}}}}}}catch(e){{}}setTimeout(refreshVisible,1200)}}refreshVisible();
 const previewCount=document.getElementById('previewCount'),previewImgs=[...document.querySelectorAll('.mediaThumb')];async function refreshPreviews(){{if(!previewImgs.length){{if(previewCount)previewCount.textContent='Previews 0/0';return}}try{{const ids=previewImgs.map(x=>x.dataset.id).join(',');const r=await fetch('/api/thumb-status?ids='+ids,{{cache:'no-store'}}),x=await r.json();const ready=new Set((x.ready||[]).map(String));for(const img of previewImgs){{const id=String(img.dataset.id);if(ready.has(id)&&img.dataset.ready!=='1'){{img.dataset.ready='1';img.src='/thumb/'+id+'?v='+(x.generation||Date.now())}}}}const unavailable=Number(x.unavailable_count||0),pending=Number(x.pending_count||0),readyN=Number(x.ready_count||0);if(previewCount)previewCount.textContent='Previews '+readyN+'/'+previewImgs.length+(unavailable?' · '+unavailable+' unavailable':pending?' · '+pending+' loading':'');if(pending>0)setTimeout(refreshPreviews,800)}}catch(e){{if(previewCount)previewCount.textContent='Previews status unavailable';setTimeout(refreshPreviews,2000)}}}}refreshPreviews();
@@ -1566,6 +1577,29 @@ bindStoryFrames();loadStoryboard();""")
             return redirect(f'/jobs/{jid}')
         except Exception as exc:
             return f'Media Brain failed: {e(exc)}',400
+
+    @app.get('/auto/from-library')
+    def auto_from_library():
+        """The videos selected in the Library -> the new-reel page with exactly them (the files where they are now)."""
+        if request.headers.get('Sec-Fetch-Site','') not in ('same-origin','none',''):
+            return 'This page can only be opened from MediaEngine itself.',403
+        ids=[int(x) for x in (request.args.get('ids') or '').split(',') if x.strip().isdigit()][:2000]
+        files=[]
+        if ids:
+            with db() as con:
+                rows=con.execute(f"SELECT * FROM inventory WHERE id IN ({','.join('?' for _ in ids)}) AND media_type='video' AND excluded=0 "
+                                 "AND analysis_status<>'private' AND private_path IS NULL AND rejected_path IS NULL ORDER BY COALESCE(date_taken,mtime,0)",ids).fetchall()
+            for r in rows:
+                local=next((r[k] for k in ('staging_path','archive_path','path') if r[k] and Path(r[k]).is_file()),None)
+                if local: files.append(str(local))
+        from .auto_edit import MAX_INPUTS
+        if not files:
+            return layout('Auto Edit',"<div class='errbox'>No selected video is on this PC now (photos are not used in reels).</div>"
+                          "<div style='margin-top:12px'><a class='btn btn2' href='/library'>Back</a></div>"),400
+        if len(files)>MAX_INPUTS:
+            return layout('Auto Edit',f"<div class='errbox'><span>One reel can use up to {MAX_INPUTS} videos. Selected:</span> {len(files)}</div>"
+                          "<div style='margin-top:12px'><a class='btn btn2' href='/library'>Back</a></div>"),400
+        return redirect('/auto/new?'+urllib.parse.urlencode([('file',x) for x in files]))
 
     @app.post('/item/<int:inv_id>/open',defaults={'action':'open'})
     @app.post('/item/<int:inv_id>/reveal',defaults={'action':'reveal'})

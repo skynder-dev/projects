@@ -112,6 +112,20 @@ def main():
         if day_links:
             r = c.get(html.unescape(day_links[0]), headers=H)
             check("big_folder_day_opens_reel_setup", r.status_code == 200 and b"Create reel" in r.data, r.status_code)
+        # a reel for every day at once (built one after another); cancelled here at once to keep the test short
+        has_form = "action='/auto/create-days'" in cam_page and "Make 2 reels" in cam_page
+        before_p = {x["id"] for x in ae.list_projects(include_archived=True)}
+        r = c.post("/auto/create-days", data={"folder": str(cam), "length": "5", "format": "vertical", "sound": "auto", "mode": a.mode},
+                   headers=H)
+        new_p = [x for x in ae.list_projects(include_archived=True) if x["id"] not in before_p]
+        for x in new_p:
+            for jj in x["jobs"]:
+                ae.cancel_job(jj["id"])
+        check("a_reel_for_every_day", has_form and r.status_code == 302 and len(new_p) == 2
+              and all(len(x["jobs"]) == 1 and len(x["files"] or []) == (ae.MAX_INPUTS + 2) // 2 for x in new_p)
+              and len({x["title"] for x in new_p}) == 2, (has_form, r.status_code, [(x["title"], len(x["files"] or [])) for x in new_p]))
+        for x in new_p:
+            ae.archive_project(x["id"])
         r = c.get("/auto/new", query_string={"folder": str(folder)}, headers={**H, "Sec-Fetch-Site": "cross-site"})
         check("setup_refuses_other_sites", r.status_code in (400, 403), r.status_code)
         if not ae.model_status()["ready"]:

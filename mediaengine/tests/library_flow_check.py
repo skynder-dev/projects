@@ -15,7 +15,7 @@
 """
 from __future__ import annotations
 
-import hashlib, html, json, os, shutil, subprocess, sys, time
+import hashlib, html, json, os, shutil, subprocess, sys, time, urllib.parse
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -142,6 +142,12 @@ def main():
         page = html.unescape(c.get("/library", headers=H).data.decode("utf-8", "replace"))
         check("private_left_the_library", names[0] not in page and names[1] in page)
         check("private_original_stays_unchanged", (src / names[0]).is_file() and sha(src / names[0]) == before[names[0]])
+        # "Make a reel" from videos selected in the Library: the new-reel page with exactly them (never a Private one)
+        sel = [inv[n]["id"] for n in names[:3]]
+        r = c.get("/auto/from-library", query_string={"ids": ",".join(map(str, sel))}, headers={**H, "Sec-Fetch-Site": "same-origin"})
+        loc = urllib.parse.unquote(r.headers.get("Location", ""))
+        check("library_selection_makes_a_reel_setup", r.status_code == 302 and "/auto/new?" in loc and names[1] in loc
+              and names[0] not in loc, (r.status_code, loc[:300]))
         r = c.post("/auto/create", data={"folder": str(src), "length": "5", "format": "vertical", "sound": "auto", "mode": "technical"}, headers=H)
         okc = r.status_code == 302 and "/auto/p/" in r.headers.get("Location", "")
         check("reel_from_the_same_folder_starts", okc, r.status_code)

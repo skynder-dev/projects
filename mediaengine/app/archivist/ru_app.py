@@ -27,6 +27,10 @@ APP_PHRASES: dict[str, str] = {
     "The Library is empty.": "Библиотека пуста.",
     "Your projects are not shown.": "Твои проекты не показаны.",
     "More": "Ещё",
+    "Make a reel": "Сделать ролик", "Select videos first": "Сначала выбери видео",
+    "No selected video is on this PC now (photos are not used in reels).": "Ни одного выбранного видео сейчас нет на этом компьютере (фото в роликах не используются).",
+    "Reel projects": "Проекты роликов",
+    "Publication history and detailed novelty signals stay in the local MediaEngine database. Nothing is sent anywhere.": "История публикаций и подробные сигналы новизны хранятся в локальной базе MediaEngine. Ничего никуда не отправляется.",
     "Open in player": "Открыть в плеере", "Make a reel from this video": "Сделать ролик из этого видео",
     "The file is not available on this PC now (disk not connected?).": "Файла сейчас нет на этом компьютере (диск не подключён?).",
     "Not available": "Недоступно",
@@ -500,6 +504,10 @@ APP_PHRASES: dict[str, str] = {
 }
 
 APP_PATTERNS: list[tuple[str, str]] = [
+    (r"One reel can use up to (\d+) videos\. Selected:", r"В один ролик помещается до \1 видео. Выбрано:"),
+    (r"Make (\d+) reels", r"Сделать роликов: \1"),
+    (r"Days with more than (\d+) videos are left out \(tick their videos below\):", r"Дни, где больше \1 видео, пропущены (их видео можно отметить ниже):"),
+    (r"The folder is not available: (.+)", r"Папка недоступна: \1"),
     ('Import finished with (\\d+) error\\(s\\) — keep the source connected', 'Импорт закончен, ошибок: \\1 — не отключай источник'),
     ('Analyzing (\\d+) local file\\(s\\); (\\d+) import error\\(s\\) — keep the source connected\\.', 'Анализирую файлы: \\1; ошибок импорта: \\2 — не отключай источник.'),
     ('Analyzing (\\d+) file\\(s\\) where they are — keep that disk connected\\.', 'Анализирую файлы на месте: \\1 — не отключай этот диск.'),

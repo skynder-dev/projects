@@ -802,10 +802,24 @@ def camera_drop_rows(path,step=.25):
     cap.release()
     return dur,rows
 
+def camera_drop_rows_cached(path,sha,cache_dir,step=.25):
+    """camera_drop_rows of a clip, remembered by the clip's SHA-256 (a variant or another length looks at the same
+    clips again: about a second each). The same numbers as measuring again."""
+    f=Path(cache_dir)/f"{sha}_{step:g}.json" if sha else None
+    if f is not None:
+        try:
+            d=json.loads(f.read_text(encoding="utf-8")); return float(d["dur"]),list(d["rows"])
+        except (OSError,ValueError,KeyError,TypeError): pass
+    dur,rows=camera_drop_rows(path,step)
+    if f is not None:
+        try: atomic_json(f,{"dur":dur,"rows":rows})
+        except OSError: pass
+    return dur,rows
+
 def apply_camera_drop(v52,dropmod,selected,work_dir):
     out=[]; decisions=[]; bdir=work_dir/"boundary_sanitized"; bdir.mkdir(parents=True,exist_ok=True)
     for e in selected:
-        dur,rows=camera_drop_rows(e["clip_path"],.25)
+        dur,rows=camera_drop_rows_cached(e["clip_path"],e.get("clip_sha256"),work_dir/"camera_drop_rows",.25)
         dec=dropmod.choose_camera_drop_trim(rows)
         decisions.append({"event_id":e["event_id"],"source_name":e["source_name"],"decision":dec})
         if not dec.get("trim"):
@@ -1389,7 +1403,16 @@ def run(args):
                                   output_resolution=resolution,output_fps=30,video_quality="high",
                                   **({"vertical_framing":framing} if framing!="fill" else {}))
             os.replace(tmp,seg); meta["sha256"]=sha256_file(seg); atomic_json(meta_path,meta)
-        return seg,meta,video_seconds(v52.FFMPEG,seg)
+        # the picture length of a cached segment is remembered with it (counting its frames again took ~1 s each)
+        side=segcache/f"{key}.seconds.json"
+        try:
+            sd=json.loads(side.read_text(encoding="utf-8"))
+            if sd.get("sha256")==meta["sha256"]: return seg,meta,float(sd["seconds"])
+        except (OSError,ValueError,KeyError,TypeError): pass
+        secs=video_seconds(v52.FFMPEG,seg)
+        try: atomic_json(side,{"sha256":meta["sha256"],"seconds":secs})
+        except OSError: pass
+        return seg,meta,secs
 
     render_source="AI_CANDIDATE_CLIPS_FROM_ORIGINAL" if use_semantic else "ORIGINAL_FULL_QUALITY_RECUT"
     hdr_sources={}; deinterlaced=[]; widened={}

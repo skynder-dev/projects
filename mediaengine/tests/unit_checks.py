@@ -247,15 +247,21 @@ def main():
     (cam2 / "trip.mp4").write_bytes(box(b"ftyp", b"isom" + bytes(4) + b"isom") + box(b"mdat", bytes(4000)) + box(b"moov", mvhd0))
     (cam2 / "trip2.mov").write_bytes(box(b"ftyp", b"qt  " + bytes(4) + b"qt  ") + box(b"moov", box(b"udta", bytes(8)) + mvhd1) + box(b"mdat", bytes(500)))
     (cam2 / "nodate.mp4").write_bytes(box(b"ftyp", b"isom" + bytes(4) + b"isom") + box(b"moov", box(b"mvhd", bytes(100))))
-    for f in cam2.iterdir():
-        os.utime(f, (1_600_000_000, 1_600_000_000))
+    for f in cam2.iterdir():                  # copied in 2025: the file date is the day of the copy
+        os.utime(f, (1_760_000_000, 1_760_000_000))
+    (cam2 / "kept.mp4").write_bytes(box(b"ftyp", b"isom" + bytes(4) + b"isom") + box(b"moov", mvhd0))
+    os.utime(cam2 / "kept.mp4", (1_720_000_000 + 3 * 3600, 1_720_000_000 + 3 * 3600))   # date kept (camera wrote local time)
     check("recording time read from the video header (moov at the end or first, 32/64-bit)",
           ae.shot_time(cam2 / "trip.mp4") == 1_720_000_000.0 and ae.shot_time(cam2 / "trip2.mov") == 1_720_000_000.0
           and ae.shot_time(cam2 / "nodate.mp4") is None and ae.shot_time(cam / "clip.mov") is None,
           (ae.shot_time(cam2 / "trip.mp4"), ae.shot_time(cam2 / "trip2.mov"), ae.shot_time(cam2 / "nodate.mp4")))
     d2 = {d["day"]: len(d["files"]) for d in ae.videos_by_day(cam2)}
     check("a copied video is grouped by the day it was recorded",
-          d2 == {_tm.strftime("%Y-%m-%d", _tm.localtime(1_720_000_000)): 2, _tm.strftime("%Y-%m-%d", _tm.localtime(1_600_000_000)): 1}, d2)
+          d2 == {_tm.strftime("%Y-%m-%d", _tm.localtime(1_720_000_000)): 2, _tm.strftime("%Y-%m-%d", _tm.localtime(1_760_000_000)): 1,
+                 **({} if _tm.strftime("%Y-%m-%d", _tm.localtime(1_720_000_000 + 3 * 3600)) == _tm.strftime("%Y-%m-%d", _tm.localtime(1_720_000_000))
+                    else {_tm.strftime("%Y-%m-%d", _tm.localtime(1_720_000_000 + 3 * 3600)): 1})}
+          if _tm.strftime("%Y-%m-%d", _tm.localtime(1_720_000_000 + 3 * 3600)) != _tm.strftime("%Y-%m-%d", _tm.localtime(1_720_000_000))
+          else d2 == {_tm.strftime("%Y-%m-%d", _tm.localtime(1_720_000_000)): 3, _tm.strftime("%Y-%m-%d", _tm.localtime(1_760_000_000)): 1}, d2)
     names14 = [f["name"] for f in days[1]["files"]]
     check("a day's videos are listed newest first (tick the newest)", names14 == sorted(names14, reverse=True), names14[:3])
     check("big folder is offered as a choice, not refused", len(ae.list_videos(cam)) > ae.MAX_INPUTS and raises(ae.check_folder, str(cam)))

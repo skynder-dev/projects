@@ -3,7 +3,11 @@ from .platform_adapter import default_archive_root
 
 import json
 import os
+import threading
+import time
 from pathlib import Path
+
+_SAVE_LOCK = threading.Lock()
 
 APP_DIR = Path(__file__).resolve().parents[1]
 INSTALL = APP_DIR.parent.resolve()      # program files: app/, .venv/, launcher.py, version.txt, port.txt
@@ -177,12 +181,25 @@ def save_config(cfg: dict) -> None:
     ensure_dirs()
     cfg = _deep_defaults(cfg, json.loads(json.dumps(DEFAULT_CONFIG)))
     cfg["config_version"] = 3
-    tmp = CONFIG_PATH.with_suffix(".tmp")
-    with open(tmp, "w", encoding="utf-8") as fh:      # on disk before it replaces the old one (a power cut left 0 bytes)
-        fh.write(json.dumps(cfg, indent=2, ensure_ascii=False))
-        fh.flush()
+    # one writer at a time, each with its own temporary file (a reel being created and the PC check finishing at
+    # the same moment wrote the same .tmp)
+    with _SAVE_LOCK:
+        tmp = CONFIG_PATH.with_name(f"{CONFIG_PATH.stem}.{os.getpid()}.{threading.get_ident()}.tmp")
         try:
-            os.fsync(fh.fileno())
-        except OSError:
-            pass
-    tmp.replace(CONFIG_PATH)
+            with open(tmp, "w", encoding="utf-8") as fh:      # on disk before it replaces the old one (a power cut left 0 bytes)
+                fh.write(json.dumps(cfg, indent=2, ensure_ascii=False))
+                fh.flush()
+                try:
+                    os.fsync(fh.fileno())
+                except OSError:
+                    pass
+            for k in range(8):                          # a virus scanner may hold config.json for a moment
+                try:
+                    tmp.replace(CONFIG_PATH)
+                    break
+                except PermissionError:
+                    if k == 7:
+                        raise
+                    time.sleep(0.2 * (k + 1))
+        finally:
+            tmp.unlink(missing_ok=True)

@@ -117,16 +117,25 @@ def main():
     except Exception:
         pass
     ensure_dirs(); set_background_priority(); install_launchers(INSTALL); sync_packaged_launcher()
-    try:     # copies of the database and settings: daily, and before a different build uses them
-        from archivist.backup import at_start
-        from archivist.config import BUILD
-        at_start(f"{VERSION}-{BUILD}" if BUILD else VERSION)
-    except Exception:
-        pass
     if detach_from_legacy_console_if_needed(HOME): return
     if port_taken():
         # Never start a second set of workers on the same database: the running copy keeps serving.
         raise SystemExit(f"Port {PORT} is already in use (MediaEngine already running?)")
+    try:     # a copy of the database and settings before a different build opens them (it may change them)
+        from archivist.backup import before_new_build, start_daily_in_background
+        from archivist.config import BUILD
+        before_new_build(f"{VERSION}-{BUILD}" if BUILD else VERSION)
+        start_daily_in_background()     # integrity check + daily copy, after the start
+    except Exception:
+        pass
+    try:
+        import logging, mimetypes
+        # one line per request (the pages ask for progress every second) filled the console log: errors only
+        logging.getLogger("werkzeug").setLevel(logging.WARNING)
+        # some Windows PCs register .js as text/plain; with nosniff the browser would refuse the page script
+        mimetypes.add_type("text/javascript", ".js")
+    except Exception:
+        pass
     from archivist.service import start_workers
     from archivist.converter import recover_convert_jobs
     from archivist.watchdog import start_watchdog
