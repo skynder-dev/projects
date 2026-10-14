@@ -151,18 +151,28 @@ def main():
         mine = np.asarray(me["beats"], float)
         inner = mine[(mine > 2) & (mine < (lb[-1] if lb.size else 0) - 1)] if lb.size else mine
         ratio = (me["bpm"] / tempo) if tempo else 0
+        alt = beats.detect(wav, comb=not beats.TEMPO_COMB)            # the other tempo score, for comparison
+        am = np.asarray(alt["beats"], float)
+        am = am[(am > 2) & (am < (lb[-1] if lb.size else 0) - 1)] if lb.size else am
         rows.append({"title": t["title"], "style": t["style"], "file": t["file"], "seconds_s": round(dt, 2),
                      "mediaengine": {k: me[k] for k in ("bpm", "clear", "confidence", "strength_db", "shifted")},
                      "librosa_bpm": round(tempo, 2),
                      "tempo_relation": min(("same", 1.0), ("half", 0.5), ("double", 2.0), ("2/3", 2 / 3), ("3/2", 1.5),
                                            key=lambda r: abs(np.log(max(1e-6, ratio) / r[1])))[0] if ratio else "none",
                      "on_librosa_beats": round(near(inner, lb), 3), "on_librosa_offbeats": round(near(inner, mids), 3),
-                     "beats_compared": int(inner.size)})
+                     "beats_compared": int(inner.size),
+                     "other_tempo_score": {"comb": not beats.TEMPO_COMB, "bpm": alt["bpm"], "clear": alt["clear"],
+                                           "on_librosa_beats": round(near(am, lb), 3), "on_librosa_offbeats": round(near(am, mids), 3)}})
         print(json.dumps(rows[-1], ensure_ascii=False), flush=True)
     clear = [r for r in rows if r["mediaengine"]["clear"] and r["beats_compared"] >= 10]
     agree = [r["on_librosa_beats"] for r in clear]
     offbeat = [r for r in clear if r["on_librosa_offbeats"] > 0.6 and r["on_librosa_beats"] < 0.4]
+    other = [r["other_tempo_score"]["on_librosa_beats"] for r in rows if r["other_tempo_score"]["clear"] and r["beats_compared"] >= 10]
     summary = {"tracks": len(rows), "clear_beat": len(clear), "median_agreement": round(float(np.median(agree)), 3) if agree else None,
+               "mean_agreement": round(float(np.mean(agree)), 3) if agree else None,
+               "other_tempo_score": {"comb": not beats.TEMPO_COMB, "clear_beat": len(other),
+                                     "mean_agreement": round(float(np.mean(other)), 3) if other else None,
+                                     "agreement_over_0_8": sum(1 for a in other if a >= 0.8)},
                "agreement_over_0_8": sum(1 for a in agree if a >= 0.8), "offbeat_locks": [r["title"] for r in offbeat], "errors": errors}
 
     # a reel with real music through the engine: its cuts against the beats

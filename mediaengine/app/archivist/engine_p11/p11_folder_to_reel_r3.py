@@ -1015,7 +1015,7 @@ def render_dissolve_block(v52,segs,durs,trans,out,dress=None,frames=None):
     # segments of different sources can differ in pixel aspect (e.g. SAR 404:405 after a crop) and time base;
     # fades and joins need them identical
     # frames: {segment: number of frames} - only these first frames of a segment are used (cuts on the beat)
-    cut=lambda i:f"trim=end_frame={int(frames[i])},setpts=PTS-STARTPTS,fps=30," if frames and i in frames else ""   # fps: xfade needs a known frame rate
+    cut=lambda i:f"trim=end_frame={int(frames[i])}," if frames and i in frames else ""
     # a segment's own sound cut at the beat ends inside its fade-out: a short fade at the new end (no click)
     fit=lambda i,d:(_fit_audio(i,d)[:-len(f"[n{i}]")]+f",afade=t=out:st={max(0.0,d-0.03):.6f}:d=0.03[n{i}]") if frames and i in frames else _fit_audio(i,d)
     filters=[fit(i,float(d)) for i,d in enumerate(durs)]+[f"[{i}:v]{cut(i)}setsar=1,format=yuv420p,settb=AVTB[w{i}]" for i in range(len(segs))]

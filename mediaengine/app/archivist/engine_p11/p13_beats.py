@@ -103,7 +103,7 @@ def _frame_time(i, sr: int) -> float:
     return ((np.asarray(i, np.float64) + 1) * HOP + NFFT / 2) / sr + 0.013
 
 
-def tempo_period(env: np.ndarray, fps: float) -> float:
+def tempo_period(env: np.ndarray, fps: float, comb: bool = False) -> float:
     """Beat period in frames: the autocorrelation peak between 55 and 140 BPM, weighted towards ~100 BPM. A fast song
     is found at half its tempo - every cut is still on a beat; twice the tempo would put cuts between the beats."""
     n = len(env)
@@ -115,7 +115,15 @@ def tempo_period(env: np.ndarray, fps: float) -> float:
     lags = np.arange(lo, hi + 1)
     bpm = 60.0 * fps / lags
     weight = np.exp(-0.5 * (np.log2(bpm / 100.0) / 0.9) ** 2)
-    sc = ac[lo:hi + 1] * weight
+    if comb:
+        # a beat repeats: the autocorrelation at 2, 3 and 4 times the period counts too (a syncopated riff that
+        # repeats every 1.5 beats does not)
+        sc = np.zeros(len(lags))
+        for m, wgt in ((1, 1.0), (2, 0.5), (3, 0.33), (4, 0.25)):
+            sc += wgt * np.where(lags * m < n, ac[np.minimum(lags * m, n - 1)], 0.0)
+        sc = sc * weight
+    else:
+        sc = ac[lo:hi + 1] * weight
     k = int(np.argmax(sc))
     p = float(lags[k])
     if 0 < k < len(sc) - 1:                                  # parabolic refinement of the peak
@@ -156,7 +164,10 @@ def track(env: np.ndarray, period: float, tightness: float = 100.0) -> list[int]
     return beats[::-1]
 
 
-def detect(wav: Path) -> dict:
+TEMPO_COMB = False          # an alternative tempo score, compared on real music in CI (tests/real_music_check.py)
+
+
+def detect(wav: Path, comb: bool | None = None) -> dict:
     x, sr = _mono(Path(wav))
     none = {"beats": [], "bpm": 0.0, "confidence": 0.0, "strength_db": 0.0, "clear": False, "shifted": False}
     if len(x) < 4 * sr:                                      # a jingle or a sound effect: no beat to follow
@@ -165,7 +176,7 @@ def detect(wav: Path) -> dict:
     fps = sr / HOP
     if len(env) < fps * 3:
         return none
-    p = tempo_period(env, fps)
+    p = tempo_period(env, fps, TEMPO_COMB if comb is None else comb)
     fr = track(env, p) if p > 0 else []
     if len(fr) < 4:
         return none
