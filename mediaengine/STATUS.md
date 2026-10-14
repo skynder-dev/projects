@@ -182,7 +182,14 @@ and then on Windows (now watched and run again; faulthandler dumps in long check
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38575715807 on `762f1d5` (2026-10-14) — all green, build b89** (results branch
+Latest full run: **38639054567 on `a620e0a` (2026-10-14 evening) — all green, build b100** (results branch
+`mediaengine-ci-results`, artifacts `MediaEngine-3.13.0-rc1-b100-Setup` and `MediaEngine-3.13.0-rc1-b100` (ZIP)): fast
+checks 101/101 · R3 = R2 29/29 · robustness 32/32 · E2E 75/75 (7 videos), 80/80 (2 videos + files), 70/70 (phone) ·
+titles, own music, beat cuts, blurred edges 40/40 · Library 38/38 · AI+ glue 21/21 · real models 17/17 · Russian 156
+pages, 0 English, 0 network · real browser (Edge) 11/11 · package smoke PASS (incl. switching builds) · Setup smoke
+PASS · 4K/long footage 5/5. Big Library (600 videos, run 38624456914): every page under 1 s, a theme reel 3.2 s.
+
+Previous: **38575715807 on `762f1d5` (2026-10-14) — all green, build b89** (results branch
 `mediaengine-ci-results`, artifacts `MediaEngine-3.13.0-rc1-b89-Setup` and `MediaEngine-3.13.0-rc1-b89` (ZIP)): fast
 checks 94/94 · R3 = R2 29/29 · robustness 32/32 · E2E 72/72 · titles, own music and cuts on the beat 39/39 · Library
 37/37 · AI+ glue 21/21 · real models 17/17 (the AI model downloaded by the app itself into its data folder, 7 s;
