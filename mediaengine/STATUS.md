@@ -168,14 +168,16 @@ The 11 runtime modules, adapter and validator are byte-identical to R2 (CI-check
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38545517249 on `4c9eb7c` (2026-10-14) — all green, build b85** (results branch
-`mediaengine-ci-results`, artifacts `MediaEngine-3.13.0-rc1-b85-Setup` and `MediaEngine-3.13.0-rc1-b85` (ZIP)): fast
-checks 94/94 (beats: click track to 10 ms, jingle / tone no beat, length within 1.5 beats) · R3 = R2 29/29 ·
-robustness 32/32 · E2E 72/72, 74/74, packaged Python 68/68 · titles, own music and cuts on the beat 39/39 (every cut
-within 40 ms of a true beat in the result, the picture and the reel's sound; a short song that repeats) · Library
-37/37 (Prepare AI+ for the whole Library: pause for a reel, Stop, continue, Private) · AI+ glue 21/21 · real models
-16/16 (prepare with the real model, then an AI+ reel looks at no frame: `scout_embed_s` 0) · Russian 152 pages, 0
-English, 0 network · package smoke PASS · Setup smoke PASS · 4K/long footage 441 s.
+Latest full run: **38575715807 on `762f1d5` (2026-10-14) — all green, build b89** (results branch
+`mediaengine-ci-results`, artifacts `MediaEngine-3.13.0-rc1-b89-Setup` and `MediaEngine-3.13.0-rc1-b89` (ZIP)): fast
+checks 94/94 · R3 = R2 29/29 · robustness 32/32 · E2E 72/72 · titles, own music and cuts on the beat 39/39 · Library
+37/37 · AI+ glue 21/21 · real models 17/17 (the AI model downloaded by the app itself into its data folder, 7 s;
+prepare AI+ for the Library, then an AI+ reel looks at no frame) · Russian 152 pages, 0 English, 0 network · package
+smoke PASS · Setup smoke PASS · 4K/long footage 347 s.
+b89 (owner, 2026-10-14): MediaEngine keeps everything in its own folder - Setup installs into `D:\projects\medeng`
+(nothing at the root of D:), the AI model is downloaded by the app into `MediaEngine Data\models` ("Download the AI
+model", 30 MB), no Archivist folder is used. Launcher: a patient check for a running build fixes the flaky
+"switch to the next release" (b80, b88).
 b82 / b83 failed one check on Windows (a picture cut one frame off the beat): the Windows FFmpeg build can start a
 segment one frame late; found with the manual probe workflow `mediaengine-probe`, fixed in b85.
 **Real music** (`mediaengine-realmusic`, 14–18 public Commons recordings): MediaEngine's beats against librosa's -
