@@ -131,7 +131,8 @@ PHRASES = {
     "Joining and verifying": "Склейка и проверка", "Ready": "Готово", "Failed": "Ошибка", "Cancelled": "Отменено",
     # what the engine reports while it works (job message line)
     "building moment library": "собираю библиотеку моментов", "checking clip boundaries": "проверяю границы моментов",
-    "joining segments and verifying": "склеиваю куски и проверяю", "choosing moments": "выбираю моменты",
+    "joining segments and verifying": "склеиваю куски и проверяю",
+    "joining segments again (the encoder stood still)": "склеиваю куски ещё раз (кодировщик остановился)", "choosing moments": "выбираю моменты",
     "analysing videos": "анализирую видео", "technical analysis": "технический анализ",
     "Cancel": "Отменить", "Retry": "Повторить", "Build failed": "Сборка не удалась", "Build cancelled": "Сборка отменена",
     "Build without AI (Technical only)": "Собрать без ИИ (только техника)",

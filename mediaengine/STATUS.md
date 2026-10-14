@@ -165,6 +165,20 @@ The 11 runtime modules, adapter and validator are byte-identical to R2 (CI-check
 | A picture with an odd width or height is analysed and cut from an even-size copy (one pixel smaller) | such a video (cropped in a gallery app) was skipped: H.264 4:2:0 cannot store odd sizes |
 | AI-mode moment cache reports the file's current name/place; no 8.3 short-path stand-in (a copy instead); an empty input list is a clear error | a renamed HDR file lost its HDR conversion; the 8.3 path was resolved back to the long name by the analysis |
 
+## Whole-program review (2026-10-14 evening)
+
+The owner asked for a deep review of the whole program with fixes and what is missing. Four review areas (Auto Edit,
+Library, engine, install/safety) plus two fresh-eyes reviews of the changes. Done (details: RELEASE_NOTES, section
+"Everyday use"): one-step Save MP4, small copy for messengers, reels up to 2 minutes, a reel for every day of a big
+folder, Library → Make a reel, whole picture with blurred edges for vertical reels, the same reel with the original
+sound, recording time from the video header, delete archived projects, free all caches, switch to another installed
+version, the reel being made shown on every page, background test reel, recent folders, project filter, What's new.
+Safety: database/settings copies (before a new build opens them, daily), missing data folder / damaged database
+banner, settings written safely. Faster variants with identical output (hash, camera-drop, segment-length and
+moment-choice caches). Found and fixed before any release: `Referrer-Policy: no-referrer` made every form button fail
+in a real browser (new real-browser check in CI, Edge); FFmpeg's final encode of a beat-synced reel stood still now
+and then on Windows (now watched and run again; faulthandler dumps in long checks showed where).
+
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
