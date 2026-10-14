@@ -760,6 +760,16 @@ def video_seconds(ffmpeg,path,fps=30.0):
     if cp.returncode!=0 or n<=0: raise RuntimeError("SEGMENT_DECODE_FAILED:"+str(path))
     return n/float(fps)
 
+def video_frames(ffmpeg,path):
+    """The frames really stored in a segment (no frame repeated to fill a gap): a segment cut by the accepted cutter
+    can start one frame late (its first frame at 0.033 s - seen with the Windows FFmpeg build), and video_seconds then
+    counts that gap as a frame."""
+    cp=subprocess.run([ffmpeg,"-hide_banner","-loglevel","error","-i",str(path),"-map","0:v:0","-fps_mode","passthrough","-vf","scale=8:8",
+                       "-f","rawvideo","-pix_fmt","gray","-"],capture_output=True)
+    n=len(cp.stdout)//64
+    if cp.returncode!=0 or n<=0: raise RuntimeError("SEGMENT_DECODE_FAILED:"+str(path))
+    return n
+
 # R3 render assembly (R2 had A/V drift): the accepted V52 segments can carry up to ~0.1 s more or less sound than
 # picture. R2 laid the sound of the next segment right after the previous sound, so the difference added up at every
 # join (measured 0.39 s at the end of a 30 s reel on Windows). R3 first makes every segment's sound exactly as long as
@@ -1014,8 +1024,9 @@ def render_dissolve_block(v52,segs,durs,trans,out,dress=None,frames=None):
         return float(durs[0])
     # segments of different sources can differ in pixel aspect (e.g. SAR 404:405 after a crop) and time base;
     # fades and joins need them identical
-    # frames: {segment: number of frames} - only these first frames of a segment are used (cuts on the beat)
-    cut=lambda i:f"trim=end_frame={int(frames[i])}," if frames and i in frames else ""
+    # frames: {segment: number of frames} (cuts on the beat): the segment's frames numbered again from 0 at exactly
+    # 30 fps (a segment that starts one frame late would move every later cut), then only these first frames
+    cut=lambda i:f"setpts=N/30/TB,trim=end_frame={int(frames[i])},fps=30," if frames and i in frames else ""
     # a segment's own sound cut at the beat ends inside its fade-out: a short fade at the new end (no click)
     fit=lambda i,d:(_fit_audio(i,d)[:-len(f"[n{i}]")]+f",afade=t=out:st={max(0.0,d-0.03):.6f}:d=0.03[n{i}]") if frames and i in frames else _fit_audio(i,d)
     filters=[fit(i,float(d)) for i,d in enumerate(durs)]+[f"[{i}:v]{cut(i)}setsar=1,format=yuv420p,settb=AVTB[w{i}]" for i in range(len(segs))]
@@ -1312,19 +1323,22 @@ def run(args):
             use,hit=beatmod.snap_use(start,float(use),td_out,td_in,float(e.get("duration_s") or use),beats,30,plan_cuts[si],beat_max_off)
             on_beat.append(hit)
         seg,meta,dur=make_seg(e,use)
-        if hit is not None:
-            # the accepted segment cutter trims the source and then sets 30 fps: depending on the source's own frame
-            # times it gives a frame or two more or less than asked (a 25 fps video: steps of two). The final encode
-            # takes exactly the frames up to the beat (trim); a segment that came out short is made again a little longer.
-            want=round((hit-start+td_out/2.0)*30)
-            got=round(dur*30)
-            if got<want:
-                use=float(use)+(want-got+0.5)/30.0
-                seg,meta,dur=make_seg(e,use); got=round(dur*30)
-            if got>=want:
-                exact[si]=want; asked[si]=float(meta.get("use") or use); dur=want/30.0
-            else:
-                on_beat[-1]=None          # the moment is too short to reach the beat: left as it is
+        if beats:
+            # cuts on the beat: every segment of the reel is used by its real frames (numbered again in the final
+            # encode). The accepted segment cutter trims the source and then sets 30 fps: depending on the source's own
+            # frame times it gives a frame or two more or less than asked (a 25 fps video: steps of two). The final
+            # encode takes exactly the frames up to the beat; a segment that came out short is made again a bit longer.
+            got=video_frames(v52.FFMPEG,seg)
+            if hit is not None:
+                want=round((hit-start+td_out/2.0)*30)
+                if got<want:
+                    use=float(use)+(want-got+0.5)/30.0
+                    seg,meta,dur=make_seg(e,use); got=video_frames(v52.FFMPEG,seg)
+                if got>=want:
+                    asked[si]=float(meta.get("use") or use); got=want
+                else:
+                    on_beat[-1]=None          # the moment is too short to reach the beat: left as it is
+            exact[si]=got; dur=got/30.0
         segs.append(seg); durs.append(dur); seg_meta.append(meta)
 
     if _FQ_FALLBACK:
