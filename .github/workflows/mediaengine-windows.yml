@@ -272,6 +272,7 @@ jobs:
           if (-not $switched) {
             $fail += 'switch to next release'
             python mediaengine/tests/ci_state.py "$data" 2>&1 | Tee-Object -Append $log
+            Get-Content "$data\data\logs\launcher.log" -Tail 20 -ErrorAction SilentlyContinue | Tee-Object -Append $log
             try { "ping now: $((Invoke-WebRequest -UseBasicParsing -TimeoutSec 5 http://127.0.0.1:8775/api/ping).Content)" | Tee-Object -Append $log } catch { "ping now: none" | Tee-Object -Append $log }
           }
           # the first release ran three times; its folder must hold exactly the files it was unpacked with

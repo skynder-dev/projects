@@ -98,13 +98,25 @@ def server_alive(timeout=.35):
         with _LOCAL_HTTP.open(f'http://{HOST}:{PORT}/api/ping',timeout=timeout) as r: return r.status==200
     except Exception: return False
 
-def running_install():
-    """Program folder of the MediaEngine answering on our port ('' = an older build that does not say)."""
+def running_install(tries=1):
+    """Program folder of the MediaEngine answering on our port ('' = an older build that does not say; None = no answer).
+    tries>1: a MediaEngine that has just started can be slow to answer (seen in CI b91: the switch never happened)."""
+    for k in range(max(1,int(tries))):
+        try:
+            with _LOCAL_HTTP.open(f'http://{HOST}:{PORT}/api/ping',timeout=2+2*k) as r:
+                return str(json.loads(r.read().decode('utf-8','replace')).get('install') or '')
+        except Exception:
+            if k+1<tries: time.sleep(.5)
+    return None
+
+
+def launcher_log(msg):
+    """What the launcher decided, for support (data folder: logs/launcher.log). Never fails."""
     try:
-        with _LOCAL_HTTP.open(f'http://{HOST}:{PORT}/api/ping',timeout=2) as r:
-            return str(json.loads(r.read().decode('utf-8','replace')).get('install') or '')
-    except Exception:
-        return None
+        logs=DATA/'logs'; logs.mkdir(parents=True,exist_ok=True); f=logs/'launcher.log'
+        if f.is_file() and f.stat().st_size>1_000_000: os.replace(f,logs/'launcher.1.log')
+        with open(f,'a',encoding='utf-8') as fh: fh.write(f"{datetime.now().isoformat(timespec='seconds')} {HOME.name}: {msg}\n")
+    except Exception: pass
 
 def same_folder(a,b):
     try: return os.path.normcase(str(Path(a).resolve()))==os.path.normcase(str(Path(b).resolve()))
@@ -411,8 +423,9 @@ def main():
     # a blink to answer - taken for "nothing runs", this launcher started its own app on the busy port, which exited,
     # and the switch to this build never happened (seen in CI b80 / b88)
     if (server_alive() or server_alive(timeout=2)) and not (force or restart or install_version):
-        other=running_install()
+        other=running_install(tries=4)
         answer=os.environ.get('MEDIAENGINE_SWITCH_ANSWER','').lower()     # automated checks answer instead of a person
+        launcher_log(f'already running: {other!r}')
         if not SIDE_BY_SIDE or other is None or (other and same_folder(other,HOME)) or (no_browser and not answer):
             if not no_browser: open_user_interface(force_browser=force_browser)
             return 0
@@ -423,7 +436,9 @@ def main():
         if not yes:
             if not no_browser: open_user_interface(force_browser=force_browser)
             return 0
+        launcher_log('switching from '+str(other))
         if not stop_running():
+            launcher_log('the running one refused to stop (busy)')
             write_status(status='switch_refused_busy',version=current_version(),running=other)
             if not answer:
                 message_box('Запущенный MediaEngine занят (собирается ролик). Попробуй снова, когда он закончит.' if ui_ru() else
