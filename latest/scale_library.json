@@ -1,0 +1,98 @@
+{
+  "passed": 12,
+  "total": 12,
+  "timings": {
+    "videos": 600,
+    "make_videos_s": 89.7,
+    "scan_s": 2.0,
+    "import_analyse_s": 613.0,
+    "import_analyse_s_per_video": 1.02,
+    "theme_index_s": 536.3,
+    "status_with_prepared_ms": 65.2,
+    "theme_search_ms": 63.7,
+    "db_mb": 11.8,
+    "app_rss_mb": 42
+  },
+  "pages_s": {
+    "import_page": 0.292,
+    "library_first_page": 0.592,
+    "library_last_page": 0.155,
+    "library_grid": 0.501,
+    "library_search_text": 0.544,
+    "library_filter_sort": 0.619,
+    "item_page": 0.019,
+    "/": 0.059,
+    "/media": 0.004,
+    "/jobs": 0.008,
+    "/import": 0.049,
+    "/auto": 0.018,
+    "/settings": 0.009,
+    "auto_new_whole_phone": 0.21,
+    "auto_new_one_day": 1.386,
+    "theme_results_page": 0.53,
+    "reel_from_theme": 3.165,
+    "library_first_page_ru": 0.469
+  },
+  "checks": [
+    {
+      "name": "every_video_found",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "import_page_opens",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "import_analyse_finished",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "all_in_the_library",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "library_lists_videos",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "whole_phone_folder_offers_the_day_list",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "reel_setup_for_one_day",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "theme_index_done",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "prepared_for_reels",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "theme_search_answers_quickly",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "reel_from_theme_picks_at_most_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "every_page_opens_in_time",
+      "pass": true,
+      "detail": null
+    }
+  ]
+}
