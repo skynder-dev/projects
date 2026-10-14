@@ -1,0 +1,165 @@
+SKIP not downloaded: File:Original Dixieland Jass Band - Livery Stable Blues (1917) alternate edit.ogg HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+SKIP not downloaded: File:Jazz at the park.ogg HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+SKIP not downloaded: File:Pange Lingua Latin in Latin.ogg HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+SKIP not downloaded: File:Casa Bossa Nova (ISRC USUAN1600012).mp3 HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+SKIP not downloaded: File:प्रभु यिशु जी खुलल दरबार बायं - Puranchali-Bhojpuri-Awadhi Folk Bhajan.ogg HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+SKIP not downloaded: File:Dhal disom re thari bati (santali folk song).ogg HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+SKIP not downloaded: File:Free Man - Wild Blue Country - United States Air Force Academy Band.mp3 HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+SKIP not downloaded: File:The Couch - Wild Blue Country - United States Air Force Academy Band.mp3 HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+SKIP not downloaded: File:Greensleeves for solo piano.wav HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+SKIP not downloaded: File:Satie Gymnopedie No. 3 for piano solo 01.wav HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+{"title": "File:Eternity Arcade - Lost in a Dream (vocal retro pop music made with AI).opus", "style": "pop song", "file": "01.opus", "seconds_s": 0.15, "mediaengine": {"bpm": 100.09, "clear": true, "confidence": 0.554, "strength_db": 5.13, "shifted": false}, "librosa_bpm": 99.38, "tempo_relation": "same", "on_librosa_beats": 1.0, "on_librosa_offbeats": 0.0, "beats_compared": 94, "other_tempo_score": {"comb": true, "bpm": 100.25, "clear": true, "on_librosa_beats": 1.0, "on_librosa_offbeats": 0.0}}
+{"title": "File:MIGUEL ANGEL FLORES HERRADA - QUIERO.wav", "style": "pop song", "file": "02.wav", "seconds_s": 0.13, "mediaengine": {"bpm": 114.88, "clear": true, "confidence": 0.667, "strength_db": 7.85, "shifted": false}, "librosa_bpm": 117.45, "tempo_relation": "same", "on_librosa_beats": 1.0, "on_librosa_offbeats": 0.0, "beats_compared": 108, "other_tempo_score": {"comb": true, "bpm": 114.85, "clear": true, "on_librosa_beats": 1.0, "on_librosa_offbeats": 0.0}}
+{"title": "File:What I Want - Max Impact - United States Air Force Band.mp3", "style": "rock song", "file": "03.mp3", "seconds_s": 0.13, "mediaengine": {"bpm": 65.32, "clear": true, "confidence": 0.331, "strength_db": 6.62, "shifted": false}, "librosa_bpm": 99.38, "tempo_relation": "2/3", "on_librosa_beats": 0.508, "on_librosa_offbeats": 0.492, "beats_compared": 61, "other_tempo_score": {"comb": true, "bpm": 65.37, "clear": true, "on_librosa_beats": 0.508, "on_librosa_offbeats": 0.492}}
+{"title": "File:Change My Mind - Max Impact - United States Air Force Band.mp3", "style": "rock song", "file": "04.mp3", "seconds_s": 0.13, "mediaengine": {"bpm": 68.05, "clear": true, "confidence": 0.421, "strength_db": 5.97, "shifted": false}, "librosa_bpm": 136.0, "tempo_relation": "half", "on_librosa_beats": 0.938, "on_librosa_offbeats": 0.031, "beats_compared": 64, "other_tempo_score": {"comb": true, "bpm": 67.93, "clear": true, "on_librosa_beats": 0.938, "on_librosa_offbeats": 0.031}}
+{"title": "File:Miss You - PIKASONIC-440600472.mp3", "style": "electronic dance music", "file": "05.mp3", "seconds_s": 0.13, "mediaengine": {"bpm": 108.94, "clear": true, "confidence": 0.576, "strength_db": 4.63, "shifted": false}, "librosa_bpm": 107.67, "tempo_relation": "same", "on_librosa_beats": 1.0, "on_librosa_offbeats": 0.0, "beats_compared": 102, "other_tempo_score": {"comb": true, "bpm": 108.76, "clear": true, "on_librosa_beats": 1.0, "on_librosa_offbeats": 0.0}}
+{"title": "File:Sample dance 1.mp3", "style": "electronic dance music", "file": "06.mp3", "seconds_s": 0.13, "mediaengine": {"bpm": 119.88, "clear": true, "confidence": 0.792, "strength_db": 4.44, "shifted": false}, "librosa_bpm": 117.45, "tempo_relation": "same", "on_librosa_beats": 0.679, "on_librosa_offbeats": 0.0, "beats_compared": 112, "other_tempo_score": {"comb": true, "bpm": 119.77, "clear": true, "on_librosa_beats": 0.679, "on_librosa_offbeats": 0.0}}
+{"title": "File:Proto-hip hop 1926.ogg", "style": "hip hop instrumental", "file": "07.ogg", "seconds_s": 0.06, "mediaengine": {"bpm": 101.7, "clear": true, "confidence": 0.4, "strength_db": 4.78, "shifted": false}, "librosa_bpm": 103.36, "tempo_relation": "same", "on_librosa_beats": 1.0, "on_librosa_offbeats": 0.0, "beats_compared": 43, "other_tempo_score": {"comb": true, "bpm": 101.65, "clear": true, "on_librosa_beats": 1.0, "on_librosa_offbeats": 0.0}}
+{"title": "File:Stem 5 from \"Friendly Evil Gangsta Synth Hip Hop\" for remixing.ogg", "style": "hip hop instrumental", "file": "08.ogg", "seconds_s": 0.13, "mediaengine": {"bpm": 106.47, "clear": true, "confidence": 0.293, "strength_db": 6.7, "shifted": false}, "librosa_bpm": 107.67, "tempo_relation": "same", "on_librosa_beats": 1.0, "on_librosa_offbeats": 0.0, "beats_compared": 101, "other_tempo_score": {"comb": true, "bpm": 106.29, "clear": true, "on_librosa_beats": 1.0, "on_librosa_offbeats": 0.0}}
+{"title": "File:Room reverb effect in a mix - longer funk example.ogg", "style": "funk", "file": "09.ogg", "seconds_s": 0.05, "mediaengine": {"bpm": 84.98, "clear": true, "confidence": 0.471, "strength_db": 8.9, "shifted": false}, "librosa_bpm": 172.27, "tempo_relation": "half", "on_librosa_beats": 1.0, "on_librosa_offbeats": 0.0, "beats_compared": 27, "other_tempo_score": {"comb": true, "bpm": 85.14, "clear": true, "on_librosa_beats": 1.0, "on_librosa_offbeats": 0.0}}
+{"title": "File:Flutey Funk (ISRC USUAN1100519).mp3", "style": "funk", "file": "10.mp3", "seconds_s": 0.13, "mediaengine": {"bpm": 89.88, "clear": true, "confidence": 0.408, "strength_db": 9.94, "shifted": false}, "librosa_bpm": 89.1, "tempo_relation": "same", "on_librosa_beats": 1.0, "on_librosa_offbeats": 0.0, "beats_compared": 85, "other_tempo_score": {"comb": true, "bpm": 89.91, "clear": true, "on_librosa_beats": 1.0, "on_librosa_offbeats": 0.0}}
+{"title": "File:Ether Disco (ISRC USUAN1100237).mp3", "style": "disco", "file": "11.mp3", "seconds_s": 0.12, "mediaengine": {"bpm": 120.13, "clear": true, "confidence": 0.338, "strength_db": 5.51, "shifted": false}, "librosa_bpm": 117.45, "tempo_relation": "same", "on_librosa_beats": 0.31, "on_librosa_offbeats": 0.646, "beats_compared": 113, "other_tempo_score": {"comb": true, "bpm": 119.84, "clear": true, "on_librosa_beats": 0.31, "on_librosa_offbeats": 0.646}}
+{"title": "File:Disco Medusae (ISRC USUAN1500041).mp3", "style": "disco", "file": "12.mp3", "seconds_s": 0.13, "mediaengine": {"bpm": 114.99, "clear": true, "confidence": 0.469, "strength_db": 6.42, "shifted": false}, "librosa_bpm": 117.45, "tempo_relation": "same", "on_librosa_beats": 0.917, "on_librosa_offbeats": 0.0, "beats_compared": 108, "other_tempo_score": {"comb": true, "bpm": 114.9, "clear": true, "on_librosa_beats": 0.917, "on_librosa_offbeats": 0.0}}
+{"title": "File:LIVE DRUMS Reggae One-drop-half-time-pattern.ogg", "style": "reggae", "file": "13.ogg", "seconds_s": 0.09, "mediaengine": {"bpm": 106.7, "clear": false, "confidence": 0.095, "strength_db": 4.07, "shifted": false}, "librosa_bpm": 107.67, "tempo_relation": "same", "on_librosa_beats": 0.515, "on_librosa_offbeats": 0.015, "beats_compared": 68, "other_tempo_score": {"comb": true, "bpm": 106.37, "clear": false, "on_librosa_beats": 0.515, "on_librosa_offbeats": 0.015}}
+{"title": "File:Say No - Top Flight - United States Air Force Band of the West.mp3", "style": "reggae", "file": "14.mp3", "seconds_s": 0.12, "mediaengine": {"bpm": 140.62, "clear": false, "confidence": 0.13, "strength_db": 5.39, "shifted": false}, "librosa_bpm": 136.0, "tempo_relation": "same", "on_librosa_beats": 0.852, "on_librosa_offbeats": 0.0, "beats_compared": 122, "other_tempo_score": {"comb": true, "bpm": 67.8, "clear": false, "on_librosa_beats": 0.758, "on_librosa_offbeats": 0.129}}
+{
+  "status": "PASS",
+  "video": "/home/runner/work/_temp/rm/reel0/MediaEngine Reel.mp4",
+  "result": "/home/runner/work/_temp/rm/reel0/MediaEngine Result.json",
+  "selection_mode": "ACCEPTED_V52_TECHNICAL_AESTHETIC",
+  "semantic": false,
+  "boundary_trimmed": 0,
+  "duration_s": 19.83,
+  "target_error_s": 0.17,
+  "selected_count": 4,
+  "audio": "source"
+}
+{"title": "File:Eternity Arcade - Lost in a Dream (vocal retro pop music made with AI).opus", "beat_sync": {"bpm": 100.12, "clear": true, "confidence": 0.52, "cut_offsets_s": [0.0016, 0.0016, 0.0016, 0.0016], "cuts": 4, "cuts_half_way_between_beats": 0, "cuts_on_beat": 4, "max_offset_s": 0.0016, "snapped": 4}, "cuts_s": [5.433, 10.233, 15.033, 19.833], "cuts_on_librosa_beats": 1.0, "warnings": []}
+{
+  "status": "PASS",
+  "video": "/home/runner/work/_temp/rm/reel1/MediaEngine Reel.mp4",
+  "result": "/home/runner/work/_temp/rm/reel1/MediaEngine Result.json",
+  "selection_mode": "ACCEPTED_V52_TECHNICAL_AESTHETIC",
+  "semantic": false,
+  "boundary_trimmed": 0,
+  "duration_s": 19.87,
+  "target_error_s": 0.13,
+  "selected_count": 4,
+  "audio": "source"
+}
+{"title": "File:MIGUEL ANGEL FLORES HERRADA - QUIERO.wav", "beat_sync": {"bpm": 114.85, "clear": true, "confidence": 0.648, "cut_offsets_s": [0.0064, 0.011, 0.0037, 0.0137], "cuts": 4, "cuts_half_way_between_beats": 0, "cuts_on_beat": 4, "max_offset_s": 0.0137, "snapped": 4}, "cuts_s": [5.233, 10.466, 14.633, 19.867], "cuts_on_librosa_beats": 1.0, "warnings": []}
+{
+  "status": "PASS",
+  "video": "/home/runner/work/_temp/rm/reel2/MediaEngine Reel.mp4",
+  "result": "/home/runner/work/_temp/rm/reel2/MediaEngine Result.json",
+  "selection_mode": "ACCEPTED_V52_TECHNICAL_AESTHETIC",
+  "semantic": false,
+  "boundary_trimmed": 0,
+  "duration_s": 19.6,
+  "target_error_s": 0.4,
+  "selected_count": 4,
+  "audio": "source"
+}
+{"title": "File:Miss You - PIKASONIC-440600472.mp3", "beat_sync": {"bpm": 108.99, "clear": true, "confidence": 0.604, "cut_offsets_s": [0.0156, 0.009, 0.0144, 0.0137], "cuts": 4, "cuts_half_way_between_beats": 0, "cuts_on_beat": 4, "max_offset_s": 0.0156, "snapped": 4}, "cuts_s": [5.267, 10.233, 14.633, 19.6], "cuts_on_librosa_beats": 0.75, "warnings": []}
+{
+ "tracks": 14,
+ "clear_beat": 12,
+ "median_agreement": 1.0,
+ "mean_agreement": 0.863,
+ "other_tempo_score": {
+  "comb": true,
+  "clear_beat": 12,
+  "mean_agreement": 0.863,
+  "agreement_over_0_8": 9
+ },
+ "agreement_over_0_8": 9,
+ "offbeat_locks": [
+  "File:Ether Disco (ISRC USUAN1100237).mp3"
+ ],
+ "errors": [],
+ "reels": [
+  {
+   "title": "File:Eternity Arcade - Lost in a Dream (vocal retro pop music made with AI).opus",
+   "beat_sync": {
+    "bpm": 100.12,
+    "clear": true,
+    "confidence": 0.52,
+    "cut_offsets_s": [
+     0.0016,
+     0.0016,
+     0.0016,
+     0.0016
+    ],
+    "cuts": 4,
+    "cuts_half_way_between_beats": 0,
+    "cuts_on_beat": 4,
+    "max_offset_s": 0.0016,
+    "snapped": 4
+   },
+   "cuts_s": [
+    5.433,
+    10.233,
+    15.033,
+    19.833
+   ],
+   "cuts_on_librosa_beats": 1.0,
+   "warnings": []
+  },
+  {
+   "title": "File:MIGUEL ANGEL FLORES HERRADA - QUIERO.wav",
+   "beat_sync": {
+    "bpm": 114.85,
+    "clear": true,
+    "confidence": 0.648,
+    "cut_offsets_s": [
+     0.0064,
+     0.011,
+     0.0037,
+     0.0137
+    ],
+    "cuts": 4,
+    "cuts_half_way_between_beats": 0,
+    "cuts_on_beat": 4,
+    "max_offset_s": 0.0137,
+    "snapped": 4
+   },
+   "cuts_s": [
+    5.233,
+    10.466,
+    14.633,
+    19.867
+   ],
+   "cuts_on_librosa_beats": 1.0,
+   "warnings": []
+  },
+  {
+   "title": "File:Miss You - PIKASONIC-440600472.mp3",
+   "beat_sync": {
+    "bpm": 108.99,
+    "clear": true,
+    "confidence": 0.604,
+    "cut_offsets_s": [
+     0.0156,
+     0.009,
+     0.0144,
+     0.0137
+    ],
+    "cuts": 4,
+    "cuts_half_way_between_beats": 0,
+    "cuts_on_beat": 4,
+    "max_offset_s": 0.0156,
+    "snapped": 4
+   },
+   "cuts_s": [
+    5.267,
+    10.233,
+    14.633,
+    19.6
+   ],
+   "cuts_on_librosa_beats": 0.75,
+   "warnings": []
+  }
+ ],
+ "reels_with_cuts_off_the_beat": [],
+ "pass": true
+}
