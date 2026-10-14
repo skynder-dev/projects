@@ -31,7 +31,8 @@ SKIP_PART = ("/video", "/thumb", ".jpg", "/source")      # files, not pages
 _PROTECT = re.compile(r"""<(\w+)\b[^>]*(?:translate=['"]no['"]|class=['"][^'"]*\b(?:ae-path|path|mono)\b[^'"]*['"])[^>]*>.*?</\1>""", re.S)
 _DROP = re.compile(r"<(script|style|code|pre|textarea)\b.*?</\1>", re.S | re.I)
 _TAG = re.compile(r"""<(?:[^>"']|"[^"]*"|'[^']*')+>""")
-USER_CONTENT = {"two", "seven", "phone", "other", "my edit", "test", "three scenes"}   # fixture names / titles typed by the user
+USER_CONTENT = {"two", "seven", "phone", "other", "my edit", "test", "three scenes",
+                "Mom's recordings [2026] 100% & co!; =,#"}   # the folder name of the e2e recording check   # fixture names / titles typed by the user
 _ATTR = re.compile(r"""\b(?:placeholder|title)=(['"])(.*?)\1""", re.S)
 
 

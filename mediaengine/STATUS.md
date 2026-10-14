@@ -259,11 +259,10 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 - `/media` file routes serve Private items to the local owner UI only (loopback + Host check) — kept by design (D17).
 - Per-cut sync on real camera footage (synthetic flash/beep: within ±7 ms; also checked on Windows CI).
 - Owner-PC run with the AI model and human review of selection quality (blind comparison is built in).
-- Owner decisions: private repo with the model for CI (AI mode in CI); publishing builds as GitHub Releases
-  (public) instead of 90-day CI artifacts.
+- Owner decision (not asked again): a private repo with the model for CI (AI mode in CI).
 
 ## Next exact action
 
-Owner: download the newest `MediaEngine-3.13.0-rc1-b<N>-Setup` artifact and run the Setup (or the ZIP: unblock +
-extract next to `D:\Archivist`), start "MediaEngine" from the Start menu, open "Check this PC" → "Build a test reel
-with the AI model", then make a reel from a real folder.
+Owner: download the newest `MediaEngine-3.13.0-rc1-b<N>-Setup` artifact and run the Setup (it installs into
+`D:\projects\medeng\<build>`), start "MediaEngine" from the Start menu, open "Check this PC" → "Download the AI model"
+→ "Build a test reel with the AI model", then make a reel from a real folder.

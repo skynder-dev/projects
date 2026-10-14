@@ -80,6 +80,14 @@ def main():
         check("create_reel_in_a_real_browser", "/auto/p/" in pg.url, pg.url)
         pid = int(pg.url.split("/auto/p/")[1].split("?")[0]) if "/auto/p/" in pg.url else 0
         jid = ae.project(pid)["jobs"][0]["id"] if pid else 0
+        # the reel being made is shown in the bar at the top of every other page, with a link to it
+        pg.goto(base + "/library")
+        try:
+            pg.wait_for_selector("#jobtext:has-text('Making a reel')", timeout=120_000)
+            bar_ok = pg.get_attribute("#jobbar a", "href") == f"/auto/p/{pid}"
+        except Exception:
+            bar_ok = ae.job(jid)["status"] == "done"          # already built (a fast PC): nothing to show
+        check("reel_progress_on_other_pages", bar_ok, pg.inner_text("#jobbar") if pg.query_selector("#jobbar") else None)
         end = time.time() + 900
         while jid and time.time() < end and ae.job(jid)["status"] in ("queued", "running"):
             time.sleep(2)
@@ -90,6 +98,12 @@ def main():
         p_ = ae.project(pid)
         ex = p_["exports"][0] if p_ and p_["exports"] else None
         check("save_mp4_in_a_real_browser", ex and Path(ex["path"]).is_file() and p_["accepted_revision_id"], (pg.url, ex))
+        # a small copy for messengers next to the saved reel (one quick encode)
+        with pg.expect_navigation(timeout=300_000):
+            pg.click("#exportForm button:has-text('Small copy for messengers')")
+        small = sorted(Path(ex["path"]).parent.glob("* small.mp4")) if ex else []
+        check("small_copy_for_messengers", small and "Small copy saved" in pg.content()
+              and small[0].stat().st_size < Path(ex["path"]).stat().st_size, (pg.url, [x.name for x in small]))
         # Check this PC: the test reel is built in the background, the page shows it when ready
         pg.goto(base + "/auto/check")
         with pg.expect_navigation():

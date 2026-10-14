@@ -1,6 +1,6 @@
 """Automatic copies of the database and the settings (MediaEngine Data\\data\\backups): once a day and before a
 different build first uses the data (an older build after a newer one, or the other way round). Kept: the last 7 daily
-copies and the last 5 build copies. A quick integrity check runs in the background; a problem is shown on every page.
+copies and the last 5 build copies (2 and 2 when the database is over 300 MB). A quick integrity check runs in the background; a problem is shown on every page.
 """
 from __future__ import annotations
 
@@ -29,6 +29,11 @@ def _copy_db(dst: Path) -> None:
 
 def _prune(prefix: str, keep: int) -> None:
     files = sorted(BACKUPS.glob(prefix + "*.db"), key=lambda p: p.stat().st_mtime, reverse=True)
+    try:     # a big database (AI+ for a large Library: ~200 KB per video) keeps fewer copies
+        if files and files[0].stat().st_size > 300 * 1024 * 1024:
+            keep = min(keep, 2)
+    except OSError:
+        pass
     for old in files[keep:]:
         for x in (old, old.with_suffix(".config.json")):
             try:
@@ -39,6 +44,9 @@ def _prune(prefix: str, keep: int) -> None:
 
 def _make(prefix: str, label: str) -> Path:
     BACKUPS.mkdir(parents=True, exist_ok=True)
+    need = DB_PATH.stat().st_size * 2 + 1024 ** 3
+    if shutil.disk_usage(BACKUPS).free < need:          # never fill the disk with a copy
+        raise OSError("not enough free disk space for a copy of the database")
     dst = BACKUPS / f"{prefix}{datetime.now().strftime('%Y%m%d-%H%M%S')}{('-' + label) if label else ''}.db"
     tmp = dst.with_suffix(".part")
     try:

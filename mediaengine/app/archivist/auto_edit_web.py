@@ -253,6 +253,11 @@ def register(app, layout, e, human_bytes):
                      + ("<form method='post' action='/auto/exports/open' style='margin:0'><button class='btn2'>Exported reels</button></form>"
                         if has_exports else "")
                      + "<a class='btn btn2' href='/auto/check'>Check this PC</a></div>")
+        # what changed in this version, once (only for someone who already used MediaEngine)
+        whats_new = "" if (ae.whats_new_seen() or not ae.selftest_passed()) else (
+            "<div class='card callout' style='margin-bottom:14px'><div class='row space'><b>New in this version</b>"
+            "<form method='post' action='/auto/whats-new/seen' style='margin:0'><button class='btn2'>OK</button></form></div>"
+            "<ul style='margin:6px 0 0'>" + "".join(f"<li>{e(x)}</li>" for x in ae.WHATS_NEW) + "</ul></div>")
         first = "" if ae.selftest_passed() else (
             "<div class='card callout' style='margin-bottom:14px'><b>First time on this PC?</b> "
             "<span class='muted'>Check this PC first: it shows whether the AI model and video tools are found and builds a 5-second test reel "
@@ -260,7 +265,7 @@ def register(app, layout, e, human_bytes):
             "<div class='row' style='margin-top:8px'><a class='btn' href='/auto/check'>Check this PC</a></div></div>")
         body = f"""<div class='pagehead'>{check_btn}<div class='eyebrow'>MediaEngine</div><h1>Auto Edit</h1>
 <div class='lead'>Choose a folder of videos (or single videos), pick length, format and sound, and MediaEngine builds a reel from the best moments.
-Your original files are only read, never changed.</div></div>{first}
+Your original files are only read, never changed.</div></div>{first}{whats_new}
 <div class='card'><h2 style='margin-top:0'>New reel</h2>
 <form method='get' action='/auto/new' class='row' style='flex-wrap:wrap' onsubmit="document.getElementById('pickMsg').textContent='Checking the videos… (a few seconds per video)'">
 <button type='button' class='ae-big' id='pickBtn'>Choose folder…</button>
@@ -328,8 +333,16 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         shared_html = (f"<div class='card row space' style='margin-top:14px;flex-wrap:wrap'><span class='muted'>What AI+ saw in your videos "
                        f"(kept for every reel, so the same video is never looked at twice): {human_bytes(sb)}</span>"
                        "<form method='post' action='/auto/check/free-shared'><button class='btn2'>Free</button></form></div>") if sb else ""
+        cb = ae.all_work_cache_bytes()
+        if cb:
+            shared_html += (f"<div class='card row space' style='margin-top:14px;flex-wrap:wrap'><span class='muted'><span>Analysis and render caches "
+                            f"of all projects (versions and saved MP4 stay; the next build of a project analyses again):</span> {human_bytes(cb)}</span>"
+                            "<form method='post' action='/auto/check/free-caches'><button class='btn2'>Free</button></form></div>")
         if request.args.get("freed_shared"):
             shared_html = "<div class='card ae-done' style='margin-top:14px'>Freed.</div>" + shared_html
+        if request.args.get("freed"):
+            shared_html = (f"<div class='card ae-done' style='margin-top:14px'><span>Freed:</span> "
+                           f"{human_bytes(int(request.args['freed']) if request.args['freed'].isdigit() else 0)}</div>") + shared_html
         builds_html = shared_html + builds_html
         body = (f"<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Check this PC</h1>"
                 f"<div class='lead'>What MediaEngine needs, and a 5-second test reel made from generated clips (your videos are not used).</div></div>"
@@ -357,6 +370,19 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
         except Exception as exc:
             return err_page(str(exc), "/auto/check")
         return redirect("/auto/check?freed_shared=1")
+
+    @app.post("/auto/whats-new/seen")
+    def ae_whats_new_seen():
+        ae.mark_whats_new_seen()
+        return redirect("/auto")
+
+    @app.post("/auto/check/free-caches")
+    def ae_free_caches():
+        try:
+            freed = ae.clear_all_work_caches()
+        except Exception as exc:
+            return err_page(str(exc), "/auto/check")
+        return redirect(f"/auto/check?freed={int(freed)}")
 
     @app.get("/auto/check/video")
     def ae_check_video():
@@ -730,6 +756,7 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
 const card=document.getElementById('jobCard');
 async function pollJob2(){if(!card)return;try{const r=await fetch('/api/auto/job/'+card.dataset.job,{cache:'no-store'});const j=await r.json();
  document.getElementById('jobBar').style.width=j.percent+'%';document.getElementById('jobStage').textContent=j.stage_label+' · '+j.percent+'%';
+ if(!window.ME_T0)window.ME_T0=document.title;document.title=j.percent+'% · '+window.ME_T0;   // progress visible on the tab
  const counted=j.total>1&&(j.stage==='render'||j.done>0);const el=Math.round(j.elapsed_s||0);
  // estimate only from real progress, only once there is enough of it (no invented timer)
  let eta='';if(j.status==='running'&&j.stage==='finish')eta=' · final encode and check of the whole reel, can take a few minutes';
@@ -909,6 +936,15 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
         except Exception as exc:
             return err_page(str(exc), f"/auto/p/{pid}")
         return redirect(f"/auto/p/{pid}?exported={res['export_id']}")
+
+    @app.post("/auto/p/<int:pid>/small")
+    def ae_small(pid):
+        try:
+            rid = int(request.form.get("revision_id") or 0)
+            dst = ae.small_copy(pid, rid)
+        except Exception as exc:
+            return err_page(ae.friendly_error(str(exc)) if "SMALL_COPY_FAILED" in str(exc) else str(exc), f"/auto/p/{pid}")
+        return redirect(f"/auto/p/{pid}?rev={rid}&small=" + urllib.parse.quote(dst.name))
 
     @app.post("/auto/exports/open")
     def ae_exports_open():
@@ -1386,9 +1422,14 @@ def _review_html(p, rev, e, building=False):
     exp_html = (f"<form method='post' action='/auto/p/{p['id']}/export' id='exportForm' style='margin-top:10px' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(b=>b.disabled=true),0)\">"
                 f"<input type='hidden' name='dest' id='exportDest' value=''><input type='hidden' name='revision_id' value='{rev['id']}'>"
                 f"<div class='row' style='flex-wrap:wrap'><button class='ae-big'>Save MP4</button>"
-                f"<button type='button' class='btn2' id='exportToBtn'>Save to another folder…</button></div>"
+                f"<button type='button' class='btn2' id='exportToBtn'>Save to another folder…</button>"
+                f"<button class='btn2' formaction='/auto/p/{p['id']}/small' title='About 720p, a much smaller file'>Small copy for messengers</button></div>"
                 f"<div class='muted' style='margin-top:4px'>Saves to <span class='ae-path' translate='no'>{e(str(ae.default_export_dir()))}</span></div>"
                 f"<div class='muted' id='exportMsg'></div></form>")
+    small = request.args.get("small", "")
+    if small:
+        exp_html += (f"<div class='card ae-done' style='margin-top:10px'><span>Small copy saved:</span> <span class='ae-path' translate='no'>{e(small)}</span>"
+                     f"<form method='post' action='/auto/exports/open' style='display:inline;margin-left:8px'><button class='btn2'>Exported reels</button></form></div>")
     if is_acc:
         if last:
             exp_html += (f"<div class='card' style='margin-top:10px'><b>Exported</b><div class='ae-path'>{e(last['path'])}</div>"

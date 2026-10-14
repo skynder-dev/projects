@@ -393,6 +393,8 @@ def main():
         r2v = c.get(f"/auto/rev/{rev['id']}/video", headers={**H, "Range": "bytes=0-9"})
         check("free_cache", r.status_code == 302 and before_cache > 0 and ae.project_disk_usage(pid)["cache_bytes"] == 0
               and r2v.status_code == 206, (r.status_code, before_cache))
+        r = c.post("/auto/check/free-caches", headers=H)      # every project's cache at once (Check this PC)
+        check("free_all_caches", r.status_code == 302 and ae.all_work_cache_bytes() == 0 and ae.project(pid)["revisions"], r.status_code)
 
         # Russian interface: same pages, same forms, Russian text; user content untouched
         c.post("/auto/lang", headers=H)

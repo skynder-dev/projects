@@ -27,6 +27,8 @@ APP_PHRASES: dict[str, str] = {
     "The Library is empty.": "Библиотека пуста.",
     "Your projects are not shown.": "Твои проекты не показаны.",
     "More": "Ещё",
+    "Making a reel": "Собирается ролик", "Open the reel": "Открыть ролик",
+    "Optional, not set up: copy the phone videos to this PC and choose that folder.": "По желанию, не настроено: скопируй видео с телефона на компьютер и выбери эту папку.",
     "Make a reel": "Сделать ролик", "Select videos first": "Сначала выбери видео",
     "No selected video is on this PC now (photos are not used in reels).": "Ни одного выбранного видео сейчас нет на этом компьютере (фото в роликах не используются).",
     "Reel projects": "Проекты роликов",

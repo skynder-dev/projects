@@ -37,7 +37,7 @@ FORMATS = {
 }
 FRAMINGS = {"fill": "Fill the screen (cropped to the interesting part)", "fit_blur": "Whole picture, blurred edges"}
 SOUNDS = {"auto": "Auto (keep source sound, mute if it jumps)", "source": "Source sound", "mute": "Mute"}
-LENGTHS = (5, 15, 30, 60)
+LENGTHS = (5, 15, 30, 60, 120)    # 120 s: about 25 moments (the engine takes up to 30; checked 2026-10-14)
 MODES = {"semantic": "AI moments (FAST_LOCAL)", "semantic_plus": "AI+ moments (PE-Core L/14)", "technical": "Technical only (no AI model)"}
 AI_MODES = ("semantic", "semantic_plus")
 # AI+ themes: key -> name shown (English; Russian in auto_edit_ru). The descriptions are in the engine (p13_event_semantic_pe).
@@ -1976,6 +1976,33 @@ def system_check() -> list[dict]:
     return rows
 
 
+WHATS_NEW_ID = "2026-10-14"
+WHATS_NEW = ["“Save MP4” in one step on any version (no separate Accept).",
+             "A reel for every day of a trip: open a big folder, “A reel for every day”.",
+             "Vertical reel from horizontal videos: the whole picture with blurred edges, if you like.",
+             "“Small copy for messengers” next to Save MP4.",
+             "Library: select videos and press “Make a reel”.",
+             "Reels up to 2 minutes; the new reel starts with your last settings.",
+             "A reel being made is shown at the top of every page."]
+
+
+def whats_new_seen() -> bool:
+    try:
+        return (load_config().get("auto_edit") or {}).get("whats_new_seen") == WHATS_NEW_ID
+    except Exception:
+        return True
+
+
+def mark_whats_new_seen() -> None:
+    try:
+        from .config import save_config
+        cfg = load_config()
+        cfg.setdefault("auto_edit", {})["whats_new_seen"] = WHATS_NEW_ID
+        save_config(cfg)
+    except Exception:
+        pass
+
+
 def selftest_passed() -> bool:
     """A test reel was built on this PC at least once ("Check this PC")."""
     try:
@@ -2296,6 +2323,29 @@ def clear_work_cache(pid: int) -> int:
     return freed
 
 
+def all_work_cache_bytes() -> int:
+    """Analysis and render caches of every project (versions and exports not counted)."""
+    total = 0
+    if AE_ROOT.is_dir():
+        for d in AE_ROOT.iterdir():
+            if d.is_dir() and re.fullmatch(r"p\d+", d.name):
+                total += _tree_bytes(d / "work")
+    return total
+
+
+def clear_all_work_caches() -> int:
+    """Free the caches of every project that is not building now (versions and exports stay)."""
+    freed = 0
+    for p in list_projects(include_archived=True):
+        if any(j["status"] in ("queued", "running") for j in p["jobs"]):
+            continue
+        try:
+            freed += clear_work_cache(p["id"])
+        except ValueError:
+            pass
+    return freed
+
+
 # ---------------------------------------------------------------- blind comparison (human quality review)
 
 def start_review(pid: int, rev_a: int, rev_b: int) -> int:
@@ -2454,6 +2504,56 @@ def _export_accepted(pid: int, dest_dir: Path | None = None, remember: bool = Fa
         dst.unlink(missing_ok=True)
         raise
     return _record_export(pid, r, dst, reused=False)
+
+
+SMALL_LONG_SIDE = 1280        # a copy for messengers: 720p, about a tenth of the size
+
+
+def small_copy(pid: int, rid: int) -> Path:
+    """A small copy of a version for messengers (WhatsApp, Telegram): long side at most 1280 px, lower bit rate, in the
+    export folder next to the saved reels. Made from the finished version in one quick encode (no new build)."""
+    p, r = project(pid), revision(rid)
+    if not p or not r or int(r["project_id"]) != int(pid):
+        raise ValueError("Revision not found in this project")
+    src = Path(r["video_path"])
+    if sha256_file(src) != r["video_sha256"]:
+        raise ValueError("Revision file changed on disk; it cannot be accepted")
+    dest_dir = default_export_dir()
+    try:
+        dest_dir = check_export_dir(p, dest_dir) if dest_dir.is_dir() else dest_dir
+    except ValueError:
+        dest_dir = Path(EXPORTS)
+    dest_dir = Path(dest_dir)
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    fmt = FORMATS.get(r["settings"]["format"], {}).get("short", "Reel")
+    dst = dest_dir / (safe_filename(f"{p['title']} - {fmt} - R{int(r['number']):03d} small") + ".mp4")
+    made = AE_ROOT / "small_copies.json"         # which version each small copy was made from (nothing extra in the folder)
+    try:
+        known = json.loads(made.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        known = {}
+    if dst.is_file() and known.get(str(dst)) == r["video_sha256"]:
+        return dst                     # made before from this very version
+    L = SMALL_LONG_SIDE
+    tmp = dest_dir / f".{dst.stem}.{os.getpid()}.part.mp4"
+    cmd = [_ffmpeg() or "ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", str(src), "-map", "0:v:0", "-map", "0:a:0?",
+           "-vf", f"scale='if(gte(iw,ih),min(iw,{L}),-2)':'if(gte(iw,ih),-2,min(ih,{L}))'",
+           "-c:v", "libx264", "-preset", "veryfast", "-crf", "26", "-pix_fmt", "yuv420p",
+           "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", str(tmp)]
+    try:
+        cp = subprocess.run(cmd, **process_kwargs({"capture_output": True, "text": True, "timeout": 1800}))
+        if cp.returncode != 0 or not tmp.is_file() or tmp.stat().st_size < 1000:
+            raise RuntimeError("SMALL_COPY_FAILED: " + (cp.stderr or "")[-300:])
+        _replace_retry(tmp, dst)
+    except BaseException:
+        tmp.unlink(missing_ok=True)
+        raise
+    try:
+        known[str(dst)] = r["video_sha256"]
+        made.write_text(json.dumps(known, ensure_ascii=False, indent=1), encoding="utf-8")
+    except OSError:
+        pass
+    return dst
 
 
 def _record_export(pid: int, r: dict, dst: Path, reused: bool) -> dict:

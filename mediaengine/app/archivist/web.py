@@ -105,14 +105,20 @@ async function pollJob(){
       if(j.stage==='import'&&j.bytes_total){if(lastJobSample&&lastJobSample.id===j.id&&j.bytes_done>lastJobSample.bytes){const dt=now-lastJobSample.t,db=j.bytes_done-lastJobSample.bytes;if(dt>0){const sp=db/dt,eta=(j.bytes_total-j.bytes_done)/sp;extra=' · '+fmtBytes(sp)+'/s'+(eta>1?' · ETA '+fmtEta(eta):'')}lastJobSample={id:j.id,t:now,bytes:j.bytes_done}}else if(!lastJobSample||lastJobSample.id!==j.id){lastJobSample={id:j.id,t:now,bytes:j.bytes_done}}}
       else lastJobSample=null;
       txt.textContent='Job #'+j.id+' · '+(window.ME_L?ME_L(j.stage):j.stage)+' · '+progress+' · '+pct+'%'+extra;
+      {const l=b.querySelector('a');if(l&&l.getAttribute('href')!=='/activity'){l.href='/activity';l.textContent=(window.ME_L?ME_L('Open activity'):'Open activity')}}
       const releasable=j.source_releasable&&j.status==='running';sub.textContent=(releasable?'SOURCE SAFE TO DISCONNECT · ':'')+(j.current_filename||j.message||'')+(j.failed?' · '+j.failed+' error(s)':'');bar.style.width=pct+'%';
-    }else if(s.discovery&&s.discovery.running){b.style.display='block';txt.textContent='Discovering · '+(s.discovery.current_source||'');sub.textContent=s.discovery.found+' found';bar.style.width='0%';lastJobSample=null}else{b.style.display='none';lastJobSample=null}
+    }else if(s.discovery&&s.discovery.running){b.style.display='block';txt.textContent='Discovering · '+(s.discovery.current_source||'');sub.textContent=s.discovery.found+' found';bar.style.width='0%';lastJobSample=null}
+    else if(s.active_reel&&location.pathname!=='/auto/p/'+s.active_reel.project_id){   // a reel being made, seen from any page
+      const a=s.active_reel;b.style.display='block';txt.textContent=(window.ME_L?ME_L('Making a reel'):'Making a reel')+': '+a.title+' · '+a.percent+'%';
+      sub.textContent=(window.ME_L?ME_L(a.stage):a.stage);bar.style.width=a.percent+'%';lastJobSample=null;
+      const l=b.querySelector('a');if(l){l.href='/auto/p/'+a.project_id;l.textContent=(window.ME_L?ME_L('Open the reel'):'Open the reel')}}
+    else{b.style.display='none';lastJobSample=null}
   }catch(e){}
   setTimeout(pollJob,800)
 }
 async function pollSourceStatus(){
   const dots=[...document.querySelectorAll('[data-phone-dot]')],texts=[...document.querySelectorAll('[data-phone-text]')];if(!dots.length&&!texts.length)return;
-  try{const r=await fetch('/api/source-status',{cache:'no-store'}),x=await r.json();for(const d of dots)d.classList.toggle('online',!!x.connected);for(const t of texts)t.textContent=x.connected?((x.model||x.serial||'Android')+' connected'):(x.error||'not connected')}catch(e){for(const d of dots)d.classList.remove('online');for(const t of texts)t.textContent='status unavailable'}
+  try{const r=await fetch('/api/source-status',{cache:'no-store'}),x=await r.json();for(const d of dots)d.classList.toggle('online',!!x.connected);for(const t of texts)t.textContent=x.connected?((x.model||x.serial||'Android')+' connected'):(String(x.error||'').includes('ADB not installed')?'Optional, not set up: copy the phone videos to this PC and choose that folder.':(x.error||'not connected'))}catch(e){for(const d of dots)d.classList.remove('online');for(const t of texts)t.textContent='status unavailable'}
   setTimeout(pollSourceStatus,3000)
 }
 async function quitApp(force=false){
@@ -325,6 +331,16 @@ def create_app():
             queued=con.execute("SELECT COUNT(*) n FROM jobs WHERE status='queued'").fetchone()['n']
         snap['active_job']={k:j[k] for k in j.keys()} if j else None
         snap['queued_jobs']=queued
+        try:     # a reel being made (Auto Edit), so the bar at the top shows it on every page
+            from . import auto_edit as _ae
+            with db() as con:
+                rj=con.execute("SELECT j.*,p.title FROM ae_jobs j JOIN ae_projects p ON p.id=j.project_id WHERE j.status='running' ORDER BY j.id LIMIT 1").fetchone()
+            if rj:
+                d=dict(rj)
+                snap['active_reel']={'project_id':int(d['project_id']),'title':d['title'],'percent':_ae.job_percent(d),
+                                     'stage':_ae.STAGE_LABEL.get(d.get('stage') or '','')}
+        except Exception:
+            pass
         return jsonify(snap)
 
     @app.post('/api/app-control')
@@ -393,6 +409,8 @@ def create_app():
             total=int(metrics['total'] or 0);imported=int(metrics['imported'] or 0);videos=int(metrics['videos'] or 0)
             waiting=int(metrics['waiting'] or 0);review=int(metrics['review'] or 0);rights=int(metrics['rights_review'] or 0);errs=int(metrics['errs'] or 0)
         phone=phone_snapshot(); phone_text=(phone.get('model') or phone.get('serial') or 'Android')+' connected' if phone['connected'] else (phone.get('error') or 'not connected')
+        if not phone['connected'] and 'ADB not installed' in str(phone.get('error') or ''):
+            phone_text='Optional, not set up: copy the phone videos to this PC and choose that folder.'   # not an error
         side_note=("<div class='card callout' style='margin-top:14px'><b>The Library is empty.</b> "
                    "<span class='muted'>Add a folder on Import, or make a reel straight from a folder of videos with Auto Edit.</span>"
                    "<div class='row' style='margin-top:8px'><a class='btn' href='/auto'>Auto Edit</a></div></div>") if (SIDE_BY_SIDE and not total) else ""
