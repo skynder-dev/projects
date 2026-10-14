@@ -212,12 +212,7 @@ def register(app, layout, e, human_bytes):
                       + f"<div class='row' style='margin-top:10px;flex-wrap:wrap;gap:6px'>{acts}</div></div>")
         if not cards:
             cards = "<div class='card muted'>No Auto Edit projects yet. Choose a folder with your videos to make the first one.</div>"
-        model_note = ("" if ms["ready"] else
-                      f"<div class='card callout' style='margin-top:10px'><b>AI model (FAST_LOCAL) not found.</b> "
-                      f"<span class='muted'>Without it reels use the clearly labelled <i>Technical only</i> selection. "
-                      f"If you have the model (for example in an existing Archivist install), choose its folder: the exact files are verified and copied here.</span>"
-                      f"<div class='row' style='margin-top:8px'><button type='button' class='btn2' id='modelBtn'>Choose model folder…</button>"
-                      f"<span class='muted' id='modelMsg'></span></div></div>")
+        model_note = "" if ms["ready"] else _model_card(ms, e, back="/auto")
         try:
             exp_dir = ae.default_export_dir()
             has_exports = exp_dir.is_dir() and any(x.suffix.lower() == ".mp4" for x in exp_dir.iterdir())
@@ -246,9 +241,6 @@ Your original files are only read, never changed.</div></div>{first}
 <div class='section-title row space'><span>My projects</span><a class='muted' href='/auto?archived={'0' if request.args.get('archived')=='1' else '1'}'>{'Hide' if request.args.get('archived')=='1' else 'Show'} archived</a></div>
 <div class='ae-grid'>{cards}</div>"""
         script = """
-const mb=document.getElementById('modelBtn');
-if(mb)mb.onclick=async()=>{const m=document.getElementById('modelMsg');m.textContent='Choose the folder that contains FAST_LOCAL…';
- const r=await fetch('/api/auto/model/import',{method:'POST'});const x=await r.json();m.textContent=x.ok?'Model installed.':(x.error||'Not installed');if(x.ok)setTimeout(()=>location.reload(),800)};
 document.getElementById('pickBtn').onclick=async()=>{const m=document.getElementById('pickMsg');m.textContent='A Windows folder window is open — it may be behind this window.';
  try{const r=await fetch('/api/auto/pick-folder',{method:'POST'});const x=await r.json();
  if(x.path){document.getElementById('folderInput').value=x.path;m.textContent='Checking the videos… (a few seconds per video)';location.href='/auto/new?folder='+encodeURIComponent(x.path)}
@@ -328,7 +320,7 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
                 f"<button name='mode' value='technical'>Build a test reel</button> "
                 + (f"<button name='mode' value='semantic' class='btn2'>Build a test reel with the AI model</button> " if ai_ready else "")
                 + (f"<button name='mode' value='semantic_plus' class='btn2'>Build a test reel with AI+</button> " if ap["ready"] else "")
-                + f"<span class='muted'></span></form>{test_html}{_aiplus_card(ap, e, human_bytes)}{builds_html}"
+                + f"<span class='muted'></span></form>{test_html}{_model_card(ae.model_status(), e, back="/auto/check")}{_aiplus_card(ap, e, human_bytes)}{builds_html}"
                 f"<div class='row' style='margin-top:14px'><a class='btn btn2' href='/auto'>Back</a></div>")
         return page("Check this PC", body)
 
@@ -383,6 +375,17 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
         except Exception as exc:
             return jsonify({"ok": False, "error": str(exc)})
         return jsonify({"ok": True, **res})
+
+    @app.post("/api/auto/model/download")
+    def ae_model_download():
+        if request.headers.get("Sec-Fetch-Site", "same-origin") not in ("same-origin", "none"):
+            return jsonify({"ok": False, "error": "Only from MediaEngine itself."}), 400
+        return jsonify({"ok": True, "started": ae.model_download_start()})
+
+    @app.get("/api/auto/model")
+    def ae_model_state():
+        dl = dict(ae._MODEL_DL)
+        return jsonify({"ready": ae.model_status()["ready"], **dl})
 
     @app.post("/api/auto/aiplus/download")
     def ae_aiplus_download():
@@ -964,6 +967,33 @@ AI_LABEL = "AI — as before (fast)"
 AIPLUS_LABEL = "AI+ — stronger model, first analysis slower"
 AIPLUS_HINT = ("AI+ (a stronger model, PE-Core L/14) can be added once on <a href='/auto/check#aiplus'>Check this PC</a> "
                "(about 650 MB, free).")
+
+
+def _model_card(ms, e, back="/auto/check"):
+    """The AI model (FAST_LOCAL): kept in MediaEngine's own data folder, downloaded once with a button (30 MB)."""
+    if ms["ready"]:
+        return ("<div class='card' id='aimodel' style='margin-top:14px'><b>AI model is installed</b>"
+                f"<div class='muted ae-path' style='margin-top:4px'>{e(str(Path(ms['path']).parent))}</div></div>")
+    dl = dict(ae._MODEL_DL)
+    running = dl["state"] == "running"
+    return ("<div class='card callout' id='aimodel' style='margin-top:14px'><b>The AI model is not downloaded yet</b>"
+            "<div class='muted'>Without it reels use the clearly labelled <i>Technical only</i> selection (sharpness, motion, light). "
+            "Download once: 30 MB from huggingface.co (free); it is kept in MediaEngine's own folder and every file is checked.</div>"
+            "<div class='row' style='margin-top:10px'>"
+            f"<button type='button' id='mdDl' {'disabled' if running else ''}>Download the AI model</button>"
+            "<button type='button' class='btn2' id='mdImport'>Copy from a folder…</button><span class='muted' id='mdMsg'></span></div>"
+            "<div class='progress' style='margin-top:8px'><i id='mdBar' style='width:0%'></i></div>"
+            + (f"<div class='errbox' style='margin-top:8px'>{e(dl['error'])}</div>" if dl["state"] == "failed" and dl["error"] else "")
+            + "</div>"
+            "<script>(function(){const m=document.getElementById('mdMsg'),b=document.getElementById('mdBar'),d=document.getElementById('mdDl');"
+            "async function poll(){try{const r=await fetch('/api/auto/model',{cache:'no-store'});const x=await r.json();"
+            f"if(x.ready){{location.href='{back}?model='+Date.now();return}}const p=x.total?Math.floor(100*x.done/x.total):0;b.style.width=p+'%';"
+            "if(x.state==='running'){m.textContent=p+' %';d.disabled=true;setTimeout(poll,700)}"
+            "else{d.disabled=false;if(x.state==='failed')m.textContent=x.error||'Failed';}}catch(e){setTimeout(poll,2000)}}"
+            "d.onclick=async()=>{d.disabled=true;m.textContent='Starting…';await fetch('/api/auto/model/download',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});poll()};"
+            "document.getElementById('mdImport').onclick=async()=>{m.textContent='A Windows folder window is open — it may be behind this window.';"
+            f"const r=await fetch('/api/auto/model/import',{{method:'POST'}});const x=await r.json();m.textContent=x.ok?'Installed.':(x.error||'Not installed');if(x.ok)setTimeout(()=>{{location.href='{back}?model='+Date.now()}},800)}};"
+            + ("poll();" if running else "") + "})();</script>")
 
 
 def _aiplus_card(ap, e, human_bytes):

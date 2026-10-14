@@ -4,8 +4,8 @@
 ; Same layout as the ZIP (contract: every build is its own folder, data outside it):
 ;   <base>\MediaEngine-<version>-b<build>\   this build (a newer setup adds a new folder next to it)
 ;   <base>\MediaEngine Data\                 projects, database, caches, exports - created by the app, kept on uninstall
-; <base> = D:\projects\medeng when it exists (the owner's project folder), else D:\MediaEngine when D:\Archivist or
-; D:\MediaEngine exists, else %USERPROFILE%\MediaEngine. The folder can be changed on the first Setup page.
+; <base> = D:\projects\medeng when D:\projects exists (the owner's project folder; nothing is put at the root of D:),
+; else %USERPROFILE%\MediaEngine. The folder can be changed on the first Setup page.
 ; Per-user install, no administrator rights, nothing written outside <base> except the Start-menu shortcut
 ; (the app itself makes its desktop shortcut on first start). No network, no services, no autostart.
 
@@ -88,10 +88,8 @@ Type: files; Name: "{userdesktop}\MediaEngine RC.lnk"
 [Code]
 function DefaultBase(Param: String): String;
 begin
-  if DirExists('D:\projects\medeng') then
-    Result := 'D:\projects\medeng'          { the owner's project folder }
-  else if DirExists('D:\Archivist') or DirExists('D:\MediaEngine') then
-    Result := 'D:\MediaEngine'
+  if DirExists('D:\projects') then
+    Result := 'D:\projects\medeng'          { the owner's project folder; nothing at the root of D: }
   else
     Result := ExpandConstant('{%USERPROFILE}') + '\MediaEngine';
 end;

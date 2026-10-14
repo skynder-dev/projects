@@ -2,8 +2,7 @@
 
   python mediaengine/tools/build_windows_package.py <out_dir> [<evidence_dir>]
 
-Layout (side-by-side with a stable D:\\Archivist install; nothing outside its own folder is touched except
-its own desktop shortcut "MediaEngine RC"):
+Layout (nothing outside its own folder is touched except its own desktop shortcut "MediaEngine RC"):
 
   MediaEngine-<version>-b<build>/
     Start MediaEngine.vbs      one obvious launch (no console)
@@ -18,8 +17,8 @@ Every build is its own folder with a unique name (contract §16: never extract o
 "<parent folder>\\MediaEngine Data", remembered in %LOCALAPPDATA%\\MediaEngine\\data_root.txt, so the next
 release sees the same projects and the previous release folder is the rollback.
 
-Model weights are NOT included; the app finds FAST_LOCAL in a neighbouring Archivist install or lets the
-user choose the folder (exact hashes verified before use).
+Model weights are NOT included; the app downloads FAST_LOCAL (30 MB) and AI+ with a button into its own data
+folder, or copies them from a folder (exact hashes verified before use).
 """
 from __future__ import annotations
 
@@ -110,7 +109,7 @@ def main(out_dir: Path, evidence_dir: Path) -> None:
     (pkg / "README.txt").write_text(f"""MediaEngine {ver} (release candidate)
 
 Installer: run "{name}-Setup.exe" (if Windows SmartScreen warns: "More info" -> "Run anyway"). It installs for
-this Windows user only (no administrator rights) into D:\\MediaEngine (if D:\\Archivist exists) or your user folder,
+this Windows user only (no administrator rights) into D:\\projects\\medeng (if D:\\projects exists) or your user folder,
 adds "MediaEngine" to the Start menu. Settings -> Apps -> MediaEngine removes all builds installed by Setup
 (your projects and exports stay).
 
@@ -136,12 +135,11 @@ Settings -> Interface language). It starts in the language chosen in Setup.
 A folder with more than 64 videos (a whole phone) shows its shooting days ("Use this day") and a tick list;
 a camera card chosen at its root lists the video folders inside (DCIM, AVCHD ...).
 
-AI model: if this folder sits next to an existing Archivist install (for example D:\\Archivist),
-the FAST_LOCAL model is found automatically. Otherwise use "Choose model folder" on the Auto Edit page.
-Without the model the app offers the clearly labelled "Technical only" mode.
+AI model: "Download the AI model" on the Auto Edit page or on "Check this PC" (once, 30 MB, free; kept in
+"MediaEngine Data", every file checked). Without the model the app offers the clearly labelled "Technical only" mode.
 
-This candidate runs on port {PORT} and keeps its own data, archive and exports in "MediaEngine Data".
-It does not change a stable Archivist install. To remove it: installed with Setup -> Settings -> Apps ->
+MediaEngine runs on port {PORT} and keeps its own data, archive and exports in "MediaEngine Data"; it uses no
+other program's folders. To remove it: installed with Setup -> Settings -> Apps ->
 MediaEngine (all Setup builds; keeps "MediaEngine Data"); from the ZIP -> Quit, delete this folder, the "MediaEngine Data" folder
 (your exported videos are inside it) and the "{SHORTCUT}" desktop shortcut.
 """, encoding="utf-8")
@@ -151,7 +149,7 @@ MediaEngine (all Setup builds; keeps "MediaEngine Data"); from the ZIP -> Quit, 
 УСТАНОВКА (проще)
   Запусти "{name}-Setup.exe". Если Windows покажет «Windows защитил ваш компьютер» — нажми
   «Подробнее» → «Выполнить в любом случае». Права администратора не нужны. Программа ставится в
-  D:\\MediaEngine (если есть D:\\Archivist) или в папку пользователя, в меню Пуск появится «MediaEngine».
+  D:\\projects\\medeng (если есть папка D:\\projects) или в папку пользователя, в меню Пуск появится «MediaEngine».
   Удалить: Параметры → Приложения → MediaEngine — удаляет все сборки, поставленные Setup'ом
   (проекты и ролики остаются).
 
@@ -191,7 +189,8 @@ MediaEngine (all Setup builds; keeps "MediaEngine Data"); from the ZIP -> Quit, 
   ИИ-режим работает на этом компьютере.
 
 ИИ-МОДЕЛЬ
-  Если рядом стоит рабочий Archivist (например D:\\Archivist), модель найдётся сама.
+  Скачай один раз: «Скачать модель ИИ» на странице автомонтажа или «Проверка компьютера» (30 МБ,
+  бесплатно, хранится в "MediaEngine Data", каждый файл проверяется).
   Без модели работает только режим «Только техника» (Technical only: резкость, движение, свет) —
   его надо выбрать явно галочкой.
   ИИ+ (по желанию): модель сильнее (PE-Core L/14), лучше понимает людей и что они делают. Скачивается
@@ -216,9 +215,9 @@ MediaEngine (all Setup builds; keeps "MediaEngine Data"); from the ZIP -> Quit, 
   версии можно удалить на странице «Проверка компьютера» (проекты и ролики не трогаются).
   Номер сборки (например b21) виден вверху рядом с версией.
 
-РЯДОМ С РАБОЧИМ ARCHIVIST
-  Эта версия работает на своём порту ({PORT}), со своим ярлыком и своими данными. Рабочий
-  Archivist (D:\\Archivist) она не меняет.
+СВОЯ ПАПКА
+  MediaEngine работает на своём порту ({PORT}), со своим ярлыком и своими данными; папки других
+  программ он не трогает.
 
 УДАЛИТЬ
   Ставил Setup'ом: Параметры → Приложения → MediaEngine (папка "MediaEngine Data" остаётся).

@@ -2,7 +2,8 @@
 
   python tests/real_models_check.py <fixtures_dir> <home_dir> [--out report.json]
 
-1. FAST_LOCAL (the accepted AI model) is downloaded from its public, pinned Hugging Face commit - the exact files the
+1. FAST_LOCAL (the accepted AI model) is downloaded by the app ("Download the AI model") from its public, pinned
+   Hugging Face commit - the exact files the
    engine checks by SHA-256 - and the AI+ model (PE-Core L/14) is downloaded with the app's own "Download AI+ model"
    code (the button on Check this PC).
 2. "Check this PC" test reels with AI and with AI+ (the real engine, semantic=required).
@@ -52,14 +53,21 @@ def main():
         print(("PASS " if ok else "FAIL ") + name + ("" if ok else f"  {detail}"), flush=True)
 
     # 1. models
-    fast = home / "models" / "FAST_LOCAL"
+    # the AI model: "Download the AI model" (the app's own download into its data folder, every file checked)
     t0 = time.time()
-    fetch(f"https://huggingface.co/{FAST_REPO}/resolve/{FAST_REV}/onnx/model_int8.onnx", fast / "model_int8.onnx")
-    for n in FAST_SUPPORT:
-        fetch(f"https://huggingface.co/{FAST_REPO}/resolve/{FAST_REV}/{n}", fast / f"support_{FAST_REV}" / n)
+    check("model_not_there_before", not ae.model_status()["ready"] and all("Archivist" not in r.parts for r in ae.model_search_roots()),
+          ae.model_search_roots())
+    for _attempt in range(2):
+        ae.model_download_start()
+        while ae._MODEL_DL["state"] == "running" and time.time() - t0 < 600:
+            time.sleep(1)
+        if ae._MODEL_DL["state"] == "done":
+            break
+        print("AI model download attempt failed:", ae._MODEL_DL.get("error"))
     timings["download_fast_local_s"] = round(time.time() - t0, 1)
     ms = ae.model_status()
-    check("fast_local_from_public_commit_is_the_exact_model", ms["ready"], ms)
+    check("fast_local_downloaded_by_the_app_into_its_data_folder", ms["ready"] and ae._MODEL_DL["state"] == "done"
+          and Path(ms["path"]).resolve().is_relative_to((home / "models").resolve()), (ms, ae._MODEL_DL))
     t0 = time.time()
     for _attempt in range(2):                       # the app's own download (one retry: a network hiccup is not a bug)
         ae.aiplus_download_start()

@@ -13,7 +13,8 @@ blind comparison → Accept → Export one MP4. Runs locally, no network, no pai
 
 **Installer** (CI artifact `MediaEngine-3.13.0-rc1-b<N>-Setup`): run `MediaEngine-3.13.0-rc1-b<N>-Setup.exe`
 (unsigned: SmartScreen → "More info" → "Run anyway"). Per-user, no administrator rights; installs into
-`D:\MediaEngine\MediaEngine-3.13.0-rc1-b<N>\` when `D:\Archivist` exists (else `%USERPROFILE%\MediaEngine\`), adds
+`D:\projects\medeng\MediaEngine-3.13.0-rc1-b<N>\` when `D:\projects` exists (else `%USERPROFILE%\MediaEngine\`;
+nothing is put at the root of D:, the owner's rule of 2026-10-14), adds
 Start-menu "MediaEngine". A newer Setup adds its own build folder next to the old one; starting it while the old
 one runs asks "Switch to …?" (never while a reel is being built). Rollback = start the old folder's
 `Start MediaEngine.vbs`. Old builds can be removed on "Check this PC". The header shows the build (e.g. `b21`). Uninstall (Settings → Apps → MediaEngine) refuses while MediaEngine runs, removes
@@ -23,9 +24,9 @@ Start-menu shortcut, data next to the builds, uninstall refused while running, t
 
 **ZIP** (same files):
 1. Download the CI artifact `MediaEngine-3.13.0-rc1-b<N>` (one ZIP with one folder of the same name).
-2. Extract it next to the stable install, e.g. `D:\MediaEngine\MediaEngine-3.13.0-rc1-b<N>\` (never over an older
+2. Extract it into its own folder, e.g. `D:\projects\medeng\MediaEngine-3.13.0-rc1-b<N>\` (never over an older
    build). Start `Start MediaEngine.vbs`. Desktop shortcut: "MediaEngine RC". Port 8775 (stable keeps 8765).
-3. Data (projects, database, exports, library) is created once in `D:\MediaEngine\MediaEngine Data\` and remembered
+3. Data (projects, database, exports, library) is created once in `D:\projects\medeng\MediaEngine Data\` and remembered
    in `%LOCALAPPDATA%\MediaEngine\data_root.txt`; every later build uses the same data.
 4. **Rollback**: Quit, start the previous build folder's `Start MediaEngine.vbs` (the shortcut follows the build that
    was started last). Delete a build folder only when it is not running.
@@ -185,8 +186,10 @@ reel from a theme; page times, database size, memory.
 
 ## AI model provenance (not in the ZIP, not in git)
 
-FAST_LOCAL is taken from the owner's stable install (`<drive>:\Archivist\sidecars\auto_edit\models`) or imported
-through "Choose model folder…"; every file is checked against the pinned hashes before use:
+FAST_LOCAL (about 30 MB) is downloaded by MediaEngine itself - "Download the AI model" on Auto Edit or Check this PC -
+from its public, pinned Hugging Face commit into its own data folder (`MediaEngine Data\models`), or copied from a
+folder ("Copy from a folder…"). No other program's folder is looked at any more (until 2026-10-14 the model was
+taken from the stable Archivist install). Every file is checked against the pinned hashes before use:
 model `844d1a46…0600` (24 281 512 bytes), semantic hook `2b15303e…2d5c`, adapter `d7ef56b5…ff36`, validator `00e14d0d…7a22`.
 Without the model only the explicitly chosen "Technical only" mode builds reels.
 

@@ -309,6 +309,15 @@ PHRASES = {
     " selection (sharpness, motion, exposure); it does not understand what happens in the video.":
         " (резкость, движение, свет); что происходит в кадре, он не понимает.",
     "Without it reels use the clearly labelled ": "Без неё ролики собираются в явно отмеченном режиме ",
+    "The AI model is not downloaded yet": "Модель ИИ ещё не скачана", "AI model is installed": "Модель ИИ установлена",
+    "Download the AI model": "Скачать модель ИИ",
+    "Without it reels use the clearly labelled": "Без неё ролики собираются в явно отмеченном режиме",
+    "selection (sharpness, motion, light). Download once: 30 MB from huggingface.co (free); it is kept in MediaEngine's own folder and every file is checked.":
+        "(резкость, движение, свет). Скачивается один раз: 30 МБ с huggingface.co (бесплатно), хранится в папке MediaEngine, каждый файл проверяется.",
+    "not downloaded yet - 'Download the AI model' below (30 MB); until then only 'Technical only' reels":
+        "ещё не скачана — кнопка «Скачать модель ИИ» ниже (30 МБ); до этого только ролики «Только техника»",
+    "files changed or incomplete - not used; download the AI model again below":
+        "файлы изменены или неполные — не используется; скачай модель ИИ ещё раз ниже",
     " selection. If you have the model (for example in an existing Archivist install), choose its folder: the exact files are verified and copied here.":
         ". Если модель есть (например, в установленном раньше Archivist, D:\\Archivist), выбери её папку: файлы проверяются на точное совпадение и копируются сюда.",
     "· source ": "· исходник ", "Revision R": "Версия R", "Horizontal ·": "Горизонтально ·", "Vertical ·": "Вертикально ·",

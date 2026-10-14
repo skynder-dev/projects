@@ -97,7 +97,7 @@ def model_root() -> Path:
     if env:
         return Path(env)
     cfg = load_config().get("auto_edit", {}) or {}
-    if cfg.get("model_root"):
+    if cfg.get("model_root") and "Archivist" not in Path(cfg["model_root"]).parts:
         return Path(cfg["model_root"])
     for cand in model_search_roots():
         if _model_valid(cand):
@@ -109,37 +109,98 @@ def model_root() -> Path:
 
 
 def model_search_roots() -> list[Path]:
-    """This install first, then a stable Archivist installed next to it (read only)."""
+    """MediaEngine's own models folder (in its data folder) first, then the program folder. No other program's
+    folders are looked at (the owner, 2026-10-14: MedEng keeps everything in its own folder)."""
     roots = [HOME / "models", HOME / "sidecars" / "auto_edit" / "models"]
     if INSTALL != HOME:
         roots += [INSTALL / "models", INSTALL / "sidecars" / "auto_edit" / "models"]
-    roots += [HOME.parent / "Archivist" / "sidecars" / "auto_edit" / "models",
-              INSTALL.parent / "Archivist" / "sidecars" / "auto_edit" / "models"]
-    if os.name == "nt":  # a stable install at the root of any local drive, e.g. D:\Archivist
-        from .platform_adapter import _is_fixed_drive
-        for letter in "CDEFGH":   # fixed disks only: a mapped network drive or an empty card reader would stall every page
-            if _is_fixed_drive(f"{letter}:\\"):
-                roots.append(Path(f"{letter}:/") / "Archivist" / "sidecars" / "auto_edit" / "models")
-        if _is_fixed_drive("D:\\"):   # the owner's project folder
-            roots += [Path("D:/projects/medeng/models"), Path("D:/projects/medeng/sidecars/auto_edit/models")]
     return roots
 
 
 def model_folder_hint() -> str | None:
-    """Where the model folder window opens: an existing Archivist install's models folder, else the install itself."""
-    for root in model_search_roots():
-        if "Archivist" in root.parts and root.is_dir():
-            return str(root)
-    if os.name == "nt":
-        from .platform_adapter import _is_fixed_drive
-        for letter in "DCEF":
-            a = Path(f"{letter}:/") / "Archivist"
-            try:
-                if _is_fixed_drive(f"{letter}:\\") and a.is_dir():
-                    return str(a)
-            except OSError:
-                pass
-    return None
+    """Where the model folder window opens (copy from a folder): the data folder."""
+    return str(HOME) if HOME.is_dir() else None
+
+
+# ---------------------------------------------------------------- AI model (FAST_LOCAL, ~30 MB)
+# Downloaded by MediaEngine itself into its own data folder (models/FAST_LOCAL) with an explicit button: the exact
+# public files of the pinned Hugging Face commit, every file checked by size and SHA-256 (the engine's contract).
+FAST_REPO = "onnx-community/TinyCLIP-ViT-8M-16-Text-3M-YFCC15M-ONNX"
+_MODEL_DL = {"state": "idle", "done": 0, "total": 0, "error": "", "file": ""}
+_MODEL_STOP = threading.Event()      # never set: the 30 MB download is not stopped half way
+
+
+def _fast_contract():
+    if str(ENGINE_DIR) not in sys.path:
+        sys.path.insert(0, str(ENGINE_DIR))
+    import validate_p11_model_contract as vc
+    return vc
+
+
+def fast_files() -> list[tuple[str, str, int, str]]:
+    """(path inside models/FAST_LOCAL, url, size, sha256) of every file of the exact model."""
+    vc = _fast_contract()
+    base = f"https://huggingface.co/{FAST_REPO}/resolve/{vc.COMMIT}/"
+    out = [(vc.MODEL_NAME, base + "onnx/" + vc.MODEL_NAME, vc.MODEL_SIZE, vc.MODEL_SHA256)]
+    out += [(vc.SUPPORT_DIR + "/" + n, base + n, size, sha) for n, (size, sha) in vc.SUPPORT.items()]
+    return out
+
+
+def model_downloading() -> bool:
+    return _MODEL_DL["state"] == "running"
+
+
+def model_download_start() -> bool:
+    with _LOCK:
+        if _MODEL_DL["state"] == "running":
+            return False
+        _MODEL_DL.update(state="running", done=0, total=0, error="", file="")
+    threading.Thread(target=_model_download, name="model-download", daemon=True).start()
+    return True
+
+
+def _model_download() -> None:
+    import http.client, socket, urllib.error
+    files = fast_files()
+    total = sum(f[2] for f in files)
+    root = HOME / "models"
+    tmp = root / "FAST_LOCAL.__download__"
+    try:
+        tmp.mkdir(parents=True, exist_ok=True)
+        if shutil.disk_usage(tmp).free < total + 200_000_000:
+            raise RuntimeError("Not enough free disk space for the AI model.")
+        _MODEL_DL.update(total=total)
+        done = 0
+        for rel, url, size, sha in files:
+            dst = tmp / rel
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            _MODEL_DL.update(file=Path(rel).name)
+            if not (dst.is_file() and dst.stat().st_size == size and sha256_file(dst) == sha):
+                part = dst.with_name(dst.name + ".part")
+                base = done
+                _fetch_resumable(url, part, size, lambda have, base=base: _MODEL_DL.update(done=base + have), stop=_MODEL_STOP)
+                if part.stat().st_size != size or sha256_file(part) != sha:
+                    part.unlink(missing_ok=True)
+                    raise RuntimeError("A downloaded file is not the exact model file (" + Path(rel).name + "). Try again.")
+                _replace_retry(part, dst)
+            done += size
+            _MODEL_DL.update(done=done)
+        _fast_contract().validate("FAST_LOCAL", tmp)
+        dst = root / "FAST_LOCAL"
+        if dst.exists():
+            shutil.rmtree(dst)
+        os.replace(tmp, dst)
+        _MODEL_CACHE.clear()
+        cfg = load_config()
+        cfg.setdefault("auto_edit", {})["model_root"] = str(root)
+        from .config import save_config
+        save_config(cfg)
+        _MODEL_DL.update(state="done", done=total, file="")
+    except Exception as exc:
+        msg = str(exc)
+        if isinstance(exc, (urllib.error.URLError, socket.timeout, ConnectionError, TimeoutError, http.client.HTTPException)):
+            msg = "No connection to huggingface.co. Check the internet connection and try again. [" + msg[:120] + "]"
+        _MODEL_DL.update(state="failed", error=msg[:300])
 
 
 def import_model(src) -> dict:
@@ -315,10 +376,11 @@ def aiplus_download_cancel() -> None:
     _AIPLUS_STOP.set()
 
 
-def _fetch_resumable(url: str, part: Path, size: int, progress, tries: int = 4) -> None:
+def _fetch_resumable(url: str, part: Path, size: int, progress, tries: int = 4, stop: threading.Event | None = None) -> None:
     """Download into `part`, continuing what is already there (HTTP Range); a dropped connection is tried again
     from where it stopped, a few times, before giving up (the part stays for the next try)."""
     import http.client, socket, urllib.error, urllib.request
+    stop = stop or _AIPLUS_STOP
     for attempt in range(tries):
         have = part.stat().st_size if part.is_file() else 0
         if have > size:
@@ -336,7 +398,7 @@ def _fetch_resumable(url: str, part: Path, size: int, progress, tries: int = 4) 
                 progress(have)
                 with part.open("ab" if resumed else "wb") as fh:
                     while True:
-                        if _AIPLUS_STOP.is_set():
+                        if stop.is_set():
                             raise RuntimeError("Download cancelled.")
                         chunk = r.read(1 << 20)
                         if not chunk:
@@ -350,7 +412,7 @@ def _fetch_resumable(url: str, part: Path, size: int, progress, tries: int = 4) 
         except (urllib.error.URLError, socket.timeout, ConnectionError, TimeoutError, OSError, http.client.HTTPException) as exc:
             if isinstance(exc, urllib.error.HTTPError) and exc.code not in (408, 429, 500, 502, 503, 504):
                 raise
-            if attempt == tries - 1 or _AIPLUS_STOP.is_set():
+            if attempt == tries - 1 or stop.is_set():
                 raise
             time.sleep(min(20, 3 * (attempt + 1)))
 
@@ -1800,7 +1862,8 @@ def system_check() -> list[dict]:
         add("FFmpeg", False, "not found")
     ms = model_status()
     add("AI model (FAST_LOCAL)", ms["ready"], ms["path"] if ms["ready"] else
-        ("not found - only 'Technical only' reels" if ms["reason"] == "MODEL_MISSING" else "files changed or incomplete - not used"))
+        ("not downloaded yet - 'Download the AI model' below (30 MB); until then only 'Technical only' reels" if ms["reason"] == "MODEL_MISSING"
+         else "files changed or incomplete - not used; download the AI model again below"))
     ap = aiplus_status()
     add("AI+ model (PE-Core L/14, optional)", ap["ready"], ap["path"] if ap["ready"] else
         ("not downloaded yet (optional) - see AI+ below" if ap["reason"] == "AIPLUS_MISSING" else "files changed or incomplete - not used"))
