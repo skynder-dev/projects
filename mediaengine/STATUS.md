@@ -1,6 +1,6 @@
 # MediaEngine status
 
-Updated: 2026-10-13 (UTC). Costs so far: $0 (GitHub-hosted Actions minutes only).
+Updated: 2026-10-14 (UTC). Costs so far: $0 (GitHub-hosted Actions minutes only).
 
 ## Baseline (verified on the owner PC, D:\Archivist) — unchanged
 
@@ -66,6 +66,11 @@ What a user can do (code: `app/archivist/auto_edit.py`, `auto_edit_web.py`, engi
   no frame looked at again. **Library → Find by theme (AI+)**: each video indexed once from its preview frames,
   instant search (4 ms in CI), opens at the best moment, "Make a reel about this theme"; Private / rejected never
   indexed or shown. Check this PC shows the AI+ speed measured on the PC.
+  **Prepare AI+ for the whole Library (2026-10-14)**: one button does the search index and then, in the engine
+  (`p13_prepare_scout.py`, below normal priority, overnight-safe), what AI+ reels need for every Library video, into
+  the shared cache every AI+ build reads: a later AI+ reel / theme from them looks at no frame (CI: `scout_embed_s` 0).
+  Pauses while a reel is built, Stop, continues where it stopped, never looks at Private videos (re-read before every
+  video), camcorder streams / odd sizes / recordings without a length left to the reel.
   Measured (model lab, public photos): COCO photo↔caption — AI+ finds the right photo for a caption 85.5 % (AI 60.2 %;
   original fp32 model 85.8 %, so int8 loses ~nothing); plain landscape scenes — no advantage (86 % vs 89 %).
   Speed (CI runners): 0.4–2.5 s per frame looked at depending on the CPU, up to 48 frames per video; threads tuned
@@ -75,6 +80,11 @@ What a user can do (code: `app/archivist/auto_edit.py`, `auto_edit_web.py`, engi
 - **Own music and a title (optional, 2026-10-13)**: "Music and title" on the new-reel page and for every variant —
   title + second line for the first 3 s, your own song (with the videos' quieter sound or only music; loudness-
   normalised, fades, seamless repeats), all in the reel's single final encode; nothing set = the reel as before.
+  **Cuts on the beat (2026-10-14)**, on by default with own music: the beat is found on the PC (`p13_beats.py`), every
+  cut and the end move to the beat nearest to their planned place (the reel stays within ~1.5 beats of its length),
+  the final encode takes exactly the frames to the beat; no clear beat (drone, speech, a jingle) = cuts unchanged.
+  CI: drum songs in AAC (also a short one that repeats) - every cut within 40 ms of a true beat in the result, the
+  picture and the reel's sound; real Commons music against librosa: workflow `mediaengine-realmusic`.
 - **Library checked like a user** (new `tests/library_flow_check.py`, Windows CI, data folder with Cyrillic letters):
   add a folder on Import → every video found → Import + analyse → Library with thumbnails, lengths and item pages →
   smart clips → Private (leaves the Library, original untouched, never in a reel) → archive copy → reject; Library

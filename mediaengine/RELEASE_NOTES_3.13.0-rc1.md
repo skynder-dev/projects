@@ -115,9 +115,14 @@ celebrations, pets, action; bad: boring, blurry, accidental, dark, dashboard, no
   are compared across all videos; when fewer than 3 match, the reel says so and fills up with the best others.
 - The text part of the model is kept as fixed numbers on disk after the first use: later builds do not open it at
   all (less memory, faster start; same rankings - checked in CI).
-- **Library → "Find by theme (AI+)"**: "Prepare the search" looks at the 8 preview frames of each Library video once
-  (Private, rejected and excluded videos are never included); every search after that is instant and opens the video
-  at its best moment. The search waits while a reel is being built (one AI+ model in memory at a time).
+- **Library → "Find by theme (AI+)"**: "Prepare AI+ for the whole Library" first looks at the 8 preview frames of
+  each Library video (Private, rejected and excluded videos are never included) - every search after that is instant
+  and opens the video at its best moment - and then, in the engine below normal priority, at what an AI+ reel needs
+  (about one frame per second, at most 48 per video, into the shared cache every AI+ build uses): a later AI+ reel or
+  theme with these videos looks at no frame again. It can run overnight (Windows does not go to sleep meanwhile),
+  shows "search / for reels: N / M" with the time left, has a Stop button, waits while a reel is being built (one AI+
+  model at a time; the engine step is ended and started again afterwards) and continues where it stopped. Camcorder
+  streams and pictures with an odd size are left to the reel itself (the engine analyses a converted copy of them).
   "Make a reel about this theme" opens the new-reel page with the matching videos, AI+ and the theme chosen.
 - Safety: a link opened from outside the app (e-mail, chat, a document) can no longer make MediaEngine open a
   network share (Windows would send its sign-in to that server); pasting a network path in the app still works.
@@ -155,6 +160,16 @@ asked for it, 2026-10-13). Titles are drawn for that size too. Checked in CI (ro
 - Changing only the music or the title is a quick new version (no new analysis); the editor and "choose again" keep
   a version's music, title and theme. A missing, silent or protected music file is refused before the build.
   Titles and music paths are not put into support bundles.
+- **Cuts on the beat** (on by default with own music, a checkbox to switch it off): the music's beat is found on the
+  PC (`engine_p11/p13_beats.py`: onset strength of 40 log-spaced bands, tempo 55–140 BPM - a fast song at half its
+  tempo, so every cut is still on a beat - beats by dynamic programming, beat or off-beat decided by the kick drum
+  and the bass), and every cut (a hard cut, or the middle of a dissolve) and the reel's end are moved to the nearest
+  beat - at most about one beat away from the plan, never longer than the moment's clip; a moment the user trimmed
+  keeps its exact length. The final encode takes exactly the frames up to the beat. Music without a clear beat (a
+  drone, speech, quiet ambient music) leaves the cuts where they were, with a note. The review shows "cuts on the
+  beat of the music: N/M (BPM)". CI (synthetic): a drum song in AAC under a 20 s reel of 7 videos - every cut within
+  40 ms of a true beat in the result, in the picture itself and in the reel's own sound; real music from Commons
+  against librosa's beat tracker: own workflow `mediaengine-realmusic`.
 
 ## Faster AI+ for several reels from the same videos
 
@@ -207,3 +222,5 @@ time (measured).
 - Technical-only selection is decided on the accepted 960-px previews; the reel itself is cut from the originals.
 - `/media` routes serve Private items to the local owner UI (loopback only), as in 3.12.42.
 - Camcorder `.MTS` reading depends on the bundled FFmpeg build (checked in CI on Windows).
+- Cuts on the beat: checked with synthetic drum songs and against librosa on public Commons music; not yet judged by a
+  person on the owner's own songs. A song with a very free rhythm may show "no clear beat" (cuts unchanged).

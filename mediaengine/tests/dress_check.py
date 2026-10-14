@@ -7,6 +7,8 @@ title (Cyrillic) and a second line, with own music (a 1 kHz tone shorter than th
 modes, and a one-moment reel with both. Checks: the title is in the picture at the start and gone later, the reel's
 length is unchanged, sound and picture end together, "music only" is the music (1 kHz), "music + sound" has both,
 the music fades in, a missing or non-audio music file is a clear error, nothing set = exactly the reel without it.
+Cuts on the beat: a drum song (AAC, known beat times) under a 20 s reel of 7 videos - every cut where a beat is, in
+the result, in the picture and in the reel's own sound; a tone (no beat) or beat_sync off leaves the cuts unchanged.
 """
 from __future__ import annotations
 
@@ -19,6 +21,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 R3 = ROOT / "app" / "archivist" / "engine_p11"
 sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(R3))
 from media_measure import av_durations, ffmpeg_exe  # noqa: E402
 
 
@@ -64,12 +67,12 @@ def main():
     text = work / "notes.txt"
     text.write_text("not music", encoding="utf-8")
 
-    def run(out, dress=None, target=10.0):
+    def run(out, dress=None, target=10.0, folder=None, work_dir=None):
         dfile = ""
         if dress is not None:
             dfile = str(work / (out + ".dress.json"))
             Path(dfile).write_text(json.dumps(dress, ensure_ascii=False), encoding="utf-8")
-        a = argparse.Namespace(input_dir=str(src), input_list="", output_dir=str(work / out), work_dir=str(work / "w"),
+        a = argparse.Namespace(input_dir=str(folder or src), input_list="", output_dir=str(work / out), work_dir=str(work_dir or (work / "w")),
                                runtime_dir=str(R3), target_seconds=target, audio="auto", semantic="off", semantic_model="fast_local",
                                theme="", profile="9x16", resolution="standard", progress_file="", exclude_events="", edits="",
                                skip_sha_file="", dress=dfile)
@@ -150,9 +153,121 @@ def main():
             err = str(exc)
         check(f"music_{name}_is_a_clear_error", err.startswith(code), err)
     check("music_file_unchanged", music.stat().st_size > 0 and subprocess.run([ff, "-v", "error", "-i", str(music), "-f", "null", "-"]).returncode == 0)
+    # a tone has no beat: the cuts stay exactly where they were, and the result says why
+    check("music_without_a_clear_beat_keeps_the_cuts", "MUSIC_NO_CLEAR_BEAT" in ro["warnings"]
+          and [x["reel_out_s"] for x in ro["segments"]] == [x["reel_out_s"] for x in rb["segments"]], (ro["warnings"], ro.get("beat_sync")))
+    beat_part(work, fx, ff, run, check)
     app_part(work, src, music, check)
     print(json.dumps({"passed": sum(checks), "total": len(checks)}))
     return 0 if all(checks) else 1
+
+
+def drum_song(path: Path, ff: str, bpm: float, offset: float, seconds: float) -> list[float]:
+    """A drum pattern (kick, snare, hi-hat between the beats) over quiet chords and a little noise, saved as AAC.
+    Returns the true beat times."""
+    sr = 48000
+    rng = np.random.default_rng(11)
+    n = int(seconds * sr)
+    t = np.arange(n) / sr
+    x = 0.08 * np.sin(2 * np.pi * 220 * t) + 0.06 * np.sin(2 * np.pi * 277 * t) + 0.05 * np.sin(2 * np.pi * 330 * t)
+    f = np.fft.rfft(rng.standard_normal(n)); f /= np.maximum(1, np.arange(len(f))) ** 0.5
+    bed = np.fft.irfft(f, n); x += 0.02 * bed / np.abs(bed).max()
+    per = 60.0 / bpm
+    beats, b, k = [], offset, 0
+    while b < seconds - 0.3:
+        i = int(b * sr); m = np.arange(min(int(0.25 * sr), n - i))
+        if k % 2 == 0:
+            x[i:i + len(m)] += 0.6 * np.sin(2 * np.pi * (55 + 70 * np.exp(-m / (0.03 * sr))) * m / sr) * np.exp(-m / (0.09 * sr))
+        else:
+            x[i:i + len(m)] += 0.35 * rng.standard_normal(len(m)) * np.exp(-m / (0.05 * sr))
+        j = int((b + per / 2) * sr); h = int(0.04 * sr)
+        if j + h < n:
+            x[j:j + h] += 0.08 * rng.standard_normal(h) * np.exp(-np.arange(h) / (0.008 * sr))
+        beats.append(round(b, 4)); b += per; k += 1
+    pcm = (np.clip(x * 0.8, -1, 1) * 32767).astype(np.int16)
+    raw = path.with_suffix(".raw")
+    raw.write_bytes(np.stack([pcm, pcm], 1).tobytes())
+    subprocess.run([ff, "-v", "error", "-y", "-f", "s16le", "-ar", str(sr), "-ac", "2", "-i", str(raw), "-c:a", "aac", "-b:a", "192k",
+                    str(path)], check=True)
+    raw.unlink()
+    return beats
+
+
+def cut_times(res) -> list[float]:
+    """Where the reel's cuts are, from its result: the middle of each dissolve (or the hard cut), and the end."""
+    segs, tr = res["segments"], res["rendered_transition_s"]
+    return [float(s["reel_out_s"]) - (float(tr[i]) / 2.0 if i < len(tr) else 0.0) for i, s in enumerate(segs)]
+
+
+def picture_cuts(ff, video, expected, fps=30):
+    """The cuts as seen in the picture, near each expected cut: the burst of frame-to-frame change (one frame for a
+    hard cut, the frames of a dissolve), its middle. A hard cut at c is measured at c - half a frame."""
+    w, h = 64, 112
+    raw = subprocess.run([ff, "-v", "error", "-i", str(video), "-vf", f"scale={w}:{h}", "-f", "rawvideo", "-pix_fmt", "gray", "-"],
+                         capture_output=True).stdout
+    fr = np.frombuffer(raw, np.uint8).reshape(-1, h, w).astype(np.float32)
+    d = np.abs(np.diff(fr, axis=0)).mean(axis=(1, 2))      # d[k]: change into frame k+1 (shown at (k+1)/fps)
+    out = []
+    for c in expected:
+        i0, i1 = max(0, int((c - 0.4) * fps)), min(len(d), int((c + 0.4) * fps))
+        seg = d[i0:i1]
+        if seg.size < 3:
+            out.append(None); continue
+        base, top = float(np.median(seg)), float(seg.max())
+        k = int(np.argmax(seg))
+        lo = hi = k
+        while lo > 0 and seg[lo - 1] > base + 0.5 * (top - base):
+            lo -= 1
+        while hi < len(seg) - 1 and seg[hi + 1] > base + 0.5 * (top - base):
+            hi += 1
+        into = (np.arange(i0 + lo, i0 + hi + 1) + 1) / fps
+        out.append(float(into.mean() - 0.5 / fps))
+    return out
+
+
+def beat_part(work, fx, ff, run, check):
+    """Own music with a clear beat: every cut on a beat of the music (where the picture really changes, and where the
+    music really is in the finished reel), the reel's length about the same, sound and picture end together; switched
+    off: the cuts stay where they were."""
+    folder = work / "seven"
+    shutil.copytree(fx / "seven", folder)
+    song = work / "Моя музыка" / "барабаны 118.m4a"
+    truth = np.array(drum_song(song, ff, 118.0, 0.27, 40.0))
+    plain, rp = run("beat_plain", None, 20.0, folder, work / "w7")
+    off, roff = run("beat_off", {"music": str(song), "music_mode": "music", "beat_sync": False}, 20.0, folder, work / "w7")
+    check("beat_sync_off_keeps_the_cuts", "beat_sync" not in roff and [x["reel_out_s"] for x in roff["segments"]] == [x["reel_out_s"] for x in rp["segments"]],
+          roff.get("beat_sync"))
+    on, ron = run("beat_on", {"music": str(song), "music_mode": "music"}, 20.0, folder, work / "w7")
+    bs = ron.get("beat_sync") or {}
+    check("beat_found_in_the_music", bs.get("clear") and abs(float(bs.get("bpm") or 0) - 118.0) < 1.0, bs)
+    cuts = cut_times(ron)
+    offs = [float(np.min(np.abs(truth - c))) for c in cuts]
+    on_beat = sum(1 for o in offs if o <= 0.04)
+    check("cuts_on_the_beat", len(cuts) >= 3 and on_beat >= len(cuts) - 1 and bs.get("cuts_on_beat") >= len(cuts) - 1, (cuts, offs, bs))
+    seen = picture_cuts(ff, on, cuts[:-1])
+    pic = [abs(a - b) for a, b in zip(seen, cuts[:-1]) if a is not None]
+    check("picture_changes_on_the_beat", len(pic) == len(cuts) - 1 and max(pic) <= 0.04, (seen, cuts[:-1]))
+    # the music in the finished reel is where its beats were found (no delay from decoding or loudness filters)
+    import p13_beats as beatmod
+    wav = work / "beat_on_audio.wav"
+    subprocess.run([ff, "-v", "error", "-y", "-i", str(on), "-map", "0:a:0", "-ac", "2", "-ar", "48000", "-c:a", "pcm_s16le", str(wav)], check=True)
+    heard = np.array(beatmod.detect(wav)["beats"])
+    lag = [float(np.min(np.abs(truth - h))) for h in heard[2:-2]] if heard.size > 4 else [1.0]
+    check("music_in_the_reel_is_on_time", float(np.median(lag)) <= 0.015, (float(np.median(lag)), heard[:6], truth[:6]))
+    v, a = av_durations(on, ff)
+    check("beat_reel_length_kept_sound_ends_with_picture", a is not None and abs(v - a) <= 0.05 and abs(v - float(rp["actual_duration_s"])) <= 1.0,
+          (v, a, rp["actual_duration_s"]))
+    # a song shorter than the reel repeats - so do its beats: the cuts follow them into the repeats
+    short = work / "Моя музыка" / "барабаны 100 короткая.m4a"
+    t_short = drum_song(short, ff, 100.0, 0.15, 7.0)
+    loop, rl = run("beat_loop", {"music": str(short), "music_mode": "mix"}, 20.0, folder, work / "w7")
+    stated = 7.0
+    rep = np.array([b + k * stated for k in range(5) for b in t_short])
+    cuts_l = cut_times(rl)
+    offs_l = [float(np.min(np.abs(rep - c))) for c in cuts_l]
+    vl, al_ = av_durations(loop, ff)
+    check("beats_follow_a_repeated_short_song", (rl.get("beat_sync") or {}).get("clear") and sum(o <= 0.04 for o in offs_l) >= len(cuts_l) - 1
+          and al_ is not None and abs(vl - al_) <= 0.05, (cuts_l, offs_l, rl.get("beat_sync")))
 
 
 def app_part(work, src, music, check):
@@ -175,7 +290,8 @@ def app_part(work, src, music, check):
 
     with app.test_client() as c:
         page = c.get("/auto/new", query_string={"folder": str(src)}, headers=H).data.decode("utf-8", "replace")
-        check("setup_offers_music_and_title", "name='reel_title'" in page and "name='music'" in page and "data-pick-music" in page)
+        check("setup_offers_music_and_title", "name='reel_title'" in page and "name='music'" in page and "data-pick-music" in page
+              and "name='beat_sync' value='1' checked" in page)
         c.post("/lang", data={"lang": "ru"}, headers=H)
         ru = c.get("/auto/new", query_string={"folder": str(src)}, headers=H).data.decode("utf-8", "replace")
         c.post("/lang", data={"lang": "en"}, headers=H)
@@ -196,7 +312,18 @@ def app_part(work, src, music, check):
         if not rev1:
             return
         pg = c.get(f"/auto/p/{pid}", headers=H).data.decode("utf-8", "replace")
-        check("review_names_title_and_music", "Наше лето" in pg and music.name in html.unescape(pg))
+        check("review_names_title_and_music", "Наше лето" in pg and music.name in html.unescape(pg)
+              and "the music has no clear beat, so the cuts were left where they were" in pg)
+        # cuts on the beat switched off (the checkbox is not sent when off): kept in the settings, not asked of the engine
+        before = {x["id"] for x in ae.project(pid)["jobs"]}
+        c.post(f"/auto/p/{pid}/variant", data={"base_revision_id": rev1["id"], "length": "15", "format": "vertical", "sound": "auto",
+                                               "mode": "technical", "reel_title": "Наше лето", "reel_subtitle": "июль 2026",
+                                               "music": str(music), "music_mode": "mix", "beat_sync_shown": "1"}, headers=H)
+        jb = [x for x in ae.project(pid)["jobs"] if x["id"] not in before]
+        jb = wait(jb[0]["id"]) if jb else {"status": "missing"}
+        revb = ae.revision(jb.get("revision_id") or 0) if jb.get("status") == "done" else None
+        check("beat_sync_off_from_the_form", revb and revb["settings"].get("beat_sync") is False and "beat_sync" not in revb["result"]
+              and "MUSIC_NO_CLEAR_BEAT" not in revb["result"]["warnings"], (jb.get("status"), jb.get("error"), revb and revb["settings"]))
         # only the music changes: a new version without a new analysis
         before = {x["id"] for x in ae.project(pid)["jobs"]}
         c.post(f"/auto/p/{pid}/variant", data={"base_revision_id": rev1["id"], "length": "15", "format": "vertical", "sound": "auto",

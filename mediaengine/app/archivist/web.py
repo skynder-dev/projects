@@ -196,7 +196,14 @@ def _spawn_launcher(mode):
     spawn_app_launcher(INSTALL, mode)
 
 
-def _exit_soon(): time.sleep(.8); os._exit(0)
+def _exit_soon():
+    time.sleep(.8)
+    try:                                  # the AI+ preparation's engine step ends with the app
+        from . import aiplus_library as _al
+        _al.shutdown()
+    except Exception:
+        pass
+    os._exit(0)
 
 
 _ALLOWED_LOOPBACK_HOSTS = frozenset((f'127.0.0.1:{APP_PORT}',f'localhost:{APP_PORT}'))
@@ -305,7 +312,7 @@ def create_app():
         except Exception:
             idx=False
         if idx and not force:
-            return jsonify({'ok':False,'error':"The Library search by theme is being prepared"}),409
+            return jsonify({'ok':False,'error':"AI+ is being prepared for the Library (it continues next time)"}),409
         if mode!='stop': _spawn_launcher(mode)
         threading.Thread(target=_exit_soon,daemon=True).start(); return jsonify({'ok':True})
 
@@ -1250,7 +1257,8 @@ pollConvert();"""
         return gallery('library')
 
     def _aiplus_search_card():
-        """Library: search the videos by a theme with the AI+ model (only when AI+ is installed)."""
+        """Library: search the videos by a theme with the AI+ model, and 'Prepare AI+ for the whole Library' (the search
+        and what AI+ reels need, ahead of time - it can run overnight). Only when AI+ is installed."""
         try:
             from . import aiplus_library as al, auto_edit as _ae
             st=al.status()
@@ -1259,21 +1267,33 @@ pollConvert();"""
         if not st["model_ready"]:
             return ""
         opts="".join(f"<option value='{k}'>{e(v)}</option>" for k,v in _ae.THEMES.items())
-        missing=1 if al.needs_preparing(st) else 0
-        prep=(f"<span class='muted'>Ready for {st['indexed']} of {st['videos']} video(s).</span> "
-              f"<button type='button' class='btn2' id='apIdx' {'disabled' if st['state']=='running' else ''}>Prepare the search</button>"
-              f"<span class='muted' id='apIdxMsg'></span>") if missing>0 or st["state"]=="running" else ""
+        missing=al.needs_preparing(st)
+        running=st["state"]=="running"
+        failed=(f"<div class='errbox' style='margin-top:8px'>{e(st['error'])}</div>") if st["state"]=="failed" and st.get("error") else ""
+        if missing or running:
+            prep=failed+(f"<div class='row' style='margin-top:8px'><span class='muted'>Search ready for {st['indexed']} of {st['videos']} video(s).</span> "
+                  f"<span class='muted'>Reels ready for {st['reels_ready']} of {st['reels_videos']} video(s).</span> "
+                  f"<button type='button' class='btn2' id='apIdx' {'disabled' if running else ''}>Prepare AI+ for the whole Library</button>"
+                  f"<button type='button' class='btn2' id='apStop' style='{'' if running else 'display:none'}'>Stop preparing</button>"
+                  f"<span class='muted' id='apIdxMsg'></span></div>"
+                  "<div class='muted small' style='margin-top:6px;white-space:normal'>The computer looks at every video once: it can run overnight, "
+                  "waits while a reel is being built and continues where it stopped. After that every search is instant and AI+ reels are built much faster.</div>")
+        elif st["videos"]:
+            prep="<div class='muted small' style='margin-top:6px'>AI+ is prepared for the whole Library.</div>"
+        else:
+            prep=""
         return (f"<div class='card' style='margin-bottom:12px'><form method='get' action='/library/theme' class='row'>"
-                f"<b>Find by theme (AI+)</b><select name='theme'>{opts}</select><button>Find</button>{prep}</form>"
-                + ("<div class='muted small' style='margin-top:6px;white-space:normal'>The AI+ model looks at the preview frames of each video once "
-                   "(about 10-20 s per video on a normal PC); after that every search is instant.</div>" if missing>0 else "")
-                + "<script>(function(){const b=document.getElementById('apIdx');if(!b)return;const m=document.getElementById('apIdxMsg');"
+                f"<b>Find by theme (AI+)</b><select name='theme'>{opts}</select><button>Find</button></form>{prep}"
+                + "<script>(function(){const b=document.getElementById('apIdx');if(!b)return;const m=document.getElementById('apIdxMsg');const s=document.getElementById('apStop');"
+                  "function left(t){if(!t)return'';return t>5400?' · about '+Math.round(t/3600)+' h left':' · about '+Math.max(1,Math.round(t/60))+' min left'}"
                   "async function poll(){try{const r=await fetch('/api/aiplus/library-index',{cache:'no-store'});const x=await r.json();"
-                  "if(x.state==='running'){b.disabled=true;m.textContent=' '+x.done+' / '+x.total+(x.waiting?' · waiting until the reel is built':'')+(x.eta_s?' · about '+Math.max(1,Math.round(x.eta_s/60))+' min left':'');setTimeout(poll,1500)}"
-                  "else{b.disabled=false;m.textContent=x.error||'';if(x.state==='done')location.href='/library?aiplus='+Date.now()}}catch(e){setTimeout(poll,3000)}}"
+                  "if(x.state==='running'){b.disabled=true;s.style.display='';m.textContent=' '+(x.phase==='reels'?'For reels: ':'Search: ')+x.done+' / '+x.total"
+                  "+(x.waiting?' · waiting until the reel is built':'')+(x.waiting?'':left(x.eta_s));setTimeout(poll,1500)}"
+                  "else{b.disabled=false;s.style.display='none';m.textContent=x.error||'';if(x.state==='done')location.href='/library?aiplus='+Date.now()}}catch(e){setTimeout(poll,3000)}}"
                   "b.onclick=async()=>{b.disabled=true;const r=await fetch('/api/aiplus/library-index',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});"
                   "const x=await r.json();if(!x.ok){m.textContent=x.error||'';b.disabled=false;return}poll()};"
-                  + ("poll();" if st["state"]=="running" else "") + "})();</script></div>")
+                  "s.onclick=async()=>{s.disabled=true;await fetch('/api/aiplus/library-index',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({stop:true})});s.disabled=false};"
+                  + ("poll();" if running else "") + "})();</script></div>")
 
     @app.get('/library/theme')
     def library_theme():
@@ -1305,7 +1325,7 @@ pollConvert();"""
         if st['indexed']<st['videos']:
             note=(f"<div class='callout card' style='margin-bottom:12px'><span>Only {st['indexed']} of {st['videos']} video(s) are prepared for the search.</span> "
                   f"<a href='/library'>Prepare the rest</a> <span>on the Library page.</span></div>")
-        elif al.needs_preparing(st):
+        elif al.search_needs_preparing(st):
             note=("<div class='callout card' style='margin-bottom:12px'><span>The search needs preparing again (new themes).</span> "
                   "<a href='/library'>Prepare the rest</a> <span>on the Library page.</span></div>")
         else:

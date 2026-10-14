@@ -424,6 +424,47 @@ def main():
     from archivist.platform_adapter import keep_awake
     with keep_awake() as k:
         check("keep_awake set on Windows", k.ok == (os.name == "nt"), k.ok)
+    # cuts on the beat (engine_p11/p13_beats.py): a click track's beats to within 10 ms, a jingle or a tone has no
+    # beat (and never an error), and moving every cut to a beat keeps the reel within about a beat and a half of
+    # its planned length at any tempo, also when the moments cannot get longer
+    import wave
+    import numpy as np
+    sys.path.insert(0, str(ROOT / "app" / "archivist" / "engine_p11"))
+    import p13_beats as beats
+    bd = work / "beats"; bd.mkdir(parents=True, exist_ok=True)
+
+    def wav(path, x, sr=48000):
+        y = (np.clip(x, -1, 1) * 32767).astype(np.int16)
+        with wave.open(str(path), "wb") as w:
+            w.setnchannels(2); w.setsampwidth(2); w.setframerate(sr); w.writeframes(np.stack([y, y], 1).tobytes())
+    sr = 48000
+    clicks = np.zeros(20 * sr, np.float32)
+    truth = [0.31 + k * 0.6 for k in range(32)]
+    for t in truth:
+        i = int(t * sr); n = np.arange(480)
+        clicks[i:i + 480] += 0.8 * np.sin(2 * np.pi * 1500 * n / sr) * np.exp(-n / 96.0)
+    wav(bd / "clicks.wav", clicks)
+    r = beats.detect(bd / "clicks.wav")
+    err = [min(abs(b - t) for b in r["beats"]) for t in truth[2:-2]] if r["beats"] else [1.0]
+    check("beats: click track found to within 10 ms", r["clear"] and abs(r["bpm"] - 100) < 1 and max(err) <= 0.01, (r["bpm"], max(err)))
+    for name, x in (("a 0.3 s jingle", clicks[: int(0.3 * sr)]), ("a 0.05 s blip", clicks[: int(0.05 * sr)]),
+                    ("a 10 s tone", 0.3 * np.sin(2 * np.pi * 440 * np.arange(10 * sr) / sr))):
+        wav(bd / "short.wav", x.astype(np.float32))
+        try:
+            ok = beats.detect(bd / "short.wav")["clear"] is False
+        except Exception as exc:
+            ok = exc
+        check(f"beats: {name} has no beat and is no error", ok is True, ok)
+    worst = 0.0
+    rng = np.random.default_rng(3)
+    for bpm in (55, 70, 100, 118, 140):
+        bt = [0.2 + k * 60.0 / bpm for k in range(600)]
+        for room in (0.5, 0.0):
+            for durs in ([5.0] * 13, list(rng.uniform(2.5, 6.0, 13))):
+                tr = [8 / 30] * 12
+                pl = beats.plan(durs, tr, [x + room for x in durs], bt)
+                worst = max(worst, abs(sum(u for u, _ in pl) - sum(durs)) - beats.max_offset(bt))
+    check("beats: the reel stays within a beat and a half of its planned length", worst <= 0.05, worst)
     print({"passed": sum(checks), "total": len(checks)})
     return 0 if all(checks) else 1
 

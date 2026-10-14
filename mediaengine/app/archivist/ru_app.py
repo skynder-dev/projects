@@ -279,6 +279,12 @@ APP_PHRASES: dict[str, str] = {
     "Rights source": "Источник", "Rights notes": "Заметки о правах", "Place / venue": "Место / площадка", "Policy/source URL": "Ссылка на правила",
     "Notes": "Заметки", "Save rights status": "Сохранить права", "Rejected": "Отклонённые (Rejected)", "Remove source": "Убрать источник", "Find by theme (AI+)": "Найти по теме (ИИ+)", "Find": "Найти",
     "Prepare the search": "Подготовить поиск", "Find by theme": "Поиск по теме", "best moment": "лучший момент",
+    "Prepare AI+ for the whole Library": "Подготовить ИИ+ для всей Библиотеки", "Stop preparing": "Остановить подготовку",
+    "AI+ is prepared for the whole Library.": "ИИ+ подготовлен для всей Библиотеки.",
+    "The AI+ preparation ended unexpectedly. Press the button again: it continues where it stopped.":
+        "Подготовка ИИ+ неожиданно прервалась. Нажми кнопку ещё раз — она продолжится с того же места.",
+    "The computer looks at every video once: it can run overnight, waits while a reel is being built and continues where it stopped. After that every search is instant and AI+ reels are built much faster.":
+        "Компьютер один раз просматривает каждое видео: можно оставить на ночь, на время сборки ролика подготовка ждёт и потом продолжается с того же места. После этого любой поиск мгновенный, а ролики с ИИ+ собираются намного быстрее.",
     "The AI+ model looks at the preview frames of each video once (about 10-20 s per video on a normal PC); after that every search is instant.":
         "Модель ИИ+ один раз смотрит кадры превью каждого видео (примерно 10–20 с на видео на обычном компьютере); после этого любой поиск мгновенный.",
     "No video matches this theme.": "Ни одно видео не подходит под эту тему.", "Library · AI+": "Библиотека · ИИ+", "Make a reel about this theme": "Собрать ролик на эту тему", "Choose a theme.": "Выбери тему.",
@@ -432,6 +438,9 @@ APP_PHRASES: dict[str, str] = {
 
 APP_PATTERNS: list[tuple[str, str]] = [
     (r"Ready for (\d+) of (\d+) video\(s\)\.", r"Готово для \1 из \2 видео."),
+    (r"Search ready for (\d+) of (\d+) video\(s\)\.", r"Поиск готов для \1 из \2 видео."),
+    (r"Reels ready for (\d+) of (\d+) video\(s\)\.", r"Для роликов готово \1 из \2 видео."),
+    (r"AI\+ preparation failed: (.*)", r"Подготовка ИИ+ не удалась: \1"),
     (r"The best (\d+) of (\d+) are shown\.", r"Показаны лучшие \1 из \2."),
     (r"AI\+ speed on this PC: (\d+)\.(\d+) s per frame\. The first analysis looks at up to 48 frames of each video \(about one per second\): "
      r"about (\d+) s for a video of a minute or longer\. Later builds reuse it\.",

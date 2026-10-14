@@ -356,9 +356,7 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
     v7=load_module("medeng_event_semantic_v7",runtime/"medeng_event_semantic_v7.py")
     here=Path(hook.__file__)
     # what the model saw depends on the adapter, the contract, the scout step and the model - not on the ranking
-    code_sha="|".join(sha256_file(here.with_name(n)) for n in ("p13_pe_core_adapter.py","p13_pe_core_contract.py"))
-    model_key="|".join(v[2] for v in pc.MODEL_FILES.values())
-    scout_key=hashlib.sha256((code_sha+"|"+hook.SCOUT_VERSION+"|"+model_key).encode()).hexdigest()
+    scout_key=hook.scout_key()
     tkey=theme or "general"
     rank_key=scout_key+"|"+sha256_file(here)+"|"+hook.prompt_key(theme)
     SEM_TIMING.clear(); SEM_TIMING.update(scout_embed_s=0.0,rank_s=0.0,clips_s=0.0,clips_cut=0,clips_cached=0,score_s=0.0)
@@ -410,16 +408,7 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
                 except Exception:
                     report=None
             if report is None:
-                sj=scout_dir/(row["sha256"]+".json"); sn=scout_dir/(row["sha256"]+".npy")
-                info=emb=None
-                if sj.is_file() and sn.is_file():
-                    try:
-                        obj=json.loads(sj.read_text())
-                        if obj.get("source_sha256")==row["sha256"] and obj.get("key")==scout_key:
-                            info=obj["info"]; emb=np.load(sn).astype(np.float32)
-                            if emb.shape[0]!=len(info["rows"]): info=emb=None
-                    except Exception:
-                        info=emb=None
+                info,emb=hook.read_scout(scout_dir,row["sha256"],scout_key)
                 if info is None:
                     if state["scorer"] is None or state["scorer"]._vision is None:
                         progress("analyze",idx,len(input_rows),"loading the AI+ model")
@@ -428,11 +417,7 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
                     t_=time.perf_counter()
                     info,emb=hook.scout(v7,sc,Path(row["path"]),v52.FFMPEG,os.environ.get("MEDENG_FFPROBE","ffprobe"))
                     SEM_TIMING["scout_embed_s"]+=time.perf_counter()-t_
-                    tag=f"{os.getpid()}.{time.time_ns()}"       # own temp names: two builds may analyse the same video
-                    tmp=scout_dir/(row["sha256"]+f".{tag}.tmp.npy"); np.save(tmp,emb.astype(np.float16)); os.replace(tmp,sn)
-                    tj=scout_dir/(row["sha256"]+f".{tag}.tmp.json")
-                    tj.write_text(json.dumps({"source_sha256":row["sha256"],"key":scout_key,"info":info},indent=2,sort_keys=True)+"\n",encoding="utf-8")
-                    os.replace(tj,sj)
+                    hook.write_scout(scout_dir,row["sha256"],scout_key,info,emb)
                 t_=time.perf_counter()
                 report=hook.rank(v7,texts,Path(row["path"]),info,emb,theme,v52.FFMPEG)
                 SEM_TIMING["rank_s"]+=time.perf_counter()-t_
@@ -890,12 +875,13 @@ def music_wav(ffmpeg,music,seconds,out):
     return n/48000.0
 
 def load_dress(path,ffmpeg):
-    """--dress JSON {title, subtitle, music, music_mode}: nothing set = None (the reel is exactly as without it)."""
+    """--dress JSON {title, subtitle, music, music_mode, beat_sync}: nothing set = None (the reel is exactly as without it).
+    beat_sync (default on): with own music, the cuts are placed on its beats (p13_beats)."""
     if not path: return None
     d=json.loads(Path(path).read_text(encoding="utf-8"))
     clean=lambda t:" ".join(str(t or "").replace("\x00"," ").split())[:80]
     out={"title":clean(d.get("title")),"subtitle":clean(d.get("subtitle")),"music":str(d.get("music") or "").strip(),
-         "music_mode":"music" if d.get("music_mode")=="music" else "mix"}
+         "music_mode":"music" if d.get("music_mode")=="music" else "mix","beat_sync":d.get("beat_sync",True) is not False}
     if out["music"]:
         p=Path(out["music"])
         if not p.is_file(): raise RuntimeError("MUSIC_FILE_MISSING")
@@ -1016,7 +1002,7 @@ def dress_filters(dress,first_input,vin,ain,total):
         k+=1
     return args,filters,vout,aout
 
-def render_dissolve_block(v52,segs,durs,trans,out,dress=None):
+def render_dissolve_block(v52,segs,durs,trans,out,dress=None,frames=None):
     out=Path(out); out.parent.mkdir(parents=True,exist_ok=True)
     args=[v52.FFMPEG,"-hide_banner","-loglevel","error","-y"]
     for p in segs: args += ["-i",str(p)]
@@ -1028,7 +1014,11 @@ def render_dissolve_block(v52,segs,durs,trans,out,dress=None):
         return float(durs[0])
     # segments of different sources can differ in pixel aspect (e.g. SAR 404:405 after a crop) and time base;
     # fades and joins need them identical
-    filters=[_fit_audio(i,float(d)) for i,d in enumerate(durs)]+[f"[{i}:v]setsar=1,format=yuv420p,settb=AVTB[w{i}]" for i in range(len(segs))]
+    # frames: {segment: number of frames} - only these first frames of a segment are used (cuts on the beat)
+    cut=lambda i:f"trim=end_frame={int(frames[i])},setpts=PTS-STARTPTS,fps=30," if frames and i in frames else ""   # fps: xfade needs a known frame rate
+    # a segment's own sound cut at the beat ends inside its fade-out: a short fade at the new end (no click)
+    fit=lambda i,d:(_fit_audio(i,d)[:-len(f"[n{i}]")]+f",afade=t=out:st={max(0.0,d-0.03):.6f}:d=0.03[n{i}]") if frames and i in frames else _fit_audio(i,d)
+    filters=[fit(i,float(d)) for i,d in enumerate(durs)]+[f"[{i}:v]{cut(i)}setsar=1,format=yuv420p,settb=AVTB[w{i}]" for i in range(len(segs))]
     vprev="w0"; aprev="n0"; cum=float(durs[0])
     for i in range(1,len(segs)):
         td=float(trans[i-1]["duration_s"]); vl=f"v{i}"; al=f"a{i}"; off=max(0.0,cum-td)
@@ -1051,11 +1041,11 @@ def render_dissolve_block(v52,segs,durs,trans,out,dress=None):
     if cp.returncode!=0: raise RuntimeError("DISSOLVE_BLOCK_RENDER_FAILED:"+cp.stderr[-800:])
     return cum
 
-def render_mixed(v52,segs,durs,transitions,out,work,dress=None):
+def render_mixed(v52,segs,durs,transitions,out,work,dress=None,frames=None):
     """Whole reel in ONE encode: dissolves (xfade/acrossfade) and hard cuts (concat) in a single filter graph.
     R2 encoded every dissolve block and then the joined reel again (two full encodes, about twice the time).
     A title and own music (optional) go into the same encode."""
-    total=render_dissolve_block(v52,segs,durs,transitions,out,dress)
+    total=render_dissolve_block(v52,segs,durs,transitions,out,dress,frames)
     dec=subprocess.run([v52.FFMPEG,"-hide_banner","-loglevel","error","-i",str(out),"-f","null","-"],capture_output=True,text=True)
     if dec.returncode!=0: raise RuntimeError("FINAL_DECODE_FAILED:"+dec.stderr[-800:])
     return total
@@ -1237,26 +1227,45 @@ def run(args):
         planned=sum(pace["durations_s"])-sum(float(t["duration_s"]) for t in pace["transitions"])
         pace["expected_duration_s"]=round(planned,3); pace["target_error_s"]=round(abs(float(args.target_seconds)-planned),3)
 
+    # Dissolves are rendered with whole-frame lengths: a 0.25 s fade (7.5 frames) made the picture start up to half a
+    # frame after its sound at every dissolve. The pacing decision itself is kept as planned (result.pacing).
+    render_trans=[dict(t,duration_s=(max(1,round(float(t["duration_s"])*30))/30.0 if t["kind"]!="HARD_CUT" and float(t["duration_s"])>0 else 0.0))
+                  for t in pace["transitions"]]
+    render_dir=work_dir/"final_v2"; render_dir.mkdir(parents=True,exist_ok=True)
+    beats=None; beat_info=None; beat_max_off=1.0
+    # where the plan has each cut (reel time): every cut is moved to the beat nearest to its PLANNED place, so earlier
+    # moves never add up
+    plan_cuts=[]; _t=0.0
+    for i,d in enumerate(pace["durations_s"]):
+        td=float(render_trans[i]["duration_s"]) if i<len(pace["durations_s"])-1 else 0.0
+        plan_cuts.append(_t+float(d)-td/2.0); _t+=float(d)-td
+    if dress and dress["music"]:
+        if not Path(dress["music"]).is_file(): raise RuntimeError("MUSIC_FILE_MISSING")
+        wav=render_dir/(fingerprint+"_music.wav")
+        planned=sum(float(d) for d in pace["durations_s"])-sum(float(t["duration_s"]) for t in render_trans)
+        need=planned+3.0     # cuts on the beat move the end by at most about a beat and a half (decoded again if not enough)
+        # the song's own stated length: an AAC file decodes with a little silence of padding at its end (a gap at
+        # every repeat) - cut at the stated length it repeats seamlessly
+        info=subprocess.run([v52.FFMPEG,"-hide_banner","-i",str(dress["music"])],capture_output=True,text=True,encoding="utf-8",errors="replace").stderr
+        m=re.search(r"Duration:\s*(\d+):(\d+):(\d+(?:\.\d+)?)",info)
+        stated=(int(m.group(1))*3600+int(m.group(2))*60+float(m.group(3))) if m else 0.0
+        dress["music_s"]=music_wav(v52.FFMPEG,dress["music"],min(need,stated) if stated>0.2 else need,wav); dress["music_wav"]=str(wav)
+        if dress.get("beat_sync"):
+            progress("render",0,len(order),"finding the beat of the music")
+            beatmod=load_module("p13_beats",runtime/"p13_beats.py")
+            try:
+                beat_info=beatmod.detect(wav)
+            except Exception as exc:     # the beat is a nicety: never a failed reel because of it
+                beat_info={"beats":[],"bpm":0.0,"confidence":0.0,"clear":False,"error":type(exc).__name__}
+            if beat_info["clear"]:
+                beats=beatmod.repeat(beat_info["beats"],dress["music_s"],need)
+                beat_max_off=beatmod.max_offset(beats)
+            else:
+                warnings.append("MUSIC_NO_CLEAR_BEAT")
     segcache=work_dir/"segment_cache_v2"; segcache.mkdir(parents=True,exist_ok=True)
-    segs=[]; durs=[]; seg_meta=[]
-    render_source="AI_CANDIDATE_CLIPS_FROM_ORIGINAL" if use_semantic else "ORIGINAL_FULL_QUALITY_RECUT"
-    hdr_sources={}; deinterlaced=[]; widened={}
-    for si,(e,use) in enumerate(zip(order,pace["durations_s"])):
-        progress("render",si,len(order),str(e["source_name"]))
-        probe_src=e.get("recut_path") or e.get("source_path")
-        hdr=hdr_kind(v52.FFMPEG,probe_src) if probe_src else None
-        deint=bool(probe_src) and is_interlaced(v52.FFMPEG,probe_src)
-        if deint and str(e["source_name"]) not in deinterlaced: deinterlaced.append(str(e["source_name"]))
-        if hdr:
-            hdr_sources[str(e["source_name"])]=hdr
-            if not zscale_available(v52.FFMPEG):
-                hdr=None
-                if "HDR_NOT_CONVERTED" not in warnings: warnings.append("HDR_NOT_CONVERTED")
-        sq=bool(probe_src) and is_anamorphic(v52.FFMPEG,probe_src)
-        if hdr or deint or sq or (not use_semantic and str(e["event_id"]) not in trims):   # manual trims are already cut from the original
-            e2=full_quality_clip(v52,e,work_dir,hdr,deint,sq)
-            if sq and e2 is not e: widened[str(e["source_name"])]=round(pixel_aspect(v52.FFMPEG,probe_src),4)
-            e=e2
+    segs=[]; durs=[]; seg_meta=[]; on_beat=[]; exact={}; asked={}
+    def make_seg(e,use):
+        """One segment of `use` seconds (cached by clip, length and output settings): (file, meta, picture length)."""
         key=hashlib.sha256(json.dumps({"clip_sha256":e["clip_sha256"],"use_s":round(float(use),3),
                                      "audio":audio_mode,"profile":profile,"resolution":resolution,"fps":30,"quality":"high"},
                                     sort_keys=True,separators=(",",":")).encode()).hexdigest()[:20]
@@ -1275,28 +1284,74 @@ def run(args):
             meta=v52.make_segment(e,tmp,profile,float(use),audio_content=audio_mode,
                                   output_resolution=resolution,output_fps=30,video_quality="high")
             os.replace(tmp,seg); meta["sha256"]=sha256_file(seg); atomic_json(meta_path,meta)
-        segs.append(seg); durs.append(video_seconds(v52.FFMPEG,seg)); seg_meta.append(meta)
+        return seg,meta,video_seconds(v52.FFMPEG,seg)
+
+    render_source="AI_CANDIDATE_CLIPS_FROM_ORIGINAL" if use_semantic else "ORIGINAL_FULL_QUALITY_RECUT"
+    hdr_sources={}; deinterlaced=[]; widened={}
+    for si,(e,use) in enumerate(zip(order,pace["durations_s"])):
+        progress("render",si,len(order),str(e["source_name"]))
+        probe_src=e.get("recut_path") or e.get("source_path")
+        hdr=hdr_kind(v52.FFMPEG,probe_src) if probe_src else None
+        deint=bool(probe_src) and is_interlaced(v52.FFMPEG,probe_src)
+        if deint and str(e["source_name"]) not in deinterlaced: deinterlaced.append(str(e["source_name"]))
+        if hdr:
+            hdr_sources[str(e["source_name"])]=hdr
+            if not zscale_available(v52.FFMPEG):
+                hdr=None
+                if "HDR_NOT_CONVERTED" not in warnings: warnings.append("HDR_NOT_CONVERTED")
+        sq=bool(probe_src) and is_anamorphic(v52.FFMPEG,probe_src)
+        if hdr or deint or sq or (not use_semantic and str(e["event_id"]) not in trims):   # manual trims are already cut from the original
+            e2=full_quality_clip(v52,e,work_dir,hdr,deint,sq)
+            if sq and e2 is not e: widened[str(e["source_name"])]=round(pixel_aspect(v52.FFMPEG,probe_src),4)
+            e=e2
+        hit=None
+        if beats and str(e["event_id"]) not in trims:   # a moment the user trimmed keeps its exact length
+            start=sum(float(d) for d in durs)-sum(float(render_trans[j]["duration_s"]) for j in range(si))
+            td_in=float(render_trans[si-1]["duration_s"]) if si>0 else 0.0
+            td_out=float(render_trans[si]["duration_s"]) if si<len(order)-1 else 0.0
+            use,hit=beatmod.snap_use(start,float(use),td_out,td_in,float(e.get("duration_s") or use),beats,30,plan_cuts[si],beat_max_off)
+            on_beat.append(hit)
+        seg,meta,dur=make_seg(e,use)
+        if hit is not None:
+            # the accepted segment cutter trims the source and then sets 30 fps: depending on the source's own frame
+            # times it gives a frame or two more or less than asked (a 25 fps video: steps of two). The final encode
+            # takes exactly the frames up to the beat (trim); a segment that came out short is made again a little longer.
+            want=round((hit-start+td_out/2.0)*30)
+            got=round(dur*30)
+            if got<want:
+                use=float(use)+(want-got+0.5)/30.0
+                seg,meta,dur=make_seg(e,use); got=round(dur*30)
+            if got>=want:
+                exact[si]=want; asked[si]=float(meta.get("use") or use); dur=want/30.0
+            else:
+                on_beat[-1]=None          # the moment is too short to reach the beat: left as it is
+        segs.append(seg); durs.append(dur); seg_meta.append(meta)
 
     if _FQ_FALLBACK:
         warnings.append("PREVIEW_QUALITY_USED:"+",".join(sorted(set(_FQ_FALLBACK))))
     progress("finish",0,1,"joining segments and verifying")
-    render_dir=work_dir/"final_v2"; render_dir.mkdir(parents=True,exist_ok=True)
     temp_final=render_dir/(fingerprint+".mp4")
     if temp_final.exists(): temp_final.unlink()
-    # Dissolves are rendered with whole-frame lengths: a 0.25 s fade (7.5 frames) made the picture start up to half a
-    # frame after its sound at every dissolve. The pacing decision itself is kept as planned (result.pacing).
-    render_trans=[dict(t,duration_s=(max(1,round(float(t["duration_s"])*30))/30.0 if t["kind"]!="HARD_CUT" and float(t["duration_s"])>0 else 0.0))
-                  for t in pace["transitions"]]
-    if dress and dress["music"]:
-        if not Path(dress["music"]).is_file(): raise RuntimeError("MUSIC_FILE_MISSING")
-        wav=render_dir/(fingerprint+"_music.wav")
-        need=sum(float(d) for d in durs)+1.0
-        # the song's own stated length: an AAC file decodes with a little silence of padding at its end (a gap at
-        # every repeat) - cut at the stated length it repeats seamlessly
-        info=subprocess.run([v52.FFMPEG,"-hide_banner","-i",str(dress["music"])],capture_output=True,text=True,encoding="utf-8",errors="replace").stderr
-        m=re.search(r"Duration:\s*(\d+):(\d+):(\d+(?:\.\d+)?)",info)
-        stated=(int(m.group(1))*3600+int(m.group(2))*60+float(m.group(3))) if m else 0.0
-        dress["music_s"]=music_wav(v52.FFMPEG,dress["music"],min(need,stated) if stated>0.2 else need,wav); dress["music_wav"]=str(wav)
+    if dress and dress.get("music_wav") and beats:
+        total_now=sum(float(d) for d in durs)-sum(float(t["duration_s"]) for t in render_trans)
+        if total_now+0.5>dress["music_s"] and total_now+0.5<=float(stated or 0):   # cut too short for this reel: again
+            dress["music_s"]=music_wav(v52.FFMPEG,dress["music"],min(total_now+2.0,stated),Path(dress["music_wav"]))
+    beat_sync=None
+    if beat_info is not None:
+        # where the cuts really are (the middle of a dissolve, a hard cut, the end) and the nearest beat to each
+        offs=[]; half=[]; t0=0.0
+        halves=[(a+b)/2.0 for a,b in zip(beats,beats[1:])] if beats else []
+        for i,d in enumerate(durs):
+            td=float(render_trans[i]["duration_s"]) if i<len(durs)-1 else 0.0
+            cut=t0+float(d)-td/2.0
+            if beats:
+                offs.append(min(abs(cut-b) for b in beats)); half.append(min(abs(cut-b) for b in halves) if halves else 9.0)
+            t0+=float(d)-td
+        beat_sync={"bpm":beat_info["bpm"],"clear":beat_info["clear"],"confidence":beat_info["confidence"],
+                   "cuts":len(durs),"cuts_on_beat":sum(1 for o in offs if o<=0.025),
+                   "cuts_half_way_between_beats":sum(1 for o,h in zip(offs,half) if o>0.025 and h<=0.025),
+                   "snapped":sum(1 for h in on_beat if h is not None),
+                   "max_offset_s":round(max(offs),4) if offs else None,"cut_offsets_s":[round(o,4) for o in offs]}
     if dress and (dress["title"] or dress["subtitle"]):
         if title_text(dress["title"])!=dress["title"] or title_text(dress["subtitle"])!=dress["subtitle"]:
             warnings.append("TITLE_CHARACTERS_LEFT_OUT")
@@ -1305,11 +1360,12 @@ def run(args):
         if not (title_text(dress["title"]) or title_text(dress["subtitle"])): pass
         elif title_png(title_text(dress["title"]),title_text(dress["subtitle"]),int(ow),int(oh),png): dress["title_png"]=str(png)
         else: warnings.append("TITLE_FONT_MISSING")
-    render_mixed(v52,segs,durs,render_trans,temp_final,render_dir/(fingerprint+"_render"),dress)
+    render_mixed(v52,segs,durs,render_trans,temp_final,render_dir/(fingerprint+"_render"),dress,exact or None)
     for x in ("title_png","music_wav"):
         if dress and dress.get(x): Path(dress[x]).unlink(missing_ok=True)
     fpr=v52.ffprobe(temp_final); actual=float(fpr["format"]["duration"]); video_sha=sha256_file(temp_final)
-    if actual < float(args.target_seconds)-1.0 and "LIMITED_TOTAL_FOOTAGE" not in warnings:
+    # cuts on the beat may end the reel up to about a beat and a half early: that is not "too little footage"
+    if actual < float(args.target_seconds)-1.0-(beat_max_off+0.1 if beats else 0.0) and "LIMITED_TOTAL_FOOTAGE" not in warnings:
         warnings.append("SHORTER_THAN_REQUESTED")
     fvs=[x for x in fpr["streams"] if x.get("codec_type")=="video"][0]; out_w,out_h=int(fvs["width"]),int(fvs["height"])
     if (out_w,out_h)!=tuple(v52.output_dimensions(profile,resolution)): raise RuntimeError("OUTPUT_DIMENSIONS_MISMATCH:%dx%d"%(out_w,out_h))
@@ -1320,7 +1376,8 @@ def run(args):
     timeline=[]; t=0.0
     for i,(e,meta,d) in enumerate(zip(order,seg_meta,durs)):
         clip_dur=float(e.get("duration_s") or d); use=float(d)
-        src_in=float(e.get("start_s") or 0.0)+max(0.0,(clip_dur-use)/2.0)
+        # a segment trimmed to a beat: cut centred for the length asked, then its end taken off
+        src_in=float(e.get("start_s") or 0.0)+max(0.0,(clip_dur-float(asked.get(i,use)))/2.0)
         if i>0: t-=float(render_trans[i-1]["duration_s"])
         timeline.append({"position":i+1,"event_id":str(e["event_id"]),"source_name":e["source_name"],
                          "source_in_s":round(src_in,3),"source_out_s":round(src_in+use,3),
@@ -1365,6 +1422,7 @@ def run(args):
                   "profile":profile,"resolution":resolution,"fps":30,
                   "profile_requested":str(args.profile),"profile_reason":profile_reason,
                   "width":out_w,"height":out_h},
+        **({"beat_sync":beat_sync} if beat_sync is not None else {}),
         "dress":({"title":dress["title"] or None,"subtitle":dress["subtitle"] or None,"title_shown":bool(dress.get("title_png")),
                   "music":({"name":dress["music_name"],"sha256":dress["music_sha256"],"mode":dress["music_mode"]} if dress["music"] else None)}
                  if dress else None),
@@ -1401,7 +1459,7 @@ def main():
     ap.add_argument("--exclude-events",default="")
     ap.add_argument("--skip-sha-file",default="",help="text file, one SHA-256 per line: inputs never to use (Private)")
     ap.add_argument("--edits",default="",help="JSON file: {selection:[event ids in order], trims:{id:[source_in_s,source_out_s]}}")
-    ap.add_argument("--dress",default="",help="JSON file: {title, subtitle, music (audio file path), music_mode: mix|music}")
+    ap.add_argument("--dress",default="",help="JSON file: {title, subtitle, music (audio file path), music_mode: mix|music, beat_sync: true|false}")
     a=ap.parse_args()
     try: run(a)
     except Exception as exc:

@@ -628,6 +628,8 @@ document.getElementById('pickFilesBtn').onclick=async()=>{const m=document.getEl
                          f"<input type='hidden' name='sound' value='{e(ls_['sound'])}'><input type='hidden' name='mode' value='technical'>"
                          + "".join(f"<input type='hidden' name='{fld}' value='{e(ls_.get(key) or '')}'>" for fld, key in
                                    (("reel_title", "title"), ("reel_subtitle", "subtitle"), ("music", "music"), ("music_mode", "music_mode")))
+                         + "<input type='hidden' name='beat_sync_shown' value='1'>"
+                         + ("<input type='hidden' name='beat_sync' value='1'>" if ls_.get("beat_sync") is not False else "")
                          + "<button class='btn2'>Build without AI (Technical only)</button></form>")
             parts.append(f"""<div class='card'><b>{'Build failed' if last_job['status']=='failed' else 'Build cancelled'}</b>
 <div class='{'errbox' if last_job['status']=='failed' else 'muted'}' style='margin:8px 0'>{_error_html(last_job.get('error') or last_job.get('message') or '', e)}</div>
@@ -1050,6 +1052,9 @@ def _dress_fields(e, s=None, date_hint=""):
             "<div class='ae-choices'>"
             f"<label><input type='radio' name='music_mode' value='mix' {'checked' if mode != 'music' else ''}> Music and the videos' sound (quieter)</label>"
             f"<label><input type='radio' name='music_mode' value='music' {'checked' if mode == 'music' else ''}> Only music</label></div>"
+            f"<label><input type='checkbox' name='beat_sync' value='1' {'checked' if s.get('beat_sync') is not False else ''}> "
+            "Cuts on the beat of the music</label> <span class='muted' style='font-size:13px'>(when the music has a clear beat)</span>"
+            "<input type='hidden' name='beat_sync_shown' value='1'>"
             "<div class='muted' style='font-size:13px'>The title is shown for the first 3 seconds. The music starts softly and fades out "
             "at the end; a short song is repeated. Changing music or title later makes a new version quickly, without a new analysis.</div>"
             "<span class='muted' data-music-msg></span></div></details>"
@@ -1065,7 +1070,9 @@ def _dress_from_form(f, base_settings=None):
     bs = base_settings or {}
     pick = lambda field, key: (f.get(field) or "") if field in f else (bs.get(key) or "")
     return {"title": pick("reel_title", "title"), "subtitle": pick("reel_subtitle", "subtitle"), "music": pick("music", "music"),
-            "music_mode": (f.get("music_mode") if "music_mode" in f else bs.get("music_mode")) or "mix"}
+            "music_mode": (f.get("music_mode") if "music_mode" in f else bs.get("music_mode")) or "mix",
+            # a checkbox is not sent when it is off: the hidden field says the form had it
+            "beat_sync": ("beat_sync" in f) if "beat_sync_shown" in f else bs.get("beat_sync") is not False}
 
 
 def _variant_form(pid, rev, e, first=False, model_ready=True, prefill=None):
@@ -1154,8 +1161,11 @@ def _review_html(p, rev, e, building=False):
         short_html = (f"<div class='callout card' style='margin-top:8px'>The reel is shorter than {target:.0f} s because you removed or "
                       f"trimmed moments. Add a moment below or let MediaEngine choose again.</div>") if target and total < target - 1.0 else ""
     else:
+        # cuts on the beat may end a reel up to about a beat and a half early (the engine then says nothing)
+        beat_short = bool(res.get("beat_sync")) and "SHORTER_THAN_REQUESTED" not in (res.get("warnings") or []) \
+            and "LIMITED_TOTAL_FOOTAGE" not in (res.get("warnings") or [])
         short_html = (f"<div class='callout card' style='margin-top:8px'>Requested {target:.0f} s, got {total:.1f} s: "
-                      f"there were not enough different moments in this footage for a longer reel.</div>") if target and total < target - 1.0 else ""
+                      f"there were not enough different moments in this footage for a longer reel.</div>") if target and total < target - 1.0 and not beat_short else ""
     skipped = res.get("skipped_inputs") or []
     skipped_html = ("<div class='muted' style='margin-top:6px'>Skipped: " + ", ".join(f"<span translate='no'>{e(x['name'])}</span> ({_skip_reason_html(ae.friendly_skip(x['reason']), e)})" for x in skipped) + "</div>") if skipped else ""
     sm = str(res.get("selection_mode", ""))
@@ -1185,12 +1195,19 @@ def _review_html(p, rev, e, building=False):
             notes.append("the title could not be drawn: no suitable font on this PC")
         elif w == "TITLE_CHARACTERS_LEFT_OUT":
             notes.append("emoji and symbols the font cannot draw were left out of the title")
+        elif w == "MUSIC_NO_CLEAR_BEAT":
+            notes.append("the music has no clear beat, so the cuts were left where they were")
     dress = res.get("dress") or {}
     if dress.get("title_shown") and (dress.get("title") or dress.get("subtitle")):
         notes.append(e("title: ") + "<span translate='no'>" + e(" / ".join(x for x in (dress.get("title"), dress.get("subtitle")) if x)) + "</span>")
     if dress.get("music"):
         notes.append(e("music: ") + names([dress["music"]["name"]])
                      + e(" (only music)" if dress["music"].get("mode") == "music" else " (with the videos' sound)"))
+    bs_ = res.get("beat_sync") or {}
+    if bs_.get("clear") and bs_.get("cuts"):
+        in_time = int(bs_.get("cuts_on_beat") or 0) + int(bs_.get("cuts_half_way_between_beats") or 0)
+        notes.append(e("cuts on the beat of the music: ") + f"{in_time}/{int(bs_['cuts'])} "
+                     + f"({int(round(float(bs_.get('bpm') or 0)))} " + e("beats per minute") + ")")
     if res.get("hdr_sources"):
         notes.append(e("HDR video converted to normal colours: ") + names(res["hdr_sources"]))
     if res.get("deinterlaced_sources"):

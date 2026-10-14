@@ -159,6 +159,43 @@ def main():
           and [s["event_id"] for s in ra["segments"]] == [s["event_id"] for s in rb["segments"]]
           and not (work / "w_b" / "semantic_scout_pe").exists(), (OPENED, vision_before))
     os.environ.pop("MEDENG_P13_SCOUT_CACHE")
+    # "Prepare AI+ for the whole Library": the same step ahead of time (engine script, same key and files); a reel
+    # afterwards looks at no frame; a second run skips what is done; a stop file stops between videos
+    sys.path.insert(0, str(R3))
+    import p13_prepare_scout as prep
+    import p13_event_semantic_pe as _hook
+    hook_key = _hook.scout_key
+    pre = work / "prepared_scout"
+    vids = sorted(str(p) for p in src.iterdir() if p.is_file())
+    prog = work / "prepare.json"
+    r1 = prep.prepare(vids, pre, R3, StandInScorer, prog, None, ff, ff)
+    st1 = json.loads(prog.read_text(encoding="utf-8"))
+    r2 = prep.prepare(vids, pre, R3, lambda: (_ for _ in ()).throw(AssertionError("model needed again")), None, None, ff, ff)
+    check("prepare_looks_at_every_video_once", r1["looked"] == len(vids) and st1["state"] == "done" and r2["looked"] == 0
+          and r2["done"] == len(vids), (r1, r2, st1))
+    stopf = work / "stop.flag"; stopf.write_text("1")
+    r3s = prep.prepare(vids, work / "prepared_other", R3, StandInScorer, None, stopf, ff, ff)
+    check("prepare_stops_on_the_stop_file", r3s["state"] == "stopped" and r3s["looked"] == 0, r3s)
+    # a video marked Private (its SHA-256 in the skip file, read again before every video) is never looked at; a
+    # Library line whose SHA-256 is not the file's any more is prepared and reported (the Library does not know it yet)
+    import hashlib
+    sha0 = hashlib.sha256(Path(vids[0]).read_bytes()).hexdigest()
+    skipf = work / "private.txt"; skipf.write_text(sha0 + "\n", encoding="utf-8")
+    r4 = prep.prepare([("1|fp", "", Path(vids[0])), ("2|fp", "0" * 64, Path(vids[1]))], work / "prepared_priv", R3, StandInScorer, None, None,
+                      ff, ff, skipf, work / "skipped.json")
+    check("prepare_never_looks_at_private_reports_changed", r4["looked"] == 1 and not (work / "prepared_priv" / (sha0 + ".npy")).exists()
+          and r4["skipped"] == {"2|fp": "changed_since_analysis"}
+          and json.loads((work / "skipped.json").read_text(encoding="utf-8")) == r4["skipped"], r4)
+    check("prepare_writes_the_key_file", all((pre / (hashlib.sha256(Path(v).read_bytes()).hexdigest() + ".key")).read_text() == hook_key()
+                                             for v in vids))
+    os.environ["MEDENG_P13_SCOUT_CACHE"] = str(pre)
+    vision_before = OPENED["vision"]
+    r3.run(args(work / "proj_prepared", work_dir=str(work / "w_prepared")))
+    rp = json.loads((work / "proj_prepared" / "MediaEngine Result.json").read_text(encoding="utf-8"))
+    check("reel_after_prepare_looks_at_no_frame", OPENED["vision"] == vision_before and rp["selection_mode"] == "PE_CORE_L14_SEMANTIC_V1"
+          and rp.get("semantic_timing", {}).get("scout_embed_s") == 0
+          and [s["event_id"] for s in rp["segments"]] == [s["event_id"] for s in ra["segments"]], (OPENED, rp.get("semantic_timing")))
+    os.environ.pop("MEDENG_P13_SCOUT_CACHE")
     # the model cannot start (e.g. not enough memory): one clear error, not "no moments" for every video
     def broken(_pe_dir):
         raise MemoryError("bad allocation")

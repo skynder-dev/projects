@@ -180,7 +180,7 @@ def main():
         import numpy as np
         from archivist import aiplus_library as al
         from i18n_coverage import english_left, page_texts
-        real_status, real_ident, real_scorer = ae.aiplus_status, ae.aiplus_identity, al._scorer
+        real_status, real_ident, real_scorer, real_deep = ae.aiplus_status, ae.aiplus_identity, al._scorer, al._deep_script
 
         class StandIn:
             vision = text = True                     # the parts "open" at once
@@ -221,15 +221,22 @@ def main():
         ae.aiplus_status = lambda: {"ready": True, "reason": "", "path": "STAND-IN", "bytes": 0, "download": {}}
         ae.aiplus_identity = lambda: "STAND_IN_MODEL_KEY"
         al._scorer = lambda: StandIn()
+        # the engine step "for reels" with a stand-in scorer (tests/standin_prepare.py: the real step, no model)
+        al._deep_script = lambda: [sys.executable, str(HERE / "standin_prepare.py")]
         try:
             page = html.unescape(c.get("/library", headers=H).data.decode("utf-8", "replace"))
-            check("library_offers_theme_search_with_aiplus", "Find by theme (AI+)" in page and "Prepare the search" in page)
+            check("library_offers_theme_search_with_aiplus", "Find by theme (AI+)" in page and "Prepare AI+ for the whole Library" in page)
             # before the search is prepared: the card's hint and the results page's note, in Russian
             left = russian_left(("/library", "/library/theme?theme=sea", "/library/theme"))
             check("library_theme_search_unprepared_in_russian", not left, left[:10])
             st = index_and_wait()
             check("library_theme_index_done", st["state"] == "done" and st["indexed"] == st["videos"] > 0 and st["texts_missing"] == 0
                   and "eta_s" in st and st["eta_s"] is None, st)
+            # ... and what AI+ reels need, for every Library video (the shared cache every AI+ build reads)
+            check("library_prepared_for_reels", st["reels_ready"] == st["reels_videos"] > 0 and not al.needs_preparing(st)
+                  and len(list(al._scout_dir().glob("*.npy"))) == st["reels_videos"], st)
+            page = html.unescape(c.get("/library", headers=H).data.decode("utf-8", "replace"))
+            check("library_says_all_prepared", "AI+ is prepared for the whole Library." in page and "id='apIdx'" not in page)
             res = al.search("sea")
             names_found = {x["filename"] for x in res}
             check("library_theme_search_never_shows_private_or_rejected", res and names[0] not in names_found
@@ -281,6 +288,56 @@ def main():
             st = al.status()
             check("library_index_waits_for_a_reel_then_finishes", reel_job and st_wait.get("waiting") and st_wait.get("state") == "running"
                   and st["state"] == "done" and st["indexed"] == st["videos"], (dict(reel_job) if reel_job else None, st_wait, st))
+            # the step for reels is ended while a reel is being built (the reel gets the computer) and goes on afterwards
+            st_pause = {}
+            if reel_job:
+                shutil.rmtree(al._scout_dir(), ignore_errors=True)
+                os.environ["STANDIN_PREPARE_DELAY"] = "0.5"
+                try:
+                    al.start()
+                    t0 = time.time()
+                    while time.time() - t0 < 120 and not (al.status()["phase"] == "reels" and al._PROC.get("p") is not None):
+                        time.sleep(0.2)
+                    time.sleep(1.5)
+                    running_mid = al.status()
+                    with db() as con:
+                        con.execute("UPDATE ae_jobs SET status='running' WHERE id=?", (reel_job["id"],)); con.commit()
+                    t0 = time.time()
+                    while time.time() - t0 < 30 and not al.status()["waiting"]:
+                        time.sleep(0.2)
+                    st_pause = al.status()
+                    proc_gone = al._PROC.get("p") is None
+                    with db() as con:
+                        con.execute("UPDATE ae_jobs SET status=? WHERE id=?", (reel_job["status"], reel_job["id"])); con.commit()
+                    t0 = time.time()
+                    while al.status()["state"] == "running" and time.time() - t0 < 300:
+                        time.sleep(0.5)
+                finally:
+                    os.environ.pop("STANDIN_PREPARE_DELAY", None)
+                st = al.status()
+                check("library_prepare_for_reels_pauses_for_a_reel_then_finishes",
+                      running_mid["phase"] == "reels" and st_pause.get("waiting") and proc_gone and st["state"] == "done"
+                      and st["reels_ready"] == st["reels_videos"] > 0, (running_mid, st_pause, st))
+            # Stop: the engine step ends at once, what is done stays done
+            shutil.rmtree(al._scout_dir(), ignore_errors=True)
+            os.environ["STANDIN_PREPARE_DELAY"] = "0.5"
+            try:
+                al.start()
+                t0 = time.time()
+                while time.time() - t0 < 120 and al._PROC.get("p") is None:
+                    time.sleep(0.2)
+                proc = al._PROC.get("p")
+                c.post("/api/aiplus/library-index", json={"stop": True}, headers=H)
+                t0 = time.time()
+                while al.status()["state"] == "running" and time.time() - t0 < 60:
+                    time.sleep(0.2)
+            finally:
+                os.environ.pop("STANDIN_PREPARE_DELAY", None)
+            st = al.status()
+            check("library_prepare_stop_ends_the_engine_step", proc is not None and proc.poll() is not None and st["state"] == "stopped"
+                  and st["reels_ready"] < st["reels_videos"], st)
+            st = index_and_wait()
+            check("library_prepare_continues_where_it_stopped", st["state"] == "done" and st["reels_ready"] == st["reels_videos"], st)
             left = russian_left(("/library", "/library/theme?theme=sea", "/library/theme?theme=kids"))
             check("library_theme_search_in_russian", not left, left[:10])
             # a video made Private AFTER it was indexed: never shown, and its row goes on the next preparation
@@ -291,8 +348,10 @@ def main():
                 wait_job((r.get_json() or {}).get("job_id") or 0, 300)
                 gone_from_search = all(x["inventory_id"] != late["id"] for x in al.search("sea"))
                 st = index_and_wait()
+                late_sha = str(late.get("sha256") or "").lower()
                 check("library_theme_private_after_index_never_shown_and_dropped", gone_from_search and late["id"] not in frame_ids()
-                      and st["state"] == "done", (gone_from_search, late["id"], frame_ids(), st))
+                      and st["state"] == "done" and late_sha and not (al._scout_dir() / (late_sha + ".npy")).exists(),
+                      (gone_from_search, late["id"], frame_ids(), st))
             # descriptions changed (a new version): the themes are prepared again, the frames are kept
             with db() as con:
                 con.execute("UPDATE aiplus_texts SET model_key=model_key||'-old' WHERE theme='sea'"); con.commit()
@@ -302,7 +361,7 @@ def main():
             check("library_theme_new_descriptions_prepared_again", st0["texts_missing"] == 1 and al.needs_preparing(st0)
                   and st["texts_missing"] == 0 and frame_ids() == frames_before and al.search("sea") is not None, (st0, st))
         finally:
-            ae.aiplus_status, ae.aiplus_identity, al._scorer = real_status, real_ident, real_scorer
+            ae.aiplus_status, ae.aiplus_identity, al._scorer, al._deep_script = real_status, real_ident, real_scorer, real_deep
 
         # the same pages in Russian
         c.post("/lang", data={"lang": "ru"}, headers=H)

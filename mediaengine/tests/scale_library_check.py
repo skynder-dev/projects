@@ -5,8 +5,8 @@
 Makes <count> short unique videos (one generated stream cut into 3 s pieces, so it is quick) in one camera folder
 with English and Cyrillic names (days in the names), then, like a user: adds the folder on the Import page, waits for the scan, "Import +
 analyse" for all of them, opens the Library pages (first, last, grid, search, filters), the item pages, Activity,
-Home, Media; prepares the AI+ search by theme (a STAND-IN scorer - the real model is checked in real_models_check.py)
-and searches; opens a new reel on the whole folder (more than 64 videos: the day list) and on one day's videos. Reports the time of every
+Home, Media; prepares AI+ for the whole Library (the search and what reels need; a STAND-IN scorer - the real model is checked
+in real_models_check.py) and searches; opens a new reel on the whole folder (more than 64 videos: the day list) and on one day's videos. Reports the time of every
 step and the slowest page; fails when a page takes more than --max-page seconds (default 5) or a step fails.
 Not part of the regular build (it takes long); runs in .github/workflows/mediaengine-scale.yml.
 """
@@ -162,6 +162,8 @@ def main():
         ae.aiplus_status = lambda: {"ready": True, "reason": "", "path": "STAND-IN", "bytes": 0, "download": {}}
         ae.aiplus_identity = lambda: "STAND_IN_MODEL_KEY"
         al._scorer = lambda: StandIn()
+        # the engine step for reels with a stand-in scorer (tests/standin_prepare.py: the real step, no model)
+        al._deep_script = lambda: [sys.executable, str(HERE / "standin_prepare.py")]
         t0 = time.time()
         c.post("/api/aiplus/library-index", json={}, headers=H)
         while al.status()["state"] == "running" and time.time() - t0 < 5400:
@@ -169,6 +171,10 @@ def main():
         st = al.status()
         timings["theme_index_s"] = round(time.time() - t0, 1)
         check("theme_index_done", st["state"] == "done" and st["indexed"] == st["videos"] == len(vids), st)
+        check("prepared_for_reels", st["reels_ready"] == st["reels_videos"] == len(vids), st)
+        t = time.perf_counter()
+        al.status()
+        timings["status_with_prepared_ms"] = round(1000 * (time.perf_counter() - t), 1)
         t = time.perf_counter()
         res = al.search("sea")
         timings["theme_search_ms"] = round(1000 * (time.perf_counter() - t), 1)

@@ -68,9 +68,10 @@ PHRASES = {
     "No exact AI+ model there (vision_model_int8.onnx, text_model_int8.onnx, vocab.json, merges.txt).":
         "Там нет точной модели ИИ+ (vision_model_int8.onnx, text_model_int8.onnx, vocab.json, merges.txt).",
     "Only from MediaEngine itself.": "Только из самой программы MediaEngine.",
-    "loading the AI+ model": "загрузка модели ИИ+",
+    "loading the AI+ model": "загрузка модели ИИ+", "finding the beat of the music": "ищу ритм музыки",
     "The AI+ model is being downloaded": "Сейчас скачивается модель ИИ+",
     "The Library search by theme is being prepared": "Сейчас готовится поиск по темам в библиотеке",
+    "AI+ is being prepared for the Library (it continues next time)": "Идёт подготовка ИИ+ для Библиотеки (в следующий раз продолжится с того же места)",
     "The AI+ model is being downloaded right now. Wait until it is finished or stop it first.":
         "Модель ИИ+ сейчас скачивается. Дождись конца или сначала останови скачивание.",
     "The AI+ model could not be started (not enough memory?). Close other programs and press Retry, or use AI.":
@@ -88,6 +89,9 @@ PHRASES = {
     "Music (your own audio file: mp3, m4a, wav, flac, ogg)": "Музыка (твой аудиофайл: mp3, m4a, wav, flac, ogg)",
     "Choose music…": "Выбрать музыку…", "No music": "Без музыки",
     "Music and the videos' sound (quieter)": "Музыка и звук видео (тише)", "Only music": "Только музыка",
+    "Cuts on the beat of the music": "Склейки в такт музыке", "(when the music has a clear beat)": "(если у музыки есть чёткий ритм)",
+    "the music has no clear beat, so the cuts were left where they were": "у музыки нет чёткого ритма, поэтому склейки остались на своих местах",
+    "cuts on the beat of the music: ": "склейки в такт музыке: ", "beats per minute": "ударов в минуту",
     "The title is shown for the first 3 seconds. The music starts softly and fades out at the end; a short song is repeated. "
     "Changing music or title later makes a new version quickly, without a new analysis.":
         "Надпись видна первые 3 секунды. Музыка начинается плавно и затихает в конце; короткая песня повторяется. "
@@ -98,6 +102,7 @@ PHRASES = {
     "What AI+ saw in your videos (kept for every reel, so the same video is never looked at twice): ":
         "Что ИИ+ увидел в твоих видео (хранится для всех роликов, чтобы одно видео не просматривать дважды): ",
     "Free": "Освободить", "Freed.": "Освобождено.",
+    "AI+ is being prepared for the Library: stop it on the Library page first": "Сейчас идёт подготовка ИИ+ для Библиотеки: сначала останови её на странице Библиотеки",
     "title: ": "надпись: ", "music: ": "музыка: ", " (only music)": " (только музыка)", " (with the videos' sound)": " (со звуком видео)",
     "A title can be at most 80 characters long": "Надпись — не длиннее 80 знаков",
     "Music file not found:": "Файл музыки не найден:", "Not a music file:": "Это не музыкальный файл:",
@@ -390,6 +395,7 @@ JS_PHRASES = {
     "'Moment '": "'Момент '", "'Starting…'": "'Запуск…'", "'Installed.'": "'Установлено.'", "'Failed'": "'Не получилось'", "'the video is only '": "'видео длится всего '",
     "' s long - “to” cannot be later'": "' с — «по» не может быть позже'",
     "' · waiting until the reel is built'": "' · жду, пока соберётся ролик'",
+    "' h left'": "' ч осталось'", "'For reels: '": "'Для роликов: '", "'Search: '": "'Поиск: '",
     "'A Windows window is open — it may be behind this window.'": "'Открыто окно Windows — оно может быть за этим окном.'",
 }
 

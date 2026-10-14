@@ -65,6 +65,55 @@ THEMES = {
 }
 
 
+def _sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    with Path(path).open("rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def scout_key() -> str:
+    """The key of what the model saw in a video: adapter + contract code, scout version, model files. The engine and
+    'Prepare AI+ for the Library' use exactly this, so either one's result serves the other."""
+    import p13_pe_core_contract as pc
+    here = Path(__file__)
+    code_sha = "|".join(_sha256(here.with_name(n)) for n in ("p13_pe_core_adapter.py", "p13_pe_core_contract.py"))
+    model_key = "|".join(v[2] for v in pc.MODEL_FILES.values())
+    return hashlib.sha256((code_sha + "|" + SCOUT_VERSION + "|" + model_key).encode()).hexdigest()
+
+
+def read_scout(cache_dir: Path, sha: str, key: str):
+    """(info, embeddings) from the cache, or (None, None)."""
+    sj, sn = Path(cache_dir) / (sha + ".json"), Path(cache_dir) / (sha + ".npy")
+    if not (sj.is_file() and sn.is_file()):
+        return None, None
+    try:
+        obj = json.loads(sj.read_text(encoding="utf-8"))
+        if obj.get("source_sha256") != sha or obj.get("key") != key:
+            return None, None
+        emb = np.load(sn).astype(np.float32)
+        return (obj["info"], emb) if emb.shape[0] == len(obj["info"]["rows"]) else (None, None)
+    except Exception:
+        return None, None
+
+
+def write_scout(cache_dir: Path, sha: str, key: str, info: dict, emb) -> None:
+    """Own temp names (two processes may analyse the same video), embeddings first, then the description, then the
+    key alone."""
+    import os
+    cache_dir = Path(cache_dir); cache_dir.mkdir(parents=True, exist_ok=True)
+    tag = f"{os.getpid()}.{time.time_ns()}"
+    tmp = cache_dir / (sha + f".{tag}.tmp.npy"); np.save(tmp, np.asarray(emb).astype(np.float16)); os.replace(tmp, cache_dir / (sha + ".npy"))
+    tj = cache_dir / (sha + f".{tag}.tmp.json")
+    tj.write_text(json.dumps({"source_sha256": sha, "key": key, "info": info}, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    os.replace(tj, cache_dir / (sha + ".json"))
+    # the key alone (64 bytes): the app counts the prepared videos without reading every description
+    tk = cache_dir / (sha + f".{tag}.tmp.key")
+    tk.write_text(key, encoding="utf-8")
+    os.replace(tk, cache_dir / (sha + ".key"))
+
+
 def prompts_for(theme: str | None):
     if theme:
         return THEMES[theme][1], NEGATIVE_PROMPTS

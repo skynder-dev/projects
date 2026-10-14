@@ -1122,6 +1122,8 @@ def normalize_settings(raw: dict, *, model_ready: bool | None = None) -> dict:
         _guard_private(mp)
         out["music"] = str(mp)
         out["music_mode"] = "music" if raw.get("music_mode") == "music" else "mix"
+        if raw.get("beat_sync") in (False, 0, "0", "off", "false"):     # cuts on the beat: on unless switched off
+            out["beat_sync"] = False
     return out
 
 
@@ -1491,7 +1493,8 @@ def _run_job(jid: int) -> None:
         pass
     dress_file = jobs_dir / f"j{jid}.dress.json"
     dress_file.write_text(json.dumps({"title": s.get("title") or "", "subtitle": s.get("subtitle") or "", "music": s.get("music") or "",
-                                      "music_mode": s.get("music_mode") or "mix"}, ensure_ascii=False), encoding="utf-8")
+                                      "music_mode": s.get("music_mode") or "mix", "beat_sync": s.get("beat_sync") is not False},
+                                     ensure_ascii=False), encoding="utf-8")
     input_list = None
     note = lambda name: _set(jid, message="Preparing a recording without a length: " + name)
     try:
@@ -2039,7 +2042,7 @@ def tidy_shared_cache(private_hashes=()) -> None:
     if not d.is_dir():
         return
     for sha in private_hashes:
-        for ext in (".json", ".npy"):
+        for ext in (".json", ".npy", ".key"):
             try:
                 (d / (str(sha) + ext)).unlink(missing_ok=True)
             except OSError:
@@ -2062,6 +2065,12 @@ def clear_shared_cache() -> int:
             busy = None
     if busy:
         raise ValueError("Wait until the current build has finished")
+    try:
+        from . import aiplus_library as _al
+        if _al.running():
+            raise ValueError("AI+ is being prepared for the Library: stop it on the Library page first")
+    except ImportError:
+        pass
     freed = shared_cache_bytes()
     shutil.rmtree(SHARED, ignore_errors=True)
     return freed

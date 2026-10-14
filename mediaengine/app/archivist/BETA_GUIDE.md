@@ -28,12 +28,14 @@ videos.
 With AI+ you can also pick a **theme** (sea and beach, mountains, children, family, celebration, animals, sunset,
 nature, snow, city, food, sport, road trip): the reel is then made of the moments that match it, from all the videos.
 A new theme for videos already analysed takes seconds. In the **Library**, "Find by theme (AI+)" shows which videos
-match a theme; "Prepare the search" looks at each video once (Private and rejected videos are never included), then
-every search is instant, and a video opens at its best moment.
+match a theme. "Prepare AI+ for the whole Library" looks at each video once (Private and rejected videos are never
+included): then every search is instant (a video opens at its best moment) and AI+ reels from these videos are built
+much faster. It can run overnight: it waits while a reel is being built and continues where it stopped.
 
 **Music and title** (optional, under "Music and title" when you make a reel or a variant): a title and a second line
-for the first 3 seconds, and your own song under the reel (with the videos' quieter sound or only the music). Changing
-them later makes a new version quickly.
+for the first 3 seconds, and your own song under the reel (with the videos' quieter sound or only the music). The
+cuts fall on the beat of the music ("Cuts on the beat of the music"; a song without a clear beat leaves the cuts as
+they were). Changing them later makes a new version quickly.
 
 ## What can leave this PC
 

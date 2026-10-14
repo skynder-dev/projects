@@ -182,6 +182,8 @@ def main():
             if stj in ("finished", "partial", "failed", "cancelled"):
                 break
             time.sleep(1)
+        # "Prepare AI+ for the whole Library" from scratch: the search, then what AI+ reels need (engine step, real model)
+        shutil.rmtree(al._scout_dir(), ignore_errors=True)
         t0 = time.time()
         c.post("/api/aiplus/library-index", json={}, headers=H)
         while al.status()["state"] == "running" and time.time() - t0 < 900:
@@ -194,6 +196,20 @@ def main():
         timings["library_search_ms"] = round(1000 * (time.time() - t0), 1)
         timings["library_search_top"] = res[:3]
         check("library_theme_search_answers", len(res) >= 2 and all("best_s" in x for x in res), res[:3])
+        check("library_prepared_for_reels_with_real_aiplus", st["reels_ready"] == st["reels_videos"] >= 2, st)
+        # an AI+ reel from the prepared videos: the model looks at no frame again
+        r = c.post("/auto/create", data={"folder": str(lib), "length": "15", "format": "social_hd", "sound": "auto", "mode": "semantic_plus"},
+                   headers=H)
+        if r.status_code == 302 and "/auto/p/" in r.headers.get("Location", ""):
+            pid2 = int(r.headers["Location"].rstrip("/").split("/")[-1])
+            j4, dt4 = wait(ae.project(pid2)["jobs"][0]["id"], 1200)
+            timings["aiplus_build_after_prepare_s"] = round(dt4, 1)
+            rev4 = ae.revision(j4.get("revision_id") or 0) if j4.get("status") == "done" else None
+            sem = (rev4 or {}).get("result", {}).get("semantic_timing") or {}
+            timings["aiplus_build_after_prepare_timing"] = sem
+            check("aiplus_reel_after_prepare_looks_at_no_frame", rev4 and sem.get("scout_embed_s") == 0, (j4.get("status"), j4.get("error"), sem))
+        else:
+            check("aiplus_reel_after_prepare_looks_at_no_frame", False, r.status_code)
     return finish(checks, timings, out_json)
 
 
