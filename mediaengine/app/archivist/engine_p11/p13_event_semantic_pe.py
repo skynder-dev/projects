@@ -7,7 +7,7 @@ candidate windows and the dense check of the best three):
   2. rank windows for "no theme" (the accepted technical windows, scored by the meaning of all their frames, weights as
      in the accepted hook: .68 meaning / .32 scout) or for a THEME (windows centred on the frames that match the theme
      best - any part of the video can be chosen);
-  3. dense check of the best three (accepted), final score .70 / .30 (accepted).
+  3. dense check of the best three (accepted; with a theme: the best three that match it), final score .70 / .30.
 A theme only needs the cached embeddings and a few text embeddings: no frame is decoded for the model again.
 """
 from __future__ import annotations
@@ -17,7 +17,10 @@ from pathlib import Path
 
 import numpy as np
 
-HOOK = "P13_EVENT_SEMANTIC_PE_V2"
+HOOK = "P13_EVENT_SEMANTIC_PE_V3"
+# what scout() stores (frames, features, embeddings): bump when scout() changes - ranking changes do not make the
+# model look at the frames again
+SCOUT_VERSION = "P13_SCOUT_V1"
 
 # fixed English descriptions (the model was trained on English captions); first the good, then the bad
 POSITIVE_PROMPTS = (
@@ -39,6 +42,9 @@ NEGATIVE_PROMPTS = (
     "a very dark underexposed frame",
     "a camera pointed at a car dashboard or interior",
     "a frame with no clear subject",
+    # added after the real-footage check (2026-10-13): a promo graphic and a close-up of twigs were chosen as moments
+    "a drawing, logo or text graphic",
+    "a close-up of the ground, branches or leaves",
 )
 
 # key: (English name for reports, descriptions). The interface shows Russian / English names (auto_edit.THEMES).
@@ -154,11 +160,15 @@ def rank(v7, scorer, path: Path, info: dict, emb, theme: str | None = None, ffmp
         c["semantic_score_0_1"] = round(float(s), 6)
         c["semantic_scout_score"] = round(.68 * float(s) + .32 * float(p), 6)
     cands.sort(key=lambda x: x["semantic_scout_score"], reverse=True)
-    for c in cands[:3]:
+    # the dense check (decodes the window) for the best three; with a theme only windows that match it - a video
+    # with no matching moment needs no decoding (a new theme over many videos was minutes of it)
+    dense = [c for c in cands if not theme or c["semantic_margin_raw"] > 0][:3]
+    for c in dense:
         c.update(v7.dense_window_quality(path, c["start_s"], c["end_s"], ffmpeg))
         c["final_score"] = round(.70 * c["semantic_scout_score"] + .30 * c["dense_score"], 6)
-    for c in cands[3:]:
-        c["final_score"] = round(.70 * c["semantic_scout_score"], 6)
+    for c in cands:
+        if "final_score" not in c:
+            c["final_score"] = round(.70 * c["semantic_scout_score"], 6)
     cands.sort(key=lambda x: x["final_score"], reverse=True)
     return {"hook": HOOK, "theme": theme or "", "video": str(path), "duration_s": duration,
             "rank_elapsed_s": round(time.perf_counter() - started, 3), "mode": "SELECT_BEST", "selection_claim": True,

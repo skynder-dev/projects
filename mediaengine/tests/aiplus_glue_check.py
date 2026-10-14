@@ -110,7 +110,7 @@ def main():
     check("aiplus_own_caches", (work / "w" / "semantic_reports_pe").is_dir() and not (work / "w" / "semantic_reports").exists()
           and any((work / "w" / "semantic_candidates_pe").glob("*.mp4")))
     rep = json.loads(next((work / "w" / "semantic_reports_pe").glob("*.json")).read_text(encoding="utf-8"))
-    check("aiplus_report_has_ranked_windows", rep["report"]["hook"] == "P13_EVENT_SEMANTIC_PE_V2" and len(rep["report"]["ranked"]) >= 2,
+    check("aiplus_report_has_ranked_windows", rep["report"]["hook"] == "P13_EVENT_SEMANTIC_PE_V3" and len(rep["report"]["ranked"]) >= 2,
           rep["report"].get("hook"))
     vd, ad = av_durations(work / "out1" / "MediaEngine Reel.mp4", ff)
     check("aiplus_reel_built_sound_fits", ad is not None and abs(vd - ad) <= 0.05 and vd > 3, (vd, ad))

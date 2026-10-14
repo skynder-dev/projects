@@ -345,6 +345,8 @@ class PeTextCache:
             try: tmp.unlink(missing_ok=True)
             except Exception: pass
 
+SEM_TIMING={}    # where the AI+ analysis time goes (result.semantic_timing)
+
 def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=None,theme=None,warnings=None):
     """Like build_semantic_candidates, with the AI+ hook. Own caches and moment ids, so AI and AI+ never mix.
     Every scout frame is embedded once per video (semantic_scout_pe/<sha>.json + .npy); a ranking per theme is cached
@@ -353,11 +355,13 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
     import p13_pe_core_contract as pc
     v7=load_module("medeng_event_semantic_v7",runtime/"medeng_event_semantic_v7.py")
     here=Path(hook.__file__)
-    hook_sha="|".join(sha256_file(here.with_name(n)) for n in ("p13_event_semantic_pe.py","p13_pe_core_adapter.py","p13_pe_core_contract.py"))
+    # what the model saw depends on the adapter, the contract, the scout step and the model - not on the ranking
+    code_sha="|".join(sha256_file(here.with_name(n)) for n in ("p13_pe_core_adapter.py","p13_pe_core_contract.py"))
     model_key="|".join(v[2] for v in pc.MODEL_FILES.values())
-    scout_key=hashlib.sha256((hook_sha+"|"+model_key).encode()).hexdigest()
+    scout_key=hashlib.sha256((code_sha+"|"+hook.SCOUT_VERSION+"|"+model_key).encode()).hexdigest()
     tkey=theme or "general"
-    rank_key=scout_key+"|"+hook.prompt_key(theme)
+    rank_key=scout_key+"|"+sha256_file(here)+"|"+hook.prompt_key(theme)
+    SEM_TIMING.clear(); SEM_TIMING.update(scout_embed_s=0.0,rank_s=0.0,clips_s=0.0,clips_cut=0,clips_cached=0,score_s=0.0)
     # what the model saw in each video (by its SHA-256): shared by all projects when the app says where
     # (MEDENG_P13_SCOUT_CACHE) - a new reel from videos analysed for another reel needs no frame looked at again
     scout_dir=Path(os.environ.get("MEDENG_P13_SCOUT_CACHE") or (work_dir/"semantic_scout_pe")); scout_dir.mkdir(parents=True,exist_ok=True)
@@ -383,7 +387,17 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
     # shared by all projects when the app says where (MEDENG_P13_TEXT_CACHE), else next to the other caches
     text_dir=Path(os.environ.get("MEDENG_P13_TEXT_CACHE") or (work_dir/"semantic_text_pe"))
     texts=PeTextCache(text_dir/(scout_key[:24]+".npz"),lambda: scorer_with("text"),identity)
-    specs=[]; reports=[]; kept=[]
+    specs=[]; reports=[]; kept=[]; deferred=[]
+    def make_spec(row,cc,rank):
+        t_=time.perf_counter(); n_=len(list(candidates_dir.glob("*.mp4"))) if candidates_dir.is_dir() else 0
+        spec=extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,"SEMANTIC_PE1")
+        SEM_TIMING["clips_s"]+=time.perf_counter()-t_
+        SEM_TIMING["clips_cut" if len(list(candidates_dir.glob("*.mp4")))>n_ else "clips_cached"]+=1
+        # a cached clip keeps its cut; its scores always come from the current ranking (theme, descriptions)
+        spec.update({"semantic_margin_raw":float(cc["semantic_margin_raw"]),"semantic_source_final_score":float(cc["final_score"]),
+                     "semantic_scout_score":float(cc["semantic_scout_score"]),"semantic_source_rank":int(rank),
+                     "technical_prominence":round(.50*float(cc["scout_eventness"])+.35*float(cc["scout_novelty"])+.15*float(cc["scout_quality"]),6)})
+        return spec
     for idx,row in enumerate(input_rows):
         progress("analyze",idx,len(input_rows),row["name"])
         try:
@@ -411,42 +425,57 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
                         progress("analyze",idx,len(input_rows),"loading the AI+ model")
                     sc=scorer_with("vision")
                     progress("analyze",idx,len(input_rows),row["name"])
+                    t_=time.perf_counter()
                     info,emb=hook.scout(v7,sc,Path(row["path"]),v52.FFMPEG,os.environ.get("MEDENG_FFPROBE","ffprobe"))
+                    SEM_TIMING["scout_embed_s"]+=time.perf_counter()-t_
                     tag=f"{os.getpid()}.{time.time_ns()}"       # own temp names: two builds may analyse the same video
                     tmp=scout_dir/(row["sha256"]+f".{tag}.tmp.npy"); np.save(tmp,emb.astype(np.float16)); os.replace(tmp,sn)
                     tj=scout_dir/(row["sha256"]+f".{tag}.tmp.json")
                     tj.write_text(json.dumps({"source_sha256":row["sha256"],"key":scout_key,"info":info},indent=2,sort_keys=True)+"\n",encoding="utf-8")
                     os.replace(tj,sj)
+                t_=time.perf_counter()
                 report=hook.rank(v7,texts,Path(row["path"]),info,emb,theme,v52.FFMPEG)
+                SEM_TIMING["rank_s"]+=time.perf_counter()-t_
                 atomic_json(rp,{"source_sha256":row["sha256"],"key":rank_key,"report":report})
             row_specs=[]
             for rank,c in enumerate(report.get("ranked",[]),1):
                 cc=dict(c); cc["_source_rank"]=rank
-                spec=extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,"SEMANTIC_PE1")
-                # a cached clip keeps its cut; its scores always come from the current ranking (theme, descriptions)
-                spec.update({"semantic_margin_raw":float(cc["semantic_margin_raw"]),"semantic_source_final_score":float(cc["final_score"]),
-                             "semantic_scout_score":float(cc["semantic_scout_score"]),"semantic_source_rank":int(rank),
-                             "technical_prominence":round(.50*float(cc["scout_eventness"])+.35*float(cc["scout_novelty"])+.15*float(cc["scout_quality"]),6)})
-                row_specs.append(spec)
+                if theme and float(cc["semantic_margin_raw"])<=0:
+                    deferred.append((row,cc,rank)); continue      # cut only if too few moments match the theme
+                row_specs.append(make_spec(row,cc,rank))
         except AiplusLoadError:
             raise
         except Exception as exc:
             if skipped is not None: skipped.append({"name":row["name"],"reason":"ANALYSIS_FAILED:"+(str(exc).split(":",1)[0] or type(exc).__name__)[:60]})
             continue
-        if not row_specs:
+        if not row_specs and not (theme and report.get("ranked")):     # with a theme: maybe nothing in it matches
             if skipped is not None: skipped.append({"name":row["name"],"reason":"NO_MOMENTS"})
             continue
         kept.append(row)
         reports.append({"source_name":row["name"],"source_sha256":row["sha256"],"theme":theme or "",
                         "rank1":report["ranked"][0] if report.get("ranked") else None})
         specs.extend(row_specs)
+    if theme and len(specs)<3:          # too few moments match the theme: the others are cut after all
+        for i_,(row,cc,rank) in enumerate(deferred):
+            progress("analyze",i_,len(deferred),row["name"])
+            try:
+                specs.append(make_spec(row,cc,rank))
+            except Exception:
+                continue
     if not specs: raise RuntimeError("NO_SEMANTIC_CANDIDATES")
+    t_=time.perf_counter()
     technical=v52.score_events(specs,work_dir/"SEMANTIC_PE_CANDIDATE_V22_SCORE_CACHE.json")
+    SEM_TIMING["score_s"]+=time.perf_counter()-t_
     if not theme:
-        for e in technical:
+        # how clearly a moment shows something worth seeing is compared across ALL videos too (absolute margins): the
+        # best window of a video of twigs or a sign no longer counts as much as the best window of a wedding dance
+        # (real-footage check, 2026-10-13); the video's own ranking and the accepted technical score keep their say
+        gm=robust01([float(e["semantic_margin_raw"]) for e in technical])
+        for e,g in zip(technical,gm):
             e["technical_v22_score"]=float(e["v22_score"])
-            e["v22_score"]=round(.80*float(e["semantic_source_final_score"])+.20*float(e["technical_v22_score"]),6)
-            e["selection_score_kind"]="PE_SEMANTIC_80_TECHNICAL_20_V1"
+            e["semantic_global_0_1"]=round(float(g),6)
+            e["v22_score"]=round(.45*float(g)+.35*float(e["semantic_source_final_score"])+.20*float(e["technical_v22_score"]),6)
+            e["selection_score_kind"]="PE_GLOBAL_45_SOURCE_35_TECHNICAL_20_V1"
         return technical,reports,kept
     # a theme: how well a moment matches is compared across ALL videos (absolute margins), so a folder's sea shots win
     # over another video's best non-sea moment; moments that do not match at all are left out when enough match
@@ -1316,7 +1345,8 @@ def run(args):
         "target_error_s":round(abs(actual-float(args.target_seconds)),3),
         "selection_mode":selection_mode,"semantic_requested":semantic_mode,"semantic_model":semantic_model if use_semantic else None,
         "theme":(str(getattr(args,"theme","") or "") or None) if (use_semantic and semantic_model=="pe_core_l14") else None,
-        "semantic_runtime":semantic_preflight,"semantic_reports":semantic_reports if use_semantic else [],
+        "semantic_runtime":semantic_preflight,
+        "semantic_timing":({k:(round(v,2) if isinstance(v,float) else v) for k,v in SEM_TIMING.items()} if (use_semantic and semantic_model=="pe_core_l14") else None),"semantic_reports":semantic_reports if use_semantic else [],
         "event_count":event_count,"event_cache":cache_status,
         "selected_count":len(order),"selected_sources":[e["source_name"] for e in order],
         "selected_event_ids":[str(e["event_id"]) for e in order],
