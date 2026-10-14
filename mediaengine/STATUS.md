@@ -168,12 +168,21 @@ The 11 runtime modules, adapter and validator are byte-identical to R2 (CI-check
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38500250069 on `4d83d31` — all green, build b81** (results branch `mediaengine-ci-results`,
-artifacts `MediaEngine-3.13.0-rc1-b81-Setup` and `MediaEngine-3.13.0-rc1-b81` (ZIP)): fast checks 89/89 · R3 = R2
-29/29 · robustness 32/32 (builds horizontal Full HD 1920×1080) · E2E 72/72, 74/74, 67/67, packaged Python 68/68 ·
-titles and own music 30/30 · Library 32/32 · AI+ glue 16/16 · real models 14/14 · Russian 152 pages, 0 English, 0
-network · package smoke PASS (b80 failed once at "switch to the next release" - timing; passed again in b81) · Setup
-smoke PASS · 4K/long footage 352 s.
+Latest full run: **38545517249 on `4c9eb7c` (2026-10-14) — all green, build b85** (results branch
+`mediaengine-ci-results`, artifacts `MediaEngine-3.13.0-rc1-b85-Setup` and `MediaEngine-3.13.0-rc1-b85` (ZIP)): fast
+checks 94/94 (beats: click track to 10 ms, jingle / tone no beat, length within 1.5 beats) · R3 = R2 29/29 ·
+robustness 32/32 · E2E 72/72, 74/74, packaged Python 68/68 · titles, own music and cuts on the beat 39/39 (every cut
+within 40 ms of a true beat in the result, the picture and the reel's sound; a short song that repeats) · Library
+37/37 (Prepare AI+ for the whole Library: pause for a reel, Stop, continue, Private) · AI+ glue 21/21 · real models
+16/16 (prepare with the real model, then an AI+ reel looks at no frame: `scout_embed_s` 0) · Russian 152 pages, 0
+English, 0 network · package smoke PASS · Setup smoke PASS · 4K/long footage 441 s.
+b82 / b83 failed one check on Windows (a picture cut one frame off the beat): the Windows FFmpeg build can start a
+segment one frame late; found with the manual probe workflow `mediaengine-probe`, fixed in b85.
+**Real music** (`mediaengine-realmusic`, 14–18 public Commons recordings): MediaEngine's beats against librosa's -
+median agreement 1.0 on tracks with a clear beat (mean 0.86; one off-beat lock on a disco track, one rock track at
+2/3 of librosa's tempo); reels with that music: every cut on a beat.
+**Big Library** (run 38534200173, 600 videos): 12/12 - preparing AI+ for the whole Library (stand-in model) 396 s,
+status of the Library card 42 ms, search 40 ms.
 **Real footage** (`mediaengine-realfootage`, 22 pinned public amateur videos from Wikimedia Commons, free licences,
 never the owner's): before / after the AI+ tuning of 2026-10-13 — general AI+ reel: twigs and a promo graphic gone,
 now mountain view, children, parade, two wedding dances, sunset; themes kids / sea / party 3 of 3 fitting, animals
