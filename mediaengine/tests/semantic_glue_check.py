@@ -41,14 +41,15 @@ def main():
     src = work / "in"
     shutil.copytree(fx / "seven", src)
 
-    def build(name):
+    def build(name, work_name=None):
         spec = importlib.util.spec_from_file_location("r3_under_test_" + name, R3 / "p11_folder_to_reel_r3.py")
         r3 = importlib.util.module_from_spec(spec); spec.loader.exec_module(r3)
         real_load = r3.load_module
         r3.load_module = lambda n, path: StubSemantic if n == "medeng_event_semantic_v7" else real_load(n, path)
         r3.semantic_runtime_preflight = lambda runtime, model_root, adapter_root: {"pass": True, "checks": {"stub": True}, "note": "STUB - not the model"}
         out_ = work / ("out" if name == "one" else "out_" + name)
-        args = argparse.Namespace(input_dir=str(src), input_list="", output_dir=str(out_), work_dir=str(work / ("w" if name == "one" else "w_" + name)),
+        wd = work / (work_name or ("w" if name == "one" else "w_" + name))
+        args = argparse.Namespace(input_dir=str(src), input_list="", output_dir=str(out_), work_dir=str(wd),
                                   runtime_dir=str(R3), target_seconds=30.0, audio="auto", semantic="required", profile="9x16",
                                   resolution="social_hd", progress_file="", exclude_events="", edits="", skip_sha_file="")
         r3.run(args)
@@ -61,6 +62,15 @@ def main():
     os.environ["MEDENG_SEMANTIC_WORKERS"] = "3"
     out3, _ = build("three")
     os.environ.pop("MEDENG_SEMANTIC_WORKERS", None)
+    # what the AI found and the moment clips, shared by all projects (the app sets MEDENG_AI_SHARED_CACHE): a new
+    # project from the same videos analyses and cuts nothing; a project made before the cache was shared hands its
+    # files over (moved, not analysed again)
+    os.environ["MEDENG_AI_SHARED_CACHE"] = str(work / "shared")
+    out_sn, _ = build("shared_new")
+    out_sa, _ = build("shared_again")
+    os.environ["MEDENG_AI_SHARED_CACHE"] = str(work / "shared_adopt")
+    out_ad, _ = build("adopt", work_name="w")          # the work folder of build "one", made without the shared cache
+    os.environ.pop("MEDENG_AI_SHARED_CACHE", None)
     res = json.loads((out / "MediaEngine Result.json").read_text(encoding="utf-8"))
     checks = []
 
@@ -81,22 +91,35 @@ def main():
     vd, ad = av_durations(out / "MediaEngine Reel.mp4", ff)
     check("ai_glue_reel_sound_fits_picture", ad is not None and abs(vd - ad) <= 0.05 and abs(vd - res["actual_duration_s"]) <= 0.1, (vd, ad))
     check("ai_glue_social_hd", (res["output"]["width"], res["output"]["height"]) == (1080, 1920))
-    # several videos analysed at once: the same moments in the same order, the same sound and the same picture
-    # (x264 in FFmpeg 7 is not always bit-identical from run to run, with "fast" as with "veryfast" - measured 1-2 runs in
-    # 10 on the same clip, 49-75 dB, far below what an eye can see; the same reel one frame late gives 9-18 dB) - so the
-    # picture is compared by PSNR, every frame >= 40 dB
-    res3 = json.loads((out3 / "MediaEngine Result.json").read_text(encoding="utf-8"))
-    same_cut = (res3["selected_event_ids"] == res["selected_event_ids"] and
-                [(x["source_name"], x["source_in_s"], x["source_out_s"]) for x in res3["segments"]] ==
-                [(x["source_name"], x["source_in_s"], x["source_out_s"]) for x in segs])
-    a_md5 = [subprocess.run([ff, "-v", "error", "-i", str(o / "MediaEngine Reel.mp4"), "-map", "0:a", "-f", "md5", "-"],
-                            capture_output=True, text=True).stdout.strip() for o in (out, out3)]
-    pq = subprocess.run([ff, "-hide_banner", "-i", str(out / "MediaEngine Reel.mp4"), "-i", str(out3 / "MediaEngine Reel.mp4"),
-                         "-lavfi", "[0:v][1:v]psnr", "-f", "null", "-"], capture_output=True, text=True).stderr
-    m = re.search(r"PSNR .*? min:(\S+)", pq)
-    psnr_min = float("inf") if m and m.group(1) == "inf" else (float(m.group(1)) if m else -1.0)
-    check("ai_glue_parallel_analysis_same_reel", same_cut and a_md5[0] == a_md5[1] and a_md5[0] and psnr_min >= 40,
-          (same_cut, a_md5, psnr_min))
+    def same_reel(o1, o2):
+        """Same moments in the same order, the same sound, the same picture (PSNR: x264 in FFmpeg 7 is not always
+        bit-identical from run to run - with "fast" as with "veryfast", 1-2 runs in 10 on the same clip, 49-75 dB, far
+        below what an eye can see; the same reel one frame late gives 9-18 dB - so every frame >= 40 dB)."""
+        r1, r2 = (json.loads((o / "MediaEngine Result.json").read_text(encoding="utf-8")) for o in (o1, o2))
+        cut = (r1["selected_event_ids"] == r2["selected_event_ids"] and
+               [(x["source_name"], x["source_in_s"], x["source_out_s"]) for x in r1["segments"]] ==
+               [(x["source_name"], x["source_in_s"], x["source_out_s"]) for x in r2["segments"]])
+        a_md5 = [subprocess.run([ff, "-v", "error", "-i", str(o / "MediaEngine Reel.mp4"), "-map", "0:a", "-f", "md5", "-"],
+                                capture_output=True, text=True).stdout.strip() for o in (o1, o2)]
+        pq = subprocess.run([ff, "-hide_banner", "-i", str(o1 / "MediaEngine Reel.mp4"), "-i", str(o2 / "MediaEngine Reel.mp4"),
+                             "-lavfi", "[0:v][1:v]psnr", "-f", "null", "-"], capture_output=True, text=True).stderr
+        m = re.search(r"PSNR .*? min:(\S+)", pq)
+        pmin = float("inf") if m and m.group(1) == "inf" else (float(m.group(1)) if m else -1.0)
+        return bool(cut and a_md5[0] == a_md5[1] and a_md5[0] and pmin >= 40), (cut, a_md5, pmin)
+
+    ok_, det_ = same_reel(out, out3)
+    check("ai_glue_parallel_analysis_same_reel", ok_, det_)
+    tim = {k: json.loads((o / "MediaEngine Result.json").read_text(encoding="utf-8")).get("semantic_timing") or {}
+           for k, o in (("new", out_sn), ("again", out_sa), ("adopt", out_ad))}
+    check("ai_shared_cache_filled_by_the_first_project", tim["new"].get("shared_cache") and tim["new"].get("videos_analysed", 0) > 0
+          and tim["new"].get("clips_cut", 0) > 0 and any((work / "shared" / "semantic_candidates").glob("*.mp4"))
+          and any((work / "shared" / "semantic_reports").glob("*.json")) and any((work / "shared" / "v22_metrics").glob("*.json")), tim["new"])
+    ok_, det_ = same_reel(out, out_sa)
+    check("ai_shared_cache_new_project_analyses_and_cuts_nothing", tim["again"].get("videos_analysed") == 0 and tim["again"].get("clips_cut") == 0
+          and tim["again"].get("clips_measured") == 0 and tim["again"].get("clips_cached", 0) > 0 and ok_, (tim["again"], det_))
+    ok_, det_ = same_reel(out, out_ad)
+    check("ai_shared_cache_takes_over_an_older_projects_files", tim["adopt"].get("videos_analysed") == 0 and tim["adopt"].get("clips_cut") == 0
+          and not any((work / "w" / "semantic_candidates").glob("*.mp4")) and ok_, (tim["adopt"], det_))
     # a drone's 1-2 s shots: "too short", not "could not be analysed" (the folder page already says "too short")
     sk = r3._semantic_skip_reason
     check("ai_short_clip_is_too_short", sk(RuntimeError("DENSE_INSUFFICIENT_FRAMES"), {"duration_s": 3.0}) == "TOO_SHORT_FOR_ANALYSIS"

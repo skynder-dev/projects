@@ -58,6 +58,28 @@ not read — reading even their first bytes would make Windows download them all
 in the cloud (OneDrive)…"); a folder that is entirely in the cloud says to choose "Always keep on this device"
 first. After the download the same reel is built again with them.
 
+## The AI's work kept for every reel, time left, a notification (2026-10-15)
+
+- **AI analysis shared by all projects** (`MediaEngine Data\data\auto_edit\shared`, by each video's SHA-256): the AI's
+  report per video, the moment clips and the clips' picture measurements. A new reel from videos analysed for another
+  reel (another project, a reel for every day, the same folder again) analyses and cuts nothing again; clips are kept
+  once. A project made before this hands its files over (moved, not copied). Kept up to 40 GB of clips (the ones used
+  longest ago go first; half when the disk has less than 10 GB free); videos marked Private leave it before every
+  build. "Check this PC" shows its size with "Free".
+- **Picture measurements of the moment clips in parallel** (up to 4 at once): the accepted scorer measured every clip
+  again, one after another; it now finds them all in its own cache format and computes exactly as before.
+- **One AI model session per build** instead of one per video (the accepted hook and adapter files are unchanged and
+  still hash-checked). Videos under 2 s are "too short" at once (the accepted scout needs 3 frames 1 s apart).
+- **Time left** while moments are found and while pieces are cut, from the real rate of that stage ("finding moments:
+  about 12 min left, then cutting and joining"). The old estimate from the whole job's percentage said "about 2 hours"
+  for a job that needed 34 more minutes.
+- **Windows notification** when a build that took more than a minute has finished (one at the end for reels for every
+  day); a click opens the reel. Local only. Off in Settings. Shown as "MediaEngine" when Setup made the Start-menu
+  shortcut (it now carries the app id `MediaEngine.Desktop`), else as "Windows PowerShell".
+- **Switching builds**: the launcher of the next build no longer takes the previous build's launcher (still finishing
+  a moment after its app answers) for its own and quietly does nothing (CI b101): one lock per program folder.
+- "What's new" shows only what came after the last time it was seen.
+
 ## AI mode with 4K videos (found on the owner's PC, 2026-10-14)
 
 The first AI reel from a folder of 18 drone videos (4K, ~3 min each) analysed ~5 min per video, one after another.

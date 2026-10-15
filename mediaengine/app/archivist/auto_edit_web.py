@@ -37,6 +37,30 @@ PAGE_CSS = r"""
 """
 
 
+_STAGE_SEEN: dict = {}
+
+
+def stage_eta_s(j: dict, now: float | None = None):
+    """Seconds left in the current stage (finding moments, cutting) from the real rate since this stage was first seen:
+    None until at least one video/piece is done in it and 20 s have passed. Stage-wise because finding moments in 4K
+    videos is most of a build (the whole-job percentage made "2 hours left" of a job that needed 34 more minutes)."""
+    import time as _t
+    now = _t.time() if now is None else now
+    jid, st = j.get("id"), j.get("stage")
+    done, total = int(j.get("done") or 0), int(j.get("total") or 0)
+    if j.get("status") != "running" or st not in ("analyze", "render") or total < 2:
+        _STAGE_SEEN.pop(jid, None)
+        return None
+    seen = _STAGE_SEEN.get(jid)
+    if not seen or seen[0] != st or done < seen[2]:
+        _STAGE_SEEN[jid] = (st, now, done)
+        return None
+    n = done - seen[2]
+    if n < 1 or now - seen[1] < 20 or done >= total:
+        return None
+    return round((now - seen[1]) / n * (total - done))
+
+
 def _when(iso) -> str:
     """'2026-10-11T08:12:55' -> '2026-10-11 08:12' (local time, as stored)."""
     t = str(iso or "")
@@ -269,7 +293,7 @@ def register(app, layout, e, human_bytes):
         whats_new = "" if (ae.whats_new_seen() or not ae.selftest_passed()) else (
             "<div class='card callout' style='margin-bottom:14px'><div class='row space'><b>New in this version</b>"
             "<form method='post' action='/auto/whats-new/seen' style='margin:0'><button class='btn2'>OK</button></form></div>"
-            "<ul style='margin:6px 0 0'>" + "".join(f"<li>{e(x)}</li>" for x in ae.WHATS_NEW) + "</ul></div>")
+            "<ul style='margin:6px 0 0'>" + "".join(f"<li>{e(x)}</li>" for x in ae.whats_new_items()) + "</ul></div>")
         first = "" if ae.selftest_passed() else (
             "<div class='card callout' style='margin-bottom:14px'><b>First time on this PC?</b> "
             "<span class='muted'>Check this PC first: it shows whether the AI model and video tools are found and builds a 5-second test reel "
@@ -348,8 +372,8 @@ const pf=document.getElementById('projFind');if(pf)pf.oninput=()=>{const q=pf.va
         if done:
             builds_html = f"<div class='card ae-done' style='margin-top:14px'>Removed <span translate='no'>{e(done)}</span>.</div>" + builds_html
         sb = ae.shared_cache_bytes()
-        shared_html = (f"<div class='card row space' style='margin-top:14px;flex-wrap:wrap'><span class='muted'>What AI+ saw in your videos "
-                       f"(kept for every reel, so the same video is never looked at twice): {human_bytes(sb)}</span>"
+        shared_html = (f"<div class='card row space' style='margin-top:14px;flex-wrap:wrap'><span class='muted'>What the AI found in your videos "
+                       f"and the cut moments (kept for every reel, so the same video is never analysed twice): {human_bytes(sb)}</span>"
                        "<form method='post' action='/auto/check/free-shared'><button class='btn2'>Free</button></form></div>") if sb else ""
         cb = ae.all_work_cache_bytes()
         if cb:
@@ -794,10 +818,10 @@ async function pollJob2(){if(!card)return;try{const r=await fetch('/api/auto/job
  document.getElementById('jobBar').style.width=j.percent+'%';document.getElementById('jobStage').textContent=j.stage_label+' · '+j.percent+'%';
  if(!window.ME_T0)window.ME_T0=document.title;document.title=j.percent+'% · '+window.ME_T0;   // progress visible on the tab
  const counted=j.total>1&&(j.stage==='render'||j.done>0);const el=Math.round(j.elapsed_s||0);
- // estimate only from real progress, only once there is enough of it (no invented timer)
+ // estimate only from the real rate of the current stage, once there is enough of it (no invented timer)
  let eta='';if(j.status==='running'&&j.stage==='finish')eta=' · final encode and check of the whole reel, can take a few minutes';
- else if(j.status==='running'&&j.percent>=15&&j.percent<100&&el>=20){const left=Math.round(el*(100-j.percent)/j.percent);
-  eta=left<60?' · less than a minute left':' · about '+Math.round(left/60)+' min left'}
+ else if(j.status==='running'&&j.eta_s!=null){const an=j.stage==='analyze';
+  eta=(an?' · finding moments: ':' · ')+(j.eta_s<60?'less than a minute left':'about '+Math.max(1,Math.round(j.eta_s/60))+' min left')+(an?', then cutting and joining':'')}
  document.getElementById('jobMsg').textContent=(counted?(Math.min(j.done+1,j.total)+' of '+j.total+' · '):'')+(j.message||'')+' · '+Math.floor(el/60)+':'+String(el%60).padStart(2,'0')+' elapsed'+eta;
  if(j.status==='done'&&j.revision_id){location.href=location.pathname+'?rev='+j.revision_id;return}   // the new version, not the old accepted one
  if(['done','failed','cancelled'].includes(j.status)){location.reload();return}}catch(e){}setTimeout(pollJob2,1000)}
@@ -837,6 +861,7 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
             return jsonify({"error": "not found"}), 404
         out = {k: j[k] for k in ("id", "status", "stage", "stage_label", "done", "total", "message", "percent", "error", "revision_id")}
         out["elapsed_s"] = ae.job_elapsed_s(j)
+        out["eta_s"] = stage_eta_s(j)
         if ae.ui_language() == "ru":
             from .auto_edit_ru import PHRASES
             out["stage_label"] = PHRASES.get(out["stage_label"], out["stage_label"])

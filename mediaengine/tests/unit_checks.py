@@ -4,7 +4,7 @@
 """
 from __future__ import annotations
 
-import os, subprocess, sys
+import json, os, shutil, subprocess, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -232,6 +232,38 @@ def main():
     st75 = (_dt.now() - _td(seconds=75)).isoformat(timespec="seconds")
     check("running job elapsed time is local, not UTC", _web._job_elapsed({"started_at": st75}) in ("1m 15s", "1m 16s")
           and 74 <= ae.job_elapsed_s({"started_at": st75}) <= 77, (_web._job_elapsed({"started_at": st75}), ae.job_elapsed_s({"started_at": st75})))
+    # time left from the real rate of the current stage (finding moments in 4K is most of a build)
+    from archivist import auto_edit_web as _aew
+    jj = {"id": 991, "status": "running", "stage": "analyze", "done": 2, "total": 18}
+    e0 = _aew.stage_eta_s(jj, now=1000.0)                        # first sight: no estimate
+    e1 = _aew.stage_eta_s(dict(jj, done=2), now=1100.0)          # nothing finished since: no estimate
+    e2 = _aew.stage_eta_s(dict(jj, done=4), now=1600.0)          # 2 videos in 600 s -> 14 left -> 4200 s
+    e3 = _aew.stage_eta_s(dict(jj, stage="render", done=0, total=6), now=1700.0)   # a new stage starts again
+    e4 = _aew.stage_eta_s(dict(jj, stage="render", done=3, total=6), now=1790.0)   # 3 pieces in 90 s -> 90 s
+    e5 = _aew.stage_eta_s(dict(jj, status="done"), now=1800.0)
+    check("time left is estimated per stage from its real rate", (e0, e1, e2, e3, e4, e5) == (None, None, 4200, None, 90, None),
+          (e0, e1, e2, e3, e4, e5))
+    # the shared AI cache: Private videos' reports and clips go, the longest unused clips go over the limit
+    sh = ae.SHARED; cd_ = sh / "semantic_candidates"; rd_ = sh / "semantic_reports"
+    cd_.mkdir(parents=True, exist_ok=True); rd_.mkdir(parents=True, exist_ok=True)
+    pv, okv = "a" * 64, "b" * 64
+    (rd_ / (pv + ".json")).write_text("{}"); (rd_ / (okv + ".json")).write_text("{}")
+    for i, src_ in enumerate([pv, okv, okv, okv]):
+        (cd_ / f"c{i}.mp4").write_bytes(b"x" * 1000)
+        (cd_ / f"c{i}.json").write_text(json.dumps({"source_sha256": src_}))
+        os.utime(cd_ / f"c{i}.json", (1000 + i, 1000 + i))
+    ae.tidy_shared_cache([pv], max_clip_bytes=2000, min_free_bytes=0)
+    left_ = sorted(x.name for x in cd_.glob("*.mp4"))
+    check("shared AI cache: Private videos go, the longest unused clips go over the limit",
+          not (rd_ / (pv + ".json")).exists() and (rd_ / (okv + ".json")).exists() and left_ == ["c2.mp4", "c3.mp4"], left_)
+    shutil.rmtree(sh, ignore_errors=True)
+    # a Windows notification after a long build (local only)
+    from archivist import notify as _nt
+    tx = _nt.toast_xml("A & B", "<x>", 'http://127.0.0.1:8775/auto/p/1?a=1&b="2"')
+    check("notification text is escaped", "A &amp; B" in tx and "&lt;x&gt;" in tx and 'a=1&amp;b=&quot;2&quot;' in tx, tx)
+    check("no notification after a short build", not _nt.reel_finished("t", True, 10, "http://x", False))
+    if os.name == "nt":
+        print("INFO a Windows notification could be shown on this PC:", _nt.show("MediaEngine", "unit checks", ""), flush=True)
     import types as _types
     check("cloud-only attribute detected", ae.cloud_only("x", _types.SimpleNamespace(st_file_attributes=0x400000))
           and not ae.cloud_only("x", _types.SimpleNamespace(st_file_attributes=0x20)))

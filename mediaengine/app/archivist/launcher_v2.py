@@ -52,13 +52,17 @@ _MUTEX = None
 LAST_UPDATE_CHECK = "not_checked"
 
 def single_instance():
-    """True if this is the only launcher for this install/port right now (Windows named mutex)."""
+    """True if this is the only launcher for this install/port right now (Windows named mutex). Per install: the
+    launcher of ANOTHER build that is still finishing (it exits a moment after its app answers) must not make this one
+    think "my own launcher is already starting it" and quietly do nothing - the switch to this build then never
+    happened (seen in CI b101)."""
     global _MUTEX
     if os.name!='nt': return True
     try:
-        import ctypes
+        import ctypes, hashlib
         k=ctypes.windll.kernel32
-        _MUTEX=k.CreateMutexW(None,False,f"Local\\MediaEngineLauncher-{PORT}")
+        tag=hashlib.sha256(os.path.normcase(str(HOME.resolve())).encode('utf-8')).hexdigest()[:12]
+        _MUTEX=k.CreateMutexW(None,False,f"Local\\MediaEngineLauncher-{PORT}-{tag}")
         return k.GetLastError()!=183   # ERROR_ALREADY_EXISTS
     except Exception:
         return True
@@ -415,6 +419,7 @@ def main():
         return 1
     if not (force or restart or install_version) and not single_instance():
         # another launcher of this install is already starting it (double click): just show the window
+        launcher_log('another launcher of this build is starting it')
         if wait_server_up(START_WAIT_S) and not no_browser: open_user_interface(force_browser=force_browser)
         return 0
     # Manual launch while already running should only focus/open the existing web app - unless the running one is

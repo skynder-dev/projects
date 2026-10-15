@@ -1485,6 +1485,8 @@ def _engine_env() -> dict:
     env.update({"MEDENG_FFMPEG": ff, "MEDENG_FFPROBE": ff, "MEDENG_P11_MODEL_ROOT": str(model_root()), "MEDENG_P13_PE_DIR": str(aiplus_dir()),
                 "MEDENG_P13_TEXT_CACHE": str(AE_ROOT / "shared" / "semantic_text_pe"),
                 "MEDENG_P13_SCOUT_CACHE": str(AE_ROOT / "shared" / "semantic_scout_pe"),
+                # what the AI found in each video and the moment clips, for every project (by the video's SHA-256)
+                "MEDENG_AI_SHARED_CACHE": str(AE_ROOT / "shared"),
                 "MEDENG_P11_ADAPTER_ROOT": str(ENGINE_DIR), "PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1",
                 "PYTHONDONTWRITEBYTECODE": "1"})   # engine helpers started without -E: nothing written into the program folder
     return env
@@ -1674,9 +1676,25 @@ def _run_job(jid: int) -> None:
     if proc.returncode != 0:
         shutil.rmtree(out_dir, ignore_errors=True)
         _set(jid, status="failed", stage="failed", finished_at=now_iso(), error=_engine_error(log_file))
+        _notify_finished(jid, p, False)
         return
     rid = _publish_revision(p["id"], jid, out_dir, s)
     _set(jid, status="done", stage="done", done=1, total=1, revision_id=rid, finished_at=now_iso(), message="Ready")
+    _notify_finished(jid, p, True)
+
+
+def _notify_finished(jid: int, p: dict, ok: bool) -> None:
+    """A Windows notification after a long build, when nothing else is waiting (reels for every day: one at the end)."""
+    try:
+        with db() as con:
+            if con.execute("SELECT 1 FROM ae_jobs WHERE status IN ('queued','running') AND id<>? LIMIT 1", (int(jid),)).fetchone():
+                return
+        from . import notify
+        from .config import APP_PORT
+        notify.reel_finished(str(p.get("title") or ""), ok, job_elapsed_s(job(jid) or {}),
+                             f"http://127.0.0.1:{APP_PORT}/auto/p/{int(p['id'])}", ui_language() == "ru")
+    except Exception:
+        pass
 
 
 def _private_hashes() -> list[str]:
@@ -1976,15 +1994,30 @@ def system_check() -> list[dict]:
     return rows
 
 
-WHATS_NEW_ID = "2026-10-14"
-WHATS_NEW = ["“Save MP4” in one step on any version (no separate Accept).",
-             "A reel for every day of a trip: open a big folder, “A reel for every day”.",
-             "Vertical reel from horizontal videos: the whole picture with blurred edges, if you like.",
-             "“Small copy for messengers” next to Save MP4.",
-             "Library: select videos and press “Make a reel”.",
-             "Reels up to 2 minutes; the new reel starts with your last settings.",
-             "A reel being made is shown at the top of every page.",
-             "AI mode is faster with big videos (4K): several videos are analysed at once, moments are cut quicker."]
+# (since, text): someone who saw the card before sees only what came after it
+WHATS_NEW_ITEMS = [
+    ("2026-10-14", "“Save MP4” in one step on any version (no separate Accept)."),
+    ("2026-10-14", "A reel for every day of a trip: open a big folder, “A reel for every day”."),
+    ("2026-10-14", "Vertical reel from horizontal videos: the whole picture with blurred edges, if you like."),
+    ("2026-10-14", "“Small copy for messengers” next to Save MP4."),
+    ("2026-10-14", "Library: select videos and press “Make a reel”."),
+    ("2026-10-14", "Reels up to 2 minutes; the new reel starts with your last settings."),
+    ("2026-10-14", "A reel being made is shown at the top of every page."),
+    ("2026-10-15", "AI mode is faster with big videos (4K): several videos are analysed at once, moments are cut quicker."),
+    ("2026-10-15", "A new reel from videos that were already analysed (another project, a reel for every day) analyses and cuts nothing again."),
+    ("2026-10-15", "While moments are being found: about how many minutes are left."),
+    ("2026-10-15", "A Windows notification when a reel that took more than a minute is ready (can be turned off in Settings)."),
+]
+WHATS_NEW_ID = max(d for d, _ in WHATS_NEW_ITEMS)
+WHATS_NEW = [t for _, t in WHATS_NEW_ITEMS]
+
+
+def whats_new_items() -> list[str]:
+    try:
+        seen = str((load_config().get("auto_edit") or {}).get("whats_new_seen") or "")
+    except Exception:
+        seen = ""
+    return [t for d, t in WHATS_NEW_ITEMS if d > seen]
 
 
 def whats_new_seen() -> bool:
@@ -2093,6 +2126,7 @@ def _quick_selftest(timeout_s: int, mode: str) -> dict:
     kw = process_kwargs() if os.name == "nt" else {"start_new_session": True}
     env = _engine_env()
     env.pop("MEDENG_P13_SCOUT_CACHE", None)     # the test reel measures the AI+ speed: always looks at its frames
+    env.pop("MEDENG_AI_SHARED_CACHE", None)     # ... and the AI speed; its generated clips stay out of the shared cache
     proc = subprocess.Popen(cmd, env=env, cwd=str(ENGINE_DIR), stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace", **kw)
     _attach_job_object(proc)
@@ -2315,22 +2349,66 @@ def shared_cache_bytes() -> int:
     return _tree_bytes(SHARED) if SHARED.exists() else 0
 
 
-def tidy_shared_cache(private_hashes=()) -> None:
-    """Before a build: what AI+ saw in videos that are Private now goes, and temp files of a stopped build."""
-    d = SHARED / "semantic_scout_pe"
-    if not d.is_dir():
+SHARED_CLIPS_MAX = 40 * 1024 ** 3      # moment clips kept for every project (4K: ~6 GB per 18 videos)
+SHARED_CLIPS_DIRS = ("semantic_candidates", "semantic_candidates_pe")
+
+
+def tidy_shared_cache(private_hashes=(), max_clip_bytes=None, min_free_bytes=10 * 1024 ** 3) -> None:
+    """Before a build: what the AI found in videos that are Private now goes (what AI+ saw, the AI's report and the
+    moment clips), temp files of a stopped build go, and the moment clips used longest ago go when there are more than
+    SHARED_CLIPS_MAX of them (or the disk is nearly full) - a later reel from those videos cuts them again."""
+    if not SHARED.is_dir():
         return
-    for sha in private_hashes:
-        for ext in (".json", ".npy", ".key"):
+    priv = {str(x).lower() for x in private_hashes}
+    d = SHARED / "semantic_scout_pe"
+    for sha in priv:
+        for f in [d / (sha + ext) for ext in (".json", ".npy", ".key")] + [SHARED / "semantic_reports" / (sha + ".json")]:
             try:
-                (d / (str(sha) + ext)).unlink(missing_ok=True)
+                f.unlink(missing_ok=True)
             except OSError:
                 pass
     old = time.time() - 6 * 3600
-    for t in d.glob("*.tmp.*"):
+    for sub in ("semantic_scout_pe", "semantic_reports", "v22_metrics") + SHARED_CLIPS_DIRS:
+        dd = SHARED / sub
+        if not dd.is_dir():
+            continue
+        for t in list(dd.glob("*.tmp.*")) + list(dd.glob("*.part")):
+            try:
+                if t.stat().st_mtime < old:
+                    t.unlink()
+            except OSError:
+                pass
+    clips = []          # (last use, bytes, clip, meta)
+    for sub in SHARED_CLIPS_DIRS:
+        dd = SHARED / sub
+        if not dd.is_dir():
+            continue
+        for meta in dd.glob("*.json"):
+            clip = meta.with_suffix(".mp4")
+            try:
+                st_m = meta.stat()
+                size = clip.stat().st_size if clip.is_file() else 0
+                if priv:
+                    src = str(json.loads(meta.read_text(encoding="utf-8")).get("source_sha256") or "").lower()
+                    if src in priv:
+                        clip.unlink(missing_ok=True); meta.unlink(missing_ok=True)
+                        continue
+                clips.append((st_m.st_mtime, size, clip, meta))
+            except (OSError, ValueError):
+                continue
+    cap = SHARED_CLIPS_MAX if max_clip_bytes is None else int(max_clip_bytes)
+    try:
+        if shutil.disk_usage(SHARED).free < min_free_bytes:      # nearly full disk: keep at most half
+            cap = min(cap, sum(c[1] for c in clips) // 2)
+    except OSError:
+        pass
+    total = sum(c[1] for c in clips)
+    for _, size, clip, meta in sorted(clips, key=lambda c: c[0]):
+        if total <= cap:
+            break
         try:
-            if t.stat().st_mtime < old:
-                t.unlink()
+            clip.unlink(missing_ok=True); meta.unlink(missing_ok=True)
+            total -= size
         except OSError:
             pass
 

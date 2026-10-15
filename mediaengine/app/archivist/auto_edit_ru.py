@@ -101,6 +101,8 @@ PHRASES = {
     "emoji and symbols the font cannot draw were left out of the title": "эмодзи и значки, которых нет в шрифте, в надпись не вошли",
     "What AI+ saw in your videos (kept for every reel, so the same video is never looked at twice): ":
         "Что ИИ+ увидел в твоих видео (хранится для всех роликов, чтобы одно видео не просматривать дважды): ",
+    "What the AI found in your videos and the cut moments (kept for every reel, so the same video is never analysed twice): ":
+        "Что ИИ нашёл в твоих видео и нарезанные моменты (хранится для всех роликов, чтобы одно видео не анализировать дважды): ",
     "Free": "Освободить", "Freed.": "Освобождено.",
     "AI+ is being prepared for the Library: stop it on the Library page first": "Сейчас идёт подготовка ИИ+ для Библиотеки: сначала останови её на странице Библиотеки",
     "title: ": "надпись: ", "music: ": "музыка: ", " (only music)": " (только музыка)", " (with the videos' sound)": " (со звуком видео)",
@@ -183,6 +185,11 @@ PHRASES = {
     "Reels up to 2 minutes; the new reel starts with your last settings.": "Ролики до 2 минут; новый ролик начинается с твоих прошлых настроек.",
     "A reel being made is shown at the top of every page.": "Ролик, который собирается, виден вверху каждой страницы.",
     "AI mode is faster with big videos (4K): several videos are analysed at once, moments are cut quicker.": "ИИ-режим быстрее с большими видео (4K): несколько видео анализируются одновременно, моменты нарезаются быстрее.",
+    "A new reel from videos that were already analysed (another project, a reel for every day) analyses and cuts nothing again.":
+        "Новый ролик из уже проанализированных видео (другой проект, ролик на каждый день) ничего не анализирует и не нарезает заново.",
+    "While moments are being found: about how many minutes are left.": "Во время поиска моментов видно, сколько примерно минут осталось.",
+    "A Windows notification when a reel that took more than a minute is ready (can be turned off in Settings).":
+        "Уведомление Windows, когда готов ролик, который собирался дольше минуты (выключается в Настройках).",
     "Vertical HD": "Вертикально HD",
     "A reel for every day": "Ролик на каждый день",
     "One reel for each of these days, made one after another:": "По ролику на каждый из этих дней, по очереди:",
@@ -440,6 +447,8 @@ def _translate_text(t: str) -> str:
 JS_PHRASES = {
     "' elapsed'": "' прошло'", "' · about '": "' · примерно '", "' min left'": "' мин осталось'",
     "' · less than a minute left'": "' · меньше минуты осталось'",
+    "' · finding moments: '": "' · поиск моментов: '", "'less than a minute left'": "'меньше минуты осталось'",
+    "'about '": "'примерно '", "', then cutting and joining'": "', потом нарезка и склейка'",
     "' · final encode and check of the whole reel, can take a few minutes'": "' · сборка и проверка всего ролика, может занять несколько минут'",
     "'A Windows folder window is open — it may be behind this window.'": "'Открыто окно выбора папки Windows — оно может быть за этим окном.'",
     "'A Windows window is open — it may be behind this window. Ctrl+click to choose several videos.'":

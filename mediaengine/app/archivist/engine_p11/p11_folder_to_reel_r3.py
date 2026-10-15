@@ -32,7 +32,8 @@ def sha256_file(path):
 
 def atomic_json(path,obj):
     path=Path(path); path.parent.mkdir(parents=True,exist_ok=True)
-    tmp=path.with_suffix(path.suffix+".part")
+    # own temp name per process and thread: caches shared by projects (and threads) never write the same temp file
+    tmp=path.with_name(f"{path.name}.{os.getpid()}.{threading.get_ident()}.part")
     tmp.write_text(json.dumps(obj,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     for k in range(8):     # Windows: a virus scanner or the indexer may hold the file for a moment
         try:
@@ -208,24 +209,44 @@ def sound_args(v52,src,dur):
 # a slightly better picture (SSIM 0.9963 vs 0.9955) and ~9 % larger files; 4K clips were most of the AI analysis time.
 CANDIDATE_X264=("-preset","veryfast","-crf","16")
 
-def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="SEMANTIC_V2"):
+_CLIP_STATS={"cut":0,"reused":0}
+_CLIP_LOCK=threading.Lock()
+
+def _adopt(legacy_dir,out_dir,names):
+    """Cache files a project made before the cache was shared: moved into the shared place (same drive: a rename), so
+    the videos analysed for it are not analysed again, and nothing is kept twice."""
+    if not legacy_dir: return
+    for n in names:
+        a=Path(legacy_dir)/n; b=Path(out_dir)/n
+        if a.is_file() and not b.exists():
+            try: os.replace(a,b)
+            except OSError:
+                try: shutil.copyfile(a,b)
+                except OSError: pass
+
+def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="SEMANTIC_V2", legacy_dir=None):
     start=float(c["start_s"]); end=float(c["end_s"]); dur=max(.25,end-start)
     raw=f"{source_sha}|{start:.3f}|{end:.3f}|{tag}".encode()
     eid=hashlib.sha256(raw).hexdigest()[:24]
     out_dir.mkdir(parents=True,exist_ok=True)
     clip=out_dir/f"{eid}.mp4"
     meta=out_dir/f"{eid}.json"
+    if legacy_dir and not clip.is_file(): _adopt(legacy_dir,out_dir,(clip.name,meta.name))
     if clip.is_file() and meta.is_file():
         try:
             m=json.loads(meta.read_text())
             if m.get("clip_sha256")==sha256_file(clip) and m.get("source_sha256")==source_sha:
-                # same content, maybe under a new name or in a new place: report where it is now
-                return dict(m,source_name=source_name,source_path=str(src))
+                with _CLIP_LOCK: _CLIP_STATS["reused"]+=1
+                try: os.utime(meta)          # last use: the app removes the longest unused clips when the cache is big
+                except OSError: pass
+                # same content, maybe under a new name or in a new place (another project, a moved data folder):
+                # report where it is now
+                return dict(m,source_name=source_name,source_path=str(src),clip_path=str(clip))
         except Exception:
             pass
         # damaged cache entry (power loss, disk error): rebuild it instead of failing the project forever
         clip.unlink(missing_ok=True); meta.unlink(missing_ok=True)
-    tmp=out_dir/f".{eid}.tmp.mp4"
+    tmp=out_dir/f".{eid}.{os.getpid()}.{threading.get_ident()}.tmp.mp4"
     if tmp.exists(): tmp.unlink()
     cmd=[v52.FFMPEG,"-hide_banner","-loglevel","error","-y",
          "-ss",f"{start:.3f}","-i",str(src),"-t",f"{dur:.3f}",
@@ -255,13 +276,84 @@ def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="S
         "semantic_source_rank":int(c["_source_rank"]),
     }
     atomic_json(meta,m)
+    with _CLIP_LOCK: _CLIP_STATS["cut"]+=1
     return m
+
+def _shared_root():
+    """Where the app keeps what the AI found in each video for every project (MEDENG_AI_SHARED_CACHE), or None."""
+    v=os.environ.get("MEDENG_AI_SHARED_CACHE")
+    return Path(v) if v else None
+
+def _prefill_v22(v52,specs,cache_path,shared=None):
+    """The accepted scorer (v52.score_events) measures every moment clip again, one after another (OpenCV reads each
+    clip; 4K clips take seconds each). Its measurements depend on the clip alone: kept per clip SHA-256 in the shared
+    cache, the missing ones measured in parallel, all written into the project's score cache in the scorer's own
+    format - score_events then finds every clip there and computes exactly as before."""
+    cache_path=Path(cache_path); cache={}
+    try:
+        o=json.loads(cache_path.read_text(encoding="utf-8"))
+        if o.get("scorer_version")==v52.SCORER_VERSION: cache=o.get("events") or {}
+    except Exception:
+        cache={}
+    need={}
+    for e in specs:
+        if (cache.get(e["event_id"]) or {}).get("clip_sha256")!=e["clip_sha256"]: need[e["event_id"]]=e
+    if not need: return 0      # clips measured now (not found in either cache)
+    mdir=(shared/"v22_metrics") if shared else None
+    measured=[]
+    def get(e):
+        f=(mdir/(e["clip_sha256"]+".json")) if mdir else None
+        if f is not None and f.is_file():
+            try:
+                o=json.loads(f.read_text(encoding="utf-8"))
+                if o.get("scorer_version")==v52.SCORER_VERSION and o.get("clip_sha256")==e["clip_sha256"]: return e,o["metrics"]
+            except Exception:
+                pass
+        m=v52.sample_clip(Path(e["clip_path"])); measured.append(1)
+        if f is not None:
+            try: atomic_json(f,{"scorer_version":v52.SCORER_VERSION,"clip_sha256":e["clip_sha256"],"metrics":m})
+            except OSError: pass
+        return e,m
+    import concurrent.futures
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max(1,min(4,(os.cpu_count() or 2)//2))) as ex:
+        got=list(ex.map(get,need.values()))
+    for e,m in got: cache[e["event_id"]]={"clip_sha256":e["clip_sha256"],"metrics":m}
+    tmp=cache_path.with_name(f"{cache_path.name}.{os.getpid()}.part"); tmp.parent.mkdir(parents=True,exist_ok=True)
+    tmp.write_text(json.dumps({"candidate":v52.CANDIDATE,"scorer_version":v52.SCORER_VERSION,"events":cache},indent=2),encoding="utf-8")
+    os.replace(tmp,cache_path)
+    return len(measured)
+
+def _share_fast_session():
+    """The accepted hook opens the AI model for every video (file checks and a new ONNX session: ~1-2 s, and with
+    videos in parallel three sessions using all cores each). One session for the whole build instead - the hook and
+    the adapter files stay as accepted (hash-checked), the session is the same, so are the results. ONNX Runtime
+    sessions may be run from several threads at once."""
+    try:
+        import p11_fast_onnx_adapter as fa
+    except Exception:
+        return
+    if getattr(fa.load_runtime,"_medeng_shared",False): return
+    orig=fa.load_runtime; cache={}; lock=threading.Lock()
+    def shared(profile_dir):
+        key=str(Path(profile_dir).resolve())
+        with lock:
+            if key not in cache: cache[key]=orig(profile_dir)
+            return cache[key]
+    shared._medeng_shared=True
+    fa.load_runtime=shared
 
 def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter_root,skipped=None):
     if str(adapter_root) not in sys.path: sys.path.insert(0,str(adapter_root))
     sem=load_module("medeng_event_semantic_v7",runtime/"medeng_event_semantic_v7.py")
-    reports_dir=work_dir/"semantic_reports"; reports_dir.mkdir(parents=True,exist_ok=True)
-    candidates_dir=work_dir/"semantic_candidates"
+    _share_fast_session()
+    # what the AI found in each video (by its SHA-256) and the moment clips: shared by all projects when the app says
+    # where - a new reel from videos analysed for another reel analyses and cuts nothing again
+    shared=_shared_root()
+    legacy_reports=work_dir/"semantic_reports"; legacy_cands=work_dir/"semantic_candidates"
+    reports_dir=(shared/"semantic_reports") if shared else legacy_reports; reports_dir.mkdir(parents=True,exist_ok=True)
+    candidates_dir=(shared/"semantic_candidates") if shared else legacy_cands
+    legacy_c=legacy_cands if shared and legacy_cands.is_dir() else None
+    stats0=dict(_CLIP_STATS)
     specs=[]
     reports=[]
     kept=[]
@@ -271,7 +363,12 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
 
     def one(row):
         """One video: its AI report (cached by SHA-256) and its candidate clips. Returns (report, row_specs, skip)."""
+        if 0<float(row.get("duration_s") or 0)<2.0:
+            # under 2 s the accepted scout gets fewer than its 3 frames (1 s apart) and always refuses: say so at once
+            # (seen: five 1-2 s drone shots tried again at every variant)
+            return None,None,{"name":row["name"],"reason":"TOO_SHORT_FOR_ANALYSIS"}
         rp=reports_dir/(row["sha256"]+".json")
+        if shared and not rp.is_file(): _adopt(legacy_reports,reports_dir,(rp.name,))
         report=None
         if rp.is_file():
             try:
@@ -294,7 +391,8 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
             t_=time.perf_counter()
             for rank,c in enumerate(report.get("ranked",[]),1):
                 cc=dict(c); cc["_source_rank"]=rank
-                row_specs.append(extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir))
+                row_specs.append(extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,
+                                                        legacy_dir=legacy_c))
             with tlock: timing["clips_s"]+=time.perf_counter()-t_
         except Exception as exc:
             # one unreadable file must not sink the whole reel: skip it and say so
@@ -341,8 +439,11 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
         specs.extend(row_specs)
     if not specs: raise RuntimeError("NO_SEMANTIC_CANDIDATES")
     t_=time.perf_counter()
+    timing["clips_measured"]=_prefill_v22(v52,specs,work_dir/"SEMANTIC_CANDIDATE_V22_SCORE_CACHE.json",shared)
     technical=v52.score_events(specs,work_dir/"SEMANTIC_CANDIDATE_V22_SCORE_CACHE.json")
     timing["score_s"]=time.perf_counter()-t_
+    timing["clips_cut"]=_CLIP_STATS["cut"]-stats0["cut"]; timing["clips_cached"]=_CLIP_STATS["reused"]-stats0["reused"]
+    timing["shared_cache"]=bool(shared)
     SEM_TIMING.clear(); SEM_TIMING.update(timing)
     # Shadow selection score: exact semantic per-source final score is primary, accepted V52 technical score is tie-break.
     for e in technical:
@@ -484,7 +585,9 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
     # (MEDENG_P13_SCOUT_CACHE) - a new reel from videos analysed for another reel needs no frame looked at again
     scout_dir=Path(os.environ.get("MEDENG_P13_SCOUT_CACHE") or (work_dir/"semantic_scout_pe")); scout_dir.mkdir(parents=True,exist_ok=True)
     reports_dir=work_dir/"semantic_reports_pe"; reports_dir.mkdir(parents=True,exist_ok=True)
-    candidates_dir=work_dir/"semantic_candidates_pe"
+    shared=_shared_root(); legacy_cands=work_dir/"semantic_candidates_pe"
+    candidates_dir=(shared/"semantic_candidates_pe") if shared else legacy_cands      # the moment clips: for every project
+    legacy_c=legacy_cands if shared and legacy_cands.is_dir() else None
     state={"scorer":None}
     def scorer_with(part):
         try:
@@ -507,10 +610,10 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
     texts=PeTextCache(text_dir/(scout_key[:24]+".npz"),lambda: scorer_with("text"),identity)
     specs=[]; reports=[]; kept=[]; deferred=[]
     def make_spec(row,cc,rank):
-        t_=time.perf_counter(); n_=len(list(candidates_dir.glob("*.mp4"))) if candidates_dir.is_dir() else 0
-        spec=extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,"SEMANTIC_PE1")
+        t_=time.perf_counter(); n_=_CLIP_STATS["cut"]
+        spec=extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,"SEMANTIC_PE1",legacy_dir=legacy_c)
         SEM_TIMING["clips_s"]+=time.perf_counter()-t_
-        SEM_TIMING["clips_cut" if len(list(candidates_dir.glob("*.mp4")))>n_ else "clips_cached"]+=1
+        SEM_TIMING["clips_cut" if _CLIP_STATS["cut"]>n_ else "clips_cached"]+=1
         # a cached clip keeps its cut; its scores always come from the current ranking (theme, descriptions)
         spec.update({"semantic_margin_raw":float(cc["semantic_margin_raw"]),"semantic_source_final_score":float(cc["final_score"]),
                      "semantic_scout_score":float(cc["semantic_scout_score"]),"semantic_source_rank":int(rank),
@@ -569,6 +672,7 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
                 continue
     if not specs: raise RuntimeError("NO_SEMANTIC_CANDIDATES")
     t_=time.perf_counter()
+    _prefill_v22(v52,specs,work_dir/"SEMANTIC_PE_CANDIDATE_V22_SCORE_CACHE.json",shared)
     technical=v52.score_events(specs,work_dir/"SEMANTIC_PE_CANDIDATE_V22_SCORE_CACHE.json")
     SEM_TIMING["score_s"]+=time.perf_counter()-t_
     if not theme:

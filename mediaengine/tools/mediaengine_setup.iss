@@ -74,7 +74,7 @@ Root: HKCU; Subkey: "Software\MediaEngine"; ValueType: string; ValueName: "Langu
 Root: HKCU; Subkey: "Software\MediaEngine"; ValueType: string; ValueName: "LanguageBuild"; ValueData: "{#PkgName}"; Flags: uninsdeletekey
 
 [Icons]
-Name: "{userprograms}\MediaEngine"; Filename: "{sys}\wscript.exe"; Parameters: """{app}\{#PkgName}\Start MediaEngine.vbs"""; WorkingDir: "{app}\{#PkgName}"; IconFilename: "{app}\{#PkgName}\MediaEngine.ico"; Comment: "MediaEngine {#AppVer}"
+Name: "{userprograms}\MediaEngine"; Filename: "{sys}\wscript.exe"; Parameters: """{app}\{#PkgName}\Start MediaEngine.vbs"""; WorkingDir: "{app}\{#PkgName}"; IconFilename: "{app}\{#PkgName}\MediaEngine.ico"; Comment: "MediaEngine {#AppVer}"; AppUserModelID: "MediaEngine.Desktop"
 
 [Run]
 Filename: "{sys}\wscript.exe"; Parameters: """{app}\{#PkgName}\Start MediaEngine.vbs"""; WorkingDir: "{app}\{#PkgName}"; Description: "{cm:LaunchProgram,MediaEngine}"; Flags: nowait postinstall skipifsilent
