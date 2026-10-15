@@ -79,6 +79,10 @@ first. After the download the same reel is built again with them.
 - **Switching builds**: the launcher of the next build no longer takes the previous build's launcher (still finishing
   a moment after its app answers) for its own and quietly does nothing (CI b101): one lock per program folder.
 - "What's new" shows only what came after the last time it was seen.
+- Moment clips are cut bit-identically every time (x264 `sync-lookahead=0`: its threaded lookahead made the same cut
+  differ in 2-3 runs of 12; without it 30 of 30 identical, same speed on 4K).
+- A reel whose videos have no useful sound (drone, action camera) offers "Add music…" next to "The same reel with the
+  original sound".
 - Found by a fresh-eyes review before release: the AI+ Library preparation (it runs beside a reel build) never prunes
   the shared clips now (it could have deleted clips the build was about to read); the engine estimates the time left
   itself and analyses videos known from before first (a mix of known and new 4K videos showed "less than a minute"

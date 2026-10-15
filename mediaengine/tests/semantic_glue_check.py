@@ -9,7 +9,7 @@ full render with sound fitted to picture. Any claim about AI quality needs the r
 """
 from __future__ import annotations
 
-import argparse, importlib.util, json, os, re, shutil, subprocess, sys
+import argparse, hashlib, importlib.util, json, os, re, shutil, subprocess, sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -109,6 +109,12 @@ def main():
 
     ok_, det_ = same_reel(out, out3)
     check("ai_glue_parallel_analysis_same_reel", ok_, det_)
+    # the moment clips themselves are bit-identical when cut again (x264 sync-lookahead=0)
+    # (cut three times: build "one" - its clips were handed over to shared_adopt -, "three" and "shared_new")
+    shas = [{f.name: hashlib.sha256(f.read_bytes()).hexdigest() for f in (work / d / "semantic_candidates").glob("*.mp4")}
+            for d in ("shared_adopt", "w_three", "shared")]
+    check("ai_moment_clips_cut_the_same_every_time", shas[0] and shas[0] == shas[1] == shas[2],
+          sorted(k for k in shas[0] if not shas[0].get(k) == shas[1].get(k) == shas[2].get(k))[:5])
     tim = {k: json.loads((o / "MediaEngine Result.json").read_text(encoding="utf-8")).get("semantic_timing") or {}
            for k, o in (("new", out_sn), ("again", out_sa), ("adopt", out_ad))}
     check("ai_shared_cache_filled_by_the_first_project", tim["new"].get("shared_cache") and tim["new"].get("videos_analysed", 0) > 0

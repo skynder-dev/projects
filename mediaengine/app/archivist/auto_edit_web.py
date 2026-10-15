@@ -1553,6 +1553,13 @@ def _review_html(p, rev, e, building=False):
         sound_btn = (f"<form method='post' action='/auto/p/{p['id']}/variant' style='margin-top:6px'>"
                      f"<input type='hidden' name='base_revision_id' value='{rev['id']}'><input type='hidden' name='sound' value='source'>"
                      f"<button class='btn2' style='font-size:13px;padding:5px 10px'>The same reel with the original sound</button></form>")
+        if "mixed" not in str(((res.get("audio") or {}).get("decision") or {}).get("reason") or "") and not rev["settings"].get("music"):
+            # no useful sound at all (drone, action camera): a reel with own music is the usual answer
+            sound_btn += ("<div class='row' style='margin-top:6px;gap:8px;align-items:center;flex-wrap:wrap'>"
+                          "<span class='muted'>The videos have no useful sound - a reel with your own music?</span>"
+                          "<button type='button' class='btn2' style='font-size:13px;padding:5px 10px' onclick=\"(()=>{const d=[...document.querySelectorAll('details.ae-dress')].pop();"
+                          "if(!d)return;d.open=true;d.scrollIntoView({behavior:'smooth',block:'center'});"
+                          "const b=[...d.querySelectorAll('button')].find(x=>x.dataset.pickMusic!==undefined);if(b)b.focus()})()\">Add music…</button></div>")
     return f"""<div class='ae-player' style='margin-top:14px'>
 <div class='card'><video id='reel' class='ae-video' controls preload='metadata' src='/auto/rev/{rev['id']}/video'></video>
 <div class='ae-strip film'>{strip}</div>

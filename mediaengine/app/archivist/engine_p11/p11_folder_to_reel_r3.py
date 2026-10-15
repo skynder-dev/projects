@@ -213,7 +213,10 @@ def sound_args(v52,src,dur):
 # AI moments are cut from the original once and the reel is rendered from these clips: the same settings as the
 # full-quality recut. Measured on 4K (H.264 100 Mbit/s and HEVC 10-bit): 1.9-2.2x faster than "fast"/crf 18, with
 # a slightly better picture (SSIM 0.9963 vs 0.9955) and ~9 % larger files; 4K clips were most of the AI analysis time.
-CANDIDATE_X264=("-preset","veryfast","-crf","16")
+# sync-lookahead=0: x264's threaded lookahead made the same cut differ now and then (FFmpeg 7, sound in the same
+# command: 2-3 runs in 12 on one clip); without it 30 of 30 were bit-identical, at the same speed on 4K. A clip cut
+# again (the shared cache removed it) is then the same clip, with the same measurements and the same choice.
+CANDIDATE_X264=("-preset","veryfast","-crf","16","-x264-params","sync-lookahead=0")
 
 _CLIP_STATS={"cut":0,"reused":0}
 _CLIP_LOCK=threading.Lock()

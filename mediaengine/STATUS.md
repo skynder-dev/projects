@@ -194,7 +194,15 @@ the same window twice -> one line.
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38639054567 on `a620e0a` (2026-10-14 evening) — all green, build b100** (results branch
+Latest full run: **38682362436 on `6d61d30` (2026-10-15) — all green, build b105** (artifacts
+`MediaEngine-3.13.0-rc1-b105-Setup` and ZIP): fast checks 106/106 (incl. a Windows notification shown on the runner) ·
+R3 = R2 29/29 · robustness 32/32 · AI glue 11/11 (one by one = three at once, shared cache: a new project analyses and
+cuts nothing, an older project hands its files over) · AI+ glue 21/21 · E2E 75/75, 80/80, 70/70 · titles and music
+40/40 · Library 38/38 · real models 17/17 · Russian 156 pages, 0 English, 0 network · Edge 11/11 · package smoke PASS
+(switching builds: the next build's launcher no longer stops at the previous one's lock) · Setup smoke PASS
+(Start-menu shortcut with the app id for notifications) · 4K/long footage.
+
+Previous: **38639054567 on `a620e0a` (2026-10-14 evening) — all green, build b100** (results branch
 `mediaengine-ci-results`, artifacts `MediaEngine-3.13.0-rc1-b100-Setup` and `MediaEngine-3.13.0-rc1-b100` (ZIP)): fast
 checks 101/101 · R3 = R2 29/29 · robustness 32/32 · E2E 75/75 (7 videos), 80/80 (2 videos + files), 70/70 (phone) ·
 titles, own music, beat cuts, blurred edges 40/40 · Library 38/38 · AI+ glue 21/21 · real models 17/17 · Russian 156
@@ -263,28 +271,28 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 | Row | Status | Note |
 | --- | --- | --- |
-| I01 clean launch without terminal | PARTIAL | Setup → Start-menu "MediaEngine" and `Start MediaEngine.vbs`, both started on the CI runner (Cyrillic folders) |
+| I01 clean launch without terminal | PASS (owner PC) | owner installed b100 with Setup and started it himself (2026-10-14); CI: Start menu and `Start MediaEngine.vbs` in Cyrillic folders |
 | I02 2 and 7 files, skip damaged | PARTIAL | synthetic fixtures; still video skipped |
 | I03 adaptive default, Length/Format/Sound only | PARTIAL | |
-| I04 R2 semantic=required started from the GUI | NOT_STARTED | needs owner PC (model not in git); one click: Check this PC → test reel with the AI model; AI glue tested with a labelled stub |
-| I05 960×540 / 540×960 / 1080×1920 | PARTIAL | all three probed in E2E |
+| I04 R2 semantic=required started from the GUI | PASS (owner PC) | b100: the app downloaded the model, AI test reel 32.1 s, AI reel from 18 real 4K drone videos (64 min, then the speed work of b101+) |
+| I05 960×540 / 540×960 / 1080×1920 | PARTIAL | all probed in E2E; owner PC: 1920×1080 and 1080×1920 from real 4K |
 | I06 one preset per run | PARTIAL | |
 | I07 15/30/60 and 5 for short footage | PARTIAL | 60 s bounded search unit-checked; shortfall shown |
 | I08 Sound Source/Auto/Mute | PARTIAL | applied sound shown; no loudness listening test |
 | I09 selection quality, camera-drop | NOT_STARTED | human blind review pending |
 | I10 player / seek / source links in GUI | PARTIAL | user interaction pending |
 | I11 manual override | PARTIAL | exclude, trim, reorder, replace, add — through app routes |
-| I12 variant reuses analysis | PARTIAL | keeps removed moments and edits |
+| I12 variant reuses analysis | PASS (owner PC) | vertical variant of the 18-video AI reel in 2 min 18 s (analysis reused); keeps removed moments and edits |
 | I13 Accept/Revert, immutable revisions | PARTIAL | |
 | I14 cancel / resume / crash | PARTIAL | cancel + retry; restart marks jobs interrupted |
 | I15 idempotent repeat, input change isolated | PARTIAL | Private change forces a new build |
-| I16 export verified accepted only, safe name, no overwrite | PARTIAL | |
+| I16 export verified accepted only, safe name, no overwrite | PASS (owner PC) | Save MP4 68.9 MB "checked: exactly the accepted version"; small copy for messengers |
 | I17 restart keeps projects | PARTIAL | |
 | I18 originals unchanged, path safety, absent drive | PARTIAL | unplugged source drive tested (project says so, nothing deleted, export works, builds again when back) |
 | I19 offline, no Supabase/GoDog | PARTIAL | app process blocked from non-loopback in tests; packaged Python behind a firewall rule on Windows CI |
 | I20 clean package, no Python in user's hands | PARTIAL | per-user Setup.exe (no admin) and ZIP; uninstall keeps the data; switching builds; old builds removable |
 | I21 full-video convert | PARTIAL | Windows CI: 1440p60 → 1080p keeps fps and every frame; portrait upright; HDR colours |
-| I22 other real media | PARTIAL | synthetic phone/camera files (rotation, HEVC, VFR, HDR, camcorder MTS, 4K, 5-min 1080p, HDV/DVD wide pixels, 18 more formats); real camera footage pending |
+| I22 other real media | PARTIAL | owner PC: 18 real DJI 4K drone videos (29 GB, 1-2 s shots skipped as too short); synthetic phone/camera files (rotation, HEVC, VFR, HDR, camcorder MTS, 5-min 1080p, wide pixels, 18 more formats) |
 | I23 public git clean | PARTIAL | |
 
 ## Deferred / waiting
