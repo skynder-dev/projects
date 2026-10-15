@@ -194,7 +194,11 @@ the same window twice -> one line.
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38704652129 on `8f6a15c` (2026-10-15) — all green, build b109**: as b108, plus clip boundaries
+Latest full run: **38719705555 on `b309ad2` (2026-10-15) — all green, build b110**: as b109, plus picture signatures
+remembered; 4K/long AI: first project 824 s, a second project from the same videos 108 s (analysis 1.5 s, boundary
+check 2.3 s instead of 34 s).
+
+Previous: **38704652129 on `8f6a15c` (2026-10-15) — all green, build b109**: as b108, plus clip boundaries
 in one pass (CI glue: the same rows as the accepted seeks with the app's OpenCV); 4K/long AI on a slower runner:
 first project 863 s (trim 71 s instead of 139 s), second project 146 s (analysis 1.4 s).
 
