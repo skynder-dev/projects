@@ -1,0 +1,222 @@
+{
+  "data": {
+    "repo": "prithivMLmods/OpenScene-Classification",
+    "revision": "bbf9f337d6c56ce5c4d31fe1ab4f1852af2a8cfe",
+    "per_class": 40,
+    "photos": 240,
+    "load_s": 15.7
+  },
+  "aiplus": {
+    "top1_fits": {
+      "buildings": 0.9,
+      "forest": 0.775,
+      "glacier": 0.875,
+      "mountain": 0.95,
+      "sea": 0.7,
+      "street": 0.925
+    },
+    "top1_examples": {
+      "buildings": {
+        "nature": 2,
+        "road": 2
+      },
+      "forest": {
+        "snow": 5,
+        "road": 2,
+        "mountains": 2
+      },
+      "glacier": {
+        "nature": 2,
+        "sport": 1,
+        "road": 1
+      },
+      "mountain": {
+        "nature": 1,
+        "road": 1
+      },
+      "sea": {
+        "sunset": 7,
+        "mountains": 2,
+        "aerial": 1
+      },
+      "street": {
+        "snow": 1,
+        "family": 1,
+        "kids": 1
+      }
+    },
+    "filter": {
+      "city": {
+        "own_pass": 0.825,
+        "unrelated_pass": 0.0
+      },
+      "mountains": {
+        "own_pass": 1.0,
+        "unrelated_pass": 0.113
+      },
+      "nature": {
+        "own_pass": 0.925,
+        "unrelated_pass": 0.16
+      },
+      "sea": {
+        "own_pass": 0.85,
+        "unrelated_pass": 0.055
+      },
+      "snow": {
+        "own_pass": 0.625,
+        "unrelated_pass": 0.056
+      }
+    },
+    "top1_fits_all": 0.854,
+    "seconds": 166.6
+  },
+  "ai_fast_local": {
+    "top1_fits": {
+      "buildings": 0.95,
+      "forest": 0.825,
+      "glacier": 0.925,
+      "mountain": 0.875,
+      "sea": 0.775,
+      "street": 0.95
+    },
+    "top1_examples": {
+      "buildings": {
+        "road": 2
+      },
+      "forest": {
+        "snow": 5,
+        "road": 1,
+        "aerial": 1
+      },
+      "glacier": {
+        "nature": 1,
+        "road": 1,
+        "aerial": 1
+      },
+      "mountain": {
+        "aerial": 3,
+        "nature": 1,
+        "road": 1
+      },
+      "sea": {
+        "sunset": 7,
+        "aerial": 2
+      },
+      "street": {
+        "snow": 1,
+        "kids": 1
+      }
+    },
+    "filter": {
+      "city": {
+        "own_pass": 0.9,
+        "unrelated_pass": 0.0
+      },
+      "mountains": {
+        "own_pass": 0.95,
+        "unrelated_pass": 0.056
+      },
+      "nature": {
+        "own_pass": 0.8,
+        "unrelated_pass": 0.07
+      },
+      "sea": {
+        "own_pass": 0.875,
+        "unrelated_pass": 0.04
+      },
+      "snow": {
+        "own_pass": 0.85,
+        "unrelated_pass": 0.081
+      }
+    },
+    "top1_fits_all": 0.883,
+    "seconds": 3.6
+  },
+  "coco": {
+    "repo": "nlphuji/mscoco_2014_5k_test_image_text_retrieval",
+    "revision": "551c4f7667f06fa82b4ef0a07617bfc4cf324ac3",
+    "photos": 300,
+    "captions": 1501,
+    "load_s": 31.4,
+    "aiplus": {
+      "text_to_photo_R1": 0.855,
+      "text_to_photo_R5": 0.983,
+      "photo_to_text_R1": 0.943,
+      "seconds": 254.1
+    },
+    "ai_fast_local": {
+      "text_to_photo_R1": 0.602,
+      "text_to_photo_R5": 0.906,
+      "photo_to_text_R1": 0.783,
+      "seconds": 51.5
+    },
+    "aiplus_reference_fp32": {
+      "text_to_photo_R1": 0.858,
+      "text_to_photo_R5": 0.985,
+      "photo_to_text_R1": 0.95,
+      "seconds": 802.7
+    }
+  },
+  "aiplus_reference_fp32": {
+    "top1_fits": {
+      "buildings": 0.9,
+      "forest": 0.775,
+      "glacier": 0.875,
+      "mountain": 0.975,
+      "sea": 0.725,
+      "street": 0.95
+    },
+    "top1_examples": {
+      "buildings": {
+        "nature": 2,
+        "road": 2
+      },
+      "forest": {
+        "snow": 5,
+        "road": 2,
+        "mountains": 2
+      },
+      "glacier": {
+        "nature": 2,
+        "sport": 1,
+        "road": 1
+      },
+      "mountain": {
+        "nature": 1
+      },
+      "sea": {
+        "sunset": 7,
+        "aerial": 2,
+        "mountains": 1
+      },
+      "street": {
+        "family": 1,
+        "kids": 1
+      }
+    },
+    "filter": {
+      "city": {
+        "own_pass": 0.85,
+        "unrelated_pass": 0.0
+      },
+      "mountains": {
+        "own_pass": 1.0,
+        "unrelated_pass": 0.1
+      },
+      "nature": {
+        "own_pass": 0.875,
+        "unrelated_pass": 0.18
+      },
+      "sea": {
+        "own_pass": 0.85,
+        "unrelated_pass": 0.07
+      },
+      "snow": {
+        "own_pass": 0.7,
+        "unrelated_pass": 0.044
+      }
+    },
+    "top1_fits_all": 0.867,
+    "seconds": 520.1
+  }
+}
