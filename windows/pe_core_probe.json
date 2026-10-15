@@ -1,0 +1,140 @@
+{
+  "platform": "win32",
+  "cpu_count": 4,
+  "model_repo_head_sha": "40c36ae81cea6449c590afcafe4a7378f1f26644",
+  "download_s": 23.9,
+  "identity": {
+    "profile": "PE_CORE_L14",
+    "repo": "onnx-community/PE-Core-L14-336-ONNX",
+    "revision": "40c36ae81cea6449c590afcafe4a7378f1f26644",
+    "files": {
+      "vision_model_int8.onnx": {
+        "bytes": 321065966,
+        "sha256": "7e28961190da8378b2b1faf562287da4d66128b5a013c3eb43558f210d273769"
+      },
+      "text_model_int8.onnx": {
+        "bytes": 355596172,
+        "sha256": "1f3a1123723d5c8abf0cf9f22b9fa8e4c836ca1105ce2ab86083cb74696526aa"
+      },
+      "vocab.json": {
+        "bytes": 862328,
+        "sha256": "5047b556ce86ccaf6aa22b3ffccfc52d391ea4accdab9c2f2407da5b742d4363"
+      },
+      "merges.txt": {
+        "bytes": 524619,
+        "sha256": "9fd691f7c8039210e0fced15865466c65820d09b63988b0174bfe25de299051a"
+      }
+    },
+    "image_size": 336,
+    "context_length": 32,
+    "network_during_analysis": false
+  },
+  "validate_s": 0.5,
+  "onnxruntime": "1.30.0",
+  "io_vision_model_int8.onnx": {
+    "inputs": [
+      [
+        "pixel_values",
+        "tensor(float)",
+        [
+          "batch_size",
+          3,
+          336,
+          336
+        ]
+      ]
+    ],
+    "outputs": [
+      [
+        "image_embeds",
+        "tensor(float)",
+        [
+          "batch_size",
+          1024
+        ]
+      ]
+    ]
+  },
+  "io_text_model_int8.onnx": {
+    "inputs": [
+      [
+        "input_ids",
+        "tensor(int64)",
+        [
+          "batch_size",
+          32
+        ]
+      ]
+    ],
+    "outputs": [
+      [
+        "text_embeds",
+        "tensor(float)",
+        [
+          "floor(Flatten_1453_o0__d1*batch_size/1024)",
+          1024
+        ]
+      ]
+    ]
+  },
+  "load_s": 0.0,
+  "text_encode_s": 0.63,
+  "image_encode_s_per_frame": 0.488,
+  "rss_mb_after_load_and_run": 950,
+  "adapter_top3": {
+    "coco_sample.png": {
+      "a photo of two cats lying on a couch": 1.0,
+      "a photo of a cat": 0.0,
+      "a blurry or shaky low quality frame": 0.0
+    },
+    "pipeline-cat-chonk.jpeg": {
+      "a photo of a cat": 0.999,
+      "a photo of two cats lying on a couch": 0.001,
+      "a blurry or shaky low quality frame": 0.0
+    },
+    "black": {
+      "a blurry or shaky low quality frame": 0.732,
+      "a black empty frame": 0.261,
+      "a beautiful sunset over the sea": 0.002
+    },
+    "orange_gradient": {
+      "a blurry or shaky low quality frame": 0.872,
+      "a beautiful sunset over the sea": 0.094,
+      "a black empty frame": 0.027
+    },
+    "noise": {
+      "a blurry or shaky low quality frame": 0.994,
+      "a black empty frame": 0.004,
+      "a photo of a cat": 0.0
+    }
+  },
+  "speed": {
+    "logical_cpus": 4,
+    "physical_cpus": 2,
+    "threads_default": {
+      "threads": null,
+      "s_per_frame": 0.447,
+      "load_s": 0.64
+    },
+    "threads_1": {
+      "threads": 1,
+      "s_per_frame": 0.833,
+      "load_s": 0.63
+    },
+    "threads_2": {
+      "threads": 2,
+      "s_per_frame": 0.443,
+      "load_s": 0.68
+    },
+    "threads_logical": {
+      "threads": 4,
+      "s_per_frame": 0.411,
+      "load_s": 0.61
+    },
+    "two_sessions_half_threads": {
+      "threads_each": 2,
+      "s_per_frame": 0.386
+    },
+    "batch_2": "refused: Fail: [ONNXRuntimeError] : 1 : FAIL : Non-zero status code returned while running Reshape node. Name:'/visual/transformer/resblocks.0/attn/Reshape_4' Status Message: N:\\_work\\1\\s\\onnxruntime\\core\\providers\\"
+  }
+}
