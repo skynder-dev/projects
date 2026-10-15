@@ -202,7 +202,15 @@ previews, the reel cut from the originals.
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38795441766 on `9d5e6c7` (2026-10-15) — all green, build b114**: AI / AI+ candidates as previews
+Latest full run: **38812143542 on `c08edcc` (2026-10-15) — all green, build b117**: as b114, plus Prepare in advance
+(E2E 7 videos 78/78 and 2 videos 83/83 with prepare then build: the build's analysis 0.02-0.04 s; AI glue 17/17: the
+build after preparing analyses, cuts and measures nothing, the same reel), the AI+ theme Aerial view (drone), the
+choice of moments and probe results shared across projects, where the accepted AI analysis spends its time. 4K/long
+AI on this runner: first project 382 s (worker time: frames looked at 171 s, closer look at the best three windows
+185 s, model 6 s, preview clips 151 s), a second project 100 s. Drone check on 10 Commons drone videos (run
+38814688890, ground parts pinned): 15/15, no pick on the ground; prepare 1011 s, the reel after it 28 s.
+
+Previous: **38795441766 on `9d5e6c7` (2026-10-15) — all green, build b114**: AI / AI+ candidates as previews
 (at most 960 px), the reel cut from the originals. 4K/long AI, first project: **606 s** (b113: 963 s) - analysis 424 s
 instead of 766 s (worker time: candidate clips 180 s instead of 637 s, measuring them 7 s instead of 84 s), boundary
 check 7 s instead of 65 s, pieces 109 s instead of 58 s (now cut from the 4K originals); the runner's 4 cores busy 99 %
@@ -336,8 +344,8 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-Owner: install the newest green `MediaEngine-3.13.0-rc1-b<N>-Setup` (b110 link sent 2026-10-15 morning; it installs
-next to the other builds, data stays in `MediaEngine Data`).
-Then (through the app's pages in the desktop app's browser pane, never computer use): a new reel from `D:\100MEDIA`
-timed against the 64 min of b100 (fresh AI analysis, fills the shared cache), then a second project from the same
-folder (should analyse and cut nothing), and a variant of project 1 (hands its older files to the shared cache).
+Owner: install `MediaEngine-3.13.0-rc1-b117-Setup` (run 38812143542, sent 2026-10-15 evening; installs next to the
+other builds, data stays in `MediaEngine Data`). Then (through the app's pages in the desktop app's browser pane,
+never computer use): a reel from `D:\100MEDIA` timed against b113's 42 min (the AI reports of b113 are reused, the
+previews are cut new) and the time breakdown read from the page (`data-timing`); "Prepare in advance" and the theme
+"Aerial view (drone)" on his own drone videos.
