@@ -202,7 +202,14 @@ previews, the reel cut from the originals.
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38737154855 on `a66dfd4` (2026-10-15) — all green, build b113**: as b110, plus the pieces of a
+Latest full run: **38795441766 on `9d5e6c7` (2026-10-15) — all green, build b114**: AI / AI+ candidates as previews
+(at most 960 px), the reel cut from the originals. 4K/long AI, first project: **606 s** (b113: 963 s) - analysis 424 s
+instead of 766 s (worker time: candidate clips 180 s instead of 637 s, measuring them 7 s instead of 84 s), boundary
+check 7 s instead of 65 s, pieces 109 s instead of 58 s (now cut from the 4K originals); the runner's 4 cores busy 99 %
+while finding moments. A second project from the same videos: 174 s. Next on `d2453f0`..`7528ee2`: Prepare in
+advance, the AI+ theme Aerial view (drone), the choice of moments and probe results shared across projects.
+
+Previous: **38737154855 on `a66dfd4` (2026-10-15) — all green, build b113**: as b110, plus the pieces of a
 reel cut up to three at once (AI glue 14/14 with the "three at once" build, E2E 2 videos 80/80 cutting three at once),
 the building page mentions the notification. (b112 failed only on a missing Russian progress text; fixed.)
 

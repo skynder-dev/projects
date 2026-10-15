@@ -421,7 +421,13 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
                     # a stand-in (camcorder remux): which real file it is, so the app can forget it with the real file
                     try: rp.with_suffix(".origin").write_text(row["origin_sha256"],encoding="utf-8")
                     except OSError: pass
-                with tlock: timing["analyse_s"]+=time.perf_counter()-t_; timing["videos_analysed"]+=1
+                with tlock:
+                    timing["analyse_s"]+=time.perf_counter()-t_; timing["videos_analysed"]+=1
+                    # where the accepted analysis spends it (its own report says): frames looked at (one FFmpeg per
+                    # frame), the model, the closer look at the best three windows
+                    for k_,rk_ in (("scout_s","scout_elapsed_s"),("model_s","semantic_elapsed_s"),("dense_s","dense_refine_elapsed_s")):
+                        try: timing[k_]=timing.get(k_,0.0)+float(report.get(rk_) or 0.0)
+                        except (TypeError,ValueError): pass
             row_specs=[]
             t_=time.perf_counter()
             for rank,c in enumerate(report.get("ranked",[]),1):
