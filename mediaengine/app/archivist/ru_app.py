@@ -183,6 +183,7 @@ APP_PHRASES: dict[str, str] = {
     "Archive folder": "Папка архива", "Private": "Личное (Private)", "Rejected quarantine": "Карантин отклонённых (Rejected)",
     "Free-space reserve GB": "Запас свободного места, ГБ", "Privacy screening": "Проверка приватности",
     "Technical quality triage": "Отбор по техническому качеству", "Save settings": "Сохранить настройки",
+    "about": "примерно", "min left": "мин осталось", "less than a minute left": "меньше минуты осталось",
     "Windows notification when a reel that took more than a minute is ready":
         "Уведомление Windows, когда готов ролик, который собирался дольше минуты",
     "Existing local sources": "Источники на компьютере", "Label": "Название", "Add source": "Добавить источник", "Remove": "Удалить",

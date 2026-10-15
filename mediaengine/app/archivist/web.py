@@ -110,7 +110,9 @@ async function pollJob(){
     }else if(s.discovery&&s.discovery.running){b.style.display='block';txt.textContent='Discovering · '+(s.discovery.current_source||'');sub.textContent=s.discovery.found+' found';bar.style.width='0%';lastJobSample=null}
     else if(s.active_reel&&location.pathname!=='/auto/p/'+s.active_reel.project_id){   // a reel being made, seen from any page
       const a=s.active_reel;b.style.display='block';txt.textContent=(window.ME_L?ME_L('Making a reel'):'Making a reel')+': '+a.title+' · '+a.percent+'%';
-      sub.textContent=(window.ME_L?ME_L(a.stage):a.stage);bar.style.width=a.percent+'%';lastJobSample=null;
+      const L_=x=>window.ME_L?ME_L(x):x;
+      sub.textContent=L_(a.stage)+(a.eta_min==null?'':' · '+(a.eta_min<1?L_('less than a minute left'):L_('about')+' '+a.eta_min+' '+L_('min left')));
+      bar.style.width=a.percent+'%';lastJobSample=null;
       const l=b.querySelector('a');if(l){l.href='/auto/p/'+a.project_id;l.textContent=(window.ME_L?ME_L('Open the reel'):'Open the reel')}}
     else{b.style.display='none';lastJobSample=null}
   }catch(e){}
@@ -346,8 +348,11 @@ def create_app():
                 rj=con.execute("SELECT j.*,p.title FROM ae_jobs j JOIN ae_projects p ON p.id=j.project_id WHERE j.status='running' ORDER BY j.id LIMIT 1").fetchone()
             if rj:
                 d=dict(rj)
+                from .auto_edit_web import stage_eta_s as _eta
+                left=_eta(d)
                 snap['active_reel']={'project_id':int(d['project_id']),'title':d['title'],'percent':_ae.job_percent(d),
-                                     'stage':_ae.STAGE_LABEL.get(d.get('stage') or '','')}
+                                     'stage':_ae.STAGE_LABEL.get(d.get('stage') or '',''),
+                                     'eta_min':(None if left is None else int(round(left/60)))}
         except Exception:
             pass
         return jsonify(snap)
