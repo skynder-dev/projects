@@ -113,7 +113,8 @@ def main():
            for k, o in (("new", out_sn), ("again", out_sa), ("adopt", out_ad))}
     check("ai_shared_cache_filled_by_the_first_project", tim["new"].get("shared_cache") and tim["new"].get("videos_analysed", 0) > 0
           and tim["new"].get("clips_cut", 0) > 0 and any((work / "shared" / "semantic_candidates").glob("*.mp4"))
-          and any((work / "shared" / "semantic_reports").glob("*.json")) and any((work / "shared" / "v22_metrics").glob("*.json")), tim["new"])
+          and any((work / "shared" / "semantic_reports").glob("*.json")) and any((work / "shared" / "v22_metrics").glob("*.json"))
+          and (work / "shared" / "source_sha256.json").is_file(), tim["new"])
     ok_, det_ = same_reel(out, out_sa)
     check("ai_shared_cache_new_project_analyses_and_cuts_nothing", tim["again"].get("videos_analysed") == 0 and tim["again"].get("clips_cut") == 0
           and tim["again"].get("clips_measured") == 0 and tim["again"].get("clips_cached", 0) > 0 and ok_, (tim["again"], det_))

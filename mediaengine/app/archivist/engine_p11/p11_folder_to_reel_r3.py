@@ -95,7 +95,7 @@ def _cached_sha(p,size,cache):
     if isinstance(cache,dict): cache[key]={"bytes":size,"mtime_ns":mt,"sha256":digest}
     return digest
 
-def discover_input(folder, probe=None, skipped=None, skip_sha=None, paths=None, sha_cache=None):
+def discover_input(folder, probe=None, skipped=None, skip_sha=None, paths=None, sha_cache=None, sha_seed=None):
     """Input videos: every supported file in <folder>, or exactly <paths> (files the user chose; names must be unique).
     sha_cache: a JSON file in the work folder that remembers the SHA-256 of each source by size and change time."""
     if paths is not None:
@@ -115,6 +115,8 @@ def discover_input(folder, probe=None, skipped=None, skip_sha=None, paths=None, 
     if not vids: raise RuntimeError("NO_SUPPORTED_VIDEO_FILES")
     if len(vids)>64: raise RuntimeError("TOO_MANY_INPUT_FILES")
     rows=[]; seen={}; cache=_load_sha_cache(sha_cache); cache0=json.dumps(cache,sort_keys=True)
+    if sha_seed:      # the project's own list from before the list was shared
+        for k,v in _load_sha_cache(sha_seed).items(): cache.setdefault(k,v)
     for i,p in enumerate(vids,1):
         progress("inputs",i-1,len(vids),p.name)
         try:
@@ -1463,8 +1465,12 @@ def run(args):
     v52=load_module("medeng_targeted_auto_edit_v26",runtime/"medeng_targeted_auto_edit_v26.py")
     dress=load_dress(getattr(args,"dress",""),v52.FFMPEG)   # title / own music: a bad music file is refused now, not after the build
     skipped_inputs=[]; warnings=[]
+    # the SHA-256 of each source by path, size and change time: shared by all projects when the app says where (a new
+    # reel from the same 29 GB folder does not read every byte again)
+    sh_=_shared_root()
     input_rows=discover_input(input_dir,probe=v52.ffprobe,skipped=skipped_inputs,skip_sha=load_skip_sha(args.skip_sha_file),paths=input_list,
-                              sha_cache=work_dir/"source_sha256.json"); fingerprint=input_fingerprint(input_rows)
+                              sha_cache=(sh_/"source_sha256.json") if sh_ else work_dir/"source_sha256.json",
+                              sha_seed=(work_dir/"source_sha256.json") if sh_ else None); fingerprint=input_fingerprint(input_rows)
     seqmod=load_module("p11_montage_sequence_shadow_v4",runtime/"p11_montage_sequence_shadow_v4.py")
     pacemod=load_module("p11_montage_pacing_shadow_v1",runtime/"p11_montage_pacing_shadow_v1.py")
     audiomod=load_module("p11_audio_coherence_shadow_v2",runtime/"p11_audio_coherence_shadow_v2.py")
