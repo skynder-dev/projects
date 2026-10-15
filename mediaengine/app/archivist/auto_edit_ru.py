@@ -160,6 +160,7 @@ PHRASES = {
     "Project deleted. Freed:": "Проект удалён. Освобождено:",
     "Delete": "Удалить",
     "Analysis and render caches of all projects (versions and saved MP4 stay; the next build of a project analyses again):": "Кэш анализа и сборки всех проектов (версии и сохранённые MP4 останутся; следующая сборка проекта заново проанализирует видео):",
+    "Analysis and render caches of all projects (versions and saved MP4 stay; the next build of a project makes them again):": "Кэш анализа и сборки всех проектов (версии и сохранённые MP4 останутся; следующая сборка проекта сделает его заново):",
     "Freed:": "Освобождено:",
     "Small copy for messengers": "Маленькая копия для мессенджеров", "About 720p, a much smaller file": "Около 720p, файл намного меньше",
     "Small copy saved:": "Маленькая копия сохранена:",
@@ -348,6 +349,7 @@ PHRASES = {
     "Blind comparisons": "Слепые сравнения", "preferred over": "лучше, чем", "about the same": "примерно одинаково",
     "Space used: versions": "Занято: версии", "analysis cache": "кэш анализа", "Free cache": "Очистить кэш",
     "(can be freed; the next build then analyses the videos again)": "(можно очистить; следующая сборка заново проанализирует видео)",
+    "(can be freed; the next build makes it again - what the AI found in the videos is kept for every project)": "(можно очистить; следующая сборка сделает его заново — найденное ИИ в видео хранится для всех проектов)",
     # blind comparison
     "Auto Edit · blind comparison": "Автомонтаж · слепое сравнение", "A is better": "A лучше", "B is better": "B лучше",
     "About the same": "Примерно одинаково", "Result": "Результат", "Back to the project": "Назад к проекту",

@@ -382,7 +382,7 @@ const pf=document.getElementById('projFind');if(pf)pf.oninput=()=>{const q=pf.va
         cb = ae.all_work_cache_bytes()
         if cb:
             shared_html += (f"<div class='card row space' style='margin-top:14px;flex-wrap:wrap'><span class='muted'><span>Analysis and render caches "
-                            f"of all projects (versions and saved MP4 stay; the next build of a project analyses again):</span> {human_bytes(cb)}</span>"
+                            f"of all projects (versions and saved MP4 stay; the next build of a project makes them again):</span> {human_bytes(cb)}</span>"
                             "<form method='post' action='/auto/check/free-caches'><button class='btn2'>Free</button></form></div>")
         if request.args.get("freed_shared"):
             shared_html = "<div class='card ae-done' style='margin-top:14px'>Freed.</div>" + shared_html
@@ -813,7 +813,7 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
         if du["cache_bytes"] or du["versions_bytes"]:
             parts.append(f"<div class='card row space' style='margin-top:14px;flex-wrap:wrap'><span class='muted'>Space used: versions "
                          f"{human_bytes(du['versions_bytes'])} · analysis cache {human_bytes(du['cache_bytes'])}"
-                         f"{' (can be freed; the next build then analyses the videos again)' if du['cache_bytes'] else ''}</span>"
+                         f"{' (can be freed; the next build makes it again - what the AI found in the videos is kept for every project)' if du['cache_bytes'] else ''}</span>"
                          + (f"<form method='post' action='/auto/p/{pid}/free-cache'><button class='btn2'>Free cache</button></form>" if du["cache_bytes"] else "")
                          + "</div>")
         script = """
