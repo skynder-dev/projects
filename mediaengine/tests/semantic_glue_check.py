@@ -123,9 +123,10 @@ def main():
           and not any((work / "w" / "semantic_candidates").glob("*.mp4")) and ok_, (tim["adopt"], det_))
     # a drone's 1-2 s shots: "too short", not "could not be analysed" (the folder page already says "too short")
     sk = r3._semantic_skip_reason
-    check("ai_short_clip_is_too_short", sk(RuntimeError("DENSE_INSUFFICIENT_FRAMES"), {"duration_s": 3.0}) == "TOO_SHORT_FOR_ANALYSIS"
-          and sk(RuntimeError("SOMETHING_ELSE: x"), {"duration_s": 1.8}) == "TOO_SHORT_FOR_ANALYSIS"
-          and sk(RuntimeError("SOMETHING_ELSE: x"), {"duration_s": 30.0}) == "ANALYSIS_FAILED:SOMETHING_ELSE")
+    check("ai_short_clip_is_too_short", sk(RuntimeError("SCOUT_INSUFFICIENT_FRAMES"), {"duration_s": 30.0}) == "TOO_SHORT_FOR_ANALYSIS"
+          and sk(RuntimeError("DENSE_INSUFFICIENT_FRAMES"), {"duration_s": 2.3}) == "TOO_SHORT_FOR_ANALYSIS"
+          and sk(RuntimeError("DENSE_INSUFFICIENT_FRAMES"), {"duration_s": 200.0}) == "ANALYSIS_FAILED:DENSE_INSUFFICIENT_FRAMES"
+          and sk(RuntimeError("SOMETHING_ELSE: x"), {"duration_s": 2.3}) == "ANALYSIS_FAILED:SOMETHING_ELSE")
     print(json.dumps({"passed": sum(checks), "total": len(checks), "reel_s": res["actual_duration_s"], "segments": len(segs)}))
     return 0 if all(checks) else 1
 

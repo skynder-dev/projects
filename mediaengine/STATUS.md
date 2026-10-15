@@ -184,7 +184,8 @@ and then on Windows (now watched and run again; faulthandler dumps in long check
 Owner PC: 16 logical cores, 69 GB RAM, Windows 10.0.26300, FFmpeg 7.1 (gyan). Worked: "Download the AI model",
 AI test reel (32.1 s), a 30 s Horizontal Full HD AI reel from `D:\100MEDIA` (18 drone videos 4K, 29 GB; 12 used,
 6 moments, sound off by Auto - no useful sound in drone videos), Save MP4 (68.9 MB, checked against the version).
-Found: the AI analysis took 64 min, one video after another; measured here, cutting the 8 moment clips per video
+A vertical variant of it took 2 min 18 s (analysis reused), the crop of the drone footage is fine; "Small copy for
+messengers" works. Found: the AI analysis took 64 min, one video after another; measured here, cutting the 8 moment clips per video
 from 4K (x264 `fast`) was most of it -> next build: `veryfast`/crf 16 clips (1.9-2.2x faster, picture not worse)
 and up to 3 videos at once (a copy of a video is analysed once - two threads once wrote the same file). Five 1-2 s
 drone clips were "could not be analysed" (the folder page said "too short") -> "too short". The replace list showed
@@ -295,6 +296,7 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-Owner: download the newest `MediaEngine-3.13.0-rc1-b<N>-Setup` artifact and run the Setup (it installs into
-`D:\projects\medeng\<build>`), start "MediaEngine" from the Start menu, open "Check this PC" → "Download the AI model"
-→ "Build a test reel with the AI model", then make a reel from a real folder.
+Owner: install the newest green `MediaEngine-3.13.0-rc1-b<N>-Setup` (it installs into `D:\projects\medeng\<build>`).
+Then (through the app's pages in the desktop app's browser pane, never computer use): a new reel from `D:\100MEDIA`
+timed against the 64 min of b100 (fresh AI analysis, fills the shared cache), then a second project from the same
+folder (should analyse and cut nothing), and a variant of project 1 (hands its older files to the shared cache).

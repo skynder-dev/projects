@@ -243,6 +243,11 @@ def main():
     e5 = _aew.stage_eta_s(dict(jj, status="done"), now=1800.0)
     check("time left is estimated per stage from its real rate", (e0, e1, e2, e3, e4, e5) == (None, None, 4200, None, 90, None),
           (e0, e1, e2, e3, e4, e5))
+    ae.ENGINE_ETA[992] = ("analyze", 600.0, 1000.0)      # the engine's own estimate wins (known videos went first)
+    e6 = _aew.stage_eta_s(dict(jj, id=992), now=1100.0)
+    ae.ENGINE_ETA[992] = ("analyze", None, 1000.0)
+    e7 = _aew.stage_eta_s(dict(jj, id=992), now=1100.0)
+    check("the engine's time left is counted down, none before it knows", (e6, e7) == (500, None), (e6, e7))
     # the shared AI cache: Private videos' reports and clips go, the longest unused clips go over the limit
     sh = ae.SHARED; cd_ = sh / "semantic_candidates"; rd_ = sh / "semantic_reports"
     cd_.mkdir(parents=True, exist_ok=True); rd_.mkdir(parents=True, exist_ok=True)
@@ -252,10 +257,17 @@ def main():
         (cd_ / f"c{i}.mp4").write_bytes(b"x" * 1000)
         (cd_ / f"c{i}.json").write_text(json.dumps({"source_sha256": src_}))
         os.utime(cd_ / f"c{i}.json", (1000 + i, 1000 + i))
+    al = "c" * 64                                   # a stand-in (camcorder remux) of the Private video
+    (rd_ / (al + ".json")).write_text("{}"); (rd_ / (al + ".origin")).write_text(pv)
+    (cd_ / "c9.mp4").write_bytes(b"x"); (cd_ / "c9.json").write_text(json.dumps({"source_sha256": al, "origin_sha256": pv}))
+    (cd_ / "orphan.mp4").write_bytes(b"x"); os.utime(cd_ / "orphan.mp4", (1000, 1000))   # no description: a stopped build
+    ae.tidy_shared_cache([pv], max_clip_bytes=2000, min_free_bytes=0, prune_clips=False)    # beside a build: nothing pruned
+    kept_ = sorted(x.name for x in cd_.glob("*.mp4"))
     ae.tidy_shared_cache([pv], max_clip_bytes=2000, min_free_bytes=0)
     left_ = sorted(x.name for x in cd_.glob("*.mp4"))
-    check("shared AI cache: Private videos go, the longest unused clips go over the limit",
-          not (rd_ / (pv + ".json")).exists() and (rd_ / (okv + ".json")).exists() and left_ == ["c2.mp4", "c3.mp4"], left_)
+    check("shared AI cache: Private videos (and their stand-ins) go, the longest unused clips go over the limit",
+          not (rd_ / (pv + ".json")).exists() and not (rd_ / (al + ".json")).exists() and (rd_ / (okv + ".json")).exists()
+          and kept_ == ["c1.mp4", "c2.mp4", "c3.mp4", "orphan.mp4"] and left_ == ["c2.mp4", "c3.mp4"], (kept_, left_))
     shutil.rmtree(sh, ignore_errors=True)
     # a Windows notification after a long build (local only)
     from archivist import notify as _nt

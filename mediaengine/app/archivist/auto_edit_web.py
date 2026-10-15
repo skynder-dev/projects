@@ -50,7 +50,11 @@ def stage_eta_s(j: dict, now: float | None = None):
     done, total = int(j.get("done") or 0), int(j.get("total") or 0)
     if j.get("status") != "running" or st not in ("analyze", "render") or total < 2:
         _STAGE_SEEN.pop(jid, None)
+        ae.ENGINE_ETA.pop(jid, None)
         return None
+    eng = ae.ENGINE_ETA.get(jid)
+    if eng and eng[0] == st:      # the engine knows better (videos analysed before go first and take seconds)
+        return None if eng[1] is None else max(0, round(float(eng[1]) - max(0.0, now - eng[2])))
     seen = _STAGE_SEEN.get(jid)
     if not seen or seen[0] != st or done < seen[2]:
         _STAGE_SEEN[jid] = (st, now, done)

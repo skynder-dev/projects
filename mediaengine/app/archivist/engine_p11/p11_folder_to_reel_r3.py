@@ -63,16 +63,20 @@ def _made_sha(clip):
 
 _PROGRESS_PATH=None
 _STAGE_T={"stage":None,"t":None,"seconds":{}}
-def progress(stage,done=0,total=0,message=""):
+_NO_ETA=object()
+def progress(stage,done=0,total=0,message="",eta_s=_NO_ETA):
     """Write the current stage for the app. Never raises: progress must not break a render.
-    Also keeps the time spent per stage (result.stage_seconds) so slow steps on a real PC can be seen."""
+    Also keeps the time spent per stage (result.stage_seconds) so slow steps on a real PC can be seen.
+    eta_s: seconds left in this stage as the engine sees it (None = not known yet); left out = the app estimates."""
     now=time.perf_counter()
     if _STAGE_T["stage"]!=stage:
         if _STAGE_T["stage"] is not None:
             sec=_STAGE_T["seconds"]; sec[_STAGE_T["stage"]]=round(sec.get(_STAGE_T["stage"],0.0)+now-_STAGE_T["t"],2)
         _STAGE_T["stage"]=stage; _STAGE_T["t"]=now
     if _PROGRESS_PATH is None: return
-    try: atomic_json(_PROGRESS_PATH,{"stage":stage,"done":int(done),"total":int(total),"message":str(message)[:300],"at":time.time()})
+    d={"stage":stage,"done":int(done),"total":int(total),"message":str(message)[:300],"at":time.time()}
+    if eta_s is not _NO_ETA: d["eta_s"]=None if eta_s is None else max(0.0,round(float(eta_s),1))
+    try: atomic_json(_PROGRESS_PATH,d)
     except Exception: pass
 
 def load_module(name,path):
@@ -226,7 +230,7 @@ def _adopt(legacy_dir,out_dir,names):
                 try: shutil.copyfile(a,b)
                 except OSError: pass
 
-def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="SEMANTIC_V2", legacy_dir=None):
+def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="SEMANTIC_V2", legacy_dir=None, origin_sha=None):
     start=float(c["start_s"]); end=float(c["end_s"]); dur=max(.25,end-start)
     raw=f"{source_sha}|{start:.3f}|{end:.3f}|{tag}".encode()
     eid=hashlib.sha256(raw).hexdigest()[:24]
@@ -277,6 +281,7 @@ def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="S
         "semantic_scout_score":float(c["semantic_scout_score"]),
         "semantic_source_rank":int(c["_source_rank"]),
     }
+    if origin_sha and origin_sha!=source_sha: m["origin_sha256"]=origin_sha   # a stand-in (camcorder remux): the real file
     atomic_json(meta,m)
     with _CLIP_LOCK: _CLIP_STATS["cut"]+=1
     return m
@@ -320,9 +325,14 @@ def _prefill_v22(v52,specs,cache_path,shared=None):
     with concurrent.futures.ThreadPoolExecutor(max_workers=max(1,min(4,(os.cpu_count() or 2)//2))) as ex:
         got=list(ex.map(get,need.values()))
     for e,m in got: cache[e["event_id"]]={"clip_sha256":e["clip_sha256"],"metrics":m}
-    tmp=cache_path.with_name(f"{cache_path.name}.{os.getpid()}.part"); tmp.parent.mkdir(parents=True,exist_ok=True)
-    tmp.write_text(json.dumps({"candidate":v52.CANDIDATE,"scorer_version":v52.SCORER_VERSION,"events":cache},indent=2),encoding="utf-8")
-    os.replace(tmp,cache_path)
+    tmp=cache_path.with_name(f"{cache_path.name}.{os.getpid()}.part")
+    try:       # only a speed-up: a virus scanner holding the file must not fail the build (score_events measures then)
+        tmp.parent.mkdir(parents=True,exist_ok=True)
+        tmp.write_text(json.dumps({"candidate":v52.CANDIDATE,"scorer_version":v52.SCORER_VERSION,"events":cache},indent=2),encoding="utf-8")
+        os.replace(tmp,cache_path)
+    except OSError:
+        try: tmp.unlink(missing_ok=True)
+        except OSError: pass
     return len(measured)
 
 def _share_fast_session():
@@ -388,13 +398,17 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
                                          v52.FFMPEG,os.environ.get("MEDENG_FFPROBE","ffprobe"))
                 atomic_json(rp,{"source_sha256":row["sha256"],"hook_sha256":SEMANTIC_HOOK_SHA,
                                 "model_sha256":MODEL_SHA,"report":report})
+                if row.get("origin_sha256") and row["origin_sha256"]!=row["sha256"]:
+                    # a stand-in (camcorder remux): which real file it is, so the app can forget it with the real file
+                    try: rp.with_suffix(".origin").write_text(row["origin_sha256"],encoding="utf-8")
+                    except OSError: pass
                 with tlock: timing["analyse_s"]+=time.perf_counter()-t_; timing["videos_analysed"]+=1
             row_specs=[]
             t_=time.perf_counter()
             for rank,c in enumerate(report.get("ranked",[]),1):
                 cc=dict(c); cc["_source_rank"]=rank
                 row_specs.append(extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,
-                                                        legacy_dir=legacy_c))
+                                                        legacy_dir=legacy_c,origin_sha=row.get("origin_sha256")))
             with tlock: timing["clips_s"]+=time.perf_counter()-t_
         except Exception as exc:
             # one unreadable file must not sink the whole reel: skip it and say so
@@ -410,27 +424,50 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
     except ValueError: pass
     results=[None]*len(input_rows)
     timing["workers"]=workers
+    # videos analysed before (a report in the cache) or too short to try go first and take seconds; the time left is
+    # measured on the new ones only: their average time x how many are left / how many run at once (a mix of 12 known
+    # and 6 new 4K videos once said "less than a minute" for 10 minutes of work)
+    def known(row):
+        try:
+            if 0<float(row.get("duration_s") or 0)<2.0: return True
+        except (TypeError,ValueError): pass
+        n=row["sha256"]+".json"
+        return (reports_dir/n).is_file() or (shared is not None and (legacy_reports/n).is_file())
+    flags=[known(r) for r in input_rows]
+    order=[i for i in range(len(input_rows)) if flags[i]]+[i for i in range(len(input_rows)) if not flags[i]]
+    n_known=sum(flags); new_total=len(input_rows)-n_known; durs=[]
+    def eta(k):
+        if not durs: return None
+        left=new_total-k
+        return 0.0 if left<=0 else (sum(durs)/len(durs))*max(1.0,left/max(1,workers))
+    def timed(idx):
+        t0=time.perf_counter(); r=one(input_rows[idx]); return r,time.perf_counter()-t0
+    done_n=0
+    for idx in order[:n_known]:
+        progress("analyze",done_n,len(input_rows),input_rows[idx]["name"],eta_s=None)
+        results[idx]=one(input_rows[idx]); done_n+=1
+    rest=order[n_known:]
     if workers<=1:
-        for idx,row in enumerate(input_rows):
-            progress("analyze",idx,len(input_rows),row["name"])
-            results[idx]=one(row)
+        for k,idx in enumerate(rest):
+            progress("analyze",done_n,len(input_rows),input_rows[idx]["name"],eta_s=eta(k))
+            results[idx],d=timed(idx); durs.append(d); done_n+=1
     else:
         import concurrent.futures
         # the same video twice (a copy under another name) shares its report and clip files: only the first one is
         # analysed in parallel, the copies afterwards from the cache (two threads never write the same file)
         seen=set(); first=[]; copies=[]
-        for idx,row in enumerate(input_rows):
-            (copies if row["sha256"] in seen else first).append(idx); seen.add(row["sha256"])
-        done_n=0
-        progress("analyze",0,len(input_rows),"analysing videos")
+        for idx in rest:
+            (copies if input_rows[idx]["sha256"] in seen else first).append(idx); seen.add(input_rows[idx]["sha256"])
+        progress("analyze",done_n,len(input_rows),"analysing videos",eta_s=None)
+        k=0
         with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as ex:
-            futs={ex.submit(one,input_rows[idx]):idx for idx in first}
+            futs={ex.submit(timed,idx):idx for idx in first}
             for fut in concurrent.futures.as_completed(futs):
-                results[futs[fut]]=fut.result(); done_n+=1
-                progress("analyze",done_n,len(input_rows),"analysing videos")
+                results[futs[fut]],d=fut.result(); durs.append(d); done_n+=1; k+=1
+                progress("analyze",done_n,len(input_rows),"analysing videos",eta_s=eta(k))
         for idx in copies:
-            results[idx]=one(input_rows[idx]); done_n+=1
-            progress("analyze",done_n,len(input_rows),"analysing videos")
+            results[idx]=one(input_rows[idx]); done_n+=1; k+=1
+            progress("analyze",done_n,len(input_rows),"analysing videos",eta_s=eta(k))
     for row,(report,row_specs,skip) in zip(input_rows,results):
         if skip is not None:
             if skipped is not None: skipped.append(skip)
@@ -441,6 +478,7 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
         specs.extend(row_specs)
     if not specs: raise RuntimeError("NO_SEMANTIC_CANDIDATES")
     t_=time.perf_counter()
+    progress("analyze",len(input_rows),len(input_rows),"measuring the moments",eta_s=None)
     timing["clips_measured"]=_prefill_v22(v52,specs,work_dir/"SEMANTIC_CANDIDATE_V22_SCORE_CACHE.json",shared)
     technical=v52.score_events(specs,work_dir/"SEMANTIC_CANDIDATE_V22_SCORE_CACHE.json")
     timing["score_s"]=time.perf_counter()-t_
@@ -458,10 +496,10 @@ def _semantic_skip_reason(exc,row):
     """Like _analysis_skip_reason, for the AI modes: a clip of a second or two (a drone's short shots) is "too short",
     not "could not be analysed" (seen: 5 of 18 drone videos, 1.5-2.6 s, the folder page already said "too short")."""
     err=str(exc)
-    if "INSUFFICIENT_FRAMES" in err: return "TOO_SHORT_FOR_ANALYSIS"
+    if "SCOUT_INSUFFICIENT_FRAMES" in err: return "TOO_SHORT_FOR_ANALYSIS"
     if "DUPLICATE_FRAME_RATIO" in err: return "STATIC_VIDEO"
-    try:
-        if 0<float(row.get("duration_s") or 0)<2.5: return "TOO_SHORT_FOR_ANALYSIS"
+    try:      # too few frames in the closer look at a moment: too short only for a video of a few seconds
+        if "INSUFFICIENT_FRAMES" in err and 0<float(row.get("duration_s") or 0)<2.5: return "TOO_SHORT_FOR_ANALYSIS"
     except (TypeError,ValueError): pass
     return "ANALYSIS_FAILED:"+(err.split(":",1)[0] or type(exc).__name__)[:60]
 
@@ -613,7 +651,8 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
     specs=[]; reports=[]; kept=[]; deferred=[]
     def make_spec(row,cc,rank):
         t_=time.perf_counter(); n_=_CLIP_STATS["cut"]
-        spec=extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,"SEMANTIC_PE1",legacy_dir=legacy_c)
+        spec=extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,"SEMANTIC_PE1",legacy_dir=legacy_c,
+                                    origin_sha=row.get("origin_sha256"))
         SEM_TIMING["clips_s"]+=time.perf_counter()-t_
         SEM_TIMING["clips_cut" if _CLIP_STATS["cut"]>n_ else "clips_cached"]+=1
         # a cached clip keeps its cut; its scores always come from the current ranking (theme, descriptions)
@@ -822,7 +861,7 @@ def analysis_aliases(rows,work_dir,long_names=True):
             use=None
         if use:
             wanted.add(alias_name)
-            a=dict(r,name=Path(use).name,path=use,sha256=sha,bytes=size); out.append(a); back[a["name"]]=r
+            a=dict(r,name=Path(use).name,path=use,sha256=sha,bytes=size,origin_sha256=r["sha256"]); out.append(a); back[a["name"]]=r
         else:
             out.append(r)
     try:

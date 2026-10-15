@@ -850,12 +850,19 @@ def _with_length(paths, work_dir: Path, note=None, jid=None) -> tuple[list[Path]
                 pass
             out.append(p)
     if fixed_dir.is_dir():                              # copies of Private, removed or changed files go
+        gone = []
         for x in fixed_dir.iterdir():
             if x.name not in keep:
                 try:
+                    if x.suffix.lower() not in (".json", ".part"):
+                        gone.append(sha256_file(x))      # the AI knows the copy by its own SHA-256
                     x.unlink()
                 except OSError:
                     pass
+        try:
+            forget_in_shared(gone)
+        except Exception:
+            pass
     return out, changed
 
 
@@ -1716,7 +1723,14 @@ def _pump_progress(jid: int, progress_file: Path) -> None:
     stage = str(d.get("stage") or "")
     if stage in ("failed",):
         return
+    if "eta_s" in d:      # the engine's own estimate for this stage (None: not known yet)
+        ENGINE_ETA[int(jid)] = (stage, d.get("eta_s"), float(d.get("at") or time.time()))
+    else:
+        ENGINE_ETA.pop(int(jid), None)
     _set(jid, stage=stage, done=int(d.get("done") or 0), total=int(d.get("total") or 0), message=str(d.get("message") or "")[:300])
+
+
+ENGINE_ETA: dict = {}     # job id -> (stage, seconds left or None, when the engine wrote it)
 
 
 _FRIENDLY = {
@@ -2353,20 +2367,45 @@ SHARED_CLIPS_MAX = 40 * 1024 ** 3      # moment clips kept for every project (4K
 SHARED_CLIPS_DIRS = ("semantic_candidates", "semantic_candidates_pe")
 
 
-def tidy_shared_cache(private_hashes=(), max_clip_bytes=None, min_free_bytes=10 * 1024 ** 3) -> None:
-    """Before a build: what the AI found in videos that are Private now goes (what AI+ saw, the AI's report and the
-    moment clips), temp files of a stopped build go, and the moment clips used longest ago go when there are more than
-    SHARED_CLIPS_MAX of them (or the disk is nearly full) - a later reel from those videos cuts them again."""
-    if not SHARED.is_dir():
+def forget_in_shared(hashes) -> None:
+    """What the AI found in these videos leaves the shared cache: what AI+ saw, the AI's reports and the moment clips
+    (also those of a stand-in - a camcorder remux - made from one of them: its report and clips name the real file)."""
+    want = {str(x).lower() for x in hashes if x}
+    if not want or not SHARED.is_dir():
         return
-    priv = {str(x).lower() for x in private_hashes}
     d = SHARED / "semantic_scout_pe"
-    for sha in priv:
+    for sha in want:
         for f in [d / (sha + ext) for ext in (".json", ".npy", ".key")] + [SHARED / "semantic_reports" / (sha + ".json")]:
             try:
                 f.unlink(missing_ok=True)
             except OSError:
                 pass
+    rd = SHARED / "semantic_reports"
+    for f in rd.glob("*.origin") if rd.is_dir() else []:      # reports of stand-ins name the real file beside them
+        try:
+            if f.read_text(encoding="utf-8").strip().lower() in want:
+                f.with_suffix(".json").unlink(missing_ok=True); f.unlink()
+        except OSError:
+            pass
+    for sub in SHARED_CLIPS_DIRS:
+        dd = SHARED / sub
+        for meta in dd.glob("*.json") if dd.is_dir() else []:
+            try:
+                m = json.loads(meta.read_text(encoding="utf-8"))
+                if {str(m.get("source_sha256") or "").lower(), str(m.get("origin_sha256") or "").lower()} & want:
+                    meta.with_suffix(".mp4").unlink(missing_ok=True); meta.unlink(missing_ok=True)
+            except (OSError, ValueError):
+                pass
+
+
+def tidy_shared_cache(private_hashes=(), max_clip_bytes=None, min_free_bytes=10 * 1024 ** 3, prune_clips=True) -> None:
+    """Before a build: what the AI found in videos that are Private now goes (forget_in_shared), temp files of a
+    stopped build go, and - prune_clips, only where no build can be using them (the build worker, before it starts the
+    engine; never from the AI+ Library preparation, which runs beside a build) - the moment clips used longest ago go
+    when there are more than SHARED_CLIPS_MAX of them (or the disk is nearly full): a later reel cuts them again."""
+    if not SHARED.is_dir():
+        return
+    forget_in_shared(private_hashes)
     old = time.time() - 6 * 3600
     for sub in ("semantic_scout_pe", "semantic_reports", "v22_metrics") + SHARED_CLIPS_DIRS:
         dd = SHARED / sub
@@ -2378,23 +2417,24 @@ def tidy_shared_cache(private_hashes=(), max_clip_bytes=None, min_free_bytes=10 
                     t.unlink()
             except OSError:
                 pass
+    if not prune_clips:
+        return
     clips = []          # (last use, bytes, clip, meta)
     for sub in SHARED_CLIPS_DIRS:
         dd = SHARED / sub
         if not dd.is_dir():
             continue
+        for clip in dd.glob("*.mp4"):         # a clip whose description was never written (a build stopped then)
+            try:
+                if not clip.with_suffix(".json").exists() and clip.stat().st_mtime < old:
+                    clip.unlink()
+            except OSError:
+                pass
         for meta in dd.glob("*.json"):
             clip = meta.with_suffix(".mp4")
             try:
-                st_m = meta.stat()
-                size = clip.stat().st_size if clip.is_file() else 0
-                if priv:
-                    src = str(json.loads(meta.read_text(encoding="utf-8")).get("source_sha256") or "").lower()
-                    if src in priv:
-                        clip.unlink(missing_ok=True); meta.unlink(missing_ok=True)
-                        continue
-                clips.append((st_m.st_mtime, size, clip, meta))
-            except (OSError, ValueError):
+                clips.append((meta.stat().st_mtime, clip.stat().st_size if clip.is_file() else 0, clip, meta))
+            except OSError:
                 continue
     cap = SHARED_CLIPS_MAX if max_clip_bytes is None else int(max_clip_bytes)
     try:

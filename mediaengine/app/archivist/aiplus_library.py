@@ -508,7 +508,7 @@ def _deep() -> None:
     computer and its memory) and started again afterwards with what is left. Videos marked Private meanwhile are never
     looked at (the list of their SHA-256 is read again before every video) and leave the shared cache afterwards."""
     ae = _ae()
-    ae.tidy_shared_cache(ae._private_hashes())
+    ae.tidy_shared_cache(ae._private_hashes(), prune_clips=False)   # a reel may be building
     run_dir = _run_dir()
     list_file, progress, stop_file, log_file = (run_dir / f"aiplus_prepare.{x}" for x in ("list.txt", "json", "stop", "log"))
     private_file, run_skipped = run_dir / "aiplus_prepare.private.txt", run_dir / "aiplus_prepare.run_skipped.json"
@@ -571,7 +571,7 @@ def _deep() -> None:
                 except Exception:
                     pass
                 try:
-                    ae.tidy_shared_cache(ae._private_hashes())
+                    ae.tidy_shared_cache(ae._private_hashes(), prune_clips=False)   # a reel may be building
                 except Exception:
                     pass
         if _STOP.is_set():                 # ended by Stop: not an error

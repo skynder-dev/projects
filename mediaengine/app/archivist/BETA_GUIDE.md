@@ -14,7 +14,13 @@ No external account or billing is required for local use.
    messengers" (about 720p, a much smaller file). "Exported reels" at the top of the Auto Edit page opens the folder
    with the finished reels.
 
-A reel is 5 seconds to 2 minutes long. While a reel is being made, its progress is shown at the top of every page.
+A reel is 5 seconds to 2 minutes long. While a reel is being made, its progress and about how long is left are shown
+at the top of every page. When a long build (over a minute) has finished, Windows shows a notification - a click opens
+the reel (can be turned off in Settings).
+
+The AI analyses each video once and keeps it for every reel: a new reel from the same videos (another project, another
+length, "A reel for every day") analyses nothing again. Big videos (4K) are analysed several at once. "Check this PC"
+shows how much space this takes ("Free").
 To go back to an earlier version of the program: "Check this PC" -> "Use this version" (projects stay the same).
 
 A new reel starts with the last reel's format, sound and mode. A vertical reel from horizontal videos can "Fill the

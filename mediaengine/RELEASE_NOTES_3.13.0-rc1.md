@@ -79,6 +79,14 @@ first. After the download the same reel is built again with them.
 - **Switching builds**: the launcher of the next build no longer takes the previous build's launcher (still finishing
   a moment after its app answers) for its own and quietly does nothing (CI b101): one lock per program folder.
 - "What's new" shows only what came after the last time it was seen.
+- Found by a fresh-eyes review before release: the AI+ Library preparation (it runs beside a reel build) never prunes
+  the shared clips now (it could have deleted clips the build was about to read); the engine estimates the time left
+  itself and analyses videos known from before first (a mix of known and new 4K videos showed "less than a minute"
+  for minutes of work); a stand-in of a camcorder video (remux) names the real file, so marking the real file
+  Private removes the stand-in's report and clips too, as does dropping a fixed copy of a recording without a length;
+  clips left without their description by a stopped build are removed after 6 h; the pre-filled score cache is only
+  a speed-up (a locked file never fails the build); "too short" only for the scout's too-few-frames or for a video
+  under 2.5 s, other errors are reported as they are.
 
 ## AI mode with 4K videos (found on the owner's PC, 2026-10-14)
 
