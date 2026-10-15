@@ -1030,24 +1030,71 @@ def pairwise(v52,events):
             if ia!=ib: p[ia+"->"+ib]=float(np.linalg.norm(sig_end[ia]-sig_start[ib])/math.sqrt(8))
     return p
 
-def camera_drop_rows(path,step=.25):
-    cap=cv2.VideoCapture(str(path))
+def _camera_drop_row(t,fr):
+    gray=cv2.cvtColor(fr,cv2.COLOR_BGR2GRAY); h,w=gray.shape
+    mean=float(gray.mean()); dark=float((gray<16).mean()); bright=float((gray>239).mean())
+    exposure=float(np.clip(1.0-abs(mean-128.0)/128.0-.8*(dark+bright),0,1))
+    bottom=gray[3*h//4:]; upper=float(gray[:h//2].mean()); lower=float(gray[h//2:].mean())
+    quality=float(.6*exposure+.4*np.clip(cv2.Laplacian(gray,cv2.CV_64F).var()/600.0,0,1))
+    return {"t":round(t,6),"quality":quality,"exposure":exposure,
+            "bottom_dark_fraction":float((bottom<50).mean()),
+            "lower_upper_ratio":float(lower/(upper+1e-9))}
+
+def _drop_times(cap,step):
     fps=float(cap.get(cv2.CAP_PROP_FPS) or 30.0); n=float(cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0.0)
     dur=(n/fps) if fps>0 and n>0 else 0.0
-    rows=[]; t=0.0
+    times=[]; t=0.0
     while t < max(0.0,dur-1e-6):
+        times.append(t); t+=step
+    return fps,dur,times
+
+def camera_drop_rows(path,step=.25):
+    """Picture rows every <step> s of a clip, each by a seek (the accepted way: every seek decodes from the clip's start
+    when the clip is one GOP - a 4K clip took ~20 s on a CI runner)."""
+    cap=cv2.VideoCapture(str(path))
+    fps,dur,times=_drop_times(cap,step)
+    rows=[]
+    for t in times:
         cap.set(cv2.CAP_PROP_POS_MSEC,t*1000.0); ok,fr=cap.read()
-        if not ok: t+=step; continue
-        gray=cv2.cvtColor(fr,cv2.COLOR_BGR2GRAY); h,w=gray.shape
-        mean=float(gray.mean()); dark=float((gray<16).mean()); bright=float((gray>239).mean())
-        exposure=float(np.clip(1.0-abs(mean-128.0)/128.0-.8*(dark+bright),0,1))
-        bottom=gray[3*h//4:]; upper=float(gray[:h//2].mean()); lower=float(gray[h//2:].mean())
-        quality=float(.6*exposure+.4*np.clip(cv2.Laplacian(gray,cv2.CV_64F).var()/600.0,0,1))
-        rows.append({"t":round(t,6),"quality":quality,"exposure":exposure,
-                     "bottom_dark_fraction":float((bottom<50).mean()),
-                     "lower_upper_ratio":float(lower/(upper+1e-9))})
-        t+=step
+        if not ok: continue
+        rows.append(_camera_drop_row(t,fr))
     cap.release()
+    return dur,rows
+
+def _seek_row(path,t):
+    cap=cv2.VideoCapture(str(path))
+    try:
+        cap.set(cv2.CAP_PROP_POS_MSEC,t*1000.0); ok,fr=cap.read()
+        return _camera_drop_row(t,fr) if ok else None
+    finally:
+        cap.release()
+
+def camera_drop_rows_fast(path,step=.25):
+    """The same rows from ONE pass through the clip: a seek to t lands on frame int(t*fps+0.5) (OpenCV's FFmpeg reader).
+    Checked on every clip: two of the rows (the second and the middle one) are measured again by a real seek and
+    must be identical, else the clip is measured the accepted way - the result is always the accepted one."""
+    cap=cv2.VideoCapture(str(path))
+    fps,dur,times=_drop_times(cap,step)
+    want={}
+    for t in times: want.setdefault(int(t*fps+0.5),[]).append(t)
+    got={}; i=0; last=max(want) if want else -1
+    while i<=last:
+        ok,fr=cap.read()
+        if not ok: break
+        for t in want.get(i,()): got[t]=_camera_drop_row(t,fr)
+        i+=1
+    cap.release()
+    kept_t=[t for t in times if t in got]; rows=[got[t] for t in kept_t]
+    missing=[t for t in times if t not in got]
+    # a time past the last frame (29.97 fps: 165 frames are 5.505 s, so 5.5 s is asked for): the seek finds nothing
+    # there either and the accepted way leaves it out - checked by a real seek like the rows
+    if missing and (len(missing)>2 or _seek_row(path,missing[0]) is not None):
+        return camera_drop_rows(path,step)
+    for k in sorted({1,len(rows)//2}):
+        if k<len(rows):
+            r=_seek_row(path,kept_t[k])
+            if r is None or r!=rows[k]:
+                return camera_drop_rows(path,step)
     return dur,rows
 
 def camera_drop_rows_cached(path,sha,cache_dir,step=.25):
@@ -1058,7 +1105,7 @@ def camera_drop_rows_cached(path,sha,cache_dir,step=.25):
         try:
             d=json.loads(f.read_text(encoding="utf-8")); return float(d["dur"]),list(d["rows"])
         except (OSError,ValueError,KeyError,TypeError): pass
-    dur,rows=camera_drop_rows(path,step)
+    dur,rows=camera_drop_rows_fast(path,step)
     if f is not None:
         try: atomic_json(f,{"dur":dur,"rows":rows})
         except OSError: pass
@@ -1067,7 +1114,9 @@ def camera_drop_rows_cached(path,sha,cache_dir,step=.25):
 def apply_camera_drop(v52,dropmod,selected,work_dir):
     out=[]; decisions=[]; bdir=work_dir/"boundary_sanitized"; bdir.mkdir(parents=True,exist_ok=True)
     for e in selected:
-        dur,rows=camera_drop_rows_cached(e["clip_path"],e.get("clip_sha256"),work_dir/"camera_drop_rows",.25)
+        # by the clip's SHA-256: shared by all projects when the app says where (a new reel from the same moments)
+        sh_=_shared_root()
+        dur,rows=camera_drop_rows_cached(e["clip_path"],e.get("clip_sha256"),(sh_/"camera_drop_rows") if sh_ else work_dir/"camera_drop_rows",.25)
         dec=dropmod.choose_camera_drop_trim(rows)
         decisions.append({"event_id":e["event_id"],"source_name":e["source_name"],"decision":dec})
         if not dec.get("trim"):

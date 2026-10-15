@@ -127,6 +127,10 @@ def main():
     ok_, det_ = same_reel(out, out_ad)
     check("ai_shared_cache_takes_over_an_older_projects_files", tim["adopt"].get("videos_analysed") == 0 and tim["adopt"].get("clips_cut") == 0
           and not any((work / "w" / "semantic_candidates").glob("*.mp4")) and ok_, (tim["adopt"], det_))
+    # boundary rows from one pass through a clip = the accepted rows from a seek per row (OpenCV of this PC)
+    cl = sorted((work / "shared" / "semantic_candidates").glob("*.mp4"))[:6]
+    same_rows = [r3.camera_drop_rows(c_) == r3.camera_drop_rows_fast(c_) for c_ in cl]
+    check("boundary_rows_one_pass_same_as_seeks", cl and all(same_rows), [c_.name for c_, ok in zip(cl, same_rows) if not ok])
     # a drone's 1-2 s shots: "too short", not "could not be analysed" (the folder page already says "too short")
     sk = r3._semantic_skip_reason
     check("ai_short_clip_is_too_short", sk(RuntimeError("SCOUT_INSUFFICIENT_FRAMES"), {"duration_s": 30.0}) == "TOO_SHORT_FOR_ANALYSIS"

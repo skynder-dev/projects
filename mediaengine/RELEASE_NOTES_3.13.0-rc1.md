@@ -83,6 +83,13 @@ first. After the download the same reel is built again with them.
   differ in 2-3 runs of 12; without it 30 of 30 identical, same speed on 4K).
 - A reel whose videos have no useful sound (drone, action camera) offers "Add music…" next to "The same reel with the
   original sound".
+- **Clip boundaries checked 4-8x faster, same result.** The camera-drop check reads a picture every 0.25 s of each
+  chosen moment by a seek; a moment clip is one GOP, so every seek decoded from its start (4K: ~40 s per clip here,
+  139 s for 6 moments on the CI runner, in every build). Now one pass through the clip takes the frames a seek lands
+  on (int(t x fps + 0.5)); on every clip two rows are measured again by a real seek (and a time past the last frame
+  must find nothing), otherwise the clip is measured the accepted way. Same rows on 15 test clips (25/29.97/30/59.94/
+  60 fps, 4K, rotated, VFR, camcorder) and in the CI glue check with the app's own OpenCV. The rows are kept per clip
+  in the shared cache.
 - AI+ too: videos ranked before for this theme go first, the engine estimates the time left on the others; the results
   stay in the input order (checked against the previous loop on 9,000 random cases: identical, except that a video
   skipped half-way no longer leaves its theme-deferred moments behind). "Known" means a valid report (a scout file

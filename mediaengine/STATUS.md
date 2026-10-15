@@ -194,7 +194,12 @@ the same window twice -> one line.
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38682362436 on `6d61d30` (2026-10-15) — all green, build b105** (artifacts
+Latest full run: **38693512243 on `59099a0` (2026-10-15) — all green, build b108** (artifacts
+`MediaEngine-3.13.0-rc1-b108-Setup` and ZIP): as b105, plus AI mode with the real model on the 4K/long footage -
+3 videos (two 4K, one 5-min 1080p) on the 4-core runner: 666 s, two at once through one shared model session; a second
+project from the same videos: analysis 1.2 s instead of 450 s (shared cache), the same moments.
+
+Previous: **38682362436 on `6d61d30` (2026-10-15) — all green, build b105** (artifacts
 `MediaEngine-3.13.0-rc1-b105-Setup` and ZIP): fast checks 106/106 (incl. a Windows notification shown on the runner) ·
 R3 = R2 29/29 · robustness 32/32 · AI glue 11/11 (one by one = three at once, shared cache: a new project analyses and
 cuts nothing, an older project hands its files over) · AI+ glue 21/21 · E2E 75/75, 80/80, 70/70 · titles and music
