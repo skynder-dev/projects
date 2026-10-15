@@ -317,7 +317,8 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-Owner: install the newest green `MediaEngine-3.13.0-rc1-b<N>-Setup` (it installs into `D:\projects\medeng\<build>`).
+Owner: install the newest green `MediaEngine-3.13.0-rc1-b<N>-Setup` (b110 link sent 2026-10-15 morning; it installs
+next to the other builds, data stays in `MediaEngine Data`).
 Then (through the app's pages in the desktop app's browser pane, never computer use): a new reel from `D:\100MEDIA`
 timed against the 64 min of b100 (fresh AI analysis, fills the shared cache), then a second project from the same
 folder (should analyse and cut nothing), and a variant of project 1 (hands its older files to the shared cache).
