@@ -1399,7 +1399,10 @@ def _build_time_html(res) -> str:
         v = sum(float(st.get(k) or 0) for k in keys)
         if v >= 0.5:
             parts.append(f"<span>{lbl}</span> {d(v)}")
-    return (f"<div class='muted' style='font-size:13px'><span>Built in</span> {d(total)}"
+    import html as _h
+    tm = res.get("semantic_timing") or {}
+    data = f" data-timing='{_h.escape(json.dumps({'stages': st, 'ai': tm}), quote=True)}'"   # for support: where the AI time went
+    return (f"<div class='muted ae-buildtime' style='font-size:13px'{data}><span>Built in</span> {d(total)}"
             + (" (" + " · ".join(parts) + ")" if parts else "") + "</div>")
 
 
