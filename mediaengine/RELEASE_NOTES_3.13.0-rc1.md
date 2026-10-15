@@ -73,7 +73,12 @@ first. After the download the same reel is built again with them.
   person next to the camera, the drone or its controller on the ground) - take-off and landing are not chosen. Library
   search by theme has it too (its own bad descriptions kept with the theme). Checked on real drone videos from
   Wikimedia Commons (free licences) in CI: every frame's score, the picks, a prepared folder and the reel
-  (`mediaengine-drone`, sheets on branch `mediaengine-drone-results`).
+  (`mediaengine-drone`, sheets on branch `mediaengine-drone-results`). First run (10 videos, run 38809558914): of 40
+  frames on or near the ground (take-off, eye level in front of a building, people on the ground, a landing at the
+  rocks - marked by looking at the sheets, now pinned in `tests/drone_manifest.json`) 13 pass the theme with its own
+  bad descriptions, 20 without them; none of the best three picks of any video and no moment of the reel is on the
+  ground; the AI reel without a theme took a low shot of a castle's dragon. Prepare in advance of the 10 videos with
+  AI+ and the theme: 961 s on the 4-core runner; the 30 s reel after it: **34 s** (analysis 0.3 s).
 
 ## AI moments analysed on previews, the reel cut from the originals (2026-10-15, measured on the owner's PC)
 
