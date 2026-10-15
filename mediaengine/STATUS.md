@@ -194,7 +194,11 @@ the same window twice -> one line.
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38719705555 on `b309ad2` (2026-10-15) — all green, build b110**: as b109, plus picture signatures
+Latest full run: **38737154855 on `a66dfd4` (2026-10-15) — all green, build b113**: as b110, plus the pieces of a
+reel cut up to three at once (AI glue 14/14 with the "three at once" build, E2E 2 videos 80/80 cutting three at once),
+the building page mentions the notification. (b112 failed only on a missing Russian progress text; fixed.)
+
+Previous: **38719705555 on `b309ad2` (2026-10-15) — all green, build b110**: as b109, plus picture signatures
 remembered; 4K/long AI: first project 824 s, a second project from the same videos 108 s (analysis 1.5 s, boundary
 check 2.3 s instead of 34 s).
 
