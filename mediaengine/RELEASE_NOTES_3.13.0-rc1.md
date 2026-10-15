@@ -58,6 +58,22 @@ not read — reading even their first bytes would make Windows download them all
 in the cloud (OneDrive)…"); a folder that is entirely in the cloud says to choose "Always keep on this device"
 first. After the download the same reel is built again with them.
 
+## AI mode with 4K videos (found on the owner's PC, 2026-10-14)
+
+The first AI reel from a folder of 18 drone videos (4K, ~3 min each) analysed ~5 min per video, one after another.
+Measured here: cutting the moment clips from 4K (8 per video, x264 `fast`/crf 18) was most of that time.
+
+- **Moment clips**: x264 `veryfast`/crf 16 - the settings the full-quality recut already uses. 1.9-2.2x faster on
+  4K (H.264 100 Mbit/s and HEVC 10-bit samples), picture slightly better (SSIM 0.9963 vs 0.9955), files ~9 % larger.
+  Clips already made are reused as they are.
+- **Several videos at once** on a PC with many cores and enough memory (up to 3: cores/4, RAM/6 GB). Each video is
+  analysed on its own, so the moments are the same; a copy of a video under another name is analysed once and the
+  copy taken from the cache afterwards (two threads once wrote the same clip file). `MEDENG_SEMANTIC_WORKERS` sets it.
+- `semantic_timing` in the result now also for AI mode (analysis, clips, scoring seconds, workers).
+- Check: `semantic_glue_check` builds the same folder one by one and three at once - same moments, same order, same
+  sound, picture >= 40 dB PSNR on every frame (x264 in FFmpeg 7 is not always bit-identical from run to run - with
+  `fast` as with `veryfast`, 1-2 runs in 10 on the same clip, 49-75 dB; the same reel one frame late: 9-18 dB).
+
 ## Everyday use (2026-10-14 review of the whole program)
 
 - **Save MP4 in one step** on any finished version (it becomes the chosen one); "Accept" is optional.

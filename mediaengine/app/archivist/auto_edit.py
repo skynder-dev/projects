@@ -1983,7 +1983,8 @@ WHATS_NEW = ["“Save MP4” in one step on any version (no separate Accept).",
              "“Small copy for messengers” next to Save MP4.",
              "Library: select videos and press “Make a reel”.",
              "Reels up to 2 minutes; the new reel starts with your last settings.",
-             "A reel being made is shown at the top of every page."]
+             "A reel being made is shown at the top of every page.",
+             "AI mode is faster with big videos (4K): several videos are analysed at once, moments are cut quicker."]
 
 
 def whats_new_seen() -> bool:

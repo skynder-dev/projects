@@ -1377,7 +1377,15 @@ def _review_html(p, rev, e, building=False):
         f"title='{e(s['source_name'])} {_fmt_s(s['source_in_s'])}–{_fmt_s(s['source_out_s'])}' translate='no'>{s['position']}</button>"
         for s in segs)
     in_reel = {s["event_id"] for s in segs}
-    pool = [c for c in (res.get("candidate_pool") or []) if c["event_id"] not in in_reel][:40]
+    pool, shown = [], set()
+    for c in res.get("candidate_pool") or []:
+        # the AI can rank the same window of a video twice (a short video's start): one line for it
+        k = (str(c.get("source_name")), _fmt_s(c["start_s"]), _fmt_s(c["end_s"]))
+        if c["event_id"] in in_reel or k in shown:
+            continue
+        shown.add(k); pool.append(c)
+        if len(pool) == 40:
+            break
     score_word = "оценка" if ae.ui_language() == "ru" else "score"      # options are not translated (file names in them)
     opts = "".join(f"<option value='{e(c['event_id'])}' translate='no'>{e(c['source_name'])} {_fmt_s(c['start_s'])}–{_fmt_s(c['end_s'])} · {score_word} {float(c['score']):.2f}</option>" for c in pool)
 

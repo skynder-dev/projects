@@ -182,6 +182,7 @@ PHRASES = {
     "Library: select videos and press “Make a reel”.": "Библиотека: отметь видео и нажми «Сделать ролик».",
     "Reels up to 2 minutes; the new reel starts with your last settings.": "Ролики до 2 минут; новый ролик начинается с твоих прошлых настроек.",
     "A reel being made is shown at the top of every page.": "Ролик, который собирается, виден вверху каждой страницы.",
+    "AI mode is faster with big videos (4K): several videos are analysed at once, moments are cut quicker.": "ИИ-режим быстрее с большими видео (4K): несколько видео анализируются одновременно, моменты нарезаются быстрее.",
     "Vertical HD": "Вертикально HD",
     "A reel for every day": "Ролик на каждый день",
     "One reel for each of these days, made one after another:": "По ролику на каждый из этих дней, по очереди:",

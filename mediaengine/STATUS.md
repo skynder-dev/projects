@@ -179,6 +179,17 @@ moment-choice caches). Found and fixed before any release: `Referrer-Policy: no-
 in a real browser (new real-browser check in CI, Edge); FFmpeg's final encode of a beat-synced reel stood still now
 and then on Windows (now watched and run again; faulthandler dumps in long checks showed where).
 
+## Owner PC test of b100 (2026-10-14 night, through the app's own pages in the desktop app's browser pane)
+
+Owner PC: 16 logical cores, 69 GB RAM, Windows 10.0.26300, FFmpeg 7.1 (gyan). Worked: "Download the AI model",
+AI test reel (32.1 s), a 30 s Horizontal Full HD AI reel from `D:\100MEDIA` (18 drone videos 4K, 29 GB; 12 used,
+6 moments, sound off by Auto - no useful sound in drone videos), Save MP4 (68.9 MB, checked against the version).
+Found: the AI analysis took 64 min, one video after another; measured here, cutting the 8 moment clips per video
+from 4K (x264 `fast`) was most of it -> next build: `veryfast`/crf 16 clips (1.9-2.2x faster, picture not worse)
+and up to 3 videos at once (a copy of a video is analysed once - two threads once wrote the same file). Five 1-2 s
+drone clips were "could not be analysed" (the folder page said "too short") -> "too short". The replace list showed
+the same window twice -> one line.
+
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
@@ -279,7 +290,7 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 - `/media` file routes serve Private items to the local owner UI only (loopback + Host check) — kept by design (D17).
 - Per-cut sync on real camera footage (synthetic flash/beep: within ±7 ms; also checked on Windows CI).
-- Owner-PC run with the AI model and human review of selection quality (blind comparison is built in).
+- Human review of AI selection quality on the owner's own footage (blind comparison is built in).
 - Owner decision (not asked again): a private repo with the model for CI (AI mode in CI).
 
 ## Next exact action

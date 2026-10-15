@@ -1,5 +1,5 @@
 from __future__ import annotations
-import argparse, hashlib, importlib.util, json, math, os, re, shutil, subprocess, sys, time
+import argparse, hashlib, importlib.util, json, math, os, re, shutil, subprocess, sys, threading, time
 from pathlib import Path
 import cv2
 import numpy as np
@@ -203,6 +203,11 @@ def sound_args(v52,src,dur):
     m=_AUDIO_MAP[key]
     return ["-map",m,"-af",f"apad=whole_dur={float(dur):.3f}"] if m else []
 
+# AI moments are cut from the original once and the reel is rendered from these clips: the same settings as the
+# full-quality recut. Measured on 4K (H.264 100 Mbit/s and HEVC 10-bit): 1.9-2.2x faster than "fast"/crf 18, with
+# a slightly better picture (SSIM 0.9963 vs 0.9955) and ~9 % larger files; 4K clips were most of the AI analysis time.
+CANDIDATE_X264=("-preset","veryfast","-crf","16")
+
 def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="SEMANTIC_V2"):
     start=float(c["start_s"]); end=float(c["end_s"]); dur=max(.25,end-start)
     raw=f"{source_sha}|{start:.3f}|{end:.3f}|{tag}".encode()
@@ -224,7 +229,7 @@ def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="S
     if tmp.exists(): tmp.unlink()
     cmd=[v52.FFMPEG,"-hide_banner","-loglevel","error","-y",
          "-ss",f"{start:.3f}","-i",str(src),"-t",f"{dur:.3f}",
-         "-map","0:v:0",*sound_args(v52,src,dur),"-c:v","libx264","-preset","fast","-crf","18",
+         "-map","0:v:0",*sound_args(v52,src,dur),"-c:v","libx264",*CANDIDATE_X264,
          "-pix_fmt","yuv420p","-c:a","aac","-b:a","192k","-ar","48000","-ac","2",
          "-movflags","+faststart",str(tmp)]
     cp=subprocess.run(cmd,capture_output=True,text=True)
@@ -260,8 +265,12 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
     specs=[]
     reports=[]
     kept=[]
-    for idx,row in enumerate(input_rows):
-        progress("analyze",idx,len(input_rows),row["name"])
+
+    timing={"analyse_s":0.0,"clips_s":0.0,"videos_analysed":0,"workers":1}
+    tlock=threading.Lock()
+
+    def one(row):
+        """One video: its AI report (cached by SHA-256) and its candidate clips. Returns (report, row_specs, skip)."""
         rp=reports_dir/(row["sha256"]+".json")
         report=None
         if rp.is_file():
@@ -275,33 +284,83 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
                 report=None   # damaged cache file: analyse again
         try:
             if report is None:
+                t_=time.perf_counter()
                 report=sem.analyze_video(Path(row["path"]),"SELECT_BEST","FAST_LOCAL",model_root,
                                          v52.FFMPEG,os.environ.get("MEDENG_FFPROBE","ffprobe"))
                 atomic_json(rp,{"source_sha256":row["sha256"],"hook_sha256":SEMANTIC_HOOK_SHA,
                                 "model_sha256":MODEL_SHA,"report":report})
+                with tlock: timing["analyse_s"]+=time.perf_counter()-t_; timing["videos_analysed"]+=1
             row_specs=[]
+            t_=time.perf_counter()
             for rank,c in enumerate(report.get("ranked",[]),1):
                 cc=dict(c); cc["_source_rank"]=rank
                 row_specs.append(extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir))
+            with tlock: timing["clips_s"]+=time.perf_counter()-t_
         except Exception as exc:
             # one unreadable file must not sink the whole reel: skip it and say so
-            if skipped is not None: skipped.append({"name":row["name"],"reason":"ANALYSIS_FAILED:"+(str(exc).split(":",1)[0] or type(exc).__name__)[:60]})
-            continue
+            return None,None,{"name":row["name"],"reason":_semantic_skip_reason(exc,row)}
         if not row_specs:
-            if skipped is not None: skipped.append({"name":row["name"],"reason":"NO_MOMENTS"})
+            return report,None,{"name":row["name"],"reason":"NO_MOMENTS"}
+        return report,row_specs,None
+
+    # Several videos at once on a PC with many cores and enough memory (each video is analysed on its own, so the
+    # moments are the same as one after another; R2 took them one by one and left most of a 16-core PC idle).
+    workers=max(1,min(3,(os.cpu_count() or 2)//4,int(_total_ram_gb()//6) or 1,len(input_rows)))
+    try: workers=max(1,int(os.environ.get("MEDENG_SEMANTIC_WORKERS") or workers))
+    except ValueError: pass
+    results=[None]*len(input_rows)
+    timing["workers"]=workers
+    if workers<=1:
+        for idx,row in enumerate(input_rows):
+            progress("analyze",idx,len(input_rows),row["name"])
+            results[idx]=one(row)
+    else:
+        import concurrent.futures
+        # the same video twice (a copy under another name) shares its report and clip files: only the first one is
+        # analysed in parallel, the copies afterwards from the cache (two threads never write the same file)
+        seen=set(); first=[]; copies=[]
+        for idx,row in enumerate(input_rows):
+            (copies if row["sha256"] in seen else first).append(idx); seen.add(row["sha256"])
+        done_n=0
+        progress("analyze",0,len(input_rows),"analysing videos")
+        with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as ex:
+            futs={ex.submit(one,input_rows[idx]):idx for idx in first}
+            for fut in concurrent.futures.as_completed(futs):
+                results[futs[fut]]=fut.result(); done_n+=1
+                progress("analyze",done_n,len(input_rows),"analysing videos")
+        for idx in copies:
+            results[idx]=one(input_rows[idx]); done_n+=1
+            progress("analyze",done_n,len(input_rows),"analysing videos")
+    for row,(report,row_specs,skip) in zip(input_rows,results):
+        if skip is not None:
+            if skipped is not None: skipped.append(skip)
             continue
         kept.append(row)
         reports.append({"source_name":row["name"],"source_sha256":row["sha256"],
                         "rank1":report["ranked"][0] if report.get("ranked") else None})
         specs.extend(row_specs)
     if not specs: raise RuntimeError("NO_SEMANTIC_CANDIDATES")
+    t_=time.perf_counter()
     technical=v52.score_events(specs,work_dir/"SEMANTIC_CANDIDATE_V22_SCORE_CACHE.json")
+    timing["score_s"]=time.perf_counter()-t_
+    SEM_TIMING.clear(); SEM_TIMING.update(timing)
     # Shadow selection score: exact semantic per-source final score is primary, accepted V52 technical score is tie-break.
     for e in technical:
         e["technical_v22_score"]=float(e["v22_score"])
         e["v22_score"]=round(.80*float(e["semantic_source_final_score"])+.20*float(e["technical_v22_score"]),6)
         e["selection_score_kind"]="SEMANTIC_80_TECHNICAL_20_SHADOW_V1"
     return technical,reports,kept
+
+def _semantic_skip_reason(exc,row):
+    """Like _analysis_skip_reason, for the AI modes: a clip of a second or two (a drone's short shots) is "too short",
+    not "could not be analysed" (seen: 5 of 18 drone videos, 1.5-2.6 s, the folder page already said "too short")."""
+    err=str(exc)
+    if "INSUFFICIENT_FRAMES" in err: return "TOO_SHORT_FOR_ANALYSIS"
+    if "DUPLICATE_FRAME_RATIO" in err: return "STATIC_VIDEO"
+    try:
+        if 0<float(row.get("duration_s") or 0)<2.5: return "TOO_SHORT_FOR_ANALYSIS"
+    except (TypeError,ValueError): pass
+    return "ANALYSIS_FAILED:"+(err.split(":",1)[0] or type(exc).__name__)[:60]
 
 def _total_ram_gb():
     """Installed memory (GB); 16 when it cannot be read."""
@@ -406,7 +465,7 @@ class PeTextCache:
             try: tmp.unlink(missing_ok=True)
             except Exception: pass
 
-SEM_TIMING={}    # where the AI+ analysis time goes (result.semantic_timing)
+SEM_TIMING={}    # where the AI / AI+ analysis time goes (result.semantic_timing)
 
 def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=None,theme=None,warnings=None):
     """Like build_semantic_candidates, with the AI+ hook. Own caches and moment ids, so AI and AI+ never mix.
@@ -492,7 +551,7 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
         except AiplusLoadError:
             raise
         except Exception as exc:
-            if skipped is not None: skipped.append({"name":row["name"],"reason":"ANALYSIS_FAILED:"+(str(exc).split(":",1)[0] or type(exc).__name__)[:60]})
+            if skipped is not None: skipped.append({"name":row["name"],"reason":_semantic_skip_reason(exc,row)})
             continue
         if not row_specs and not (theme and report.get("ranked")):     # with a theme: maybe nothing in it matches
             if skipped is not None: skipped.append({"name":row["name"],"reason":"NO_MOMENTS"})
@@ -1603,7 +1662,7 @@ def run(args):
         "selection_mode":selection_mode,"semantic_requested":semantic_mode,"semantic_model":semantic_model if use_semantic else None,
         "theme":(str(getattr(args,"theme","") or "") or None) if (use_semantic and semantic_model=="pe_core_l14") else None,
         "semantic_runtime":semantic_preflight,
-        "semantic_timing":({k:(round(v,2) if isinstance(v,float) else v) for k,v in SEM_TIMING.items()} if (use_semantic and semantic_model=="pe_core_l14") else None),"semantic_reports":semantic_reports if use_semantic else [],
+        "semantic_timing":({k:(round(v,2) if isinstance(v,float) else v) for k,v in SEM_TIMING.items()} if use_semantic else None),"semantic_reports":semantic_reports if use_semantic else [],
         "event_count":event_count,"event_cache":cache_status,
         "selected_count":len(order),"selected_sources":[e["source_name"] for e in order],
         "selected_event_ids":[str(e["event_id"]) for e in order],
