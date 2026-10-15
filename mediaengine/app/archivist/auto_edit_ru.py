@@ -426,6 +426,8 @@ PHRASES = {
     "No video of this theme is on this PC now.": "Сейчас на этом компьютере нет видео на эту тему.",
     # "Prepare in advance" (analysis only; the reel later in minutes)
     "Prepare in advance": "Подготовить заранее", "Preparing in advance": "Подготовка заранее",
+    "Preparing failed": "Подготовка не удалась", "Preparing cancelled": "Подготовка отменена",
+    "Moments: AI": "Моменты: ИИ", "Moments: AI+": "Моменты: ИИ+", "Moments: Technical only": "Моменты: только техника",
     "Prepared in advance": "Подготовлено заранее", "Prepared": "Подготовлено", "PREPARED": "ПОДГОТОВЛЕН",
     "Prepare in advance: MediaEngine only analyses the videos now - for example overnight. The reel is then made from them in minutes.":
         "Подготовить заранее: MediaEngine сейчас только анализирует видео — например, ночью. Потом ролик из них собирается за минуты.",

@@ -782,14 +782,17 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
 <div class='muted'>{e(ae.FORMATS[active['settings']['format']]['label'])} · {active['settings']['length']} s · sound {e(active['settings']['sound'])}</div>
 {"<div style='margin-top:6px'>A new version with your edits.</div>" if active['settings'].get('selection') else ""}{_waiting_html(active, pid, e)}
 <div class='muted' style='margin-top:6px'>{'You can close this window: the reel keeps building and the PC does not go to sleep. When it is ready, Windows shows a notification - click it to see the reel.' if _notify_on() else 'You can close this window: the reel keeps building and the PC does not go to sleep. Open MediaEngine again to see it.'}</div></div>""")
+        if active:
             for q in queued:
-                parts.append(f"<div class='card row space' style='margin-top:8px'><span class='muted'>Waiting: {e(ae.FORMATS[q['settings']['format']]['short'])} · "
-                             f"{q['settings']['length']} s · sound {e(q['settings']['sound'])}</span>"
+                what = (f"<span>Prepare in advance</span> · {_mode_name(q['settings'], e)}" if q["settings"].get("prepare") else
+                        f"{e(ae.FORMATS[q['settings']['format']]['short'])} · {q['settings']['length']} s · sound {e(q['settings']['sound'])}")
+                parts.append(f"<div class='card row space' style='margin-top:8px'><span class='muted'><span>Waiting:</span> {what}</span>"
                              f"<form method='post' action='/auto/job/{q['id']}/cancel'><button class='btn2'>Cancel</button></form></div>")
         elif last_job and last_job["status"] in ("failed", "cancelled") and (not revs or last_job["id"] > max(r["job_id"] for r in revs)):
             ls_ = last_job["settings"]
             no_ai = ""
-            if last_job["status"] == "failed" and ls_.get("mode") in ae.AI_MODES:
+            was_prep = bool(ls_.get("prepare"))
+            if last_job["status"] == "failed" and ls_.get("mode") in ae.AI_MODES and not was_prep:
                 # an AI-mode failure must not leave the user stuck: offer the clearly labelled technical build
                 no_ai = (f"<form method='post' action='/auto/p/{pid}/variant'>"
                          f"<input type='hidden' name='length' value='{ls_['length']}'><input type='hidden' name='format' value='{e(ls_['format'])}'>"
@@ -800,7 +803,9 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
                          + "<input type='hidden' name='beat_sync_shown' value='1'>"
                          + ("<input type='hidden' name='beat_sync' value='1'>" if ls_.get("beat_sync") is not False else "")
                          + "<button class='btn2'>Build without AI (Technical only)</button></form>")
-            parts.append(f"""<div class='card'><b>{'Build failed' if last_job['status']=='failed' else 'Build cancelled'}</b>
+            head_ = (("Preparing failed" if last_job["status"] == "failed" else "Preparing cancelled") if was_prep else
+                     ("Build failed" if last_job["status"] == "failed" else "Build cancelled"))
+            parts.append(f"""<div class='card'><b>{head_}</b>
 <div class='{'errbox' if last_job['status']=='failed' else 'muted'}' style='margin:8px 0'>{_error_html(last_job.get('error') or last_job.get('message') or '', e)}</div>
 <div class='row' style='flex-wrap:wrap'><form method='post' action='/auto/job/{last_job['id']}/retry'><button>Retry</button></form>{no_ai}</div></div>""")
         done_x = ae.export_row(request.args.get("exported", type=int) or 0)
@@ -1395,7 +1400,7 @@ _FRAMING_JS = ("(()=>{const V=%s;const upd=()=>{document.querySelectorAll('form'
 
 def _mode_name(st: dict, e) -> str:
     """HTML: the way of choosing moments, and the theme (each its own element: translated separately)."""
-    mode = {"semantic": "AI", "semantic_plus": "AI+", "technical": "Technical only"}.get(st.get("mode") or "", "")
+    mode = {"semantic": "Moments: AI", "semantic_plus": "Moments: AI+", "technical": "Moments: Technical only"}.get(st.get("mode") or "", "")
     theme = ae.THEMES.get(st.get("theme") or "", "")
     return f"<span>{e(mode)}</span>" + (f" · <span>{e(theme)}</span>" if theme else "")
 
