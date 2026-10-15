@@ -131,6 +131,16 @@ def main():
     cl = sorted((work / "shared" / "semantic_candidates").glob("*.mp4"))[:6]
     same_rows = [r3.camera_drop_rows(c_) == r3.camera_drop_rows_fast(c_) for c_ in cl]
     check("boundary_rows_one_pass_same_as_seeks", cl and all(same_rows), [c_.name for c_, ok in zip(cl, same_rows) if not ok])
+    # a spot-check that disagrees (another OpenCV, an odd clip): the clip is measured the accepted way
+    real_seek, calls = r3._seek_row, []
+    r3._seek_row = lambda path, t: {"t": -1.0}
+    real_slow = r3.camera_drop_rows
+    r3.camera_drop_rows = lambda path, step=.25: (calls.append(path), real_slow(path, step))[1]
+    try:
+        fb = r3.camera_drop_rows_fast(cl[0]) if cl else None
+    finally:
+        r3._seek_row, r3.camera_drop_rows = real_seek, real_slow
+    check("boundary_rows_fall_back_when_a_spot_check_differs", cl and calls == [cl[0]] and fb == real_slow(cl[0]), calls)
     # a drone's 1-2 s shots: "too short", not "could not be analysed" (the folder page already says "too short")
     sk = r3._semantic_skip_reason
     check("ai_short_clip_is_too_short", sk(RuntimeError("SCOUT_INSUFFICIENT_FRAMES"), {"duration_s": 30.0}) == "TOO_SHORT_FOR_ANALYSIS"
