@@ -80,7 +80,7 @@ first. After the download the same reel is built again with them.
   ground; the AI reel without a theme took a low shot of a castle's dragon. Prepare in advance of the 10 videos with
   AI+ and the theme: 961 s on the 4-core runner; the 30 s reel after it: **34 s** (analysis 0.3 s).
   Model lab (240 public ground-level scene photos): the aerial theme is the best of the 14 themes for 1 photo (a sea
-  photo); the other themes' results are unchanged.
+  photo).
 
 ## AI moments analysed on previews, the reel cut from the originals (2026-10-15, measured on the owner's PC)
 
