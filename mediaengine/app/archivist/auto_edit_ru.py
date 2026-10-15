@@ -254,6 +254,8 @@ PHRASES = {
     "Only the videos directly in this folder are used. Folders inside it with videos: ":
         "Берутся только видео, лежащие прямо в этой папке. Вложенных папок с видео: ",
     "Exported reels": "Готовые ролики", "The folder for exported reels is not there yet.": "Папки с готовыми роликами ещё нет.",
+    "You can close this window: the reel keeps building and the PC does not go to sleep. When it is ready, Windows shows a notification - click it to see the reel.":
+        "Окно можно закрыть: ролик продолжит собираться, а компьютер не уснёт. Когда он будет готов, Windows покажет уведомление — нажми на него, чтобы посмотреть.",
     "You can close this window: the reel keeps building and the PC does not go to sleep. Open MediaEngine again to see it.":
         "Окно можно закрыть: ролик продолжит собираться, а компьютер не уснёт. Чтобы посмотреть, снова открой MediaEngine.",
     "The current revision stays as it is. Format and sound variants keep its removed moments and your edits and reuse the analysis; a new length chooses the moments again (removed ones stay out).":

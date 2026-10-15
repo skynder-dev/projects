@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 import urllib.parse
 from pathlib import Path
 
@@ -772,7 +773,7 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
 <div class='muted' id='jobMsg'>{e(active.get('message') or '')}</div>
 <div class='muted'>{e(ae.FORMATS[active['settings']['format']]['label'])} · {active['settings']['length']} s · sound {e(active['settings']['sound'])}</div>
 {"<div style='margin-top:6px'>A new version with your edits.</div>" if active['settings'].get('selection') else ""}{_waiting_html(active, pid, e)}
-<div class='muted' style='margin-top:6px'>You can close this window: the reel keeps building and the PC does not go to sleep. Open MediaEngine again to see it.</div></div>""")
+<div class='muted' style='margin-top:6px'>{'You can close this window: the reel keeps building and the PC does not go to sleep. When it is ready, Windows shows a notification - click it to see the reel.' if _notify_on() else 'You can close this window: the reel keeps building and the PC does not go to sleep. Open MediaEngine again to see it.'}</div></div>""")
             for q in queued:
                 parts.append(f"<div class='card row space' style='margin-top:8px'><span class='muted'>Waiting: {e(ae.FORMATS[q['settings']['format']]['short'])} · "
                              f"{q['settings']['length']} s · sound {e(q['settings']['sound'])}</span>"
@@ -1379,6 +1380,14 @@ _FRAMING_JS = ("(()=>{const V=%s;const upd=()=>{document.querySelectorAll('form'
                "const c=f.querySelector('input[name=format]:checked');if(b)b.style.display=(!c||V.includes(c.value))?'':'none'})};"
                "document.querySelectorAll('input[name=format]').forEach(r=>r.addEventListener('change',upd));upd()})();"
                % json.dumps([k for k, v in ae.FORMATS.items() if v["profile"] == "9x16"]))
+
+
+def _notify_on() -> bool:
+    try:
+        from . import notify
+        return os.name == "nt" and notify.enabled()
+    except Exception:
+        return False
 
 
 def _build_time_html(res) -> str:
