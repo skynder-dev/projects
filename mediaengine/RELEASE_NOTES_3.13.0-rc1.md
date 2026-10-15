@@ -61,9 +61,9 @@ first. After the download the same reel is built again with them.
 ## Prepare in advance; the AI+ theme "Aerial view (drone)" (2026-10-15)
 
 - **"Prepare in advance"** next to "Create reel": the engine (`--prepare-only`) analyses the videos with the chosen
-  mode (AI, AI+, AI+ with a theme, Technical only), measures and chooses the moments for the chosen length once and
-  measures the clip edges of every moment that could be chosen - all of it into the caches a build reads; nothing is
-  cut or rendered, no version is made (`MediaEngine Prepared.json`: videos, skipped, moments, time). The project then
+  mode (AI, AI+, AI+ with a theme, Technical only), measures and chooses the moments for the chosen length once,
+  measures the clip edges of every moment that could be chosen and cuts the chosen moments from the originals at full
+  quality - all of it into the caches a build reads; no reel is joined, no version is made (`MediaEngine Prepared.json`: videos, skipped, moments, time). The project then
   says "Prepared in advance" (state PREPARED) with the build form below; the reel made from it starts at "choosing
   moments". A job of its own (request key with `prepare`), the same queue as reels, a Windows notification "Your videos
   are prepared". Videos added to the folder later are analysed by the build. For a folder that takes an hour (the

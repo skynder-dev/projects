@@ -1344,6 +1344,38 @@ SQUARE_PIXELS="scale=w=trunc(iw*sar/2+0.5)*2:h=ih,setsar=1"   # widen to the pic
 
 _FQ_FALLBACK=[]   # sources whose moments had to stay at analysis-preview quality (reported, not hidden)
 
+def piece_flags(v52,e):
+    """What the recut of a moment from its original needs: (probed source, hdr to convert, hdr found, no zscale,
+    deinterlace, square pixels). The build and "Prepare in advance" use the same, so the recut is the same file."""
+    probe_src=e.get("recut_path") or e.get("source_path")
+    hdr=hdr_kind(v52.FFMPEG,probe_src) if probe_src else None
+    deint=bool(probe_src) and is_interlaced(v52.FFMPEG,probe_src)
+    hdr_found=hdr; no_zscale=False
+    if hdr and not zscale_available(v52.FFMPEG):
+        hdr=None; no_zscale=True
+    sq=bool(probe_src) and is_anamorphic(v52.FFMPEG,probe_src)
+    return probe_src,hdr,hdr_found,no_zscale,deint,sq
+
+def prewarm_full_quality(v52,dropmod,selected,work_dir):
+    """"Prepare in advance": the moments it would choose for the asked length, with their clip edges checked, cut
+    from the originals at full quality now (the build of the same length finds them made). Returns how many."""
+    auto,_=apply_camera_drop(v52,dropmod,list(selected),work_dir)
+    workers=max(1,min(3,(os.cpu_count() or 4)//4,len(auto)))
+    done=[0]
+    def one(e):
+        try:
+            _,hdr,_,_,deint,sq=piece_flags(v52,e)
+            full_quality_clip(v52,e,work_dir,hdr,deint,sq)
+        except Exception: pass          # the build cuts it, as without preparing
+        with _CLIP_LOCK:
+            done[0]+=1; progress("trim",done[0],len(auto),"cutting the pieces")
+    if workers==1:
+        for e in auto: one(e)
+    else:
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(workers) as ex: list(ex.map(one,auto))
+    return len(auto)
+
 def full_quality_clip(v52,e,work_dir,hdr=None,deinterlace=False,square=False):
     """Technical mode: moments are found and scored on the accepted V12 preview clips (max 960 px wide, re-timed to
     25 fps, sound and picture re-zeroed separately -> sound up to ~45 ms early). The reel itself is cut from the
@@ -1806,11 +1838,12 @@ def run(args):
         # the clip edges of every moment measured - all of it kept in the caches the build uses; nothing is cut or
         # rendered. A reel made later from these videos with the same mode starts at "choosing moments", in minutes.
         edges_measured=prefill_camera_drop(pool,work_dir)
+        pieces_cut=prewarm_full_quality(v52,dropmod,selected,work_dir)
         prepared={"schema":"MEDENG_PREPARED_V1","prepared":True,"input_count":len(input_rows),"input_fingerprint":fingerprint,
                   "skipped_inputs":skipped_inputs,"moments":len(pool),"would_select":len(selected),
                   "selection_mode":selection_mode,"semantic":bool(use_semantic),"semantic_model":semantic_model if use_semantic else None,
                   "theme":(str(getattr(args,"theme","") or "") or None) if semantic_model=="pe_core_l14" else None,
-                  "cache_status":cache_status,"clip_edges_measured":edges_measured,
+                  "cache_status":cache_status,"clip_edges_measured":edges_measured,"pieces_cut":pieces_cut,
                   "semantic_timing":({k:(round(v,2) if isinstance(v,float) else v) for k,v in SEM_TIMING.items()} if use_semantic else None),
                   "source_mutated":False,"network_request_performed":False,
                   "elapsed_s":round(time.perf_counter()-started,3),
@@ -1928,13 +1961,7 @@ def run(args):
     hdr_sources={}; deinterlaced=[]; widened={}
     def piece_source(e):
         """The clip a segment is cut from (a full-quality recut from the original when needed) and what was found."""
-        probe_src=e.get("recut_path") or e.get("source_path")
-        hdr=hdr_kind(v52.FFMPEG,probe_src) if probe_src else None
-        deint=bool(probe_src) and is_interlaced(v52.FFMPEG,probe_src)
-        hdr_found=hdr; no_zscale=False
-        if hdr and not zscale_available(v52.FFMPEG):
-            hdr=None; no_zscale=True
-        sq=bool(probe_src) and is_anamorphic(v52.FFMPEG,probe_src)
+        probe_src,hdr,hdr_found,no_zscale,deint,sq=piece_flags(v52,e)
         e2=e
         # analysed on previews (both modes): cut again from the original; manual trims are already cut from it
         if hdr or deint or sq or str(e["event_id"]) not in trims:
