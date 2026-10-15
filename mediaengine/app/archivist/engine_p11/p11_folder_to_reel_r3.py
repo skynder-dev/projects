@@ -1809,6 +1809,8 @@ def run(args):
                                   output_resolution=resolution,output_fps=30,video_quality="high",
                                   **({"vertical_framing":framing} if framing!="fill" else {}))
             os.replace(tmp,seg); meta["sha256"]=sha256_file(seg); atomic_json(meta_path,meta)
+            try: tmp.with_suffix(".json").unlink(missing_ok=True)     # the accepted cutter's note beside its temp file
+            except OSError: pass
         # the picture length of a cached segment is remembered with it (counting its frames again took ~1 s each)
         side=segcache/f"{key}.seconds.json"
         try:
@@ -1822,22 +1824,49 @@ def run(args):
 
     render_source="AI_CANDIDATE_CLIPS_FROM_ORIGINAL" if use_semantic else "ORIGINAL_FULL_QUALITY_RECUT"
     hdr_sources={}; deinterlaced=[]; widened={}
-    for si,(e,use) in enumerate(zip(order,pace["durations_s"])):
-        progress("render",si,len(order),str(e["source_name"]))
+    def piece_source(e):
+        """The clip a segment is cut from (a full-quality recut from the original when needed) and what was found."""
         probe_src=e.get("recut_path") or e.get("source_path")
         hdr=hdr_kind(v52.FFMPEG,probe_src) if probe_src else None
         deint=bool(probe_src) and is_interlaced(v52.FFMPEG,probe_src)
-        if deint and str(e["source_name"]) not in deinterlaced: deinterlaced.append(str(e["source_name"]))
-        if hdr:
-            hdr_sources[str(e["source_name"])]=hdr
-            if not zscale_available(v52.FFMPEG):
-                hdr=None
-                if "HDR_NOT_CONVERTED" not in warnings: warnings.append("HDR_NOT_CONVERTED")
+        hdr_found=hdr; no_zscale=False
+        if hdr and not zscale_available(v52.FFMPEG):
+            hdr=None; no_zscale=True
         sq=bool(probe_src) and is_anamorphic(v52.FFMPEG,probe_src)
+        e2=e
         if hdr or deint or sq or (not use_semantic and str(e["event_id"]) not in trims):   # manual trims are already cut from the original
             e2=full_quality_clip(v52,e,work_dir,hdr,deint,sq)
-            if sq and e2 is not e: widened[str(e["source_name"])]=round(pixel_aspect(v52.FFMPEG,probe_src),4)
-            e=e2
+        return e2,{"hdr":hdr_found,"deint":deint,"no_zscale":no_zscale,
+                   "widen":(round(pixel_aspect(v52.FFMPEG,probe_src),4) if sq and e2 is not e else None)}
+    if not beats and len(order)>1:
+        # the pieces in parallel first (each one is one FFmpeg; the loop below then finds them all made): the same
+        # pieces as one after another (with cuts on the beat each piece depends on the one before: not then)
+        pw=max(1,min(3,(os.cpu_count() or 2)//4,len(order)))
+        try: pw=max(1,int(os.environ.get("MEDENG_RENDER_WORKERS") or pw))
+        except ValueError: pass
+        if pw>1:
+            import concurrent.futures
+            progress("render",0,len(order),"cutting the pieces")
+            def warm(item):
+                try:
+                    e_,use_=item; e2_,_=piece_source(e_); make_seg(e2_,use_)
+                except Exception:
+                    pass        # the loop below makes it again and reports a real error as before
+            seen_=set(); items=[]
+            for e_,use_ in zip(order,pace["durations_s"]):
+                k_=(str(e_["event_id"]),round(float(use_),3))
+                if k_ not in seen_: seen_.add(k_); items.append((e_,use_))
+            with concurrent.futures.ThreadPoolExecutor(max_workers=pw) as ex:
+                list(ex.map(warm,items))
+    for si,(e,use) in enumerate(zip(order,pace["durations_s"])):
+        name_=str(e["source_name"])
+        progress("render",si,len(order),name_)
+        e,found=piece_source(e)
+        if found["deint"] and name_ not in deinterlaced: deinterlaced.append(name_)
+        if found["hdr"]:
+            hdr_sources[name_]=found["hdr"]
+            if found["no_zscale"] and "HDR_NOT_CONVERTED" not in warnings: warnings.append("HDR_NOT_CONVERTED")
+        if found["widen"] is not None: widened[name_]=found["widen"]
         hit=None
         if beats and str(e["event_id"]) not in trims:   # a moment the user trimmed keeps its exact length
             start=sum(float(d) for d in durs)-sum(float(render_trans[j]["duration_s"]) for j in range(si))

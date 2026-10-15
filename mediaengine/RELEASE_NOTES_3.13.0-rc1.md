@@ -94,6 +94,10 @@ first. After the download the same reel is built again with them.
   near the end of every moment twice (a seek near the end of a one-GOP 4K clip decodes the whole clip; 34 s for 6
   moments on the CI runner even for a project whose analysis was shared). Remembered for the build and per clip SHA-256
   in the shared cache - the same float32 numbers, so the same order and transitions (R3 = R2 regression unchanged).
+- **The pieces of a reel are cut up to three at once** on a PC with many cores (cores/4; not with cuts on the beat,
+  where each piece depends on the one before): every piece is the same FFmpeg command as before, made first in
+  parallel, then the usual loop finds them all made. A format variant of a 4K reel spent about half its time here.
+  CI: the AI glue check (one by one vs three at once) and one E2E run cut three at once.
 - AI+ too: videos ranked before for this theme go first, the engine estimates the time left on the others; the results
   stay in the input order (checked against the previous loop on 9,000 random cases: identical, except that a video
   skipped half-way no longer leaves its theme-deferred moments behind). "Known" means a valid report (a scout file

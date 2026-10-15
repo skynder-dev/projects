@@ -138,8 +138,10 @@ jobs:
         run: |
           python mediaengine/tests/e2e_auto_edit.py --folder "$env:RUNNER_TEMP\fx\seven" --home "$env:RUNNER_TEMP\home7" --mode technical --out "$env:OUT\e2e_seven.json" 2>&1 | Tee-Object "$env:OUT\e2e_seven.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
-      - name: Auto Edit E2E - 2 videos
+      - name: Auto Edit E2E - 2 videos (pieces of a reel cut three at once, as on a PC with many cores)
         shell: pwsh
+        env:
+          MEDENG_RENDER_WORKERS: '3'
         run: |
           python mediaengine/tests/e2e_auto_edit.py --folder "$env:RUNNER_TEMP\fx\two" --home "$env:RUNNER_TEMP\home2" --mode technical --skip-cancel --files-check --out "$env:OUT\e2e_two.json" 2>&1 | Tee-Object "$env:OUT\e2e_two.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }

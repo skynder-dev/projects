@@ -60,8 +60,10 @@ def main():
     # several videos analysed at once (a PC with many cores): the same reel to the frame; "seven" has a copy of a
     # video under another name, which once made two threads write the same clip file
     os.environ["MEDENG_SEMANTIC_WORKERS"] = "3"
+    os.environ["MEDENG_RENDER_WORKERS"] = "3"          # and the pieces cut three at once
     out3, _ = build("three")
     os.environ.pop("MEDENG_SEMANTIC_WORKERS", None)
+    os.environ.pop("MEDENG_RENDER_WORKERS", None)
     # what the AI found and the moment clips, shared by all projects (the app sets MEDENG_AI_SHARED_CACHE): a new
     # project from the same videos analyses and cuts nothing; a project made before the cache was shared hands its
     # files over (moved, not analysed again)
