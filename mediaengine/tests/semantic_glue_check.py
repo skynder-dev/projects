@@ -32,6 +32,13 @@ class StubSemantic:
                            for a, b, sc in wins]}
 
 
+def ffprobe_wh(ff, path):
+    """(width, height) of a video's picture, read with ffmpeg itself (no ffprobe needed)."""
+    err = subprocess.run([ff, "-hide_banner", "-i", str(path)], capture_output=True, text=True).stderr
+    m = re.search(r"Video:.*?(\d{2,5})x(\d{2,5})", err)
+    return (int(m.group(1)), int(m.group(2))) if m else (99999, 99999)
+
+
 def main():
     fx, work = Path(sys.argv[1]).resolve(), Path(sys.argv[2]).resolve()
     shutil.rmtree(work, ignore_errors=True)
@@ -113,14 +120,19 @@ def main():
     check("ai_glue_parallel_analysis_same_reel", ok_, det_)
     # the moment clips themselves are bit-identical when cut again (x264 sync-lookahead=0)
     # (cut three times: build "one" - its clips were handed over to shared_adopt -, "three" and "shared_new")
-    shas = [{f.name: hashlib.sha256(f.read_bytes()).hexdigest() for f in (work / d / "semantic_candidates").glob("*.mp4")}
-            for d in ("shared_adopt", "w_three", "shared")]
-    check("ai_moment_clips_cut_the_same_every_time", shas[0] and shas[0] == shas[1] == shas[2],
-          sorted(k for k in shas[0] if not shas[0].get(k) == shas[1].get(k) == shas[2].get(k))[:5])
+    shas = [{f.name: hashlib.sha256(f.read_bytes()).hexdigest() for f in (work / d / "semantic_previews").glob("*.mp4")}
+            for d in ("w", "w_three", "shared", "shared_adopt")]
+    check("ai_moment_clips_cut_the_same_every_time", shas[0] and shas[0] == shas[1] == shas[2] == shas[3],
+          sorted(k for k in shas[0] if not shas[0].get(k) == shas[1].get(k) == shas[2].get(k) == shas[3].get(k))[:5])
+    # the moments are analysed on previews (at most 960 px wide) and the reel is cut from the originals
+    pv = [ffprobe_wh(ff, f) for f in sorted((work / "shared" / "semantic_previews").glob("*.mp4"))[:3]]
+    check("ai_previews_small_reel_from_originals", pv and all(w_ <= 960 for w_, _ in pv)
+          and res.get("render_source") == "ORIGINAL_FULL_QUALITY_RECUT"
+          and not any(w.startswith("PREVIEW_QUALITY_USED") for w in res.get("warnings", [])), (pv, res.get("render_source")))
     tim = {k: json.loads((o / "MediaEngine Result.json").read_text(encoding="utf-8")).get("semantic_timing") or {}
            for k, o in (("new", out_sn), ("again", out_sa), ("adopt", out_ad))}
     check("ai_shared_cache_filled_by_the_first_project", tim["new"].get("shared_cache") and tim["new"].get("videos_analysed", 0) > 0
-          and tim["new"].get("clips_cut", 0) > 0 and any((work / "shared" / "semantic_candidates").glob("*.mp4"))
+          and tim["new"].get("clips_cut", 0) > 0 and any((work / "shared" / "semantic_previews").glob("*.mp4"))
           and any((work / "shared" / "semantic_reports").glob("*.json")) and any((work / "shared" / "v22_metrics").glob("*.json"))
           and (work / "shared" / "source_sha256.json").is_file() and any((work / "shared" / "signatures").glob("*.json"))
           and any((work / "shared" / "camera_drop_rows").glob("*.json")), tim["new"])
@@ -128,10 +140,10 @@ def main():
     check("ai_shared_cache_new_project_analyses_and_cuts_nothing", tim["again"].get("videos_analysed") == 0 and tim["again"].get("clips_cut") == 0
           and tim["again"].get("clips_measured") == 0 and tim["again"].get("clips_cached", 0) > 0 and ok_, (tim["again"], det_))
     ok_, det_ = same_reel(out, out_ad)
-    check("ai_shared_cache_takes_over_an_older_projects_files", tim["adopt"].get("videos_analysed") == 0 and tim["adopt"].get("clips_cut") == 0
-          and not any((work / "w" / "semantic_candidates").glob("*.mp4")) and ok_, (tim["adopt"], det_))
+    check("ai_shared_cache_takes_over_an_older_projects_files", tim["adopt"].get("videos_analysed") == 0
+          and not any((work / "w" / "semantic_reports").glob("*.json")) and ok_, (tim["adopt"], det_))
     # boundary rows from one pass through a clip = the accepted rows from a seek per row (OpenCV of this PC)
-    cl = sorted((work / "shared" / "semantic_candidates").glob("*.mp4"))[:6]
+    cl = sorted((work / "shared" / "semantic_previews").glob("*.mp4"))[:6]
     same_rows = [r3.camera_drop_rows(c_) == r3.camera_drop_rows_fast(c_) for c_ in cl]
     check("boundary_rows_one_pass_same_as_seeks", cl and all(same_rows), [c_.name for c_, ok in zip(cl, same_rows) if not ok])
     # a spot-check that disagrees (another OpenCV, an odd clip): the clip is measured the accepted way

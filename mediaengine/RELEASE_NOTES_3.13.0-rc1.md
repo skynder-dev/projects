@@ -58,6 +58,20 @@ not read — reading even their first bytes would make Windows download them all
 in the cloud (OneDrive)…"); a folder that is entirely in the cloud says to choose "Always keep on this device"
 first. After the download the same reel is built again with them.
 
+## AI moments analysed on previews, the reel cut from the originals (2026-10-15, measured on the owner's PC)
+
+b113 on the owner's PC (16 threads, 18 drone videos 4K, 29 GB): the first AI reel 42 min instead of 64 (b100), the
+same 6 moments; a second project from the same folder (vertical) 2 min 16 s (analysis reused: 9 s). Where the 42 min
+went (worker time, 3 videos at once): cutting 90 candidate clips in 4K 4002 s, the AI's own analysis 1353 s,
+measuring the clips 418 s - for the 6 moments a 30 s reel uses.
+
+- **Candidates are previews now** (at most 960 px wide, the same x264 settings), in AI and AI+ mode - as the accepted
+  technical mode does with its V12 previews. Only the moments in the reel are cut again from the original at full
+  quality (`full_quality_clip`, the same settings the candidates had), so the reel's picture is as before. The scores
+  hardly move: the accepted scorer looks at every frame at 320 px wide and the signatures at 160 px; the boundary
+  check (camera drop) reads the preview like technical mode does. Moment ids are unchanged (edits stay valid).
+- The 4K candidate clips of b101-b113 (shared cache and projects) are removed at the next build: gigabytes back.
+
 ## The AI's work kept for every reel, time left, a notification (2026-10-15)
 
 - **AI analysis shared by all projects** (`MediaEngine Data\data\auto_edit\shared`, by each video's SHA-256): the AI's

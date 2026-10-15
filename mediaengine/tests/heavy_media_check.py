@@ -92,7 +92,8 @@ def main():
 
         a1, t_a1, err1 = ai_build("ai", 2)
         check("heavy_ai_build_done_two_videos_at_once", a1 is not None and a1["selection_mode"].startswith("FAST_LOCAL")
-              and (a1.get("semantic_timing") or {}).get("workers") == 2 and (a1.get("semantic_timing") or {}).get("videos_analysed") == 3, err1 or a1)
+              and (a1.get("semantic_timing") or {}).get("workers") == 2 and (a1.get("semantic_timing") or {}).get("videos_analysed") == 3
+              and a1.get("render_source") == "ORIGINAL_FULL_QUALITY_RECUT", err1 or a1)
         a2, t_a2, err2 = ai_build("ai_again", 2)
         tm2 = (a2 or {}).get("semantic_timing") or {}
         check("heavy_ai_second_project_analyses_nothing", a2 is not None and tm2.get("videos_analysed") == 0 and tm2.get("clips_cut") == 0

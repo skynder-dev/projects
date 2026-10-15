@@ -191,6 +191,14 @@ and up to 3 videos at once (a copy of a video is analysed once - two threads onc
 drone clips were "could not be analysed" (the folder page said "too short") -> "too short". The replace list showed
 the same window twice -> one line.
 
+## Owner PC test of b113 (2026-10-15)
+
+First AI reel from `D:\100MEDIA` (18 drone videos 4K, 30 s horizontal): **42 min** (b100: 64 min), the same 6 moments.
+Worker time (3 videos at once): candidate clips cut in 4K 4002 s, AI analysis 1353 s, measuring clips 418 s; stages:
+inputs 50 s, analysis 38 min, select 39 s, boundaries 70 s, pieces 33 s, joining 25 s. A second project from the same
+folder (vertical 30 s): **2 min 16 s** (analysis 9 s, 93 clips from the shared cache). Next (b114): candidates as
+previews, the reel cut from the originals.
+
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).

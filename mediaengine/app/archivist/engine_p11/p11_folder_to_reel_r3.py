@@ -217,6 +217,12 @@ def sound_args(v52,src,dur):
 # command: 2-3 runs in 12 on one clip); without it 30 of 30 were bit-identical, at the same speed on 4K. A clip cut
 # again (the shared cache removed it) is then the same clip, with the same measurements and the same choice.
 CANDIDATE_X264=("-preset","veryfast","-crf","16","-x264-params","sync-lookahead=0")
+# AI moments are analysed, scored and checked on a PREVIEW of each candidate (at most 960 px wide, like the accepted
+# technical mode's V12 previews); only the moments in the reel are cut again from the original at full quality
+# (full_quality_clip, the same settings). On the owner's PC 90 candidates cut in 4K were 75 % of a 42-minute build
+# (4002 s of 5355 s of worker time) and measuring them 418 s more - for the 6 moments a 30 s reel uses. The scores
+# hardly move: the accepted scorer looks at every frame at 320 px wide, the picture signatures at 160 px.
+PREVIEW_VF="scale=w='min(960,iw)':h=-2"
 
 _CLIP_STATS={"cut":0,"reused":0}
 _CLIP_LOCK=threading.Lock()
@@ -233,7 +239,7 @@ def _adopt(legacy_dir,out_dir,names):
                 try: shutil.copyfile(a,b)
                 except OSError: pass
 
-def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="SEMANTIC_V2", legacy_dir=None, origin_sha=None):
+def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="SEMANTIC_V2", legacy_dir=None, origin_sha=None, preview=False):
     start=float(c["start_s"]); end=float(c["end_s"]); dur=max(.25,end-start)
     raw=f"{source_sha}|{start:.3f}|{end:.3f}|{tag}".encode()
     eid=hashlib.sha256(raw).hexdigest()[:24]
@@ -259,7 +265,7 @@ def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="S
     if tmp.exists(): tmp.unlink()
     cmd=[v52.FFMPEG,"-hide_banner","-loglevel","error","-y",
          "-ss",f"{start:.3f}","-i",str(src),"-t",f"{dur:.3f}",
-         "-map","0:v:0",*sound_args(v52,src,dur),"-c:v","libx264",*CANDIDATE_X264,
+         "-map","0:v:0",*sound_args(v52,src,dur),*(["-vf",PREVIEW_VF] if preview else []),"-c:v","libx264",*CANDIDATE_X264,
          "-pix_fmt","yuv420p","-c:a","aac","-b:a","192k","-ar","48000","-ac","2",
          "-movflags","+faststart",str(tmp)]
     cp=subprocess.run(cmd,capture_output=True,text=True)
@@ -285,6 +291,7 @@ def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="S
         "semantic_source_rank":int(c["_source_rank"]),
     }
     if origin_sha and origin_sha!=source_sha: m["origin_sha256"]=origin_sha   # a stand-in (camcorder remux): the real file
+    if preview: m["preview"]=True
     atomic_json(meta,m)
     with _CLIP_LOCK: _CLIP_STATS["cut"]+=1
     return m
@@ -364,10 +371,10 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
     # what the AI found in each video (by its SHA-256) and the moment clips: shared by all projects when the app says
     # where - a new reel from videos analysed for another reel analyses and cuts nothing again
     shared=_shared_root()
-    legacy_reports=work_dir/"semantic_reports"; legacy_cands=work_dir/"semantic_candidates"
+    legacy_reports=work_dir/"semantic_reports"
     reports_dir=(shared/"semantic_reports") if shared else legacy_reports; reports_dir.mkdir(parents=True,exist_ok=True)
-    candidates_dir=(shared/"semantic_candidates") if shared else legacy_cands
-    legacy_c=legacy_cands if shared and legacy_cands.is_dir() else None
+    candidates_dir=(shared/"semantic_previews") if shared else work_dir/"semantic_previews"     # previews (PREVIEW_VF)
+    legacy_c=None
     stats0=dict(_CLIP_STATS)
     specs=[]
     reports=[]
@@ -411,7 +418,7 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
             for rank,c in enumerate(report.get("ranked",[]),1):
                 cc=dict(c); cc["_source_rank"]=rank
                 row_specs.append(extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,
-                                                        legacy_dir=legacy_c,origin_sha=row.get("origin_sha256")))
+                                                        legacy_dir=legacy_c,origin_sha=row.get("origin_sha256"),preview=True))
             with tlock: timing["clips_s"]+=time.perf_counter()-t_
         except Exception as exc:
             # one unreadable file must not sink the whole reel: skip it and say so
@@ -453,6 +460,7 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
         return 0.0 if left<=0 else (sum(durs)/len(durs))*max(1.0,left/max(1,workers))
     def timed(idx):
         t0=time.perf_counter(); r=one(input_rows[idx]); return r,time.perf_counter()-t0
+    cpu=CpuMeter(); cpu.__enter__()        # how busy the PC was while videos were analysed (daemon thread)
     done_n=0
     for idx in order[:n_known]:
         progress("analyze",done_n,len(input_rows),input_rows[idx]["name"],eta_s=(_NO_ETA if new_total==0 else None))
@@ -479,6 +487,7 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
         for idx in copies:
             results[idx]=one(input_rows[idx]); done_n+=1; k+=1
             progress("analyze",done_n,len(input_rows),"analysing videos",eta_s=eta(k))
+    cpu.__exit__(); timing["cpu_busy"]=cpu.summary(); timing["cpus"]=os.cpu_count()
     for row,(report,row_specs,skip) in zip(input_rows,results):
         if skip is not None:
             if skipped is not None: skipped.append(skip)
@@ -513,6 +522,40 @@ def _semantic_skip_reason(exc,row):
         if "INSUFFICIENT_FRAMES" in err and 0<float(row.get("duration_s") or 0)<2.5: return "TOO_SHORT_FOR_ANALYSIS"
     except (TypeError,ValueError): pass
     return "ANALYSIS_FAILED:"+(err.split(":",1)[0] or type(exc).__name__)[:60]
+
+class CpuMeter:
+    """How busy the whole PC's processor was while a step ran (0..1, all cores), for result.semantic_timing - so a slow
+    build on a real PC tells whether more work at once could help (idle cores) or not (busy). Never fails a build."""
+    def __init__(self):
+        self.samples=[]; self._stop=threading.Event(); self._th=None
+    @staticmethod
+    def _times():
+        try:
+            if os.name=="nt":
+                import ctypes
+                idle,kern,user=(ctypes.c_ulonglong(),ctypes.c_ulonglong(),ctypes.c_ulonglong())
+                if not ctypes.windll.kernel32.GetSystemTimes(ctypes.byref(idle),ctypes.byref(kern),ctypes.byref(user)): return None
+                return float(idle.value),float(kern.value+user.value)        # kernel time includes idle time
+            with open("/proc/stat") as f:
+                v=[float(x) for x in f.readline().split()[1:]]
+            return v[3]+(v[4] if len(v)>4 else 0.0),sum(v)
+        except Exception:
+            return None
+    def _run(self):
+        last=self._times()
+        while not self._stop.wait(2.0):
+            now=self._times()
+            if last and now and now[1]>last[1]:
+                self.samples.append(max(0.0,min(1.0,1.0-(now[0]-last[0])/(now[1]-last[1]))))
+            last=now
+    def __enter__(self):
+        self._th=threading.Thread(target=self._run,daemon=True); self._th.start(); return self
+    def __exit__(self,*a):
+        self._stop.set()
+        if self._th: self._th.join(3)
+    def summary(self):
+        if not self.samples: return None
+        return round(sum(self.samples)/len(self.samples),3)
 
 def _total_ram_gb():
     """Installed memory (GB); 16 when it cannot be read."""
@@ -636,9 +679,10 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
     # (MEDENG_P13_SCOUT_CACHE) - a new reel from videos analysed for another reel needs no frame looked at again
     scout_dir=Path(os.environ.get("MEDENG_P13_SCOUT_CACHE") or (work_dir/"semantic_scout_pe")); scout_dir.mkdir(parents=True,exist_ok=True)
     reports_dir=work_dir/"semantic_reports_pe"; reports_dir.mkdir(parents=True,exist_ok=True)
-    shared=_shared_root(); legacy_cands=work_dir/"semantic_candidates_pe"
-    candidates_dir=(shared/"semantic_candidates_pe") if shared else legacy_cands      # the moment clips: for every project
-    legacy_c=legacy_cands if shared and legacy_cands.is_dir() else None
+    shared=_shared_root()
+    # previews of the moments (PREVIEW_VF), for every project when shared; the reel is cut from the original
+    candidates_dir=(shared/"semantic_previews_pe") if shared else work_dir/"semantic_previews_pe"
+    legacy_c=None
     state={"scorer":None}
     def scorer_with(part):
         try:
@@ -663,7 +707,7 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
     def make_spec(row,cc,rank):
         t_=time.perf_counter(); n_=_CLIP_STATS["cut"]
         spec=extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,"SEMANTIC_PE1",legacy_dir=legacy_c,
-                                    origin_sha=row.get("origin_sha256"))
+                                    origin_sha=row.get("origin_sha256"),preview=True)
         SEM_TIMING["clips_s"]+=time.perf_counter()-t_
         SEM_TIMING["clips_cut" if _CLIP_STATS["cut"]>n_ else "clips_cached"]+=1
         # a cached clip keeps its cut; its scores always come from the current ranking (theme, descriptions)
@@ -1822,7 +1866,7 @@ def run(args):
         except OSError: pass
         return seg,meta,secs
 
-    render_source="AI_CANDIDATE_CLIPS_FROM_ORIGINAL" if use_semantic else "ORIGINAL_FULL_QUALITY_RECUT"
+    render_source="ORIGINAL_FULL_QUALITY_RECUT"      # both modes analyse previews and cut the reel from the original
     hdr_sources={}; deinterlaced=[]; widened={}
     def piece_source(e):
         """The clip a segment is cut from (a full-quality recut from the original when needed) and what was found."""
@@ -1834,7 +1878,8 @@ def run(args):
             hdr=None; no_zscale=True
         sq=bool(probe_src) and is_anamorphic(v52.FFMPEG,probe_src)
         e2=e
-        if hdr or deint or sq or (not use_semantic and str(e["event_id"]) not in trims):   # manual trims are already cut from the original
+        # analysed on previews (both modes): cut again from the original; manual trims are already cut from it
+        if hdr or deint or sq or str(e["event_id"]) not in trims:
             e2=full_quality_clip(v52,e,work_dir,hdr,deint,sq)
         return e2,{"hdr":hdr_found,"deint":deint,"no_zscale":no_zscale,
                    "widen":(round(pixel_aspect(v52.FFMPEG,probe_src),4) if sq and e2 is not e else None)}

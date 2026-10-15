@@ -249,7 +249,8 @@ def main():
     e7 = _aew.stage_eta_s(dict(jj, id=992), now=1100.0)
     check("the engine's time left is counted down, none before it knows", (e6, e7) == (500, None), (e6, e7))
     # the shared AI cache: Private videos' reports and clips go, the longest unused clips go over the limit
-    sh = ae.SHARED; cd_ = sh / "semantic_candidates"; rd_ = sh / "semantic_reports"
+    sh = ae.SHARED; cd_ = sh / "semantic_previews"; rd_ = sh / "semantic_reports"
+    (sh / "semantic_candidates").mkdir(parents=True, exist_ok=True); (sh / "semantic_candidates" / "old4k.mp4").write_bytes(b"x")
     cd_.mkdir(parents=True, exist_ok=True); rd_.mkdir(parents=True, exist_ok=True)
     pv, okv = "a" * 64, "b" * 64
     (rd_ / (pv + ".json")).write_text("{}"); (rd_ / (okv + ".json")).write_text("{}")
@@ -267,7 +268,8 @@ def main():
     left_ = sorted(x.name for x in cd_.glob("*.mp4"))
     check("shared AI cache: Private videos (and their stand-ins) go, the longest unused clips go over the limit",
           not (rd_ / (pv + ".json")).exists() and not (rd_ / (al + ".json")).exists() and (rd_ / (okv + ".json")).exists()
-          and kept_ == ["c1.mp4", "c2.mp4", "c3.mp4", "orphan.mp4"] and left_ == ["c2.mp4", "c3.mp4"], (kept_, left_))
+          and kept_ == ["c1.mp4", "c2.mp4", "c3.mp4", "orphan.mp4"] and left_ == ["c2.mp4", "c3.mp4"]
+          and not (sh / "semantic_candidates").exists(), (kept_, left_))
     shutil.rmtree(sh, ignore_errors=True)
     # a Windows notification after a long build (local only)
     from archivist import notify as _nt

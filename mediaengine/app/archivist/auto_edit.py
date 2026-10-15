@@ -1605,6 +1605,8 @@ def _run_job(jid: int) -> None:
     log_file = jobs_dir / f"j{jid}.log"
     jobs_dir.mkdir(parents=True, exist_ok=True)
     work_dir.mkdir(parents=True, exist_ok=True)
+    for sub in ("semantic_candidates", "semantic_candidates_pe"):   # this project's full-size clips of b100-b113: unused now
+        shutil.rmtree(work_dir / sub, ignore_errors=True)
     if out_dir.exists():
         shutil.rmtree(out_dir)
     progress_file.unlink(missing_ok=True)
@@ -2363,8 +2365,9 @@ def shared_cache_bytes() -> int:
     return _tree_bytes(SHARED) if SHARED.exists() else 0
 
 
-SHARED_CLIPS_MAX = 40 * 1024 ** 3      # moment clips kept for every project (4K: ~6 GB per 18 videos)
-SHARED_CLIPS_DIRS = ("semantic_candidates", "semantic_candidates_pe")
+SHARED_CLIPS_MAX = 40 * 1024 ** 3      # moment clips kept for every project (previews: ~0.5 GB per 18 videos)
+SHARED_CLIPS_DIRS = ("semantic_previews", "semantic_previews_pe")      # previews of the moments (since b114)
+OBSOLETE_CLIP_DIRS = ("semantic_candidates", "semantic_candidates_pe")  # full-size moment clips of b101-b113: never read again
 
 
 def forget_in_shared(hashes) -> None:
@@ -2387,7 +2390,7 @@ def forget_in_shared(hashes) -> None:
                 f.with_suffix(".json").unlink(missing_ok=True); f.unlink()
         except OSError:
             pass
-    for sub in SHARED_CLIPS_DIRS:
+    for sub in SHARED_CLIPS_DIRS + OBSOLETE_CLIP_DIRS:
         dd = SHARED / sub
         for meta in dd.glob("*.json") if dd.is_dir() else []:
             try:
@@ -2419,6 +2422,8 @@ def tidy_shared_cache(private_hashes=(), max_clip_bytes=None, min_free_bytes=10 
                 pass
     if not prune_clips:
         return
+    for sub in OBSOLETE_CLIP_DIRS:        # 4K clips the engine no longer reads (it keeps small previews): gigabytes back
+        shutil.rmtree(SHARED / sub, ignore_errors=True)
     clips = []          # (last use, bytes, clip, meta)
     for sub in SHARED_CLIPS_DIRS:
         dd = SHARED / sub
