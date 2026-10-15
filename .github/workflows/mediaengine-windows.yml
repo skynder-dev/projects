@@ -412,14 +412,6 @@ jobs:
           }
           if ($fail.Count) { "FAILED: $($fail -join ', ')" | Tee-Object -Append $log; exit 1 }
           "installer smoke PASS" | Tee-Object -Append $log
-      - name: Large phone-like footage (4K H.264, 4K HEVC, 5 min 1080p) - build time measured, technical and AI (real model, shared cache)
-        if: success()
-        continue-on-error: true
-        timeout-minutes: 80
-        shell: pwsh
-        run: |
-          python mediaengine/tests/heavy_media_check.py "D:\me-heavy" "--ai-models=$env:RUNNER_TEMP\home-ai\models" 2>&1 | Tee-Object "$env:OUT\heavy_media.txt"
-          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Upload installable package (one ZIP named like the release folder inside it)
         if: success()
         uses: actions/upload-artifact@v4
@@ -435,6 +427,14 @@ jobs:
           name: ${{ env.PKG_NAME }}-Setup
           path: ${{ runner.temp }}/setup/
           compression-level: 0
+      - name: Large phone-like footage (4K H.264, 4K HEVC, 5 min 1080p) - build time measured, technical and AI (real model, shared cache)
+        if: success()
+        continue-on-error: true
+        timeout-minutes: 80
+        shell: pwsh
+        run: |
+          python mediaengine/tests/heavy_media_check.py "D:\me-heavy" "--ai-models=$env:RUNNER_TEMP\home-ai\models" 2>&1 | Tee-Object "$env:OUT\heavy_media.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Upload reports
         if: always()
         uses: actions/upload-artifact@v4
