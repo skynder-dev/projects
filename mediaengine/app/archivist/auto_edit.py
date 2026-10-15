@@ -2407,7 +2407,7 @@ def tidy_shared_cache(private_hashes=(), max_clip_bytes=None, min_free_bytes=10 
         return
     forget_in_shared(private_hashes)
     old = time.time() - 6 * 3600
-    for sub in ("semantic_scout_pe", "semantic_reports", "v22_metrics", "camera_drop_rows") + SHARED_CLIPS_DIRS:
+    for sub in ("semantic_scout_pe", "semantic_reports", "v22_metrics", "camera_drop_rows", "signatures") + SHARED_CLIPS_DIRS:
         dd = SHARED / sub
         if not dd.is_dir():
             continue

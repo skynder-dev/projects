@@ -1018,6 +1018,45 @@ def build_event_library(runtime_dir,input_rows,work_dir,skipped=None):
     except OSError: pass
     return libpath,lib,"built",kept
 
+def _remember_signatures(v52,shared=None):
+    """The accepted picture signature at a time of a clip (v52.signature: a seek, then one frame) is asked for twice per
+    moment and end (the accepted order_continuity, then pairwise) - near the end of a one-GOP 4K clip each seek decodes
+    the whole clip (34 s for 6 moments on the CI runner). Remembered for this build, and per clip SHA-256 in the shared
+    cache when the app gives one: the same float32 numbers (exact through JSON), so the same order and transitions."""
+    if getattr(v52.signature,"_medeng_memo",False): return
+    orig=v52.signature; mem={}; shas={}; lock=threading.Lock()
+    sdir=(shared/"signatures") if shared else None
+    def clip_sha(path):
+        try: st=os.stat(path); k=(str(path),st.st_size,st.st_mtime_ns)
+        except OSError: return None
+        if k not in shas: shas[k]=sha256_file(path)
+        return shas[k]
+    def sig(path,at):
+        k=(str(path),repr(float(at)))
+        with lock:
+            if k in mem: return mem[k].copy()
+        sha=clip_sha(path) if sdir is not None else None
+        f=(sdir/(sha+".json")) if sha else None
+        x=None
+        if f is not None:
+            try:
+                v=json.loads(f.read_text(encoding="utf-8")).get(k[1])
+                if isinstance(v,list) and len(v)==8: x=np.asarray(v,np.float32)
+            except (OSError,ValueError): pass
+        if x is None:
+            x=orig(path,at)
+            if f is not None and np.asarray(x).dtype==np.float32:
+                try:
+                    try: d=json.loads(f.read_text(encoding="utf-8"))
+                    except (OSError,ValueError): d={}
+                    d[k[1]]=[float(v) for v in np.asarray(x).ravel()]
+                    atomic_json(f,d)
+                except OSError: pass
+        with lock: mem[k]=np.asarray(x).copy()
+        return np.asarray(x).copy()
+    sig._medeng_memo=True
+    v52.signature=sig
+
 def pairwise(v52,events):
     p={}; sig_start={}; sig_end={}
     for e in events:
@@ -1595,6 +1634,7 @@ def run(args):
 
     # 16x9 + social_hd = horizontal Full HD 1920x1080 (the engine's own size; offered since the owner asked, 2026-10-13)
     v52=load_module("medeng_targeted_auto_edit_v26",runtime/"medeng_targeted_auto_edit_v26.py")
+    _remember_signatures(v52,_shared_root())
     dress=load_dress(getattr(args,"dress",""),v52.FFMPEG)   # title / own music: a bad music file is refused now, not after the build
     skipped_inputs=[]; warnings=[]
     # the SHA-256 of each source by path, size and change time: shared by all projects when the app says where (a new

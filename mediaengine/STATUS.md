@@ -194,7 +194,11 @@ the same window twice -> one line.
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38693512243 on `59099a0` (2026-10-15) — all green, build b108** (artifacts
+Latest full run: **38704652129 on `8f6a15c` (2026-10-15) — all green, build b109**: as b108, plus clip boundaries
+in one pass (CI glue: the same rows as the accepted seeks with the app's OpenCV); 4K/long AI on a slower runner:
+first project 863 s (trim 71 s instead of 139 s), second project 146 s (analysis 1.4 s).
+
+Previous: **38693512243 on `59099a0` (2026-10-15) — all green, build b108** (artifacts
 `MediaEngine-3.13.0-rc1-b108-Setup` and ZIP): as b105, plus AI mode with the real model on the 4K/long footage -
 3 videos (two 4K, one 5-min 1080p) on the 4-core runner: 666 s, two at once through one shared model session; a second
 project from the same videos: analysis 1.2 s instead of 450 s (shared cache), the same moments.

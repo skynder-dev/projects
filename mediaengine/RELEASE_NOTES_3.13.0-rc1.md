@@ -90,6 +90,10 @@ first. After the download the same reel is built again with them.
   must find nothing), otherwise the clip is measured the accepted way. Same rows on 15 test clips (25/29.97/30/59.94/
   60 fps, 4K, rotated, VFR, camcorder) and in the CI glue check with the app's own OpenCV. The rows are kept per clip
   in the shared cache.
+- **Picture signatures remembered.** The accepted order and transition planning ask for a signature at the start and
+  near the end of every moment twice (a seek near the end of a one-GOP 4K clip decodes the whole clip; 34 s for 6
+  moments on the CI runner even for a project whose analysis was shared). Remembered for the build and per clip SHA-256
+  in the shared cache - the same float32 numbers, so the same order and transitions (R3 = R2 regression unchanged).
 - AI+ too: videos ranked before for this theme go first, the engine estimates the time left on the others; the results
   stay in the input order (checked against the previous loop on 9,000 random cases: identical, except that a video
   skipped half-way no longer leaves its theme-deferred moments behind). "Known" means a valid report (a scout file
