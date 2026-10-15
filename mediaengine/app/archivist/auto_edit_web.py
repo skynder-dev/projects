@@ -1559,7 +1559,7 @@ def _review_html(p, rev, e, building=False):
                           "<span class='muted'>The videos have no useful sound - a reel with your own music?</span>"
                           "<button type='button' class='btn2' style='font-size:13px;padding:5px 10px' onclick=\"(()=>{const d=[...document.querySelectorAll('details.ae-dress')].pop();"
                           "if(!d)return;d.open=true;d.scrollIntoView({behavior:'smooth',block:'center'});"
-                          "const b=[...d.querySelectorAll('button')].find(x=>x.dataset.pickMusic!==undefined);if(b)b.focus()})()\">Add music…</button></div>")
+                          "const b=[...d.querySelectorAll('button')].find(x=>x.dataset.pickMusic!==undefined);if(b)b.focus({preventScroll:true})})()\">Add music…</button></div>")
     return f"""<div class='ae-player' style='margin-top:14px'>
 <div class='card'><video id='reel' class='ae-video' controls preload='metadata' src='/auto/rev/{rev['id']}/video'></video>
 <div class='ae-strip film'>{strip}</div>

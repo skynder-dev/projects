@@ -435,11 +435,19 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
             if 0<float(row.get("duration_s") or 0)<2.0: return True
         except (TypeError,ValueError): pass
         n=row["sha256"]+".json"
-        return (reports_dir/n).is_file() or (shared is not None and (legacy_reports/n).is_file())
+        for f in ((reports_dir/n),)+(((legacy_reports/n),) if shared is not None else ()):
+            try:          # valid as one() takes it (a stale report means analysing again: not quick)
+                obj=json.loads(f.read_text())
+                if obj.get("source_sha256")==row["sha256"] and obj.get("hook_sha256")==SEMANTIC_HOOK_SHA and obj.get("model_sha256")==MODEL_SHA:
+                    return True
+            except Exception:
+                pass
+        return False
     flags=[known(r) for r in input_rows]
     order=[i for i in range(len(input_rows)) if flags[i]]+[i for i in range(len(input_rows)) if not flags[i]]
     n_known=sum(flags); new_total=len(input_rows)-n_known; durs=[]
     def eta(k):
+        if new_total==0: return _NO_ETA          # nothing new: the app estimates from the rate of this stage
         if not durs: return None
         left=new_total-k
         return 0.0 if left<=0 else (sum(durs)/len(durs))*max(1.0,left/max(1,workers))
@@ -447,7 +455,7 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
         t0=time.perf_counter(); r=one(input_rows[idx]); return r,time.perf_counter()-t0
     done_n=0
     for idx in order[:n_known]:
-        progress("analyze",done_n,len(input_rows),input_rows[idx]["name"],eta_s=None)
+        progress("analyze",done_n,len(input_rows),input_rows[idx]["name"],eta_s=(_NO_ETA if new_total==0 else None))
         results[idx]=one(input_rows[idx]); done_n+=1
     rest=order[n_known:]
     if workers<=1:
@@ -663,8 +671,30 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
                      "semantic_scout_score":float(cc["semantic_scout_score"]),"semantic_source_rank":int(rank),
                      "technical_prominence":round(.50*float(cc["scout_eventness"])+.35*float(cc["scout_novelty"])+.15*float(cc["scout_quality"]),6)})
         return spec
-    for idx,row in enumerate(input_rows):
-        progress("analyze",idx,len(input_rows),row["name"])
+    # videos the model has seen before (in the shared cache, or ranked for this theme) go first and take seconds; the
+    # time left is measured on the others (their average time x how many are left); results stay in the input order
+    n_rows=len(input_rows)
+    def seen_before(row):
+        # a valid report for this theme: then only its clips are checked (a scout file alone still means ranking and
+        # cutting every moment clip - most of the time on 4K)
+        try:
+            if 0<float(row.get("duration_s") or 0)<2.0: return True
+            obj=json.loads((reports_dir/f"{row['sha256']}.{tkey}.json").read_text())
+            return obj.get("source_sha256")==row["sha256"] and obj.get("key")==rank_key
+        except Exception:
+            return False
+    flags=[seen_before(r) for r in input_rows]
+    order=[i for i in range(n_rows) if flags[i]]+[i for i in range(n_rows) if not flags[i]]
+    new_total=n_rows-sum(flags); durs=[]
+    def eta():
+        if new_total==0: return _NO_ETA          # nothing new: the app estimates from the rate of this stage
+        if not durs: return None
+        return (sum(durs)/len(durs))*max(0,new_total-len(durs))
+    outcome={}
+    for pos,idx in enumerate(order):
+        row=input_rows[idx]; fresh=not flags[idx]; t_row=time.perf_counter()
+        progress("analyze",pos,n_rows,row["name"],eta_s=eta())
+        row_deferred=[]
         try:
             rp=reports_dir/f"{row['sha256']}.{tkey}.json"
             report=None
@@ -678,9 +708,9 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
                 info,emb=hook.read_scout(scout_dir,row["sha256"],scout_key)
                 if info is None:
                     if state["scorer"] is None or state["scorer"]._vision is None:
-                        progress("analyze",idx,len(input_rows),"loading the AI+ model")
+                        progress("analyze",pos,n_rows,"loading the AI+ model",eta_s=eta())
                     sc=scorer_with("vision")
-                    progress("analyze",idx,len(input_rows),row["name"])
+                    progress("analyze",pos,n_rows,row["name"],eta_s=eta())
                     t_=time.perf_counter()
                     info,emb=hook.scout(v7,sc,Path(row["path"]),v52.FFMPEG,os.environ.get("MEDENG_FFPROBE","ffprobe"))
                     SEM_TIMING["scout_embed_s"]+=time.perf_counter()-t_
@@ -693,16 +723,26 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
             for rank,c in enumerate(report.get("ranked",[]),1):
                 cc=dict(c); cc["_source_rank"]=rank
                 if theme and float(cc["semantic_margin_raw"])<=0:
-                    deferred.append((row,cc,rank)); continue      # cut only if too few moments match the theme
+                    row_deferred.append((row,cc,rank)); continue      # cut only if too few moments match the theme
                 row_specs.append(make_spec(row,cc,rank))
         except AiplusLoadError:
             raise
         except Exception as exc:
-            if skipped is not None: skipped.append({"name":row["name"],"reason":_semantic_skip_reason(exc,row)})
+            outcome[idx]=("skip",{"name":row["name"],"reason":_semantic_skip_reason(exc,row)})
             continue
+        finally:
+            if fresh: durs.append(time.perf_counter()-t_row)
         if not row_specs and not (theme and report.get("ranked")):     # with a theme: maybe nothing in it matches
-            if skipped is not None: skipped.append({"name":row["name"],"reason":"NO_MOMENTS"})
+            outcome[idx]=("skip",{"name":row["name"],"reason":"NO_MOMENTS"}); continue
+        outcome[idx]=("ok",report,row_specs,row_deferred)
+    for idx,row in enumerate(input_rows):          # in the input order, as when they were taken one after another
+        o=outcome.get(idx)
+        if o is None: continue
+        if o[0]=="skip":
+            if skipped is not None: skipped.append(o[1])
             continue
+        _,report,row_specs,row_deferred=o
+        deferred.extend(row_deferred)
         kept.append(row)
         reports.append({"source_name":row["name"],"source_sha256":row["sha256"],"theme":theme or "",
                         "rank1":report["ranked"][0] if report.get("ranked") else None})
@@ -714,6 +754,7 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
                 specs.append(make_spec(row,cc,rank))
             except Exception:
                 continue
+    progress("analyze",n_rows,n_rows,"measuring the moments",eta_s=None)
     if not specs: raise RuntimeError("NO_SEMANTIC_CANDIDATES")
     t_=time.perf_counter()
     _prefill_v22(v52,specs,work_dir/"SEMANTIC_PE_CANDIDATE_V22_SCORE_CACHE.json",shared)

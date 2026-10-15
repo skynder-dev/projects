@@ -83,6 +83,10 @@ first. After the download the same reel is built again with them.
   differ in 2-3 runs of 12; without it 30 of 30 identical, same speed on 4K).
 - A reel whose videos have no useful sound (drone, action camera) offers "Add music…" next to "The same reel with the
   original sound".
+- AI+ too: videos ranked before for this theme go first, the engine estimates the time left on the others; the results
+  stay in the input order (checked against the previous loop on 9,000 random cases: identical, except that a video
+  skipped half-way no longer leaves its theme-deferred moments behind). "Known" means a valid report (a scout file
+  alone or a stale report still needs the slow part); with nothing new the app estimates from the stage's rate.
 - Found by a fresh-eyes review before release: the AI+ Library preparation (it runs beside a reel build) never prunes
   the shared clips now (it could have deleted clips the build was about to read); the engine estimates the time left
   itself and analyses videos known from before first (a mix of known and new 4K videos showed "less than a minute"
