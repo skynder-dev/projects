@@ -82,7 +82,7 @@ PHRASES = {
         "С темой ИИ+ ищет во всех видео подходящие моменты (например, только море).",
     "Sea and beach": "Море и пляж", "Mountains": "Горы", "Children": "Дети", "Family and friends": "Семья и друзья",
     "Celebration": "Праздник", "Animals": "Животные", "Sunset": "Закат", "Nature": "Природа", "Winter and snow": "Зима и снег",
-    "City": "Город", "Food": "Еда", "Sport": "Спорт", "Road trip": "Дорога и поездки", "theme": "тема",
+    "City": "Город", "Food": "Еда", "Sport": "Спорт", "Road trip": "Дорога и поездки", "Aerial view (drone)": "Вид сверху (дрон)", "theme": "тема",
     "Music and title": "Музыка и надпись", "(optional)": "(по желанию)", "Title at the start": "Надпись в начале",
     "For example: Summer at the sea": "Например: Лето у моря", "Second line": "Вторая строка",
     "For example: July 2026": "Например: июль 2026", "Insert the date": "Вставить дату",
@@ -135,7 +135,7 @@ PHRASES = {
     "building moment library": "собираю библиотеку моментов", "checking clip boundaries": "проверяю границы моментов",
     "joining segments and verifying": "склеиваю куски и проверяю",
     "joining segments again (the encoder stood still)": "склеиваю куски ещё раз (кодировщик остановился)", "choosing moments": "выбираю моменты",
-    "analysing videos": "анализирую видео", "measuring the moments": "оцениваю моменты", "cutting the pieces": "нарезаю куски",
+    "analysing videos": "анализирую видео", "measuring the moments": "оцениваю моменты", "cutting the pieces": "нарезаю куски", "prepared": "подготовлено",
     "The videos have no useful sound - a reel with your own music?": "В видео нет полезного звука — ролик со своей музыкой?",
     "Add music…": "Добавить музыку…", "technical analysis": "технический анализ",
     "Cancel": "Отменить", "Retry": "Повторить", "Build failed": "Сборка не удалась", "Build cancelled": "Сборка отменена",
@@ -193,6 +193,12 @@ PHRASES = {
     "While moments are being found: about how many minutes are left.": "Во время поиска моментов видно, сколько примерно минут осталось.",
     "A Windows notification when a reel that took more than a minute is ready (can be turned off in Settings).":
         "Уведомление Windows, когда готов ролик, который собирался дольше минуты (выключается в Настройках).",
+    "AI with 4K videos is faster again: moments are looked at in small copies, the reel is cut from the originals.":
+        "ИИ с 4K-видео стал ещё быстрее: моменты оцениваются по уменьшенным копиям, а ролик режется из оригиналов.",
+    "“Prepare in advance” on the new-reel page: the videos are analysed now (for example overnight), the reel is then made in minutes.":
+        "«Подготовить заранее» на странице нового ролика: видео анализируются сразу (например, ночью), потом ролик собирается за минуты.",
+    "AI+ theme “Aerial view (drone)”: the view from above, without take-off and landing on the ground.":
+        "Тема ИИ+ «Вид сверху (дрон)»: вид с высоты, без взлёта и посадки на земле.",
     "Vertical HD": "Вертикально HD",
     "A reel for every day": "Ролик на каждый день",
     "One reel for each of these days, made one after another:": "По ролику на каждый из этих дней, по очереди:",
@@ -418,6 +424,18 @@ PHRASES = {
     "Network folders can only be opened from MediaEngine itself: paste the path on the Auto Edit page.":
         "Сетевые папки открываются только из самого MediaEngine: вставь путь на странице «Автомонтаж».",
     "No video of this theme is on this PC now.": "Сейчас на этом компьютере нет видео на эту тему.",
+    # "Prepare in advance" (analysis only; the reel later in minutes)
+    "Prepare in advance": "Подготовить заранее", "Preparing in advance": "Подготовка заранее",
+    "Prepared in advance": "Подготовлено заранее", "Prepared": "Подготовлено", "PREPARED": "ПОДГОТОВЛЕН",
+    "Prepare in advance: MediaEngine only analyses the videos now - for example overnight. The reel is then made from them in minutes.":
+        "Подготовить заранее: MediaEngine сейчас только анализирует видео — например, ночью. Потом ролик из них собирается за минуты.",
+    "You can close this window: the videos keep being analysed and the PC does not go to sleep. When it is done, Windows shows a notification and the reel is made here in minutes.":
+        "Окно можно закрыть: анализ продолжится, компьютер не уснёт. Когда закончится, Windows покажет уведомление, а ролик здесь соберётся за минуты.",
+    "You can close this window: the videos keep being analysed and the PC does not go to sleep. When it is done, the reel is made here in minutes.":
+        "Окно можно закрыть: анализ продолжится, компьютер не уснёт. Когда закончится, ролик здесь соберётся за минуты.",
+    "Videos analysed:": "Проанализировано видео:", "skipped:": "пропущено:", "took": "заняло",
+    "Now press Build: the reel is made from the prepared videos in minutes. Videos added to the folder later are analysed during the build.":
+        "Теперь нажми «Собрать»: ролик из подготовленных видео соберётся за минуты. Видео, добавленные в папку позже, проанализируются во время сборки.",
 }
 
 import html as _html

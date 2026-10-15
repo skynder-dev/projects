@@ -58,6 +58,23 @@ not read — reading even their first bytes would make Windows download them all
 in the cloud (OneDrive)…"); a folder that is entirely in the cloud says to choose "Always keep on this device"
 first. After the download the same reel is built again with them.
 
+## Prepare in advance; the AI+ theme "Aerial view (drone)" (2026-10-15)
+
+- **"Prepare in advance"** next to "Create reel": the engine (`--prepare-only`) analyses the videos with the chosen
+  mode (AI, AI+, AI+ with a theme, Technical only), measures and chooses the moments for the chosen length once and
+  measures the clip edges of every moment that could be chosen - all of it into the caches a build reads; nothing is
+  cut or rendered, no version is made (`MediaEngine Prepared.json`: videos, skipped, moments, time). The project then
+  says "Prepared in advance" (state PREPARED) with the build form below; the reel made from it starts at "choosing
+  moments". A job of its own (request key with `prepare`), the same queue as reels, a Windows notification "Your videos
+  are prepared". Videos added to the folder later are analysed by the build. For a folder that takes an hour (the
+  owner's 18 drone videos in 4K), e.g. overnight.
+- **AI+ theme "Aerial view (drone)"** (`aerial`): the view from high above (fields, roads, water, the coast, a town);
+  for this theme only, frames at ground level are bad frames too (`THEME_NEGATIVES`: the ground close by, feet, a
+  person next to the camera, the drone or its controller on the ground) - take-off and landing are not chosen. Library
+  search by theme has it too (its own bad descriptions kept with the theme). Checked on real drone videos from
+  Wikimedia Commons (free licences) in CI: every frame's score, the picks, a prepared folder and the reel
+  (`mediaengine-drone`, sheets on branch `mediaengine-drone-results`).
+
 ## AI moments analysed on previews, the reel cut from the originals (2026-10-15, measured on the owner's PC)
 
 b113 on the owner's PC (16 threads, 18 drone videos 4K, 29 GB): the first AI reel 42 min instead of 64 (b100), the

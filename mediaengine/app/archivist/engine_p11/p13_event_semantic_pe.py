@@ -62,6 +62,15 @@ THEMES = {
     "food": ("Food", ("food on a table", "people eating together", "a meal at a restaurant", "cooking food")),
     "sport": ("Sport", ("people playing sports", "a person running or cycling", "skiing or snowboarding", "a ball game")),
     "road": ("Road trip", ("a road trip", "driving on a road", "a view from a car window", "a train or a plane journey")),
+    # drone videos (2026-10-15, the owner's folder is 4K drone footage): the view from high above; take-off and landing
+    # (the ground, grass and feet close by, the pilot, the drone on the ground) are bad frames for this theme
+    "aerial": ("Aerial view (drone)", ("an aerial view from a drone high above the ground", "a bird's-eye view of a landscape",
+                                       "a drone shot flying over fields, roads, water or a town", "a high aerial view of the coast or the mountains")),
+}
+# bad frames of one theme only (added to NEGATIVE_PROMPTS for it)
+THEME_NEGATIVES = {
+    "aerial": ("a view from ground level", "grass or the ground seen from very close", "a person standing next to the camera",
+               "a drone or a remote controller on the ground", "people's feet or legs", "a frame filmed at eye level"),
 }
 
 
@@ -116,7 +125,7 @@ def write_scout(cache_dir: Path, sha: str, key: str, info: dict, emb) -> None:
 
 def prompts_for(theme: str | None):
     if theme:
-        return THEMES[theme][1], NEGATIVE_PROMPTS
+        return THEMES[theme][1], NEGATIVE_PROMPTS + THEME_NEGATIVES.get(theme, ())
     return POSITIVE_PROMPTS, NEGATIVE_PROMPTS
 
 

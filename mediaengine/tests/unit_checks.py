@@ -182,8 +182,28 @@ def main():
     check("AI+ themes: app and engine lists are the same", {k: v[0] for k, v in _hook.THEMES.items()} == ae.THEMES)
     check("AI+ themes: every description is plain English (the model's tokenizer)",
           all(t.isascii() for _, ps in _hook.THEMES.values() for t in ps) and all(t.isascii() for t in _hook.POSITIVE_PROMPTS + _hook.NEGATIVE_PROMPTS))
+    check("AI+ themes: the theme's own bad descriptions are plain English and belong to a theme",
+          all(t.isascii() for ps in _hook.THEME_NEGATIVES.values() for t in ps) and set(_hook.THEME_NEGATIVES) <= set(_hook.THEMES))
+    pos_a, neg_a = _hook.prompts_for("aerial")
+    check("aerial theme: take-off / landing frames are bad frames for it, the general bad frames too",
+          set(_hook.NEGATIVE_PROMPTS) < set(neg_a) and any("ground" in t for t in neg_a)
+          and _hook.prompts_for("sea")[1] == _hook.NEGATIVE_PROMPTS and _hook.prompt_key("aerial") != _hook.prompt_key("sea"), neg_a)
     st = ae.normalize_settings({"length": 15, "format": "social_hd", "sound": "auto", "mode": "technical", "theme": "sea"})
     check("a theme is dropped without AI+", "theme" not in st, st)
+    # "Prepare in advance": its own request (never mixed up with a build), analysis-only progress, its own state
+    base_ = {"length": 15, "format": "social_hd", "sound": "auto", "mode": "technical"}
+    stp = ae.normalize_settings({**base_, "prepare": "1"})
+    check("prepare in advance: a flag of its own; not with a hand-made selection",
+          stp.get("prepare") is True and "prepare" not in ae.normalize_settings(base_)
+          and "prepare" not in ae.normalize_settings({**base_, "prepare": "1", "selection": ["a" * 16]}), stp)
+    jp_ = {"status": "running", "stage": "analyze", "done": 5, "total": 10, "settings_json": json.dumps(stp)}
+    jb_ = {"status": "running", "stage": "analyze", "done": 5, "total": 10, "settings": base_}
+    check("prepare in advance: finding moments is nearly the whole bar", ae.job_percent(jp_) == 50 and ae.job_percent(jb_) == 27
+          and ae.is_prepare(jp_) and not ae.is_prepare(jb_), (ae.job_percent(jp_), ae.job_percent(jb_)))
+    check("prepare in advance: a prepared project says so", ae.project_state({"jobs": [{"status": "done", "settings": stp}]}) == "PREPARED"
+          and ae.project_state({"jobs": [{"status": "done", "settings": base_}]}) == "DRAFT")
+    cmd_ = ae.engine_command(work, work / "o", work / "w", work / "p.json", {**stp, "title": "T"}, work / "e.json", None, None, work / "d.json")
+    check("prepare in advance: the engine only analyses (no title / music step)", "--prepare-only" in cmd_ and "--dress" not in cmd_, cmd_[-6:])
     check("an unknown theme is refused", raises(ae.normalize_settings, {"length": 15, "format": "social_hd", "sound": "auto",
                                                                          "mode": "technical", "theme": "moon"}))
     # AI+ download over a bad connection: the connection drops in the middle, the download continues where it stopped
@@ -276,6 +296,7 @@ def main():
     tx = _nt.toast_xml("A & B", "<x>", 'http://127.0.0.1:8775/auto/p/1?a=1&b="2"')
     check("notification text is escaped", "A &amp; B" in tx and "&lt;x&gt;" in tx and 'a=1&amp;b=&quot;2&quot;' in tx, tx)
     check("no notification after a short build", not _nt.reel_finished("t", True, 10, "http://x", False))
+    check("no notification after a short preparation", not _nt.reel_finished("t", True, 10, "http://x", True, prepared=True))
     if os.name == "nt":
         print("INFO a Windows notification could be shown on this PC:", _nt.show("MediaEngine", "unit checks", ""), flush=True)
     import types as _types

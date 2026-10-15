@@ -16,6 +16,7 @@ PAGE_CSS = r"""
 .ae-state{font-size:12px;font-weight:700;letter-spacing:.4px;padding:3px 8px;border-radius:999px;border:1px solid var(--line2)}
 .ae-state.READY{color:#0b1;border-color:#2c6}.ae-state.REVIEW{color:var(--orange);border-color:var(--orange)}
 .ae-state.PROCESSING{color:var(--cyan);border-color:var(--cyan)}.ae-state.ATTENTION{color:var(--red);border-color:var(--red)}
+.ae-state.PREPARED{color:var(--cyan);border-color:var(--line2)}
 .ae-choices{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}.ae-choices label{display:flex;gap:8px;align-items:center;
  padding:10px 14px;border:1px solid var(--line2);border-radius:12px;cursor:pointer;background:var(--card2)}
 .ae-choices input{accent-color:var(--orange)}.ae-choices label:has(input:checked){border-color:var(--orange);box-shadow:0 0 0 1px var(--orange) inset}
@@ -668,6 +669,10 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
                   f"Folders inside it with videos: {len(subs)}</summary><ul style='margin:6px 0 0'>"
                   + "".join(f"<li><a href='/auto/new?folder={urllib.parse.quote(p_)}' translate='no'>{e(_rel(p_, scan['folder']))}</a> "
                             f"<span class='muted'>· {n} video(s)</span></li>" for p_, n in subs) + "</ul></details>") if subs else ""
+        # analyse the videos now (for example overnight), make the reel later in minutes
+        prepare_btn = "<button class='btn2 ae-big' name='prepare' value='1'>Prepare in advance</button>"
+        prepare_note = ("<div class='muted' style='margin-top:6px'>Prepare in advance: MediaEngine only analyses the videos now - for example "
+                        "overnight. The reel is then made from them in minutes.</div>")
         picked = [Path(x) for x in (scan["files_chosen"] or [])]
         pdays = {ae.video_day(x, 0) for x in picked} if picked and all(ae._DAY_IN_NAME.search(x.stem) for x in picked) else set()
         day_suffix = (" · " + _day_label(next(iter(pdays)))) if len(pdays) == 1 else ""      # "Телефон · 2 августа 2026"
@@ -675,13 +680,13 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
 <div class='lead'>{where_html}</div></div>
 <div class='card'><b>{scan['usable']} usable video(s)</b>, total {_fmt_s(total)} · {human_bytes(scan['total_bytes'])}{(' · ' + str(scan['skipped']) + ' skipped') if scan['skipped'] else ''}
 <details style='margin-top:8px'><summary class='muted'>Show files</summary><table class='ae-files'><tr><th>File</th><th>Size</th><th>Length</th><th>Frame</th><th></th></tr>{rows}</table></details>{inside}{warn}</div>
-<form method='post' action='/auto/create' class='card' style='margin-top:14px' onsubmit="this.querySelector('button:not([type=button])').disabled=true">
+<form method='post' action='/auto/create' class='card' style='margin-top:14px' onsubmit="setTimeout(()=>this.querySelectorAll('button:not([type=button])').forEach(b=>b.disabled=true),0)">
 {src_hidden}
 <h2 style='margin-top:0'>Length</h2><div class='ae-choices'>{lengths}</div>
 <h2>Format</h2><div class='ae-choices'>{formats}</div>{_framing_choice(e, last_new.get("framing", "fill"))}
 <h2>Sound</h2><div class='ae-choices'>{sounds}</div>{mode_html}
 {_dress_fields(e, None, _day_label(next(iter(pdays))) if len(pdays) == 1 else "")}
-<button class='ae-big'>Create reel</button></form>{back_html}"""
+<div class='row' style='flex-wrap:wrap;gap:10px;align-items:center'><button class='ae-big'>Create reel</button>{prepare_btn}</div>{prepare_note}</form>{back_html}"""
         return page("New reel", body, _FRAMING_JS)
 
     @app.post("/auto/create-days")
@@ -727,7 +732,8 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
             ae.check_free_space()
             pid = ae.create_project(f.get("folder"), f.get("title"), files=f.getlist("file") or None)
             ae.start_job(pid, {"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode"),
-                               "theme": f.get("theme") or "", "framing": f.get("framing"), **dress})
+                               "theme": f.get("theme") or "", "framing": f.get("framing"), **dress,
+                               **({"prepare": True} if f.get("prepare") == "1" else {})})
             ae.remember_new_settings({"format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode"), "framing": f.get("framing")})
         except Exception as exc:
             return err_page(str(exc))
@@ -766,7 +772,9 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
                          f"{len(gone)} of {len(p['files'])}.</span> <span class='muted' translate='no'>"
                          + e(", ".join(Path(x).name for x in gone[:8]) + (" …" if len(gone) > 8 else "")) + "</span> "
                          "<span>New versions are made from the others.</span></div>")
-        if active:
+        if active and active["settings"].get("prepare"):
+            parts.append(_preparing_html(active, pid, e))
+        elif active:
             parts.append(f"""<div class='card' id='jobCard' data-job='{active['id']}'><div class='row space'><b id='jobStage'>{e(ae.STAGE_LABEL.get(active['stage'] or 'queued', ''))}</b>
 <form method='post' action='/auto/job/{active['id']}/cancel'><button class='btn2'>Cancel</button></form></div>
 <div class='ae-bar' style='margin:10px 0'><i id='jobBar' style='width:{active['percent']}%'></i></div>
@@ -803,6 +811,9 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
 <form method='post' action='/auto/export/{done_x['id']}/reveal'><button class='btn2'>Show in folder</button></form>
 <button type='button' class='btn2' id='copyDone' data-path='{e(done_x['path'])}'>Copy path</button>
 <a class='btn btn2' href='/auto'>All projects</a></div></div>""")
+        if (last_job and last_job["status"] == "done" and last_job["settings"].get("prepare")
+                and (not revs or last_job["id"] > max(r["job_id"] for r in revs))):
+            parts.append(_prepared_html(last_job, e))
         if cur:
             parts.append(_review_html(p, cur, e, building=bool(active)))
         elif not active:
@@ -826,7 +837,7 @@ async function pollJob2(){if(!card)return;try{const r=await fetch('/api/auto/job
  // estimate only from the real rate of the current stage, once there is enough of it (no invented timer)
  let eta='';if(j.status==='running'&&j.stage==='finish')eta=' · final encode and check of the whole reel, can take a few minutes';
  else if(j.status==='running'&&j.eta_s!=null){const an=j.stage==='analyze';
-  eta=(an?' · finding moments: ':' · ')+(j.eta_s<60?'less than a minute left':'about '+Math.max(1,Math.round(j.eta_s/60))+' min left')+(an?', then cutting and joining':'')}
+  eta=(an?' · finding moments: ':' · ')+(j.eta_s<60?'less than a minute left':'about '+Math.max(1,Math.round(j.eta_s/60))+' min left')+(an&&!card.dataset.prepare?', then cutting and joining':'')}
  document.getElementById('jobMsg').textContent=(counted?(Math.min(j.done+1,j.total)+' of '+j.total+' · '):'')+(j.message||'')+' · '+Math.floor(el/60)+':'+String(el%60).padStart(2,'0')+' elapsed'+eta;
  if(j.status==='done'&&j.revision_id){location.href=location.pathname+'?rev='+j.revision_id;return}   // the new version, not the old accepted one
  if(['done','failed','cancelled'].includes(j.status)){location.reload();return}}catch(e){}setTimeout(pollJob2,1000)}
@@ -1380,6 +1391,39 @@ _FRAMING_JS = ("(()=>{const V=%s;const upd=()=>{document.querySelectorAll('form'
                "const c=f.querySelector('input[name=format]:checked');if(b)b.style.display=(!c||V.includes(c.value))?'':'none'})};"
                "document.querySelectorAll('input[name=format]').forEach(r=>r.addEventListener('change',upd));upd()})();"
                % json.dumps([k for k, v in ae.FORMATS.items() if v["profile"] == "9x16"]))
+
+
+def _mode_name(st: dict, e) -> str:
+    """HTML: the way of choosing moments, and the theme (each its own element: translated separately)."""
+    mode = {"semantic": "AI", "semantic_plus": "AI+", "technical": "Technical only"}.get(st.get("mode") or "", "")
+    theme = ae.THEMES.get(st.get("theme") or "", "")
+    return f"<span>{e(mode)}</span>" + (f" · <span>{e(theme)}</span>" if theme else "")
+
+
+def _preparing_html(active, pid, e) -> str:
+    """The card of a running "Prepare in advance" job (same ids as the build card: the same progress script)."""
+    note = ("You can close this window: the videos keep being analysed and the PC does not go to sleep. When it is done, "
+            + ("Windows shows a notification and " if _notify_on() else "") + "the reel is made here in minutes.")
+    return (f"<div class='card' id='jobCard' data-job='{active['id']}' data-prepare='1'><div class='eyebrow'>Preparing in advance</div>"
+            f"<div class='row space'><b id='jobStage'>{e(ae.STAGE_LABEL.get(active['stage'] or 'queued', ''))}</b>"
+            f"<form method='post' action='/auto/job/{active['id']}/cancel'><button class='btn2'>Cancel</button></form></div>"
+            f"<div class='ae-bar' style='margin:10px 0'><i id='jobBar' style='width:{active['percent']}%'></i></div>"
+            f"<div class='muted' id='jobMsg'>{e(active.get('message') or '')}</div>"
+            f"<div class='muted'>{_mode_name(active['settings'], e)}</div>{_waiting_html(active, pid, e)}"
+            f"<div class='muted' style='margin-top:6px'>{e(note)}</div></div>")
+
+
+def _prepared_html(j, e) -> str:
+    """After "Prepare in advance": what was analysed; the build form below makes the reel."""
+    info = ae.prepared_info(int(j["id"])) or {}
+    n, skipped = int(info.get("input_count") or 0), len(info.get("skipped_inputs") or [])
+    took = float(info.get("elapsed_s") or ae.job_elapsed_s(j) or 0)
+    took_txt = (f"{took:.0f} <span>s</span>" if took < 90 else f"{took / 60:.0f} <span>min</span>")
+    return (f"<div class='card ae-done' style='margin-bottom:12px'><div class='eyebrow'>Prepared in advance</div>"
+            f"<div><span>Videos analysed:</span> {n}" + (f" · <span>skipped:</span> {skipped}" if skipped else "")
+            + f" · <span>took</span> {took_txt} · {_mode_name(j['settings'], e)}</div>"
+            f"<div class='muted' style='margin-top:4px'>Now press Build: the reel is made from the prepared videos in minutes. "
+            f"Videos added to the folder later are analysed during the build.</div></div>")
 
 
 def _notify_on() -> bool:

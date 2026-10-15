@@ -1,0 +1,66 @@
+name: mediaengine-drone
+# AI+ theme "Aerial view (drone)" on REAL drone videos (public Wikimedia Commons videos with free licences - never the
+# owner's videos): what the model sees in every frame (take-off / landing on the ground vs the view from above), the
+# theme's picks, "Prepare in advance" + the reel after it, and an AI reel for comparison, through the app on Windows.
+# Not a quality proof. Results: branch mediaengine-drone-results (sheets, JSON, attribution); reels: artifact.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'mediaengine/tests/drone_theme_check.py'
+      - 'mediaengine/tests/drone_manifest.json'
+      - 'mediaengine/app/archivist/engine_p11/p13_event_semantic_pe.py'
+      - '.github/workflows/mediaengine-drone.yml'
+permissions:
+  contents: write
+concurrency:
+  group: mediaengine-drone-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 240
+    env:
+      PYTHONUTF8: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned 3.12.42 environment
+        shell: pwsh
+        run: python -m pip install --disable-pip-version-check -q -r mediaengine/requirements.txt
+      - name: Drone videos from Commons, AI+ frames and picks, prepare + reels, contact sheets
+        shell: pwsh
+        timeout-minutes: 220
+        run: |
+          New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\out" | Out-Null
+          python mediaengine/tests/drone_theme_check.py "D:\me-drone" --out "$env:RUNNER_TEMP\out" 2>&1 | Tee-Object "$env:RUNNER_TEMP\out\drone_theme.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Upload the reels (with the attribution)
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: drone-theme-reels
+          path: |
+            ${{ runner.temp }}/out/*.mp4
+            ${{ runner.temp }}/out/ATTRIBUTION.md
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Publish sheets and results to branch mediaengine-drone-results
+        if: success() || failure()
+        shell: bash
+        env:
+          RUN_ID: ${{ github.run_id }}
+          SRC_SHA: ${{ github.sha }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          pub="$RUNNER_TEMP/pub"; rm -rf "$pub"; mkdir -p "$pub/latest"
+          cp "$RUNNER_TEMP"/out/*.jpg "$RUNNER_TEMP"/out/*.json "$RUNNER_TEMP"/out/*.md "$RUNNER_TEMP"/out/*.txt "$pub/latest/" 2>/dev/null || true
+          printf 'sha=%s\nrun=%s\nstatus=%s\n' "$SRC_SHA" "$RUN_ID" "$JOB_STATUS" > "$pub/latest/RUN.txt"
+          cd "$pub"; git init -q; git checkout -q -b mediaengine-drone-results
+          git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
+          git add -A; git commit -q -m "mediaengine drone theme run $RUN_ID ($SRC_SHA) $JOB_STATUS"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" mediaengine-drone-results

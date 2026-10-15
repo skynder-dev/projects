@@ -43,7 +43,8 @@ AI_MODES = ("semantic", "semantic_plus")
 # AI+ themes: key -> name shown (English; Russian in auto_edit_ru). The descriptions are in the engine (p13_event_semantic_pe).
 THEMES = {"sea": "Sea and beach", "mountains": "Mountains", "kids": "Children", "family": "Family and friends",
           "party": "Celebration", "animals": "Animals", "sunset": "Sunset", "nature": "Nature", "snow": "Winter and snow",
-          "city": "City", "food": "Food", "sport": "Sport", "road": "Road trip"}
+          "city": "City", "food": "Food", "sport": "Sport", "road": "Road trip",
+          "aerial": "Aerial view (drone)"}
 
 MODEL_SHA = "844d1a46ab18acf50c989e541b12fe3b6dc7f8d6004725b4e992d142788e0600"
 MODEL_BYTES = 24281512
@@ -53,6 +54,9 @@ MODEL_BYTES = 24281512
 # the final stage has no steps of its own, so it starts well before the end instead of sitting at 95 % for minutes
 STAGE_SPAN = {"queued": (0, 0), "starting": (0, 1), "inputs": (1, 5), "analyze": (5, 50), "select": (50, 51),
               "trim": (51, 54), "render": (54, 80), "finish": (80, 99), "done": (100, 100)}
+# "Prepare in advance" (analysis only, no reel): finding moments is nearly all of it
+STAGE_SPAN_PREPARE = {"queued": (0, 0), "starting": (0, 1), "inputs": (1, 5), "analyze": (5, 95), "select": (95, 96),
+                      "trim": (96, 99), "done": (100, 100)}
 STAGE_LABEL = {"queued": "Waiting", "starting": "Starting", "inputs": "Checking files", "analyze": "Finding moments",
                "select": "Choosing moments", "trim": "Checking clip edges", "render": "Rendering segments",
                "finish": "Joining and verifying", "done": "Ready", "failed": "Failed", "cancelled": "Cancelled"}
@@ -1129,6 +1133,8 @@ def project_state(d: dict) -> str:
         return "REVIEW"
     if jobs and jobs[0]["status"] == "failed":
         return "ATTENTION"
+    if jobs and jobs[0]["status"] == "done" and (jobs[0].get("settings") or {}).get("prepare"):
+        return "PREPARED"            # analysed in advance: the reel is made in minutes
     return "DRAFT"
 
 
@@ -1216,6 +1222,8 @@ def normalize_settings(raw: dict, *, model_ready: bool | None = None) -> dict:
         out["exclude"] = []
     if trims:
         out["trims"] = trims
+    if raw.get("prepare") in (True, 1, "1", "on", "true") and not selection:
+        out["prepare"] = True     # "Prepare in advance": analysis only, no reel (a request of its own)
     # titles and own music (optional): only stored when set, so a reel without them keeps its old key
     clean = lambda t: " ".join(str(t or "").replace("\x00", " ").split())
     title, subtitle = clean(raw.get("title")), clean(raw.get("subtitle"))
@@ -1370,6 +1378,8 @@ def recent_jobs(limit: int = 20) -> list[dict]:
         d = dict(r)
         d["settings"] = json.loads(d.pop("settings_json") or "{}")
         d["label"] = STAGE_LABEL.get(d["status"] if d["status"] in ("failed", "cancelled", "done") else (d.get("stage") or "queued"), d["status"])
+        if d["status"] == "done" and d["settings"].get("prepare"):
+            d["label"] = "Prepared"
         out.append(d)
     return out
 
@@ -1402,10 +1412,21 @@ def job_elapsed_s(j: dict) -> float:
         return 0.0
 
 
+def is_prepare(j: dict) -> bool:
+    """A "Prepare in advance" job (analysis only, no reel)."""
+    s = j.get("settings")
+    if s is None:
+        try:
+            s = json.loads(j.get("settings_json") or "{}")
+        except (TypeError, ValueError):
+            s = {}
+    return bool((s or {}).get("prepare"))
+
+
 def job_percent(j: dict) -> int:
     if j.get("status") == "done":
         return 100
-    lo, hi = STAGE_SPAN.get(j.get("stage") or "queued", (0, 0))
+    lo, hi = (STAGE_SPAN_PREPARE if is_prepare(j) else STAGE_SPAN).get(j.get("stage") or "queued", (0, 0))
     tot = int(j.get("total") or 0)
     frac = (int(j.get("done") or 0) / tot) if tot > 0 else 0.0
     return int(lo + (hi - lo) * max(0.0, min(1.0, frac)))
@@ -1567,8 +1588,10 @@ def engine_command(folder: Path, out_dir: Path, work_dir: Path, progress_file: P
         cmd += ["--skip-sha-file", str(skip_sha_file)]
     if s.get("framing") == "fit_blur":
         cmd += ["--vertical-framing", "fit_blur"]
-    if dress_file is not None and (s.get("title") or s.get("subtitle") or s.get("music")):
+    if dress_file is not None and (s.get("title") or s.get("subtitle") or s.get("music")) and not s.get("prepare"):
         cmd += ["--dress", str(dress_file)]
+    if s.get("prepare"):
+        cmd += ["--prepare-only"]
     return cmd
 
 
@@ -1687,9 +1710,33 @@ def _run_job(jid: int) -> None:
         _set(jid, status="failed", stage="failed", finished_at=now_iso(), error=_engine_error(log_file))
         _notify_finished(jid, p, False)
         return
+    if s.get("prepare"):
+        # "Prepare in advance": no reel, only the analysis in the caches; what was done is kept for the project page
+        info = prepared_info(jid, out_dir)
+        if not info:
+            _set(jid, status="failed", stage="failed", finished_at=now_iso(), error=friendly_error("PREPARED_RESULT_MISSING"))
+            _notify_finished(jid, p, False)
+            return
+        _set(jid, status="done", stage="done", done=1, total=1, finished_at=now_iso(), message="Prepared")
+        _notify_finished(jid, p, True)
+        return
     rid = _publish_revision(p["id"], jid, out_dir, s)
     _set(jid, status="done", stage="done", done=1, total=1, revision_id=rid, finished_at=now_iso(), message="Ready")
     _notify_finished(jid, p, True)
+
+
+def prepared_info(jid: int, out_dir: Path | None = None) -> dict | None:
+    """What a finished "Prepare in advance" job did (the engine's MediaEngine Prepared.json), or None."""
+    if out_dir is None:
+        j = job(jid)
+        if not j:
+            return None
+        out_dir = _project_dir(j["project_id"]) / "jobs" / f"j{int(jid)}"
+    try:
+        d = json.loads((Path(out_dir) / "MediaEngine Prepared.json").read_text(encoding="utf-8"))
+        return d if d.get("prepared") is True else None
+    except (OSError, ValueError):
+        return None
 
 
 def _notify_finished(jid: int, p: dict, ok: bool) -> None:
@@ -1700,8 +1747,9 @@ def _notify_finished(jid: int, p: dict, ok: bool) -> None:
                 return
         from . import notify
         from .config import APP_PORT
-        notify.reel_finished(str(p.get("title") or ""), ok, job_elapsed_s(job(jid) or {}),
-                             f"http://127.0.0.1:{APP_PORT}/auto/p/{int(p['id'])}", ui_language() == "ru")
+        j = job(jid) or {}
+        notify.reel_finished(str(p.get("title") or ""), ok, job_elapsed_s(j),
+                             f"http://127.0.0.1:{APP_PORT}/auto/p/{int(p['id'])}", ui_language() == "ru", prepared=is_prepare(j))
     except Exception:
         pass
 
@@ -2023,6 +2071,9 @@ WHATS_NEW_ITEMS = [
     ("2026-10-15", "A new reel from videos that were already analysed (another project, a reel for every day) analyses and cuts nothing again."),
     ("2026-10-15", "While moments are being found: about how many minutes are left."),
     ("2026-10-15", "A Windows notification when a reel that took more than a minute is ready (can be turned off in Settings)."),
+    ("2026-10-15b", "AI with 4K videos is faster again: moments are looked at in small copies, the reel is cut from the originals."),
+    ("2026-10-15b", "“Prepare in advance” on the new-reel page: the videos are analysed now (for example overnight), the reel is then made in minutes."),
+    ("2026-10-15b", "AI+ theme “Aerial view (drone)”: the view from above, without take-off and landing on the ground."),
 ]
 WHATS_NEW_ID = max(d for d, _ in WHATS_NEW_ITEMS)
 WHATS_NEW = [t for _, t in WHATS_NEW_ITEMS]
@@ -2410,7 +2461,8 @@ def tidy_shared_cache(private_hashes=(), max_clip_bytes=None, min_free_bytes=10 
         return
     forget_in_shared(private_hashes)
     old = time.time() - 6 * 3600
-    for sub in ("semantic_scout_pe", "semantic_reports", "v22_metrics", "camera_drop_rows", "signatures") + SHARED_CLIPS_DIRS:
+    for sub in ("semantic_scout_pe", "semantic_reports", "v22_metrics", "camera_drop_rows", "signatures",
+                "selection_cache") + SHARED_CLIPS_DIRS:
         dd = SHARED / sub
         if not dd.is_dir():
             continue

@@ -217,12 +217,15 @@ def _theme_texts(sc) -> None:
     hook = _hook()
     with db() as con:
         have = {(r["model_key"], r["theme"]) for r in con.execute("SELECT model_key,theme FROM aiplus_texts").fetchall()}
-    neg = None
-    for theme, (_name, prompts) in hook.THEMES.items():
+    negs = {}
+    for theme in hook.THEMES:
         key = text_key(theme)
         if (key, theme) in have:
             continue
-        neg = sc.encode_text(list(hook.NEGATIVE_PROMPTS)) if neg is None else neg
+        prompts, bad = hook.prompts_for(theme)      # a theme may have bad descriptions of its own (aerial: the ground)
+        neg = negs.get(bad)
+        if neg is None:
+            neg = negs[bad] = sc.encode_text(list(bad))
         pos = sc.encode_text(list(prompts))
         with db() as con:
             con.execute("DELETE FROM aiplus_texts WHERE theme=? AND model_key<>?", (theme, key))

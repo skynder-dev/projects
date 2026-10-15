@@ -18,6 +18,8 @@ on:
       - '!mediaengine/tests/real_music_check.py'      # mediaengine-realmusic.yml
       - '!mediaengine/tests/real_music_manifest.json'
       - '!mediaengine/tests/beat_probe.py'           # mediaengine-probe.yml (manual)
+      - '!mediaengine/tests/drone_theme_check.py'    # mediaengine-drone.yml
+      - '!mediaengine/tests/drone_manifest.json'
       - '.github/workflows/mediaengine-windows.yml'
   workflow_dispatch:
 permissions:

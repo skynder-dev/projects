@@ -309,7 +309,7 @@ APP_PHRASES: dict[str, str] = {
     "No video matches this theme.": "Ни одно видео не подходит под эту тему.", "Library · AI+": "Библиотека · ИИ+", "Make a reel about this theme": "Собрать ролик на эту тему", "Choose a theme.": "Выбери тему.",
     "Sea and beach": "Море и пляж", "Mountains": "Горы", "Children": "Дети", "Family and friends": "Семья и друзья",
     "Celebration": "Праздник", "Animals": "Животные", "Sunset": "Закат", "Nature": "Природа", "Winter and snow": "Зима и снег",
-    "City": "Город", "Food": "Еда", "Sport": "Спорт", "Road trip": "Дорога и поездки",
+    "City": "Город", "Food": "Еда", "Sport": "Спорт", "Road trip": "Дорога и поездки", "Aerial view (drone)": "Вид сверху (дрон)",
     "Open one to start at its best moment.": "Открой видео — оно начнётся с лучшего момента.",
     "Stopped.": "Остановлено.", "The AI+ model could not be started (not enough memory?). Close other programs and try again.":
         "Модель ИИ+ не запустилась (не хватает памяти?). Закрой другие программы и попробуй ещё раз.", "The AI+ model is not on this computer yet. Download it once on 'Check this PC'.":

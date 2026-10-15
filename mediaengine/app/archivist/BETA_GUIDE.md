@@ -21,6 +21,9 @@ the reel (can be turned off in Settings).
 The AI analyses each video once and keeps it for every reel: a new reel from the same videos (another project, another
 length, "A reel for every day") analyses nothing again. Big videos (4K) are analysed several at once. "Check this PC"
 shows how much space this takes ("Free").
+**"Prepare in advance"** (next to "Create reel"): MediaEngine only analyses the videos - for example overnight - and
+the reel is then made from them in minutes ("Build" in the project). Videos added to the folder later are analysed
+during the build.
 To go back to an earlier version of the program: "Check this PC" -> "Use this version" (projects stay the same).
 
 A new reel starts with the last reel's format, sound and mode. A vertical reel from horizontal videos can "Fill the
@@ -46,7 +49,7 @@ AI in 60); for plain landscapes the difference is small. Use "Compare blind" to 
 videos.
 
 With AI+ you can also pick a **theme** (sea and beach, mountains, children, family, celebration, animals, sunset,
-nature, snow, city, food, sport, road trip): the reel is then made of the moments that match it, from all the videos.
+nature, snow, city, food, sport, road trip, aerial view (drone) - without take-off and landing): the reel is then made of the moments that match it, from all the videos.
 A new theme for videos already analysed takes seconds. In the **Library**, "Find by theme (AI+)" shows which videos
 match a theme. "Prepare AI+ for the whole Library" looks at each video once (Private and rejected videos are never
 included): then every search is instant (a video opens at its best moment) and AI+ reels from these videos are built

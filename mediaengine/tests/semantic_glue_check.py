@@ -48,7 +48,7 @@ def main():
     src = work / "in"
     shutil.copytree(fx / "seven", src)
 
-    def build(name, work_name=None):
+    def build(name, work_name=None, prepare=False):
         spec = importlib.util.spec_from_file_location("r3_under_test_" + name, R3 / "p11_folder_to_reel_r3.py")
         r3 = importlib.util.module_from_spec(spec); spec.loader.exec_module(r3)
         real_load = r3.load_module
@@ -58,7 +58,8 @@ def main():
         wd = work / (work_name or ("w" if name == "one" else "w_" + name))
         args = argparse.Namespace(input_dir=str(src), input_list="", output_dir=str(out_), work_dir=str(wd),
                                   runtime_dir=str(R3), target_seconds=30.0, audio="auto", semantic="required", profile="9x16",
-                                  resolution="social_hd", progress_file="", exclude_events="", edits="", skip_sha_file="")
+                                  resolution="social_hd", progress_file="", exclude_events="", edits="", skip_sha_file="",
+                                  prepare_only=prepare)
         r3.run(args)
         return out_, r3
 
@@ -79,6 +80,12 @@ def main():
     out_sa, _ = build("shared_again")
     os.environ["MEDENG_AI_SHARED_CACHE"] = str(work / "shared_adopt")
     out_ad, _ = build("adopt", work_name="w")          # the work folder of build "one", made without the shared cache
+    # "Prepare in advance": analysis only (no reel); the reel made after it analyses, cuts and measures nothing
+    os.environ["MEDENG_AI_SHARED_CACHE"] = str(work / "shared_prep")
+    out_pp, _ = build("prep", prepare=True)
+    rows_before = sorted(x.name for x in (work / "shared_prep" / "camera_drop_rows").glob("*.json"))
+    out_ap, _ = build("after_prep", work_name="w_prep")
+    rows_after = sorted(x.name for x in (work / "shared_prep" / "camera_drop_rows").glob("*.json"))
     os.environ.pop("MEDENG_AI_SHARED_CACHE", None)
     res = json.loads((out / "MediaEngine Result.json").read_text(encoding="utf-8"))
     checks = []
@@ -142,6 +149,15 @@ def main():
     ok_, det_ = same_reel(out, out_ad)
     check("ai_shared_cache_takes_over_an_older_projects_files", tim["adopt"].get("videos_analysed") == 0
           and not any((work / "w" / "semantic_reports").glob("*.json")) and ok_, (tim["adopt"], det_))
+    prep = json.loads((out_pp / "MediaEngine Prepared.json").read_text(encoding="utf-8"))
+    after = json.loads((out_ap / "MediaEngine Result.json").read_text(encoding="utf-8"))
+    ok_, det_ = same_reel(out, out_ap)
+    check("prepare_in_advance_makes_no_reel", sorted(x.name for x in out_pp.iterdir()) == ["MediaEngine Prepared.json"]
+          and prep.get("prepared") is True and prep.get("moments", 0) >= len(after.get("segments", [])) > 0
+          and prep.get("clip_edges_measured", 0) >= len(after.get("segments", [])), prep)
+    st_ = after.get("semantic_timing") or {}
+    check("build_after_prepare_analyses_cuts_measures_nothing", st_.get("videos_analysed") == 0 and st_.get("clips_cut") == 0
+          and st_.get("clips_measured") == 0 and rows_before and rows_after == rows_before and ok_, (st_, len(rows_before), len(rows_after), det_))
     # boundary rows from one pass through a clip = the accepted rows from a seek per row (OpenCV of this PC)
     cl = sorted((work / "shared" / "semantic_previews").glob("*.mp4"))[:6]
     same_rows = [r3.camera_drop_rows(c_) == r3.camera_drop_rows_fast(c_) for c_ in cl]

@@ -396,6 +396,35 @@ def main():
         r = c.post("/auto/check/free-caches", headers=H)      # every project's cache at once (Check this PC)
         check("free_all_caches", r.status_code == 302 and ae.all_work_cache_bytes() == 0 and ae.project(pid)["revisions"], r.status_code)
 
+        # "Prepare in advance": the videos analysed, no reel; the reel made after it reuses that analysis
+        r = c.get("/auto/new", query_string={"folder": str(folder)}, headers={**H, "Sec-Fetch-Site": "same-origin"})
+        offered = "name='prepare'" in r.get_data(as_text=True)
+        pform = {"folder": str(folder), "length": str(a.length), "format": "social_hd", "sound": "auto", "mode": a.mode}
+        r = c.post("/auto/create", data={**pform, "prepare": "1"}, headers=H)
+        ppid = int(r.headers["Location"].rstrip("/").split("/")[-1]) if r.status_code == 302 else None
+        pj, _, pdt = wait_job(c, ae.project(ppid)["jobs"][0]["id"]) if ppid else ({"status": "no project"}, [], 0.0)
+        pinfo = (ae.prepared_info(pj["id"]) if pj.get("id") else None) or {}
+        pp = ae.project(ppid) if ppid else {}
+        check("prepare_in_advance_done_without_reel", offered and pj["status"] == "done" and pinfo.get("prepared") is True
+              and not pp.get("revisions") and pp.get("state") == "PREPARED" and int(pinfo.get("input_count") or 0) >= 1,
+              (offered, r.status_code, pj.get("status"), pj.get("error"), pinfo, pp.get("state")))
+        page_ = c.get(f"/auto/p/{ppid}", headers=H).get_data(as_text=True) if ppid else ""
+        check("prepared_page_offers_build", "Prepared in advance" in page_ and f"/auto/p/{ppid}/variant" in page_, page_[-400:])
+        jb, bdt, revb = {"status": "not started"}, 0.0, None
+        if ppid:
+            before_j = {x["id"] for x in ae.project(ppid)["jobs"]}
+            c.post(f"/auto/p/{ppid}/variant", data={k: v for k, v in pform.items() if k != "folder"}, headers=H)
+            nj = [x["id"] for x in ae.project(ppid)["jobs"] if x["id"] not in before_j]
+            if nj:
+                jb, _, bdt = wait_job(c, nj[0])
+                revs_ = ae.project(ppid)["revisions"]
+                revb = ae.revision(revs_[-1]["id"]) if revs_ else None
+        an_p = float((pinfo.get("stage_seconds") or {}).get("analyze") or 0)
+        an_b = float(((revb or {}).get("result") or {}).get("stage_seconds", {}).get("analyze") or 0)
+        timings.update(prepare_s=round(pdt, 1), build_after_prepare_s=round(bdt, 1), prepare_analyze_s=an_p, build_after_prepare_analyze_s=an_b)
+        check("build_after_prepare_reuses_analysis", jb["status"] == "done" and revb is not None and an_b <= max(3.0, 0.5 * an_p),
+              (jb.get("status"), jb.get("error"), an_p, an_b))
+
         # Russian interface: same pages, same forms, Russian text; user content untouched
         c.post("/auto/lang", headers=H)
         ru = {u: c.get(u, headers=H) for u in ("/auto", f"/auto/p/{pid}", f"/auto/new?folder={urllib.parse.quote(str(folder))}")}

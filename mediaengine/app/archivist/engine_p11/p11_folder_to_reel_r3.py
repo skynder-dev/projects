@@ -127,13 +127,22 @@ def discover_input(folder, probe=None, skipped=None, skip_sha=None, paths=None, 
             size=p.stat().st_size; dur=0.0; wh=(0,0)
             if size<1024: raise RuntimeError("FILE_TOO_SMALL")
             if probe is not None:
-                info=probe(p)
-                vs=[x for x in info.get("streams",[]) if x.get("codec_type")=="video"]
-                if not vs: raise RuntimeError("NO_VIDEO_STREAM")
-                wh=(int(vs[0].get("width") or 0),int(vs[0].get("height") or 0))
-                dur=float(info.get("format",{}).get("duration") or 0)
+                # what the probe said, remembered with the SHA-256 by size and change time (a 4K file: ~1 s each)
+                c=cache.get(str(p)) if isinstance(cache,dict) else None
+                pr=c.get("probe") if isinstance(c,dict) and c.get("bytes")==size and c.get("mtime_ns")==p.stat().st_mtime_ns else None
+                if isinstance(pr,dict) and {"w","h","dur"}<=set(pr):
+                    wh=(int(pr["w"]),int(pr["h"])); dur=float(pr["dur"])
+                else:
+                    info=probe(p)
+                    vs=[x for x in info.get("streams",[]) if x.get("codec_type")=="video"]
+                    if not vs: raise RuntimeError("NO_VIDEO_STREAM")
+                    wh=(int(vs[0].get("width") or 0),int(vs[0].get("height") or 0))
+                    dur=float(info.get("format",{}).get("duration") or 0)
+                    pr={"w":wh[0],"h":wh[1],"dur":dur}
                 if dur<0.5: raise RuntimeError("TOO_SHORT")
             digest=_cached_sha(p,size,cache)
+            if probe is not None and isinstance(cache,dict) and isinstance(cache.get(str(p)),dict):
+                cache[str(p)]["probe"]=pr
         except Exception as exc:
             if skipped is not None: skipped.append({"name":p.name,"reason":type(exc).__name__+":"+str(exc)[:160]})
             continue
@@ -1194,6 +1203,28 @@ def camera_drop_rows_cached(path,sha,cache_dir,step=.25):
         except OSError: pass
     return dur,rows
 
+def prefill_camera_drop(pool,work_dir):
+    """"Prepare in advance": the clip-edge measurements of every moment that could be chosen (the build later only
+    reads them). Returns how many were measured now."""
+    sh_=_shared_root(); cdir=(sh_/"camera_drop_rows") if sh_ else work_dir/"camera_drop_rows"
+    todo=[e for e in pool if e.get("clip_path") and e.get("clip_sha256") and not (cdir/f"{e['clip_sha256']}_{.25:g}.json").is_file()]
+    todo=list({e["clip_sha256"]:e for e in todo}.values())
+    if not todo: return 0
+    workers=max(1,min(3,(os.cpu_count() or 4)//4,len(todo)))
+    done=[0]
+    def one(e):
+        try: camera_drop_rows_cached(e["clip_path"],e["clip_sha256"],cdir,.25)
+        except Exception: pass          # measured again by the build, as without preparing
+        with _CLIP_LOCK:
+            done[0]+=1; progress("trim",done[0],len(todo),"checking clip boundaries")
+    progress("trim",0,len(todo),"checking clip boundaries")
+    if workers==1:
+        for e in todo: one(e)
+    else:
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(workers) as ex: list(ex.map(one,todo))
+    return len(todo)
+
 def apply_camera_drop(v52,dropmod,selected,work_dir):
     out=[]; decisions=[]; bdir=work_dir/"boundary_sanitized"; bdir.mkdir(parents=True,exist_ok=True)
     for e in selected:
@@ -1609,6 +1640,12 @@ def drop_overlapping(events,limit=.5):
         (removed if clash else keep).append(e)
     return keep,removed
 
+def _selection_cache_dir(work_dir):
+    """The choice of moments is keyed by the moments themselves (ids, scores, sources, times) and the length: shared by
+    all projects when the app says where (a new reel from the same videos and length chose for 41 s on the owner's PC)."""
+    sh=_shared_root()
+    return (sh/"selection_cache") if sh else Path(work_dir)/"selection_cache"
+
 def choose_moments(v52,events,target,warnings,exclude=(),clip=5.0,trans=.25,cache_dir=None):
     """V52 choose_for_target, bounded so a 60 s reel cannot hang for hours, with an honest shorter reel
     (warning LIMITED_TOTAL_FOOTAGE) when the footage cannot fill the requested length.
@@ -1732,7 +1769,7 @@ def run(args):
         pool=candidates
         progress("select",0,1,"choosing moments")
         selected=manual_selection(pool,manual) if manual else choose_moments(v52,candidates,float(args.target_seconds),warnings,exclude,
-                                                                             cache_dir=work_dir/"selection_cache")
+                                                                             cache_dir=_selection_cache_dir(work_dir))
         selection_mode="PE_CORE_L14_SEMANTIC_V1" if semantic_model=="pe_core_l14" else "FAST_LOCAL_SEMANTIC_SHADOW_V1"
         event_count=len(candidates); cache_status="semantic_candidate_cache"
     else:
@@ -1759,11 +1796,32 @@ def run(args):
         pool=scored
         progress("select",0,1,"choosing moments")
         selected=manual_selection(pool,manual) if manual else choose_moments(v52,scored,float(args.target_seconds),warnings,exclude,
-                                                                             cache_dir=work_dir/"selection_cache")
+                                                                             cache_dir=_selection_cache_dir(work_dir))
         selection_mode="ACCEPTED_V52_TECHNICAL_AESTHETIC"
         event_count=int(lib["event_count"])
     if not selected: raise RuntimeError("NO_EVENTS_SELECTED")
     fingerprint=input_fingerprint(input_rows)   # files skipped during analysis are not part of this reel
+    if getattr(args,"prepare_only",False):
+        # "Prepare in advance" (e.g. overnight): the videos are analysed, their moments measured and chosen once and
+        # the clip edges of every moment measured - all of it kept in the caches the build uses; nothing is cut or
+        # rendered. A reel made later from these videos with the same mode starts at "choosing moments", in minutes.
+        edges_measured=prefill_camera_drop(pool,work_dir)
+        prepared={"schema":"MEDENG_PREPARED_V1","prepared":True,"input_count":len(input_rows),"input_fingerprint":fingerprint,
+                  "skipped_inputs":skipped_inputs,"moments":len(pool),"would_select":len(selected),
+                  "selection_mode":selection_mode,"semantic":bool(use_semantic),"semantic_model":semantic_model if use_semantic else None,
+                  "theme":(str(getattr(args,"theme","") or "") or None) if semantic_model=="pe_core_l14" else None,
+                  "cache_status":cache_status,"clip_edges_measured":edges_measured,
+                  "semantic_timing":({k:(round(v,2) if isinstance(v,float) else v) for k,v in SEM_TIMING.items()} if use_semantic else None),
+                  "source_mutated":False,"network_request_performed":False,
+                  "elapsed_s":round(time.perf_counter()-started,3),
+                  "stage_seconds":dict(_STAGE_T["seconds"],**({_STAGE_T["stage"]:round(_STAGE_T["seconds"].get(_STAGE_T["stage"],0.0)+time.perf_counter()-_STAGE_T["t"],2)} if _STAGE_T["stage"] else {}))}
+        atomic_json(output_dir/"MediaEngine Prepared.json",prepared)
+        names=sorted(x.name for x in output_dir.iterdir() if x.is_file())
+        if names!=["MediaEngine Prepared.json"]: raise RuntimeError("OUTPUT_CONTRACT_VIOLATION:"+repr(names))
+        progress("done",1,1,"prepared")
+        print(json.dumps({"status":"PASS","prepared":True,"input_count":len(input_rows),"moments":len(pool),
+                          "selection_mode":selection_mode,"semantic":bool(use_semantic)},indent=2))
+        return prepared
 
     progress("trim",0,1,"checking clip boundaries")
     auto_part=[e for e in selected if str(e["event_id"]) not in trims]
@@ -2076,6 +2134,7 @@ def main():
     ap.add_argument("--skip-sha-file",default="",help="text file, one SHA-256 per line: inputs never to use (Private)")
     ap.add_argument("--edits",default="",help="JSON file: {selection:[event ids in order], trims:{id:[source_in_s,source_out_s]}}")
     ap.add_argument("--dress",default="",help="JSON file: {title, subtitle, music (audio file path), music_mode: mix|music, beat_sync: true|false}")
+    ap.add_argument("--prepare-only",action="store_true",help="analyse and choose only (caches for a later build); no reel is made")
     a=ap.parse_args()
     try: run(a)
     except Exception as exc:

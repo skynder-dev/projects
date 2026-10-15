@@ -69,11 +69,15 @@ def enabled() -> bool:
         return True
 
 
-def reel_finished(project_title: str, ok: bool, elapsed_s: float, url: str, ru: bool) -> bool:
-    """In the background (never holds up the next build): True when a notification was started."""
+def reel_finished(project_title: str, ok: bool, elapsed_s: float, url: str, ru: bool, prepared: bool = False) -> bool:
+    """In the background (never holds up the next build): True when a notification was started. prepared: a
+    "Prepare in advance" job (the videos were analysed; no reel yet)."""
     if not enabled() or float(elapsed_s or 0) < MIN_SECONDS:
         return False
-    if ok:
+    if prepared:
+        title = (("Видео подготовлены" if ru else "Your videos are prepared") if ok else
+                 ("Подготовка не удалась" if ru else "Preparing the videos failed"))
+    elif ok:
         title = "Ролик готов" if ru else "Your reel is ready"
     else:
         title = "Ролик не собрался" if ru else "The reel could not be made"
