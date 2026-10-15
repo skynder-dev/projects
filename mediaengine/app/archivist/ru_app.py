@@ -42,7 +42,7 @@ APP_PHRASES: dict[str, str] = {
     "Copies of it are kept in the backups folder:": "Её копии лежат в папке резервных копий:",
     "Add a folder on Import, or make a reel straight from a folder of videos with Auto Edit.":
         "Добавь папку в «Импорте» или сразу собери ролик из папки с видео в «Автомонтаже».",
-    "analysis": "анализ", "cutting": "нарезка", "joining": "склейка", "reel": "ролик",
+    "analysis": "анализ", "cutting": "нарезка", "joining": "склейка", "reel": "ролик", "Built in": "Собрано за", "min": "мин",
     "on": "включены", "files changed or incomplete - not used": "файлы изменены или неполные — не используются",
     "missing - HDR video will look grey": "нет — HDR-видео будет серым",
     "Memory (RAM)": "Память (ОЗУ)", "MediaEngine version": "Версия MediaEngine",

@@ -1381,6 +1381,28 @@ _FRAMING_JS = ("(()=>{const V=%s;const upd=()=>{document.querySelectorAll('form'
                % json.dumps([k for k, v in ae.FORMATS.items() if v["profile"] == "9x16"]))
 
 
+def _build_time_html(res) -> str:
+    """How long this version took and where the time went (a 4K folder can take long: the user sees why)."""
+    try:
+        st = res.get("stage_seconds") or {}
+        total = float(res.get("elapsed_s") or sum(float(v) for v in st.values()))
+    except (TypeError, ValueError, AttributeError):
+        return ""
+    if total < 1:
+        return ""
+
+    def d(x):
+        x = float(x)
+        return (f"{x:.0f} <span>s</span>" if x < 90 else f"{x / 60:.0f} <span>min</span>")
+    parts = []
+    for keys, lbl in ((("inputs", "analyze", "select"), "analysis"), (("render", "trim"), "cutting"), (("finish",), "joining")):
+        v = sum(float(st.get(k) or 0) for k in keys)
+        if v >= 0.5:
+            parts.append(f"<span>{lbl}</span> {d(v)}")
+    return (f"<div class='muted' style='font-size:13px'><span>Built in</span> {d(total)}"
+            + (" (" + " · ".join(parts) + ")" if parts else "") + "</div>")
+
+
 def _sound_label(requested, res):
     audio = (res or {}).get("audio") or {}
     applied, reason = audio.get("applied"), str((audio.get("decision") or {}).get("reason") or "")
@@ -1563,7 +1585,7 @@ def _review_html(p, rev, e, building=False):
     return f"""<div class='ae-player' style='margin-top:14px'>
 <div class='card'><video id='reel' class='ae-video' controls preload='metadata' src='/auto/rev/{rev['id']}/video'></video>
 <div class='ae-strip film'>{strip}</div>
-<div class='muted'>Revision R{int(rev['number']):03d} · {e(fmt.get('short',''))} {rev['width']}×{rev['height']}{" · <span>blurred edges</span>" if rev['settings'].get('framing') == 'fit_blur' else ""} · {total:.2f} s · sound {e(_sound_label(rev['settings']['sound'], res))} · <span>{e(mode)}</span>{(" · <span>theme</span> <span>" + e(theme_name) + "</span>") if theme_name else ""}</div>{sound_btn}{short_html}{skipped_html}{skipped_html_extra}
+<div class='muted'>Revision R{int(rev['number']):03d} · {e(fmt.get('short',''))} {rev['width']}×{rev['height']}{" · <span>blurred edges</span>" if rev['settings'].get('framing') == 'fit_blur' else ""} · {total:.2f} s · sound {e(_sound_label(rev['settings']['sound'], res))} · <span>{e(mode)}</span>{(" · <span>theme</span> <span>" + e(theme_name) + "</span>") if theme_name else ""}</div>{_build_time_html(res)}{sound_btn}{short_html}{skipped_html}{skipped_html_extra}
 <div class='row' style='margin-top:12px;flex-wrap:wrap'>{actions}</div>{compare_html}{exp_html}</div>
 {editor}</div>
 {variant}"""
