@@ -215,7 +215,12 @@ are the AI reel's - the owner's videos have little take-off or landing in them.
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38877326081 on `efdc956` (2026-10-16) — all green, build b120**: as b119, plus decoding on the
+Latest full run: **38891840332 on `7944b86` (2026-10-16) — all green, build b121**: as b120, plus "cut with the
+graphics card" next to the build time of a version cut with it. Drone check on the same code (run 38891868446):
+15/15; AI+ prepare of the 10 Commons drone videos 603 s (was 961-1011 s: AI+ clips three at once), the reel after it
+22 s; the AI reel 238 s (was 324-330 s).
+
+Previous: **38877326081 on `efdc956` (2026-10-16) — all green, build b120**: as b119, plus decoding on the
 graphics card where the PC proves it (unit 119/119 on Windows: the real test on the runner's Hyper-V adapter found no
 usable method - `dxva2` "decoded" by falling back to the processor, 1.0x, not used; AI glue 20/20 with the failing
 method and with the card's code path `-hwaccel none`: every preview byte-identical), the first choice of moments on
@@ -370,7 +375,7 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-Owner: b117 installed and measured (see above). Newest: `MediaEngine-3.13.0-rc1-b120-Setup` (run 38877326081); after
+Owner: b117 installed and measured (see above). Newest: `MediaEngine-3.13.0-rc1-b121-Setup` (run 38891840332); after
 installing it: Check this PC -> "Test the graphics card" (a minute or two), then a reel from `D:\100MEDIA`. Then (through the app's pages in the desktop app's browser pane,
 never computer use): a reel from `D:\100MEDIA` timed against b113's 42 min (the AI reports of b113 are reused, the
 previews are cut new) and the time breakdown read from the page (`data-timing`); "Prepare in advance" and the theme
