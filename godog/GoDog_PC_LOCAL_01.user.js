@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GoDog GDCONST-010 DEFAULT-DISABLED canary
 // @namespace    GoDog.constitution
-// @version      7.0.4
+// @version      7.0.5
 // @description  Local-only direct controls, PC-hosted Tampermonkey updates, original 6.0.26 UI.
 // @match        https://chatgpt.com/*
 // @run-at       document-idle
@@ -17,7 +17,7 @@
   // LOCAL ONLY. No fetch, XMLHttpRequest, GM_xmlhttpRequest, WebSocket, heartbeat or cloud endpoint.
   // Direct controls: GO -> native submit, STOP -> local AUTO off,
   // NEW -> same-tab native new chat with local handoff, AUTO -> event-driven next GO.
-  const VERSION = '7.0.4';
+  const VERSION = '7.0.5';
   const STATE_KEY = 'godog-pc-local-v7-session';
   const NEW_KEY = 'godog-pc-local-v7-handoff';
   const VERSION_KEY = 'godog-pc-local-v7-version-seen';
@@ -94,43 +94,59 @@
   let lastDock = '';
   function alignDockToComposer() {
     if (!root.isConnected) return;
-    const editor=composer();
-    let surface=editor?.closest?.('[data-type="unified-composer"]') || editor?.closest?.('form');
-    if (!surface && editor) {
-      for(let el=editor.parentElement, i=0;el && i<8;el=el.parentElement,i++) {
-        const r=el.getBoundingClientRect();
-        if(r.width>=240 && r.width<window.innerWidth*0.98 && r.height>=42 && r.height<=260) {
-          surface=el; break;
-        }
+    const vw=Math.max(1,window.innerWidth||document.documentElement.clientWidth||1200);
+    const vh=Math.max(40,window.innerHeight||720);
+    const ed=composer();
+    const editorRect=ed?.getBoundingClientRect?.();
+    const valid=(r)=>!!r && Number.isFinite(r.width) && Number.isFinite(r.left) &&
+      r.width>=240 && r.width<=vw-8 && r.height>=32 && r.height<=320;
+    let surface=ed?.closest?.('[data-type="unified-composer"]') || null;
+    if (!valid(surface?.getBoundingClientRect?.())) surface=null;
+    // ChatGPT changes markup. Use the nearest realistically sized rounded
+    // composer surface instead of blindly using a viewport-wide <form>.
+    if (!surface && ed) {
+      let opaque=null, sized=null;
+      for(let el=ed.parentElement,i=0;el&&i<11;el=el.parentElement,i++) {
+        const r=el.getBoundingClientRect?.();
+        if(!valid(r)) continue;
+        const cs=window.getComputedStyle?.(el);
+        const radius=parseFloat(cs?.borderTopLeftRadius||'0')||0;
+        const bg=String(cs?.backgroundColor||'');
+        if(!sized) sized=el;
+        if(bg && bg!=='transparent' && bg!=='rgba(0, 0, 0, 0)' && !opaque) opaque=el;
+        if(radius>=12 && r.width>=(editorRect?.width||0)) {surface=el;break;}
       }
+      surface=surface||opaque||sized;
     }
-    if (!surface) {
-      root.style.setProperty('visibility','hidden','important');
-      lastDock='';
-      return;
+    const rect=surface?.getBoundingClientRect?.();
+    const fallbackWidth=Math.max(250,Math.min(vw-16,
+      vw>1500?780:Math.min(960,Math.round(vw*.82))));
+    let width=fallbackWidth, left=Math.round((vw-width)/2), dockTop=vh-40;
+    if(valid(rect)) {
+      width=Math.min(rect.width,vw-16);
+      left=Math.max(8,Math.min(Math.round(rect.left),vw-width-8));
+      const send=getSendButton(), sr=send?.getBoundingClientRect?.();
+      const dockHeight=Math.max(33,Math.round(root.getBoundingClientRect().height||36));
+      const below=(sr?.width>8&&sr?.height>8)?sr.bottom+2:rect.bottom-1;
+      dockTop=Math.max(0,Math.min(Math.round(below),vh-dockHeight-3));
+    } else if(valid(editorRect)) {
+      width=Math.max(250,Math.min(vw-16,editorRect.width+72));
+      left=Math.max(8,Math.min(Math.round(editorRect.left-36),vw-width-8));
+      dockTop=Math.max(0,Math.min(Math.round(editorRect.bottom+12),vh-39));
     }
-    const r=surface.getBoundingClientRect();
-    if (!(r.width>=240 && r.width<=window.innerWidth*0.98 && r.height>=38)) {
-      root.style.setProperty('visibility','hidden','important');
-      lastDock='';
-      return;
-    }
-    const send=getSendButton();
-    const sr=send?.getBoundingClientRect?.();
-    const dockHeight=Math.max(33,Math.round(root.getBoundingClientRect().height||36));
-    const desiredTop=Math.max(r.bottom-1,(sr?.width>8 && sr?.height>8) ? sr.bottom+2 : r.bottom-1);
-    const top=Math.max(0,Math.min(Math.round(desiredTop),window.innerHeight-dockHeight-3));
-    const left=Math.max(0,Math.round(r.left));
-    const right=Math.max(0,Math.round(window.innerWidth-r.right));
-    const signature=[left,right,top].join(':');
+    // A width constraint is mandatory even when composer geometry fails.
+    // It eliminates the observed full-viewport 7.0.2 dock failure.
+    const signature=[left,Math.round(width),dockTop].join(':');
     if(signature!==lastDock) {
       lastDock=signature;
       root.style.setProperty('left',left+'px','important');
-      root.style.setProperty('right',right+'px','important');
-      root.style.setProperty('top',top+'px','important');
+      root.style.setProperty('width',Math.round(width)+'px','important');
+      root.style.setProperty('max-width','calc(100vw - 16px)','important');
+      root.style.setProperty('right','auto','important');
+      root.style.setProperty('top',dockTop+'px','important');
       root.style.setProperty('bottom','auto','important');
     }
-    root.style.setProperty('visibility','visible','important');
+    root.style.setProperty('visibility',ed?'visible':'hidden','important');
   }
   function getSendButton() {
     return document.querySelector('[data-testid="send-button"], button[aria-label="Send prompt"], button[aria-label="Send message"], button[aria-label="Send"], button[title="Send"]');
@@ -142,7 +158,7 @@
     return !!getNativeStopButton();
   }
   function composer() {
-    for(const selector of ['#prompt-textarea','[data-testid="composer-text-input"]','[contenteditable="true"][data-testid*="composer"]']) {
+    for(const selector of ['#prompt-textarea','[data-testid="composer-text-input"]','[contenteditable="true"][data-testid*="composer"]','[contenteditable="true"][aria-label="Ask ChatGPT"]','[contenteditable][role="textbox"]','textarea[placeholder="Ask ChatGPT"]']) {
       const el=document.querySelector(selector);
       if(el && !el.closest('#chatgpt-go-watchdog') && el.getAttribute('aria-disabled')!=='true') return el;
     }
