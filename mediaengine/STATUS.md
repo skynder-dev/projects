@@ -206,6 +206,11 @@ A reel from `D:\100MEDIA` (30 s horizontal, AI; the AI reports of b113 were in t
 previews (908 s), one video after another, the 16-thread PC 42 % busy; measuring 21 s, select 31 s, boundaries 7 s,
 pieces 93 s, joining 21 s. Fixed after it (b119): videos analysed before go three at once too, and count as new work
 until their clips are made; AI+ cuts a video's clips three at once.
+Then from scratch (shared cache freed): **Prepare in advance** (AI, 30 s) 17 min 53 s; the reel after it **54 s**
+(analysis 1 s, pieces 27 s, joining 21 s) - the same 6 moments as the reel above. An AI+ variant with the theme
+"Aerial view (drone)": 35 min (AI+ frames + model 758 s, ranking with the closer look 283 s, 85 previews cut one
+after another 866 s - three at once since b119); its 6 moments all from above (looked at on the filmstrip), as
+are the AI reel's - the owner's videos have little take-off or landing in them.
 
 ## Evidence
 
