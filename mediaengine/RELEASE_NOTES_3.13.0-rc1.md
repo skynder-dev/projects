@@ -91,7 +91,9 @@ measuring the clips 418 s - for the 6 moments a 30 s reel uses.
 
 - **Candidates are previews now** (at most 960 px wide, the same x264 settings), in AI and AI+ mode - as the accepted
   technical mode does with its V12 previews. Only the moments in the reel are cut again from the original at full
-  quality (`full_quality_clip`, the same settings the candidates had), so the reel's picture is as before. The scores
+  quality (`full_quality_clip`), so the reel's picture is as before. That recut is only an intermediate (the accepted
+  segment cutter scales it to the reel): x264 `ultrafast`/crf 16 since b118 - on 4K the encode 4x faster than
+  `veryfast` (the recut 2.4x), at the reel's size closer to the original (SSIM 0.9890 vs 0.9874), files ~1.8x larger. The scores
   hardly move: the accepted scorer looks at every frame at 320 px wide and the signatures at 160 px; the boundary
   check (camera drop) reads the preview like technical mode does. Moment ids are unchanged (edits stay valid).
 - The 4K candidate clips of b101-b113 (shared cache and projects) are removed at the next build: gigabytes back.

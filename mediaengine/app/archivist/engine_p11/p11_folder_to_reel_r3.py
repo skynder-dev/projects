@@ -1382,6 +1382,11 @@ def prewarm_full_quality(v52,dropmod,selected,work_dir):
         with ThreadPoolExecutor(workers) as ex: list(ex.map(one,auto))
     return len(auto)
 
+# the piece cut again from the original is only an intermediate (the accepted segment cutter scales it to the reel):
+# x264 ultrafast at crf 16 - measured on 4K (2026-10-15): the encode 4x faster than veryfast (the recut 2.4x), the
+# picture at the reel's size closer to the original (SSIM 0.9890 vs 0.9874), the file ~1.8x larger (a cache)
+FULL_QUALITY_X264=("-preset","ultrafast","-crf","16")
+
 def full_quality_clip(v52,e,work_dir,hdr=None,deinterlace=False,square=False):
     """Technical mode: moments are found and scored on the accepted V12 preview clips (max 960 px wide, re-timed to
     25 fps, sound and picture re-zeroed separately -> sound up to ~45 ms early). The reel itself is cut from the
@@ -1401,7 +1406,7 @@ def full_quality_clip(v52,e,work_dir,hdr=None,deinterlace=False,square=False):
         chain=(["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if deinterlace else [])+([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else [])+([SQUARE_PIXELS] if square else [])
         conv=(["-vf",",".join(chain)] if chain else [])+(["-color_primaries","bt709","-color_trc","bt709","-colorspace","bt709"] if hdr in HDR_TO_SDR else [])
         cp=subprocess.run([v52.FFMPEG,"-hide_banner","-loglevel","error","-y","-ss",f"{a:.3f}","-i",str(src),"-t",f"{b-a:.3f}",
-                           "-map","0:v:0",*sound_args(v52,src,b-a),*conv,"-c:v","libx264","-preset","veryfast","-crf","16","-pix_fmt","yuv420p",
+                           "-map","0:v:0",*sound_args(v52,src,b-a),*conv,"-c:v","libx264",*FULL_QUALITY_X264,"-pix_fmt","yuv420p",
                            "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(tmp)],capture_output=True,text=True)
         if cp.returncode!=0 or "Video:" not in _video_line(v52.FFMPEG,tmp):
             tmp.unlink(missing_ok=True); _FQ_FALLBACK.append(str(e.get("source_name"))); return e   # keep the preview clip rather than fail the reel
