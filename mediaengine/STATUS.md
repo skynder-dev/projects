@@ -212,6 +212,15 @@ Then from scratch (shared cache freed): **Prepare in advance** (AI, 30 s) 17 min
 after another 866 s - three at once since b119); its 6 moments all from above (looked at on the filmstrip), as
 are the AI reel's - the owner's videos have little take-off or landing in them.
 
+## Owner PC test of b121 (2026-10-16 evening)
+
+Check this PC: graphics card NVIDIA GeForce RTX 3060; "Test the graphics card": not used - one cut alone 0.8x the
+processor (16 threads, idle). Prepare in advance from scratch on `D:\100MEDIA` (AI, 30 s): **19 min** (b117: 17 min 53
+s) - inputs 54 s (the SHA-256 of 29 GB again: the shared cache was freed), analysis 16 min, clip edges and pieces 74
+s; worker time (3 videos at once): previews 1525 s, the accepted analysis 1196 s (frames 468 s, the closer look at the
+best three windows 689 s, the model 18 s), measuring 27 s; **the processor 96 % busy**. The reel after it: **48 s**.
+So the processor is the limit; b122 tests the card with several cuts at once (as in a build).
+
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
