@@ -1424,7 +1424,9 @@ def _prepared_html(j, e) -> str:
     n, skipped = int(info.get("input_count") or 0), len(info.get("skipped_inputs") or [])
     took = float(info.get("elapsed_s") or ae.job_elapsed_s(j) or 0)
     took_txt = (f"{took:.0f} <span>s</span>" if took < 90 else f"{took / 60:.0f} <span>min</span>")
-    return (f"<div class='card ae-done' style='margin-bottom:12px'><div class='eyebrow'>Prepared in advance</div>"
+    import html as _h
+    data = _h.escape(json.dumps({"stages": info.get("stage_seconds") or {}, "ai": info.get("semantic_timing") or {}}), quote=True)
+    return (f"<div class='card ae-done ae-prepared' data-timing='{data}' style='margin-bottom:12px'><div class='eyebrow'>Prepared in advance</div>"
             f"<div><span>Videos analysed:</span> {n}" + (f" · <span>skipped:</span> {skipped}" if skipped else "")
             + f" · <span>took</span> {took_txt} · {_mode_name(j['settings'], e)}</div>"
             f"<div class='muted' style='margin-top:4px'>Now press Build: the reel is made from the prepared videos in minutes. "

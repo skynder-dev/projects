@@ -80,6 +80,13 @@ def main():
     out_sa, _ = build("shared_again")
     os.environ["MEDENG_AI_SHARED_CACHE"] = str(work / "shared_adopt")
     out_ad, _ = build("adopt", work_name="w")          # the work folder of build "one", made without the shared cache
+    # the reports are there but the clips are not (b113's reports, b117's first build on the owner's PC): the videos go
+    # three at once all the same, the clips are cut again, nothing is analysed again - the same reel
+    os.environ["MEDENG_AI_SHARED_CACHE"] = str(work / "shared_reclip")
+    shutil.copytree(work / "shared" / "semantic_reports", work / "shared_reclip" / "semantic_reports")
+    os.environ["MEDENG_SEMANTIC_WORKERS"] = "3"
+    out_rc, _ = build("reclip")
+    os.environ.pop("MEDENG_SEMANTIC_WORKERS", None)
     # "Prepare in advance": analysis only (no reel); the reel made after it analyses, cuts and measures nothing
     os.environ["MEDENG_AI_SHARED_CACHE"] = str(work / "shared_prep")
     out_pp, _ = build("prep", prepare=True)
@@ -158,6 +165,10 @@ def main():
     st_ = after.get("semantic_timing") or {}
     check("build_after_prepare_analyses_cuts_measures_nothing", st_.get("videos_analysed") == 0 and st_.get("clips_cut") == 0
           and st_.get("clips_measured") == 0 and rows_before and rows_after == rows_before and ok_, (st_, len(rows_before), len(rows_after), det_))
+    rc_ = json.loads((out_rc / "MediaEngine Result.json").read_text(encoding="utf-8")).get("semantic_timing") or {}
+    ok_, det_ = same_reel(out, out_rc)
+    check("known_reports_missing_clips_cut_in_parallel", rc_.get("videos_analysed") == 0 and rc_.get("clips_cut", 0) > 0
+          and rc_.get("workers") == 3 and ok_, (rc_, det_))
     # boundary rows from one pass through a clip = the accepted rows from a seek per row (OpenCV of this PC)
     cl = sorted((work / "shared" / "semantic_previews").glob("*.mp4"))[:6]
     same_rows = [r3.camera_drop_rows(c_) == r3.camera_drop_rows_fast(c_) for c_ in cl]

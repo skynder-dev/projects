@@ -248,10 +248,13 @@ def _adopt(legacy_dir,out_dir,names):
                 try: shutil.copyfile(a,b)
                 except OSError: pass
 
+def candidate_eid(source_sha,c,tag="SEMANTIC_V2"):
+    """The id (and clip file name) of a moment: the video's SHA-256 and the window."""
+    return hashlib.sha256(f"{source_sha}|{float(c['start_s']):.3f}|{float(c['end_s']):.3f}|{tag}".encode()).hexdigest()[:24]
+
 def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="SEMANTIC_V2", legacy_dir=None, origin_sha=None, preview=False):
     start=float(c["start_s"]); end=float(c["end_s"]); dur=max(.25,end-start)
-    raw=f"{source_sha}|{start:.3f}|{end:.3f}|{tag}".encode()
-    eid=hashlib.sha256(raw).hexdigest()[:24]
+    eid=candidate_eid(source_sha,c,tag)
     out_dir.mkdir(parents=True,exist_ok=True)
     clip=out_dir/f"{eid}.mp4"
     meta=out_dir/f"{eid}.json"
@@ -458,10 +461,11 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
         except (TypeError,ValueError): pass
         n=row["sha256"]+".json"
         for f in ((reports_dir/n),)+(((legacy_reports/n),) if shared is not None else ()):
-            try:          # valid as one() takes it (a stale report means analysing again: not quick)
-                obj=json.loads(f.read_text())
+            try:          # valid as one() takes it (a stale report means analysing again: not quick) and its moment
+                obj=json.loads(f.read_text())        # clips made (cutting them from 4K is not quick either)
                 if obj.get("source_sha256")==row["sha256"] and obj.get("hook_sha256")==SEMANTIC_HOOK_SHA and obj.get("model_sha256")==MODEL_SHA:
-                    return True
+                    return all((candidates_dir/(candidate_eid(row["sha256"],c)+".mp4")).is_file()
+                               for c in (obj.get("report") or {}).get("ranked",[]))
             except Exception:
                 pass
         return False
@@ -477,31 +481,35 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
         t0=time.perf_counter(); r=one(input_rows[idx]); return r,time.perf_counter()-t0
     cpu=CpuMeter(); cpu.__enter__()        # how busy the PC was while videos were analysed (daemon thread)
     done_n=0
-    for idx in order[:n_known]:
-        progress("analyze",done_n,len(input_rows),input_rows[idx]["name"],eta_s=(_NO_ETA if new_total==0 else None))
-        results[idx]=one(input_rows[idx]); done_n+=1
-    rest=order[n_known:]
     if workers<=1:
-        for k,idx in enumerate(rest):
+        for idx in order[:n_known]:
+            progress("analyze",done_n,len(input_rows),input_rows[idx]["name"],eta_s=(_NO_ETA if new_total==0 else None))
+            results[idx]=one(input_rows[idx]); done_n+=1
+        for k,idx in enumerate(order[n_known:]):
             progress("analyze",done_n,len(input_rows),input_rows[idx]["name"],eta_s=eta(k))
             results[idx],d=timed(idx); durs.append(d); done_n+=1
     else:
         import concurrent.futures
-        # the same video twice (a copy under another name) shares its report and clip files: only the first one is
-        # analysed in parallel, the copies afterwards from the cache (two threads never write the same file)
+        # videos analysed before go in parallel too: their moment clips may still have to be cut (seen on the owner's
+        # PC with b117: the reports of b113 were there, the previews were not - 18 4K videos one by one, ~100 s each).
+        # The same video twice (a copy under another name) shares its report and clip files: only the first one runs
+        # in parallel, the copies afterwards from the cache (two threads never write the same file). The time left is
+        # measured on the new videos only.
         seen=set(); first=[]; copies=[]
-        for idx in rest:
+        for idx in order:
             (copies if input_rows[idx]["sha256"] in seen else first).append(idx); seen.add(input_rows[idx]["sha256"])
-        progress("analyze",done_n,len(input_rows),"analysing videos",eta_s=None)
+        progress("analyze",done_n,len(input_rows),"analysing videos",eta_s=(_NO_ETA if new_total==0 else None))
         k=0
         with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as ex:
             futs={ex.submit(timed,idx):idx for idx in first}
             for fut in concurrent.futures.as_completed(futs):
-                results[futs[fut]],d=fut.result(); durs.append(d); done_n+=1; k+=1
-                progress("analyze",done_n,len(input_rows),"analysing videos",eta_s=eta(k))
+                idx=futs[fut]; results[idx],d=fut.result(); done_n+=1
+                if not flags[idx]: durs.append(d); k+=1
+                progress("analyze",done_n,len(input_rows),"analysing videos",eta_s=(eta(k) if new_total else _NO_ETA))
         for idx in copies:
-            results[idx]=one(input_rows[idx]); done_n+=1; k+=1
-            progress("analyze",done_n,len(input_rows),"analysing videos",eta_s=eta(k))
+            results[idx]=one(input_rows[idx]); done_n+=1
+            if not flags[idx]: k+=1
+            progress("analyze",done_n,len(input_rows),"analysing videos",eta_s=(eta(k) if new_total else _NO_ETA))
     cpu.__exit__(); timing["cpu_busy"]=cpu.summary(); timing["cpus"]=os.cpu_count()
     for row,(report,row_specs,skip) in zip(input_rows,results):
         if skip is not None:
@@ -719,17 +727,27 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
     text_dir=Path(os.environ.get("MEDENG_P13_TEXT_CACHE") or (work_dir/"semantic_text_pe"))
     texts=PeTextCache(text_dir/(scout_key[:24]+".npz"),lambda: scorer_with("text"),identity)
     specs=[]; reports=[]; kept=[]; deferred=[]
+    st_lock=threading.Lock()
     def make_spec(row,cc,rank):
-        t_=time.perf_counter(); n_=_CLIP_STATS["cut"]
+        t_=time.perf_counter()
+        was=(candidates_dir/(candidate_eid(row["sha256"],cc,"SEMANTIC_PE1")+".mp4")).is_file()
         spec=extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,"SEMANTIC_PE1",legacy_dir=legacy_c,
                                     origin_sha=row.get("origin_sha256"),preview=True)
-        SEM_TIMING["clips_s"]+=time.perf_counter()-t_
-        SEM_TIMING["clips_cut" if _CLIP_STATS["cut"]>n_ else "clips_cached"]+=1
+        with st_lock:
+            SEM_TIMING["clips_s"]+=time.perf_counter()-t_
+            SEM_TIMING["clips_cached" if was else "clips_cut"]+=1
         # a cached clip keeps its cut; its scores always come from the current ranking (theme, descriptions)
         spec.update({"semantic_margin_raw":float(cc["semantic_margin_raw"]),"semantic_source_final_score":float(cc["final_score"]),
                      "semantic_scout_score":float(cc["semantic_scout_score"]),"semantic_source_rank":int(rank),
                      "technical_prominence":round(.50*float(cc["scout_eventness"])+.35*float(cc["scout_novelty"])+.15*float(cc["scout_quality"]),6)})
         return spec
+    # the moment clips of one video cut up to three at once (AI+ looks at one video at a time: its model needs the
+    # memory; cutting 8 clips from a 4K video one after another left most of a 16-core PC idle). Same clips, same order.
+    clip_workers=max(1,min(3,(os.cpu_count() or 4)//4))
+    def make_specs(items):
+        if clip_workers<=1 or len(items)<2: return [make_spec(*it) for it in items]
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(clip_workers) as ex: return list(ex.map(lambda it: make_spec(*it),items))
     # videos the model has seen before (in the shared cache, or ranked for this theme) go first and take seconds; the
     # time left is measured on the others (their average time x how many are left); results stay in the input order
     n_rows=len(input_rows)
@@ -779,11 +797,13 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
                 SEM_TIMING["rank_s"]+=time.perf_counter()-t_
                 atomic_json(rp,{"source_sha256":row["sha256"],"key":rank_key,"report":report})
             row_specs=[]
+            todo=[]
             for rank,c in enumerate(report.get("ranked",[]),1):
                 cc=dict(c); cc["_source_rank"]=rank
                 if theme and float(cc["semantic_margin_raw"])<=0:
                     row_deferred.append((row,cc,rank)); continue      # cut only if too few moments match the theme
-                row_specs.append(make_spec(row,cc,rank))
+                todo.append((row,cc,rank))
+            row_specs.extend(make_specs(todo))
         except AiplusLoadError:
             raise
         except Exception as exc:

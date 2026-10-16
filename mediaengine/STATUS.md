@@ -199,6 +199,14 @@ inputs 50 s, analysis 38 min, select 39 s, boundaries 70 s, pieces 33 s, joining
 folder (vertical 30 s): **2 min 16 s** (analysis 9 s, 93 clips from the shared cache). Next (b114): candidates as
 previews, the reel cut from the originals.
 
+## Owner PC test of b117 (2026-10-16 night)
+
+A reel from `D:\100MEDIA` (30 s horizontal, AI; the AI reports of b113 were in the shared cache, the previews new):
+**18 min 27 s** (b113: 42 min, b100: 64 min). Stages: inputs 23 s, analysis 15.5 min - all of it cutting the 90
+previews (908 s), one video after another, the 16-thread PC 42 % busy; measuring 21 s, select 31 s, boundaries 7 s,
+pieces 93 s, joining 21 s. Fixed after it (b119): videos analysed before go three at once too, and count as new work
+until their clips are made; AI+ cuts a video's clips three at once.
+
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
