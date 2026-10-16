@@ -63,8 +63,10 @@ first. After the download the same reel is built again with them.
 - **Video decoding on the graphics card, only where it is proven on this PC** (`hwdecode.py`). "Check this PC" ->
   "Test the graphics card": three short 4K test clips (H.264, HEVC, HEVC 10-bit) are cut as the engine cuts them,
   with the processor and with every hardware method this FFmpeg offers (`d3d11va`, `cuda`, `qsv`, `d3d12va`,
-  `dxva2`); every frame is compared (MD5 of the full picture and of the 960-px preview) and timed. A method is used
-  only when every frame was identical and it was at least 1.3x faster; a different FFmpeg or graphics driver means
+  `dxva2`); every frame is compared (MD5 of the full picture and of the 960-px preview) and timed - one cut alone and,
+  since b122, several at once (as in a build, where the processor is busy: on the owner's 16-thread PC with an RTX 3060
+  one cut alone on the card was 0.8x the processor). A method is used only when every frame was identical and it was
+  at least 1.3x faster under load; a different FFmpeg or graphics driver means
   testing again; it can be turned off. The engine (`MEDENG_HWACCEL`) uses it for the preview cuts and the
   full-quality pieces without conversions (HDR, interlaced and non-square pieces stay on the processor) and makes
   any cut that fails with it again on the processor (`hw_decode` in the result: cuts, fallbacks). Check this PC also

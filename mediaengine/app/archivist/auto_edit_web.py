@@ -436,6 +436,8 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
     @app.get("/api/auto/hwtest")
     def ae_hwtest_state():
         from . import hwdecode
+        if request.args.get("full"):       # support: the whole remembered result (times per clip and method)
+            return jsonify(hwdecode.saved())
         st = hwdecode.state()
         step = st.get("step") or ""
         if ae.ui_language() == "ru":

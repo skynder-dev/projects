@@ -111,6 +111,15 @@ def _cut(ff: str, clip: Path, hw: str | None, vf: str) -> tuple[float, str | Non
     return dt, hashlib.md5("\n".join(md5s).encode()).hexdigest(), ""
 
 
+def _parallel(ff: str, clip: Path, hw: str | None, vf: str, k: int) -> tuple[float, bool]:
+    """k cuts at once (a build cuts several videos' moments at the same time): (seconds for all, all good)."""
+    from concurrent.futures import ThreadPoolExecutor
+    t0 = time.perf_counter()
+    with ThreadPoolExecutor(k) as ex:
+        outs = list(ex.map(lambda _: _cut(ff, clip, hw, vf), range(k)))
+    return time.perf_counter() - t0, all(md5 and not err for _, md5, err in outs)
+
+
 def run_test(ff: str, folder: Path, step=lambda s: None) -> dict:
     """Processor vs every offered hardware method on every test clip. Never raises."""
     t_start = time.time()
@@ -157,7 +166,28 @@ def run_test(ff: str, folder: Path, step=lambda s: None) -> dict:
                 mres["clips"][c.name] = cres
                 if all(not v["error"] for v in cres.values()):
                     mres["decoded"] += 1
-            mres["speedup"] = round(sw_total / hw_total, 2) if hw_total > 0 else 0.0
+            mres["speedup_single"] = round(sw_total / hw_total, 2) if hw_total > 0 else 0.0
+            mres["speedup"] = mres["speedup_single"]
+            if mres["identical"] and mres["decoded"]:
+                # under load, as in a build (several moments cut at once while the AI looks at other videos): the
+                # card takes the decoding off the processor - one cut alone on an idle 16-thread processor says little
+                k = max(2, min(4, (os.cpu_count() or 4) // 4))
+                sw_par = hw_par = 0.0
+                for c in clips:
+                    cr = mres["clips"].get(c.name) or {}
+                    if any(v.get("error") for v in cr.values()):
+                        continue
+                    step(f"{m}: {c.name} x{k}")
+                    if (c.name, "par") not in sw:
+                        sw[(c.name, "par")] = _parallel(ff, c, None, views["preview"], k)
+                    st, sok = sw[(c.name, "par")]
+                    ht, hok = _parallel(ff, c, m, views["preview"], k)
+                    if sok and hok:
+                        sw_par += st; hw_par += ht
+                        cr["loaded"] = {"cuts_at_once": k, "sw_s": round(st, 3), "hw_s": round(ht, 3)}
+                if hw_par > 0:
+                    mres["speedup_loaded"] = round(sw_par / hw_par, 2)
+                    mres["speedup"] = mres["speedup_loaded"]
             res["methods"][m] = mres
         res["use"] = choose(res)
         for c in clips:                      # ~100 MB of test video: made again for the next test
