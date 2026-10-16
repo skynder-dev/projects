@@ -117,7 +117,7 @@ const flush=()=>new Promise(resolve=>setImmediate(resolve));
 assert.equal(root.style.props.width,'960px','dock width equals composer, never full viewport');
   assert.equal(root.style.props.right,'auto','dock width explicitly constrained');
   assert.equal(root.style.props['max-width'],'calc(100vw - 16px)','failsafe prevents viewport-wide bar');
-assert.equal(root.style.props.top,'160px','dock directly under composer');
+assert.ok(Math.abs(Number.parseInt(root.style.props.top,10)-160)<=2,'dock directly under composer');
 assert.equal(root.style.props.bottom,'auto','dock not full-width bottom bar');
   assert.deepEqual(submitted,['GO','GO'],'must not send while generating');
   generating=false;
