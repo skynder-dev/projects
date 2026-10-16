@@ -339,19 +339,19 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 | --- | --- | --- |
 | I01 clean launch without terminal | PASS (owner PC) | owner installed b100 with Setup and started it himself (2026-10-14); CI: Start menu and `Start MediaEngine.vbs` in Cyrillic folders |
 | I02 2 and 7 files, skip damaged | PARTIAL | synthetic fixtures; still video skipped |
-| I03 adaptive default, Length/Format/Sound only | PARTIAL | |
+| I03 adaptive default, Length/Format/Sound only | PASS (owner PC) | b117, `D:\100MEDIA` (27 min of 4K): "30 s · recommended", only length, format, sound and the way of choosing |
 | I04 R2 semantic=required started from the GUI | PASS (owner PC) | b100: the app downloaded the model, AI test reel 32.1 s, AI reel from 18 real 4K drone videos (64 min, then the speed work of b101+) |
-| I05 960×540 / 540×960 / 1080×1920 | PARTIAL | all probed in E2E; owner PC: 1920×1080 and 1080×1920 from real 4K |
-| I06 one preset per run | PARTIAL | |
-| I07 15/30/60 and 5 for short footage | PARTIAL | 60 s bounded search unit-checked; shortfall shown |
+| I05 960×540 / 540×960 / 1080×1920 | PASS (owner PC) | owner PC: 1920×1080, 1080×1920 and 540×960 (b117, 2026-10-16: the 540×960 variant probed 540×960, 30.0 s) from real 4K; all four in E2E |
+| I06 one preset per run | PASS (owner PC) | every version one format (project 5 on the owner's PC: R001 1920×1080, R004 540×960, R005 60 s 1920×1080) |
+| I07 15/30/60 and 5 for short footage | PASS (owner PC) | owner PC b117: 30 s and a 60 s variant of 13 moments, 59.9 s, in 3 min 19 s (choice 13 s); shortfall shown (E2E) |
 | I08 Sound Source/Auto/Mute | PARTIAL | applied sound shown; no loudness listening test |
 | I09 selection quality, camera-drop | NOT_STARTED | human blind review pending |
-| I10 player / seek / source links in GUI | PARTIAL | user interaction pending |
-| I11 manual override | PARTIAL | exclude, trim, reorder, replace, add — through app routes |
+| I10 player / seek / source links in GUI | PASS (owner PC) | b117 in the app's own browser pane: the reel plays, "show in reel" seeks (14.2 s asked, playing from there), video served with byte ranges (206) |
+| I11 manual override | PASS (owner PC) | b117: a moment removed and another moved up on the page -> R003 has exactly that order, built in 39 s; trim/replace/add in E2E |
 | I12 variant reuses analysis | PASS (owner PC) | vertical variant of the 18-video AI reel in 2 min 18 s (analysis reused); keeps removed moments and edits |
-| I13 Accept/Revert, immutable revisions | PARTIAL | |
-| I14 cancel / resume / crash | PARTIAL | cancel + retry; restart marks jobs interrupted |
-| I15 idempotent repeat, input change isolated | PARTIAL | Private change forces a new build |
+| I13 Accept/Revert, immutable revisions | PASS (owner PC) | b117: accept R001, accept R004, "go back" -> R001 again; versions kept |
+| I14 cancel / resume / crash | PASS (owner PC) | b117: a build cancelled while checking clip edges -> cancelled, nothing published; Retry -> done in 27 s; restart marking interrupted jobs in E2E |
+| I15 idempotent repeat, input change isolated | PASS (owner PC) | b117: the same variant asked again -> "This version already exists", no new job; Private change forces a new build (E2E) |
 | I16 export verified accepted only, safe name, no overwrite | PASS (owner PC) | Save MP4 68.9 MB "checked: exactly the accepted version"; small copy for messengers |
 | I17 restart keeps projects | PARTIAL | |
 | I18 originals unchanged, path safety, absent drive | PARTIAL | unplugged source drive tested (project says so, nothing deleted, export works, builds again when back) |
