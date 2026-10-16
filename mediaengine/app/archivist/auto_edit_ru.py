@@ -432,7 +432,7 @@ PHRASES = {
     "No video of this theme is on this PC now.": "Сейчас на этом компьютере нет видео на эту тему.",
     # "Prepare in advance" (analysis only; the reel later in minutes)
     # decoding on the graphics card (Check this PC)
-    "Graphics card": "Видеокарта", "Video decoding on the graphics card": "Разбор видео на видеокарте",
+    "Graphics card": "Видеокарта", "Video decoding on the graphics card": "Разбор видео на видеокарте", "cut with the graphics card": "нарезано видеокартой",
     "not tested yet - press 'Test the graphics card' below (about a minute, your videos are not used)":
         "ещё не проверено — нажми «Проверить видеокарту» ниже (около минуты, твои видео не используются)",
     "Testing the graphics card…": "Проверяю видеокарту…", "About a minute or two. You can leave this page.": "Минуту-две. Страницу можно закрыть.",

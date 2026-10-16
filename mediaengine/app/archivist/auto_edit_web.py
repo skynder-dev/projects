@@ -1529,8 +1529,10 @@ def _build_time_html(res) -> str:
     import html as _h
     tm = res.get("semantic_timing") or {}
     data = f" data-timing='{_h.escape(json.dumps({'stages': st, 'ai': tm, 'hw': res.get('hw_decode')}), quote=True)}'"   # for support: where the AI time went
+    hw = res.get("hw_decode") or {}
+    gpu = " · <span>cut with the graphics card</span>" if int(hw.get("cuts") or 0) > 0 else ""
     return (f"<div class='muted ae-buildtime' style='font-size:13px'{data}><span>Built in</span> {d(total)}"
-            + (" (" + " · ".join(parts) + ")" if parts else "") + "</div>")
+            + (" (" + " · ".join(parts) + ")" if parts else "") + gpu + "</div>")
 
 
 def _sound_label(requested, res):
