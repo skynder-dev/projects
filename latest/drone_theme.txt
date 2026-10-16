@@ -1,0 +1,16 @@
+PASS enough_drone_videos
+PASS models_ready
+PASS no_ground_pick:03_BLM_drone_training_above_Horning_Seed_Orchard_3517.webm
+PASS no_ground_pick:04_Drone_footage_of_the_Space_Telescope_Science_Insti.webm
+PASS no_ground_pick:05_Bishops_Castle_-_drone_footage_2019.webm
+PASS no_ground_pick:10_View_from_Mt_Pemigewasset_dji_phantom_4_advanced.webm
+PASS frames_scored
+PASS prepare_button_offered
+PASS prepare_project_created
+PASS prepared
+PASS prepared_card_and_build_form_shown
+PASS aiplus_aerial_30s_after_prepare_built
+PASS build_after_prepare_reuses_analysis
+PASS ai_30s_built
+PASS aerial_reel_avoids_ground
+{"passed": 15, "total": 15, "videos": 10, "labelled": true, "prepare_s": 603.0, "reels": {"aiplus_aerial_30s_after_prepare": [22.1, 6, 0], "ai_30s": [237.5, 6, 0]}}

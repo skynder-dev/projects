@@ -1,0 +1,3295 @@
+{
+  "checks": [
+    {
+      "name": "enough_drone_videos",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "models_ready",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "no_ground_pick:03_BLM_drone_training_above_Horning_Seed_Orchard_3517.webm",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "no_ground_pick:04_Drone_footage_of_the_Space_Telescope_Science_Insti.webm",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "no_ground_pick:05_Bishops_Castle_-_drone_footage_2019.webm",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "no_ground_pick:10_View_from_Mt_Pemigewasset_dji_phantom_4_advanced.webm",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "frames_scored",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "prepare_button_offered",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "prepare_project_created",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "prepared",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "prepared_card_and_build_form_shown",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "aiplus_aerial_30s_after_prepare_built",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "build_after_prepare_reuses_analysis",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "ai_30s_built",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "aerial_reel_avoids_ground",
+      "pass": true,
+      "detail": null
+    }
+  ],
+  "timings": {
+    "download_s": 15.9,
+    "frames_s": 549.9
+  },
+  "theme": "aerial",
+  "source": "pinned manifest",
+  "videos": [
+    {
+      "title": "File:Take off from Pannerdense kop 0577 D.webm",
+      "topic": "drone take off",
+      "duration_s": 65.498,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/5/5d/Take_off_from_Pannerdense_kop_0577_D.webm/Take_off_from_Pannerdense_kop_0577_D.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Take_off_from_Pannerdense_kop_0577_D.webm",
+      "licence": "CC BY-SA 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Quahadi",
+      "original_sha1": "d7a03347f6ee87a605c250eba610dbd8e873a75b",
+      "ground": null,
+      "sha256": "104e84fc8827fde26acf3ea50862a58b6d188c7427377a37d34871c7682c9538",
+      "file": "01_Take_off_from_Pannerdense_kop_0577_D.webm",
+      "bytes": 6551256
+    },
+    {
+      "title": "File:Drone flyover video of Mount Maya.webm",
+      "topic": "drone take off",
+      "duration_s": 299.883,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/7/7b/Drone_flyover_video_of_Mount_Maya.webm/Drone_flyover_video_of_Mount_Maya.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Drone_flyover_video_of_Mount_Maya.webm",
+      "licence": "CC BY-SA 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Benlisquare",
+      "original_sha1": "e459f9ecfffccb3be356eefe7417f6ad9121e4af",
+      "ground": null,
+      "sha256": "f8d5ac9ba615881dc79ab8e758985d707ad53ded914e7cff59b3bc894549a145",
+      "file": "02_Drone_flyover_video_of_Mount_Maya.webm",
+      "bytes": 56146504
+    },
+    {
+      "title": "File:BLM drone training above Horning Seed Orchard (35179078385).webm",
+      "topic": "drone take off",
+      "duration_s": 22.923000000000002,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/2/22/BLM_drone_training_above_Horning_Seed_Orchard_%2835179078385%29.webm/BLM_drone_training_above_Horning_Seed_Orchard_%2835179078385%29.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:BLM_drone_training_above_Horning_Seed_Orchard_(35179078385).webm",
+      "licence": "Public domain",
+      "licence_url": "",
+      "author": "BLM Oregon & Washington",
+      "original_sha1": "8d73015f6040756634914067e8c6fadaad5db1b0",
+      "ground": [
+        [
+          0,
+          7.5
+        ]
+      ],
+      "sha256": "7678f75460b24c690aba70d0a88ee9a2ce0f6d9212ae2baf736b487d2d3c3a3c",
+      "file": "03_BLM_drone_training_above_Horning_Seed_Orchard_3517.webm",
+      "bytes": 2959553
+    },
+    {
+      "title": "File:Drone footage of the Space Telescope Science Institute Facility (SVS14218).webm",
+      "topic": "drone footage",
+      "duration_s": 109.298,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/b/b7/Drone_footage_of_the_Space_Telescope_Science_Institute_Facility_%28SVS14218%29.webm/Drone_footage_of_the_Space_Telescope_Science_Institute_Facility_%28SVS14218%29.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Drone_footage_of_the_Space_Telescope_Science_Institute_Facility_(SVS14218).webm",
+      "licence": "Public domain",
+      "licence_url": "",
+      "author": "NASA's Scientific Visualization Studio - KBR Wyle Services, LLC/Michael McClare, KBR Wyle Services, LLC/Chris Meaney, Advocates in Manpower Management, Inc./Michael P. Menzel, Advocates in Manpower Ma",
+      "original_sha1": "6afbf899e0531bbb7d22107f847f3a7351d71cf1",
+      "ground": [
+        [
+          29,
+          76
+        ]
+      ],
+      "sha256": "9319c4df3c899797aef9d1d4629c7c9846085dce643dbad8a43f00b093d06ba1",
+      "file": "04_Drone_footage_of_the_Space_Telescope_Science_Insti.webm",
+      "bytes": 13675826
+    },
+    {
+      "title": "File:Bishops Castle - drone footage 2019.webm",
+      "topic": "drone footage",
+      "duration_s": 169.0,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c7/Bishops_Castle_-_drone_footage_2019.webm/Bishops_Castle_-_drone_footage_2019.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Bishops_Castle_-_drone_footage_2019.webm",
+      "licence": "CC BY 3.0",
+      "licence_url": "https://creativecommons.org/licenses/by/3.0",
+      "author": "BarbiCyanide",
+      "original_sha1": "1bab7ceb4920ebfcb9f06c3b03f88a55cd177fe6",
+      "ground": [
+        [
+          90,
+          96.5
+        ]
+      ],
+      "sha256": "833a08b56c991ce1ce506b2587cd73a814daa9315e047768e986a2c6c0c15bbd",
+      "file": "05_Bishops_Castle_-_drone_footage_2019.webm",
+      "bytes": 26956468
+    },
+    {
+      "title": "File:Kenilworth Castle drone Footage .webm",
+      "topic": "drone footage",
+      "duration_s": 65.024,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/0d/Kenilworth_Castle_drone_Footage_.webm/Kenilworth_Castle_drone_Footage_.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Kenilworth_Castle_drone_Footage_.webm",
+      "licence": "CC BY 3.0",
+      "licence_url": "https://creativecommons.org/licenses/by/3.0",
+      "author": "ThePsychoNBK",
+      "original_sha1": "6bc906c139ad3d9654c7610efefa911baa7b347a",
+      "ground": null,
+      "sha256": "adc644a0968609090c98a0108f81a0404efa5bfea76913684c720a344eda9804",
+      "file": "06_Kenilworth_Castle_drone_Footage.webm",
+      "bytes": 10343449
+    },
+    {
+      "title": "File:Solis Viaduct, Schinschlucht and Solis dam, aerial video.webm",
+      "topic": "aerial drone video",
+      "duration_s": 182.552,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/a/a8/Solis_Viaduct%2C_Schinschlucht_and_Solis_dam%2C_aerial_video.webm/Solis_Viaduct%2C_Schinschlucht_and_Solis_dam%2C_aerial_video.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Solis_Viaduct,_Schinschlucht_and_Solis_dam,_aerial_video.webm",
+      "licence": "CC BY-SA 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Video & editing: Capricorn4049 Audio: Silent Partner Kevin MacLeod",
+      "original_sha1": "5ddffe28df44490e753f70ec411dba94223bcb56",
+      "ground": null,
+      "sha256": "360cec05daf8aaa1c42efe31d7e123aaa2fe9a4e2792238aba4452f9234e7672",
+      "file": "07_Solis_Viaduct_Schinschlucht_and_Solis_dam_aerial_v.webm",
+      "bytes": 31148550
+    },
+    {
+      "title": "File:Landwasserviadukt, aerial video.webm",
+      "topic": "aerial drone video",
+      "duration_s": 169.752,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/7/72/Landwasserviadukt%2C_aerial_video.webm/Landwasserviadukt%2C_aerial_video.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Landwasserviadukt,_aerial_video.webm",
+      "licence": "CC BY-SA 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Video: Capricorn4049 Audio: Kevin MacLeod",
+      "original_sha1": "2fe22231cc77640e29c923590691858e88121062",
+      "ground": null,
+      "sha256": "9ed9fd008b32ad8720dba538a6d4610c88644f8941cbd3b586030cee8273804d",
+      "file": "08_Landwasserviadukt_aerial_video.webm",
+      "bytes": 33724663
+    },
+    {
+      "title": "File:007 Volcano eruption of Litli-Hrútur in Iceland in 2023 Video by Giles Laurent.webm",
+      "topic": "aerial drone video",
+      "duration_s": 23.837,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/5/53/007_Volcano_eruption_of_Litli-Hr%C3%BAtur_in_Iceland_in_2023_Video_by_Giles_Laurent.webm/007_Volcano_eruption_of_Litli-Hr%C3%BAtur_in_Iceland_in_2023_Video_by_Giles_Laurent.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:007_Volcano_eruption_of_Litli-Hr%C3%BAtur_in_Iceland_in_2023_Video_by_Giles_Laurent.webm",
+      "licence": "CC BY-SA 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Giles Laurent",
+      "original_sha1": "d3372d1bae4cfde73e4f94c478b25b8149d74bcc",
+      "ground": null,
+      "sha256": "032205821c6f9baf76e1968cc5db21d2f051b15520cd7ffe80e0442270bc22cb",
+      "file": "09_007_Volcano_eruption_of_Litli-Hrútur_in_Iceland_in.webm",
+      "bytes": 2965990
+    },
+    {
+      "title": "File:View from Mt. Pemigewasset dji phantom 4 advanced.webm",
+      "topic": "DJI Phantom",
+      "duration_s": 215.548,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/9/95/View_from_Mt._Pemigewasset_dji_phantom_4_advanced.webm/View_from_Mt._Pemigewasset_dji_phantom_4_advanced.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:View_from_Mt._Pemigewasset_dji_phantom_4_advanced.webm",
+      "licence": "CC BY 3.0",
+      "licence_url": "https://creativecommons.org/licenses/by/3.0",
+      "author": "Sustainable Living",
+      "original_sha1": "4b2a482a6d6a31cda7bb6df796374efef555c4f5",
+      "ground": [
+        [
+          174,
+          216
+        ]
+      ],
+      "sha256": "5c97aedb30e3fa904bb7d869344501788353053ae9e01da2884b86181a9ff592",
+      "file": "10_View_from_Mt_Pemigewasset_dji_phantom_4_advanced.webm",
+      "bytes": 21376776
+    }
+  ],
+  "frames": [
+    {
+      "file": "01_Take_off_from_Pannerdense_kop_0577_D.webm",
+      "title": "File:Take off from Pannerdense kop 0577 D.webm",
+      "duration_s": 65.5,
+      "frames": [
+        {
+          "t": 0.0,
+          "margin": 2.2,
+          "margin_generic_bad_only": 3.62
+        },
+        {
+          "t": 1.36,
+          "margin": 1.8,
+          "margin_generic_bad_only": 4.28
+        },
+        {
+          "t": 2.73,
+          "margin": 0.58,
+          "margin_generic_bad_only": 2.81
+        },
+        {
+          "t": 4.09,
+          "margin": 1.23,
+          "margin_generic_bad_only": 4.08
+        },
+        {
+          "t": 5.46,
+          "margin": 1.37,
+          "margin_generic_bad_only": 3.57
+        },
+        {
+          "t": 6.82,
+          "margin": 2.43,
+          "margin_generic_bad_only": 4.4
+        },
+        {
+          "t": 8.19,
+          "margin": 3.02,
+          "margin_generic_bad_only": 5.19
+        },
+        {
+          "t": 9.55,
+          "margin": 3.35,
+          "margin_generic_bad_only": 5.35
+        },
+        {
+          "t": 10.92,
+          "margin": 2.58,
+          "margin_generic_bad_only": 4.54
+        },
+        {
+          "t": 12.28,
+          "margin": 3.49,
+          "margin_generic_bad_only": 4.96
+        },
+        {
+          "t": 13.65,
+          "margin": 3.81,
+          "margin_generic_bad_only": 5.2
+        },
+        {
+          "t": 15.01,
+          "margin": 3.64,
+          "margin_generic_bad_only": 4.82
+        },
+        {
+          "t": 16.38,
+          "margin": 4.02,
+          "margin_generic_bad_only": 5.82
+        },
+        {
+          "t": 17.74,
+          "margin": 4.5,
+          "margin_generic_bad_only": 5.59
+        },
+        {
+          "t": 19.1,
+          "margin": 3.87,
+          "margin_generic_bad_only": 5.31
+        },
+        {
+          "t": 20.47,
+          "margin": 4.74,
+          "margin_generic_bad_only": 5.83
+        },
+        {
+          "t": 21.83,
+          "margin": 4.34,
+          "margin_generic_bad_only": 5.25
+        },
+        {
+          "t": 23.2,
+          "margin": 5.09,
+          "margin_generic_bad_only": 6.03
+        },
+        {
+          "t": 24.56,
+          "margin": 4.39,
+          "margin_generic_bad_only": 5.56
+        },
+        {
+          "t": 25.93,
+          "margin": 5.03,
+          "margin_generic_bad_only": 6.05
+        },
+        {
+          "t": 27.29,
+          "margin": 4.93,
+          "margin_generic_bad_only": 5.81
+        },
+        {
+          "t": 28.66,
+          "margin": 4.76,
+          "margin_generic_bad_only": 5.38
+        },
+        {
+          "t": 30.02,
+          "margin": 5.82,
+          "margin_generic_bad_only": 6.17
+        },
+        {
+          "t": 31.39,
+          "margin": 5.27,
+          "margin_generic_bad_only": 5.27
+        },
+        {
+          "t": 32.75,
+          "margin": 5.14,
+          "margin_generic_bad_only": 5.23
+        },
+        {
+          "t": 34.11,
+          "margin": 5.49,
+          "margin_generic_bad_only": 5.49
+        },
+        {
+          "t": 35.48,
+          "margin": 5.95,
+          "margin_generic_bad_only": 5.95
+        },
+        {
+          "t": 36.84,
+          "margin": 5.55,
+          "margin_generic_bad_only": 5.55
+        },
+        {
+          "t": 38.21,
+          "margin": 4.94,
+          "margin_generic_bad_only": 4.94
+        },
+        {
+          "t": 39.57,
+          "margin": 4.78,
+          "margin_generic_bad_only": 4.9
+        },
+        {
+          "t": 40.94,
+          "margin": 5.31,
+          "margin_generic_bad_only": 5.31
+        },
+        {
+          "t": 42.3,
+          "margin": 6.1,
+          "margin_generic_bad_only": 6.29
+        },
+        {
+          "t": 43.67,
+          "margin": 5.95,
+          "margin_generic_bad_only": 5.95
+        },
+        {
+          "t": 45.03,
+          "margin": 4.71,
+          "margin_generic_bad_only": 4.71
+        },
+        {
+          "t": 46.4,
+          "margin": 5.74,
+          "margin_generic_bad_only": 5.74
+        },
+        {
+          "t": 47.76,
+          "margin": 5.95,
+          "margin_generic_bad_only": 5.96
+        },
+        {
+          "t": 49.12,
+          "margin": 5.72,
+          "margin_generic_bad_only": 5.72
+        },
+        {
+          "t": 50.49,
+          "margin": 5.39,
+          "margin_generic_bad_only": 5.39
+        },
+        {
+          "t": 51.85,
+          "margin": 5.15,
+          "margin_generic_bad_only": 5.15
+        },
+        {
+          "t": 53.22,
+          "margin": 5.15,
+          "margin_generic_bad_only": 5.15
+        },
+        {
+          "t": 54.58,
+          "margin": 5.07,
+          "margin_generic_bad_only": 5.07
+        },
+        {
+          "t": 55.95,
+          "margin": 5.99,
+          "margin_generic_bad_only": 6.03
+        },
+        {
+          "t": 57.31,
+          "margin": 5.77,
+          "margin_generic_bad_only": 6.14
+        },
+        {
+          "t": 58.68,
+          "margin": 6.57,
+          "margin_generic_bad_only": 6.57
+        },
+        {
+          "t": 60.04,
+          "margin": 5.66,
+          "margin_generic_bad_only": 5.66
+        },
+        {
+          "t": 61.41,
+          "margin": 5.36,
+          "margin_generic_bad_only": 5.36
+        },
+        {
+          "t": 62.77,
+          "margin": 5.83,
+          "margin_generic_bad_only": 5.83
+        },
+        {
+          "t": 64.14,
+          "margin": 4.87,
+          "margin_generic_bad_only": 4.87
+        }
+      ],
+      "picks": [
+        {
+          "start_s": 56.0,
+          "end_s": 61.5,
+          "center_s": 58.67708333333333,
+          "semantic_margin_raw": 5.839972,
+          "final_score": 0.830691
+        },
+        {
+          "start_s": 39.5,
+          "end_s": 45.0,
+          "center_s": 42.30208333333333,
+          "semantic_margin_raw": 5.53303,
+          "final_score": 0.678905
+        },
+        {
+          "start_s": 47.5,
+          "end_s": 53.0,
+          "center_s": 50.48958333333333,
+          "semantic_margin_raw": 5.552445,
+          "final_score": 0.647548
+        },
+        {
+          "start_s": 45.0,
+          "end_s": 50.5,
+          "center_s": 47.760416666666664,
+          "semantic_margin_raw": 5.499791,
+          "final_score": 0.436505
+        },
+        {
+          "start_s": 53.0,
+          "end_s": 58.5,
+          "center_s": 55.947916666666664,
+          "semantic_margin_raw": 5.497395,
+          "final_score": 0.408225
+        },
+        {
+          "start_s": 32.5,
+          "end_s": 38.0,
+          "center_s": 35.479166666666664,
+          "semantic_margin_raw": 5.53315,
+          "final_score": 0.285876
+        },
+        {
+          "start_s": 60.0,
+          "end_s": 65.5,
+          "center_s": 62.77083333333333,
+          "semantic_margin_raw": 5.430175,
+          "final_score": 0.260324
+        },
+        {
+          "start_s": 27.5,
+          "end_s": 33.0,
+          "center_s": 30.020833333333332,
+          "semantic_margin_raw": 5.244384,
+          "final_score": 0.019718
+        }
+      ],
+      "frames_matching": 48,
+      "frames_matching_generic_bad_only": 48,
+      "ground": null
+    },
+    {
+      "file": "02_Drone_flyover_video_of_Mount_Maya.webm",
+      "title": "File:Drone flyover video of Mount Maya.webm",
+      "duration_s": 299.88,
+      "frames": [
+        {
+          "t": 0.0,
+          "margin": -6.31,
+          "margin_generic_bad_only": -4.76
+        },
+        {
+          "t": 6.25,
+          "margin": 0.33,
+          "margin_generic_bad_only": 0.33
+        },
+        {
+          "t": 12.49,
+          "margin": 4.27,
+          "margin_generic_bad_only": 4.27
+        },
+        {
+          "t": 18.74,
+          "margin": 4.44,
+          "margin_generic_bad_only": 4.44
+        },
+        {
+          "t": 24.99,
+          "margin": 4.41,
+          "margin_generic_bad_only": 4.41
+        },
+        {
+          "t": 31.24,
+          "margin": 3.41,
+          "margin_generic_bad_only": 3.41
+        },
+        {
+          "t": 37.48,
+          "margin": 4.58,
+          "margin_generic_bad_only": 4.58
+        },
+        {
+          "t": 43.73,
+          "margin": 5.51,
+          "margin_generic_bad_only": 5.51
+        },
+        {
+          "t": 49.98,
+          "margin": 4.9,
+          "margin_generic_bad_only": 4.9
+        },
+        {
+          "t": 56.23,
+          "margin": 3.51,
+          "margin_generic_bad_only": 3.51
+        },
+        {
+          "t": 62.47,
+          "margin": 5.23,
+          "margin_generic_bad_only": 6.45
+        },
+        {
+          "t": 68.72,
+          "margin": 5.32,
+          "margin_generic_bad_only": 6.12
+        },
+        {
+          "t": 74.97,
+          "margin": 4.31,
+          "margin_generic_bad_only": 4.31
+        },
+        {
+          "t": 81.22,
+          "margin": 4.86,
+          "margin_generic_bad_only": 4.86
+        },
+        {
+          "t": 87.46,
+          "margin": 5.89,
+          "margin_generic_bad_only": 5.89
+        },
+        {
+          "t": 93.71,
+          "margin": 5.91,
+          "margin_generic_bad_only": 5.91
+        },
+        {
+          "t": 99.96,
+          "margin": 5.1,
+          "margin_generic_bad_only": 5.79
+        },
+        {
+          "t": 106.21,
+          "margin": 5.9,
+          "margin_generic_bad_only": 5.9
+        },
+        {
+          "t": 112.45,
+          "margin": 6.05,
+          "margin_generic_bad_only": 6.26
+        },
+        {
+          "t": 118.7,
+          "margin": 5.67,
+          "margin_generic_bad_only": 5.67
+        },
+        {
+          "t": 124.95,
+          "margin": 6.71,
+          "margin_generic_bad_only": 6.71
+        },
+        {
+          "t": 131.2,
+          "margin": 6.93,
+          "margin_generic_bad_only": 6.93
+        },
+        {
+          "t": 137.44,
+          "margin": 6.11,
+          "margin_generic_bad_only": 6.51
+        },
+        {
+          "t": 143.69,
+          "margin": 6.35,
+          "margin_generic_bad_only": 6.35
+        },
+        {
+          "t": 149.94,
+          "margin": 6.92,
+          "margin_generic_bad_only": 6.97
+        },
+        {
+          "t": 156.19,
+          "margin": 5.72,
+          "margin_generic_bad_only": 5.72
+        },
+        {
+          "t": 162.44,
+          "margin": 5.78,
+          "margin_generic_bad_only": 6.28
+        },
+        {
+          "t": 168.68,
+          "margin": 5.83,
+          "margin_generic_bad_only": 6.54
+        },
+        {
+          "t": 174.93,
+          "margin": 6.24,
+          "margin_generic_bad_only": 6.84
+        },
+        {
+          "t": 181.18,
+          "margin": 6.2,
+          "margin_generic_bad_only": 6.88
+        },
+        {
+          "t": 187.42,
+          "margin": 6.33,
+          "margin_generic_bad_only": 6.54
+        },
+        {
+          "t": 193.67,
+          "margin": 6.29,
+          "margin_generic_bad_only": 6.7
+        },
+        {
+          "t": 199.92,
+          "margin": 5.53,
+          "margin_generic_bad_only": 6.15
+        },
+        {
+          "t": 206.17,
+          "margin": 6.45,
+          "margin_generic_bad_only": 6.78
+        },
+        {
+          "t": 212.41,
+          "margin": 6.64,
+          "margin_generic_bad_only": 7.21
+        },
+        {
+          "t": 218.66,
+          "margin": 5.88,
+          "margin_generic_bad_only": 6.2
+        },
+        {
+          "t": 224.91,
+          "margin": 6.13,
+          "margin_generic_bad_only": 6.73
+        },
+        {
+          "t": 231.16,
+          "margin": 6.32,
+          "margin_generic_bad_only": 7.02
+        },
+        {
+          "t": 237.4,
+          "margin": 5.53,
+          "margin_generic_bad_only": 6.54
+        },
+        {
+          "t": 243.65,
+          "margin": 5.41,
+          "margin_generic_bad_only": 6.66
+        },
+        {
+          "t": 249.9,
+          "margin": 4.88,
+          "margin_generic_bad_only": 5.82
+        },
+        {
+          "t": 256.15,
+          "margin": 5.34,
+          "margin_generic_bad_only": 6.57
+        },
+        {
+          "t": 262.39,
+          "margin": 4.99,
+          "margin_generic_bad_only": 6.45
+        },
+        {
+          "t": 268.64,
+          "margin": 4.78,
+          "margin_generic_bad_only": 5.68
+        },
+        {
+          "t": 274.89,
+          "margin": 5.67,
+          "margin_generic_bad_only": 6.94
+        },
+        {
+          "t": 281.14,
+          "margin": 5.05,
+          "margin_generic_bad_only": 6.58
+        },
+        {
+          "t": 287.38,
+          "margin": 5.67,
+          "margin_generic_bad_only": 6.24
+        },
+        {
+          "t": 293.63,
+          "margin": 6.5,
+          "margin_generic_bad_only": 7.02
+        }
+      ],
+      "picks": [
+        {
+          "start_s": 147.0,
+          "end_s": 152.5,
+          "center_s": 149.94,
+          "semantic_margin_raw": 6.920224,
+          "final_score": 0.889757
+        },
+        {
+          "start_s": 128.5,
+          "end_s": 134.0,
+          "center_s": 131.1975,
+          "semantic_margin_raw": 6.925835,
+          "final_score": 0.648128
+        },
+        {
+          "start_s": 209.5,
+          "end_s": 215.0,
+          "center_s": 212.415,
+          "semantic_margin_raw": 6.640581,
+          "final_score": 0.498957
+        },
+        {
+          "start_s": 122.0,
+          "end_s": 127.5,
+          "center_s": 124.94999999999999,
+          "semantic_margin_raw": 6.710382,
+          "final_score": 0.304627
+        },
+        {
+          "start_s": 291.0,
+          "end_s": 296.5,
+          "center_s": 293.6325,
+          "semantic_margin_raw": 6.499475,
+          "final_score": 0.274265
+        },
+        {
+          "start_s": 203.5,
+          "end_s": 209.0,
+          "center_s": 206.1675,
+          "semantic_margin_raw": 6.454127,
+          "final_score": 0.183234
+        },
+        {
+          "start_s": 184.5,
+          "end_s": 190.0,
+          "center_s": 187.42499999999998,
+          "semantic_margin_raw": 6.327229,
+          "final_score": 0.03026
+        },
+        {
+          "start_s": 141.0,
+          "end_s": 146.5,
+          "center_s": 143.6925,
+          "semantic_margin_raw": 6.353365,
+          "final_score": 0.006475
+        }
+      ],
+      "frames_matching": 47,
+      "frames_matching_generic_bad_only": 47,
+      "ground": null
+    },
+    {
+      "file": "03_BLM_drone_training_above_Horning_Seed_Orchard_3517.webm",
+      "title": "File:BLM drone training above Horning Seed Orchard (35179078385).webm",
+      "duration_s": 22.92,
+      "frames": [
+        {
+          "t": 0.0,
+          "margin": -2.39,
+          "margin_generic_bad_only": 0.17
+        },
+        {
+          "t": 1.0,
+          "margin": -2.77,
+          "margin_generic_bad_only": -1.2
+        },
+        {
+          "t": 2.0,
+          "margin": -3.74,
+          "margin_generic_bad_only": -1.3
+        },
+        {
+          "t": 3.0,
+          "margin": -3.82,
+          "margin_generic_bad_only": -0.97
+        },
+        {
+          "t": 4.0,
+          "margin": -2.44,
+          "margin_generic_bad_only": -2.05
+        },
+        {
+          "t": 5.0,
+          "margin": 1.24,
+          "margin_generic_bad_only": 2.6
+        },
+        {
+          "t": 6.0,
+          "margin": 1.7,
+          "margin_generic_bad_only": 3.56
+        },
+        {
+          "t": 7.0,
+          "margin": 1.19,
+          "margin_generic_bad_only": 3.86
+        },
+        {
+          "t": 8.0,
+          "margin": 5.68,
+          "margin_generic_bad_only": 7.5
+        },
+        {
+          "t": 9.0,
+          "margin": 5.24,
+          "margin_generic_bad_only": 7.61
+        },
+        {
+          "t": 10.0,
+          "margin": 5.18,
+          "margin_generic_bad_only": 6.35
+        },
+        {
+          "t": 11.0,
+          "margin": 5.3,
+          "margin_generic_bad_only": 7.22
+        },
+        {
+          "t": 12.0,
+          "margin": 4.51,
+          "margin_generic_bad_only": 5.96
+        },
+        {
+          "t": 13.0,
+          "margin": 4.4,
+          "margin_generic_bad_only": 6.66
+        },
+        {
+          "t": 14.0,
+          "margin": 4.2,
+          "margin_generic_bad_only": 7.04
+        },
+        {
+          "t": 15.0,
+          "margin": 3.89,
+          "margin_generic_bad_only": 7.61
+        },
+        {
+          "t": 16.0,
+          "margin": 3.77,
+          "margin_generic_bad_only": 7.14
+        },
+        {
+          "t": 17.0,
+          "margin": 4.99,
+          "margin_generic_bad_only": 7.84
+        },
+        {
+          "t": 18.0,
+          "margin": 4.69,
+          "margin_generic_bad_only": 6.97
+        },
+        {
+          "t": 19.0,
+          "margin": 4.28,
+          "margin_generic_bad_only": 7.37
+        },
+        {
+          "t": 20.0,
+          "margin": 4.68,
+          "margin_generic_bad_only": 6.44
+        },
+        {
+          "t": 21.0,
+          "margin": 5.58,
+          "margin_generic_bad_only": 8.2
+        },
+        {
+          "t": 22.0,
+          "margin": 5.27,
+          "margin_generic_bad_only": 7.8
+        }
+      ],
+      "picks": [
+        {
+          "start_s": 17.5,
+          "end_s": 22.92,
+          "center_s": 21.0,
+          "semantic_margin_raw": 4.901069,
+          "final_score": 0.85597
+        },
+        {
+          "start_s": 14.0,
+          "end_s": 19.5,
+          "center_s": 17.0,
+          "semantic_margin_raw": 4.304476,
+          "final_score": 0.807094
+        },
+        {
+          "start_s": 12.0,
+          "end_s": 17.5,
+          "center_s": 15.0,
+          "semantic_margin_raw": 4.293784,
+          "final_score": 0.79811
+        },
+        {
+          "start_s": 8.0,
+          "end_s": 13.5,
+          "center_s": 11.0,
+          "semantic_margin_raw": 5.050691,
+          "final_score": 0.561545
+        },
+        {
+          "start_s": 10.0,
+          "end_s": 15.5,
+          "center_s": 13.0,
+          "semantic_margin_raw": 4.579917,
+          "final_score": 0.552467
+        },
+        {
+          "start_s": 5.0,
+          "end_s": 10.5,
+          "center_s": 8.0,
+          "semantic_margin_raw": 3.369838,
+          "final_score": 0.485879
+        },
+        {
+          "start_s": 3.0,
+          "end_s": 8.5,
+          "center_s": 6.0,
+          "semantic_margin_raw": 0.590414,
+          "final_score": 0.303464
+        },
+        {
+          "start_s": 0.0,
+          "end_s": 5.5,
+          "center_s": 0.0,
+          "semantic_margin_raw": -2.319019,
+          "final_score": 0.0
+        }
+      ],
+      "frames_matching": 18,
+      "frames_matching_generic_bad_only": 19,
+      "ground": [
+        [
+          0,
+          7.5
+        ]
+      ],
+      "ground_frames_matching": 3,
+      "ground_frames_matching_generic_bad_only": 4
+    },
+    {
+      "file": "04_Drone_footage_of_the_Space_Telescope_Science_Insti.webm",
+      "title": "File:Drone footage of the Space Telescope Science Institute Facility (SVS14218).webm",
+      "duration_s": 109.31,
+      "frames": [
+        {
+          "t": 0.0,
+          "margin": 3.79,
+          "margin_generic_bad_only": 4.85
+        },
+        {
+          "t": 2.28,
+          "margin": 4.61,
+          "margin_generic_bad_only": 6.62
+        },
+        {
+          "t": 4.55,
+          "margin": 2.99,
+          "margin_generic_bad_only": 5.31
+        },
+        {
+          "t": 6.83,
+          "margin": 3.65,
+          "margin_generic_bad_only": 5.91
+        },
+        {
+          "t": 9.11,
+          "margin": 2.97,
+          "margin_generic_bad_only": 4.71
+        },
+        {
+          "t": 11.39,
+          "margin": 3.08,
+          "margin_generic_bad_only": 4.56
+        },
+        {
+          "t": 13.66,
+          "margin": 2.41,
+          "margin_generic_bad_only": 2.75
+        },
+        {
+          "t": 15.94,
+          "margin": 2.54,
+          "margin_generic_bad_only": 3.85
+        },
+        {
+          "t": 18.22,
+          "margin": 2.62,
+          "margin_generic_bad_only": 3.29
+        },
+        {
+          "t": 20.5,
+          "margin": 2.53,
+          "margin_generic_bad_only": 3.6
+        },
+        {
+          "t": 22.77,
+          "margin": -0.22,
+          "margin_generic_bad_only": -0.22
+        },
+        {
+          "t": 25.05,
+          "margin": 1.48,
+          "margin_generic_bad_only": 1.77
+        },
+        {
+          "t": 27.33,
+          "margin": 0.71,
+          "margin_generic_bad_only": 1.59
+        },
+        {
+          "t": 29.6,
+          "margin": -0.82,
+          "margin_generic_bad_only": 1.69
+        },
+        {
+          "t": 31.88,
+          "margin": -0.41,
+          "margin_generic_bad_only": 2.29
+        },
+        {
+          "t": 34.16,
+          "margin": 0.3,
+          "margin_generic_bad_only": 1.11
+        },
+        {
+          "t": 36.44,
+          "margin": -0.97,
+          "margin_generic_bad_only": 0.92
+        },
+        {
+          "t": 38.71,
+          "margin": -2.5,
+          "margin_generic_bad_only": -0.75
+        },
+        {
+          "t": 40.99,
+          "margin": -2.91,
+          "margin_generic_bad_only": -1.2
+        },
+        {
+          "t": 43.27,
+          "margin": -3.21,
+          "margin_generic_bad_only": -3.21
+        },
+        {
+          "t": 45.55,
+          "margin": -1.41,
+          "margin_generic_bad_only": -1.09
+        },
+        {
+          "t": 47.82,
+          "margin": -2.19,
+          "margin_generic_bad_only": -0.42
+        },
+        {
+          "t": 50.1,
+          "margin": -2.14,
+          "margin_generic_bad_only": -1.62
+        },
+        {
+          "t": 52.38,
+          "margin": -1.9,
+          "margin_generic_bad_only": -0.11
+        },
+        {
+          "t": 54.66,
+          "margin": -1.59,
+          "margin_generic_bad_only": -0.71
+        },
+        {
+          "t": 56.93,
+          "margin": -2.31,
+          "margin_generic_bad_only": -2.18
+        },
+        {
+          "t": 59.21,
+          "margin": -2.57,
+          "margin_generic_bad_only": -1.93
+        },
+        {
+          "t": 61.49,
+          "margin": -2.04,
+          "margin_generic_bad_only": -1.45
+        },
+        {
+          "t": 63.76,
+          "margin": -1.67,
+          "margin_generic_bad_only": 0.94
+        },
+        {
+          "t": 66.04,
+          "margin": -2.89,
+          "margin_generic_bad_only": -0.38
+        },
+        {
+          "t": 68.32,
+          "margin": -1.45,
+          "margin_generic_bad_only": -1.32
+        },
+        {
+          "t": 70.6,
+          "margin": -2.0,
+          "margin_generic_bad_only": 0.17
+        },
+        {
+          "t": 72.87,
+          "margin": -2.72,
+          "margin_generic_bad_only": -1.97
+        },
+        {
+          "t": 75.15,
+          "margin": -1.77,
+          "margin_generic_bad_only": -0.62
+        },
+        {
+          "t": 77.43,
+          "margin": 2.38,
+          "margin_generic_bad_only": 2.46
+        },
+        {
+          "t": 79.71,
+          "margin": 2.25,
+          "margin_generic_bad_only": 2.55
+        },
+        {
+          "t": 81.98,
+          "margin": 1.61,
+          "margin_generic_bad_only": 2.23
+        },
+        {
+          "t": 84.26,
+          "margin": 1.52,
+          "margin_generic_bad_only": 2.57
+        },
+        {
+          "t": 86.54,
+          "margin": 1.59,
+          "margin_generic_bad_only": 2.19
+        },
+        {
+          "t": 88.81,
+          "margin": 0.95,
+          "margin_generic_bad_only": 0.95
+        },
+        {
+          "t": 91.09,
+          "margin": 1.41,
+          "margin_generic_bad_only": 1.62
+        },
+        {
+          "t": 93.37,
+          "margin": -0.25,
+          "margin_generic_bad_only": -0.21
+        },
+        {
+          "t": 95.65,
+          "margin": 3.05,
+          "margin_generic_bad_only": 5.19
+        },
+        {
+          "t": 97.92,
+          "margin": 3.63,
+          "margin_generic_bad_only": 5.47
+        },
+        {
+          "t": 100.2,
+          "margin": 3.37,
+          "margin_generic_bad_only": 4.6
+        },
+        {
+          "t": 102.48,
+          "margin": 3.78,
+          "margin_generic_bad_only": 4.36
+        },
+        {
+          "t": 104.76,
+          "margin": 4.28,
+          "margin_generic_bad_only": 4.39
+        },
+        {
+          "t": 107.03,
+          "margin": 4.04,
+          "margin_generic_bad_only": 4.22
+        }
+      ],
+      "picks": [
+        {
+          "start_s": 104.0,
+          "end_s": 109.31,
+          "center_s": 107.03270833333333,
+          "semantic_margin_raw": 4.160884,
+          "final_score": 0.864703
+        },
+        {
+          "start_s": 102.0,
+          "end_s": 107.5,
+          "center_s": 104.75541666666666,
+          "semantic_margin_raw": 4.033143,
+          "final_score": 0.861131
+        },
+        {
+          "start_s": 99.5,
+          "end_s": 105.0,
+          "center_s": 102.478125,
+          "semantic_margin_raw": 3.809025,
+          "final_score": 0.688213
+        },
+        {
+          "start_s": 97.5,
+          "end_s": 103.0,
+          "center_s": 100.20083333333334,
+          "semantic_margin_raw": 3.593763,
+          "final_score": 0.358548
+        },
+        {
+          "start_s": 0.0,
+          "end_s": 5.5,
+          "center_s": 2.2772916666666667,
+          "semantic_margin_raw": 3.793492,
+          "final_score": 0.341802
+        },
+        {
+          "start_s": 95.0,
+          "end_s": 100.5,
+          "center_s": 97.92354166666667,
+          "semantic_margin_raw": 3.351337,
+          "final_score": 0.331534
+        },
+        {
+          "start_s": 4.0,
+          "end_s": 9.5,
+          "center_s": 6.831875,
+          "semantic_margin_raw": 3.200369,
+          "final_score": 0.076565
+        },
+        {
+          "start_s": 8.5,
+          "end_s": 14.0,
+          "center_s": 11.386458333333334,
+          "semantic_margin_raw": 2.81744,
+          "final_score": 0.003095
+        }
+      ],
+      "frames_matching": 26,
+      "frames_matching_generic_bad_only": 31,
+      "ground": [
+        [
+          29,
+          76
+        ]
+      ],
+      "ground_frames_matching": 1,
+      "ground_frames_matching_generic_bad_only": 6
+    },
+    {
+      "file": "05_Bishops_Castle_-_drone_footage_2019.webm",
+      "title": "File:Bishops Castle - drone footage 2019.webm",
+      "duration_s": 169.0,
+      "frames": [
+        {
+          "t": 0.0,
+          "margin": 2.91,
+          "margin_generic_bad_only": 4.28
+        },
+        {
+          "t": 3.52,
+          "margin": 2.13,
+          "margin_generic_bad_only": 3.93
+        },
+        {
+          "t": 7.04,
+          "margin": 2.15,
+          "margin_generic_bad_only": 5.13
+        },
+        {
+          "t": 10.56,
+          "margin": -0.75,
+          "margin_generic_bad_only": 1.49
+        },
+        {
+          "t": 14.08,
+          "margin": 3.2,
+          "margin_generic_bad_only": 5.27
+        },
+        {
+          "t": 17.6,
+          "margin": 2.22,
+          "margin_generic_bad_only": 5.1
+        },
+        {
+          "t": 21.12,
+          "margin": -0.6,
+          "margin_generic_bad_only": 2.44
+        },
+        {
+          "t": 24.65,
+          "margin": 3.41,
+          "margin_generic_bad_only": 5.74
+        },
+        {
+          "t": 28.17,
+          "margin": 0.57,
+          "margin_generic_bad_only": 3.71
+        },
+        {
+          "t": 31.69,
+          "margin": 0.08,
+          "margin_generic_bad_only": 2.0
+        },
+        {
+          "t": 35.21,
+          "margin": -5.34,
+          "margin_generic_bad_only": -4.14
+        },
+        {
+          "t": 38.73,
+          "margin": -0.63,
+          "margin_generic_bad_only": 0.83
+        },
+        {
+          "t": 42.25,
+          "margin": 1.2,
+          "margin_generic_bad_only": 4.52
+        },
+        {
+          "t": 45.77,
+          "margin": 1.45,
+          "margin_generic_bad_only": 2.42
+        },
+        {
+          "t": 49.29,
+          "margin": -1.06,
+          "margin_generic_bad_only": 0.32
+        },
+        {
+          "t": 52.81,
+          "margin": 3.94,
+          "margin_generic_bad_only": 6.65
+        },
+        {
+          "t": 56.33,
+          "margin": -0.71,
+          "margin_generic_bad_only": 1.03
+        },
+        {
+          "t": 59.85,
+          "margin": 1.44,
+          "margin_generic_bad_only": 2.91
+        },
+        {
+          "t": 63.38,
+          "margin": 1.67,
+          "margin_generic_bad_only": 3.22
+        },
+        {
+          "t": 66.9,
+          "margin": 0.26,
+          "margin_generic_bad_only": 1.36
+        },
+        {
+          "t": 70.42,
+          "margin": 0.2,
+          "margin_generic_bad_only": 3.35
+        },
+        {
+          "t": 73.94,
+          "margin": 0.06,
+          "margin_generic_bad_only": 2.63
+        },
+        {
+          "t": 77.46,
+          "margin": -2.05,
+          "margin_generic_bad_only": -0.43
+        },
+        {
+          "t": 80.98,
+          "margin": 1.13,
+          "margin_generic_bad_only": 3.96
+        },
+        {
+          "t": 84.5,
+          "margin": -3.33,
+          "margin_generic_bad_only": -1.03
+        },
+        {
+          "t": 88.02,
+          "margin": 1.37,
+          "margin_generic_bad_only": 3.02
+        },
+        {
+          "t": 91.54,
+          "margin": -3.88,
+          "margin_generic_bad_only": 0.01
+        },
+        {
+          "t": 95.06,
+          "margin": -5.85,
+          "margin_generic_bad_only": -4.67
+        },
+        {
+          "t": 98.58,
+          "margin": 3.15,
+          "margin_generic_bad_only": 3.59
+        },
+        {
+          "t": 102.1,
+          "margin": -5.01,
+          "margin_generic_bad_only": -0.8
+        },
+        {
+          "t": 105.62,
+          "margin": -0.32,
+          "margin_generic_bad_only": 2.32
+        },
+        {
+          "t": 109.15,
+          "margin": -0.77,
+          "margin_generic_bad_only": 2.04
+        },
+        {
+          "t": 112.67,
+          "margin": -1.51,
+          "margin_generic_bad_only": 0.72
+        },
+        {
+          "t": 116.19,
+          "margin": 1.22,
+          "margin_generic_bad_only": 3.92
+        },
+        {
+          "t": 119.71,
+          "margin": 3.28,
+          "margin_generic_bad_only": 4.7
+        },
+        {
+          "t": 123.23,
+          "margin": -0.61,
+          "margin_generic_bad_only": 1.45
+        },
+        {
+          "t": 126.75,
+          "margin": 2.25,
+          "margin_generic_bad_only": 2.65
+        },
+        {
+          "t": 130.27,
+          "margin": 2.07,
+          "margin_generic_bad_only": 4.75
+        },
+        {
+          "t": 133.79,
+          "margin": 2.85,
+          "margin_generic_bad_only": 5.64
+        },
+        {
+          "t": 137.31,
+          "margin": 1.17,
+          "margin_generic_bad_only": 2.35
+        },
+        {
+          "t": 140.83,
+          "margin": 1.36,
+          "margin_generic_bad_only": 1.84
+        },
+        {
+          "t": 144.35,
+          "margin": 1.87,
+          "margin_generic_bad_only": 2.56
+        },
+        {
+          "t": 147.88,
+          "margin": 0.58,
+          "margin_generic_bad_only": 2.59
+        },
+        {
+          "t": 151.4,
+          "margin": 0.0,
+          "margin_generic_bad_only": 1.16
+        },
+        {
+          "t": 154.92,
+          "margin": 1.98,
+          "margin_generic_bad_only": 4.58
+        },
+        {
+          "t": 158.44,
+          "margin": 2.77,
+          "margin_generic_bad_only": 4.48
+        },
+        {
+          "t": 161.96,
+          "margin": -0.08,
+          "margin_generic_bad_only": 3.42
+        },
+        {
+          "t": 165.48,
+          "margin": 1.88,
+          "margin_generic_bad_only": 4.73
+        }
+      ],
+      "picks": [
+        {
+          "start_s": 50.0,
+          "end_s": 55.5,
+          "center_s": 52.8125,
+          "semantic_margin_raw": 3.944603,
+          "final_score": 0.747113
+        },
+        {
+          "start_s": 22.0,
+          "end_s": 27.5,
+          "center_s": 24.645833333333336,
+          "semantic_margin_raw": 3.414829,
+          "final_score": 0.659715
+        },
+        {
+          "start_s": 11.5,
+          "end_s": 17.0,
+          "center_s": 14.083333333333334,
+          "semantic_margin_raw": 3.200249,
+          "final_score": 0.65734
+        },
+        {
+          "start_s": 117.0,
+          "end_s": 122.5,
+          "center_s": 119.70833333333334,
+          "semantic_margin_raw": 3.275047,
+          "final_score": 0.402812
+        },
+        {
+          "start_s": 131.0,
+          "end_s": 136.5,
+          "center_s": 133.79166666666669,
+          "semantic_margin_raw": 2.854595,
+          "final_score": 0.29672
+        },
+        {
+          "start_s": 96.0,
+          "end_s": 101.5,
+          "center_s": 98.58333333333334,
+          "semantic_margin_raw": 3.154671,
+          "final_score": 0.277271
+        },
+        {
+          "start_s": 155.5,
+          "end_s": 161.0,
+          "center_s": 158.4375,
+          "semantic_margin_raw": 2.774563,
+          "final_score": 0.176151
+        },
+        {
+          "start_s": 0.0,
+          "end_s": 5.5,
+          "center_s": 0.0,
+          "semantic_margin_raw": 2.524028,
+          "final_score": 0.0
+        }
+      ],
+      "frames_matching": 32,
+      "frames_matching_generic_bad_only": 43,
+      "ground": [
+        [
+          90,
+          96.5
+        ]
+      ],
+      "ground_frames_matching": 0,
+      "ground_frames_matching_generic_bad_only": 1
+    },
+    {
+      "file": "06_Kenilworth_Castle_drone_Footage.webm",
+      "title": "File:Kenilworth Castle drone Footage .webm",
+      "duration_s": 65.02,
+      "frames": [
+        {
+          "t": 0.0,
+          "margin": 3.79,
+          "margin_generic_bad_only": 3.79
+        },
+        {
+          "t": 1.35,
+          "margin": 4.1,
+          "margin_generic_bad_only": 4.1
+        },
+        {
+          "t": 2.71,
+          "margin": 3.45,
+          "margin_generic_bad_only": 3.45
+        },
+        {
+          "t": 4.06,
+          "margin": 3.99,
+          "margin_generic_bad_only": 3.99
+        },
+        {
+          "t": 5.42,
+          "margin": 3.9,
+          "margin_generic_bad_only": 3.9
+        },
+        {
+          "t": 6.77,
+          "margin": 3.61,
+          "margin_generic_bad_only": 3.61
+        },
+        {
+          "t": 8.13,
+          "margin": 4.18,
+          "margin_generic_bad_only": 4.22
+        },
+        {
+          "t": 9.48,
+          "margin": 3.35,
+          "margin_generic_bad_only": 3.35
+        },
+        {
+          "t": 10.84,
+          "margin": 3.35,
+          "margin_generic_bad_only": 3.35
+        },
+        {
+          "t": 12.19,
+          "margin": 2.29,
+          "margin_generic_bad_only": 2.29
+        },
+        {
+          "t": 13.55,
+          "margin": 3.4,
+          "margin_generic_bad_only": 3.4
+        },
+        {
+          "t": 14.9,
+          "margin": 4.22,
+          "margin_generic_bad_only": 4.22
+        },
+        {
+          "t": 16.25,
+          "margin": 5.22,
+          "margin_generic_bad_only": 5.22
+        },
+        {
+          "t": 17.61,
+          "margin": 4.69,
+          "margin_generic_bad_only": 4.69
+        },
+        {
+          "t": 18.96,
+          "margin": 4.67,
+          "margin_generic_bad_only": 4.94
+        },
+        {
+          "t": 20.32,
+          "margin": 4.37,
+          "margin_generic_bad_only": 4.48
+        },
+        {
+          "t": 21.67,
+          "margin": 3.99,
+          "margin_generic_bad_only": 3.99
+        },
+        {
+          "t": 23.03,
+          "margin": 3.58,
+          "margin_generic_bad_only": 3.58
+        },
+        {
+          "t": 24.38,
+          "margin": 3.17,
+          "margin_generic_bad_only": 3.17
+        },
+        {
+          "t": 25.74,
+          "margin": 3.36,
+          "margin_generic_bad_only": 3.36
+        },
+        {
+          "t": 27.09,
+          "margin": 3.03,
+          "margin_generic_bad_only": 3.03
+        },
+        {
+          "t": 28.45,
+          "margin": 4.68,
+          "margin_generic_bad_only": 4.68
+        },
+        {
+          "t": 29.8,
+          "margin": 3.71,
+          "margin_generic_bad_only": 3.71
+        },
+        {
+          "t": 31.16,
+          "margin": 3.24,
+          "margin_generic_bad_only": 3.24
+        },
+        {
+          "t": 32.51,
+          "margin": 3.65,
+          "margin_generic_bad_only": 3.65
+        },
+        {
+          "t": 33.86,
+          "margin": 4.0,
+          "margin_generic_bad_only": 4.14
+        },
+        {
+          "t": 35.22,
+          "margin": 3.01,
+          "margin_generic_bad_only": 3.01
+        },
+        {
+          "t": 36.57,
+          "margin": 2.82,
+          "margin_generic_bad_only": 2.82
+        },
+        {
+          "t": 37.93,
+          "margin": 4.54,
+          "margin_generic_bad_only": 4.7
+        },
+        {
+          "t": 39.28,
+          "margin": 4.34,
+          "margin_generic_bad_only": 4.45
+        },
+        {
+          "t": 40.64,
+          "margin": 3.88,
+          "margin_generic_bad_only": 3.88
+        },
+        {
+          "t": 41.99,
+          "margin": 4.09,
+          "margin_generic_bad_only": 4.09
+        },
+        {
+          "t": 43.35,
+          "margin": 4.12,
+          "margin_generic_bad_only": 4.12
+        },
+        {
+          "t": 44.7,
+          "margin": 4.31,
+          "margin_generic_bad_only": 4.34
+        },
+        {
+          "t": 46.06,
+          "margin": 3.76,
+          "margin_generic_bad_only": 3.76
+        },
+        {
+          "t": 47.41,
+          "margin": 4.83,
+          "margin_generic_bad_only": 4.83
+        },
+        {
+          "t": 48.77,
+          "margin": 4.15,
+          "margin_generic_bad_only": 4.15
+        },
+        {
+          "t": 50.12,
+          "margin": 4.18,
+          "margin_generic_bad_only": 4.18
+        },
+        {
+          "t": 51.47,
+          "margin": 4.64,
+          "margin_generic_bad_only": 4.64
+        },
+        {
+          "t": 52.83,
+          "margin": 3.48,
+          "margin_generic_bad_only": 3.48
+        },
+        {
+          "t": 54.18,
+          "margin": 2.3,
+          "margin_generic_bad_only": 2.3
+        },
+        {
+          "t": 55.54,
+          "margin": 4.35,
+          "margin_generic_bad_only": 5.35
+        },
+        {
+          "t": 56.89,
+          "margin": 3.88,
+          "margin_generic_bad_only": 4.24
+        },
+        {
+          "t": 58.25,
+          "margin": 5.05,
+          "margin_generic_bad_only": 5.38
+        },
+        {
+          "t": 59.6,
+          "margin": 4.73,
+          "margin_generic_bad_only": 5.66
+        },
+        {
+          "t": 60.96,
+          "margin": 4.52,
+          "margin_generic_bad_only": 4.61
+        },
+        {
+          "t": 62.31,
+          "margin": 5.63,
+          "margin_generic_bad_only": 5.88
+        },
+        {
+          "t": 63.67,
+          "margin": 5.07,
+          "margin_generic_bad_only": 5.51
+        }
+      ],
+      "picks": [
+        {
+          "start_s": 59.5,
+          "end_s": 65.0,
+          "center_s": 62.31083333333333,
+          "semantic_margin_raw": 4.987722,
+          "final_score": 0.878987
+        },
+        {
+          "start_s": 16.0,
+          "end_s": 21.5,
+          "center_s": 18.964166666666664,
+          "semantic_margin_raw": 4.73604,
+          "final_score": 0.760661
+        },
+        {
+          "start_s": 55.5,
+          "end_s": 61.0,
+          "center_s": 58.24708333333333,
+          "semantic_margin_raw": 4.507426,
+          "final_score": 0.743988
+        },
+        {
+          "start_s": 13.5,
+          "end_s": 19.0,
+          "center_s": 16.255,
+          "semantic_margin_raw": 4.438161,
+          "final_score": 0.502737
+        },
+        {
+          "start_s": 44.5,
+          "end_s": 50.0,
+          "center_s": 47.41041666666666,
+          "semantic_margin_raw": 4.264766,
+          "final_score": 0.244189
+        },
+        {
+          "start_s": 25.5,
+          "end_s": 31.0,
+          "center_s": 28.44625,
+          "semantic_margin_raw": 3.693581,
+          "final_score": 0.222119
+        },
+        {
+          "start_s": 48.5,
+          "end_s": 54.0,
+          "center_s": 51.47416666666666,
+          "semantic_margin_raw": 4.112299,
+          "final_score": 0.200819
+        },
+        {
+          "start_s": 35.0,
+          "end_s": 40.5,
+          "center_s": 37.92833333333333,
+          "semantic_margin_raw": 3.677621,
+          "final_score": 0.072624
+        }
+      ],
+      "frames_matching": 48,
+      "frames_matching_generic_bad_only": 48,
+      "ground": null
+    },
+    {
+      "file": "07_Solis_Viaduct_Schinschlucht_and_Solis_dam_aerial_v.webm",
+      "title": "File:Solis Viaduct, Schinschlucht and Solis dam, aerial video.webm",
+      "duration_s": 182.57,
+      "frames": [
+        {
+          "t": 0.0,
+          "margin": -0.35,
+          "margin_generic_bad_only": -0.35
+        },
+        {
+          "t": 3.8,
+          "margin": -2.32,
+          "margin_generic_bad_only": -2.32
+        },
+        {
+          "t": 7.61,
+          "margin": -1.93,
+          "margin_generic_bad_only": -1.93
+        },
+        {
+          "t": 11.41,
+          "margin": -1.47,
+          "margin_generic_bad_only": -1.47
+        },
+        {
+          "t": 15.21,
+          "margin": -2.69,
+          "margin_generic_bad_only": -2.69
+        },
+        {
+          "t": 19.02,
+          "margin": -1.45,
+          "margin_generic_bad_only": -1.45
+        },
+        {
+          "t": 22.82,
+          "margin": -1.6,
+          "margin_generic_bad_only": -1.6
+        },
+        {
+          "t": 26.62,
+          "margin": -0.2,
+          "margin_generic_bad_only": -0.2
+        },
+        {
+          "t": 30.43,
+          "margin": 1.25,
+          "margin_generic_bad_only": 1.25
+        },
+        {
+          "t": 34.23,
+          "margin": 1.55,
+          "margin_generic_bad_only": 1.55
+        },
+        {
+          "t": 38.04,
+          "margin": 0.77,
+          "margin_generic_bad_only": 0.77
+        },
+        {
+          "t": 41.84,
+          "margin": 3.7,
+          "margin_generic_bad_only": 3.7
+        },
+        {
+          "t": 45.64,
+          "margin": 6.32,
+          "margin_generic_bad_only": 6.32
+        },
+        {
+          "t": 49.45,
+          "margin": 5.8,
+          "margin_generic_bad_only": 5.8
+        },
+        {
+          "t": 53.25,
+          "margin": 4.48,
+          "margin_generic_bad_only": 4.48
+        },
+        {
+          "t": 57.05,
+          "margin": 4.76,
+          "margin_generic_bad_only": 4.76
+        },
+        {
+          "t": 60.86,
+          "margin": 3.07,
+          "margin_generic_bad_only": 3.07
+        },
+        {
+          "t": 64.66,
+          "margin": 1.42,
+          "margin_generic_bad_only": 1.42
+        },
+        {
+          "t": 68.46,
+          "margin": -4.38,
+          "margin_generic_bad_only": -4.38
+        },
+        {
+          "t": 72.27,
+          "margin": -1.54,
+          "margin_generic_bad_only": -1.54
+        },
+        {
+          "t": 76.07,
+          "margin": 1.09,
+          "margin_generic_bad_only": 1.09
+        },
+        {
+          "t": 79.87,
+          "margin": -2.57,
+          "margin_generic_bad_only": -2.57
+        },
+        {
+          "t": 83.68,
+          "margin": -4.07,
+          "margin_generic_bad_only": -4.07
+        },
+        {
+          "t": 87.48,
+          "margin": -2.52,
+          "margin_generic_bad_only": -2.52
+        },
+        {
+          "t": 91.28,
+          "margin": -1.56,
+          "margin_generic_bad_only": -1.56
+        },
+        {
+          "t": 95.09,
+          "margin": -2.18,
+          "margin_generic_bad_only": -2.18
+        },
+        {
+          "t": 98.89,
+          "margin": -4.52,
+          "margin_generic_bad_only": -4.52
+        },
+        {
+          "t": 102.7,
+          "margin": -5.15,
+          "margin_generic_bad_only": -5.15
+        },
+        {
+          "t": 106.5,
+          "margin": -3.9,
+          "margin_generic_bad_only": -3.9
+        },
+        {
+          "t": 110.3,
+          "margin": -0.74,
+          "margin_generic_bad_only": -0.74
+        },
+        {
+          "t": 114.11,
+          "margin": -0.18,
+          "margin_generic_bad_only": -0.18
+        },
+        {
+          "t": 117.91,
+          "margin": 1.37,
+          "margin_generic_bad_only": 1.37
+        },
+        {
+          "t": 121.71,
+          "margin": 1.29,
+          "margin_generic_bad_only": 1.29
+        },
+        {
+          "t": 125.52,
+          "margin": -0.45,
+          "margin_generic_bad_only": -0.45
+        },
+        {
+          "t": 129.32,
+          "margin": -2.89,
+          "margin_generic_bad_only": -2.89
+        },
+        {
+          "t": 133.12,
+          "margin": -1.81,
+          "margin_generic_bad_only": -1.81
+        },
+        {
+          "t": 136.93,
+          "margin": -1.96,
+          "margin_generic_bad_only": -1.96
+        },
+        {
+          "t": 140.73,
+          "margin": 0.88,
+          "margin_generic_bad_only": 0.88
+        },
+        {
+          "t": 144.53,
+          "margin": -0.1,
+          "margin_generic_bad_only": -0.1
+        },
+        {
+          "t": 148.34,
+          "margin": 1.47,
+          "margin_generic_bad_only": 1.47
+        },
+        {
+          "t": 152.14,
+          "margin": 0.6,
+          "margin_generic_bad_only": 0.6
+        },
+        {
+          "t": 155.95,
+          "margin": -0.03,
+          "margin_generic_bad_only": -0.03
+        },
+        {
+          "t": 159.75,
+          "margin": 3.23,
+          "margin_generic_bad_only": 4.56
+        },
+        {
+          "t": 163.55,
+          "margin": 1.95,
+          "margin_generic_bad_only": 2.77
+        },
+        {
+          "t": 167.36,
+          "margin": 1.99,
+          "margin_generic_bad_only": 2.37
+        },
+        {
+          "t": 171.16,
+          "margin": 0.77,
+          "margin_generic_bad_only": 0.79
+        },
+        {
+          "t": 174.96,
+          "margin": 3.53,
+          "margin_generic_bad_only": 3.84
+        },
+        {
+          "t": 178.77,
+          "margin": 4.79,
+          "margin_generic_bad_only": 4.79
+        }
+      ],
+      "picks": [
+        {
+          "start_s": 43.0,
+          "end_s": 48.5,
+          "center_s": 45.6425,
+          "semantic_margin_raw": 6.31996,
+          "final_score": 0.732283
+        },
+        {
+          "start_s": 46.5,
+          "end_s": 52.0,
+          "center_s": 49.446041666666666,
+          "semantic_margin_raw": 5.803568,
+          "final_score": 0.629192
+        },
+        {
+          "start_s": 54.5,
+          "end_s": 60.0,
+          "center_s": 57.053124999999994,
+          "semantic_margin_raw": 4.757327,
+          "final_score": 0.624337
+        },
+        {
+          "start_s": 176.0,
+          "end_s": 181.5,
+          "center_s": 178.76645833333333,
+          "semantic_margin_raw": 4.78948,
+          "final_score": 0.331797
+        },
+        {
+          "start_s": 157.0,
+          "end_s": 162.5,
+          "center_s": 159.74875,
+          "semantic_margin_raw": 3.226471,
+          "final_score": 0.224
+        },
+        {
+          "start_s": 39.0,
+          "end_s": 44.5,
+          "center_s": 41.83895833333333,
+          "semantic_margin_raw": 3.69944,
+          "final_score": 0.212854
+        },
+        {
+          "start_s": 50.5,
+          "end_s": 56.0,
+          "center_s": 53.24958333333333,
+          "semantic_margin_raw": 4.476213,
+          "final_score": 0.198723
+        },
+        {
+          "start_s": 172.0,
+          "end_s": 177.5,
+          "center_s": 174.96291666666664,
+          "semantic_margin_raw": 3.532164,
+          "final_score": 0.037524
+        }
+      ],
+      "frames_matching": 22,
+      "frames_matching_generic_bad_only": 22,
+      "ground": null
+    },
+    {
+      "file": "08_Landwasserviadukt_aerial_video.webm",
+      "title": "File:Landwasserviadukt, aerial video.webm",
+      "duration_s": 169.77,
+      "frames": [
+        {
+          "t": 0.0,
+          "margin": 3.28,
+          "margin_generic_bad_only": 3.28
+        },
+        {
+          "t": 3.54,
+          "margin": 3.87,
+          "margin_generic_bad_only": 3.87
+        },
+        {
+          "t": 7.07,
+          "margin": 3.74,
+          "margin_generic_bad_only": 3.74
+        },
+        {
+          "t": 10.61,
+          "margin": 4.03,
+          "margin_generic_bad_only": 4.03
+        },
+        {
+          "t": 14.15,
+          "margin": 4.31,
+          "margin_generic_bad_only": 4.31
+        },
+        {
+          "t": 17.68,
+          "margin": 3.74,
+          "margin_generic_bad_only": 3.74
+        },
+        {
+          "t": 21.22,
+          "margin": 4.59,
+          "margin_generic_bad_only": 4.59
+        },
+        {
+          "t": 24.76,
+          "margin": 2.76,
+          "margin_generic_bad_only": 2.76
+        },
+        {
+          "t": 28.3,
+          "margin": 1.06,
+          "margin_generic_bad_only": 1.06
+        },
+        {
+          "t": 31.83,
+          "margin": 2.02,
+          "margin_generic_bad_only": 2.02
+        },
+        {
+          "t": 35.37,
+          "margin": -0.73,
+          "margin_generic_bad_only": -0.73
+        },
+        {
+          "t": 38.91,
+          "margin": -0.8,
+          "margin_generic_bad_only": -0.8
+        },
+        {
+          "t": 42.44,
+          "margin": 3.36,
+          "margin_generic_bad_only": 3.36
+        },
+        {
+          "t": 45.98,
+          "margin": 2.38,
+          "margin_generic_bad_only": 2.38
+        },
+        {
+          "t": 49.52,
+          "margin": 1.04,
+          "margin_generic_bad_only": 1.04
+        },
+        {
+          "t": 53.05,
+          "margin": 2.61,
+          "margin_generic_bad_only": 2.61
+        },
+        {
+          "t": 56.59,
+          "margin": 2.28,
+          "margin_generic_bad_only": 2.28
+        },
+        {
+          "t": 60.13,
+          "margin": 1.12,
+          "margin_generic_bad_only": 1.12
+        },
+        {
+          "t": 63.66,
+          "margin": 0.99,
+          "margin_generic_bad_only": 0.99
+        },
+        {
+          "t": 67.2,
+          "margin": 1.16,
+          "margin_generic_bad_only": 1.16
+        },
+        {
+          "t": 70.74,
+          "margin": 1.3,
+          "margin_generic_bad_only": 1.3
+        },
+        {
+          "t": 74.27,
+          "margin": 0.71,
+          "margin_generic_bad_only": 0.71
+        },
+        {
+          "t": 77.81,
+          "margin": 1.18,
+          "margin_generic_bad_only": 1.18
+        },
+        {
+          "t": 81.35,
+          "margin": 2.3,
+          "margin_generic_bad_only": 2.3
+        },
+        {
+          "t": 84.89,
+          "margin": 1.7,
+          "margin_generic_bad_only": 1.7
+        },
+        {
+          "t": 88.42,
+          "margin": 0.51,
+          "margin_generic_bad_only": 0.51
+        },
+        {
+          "t": 91.96,
+          "margin": 0.4,
+          "margin_generic_bad_only": 0.4
+        },
+        {
+          "t": 95.5,
+          "margin": 4.57,
+          "margin_generic_bad_only": 4.57
+        },
+        {
+          "t": 99.03,
+          "margin": -0.25,
+          "margin_generic_bad_only": -0.25
+        },
+        {
+          "t": 102.57,
+          "margin": -3.29,
+          "margin_generic_bad_only": -3.29
+        },
+        {
+          "t": 106.11,
+          "margin": -3.12,
+          "margin_generic_bad_only": -3.12
+        },
+        {
+          "t": 109.64,
+          "margin": -3.04,
+          "margin_generic_bad_only": -3.04
+        },
+        {
+          "t": 113.18,
+          "margin": 0.37,
+          "margin_generic_bad_only": 0.37
+        },
+        {
+          "t": 116.72,
+          "margin": 2.85,
+          "margin_generic_bad_only": 2.85
+        },
+        {
+          "t": 120.25,
+          "margin": 2.91,
+          "margin_generic_bad_only": 2.91
+        },
+        {
+          "t": 123.79,
+          "margin": -1.17,
+          "margin_generic_bad_only": -1.17
+        },
+        {
+          "t": 127.33,
+          "margin": -1.58,
+          "margin_generic_bad_only": -1.58
+        },
+        {
+          "t": 130.86,
+          "margin": -2.45,
+          "margin_generic_bad_only": -2.45
+        },
+        {
+          "t": 134.4,
+          "margin": -2.89,
+          "margin_generic_bad_only": -2.89
+        },
+        {
+          "t": 137.94,
+          "margin": -2.27,
+          "margin_generic_bad_only": -2.27
+        },
+        {
+          "t": 141.48,
+          "margin": -1.48,
+          "margin_generic_bad_only": -1.48
+        },
+        {
+          "t": 145.01,
+          "margin": -0.87,
+          "margin_generic_bad_only": -0.87
+        },
+        {
+          "t": 148.55,
+          "margin": 0.93,
+          "margin_generic_bad_only": 0.93
+        },
+        {
+          "t": 152.09,
+          "margin": -1.17,
+          "margin_generic_bad_only": -1.17
+        },
+        {
+          "t": 155.62,
+          "margin": -0.91,
+          "margin_generic_bad_only": -0.91
+        },
+        {
+          "t": 159.16,
+          "margin": -0.48,
+          "margin_generic_bad_only": -0.48
+        },
+        {
+          "t": 162.7,
+          "margin": -0.52,
+          "margin_generic_bad_only": -0.52
+        },
+        {
+          "t": 166.23,
+          "margin": -0.78,
+          "margin_generic_bad_only": -0.78
+        }
+      ],
+      "picks": [
+        {
+          "start_s": 18.5,
+          "end_s": 24.0,
+          "center_s": 21.22125,
+          "semantic_margin_raw": 4.585906,
+          "final_score": 0.828022
+        },
+        {
+          "start_s": 92.5,
+          "end_s": 98.0,
+          "center_s": 95.495625,
+          "semantic_margin_raw": 4.565411,
+          "final_score": 0.748134
+        },
+        {
+          "start_s": 11.5,
+          "end_s": 17.0,
+          "center_s": 14.1475,
+          "semantic_margin_raw": 4.308968,
+          "final_score": 0.555185
+        },
+        {
+          "start_s": 39.5,
+          "end_s": 45.0,
+          "center_s": 42.4425,
+          "semantic_margin_raw": 3.357246,
+          "final_score": 0.224
+        },
+        {
+          "start_s": 8.0,
+          "end_s": 13.5,
+          "center_s": 10.610625,
+          "semantic_margin_raw": 4.032389,
+          "final_score": 0.204894
+        },
+        {
+          "start_s": 1.0,
+          "end_s": 6.5,
+          "center_s": 3.536875,
+          "semantic_margin_raw": 3.870775,
+          "final_score": 0.182437
+        },
+        {
+          "start_s": 4.5,
+          "end_s": 10.0,
+          "center_s": 7.07375,
+          "semantic_margin_raw": 3.740216,
+          "final_score": 0.095482
+        },
+        {
+          "start_s": 15.0,
+          "end_s": 20.5,
+          "center_s": 17.684375000000003,
+          "semantic_margin_raw": 3.739608,
+          "final_score": 0.068711
+        }
+      ],
+      "frames_matching": 30,
+      "frames_matching_generic_bad_only": 30,
+      "ground": null
+    },
+    {
+      "file": "09_007_Volcano_eruption_of_Litli-Hrútur_in_Iceland_in.webm",
+      "title": "File:007 Volcano eruption of Litli-Hrútur in Iceland in 2023 Video by Giles Laurent.webm",
+      "duration_s": 23.84,
+      "frames": [
+        {
+          "t": 0.0,
+          "margin": 1.05,
+          "margin_generic_bad_only": 1.39
+        },
+        {
+          "t": 1.0,
+          "margin": 0.52,
+          "margin_generic_bad_only": 1.23
+        },
+        {
+          "t": 2.0,
+          "margin": 1.52,
+          "margin_generic_bad_only": 2.4
+        },
+        {
+          "t": 3.0,
+          "margin": 0.68,
+          "margin_generic_bad_only": 1.18
+        },
+        {
+          "t": 4.0,
+          "margin": 0.66,
+          "margin_generic_bad_only": 0.98
+        },
+        {
+          "t": 5.0,
+          "margin": 0.88,
+          "margin_generic_bad_only": 1.48
+        },
+        {
+          "t": 6.0,
+          "margin": 0.14,
+          "margin_generic_bad_only": 0.66
+        },
+        {
+          "t": 7.0,
+          "margin": 0.36,
+          "margin_generic_bad_only": 0.58
+        },
+        {
+          "t": 8.0,
+          "margin": 0.98,
+          "margin_generic_bad_only": 1.33
+        },
+        {
+          "t": 9.0,
+          "margin": 0.98,
+          "margin_generic_bad_only": 1.24
+        },
+        {
+          "t": 10.0,
+          "margin": 1.06,
+          "margin_generic_bad_only": 1.06
+        },
+        {
+          "t": 11.0,
+          "margin": 0.98,
+          "margin_generic_bad_only": 0.98
+        },
+        {
+          "t": 12.0,
+          "margin": 0.79,
+          "margin_generic_bad_only": 0.79
+        },
+        {
+          "t": 13.0,
+          "margin": 2.14,
+          "margin_generic_bad_only": 3.19
+        },
+        {
+          "t": 14.0,
+          "margin": 0.49,
+          "margin_generic_bad_only": 1.05
+        },
+        {
+          "t": 15.0,
+          "margin": 1.38,
+          "margin_generic_bad_only": 1.91
+        },
+        {
+          "t": 16.0,
+          "margin": 1.82,
+          "margin_generic_bad_only": 2.36
+        },
+        {
+          "t": 17.0,
+          "margin": 1.66,
+          "margin_generic_bad_only": 2.34
+        },
+        {
+          "t": 18.0,
+          "margin": 1.61,
+          "margin_generic_bad_only": 2.41
+        },
+        {
+          "t": 19.0,
+          "margin": 1.35,
+          "margin_generic_bad_only": 2.68
+        },
+        {
+          "t": 20.0,
+          "margin": 1.26,
+          "margin_generic_bad_only": 2.02
+        },
+        {
+          "t": 21.0,
+          "margin": 1.12,
+          "margin_generic_bad_only": 2.26
+        },
+        {
+          "t": 22.0,
+          "margin": 1.19,
+          "margin_generic_bad_only": 2.91
+        },
+        {
+          "t": 23.0,
+          "margin": 1.48,
+          "margin_generic_bad_only": 3.41
+        }
+      ],
+      "picks": [
+        {
+          "start_s": 18.5,
+          "end_s": 23.84,
+          "center_s": 23.0,
+          "semantic_margin_raw": 1.281115,
+          "final_score": 0.693028
+        },
+        {
+          "start_s": 15.0,
+          "end_s": 20.5,
+          "center_s": 18.0,
+          "semantic_margin_raw": 1.513499,
+          "final_score": 0.64954
+        },
+        {
+          "start_s": 13.0,
+          "end_s": 18.5,
+          "center_s": 16.0,
+          "semantic_margin_raw": 1.51719,
+          "final_score": 0.632714
+        },
+        {
+          "start_s": 10.0,
+          "end_s": 15.5,
+          "center_s": 13.0,
+          "semantic_margin_raw": 1.139986,
+          "final_score": 0.379228
+        },
+        {
+          "start_s": 0.0,
+          "end_s": 5.5,
+          "center_s": 2.0,
+          "semantic_margin_raw": 0.885092,
+          "final_score": 0.317467
+        },
+        {
+          "start_s": 2.0,
+          "end_s": 7.5,
+          "center_s": 5.0,
+          "semantic_margin_raw": 0.706079,
+          "final_score": 0.224
+        },
+        {
+          "start_s": 7.0,
+          "end_s": 12.5,
+          "center_s": 10.0,
+          "semantic_margin_raw": 0.858765,
+          "final_score": 0.196671
+        },
+        {
+          "start_s": 5.0,
+          "end_s": 10.5,
+          "center_s": 8.0,
+          "semantic_margin_raw": 0.733264,
+          "final_score": 0.022203
+        }
+      ],
+      "frames_matching": 24,
+      "frames_matching_generic_bad_only": 24,
+      "ground": null
+    },
+    {
+      "file": "10_View_from_Mt_Pemigewasset_dji_phantom_4_advanced.webm",
+      "title": "File:View from Mt. Pemigewasset dji phantom 4 advanced.webm",
+      "duration_s": 215.55,
+      "frames": [
+        {
+          "t": 0.0,
+          "margin": 4.69,
+          "margin_generic_bad_only": 4.93
+        },
+        {
+          "t": 4.49,
+          "margin": 4.66,
+          "margin_generic_bad_only": 4.97
+        },
+        {
+          "t": 8.98,
+          "margin": 3.97,
+          "margin_generic_bad_only": 3.97
+        },
+        {
+          "t": 13.47,
+          "margin": 6.39,
+          "margin_generic_bad_only": 7.03
+        },
+        {
+          "t": 17.96,
+          "margin": 6.86,
+          "margin_generic_bad_only": 7.31
+        },
+        {
+          "t": 22.45,
+          "margin": 5.74,
+          "margin_generic_bad_only": 5.74
+        },
+        {
+          "t": 26.94,
+          "margin": 0.95,
+          "margin_generic_bad_only": 0.95
+        },
+        {
+          "t": 31.43,
+          "margin": 6.63,
+          "margin_generic_bad_only": 6.77
+        },
+        {
+          "t": 35.93,
+          "margin": 6.13,
+          "margin_generic_bad_only": 6.13
+        },
+        {
+          "t": 40.42,
+          "margin": 4.41,
+          "margin_generic_bad_only": 4.41
+        },
+        {
+          "t": 44.91,
+          "margin": 3.27,
+          "margin_generic_bad_only": 3.27
+        },
+        {
+          "t": 49.4,
+          "margin": 2.94,
+          "margin_generic_bad_only": 2.94
+        },
+        {
+          "t": 53.89,
+          "margin": 6.31,
+          "margin_generic_bad_only": 6.83
+        },
+        {
+          "t": 58.38,
+          "margin": 4.61,
+          "margin_generic_bad_only": 4.61
+        },
+        {
+          "t": 62.87,
+          "margin": 4.43,
+          "margin_generic_bad_only": 4.43
+        },
+        {
+          "t": 67.36,
+          "margin": 4.94,
+          "margin_generic_bad_only": 4.94
+        },
+        {
+          "t": 71.85,
+          "margin": 5.45,
+          "margin_generic_bad_only": 5.45
+        },
+        {
+          "t": 76.34,
+          "margin": 5.5,
+          "margin_generic_bad_only": 5.5
+        },
+        {
+          "t": 80.83,
+          "margin": 5.58,
+          "margin_generic_bad_only": 5.58
+        },
+        {
+          "t": 85.32,
+          "margin": 6.12,
+          "margin_generic_bad_only": 6.12
+        },
+        {
+          "t": 89.81,
+          "margin": 5.38,
+          "margin_generic_bad_only": 5.72
+        },
+        {
+          "t": 94.3,
+          "margin": 6.29,
+          "margin_generic_bad_only": 6.29
+        },
+        {
+          "t": 98.79,
+          "margin": 4.71,
+          "margin_generic_bad_only": 4.71
+        },
+        {
+          "t": 103.28,
+          "margin": 5.22,
+          "margin_generic_bad_only": 5.78
+        },
+        {
+          "t": 107.78,
+          "margin": 4.69,
+          "margin_generic_bad_only": 4.69
+        },
+        {
+          "t": 112.27,
+          "margin": 4.54,
+          "margin_generic_bad_only": 5.31
+        },
+        {
+          "t": 116.76,
+          "margin": 5.65,
+          "margin_generic_bad_only": 5.97
+        },
+        {
+          "t": 121.25,
+          "margin": 6.6,
+          "margin_generic_bad_only": 6.81
+        },
+        {
+          "t": 125.74,
+          "margin": 5.8,
+          "margin_generic_bad_only": 5.93
+        },
+        {
+          "t": 130.23,
+          "margin": 4.4,
+          "margin_generic_bad_only": 4.49
+        },
+        {
+          "t": 134.72,
+          "margin": 6.11,
+          "margin_generic_bad_only": 6.11
+        },
+        {
+          "t": 139.21,
+          "margin": 4.68,
+          "margin_generic_bad_only": 4.68
+        },
+        {
+          "t": 143.7,
+          "margin": 5.23,
+          "margin_generic_bad_only": 5.38
+        },
+        {
+          "t": 148.19,
+          "margin": 5.61,
+          "margin_generic_bad_only": 5.78
+        },
+        {
+          "t": 152.68,
+          "margin": 5.54,
+          "margin_generic_bad_only": 6.13
+        },
+        {
+          "t": 157.17,
+          "margin": 4.16,
+          "margin_generic_bad_only": 4.16
+        },
+        {
+          "t": 161.66,
+          "margin": 5.11,
+          "margin_generic_bad_only": 5.11
+        },
+        {
+          "t": 166.15,
+          "margin": 4.66,
+          "margin_generic_bad_only": 4.66
+        },
+        {
+          "t": 170.64,
+          "margin": 4.42,
+          "margin_generic_bad_only": 4.42
+        },
+        {
+          "t": 175.13,
+          "margin": 2.65,
+          "margin_generic_bad_only": 3.15
+        },
+        {
+          "t": 179.63,
+          "margin": 4.87,
+          "margin_generic_bad_only": 5.63
+        },
+        {
+          "t": 184.12,
+          "margin": 5.02,
+          "margin_generic_bad_only": 5.27
+        },
+        {
+          "t": 188.61,
+          "margin": 1.59,
+          "margin_generic_bad_only": 1.59
+        },
+        {
+          "t": 193.1,
+          "margin": 4.06,
+          "margin_generic_bad_only": 4.06
+        },
+        {
+          "t": 197.59,
+          "margin": 2.49,
+          "margin_generic_bad_only": 2.7
+        },
+        {
+          "t": 202.08,
+          "margin": 1.54,
+          "margin_generic_bad_only": 1.54
+        },
+        {
+          "t": 206.57,
+          "margin": 2.4,
+          "margin_generic_bad_only": 2.4
+        },
+        {
+          "t": 211.06,
+          "margin": 1.47,
+          "margin_generic_bad_only": 1.98
+        }
+      ],
+      "picks": [
+        {
+          "start_s": 15.0,
+          "end_s": 20.5,
+          "center_s": 17.962500000000002,
+          "semantic_margin_raw": 6.861666,
+          "final_score": 0.700556
+        },
+        {
+          "start_s": 28.5,
+          "end_s": 34.0,
+          "center_s": 31.434375000000003,
+          "semantic_margin_raw": 6.62698,
+          "final_score": 0.644679
+        },
+        {
+          "start_s": 118.5,
+          "end_s": 124.0,
+          "center_s": 121.24687500000002,
+          "semantic_margin_raw": 6.596492,
+          "final_score": 0.582533
+        },
+        {
+          "start_s": 51.0,
+          "end_s": 56.5,
+          "center_s": 53.8875,
+          "semantic_margin_raw": 6.31185,
+          "final_score": 0.379413
+        },
+        {
+          "start_s": 10.5,
+          "end_s": 16.0,
+          "center_s": 13.471875,
+          "semantic_margin_raw": 6.393055,
+          "final_score": 0.270854
+        },
+        {
+          "start_s": 91.5,
+          "end_s": 97.0,
+          "center_s": 94.30312500000001,
+          "semantic_margin_raw": 6.289524,
+          "final_score": 0.23918
+        },
+        {
+          "start_s": 33.0,
+          "end_s": 38.5,
+          "center_s": 35.925000000000004,
+          "semantic_margin_raw": 6.126745,
+          "final_score": 0.082297
+        },
+        {
+          "start_s": 82.5,
+          "end_s": 88.0,
+          "center_s": 85.321875,
+          "semantic_margin_raw": 6.120764,
+          "final_score": 0.021311
+        }
+      ],
+      "frames_matching": 48,
+      "frames_matching_generic_bad_only": 48,
+      "ground": [
+        [
+          174,
+          216
+        ]
+      ],
+      "ground_frames_matching": 9,
+      "ground_frames_matching_generic_bad_only": 9
+    }
+  ],
+  "prepare": {
+    "seconds": 603.0,
+    "status": "done",
+    "error": null,
+    "info": {
+      "cache_status": "semantic_candidate_cache",
+      "clip_edges_measured": 79,
+      "elapsed_s": 600.672,
+      "hw_decode": null,
+      "input_count": 10,
+      "input_fingerprint": "178039f23c6004c14b3c94e0b06f6b299c44d01d563007e603fb834eb09d8ecf",
+      "moments": 79,
+      "network_request_performed": false,
+      "pieces_cut": 6,
+      "prepared": true,
+      "schema": "MEDENG_PREPARED_V1",
+      "selection_mode": "PE_CORE_L14_SEMANTIC_V1",
+      "semantic": true,
+      "semantic_model": "pe_core_l14",
+      "semantic_timing": {
+        "clips_cached": 0,
+        "clips_cut": 79,
+        "clips_s": 62.67,
+        "rank_s": 76.17,
+        "score_s": 15.27,
+        "scout_embed_s": 393.68
+      },
+      "skipped_inputs": [],
+      "source_mutated": false,
+      "stage_seconds": {
+        "analyze": 548.82,
+        "inputs": 1.21,
+        "select": 7.41,
+        "trim": 43.22
+      },
+      "theme": "aerial",
+      "would_select": 6
+    }
+  },
+  "reels": {
+    "aiplus_aerial_30s_after_prepare": {
+      "revision_id": 1,
+      "seconds": 22.1,
+      "selection_mode": "PE_CORE_L14_SEMANTIC_V1",
+      "theme": "aerial",
+      "stage_seconds": {
+        "analyze": 0.23,
+        "finish": 10.35,
+        "inputs": 0.61,
+        "render": 7.68,
+        "select": 0.0,
+        "trim": 1.81
+      },
+      "duration_s": 29.9,
+      "segments": [
+        {
+          "source_name": "02_Drone_flyover_video_of_Mount_Maya.webm",
+          "source_in_s": 147.062,
+          "source_out_s": 152.428,
+          "reel_in_s": 0.0,
+          "reel_out_s": 5.367,
+          "score": 0.904651
+        },
+        {
+          "source_name": "10_View_from_Mt_Pemigewasset_dji_phantom_4_advanced.webm",
+          "source_in_s": 15.288,
+          "source_out_s": 20.222,
+          "reel_in_s": 5.167,
+          "reel_out_s": 10.1,
+          "score": 0.824569
+        },
+        {
+          "source_name": "07_Solis_Viaduct_Schinschlucht_and_Solis_dam_aerial_v.webm",
+          "source_in_s": 43.205,
+          "source_out_s": 48.305,
+          "reel_in_s": 9.9,
+          "reel_out_s": 15.0,
+          "score": 0.850881
+        },
+        {
+          "source_name": "03_BLM_drone_training_above_Horning_Seed_Orchard_3517.webm",
+          "source_in_s": 17.687,
+          "source_out_s": 22.753,
+          "reel_in_s": 14.8,
+          "reel_out_s": 19.867,
+          "score": 0.720475
+        },
+        {
+          "source_name": "01_Take_off_from_Pannerdense_kop_0577_D.webm",
+          "source_in_s": 56.318,
+          "source_out_s": 61.152,
+          "reel_in_s": 19.733,
+          "reel_out_s": 24.567,
+          "score": 0.796014
+        },
+        {
+          "source_name": "06_Kenilworth_Castle_drone_Footage.webm",
+          "source_in_s": 59.522,
+          "source_out_s": 64.988,
+          "reel_in_s": 24.433,
+          "reel_out_s": 29.9,
+          "score": 0.746553
+        }
+      ],
+      "moments_centred_on_ground": 0
+    },
+    "ai_30s": {
+      "revision_id": 2,
+      "seconds": 237.5,
+      "selection_mode": "FAST_LOCAL_SEMANTIC_SHADOW_V1",
+      "theme": null,
+      "stage_seconds": {
+        "analyze": 203.64,
+        "finish": 10.38,
+        "inputs": 0.1,
+        "render": 8.89,
+        "select": 9.41,
+        "trim": 2.96
+      },
+      "duration_s": 29.9,
+      "segments": [
+        {
+          "source_name": "05_Bishops_Castle_-_drone_footage_2019.webm",
+          "source_in_s": 67.517,
+          "source_out_s": 72.983,
+          "reel_in_s": 0.0,
+          "reel_out_s": 5.467,
+          "score": 0.869538
+        },
+        {
+          "source_name": "10_View_from_Mt_Pemigewasset_dji_phantom_4_advanced.webm",
+          "source_in_s": 132.255,
+          "source_out_s": 137.255,
+          "reel_in_s": 5.233,
+          "reel_out_s": 10.233,
+          "score": 0.803286
+        },
+        {
+          "source_name": "02_Drone_flyover_video_of_Mount_Maya.webm",
+          "source_in_s": 147.312,
+          "source_out_s": 152.178,
+          "reel_in_s": 10.1,
+          "reel_out_s": 14.967,
+          "score": 0.823571
+        },
+        {
+          "source_name": "03_BLM_drone_training_above_Horning_Seed_Orchard_3517.webm",
+          "source_in_s": 17.67,
+          "source_out_s": 22.77,
+          "reel_in_s": 14.833,
+          "reel_out_s": 19.933,
+          "score": 0.808109
+        },
+        {
+          "source_name": "01_Take_off_from_Pannerdense_kop_0577_D.webm",
+          "source_in_s": 38.305,
+          "source_out_s": 43.205,
+          "reel_in_s": 19.7,
+          "reel_out_s": 24.6,
+          "score": 0.840173
+        },
+        {
+          "source_name": "06_Kenilworth_Castle_drone_Footage.webm",
+          "source_in_s": 8.022,
+          "source_out_s": 13.488,
+          "reel_in_s": 24.433,
+          "reel_out_s": 29.9,
+          "score": 0.832096
+        }
+      ],
+      "moments_centred_on_ground": 0
+    }
+  }
+}
