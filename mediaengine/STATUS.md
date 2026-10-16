@@ -215,7 +215,15 @@ are the AI reel's - the owner's videos have little take-off or landing in them.
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38856904315 on `6343e9a` (2026-10-16) — all green, build b119**: as b117, plus the full-quality
+Latest full run: **38877326081 on `efdc956` (2026-10-16) — all green, build b120**: as b119, plus decoding on the
+graphics card where the PC proves it (unit 119/119 on Windows: the real test on the runner's Hyper-V adapter found no
+usable method - `dxva2` "decoded" by falling back to the processor, 1.0x, not used; AI glue 20/20 with the failing
+method and with the card's code path `-hwaccel none`: every preview byte-identical), the first choice of moments on
+several cores (400 random cases + the largest 30 s search identical to the accepted function: 18.8 s -> 10.9 s on 2
+workers; the packaged-runtime E2E 76/76 with the search forced onto worker processes), prepare in advance for every
+day. 4K/long AI on this runner: first project 541 s, a second one 123 s.
+
+Previous: **38856904315 on `6343e9a` (2026-10-16) — all green, build b119**: as b117, plus the full-quality
 recut with x264 ultrafast (b118: pieces 65 s instead of 109 s on the same kind of runner), videos analysed before cut
 their clips three at once (AI glue 18/18 with the new "reports kept, clips gone" build), AI+ clips three at once, the
 timing of a preparation on its card.
@@ -362,8 +370,8 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-Owner: b117 installed and measured (see above). Newest: `MediaEngine-3.13.0-rc1-b119-Setup` (run 38856904315, link
-sent 2026-10-16 night, not urgent). Then (through the app's pages in the desktop app's browser pane,
+Owner: b117 installed and measured (see above). Newest: `MediaEngine-3.13.0-rc1-b120-Setup` (run 38877326081); after
+installing it: Check this PC -> "Test the graphics card" (a minute or two), then a reel from `D:\100MEDIA`. Then (through the app's pages in the desktop app's browser pane,
 never computer use): a reel from `D:\100MEDIA` timed against b113's 42 min (the AI reports of b113 are reused, the
 previews are cut new) and the time breakdown read from the page (`data-timing`); "Prepare in advance" and the theme
 "Aerial view (drone)" on his own drone videos.
