@@ -1,3 +1,15 @@
+## 2026-10-16, GoDog full-width live UI repair continuation
+
+**Owner-facing acceptance: NOT PASSED.** The connected browser read of *two different currently open ChatGPT tabs* returned the exact visible GoDog panel tokens `v7.0.2`, `PC`, `PC LOCAL`, `LOCAL` and GO/AUTO/NEW/STOP buttons. This supersedes previous misleading conclusions from stale 6.0.26 Remote Lab/Chrome LevelDB probe. **Do not claim the owner is on 6.0.26 or 7.0.5.**
+
+**Actual repair work:** GoDog 7.0.5 source now handles current ChatGPT `[contenteditable][aria-label="Ask ChatGPT"]`, finds nearest constrained/rounded composer surface, pins dock width explicitly, and has a fallback max width so it cannot ever stretch to whole viewport if composer geometry is missing. Preserved exact 6.0.26 UI HTML/CSS, original colors and controls. JavaScript syntax, mock DOM GO/AUTO/STOP/NEW, and bounded composer width CI PASS: https://github.com/skynder-dev/projects/actions/runs/38863656367. Offline source workflow PASS: https://github.com/skynder-dev/projects/actions/runs/38863602177.
+
+**Delivery staged:** Supabase artifact `godog-localhub-canary-001` 7.0.5 source SHA256 `768bc4c93ca74246adc3aeb37c07f8969803d86e85cb24c31584e04d395a7c0a`, Tampermonkey managed JSON `godog-tm-provision-localhub-canary-001` SHA256 `9da3d463380a73f5b2d0b018e35bd952eebaab74b9d4614383a1efb4ee480f1c`; policy apply command `2b8cf117-8188-4623-ab17-0f810e9a1675` DONE. It is NOT a Chrome runtime install proof.
+
+**Non-interference:** No user tab opened, closed, refreshed, or redirected, and no Chrome browser restart was attempted. Attempted a bounded read-only localhost `127.0.0.1:43129` health probe via registered, hidden Pythonw helper, but result was not verifiable (neither Supabase sink nor LocalHub returned a proving record). Removed the ephemeral helper from managed apps (`602c0d15-f6da-4094-9e5a-23401780c0d9` DONE), and released Remote Lab lease 240. Local update endpoint remains unverified. Do not retry these blind probes indefinitely.
+
+**Next exact action requiring user approval:** obtain authorization for ONE safe Chrome restart restoring the session, OR directly controlled Tampermonkey edit in user browser. Previous user requested not to close or interfere with active windows, so do not assume permission. Upon user approval, back up session state, verify extension's script version in the *actual browser*, then observe dock width visually and test buttons. Do not change code again until there is live browser evidence. If no permission, stop claiming it is fixed; browser-control connector in Chat is read-only.
+
 ## 2026-10-12, CURRENT REAL WINDOWS ACCEPTANCE BOUNDARY
 
 **NOT COMPLETE. Do not claim the 7.0.4 script is installed/running in user's Chrome.**
