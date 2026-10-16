@@ -97,6 +97,10 @@ measuring the clips 418 s - for the 6 moments a 30 s reel uses.
   hardly move: the accepted scorer looks at every frame at 320 px wide and the signatures at 160 px; the boundary
   check (camera drop) reads the preview like technical mode does. Moment ids are unchanged (edits stay valid).
 - The 4K candidate clips of b101-b113 (shared cache and projects) are removed at the next build: gigabytes back.
+- Owner's PC with b117 (2026-10-16): the same reel in **18 min** (b113: 42) - with b113's AI reports kept, all of it
+  was cutting the 90 previews, one video after another, the PC 42 % busy. Since b119 videos analysed before go three
+  at once too and count as new work until their clips are made; AI+ cuts a video's clips three at once. "Prepare in
+  advance" of the same folder from scratch: 18 min; the reel after it: **54 s**, the same 6 moments.
 
 ## The AI's work kept for every reel, time left, a notification (2026-10-15)
 
