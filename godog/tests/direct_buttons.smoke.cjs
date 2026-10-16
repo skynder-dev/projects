@@ -6,7 +6,7 @@ const src=fs.readFileSync(require('node:path').join(__dirname,'..','GoDog_PC_LOC
 for(const required of [
   '// @name         GoDog GDCONST-010 DEFAULT-DISABLED canary',
   '// @namespace    GoDog.constitution',
-  '// @version      7.0.4',
+  '// @version      7.0.5',
   '// @grant        none',
   '// @updateURL    http://127.0.0.1:43129/godog.meta.js',
   '// @downloadURL  http://127.0.0.1:43129/godog.user.js'
@@ -93,7 +93,7 @@ const ctx={window:win,document,location:loc,sessionStorage:storage(session),loca
   HTMLTextAreaElement:class{},HTMLInputElement:class{}};
 vm.runInNewContext(src,ctx,{timeout:3000});
 assert.equal(buttons['.cg-status'].textContent,'DISARMED','restored original initial status');
-assert.equal(buttons['.cg-version'].textContent,'GoDog 7.0.4','restored original version chip');
+assert.equal(buttons['.cg-version'].textContent,'GoDog 7.0.5','restored original version chip');
 assert.equal(buttons['.cg-project'].textContent,'GoDog','restored original project chip');
 assert.equal(buttons['.cg-auto'].textContent,'AUTO','restored original AUTO label');
 assert.equal(buttons['.cg-timer'].textContent,'','no fake LOCAL timer');
@@ -114,7 +114,9 @@ const flush=()=>new Promise(resolve=>setImmediate(resolve));
 (async()=>{
   await flush();
   assert.equal(root.style.props.left,'130px','dock aligned to composer left');
-assert.equal(root.style.props.right,'130px','dock aligned to composer right');
+assert.equal(root.style.props.width,'960px','dock width equals composer, never full viewport');
+  assert.equal(root.style.props.right,'auto','dock width explicitly constrained');
+  assert.equal(root.style.props['max-width'],'calc(100vw - 16px)','failsafe prevents viewport-wide bar');
 assert.equal(root.style.props.top,'160px','dock directly under composer');
 assert.equal(root.style.props.bottom,'auto','dock not full-width bottom bar');
   assert.deepEqual(submitted,['GO','GO'],'must not send while generating');
