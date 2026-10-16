@@ -218,7 +218,8 @@ Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, T
 Latest full run: **38891840332 on `7944b86` (2026-10-16) — all green, build b121**: as b120, plus "cut with the
 graphics card" next to the build time of a version cut with it. Drone check on the same code (run 38891868446):
 15/15; AI+ prepare of the 10 Commons drone videos 603 s (was 961-1011 s: AI+ clips three at once), the reel after it
-22 s; the AI reel 238 s (was 324-330 s).
+22 s; the AI reel 238 s (was 324-330 s). Real-footage check on the same code (run 38891901637, 22 Commons videos):
+10/10 - AI 30 s 455 s, AI+ 30 s 1284 s, AI+ theme reels (kids, sea, animals, party) 42-95 s.
 
 Previous: **38877326081 on `efdc956` (2026-10-16) — all green, build b120**: as b119, plus decoding on the
 graphics card where the PC proves it (unit 119/119 on Windows: the real test on the runner's Hyper-V adapter found no
