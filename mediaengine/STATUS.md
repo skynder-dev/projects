@@ -215,7 +215,12 @@ are the AI reel's - the owner's videos have little take-off or landing in them.
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38812143542 on `c08edcc` (2026-10-15) — all green, build b117**: as b114, plus Prepare in advance
+Latest full run: **38856904315 on `6343e9a` (2026-10-16) — all green, build b119**: as b117, plus the full-quality
+recut with x264 ultrafast (b118: pieces 65 s instead of 109 s on the same kind of runner), videos analysed before cut
+their clips three at once (AI glue 18/18 with the new "reports kept, clips gone" build), AI+ clips three at once, the
+timing of a preparation on its card.
+
+Previous: **38812143542 on `c08edcc` (2026-10-15) — all green, build b117**: as b114, plus Prepare in advance
 (E2E 7 videos 78/78 and 2 videos 83/83 with prepare then build: the build's analysis 0.02-0.04 s; AI glue 17/17: the
 build after preparing analyses, cuts and measures nothing, the same reel), the AI+ theme Aerial view (drone), the
 choice of moments and probe results shared across projects, where the accepted AI analysis spends its time. 4K/long
@@ -357,8 +362,8 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-Owner: install `MediaEngine-3.13.0-rc1-b117-Setup` (run 38812143542, sent 2026-10-15 evening; installs next to the
-other builds, data stays in `MediaEngine Data`). Then (through the app's pages in the desktop app's browser pane,
+Owner: b117 installed and measured (see above). Newest: `MediaEngine-3.13.0-rc1-b119-Setup` (run 38856904315, link
+sent 2026-10-16 night, not urgent). Then (through the app's pages in the desktop app's browser pane,
 never computer use): a reel from `D:\100MEDIA` timed against b113's 42 min (the AI reports of b113 are reused, the
 previews are cut new) and the time breakdown read from the page (`data-timing`); "Prepare in advance" and the theme
 "Aerial view (drone)" on his own drone videos.
