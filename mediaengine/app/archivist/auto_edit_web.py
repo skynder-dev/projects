@@ -161,14 +161,17 @@ def _every_day_form(folder: Path, days: list, e) -> str:
     mode = _mode_choice(ms["ready"], ae.aiplus_status()["ready"], e, current=last.get("mode"), heading=False)
     skipped = len(days) - len(usable)
     return (f"<form method='post' action='/auto/create-days' class='card' style='margin-top:14px' "
-            f"onsubmit=\"this.querySelector('button').disabled=true\"><h2 style='margin-top:0'>A reel for every day</h2>"
+            f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(b=>b.disabled=true),0)\"><h2 style='margin-top:0'>A reel for every day</h2>"
             f"<div class='muted'><span>One reel for each of these days, made one after another:</span> {len(usable)}"
             + (f". <span>Days with more than {ae.MAX_INPUTS} videos are left out (tick their videos below):</span> {skipped}" if skipped else "")
             + "</div>"
             f"<input type='hidden' name='folder' value='{e(str(folder))}'><input type='hidden' name='sound' value='{e(last.get('sound', 'auto'))}'>"
             f"<input type='hidden' name='framing' value='{e(last.get('framing', 'fill'))}'>"
             f"<div class='ae-choices'>{lengths}</div><div class='ae-choices'>{formats}</div>{mode}"
-            f"<button class='ae-big'>Make {len(usable)} reels</button></form>")
+            f"<div class='row' style='flex-wrap:wrap;gap:10px;align-items:center'><button class='ae-big'>Make {len(usable)} reels</button>"
+            f"<button class='btn2 ae-big' name='prepare' value='1'>Prepare in advance</button></div>"
+            f"<div class='muted' style='margin-top:6px'>Prepare in advance: the videos of every day are only analysed now (for example "
+            f"overnight); each day's reel is then made in minutes.</div></form>")
 
 
 def _big_folder_page(folder: Path, days: list, e, human_bytes) -> tuple[str, str]:
@@ -341,7 +344,7 @@ const pf=document.getElementById('projFind');if(pf)pf.oninput=()=>{const q=pf.va
         def looks_like_path(t):   # paths, versions, system names: shown exactly as they are
             return ":\\" in t or t.startswith("/") or "version" in t or "|" in t or t.startswith(("Windows-", "Linux", "Darwin", "3.1"))
         table = "".join(f"<tr><td>{'✅' if r['ok'] else '⚠️'}</td><td><b>{e(r['name'])}</b></td>"
-                        f"<td class='{'ae-path' if looks_like_path(r['detail']) else 'muted'}'>{e(r['detail'])}</td></tr>" for r in rows)
+                        f"<td class='{'ae-path' if looks_like_path(r['detail']) or r['name'] == 'Graphics card' else 'muted'}'>{e(r['detail'])}</td></tr>" for r in rows)
         test_html = ""
         ai_ready = ae.model_status()["ready"]
         ap = ae.aiplus_status()
@@ -392,6 +395,7 @@ const pf=document.getElementById('projFind');if(pf)pf.oninput=()=>{const q=pf.va
             shared_html = (f"<div class='card ae-done' style='margin-top:14px'><span>Freed:</span> "
                            f"{human_bytes(int(request.args['freed']) if request.args['freed'].isdigit() else 0)}</div>") + shared_html
         builds_html = shared_html + builds_html
+        hw_html = _hwdecode_html(e)
         body = (f"<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Check this PC</h1>"
                 f"<div class='lead'>What MediaEngine needs, and a 5-second test reel made from generated clips (your videos are not used).</div></div>"
                 f"<div class='card'><table class='ae-files'>{table}</table></div>"
@@ -399,12 +403,45 @@ const pf=document.getElementById('projFind');if(pf)pf.oninput=()=>{const q=pf.va
                 f"<button name='mode' value='technical' {'disabled' if st['running'] else ''}>Build a test reel</button> "
                 + (f"<button name='mode' value='semantic' class='btn2' {'disabled' if st['running'] else ''}>Build a test reel with the AI model</button> " if ai_ready else "")
                 + (f"<button name='mode' value='semantic_plus' class='btn2' {'disabled' if st['running'] else ''}>Build a test reel with AI+</button> " if ap["ready"] else "")
-                + f"<span class='muted'></span></form>{test_html}{_model_card(ae.model_status(), e, back='/auto/check')}{_aiplus_card(ap, e, human_bytes)}{builds_html}"
+                + f"<span class='muted'></span></form>{test_html}{hw_html}{_model_card(ae.model_status(), e, back='/auto/check')}{_aiplus_card(ap, e, human_bytes)}{builds_html}"
                 f"<div class='row' style='margin-top:14px'><a class='btn btn2' href='/auto'>Back</a></div>")
-        script = """const tc=document.getElementById('testRun');
+        script = """const hc=document.getElementById('hwRun');
+if(hc){const t0=Date.now()-Number(hc.dataset.el||0)*1000;const tick=async()=>{try{const r=await fetch('/api/auto/hwtest',{cache:'no-store'});const x=await r.json();if(!x.running){location.href='/auto/check';return}
+ document.getElementById('hwStep').textContent=x.step||''}catch(e){}document.getElementById('hwSec').textContent=Math.round((Date.now()-t0)/1000);setTimeout(tick,2000)};setTimeout(tick,0)}
+const tc=document.getElementById('testRun');
 if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{try{const r=await fetch('/api/auto/selftest',{cache:'no-store'});const x=await r.json();if(!x.running){location.href='/auto/check';return}}catch(e){}
  document.getElementById('testSec').textContent=Math.round((Date.now()-t0)/1000);setTimeout(tick,2000)};setTimeout(tick,2000)}"""
         return page("Check this PC", body, script)
+
+    @app.post("/auto/check/hwtest")
+    def ae_hwtest():
+        from . import hwdecode
+        if ae.app_busy():
+            return err_page("Wait until the current build has finished", "/auto/check")
+        ff = ae._ffmpeg()
+        if not ff:
+            return err_page("FFmpeg not found", "/auto/check")
+        hwdecode.start(ff, ae.AE_ROOT / "hwtest")
+        return redirect("/auto/check")
+
+    @app.post("/auto/check/hwtest-use")
+    def ae_hwtest_use():
+        from . import hwdecode
+        r = hwdecode.saved()
+        if r:
+            r["off"] = request.form.get("on") != "1"
+            hwdecode.save(r)
+        return redirect("/auto/check")
+
+    @app.get("/api/auto/hwtest")
+    def ae_hwtest_state():
+        from . import hwdecode
+        st = hwdecode.state()
+        step = st.get("step") or ""
+        if ae.ui_language() == "ru":
+            from .auto_edit_ru import PHRASES
+            step = " ".join(PHRASES.get(x, x) for x in [step.split(":")[0]]) + (":" + step.split(":", 1)[1] if ":" in step else "")
+        return jsonify({"running": st["running"], "elapsed_s": st["elapsed_s"], "step": step})
 
     @app.get("/api/auto/selftest")
     def ae_selftest_state():
@@ -700,7 +737,8 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
                 raise ValueError("The folder is not available: " + str(folder))
             ae._guard_private(folder)
             settings = {"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound") or "auto",
-                        "mode": f.get("mode"), "framing": f.get("framing"), "theme": ""}
+                        "mode": f.get("mode"), "framing": f.get("framing"), "theme": "",
+                        **({"prepare": True} if f.get("prepare") == "1" else {})}
             ae.normalize_settings(settings, model_ready=ae.model_status()["ready"])
             ae.check_free_space()
             days = []
@@ -1425,12 +1463,41 @@ def _prepared_html(j, e) -> str:
     took = float(info.get("elapsed_s") or ae.job_elapsed_s(j) or 0)
     took_txt = (f"{took:.0f} <span>s</span>" if took < 90 else f"{took / 60:.0f} <span>min</span>")
     import html as _h
-    data = _h.escape(json.dumps({"stages": info.get("stage_seconds") or {}, "ai": info.get("semantic_timing") or {}}), quote=True)
+    data = _h.escape(json.dumps({"stages": info.get("stage_seconds") or {}, "ai": info.get("semantic_timing") or {},
+                                 "hw": info.get("hw_decode")}), quote=True)
     return (f"<div class='card ae-done ae-prepared' data-timing='{data}' style='margin-bottom:12px'><div class='eyebrow'>Prepared in advance</div>"
             f"<div><span>Videos analysed:</span> {n}" + (f" · <span>skipped:</span> {skipped}" if skipped else "")
             + f" · <span>took</span> {took_txt} · {_mode_name(j['settings'], e)}</div>"
             f"<div class='muted' style='margin-top:4px'>Now press Build: the reel is made from the prepared videos in minutes. "
             f"Videos added to the folder later are analysed during the build.</div></div>")
+
+
+def _hwdecode_html(e) -> str:
+    """Check this PC: the graphics-card decoding test (runs in the background) and its result."""
+    from . import hwdecode
+    st = hwdecode.state()
+    if st["running"]:
+        return (f"<div class='card' id='hwRun' data-el='{st['elapsed_s']}' style='margin-top:14px'><b>Testing the graphics card…</b> "
+                f"<span id='hwSec'>{int(st['elapsed_s'])}</span> s · <span class='muted' id='hwStep'>{e(st.get('step') or '')}</span>"
+                f"<div class='muted' style='margin-top:4px'>About a minute or two. You can leave this page.</div></div>")
+    r = hwdecode.saved()
+    used, line = hwdecode.summary(r, ae._ffmpeg())
+    toggle = ""
+    if r and (r.get("use") or r.get("off")):
+        if r.get("off") and r.get("use"):
+            toggle = ("<form method='post' action='/auto/check/hwtest-use' style='margin:0'><input type='hidden' name='on' value='1'>"
+                      "<button class='btn2'>Use the graphics card</button></form>")
+        elif used:
+            toggle = ("<form method='post' action='/auto/check/hwtest-use' style='margin:0'><button class='btn2'>Do not use the graphics card"
+                      "</button></form>")
+    when = f" <span class='muted'>· tested {e(r['tested_at'])}</span>" if r.get("tested_at") else ""
+    return (f"<div class='card' style='margin-top:14px'><b>Video decoding on the graphics card</b>{when}"
+            f"<div class='muted' style='margin:4px 0 8px'>{e(line)}</div>"
+            f"<div class='muted' style='margin-bottom:8px;font-size:13px'>The test cuts short 4K test clips with the processor and with the "
+            f"graphics card and compares every frame. The graphics card is used only if the picture is exactly the same and it is clearly "
+            f"faster. Your videos are not used.</div>"
+            f"<div class='row' style='gap:8px;flex-wrap:wrap'><form method='post' action='/auto/check/hwtest' style='margin:0'>"
+            f"<button class='btn2'>{'Test again' if r else 'Test the graphics card'}</button></form>{toggle}</div></div>")
 
 
 def _notify_on() -> bool:
@@ -1461,7 +1528,7 @@ def _build_time_html(res) -> str:
             parts.append(f"<span>{lbl}</span> {d(v)}")
     import html as _h
     tm = res.get("semantic_timing") or {}
-    data = f" data-timing='{_h.escape(json.dumps({'stages': st, 'ai': tm}), quote=True)}'"   # for support: where the AI time went
+    data = f" data-timing='{_h.escape(json.dumps({'stages': st, 'ai': tm, 'hw': res.get('hw_decode')}), quote=True)}'"   # for support: where the AI time went
     return (f"<div class='muted ae-buildtime' style='font-size:13px'{data}><span>Built in</span> {d(total)}"
             + (" (" + " · ".join(parts) + ")" if parts else "") + "</div>")
 

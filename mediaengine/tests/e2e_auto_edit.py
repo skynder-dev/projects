@@ -132,6 +132,24 @@ def main():
                 time.sleep(0.5)
             c.post(f"/auto/p/{x['id']}/delete", headers=H)
         check("every_day_test_projects_deleted", all(ae.project(x["id"]) is None for x in new_p))
+        # every day prepared in advance (analysis only): one project per day with a preparing job
+        has_prep = "name='prepare'" in cam_page
+        before_p = {x["id"] for x in ae.list_projects(include_archived=True)}
+        r = c.post("/auto/create-days", data={"folder": str(cam), "length": "5", "format": "vertical", "sound": "auto", "mode": a.mode,
+                                              "prepare": "1"}, headers=H)
+        new_p = [x for x in ae.list_projects(include_archived=True) if x["id"] not in before_p]
+        for x in new_p:
+            for jj in x["jobs"]:
+                ae.cancel_job(jj["id"])
+        check("every_day_prepared_in_advance", has_prep and r.status_code == 302 and len(new_p) == 2
+              and all(len(x["jobs"]) == 1 and x["jobs"][0]["settings"].get("prepare") for x in new_p), (has_prep, r.status_code, len(new_p)))
+        for x in new_p:
+            ae.archive_project(x["id"])
+            for _ in range(60):
+                if not any(jj["status"] in ("queued", "running") for jj in ae.project(x["id"])["jobs"]):
+                    break
+                time.sleep(0.5)
+            c.post(f"/auto/p/{x['id']}/delete", headers=H)
         r = c.get("/auto/new", query_string={"folder": str(folder)}, headers={**H, "Sec-Fetch-Site": "cross-site"})
         check("setup_refuses_other_sites", r.status_code in (400, 403), r.status_code)
         if not ae.model_status()["ready"]:
@@ -172,6 +190,9 @@ def main():
         r_short = c.get(f"/auto/p/{pid}", headers=H).data.decode("utf-8", "replace")
         check("duration_near_target_or_shortfall_shown", abs(dur - a.length) <= 1.5 or (dur < a.length and f"Requested {a.length} s" in r_short), dur)
         check("revision_has_segments_for_review", len(rev["result"].get("segments", [])) >= 1, len(rev["result"].get("segments", [])))
+        if os.environ.get("MEDENG_SELECT_MIN_PARALLEL") == "0":      # CI: the search on several processes in this Python
+            check("choice_of_moments_on_several_processes", rev["result"].get("selection_search") == "parallel",
+                  rev["result"].get("selection_search"))
         check("selection_mode_matches_request",
               rev["result"].get("selection_mode", "").startswith("FAST_LOCAL") == (a.mode == "semantic"), rev["result"].get("selection_mode"))
 

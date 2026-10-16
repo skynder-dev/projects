@@ -248,6 +248,46 @@ def _adopt(legacy_dir,out_dir,names):
                 try: shutil.copyfile(a,b)
                 except OSError: pass
 
+# Decoding on the graphics card, only when the app says so (MEDENG_HWACCEL): "Check this PC" tested on THIS PC that
+# the method gives every frame identical to the processor's and is clearly faster (app/archivist/hwdecode.py). Plain
+# cuts only (previews, full-quality pieces without conversions); any FFmpeg error with it: the same cut on the processor.
+HWACCEL=(os.environ.get("MEDENG_HWACCEL") or "").strip()
+# the kinds of video the test decoded identically with it (h264, hevc, hevc10); unset = all three (tests)
+HWACCEL_KINDS={k.strip() for k in (os.environ.get("MEDENG_HWACCEL_KINDS") or "h264,hevc,hevc10").split(",") if k.strip()}
+_HW_STATS={"cuts":0,"fallbacks":0}
+
+def _hw_pix_fmt(ffmpeg,src):
+    """The processor decoder's picture format when this source may go to the graphics card - H.264 / HEVC 4:2:0, 8 or
+    10 bit, what the test compares - else None (other codecs define no exact decoded picture: processor only)."""
+    line=_video_line(ffmpeg,src)
+    m=re.search(r"Video: (\w+)",line)
+    if not m or m.group(1) not in ("h264","hevc"): return None
+    p=re.search(r"\b(yuv420p10le|yuv420p)\b",line)
+    if not p: return None
+    kind=m.group(1)+("10" if p.group(1)=="yuv420p10le" else "")
+    return p.group(1) if kind in HWACCEL_KINDS else None
+
+def run_cut(ffmpeg,src,cmd_before_input,cmd_rest,tmp,check=None):
+    """FFmpeg cut: with the graphics card first when allowed, then on the processor. cmd_before_input ends just before
+    the input options; check(tmp) -> True when the output is good. The card's frames are first turned into the picture
+    format the processor's decoder gives (8-bit nv12 -> yuv420p, 10-bit p010 -> yuv420p10le), so every later step sees
+    the same numbers - as in the test. Any message from FFmpeg (-loglevel error: a frame the card could not decode)
+    counts as a failure: the cut is made again on the processor."""
+    pix=_hw_pix_fmt(ffmpeg,src) if HWACCEL else None
+    if pix:
+        rest=list(cmd_rest)
+        if "-vf" in rest:
+            i=rest.index("-vf"); rest[i+1]=f"format={pix},"+rest[i+1]
+        else:
+            i=rest.index("-c:v"); rest[i:i]=["-vf",f"format={pix}"]
+        cp=subprocess.run([*cmd_before_input,"-hwaccel",HWACCEL,*rest],capture_output=True,text=True)
+        if cp.returncode==0 and not (cp.stderr or "").strip() and (check is None or check(tmp)):
+            with _CLIP_LOCK: _HW_STATS["cuts"]+=1
+            return cp
+        Path(tmp).unlink(missing_ok=True); _HDR_CACHE.pop(str(tmp),None)
+        with _CLIP_LOCK: _HW_STATS["fallbacks"]+=1
+    return subprocess.run([*cmd_before_input,*cmd_rest],capture_output=True,text=True)
+
 def candidate_eid(source_sha,c,tag="SEMANTIC_V2"):
     """The id (and clip file name) of a moment: the video's SHA-256 and the window."""
     return hashlib.sha256(f"{source_sha}|{float(c['start_s']):.3f}|{float(c['end_s']):.3f}|{tag}".encode()).hexdigest()[:24]
@@ -275,12 +315,11 @@ def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="S
         clip.unlink(missing_ok=True); meta.unlink(missing_ok=True)
     tmp=out_dir/f".{eid}.{os.getpid()}.{threading.get_ident()}.tmp.mp4"
     if tmp.exists(): tmp.unlink()
-    cmd=[v52.FFMPEG,"-hide_banner","-loglevel","error","-y",
-         "-ss",f"{start:.3f}","-i",str(src),"-t",f"{dur:.3f}",
-         "-map","0:v:0",*sound_args(v52,src,dur),*(["-vf",PREVIEW_VF] if preview else []),"-c:v","libx264",*CANDIDATE_X264,
-         "-pix_fmt","yuv420p","-c:a","aac","-b:a","192k","-ar","48000","-ac","2",
-         "-movflags","+faststart",str(tmp)]
-    cp=subprocess.run(cmd,capture_output=True,text=True)
+    cp=run_cut(v52.FFMPEG,src,[v52.FFMPEG,"-hide_banner","-loglevel","error","-y"],
+               ["-ss",f"{start:.3f}","-i",str(src),"-t",f"{dur:.3f}",
+                "-map","0:v:0",*sound_args(v52,src,dur),*(["-vf",PREVIEW_VF] if preview else []),"-c:v","libx264",*CANDIDATE_X264,
+                "-pix_fmt","yuv420p","-c:a","aac","-b:a","192k","-ar","48000","-ac","2",
+                "-movflags","+faststart",str(tmp)],tmp,check=lambda t: Path(t).is_file() and Path(t).stat().st_size>0)
     if cp.returncode!=0: raise RuntimeError("SEMANTIC_CANDIDATE_EXTRACT_FAILED:"+cp.stderr[-800:])
     os.replace(tmp,clip)
     pr=v52.ffprobe(clip); actual=float(pr["format"]["duration"])
@@ -1425,9 +1464,14 @@ def full_quality_clip(v52,e,work_dir,hdr=None,deinterlace=False,square=False):
         tmp=d/f".{key}.tmp.mp4"
         chain=(["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if deinterlace else [])+([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else [])+([SQUARE_PIXELS] if square else [])
         conv=(["-vf",",".join(chain)] if chain else [])+(["-color_primaries","bt709","-color_trc","bt709","-colorspace","bt709"] if hdr in HDR_TO_SDR else [])
-        cp=subprocess.run([v52.FFMPEG,"-hide_banner","-loglevel","error","-y","-ss",f"{a:.3f}","-i",str(src),"-t",f"{b-a:.3f}",
-                           "-map","0:v:0",*sound_args(v52,src,b-a),*conv,"-c:v","libx264",*FULL_QUALITY_X264,"-pix_fmt","yuv420p",
-                           "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(tmp)],capture_output=True,text=True)
+        head=[v52.FFMPEG,"-hide_banner","-loglevel","error","-y"]
+        rest=["-ss",f"{a:.3f}","-i",str(src),"-t",f"{b-a:.3f}",
+              "-map","0:v:0",*sound_args(v52,src,b-a),*conv,"-c:v","libx264",*FULL_QUALITY_X264,"-pix_fmt","yuv420p",
+              "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(tmp)]
+        if conv:      # a conversion (HDR, interlaced, non-square pixels): on the processor, as tested
+            cp=subprocess.run([*head,*rest],capture_output=True,text=True)
+        else:
+            cp=run_cut(v52.FFMPEG,src,head,rest,tmp,check=lambda t: "Video:" in _video_line(v52.FFMPEG,t))
         if cp.returncode!=0 or "Video:" not in _video_line(v52.FFMPEG,tmp):
             tmp.unlink(missing_ok=True); _FQ_FALLBACK.append(str(e.get("source_name"))); return e   # keep the preview clip rather than fail the reel
         os.replace(tmp,clip); sha=_made_sha(clip)
@@ -1737,13 +1781,43 @@ def choose_moments(v52,events,target,warnings,exclude=(),clip=5.0,trans=.25,cach
         except OSError: pass
     return sel
 
+SELECTION_SEARCH={"kind":""}     # how the choice of moments was searched (result.selection_search)
+
+def _selection_search(v52,events,t,clip,trans,m):
+    """The accepted choose_for_target; a big search on several cores (p11_selection_parallel: the same result). The
+    accepted function itself when the cores cannot be used (no worker processes allowed, a broken pool) or a score is
+    not a number (">" is then no order and the split could pick another combination)."""
+    try:
+        here=str(Path(__file__).resolve().parent)
+        if here not in sys.path: sys.path.insert(0,here)
+        import p11_selection_parallel as sp
+    except Exception as exc:
+        SELECTION_SEARCH["kind"]="accepted (no parallel module: %s)"%type(exc).__name__
+        return v52.choose_for_target(events,t,clip,trans,max_events=m)
+    if any(not math.isfinite(float(e["v22_score"])) for e in events):
+        SELECTION_SEARCH["kind"]="accepted (a score is not a number)"
+        return v52.choose_for_target(events,t,clip,trans,max_events=m)
+    def env_int(name):
+        try: return int(os.environ[name]) if os.environ.get(name) else None
+        except ValueError: return None
+    w=env_int("MEDENG_SELECT_WORKERS"); mp=env_int("MEDENG_SELECT_MIN_PARALLEL")
+    try:
+        sel=sp.choose_for_target(v52,events,t,clip,trans,max_events=m,workers=w,**({"min_parallel":mp} if mp is not None else {}))
+        SELECTION_SEARCH["kind"]=sp.LAST["kind"]
+        return sel
+    except v52.V22Error:
+        raise                     # the accepted outcome (no combination fits): the same as the accepted function
+    except Exception as exc:
+        SELECTION_SEARCH["kind"]="accepted (cores not usable: %s)"%type(exc).__name__
+        return v52.choose_for_target(events,t,clip,trans,max_events=m)
+
 def _choose_moments_search(v52,events,target,warnings,clip,trans):
     t=float(target)
     while True:
         m=min(30,len(events))
         while m>2 and search_size(t,clip,trans,m)>SELECTION_COMBINATION_BUDGET: m-=1
         try:
-            sel=v52.choose_for_target(events,t,clip,trans,max_events=m)
+            sel=_selection_search(v52,events,t,clip,trans,m)
         except Exception as exc:
             if "NO_DIVERSE_TARGET_COMBINATION" not in str(exc) or t<=clip: raise
             t=max(clip,t-(clip-trans)); continue
@@ -1875,6 +1949,7 @@ def run(args):
                   "selection_mode":selection_mode,"semantic":bool(use_semantic),"semantic_model":semantic_model if use_semantic else None,
                   "theme":(str(getattr(args,"theme","") or "") or None) if semantic_model=="pe_core_l14" else None,
                   "cache_status":cache_status,"clip_edges_measured":edges_measured,"pieces_cut":pieces_cut,
+                  "hw_decode":({"method":HWACCEL,**_HW_STATS} if HWACCEL else None),
                   "semantic_timing":({k:(round(v,2) if isinstance(v,float) else v) for k,v in SEM_TIMING.items()} if use_semantic else None),
                   "source_mutated":False,"network_request_performed":False,
                   "elapsed_s":round(time.perf_counter()-started,3),
@@ -2124,7 +2199,9 @@ def run(args):
     result={
         "contract":CONTRACT_VERSION,"status":"PASS",
         "segments":timeline,"candidate_pool":pool_rows,"excluded_event_ids":sorted(exclude),"manual_edits":edits,
-        "skipped_inputs":skipped_inputs,"warnings":warnings,"render_source":render_source,"hdr_sources":hdr_sources,"deinterlaced_sources":deinterlaced,"widened_sources":widened,
+        "skipped_inputs":skipped_inputs,"warnings":warnings,"render_source":render_source,
+        "hw_decode":({"method":HWACCEL,**_HW_STATS} if HWACCEL else None),"hdr_sources":hdr_sources,
+        "selection_search":SELECTION_SEARCH["kind"] or None,"deinterlaced_sources":deinterlaced,"widened_sources":widened,
         "rendered_transition_s":[round(float(x["duration_s"]),6) for x in render_trans],
         "engine":{"orchestrator_sha256":sha256_file(Path(__file__)),"semantic_hook_sha256":SEMANTIC_HOOK_SHA},
         "input_folder":str(input_dir),"input_list":input_list,"input_fingerprint":fingerprint,"input_count":len(input_rows),

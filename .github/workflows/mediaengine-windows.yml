@@ -56,6 +56,11 @@ jobs:
         run: |
           python mediaengine/tests/unit_checks.py "$env:RUNNER_TEMP\unit" 2>&1 | Tee-Object "$env:OUT\unit_checks.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: The choice of moments on several cores is exactly the accepted choice (random moment sets, the largest 30 s search timed)
+        shell: pwsh
+        run: |
+          python mediaengine/tests/selection_parallel_check.py --cases 400 --big 2>&1 | Tee-Object "$env:OUT\selection_parallel.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: App startup self-check (same check the launcher uses before accepting a release)
         shell: pwsh
         run: |
@@ -318,6 +323,9 @@ jobs:
             & $py -s -E -c "import urllib.request; urllib.request.urlopen('https://www.microsoft.com', timeout=10)" 2>$null
             $blocked = ($LASTEXITCODE -ne 0)
             "internet blocked for the packaged Python: $blocked" | Tee-Object "$env:OUT\offline.txt"
+            # the choice of moments on two worker processes even for the small fixture search: the pool must start in
+            # the packaged Python (spawn, -s -E, the job object)
+            $env:MEDENG_SELECT_MIN_PARALLEL = '0'; $env:MEDENG_SELECT_WORKERS = '2'
             & $py -s -E -X utf8 mediaengine/tests/e2e_auto_edit.py --folder "$env:RUNNER_TEMP\fx\seven" --home "$env:RUNNER_TEMP\home-pkg" --mode technical --length 15 --skip-cancel --out "$env:OUT\e2e_packaged_python.json" 2>&1 | Tee-Object "$env:OUT\e2e_packaged_python.txt"
             $code = $LASTEXITCODE
           } finally {

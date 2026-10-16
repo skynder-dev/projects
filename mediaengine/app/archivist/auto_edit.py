@@ -1517,6 +1517,17 @@ def _engine_env() -> dict:
                 "MEDENG_AI_SHARED_CACHE": str(AE_ROOT / "shared"),
                 "MEDENG_P11_ADAPTER_ROOT": str(ENGINE_DIR), "PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1",
                 "PYTHONDONTWRITEBYTECODE": "1"})   # engine helpers started without -E: nothing written into the program folder
+    try:      # decoding on the graphics card: only a method THIS PC proved identical and faster (Check this PC)
+        from . import hwdecode
+        hw = hwdecode.method_for_engine(ff)
+        kinds = hwdecode.proven_kinds(hwdecode.saved(), hw) if hw else []
+        if hw and kinds:
+            env["MEDENG_HWACCEL"] = hw
+            env["MEDENG_HWACCEL_KINDS"] = ",".join(kinds)
+        else:
+            env.pop("MEDENG_HWACCEL", None); env.pop("MEDENG_HWACCEL_KINDS", None)
+    except Exception:
+        env.pop("MEDENG_HWACCEL", None); env.pop("MEDENG_HWACCEL_KINDS", None)
     return env
 
 
@@ -2030,6 +2041,15 @@ def system_check() -> list[dict]:
     except Exception as exc:
         add("Engine libraries load (numpy, OpenCV, ONNX Runtime)", False, exc)
     add("Processor", True, f"{os.cpu_count() or '?'} logical cores")
+    try:
+        from . import hwdecode
+        gpus = hwdecode.gpu_names_cached()
+        if gpus:
+            add("Graphics card", True, "; ".join(gpus))
+        used, line = hwdecode.summary(hwdecode.saved(), ff)
+        add("Video decoding on the graphics card", True, line, "ok" if used else "info")
+    except Exception:
+        pass
     if os.name == "nt":
         try:
             import winreg
@@ -2074,6 +2094,9 @@ WHATS_NEW_ITEMS = [
     ("2026-10-15b", "AI with 4K videos is faster again: moments are looked at in small copies, the reel is cut from the originals."),
     ("2026-10-15b", "“Prepare in advance” on the new-reel page: the videos are analysed now (for example overnight), the reel is then made in minutes."),
     ("2026-10-15b", "AI+ theme “Aerial view (drone)”: the view from above, without take-off and landing on the ground."),
+    ("2026-10-16", "Check this PC can test the graphics card: if it decodes 4K faster with exactly the same picture, the videos are cut with it."),
+    ("2026-10-16", "Choosing the moments of a new reel length uses several processor cores (the same choice, found faster)."),
+    ("2026-10-16", "“Prepare in advance” for a reel for every day of a big folder too."),
 ]
 WHATS_NEW_ID = max(d for d, _ in WHATS_NEW_ITEMS)
 WHATS_NEW = [t for _, t in WHATS_NEW_ITEMS]

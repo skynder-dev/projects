@@ -291,6 +291,34 @@ def main():
           and kept_ == ["c1.mp4", "c2.mp4", "c3.mp4", "orphan.mp4"] and left_ == ["c2.mp4", "c3.mp4"]
           and not (sh / "semantic_candidates").exists(), (kept_, left_))
     shutil.rmtree(sh, ignore_errors=True)
+    # decoding on the graphics card: chosen only when identical and clearly faster; stale with another FFmpeg
+    from archivist import hwdecode as _hw
+    ok_h = {"full": {"error": None}, "preview": {"error": None}}
+    ok_h_same = {"full": {"identical": True, "error": None}, "preview": {"identical": True, "error": None}}
+    res_ = {"methods": {"d3d11va": {"identical": True, "decoded": 3, "speedup": 2.5, "clips": {"h264_4k.mp4": ok_h}},
+                        "cuda": {"identical": False, "decoded": 3, "speedup": 4.0, "clips": {"h264_4k.mp4": ok_h}},
+                        "qsv": {"identical": True, "decoded": 3, "speedup": 1.1, "clips": {"h264_4k.mp4": ok_h}}}}
+    check("graphics card: the identical and faster method is chosen", _hw.choose(res_) == "d3d11va"
+          and _hw.choose({"methods": {"cuda": res_["methods"]["cuda"]}}) == ""
+          and _hw.choose({"methods": {"qsv": res_["methods"]["qsv"]}}) == "", _hw.choose(res_))
+    check("graphics card: summary lines", _hw.summary({})[0] is False and _hw.summary({**res_, "use": "d3d11va"})[0] is True
+          and "not faster" in _hw.summary({"methods": {"qsv": res_["methods"]["qsv"]}})[1]
+          and "not exactly the same" in _hw.summary({"methods": {"cuda": res_["methods"]["cuda"]}})[1])
+    pk_ = {"methods": {"d3d11va": {"clips": {"h264_4k.mp4": ok_h_same, "hevc_4k.mp4": ok_h_same,
+                                              "hevc10_4k.mp4": {"full": {"identical": False, "error": "no 10-bit"}, "preview": {"identical": False, "error": "no 10-bit"}}}}}}
+    check("graphics card: only the kinds of video it decoded identically go to it", _hw.proven_kinds(pk_, "d3d11va") == ["h264", "hevc"],
+          _hw.proven_kinds(pk_, "d3d11va"))
+    _hw.save({**res_, "use": "d3d11va", "ffmpeg": "ffmpeg version 0.0-other", "gpu": []})
+    check("graphics card: a changed FFmpeg is said on Check this PC", "changed" in _hw.summary(_hw.saved(), ae._ffmpeg() or "ffmpeg")[1])
+    check("graphics card: not used after FFmpeg changed (test again)", _hw.method_for_engine(ae._ffmpeg() or "ffmpeg") == ""
+          and "MEDENG_HWACCEL" not in ae._engine_env())
+    _hw.save({})
+    if os.name == "nt" and ae._ffmpeg():     # the real test on this Windows machine (CI: no real graphics card expected)
+        r_ = _hw.run_test(ae._ffmpeg(), work / "hwtest")
+        print("INFO graphics card test:", json.dumps({k: r_.get(k) for k in ("gpu", "use", "seconds", "error")}),
+              {m: (v.get("decoded"), v.get("identical"), v.get("speedup")) for m, v in (r_.get("methods") or {}).items()}, flush=True)
+        check("graphics card test runs on Windows and decides", isinstance(r_.get("methods"), dict) and not r_.get("error")
+              and len(r_.get("clips") or []) >= 1 and (r_.get("use") == "" or r_["methods"][r_["use"]]["identical"]), r_)
     # a Windows notification after a long build (local only)
     from archivist import notify as _nt
     tx = _nt.toast_xml("A & B", "<x>", 'http://127.0.0.1:8775/auto/p/1?a=1&b="2"')

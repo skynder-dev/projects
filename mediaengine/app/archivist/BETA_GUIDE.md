@@ -41,6 +41,8 @@ runs) to "MediaEngine Data\data\backups".
 
 Your original files are only read, never changed. "Check this PC" (Home, Settings, Auto Edit) shows whether the
 AI model and video tools are found and builds a 5-second test reel. The language switch is at the top right.
+"Test the graphics card" there: if the graphics card decodes 4K faster than the processor with exactly the same
+picture, MediaEngine cuts the videos with it (noticeable with big 4K folders); otherwise everything stays on the processor.
 
 **AI+** is a stronger, optional model. Download it once on "Check this PC" (about 650 MB, free), then choose "AI+"
 when you make a reel or a variant. The first analysis of new videos takes longer. It understands people and what

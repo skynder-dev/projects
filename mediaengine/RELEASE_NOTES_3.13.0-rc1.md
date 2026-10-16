@@ -58,6 +58,25 @@ not read — reading even their first bytes would make Windows download them all
 in the cloud (OneDrive)…"); a folder that is entirely in the cloud says to choose "Always keep on this device"
 first. After the download the same reel is built again with them.
 
+## The graphics card for decoding, a faster first choice of moments (2026-10-16)
+
+- **Video decoding on the graphics card, only where it is proven on this PC** (`hwdecode.py`). "Check this PC" ->
+  "Test the graphics card": three short 4K test clips (H.264, HEVC, HEVC 10-bit) are cut as the engine cuts them,
+  with the processor and with every hardware method this FFmpeg offers (`d3d11va`, `cuda`, `qsv`, `d3d12va`,
+  `dxva2`); every frame is compared (MD5 of the full picture and of the 960-px preview) and timed. A method is used
+  only when every frame was identical and it was at least 1.3x faster; a different FFmpeg or graphics driver means
+  testing again; it can be turned off. The engine (`MEDENG_HWACCEL`) uses it for the preview cuts and the
+  full-quality pieces without conversions (HDR, interlaced and non-square pieces stay on the processor) and makes
+  any cut that fails with it again on the processor (`hw_decode` in the result: cuts, fallbacks). Check this PC also
+  shows the graphics adapters. The accepted AI analysis (frozen) still decodes on the processor.
+- **The first choice of moments for a length on several cores**: the accepted search (`choose_for_target`, up to 8.65
+  million combinations for 30 s; 31 s on the owner's PC) is split by the first moments of the combinations into
+  parts searched in separate processes by the accepted loop (copied line for line), and the parts' best results are
+  compared in the accepted order - exactly the accepted choice (`tests/selection_parallel_check.py`: random moment
+  sets with ties, every length; in every CI run). Below 1.5 million combinations, or on 2-3 cores, the accepted
+  function itself.
+- **Prepare in advance for a reel for every day** of a big folder.
+
 ## Prepare in advance; the AI+ theme "Aerial view (drone)" (2026-10-15)
 
 - **"Prepare in advance"** next to "Create reel": the engine (`--prepare-only`) analyses the videos with the chosen

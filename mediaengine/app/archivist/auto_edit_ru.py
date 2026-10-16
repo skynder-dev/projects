@@ -199,6 +199,12 @@ PHRASES = {
         "«Подготовить заранее» на странице нового ролика: видео анализируются сразу (например, ночью), потом ролик собирается за минуты.",
     "AI+ theme “Aerial view (drone)”: the view from above, without take-off and landing on the ground.":
         "Тема ИИ+ «Вид сверху (дрон)»: вид с высоты, без взлёта и посадки на земле.",
+    "Check this PC can test the graphics card: if it decodes 4K faster with exactly the same picture, the videos are cut with it.":
+        "«Проверка компьютера» умеет проверить видеокарту: если она разбирает 4K быстрее и с точно такой же картинкой, видео режутся ею.",
+    "Choosing the moments of a new reel length uses several processor cores (the same choice, found faster).":
+        "Выбор моментов для новой длины ролика идёт на нескольких ядрах процессора (выбор тот же, только быстрее).",
+    "“Prepare in advance” for a reel for every day of a big folder too.":
+        "«Подготовить заранее» теперь есть и для роликов на каждый день большой папки.",
     "Vertical HD": "Вертикально HD",
     "A reel for every day": "Ролик на каждый день",
     "One reel for each of these days, made one after another:": "По ролику на каждый из этих дней, по очереди:",
@@ -425,7 +431,26 @@ PHRASES = {
         "Сетевые папки открываются только из самого MediaEngine: вставь путь на странице «Автомонтаж».",
     "No video of this theme is on this PC now.": "Сейчас на этом компьютере нет видео на эту тему.",
     # "Prepare in advance" (analysis only; the reel later in minutes)
+    # decoding on the graphics card (Check this PC)
+    "Graphics card": "Видеокарта", "Video decoding on the graphics card": "Разбор видео на видеокарте",
+    "not tested yet - press 'Test the graphics card' below (about a minute, your videos are not used)":
+        "ещё не проверено — нажми «Проверить видеокарту» ниже (около минуты, твои видео не используются)",
+    "Testing the graphics card…": "Проверяю видеокарту…", "About a minute or two. You can leave this page.": "Минуту-две. Страницу можно закрыть.",
+    "The test cuts short 4K test clips with the processor and with the graphics card and compares every frame. The graphics card is used only if the picture is exactly the same and it is clearly faster. Your videos are not used.":
+        "Проверка режет короткие тестовые 4K-клипы процессором и видеокартой и сравнивает каждый кадр. Видеокарта используется, только если картинка точно такая же и это заметно быстрее. Твои видео не используются.",
+    "Test again": "Проверить ещё раз", "Test the graphics card": "Проверить видеокарту",
+    "Use the graphics card": "Использовать видеокарту", "Do not use the graphics card": "Не использовать видеокарту",
+    "turned off": "выключено", "· tested ": "· проверено ",
+    "not used: this FFmpeg cannot decode video on a graphics card": "не используется: этот FFmpeg не умеет разбирать видео на видеокарте",
+    "not used: the graphics card cannot decode these videos here": "не используется: видеокарта здесь не разбирает такие видео",
+    "not used: the picture is not exactly the same as the processor's": "не используется: картинка не точно такая же, как у процессора",
+    "making 4K test clips": "делаю тестовые 4K-клипы", "processor": "процессор",
+    "not used: the test could not be finished - test again": "не используется: проверка не закончилась — проверь ещё раз",
+    "not used: FFmpeg or the graphics driver changed since the test - test again":
+        "не используется: после проверки сменился FFmpeg или драйвер видеокарты — проверь ещё раз",
     "Prepare in advance": "Подготовить заранее", "Preparing in advance": "Подготовка заранее",
+    "Prepare in advance: the videos of every day are only analysed now (for example overnight); each day's reel is then made in minutes.":
+        "Подготовить заранее: видео каждого дня сейчас только анализируются (например, ночью); потом ролик каждого дня собирается за минуты.",
     "Preparing failed": "Подготовка не удалась", "Preparing cancelled": "Подготовка отменена",
     "Moments: AI": "Моменты: ИИ", "Moments: AI+": "Моменты: ИИ+", "Moments: Technical only": "Моменты: только техника",
     "Prepared in advance": "Подготовлено заранее", "Prepared": "Подготовлено", "PREPARED": "ПОДГОТОВЛЕН",

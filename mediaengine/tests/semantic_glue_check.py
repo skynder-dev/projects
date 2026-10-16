@@ -87,6 +87,17 @@ def main():
     os.environ["MEDENG_SEMANTIC_WORKERS"] = "3"
     out_rc, _ = build("reclip")
     os.environ.pop("MEDENG_SEMANTIC_WORKERS", None)
+    # decoding on the graphics card that fails (here: a method FFmpeg does not know): every cut is made again on the
+    # processor - the same reel, nothing left at preview quality
+    os.environ["MEDENG_AI_SHARED_CACHE"] = str(work / "shared_hw")
+    os.environ["MEDENG_HWACCEL"] = "no_such_method"
+    out_hw, _ = build("hwfallback")
+    # the path a working graphics card takes ('-hwaccel none' = FFmpeg's own decoder): the card's cut with the picture
+    # format step - every preview clip byte-identical to the processor's
+    os.environ["MEDENG_AI_SHARED_CACHE"] = str(work / "shared_hwnone")
+    os.environ["MEDENG_HWACCEL"] = "none"
+    out_hn, _ = build("hwnone")
+    os.environ.pop("MEDENG_HWACCEL", None)
     # "Prepare in advance": analysis only (no reel); the reel made after it analyses, cuts and measures nothing
     os.environ["MEDENG_AI_SHARED_CACHE"] = str(work / "shared_prep")
     out_pp, _ = build("prep", prepare=True)
@@ -169,6 +180,19 @@ def main():
     ok_, det_ = same_reel(out, out_rc)
     check("known_reports_missing_clips_cut_in_parallel", rc_.get("videos_analysed") == 0 and rc_.get("clips_cut", 0) > 0
           and rc_.get("workers") == 3 and ok_, (rc_, det_))
+    hwres = json.loads((out_hw / "MediaEngine Result.json").read_text(encoding="utf-8"))
+    ok_, det_ = same_reel(out, out_hw)
+    hd_ = hwres.get("hw_decode") or {}
+    check("hw_decode_failure_falls_back_to_processor", hd_.get("method") == "no_such_method" and hd_.get("cuts") == 0
+          and hd_.get("fallbacks", 0) > 0 and not any(w.startswith("PREVIEW_QUALITY_USED") for w in hwres.get("warnings", [])) and ok_,
+          (hd_, hwres.get("warnings"), det_))
+    hn = json.loads((out_hn / "MediaEngine Result.json").read_text(encoding="utf-8"))
+    hnd = hn.get("hw_decode") or {}
+    sha_ = lambda d: {f.name: hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted((work / d / "semantic_previews").glob("*.mp4"))}
+    a_, b_ = sha_("shared"), sha_("shared_hwnone")
+    ok_, det_ = same_reel(out, out_hn)
+    check("hw_decode_path_gives_the_same_clips", hnd.get("cuts", 0) > 0 and hnd.get("fallbacks") == 0 and a_ and a_ == b_ and ok_,
+          (hnd, len(a_), len(b_), [k for k in a_ if a_.get(k) != b_.get(k)][:3], det_))
     # boundary rows from one pass through a clip = the accepted rows from a seek per row (OpenCV of this PC)
     cl = sorted((work / "shared" / "semantic_previews").glob("*.mp4"))[:6]
     same_rows = [r3.camera_drop_rows(c_) == r3.camera_drop_rows_fast(c_) for c_ in cl]

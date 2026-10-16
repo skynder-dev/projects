@@ -509,6 +509,9 @@ APP_PHRASES: dict[str, str] = {
 }
 
 APP_PATTERNS: list[tuple[str, str]] = [
+    (r"used \((\w+)\): ([\d.]+)x faster than the processor, every frame identical",
+     r"используется (\1): в \2 раза быстрее процессора, все кадры совпадают"),
+    (r"not used: not faster than the processor \(([\d.]+)x\)", r"не используется: не быстрее процессора (×\1)"),
     (r"One reel can use up to (\d+) videos\. Selected:", r"В один ролик помещается до \1 видео. Выбрано:"),
     (r"Make (\d+) reels", r"Сделать роликов: \1"),
     (r"Days with more than (\d+) videos are left out \(tick their videos below\):", r"Дни, где больше \1 видео, пропущены (их видео можно отметить ниже):"),
