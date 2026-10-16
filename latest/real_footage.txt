@@ -1,0 +1,11 @@
+PASS enough_real_videos
+PASS models_ready
+PASS project_created
+PASS ai_30s_built
+PASS aiplus_30s_built
+PASS aiplus_kids_15s_built
+PASS aiplus_sea_15s_built
+PASS aiplus_animals_15s_built
+PASS aiplus_party_15s_built
+PASS all_reels_built
+{"passed": 10, "total": 10, "videos": 22, "reels": {"ai_30s": [455.2, 6], "aiplus_30s": [1283.7, 6], "aiplus_kids_15s": [72.4, 3], "aiplus_sea_15s": [78.4, 3], "aiplus_animals_15s": [42.3, 3], "aiplus_party_15s": [94.6, 3]}}

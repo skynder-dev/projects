@@ -1,0 +1,982 @@
+{
+ "actual_duration_s": 14.97,
+ "audio": {
+  "activity": [
+   {
+    "audible": true,
+    "event_id": "e45744f3a75d4aefdd7a1921",
+    "has_audio_stream": true,
+    "rms_dbfs": -8.485,
+    "source_name": "06_Birthday_Party.webm"
+   },
+   {
+    "audible": true,
+    "event_id": "e4c6fcc9aa99d850a0f0c6ee",
+    "has_audio_stream": true,
+    "rms_dbfs": -27.349,
+    "source_name": "01_Children_Playing_in_Cameroon.webm"
+   },
+   {
+    "audible": true,
+    "event_id": "89c7ab6f354af3d13af68498",
+    "has_audio_stream": true,
+    "rms_dbfs": -15.033,
+    "source_name": "02_Children_playing_on_Ai_Weiwei_Soft_Ground_MVI_6171.webm"
+   }
+  ],
+  "applied": "source",
+  "decision": {
+   "algorithm": "P11_AUDIO_COHERENCE_SHADOW_V2",
+   "audible_clip_count": 3,
+   "audible_presence": [
+    true,
+    true,
+    true
+   ],
+   "changed": false,
+   "hazard_edges": 0,
+   "mode": "source",
+   "reason": "continuous_audible_source_audio",
+   "silent_clip_count": 0
+  },
+  "requested": "auto"
+ },
+ "boundary": {
+  "algorithm": "P11_CAMERA_DROP_TRIM_SHADOW_V1",
+  "decisions": [
+   {
+    "decision": {
+     "algorithm": "P11_CAMERA_DROP_TRIM_SHADOW_V1",
+     "base_dark": 0.005084,
+     "base_ratio": 1.916352,
+     "dark_threshold": 0.3,
+     "ratio_threshold": 0.7,
+     "reason": "no_sustained_terminal_camera_drop",
+     "trim": false
+    },
+    "event_id": "e45744f3a75d4aefdd7a1921",
+    "source_name": "06_Birthday_Party.webm"
+   },
+   {
+    "decision": {
+     "algorithm": "P11_CAMERA_DROP_TRIM_SHADOW_V1",
+     "base_dark": 0.007938,
+     "base_ratio": 1.111788,
+     "dark_threshold": 0.3,
+     "ratio_threshold": 0.7,
+     "reason": "no_sustained_terminal_camera_drop",
+     "trim": false
+    },
+    "event_id": "e4c6fcc9aa99d850a0f0c6ee",
+    "source_name": "01_Children_Playing_in_Cameroon.webm"
+   },
+   {
+    "decision": {
+     "algorithm": "P11_CAMERA_DROP_TRIM_SHADOW_V1",
+     "base_dark": 0.005621,
+     "base_ratio": 1.155496,
+     "dark_threshold": 0.3,
+     "ratio_threshold": 0.7,
+     "reason": "no_sustained_terminal_camera_drop",
+     "trim": false
+    },
+    "event_id": "89c7ab6f354af3d13af68498",
+    "source_name": "02_Children_playing_on_Ai_Weiwei_Soft_Ground_MVI_6171.webm"
+   }
+  ],
+  "trimmed_count": 0
+ },
+ "candidate_pool": [
+  {
+   "end_s": 67.5,
+   "event_id": "e45744f3a75d4aefdd7a1921",
+   "excluded": false,
+   "score": 0.852433,
+   "selected": true,
+   "source_name": "06_Birthday_Party.webm",
+   "start_s": 62.0
+  },
+  {
+   "end_s": 54.0,
+   "event_id": "73beb6cb895d8f9daeb53497",
+   "excluded": false,
+   "score": 0.832925,
+   "selected": false,
+   "source_name": "06_Birthday_Party.webm",
+   "start_s": 48.5
+  },
+  {
+   "end_s": 16.5,
+   "event_id": "e4c6fcc9aa99d850a0f0c6ee",
+   "excluded": false,
+   "score": 0.827551,
+   "selected": true,
+   "source_name": "01_Children_Playing_in_Cameroon.webm",
+   "start_s": 11.0
+  },
+  {
+   "end_s": 18.5,
+   "event_id": "7a1d7aa9531a5fcf2ad710e4",
+   "excluded": false,
+   "score": 0.78337,
+   "selected": false,
+   "source_name": "01_Children_Playing_in_Cameroon.webm",
+   "start_s": 13.0
+  },
+  {
+   "end_s": 79.5,
+   "event_id": "00742a753988e62be060bc78",
+   "excluded": false,
+   "score": 0.73691,
+   "selected": false,
+   "source_name": "06_Birthday_Party.webm",
+   "start_s": 74.0
+  },
+  {
+   "end_s": 5.5,
+   "event_id": "89c7ab6f354af3d13af68498",
+   "excluded": false,
+   "score": 0.694134,
+   "selected": true,
+   "source_name": "02_Children_playing_on_Ai_Weiwei_Soft_Ground_MVI_6171.webm",
+   "start_s": 0.0
+  },
+  {
+   "end_s": 24.5,
+   "event_id": "da465e7dd4596a69a6195738",
+   "excluded": false,
+   "score": 0.661356,
+   "selected": false,
+   "source_name": "01_Children_Playing_in_Cameroon.webm",
+   "start_s": 19.0
+  },
+  {
+   "end_s": 20.5,
+   "event_id": "01b466b41748955805861d44",
+   "excluded": false,
+   "score": 0.659559,
+   "selected": false,
+   "source_name": "01_Children_Playing_in_Cameroon.webm",
+   "start_s": 15.0
+  },
+  {
+   "end_s": 14.5,
+   "event_id": "7c148abd10000d58d907f5ce",
+   "excluded": false,
+   "score": 0.632133,
+   "selected": false,
+   "source_name": "01_Children_Playing_in_Cameroon.webm",
+   "start_s": 9.0
+  },
+  {
+   "end_s": 75.5,
+   "event_id": "5fac77492428b7342e30ba80",
+   "excluded": false,
+   "score": 0.584647,
+   "selected": false,
+   "source_name": "06_Birthday_Party.webm",
+   "start_s": 70.0
+  },
+  {
+   "end_s": 64.0,
+   "event_id": "11f0714929cf1e38e95335c7",
+   "excluded": false,
+   "score": 0.581372,
+   "selected": false,
+   "source_name": "06_Birthday_Party.webm",
+   "start_s": 58.5
+  },
+  {
+   "end_s": 70.5,
+   "event_id": "acce037fdb8aaae5af3489bf",
+   "excluded": false,
+   "score": 0.578572,
+   "selected": false,
+   "source_name": "06_Birthday_Party.webm",
+   "start_s": 65.0
+  },
+  {
+   "end_s": 7.5,
+   "event_id": "c7bebfc9a769f2b9aa97ff50",
+   "excluded": false,
+   "score": 0.578004,
+   "selected": false,
+   "source_name": "02_Children_playing_on_Ai_Weiwei_Soft_Ground_MVI_6171.webm",
+   "start_s": 2.0
+  },
+  {
+   "end_s": 19.5,
+   "event_id": "4b1bc3977178d50dcd4daf22",
+   "excluded": false,
+   "score": 0.552195,
+   "selected": false,
+   "source_name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+   "start_s": 14.0
+  },
+  {
+   "end_s": 40.82,
+   "event_id": "8f2b58e8d3f8d40b890e5590",
+   "excluded": false,
+   "score": 0.541673,
+   "selected": false,
+   "source_name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+   "start_s": 35.5
+  },
+  {
+   "end_s": 51.0,
+   "event_id": "962ec2bd1696bb5af60913b3",
+   "excluded": false,
+   "score": 0.495326,
+   "selected": false,
+   "source_name": "06_Birthday_Party.webm",
+   "start_s": 45.5
+  },
+  {
+   "end_s": 17.5,
+   "event_id": "9f3756af625b41733263accd",
+   "excluded": false,
+   "score": 0.43162,
+   "selected": false,
+   "source_name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+   "start_s": 12.0
+  },
+  {
+   "end_s": 22.5,
+   "event_id": "224151eea6ee4d0ee3808e15",
+   "excluded": false,
+   "score": 0.394978,
+   "selected": false,
+   "source_name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+   "start_s": 17.0
+  },
+  {
+   "end_s": 46.0,
+   "event_id": "1e9f77c1bdd1fc1f657ffd8f",
+   "excluded": false,
+   "score": 0.319421,
+   "selected": false,
+   "source_name": "06_Birthday_Party.webm",
+   "start_s": 40.5
+  },
+  {
+   "end_s": 14.5,
+   "event_id": "a7a47e13dc6c59d428c6fe06",
+   "excluded": false,
+   "score": 0.212861,
+   "selected": false,
+   "source_name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+   "start_s": 9.0
+  },
+  {
+   "end_s": 26.5,
+   "event_id": "2d89214996f92352501ce8c4",
+   "excluded": false,
+   "score": 0.200056,
+   "selected": false,
+   "source_name": "01_Children_Playing_in_Cameroon.webm",
+   "start_s": 21.0
+  },
+  {
+   "end_s": 11.5,
+   "event_id": "82d5796f1c260c175370b114",
+   "excluded": false,
+   "score": 0.172567,
+   "selected": false,
+   "source_name": "01_Children_Playing_in_Cameroon.webm",
+   "start_s": 6.0
+  },
+  {
+   "end_s": 10.0,
+   "event_id": "9ca62c1406217d25e62e243c",
+   "excluded": false,
+   "score": 0.145376,
+   "selected": false,
+   "source_name": "02_Children_playing_on_Ai_Weiwei_Soft_Ground_MVI_6171.webm",
+   "start_s": 4.5
+  }
+ ],
+ "claim_scope": "current run only; shadow prototype",
+ "contract": "P11_FOLDER_TO_REEL_R3",
+ "deinterlaced_sources": [],
+ "dress": null,
+ "elapsed_s": 69.218,
+ "engine": {
+  "orchestrator_sha256": "a812e5b1a0f5a786335ba7433a48932b8ff50163e50420fc105e8bb53d0edd2c",
+  "semantic_hook_sha256": "2b15303eba5b02b7f949cb560e58b2dbee09ff4576e21ad4b25b2d3111b02d5c"
+ },
+ "event_cache": "semantic_candidate_cache",
+ "event_count": 23,
+ "excluded_event_ids": [],
+ "hdr_sources": {},
+ "hw_decode": null,
+ "input_count": 20,
+ "input_fingerprint": "eee3e5cbcce4ea25ac9805503a8a545a25c65217fd9bf42afb18ed11ad4db40e",
+ "input_folder": "D:\\me-real\\Commons videos",
+ "input_list": null,
+ "inputs": [
+  {
+   "bytes": 4586512,
+   "name": "01_Children_Playing_in_Cameroon.webm",
+   "sha256": "5b0a66a3da4ac71ba39aa7708582c70323dfd36c480fce446dc9f4a163851066"
+  },
+  {
+   "bytes": 1539018,
+   "name": "02_Children_playing_on_Ai_Weiwei_Soft_Ground_MVI_6171.webm",
+   "sha256": "c837bca1265887d5f0d101ea57f2eff3e70a0b22ed13f58744e33b62d93525c9"
+  },
+  {
+   "bytes": 5708083,
+   "name": "03_Explore_Oregon_Recreation-_South_Steens_Campground.webm",
+   "sha256": "be871b836bbdf63037fbf56f577bfee95095c99192b8b65c39c0a80245f2b175"
+  },
+  {
+   "bytes": 1469865,
+   "name": "04_22341885325_1080p_28818105850.webm",
+   "sha256": "f6d59e0901acaba53755b1ae2bbdeffee07afdc022b07483881cabdaa1b82008"
+  },
+  {
+   "bytes": 5390447,
+   "name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+   "sha256": "22310f4cf18c7ae76a5166c02fb399a05f16c03234eb921d24509a800dcef612"
+  },
+  {
+   "bytes": 10761296,
+   "name": "06_Birthday_Party.webm",
+   "sha256": "1b306300345023827224e579d6d78ff5770ec1018cdd1391f8ddf0b44ff39fa1"
+  },
+  {
+   "bytes": 10215281,
+   "name": "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm",
+   "sha256": "1d1de1bf933bd10deafdf9da697c1e40991c2f3b1cc748f31900886d97d01bae"
+  },
+  {
+   "bytes": 20945494,
+   "name": "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm",
+   "sha256": "746a3051deb64ca760b711781e935305ee0158f31a7814c92015ec14b26588a3"
+  },
+  {
+   "bytes": 7655711,
+   "name": "10_Пузыри_собака.webm",
+   "sha256": "126089ba6793a581396ff0df4dfff0219b18a4299f84b12f8d555fca35568d62"
+  },
+  {
+   "bytes": 1343874,
+   "name": "11_Cat_lapping_water_off_ground_in_slow_motion_gk.webm",
+   "sha256": "3e75bdfc00a678ceb1c0f02f4005edd5fce7fff3586fe3f8046679d253165c10"
+  },
+  {
+   "bytes": 2114525,
+   "name": "13_Water_waves_in_Herzliya_beach.webm",
+   "sha256": "97e172d6c28fd73e9bd320eb8e3cb3875de12f1eab3e5ad2757651b7346e3e50"
+  },
+  {
+   "bytes": 1642174,
+   "name": "14_Rialto_Beach_Waves_2022.webm",
+   "sha256": "78f834164eeac4cdfbf5b2ee68df96bef66757a887ce13361d204eb7e25dce0e"
+  },
+  {
+   "bytes": 2967670,
+   "name": "15_Sea_of_Galilee_Boat_Ride.webm",
+   "sha256": "77675a59d9f0a1e4b9f58d8dd42b75f97ed81c9b0982ee76e6ad1a67d2c8a1f2"
+  },
+  {
+   "bytes": 3403441,
+   "name": "16_Fishing_Boat-1013831_Dingle_Peninsula_Co_Kerry_Ire.webm",
+   "sha256": "ab6d258b4ad915b21a5fdb7c1f4f899586ed805cc302039a367336ea07d95fc4"
+  },
+  {
+   "bytes": 2338952,
+   "name": "17_Rattlesnake_encounter_in_the_Pinal_Mountains_AZ.webm",
+   "sha256": "7eef1a6311fa915a5caa7aba8f5ee758f0abb7057b6d8c0d42e76487a7d33b5f"
+  },
+  {
+   "bytes": 1224117,
+   "name": "18_Santa_Rosa_and_San_Jacinto_Mountains_National_Monu.webm",
+   "sha256": "c77403f623e2029f5b2591531347d947c61139ff252e473704f2a3633200541c"
+  },
+  {
+   "bytes": 16898809,
+   "name": "19_Setting_sun_1063.webm",
+   "sha256": "737cc73379067e926fb9f4546274df89335909bd85ad709fbf6fce7898a65170"
+  },
+  {
+   "bytes": 1274032,
+   "name": "20_Sunset_in_Yogyakarta.webm",
+   "sha256": "5ad6a69b0088cb36cb802c432ce4f314bd8a3cc7f3087be720f1733acc30f4ce"
+  },
+  {
+   "bytes": 4569635,
+   "name": "21_2026-05-05_Saxony_State_and_Leipzig_City_official.webm",
+   "sha256": "a60eb0b9cbe782bdbfcce2ba81093f746417c8ddf8395dd09825a7ae2cfba5e0"
+  },
+  {
+   "bytes": 144924,
+   "name": "22_Fireworks_Naperville_2022.webm",
+   "sha256": "f2e0a74c9880aae1db9026c86adf222fabf7ab80a044cb9b5ae3fb3b3a0ff621"
+  }
+ ],
+ "manual_edits": {},
+ "network_request_performed": false,
+ "output": {
+  "bytes": 5374912,
+  "fps": 30,
+  "height": 960,
+  "name": "MediaEngine Reel.mp4",
+  "profile": "9x16",
+  "profile_reason": "explicit",
+  "profile_requested": "9x16",
+  "resolution": "standard",
+  "sha256": "257121400ceb05a0cddc71a2095820021ba01959bfdf122066073c7613bd3a0e",
+  "width": 540
+ },
+ "pacing": {
+  "algorithm": "P11_MONTAGE_PACING_SHADOW_V1",
+  "baseline_target_error_s": 0.5,
+  "changed": true,
+  "durations_s": [
+   5.397,
+   4.799,
+   5.104
+  ],
+  "planned_target_error_s": 0.0,
+  "reason": "targeted_dynamic_pacing",
+  "transitions": [
+   {
+    "distance": 0.13862,
+    "duration_s": 0.15,
+    "kind": "DISSOLVE",
+    "min_stability": 0.275862,
+    "reason": "stability_scaled_dissolve"
+   },
+   {
+    "distance": 0.133254,
+    "duration_s": 0.15,
+    "kind": "DISSOLVE",
+    "min_stability": 0.275862,
+    "reason": "stability_scaled_dissolve"
+   }
+  ]
+ },
+ "render_source": "ORIGINAL_FULL_QUALITY_RECUT",
+ "rendered_transition_s": [
+  0.133333,
+  0.133333
+ ],
+ "segments": [
+  {
+   "camera_drop_trim": false,
+   "event_id": "e45744f3a75d4aefdd7a1921",
+   "manual_trim": null,
+   "position": 1,
+   "reel_in_s": 0.0,
+   "reel_out_s": 5.367,
+   "score": 0.852433,
+   "source_in_s": 62.067,
+   "source_name": "06_Birthday_Party.webm",
+   "source_out_s": 67.433
+  },
+  {
+   "camera_drop_trim": false,
+   "event_id": "e4c6fcc9aa99d850a0f0c6ee",
+   "manual_trim": null,
+   "position": 2,
+   "reel_in_s": 5.233,
+   "reel_out_s": 10.0,
+   "score": 0.827551,
+   "source_in_s": 11.377,
+   "source_name": "01_Children_Playing_in_Cameroon.webm",
+   "source_out_s": 16.143
+  },
+  {
+   "camera_drop_trim": false,
+   "event_id": "89c7ab6f354af3d13af68498",
+   "manual_trim": null,
+   "position": 3,
+   "reel_in_s": 9.867,
+   "reel_out_s": 14.967,
+   "score": 0.694134,
+   "source_in_s": 0.205,
+   "source_name": "02_Children_playing_on_Ai_Weiwei_Soft_Ground_MVI_6171.webm",
+   "source_out_s": 5.305
+  }
+ ],
+ "selected_count": 3,
+ "selected_event_ids": [
+  "e45744f3a75d4aefdd7a1921",
+  "e4c6fcc9aa99d850a0f0c6ee",
+  "89c7ab6f354af3d13af68498"
+ ],
+ "selected_scores": [
+  0.852433,
+  0.827551,
+  0.694134
+ ],
+ "selected_sources": [
+  "06_Birthday_Party.webm",
+  "01_Children_Playing_in_Cameroon.webm",
+  "02_Children_playing_on_Ai_Weiwei_Soft_Ground_MVI_6171.webm"
+ ],
+ "selection_mode": "PE_CORE_L14_SEMANTIC_V1",
+ "selection_search": "accepted",
+ "semantic_best_moment_claim": true,
+ "semantic_model": "pe_core_l14",
+ "semantic_reports": [
+  {
+   "rank1": {
+    "center_s": 22.0,
+    "dense_boundary_quality": 0.543485,
+    "dense_eventness": 0.562679,
+    "dense_frames": 22,
+    "dense_quality": 0.599198,
+    "dense_score": 0.578926,
+    "end_s": 24.5,
+    "final_score": 0.731121,
+    "scout_eventness": 0.769157,
+    "scout_novelty": 0.50999,
+    "scout_priority": 0.513178,
+    "scout_quality": 0.324159,
+    "semantic_margin_raw": 2.027809,
+    "semantic_score_0_1": 0.700512,
+    "semantic_scout_score": 0.796348,
+    "start_s": 19.0
+   },
+   "source_name": "01_Children_Playing_in_Cameroon.webm",
+   "source_sha256": "5b0a66a3da4ac71ba39aa7708582c70323dfd36c480fce446dc9f4a163851066",
+   "theme": "kids"
+  },
+  {
+   "rank1": {
+    "center_s": 3.0,
+    "dense_boundary_quality": 0.28637,
+    "dense_eventness": 0.656047,
+    "dense_frames": 22,
+    "dense_quality": 0.674335,
+    "dense_score": 0.59217,
+    "end_s": 5.5,
+    "final_score": 0.776945,
+    "scout_eventness": 0.556175,
+    "scout_novelty": 0.528322,
+    "scout_priority": 0.578851,
+    "scout_quality": 0.756184,
+    "semantic_margin_raw": 2.209974,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.856135,
+    "start_s": 0.0
+   },
+   "source_name": "02_Children_playing_on_Ai_Weiwei_Soft_Ground_MVI_6171.webm",
+   "source_sha256": "c837bca1265887d5f0d101ea57f2eff3e70a0b22ed13f58744e33b62d93525c9",
+   "theme": "kids"
+  },
+  {
+   "rank1": {
+    "center_s": 10.0,
+    "end_s": 12.5,
+    "final_score": 0.58506,
+    "scout_eventness": 0.524782,
+    "scout_novelty": 0.458884,
+    "scout_priority": 0.472393,
+    "scout_quality": 0.474343,
+    "semantic_margin_raw": -3.786512,
+    "semantic_score_0_1": 0.848253,
+    "semantic_scout_score": 0.8358,
+    "start_s": 7.0
+   },
+   "source_name": "03_Explore_Oregon_Recreation-_South_Steens_Campground.webm",
+   "source_sha256": "be871b836bbdf63037fbf56f577bfee95095c99192b8b65c39c0a80245f2b175",
+   "theme": "kids"
+  },
+  {
+   "rank1": {
+    "center_s": 1.0,
+    "end_s": 5.5,
+    "final_score": 0.476,
+    "scout_eventness": 0.21806,
+    "scout_novelty": 0.295943,
+    "scout_priority": 0.347513,
+    "scout_quality": 0.611189,
+    "semantic_margin_raw": -4.07513,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.68,
+    "start_s": 0.0
+   },
+   "source_name": "04_22341885325_1080p_28818105850.webm",
+   "source_sha256": "f6d59e0901acaba53755b1ae2bbdeffee07afdc022b07483881cabdaa1b82008",
+   "theme": "kids"
+  },
+  {
+   "rank1": {
+    "center_s": 40.0,
+    "dense_boundary_quality": 0.397271,
+    "dense_eventness": 0.747968,
+    "dense_frames": 21,
+    "dense_quality": 0.518066,
+    "dense_score": 0.551383,
+    "end_s": 40.82,
+    "final_score": 0.793845,
+    "scout_eventness": 0.687579,
+    "scout_novelty": 0.603381,
+    "scout_priority": 0.546092,
+    "scout_quality": 0.254988,
+    "semantic_margin_raw": 1.500512,
+    "semantic_score_0_1": 0.972693,
+    "semantic_scout_score": 0.897757,
+    "start_s": 35.5
+   },
+   "source_name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+   "source_sha256": "22310f4cf18c7ae76a5166c02fb399a05f16c03234eb921d24509a800dcef612",
+   "theme": "kids"
+  },
+  {
+   "rank1": {
+    "center_s": 51.34375,
+    "dense_boundary_quality": 0.354207,
+    "dense_eventness": 0.825058,
+    "dense_frames": 22,
+    "dense_quality": 0.537599,
+    "dense_score": 0.572785,
+    "end_s": 54.0,
+    "final_score": 0.778223,
+    "scout_eventness": 0.558314,
+    "scout_novelty": 0.514104,
+    "scout_priority": 0.506474,
+    "scout_quality": 0.442038,
+    "semantic_margin_raw": 2.652495,
+    "semantic_score_0_1": 0.934151,
+    "semantic_scout_score": 0.866268,
+    "start_s": 48.5
+   },
+   "source_name": "06_Birthday_Party.webm",
+   "source_sha256": "1b306300345023827224e579d6d78ff5770ec1018cdd1391f8ddf0b44ff39fa1",
+   "theme": "kids"
+  },
+  {
+   "rank1": {
+    "center_s": 57.643750000000004,
+    "end_s": 60.5,
+    "final_score": 0.642325,
+    "scout_eventness": 0.743403,
+    "scout_novelty": 0.532828,
+    "scout_priority": 0.557997,
+    "scout_quality": 0.493338,
+    "semantic_margin_raw": -2.819187,
+    "semantic_score_0_1": 0.895914,
+    "semantic_scout_score": 0.917607,
+    "start_s": 55.0
+   },
+   "source_name": "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm",
+   "source_sha256": "1d1de1bf933bd10deafdf9da697c1e40991c2f3b1cc748f31900886d97d01bae",
+   "theme": "kids"
+  },
+  {
+   "rank1": {
+    "center_s": 25.438333333333333,
+    "end_s": 28.0,
+    "final_score": 0.633731,
+    "scout_eventness": 0.586763,
+    "scout_novelty": 0.363087,
+    "scout_priority": 0.466248,
+    "scout_quality": 0.698556,
+    "semantic_margin_raw": -2.796656,
+    "semantic_score_0_1": 0.948698,
+    "semantic_scout_score": 0.90533,
+    "start_s": 22.5
+   },
+   "source_name": "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm",
+   "source_sha256": "746a3051deb64ca760b711781e935305ee0158f31a7814c92015ec14b26588a3",
+   "theme": "kids"
+  },
+  {
+   "rank1": {
+    "center_s": 21.90375,
+    "end_s": 24.5,
+    "final_score": 0.493288,
+    "scout_eventness": 0.181325,
+    "scout_novelty": 0.229433,
+    "scout_priority": 0.315435,
+    "scout_quality": 0.691553,
+    "semantic_margin_raw": -1.152624,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.704697,
+    "start_s": 19.0
+   },
+   "source_name": "10_Пузыри_собака.webm",
+   "source_sha256": "126089ba6793a581396ff0df4dfff0219b18a4299f84b12f8d555fca35568d62",
+   "theme": "kids"
+  },
+  {
+   "rank1": {
+    "center_s": 7.0,
+    "end_s": 9.5,
+    "final_score": 0.595904,
+    "scout_eventness": 0.686533,
+    "scout_novelty": 0.576236,
+    "scout_priority": 0.554207,
+    "scout_quality": 0.381663,
+    "semantic_margin_raw": -7.455706,
+    "semantic_score_0_1": 0.852361,
+    "semantic_scout_score": 0.851291,
+    "start_s": 4.0
+   },
+   "source_name": "11_Cat_lapping_water_off_ground_in_slow_motion_gk.webm",
+   "source_sha256": "3e75bdfc00a678ceb1c0f02f4005edd5fce7fff3586fe3f8046679d253165c10",
+   "theme": "kids"
+  },
+  {
+   "rank1": {
+    "center_s": 2.0,
+    "end_s": 5.5,
+    "final_score": 0.693904,
+    "scout_eventness": 0.632001,
+    "scout_novelty": 0.483278,
+    "scout_priority": 0.560359,
+    "scout_quality": 0.748249,
+    "semantic_margin_raw": -4.292223,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.991291,
+    "start_s": 0.0
+   },
+   "source_name": "13_Water_waves_in_Herzliya_beach.webm",
+   "source_sha256": "97e172d6c28fd73e9bd320eb8e3cb3875de12f1eab3e5ad2757651b7346e3e50",
+   "theme": "kids"
+  },
+  {
+   "rank1": {
+    "center_s": 26.0,
+    "end_s": 28.5,
+    "final_score": 0.639265,
+    "scout_eventness": 0.362614,
+    "scout_novelty": 0.391399,
+    "scout_priority": 0.461804,
+    "scout_quality": 0.761466,
+    "semantic_margin_raw": -4.610769,
+    "semantic_score_0_1": 0.980669,
+    "semantic_scout_score": 0.913235,
+    "start_s": 23.0
+   },
+   "source_name": "14_Rialto_Beach_Waves_2022.webm",
+   "source_sha256": "78f834164eeac4cdfbf5b2ee68df96bef66757a887ce13361d204eb7e25dce0e",
+   "theme": "kids"
+  },
+  {
+   "rank1": {
+    "center_s": 11.0,
+    "end_s": 13.5,
+    "final_score": 0.590456,
+    "scout_eventness": 0.583274,
+    "scout_novelty": 0.492523,
+    "scout_priority": 0.591842,
+    "scout_quality": 0.912403,
+    "semantic_margin_raw": -6.715753,
+    "semantic_score_0_1": 0.769867,
+    "semantic_scout_score": 0.843509,
+    "start_s": 8.0
+   },
+   "source_name": "15_Sea_of_Galilee_Boat_Ride.webm",
+   "source_sha256": "77675a59d9f0a1e4b9f58d8dd42b75f97ed81c9b0982ee76e6ad1a67d2c8a1f2",
+   "theme": "kids"
+  },
+  {
+   "rank1": {
+    "center_s": 19.0,
+    "end_s": 19.0,
+    "final_score": 0.7,
+    "scout_eventness": 0.435121,
+    "scout_novelty": 0.583653,
+    "scout_priority": 0.542295,
+    "scout_quality": 0.494941,
+    "semantic_margin_raw": -5.195656,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 1.0,
+    "start_s": 13.5
+   },
+   "source_name": "16_Fishing_Boat-1013831_Dingle_Peninsula_Co_Kerry_Ire.webm",
+   "source_sha256": "ab6d258b4ad915b21a5fdb7c1f4f899586ed805cc302039a367336ea07d95fc4",
+   "theme": "kids"
+  },
+  {
+   "rank1": {
+    "center_s": 8.0,
+    "end_s": 10.5,
+    "final_score": 0.496247,
+    "scout_eventness": 0.467325,
+    "scout_novelty": 0.507095,
+    "scout_priority": 0.526634,
+    "scout_quality": 0.634515,
+    "semantic_margin_raw": -4.652017,
+    "semantic_score_0_1": 0.875886,
+    "semantic_scout_score": 0.708924,
+    "start_s": 5.0
+   },
+   "source_name": "17_Rattlesnake_encounter_in_the_Pinal_Mountains_AZ.webm",
+   "source_sha256": "7eef1a6311fa915a5caa7aba8f5ee758f0abb7057b6d8c0d42e76487a7d33b5f",
+   "theme": "kids"
+  },
+  {
+   "rank1": {
+    "center_s": 1.0,
+    "end_s": 5.5,
+    "final_score": 0.630048,
+    "scout_eventness": 0.454364,
+    "scout_novelty": 0.540901,
+    "scout_priority": 0.53604,
+    "scout_quality": 0.584205,
+    "semantic_margin_raw": -5.550432,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.900069,
+    "start_s": 0.0
+   },
+   "source_name": "18_Santa_Rosa_and_San_Jacinto_Mountains_National_Monu.webm",
+   "source_sha256": "c77403f623e2029f5b2591531347d947c61139ff252e473704f2a3633200541c",
+   "theme": "kids"
+  },
+  {
+   "rank1": {
+    "center_s": 47.94125,
+    "end_s": 50.5,
+    "final_score": 0.587015,
+    "scout_eventness": 0.374114,
+    "scout_novelty": 0.370914,
+    "scout_priority": 0.373255,
+    "scout_quality": 0.379988,
+    "semantic_margin_raw": -4.586279,
+    "semantic_score_0_1": 0.954141,
+    "semantic_scout_score": 0.838593,
+    "start_s": 45.0
+   },
+   "source_name": "19_Setting_sun_1063.webm",
+   "source_sha256": "737cc73379067e926fb9f4546274df89335909bd85ad709fbf6fce7898a65170",
+   "theme": "kids"
+  },
+  {
+   "rank1": {
+    "center_s": 13.0,
+    "end_s": 15.37,
+    "final_score": 0.61984,
+    "scout_eventness": 0.50986,
+    "scout_novelty": 0.685274,
+    "scout_priority": 0.585689,
+    "scout_quality": 0.329931,
+    "semantic_margin_raw": -7.67916,
+    "semantic_score_0_1": 0.833542,
+    "semantic_scout_score": 0.885486,
+    "start_s": 10.0
+   },
+   "source_name": "20_Sunset_in_Yogyakarta.webm",
+   "source_sha256": "5ad6a69b0088cb36cb802c432ce4f314bd8a3cc7f3087be720f1733acc30f4ce",
+   "theme": "kids"
+  },
+  {
+   "rank1": {
+    "center_s": 33.0,
+    "end_s": 33.5,
+    "final_score": 0.62251,
+    "scout_eventness": 0.625285,
+    "scout_novelty": 0.479069,
+    "scout_priority": 0.563453,
+    "scout_quality": 0.78206,
+    "semantic_margin_raw": -5.887537,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.8893,
+    "start_s": 28.0
+   },
+   "source_name": "21_2026-05-05_Saxony_State_and_Leipzig_City_official.webm",
+   "source_sha256": "a60eb0b9cbe782bdbfcce2ba81093f746417c8ddf8395dd09825a7ae2cfba5e0",
+   "theme": "kids"
+  },
+  {
+   "rank1": {
+    "center_s": 29.0,
+    "end_s": 31.5,
+    "final_score": 0.649967,
+    "scout_eventness": 0.36795,
+    "scout_novelty": 0.419143,
+    "scout_priority": 0.402247,
+    "scout_quality": 0.375519,
+    "semantic_margin_raw": -5.537951,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.928524,
+    "start_s": 26.0
+   },
+   "source_name": "22_Fireworks_Naperville_2022.webm",
+   "source_sha256": "f2e0a74c9880aae1db9026c86adf222fabf7ab80a044cb9b5ae3fb3b3a0ff621",
+   "theme": "kids"
+  }
+ ],
+ "semantic_requested": "required",
+ "semantic_runtime": {
+  "identity": {
+   "context_length": 32,
+   "files": {
+    "merges.txt": {
+     "bytes": 524619,
+     "sha256": "9fd691f7c8039210e0fced15865466c65820d09b63988b0174bfe25de299051a"
+    },
+    "text_model_int8.onnx": {
+     "bytes": 355596172,
+     "sha256": "1f3a1123723d5c8abf0cf9f22b9fa8e4c836ca1105ce2ab86083cb74696526aa"
+    },
+    "vision_model_int8.onnx": {
+     "bytes": 321065966,
+     "sha256": "7e28961190da8378b2b1faf562287da4d66128b5a013c3eb43558f210d273769"
+    },
+    "vocab.json": {
+     "bytes": 862328,
+     "sha256": "5047b556ce86ccaf6aa22b3ffccfc52d391ea4accdab9c2f2407da5b742d4363"
+    }
+   },
+   "image_size": 336,
+   "network_during_analysis": false,
+   "profile": "PE_CORE_L14",
+   "repo": "onnx-community/PE-Core-L14-336-ONNX",
+   "revision": "40c36ae81cea6449c590afcafe4a7378f1f26644"
+  },
+  "model_dir": "D:\\me-real\\home\\models\\PE_CORE_L14",
+  "pass": true
+ },
+ "semantic_timing": {
+  "clips_cached": 9,
+  "clips_cut": 14,
+  "clips_s": 13.95,
+  "rank_s": 33.44,
+  "score_s": 3.22,
+  "scout_embed_s": 0.0
+ },
+ "sequence": {
+  "algorithm": "P11_MONTAGE_SEQUENCE_SHADOW_V4",
+  "changed": false,
+  "guards": {
+   "adaptive_far_nonregression": true,
+   "adaptive_near_nonregression": true,
+   "adaptive_two_step_nonregression": true,
+   "closer_nonregression": true,
+   "fixed_far_count_nonregression": true,
+   "fixed_near_count_nonregression": true,
+   "fixed_similar_count_nonregression": true,
+   "fixed_two_step_count_nonregression": true,
+   "opener_nonregression": true,
+   "same_source_nonregression": true,
+   "source_switch_nonregression": true
+  },
+  "improvement": 0.0,
+  "reason": "insufficient_guarded_gain_keep_baseline"
+ },
+ "skipped_inputs": [],
+ "source_mutated": false,
+ "stage_seconds": {
+  "analyze": 50.69,
+  "finish": 7.62,
+  "inputs": 0.74,
+  "render": 7.09,
+  "select": 0.04,
+  "trim": 3.03
+ },
+ "status": "PASS",
+ "target_error_s": 0.03,
+ "target_seconds": 15.0,
+ "theme": "kids",
+ "warnings": [
+  "THEME:kids:23_MATCHING_MOMENTS",
+  "OVERLAPPING_MOMENTS_DROPPED:5"
+ ],
+ "widened_sources": {}
+}

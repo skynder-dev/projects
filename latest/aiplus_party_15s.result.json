@@ -1,0 +1,1093 @@
+{
+ "actual_duration_s": 14.97,
+ "audio": {
+  "activity": [
+   {
+    "audible": true,
+    "event_id": "90ea0323641ba08648da7647",
+    "has_audio_stream": true,
+    "rms_dbfs": -14.353,
+    "source_name": "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm"
+   },
+   {
+    "audible": true,
+    "event_id": "cefe73ad4575b993b2436b3b",
+    "has_audio_stream": true,
+    "rms_dbfs": -5.991,
+    "source_name": "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm"
+   },
+   {
+    "audible": true,
+    "event_id": "2e0a4f21df1b5919ca53ae4a",
+    "has_audio_stream": true,
+    "rms_dbfs": -14.696,
+    "source_name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm"
+   }
+  ],
+  "applied": "source",
+  "decision": {
+   "algorithm": "P11_AUDIO_COHERENCE_SHADOW_V2",
+   "audible_clip_count": 3,
+   "audible_presence": [
+    true,
+    true,
+    true
+   ],
+   "changed": false,
+   "hazard_edges": 0,
+   "mode": "source",
+   "reason": "continuous_audible_source_audio",
+   "silent_clip_count": 0
+  },
+  "requested": "auto"
+ },
+ "boundary": {
+  "algorithm": "P11_CAMERA_DROP_TRIM_SHADOW_V1",
+  "decisions": [
+   {
+    "decision": {
+     "algorithm": "P11_CAMERA_DROP_TRIM_SHADOW_V1",
+     "base_dark": 0.405816,
+     "base_ratio": 0.794138,
+     "dark_threshold": 0.605816,
+     "ratio_threshold": 0.644138,
+     "reason": "no_sustained_terminal_camera_drop",
+     "trim": false
+    },
+    "event_id": "90ea0323641ba08648da7647",
+    "source_name": "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm"
+   },
+   {
+    "decision": {
+     "algorithm": "P11_CAMERA_DROP_TRIM_SHADOW_V1",
+     "base_dark": 0.450515,
+     "base_ratio": 0.907083,
+     "dark_threshold": 0.650515,
+     "ratio_threshold": 0.7,
+     "reason": "no_sustained_terminal_camera_drop",
+     "trim": false
+    },
+    "event_id": "cefe73ad4575b993b2436b3b",
+    "source_name": "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm"
+   },
+   {
+    "decision": {
+     "algorithm": "P11_CAMERA_DROP_TRIM_SHADOW_V1",
+     "base_dark": 0.755645,
+     "base_ratio": 0.741704,
+     "dark_threshold": 0.955645,
+     "ratio_threshold": 0.591704,
+     "reason": "no_sustained_terminal_camera_drop",
+     "trim": false
+    },
+    "event_id": "2e0a4f21df1b5919ca53ae4a",
+    "source_name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm"
+   }
+  ],
+  "trimmed_count": 0
+ },
+ "candidate_pool": [
+  {
+   "end_s": 133.0,
+   "event_id": "90ea0323641ba08648da7647",
+   "excluded": false,
+   "score": 0.898679,
+   "selected": true,
+   "source_name": "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm",
+   "start_s": 127.5
+  },
+  {
+   "end_s": 139.5,
+   "event_id": "90f8f04c804afe33efae9970",
+   "excluded": false,
+   "score": 0.871243,
+   "selected": false,
+   "source_name": "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm",
+   "start_s": 134.0
+  },
+  {
+   "end_s": 66.5,
+   "event_id": "2b557e8381cbcc96e9f05fac",
+   "excluded": false,
+   "score": 0.802822,
+   "selected": false,
+   "source_name": "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm",
+   "start_s": 61.0
+  },
+  {
+   "end_s": 130.0,
+   "event_id": "43c73dd89f2dda4c219bbc88",
+   "excluded": false,
+   "score": 0.755948,
+   "selected": false,
+   "source_name": "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm",
+   "start_s": 124.5
+  },
+  {
+   "end_s": 45.5,
+   "event_id": "cefe73ad4575b993b2436b3b",
+   "excluded": false,
+   "score": 0.751383,
+   "selected": true,
+   "source_name": "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm",
+   "start_s": 40.0
+  },
+  {
+   "end_s": 105.5,
+   "event_id": "b133e9d61eef42b08982c19e",
+   "excluded": false,
+   "score": 0.741462,
+   "selected": false,
+   "source_name": "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm",
+   "start_s": 100.0
+  },
+  {
+   "end_s": 9.0,
+   "event_id": "c92b6fdddf64e962fc5873a0",
+   "excluded": false,
+   "score": 0.726522,
+   "selected": false,
+   "source_name": "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm",
+   "start_s": 3.5
+  },
+  {
+   "end_s": 103.0,
+   "event_id": "1458c964c49cd710e5d0cf22",
+   "excluded": false,
+   "score": 0.724416,
+   "selected": false,
+   "source_name": "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm",
+   "start_s": 97.5
+  },
+  {
+   "end_s": 25.0,
+   "event_id": "2b88af8c7f645eba895187cc",
+   "excluded": false,
+   "score": 0.722598,
+   "selected": false,
+   "source_name": "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm",
+   "start_s": 19.5
+  },
+  {
+   "end_s": 43.0,
+   "event_id": "b6e3791566d12552e482b7c5",
+   "excluded": false,
+   "score": 0.694558,
+   "selected": false,
+   "source_name": "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm",
+   "start_s": 37.5
+  },
+  {
+   "end_s": 136.5,
+   "event_id": "e9648c19f338258ecdde766b",
+   "excluded": false,
+   "score": 0.684202,
+   "selected": false,
+   "source_name": "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm",
+   "start_s": 131.0
+  },
+  {
+   "end_s": 90.5,
+   "event_id": "0925c07e70d663d1fd5f6963",
+   "excluded": false,
+   "score": 0.642338,
+   "selected": false,
+   "source_name": "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm",
+   "start_s": 85.0
+  },
+  {
+   "end_s": 69.5,
+   "event_id": "fd322bfb1ad1ff75f7f6569b",
+   "excluded": false,
+   "score": 0.612674,
+   "selected": false,
+   "source_name": "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm",
+   "start_s": 64.0
+  },
+  {
+   "end_s": 40.5,
+   "event_id": "a35136886a83abd08f490a68",
+   "excluded": false,
+   "score": 0.606296,
+   "selected": false,
+   "source_name": "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm",
+   "start_s": 35.0
+  },
+  {
+   "end_s": 88.0,
+   "event_id": "584300f5faa8acead2da605f",
+   "excluded": false,
+   "score": 0.562323,
+   "selected": false,
+   "source_name": "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm",
+   "start_s": 82.5
+  },
+  {
+   "end_s": 7.5,
+   "event_id": "2e0a4f21df1b5919ca53ae4a",
+   "excluded": false,
+   "score": 0.545754,
+   "selected": true,
+   "source_name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+   "start_s": 2.0
+  },
+  {
+   "end_s": 5.5,
+   "event_id": "7ce2e0ea4d1e2ba3c71226d9",
+   "excluded": false,
+   "score": 0.541773,
+   "selected": false,
+   "source_name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+   "start_s": 0.0
+  },
+  {
+   "end_s": 9.5,
+   "event_id": "da69463f68d68571404401f7",
+   "excluded": false,
+   "score": 0.476856,
+   "selected": false,
+   "source_name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+   "start_s": 4.0
+  },
+  {
+   "end_s": 53.0,
+   "event_id": "999dfbb77ed0f09dae240c54",
+   "excluded": false,
+   "score": 0.462977,
+   "selected": false,
+   "source_name": "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm",
+   "start_s": 47.5
+  },
+  {
+   "end_s": 34.0,
+   "event_id": "4c36167a84167081c0dd5de3",
+   "excluded": false,
+   "score": 0.441803,
+   "selected": false,
+   "source_name": "06_Birthday_Party.webm",
+   "start_s": 28.5
+  },
+  {
+   "end_s": 33.5,
+   "event_id": "de6437e15f7627f93699186b",
+   "excluded": false,
+   "score": 0.425659,
+   "selected": false,
+   "source_name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+   "start_s": 28.0
+  },
+  {
+   "end_s": 74.0,
+   "event_id": "38508d8c6bcc1279904fc817",
+   "excluded": false,
+   "score": 0.417717,
+   "selected": false,
+   "source_name": "06_Birthday_Party.webm",
+   "start_s": 68.5
+  },
+  {
+   "end_s": 31.5,
+   "event_id": "efdb3b1ba02b4acfc91ba03d",
+   "excluded": false,
+   "score": 0.393012,
+   "selected": false,
+   "source_name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+   "start_s": 26.0
+  },
+  {
+   "end_s": 65.5,
+   "event_id": "85cc3e81d0dd4e4eefed72a8",
+   "excluded": false,
+   "score": 0.38883,
+   "selected": false,
+   "source_name": "06_Birthday_Party.webm",
+   "start_s": 60.0
+  },
+  {
+   "end_s": 35.5,
+   "event_id": "c38560d4fd077ae6410dae2f",
+   "excluded": false,
+   "score": 0.370698,
+   "selected": false,
+   "source_name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+   "start_s": 30.0
+  },
+  {
+   "end_s": 10.5,
+   "event_id": "38cad9754742efaf13c88c86",
+   "excluded": false,
+   "score": 0.353384,
+   "selected": false,
+   "source_name": "04_22341885325_1080p_28818105850.webm",
+   "start_s": 5.0
+  },
+  {
+   "end_s": 12.5,
+   "event_id": "6e0d803918d9c57cffd39392",
+   "excluded": false,
+   "score": 0.334497,
+   "selected": false,
+   "source_name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+   "start_s": 7.0
+  },
+  {
+   "end_s": 62.5,
+   "event_id": "17d91b22ac99d6e2c79ac422",
+   "excluded": false,
+   "score": 0.331052,
+   "selected": false,
+   "source_name": "06_Birthday_Party.webm",
+   "start_s": 57.0
+  },
+  {
+   "end_s": 59.0,
+   "event_id": "95bf9ab6842aa188fcfc81c9",
+   "excluded": false,
+   "score": 0.318666,
+   "selected": false,
+   "source_name": "06_Birthday_Party.webm",
+   "start_s": 53.5
+  },
+  {
+   "end_s": 70.5,
+   "event_id": "acce037fdb8aaae5af3489bf",
+   "excluded": false,
+   "score": 0.31252,
+   "selected": false,
+   "source_name": "06_Birthday_Party.webm",
+   "start_s": 65.0
+  },
+  {
+   "end_s": 28.5,
+   "event_id": "12fde1fa252891c685c8932b",
+   "excluded": false,
+   "score": 0.261694,
+   "selected": false,
+   "source_name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+   "start_s": 23.0
+  },
+  {
+   "end_s": 54.0,
+   "event_id": "73beb6cb895d8f9daeb53497",
+   "excluded": false,
+   "score": 0.244831,
+   "selected": false,
+   "source_name": "06_Birthday_Party.webm",
+   "start_s": 48.5
+  },
+  {
+   "end_s": 8.5,
+   "event_id": "e0a64542f2ccc7557a9a6cfd",
+   "excluded": false,
+   "score": 0.216776,
+   "selected": false,
+   "source_name": "04_22341885325_1080p_28818105850.webm",
+   "start_s": 3.0
+  },
+  {
+   "end_s": 6.0,
+   "event_id": "08c1acbc23edb88298acd643",
+   "excluded": false,
+   "score": 0.191489,
+   "selected": false,
+   "source_name": "06_Birthday_Party.webm",
+   "start_s": 0.5
+  },
+  {
+   "end_s": 6.5,
+   "event_id": "807512e3a414131dd0c785d8",
+   "excluded": false,
+   "score": 0.160245,
+   "selected": false,
+   "source_name": "04_22341885325_1080p_28818105850.webm",
+   "start_s": 1.0
+  }
+ ],
+ "claim_scope": "current run only; shadow prototype",
+ "contract": "P11_FOLDER_TO_REEL_R3",
+ "deinterlaced_sources": [],
+ "dress": null,
+ "elapsed_s": 91.427,
+ "engine": {
+  "orchestrator_sha256": "a812e5b1a0f5a786335ba7433a48932b8ff50163e50420fc105e8bb53d0edd2c",
+  "semantic_hook_sha256": "2b15303eba5b02b7f949cb560e58b2dbee09ff4576e21ad4b25b2d3111b02d5c"
+ },
+ "event_cache": "semantic_candidate_cache",
+ "event_count": 35,
+ "excluded_event_ids": [],
+ "hdr_sources": {},
+ "hw_decode": null,
+ "input_count": 20,
+ "input_fingerprint": "eee3e5cbcce4ea25ac9805503a8a545a25c65217fd9bf42afb18ed11ad4db40e",
+ "input_folder": "D:\\me-real\\Commons videos",
+ "input_list": null,
+ "inputs": [
+  {
+   "bytes": 4586512,
+   "name": "01_Children_Playing_in_Cameroon.webm",
+   "sha256": "5b0a66a3da4ac71ba39aa7708582c70323dfd36c480fce446dc9f4a163851066"
+  },
+  {
+   "bytes": 1539018,
+   "name": "02_Children_playing_on_Ai_Weiwei_Soft_Ground_MVI_6171.webm",
+   "sha256": "c837bca1265887d5f0d101ea57f2eff3e70a0b22ed13f58744e33b62d93525c9"
+  },
+  {
+   "bytes": 5708083,
+   "name": "03_Explore_Oregon_Recreation-_South_Steens_Campground.webm",
+   "sha256": "be871b836bbdf63037fbf56f577bfee95095c99192b8b65c39c0a80245f2b175"
+  },
+  {
+   "bytes": 1469865,
+   "name": "04_22341885325_1080p_28818105850.webm",
+   "sha256": "f6d59e0901acaba53755b1ae2bbdeffee07afdc022b07483881cabdaa1b82008"
+  },
+  {
+   "bytes": 5390447,
+   "name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+   "sha256": "22310f4cf18c7ae76a5166c02fb399a05f16c03234eb921d24509a800dcef612"
+  },
+  {
+   "bytes": 10761296,
+   "name": "06_Birthday_Party.webm",
+   "sha256": "1b306300345023827224e579d6d78ff5770ec1018cdd1391f8ddf0b44ff39fa1"
+  },
+  {
+   "bytes": 10215281,
+   "name": "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm",
+   "sha256": "1d1de1bf933bd10deafdf9da697c1e40991c2f3b1cc748f31900886d97d01bae"
+  },
+  {
+   "bytes": 20945494,
+   "name": "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm",
+   "sha256": "746a3051deb64ca760b711781e935305ee0158f31a7814c92015ec14b26588a3"
+  },
+  {
+   "bytes": 7655711,
+   "name": "10_Пузыри_собака.webm",
+   "sha256": "126089ba6793a581396ff0df4dfff0219b18a4299f84b12f8d555fca35568d62"
+  },
+  {
+   "bytes": 1343874,
+   "name": "11_Cat_lapping_water_off_ground_in_slow_motion_gk.webm",
+   "sha256": "3e75bdfc00a678ceb1c0f02f4005edd5fce7fff3586fe3f8046679d253165c10"
+  },
+  {
+   "bytes": 2114525,
+   "name": "13_Water_waves_in_Herzliya_beach.webm",
+   "sha256": "97e172d6c28fd73e9bd320eb8e3cb3875de12f1eab3e5ad2757651b7346e3e50"
+  },
+  {
+   "bytes": 1642174,
+   "name": "14_Rialto_Beach_Waves_2022.webm",
+   "sha256": "78f834164eeac4cdfbf5b2ee68df96bef66757a887ce13361d204eb7e25dce0e"
+  },
+  {
+   "bytes": 2967670,
+   "name": "15_Sea_of_Galilee_Boat_Ride.webm",
+   "sha256": "77675a59d9f0a1e4b9f58d8dd42b75f97ed81c9b0982ee76e6ad1a67d2c8a1f2"
+  },
+  {
+   "bytes": 3403441,
+   "name": "16_Fishing_Boat-1013831_Dingle_Peninsula_Co_Kerry_Ire.webm",
+   "sha256": "ab6d258b4ad915b21a5fdb7c1f4f899586ed805cc302039a367336ea07d95fc4"
+  },
+  {
+   "bytes": 2338952,
+   "name": "17_Rattlesnake_encounter_in_the_Pinal_Mountains_AZ.webm",
+   "sha256": "7eef1a6311fa915a5caa7aba8f5ee758f0abb7057b6d8c0d42e76487a7d33b5f"
+  },
+  {
+   "bytes": 1224117,
+   "name": "18_Santa_Rosa_and_San_Jacinto_Mountains_National_Monu.webm",
+   "sha256": "c77403f623e2029f5b2591531347d947c61139ff252e473704f2a3633200541c"
+  },
+  {
+   "bytes": 16898809,
+   "name": "19_Setting_sun_1063.webm",
+   "sha256": "737cc73379067e926fb9f4546274df89335909bd85ad709fbf6fce7898a65170"
+  },
+  {
+   "bytes": 1274032,
+   "name": "20_Sunset_in_Yogyakarta.webm",
+   "sha256": "5ad6a69b0088cb36cb802c432ce4f314bd8a3cc7f3087be720f1733acc30f4ce"
+  },
+  {
+   "bytes": 4569635,
+   "name": "21_2026-05-05_Saxony_State_and_Leipzig_City_official.webm",
+   "sha256": "a60eb0b9cbe782bdbfcce2ba81093f746417c8ddf8395dd09825a7ae2cfba5e0"
+  },
+  {
+   "bytes": 144924,
+   "name": "22_Fireworks_Naperville_2022.webm",
+   "sha256": "f2e0a74c9880aae1db9026c86adf222fabf7ab80a044cb9b5ae3fb3b3a0ff621"
+  }
+ ],
+ "manual_edits": {},
+ "network_request_performed": false,
+ "output": {
+  "bytes": 6876895,
+  "fps": 30,
+  "height": 960,
+  "name": "MediaEngine Reel.mp4",
+  "profile": "9x16",
+  "profile_reason": "explicit",
+  "profile_requested": "9x16",
+  "resolution": "standard",
+  "sha256": "855921c1cd07b936746a88efe8871a385730c029239e59c1b3fc17f70090bbaf",
+  "width": 540
+ },
+ "pacing": {
+  "algorithm": "P11_MONTAGE_PACING_SHADOW_V1",
+  "baseline_target_error_s": 0.5,
+  "changed": true,
+  "durations_s": [
+   5.45,
+   4.507,
+   5.043
+  ],
+  "planned_target_error_s": 0.0,
+  "reason": "targeted_dynamic_pacing",
+  "transitions": [
+   {
+    "distance": 0.23999,
+    "duration_s": 0.0,
+    "kind": "HARD_CUT",
+    "reason": "large_visual_jump_avoid_ghosting"
+   },
+   {
+    "distance": 0.228367,
+    "duration_s": 0.0,
+    "kind": "HARD_CUT",
+    "reason": "large_visual_jump_avoid_ghosting"
+   }
+  ]
+ },
+ "render_source": "ORIGINAL_FULL_QUALITY_RECUT",
+ "rendered_transition_s": [
+  0.0,
+  0.0
+ ],
+ "segments": [
+  {
+   "camera_drop_trim": false,
+   "event_id": "90ea0323641ba08648da7647",
+   "manual_trim": null,
+   "position": 1,
+   "reel_in_s": 0.0,
+   "reel_out_s": 5.433,
+   "score": 0.898679,
+   "source_in_s": 127.533,
+   "source_name": "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm",
+   "source_out_s": 132.967
+  },
+  {
+   "camera_drop_trim": false,
+   "event_id": "cefe73ad4575b993b2436b3b",
+   "manual_trim": null,
+   "position": 2,
+   "reel_in_s": 5.433,
+   "reel_out_s": 9.933,
+   "score": 0.751383,
+   "source_in_s": 40.505,
+   "source_name": "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm",
+   "source_out_s": 45.005
+  },
+  {
+   "camera_drop_trim": false,
+   "event_id": "2e0a4f21df1b5919ca53ae4a",
+   "manual_trim": null,
+   "position": 3,
+   "reel_in_s": 9.933,
+   "reel_out_s": 14.967,
+   "score": 0.545754,
+   "source_in_s": 2.238,
+   "source_name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+   "source_out_s": 7.272
+  }
+ ],
+ "selected_count": 3,
+ "selected_event_ids": [
+  "90ea0323641ba08648da7647",
+  "cefe73ad4575b993b2436b3b",
+  "2e0a4f21df1b5919ca53ae4a"
+ ],
+ "selected_scores": [
+  0.898679,
+  0.751383,
+  0.545754
+ ],
+ "selected_sources": [
+  "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm",
+  "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm",
+  "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm"
+ ],
+ "selection_mode": "PE_CORE_L14_SEMANTIC_V1",
+ "selection_search": "accepted",
+ "semantic_best_moment_claim": true,
+ "semantic_model": "pe_core_l14",
+ "semantic_reports": [
+  {
+   "rank1": {
+    "center_s": 10.0,
+    "end_s": 12.5,
+    "final_score": 0.518369,
+    "scout_eventness": 0.300465,
+    "scout_novelty": 0.383044,
+    "scout_priority": 0.381023,
+    "scout_quality": 0.43729,
+    "semantic_margin_raw": -1.298151,
+    "semantic_score_0_1": 0.875858,
+    "semantic_scout_score": 0.740527,
+    "start_s": 7.0
+   },
+   "source_name": "01_Children_Playing_in_Cameroon.webm",
+   "source_sha256": "5b0a66a3da4ac71ba39aa7708582c70323dfd36c480fce446dc9f4a163851066",
+   "theme": "party"
+  },
+  {
+   "rank1": {
+    "center_s": 2.0,
+    "end_s": 5.5,
+    "final_score": 0.599294,
+    "scout_eventness": 0.556175,
+    "scout_novelty": 0.528322,
+    "scout_priority": 0.578851,
+    "scout_quality": 0.756184,
+    "semantic_margin_raw": -2.125002,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.856135,
+    "start_s": 0.0
+   },
+   "source_name": "02_Children_playing_on_Ai_Weiwei_Soft_Ground_MVI_6171.webm",
+   "source_sha256": "c837bca1265887d5f0d101ea57f2eff3e70a0b22ed13f58744e33b62d93525c9",
+   "theme": "party"
+  },
+  {
+   "rank1": {
+    "center_s": 11.0,
+    "end_s": 13.5,
+    "final_score": 0.573739,
+    "scout_eventness": 0.556029,
+    "scout_novelty": 0.384765,
+    "scout_priority": 0.458537,
+    "scout_quality": 0.615866,
+    "semantic_margin_raw": -3.069499,
+    "semantic_score_0_1": 0.836822,
+    "semantic_scout_score": 0.819627,
+    "start_s": 8.0
+   },
+   "source_name": "03_Explore_Oregon_Recreation-_South_Steens_Campground.webm",
+   "source_sha256": "be871b836bbdf63037fbf56f577bfee95095c99192b8b65c39c0a80245f2b175",
+   "theme": "party"
+  },
+  {
+   "rank1": {
+    "center_s": 9.0,
+    "dense_boundary_quality": 0.418471,
+    "dense_eventness": 0.630729,
+    "dense_frames": 22,
+    "dense_quality": 0.613137,
+    "dense_score": 0.578602,
+    "end_s": 10.5,
+    "final_score": 0.873581,
+    "scout_eventness": 0.600073,
+    "scout_novelty": 0.545051,
+    "scout_priority": 0.561702,
+    "scout_quality": 0.584484,
+    "semantic_margin_raw": 1.283786,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 1.0,
+    "start_s": 5.0
+   },
+   "source_name": "04_22341885325_1080p_28818105850.webm",
+   "source_sha256": "f6d59e0901acaba53755b1ae2bbdeffee07afdc022b07483881cabdaa1b82008",
+   "theme": "party"
+  },
+  {
+   "rank1": {
+    "center_s": 5.0,
+    "dense_boundary_quality": 0.512873,
+    "dense_eventness": 0.570506,
+    "dense_frames": 22,
+    "dense_quality": 0.510998,
+    "dense_score": 0.52625,
+    "end_s": 7.5,
+    "final_score": 0.724591,
+    "scout_eventness": 0.564997,
+    "scout_novelty": 0.426105,
+    "scout_priority": 0.502136,
+    "scout_quality": 0.693539,
+    "semantic_margin_raw": 4.310808,
+    "semantic_score_0_1": 0.898277,
+    "semantic_scout_score": 0.809595,
+    "start_s": 2.0
+   },
+   "source_name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+   "source_sha256": "22310f4cf18c7ae76a5166c02fb399a05f16c03234eb921d24509a800dcef612",
+   "theme": "party"
+  },
+  {
+   "rank1": {
+    "center_s": 31.46875,
+    "dense_boundary_quality": 0.356961,
+    "dense_eventness": 0.739371,
+    "dense_frames": 22,
+    "dense_quality": 0.58918,
+    "dense_score": 0.580284,
+    "end_s": 34.0,
+    "final_score": 0.760306,
+    "scout_eventness": 0.796908,
+    "scout_novelty": 0.467321,
+    "scout_priority": 0.571165,
+    "scout_quality": 0.723785,
+    "semantic_margin_raw": 2.552052,
+    "semantic_score_0_1": 0.815802,
+    "semantic_scout_score": 0.837458,
+    "start_s": 28.5
+   },
+   "source_name": "06_Birthday_Party.webm",
+   "source_sha256": "1b306300345023827224e579d6d78ff5770ec1018cdd1391f8ddf0b44ff39fa1",
+   "theme": "party"
+  },
+  {
+   "rank1": {
+    "center_s": 42.60625,
+    "dense_boundary_quality": 0.277581,
+    "dense_eventness": 0.703766,
+    "dense_frames": 22,
+    "dense_quality": 0.445672,
+    "dense_score": 0.476577,
+    "end_s": 45.5,
+    "final_score": 0.782056,
+    "scout_eventness": 0.672372,
+    "scout_novelty": 0.523204,
+    "scout_priority": 0.577841,
+    "scout_quality": 0.676998,
+    "semantic_margin_raw": 6.489416,
+    "semantic_score_0_1": 0.947511,
+    "semantic_scout_score": 0.912975,
+    "start_s": 40.0
+   },
+   "source_name": "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm",
+   "source_sha256": "1d1de1bf933bd10deafdf9da697c1e40991c2f3b1cc748f31900886d97d01bae",
+   "theme": "party"
+  },
+  {
+   "rank1": {
+    "center_s": 130.37145833333332,
+    "dense_boundary_quality": 0.526693,
+    "dense_eventness": 0.671706,
+    "dense_frames": 22,
+    "dense_quality": 0.559792,
+    "dense_score": 0.581151,
+    "end_s": 133.0,
+    "final_score": 0.874345,
+    "scout_eventness": 0.604005,
+    "scout_novelty": 0.559973,
+    "scout_priority": 0.623909,
+    "scout_quality": 0.841458,
+    "semantic_margin_raw": 7.917916,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 1.0,
+    "start_s": 127.5
+   },
+   "source_name": "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm",
+   "source_sha256": "746a3051deb64ca760b711781e935305ee0158f31a7814c92015ec14b26588a3",
+   "theme": "party"
+  },
+  {
+   "rank1": {
+    "center_s": 24.3375,
+    "end_s": 27.0,
+    "final_score": 0.540198,
+    "scout_eventness": 0.212029,
+    "scout_novelty": 0.2635,
+    "scout_priority": 0.322321,
+    "scout_quality": 0.594007,
+    "semantic_margin_raw": -0.60038,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.771711,
+    "start_s": 21.5
+   },
+   "source_name": "10_Пузыри_собака.webm",
+   "source_sha256": "126089ba6793a581396ff0df4dfff0219b18a4299f84b12f8d555fca35568d62",
+   "theme": "party"
+  },
+  {
+   "rank1": {
+    "center_s": 6.0,
+    "end_s": 8.5,
+    "final_score": 0.637859,
+    "scout_eventness": 0.706336,
+    "scout_novelty": 0.570195,
+    "scout_priority": 0.547463,
+    "scout_quality": 0.35205,
+    "semantic_margin_raw": -6.248718,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.911227,
+    "start_s": 3.0
+   },
+   "source_name": "11_Cat_lapping_water_off_ground_in_slow_motion_gk.webm",
+   "source_sha256": "3e75bdfc00a678ceb1c0f02f4005edd5fce7fff3586fe3f8046679d253165c10",
+   "theme": "party"
+  },
+  {
+   "rank1": {
+    "center_s": 2.0,
+    "end_s": 5.5,
+    "final_score": 0.7,
+    "scout_eventness": 0.632001,
+    "scout_novelty": 0.483278,
+    "scout_priority": 0.560359,
+    "scout_quality": 0.748249,
+    "semantic_margin_raw": -4.47506,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 1.0,
+    "start_s": 0.0
+   },
+   "source_name": "13_Water_waves_in_Herzliya_beach.webm",
+   "source_sha256": "97e172d6c28fd73e9bd320eb8e3cb3875de12f1eab3e5ad2757651b7346e3e50",
+   "theme": "party"
+  },
+  {
+   "rank1": {
+    "center_s": 26.0,
+    "end_s": 28.5,
+    "final_score": 0.607769,
+    "scout_eventness": 0.362614,
+    "scout_novelty": 0.391399,
+    "scout_priority": 0.461804,
+    "scout_quality": 0.761466,
+    "semantic_margin_raw": -5.822081,
+    "semantic_score_0_1": 0.916275,
+    "semantic_scout_score": 0.868242,
+    "start_s": 23.0
+   },
+   "source_name": "14_Rialto_Beach_Waves_2022.webm",
+   "source_sha256": "78f834164eeac4cdfbf5b2ee68df96bef66757a887ce13361d204eb7e25dce0e",
+   "theme": "party"
+  },
+  {
+   "rank1": {
+    "center_s": 0.0,
+    "end_s": 5.5,
+    "final_score": 0.526983,
+    "scout_eventness": 0.224348,
+    "scout_novelty": 0.512862,
+    "scout_priority": 0.430064,
+    "scout_quality": 0.328384,
+    "semantic_margin_raw": -5.702991,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.752833,
+    "start_s": 0.0
+   },
+   "source_name": "15_Sea_of_Galilee_Boat_Ride.webm",
+   "source_sha256": "77675a59d9f0a1e4b9f58d8dd42b75f97ed81c9b0982ee76e6ad1a67d2c8a1f2",
+   "theme": "party"
+  },
+  {
+   "rank1": {
+    "center_s": 19.0,
+    "end_s": 19.0,
+    "final_score": 0.7,
+    "scout_eventness": 0.435121,
+    "scout_novelty": 0.583653,
+    "scout_priority": 0.542295,
+    "scout_quality": 0.494941,
+    "semantic_margin_raw": -6.054949,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 1.0,
+    "start_s": 13.5
+   },
+   "source_name": "16_Fishing_Boat-1013831_Dingle_Peninsula_Co_Kerry_Ire.webm",
+   "source_sha256": "ab6d258b4ad915b21a5fdb7c1f4f899586ed805cc302039a367336ea07d95fc4",
+   "theme": "party"
+  },
+  {
+   "rank1": {
+    "center_s": 10.0,
+    "end_s": 12.5,
+    "final_score": 0.476,
+    "scout_eventness": 0.40588,
+    "scout_novelty": 0.345085,
+    "scout_priority": 0.433169,
+    "scout_quality": 0.732783,
+    "semantic_margin_raw": -8.022897,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.68,
+    "start_s": 7.0
+   },
+   "source_name": "17_Rattlesnake_encounter_in_the_Pinal_Mountains_AZ.webm",
+   "source_sha256": "7eef1a6311fa915a5caa7aba8f5ee758f0abb7057b6d8c0d42e76487a7d33b5f",
+   "theme": "party"
+  },
+  {
+   "rank1": {
+    "center_s": 1.0,
+    "end_s": 5.5,
+    "final_score": 0.630048,
+    "scout_eventness": 0.454364,
+    "scout_novelty": 0.540901,
+    "scout_priority": 0.53604,
+    "scout_quality": 0.584205,
+    "semantic_margin_raw": -5.085246,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.900069,
+    "start_s": 0.0
+   },
+   "source_name": "18_Santa_Rosa_and_San_Jacinto_Mountains_National_Monu.webm",
+   "source_sha256": "c77403f623e2029f5b2591531347d947c61139ff252e473704f2a3633200541c",
+   "theme": "party"
+  },
+  {
+   "rank1": {
+    "center_s": 160.945625,
+    "end_s": 163.5,
+    "final_score": 0.568954,
+    "scout_eventness": 0.52753,
+    "scout_novelty": 0.458862,
+    "scout_priority": 0.433477,
+    "scout_quality": 0.280097,
+    "semantic_margin_raw": -5.044741,
+    "semantic_score_0_1": 0.946941,
+    "semantic_scout_score": 0.812792,
+    "start_s": 158.0
+   },
+   "source_name": "19_Setting_sun_1063.webm",
+   "source_sha256": "737cc73379067e926fb9f4546274df89335909bd85ad709fbf6fce7898a65170",
+   "theme": "party"
+  },
+  {
+   "rank1": {
+    "center_s": 13.0,
+    "end_s": 15.37,
+    "final_score": 0.688913,
+    "scout_eventness": 0.50986,
+    "scout_novelty": 0.685274,
+    "scout_priority": 0.585689,
+    "scout_quality": 0.329931,
+    "semantic_margin_raw": -6.584448,
+    "semantic_score_0_1": 0.979328,
+    "semantic_scout_score": 0.984161,
+    "start_s": 10.0
+   },
+   "source_name": "20_Sunset_in_Yogyakarta.webm",
+   "source_sha256": "5ad6a69b0088cb36cb802c432ce4f314bd8a3cc7f3087be720f1733acc30f4ce",
+   "theme": "party"
+  },
+  {
+   "rank1": {
+    "center_s": 25.0,
+    "end_s": 27.5,
+    "final_score": 0.637543,
+    "scout_eventness": 0.663312,
+    "scout_novelty": 0.737487,
+    "scout_priority": 0.688953,
+    "scout_quality": 0.555503,
+    "semantic_margin_raw": -1.857606,
+    "semantic_score_0_1": 0.885774,
+    "semantic_scout_score": 0.910775,
+    "start_s": 22.0
+   },
+   "source_name": "21_2026-05-05_Saxony_State_and_Leipzig_City_official.webm",
+   "source_sha256": "a60eb0b9cbe782bdbfcce2ba81093f746417c8ddf8395dd09825a7ae2cfba5e0",
+   "theme": "party"
+  },
+  {
+   "rank1": {
+    "center_s": 26.0,
+    "end_s": 28.5,
+    "final_score": 0.64614,
+    "scout_eventness": 0.366776,
+    "scout_novelty": 0.483766,
+    "scout_priority": 0.446269,
+    "scout_quality": 0.389588,
+    "semantic_margin_raw": -1.901876,
+    "semantic_score_0_1": 0.93588,
+    "semantic_scout_score": 0.923057,
+    "start_s": 23.0
+   },
+   "source_name": "22_Fireworks_Naperville_2022.webm",
+   "source_sha256": "f2e0a74c9880aae1db9026c86adf222fabf7ab80a044cb9b5ae3fb3b3a0ff621",
+   "theme": "party"
+  }
+ ],
+ "semantic_requested": "required",
+ "semantic_runtime": {
+  "identity": {
+   "context_length": 32,
+   "files": {
+    "merges.txt": {
+     "bytes": 524619,
+     "sha256": "9fd691f7c8039210e0fced15865466c65820d09b63988b0174bfe25de299051a"
+    },
+    "text_model_int8.onnx": {
+     "bytes": 355596172,
+     "sha256": "1f3a1123723d5c8abf0cf9f22b9fa8e4c836ca1105ce2ab86083cb74696526aa"
+    },
+    "vision_model_int8.onnx": {
+     "bytes": 321065966,
+     "sha256": "7e28961190da8378b2b1faf562287da4d66128b5a013c3eb43558f210d273769"
+    },
+    "vocab.json": {
+     "bytes": 862328,
+     "sha256": "5047b556ce86ccaf6aa22b3ffccfc52d391ea4accdab9c2f2407da5b742d4363"
+    }
+   },
+   "image_size": 336,
+   "network_during_analysis": false,
+   "profile": "PE_CORE_L14",
+   "repo": "onnx-community/PE-Core-L14-336-ONNX",
+   "revision": "40c36ae81cea6449c590afcafe4a7378f1f26644"
+  },
+  "model_dir": "D:\\me-real\\home\\models\\PE_CORE_L14",
+  "pass": true
+ },
+ "semantic_timing": {
+  "clips_cached": 10,
+  "clips_cut": 25,
+  "clips_s": 24.99,
+  "rank_s": 41.92,
+  "score_s": 5.18,
+  "scout_embed_s": 0.0
+ },
+ "sequence": {
+  "algorithm": "P11_MONTAGE_SEQUENCE_SHADOW_V4",
+  "changed": false,
+  "guards": {
+   "adaptive_far_nonregression": true,
+   "adaptive_near_nonregression": true,
+   "adaptive_two_step_nonregression": true,
+   "closer_nonregression": true,
+   "fixed_far_count_nonregression": true,
+   "fixed_near_count_nonregression": true,
+   "fixed_similar_count_nonregression": true,
+   "fixed_two_step_count_nonregression": true,
+   "opener_nonregression": true,
+   "same_source_nonregression": true,
+   "source_switch_nonregression": true
+  },
+  "improvement": 0.0,
+  "reason": "insufficient_guarded_gain_keep_baseline"
+ },
+ "skipped_inputs": [],
+ "source_mutated": false,
+ "stage_seconds": {
+  "analyze": 72.17,
+  "finish": 8.67,
+  "inputs": 0.72,
+  "render": 7.36,
+  "select": 0.21,
+  "trim": 2.28
+ },
+ "status": "PASS",
+ "target_error_s": 0.03,
+ "target_seconds": 15.0,
+ "theme": "party",
+ "warnings": [
+  "THEME:party:35_MATCHING_MOMENTS",
+  "OVERLAPPING_MOMENTS_DROPPED:8"
+ ],
+ "widened_sources": {}
+}

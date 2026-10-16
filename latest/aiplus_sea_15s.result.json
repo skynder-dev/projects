@@ -1,0 +1,1031 @@
+{
+ "actual_duration_s": 15.0,
+ "audio": {
+  "activity": [
+   {
+    "audible": true,
+    "event_id": "57589fc5fbe3914945a0b713",
+    "has_audio_stream": true,
+    "rms_dbfs": -23.818,
+    "source_name": "13_Water_waves_in_Herzliya_beach.webm"
+   },
+   {
+    "audible": true,
+    "event_id": "9e4aa8ecbba9b8c72ce486c3",
+    "has_audio_stream": true,
+    "rms_dbfs": -16.495,
+    "source_name": "14_Rialto_Beach_Waves_2022.webm"
+   },
+   {
+    "audible": true,
+    "event_id": "6c41a94e60afcf0fdb53b7cf",
+    "has_audio_stream": true,
+    "rms_dbfs": -38.036,
+    "source_name": "16_Fishing_Boat-1013831_Dingle_Peninsula_Co_Kerry_Ire.webm"
+   }
+  ],
+  "applied": "source",
+  "decision": {
+   "algorithm": "P11_AUDIO_COHERENCE_SHADOW_V2",
+   "audible_clip_count": 3,
+   "audible_presence": [
+    true,
+    true,
+    true
+   ],
+   "changed": false,
+   "hazard_edges": 0,
+   "mode": "source",
+   "reason": "continuous_audible_source_audio",
+   "silent_clip_count": 0
+  },
+  "requested": "auto"
+ },
+ "boundary": {
+  "algorithm": "P11_CAMERA_DROP_TRIM_SHADOW_V1",
+  "decisions": [
+   {
+    "decision": {
+     "algorithm": "P11_CAMERA_DROP_TRIM_SHADOW_V1",
+     "base_dark": 0.0,
+     "base_ratio": 0.601101,
+     "dark_threshold": 0.3,
+     "ratio_threshold": 0.451101,
+     "reason": "no_sustained_terminal_camera_drop",
+     "trim": false
+    },
+    "event_id": "57589fc5fbe3914945a0b713",
+    "source_name": "13_Water_waves_in_Herzliya_beach.webm"
+   },
+   {
+    "decision": {
+     "algorithm": "P11_CAMERA_DROP_TRIM_SHADOW_V1",
+     "base_dark": 0.888251,
+     "base_ratio": 0.228715,
+     "dark_threshold": 1.088251,
+     "ratio_threshold": 0.078715,
+     "reason": "no_sustained_terminal_camera_drop",
+     "trim": false
+    },
+    "event_id": "9e4aa8ecbba9b8c72ce486c3",
+    "source_name": "14_Rialto_Beach_Waves_2022.webm"
+   },
+   {
+    "decision": {
+     "algorithm": "P11_CAMERA_DROP_TRIM_SHADOW_V1",
+     "base_dark": 0.000464,
+     "base_ratio": 0.898365,
+     "dark_threshold": 0.3,
+     "ratio_threshold": 0.7,
+     "reason": "no_sustained_terminal_camera_drop",
+     "trim": false
+    },
+    "event_id": "6c41a94e60afcf0fdb53b7cf",
+    "source_name": "16_Fishing_Boat-1013831_Dingle_Peninsula_Co_Kerry_Ire.webm"
+   }
+  ],
+  "trimmed_count": 0
+ },
+ "candidate_pool": [
+  {
+   "end_s": 8.5,
+   "event_id": "57589fc5fbe3914945a0b713",
+   "excluded": false,
+   "score": 0.886112,
+   "selected": true,
+   "source_name": "13_Water_waves_in_Herzliya_beach.webm",
+   "start_s": 3.0
+  },
+  {
+   "end_s": 11.5,
+   "event_id": "9e4aa8ecbba9b8c72ce486c3",
+   "excluded": false,
+   "score": 0.841496,
+   "selected": true,
+   "source_name": "14_Rialto_Beach_Waves_2022.webm",
+   "start_s": 6.0
+  },
+  {
+   "end_s": 8.5,
+   "event_id": "e29e2c835f0a6fecb5c0c3c3",
+   "excluded": false,
+   "score": 0.81944,
+   "selected": false,
+   "source_name": "14_Rialto_Beach_Waves_2022.webm",
+   "start_s": 3.0
+  },
+  {
+   "end_s": 23.5,
+   "event_id": "9a6b601e282df028dcf801c6",
+   "excluded": false,
+   "score": 0.79914,
+   "selected": false,
+   "source_name": "14_Rialto_Beach_Waves_2022.webm",
+   "start_s": 18.0
+  },
+  {
+   "end_s": 5.5,
+   "event_id": "66a63c23f24248a0c666b8c4",
+   "excluded": false,
+   "score": 0.782924,
+   "selected": false,
+   "source_name": "13_Water_waves_in_Herzliya_beach.webm",
+   "start_s": 0.0
+  },
+  {
+   "end_s": 11.5,
+   "event_id": "e383c8729fd480d0fa03f0af",
+   "excluded": false,
+   "score": 0.778739,
+   "selected": false,
+   "source_name": "13_Water_waves_in_Herzliya_beach.webm",
+   "start_s": 6.0
+  },
+  {
+   "end_s": 13.5,
+   "event_id": "a96334327cb8207ce5ff0e04",
+   "excluded": false,
+   "score": 0.733089,
+   "selected": false,
+   "source_name": "14_Rialto_Beach_Waves_2022.webm",
+   "start_s": 8.0
+  },
+  {
+   "end_s": 32.5,
+   "event_id": "7317c19cc28c2efd7b3662a5",
+   "excluded": false,
+   "score": 0.722353,
+   "selected": false,
+   "source_name": "14_Rialto_Beach_Waves_2022.webm",
+   "start_s": 27.0
+  },
+  {
+   "end_s": 20.5,
+   "event_id": "37da6883599999d8fd90f2a9",
+   "excluded": false,
+   "score": 0.714584,
+   "selected": false,
+   "source_name": "14_Rialto_Beach_Waves_2022.webm",
+   "start_s": 15.0
+  },
+  {
+   "end_s": 35.5,
+   "event_id": "d393a762df6e04422ccf3c3f",
+   "excluded": false,
+   "score": 0.641858,
+   "selected": false,
+   "source_name": "14_Rialto_Beach_Waves_2022.webm",
+   "start_s": 30.0
+  },
+  {
+   "end_s": 19.0,
+   "event_id": "6c41a94e60afcf0fdb53b7cf",
+   "excluded": false,
+   "score": 0.595596,
+   "selected": true,
+   "source_name": "16_Fishing_Boat-1013831_Dingle_Peninsula_Co_Kerry_Ire.webm",
+   "start_s": 13.5
+  },
+  {
+   "end_s": 39.0,
+   "event_id": "7b9a7930c2b104d572c9dbed",
+   "excluded": false,
+   "score": 0.54576,
+   "selected": false,
+   "source_name": "14_Rialto_Beach_Waves_2022.webm",
+   "start_s": 33.5
+  },
+  {
+   "end_s": 102.0,
+   "event_id": "e553c1bb98e24504018ff523",
+   "excluded": false,
+   "score": 0.527207,
+   "selected": false,
+   "source_name": "19_Setting_sun_1063.webm",
+   "start_s": 96.5
+  },
+  {
+   "end_s": 16.5,
+   "event_id": "e507e7d0f6d4ff488b0003a0",
+   "excluded": false,
+   "score": 0.515946,
+   "selected": false,
+   "source_name": "16_Fishing_Boat-1013831_Dingle_Peninsula_Co_Kerry_Ire.webm",
+   "start_s": 11.0
+  },
+  {
+   "end_s": 5.5,
+   "event_id": "1d6220f08ca7ae3bdebea375",
+   "excluded": false,
+   "score": 0.47743,
+   "selected": false,
+   "source_name": "16_Fishing_Boat-1013831_Dingle_Peninsula_Co_Kerry_Ire.webm",
+   "start_s": 0.0
+  },
+  {
+   "end_s": 30.0,
+   "event_id": "de2e521135f94a960a7e148f",
+   "excluded": false,
+   "score": 0.429411,
+   "selected": false,
+   "source_name": "19_Setting_sun_1063.webm",
+   "start_s": 24.5
+  },
+  {
+   "end_s": 61.0,
+   "event_id": "b2512c09c9aad51a3279f632",
+   "excluded": false,
+   "score": 0.379629,
+   "selected": false,
+   "source_name": "19_Setting_sun_1063.webm",
+   "start_s": 55.5
+  },
+  {
+   "end_s": 13.5,
+   "event_id": "0b6176c8dc7fac3a141c21e9",
+   "excluded": false,
+   "score": 0.34624,
+   "selected": false,
+   "source_name": "16_Fishing_Boat-1013831_Dingle_Peninsula_Co_Kerry_Ire.webm",
+   "start_s": 8.0
+  },
+  {
+   "end_s": 16.5,
+   "event_id": "c781ff0f7812efe0ec3c6e7a",
+   "excluded": false,
+   "score": 0.342516,
+   "selected": false,
+   "source_name": "15_Sea_of_Galilee_Boat_Ride.webm",
+   "start_s": 11.0
+  },
+  {
+   "end_s": 8.5,
+   "event_id": "1039d283bac3aa87601fb364",
+   "excluded": false,
+   "score": 0.321116,
+   "selected": false,
+   "source_name": "16_Fishing_Boat-1013831_Dingle_Peninsula_Co_Kerry_Ire.webm",
+   "start_s": 3.0
+  },
+  {
+   "end_s": 64.5,
+   "event_id": "da3aeb4a8cdd8dd83e73fdea",
+   "excluded": false,
+   "score": 0.304818,
+   "selected": false,
+   "source_name": "19_Setting_sun_1063.webm",
+   "start_s": 59.0
+  },
+  {
+   "end_s": 10.5,
+   "event_id": "bed6da3a0919ec4435e79d5b",
+   "excluded": false,
+   "score": 0.289366,
+   "selected": false,
+   "source_name": "16_Fishing_Boat-1013831_Dingle_Peninsula_Co_Kerry_Ire.webm",
+   "start_s": 5.0
+  },
+  {
+   "end_s": 92.0,
+   "event_id": "16114a0d3eebd89041a92967",
+   "excluded": false,
+   "score": 0.284972,
+   "selected": false,
+   "source_name": "19_Setting_sun_1063.webm",
+   "start_s": 86.5
+  },
+  {
+   "end_s": 18.5,
+   "event_id": "3d250ec7ac11b6bf8dfa026e",
+   "excluded": false,
+   "score": 0.284609,
+   "selected": false,
+   "source_name": "15_Sea_of_Galilee_Boat_Ride.webm",
+   "start_s": 13.0
+  },
+  {
+   "end_s": 5.5,
+   "event_id": "e1de6ce9ace80b93fcb9ad63",
+   "excluded": false,
+   "score": 0.270473,
+   "selected": false,
+   "source_name": "15_Sea_of_Galilee_Boat_Ride.webm",
+   "start_s": 0.0
+  },
+  {
+   "end_s": 98.5,
+   "event_id": "ed55dadad147e144b1745527",
+   "excluded": false,
+   "score": 0.254429,
+   "selected": false,
+   "source_name": "19_Setting_sun_1063.webm",
+   "start_s": 93.0
+  },
+  {
+   "end_s": 23.5,
+   "event_id": "f68dd2ddbfd7c28260f0d634",
+   "excluded": false,
+   "score": 0.235698,
+   "selected": false,
+   "source_name": "19_Setting_sun_1063.webm",
+   "start_s": 18.0
+  },
+  {
+   "end_s": 47.5,
+   "event_id": "e68d0d2522a823dbfe26718d",
+   "excluded": false,
+   "score": 0.195254,
+   "selected": false,
+   "source_name": "19_Setting_sun_1063.webm",
+   "start_s": 42.0
+  }
+ ],
+ "claim_scope": "current run only; shadow prototype",
+ "contract": "P11_FOLDER_TO_REEL_R3",
+ "deinterlaced_sources": [],
+ "dress": null,
+ "elapsed_s": 75.558,
+ "engine": {
+  "orchestrator_sha256": "a812e5b1a0f5a786335ba7433a48932b8ff50163e50420fc105e8bb53d0edd2c",
+  "semantic_hook_sha256": "2b15303eba5b02b7f949cb560e58b2dbee09ff4576e21ad4b25b2d3111b02d5c"
+ },
+ "event_cache": "semantic_candidate_cache",
+ "event_count": 28,
+ "excluded_event_ids": [],
+ "hdr_sources": {},
+ "hw_decode": null,
+ "input_count": 20,
+ "input_fingerprint": "eee3e5cbcce4ea25ac9805503a8a545a25c65217fd9bf42afb18ed11ad4db40e",
+ "input_folder": "D:\\me-real\\Commons videos",
+ "input_list": null,
+ "inputs": [
+  {
+   "bytes": 4586512,
+   "name": "01_Children_Playing_in_Cameroon.webm",
+   "sha256": "5b0a66a3da4ac71ba39aa7708582c70323dfd36c480fce446dc9f4a163851066"
+  },
+  {
+   "bytes": 1539018,
+   "name": "02_Children_playing_on_Ai_Weiwei_Soft_Ground_MVI_6171.webm",
+   "sha256": "c837bca1265887d5f0d101ea57f2eff3e70a0b22ed13f58744e33b62d93525c9"
+  },
+  {
+   "bytes": 5708083,
+   "name": "03_Explore_Oregon_Recreation-_South_Steens_Campground.webm",
+   "sha256": "be871b836bbdf63037fbf56f577bfee95095c99192b8b65c39c0a80245f2b175"
+  },
+  {
+   "bytes": 1469865,
+   "name": "04_22341885325_1080p_28818105850.webm",
+   "sha256": "f6d59e0901acaba53755b1ae2bbdeffee07afdc022b07483881cabdaa1b82008"
+  },
+  {
+   "bytes": 5390447,
+   "name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+   "sha256": "22310f4cf18c7ae76a5166c02fb399a05f16c03234eb921d24509a800dcef612"
+  },
+  {
+   "bytes": 10761296,
+   "name": "06_Birthday_Party.webm",
+   "sha256": "1b306300345023827224e579d6d78ff5770ec1018cdd1391f8ddf0b44ff39fa1"
+  },
+  {
+   "bytes": 10215281,
+   "name": "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm",
+   "sha256": "1d1de1bf933bd10deafdf9da697c1e40991c2f3b1cc748f31900886d97d01bae"
+  },
+  {
+   "bytes": 20945494,
+   "name": "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm",
+   "sha256": "746a3051deb64ca760b711781e935305ee0158f31a7814c92015ec14b26588a3"
+  },
+  {
+   "bytes": 7655711,
+   "name": "10_Пузыри_собака.webm",
+   "sha256": "126089ba6793a581396ff0df4dfff0219b18a4299f84b12f8d555fca35568d62"
+  },
+  {
+   "bytes": 1343874,
+   "name": "11_Cat_lapping_water_off_ground_in_slow_motion_gk.webm",
+   "sha256": "3e75bdfc00a678ceb1c0f02f4005edd5fce7fff3586fe3f8046679d253165c10"
+  },
+  {
+   "bytes": 2114525,
+   "name": "13_Water_waves_in_Herzliya_beach.webm",
+   "sha256": "97e172d6c28fd73e9bd320eb8e3cb3875de12f1eab3e5ad2757651b7346e3e50"
+  },
+  {
+   "bytes": 1642174,
+   "name": "14_Rialto_Beach_Waves_2022.webm",
+   "sha256": "78f834164eeac4cdfbf5b2ee68df96bef66757a887ce13361d204eb7e25dce0e"
+  },
+  {
+   "bytes": 2967670,
+   "name": "15_Sea_of_Galilee_Boat_Ride.webm",
+   "sha256": "77675a59d9f0a1e4b9f58d8dd42b75f97ed81c9b0982ee76e6ad1a67d2c8a1f2"
+  },
+  {
+   "bytes": 3403441,
+   "name": "16_Fishing_Boat-1013831_Dingle_Peninsula_Co_Kerry_Ire.webm",
+   "sha256": "ab6d258b4ad915b21a5fdb7c1f4f899586ed805cc302039a367336ea07d95fc4"
+  },
+  {
+   "bytes": 2338952,
+   "name": "17_Rattlesnake_encounter_in_the_Pinal_Mountains_AZ.webm",
+   "sha256": "7eef1a6311fa915a5caa7aba8f5ee758f0abb7057b6d8c0d42e76487a7d33b5f"
+  },
+  {
+   "bytes": 1224117,
+   "name": "18_Santa_Rosa_and_San_Jacinto_Mountains_National_Monu.webm",
+   "sha256": "c77403f623e2029f5b2591531347d947c61139ff252e473704f2a3633200541c"
+  },
+  {
+   "bytes": 16898809,
+   "name": "19_Setting_sun_1063.webm",
+   "sha256": "737cc73379067e926fb9f4546274df89335909bd85ad709fbf6fce7898a65170"
+  },
+  {
+   "bytes": 1274032,
+   "name": "20_Sunset_in_Yogyakarta.webm",
+   "sha256": "5ad6a69b0088cb36cb802c432ce4f314bd8a3cc7f3087be720f1733acc30f4ce"
+  },
+  {
+   "bytes": 4569635,
+   "name": "21_2026-05-05_Saxony_State_and_Leipzig_City_official.webm",
+   "sha256": "a60eb0b9cbe782bdbfcce2ba81093f746417c8ddf8395dd09825a7ae2cfba5e0"
+  },
+  {
+   "bytes": 144924,
+   "name": "22_Fireworks_Naperville_2022.webm",
+   "sha256": "f2e0a74c9880aae1db9026c86adf222fabf7ab80a044cb9b5ae3fb3b3a0ff621"
+  }
+ ],
+ "manual_edits": {},
+ "network_request_performed": false,
+ "output": {
+  "bytes": 3681880,
+  "fps": 30,
+  "height": 960,
+  "name": "MediaEngine Reel.mp4",
+  "profile": "9x16",
+  "profile_reason": "explicit",
+  "profile_requested": "9x16",
+  "resolution": "standard",
+  "sha256": "58511c6ae89a6ec0d437a42e6097a768bb7b167a23ee79202a569c0f38a86827",
+  "width": 540
+ },
+ "pacing": {
+  "algorithm": "P11_MONTAGE_PACING_SHADOW_V1",
+  "baseline_target_error_s": 0.5,
+  "changed": true,
+  "durations_s": [
+   5.5,
+   4.919,
+   4.792
+  ],
+  "planned_target_error_s": 0.0,
+  "reason": "targeted_dynamic_pacing",
+  "transitions": [
+   {
+    "distance": 0.143353,
+    "duration_s": 0.211,
+    "kind": "DISSOLVE",
+    "min_stability": 0.289982,
+    "reason": "stability_scaled_dissolve"
+   },
+   {
+    "distance": 0.291317,
+    "duration_s": 0.0,
+    "kind": "HARD_CUT",
+    "reason": "large_visual_jump_avoid_ghosting"
+   }
+  ]
+ },
+ "render_source": "ORIGINAL_FULL_QUALITY_RECUT",
+ "rendered_transition_s": [
+  0.2,
+  0.0
+ ],
+ "segments": [
+  {
+   "camera_drop_trim": false,
+   "event_id": "57589fc5fbe3914945a0b713",
+   "manual_trim": null,
+   "position": 1,
+   "reel_in_s": 0.0,
+   "reel_out_s": 5.467,
+   "score": 0.886112,
+   "source_in_s": 3.027,
+   "source_name": "13_Water_waves_in_Herzliya_beach.webm",
+   "source_out_s": 8.493
+  },
+  {
+   "camera_drop_trim": false,
+   "event_id": "9e4aa8ecbba9b8c72ce486c3",
+   "manual_trim": null,
+   "position": 2,
+   "reel_in_s": 5.267,
+   "reel_out_s": 10.167,
+   "score": 0.841496,
+   "source_in_s": 6.3,
+   "source_name": "14_Rialto_Beach_Waves_2022.webm",
+   "source_out_s": 11.2
+  },
+  {
+   "camera_drop_trim": false,
+   "event_id": "6c41a94e60afcf0fdb53b7cf",
+   "manual_trim": null,
+   "position": 3,
+   "reel_in_s": 10.167,
+   "reel_out_s": 14.967,
+   "score": 0.595596,
+   "source_in_s": 13.85,
+   "source_name": "16_Fishing_Boat-1013831_Dingle_Peninsula_Co_Kerry_Ire.webm",
+   "source_out_s": 18.65
+  }
+ ],
+ "selected_count": 3,
+ "selected_event_ids": [
+  "57589fc5fbe3914945a0b713",
+  "9e4aa8ecbba9b8c72ce486c3",
+  "6c41a94e60afcf0fdb53b7cf"
+ ],
+ "selected_scores": [
+  0.886112,
+  0.841496,
+  0.595596
+ ],
+ "selected_sources": [
+  "13_Water_waves_in_Herzliya_beach.webm",
+  "14_Rialto_Beach_Waves_2022.webm",
+  "16_Fishing_Boat-1013831_Dingle_Peninsula_Co_Kerry_Ire.webm"
+ ],
+ "selection_mode": "PE_CORE_L14_SEMANTIC_V1",
+ "selection_search": "accepted",
+ "semantic_best_moment_claim": true,
+ "semantic_model": "pe_core_l14",
+ "semantic_reports": [
+  {
+   "rank1": {
+    "center_s": 17.0,
+    "end_s": 19.5,
+    "final_score": 0.498048,
+    "scout_eventness": 0.381315,
+    "scout_novelty": 0.381442,
+    "scout_priority": 0.379623,
+    "scout_quality": 0.372558,
+    "semantic_margin_raw": -6.563032,
+    "semantic_score_0_1": 0.900407,
+    "semantic_scout_score": 0.711497,
+    "start_s": 14.0
+   },
+   "source_name": "01_Children_Playing_in_Cameroon.webm",
+   "source_sha256": "5b0a66a3da4ac71ba39aa7708582c70323dfd36c480fce446dc9f4a163851066",
+   "theme": "sea"
+  },
+  {
+   "rank1": {
+    "center_s": 3.0,
+    "end_s": 5.5,
+    "final_score": 0.599294,
+    "scout_eventness": 0.556175,
+    "scout_novelty": 0.528322,
+    "scout_priority": 0.578851,
+    "scout_quality": 0.756184,
+    "semantic_margin_raw": -4.32727,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.856135,
+    "start_s": 0.0
+   },
+   "source_name": "02_Children_playing_on_Ai_Weiwei_Soft_Ground_MVI_6171.webm",
+   "source_sha256": "c837bca1265887d5f0d101ea57f2eff3e70a0b22ed13f58744e33b62d93525c9",
+   "theme": "sea"
+  },
+  {
+   "rank1": {
+    "center_s": 0.0,
+    "end_s": 5.5,
+    "final_score": 0.531014,
+    "scout_eventness": 0.464796,
+    "scout_novelty": 0.404147,
+    "scout_priority": 0.381319,
+    "scout_quality": 0.244245,
+    "semantic_margin_raw": -5.519164,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.758592,
+    "start_s": 0.0
+   },
+   "source_name": "03_Explore_Oregon_Recreation-_South_Steens_Campground.webm",
+   "source_sha256": "be871b836bbdf63037fbf56f577bfee95095c99192b8b65c39c0a80245f2b175",
+   "theme": "sea"
+  },
+  {
+   "rank1": {
+    "center_s": 7.0,
+    "end_s": 9.5,
+    "final_score": 0.7,
+    "scout_eventness": 0.5422,
+    "scout_novelty": 0.514518,
+    "scout_priority": 0.530818,
+    "scout_quality": 0.573481,
+    "semantic_margin_raw": -5.736617,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 1.0,
+    "start_s": 4.0
+   },
+   "source_name": "04_22341885325_1080p_28818105850.webm",
+   "source_sha256": "f6d59e0901acaba53755b1ae2bbdeffee07afdc022b07483881cabdaa1b82008",
+   "theme": "sea"
+  },
+  {
+   "rank1": {
+    "center_s": 5.0,
+    "end_s": 7.5,
+    "final_score": 0.504391,
+    "scout_eventness": 0.564997,
+    "scout_novelty": 0.426105,
+    "scout_priority": 0.502136,
+    "scout_quality": 0.693539,
+    "semantic_margin_raw": -9.031881,
+    "semantic_score_0_1": 0.848165,
+    "semantic_scout_score": 0.720559,
+    "start_s": 2.0
+   },
+   "source_name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+   "source_sha256": "22310f4cf18c7ae76a5166c02fb399a05f16c03234eb921d24509a800dcef612",
+   "theme": "sea"
+  },
+  {
+   "rank1": {
+    "center_s": 36.4375,
+    "end_s": 39.0,
+    "final_score": 0.689832,
+    "scout_eventness": 0.658798,
+    "scout_novelty": 0.649338,
+    "scout_priority": 0.621559,
+    "scout_quality": 0.504799,
+    "semantic_margin_raw": -5.561592,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.985474,
+    "start_s": 33.5
+   },
+   "source_name": "06_Birthday_Party.webm",
+   "source_sha256": "1b306300345023827224e579d6d78ff5770ec1018cdd1391f8ddf0b44ff39fa1",
+   "theme": "sea"
+  },
+  {
+   "rank1": {
+    "center_s": 60.150000000000006,
+    "end_s": 63.0,
+    "final_score": 0.560192,
+    "scout_eventness": 0.685314,
+    "scout_novelty": 0.633909,
+    "scout_priority": 0.574644,
+    "scout_quality": 0.301258,
+    "semantic_margin_raw": -7.142386,
+    "semantic_score_0_1": 0.882108,
+    "semantic_scout_score": 0.800274,
+    "start_s": 57.5
+   },
+   "source_name": "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm",
+   "source_sha256": "1d1de1bf933bd10deafdf9da697c1e40991c2f3b1cc748f31900886d97d01bae",
+   "theme": "sea"
+  },
+  {
+   "rank1": {
+    "center_s": 127.19166666666666,
+    "end_s": 130.0,
+    "final_score": 0.483798,
+    "scout_eventness": 0.769335,
+    "scout_novelty": 0.273202,
+    "scout_priority": 0.444033,
+    "scout_quality": 0.73093,
+    "semantic_margin_raw": -4.979377,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.69114,
+    "start_s": 124.5
+   },
+   "source_name": "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm",
+   "source_sha256": "746a3051deb64ca760b711781e935305ee0158f31a7814c92015ec14b26588a3",
+   "theme": "sea"
+  },
+  {
+   "rank1": {
+    "center_s": 52.325624999999995,
+    "end_s": 55.0,
+    "final_score": 0.542842,
+    "scout_eventness": 0.125281,
+    "scout_novelty": 0.300667,
+    "scout_priority": 0.319234,
+    "scout_quality": 0.528767,
+    "semantic_margin_raw": -7.892721,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.775489,
+    "start_s": 49.5
+   },
+   "source_name": "10_Пузыри_собака.webm",
+   "source_sha256": "126089ba6793a581396ff0df4dfff0219b18a4299f84b12f8d555fca35568d62",
+   "theme": "sea"
+  },
+  {
+   "rank1": {
+    "center_s": 7.0,
+    "end_s": 9.5,
+    "final_score": 0.669124,
+    "scout_eventness": 0.686533,
+    "scout_novelty": 0.576236,
+    "scout_priority": 0.554207,
+    "scout_quality": 0.381663,
+    "semantic_margin_raw": -8.952266,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.955892,
+    "start_s": 4.0
+   },
+   "source_name": "11_Cat_lapping_water_off_ground_in_slow_motion_gk.webm",
+   "source_sha256": "3e75bdfc00a678ceb1c0f02f4005edd5fce7fff3586fe3f8046679d253165c10",
+   "theme": "sea"
+  },
+  {
+   "rank1": {
+    "center_s": 6.0,
+    "dense_boundary_quality": 0.507482,
+    "dense_eventness": 0.732956,
+    "dense_frames": 22,
+    "dense_quality": 0.546023,
+    "dense_score": 0.585048,
+    "end_s": 8.5,
+    "final_score": 0.84307,
+    "scout_eventness": 0.50868,
+    "scout_novelty": 0.51702,
+    "scout_priority": 0.536894,
+    "scout_quality": 0.621649,
+    "semantic_margin_raw": 6.860615,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.953651,
+    "start_s": 3.0
+   },
+   "source_name": "13_Water_waves_in_Herzliya_beach.webm",
+   "source_sha256": "97e172d6c28fd73e9bd320eb8e3cb3875de12f1eab3e5ad2757651b7346e3e50",
+   "theme": "sea"
+  },
+  {
+   "rank1": {
+    "center_s": 9.0,
+    "dense_boundary_quality": 0.388119,
+    "dense_eventness": 0.644663,
+    "dense_frames": 22,
+    "dense_quality": 0.588447,
+    "dense_score": 0.562436,
+    "end_s": 11.5,
+    "final_score": 0.803862,
+    "scout_eventness": 0.465488,
+    "scout_novelty": 0.438882,
+    "scout_priority": 0.452337,
+    "scout_quality": 0.484635,
+    "semantic_margin_raw": 5.840249,
+    "semantic_score_0_1": 0.979304,
+    "semantic_scout_score": 0.907331,
+    "start_s": 6.0
+   },
+   "source_name": "14_Rialto_Beach_Waves_2022.webm",
+   "source_sha256": "78f834164eeac4cdfbf5b2ee68df96bef66757a887ce13361d204eb7e25dce0e",
+   "theme": "sea"
+  },
+  {
+   "rank1": {
+    "center_s": 14.0,
+    "dense_boundary_quality": 0.321918,
+    "dense_eventness": 0.785641,
+    "dense_frames": 22,
+    "dense_quality": 0.649433,
+    "dense_score": 0.617982,
+    "end_s": 16.5,
+    "final_score": 0.791046,
+    "scout_eventness": 0.614853,
+    "scout_novelty": 0.368428,
+    "scout_priority": 0.498311,
+    "scout_quality": 0.818163,
+    "semantic_margin_raw": 0.227666,
+    "semantic_score_0_1": 0.957014,
+    "semantic_scout_score": 0.865217,
+    "start_s": 11.0
+   },
+   "source_name": "15_Sea_of_Galilee_Boat_Ride.webm",
+   "source_sha256": "77675a59d9f0a1e4b9f58d8dd42b75f97ed81c9b0982ee76e6ad1a67d2c8a1f2",
+   "theme": "sea"
+  },
+  {
+   "rank1": {
+    "center_s": 18.0,
+    "dense_boundary_quality": 0.355127,
+    "dense_eventness": 0.71739,
+    "dense_frames": 22,
+    "dense_quality": 0.547356,
+    "dense_score": 0.551419,
+    "end_s": 19.0,
+    "final_score": 0.865426,
+    "scout_eventness": 0.435121,
+    "scout_novelty": 0.583653,
+    "scout_priority": 0.542295,
+    "scout_quality": 0.494941,
+    "semantic_margin_raw": 4.127237,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 1.0,
+    "start_s": 13.5
+   },
+   "source_name": "16_Fishing_Boat-1013831_Dingle_Peninsula_Co_Kerry_Ire.webm",
+   "source_sha256": "ab6d258b4ad915b21a5fdb7c1f4f899586ed805cc302039a367336ea07d95fc4",
+   "theme": "sea"
+  },
+  {
+   "rank1": {
+    "center_s": 8.0,
+    "end_s": 10.5,
+    "final_score": 0.555325,
+    "scout_eventness": 0.467325,
+    "scout_novelty": 0.507095,
+    "scout_priority": 0.526634,
+    "scout_quality": 0.634515,
+    "semantic_margin_raw": -9.628495,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.793321,
+    "start_s": 5.0
+   },
+   "source_name": "17_Rattlesnake_encounter_in_the_Pinal_Mountains_AZ.webm",
+   "source_sha256": "7eef1a6311fa915a5caa7aba8f5ee758f0abb7057b6d8c0d42e76487a7d33b5f",
+   "theme": "sea"
+  },
+  {
+   "rank1": {
+    "center_s": 5.0,
+    "end_s": 7.5,
+    "final_score": 0.539884,
+    "scout_eventness": 0.523927,
+    "scout_novelty": 0.616062,
+    "scout_priority": 0.568092,
+    "scout_quality": 0.450835,
+    "semantic_margin_raw": -5.471849,
+    "semantic_score_0_1": 0.663621,
+    "semantic_scout_score": 0.771263,
+    "start_s": 2.0
+   },
+   "source_name": "18_Santa_Rosa_and_San_Jacinto_Mountains_National_Monu.webm",
+   "source_sha256": "c77403f623e2029f5b2591531347d947c61139ff252e473704f2a3633200541c",
+   "theme": "sea"
+  },
+  {
+   "rank1": {
+    "center_s": 99.306875,
+    "dense_boundary_quality": 0.534265,
+    "dense_eventness": 0.726034,
+    "dense_frames": 22,
+    "dense_quality": 0.582651,
+    "dense_score": 0.60882,
+    "end_s": 102.0,
+    "final_score": 0.882646,
+    "scout_eventness": 0.771763,
+    "scout_novelty": 0.673448,
+    "scout_priority": 0.698311,
+    "scout_quality": 0.719758,
+    "semantic_margin_raw": 2.86801,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 1.0,
+    "start_s": 96.5
+   },
+   "source_name": "19_Setting_sun_1063.webm",
+   "source_sha256": "737cc73379067e926fb9f4546274df89335909bd85ad709fbf6fce7898a65170",
+   "theme": "sea"
+  },
+  {
+   "rank1": {
+    "center_s": 11.0,
+    "end_s": 13.5,
+    "final_score": 0.581312,
+    "scout_eventness": 0.394015,
+    "scout_novelty": 0.595183,
+    "scout_priority": 0.533792,
+    "scout_quality": 0.448481,
+    "semantic_margin_raw": -9.075782,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.830446,
+    "start_s": 8.0
+   },
+   "source_name": "20_Sunset_in_Yogyakarta.webm",
+   "source_sha256": "5ad6a69b0088cb36cb802c432ce4f314bd8a3cc7f3087be720f1733acc30f4ce",
+   "theme": "sea"
+  },
+  {
+   "rank1": {
+    "center_s": 33.0,
+    "end_s": 33.5,
+    "final_score": 0.608282,
+    "scout_eventness": 0.625285,
+    "scout_novelty": 0.479069,
+    "scout_priority": 0.563453,
+    "scout_quality": 0.78206,
+    "semantic_margin_raw": -6.566329,
+    "semantic_score_0_1": 1.0,
+    "semantic_scout_score": 0.868974,
+    "start_s": 28.0
+   },
+   "source_name": "21_2026-05-05_Saxony_State_and_Leipzig_City_official.webm",
+   "source_sha256": "a60eb0b9cbe782bdbfcce2ba81093f746417c8ddf8395dd09825a7ae2cfba5e0",
+   "theme": "sea"
+  },
+  {
+   "rank1": {
+    "center_s": 29.0,
+    "end_s": 31.5,
+    "final_score": 0.606717,
+    "scout_eventness": 0.36795,
+    "scout_novelty": 0.419143,
+    "scout_priority": 0.402247,
+    "scout_quality": 0.375519,
+    "semantic_margin_raw": -3.246836,
+    "semantic_score_0_1": 0.96964,
+    "semantic_scout_score": 0.866739,
+    "start_s": 26.0
+   },
+   "source_name": "22_Fireworks_Naperville_2022.webm",
+   "source_sha256": "f2e0a74c9880aae1db9026c86adf222fabf7ab80a044cb9b5ae3fb3b3a0ff621",
+   "theme": "sea"
+  }
+ ],
+ "semantic_requested": "required",
+ "semantic_runtime": {
+  "identity": {
+   "context_length": 32,
+   "files": {
+    "merges.txt": {
+     "bytes": 524619,
+     "sha256": "9fd691f7c8039210e0fced15865466c65820d09b63988b0174bfe25de299051a"
+    },
+    "text_model_int8.onnx": {
+     "bytes": 355596172,
+     "sha256": "1f3a1123723d5c8abf0cf9f22b9fa8e4c836ca1105ce2ab86083cb74696526aa"
+    },
+    "vision_model_int8.onnx": {
+     "bytes": 321065966,
+     "sha256": "7e28961190da8378b2b1faf562287da4d66128b5a013c3eb43558f210d273769"
+    },
+    "vocab.json": {
+     "bytes": 862328,
+     "sha256": "5047b556ce86ccaf6aa22b3ffccfc52d391ea4accdab9c2f2407da5b742d4363"
+    }
+   },
+   "image_size": 336,
+   "network_during_analysis": false,
+   "profile": "PE_CORE_L14",
+   "repo": "onnx-community/PE-Core-L14-336-ONNX",
+   "revision": "40c36ae81cea6449c590afcafe4a7378f1f26644"
+  },
+  "model_dir": "D:\\me-real\\home\\models\\PE_CORE_L14",
+  "pass": true
+ },
+ "semantic_timing": {
+  "clips_cached": 8,
+  "clips_cut": 20,
+  "clips_s": 17.36,
+  "rank_s": 38.04,
+  "score_s": 3.76,
+  "scout_embed_s": 0.0
+ },
+ "sequence": {
+  "algorithm": "P11_MONTAGE_SEQUENCE_SHADOW_V4",
+  "changed": false,
+  "guards": {
+   "adaptive_far_nonregression": true,
+   "adaptive_near_nonregression": true,
+   "adaptive_two_step_nonregression": true,
+   "closer_nonregression": true,
+   "fixed_far_count_nonregression": true,
+   "fixed_near_count_nonregression": true,
+   "fixed_similar_count_nonregression": true,
+   "fixed_two_step_count_nonregression": true,
+   "opener_nonregression": true,
+   "same_source_nonregression": true,
+   "source_switch_nonregression": true
+  },
+  "improvement": 0.0,
+  "reason": "insufficient_guarded_gain_keep_baseline"
+ },
+ "skipped_inputs": [],
+ "source_mutated": false,
+ "stage_seconds": {
+  "analyze": 59.24,
+  "finish": 6.45,
+  "inputs": 0.73,
+  "render": 6.6,
+  "select": 0.12,
+  "trim": 2.4
+ },
+ "status": "PASS",
+ "target_error_s": 0.0,
+ "target_seconds": 15.0,
+ "theme": "sea",
+ "warnings": [
+  "THEME:sea:28_MATCHING_MOMENTS",
+  "OVERLAPPING_MOMENTS_DROPPED:4"
+ ],
+ "widened_sources": {}
+}

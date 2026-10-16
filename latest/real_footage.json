@@ -1,0 +1,686 @@
+{
+  "checks": [
+    {
+      "name": "enough_real_videos",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "models_ready",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "project_created",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "ai_30s_built",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "aiplus_30s_built",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "aiplus_kids_15s_built",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "aiplus_sea_15s_built",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "aiplus_animals_15s_built",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "aiplus_party_15s_built",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "all_reels_built",
+      "pass": true,
+      "detail": null
+    }
+  ],
+  "timings": {
+    "download_s": 25.8
+  },
+  "source": "pinned manifest",
+  "videos": [
+    {
+      "title": "File:Children Playing in Cameroon.webm",
+      "topic": "children playing",
+      "duration_s": 28.693,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/9/91/Children_Playing_in_Cameroon.webm/Children_Playing_in_Cameroon.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Children_Playing_in_Cameroon.webm",
+      "licence": "CC BY-SA 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Eyongblaise",
+      "original_sha1": "252a276978c8be956a47c359cb4788f00d514802",
+      "sha256": "5b0a66a3da4ac71ba39aa7708582c70323dfd36c480fce446dc9f4a163851066",
+      "file": "01_Children_Playing_in_Cameroon.webm",
+      "bytes": 4586512
+    },
+    {
+      "title": "File:Children playing on Ai Weiwei Soft Ground MVI 6171.webm",
+      "topic": "children playing",
+      "duration_s": 9.981,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/09/Children_playing_on_Ai_Weiwei_Soft_Ground_MVI_6171.webm/Children_playing_on_Ai_Weiwei_Soft_Ground_MVI_6171.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Children_playing_on_Ai_Weiwei_Soft_Ground_MVI_6171.webm",
+      "licence": "CC BY-SA 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Deror avi",
+      "original_sha1": "5809db930f87b20fcaf7306439036525c4a39d64",
+      "sha256": "c837bca1265887d5f0d101ea57f2eff3e70a0b22ed13f58744e33b62d93525c9",
+      "file": "02_Children_playing_on_Ai_Weiwei_Soft_Ground_MVI_6171.webm",
+      "bytes": 1539018
+    },
+    {
+      "title": "File:Explore Oregon Recreation- South Steens Campground (27239691486).webm",
+      "topic": "family picnic",
+      "duration_s": 42.776,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c1/Explore_Oregon_Recreation-_South_Steens_Campground_%2827239691486%29.webm/Explore_Oregon_Recreation-_South_Steens_Campground_%2827239691486%29.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Explore_Oregon_Recreation-_South_Steens_Campground_(27239691486).webm",
+      "licence": "Public domain",
+      "licence_url": "",
+      "author": "BLM Oregon & Washington",
+      "original_sha1": "d7eb1d1e370f4dbfe1f1ee69b7b77cbf31d4f24f",
+      "sha256": "be871b836bbdf63037fbf56f577bfee95095c99192b8b65c39c0a80245f2b175",
+      "file": "03_Explore_Oregon_Recreation-_South_Steens_Campground.webm",
+      "bytes": 5708083
+    },
+    {
+      "title": "File:22341885325 1080p (28818105850).webm",
+      "topic": "family picnic",
+      "duration_s": 10.644,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/22341885325_1080p_%2828818105850%29.webm/22341885325_1080p_%2828818105850%29.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:22341885325_1080p_(28818105850).webm",
+      "licence": "Public domain",
+      "licence_url": "",
+      "author": "mypubliclands",
+      "original_sha1": "90bdb879fe4f7d3ce19c38360a14e91474d42da7",
+      "sha256": "f6d59e0901acaba53755b1ae2bbdeffee07afdc022b07483881cabdaa1b82008",
+      "file": "04_22341885325_1080p_28818105850.webm",
+      "bytes": 1469865
+    },
+    {
+      "title": "File:Birthday party family in northern Maracay, Venezuela.webm",
+      "topic": "birthday party",
+      "duration_s": 40.815,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/dd/Birthday_party_family_in_northern_Maracay%2C_Venezuela.webm/Birthday_party_family_in_northern_Maracay%2C_Venezuela.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Birthday_party_family_in_northern_Maracay,_Venezuela.webm",
+      "licence": "CC BY 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by/4.0",
+      "author": "Bobjgalindo",
+      "original_sha1": "6878b482708ffa8a6327a08655ddae3d935ebfad",
+      "sha256": "22310f4cf18c7ae76a5166c02fb399a05f16c03234eb921d24509a800dcef612",
+      "file": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+      "bytes": 5390447
+    },
+    {
+      "title": "File:Birthday Party 🥳.webm",
+      "topic": "birthday party",
+      "duration_s": 79.5,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/1c/Birthday_Party_%F0%9F%A5%B3.webm/Birthday_Party_%F0%9F%A5%B3.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Birthday_Party_%F0%9F%A5%B3.webm",
+      "licence": "Public domain",
+      "licence_url": "",
+      "author": "Lafayette County Fire Department",
+      "original_sha1": "f17be761cbd10e9c950f7c00f444f2dbbfea024a",
+      "sha256": "1b306300345023827224e579d6d78ff5770ec1018cdd1391f8ddf0b44ff39fa1",
+      "file": "06_Birthday_Party.webm",
+      "bytes": 10761296
+    },
+    {
+      "title": "File:White Wedding Dance - Igbo Tribe - Anambra State - Nigeria.webm",
+      "topic": "wedding dance",
+      "duration_s": 120.298,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/b/be/White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-_Nigeria.webm/White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-_Nigeria.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-_Nigeria.webm",
+      "licence": "CC BY-SA 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Arch-Angel Raphael the Artist",
+      "original_sha1": "af0da28c0bce99f0961cfaa984c87da6842875ba",
+      "sha256": "1d1de1bf933bd10deafdf9da697c1e40991c2f3b1cc748f31900886d97d01bae",
+      "file": "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm",
+      "bytes": 10215281
+    },
+    {
+      "title": "File:Tel Aviv (by Omer Adam) song on a wedding.webm",
+      "topic": "wedding dance",
+      "duration_s": 152.633,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/cc/Tel_Aviv_%28by_Omer_Adam%29_song_on_a_wedding.webm/Tel_Aviv_%28by_Omer_Adam%29_song_on_a_wedding.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Tel_Aviv_(by_Omer_Adam)_song_on_a_wedding.webm",
+      "licence": "CC BY-SA 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Oleg Yunakov",
+      "original_sha1": "47f5256f7ad1e3b7336de65e2f353d8b2212f4f3",
+      "sha256": "746a3051deb64ca760b711781e935305ee0158f31a7814c92015ec14b26588a3",
+      "file": "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm",
+      "bytes": 20945494
+    },
+    {
+      "title": "File:Dog park.theora.ogv",
+      "topic": "dog playing",
+      "duration_s": 120.18673333333334,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/5/53/Dog_park.theora.ogv?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "page": "https://commons.wikimedia.org/wiki/File:Dog_park.theora.ogv",
+      "licence": "CC BY-SA 3.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/3.0",
+      "author": "Rubi2011",
+      "original_sha1": "65f305e98b7442dd2b3699b6a8052a6dda058789",
+      "sha256": "cb5166c8b5f55a00b0c32c404dbd0abbf2cf673a09fb84c77dca1250543ff807",
+      "file": "09_Dog_park_theora.ogv",
+      "bytes": 24007830
+    },
+    {
+      "title": "File:Пузыри собака.ogv",
+      "topic": "dog playing",
+      "duration_s": 58.399415999999995,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/16/%D0%9F%D1%83%D0%B7%D1%8B%D1%80%D0%B8_%D1%81%D0%BE%D0%B1%D0%B0%D0%BA%D0%B0.ogv/%D0%9F%D1%83%D0%B7%D1%8B%D1%80%D0%B8_%D1%81%D0%BE%D0%B1%D0%B0%D0%BA%D0%B0.ogv.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:%D0%9F%D1%83%D0%B7%D1%8B%D1%80%D0%B8_%D1%81%D0%BE%D0%B1%D0%B0%D0%BA%D0%B0.ogv",
+      "licence": "CC BY-SA 3.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/3.0",
+      "author": "Шатилло Г.В.",
+      "original_sha1": "b6c1fd97f257c36d04941cdaeed6e3d34d23fe8f",
+      "sha256": "126089ba6793a581396ff0df4dfff0219b18a4299f84b12f8d555fca35568d62",
+      "file": "10_Пузыри_собака.webm",
+      "bytes": 7655711
+    },
+    {
+      "title": "File:Cat lapping water off ground in slow motion.gk.webm",
+      "topic": "cat",
+      "duration_s": 23.666,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/a/ac/Cat_lapping_water_off_ground_in_slow_motion.gk.webm/Cat_lapping_water_off_ground_in_slow_motion.gk.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Cat_lapping_water_off_ground_in_slow_motion.gk.webm",
+      "licence": "CC BY-SA 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Grendelkhan",
+      "original_sha1": "16729ef0888d4c30b444015cb5d6e935c3c8aa88",
+      "sha256": "3e75bdfc00a678ceb1c0f02f4005edd5fce7fff3586fe3f8046679d253165c10",
+      "file": "11_Cat_lapping_water_off_ground_in_slow_motion_gk.webm",
+      "bytes": 1343874
+    },
+    {
+      "title": "File:Domestic cats breeding.ogv",
+      "topic": "cat",
+      "duration_s": 117.7861224489796,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/5/51/Domestic_cats_breeding.ogv?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "page": "https://commons.wikimedia.org/wiki/File:Domestic_cats_breeding.ogv",
+      "licence": "CC BY-SA 3.0",
+      "licence_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "author": "Malene Thyssen",
+      "original_sha1": "b4be62a6c18d76bdf67a8c1be92515b0c01155c9",
+      "sha256": "c0e6eee4540d6174508111b3a6daa33662cba4118137a01a985e0855ba439462",
+      "file": "12_Domestic_cats_breeding.ogv",
+      "bytes": 3946748
+    },
+    {
+      "title": "File:Water waves in Herzliya beach.webm",
+      "topic": "beach waves",
+      "duration_s": 12.563,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/09/Water_waves_in_Herzliya_beach.webm/Water_waves_in_Herzliya_beach.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Water_waves_in_Herzliya_beach.webm",
+      "licence": "CC BY-SA 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "דוד שי",
+      "original_sha1": "42d3f1ee7fa78165014708126ee700635ddd48d0",
+      "sha256": "97e172d6c28fd73e9bd320eb8e3cb3875de12f1eab3e5ad2757651b7346e3e50",
+      "file": "13_Water_waves_in_Herzliya_beach.webm",
+      "bytes": 2114525
+    },
+    {
+      "title": "File:Rialto Beach Waves 2022.webm",
+      "topic": "beach waves",
+      "duration_s": 39.133,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f3/Rialto_Beach_Waves_2022.webm/Rialto_Beach_Waves_2022.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Rialto_Beach_Waves_2022.webm",
+      "licence": "CC BY-SA 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Sea Cow",
+      "original_sha1": "d95bf027426ccb89f3f28af20ec7595944a0d3c1",
+      "sha256": "78f834164eeac4cdfbf5b2ee68df96bef66757a887ce13361d204eb7e25dce0e",
+      "file": "14_Rialto_Beach_Waves_2022.webm",
+      "bytes": 1642174
+    },
+    {
+      "title": "File:Sea of Galilee Boat Ride.webm",
+      "topic": "sea boat",
+      "duration_s": 18.766000000000002,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/4b/Sea_of_Galilee_Boat_Ride.webm/Sea_of_Galilee_Boat_Ride.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Sea_of_Galilee_Boat_Ride.webm",
+      "licence": "CC BY 2.0",
+      "licence_url": "https://creativecommons.org/licenses/by/2.0",
+      "author": "Prince Roy",
+      "original_sha1": "f92d39870f29aacd504d26d7d1aae0fb6b18e19f",
+      "sha256": "77675a59d9f0a1e4b9f58d8dd42b75f97ed81c9b0982ee76e6ad1a67d2c8a1f2",
+      "file": "15_Sea_of_Galilee_Boat_Ride.webm",
+      "bytes": 2967670
+    },
+    {
+      "title": "File:Fishing Boat-1013831, Dingle Peninsula, Co. Kerry, Ireland.webm",
+      "topic": "sea boat",
+      "duration_s": 19.208000000000002,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/9/98/Fishing_Boat-1013831%2C_Dingle_Peninsula%2C_Co._Kerry%2C_Ireland.webm/Fishing_Boat-1013831%2C_Dingle_Peninsula%2C_Co._Kerry%2C_Ireland.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Fishing_Boat-1013831,_Dingle_Peninsula,_Co._Kerry,_Ireland.webm",
+      "licence": "CC BY-SA 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "[[User:|Maoileann|Maoileann]]",
+      "original_sha1": "10aa33e89f030900dfcc7f8b24ea3a2f669e7cc6",
+      "sha256": "ab6d258b4ad915b21a5fdb7c1f4f899586ed805cc302039a367336ea07d95fc4",
+      "file": "16_Fishing_Boat-1013831_Dingle_Peninsula_Co_Kerry_Ire.webm",
+      "bytes": 3403441
+    },
+    {
+      "title": "File:Rattlesnake encounter in the Pinal Mountains, AZ.webm",
+      "topic": "mountains hiking",
+      "duration_s": 13.831,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/9/94/Rattlesnake_encounter_in_the_Pinal_Mountains%2C_AZ.webm/Rattlesnake_encounter_in_the_Pinal_Mountains%2C_AZ.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Rattlesnake_encounter_in_the_Pinal_Mountains,_AZ.webm",
+      "licence": "CC BY-SA 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Zakhari Volk",
+      "original_sha1": "80b84729d6994897f2eba635ad0fd53ef3f5b05d",
+      "sha256": "7eef1a6311fa915a5caa7aba8f5ee758f0abb7057b6d8c0d42e76487a7d33b5f",
+      "file": "17_Rattlesnake_encounter_in_the_Pinal_Mountains_AZ.webm",
+      "bytes": 2338952
+    },
+    {
+      "title": "File:Santa Rosa and San Jacinto Mountains National Monument (29552839442).webm",
+      "topic": "mountains hiking",
+      "duration_s": 9.91,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c3/Santa_Rosa_and_San_Jacinto_Mountains_National_Monument_%2829552839442%29.webm/Santa_Rosa_and_San_Jacinto_Mountains_National_Monument_%2829552839442%29.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Santa_Rosa_and_San_Jacinto_Mountains_National_Monument_(29552839442).webm",
+      "licence": "Public domain",
+      "licence_url": "",
+      "author": "blmcalifornia",
+      "original_sha1": "0066348b3e7b598bdcca44da6423b0138317c388",
+      "sha256": "c77403f623e2029f5b2591531347d947c61139ff252e473704f2a3633200541c",
+      "file": "18_Santa_Rosa_and_San_Jacinto_Mountains_National_Monu.webm",
+      "bytes": 1224117
+    },
+    {
+      "title": "File:Setting sun 1063.ogg",
+      "topic": "sunset",
+      "duration_s": 164.37333333333333,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c0/Setting_sun_1063.ogg/Setting_sun_1063.ogg.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Setting_sun_1063.ogg",
+      "licence": "CC BY-SA 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Chris Light",
+      "original_sha1": "bab5aa9e1b356c04583cd4b635d1e3c8a3476782",
+      "sha256": "737cc73379067e926fb9f4546274df89335909bd85ad709fbf6fce7898a65170",
+      "file": "19_Setting_sun_1063.webm",
+      "bytes": 16898809
+    },
+    {
+      "title": "File:Sunset in Yogyakarta.webm",
+      "topic": "sunset",
+      "duration_s": 15.368,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/b/b6/Sunset_in_Yogyakarta.webm/Sunset_in_Yogyakarta.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Sunset_in_Yogyakarta.webm",
+      "licence": "CC BY 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by/4.0",
+      "author": "Joaquim Baeta",
+      "original_sha1": "453663ef8bb85ffd42b3f760174440a0f2fea1eb",
+      "sha256": "5ad6a69b0088cb36cb802c432ce4f314bd8a3cc7f3087be720f1733acc30f4ce",
+      "file": "20_Sunset_in_Yogyakarta.webm",
+      "bytes": 1274032
+    },
+    {
+      "title": "File:(2026-05-05) Saxony State and Leipzig City officials walk down the reopened street.webm",
+      "topic": "city street walk",
+      "duration_s": 33.633,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/8/85/%282026-05-05%29_Saxony_State_and_Leipzig_City_officials_walk_down_the_reopened_street.webm/%282026-05-05%29_Saxony_State_and_Leipzig_City_officials_walk_down_the_reopened_street.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:(2026-05-05)_Saxony_State_and_Leipzig_City_officials_walk_down_the_reopened_street.webm",
+      "licence": "CC BY-SA 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Roy Zuo",
+      "original_sha1": "2604b9f7b4d7e81fe5264f6f43d7d8c404540571",
+      "sha256": "a60eb0b9cbe782bdbfcce2ba81093f746417c8ddf8395dd09825a7ae2cfba5e0",
+      "file": "21_2026-05-05_Saxony_State_and_Leipzig_City_official.webm",
+      "bytes": 4569635
+    },
+    {
+      "title": "File:Fireworks Naperville 2022.webm",
+      "topic": "fireworks",
+      "duration_s": 41.300000000000004,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/4c/Fireworks_Naperville_2022.webm/Fireworks_Naperville_2022.webm.480p.vp9.webm",
+      "page": "https://commons.wikimedia.org/wiki/File:Fireworks_Naperville_2022.webm",
+      "licence": "CC BY-SA 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Sea Cow",
+      "original_sha1": "b03dcf865a351d1f5ebcfd828b7cdd5abc3d9530",
+      "sha256": "f2e0a74c9880aae1db9026c86adf222fabf7ab80a044cb9b5ae3fb3b3a0ff621",
+      "file": "22_Fireworks_Naperville_2022.webm",
+      "bytes": 144924
+    }
+  ],
+  "reels": {
+    "ai_30s": {
+      "revision_id": 1,
+      "seconds": 455.2,
+      "selection_mode": "FAST_LOCAL_SEMANTIC_SHADOW_V1",
+      "theme": null,
+      "warnings": [
+        "OVERLAPPING_MOMENTS_DROPPED:42"
+      ],
+      "stage_seconds": {
+        "analyze": 390.91,
+        "finish": 14.69,
+        "inputs": 1.1,
+        "render": 13.74,
+        "select": 27.27,
+        "trim": 5.2
+      },
+      "duration_s": 30.0,
+      "segments": [
+        {
+          "source_name": "06_Birthday_Party.webm",
+          "source_in_s": 20.517,
+          "source_out_s": 25.983,
+          "reel_in_s": 0.0,
+          "reel_out_s": 5.467,
+          "score": 0.861408
+        },
+        {
+          "source_name": "03_Explore_Oregon_Recreation-_South_Steens_Campground.webm",
+          "source_in_s": 5.155,
+          "source_out_s": 10.355,
+          "reel_in_s": 5.3,
+          "reel_out_s": 10.5,
+          "score": 0.857791
+        },
+        {
+          "source_name": "21_2026-05-05_Saxony_State_and_Leipzig_City_official.webm",
+          "source_in_s": 18.322,
+          "source_out_s": 23.188,
+          "reel_in_s": 10.367,
+          "reel_out_s": 15.233,
+          "score": 0.858181
+        },
+        {
+          "source_name": "18_Santa_Rosa_and_San_Jacinto_Mountains_National_Monu.webm",
+          "source_in_s": 0.257,
+          "source_out_s": 5.223,
+          "reel_in_s": 15.1,
+          "reel_out_s": 20.067,
+          "score": 0.843434
+        },
+        {
+          "source_name": "14_Rialto_Beach_Waves_2022.webm",
+          "source_in_s": 33.85,
+          "source_out_s": 38.65,
+          "reel_in_s": 19.933,
+          "reel_out_s": 24.733,
+          "score": 0.829044
+        },
+        {
+          "source_name": "13_Water_waves_in_Herzliya_beach.webm",
+          "source_in_s": 0.077,
+          "source_out_s": 5.443,
+          "reel_in_s": 24.6,
+          "reel_out_s": 29.967,
+          "score": 0.826219
+        }
+      ]
+    },
+    "aiplus_30s": {
+      "revision_id": 2,
+      "seconds": 1283.7,
+      "selection_mode": "PE_CORE_L14_SEMANTIC_V1",
+      "theme": null,
+      "warnings": [
+        "OVERLAPPING_MOMENTS_DROPPED:42"
+      ],
+      "stage_seconds": {
+        "analyze": 1235.93,
+        "finish": 15.1,
+        "inputs": 0.72,
+        "render": 12.76,
+        "select": 11.8,
+        "trim": 4.2
+      },
+      "duration_s": 29.93,
+      "segments": [
+        {
+          "source_name": "18_Santa_Rosa_and_San_Jacinto_Mountains_National_Monu.webm",
+          "source_in_s": 1.022,
+          "source_out_s": 6.488,
+          "reel_in_s": 0.0,
+          "reel_out_s": 5.467,
+          "score": 0.882853
+        },
+        {
+          "source_name": "01_Children_Playing_in_Cameroon.webm",
+          "source_in_s": 17.343,
+          "source_out_s": 22.177,
+          "reel_in_s": 5.333,
+          "reel_out_s": 10.167,
+          "score": 0.843525
+        },
+        {
+          "source_name": "06_Birthday_Party.webm",
+          "source_in_s": 20.65,
+          "source_out_s": 25.85,
+          "reel_in_s": 10.033,
+          "reel_out_s": 15.233,
+          "score": 0.84757
+        },
+        {
+          "source_name": "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm",
+          "source_in_s": 92.817,
+          "source_out_s": 97.683,
+          "reel_in_s": 15.1,
+          "reel_out_s": 19.967,
+          "score": 0.882793
+        },
+        {
+          "source_name": "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm",
+          "source_in_s": 32.917,
+          "source_out_s": 37.583,
+          "reel_in_s": 19.967,
+          "reel_out_s": 24.633,
+          "score": 0.815142
+        },
+        {
+          "source_name": "19_Setting_sun_1063.webm",
+          "source_in_s": 96.56,
+          "source_out_s": 101.96,
+          "reel_in_s": 24.5,
+          "reel_out_s": 29.9,
+          "score": 0.816947
+        }
+      ]
+    },
+    "aiplus_kids_15s": {
+      "revision_id": 3,
+      "seconds": 72.4,
+      "selection_mode": "PE_CORE_L14_SEMANTIC_V1",
+      "theme": "kids",
+      "warnings": [
+        "THEME:kids:23_MATCHING_MOMENTS",
+        "OVERLAPPING_MOMENTS_DROPPED:5"
+      ],
+      "stage_seconds": {
+        "analyze": 50.69,
+        "finish": 7.62,
+        "inputs": 0.74,
+        "render": 7.09,
+        "select": 0.04,
+        "trim": 3.03
+      },
+      "duration_s": 14.97,
+      "segments": [
+        {
+          "source_name": "06_Birthday_Party.webm",
+          "source_in_s": 62.067,
+          "source_out_s": 67.433,
+          "reel_in_s": 0.0,
+          "reel_out_s": 5.367,
+          "score": 0.852433
+        },
+        {
+          "source_name": "01_Children_Playing_in_Cameroon.webm",
+          "source_in_s": 11.377,
+          "source_out_s": 16.143,
+          "reel_in_s": 5.233,
+          "reel_out_s": 10.0,
+          "score": 0.827551
+        },
+        {
+          "source_name": "02_Children_playing_on_Ai_Weiwei_Soft_Ground_MVI_6171.webm",
+          "source_in_s": 0.205,
+          "source_out_s": 5.305,
+          "reel_in_s": 9.867,
+          "reel_out_s": 14.967,
+          "score": 0.694134
+        }
+      ]
+    },
+    "aiplus_sea_15s": {
+      "revision_id": 4,
+      "seconds": 78.4,
+      "selection_mode": "PE_CORE_L14_SEMANTIC_V1",
+      "theme": "sea",
+      "warnings": [
+        "THEME:sea:28_MATCHING_MOMENTS",
+        "OVERLAPPING_MOMENTS_DROPPED:4"
+      ],
+      "stage_seconds": {
+        "analyze": 59.24,
+        "finish": 6.45,
+        "inputs": 0.73,
+        "render": 6.6,
+        "select": 0.12,
+        "trim": 2.4
+      },
+      "duration_s": 15.0,
+      "segments": [
+        {
+          "source_name": "13_Water_waves_in_Herzliya_beach.webm",
+          "source_in_s": 3.027,
+          "source_out_s": 8.493,
+          "reel_in_s": 0.0,
+          "reel_out_s": 5.467,
+          "score": 0.886112
+        },
+        {
+          "source_name": "14_Rialto_Beach_Waves_2022.webm",
+          "source_in_s": 6.3,
+          "source_out_s": 11.2,
+          "reel_in_s": 5.267,
+          "reel_out_s": 10.167,
+          "score": 0.841496
+        },
+        {
+          "source_name": "16_Fishing_Boat-1013831_Dingle_Peninsula_Co_Kerry_Ire.webm",
+          "source_in_s": 13.85,
+          "source_out_s": 18.65,
+          "reel_in_s": 10.167,
+          "reel_out_s": 14.967,
+          "score": 0.595596
+        }
+      ]
+    },
+    "aiplus_animals_15s": {
+      "revision_id": 5,
+      "seconds": 42.3,
+      "selection_mode": "PE_CORE_L14_SEMANTIC_V1",
+      "theme": "animals",
+      "warnings": [
+        "THEME:animals:16_MATCHING_MOMENTS",
+        "OVERLAPPING_MOMENTS_DROPPED:5"
+      ],
+      "stage_seconds": {
+        "analyze": 23.97,
+        "finish": 6.51,
+        "inputs": 0.72,
+        "render": 5.53,
+        "select": 0.01,
+        "trim": 1.91
+      },
+      "duration_s": 14.93,
+      "segments": [
+        {
+          "source_name": "10_Пузыри_собака.webm",
+          "source_in_s": 15.633,
+          "source_out_s": 20.867,
+          "reel_in_s": 0.0,
+          "reel_out_s": 5.233,
+          "score": 0.837034
+        },
+        {
+          "source_name": "10_Пузыри_собака.webm",
+          "source_in_s": 19.25,
+          "source_out_s": 24.25,
+          "reel_in_s": 5.233,
+          "reel_out_s": 10.233,
+          "score": 0.795557
+        },
+        {
+          "source_name": "11_Cat_lapping_water_off_ground_in_slow_motion_gk.webm",
+          "source_in_s": 3.4,
+          "source_out_s": 8.1,
+          "reel_in_s": 10.233,
+          "reel_out_s": 14.933,
+          "score": 0.436067
+        }
+      ]
+    },
+    "aiplus_party_15s": {
+      "revision_id": 6,
+      "seconds": 94.6,
+      "selection_mode": "PE_CORE_L14_SEMANTIC_V1",
+      "theme": "party",
+      "warnings": [
+        "THEME:party:35_MATCHING_MOMENTS",
+        "OVERLAPPING_MOMENTS_DROPPED:8"
+      ],
+      "stage_seconds": {
+        "analyze": 72.17,
+        "finish": 8.67,
+        "inputs": 0.72,
+        "render": 7.36,
+        "select": 0.21,
+        "trim": 2.28
+      },
+      "duration_s": 14.97,
+      "segments": [
+        {
+          "source_name": "08_Tel_Aviv_by_Omer_Adam_song_on_a_wedding.webm",
+          "source_in_s": 127.533,
+          "source_out_s": 132.967,
+          "reel_in_s": 0.0,
+          "reel_out_s": 5.433,
+          "score": 0.898679
+        },
+        {
+          "source_name": "07_White_Wedding_Dance_-_Igbo_Tribe_-_Anambra_State_-.webm",
+          "source_in_s": 40.505,
+          "source_out_s": 45.005,
+          "reel_in_s": 5.433,
+          "reel_out_s": 9.933,
+          "score": 0.751383
+        },
+        {
+          "source_name": "05_Birthday_party_family_in_northern_Maracay_Venezuel.webm",
+          "source_in_s": 2.238,
+          "source_out_s": 7.272,
+          "reel_in_s": 9.933,
+          "reel_out_s": 14.967,
+          "score": 0.545754
+        }
+      ]
+    }
+  }
+}
