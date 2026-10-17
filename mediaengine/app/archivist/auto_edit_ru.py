@@ -593,7 +593,7 @@ JS_PHRASES = {
     "'Copied'": "'Скопировано'", "'Copy this path:'": "'Скопируй путь:'", "'Folder window failed: '": "'Окно выбора папки не открылось: '",
     "'No folder chosen.'": "'Папка не выбрана.'", "'No videos chosen.'": "'Видео не выбраны.'", "'Window failed: '": "'Окно не открылось: '",
     "' of '": "' из '",
-    "'write the time as seconds (12.5) or minutes (1:05)'": "'напиши время в секундах (12.5) или минутах (1:05)'",
+    "'write the time as seconds (12.5), minutes (1:05) or hours (1:05:03)'": "'напиши время в секундах (12.5), минутах (1:05) или часах (1:05:03)'",
     "'“to” must be at least 0.5 s after “from”'": "'«по» должно быть хотя бы на 0,5 с позже, чем «с»'",
     "'one moment can be at most 60 s long'": "'один момент — не длиннее 60 с'",
     "'Moment '": "'Момент '", "'Starting…'": "'Запуск…'", "'Installed.'": "'Установлено.'", "'Failed'": "'Не получилось'", "'the video is only '": "'видео длится всего '",

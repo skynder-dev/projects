@@ -955,13 +955,13 @@ async function pollJob2(){if(!card)return;try{const r=await fetch('/api/auto/job
  if(['done','failed','cancelled'].includes(j.status)){location.reload();return}}catch(e){}setTimeout(pollJob2,1000)}
 pollJob2();
 const ef=document.getElementById('editForm');
-function secs(x){x=String(x||'').trim().replace(',','.');if(!x)return null;const m=/^(\\d+):(\\d{1,2}(?:\\.\\d+)?)$/.exec(x);
- if(m)return (+m[2])>=60?null:(+m[1])*60+(+m[2]);return /^\\d+(\\.\\d+)?$/.test(x)?+x:null}
+function secs(x){x=String(x||'').trim().replace(',','.');if(!x)return null;const m=/^(?:(\\d+):)?(\\d+):(\\d{1,2}(?:\\.\\d+)?)$/.exec(x);
+ if(m)return ((+m[3])>=60||(m[1]!==undefined&&(+m[2])>=60))?null:(+(m[1]||0))*3600+(+m[2])*60+(+m[3]);return /^\\d+(\\.\\d+)?$/.test(x)?+x:null}
 if(ef)ef.addEventListener('submit',ev=>{if(ev.submitter&&ev.submitter.name==='rechoose')return;const errs=[];
  ef.querySelectorAll('.ae-edit').forEach(row=>{const a=row.querySelector('input[name^="in_"]'),b=row.querySelector('input[name^="out_"]'),rm=row.querySelector('input[name="remove"]');
   if(!a||!b||(rm&&rm.checked))return;const n=(row.querySelector('.pos')||{}).textContent||'?',x=secs(a.value),y=secs(b.value);
   const d=parseFloat(row.dataset.dur||'0'),m='Moment '+n+': ';
-  if(x===null||y===null)errs.push(m+'write the time as seconds (12.5) or minutes (1:05)');
+  if(x===null||y===null)errs.push(m+'write the time as seconds (12.5), minutes (1:05) or hours (1:05:03)');
   else if(d>0&&y>d+0.05)errs.push(m+'the video is only '+d.toFixed(1)+' s long - “to” cannot be later');
   else if(y-x<0.5)errs.push(m+'“to” must be at least 0.5 s after “from”');
   else if(y-x>60)errs.push(m+'one moment can be at most 60 s long')});
@@ -1048,7 +1048,8 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
                 return redirect(f"/auto/p/{pid}?rev={same['id']}&same=1" if same else f"/auto/p/{pid}")
         except Exception as exc:
             return err_page(str(exc), f"/auto/p/{pid}")
-        return redirect(f"/auto/p/{pid}")
+        # while the new version builds, the page keeps showing the version it was made from (not the accepted one)
+        return redirect(f"/auto/p/{pid}?rev={int(base['id'])}" if base else f"/auto/p/{pid}")
 
     @app.post("/auto/p/<int:pid>/edit")
     def ae_edit(pid):
@@ -1105,7 +1106,8 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
             return err_page(str(exc), f"/auto/p/{pid}")
         except Exception as exc:
             return err_page("Could not apply the edits: " + str(exc), f"/auto/p/{pid}")
-        return redirect(f"/auto/p/{pid}")
+        ok_base = base and int(base["project_id"]) == int(pid)
+        return redirect(f"/auto/p/{pid}?rev={int(base['id'])}" if ok_base else f"/auto/p/{pid}")
 
     @app.post("/auto/p/<int:pid>/accept")
     def ae_accept(pid):
@@ -1118,10 +1120,14 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
     @app.post("/auto/p/<int:pid>/revert")
     def ae_revert(pid):
         try:
-            ae.revert(pid)
+            raw = str(request.form.get("from_revision") or "")
+            was = (ae.project(pid) or {}).get("accepted_revision_id")
+            # the version the button was shown for: a second click (or an old page) does not go back once more
+            prev = ae.revert(pid, expect=int(raw) if raw.isascii() and raw.isdigit() else None)
         except Exception as exc:
             return err_page(str(exc), f"/auto/p/{pid}")
-        return redirect(f"/auto/p/{pid}")
+        show = prev or was                          # "Undo accept": stay on the version just un-accepted
+        return redirect(f"/auto/p/{pid}?rev={int(show)}" if show else f"/auto/p/{pid}")
 
     @app.post("/auto/p/<int:pid>/export")
     def ae_export(pid):
@@ -1251,7 +1257,8 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
                          if w and p["accepted_revision_id"] != w["id"] else "")({"left": L, "right": R}.get(rv["choice"]))
                       + f"<a class='btn btn2' href='/auto/p/{pid}'>Back to the project</a></div></div>")
         else:
-            bottom = (f"<form method='post' action='/auto/review/{rid}/decide' class='card' style='margin-top:14px'>"
+            bottom = (f"<form method='post' action='/auto/review/{rid}/decide' class='card' style='margin-top:14px' "
+                      f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(b=>b.disabled=true),0)\">"
                       f"<div class='muted'>Watch both. Which one would you rather publish? Versions and settings are hidden until you decide.</div>"
                       f"<input name='note' maxlength='500' placeholder='Why? (optional, e.g. better start, fewer shaky shots)' style='width:100%;margin:10px 0'>"
                       f"<div class='row' style='flex-wrap:wrap'><button name='choice' value='left' class='ae-big'>A is better</button>"
@@ -1748,7 +1755,7 @@ def _review_html(p, rev, e, building=False):
                 f"<div class='row' style='flex-wrap:wrap'><button class='ae-big'>Save MP4</button>"
                 f"<button type='button' class='btn2' id='exportToBtn'>Save to another folder…</button>"
                 f"<button class='btn2' formaction='/auto/p/{p['id']}/small' title='About 720p, a much smaller file'>Small copy for messengers</button></div>"
-                f"<div class='muted' style='margin-top:4px'>Saves to <span class='ae-path' translate='no'>{e(str(ae.default_export_dir()))}</span></div>"
+                f"<div class='muted' style='margin-top:4px'>Saves to <span class='ae-path' translate='no'>{e(str(ae.export_dir_for(p)))}</span></div>"
                 f"<div class='muted' id='exportMsg'></div></form>")
     small = request.args.get("small", "")
     if small:
@@ -1761,7 +1768,9 @@ def _review_html(p, rev, e, building=False):
                          f"<form method='post' action='/auto/export/{last['id']}/reveal'><button class='btn2'>Show in folder</button></form>"
                          f"<button type='button' class='btn2' id='copyPath' data-path='{e(last['path'])}'>Copy path</button></div></div>")
     undo = "Revert" if ae.previous_accepted(p["id"]) else "Undo accept"     # with no earlier one, Revert just un-accepts
-    actions = (f"<span class='badge ready'>Accepted</span><form method='post' action='/auto/p/{p['id']}/revert'><button class='btn2'>{undo}</button></form>" if is_acc else
+    actions = (f"<span class='badge ready'>Accepted</span><form method='post' action='/auto/p/{p['id']}/revert' "
+               f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(b=>b.disabled=true),0)\">"
+               f"<input type='hidden' name='from_revision' value='{int(rev['id'])}'><button class='btn2'>{undo}</button></form>" if is_acc else
                f"<form method='post' action='/auto/p/{p['id']}/accept' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(b=>b.disabled=true),0)\"><input type='hidden' name='revision_id' value='{rev['id']}'><button class='btn2' title='Mark it as the chosen version without saving a file'>Accept this version</button></form>")
     excl_hidden = "".join(f"<input type='hidden' name='exclude' value='{e(x)}'>" for x in rev["settings"].get("exclude", []))
     # only versions of the same format: a vertical reel next to a horizontal one is not a blind comparison

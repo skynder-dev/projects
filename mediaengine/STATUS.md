@@ -348,6 +348,13 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
     wrong numbers ("variant_id, views" with spaces, an unquoted 1,234, short rows, nan / inf / 20-digit numbers);
     a CSV within its limit no longer gets a bare 413 page. Known, not changed (manual-publishing lab only): a
     composition recorded in local history is then held by its own record in the queue.
+  - Editor and engine (round 14, evening): own music whose length FFmpeg only estimates (raw AAC, a VBR MP3 without
+    its header) was cut at the guess and restarted early in the reel → the guess is not used; a double click on Revert
+    went back two versions → the button carries the version it was shown for; after an edit or a variant the page
+    stays on the version it was made from (it jumped to the accepted one); "Undo accept" stays on that version; time
+    fields accept h:mm:ss (as the page shows times of long videos); the blind comparison buttons can be pressed once;
+    "Saves to" names the folder Save MP4 really uses. Checks: unit, e2e 81/81 (Revert double click), titles and
+    music 40/40, browser 12/12, route fuzz.
   - New check `tests/route_fuzz.py`: every route with odd input (huge / Unicode-digit ids, damaged forms and JSON) -
     no server error (it found 7 routes, fixed); in Windows CI on a copy of the 7-video home (non-blocking).
   Checks after the fixes (Linux): unit 135/135, e2e 81/81, orders 49/49, library flow 43/43, library 4/4, convert

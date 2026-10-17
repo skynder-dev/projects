@@ -2057,6 +2057,8 @@ def run(args):
         info=subprocess.run([v52.FFMPEG,"-hide_banner","-i",str(dress["music"])],capture_output=True,text=True,encoding="utf-8",errors="replace").stderr
         m=re.search(r"Duration:\s*(\d+):(\d+):(\d+(?:\.\d+)?)",info)
         stated=(int(m.group(1))*3600+int(m.group(2))*60+float(m.group(3))) if m else 0.0
+        if "Estimating duration from bitrate" in info:
+            stated=0.0     # only a guess (raw AAC, a VBR MP3 without its header): cut there, the song restarted too early
         dress["music_s"]=music_wav(v52.FFMPEG,dress["music"],min(need,stated) if stated>0.2 else need,wav); dress["music_wav"]=str(wav)
         if dress.get("beat_sync"):
             progress("render",0,len(order),"finding the beat of the music")
@@ -2187,8 +2189,9 @@ def run(args):
     if temp_final.exists(): temp_final.unlink()
     if dress and dress.get("music_wav") and beats:
         total_now=sum(float(d) for d in durs)-sum(float(t["duration_s"]) for t in render_trans)
-        if total_now+0.5>dress["music_s"] and total_now+0.5<=float(stated or 0):   # cut too short for this reel: again
-            dress["music_s"]=music_wav(v52.FFMPEG,dress["music"],min(total_now+2.0,stated),Path(dress["music_wav"]))
+        if total_now+0.5>dress["music_s"] and (float(stated or 0)<=0.2 or total_now+0.5<=float(stated)):   # cut too short: again
+            dress["music_s"]=music_wav(v52.FFMPEG,dress["music"],min(total_now+2.0,stated) if float(stated or 0)>0.2 else total_now+2.0,
+                                       Path(dress["music_wav"]))
     beat_sync=None
     if beat_info is not None:
         # where the cuts really are (the middle of a dissolve, a hard cut, the end) and the nearest beat to each

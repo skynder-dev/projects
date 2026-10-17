@@ -2214,14 +2214,18 @@ def previous_accepted(pid: int) -> int | None:
     return stack[-2] if len(stack) >= 2 else None
 
 
-def revert(pid: int) -> int | None:
-    """Move the accepted pointer back to the previously accepted revision (files untouched)."""
+def revert(pid: int, expect: int | None = None) -> int | None:
+    """Move the accepted pointer back to the previously accepted revision (files untouched). expect: the version the
+    button was shown for - when it is not the accepted one any more (a double click), nothing changes."""
     with db() as con:
         con.execute("BEGIN IMMEDIATE")
         cur = con.execute("SELECT accepted_revision_id FROM ae_projects WHERE id=?", (int(pid),)).fetchone()
         if not cur:
             con.rollback()
             raise ValueError("Project not found")
+        if expect is not None and cur["accepted_revision_id"] != int(expect):
+            con.rollback()
+            return cur["accepted_revision_id"]
         log = [dict(r) for r in con.execute("SELECT action,revision_id FROM ae_accept_log WHERE project_id=? ORDER BY id", (int(pid),)).fetchall()]
         stack = accepted_history(log)
         if stack:
@@ -3102,6 +3106,16 @@ def default_export_dir() -> Path:
     return EXPORTS
 
 
+def export_dir_for(p: dict) -> Path:
+    """Where Save MP4 of this project goes: the folder used last - unless that is this reel's own source folder
+    (the reel would become an input of its next build), then MediaEngine Data\\Exports."""
+    d = default_export_dir()
+    try:
+        return check_export_dir(p, d) if d.is_dir() else d
+    except ValueError:
+        return Path(EXPORTS)
+
+
 def check_export_dir(p: dict, dest) -> Path:
     raw = str(dest or "").strip().strip('"')
     d = Path(raw)
@@ -3148,11 +3162,7 @@ def _export_accepted(pid: int, dest_dir: Path | None = None, remember: bool = Fa
     if sha256_file(src) != r["video_sha256"]:
         raise ValueError("Accepted revision changed on disk; export refused")
     if not dest_dir:
-        dest_dir = default_export_dir()
-        try:                       # the remembered folder may be this reel's own source folder: then the usual one
-            dest_dir = check_export_dir(p, dest_dir) if dest_dir.is_dir() else dest_dir
-        except ValueError:
-            dest_dir = check_export_dir(p, EXPORTS) if Path(EXPORTS).is_dir() else Path(EXPORTS)
+        dest_dir = export_dir_for(p)   # (the remembered folder may be this reel's own source folder: then the usual one)
     dest_dir = Path(dest_dir)
     dest_dir.mkdir(parents=True, exist_ok=True)
     fmt = FORMATS.get(r["settings"]["format"], {}).get("short", "Reel")
@@ -3205,12 +3215,7 @@ def _small_copy(pid: int, rid: int) -> Path:
     src = Path(r["video_path"])
     if sha256_file(src) != r["video_sha256"]:
         raise ValueError("The file of this version changed on disk; build the version again")
-    dest_dir = default_export_dir()
-    try:
-        dest_dir = check_export_dir(p, dest_dir) if dest_dir.is_dir() else dest_dir
-    except ValueError:
-        dest_dir = Path(EXPORTS)
-    dest_dir = Path(dest_dir)
+    dest_dir = Path(export_dir_for(p))
     dest_dir.mkdir(parents=True, exist_ok=True)
     fmt = FORMATS.get(r["settings"]["format"], {}).get("short", "Reel")
     base = safe_filename(f"{p['title']} - {fmt} - R{int(r['number']):03d} small")

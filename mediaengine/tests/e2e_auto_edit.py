@@ -315,8 +315,10 @@ def main():
         # accept the override (double click: twice), then revert back to R001
         c.post(f"/auto/p/{pid}/accept", data={"revision_id": rev3["id"]}, headers=H)
         c.post(f"/auto/p/{pid}/accept", data={"revision_id": rev3["id"]}, headers=H)
-        c.post(f"/auto/p/{pid}/revert", headers=H)
-        check("revert_restores_previous_accept", ae.project(pid)["accepted_revision_id"] == rev["id"], ae.project(pid)["accepted_revision_id"])
+        r1 = c.post(f"/auto/p/{pid}/revert", data={"from_revision": rev3["id"]}, headers=H)
+        c.post(f"/auto/p/{pid}/revert", data={"from_revision": rev3["id"]}, headers=H)     # a double click: once only
+        check("revert_restores_previous_accept", ae.project(pid)["accepted_revision_id"] == rev["id"]
+              and f"rev={rev['id']}" in r1.headers.get("Location", ""), (ae.project(pid)["accepted_revision_id"], r1.headers.get("Location")))
 
         # manual editor: reverse order, trim the (new) first moment, replace one, remove one, add one
         segs = rev["result"]["segments"]
