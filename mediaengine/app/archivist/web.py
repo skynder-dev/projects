@@ -468,7 +468,7 @@ def create_app():
 
     def phone_snapshot():
         adb=android.find_adb()
-        devs,err=android.adb_devices(adb) if adb else ([], 'ADB not installed')
+        devs,err=android.adb_devices_now(adb)      # never waits for adb (a hung adb froze every page)
         phone=next((d for d in devs if d.get('state')=='device'),None)
         return {
             'connected':bool(phone),

@@ -913,6 +913,12 @@ def _ensure_imported(row: dict, job_id: int, item_id: int) -> Path:
             )
             if not ok:
                 raise RuntimeError(err or "Android import failed")
+            if not expected and not source_sha and row.get("path"):
+                # the phone did not say the size: the copy is checked against the phone's own SHA-256 instead (a cut
+                # transfer must never count as imported and the phone as safe to disconnect)
+                source_sha = android.remote_sha256(adb, row["source_id"], row.get("path"))
+                if not source_sha:
+                    raise RuntimeError("The copy from the phone could not be checked (its size is unknown). Try again.")
         elif row.get("source_kind") == "removable":
             src = Path(row.get("path") or "")
             if not src.exists():

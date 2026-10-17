@@ -47,6 +47,32 @@ def find_adb() -> str | None:
 _device_cache_lock = threading.Lock()
 _device_cache = {"at": 0.0, "devices": [], "error": None, "adb": None}
 
+_refreshing = threading.Event()
+PULL_STALL_S = 180      # a copy from the phone that gets no new data for this long has stopped
+
+
+def adb_devices_now(adb: str | None) -> tuple[list[dict], str | None]:
+    """For pages (polled every few seconds): the last known phones at once, never waiting for adb. A stale answer
+    starts one refresh in the background (adb can hang for 40 s with a phone in a bad state: pages froze and every
+    poll started more adb processes)."""
+    if not adb:
+        return [], "ADB not installed"
+    with _device_cache_lock:
+        fresh = _device_cache["adb"] == adb and time.time() - _device_cache["at"] < 4.0
+        cached = (list(_device_cache["devices"]), _device_cache["error"]) if _device_cache["adb"] == adb else ([], None)
+        start = not fresh and not _refreshing.is_set()
+        if start:
+            _refreshing.set()
+    if start:
+        def go():
+            try:
+                adb_devices(adb, refresh=True)
+            finally:
+                _refreshing.clear()
+        threading.Thread(target=go, daemon=True, name="adb-devices").start()
+    return cached
+
+
 def adb_devices(adb: str | None = None, refresh: bool = False) -> tuple[list[dict], str | None]:
     adb = adb or find_adb()
     now = time.time()
@@ -389,7 +415,17 @@ def remote_sha256(adb: str, serial: str, remote_path: str | None) -> str | None:
     try:
         # adb joins extra arguments with spaces WITHOUT quoting, so "sh -c <cmd>" would run
         # sha256sum on stdin. Pass the whole command as one string to the device shell.
-        r = _run([adb, "-s", serial, "shell", cmd], capture_output=True, text=True, timeout=600, errors="replace", stdin=subprocess.DEVNULL)
+        from .media import io_tick
+        done = threading.Event()
+
+        def alive():                # the phone reads its whole file: the watchdog must not take that for a stall
+            while not done.wait(10):
+                io_tick()
+        threading.Thread(target=alive, daemon=True).start()
+        try:
+            r = _run([adb, "-s", serial, "shell", cmd], capture_output=True, text=True, timeout=600, errors="replace", stdin=subprocess.DEVNULL)
+        finally:
+            done.set()
         m = re.search(r"\b([0-9a-fA-F]{64})\b", r.stdout)
         return m.group(1).lower() if m else None
     except Exception:
@@ -411,6 +447,7 @@ def pull_original_progress(adb: str, serial: str, remote_path: str | None, conte
     started = time.time()
 
     def monitor(proc):
+        last_size, grew_at = -1, time.time()
         while proc.poll() is None:
             if cancel_cb and cancel_cb():
                 try: proc.kill()
@@ -421,10 +458,20 @@ def pull_original_progress(adb: str, serial: str, remote_path: str | None, conte
                 except Exception: pass
                 return "timeout"
             try:
-                if progress_cb:
-                    progress_cb(dest.stat().st_size if dest.exists() else 0)
-            except Exception:
-                pass
+                size = dest.stat().st_size if dest.exists() else 0
+            except OSError:
+                size = last_size
+            if size != last_size:
+                last_size, grew_at = size, time.time()
+                try:
+                    if progress_cb:         # only real progress counts as alive (a stalled pull was never noticed)
+                        progress_cb(size)
+                except Exception:
+                    pass
+            elif time.time() - grew_at > PULL_STALL_S:
+                try: proc.kill()
+                except Exception: pass
+                return "timeout"            # no new data for minutes: the phone / cable stopped
             time.sleep(0.35)
         try:
             if progress_cb:
