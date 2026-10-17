@@ -471,6 +471,23 @@ def main():
     (early / "data").mkdir(exist_ok=True); (early / "data" / "archivist.db").write_bytes(b"db")
     check("a build folder holding projects is never offered for removal", early.name not in [b["name"] for b in ae.other_builds(cur)]
           and raises(ae.delete_build, early.name, cur) and (early / "data" / "archivist.db").exists())
+    # the owner's clips kept inside an old version's folder (or a Library source there): that version is never removed
+    clips_b = base / "MediaEngine-3.13.0-b0"
+    (clips_b / "app").mkdir(parents=True, exist_ok=True)
+    for n in ae.BUILD_MARKERS:
+        (clips_b / n).write_text("x", encoding="utf-8")
+    offered_plain = clips_b.name in [b["name"] for b in ae.other_builds(cur)]
+    (clips_b / "My clips").mkdir(exist_ok=True); (clips_b / "My clips" / "VID_0001.mp4").write_bytes(b"0" * 4096)
+    offered_clips = clips_b.name in [b["name"] for b in ae.other_builds(cur)]
+    refused_clips = raises(ae.delete_build, clips_b.name, cur) and (clips_b / "My clips" / "VID_0001.mp4").is_file()
+    shutil.move(str(clips_b / "My clips"), str(work / "My clips moved"))
+    from archivist.config import update_config as _uc
+    _uc(lambda c: c.setdefault("sources", []).append({"path": str(clips_b / "app"), "label": "x", "kind": "fixed", "enabled": True}))
+    offered_source = clips_b.name in [b["name"] for b in ae.other_builds(cur)]
+    _uc(lambda c: c.update(sources=[x for x in c.get("sources") or [] if x.get("path") != str(clips_b / "app")]))
+    check("a version folder with the owner's files in it (or a Library source) is never offered for removal",
+          offered_plain and not offered_clips and not offered_source and refused_clips,
+          (offered_plain, offered_clips, offered_source, refused_clips))
     # shortcuts keep any characters (WScript.Shell stored "?" for Cyrillic on an English Windows)
     if os.name == "nt":
         from archivist.platform_adapter import read_shell_link, write_shell_link, shell_folder
@@ -760,6 +777,23 @@ def main():
     _web._remove_source({"index": "0", "path": str(srcd.resolve())})
     check("settings: Remove takes exactly the row that was shown", n_before == 2
           and [x["path"] for x in load_config()["sources"]] == [str(work.resolve())], load_config()["sources"])
+    # Private / Rejected copies: two cards' VID_0001.mp4 never share one name; a move never replaces a different file
+    from archivist import service as _sv
+    fold_ = work / "priv_names"; fold_.mkdir(exist_ok=True)
+    taken_ = []
+    for k_ in range(4):
+        d_ = _sv._free_name(fold_, "VID_0001.mp4", ["unknown", "unknown_7"])
+        d_.write_bytes(bytes([k_]) * 10); taken_.append(d_.name)
+    a_ = work / "mv_a.bin"; a_.write_bytes(b"A" * 50)
+    try:
+        _sv._verified_move(a_, fold_ / "VID_0001.mp4")
+        refused_mv = False
+    except RuntimeError:
+        refused_mv = True
+    check("Private / Rejected names never repeat; a move never replaces a different file",
+          taken_ == ["VID_0001.mp4", "VID_0001_unknown.mp4", "VID_0001_unknown_7.mp4", "VID_0001_unknown_7_2.mp4"]
+          and refused_mv and a_.is_file()
+          and (fold_ / "VID_0001.mp4").read_bytes() == bytes([0]) * 10, taken_)
     update_config(lambda c: c.update(archive_root=str(work / "Архив")))
     check("archive folder: one reading for the whole app", archive_root() == work / "Архив")
     print({"passed": sum(checks), "total": len(checks)})

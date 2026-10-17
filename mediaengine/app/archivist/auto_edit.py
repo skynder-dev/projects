@@ -2501,18 +2501,58 @@ def _tree_bytes(root: Path) -> int:
 BUILD_MARKERS = ("BUILD.txt", "port.txt", "Start MediaEngine.vbs")
 
 
+# What a release folder holds (tools/build_windows_package.py, the launcher, Windows itself). A folder with anything
+# else in it - the owner's clips put there, a Library source, a reel's folder - is never offered for removal: removing
+# a version deletes its folder for good (no Recycle Bin).
+RELEASE_ENTRIES = {".venv", "app", "app.__new__", "app.__old__", "requirements.txt", "launcher.py", "version.txt", "port.txt",
+                   "shortcut_name.txt", "start mediaengine.vbs", "mediaengine.ico", "build.txt", "readme.txt", "прочти.txt",
+                   "updater_config.json", "__pycache__", "models", "sidecars", "desktop.ini", "thumbs.db"}
+
+
+def _user_places() -> list[Path]:
+    """Folders the owner's own files are in or go to: the Library's sources, the reels' folders and chosen videos,
+    the folders reels were saved to."""
+    out: list[Path] = []
+    try:
+        for s_ in load_config().get("sources") or []:
+            if s_.get("path"):
+                out.append(Path(os.path.expandvars(str(s_["path"]))).expanduser())
+    except Exception:
+        pass
+    try:
+        ensure_schema()
+        with db() as con:
+            for r in con.execute("SELECT folder, files_json FROM ae_projects").fetchall():
+                if r["folder"]:
+                    out.append(Path(r["folder"]))
+                for f in json.loads(r["files_json"] or "null") or []:
+                    out.append(Path(f).parent)
+            for r in con.execute("SELECT DISTINCT path FROM ae_exports").fetchall():
+                out.append(Path(r["path"]).parent)
+    except Exception:
+        pass
+    return out
+
+
 def _holds_user_data(d: Path) -> bool:
     """Early 3.13 candidates kept projects, database and exports INSIDE the release folder, and the data folder,
-    the export folder or the archive may have been chosen inside one: such a folder is never offered for removal."""
+    the export folder, the archive, a Library source or a reel's videos may be inside one: such a folder is never
+    offered for removal (nor anything that is not exactly a release folder)."""
     if any((d / n).exists() for n in ("data", "Exports", "MediaArchive", "Staging", "Private")):
         return True
     try:
+        if any(x.name.lower() not in RELEASE_ENTRIES for x in d.iterdir()):
+            return True                   # something of the owner's (or unknown) is in it
         rd = d.resolve()
         places = [HOME, DATA, EXPORTS, default_export_dir()]
         from .config import archive_root
         places.append(archive_root())
+        places += _user_places()
         for x in places:
-            rx = Path(x).resolve()
+            try:
+                rx = Path(x).resolve()
+            except (OSError, ValueError):
+                continue
             if rx == rd or rd in rx.parents:
                 return True
     except Exception:

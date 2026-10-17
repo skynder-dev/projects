@@ -526,18 +526,40 @@ def _staging_dest(row: dict) -> Path:
     return folder / f"{int(row['id']):08d}__{name}"
 
 
+def _free_name(folder: Path, name: str, tags: list[str]) -> Path:
+    """The first name not taken in <folder>: name, then name_<tag> for each tag, then name_<last tag>_2, _3, ...
+    (two cards' VID_0001.mp4 never share one Private / Rejected copy - one would be overwritten)."""
+    base = Path(name)
+    cands = [folder / name] + [folder / f"{base.stem}_{t}{base.suffix}" for t in tags]
+    for c in cands:
+        if not c.exists():
+            return c
+    last = cands[-1]
+    n = 2
+    while (folder / f"{last.stem}_{n}{base.suffix}").exists():
+        n += 1
+    return folder / f"{last.stem}_{n}{base.suffix}"
+
+
+def _no_overwrite(dest: Path, size: int, sha: str) -> None:
+    """Never replace a different file that has the destination's name (an identical one is fine)."""
+    if dest.exists():
+        try:
+            if dest.stat().st_size == size and sha256_file(dest) == sha:
+                return
+        except OSError:
+            pass
+        raise RuntimeError("A different file already has that name: " + str(dest))
+
+
 def _private_dest(row: dict, src: Path, sha: str) -> Path:
     folder = PRIVATE / re_safe(row.get("source_label") or "Source"); folder.mkdir(parents=True, exist_ok=True)
-    dest = folder / re_safe(row.get("filename") or src.name)
-    if dest.exists(): dest = folder / f"{dest.stem}_{sha[:8]}{dest.suffix}"
-    return dest
+    return _free_name(folder, re_safe(row.get("filename") or src.name), [str(sha)[:8], f"{str(sha)[:8]}_{int(row['id'])}"])
 
 
 def _rejected_dest(row: dict, src: Path) -> Path:
     folder = REJECTED / re_safe(row.get("source_label") or "Source"); folder.mkdir(parents=True, exist_ok=True)
-    dest = folder / re_safe(row.get("filename") or src.name)
-    if dest.exists(): dest = folder / f"{dest.stem}_{int(row['id'])}{dest.suffix}"
-    return dest
+    return _free_name(folder, re_safe(row.get("filename") or src.name), [str(int(row['id']))])
 
 
 def _same_volume(a: Path, b: Path) -> bool:
@@ -552,6 +574,8 @@ def _verified_move(src: Path, dest: Path, sha: str | None = None) -> None:
     dest.parent.mkdir(parents=True, exist_ok=True)
     expected_size = src.stat().st_size
     expected_sha = sha or sha256_file(src)
+    if dest.resolve() != src.resolve():
+        _no_overwrite(dest, expected_size, expected_sha)
     if _same_volume(src, dest):
         # Same-volume rename is atomic; content bytes are not rewritten.
         src.replace(dest)
@@ -591,7 +615,7 @@ def _archive_dest(root: Path, row: dict, src: Path, sha: str) -> Path:
             return candidate
     except Exception:
         pass
-    return folder / f"{dest.stem}_{sha[:8]}_{int(row['id'])}{dest.suffix}"
+    return _free_name(folder, name, [f"{sha[:8]}_{int(row['id'])}"])
 
 
 def _job_update(job_id: int, **fields):
@@ -1256,6 +1280,7 @@ def _run_media_brain_job(job: dict):
 
 def _verified_copy(src: Path, dest: Path, sha: str) -> None:
     dest.parent.mkdir(parents=True, exist_ok=True)
+    _no_overwrite(dest, src.stat().st_size, sha)
     tmp = dest.with_suffix(dest.suffix + ".part")
     tmp.unlink(missing_ok=True)
     shutil.copy2(src, tmp)
