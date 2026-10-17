@@ -1,3 +1,12 @@
+## 2026-10-17, clean Tampermonkey label / GoDog 7.0.6
+
+- Owner noticed active Tampermonkey listing `GoDog GDCONST-010 DEFAULT-DISABLED canary` (enabled script, 7.0.2). This is obsolete development terminology, not an intentional product name.
+- Source GoDog 7.0.6 changes only userscript metadata and code version label: `@name GoDog`, localized names `@name:en GoDog`, `@name:ru GoDog`. Preserves original `@namespace GoDog.constitution`, `@updateURL` and `@downloadURL` to avoid a new script identity. UI layout, buttons and local-only logic unchanged.
+- Script and tests committed; GitHub Actions browser-control mock and offline source CI **PASS** on runs 39000875933 and 39000879359.
+- Source staged in Supabase canonical cache `godog-localhub-canary-001` 7.0.6, sha256 `c81d769fd14787b01c220d1989474ff095ae55e2c78983018a1da8ffc6bf7295`; managed Tampermonkey provision `godog-tm-provision-localhub-canary-001` 7.0.6, SHA256 `56ad76476b267dfed48c4f639873121d8ac0185f95a20ad81342633832ba550c`; existing UUID preserved, other scripts disabled.
+- **Not installed on owner's PC as of this checkpoint.** An attempt to stage a temporary silent Windows deployment through Relay was blocked; do not present staged artifacts or CI as live install. Do not bypass tool security. Tampermonkey dashboard still displays old name until the already installed script updates from its localhost URL. Do not run more random installations, risk duplicate GoDog scripts, or restart owner's browser without permission.
+- Next exact action: use an authorized supported Windows/Tampermonkey update mechanism to atomically stage the SHA-pinned 7.0.6 file at `%LOCALAPPDATA%\GoDog\current.user.js`, check `http://127.0.0.1:43129/godog.meta.js` and full userscript SHA, then verify Tampermonkey's *actual script name and version* in the browser. The user does not want to manually install repeated ZIPs.
+
 ## 2026-10-17, PC local Tampermonkey update feed restored
 
 **Windows acceptance boundary: local feed PASSED, live Tampermonkey install NOT YET verified.**
