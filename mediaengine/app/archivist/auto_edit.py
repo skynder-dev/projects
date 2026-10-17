@@ -2097,6 +2097,7 @@ WHATS_NEW_ITEMS = [
     ("2026-10-16", "Check this PC can test the graphics card: if it decodes 4K faster with exactly the same picture, the videos are cut with it."),
     ("2026-10-16", "Choosing the moments of a new reel length uses several processor cores (the same choice, found faster)."),
     ("2026-10-16", "“Prepare in advance” for a reel for every day of a big folder too."),
+    ("2026-10-17", "Orders from other programs: a program puts an order into the Inbox folder (Auto Edit → Orders), MediaEngine makes the video and puts it into Done."),
 ]
 WHATS_NEW_ID = max(d for d, _ in WHATS_NEW_ITEMS)
 WHATS_NEW = [t for _, t in WHATS_NEW_ITEMS]

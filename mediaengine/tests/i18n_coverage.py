@@ -24,6 +24,7 @@ KEEP = {  # stays English in Russian too (names, units, formats)
     "PE", "Core", "Apache", "huggingface", "co", "Hugging", "Face", "TinyCLIP",     # AI+ model name, licence and source
     "Full", "Reels", "Shorts",                                                      # format names (Full HD, Instagram Reels, YouTube Shorts)
     "mp3", "mp", "m4a", "wav", "flac", "ogg", "opus", "wma", "aac",                 # music file types
+    "Inbox", "Done", "Failed", "Orders", "ORDERS", "md",                           # folder / file names of Orders (other programs use them)
 }
 SKIP_PREFIX = ("/api/", "/static", "/media/", "/thumb/", "/storyboard/", "/clip-preview/", "/export-file/", "/composition-file/",
                "/diagnostics/fixture", "/auto/rev/")

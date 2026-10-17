@@ -152,6 +152,11 @@ jobs:
         run: |
           python mediaengine/tests/e2e_auto_edit.py --folder "$env:RUNNER_TEMP\fx\two" --home "$env:RUNNER_TEMP\home2" --mode technical --skip-cancel --files-check --out "$env:OUT\e2e_two.json" 2>&1 | Tee-Object "$env:OUT\e2e_two.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Orders from other programs - video by plan, reel from a folder, 22 bad orders refused, wait for OK, stop, retry, restart
+        shell: pwsh
+        run: |
+          python mediaengine/tests/orders_check.py --home "$env:RUNNER_TEMP\home-orders" --videos "$env:RUNNER_TEMP\fx\two" --out "$env:OUT\orders.json" 2>&1 | Tee-Object "$env:OUT\orders.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Real AI models from Hugging Face - AI and AI+ test reels, an AI+ reel, its AI variant, blind comparison
         timeout-minutes: 75
         continue-on-error: true    # needs huggingface.co: an outage there is reported (results branch) but never blocks the package
@@ -159,11 +164,11 @@ jobs:
         run: |
           python mediaengine/tests/real_models_check.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\home-ai" --out "$env:OUT\real_models.json" 2>&1 | Tee-Object "$env:OUT\real_models.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
-      - name: Russian interface - every page in Russian, no English left, no page contacts the internet (7-video, library and library-flow homes)
+      - name: Russian interface - every page in Russian, no English left, no page contacts the internet (7-video, library, library-flow and orders homes)
         continue-on-error: true    # a missed word is reported (results branch) but never blocks the package
         shell: pwsh
         run: |
-          python mediaengine/tests/i18n_coverage.py "$env:RUNNER_TEMP\home7" "$env:RUNNER_TEMP\libchk\home" "$env:RUNNER_TEMP\home2" "$env:RUNNER_TEMP\libflow\Данные пользователя" 2>&1 | Tee-Object "$env:OUT\i18n_coverage.txt"
+          python mediaengine/tests/i18n_coverage.py "$env:RUNNER_TEMP\home7" "$env:RUNNER_TEMP\libchk\home" "$env:RUNNER_TEMP\home2" "$env:RUNNER_TEMP\libflow\Данные пользователя" "$env:RUNNER_TEMP\home-orders" 2>&1 | Tee-Object "$env:OUT\i18n_coverage.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: The app in a real browser (Edge) - form buttons, page scripts, Save MP4, Check this PC in the background
         if: success()
@@ -328,6 +333,10 @@ jobs:
             $env:MEDENG_SELECT_MIN_PARALLEL = '0'; $env:MEDENG_SELECT_WORKERS = '2'
             & $py -s -E -X utf8 mediaengine/tests/e2e_auto_edit.py --folder "$env:RUNNER_TEMP\fx\seven" --home "$env:RUNNER_TEMP\home-pkg" --mode technical --length 15 --skip-cancel --out "$env:OUT\e2e_packaged_python.json" 2>&1 | Tee-Object "$env:OUT\e2e_packaged_python.txt"
             $code = $LASTEXITCODE
+            if ($code -eq 0) {   # orders with the packaged Python and FFmpeg too (folders renamed on NTFS, offline)
+              & $py -s -E -X utf8 mediaengine/tests/orders_check.py --home "$env:RUNNER_TEMP\home-pkg-orders" --videos "$env:RUNNER_TEMP\fx\two" --out "$env:OUT\orders_packaged_python.json" 2>&1 | Tee-Object "$env:OUT\orders_packaged_python.txt"
+              $code = $LASTEXITCODE
+            }
           } finally {
             Remove-NetFirewallRule -DisplayName 'MediaEngine CI offline' -ErrorAction SilentlyContinue
             Remove-NetFirewallRule -DisplayName 'MediaEngine CI offline w' -ErrorAction SilentlyContinue

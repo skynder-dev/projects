@@ -62,6 +62,15 @@ for the first 3 seconds, and your own song under the reel (with the videos' quie
 cuts fall on the beat of the music ("Cuts on the beat of the music"; a song without a clear beat leaves the cuts as
 they were). Changing them later makes a new version quickly.
 
+## Orders from other programs
+
+Another program on this PC can order a video (**Auto Edit → Orders**). It puts a folder with `order.json` into
+`MediaEngine Data\Orders\Inbox`; MediaEngine makes the video and puts it into `Orders\Done\<order>` (`video.mp4` +
+`result.json`, a receipt with checks), or explains in `Orders\Failed` why it could not. Two kinds: a reel from videos
+(MediaEngine chooses the moments; it is also a normal project) and a video exactly by plan (pictures, pieces of videos
+and a narration with their times). New orders start at once or wait for your OK. MediaEngine publishes nothing.
+The format for whoever writes the other program: `Orders\ORDERS.md`.
+
 ## What can leave this PC
 
 Nothing leaves this PC by default. If you explicitly connect a provider or start an optional upload, authentication data, selected uploads, and provider analytics can be sent to that service.

@@ -230,6 +230,11 @@ def register(app, layout, e, human_bytes):
             ae.ensure_schema()
         except Exception:
             pass
+        try:          # orders from other programs (Orders\\Inbox): watched while the app runs
+            from . import orders
+            orders.start()
+        except Exception:
+            pass
 
     def page(title, body, script=""):
         return layout(title, PAGE_CSS + body, script)      # translated (if Russian) for every page in i18n.install
@@ -282,9 +287,16 @@ def register(app, layout, e, human_bytes):
             has_exports = exp_dir.is_dir() and any(x.suffix.lower() == ".mp4" for x in exp_dir.iterdir())
         except OSError:
             has_exports = False
+        try:
+            from . import orders
+            n_orders = len(orders.inbox()) + len(orders.unfinished())
+        except Exception:
+            n_orders = 0
         check_btn = ("<div class='row' style='float:right;gap:8px'>"
                      + ("<form method='post' action='/auto/exports/open' style='margin:0'><button class='btn2'>Exported reels</button></form>"
                         if has_exports else "")
+                     + "<a class='btn btn2' href='/auto/orders'>Orders"
+                     + (f" <span class='badge review' translate='no'>{n_orders}</span>" if n_orders else "") + "</a>"
                      + "<a class='btn btn2' href='/auto/check'>Check this PC</a></div>")
         # folders of the last reels (one click to a new reel from the same place)
         recent, seen_f = [], set()
@@ -1210,6 +1222,9 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
         if not src:
             return "not found", 404
         return send_file(src, conditional=True)
+
+    from . import orders_web       # orders from other programs
+    orders_web.register(app, page, err_page, e, _error_html)
 
 
 AI_LABEL = "AI — as before (fast)"
