@@ -172,6 +172,13 @@ def update_config(change) -> dict:
         return cfg
 
 
+def archive_root(cfg: dict | None = None) -> Path:
+    """The archive folder as every part of the app must read it (%VAR% / ~ expanded): archiving writes there, Private
+    Forever and the Library's own-folder rules recognise copies there."""
+    raw = str((cfg if cfg is not None else load_config()).get("archive_root") or "") or default_archive_root()
+    return Path(os.path.expandvars(raw)).expanduser()
+
+
 def load_config() -> dict:
     ensure_dirs()
     cfg = {}

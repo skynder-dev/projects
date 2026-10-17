@@ -180,6 +180,11 @@ def main():
     from archivist.converter import recover_convert_jobs
     from archivist.watchdog import start_watchdog
     from archivist.web import create_app
+    try:
+        from archivist.clip_export import sweep_exports
+        sweep_exports()                   # empty reserved names / .part files of renders the app was closed during
+    except Exception:
+        pass
     start_workers(); recover_convert_jobs(); start_watchdog(); app=create_app(); startup_self_check(app); url=f"http://{HOST}:{PORT}/"+("auto" if SIDE_BY_SIDE else "")
     # (the old Remote Lab diagnostics upload is gone: MediaEngine sends nothing anywhere)
     suppress=os.environ.get("ARCHIVIST_SUPPRESS_BROWSER")=="1" or "--no-browser" in sys.argv

@@ -49,12 +49,10 @@ def _own_folders() -> list[str]:
     scanned as new media - a Private video would come back through Import, archived copies would look like duplicates."""
     out = []
     try:
-        from .config import HOME, INSTALL, load_config
+        from .config import HOME, INSTALL, archive_root
         roots = [HOME, INSTALL]
         try:
-            ar = (load_config() or {}).get("archive_root")
-            if ar:
-                roots.append(Path(ar))
+            roots.append(archive_root())
         except Exception:
             pass
         for r in roots:

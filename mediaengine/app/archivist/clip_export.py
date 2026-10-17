@@ -30,6 +30,30 @@ def ensure_schema():
         """)
         con.commit()
 
+def sweep_exports():
+    """At start (nothing renders yet): names reserved by a clip export or a Composer render that the app was closed
+    during (empty clip_*/composition_* files), their half-written .part files and old Composer temp folders go.
+    A finished export is never touched."""
+    try:
+        for f in list(EXPORTS.glob("clip_*.mp4"))+list(EXPORTS.glob("composition_*.mp4")):
+            try:
+                if f.name.endswith(".part.mp4") or f.stat().st_size==0:
+                    f.unlink()
+            except OSError:
+                pass
+    except OSError:
+        pass
+    try:
+        import tempfile, shutil, time as _t
+        for d in Path(tempfile.gettempdir()).glob("archivist_composer_*"):
+            try:
+                if d.is_dir() and _t.time()-d.stat().st_mtime>3600:
+                    shutil.rmtree(d,ignore_errors=True)
+            except OSError:
+                pass
+    except OSError:
+        pass
+
 def _unique_output(clip_id,aspect):
     EXPORTS.mkdir(parents=True,exist_ok=True)
     stem=f"clip_{int(clip_id)}_{str(aspect).replace(':','x')}"

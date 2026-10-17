@@ -19,6 +19,7 @@ PRESETS = {
 _LOCK = threading.Lock()
 _CURRENT_PROCESS = None
 _CURRENT_PROCESS_JOB_ID = None
+_EXITING = threading.Event()     # the app is quitting: a stopped FFmpeg is not a failed video (the job resumes next start)
 
 
 def _now():
@@ -41,6 +42,8 @@ def _local_path(row):
 
 
 def _unique_output(source: Path, preset: str, target_mb: int | None, output_dir: Path | None = None) -> Path:
+    """A new output name, reserved at once (an empty file): two conversions never pick the same name. A very long
+    source name is shortened (the whole name must stay within 255 characters)."""
     cfg = PRESETS[preset]
     # Never write next to the source: it may be an SD card, a phone folder or another app's archive.
     folder = output_dir or (HOME / "Converted")
@@ -50,15 +53,37 @@ def _unique_output(source: Path, preset: str, target_mb: int | None, output_dir:
         folder = HOME / "Converted"
         folder.mkdir(parents=True, exist_ok=True)
     suffix = f"target_{int(target_mb)}mb" if target_mb else cfg["suffix"]
-    base = folder / f"{source.stem}_{suffix}.mp4"
-    if not base.exists():
-        return base
-    n = 2
+    stem = source.stem[:150]
+    n = 1
     while True:
-        p = folder / f"{source.stem}_{suffix}_{n}.mp4"
-        if not p.exists():
-            return p
-        n += 1
+        p = folder / (f"{stem}_{suffix}.mp4" if n == 1 else f"{stem}_{suffix}_{n}.mp4")
+        try:
+            with open(p, "xb"):
+                return p
+        except FileExistsError:
+            n += 1
+            if n > 100000:
+                raise RuntimeError("No free output name in " + str(folder))
+
+
+def _sweep_converted(folder: Path | None = None) -> None:
+    """At start (nothing converts yet): names reserved by a conversion the app was closed during (empty files) and
+    half-written .part files go; finished conversions are never touched."""
+    folder = folder or (HOME / "Converted")
+    try:
+        for f in folder.glob("*.mp4"):
+            try:
+                if f.name.endswith(".part.mp4") or f.stat().st_size == 0:
+                    f.unlink()
+            except OSError:
+                pass
+        for f in (HOME / "data").glob("ffmpeg2pass-*"):    # two-pass logs of a conversion that did not finish
+            try:
+                f.unlink()
+            except OSError:
+                pass
+    except OSError:
+        pass
 
 
 HDR_TO_SDR = {   # same conversion as the Auto Edit engine (engine_p11/p11_folder_to_reel_r3.py)
@@ -128,6 +153,11 @@ def _run_progress_inner(cmd, duration_s: float, progress_cb=None, cancel_cb=None
         full, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace",
         creationflags=flags, startupinfo=si, close_fds=True
     )
+    try:                                   # Windows: FFmpeg dies with the app (never a second writer after a restart)
+        from .auto_edit import _attach_job_object
+        _attach_job_object(p)
+    except Exception:
+        pass
     with _LOCK:
         _CURRENT_PROCESS = p
         _CURRENT_PROCESS_JOB_ID = int(job_id) if job_id else None
@@ -142,8 +172,12 @@ def _run_progress_inner(cmd, duration_s: float, progress_cb=None, cancel_cb=None
                 if cancel_cb and cancel_cb():
                     try:
                         p.terminate()
+                        p.wait(15)                 # (the .part file is deleted next: Windows needs the writer gone)
                     except Exception:
-                        pass
+                        try:
+                            p.kill(); p.wait(15)
+                        except Exception:
+                            pass
                     raise RuntimeError("cancelled")
                 if "=" in line:
                     k, v = line.split("=", 1)
@@ -169,6 +203,15 @@ def _run_progress_inner(cmd, duration_s: float, progress_cb=None, cancel_cb=None
             if _CURRENT_PROCESS is p:
                 _CURRENT_PROCESS = None
                 _CURRENT_PROCESS_JOB_ID = None
+        try:
+            from .auto_edit import _JOB_HANDLES
+            h = _JOB_HANDLES.pop(p.pid, None)
+            if h is not None:
+                import ctypes
+                from ctypes import wintypes
+                ctypes.windll.kernel32.CloseHandle(wintypes.HANDLE(h))
+        except Exception:
+            pass
         if job_id:
             with db() as con:
                 con.execute("UPDATE jobs SET worker_pid=NULL,heartbeat_at=? WHERE id=? AND worker_pid=?",(_now(),int(job_id),int(p.pid)));con.commit()
@@ -189,14 +232,9 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
     hdr = _hdr_kind(ffmpeg, source)
     interlaced = _is_interlaced(ffmpeg, source)
     target_mb = int(target_mb) if target_mb else None
-    out = _unique_output(source, preset, target_mb, Path(output_dir) if output_dir else None)
-    part = out.with_name(out.stem + ".part.mp4")
-    try:
-        if part.exists():
-            part.unlink()
-    except Exception:
-        pass
-
+    out = _unique_output(source, preset, target_mb, Path(output_dir) if output_dir else None)   # reserved (empty)
+    part = out.with_name(out.stem + ".part.mp4")       # its own name: the output name is this conversion's alone
+    passlog = None
     try:
         cfg = PRESETS[preset]
         common = [
@@ -210,6 +248,7 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
             total_bits = float(target_mb) * 1024 * 1024 * 8 * 0.94
             video_k = max(250, int(total_bits / duration / 1000.0 - audio_k))
             passlog = str((HOME / "data" / f"ffmpeg2pass-{os.getpid()}-{threading.get_ident()}").resolve())
+            Path(passlog).parent.mkdir(parents=True, exist_ok=True)
             pass1 = [
                 str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-i", str(source),
                 "-map", "0:v:0", *_scale_args(preset, hdr, interlaced),
@@ -224,11 +263,6 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
                 "-c:a", "aac", "-b:a", f"{audio_k}k", "-movflags", "+faststart", str(part)
             ]
             _run_progress(pass2, duration, progress_cb, cancel_cb, 0.50, 0.50, job_id=job_id)
-            for extra in ("-0.log", "-0.log.mbtree", ".log", ".log.mbtree"):
-                try:
-                    Path(passlog + extra).unlink(missing_ok=True)
-                except Exception:
-                    pass
         else:
             cmd = common + [
                 "-crf", str(int(cfg["crf"])),
@@ -252,12 +286,24 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
             "target_mb": target_mb,
         }
     except BaseException:
-        # never leave a half-written .part file behind (it would be re-discovered as media)
+        # never leave a half-written .part file behind (it would be re-discovered as media), nor the empty reserved name
         try:
             part.unlink(missing_ok=True)
         except Exception:
             pass
+        try:
+            if out.is_file() and out.stat().st_size == 0:
+                out.unlink()
+        except Exception:
+            pass
         raise
+    finally:
+        if passlog:                        # two-pass logs (with .temp files while a pass runs): also after Cancel
+            for f in Path(passlog).parent.glob(Path(passlog).name + "*"):
+                try:
+                    f.unlink()
+                except Exception:
+                    pass
 
 
 def _job_update(job_id, **fields):
@@ -351,7 +397,7 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
                     outputs.append(result); success += 1
                     break
                 except Exception as exc:
-                    if str(exc).lower() == "cancelled":
+                    if str(exc).lower() == "cancelled" or _EXITING.is_set():
                         raise
                     request=_consume_watchdog_request(job_id)
                     if request==1:
@@ -373,6 +419,8 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
                     current_filename=None, message=f"Converted {success}; failed {failed}",
                     options_json=json.dumps({"preset": preset, "target_mb": target_mb, "inventory_ids": inventory_ids, "finished_ids": sorted(finished_ids), "outputs": outputs}, ensure_ascii=False))
     except Exception as exc:
+        if _EXITING.is_set():
+            return                         # the app quits: the job stays 'running' and resumes at the next start
         cancelled = str(exc).lower() == "cancelled"
         _job_update(job_id, status="cancelled" if cancelled else "failed", stage="cancelled" if cancelled else "error",
                     finished_at=_now(), error=None if cancelled else str(exc)[:1500],
@@ -397,6 +445,7 @@ def recover_convert_jobs():
         )
         rows=con.execute("SELECT * FROM jobs WHERE kind='convert' AND status IN ('running','queued') AND cancel_requested=0 ORDER BY id").fetchall()
         con.commit()
+    _sweep_converted()
     resumed=0; interrupted=0
     for row in rows:
         d={k:row[k] for k in row.keys()}
@@ -517,6 +566,7 @@ def start_convert_job(inventory_ids, preset="share_1080p", target_mb=None):
     if target_mb is not None and not (50 <= target_mb <= 100000):
         raise ValueError("Target size must be between 50 MB and 100000 MB")
     with db() as con:
+        con.execute("BEGIN IMMEDIATE")     # the "nothing runs" check and the new job as one step (two clicks: one job)
         ok_ids = {int(r["id"]) for r in con.execute(
             f"SELECT id FROM inventory WHERE id IN ({','.join('?' for _ in ids)}) AND excluded=0 AND media_type='video' "
             "AND COALESCE(analysis_status,'')<>'private' AND private_path IS NULL AND rejected_path IS NULL", ids).fetchall()}
@@ -535,6 +585,18 @@ def start_convert_job(inventory_ids, preset="share_1080p", target_mb=None):
         con.commit()
     threading.Thread(target=_convert_worker, args=(job_id, ids, preset, target_mb), daemon=True, name=f"ArchivistConvert{job_id}").start()
     return job_id
+
+
+def shutdown() -> None:
+    """The app quits: the running FFmpeg is stopped (no orphan writing on); the job resumes at the next start."""
+    _EXITING.set()
+    with _LOCK:
+        p = _CURRENT_PROCESS
+    if p is not None:
+        try:
+            p.kill(); p.wait(10)
+        except Exception:
+            pass
 
 
 def convert_job_snapshot(job_id=None):

@@ -87,6 +87,41 @@ def main():
         red, grey = px(12, 8), px(115, 8)
         check("convert_hdr_hlg_normal_colours", red and grey and red[0] >= 160 and red[1] <= 70 and 100 <= grey[1] <= 160, (red, grey))
     check("convert_no_part_files", not list(out_dir.glob("*.part*")))
+    # two conversions of one video at the same moment: two outputs (each name reserved), both whole
+    import threading
+    from archivist import converter as cv
+    small = fx / "phone" / "переменная частота.mp4"
+    both, errs = [], []
+
+    def one():
+        try:
+            both.append(convert_file(small, "small_720p", output_dir=out_dir)["output"])
+        except Exception as exc:
+            errs.append(repr(exc))
+    ts = [threading.Thread(target=one) for _ in range(2)]
+    [t.start() for t in ts]; [t.join() for t in ts]
+    clean = [subprocess.run([ff, "-v", "error", "-i", o, "-f", "null", "-"], capture_output=True, text=True).stderr.strip() == "" for o in both]
+    check("convert_twice_at_once_two_whole_outputs", len(set(both)) == 2 and all(clean) and not errs, (both, clean, errs))
+    # "Fit under N MB" (two passes) cancelled half way: no .part, no empty reserved name, no pass logs left
+    calls = {"n": 0}
+
+    def cancel_soon():
+        calls["n"] += 1
+        return calls["n"] > 6
+    out2 = work / "Converted cancel"
+    try:
+        convert_file(big, "share_1080p", target_mb=60, cancel_cb=cancel_soon, output_dir=out2)
+        cancelled = False
+    except RuntimeError as exc:
+        cancelled = str(exc) == "cancelled"
+    left = [x.name for x in out2.glob("*")] + [x.name for x in (work / "home" / "data").glob("ffmpeg2pass-*")]
+    check("convert_cancel_leaves_nothing", cancelled and not left, (cancelled, left))
+    # at the next start: names reserved by a conversion the app was closed during go, finished conversions stay
+    (out_dir / "x_share_1080p.mp4").write_bytes(b"")
+    (out_dir / "y_share_1080p.part.mp4").write_bytes(b"0" * 100)
+    cv._sweep_converted(out_dir)
+    check("convert_start_sweeps_interrupted_names_only", not (out_dir / "x_share_1080p.mp4").exists()
+          and not (out_dir / "y_share_1080p.part.mp4").exists() and all(Path(o).is_file() for o in both))
     print(json.dumps({"passed": sum(checks), "total": len(checks)}))
     return 0 if all(checks) else 1
 

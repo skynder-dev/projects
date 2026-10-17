@@ -12,7 +12,7 @@ from pathlib import Path
 from flask import Flask, Response, jsonify, redirect, render_template, request, send_file
 
 from . import android
-from .config import APP_PORT, BUILD, HOME, INSTALL, SIDE_BY_SIDE, PRIVATE, REJECTED, STAGING, STORYBOARDS, THUMBS, VERSION, load_config, save_config
+from .config import APP_PORT, BUILD, HOME, INSTALL, SIDE_BY_SIDE, PRIVATE, REJECTED, STAGING, STORYBOARDS, THUMBS, VERSION, load_config, save_config, update_config
 from .db import db, init_db
 from .media_brain import (best_clips, build_tracked_trajectory, clip_by_id, clips_for_inventory,
                           ensure_schema as ensure_media_brain_schema, save_crop_trajectory,
@@ -239,6 +239,39 @@ def _id_list(raw, limit=200):
     return out
 
 
+def _remove_source(form) -> None:
+    """Remove-source buttons: the row's position AND its path (a page left open since another source was removed must
+    not remove the wrong one; a request without a position removes nothing)."""
+    raw=str(form.get('index') or '').strip()
+    if not (raw.isascii() and raw.isdigit()):
+        return
+    i=int(raw); want=form.get('path')
+    def change(cfg):
+        src=cfg.get('sources') or []
+        if i<len(src) and (want is None or str(src[i].get('path') or '')==want):
+            src.pop(i)
+    update_config(change)
+
+
+def _add_source(form) -> str:
+    """Add a folder of videos as a source (Import and Settings): it must exist; stored as the full path, once.
+    Returns an error text, or '' when added (or already there)."""
+    p=str(form.get('path') or '').strip(); label=str(form.get('label') or '').strip()
+    try:
+        pp=Path(os.path.expandvars(p)).expanduser()
+        if not p or not pp.is_absolute() or not pp.is_dir():
+            return 'Folder not found: '+(p or '(empty path)')
+        norm=str(pp.resolve())
+    except (OSError,ValueError):
+        return 'Folder not found: '+(p or '(empty path)')
+    def change(cfg):
+        if not any(str(Path(os.path.expandvars(str(s.get('path') or ''))).expanduser()).lower()==norm.lower()
+                   for s in cfg.get('sources',[]) if s.get('path')):
+            cfg.setdefault('sources',[]).append({'path':norm,'label':label or norm,'kind':'fixed','enabled':True})
+    update_config(change)
+    return ''
+
+
 def _json_obj():
     """The request's JSON body when it is an object, else {} (a list or a number never reaches .get())."""
     d=request.get_json(silent=True)
@@ -255,6 +288,11 @@ def _exit_soon():
     try:                                  # an order's FFmpeg too (the order is done again at the next start)
         from . import orders as _or
         _or.shutdown()
+    except Exception:
+        pass
+    try:                                  # a conversion's FFmpeg too (the conversion resumes at the next start)
+        from . import converter as _cv
+        _cv.shutdown()
     except Exception:
         pass
     os._exit(0)
@@ -415,6 +453,13 @@ def create_app():
             od=''
         if od and not force:
             return jsonify({'ok':False,'error':"An order from another program is being done (Auto Edit → Orders)"}),409
+        try:
+            from . import composer as _cp
+            with _cp._ACTIVE_LOCK: comp=bool(_cp._ACTIVE)
+        except Exception:
+            comp=False
+        if comp and not force:
+            return jsonify({'ok':False,'error':"A composition is being rendered (Composer)"}),409
         if mode!='stop': _spawn_launcher(mode)
         threading.Thread(target=_exit_soon,daemon=True).start(); return jsonify({'ok':True})
 
@@ -852,7 +897,7 @@ if(recheck)recheck.onclick=async()=>{
             source_error=request.args.get('source_error','').strip()
             source_rows=''.join(
                 f"<div class='row space' style='padding:6px 0'><div><b translate='no'>{e(s.get('label') or s.get('path'))}</b><div class='muted' translate='no'>{e(s.get('path'))}</div></div>"
-                f"<form method='post' action='/import/remove-source'><input type='hidden' name='index' value='{i}'><button class='btn2'>Remove source</button></form></div>"
+                f"<form method='post' action='/import/remove-source'><input type='hidden' name='index' value='{i}'><input type='hidden' name='path' value='{e(str(s.get('path') or ''))}'><button class='btn2'>Remove source</button></form></div>"
                 for i,s in enumerate(cfg.get('sources',[])) if s.get('enabled',True) and (s.get('kind') or 'fixed')=='fixed'
             )
             if not source_rows:
@@ -1365,7 +1410,8 @@ pollConvert();"""
     @app.get('/api/convert/status')
     def convert_status():
         raw=request.args.get('id','').strip()
-        job=convert_job_snapshot(int(raw)) if _id_list(raw,1) else convert_job_snapshot()
+        one=_id_list(raw,1)
+        job=convert_job_snapshot(one[0]) if one else convert_job_snapshot()
         return jsonify({'job':job})
 
 
@@ -1814,7 +1860,9 @@ async function jobAction(btn,url,mode){
     def settings():
         cfg=load_config(); body=f"""<div class='pagehead'><div class='eyebrow'>Configuration</div><h1>Settings</h1><div class='lead'>Storage, privacy and local analysis behavior. External capabilities are managed separately in Setup & Connections.</div><div class='row' style='margin-top:10px'><a class='btn btn2' href='/auto/check'>Check this PC</a><a class='btn btn2' href='/settings/connections'>Setup & Connections</a><a class='btn btn2' href='/help'>Help & Recovery</a><a class='btn btn2' href='/about'>About</a></div><div class='row' style='margin-top:10px'><span class='muted'>Interface language</span><form method='post' action='/lang' style='margin:0'><input type='hidden' name='lang' value='en'><input type='hidden' name='back' value='/settings'><button class='{'btn2' if i18n.ui_language()=='ru' else ''}' translate='no'>English</button></form><form method='post' action='/lang' style='margin:0'><input type='hidden' name='lang' value='ru'><input type='hidden' name='back' value='/settings'><button class='{'' if i18n.ui_language()=='ru' else 'btn2'}' translate='no'>Русский</button></form></div></div><div class='about-grid'><div><div class='section-title'>Storage</div><div class='card about-list'><div><b>Data folder</b><div class='muted'>{e(HOME)} <span class='muted'>(projects, database, exports{' — kept outside the program folder, shared by every release' if INSTALL!=HOME else ''})</span></div></div><div><b>Program folder</b><div class='muted'>{e(INSTALL)}</div></div><div><b>Staging</b><div class='muted'>{e(STAGING)}</div></div><div><b>Private</b><div class='muted'>{e(PRIVATE)}</div></div><div><b>Rejected quarantine</b><div class='muted'>{e(REJECTED)}</div></div><div><b>Archive folder</b><div class='muted'>{e(cfg['archive_root'])}</div></div></div></div><div><div class='section-title'>Behavior</div><form method='post' action='/settings/save' class='card'><label>Archive folder<br><input name='archive_root' style='width:100%;margin-top:5px' value='{e(cfg['archive_root'])}'></label><br><br><label>Free-space reserve GB<br><input name='min_free_gb' type='number' value='{e(cfg['ingest']['min_free_gb'])}' style='margin-top:5px'></label><br><br><label><input type='checkbox' name='privacy' {'checked' if cfg['privacy']['enabled'] else ''}> Privacy screening</label><br><label><input type='checkbox' name='quality' {'checked' if cfg['analysis']['technical_quality'] else ''}> Technical quality triage</label><br><label><input type='checkbox' name='notify' {'checked' if (cfg.get('auto_edit') or {}).get('notify',True) is not False else ''}> Windows notification when a reel that took more than a minute is ready</label><br><br><button>Save settings</button></form></div></div><div class='section-title'>Existing local sources</div><div class='card'>"""
         for i,s in enumerate(cfg.get('sources',[])):
-            body+=f"<div class='row space' style='padding:7px 0'><span><b translate='no'>{e(s.get('label') or s.get('path'))}</b><div class='muted' translate='no'>{e(s.get('path'))}</div></span><form method='post' action='/settings/remove-source'><input type='hidden' name='index' value='{i}'><button class='danger'>Remove</button></form></div>"
+            body+=f"<div class='row space' style='padding:7px 0'><span><b translate='no'>{e(s.get('label') or s.get('path'))}</b><div class='muted' translate='no'>{e(s.get('path'))}</div></span><form method='post' action='/settings/remove-source'><input type='hidden' name='index' value='{i}'><input type='hidden' name='path' value='{e(str(s.get('path') or ''))}'><button class='danger'>Remove</button></form></div>"
+        if request.args.get('source_error','').strip():
+            body+=f"<div class='errbox' style='margin:8px 0'>{e(request.args.get('source_error','').strip())}</div>"
         body+=f"""<form method='post' action='/settings/add-source' class='toolbar'><input name='label' placeholder='Label'><input name='path' style='min-width:360px' placeholder='D:\\Videos'><button type='button' class='btn2' onclick=\"(async b=>{{b.disabled=true;try{{const r=await fetch('/api/auto/pick-folder',{{method:'POST'}});const x=await r.json();if(x.path)b.form.path.value=x.path}}catch(e){{}}b.disabled=false}})(this)\">Choose folder…</button><button>Add source</button></form></div><div class='section-title'>Rights Guard</div><div class='card'>Privacy, technical quality and publishing-rights risk stay separate. Rights flags are conservative workflow hints, not legal determinations. Manual rights decisions are preserved across later analysis.</div>"""
         return layout('Settings',body)
 
@@ -1834,16 +1882,10 @@ async function jobAction(btn,url,mode){
 
     @app.post('/import/add-source')
     def import_add_source():
-        cfg=load_config(); p=request.form.get('path','').strip(); label=request.form.get('label','').strip() or p
         try:
-            pp=Path(os.path.expandvars(p)).expanduser()
-            if not p or not pp.exists() or not pp.is_dir():
-                return redirect('/import?source_error='+urllib.parse.quote('Folder not found: '+(p or '(empty path)')))
-            norm=str(pp.resolve())
-            exists=any(str(Path(os.path.expandvars(str(s.get('path') or ''))).expanduser()).lower()==norm.lower() for s in cfg.get('sources',[]) if s.get('path'))
-            if not exists:
-                cfg.setdefault('sources',[]).append({'path':norm,'label':label or norm,'kind':'fixed','enabled':True})
-                save_config(cfg)
+            err=_add_source(request.form)
+            if err:
+                return redirect('/import?source_error='+urllib.parse.quote(err))
             start_discovery()
             return redirect('/import?source_kind=fixed')
         except Exception as exc:
@@ -1851,36 +1893,43 @@ async function jobAction(btn,url,mode){
 
     @app.post('/import/remove-source')
     def import_remove_source():
-        cfg=load_config()
-        try:
-            cfg['sources'].pop(int(request.form.get('index','-1')))
-            save_config(cfg)
-        except Exception:
-            pass
+        _remove_source(request.form)
         return redirect('/import')
 
     @app.post('/settings/add-source')
     def add_source():
-        cfg=load_config();p=request.form.get('path','').strip();label=request.form.get('label','').strip() or p
-        if p:cfg.setdefault('sources',[]).append({'path':p,'label':label,'kind':'fixed','enabled':True});save_config(cfg)
-        return redirect('/settings')
+        err=_add_source(request.form)
+        return redirect('/settings'+('?source_error='+urllib.parse.quote(err) if err else ''))
 
     @app.post('/settings/remove-source')
     def rem_source():
-        cfg=load_config()
-        try:cfg['sources'].pop(int(request.form.get('index','-1')));save_config(cfg)
-        except Exception:pass
+        _remove_source(request.form)
         return redirect('/settings')
 
     @app.post('/settings/save')
     def save_settings():
-        cfg=load_config();ar=request.form.get('archive_root','').strip()
-        if ar:cfg['archive_root']=ar
-        try:cfg['ingest']['min_free_gb']=max(1,int(request.form.get('min_free_gb','10')))
-        except Exception:pass
-        cfg['privacy']['enabled']='privacy' in request.form;cfg['analysis']['technical_quality']='quality' in request.form
-        cfg.setdefault('auto_edit',{})['notify']='notify' in request.form
-        save_config(cfg);return redirect('/settings')
+        ar=request.form.get('archive_root','').strip()
+        err=''
+        if ar:
+            try:
+                arp=Path(os.path.expandvars(ar)).expanduser()   # stored as the full folder: every part of the app reads it the same way
+                if not arp.is_absolute():     # (an unknown %VAR% / $VAR stays in the text: not a full path)
+                    raise ValueError
+                ar=str(arp.resolve())
+            except (OSError,ValueError):
+                ar,err='','The archive folder must be a full folder path, such as D:\\Video Archive'
+        def change(cfg):
+            if ar:cfg['archive_root']=ar
+            try:
+                gb=int(str(request.form.get('min_free_gb','10')).strip())
+                cfg.setdefault('ingest',{})['min_free_gb']=max(1,min(100000,gb))
+            except ValueError:
+                pass
+            cfg.setdefault('privacy',{})['enabled']='privacy' in request.form
+            cfg.setdefault('analysis',{})['technical_quality']='quality' in request.form
+            cfg.setdefault('auto_edit',{})['notify']='notify' in request.form
+        update_config(change)
+        return redirect('/settings'+('?source_error='+urllib.parse.quote(err) if err else ''))
 
     register_auto_edit(app, layout, e, human_bytes)
     return app

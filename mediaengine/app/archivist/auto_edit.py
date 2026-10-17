@@ -2509,9 +2509,8 @@ def _holds_user_data(d: Path) -> bool:
     try:
         rd = d.resolve()
         places = [HOME, DATA, EXPORTS, default_export_dir()]
-        arch = str(load_config().get("archive_root") or "")
-        if arch:
-            places.append(Path(arch))
+        from .config import archive_root
+        places.append(archive_root())
         for x in places:
             rx = Path(x).resolve()
             if rx == rd or rd in rx.parents:
@@ -2579,6 +2578,13 @@ def app_busy() -> str:
         from . import orders as _or
         if _or.busy():
             return "An order from another program is being done. Switch when it is ready."
+    except Exception:
+        pass
+    try:
+        from . import composer as _cp
+        with _cp._ACTIVE_LOCK:
+            if _cp._ACTIVE:
+                return "A composition is being rendered (Composer). Switch when it is ready."
     except Exception:
         pass
     return ""

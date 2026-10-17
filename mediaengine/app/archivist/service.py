@@ -1267,7 +1267,8 @@ def _verified_copy(src: Path, dest: Path, sha: str) -> None:
 
 def _run_archive_job(job: dict):
     job_id = int(job["id"])
-    root = Path(os.path.expandvars(load_config()["archive_root"])).expanduser(); root.mkdir(parents=True, exist_ok=True)
+    from .config import archive_root
+    root = archive_root(); root.mkdir(parents=True, exist_ok=True)
     with db() as con:
         items = con.execute("SELECT * FROM job_items WHERE job_id=? AND status NOT IN ('done','skipped') ORDER BY seq", (job_id,)).fetchall()
     _job_update(job_id, status="running", started_at=job.get("started_at") or now_iso(), stage="archive", message="Archiving", source_releasable=0 if _reads_sources_in_place(job_id) else 1)
@@ -1325,7 +1326,8 @@ def _owned_copy(row: dict) -> Path | None:
     """The Archivist-owned copy of an item (Staging or archive), never the source original."""
     roots = [STAGING.resolve()]
     try:
-        roots.append(Path(load_config()["archive_root"]).resolve())
+        from .config import archive_root
+        roots.append(archive_root().resolve())
     except Exception:
         pass
     original = None

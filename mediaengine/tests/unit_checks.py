@@ -738,6 +738,30 @@ def main():
                 pl = beats.plan(durs, tr, [x + room for x in durs], bt)
                 worst = max(worst, abs(sum(u for u, _ in pl) - sum(durs)) - beats.max_offset(bt))
     check("beats: the reel stays within a beat and a half of its planned length", worst <= 0.05, worst)
+    # a path that cannot even be looked at (locked drive, no permission, name too long) counts as not there - one such
+    # Library row made a page fail and the start-up check then refused to start the app
+    odd_ = work / ("n" * 300) / "x.mp4"
+    check("an unreadable path is simply not there", odd_.exists() is False and odd_.is_file() is False and odd_.is_dir() is False
+          and work.is_dir())
+    # Settings: sources are added only as existing full folders, once; Remove needs the row's position and path
+    from archivist import web as _web
+    from archivist.config import load_config, update_config, archive_root
+    update_config(lambda c: c.update(sources=[]))
+    srcd = work / "Мои видео"; srcd.mkdir(exist_ok=True)
+    errs_ = [_web._add_source({"path": str(srcd)}), _web._add_source({"path": str(srcd) + os.sep}),
+             _web._add_source({"path": "relative\\folder"}), _web._add_source({"path": str(work / "no such")})]
+    got_src = [x["path"] for x in load_config()["sources"]]
+    check("settings: a source is an existing full folder, added once", got_src == [str(srcd.resolve())] and errs_[0] == ""
+          and errs_[1] == "" and errs_[2] and errs_[3], (got_src, errs_))
+    _web._add_source({"path": str(work)})
+    _web._remove_source({"index": "0", "path": "something else"})          # a page from before: wrong row, nothing removed
+    _web._remove_source({})                                                 # no position: nothing removed
+    n_before = len(load_config()["sources"])
+    _web._remove_source({"index": "0", "path": str(srcd.resolve())})
+    check("settings: Remove takes exactly the row that was shown", n_before == 2
+          and [x["path"] for x in load_config()["sources"]] == [str(work.resolve())], load_config()["sources"])
+    update_config(lambda c: c.update(archive_root=str(work / "Архив")))
+    check("archive folder: one reading for the whole app", archive_root() == work / "Архив")
     print({"passed": sum(checks), "total": len(checks)})
     return 0 if all(checks) else 1
 
