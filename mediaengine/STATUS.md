@@ -273,7 +273,12 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38983106755 on `c564596` (2026-10-17) — all green, build b122**: as b121, plus the graphics-card
+Latest full run: **39024722016 on `bee9e2f` (2026-10-17) — all green, build b125**: as b122, plus orders from other
+programs (44 checks, also with the packaged Python offline; the Edge check runs an order with the page's button) and
+the first night-review fixes (GPU result reaches the engine, prepare fixes). Running next: 39030989741 on `17479da`
+(review rounds 2-3).
+
+Previous: **38983106755 on `c564596` (2026-10-17) — all green, build b122**: as b121, plus the graphics-card
 test under load (several cuts at once) and its whole result for support.
 
 Previous: **38891840332 on `7944b86` (2026-10-16) — all green, build b121**: as b120, plus "cut with the
@@ -437,8 +442,9 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-Owner: b117 installed and measured (see above). Newest: `MediaEngine-3.13.0-rc1-b122-Setup` (run 38983106755, link sent 2026-10-16 evening); after
-installing it: Check this PC -> "Test the graphics card" (a minute or two), then a reel from `D:\100MEDIA`. Then (through the app's pages in the desktop app's browser pane,
-never computer use): a reel from `D:\100MEDIA` timed against b113's 42 min (the AI reports of b113 are reused, the
-previews are cut new) and the time breakdown read from the page (`data-timing`); "Prepare in advance" and the theme
-"Aerial view (drone)" on his own drone videos.
+Owner: install the newest green build (now `MediaEngine-3.13.0-rc1-b125-Setup`, run 39024722016; b126 with review
+rounds 2-3 follows when run 39030989741 is green). After installing: Auto Edit → **Orders** opens (the folder
+`MediaEngine Data\Orders` with `ORDERS.md` appears); a reel from `D:\100MEDIA` works as before. Through the app's pages in
+the desktop app's browser pane (never computer use): Orders page renders in Russian, a test order (video by plan made
+from generated pictures) if the owner allows copying a small order folder onto his PC. Moment quality on his own
+footage stays his call (blind comparison is built in).
