@@ -510,13 +510,20 @@ def model_identity() -> str:
 # ---------------------------------------------------------------- schema
 
 _SCHEMA_READY = False
+_SCHEMA_LOCK = threading.Lock()
 
 
 def ensure_schema() -> None:
     """Create tables once per process; jobs left queued/running by a previous process become Retry-able failures."""
-    global _SCHEMA_READY
     if _SCHEMA_READY:
         return
+    with _SCHEMA_LOCK:      # two first requests at once: the second must not mark a job just started as interrupted
+        if not _SCHEMA_READY:
+            _ensure_schema_now()
+
+
+def _ensure_schema_now() -> None:
+    global _SCHEMA_READY
     AE_ROOT.mkdir(parents=True, exist_ok=True)
     with db() as con:
         con.executescript(
@@ -815,6 +822,10 @@ def _with_length(paths, work_dir: Path, note=None, jid=None) -> tuple[list[Path]
         with _LOCK:
             if jid is not None and jid in _CANCEL:
                 raise _Stopped()
+        if not p.is_file():          # (a card unplugged for now) its copy, if any, stays for when it is back
+            keep.update({_fixed_name(p), _fixed_name(p) + ".source.json"})
+            out.append(p)
+            continue
         if not length_missing(p):
             out.append(p)
             continue
@@ -1154,8 +1165,24 @@ def prepared_project_for(folder, files=None) -> int | None:
         return None
     for pid in cands:
         p = project(pid) if pid else None
-        if p and p["state"] == "PREPARED":
+        if p and p["state"] != "PROCESSING" and prepared_job(p):
             return int(pid)
+    return None
+
+
+def prepared_job(d: dict) -> dict | None:
+    """The "Prepare in advance" job of a project not built yet, or None. A later build that was cancelled or failed
+    (or the card being unplugged for a while) does not undo the preparing: its analysis and cut pieces are still there."""
+    if d.get("revisions"):
+        return None
+    for j in d.get("jobs") or []:                # newest first
+        if j["status"] != "done":
+            continue
+        if not (j.get("settings") or {}).get("prepare"):
+            return None
+        if j.get("id") and d.get("id") and not prepared_info(int(j["id"]), _project_dir(int(d["id"])) / "jobs" / f"j{int(j['id'])}"):
+            return None                           # freed since (no Prepared.json any more)
+        return j
     return None
 
 
@@ -1210,12 +1237,8 @@ def project_state(d: dict) -> str:
         return "REVIEW"
     if jobs and jobs[0]["status"] == "failed":
         return "ATTENTION"
-    if jobs and jobs[0]["status"] == "done" and (jobs[0].get("settings") or {}).get("prepare"):
-        j0 = jobs[0]
-        freed = (j0.get("id") and d.get("id") and
-                 not prepared_info(int(j0["id"]), _project_dir(int(d["id"])) / "jobs" / f"j{int(j0['id'])}"))
-        if not freed:
-            return "PREPARED"        # analysed in advance (and not freed since): the reel is made in minutes
+    if prepared_job(d):
+        return "PREPARED"            # analysed in advance (and not freed since): the reel is made in minutes
     return "DRAFT"
 
 
@@ -1427,6 +1450,10 @@ def check_free_space() -> None:
 def resume_queued() -> None:
     """At the app's start (the serving process only): builds still waiting from the last run go on."""
     ensure_schema()
+    try:
+        sweep_deleting()
+    except OSError:
+        pass
     with db() as con:
         waiting = con.execute("SELECT 1 FROM ae_jobs WHERE status='queued' LIMIT 1").fetchone()
     if waiting:
@@ -1448,14 +1475,14 @@ def start_job(pid: int, raw_settings: dict, *, retry=False) -> int:
                          "you can pick a day or the videos there.")
     settings = normalize_settings(raw_settings, model_ready=model_status()["ready"])
     key = _request_key(p, settings)
-    with db() as con:
+    with _CACHE_LOCK, db() as con:      # (not while a Free empties the folders this build would write into)
         con.execute("BEGIN IMMEDIATE")  # lookup + insert as one step: a double click never queues twice
         same = con.execute("SELECT * FROM ae_jobs WHERE project_id=? AND request_key=? ORDER BY id DESC LIMIT 1", (int(pid), key)).fetchone()
         n_same = con.execute("SELECT COUNT(*) n FROM ae_jobs WHERE project_id=? AND request_key=? AND status='done'",
                              (int(pid), key)).fetchone()["n"]
         # a reel made worse by a passing problem is built once more; if it comes out the same, that is the video itself
         if same and (same["status"] in ("queued", "running")
-                     or (same["status"] == "done" and (n_same >= 2 or not _degraded(same)))):
+                     or (same["status"] == "done" and not _result_gone(same) and (n_same >= 2 or not _degraded(same)))):
             return int(same["id"])
         check_free_space()
         ts = now_iso()
@@ -1467,6 +1494,19 @@ def start_job(pid: int, raw_settings: dict, *, retry=False) -> int:
     _ensure_worker()
     _WAKE.set()
     return jid
+
+
+def _result_gone(job_row) -> bool:
+    """The reel of a finished build is not on this PC any more (deleted or quarantined outside the app): the same
+    request builds it again instead of pointing at a missing file. A prepare job has no reel: never gone."""
+    try:
+        rid = job_row["revision_id"]
+        if not rid:
+            return False
+        r = revision(int(rid))
+        return not r or not Path(r["video_path"]).is_file()
+    except (OSError, ValueError, TypeError, KeyError, IndexError):
+        return False
 
 
 def _degraded(job_row) -> bool:
@@ -1793,7 +1833,7 @@ def _run_job(jid: int) -> None:
                 input_list = jobs_dir / f"j{jid}.inputs.txt"
                 # "path<TAB>name" for a video whose reel name is not its file name (same name in two folders)
                 input_list.write_text("".join(str(x) + (("\t" + alias[str(o)]) if alias.get(str(o), Path(o).name) != Path(x).name else "") + "\n"
-                                              for o, x in zip(chosen, local)), encoding="utf-8")
+                                              for o, x in zip(chosen, local)), encoding="utf-8", errors="surrogatepass")
             else:
                 vids = list_videos(Path(p["folder"]))
                 usable = local_inputs(_not_private_paths(vids))
@@ -1801,7 +1841,7 @@ def _run_job(jid: int) -> None:
                 if fixed or len(local) != len(vids):   # cloud-only placeholders / fixed copies: give the engine the exact list
                     input_list = jobs_dir / f"j{jid}.inputs.txt"     # (a fixed copy keeps its video's name in the reel)
                     input_list.write_text("".join(str(x) + (("\t" + Path(o).name) if Path(o).name != Path(x).name else "") + "\n"
-                                                  for o, x in zip(usable, local)), encoding="utf-8")
+                                                  for o, x in zip(usable, local)), encoding="utf-8", errors="surrogatepass")
     except _Stopped:
         with _LOCK:
             _CANCEL.discard(jid)
@@ -2597,31 +2637,32 @@ def delete_project(pid: int) -> int:
         raise ValueError("Project not found")
     if not p["archived"]:
         raise ValueError("Archive the project first")
-    if any(j["status"] in ("queued", "running") for j in p["jobs"]):
-        raise ValueError("Wait until the current build has finished")
-    d = _project_dir(pid)
-    freed = _tree_bytes(d)
-    gone = d.with_name(d.name + ".deleting")
-    if d.exists():
+    with _CACHE_LOCK:
+        if any(j["status"] in ("queued", "running") for j in (project(pid) or p)["jobs"]):
+            raise ValueError("Wait until the current build has finished")
+        d = _project_dir(pid)
+        freed = _tree_bytes(d)
+        gone = d.with_name(d.name + ".deleting")
+        if d.exists():
+            try:
+                shutil.rmtree(gone, ignore_errors=True)
+                os.rename(d, gone)        # fails while a version is open in a player: then nothing is half-deleted
+            except OSError:
+                raise ValueError("A video of this project is open (in a player?). Close it and try again.")
         try:
-            shutil.rmtree(gone, ignore_errors=True)
-            os.rename(d, gone)        # fails while a version is open in a player: then nothing is half-deleted
-        except OSError:
-            raise ValueError("A video of this project is open (in a player?). Close it and try again.")
-    try:
-        with db() as con:
-            con.execute("BEGIN IMMEDIATE")
-            for t in ("ae_reviews", "ae_accept_log", "ae_exports", "ae_revisions", "ae_jobs"):
-                con.execute(f"DELETE FROM {t} WHERE project_id=?", (int(pid),))
-            con.execute("DELETE FROM ae_projects WHERE id=?", (int(pid),))
-            con.commit()
-    except BaseException:
-        try:                          # the project stays as it was: its files back in place
-            if gone.exists() and not d.exists():
-                os.rename(gone, d)
-        except OSError:
-            pass
-        raise
+            with db() as con:
+                con.execute("BEGIN IMMEDIATE")
+                for t in ("ae_reviews", "ae_accept_log", "ae_exports", "ae_revisions", "ae_jobs"):
+                    con.execute(f"DELETE FROM {t} WHERE project_id=?", (int(pid),))
+                con.execute("DELETE FROM ae_projects WHERE id=?", (int(pid),))
+                con.commit()
+        except BaseException:
+            try:                          # the project stays as it was: its files back in place
+                if gone.exists() and not d.exists():
+                    os.rename(gone, d)
+            except OSError:
+                pass
+            raise
     shutil.rmtree(gone, ignore_errors=True)
     return freed
 
@@ -2743,7 +2784,7 @@ def tidy_work_caches(keep_pid: int | None = None, max_bytes: int | None = None, 
     piece is cut again if that project is built again. Returns the bytes freed."""
     keep = {int(keep_pid)} if keep_pid else set()
     try:
-        keep |= {int(x["id"]) for x in list_projects(include_archived=True) if x["state"] in ("PREPARED", "PROCESSING")}
+        keep |= {int(x["id"]) for x in list_projects(include_archived=True) if x["state"] == "PROCESSING" or prepared_job(x)}
     except Exception:
         return 0
     files = []
@@ -2779,39 +2820,70 @@ def tidy_work_caches(keep_pid: int | None = None, max_bytes: int | None = None, 
     return freed
 
 
+# A Free (or a project deleted for good) and a build starting at that moment (an order, Retry in another tab): the
+# check "nothing is building" and moving the folder aside are one step against start_job; the slow delete comes after.
+_CACHE_LOCK = threading.RLock()
+
+
+def _move_aside(path: Path) -> Path | None:
+    """Renames the folder to "<name>.deleting-<n>" (instant) and returns the new path; None when there was nothing
+    or it could not be renamed (then it is deleted right here, still under the lock)."""
+    if not path.exists():
+        return None
+    gone = path.with_name(f"{path.name}.deleting-{time.time_ns()}")
+    try:
+        os.replace(path, gone)
+        return gone
+    except OSError:
+        shutil.rmtree(path, ignore_errors=True)
+        return None
+
+
+def sweep_deleting() -> None:
+    """Folders left half-deleted by a Free when the app was closed meanwhile (at start, before any build)."""
+    for d in [*AE_ROOT.glob("shared.deleting-*"), *AE_ROOT.glob("p*/work.deleting-*")]:
+        shutil.rmtree(d, ignore_errors=True)
+
+
 def clear_shared_cache() -> int:
     """'Free' on Check this PC: the next AI+ build looks at the frames of its videos again."""
-    with db() as con:
+    with _CACHE_LOCK:
+        with db() as con:
+            try:
+                busy = con.execute("SELECT 1 FROM ae_jobs WHERE status IN ('queued','running') LIMIT 1").fetchone()
+            except Exception:
+                busy = None
+        if busy:
+            raise ValueError("Wait until the current build has finished")
         try:
-            busy = con.execute("SELECT 1 FROM ae_jobs WHERE status IN ('queued','running') LIMIT 1").fetchone()
-        except Exception:
-            busy = None
-    if busy:
-        raise ValueError("Wait until the current build has finished")
-    try:
-        from . import aiplus_library as _al
-        if _al.running():
-            raise ValueError("AI+ is being prepared for the Library: stop it on the Library page first")
-    except ImportError:
-        pass
-    freed = shared_cache_bytes()
-    shutil.rmtree(SHARED, ignore_errors=True)
-    for p in list_projects(include_archived=True):      # what was prepared in advance lived there too
-        _forget_prepared(p)
+            from . import aiplus_library as _al
+            if _al.running():
+                raise ValueError("AI+ is being prepared for the Library: stop it on the Library page first")
+        except ImportError:
+            pass
+        freed = shared_cache_bytes()
+        gone = _move_aside(SHARED)
+        for p in list_projects(include_archived=True):      # what was prepared in advance lived there too
+            _forget_prepared(p)
+    if gone is not None:
+        shutil.rmtree(gone, ignore_errors=True)
     return freed
 
 
 def clear_work_cache(pid: int) -> int:
     """Delete the project's analysis/render cache (versions and exports stay). The next build analyses again."""
-    p = project(pid)
-    if not p:
-        raise ValueError("Project not found")
-    if any(j["status"] in ("queued", "running") for j in p["jobs"]):
-        raise ValueError("Wait until the current build has finished")
-    work = _project_dir(pid) / "work"
-    freed = _tree_bytes(work)
-    shutil.rmtree(work, ignore_errors=True)
-    _forget_prepared(p)
+    with _CACHE_LOCK:
+        p = project(pid)
+        if not p:
+            raise ValueError("Project not found")
+        if any(j["status"] in ("queued", "running") for j in p["jobs"]):
+            raise ValueError("Wait until the current build has finished")
+        work = _project_dir(pid) / "work"
+        freed = _tree_bytes(work)
+        gone = _move_aside(work)
+        _forget_prepared(p)
+    if gone is not None:
+        shutil.rmtree(gone, ignore_errors=True)
     return freed
 
 

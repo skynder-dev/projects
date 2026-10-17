@@ -99,6 +99,13 @@ def _cached_sha(p,size,cache):
     if isinstance(cache,dict): cache[key]={"bytes":size,"mtime_ns":mt,"sha256":digest}
     return digest
 
+def read_input_list(path):
+    """The lines of --input-list: one video per "\n" line - not splitlines(): U+0085/U+2028/U+2029 are allowed in
+    Windows file names; a reel name may start with a space (" clip (2).mp4"), so only the line end is trimmed;
+    surrogatepass: odd names exactly as the app wrote them."""
+    text=Path(path).read_text(encoding="utf-8",errors="surrogatepass").lstrip("\ufeff")
+    return [x.rstrip("\r") for x in text.split("\n") if x.strip()]
+
 def discover_input(folder, probe=None, skipped=None, skip_sha=None, paths=None, sha_cache=None, sha_seed=None):
     """Input videos: every supported file in <folder>, or exactly <paths> (files the user chose; names must be unique).
     A line of <paths> may be "path<TAB>name": the name the reel uses for that video (two cameras' DJI_0001.MP4 from
@@ -108,7 +115,7 @@ def discover_input(folder, probe=None, skipped=None, skip_sha=None, paths=None, 
         vids=[]
         for raw in paths:
             raw_path,_,alias=str(raw).partition("\t")
-            p=Path(raw_path).resolve(); nm=alias.strip() or p.name
+            p=Path(raw_path.strip()).resolve(); nm=alias or p.name
             if not p.is_file():
                 if skipped is not None: skipped.append({"name":nm,"reason":"MISSING"})
                 continue
@@ -1878,7 +1885,7 @@ def run(args):
     trims={str(k):(float(v[0]),float(v[1])) for k,v in (edits.get("trims") or {}).items()}
     runtime=Path(args.runtime_dir).resolve()
     if str(runtime) not in sys.path: sys.path.insert(0,str(runtime))
-    input_list=[x.strip() for x in Path(args.input_list).read_text(encoding="utf-8-sig").splitlines() if x.strip()] if args.input_list else None
+    input_list=read_input_list(args.input_list) if args.input_list else None
     if (input_list is None)==(not args.input_dir): raise RuntimeError("GIVE_EXACTLY_ONE_OF_INPUT_DIR_OR_INPUT_LIST")
     if input_list is not None and not input_list: raise RuntimeError("NO_SUPPORTED_VIDEO_FILES")   # e.g. all cloud-only
     input_dir=Path(args.input_dir or Path(input_list[0].partition("\t")[0]).parent).resolve(); output_dir=Path(args.output_dir).resolve(); work_dir=Path(args.work_dir).resolve()

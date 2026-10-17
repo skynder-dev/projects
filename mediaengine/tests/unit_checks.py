@@ -60,6 +60,40 @@ def main():
     names_ = [nm for _, nm in ae.input_names(two_)]
     check("same file names from two folders: both used, named apart", len(two_) == 2 and sorted(names_) == ["a (2).mp4", "a.mp4"]
           and [nm for _, nm in ae.input_names(list(reversed(two_)))] == names_, (two_, names_))
+    # the engine's input list: a name with U+2028 (allowed on Windows) is one line; a reel name keeps its leading space
+    sys.path.insert(0, str(ROOT / "app" / "archivist" / "engine_p11"))
+    import p11_folder_to_reel_r3 as _eng
+    lst_ = d / "inputs.txt"
+    lst_.write_text(str(d / "a\u2028b.mp4") + "\n" + str(d / "x" / " c.mp4") + "\t c (2).mp4\r\n\n", encoding="utf-8")
+    got_ = _eng.read_input_list(lst_)
+    check("input list: odd line breaks inside names, leading spaces kept",
+          got_ == [str(d / "a\u2028b.mp4"), str(d / "x" / " c.mp4") + "\t c (2).mp4"], got_)
+    # Free and a build starting at that moment: the folder is moved aside at once, deleted after; leftovers swept
+    aside_ = work / "aside_t" / "work"
+    (aside_ / "sub").mkdir(parents=True, exist_ok=True); (aside_ / "sub" / "f.bin").write_bytes(b"1")
+    moved_ = ae._move_aside(aside_)
+    check("free: the cache folder is moved aside in one step", moved_ is not None and moved_.is_dir() and not aside_.exists()
+          and moved_.name.startswith("work.deleting-") and ae._move_aside(aside_) is None, moved_)
+    real_ae_root = ae.AE_ROOT
+    try:
+        ae.AE_ROOT = work / "aside_t"
+        (ae.AE_ROOT / "p3").mkdir(exist_ok=True)
+        os.replace(moved_, ae.AE_ROOT / "p3" / moved_.name)
+        (ae.AE_ROOT / "shared.deleting-1").mkdir()
+        (ae.AE_ROOT / "p3" / "work").mkdir()
+        ae.sweep_deleting()
+        check("free: half-deleted folders are swept at start, nothing else",
+              sorted(x.name for x in ae.AE_ROOT.rglob("*")) == ["p3", "work"], sorted(x.name for x in ae.AE_ROOT.rglob("*")))
+    finally:
+        ae.AE_ROOT = real_ae_root
+    # a finished reel deleted outside the app: the same request builds it again
+    real_rev = ae.revision
+    try:
+        ae.revision = lambda rid: {"video_path": str(d / "a.mp4")} if int(rid) == 1 else ({"video_path": str(d / "gone.mp4")} if int(rid) == 2 else None)
+        check("a finished reel that is gone is built again", not ae._result_gone({"revision_id": 1}) and ae._result_gone({"revision_id": 2})
+              and ae._result_gone({"revision_id": 3}) and not ae._result_gone({"revision_id": None}))
+    finally:
+        ae.revision = real_rev
     check("check_files refuses non-video", raises(ae.check_files, [str(d / "t.txt")]))
     check("check_files refuses missing", raises(ae.check_files, [str(d / "nope.mp4")]))
     check("check_files refuses relative", raises(ae.check_files, ["a.mp4"]))
@@ -158,6 +192,13 @@ def main():
             third, _ = ae._with_length([live], rw, notes.append)
             check("recording without a length: a damaged stamp makes a new copy, never a failed build", third == fixed and len(notes) == 2,
                   (third, notes))
+            away = rec / "rec.webm.away"
+            os.replace(live, away)                      # its card unplugged for now
+            gone_, _ = ae._with_length([live], rw, notes.append)
+            os.replace(away, live)
+            back_, _ = ae._with_length([live], rw, notes.append)
+            check("recording without a length: its copy stays while the card is unplugged, reused when it is back",
+                  gone_ == [live] and back_ == fixed and len(notes) == 2, (gone_, back_, notes))
             from archivist import media as _media
             ld = _media.probe_duration(live)
             check("recording without a length: Library and Convert get its length too", ld and 3.5 <= ld <= 4.1, ld)
@@ -206,6 +247,16 @@ def main():
           and ae.is_prepare(jp_) and not ae.is_prepare(jb_), (ae.job_percent(jp_), ae.job_percent(jb_)))
     check("prepare in advance: a prepared project says so", ae.project_state({"jobs": [{"status": "done", "settings": stp}]}) == "PREPARED"
           and ae.project_state({"jobs": [{"status": "done", "settings": base_}]}) == "DRAFT")
+    # a build after preparing that was cancelled or failed (or the card unplugged) does not undo the preparing
+    prep_ = {"status": "done", "settings": stp}
+    canc_ = {"jobs": [{"status": "cancelled", "settings": base_}, prep_]}
+    fail_ = {"jobs": [{"status": "failed", "settings": base_}, prep_]}
+    unpl_ = {"jobs": [prep_], "source_present": False}
+    built_ = {"jobs": [{"status": "done", "settings": base_}, prep_], "revisions": [{"id": 1}]}
+    check("prepare in advance: still prepared after a cancelled or failed build",
+          ae.project_state(canc_) == "PREPARED" and ae.prepared_job(canc_) is prep_ and ae.prepared_job(fail_) is prep_
+          and ae.project_state(fail_) == "ATTENTION" and ae.prepared_job(unpl_) is prep_ and ae.prepared_job(built_) is None,
+          (ae.project_state(canc_), ae.project_state(fail_)))
     cmd_ = ae.engine_command(work, work / "o", work / "w", work / "p.json", {**stp, "title": "T"}, work / "e.json", None, None, work / "d.json")
     check("prepare in advance: the engine only analyses (no title / music step)", "--prepare-only" in cmd_ and "--dress" not in cmd_, cmd_[-6:])
     check("an unknown theme is refused", raises(ae.normalize_settings, {"length": 15, "format": "social_hd", "sound": "auto",

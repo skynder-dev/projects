@@ -318,7 +318,7 @@ def register(app, layout, e, human_bytes):
         model_note = "" if ms["ready"] else _model_card(ms, e, back="/auto")
         freed = request.args.get("deleted", "")
         deleted_html = (f"<div class='card ae-done' style='margin-bottom:10px'><span>Project deleted. Freed:</span> {human_bytes(int(freed))}</div>"
-                        if freed.isdigit() else "")
+                        if freed.isascii() and freed.isdigit() else "")
         try:
             exp_dir = ae.default_export_dir()
             has_exports = exp_dir.is_dir() and any(x.suffix.lower() == ".mp4" for x in exp_dir.iterdir())
@@ -448,7 +448,7 @@ const pf=document.getElementById('projFind');if(pf)pf.oninput=()=>{const q=pf.va
             shared_html = "<div class='card ae-done' style='margin-top:14px'>Freed.</div>" + shared_html
         if request.args.get("freed"):
             shared_html = (f"<div class='card ae-done' style='margin-top:14px'><span>Freed:</span> "
-                           f"{human_bytes(int(request.args['freed']) if request.args['freed'].isdigit() else 0)}</div>") + shared_html
+                           f"{human_bytes(int(request.args['freed']) if request.args['freed'].isascii() and request.args['freed'].isdigit() else 0)}</div>") + shared_html
         builds_html = shared_html + builds_html
         hw_html = _hwdecode_html(e)
         body = (f"<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Check this PC</h1>"
@@ -918,9 +918,9 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
 <form method='post' action='/auto/export/{done_x['id']}/reveal'><button class='btn2'>Show in folder</button></form>
 <button type='button' class='btn2' id='copyDone' data-path='{e(done_x['path'])}'>Copy path</button>
 <a class='btn btn2' href='/auto'>All projects</a></div></div>""")
-        if (last_job and last_job["status"] == "done" and last_job["settings"].get("prepare") and p["state"] == "PREPARED"
-                and (not revs or last_job["id"] > max(r["job_id"] for r in revs))):
-            parts.append(_prepared_html(last_job, e))
+        prep_job = ae.prepared_job(p) if not active else None
+        if prep_job:
+            parts.append(_prepared_html(prep_job, e))
         if cur:
             parts.append(_review_html(p, cur, e, building=bool(active)))
         elif not active:
@@ -1123,7 +1123,7 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
         try:
             dest = (request.form.get("dest") or "").strip()
             rid = request.form.get("revision_id") or ""
-            if rid.isdigit():
+            if rid.isascii() and rid.isdigit():
                 pr = ae.project(pid)
                 if pr and dest:
                     ae.check_export_dir(pr, dest)    # a refused folder must not change the chosen version
@@ -1710,7 +1710,7 @@ def _review_html(p, rev, e, building=False):
             notes.append("few moments match the theme, so the reel also uses other good moments")
         elif w.startswith("THEME:") and w.endswith("_MATCHING_MOMENTS"):
             n = w.split(":")[-1].split("_")[0]
-            notes.append(f"moments that match the theme: {int(n) if n.isdigit() else 0}")
+            notes.append(f"moments that match the theme: {int(n) if n.isascii() and n.isdigit() else 0}")
         elif w == "TITLE_FONT_MISSING":
             notes.append("the title could not be drawn: no suitable font on this PC")
         elif w == "TITLE_CHARACTERS_LEFT_OUT":

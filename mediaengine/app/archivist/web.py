@@ -227,6 +227,18 @@ def _spawn_launcher(mode):
     spawn_app_launcher(INSTALL, mode)
 
 
+def _id_list(raw, limit=200):
+    """Ids from "1,2,3" (a URL): plain digits that SQLite can look up only ("²" is a digit to Python, int() refuses it;
+    a 30-digit number overflows SQLite) - a typed or damaged URL never gives a server error."""
+    out=[]
+    for x in str(raw or '').split(','):
+        x=x.strip()
+        if x.isascii() and x.isdigit() and 0<int(x)<2**63:
+            out.append(int(x))
+            if len(out)>=limit:break
+    return out
+
+
 def _json_obj():
     """The request's JSON body when it is an object, else {} (a list or a number never reaches .get())."""
     d=request.get_json(silent=True)
@@ -1109,7 +1121,10 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
 
     @app.post('/composer/<int:cid>/move')
     def composer_move(cid):
-        move_composer_item(cid,request.form.get('position','1'),request.form.get('direction','down'));return redirect(f'/composer/{cid}')
+        try:pos=int(str(request.form.get('position','1')).strip())
+        except ValueError:pos=0
+        if 0<pos<100000:move_composer_item(cid,pos,request.form.get('direction','down'))
+        return redirect(f'/composer/{cid}')
 
     @app.post('/composer/<int:cid>/render')
     def composer_render(cid):
@@ -1137,7 +1152,7 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
         source_kind=request.args.get('source_kind','').strip()
         scope=request.args.get('scope','all').strip() or 'all'
         sort=request.args.get('sort','date_desc').strip() or 'date_desc'
-        preselect_ids={int(x) for x in request.args.get('ids','').split(',') if x.strip().isdigit()}
+        preselect_ids=set(_id_list(request.args.get('ids',''),2000))
         where=["excluded=0","media_type='video'","private_path IS NULL","rejected_path IS NULL","COALESCE(analysis_status,'')<>'private'"]
         args=[]
         if scope=='library': where.append("work_selected=1")
@@ -1350,7 +1365,7 @@ pollConvert();"""
     @app.get('/api/convert/status')
     def convert_status():
         raw=request.args.get('id','').strip()
-        job=convert_job_snapshot(int(raw)) if raw.isdigit() else convert_job_snapshot()
+        job=convert_job_snapshot(int(raw)) if _id_list(raw,1) else convert_job_snapshot()
         return jsonify({'job':job})
 
 
@@ -1483,7 +1498,7 @@ pollConvert();"""
 
     @app.get('/api/items')
     def items_api():
-        ids=[int(x) for x in request.args.get('ids','').split(',') if x.isdigit()][:200]
+        ids=_id_list(request.args.get('ids',''),200)
         if not ids:return jsonify({})
         with db() as con: rows=con.execute(f"SELECT id,analysis_status,import_status,source_kind,staging_path,archive_path,private_path,quality_status,quality_score,rights_status,rights_audio_present,error,import_error FROM inventory WHERE id IN ({','.join('?' for _ in ids)})",ids).fetchall()
         out={}
@@ -1494,7 +1509,7 @@ pollConvert();"""
 
     @app.get('/api/thumb-status')
     def thumb_status():
-        ids=[int(x) for x in request.args.get('ids','').split(',') if x.isdigit()][:200]
+        ids=_id_list(request.args.get('ids',''),200)
         if not ids:return jsonify({'ready':[],'ready_count':0,'pending_count':0,'unavailable_count':0,'generation':int(time.time())})
         with db() as con:
             rows=con.execute(f"SELECT id,preview_status,preview_path FROM inventory WHERE excluded=0 AND id IN ({','.join('?' for _ in ids)})",ids).fetchall()
@@ -1509,7 +1524,7 @@ pollConvert();"""
 
     @app.get('/api/storyboard-status')
     def storyboard_status():
-        ids=[int(x) for x in request.args.get('ids','').split(',') if x.isdigit()][:200]
+        ids=_id_list(request.args.get('ids',''),200)
         out={}; pending=0
         if not ids:return jsonify({'items':{},'pending_count':0})
         with db() as con:
@@ -1638,7 +1653,7 @@ bindStoryFrames();loadStoryboard();""")
         """The videos selected in the Library -> the new-reel page with exactly them (the files where they are now)."""
         if request.headers.get('Sec-Fetch-Site','') not in ('same-origin','none',''):
             return 'This page can only be opened from MediaEngine itself.',403
-        ids=[int(x) for x in (request.args.get('ids') or '').split(',') if x.strip().isdigit()][:2000]
+        ids=_id_list(request.args.get('ids'),2000)
         files=[]
         if ids:
             with db() as con:

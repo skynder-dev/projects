@@ -268,6 +268,14 @@ def main():
         check("damaged_video_left_out_not_refused", st == "done" and res.get("videos_left_out") == ["broken.mp4"]
               and vids[0].name in (res.get("videos_used") or []), (st, res.get("error"), res.get("videos_left_out"), res.get("videos_used")))
 
+        # 6c. chosen videos, one of them gone since (moved, card unplugged): done without it on the first try
+        put("reel-gone", {"schema": orders.SCHEMA, "kind": "reel_from_videos",
+                          "videos": {"files": [str(dmg / vids[0].name), str(home / "gone since.mp4")]},
+                          "length": 5, "format": "vertical", "mode": "technical"}, single=True)
+        st, res = answer("reel-gone", 1800)
+        check("missing_video_left_out_first_try", st == "done" and res.get("videos_left_out") == ["gone since.mp4"]
+              and vids[0].name in (res.get("videos_used") or []), (st, res.get("error"), res.get("videos_left_out")))
+
         # 7. "Wait for my OK": Run, Reject, a rejected order is not done again
         r = c.post("/auto/orders/settings", data={"auto_run": "0"}, headers=H)
         check("setting_wait_for_ok_saved", r.status_code == 302 and orders.auto_run() is False)

@@ -170,6 +170,16 @@ jobs:
         run: |
           python mediaengine/tests/i18n_coverage.py "$env:RUNNER_TEMP\home7" "$env:RUNNER_TEMP\libchk\home" "$env:RUNNER_TEMP\home2" "$env:RUNNER_TEMP\libflow\Данные пользователя" "$env:RUNNER_TEMP\home-orders" 2>&1 | Tee-Object "$env:OUT\i18n_coverage.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Every page and button with odd input (typed URLs, damaged forms) - no server error (a copy of the 7-video home)
+        continue-on-error: true    # reported (results branch); never blocks the package
+        timeout-minutes: 20
+        shell: pwsh
+        run: |
+          Copy-Item -Recurse "$env:RUNNER_TEMP\home7" "$env:RUNNER_TEMP\home-fuzz"
+          python mediaengine/tests/route_fuzz.py --home "$env:RUNNER_TEMP\home-fuzz" --seconds 900 --out "$env:OUT\route_fuzz.json" 2>&1 | Tee-Object "$env:OUT\route_fuzz.txt"
+          $code = $LASTEXITCODE
+          Remove-Item -Recurse -Force "$env:RUNNER_TEMP\home-fuzz" -ErrorAction SilentlyContinue
+          if ($code -ne 0) { exit 1 }
       - name: The app in a real browser (Edge) - form buttons, page scripts, Save MP4, Check this PC in the background
         if: success()
         shell: pwsh

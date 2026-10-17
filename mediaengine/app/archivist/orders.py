@@ -493,8 +493,11 @@ def _reel_spec(order: dict, base: Path) -> dict:
             paths = []
         keep, left_out = [], []
         for vp in paths:
-            if not vp.is_file() or ae.cloud_only(vp):
-                keep.append(vp)            # the build says it is missing / only in the cloud - never read here
+            if not vp.is_file():
+                left_out.append(vp.name)   # not there (moved, renamed, card unplugged): left out, as a damaged one
+                continue
+            if ae.cloud_only(vp):
+                keep.append(vp)            # the build says it is only in the cloud - never read here
                 continue
             hd = _header(vp)
             if hd["format"] in VIDEO_FORMATS:

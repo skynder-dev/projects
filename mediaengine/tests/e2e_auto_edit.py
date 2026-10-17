@@ -470,6 +470,14 @@ def main():
               (offered, r.status_code, pj.get("status"), pj.get("error"), pinfo, pp.get("state")))
         page_ = c.get(f"/auto/p/{ppid}", headers=H).get_data(as_text=True) if ppid else ""
         check("prepared_page_offers_build", "Prepared in advance" in page_ and f"/auto/p/{ppid}/variant" in page_, page_[-400:])
+        # a build cancelled after preparing (another length) does not undo the preparing: New reel still finds it
+        if ppid:
+            cj = ae.start_job(ppid, {k: v for k, v in pform.items() if k != "folder"} | {"length": "5" if str(a.length) != "5" else "15"})
+            ae.cancel_job(cj)
+            cjd = wait_job(c, cj)[0]
+            pp2 = ae.project(ppid)
+            check("prepared_after_a_cancelled_build", cjd["status"] == "cancelled" and pp2["state"] == "PREPARED"
+                  and ae.prepared_project_for(str(folder)) == ppid, (cjd["status"], pp2["state"], ae.prepared_project_for(str(folder))))
         jb, bdt, revb = {"status": "not started"}, 0.0, None
         if ppid:
             before_j = {x["id"] for x in ae.project(ppid)["jobs"]}
