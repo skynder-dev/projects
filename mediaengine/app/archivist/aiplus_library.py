@@ -133,8 +133,27 @@ def _texts_missing() -> int:
     return sum(1 for t in hook.THEMES if (text_key(t), t) not in have)
 
 
+_HIDDEN_PURGED = [0.0]
+
+
+def _purge_hidden() -> None:
+    """What AI+ saw in a video that left the Library (Private, rejected, removed) is deleted soon after - not only at
+    the next "Prepare" (whose button is gone once nothing is left to prepare). At most once a minute."""
+    import time as _t
+    if _t.monotonic() - _HIDDEN_PURGED[0] < 60:
+        return
+    _HIDDEN_PURGED[0] = _t.monotonic()
+    try:
+        with db() as con:
+            con.execute(f"DELETE FROM aiplus_frames WHERE inventory_id NOT IN (SELECT id FROM inventory WHERE {_VISIBLE})")
+            con.commit()
+    except Exception:
+        pass
+
+
 def status() -> dict:
     ensure_schema()
+    _purge_hidden()
     ae = _ae()
     ready = ae.aiplus_status()["ready"]
     vids = _videos()
@@ -516,11 +535,14 @@ def _deep_todo() -> list[str]:
     vids = _deep_videos()
     done = _prepared({v["sha256"] for v in vids})
     gone = _skipped(for_good_only=True)
-    out, missing = [], {}
+    out, missing, queued = [], {}, set()
     for v in vids:
-        if v["sha256"] in done or _vid(v) in gone:
-            continue
+        if v["sha256"] in done or _vid(v) in gone or v["sha256"] in queued:
+            continue                      # (a copy of a video already in the list: prepared once, for both)
         p = _existing_local_path(v)
+        if p and ae.cloud_only(p):        # only in OneDrive: preparing would download it again
+            missing[_vid(v)] = "unreadable:cloud_only"
+            continue
         if not p:
             missing[_vid(v)] = "unreadable:not_on_this_pc"
             continue
@@ -528,6 +550,7 @@ def _deep_todo() -> list[str]:
             missing[_vid(v)] = "no_length"
             continue
         out.append(f"{_vid(v)}\t{v['sha256']}\t{p}")
+        queued.add(v["sha256"])
     if missing:
         _remember_skipped(missing)
     return out
@@ -653,11 +676,19 @@ def search(theme: str, limit: int | None = None) -> list[dict]:
         raise ValueError("Unknown theme")
     ensure_schema()
     key = frames_key()
+    where = (f"FROM aiplus_frames f JOIN inventory i ON i.id=f.inventory_id WHERE f.model_key=? AND {_VISIBLE_I} "
+             f"AND COALESCE(f.source_fingerprint,'')=COALESCE(i.source_fingerprint,'')")
     with db() as con:
         t = con.execute("SELECT pos,neg FROM aiplus_texts WHERE model_key=? AND theme=?", (text_key(theme), theme)).fetchone()
-        rows = con.execute(f"SELECT f.inventory_id,f.times,f.emb,i.filename FROM aiplus_frames f JOIN inventory i ON i.id=f.inventory_id "
-                           f"WHERE f.model_key=? AND {_VISIBLE_I} AND COALESCE(f.source_fingerprint,'')=COALESCE(i.source_fingerprint,'')",
-                           (key,)).fetchall()
+        # what the result depends on, without reading the pictures' numbers (80 MB at 5,000 videos, at every search):
+        # the same visible, unchanged videos -> the same answer as last time
+        sig = tuple(con.execute(f"SELECT COUNT(*), MAX(f.indexed_at), TOTAL(f.inventory_id) {where}",
+                                (key,)).fetchone()) + (key, text_key(theme), bool(t))
+        hit = _SEARCH_CACHE.get(theme)
+        if hit and hit[0] == sig:
+            out = [dict(x) for x in hit[1]]
+            return out if limit is None else out[: max(1, int(limit))]
+        rows = con.execute(f"SELECT f.inventory_id,f.times,f.emb,i.filename {where}", (key,)).fetchall()
     if not t or not rows:
         return []
     pos = np.frombuffer(t["pos"], np.float32).reshape(-1, 1024)
@@ -675,7 +706,11 @@ def search(theme: str, limit: int | None = None) -> list[dict]:
         out.append({"inventory_id": int(r["inventory_id"]), "filename": r["filename"], "best_s": best, "frame": frame,
                     "score": round(float(margin[i]), 3)})
     out.sort(key=lambda x: x["score"], reverse=True)
+    _SEARCH_CACHE[theme] = (sig, [dict(x) for x in out])
     return out if limit is None else out[: max(1, int(limit))]
+
+
+_SEARCH_CACHE: dict = {}
 
 
 def reel_files(theme: str, limit: int = 64) -> list[str]:
@@ -683,7 +718,7 @@ def reel_files(theme: str, limit: int = 64) -> list[str]:
     soon as it has enough (no look at the rest)."""
     from .service import _existing_local_path
     good = [r for r in search(theme) if r["score"] > 0]
-    picked, names = [], set()
+    picked, names, shas = [], set(), set()
     for k in range(0, len(good), 200):
         part = good[k:k + 200]
         with db() as con:
@@ -692,8 +727,13 @@ def reel_files(theme: str, limit: int = 64) -> list[str]:
         for r in part:
             row = rows.get(r["inventory_id"])
             local = _existing_local_path(row) if row else None
+            sha = str((row or {}).get("sha256") or "").lower()
+            if sha and sha in shas:
+                continue                       # a copy of a video already picked (it would take one of the 64 places)
             if local and str(local).lower() not in names:     # two cameras' DJI_0001.MP4: both (the reel names them apart)
                 names.add(str(local).lower()); picked.append(str(local))
+                if sha:
+                    shas.add(sha)
                 if len(picked) >= limit:
                     return picked
     return picked

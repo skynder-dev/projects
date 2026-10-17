@@ -331,7 +331,8 @@ def create_app():
         if host not in _ALLOWED_LOOPBACK_HOSTS:
             return jsonify({'error':'Invalid Host'}),403
         # another web site may not embed the owner's videos or pictures (nor learn that MediaEngine runs)
-        if request.headers.get('Sec-Fetch-Site','')=='cross-site' and request.path.startswith(('/media','/thumb','/storyboard','/auto/','/api/')):
+        if request.headers.get('Sec-Fetch-Site','')=='cross-site' and request.path.startswith(('/media','/thumb','/storyboard','/auto/','/api/',
+                                                                                         '/clip','/composition-file','/export-file','/item/')):
             return jsonify({'error':'Cross-site request blocked'}),403
         if request.method not in _MUTATING_METHODS:
             return None
@@ -1608,6 +1609,13 @@ pollConvert();"""
     @app.get('/clip-preview/<int:clip_id>')
     def clip_preview(clip_id):
         c=clip_by_id(clip_id)
+        if c:      # a moment of a Private, rejected or removed video is not shown (as its thumbnail is not)
+            with db() as con:
+                ok=con.execute("SELECT 1 FROM inventory WHERE id=? AND excluded=0 AND private_path IS NULL AND rejected_path IS NULL "
+                               "AND COALESCE(analysis_status,'')<>'private' AND COALESCE(sha256,'') NOT IN (SELECT sha256 FROM ignored_hashes)",
+                               (int(c['inventory_id']),)).fetchone()
+            if not ok:
+                return Response(placeholder_svg('video'),mimetype='image/svg+xml'),404
         if c and c.get('preview_path') and Path(c['preview_path']).exists():
             return send_file(c['preview_path'],mimetype='image/jpeg',conditional=True)
         if c:

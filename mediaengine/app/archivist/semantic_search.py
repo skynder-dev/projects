@@ -106,6 +106,30 @@ def ensure_schema():
         END;
         """)
         state={str(r["key"]):str(r["value"]) for r in con.execute("SELECT key,value FROM semantic_meta").fetchall()}
+        if state.get("update_trigger")!="2":
+            # only a real change marks a video for re-indexing (every unchanged rescan marked the whole catalog)
+            con.executescript("""
+            DROP TRIGGER IF EXISTS trg_semantic_inventory_update;
+            CREATE TRIGGER trg_semantic_inventory_update
+            AFTER UPDATE OF filename,source_label,source_kind,media_type,duration_ms,width,height,
+                            analysis_status,quality_status,quality_score,rights_status,rights_audio_present,
+                            excluded,work_selected,private_path,rejected_path
+            ON inventory
+            WHEN OLD.filename IS NOT NEW.filename OR OLD.source_label IS NOT NEW.source_label
+              OR OLD.source_kind IS NOT NEW.source_kind OR OLD.media_type IS NOT NEW.media_type
+              OR OLD.duration_ms IS NOT NEW.duration_ms OR OLD.width IS NOT NEW.width OR OLD.height IS NOT NEW.height
+              OR OLD.analysis_status IS NOT NEW.analysis_status OR OLD.quality_status IS NOT NEW.quality_status
+              OR OLD.quality_score IS NOT NEW.quality_score OR OLD.rights_status IS NOT NEW.rights_status
+              OR OLD.rights_audio_present IS NOT NEW.rights_audio_present OR OLD.excluded IS NOT NEW.excluded
+              OR OLD.work_selected IS NOT NEW.work_selected OR OLD.private_path IS NOT NEW.private_path
+              OR OLD.rejected_path IS NOT NEW.rejected_path
+            BEGIN
+                INSERT INTO semantic_dirty(inventory_id,reason,dirtied_at)
+                VALUES(NEW.id,'inventory_update',CURRENT_TIMESTAMP)
+                ON CONFLICT(inventory_id) DO UPDATE SET reason=excluded.reason,dirtied_at=excluded.dirtied_at;
+            END;
+            INSERT INTO semantic_meta(key,value) VALUES('update_trigger','2') ON CONFLICT(key) DO UPDATE SET value=excluded.value;
+            """)
         if state.get("schema_version")!=SEMANTIC_SCHEMA_VERSION or state.get("model")!=SEARCH_MODEL:
             ts=now_iso()
             con.execute("""INSERT OR REPLACE INTO semantic_dirty(inventory_id,reason,dirtied_at)
@@ -251,6 +275,14 @@ def _refresh_dirty_index(limit=None):
             con.rollback()
             raise
 
+def _refresh_all():
+    """Every marked video, 500 at a time: one list of all of them overflowed SQLite's variable limit on a big catalog
+    (after a rescan every row was marked) and search failed for good."""
+    while True:
+        r=_refresh_dirty_index(500)
+        if not r["processed"]:
+            return r
+
 def rebuild_index():
     ensure_schema()
     with db() as con:
@@ -259,12 +291,12 @@ def rebuild_index():
                        SELECT id,'explicit_rebuild',? FROM inventory""",(ts,))
         con.execute("DELETE FROM semantic_index WHERE inventory_id NOT IN (SELECT id FROM inventory)")
         con.commit()
-    return int(_refresh_dirty_index()["index_count"])
+    return int(_refresh_all()["index_count"])
 
 def search_library(query,limit=120):
     parsed=parse_query(query);q=parsed["query"]
-    if not q:return {"query":"","intents":[],"tokens":[],"results":[],"index_count":int(_refresh_dirty_index()["index_count"]),"model":SEARCH_MODEL}
-    count=int(_refresh_dirty_index()["index_count"]);intents=set(parsed["intents"]);tokens=parsed["tokens"]
+    if not q:return {"query":"","intents":[],"tokens":[],"results":[],"index_count":int(_refresh_all()["index_count"]),"model":SEARCH_MODEL}
+    count=int(_refresh_all()["index_count"]);intents=set(parsed["intents"]);tokens=parsed["tokens"]
     with db() as con:
         rows=[dict(x) for x in con.execute("""
             SELECT i.id,i.filename,i.source_label,i.source_kind,i.media_type,i.size_bytes,i.duration_ms,i.width,i.height,

@@ -274,8 +274,11 @@ def init_db() -> None:
         con.commit()
 
 
-def upsert_inventory(con: sqlite3.Connection, row: dict) -> None:
+def upsert_inventory(con: sqlite3.Connection, row: dict) -> int | None:
+    """Insert or refresh a catalog row. Returns the row's id when a file used in place (a folder source) was replaced
+    by another one at the same path (other size or time): what was made from the old content must go."""
     ts = now_iso()
+    replaced = None
     source_fp = row.get("source_fingerprint") or "|".join([
         str(row.get("source_key") or ""), str(row.get("size_bytes") or ""), str(row.get("mtime") or "")
     ])
@@ -331,6 +334,16 @@ def upsert_inventory(con: sqlite3.Connection, row: dict) -> None:
                 except sqlite3.Error:
                     pass
                 forked = True
+    elif payload["source_kind"] == "fixed":
+        old = con.execute("SELECT id,size_bytes,mtime FROM inventory WHERE source_key=?", (payload["source_key"],)).fetchone()
+        if old is not None and old["size_bytes"] is not None and payload["size_bytes"] is not None and old["mtime"] is not None \
+                and payload["mtime"] is not None:
+            try:
+                dt = abs(float(old["mtime"]) - float(payload["mtime"]))
+                if int(old["size_bytes"]) != int(payload["size_bytes"]) or not (dt <= 2.0 or abs(dt - 3600.0) <= 2.0):
+                    replaced = int(old["id"])
+            except (TypeError, ValueError):
+                pass
     cols = list(payload)
     updates = ",".join(
         f"{c}=COALESCE(excluded.{c},inventory.{c})" if c in {
@@ -350,6 +363,7 @@ def upsert_inventory(con: sqlite3.Connection, row: dict) -> None:
             "WHERE source_key=? AND EXISTS(SELECT 1 FROM ignored_source_keys WHERE source_key=?)",
             (payload["source_key"], payload["source_key"]),
         )
+    return replaced
 
 
 def create_job(kind: str, ids: list[int], options: dict | None = None) -> int:

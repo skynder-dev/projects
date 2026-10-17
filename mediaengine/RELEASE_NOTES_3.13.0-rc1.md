@@ -77,6 +77,24 @@ first. After the download the same reel is built again with them.
 - Quit / Update / restart: only the reel being built is interrupted; waiting reels (an overnight set) go on at the next
   start. A reel with a video you marked Private while it was being built is not kept, and no version with such a video
   can be saved. Old cut pieces of other projects are kept under 60 GB.
+- Your files (day review): removing an old version on "Check this PC" is offered only for a folder that holds exactly
+  a release (never one with your clips put in it, a Library source or a reel's folder in it); Private / Rejected /
+  archive copies never overwrite another file of the same name (two cards' VID_0001.mp4).
+- Cards and phones: a folder you added on a USB stick or SD card is copied in like the card (it was once reported
+  imported without a copy); "source can be disconnected" waits until every queued import has copied from that card; a
+  swapped card's or reset phone's VID_0001.MP4 comes in as a new file (not Rejected, Private or with the old picture);
+  a file whose copy failed shows on Import again; an import resumed after a restart no longer fails for space it
+  already used; pages never wait for a phone that does not answer; a stalled copy from the phone is stopped.
+- The watchdog no longer restarts the app during a long healthy task (hashing or copying a big file, a PC back from
+  sleep) and never over a reel being made, an order or a Composer render.
+- Convert: two conversions never write one file; Quit stops the conversion's FFmpeg (it continues at the next start);
+  nothing half-written is left after Cancel. A video on a locked or failing card no longer stops pages (or the app's
+  start). Settings: a source must be an existing folder; Remove takes exactly the row shown; the archive folder is
+  stored as a full path.
+- Prepared in advance stays prepared after a cancelled or failed build; a reel whose file you deleted is built again.
+- Library: search keeps working on a very big catalog; "similar videos" no longer blocks other work; a video replaced
+  in its folder gets a new picture (and new moments when it is another video); copies of one video are prepared and
+  offered once; videos only in OneDrive are not downloaded by "prepare for reels".
 
 ## The graphics card for decoding, a faster first choice of moments (2026-10-16)
 

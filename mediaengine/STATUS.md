@@ -296,6 +296,46 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   the program took are listed with Delete; damaged Library videos really leave "ready N of M"; Private no longer
   downloads cloud-only files to hash them; Private copies hidden in search, similar videos and the start page counts.
   Not changed (old builds cannot be fixed): going back to b122 re-adds removed Library videos (its old start code).
+- Day review (2026-10-17, rounds 6-9; each by an independent reviewer, every confirmed finding fixed and checked):
+  - Auto Edit lifecycle: a project prepared in advance stays prepared after a cancelled / failed build or an unplugged
+    card (New reel reuses it; the cache tidy keeps its pieces); Free and delete-for-good move the folder aside under
+    one lock with start_job (an order starting meanwhile wrote into a folder being deleted); the engine's input list
+    is split on "\n" only (U+2028 etc. are legal in names) and keeps a reel name's leading space; a reel deleted outside
+    the app is built again; an unplugged card's fixed copies are kept; a missing video of an order is left out.
+  - Convert / Composer / Settings: Python 3.11's Path.exists() raised for a locked or failing card and one such Library
+    row made /convert fail - and the start-up check then refused to start the app → path checks never raise in the app
+    process (archivist/__init__.py); two Convert jobs could start at once and share one .part → one transaction, each
+    output name reserved; the conversion's FFmpeg dies with the app (Windows job) and is stopped on Quit (the job
+    resumes); two-pass logs and half-written files never left; empty reserved names swept at start (also Composer /
+    clip export); a Composer render counts as busy; Settings sources only as existing folders, Remove by row and path,
+    the archive folder stored as a full path and read by one helper (Private Forever recognised archive copies again).
+  - Every place that deletes or moves files: "remove an old version" could delete the owner's clips kept inside that
+    version's folder (rmtree, no Recycle Bin) → offered only for a folder holding exactly a release's entries, and not
+    when a Library source / a reel's folder / an export folder is inside; Private / Rejected / archive names loop to a
+    free name and a move or copy never replaces a different file. Checked safe: Private Forever, Reject, Remove from
+    Library, Archive, staging, Auto Edit stand-ins (hard links never written), caches, Orders, launcher / updater.
+  - Import from cards and phones: a folder added on a USB stick was walked as "fixed" and the stick again as
+    "removable"; an import in between used the card file in place and reported success with no copy → a configured
+    folder on a removable drive is a card source and the card is walked once, and a "fixed" file on a removable drive
+    is copied; "safe to disconnect" waits for every queued import from cards / phones; the watchdog takes a task that
+    still hashes / copies its file for alive (I/O counter), gives a grace period after sleep and never restarts the app
+    over a reel, an order, AI+ preparation or a Composer render; a resumed import checks space for what is left; a
+    failed copy shows on Import again; a swapped card's file always gets its own row (FAT32 hour shift = same file);
+    discovery writes in short transactions; pages never wait for adb; a stalled phone copy is stopped; a phone copy of
+    unknown size is checked by the phone's SHA-256.
+  - Library AI side (round 10): search failed for good on a catalog past ~32k rows (every unchanged rescan marked every
+    row for re-indexing, then one SQL list of all of them overflowed SQLite) → re-indexed 500 at a time and only real
+    changes mark a row; "similar videos" rebuilt its whole index in one long write transaction at every request (other
+    writers could hit "database is locked") → one query, short batches, reused for 20 s; a moment picture of a Private
+    video was served (also to other sites) → refused like its thumbnail; a video replaced in its folder kept the old
+    video's moments and length → picture made again, moments and length dropped when the length changed (hand-made
+    crops stay when only tags were edited); copies of one video prepared and offered twice → once; OneDrive-only videos
+    no longer downloaded by "prepare for reels"; AI+ data of videos that left the Library deleted within a minute;
+    theme search no longer re-reads every video's numbers when nothing changed.
+  - New check `tests/route_fuzz.py`: every route with odd input (huge / Unicode-digit ids, damaged forms and JSON) -
+    no server error (it found 7 routes, fixed); in Windows CI on a copy of the 7-video home (non-blocking).
+  Checks after the fixes (Linux): unit 135/135, e2e 81/81, orders 49/49, library flow 42/42, library 4/4, convert
+  23/23, reliability 9/9, scale library (600 videos) OK, browser 12/12, route fuzz 0 server errors.
 
 ## Evidence
 

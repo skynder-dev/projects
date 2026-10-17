@@ -137,6 +137,37 @@ def _effective_kind(row: dict) -> str:
     return kind
 
 
+def _forget_old_content(ids: list[int]) -> None:
+    """A file in a folder source changed (other size or time). Its picture is made again. When its length changed too
+    it is another video: the moments (and crops) made from the old one go and its length is measured again. Same length
+    (tags edited by another program): moments and hand-made crops stay."""
+    from .media import probe_duration
+    other = []
+    for i in ids:
+        try:
+            with db() as con:
+                r = con.execute("SELECT path,duration_ms,media_type FROM inventory WHERE id=?", (int(i),)).fetchone()
+                con.execute("UPDATE inventory SET preview_status='pending',preview_path=NULL,storyboard_status='pending' WHERE id=?", (int(i),))
+                con.commit()
+            (THUMBS / f"{int(i)}.jpg").unlink(missing_ok=True)
+            if not r or r["media_type"] != "video":
+                continue
+            new_s = probe_duration(Path(r["path"])) if r["path"] else None
+            if not r["duration_ms"] or not new_s or abs(float(new_s) * 1000 - float(r["duration_ms"])) > 500:
+                other.append(int(i))
+        except Exception as exc:
+            log(f"discovery: changed file {i}: {exc}")
+    if other:
+        try:
+            from .media_brain import purge_media_brain
+            purge_media_brain(other)
+            with db() as con:
+                con.executemany("UPDATE inventory SET duration_ms=NULL,width=NULL,height=NULL WHERE id=?", [(x,) for x in other])
+                con.commit()
+        except Exception as exc:
+            log(f"discovery: old moments of replaced files not removed: {exc}")
+
+
 def transfers_pending() -> bool:
     """A queued or running import still has to copy a file from a card or a phone: "safe to disconnect" must not be
     shown (by any job) until it has."""
@@ -228,9 +259,10 @@ def run_discovery():
                 def flush():
                     # rows are written in one short transaction: no write lock is held while the walk waits for a slow
                     # folder listing (a NAS, a huge folder, a card that hangs) - "Add to Library" never waits for it
-                    for r_ in batch:
-                        upsert_inventory(con, r_)
+                    replaced = [x for x in (upsert_inventory(con, r_) for r_ in batch) if x]
                     con.commit(); batch.clear()
+                    if replaced:      # a video replaced in its folder: its moments, crops and picture were of the old one
+                        _forget_old_content(replaced)
                     with STATE.lock:
                         STATE.discovery["per_source"][label] = {"count": count, "size": total, "status": "scanning"}
                 for f in walk_media(p, bool(filt.get("ignore_noise", True)), int(filt.get("min_image_bytes", 0)), int(filt.get("min_video_bytes", 0)), errors=walk_errors):
