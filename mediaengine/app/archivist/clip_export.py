@@ -3,7 +3,7 @@ from .platform_adapter import process_kwargs
 import os, subprocess
 from pathlib import Path
 from .config import HOME
-from .db import db, now_iso
+from .db import db, inventory_visible, now_iso
 from .media import _ffmpeg_exe
 
 EXPORTS=HOME/"Exports"
@@ -103,7 +103,8 @@ def export_clip(clip_id:int,aspect:str="original"):
           FROM virtual_clips vc JOIN inventory i ON i.id=vc.inventory_id
           WHERE vc.id=?""",(int(clip_id),)).fetchone()
         if not row: raise ValueError("Clip not found")
-        if int(row["excluded"] or 0) or row["private_path"] or row["rejected_path"] or str(row["analysis_status"] or "")=="private":
+        if int(row["excluded"] or 0) or row["private_path"] or row["rejected_path"] or str(row["analysis_status"] or "")=="private" \
+                or not inventory_visible(con,row["inventory_id"]):          # (a copy of a Private video too)
             raise ValueError("This clip is not exportable from the normal Library")
         plan=None
         if aspect!="original":

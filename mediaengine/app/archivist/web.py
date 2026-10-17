@@ -13,7 +13,7 @@ from flask import Flask, Response, jsonify, redirect, render_template, request, 
 
 from . import android
 from .config import APP_PORT, BUILD, HOME, INSTALL, SIDE_BY_SIDE, PRIVATE, REJECTED, STAGING, STORYBOARDS, THUMBS, VERSION, load_config, save_config, update_config
-from .db import db, init_db
+from .db import db, init_db, inventory_visible
 from .media_brain import (best_clips, build_tracked_trajectory, clip_by_id, clips_for_inventory,
                           ensure_schema as ensure_media_brain_schema, save_crop_trajectory,
                           trajectories_for_clip, trajectory_for_clip)
@@ -320,6 +320,9 @@ def _exact_loopback_origin(value):
 
 def create_app():
     init_db(); ensure_media_brain_schema(); app=Flask(__name__)
+    # a results CSV within its 128 KiB limit is up to ~650 KB once a browser has encoded the form (Cyrillic notes):
+    # above Werkzeug's 500 KB default it got a bare "413 Request Entity Too Large" page
+    app.config["MAX_FORM_MEMORY_SIZE"]=2*1024*1024
     i18n.install(app)   # Russian interface (optional): every page and API message translated after it is made
 
     @app.before_request
@@ -1025,7 +1028,7 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
                 i.path,i.staging_path,i.archive_path,i.private_path,i.duration_ms
                 FROM virtual_clips vc JOIN inventory i ON i.id=vc.inventory_id
                 WHERE vc.id=? AND i.excluded=0""",(clip_id,)).fetchone()
-            if not r:
+            if not r or not inventory_visible(con,r['inventory_id']):     # (a copy of a Private video too)
                 return 'Clip not found',404
             crops=[dict(x) for x in con.execute("""SELECT * FROM crop_plans WHERE clip_id=?
                 ORDER BY CASE aspect WHEN '16:9' THEN 1 WHEN '4:5' THEN 2 WHEN '1:1' THEN 3 ELSE 4 END""",(clip_id,)).fetchall()]
@@ -1088,6 +1091,7 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
             row=con.execute("""SELECT vc.*,i.path,i.staging_path,i.archive_path,i.private_path,i.duration_ms
                 FROM virtual_clips vc JOIN inventory i ON i.id=vc.inventory_id WHERE vc.id=? AND i.excluded=0""",(clip_id,)).fetchone()
             plan=con.execute("SELECT * FROM crop_plans WHERE clip_id=? AND aspect=? ORDER BY id DESC LIMIT 1",(clip_id,aspect)).fetchone()
+            if row and not inventory_visible(con,row['inventory_id']): row=None
         if not row or not plan: return jsonify({'error':'Clip or crop plan not found'}),404
         local=next((Path(row[k]) for k in ('staging_path','archive_path','private_path','path') if row[k] and Path(row[k]).exists()),None)
         if not local: return jsonify({'error':'Local video file is unavailable'}),409
@@ -1126,6 +1130,9 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
     def export_file(export_id):
         x=export_by_id(export_id)
         if not x:return 'Not found',404
+        with db() as con:     # made before its video became Private: not shown any more
+            vis=con.execute("SELECT inventory_id FROM virtual_clips WHERE id=?",(int(x['clip_id']),)).fetchone()
+            if not vis or not inventory_visible(con,vis['inventory_id']):return 'Export unavailable',404
         p=Path(x['output_path'])
         if not p.exists() or p.parent.resolve()!=EXPORTS.resolve():return 'Export unavailable',404
         return send_file(p,mimetype='video/mp4',conditional=True)
@@ -1185,6 +1192,7 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
     def composition_file(cid):
         c=composition_detail(cid)
         if not c or not c.get('output_path'):return 'Not found',404
+        if c.get('hidden_items'):return 'Unavailable: a video in it is Private or no longer in the Library',404
         p=Path(c['output_path'])
         if not p.exists() or p.parent.resolve()!=COMPOSER_EXPORTS.resolve():return 'Unavailable',404
         return send_file(p,mimetype='video/mp4',conditional=True)

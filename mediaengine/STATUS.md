@@ -341,6 +341,13 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
     trusted; a new user gets no "New in this version" list; the PC tests and builds never run at the same time; a
     second test reel works while the first is still open. A build that passed its start-up check once on this PC is no
     longer refused later because of the owner's data (it starts and logs the failing page).
+  - Social / Composer / clip pages (round 13; nothing there contacts the network or claims a publication): a copy of a
+    Private video still reached the clip page, clip export, Composer and Social → one shared visibility rule
+    (`db.VISIBLE_SQL`); a render or export made before its video became Private is no longer listed or served; a
+    reordered composition becomes a draft again (its old MP4 was the other order); the results CSV no longer stores
+    wrong numbers ("variant_id, views" with spaces, an unquoted 1,234, short rows, nan / inf / 20-digit numbers);
+    a CSV within its limit no longer gets a bare 413 page. Known, not changed (manual-publishing lab only): a
+    composition recorded in local history is then held by its own record in the queue.
   - New check `tests/route_fuzz.py`: every route with odd input (huge / Unicode-digit ids, damaged forms and JSON) -
     no server error (it found 7 routes, fixed); in Windows CI on a copy of the 7-video home (non-blocking).
   Checks after the fixes (Linux): unit 135/135, e2e 81/81, orders 49/49, library flow 42/42, library 4/4, convert

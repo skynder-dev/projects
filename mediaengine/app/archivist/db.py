@@ -366,6 +366,18 @@ def upsert_inventory(con: sqlite3.Connection, row: dict) -> int | None:
     return replaced
 
 
+# A video the normal Library shows (not Private - also not a copy of a Private video -, not rejected, not removed).
+VISIBLE_SQL = ("i.excluded=0 AND i.private_path IS NULL AND i.rejected_path IS NULL AND COALESCE(i.analysis_status,'')<>'private' "
+               "AND COALESCE(i.sha256,'') NOT IN (SELECT sha256 FROM ignored_hashes)")
+
+
+def inventory_visible(con: sqlite3.Connection, inv_id) -> bool:
+    try:
+        return con.execute(f"SELECT 1 FROM inventory i WHERE i.id=? AND {VISIBLE_SQL}", (int(inv_id),)).fetchone() is not None
+    except (TypeError, ValueError, sqlite3.Error):
+        return False
+
+
 def create_job(kind: str, ids: list[int], options: dict | None = None) -> int:
     # Preserve user order but never let duplicate IDs break a durable job.
     seen = set()

@@ -170,10 +170,17 @@ def validate_results_csv(experiment_id,csv_text,max_rows=200):
         if not any(h in metric_cols for h in headers):errors.append("CSV must include at least one metric column")
         with db() as c:
             valid_ids={int(r["id"]) for r in c.execute("SELECT id FROM social_experiment_variants WHERE experiment_id=?",(eid,)).fetchall()}
-        for n,row in enumerate(reader,start=2):
+        import math
+        for n,raw_row in enumerate(reader,start=2):
             if len(normalized)>=int(max_rows):errors.append(f"Row limit exceeded: {max_rows}");break
-            if not any(str(v or "").strip() for v in row.values()):continue
             row_errors=[]
+            if None in raw_row:      # more values than headers: e.g. 1,234 written without quotes
+                row_errors.append("more values than columns (put a number like 1,234 in quotes or write 1234)")
+            elif any(v is None for k,v in raw_row.items()) and any(str(v or "").strip() for v in raw_row.values()):
+                row_errors.append("fewer values than columns")
+            # "variant_id, views": the header names are trimmed, so the values are found under the trimmed names too
+            row={str(k or "").strip():v for k,v in raw_row.items() if k is not None}
+            if not any(str(v or "").strip() for v in row.values()) and not row_errors:continue
             try:vid=int(str(row.get("variant_id") or "").strip())
             except Exception:vid=None;row_errors.append("variant_id must be an integer")
             if vid is not None and vid not in valid_ids:row_errors.append("variant_id does not belong to this experiment")
@@ -187,7 +194,7 @@ def validate_results_csv(experiment_id,csv_text,max_rows=200):
                 if not raw:out[key]=0;continue
                 try:
                     val=int(raw)
-                    if val<0:raise ValueError()
+                    if val<0 or val>=2**63:raise ValueError()
                     out[key]=val
                 except Exception:row_errors.append(key+" must be a non-negative integer");out[key]=0
             for key in ("watch_time_s","avg_view_duration_s"):
@@ -195,7 +202,7 @@ def validate_results_csv(experiment_id,csv_text,max_rows=200):
                 if not raw:out[key]=0.0;continue
                 try:
                     val=float(raw)
-                    if val<0:raise ValueError()
+                    if val<0 or not math.isfinite(val):raise ValueError()
                     out[key]=val
                 except Exception:row_errors.append(key+" must be a non-negative number");out[key]=0.0
             for key in ("retention_3s_pct","completion_pct"):
@@ -203,7 +210,7 @@ def validate_results_csv(experiment_id,csv_text,max_rows=200):
                 if not raw:out[key]=None;continue
                 try:
                     val=float(raw)
-                    if val<0 or val>100:raise ValueError()
+                    if not math.isfinite(val) or val<0 or val>100:raise ValueError()
                     out[key]=val
                 except Exception:row_errors.append(key+" must be between 0 and 100");out[key]=None
             out["notes"]=str(row.get("notes") or "")[:1000]

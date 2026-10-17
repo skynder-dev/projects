@@ -376,6 +376,40 @@ def main():
               {u: x.status_code for u, x in ru.items()})
         c.post("/lang", data={"lang": "en"}, headers=H)
 
+        # a copy of a Private video: its moments leave the clip page, Composer and Social too (review 2026-10-17)
+        from archivist.db import inventory_visible
+        with db() as con:
+            vis = [r_ for r_ in rows() if r_["work_selected"] == 1 and r_.get("sha256") and inventory_visible(con, r_["id"])]
+        if vis:
+            one = vis[0]
+            r = c.post("/api/selection-action", json={"action": "media_brain", "ids": [one["id"]]}, headers=H)
+            wait_job((r.get_json() or {}).get("job_id") or 0, 600)
+            with db() as con:
+                oc = con.execute("SELECT id FROM virtual_clips WHERE inventory_id=? ORDER BY id LIMIT 1", (one["id"],)).fetchone()
+            from archivist import composer as _cp, social_lab as _sl
+            if oc:
+                comp_id = _cp.create_composition([int(oc["id"])], "9:16", "copy test")
+                with db() as con:
+                    con.execute("INSERT OR REPLACE INTO ignored_hashes(sha256,reason,created_at) VALUES(?,?,?)", (one["sha256"], "test-composer", "t"))
+                    con.commit()
+                try:
+                    _cp.create_composition([int(oc["id"])], "9:16", "again")
+                    refused = False
+                except ValueError:
+                    refused = True
+                with db() as con:
+                    soc = _sl._composition_source_visibility(con, comp_id)
+                det = _cp.composition_detail(comp_id)
+                check("a_copy_of_a_private_video_no_clip_page_composition_or_social",
+                      c.get(f"/clip/{oc['id']}", headers=H).status_code == 404 and c.get(f"/clip-preview/{oc['id']}", headers=H).status_code == 404
+                      and refused and not soc["safe"] and det["hidden_items"] == 1 and not det["items"] and not det.get("output_path"),
+                      (refused, soc, det.get("hidden_items")))
+                with db() as con:      # the next checks need this video as it was
+                    con.execute("DELETE FROM ignored_hashes WHERE sha256=? AND reason='test-composer'", (one["sha256"],)); con.commit()
+            else:
+                print("SKIP copy of a Private video in Composer: no clips were made")
+        else:
+            print("SKIP copy of a Private video in Composer: no visible video left")
         # QA review 2026-10-17: "Remove from Library" survives a restart; "Make a reel" never takes a removed video; a
         # copy of a Private video is not shown; odd page numbers / ids are refused cleanly
         live = [r_ for r_ in rows() if r_["work_selected"] == 1 and r_["analysis_status"] != "private" and r_.get("sha256")]

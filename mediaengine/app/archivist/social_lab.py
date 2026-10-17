@@ -61,7 +61,8 @@ def list_publications(limit=20):
 
 def _composition_source_visibility(con,cid):
     rows=con.execute("""SELECT ci.clip_id,vc.id vc_id,i.id inventory_id,
-      COALESCE(i.excluded,1) excluded,i.private_path,i.rejected_path,i.analysis_status
+      COALESCE(i.excluded,1) excluded,i.private_path,i.rejected_path,i.analysis_status,
+      CASE WHEN COALESCE(i.sha256,'') IN (SELECT sha256 FROM ignored_hashes) THEN 1 ELSE 0 END private_copy
       FROM composition_items ci
       LEFT JOIN virtual_clips vc ON vc.id=ci.clip_id
       LEFT JOIN inventory i ON i.id=vc.inventory_id
@@ -77,6 +78,7 @@ def _composition_source_visibility(con,cid):
         elif r["private_path"]:reason="private"
         elif r["rejected_path"]:reason="rejected"
         elif str(r["analysis_status"] or "")=="private":reason="private_analysis"
+        elif int(r["private_copy"] or 0):reason="private_copy"        # a copy of a video marked Private
         if reason:blocked.append({"clip_id":int(r["clip_id"]),"reason":reason})
     return {"safe":not blocked,"reason":blocked[0]["reason"] if blocked else None,"clip_ids":clip_ids,"blocked":blocked}
 

@@ -3,7 +3,7 @@ from .platform_adapter import process_kwargs
 import os, subprocess, tempfile, threading
 from pathlib import Path
 from .config import HOME
-from .db import db, now_iso
+from .db import VISIBLE_SQL, db, now_iso
 from .media import _ffmpeg_exe
 from .media_brain import ensure_schema as ensure_media_brain_schema
 
@@ -61,7 +61,7 @@ def create_composition(clip_ids,aspect,title=""):
     with db() as con:
         q=",".join("?" for _ in ids)
         rows=con.execute(f"""SELECT vc.id,vc.start_ms,vc.end_ms FROM virtual_clips vc JOIN inventory i ON i.id=vc.inventory_id
-          WHERE vc.id IN ({q}) AND i.excluded=0 AND i.private_path IS NULL AND i.rejected_path IS NULL AND i.analysis_status<>'private'""",ids).fetchall()
+          WHERE vc.id IN ({q}) AND {VISIBLE_SQL}""",ids).fetchall()
         found={int(r["id"]):r for r in rows}
         if len(found)!=len(ids):raise ValueError("One or more clips are unavailable for normal Library composition")
         total=sum(max(0,int(found[i]["end_ms"])-int(found[i]["start_ms"])) for i in ids)/1000.0
@@ -76,10 +76,16 @@ def composition_detail(composition_id):
     with db() as con:
         c=con.execute("SELECT * FROM compositions WHERE id=?",(int(composition_id),)).fetchone()
         if not c:return None
-        items=[dict(r) for r in con.execute("""SELECT ci.position,vc.*,i.filename,i.source_label FROM composition_items ci
+        items=[dict(r) for r in con.execute(f"""SELECT ci.position,vc.*,i.filename,i.source_label,
+          CASE WHEN {VISIBLE_SQL} THEN 0 ELSE 1 END hidden FROM composition_items ci
           JOIN virtual_clips vc ON vc.id=ci.clip_id JOIN inventory i ON i.id=vc.inventory_id
           WHERE ci.composition_id=? ORDER BY ci.position""",(int(composition_id),)).fetchall()]
-        d=dict(c);d["items"]=items;return d
+        hidden=sum(1 for x in items if x["hidden"])
+        # a video made Private (or removed) after the render: its moments are not listed and the MP4 is not offered
+        d=dict(c);d["items"]=[{k:v for k,v in x.items() if k!="hidden"} for x in items if not x["hidden"]];d["hidden_items"]=hidden
+        if hidden:
+            d["output_path"]=None
+        return d
 
 def move_item(composition_id,position,direction):
     ensure_schema();pos=int(position);other=pos+(-1 if str(direction)=="up" else 1)
@@ -90,7 +96,10 @@ def move_item(composition_id,position,direction):
         if not a or not b:return
         con.execute("UPDATE composition_items SET position=0 WHERE composition_id=? AND position=?",(int(composition_id),pos))
         con.execute("UPDATE composition_items SET position=? WHERE composition_id=? AND position=?",(pos,int(composition_id),other))
-        con.execute("UPDATE composition_items SET position=? WHERE composition_id=? AND position=0",(other,int(composition_id)));con.commit()
+        con.execute("UPDATE composition_items SET position=? WHERE composition_id=? AND position=0",(other,int(composition_id)))
+        # the order changed: the last MP4 is not this composition any more (Render makes it again)
+        con.execute("UPDATE compositions SET status='draft',output_path=NULL,output_bytes=0,updated_at=? WHERE id=? AND status NOT IN ('queued','rendering')",
+                    (now_iso(),int(composition_id)));con.commit()
 
 def _center_plan(width,height,aspect):
     tw,th=ASPECTS[aspect];target=tw/th;sw=max(1.0,float(width or 1));sh=max(1.0,float(height or 1));src=sw/sh
@@ -155,8 +164,9 @@ def render_composition(composition_id):
     with db() as con:
         comp=con.execute("SELECT * FROM compositions WHERE id=?",(cid,)).fetchone()
         if not comp:raise ValueError("Composition not found")
-        aspect=str(comp["aspect"]);rows=[dict(r) for r in con.execute("""SELECT ci.position,vc.id clip_id,vc.start_ms,vc.end_ms,
+        aspect=str(comp["aspect"]);rows=[dict(r) for r in con.execute(f"""SELECT ci.position,vc.id clip_id,vc.start_ms,vc.end_ms,
           i.width,i.height,i.path,i.staging_path,i.archive_path,i.private_path,i.rejected_path,i.analysis_status,i.excluded,
+          CASE WHEN {VISIBLE_SQL} THEN 1 ELSE 0 END visible,
           cp.x,cp.y,cp.w,cp.h FROM composition_items ci JOIN virtual_clips vc ON vc.id=ci.clip_id
           JOIN inventory i ON i.id=vc.inventory_id LEFT JOIN crop_plans cp ON cp.id=(
             SELECT id FROM crop_plans x WHERE x.clip_id=vc.id AND x.aspect=? ORDER BY id DESC LIMIT 1)
@@ -170,7 +180,8 @@ def render_composition(composition_id):
         with tempfile.TemporaryDirectory(prefix="archivist_composer_") as td:
             tdir=Path(td);parts=[]
             for idx,r in enumerate(rows):
-                if int(r["excluded"] or 0) or r["private_path"] or r["rejected_path"] or str(r["analysis_status"] or "")=="private":
+                if int(r["excluded"] or 0) or r["private_path"] or r["rejected_path"] or str(r["analysis_status"] or "")=="private" \
+                        or not r["visible"]:          # (a copy of a Private video too)
                     raise ValueError("A composition clip is no longer exportable")
                 src=next((Path(r[k]) for k in ("staging_path","archive_path","path") if r[k] and Path(r[k]).exists()),None)
                 if not src:raise FileNotFoundError("A composition source is unavailable")
