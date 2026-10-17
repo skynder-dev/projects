@@ -102,8 +102,8 @@ def model_root() -> Path:
     if env:
         return Path(env)
     cfg = load_config().get("auto_edit", {}) or {}
-    if cfg.get("model_root") and "Archivist" not in Path(cfg["model_root"]).parts:
-        return Path(cfg["model_root"])
+    if cfg.get("model_root") and "Archivist" not in Path(cfg["model_root"]).parts and _model_valid(Path(cfg["model_root"])):
+        return Path(cfg["model_root"])        # (a remembered folder that moved away is not trusted: the usual places are)
     for cand in model_search_roots():
         if _model_valid(cand):
             return cand
@@ -203,7 +203,10 @@ def _model_download() -> None:
         _MODEL_DL.update(state="done", done=total, file="")
     except Exception as exc:
         msg = str(exc)
-        if isinstance(exc, (urllib.error.URLError, socket.timeout, ConnectionError, TimeoutError, http.client.HTTPException)):
+        if isinstance(exc, urllib.error.HTTPError):       # (an HTTPError is also a URLError: it is not "no connection")
+            msg = (f"huggingface.co answered HTTP {exc.code}: the model cannot be downloaded from there now. "
+                   "Try later, or copy it from another PC (Copy from a folder…).")
+        elif isinstance(exc, (urllib.error.URLError, socket.timeout, ConnectionError, TimeoutError, http.client.HTTPException)):
             msg = "No connection to huggingface.co. Check the internet connection and try again. [" + msg[:120] + "]"
         _MODEL_DL.update(state="failed", error=msg[:300])
 
@@ -229,6 +232,11 @@ def import_model(src) -> dict:
         raise ValueError("No exact FAST_LOCAL model found there (model_int8.onnx + support_" + vc.COMMIT[:8] + "… with pinned hashes)")
     dst = HOME / "models" / "FAST_LOCAL"
     if root.resolve() == (HOME / "models").resolve():
+        cfg = load_config()                   # already here: remember it (an old remembered folder no longer wins)
+        cfg.setdefault("auto_edit", {})["model_root"] = str(HOME / "models")
+        from .config import save_config
+        save_config(cfg)
+        _MODEL_CACHE.clear()
         return {"path": str(dst), "copied": False}
     tmp = HOME / "models" / "FAST_LOCAL.__new__"
     shutil.rmtree(tmp, ignore_errors=True)
@@ -397,7 +405,15 @@ def _fetch_resumable(url: str, part: Path, size: int, progress, tries: int = 4, 
             headers["Range"] = f"bytes={have}-"
         try:
             with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=60) as r:
-                resumed = have and getattr(r, "status", 200) == 206 and str(r.headers.get("Content-Range", "")).startswith(f"bytes {have}-")
+                status = getattr(r, "status", 200)
+                resumed = have and status == 206 and str(r.headers.get("Content-Range", "")).startswith(f"bytes {have}-")
+                length = r.headers.get("Content-Length")
+                whole = status == 200 and (length is None or str(length).strip() == str(size))
+                if "text/html" in str(r.headers.get("Content-Type", "")).lower() or not (resumed or whole) or \
+                        (resumed and length is not None and str(length).strip() != str(size - have)):
+                    # a hotel / proxy sign-in page (200 + HTML) or an answer of the wrong size: never written over
+                    # what is already downloaded
+                    raise ConnectionError(f"not the model file (HTTP {status}, {r.headers.get('Content-Type', '?')})")
                 if have and not resumed:          # the server sent the whole file: start again
                     have = 0
                 progress(have)
@@ -458,7 +474,10 @@ def _aiplus_download() -> None:
         _AIPLUS_DL.update(state="done", done=pc.TOTAL_BYTES, file="")
     except Exception as exc:
         msg = str(exc)
-        if isinstance(exc, (urllib.error.URLError, socket.timeout, ConnectionError, TimeoutError, http.client.HTTPException)):
+        if isinstance(exc, urllib.error.HTTPError):       # (an HTTPError is also a URLError: it is not "no connection")
+            msg = (f"huggingface.co answered HTTP {exc.code}: the model cannot be downloaded from there now. "
+                   "Try later, or copy it from another PC (Copy from a folder…).")
+        elif isinstance(exc, (urllib.error.URLError, socket.timeout, ConnectionError, TimeoutError, http.client.HTTPException)):
             msg = "No connection to huggingface.co. Check the internet connection and try again. [" + msg[:120] + "]"
         _AIPLUS_DL.update(state="failed", error=msg[:300])
 
@@ -1655,6 +1674,15 @@ def _worker_loop() -> None:
                 _WAKE.clear()
                 continue
             jid = int(r["id"])
+            if _pc_test_running():        # a reel next to the PC test would skew the test's numbers: it waits
+                with db() as con:
+                    con.execute("UPDATE ae_jobs SET message=? WHERE id=? AND status='queued'",
+                                ("Waiting for the test on Check this PC to finish", jid))
+                    con.commit()
+                jid = None
+                _WAKE.wait(5)
+                _WAKE.clear()
+                continue
             _run_job(jid)
         except Exception as exc:  # never let the worker die
             try:
@@ -1666,6 +1694,22 @@ def _worker_loop() -> None:
             except Exception:
                 pass
             time.sleep(1)
+
+
+def _pc_test_running() -> str:
+    """The test reel or the graphics-card test of Check this PC is running (they measure this PC's speed)."""
+    try:
+        if selftest_state()["running"]:
+            return "The test reel of Check this PC is being made. Wait until it is ready."
+    except Exception:
+        pass
+    try:
+        from . import hwdecode
+        if hwdecode.state().get("running"):
+            return "The graphics card is being tested (Check this PC). Wait until the test has finished."
+    except Exception:
+        pass
+    return ""
 
 
 def _engine_env() -> dict:
@@ -2366,18 +2410,28 @@ def _remember_selftest(res: dict) -> None:
     try:
         from .config import update_config
 
+        try:
+            first_use = not (load_config().get("auto_edit") or {}).get("selftest_ok_at") and not list_projects(include_archived=True)
+        except Exception:
+            first_use = False
+
         def change(cfg):
             a = cfg.setdefault("auto_edit", {})
             a["selftest_ok_at"] = now_iso()
             a["selftest_mode"] = str(res.get("selection_mode") or "")
+            if first_use:                 # a new user: everything is new - no "New in this version" list
+                a["whats_new_seen"] = WHATS_NEW_ID
         update_config(change)
     except Exception:
         pass
 
 
 def selftest_video() -> Path | None:
-    v = DATA / "selftest" / "out" / "MediaEngine Reel.mp4"
-    return v if v.is_file() else None
+    try:
+        vids = sorted((DATA / "selftest").glob("out*/MediaEngine Reel.mp4"), key=lambda p: p.stat().st_mtime)
+    except OSError:
+        vids = []
+    return vids[-1] if vids else None
 
 
 SELFTEST_RUNNING = threading.Event()      # the Library's AI+ search preparation waits for it (one AI+ model at a time)
@@ -2431,13 +2485,16 @@ def _quick_selftest(timeout_s: int, mode: str) -> dict:
     ff = _ffmpeg() or "ffmpeg"
     root = DATA / "selftest"
     shutil.rmtree(root, ignore_errors=True)
+    out_dir = root / "out"
+    if out_dir.exists():                      # the last test reel still open in the page's player (Windows): a new folder
+        out_dir = root / f"out-{int(_t.time())}"
     src = root / "in"; src.mkdir(parents=True, exist_ok=True)
     for i, lav in enumerate(("testsrc2=size=640x360:rate=30", "mandelbrot=size=640x360:rate=30"), 1):
         subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", lav, "-f", "lavfi", "-i", f"sine=frequency={300 + 100 * i}:sample_rate=48000",
                         "-t", "8", "-vf", f"hue=h=t*{20 * i}", "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p",
                         "-c:a", "aac", "-shortest", str(src / f"test_{i}.mp4")], **process_kwargs({"capture_output": True, "timeout": 120}))
     s = {"length": 5, "format": "vertical", "sound": "auto", "mode": mode if mode in AI_MODES else "technical"}
-    cmd = engine_command(src, root / "out", root / "work", root / "progress.json", s)
+    cmd = engine_command(src, out_dir, root / "work", root / "progress.json", s)
     t0 = _t.time()
     # same handling as a build: on Windows a job object, so a time-out stops the engine AND every ffmpeg it started
     kw = process_kwargs() if os.name == "nt" else {"start_new_session": True}
@@ -2449,7 +2506,7 @@ def _quick_selftest(timeout_s: int, mode: str) -> dict:
     _attach_job_object(proc)
     try:
         out, _ = proc.communicate(timeout=timeout_s)
-        ok = proc.returncode == 0 and (root / "out" / "MediaEngine Reel.mp4").is_file()
+        ok = proc.returncode == 0 and (out_dir / "MediaEngine Reel.mp4").is_file()
         err = "" if ok else (out or "")[-600:]
     except subprocess.TimeoutExpired:
         _kill_tree(proc)
@@ -2469,8 +2526,8 @@ def _quick_selftest(timeout_s: int, mode: str) -> dict:
                 pass
     res = {"ok": ok, "seconds": round(_t.time() - t0, 1), "error": err}
     if ok:
-        r = json.loads((root / "out" / "MediaEngine Result.json").read_text(encoding="utf-8"))
-        res.update(video=str(root / "out" / "MediaEngine Reel.mp4"), duration_s=r.get("actual_duration_s"), stages=r.get("stage_seconds"),
+        r = json.loads((out_dir / "MediaEngine Result.json").read_text(encoding="utf-8"))
+        res.update(video=str(out_dir / "MediaEngine Reel.mp4"), duration_s=r.get("actual_duration_s"), stages=r.get("stage_seconds"),
                    selection_mode=r.get("selection_mode"))
         # AI+ speed measured on this PC: seconds per frame the model looked at (model start not included)
         frames = secs = 0.0

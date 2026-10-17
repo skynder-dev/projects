@@ -332,6 +332,15 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
     crops stay when only tags were edited); copies of one video prepared and offered twice → once; OneDrive-only videos
     no longer downloaded by "prepare for reels"; AI+ data of videos that left the Library deleted within a minute;
     theme search no longer re-reads every video's numbers when nothing changed.
+  - An independent review of rounds 6-10 found one regression (a folder source on a card relabelled "removable" hid a
+    Library used in place) and four smaller issues - all fixed the same day (the card's own walk skips such a folder
+    instead; one failed copy no longer hides "safe to disconnect"; moments are dropped only when both lengths are known
+    and differ; the search trigger migration runs once in one transaction).
+  - First run and models (round 12): a download never writes a proxy / sign-in page over the part already downloaded;
+    HTTP 401/404 from huggingface.co is not called "no connection"; a remembered model folder that moved is not
+    trusted; a new user gets no "New in this version" list; the PC tests and builds never run at the same time; a
+    second test reel works while the first is still open. A build that passed its start-up check once on this PC is no
+    longer refused later because of the owner's data (it starts and logs the failing page).
   - New check `tests/route_fuzz.py`: every route with odd input (huge / Unicode-digit ids, damaged forms and JSON) -
     no server error (it found 7 routes, fixed); in Windows CI on a copy of the 7-video home (non-blocking).
   Checks after the fixes (Linux): unit 135/135, e2e 81/81, orders 49/49, library flow 42/42, library 4/4, convert

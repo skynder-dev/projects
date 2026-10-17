@@ -554,6 +554,8 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"A downloaded file is not the exact model file \((.+)\)\. Try again\.", r"Скачанный файл не совпадает с точным файлом модели (\1). Попробуй ещё раз."),
     (r"No connection to huggingface\.co\. Check the internet connection and try again\. \[(.*)\]",
      r"Нет связи с huggingface.co. Проверь интернет и попробуй ещё раз. [\1]"),
+    (r"huggingface\.co answered HTTP (\d+): the model cannot be downloaded from there now\. Try later, or copy it from another PC \(Copy from a folder…\)\.",
+     r"huggingface.co ответил HTTP \1: сейчас модель оттуда не скачать. Попробуй позже или скопируй её с другого компьютера («Скопировать из папки…»)."),
     (r"Folder: (.+) \((\d+)\)", r"Папка: \1 (\2)"),
     (r"(very_dark|dark|very_bright|bright),(very_low_detail|low_detail)", r"⟦\1⟧, ⟦\2⟧"),
     (r"Preparing a recording without a length: (.+)", r"Подготовка записи без длины: \1"),

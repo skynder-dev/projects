@@ -401,6 +401,9 @@ const pf=document.getElementById('projFind');if(pf)pf.oninput=()=>{const q=pf.va
             busy_ = ae.app_busy()
             if busy_ and not ae.selftest_state()["running"]:     # two engines at once: the test would look broken
                 return err_page(busy_, "/auto/check")
+            from . import hwdecode as _hw
+            if _hw.state().get("running"):
+                return err_page("The graphics card is being tested (Check this PC). Wait until the test has finished.", "/auto/check")
             want = request.form.get("mode")
             want = want if (want == "semantic" and ai_ready) or (want == "semantic_plus" and ap["ready"]) else "technical"
             ae.selftest_start(want, 1800 if want == "semantic_plus" else 900)
@@ -473,6 +476,8 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
         from . import hwdecode
         if ae.app_busy():
             return err_page("Wait until the current build has finished", "/auto/check")
+        if ae.selftest_state()["running"]:     # two speed tests at once measure each other
+            return err_page("The test reel of Check this PC is being made. Wait until it is ready.", "/auto/check")
         ff = ae._ffmpeg()
         if not ff:
             return err_page("FFmpeg not found", "/auto/check")
