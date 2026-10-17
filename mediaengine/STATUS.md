@@ -358,7 +358,13 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest run: **39050990426 on `2bad821` (2026-10-17) — build b131** (day review rounds 6-10 and the independent
+Latest run: **39062476347 on `7c83346` (2026-10-17) — build b133**: everything of b131 plus rounds 12-13, the
+start-up check rule, the guides and the in-app Social queue buttons; every check green up to and including the
+installer smoke (route fuzz 10 min, no server error); installer artifact `MediaEngine-3.13.0-rc1-b133-Setup`
+(https://github.com/skynder-dev/projects/actions/runs/39062476347/artifacts/12114239393). The owner installed b131
+(seen through the app's pages: b131 serves, Orders page opens, Check this PC all green, projects intact).
+
+Before: **39050990426 on `2bad821` (2026-10-17) — build b131** (day review rounds 6-10 and the independent
 review's follow-ups): every check green up to and including the installer smoke (unit, engine regression and
 robustness, A/V sync, E2E phone / 7 / 2 videos, AI and AI+ glue, titles and music, Convert, Library, unplugged drive,
 64 long names, orders, real AI models, Russian pages, route fuzz, Edge, package smoke, packaged runtime offline,
@@ -535,8 +541,8 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-Owner: install the newest green build (now `MediaEngine-3.13.0-rc1-b131-Setup`, run 39050990426; the next build adds
-rounds 12-13 and the guides). After installing: Auto Edit → **Orders** opens (the folder `MediaEngine Data\Orders` with
-`ORDERS.md` appears); a reel from `D:\100MEDIA` works as before. Through the app's pages in the desktop app's browser
-pane (never computer use). The sending side of orders in the owner's Social project is not started (only with his
-permission). Moment quality on his own footage stays his call (blind comparison is built in).
+Owner: b131 is installed. Optional: install `MediaEngine-3.13.0-rc1-b133-Setup` (run 39062476347) when nothing is
+being built - it adds rounds 12-13 and the guides. Old versions b28-b122 (~430 MB each) can be removed on Check this PC
+(his choice). The sending side of orders in the owner's Social project is not started (only with his permission).
+Moment quality on his own footage stays his call (blind comparison is built in). Through the app's pages in the
+desktop app's browser pane only (never computer use).
