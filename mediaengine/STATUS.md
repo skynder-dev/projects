@@ -220,6 +220,10 @@ s) - inputs 54 s (the SHA-256 of 29 GB again: the shared cache was freed), analy
 s; worker time (3 videos at once): previews 1525 s, the accepted analysis 1196 s (frames 468 s, the closer look at the
 best three windows 689 s, the model 18 s), measuring 27 s; **the processor 96 % busy**. The reel after it: **48 s**.
 So the processor is the limit; b122 tests the card with several cuts at once (as in a build).
+b122 on the owner's PC (2026-10-17 night), "Test the graphics card" with 4 cuts at once: every frame identical with
+`cuda`, `d3d11va`, `d3d12va` and `dxva2` (all three test clips), but slower than the processor under load too
+(0.66-0.85x; H.264: 4 cuts 3.3 s on the card vs 2.1 s on the processor) - not used. The full 4K frames have to come
+back to the processor for the accepted scaling; the card does not pay here.
 
 ## Evidence
 
