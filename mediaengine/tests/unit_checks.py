@@ -777,6 +777,38 @@ def main():
     _web._remove_source({"index": "0", "path": str(srcd.resolve())})
     check("settings: Remove takes exactly the row that was shown", n_before == 2
           and [x["path"] for x in load_config()["sources"]] == [str(work.resolve())], load_config()["sources"])
+    # the watchdog: a Library task still reading its file, a PC back from sleep, or a reel being made is never "stalled"
+    from archivist import watchdog as _wd, media as _md
+    t0_ = _md.io_ticks(); _md.sha256_file(work / "files" / "a.mp4")
+    check("watchdog: hashing moves the alive counter; late tasks are restarted only when nothing says they live",
+          _md.io_ticks() > t0_ and _wd.verdict("import", 10, 300, False, False, lambda: "") == "ok"
+          and _wd.verdict("import", 400, 300, True, False, lambda: "") == "touch"
+          and _wd.verdict("import", 400, 300, False, True, lambda: "") == "touch"
+          and _wd.verdict("import", 400, 300, False, False, lambda: "reel") == "touch"
+          and _wd.verdict("import", 400, 300, False, False, lambda: "") == "recover"
+          and _wd.verdict("convert", 100, 90, False, True, lambda: "reel") == "recover"
+          and _wd.verdict("convert", 100, 90, True, False, lambda: "") == "touch")
+    # a swapped card / reset phone: the same path with another file gets a row of its own (never the old one's
+    # Rejected / Private / picture); a FAT32 card's hour shift across daylight saving is the same file
+    from archivist.db import db as _db, init_db as _init_db, upsert_inventory as _ups
+    _init_db()
+    key_ = "local:e:\\dcim\\100media\\vid_0001.mp4"
+    base_row = {"source_key": key_, "source_kind": "removable", "source_id": "E:\\", "source_label": "SD E:", "path": "E:\\DCIM\\100MEDIA\\VID_0001.MP4",
+                "filename": "VID_0001.MP4", "ext": ".mp4", "media_type": "video", "size_bytes": 1000, "mtime": 1700000000.0}
+    with _db() as con_:
+        _ups(con_, base_row); con_.commit()
+        id1 = con_.execute("SELECT id FROM inventory WHERE source_key=?", (key_,)).fetchone()[0]
+        con_.execute("UPDATE inventory SET excluded=1, rejected_path='R', analysis_status='rejected' WHERE id=?", (id1,))
+        con_.execute("INSERT OR IGNORE INTO ignored_source_keys(source_key, created_at) VALUES(?, '2026-01-01')", (key_,))
+        con_.commit()
+        _ups(con_, dict(base_row, mtime=1700003600.0)); con_.commit()          # the hour shift: the same file
+        same_ = con_.execute("SELECT id FROM inventory WHERE source_key=?", (key_,)).fetchone()[0]
+        _ups(con_, dict(base_row, size_bytes=2000, mtime=1710000000.0)); con_.commit()   # another card's VID_0001.MP4
+        new_ = dict(con_.execute("SELECT id, excluded, rejected_path, analysis_status FROM inventory WHERE source_key=?", (key_,)).fetchone())
+        moved_ = con_.execute("SELECT COUNT(*) FROM ignored_source_keys WHERE source_key=?", (key_,)).fetchone()[0]
+    check("swapped card: a new file at a known path is new (not Rejected, not Private); an hour shift is the same file",
+          same_ == id1 and new_["id"] != id1 and not new_["excluded"] and not new_["rejected_path"]
+          and new_["analysis_status"] != "private" and moved_ == 0, (same_, id1, new_, moved_))
     # Private / Rejected copies: two cards' VID_0001.mp4 never share one name; a move never replaces a different file
     from archivist import service as _sv
     fold_ = work / "priv_names"; fold_.mkdir(exist_ok=True)

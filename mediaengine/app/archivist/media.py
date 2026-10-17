@@ -112,14 +112,42 @@ def walk_media(root: Path, ignore_noise=True, min_image_bytes=0, min_video_bytes
             yield p
 
 
+# Work that reads or writes a lot without a progress bar (hashing a 40 GB file, copying it to the archive, measuring
+# a recording without a written length) moves this counter: the watchdog does not take a Library task that still reads
+# its file for a stalled one (it restarted the app in the middle of a healthy import, review 2026-10-17).
+_IO_TICKS = [0]
+
+
+def io_tick() -> None:
+    _IO_TICKS[0] += 1
+
+
+def io_ticks() -> int:
+    return _IO_TICKS[0]
+
+
+def copy_file(src, dst, chunk=8 * 1024 * 1024) -> None:
+    """shutil.copy2 with the watchdog's counter moving (a long copy is visibly alive; a hung disk is not)."""
+    import shutil
+    with open(src, "rb") as fi, open(dst, "wb") as fo:
+        while True:
+            b = fi.read(chunk)
+            if not b:
+                break
+            fo.write(b)
+            io_tick()
+    shutil.copystat(src, dst)
+
+
 def sha256_file(path: Path, chunk=8 * 1024 * 1024) -> str:
     h = hashlib.sha256()
-    with path.open("rb") as f:
+    with Path(path).open("rb") as f:
         while True:
             b = f.read(chunk)
             if not b:
                 break
             h.update(b)
+            io_tick()
     return h.hexdigest()
 
 
@@ -209,8 +237,18 @@ def _measured_duration(exe: str, path: Path) -> float | None:
         st = path.stat()
         key = (str(path), st.st_size, st.st_mtime_ns)
         if key not in _MEASURED:
-            r = _run([exe, "-hide_banner", "-nostdin", "-i", str(path), "-map", "0:v:0", "-c", "copy", "-f", "null", "-"],
-                     capture_output=True, text=True, timeout=600, errors="replace")
+            import threading
+            done = threading.Event()
+
+            def alive():             # (bounded by the 600 s time-out below)
+                while not done.wait(10):
+                    io_tick()
+            threading.Thread(target=alive, daemon=True).start()
+            try:
+                r = _run([exe, "-hide_banner", "-nostdin", "-i", str(path), "-map", "0:v:0", "-c", "copy", "-f", "null", "-"],
+                         capture_output=True, text=True, timeout=600, errors="replace")
+            finally:
+                done.set()
             t = re.findall(r"time=\s*(\d+):(\d+):(\d+(?:\.\d+)?)", r.stderr or "")
             _MEASURED[key] = (int(t[-1][0]) * 3600 + int(t[-1][1]) * 60 + float(t[-1][2])) if t and r.returncode == 0 else None
         return _MEASURED[key] or None

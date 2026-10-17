@@ -308,13 +308,28 @@ def upsert_inventory(con: sqlite3.Connection, row: dict) -> None:
         # Cards and phones reuse paths (DCIM/100CANON/IMG_0001.JPG after a counter reset or on another
         # card). A different file at a known path must NOT inherit the old row's local copy, or it would
         # look imported while only the old picture exists in Staging.
-        old = con.execute("SELECT id,size_bytes,mtime,staging_path,archive_path,private_path,sha256 FROM inventory WHERE source_key=?",
-                          (payload["source_key"],)).fetchone()
-        if old is not None and (old["staging_path"] or old["archive_path"] or old["private_path"] or old["sha256"]):
+        # Any different file gets a row of its own - also when the old one was only Rejected, removed, selected or
+        # had a picture: a swapped card's VID_0001.MP4 must not come in hidden, Private or with the old thumbnail.
+        old = con.execute("SELECT id,size_bytes,mtime FROM inventory WHERE source_key=?", (payload["source_key"],)).fetchone()
+        if old is not None:
             def _differs(a, b):
                 return a is not None and b is not None and str(a) != str(b)
-            if _differs(old["size_bytes"], payload["size_bytes"]) or _differs(old["mtime"], payload["mtime"]):
-                con.execute("UPDATE inventory SET source_key=? WHERE id=?", (f'{payload["source_key"]}#superseded:{int(old["id"])}', int(old["id"])))
+
+            def _mtime_differs(a, b):
+                if a is None or b is None:
+                    return False
+                try:            # FAT32 cards: 2-second times, shifted by an hour across a daylight-saving change
+                    dt = abs(float(a) - float(b))
+                    return not (dt <= 2.0 or abs(dt - 3600.0) <= 2.0)
+                except (TypeError, ValueError):
+                    return str(a) != str(b)
+            if _differs(old["size_bytes"], payload["size_bytes"]) or _mtime_differs(old["mtime"], payload["mtime"]):
+                gone_key = f'{payload["source_key"]}#superseded:{int(old["id"])}'
+                con.execute("UPDATE inventory SET source_key=? WHERE id=?", (gone_key, int(old["id"])))
+                try:            # "Private forever" belongs to the old file
+                    con.execute("UPDATE ignored_source_keys SET source_key=? WHERE source_key=?", (gone_key, payload["source_key"]))
+                except sqlite3.Error:
+                    pass
                 forked = True
     cols = list(payload)
     updates = ",".join(

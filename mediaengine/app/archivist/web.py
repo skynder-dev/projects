@@ -402,6 +402,9 @@ def create_app():
             if not j: j=con.execute("SELECT * FROM jobs WHERE status='queued' ORDER BY id LIMIT 1").fetchone()
             queued=con.execute("SELECT COUNT(*) n FROM jobs WHERE status='queued'").fetchone()['n']
         snap['active_job']={k:j[k] for k in j.keys()} if j else None
+        if snap['active_job'] and snap['active_job'].get('source_releasable'):
+            from .service import transfers_pending   # another import still copies from that card: not safe yet
+            if transfers_pending(): snap['active_job']['source_releasable']=0
         snap['queued_jobs']=queued
         try:     # a reel being made (Auto Edit), so the bar at the top shows it on every page
             from . import auto_edit as _ae
@@ -1806,7 +1809,8 @@ bindStoryFrames();loadStoryboard();""")
         d=job_detail(jid)
         if not d:return 'Not found',404
         j=d['job']
-        safe=' · source can be disconnected' if j.get('source_releasable') and j['status']=='running' else ''
+        from .service import transfers_pending
+        safe=' · source can be disconnected' if j.get('source_releasable') and j['status']=='running' and not transfers_pending() else ''
         body=f"<div class='row space'><div><h1>Job #{jid}</h1><div class='muted'><span>{e(j['kind'])}</span> · <span>{e(j['status'])}</span> · {j['done']}/{j['total']}{(' · <span>'+human_bytes(j['bytes_done'])+'</span>/<span>'+human_bytes(j['bytes_total'])+'</span>') if j['bytes_total'] else ''}{safe}</div></div><div class='row'>"
         if j['failed']:
             body += f"<button onclick=\"jobAction(this,'/api/jobs/{jid}/retry','retry')\" class='warn'>Retry failed</button>"

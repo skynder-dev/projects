@@ -134,9 +134,58 @@ def recover_job(job_id,reason="stalled",allow_app_restart=True,report=True):
     _record(job,"failed",reason,proc_count,app_count,report)
     return "failed"
 
+def _other_work() -> str:
+    """Work an app restart would kill that is not the stalled Library task: a reel being made, an order, AI+ preparing
+    the Library, a Composer render. The watchdog never restarts the app over it."""
+    try:
+        from . import auto_edit as _ae
+        with db() as con:
+            if con.execute("SELECT 1 FROM ae_jobs WHERE status IN ('queued','running') LIMIT 1").fetchone():
+                return "reel"
+        try:
+            from . import aiplus_library as _al
+            if _al.running():return "aiplus"
+        except Exception:pass
+        try:
+            from . import orders as _or
+            if _or.busy():return "order"
+        except Exception:pass
+        try:
+            from . import composer as _cp
+            with _cp._ACTIVE_LOCK:
+                if _cp._ACTIVE:return "composer"
+        except Exception:pass
+    except Exception:
+        return ""
+    return ""
+
+def verdict(kind,age,limit,in_grace,io_recent,other_work)->str:
+    """'ok' (not late), 'touch' (late but alive or must not be restarted: its clock starts again) or 'recover'."""
+    if age<limit:return "ok"
+    if in_grace:return "touch"                      # after sleep: the clock starts again from now
+    if kind!="convert" and io_recent:return "touch" # still reading / copying / hashing its file
+    if kind!="convert" and other_work():return "touch"   # a restart would kill a reel / an order: never
+    return "recover"
+
+def _touch(job_id):
+    ts=now_iso()
+    try:
+        with db() as con:
+            con.execute("UPDATE jobs SET progress_at=?,heartbeat_at=? WHERE id=? AND status='running'",(ts,ts,int(job_id)));con.commit()
+    except Exception:pass
+
 def _loop():
+    from .media import io_ticks
+    last_poll=time.time(); grace_until=0.0
+    ticks=io_ticks(); ticks_moved=time.monotonic()
     while True:
         try:
+            now=time.time(); gap=now-last_poll; last_poll=now
+            if gap>max(60.0,POLL_SECONDS*6):
+                # the PC slept (or this process was frozen): every heartbeat looks old - give the work time to go on
+                grace_until=time.monotonic()+GENERIC_STALL_SECONDS
+            t=io_ticks()
+            if t!=ticks:ticks=t;ticks_moved=time.monotonic()
             if _RESTARTING.is_set():time.sleep(1);continue
             with db() as con:
                 r=con.execute("SELECT * FROM jobs WHERE status='running' ORDER BY id LIMIT 1").fetchone()
@@ -144,8 +193,10 @@ def _loop():
                 job={k:r[k] for k in r.keys()}
                 age=_age_seconds(job.get("progress_at") or job.get("started_at") or job.get("created_at"))
                 limit=CONVERT_STALL_SECONDS if str(job.get("kind"))=="convert" else GENERIC_STALL_SECONDS
-                if age>=limit:
-                    recover_job(int(job["id"]),reason=f"no_progress_{int(age)}s")
+                v=verdict(str(job.get("kind")),age,limit,time.monotonic()<grace_until,time.monotonic()-ticks_moved<min(limit,120),
+                          (lambda:_other_work()) if str(job.get("kind"))!="convert" else (lambda:""))
+                if v=="touch":_touch(job["id"])
+                elif v=="recover":recover_job(int(job["id"]),reason=f"no_progress_{int(age)}s")
         except Exception:
             pass
         time.sleep(max(1.0,POLL_SECONDS))

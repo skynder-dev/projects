@@ -14,7 +14,7 @@ from pathlib import Path
 from . import android
 from .config import HOME, LOGS, PRIVATE, REJECTED, STAGING, STORYBOARDS, THUMBS, load_config
 from .db import create_job, db, init_db, now_iso, recover_jobs, upsert_inventory
-from .media import analyze_combined, make_storyboard, make_thumbnail, media_type_for, probe_rights_flags, sha256_file, walk_media
+from .media import analyze_combined, copy_file, make_storyboard, make_thumbnail, media_type_for, probe_rights_flags, sha256_file, walk_media
 from .media_brain import analyze_video_into_clips, purge_media_brain
 
 
@@ -95,18 +95,60 @@ def windows_drives():
     return out
 
 
+def _drive_of(path) -> str:
+    try:
+        d = os.path.splitdrive(os.path.expandvars(str(path or "")))[0]
+        return (d.rstrip("\\/") + "\\").lower() if d else ""
+    except Exception:
+        return ""
+
+
 def configured_sources(cfg):
+    """The places discovery walks. A folder the user added that is on a card or USB stick is a removable source (its
+    videos are copied in, never used in place: the card goes away), and that card is then not walked a second time as
+    a whole - the same file seen as "fixed" and "removable" in turn was once reported imported without a copy."""
+    removable = {d["root"].lower() for d in windows_drives() if d["kind"] == "removable"}
     sources = []
     for s in cfg.get("sources", []):
         if not s.get("enabled", True):
             continue
-        sources.append({"path": s.get("path"), "label": s.get("label") or s.get("path"), "kind": s.get("kind") or "fixed"})
+        kind = s.get("kind") or "fixed"
+        if kind == "fixed" and _drive_of(s.get("path")) in removable:
+            kind = "removable"
+        sources.append({"path": s.get("path"), "label": s.get("label") or s.get("path"), "kind": kind})
     if cfg.get("auto_removable", True):
-        known = {str(s.get("path", "")).lower() for s in sources}
+        on_drive = {_drive_of(s.get("path")) for s in sources}
         for d in windows_drives():
-            if d["kind"] == "removable" and d["root"].lower() not in known:
+            if d["kind"] == "removable" and d["root"].lower() not in on_drive:
                 sources.append({"path": d["root"], "label": f"SD/USB {d['root'][0]}:", "kind": "removable"})
     return sources
+
+
+def _effective_kind(row: dict) -> str:
+    """A "fixed" (used in place) file that is on a card or USB stick is imported like a card's file: copied in. Used
+    in place, it would be gone with the stick - and once it was reported imported with no copy made."""
+    kind = str(row.get("source_kind") or "")
+    if kind == "fixed" and os.name == "nt":
+        try:
+            if _drive_of(row.get("path")) in {d["root"].lower() for d in windows_drives() if d["kind"] == "removable"}:
+                return "removable"
+        except Exception:
+            pass
+    return kind
+
+
+def transfers_pending() -> bool:
+    """A queued or running import still has to copy a file from a card or a phone: "safe to disconnect" must not be
+    shown (by any job) until it has."""
+    try:
+        with db() as con:
+            return con.execute(
+                "SELECT 1 FROM job_items ji JOIN jobs j ON j.id=ji.job_id JOIN inventory i ON i.id=ji.inventory_id "
+                "WHERE j.status IN ('queued','running') AND j.kind IN ('import','import_analyze') "
+                "AND ji.status NOT IN ('done','skipped') AND i.source_kind IN ('removable','android') "
+                "AND i.staging_path IS NULL AND i.archive_path IS NULL LIMIT 1").fetchone() is not None
+    except Exception:
+        return True
 
 
 def _foreground_busy() -> bool:
@@ -181,20 +223,28 @@ def run_discovery():
                 count = total = 0
                 walk_errors: list = []
                 last_commit = time.monotonic()
+                batch: list = []
+
+                def flush():
+                    # rows are written in one short transaction: no write lock is held while the walk waits for a slow
+                    # folder listing (a NAS, a huge folder, a card that hangs) - "Add to Library" never waits for it
+                    for r_ in batch:
+                        upsert_inventory(con, r_)
+                    con.commit(); batch.clear()
+                    with STATE.lock:
+                        STATE.discovery["per_source"][label] = {"count": count, "size": total, "status": "scanning"}
                 for f in walk_media(p, bool(filt.get("ignore_noise", True)), int(filt.get("min_image_bytes", 0)), int(filt.get("min_video_bytes", 0)), errors=walk_errors):
                     try: st = f.stat()
                     except Exception: continue
                     mt = media_type_for(f); source_key = "local:" + os.path.normcase(os.path.abspath(str(f)))
-                    row = {"source_key": source_key, "source_kind": kind, "source_id": str(p), "source_label": label, "path": str(f), "filename": f.name,
-                           "ext": f.suffix.lower(), "media_type": mt, "mime_type": None, "size_bytes": st.st_size, "mtime": st.st_mtime,
-                           "date_taken": None, "duration_ms": None, "width": None, "height": None,
-                           "source_fingerprint": f"{source_key}|{st.st_size}|{st.st_mtime}"}
-                    upsert_inventory(con, row); count += 1; total += st.st_size
-                    # Commit by count AND by time so a slow/large walk never holds the DB write lock
-                    # long enough for UI actions or import progress to hit "database is locked".
-                    if count % 250 == 0 or time.monotonic() - last_commit > 1.0:
-                        con.commit(); last_commit = time.monotonic()
-                con.commit()
+                    batch.append({"source_key": source_key, "source_kind": kind, "source_id": str(p), "source_label": label, "path": str(f), "filename": f.name,
+                                  "ext": f.suffix.lower(), "media_type": mt, "mime_type": None, "size_bytes": st.st_size, "mtime": st.st_mtime,
+                                  "date_taken": None, "duration_ms": None, "width": None, "height": None,
+                                  "source_fingerprint": f"{source_key}|{st.st_size}|{st.st_mtime}"})
+                    count += 1; total += st.st_size
+                    if len(batch) >= 250 or time.monotonic() - last_commit > 1.0:
+                        flush(); last_commit = time.monotonic()
+                flush()
                 with STATE.lock:
                     STATE.discovery["found"] += count; STATE.discovery["per_source"][label] = {"count": count, "size": total, "status": "done"}
                 # Prune unseen rows only after a complete, error-free walk, and never Library items
@@ -584,7 +634,7 @@ def _verified_move(src: Path, dest: Path, sha: str | None = None) -> None:
         return
     tmp = dest.with_suffix(dest.suffix + ".part")
     tmp.unlink(missing_ok=True)
-    shutil.copy2(src, tmp)
+    copy_file(src, tmp)
     if tmp.stat().st_size != expected_size or sha256_file(tmp) != expected_sha:
         tmp.unlink(missing_ok=True)
         raise RuntimeError("Cross-volume move verification failed")
@@ -775,6 +825,7 @@ def _existing_local_path(row: dict) -> Path | None:
 
 
 def _ensure_imported(row: dict, job_id: int, item_id: int) -> Path:
+    row = dict(row, source_kind=_effective_kind(row))
     # Already-local assets do not need an unnecessary second copy or source access.
     local = _existing_local_path(row)
     if local:
@@ -1039,6 +1090,19 @@ def _mark_remaining_cancelled(job_id: int):
         con.commit()
 
 
+def _not_copied_back_to_import(job_id: int) -> None:
+    """A card / phone file whose copy failed or was cancelled is not in the Library (it has no copy here): it shows on
+    Import again ("Not in Library"), where it can be added again - instead of vanishing from both views."""
+    try:
+        with db() as con:
+            con.execute("UPDATE inventory SET work_selected=0 WHERE id IN (SELECT inventory_id FROM job_items WHERE job_id=? "
+                        "AND status IN ('error','skipped')) AND staging_path IS NULL AND archive_path IS NULL "
+                        "AND source_kind IN ('removable','android')", (int(job_id),))
+            con.commit()
+    except Exception as exc:
+        log(f"job {job_id}: could not return uncopied files to Import: {exc}")
+
+
 def _run_import_analyze_job(job: dict):
     """Two explicit phases: import ALL selected files first, then analyze locally.
 
@@ -1058,17 +1122,32 @@ def _run_import_analyze_job(job: dict):
     # Fail before touching the source if the complete selected transfer cannot fit.
     # This is conservative (duplicates may reduce the actual transfer), but avoids a
     # half-imported batch that only discovers the disk is full near the end.
-    transfer_total = int(job.get("bytes_total") or 0)
+    # Only what is still to be copied counts (after a restart half of it may be here already), and only those
+    # files fail for lack of space - files already copied are still analysed.
+    with db() as con:
+        need = con.execute(
+            "SELECT ji.id, i.size_bytes FROM job_items ji JOIN inventory i ON i.id=ji.inventory_id WHERE ji.job_id=? "
+            "AND ji.status NOT IN ('done','skipped') AND i.source_kind IN ('removable','android') "
+            "AND i.staging_path IS NULL AND i.archive_path IS NULL", (job_id,)).fetchall()
+    transfer_total = sum(int(r["size_bytes"] or 0) for r in need)
     if transfer_total:
         try:
             _check_free_space(transfer_total)
         except Exception as exc:
             msg = str(exc)
+            lacking = {int(r["id"]) for r in need}
             with db() as con:
-                con.execute("UPDATE job_items SET status='error',phase='error',error=?,finished_at=? WHERE job_id=? AND status NOT IN ('done','skipped')", (msg, now_iso(), job_id))
-                con.execute("UPDATE jobs SET status='failed',stage='done',message=?,error=?,failed=total,done=total,finished_at=? WHERE id=?", (msg, msg, now_iso(), job_id))
+                con.executemany("UPDATE job_items SET status='error',phase='error',error=?,finished_at=? WHERE id=?",
+                                [(msg, now_iso(), i) for i in lacking])
                 con.commit()
-            return
+            _not_copied_back_to_import(job_id)
+            items = [x for x in items if int(x["id"]) not in lacking]
+            if not items:
+                with db() as con:
+                    con.execute("UPDATE jobs SET status='failed',stage='done',message=?,error=?,failed=total,done=total,finished_at=? WHERE id=?", (msg, msg, now_iso(), job_id))
+                    con.commit()
+                return
+            _refresh_job_counts(job_id)
 
     _job_update(job_id, status="running", started_at=job.get("started_at") or now_iso(), stage="import", message="Importing selected files", source_releasable=0)
 
@@ -1085,6 +1164,7 @@ def _run_import_analyze_job(job: dict):
             _refresh_job_counts(job_id)
             continue
         row = _row_dict(rr)
+        row["source_kind"] = _effective_kind(row)
         _job_update(job_id, current_inventory_id=inv_id, current_filename=row["filename"], stage="import", message=f"Importing {row['filename']}")
         try:
             # Never touch the phone/SD again when this item is already local. Only
@@ -1115,6 +1195,7 @@ def _run_import_analyze_job(job: dict):
             _item_update(iid, status="error", phase="error", error=str(exc), finished_at=now_iso())
         _refresh_job_counts(job_id)
 
+    _not_copied_back_to_import(job_id)
     if _cancel_requested(job_id):
         _finish_job(job_id)
         return
@@ -1283,7 +1364,7 @@ def _verified_copy(src: Path, dest: Path, sha: str) -> None:
     _no_overwrite(dest, src.stat().st_size, sha)
     tmp = dest.with_suffix(dest.suffix + ".part")
     tmp.unlink(missing_ok=True)
-    shutil.copy2(src, tmp)
+    copy_file(src, tmp)
     if tmp.stat().st_size != src.stat().st_size or sha256_file(tmp) != sha:
         tmp.unlink(missing_ok=True)
         raise RuntimeError("Archive copy verification failed")
