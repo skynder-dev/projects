@@ -1,3 +1,21 @@
+## 2026-10-17, GoDog 7.0.8 frozen UI visual recovery, verified local delivery
+
+**What the owner rejected:** GoDog 7.0.5 displayed a detached/incomplete dock under the ChatGPT composer, even though 7.x claimed it preserved the original UI.
+
+**Root cause:** although 7.x preserved the exact original 6.0.26 CSS (35,049 characters) and dock HTML, it OMITTED the original runtime DOM/compositor glue. From archived accepted 6.0.26 source we restored `dogUnderlay`, `dockBgLift`, left and right `cg-composer-seam-cap`, left and right `cg-fixed-side-bridge`, `mountDogUnderComposer()`, dynamic sampled background/edge blending, transparent upper 5px of dock surface, 2px downward root shift, 1px internal shift, and hiding on the ChatGPT home screen. GO/AUTO/NEW/STOP remain the local direct event-driven control behavior, no timers/network calls in userscript. Original CSS and HTML unchanged.
+
+**v7.0.7 delivery failed because original localhost v03/v04 server enforces the canonical `@name GoDog GDCONST-010 DEFAULT-DISABLED canary`; v7.0.7 source changed `@name GoDog`, and the owner's server answered HTTP 503.** No live install claimed. Resolved in **v7.0.8** by retaining the existing canonical `@name` and `@namespace GoDog.constitution`, adding `@name:en GoDog`, `@name:ru GoDog` for clean UI, keeping local `@updateURL` and `@downloadURL`, and preserving existing Tampermonkey UUID. This avoids accidental duplicate scripts and satisfies the old server.
+
+**Source tests PASS:** `godog-pc-local` Actions run 39004376418, offline source workflow 39004385125, including UI visual underlay component mock and GO/AUTO/STOP/NEW. v7.0.8 source sha256 `d8ada6251a7816136bc37038100d334f8a95edbf476dad2f86dfdcfd984f28f5`.
+
+**Actual Windows local-source proof PASS:** command 1247, report `GODOG_VISUAL_708 LOCAL_HTTP_VERIFIED` at `2026-10-17T04:58:12Z`. `%LOCALAPPDATA%\GoDog\current.user.js` updated and localhost `127.0.0.1:43129` served the correct v7.0.8 metadata + exact full file SHA. The one-time Supabase transfer artifacts were disabled and temporary app launch helpers removed by config command `f9a76da9-deb6-49b5-bee7-c7aa1c97d08c` DONE. This is NOT proof of installed Tampermonkey runtime.
+
+**Managed provision:** `godog-tm-provision-localhub-canary-001` updated to7.0.8, SHA `83ae195605256dc101cc32c0f2740900aaa629439be1f10093957ffd516f958b`. Relay policy command `0d9d942b-10cb-460f-9fe4-8e6dc08da0a2` DONE, event 81 `present=true`.
+
+**Later Windows extension policy activation attempts:** after HTTP proof, Remote Lab 1.1.169 acquired lease 241. Typed `godog_refresh_platform_policy_v1` command 1248 PASS (tabs_opened=false,windows_opened=false,focus_change_requested=false). Typed `godog_restart_extension_renderers_v1` command 1249 PASS (tabs_opened=false,tabs_reloaded=false,browser_closed=false,focus_changed=false). **Live Browser read-only after these still displayed GoDog 7.0.5 in tab 920398642 and GoDog v7.0.2 in old tabs 920398723 and 920398639. Tampermonkey installation of 7.0.8 NOT PROVEN.** Do not equate policy/renderer PASS with installation; also, old pages cannot load new userscript without navigation/reload even if extension updates later.
+
+**Remaining acceptance gate:** get live Tampermonkey to install v7.0.8 from already verified localhost feed, confirm dashboard version + live tab version with **no duplicate scripts**, and compare screenshot to frozen 6.0.26. Respect owner instruction NOT to close or reload their live tabs or shift focus without permission. No more variant versions or blind policy retries.
+
 ## 2026-10-17, clean Tampermonkey label / GoDog 7.0.6
 
 - Owner noticed active Tampermonkey listing `GoDog GDCONST-010 DEFAULT-DISABLED canary` (enabled script, 7.0.2). This is obsolete development terminology, not an intentional product name.
