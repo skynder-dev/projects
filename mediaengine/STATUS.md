@@ -358,7 +358,15 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **39024722016 on `bee9e2f` (2026-10-17) — all green, build b125**: as b122, plus orders from other
+Latest run: **39050990426 on `2bad821` (2026-10-17) — build b131** (day review rounds 6-10 and the independent
+review's follow-ups): every check green up to and including the installer smoke (unit, engine regression and
+robustness, A/V sync, E2E phone / 7 / 2 videos, AI and AI+ glue, titles and music, Convert, Library, unplugged drive,
+64 long names, orders, real AI models, Russian pages, route fuzz, Edge, package smoke, packaged runtime offline,
+installer smoke); installer artifact `MediaEngine-3.13.0-rc1-b131-Setup`. The last step (large phone-like footage,
+timing only) was cut by the job's 150-minute limit on a slow runner (limit now 190 min, route fuzz at most 9 min). Next build: rounds 12-13, the start-up
+check rule and the guides.
+
+Before: **39024722016 on `bee9e2f` (2026-10-17) — all green, build b125**: as b122, plus orders from other
 programs (44 checks, also with the packaged Python offline; the Edge check runs an order with the page's button) and
 the first night-review fixes (GPU result reaches the engine, prepare fixes). Running next: 39030989741 on `17479da`
 (review rounds 2-3).
@@ -527,9 +535,8 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-Owner: install the newest green build (now `MediaEngine-3.13.0-rc1-b125-Setup`, run 39024722016; b126 with review
-rounds 2-3 follows when run 39030989741 is green). After installing: Auto Edit → **Orders** opens (the folder
-`MediaEngine Data\Orders` with `ORDERS.md` appears); a reel from `D:\100MEDIA` works as before. Through the app's pages in
-the desktop app's browser pane (never computer use): Orders page renders in Russian, a test order (video by plan made
-from generated pictures) if the owner allows copying a small order folder onto his PC. Moment quality on his own
-footage stays his call (blind comparison is built in).
+Owner: install the newest green build (now `MediaEngine-3.13.0-rc1-b131-Setup`, run 39050990426; the next build adds
+rounds 12-13 and the guides). After installing: Auto Edit → **Orders** opens (the folder `MediaEngine Data\Orders` with
+`ORDERS.md` appears); a reel from `D:\100MEDIA` works as before. Through the app's pages in the desktop app's browser
+pane (never computer use). The sending side of orders in the owner's Social project is not started (only with his
+permission). Moment quality on his own footage stays his call (blind comparison is built in).

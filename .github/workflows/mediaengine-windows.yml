@@ -30,7 +30,7 @@ concurrency:
 jobs:
   windows:
     runs-on: windows-latest
-    timeout-minutes: 150
+    timeout-minutes: 190      # a slow runner took 150 min before the large-footage step had finished (run 39050990426)
     env:
       PYTHONUTF8: '1'
     steps:
