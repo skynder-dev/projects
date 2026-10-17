@@ -4,11 +4,11 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const src=fs.readFileSync(require('node:path').join(__dirname,'..','GoDog_PC_LOCAL_01.user.js'),'utf8');
 for(const required of [
-  '// @name         GoDog',
+  '// @name         GoDog GDCONST-010 DEFAULT-DISABLED canary',
   '// @name:en      GoDog',
   '// @name:ru      GoDog',
   '// @namespace    GoDog.constitution',
-  '// @version      7.0.7',
+  '// @version      7.0.8',
   '// @grant        none',
   '// @updateURL    http://127.0.0.1:43129/godog.meta.js',
   '// @downloadURL  http://127.0.0.1:43129/godog.user.js'
@@ -18,6 +18,11 @@ assert.ok(!src.includes('raw.githubusercontent.com'),'no GitHub client updates')
 assert.ok(!/\bset(?:Interval|Timeout)\s*\(/.test(src),'No wait timers');
 assert.ok(!/\b(?:fetch|XMLHttpRequest|GM_xmlhttpRequest)\s*\(/.test(src),'No network APIs');
 new vm.Script(src,{filename:'GoDog_PC_LOCAL_01.user.js'});
+// This exact canonical name is required by the PC localhost updater and keeps
+// Tampermonkey's existing installed script identity. Localized name is clean.
+assert.match(src,/^\/\/ @name\s+GoDog GDCONST-010 DEFAULT-DISABLED canary$/m);
+assert.match(src,/^\/\/ @name:en\s+GoDog$/m);
+assert.ok(src.includes('function mountDogUnderComposer('),'frozen visual underlay glue required');
 
 class Element {
   constructor(name='DIV') {this.tagName=name;this.listeners={};this.dataset={};this.value=undefined;this.innerText='';this.textContent='';this.isConnected=false;this.disabled=false;this.attributes={};this.classList={toggle(){}};this.style={props:{},setProperty(n,v){this.props[n]=v;},removeProperty(n){delete this.props[n];},getPropertyValue(n){return this.props[n]||'';},getPropertyPriority(){return '';}};this.childNodes=[];this.parentElement=null;this.firstChild=null;this.rect={left:0,right:1200,top:0,bottom:36,width:1200,height:36};}
@@ -103,7 +108,7 @@ const ctx={window:win,document,location:loc,sessionStorage:storage(session),loca
   HTMLTextAreaElement:class{},HTMLInputElement:class{}};
 vm.runInNewContext(src,ctx,{timeout:3000});
 assert.equal(buttons['.cg-status'].textContent,'DISARMED','restored original initial status');
-assert.equal(buttons['.cg-version'].textContent,'GoDog 7.0.7','restored original version chip');
+assert.equal(buttons['.cg-version'].textContent,'GoDog 7.0.8','restored original version chip');
 assert.equal(buttons['.cg-project'].textContent,'GoDog','restored original project chip');
 assert.equal(buttons['.cg-auto'].textContent,'AUTO','restored original AUTO label');
 assert.equal(buttons['.cg-timer'].textContent,'','no fake LOCAL timer');
