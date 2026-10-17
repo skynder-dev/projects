@@ -225,6 +225,38 @@ b122 on the owner's PC (2026-10-17 night), "Test the graphics card" with 4 cuts 
 (0.66-0.85x; H.264: 4 cuts 3.3 s on the card vs 2.1 s on the processor) - not used. The full 4K frames have to come
 back to the processor for the accepted scaling; the card does not pay here.
 
+## Orders from other programs (2026-10-17)
+
+The owner asked how MediaEngine would do orders from his other programs (for example Social) instead of everything by
+hand. MediaEngine side only (no other project touched): `app/archivist/orders.py`, `orders_web.py`, the contract
+`app/archivist/ORDERS.md` (also copied into `MediaEngine Data\Orders\`), Auto Edit → **Orders** page and
+`/api/auto/orders`. A program puts `Orders\Inbox\<id>\` with `order.json` written last; the running app takes it
+(`Received`), does it one at a time and answers with ONE folder that appears complete: `Done\<id>\video.mp4 +
+result.json` (SHA-256, checks: H.264, size, length, sound, decoded to the end) or `Failed\<id>\result.json` (code and
+reason). Kinds: `render_plan` (pictures / video pieces + a sound track, frame-exact, only files inside the order
+folder, plain media files only - playlists refused) and `reel_from_videos` (folder, chosen videos or a Library theme;
+a normal Auto Edit project). Start at once or "Wait for my OK"; Run / Reject / Stop / Try again / Delete; an order
+interrupted by a restart is done again, one started 3 times without finishing waits for the owner; Quit / Restart /
+switching builds ask while an order runs; MediaEngine publishes nothing. Check: `tests/orders_check.py` (44 checks,
+incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also with the packaged Python offline.
+
+## Night review (2026-10-17): two independent reviewers, findings fixed
+
+- Orders (before any release): a playlist (`.m3u8`) inside an order could make FFmpeg read any file on the PC → only
+  plain media containers, each input opened with the demuxer found at the check; a file in the order folder could pose
+  as MediaEngine's notes and point a reel order at one of the owner's projects → notes kept outside the order folder;
+  a quoted or `//` network path passed the network guard → normalised first; pictures over 50 MP refused; buttons no
+  longer wait for a running render; no half-moved folders; Stop never reported as a render error; ids with `..` work.
+- Graphics card (b122): a method that Check this PC called "used" never reached the engine (the load numbers made
+  every kind "unproven") → fixed and unit-checked; the test now counts FFmpeg error messages as failures (as the
+  engine does), compares every run and every cut done at the same time with the processor's frames, and sees a
+  driver changed while the app stays open; the engine gives the card 3 minutes per cut, then cuts on the processor;
+  interlaced camcorder video never goes to the card. (On the owner's PC the card is not used: it was slower.)
+- Prepare in advance: one piece that cannot be prepared no longer fails the whole preparation; "A reel for every day"
+  after preparing goes on in the prepared day projects (no second set of projects); Free cache ends "Prepared" and
+  Prepare again really prepares.
+- Unused code that could have sent a diagnostics report to the old Supabase lab is switched off (it had no caller).
+
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).

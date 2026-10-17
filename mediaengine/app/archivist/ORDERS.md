@@ -92,6 +92,9 @@ for example). MediaEngine renders it: H.264 + AAC MP4, frame-exact times.
 - `"fit"`: `"fit"` = whole picture on black (default for pictures), `"fill"` = cropped to fill the frame (default for videos).
 - `audio` (optional): cut or filled with silence to the plan's length. Without it the video gets a silent sound track.
 - Only files **inside the order folder** are used (relative paths, no `..`, no absolute or network paths).
+- Plain media files only: pictures PNG, JPEG, WebP, BMP, TIFF (at most 50 megapixels); videos MP4/MOV, MKV/WebM, AVI,
+  MPEG, MPEG-TS, WMV, FLV (at most 8192 pixels a side); sound WAV, MP3, M4A/AAC, FLAC, OGG, MKA, AIFF.
+  Playlists (`.m3u8`, concat lists) are refused whatever their name: they could point to any file on the PC.
 
 ## Kind 2: `reel_from_videos` — MediaEngine chooses the moments
 
@@ -137,7 +140,8 @@ videos used and the number of moments.
 | `ORDER_FILE_MISSING` / `ORDER_PATH_OUTSIDE` / `ORDER_NETWORK_PATH` | a named file is missing / outside the order folder / on the network |
 | `ORDER_ID_INVALID` / `ORDER_ID_ALREADY_USED` | bad or reused order id (the answer is in `Failed\<id> (2)` etc.) |
 | `PLAN_TIMES_INVALID` / `PLAN_TOO_LONG` / `PLAN_TOO_MANY_CLIPS` | the plan's times do not fit / > 10 min / > 300 clips |
-| `PLAN_IMAGE_UNREADABLE` / `PLAN_VIDEO_UNREADABLE` / `PLAN_AUDIO_UNREADABLE` | a file of the plan cannot be read |
+| `PLAN_IMAGE_UNREADABLE` / `PLAN_VIDEO_UNREADABLE` / `PLAN_AUDIO_UNREADABLE` | a file of the plan cannot be read (or is not a plain media file) |
+| `PLAN_IMAGE_TOO_BIG` | a picture has more than 50 megapixels |
 | `VIDEOS_NOT_USABLE` / `NO_VIDEOS` / `AIPLUS_NOT_READY` | the videos of a reel order cannot be used |
 | `REEL_NOT_STARTED` / `REEL_FAILED` | the reel could not be started / built (the message says why) |
 | `RENDER_FAILED` / `OUTPUT_CHECK_FAILED` / `OUTPUT_COPY_FAILED` | the video could not be made / failed its checks / copied |
@@ -146,6 +150,7 @@ videos used and the number of moments.
 
 ## Notes
 
-- The app must be running. Orders put in while it is closed are done when it starts. An order interrupted by a restart is done again.
+- The app must be running. Orders put in while it is closed are done when it starts. An order interrupted by a restart is done again;
+  one started 3 times without finishing waits on the Orders page for **Try again** or **Delete**.
 - Deleting an order on the Orders page removes only its folders in `Orders` (never the owner's videos or projects).
 - A program on another computer (or in the cloud) cannot reach this folder; copying orders here is the owner's choice.

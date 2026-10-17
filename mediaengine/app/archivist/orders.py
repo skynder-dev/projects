@@ -33,10 +33,20 @@ POLL_S = 3.0
 MAX_PLAN_S = 600.0        # a plan of at most 10 minutes
 MAX_CLIPS = 300
 MAX_SIDE = 4096
+MAX_STILL_PIXELS = 50_000_000   # a bigger picture (a tiny file can say 40000x40000) would need gigabytes to decode
+MAX_VIDEO_SIDE = 8192
+MAX_ATTEMPTS = 3          # an order that was started this many times without an answer (crash, restart) waits for the owner
+# what FFmpeg may read for a plan: plain media files only. A playlist (HLS .m3u8, concat) could name ANY file on the PC,
+# so it is refused, and every input is opened with the demuxer found here (a file swapped later cannot become one).
+STILL_FORMATS = {"png_pipe", "jpeg_pipe", "webp_pipe", "bmp_pipe", "tiff_pipe", "image2"}
+VIDEO_FORMATS = {"mov", "matroska", "avi", "mpeg", "mpegts", "asf", "flv"}
+AUDIO_FORMATS = {"wav", "mp3", "mov", "flac", "ogg", "aac", "matroska", "w64", "aiff", "asf"}
+_INPUT_RE = re.compile(r"^Input #0, (.+?), from ", re.M)
 _ID = re.compile(r"^[^\W_][\w.\- ()]{0,79}$")
 _IGNORED_SUFFIX = (".tmp", ".part", ".partial", ".crdownload")
 
 _LOCK = threading.Lock()          # one order at a time (the watcher and a button press never run two)
+_MOVE_LOCK = threading.RLock()    # taking an order and writing an answer (short; buttons never wait for a render)
 _STATE_LOCK = threading.Lock()
 _WAKE = threading.Event()
 _STOP_ALL = threading.Event()
@@ -184,8 +194,9 @@ def _unique(base: Path, name: str) -> Path:
     return base / x
 
 
-def _move(src: Path, dst: Path, tries: int = 12) -> None:
-    """Rename (same drive); a file held open for a moment (antivirus, the writing program) is retried."""
+def _move(src: Path, dst: Path, tries: int = 40) -> None:
+    """Rename (same drive, one step: never half a folder); a file held open for a moment (antivirus, Explorer, the
+    writing program) is retried for 20 s, then the error is raised and the order is taken / answered later."""
     for k in range(tries):
         try:
             os.replace(src, dst)
@@ -194,14 +205,18 @@ def _move(src: Path, dst: Path, tries: int = 12) -> None:
             raise
         except OSError:
             if k == tries - 1:
-                shutil.move(str(src), str(dst))
-                return
+                raise
             time.sleep(0.5)
 
 
+def _clean_path(raw: str) -> str:
+    return str(raw).strip().strip('"').strip()
+
+
 def _no_network(raw: str, field: str) -> None:
-    s = str(raw).strip().replace("/", "\\")
-    if s.startswith("\\\\"):
+    """\\\\server\\share, //server/share, \\\\?\\UNC\\..., quoted or not: Windows would send the owner's sign-in there."""
+    s = _clean_path(raw).replace("/", "\\")
+    if s.startswith("\\\\") or s.startswith("\\??\\"):
         raise OrderError("ORDER_NETWORK_PATH", f"{field}: network paths are not used (Windows would sign in to that server)")
 
 
@@ -210,7 +225,7 @@ def _inside(base: Path, rel, field: str) -> Path:
     if not isinstance(rel, str) or not rel.strip():
         raise OrderError("ORDER_FIELD_INVALID", f"{field} must be the name of a file in the order folder")
     _no_network(rel, field)
-    r = Path(rel.strip().replace("\\", "/"))
+    r = Path(_clean_path(rel).replace("\\", "/"))
     if r.is_absolute() or r.drive or any(part == ".." for part in r.parts):
         raise OrderError("ORDER_PATH_OUTSIDE", f"{field}: only files inside the order folder can be used ({rel})")
     p = (base / r).resolve()
@@ -228,7 +243,7 @@ def _own_path(base: Path, raw, field: str) -> Path:
     if not isinstance(raw, str) or not raw.strip():
         raise OrderError("ORDER_FIELD_INVALID", f"{field} must be a path")
     _no_network(raw, field)
-    s = raw.strip().strip('"')
+    s = _clean_path(raw)
     p = Path(s)
     if p.is_absolute():
         return p
@@ -259,13 +274,17 @@ def _ffmpeg() -> str:
     return ae._ffmpeg() or "ffmpeg"
 
 
-def _decode_info(path: Path, video_frames: int | None = None, timeout: int = 300) -> dict:
+def _input_args(fmt: str) -> list[str]:
+    return ["-f", fmt, *(["-pattern_type", "none"] if fmt == "image2" else [])]
+
+
+def _decode_info(path: Path, video_frames: int | None = None, timeout: int = 300, fmt: str = "") -> dict:
     """Read a picture / sound / video with FFmpeg (the same FFmpeg that renders): its streams and decoded length."""
     import sys
     if str(ae.ENGINE_DIR) not in sys.path:
         sys.path.insert(0, str(ae.ENGINE_DIR))
     import medeng_media_probe_v41 as probe_mod  # the engine's FFmpeg-only probe (Windows has no ffprobe)
-    cmd = [_ffmpeg(), "-hide_banner", "-nostdin", "-i", str(path)]
+    cmd = [_ffmpeg(), "-hide_banner", "-nostdin", *(_input_args(fmt) if fmt else []), "-i", str(path)]
     if video_frames:
         cmd += ["-frames:v", str(video_frames)]
     cmd += ["-f", "null", "-"]
@@ -291,6 +310,33 @@ def _decode_info(path: Path, video_frames: int | None = None, timeout: int = 300
     times = ae._TIME_RE.findall(text)
     secs = (int(times[-1][0]) * 3600 + int(times[-1][1]) * 60 + float(times[-1][2])) if times else 0.0
     return {"ok": cp.returncode == 0, "streams": streams, "seconds": secs, "error": text.strip().splitlines()[-1:] if cp.returncode else []}
+
+
+def _header(path: Path, timeout: int = 60) -> dict:
+    """What FFmpeg says about a file without decoding it: its container (demuxer) and streams with picture sizes."""
+    import sys
+    if str(ae.ENGINE_DIR) not in sys.path:
+        sys.path.insert(0, str(ae.ENGINE_DIR))
+    import medeng_media_probe_v41 as probe_mod
+    try:
+        cp = subprocess.run([_ffmpeg(), "-hide_banner", "-nostdin", "-i", str(path)],
+                            **process_kwargs(dict(stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True,
+                                                  errors="replace", timeout=timeout, check=False)))
+        text = cp.stderr or ""
+    except (subprocess.TimeoutExpired, OSError):
+        text = ""
+    m = _INPUT_RE.search(text)
+    streams = []
+    for raw in text.splitlines():
+        sm = probe_mod._STREAM_RE.match(raw)
+        if not sm:
+            continue
+        row = {"type": sm.group(2).lower(), "codec": sm.group(3).lower()}
+        zm = probe_mod._SIZE_RE.search(raw) if row["type"] == "video" else None
+        if zm:
+            row["width"], row["height"] = int(zm.group(1)), int(zm.group(2))
+        streams.append(row)
+    return {"format": m.group(1).split(",")[0].strip() if m else "", "streams": streams}
 
 
 def _first(info: dict, kind: str) -> dict | None:
@@ -353,13 +399,27 @@ def _plan_spec(order: dict, base: Path) -> dict:
         row = {"n": i, "start_s": start, "end_s": end, "frames": frame - prev_frame, "fit": fit}
         if has_still:
             p = _inside(base, c["still"], f"clip {i} still")
-            info = _decode_info(p, video_frames=1, timeout=60)
+            hd = _header(p)
+            v = _first(hd, "video")
+            if hd["format"] not in STILL_FORMATS or not v:
+                raise OrderError("PLAN_IMAGE_UNREADABLE", f"clip {i}: {c['still']} is not a picture that can be read")
+            if int(v.get("width") or 0) * int(v.get("height") or 0) > MAX_STILL_PIXELS:
+                raise OrderError("PLAN_IMAGE_TOO_BIG", f"clip {i}: {c['still']} is {v.get('width')}x{v.get('height')} "
+                                                       f"(at most {MAX_STILL_PIXELS // 1_000_000} megapixels)")
+            info = _decode_info(p, video_frames=1, timeout=60, fmt=hd["format"])
             if not info["ok"] or not _first(info, "video"):
                 raise OrderError("PLAN_IMAGE_UNREADABLE", f"clip {i}: {c['still']} is not a picture that can be read")
-            row["still"] = p
+            row.update(still=p, fmt=hd["format"])
         else:
             p = _inside(base, c["video"], f"clip {i} video")
             from_s = _num(c.get("from_s", 0), f"clip {i} from_s", 0, 24 * 3600)
+            hd = _header(p)
+            v = _first(hd, "video")
+            if hd["format"] not in VIDEO_FORMATS or not v:
+                raise OrderError("PLAN_VIDEO_UNREADABLE", f"clip {i}: {c['video']} is not a video file that can be used "
+                                                          f"(container: {hd['format'] or 'unknown'})")
+            if max(int(v.get("width") or 0), int(v.get("height") or 0)) > MAX_VIDEO_SIDE:
+                raise OrderError("PLAN_VIDEO_UNREADABLE", f"clip {i}: {c['video']} is larger than {MAX_VIDEO_SIDE} pixels")
             try:
                 pr = ae.probe_any(p)
                 dur = float(pr.get("format", {}).get("duration") or 0)
@@ -370,17 +430,18 @@ def _plan_spec(order: dict, base: Path) -> dict:
                 raise OrderError("PLAN_VIDEO_UNREADABLE", f"clip {i}: {c['video']} is not a video that can be read")
             if from_s >= dur:
                 raise OrderError("PLAN_TIMES_INVALID", f"clip {i}: from_s {from_s:g} s is after the end of {c['video']} ({dur:.1f} s)")
-            row.update(video=p, from_s=from_s, source_s=dur)
+            row.update(video=p, from_s=from_s, source_s=dur, fmt=hd["format"])
         out.append(row)
         t, prev_frame = end, frame
     audio = plan.get("audio")
-    apath = None
+    apath, afmt = None, ""
     if audio not in (None, ""):
         apath = _inside(base, audio, "plan.audio")
-        info = _decode_info(apath, timeout=300)
+        afmt = _header(apath)["format"]
+        info = _decode_info(apath, timeout=300, fmt=afmt) if afmt in AUDIO_FORMATS else {"ok": False}
         if not info["ok"] or not _first(info, "audio") or info["seconds"] <= 0:
             raise OrderError("PLAN_AUDIO_UNREADABLE", f"plan.audio: {audio} is not a sound file that can be read")
-    return {"width": w, "height": h, "fps": fps, "clips": out, "audio": apath, "frames": prev_frame,
+    return {"width": w, "height": h, "fps": fps, "clips": out, "audio": apath, "audio_fmt": afmt, "frames": prev_frame,
             "total_s": round(prev_frame / fps, 3)}
 
 
@@ -489,7 +550,7 @@ def _take(entry: dict) -> tuple[str, Path | None]:
         tmp.mkdir(parents=True)
         _move(src, tmp / "order.json")
         _move(tmp, dst)
-    _write_state(dst, {"received_at": now_iso()})
+    _reset_state(dst, {"received_at": now_iso()})       # MediaEngine's own notes, never anything the order brought
     return oid, dst
 
 
@@ -514,7 +575,18 @@ def _refuse_unreceived(src: Path, name: str, code: str, message: str) -> tuple[s
 # ---------------------------------------------------------------- state of an order being done
 
 def _state_file(rdir: Path) -> Path:
-    return rdir / ".mediaengine_state.json"
+    """MediaEngine's notes about an order (project, job, attempts) - kept OUTSIDE the order's folder: a file the
+    ordering program put into its folder can never pose as them (it could name one of the owner's projects)."""
+    return received_dir() / ".state" / f"{rdir.name}.json"
+
+
+def _reset_state(rdir: Path, d: dict) -> None:
+    with _STATE_LOCK:
+        try:
+            _state_file(rdir).parent.mkdir(parents=True, exist_ok=True)
+            _write_json(_state_file(rdir), d)
+        except OSError:
+            pass
 
 
 def _read_state(rdir: Path) -> dict:
@@ -530,6 +602,7 @@ def _write_state(rdir: Path, change: dict) -> dict:
         d = _read_state(rdir)
         d.update(change)
         try:
+            _state_file(rdir).parent.mkdir(parents=True, exist_ok=True)
             _write_json(_state_file(rdir), d)
         except OSError:
             pass
@@ -564,9 +637,9 @@ def _stopped() -> bool:
 def _process(oid: str) -> str:
     """Do the received order `oid`; returns "done" or "failed" (its answer is then in Done / Failed)."""
     rdir = received_dir() / oid
-    st = _write_state(rdir, {"started_at": now_iso()})
+    st = _write_state(rdir, {"started_at": now_iso(), "attempts": int(_read_state(rdir).get("attempts") or 0) + 1})
+    _CURRENT["stop"] = threading.Event()          # before the id: a Stop pressed right now is never lost
     _CURRENT.update(id=oid, proc=None, done=0, total=0, step="")
-    _CURRENT["stop"] = threading.Event()
     order, order_sha, spec = {}, "", None
     for old in rdir.glob(".work*"):      # an earlier attempt's pieces (a crash, a stop)
         shutil.rmtree(old, ignore_errors=True)
@@ -614,7 +687,17 @@ def _video_entry(path: Path) -> dict:
             "width": int(v.get("width") or 0), "height": int(v.get("height") or 0)}
 
 
-def _publish_done(oid, order, order_sha, video_path: Path, move: bool, checks, extra, st) -> None:
+def _publish_done(*a) -> None:
+    with _MOVE_LOCK:
+        _publish_done_now(*a)
+
+
+def _publish_failed(*a, **k) -> None:
+    with _MOVE_LOCK:
+        _publish_failed_now(*a, **k)
+
+
+def _publish_done_now(oid, order, order_sha, video_path: Path, move: bool, checks, extra, st) -> None:
     final = done_dir() / oid
     part = done_dir() / f".{oid}.partial"
     shutil.rmtree(part, ignore_errors=True)
@@ -641,7 +724,7 @@ def _publish_done(oid, order, order_sha, video_path: Path, move: bool, checks, e
     _notify(oid, order, True)
 
 
-def _publish_failed(oid, order, order_sha, code, message, st, retry=True) -> None:
+def _publish_failed_now(oid, order, order_sha, code, message, st, retry=True) -> None:
     shutil.rmtree(done_dir() / f".{oid}.partial", ignore_errors=True)
     final = failed_dir() / oid
     part = failed_dir() / f".{oid}.partial"
@@ -719,6 +802,8 @@ def _run_ffmpeg(cmd: list[str], log: Path, timeout_s: float) -> None:
                     ctypes.windll.kernel32.CloseHandle(wintypes.HANDLE(h))
                 except Exception:
                     pass
+    if _stopped():               # Stop killed FFmpeg itself (the loop above may not have seen the flag first)
+        raise OrderError("STOPPED_BY_OWNER", "Stopped on the Orders page")
     if proc.returncode != 0:
         tail = ""
         try:
@@ -743,10 +828,10 @@ def _render_plan(spec: dict, base: Path, work: Path) -> Path:
                 if c["fit"] == "fit" else
                 f"scale={w}:{h}:force_original_aspect_ratio=increase:flags=lanczos,crop={w}:{h}")
         if "still" in c:
-            cmd = [ff, "-hide_banner", "-nostdin", "-y", "-loop", "1", "-framerate", rate, "-i", str(c["still"]),
-                   "-vf", f"{size},format=yuv420p,setsar=1"]
+            cmd = [ff, "-hide_banner", "-nostdin", "-y", *_input_args(c["fmt"]), "-framerate", rate, "-stream_loop", "-1",
+                   "-i", str(c["still"]), "-vf", f"{size},format=yuv420p,setsar=1"]
         else:
-            cmd = [ff, "-hide_banner", "-nostdin", "-y", "-ss", f"{c['from_s']:.3f}", "-i", str(c["video"]),
+            cmd = [ff, "-hide_banner", "-nostdin", "-y", "-ss", f"{c['from_s']:.3f}", *_input_args(c["fmt"]), "-i", str(c["video"]),
                    "-vf", f"{size},fps={rate},tpad=stop_mode=clone:stop=-1,format=yuv420p,setsar=1"]
         cmd += ["-an", "-frames:v", str(c["frames"]), "-r", rate, *X264, "-g", str(max(1, int(round(fps * 2)))),
                 "-f", "mp4", str(out)]
@@ -759,7 +844,7 @@ def _render_plan(spec: dict, base: Path, work: Path) -> Path:
     total = f"{spec['total_s']:.3f}"
     cmd = [ff, "-hide_banner", "-nostdin", "-y", "-f", "concat", "-safe", "0", "-i", str(lst)]
     if spec["audio"]:
-        cmd += ["-i", str(spec["audio"])]
+        cmd += [*_input_args(spec["audio_fmt"]), "-i", str(spec["audio"])]
     else:
         cmd += ["-f", "lavfi", "-i", "anullsrc=channel_layout=stereo:sample_rate=48000"]
     cmd += ["-map", "0:v:0", "-map", "1:a:0", "-c:v", "copy", "-af", "apad", "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
@@ -878,8 +963,19 @@ def unfinished() -> list[str]:
     return out
 
 
+def stuck(oid: str) -> bool:
+    """Started MAX_ATTEMPTS times without an answer (the app was closed or crashed each time): not started again
+    by itself - the owner presses Try again or Delete."""
+    return _CURRENT.get("id") != oid and int(_read_state(received_dir() / oid).get("attempts") or 0) >= MAX_ATTEMPTS
+
+
+def busy() -> str:
+    """The order being done now ('' when none): Quit / Restart / switching builds ask first."""
+    return str(_CURRENT.get("id") or "")
+
+
 def _next() -> tuple[str, Path] | None:
-    left = unfinished()
+    left = [x for x in unfinished() if not stuck(x)]
     if left:
         return left[0], received_dir() / left[0]
     go = auto_run()
@@ -899,7 +995,8 @@ def process_next() -> str | None:
         return None
     try:
         ensure_dirs()
-        nxt = _next()
+        with _MOVE_LOCK:
+            nxt = _next()
         if not nxt:
             return None
         _process(nxt[0])
@@ -951,7 +1048,7 @@ def run_now(oid: str) -> None:
 
 def reject(oid: str) -> bool:
     """A waiting order the owner does not want: answered in Failed (REJECTED_BY_OWNER), never done."""
-    with _LOCK:
+    with _MOVE_LOCK:
         entry = next((x for x in inbox() if x["id"] == oid), None)
         if not entry:
             return False
@@ -983,8 +1080,12 @@ def stop(oid: str) -> bool:
 
 
 def retry(oid: str) -> bool:
-    """A failed order is done again (its files are still in Received)."""
-    with _LOCK:
+    """A failed (or stuck) order is done again (its files are still in Received)."""
+    with _MOVE_LOCK:
+        if oid in unfinished() and stuck(oid):
+            _write_state(received_dir() / oid, {"attempts": 0, "retried_at": now_iso()})
+            _WAKE.set()
+            return True
         f = failed_dir() / oid
         if not f.is_dir() or not (received_dir() / oid).is_dir():
             return False
@@ -994,15 +1095,17 @@ def retry(oid: str) -> bool:
         except Exception:
             pass
         shutil.rmtree(f)
-        _write_state(received_dir() / oid, {"finished": None, "retried_at": now_iso()})
+        _write_state(received_dir() / oid, {"finished": None, "attempts": 0, "retried_at": now_iso()})
     _WAKE.set()
     return True
 
 
 def delete(oid: str) -> bool:
     """Forget a finished order: its folders in Orders (never the owner's videos elsewhere, never a project)."""
-    with _LOCK:
-        if oid in unfinished() or not oid or "/" in oid or "\\" in oid or oid in (".", ".."):
+    with _MOVE_LOCK:
+        if not oid or "/" in oid or "\\" in oid or oid in (".", "..") or busy() == oid:
+            return False
+        if oid in unfinished() and not stuck(oid):
             return False
         gone = False
         for d in (received_dir(), done_dir(), failed_dir()):
@@ -1010,6 +1113,11 @@ def delete(oid: str) -> bool:
             if p.is_dir() and p.resolve().parent == d.resolve():
                 shutil.rmtree(p, ignore_errors=True)
                 gone = True
+        if gone:
+            try:
+                _state_file(received_dir() / oid).unlink(missing_ok=True)
+            except OSError:
+                pass
         return gone
 
 
@@ -1031,9 +1139,13 @@ def overview(limit: int = 100) -> dict:
             prog = f"{_CURRENT.get('done', 0)}%"
         elif cur and _CURRENT.get("total"):
             prog = f"{_CURRENT.get('done', 0)}/{_CURRENT.get('total', 0)}"
-        items.append({"id": oid, "state": "working" if cur else "waiting", "kind": st.get("kind"), "from": st.get("from") or "",
-                      "title": st.get("title") or "", "progress": prog, "project_id": st.get("project_id"),
-                      "time": _mtime(rdir)})
+        it = {"id": oid, "state": "working" if cur else "waiting", "kind": st.get("kind"), "from": st.get("from") or "",
+              "title": st.get("title") or "", "progress": prog, "project_id": st.get("project_id"), "time": _mtime(rdir)}
+        if not cur and stuck(oid):
+            it.update(state="stuck", can_retry=True, finished_at=st.get("started_at"),
+                      error={"code": "INTERRUPTED", "message": f"Started {st.get('attempts')} times without finishing "
+                                                               "(MediaEngine was closed or stopped each time)"})
+        items.append(it)
     for state, d in (("done", done_dir()), ("failed", failed_dir())):
         try:
             dirs = sorted((p for p in d.iterdir() if p.is_dir() and not p.name.startswith(".")), key=_mtime, reverse=True)[:limit]
@@ -1048,10 +1160,10 @@ def overview(limit: int = 100) -> dict:
                           "video": r.get("video"), "error": r.get("error"), "can_retry": r.get("can_retry", True) and (received_dir() / p.name).is_dir(),
                           "project_id": (r.get("project") or {}).get("id"), "finished_at": r.get("finished_at"),
                           "checks": r.get("checks"), "time": _mtime(p)})
-    order = {"working": 0, "waiting": 1, "new": 2, "arriving": 3, "failed": 4, "done": 4}
+    order = {"working": 0, "waiting": 1, "new": 2, "arriving": 3, "stuck": 4, "failed": 4, "done": 4}
     items.sort(key=lambda x: (order.get(x["state"], 9), -float(x.get("time") or 0)))
     return {"auto_run": auto_run(), "inbox": str(inbox_dir()), "root": str(root()), "items": items,
-            "counts": {s: sum(1 for x in items if x["state"] == s) for s in ("new", "arriving", "working", "waiting", "done", "failed")}}
+            "counts": {s: sum(1 for x in items if x["state"] == s) for s in ("new", "arriving", "working", "waiting", "stuck", "done", "failed")}}
 
 
 def _mtime(p: Path) -> float:

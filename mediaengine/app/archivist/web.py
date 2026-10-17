@@ -234,6 +234,11 @@ def _exit_soon():
         _al.shutdown()
     except Exception:
         pass
+    try:                                  # an order's FFmpeg too (the order is done again at the next start)
+        from . import orders as _or
+        _or.shutdown()
+    except Exception:
+        pass
     os._exit(0)
 
 
@@ -385,6 +390,13 @@ def create_app():
             idx=False
         if idx and not force:
             return jsonify({'ok':False,'error':"AI+ is being prepared for the Library (it continues next time)"}),409
+        try:
+            from . import orders as _or
+            od=_or.busy()
+        except Exception:
+            od=''
+        if od and not force:
+            return jsonify({'ok':False,'error':"An order from another program is being done (Auto Edit → Orders)"}),409
         if mode!='stop': _spawn_launcher(mode)
         threading.Thread(target=_exit_soon,daemon=True).start(); return jsonify({'ok':True})
 

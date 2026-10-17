@@ -117,6 +117,32 @@ def main():
         except Exception:
             built = False
         check("check_this_pc_in_the_background", building and built, (building, built))
+        # Orders: an order waiting for the owner's OK is run with the page's button (a form posted by a real browser)
+        from archivist import orders
+        import subprocess as _sp
+        orders.set_auto_run(False)
+        aside = work / "_order"
+        aside.mkdir()
+        ff = ae._ffmpeg() or "ffmpeg"
+        _sp.run([ff, "-y", "-f", "lavfi", "-i", "color=c=navy:s=540x960", "-frames:v", "1", str(aside / "a.png")], capture_output=True)
+        _sp.run([ff, "-y", "-f", "lavfi", "-i", "sine=f=440:d=2", str(aside / "v.wav")], capture_output=True)
+        (aside / "order.json").write_text(json.dumps({"schema": orders.SCHEMA, "kind": "render_plan", "title": "Заказ в браузере",
+                                                      "plan": {"width": 540, "height": 960, "audio": "v.wav",
+                                                               "clips": [{"still": "a.png", "start_s": 0, "end_s": 2}]}}), encoding="utf-8")
+        orders.ensure_dirs()
+        os.replace(aside, orders.inbox_dir() / "browser-1")
+        pg.goto(base + "/auto/orders")
+        try:
+            pg.wait_for_selector("form[action='/auto/orders/browser-1/run'] button", timeout=60_000)
+            with pg.expect_navigation():
+                pg.click("form[action='/auto/orders/browser-1/run'] button")
+            pg.wait_for_selector("form[action='/auto/orders/browser-1/open']", timeout=180_000)
+            ran = True
+        except Exception as exc:
+            ran = str(exc)[:200]
+        done = (orders.done_dir() / "browser-1" / "video.mp4").is_file()
+        check("orders_run_button_in_a_real_browser", ran is True and done, (ran, done))
+        orders.set_auto_run(True)
         check("no_script_errors", not errors, errors[:5])
         b.close()
     out = {"passed": sum(c["pass"] for c in checks), "total": len(checks), "checks": checks}

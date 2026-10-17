@@ -764,8 +764,12 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
                 raise ValueError("No day with videos to use.")
             if len(days) > 31:
                 raise ValueError("More than 31 days: choose the days one by one.")
+            for d in days:                  # every day checked before anything is made (no half-made set of projects)
+                ae.check_files(d["paths"])
             for d in reversed(days):        # the oldest day first: the list then reads newest on top
-                pid = ae.create_project(str(folder), f"{folder.name} · {_day_label(d['day'])}", files=d["paths"])
+                # a day prepared before (or a second press) continues its own project: its prepared pieces are used
+                pid = ae.project_with_files(d["paths"]) or ae.create_project(str(folder), f"{folder.name} · {_day_label(d['day'])}",
+                                                                              files=d["paths"])
                 ae.start_job(pid, settings)
             ae.remember_new_settings(settings)
         except Exception as exc:

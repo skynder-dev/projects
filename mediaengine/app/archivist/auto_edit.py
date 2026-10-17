@@ -1092,6 +1092,23 @@ def create_project(folder, title="", files=None) -> int:
         return int(cur.lastrowid)
 
 
+def project_with_files(files) -> int | None:
+    """The project (not archived) made of exactly these chosen videos, or None: "A reel for every day" pressed again
+    after "Prepare in advance" (or twice) continues the day's project instead of making a second one."""
+    want = sorted(str(x).lower() for x in check_files(files))
+    ensure_schema()
+    with db() as con:
+        rows = con.execute("SELECT id, files_json FROM ae_projects WHERE archived=0 AND files_json IS NOT NULL ORDER BY id DESC").fetchall()
+    for r in rows:
+        try:
+            have = sorted(str(x).lower() for x in json.loads(r["files_json"] or "[]"))
+        except ValueError:
+            continue
+        if have == want:
+            return int(r["id"])
+    return None
+
+
 def _project_dir(pid: int) -> Path:
     return AE_ROOT / f"p{int(pid)}"
 
@@ -1133,8 +1150,9 @@ def project_state(d: dict) -> str:
         return "REVIEW"
     if jobs and jobs[0]["status"] == "failed":
         return "ATTENTION"
-    if jobs and jobs[0]["status"] == "done" and (jobs[0].get("settings") or {}).get("prepare"):
-        return "PREPARED"            # analysed in advance: the reel is made in minutes
+    if (jobs and jobs[0]["status"] == "done" and (jobs[0].get("settings") or {}).get("prepare")
+            and prepared_info(int(jobs[0]["id"]), _project_dir(int(d["id"])) / "jobs" / f"j{int(jobs[0]['id'])}" if d.get("id") else None)):
+        return "PREPARED"            # analysed in advance (and not freed since): the reel is made in minutes
     return "DRAFT"
 
 
@@ -2349,6 +2367,12 @@ def app_busy() -> str:
             return "AI+ is being prepared for the Library. Stop it first (it continues next time)."
     except Exception:
         pass
+    try:
+        from . import orders as _or
+        if _or.busy():
+            return "An order from another program is being done. Switch when it is ready."
+    except Exception:
+        pass
     return ""
 
 
@@ -2564,6 +2588,14 @@ def clear_work_cache(pid: int) -> int:
     work = _project_dir(pid) / "work"
     freed = _tree_bytes(work)
     shutil.rmtree(work, ignore_errors=True)
+    # "Prepared in advance" is not true any more: the page stops saying so, and Prepare again really prepares
+    for j in p["jobs"]:
+        if j["status"] == "done" and is_prepare(j):
+            (_project_dir(pid) / "jobs" / f"j{int(j['id'])}" / "MediaEngine Prepared.json").unlink(missing_ok=True)
+            with db() as con:
+                con.execute("UPDATE ae_jobs SET request_key=request_key||':cleared' WHERE id=? AND request_key NOT LIKE '%:cleared'",
+                            (int(j["id"]),))
+                con.commit()
     return freed
 
 

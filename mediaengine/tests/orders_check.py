@@ -63,6 +63,14 @@ def main():
     long_clip = src / "long.mp4"
     run([ff, "-y", "-f", "lavfi", "-i", "testsrc2=s=1920x1080:r=30:d=12", "-c:v", "libx264", "-preset", "ultrafast",
          "-pix_fmt", "yuv420p", str(long_clip)])
+    # files that try to make FFmpeg read something OUTSIDE the order folder (a "Private" video of the owner)
+    secret = home.parent / (home.name + "-private") / "secret.mp4"
+    secret.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(long_clip, secret)
+    (src / "playlist.m3u8").write_text(f"#EXTM3U\n#EXT-X-TARGETDURATION:12\n#EXTINF:12.0,\n{secret.as_posix()}\n#EXT-X-ENDLIST\n",
+                                       encoding="utf-8")
+    (src / "list.ffconcat").write_text(f"ffconcat version 1.0\nfile '{secret.as_posix()}'\n", encoding="utf-8")
+    run([ff, "-y", "-f", "lavfi", "-i", "color=c=gray:s=8000x8000", "-frames:v", "1", str(src / "huge.png")])
 
     inbox = None
 
@@ -176,6 +184,19 @@ def main():
                                  "mode": "technical", "length": 7}, None, (), "ORDER_FIELD_INVALID"),
             "bad-reel-two-sources": ({"schema": orders.SCHEMA, "kind": "reel_from_videos", "videos": {"folder": str(videos), "library_theme": "sea"},
                                       "mode": "technical"}, None, (), "ORDER_FIELD_INVALID"),
+            # found by review (2026-10-17): a playlist names any file on the PC; a quoted or // network path
+            "bad-hls": (plan_of([{"video": "clip.m3u8", "start_s": 0, "end_s": 1}]), None, [("clip.m3u8", src / "playlist.m3u8")], "PLAN_VIDEO_UNREADABLE"),
+            "bad-hls-as-mp4": (plan_of([{"video": "clip.mp4", "start_s": 0, "end_s": 1}]), None, [("clip.mp4", src / "playlist.m3u8")], "PLAN_VIDEO_UNREADABLE"),
+            "bad-hls-sound": (plan_of([{"still": "a.png", "start_s": 0, "end_s": 1}], audio="s.m3u8"), None,
+                              ok_files + [("s.m3u8", src / "playlist.m3u8")], "PLAN_AUDIO_UNREADABLE"),
+            "bad-concat": (plan_of([{"video": "x.mp4", "start_s": 0, "end_s": 1}]), None, [("x.mp4", src / "list.ffconcat")], "PLAN_VIDEO_UNREADABLE"),
+            "bad-huge-picture": (plan_of([{"still": "big.png", "start_s": 0, "end_s": 1}]), None, [("big.png", src / "huge.png")], "PLAN_IMAGE_TOO_BIG"),
+            "bad-quoted-unc": ({"schema": orders.SCHEMA, "kind": "reel_from_videos", "videos": {"folder": '"\\\\no-such-server\\share"'},
+                                "mode": "technical", "length": 5}, None, (), "ORDER_NETWORK_PATH"),
+            "bad-slash-unc": ({"schema": orders.SCHEMA, "kind": "reel_from_videos", "videos": {"files": ["//no-such-server/share/a.mp4"]},
+                               "mode": "technical", "length": 5}, None, (), "ORDER_NETWORK_PATH"),
+            "bad-music-unc": ({"schema": orders.SCHEMA, "kind": "reel_from_videos", "videos": {"folder": str(videos)},
+                               "music": "\\\\?\\UNC\\no-such-server\\m.mp3", "mode": "technical", "length": 5}, None, (), "ORDER_NETWORK_PATH"),
         }
         for oid, (order, raw, files, _) in bad.items():
             put(oid, order, files, raw=raw)
@@ -224,6 +245,15 @@ def main():
             check("reel_order_checks_pass", all(x["pass"] for x in res["checks"]) and (res["video"]["width"], res["video"]["height"]) == (540, 960),
                   res["checks"])
             check("reel_order_title_kept", (rev.get("settings") or {}).get("title") == "Заказ 1", rev.get("settings"))
+            # a file in the order folder posing as MediaEngine's own notes cannot point the order at an existing project
+            planted = home / "_planted.json"
+            planted.write_text(json.dumps({"project_id": pid, "job_id": 1, "attempts": 0}), encoding="utf-8")
+            n_rev = len(p["revisions"])
+            put("planted-1", {"schema": orders.SCHEMA, "kind": "reel_from_videos", "videos": {"folder": str(home / "no such folder")},
+                              "mode": "technical", "length": 5}, [(".mediaengine_state.json", planted)])
+            st2, res2 = answer("planted-1", 300)
+            check("planted_state_file_ignored", st2 == "failed" and res2["error"]["code"] == "VIDEOS_NOT_USABLE"
+                  and len(ae.project(pid)["revisions"]) == n_rev and not res2.get("project"), (st2, res2.get("error"), res2.get("project")))
 
         # 7. "Wait for my OK": Run, Reject, a rejected order is not done again
         r = c.post("/auto/orders/settings", data={"auto_run": "0"}, headers=H)
@@ -259,7 +289,15 @@ def main():
         while time.time() - t0 < 300:
             ov = c.get("/api/auto/orders", headers=H).get_json()
             if any(x["id"] == "stop-1" and x["state"] == "working" for x in ov["items"]):
-                time.sleep(1.0)
+                # while it renders: Quit / switching builds ask first, and a button on another order answers at once
+                check("busy_while_an_order_is_done", orders.busy() == "stop-1" and "order" in ae.app_busy().lower(), ae.app_busy())
+                put("wait-3", PLAN, PLAN_FILES)
+                time.sleep(orders.SETTLE_S + 1.5)
+                t1 = time.time()
+                r = c.post("/auto/orders/wait-3/reject", headers=H)
+                dt = time.time() - t1
+                still = any(x["id"] == "stop-1" and x["state"] == "working" for x in c.get("/api/auto/orders", headers=H).get_json()["items"])
+                check("reject_does_not_wait_for_a_render", r.status_code == 302 and dt < 5 and still, (r.status_code, round(dt, 1), still))
                 c.post("/auto/orders/stop-1/stop", headers=H)
                 stopped = True
                 break
@@ -295,6 +333,33 @@ def main():
         orders._WAKE.set()
         st, res = answer("interrupted-1", 300)
         check("interrupted_order_done_again", st == "done", res.get("error"))
+
+        # 10b. an order started 3 times without an answer (closed each time) waits for the owner, then Try again
+        aside = home / "_stuck"
+        aside.mkdir()
+        for rel, f in PLAN_FILES:
+            (aside / rel).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(f, aside / rel)
+        (aside / "order.json").write_text(json.dumps(PLAN), encoding="utf-8")
+        (orders.received_dir() / ".state").mkdir(exist_ok=True)
+        (orders.received_dir() / ".state" / "stuck-1.json").write_text(json.dumps({"attempts": orders.MAX_ATTEMPTS}), encoding="utf-8")
+        os.replace(aside, orders.received_dir() / "stuck-1")
+        orders._WAKE.set()
+        time.sleep(8)
+        ov = c.get("/api/auto/orders", headers=H).get_json()
+        sk = [x for x in ov["items"] if x["id"] == "stuck-1"]
+        check("stuck_order_waits_for_owner", sk and sk[0]["state"] == "stuck" and not (orders.done_dir() / "stuck-1").exists(), sk)
+        page = c.get("/auto/orders", headers=H).data.decode("utf-8", "replace")
+        r = c.post("/auto/orders/stuck-1/retry", headers=H)
+        st, res = answer("stuck-1", 300)
+        check("stuck_order_try_again", "/auto/orders/stuck-1/retry" in page and r.status_code == 302 and st == "done", (r.status_code, st))
+
+        # 10c. an id with two dots works with every button
+        put("v1..2", PLAN, PLAN_FILES)
+        st, res = answer("v1..2", 300)
+        r = c.post("/auto/orders/v1..2/delete", headers=H)
+        check("id_with_two_dots_done_and_deleted", st == "done" and r.status_code == 302 and not (orders.done_dir() / "v1..2").exists(),
+              (st, r.status_code))
 
         # 11. pages, API, Delete
         page = c.get("/auto/orders", headers=H).data.decode("utf-8", "replace")

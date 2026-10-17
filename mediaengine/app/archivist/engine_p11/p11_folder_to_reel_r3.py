@@ -255,6 +255,7 @@ HWACCEL=(os.environ.get("MEDENG_HWACCEL") or "").strip()
 # the kinds of video the test decoded identically with it (h264, hevc, hevc10); unset = all three (tests)
 HWACCEL_KINDS={k.strip() for k in (os.environ.get("MEDENG_HWACCEL_KINDS") or "h264,hevc,hevc10").split(",") if k.strip()}
 _HW_STATS={"cuts":0,"fallbacks":0}
+HW_CUT_TIMEOUT_S=180      # one moment (at most 60 s of 4K) is cut in seconds; longer means the driver hangs
 
 def _hw_pix_fmt(ffmpeg,src):
     """The processor decoder's picture format when this source may go to the graphics card - H.264 / HEVC 4:2:0, 8 or
@@ -262,6 +263,7 @@ def _hw_pix_fmt(ffmpeg,src):
     line=_video_line(ffmpeg,src)
     m=re.search(r"Video: (\w+)",line)
     if not m or m.group(1) not in ("h264","hevc"): return None
+    if is_interlaced(ffmpeg,src): return None     # camcorder fields: the test proved progressive video only
     p=re.search(r"\b(yuv420p10le|yuv420p)\b",line)
     if not p: return None
     kind=m.group(1)+("10" if p.group(1)=="yuv420p10le" else "")
@@ -280,7 +282,10 @@ def run_cut(ffmpeg,src,cmd_before_input,cmd_rest,tmp,check=None):
             i=rest.index("-vf"); rest[i+1]=f"format={pix},"+rest[i+1]
         else:
             i=rest.index("-c:v"); rest[i:i]=["-vf",f"format={pix}"]
-        cp=subprocess.run([*cmd_before_input,"-hwaccel",HWACCEL,*rest],capture_output=True,text=True)
+        try:      # a hung graphics driver must not hang the build: the processor does the cut instead
+            cp=subprocess.run([*cmd_before_input,"-hwaccel",HWACCEL,*rest],capture_output=True,text=True,timeout=HW_CUT_TIMEOUT_S)
+        except (subprocess.TimeoutExpired,OSError) as exc:
+            cp=subprocess.CompletedProcess(exc.args if isinstance(exc,OSError) else exc.cmd,1,"",str(exc))
         if cp.returncode==0 and not (cp.stderr or "").strip() and (check is None or check(tmp)):
             with _CLIP_LOCK: _HW_STATS["cuts"]+=1
             return cp
@@ -1424,7 +1429,10 @@ def piece_flags(v52,e):
 def prewarm_full_quality(v52,dropmod,selected,work_dir):
     """"Prepare in advance": the moments it would choose for the asked length, with their clip edges checked, cut
     from the originals at full quality now (the build of the same length finds them made). Returns how many."""
-    auto,_=apply_camera_drop(v52,dropmod,list(selected),work_dir)
+    try:
+        auto,_=apply_camera_drop(v52,dropmod,list(selected),work_dir)
+    except Exception:
+        return 0         # the analysis is done and kept; the build checks the clip edges and cuts the pieces itself
     workers=max(1,min(3,(os.cpu_count() or 4)//4,len(auto)))
     done=[0]
     def one(e):

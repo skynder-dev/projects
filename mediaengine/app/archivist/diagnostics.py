@@ -1644,6 +1644,8 @@ def run_extended_suite():
     return {'status':'failed' if failed else 'passed','summary':f"{len(rows)-len(failed)}/{len(rows)} extended checks acceptable; {len(failed)} required failures",'details':{'suite':'windows_extended_v1','checks':rows,'tested_at':_now()}}
 
 def _report(result):
+    # MediaEngine sends nothing anywhere (owner: offline, no Supabase). The result stays in the local marker file.
+    return
     try:
         cfg=json.loads(REMOTE_CONFIG.read_text(encoding='utf-8')); tok=cfg.get('device_token')
         if not tok:return

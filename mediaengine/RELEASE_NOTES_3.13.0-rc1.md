@@ -58,6 +58,20 @@ not read — reading even their first bytes would make Windows download them all
 in the cloud (OneDrive)…"); a folder that is entirely in the cloud says to choose "Always keep on this device"
 first. After the download the same reel is built again with them.
 
+## Orders from other programs; night review fixes (2026-10-17)
+
+- **Orders** (Auto Edit → Orders): another program on this PC puts an order folder into
+  `MediaEngine Data\Orders\Inbox` (`order.json` written last); MediaEngine makes the video and answers in
+  `Orders\Done\<id>` (`video.mp4` + `result.json` with SHA-256 and checks) or `Orders\Failed\<id>` (the reason).
+  A reel from videos (MediaEngine chooses the moments; a normal project) or a video exactly by plan (pictures, pieces
+  of videos and a narration with their times, frame-exact). New orders start at once or wait for your OK; Run,
+  Reject, Stop, Try again, Delete. Nothing is published. Format: `ORDERS.md` (also in the Orders folder).
+- Graphics card: a method that "Check this PC" found identical and faster now really reaches the build (it did not);
+  stricter test (error messages, every run and parallel cuts compared); a hung driver cannot hang a build; camcorder
+  (interlaced) video stays on the processor.
+- Prepare in advance: one piece that cannot be prepared no longer fails the preparation; "A reel for every day" after
+  preparing continues the prepared day projects; "Free cache" ends "Prepared".
+
 ## The graphics card for decoding, a faster first choice of moments (2026-10-16)
 
 - **Video decoding on the graphics card, only where it is proven on this PC** (`hwdecode.py`). "Check this PC" ->

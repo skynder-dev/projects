@@ -38,6 +38,8 @@ ERROR_TEXT = {
     "REJECTED_BY_OWNER": "You rejected this order.",
     "STOPPED_BY_OWNER": "You stopped this order.",
     "INTERNAL_ERROR": "MediaEngine had an internal error with this order.",
+    "INTERRUPTED": "This order was started several times and never finished (MediaEngine was closed each time).",
+    "PLAN_IMAGE_TOO_BIG": "A picture of the plan is too big.",
 }
 
 
@@ -59,7 +61,7 @@ def register(app, page, err_page, e, error_html):
     """Attach the Orders routes (called from auto_edit_web.register)."""
 
     def ok_id(oid: str) -> bool:
-        if not oid or "/" in oid or "\\" in oid or ".." in oid:
+        if not oid or "/" in oid or "\\" in oid or oid in (".", ".."):
             return False
         return orders.valid_id(oid) or oid.startswith("order ")
 
@@ -118,7 +120,7 @@ def register(app, page, err_page, e, error_html):
                     line = "Still arriving (order.json is not there yet)"
                 cards["new"].append(f"<div class='card'>{head(it)}<div class='muted' style='margin-top:6px'>{line}</div>"
                                     f"<div class='row' style='margin-top:8px;gap:6px'>{acts}</div></div>")
-            elif st == "failed":
+            elif st in ("failed", "stuck"):
                 err = it.get("error") or {}
                 code = str(err.get("code") or "")
                 if code == "REEL_FAILED":

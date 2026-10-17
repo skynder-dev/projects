@@ -102,8 +102,9 @@ def _cut(ff: str, clip: Path, hw: str | None, vf: str) -> tuple[float, str | Non
     except Exception as exc:
         return time.perf_counter() - t0, None, str(exc)[:200]
     dt = time.perf_counter() - t0
-    if cp.returncode != 0:
-        return dt, None, cp.stderr.decode("utf-8", "replace").strip()[-300:]
+    err = cp.stderr.decode("utf-8", "replace").strip()
+    if cp.returncode != 0 or err:      # as the engine: any message (-loglevel error) means the card did not decode it
+        return dt, None, (err or f"exit code {cp.returncode}")[-300:]
     lines = [ln for ln in cp.stdout.decode("ascii", "replace").splitlines() if ln and not ln.startswith("#")]
     if len(lines) < 30:
         return dt, None, f"only {len(lines)} frames"
@@ -111,13 +112,15 @@ def _cut(ff: str, clip: Path, hw: str | None, vf: str) -> tuple[float, str | Non
     return dt, hashlib.md5("\n".join(md5s).encode()).hexdigest(), ""
 
 
-def _parallel(ff: str, clip: Path, hw: str | None, vf: str, k: int) -> tuple[float, bool]:
-    """k cuts at once (a build cuts several videos' moments at the same time): (seconds for all, all good)."""
+def _parallel(ff: str, clip: Path, hw: str | None, vf: str, k: int, expected: str | None = None) -> tuple[float, bool]:
+    """k cuts at once (a build cuts several videos' moments at the same time): (seconds for all, all good). With
+    `expected` (the processor's frames) every one of the k cuts must give exactly those frames."""
     from concurrent.futures import ThreadPoolExecutor
     t0 = time.perf_counter()
     with ThreadPoolExecutor(k) as ex:
         outs = list(ex.map(lambda _: _cut(ff, clip, hw, vf), range(k)))
-    return time.perf_counter() - t0, all(md5 and not err for _, md5, err in outs)
+    ok = all(md5 and not err and (expected is None or md5 == expected) for _, md5, err in outs)
+    return time.perf_counter() - t0, ok
 
 
 def run_test(ff: str, folder: Path, step=lambda s: None) -> dict:
@@ -149,14 +152,15 @@ def run_test(ff: str, folder: Path, step=lambda s: None) -> dict:
                 cres = {}
                 for vk, vf in views.items():
                     step(f"{m}: {c.name}")
-                    times, md5, err = [], None, ""
+                    times, md5s, err = [], [], ""
+                    s_t, s_md5 = sw[(c.name, vk)]
                     for _ in range(2):
                         dt, md5, err = _cut(ff, c, m, vf)
                         times.append(dt)
+                        md5s.append(md5)
                         if err:
                             break
-                    s_t, s_md5 = sw[(c.name, vk)]
-                    same = (md5 is not None and md5 == s_md5)
+                    same = bool(md5s) and all(x is not None and x == s_md5 for x in md5s)     # every run, not the last
                     cres[vk] = {"sw_s": round(s_t, 3), "hw_s": round(min(times), 3), "identical": same, "error": err or None}
                     if err:
                         continue                 # cannot decode this one here: the engine cuts it on the processor
@@ -181,10 +185,14 @@ def run_test(ff: str, folder: Path, step=lambda s: None) -> dict:
                     if (c.name, "par") not in sw:
                         sw[(c.name, "par")] = _parallel(ff, c, None, views["preview"], k)
                     st, sok = sw[(c.name, "par")]
-                    ht, hok = _parallel(ff, c, m, views["preview"], k)
+                    ht, hok = _parallel(ff, c, m, views["preview"], k, expected=sw[(c.name, "preview")][1])
+                    if sok and not hok:          # under load the card gave other frames (or failed): not identical
+                        mres["identical"] = False
+                        mres.setdefault("loaded", {})[c.name] = {"cuts_at_once": k, "identical": False}
                     if sok and hok:
                         sw_par += st; hw_par += ht
-                        cr["loaded"] = {"cuts_at_once": k, "sw_s": round(st, 3), "hw_s": round(ht, 3)}
+                        mres.setdefault("loaded", {})[c.name] = {"cuts_at_once": k, "sw_s": round(st, 3), "hw_s": round(ht, 3),
+                                                                 "identical": True}
                 if hw_par > 0:
                     mres["speedup_loaded"] = round(sw_par / hw_par, 2)
                     mres["speedup"] = mres["speedup_loaded"]
@@ -241,7 +249,8 @@ def proven_kinds(r: dict, m: str) -> list[str]:
     out = []
     for name, kind in (("h264_4k.mp4", "h264"), ("hevc_4k.mp4", "hevc"), ("hevc10_4k.mp4", "hevc10")):
         c = ((r.get("methods") or {}).get(m) or {}).get("clips", {}).get(name) or {}
-        if c and all(v.get("identical") and not v.get("error") for v in c.values()):
+        views = [c.get(v) for v in ("full", "preview")]          # (older results kept the load numbers in here too)
+        if all(isinstance(v, dict) and v.get("identical") and not v.get("error") for v in views):
             out.append(kind)
     return out
 
@@ -258,10 +267,12 @@ def method_for_engine(ff: str | None) -> str:
 _GPU_CACHE: dict = {}
 
 
-def gpu_names_cached() -> list[str]:
-    """gpu_names() once per run of the app (PowerShell takes a second)."""
-    if "v" not in _GPU_CACHE:
+def gpu_names_cached(max_age_s: float = 600) -> list[str]:
+    """gpu_names() at most every 10 minutes (PowerShell takes a second): a graphics driver updated by Windows while
+    the app stays open (an overnight preparation) is seen before the next build uses the card."""
+    if "v" not in _GPU_CACHE or time.time() - _GPU_CACHE.get("t", 0) > max_age_s:
         _GPU_CACHE["v"] = gpu_names()
+        _GPU_CACHE["t"] = time.time()
     return _GPU_CACHE["v"]
 
 

@@ -308,6 +308,17 @@ def main():
                                               "hevc10_4k.mp4": {"full": {"identical": False, "error": "no 10-bit"}, "preview": {"identical": False, "error": "no 10-bit"}}}}}}
     check("graphics card: only the kinds of video it decoded identically go to it", _hw.proven_kinds(pk_, "d3d11va") == ["h264", "hevc"],
           _hw.proven_kinds(pk_, "d3d11va"))
+    # b122 bug (found by review 2026-10-17): the load numbers stored inside a clip's results made every kind "unproven",
+    # so a method Check this PC called "used" never reached the engine
+    ff_ = ae._ffmpeg() or "ffmpeg"
+    loaded_ = {"methods": {"d3d11va": {"identical": True, "decoded": 1, "speedup": 2.0,
+                                       "clips": {"h264_4k.mp4": {**ok_h_same, "loaded": {"cuts_at_once": 4, "sw_s": 1.0, "hw_s": 0.5}}}}}}
+    check("graphics card: a result with load numbers still proves its kinds", _hw.proven_kinds(loaded_, "d3d11va") == ["h264"],
+          _hw.proven_kinds(loaded_, "d3d11va"))
+    _hw.save({**loaded_, "use": "d3d11va", "ffmpeg": _hw.ffmpeg_version(ff_), "gpu": _hw.gpu_names_cached()})
+    env_ = ae._engine_env()
+    check("graphics card: a chosen and proven method reaches the engine", env_.get("MEDENG_HWACCEL") == "d3d11va"
+          and env_.get("MEDENG_HWACCEL_KINDS") == "h264", (env_.get("MEDENG_HWACCEL"), env_.get("MEDENG_HWACCEL_KINDS")))
     _hw.save({**res_, "use": "d3d11va", "ffmpeg": "ffmpeg version 0.0-other", "gpu": []})
     check("graphics card: a changed FFmpeg is said on Check this PC", "changed" in _hw.summary(_hw.saved(), ae._ffmpeg() or "ffmpeg")[1])
     check("graphics card: not used after FFmpeg changed (test again)", _hw.method_for_engine(ae._ffmpeg() or "ffmpeg") == ""

@@ -143,7 +143,17 @@ def main():
                 ae.cancel_job(jj["id"])
         check("every_day_prepared_in_advance", has_prep and r.status_code == 302 and len(new_p) == 2
               and all(len(x["jobs"]) == 1 and x["jobs"][0]["settings"].get("prepare") for x in new_p), (has_prep, r.status_code, len(new_p)))
-        for x in new_p:
+        # "Make 2 reels" after preparing: the prepared day projects go on (no second set of projects)
+        before_p2 = {x["id"] for x in ae.list_projects(include_archived=True)}
+        r = c.post("/auto/create-days", data={"folder": str(cam), "length": "5", "format": "vertical", "sound": "auto", "mode": a.mode},
+                   headers=H)
+        again = [x for x in ae.list_projects(include_archived=True) if x["id"] not in before_p2]
+        for x in new_p + again:
+            for jj in ae.project(x["id"])["jobs"]:
+                ae.cancel_job(jj["id"])
+        check("every_day_after_prepare_goes_on_in_the_same_projects", r.status_code == 302 and not again
+              and all(len(ae.project(x["id"])["jobs"]) == 2 for x in new_p), (r.status_code, len(again)))
+        for x in new_p + again:
             ae.archive_project(x["id"])
             for _ in range(60):
                 if not any(jj["status"] in ("queued", "running") for jj in ae.project(x["id"])["jobs"]):
@@ -445,6 +455,18 @@ def main():
         timings.update(prepare_s=round(pdt, 1), build_after_prepare_s=round(bdt, 1), prepare_analyze_s=an_p, build_after_prepare_analyze_s=an_b)
         check("build_after_prepare_reuses_analysis", jb["status"] == "done" and revb is not None and an_b <= max(3.0, 0.5 * an_p),
               (jb.get("status"), jb.get("error"), an_p, an_b))
+        # Free cache after preparing: no more "Prepared", and Prepare again really prepares (not the old job)
+        r = c.post("/auto/create", data={**pform, "prepare": "1"}, headers=H)
+        qpid = int(r.headers["Location"].rstrip("/").split("/")[-1]) if r.status_code == 302 else None
+        qj = wait_job(c, ae.project(qpid)["jobs"][0]["id"])[0] if qpid else {"status": "no project"}
+        st_before = ae.project(qpid)["state"] if qpid else ""
+        r = c.post(f"/auto/p/{qpid}/free-cache", headers=H) if qpid else None
+        st_after = ae.project(qpid)["state"] if qpid else ""
+        again_j = ae.start_job(qpid, {k: v for k, v in pform.items() if k != "folder"} | {"prepare": True}) if qpid else None
+        if again_j:
+            ae.cancel_job(again_j)
+        check("free_cache_ends_prepared", qj["status"] == "done" and st_before == "PREPARED" and st_after != "PREPARED"
+              and again_j is not None and again_j != qj.get("id"), (qj.get("status"), st_before, st_after, again_j, qj.get("id")))
 
         # Russian interface: same pages, same forms, Russian text; user content untouched
         c.post("/auto/lang", headers=H)

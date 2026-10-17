@@ -508,6 +508,11 @@ PHRASES = {
     "The reel could not be started.": "Ролик не удалось запустить.",
     "You rejected this order.": "Ты отклонил этот заказ.", "You stopped this order.": "Ты остановил этот заказ.",
     "MediaEngine had an internal error with this order.": "Внутренняя ошибка MediaEngine с этим заказом.",
+    "This order was started several times and never finished (MediaEngine was closed each time).":
+        "Этот заказ запускался несколько раз и ни разу не закончился (MediaEngine каждый раз закрывали).",
+    "A picture of the plan is too big.": "Картинка из плана слишком большая.",
+    "An order from another program is being done (Auto Edit → Orders)": "Выполняется заказ другой программы (Автомонтаж → Заказы)",
+    "An order from another program is being done. Switch when it is ready.": "Выполняется заказ другой программы. Переключись, когда он будет готов.",
     "Order not found": "Заказ не найден", "This order cannot be done again.": "Этот заказ нельзя выполнить снова.",
     "This order cannot be deleted now.": "Этот заказ сейчас нельзя удалить.",
     "The video of this order is not there.": "Видео этого заказа нет.", "The folder of this order is not there.": "Папки этого заказа нет.",
