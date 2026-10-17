@@ -1003,7 +1003,7 @@ def _even_alias(r,alias):
         os.replace(tmp,alias); return True
     tmp.unlink(missing_ok=True); return False
 
-def analysis_aliases(rows,work_dir,long_names=True):
+def analysis_aliases(rows,work_dir,long_names=True,skipped=None):
     """Stand-ins the accepted analysis can handle, mapped back to the real files afterwards.
     - Windows without long-path support (the default) cannot reach the analysis files of a video with a long name:
       the accepted pipeline names its folders after the video (up to ~330 characters, limit 260). Such videos are
@@ -1053,6 +1053,10 @@ def analysis_aliases(rows,work_dir,long_names=True):
         if use:
             wanted.add(alias_name)
             a=dict(r,name=Path(use).name,path=use,sha256=sha,bytes=size,origin_sha256=r["sha256"]); out.append(a); back[a["name"]]=r
+        elif renamed and not remux:
+            # a second video with the same file name could not get a stand-in (another drive, over 4 GB or the disk is
+            # full): left out with a reason - analysed under its file name it would break the whole reel
+            if skipped is not None: skipped.append({"name":name,"reason":"SAME_NAME_NO_ROOM"})
         else:
             out.append(r)
     try:
@@ -1943,7 +1947,9 @@ def run(args):
         event_count=len(candidates); cache_status="semantic_candidate_cache"
     else:
         progress("analyze",0,len(input_rows),"technical analysis")
-        analysis_rows,alias_back=analysis_aliases(input_rows,work_dir)
+        alias_skipped=[]
+        analysis_rows,alias_back=analysis_aliases(input_rows,work_dir,skipped=alias_skipped)
+        skipped_inputs.extend(alias_skipped)
         skipped_analysis=[]
         libpath,lib,cache_status,analysed=build_event_library(runtime,analysis_rows,work_dir,skipped_analysis)
         for x in skipped_analysis:

@@ -285,6 +285,17 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   the technical analysis looks at it under a stand-in), the source preview finds it; before, the new-reel page asked
   to rename the originals and theme reels silently dropped one. Known, not changed: a video renamed or deleted in a
   Library folder leaves its old Library card (kept on purpose: clips and compositions made from it stay).
+- Fifth round (a review of rounds 4 and same names, and of install / update / switching): one app per port from the
+  very first moment (a named lock: a second copy started while the first was still checking itself could resume the
+  same waiting builds and mark the other's build interrupted); shortcuts follow a new build only once it serves, and
+  if a switched-to build cannot start, the launcher starts the previous one again (never nothing running); removing a
+  version on Check this PC re-points the shortcuts to the running one. A damaged video in a folder order is left out
+  (as in the app) instead of refusing the order; same-named recordings without a written length get separate fixed
+  copies; reel names stay the same when one of two same-named cards is unplugged; a same-named video that cannot get
+  a stand-in is left out with a reason instead of failing the reel; stand-ins count in the 60 GB piece limit; answers
+  the program took are listed with Delete; damaged Library videos really leave "ready N of M"; Private no longer
+  downloads cloud-only files to hash them; Private copies hidden in search, similar videos and the start page counts.
+  Not changed (old builds cannot be fixed): going back to b122 re-adds removed Library videos (its old start code).
 
 ## Evidence
 

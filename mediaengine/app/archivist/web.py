@@ -423,7 +423,7 @@ def create_app():
 
     @app.get('/')
     def dashboard():
-        local_sql="excluded=0 AND work_selected=1 AND private_path IS NULL AND rejected_path IS NULL AND analysis_status<>'private' AND (source_kind='fixed' OR staging_path IS NOT NULL OR archive_path IS NOT NULL)"
+        local_sql="excluded=0 AND work_selected=1 AND private_path IS NULL AND rejected_path IS NULL AND analysis_status<>'private' AND COALESCE(sha256,'') NOT IN (SELECT sha256 FROM ignored_hashes) AND (source_kind='fixed' OR staging_path IS NOT NULL OR archive_path IS NOT NULL)"
         with db() as con:
             metrics=con.execute(f"""SELECT
                 SUM(CASE WHEN excluded=0 AND private_path IS NULL AND analysis_status<>'private' THEN 1 ELSE 0 END) total,
@@ -1457,7 +1457,8 @@ pollConvert();"""
     def selection_action():
         p=_json_obj(); action=p.get('action'); raw_ids=p.get('ids',[])
         if not isinstance(raw_ids,list): return jsonify({'error':'No files selected'}),400      # "12" is not [1,2]
-        ids=[int(x) for x in raw_ids if (isinstance(x,int) and not isinstance(x,bool)) or (isinstance(x,str) and x.isdigit())]
+        ids=[int(x) for x in raw_ids if (isinstance(x,int) and not isinstance(x,bool) and 0<x<2**63)
+             or (isinstance(x,str) and x.isascii() and x.isdigit() and 0<int(x)<2**63)]
         if not ids: return jsonify({'error':'No files selected'}),400
         try:
             if action=='import': return jsonify({'job_id':queue_job('import',ids,{'analyze':False})})

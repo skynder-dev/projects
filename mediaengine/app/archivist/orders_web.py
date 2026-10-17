@@ -134,6 +134,10 @@ def register(app, page, err_page, e, error_html):
                 cards["failed"].append(f"<div class='card'>{head(it)}<div class='errbox' style='margin-top:8px'>{why}</div>"
                                        f"<div class='muted' style='margin-top:6px'>{e(_when(it.get('finished_at')))}</div>"
                                        f"<div class='row' style='margin-top:8px;gap:6px;flex-wrap:wrap'>{acts}</div></div>")
+            elif st == "taken":
+                acts = proj(it) + btn(oid, "delete", "Delete", "btn2", "delq")
+                cards["done"].append(f"<div class='card'>{head(it)}<div class='muted' style='margin-top:6px'>The program took the answer.</div>"
+                                     f"<div class='row' style='margin-top:8px;gap:6px;flex-wrap:wrap'>{acts}</div></div>")
             else:
                 v = it.get("video") or {}
                 info = " · ".join(x for x in (f"{v.get('width')}×{v.get('height')}" if v.get("width") else "",

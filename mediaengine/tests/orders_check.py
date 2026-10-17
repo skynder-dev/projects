@@ -257,6 +257,17 @@ def main():
             check("planted_state_file_ignored", st2 == "failed" and res2["error"]["code"] == "VIDEOS_NOT_USABLE"
                   and len(ae.project(pid)["revisions"]) == n_rev and not res2.get("project"), (st2, res2.get("error"), res2.get("project")))
 
+        # 6b. a folder with a damaged video: the order is done without it (as a reel in the app), the answer says so
+        dmg = home / "_with_damaged"
+        dmg.mkdir(exist_ok=True)
+        shutil.copy2(vids[0], dmg / vids[0].name)
+        (dmg / "broken.mp4").write_bytes(b"this is not a video" * 200)
+        put("reel-damaged", {"schema": orders.SCHEMA, "kind": "reel_from_videos", "videos": {"folder": str(dmg)},
+                             "length": 5, "format": "vertical", "mode": "technical"}, single=True)
+        st, res = answer("reel-damaged", 1800)
+        check("damaged_video_left_out_not_refused", st == "done" and res.get("videos_left_out") == ["broken.mp4"]
+              and vids[0].name in (res.get("videos_used") or []), (st, res.get("error"), res.get("videos_left_out"), res.get("videos_used")))
+
         # 7. "Wait for my OK": Run, Reject, a rejected order is not done again
         r = c.post("/auto/orders/settings", data={"auto_run": "0"}, headers=H)
         check("setting_wait_for_ok_saved", r.status_code == 302 and orders.auto_run() is False)
@@ -288,6 +299,11 @@ def main():
         time.sleep(9)
         check("answers_taken_away_are_not_done_again", not (orders.done_dir() / "wait-1").exists() and not (orders.done_dir() / "wait-2").exists()
               and not (orders.failed_dir() / "wait-2").exists() and orders.busy() not in ("wait-1", "wait-2"), orders.busy())
+        ov = c.get("/api/auto/orders", headers=H).get_json()
+        taken = {x["id"]: x["state"] for x in ov["items"] if x["id"] in ("wait-1", "wait-2")}
+        r = c.post("/auto/orders/wait-1/delete", headers=H)
+        check("taken_answers_listed_and_deletable", taken == {"wait-1": "taken", "wait-2": "taken"} and r.status_code == 302
+              and not (orders.received_dir() / "wait-1").exists(), (taken, r.status_code))
 
         # 7c. a folder Windows cannot move now (a file open in it) does not hold up the others
         real_move = orders._move

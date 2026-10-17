@@ -1357,7 +1357,14 @@ def _mark_private_one(inv_id: int) -> str:
     local = next((Path(row[k]) for k in ("staging_path", "archive_path", "private_path", "path") if row.get(k) and Path(row[k]).exists()), None)
     # the file as it is NOW (it may have been replaced since its hash was taken); the old hash stays Private too
     old_sha = row.get("sha256")
-    sha = (sha256_file(local) if local else None) or old_sha
+    changed = True
+    try:     # (a background job: reading the file once is fine) - but never a file only in the cloud: no download for it
+        from .auto_edit import cloud_only
+        if local is not None and cloud_only(local):
+            changed = False
+    except Exception:
+        pass
+    sha = (sha256_file(local) if (local and changed) else None) or old_sha
     private_path = row.get("private_path")
     # Never move the user's original (phone, card, fixed folder). Only a copy Archivist owns
     # (an existing file inside Staging or the archive root) may move into the private area.

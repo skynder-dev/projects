@@ -407,7 +407,21 @@ def spawn_app(no_browser=False):
     return subprocess.Popen([str(exe),'-B','-s','-E',str(main),'--no-browser' if no_browser else '--open-browser'],cwd=str(HOME),env=env,close_fds=True,
                             stdin=subprocess.DEVNULL,stdout=out,stderr=out,**hidden_kwargs())
 
+def start_previous(folder) -> bool:
+    """Start the build this launcher stopped for the switch again (this one could not start): the owner is never left
+    with nothing running."""
+    try:
+        vbs=Path(folder)/'Start MediaEngine.vbs'
+        if os.name!='nt' or not vbs.is_file(): return False
+        env={k:v for k,v in os.environ.items() if not k.upper().startswith('ARCHIVIST_') and k!='MEDIAENGINE_SWITCH_ANSWER'}
+        subprocess.Popen(['wscript.exe',str(vbs)],cwd=str(folder),env=env,close_fds=True,stdin=subprocess.DEVNULL,
+                         stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,**hidden_kwargs())
+        return True
+    except Exception:
+        return False
+
 def main():
+    switched_from=None
     raw_args=list(sys.argv[1:]); args=set(raw_args); force_browser='--browser' in args; force='--update' in args; restart='--restart' in args
     no_browser='--no-browser' in args or os.environ.get('MEDIAENGINE_NO_BROWSER')=='1'   # env: automated checks
     install_version=next((x.split('=',1)[1] for x in raw_args if x.startswith('--install-version=')),None)
@@ -442,6 +456,7 @@ def main():
             if not no_browser: open_user_interface(force_browser=force_browser)
             return 0
         launcher_log('switching from '+str(other))
+        switched_from=str(other) if other else None
         if not stop_running():
             launcher_log('the running one refused to stop (busy)')
             write_status(status='switch_refused_busy',version=current_version(),running=other)
@@ -485,8 +500,15 @@ def main():
             if not no_browser: open_user_interface(force_browser=force_browser)
             return 0
     write_status(status='start_failed',version=current_version())
+    log=DATA/'logs'/'app_console.log'
+    if switched_from and start_previous(switched_from):
+        write_status(status='start_failed_previous_started',version=current_version(),running=switched_from)
+        if not no_browser:
+            name=Path(switched_from).name
+            message_box(f'Эта версия MediaEngine не запустилась, поэтому снова запущена прежняя ({name}). Подробности для поддержки: {log}' if ui_ru() else
+                        f'This MediaEngine version could not start, so the previous one ({name}) was started again. Details for support: {log}')
+        return 1
     if not no_browser:      # never a double click that silently does nothing
-        log=DATA/'logs'/'app_console.log'
         message_box(f'MediaEngine не запустился. Подробности для поддержки: {log}' if ui_ru() else
                     f'MediaEngine could not start. Details for support: {log}')
     return 1

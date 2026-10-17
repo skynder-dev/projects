@@ -56,7 +56,7 @@ def rebuild_index():
           SELECT id FROM inventory
           WHERE excluded=0 AND work_selected=1
             AND private_path IS NULL AND rejected_path IS NULL
-            AND analysis_status<>'private'
+            AND analysis_status<>'private' AND COALESCE(sha256,'') NOT IN (SELECT sha256 FROM ignored_hashes)
         """).fetchall()]
         alive=[]
         for r in rows:

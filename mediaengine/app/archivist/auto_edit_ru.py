@@ -516,6 +516,9 @@ PHRASES = {
     "The source folder is not available (disconnected drive?)": "Папка с исходными видео недоступна (диск отключён?)",
     "The source videos are not available (disconnected drive?)": "Исходные видео недоступны (диск отключён?)",
     "Keep at least one moment.": "Оставь хотя бы один момент.",
+    "The program took the answer.": "Программа забрала ответ.",
+    "another video has the same name and there was no room on the drive to analyse it apart":
+        "у другого видео такое же имя, а на диске не хватило места, чтобы проанализировать его отдельно",
     "Free it? Every video is then analysed again - for a reel, for videos prepared in advance and for AI+ in the Library (that can take hours for a big Library).":
         "Освободить? Тогда каждое видео будет анализироваться заново — для ролика, для подготовленных заранее видео и для ИИ+ в Библиотеке (для большой Библиотеки это часы).", "Could not apply the edits: ": "Не удалось применить правки: ",
     "The exported file is not available any more: ": "Сохранённого файла больше нет: ", "Job not found": "Сборка не найдена",

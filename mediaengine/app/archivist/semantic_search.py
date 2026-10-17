@@ -221,6 +221,7 @@ def _refresh_dirty_index(limit=None):
                 FROM inventory i LEFT JOIN virtual_clips vc ON vc.inventory_id=i.id
                 WHERE i.id IN ({marks}) AND i.excluded=0 AND i.work_selected=1
                   AND i.private_path IS NULL AND i.rejected_path IS NULL AND i.analysis_status<>'private'
+                  AND COALESCE(i.sha256,'') NOT IN (SELECT sha256 FROM ignored_hashes)
                 GROUP BY i.id
             """,ids).fetchall()]
             eligible={int(r["id"]):r for r in rows}
@@ -271,7 +272,7 @@ def search_library(query,limit=120):
                    s.text_terms,s.tags_json,s.best_clip_id,s.best_clip_score,s.max_motion,s.avg_brightness,s.avg_detail,s.clip_count
             FROM semantic_index s JOIN inventory i ON i.id=s.inventory_id
             WHERE i.excluded=0 AND i.work_selected=1 AND i.private_path IS NULL AND i.rejected_path IS NULL
-              AND i.analysis_status<>'private'
+              AND i.analysis_status<>'private' AND COALESCE(i.sha256,'') NOT IN (SELECT sha256 FROM ignored_hashes)
         """).fetchall()]
     scored=[]
     hard={"video","image","portrait","landscape","square","dark","bright","high_motion","low_motion",

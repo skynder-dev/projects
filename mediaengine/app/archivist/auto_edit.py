@@ -820,9 +820,10 @@ def _with_length(paths, work_dir: Path, note=None, jid=None) -> tuple[list[Path]
             continue
         if private is None:
             private = set(_private_hashes())
-        dst = fixed_dir / p.name
-        stamp = fixed_dir / (p.name + ".source.json")
-        tmp = fixed_dir / (p.name + ".part")          # never a video name, so never another input's copy
+        fx = _fixed_name(p)          # per source file: two recordings with the same name never share one copy
+        dst = fixed_dir / fx
+        stamp = fixed_dir / (fx + ".source.json")
+        tmp = fixed_dir / (fx + ".part")              # never a video name, so never another input's copy
         try:
             if sha256_file(p) in private:
                 out.append(p)                          # the engine skips it as unusable; it is never copied
@@ -842,7 +843,7 @@ def _with_length(paths, work_dir: Path, note=None, jid=None) -> tuple[list[Path]
                     out.append(p)                      # the engine reports it as unusable
                     continue
                 os.replace(tmp, dst)
-                stamp_tmp = fixed_dir / (p.name + ".source.json.part")
+                stamp_tmp = fixed_dir / (fx + ".source.json.part")
                 stamp_tmp.write_text(json.dumps(want), encoding="utf-8")
                 os.replace(stamp_tmp, stamp)
             out.append(dst)
@@ -871,10 +872,20 @@ def _with_length(paths, work_dir: Path, note=None, jid=None) -> tuple[list[Path]
     return out, changed
 
 
+def _fixed_name(p) -> str:
+    """The file name of a recording's fixed copy: its source path's hash + its own name (the engine is told the name
+    the reel uses for it)."""
+    key = os.path.normcase(str(Path(p).resolve()))
+    return hashlib.sha256(key.encode("utf-8")).hexdigest()[:12] + "_" + Path(p).name
+
+
 def fixed_copy_seconds(pid: int, name: str) -> float:
     """Length of the fixed copy of a recording without a written length (0 when there is none). Quick."""
     try:
-        cp = _project_dir(int(pid)) / "work" / "fixed_inputs" / name
+        src = source_file(int(pid), name)
+        if not src:
+            return 0.0
+        cp = _project_dir(int(pid)) / "work" / "fixed_inputs" / _fixed_name(src)
         return float(_probe(cp).get("format", {}).get("duration") or 0) if cp.is_file() else 0.0
     except Exception:
         return 0.0
@@ -1068,6 +1079,8 @@ def friendly_skip(reason: str) -> str:
         return "could not be analysed"
     if r in ("MISSING", "NOT_FOUND", "FILE_MISSING"):
         return "not found (moved or deleted)"
+    if r == "SAME_NAME_NO_ROOM":
+        return "another video has the same name and there was no room on the drive to analyse it apart"
     return "damaged or not a video"
 
 
@@ -1774,7 +1787,8 @@ def _run_job(jid: int) -> None:
         with keep_awake():
             if p.get("files"):
                 chosen = local_inputs(_not_private_paths(p["files"]))
-                alias = {str(x): nm for x, nm in input_names(project_inputs(p))}     # the same names the pages use
+                # over every chosen file, there or not: names never swap when one of two cards is unplugged
+                alias = {str(x): nm for x, nm in input_names([Path(f) for f in p["files"]])}
                 local, _ = _with_length(chosen, work_dir, note, jid)
                 input_list = jobs_dir / f"j{jid}.inputs.txt"
                 # "path<TAB>name" for a video whose reel name is not its file name (same name in two folders)
@@ -1782,10 +1796,12 @@ def _run_job(jid: int) -> None:
                                               for o, x in zip(chosen, local)), encoding="utf-8")
             else:
                 vids = list_videos(Path(p["folder"]))
-                local, fixed = _with_length(local_inputs(_not_private_paths(vids)), work_dir, note, jid)
+                usable = local_inputs(_not_private_paths(vids))
+                local, fixed = _with_length(usable, work_dir, note, jid)
                 if fixed or len(local) != len(vids):   # cloud-only placeholders / fixed copies: give the engine the exact list
-                    input_list = jobs_dir / f"j{jid}.inputs.txt"
-                    input_list.write_text("\n".join(str(x) for x in local) + "\n", encoding="utf-8")
+                    input_list = jobs_dir / f"j{jid}.inputs.txt"     # (a fixed copy keeps its video's name in the reel)
+                    input_list.write_text("".join(str(x) + (("\t" + Path(o).name) if Path(o).name != Path(x).name else "") + "\n"
+                                                  for o, x in zip(usable, local)), encoding="utf-8")
     except _Stopped:
         with _LOCK:
             _CANCEL.discard(jid)
@@ -1899,12 +1915,21 @@ def _private_paths() -> set:
                                "AND (sha256 IS NULL OR sha256='')").fetchall()
     except Exception:
         return set()
-    return {os.path.normcase(os.path.abspath(str(r[k]))) for r in rows for k in ("path", "staging_path", "archive_path") if r[k]}
+    return {_path_key(r[k]) for r in rows for k in ("path", "staging_path", "archive_path") if r[k]}
+
+
+def _path_key(x) -> str:
+    """The same key for one file however it is written (a mapped drive, a junction, letter case) - as the project
+    stores it (resolved)."""
+    try:
+        return os.path.normcase(os.path.realpath(str(x)))
+    except (OSError, ValueError):
+        return os.path.normcase(os.path.abspath(str(x)))
 
 
 def _not_private_paths(paths) -> list:
     priv = _private_paths()
-    return [x for x in paths if os.path.normcase(os.path.abspath(str(x))) not in priv] if priv else list(paths)
+    return [x for x in paths if _path_key(x) not in priv] if priv else list(paths)
 
 
 def private_in_result(res: dict) -> list[str]:
@@ -2555,6 +2580,12 @@ def delete_build(name: str, install: Path | None = None) -> int:
     except OSError:
         raise ValueError("Some files of that version are in use. Close anything opened from that folder and try again.")
     shutil.rmtree(gone, ignore_errors=True)
+    if install is None:       # a Start-menu / desktop shortcut may have pointed at the removed version: now at this one
+        try:
+            from .platform_adapter import install_launchers
+            install_launchers(INSTALL)
+        except Exception:
+            pass
     return int(b["bytes"])
 
 
@@ -2702,7 +2733,7 @@ def tidy_shared_cache(private_hashes=(), max_clip_bytes=None, min_free_bytes=10 
 
 
 WORK_CACHE_MAX = 60 * 1024 ** 3          # the full-quality pieces and finished segments of all projects together
-WORK_CACHE_DIRS = ("full_quality", "segment_cache_v2")
+WORK_CACHE_DIRS = ("full_quality", "segment_cache_v2", "in")      # in: stand-ins the analysis made (copies from another drive)
 
 
 def tidy_work_caches(keep_pid: int | None = None, max_bytes: int | None = None, min_free_bytes: int = 10 * 1024 ** 3) -> int:
@@ -2720,7 +2751,9 @@ def tidy_work_caches(keep_pid: int | None = None, max_bytes: int | None = None, 
         if not pd.is_dir() or not pd.name[1:].isdigit() or int(pd.name[1:]) in keep:
             continue
         for sub in WORK_CACHE_DIRS:
-            for f in (pd / "work" / sub).glob("*.mp4"):
+            for f in (pd / "work" / sub).glob("*.mp4" if sub != "in" else "v_*"):
+                if f.suffix.lower() in (".sha256", ".part"):
+                    continue
                 try:
                     st = f.stat()
                     files.append((st.st_mtime, st.st_size, f))
@@ -3097,8 +3130,8 @@ def source_file(pid: int, name: str) -> Path | None:
         return None
     if p.get("files"):
         allowed = {str(Path(x).resolve()) for x in p["files"]}
-        for v, nm in input_names(project_inputs(p)):        # the reel's name for it (DJI_0001 (2).MP4)
-            if nm == name and str(v.resolve()) in allowed:
+        for v, nm in input_names([Path(f) for f in p["files"]]):     # the reel's name for it (DJI_0001 (2).MP4)
+            if nm == name and str(v.resolve()) in allowed and v.is_file():
                 return v.resolve()
         return None
     folder = Path(p["folder"]).resolve()

@@ -151,10 +151,10 @@ def main():
             again, _ = ae._with_length([live], rw, notes.append)
             check("recording without a length: fixed copy has the length, original untouched, copy reused, old copies gone",
                   changed and fixed[0] != live and 3.5 <= float(ae._probe(fixed[0])["format"]["duration"]) <= 4.1
-                  and live.read_bytes() == orig and again == fixed and fixed[0].name == live.name and notes == [live.name]
+                  and live.read_bytes() == orig and again == fixed and fixed[0].name == ae._fixed_name(live) and notes == [live.name]
                   and fixed[0].stat().st_mtime_ns == m1 and not (rw / "fixed_inputs" / "old removed.webm").exists(),
                   (fixed, changed, notes))
-            (rw / "fixed_inputs" / (live.name + ".source.json")).write_text("", encoding="utf-8")   # damaged stamp (disk was full)
+            (rw / "fixed_inputs" / (ae._fixed_name(live) + ".source.json")).write_text("", encoding="utf-8")   # damaged stamp (disk was full)
             third, _ = ae._with_length([live], rw, notes.append)
             check("recording without a length: a damaged stamp makes a new copy, never a failed build", third == fixed and len(notes) == 2,
                   (third, notes))

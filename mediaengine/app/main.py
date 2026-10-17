@@ -110,17 +110,57 @@ def port_taken(wait_s=20.0):
         time.sleep(.5)
 
 
+_INSTANCE: list = []
+
+
+def hold_instance_lock(wait_s: float = 20.0) -> bool:
+    """One app per port (and so per data folder) from the very start to the end of the process. The port alone was
+    not enough: a second copy started while the first was still checking itself (before it took the port) touched the
+    same database - resumed the same waiting builds, marked the other's running build interrupted (review
+    2026-10-17). A copy that is closing (a restart) is waited for; a running one wins."""
+    end = time.time() + wait_s
+    while True:
+        if os.name == "nt":
+            import ctypes
+            k32 = ctypes.WinDLL("kernel32", use_last_error=True)
+            k32.CreateMutexW.restype = ctypes.c_void_p
+            h = k32.CreateMutexW(None, False, f"Local\\MediaEngineApp-{PORT}")
+            if not h:
+                return True                      # cannot tell: as before (the port still decides)
+            if ctypes.get_last_error() != 183:   # not ERROR_ALREADY_EXISTS: ours for the life of this process
+                _INSTANCE.append(h)
+                return True
+            k32.CloseHandle(ctypes.c_void_p(h))
+        else:
+            try:
+                import fcntl
+                f = open(HOME / f".mediaengine-app-{PORT}.lock", "w")
+                try:
+                    fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    _INSTANCE.append(f)
+                    return True
+                except OSError:
+                    f.close()
+            except (ImportError, OSError):
+                return True
+        if _ping_ok() or time.time() >= end:
+            return False
+        time.sleep(0.5)
+
+
 def main():
     import faulthandler
     try:
         faulthandler.enable()          # a hard crash leaves its trace in the console log (the launcher keeps it)
     except Exception:
         pass
-    ensure_dirs(); set_background_priority(); install_launchers(INSTALL); sync_packaged_launcher()
+    ensure_dirs(); set_background_priority(); sync_packaged_launcher()
     if detach_from_legacy_console_if_needed(HOME): return
     if port_taken():
         # Never start a second set of workers on the same database: the running copy keeps serving.
         raise SystemExit(f"Port {PORT} is already in use (MediaEngine already running?)")
+    if not hold_instance_lock():
+        raise SystemExit("MediaEngine is already starting or running")
     try:     # a copy of the database and settings before a different build opens them (it may change them)
         from archivist.backup import before_new_build, start_daily_in_background
         from archivist.config import BUILD
@@ -145,6 +185,16 @@ def main():
     suppress=os.environ.get("ARCHIVIST_SUPPRESS_BROWSER")=="1" or "--no-browser" in sys.argv
     if not suppress:
         threading.Thread(target=lambda:(time.sleep(1.0),webbrowser.open(url)),daemon=True).start()
+    def _shortcuts_when_up():
+        # the desktop / Start-menu shortcuts follow this build only once it really serves: a build that fails its
+        # start (after a switch) must not leave both shortcuts pointing at it (review 2026-10-17)
+        for _ in range(240):
+            if _ping_ok():
+                try: install_launchers(INSTALL)
+                except Exception: pass
+                return
+            time.sleep(0.5)
+    threading.Thread(target=_shortcuts_when_up,daemon=True,name="shortcuts").start()
     if os.name=="nt":
         # Windows SO_REUSEADDR lets a second copy bind the same port silently (two servers, one database).
         # Without it a second start fails cleanly and the launcher just opens the running one.

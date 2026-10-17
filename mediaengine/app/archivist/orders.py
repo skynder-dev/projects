@@ -341,7 +341,8 @@ def _header(path: Path, timeout: int = 60) -> dict:
         if zm:
             row["width"], row["height"] = int(zm.group(1)), int(zm.group(2))
         streams.append(row)
-    return {"format": m.group(1).split(",")[0].strip() if m else "", "streams": streams}
+    return {"format": m.group(1).split(",")[0].strip() if m else "", "streams": streams,
+            "blocked": "not on whitelist" in text}       # a playlist / manifest (refused) - not just a damaged file
 
 
 def _first(info: dict, kind: str) -> dict | None:
@@ -484,14 +485,28 @@ def _reel_spec(order: dict, base: Path) -> dict:
         raise OrderError("AIPLUS_NOT_READY", "The AI+ model is not on this PC yet: download it once on 'Check this PC'")
     # the videos the engine will open: plain media files only (a manifest saved under a video name could make FFmpeg
     # fetch another file - a Private one, or one on a network share)
-    if spec["files"] or spec["folder"]:
+    spec["left_out"] = []
+    if spec["files"] or (spec["folder"] and spec["folder"].is_dir()):
         try:
-            paths = spec["files"] or (ae.list_videos(spec["folder"]) if spec["folder"].is_dir() else [])
+            paths = [Path(x) for x in (spec["files"] or ae.list_videos(spec["folder"]))]
         except OSError:
             paths = []
+        keep, left_out = [], []
         for vp in paths:
-            if Path(vp).is_file() and _header(Path(vp))["format"] not in VIDEO_FORMATS:
-                raise OrderError("VIDEOS_NOT_USABLE", f"{Path(vp).name} is not a plain video file")
+            if not vp.is_file() or ae.cloud_only(vp):
+                keep.append(vp)            # the build says it is missing / only in the cloud - never read here
+                continue
+            hd = _header(vp)
+            if hd["format"] in VIDEO_FORMATS:
+                keep.append(vp)
+            elif hd.get("blocked"):
+                raise OrderError("VIDEOS_NOT_USABLE", f"{vp.name} is not a plain video file (a playlist or manifest)")
+            else:
+                left_out.append(vp.name)   # damaged or unreadable: left out, as a reel from the app leaves it out
+        if paths and not keep:
+            raise OrderError("VIDEOS_NOT_USABLE", "None of the videos can be read")
+        if left_out:                       # the engine gets exactly the readable files
+            spec["files"], spec["folder"], spec["left_out"] = keep, None, left_out
     music = order.get("music")
     if music not in (None, ""):
         mp_ = _own_path(base, music, "music")
@@ -947,7 +962,10 @@ def _reel(spec: dict, rdir: Path) -> tuple[Path, dict, dict]:
     size = ae.FORMATS[spec["settings"]["format"]].get("size")
     used = sorted({str(sg.get("source_name")) for sg in (rev.get("result") or {}).get("segments") or [] if sg.get("source_name")})
     extra = {"project": {"id": int(pid), "url": f"http://127.0.0.1:{APP_PORT}/auto/p/{int(pid)}", "version": int(rev["number"])},
-             "settings": spec["settings"], "videos_used": used, "moments": len((rev.get("result") or {}).get("segments") or [])}
+             "settings": spec["settings"], "videos_used": used, "moments": len((rev.get("result") or {}).get("segments") or []),
+             # the reel's names (a second DJI_0001.MP4 is "DJI_0001 (2).MP4") with each video's SHA-256
+             "inputs": [{"name": x.get("name"), "sha256": x.get("sha256")} for x in (rev.get("result") or {}).get("inputs") or []],
+             **({"videos_left_out": spec["left_out"]} if spec.get("left_out") else {})}
     want = {"width": size[0] if size else int(rev.get("width") or 0), "height": size[1] if size else int(rev.get("height") or 0),
             "seconds": float(rev.get("duration_s") or 0), "tolerance": 0.15, "sha256": rev["video_sha256"]}
     return Path(rev["video_path"]), extra, want
@@ -1199,6 +1217,17 @@ def overview(limit: int = 100) -> dict:
                       error={"code": "INTERRUPTED", "message": f"Started {st.get('attempts')} times without finishing "
                                                                "(MediaEngine was closed or stopped each time)"})
         items.append(it)
+    try:          # answered, and the program took its answer away: listed (with Delete) so its files can go
+        for d in received_dir().iterdir():
+            if (d.is_dir() and not d.name.startswith(".") and not (done_dir() / d.name).exists()
+                    and not (failed_dir() / d.name).exists()):
+                st = _read_state(d)
+                if st.get("finished"):
+                    items.append({"id": d.name, "state": "taken", "kind": st.get("kind"), "from": st.get("from") or "",
+                                  "title": st.get("title") or "", "answer": st.get("finished"), "project_id": st.get("project_id"),
+                                  "time": _mtime(d)})
+    except OSError:
+        pass
     for state, d in (("done", done_dir()), ("failed", failed_dir())):
         try:
             dirs = sorted((p for p in d.iterdir() if p.is_dir() and not p.name.startswith(".")), key=_mtime, reverse=True)[:limit]
@@ -1213,10 +1242,10 @@ def overview(limit: int = 100) -> dict:
                           "video": r.get("video"), "error": r.get("error"), "can_retry": r.get("can_retry", True) and (received_dir() / p.name).is_dir(),
                           "project_id": (r.get("project") or {}).get("id"), "finished_at": r.get("finished_at"),
                           "checks": r.get("checks"), "time": _mtime(p)})
-    order = {"working": 0, "waiting": 1, "new": 2, "arriving": 3, "stuck": 4, "failed": 4, "done": 4}
+    order = {"working": 0, "waiting": 1, "new": 2, "arriving": 3, "stuck": 4, "failed": 4, "done": 4, "taken": 5}
     items.sort(key=lambda x: (order.get(x["state"], 9), -float(x.get("time") or 0)))
     return {"auto_run": auto_run(), "inbox": str(inbox_dir()), "root": str(root()), "items": items,
-            "counts": {s: sum(1 for x in items if x["state"] == s) for s in ("new", "arriving", "working", "waiting", "stuck", "done", "failed")}}
+            "counts": {s: sum(1 for x in items if x["state"] == s) for s in ("new", "arriving", "working", "waiting", "stuck", "done", "failed", "taken")}}
 
 
 def _mtime(p: Path) -> float:

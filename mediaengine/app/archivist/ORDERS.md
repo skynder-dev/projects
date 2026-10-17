@@ -133,7 +133,9 @@ The usual Auto Edit reel. It also becomes a normal Auto Edit project (the owner 
 - Videos marked **Private** or **Rejected** are never used.
 
 The answer has the project (`"project": {"id": …, "url": …, "version": …}`), the settings, the names of the
-videos used and the number of moments.
+videos used and the number of moments. Names are the reel's names: a second video with the same file name from another
+folder is "DJI_0001 (2).MP4"; `inputs` gives every video's name with its SHA-256. A damaged or unreadable video is left
+out (`videos_left_out`), as in a reel made in the app; a playlist or manifest among the videos refuses the order.
 
 ## Answer codes
 

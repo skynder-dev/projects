@@ -350,8 +350,15 @@ def _run_all() -> None:
                 except Exception:
                     continue
             if not images:
-                if info and not frames:       # the preview was made but has no frame: a damaged video
-                    _remember_no_frames(v["id"], v.get("source_fingerprint") or "")
+                # no frame although the file is here (not only in the cloud): a damaged video - left out of the counts
+                try:
+                    with db() as con:
+                        row = con.execute("SELECT * FROM inventory WHERE id=?", (v["id"],)).fetchone()
+                    local = service._existing_local_path(dict(row)) if row else None
+                    if local and not _ae().cloud_only(local):
+                        _remember_no_frames(v["id"], v.get("source_fingerprint") or "")
+                except Exception:
+                    pass
                 continue                      # file unavailable now: tried again next time
             if sc is None:
                 sc = _load("vision")
