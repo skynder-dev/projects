@@ -224,7 +224,10 @@ So the processor is the limit; b122 tests the card with several cuts at once (as
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest full run: **38891840332 on `7944b86` (2026-10-16) — all green, build b121**: as b120, plus "cut with the
+Latest full run: **38983106755 on `c564596` (2026-10-17) — all green, build b122**: as b121, plus the graphics-card
+test under load (several cuts at once) and its whole result for support.
+
+Previous: **38891840332 on `7944b86` (2026-10-16) — all green, build b121**: as b120, plus "cut with the
 graphics card" next to the build time of a version cut with it. Drone check on the same code (run 38891868446):
 15/15; AI+ prepare of the 10 Commons drone videos 603 s (was 961-1011 s: AI+ clips three at once), the reel after it
 22 s; the AI reel 238 s (was 324-330 s). Real-footage check on the same code (run 38891901637, 22 Commons videos):
@@ -385,7 +388,7 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-Owner: b117 installed and measured (see above). Newest: `MediaEngine-3.13.0-rc1-b121-Setup` (run 38891840332); after
+Owner: b117 installed and measured (see above). Newest: `MediaEngine-3.13.0-rc1-b122-Setup` (run 38983106755, link sent 2026-10-16 evening); after
 installing it: Check this PC -> "Test the graphics card" (a minute or two), then a reel from `D:\100MEDIA`. Then (through the app's pages in the desktop app's browser pane,
 never computer use): a reel from `D:\100MEDIA` timed against b113's 42 min (the AI reports of b113 are reused, the
 previews are cut new) and the time breakdown read from the page (`data-timing`); "Prepare in advance" and the theme
