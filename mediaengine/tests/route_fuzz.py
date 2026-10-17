@@ -54,6 +54,8 @@ def main():
 
     def hit(method, url, **kw):
         nonlocal n
+        if time.time() > t_end:          # (the time limit holds inside a route with many odd inputs too)
+            return
         n += 1
         t = time.time()
         try:
