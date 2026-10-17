@@ -987,15 +987,30 @@ def check_files(files) -> list[Path]:
         if f.suffix.lower() not in SUPPORTED or f.name.startswith("._"):
             raise ValueError(f"Not a supported video file: {f.name} ({SUPPORTED_TEXT})")
         _guard_private(f)
-        if f.name.lower() in names:
-            raise ValueError(f"Two chosen files have the same name ({f.name}). Rename one of them, or choose a folder.")
-        names.add(f.name.lower())
-        out.append(f.resolve())
+        rp = f.resolve()
+        if str(rp).lower() in names:
+            continue                     # the same file twice: once (two files with the same NAME are fine: see input_names)
+        names.add(str(rp).lower())
+        out.append(rp)
     if not out:
         raise ValueError("No video files chosen")
     if len(out) > MAX_INPUTS:
         raise ValueError(f"Choose at most {MAX_INPUTS} videos for one reel.")
     return sorted(out, key=lambda x: x.name.lower())
+
+
+def input_names(paths) -> list[tuple[Path, str]]:
+    """Each input video with the name the reel uses for it: its file name, or - for a second video with the same name
+    from another folder (two cameras' DJI_0001.MP4) - "DJI_0001 (2).MP4". Always the same names for the same files."""
+    items = sorted((Path(x) for x in paths), key=lambda x: (x.name.lower(), str(x).lower()))
+    used, out = set(), []
+    for x in items:
+        nm, k = x.name, 2
+        while nm.lower() in used:
+            nm, k = f"{x.stem} ({k}){x.suffix}", k + 1
+        used.add(nm.lower())
+        out.append((x, nm))
+    return out
 
 
 def project_inputs(p: dict) -> list[Path]:
@@ -1758,9 +1773,13 @@ def _run_job(jid: int) -> None:
     try:
         with keep_awake():
             if p.get("files"):
-                local, _ = _with_length(local_inputs(_not_private_paths(p["files"])), work_dir, note, jid)
+                chosen = local_inputs(_not_private_paths(p["files"]))
+                alias = {str(x): nm for x, nm in input_names(project_inputs(p))}     # the same names the pages use
+                local, _ = _with_length(chosen, work_dir, note, jid)
                 input_list = jobs_dir / f"j{jid}.inputs.txt"
-                input_list.write_text("\n".join(str(x) for x in local) + "\n", encoding="utf-8")
+                # "path<TAB>name" for a video whose reel name is not its file name (same name in two folders)
+                input_list.write_text("".join(str(x) + (("\t" + alias[str(o)]) if alias.get(str(o), Path(o).name) != Path(x).name else "") + "\n"
+                                              for o, x in zip(chosen, local)), encoding="utf-8")
             else:
                 vids = list_videos(Path(p["folder"]))
                 local, fixed = _with_length(local_inputs(_not_private_paths(vids)), work_dir, note, jid)
@@ -3078,8 +3097,8 @@ def source_file(pid: int, name: str) -> Path | None:
         return None
     if p.get("files"):
         allowed = {str(Path(x).resolve()) for x in p["files"]}
-        for v in project_inputs(p):
-            if v.name == name and str(v.resolve()) in allowed:
+        for v, nm in input_names(project_inputs(p)):        # the reel's name for it (DJI_0001 (2).MP4)
+            if nm == name and str(v.resolve()) in allowed:
                 return v.resolve()
         return None
     folder = Path(p["folder"]).resolve()

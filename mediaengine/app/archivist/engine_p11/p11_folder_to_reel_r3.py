@@ -101,28 +101,31 @@ def _cached_sha(p,size,cache):
 
 def discover_input(folder, probe=None, skipped=None, skip_sha=None, paths=None, sha_cache=None, sha_seed=None):
     """Input videos: every supported file in <folder>, or exactly <paths> (files the user chose; names must be unique).
+    A line of <paths> may be "path<TAB>name": the name the reel uses for that video (two cameras' DJI_0001.MP4 from
+    two folders: the app gives the second one "DJI_0001 (2).MP4"; the file itself is read where it is).
     sha_cache: a JSON file in the work folder that remembers the SHA-256 of each source by size and change time."""
     if paths is not None:
         vids=[]
         for raw in paths:
-            p=Path(raw).resolve()
+            raw_path,_,alias=str(raw).partition("\t")
+            p=Path(raw_path).resolve(); nm=alias.strip() or p.name
             if not p.is_file():
-                if skipped is not None: skipped.append({"name":p.name,"reason":"MISSING"})
+                if skipped is not None: skipped.append({"name":nm,"reason":"MISSING"})
                 continue
-            if p.suffix.lower() in SUPPORTED: vids.append(p)
-        vids=sorted(vids,key=lambda p:p.name.lower())
-        if len({p.name.lower() for p in vids})!=len(vids): raise RuntimeError("INPUT_NAMES_NOT_UNIQUE")
+            if p.suffix.lower() in SUPPORTED: vids.append((p,nm))
+        vids=sorted(vids,key=lambda x:x[1].lower())
+        if len({nm.lower() for _,nm in vids})!=len(vids): raise RuntimeError("INPUT_NAMES_NOT_UNIQUE")
     else:
         folder=Path(folder).resolve()
         if not folder.is_dir(): raise RuntimeError("INPUT_FOLDER_MISSING")
-        vids=sorted([p for p in folder.iterdir() if not p.name.startswith("._") and p.suffix.lower() in SUPPORTED and p.is_file()],key=lambda p:p.name.lower())
+        vids=[(p,p.name) for p in sorted([p for p in folder.iterdir() if not p.name.startswith("._") and p.suffix.lower() in SUPPORTED and p.is_file()],key=lambda p:p.name.lower())]
     if not vids: raise RuntimeError("NO_SUPPORTED_VIDEO_FILES")
     if len(vids)>64: raise RuntimeError("TOO_MANY_INPUT_FILES")
     rows=[]; seen={}; cache=_load_sha_cache(sha_cache); cache0=json.dumps(cache,sort_keys=True)
     if sha_seed:      # the project's own list from before the list was shared
         for k,v in _load_sha_cache(sha_seed).items(): cache.setdefault(k,v)
-    for i,p in enumerate(vids,1):
-        progress("inputs",i-1,len(vids),p.name)
+    for i,(p,nm) in enumerate(vids,1):
+        progress("inputs",i-1,len(vids),nm)
         try:
             size=p.stat().st_size; dur=0.0; wh=(0,0)
             if size<1024: raise RuntimeError("FILE_TOO_SMALL")
@@ -144,16 +147,16 @@ def discover_input(folder, probe=None, skipped=None, skip_sha=None, paths=None, 
             if probe is not None and isinstance(cache,dict) and isinstance(cache.get(str(p)),dict):
                 cache[str(p)]["probe"]=pr
         except Exception as exc:
-            if skipped is not None: skipped.append({"name":p.name,"reason":type(exc).__name__+":"+str(exc)[:160]})
+            if skipped is not None: skipped.append({"name":nm,"reason":type(exc).__name__+":"+str(exc)[:160]})
             continue
         if skip_sha and digest in skip_sha:
-            if skipped is not None: skipped.append({"name":p.name,"reason":"PRIVATE"})
+            if skipped is not None: skipped.append({"name":nm,"reason":"PRIVATE"})
             continue
         if digest in seen:
-            if skipped is not None: skipped.append({"name":p.name,"reason":"DUPLICATE_OF:"+seen[digest]})
+            if skipped is not None: skipped.append({"name":nm,"reason":"DUPLICATE_OF:"+seen[digest]})
             continue
-        seen[digest]=p.name
-        rows.append({"name":p.name,"path":str(p),"bytes":size,"sha256":digest,"duration_s":dur,"width":wh[0],"height":wh[1]})
+        seen[digest]=nm
+        rows.append({"name":nm,"path":str(p),"bytes":size,"sha256":digest,"duration_s":dur,"width":wh[0],"height":wh[1]})
     if sha_cache and json.dumps(cache,sort_keys=True)!=cache0:
         try: atomic_json(sha_cache,cache)
         except OSError: pass                     # only a speed-up: never a reason to fail the build
@@ -1016,7 +1019,10 @@ def analysis_aliases(rows,work_dir,long_names=True):
         projected=len(str(realmedia))+10+min(len(name),100)+14+10+len(name)+45   # realmedia\gN\items\<item>\previews\<name>\...
         odd=bool(int(r.get("width") or 0)%2 or int(r.get("height") or 0)%2)
         remux=ext in REMUX_EXT or odd
-        if not remux and not (long_names and (force or (os.name=="nt" and projected>240))):
+        # a second video with the same file name (another camera's DJI_0001.MP4) has its own name in the reel; the
+        # technical analysis names its results after the FILE, so it looks at it under a stand-in name
+        renamed=long_names and Path(r["path"]).name!=name
+        if not remux and not renamed and not (long_names and (force or (os.name=="nt" and projected>240))):
             out.append(r); continue
         alias_name=f"v_{r['sha256'][:12]}{'.mp4' if remux else ext}"
         alias=adir/alias_name; use=None; sha=r["sha256"]; size=int(r["bytes"])
@@ -1871,7 +1877,7 @@ def run(args):
     input_list=[x.strip() for x in Path(args.input_list).read_text(encoding="utf-8-sig").splitlines() if x.strip()] if args.input_list else None
     if (input_list is None)==(not args.input_dir): raise RuntimeError("GIVE_EXACTLY_ONE_OF_INPUT_DIR_OR_INPUT_LIST")
     if input_list is not None and not input_list: raise RuntimeError("NO_SUPPORTED_VIDEO_FILES")   # e.g. all cloud-only
-    input_dir=Path(args.input_dir or Path(input_list[0]).parent).resolve(); output_dir=Path(args.output_dir).resolve(); work_dir=Path(args.work_dir).resolve()
+    input_dir=Path(args.input_dir or Path(input_list[0].partition("\t")[0]).parent).resolve(); output_dir=Path(args.output_dir).resolve(); work_dir=Path(args.work_dir).resolve()
     output_dir.mkdir(parents=True,exist_ok=True); work_dir.mkdir(parents=True,exist_ok=True)
     final_video=output_dir/"MediaEngine Reel.mp4"; final_result=output_dir/"MediaEngine Result.json"
     if final_video.exists() or final_result.exists(): raise RuntimeError("OUTPUT_ALREADY_EXISTS")

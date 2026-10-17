@@ -672,8 +672,8 @@ def search(theme: str, limit: int | None = None) -> list[dict]:
 
 
 def reel_files(theme: str, limit: int = 64) -> list[str]:
-    """The videos of a theme search for a new reel: best first, files that are on this PC, one per file name (a reel
-    refers to its sources by name), at most `limit`. Stops as soon as it has enough (no look at the rest)."""
+    """The videos of a theme search for a new reel: best first, files that are on this PC, at most `limit`. Stops as
+    soon as it has enough (no look at the rest)."""
     from .service import _existing_local_path
     good = [r for r in search(theme) if r["score"] > 0]
     picked, names = [], set()
@@ -685,8 +685,8 @@ def reel_files(theme: str, limit: int = 64) -> list[str]:
         for r in part:
             row = rows.get(r["inventory_id"])
             local = _existing_local_path(row) if row else None
-            if local and local.name.lower() not in names:
-                names.add(local.name.lower()); picked.append(str(local))
+            if local and str(local).lower() not in names:     # two cameras' DJI_0001.MP4: both (the reel names them apart)
+                names.add(str(local).lower()); picked.append(str(local))
                 if len(picked) >= limit:
                     return picked
     return picked

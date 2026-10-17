@@ -55,7 +55,11 @@ def main():
     # chosen files: missing, unsupported and same-name files are refused
     d = work / "files"; (d / "x").mkdir(parents=True, exist_ok=True)
     (d / "a.mp4").write_bytes(b"0" * 2048); (d / "x" / "a.mp4").write_bytes(b"1" * 2048); (d / "t.txt").write_text("t")
-    check("check_files refuses same names", raises(ae.check_files, [str(d / "a.mp4"), str(d / "x" / "a.mp4")]))
+    # two cameras' DJI_0001.MP4 from two folders: both used, the second named apart in the reel; the same file once
+    two_ = ae.check_files([str(d / "a.mp4"), str(d / "x" / "a.mp4"), str(d / "a.mp4")])
+    names_ = [nm for _, nm in ae.input_names(two_)]
+    check("same file names from two folders: both used, named apart", len(two_) == 2 and sorted(names_) == ["a (2).mp4", "a.mp4"]
+          and [nm for _, nm in ae.input_names(list(reversed(two_)))] == names_, (two_, names_))
     check("check_files refuses non-video", raises(ae.check_files, [str(d / "t.txt")]))
     check("check_files refuses missing", raises(ae.check_files, [str(d / "nope.mp4")]))
     check("check_files refuses relative", raises(ae.check_files, ["a.mp4"]))

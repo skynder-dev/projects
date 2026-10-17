@@ -280,6 +280,11 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   longer shown (Library, theme search, Best Moments, Make a reel); Make a reel never takes a removed video; "ready for
   N of M" no longer stays short for copies or damaged videos; Free (shared AI data) asks first; odd page numbers and
   ids give no server error; Library search texts in Russian.
+- Two cameras' videos with the same file name (DJI_0001.MP4 on each card, from two folders or from the Library) are
+  both used in one reel: the second is named "DJI_0001 (2).MP4" in the reel (the engine's input list carries the name;
+  the technical analysis looks at it under a stand-in), the source preview finds it; before, the new-reel page asked
+  to rename the originals and theme reels silently dropped one. Known, not changed: a video renamed or deleted in a
+  Library folder leaves its old Library card (kept on purpose: clips and compositions made from it stay).
 
 ## Evidence
 

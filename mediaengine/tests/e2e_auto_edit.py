@@ -552,6 +552,24 @@ def main():
                 if others:
                     r = c.get(f"/auto/p/{fpid}/source", query_string={"name": others[0]}, headers=H)
                     check("files_other_file_not_served", r.status_code == 404, r.status_code)
+                # two cameras' videos with the same file name (DJI_0001.MP4 on each card): both in one reel, named apart
+                cam_a, cam_b = home / "card A", home / "card B"
+                cam_a.mkdir(exist_ok=True); cam_b.mkdir(exist_ok=True)
+                for k_, d_ in enumerate((cam_a, cam_b)):      # two different new clips (the fixtures may be Private by now)
+                    subprocess.run([ae._ffmpeg() or "ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", f"testsrc2=size=640x360:rate=30,hue=h={90 * k_}",
+                                    "-f", "lavfi", "-i", f"sine=f={440 + 220 * k_}", "-t", "8", "-c:v", "libx264", "-pix_fmt", "yuv420p",
+                                    "-c:a", "aac", "-shortest", str(d_ / "DJI_0001.MP4")], check=False)
+                r = c.post("/auto/create", data={"file": [str(cam_a / "DJI_0001.MP4"), str(cam_b / "DJI_0001.MP4")], "length": "5",
+                                                 "format": "vertical", "sound": "auto", "mode": a.mode}, headers=H)
+                spid = int(r.headers["Location"].rstrip("/").split("/")[-1]) if r.status_code == 302 else None
+                sj = wait_job(c, ae.project(spid)["jobs"][0]["id"])[0] if spid else {"status": "no project"}
+                srev = ae.revision(sj["revision_id"]) if sj.get("status") == "done" else None
+                snames = sorted(x["name"] for x in (srev or {}).get("result", {}).get("inputs", []))
+                sused = {s_["source_name"] for s_ in (srev or {}).get("result", {}).get("segments", [])}
+                rr = c.get(f"/auto/p/{spid}/source", query_string={"name": "DJI_0001 (2).MP4"}, headers=H) if spid else None
+                check("same_file_name_from_two_cards", srev is not None and snames == ["DJI_0001 (2).MP4", "DJI_0001.MP4"]
+                      and sused <= set(snames) and rr is not None and rr.status_code in (200, 206),
+                      (sj.get("status"), sj.get("error"), snames, sused, rr.status_code if rr else None))
                 # the next new reel starts with the last one's format
                 r = c.get("/auto/new", query_string={"folder": str(folder)}, headers=H)
                 check("new_reel_remembers_last_format", "value='vertical' checked" in r.data.decode("utf-8", "replace"))
