@@ -79,6 +79,26 @@ def startup_self_check(app):
                 raise RuntimeError(f"Startup self-check failed: {path} -> HTTP {response.status_code}")
 
 
+def _self_check_known_good(app):
+    """The start-up check guards a NEW build (a broken release is refused and the previous one starts). A build that
+    has passed it once on this PC is not refused later because of something in the owner's data (one odd Library row
+    made a page fail): it starts and says so in the log - otherwise no build at all would start on that data."""
+    from archivist.config import BUILD, DATA
+    mark = DATA / "startup_checked" / re.sub(r"[^\w.-]", "_", f"{VERSION}-{BUILD}" if BUILD else VERSION)
+    try:
+        startup_self_check(app)
+    except Exception as exc:
+        if not mark.is_file():
+            raise
+        print(f"Startup self-check failed, but this build started on this PC before - starting anyway: {exc}", file=sys.stderr)
+        return
+    try:
+        mark.parent.mkdir(parents=True, exist_ok=True)
+        mark.write_text(time.strftime("%Y-%m-%d %H:%M:%S"), encoding="utf-8")
+    except OSError:
+        pass
+
+
 def _bind_fails():
     import socket
     s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -185,7 +205,7 @@ def main():
         sweep_exports()                   # empty reserved names / .part files of renders the app was closed during
     except Exception:
         pass
-    start_workers(); recover_convert_jobs(); start_watchdog(); app=create_app(); startup_self_check(app); url=f"http://{HOST}:{PORT}/"+("auto" if SIDE_BY_SIDE else "")
+    start_workers(); recover_convert_jobs(); start_watchdog(); app=create_app(); _self_check_known_good(app); url=f"http://{HOST}:{PORT}/"+("auto" if SIDE_BY_SIDE else "")
     # (the old Remote Lab diagnostics upload is gone: MediaEngine sends nothing anywhere)
     suppress=os.environ.get("ARCHIVIST_SUPPRESS_BROWSER")=="1" or "--no-browser" in sys.argv
     if not suppress:
