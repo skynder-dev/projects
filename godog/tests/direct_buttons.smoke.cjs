@@ -8,7 +8,7 @@ for(const required of [
   '// @name:en      GoDog',
   '// @name:ru      GoDog',
   '// @namespace    GoDog.constitution',
-  '// @version      7.0.6',
+  '// @version      7.0.7',
   '// @grant        none',
   '// @updateURL    http://127.0.0.1:43129/godog.meta.js',
   '// @downloadURL  http://127.0.0.1:43129/godog.user.js'
@@ -20,7 +20,7 @@ assert.ok(!/\b(?:fetch|XMLHttpRequest|GM_xmlhttpRequest)\s*\(/.test(src),'No net
 new vm.Script(src,{filename:'GoDog_PC_LOCAL_01.user.js'});
 
 class Element {
-  constructor(name='DIV') {this.tagName=name;this.listeners={};this.dataset={};this.value=undefined;this.innerText='';this.textContent='';this.isConnected=false;this.disabled=false;this.attributes={};this.classList={toggle(){}};this.style={props:{},setProperty(n,v){this.props[n]=v;},removeProperty(n){delete this.props[n];}};this.rect={left:0,right:1200,top:0,bottom:36,width:1200,height:36};}
+  constructor(name='DIV') {this.tagName=name;this.listeners={};this.dataset={};this.value=undefined;this.innerText='';this.textContent='';this.isConnected=false;this.disabled=false;this.attributes={};this.classList={toggle(){}};this.style={props:{},setProperty(n,v){this.props[n]=v;},removeProperty(n){delete this.props[n];},getPropertyValue(n){return this.props[n]||'';},getPropertyPriority(){return '';}};this.childNodes=[];this.parentElement=null;this.firstChild=null;this.rect={left:0,right:1200,top:0,bottom:36,width:1200,height:36};}
   removeAttribute(name) {delete this.attributes[name];}
   getAttribute(name) {return this.attributes[name]??null;}
   setAttribute(name,value) {this.attributes[name]=String(value);}
@@ -30,7 +30,10 @@ class Element {
   closest() {return null;}
   click() {this.listeners.click?.({ctrlKey:false});}
   querySelector() {return null;}
-  appendChild(el) {el.isConnected=true;}
+  appendChild(el) {el.isConnected=true;el.parentElement=this;this.childNodes.push(el);this.firstChild=this.childNodes[0];return el;}
+  insertBefore(el,next){el.isConnected=true;el.parentElement=this;this.childNodes.unshift(el);this.firstChild=this.childNodes[0];return el;}
+  remove(){this.isConnected=false;if(this.parentElement){this.parentElement.childNodes=this.parentElement.childNodes.filter(x=>x!==this);this.parentElement=null;}}
+
   replaceChildren() {}
   dispatchEvent() {return true;}
 }
@@ -49,9 +52,14 @@ const buttons={
 };
 const root=new Element('DIV');
 root.querySelector=key=>buttons[key]??null;
+const visualNodes=[];
+let createdDivs=0;
 const editor=new Element('DIV'); editor.attributes['aria-disabled']='false';
 const composerSurface=new Element('DIV');
+const composerParent=new Element('DIV');composerParent.isConnected=true;
+composerParent.appendChild(composerSurface);
 composerSurface.rect={left:130,right:1090,top:69,bottom:161,width:960,height:92};
+editor.isConnected=true;
 editor.closest=selector=>selector==='[data-type="unified-composer"]' ? composerSurface : null;
 
 const send=new Element('BUTTON');
@@ -72,7 +80,7 @@ const document={
   title:'GoDog test project',
   documentElement:new Element('HTML'),body:new Element('BODY'),
   getElementById(){return null;},
-  createElement(tag){return tag==='div' ? root : new Element(tag.toUpperCase());},
+  createElement(tag){if(tag==='div'&&createdDivs++===0)return root;const el=new Element(tag.toUpperCase());visualNodes.push(el);return el;},
   createRange(){return {selectNodeContents(){}};},
   execCommand(cmd,mode,data){assert.equal(cmd,'insertText');editor.innerText=data;return true;},
   querySelector(selector) {
@@ -88,14 +96,14 @@ const document={
   },
   addEventListener(){}
 };
-const win={innerWidth:1220,innerHeight:250,addEventListener(){}};win.top=win;win.self=win;win.getSelection=()=>({removeAllRanges(){},addRange(){}});
+const win={innerWidth:1220,innerHeight:250,addEventListener(){},getComputedStyle(el){return {position:'static',backgroundColor:'rgb(33, 33, 33)',borderTopLeftRadius:'26px',borderTopRightRadius:'26px',borderBottomLeftRadius:'26px',borderBottomRightRadius:'26px',borderLeftWidth:'1px',borderLeftColor:'rgba(255, 255, 255, 0.1)',borderRightWidth:'1px',borderRightColor:'rgba(255, 255, 255, 0.1)',borderBottomWidth:'1px',borderBottomColor:'rgba(255, 255, 255, 0.1)',borderTopWidth:'1px',borderTopColor:'rgba(255, 255, 255, 0.1)'}}};win.top=win;win.self=win;win.getSelection=()=>({removeAllRanges(){},addRange(){}});
 const ctx={window:win,document,location:loc,sessionStorage:storage(session),localStorage:storage(local),
   queueMicrotask,MutationObserver:class{constructor(fn){observerCb=fn;}observe(){}},
   Event:class{},InputEvent:class{},KeyboardEvent:class{},console,
   HTMLTextAreaElement:class{},HTMLInputElement:class{}};
 vm.runInNewContext(src,ctx,{timeout:3000});
 assert.equal(buttons['.cg-status'].textContent,'DISARMED','restored original initial status');
-assert.equal(buttons['.cg-version'].textContent,'GoDog 7.0.6','restored original version chip');
+assert.equal(buttons['.cg-version'].textContent,'GoDog 7.0.7','restored original version chip');
 assert.equal(buttons['.cg-project'].textContent,'GoDog','restored original project chip');
 assert.equal(buttons['.cg-auto'].textContent,'AUTO','restored original AUTO label');
 assert.equal(buttons['.cg-timer'].textContent,'','no fake LOCAL timer');
@@ -121,6 +129,16 @@ assert.equal(root.style.props.width,'960px','dock width equals composer, never f
   assert.equal(root.style.props['max-width'],'calc(100vw - 16px)','failsafe prevents viewport-wide bar');
 assert.ok(Math.abs(Number.parseInt(root.style.props.top,10)-160)<=2,'dock directly under composer');
 assert.equal(root.style.props.bottom,'auto','dock not full-width bottom bar');
+  assert.ok(src.includes("transform: translateY(2px) !important"),"preserve frozen 2px dock offset");
+  assert.ok(src.includes("background: linear-gradient(to bottom, transparent 0 5px"),"preserve frozen top transparent seam");
+  const underlay=visualNodes.find(e=>e.id==='chatgpt-go-watchdog-underlay');
+  assert.ok(underlay,'original composer underlay restored');
+  assert.equal(underlay.parentElement,composerParent,'underlay belongs UNDER composer host, not above it');
+  assert.equal(underlay.style.props.background,'rgb(33, 33, 33)','composer color carried through to dock');
+  assert.equal(underlay.style.props.display,'block','underlay visible');
+  assert.equal(root.style.props['--cg-unified-surface'],'rgb(33, 33, 33)','root backdrop inherits composer color');
+  assert.ok(visualNodes.some(e=>e.className?.includes('cg-composer-seam-cap')),'frozen seam caps restored');
+  assert.ok(visualNodes.some(e=>e.className==='cg-fixed-side-bridge'),'frozen side bridges restored');
   assert.deepEqual(submitted,['GO','GO'],'must not send while generating');
   generating=false;
   assistantMessages.push(Object.assign(new Element(),{innerText:'Step completed',attributes:{'data-message-id':'A1'}}));
