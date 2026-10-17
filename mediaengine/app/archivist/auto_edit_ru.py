@@ -430,6 +430,7 @@ PHRASES = {
     "Waiting for the test on Check this PC to finish": "Ждёт окончания проверки на странице «Проверка компьютера»",
     "more values than columns (put a number like 1,234 in quotes or write 1234)": "значений больше, чем столбцов (число вида 1,234 возьми в кавычки или напиши 1234)",
     "fewer values than columns": "значений меньше, чем столбцов",
+    "Remove from queue": "Убрать из очереди",
     "The test reel of Check this PC is being made. Wait until it is ready.": "Делается тестовый ролик «Проверки компьютера». Подожди, пока он будет готов.",
     "The graphics card is being tested (Check this PC). Wait until the test has finished.": "Идёт проверка видеокарты («Проверка компьютера»). Подожди окончания проверки.",
     "Private and Rejected media cannot be used in a reel": "Видео из Private и Rejected нельзя использовать в ролике",

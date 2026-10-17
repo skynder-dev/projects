@@ -549,6 +549,9 @@ def create_app():
             if q['queue_state']=='review':body+=f"<form method='post' action='/social/queue-item/{int(q['id'])}/ready'><button class='btn btn2'>Mark ready</button></form>"
             elif q['queue_state']=='ready':body+=f"<form method='post' action='/social/queue-item/{int(q['id'])}/review'><button class='btn btn2'>Review</button></form>"
             elif q['queue_state']=='hold':body+="<span class='badge'>hold</span>"
+            if q['queue_state'] in ('ready','review','hold'):     # (a held item could not be taken out of the queue)
+                body+=(f"<form method='post' action='/social/queue-item/{int(q['id'])}/canceled'><button class='btn2'>Remove from queue</button></form>"
+                       + (f"<form method='post' action='/social/queue-item/{int(q['id'])}/done'><button class='btn2'>Done</button></form>" if q['queue_state']=='ready' else ""))
             body+="</div>"
         body+="</div>"
         body+="<div class='card callout' style='margin-top:14px'><div class='row space'><div><b>Experiments</b><div class='muted'>Plan hook/caption/cover/duration/order variants and record manual/import performance metrics locally.</div></div><a class='btn btn2' href='/social/experiments'>Open Experiments</a></div></div>"

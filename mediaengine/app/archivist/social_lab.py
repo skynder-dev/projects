@@ -174,7 +174,9 @@ def enqueue_candidate(*,composition_id=None,publication_id=None,title="",platfor
         if composition_id is not None:
             _require_composition_source_visibility(c,int(composition_id))
             old=c.execute("SELECT id,queue_state FROM social_queue WHERE composition_id=? AND queue_state NOT IN ('done','canceled') ORDER BY id DESC LIMIT 1",(int(composition_id),)).fetchone()
-            if old:return {"queue_id":int(old["id"]),"queue_state":str(old["queue_state"]),"existing":True}
+            if old:      # queued again: the item shows today's novelty answer (it showed the first one for ever)
+                c.execute("UPDATE social_queue SET novelty_state=?,queue_state=?,updated_at=? WHERE id=?",(str(novelty_state),state,ts,int(old["id"])));c.commit()
+                return {"queue_id":int(old["id"]),"queue_state":state,"existing":True}
         cur=c.execute("INSERT INTO social_queue(composition_id,publication_id,title,platform_target,caption_text,novelty_state,queue_state,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?)",(int(composition_id) if composition_id is not None else None,int(publication_id) if publication_id is not None else None,str(title or "")[:160],str(platform_target or "")[:80],str(caption_text or "")[:2000],str(novelty_state),state,ts,ts));c.commit()
         return {"queue_id":int(cur.lastrowid),"queue_state":state,"existing":False}
 
