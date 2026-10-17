@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import json, re
+import json, re, threading
 from .db import db, now_iso
 from .media_brain import ensure_schema as ensure_media_brain_schema
 
@@ -34,6 +34,37 @@ INTENT_PHRASES={
 }
 
 SEMANTIC_SCHEMA_VERSION="2"
+
+_MIGRATE_LOCK = threading.Lock()
+
+
+def _new_update_trigger(con):
+    # only a real change marks a video for re-indexing (every unchanged rescan marked the whole catalog)
+    con.executescript("""
+    BEGIN IMMEDIATE;
+    DROP TRIGGER IF EXISTS trg_semantic_inventory_update;
+    CREATE TRIGGER trg_semantic_inventory_update
+    AFTER UPDATE OF filename,source_label,source_kind,media_type,duration_ms,width,height,
+                    analysis_status,quality_status,quality_score,rights_status,rights_audio_present,
+                    excluded,work_selected,private_path,rejected_path
+    ON inventory
+    WHEN OLD.filename IS NOT NEW.filename OR OLD.source_label IS NOT NEW.source_label
+      OR OLD.source_kind IS NOT NEW.source_kind OR OLD.media_type IS NOT NEW.media_type
+      OR OLD.duration_ms IS NOT NEW.duration_ms OR OLD.width IS NOT NEW.width OR OLD.height IS NOT NEW.height
+      OR OLD.analysis_status IS NOT NEW.analysis_status OR OLD.quality_status IS NOT NEW.quality_status
+      OR OLD.quality_score IS NOT NEW.quality_score OR OLD.rights_status IS NOT NEW.rights_status
+      OR OLD.rights_audio_present IS NOT NEW.rights_audio_present OR OLD.excluded IS NOT NEW.excluded
+      OR OLD.work_selected IS NOT NEW.work_selected OR OLD.private_path IS NOT NEW.private_path
+      OR OLD.rejected_path IS NOT NEW.rejected_path
+    BEGIN
+        INSERT INTO semantic_dirty(inventory_id,reason,dirtied_at)
+        VALUES(NEW.id,'inventory_update',CURRENT_TIMESTAMP)
+        ON CONFLICT(inventory_id) DO UPDATE SET reason=excluded.reason,dirtied_at=excluded.dirtied_at;
+    END;
+    INSERT INTO semantic_meta(key,value) VALUES('update_trigger','2') ON CONFLICT(key) DO UPDATE SET value=excluded.value;
+    COMMIT;
+    """)
+
 
 def ensure_schema():
     ensure_media_brain_schema()
@@ -105,31 +136,10 @@ def ensure_schema():
             ON CONFLICT(inventory_id) DO UPDATE SET reason=excluded.reason,dirtied_at=excluded.dirtied_at;
         END;
         """)
-        state={str(r["key"]):str(r["value"]) for r in con.execute("SELECT key,value FROM semantic_meta").fetchall()}
-        if state.get("update_trigger")!="2":
-            # only a real change marks a video for re-indexing (every unchanged rescan marked the whole catalog)
-            con.executescript("""
-            DROP TRIGGER IF EXISTS trg_semantic_inventory_update;
-            CREATE TRIGGER trg_semantic_inventory_update
-            AFTER UPDATE OF filename,source_label,source_kind,media_type,duration_ms,width,height,
-                            analysis_status,quality_status,quality_score,rights_status,rights_audio_present,
-                            excluded,work_selected,private_path,rejected_path
-            ON inventory
-            WHEN OLD.filename IS NOT NEW.filename OR OLD.source_label IS NOT NEW.source_label
-              OR OLD.source_kind IS NOT NEW.source_kind OR OLD.media_type IS NOT NEW.media_type
-              OR OLD.duration_ms IS NOT NEW.duration_ms OR OLD.width IS NOT NEW.width OR OLD.height IS NOT NEW.height
-              OR OLD.analysis_status IS NOT NEW.analysis_status OR OLD.quality_status IS NOT NEW.quality_status
-              OR OLD.quality_score IS NOT NEW.quality_score OR OLD.rights_status IS NOT NEW.rights_status
-              OR OLD.rights_audio_present IS NOT NEW.rights_audio_present OR OLD.excluded IS NOT NEW.excluded
-              OR OLD.work_selected IS NOT NEW.work_selected OR OLD.private_path IS NOT NEW.private_path
-              OR OLD.rejected_path IS NOT NEW.rejected_path
-            BEGIN
-                INSERT INTO semantic_dirty(inventory_id,reason,dirtied_at)
-                VALUES(NEW.id,'inventory_update',CURRENT_TIMESTAMP)
-                ON CONFLICT(inventory_id) DO UPDATE SET reason=excluded.reason,dirtied_at=excluded.dirtied_at;
-            END;
-            INSERT INTO semantic_meta(key,value) VALUES('update_trigger','2') ON CONFLICT(key) DO UPDATE SET value=excluded.value;
-            """)
+        with _MIGRATE_LOCK:
+            state={str(r["key"]):str(r["value"]) for r in con.execute("SELECT key,value FROM semantic_meta").fetchall()}
+            if state.get("update_trigger")!="2":
+                _new_update_trigger(con)
         if state.get("schema_version")!=SEMANTIC_SCHEMA_VERSION or state.get("model")!=SEARCH_MODEL:
             ts=now_iso()
             con.execute("""INSERT OR REPLACE INTO semantic_dirty(inventory_id,reason,dirtied_at)

@@ -682,7 +682,8 @@ def search(theme: str, limit: int | None = None) -> list[dict]:
         t = con.execute("SELECT pos,neg FROM aiplus_texts WHERE model_key=? AND theme=?", (text_key(theme), theme)).fetchone()
         # what the result depends on, without reading the pictures' numbers (80 MB at 5,000 videos, at every search):
         # the same visible, unchanged videos -> the same answer as last time
-        sig = tuple(con.execute(f"SELECT COUNT(*), MAX(f.indexed_at), TOTAL(f.inventory_id) {where}",
+        sig = tuple(con.execute(f"SELECT COUNT(*), MAX(f.indexed_at), TOTAL(f.inventory_id), TOTAL(f.inventory_id*f.inventory_id), "
+                                f"GROUP_CONCAT(i.filename, '/') {where}",
                                 (key,)).fetchone()) + (key, text_key(theme), bool(t))
         hit = _SEARCH_CACHE.get(theme)
         if hit and hit[0] == sig:

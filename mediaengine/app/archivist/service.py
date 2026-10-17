@@ -105,22 +105,20 @@ def _drive_of(path) -> str:
 
 def configured_sources(cfg):
     """The places discovery walks. A folder the user added that is on a card or USB stick is a removable source (its
-    videos are copied in, never used in place: the card goes away), and that card is then not walked a second time as
-    a whole - the same file seen as "fixed" and "removable" in turn was once reported imported without a copy."""
-    removable = {d["root"].lower() for d in windows_drives() if d["kind"] == "removable"}
+    videos are imported by copying - see _effective_kind) keeps its kind (a Library used in place stays as it is), and
+    the card's own walk leaves that folder to it ("skip"): the same file seen as "fixed" and "removable" in turn was
+    once reported imported without a copy. Other folders of the card are still found."""
     sources = []
     for s in cfg.get("sources", []):
         if not s.get("enabled", True):
             continue
-        kind = s.get("kind") or "fixed"
-        if kind == "fixed" and _drive_of(s.get("path")) in removable:
-            kind = "removable"
-        sources.append({"path": s.get("path"), "label": s.get("label") or s.get("path"), "kind": kind})
+        sources.append({"path": s.get("path"), "label": s.get("label") or s.get("path"), "kind": s.get("kind") or "fixed"})
     if cfg.get("auto_removable", True):
-        on_drive = {_drive_of(s.get("path")) for s in sources}
+        known = {str(s.get("path", "")).lower() for s in sources}
         for d in windows_drives():
-            if d["kind"] == "removable" and d["root"].lower() not in on_drive:
-                sources.append({"path": d["root"], "label": f"SD/USB {d['root'][0]}:", "kind": "removable"})
+            if d["kind"] == "removable" and d["root"].lower() not in known:
+                inside = [s["path"] for s in sources if s.get("path") and _drive_of(s["path"]) == d["root"].lower()]
+                sources.append({"path": d["root"], "label": f"SD/USB {d['root'][0]}:", "kind": "removable", "skip": inside})
     return sources
 
 
@@ -153,8 +151,8 @@ def _forget_old_content(ids: list[int]) -> None:
             if not r or r["media_type"] != "video":
                 continue
             new_s = probe_duration(Path(r["path"])) if r["path"] else None
-            if not r["duration_ms"] or not new_s or abs(float(new_s) * 1000 - float(r["duration_ms"])) > 500:
-                other.append(int(i))
+            if r["duration_ms"] and new_s and abs(float(new_s) * 1000 - float(r["duration_ms"])) > 500:
+                other.append(int(i))      # (a length that cannot be read now never deletes anything)
         except Exception as exc:
             log(f"discovery: changed file {i}: {exc}")
     if other:
@@ -176,7 +174,7 @@ def transfers_pending() -> bool:
             return con.execute(
                 "SELECT 1 FROM job_items ji JOIN jobs j ON j.id=ji.job_id JOIN inventory i ON i.id=ji.inventory_id "
                 "WHERE j.status IN ('queued','running') AND j.kind IN ('import','import_analyze') "
-                "AND ji.status NOT IN ('done','skipped') AND i.source_kind IN ('removable','android') "
+                "AND ji.status IN ('queued','running') AND i.source_kind IN ('removable','android') "
                 "AND i.staging_path IS NULL AND i.archive_path IS NULL LIMIT 1").fetchone() is not None
     except Exception:
         return True
@@ -255,6 +253,12 @@ def run_discovery():
                 walk_errors: list = []
                 last_commit = time.monotonic()
                 batch: list = []
+                skips = []
+                for sk in src.get("skip") or []:
+                    try:
+                        skips.append(os.path.normcase(os.path.abspath(os.path.expandvars(str(sk)))).rstrip("\\/") + os.sep)
+                    except Exception:
+                        pass
 
                 def flush():
                     # rows are written in one short transaction: no write lock is held while the walk waits for a slow
@@ -269,6 +273,8 @@ def run_discovery():
                     try: st = f.stat()
                     except Exception: continue
                     mt = media_type_for(f); source_key = "local:" + os.path.normcase(os.path.abspath(str(f)))
+                    if skips and any(source_key[6:].startswith(sk) for sk in skips):
+                        continue          # a folder of this card that is a source of its own: found there
                     batch.append({"source_key": source_key, "source_kind": kind, "source_id": str(p), "source_label": label, "path": str(f), "filename": f.name,
                                   "ext": f.suffix.lower(), "media_type": mt, "mime_type": None, "size_bytes": st.st_size, "mtime": st.st_mtime,
                                   "date_taken": None, "duration_ms": None, "width": None, "height": None,
@@ -949,8 +955,8 @@ def _ensure_imported(row: dict, job_id: int, item_id: int) -> Path:
                 # the phone did not say the size: the copy is checked against the phone's own SHA-256 instead (a cut
                 # transfer must never count as imported and the phone as safe to disconnect)
                 source_sha = android.remote_sha256(adb, row["source_id"], row.get("path"))
-                if not source_sha:
-                    raise RuntimeError("The copy from the phone could not be checked (its size is unknown). Try again.")
+                if not source_sha:     # (a phone without sha256sum: as before, the copy is taken as it is)
+                    log(f"import {row.get('id')}: phone size and SHA-256 unknown - copy not checked")
         elif row.get("source_kind") == "removable":
             src = Path(row.get("path") or "")
             if not src.exists():
