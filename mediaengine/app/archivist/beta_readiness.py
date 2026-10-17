@@ -23,16 +23,24 @@ def guide_text() -> str:
     return guide_path().read_text(encoding="utf-8", errors="replace")
 
 
+def _inline(text: str) -> str:
+    """**bold** and `code` of the guide (shown as such, not with the stars and backticks)."""
+    import re
+    t = _e(text)
+    t = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t)
+    return re.sub(r"`([^`]+)`", r"<code translate='no'>\1</code>", t)
+
+
 def guide_html(text: str) -> str:
-    """The guide's small Markdown (## headings, numbered steps, paragraphs) as readable HTML."""
+    """The guide's small Markdown (## headings, numbered steps, paragraphs, **bold**, `code`) as readable HTML."""
     out, para, items = [], [], []
 
     def flush():
         if para:
-            out.append("<p>" + _e(" ".join(para)) + "</p>")
+            out.append("<p>" + _inline(" ".join(para)) + "</p>")
             para.clear()
         if items:
-            out.append("<ol>" + "".join("<li>" + _e(" ".join(i)) + "</li>" for i in items) + "</ol>")
+            out.append("<ol>" + "".join("<li>" + _inline(" ".join(i)) + "</li>" for i in items) + "</ol>")
             items.clear()
     for raw in text.splitlines():
         line = raw.strip()

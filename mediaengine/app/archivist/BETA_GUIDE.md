@@ -25,6 +25,8 @@ shows how much space this takes ("Free").
 the reel is then made from them in minutes ("Build" in the project). Videos added to the folder later are analysed
 during the build.
 To go back to an earlier version of the program: "Check this PC" -> "Use this version" (projects stay the same).
+Only versions in the same folder whose folder holds just the program are listed; a version older than 11 October 2026
+has no button: start it from its own folder.
 
 A new reel starts with the last reel's format, sound and mode. A vertical reel from horizontal videos can "Fill the
 screen" (cropped to the interesting part) or show the "Whole picture, blurred edges". When Auto muted a reel, "The

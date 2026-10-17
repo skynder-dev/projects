@@ -350,8 +350,10 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
     composition recorded in local history is then held by its own record in the queue.
   - New check `tests/route_fuzz.py`: every route with odd input (huge / Unicode-digit ids, damaged forms and JSON) -
     no server error (it found 7 routes, fixed); in Windows CI on a copy of the 7-video home (non-blocking).
-  Checks after the fixes (Linux): unit 135/135, e2e 81/81, orders 49/49, library flow 42/42, library 4/4, convert
-  23/23, reliability 9/9, scale library (600 videos) OK, browser 12/12, route fuzz 0 server errors.
+  Checks after the fixes (Linux): unit 135/135, e2e 81/81, orders 49/49, library flow 43/43, library 4/4, convert
+  23/23, reliability 9/9, engine robustness, AI / AI+ glue, titles and music 40/40, scale library (600 videos) OK,
+  browser 12/12 (it caught one slip of round 12 - a second test reel - fixed before any push), Russian pages 0 English
+  left, route fuzz 0 server errors.
 
 ## Evidence
 

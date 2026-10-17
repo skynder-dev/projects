@@ -19,7 +19,7 @@ waits for the owner's **Run** if he chose *Wait for my OK*.
 
 1. Make a folder `Inbox\<order id>\`. The folder name is the order id: letters, digits, spaces, `. - _ ( )`,
    at most 80 characters, starting with a letter or digit. Every order needs a new id; an id that was already
-   received is refused (`ORDER_ID_ALREADY_USED`).
+   received is refused (`ORDER_ID_ALREADY_USED`) - after Delete on the Orders page the id can be used again.
 2. Put the order's files into it (pictures, sound, videos).
 3. Write `order.json` **last**. MediaEngine takes a folder only when `order.json` is there and nothing in the folder
    changed for 3 seconds. (Or make the folder elsewhere on the same drive and move it into `Inbox` in one step.)
@@ -130,7 +130,9 @@ The usual Auto Edit reel. It also becomes a normal Auto Edit project (the owner 
 - `sound`: `auto`, `source` or `mute`. `mode`: `semantic` (AI), `semantic_plus` (AI+; with `"theme"`), `technical`.
 - `framing` (vertical from horizontal videos): `fill` or `fit_blur`. `text`, `music` (+ `music_mode`: `mix`/`music`,
   `beat_sync`: false) are optional.
-- Videos marked **Private** or **Rejected** are never used.
+- Videos marked **Private** (also any copy with the same content) and files in MediaEngine's Private and Rejected
+  folders are never used. Rejecting moves only MediaEngine's imported copy: the original in a folder you order from
+  is still used.
 
 The answer has the project (`"project": {"id": …, "url": …, "version": …}`), the settings, the names of the
 videos used and the number of moments. Names are the reel's names: a second video with the same file name from another
@@ -145,7 +147,7 @@ is left out (`videos_left_out`), as in a reel made in the app; a playlist or man
 | `ORDER_SCHEMA_UNKNOWN` / `ORDER_KIND_UNKNOWN` | not `mediaengine.order/1` / unknown `kind` |
 | `ORDER_FIELD_INVALID` | a field is wrong (the message names it) |
 | `ORDER_FILE_MISSING` / `ORDER_PATH_OUTSIDE` / `ORDER_NETWORK_PATH` | a named file is missing / outside the order folder / on the network |
-| `ORDER_ID_INVALID` / `ORDER_ID_ALREADY_USED` | bad id (answer in `Failed\order <cleaned id>`) / reused id (answer in `Failed\<id> (2)` etc.) |
+| `ORDER_ID_INVALID` / `ORDER_ID_ALREADY_USED` | bad id (answer in `Failed\<cleaned id>`: other characters become `_`, at most 80; "order " in front only if it does not start with a letter or digit) / reused id (answer in `Failed\<id> (2)` etc.) |
 | `PLAN_TIMES_INVALID` / `PLAN_TOO_LONG` / `PLAN_TOO_MANY_CLIPS` | the plan's times do not fit / > 10 min / > 300 clips |
 | `PLAN_IMAGE_UNREADABLE` / `PLAN_VIDEO_UNREADABLE` / `PLAN_AUDIO_UNREADABLE` | a file of the plan cannot be read (or is not a plain media file) |
 | `PLAN_IMAGE_TOO_BIG` | a picture has more than 50 megapixels |

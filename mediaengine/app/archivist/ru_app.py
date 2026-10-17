@@ -24,8 +24,8 @@ APP_PHRASES: dict[str, str] = {
     "Android source": "Android-источник", "Jobs": "Задачи", "How it works": "Как это работает",
     "Browse every source in": "Просмотри любой источник в разделе Медиа →", "Import": "Импорт", "→ select what you want →": "→ выбери нужное →",
     "Add to Library": "Добавить в библиотеку", "or": "или", "Add + Analyze": "Добавить + анализ",
-    ". Local-folder files stay in place; Android/SD files copy to Staging. Private and Rejected media never appear in Library.":
-        ". Файлы из папок остаются на месте; файлы с Android/SD копируются в промежуточную папку (Staging). Личное (Private) и отклонённое (Rejected) никогда не попадают в библиотеку.",
+    ". Files in folders on this PC stay in place; files from a phone, SD card or USB stick (also a folder added there) copy to Staging. Private and Rejected media never appear in Library.":
+        ". Файлы из папок на этом компьютере остаются на месте; файлы с телефона, SD-карты или флешки (и из добавленной там папки) копируются в промежуточную папку (Staging). Личное (Private) и отклонённое (Rejected) никогда не попадают в библиотеку.",
     "This is a separate MediaEngine install.": "Это отдельная установка MediaEngine.",
     "The Library is empty.": "Библиотека пуста.",
     "Your projects are not shown.": "Твои проекты не показаны.",
@@ -233,8 +233,8 @@ APP_PHRASES: dict[str, str] = {
         "Android, SD/USB и папки на компьютере — в одном месте. Выбери, что войдёт в библиотеку.",
     "Local folders stay where they are. Android and SD/USB files are copied to Staging only after you select them.":
         "Папки на компьютере остаются на месте. Файлы с Android и SD/USB копируются в Staging, только когда ты их выберешь.",
-    "Local-folder files stay in place. Android/SD files are copied to Staging. Source originals are never deleted.":
-        "Файлы из папок остаются на месте. Файлы с Android/SD копируются в Staging. Оригиналы никогда не удаляются.",
+    "Files in folders on this PC stay in place. Files from a phone, SD card or USB stick are copied to Staging. Source originals are never deleted.":
+        "Файлы из папок на этом компьютере остаются на месте. Файлы с телефона, SD-карты или флешки копируются в Staging. Оригиналы никогда не удаляются.",
     "Label (optional)": "Название (необязательно)", "Add folder + Discover": "Добавить папку и найти видео",
     "Discover all sources": "Найти во всех источниках", "No local folders added yet.": "Папки ещё не добавлены.",
     "Nothing here with the current filters.": "С такими фильтрами ничего нет.", "Search source media": "Поиск по источникам",
@@ -630,7 +630,8 @@ APP_JS: dict[str, str] = {
     "Quit MediaEngine? Running work stops; you can start it again from the desktop shortcut.":
         "Закрыть MediaEngine? Текущая работа остановится; запустить снова можно с ярлыка.",
     "Work is running.": "Идёт работа.", "A job is running.": "Идёт задача.",
-    "\\n\\nQuit anyway? It will be marked interrupted and can be retried.": "\\n\\nВсё равно выйти? Работа будет отмечена как прерванная, её можно повторить.",
+    "\\n\\nQuit anyway? A reel being made is marked interrupted (Retry reuses its analysis); Library tasks, conversions and orders go on at the next start.":
+        "\\n\\nВсё равно выйти? Собираемый ролик будет отмечен как прерванный (повтор использует готовый анализ); задачи Библиотеки, конвертация и заказы продолжатся при следующем запуске.",
     "\\n\\nRestart/update anyway? The current file may need to restart.": "\\n\\nВсё равно перезапустить? Текущий файл, возможно, начнётся заново.",
     "Mark selected Private forever?": "Отметить выбранное как личное навсегда? Оно уйдёт из библиотеки и никогда не попадёт в ролики.",
     "Archive selected local/staged files? Source-device originals are never deleted.": "Отправить выбранное в архив? Оригиналы на устройствах никогда не удаляются.",

@@ -121,12 +121,14 @@ can take a minute (Windows checks the new files). "Quit" in the top bar stops Me
 Your projects, settings and exports are kept OUTSIDE this folder, in "MediaEngine Data" next to it
 (the exact place is shown under Settings). Newer build: run its Setup (or extract it next to this one, a new
 folder) and start it; it opens the same projects, and if this one is still running it asks to switch. If the new
-build has a problem, start the old folder again. Old builds can be removed on "Check this PC". The build number
+build has a problem, start the old folder again. Old builds next to this one can be removed on "Check this PC"
+(only a folder that holds nothing but the program is listed). The build number
 (e.g. b21) is shown next to the version at the top.
 
 Auto Edit: choose a folder with your videos (or single videos), pick Length / Format / Sound, press
-"Create reel". Review the result, Accept it, then Export MP4 (to the Exports folder in "MediaEngine Data",
-or "Export to another folder..."). Phone and camera files work: MP4/MOV (also HEVC and HDR), camcorder
+"Create reel". Review the result, then press "Save MP4" on the version you want (it goes to the folder shown
+under the button: "MediaEngine Data\\Exports" until you use "Save to another folder...", which is then remembered).
+Phone and camera files work: MP4/MOV (also HEVC and HDR), camcorder
 MTS/M2TS/MOD/TOD, HDV/DV tape captures, DVD VOB/MPG, older WMV/FLV/3GP, screen and browser recordings
 (WebM/MKV, also without a length written in the file). "Check this PC" (button on Home, in
 Settings and on Auto Edit) shows what is installed and builds a test reel (also with the AI model).
@@ -138,10 +140,10 @@ a camera card chosen at its root lists the video folders inside (DCIM, AVCHD ...
 AI model: "Download the AI model" on the Auto Edit page or on "Check this PC" (once, 30 MB, free; kept in
 "MediaEngine Data", every file checked). Without the model the app offers the clearly labelled "Technical only" mode.
 
-MediaEngine runs on port {PORT} and keeps its own data, archive and exports in "MediaEngine Data"; it uses no
-other program's folders. To remove it: installed with Setup -> Settings -> Apps ->
+MediaEngine runs on port {PORT} and keeps its own data in "MediaEngine Data" (by default also the archive and the
+exports; Settings shows both folders); it uses no other program's folders. To remove it: installed with Setup -> Settings -> Apps ->
 MediaEngine (all Setup builds; keeps "MediaEngine Data"); from the ZIP -> Quit, delete this folder, the "MediaEngine Data" folder
-(your exported videos are inside it) and the "{SHORTCUT}" desktop shortcut.
+(your exported videos are inside it unless you saved them elsewhere) and the "{SHORTCUT}" desktop shortcut.
 """, encoding="utf-8")
 
     (pkg / "ПРОЧТИ.txt").write_text(f"""MediaEngine {ver} — кандидат (тестовая версия)
@@ -167,9 +169,9 @@ MediaEngine (all Setup builds; keeps "MediaEngine Data"); from the ZIP -> Quit, 
   2. Выбери длину, формат и звук → «Создать ролик».
   3. Посмотри результат. Можно убрать, заменить, обрезать, переставить моменты — каждая правка
      сохраняется как новая версия, старые не теряются.
-  4. «Принять эту версию» → «Экспорт MP4» (или «Экспорт в другую папку…»). Папку с готовыми роликами
-     открывает кнопка «Готовые ролики» вверху страницы автомонтажа.
-  (В английском интерфейсе: Auto Edit → Choose folder… → Create reel → Accept → Export MP4.)
+  4. «Сохранить MP4» (или «Сохранить в другую папку…») — у любой готовой версии, принимать отдельно не нужно.
+     Папку с готовыми роликами открывает кнопка «Готовые ролики» вверху страницы автомонтажа.
+  (В английском интерфейсе: Auto Edit → Choose folder… → Create reel → Save MP4.)
   Оригиналы только читаются и никогда не меняются.
   Папка, где больше 64 видео (весь телефон): программа покажет дни съёмки — «Взять этот день» —
   или список, где можно отметить нужные видео (до 64 в одном ролике). Карту памяти камеры можно
@@ -212,7 +214,8 @@ MediaEngine (all Setup builds; keeps "MediaEngine Data"); from the ZIP -> Quit, 
   Новую версию поставь её Setup'ом (или распакуй ZIP в новую папку рядом, не поверх старой) и запусти —
   она откроет те же проекты. Если старая ещё запущена, MediaEngine спросит, переключиться ли на новую.
   Если с новой что-то не так: «Выход» и запусти "Start MediaEngine.vbs" из старой папки. Ненужные старые
-  версии можно удалить на странице «Проверка компьютера» (проекты и ролики не трогаются).
+  версии рядом с этой можно удалить на странице «Проверка компьютера»: там показаны только папки, где нет
+  ничего, кроме самой программы (проекты и ролики не трогаются).
   Номер сборки (например b21) виден вверху рядом с версией.
 
 СВОЯ ПАПКА
@@ -221,7 +224,8 @@ MediaEngine (all Setup builds; keeps "MediaEngine Data"); from the ZIP -> Quit, 
 
 УДАЛИТЬ
   Ставил Setup'ом: Параметры → Приложения → MediaEngine (папка "MediaEngine Data" остаётся).
-  Из ZIP: «Выход» (Quit) → удали эту папку, папку "MediaEngine Data" (в ней и экспортированные ролики) и ярлык
+  Из ZIP: «Выход» (Quit) → удали эту папку, папку "MediaEngine Data" (в ней экспортированные ролики, если ты
+  не сохранял их в другую папку) и ярлык
   "{SHORTCUT}".
 """, encoding="utf-8-sig")
 
