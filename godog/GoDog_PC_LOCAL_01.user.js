@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name         GoDog
+// @name         GoDog GDCONST-010 DEFAULT-DISABLED canary
 // @name:en      GoDog
 // @name:ru      GoDog
 // @namespace    GoDog.constitution
-// @version      7.0.7
+// @version      7.0.8
 // @description  GoDog for ChatGPT: GO, AUTO, NEW, STOP. Local updates, original UI.
 // @match        https://chatgpt.com/*
 // @run-at       document-idle
@@ -15,11 +15,11 @@
 
 (() => {
   'use strict';
-  // Keep namespace and localhost update URLs unchanged. Tampermonkey upgrades the installed script from its existing downloadURL, updating the visible name.
+  // Retain original canonical @name + @namespace identity; localized @name:en displays "GoDog" without creating a second script.
   // LOCAL ONLY. No fetch, XMLHttpRequest, GM_xmlhttpRequest, WebSocket, heartbeat or cloud endpoint.
   // Direct controls: GO -> native submit, STOP -> local AUTO off,
   // NEW -> same-tab native new chat with local handoff, AUTO -> event-driven next GO.
-  const VERSION = '7.0.7';
+  const VERSION = '7.0.8';
   const STATE_KEY = 'godog-pc-local-v7-session';
   const NEW_KEY = 'godog-pc-local-v7-handoff';
   const VERSION_KEY = 'godog-pc-local-v7-version-seen';
