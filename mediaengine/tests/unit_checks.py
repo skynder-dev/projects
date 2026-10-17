@@ -311,9 +311,13 @@ def main():
     # b122 bug (found by review 2026-10-17): the load numbers stored inside a clip's results made every kind "unproven",
     # so a method Check this PC called "used" never reached the engine
     ff_ = ae._ffmpeg() or "ffmpeg"
-    loaded_ = {"methods": {"d3d11va": {"identical": True, "decoded": 1, "speedup": 2.0,
-                                       "clips": {"h264_4k.mp4": {**ok_h_same, "loaded": {"cuts_at_once": 4, "sw_s": 1.0, "hw_s": 0.5}}}}}}
-    check("graphics card: a result with load numbers still proves its kinds", _hw.proven_kinds(loaded_, "d3d11va") == ["h264"],
+    old_fmt_ = {"methods": {"d3d11va": {"identical": True, "decoded": 1, "speedup": 2.0,
+                                        "clips": {"h264_4k.mp4": {**ok_h_same, "loaded": {"cuts_at_once": 4, "sw_s": 1.0, "hw_s": 0.5}}}}}}
+    check("graphics card: a result of the older, weaker test (b122) is never used - test again",
+          _hw.proven_kinds(old_fmt_, "d3d11va") == [], _hw.proven_kinds(old_fmt_, "d3d11va"))
+    loaded_ = {"methods": {"d3d11va": {"identical": True, "decoded": 1, "speedup": 2.0, "clips": {"h264_4k.mp4": ok_h_same},
+                                       "loaded": {"h264_4k.mp4": {"cuts_at_once": 4, "sw_s": 1.0, "hw_s": 0.5, "identical": True}}}}}
+    check("graphics card: a result with load numbers proves its kinds", _hw.proven_kinds(loaded_, "d3d11va") == ["h264"],
           _hw.proven_kinds(loaded_, "d3d11va"))
     _hw.save({**loaded_, "use": "d3d11va", "ffmpeg": _hw.ffmpeg_version(ff_), "gpu": _hw.gpu_names_cached()})
     env_ = ae._engine_env()
@@ -449,6 +453,52 @@ def main():
     # (any page - Quit/Restart/switching builds would otherwise be refused for a job that no longer exists)
     from archivist.db import db as _db, now_iso as _now
     ae.ensure_schema()
+    # a restart (Quit, Update, a Windows reboot) during an overnight set: the running build is interrupted, the
+    # waiting ones stay waiting (QA review 2026-10-17: every waiting build was failed too)
+    with _db() as con:
+        pq_ = con.execute("INSERT INTO ae_projects(title,folder,created_at,updated_at) VALUES('q',?,?,?)", (str(work), _now(), _now())).lastrowid
+        jr_ = con.execute("INSERT INTO ae_jobs(project_id,request_key,settings_json,status,stage,created_at,started_at) "
+                          "VALUES(?,'kr','{}','running','analyze',?,?)", (pq_, _now(), _now())).lastrowid
+        jq_ = con.execute("INSERT INTO ae_jobs(project_id,request_key,settings_json,status,stage,created_at) "
+                          "VALUES(?,'kq','{}','queued','queued',?)", (pq_, _now())).lastrowid
+        con.commit()
+    ae._SCHEMA_READY = False
+    ae.ensure_schema()
+    st_r, st_q = ae.job(jr_)["status"], ae.job(jq_)["status"]
+    with _db() as con:                           # never built here (no worker started in this check)
+        con.execute("DELETE FROM ae_jobs WHERE id IN (?,?)", (jr_, jq_)); con.execute("DELETE FROM ae_projects WHERE id=?", (pq_,)); con.commit()
+    check("restart: the running build is interrupted, waiting builds keep waiting", st_r == "failed" and st_q == "queued", (st_r, st_q))
+    # the cut pieces of other projects are kept to a limit, oldest first; never the project being built
+    fq_ = ae.AE_ROOT / "p999001" / "work" / "full_quality"; fq_.mkdir(parents=True, exist_ok=True)
+    kp_ = ae.AE_ROOT / "p999002" / "work" / "segment_cache_v2"; kp_.mkdir(parents=True, exist_ok=True)
+    (fq_ / "a.mp4").write_bytes(b"0" * 1000); (fq_ / "a.mp4.sha256").write_text("x"); (fq_ / "b.mp4").write_bytes(b"0" * 1000)
+    (kp_ / "k.mp4").write_bytes(b"0" * 5000)
+    os.utime(fq_ / "a.mp4", (1_600_000_000, 1_600_000_000))
+    freed_ = ae.tidy_work_caches(keep_pid=999002, max_bytes=1500, min_free_bytes=0)
+    check("cut pieces of other projects kept to a limit, oldest first, never the one being built",
+          freed_ == 1000 and not (fq_ / "a.mp4").exists() and not (fq_ / "a.mp4.sha256").exists() and (fq_ / "b.mp4").exists()
+          and (kp_ / "k.mp4").exists(), (freed_, sorted(x.name for x in fq_.iterdir())))
+    shutil.rmtree(ae.AE_ROOT / "p999001", ignore_errors=True); shutil.rmtree(ae.AE_ROOT / "p999002", ignore_errors=True)
+    _ph = ae._private_hashes
+    try:      # a video marked Private while its reel was being built: that reel is never kept or saved
+        ae._private_hashes = lambda: ["aa11"]
+        res_p = {"inputs": [{"name": "a.mp4", "sha256": "AA11"}, {"name": "b.mp4", "sha256": "bb22"}],
+                 "segments": [{"source_name": "a.mp4"}, {"source_name": "b.mp4"}]}
+        hit, miss = ae.private_in_result(res_p), ae.private_in_result({**res_p, "segments": [{"source_name": "b.mp4"}]})
+        refused = False
+        try:
+            ae._refuse_private({"result": res_p})
+        except ValueError:
+            refused = True
+    finally:
+        ae._private_hashes = _ph
+    check("a reel with a video marked Private since is not kept or saved", hit == ["a.mp4"] and miss == [] and refused, (hit, miss, refused))
+    import importlib as _il
+    _web_mod = _il.import_module("archivist.auto_edit_web")
+    check("times never show 0:60.0", _web_mod._fmt_s(59.97) == "1:00.0" and _web_mod._fmt_s(119.96) == "2:00.0"
+          and _web_mod._fmt_s(59.94) == "0:59.9", (_web_mod._fmt_s(59.97), _web_mod._fmt_s(119.96), _web_mod._fmt_s(59.94)))
+    check("paths in error messages stay as they are in Russian", "<span translate='no'>C:\\Music\\Only you.mp3</span>"
+          in _web_mod._protect_paths("Music file not found: C:\\Music\\Only you.mp3"), _web_mod._protect_paths("Music file not found: C:\\Music\\Only you.mp3"))
     with _db() as con:
         pid_ = con.execute("INSERT INTO ae_projects(title,folder,created_at,updated_at) VALUES('t',?,?,?)", (str(work), _now(), _now())).lastrowid
         jid_ = con.execute("INSERT INTO ae_jobs(project_id,request_key,settings_json,status,stage,created_at,started_at) "

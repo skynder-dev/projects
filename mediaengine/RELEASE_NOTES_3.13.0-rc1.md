@@ -71,6 +71,12 @@ first. After the download the same reel is built again with them.
   (interlaced) video stays on the processor.
 - Prepare in advance: one piece that cannot be prepared no longer fails the preparation; "A reel for every day" after
   preparing continues the prepared day projects; "Free cache" ends "Prepared".
+- Editing: moments you removed stay out in a variant of another length and in "Let MediaEngine choose again"; "Apply my
+  edits" with nothing changed makes no copy; Back after an error keeps what you typed; a new reel from a folder you
+  prepared in advance continues that project.
+- Quit / Update / restart: only the reel being built is interrupted; waiting reels (an overnight set) go on at the next
+  start. A reel with a video you marked Private while it was being built is not kept, and no version with such a video
+  can be saved. Old cut pieces of other projects are kept under 60 GB.
 
 ## The graphics card for decoding, a faster first choice of moments (2026-10-16)
 

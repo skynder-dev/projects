@@ -256,6 +256,19 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   after preparing goes on in the prepared day projects (no second set of projects); Free cache ends "Prepared" and
   Prepare again really prepares.
 - Unused code that could have sent a diagnostics report to the old Supabase lab is switched off (it had no caller).
+- Second round (a QA walk-through of the Auto Edit pages and a review of the engine's caches), then a third reviewer
+  checking these fixes: moments removed by hand came back in a variant of another length or "Let MediaEngine choose
+  again" → remembered with the hand-made selection; "Apply my edits" with nothing changed no longer builds a copy;
+  a new reel from a folder prepared in advance continues that project; Back after an error keeps what was typed (and
+  re-enables the buttons); a restart (Quit, Update, reboot) only interrupts the running build - waiting builds of an
+  overnight set go on at the next start; a folder grown past 64 videos says to pick a day; a refused Save MP4 no longer
+  changes the chosen version; times never show "0:60.0"; Free (shared AI data) ends "Prepared" too; paths in messages
+  stay untranslated in Russian; odd ids / JSON bodies never give a server error; the test reel waits while a build
+  runs; a reel with a video marked Private during its build is not kept and such a version cannot be saved; a reel
+  made worse by a passing problem (a time-out, a piece from the small preview) is built once more on request; the cut
+  pieces of other projects are kept under 60 GB (never a prepared project's); the engine never cuts one AI+ moment
+  twice at once (on Windows that could drop a video) and keys finished segments by their start and crop; a graphics
+  card test of b122 is not trusted (test again). Checks: unit 121/121, e2e, orders, browser (all on Linux; Windows CI).
 
 ## Evidence
 

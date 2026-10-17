@@ -270,6 +270,14 @@ def main():
         check("variant_same_moments", [s["event_id"] for s in rev2["result"]["segments"]] == [s["event_id"] for s in rev["result"]["segments"]])
         check("variant_faster_than_first_build", dt2 < timings["first_build_s"], (dt2, timings["first_build_s"]))
         check("accepted_pointer_unchanged_by_variant", p["accepted_revision_id"] == rev["id"] and sha(rev["video_path"]) == rev["video_sha256"])
+        # "Save MP4" of another version into a refused folder: refused, and the chosen version stays (QA review 2026-10-17)
+        r = c.post(f"/auto/p/{pid}/export", data={"dest": str(folder), "revision_id": str(rev2["id"])}, headers=H)
+        check("refused_save_keeps_chosen_version", r.status_code == 400 and ae.project(pid)["accepted_revision_id"] == rev["id"],
+              (r.status_code, ae.project(pid)["accepted_revision_id"]))
+        huge = "9" * 30
+        codes_ = [c.get(u, headers=H).status_code for u in (f"/auto/p/{huge}", f"/api/auto/job/{huge}", f"/auto/rev/{huge}/video")]
+        codes_.append(c.get(f"/auto/p/{pid}?rev={huge}&exported={huge}", headers=H).status_code)
+        check("odd_ids_and_bodies_never_500", all(x != 500 for x in codes_) and codes_[0] == 404, codes_)
         # blind comparison: versions hidden until the person decides, then revealed and listed on the project
         r = c.post(f"/auto/p/{pid}/compare", data={"a": rev2["id"], "b": rev["id"]}, headers=H)
         okr = r.status_code == 302 and "/auto/review/" in r.headers.get("Location", "")
@@ -370,6 +378,27 @@ def main():
                 t6 = next((s_ for s_ in rev6["result"]["segments"] if s_["event_id"] == first), None)
                 check("re_edit_keeps_earlier_trim", j6["status"] == "done" and t6 and abs(t6["source_in_s"] - t_in) <= 0.15
                       and rows2[-1] not in [s_["event_id"] for s_ in rev6["result"]["segments"]], t6)
+                # "Apply my edits" with nothing changed: no new version, "this version already exists"
+                n_jobs = len(ae.project(pid)["jobs"])
+                f3 = {"revision_id": rev6["id"], "length": a.length, "format": "social_hd", "sound": "auto",
+                      "mode": rev6["settings"]["mode"], "row": [s_["event_id"] for s_ in rev6["result"]["segments"]]}
+                for s_ in rev6["result"]["segments"]:
+                    for k in ("in", "out"):
+                        f3[f"{k}_{s_['event_id']}"] = f3[f"def_{k}_{s_['event_id']}"] = f"{s_['source_' + k + '_s']:.1f}"
+                r = c.post(f"/auto/p/{pid}/edit", data=f3, headers=H)
+                check("edit_without_changes_makes_no_version", r.status_code == 302 and "same=1" in r.headers.get("Location", "")
+                      and len(ae.project(pid)["jobs"]) == n_jobs, (r.status_code, r.headers.get("Location"), len(ae.project(pid)["jobs"]), n_jobs))
+                # removed moments stay out when MediaEngine chooses again (QA review 2026-10-17: they came back)
+                gone_ids = {x for x in (removed, rows2[-1], replaced[0] if replaced else None) if x}
+                check("edit_remembers_removed_moments", gone_ids <= set(rev6["settings"].get("exclude") or []),
+                      (gone_ids, rev6["settings"].get("exclude")))
+                r = c.post(f"/auto/p/{pid}/variant", data={"base_revision_id": rev6["id"], "length": a.length, "format": "social_hd",
+                                                            "sound": "auto", "rechoose": "1"}, headers=H)
+                j7, _, _ = wait_job(c, ae.project(pid)["jobs"][0]["id"])
+                rev7 = ae.revision(ae.project(pid)["revisions"][-1]["id"]) if j7["status"] == "done" else None
+                got7 = [s_["event_id"] for s_ in (rev7 or {}).get("result", {}).get("segments", [])]
+                check("choose_again_keeps_removed_moments_out", j7["status"] == "done" and got7 and not (gone_ids & set(got7)),
+                      (j7.get("status"), j7.get("error"), gone_ids & set(got7)))
         # a revision of another project is never shown here
         other = ae.create_project(str(folder), "other")
         r = c.get(f"/auto/p/{other}?rev={rev['id']}", headers=H)

@@ -549,8 +549,9 @@ def ensure_schema() -> None:
         )
         if "files_json" not in [r[1] for r in con.execute("PRAGMA table_info(ae_projects)").fetchall()]:
             con.execute("ALTER TABLE ae_projects ADD COLUMN files_json TEXT")   # chosen files instead of a whole folder
-        # A job that was queued/running when the previous app process stopped has no live process any more.
-        con.execute("UPDATE ae_jobs SET status='failed',stage='failed',error=?,finished_at=? WHERE status IN ('queued','running')",
+        # The job that was running when the previous app process stopped has no live process any more: interrupted
+        # (Retry reuses the finished analysis). Queued jobs just wait: the next app start builds them (overnight sets).
+        con.execute("UPDATE ae_jobs SET status='failed',stage='failed',error=?,finished_at=? WHERE status='running'",
                     ("Interrupted: the app was closed. Press Retry - finished analysis is reused.", now_iso()))
         con.commit()
     _SCHEMA_READY = True
@@ -1109,11 +1110,42 @@ def project_with_files(files) -> int | None:
     return None
 
 
+def prepared_project_for(folder, files=None) -> int | None:
+    """The project (not archived, nothing building) prepared in advance from exactly this folder or these videos and
+    not built yet, or None."""
+    try:
+        if files:
+            cands = [project_with_files(files)]
+        else:
+            f = check_folder(folder)
+            ensure_schema()
+            with db() as con:
+                rows = con.execute("SELECT id, folder FROM ae_projects WHERE archived=0 AND files_json IS NULL ORDER BY id DESC").fetchall()
+            cands = [int(r["id"]) for r in rows if str(r["folder"]).lower() == str(f.resolve()).lower()]
+    except (ValueError, OSError):
+        return None
+    for pid in cands:
+        p = project(pid) if pid else None
+        if p and p["state"] == "PREPARED":
+            return int(pid)
+    return None
+
+
+def _sql_int(x) -> bool:
+    """An id SQLite can look up (a huge number from a typed URL would raise OverflowError -> a server error)."""
+    try:
+        return -(2 ** 63) <= int(x) < 2 ** 63
+    except (TypeError, ValueError):
+        return False
+
+
 def _project_dir(pid: int) -> Path:
     return AE_ROOT / f"p{int(pid)}"
 
 
 def project(pid: int) -> dict | None:
+    if not _sql_int(pid):
+        return None
     ensure_schema()
     with db() as con:
         p = con.execute("SELECT * FROM ae_projects WHERE id=?", (int(pid),)).fetchone()
@@ -1240,7 +1272,9 @@ def normalize_settings(raw: dict, *, model_ready: bool | None = None) -> dict:
         trims[str(k)] = [a, b]
     if selection:
         out["selection"] = selection
-        out["exclude"] = []
+        # removed moments are remembered with a hand-made selection (they stay out when MediaEngine chooses again for
+        # another length); the engine only marks them in the pool, the selection decides the reel
+        out["exclude"] = sorted(set(exclude) - set(selection))
     if trims:
         out["trims"] = trims
     if raw.get("prepare") in (True, 1, "1", "on", "true") and not selection:
@@ -1360,6 +1394,16 @@ def check_free_space() -> None:
                          "A reel needs at least 1 GB to work in. Free some space (for example 'Free cache' on old projects) and try again.")
 
 
+def resume_queued() -> None:
+    """At the app's start (the serving process only): builds still waiting from the last run go on."""
+    ensure_schema()
+    with db() as con:
+        waiting = con.execute("SELECT 1 FROM ae_jobs WHERE status='queued' LIMIT 1").fetchone()
+    if waiting:
+        _ensure_worker()
+        _WAKE.set()
+
+
 def start_job(pid: int, raw_settings: dict, *, retry=False) -> int:
     """Queue a reel build. Same project + same inputs + same settings never builds twice."""
     ensure_schema()
@@ -1369,12 +1413,19 @@ def start_job(pid: int, raw_settings: dict, *, retry=False) -> int:
     if not p["source_present"]:
         raise ValueError("The source videos are not available (disconnected drive?)" if p["files"] else
                          "The source folder is not available (disconnected drive?)")
+    if not p["files"] and len(local_inputs(list_videos(Path(p["folder"])))) > MAX_INPUTS:     # as the build counts them
+        raise ValueError(f"This folder has more than {MAX_INPUTS} videos now. Make a new reel from it (Auto Edit → New reel): "
+                         "you can pick a day or the videos there.")
     settings = normalize_settings(raw_settings, model_ready=model_status()["ready"])
     key = _request_key(p, settings)
     with db() as con:
         con.execute("BEGIN IMMEDIATE")  # lookup + insert as one step: a double click never queues twice
         same = con.execute("SELECT * FROM ae_jobs WHERE project_id=? AND request_key=? ORDER BY id DESC LIMIT 1", (int(pid), key)).fetchone()
-        if same and (same["status"] in ("queued", "running", "done")):
+        n_same = con.execute("SELECT COUNT(*) n FROM ae_jobs WHERE project_id=? AND request_key=? AND status='done'",
+                             (int(pid), key)).fetchone()["n"]
+        # a reel made worse by a passing problem is built once more; if it comes out the same, that is the video itself
+        if same and (same["status"] in ("queued", "running")
+                     or (same["status"] == "done" and (n_same >= 2 or not _degraded(same)))):
             return int(same["id"])
         check_free_space()
         ts = now_iso()
@@ -1386,6 +1437,22 @@ def start_job(pid: int, raw_settings: dict, *, retry=False) -> int:
     _ensure_worker()
     _WAKE.set()
     return jid
+
+
+def _degraded(job_row) -> bool:
+    """A finished reel made worse by a passing problem (a video skipped for a time-out or an error, pieces from the
+    small previews): the same request builds it again instead of returning it."""
+    try:
+        rid = job_row["revision_id"]
+        if not rid:
+            return False
+        res = json.loads(Path((revision(int(rid)) or {}).get("result_path") or "").read_text(encoding="utf-8"))
+    except (OSError, ValueError, TypeError, KeyError, IndexError):
+        return False
+    if any(str(x.get("reason") or "").startswith(("ANALYSIS_TIMEOUT", "ANALYSIS_FAILED"))
+           for x in res.get("skipped_inputs") or [] if isinstance(x, dict)):
+        return True              # (a damaged or Private video, a duplicate, "no moments" are the videos themselves)
+    return any(str(w).startswith("PREVIEW_QUALITY_USED") for w in res.get("warnings") or [])
 
 
 def recent_jobs(limit: int = 20) -> list[dict]:
@@ -1406,6 +1473,8 @@ def recent_jobs(limit: int = 20) -> list[dict]:
 
 
 def job(jid: int) -> dict | None:
+    if not _sql_int(jid):
+        return None
     ensure_schema()
     with db() as con:
         r = con.execute("SELECT * FROM ae_jobs WHERE id=?", (int(jid),)).fetchone()
@@ -1460,7 +1529,8 @@ def cancel_job(jid: int) -> bool:
         if not r or r["status"] not in ("queued", "running"):
             return False
         if r["status"] == "queued":
-            cur = con.execute("UPDATE ae_jobs SET status='cancelled',stage='cancelled',finished_at=? WHERE id=? AND status='queued'", (now_iso(), jid))
+            cur = con.execute("UPDATE ae_jobs SET status='cancelled',stage='cancelled',finished_at=?,message='Cancelled by user' "
+                              "WHERE id=? AND status='queued'", (now_iso(), jid))
             con.commit()
             if cur.rowcount:
                 return True
@@ -1673,6 +1743,10 @@ def _run_job(jid: int) -> None:
         tidy_shared_cache(_private_hashes())
     except Exception:
         pass
+    try:
+        tidy_work_caches(keep_pid=int(p["id"]))
+    except Exception:
+        pass
     dress_file = jobs_dir / f"j{jid}.dress.json"
     dress_file.write_text(json.dumps({"title": s.get("title") or "", "subtitle": s.get("subtitle") or "", "music": s.get("music") or "",
                                       "music_mode": s.get("music_mode") or "mix", "beat_sync": s.get("beat_sync") is not False},
@@ -1752,6 +1826,15 @@ def _run_job(jid: int) -> None:
         _set(jid, status="done", stage="done", done=1, total=1, finished_at=now_iso(), message="Prepared")
         _notify_finished(jid, p, True)
         return
+    try:          # a video marked Private while this reel was being built: the reel is not kept
+        gone = private_in_result(json.loads((out_dir / "MediaEngine Result.json").read_text(encoding="utf-8")))
+    except (OSError, ValueError):
+        gone = []
+    if gone:
+        shutil.rmtree(out_dir, ignore_errors=True)
+        _set(jid, status="failed", stage="failed", finished_at=now_iso(), error=friendly_error("PRIVATE_DURING_BUILD: " + ", ".join(gone)[:200]))
+        _notify_finished(jid, p, False)
+        return
     rid = _publish_revision(p["id"], jid, out_dir, s)
     _set(jid, status="done", stage="done", done=1, total=1, revision_id=rid, finished_at=now_iso(), message="Ready")
     _notify_finished(jid, p, True)
@@ -1784,6 +1867,22 @@ def _notify_finished(jid: int, p: dict, ok: bool) -> None:
                              f"http://127.0.0.1:{APP_PORT}/auto/p/{int(p['id'])}", ui_language() == "ru", prepared=is_prepare(j))
     except Exception:
         pass
+
+
+def private_in_result(res: dict) -> list[str]:
+    """Names of the videos in a reel (its result) that are marked Private now."""
+    priv = set(_private_hashes())
+    if not priv:
+        return []
+    by_name = {str(x.get("name")): str(x.get("sha256") or "").lower() for x in (res or {}).get("inputs") or []}
+    used = {str(sg.get("source_name")) for sg in (res or {}).get("segments") or []}
+    return sorted(n for n in used if by_name.get(n) in priv)
+
+
+def _refuse_private(r: dict) -> None:
+    if private_in_result(r.get("result") or {}):
+        raise ValueError("This version contains a video that is marked Private now. Make a new version (Let MediaEngine "
+                         "choose again, or a variant): it is made without that video.")
 
 
 def _private_hashes() -> list[str]:
@@ -1853,6 +1952,7 @@ _FRIENDLY = {
     "OUTPUT_DIMENSIONS_MISMATCH": "The reel came out in a wrong size. Press Retry; if it repeats, free the cache of this project.",
     "FINAL_COPY_VERIFY_FAILED": "The finished reel could not be saved correctly. Check the free space and press Retry.",
     "UNKNOWN_THEME": "This theme is not available. Choose another one.",
+    "PRIVATE_DURING_BUILD": "A video of this reel was marked Private while the reel was being built, so the reel was not kept. Press Retry (for a version edited by hand: Let MediaEngine choose again): it is made without that video.",
     "Rendered reel does not match": "The finished reel could not be saved correctly. Press Retry.",
 }
 
@@ -1912,6 +2012,8 @@ def _publish_revision(pid: int, jid: int, out_dir: Path, settings: dict) -> int:
 
 
 def revision(rid: int) -> dict | None:
+    if not _sql_int(rid):
+        return None
     with db() as con:
         r = con.execute("SELECT * FROM ae_revisions WHERE id=?", (int(rid),)).fetchone()
     if not r:
@@ -2561,6 +2663,51 @@ def tidy_shared_cache(private_hashes=(), max_clip_bytes=None, min_free_bytes=10 
             pass
 
 
+WORK_CACHE_MAX = 60 * 1024 ** 3          # the full-quality pieces and finished segments of all projects together
+WORK_CACHE_DIRS = ("full_quality", "segment_cache_v2")
+
+
+def tidy_work_caches(keep_pid: int | None = None, max_bytes: int | None = None, min_free_bytes: int = 10 * 1024 ** 3) -> int:
+    """Before a build: the cut pieces of the OTHER projects (4K pieces: ~100 MB per moment) are kept to WORK_CACHE_MAX
+    (less when the disk is nearly full), the oldest first - nothing grows without end. Never the project being built
+    and never a project prepared in advance and not built yet (its pieces are what makes its reel quick). A removed
+    piece is cut again if that project is built again. Returns the bytes freed."""
+    keep = {int(keep_pid)} if keep_pid else set()
+    try:
+        keep |= {int(x["id"]) for x in list_projects(include_archived=True) if x["state"] in ("PREPARED", "PROCESSING")}
+    except Exception:
+        return 0
+    files = []
+    for pd in AE_ROOT.glob("p*"):
+        if not pd.is_dir() or not pd.name[1:].isdigit() or int(pd.name[1:]) in keep:
+            continue
+        for sub in WORK_CACHE_DIRS:
+            for f in (pd / "work" / sub).glob("*.mp4"):
+                try:
+                    st = f.stat()
+                    files.append((st.st_mtime, st.st_size, f))
+                except OSError:
+                    pass
+    total = sum(x[1] for x in files)
+    cap = WORK_CACHE_MAX if max_bytes is None else int(max_bytes)
+    try:
+        if shutil.disk_usage(AE_ROOT).free < min_free_bytes:
+            cap = min(cap, total // 2)
+    except OSError:
+        pass
+    freed = 0
+    for _, size, f in sorted(files, key=lambda x: x[0]):
+        if total - freed <= cap:
+            break
+        for side in (f, f.with_name(f.name + ".sha256"), f.with_suffix(".json")):
+            try:
+                side.unlink(missing_ok=True)
+            except OSError:
+                pass
+        freed += size
+    return freed
+
+
 def clear_shared_cache() -> int:
     """'Free' on Check this PC: the next AI+ build looks at the frames of its videos again."""
     with db() as con:
@@ -2578,6 +2725,8 @@ def clear_shared_cache() -> int:
         pass
     freed = shared_cache_bytes()
     shutil.rmtree(SHARED, ignore_errors=True)
+    for p in list_projects(include_archived=True):      # what was prepared in advance lived there too
+        _forget_prepared(p)
     return freed
 
 
@@ -2591,15 +2740,20 @@ def clear_work_cache(pid: int) -> int:
     work = _project_dir(pid) / "work"
     freed = _tree_bytes(work)
     shutil.rmtree(work, ignore_errors=True)
-    # "Prepared in advance" is not true any more: the page stops saying so, and Prepare again really prepares
-    for j in p["jobs"]:
+    _forget_prepared(p)
+    return freed
+
+
+def _forget_prepared(p: dict) -> None:
+    """"Prepared in advance" is not true any more (a cache was freed): the page stops saying so, and Prepare again
+    really prepares (the old job is no longer "the same request")."""
+    for j in p.get("jobs") or []:
         if j["status"] == "done" and is_prepare(j):
-            (_project_dir(pid) / "jobs" / f"j{int(j['id'])}" / "MediaEngine Prepared.json").unlink(missing_ok=True)
+            (_project_dir(int(p["id"])) / "jobs" / f"j{int(j['id'])}" / "MediaEngine Prepared.json").unlink(missing_ok=True)
             with db() as con:
                 con.execute("UPDATE ae_jobs SET request_key=request_key||':cleared' WHERE id=? AND request_key NOT LIKE '%:cleared'",
                             (int(j["id"]),))
                 con.commit()
-    return freed
 
 
 def all_work_cache_bytes() -> int:
@@ -2643,6 +2797,8 @@ def start_review(pid: int, rev_a: int, rev_b: int) -> int:
 
 
 def review(review_id: int) -> dict | None:
+    if not _sql_int(review_id):
+        return None
     ensure_schema()
     with db() as con:
         r = con.execute("SELECT * FROM ae_reviews WHERE id=?", (int(review_id),)).fetchone()
@@ -2741,6 +2897,7 @@ def _export_accepted(pid: int, dest_dir: Path | None = None, remember: bool = Fa
     if not p["accepted_revision_id"]:
         raise ValueError("Accept a revision before exporting")
     r = revision(p["accepted_revision_id"])
+    _refuse_private(r)
     src = Path(r["video_path"])
     if sha256_file(src) != r["video_sha256"]:
         raise ValueError("Accepted revision changed on disk; export refused")
@@ -2798,6 +2955,7 @@ def _small_copy(pid: int, rid: int) -> Path:
     p, r = project(pid), revision(rid)
     if not p or not r or int(r["project_id"]) != int(pid):
         raise ValueError("Revision not found in this project")
+    _refuse_private(r)
     src = Path(r["video_path"])
     if sha256_file(src) != r["video_sha256"]:
         raise ValueError("The file of this version changed on disk; build the version again")
@@ -2873,6 +3031,8 @@ def _record_export(pid: int, r: dict, dst: Path, reused: bool) -> dict:
 
 
 def export_row(eid: int) -> dict | None:
+    if not _sql_int(eid):
+        return None
     with db() as con:
         r = con.execute("SELECT * FROM ae_exports WHERE id=?", (int(eid),)).fetchone()
     return dict(r) if r else None

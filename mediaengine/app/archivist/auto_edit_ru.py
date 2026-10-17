@@ -511,6 +511,18 @@ PHRASES = {
     "This order was started several times and never finished (MediaEngine was closed each time).":
         "Этот заказ запускался несколько раз и ни разу не закончился (MediaEngine каждый раз закрывали).",
     "A picture of the plan is too big.": "Картинка из плана слишком большая.",
+    # found by the QA review (2026-10-17): messages that stayed English
+    "The source folder is not available (disconnected drive?)": "Папка с исходными видео недоступна (диск отключён?)",
+    "The source videos are not available (disconnected drive?)": "Исходные видео недоступны (диск отключён?)",
+    "Keep at least one moment.": "Оставь хотя бы один момент.", "Could not apply the edits: ": "Не удалось применить правки: ",
+    "The exported file is not available any more: ": "Сохранённого файла больше нет: ", "Job not found": "Сборка не найдена",
+    "Export not found": "Сохранение не найдено", "not found (moved or deleted)": "не найден (перемещён или удалён)",
+    "A video of this reel was marked Private while the reel was being built, so the reel was not kept. Press Retry (for a version edited by hand: Let MediaEngine choose again): it is made without that video.":
+        "Пока ролик собирался, одно из его видео отметили как личное, поэтому ролик не сохранён. Нажми «Повторить» (для версии, которую ты правил вручную, — «Пусть MediaEngine выберет заново»): он соберётся без этого видео.",
+    "This version contains a video that is marked Private now. Make a new version (Let MediaEngine choose again, or a variant): it is made without that video.":
+        "В этой версии есть видео, которое теперь отмечено как личное. Сделай новую версию («Пусть MediaEngine выберет заново» или вариант): она будет без этого видео.",
+    "This folder has more than 64 videos now. Make a new reel from it (Auto Edit → New reel): you can pick a day or the videos there.":
+        "В этой папке теперь больше 64 видео. Сделай из неё новый ролик (Автомонтаж → Новый ролик): там можно выбрать день или сами видео.",
     "An order from another program is being done (Auto Edit → Orders)": "Выполняется заказ другой программы (Автомонтаж → Заказы)",
     "An order from another program is being done. Switch when it is ready.": "Выполняется заказ другой программы. Переключись, когда он будет готов.",
     "Order not found": "Заказ не найден", "This order cannot be done again.": "Этот заказ нельзя выполнить снова.",

@@ -283,7 +283,10 @@ def run_cut(ffmpeg,src,cmd_before_input,cmd_rest,tmp,check=None):
         else:
             i=rest.index("-c:v"); rest[i:i]=["-vf",f"format={pix}"]
         try:      # a hung graphics driver must not hang the build: the processor does the cut instead
-            cp=subprocess.run([*cmd_before_input,"-hwaccel",HWACCEL,*rest],capture_output=True,text=True,timeout=HW_CUT_TIMEOUT_S)
+            try: secs=float(rest[rest.index("-t")+1])
+            except (ValueError,IndexError): secs=60.0
+            cp=subprocess.run([*cmd_before_input,"-hwaccel",HWACCEL,*rest],capture_output=True,text=True,
+                              timeout=max(HW_CUT_TIMEOUT_S,60+10*secs))
         except (subprocess.TimeoutExpired,OSError) as exc:
             cp=subprocess.CompletedProcess(exc.args if isinstance(exc,OSError) else exc.cmd,1,"",str(exc))
         if cp.returncode==0 and not (cp.stderr or "").strip() and (check is None or check(tmp)):
@@ -297,7 +300,18 @@ def candidate_eid(source_sha,c,tag="SEMANTIC_V2"):
     """The id (and clip file name) of a moment: the video's SHA-256 and the window."""
     return hashlib.sha256(f"{source_sha}|{float(c['start_s']):.3f}|{float(c['end_s']):.3f}|{tag}".encode()).hexdigest()[:24]
 
+_EID_LOCKS={}
+_EID_LOCKS_GUARD=threading.Lock()
+
 def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="SEMANTIC_V2", legacy_dir=None, origin_sha=None, preview=False):
+    """One clip at a time per moment id: two threads asked for the same window (AI+ can rank one window twice) never
+    cut and rename the same file at once (on Windows the second rename fails while the first is still being read)."""
+    key=str(Path(out_dir)/candidate_eid(source_sha,c,tag))
+    with _EID_LOCKS_GUARD: lock=_EID_LOCKS.setdefault(key,threading.Lock())
+    with lock:
+        return _extract_candidate_clip(v52,src,source_sha,source_name,c,out_dir,tag,legacy_dir,origin_sha,preview)
+
+def _extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="SEMANTIC_V2", legacy_dir=None, origin_sha=None, preview=False):
     start=float(c["start_s"]); end=float(c["end_s"]); dur=max(.25,end-start)
     eid=candidate_eid(source_sha,c,tag)
     out_dir.mkdir(parents=True,exist_ok=True)
@@ -842,8 +856,12 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
                 atomic_json(rp,{"source_sha256":row["sha256"],"key":rank_key,"report":report})
             row_specs=[]
             todo=[]
+            seen_e=set()
             for rank,c in enumerate(report.get("ranked",[]),1):
                 cc=dict(c); cc["_source_rank"]=rank
+                ek=candidate_eid(row["sha256"],cc,"SEMANTIC_PE1")
+                if ek in seen_e: continue       # the same window ranked twice (a short video's start): one moment, best rank
+                seen_e.add(ek)
                 if theme and float(cc["semantic_margin_raw"])<=0:
                     row_deferred.append((row,cc,rank)); continue      # cut only if too few moments match the theme
                 todo.append((row,cc,rank))
@@ -2038,9 +2056,15 @@ def run(args):
     framing=str(getattr(args,"vertical_framing","fill") or "fill") if profile=="9x16" else "fill"
     def make_seg(e,use):
         """One segment of `use` seconds (cached by clip, length and output settings): (file, meta, picture length)."""
+        try:      # where it starts in the clip and the picture's crop (the 9:16 crop follows the moment's saliency):
+            # the same clip seen by another mode (other scores) must not reuse another crop (found by review 2026-10-17)
+            _src,ss_,_use,vf_,_crop,_cx=v52.segment_spec(e,profile,float(use),framing,output_resolution=resolution,output_fps=30)
+            spec_={"ss":round(float(ss_),3),"vf":vf_}
+        except Exception:
+            spec_={}
         key=hashlib.sha256(json.dumps({"clip_sha256":e["clip_sha256"],"use_s":round(float(use),3),
                                      "audio":audio_mode,"profile":profile,"resolution":resolution,"fps":30,"quality":"high",
-                                     **({"framing":framing} if framing!="fill" else {})},
+                                     **({"framing":framing} if framing!="fill" else {}),**spec_},
                                     sort_keys=True,separators=(",",":")).encode()).hexdigest()[:20]
         seg=segcache/f"{key}.mp4"; meta_path=segcache/f"{key}.json"
         meta=None

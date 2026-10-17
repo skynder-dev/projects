@@ -39,7 +39,13 @@ PAGE_CSS = r"""
 """
 
 
+# Back after an error: a page the browser restores from its cache keeps the buttons its form disabled on submit
+_REENABLE_JS = """
+document.addEventListener('submit',ev=>{ev.target.querySelectorAll('button:not([disabled])').forEach(b=>b.dataset.reen='1')},true);
+window.addEventListener('pageshow',ev=>{if(ev.persisted)document.querySelectorAll('button[data-reen]').forEach(b=>{b.disabled=false;delete b.dataset.reen})});"""
+
 _STAGE_SEEN: dict = {}
+_RESUMED: list = []
 
 
 def stage_eta_s(j: dict, now: float | None = None):
@@ -124,7 +130,7 @@ def _rel(path: str, base: str) -> str:
 
 def _fmt_s(x) -> str:
     try:
-        x = float(x)
+        x = round(float(x), 1)          # 59.97 s -> 1:00.0, never "0:60.0"
     except Exception:
         return "—"
     m, s = divmod(x, 60)
@@ -218,8 +224,35 @@ def _big_folder_page(folder: Path, days: list, e, human_bytes) -> tuple[str, str
     return body, script
 
 
+def _json_obj() -> dict:
+    """The request's JSON body when it is an object, else {} (a list or a number never reaches .get())."""
+    d = request.get_json(silent=True)
+    return d if isinstance(d, dict) else {}
+
+
+_PATH_IN_TEXT = None
+
+
+def _protect_paths(escaped: str) -> str:
+    """Paths inside an (escaped) message stay exactly as they are in Russian: "C:\\Music\\Only you.mp3" must not
+    become "...\\Всего you.mp3"."""
+    import re as _re
+    global _PATH_IN_TEXT
+    if _PATH_IN_TEXT is None:
+        _PATH_IN_TEXT = _re.compile(r"((?<![A-Za-z])[A-Za-z]:[\\/][^<\n]*?|\\\\[^<\n]*?)(?=\s\(|\s\[|$|\n)")
+    return _PATH_IN_TEXT.sub(lambda m: "<span translate='no'>" + m.group(1) + "</span>", escaped)
+
+
 def register(app, layout, e, human_bytes):
     """Attach Auto Edit routes to the existing app (called from web.create_app)."""
+
+    @app.before_request
+    def _ids_in_range():
+        # /auto/p/99999999999999999999: SQLite cannot even look such a number up (OverflowError -> 500): not found
+        for v in (request.view_args or {}).values():
+            if isinstance(v, int) and not (-(2 ** 63) <= v < 2 ** 63):
+                return "not found", 404
+        return None
 
     @app.before_request
     def _ae_recover():
@@ -228,6 +261,9 @@ def register(app, layout, e, human_bytes):
         # Only the process that actually serves pages does this - a second copy that cannot take the port never does.
         try:
             ae.ensure_schema()
+            if not _RESUMED:
+                ae.resume_queued()       # builds still waiting from the last run (an overnight set) go on
+                _RESUMED.append(1)
         except Exception:
             pass
         try:          # orders from other programs (Orders\\Inbox): watched while the app runs
@@ -237,11 +273,12 @@ def register(app, layout, e, human_bytes):
             pass
 
     def page(title, body, script=""):
-        return layout(title, PAGE_CSS + body, script)      # translated (if Russian) for every page in i18n.install
+        return layout(title, PAGE_CSS + body, script + _REENABLE_JS)      # translated (if Russian) for every page in i18n.install
 
     def err_page(msg, back="/auto"):
-        return page("Auto Edit", f"<div class='card'><h2>Could not continue</h2><div class='errbox' style='margin-bottom:12px'>{e(msg)}</div>"
-                                 f"<a class='btn btn2' href='{e(back)}'>Back</a></div>"), 400
+        # Back = the browser's back when possible: the form comes back with everything typed in it
+        return page("Auto Edit", f"<div class='card'><h2>Could not continue</h2><div class='errbox' style='margin-bottom:12px'>{_protect_paths(e(msg))}</div>"
+                                 f"<a class='btn btn2' href='{e(back)}' onclick='if(history.length>1){{history.back();return false}}'>Back</a></div>"), 400
 
     # ------------------------------------------------------------ home
 
@@ -361,6 +398,9 @@ const pf=document.getElementById('projFind');if(pf)pf.oninput=()=>{const q=pf.va
         ai_ready = ae.model_status()["ready"]
         ap = ae.aiplus_status()
         if request.method == "POST":
+            busy_ = ae.app_busy()
+            if busy_ and not ae.selftest_state()["running"]:     # two engines at once: the test would look broken
+                return err_page(busy_, "/auto/check")
             want = request.form.get("mode")
             want = want if (want == "semantic" and ai_ready) or (want == "semantic_plus" and ap["ready"]) else "technical"
             ae.selftest_start(want, 1800 if want == "semantic_plus" else 900)
@@ -523,7 +563,7 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
 
     @app.post("/api/auto/model/import")
     def ae_model_import():
-        path = (request.get_json(silent=True) or {}).get("path") or ae.pick_folder("Choose the folder that contains the FAST_LOCAL model",
+        path = _json_obj().get("path") or ae.pick_folder("Choose the folder that contains the FAST_LOCAL model",
                                                                                   initial=ae.model_folder_hint())
         if not path:
             return jsonify({"ok": False, "error": "No folder chosen."})
@@ -535,7 +575,7 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
 
     @app.post("/api/auto/aiplus/import")
     def ae_aiplus_import():
-        path = (request.get_json(silent=True) or {}).get("path") or ae.pick_folder("Choose the folder with the AI+ model files")
+        path = _json_obj().get("path") or ae.pick_folder("Choose the folder with the AI+ model files")
         if not path:
             return jsonify({"ok": False, "error": "No folder chosen."})
         try:
@@ -559,7 +599,7 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
     def ae_aiplus_download():
         if request.headers.get("Sec-Fetch-Site", "same-origin") not in ("same-origin", "none"):
             return jsonify({"ok": False, "error": "Only from MediaEngine itself."}), 400
-        if (request.get_json(silent=True) or {}).get("cancel"):
+        if _json_obj().get("cancel"):
             ae.aiplus_download_cancel()
             return jsonify({"ok": True})
         started = ae.aiplus_download_start()
@@ -593,7 +633,7 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
 
     @app.post("/api/auto/pick-folder")
     def ae_pick_folder():
-        purpose = (request.get_json(silent=True) or {}).get("purpose")
+        purpose = _json_obj().get("purpose")
         path = ae.pick_folder("Choose a folder for the exported reel" if purpose == "export" else
                               "Choose a folder with your videos on this computer (copy phone videos to the computer first)",
                               initial=str(ae.default_export_dir()) if purpose == "export" else ae.last_source_parent())
@@ -786,7 +826,9 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
             ae.normalize_settings({"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode"),
                                    "framing": f.get("framing"), **dress}, model_ready=ae.model_status()["ready"])
             ae.check_free_space()
-            pid = ae.create_project(f.get("folder"), f.get("title"), files=f.getlist("file") or None)
+            # the same folder / videos prepared in advance before: the reel is made in that project (its pieces are there)
+            pid = (ae.prepared_project_for(f.get("folder"), f.getlist("file") or None)
+                   or ae.create_project(f.get("folder"), f.get("title"), files=f.getlist("file") or None))
             ae.start_job(pid, {"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode"),
                                "theme": f.get("theme") or "", "framing": f.get("framing"), **dress,
                                **({"prepare": True} if f.get("prepare") == "1" else {})})
@@ -848,7 +890,8 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
             ls_ = last_job["settings"]
             no_ai = ""
             was_prep = bool(ls_.get("prepare"))
-            if last_job["status"] == "failed" and ls_.get("mode") in ae.AI_MODES and not was_prep:
+            interrupted = str(last_job.get("error") or "").startswith("Interrupted")
+            if last_job["status"] == "failed" and ls_.get("mode") in ae.AI_MODES and not was_prep and not interrupted:
                 # an AI-mode failure must not leave the user stuck: offer the clearly labelled technical build
                 no_ai = (f"<form method='post' action='/auto/p/{pid}/variant'>"
                          f"<input type='hidden' name='length' value='{ls_['length']}'><input type='hidden' name='format' value='{e(ls_['format'])}'>"
@@ -872,7 +915,7 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
 <form method='post' action='/auto/export/{done_x['id']}/reveal'><button class='btn2'>Show in folder</button></form>
 <button type='button' class='btn2' id='copyDone' data-path='{e(done_x['path'])}'>Copy path</button>
 <a class='btn btn2' href='/auto'>All projects</a></div></div>""")
-        if (last_job and last_job["status"] == "done" and last_job["settings"].get("prepare")
+        if (last_job and last_job["status"] == "done" and last_job["settings"].get("prepare") and p["state"] == "PREPARED"
                 and (not revs or last_job["id"] > max(r["job_id"] for r in revs))):
             parts.append(_prepared_html(last_job, e))
         if cur:
@@ -905,7 +948,7 @@ async function pollJob2(){if(!card)return;try{const r=await fetch('/api/auto/job
 pollJob2();
 const ef=document.getElementById('editForm');
 function secs(x){x=String(x||'').trim().replace(',','.');if(!x)return null;const m=/^(\\d+):(\\d{1,2}(?:\\.\\d+)?)$/.exec(x);
- if(m)return (+m[1])*60+(+m[2]);return /^\\d+(\\.\\d+)?$/.test(x)?+x:null}
+ if(m)return (+m[2])>=60?null:(+m[1])*60+(+m[2]);return /^\\d+(\\.\\d+)?$/.test(x)?+x:null}
 if(ef)ef.addEventListener('submit',ev=>{if(ev.submitter&&ev.submitter.name==='rechoose')return;const errs=[];
  ef.querySelectorAll('.ae-edit').forEach(row=>{const a=row.querySelector('input[name^="in_"]'),b=row.querySelector('input[name^="out_"]'),rm=row.querySelector('input[name="remove"]');
   if(!a||!b||(rm&&rm.checked))return;const n=(row.querySelector('.pos')||{}).textContent||'?',x=secs(a.value),y=secs(b.value);
@@ -1030,10 +1073,21 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
             if not selection:
                 return err_page("Keep at least one moment.", f"/auto/p/{pid}")
             bset = base["settings"] if base and int(base["project_id"]) == int(pid) else {}
+            # what the user took out (removed or replaced) stays out of later automatic choices (another length,
+            # "Let MediaEngine choose again")
+            gone = {x for x in f.getlist("row") if x in removed or f.get(f"replace_{x}")}
+            exclude = sorted((set(bset.get("exclude") or []) | gone) - set(selection))
             settings = {"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode"),
-                        "selection": selection, "trims": trims, "framing": bset.get("framing"),
+                        "selection": selection, "trims": trims, "framing": bset.get("framing"), "exclude": exclude,
                         # an edit keeps the version's theme, music and title (the moments come from its pool)
                         "theme": f.get("theme") if "theme" in f else (bset.get("theme") or ""), **_dress_from_form(f, bset)}
+            base_seq = [str(sg.get("event_id")) for sg in ((base or {}).get("result") or {}).get("segments") or []]
+            ns = ae.normalize_settings(settings, model_ready=ae.model_status()["ready"])
+            rest = lambda d: {k: v for k, v in d.items() if k not in ("selection", "trims", "exclude")}
+            if (bset and selection == base_seq and not add and not gone and not ae.private_in_result(base.get("result") or {})
+                    and (ns.get("trims") or {}) == {k: v for k, v in (bset.get("trims") or {}).items() if k in selection}
+                    and rest(ns) == rest(bset)):
+                return redirect(f"/auto/p/{pid}?rev={int(base['id'])}&same=1")      # nothing was changed: no new version
             before = {j["id"] for j in ae.project(pid)["jobs"]}
             jid = ae.start_job(pid, settings)
             j = ae.job(jid)
@@ -1068,6 +1122,11 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
             rid = request.form.get("revision_id") or ""
             if rid.isdigit():
                 pr = ae.project(pid)
+                if pr and dest:
+                    ae.check_export_dir(pr, dest)    # a refused folder must not change the chosen version
+                rv_ = ae.revision(int(rid))
+                if pr and rv_ and int(rv_["project_id"]) == int(pid):
+                    ae._refuse_private(rv_)          # nor a version with a video marked Private since
                 if pr and pr["accepted_revision_id"] != int(rid):
                     ae.accept(pid, int(rid))         # "Save MP4" on a version that was not chosen yet: choose it
             res = ae.export_accepted(pid, dest or None, remember=bool(dest))

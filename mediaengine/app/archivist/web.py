@@ -227,6 +227,12 @@ def _spawn_launcher(mode):
     spawn_app_launcher(INSTALL, mode)
 
 
+def _json_obj():
+    """The request's JSON body when it is an object, else {} (a list or a number never reaches .get())."""
+    d=request.get_json(silent=True)
+    return d if isinstance(d,dict) else {}
+
+
 def _exit_soon():
     time.sleep(.8)
     try:                                  # the AI+ preparation's engine step ends with the app
@@ -364,7 +370,7 @@ def create_app():
 
     @app.post('/api/app-control')
     def app_control():
-        payload=request.get_json(silent=True) or {};mode=payload.get('mode','restart');force=bool(payload.get('force'))
+        payload=_json_obj();mode=payload.get('mode','restart');force=bool(payload.get('force'))
         if mode not in ('restart','update','stop'): return jsonify({'ok':False,'error':'bad mode'}),400
         with db() as con:
             busy=con.execute("SELECT id,kind,current_filename FROM jobs WHERE status='running' ORDER BY id LIMIT 1").fetchone()
@@ -1003,7 +1009,7 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
     @app.post('/api/clip/<int:clip_id>/trajectory/<aspect>')
     def save_trajectory(clip_id,aspect):
         aspect=urllib.parse.unquote(aspect)
-        p=request.get_json(silent=True) or {}
+        p=_json_obj()
         try:
             result=save_crop_trajectory(clip_id,aspect,p.get('keyframes') or [],preset=str(p.get('preset') or 'general'),
                 status=str(p.get('status') or 'draft'),confidence=float(p.get('confidence') or 0),
@@ -1032,7 +1038,7 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
 
     @app.post('/api/clip/<int:clip_id>/trajectory-status/<aspect>')
     def trajectory_status(clip_id,aspect):
-        aspect=urllib.parse.unquote(aspect); p=request.get_json(silent=True) or {}; status=str(p.get('status') or '')
+        aspect=urllib.parse.unquote(aspect); p=_json_obj(); status=str(p.get('status') or '')
         current=trajectory_for_clip(clip_id,aspect)
         if not current: return jsonify({'error':'Build or save a trajectory first'}),404
         try:
@@ -1328,12 +1334,12 @@ pollConvert();"""
 
     @app.post('/api/convert/probe')
     def convert_probe():
-        payload=request.get_json(silent=True) or {}
+        payload=_json_obj()
         return jsonify({'items':{str(k):v for k,v in probe_local_media_meta(payload.get('ids') or []).items()}})
 
     @app.post('/api/convert/start')
     def convert_start():
-        payload=request.get_json(silent=True) or {}
+        payload=_json_obj()
         try:
             job_id=start_convert_job(payload.get('ids') or [],payload.get('preset') or 'share_1080p',payload.get('target_mb'))
             return jsonify({'ok':True,'job_id':job_id})
@@ -1437,7 +1443,7 @@ pollConvert();"""
     def aiplus_library_index():
         from . import aiplus_library as al
         if request.method=='POST':
-            if (request.get_json(silent=True) or {}).get('stop'):
+            if _json_obj().get('stop'):
                 al.stop(); return jsonify({'ok':True})
             try:
                 al.start()
@@ -1448,7 +1454,7 @@ pollConvert();"""
 
     @app.post('/api/selection-action')
     def selection_action():
-        p=request.get_json(silent=True) or {}; action=p.get('action'); ids=[int(x) for x in p.get('ids',[]) if str(x).isdigit()]
+        p=_json_obj(); action=p.get('action'); ids=[int(x) for x in p.get('ids',[]) if str(x).isdigit()]
         if not ids: return jsonify({'error':'No files selected'}),400
         try:
             if action=='import': return jsonify({'job_id':queue_job('import',ids,{'analyze':False})})

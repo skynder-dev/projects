@@ -249,7 +249,9 @@ def proven_kinds(r: dict, m: str) -> list[str]:
     out = []
     for name, kind in (("h264_4k.mp4", "h264"), ("hevc_4k.mp4", "hevc"), ("hevc10_4k.mp4", "hevc10")):
         c = ((r.get("methods") or {}).get(m) or {}).get("clips", {}).get(name) or {}
-        views = [c.get(v) for v in ("full", "preview")]          # (older results kept the load numbers in here too)
+        if "loaded" in c:        # a test before b123 (only the last run compared, nothing under load): test again
+            return []
+        views = [c.get(v) for v in ("full", "preview")]
         if all(isinstance(v, dict) and v.get("identical") and not v.get("error") for v in views):
             out.append(kind)
     return out
