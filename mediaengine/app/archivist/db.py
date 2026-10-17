@@ -249,9 +249,13 @@ def init_db() -> None:
         )
         # 1.x staged files are real imports even though no explicit import_status existed.
         con.execute("UPDATE inventory SET import_status='imported' WHERE staging_path IS NOT NULL AND staging_path<>'' AND import_status='not_imported'")
-        # Backfill the Work Set from historical explicit import choices. This recovers
-        # the user's already-selected videos from finished import/import+analyze jobs.
-        con.execute("UPDATE inventory SET work_selected=1 WHERE id IN (SELECT ji.inventory_id FROM job_items ji JOIN jobs j ON j.id=ji.job_id WHERE j.kind IN ('import','import_analyze') AND j.status='finished')")
+        # Backfill the Work Set from historical explicit import choices (an old 1.x database) - ONCE: run at every
+        # start it put back every video the user had removed from the Library (QA review 2026-10-17)
+        con.execute("CREATE TABLE IF NOT EXISTS app_meta(key TEXT PRIMARY KEY,value TEXT)")
+        if not con.execute("SELECT 1 FROM app_meta WHERE key='work_set_backfill_v1'").fetchone():
+            if not con.execute("SELECT 1 FROM app_meta WHERE key='library_membership_v2'").fetchone():
+                con.execute("UPDATE inventory SET work_selected=1 WHERE id IN (SELECT ji.inventory_id FROM job_items ji JOIN jobs j ON j.id=ji.job_id WHERE j.kind IN ('import','import_analyze') AND j.status='finished')")
+            con.execute("INSERT OR REPLACE INTO app_meta(key,value) VALUES('work_set_backfill_v1',?)", (now_iso(),))
         # 2.5.1: Library membership is explicit. Import is the source browser for Android,
         # SD/USB and configured local folders. Preserve already-imported/archive media and
         # local files the user has actually worked on, but do not auto-add every newly

@@ -7,6 +7,9 @@ APP_JS: quoted UI messages inside page scripts (only full quoted literals that a
 from __future__ import annotations
 
 APP_PHRASES: dict[str, str] = {
+    "Best clip": "Лучший клип", "← Video": "← Видео", "Selected files are no longer in the catalog": "Выбранных файлов больше нет в каталоге",
+    "No match yet. Try a property such as vertical, high motion, dark, drone, long, Android, audio, safe, or best. Object/people vision search comes in the next semantic layer.":
+        "Пока ничего не найдено. Попробуй свойство: вертикальное, много движения, тёмное, дрон, длинное, Android, звук, безопасное или лучшее. Поиск людей и предметов по картинке появится позже.",
     # ---- frame, home
     "Dashboard": "Главная", "Stop MediaEngine on this PC": "Остановить MediaEngine на этом компьютере",
     "Interface language: English": "Язык интерфейса: английский", "Язык интерфейса: русский": "Язык интерфейса: русский",
@@ -509,6 +512,13 @@ APP_PHRASES: dict[str, str] = {
 }
 
 APP_PATTERNS: list[tuple[str, str]] = [
+    # Library search and Remove (QA review 2026-10-17)
+    (r"(\d+) result\(s\)", r"Найдено: \1"),
+    (r"match ([\d.]+)", r"совпадение \1"),
+    (r"signals v1 · (.+)", r"признаки v1 · \1"),
+    (r"Removed (\d+) item\(s\) from Library", r"Убрано из Библиотеки: \1"),
+    (r"Removed (\d+) item\(s\) from Library; moved (\d+) Staging copy/copies to Rejected/Removed from Library",
+     r"Убрано из Библиотеки: \1; копий из Staging перенесено в «Отклонённые / Убранные»: \2"),
     (r"used \((\w+)\): ([\d.]+)x faster than the processor, every frame identical",
      r"используется (\1): в \2 раза быстрее процессора, все кадры совпадают"),
     (r"not used: not faster than the processor \(([\d.]+)x\)", r"не используется: не быстрее процессора (×\1)"),

@@ -376,6 +376,30 @@ def main():
               {u: x.status_code for u, x in ru.items()})
         c.post("/lang", data={"lang": "en"}, headers=H)
 
+        # QA review 2026-10-17: "Remove from Library" survives a restart; "Make a reel" never takes a removed video; a
+        # copy of a Private video is not shown; odd page numbers / ids are refused cleanly
+        live = [r_ for r_ in rows() if r_["work_selected"] == 1 and r_["analysis_status"] != "private" and r_.get("sha256")]
+        if len(live) < 2:
+            print("SKIP library removal checks: fewer than 2 videos left", [r_["filename"] for r_ in live])
+        else:
+            other, victim = live[0], live[1]
+            with db() as con:            # the same content as a Private video (a copy): not shown
+                con.execute("INSERT OR REPLACE INTO ignored_hashes(sha256,reason,created_at) VALUES(?,?,?)", (other["sha256"], "test", "t"))
+                con.commit()
+            page = html.unescape(c.get("/library", headers=H).data.decode("utf-8", "replace"))
+            check("a_copy_of_a_private_video_is_not_shown", other["filename"] not in page and victim["filename"] in page, other["filename"])
+            r = c.post("/api/selection-action", json={"action": "remove", "ids": [victim["id"]]}, headers=H)
+            from archivist.db import init_db
+            init_db()                                  # what every app start does
+            with db() as con:
+                ws = con.execute("SELECT work_selected FROM inventory WHERE id=?", (victim["id"],)).fetchone()[0]
+            check("removed_from_library_stays_removed_after_restart", r.status_code == 200 and ws == 0, (r.status_code, ws))
+            r = c.get("/auto/from-library", query_string={"ids": str(victim["id"])}, headers={**H, "Sec-Fetch-Site": "same-origin"})
+            check("make_a_reel_never_takes_a_removed_video", r.status_code == 400, r.status_code)
+        r1 = c.get("/library?page=abc", headers=H)
+        r2 = c.post("/api/selection-action", json={"action": "private", "ids": "12"}, headers=H)
+        check("odd_page_and_ids_refused_cleanly", r1.status_code == 200 and r2.status_code == 400, (r1.status_code, r2.status_code))
+
     service.STOP_EVENT.set()
     now = {p.name: sha(p) for p in src.iterdir() if p.is_file()}
     check("sources_unchanged", now == before, sorted(set(now.items()) ^ set(before.items()))[:4])

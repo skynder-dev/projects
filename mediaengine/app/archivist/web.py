@@ -789,10 +789,11 @@ if(recheck)recheck.onclick=async()=>{
 
     def gallery(mode: str):
         is_import=mode=='import'
-        page=max(1,int(request.args.get('page',1))); per=48
+        page=max(1,request.args.get('page',1,type=int) or 1); per=48
         media_type=request.args.get('media_type',''); status=request.args.get('status',''); rights=request.args.get('rights',''); source_kind=request.args.get('source_kind',''); source_id=request.args.get('source_id','').strip(); q=request.args.get('q','').strip(); sort=request.args.get('sort','date_desc')
         imported=request.args.get('imported','no' if is_import and 'imported' not in request.args else '')
-        where=['excluded=0','private_path IS NULL','rejected_path IS NULL',"analysis_status<>'private'"]; args=[]
+        where=['excluded=0','private_path IS NULL','rejected_path IS NULL',"analysis_status<>'private'",
+               "COALESCE(sha256,'') NOT IN (SELECT sha256 FROM ignored_hashes)"]; args=[]      # a copy of a Private video too
         if is_import:
             # Import is the single source browser: Android, SD/USB and configured local folders.
             where.append("source_kind IN ('android','removable','fixed')")
@@ -883,7 +884,7 @@ const MODE={json.dumps(mode_js)};const KEY={json.dumps(key)};const cards=[...doc
 let selected=new Set();try{{selected=new Set(JSON.parse(localStorage.getItem(KEY)||'[]').map(String))}}catch(e){{}}
 function save(){{localStorage.setItem(KEY,JSON.stringify([...selected]))}}function sync(){{cards.forEach((c,i)=>{{let id=String(checks[i].value),on=selected.has(id);checks[i].checked=on;c.classList.toggle('selected',on)}});if(count)count.textContent=selected.size+' selected'}}function setSel(ch,on){{let id=String(ch.value);on?selected.add(id):selected.delete(id);save();sync()}}
 cards.forEach((c,i)=>c.addEventListener('click',ev=>{{if(ev.target.closest('.openLink')||ev.target===checks[i])return;setSel(checks[i],!selected.has(String(checks[i].value)))}}));checks.forEach(ch=>ch.addEventListener('change',()=>setSel(ch,ch.checked)));const sp=document.getElementById('selectPage'),cs=document.getElementById('clearSel');if(sp)sp.onclick=()=>{{checks.forEach(x=>selected.add(String(x.value)));save();sync()}};if(cs)cs.onclick=()=>{{selected.clear();save();sync()}};
-let actionBusy=false;async function act(action,confirmText){{if(actionBusy)return;if(!selected.size){{toast('Select files first');return}}if(confirmText&&!confirm(confirmText))return;actionBusy=true;if(msg)msg.textContent='Creating durable job for '+selected.size+' selected files…';const ids=[...selected].map(Number);try{{let r=await fetch('/api/selection-action',{{method:'POST',headers:{{'Content-Type':'application/json'}},body:JSON.stringify({{action,ids}})}});let x=await r.json();if(!r.ok){{if(msg)msg.textContent='ERROR: '+(x.error||r.statusText);toast('ERROR: '+(x.error||r.statusText));return}}if(x.job_id){{selected.clear();save();sync();if(msg)msg.textContent='Job #'+x.job_id+' accepted.';toast('Job #'+x.job_id+' accepted')}}else{{if(msg)msg.textContent=x.message||'Done';toast(x.message||'Done');location.reload()}}}}finally{{actionBusy=false}}}}
+let actionBusy=false;async function act(action,confirmText){{if(actionBusy)return;if(!selected.size){{toast('Select files first');return}}if(confirmText&&!confirm(confirmText))return;actionBusy=true;if(msg)msg.textContent='Creating durable job for '+selected.size+' selected files…';const ids=[...selected].map(Number);try{{let r=await fetch('/api/selection-action',{{method:'POST',headers:{{'Content-Type':'application/json'}},body:JSON.stringify({{action,ids}})}});let x=await r.json();if(!r.ok){{if(msg)msg.textContent='ERROR: '+(x.error||r.statusText);toast('ERROR: '+(x.error||r.statusText));return}}if(x.job_id){{selected.clear();save();sync();if(msg)msg.textContent='Job #'+x.job_id+' accepted.';toast('Job #'+x.job_id+' accepted')}}else{{selected.clear();save();if(msg)msg.textContent=x.message||'Done';toast(x.message||'Done');location.reload()}}}}finally{{actionBusy=false}}}}
 const ib=document.getElementById('importBtn'),iab=document.getElementById('importAnalyzeBtn'),an=document.getElementById('analyzeBtn'),mb=document.getElementById('mediaBrainBtn'),cb=document.getElementById('convertBulkBtn'),pb=document.getElementById('privateBtn'),ab=document.getElementById('archiveBtn'),rbj=document.getElementById('rejectBtn'),rml=document.getElementById('removeBtn');if(ib)ib.onclick=()=>act('import');if(iab)iab.onclick=()=>act('import_analyze');if(an)an.onclick=()=>act('analyze');if(mb)mb.onclick=()=>act('media_brain');if(cb)cb.onclick=()=>{{const ids=cards.filter(c=>selected.has(c.dataset.id)&&c.dataset.type==='video').map(c=>c.dataset.id);if(!ids.length){{toast('Select local videos first');return}}location.href='/convert?ids='+encodeURIComponent(ids.join(','))}};if(pb)pb.onclick=()=>act('private','Mark selected Private forever?');if(ab)ab.onclick=()=>act('archive','Archive selected local/staged files? Source-device originals are never deleted.');if(rbj)rbj.onclick=()=>act('reject','Move selected Staging copies to Rejected quarantine and hide them? Phone/SD originals stay untouched.');if(rml)rml.onclick=()=>act('remove','Remove selected items from Library? Imported Staging copies move to the Rejected / Removed from Library folder (delete them there when you are sure). Source originals and local/archive files stay untouched.');sync();
 const rlb=document.getElementById('reelBtn');if(rlb)rlb.onclick=()=>{{const all=[...selected];if(!all.length){{toast('Select videos first');return}}location.href='/auto/from-library?ids='+encodeURIComponent(all.join(','))}};
 async function tagRights(){{const el=document.getElementById('rightsPreset');if(!el)return;const preset=el.value;if(!preset){{toast('Choose a rights tag');return}}if(!selected.size){{toast('Select files first');return}}const ids=[...selected].map(Number);const r=await fetch('/api/selection-action',{{method:'POST',headers:{{'Content-Type':'application/json'}},body:JSON.stringify({{action:'rights',ids,preset}})}});const x=await r.json();if(!r.ok){{toast('ERROR: '+(x.error||r.statusText));return}}toast(x.message||'Rights updated');refreshVisible()}}const rbt=document.getElementById('rightsBtn');if(rbt)rbt.onclick=tagRights;
@@ -1149,7 +1150,7 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
             where.append("source_id=?");args.append(source_id)
         order_map={'date_desc':'COALESCE(date_taken,mtime,0) DESC,id DESC','date_asc':'COALESCE(date_taken,mtime,0) ASC,id ASC','size_desc':'COALESCE(size_bytes,0) DESC','size_asc':'COALESCE(size_bytes,0) ASC','duration_desc':'COALESCE(duration_ms,0) DESC','name':'LOWER(filename) ASC','source':"LOWER(COALESCE(source_label,source_id,'')) ASC,LOWER(filename) ASC"}
         order_sql=order_map.get(sort,order_map['date_desc'])
-        page=max(1,int(request.args.get('page',1) or 1)); per=120
+        page=max(1,request.args.get('page',1,type=int) or 1); per=120
         where_sql=' AND '.join(where)
         with db() as con:
             source_rows=con.execute("SELECT source_id,MAX(source_label) source_label FROM inventory WHERE "+where_sql+" GROUP BY source_id ORDER BY LOWER(COALESCE(MAX(source_label),source_id,''))",args).fetchall()
@@ -1454,7 +1455,9 @@ pollConvert();"""
 
     @app.post('/api/selection-action')
     def selection_action():
-        p=_json_obj(); action=p.get('action'); ids=[int(x) for x in p.get('ids',[]) if str(x).isdigit()]
+        p=_json_obj(); action=p.get('action'); raw_ids=p.get('ids',[])
+        if not isinstance(raw_ids,list): return jsonify({'error':'No files selected'}),400      # "12" is not [1,2]
+        ids=[int(x) for x in raw_ids if (isinstance(x,int) and not isinstance(x,bool)) or (isinstance(x,str) and x.isdigit())]
         if not ids: return jsonify({'error':'No files selected'}),400
         try:
             if action=='import': return jsonify({'job_id':queue_job('import',ids,{'analyze':False})})
@@ -1474,6 +1477,7 @@ pollConvert();"""
                 n=set_rights(ids,str(p.get('preset') or ''),str(p.get('notes') or '')); return jsonify({'message':f'Rights updated for {n} item(s)'})
             if action=='exclude': set_excluded(ids,True); return jsonify({'message':'Excluded'})
             return jsonify({'error':'Unknown action'}),400
+        except ValueError as exc: return jsonify({'error':str(exc)}),400     # what the user asked for cannot be done
         except Exception as exc: return jsonify({'error':str(exc)}),500
 
     @app.get('/api/items')
@@ -1638,7 +1642,8 @@ bindStoryFrames();loadStoryboard();""")
         if ids:
             with db() as con:
                 rows=con.execute(f"SELECT * FROM inventory WHERE id IN ({','.join('?' for _ in ids)}) AND media_type='video' AND excluded=0 "
-                                 "AND analysis_status<>'private' AND private_path IS NULL AND rejected_path IS NULL ORDER BY COALESCE(date_taken,mtime,0)",ids).fetchall()
+                                 "AND work_selected=1 AND analysis_status<>'private' AND private_path IS NULL AND rejected_path IS NULL "
+                                 "AND COALESCE(sha256,'') NOT IN (SELECT sha256 FROM ignored_hashes) ORDER BY COALESCE(date_taken,mtime,0)",ids).fetchall()
             for r in rows:
                 local=next((r[k] for k in ('staging_path','archive_path','path') if r[k] and Path(r[k]).is_file()),None)
                 if local: files.append(str(local))

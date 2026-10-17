@@ -631,7 +631,8 @@ def best_clips(limit: int = 120) -> list[dict]:
     with db() as con:
         rows=con.execute("""SELECT vc.*,i.filename,i.source_label,i.duration_ms,i.analysis_status,i.rights_status
             FROM virtual_clips vc JOIN inventory i ON i.id=vc.inventory_id
-            WHERE i.excluded=0 AND i.private_path IS NULL AND i.rejected_path IS NULL AND i.analysis_status<>'private'
+            WHERE i.excluded=0 AND i.work_selected=1 AND i.private_path IS NULL AND i.rejected_path IS NULL AND i.analysis_status<>'private'
+              AND COALESCE(i.sha256,'') NOT IN (SELECT sha256 FROM ignored_hashes)
             ORDER BY vc.score DESC, vc.updated_at DESC LIMIT ?""",(max(1,min(500,int(limit))),)).fetchall()
         return [dict(r) for r in rows]
 

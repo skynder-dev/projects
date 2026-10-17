@@ -190,6 +190,8 @@ def main():
             "bad-hls-sound": (plan_of([{"still": "a.png", "start_s": 0, "end_s": 1}], audio="s.m3u8"), None,
                               ok_files + [("s.m3u8", src / "playlist.m3u8")], "PLAN_AUDIO_UNREADABLE"),
             "bad-concat": (plan_of([{"video": "x.mp4", "start_s": 0, "end_s": 1}]), None, [("x.mp4", src / "list.ffconcat")], "PLAN_VIDEO_UNREADABLE"),
+            "bad-reel-playlist": ({"schema": orders.SCHEMA, "kind": "reel_from_videos", "videos": {"files": ["v.mp4"]},
+                                   "mode": "technical", "length": 5}, None, [("v.mp4", src / "playlist.m3u8")], "VIDEOS_NOT_USABLE"),
             "bad-huge-picture": (plan_of([{"still": "big.png", "start_s": 0, "end_s": 1}]), None, [("big.png", src / "huge.png")], "PLAN_IMAGE_TOO_BIG"),
             "bad-quoted-unc": ({"schema": orders.SCHEMA, "kind": "reel_from_videos", "videos": {"folder": '"\\\\no-such-server\\share"'},
                                 "mode": "technical", "length": 5}, None, (), "ORDER_NETWORK_PATH"),
@@ -276,6 +278,34 @@ def main():
         st, res = answer("wait-1", 300)
         check("run_after_ok", st == "done", res.get("error"))
         c.post("/auto/orders/settings", data={"auto_run": "1"}, headers=H)
+
+        # 7b. the program moved its answers away (read them): never done again by itself - also not a rejected one
+        _retire_ = home / "_taken_answers"
+        _retire_.mkdir(exist_ok=True)
+        os.replace(orders.done_dir() / "wait-1", _retire_ / "wait-1")
+        os.replace(orders.failed_dir() / "wait-2", _retire_ / "wait-2")
+        orders._WAKE.set()
+        time.sleep(9)
+        check("answers_taken_away_are_not_done_again", not (orders.done_dir() / "wait-1").exists() and not (orders.done_dir() / "wait-2").exists()
+              and not (orders.failed_dir() / "wait-2").exists() and orders.busy() not in ("wait-1", "wait-2"), orders.busy())
+
+        # 7c. a folder Windows cannot move now (a file open in it) does not hold up the others
+        real_move = orders._move
+        def flaky(src_, dst_, tries=40):
+            if Path(src_).name == "locked-1":
+                raise PermissionError("a file in it is open")
+            return real_move(src_, dst_, tries)
+        orders._move = flaky
+        try:
+            put("locked-1", PLAN, PLAN_FILES)
+            time.sleep(0.5)
+            put("after-1", PLAN, PLAN_FILES)
+            st, res = answer("after-1", 300)
+            waiting = (inbox / "locked-1").is_dir()
+        finally:
+            orders._move = real_move
+        st2, res2 = answer("locked-1", 300)
+        check("an_unmovable_order_does_not_block_others", st == "done" and waiting and st2 == "done", (st, waiting, st2))
 
         # 8. Stop in the middle, then Run again
         clips, t = [], 0.0

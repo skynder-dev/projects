@@ -39,14 +39,19 @@ MAX_ATTEMPTS = 3          # an order that was started this many times without an
 # what FFmpeg may read for a plan: plain media files only. A playlist (HLS .m3u8, concat) could name ANY file on the PC,
 # so it is refused, and every input is opened with the demuxer found here (a file swapped later cannot become one).
 STILL_FORMATS = {"png_pipe", "jpeg_pipe", "webp_pipe", "bmp_pipe", "tiff_pipe", "image2"}
-VIDEO_FORMATS = {"mov", "matroska", "avi", "mpeg", "mpegts", "asf", "flv"}
+VIDEO_FORMATS = {"mov", "matroska", "avi", "mpeg", "mpegts", "asf", "flv", "dv"}
 AUDIO_FORMATS = {"wav", "mp3", "mov", "flac", "ogg", "aac", "matroska", "w64", "aiff", "asf"}
 _INPUT_RE = re.compile(r"^Input #0, (.+?), from ", re.M)
+# FFmpeg may not even OPEN another container while a file is checked (a playlist opens the files it names first)
+FORMAT_WHITELIST = ",".join(sorted(STILL_FORMATS | VIDEO_FORMATS | AUDIO_FORMATS))
+STILL_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".tif", ".tiff"}
 _ID = re.compile(r"^[^\W_][\w.\- ()]{0,79}$")
 _IGNORED_SUFFIX = (".tmp", ".part", ".partial", ".crdownload")
 
 _LOCK = threading.Lock()          # one order at a time (the watcher and a button press never run two)
 _MOVE_LOCK = threading.RLock()    # taking an order and writing an answer (short; buttons never wait for a render)
+_CUR_LOCK = threading.Lock()      # the order being done now, its Stop flag and its FFmpeg - read and changed together
+_BACKOFF: dict = {}               # Inbox id -> time before which it is not tried again (a folder Windows cannot move now)
 _STATE_LOCK = threading.Lock()
 _WAKE = threading.Event()
 _STOP_ALL = threading.Event()
@@ -284,7 +289,7 @@ def _decode_info(path: Path, video_frames: int | None = None, timeout: int = 300
     if str(ae.ENGINE_DIR) not in sys.path:
         sys.path.insert(0, str(ae.ENGINE_DIR))
     import medeng_media_probe_v41 as probe_mod  # the engine's FFmpeg-only probe (Windows has no ffprobe)
-    cmd = [_ffmpeg(), "-hide_banner", "-nostdin", *(_input_args(fmt) if fmt else []), "-i", str(path)]
+    cmd = [_ffmpeg(), "-hide_banner", "-nostdin", "-format_whitelist", FORMAT_WHITELIST, *(_input_args(fmt) if fmt else []), "-i", str(path)]
     if video_frames:
         cmd += ["-frames:v", str(video_frames)]
     cmd += ["-f", "null", "-"]
@@ -319,7 +324,7 @@ def _header(path: Path, timeout: int = 60) -> dict:
         sys.path.insert(0, str(ae.ENGINE_DIR))
     import medeng_media_probe_v41 as probe_mod
     try:
-        cp = subprocess.run([_ffmpeg(), "-hide_banner", "-nostdin", "-i", str(path)],
+        cp = subprocess.run([_ffmpeg(), "-hide_banner", "-nostdin", "-format_whitelist", FORMAT_WHITELIST, "-i", str(path)],
                             **process_kwargs(dict(stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True,
                                                   errors="replace", timeout=timeout, check=False)))
         text = cp.stderr or ""
@@ -401,8 +406,9 @@ def _plan_spec(order: dict, base: Path) -> dict:
             p = _inside(base, c["still"], f"clip {i} still")
             hd = _header(p)
             v = _first(hd, "video")
-            if hd["format"] not in STILL_FORMATS or not v:
-                raise OrderError("PLAN_IMAGE_UNREADABLE", f"clip {i}: {c['still']} is not a picture that can be read")
+            if hd["format"] not in STILL_FORMATS or not v or (hd["format"] == "image2" and p.suffix.lower() not in STILL_SUFFIXES):
+                raise OrderError("PLAN_IMAGE_UNREADABLE", f"clip {i}: {c['still']} is not a picture that can be read "
+                                                          "(PNG, JPEG, WebP, BMP or TIFF)")
             if int(v.get("width") or 0) * int(v.get("height") or 0) > MAX_STILL_PIXELS:
                 raise OrderError("PLAN_IMAGE_TOO_BIG", f"clip {i}: {c['still']} is {v.get('width')}x{v.get('height')} "
                                                        f"(at most {MAX_STILL_PIXELS // 1_000_000} megapixels)")
@@ -474,9 +480,24 @@ def _reel_spec(order: dict, base: Path) -> dict:
         spec["library_theme"] = th
         if order.get("mode") in (None, "", "semantic_plus"):      # a Library theme reel: AI+ with that theme, as in the Library
             raw["mode"], raw["theme"] = "semantic_plus", raw["theme"] or th
+    if raw["mode"] == "semantic_plus" and not ae.aiplus_status()["ready"]:
+        raise OrderError("AIPLUS_NOT_READY", "The AI+ model is not on this PC yet: download it once on 'Check this PC'")
+    # the videos the engine will open: plain media files only (a manifest saved under a video name could make FFmpeg
+    # fetch another file - a Private one, or one on a network share)
+    if spec["files"] or spec["folder"]:
+        try:
+            paths = spec["files"] or (ae.list_videos(spec["folder"]) if spec["folder"].is_dir() else [])
+        except OSError:
+            paths = []
+        for vp in paths:
+            if Path(vp).is_file() and _header(Path(vp))["format"] not in VIDEO_FORMATS:
+                raise OrderError("VIDEOS_NOT_USABLE", f"{Path(vp).name} is not a plain video file")
     music = order.get("music")
     if music not in (None, ""):
-        raw["music"] = str(_own_path(base, music, "music"))
+        mp_ = _own_path(base, music, "music")
+        if mp_.is_file() and _header(mp_)["format"] not in AUDIO_FORMATS:
+            raise OrderError("ORDER_FIELD_INVALID", f"music: {mp_.name} is not a plain sound file")
+        raw["music"] = str(mp_)
         if order.get("music_mode") == "music":
             raw["music_mode"] = "music"
         if order.get("beat_sync") is False:
@@ -530,7 +551,7 @@ def _peek(entry: dict) -> dict:
         return {}
 
 
-def _take(entry: dict) -> tuple[str, Path | None]:
+def _take(entry: dict, tries: int = 4) -> tuple[str, Path | None]:
     """Move a waiting order to Received. Returns (id, received folder) or (id, None) when it was refused at once
     (bad or already used id): then its answer is already in Failed."""
     oid, src = entry["id"], entry["path"]
@@ -543,12 +564,12 @@ def _take(entry: dict) -> tuple[str, Path | None]:
                                   f"An order with the id {oid!r} was already received. Every order needs a new id.")
     dst = received_dir() / oid
     if src.is_dir():
-        _move(src, dst)
+        _move(src, dst, tries)
     else:
         tmp = received_dir() / f".{oid}.taking"
         shutil.rmtree(tmp, ignore_errors=True)
         tmp.mkdir(parents=True)
-        _move(src, tmp / "order.json")
+        _move(src, tmp / "order.json", tries)
         _move(tmp, dst)
     _reset_state(dst, {"received_at": now_iso()})       # MediaEngine's own notes, never anything the order brought
     return oid, dst
@@ -638,8 +659,9 @@ def _process(oid: str) -> str:
     """Do the received order `oid`; returns "done" or "failed" (its answer is then in Done / Failed)."""
     rdir = received_dir() / oid
     st = _write_state(rdir, {"started_at": now_iso(), "attempts": int(_read_state(rdir).get("attempts") or 0) + 1})
-    _CURRENT["stop"] = threading.Event()          # before the id: a Stop pressed right now is never lost
-    _CURRENT.update(id=oid, proc=None, done=0, total=0, step="")
+    with _CUR_LOCK:      # a Stop pressed right now is never lost, nor applied to the next order
+        _CURRENT["stop"] = threading.Event()
+        _CURRENT.update(id=oid, proc=None, done=0, total=0, step="")
     order, order_sha, spec = {}, "", None
     for old in rdir.glob(".work*"):      # an earlier attempt's pieces (a crash, a stop)
         shutil.rmtree(old, ignore_errors=True)
@@ -669,14 +691,19 @@ def _process(oid: str) -> str:
         _publish_done(oid, order, order_sha, video_path, move, checks, extra, st)
         return "done"
     except OrderError as exc:
+        if _STOP_ALL.is_set() and not _CURRENT["stop"].is_set():
+            return "interrupted"      # the app is closing: no answer - the order is done again at the next start
         _publish_failed(oid, order, order_sha, exc.code, exc.message, st, retry=exc.code not in ("REJECTED_BY_OWNER",))
         return "failed"
     except Exception as exc:          # never leave an order half-done without an answer
+        if _STOP_ALL.is_set():
+            return "interrupted"
         _publish_failed(oid, order, order_sha, "INTERNAL_ERROR", (type(exc).__name__ + ": " + str(exc))[:300], st)
         return "failed"
     finally:
         shutil.rmtree(work, ignore_errors=True)
-        _CURRENT.update(id="", proc=None, step="")
+        with _CUR_LOCK:
+            _CURRENT.update(id="", proc=None, step="")
 
 
 def _video_entry(path: Path) -> dict:
@@ -688,13 +715,11 @@ def _video_entry(path: Path) -> dict:
 
 
 def _publish_done(*a) -> None:
-    with _MOVE_LOCK:
-        _publish_done_now(*a)
+    _publish_done_now(*a)          # copies and hashes outside the lock; only the final rename takes it
 
 
 def _publish_failed(*a, **k) -> None:
-    with _MOVE_LOCK:
-        _publish_failed_now(*a, **k)
+    _publish_failed_now(*a, **k)
 
 
 def _publish_done_now(oid, order, order_sha, video_path: Path, move: bool, checks, extra, st) -> None:
@@ -717,10 +742,11 @@ def _publish_done_now(oid, order, order_sha, video_path: Path, move: bool, check
     _write_json(part / "result.json", _result(oid, order, "done", video=entry, checks=checks, extra=extra,
                                               received_at=st.get("received_at", ""), started_at=st.get("started_at", ""),
                                               order_sha=order_sha))
-    if final.exists():                 # a crash after a finished answer: the newer answer replaces it
-        shutil.rmtree(final, ignore_errors=True)
-    _move(part, final)
-    _write_state(received_dir() / oid, {"finished": "done"})
+    with _MOVE_LOCK:
+        if final.exists():             # a crash after a finished answer: the newer answer replaces it
+            _retire(final)
+        _move(part, final)
+        _write_state(received_dir() / oid, {"finished": "done", "attempts": 0})
     _notify(oid, order, True)
 
 
@@ -738,12 +764,24 @@ def _publish_failed_now(oid, order, order_sha, code, message, st, retry=True) ->
                                               error={"code": code, "message": message}, retry=retry,
                                               received_at=st.get("received_at", ""), started_at=st.get("started_at", ""),
                                               order_sha=order_sha, extra=_project_extra(received_dir() / oid)))
-    if final.exists():
-        shutil.rmtree(final, ignore_errors=True)
-    _move(part, final)
-    _write_state(received_dir() / oid, {"finished": "failed"})
+    with _MOVE_LOCK:
+        if final.exists():
+            _retire(final)
+        _move(part, final)
+        _write_state(received_dir() / oid, {"finished": "failed", "attempts": 0})
     if code not in ("REJECTED_BY_OWNER", "STOPPED_BY_OWNER"):
         _notify(oid, order if isinstance(order, dict) else {}, False)
+
+
+def _retire(folder: Path) -> None:
+    """An answer folder taken back: first renamed to a hidden name (it disappears in one step for a program that
+    watches Done / Failed), then deleted."""
+    gone = folder.with_name(f".{folder.name}.retired.{int(time.time() * 1000)}")
+    try:
+        os.replace(folder, gone)
+    except OSError:
+        gone = folder
+    shutil.rmtree(gone, ignore_errors=True)
 
 
 def _project_extra(rdir: Path) -> dict | None:
@@ -893,7 +931,9 @@ def _reel(spec: dict, rdir: Path) -> tuple[Path, dict, dict]:
             raise OrderError("REEL_FAILED", str(j.get("error") or "The reel could not be built"))
         if j["status"] == "cancelled":
             raise OrderError("STOPPED_BY_OWNER", "The reel was cancelled")
-        if _stopped():
+        if _STOP_ALL.is_set() and not _CURRENT["stop"].is_set():
+            raise OrderError("STOPPED_BY_OWNER", "The app is closing")     # no answer: done again at the next start
+        if _CURRENT["stop"].is_set():
             ae.cancel_job(jid)
             for _ in range(120):
                 if (ae.job(jid) or {}).get("status") not in ("queued", "running"):
@@ -957,6 +997,8 @@ def unfinished() -> list[str]:
     try:
         for d in sorted(received_dir().iterdir(), key=lambda p: p.stat().st_mtime):
             if d.is_dir() and not d.name.startswith(".") and not (done_dir() / d.name).exists() and not (failed_dir() / d.name).exists():
+                if _read_state(d).get("finished"):      # answered (the program moved its answer away): never again
+                    continue
                 out.append(d.name)
     except OSError:
         pass
@@ -979,10 +1021,16 @@ def _next() -> tuple[str, Path] | None:
     if left:
         return left[0], received_dir() / left[0]
     go = auto_run()
+    now = time.time()
     for entry in inbox():
-        if entry["ready"] and (go or entry["id"] in _RUN_NOW):
+        if entry["ready"] and (go or entry["id"] in _RUN_NOW) and _BACKOFF.get(entry["id"], 0) <= now:
+            try:
+                oid, rdir = _take(entry)
+            except OSError:               # Windows cannot move it now (a file open in it): the others go first
+                _BACKOFF[entry["id"]] = now + 30
+                continue
             _RUN_NOW.discard(entry["id"])
-            oid, rdir = _take(entry)
+            _BACKOFF.pop(entry["id"], None)
             if rdir is None:
                 continue                  # refused at once (bad / used id): its answer is in Failed
             return oid, rdir
@@ -1053,9 +1101,13 @@ def reject(oid: str) -> bool:
         if not entry:
             return False
         _RUN_NOW.discard(oid)
-        oid2, rdir = _take(entry)
+        try:
+            oid2, rdir = _take(entry)
+        except OSError:
+            return False
         if rdir is None:
             return True
+        _write_state(rdir, {"finished": "rejected"})       # never done, even if writing the answer fails
         order = {}
         try:
             order = _read_json(rdir / "order.json")
@@ -1067,10 +1119,11 @@ def reject(oid: str) -> bool:
 
 
 def stop(oid: str) -> bool:
-    if _CURRENT.get("id") != oid:
-        return False
-    _CURRENT["stop"].set()
-    p = _CURRENT.get("proc")
+    with _CUR_LOCK:
+        if _CURRENT.get("id") != oid:
+            return False
+        _CURRENT["stop"].set()
+        p = _CURRENT.get("proc")
     if p is not None:
         try:
             p.kill()
@@ -1094,7 +1147,7 @@ def retry(oid: str) -> bool:
                 return False
         except Exception:
             pass
-        shutil.rmtree(f)
+        _retire(f)
         _write_state(received_dir() / oid, {"finished": None, "attempts": 0, "retried_at": now_iso()})
     _WAKE.set()
     return True

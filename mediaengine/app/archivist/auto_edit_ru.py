@@ -468,7 +468,8 @@ PHRASES = {
     "Other programs on this PC can order a video: they put an order into the Inbox folder, MediaEngine makes the video and puts it into Done with a receipt. Nothing is published.":
         "Другие программы на этом компьютере могут заказать видео: они кладут заказ в папку «Входящие» (Inbox), MediaEngine делает видео и кладёт его в папку «Готово» (Done) вместе с квитанцией. Ничего не публикуется.",
     "Inbox folder": "Папка «Входящие»", "Done folder": "Папка «Готово»",
-    "Delete this order's folders in Orders? Your own videos and projects stay.": "Удалить папки этого заказа? Твои видео и проекты останутся.",
+    "Delete this order's folders in Orders (with the files it brought)? Your own videos elsewhere and your projects stay.":
+        "Удалить папки этого заказа (вместе с файлами, которые он принёс)? Твои видео в других папках и проекты останутся.",
     "Reject this order? It will not be done.": "Отклонить заказ? Он не будет выполнен.", "Stop this order?": "Остановить заказ?",
     "Orders in work": "В работе", "New orders": "Новые заказы", "Orders not done": "Не выполнены", "Ready orders": "Готовые заказы",
     "No orders yet. When another program puts an order into the Inbox folder, it appears here.":
@@ -514,7 +515,9 @@ PHRASES = {
     # found by the QA review (2026-10-17): messages that stayed English
     "The source folder is not available (disconnected drive?)": "Папка с исходными видео недоступна (диск отключён?)",
     "The source videos are not available (disconnected drive?)": "Исходные видео недоступны (диск отключён?)",
-    "Keep at least one moment.": "Оставь хотя бы один момент.", "Could not apply the edits: ": "Не удалось применить правки: ",
+    "Keep at least one moment.": "Оставь хотя бы один момент.",
+    "Free it? Every video is then analysed again - for a reel, for videos prepared in advance and for AI+ in the Library (that can take hours for a big Library).":
+        "Освободить? Тогда каждое видео будет анализироваться заново — для ролика, для подготовленных заранее видео и для ИИ+ в Библиотеке (для большой Библиотеки это часы).", "Could not apply the edits: ": "Не удалось применить правки: ",
     "The exported file is not available any more: ": "Сохранённого файла больше нет: ", "Job not found": "Сборка не найдена",
     "Export not found": "Сохранение не найдено", "not found (moved or deleted)": "не найден (перемещён или удалён)",
     "A video of this reel was marked Private while the reel was being built, so the reel was not kept. Press Retry (for a version edited by hand: Let MediaEngine choose again): it is made without that video.":

@@ -85,16 +85,45 @@ def text_key(theme: str) -> str:
 
 # exactly the Library page's set (web.gallery): the working set, available on this PC, not Private / rejected / excluded
 _VISIBLE = ("media_type='video' AND work_selected=1 AND excluded=0 AND COALESCE(analysis_status,'')<>'private' "
-            "AND private_path IS NULL AND rejected_path IS NULL "
+            "AND private_path IS NULL AND rejected_path IS NULL AND COALESCE(sha256,'') NOT IN (SELECT sha256 FROM ignored_hashes) "
             "AND (source_kind='fixed' OR staging_path IS NOT NULL OR archive_path IS NOT NULL)")
 _VISIBLE_I = ("i.media_type='video' AND i.work_selected=1 AND i.excluded=0 AND COALESCE(i.analysis_status,'')<>'private' "
-              "AND i.private_path IS NULL AND i.rejected_path IS NULL "
+              "AND i.private_path IS NULL AND i.rejected_path IS NULL AND COALESCE(i.sha256,'') NOT IN (SELECT sha256 FROM ignored_hashes) "
               "AND (i.source_kind='fixed' OR i.staging_path IS NOT NULL OR i.archive_path IS NOT NULL)")
 
 
 def _videos():
+    """The Library's videos the search can look at: without the ones that have no preview frame to look at (damaged)."""
     with db() as con:
-        return [dict(r) for r in con.execute(f"SELECT id,filename,source_fingerprint FROM inventory WHERE {_VISIBLE} ORDER BY id").fetchall()]
+        rows = [dict(r) for r in con.execute(f"SELECT id,filename,source_fingerprint FROM inventory WHERE {_VISIBLE} ORDER BY id").fetchall()]
+    bad = _no_frames()
+    return [r for r in rows if bad.get(str(r["id"])) != (r["source_fingerprint"] or "")]
+
+
+def _no_frames_file() -> Path:
+    from .config import DATA
+    return DATA / "aiplus_no_frames.json"
+
+
+def _no_frames() -> dict:
+    """Videos whose preview could be made but has no frame to look at (damaged): {inventory id: fingerprint}. They are
+    left out of "ready for N of M" (before: "5 of 6" for ever) and looked at again once the file changes."""
+    try:
+        d = json.loads(_no_frames_file().read_text(encoding="utf-8"))
+        return d if isinstance(d, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def _remember_no_frames(inv_id: int, fingerprint: str) -> None:
+    d = _no_frames()
+    d[str(int(inv_id))] = fingerprint or ""
+    try:
+        tmp = _no_frames_file().with_suffix(".tmp")
+        tmp.write_text(json.dumps(d), encoding="utf-8")
+        os.replace(tmp, _no_frames_file())
+    except OSError:
+        pass
 
 
 def _texts_missing() -> int:
@@ -132,7 +161,8 @@ def status() -> dict:
             pace = max(0.0, time.time() - snap["t0"]) / (snap["done"] - snap["n0"])
             eta = round(pace * max(0, snap["total"] - snap["done"]))
     return {"model_ready": ready, "videos": len(vids), "indexed": indexed, "texts_missing": texts_missing, "eta_s": eta,
-            "reels_videos": len(deep), "reels_ready": deep_ready,
+            # two Library rows of the same video (a copy): one video to prepare
+            "reels_videos": len({v["sha256"] for v in deep}), "reels_ready": deep_ready,
             **{k: snap[k] for k in ("state", "done", "total", "error", "file", "waiting", "phase")}}
 
 
@@ -320,7 +350,9 @@ def _run_all() -> None:
                 except Exception:
                     continue
             if not images:
-                continue                      # no preview frames (file unavailable): tried again next time
+                if info and not frames:       # the preview was made but has no frame: a damaged video
+                    _remember_no_frames(v["id"], v.get("source_fingerprint") or "")
+                continue                      # file unavailable now: tried again next time
             if sc is None:
                 sc = _load("vision")
             try:

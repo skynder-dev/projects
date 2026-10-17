@@ -435,7 +435,10 @@ const pf=document.getElementById('projFind');if(pf)pf.oninput=()=>{const q=pf.va
         sb = ae.shared_cache_bytes()
         shared_html = (f"<div class='card row space' style='margin-top:14px;flex-wrap:wrap'><span class='muted'>What the AI found in your videos "
                        f"and the cut moments (kept for every reel, so the same video is never analysed twice): {human_bytes(sb)}</span>"
-                       "<form method='post' action='/auto/check/free-shared'><button class='btn2'>Free</button></form></div>") if sb else ""
+                       "<form method='post' action='/auto/check/free-shared' onsubmit=\"return confirm(document.getElementById('freeSharedQ').textContent)\">"
+                       "<button class='btn2'>Free</button></form>"
+                       "<span id='freeSharedQ' hidden>Free it? Every video is then analysed again - for a reel, for videos prepared in advance "
+                       "and for AI+ in the Library (that can take hours for a big Library).</span></div>") if sb else ""
         cb = ae.all_work_cache_bytes()
         if cb:
             shared_html += (f"<div class='card row space' style='margin-top:14px;flex-wrap:wrap'><span class='muted'><span>Analysis and render caches "

@@ -269,6 +269,17 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   pieces of other projects are kept under 60 GB (never a prepared project's); the engine never cuts one AI+ moment
   twice at once (on Windows that could drop a video) and keys finished segments by their start and crop; a graphics
   card test of b122 is not trusted (test again). Checks: unit 121/121, e2e, orders, browser (all on Linux; Windows CI).
+- Fourth round (a second look at the orders, a QA walk-through of the Library): a reel order could still pull a
+  Private video in through a manifest saved under a video name → every video and music file of an order is checked
+  as a plain media file, and FFmpeg may not even open playlists/manifests while checking; an order whose answer the
+  program moved away was done again (also a rejected one) → answered orders are never done again by themselves; one
+  order folder Windows cannot move no longer holds up the others; Try again takes a Failed answer back in one step;
+  closing the app no longer writes "stopped by owner". Library: "Remove from Library" was undone at every app start
+  (an old import backfill ran each time) → once only; "Private forever" now hashes the file as it is now (a replaced
+  file kept its old hash) and keeps never-hashed Private files out of reels by path; a copy of a Private video is no
+  longer shown (Library, theme search, Best Moments, Make a reel); Make a reel never takes a removed video; "ready for
+  N of M" no longer stays short for copies or damaged videos; Free (shared AI data) asks first; odd page numbers and
+  ids give no server error; Library search texts in Russian.
 
 ## Evidence
 

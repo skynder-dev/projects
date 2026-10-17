@@ -1373,6 +1373,8 @@ def _request_key(p: dict, settings: dict) -> str:
                                                              aiplus_identity() if settings.get("mode") == "semantic_plus" else "off"),
                       # marking a file Private later must never reuse a reel that contains it
                       "private": hashlib.sha256("\n".join(_private_hashes()).encode()).hexdigest(),
+                      **({"private_paths": hashlib.sha256("\n".join(sorted(_private_paths())).encode()).hexdigest()}
+                         if _private_paths() else {}),
                       **({"music_file": music_identity(settings["music"])} if settings.get("music") else {})},
                      sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(raw.encode()).hexdigest()
@@ -1756,12 +1758,12 @@ def _run_job(jid: int) -> None:
     try:
         with keep_awake():
             if p.get("files"):
-                local, _ = _with_length(local_inputs(p["files"]), work_dir, note, jid)
+                local, _ = _with_length(local_inputs(_not_private_paths(p["files"])), work_dir, note, jid)
                 input_list = jobs_dir / f"j{jid}.inputs.txt"
                 input_list.write_text("\n".join(str(x) for x in local) + "\n", encoding="utf-8")
             else:
                 vids = list_videos(Path(p["folder"]))
-                local, fixed = _with_length(local_inputs(vids), work_dir, note, jid)
+                local, fixed = _with_length(local_inputs(_not_private_paths(vids)), work_dir, note, jid)
                 if fixed or len(local) != len(vids):   # cloud-only placeholders / fixed copies: give the engine the exact list
                     input_list = jobs_dir / f"j{jid}.inputs.txt"
                     input_list.write_text("\n".join(str(x) for x in local) + "\n", encoding="utf-8")
@@ -1867,6 +1869,23 @@ def _notify_finished(jid: int, p: dict, ok: bool) -> None:
                              f"http://127.0.0.1:{APP_PORT}/auto/p/{int(p['id'])}", ui_language() == "ru", prepared=is_prepare(j))
     except Exception:
         pass
+
+
+def _private_paths() -> set:
+    """Files marked Private in the Library whose content was never hashed (marked while the drive was unplugged):
+    kept out of reels by their path (the engine skips Private videos by SHA-256)."""
+    try:
+        with db() as con:
+            rows = con.execute("SELECT path,staging_path,archive_path FROM inventory WHERE analysis_status='private' "
+                               "AND (sha256 IS NULL OR sha256='')").fetchall()
+    except Exception:
+        return set()
+    return {os.path.normcase(os.path.abspath(str(r[k]))) for r in rows for k in ("path", "staging_path", "archive_path") if r[k]}
+
+
+def _not_private_paths(paths) -> list:
+    priv = _private_paths()
+    return [x for x in paths if os.path.normcase(os.path.abspath(str(x))) not in priv] if priv else list(paths)
 
 
 def private_in_result(res: dict) -> list[str]:

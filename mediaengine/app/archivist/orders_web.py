@@ -182,7 +182,7 @@ def register(app, page, err_page, e, error_html):
                 f"<form method='post' action='/auto/orders/open-done' style='margin:0'><button class='btn2'>Done folder</button></form>"
                 f"<a class='btn btn2' href='/auto'>Auto Edit</a></div>"
                 f"<div class='muted ae-path' style='margin-top:6px'>{e(ov['inbox'])}</div></div>"
-                f"<span id='delq' hidden>Delete this order's folders in Orders? Your own videos and projects stay.</span>"
+                f"<span id='delq' hidden>Delete this order's folders in Orders (with the files it brought)? Your own videos elsewhere and your projects stay.</span>"
                 f"<span id='rejectq' hidden>Reject this order? It will not be done.</span>"
                 f"<span id='stopq' hidden>Stop this order?</span>"
                 f"{listing}{settings}{howto}")

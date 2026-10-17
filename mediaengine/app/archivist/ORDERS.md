@@ -30,7 +30,11 @@ Names starting with `.`, `~` or `_`, and names ending with `.tmp`, `.part`, `.pa
 ## Getting the answer
 
 Wait for `Done\<order id>\` or `Failed\<order id>\`. Each answer folder appears complete at once (it is written
-under a hidden name and then renamed), so when the folder exists, its `result.json` is final.
+under a hidden name and then renamed), so when the folder exists, its `result.json` is final. The program may move or
+delete an answer folder after reading it: an answered order is never done again by itself. Check `order_sha256` in
+`result.json` against your own `order.json` (an id used twice is refused; the old answer stays where it was).
+Only the owner's **Try again** on the Orders page takes a `Failed` answer back (it disappears in one step) and does the
+order again; its new answer then appears in `Done` or `Failed`.
 
 `result.json` (schema `mediaengine.result/1`):
 
@@ -93,8 +97,9 @@ for example). MediaEngine renders it: H.264 + AAC MP4, frame-exact times.
 - `audio` (optional): cut or filled with silence to the plan's length. Without it the video gets a silent sound track.
 - Only files **inside the order folder** are used (relative paths, no `..`, no absolute or network paths).
 - Plain media files only: pictures PNG, JPEG, WebP, BMP, TIFF (at most 50 megapixels); videos MP4/MOV, MKV/WebM, AVI,
-  MPEG, MPEG-TS, WMV, FLV (at most 8192 pixels a side); sound WAV, MP3, M4A/AAC, FLAC, OGG, MKA, AIFF.
-  Playlists (`.m3u8`, concat lists) are refused whatever their name: they could point to any file on the PC.
+  MPEG, MPEG-TS, WMV, FLV, DV (at most 8192 pixels a side); sound WAV, MP3, M4A/AAC, FLAC, OGG, MKA, AIFF.
+  Playlists and manifests (`.m3u8`, DASH, concat lists) are refused whatever their name - FFmpeg is not even allowed
+  to open them: they could point to any file on the PC. The same holds for the videos and the music of a reel order.
 
 ## Kind 2: `reel_from_videos` — MediaEngine chooses the moments
 
@@ -138,7 +143,7 @@ videos used and the number of moments.
 | `ORDER_SCHEMA_UNKNOWN` / `ORDER_KIND_UNKNOWN` | not `mediaengine.order/1` / unknown `kind` |
 | `ORDER_FIELD_INVALID` | a field is wrong (the message names it) |
 | `ORDER_FILE_MISSING` / `ORDER_PATH_OUTSIDE` / `ORDER_NETWORK_PATH` | a named file is missing / outside the order folder / on the network |
-| `ORDER_ID_INVALID` / `ORDER_ID_ALREADY_USED` | bad or reused order id (the answer is in `Failed\<id> (2)` etc.) |
+| `ORDER_ID_INVALID` / `ORDER_ID_ALREADY_USED` | bad id (answer in `Failed\order <cleaned id>`) / reused id (answer in `Failed\<id> (2)` etc.) |
 | `PLAN_TIMES_INVALID` / `PLAN_TOO_LONG` / `PLAN_TOO_MANY_CLIPS` | the plan's times do not fit / > 10 min / > 300 clips |
 | `PLAN_IMAGE_UNREADABLE` / `PLAN_VIDEO_UNREADABLE` / `PLAN_AUDIO_UNREADABLE` | a file of the plan cannot be read (or is not a plain media file) |
 | `PLAN_IMAGE_TOO_BIG` | a picture has more than 50 megapixels |
@@ -152,5 +157,7 @@ videos used and the number of moments.
 
 - The app must be running. Orders put in while it is closed are done when it starts. An order interrupted by a restart is done again;
   one started 3 times without finishing waits on the Orders page for **Try again** or **Delete**.
-- Deleting an order on the Orders page removes only its folders in `Orders` (never the owner's videos or projects).
+- Deleting an order on the Orders page removes only its folders in `Orders`, with the files the order brought (a reel
+  project made from videos sent inside the order then has no sources; the owner's own videos elsewhere and his projects
+  stay).
 - A program on another computer (or in the cloud) cannot reach this folder; copying orders here is the owner's choice.

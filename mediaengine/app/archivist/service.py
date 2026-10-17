@@ -1355,7 +1355,9 @@ def _mark_private_one(inv_id: int) -> str:
         raise RuntimeError("Catalog item missing")
     row = _row_dict(rr)
     local = next((Path(row[k]) for k in ("staging_path", "archive_path", "private_path", "path") if row.get(k) and Path(row[k]).exists()), None)
-    sha = row.get("sha256") or (sha256_file(local) if local else None)
+    # the file as it is NOW (it may have been replaced since its hash was taken); the old hash stays Private too
+    old_sha = row.get("sha256")
+    sha = (sha256_file(local) if local else None) or old_sha
     private_path = row.get("private_path")
     # Never move the user's original (phone, card, fixed folder). Only a copy Archivist owns
     # (an existing file inside Staging or the archive root) may move into the private area.
@@ -1366,8 +1368,8 @@ def _mark_private_one(inv_id: int) -> str:
         private_path = str(dest)
     with db() as con:
         con.execute("INSERT OR REPLACE INTO ignored_source_keys(source_key,reason,created_at) VALUES(?,?,?)", (row["source_key"], "private_forever", now_iso()))
-        if sha:
-            con.execute("INSERT OR REPLACE INTO ignored_hashes(sha256,reason,created_at) VALUES(?,?,?)", (sha, "private_forever", now_iso()))
+        for h in {x for x in (sha, old_sha) if x}:
+            con.execute("INSERT OR REPLACE INTO ignored_hashes(sha256,reason,created_at) VALUES(?,?,?)", (h, "private_forever", now_iso()))
         con.execute(
             "UPDATE inventory SET analysis_status='private',privacy_reason='private_forever',sha256=COALESCE(?,sha256),private_path=COALESCE(?,private_path),staging_path=CASE WHEN ? IS NOT NULL THEN NULL ELSE staging_path END,archive_path=CASE WHEN ? IS NOT NULL THEN NULL ELSE archive_path END,import_status='private',excluded=1,error=NULL WHERE id=?",
             (sha, private_path, private_path, private_path, inv_id),
