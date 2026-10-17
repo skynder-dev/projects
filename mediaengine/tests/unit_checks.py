@@ -432,6 +432,11 @@ def main():
         check("unicode shortcut round trip", back["arguments"] == arg and back["workdir"] == str(d)
               and back["target"].lower() == tgt.lower(), back)
         check("desktop and start-menu folders found", shell_folder(0x10) is not None and shell_folder(0x02) is not None)
+        # a Start-menu entry rewritten by the app keeps the app id Setup gives it (notifications named MediaEngine)
+        write_shell_link(d / "Меню.lnk", tgt, arg, str(d), "", "MediaEngine", app_id="MediaEngine.Desktop")
+        back = read_shell_link(d / "Меню.lnk")
+        check("shortcut carries the app id", "MediaEngine.Desktop".encode("utf-16-le") in (d / "Меню.lnk").read_bytes()
+              and back["arguments"] == arg, back)
     # Russian: plural forms; native window titles follow the interface language
     from archivist import i18n
     check("ru plural forms", [i18n.ru_plural(n, "версия", "версии", "версий") for n in (1, 2, 5, 11, 21, 22, 112)]

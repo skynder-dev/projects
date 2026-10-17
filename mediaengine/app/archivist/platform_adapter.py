@@ -140,7 +140,48 @@ def _shell_link_session(fn):
             ctypes.windll.ole32.CoUninitialize()
 
 
-def write_shell_link(lnk: Path, target: str, arguments: str = "", workdir: str = "", icon: str = "", description: str = "") -> None:
+_IID_IPROPERTYSTORE = "{886D8EEB-8CF2-4446-8D02-CDBA1DBDCF99}"
+_PKEY_APP_USER_MODEL_ID = ("{9F4C2855-9F79-4B39-A8D0-E1D42DE1D5F3}", 5)
+
+
+def _set_link_app_id(link, app_id: str) -> None:
+    """System.AppUserModel.ID on the shortcut (what Setup's AppUserModelID does): Windows then names the app's
+    notifications "MediaEngine". Errors come back as OSError (HRESULT) and are the caller's to ignore."""
+    import ctypes
+    from ctypes import wintypes
+
+    class GUID(ctypes.Structure):
+        _fields_ = [("a", wintypes.DWORD), ("b", wintypes.WORD), ("c", wintypes.WORD), ("d", ctypes.c_ubyte * 8)]
+
+    class PROPERTYKEY(ctypes.Structure):
+        _fields_ = [("fmtid", GUID), ("pid", wintypes.DWORD)]
+
+    class PROPVARIANT(ctypes.Structure):          # vt + 3 reserved words + the 16-byte union (24 bytes on x64)
+        _fields_ = [("vt", ctypes.c_ushort), ("r1", ctypes.c_ushort), ("r2", ctypes.c_ushort), ("r3", ctypes.c_ushort),
+                    ("p", ctypes.c_void_p), ("p2", ctypes.c_void_p)]
+
+    ole32 = ctypes.OleDLL("ole32")
+    iid = GUID()
+    ole32.CLSIDFromString(ctypes.c_wchar_p(_IID_IPROPERTYSTORE), ctypes.byref(iid))
+    key = PROPERTYKEY()
+    ole32.CLSIDFromString(ctypes.c_wchar_p(_PKEY_APP_USER_MODEL_ID[0]), ctypes.byref(key.fmtid))
+    key.pid = _PKEY_APP_USER_MODEL_ID[1]
+    text = ctypes.create_unicode_buffer(app_id)
+    var = PROPVARIANT()
+    var.vt = 31                                   # VT_LPWSTR; the store copies the text
+    var.p = ctypes.cast(text, ctypes.c_void_p).value
+    ps = ctypes.c_void_p()
+    _com_call(link, 0, ctypes.HRESULT, ctypes.c_void_p(ctypes.addressof(iid)), ctypes.c_void_p(ctypes.addressof(ps)))  # QueryInterface
+    try:
+        _com_call(ps, 6, ctypes.HRESULT, ctypes.c_void_p(ctypes.addressof(key)), ctypes.c_void_p(ctypes.addressof(var)))  # SetValue
+        _com_call(ps, 7, ctypes.HRESULT)                                                                                  # Commit
+    finally:
+        if ps.value:
+            _com_call(ps, 2, ctypes.c_ulong)                                                                              # Release
+
+
+def write_shell_link(lnk: Path, target: str, arguments: str = "", workdir: str = "", icon: str = "", description: str = "",
+                     app_id: str = "") -> None:
     """Create or replace a Windows shortcut with full Unicode paths."""
     import ctypes
 
@@ -154,6 +195,11 @@ def write_shell_link(lnk: Path, target: str, arguments: str = "", workdir: str =
             _com_call(link, 7, ctypes.HRESULT, W(str(description)))             # SetDescription
         if icon:
             _com_call(link, 17, ctypes.HRESULT, W(str(icon)), ctypes.c_int(0))  # SetIconLocation
+        if app_id:
+            try:
+                _set_link_app_id(link, app_id)
+            except OSError:
+                pass                                                            # a shortcut without the id still starts the app
         _com_call(pf, 6, ctypes.HRESULT, W(str(lnk)), ctypes.c_int(1))          # IPersistFile::Save
     _shell_link_session(go)
 
@@ -174,6 +220,16 @@ def read_shell_link(lnk: Path) -> dict:
             out[key] = buf.value
         return out
     return _shell_link_session(go)
+
+
+def _link_runs(lnk: Path, arguments: str) -> bool:
+    """True when the shortcut already starts exactly this (wscript with these arguments)."""
+    try:
+        got = read_shell_link(lnk)
+        return (str(got.get("arguments") or "").strip().lower() == arguments.strip().lower()
+                and Path(str(got.get("target") or "")).name.lower() == "wscript.exe")
+    except Exception:
+        return False
 
 
 def shell_folder(csidl: int) -> Path | None:
@@ -236,8 +292,12 @@ def install_launchers(home: Path) -> None:
                 # a failure here must not send the (good) desktop shortcut through the ANSI fallback
                 try:
                     progs = shell_folder(0x02)                          # CSIDL_PROGRAMS
-                    if progs is not None and (progs / "MediaEngine.lnk").is_file():
-                        write_shell_link(progs / "MediaEngine.lnk", wscript, f'"{vbs}"', str(home), str(icon) if icon.is_file() else "", "MediaEngine")
+                    sm = progs / "MediaEngine.lnk" if progs is not None else None
+                    if sm is not None and sm.is_file() and not _link_runs(sm, f'"{vbs}"'):
+                        # only when it points elsewhere; the app id (as Setup sets it) names MediaEngine in notifications
+                        from .notify import AUMID_APP
+                        write_shell_link(sm, wscript, f'"{vbs}"', str(home), str(icon) if icon.is_file() else "", "MediaEngine",
+                                         app_id=AUMID_APP)
                 except Exception:
                     pass
             return
