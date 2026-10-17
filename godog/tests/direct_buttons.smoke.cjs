@@ -4,9 +4,11 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const src=fs.readFileSync(require('node:path').join(__dirname,'..','GoDog_PC_LOCAL_01.user.js'),'utf8');
 for(const required of [
-  '// @name         GoDog GDCONST-010 DEFAULT-DISABLED canary',
+  '// @name         GoDog',
+  '// @name:en      GoDog',
+  '// @name:ru      GoDog',
   '// @namespace    GoDog.constitution',
-  '// @version      7.0.5',
+  '// @version      7.0.6',
   '// @grant        none',
   '// @updateURL    http://127.0.0.1:43129/godog.meta.js',
   '// @downloadURL  http://127.0.0.1:43129/godog.user.js'
@@ -93,7 +95,7 @@ const ctx={window:win,document,location:loc,sessionStorage:storage(session),loca
   HTMLTextAreaElement:class{},HTMLInputElement:class{}};
 vm.runInNewContext(src,ctx,{timeout:3000});
 assert.equal(buttons['.cg-status'].textContent,'DISARMED','restored original initial status');
-assert.equal(buttons['.cg-version'].textContent,'GoDog 7.0.5','restored original version chip');
+assert.equal(buttons['.cg-version'].textContent,'GoDog 7.0.6','restored original version chip');
 assert.equal(buttons['.cg-project'].textContent,'GoDog','restored original project chip');
 assert.equal(buttons['.cg-auto'].textContent,'AUTO','restored original AUTO label');
 assert.equal(buttons['.cg-timer'].textContent,'','no fake LOCAL timer');
