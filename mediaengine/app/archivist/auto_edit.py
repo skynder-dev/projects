@@ -1150,9 +1150,12 @@ def project_state(d: dict) -> str:
         return "REVIEW"
     if jobs and jobs[0]["status"] == "failed":
         return "ATTENTION"
-    if (jobs and jobs[0]["status"] == "done" and (jobs[0].get("settings") or {}).get("prepare")
-            and prepared_info(int(jobs[0]["id"]), _project_dir(int(d["id"])) / "jobs" / f"j{int(jobs[0]['id'])}" if d.get("id") else None)):
-        return "PREPARED"            # analysed in advance (and not freed since): the reel is made in minutes
+    if jobs and jobs[0]["status"] == "done" and (jobs[0].get("settings") or {}).get("prepare"):
+        j0 = jobs[0]
+        freed = (j0.get("id") and d.get("id") and
+                 not prepared_info(int(j0["id"]), _project_dir(int(d["id"])) / "jobs" / f"j{int(j0['id'])}"))
+        if not freed:
+            return "PREPARED"        # analysed in advance (and not freed since): the reel is made in minutes
     return "DRAFT"
 
 
