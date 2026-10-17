@@ -1,0 +1,137 @@
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\semglue\\out\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\semglue\\out\\MediaEngine Result.json",
+  "selection_mode": "FAST_LOCAL_SEMANTIC_SHADOW_V1",
+  "semantic": true,
+  "boundary_trimmed": 0,
+  "duration_s": 28.47,
+  "target_error_s": 1.53,
+  "selected_count": 6,
+  "audio": "source"
+}
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\semglue\\out_three\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\semglue\\out_three\\MediaEngine Result.json",
+  "selection_mode": "FAST_LOCAL_SEMANTIC_SHADOW_V1",
+  "semantic": true,
+  "boundary_trimmed": 0,
+  "duration_s": 28.47,
+  "target_error_s": 1.53,
+  "selected_count": 6,
+  "audio": "source"
+}
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\semglue\\out_shared_new\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\semglue\\out_shared_new\\MediaEngine Result.json",
+  "selection_mode": "FAST_LOCAL_SEMANTIC_SHADOW_V1",
+  "semantic": true,
+  "boundary_trimmed": 0,
+  "duration_s": 28.47,
+  "target_error_s": 1.53,
+  "selected_count": 6,
+  "audio": "source"
+}
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\semglue\\out_shared_again\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\semglue\\out_shared_again\\MediaEngine Result.json",
+  "selection_mode": "FAST_LOCAL_SEMANTIC_SHADOW_V1",
+  "semantic": true,
+  "boundary_trimmed": 0,
+  "duration_s": 28.47,
+  "target_error_s": 1.53,
+  "selected_count": 6,
+  "audio": "source"
+}
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\semglue\\out_adopt\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\semglue\\out_adopt\\MediaEngine Result.json",
+  "selection_mode": "FAST_LOCAL_SEMANTIC_SHADOW_V1",
+  "semantic": true,
+  "boundary_trimmed": 0,
+  "duration_s": 28.47,
+  "target_error_s": 1.53,
+  "selected_count": 6,
+  "audio": "source"
+}
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\semglue\\out_reclip\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\semglue\\out_reclip\\MediaEngine Result.json",
+  "selection_mode": "FAST_LOCAL_SEMANTIC_SHADOW_V1",
+  "semantic": true,
+  "boundary_trimmed": 0,
+  "duration_s": 28.47,
+  "target_error_s": 1.53,
+  "selected_count": 6,
+  "audio": "source"
+}
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\semglue\\out_hwfallback\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\semglue\\out_hwfallback\\MediaEngine Result.json",
+  "selection_mode": "FAST_LOCAL_SEMANTIC_SHADOW_V1",
+  "semantic": true,
+  "boundary_trimmed": 0,
+  "duration_s": 28.47,
+  "target_error_s": 1.53,
+  "selected_count": 6,
+  "audio": "source"
+}
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\semglue\\out_hwnone\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\semglue\\out_hwnone\\MediaEngine Result.json",
+  "selection_mode": "FAST_LOCAL_SEMANTIC_SHADOW_V1",
+  "semantic": true,
+  "boundary_trimmed": 0,
+  "duration_s": 28.47,
+  "target_error_s": 1.53,
+  "selected_count": 6,
+  "audio": "source"
+}
+{
+  "status": "PASS",
+  "prepared": true,
+  "input_count": 7,
+  "moments": 21,
+  "selection_mode": "FAST_LOCAL_SEMANTIC_SHADOW_V1",
+  "semantic": true
+}
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\semglue\\out_after_prep\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\semglue\\out_after_prep\\MediaEngine Result.json",
+  "selection_mode": "FAST_LOCAL_SEMANTIC_SHADOW_V1",
+  "semantic": true,
+  "boundary_trimmed": 0,
+  "duration_s": 28.47,
+  "target_error_s": 1.53,
+  "selected_count": 6,
+  "audio": "source"
+}
+PASS ai_glue_mode_label
+PASS ai_glue_overlaps_removed
+PASS ai_glue_no_moment_twice
+PASS ai_glue_damaged_and_duplicate_skipped
+PASS ai_glue_reel_sound_fits_picture
+PASS ai_glue_social_hd
+PASS ai_glue_parallel_analysis_same_reel
+PASS ai_moment_clips_cut_the_same_every_time
+PASS ai_previews_small_reel_from_originals
+PASS ai_shared_cache_filled_by_the_first_project
+PASS ai_shared_cache_new_project_analyses_and_cuts_nothing
+PASS ai_shared_cache_takes_over_an_older_projects_files
+PASS prepare_in_advance_makes_no_reel
+PASS build_after_prepare_analyses_cuts_measures_nothing
+PASS known_reports_missing_clips_cut_in_parallel
+PASS hw_decode_failure_falls_back_to_processor
+PASS hw_decode_path_gives_the_same_clips
+PASS boundary_rows_one_pass_same_as_seeks
+PASS boundary_rows_fall_back_when_a_spot_check_differs
+PASS ai_short_clip_is_too_short
+{"passed": 20, "total": 20, "reel_s": 28.47, "segments": 6}

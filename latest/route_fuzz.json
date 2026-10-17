@@ -1,0 +1,12 @@
+{
+ "requests": 67,
+ "server_errors": [],
+ "slow": [
+  {
+   "method": "POST",
+   "url": "/api/auto/aiplus/import",
+   "seconds": 600.0
+  }
+ ],
+ "pass": false
+}

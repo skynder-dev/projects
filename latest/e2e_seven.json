@@ -1,0 +1,880 @@
+{
+  "passed": 87,
+  "total": 87,
+  "timings": {
+    "first_build_s": 106.2,
+    "first_build_stage_s": {
+      "analyze": 12.55,
+      "finish": 55.78,
+      "inputs": 0.4,
+      "render": 34.4,
+      "select": 0.0,
+      "trim": 1.86
+    },
+    "format_variant_s": 30.8,
+    "prepare_s": 13.9,
+    "build_after_prepare_s": 78.4,
+    "prepare_analyze_s": 10.19,
+    "build_after_prepare_analyze_s": 0.04
+  },
+  "checks": [
+    {
+      "name": "auto_home_renders",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "setup_page_renders",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "name": "scan_skips_broken_and_one_of_each_duplicate",
+      "pass": true,
+      "detail": {
+        "broken.mp4": "damaged or not a video",
+        "clip_2.mp4": "duplicate of clip_2 copy.mp4"
+      }
+    },
+    {
+      "name": "setup_shows_only_length_format_sound",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "folder_with_subfolders_lists_them",
+      "pass": true,
+      "detail": "b\")=>appControl('update');if(q)q.onclick=()=>quitApp();pollJob();pollSourceStatus()});\\n\\n\\ndocument.addEventListener('submit',ev=>{ev.target.querySelectorAll('button:not([disabled])').forEach(b=>b.dataset.reen='1')},true);\\nwindow.addEventListener('pageshow',ev=>{if(ev.persisted)document.querySelectorAll('button[data-reen]').forEach(b=>{b.disabled=false;delete b.dataset.reen})});</script></body></html>\""
+    },
+    {
+      "name": "big_folder_offers_days_and_ticks",
+      "pass": true,
+      "detail": [
+        200,
+        2
+      ]
+    },
+    {
+      "name": "big_folder_day_opens_reel_setup",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "name": "a_reel_for_every_day",
+      "pass": true,
+      "detail": [
+        true,
+        302,
+        [
+          [
+            "camera_roll \u00b7 15 Jul 2026",
+            33
+          ],
+          [
+            "camera_roll \u00b7 14 Jul 2026",
+            33
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "every_day_test_projects_deleted",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "every_day_prepared_in_advance",
+      "pass": true,
+      "detail": [
+        true,
+        302,
+        2
+      ]
+    },
+    {
+      "name": "every_day_after_prepare_goes_on_in_the_same_projects",
+      "pass": true,
+      "detail": [
+        302,
+        0
+      ]
+    },
+    {
+      "name": "setup_refuses_other_sites",
+      "pass": true,
+      "detail": 403
+    },
+    {
+      "name": "no_silent_technical_fallback",
+      "pass": true,
+      "detail": 400
+    },
+    {
+      "name": "create_redirects_to_project",
+      "pass": true,
+      "detail": 302
+    },
+    {
+      "name": "progress_page_renders",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "first_build_done",
+      "pass": true,
+      "detail": {
+        "done": 1,
+        "elapsed_s": 106.0,
+        "error": null,
+        "eta_s": null,
+        "id": 7,
+        "message": "Ready",
+        "percent": 100,
+        "revision_id": 1,
+        "stage": "done",
+        "stage_label": "Ready",
+        "status": "done",
+        "total": 1
+      }
+    },
+    {
+      "name": "job_reports_elapsed_time",
+      "pass": true,
+      "detail": 106.0
+    },
+    {
+      "name": "progress_has_real_stages",
+      "pass": true,
+      "detail": [
+        [
+          "starting",
+          0
+        ],
+        [
+          "inputs",
+          3
+        ],
+        [
+          "analyze",
+          5
+        ],
+        [
+          "analyze",
+          17
+        ],
+        [
+          "analyze",
+          30
+        ],
+        [
+          "analyze",
+          37
+        ],
+        [
+          "analyze",
+          43
+        ],
+        [
+          "analyze",
+          50
+        ],
+        [
+          "trim",
+          51
+        ],
+        [
+          "render",
+          54
+        ],
+        [
+          "render",
+          58
+        ],
+        [
+          "render",
+          62
+        ],
+        [
+          "render",
+          67
+        ],
+        [
+          "render",
+          71
+        ],
+        [
+          "render",
+          75
+        ],
+        [
+          "finish",
+          80
+        ],
+        [
+          "done",
+          100
+        ]
+      ]
+    },
+    {
+      "name": "revision_is_social_hd_1080x1920",
+      "pass": true,
+      "detail": [
+        {
+          "index": 0,
+          "codec_type": "video",
+          "codec_name": "h264",
+          "width": 1080,
+          "height": 1920,
+          "r_frame_rate": "30/1"
+        }
+      ]
+    },
+    {
+      "name": "revision_has_audio",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "audio_video_same_length",
+      "pass": true,
+      "detail": [
+        29.9,
+        29.909333333333333
+      ]
+    },
+    {
+      "name": "duration_near_target_or_shortfall_shown",
+      "pass": true,
+      "detail": 29.9
+    },
+    {
+      "name": "revision_has_segments_for_review",
+      "pass": true,
+      "detail": 6
+    },
+    {
+      "name": "selection_mode_matches_request",
+      "pass": true,
+      "detail": "ACCEPTED_V52_TECHNICAL_AESTHETIC"
+    },
+    {
+      "name": "review_page_has_player",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "video_served_with_range",
+      "pass": true,
+      "detail": 206
+    },
+    {
+      "name": "source_preview_served",
+      "pass": true,
+      "detail": 206
+    },
+    {
+      "name": "source_preview_path_safe",
+      "pass": true,
+      "detail": 404
+    },
+    {
+      "name": "export_refused_before_accept",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "accept",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "export_one_mp4",
+      "pass": true,
+      "detail": {
+        "id": 1,
+        "project_id": 5,
+        "revision_id": 1,
+        "path": "D:\\a\\_temp\\home7\\Exports\\seven - Vertical HD - R001.mp4",
+        "sha256": "e7373279f6f6ff0e5932b508c219cd588e0f30975fb1eb61e42328b4fa4aa5a4",
+        "bytes": 41588512,
+        "created_at": "2026-10-17T20:16:43"
+      }
+    },
+    {
+      "name": "export_name_windows_safe",
+      "pass": true,
+      "detail": "seven - Vertical HD - R001.mp4"
+    },
+    {
+      "name": "exported_reels_button_after_export",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "repeat_export_idempotent",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "completion_screen",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "export_to_chosen_folder",
+      "pass": true,
+      "detail": [
+        "seven - Vertical HD - R001.mp4"
+      ]
+    },
+    {
+      "name": "export_into_source_folder_refused",
+      "pass": true,
+      "detail": 400
+    },
+    {
+      "name": "default_export_never_into_source_folder",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "filmstrip_frame",
+      "pass": true,
+      "detail": [
+        200,
+        2338
+      ]
+    },
+    {
+      "name": "repeat_request_reuses_job",
+      "pass": true,
+      "detail": [
+        7,
+        7
+      ]
+    },
+    {
+      "name": "variant_done",
+      "pass": true,
+      "detail": {
+        "done": 1,
+        "elapsed_s": 31.0,
+        "error": null,
+        "eta_s": null,
+        "id": 8,
+        "message": "Ready",
+        "percent": 100,
+        "revision_id": 2,
+        "stage": "done",
+        "stage_label": "Ready",
+        "status": "done",
+        "total": 1
+      }
+    },
+    {
+      "name": "variant_is_960x540",
+      "pass": true,
+      "detail": [
+        {
+          "index": 0,
+          "codec_type": "video",
+          "codec_name": "h264",
+          "width": 960,
+          "height": 540,
+          "r_frame_rate": "30/1"
+        }
+      ]
+    },
+    {
+      "name": "variant_same_moments",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "variant_faster_than_first_build",
+      "pass": true,
+      "detail": [
+        30.75524091720581,
+        106.2
+      ]
+    },
+    {
+      "name": "accepted_pointer_unchanged_by_variant",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "refused_save_keeps_chosen_version",
+      "pass": true,
+      "detail": [
+        400,
+        1
+      ]
+    },
+    {
+      "name": "odd_ids_and_bodies_never_500",
+      "pass": true,
+      "detail": [
+        404,
+        404,
+        404,
+        200
+      ]
+    },
+    {
+      "name": "blind_compare_starts",
+      "pass": true,
+      "detail": 302
+    },
+    {
+      "name": "blind_compare_hides_versions",
+      "pass": true,
+      "detail": [
+        206,
+        206
+      ]
+    },
+    {
+      "name": "blind_compare_reveals_and_records",
+      "pass": true,
+      "detail": 400
+    },
+    {
+      "name": "exclude_rebuild_done",
+      "pass": true,
+      "detail": {
+        "done": 1,
+        "elapsed_s": 81.0,
+        "error": null,
+        "eta_s": null,
+        "id": 9,
+        "message": "Ready",
+        "percent": 100,
+        "revision_id": 3,
+        "stage": "done",
+        "stage_label": "Ready",
+        "status": "done",
+        "total": 1
+      }
+    },
+    {
+      "name": "excluded_moment_absent",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "variant_keeps_removed_moments",
+      "pass": true,
+      "detail": [
+        "done",
+        {
+          "exclude": [
+            "8cfaade29fb5040b2d8d5e8e"
+          ],
+          "format": "horizontal",
+          "length": 30,
+          "mode": "technical",
+          "sound": "auto"
+        }
+      ]
+    },
+    {
+      "name": "revert_restores_previous_accept",
+      "pass": true,
+      "detail": 1
+    },
+    {
+      "name": "edit_submits",
+      "pass": true,
+      "detail": 302
+    },
+    {
+      "name": "edit_build_done",
+      "pass": true,
+      "detail": {
+        "done": 1,
+        "elapsed_s": 67.0,
+        "error": null,
+        "eta_s": null,
+        "id": 11,
+        "message": "Ready",
+        "percent": 100,
+        "revision_id": 5,
+        "stage": "done",
+        "stage_label": "Ready",
+        "status": "done",
+        "total": 1
+      }
+    },
+    {
+      "name": "edit_order_and_membership_as_requested",
+      "pass": true,
+      "detail": [
+        [
+          "c58aac3f8878c9531c3799da",
+          "9145592adf396a3213668ae2",
+          "09ea182620422c2baaa34c34",
+          "ce2c592f17a7bf6fb00c9d90",
+          "e0e62666ec6c0d3dda070b2c"
+        ],
+        [
+          "c58aac3f8878c9531c3799da",
+          "9145592adf396a3213668ae2",
+          "09ea182620422c2baaa34c34",
+          "ce2c592f17a7bf6fb00c9d90",
+          "e0e62666ec6c0d3dda070b2c"
+        ]
+      ]
+    },
+    {
+      "name": "edit_trim_applied_in_source_time",
+      "pass": true,
+      "detail": {
+        "camera_drop_trim": false,
+        "event_id": "c58aac3f8878c9531c3799da",
+        "manual_trim": [
+          6.8,
+          9.8
+        ],
+        "position": 1,
+        "reel_in_s": 0.0,
+        "reel_out_s": 2.967,
+        "score": 0.530133,
+        "source_in_s": 6.817,
+        "source_name": "clip_6.mp4",
+        "source_out_s": 9.783
+      }
+    },
+    {
+      "name": "edit_replacement_used",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "edit_removed_absent",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "edit_keeps_accepted_pointer",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "edited_revision_reviewable",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "variant_keeps_manual_edits",
+      "pass": true,
+      "detail": [
+        [
+          "c58aac3f8878c9531c3799da",
+          "9145592adf396a3213668ae2",
+          "09ea182620422c2baaa34c34",
+          "ce2c592f17a7bf6fb00c9d90",
+          "e0e62666ec6c0d3dda070b2c"
+        ],
+        [
+          "c58aac3f8878c9531c3799da",
+          "9145592adf396a3213668ae2",
+          "09ea182620422c2baaa34c34",
+          "ce2c592f17a7bf6fb00c9d90",
+          "e0e62666ec6c0d3dda070b2c"
+        ],
+        {
+          "camera_drop_trim": false,
+          "event_id": "c58aac3f8878c9531c3799da",
+          "manual_trim": [
+            6.8,
+            9.8
+          ],
+          "position": 1,
+          "reel_in_s": 0.0,
+          "reel_out_s": 2.967,
+          "score": 0.530133,
+          "source_in_s": 6.817,
+          "source_name": "clip_6.mp4",
+          "source_out_s": 9.783
+        }
+      ]
+    },
+    {
+      "name": "re_edit_keeps_earlier_trim",
+      "pass": true,
+      "detail": {
+        "camera_drop_trim": false,
+        "event_id": "c58aac3f8878c9531c3799da",
+        "manual_trim": [
+          6.8,
+          9.8
+        ],
+        "position": 1,
+        "reel_in_s": 0.0,
+        "reel_out_s": 2.967,
+        "score": 0.530133,
+        "source_in_s": 6.817,
+        "source_name": "clip_6.mp4",
+        "source_out_s": 9.783
+      }
+    },
+    {
+      "name": "edit_without_changes_makes_no_version",
+      "pass": true,
+      "detail": [
+        302,
+        "/auto/p/5?rev=7&same=1",
+        7,
+        7
+      ]
+    },
+    {
+      "name": "edit_remembers_removed_moments",
+      "pass": true,
+      "detail": [
+        [
+          "8cfaade29fb5040b2d8d5e8e",
+          "8d35d892b24dc8547470c993",
+          "e0e62666ec6c0d3dda070b2c"
+        ],
+        [
+          "8cfaade29fb5040b2d8d5e8e",
+          "8d35d892b24dc8547470c993",
+          "e0e62666ec6c0d3dda070b2c"
+        ]
+      ]
+    },
+    {
+      "name": "choose_again_keeps_removed_moments_out",
+      "pass": true,
+      "detail": [
+        "done",
+        null,
+        []
+      ]
+    },
+    {
+      "name": "rev_param_scoped_to_project",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "restart_refused_while_reel_builds",
+      "pass": true,
+      "detail": [
+        409,
+        []
+      ]
+    },
+    {
+      "name": "cancel_stops_job",
+      "pass": true,
+      "detail": {
+        "done": 0,
+        "elapsed_s": 1.0,
+        "error": null,
+        "eta_s": null,
+        "id": 15,
+        "message": "Cancelled by user",
+        "percent": 0,
+        "revision_id": null,
+        "stage": "cancelled",
+        "stage_label": "Cancelled",
+        "status": "cancelled",
+        "total": 6
+      }
+    },
+    {
+      "name": "cancel_publishes_nothing",
+      "pass": true,
+      "detail": [
+        8,
+        8
+      ]
+    },
+    {
+      "name": "retry_after_cancel_done",
+      "pass": true,
+      "detail": {
+        "done": 1,
+        "elapsed_s": 25.0,
+        "error": null,
+        "eta_s": null,
+        "id": 16,
+        "message": "Ready",
+        "percent": 100,
+        "revision_id": 9,
+        "stage": "done",
+        "stage_label": "Ready",
+        "status": "done",
+        "total": 1
+      }
+    },
+    {
+      "name": "private_change_forces_new_build",
+      "pass": true,
+      "detail": [
+        17,
+        7
+      ]
+    },
+    {
+      "name": "private_file_never_used",
+      "pass": true,
+      "detail": [
+        {
+          "name": "broken.mp4",
+          "reason": "ProbeError:FFMPEG_INPUT_DURATION_MISSING:[mov,mp4,m4a,3gp,3g2,mj2 @ 000001ac14b31380] Format mov,mp4,m4a,3gp,3g2,mj2 detected only with low score of 1, misdetection possib"
+        },
+        {
+          "name": "clip_2.mp4",
+          "reason": "DUPLICATE_OF:clip_2 copy.mp4"
+        },
+        {
+          "name": "clip_4.mp4",
+          "reason": "PRIVATE"
+        }
+      ]
+    },
+    {
+      "name": "free_cache",
+      "pass": true,
+      "detail": [
+        302,
+        333726491
+      ]
+    },
+    {
+      "name": "free_all_caches",
+      "pass": true,
+      "detail": 302
+    },
+    {
+      "name": "prepare_in_advance_done_without_reel",
+      "pass": true,
+      "detail": [
+        true,
+        302,
+        "done",
+        null,
+        {
+          "cache_status": "built",
+          "clip_edges_measured": 0,
+          "elapsed_s": 13.11,
+          "hw_decode": null,
+          "input_count": 6,
+          "input_fingerprint": "f2b6f602868eb8c8938946b94a9bea306cdb020ef4fd14bfef227fac23eb1913",
+          "moments": 6,
+          "network_request_performed": false,
+          "pieces_cut": 6,
+          "prepared": true,
+          "schema": "MEDENG_PREPARED_V1",
+          "selection_mode": "ACCEPTED_V52_TECHNICAL_AESTHETIC",
+          "semantic": false,
+          "semantic_model": null,
+          "semantic_timing": null,
+          "skipped_inputs": [
+            {
+              "name": "broken.mp4",
+              "reason": "ProbeError:FFMPEG_INPUT_DURATION_MISSING:[mov,mp4,m4a,3gp,3g2,mj2 @ 000002751d461380] Format mov,mp4,m4a,3gp,3g2,mj2 detected only with low score of 1, misdetection possib"
+            },
+            {
+              "name": "clip_2.mp4",
+              "reason": "DUPLICATE_OF:clip_2 copy.mp4"
+            },
+            {
+              "name": "clip_4.mp4",
+              "reason": "PRIVATE"
+            }
+          ],
+          "source_mutated": false,
+          "stage_seconds": {
+            "analyze": 10.19,
+            "inputs": 0.04,
+            "select": 0.34,
+            "trim": 2.54
+          },
+          "theme": null,
+          "would_select": 6
+        },
+        "PREPARED"
+      ]
+    },
+    {
+      "name": "prepared_page_offers_build",
+      "pass": true,
+      "detail": "ectorAll('input[name=format]').forEach(r=>r.addEventListener('change',upd));upd()})();\ndocument.addEventListener('submit',ev=>{ev.target.querySelectorAll('button:not([disabled])').forEach(b=>b.dataset.reen='1')},true);\nwindow.addEventListener('pageshow',ev=>{if(ev.persisted)document.querySelectorAll('button[data-reen]').forEach(b=>{b.disabled=false;delete b.dataset.reen})});</script></body></html>"
+    },
+    {
+      "name": "prepared_after_a_cancelled_build",
+      "pass": true,
+      "detail": [
+        "cancelled",
+        "PREPARED",
+        7
+      ]
+    },
+    {
+      "name": "build_after_prepare_reuses_analysis",
+      "pass": true,
+      "detail": [
+        "done",
+        null,
+        10.19,
+        0.04
+      ]
+    },
+    {
+      "name": "free_cache_ends_prepared",
+      "pass": true,
+      "detail": [
+        "done",
+        "PREPARED",
+        "DRAFT",
+        22,
+        21
+      ]
+    },
+    {
+      "name": "russian_interface",
+      "pass": true,
+      "detail": {
+        "/auto": 200,
+        "/auto/p/5": 200,
+        "/auto/new?folder=D%3A%5Ca%5C_temp%5Cfx%5Cseven": 200
+      }
+    },
+    {
+      "name": "english_again",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "language_switch_everywhere",
+      "pass": true,
+      "detail": {
+        "/": 149306,
+        "/settings": 150510,
+        "/library": 158874,
+        "/jobs": 150784
+      }
+    },
+    {
+      "name": "check_this_pc_page",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "sources_unchanged",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "restart_keeps_project",
+      "pass": true,
+      "detail": "1 10 READY\n"
+    }
+  ]
+}

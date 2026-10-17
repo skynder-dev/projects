@@ -1,0 +1,172 @@
+{
+  "passed": 17,
+  "total": 17,
+  "timings": {
+    "download_fast_local_s": 5.1,
+    "download_aiplus_s": 10.1,
+    "test_reel_semantic_s": 23.4,
+    "test_reel_semantic_plus_s": 80.1,
+    "test_reel_aiplus_s_per_frame": 3.286,
+    "aiplus_first_build_s": 280.5,
+    "aiplus_stage_seconds": {
+      "analyze": 217.1,
+      "finish": 36.22,
+      "inputs": 1.08,
+      "render": 21.87,
+      "select": 0.04,
+      "trim": 3.17
+    },
+    "aiplus_videos_embedded": 9,
+    "aiplus_frames_embedded": 114,
+    "aiplus_scout_s_total": 8.4,
+    "aiplus_embed_s_total": 196.9,
+    "aiplus_embed_s_per_frame": 1.728,
+    "ai_variant_build_s": 118.6,
+    "ai_stage_seconds": {
+      "analyze": 70.45,
+      "finish": 26.15,
+      "inputs": 0.14,
+      "render": 18.41,
+      "select": 0.05,
+      "trim": 2.24
+    },
+    "aiplus_theme_variant_s": 71.9,
+    "aiplus_theme_stage_seconds": {
+      "analyze": 12.18,
+      "finish": 34.49,
+      "inputs": 0.72,
+      "render": 21.11,
+      "select": 0.06,
+      "trim": 2.64
+    },
+    "aiplus_theme_warnings": [
+      "THEME:sunset:0_MATCHING_MOMENTS",
+      "THEME_FEW_MATCHES:sunset",
+      "OVERLAPPING_MOMENTS_DROPPED:12"
+    ],
+    "aiplus_sources": [
+      "clip_2 copy.mp4",
+      "clip_3.mp4",
+      "clip_4.mp4"
+    ],
+    "ai_sources": [
+      "clip_1.mp4",
+      "clip_4.mp4",
+      "clip_5.mp4"
+    ],
+    "library_index_s": 113.6,
+    "library_search_ms": 3.8,
+    "library_search_top": [
+      {
+        "inventory_id": 2,
+        "filename": "clip_3.mp4",
+        "best_s": 9.52,
+        "frame": 5,
+        "score": -2.41
+      },
+      {
+        "inventory_id": 1,
+        "filename": "clip_1.mp4",
+        "best_s": 1.12,
+        "frame": 0,
+        "score": -6.975
+      }
+    ],
+    "aiplus_build_after_prepare_s": 63.0,
+    "aiplus_build_after_prepare_timing": {
+      "clips_cached": 10,
+      "clips_cut": 0,
+      "clips_s": 0.05,
+      "rank_s": 9.19,
+      "score_s": 0.01,
+      "scout_embed_s": 0.0
+    }
+  },
+  "checks": [
+    {
+      "name": "model_not_there_before",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fast_local_downloaded_by_the_app_into_its_data_folder",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "aiplus_downloaded_by_the_app_and_verified",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "test_reel_semantic",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "test_reel_semantic_plus",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "test_reel_aiplus_reports_speed",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "setup_offers_ai_and_aiplus",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "aiplus_project_created",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "aiplus_reel_built",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "ai_variant_of_the_same_project",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "review_says_aiplus",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "aiplus_theme_variant",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "blind_compare_ai_vs_aiplus_starts",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "library_indexed_with_real_aiplus",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "library_theme_search_answers",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "library_prepared_for_reels_with_real_aiplus",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "aiplus_reel_after_prepare_looks_at_no_frame",
+      "pass": true,
+      "detail": null
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+PASS analysis_makes_clips
+PASS composition_keeps_its_clip
+PASS hand_made_crop_kept
+PASS no_duplicate_moments
+{'passed': 4, 'total': 4}
