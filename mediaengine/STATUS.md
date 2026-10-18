@@ -419,6 +419,12 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   i18n 40 pages 0 English 0 network; route fuzz of the update routes and states: no server error. Windows CI:
   the same check, plus the package's Update button finds a next build served from 127.0.0.1, installs it into a
   Cyrillic folder with the runtime hard-linked (fsutil) and takes over (ping answers from the new folder).
+  Windows CI b142 (run 39098689249, commit 2fa9886): every step green except one line of the installer smoke - the
+  tray icon was SHOWN (`tray: shown` in /api/ping of the installed build), but the check's FindWindowW got PowerShell's
+  `$null` as "" and found no window, so the tray Quit was not tried (fixed in the workflow, cd3909a). Update button
+  smoke PASS: b142 found `b100142` served from 127.0.0.1, installed it into `upd\Программы\` (2.3 MB ZIP, 164 files),
+  python.exe of the runtime has 2 names (hard link), ping answered from the new folder, old build kept and listed,
+  nothing half-made. update_check 26/26 on Windows too.
 
 ## Evidence
 
