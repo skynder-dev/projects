@@ -470,6 +470,15 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   (3) after a takeover the old windows close only once the new window is there (closing Edge's last window
   first could make Edge drop the new one); `sync_autostart` runs even when the desktop shortcut failed.
   Launcher 3.9.3. Known, accepted: "End task" counts as an unexpected stop (the reel is made once more).
+- **Windows CI b148 (run 39116280608, commit a6fd55d): every blocking step green.** Installer smoke: tray `shown`,
+  its window found, **Quit from the tray stopped MediaEngine**; start at sign-in off before, on via Settings
+  (pythonw ... --no-browser --at-sign-in of this build), removed by uninstall. Update button smoke PASS (b148 →
+  b100148 from 127.0.0.1, runtime hard-linked). restart_resume 7/7 and update_check 33/33 on Windows. Package smoke:
+  tray shown, takeover to the next release. The update was NOT published: two non-blocking checks failed for test
+  reasons - route fuzz POSTed /api/auto/aiplus/import without a path, which opens a Windows folder window that
+  waited the whole 600 s (now those two import routes get only odd paths); the Russian check counted project /
+  composition titles made by the orders and library tests ("Order reel-damaged", "copy test") as English left (now
+  every stored title is user content). Installer: artifact 12135137992 (MediaEngine-3.13.0-rc1-b148-Setup).
 
 ## Evidence
 

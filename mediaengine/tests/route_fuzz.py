@@ -18,6 +18,8 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 PORT = 18779
 
+# without a "path" these open a Windows folder window (it waits for a person): only odd paths are sent to them
+PATH_ONLY = ("/api/auto/model/import", "/api/auto/aiplus/import")
 SKIP_RULES = ("/api/app-control", "/api/auto/pick-", "/auto/check/use-build", "/auto/check/remove-build",
               "/api/auto/model/download", "/api/auto/aiplus/download", "/auto/check/hwtest", "/auto/exports/open",
               "/auto/orders/open-", "/static/", "/diagnostics/fixture.mp4")
@@ -79,6 +81,11 @@ def main():
         if time.time() > t_end:
             break
         if rule.rule.startswith(SKIP_RULES) or rule.rule.endswith(("/open", "/reveal", "/open-folder")) or rule.endpoint == "static":
+            continue
+        if rule.rule in PATH_ONLY:
+            for v in ODD:
+                if v:                                  # ("" = no path: the folder window)
+                    hit("POST", rule.rule, json={"path": v})
             continue
         args = list(rule.arguments)
         urls = []

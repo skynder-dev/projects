@@ -153,6 +153,9 @@ def main():
         i18n.set_ui_language("ru")
         H = {"Host": "127.0.0.1:8765"}
         with app.test_client() as c, db() as con:
+            for table in ("ae_projects", "compositions"):      # names the user (or a test, an order) gave: they stay as typed
+                if _has(con, table):
+                    USER_CONTENT.update(str(r[0]) for r in con.execute(f"SELECT title FROM {table}").fetchall() if r[0])
             for url in urls_for(app, con):
                 r = c.get(url, headers=H)
                 if r.mimetype != "text/html" or r.status_code >= 500:
