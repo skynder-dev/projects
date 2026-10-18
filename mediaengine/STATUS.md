@@ -448,6 +448,13 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   file (one file that cannot be linked no longer demands room for the whole runtime); ZIP fetched with its SHA in
   the address (a re-run with the same build name never gets a cached older ZIP); watchdog waits during the
   switch too; shorter staging name (long runtime paths).
+- Start at sign-in (Settings, installed builds on Windows, OFF unless the owner turns it on): a shortcut in the
+  user's Startup folder runs this build's launcher with --no-browser (no window; the tray icon shows it runs; the
+  first ping resumes reels waiting from before a restart and watches Orders\Inbox). It follows the build started
+  last (`sync_autostart` from install_launchers, also after removing a build); uninstall removes it. Closes the
+  known gap "after a night reboot the app does not start itself" for an owner who wants that. Windows CI
+  installer smoke: turns it on through Settings, checks the shortcut (pythonw, --no-browser, this build) and that
+  uninstall removed it.
 
 ## Evidence
 

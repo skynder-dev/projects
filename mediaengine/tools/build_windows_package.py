@@ -129,7 +129,8 @@ Windows asks about every start). Start: double-click "Start MediaEngine.vbs". A 
 "{SHORTCUT}" is created for next time. No console, no Python install needed. The first start
 can take a minute (Windows checks the new files). Closing the window leaves MediaEngine running (a reel being
 made goes on): its icon is in the notification area next to the clock - click it to open the window again,
-right-click -> Quit to stop MediaEngine ("Quit" in the top bar does the same).
+right-click -> Quit to stop MediaEngine ("Quit" in the top bar does the same). Settings can start it in the background
+when you sign in to Windows (off unless you turn it on).
 
 Your projects, settings and exports are kept OUTSIDE this folder, in "MediaEngine Data" next to it
 (the exact place is shown under Settings). Newer build: press "Update" at the top - MediaEngine looks on GitHub
@@ -181,6 +182,7 @@ MediaEngine (all Setup builds; keeps "MediaEngine Data"); from the ZIP -> Quit, 
   Python, консоль и браузер отдельно не нужны. Если закрыть окно, программа продолжает работать в фоне
   (ролик дособирается): её значок в трее рядом с часами (может быть под стрелкой ^). Щелчок по значку снова
   открывает окно, правая кнопка → «Выход» закрывает программу (то же делает кнопка «Выход» вверху).
+  В Настройках можно включить запуск в фоне при входе в Windows (по умолчанию выключен).
 
 РОЛИК ИЗ СВОИХ ВИДЕО (Автомонтаж)
   1. Автомонтаж → «Выбрать папку…» (папка с видео) или «Выбрать видео…» (отдельные файлы).

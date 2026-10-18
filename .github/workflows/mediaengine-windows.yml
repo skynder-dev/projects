@@ -493,6 +493,13 @@ jobs:
             # after the first start the Start-menu entry still points at this build (the app re-saves it)
             $sc2 = (& python -c $readLnk $lnk $pa) | ConvertFrom-Json
             if ($sc2.arguments -ne "`"$rel\Start MediaEngine.vbs`"") { $fail += 'start-menu shortcut after start' }
+            # start at sign-in (Settings, off by default): on -> a Startup shortcut runs this build's launcher without a window
+            $asl = Join-Path ([Environment]::GetFolderPath('Startup')) 'MediaEngine.lnk'
+            $asBefore = Test-Path $asl
+            try { Invoke-WebRequest -UseBasicParsing -Method Post -Uri http://127.0.0.1:8775/settings/save -Headers @{Origin='http://127.0.0.1:8775'} -Body @{autostart_shown='1'; autostart='on'; notify='on'} -MaximumRedirection 0 -ErrorAction SilentlyContinue | Out-Null } catch {}
+            $as = if (Test-Path $asl) { (& python -c $readLnk $asl $pa) | ConvertFrom-Json } else { $null }
+            "start at sign-in: off before: $(-not $asBefore); on: $([bool]$as) $($as.target) $($as.arguments)" | Tee-Object -Append $log
+            if ($asBefore -or -not $as -or -not $as.target.EndsWith('pythonw.exe') -or -not $as.arguments.Contains('--no-browser') -or -not $as.arguments.Contains($rel)) { $fail += 'start at sign-in' }
             # uninstall while MediaEngine runs: refused (silent mode answers Cancel), nothing removed
             if ($up) {
               $u = Start-Process "$base\unins000.exe" -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -PassThru -Wait
@@ -525,11 +532,14 @@ jobs:
             "after Quit + uninstall: build removed: $(-not (Test-Path $rel)); shortcut removed: $(-not (Test-Path $lnk)); data kept: $(Test-Path "$data\data\archivist.db")" | Tee-Object -Append $log
             if (Test-Path $rel) { "left in the build folder: $(@(Get-ChildItem -Recurse $rel | Select-Object -First 15 | ForEach-Object { $_.FullName.Substring($rel.Length) }) -join ' ; ')" | Tee-Object -Append $log }
             if ((Test-Path $rel) -or (Test-Path $lnk) -or -not (Test-Path "$data\data\archivist.db")) { $fail += 'uninstall' }
+            "uninstall removed the start-at-sign-in shortcut: $(-not (Test-Path $asl))" | Tee-Object -Append $log
+            if (Test-Path $asl) { $fail += 'uninstall start at sign-in' }
           } finally {
             Remove-Item Env:MEDIAENGINE_NO_BROWSER -ErrorAction SilentlyContinue
             Remove-Item $ptr -ErrorAction SilentlyContinue
             if (Test-Path "$ptr.ci-bak") { Move-Item "$ptr.ci-bak" $ptr -Force }
             Remove-Item "$([Environment]::GetFolderPath('Desktop'))\MediaEngine RC.lnk" -ErrorAction SilentlyContinue
+            Remove-Item (Join-Path ([Environment]::GetFolderPath('Startup')) 'MediaEngine.lnk') -ErrorAction SilentlyContinue
           }
           if ($fail.Count) { "FAILED: $($fail -join ', ')" | Tee-Object -Append $log; exit 1 }
           "installer smoke PASS" | Tee-Object -Append $log

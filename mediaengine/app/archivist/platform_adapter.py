@@ -241,6 +241,59 @@ def shell_folder(csidl: int) -> Path | None:
     return Path(buf.value)
 
 
+def autostart_link() -> Path | None:
+    """The shortcut in this Windows user's Startup folder that starts MediaEngine at sign-in (the owner's choice in
+    Settings; off unless he turns it on)."""
+    if not is_windows():
+        return None
+    d = shell_folder(0x07)                                              # CSIDL_STARTUP
+    return d / "MediaEngine.lnk" if d is not None else None
+
+
+def autostart_on() -> bool:
+    try:
+        lnk = autostart_link()
+        return bool(lnk and lnk.is_file())
+    except Exception:
+        return False
+
+
+def _autostart_args(home: Path) -> str:
+    return f'-B -s -E "{Path(home) / "launcher.py"}" --no-browser'
+
+
+def set_autostart(home: Path, on: bool) -> bool:
+    """Start this build at sign-in in the background (no window: the tray icon shows it runs, a reel queue left
+    from before a restart goes on) - or not. Returns whether it is on now."""
+    lnk = autostart_link()
+    if lnk is None:
+        return False
+    if not on:
+        lnk.unlink(missing_ok=True)
+        return False
+    home = Path(home)
+    pyw = home / ".venv" / "Scripts" / "pythonw.exe"
+    if not pyw.is_file() or not (home / "launcher.py").is_file():
+        raise OSError("this MediaEngine is not an installed build")
+    icon = home / "MediaEngine.ico"
+    lnk.parent.mkdir(parents=True, exist_ok=True)
+    write_shell_link(lnk, str(pyw), _autostart_args(home), str(home), str(icon) if icon.is_file() else "", "MediaEngine")
+    return True
+
+
+def sync_autostart(home: Path) -> None:
+    """When start at sign-in is on, it starts the build that ran last (like the desktop shortcut)."""
+    try:
+        lnk = autostart_link()
+        if lnk is None or not lnk.is_file():
+            return
+        got = read_shell_link(lnk)
+        if str(got.get("arguments") or "").strip().lower() != _autostart_args(home).lower():
+            set_autostart(home, True)
+    except Exception:
+        pass
+
+
 def install_launchers(home: Path) -> None:
     """Repair the current platform launcher. Windows is the only validated desktop adapter today."""
     if not is_windows():
@@ -300,6 +353,7 @@ def install_launchers(home: Path) -> None:
                                          app_id=AUMID_APP)
                 except Exception:
                     pass
+                sync_autostart(home)
             return
         # temp folder, not <home>\data: a side-by-side release folder must stay exactly as it was unpacked
         import tempfile

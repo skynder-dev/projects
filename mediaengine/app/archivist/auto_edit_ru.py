@@ -604,6 +604,11 @@ PHRASES = {
     "The update is for another kind of MediaEngine, so it is not used.": "Обновление для другого вида MediaEngine, поэтому не используется.",
     "An update is being installed. Wait a minute.": "Устанавливается обновление. Подожди минуту.",
     "Cannot tell whether work is running.": "Не удалось понять, идёт ли работа.",
+    "Start at sign-in could not be changed.": "Не удалось изменить запуск при входе в Windows.",
+    "Settings: start MediaEngine in the background when you sign in to Windows (off unless you turn it on); reels waiting from before a restart go on.":
+        "Настройки: запуск MediaEngine в фоне при входе в Windows (выключен, пока ты сам не включишь); ролики, ждавшие до перезагрузки, продолжатся.",
+    "Start MediaEngine in the background when I sign in to Windows (icon in the tray; reels waiting from before a restart go on)":
+        "Запускать MediaEngine в фоне при входе в Windows (значок в трее; ролики, ждавшие до перезагрузки, продолжатся)",
     "Work started in the meantime. The new version is ready: press Update now again when the work has finished.":
         "Тем временем началась работа. Новая версия готова: нажми «Обновить сейчас» ещё раз, когда работа закончится.",
     "The new version is ready in its folder, but it did not take over. Press Update now to try again.":

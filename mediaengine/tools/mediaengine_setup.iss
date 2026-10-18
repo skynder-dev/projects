@@ -87,6 +87,8 @@ Type: filesandordirs; Name: "{app}\{#PkgName}"
 Type: filesandordirs; Name: "{app}\MediaEngine-*"
 Type: filesandordirs; Name: "{app}\.update-MediaEngine-*"
 Type: files; Name: "{userdesktop}\MediaEngine RC.lnk"
+; start at sign-in (Settings in the program; off unless turned on there)
+Type: files; Name: "{userstartup}\MediaEngine.lnk"
 
 [Code]
 function DefaultBase(Param: String): String;

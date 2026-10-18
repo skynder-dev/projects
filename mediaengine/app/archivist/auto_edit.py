@@ -2429,6 +2429,7 @@ WHATS_NEW_ITEMS = [
     ("2026-10-17b", "MediaEngine is in the tray (next to the clock): click it to open the window, right-click → Quit to close the program."),
     ("2026-10-17b", "A new version takes over from the old one by itself, without the “switch?” question."),
     ("2026-10-18", "The “Update” button at the top: MediaEngine finds a newer version on GitHub and installs it itself (only when you press it)."),
+    ("2026-10-18", "Settings: start MediaEngine in the background when you sign in to Windows (off unless you turn it on); reels waiting from before a restart go on."),
 ]
 WHATS_NEW_ID = max(d for d, _ in WHATS_NEW_ITEMS)
 WHATS_NEW = [t for _, t in WHATS_NEW_ITEMS]
