@@ -419,7 +419,7 @@ def main():
             import archivist.web as web_mod
             exits = []
             real_exit, real_spawn = web_mod._exit_soon, web_mod._spawn_launcher
-            web_mod._exit_soon, web_mod._spawn_launcher = (lambda: exits.append("exit")), (lambda m: exits.append(m))
+            web_mod._exit_soon, web_mod._spawn_launcher = (lambda **kw: exits.append("exit")), (lambda m: exits.append(m))
             try:
                 r = c.post("/api/app-control", json={"mode": "restart"}, headers=H)
                 time.sleep(0.2)

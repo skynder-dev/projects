@@ -116,7 +116,9 @@ adds "MediaEngine" to the Start menu. Settings -> Apps -> MediaEngine removes al
 ZIP instead: before extracting, right-click the downloaded ZIP -> Properties -> tick "Unblock" -> OK (otherwise
 Windows asks about every start). Start: double-click "Start MediaEngine.vbs". A MediaEngine window opens; a desktop shortcut
 "{SHORTCUT}" is created for next time. No console, no Python install needed. The first start
-can take a minute (Windows checks the new files). "Quit" in the top bar stops MediaEngine.
+can take a minute (Windows checks the new files). Closing the window leaves MediaEngine running (a reel being
+made goes on): its icon is in the notification area next to the clock - click it to open the window again,
+right-click -> Quit to stop MediaEngine ("Quit" in the top bar does the same).
 
 Your projects, settings and exports are kept OUTSIDE this folder, in "MediaEngine Data" next to it
 (the exact place is shown under Settings). Newer build: run its Setup (or extract it next to this one, a new
@@ -163,7 +165,9 @@ MediaEngine (all Setup builds; keeps "MediaEngine Data"); from the ZIP -> Quit, 
 ЗАПУСК
   Дважды щёлкни "Start MediaEngine.vbs". Откроется окно MediaEngine. На рабочем столе появится
   ярлык "{SHORTCUT}" — дальше запускай с него. Первый запуск может занять минуту.
-  Python, консоль и браузер отдельно не нужны. Закрыть программу: кнопка «Выход» (Quit) вверху.
+  Python, консоль и браузер отдельно не нужны. Если закрыть окно, программа продолжает работать в фоне
+  (ролик дособирается): её значок в трее рядом с часами (может быть под стрелкой ^). Щелчок по значку снова
+  открывает окно, правая кнопка → «Выход» закрывает программу (то же делает кнопка «Выход» вверху).
 
 РОЛИК ИЗ СВОИХ ВИДЕО (Автомонтаж)
   1. Автомонтаж → «Выбрать папку…» (папка с видео) или «Выбрать видео…» (отдельные файлы).

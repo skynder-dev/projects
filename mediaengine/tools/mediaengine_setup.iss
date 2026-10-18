@@ -58,10 +58,10 @@ Name: "ru"; MessagesFile: "compiler:Languages\Russian.isl"
 [CustomMessages]
 en.DataKept=Your projects and exported videos stay in "MediaEngine Data" (they are not removed by uninstall).
 ru.DataKept=Проекты и экспортированные ролики остаются в папке «MediaEngine Data» (удаление программы их не трогает).
-en.Running=MediaEngine is running (maybe only in the background). Open MediaEngine from the Start menu, press Quit at the top, then continue.
-ru.Running=MediaEngine запущен (возможно, только в фоне). Открой MediaEngine из меню Пуск, нажми «Выход» вверху и продолжай.
-en.SameRunning=This very build of MediaEngine is running right now (maybe only in the background). Open it from the Start menu, press Quit at the top, then run Setup again.
-ru.SameRunning=Именно эта сборка MediaEngine сейчас запущена (возможно, только в фоне). Открой её из меню Пуск, нажми «Выход» вверху и запусти Setup снова.
+en.Running=MediaEngine is running (maybe only in the background). Quit it: right-click its icon in the notification area next to the clock → Quit (or open it from the Start menu and press Quit at the top), then continue.
+ru.Running=MediaEngine запущен (возможно, только в фоне). Закрой его: правой кнопкой по его значку в трее рядом с часами → «Выход» (или открой из меню Пуск и нажми «Выход» вверху), затем продолжай.
+en.SameRunning=This very build of MediaEngine is running right now (maybe only in the background). Quit it: right-click its icon in the notification area next to the clock → Quit, then run Setup again.
+ru.SameRunning=Именно эта сборка MediaEngine сейчас запущена (возможно, только в фоне). Закрой её: правой кнопкой по значку MediaEngine в трее рядом с часами → «Выход», затем запусти Setup снова.
 
 [Files]
 Source: "{#SrcDir}\*"; DestDir: "{app}\{#PkgName}"; Flags: ignoreversion recursesubdirs createallsubdirs

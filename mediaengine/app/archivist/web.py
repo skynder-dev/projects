@@ -125,7 +125,7 @@ async function pollSourceStatus(){
 }
 async function quitApp(force=false){
   if(!force&&!confirm('Quit MediaEngine? Running work stops; you can start it again from the desktop shortcut.'))return;
-  try{const r=await fetch('/api/app-control',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'stop',force})});
+  try{const r=await fetch('/api/app-control',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'stop',force,close:true})});
     if(r.status===409){const x=await r.json();if(confirm((x.error||'Work is running.')+'\n\nQuit anyway? A reel being made is marked interrupted (Retry reuses its analysis); Library tasks, conversions and orders go on at the next start.'))return quitApp(true);return}}catch(e){}
   document.body.innerHTML="<div style='font:16px system-ui;padding:40px'>MediaEngine is closed. You can close this window.</div>";
 }
@@ -278,8 +278,87 @@ def _json_obj():
     return d if isinstance(d,dict) else {}
 
 
-def _exit_soon():
+def busy_reason() -> str:
+    """What a Quit (or a switch to another build) would stop right now, '' when nothing (Quit button, tray, launcher)."""
+    with db() as con:
+        busy=con.execute("SELECT id,kind,current_filename FROM jobs WHERE status='running' ORDER BY id LIMIT 1").fetchone()
+        try:
+            reel=con.execute("SELECT id FROM ae_jobs WHERE status IN ('running','queued') ORDER BY id LIMIT 1").fetchone()
+        except Exception:
+            reel=None
+    if busy:
+        return f"Job #{busy['id']} ({busy['kind']}) is running"
+    if reel:
+        return f"Auto Edit job #{reel['id']} is building a reel"
+    try:
+        from . import auto_edit as _ae
+        if _ae.aiplus_downloading(): return "The AI+ model is being downloaded"
+    except Exception:
+        pass
+    try:
+        from . import aiplus_library as _al
+        if _al.running(): return "AI+ is being prepared for the Library (it continues next time)"
+    except Exception:
+        pass
+    try:
+        from . import orders as _or
+        if _or.busy(): return "An order from another program is being done (Auto Edit → Orders)"
+    except Exception:
+        pass
+    try:
+        from . import composer as _cp
+        with _cp._ACTIVE_LOCK:
+            if _cp._ACTIVE: return "A composition is being rendered (Composer)"
+    except Exception:
+        pass
+    return ''
+
+
+def activity_line(ru: bool=False) -> str:
+    """One short line on what runs right now, for the tray icon ('' = nothing a Quit would stop)."""
+    try:
+        with db() as con:
+            rj=con.execute("SELECT j.*,p.title FROM ae_jobs j JOIN ae_projects p ON p.id=j.project_id "
+                           "WHERE j.status IN ('running','queued') ORDER BY (j.status='running') DESC,j.id LIMIT 1").fetchone()
+        if rj:
+            d=dict(rj); t=str(d.get('title') or '')
+            t=t if len(t)<=40 else t[:39]+'…'
+            if d.get('status')=='running':
+                from . import auto_edit as _ae
+                pct=_ae.job_percent(d)
+                return f"Собирается ролик «{t}»: {pct}%" if ru else f"Making a reel “{t}”: {pct}%"
+            return f"Ролик «{t}» ждёт сборки" if ru else f"Reel “{t}” is waiting to be made"
+    except Exception:
+        pass
+    try:
+        r=busy_reason()
+    except Exception:
+        return ''
+    if not r: return ''
+    if r.startswith('Job #'):
+        return 'Идёт задача Библиотеки (импорт или анализ)' if ru else 'A Library task is running (import or analysis)'
+    if ru:
+        try:
+            from .i18n import translate_text
+            return translate_text(r)
+        except Exception:
+            return r
+    return r
+
+
+def quit_soon(close_windows: bool=False) -> None:
+    """Stop the program a moment from now (the answer to the page that asked gets out first)."""
+    threading.Thread(target=_exit_soon,kwargs={'close_windows':bool(close_windows)},daemon=True,name='quit').start()
+
+
+def _exit_soon(close_windows=False):
     time.sleep(.8)
+    try:                                  # the tray icon goes first (a dead one would stay until hovered); the
+        from . import tray as _tr         # program's windows close with it when Quit was asked from a page or the tray
+        if close_windows: _tr.close_app_windows()
+        _tr.remove()
+    except Exception:
+        pass
     try:                                  # the AI+ preparation's engine step ends with the app
         from . import aiplus_library as _al
         _al.shutdown()
@@ -369,7 +448,9 @@ def create_app():
         return resp
 
     @app.get('/api/ping')
-    def ping(): return jsonify({'ok':True,'version':VERSION,'build':BUILD,'install':str(INSTALL)})   # loopback only
+    def ping():   # loopback only
+        from . import tray as _tr
+        return jsonify({'ok':True,'version':VERSION,'build':BUILD,'install':str(INSTALL),'tray':_tr.STATE.get('state')})
 
     @app.get('/diagnostics/fixture.mp4')
     def diagnostics_fixture():
@@ -434,46 +515,11 @@ def create_app():
     def app_control():
         payload=_json_obj();mode=payload.get('mode','restart');force=bool(payload.get('force'))
         if mode not in ('restart','update','stop'): return jsonify({'ok':False,'error':'bad mode'}),400
-        with db() as con:
-            busy=con.execute("SELECT id,kind,current_filename FROM jobs WHERE status='running' ORDER BY id LIMIT 1").fetchone()
-            try:
-                reel=con.execute("SELECT id FROM ae_jobs WHERE status IN ('running','queued') ORDER BY id LIMIT 1").fetchone()
-            except Exception:
-                reel=None
-        if busy and not force:
-            return jsonify({'ok':False,'error':f"Job #{busy['id']} ({busy['kind']}) is running"}),409
-        if reel and not force:
-            return jsonify({'ok':False,'error':f"Auto Edit job #{reel['id']} is building a reel"}),409
-        try:
-            from . import auto_edit as _ae
-            dl=_ae.aiplus_downloading()
-        except Exception:
-            dl=False
-        if dl and not force:
-            return jsonify({'ok':False,'error':"The AI+ model is being downloaded"}),409
-        try:
-            from . import aiplus_library as _al
-            idx=_al.running()
-        except Exception:
-            idx=False
-        if idx and not force:
-            return jsonify({'ok':False,'error':"AI+ is being prepared for the Library (it continues next time)"}),409
-        try:
-            from . import orders as _or
-            od=_or.busy()
-        except Exception:
-            od=''
-        if od and not force:
-            return jsonify({'ok':False,'error':"An order from another program is being done (Auto Edit → Orders)"}),409
-        try:
-            from . import composer as _cp
-            with _cp._ACTIVE_LOCK: comp=bool(_cp._ACTIVE)
-        except Exception:
-            comp=False
-        if comp and not force:
-            return jsonify({'ok':False,'error':"A composition is being rendered (Composer)"}),409
+        reason='' if force else busy_reason()
+        if reason: return jsonify({'ok':False,'error':reason}),409
         if mode!='stop': _spawn_launcher(mode)
-        threading.Thread(target=_exit_soon,daemon=True).start(); return jsonify({'ok':True})
+        # Quit from a page closes its window too (as any program does); a switch to another build leaves it open
+        quit_soon(close_windows=(mode=='stop' and payload.get('close') is True)); return jsonify({'ok':True})
 
     def phone_snapshot():
         adb=android.find_adb()

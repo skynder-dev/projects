@@ -383,6 +383,19 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   runs takes over without a question (the older one is asked to quit as with Quit; if it is building a reel it stays
   and says so); an OLDER build or an unknown folder name still asks, worded "a newer build is running". Unit check
   added (136/136).
+- Owner asked (22:52): put MediaEngine in the tray so it can be quit like a normal program. Done:
+  `app/archivist/tray.py` (plain Win32 through ctypes, no new package), started by `main.py`. Icon in the
+  notification area while the app runs; hover text = version and what runs ("Собирается ролик «…»: 45%");
+  click = bring the MediaEngine window to the front (or open one); right-click menu = what runs (greyed),
+  Открыть MediaEngine, Выход. Выход when idle quits at once; while work runs it asks (same text as the Quit
+  button). Quit from the tray or the in-app Quit button also closes the program's windows (Edge app windows whose
+  title ends with " · MediaEngine" - the stable uses " · Archivist", a browser tab adds " - Microsoft Edge");
+  a switch to another build does not (the Check-this-PC switch page waits in its window). The icon is removed
+  before every exit (Quit, switch, watchdog restart). Once per data folder a hint balloon says where the icon is.
+  `web.busy_reason()` is now the one check behind the Quit button, the launcher's switch and the tray.
+  Checks: unit 140/140 (window title rule, idle/busy texts; on Windows also the Win32 structure sizes 976/80);
+  Windows CI installer smoke now quits the installed app through the tray icon's Quit command and reports the
+  icon state (shown / no_taskbar). Not checkable in CI: how the icon and menu look - owner's eyes.
 
 ## Evidence
 

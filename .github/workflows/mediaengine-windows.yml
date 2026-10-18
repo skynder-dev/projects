@@ -374,7 +374,7 @@ jobs:
           & $iscc /Q "/DPkgName=$env:PKG_NAME" "/DAppVer=$env:PKG_VERSION" "/DSrcDir=$($src.FullName)" "/DOutDir=$env:RUNNER_TEMP\setup" mediaengine\tools\mediaengine_setup.iss 2>&1 | Tee-Object "$env:OUT\setup_build.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
           Get-ChildItem "$env:RUNNER_TEMP\setup" | ForEach-Object { "$($_.Name) $([math]::Round($_.Length/1MB,1)) MB" } | Tee-Object -Append "$env:OUT\setup_build.txt"
-      - name: Installer smoke - silent install into a Cyrillic folder, start from the Start-menu shortcut, uninstall keeps the data
+      - name: Installer smoke - silent install into a Cyrillic folder, start from the Start-menu shortcut, Quit from the tray icon, uninstall keeps the data
         if: success()
         shell: pwsh
         run: |
@@ -424,7 +424,18 @@ jobs:
               "uninstall while running: exit $($u.ExitCode); build kept: $(Test-Path "$rel\Start MediaEngine.vbs")" | Tee-Object -Append $log
               if (-not (Test-Path "$rel\Start MediaEngine.vbs")) { $fail += 'uninstall did not wait for Quit' }
             }
-            try { Invoke-WebRequest -UseBasicParsing -Method Post -Uri http://127.0.0.1:8775/api/app-control -Headers @{Origin='http://127.0.0.1:8775'} -ContentType 'application/json' -Body '{"mode":"stop","force":true}' | Out-Null } catch {}
+            # Quit from the tray icon, as a user does: its menu command "Quit" sent to the icon's window
+            if ($up) {
+              $trayState = try { ((Ping) | ConvertFrom-Json).tray } catch { '' }
+              Add-Type -Namespace MeCi -Name U -MemberDefinition '[DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern IntPtr FindWindowW(string c, string t); [DllImport("user32.dll")] public static extern bool PostMessageW(IntPtr h, uint m, IntPtr w, IntPtr l);'
+              $tw = [MeCi.U]::FindWindowW('MediaEngineTray', $null)
+              if ($tw -ne [IntPtr]::Zero) { [void][MeCi.U]::PostMessageW($tw, 0x0111, [IntPtr]1002, [IntPtr]::Zero) }
+              for ($i = 0; $i -lt 30 -and (Ping); $i++) { Start-Sleep 1 }
+              $trayQuit = -not (Ping)
+              "tray icon: $trayState; its window found: $($tw -ne [IntPtr]::Zero); Quit from the tray stopped MediaEngine: $trayQuit" | Tee-Object -Append $log
+              if ($trayState -notin @('shown', 'no_taskbar') -or $tw -eq [IntPtr]::Zero -or -not $trayQuit) { $fail += 'tray icon Quit' }
+            }
+            if (Ping) { try { Invoke-WebRequest -UseBasicParsing -Method Post -Uri http://127.0.0.1:8775/api/app-control -Headers @{Origin='http://127.0.0.1:8775'} -ContentType 'application/json' -Body '{"mode":"stop","force":true}' | Out-Null } catch {} }
             for ($i = 0; $i -lt 30 -and (Ping); $i++) { Start-Sleep 1 }
             # Quit = the server stops answering; its processes may need a few more seconds to exit
             for ($i = 0; $i -lt 30 -and (Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.Path -and $_.Path.StartsWith($rel) }); $i++) { Start-Sleep 1 }

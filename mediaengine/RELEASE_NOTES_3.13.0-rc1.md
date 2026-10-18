@@ -16,7 +16,10 @@ blind comparison → Accept → Export one MP4. Runs locally, no network, no pai
 `D:\projects\medeng\MediaEngine-3.13.0-rc1-b<N>\` when `D:\projects` exists (else `%USERPROFILE%\MediaEngine\`;
 nothing is put at the root of D:, the owner's rule of 2026-10-14), adds
 Start-menu "MediaEngine". A newer Setup adds its own build folder next to the old one; starting it while the old
-one runs asks "Switch to …?" (never while a reel is being built). Rollback = start the old folder's
+one runs takes over from it without a question (never while a reel is being built; starting an OLDER build while a
+newer one runs asks first). Closing the window leaves MediaEngine running: its icon in the notification area (tray)
+opens the window again (click) or quits (right-click → Quit, asks first when a reel is being built); Quit also
+closes the program's windows. Rollback = start the old folder's
 `Start MediaEngine.vbs`. Old builds can be removed on "Check this PC". The header shows the build (e.g. `b21`). Uninstall (Settings → Apps → MediaEngine) refuses while MediaEngine runs, removes
 all build folders installed by Setup and the shortcuts, keeps `MediaEngine Data`. Re-running the Setup of the build
 that is running is refused (quit first); a newer build can be installed while an older one runs. CI: silent install into a Cyrillic folder, start from the

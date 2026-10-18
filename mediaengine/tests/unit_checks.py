@@ -59,6 +59,37 @@ def main():
           L.switch_question("MediaEngine-3.13.0-rc1-b137", ""),
           L.switch_question("MediaEngine-3.13.0-rc1-b137", "MediaEngine-3.13.0-rc1-b137")]
     check("switch_question: newer switches, older or unknown asks", sq == ["switch", "ask_older", "switch", "ask_older", "ask", "ask", "ask"], sq)
+    # tray icon: only MediaEngine's own Edge app windows are focused / closed by Open and Quit
+    from archivist import tray
+    tw = [tray.is_app_window_title(t) for t in ("Auto Edit · MediaEngine", "Автомонтаж · MediaEngine", "Мой ролик · MediaEngine",
+                                                "Auto Edit · MediaEngine - Microsoft​ Edge", "Library · Archivist",
+                                                "MediaEngine", "· MediaEngine", "skynder-dev/projects · GitHub", "")]
+    check("tray: own app windows only", tw == [True, True, True, False, False, False, False, False, False], tw)
+    if os.name == "nt":      # Win32 structures as Windows lays them out (64-bit): a wrong size = no icon
+        import ctypes
+        api = tray._api()
+        check("tray: NOTIFYICONDATAW / WNDCLASSEXW sizes", (ctypes.sizeof(api["NID"]), ctypes.sizeof(api["WC"])) == (976, 80),
+              (ctypes.sizeof(api["NID"]), ctypes.sizeof(api["WC"])))
+    else:
+        check("tray: nothing to show off Windows", tray.start(url="", icon=Path("x"), version="", ru=lambda: True, status=str,
+                                                             busy=str, quit_app=lambda: None) is False)
+    # what the tray says runs, and what a Quit would stop: nothing in an empty home; a reel being made is named
+    from archivist.db import init_db, db as _db
+    from archivist import web as _web
+    init_db(); ae.ensure_schema() if hasattr(ae, "ensure_schema") else None
+    idle = (_web.busy_reason(), _web.activity_line(True), _web.activity_line(False))
+    check("tray: idle home - nothing runs", idle == ("", "", ""), idle)
+    try:
+        with _db() as con:
+            con.execute("INSERT INTO ae_projects(id,title,folder,created_at,updated_at) VALUES(9901,'Поездка & море','x','t','t')")
+            con.execute("INSERT INTO ae_jobs(id,project_id,request_key,settings_json,status,stage,done,total,created_at) "
+                        "VALUES(9901,9901,'k','{}','running','render',1,2,'t')"); con.commit()
+        busy = (_web.busy_reason(), _web.activity_line(True))
+        check("tray: a reel being made is named, Quit asks", busy[0].startswith("Auto Edit job #9901") and "«Поездка & море»" in busy[1]
+              and busy[1].endswith("%"), busy)
+    finally:
+        with _db() as con:
+            con.execute("DELETE FROM ae_jobs WHERE id=9901"); con.execute("DELETE FROM ae_projects WHERE id=9901"); con.commit()
     # friendly reasons for skipped files
     for code in ("PRIVATE", "NO_MOMENTS", "STATIC_VIDEO", "TOO_SHORT_FOR_ANALYSIS", "ANALYSIS_TIMEOUT", "ANALYSIS_FAILED:X", "DUPLICATE_OF:a.mp4"):
         check(f"friendly_skip {code}", ae.friendly_skip(code) and "_" not in ae.friendly_skip(code).split(" of ")[0], ae.friendly_skip(code))

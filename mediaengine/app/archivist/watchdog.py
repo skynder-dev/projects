@@ -83,7 +83,13 @@ def _request_app_restart():
         if not exe.exists() or not launcher.exists():raise RuntimeError("launcher unavailable")
         subprocess.Popen([str(exe),str(launcher),"--no-browser","--restart"],cwd=str(HOME),close_fds=True,**_hidden())
         def leave():
-            time.sleep(1.0);os._exit(0)
+            time.sleep(1.0)
+            try:                         # the restarted copy shows its own icon
+                from . import tray as _tr
+                _tr.remove()
+            except Exception:
+                pass
+            os._exit(0)
         threading.Thread(target=leave,daemon=True,name="ArchivistWatchdogExit").start()
         return True
     except Exception:

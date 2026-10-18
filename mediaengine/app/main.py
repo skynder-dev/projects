@@ -220,6 +220,16 @@ def main():
                 return
             time.sleep(0.5)
     threading.Thread(target=_shortcuts_when_up,daemon=True,name="shortcuts").start()
+    try:     # the icon in the notification area: Open / Quit (closing the window does not stop MediaEngine)
+        from archivist import tray
+        from archivist.config import BUILD
+        from archivist.i18n import ui_language
+        from archivist.web import activity_line, busy_reason, quit_soon
+        tray.start(url=url, icon=INSTALL/"MediaEngine.ico", version=f"{VERSION} {BUILD}".strip(),
+                   ru=lambda: ui_language()=="ru", status=activity_line, busy=busy_reason, quit_app=quit_soon,
+                   hint_flag=HOME/"data"/"tray_hint_shown.txt")
+    except Exception:
+        pass
     if os.name=="nt":
         # Windows SO_REUSEADDR lets a second copy bind the same port silently (two servers, one database).
         # Without it a second start fails cleanly and the launcher just opens the running one.
