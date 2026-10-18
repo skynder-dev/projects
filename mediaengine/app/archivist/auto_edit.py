@@ -1861,6 +1861,21 @@ def _run_job(jid: int) -> None:
         tidy_work_caches(keep_pid=int(p["id"]))
     except Exception:
         pass
+    # checked again when the build really starts (an overnight batch was queued hours ago): a card unplugged since, a
+    # disk filled since - a clear reason instead of "no supported video files" or a build that dies half-way
+    late = ""
+    if not p.get("source_present", True):
+        late = ("The source videos are not available (card or drive disconnected?). Plug it in and press Retry."
+                if p.get("files") else "The source folder is not available (card or drive disconnected?). Plug it in and press Retry.")
+    else:
+        try:
+            check_free_space()
+        except ValueError as exc:
+            late = str(exc)
+    if late:
+        _set(jid, status="failed", stage="failed", finished_at=now_iso(), error=late)
+        _notify_finished(jid, p, False)
+        return
     dress_file = jobs_dir / f"j{jid}.dress.json"
     dress_file.write_text(json.dumps({"title": s.get("title") or "", "subtitle": s.get("subtitle") or "", "music": s.get("music") or "",
                                       "music_mode": s.get("music_mode") or "mix", "beat_sync": s.get("beat_sync") is not False},
@@ -1898,6 +1913,9 @@ def _run_job(jid: int) -> None:
         _attach_job_object(proc)
         with _LOCK:
             _RUNNING[jid] = proc
+        stalled = False
+        alive_at = time.monotonic()
+        last_seen = None
         try:
             while proc.poll() is None:
                 with _LOCK:
@@ -1910,6 +1928,17 @@ def _run_job(jid: int) -> None:
                     _pump_progress(jid, progress_file)
                 except Exception:
                     pass
+                try:          # the engine says nothing (progress, log) for a long time: a hung FFmpeg on a stalled drive
+                    seen = tuple((f.stat().st_mtime_ns, f.stat().st_size) if f.exists() else None for f in (progress_file, log_file))
+                except OSError:
+                    seen = last_seen
+                if seen != last_seen:
+                    last_seen, alive_at = seen, time.monotonic()
+                elif time.monotonic() - alive_at > ENGINE_STALL_S:
+                    stalled = True                 # (the rest of an overnight queue goes on)
+                    _kill_tree(proc)
+                    proc.wait(30)
+                    break
                 time.sleep(0.5)
         except BaseException:
             _kill_tree(proc)   # never leave an engine running after the loop fails
@@ -1931,6 +1960,13 @@ def _run_job(jid: int) -> None:
     if cancelled:
         shutil.rmtree(out_dir, ignore_errors=True)   # never advertise a half-made reel
         _set(jid, status="cancelled", stage="cancelled", finished_at=now_iso(), message="Cancelled by user")
+        return
+    if stalled:
+        shutil.rmtree(out_dir, ignore_errors=True)
+        _set(jid, status="failed", stage="failed", finished_at=now_iso(),
+             error=f"The build made no progress for {ENGINE_STALL_S // 60} minutes and was stopped (a drive or a video "
+                   "that does not answer?). Press Retry - finished analysis is reused.")
+        _notify_finished(jid, p, False)
         return
     if proc.returncode != 0:
         shutil.rmtree(out_dir, ignore_errors=True)
@@ -1975,17 +2011,35 @@ def prepared_info(jid: int, out_dir: Path | None = None) -> dict | None:
         return None
 
 
+ENGINE_STALL_S = 90 * 60     # no word from the engine for this long: stopped (a hung read; normal steps report sooner)
+_BATCH = {"started": None, "ok": 0, "failed": 0}
+
+
 def _notify_finished(jid: int, p: dict, ok: bool) -> None:
-    """A Windows notification after a long build, when nothing else is waiting (reels for every day: one at the end)."""
+    """A Windows notification after a long build, when nothing else is waiting (reels for every day: one at the end,
+    saying how many were made and how many failed, timed from the first one)."""
     try:
+        j = job(jid) or {}
+        with _LOCK:
+            if _BATCH["started"] is None:
+                _BATCH["started"] = time.time() - job_elapsed_s(j)
+            _BATCH["ok" if ok else "failed"] += 1
         with db() as con:
             if con.execute("SELECT 1 FROM ae_jobs WHERE status IN ('queued','running') AND id<>? LIMIT 1", (int(jid),)).fetchone():
                 return
+        with _LOCK:
+            n_ok, n_bad, t0 = _BATCH["ok"], _BATCH["failed"], _BATCH["started"]
+            _BATCH.update(started=None, ok=0, failed=0)
         from . import notify
         from .config import APP_PORT
-        j = job(jid) or {}
+        ru = ui_language() == "ru"
+        if n_ok + n_bad > 1:
+            title = (f"Готово: {n_ok}, не получилось: {n_bad}" if ru else f"Ready: {n_ok}, failed: {n_bad}")
+            notify.reel_finished(title, n_bad == 0, time.time() - float(t0 or time.time()),
+                                 f"http://127.0.0.1:{APP_PORT}/auto", ru, prepared=is_prepare(j))
+            return
         notify.reel_finished(str(p.get("title") or ""), ok, job_elapsed_s(j),
-                             f"http://127.0.0.1:{APP_PORT}/auto/p/{int(p['id'])}", ui_language() == "ru", prepared=is_prepare(j))
+                             f"http://127.0.0.1:{APP_PORT}/auto/p/{int(p['id'])}", ru, prepared=is_prepare(j))
     except Exception:
         pass
 
@@ -2891,7 +2945,9 @@ def tidy_work_caches(keep_pid: int | None = None, max_bytes: int | None = None, 
     piece is cut again if that project is built again. Returns the bytes freed."""
     keep = {int(keep_pid)} if keep_pid else set()
     try:
-        keep |= {int(x["id"]) for x in list_projects(include_archived=True) if x["state"] == "PROCESSING" or prepared_job(x)}
+        # (a prepared project the owner archived is not kept: its pieces may go when space is needed)
+        keep |= {int(x["id"]) for x in list_projects(include_archived=True)
+                 if x["state"] == "PROCESSING" or (prepared_job(x) and not x.get("archived"))}
     except Exception:
         return 0
     files = []

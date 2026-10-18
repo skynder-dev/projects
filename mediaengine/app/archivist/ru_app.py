@@ -557,6 +557,8 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"huggingface\.co answered HTTP (\d+): the model cannot be downloaded from there now\. Try later, or copy it from another PC \(Copy from a folder…\)\.",
      r"huggingface.co ответил HTTP \1: сейчас модель оттуда не скачать. Попробуй позже или скопируй её с другого компьютера («Скопировать из папки…»)."),
     (r"Folder: (.+) \((\d+)\)", r"Папка: \1 (\2)"),
+    (r"The build made no progress for (\d+) minutes and was stopped \(a drive or a video that does not answer\?\)\. Press Retry - finished analysis is reused\.",
+     r"Сборка не двигалась \1 минут и была остановлена (диск или видео не отвечает?). Нажми «Повторить» — готовый анализ используется."),
     (r"(very_dark|dark|very_bright|bright),(very_low_detail|low_detail)", r"⟦\1⟧, ⟦\2⟧"),
     (r"Preparing a recording without a length: (.+)", r"Подготовка записи без длины: \1"),
     (r"(\d+) errors?", r"ошибок: \1"), (r"(\d+) GB - less than 6 GB, long 4K videos may be slow", r"\1 ГБ — меньше 6 ГБ, длинные 4K-видео могут обрабатываться медленно"),

@@ -355,6 +355,12 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
     fields accept h:mm:ss (as the page shows times of long videos); the blind comparison buttons can be pressed once;
     "Saves to" names the folder Save MP4 really uses. Checks: unit, e2e 81/81 (Revert double click), titles and
     music 40/40, browser 12/12, route fuzz.
+  - Unattended overnight use (round 15): a batch queued in the evening is checked again when each build really
+    starts (a card unplugged since → "plug it in and press Retry" instead of "no supported video files"; a disk filled
+    since → refused up front instead of failing half-way); a build whose engine says nothing for 90 minutes (a hung
+    read) is stopped so the rest of the queue goes on; the notification at the end of a batch says how many were made
+    and how many failed (it described only the last one); an archived prepared project's pieces may be tidied. Known,
+    not changed: the app does not start itself after a night reboot (the queue continues when it is opened).
   - New check `tests/route_fuzz.py`: every route with odd input (huge / Unicode-digit ids, damaged forms and JSON) -
     no server error (it found 7 routes, fixed); in Windows CI on a copy of the 7-video home (non-blocking).
   Checks after the fixes (Linux): unit 135/135, e2e 81/81, orders 49/49, library flow 43/43, library 4/4, convert
