@@ -207,12 +207,50 @@ def start() -> bool:
             return False
         _STATE.update(state="running", done=0, total=0, error="", file="", waiting=False, t0=0.0, n0=0, phase="search", deep_eta=None)
     _STOP.clear()
+    _USER_STOP.clear()
+    _remember_running(True)
     threading.Thread(target=_run, name="aiplus-library-index", daemon=True).start()
+    return True
+
+
+_USER_STOP = threading.Event()
+
+
+def _remember_running(on: bool) -> None:
+    """Remembered in the settings: preparing that the app's closing (a night reboot, Quit) interrupted goes on at the
+    next start (it continues where it stopped); Stop, a finished or a failed run is not started again."""
+    try:
+        from .config import update_config
+        update_config(lambda c: c.setdefault("aiplus_library", {}).__setitem__("resume", bool(on)))
+    except Exception:
+        pass
+
+
+def resume_after_restart(delay_s: float = 90.0) -> bool:
+    """At the app's start (the serving process): AI+ preparation that was running when the app closed goes on."""
+    try:
+        from .config import load_config
+        if not (load_config().get("aiplus_library") or {}).get("resume"):
+            return False
+        if not _ae().aiplus_status()["ready"]:
+            return False
+    except Exception:
+        return False
+
+    def later():
+        import time as _t
+        _t.sleep(delay_s)                  # (the app's own start first)
+        try:
+            start()
+        except Exception:
+            pass
+    threading.Thread(target=later, name="aiplus-library-resume", daemon=True).start()
     return True
 
 
 def stop() -> None:
     """Stop pressed: the worker ends the engine step within a second (it owns the process and its job handle)."""
+    _USER_STOP.set()
     _STOP.set()
 
 
@@ -394,10 +432,13 @@ def _run_all() -> None:
         sc = None                                      # memory back before the engine loads the model itself
         _deep()
         _STATE.update(state="done", file="", phase="")
+        _remember_running(False)
     except Exception as exc:
         msg = str(exc)
         _STATE.update(state="stopped" if msg == "Stopped." else "failed", error="" if msg == "Stopped." else msg[:300], file="",
                       waiting=False, phase="")
+        if msg != "Stopped." or _USER_STOP.is_set():
+            _remember_running(False)       # (stopped by the app's closing: goes on at the next start)
     finally:
         sc = None
 

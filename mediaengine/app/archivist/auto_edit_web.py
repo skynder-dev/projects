@@ -264,6 +264,11 @@ def register(app, layout, e, human_bytes):
             if not _RESUMED:
                 ae.resume_queued()       # builds still waiting from the last run (an overnight set) go on
                 _RESUMED.append(1)
+                try:
+                    from . import aiplus_library as _al
+                    _al.resume_after_restart()      # AI+ preparation for the Library the closing interrupted
+                except Exception:
+                    pass
         except Exception:
             pass
         try:          # orders from other programs (Orders\\Inbox): watched while the app runs

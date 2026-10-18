@@ -109,6 +109,9 @@ def recover_job(job_id,reason="stalled",allow_app_restart=True,report=True):
         killed=terminate_current_process(int(job_id))
         _record(job,"process_restart" if killed else "process_restart_requested",reason,proc_count,app_count,report)
         return "process_restart"
+    if action=="app_restart" and allow_app_restart and _other_work():
+        _touch(job_id)        # a restart would kill a reel being made / an order / AI+ preparation: the stalled task waits
+        return "app_restart_deferred"
     if action=="app_restart" and allow_app_restart:
         proc_count=int(job.get("watchdog_process_restarts") or 0);app_count=int(job.get("watchdog_app_restarts") or 0)+1
         ts=now_iso();retry_code=2 if str(job.get("kind"))=="convert" else 0

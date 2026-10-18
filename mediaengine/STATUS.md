@@ -359,8 +359,11 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
     starts (a card unplugged since → "plug it in and press Retry" instead of "no supported video files"; a disk filled
     since → refused up front instead of failing half-way); a build whose engine says nothing for 90 minutes (a hung
     read) is stopped so the rest of the queue goes on; the notification at the end of a batch says how many were made
-    and how many failed (it described only the last one); an archived prepared project's pieces may be tidied. Known,
-    not changed: the app does not start itself after a night reboot (the queue continues when it is opened).
+    and how many failed (it described only the last one); an archived prepared project's pieces may be tidied; AI+ preparation for the Library that the
+    app's closing interrupted goes on at the next start (Stop, finished or failed runs do not); the watchdog never
+    restarts the app over a reel / an order / AI+ preparation (also after repeated Convert stalls). Known, not changed:
+    the app does not start itself after a night reboot (the queue continues when it is opened), and the build that was
+    running then is marked interrupted (Retry reuses its analysis).
   - New check `tests/route_fuzz.py`: every route with odd input (huge / Unicode-digit ids, damaged forms and JSON) -
     no server error (it found 7 routes, fixed); in Windows CI on a copy of the 7-video home (non-blocking).
   Checks after the fixes (Linux): unit 135/135, e2e 81/81, orders 49/49, library flow 43/43, library 4/4, convert
