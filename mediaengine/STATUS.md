@@ -376,6 +376,14 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   browser 12/12 (it caught one slip of round 12 - a second test reel - fixed before any push), Russian pages 0 English
   left, route fuzz 0 server errors.
 
+## Owner feedback 2026-10-17 evening: the switch question after every install
+- The owner closes the MediaEngine window before installing, yet the new build always asked "another MediaEngine is
+  running, switch?". Cause: closing the window does not quit the app (it keeps running in the background so a reel
+  being built goes on); only Quit does. Fix (launcher_v2 `switch_question`): a NEWER build started while an older one
+  runs takes over without a question (the older one is asked to quit as with Quit; if it is building a reel it stays
+  and says so); an OLDER build or an unknown folder name still asks, worded "a newer build is running". Unit check
+  added (136/136).
+
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).

@@ -49,6 +49,16 @@ def main():
     # release ordering incl. pre-releases
     vs = ["3.12.42", "3.13.0-rc1", "3.13.0-rc2", "3.13.0", "3.13.1"]
     check("version_key orders pre-releases", sorted(vs, key=L.version_key) == vs)
+    # a newer build takes over from an older running one without a question (closing the window leaves the old one
+    # running in the background, so the owner was asked after every install); an older one or an unknown name asks
+    sq = [L.switch_question(r"D:\p\MediaEngine-3.13.0-rc1-b137", r"D:\p\MediaEngine-3.13.0-rc1-b131"),
+          L.switch_question("MediaEngine-3.13.0-rc1-b131", "MediaEngine-3.13.0-rc1-b137"),
+          L.switch_question("MediaEngine-3.13.0-b2", "MediaEngine-3.13.0-rc1-b140"),
+          L.switch_question("MediaEngine-3.13.0-rc1-b9", "MediaEngine-3.13.0-rc1-b10"),
+          L.switch_question("MediaEngine Тест 2", "MediaEngine-3.13.0-rc1-b131"),
+          L.switch_question("MediaEngine-3.13.0-rc1-b137", ""),
+          L.switch_question("MediaEngine-3.13.0-rc1-b137", "MediaEngine-3.13.0-rc1-b137")]
+    check("switch_question: newer switches, older or unknown asks", sq == ["switch", "ask_older", "switch", "ask_older", "ask", "ask", "ask"], sq)
     # friendly reasons for skipped files
     for code in ("PRIVATE", "NO_MOMENTS", "STATIC_VIDEO", "TOO_SHORT_FOR_ANALYSIS", "ANALYSIS_TIMEOUT", "ANALYSIS_FAILED:X", "DUPLICATE_OF:a.mp4"):
         check(f"friendly_skip {code}", ae.friendly_skip(code) and "_" not in ae.friendly_skip(code).split(" of ")[0], ae.friendly_skip(code))

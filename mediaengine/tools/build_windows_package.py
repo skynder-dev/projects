@@ -120,8 +120,9 @@ can take a minute (Windows checks the new files). "Quit" in the top bar stops Me
 
 Your projects, settings and exports are kept OUTSIDE this folder, in "MediaEngine Data" next to it
 (the exact place is shown under Settings). Newer build: run its Setup (or extract it next to this one, a new
-folder) and start it; it opens the same projects, and if this one is still running it asks to switch. If the new
-build has a problem, start the old folder again. Old builds next to this one can be removed on "Check this PC"
+folder) and start it; it opens the same projects, and if this one still runs in the background the new one closes
+it and opens instead (unless it is building a reel right then). If the new build has a problem, start the old folder
+again. Old builds next to this one can be removed on "Check this PC"
 (only a folder that holds nothing but the program is listed). The build number
 (e.g. b21) is shown next to the version at the top.
 
@@ -212,7 +213,8 @@ MediaEngine (all Setup builds; keeps "MediaEngine Data"); from the ZIP -> Quit, 
 
 НОВАЯ ВЕРСИЯ / ОТКАТ
   Новую версию поставь её Setup'ом (или распакуй ZIP в новую папку рядом, не поверх старой) и запусти —
-  она откроет те же проекты. Если старая ещё запущена, MediaEngine спросит, переключиться ли на новую.
+  она откроет те же проекты. Если старая ещё работает в фоне, новая сама её закроет и откроется вместо неё
+  (если старая как раз собирает ролик, пока остаётся она - запусти новую ещё раз, когда ролик готов).
   Если с новой что-то не так: «Выход» и запусти "Start MediaEngine.vbs" из старой папки. Ненужные старые
   версии рядом с этой можно удалить на странице «Проверка компьютера»: там показаны только папки, где нет
   ничего, кроме самой программы (проекты и ролики не трогаются).

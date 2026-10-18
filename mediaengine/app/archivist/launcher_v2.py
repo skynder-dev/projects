@@ -126,6 +126,21 @@ def same_folder(a,b):
     try: return os.path.normcase(str(Path(a).resolve()))==os.path.normcase(str(Path(b).resolve()))
     except Exception: return False
 
+def build_order(folder):
+    """Order of a release folder 'MediaEngine-3.13.0-rc1-b137' (version, then build); None when its name does not say."""
+    import re
+    m=re.match(r'MediaEngine-(.+)-b(\d+)$',re.split(r'[\\/]',str(folder or '').rstrip('\\/'))[-1])
+    return (version_key(m.group(1)),int(m.group(2))) if m else None
+
+def switch_question(here,there):
+    """What starting this build does while another build runs: 'switch' without asking when this one is newer (the
+    owner just installed it - closing the window leaves the old one running in the background, so the question came
+    after every install), else 'ask_older' (this one is older) or 'ask' (cannot tell)."""
+    mine,theirs=build_order(here),build_order(there)
+    if mine and theirs and mine>theirs: return 'switch'
+    if mine and theirs and mine<theirs: return 'ask_older'
+    return 'ask'
+
 def ui_ru():
     """Same choice as the app (i18n.ui_language): a new Setup run's language first, then the language chosen in the
     app (config.json in the data folder), then the Windows display language."""
@@ -449,9 +464,16 @@ def main():
             if not no_browser: open_user_interface(force_browser=force_browser)
             return 0
         here=HOME.name; there=Path(other).name if other else 'an older build'
-        yes=(answer=='yes') if answer else message_box(
-            f'Уже запущен другой MediaEngine: {there}.\nПереключиться на {here}? (Проекты останутся те же.)' if ui_ru() else
-            f'Another MediaEngine is running: {there}.\nSwitch to {here}? (Your projects stay the same.)',yes_no=True)
+        how=switch_question(HOME,other)
+        if answer: yes=(answer=='yes')
+        elif how=='switch':
+            yes=True; launcher_log(f'{there} is an older build: switching to this one without asking')
+        elif how=='ask_older':
+            yes=message_box(f'Уже запущена более новая сборка MediaEngine: {there}.\nВсё равно переключиться на более старую {here}? (Проекты останутся те же.)' if ui_ru() else
+                            f'A newer MediaEngine build is running: {there}.\nSwitch to the older {here} anyway? (Your projects stay the same.)',yes_no=True)
+        else:
+            yes=message_box(f'Уже запущен другой MediaEngine: {there}.\nПереключиться на {here}? (Проекты останутся те же.)' if ui_ru() else
+                            f'Another MediaEngine is running: {there}.\nSwitch to {here}? (Your projects stay the same.)',yes_no=True)
         if not yes:
             if not no_browser: open_user_interface(force_browser=force_browser)
             return 0
@@ -460,7 +482,10 @@ def main():
         if not stop_running():
             launcher_log('the running one refused to stop (busy)')
             write_status(status='switch_refused_busy',version=current_version(),running=other)
-            if not answer:
+            if not answer and how=='switch':
+                message_box(f'Пока открыта прежняя сборка {there}: она занята (собирается ролик). Когда закончит, запусти MediaEngine снова - откроется новая {here}.' if ui_ru() else
+                            f'The previous build {there} stays open for now: it is busy (a reel is being built). When it has finished, start MediaEngine again to open the new {here}.')
+            elif not answer:
                 message_box('Запущенный MediaEngine занят (собирается ролик). Попробуй снова, когда он закончит.' if ui_ru() else
                             'The running MediaEngine is busy (a reel is being built). Try again when it has finished.')
             if not no_browser: open_user_interface(force_browser=force_browser)

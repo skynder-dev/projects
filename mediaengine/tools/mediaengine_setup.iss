@@ -109,8 +109,8 @@ var
   ResultCode: Integer;
   F: String;
 begin
-  // a NEW build goes into its own folder and can be installed while an older one runs (it offers to switch when
-  // started); only re-installing the very build that is running would hit files in use
+  // a NEW build goes into its own folder and can be installed while an older one runs (started, it takes over
+  // from the older one); only re-installing the very build that is running would hit files in use
   F := Folder;
   StringChangeEx(F, '''', '''''', True);
   Result := Exec(ExpandConstant('{sys}\WindowsPowerShell\v1.0\powershell.exe'),
