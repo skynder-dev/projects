@@ -130,6 +130,11 @@ def main() -> int:
     # a second Update now with the folder already there: it is reused (e.g. the switch was refused by a reel)
     reset(); c.post("/auto/update/check", headers=H); c.post("/auto/update/apply", headers=H); s = wait_done()
     check("apply again: the finished folder is reused", s["state"] == "ready" and (tgt / "app" / "main.py").read_text() == "NEW\n", s)
+    listed = {b["name"]: b for b in ae.other_builds(cur)}
+    whole = sum(f.stat().st_size for f in tgt.rglob("*") if f.is_file())
+    own = whole - sum(f.stat().st_size for f in (tgt / ".venv").rglob("*") if f.is_file())
+    check("Check this PC: the new build is listed with only its own bytes (the shared runtime is not freed by removing it)",
+          tgt.name in listed and listed[tgt.name]["bytes"] == own < whole, (listed.get(tgt.name), own, whole))
     shutil.rmtree(tgt)
 
     # newest already / needs the full installer

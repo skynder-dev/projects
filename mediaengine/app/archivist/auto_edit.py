@@ -2605,12 +2605,17 @@ def _quick_selftest(timeout_s: int, mode: str) -> dict:
 
 # ---------------------------------------------------------------- disk space
 
-def _tree_bytes(root: Path) -> int:
+def _tree_bytes(root: Path, own_only: bool = False) -> int:
+    """Bytes of the files under root. own_only: without files that have other names too (hard links: a build made
+    by the Update button shares its runtime with the build it came from - removing one frees only what is its own)."""
     total = 0
     for dirpath, _dirs, files in os.walk(root):
         for f in files:
             try:
-                total += (Path(dirpath) / f).stat().st_size
+                st = (Path(dirpath) / f).stat()
+                if own_only and st.st_nlink > 1:
+                    continue
+                total += st.st_size
             except OSError:
                 pass
     return total
@@ -2702,7 +2707,7 @@ def other_builds(install: Path | None = None) -> list[dict]:
         mt = (d / "BUILD.txt").stat().st_mtime
         hit = _BUILD_BYTES.get(str(d))
         if not hit or hit[0] != mt:          # a release folder does not change once installed: count its size once
-            hit = _BUILD_BYTES[str(d)] = (mt, _tree_bytes(d))
+            hit = _BUILD_BYTES[str(d)] = (mt, _tree_bytes(d, own_only=True))
         try:     # older launchers cannot be asked to take over from here (switching came in 2026-10-11)
             can_switch = "MEDIAENGINE_SWITCH_ANSWER" in (d / "launcher.py").read_text(encoding="utf-8", errors="replace")
         except OSError:
