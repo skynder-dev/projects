@@ -32,8 +32,8 @@ FORMATS = {
     "social_hd": {"profile": "9x16", "resolution": "social_hd", "label": "Vertical Full HD 1080×1920 (phone, Reels, Shorts)", "short": "Vertical HD", "size": (1080, 1920)},
     "horizontal_hd": {"profile": "16x9", "resolution": "social_hd", "label": "Horizontal Full HD 1920×1080 (TV, YouTube)",
                       "short": "Horizontal HD", "size": (1920, 1080)},
-    "vertical": {"profile": "9x16", "resolution": "standard", "label": "Vertical small 540×960 (quick to send)", "short": "Vertical", "size": (540, 960)},
-    "horizontal": {"profile": "16x9", "resolution": "standard", "label": "Horizontal small 960×540 (quick to send)", "short": "Horizontal", "size": (960, 540)},
+    "vertical": {"profile": "9x16", "resolution": "standard", "label": "Vertical small 540×960 (quick to send)", "short": "Vertical small", "size": (540, 960)},
+    "horizontal": {"profile": "16x9", "resolution": "standard", "label": "Horizontal small 960×540 (quick to send)", "short": "Horizontal small", "size": (960, 540)},
 }
 FRAMINGS = {"fill": "Fill the screen (cropped to the interesting part)", "fit_blur": "Whole picture, blurred edges"}
 SOUNDS = {"auto": "Auto (keep source sound, mute if it jumps)", "source": "Source sound", "mute": "Mute"}
@@ -84,6 +84,25 @@ def _ffmpeg() -> str | None:
 
 
 _WIN_RESERVED = {"CON", "PRN", "AUX", "NUL", *(f"COM{i}" for i in range(1, 10)), *(f"LPT{i}" for i in range(1, 10))}
+
+
+_FORMAT_WORD_RU = {"social_hd": "Вертикально HD", "horizontal_hd": "Горизонтально HD",
+                   "vertical": "Вертикально маленький", "horizontal": "Горизонтально маленький"}
+
+
+def _ui_ru() -> bool:
+    try:
+        from .i18n import ui_language
+        return ui_language() == "ru"
+    except Exception:
+        return False
+
+
+def format_file_word(fmt: str) -> str:
+    """The format in a saved file's name, in the language of the program (the same names as on the new-reel page)."""
+    if _ui_ru() and fmt in _FORMAT_WORD_RU:
+        return _FORMAT_WORD_RU[fmt]
+    return FORMATS.get(fmt, {}).get("short", "Reel")
 
 
 def safe_filename(name: str, fallback: str = "MediaEngine Reel") -> str:
@@ -207,8 +226,9 @@ def _model_download() -> None:
             msg = (f"huggingface.co answered HTTP {exc.code}: the model cannot be downloaded from there now. "
                    "Try later, or copy it from another PC (Copy from a folder…).")
         elif isinstance(exc, (urllib.error.URLError, socket.timeout, ConnectionError, TimeoutError, http.client.HTTPException)):
-            msg = "No connection to huggingface.co. Check the internet connection and try again. [" + msg[:120] + "]"
-        _MODEL_DL.update(state="failed", error=msg[:300])
+            print("model download: no connection:", msg[:300], flush=True)       # (details for support: app_console.log)
+            msg = "No connection to huggingface.co. Check the internet connection and try again, or copy the model from another PC (Copy from a folder…)."
+        _MODEL_DL.update(state="failed", error=msg[:300], failed_at=time.time())
 
 
 def import_model(src) -> dict:
@@ -478,8 +498,9 @@ def _aiplus_download() -> None:
             msg = (f"huggingface.co answered HTTP {exc.code}: the model cannot be downloaded from there now. "
                    "Try later, or copy it from another PC (Copy from a folder…).")
         elif isinstance(exc, (urllib.error.URLError, socket.timeout, ConnectionError, TimeoutError, http.client.HTTPException)):
-            msg = "No connection to huggingface.co. Check the internet connection and try again. [" + msg[:120] + "]"
-        _AIPLUS_DL.update(state="failed", error=msg[:300])
+            print("model download: no connection:", msg[:300], flush=True)       # (details for support: app_console.log)
+            msg = "No connection to huggingface.co. Check the internet connection and try again, or copy the model from another PC (Copy from a folder…)."
+        _AIPLUS_DL.update(state="failed", error=msg[:300], failed_at=time.time())
 
 
 def aiplus_import(src) -> dict:
@@ -2403,8 +2424,12 @@ def system_check() -> list[dict]:
         ("not downloaded yet - 'Download the AI model' below (30 MB); until then only 'Technical only' reels" if ms["reason"] == "MODEL_MISSING"
          else "files changed or incomplete - not used; download the AI model again below"))
     ap = aiplus_status()
-    add("AI+ model (PE-Core L/14, optional)", ap["ready"], ap["path"] if ap["ready"] else
-        ("not downloaded yet (optional) - see AI+ below" if ap["reason"] == "AIPLUS_MISSING" else "files changed or incomplete - not used"))
+    if ap["ready"]:
+        add("AI+ model (PE-Core L/14, optional)", True, ap["path"])
+    elif ap["reason"] == "AIPLUS_MISSING":           # optional and not there: information, not a warning
+        add("AI+ model (PE-Core L/14, optional)", True, "not downloaded yet - see AI+ below", "info")
+    else:
+        add("AI+ model (PE-Core L/14, optional)", False, "files changed or incomplete - not used")
     try:
         cp = subprocess.run([engine_python(), "-B", "-s", "-E", "-c",
                              "import numpy, cv2, onnxruntime; print('numpy', numpy.__version__, '| opencv', cv2.__version__, '| onnxruntime', onnxruntime.__version__)"],
@@ -2491,7 +2516,17 @@ def whats_new_items() -> list[str]:
 
 def whats_new_seen() -> bool:
     try:
-        return (load_config().get("auto_edit") or {}).get("whats_new_seen") == WHATS_NEW_ID
+        ae_cfg = load_config().get("auto_edit") or {}
+        if ae_cfg.get("whats_new_seen") == WHATS_NEW_ID:
+            return True
+        if not ae_cfg.get("whats_new_seen"):
+            # a first install (no reel made yet): everything is new, a list of changes means nothing - not shown
+            ensure_schema()
+            with db() as con:
+                if not con.execute("SELECT 1 FROM ae_projects LIMIT 1").fetchone():
+                    mark_whats_new_seen()
+                    return True
+        return False
     except Exception:
         return True
 
@@ -3289,7 +3324,7 @@ def _export_accepted(pid: int, dest_dir: Path | None = None, remember: bool = Fa
         dest_dir = export_dir_for(p)   # (the remembered folder may be this reel's own source folder: then the usual one)
     dest_dir = Path(dest_dir)
     dest_dir.mkdir(parents=True, exist_ok=True)
-    fmt = FORMATS.get(r["settings"]["format"], {}).get("short", "Reel")
+    fmt = format_file_word(r["settings"]["format"])
     base = safe_filename(f"{p['title']} - {fmt} - R{int(r['number']):03d}")
     n = 1
     while True:
@@ -3341,8 +3376,8 @@ def _small_copy(pid: int, rid: int) -> Path:
         raise ValueError("The file of this version changed on disk; build the version again")
     dest_dir = Path(export_dir_for(p))
     dest_dir.mkdir(parents=True, exist_ok=True)
-    fmt = FORMATS.get(r["settings"]["format"], {}).get("short", "Reel")
-    base = safe_filename(f"{p['title']} - {fmt} - R{int(r['number']):03d} small")
+    fmt = format_file_word(r["settings"]["format"])
+    base = safe_filename(f"{p['title']} - {fmt} - R{int(r['number']):03d} " + ("маленькая копия" if _ui_ru() else "small"))
     made = AE_ROOT / "small_copies.json"         # which version each small copy was made from (nothing extra in the folder)
     with _SMALL_LOCK:
         try:

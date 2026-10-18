@@ -494,6 +494,19 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   pane) then answered `build b150`, install `D:\Projects\MedEng\MediaEngine\MediaEngine-3.13.0-rc1-b150`,
   `tray: shown` - the folder b150 next to b148 was made by the Update button from GitHub and took over; no
   unfinished `.update-*` folder left. Older builds there: b28, b100, b113, b117, b121, b122, b131, b137 (his call).
+- QA as the owner in Russian through the real pages (independent agent, 8 reels, every link followed): no server
+  error; fixed what it found: format names the same everywhere ("Vertical small 540×960", not a bare "Vertical")
+  and in the language of the program in saved file names; a quoted path (Windows "Copy as path") accepted on Import
+  and Settings, "Folder not found: …" translated; Convert names its real folder (Converted, in the data folder);
+  a Library video on the item page says it stays in its folder; First run no longer says the AI is ready without
+  the model; a missing source says moved/renamed/deleted and shows where, "View in source" hidden then; a failed
+  model download speaks plainly (detail to the console log) and is shown for an hour; Updates page shows the
+  version and is linked from Settings, About and Help; the guide got a section on updates, tray and start;
+  the sound hint names the real option; Check this PC: an info mark (not a green tick) for things not tested /
+  optional, "built in N s"; no Archive / Free cache while a reel is being built; no what's-new list on a first
+  install; one decimal for reel lengths; real empty-state texts for Library / Import; "Settings saved".
+  Left as is: dot decimals in a few technical numbers, which of two identical videos counts as the duplicate,
+  the small copy not listed under saved exports.
 
 ## Evidence
 

@@ -241,6 +241,10 @@ APP_PHRASES: dict[str, str] = {
     "Apply": "Применить", "Go": "Перейти", "First": "Первая", "Last": "Последняя", "Next": "Следующая", "Previous": "Предыдущая",
     "Page": "Страница", "Select page": "Выбрать страницу", "Previews …": "Превью …", "local-source": "папка на компьютере",
     "Local video utility": "Утилита для видео",
+    "Make smaller shareable copies without touching originals. Converted files go into the folder":
+        "Делает уменьшенные копии, чтобы делиться, не трогая оригиналы. Готовые файлы попадают в папку",
+    "in the data folder:": "в папке данных:",
+    "Source folders and cards are never written to.": "В исходные папки и на карты памяти ничего не записывается.",
     "Make smaller shareable copies without touching originals. Converted files go into the":
         "Делает уменьшенные копии для отправки, не трогая оригиналы. Готовые файлы попадают в папку",
     "folder of this installation; source folders and cards are never written to.":
@@ -512,6 +516,7 @@ APP_PHRASES: dict[str, str] = {
 }
 
 APP_PATTERNS: list[tuple[str, str]] = [
+    (r"Folder not found: (.+)", r"Папка не найдена: \1"),
     # Library search and Remove (QA review 2026-10-17)
     (r"(\d+) result\(s\)", r"Найдено: \1"),
     (r"match ([\d.]+)", r"совпадение \1"),

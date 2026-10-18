@@ -14,8 +14,8 @@ No external account or billing is required for local use.
    messengers" (about 720p, a much smaller file). "Exported reels" at the top of the Auto Edit page opens the folder
    with the finished reels.
 
-A reel is 5 seconds to 2 minutes long. While a reel is being made, its progress and about how long is left are shown
-at the top of every page. When a long build (over a minute) has finished, Windows shows a notification - a click opens
+A reel is 5 seconds to 2 minutes long. While a reel is being made, its progress is shown at the top of every page, and
+about how long is left once that can be estimated. When a long build (over a minute) has finished, Windows shows a notification - a click opens
 the reel (can be turned off in Settings).
 
 The AI analyses each video once and keeps it for every reel: a new reel from the same videos (another project, another
@@ -43,7 +43,7 @@ runs) to "MediaEngine Data\data\backups".
 
 Your original files are only read, never changed. "Check this PC" (Home, Settings, Auto Edit) shows whether the
 AI model and video tools are found and builds a 5-second test reel. The language switch is at the top right.
-"Test the graphics card" there: if the graphics card decodes 4K faster than the processor with exactly the same
+"Test the graphics card" is on "Check this PC" too: if the graphics card decodes 4K faster than the processor with exactly the same
 picture, MediaEngine cuts the videos with it (noticeable with big 4K folders); otherwise everything stays on the processor.
 
 **AI+** is a stronger, optional model. Download it once on "Check this PC" (about 650 MB, free), then choose "AI+"
@@ -82,6 +82,18 @@ Provider credentials belong in Windows Credential Manager, not MediaEngine SQLit
 Cloud Vault is off by default. Its upload modes are exports only, selected media, or full archive mirror. Enabling cloud never deletes local or source originals.
 
 Provider analytics retain source provenance and are descriptive. MediaEngine does not automatically choose a cross-provider winner or create an opaque ranking.
+
+## New versions, tray, start
+
+**Update** is a button at the top. Only when you press it does MediaEngine look on GitHub for a newer version; it shows
+what is new, and "Update now" puts it into a new folder next to this one and switches to it (a few MB; the same
+projects). The previous version stays: to go back, "Check this PC" → "Use this version". When the libraries
+themselves changed, it says that the full installer is needed this time.
+
+Closing the window does not stop MediaEngine (a reel being made goes on): its icon is in the tray next to the clock
+(maybe under the ^ arrow). Click it to open the window, right-click → Quit to stop the program. Settings can start it
+in the background when you sign in to Windows (off by default). A reel that was being made when the PC restarted is
+made again by itself at the next start (once).
 
 ## Recovery and support
 

@@ -48,6 +48,12 @@ _UPDATE_STEP = {"downloading": "Downloading the new version…", "preparing": "P
                 "switching": "Starting the new version…"}
 
 
+def _recent_failure(dl: dict) -> bool:
+    """A failed download is shown for an hour after it failed (not on every visit until the next try)."""
+    import time as _t
+    return dl.get("state") == "failed" and bool(dl.get("error")) and _t.time() - float(dl.get("failed_at") or 0) < 3600
+
+
 def status_pct(s: dict) -> int:
     if s.get("state") != "downloading":
         return 100
@@ -308,7 +314,7 @@ def register(app, layout, e, human_bytes):
             last = p["revisions"][-1] if p["revisions"] else None
             ref = acc or last
             preset = ae.FORMATS.get(ref["settings"]["format"], {}).get("short", "") if ref else ""
-            length = f"{float(ref.get('duration_s') or ref['settings']['length']):.0f} s" if ref else ""   # what the reel really is
+            length = f"{float(ref.get('duration_s') or ref['settings']['length']):.1f} s" if ref else ""   # what the reel really is
             exp = ae.export_row(p["last_export_id"]) if p.get("last_export_id") else None
             n_src = len(ae.project_inputs(p)) if p["source_present"] else 0
             acts = f"<a class='btn btn2' href='/auto/p/{p['id']}'>{'Review' if p['revisions'] else 'Open'}</a>"
@@ -317,7 +323,8 @@ def register(app, layout, e, human_bytes):
             if exp:
                 acts += (f"<form method='post' action='/auto/export/{exp['id']}/open'><input type='hidden' name='back' value='/auto'><button class='btn2'>Open video</button></form>"
                          f"<form method='post' action='/auto/export/{exp['id']}/reveal'><input type='hidden' name='back' value='/auto'><button class='btn2'>Show in folder</button></form>")
-            acts += f"<form method='post' action='/auto/p/{p['id']}/archive'><button class='btn2'>{'Unarchive' if p['archived'] else 'Archive'}</button></form>"
+            if p["archived"] or not any(j["status"] in ("queued", "running") for j in p["jobs"]):    # (not while it is being built)
+                acts += f"<form method='post' action='/auto/p/{p['id']}/archive'><button class='btn2'>{'Unarchive' if p['archived'] else 'Archive'}</button></form>"
             if p["archived"] and not any(j["status"] in ("queued", "running") for j in p["jobs"]):
                 acts += (f"<form method='post' action='/auto/p/{p['id']}/delete' onsubmit=\"return confirm(document.getElementById('delq').textContent)\">"
                          f"<button class='btn2' title='Saved MP4 files and your original videos stay'>Delete</button></form>")
@@ -407,7 +414,7 @@ const pf=document.getElementById('projFind');if(pf)pf.oninput=()=>{const q=pf.va
         rows = ae.system_check()
         def looks_like_path(t):   # paths, versions, system names: shown exactly as they are
             return ":\\" in t or t.startswith("/") or "version" in t or "|" in t or t.startswith(("Windows-", "Linux", "Darwin", "3.1"))
-        table = "".join(f"<tr><td>{'✅' if r['ok'] else '⚠️'}</td><td><b>{e(r['name'])}</b></td>"
+        table = "".join(f"<tr><td>{('ℹ️' if r.get('level') == 'info' else '✅') if r['ok'] else '⚠️'}</td><td><b>{e(r['name'])}</b></td>"
                         f"<td class='{'ae-path' if looks_like_path(r['detail']) or r['name'] == 'Graphics card' else 'muted'}'>{e(r['detail'])}</td></tr>" for r in rows)
         test_html = ""
         ai_ready = ae.model_status()["ready"]
@@ -582,7 +589,8 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
             ru = False
         s = dict(up.STATE)
         m = s.get("found") or {}
-        here = up.build_label(up.INSTALL.name)
+        from .config import BUILD as _B, VERSION as _V
+        here = up.build_label(up.INSTALL.name) if up.build_order(up.INSTALL.name) else f"{_V} {_B}".strip()
         why = up.why_not()
         check_btn = ("<form method='post' action='/auto/update/check' style='display:inline' "
                      "onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
@@ -993,13 +1001,14 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
 <div class='row' style='flex-wrap:wrap'><a class='btn btn2' href='/auto'>All projects</a>
 <form method='post' action='/auto/p/{pid}/open-folder'><button class='btn2' title='Open the folder of the videos in Explorer'>Videos folder</button></form>
 <form method='post' action='/auto/p/{pid}/rename' class='row' style='gap:6px'><input name='title' value='{e(p['title'])}' maxlength='80' style='width:200px'><button class='btn2'>Rename</button></form>
-<form method='post' action='/auto/p/{pid}/archive'><button class='btn2'>{'Unarchive' if p['archived'] else 'Archive'}</button></form></div></div>"""]
+{"" if active and not p['archived'] else f"<form method='post' action='/auto/p/{pid}/archive'><button class='btn2'>{'Unarchive' if p['archived'] else 'Archive'}</button></form>"}</div></div>"""]
         if request.args.get("same") and cur:
             parts.append(f"<div class='card callout' style='margin-bottom:12px'>This version already exists: R{int(cur['number']):03d} "
                          f"(the same settings and moments). Change the length, format or sound, or tick “remove” on a moment.</div>")
         if not p["source_present"]:
-            parts.append("<div class='errbox'>The source videos are not available (drive disconnected?). Revisions and exports are kept; "
-                         "new builds are possible when they are back.</div>")
+            parts.append("<div class='errbox'><span>The source videos are not available: the drive is disconnected, or the folder was "
+                         "moved, renamed or deleted. Versions and saved MP4 files are kept; new builds are possible when the videos are "
+                         "back in their place:</span> <span class='ae-path'>" + e(p.get("folder") or "; ".join(map(str, (p.get("missing_files") or [])[:3]))) + "</span></div>")
         elif p.get("missing_files"):
             gone = p["missing_files"]
             parts.append("<div class='callout card' style='margin-bottom:12px'><span>Some videos of this reel are not there any more (moved or deleted): "
@@ -1066,7 +1075,7 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
             parts.append(f"<div class='card row space' style='margin-top:14px;flex-wrap:wrap'><span class='muted'>Space used: versions "
                          f"{human_bytes(du['versions_bytes'])} · analysis cache {human_bytes(du['cache_bytes'])}"
                          f"{' (can be freed; the next build makes it again - what the AI found in the videos is kept for every project)' if du['cache_bytes'] else ''}</span>"
-                         + (f"<form method='post' action='/auto/p/{pid}/free-cache'><button class='btn2'>Free cache</button></form>" if du["cache_bytes"] else "")
+                         + (f"<form method='post' action='/auto/p/{pid}/free-cache'><button class='btn2'>Free cache</button></form>" if du["cache_bytes"] and not active else "")
                          + "</div>")
         script = """
 const card=document.getElementById('jobCard');
@@ -1337,6 +1346,8 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
     @app.post("/auto/p/<int:pid>/archive")
     def ae_archive(pid):
         p = ae.project(pid)
+        if p and not p["archived"] and any(j["status"] in ("queued", "running") for j in p["jobs"]):
+            return err_page("Wait until the current build has finished, then archive the project.", f"/auto/p/{pid}")
         if p:
             ae.archive_project(pid, not p["archived"])
         return redirect("/auto")
@@ -1374,7 +1385,7 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
             def who(r):
                 f = ae.FORMATS.get(r["settings"]["format"], {}).get("short", "")
                 secs = float(r.get("duration_s") or r["settings"]["length"])
-                return f"R{int(r['number']):03d} ({e(f)} · {secs:.0f} s · {'edited by you' if r['settings'].get('selection') else 'automatic'})"
+                return f"R{int(r['number']):03d} ({e(f)} · {secs:.1f} s · {'edited by you' if r['settings'].get('selection') else 'automatic'})"
             verdict = {"left": f"You preferred A = {who(L)} over B = {who(R)}.", "right": f"You preferred B = {who(R)} over A = {who(L)}.",
                        "same": f"You found them about the same: A = {who(L)}, B = {who(R)}."}[rv["choice"]]
             bottom = (f"<div class='card ae-done' style='margin-top:14px'><b>Result</b><div style='margin-top:6px'>{verdict}</div>"
@@ -1453,7 +1464,7 @@ def _model_card(ms, e, back="/auto/check"):
             f"<button type='button' id='mdDl' {'disabled' if running else ''}>Download the AI model</button>"
             "<button type='button' class='btn2' id='mdImport'>Copy from a folder…</button><span class='muted' id='mdMsg'></span></div>"
             "<div class='progress' style='margin-top:8px'><i id='mdBar' style='width:0%'></i></div>"
-            + (f"<div class='errbox' style='margin-top:8px'>{e(dl['error'])}</div>" if dl["state"] == "failed" and dl["error"] else "")
+            + (f"<div class='errbox' style='margin-top:8px'>{e(dl['error'])}</div>" if _recent_failure(dl) else "")
             + "</div>"
             "<script>(function(){const m=document.getElementById('mdMsg'),b=document.getElementById('mdBar'),d=document.getElementById('mdDl');"
             "async function poll(){try{const r=await fetch('/api/auto/model',{cache:'no-store'});const x=await r.json();"
@@ -1487,7 +1498,7 @@ def _aiplus_card(ap, e, human_bytes):
             "<button type='button' class='btn2' id='apImport'>Copy from a folder…</button>"
             "<span class='muted' id='apMsg'></span></div>"
             "<div class='progress' style='margin-top:8px'><i id='apBar' style='width:0%'></i></div>"
-            + (f"<div class='errbox' style='margin-top:8px'>{e(dl['error'])}</div>" if dl["state"] == "failed" and dl["error"] else "")
+            + (f"<div class='errbox' style='margin-top:8px'>{e(dl['error'])}</div>" if _recent_failure(dl) else "")
             + "</div>"
             "<script>(function(){const m=document.getElementById('apMsg'),b=document.getElementById('apBar'),d=document.getElementById('apDl'),"
             "c=document.getElementById('apCancel');"
@@ -1534,7 +1545,7 @@ def _selftest_html(t, e):
     stage_txt = " · ".join(f"<span>{lbl}</span> {float(st[k]):.1f} s" for k, lbl in
                            (("analyze", "analysis"), ("render", "cutting"), ("finish", "joining")) if k in st)
     return (f"<div class='card ae-done' style='margin-top:14px'><b>Test reel built</b> · "
-            f"<span>{'with the AI+ model (PE-Core L/14)' if sm.startswith('PE_CORE') else 'with the AI model (FAST_LOCAL)' if ai else 'Technical only'}</span> · {t['seconds']} s"
+            f"<span>{'with the AI+ model (PE-Core L/14)' if sm.startswith('PE_CORE') else 'with the AI model (FAST_LOCAL)' if ai else 'Technical only'}</span> · <span>built in</span> {t['seconds']} s"
             f"<div class='muted' style='margin-top:4px'><span>reel</span> {t.get('duration_s')} s · {stage_txt}</div>"
             + (f"<div class='muted' style='margin-top:4px'>AI+ speed on this PC: {float(t['aiplus_s_per_frame']):.1f} s per frame. "
                f"The first analysis looks at up to 48 frames of each video (about one per second): about "
@@ -1766,7 +1777,7 @@ def _sound_label(requested, res):
     if requested == "auto" and applied == "mute":
         if "mixed" in reason:
             # accepted P11 rule: no jumps between sound and silence; the user can force the sound
-            return "Auto → muted (some moments have no sound; choose Source to keep the sound)"
+            return "Auto → muted (some moments have no sound; choose “Source sound” to keep the sound)"
         return "Auto → muted (no useful sound found)"
     return requested.title()
 
@@ -1806,7 +1817,9 @@ def _review_html(p, rev, e, building=False):
                 f"data-dur='{durs.get(str(s['source_name']), 0):.2f}'><b class='pos'>{s['position']}</b>"
                 f"<div><div><span translate='no'>{e(s['source_name'])}</span> <span class='muted' style='white-space:nowrap'>· source {_fmt_s(s['source_in_s'])}–{_fmt_s(s['source_out_s'])}{badge}</span></div>"
                 f"<div class='row' style='gap:8px;margin-top:4px;flex-wrap:wrap'><button type='button' class='btn2' data-seek='{s['reel_in_s']}'>Play in reel</button>"
-                f"<a class='btn btn2' style='font-size:13px' target='_blank' href='/auto/p/{p['id']}/source?name={e(urllib.parse.quote(s['source_name']))}#t={s['source_in_s']},{s['source_out_s']}'>View in source</a></div>"
+                + (f"<a class='btn btn2' style='font-size:13px' target='_blank' href='/auto/p/{p['id']}/source?name={e(urllib.parse.quote(s['source_name']))}#t={s['source_in_s']},{s['source_out_s']}'>View in source</a>"
+                   if p.get("source_present") and str(s["source_name"]) not in {Path(str(x)).name for x in (p.get("missing_files") or [])} else "")
+                + "</div>"
                 f"<div class='row' style='gap:8px;margin-top:6px;flex-wrap:wrap'><label class='muted'>from <input name='in_{eid}' value='{s['source_in_s']:.1f}' inputmode='decimal' style='width:72px'></label>"
                 f"<label class='muted'>to <input name='out_{eid}' value='{s['source_out_s']:.1f}' inputmode='decimal' style='width:72px'> s</label>{repl}</div>"
                 f"<input type='hidden' name='row' value='{eid}'><input type='hidden' name='def_in_{eid}' value='{s['source_in_s']:.1f}'><input type='hidden' name='def_out_{eid}' value='{s['source_out_s']:.1f}'></div>"

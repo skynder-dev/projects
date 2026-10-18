@@ -69,7 +69,7 @@ def setup_catalog(cfg: dict) -> list[dict]:
         },
         {
             "id": "online_ai",
-            "name": "Optional Online AI",
+            "name": "Online AI",                 # (the badge says Optional)
             "why": "Future opt-in tasks that cannot or should not run locally.",
             "required": False,
             "status": "Disabled",

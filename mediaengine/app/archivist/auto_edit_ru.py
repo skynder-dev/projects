@@ -60,6 +60,10 @@ PHRASES = {
     "with the AI+ model (PE-Core L/14)": "с моделью ИИ+ (PE-Core L/14)", "The AI+ mode works on this PC.": "Режим ИИ+ работает на этом компьютере.",
     "AI+ model (PE-Core L/14, optional)": "Модель ИИ+ (PE-Core L/14, по желанию)",
     "not downloaded yet (optional) - see AI+ below": "ещё не скачана (по желанию) — см. ИИ+ ниже",
+    "not downloaded yet - see AI+ below": "ещё не скачана — см. ИИ+ ниже", "built in": "собран за", "Settings saved.": "Настройки сохранены.",
+    "No videos found yet. Add a folder above (or connect a phone, a card or a USB drive).": "Видео пока не найдены. Добавь папку выше (или подключи телефон, карту памяти или USB-диск).",
+    "The Library is empty. Add a folder on Import and choose its videos for the Library.": "Библиотека пуста. Добавь папку на странице «Импорт» и выбери её видео для Библиотеки.",
+    "Wait until the current build has finished, then archive the project.": "Дождись окончания текущей сборки, потом отправь проект в архив.",
     "The AI+ model is not on this computer yet. Download it once on 'Check this PC' or choose another mode.":
         "Модели ИИ+ на этом компьютере пока нет. Скачай её один раз на странице «Проверка компьютера» или выбери другой режим.",
     "The AI+ model files are missing or changed. Download the AI+ model again on 'Check this PC'.":
@@ -228,8 +232,8 @@ PHRASES = {
     "Revisions": "Версии", "accepted": "принята", "viewing": "открыта", "edited by you": "твои правки", "excluded": "убрано",
     "Revision": "Версия", "sound": "звук", "Technical only (no AI)": "Только техника (без ИИ)", "AI moments (FAST_LOCAL)": "ИИ-моменты (FAST_LOCAL)",
     "Auto → original sound": "Авто → звук исходника",
-    "Auto → muted (some moments have no sound; choose Source to keep the sound)":
-        "Авто → без звука (в части моментов нет звука; выбери «Исходный», чтобы оставить звук)",
+    "Auto → muted (some moments have no sound; choose “Source sound” to keep the sound)":
+        "Авто → без звука (в части моментов нет звука; выбери «Звук исходника», чтобы оставить звук)",
     "Auto → muted (no useful sound found)": "Авто → без звука (полезного звука нет)",
     "overlapping moment(s) of the same video were left out so nothing repeats":
         "пересекающихся моментов одного видео убрано, чтобы ничего не повторялось",
@@ -383,6 +387,7 @@ PHRASES = {
     "Horizontal 960×540": "Горизонтально 960×540",
     "Vertical Full HD 1080×1920 (phone, Reels, Shorts)": "Вертикально Full HD 1080×1920 (телефон, Reels, Shorts)",
     "Vertical small 540×960 (quick to send)": "Вертикально, маленький 540×960 (быстро отправить)",
+    "Vertical small": "Вертикально, маленький", "Horizontal small": "Горизонтально, маленький",
     "Horizontal small 960×540 (quick to send)": "Горизонтально, маленький 960×540 (быстро отправить)",
     "Horizontal Full HD 1920×1080 (TV, YouTube)": "Горизонтально 1920×1080 (телевизор, YouTube)", "Horizontal HD": "Горизонтально HD", " · recommended": " · рекомендуется", ", total ": ", всего ",
     "Only ": "Всего ", "Without it MediaEngine can only use the ": "Без неё MediaEngine умеет только режим ",
@@ -603,6 +608,16 @@ PHRASES = {
     "The update is incomplete, so it is not used.": "Обновление неполное, поэтому не используется.",
     "The update is for another kind of MediaEngine, so it is not used.": "Обновление для другого вида MediaEngine, поэтому не используется.",
     "An update is being installed. Wait a minute.": "Устанавливается обновление. Подожди минуту.",
+    "Type the full path of the folder first.": "Сначала впиши полный путь к папке.", "MB": "МБ",
+    "in Library (the file stays in its folder)": "в Библиотеке (файл остаётся в своей папке)",
+    "Online AI": "Онлайн-ИИ", "A new version goes next to this one.": "Новая версия ставится рядом с этой.",
+    "The Update button looks on GitHub for a newer version only when you press it. The new version goes into its own folder and the previous one stays, so you can go back to it on Check this PC. If a new version does not start, the previous one is started again.":
+        "Кнопка «Обновить» ищет новую версию на GitHub, только когда ты её нажимаешь. Новая версия ставится в свою папку, а прежняя остаётся — к ней можно вернуться на странице «Проверка компьютера». Если новая версия не запустится, снова запускается прежняя.",
+    "No connection to huggingface.co. Check the internet connection and try again, or copy the model from another PC (Copy from a folder…).":
+        "Нет связи с huggingface.co. Проверь интернет и попробуй снова или скопируй модель с другого компьютера («Скопировать из папки…»).",
+    "The source videos are not available: the drive is disconnected, or the folder was moved, renamed or deleted. Versions and saved MP4 files are kept; new builds are possible when the videos are back in their place:":
+        "Исходные видео недоступны: диск отключён или папку переместили, переименовали или удалили. Версии и сохранённые MP4 на месте; новые сборки — когда видео вернутся на своё место:",
+    "Works; the AI model is not downloaded yet (Check this PC)": "Работает; модель ИИ ещё не скачана («Проверка компьютера»)",
     "Cannot tell whether work is running.": "Не удалось понять, идёт ли работа.",
     "Start at sign-in could not be changed.": "Не удалось изменить запуск при входе в Windows.",
     "A reel being made when the PC restarts (or MediaEngine stops without Quit) is made again by itself at the next start, once.":
