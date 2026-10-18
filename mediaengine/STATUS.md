@@ -507,6 +507,8 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   install; one decimal for reel lengths; real empty-state texts for Library / Import; "Settings saved".
   Left as is: dot decimals in a few technical numbers, which of two identical videos counts as the duplicate,
   the small copy not listed under saved exports.
+  Windows CI run 39156849185 (b151, commit 7462c01) fully green; published and served from raw.githubusercontent.com
+  (b151 ZIP 2,350,880 bytes, SHA-256 matches) - the owner's b150 gets it with Update.
 
 ## Evidence
 
