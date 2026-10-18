@@ -319,6 +319,11 @@ def busy_reason() -> str:
             if _cp._ACTIVE: return "A composition is being rendered (Composer)"
     except Exception:
         pass
+    try:                                  # downloading / unpacking an update (not its last step, the switch itself)
+        from . import updater as _up
+        if _up.installing(): return "An update is being installed. Wait a minute."
+    except Exception:
+        pass
     return ''
 
 

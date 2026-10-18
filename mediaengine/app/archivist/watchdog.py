@@ -164,6 +164,10 @@ def _other_work() -> str:
             with _cp._ACTIVE_LOCK:
                 if _cp._ACTIVE:return "composer"
         except Exception:pass
+        try:
+            from . import updater as _up
+            if _up.installing():return "update"
+        except Exception:pass
     except Exception:
         return ""
     return ""

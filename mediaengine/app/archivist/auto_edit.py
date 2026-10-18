@@ -2750,6 +2750,12 @@ def app_busy() -> str:
                 return "A composition is being rendered (Composer). Switch when it is ready."
     except Exception:
         pass
+    try:
+        from . import updater as _up
+        if _up.installing():
+            return "An update is being installed. Wait a minute."
+    except Exception:
+        pass
     return ""
 
 
@@ -2766,12 +2772,19 @@ def use_build(name: str) -> str:
     busy = app_busy()
     if busy:
         raise ValueError(busy)
+    start_build_folder(Path(b["path"]))
+    return b["path"]
+
+
+def start_build_folder(folder: Path) -> None:
+    """Start the launcher of another build folder so that it takes over from this one (it asks this one to quit, as
+    its Quit button does, and starts itself on the same port). This page's window stays and follows it."""
+    folder = Path(folder)
     env = {k: v for k, v in os.environ.items() if not k.upper().startswith("ARCHIVIST_")}
     env.update(MEDIAENGINE_SWITCH_ANSWER="yes", MEDIAENGINE_NO_BROWSER="1")
-    subprocess.Popen(["wscript.exe", str(Path(b["path"]) / "Start MediaEngine.vbs")], cwd=b["path"], env=env, close_fds=True,
+    subprocess.Popen(["wscript.exe", str(folder / "Start MediaEngine.vbs")], cwd=str(folder), env=env, close_fds=True,
                      stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                      **process_kwargs(detached=True, below_normal=False))
-    return b["path"]
 
 
 def delete_build(name: str, install: Path | None = None) -> int:

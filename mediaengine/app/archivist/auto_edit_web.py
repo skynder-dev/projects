@@ -597,7 +597,9 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
                           f"<div class='muted' style='margin-top:6px'>Do not close this window: MediaEngine restarts by itself and this page "
                           f"then opens the new version.</div>"
                           f"<div class='errbox' id='upSlow' style='margin-top:10px' hidden>The new version is taking long to start. If nothing "
-                          f"happens, start MediaEngine from the desktop shortcut.</div></div>")
+                          f"happens, start MediaEngine from the desktop shortcut.</div>"
+                          f"<div class='errbox' id='upBack' style='margin-top:10px' hidden>The new version did not start, so this version is "
+                          f"running again. Details for support are in the logs folder.</div></div>")
         elif st in ("check_failed", "error"):
             again = (f"<form method='post' action='/auto/update/apply' style='display:inline;margin-right:8px'><button>Try again</button></form>"
                      if st == "error" and m.get("newer") and m.get("same_runtime") else "")
@@ -641,10 +643,14 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
         script = ""
         if st in ("downloading", "preparing", "switching"):
             steps = json.dumps({k: v for k, v in _UPDATE_STEP.items()})
-            script = ("const ST=" + steps + ";let want='';let n=0;"
+            script = ("const ST=" + steps + ";let want='';let n=0;let down=false;"
                       "async function t(){n++;"
                       "if(want){try{const r=await fetch('/api/ping',{cache:'no-store'});const x=await r.json();"
-                      "if(String(x.install||'').replace(/\\//g,'\\\\').toLowerCase()===want){location.href='/auto';return}}catch(e){}}"
+                      "const got=String(x.install||'').replace(/\\//g,'\\\\').toLowerCase();"
+                      "if(got===want){location.href='/auto';return}"
+                      # the old build answers again after it was gone: the new one did not start (its launcher started the old one)
+                      "if(down){document.getElementById('upBack').hidden=false;document.getElementById('upSlow').hidden=true;return}"
+                      "}catch(e){down=true}}"
                       "try{const r=await fetch('/api/update-status',{cache:'no-store'});const s=await r.json();"
                       "if(s.target)want=String(s.target).replace(/\\//g,'\\\\').toLowerCase();"
                       "if(s.state==='error'||s.state==='ready'||(s.state!=='downloading'&&s.state!=='preparing'&&s.state!=='switching'&&!want)){location.reload();return}"

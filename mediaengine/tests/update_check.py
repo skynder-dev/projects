@@ -137,6 +137,35 @@ def main() -> int:
           tgt.name in listed and listed[tgt.name]["bytes"] == own < whole, (listed.get(tgt.name), own, whole))
     shutil.rmtree(tgt)
 
+    # one install at a time: a check that ends while Update now runs does not reset it; Quit / switches wait for it
+    reset(); c.post("/auto/update/check", headers=H)
+    up._APPLY.set()
+    try:
+        r = c.post("/auto/update/check", headers=H)
+        check("a check while an install runs leaves it alone", up.STATE["state"] == "checked" and r.status_code == 302)
+        try:
+            up.check(); raced = False
+        except up.UpdateError as exc:
+            raced = "being installed" in str(exc)
+        check("check() refuses while an install thread is alive", raced)
+        up.start_apply()
+        check("Update now twice: one install thread", up.STATE["state"] == "checked")
+    finally:
+        up._APPLY.clear()
+    from archivist import web as _web
+    up.STATE["state"] = "downloading"
+    check("Quit / switch / restart wait while an update downloads", _web.busy_reason() == "An update is being installed. Wait a minute."
+          and ae.app_busy() == "An update is being installed. Wait a minute.")
+    up.STATE["state"] = "switching"
+    check("...but not its own last step (the switch)", _web.busy_reason() == "" and ae.app_busy() == "")
+    vk = ["3.13.0-alpha1", "3.13.0-beta1", "3.13.0-beta2", "3.13.0-rc1", "3.13.0-rc2", "3.13.0"]
+    check("version order with alpha / beta numbers", sorted(reversed(vk), key=up.version_key) == vk)
+    # an interrupted earlier attempt (a folder a scanner held) is cleaned and never in the way
+    (base / ".update-MediaEngine-3.13.0-rc1-b200-1-1").mkdir(); (base / ".update-MediaEngine-3.13.0-rc1-b200-1-1" / "x").write_text("x")
+    reset(); c.post("/auto/update/check", headers=H); c.post("/auto/update/apply", headers=H); s = wait_done()
+    check("leftovers of an interrupted attempt are cleaned", s["state"] == "ready" and not list(base.glob(".update-*")), (s, list(base.glob(".update-*"))))
+    shutil.rmtree(tgt)
+
     # newest already / needs the full installer
     bundle(nxt_src, name="MediaEngine-3.13.0-rc1-b050"); reset(); c.post("/auto/update/check", headers=H)
     check("an older build on GitHub: this is the newest", "This is the newest version." in text()[1])
@@ -197,7 +226,7 @@ def main() -> int:
     # every state of the page in Russian: no English left (names stay)
     from archivist import i18n
     i18n.set_ui_language("ru")
-    keep = {"MediaEngine", "Social", "Lab", "GitHub", "Setup", "ZIP", "Python", "MB", "KB", "rc", "MEDIAENGINE_UPDATE_URL", "b200", "b300", "HTTP"}
+    keep = {"MediaEngine", "Social", "Lab", "GitHub", "logs", "Setup", "ZIP", "Python", "MB", "KB", "rc", "MEDIAENGINE_UPDATE_URL", "b200", "b300", "HTTP"}
     left = []
     man = bundle(nxt_src)
     states = [("idle", None), ("checked-new", "b200"), ("checked-runtime", "b300"), ("checked-newest", "b050"), ("check_failed", ""),

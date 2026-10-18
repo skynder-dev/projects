@@ -63,8 +63,11 @@ def main():
     from archivist import tray
     tw = [tray.is_app_window_title(t) for t in ("Auto Edit · MediaEngine", "Автомонтаж · MediaEngine", "Мой ролик · MediaEngine",
                                                 "Auto Edit · MediaEngine - Microsoft​ Edge", "Library · Archivist",
-                                                "MediaEngine", "· MediaEngine", "skynder-dev/projects · GitHub", "")]
-    check("tray: own app windows only", tw == [True, True, True, False, False, False, False, False, False], tw)
+                                                "MediaEngine", "· MediaEngine", "skynder-dev/projects · GitHub", "",
+                                                "Microsoft demo · MediaEngine")]
+    check("tray: own app windows only", tw == [True, True, True, False, False, False, False, False, False, True], tw)
+    vk = ["3.13.0-alpha1", "3.13.0-beta1", "3.13.0-beta2", "3.13.0-rc1", "3.13.0-rc2", "3.13.0"]
+    check("version order with alpha / beta numbers (launcher)", sorted(reversed(vk), key=L.version_key) == vk, sorted(reversed(vk), key=L.version_key))
     titles = ["Auto Edit · MediaEngine", "Auto Edit · MediaEngine - Microsoft\u200b Edge", "Library · Archivist", "· MediaEngine", ""]
     check("launcher finds the same windows as the tray", [L.is_app_window_title(t) for t in titles] == [tray.is_app_window_title(t) for t in titles])
     check("launcher: nothing to focus off Windows", os.name == "nt" or L.focus_app_window() is False)

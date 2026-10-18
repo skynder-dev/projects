@@ -18,7 +18,7 @@ the same repository - the protection is the access to the owner's GitHub, as for
 """
 from __future__ import annotations
 
-import hashlib, json, os, re, shutil, threading, time, urllib.error, urllib.request, zipfile
+import hashlib, json, os, re, shutil, subprocess, threading, time, urllib.error, urllib.request, zipfile
 from pathlib import Path
 
 from .config import BUILD, DATA, INSTALL, VERSION
@@ -31,6 +31,8 @@ REQUIRED = ("BUILD.txt", "port.txt", "Start MediaEngine.vbs", "launcher.py", "ve
 _PKG = re.compile(r"MediaEngine-([0-9][0-9A-Za-z.\-]*)-b(\d+)$")
 _LOCK = threading.Lock()
 _BUSY_STATES = ("downloading", "preparing", "switching")
+_APPLY = threading.Event()          # an install thread is alive (one at a time, whatever the page shows)
+SWITCH_WAIT_S = 150                 # the new build's launcher stops this one within this time, or the switch failed
 STATE: dict = {"state": "idle", "error": "", "detail": "", "found": None, "done": 0, "total": 0, "target": "", "checked_at": 0.0}
 
 
@@ -45,7 +47,7 @@ class UpdateError(Exception):
 
 def version_key(v):
     """3.13.0-rc1 < 3.13.0-rc2 < 3.13.0 (same rule as the launcher)."""
-    m = re.match(r"\s*(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:[-.]?(a|alpha|b|beta|rc)(\d*))?", str(v or ""))
+    m = re.match(r"\s*(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:[-.]?(alpha|beta|rc|a|b)(\d*))?", str(v or ""))
     if not m:
         return (0, 0, 0, 0, 0)
     pre = {"a": 0, "alpha": 0, "b": 1, "beta": 1, "rc": 2}.get((m.group(4) or "").lower(), 3)
@@ -140,10 +142,10 @@ def check() -> dict:
     if why:
         raise UpdateError(why)
     with _LOCK:
-        if STATE["state"] in _BUSY_STATES:
+        if STATE["state"] in _BUSY_STATES or _APPLY.is_set():
             raise UpdateError("An update is being installed right now.")
     try:
-        with _get(base_url() + "latest.json", 20) as r:
+        with _get(base_url() + f"latest.json?t={int(time.time())}", 20) as r:      # (not an old copy from a cache)
             raw = r.read(2_000_001)
     except urllib.error.HTTPError as exc:
         if exc.code == 404:
@@ -160,13 +162,20 @@ def check() -> dict:
     m["newer"] = bool(theirs and (mine is None or theirs > mine))
     m["same_runtime"] = bool(m["runtime"]) and m["runtime"] == runtime_id(INSTALL)
     with _LOCK:
+        if STATE["state"] in _BUSY_STATES or _APPLY.is_set():     # Update now was pressed while this check ran
+            raise UpdateError("An update is being installed right now.")
         STATE.update(state="checked", found=m, error="", detail="", checked_at=time.time(), done=0, total=0, target="")
     return m
 
 
+def installing() -> bool:
+    """An update is being downloaded or put next to this build (a Quit or a restart now would waste it)."""
+    return STATE.get("state") in ("downloading", "preparing")
+
+
 def check_failed(exc: Exception) -> None:
     with _LOCK:
-        if STATE["state"] not in _BUSY_STATES:
+        if STATE["state"] not in _BUSY_STATES and not _APPLY.is_set():     # never over an install that runs
             STATE.update(state="check_failed", error=str(exc), detail=getattr(exc, "detail", ""), checked_at=time.time())
 
 
@@ -181,7 +190,7 @@ def _busy() -> str:
 def start_apply() -> None:
     """Download and install the build found by check() (in the background), then switch to it."""
     with _LOCK:
-        if STATE["state"] in _BUSY_STATES:
+        if STATE["state"] in _BUSY_STATES or _APPLY.is_set():
             return
         m = STATE.get("found")
         if not m or STATE["state"] not in ("checked", "error"):
@@ -194,6 +203,7 @@ def start_apply() -> None:
         if busy:
             raise UpdateError(busy)
         STATE.update(state="downloading", error="", detail="", done=0, total=int(m["size"]), target="")
+        _APPLY.set()
     threading.Thread(target=_apply, args=(dict(m),), daemon=True, name="update").start()
 
 
@@ -212,6 +222,8 @@ def _apply(m: dict) -> None:
     except Exception as exc:
         with _LOCK:
             STATE.update(state="error", error="The update could not be installed.", detail=f"{type(exc).__name__}: {exc}")
+    finally:
+        _APPLY.clear()
 
 
 def _sha256(p: Path) -> str:
@@ -281,6 +293,7 @@ def _link_tree(src: Path, dst: Path) -> tuple[int, int]:
     """The runtime of this build into the new folder: hard links (no second copy on the disk), a copy where the
     disk cannot link (FAT/exFAT, a network drive)."""
     linked = copied = 0
+    room_checked = False
     for dirpath, _dirs, files in os.walk(src):
         rel = os.path.relpath(dirpath, src)
         out = dst if rel == "." else dst / rel
@@ -291,9 +304,30 @@ def _link_tree(src: Path, dst: Path) -> tuple[int, int]:
                 os.link(s, t)
                 linked += 1
             except OSError:
+                if not room_checked:              # a whole copy of the runtime (~0.5 GB) must fit
+                    room_checked = True
+                    need = sum((Path(dp) / x).stat().st_size for dp, _d, xs in os.walk(src) for x in xs)
+                    try:
+                        free = shutil.disk_usage(dst).free
+                    except OSError:
+                        free = 1 << 40
+                    if free < need + 200 * 2 ** 20:
+                        raise UpdateError("Not enough free space on the disk with MediaEngine for the update.")
                 shutil.copy2(s, t)
                 copied += 1
     return linked, copied
+
+
+def _rename_patiently(src: Path, dst: Path) -> None:
+    """A folder full of new files can be held for a moment by a virus scanner: try again for ~30 s."""
+    for k in range(16):
+        try:
+            os.rename(src, dst)
+            return
+        except PermissionError:
+            if k == 15:
+                raise
+            time.sleep(min(4.0, 0.5 * (k + 1)))
 
 
 def _prepare(zip_path: Path, m: dict) -> Path:
@@ -304,11 +338,13 @@ def _prepare(zip_path: Path, m: dict) -> Path:
             return target                        # already here (an earlier update, or its Setup)
         raise UpdateError("A folder with the new version's name is already there, but it is not a complete MediaEngine. "
                           "Remove that folder or install the new version with its Setup.", str(target))
-    stage = parent / (".update-" + m["pkg"])     # not "MediaEngine-...": never listed as a version while unfinished
     for left in parent.glob(".update-MediaEngine-*"):
-        shutil.rmtree(left, ignore_errors=True)   # earlier attempts that were interrupted
-    stage.mkdir(parents=True)
+        shutil.rmtree(left, ignore_errors=True)   # earlier attempts that were interrupted (one install at a time)
+    # not "MediaEngine-...": never listed as a version while unfinished; unique: a folder a scanner still holds
+    # from an earlier attempt is never in the way
+    stage = parent / f".update-{m['pkg']}-{os.getpid()}-{int(time.time() * 1000) % 10 ** 9}"
     try:
+        stage.mkdir(parents=True)
         with zipfile.ZipFile(zip_path) as zf:
             total = 0
             for info in zf.infolist():
@@ -333,21 +369,44 @@ def _prepare(zip_path: Path, m: dict) -> Path:
         if not same_port:
             raise UpdateError("The update is for another kind of MediaEngine, so it is not used.")
         _link_tree(INSTALL / ".venv", stage / ".venv")
-        os.rename(stage, target)
+        _rename_patiently(stage, target)
     except BaseException:
         shutil.rmtree(stage, ignore_errors=True)
         raise
     return target
 
 
+def _launcher_status() -> tuple[float, str]:
+    p = DATA / "update_status.json"           # what the launchers of the builds last did (launcher_v2.write_status)
+    try:
+        return p.stat().st_mtime, str(json.loads(p.read_text(encoding="utf-8")).get("status") or "")
+    except Exception:
+        return 0.0, ""
+
+
 def _switch(target: Path) -> None:
-    """The usual switch to another version (Check this PC): its launcher asks this one to quit and starts itself."""
+    """The usual switch to another version: its launcher asks this one to quit and starts itself. The folder just
+    checked is started directly (not looked up among the versions this build knows: a newer build may hold a file
+    this one has never heard of). Still running after SWITCH_WAIT_S: the switch did not happen - say why."""
     if os.name != "nt" or os.environ.get("MEDIAENGINE_UPDATE_NO_SWITCH") == "1":
         with _LOCK:
             STATE.update(state="ready")
         return
-    from .auto_edit import use_build
-    try:
-        use_build(target.name)
-    except ValueError as exc:     # e.g. a reel was started meanwhile: the folder is ready, Update now switches later
-        raise UpdateError(str(exc), str(target))
+    busy = _busy()
+    if busy:                     # e.g. a reel was started meanwhile: the folder is ready, Update now switches later
+        raise UpdateError(busy, str(target))
+    from .auto_edit import start_build_folder
+    before, _ = _launcher_status()
+    start_build_folder(target)
+    end = time.time() + SWITCH_WAIT_S
+    while time.time() < end:     # normally this process is stopped by the new build before the loop ends
+        time.sleep(1)
+        at, st = _launcher_status()
+        if at > before and st in ("switch_refused_busy", "switch_failed_still_running"):
+            break
+    at, st = _launcher_status()
+    if at > before and st == "switch_refused_busy":
+        raise UpdateError("Work started in the meantime. The new version is ready: press Update now again when the work has finished.",
+                          str(target))
+    raise UpdateError("The new version is ready in its folder, but it did not take over. Press Update now to try again.",
+                      f"{target} ({st or 'no answer from its launcher'})")

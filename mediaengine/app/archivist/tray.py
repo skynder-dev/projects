@@ -5,7 +5,7 @@ Closing the MediaEngine window does not stop the program (a reel being built goe
 session without a taskbar there is simply no icon (STATE says why).
 
 The program's windows are the Edge app windows whose title ends with " · MediaEngine" (every page's title; the stable
-Archivist install uses " · Archivist", a normal browser tab adds " - Microsoft Edge"), owned by msedge.exe.
+Archivist install uses " · Archivist", a normal browser tab ends with " - Microsoft Edge"), owned by msedge.exe.
 """
 from __future__ import annotations
 
@@ -97,7 +97,7 @@ def _api():
 def is_app_window_title(title: str) -> bool:
     """A MediaEngine page shown in an Edge app window (not a browser tab, not the stable Archivist)."""
     t = str(title or "")
-    return t.endswith(TITLE_SUFFIX) and t != TITLE_SUFFIX.strip() and "Microsoft" not in t
+    return t.endswith(TITLE_SUFFIX) and t != TITLE_SUFFIX.strip()      # a browser tab ends with "- Microsoft Edge"
 
 
 def app_windows() -> list:
@@ -285,8 +285,8 @@ def _run(*, url, icon, version, ru, status, busy, quit_app, hint_flag):
             r = texts(); reason = ""
             try:
                 reason = busy() or ""
-            except Exception:
-                pass
+            except Exception:            # cannot tell what runs: ask rather than stop a reel without a word
+                reason = "?"
             if reason:
                 line = ""
                 try:

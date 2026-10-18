@@ -4,7 +4,7 @@ import base64, hashlib, json, os, shutil, subprocess, sys, tempfile, time, urlli
 from datetime import datetime, timezone
 from pathlib import Path
 
-LAUNCHER_VERSION = "3.9.1"
+LAUNCHER_VERSION = "3.9.2"
 HOME = Path(__file__).resolve().parent          # program folder of this release
 SIDE_BY_SIDE = (HOME / "port.txt").exists()
 
@@ -77,7 +77,7 @@ def version_tuple(v):
 def version_key(v):
     """Release ordering with pre-releases: 3.13.0-rc1 < 3.13.0-rc2 < 3.13.0 (version_tuple treats them as equal)."""
     import re
-    m=re.match(r'\s*(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:[-.]?(a|alpha|b|beta|rc)(\d*))?',str(v or ''))
+    m=re.match(r'\s*(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:[-.]?(alpha|beta|rc|a|b)(\d*))?',str(v or ''))
     if not m: return (0,0,0,0,0)
     pre={'a':0,'alpha':0,'b':1,'beta':1,'rc':2}.get((m.group(4) or '').lower(),3)
     return (int(m.group(1) or 0),int(m.group(2) or 0),int(m.group(3) or 0),pre,int(m.group(5) or 0))
@@ -172,9 +172,11 @@ def message_box(text,yes_no=False):
     except Exception:
         return False
 
-def stop_running():
-    """Ask the running MediaEngine to quit (same request as its Quit button). False when it is busy building."""
-    req=urllib.request.Request(f'http://{HOST}:{PORT}/api/app-control',data=b'{"mode":"stop"}',method='POST',
+def stop_running(close_windows=False):
+    """Ask the running MediaEngine to quit (same request as its Quit button). False when it is busy building.
+    close_windows: its windows close too (this launcher opens a fresh one; older builds ignore it)."""
+    body=b'{"mode":"stop","close":true}' if close_windows else b'{"mode":"stop"}'
+    req=urllib.request.Request(f'http://{HOST}:{PORT}/api/app-control',data=body,method='POST',
                                headers={'Content-Type':'application/json','Origin':f'http://{HOST}:{PORT}'})
     try:
         with _LOCAL_HTTP.open(req,timeout=10) as r: return r.status==200
@@ -220,7 +222,7 @@ def is_app_window_title(title):
     """A MediaEngine page in an Edge app window (same rule as the tray icon, archivist/tray.py): every page title ends
     with ' · MediaEngine'; the stable install uses ' · Archivist', a browser tab adds ' - Microsoft Edge'."""
     t=str(title or '')
-    return t.endswith(' · MediaEngine') and t!='· MediaEngine' and 'Microsoft' not in t
+    return t.endswith(' · MediaEngine') and t!='· MediaEngine'      # a browser tab ends with '- Microsoft Edge'
 
 def focus_app_window():
     """Bring an open MediaEngine window to the front instead of opening a second one. False when there is none or
@@ -529,7 +531,9 @@ def main():
             return 0
         launcher_log('switching from '+str(other))
         switched_from=str(other) if other else None
-        if not stop_running():
+        # a switch started from inside the program (Update, Check this PC) keeps its window: that page follows the
+        # switch; a start from the shortcut or Setup opens a fresh window below, so the old one closes (one window)
+        if not stop_running(close_windows=not no_browser):
             launcher_log('the running one refused to stop (busy)')
             write_status(status='switch_refused_busy',version=current_version(),running=other)
             if not answer and how=='switch':

@@ -602,6 +602,13 @@ PHRASES = {
     "The update is much bigger than expected, so it is not used.": "Обновление намного больше ожидаемого, поэтому не используется.",
     "The update is incomplete, so it is not used.": "Обновление неполное, поэтому не используется.",
     "The update is for another kind of MediaEngine, so it is not used.": "Обновление для другого вида MediaEngine, поэтому не используется.",
+    "An update is being installed. Wait a minute.": "Устанавливается обновление. Подожди минуту.",
+    "Work started in the meantime. The new version is ready: press Update now again when the work has finished.":
+        "Тем временем началась работа. Новая версия готова: нажми «Обновить сейчас» ещё раз, когда работа закончится.",
+    "The new version is ready in its folder, but it did not take over. Press Update now to try again.":
+        "Новая версия готова в своей папке, но не запустилась вместо этой. Нажми «Обновить сейчас», чтобы попробовать снова.",
+    "The new version did not start, so this version is running again. Details for support are in the logs folder.":
+        "Новая версия не запустилась, поэтому снова работает эта. Подробности для поддержки — в папке logs.",
 }
 
 import html as _html

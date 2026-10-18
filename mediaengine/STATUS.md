@@ -425,6 +425,22 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   smoke PASS: b142 found `b100142` served from 127.0.0.1, installed it into `upd\Программы\` (2.3 MB ZIP, 164 files),
   python.exe of the runtime has 2 names (hard link), ping answered from the new folder, old build kept and listed,
   nothing half-made. update_check 26/26 on Windows too.
+- Independent review of tray / Update / launcher (2026-10-18 night), all confirmed findings fixed:
+  (1) a switch that never happened left the page "switching" forever: after starting the new build the old one
+  waits 150 s and then says why (launcher's update_status.json: refused because work started / no answer); the
+  progress page says "the new version did not start, this one runs again" when the old build answers again after
+  being gone; (2) a slow check could reset a running install and allow a second install thread: one install at a
+  time (`_APPLY`), a check or a failed check never overwrites it; (3) the switch looked the new folder up among the
+  versions the OLD build knows (a future top-level file would have hidden it): the verified folder is started
+  directly (`auto_edit.start_build_folder`, shared with Use this version); (4) Quit / tray / switch / watchdog
+  restart now wait while an update downloads or unpacks (not during its own switch); unique staging folder made
+  inside the try; (5) a takeover started from the shortcut or Setup asks the old build to close its windows (one
+  fresh window instead of two; in-app switches keep theirs); (6) the update is published only when every check
+  passed, also the non-blocking ones (models, Russian pages, odd input, large footage). Also: rename retried while
+  a virus scanner holds the new folder; free space checked before a runtime copy (disks without hard links); tray
+  Quit asks when it cannot tell what runs; latest.json fetched past caches and the previous ZIP kept one more
+  round; alpha/beta numbers ordered; a project titled "Microsoft …" is still our window. Launcher 3.9.2.
+  update_check 33/33, unit 143/143, i18n 40 pages 0 English.
 
 ## Evidence
 

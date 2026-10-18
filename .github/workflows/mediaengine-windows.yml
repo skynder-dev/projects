@@ -163,6 +163,7 @@ jobs:
           python mediaengine/tests/orders_check.py --home "$env:RUNNER_TEMP\home-orders" --videos "$env:RUNNER_TEMP\fx\two" --out "$env:OUT\orders.json" 2>&1 | Tee-Object "$env:OUT\orders.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Real AI models from Hugging Face - AI and AI+ test reels, an AI+ reel, its AI variant, blind comparison
+        id: models
         timeout-minutes: 75
         continue-on-error: true    # needs huggingface.co: an outage there is reported (results branch) but never blocks the package
         shell: pwsh
@@ -170,12 +171,14 @@ jobs:
           python mediaengine/tests/real_models_check.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\home-ai" --out "$env:OUT\real_models.json" 2>&1 | Tee-Object "$env:OUT\real_models.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Russian interface - every page in Russian, no English left, no page contacts the internet (7-video, library, library-flow and orders homes)
+        id: ru
         continue-on-error: true    # a missed word is reported (results branch) but never blocks the package
         shell: pwsh
         run: |
           python mediaengine/tests/i18n_coverage.py "$env:RUNNER_TEMP\home7" "$env:RUNNER_TEMP\libchk\home" "$env:RUNNER_TEMP\home2" "$env:RUNNER_TEMP\libflow\Данные пользователя" "$env:RUNNER_TEMP\home-orders" 2>&1 | Tee-Object "$env:OUT\i18n_coverage.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Every page and button with odd input (typed URLs, damaged forms) - no server error (a copy of the 7-video home)
+        id: fuzz
         continue-on-error: true    # reported (results branch); never blocks the package
         timeout-minutes: 15
         shell: pwsh
@@ -546,6 +549,7 @@ jobs:
           path: ${{ runner.temp }}/setup/
           compression-level: 0
       - name: Large phone-like footage (4K H.264, 4K HEVC, 5 min 1080p) - build time measured, technical and AI (real model, shared cache)
+        id: large
         if: success()
         continue-on-error: true
         timeout-minutes: 80
@@ -561,7 +565,8 @@ jobs:
           path: ${{ runner.temp }}/me-ci/*
           if-no-files-found: warn
       - name: Publish the in-app update (branch mediaengine-update, read by the Update button) - only a fully green run of main
-        if: success() && github.ref == 'refs/heads/main'
+        # every check passed, also those that never block the package (models, Russian pages, odd input, large footage)
+        if: success() && github.ref == 'refs/heads/main' && steps.models.outcome == 'success' && steps.ru.outcome == 'success' && steps.fuzz.outcome == 'success' && steps.large.outcome == 'success'
         shell: bash
         env:
           RUN_ID: ${{ github.run_id }}
@@ -572,6 +577,12 @@ jobs:
           pub="$RUNNER_TEMP/me-update-pub"; rm -rf "$pub"; mkdir -p "$pub"
           python mediaengine/tools/make_update_bundle.py "$pkg" "$pub" --run-url "https://github.com/${{ github.repository }}/actions/runs/$RUN_ID"
           printf '# MediaEngine in-app update\n\nRead by the Update button of MediaEngine (app/archivist/updater.py). Made by Windows CI run %s from %s.\n' "$RUN_ID" "$SRC_SHA" > "$pub/README.md"
+          # the previous ZIP stays one more round: a latest.json a cache still hands out must not point at nothing
+          prev="$RUNNER_TEMP/me-update-prev"; rm -rf "$prev"
+          if git clone -q --depth 1 --branch mediaengine-update "https://github.com/${{ github.repository }}.git" "$prev" 2>/dev/null; then
+            pf=$(python -c "import json,sys; print(json.load(open(sys.argv[1], encoding='utf-8'))['file'])" "$prev/latest.json" 2>/dev/null || true)
+            if [ -n "$pf" ] && [ -f "$prev/$pf" ] && [ ! -f "$pub/$pf" ]; then cp "$prev/$pf" "$pub/"; fi
+          fi
           cd "$pub"; git init -q; git checkout -q -b mediaengine-update
           git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
           git add -A; git commit -q -m "mediaengine update from run $RUN_ID ($SRC_SHA)"
