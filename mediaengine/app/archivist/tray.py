@@ -286,14 +286,15 @@ def _run(*, url, icon, version, ru, status, busy, quit_app, hint_flag):
             try:
                 reason = busy() or ""
             except Exception:            # cannot tell what runs: ask rather than stop a reel without a word
-                reason = "?"
+                reason = "Cannot tell whether work is running."
             if reason:
                 line = ""
                 try:
                     line = status(r) or ""
                 except Exception:
                     pass
-                q = ((line or "Сейчас идёт работа.") + "\n\nВсё равно выйти? Собираемый ролик будет отмечен как прерванный "
+                q = ((line or ("Не удалось понять, идёт ли работа." if reason.startswith("Cannot tell") else "Сейчас идёт работа."))
+                     + "\n\nВсё равно выйти? Собираемый ролик будет отмечен как прерванный "
                      "(повтор использует готовый анализ); задачи Библиотеки, конвертация и заказы продолжатся при "
                      "следующем запуске.") if r else ((line or reason) + "\n\nQuit anyway? A reel being made is marked "
                      "interrupted (Retry reuses its analysis); Library tasks, conversions and orders go on at the next start.")

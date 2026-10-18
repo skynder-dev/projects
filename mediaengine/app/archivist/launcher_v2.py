@@ -172,11 +172,9 @@ def message_box(text,yes_no=False):
     except Exception:
         return False
 
-def stop_running(close_windows=False):
-    """Ask the running MediaEngine to quit (same request as its Quit button). False when it is busy building.
-    close_windows: its windows close too (this launcher opens a fresh one; older builds ignore it)."""
-    body=b'{"mode":"stop","close":true}' if close_windows else b'{"mode":"stop"}'
-    req=urllib.request.Request(f'http://{HOST}:{PORT}/api/app-control',data=body,method='POST',
+def stop_running():
+    """Ask the running MediaEngine to quit (same request as its Quit button). False when it is busy building."""
+    req=urllib.request.Request(f'http://{HOST}:{PORT}/api/app-control',data=b'{"mode":"stop"}',method='POST',
                                headers={'Content-Type':'application/json','Origin':f'http://{HOST}:{PORT}'})
     try:
         with _LOCAL_HTTP.open(req,timeout=10) as r: return r.status==200
@@ -224,41 +222,47 @@ def is_app_window_title(title):
     t=str(title or '')
     return t.endswith(' · MediaEngine') and t!='· MediaEngine'      # a browser tab ends with '- Microsoft Edge'
 
+def _app_windows():
+    """The visible MediaEngine windows (Edge app windows, title rule above), with the Win32 functions used on them."""
+    if os.name!='nt': return [],None
+    import ctypes
+    from ctypes import wintypes as wt
+    u=ctypes.WinDLL('user32'); k=ctypes.WinDLL('kernel32')
+    ENUM=ctypes.WINFUNCTYPE(wt.BOOL,wt.HWND,wt.LPARAM)
+    u.EnumWindows.argtypes=[ENUM,wt.LPARAM]; u.IsWindowVisible.argtypes=[wt.HWND]; u.IsIconic.argtypes=[wt.HWND]
+    u.GetClassNameW.argtypes=[wt.HWND,wt.LPWSTR,ctypes.c_int]; u.GetWindowTextW.argtypes=[wt.HWND,wt.LPWSTR,ctypes.c_int]
+    u.GetWindowThreadProcessId.argtypes=[wt.HWND,ctypes.POINTER(wt.DWORD)]
+    u.ShowWindow.argtypes=[wt.HWND,ctypes.c_int]; u.SetForegroundWindow.argtypes=[wt.HWND]
+    u.PostMessageW.argtypes=[wt.HWND,wt.UINT,wt.WPARAM,wt.LPARAM]
+    k.OpenProcess.restype=wt.HANDLE; k.OpenProcess.argtypes=[wt.DWORD,wt.BOOL,wt.DWORD]
+    k.QueryFullProcessImageNameW.argtypes=[wt.HANDLE,wt.DWORD,wt.LPWSTR,ctypes.POINTER(wt.DWORD)]
+    k.CloseHandle.argtypes=[wt.HANDLE]
+    found=[]
+    def each(h,_):
+        try:
+            if not u.IsWindowVisible(h): return True
+            c=ctypes.create_unicode_buffer(64); u.GetClassNameW(h,c,64)
+            if c.value!='Chrome_WidgetWin_1': return True
+            t=ctypes.create_unicode_buffer(512); u.GetWindowTextW(h,t,512)
+            if not is_app_window_title(t.value): return True
+            pid=wt.DWORD(0); u.GetWindowThreadProcessId(h,ctypes.byref(pid))
+            ph=k.OpenProcess(0x1000,False,pid.value)
+            if ph:
+                try:
+                    b=ctypes.create_unicode_buffer(1024); n=wt.DWORD(1024)
+                    if k.QueryFullProcessImageNameW(ph,0,b,ctypes.byref(n)) and os.path.basename(b.value).lower()=='msedge.exe':
+                        found.append(h)
+                finally: k.CloseHandle(ph)
+        except Exception: pass
+        return True
+    cb=ENUM(each); u.EnumWindows(cb,0)
+    return found,u
+
 def focus_app_window():
     """Bring an open MediaEngine window to the front instead of opening a second one. False when there is none or
     Windows does not let this launcher take the front (then a window is opened, as before)."""
-    if os.name!='nt': return False
     try:
-        import ctypes
-        from ctypes import wintypes as wt
-        u=ctypes.WinDLL('user32'); k=ctypes.WinDLL('kernel32')
-        ENUM=ctypes.WINFUNCTYPE(wt.BOOL,wt.HWND,wt.LPARAM)
-        u.EnumWindows.argtypes=[ENUM,wt.LPARAM]; u.IsWindowVisible.argtypes=[wt.HWND]; u.IsIconic.argtypes=[wt.HWND]
-        u.GetClassNameW.argtypes=[wt.HWND,wt.LPWSTR,ctypes.c_int]; u.GetWindowTextW.argtypes=[wt.HWND,wt.LPWSTR,ctypes.c_int]
-        u.GetWindowThreadProcessId.argtypes=[wt.HWND,ctypes.POINTER(wt.DWORD)]
-        u.ShowWindow.argtypes=[wt.HWND,ctypes.c_int]; u.SetForegroundWindow.argtypes=[wt.HWND]
-        k.OpenProcess.restype=wt.HANDLE; k.OpenProcess.argtypes=[wt.DWORD,wt.BOOL,wt.DWORD]
-        k.QueryFullProcessImageNameW.argtypes=[wt.HANDLE,wt.DWORD,wt.LPWSTR,ctypes.POINTER(wt.DWORD)]
-        k.CloseHandle.argtypes=[wt.HANDLE]
-        found=[]
-        def each(h,_):
-            try:
-                if not u.IsWindowVisible(h): return True
-                c=ctypes.create_unicode_buffer(64); u.GetClassNameW(h,c,64)
-                if c.value!='Chrome_WidgetWin_1': return True
-                t=ctypes.create_unicode_buffer(512); u.GetWindowTextW(h,t,512)
-                if not is_app_window_title(t.value): return True
-                pid=wt.DWORD(0); u.GetWindowThreadProcessId(h,ctypes.byref(pid))
-                ph=k.OpenProcess(0x1000,False,pid.value)
-                if ph:
-                    try:
-                        b=ctypes.create_unicode_buffer(1024); n=wt.DWORD(1024)
-                        if k.QueryFullProcessImageNameW(ph,0,b,ctypes.byref(n)) and os.path.basename(b.value).lower()=='msedge.exe':
-                            found.append(h)
-                    finally: k.CloseHandle(ph)
-            except Exception: pass
-            return True
-        cb=ENUM(each); u.EnumWindows(cb,0)
+        found,u=_app_windows()
         if not found: return False
         if not u.SetForegroundWindow(found[0]): return False
         if u.IsIconic(found[0]): u.ShowWindow(found[0],9)       # SW_RESTORE
@@ -266,6 +270,16 @@ def focus_app_window():
         return True
     except Exception:
         return False
+
+def close_app_windows():
+    """Close the open MediaEngine windows (after a takeover, right before this build opens its own: one window, and
+    never a moment without one while the new build was still starting)."""
+    try:
+        found,u=_app_windows()
+        for h in found: u.PostMessageW(h,0x0010,0,0)          # WM_CLOSE
+        return len(found)
+    except Exception:
+        return 0
 
 def hidden_kwargs():
     kw={}
@@ -531,9 +545,7 @@ def main():
             return 0
         launcher_log('switching from '+str(other))
         switched_from=str(other) if other else None
-        # a switch started from inside the program (Update, Check this PC) keeps its window: that page follows the
-        # switch; a start from the shortcut or Setup opens a fresh window below, so the old one closes (one window)
-        if not stop_running(close_windows=not no_browser):
+        if not stop_running():
             launcher_log('the running one refused to stop (busy)')
             write_status(status='switch_refused_busy',version=current_version(),running=other)
             if not answer and how=='switch':
@@ -570,7 +582,12 @@ def main():
             if not no_browser: open_user_interface(force_browser=force_browser)
             return 1
         write_status(status='running',version=current_version(),update_check=LAST_UPDATE_CHECK)
-        if not no_browser: open_user_interface(force_browser=force_browser)
+        if not no_browser:
+            # took over from another build (from the shortcut or Setup): its windows still show the old pages - they
+            # close now that this one answers, and this one opens its own (one window, never a moment without one).
+            # A switch started inside the program (Update, Check this PC: no_browser) keeps its window: it follows.
+            if switched_from: close_app_windows()
+            open_user_interface(force_browser=force_browser)
         return 0
     # A bad release must not strand the user with a dead desktop shortcut.
     if after!=before and restore_latest_backup(before):

@@ -441,6 +441,13 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   Quit asks when it cannot tell what runs; latest.json fetched past caches and the previous ZIP kept one more
   round; alpha/beta numbers ordered; a project titled "Microsoft …" is still our window. Launcher 3.9.2.
   update_check 33/33, unit 143/143, i18n 40 pages 0 English.
+  Verification of those fixes by the same reviewer: no deadlock, the update never blocks its own switch; fixed
+  what it found: the old window closed long before the new one opened (the takeover now closes the old windows
+  only when the new build answers, right before opening its own - launcher `close_app_windows`; the stop request
+  is the plain one again); tray question when the busy check fails says so in words; space checked per copied
+  file (one file that cannot be linked no longer demands room for the whole runtime); ZIP fetched with its SHA in
+  the address (a re-run with the same build name never gets a cached older ZIP); watchdog waits during the
+  switch too; shorter staging name (long runtime paths).
 
 ## Evidence
 

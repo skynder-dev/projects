@@ -256,7 +256,7 @@ def _download(m: dict) -> Path:
     part = d / (m["file"] + ".part")
     h, n = hashlib.sha256(), 0
     try:
-        with _get(base_url() + m["file"], 60) as r, open(part, "wb") as out:
+        with _get(base_url() + m["file"] + "?sha=" + m["sha256"][:16], 60) as r, open(part, "wb") as out:   # (never a cached older ZIP)
             while True:
                 b = r.read(1 << 20)
                 if not b:
@@ -293,7 +293,6 @@ def _link_tree(src: Path, dst: Path) -> tuple[int, int]:
     """The runtime of this build into the new folder: hard links (no second copy on the disk), a copy where the
     disk cannot link (FAT/exFAT, a network drive)."""
     linked = copied = 0
-    room_checked = False
     for dirpath, _dirs, files in os.walk(src):
         rel = os.path.relpath(dirpath, src)
         out = dst if rel == "." else dst / rel
@@ -304,15 +303,12 @@ def _link_tree(src: Path, dst: Path) -> tuple[int, int]:
                 os.link(s, t)
                 linked += 1
             except OSError:
-                if not room_checked:              # a whole copy of the runtime (~0.5 GB) must fit
-                    room_checked = True
-                    need = sum((Path(dp) / x).stat().st_size for dp, _d, xs in os.walk(src) for x in xs)
-                    try:
-                        free = shutil.disk_usage(dst).free
-                    except OSError:
-                        free = 1 << 40
-                    if free < need + 200 * 2 ** 20:
-                        raise UpdateError("Not enough free space on the disk with MediaEngine for the update.")
+                try:                              # copied instead: it must fit (and leave room for the program)
+                    free = shutil.disk_usage(dst).free
+                except OSError:
+                    free = 1 << 40
+                if free < s.stat().st_size + 200 * 2 ** 20:
+                    raise UpdateError("Not enough free space on the disk with MediaEngine for the update.")
                 shutil.copy2(s, t)
                 copied += 1
     return linked, copied
@@ -342,7 +338,7 @@ def _prepare(zip_path: Path, m: dict) -> Path:
         shutil.rmtree(left, ignore_errors=True)   # earlier attempts that were interrupted (one install at a time)
     # not "MediaEngine-...": never listed as a version while unfinished; unique: a folder a scanner still holds
     # from an earlier attempt is never in the way
-    stage = parent / f".update-{m['pkg']}-{os.getpid()}-{int(time.time() * 1000) % 10 ** 9}"
+    stage = parent / f".update-MediaEngine-{os.getpid() % 10000}-{int(time.time() * 1000) % 10 ** 6}"   # (short: long runtime paths)
     try:
         stage.mkdir(parents=True)
         with zipfile.ZipFile(zip_path) as zf:

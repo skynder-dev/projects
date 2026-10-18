@@ -166,7 +166,7 @@ def _other_work() -> str:
         except Exception:pass
         try:
             from . import updater as _up
-            if _up.installing():return "update"
+            if _up.installing() or _up.STATE.get("state")=="switching":return "update"   # (a restart mid-switch would look like a failed one)
         except Exception:pass
     except Exception:
         return ""
