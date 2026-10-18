@@ -490,6 +490,10 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
 - Run 39138313083 (b150, commit 44bfed1) fully green and published; **on Windows the published update was fetched
   from raw.githubusercontent.com** (the address the Update button reads): latest.json says b150, the ZIP (2,343,573
   bytes) matches its SHA-256 (update_served.txt). The branch now holds b150 and keeps the b149 ZIP one more round.
+- **Owner PC (2026-10-18 12:50 Chicago)**: he installed b148 with Setup; the app's own /api/ping (built-in browser
+  pane) then answered `build b150`, install `D:\Projects\MedEng\MediaEngine\MediaEngine-3.13.0-rc1-b150`,
+  `tray: shown` - the folder b150 next to b148 was made by the Update button from GitHub and took over; no
+  unfinished `.update-*` folder left. Older builds there: b28, b100, b113, b117, b121, b122, b131, b137 (his call).
 
 ## Evidence
 
