@@ -479,6 +479,14 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   waited the whole 600 s (now those two import routes get only odd paths); the Russian check counted project /
   composition titles made by the orders and library tests ("Order reel-damaged", "copy test") as English left (now
   every stored title is user content). Installer: artifact 12135137992 (MediaEngine-3.13.0-rc1-b148-Setup).
+- **First real publication**: run 39127136116 (b149, commit 21a607d) fully green, also every non-blocking check, and the
+  branch `mediaengine-update` was published: `latest.json` (8 KB, 23 what-is-new items EN+RU, runtime b9810d447e8c86c5 =
+  the runtime of b148) + `MediaEngine-3.13.0-rc1-b149-update.zip` (2.3 MB, 164 files). Checked from here with the
+  published bytes (raw.githubusercontent.com itself is not reachable from this sandbox): a b100 install with that
+  runtime finds b149 (newer, same runtime, 23 notes), downloads, SHA-256 matches, installs MediaEngine-3.13.0-rc1-b149
+  next to it with the runtime hard-linked, BUILD.txt commit 21a607d. So b148 (installed by the owner with Setup)
+  updates with the button. Next runs also fetch the published files from raw.githubusercontent.com on Windows and
+  compare the SHA (non-blocking step "The published update is served ...").
 
 ## Evidence
 

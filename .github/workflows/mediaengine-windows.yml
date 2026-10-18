@@ -580,6 +580,7 @@ jobs:
           path: ${{ runner.temp }}/me-ci/*
           if-no-files-found: warn
       - name: Publish the in-app update (branch mediaengine-update, read by the Update button) - only a fully green run of main
+        id: publish
         # every check passed, also those that never block the package (models, Russian pages, odd input, large footage)
         if: success() && github.ref == 'refs/heads/main' && steps.models.outcome == 'success' && steps.ru.outcome == 'success' && steps.fuzz.outcome == 'success' && steps.large.outcome == 'success'
         shell: bash
@@ -602,6 +603,30 @@ jobs:
           git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
           git add -A; git commit -q -m "mediaengine update from run $RUN_ID ($SRC_SHA)"
           git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" mediaengine-update
+      - name: The published update is served where the Update button reads it (raw.githubusercontent.com, same bytes)
+        if: steps.publish.outcome == 'success'
+        continue-on-error: true    # GitHub's cache can take minutes: reported, never blocks
+        shell: pwsh
+        run: |
+          $log = "$env:OUT\update_served.txt"
+          $want = (Get-ChildItem "$env:RUNNER_TEMP\pkg" -Directory | Select-Object -First 1).Name
+          $base = 'https://raw.githubusercontent.com/${{ github.repository }}/mediaengine-update/'
+          $ok = $false
+          for ($i = 0; $i -lt 40 -and -not $ok; $i++) {
+            try {
+              $m = (Invoke-WebRequest -UseBasicParsing -TimeoutSec 20 -Headers @{'Cache-Control'='no-cache'} ($base + "latest.json?t=$i$(Get-Random)")).Content | ConvertFrom-Json
+              if ($m.pkg -eq $want) {
+                $zip = "$env:RUNNER_TEMP\served-update.zip"
+                Invoke-WebRequest -UseBasicParsing -TimeoutSec 60 ($base + $m.file + "?sha=" + $m.sha256.Substring(0, 16)) -OutFile $zip
+                $sha = (Get-FileHash -Algorithm SHA256 $zip).Hash.ToLower()
+                "served: $($m.pkg) $($m.file) $((Get-Item $zip).Length) bytes, SHA-256 matches: $($sha -eq $m.sha256)" | Tee-Object $log
+                $ok = ($sha -eq $m.sha256) -and ((Get-Item $zip).Length -eq $m.size)
+              } else { "try $i - still the previous build: $($m.pkg)" | Tee-Object -Append $log }
+            } catch { "try $i - $_" | Tee-Object -Append $log }
+            if (-not $ok) { Start-Sleep 15 }
+          }
+          if (-not $ok) { "NOT served yet" | Tee-Object -Append $log; exit 1 }
+          "update served PASS" | Tee-Object -Append $log
       - name: Publish results to branch mediaengine-ci-results
         if: success() || failure()
         shell: bash
