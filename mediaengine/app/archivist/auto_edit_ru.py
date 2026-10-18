@@ -549,6 +549,59 @@ PHRASES = {
     "The video of this order is not there.": "Видео этого заказа нет.", "The folder of this order is not there.": "Папки этого заказа нет.",
     "Orders from other programs: a program puts an order into the Inbox folder (Auto Edit → Orders), MediaEngine makes the video and puts it into Done.":
         "Заказы от других программ: программа кладёт заказ в папку «Входящие» (Автомонтаж → Заказы), MediaEngine делает видео и кладёт его в «Готово».",
+    # tray icon, switch without a question, the Update button (2026-10-17/18)
+    "MediaEngine is in the tray (next to the clock): click it to open the window, right-click → Quit to close the program.":
+        "MediaEngine в трее (рядом с часами): щелчок открывает окно, правая кнопка → «Выход» закрывает программу.",
+    "A new version takes over from the old one by itself, without the “switch?” question.":
+        "Новая версия сама сменяет старую, без вопроса «переключиться?».",
+    "The “Update” button at the top: MediaEngine finds a newer version on GitHub and installs it itself (only when you press it).":
+        "Кнопка «Обновить» вверху: MediaEngine сам находит новую версию на GitHub и ставит её (только когда ты её нажмёшь).",
+    "Update": "Обновить", "Updates": "Обновления", "Look for a newer MediaEngine on GitHub": "Найти новую версию MediaEngine на GitHub",
+    "Check for updates": "Проверить обновления", "Updating to": "Обновление до", "This version:": "Эта версия:",
+    "Downloading the new version…": "Скачиваю новую версию…", "Putting the new version next to this one…": "Ставлю новую версию рядом с этой…",
+    "Starting the new version…": "Запускаю новую версию…",
+    "Do not close this window: MediaEngine restarts by itself and this page then opens the new version.":
+        "Не закрывай это окно: MediaEngine перезапустится сам, и эта страница откроет новую версию.",
+    "The new version is taking long to start. If nothing happens, start MediaEngine from the desktop shortcut.":
+        "Новая версия долго запускается. Если ничего не происходит, запусти MediaEngine ярлыком на рабочем столе.",
+    "This is the newest version.": "Это самая новая версия.", "Open the page with the installer": "Открыть страницу с установщиком",
+    "A newer version is ready:": "Есть новая версия:", "What is new": "Что нового", "Download:": "Загрузка:", "Update now": "Обновить сейчас",
+    "This time it needs the full installer: Python or its libraries changed. Download its Setup and install it (projects stay the same).":
+        "В этот раз нужен полный установщик: изменился Python или его библиотеки. Скачай Setup и установи его (проекты останутся те же).",
+    "It goes into a new folder next to this one; this version stays on the PC (to go back: Check this PC). Projects stay the same. MediaEngine restarts by itself.":
+        "Новая версия ставится в новую папку рядом с этой; эта остаётся на компьютере (вернуться: «Проверка компьютера»). Проекты те же. MediaEngine перезапустится сам.",
+    "MediaEngine looks for a newer version on GitHub only when you press this button; it goes online for nothing else.":
+        "MediaEngine ищет новую версию на GitHub, только когда ты нажимаешь эту кнопку; больше он ни за чем в интернет не выходит.",
+    "Updates are turned off here.": "Обновления здесь выключены.",
+    "Only an installed MediaEngine (Setup or ZIP) updates itself.": "Сам обновляется только установленный MediaEngine (Setup или ZIP).",
+    "This version cannot update itself yet. Install the new version once with its Setup.":
+        "Эта версия ещё не умеет обновляться сама. Один раз установи новую версию её установщиком (Setup).",
+    "MEDIAENGINE_UPDATE_URL may only point at this PC (it is for checks).": "MEDIAENGINE_UPDATE_URL может указывать только на этот компьютер (это для проверок).",
+    "The update description on GitHub is damaged. Try again later.": "Описание обновления на GitHub повреждено. Попробуй позже.",
+    "This version does not understand the new update. Install the new version once with its Setup.":
+        "Эта версия не понимает новое обновление. Один раз установи новую версию её установщиком (Setup).",
+    "An update is being installed right now.": "Обновление уже устанавливается.",
+    "No update has been published yet.": "Обновлений пока не выложено.",
+    "GitHub answered with an error. Try again later.": "GitHub ответил ошибкой. Попробуй позже.",
+    "No connection to GitHub. Check the internet connection and try again.": "Нет связи с GitHub. Проверь интернет и попробуй снова.",
+    "Press Check for updates first.": "Сначала нажми «Проверить обновления».",
+    "This is already the newest version.": "Это уже самая новая версия.",
+    "This update needs the full installer this time (Python or its libraries changed).":
+        "Для этого обновления нужен полный установщик (изменился Python или его библиотеки).",
+    "The update could not be installed.": "Обновление не удалось установить.",
+    "Not enough free space on the disk with MediaEngine for the update.": "Для обновления не хватает места на диске с MediaEngine.",
+    "The download is bigger than announced, so it is not used.": "Загрузка больше заявленной, поэтому не используется.",
+    "A newer version was published in the meantime. Press Check for updates again.":
+        "Пока шла загрузка, вышла ещё более новая версия. Нажми «Проверить обновления» ещё раз.",
+    "The download was interrupted. Check the internet connection and try again.": "Загрузка прервалась. Проверь интернет и попробуй снова.",
+    "The downloaded file is damaged (its checksum differs), so it is not used. Try again.":
+        "Скачанный файл повреждён (контрольная сумма не совпадает), поэтому не используется. Попробуй снова.",
+    "A folder with the new version's name is already there, but it is not a complete MediaEngine. Remove that folder or install the new version with its Setup.":
+        "Папка с именем новой версии уже есть, но это не полный MediaEngine. Удали эту папку или установи новую версию её установщиком (Setup).",
+    "The update contains a file outside its folder, so it is not used.": "В обновлении есть файл вне его папки, поэтому оно не используется.",
+    "The update is much bigger than expected, so it is not used.": "Обновление намного больше ожидаемого, поэтому не используется.",
+    "The update is incomplete, so it is not used.": "Обновление неполное, поэтому не используется.",
+    "The update is for another kind of MediaEngine, so it is not used.": "Обновление для другого вида MediaEngine, поэтому не используется.",
 }
 
 import html as _html

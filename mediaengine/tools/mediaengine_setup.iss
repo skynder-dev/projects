@@ -83,6 +83,9 @@ Filename: "{sys}\wscript.exe"; Parameters: """{app}\{#PkgName}\Start MediaEngine
 ; the whole build folder this setup made, including anything created in it at run time (the data folder
 ; "MediaEngine Data" next to it is never touched)
 Type: filesandordirs; Name: "{app}\{#PkgName}"
+; builds the program installed itself with its Update button (next to this one, same layout) and an unfinished one
+Type: filesandordirs; Name: "{app}\MediaEngine-*"
+Type: filesandordirs; Name: "{app}\.update-MediaEngine-*"
 Type: files; Name: "{userdesktop}\MediaEngine RC.lnk"
 
 [Code]

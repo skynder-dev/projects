@@ -2426,6 +2426,9 @@ WHATS_NEW_ITEMS = [
     ("2026-10-16", "Choosing the moments of a new reel length uses several processor cores (the same choice, found faster)."),
     ("2026-10-16", "“Prepare in advance” for a reel for every day of a big folder too."),
     ("2026-10-17", "Orders from other programs: a program puts an order into the Inbox folder (Auto Edit → Orders), MediaEngine makes the video and puts it into Done."),
+    ("2026-10-17b", "MediaEngine is in the tray (next to the clock): click it to open the window, right-click → Quit to close the program."),
+    ("2026-10-17b", "A new version takes over from the old one by itself, without the “switch?” question."),
+    ("2026-10-18", "The “Update” button at the top: MediaEngine finds a newer version on GitHub and installs it itself (only when you press it)."),
 ]
 WHATS_NEW_ID = max(d for d, _ in WHATS_NEW_ITEMS)
 WHATS_NEW = [t for _, t in WHATS_NEW_ITEMS]
@@ -2619,7 +2622,7 @@ BUILD_MARKERS = ("BUILD.txt", "port.txt", "Start MediaEngine.vbs")
 # What a release folder holds (tools/build_windows_package.py, the launcher, Windows itself). A folder with anything
 # else in it - the owner's clips put there, a Library source, a reel's folder - is never offered for removal: removing
 # a version deletes its folder for good (no Recycle Bin).
-RELEASE_ENTRIES = {".venv", "app", "app.__new__", "app.__old__", "requirements.txt", "launcher.py", "version.txt", "port.txt",
+RELEASE_ENTRIES = {".venv", "app", "app.__new__", "app.__old__", "requirements.txt", "launcher.py", "version.txt", "port.txt", "runtime.txt",
                    "shortcut_name.txt", "start mediaengine.vbs", "mediaengine.ico", "build.txt", "readme.txt", "прочти.txt",
                    "updater_config.json", "__pycache__", "models", "sidecars", "desktop.ini", "thumbs.db"}
 

@@ -399,6 +399,26 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   The desktop shortcut while this build already runs now brings its window to the front (launcher
   `focus_app_window`, same title rule) and opens a second window only when there is none or Windows does not
   let the launcher take the front. Launcher 3.9.1. Unit 142/142, e2e 87/87, route fuzz 0 server errors.
+- Owner asked (23:30) for updates with a button inside MediaEngine; agreed (23:35) to builds published openly on
+  GitHub and to the program going online only when the button is pressed. Done:
+  `app/archivist/updater.py` + page `/auto/update` + "Update" in the top bar of installed builds. Windows CI, after
+  a fully green run of main, publishes `tools/make_update_bundle.py` output to the orphan branch `mediaengine-update`
+  (force-pushed: only the newest): `latest.json` (build, size, SHA-256, runtime id, what is new in EN/RU, run link)
+  and the program without .venv as one ZIP. The button: reads latest.json from raw.githubusercontent.com, shows
+  what is new, "Update now" downloads into the data folder (size + SHA-256 checked), unpacks into
+  `.update-<build>` next to the running build (paths outside the folder, a lying size, an incomplete or foreign
+  package refused; nothing left behind), hard-links this build's .venv into it when `runtime.txt` matches (new
+  file of every package: Python major.minor + requirements.txt + RUNTIME_REV of the package builder), renames it
+  to `MediaEngine-<ver>-b<N>` and switches with `use_build` (the new launcher takes over; refused while work
+  runs, then Update now again reuses the finished folder). Another runtime: "the full installer is needed this
+  time" with the CI run's link. No signature key: secrets cannot be set from here, and whoever can write to that
+  branch can equally change the source on main - the trust root is the owner's GitHub either way (HTTPS + SHA-256
+  guard against damage). Uninstall also removes builds made this way (`MediaEngine-*`, `.update-MediaEngine-*`).
+  Checks: `tests/update_check.py` 25/25 (local server; found / newest / full installer / damaged / unsafe path /
+  oversized / nothing published / no connection / foreign address / turned off / old build / Russian pages);
+  i18n 40 pages 0 English 0 network; route fuzz of the update routes and states: no server error. Windows CI:
+  the same check, plus the package's Update button finds a next build served from 127.0.0.1, installs it into a
+  Cyrillic folder with the runtime hard-linked (fsutil) and takes over (ping answers from the new folder).
 
 ## Evidence
 

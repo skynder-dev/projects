@@ -19,7 +19,12 @@ Start-menu "MediaEngine". A newer Setup adds its own build folder next to the ol
 one runs takes over from it without a question (never while a reel is being built; starting an OLDER build while a
 newer one runs asks first). Closing the window leaves MediaEngine running: its icon in the notification area (tray)
 opens the window again (click) or quits (right-click → Quit, asks first when a reel is being built); Quit also
-closes the program's windows. Rollback = start the old folder's
+closes the program's windows. **Update button** (top bar, installed builds): only when pressed, MediaEngine reads
+`latest.json` of the branch `mediaengine-update` (published by Windows CI after every fully green run of main), downloads
+the program of the newest build (a few MB, size + SHA-256 checked, unsafe paths refused), unpacks it into a new build
+folder next to this one, reuses this build's runtime (.venv) through hard links when `runtime.txt` matches (else: "the
+full installer is needed this time" with the link to the run) and switches to it as "Use this version" does. The old
+folder stays (rollback on Check this PC); uninstall also removes builds made this way. Rollback = start the old folder's
 `Start MediaEngine.vbs`. Old builds can be removed on "Check this PC". The header shows the build (e.g. `b21`). Uninstall (Settings → Apps → MediaEngine) refuses while MediaEngine runs, removes
 all build folders installed by Setup and the shortcuts, keeps `MediaEngine Data`. Re-running the Setup of the build
 that is running is refused (quit first); a newer build can be installed while an older one runs. CI: silent install into a Cyrillic folder, start from the

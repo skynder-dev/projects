@@ -190,7 +190,7 @@ def layout(title,body,script="",script_srcs=()):
     ])
     external_scripts=''.join(f"<script src='{e(src)}'></script>" for src in script_srcs)
     return f"""<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>{e(title)} · MediaEngine</title><link rel='icon' href='/favicon.ico'><style>{CSS}</style></head><body>
-<nav><div class='navin{" showmore" if more_active else ""}'><span class='brand'>MediaEngine <span class='version' title='{e(str(INSTALL))}'>v{VERSION}{(' ' + BUILD) if BUILD else ''}</span></span>{nav}<span class='spacer'></span>{_lang_button(path)}<button id='restartBtn' class='btn2'>Restart</button>{"<button id='updateBtn' class='ok'>Update</button>" if (INSTALL/'updater_config.json').exists() else "<button id='quitBtn' class='btn2' title='Stop MediaEngine on this PC'>Quit</button>"}</div></nav>
+<nav><div class='navin{" showmore" if more_active else ""}'><span class='brand'>MediaEngine <span class='version' title='{e(str(INSTALL))}'>v{VERSION}{(' ' + BUILD) if BUILD else ''}</span></span>{nav}<span class='spacer'></span>{_lang_button(path)}{_update_button()}<button id='restartBtn' class='btn2'>Restart</button>{"<button id='updateBtn' class='ok'>Update</button>" if (INSTALL/'updater_config.json').exists() else "<button id='quitBtn' class='btn2' title='Stop MediaEngine on this PC'>Quit</button>"}</div></nav>
 <div id='jobbar' class='jobbar'><div class='jobinner'><div class='row space'><b id='jobtext'>Working…</b><a href='/activity' class='muted'>Open activity</a></div><div id='jobsub' class='muted'></div><div class='progress'><i id='jobpct'></i></div></div></div>
 <div class='wrap'>{_data_note()}{body}</div><div id='toast' class='toast'></div><script>{GLOBAL_JS}\n{script}</script>{external_scripts}</body></html>"""
 
@@ -276,6 +276,14 @@ def _json_obj():
     """The request's JSON body when it is an object, else {} (a list or a number never reaches .get())."""
     d=request.get_json(silent=True)
     return d if isinstance(d,dict) else {}
+
+
+def _update_button() -> str:
+    """The Update button of an installed MediaEngine: it asks GitHub for a newer build (only when pressed)."""
+    if not SIDE_BY_SIDE:
+        return ''
+    return ("<form method='post' action='/auto/update/check' style='display:contents'>"
+            "<button class='btn2' title='Look for a newer MediaEngine on GitHub'>Update</button></form>")
 
 
 def busy_reason() -> str:

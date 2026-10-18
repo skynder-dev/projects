@@ -44,6 +44,16 @@ _REENABLE_JS = """
 document.addEventListener('submit',ev=>{ev.target.querySelectorAll('button:not([disabled])').forEach(b=>b.dataset.reen='1')},true);
 window.addEventListener('pageshow',ev=>{if(ev.persisted)document.querySelectorAll('button[data-reen]').forEach(b=>{b.disabled=false;delete b.dataset.reen})});"""
 
+_UPDATE_STEP = {"downloading": "Downloading the new version…", "preparing": "Putting the new version next to this one…",
+                "switching": "Starting the new version…"}
+
+
+def status_pct(s: dict) -> int:
+    if s.get("state") != "downloading":
+        return 100
+    return int(100 * int(s.get("done") or 0) / int(s["total"])) if s.get("total") else 0
+
+
 _STAGE_SEEN: dict = {}
 _RESUMED: list = []
 
@@ -559,6 +569,113 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
                   "if(String(x.install||'').replace(/\\//g,'\\\\').toLowerCase()===want){location.href='/auto';return}}catch(e){}"
                   "if(n>150)document.getElementById('swMsg').hidden=false;setTimeout(t,n>150?3000:1000)}setTimeout(t,1500);")
         return page("Check this PC", body, script)
+
+    # ------------------------------------------------------------ update (the "Update" button)
+
+    @app.get("/auto/update")
+    def ae_update():
+        from . import updater as up
+        try:
+            from .i18n import ui_language
+            ru = ui_language() == "ru"
+        except Exception:
+            ru = False
+        s = dict(up.STATE)
+        m = s.get("found") or {}
+        here = up.build_label(up.INSTALL.name)
+        why = up.why_not()
+        check_btn = ("<form method='post' action='/auto/update/check' style='display:inline' "
+                     "onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
+                     "<button class='{cls}'>Check for updates</button></form>")
+        detail = (f"<div class='muted ae-path' translate='no' style='margin-top:6px'>{e(s.get('detail') or '')}</div>"
+                  if s.get("detail") else "")
+        st = s.get("state")
+        if st in ("downloading", "preparing", "switching"):
+            body_state = (f"<div class='card' id='upRun'><h2 style='margin-top:0'><span>Updating to</span> <span translate='no'>{e(up.build_label(m.get('pkg')))}</span></h2>"
+                          f"<div class='ae-bar'><i id='upBar' style='width:{status_pct(s)}%'></i></div>"
+                          f"<div style='margin-top:8px'><span id='upStep'>{e(_UPDATE_STEP.get(st, ''))}</span></div>"
+                          f"<div class='muted' style='margin-top:6px'>Do not close this window: MediaEngine restarts by itself and this page "
+                          f"then opens the new version.</div>"
+                          f"<div class='errbox' id='upSlow' style='margin-top:10px' hidden>The new version is taking long to start. If nothing "
+                          f"happens, start MediaEngine from the desktop shortcut.</div></div>")
+        elif st in ("check_failed", "error"):
+            again = (f"<form method='post' action='/auto/update/apply' style='display:inline;margin-right:8px'><button>Try again</button></form>"
+                     if st == "error" and m.get("newer") and m.get("same_runtime") else "")
+            body_state = (f"<div class='card'><div class='errbox'>{e(s.get('error') or '')}</div>{detail}"
+                          f"<div style='margin-top:12px'>{again}{check_btn.format(cls='btn2')}</div></div>")
+        elif st == "checked" and m:
+            if not m.get("newer"):
+                body_state = (f"<div class='card ae-done'><b>This is the newest version.</b></div>"
+                              f"<div style='margin-top:12px'>{check_btn.format(cls='btn2')}</div>")
+            elif not m.get("same_runtime"):
+                link = (f"<a class='btn' href='{e(m['run_url'])}' target='_blank' rel='noopener'>Open the page with the installer</a>"
+                        if m.get("run_url") else "")
+                body_state = (f"<div class='card'><h2 style='margin-top:0'><span>A newer version is ready:</span> <span translate='no'>"
+                              f"{e(up.build_label(m['pkg']))}</span></h2><div>This time it needs the full installer: Python or its libraries "
+                              f"changed. Download its Setup and install it (projects stay the same).</div>"
+                              f"<div style='margin-top:12px'>{link}</div></div>")
+            else:
+                try:
+                    seen = str(ae.WHATS_NEW_ID)
+                except Exception:
+                    seen = ""
+                items = [n for n in (m.get("notes") or []) if str(n.get("since") or "") > seen][-15:]
+                notes = "".join(f"<li translate='no'>{e((n.get('ru') if ru else '') or n.get('en') or '')}</li>" for n in items)
+                notes_html = f"<div style='margin-top:10px'><b>What is new</b><ul style='margin:6px 0 0'>{notes}</ul></div>" if notes else ""
+                body_state = (f"<div class='card'><h2 style='margin-top:0'><span>A newer version is ready:</span> <span translate='no'>"
+                              f"{e(up.build_label(m['pkg']))}</span></h2>{notes_html}"
+                              f"<div class='muted' style='margin-top:10px'><span>Download:</span> {human_bytes(int(m.get('size') or 0))}. "
+                              f"<span>It goes into a new folder next to this one; this version stays on the PC (to go back: Check this PC). "
+                              f"Projects stay the same. MediaEngine restarts by itself.</span></div>"
+                              f"<form method='post' action='/auto/update/apply' style='margin-top:12px' "
+                              f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
+                              f"<button class='ae-big'>Update now</button></form></div>")
+        else:
+            body_state = (f"<div class='card'><div>MediaEngine looks for a newer version on GitHub only when you press this button; "
+                          f"it goes online for nothing else.</div><div style='margin-top:12px'>{check_btn.format(cls='')}</div></div>")
+        if why and st not in ("downloading", "preparing", "switching"):
+            body_state = f"<div class='card'><div class='errbox'>{e(why)}</div></div>"
+        body = (f"<div class='pagehead'><div class='eyebrow'>MediaEngine</div><h1>Updates</h1>"
+                f"<div class='lead'><span>This version:</span> <b translate='no'>{e(here)}</b></div></div>{body_state}"
+                f"<div class='row' style='margin-top:14px'><a class='btn btn2' href='/auto'>Back</a></div>")
+        script = ""
+        if st in ("downloading", "preparing", "switching"):
+            steps = json.dumps({k: v for k, v in _UPDATE_STEP.items()})
+            script = ("const ST=" + steps + ";let want='';let n=0;"
+                      "async function t(){n++;"
+                      "if(want){try{const r=await fetch('/api/ping',{cache:'no-store'});const x=await r.json();"
+                      "if(String(x.install||'').replace(/\\//g,'\\\\').toLowerCase()===want){location.href='/auto';return}}catch(e){}}"
+                      "try{const r=await fetch('/api/update-status',{cache:'no-store'});const s=await r.json();"
+                      "if(s.target)want=String(s.target).replace(/\\//g,'\\\\').toLowerCase();"
+                      "if(s.state==='error'||s.state==='ready'||(s.state!=='downloading'&&s.state!=='preparing'&&s.state!=='switching'&&!want)){location.reload();return}"
+                      "document.getElementById('upBar').style.width=(s.state==='downloading'?s.percent:100)+'%';"
+                      "const el=document.getElementById('upStep');const tx=ST[s.state]||'';el.textContent=window.ME_L?ME_L(tx):tx}catch(e){}"
+                      "if(n>240)document.getElementById('upSlow').hidden=false;setTimeout(t,1000)}setTimeout(t,800);")
+        return page("Updates", body, script)
+
+    @app.post("/auto/update/check")
+    def ae_update_check():
+        from . import updater as up
+        try:
+            up.check()
+        except up.UpdateError as exc:
+            up.check_failed(exc)
+        return redirect("/auto/update")
+
+    @app.post("/auto/update/apply")
+    def ae_update_apply():
+        from . import updater as up
+        try:
+            up.start_apply()
+        except up.UpdateError as exc:
+            return err_page(str(exc), "/auto/update")
+        return redirect("/auto/update")
+
+    @app.get("/api/update-status")
+    def ae_update_status():
+        from . import updater as up
+        s = up.status()
+        return jsonify({k: s.get(k) for k in ("state", "percent", "target", "error")})
 
     @app.post("/auto/check/remove-build")
     def ae_remove_build():

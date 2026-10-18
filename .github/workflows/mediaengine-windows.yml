@@ -56,6 +56,11 @@ jobs:
         run: |
           python mediaengine/tests/unit_checks.py "$env:RUNNER_TEMP\unit" 2>&1 | Tee-Object "$env:OUT\unit_checks.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: In-app update from a server on this PC (found, newest, full installer needed, damaged / unsafe / oversized refused, runtime hard-linked, Russian pages)
+        shell: pwsh
+        run: |
+          python mediaengine/tests/update_check.py "$env:RUNNER_TEMP\updchk" 2>&1 | Tee-Object "$env:OUT\update_check.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: The choice of moments on several cores is exactly the accepted choice (random moment sets, the largest 30 s search timed)
         shell: pwsh
         run: |
@@ -324,6 +329,74 @@ jobs:
           Remove-Item "$desk\MediaEngine RC.lnk" -ErrorAction SilentlyContinue
           if ($fail.Count) { "FAILED: $($fail -join ', ')" | Tee-Object -Append $log; exit 1 }
           "package smoke PASS" | Tee-Object -Append $log
+      - name: Update button in the package - a next build served from this PC is found, installed next to this one (runtime hard-linked) and takes over
+        if: success()
+        shell: pwsh
+        run: |
+          # Work on a copy: the uploaded package must stay exactly as built.
+          $src = Get-ChildItem "$env:RUNNER_TEMP\pkg" -Directory | Select-Object -First 1
+          $log = "$env:OUT\update_smoke.txt"
+          $base = "$env:RUNNER_TEMP\upd\Программы"          # non-ASCII on purpose
+          $cur = Join-Path $base $src.Name
+          New-Item -ItemType Directory -Force $base | Out-Null
+          Copy-Item -Recurse $src.FullName $cur
+          $mm = [regex]::Match($src.Name, '^(MediaEngine-.+-b)(\d+)$')
+          $nextName = $mm.Groups[1].Value + ([int]$mm.Groups[2].Value + 100000)
+          $want = Join-Path $base $nextName
+          $srv = "$env:RUNNER_TEMP\upd-srv"; New-Item -ItemType Directory -Force $srv | Out-Null
+          python mediaengine/tools/make_update_bundle.py $src.FullName $srv --name $nextName --run-url "https://github.com/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID" 2>&1 | Tee-Object $log
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          $http = Start-Process python -ArgumentList '-m', 'http.server', '18790', '--bind', '127.0.0.1', '--directory', "`"$srv`"" -PassThru -WindowStyle Hidden
+          $fail = @()
+          $H = @{Origin='http://127.0.0.1:8775'}
+          function Ping { try { (Invoke-WebRequest -UseBasicParsing -TimeoutSec 3 http://127.0.0.1:8775/api/ping).Content | ConvertFrom-Json } catch { $null } }
+          function Post($path) { try { Invoke-WebRequest -UseBasicParsing -Method Post -Uri "http://127.0.0.1:8775$path" -Headers $H -MaximumRedirection 0 -ErrorAction SilentlyContinue | Out-Null } catch {} }
+          function Text($path) { try { ((Invoke-WebRequest -UseBasicParsing "http://127.0.0.1:8775$path").Content -replace '<script[\s\S]*?</script>', ' ' -replace '<[^>]+>', ' ' -replace '\s+', ' ') } catch { "$_" } }
+          $env:MEDIAENGINE_NO_BROWSER = '1'
+          $env:MEDIAENGINE_DATA = "$env:RUNNER_TEMP\upd\Data"
+          $env:MEDIAENGINE_UPDATE_URL = 'http://127.0.0.1:18790/'
+          try {
+            Start-Process wscript.exe -ArgumentList "`"$cur\Start MediaEngine.vbs`""
+            $p = $null; for ($i = 0; $i -lt 180 -and -not $p; $i++) { $p = Ping; if (-not $p) { Start-Sleep 1 } }
+            "started: $($p.install) $($p.build)" | Tee-Object -Append $log
+            if (-not $p) { $fail += 'start' } else {
+              $auto = (Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8775/auto).Content
+              "Update button in the top bar: $($auto.Contains("action='/auto/update/check'"))" | Tee-Object -Append $log
+              if (-not $auto.Contains("action='/auto/update/check'")) { $fail += 'Update button' }
+              Post '/auto/update/check'
+              $pg = (Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8775/auto/update).Content
+              $found = $pg.Contains("action='/auto/update/apply'")
+              "next build found: $found" | Tee-Object -Append $log
+              if (-not $found) { $fail += 'update found'; (Text '/auto/update') | Tee-Object -Append $log }
+              Post '/auto/update/apply'
+              $sw = $null
+              for ($i = 0; $i -lt 300 -and -not $sw; $i++) { $q = Ping; if ($q -and $q.install -eq $want) { $sw = $q } else { Start-Sleep 1 } }
+              "switched to the new build: $([bool]$sw) $($sw.install) $($sw.build)" | Tee-Object -Append $log
+              if (-not $sw) {
+                $fail += 'switch to the new build'
+                try { (Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8775/api/update-status).Content | Tee-Object -Append $log } catch {}
+                Get-Content "$env:MEDIAENGINE_DATA\data\logs\launcher.log" -Tail 20 -ErrorAction SilentlyContinue | Tee-Object -Append $log
+              } else {
+                $links = @(fsutil hardlink list "$want\.venv\Scripts\python.exe").Count
+                "names of the runtime's python.exe (hard links, the old and the new build): $links" | Tee-Object -Append $log
+                if ($links -lt 2) { $fail += 'runtime hard-linked' }
+                $code = try { (Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8775/auto).StatusCode } catch { 0 }
+                "new build pages: $code; old build kept: $(Test-Path "$cur\Start MediaEngine.vbs"); nothing half-made: $(-not (Test-Path "$base\.update-*"))" | Tee-Object -Append $log
+                if ($code -ne 200 -or -not (Test-Path "$cur\Start MediaEngine.vbs") -or (Test-Path "$base\.update-*")) { $fail += 'after the update' }
+                # the old build is listed for going back (Check this PC)
+                $chk = (Invoke-WebRequest -UseBasicParsing -Headers @{'Sec-Fetch-Site'='same-origin'} http://127.0.0.1:8775/auto/check).Content
+                if (-not $chk.Contains($src.Name)) { $fail += 'old build listed on Check this PC' }
+              }
+            }
+          } finally {
+            try { Invoke-WebRequest -UseBasicParsing -Method Post -Uri http://127.0.0.1:8775/api/app-control -Headers $H -ContentType 'application/json' -Body '{"mode":"stop","force":true}' | Out-Null } catch {}
+            for ($i = 0; $i -lt 30 -and (Ping); $i++) { Start-Sleep 1 }
+            Stop-Process -Id $http.Id -ErrorAction SilentlyContinue
+            Remove-Item Env:MEDIAENGINE_NO_BROWSER, Env:MEDIAENGINE_DATA, Env:MEDIAENGINE_UPDATE_URL -ErrorAction SilentlyContinue
+            Remove-Item "$([Environment]::GetFolderPath('Desktop'))\MediaEngine RC.lnk" -ErrorAction SilentlyContinue
+          }
+          if ($fail.Count) { "FAILED: $($fail -join ', ')" | Tee-Object -Append $log; exit 1 }
+          "update button smoke PASS" | Tee-Object -Append $log
       - name: Package runtime runs the engine end to end, with the packaged Python blocked from the internet
         if: success()
         shell: pwsh
@@ -487,6 +560,22 @@ jobs:
           name: mediaengine-windows-ci
           path: ${{ runner.temp }}/me-ci/*
           if-no-files-found: warn
+      - name: Publish the in-app update (branch mediaengine-update, read by the Update button) - only a fully green run of main
+        if: success() && github.ref == 'refs/heads/main'
+        shell: bash
+        env:
+          RUN_ID: ${{ github.run_id }}
+          SRC_SHA: ${{ github.sha }}
+        run: |
+          set -e
+          pkg=$(ls -d "$RUNNER_TEMP"/pkg/MediaEngine-*/ | head -1)
+          pub="$RUNNER_TEMP/me-update-pub"; rm -rf "$pub"; mkdir -p "$pub"
+          python mediaengine/tools/make_update_bundle.py "$pkg" "$pub" --run-url "https://github.com/${{ github.repository }}/actions/runs/$RUN_ID"
+          printf '# MediaEngine in-app update\n\nRead by the Update button of MediaEngine (app/archivist/updater.py). Made by Windows CI run %s from %s.\n' "$RUN_ID" "$SRC_SHA" > "$pub/README.md"
+          cd "$pub"; git init -q; git checkout -q -b mediaengine-update
+          git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
+          git add -A; git commit -q -m "mediaengine update from run $RUN_ID ($SRC_SHA)"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" mediaengine-update
       - name: Publish results to branch mediaengine-ci-results
         if: success() || failure()
         shell: bash
