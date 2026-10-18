@@ -180,6 +180,7 @@ def ru_plural(n: int, one: str, few: str, many: str) -> str:
 # Russian writes a decimal comma: "5,00 с", "16,8 МБ". Only a number with a unit right after it and then the end of
 # the text or a separator (· , ; ) ( / — →, or a full stop at the end), so times like 0:04.2, versions like 3.13.0
 # and file names ("Дача 15.08 с мамой.mp4", "клип 1.5 с.webm") stay exactly as they are.
+_CLOCK = re.compile(r"(?<![\d.:])(\d{1,2}:\d{2}(?::\d{2})?)\.(\d)(?!\d)")
 _DEC = re.compile(r"(?<![\d.:,])(\d+)\.(\d+)(?=\s?(?:с|сек|Б|КБ|МБ|ГБ|ТБ)(?:\s*$|\s*[·,;:()/—–→]|\.(?=\s|$)))")
 _KEEP = re.compile("\ue000(\\d+)\ue001")
 
@@ -187,6 +188,7 @@ _KEEP = re.compile("\ue000(\\d+)\ue001")
 def _finish(text: str) -> str:
     text = _LOOKUP.sub(lambda k: EXACT.get(k.group(1), k.group(1)), text)
     text = _PLURAL.sub(lambda k: ru_plural(int(k.group(1)), k.group(2), k.group(3), k.group(4)), text)
+    text = _CLOCK.sub(r"\1,\2", text)       # 0:14.5 -> 0:14,5 (a clock time is never part of a Windows file name)
     return _DEC.sub(r"\1,\2", text)
 
 

@@ -509,6 +509,9 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   the small copy not listed under saved exports.
   Windows CI run 39156849185 (b151, commit 7462c01) fully green; published and served from raw.githubusercontent.com
   (b151 ZIP 2,350,880 bytes, SHA-256 matches) - the owner's b150 gets it with Update.
+  Then: Russian decimal comma also in clock times (0:14,5) and scores of the replace list; quality badges show a
+  whole number. Still left (low value, risk to proven logic): which of two identical videos counts as the duplicate,
+  the small copy not listed under saved exports.
 
 ## Evidence
 

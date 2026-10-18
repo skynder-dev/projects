@@ -1804,7 +1804,7 @@ def _review_html(p, rev, e, building=False):
         if len(pool) == 40:
             break
     score_word = "оценка" if ae.ui_language() == "ru" else "score"      # options are not translated (file names in them)
-    opts = "".join(f"<option value='{e(c['event_id'])}' translate='no'>{e(c['source_name'])} {_fmt_s(c['start_s'])}–{_fmt_s(c['end_s'])} · {score_word} {float(c['score']):.2f}</option>" for c in pool)
+    opts = "".join(f"<option value='{e(c['event_id'])}' translate='no'>{e(c['source_name'])} {_fmt_s(c['start_s'])}–{_fmt_s(c['end_s'])} · {score_word} {(f"{float(c['score']):.2f}".replace('.', ',') if score_word == 'оценка' else f"{float(c['score']):.2f}")}</option>" for c in pool)
 
     durs = {str(sg["source_name"]): _source_seconds(p["id"], str(sg["source_name"])) for sg in (res.get("segments") or [])}
 

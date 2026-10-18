@@ -1022,7 +1022,10 @@ if(recheck)recheck.onclick=async()=>{
             else:
                 imp='archived' if r['archive_path'] else ('imported' if r['staging_path'] else ('local' if r['source_kind']=='fixed' else r['import_status']))
             qcls='quality-'+str(r['quality_status']) if r['quality_status'] in ('ok','review') else ''
-            extra=(f"<span class='badge qualityBadge {qcls}'>quality {e(r['quality_status'])} {e(r['quality_score'])}</span>" if (not is_import and r['quality_status']!='unreviewed') else '')
+            qs=r['quality_score']
+            try: qs=str(int(round(float(qs)))) if qs is not None else ''
+            except (TypeError,ValueError): qs=str(qs)
+            extra=(f"<span class='badge qualityBadge {qcls}'>quality {e(r['quality_status'])} {e(qs)}</span>" if (not is_import and r['quality_status']!='unreviewed') else '')
             # only a rights tag the user set (most home videos never get one: "rights unknown" on every card is noise)
             rights_badge=(f"<span class='badge rightsBadge rights-{e(r['rights_status'])}'>rights {e(r['rights_status'])}</span>" if not is_import and (r['rights_status'] or 'unknown')!='unknown' else '')
             audio=("<span class='badge audioflag'>audio</span>" if (not is_import and r['rights_audio_present']) else '')
