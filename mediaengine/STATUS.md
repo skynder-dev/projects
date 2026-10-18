@@ -379,7 +379,12 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
 ## Evidence
 
 Windows CI (GitHub-hosted runner — not the owner PC), synthetic videos only, Technical mode (the model is not in git).
-Latest run: **39062476347 on `7c83346` (2026-10-17) — build b133**: everything of b131 plus rounds 12-13, the
+Latest run: **39083521797 on `8c7e647` (2026-10-18) — build b137**: everything of b133 plus review rounds 14-16
+(music length guesses, Revert double click, overnight batches, AI+ preparation resumes after a restart, local web
+hardening); every check green up to and including the installer smoke; installer artifact
+`MediaEngine-3.13.0-rc1-b137-Setup` (https://github.com/skynder-dev/projects/actions/runs/39083521797/artifacts/12122880570).
+
+Before: **39062476347 on `7c83346` (2026-10-17) — build b133**: everything of b131 plus rounds 12-13, the
 start-up check rule, the guides and the in-app Social queue buttons; every check green up to and including the
 installer smoke (route fuzz 10 min, no server error); installer artifact `MediaEngine-3.13.0-rc1-b133-Setup`
 (https://github.com/skynder-dev/projects/actions/runs/39062476347/artifacts/12114239393). The owner installed b131
@@ -562,8 +567,8 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-Owner: b131 is installed. Optional: install `MediaEngine-3.13.0-rc1-b133-Setup` (run 39062476347) when nothing is
-being built - it adds rounds 12-13 and the guides. Old versions b28-b122 (~430 MB each) can be removed on Check this PC
+Owner: b131 is installed. Optional: install `MediaEngine-3.13.0-rc1-b137-Setup` (run 39083521797) when nothing is
+being built - it adds rounds 12-16 and the guides. Old versions b28-b122 (~430 MB each) can be removed on Check this PC
 (his choice). The sending side of orders in the owner's Social project is not started (only with his permission).
 Moment quality on his own footage stays his call (blind comparison is built in). Through the app's pages in the
 desktop app's browser pane only (never computer use).
