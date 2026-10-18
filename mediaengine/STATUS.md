@@ -487,6 +487,9 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   next to it with the runtime hard-linked, BUILD.txt commit 21a607d. So b148 (installed by the owner with Setup)
   updates with the button. Next runs also fetch the published files from raw.githubusercontent.com on Windows and
   compare the SHA (non-blocking step "The published update is served ...").
+- Run 39138313083 (b150, commit 44bfed1) fully green and published; **on Windows the published update was fetched
+  from raw.githubusercontent.com** (the address the Update button reads): latest.json says b150, the ZIP (2,343,573
+  bytes) matches its SHA-256 (update_served.txt). The branch now holds b150 and keeps the b149 ZIP one more round.
 
 ## Evidence
 
