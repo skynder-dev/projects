@@ -71,6 +71,8 @@ def main():
     titles = ["Auto Edit · MediaEngine", "Auto Edit · MediaEngine - Microsoft\u200b Edge", "Library · Archivist", "· MediaEngine", ""]
     check("launcher finds the same windows as the tray", [L.is_app_window_title(t) for t in titles] == [tray.is_app_window_title(t) for t in titles])
     check("launcher: nothing to focus or close off Windows", os.name == "nt" or (L.focus_app_window() is False and L.close_app_windows() == 0))
+    check("launcher at sign-in: no other build to follow / no data drive to wait for here",
+          os.name == "nt" or (L.last_started_build() is None and L.wait_for_data_folder(1) is True))
     if os.name == "nt":      # Win32 structures as Windows lays them out (64-bit): a wrong size = no icon
         import ctypes
         api = tray._api()

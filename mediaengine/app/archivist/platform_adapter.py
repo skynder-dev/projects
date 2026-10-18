@@ -259,7 +259,7 @@ def autostart_on() -> bool:
 
 
 def _autostart_args(home: Path) -> str:
-    return f'-B -s -E "{Path(home) / "launcher.py"}" --no-browser'
+    return f'-B -s -E "{Path(home) / "launcher.py"}" --no-browser --at-sign-in'
 
 
 def set_autostart(home: Path, on: bool) -> bool:
@@ -321,6 +321,8 @@ def install_launchers(home: Path) -> None:
         want = launcher_vbs_text().encode("utf-16")
         if not (vbs.is_file() and vbs.read_bytes() == want):
             vbs.write_bytes(want)
+        if side_by_side:
+            sync_autostart(home)                 # start at sign-in (when on) follows the build started last
         # A side-by-side install ships shortcut_name.txt so it never repoints the stable "Archivist" shortcut.
         try:
             name = (home / "shortcut_name.txt").read_text(encoding="utf-8-sig").strip()
@@ -353,7 +355,6 @@ def install_launchers(home: Path) -> None:
                                          app_id=AUMID_APP)
                 except Exception:
                     pass
-                sync_autostart(home)
             return
         # temp folder, not <home>\data: a side-by-side release folder must stay exactly as it was unpacked
         import tempfile

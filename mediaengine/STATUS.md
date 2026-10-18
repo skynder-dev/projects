@@ -462,6 +462,14 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   reel was resumed attaches to the same build (same request key). New check `tests/restart_resume_check.py` (real
   app processes, the process tree killed while the engine runs) 7/7; also in Windows CI. Orders 49/49, library
   flow 43/43, unit 143/143, update 33/33.
+- Review of start at sign-in / auto-resume / window swap (same reviewer): nothing breaks Quit, a switch or an update;
+  fixed: (1) a rollback to a build older than this feature left start at sign-in on the newer build - the sign-in
+  shortcut now carries --at-sign-in and the launcher then starts the build the Start-menu / desktop shortcut points
+  at (every build keeps those on itself, old ones too); (2) at sign-in the launcher waits up to 3 min for a
+  remembered data folder on a drive that comes later, and starts nothing rather than an empty fallback;
+  (3) after a takeover the old windows close only once the new window is there (closing Edge's last window
+  first could make Edge drop the new one); `sync_autostart` runs even when the desktop shortcut failed.
+  Launcher 3.9.3. Known, accepted: "End task" counts as an unexpected stop (the reel is made once more).
 
 ## Evidence
 

@@ -4,7 +4,7 @@ import base64, hashlib, json, os, shutil, subprocess, sys, tempfile, time, urlli
 from datetime import datetime, timezone
 from pathlib import Path
 
-LAUNCHER_VERSION = "3.9.2"
+LAUNCHER_VERSION = "3.9.3"
 HOME = Path(__file__).resolve().parent          # program folder of this release
 SIDE_BY_SIDE = (HOME / "port.txt").exists()
 
@@ -281,6 +281,55 @@ def close_app_windows():
     except Exception:
         return 0
 
+def close_windows_after_new(old, seconds=10):
+    """After a takeover: close the old build's windows once a new MediaEngine window is there. Closing Edge's last
+    window first could make Edge drop the new one (no window at all); no new window in time: both stay."""
+    end=time.time()+seconds
+    while time.time()<end:
+        try:
+            now,u=_app_windows()
+            if any(h not in old for h in now):
+                for h in old: u.PostMessageW(h,0x0010,0,0)      # WM_CLOSE
+                return len(old)
+        except Exception:
+            return 0
+        time.sleep(.4)
+    return 0
+
+def last_started_build():
+    """The build the Start-menu (or desktop) shortcut starts. Every build points them at itself when it starts - also
+    builds older than start at sign-in - so a start at sign-in follows a rollback to such a build."""
+    if os.name!='nt': return None
+    try:
+        import importlib.util
+        spec=importlib.util.spec_from_file_location('me_platform_adapter',str(HOME/'app'/'archivist'/'platform_adapter.py'))
+        pa=importlib.util.module_from_spec(spec); spec.loader.exec_module(pa)
+        for csidl,name in ((0x02,'MediaEngine.lnk'),(0x10,'MediaEngine RC.lnk')):
+            d=pa.shell_folder(csidl)
+            if d is None or not (d/name).is_file(): continue
+            arg=str(pa.read_shell_link(d/name).get('arguments') or '').strip().strip('"')
+            if arg.lower().endswith('start mediaengine.vbs'):
+                return Path(arg).parent
+    except Exception:
+        pass
+    return None
+
+def wait_for_data_folder(seconds=180):
+    """At sign-in the remembered data folder can be on a drive that comes a little later (USB, network, a drive
+    unlocked after sign-in). Wait for it rather than start on an empty folder; False: it did not come."""
+    global DATA,STATUS_PATH
+    if not SIDE_BY_SIDE or os.environ.get('MEDIAENGINE_DATA'): return True
+    ptr=Path(os.environ.get('LOCALAPPDATA') or str(Path.home()/'.local'/'share'))/'MediaEngine'/'data_root.txt'
+    try: remembered=Path(ptr.read_text(encoding='utf-8-sig').strip())
+    except Exception: return True                # never started yet: the default place
+    if not remembered.is_absolute(): return True
+    end=time.time()+seconds
+    while not remembered.is_dir():
+        if time.time()>end: return False
+        time.sleep(5)
+    DATA=data_root()/'data'; STATUS_PATH=DATA/'update_status.json'
+    return True
+
 def hidden_kwargs():
     kw={}
     if os.name=='nt':
@@ -505,6 +554,16 @@ def main():
     raw_args=list(sys.argv[1:]); args=set(raw_args); force_browser='--browser' in args; force='--update' in args; restart='--restart' in args
     no_browser='--no-browser' in args or os.environ.get('MEDIAENGINE_NO_BROWSER')=='1'   # env: automated checks
     install_version=next((x.split('=',1)[1] for x in raw_args if x.startswith('--install-version=')),None)
+    if '--at-sign-in' in args:                  # start at sign-in (Settings): in the background, no window
+        no_browser=True
+        if not wait_for_data_folder(): return 0  # (nothing is written before: no empty data folder appears)
+        other=last_started_build()
+        if other and not same_folder(other,HOME) and (other/'launcher.py').is_file() and (other/'.venv'/'Scripts'/'pythonw.exe').is_file():
+            launcher_log(f'sign-in: the build started last is {other.name}: it starts instead')
+            subprocess.Popen([str(other/'.venv'/'Scripts'/'pythonw.exe'),'-B','-s','-E',str(other/'launcher.py'),'--no-browser'],
+                             cwd=str(other),close_fds=True,stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,
+                             **hidden_kwargs())
+            return 0
     if PORT is None:
         write_status(status='start_failed',version=current_version(),error='port.txt is present but not a valid port number')
         if not no_browser:   # a double click must not just do nothing
@@ -584,10 +643,14 @@ def main():
         write_status(status='running',version=current_version(),update_check=LAST_UPDATE_CHECK)
         if not no_browser:
             # took over from another build (from the shortcut or Setup): its windows still show the old pages - they
-            # close now that this one answers, and this one opens its own (one window, never a moment without one).
-            # A switch started inside the program (Update, Check this PC: no_browser) keeps its window: it follows.
-            if switched_from: close_app_windows()
+            # close once this one's window is there (one window, never a moment without one). A switch started inside
+            # the program (Update, Check this PC: no_browser) keeps its window: that page follows the switch.
+            old=[]
+            if switched_from:
+                try: old=_app_windows()[0]
+                except Exception: old=[]
             open_user_interface(force_browser=force_browser)
+            if old: close_windows_after_new(old)
         return 0
     # A bad release must not strand the user with a dead desktop shortcut.
     if after!=before and restore_latest_backup(before):
