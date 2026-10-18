@@ -396,6 +396,9 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   Checks: unit 140/140 (window title rule, idle/busy texts; on Windows also the Win32 structure sizes 976/80);
   Windows CI installer smoke now quits the installed app through the tray icon's Quit command and reports the
   icon state (shown / no_taskbar). Not checkable in CI: how the icon and menu look - owner's eyes.
+  The desktop shortcut while this build already runs now brings its window to the front (launcher
+  `focus_app_window`, same title rule) and opens a second window only when there is none or Windows does not
+  let the launcher take the front. Launcher 3.9.1. Unit 142/142, e2e 87/87, route fuzz 0 server errors.
 
 ## Evidence
 

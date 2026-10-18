@@ -65,6 +65,9 @@ def main():
                                                 "Auto Edit · MediaEngine - Microsoft​ Edge", "Library · Archivist",
                                                 "MediaEngine", "· MediaEngine", "skynder-dev/projects · GitHub", "")]
     check("tray: own app windows only", tw == [True, True, True, False, False, False, False, False, False], tw)
+    titles = ["Auto Edit · MediaEngine", "Auto Edit · MediaEngine - Microsoft\u200b Edge", "Library · Archivist", "· MediaEngine", ""]
+    check("launcher finds the same windows as the tray", [L.is_app_window_title(t) for t in titles] == [tray.is_app_window_title(t) for t in titles])
+    check("launcher: nothing to focus off Windows", os.name == "nt" or L.focus_app_window() is False)
     if os.name == "nt":      # Win32 structures as Windows lays them out (64-bit): a wrong size = no icon
         import ctypes
         api = tray._api()

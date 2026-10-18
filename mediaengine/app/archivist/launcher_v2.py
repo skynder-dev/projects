@@ -4,7 +4,7 @@ import base64, hashlib, json, os, shutil, subprocess, sys, tempfile, time, urlli
 from datetime import datetime, timezone
 from pathlib import Path
 
-LAUNCHER_VERSION = "3.9.0"
+LAUNCHER_VERSION = "3.9.1"
 HOME = Path(__file__).resolve().parent          # program folder of this release
 SIDE_BY_SIDE = (HOME / "port.txt").exists()
 
@@ -215,6 +215,55 @@ def open_user_interface(force_browser=False):
     webbrowser.open(url)
     write_status(status='shell_opened', version=current_version(), shell='browser')
     return 'browser'
+
+def is_app_window_title(title):
+    """A MediaEngine page in an Edge app window (same rule as the tray icon, archivist/tray.py): every page title ends
+    with ' · MediaEngine'; the stable install uses ' · Archivist', a browser tab adds ' - Microsoft Edge'."""
+    t=str(title or '')
+    return t.endswith(' · MediaEngine') and t!='· MediaEngine' and 'Microsoft' not in t
+
+def focus_app_window():
+    """Bring an open MediaEngine window to the front instead of opening a second one. False when there is none or
+    Windows does not let this launcher take the front (then a window is opened, as before)."""
+    if os.name!='nt': return False
+    try:
+        import ctypes
+        from ctypes import wintypes as wt
+        u=ctypes.WinDLL('user32'); k=ctypes.WinDLL('kernel32')
+        ENUM=ctypes.WINFUNCTYPE(wt.BOOL,wt.HWND,wt.LPARAM)
+        u.EnumWindows.argtypes=[ENUM,wt.LPARAM]; u.IsWindowVisible.argtypes=[wt.HWND]; u.IsIconic.argtypes=[wt.HWND]
+        u.GetClassNameW.argtypes=[wt.HWND,wt.LPWSTR,ctypes.c_int]; u.GetWindowTextW.argtypes=[wt.HWND,wt.LPWSTR,ctypes.c_int]
+        u.GetWindowThreadProcessId.argtypes=[wt.HWND,ctypes.POINTER(wt.DWORD)]
+        u.ShowWindow.argtypes=[wt.HWND,ctypes.c_int]; u.SetForegroundWindow.argtypes=[wt.HWND]
+        k.OpenProcess.restype=wt.HANDLE; k.OpenProcess.argtypes=[wt.DWORD,wt.BOOL,wt.DWORD]
+        k.QueryFullProcessImageNameW.argtypes=[wt.HANDLE,wt.DWORD,wt.LPWSTR,ctypes.POINTER(wt.DWORD)]
+        k.CloseHandle.argtypes=[wt.HANDLE]
+        found=[]
+        def each(h,_):
+            try:
+                if not u.IsWindowVisible(h): return True
+                c=ctypes.create_unicode_buffer(64); u.GetClassNameW(h,c,64)
+                if c.value!='Chrome_WidgetWin_1': return True
+                t=ctypes.create_unicode_buffer(512); u.GetWindowTextW(h,t,512)
+                if not is_app_window_title(t.value): return True
+                pid=wt.DWORD(0); u.GetWindowThreadProcessId(h,ctypes.byref(pid))
+                ph=k.OpenProcess(0x1000,False,pid.value)
+                if ph:
+                    try:
+                        b=ctypes.create_unicode_buffer(1024); n=wt.DWORD(1024)
+                        if k.QueryFullProcessImageNameW(ph,0,b,ctypes.byref(n)) and os.path.basename(b.value).lower()=='msedge.exe':
+                            found.append(h)
+                    finally: k.CloseHandle(ph)
+            except Exception: pass
+            return True
+        cb=ENUM(each); u.EnumWindows(cb,0)
+        if not found: return False
+        if not u.SetForegroundWindow(found[0]): return False
+        if u.IsIconic(found[0]): u.ShowWindow(found[0],9)       # SW_RESTORE
+        write_status(status='shell_focused',version=current_version())
+        return True
+    except Exception:
+        return False
 
 def hidden_kwargs():
     kw={}
@@ -461,7 +510,8 @@ def main():
         answer=os.environ.get('MEDIAENGINE_SWITCH_ANSWER','').lower()     # automated checks answer instead of a person
         launcher_log(f'already running: {other!r}')
         if not SIDE_BY_SIDE or other is None or (other and same_folder(other,HOME)) or (no_browser and not answer):
-            if not no_browser: open_user_interface(force_browser=force_browser)
+            # this build already runs: its window to the front (a second one only when there is none)
+            if not no_browser and not (not force_browser and focus_app_window()): open_user_interface(force_browser=force_browser)
             return 0
         here=HOME.name; there=Path(other).name if other else 'an older build'
         how=switch_question(HOME,other)
