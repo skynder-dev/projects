@@ -364,6 +364,11 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
     restarts the app over a reel / an order / AI+ preparation (also after repeated Convert stalls). Known, not changed:
     the app does not start itself after a night reboot (the queue continues when it is opened), and the build that was
     running then is marked interrupted (Retry reuses its analysis).
+  - Local web security (round 16; the owner browses the web while MediaEngine runs): no high-severity issue (Host
+    allow-list, Origin / Referer checks, no CORS, no framing, file routes confined, no shell). Hardened: a request
+    another site's page makes is refused by default (an <img> loop could make the app create thumbnails, ask adb or
+    run AI+ searches), only a top-level link to the start pages passes; a write whose browser marks it cross-site or
+    same-site is refused even without an Origin header (old browsers); Convert results are escaped in the page.
   - New check `tests/route_fuzz.py`: every route with odd input (huge / Unicode-digit ids, damaged forms and JSON) -
     no server error (it found 7 routes, fixed); in Windows CI on a copy of the 7-video home (non-blocking).
   Checks after the fixes (Linux): unit 135/135, e2e 81/81, orders 49/49, library flow 43/43, library 4/4, convert

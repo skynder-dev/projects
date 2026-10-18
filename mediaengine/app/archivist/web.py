@@ -333,12 +333,17 @@ def create_app():
         host=(request.headers.get('Host') or '').strip().lower()
         if host not in _ALLOWED_LOOPBACK_HOSTS:
             return jsonify({'error':'Invalid Host'}),403
-        # another web site may not embed the owner's videos or pictures (nor learn that MediaEngine runs)
-        if request.headers.get('Sec-Fetch-Site','')=='cross-site' and request.path.startswith(('/media','/thumb','/storyboard','/auto/','/api/',
-                                                                                         '/clip','/composition-file','/export-file','/item/')):
+        # another web site may not embed the owner's videos or pictures, nor make this app work (thumbnails, adb, AI+
+        # search for an <img> loop): a request another site's page makes is refused - only a link that opens the
+        # app's start pages in the browser (a top-level navigation) is let through
+        sfs=request.headers.get('Sec-Fetch-Site','')
+        if sfs=='cross-site' and not (request.method=='GET' and request.headers.get('Sec-Fetch-Mode','')=='navigate'
+                                      and request.path in ('/','/auto')):
             return jsonify({'error':'Cross-site request blocked'}),403
         if request.method not in _MUTATING_METHODS:
             return None
+        if sfs and sfs not in ('same-origin','none'):    # (the browser sets it; an old browser without Origin is covered)
+            return jsonify({'error':'Cross-origin request blocked'}),403
         origin=request.headers.get('Origin','')
         referer=request.headers.get('Referer','')
         # "Origin: null" from this app's own page (a stricter browser setting): Sec-Fetch-Site is set by the browser
@@ -1401,7 +1406,7 @@ async function startConv(){const ids=checks().map(x=>Number(x.value));if(!ids.le
  try{const r=await fetch('/api/convert/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids,preset,target_mb:target})});const x=await r.json();if(!r.ok)throw new Error(x.error||'Could not start');toast('Conversion started');location.href='/convert'}catch(e){toast(e.message||String(e));b.disabled=false}}
 document.getElementById('startConvert').onclick=startConv;
 function hb(n){n=Number(n||0);for(const u of ['B','KB','MB','GB','TB']){if(n<1024||u==='TB')return (u==='B'||u==='KB'?n.toFixed(0):n.toFixed(1))+' '+u;n/=1024}}
-async function pollConvert(){const box=document.getElementById('convertStatus');if(!box)return;const id=box.dataset.job;try{const r=await fetch('/api/convert/status?id='+id,{cache:'no-store'});const x=await r.json();if(!x.job)return;const j=x.job;document.getElementById('convertMsg').textContent=j.message||j.status;document.getElementById('convertPct').style.width=(j.percent||0)+'%';if(['finished','failed','cancelled'].includes(j.status)){const outs=((j.options||{}).outputs||[]);let h='';for(const o of outs){if(o.error){h+="<div class='small error'>Failed: "+o.error+"</div>"}else{h+="<div class='small'><b>"+hb(o.source_bytes)+" → "+hb(o.output_bytes)+"</b> · saved "+o.saved_percent+"%<br><span class='muted'>"+o.output+"</span></div>"}}document.getElementById('convertResults').innerHTML=h;return}}catch(e){}setTimeout(pollConvert,1000)}
+async function pollConvert(){const box=document.getElementById('convertStatus');if(!box)return;const id=box.dataset.job;try{const r=await fetch('/api/convert/status?id='+id,{cache:'no-store'});const x=await r.json();if(!x.job)return;const j=x.job;document.getElementById('convertMsg').textContent=j.message||j.status;document.getElementById('convertPct').style.width=(j.percent||0)+'%';if(['finished','failed','cancelled'].includes(j.status)){const outs=((j.options||{}).outputs||[]);let h='';for(const o of outs){const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));if(o.error){h+="<div class='small error'>Failed: "+esc(o.error)+"</div>"}else{h+="<div class='small'><b>"+hb(o.source_bytes)+" → "+hb(o.output_bytes)+"</b> · saved "+esc(o.saved_percent)+"%<br><span class='muted'>"+esc(o.output)+"</span></div>"}}document.getElementById('convertResults').innerHTML=h;return}}catch(e){}setTimeout(pollConvert,1000)}
 pollConvert();"""
         if not preselect_ids and pages>1:
             base={k:v for k,v in request.args.items() if k not in ('page','ids')}
