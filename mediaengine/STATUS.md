@@ -455,6 +455,13 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   known gap "after a night reboot the app does not start itself" for an owner who wants that. Windows CI
   installer smoke: turns it on through Settings, checks the shortcut (pythonw, --no-browser, this build) and that
   uninstall removed it.
+- A reel being made when the app stops WITHOUT Quit (a PC restart at night, a crash, power) is made again by itself
+  at the next start, once (`auto_resumed` column; a second unexpected stop of the same build leaves it interrupted
+  with Retry - no loop). Quit, a switch to another build and the watchdog's own restart remove the run mark
+  (`DATA/app_running.txt`, `mark_clean_exit`): a build stopped on purpose stays interrupted as before. An order whose
+  reel was resumed attaches to the same build (same request key). New check `tests/restart_resume_check.py` (real
+  app processes, the process tree killed while the engine runs) 7/7; also in Windows CI. Orders 49/49, library
+  flow 43/43, unit 143/143, update 33/33.
 
 ## Evidence
 

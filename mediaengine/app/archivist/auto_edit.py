@@ -575,12 +575,44 @@ def _ensure_schema_now() -> None:
         )
         if "files_json" not in [r[1] for r in con.execute("PRAGMA table_info(ae_projects)").fetchall()]:
             con.execute("ALTER TABLE ae_projects ADD COLUMN files_json TEXT")   # chosen files instead of a whole folder
-        # The job that was running when the previous app process stopped has no live process any more: interrupted
-        # (Retry reuses the finished analysis). Queued jobs just wait: the next app start builds them (overnight sets).
-        con.execute("UPDATE ae_jobs SET status='failed',stage='failed',error=?,finished_at=? WHERE status='running'",
-                    ("Interrupted: the app was closed. Press Retry - finished analysis is reused.", now_iso()))
+        if "auto_resumed" not in [r[1] for r in con.execute("PRAGMA table_info(ae_jobs)").fetchall()]:
+            con.execute("ALTER TABLE ae_jobs ADD COLUMN auto_resumed INTEGER NOT NULL DEFAULT 0")
+        # The job that was running when the previous app process stopped has no live process any more. Quit (or a
+        # switch, a restart of the app) stopped it on purpose: interrupted, Retry reuses the finished analysis. The app
+        # stopped WITHOUT quitting (a restart of the PC at night, a crash, power): it is made again by itself, once.
+        # Queued jobs just wait: the next app start builds them (overnight sets).
+        unclean = _run_mark().is_file()
+        for r in con.execute("SELECT id, auto_resumed FROM ae_jobs WHERE status='running'").fetchall():
+            again = unclean and not int(r["auto_resumed"] or 0)
+            con.execute("UPDATE ae_jobs SET status='failed',stage='failed',error=?,finished_at=? WHERE id=?",
+                        (AUTO_RESUME_MSG if again else INTERRUPTED_MSG, now_iso(), int(r["id"])))
+            if again:
+                _AUTO_RESUME.append(int(r["id"]))
         con.commit()
+    try:                     # this process runs now; Quit removes the mark (mark_clean_exit)
+        _run_mark().parent.mkdir(parents=True, exist_ok=True)
+        _run_mark().write_text(str(os.getpid()), encoding="utf-8")
+    except OSError:
+        pass
     _SCHEMA_READY = True
+
+
+INTERRUPTED_MSG = "Interrupted: the app was closed. Press Retry - finished analysis is reused."
+AUTO_RESUME_MSG = "Stopped when MediaEngine stopped unexpectedly (for example a restart of the PC). It is made again by itself."
+_AUTO_RESUME: list[int] = []        # failed job ids to make again once (resume_queued, at the app's first request)
+
+
+def _run_mark() -> Path:
+    return DATA / "app_running.txt"
+
+
+def mark_clean_exit() -> None:
+    """The app quits on purpose (Quit, a switch to another build, a restart of the app): a build it stops is
+    interrupted (Retry), not made again by itself at the next start."""
+    try:
+        _run_mark().unlink(missing_ok=True)
+    except OSError:
+        pass
 
 
 # ---------------------------------------------------------------- folder scan
@@ -1473,6 +1505,19 @@ def resume_queued() -> None:
         sweep_deleting()
     except OSError:
         pass
+    while _AUTO_RESUME:        # builds the app stopped without quitting (a restart of the PC): made again, once
+        jid = _AUTO_RESUME.pop(0)
+        try:
+            j = job(jid)
+            new = start_job(j["project_id"], j["settings"]) if j else None
+            if new:
+                with db() as con:
+                    con.execute("UPDATE ae_jobs SET auto_resumed=1 WHERE id=?", (int(new),))
+                    con.commit()
+        except Exception:      # (its videos are not there now, ...): it stays a failed build with Retry
+            with db() as con:
+                con.execute("UPDATE ae_jobs SET error=? WHERE id=?", (INTERRUPTED_MSG, int(jid)))
+                con.commit()
     with db() as con:
         waiting = con.execute("SELECT 1 FROM ae_jobs WHERE status='queued' LIMIT 1").fetchone()
     if waiting:
@@ -2430,6 +2475,7 @@ WHATS_NEW_ITEMS = [
     ("2026-10-17b", "A new version takes over from the old one by itself, without the “switch?” question."),
     ("2026-10-18", "The “Update” button at the top: MediaEngine finds a newer version on GitHub and installs it itself (only when you press it)."),
     ("2026-10-18", "Settings: start MediaEngine in the background when you sign in to Windows (off unless you turn it on); reels waiting from before a restart go on."),
+    ("2026-10-18", "A reel being made when the PC restarts (or MediaEngine stops without Quit) is made again by itself at the next start, once."),
 ]
 WHATS_NEW_ID = max(d for d, _ in WHATS_NEW_ITEMS)
 WHATS_NEW = [t for _, t in WHATS_NEW_ITEMS]

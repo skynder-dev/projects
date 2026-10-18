@@ -84,6 +84,11 @@ def _request_app_restart():
         subprocess.Popen([str(exe),str(launcher),"--no-browser","--restart"],cwd=str(HOME),close_fds=True,**_hidden())
         def leave():
             time.sleep(1.0)
+            try:                         # a restart on purpose (no reel runs: the watchdog never restarts over one)
+                from . import auto_edit as _ae
+                _ae.mark_clean_exit()
+            except Exception:
+                pass
             try:                         # the restarted copy shows its own icon
                 from . import tray as _tr
                 _tr.remove()

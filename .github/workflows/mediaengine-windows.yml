@@ -157,6 +157,11 @@ jobs:
         run: |
           python mediaengine/tests/e2e_auto_edit.py --folder "$env:RUNNER_TEMP\fx\two" --home "$env:RUNNER_TEMP\home2" --mode technical --skip-cancel --files-check --out "$env:OUT\e2e_two.json" 2>&1 | Tee-Object "$env:OUT\e2e_two.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: A reel being made when the app stops without quitting (a PC restart) is made again by itself, once; after Quit it waits for Retry
+        shell: pwsh
+        run: |
+          python mediaengine/tests/restart_resume_check.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\restart-resume" 2>&1 | Tee-Object "$env:OUT\restart_resume.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Orders from other programs - video by plan, reel from a folder, bad and unsafe orders refused, wait for OK, stop, retry, restart
         shell: pwsh
         run: |

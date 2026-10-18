@@ -605,6 +605,10 @@ PHRASES = {
     "An update is being installed. Wait a minute.": "Устанавливается обновление. Подожди минуту.",
     "Cannot tell whether work is running.": "Не удалось понять, идёт ли работа.",
     "Start at sign-in could not be changed.": "Не удалось изменить запуск при входе в Windows.",
+    "A reel being made when the PC restarts (or MediaEngine stops without Quit) is made again by itself at the next start, once.":
+        "Ролик, который собирался, когда компьютер перезагрузился (или MediaEngine закрылся не через «Выход»), сам собирается заново при следующем запуске — один раз.",
+    "Stopped when MediaEngine stopped unexpectedly (for example a restart of the PC). It is made again by itself.":
+        "Остановлен, когда MediaEngine неожиданно закрылся (например, при перезагрузке компьютера). Собирается заново сам.",
     "Settings: start MediaEngine in the background when you sign in to Windows (off unless you turn it on); reels waiting from before a restart go on.":
         "Настройки: запуск MediaEngine в фоне при входе в Windows (выключен, пока ты сам не включишь); ролики, ждавшие до перезагрузки, продолжатся.",
     "Start MediaEngine in the background when I sign in to Windows (icon in the tray; reels waiting from before a restart go on)":

@@ -376,6 +376,11 @@ def quit_soon(close_windows: bool=False) -> None:
 
 def _exit_soon(close_windows=False):
     time.sleep(.8)
+    try:                                  # quitting on purpose: a build stopped now is not made again by itself
+        from . import auto_edit as _ae
+        _ae.mark_clean_exit()
+    except Exception:
+        pass
     try:                                  # the tray icon goes first (a dead one would stay until hovered); the
         from . import tray as _tr         # program's windows close with it when Quit was asked from a page or the tray
         if close_windows: _tr.close_app_windows()
