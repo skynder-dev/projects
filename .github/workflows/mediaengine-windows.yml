@@ -501,7 +501,7 @@ jobs:
             if ($up) {
               $trayState = try { ((Ping) | ConvertFrom-Json).tray } catch { '' }
               Add-Type -Namespace MeCi -Name U -MemberDefinition '[DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern IntPtr FindWindowW(string c, string t); [DllImport("user32.dll")] public static extern bool PostMessageW(IntPtr h, uint m, IntPtr w, IntPtr l);'
-              $tw = [MeCi.U]::FindWindowW('MediaEngineTray', $null)
+              $tw = [MeCi.U]::FindWindowW('MediaEngineTray', [NullString]::Value)   # ($null would be passed as "": no window has an empty title)
               if ($tw -ne [IntPtr]::Zero) { [void][MeCi.U]::PostMessageW($tw, 0x0111, [IntPtr]1002, [IntPtr]::Zero) }
               for ($i = 0; $i -lt 30 -and (Ping); $i++) { Start-Sleep 1 }
               $trayQuit = -not (Ping)
