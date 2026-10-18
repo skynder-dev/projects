@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "packageName": "dev.forge.mobile",
-  "versionCode": 3,
-  "versionName": "0.1.1-mobile",
+  "versionCode": 4,
+  "versionName": "0.1.2-mobile",
   "minSdk": 26,
-  "apkUrl": "https://raw.githubusercontent.com/skynder-dev/projects/main/forge/android-mobile-updates/Forge-Mobile-0.1.1.apk",
-  "sha256": "980e78d0c8909fc330646694602033592d923ddd8b65a6700f53fbd39d8a47e8",
+  "apkUrl": "https://raw.githubusercontent.com/skynder-dev/projects/main/forge/android-mobile-updates/Forge-Mobile-0.1.2.apk",
+  "sha256": "fa392e6aed0412064210da9c2cee7e7351d0203f10d27e39c062474fe3256fa0",
   "sizeBytes": 65811
 }
