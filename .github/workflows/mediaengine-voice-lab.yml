@@ -14,7 +14,8 @@ name: mediaengine-voice-lab
 # voice_lab.py commands stay.
 # Round 4 (this file, results in round4/): only 3.1 (VoxCPM2 designed "friend"), the one he found interesting - more
 # diffusion steps, a sharper direction, best of six takes by UTMOS (checked against his verdicts), with and without a
-# "microphone" finishing, and 3.1's voice locked on a new text.
+# "microphone" finishing, and 3.1's voice locked on a new text. Every take is its own job (all in parallel): 30
+# diffusion steps on a CPU runner are slow (the first try, run 39219048133, ran them in two jobs one after another).
 on:
   workflow_dispatch:
   push:
@@ -34,9 +35,23 @@ env:
   ROUND1_RUN: '39197836516'
   ROUND3_RUN: '39214928456'
 jobs:
-  vox4a:
+  gen:
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {variant: r4_same_more_steps, take: 1}
+          - {variant: r4_direction_cfg16, take: 1}
+          - {variant: r4_best_of_six, take: 1}
+          - {variant: r4_best_of_six, take: 2}
+          - {variant: r4_best_of_six, take: 3}
+          - {variant: r4_best_of_six, take: 4}
+          - {variant: r4_best_of_six, take: 5}
+          - {variant: r4_best_of_six, take: 6}
+          - {variant: r4_locked_new_text, take: 1}
+          - {variant: r4_locked_new_text, take: 2}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -57,42 +72,17 @@ jobs:
           python -m venv "$RUNNER_TEMP/v"
           "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" torch torchaudio
           "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" voxcpm soundfile
-      - name: 3.1 at 30 steps, sharper direction, 3.1's voice on a new text
+      - name: One take (${{ matrix.variant }} ${{ matrix.take }})
         run: |
           mkdir -p "$RUNNER_TEMP/out"
-          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py vox4a "$RUNNER_TEMP/out" "$RUNNER_TEMP/r3/vox_friend_t1.wav" 2>&1 | tee "$RUNNER_TEMP/out/vox4a.txt"
+          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py vox4one "$RUNNER_TEMP/out" ${{ matrix.variant }} ${{ matrix.take }} "$RUNNER_TEMP/r3/vox_friend_t1.wav" 2>&1 | tee "$RUNNER_TEMP/out/${{ matrix.variant }}_${{ matrix.take }}.txt"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: voice4-a
-          path: ${{ runner.temp }}/out
-  vox4b:
-    runs-on: ubuntu-latest
-    timeout-minutes: 300
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: VoxCPM in its own venv (CPU torch; FFmpeg libraries for torchaudio's decoder)
-        run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
-          python -m venv "$RUNNER_TEMP/v"
-          "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" torch torchaudio
-          "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" voxcpm soundfile
-      - name: Six takes of the sharper direction
-        run: |
-          mkdir -p "$RUNNER_TEMP/out"
-          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py vox4b "$RUNNER_TEMP/out" 2>&1 | tee "$RUNNER_TEMP/out/vox4b.txt"
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: voice4-b
+          name: voice4-${{ matrix.variant }}-${{ matrix.take }}
           path: ${{ runner.temp }}/out
   finish:
-    needs: [vox4a, vox4b]
+    needs: [gen]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 60

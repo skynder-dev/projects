@@ -604,6 +604,26 @@ def vox4b(out: Path) -> None:
             m.generate(text=FRIEND2 + SPOKEN, cfg_value=2.0, inference_timesteps=STEPS4), sr))[1])
 
 
+def vox4one(out: Path, variant: str, take: int, ref31: Path) -> None:
+    """One take of round 4 (each take is its own CI job, all in parallel: 30 steps on a CPU are slow)."""
+    import torch
+    m, sr = _vox2()
+    seeds = {"r4_same_more_steps": 801, "r4_direction_cfg16": 901, "r4_best_of_six": 910, "r4_locked_new_text": 920}
+
+    def make(t):
+        torch.manual_seed(seeds[variant] + (0 if variant in ("r4_same_more_steps", "r4_direction_cfg16") else t))
+        if variant == "r4_same_more_steps":
+            return m.generate(text=FRIEND + SPOKEN, cfg_value=2.0, inference_timesteps=STEPS4), sr
+        if variant == "r4_direction_cfg16":
+            return m.generate(text=FRIEND2 + SPOKEN, cfg_value=1.6, inference_timesteps=STEPS4), sr
+        if variant == "r4_best_of_six":
+            return m.generate(text=FRIEND2 + SPOKEN, cfg_value=2.0, inference_timesteps=STEPS4), sr
+        return m.generate(text=NEW_TEXT, cfg_value=2.0, inference_timesteps=STEPS4, prompt_wav_path=str(ref31),
+                          prompt_text=SPOKEN, reference_wav_path=str(ref31)), sr
+
+    _take(out, variant, take, make)
+
+
 def _utmos():
     """UTMOS22 (strong learner): a predictor of how natural speech sounds, 1-5 (the VoiceMOS 2022 winner)."""
     import torch
@@ -781,6 +801,8 @@ def main() -> int:
         vox4a(out, Path(sys.argv[3]).resolve())
     elif cmd == "vox4b":
         vox4b(out)
+    elif cmd == "vox4one":
+        vox4one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve())
     elif cmd == "round4":
         return round4(out, Path(sys.argv[3]).resolve(), Path(sys.argv[4]).resolve())
     else:
