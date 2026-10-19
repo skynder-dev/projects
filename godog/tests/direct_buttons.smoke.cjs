@@ -23,6 +23,7 @@ new vm.Script(src,{filename:'GoDog_PC_LOCAL_01.user.js'});
 assert.match(src,/^\/\/ @name\s+GoDog GDCONST-010 DEFAULT-DISABLED canary$/m);
 assert.match(src,/^\/\/ @name:en\s+GoDog$/m);
 assert.ok(src.includes('function mountDogUnderComposer('),'frozen visual underlay glue required');
+assert.ok(src.includes('button[aria-label="Stop"]'),'native Stop generating guard required');
 
 class Element {
   constructor(name='DIV') {this.tagName=name;this.listeners={};this.dataset={};this.value=undefined;this.innerText='';this.textContent='';this.isConnected=false;this.disabled=false;this.attributes={};this.classList={toggle(){}};this.style={props:{},setProperty(n,v){this.props[n]=v;},removeProperty(n){delete this.props[n];},getPropertyValue(n){return this.props[n]||'';},getPropertyPriority(){return '';}};this.childNodes=[];this.parentElement=null;this.firstChild=null;this.rect={left:0,right:1200,top:0,bottom:36,width:1200,height:36};}
