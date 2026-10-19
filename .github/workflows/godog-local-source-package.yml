@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify fully local Tampermonkey metadata
         run: |
-          grep -q '^// @version      7.0.8' godog/GoDog_PC_LOCAL_01.user.js
+          grep -q '^// @version      7.0.9' godog/GoDog_PC_LOCAL_01.user.js
           grep -q '^// @name         GoDog GDCONST-010 DEFAULT-DISABLED canary' godog/GoDog_PC_LOCAL_01.user.js
           grep -q '^// @name:en      GoDog' godog/GoDog_PC_LOCAL_01.user.js
           grep -q '^// @updateURL    http://127.0.0.1:43129/godog.meta.js' godog/GoDog_PC_LOCAL_01.user.js
@@ -28,6 +28,6 @@ jobs:
       - name: Store offline source for owner release ZIP
         uses: actions/upload-artifact@v4
         with:
-          name: godog-pc-local-7-0-8-source
+          name: godog-pc-local-7-0-9-source
           path: source/current.user.js
           if-no-files-found: error
