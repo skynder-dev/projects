@@ -526,6 +526,12 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   faster-whisper check (two "errors" are only "10" written for "ten"); Kokoro moves its pitch least (2.9 semitones vs
   3.2-4.8). CPU runner: Kokoro 7 s, Qwen / Chatterbox ~2 min per 18 s take. Sent to the owner blind (A-F) to pick by
   ear; nothing in the product yet.
+  Owner 2026-10-19 01:05: kept B (Chatterbox built-in), D (Qwen Base, locked voice), E (Chatterbox, locked voice) -
+  "still feels like AI, but good intonations"; rejected A (VoiceDesign upbeat), C (VoiceDesign warm, "too sexy"),
+  F (Kokoro - his earlier verdict confirmed blind). Round 2 (run 39209510581, branch round2/): those very takes plus
+  Chatterbox Turbo and VoxCPM2 (2B, 48 kHz, Apache-2.0) with the same locked voice, all with one voice-over finishing
+  (room, room tone, compression, de-essing) and over a CC BY music bed with ducking (his idea); all 5 say every word.
+  Sent blind as G-K.
 
 ## Evidence
 
