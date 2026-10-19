@@ -574,6 +574,13 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   shift; highpass/lowpass, soft clip, a small room, gentle compression) is on by default, can be switched off.
   Round 5 (run 39321688115, round5/): both locked voices on a business-info text, plain and with the microphone
   finishing; both say every word (Whisper only wrote "twenty percent" as "20%"). Sent to the owner to pick the default.
+  The owner's PC (seen 2026-10-19 21:40 UTC on his app's own page, read only): b158, the voice add-on INSTALLED with
+  the graphics-card version - "works on the NVIDIA GeForce RTX 3060", 12.9 GB (so the CUDA torch install and its
+  self-test computing on the card passed on his PC); no voice-over made there yet.
+  An independent review of 100c228 found one real problem: Try again on a job made by an older build used that
+  build's stored path of the voice recording (3.1 is gone; an old build folder can be removed) -> a raw worker error,
+  on CUDA even a second model load on the CPU. Fixed in c8364aa (this build's recording by the voice's key; a voice no
+  longer shipped is said in words); voice_check's stand-in worker now fails like the real one (54/54).
 
 ## Evidence
 
