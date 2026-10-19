@@ -1,3 +1,19 @@
+## 2026-10-19, critical GO fails native send, fixed in source 7.0.9
+
+**Owner reported:** real GoDog 7.0.8 GO button writes `GO` into ChatGPT composer but does not submit. This is a correctness failure even though 7.0.8's CI previously passed.
+
+**Root cause in source 7.0.8:** `sendNow()` synchronously wrote the contenteditable and attempted `getSendButton().click()` before React committed/activated the native Send button. If disabled/missing, it dispatched a **synthetic, untrusted Enter KeyboardEvent** and prematurely reported `GO → CLICK`. Synthetic Enter is not proof of native submission; a single microtask recheck could execute before React's update. Old 6.0.26 used a native button in the composer scope or `form.requestSubmit()` after an animation-frame commit.
+
+**Fix in GoDog 7.0.9, no UI changes:** choose live native Send in the composer (including updated selectors and form submit), create one single-flight pending intent if React hasn't enabled Send, watch native disabled/aria-disabled DOM changes through the existing MutationObserver, and perform at most one actual click on an enabled native Send or one native `form.requestSubmit()` when the button is genuinely absent. Use one `requestAnimationFrame` post-input commit, not a timer, queue, delay or polling loop. Never dispatch fake Enter; never report `GO → CLICK` until a real native control was clicked. Detect bare `aria-label="Stop"` while generating; do not send during ongoing assistant response. STOP cancels an unsubmitted AUTO intent. No duplicate clicks if user repeatedly presses GO before React enables Send. All prior frozen 6.0.26 HTML/CSS/underlay/visuals unchanged.
+
+**Tests:** `godog/tests/direct_buttons.smoke.cjs` reproduces disabled React Send control, verifies initial typed GO without false submission, enables native Send and asserts exactly one actual send even after repeated DOM mutations, validates native form requestSubmit fallback, no fake Enter, plus existing AUTO/STOP/NEW and UI invariants. GitHub Actions `godog-pc-local` run 39200118601 PASS after test addition, later code+test commits for bare native Stop PASS on Actions to be checked.
+
+**Source staged, not installed:** GitHub `godog/GoDog_PC_LOCAL_01.user.js` version 7.0.9; Supabase canonical source `godog-localhub-canary-001` SHA256 `77b0d276444b6ac26b4b2f226a13917d912cbeb8a5c38be848280dc541930512`, bytes 68040; managed Tampermonkey provision 7.0.9 SHA256 `44d960fc220593a8535b373ffce8cc551113ed8d754bb13f1b11a77226ec10ac`, existing UUID retained. Both have `runtime_install_proof=false`. These artifact updates **do not** change the user's actual PC-local server until a signed one-time transfer copies the file.
+
+**Blocker:** GoDog Relay `relay-home-main` last heartbeat 2026-10-18 18:13 UTC, at diagnosis ~10+ hours offline. Remote Lab Windows agent 1.1.169 is online, but its typed `godog_tampermonkey_dev11_apply_v1` is pinned to old 6.0.22, and `godog_localhub_install_v1` targets the unrelated 8765 LocalHub, not localhost 43129 userscript. DO NOT repurpose typed agent actions or blindly restart the old cloud-polling GoDog Relay (user previously asked to stop runaway Supabase traffic). No ZIP, no user-focus/window change, no false DONE claim.
+
+**Next exact action:** Once an explicitly authorized safe Relay transfer channel is available, atomically replace `%LOCALAPPDATA%\GoDog\current.user.js` with the vetted 7.0.9 bytes, verify both localhost /godog.meta.js version 7.0.9 and /godog.user.js SHA-256, then have Tampermonkey install it through its normal update mechanism. Confirm live Chrome tab 7.0.9 and owner-observed GO sends actual ChatGPT user message. Do not close/refresh user tabs without approval.
+
 ## 2026-10-18, actual Tampermonkey updater limitation and automatic-check bug
 
 - Owner says GO. Read-only actual Chrome tabs showed GoDog 7.0.5 and v7.0.2, NOT installed 7.0.8. PC Relay alive, and earlier Windows localhost HTTP exact 7.0.8 SHA proof remains valid.
