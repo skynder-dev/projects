@@ -565,6 +565,9 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   picture); mediaengine-voice-addon.yml, the real Install through the page on Windows: run 39247474464 11/11
   (install 103 s, 7.6 GB; 8 s voice in voice 3.1 on the CPU in 253 s with every word; onto a video; captions of its
   speech), run 39248662670 green. Not yet seen: the graphics-card version on the owner's PC.
+  Published: Windows CI run 39258002103 (b158, commit a77f3df) fully green (voice 51/51 in it), served from
+  raw.githubusercontent.com (b158 ZIP 3,237,959 bytes, SHA-256 matches; same runtime - the Update button works);
+  the real add-on run 39258002105 green (12/12 with the Russian voice-over).
 
 ## Evidence
 
