@@ -520,6 +520,12 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   Social <-> MedEng link discussed 2026-10-18 (analysis only, nothing built - the owner said wait). His decision:
   voice-over, processing and text in the video belong to MedEng. MedEng today renders orders with a ready sound track
   and title / subtitle text; it does not make voice-over or subtitles itself.
+  Voice lab (mediaengine-voice-lab.yml, run 39197836516, branch mediaengine-voice-lab): 6 free local variants of one
+  English text in a female voice - Kokoro af_heart (reference), Qwen3-TTS VoiceDesign warm / upbeat, Qwen Base and
+  Chatterbox with a locked designed voice, Chatterbox built-in. All 6 made; every word said in all of them by the
+  faster-whisper check (two "errors" are only "10" written for "ten"); Kokoro moves its pitch least (2.9 semitones vs
+  3.2-4.8). CPU runner: Kokoro 7 s, Qwen / Chatterbox ~2 min per 18 s take. Sent to the owner blind (A-F) to pick by
+  ear; nothing in the product yet.
 
 ## Evidence
 
