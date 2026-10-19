@@ -1,0 +1,4 @@
+0969f547cfba94e48f36c1e933661ee96e238306230272f57be8e0e173db28e7  /home/runner/work/_temp/r3/vox_friend_t1.wav
+f47bc4c88ee9c15a970229b5507d8ea7995c88a981cec0db9d629dfb73f4b42e  /home/runner/work/_temp/out/friend_3_1.flac
+  Duration: 00:00:19.52, start: 0.000000, bitrate: 321 kb/s
+  Stream #0:0: Audio: flac, 48000 Hz, mono, s16
