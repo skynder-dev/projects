@@ -1,0 +1,26 @@
+{
+ "chatterbox_b_spoken_t1": {
+  "variant": "chatterbox_b_spoken",
+  "take": 1,
+  "seconds_to_make": 108.0,
+  "sr": 24000
+ },
+ "chatterbox_b_spoken_t2": {
+  "variant": "chatterbox_b_spoken",
+  "take": 2,
+  "seconds_to_make": 111.5,
+  "sr": 24000
+ },
+ "turbo_de_spoken_t1": {
+  "variant": "turbo_de_spoken",
+  "take": 1,
+  "seconds_to_make": 61.2,
+  "sr": 24000
+ },
+ "turbo_de_spoken_t2": {
+  "variant": "turbo_de_spoken",
+  "take": 2,
+  "seconds_to_make": 63.4,
+  "sr": 24000
+ }
+}

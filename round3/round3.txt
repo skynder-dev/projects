@@ -1,0 +1,13 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[0;93m2026-10-19 07:30:30.754631397 [W:onnxruntime:Default, device_discovery.cc:95 GetPciBusId] Skipping pci_bus_id for PCI path at "/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/5620e0c7-8062-4dce-aeb7-520c7ef76171" because filename "5620e0c7-8062-4dce-aeb7-520c7ef76171" did not match expected pattern of [0-9a-f]+:[0-9a-f]+:[0-9a-f]+[.][0-9a-f]+[m
+07:30:40 chatterbox_b_spoken_t1: 13.3 s, 1 word errors, pitch 160 Hz +-5.5 st
+07:30:46 chatterbox_b_spoken_t2: 15.6 s, 0 word errors, pitch 154 Hz +-5.2 st
+07:30:52 turbo_de_spoken_t1: 22.3 s, 0 word errors, pitch 289 Hz +-4.5 st
+07:30:58 turbo_de_spoken_t2: 24.0 s, 0 word errors, pitch 300 Hz +-4.4 st
+07:31:04 vox_friend_t1: 19.5 s, 0 word errors, pitch 307 Hz +-3.5 st
+07:31:12 vox_friend_t2: 22.4 s, 0 word errors, pitch 247 Hz +-3.9 st
+07:31:18 vox_vlogger_t1: 17.6 s, 0 word errors, pitch 222 Hz +-4.5 st
+07:31:23 vox_vlogger_t2: 14.6 s, 0 word errors, pitch 185 Hz +-3.8 st
+07:31:29 vox_voice_b_t1: 19.7 s, 0 word errors, pitch 251 Hz +-3.7 st
+07:31:35 vox_voice_b_t2: 18.1 s, 0 word errors, pitch 266 Hz +-4.5 st
+{"made": 5, "of": 5, "failed_takes": 0}

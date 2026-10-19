@@ -1,0 +1,38 @@
+{
+ "vox_friend_t1": {
+  "variant": "vox_friend",
+  "take": 1,
+  "seconds_to_make": 101.9,
+  "sr": 48000
+ },
+ "vox_vlogger_t1": {
+  "variant": "vox_vlogger",
+  "take": 1,
+  "seconds_to_make": 88.7,
+  "sr": 48000
+ },
+ "vox_voice_b_t1": {
+  "variant": "vox_voice_b",
+  "take": 1,
+  "seconds_to_make": 117.4,
+  "sr": 48000
+ },
+ "vox_friend_t2": {
+  "variant": "vox_friend",
+  "take": 2,
+  "seconds_to_make": 114.5,
+  "sr": 48000
+ },
+ "vox_vlogger_t2": {
+  "variant": "vox_vlogger",
+  "take": 2,
+  "seconds_to_make": 79.3,
+  "sr": 48000
+ },
+ "vox_voice_b_t2": {
+  "variant": "vox_voice_b",
+  "take": 2,
+  "seconds_to_make": 97.7,
+  "sr": 48000
+ }
+}
