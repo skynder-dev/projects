@@ -10,6 +10,15 @@ MediaEngine. Nothing here is the product: it decides which engine the product us
   python voice_lab.py chatterbox <out> [<ref.wav>] (Chatterbox: built-in voice, and the locked voice from qwen)
   python voice_lab.py check     <in> <out>         (word check, pitch, loudness, blind letters, results)
 
+Round 1 (run 39197836516, branch mediaengine-voice-lab latest/): the owner kept B (Chatterbox built-in voice),
+D (Qwen Base, locked voice) and E (Chatterbox, locked voice) - "still feels like AI, but good intonations"; rejected
+A (Qwen VoiceDesign upbeat), C (VoiceDesign warm: "too sexy") and F (Kokoro). Round 2 aims at "less like AI":
+
+  python voice_lab.py turbo  <out> <ref.wav>      (Chatterbox Turbo, locked voice, a [chuckle] tag)
+  python voice_lab.py voxcpm <out> <ref.wav>      (VoxCPM 1.5, 44.1 kHz, locked voice)
+  python voice_lab.py round2 <in> <out>           (the very takes B, D, E he heard + the two new engines, all with
+                                                   the same voice-over finishing; blind letters G-K)
+
 Each engine runs in its own venv (their pins clash); CPU only (GitHub runners have no GPU). Synthetic voices only:
 no recordings of real people, no owner data.
 """
@@ -190,6 +199,59 @@ def chatterbox(out: Path, ref: Path | None) -> None:
                   lambda t: make(500 + t, audio_prompt_path=str(ref), exaggeration=0.6, cfg_weight=0.4))
 
 
+def _kwargs_that_fit(fn, wanted: dict) -> dict:
+    import inspect
+    try:
+        params = inspect.signature(fn).parameters
+    except (TypeError, ValueError):
+        return wanted
+    if any(p.kind == p.VAR_KEYWORD for p in params.values()):
+        return wanted
+    return {k: v for k, v in wanted.items() if k in params}
+
+
+TURBO_TEXT = TEXT.replace("honestly? It", "honestly? [chuckle] It")
+
+
+def turbo(out: Path, ref: Path) -> None:
+    _threads()
+    import torch
+    from chatterbox.tts_turbo import ChatterboxTurboTTS
+    try:
+        m = ChatterboxTurboTTS.from_pretrained(device="cpu")
+    except Exception as exc:          # its loader may insist on a Hugging Face token; the model is public
+        _log(f"from_pretrained failed ({exc}); downloading the public files without a token")
+        from huggingface_hub import snapshot_download
+        m = ChatterboxTurboTTS.from_local(snapshot_download("ResembleAI/chatterbox-turbo", token=False), "cpu")
+    _api_dump(out, m, "turbo")
+
+    def make(take):
+        torch.manual_seed(600 + take)
+        return m.generate(TURBO_TEXT, **_kwargs_that_fit(m.generate, {"audio_prompt_path": str(ref)})), m.sr
+
+    for take in TAKES:
+        _take(out, "turbo_locked", take, make)
+
+
+def voxcpm(out: Path, ref: Path) -> None:
+    _threads()
+    import torch
+    from voxcpm import VoxCPM
+    m = VoxCPM.from_pretrained("openbmb/VoxCPM1.5",
+                               **_kwargs_that_fit(VoxCPM.from_pretrained, {"load_denoiser": False, "optimize": False}))
+    _api_dump(out, m, "voxcpm")
+    sr = int(getattr(getattr(m, "tts_model", None), "sample_rate", 0) or getattr(m, "sample_rate", 0) or 44100)
+
+    def make(take):
+        torch.manual_seed(700 + take)
+        kw = _kwargs_that_fit(m.generate, {"text": TEXT, "prompt_wav_path": str(ref), "prompt_text": REF_TEXT,
+                                           "cfg_value": 2.0, "inference_timesteps": 10, "denoise": False})
+        return m.generate(**kw), sr
+
+    for take in TAKES:
+        _take(out, "voxcpm_locked", take, make)
+
+
 # ---------------------------------------------------------------------------------------------------------- check
 
 def _words(s: str) -> list[str]:
@@ -221,6 +283,163 @@ def _diff(ref: list[str], hyp: list[str]) -> tuple[int, list[str], list[str]]:
     return d[n][m], missing[::-1], extra[::-1]
 
 
+_NUMBERS = {"10": "ten", "3": "three"}       # the checker writes "10" for a spoken "ten": not a wrong word
+
+
+def _analyze(asr, wav: Path, src: Path, gen: dict) -> dict:
+    """What a take really says (faster-whisper), how long it is, how high the voice is and how much it moves."""
+    import numpy as np, librosa
+    name = wav.stem
+    ref_words = _words(TEXT)
+    y, sr = librosa.load(str(wav), sr=16000, mono=True)
+    dur = len(y) / sr
+    segs, _ = asr.transcribe(str(wav), language="en", beam_size=5, vad_filter=True)
+    said = " ".join(s.text.strip() for s in segs)
+    dist, missing, extra = _diff(ref_words, [_NUMBERS.get(w, w) for w in _words(said)])
+    f0, voiced, _ = librosa.pyin(y, fmin=70, fmax=450, sr=sr, frame_length=1024)
+    f0v = f0[voiced & ~np.isnan(f0)] if f0 is not None else np.array([])
+    med = float(np.median(f0v)) if f0v.size else 0.0
+    semis = float(np.std(12 * np.log2(f0v / med))) if f0v.size and med else 0.0   # how much the pitch moves
+    info = dict(gen.get(name, {}))
+    info.pop("trace", None)
+    info.update(file=str(wav.relative_to(src)), seconds=round(dur, 2), said=said, word_errors=dist,
+                word_error_rate=round(dist / max(1, len(ref_words)), 3), missing=missing, extra=extra,
+                pitch_median_hz=round(med, 1), pitch_movement_semitones=round(semis, 2),
+                female_range=bool(160 <= med <= 300),
+                words_per_minute=round(len(ref_words) / dur * 60, 1) if dur else 0)
+    _log(f"{name}: {dur:.1f} s, {dist} word errors, pitch {med:.0f} Hz +-{semis:.1f} st")
+    return info
+
+
+FINISHING = ("voice-over finishing: silence trimmed (0.25 s lead, 0.6 s tail), high-pass 70 Hz, a small dark room "
+             "mixed 20 dB under the voice, a faint room tone 55 dB under it instead of digital silence, gentle "
+             "compression (2.5:1), de-essing, loudness -16 LUFS, 44.1 kHz")
+
+
+def produce(wav: Path, mp3: Path, seed: int, music: Path | None = None, music_mp3: Path | None = None) -> None:
+    """The same finishing for every voice: a voice in a room, not in a vacuum."""
+    import numpy as np, librosa, soundfile as sf
+    from scipy.signal import butter, sosfilt, fftconvolve
+    sr = 44100
+    y, _ = librosa.load(str(wav), sr=sr, mono=True)
+    y, _ = librosa.effects.trim(y, top_db=45, frame_length=1024, hop_length=256)
+    y = np.concatenate([np.zeros(int(0.25 * sr)), y, np.zeros(int(0.6 * sr))])
+    y = sosfilt(butter(2, 70, btype="highpass", fs=sr, output="sos"), y)
+    rng = np.random.default_rng(seed)
+
+    def rms(a):
+        return float(np.sqrt(np.mean(np.square(a)))) or 1e-9
+
+    n = int(0.3 * sr)                                      # small room: a dark diffuse tail, -60 dB after 0.3 s
+    t = np.arange(n) / sr
+    ir = rng.standard_normal(n) * np.exp(-6.9 * t / 0.3)
+    ir[: int(0.004 * sr)] = 0.0
+    ir = sosfilt(butter(2, 5000, btype="lowpass", fs=sr, output="sos"), ir)
+    wet = fftconvolve(y, ir)[: len(y)]
+    y = y + wet * (rms(y) / rms(wet)) * 10 ** (-20 / 20)
+    tone = sosfilt(butter(2, [120, 4000], btype="bandpass", fs=sr, output="sos"), rng.standard_normal(len(y)))
+    y = y + tone * (rms(y) / rms(tone)) * 10 ** (-55 / 20)
+    y = y / (np.max(np.abs(y)) or 1.0) * 0.7
+    tmp = mp3.with_suffix(".finished.wav")
+    sf.write(str(tmp), y.astype("float32"), sr)
+    voice_chain = "acompressor=threshold=-21dB:ratio=2.5:attack=8:release=120:makeup=1.5,deesser=i=0.4"
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(tmp), "-af", voice_chain + ",loudnorm=I=-16:TP=-1.5:LRA=9",
+                    "-ar", "44100", "-ac", "1", "-b:a", "192k", str(mp3)], check=True)
+    if music is not None and music_mp3 is not None:
+        dur = len(y) / sr + 1.0                            # the music starts 1 s before the voice, ends 1.5 s after
+        fc = (f"[1:a]atrim=start={MUSIC_START_S},asetpts=PTS-STARTPTS,aresample=44100,aformat=channel_layouts=mono,"
+              f"volume=-13dB,afade=t=in:d=0.6[m];"
+              f"[0:a]{voice_chain},adelay=1000,apad=pad_dur=1.5,asplit=2[v][sc];"
+              f"[m][sc]sidechaincompress=threshold=0.03:ratio=4:attack=30:release=400[md];"
+              f"[v][md]amix=inputs=2:duration=first:normalize=0,afade=t=out:st={dur:.2f}:d=1.5,"
+              f"loudnorm=I=-14:TP=-1.5:LRA=11[out]")
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(tmp), "-i", str(music), "-filter_complex", fc,
+                        "-map", "[out]", "-ar", "44100", "-ac", "2", "-b:a", "192k", str(music_mp3)], check=True)
+    tmp.unlink()
+
+
+MUSIC = {"title": "File:Flutey Funk (ISRC USUAN1100519).mp3", "author": "Kevin MacLeod (incompetech.com)",
+         "licence": "CC BY 3.0", "page": "https://commons.wikimedia.org/wiki/File:Flutey_Funk_(ISRC_USUAN1100519).mp3"}
+MUSIC_START_S = 2.0
+_UA = {"User-Agent": "MediaEngine-voice-lab/1.0 (https://github.com/skynder-dev/projects; CI test, no reuse)"}
+
+
+def fetch_music(dst: Path) -> Path:
+    """A free-licence instrumental from Wikimedia Commons (the reels' usual case: a voice over music). SHA-1 checked."""
+    import hashlib, urllib.parse, urllib.request
+    q = urllib.parse.urlencode({"action": "query", "format": "json", "formatversion": "2", "titles": MUSIC["title"],
+                                "prop": "imageinfo", "iiprop": "url|sha1"})
+    with urllib.request.urlopen(urllib.request.Request("https://commons.wikimedia.org/w/api.php?" + q, headers=_UA),
+                                timeout=60) as r:
+        info = json.load(r)["query"]["pages"][0]["imageinfo"][0]
+    with urllib.request.urlopen(urllib.request.Request(info["url"], headers=_UA), timeout=180) as r:
+        data = r.read()
+    if hashlib.sha1(data).hexdigest() != info["sha1"]:
+        raise RuntimeError("music file does not match Commons' SHA-1")
+    dst.write_bytes(data)
+    return dst
+
+
+ROUND2 = {   # round 1's very takes the owner kept (results.json of run 39197836516), then the new engines
+    "chatterbox_builtin": ("chatterbox_builtin_t2", "B of round 1: Chatterbox built-in voice, exaggeration 0.7, cfg 0.3"),
+    "qwen_locked": ("qwen_locked_t1", "D of round 1: Qwen3-TTS 1.7B Base, the locked designed voice"),
+    "chatterbox_locked": ("chatterbox_locked_t1", "E of round 1: Chatterbox, the locked designed voice"),
+    "turbo_locked": (None, "Chatterbox Turbo, the locked designed voice, a [chuckle] after 'honestly?'"),
+    "voxcpm_locked": (None, "VoxCPM 1.5 (44.1 kHz), the locked designed voice"),
+}
+
+
+def round2(src: Path, out: Path) -> int:
+    from faster_whisper import WhisperModel
+    out.mkdir(parents=True, exist_ok=True)
+    gen = {}
+    for p in src.rglob("gen.json"):
+        gen.update(json.loads(p.read_text("utf-8")))
+    wavs = {w.stem: w for w in src.rglob("*_t[0-9].wav")}
+    asr = WhisperModel("small.en", device="cpu", compute_type="int8")
+    chosen, takes = {}, {}
+    for v, (fixed, what) in ROUND2.items():
+        names = [fixed] if fixed else sorted(n for n in wavs if n.rsplit("_t", 1)[0] == v)
+        for n in names:
+            if n in wavs:
+                takes[n] = _analyze(asr, wavs[n], src, gen)
+        have = [takes[n] for n in names if n in takes]
+        if have:
+            chosen[v] = dict(min(have, key=lambda i: (i["word_errors"], i.get("take", 9))), what=what)
+    order = [v for v in ROUND2 if v in chosen]
+    shuffled = order[:]
+    random.Random(2027).shuffle(shuffled)
+    blind = {"GHIJK"[i]: v for i, v in enumerate(shuffled)}
+    music = None
+    try:
+        music = fetch_music(out.parent / "music.mp3")
+    except Exception as exc:
+        _log(f"no music ({exc}): voice-only files only")
+    for i, (letter, v) in enumerate(blind.items()):
+        produce(src / chosen[v]["file"], out / f"voice_{letter}.mp3", 900 + i, music, out / f"music_{letter}.mp3")
+        chosen[v]["letter"] = letter
+    failed = {k: v.get("error") for k, v in gen.items() if v.get("error") and k.rsplit("_t", 1)[0] in ROUND2}
+    res = {"round": 2, "text": TEXT, "turbo_text": TURBO_TEXT, "finishing": FINISHING, "blind": blind,
+           "variants": chosen, "missing_variants": [v for v in ROUND2 if v not in chosen], "failed_takes": failed,
+           "all_takes": takes, "licenses": {**LICENSES, "voxcpm": "VoxCPM 1.5: Apache-2.0 (code and weights)"},
+           "round1": "branch mediaengine-voice-lab latest/ (run 39197836516)",
+           "music": {**MUSIC, "used": music is not None, "mix": "starts 1 s before the voice, 13 dB down and ducked "
+                     "under the voice, fades out 1.5 s after it; whole mix -14 LUFS"}}
+    (out / "results.json").write_text(json.dumps(res, indent=1, ensure_ascii=False), "utf-8")
+    md = ["# Voice lab - round 2 (less like AI)", "", f"Text: {TEXT}", "", f"Every file: {FINISHING}.", "",
+          "| letter | words wrong | seconds | pitch Hz | pitch moves (semitones) |", "|---|---|---|---|---|"]
+    for letter, v in sorted(blind.items()):
+        b = chosen[v]
+        md.append(f"| {letter} | {b['word_errors']} | {b['seconds']} | {b['pitch_median_hz']} | {b['pitch_movement_semitones']} |")
+    md += ["", "music_<letter>.mp3: the same voice over music - " + f"{MUSIC['title'][5:]} by {MUSIC['author']}, "
+           f"{MUSIC['licence']} ({MUSIC['page']}).", "", "Which letter is which: results.json -> blind."]
+    if failed:
+        md += ["", "Failed takes:"] + [f"- {k}: {e}" for k, e in failed.items()]
+    (out / "RESULTS.md").write_text("\n".join(md) + "\n", "utf-8")
+    print(json.dumps({"made": len(order), "of": len(ROUND2), "failed_takes": len(failed)}))
+    return 0 if len(order) >= 3 else 1
+
+
 def check(src: Path, out: Path) -> int:
     import numpy as np, librosa
     from faster_whisper import WhisperModel
@@ -229,28 +448,9 @@ def check(src: Path, out: Path) -> int:
     for p in src.rglob("gen.json"):
         gen.update(json.loads(p.read_text("utf-8")))
     asr = WhisperModel("small.en", device="cpu", compute_type="int8")
-    ref_words = _words(TEXT)
     takes = {}
     for wav in sorted(src.rglob("*_t[0-9].wav")):
-        name = wav.stem
-        y, sr = librosa.load(str(wav), sr=16000, mono=True)
-        dur = len(y) / sr
-        segs, _ = asr.transcribe(str(wav), language="en", beam_size=5, vad_filter=True)
-        said = " ".join(s.text.strip() for s in segs)
-        dist, missing, extra = _diff(ref_words, _words(said))
-        f0, voiced, _ = librosa.pyin(y, fmin=70, fmax=450, sr=sr, frame_length=1024)
-        f0v = f0[voiced & ~np.isnan(f0)] if f0 is not None else np.array([])
-        med = float(np.median(f0v)) if f0v.size else 0.0
-        semis = float(np.std(12 * np.log2(f0v / med))) if f0v.size and med else 0.0   # how much the pitch moves
-        info = dict(gen.get(name, {}))
-        info.pop("trace", None)
-        info.update(file=str(wav.relative_to(src)), seconds=round(dur, 2), said=said, word_errors=dist,
-                    word_error_rate=round(dist / max(1, len(ref_words)), 3), missing=missing, extra=extra,
-                    pitch_median_hz=round(med, 1), pitch_movement_semitones=round(semis, 2),
-                    female_range=bool(160 <= med <= 300),
-                    words_per_minute=round(len(ref_words) / dur * 60, 1) if dur else 0)
-        takes[name] = info
-        _log(f"{name}: {dur:.1f} s, {dist} word errors, pitch {med:.0f} Hz +-{semis:.1f} st")
+        takes[wav.stem] = _analyze(asr, wav, src, gen)
     best = {}
     for name, info in takes.items():          # the better take by the machine checks: fewer word errors, then take 1
         v = info.get("variant") or name.rsplit("_t", 1)[0]
@@ -301,6 +501,12 @@ def main() -> int:
         chatterbox(out, Path(sys.argv[3]).resolve() if len(sys.argv) > 3 else None)
     elif cmd == "check":
         return check(out, Path(sys.argv[3]).resolve())
+    elif cmd == "turbo":
+        turbo(out, Path(sys.argv[3]).resolve())
+    elif cmd == "voxcpm":
+        voxcpm(out, Path(sys.argv[3]).resolve())
+    elif cmd == "round2":
+        return round2(out, Path(sys.argv[3]).resolve())
     else:
         raise SystemExit(f"unknown command {cmd}")
     return 0
