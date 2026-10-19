@@ -1,8 +1,10 @@
 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-[0;93m2026-10-19 06:18:13.200638586 [W:onnxruntime:Default, device_discovery.cc:95 GetPciBusId] Skipping pci_bus_id for PCI path at "/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/5620e0c7-8062-4dce-aeb7-520c7ef76171" because filename "5620e0c7-8062-4dce-aeb7-520c7ef76171" did not match expected pattern of [0-9a-f]+:[0-9a-f]+:[0-9a-f]+[.][0-9a-f]+[m
-06:18:21 chatterbox_builtin_t2: 19.2 s, 0 word errors, pitch 283 Hz +-4.7 st
-06:18:25 qwen_locked_t1: 17.0 s, 0 word errors, pitch 240 Hz +-4.6 st
-06:18:28 chatterbox_locked_t1: 19.1 s, 0 word errors, pitch 252 Hz +-4.8 st
-06:18:32 turbo_locked_t1: 20.0 s, 0 word errors, pitch 275 Hz +-4.5 st
-06:18:36 turbo_locked_t2: 19.2 s, 0 word errors, pitch 278 Hz +-4.8 st
-{"made": 4, "of": 5, "failed_takes": 2}
+[0;93m2026-10-19 06:29:59.788875145 [W:onnxruntime:Default, device_discovery.cc:95 GetPciBusId] Skipping pci_bus_id for PCI path at "/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/5620e0c7-8062-4dce-aeb7-520c7ef76171" because filename "5620e0c7-8062-4dce-aeb7-520c7ef76171" did not match expected pattern of [0-9a-f]+:[0-9a-f]+:[0-9a-f]+[.][0-9a-f]+[m
+06:30:07 chatterbox_builtin_t2: 19.2 s, 0 word errors, pitch 283 Hz +-4.7 st
+06:30:11 qwen_locked_t1: 17.0 s, 0 word errors, pitch 240 Hz +-4.6 st
+06:30:14 chatterbox_locked_t1: 19.1 s, 0 word errors, pitch 252 Hz +-4.8 st
+06:30:18 turbo_locked_t1: 20.0 s, 0 word errors, pitch 275 Hz +-4.5 st
+06:30:22 turbo_locked_t2: 19.2 s, 0 word errors, pitch 278 Hz +-4.8 st
+06:30:26 voxcpm_locked_t1: 15.7 s, 0 word errors, pitch 288 Hz +-4.0 st
+06:30:30 voxcpm_locked_t2: 17.9 s, 0 word errors, pitch 231 Hz +-7.4 st
+{"made": 5, "of": 5, "failed_takes": 0}

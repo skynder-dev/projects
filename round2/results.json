@@ -4,10 +4,11 @@
  "turbo_text": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need ten outfits. You need three, and one really good hat. We tried it last summer, and honestly? [chuckle] It changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments!",
  "finishing": "voice-over finishing: silence trimmed (0.25 s lead, 0.6 s tail), high-pass 70 Hz, a small dark room mixed 20 dB under the voice, a faint room tone 55 dB under it instead of digital silence, gentle compression (2.5:1), de-essing, loudness -16 LUFS, 44.1 kHz",
  "blind": {
-  "G": "chatterbox_locked",
-  "H": "turbo_locked",
-  "I": "qwen_locked",
-  "J": "chatterbox_builtin"
+  "G": "qwen_locked",
+  "H": "chatterbox_locked",
+  "I": "voxcpm_locked",
+  "J": "turbo_locked",
+  "K": "chatterbox_builtin"
  },
  "variants": {
   "chatterbox_builtin": {
@@ -27,7 +28,7 @@
    "female_range": true,
    "words_per_minute": 166.0,
    "what": "B of round 1: Chatterbox built-in voice, exaggeration 0.7, cfg 0.3",
-   "letter": "J"
+   "letter": "K"
   },
   "qwen_locked": {
    "variant": "qwen_locked",
@@ -46,7 +47,7 @@
    "female_range": true,
    "words_per_minute": 186.6,
    "what": "D of round 1: Qwen3-TTS 1.7B Base, the locked designed voice",
-   "letter": "I"
+   "letter": "G"
   },
   "chatterbox_locked": {
    "variant": "chatterbox_locked",
@@ -65,12 +66,12 @@
    "female_range": true,
    "words_per_minute": 166.3,
    "what": "E of round 1: Chatterbox, the locked designed voice",
-   "letter": "G"
+   "letter": "H"
   },
   "turbo_locked": {
    "variant": "turbo_locked",
    "take": 1,
-   "seconds_to_make": 61.7,
+   "seconds_to_make": 56.4,
    "sr": 24000,
    "file": "r2/voice2-turbo/turbo_locked_t1.wav",
    "seconds": 20.0,
@@ -84,16 +85,30 @@
    "female_range": true,
    "words_per_minute": 159.0,
    "what": "Chatterbox Turbo, the locked designed voice, a [chuckle] after 'honestly?'",
-   "letter": "H"
+   "letter": "J"
+  },
+  "voxcpm_locked": {
+   "variant": "voxcpm_locked",
+   "take": 1,
+   "seconds_to_make": 95.5,
+   "sr": 48000,
+   "file": "r2/voice2-voxcpm/voxcpm_locked_t1.wav",
+   "seconds": 15.68,
+   "said": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need 10 outfits. You need three and one really good hat. We tried it last summer and honestly, it changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 288.2,
+   "pitch_movement_semitones": 4.03,
+   "female_range": true,
+   "words_per_minute": 202.8,
+   "what": "VoxCPM2 (2B, 48 kHz), the locked designed voice (ultimate cloning)",
+   "letter": "I"
   }
  },
- "missing_variants": [
-  "voxcpm_locked"
- ],
- "failed_takes": {
-  "voxcpm_locked_t1": "RuntimeError: Failed to create AudioDecoder for /home/runner/work/_temp/r1/reference_locked_voice.wav: Could not load libtorchcodec. Likely causes:\n          1. FFmpeg is not properly installed in your environment. We support\n             versions 4, 5, 6, 7, 8, and 9, and we attempt to load libtorchcodec\n             for each of those versions. Errors for versions not installed on\n             your system are expected; only the error for your installed FFmpeg\n             version is relevant. On Windows, ensure you've installed the\n             \"full-shared\" version which ships DLLs.\n          2. The PyTorch version (2.14.1+cpu) is not compatible with\n             this version of TorchCodec. Refer to the version compatibility\n             table:\n             https://github.com/pytorch/torchcodec?tab=readme-ov-file#installing-torchcodec.\n          3. Another runtime dependency; see exceptions below.\n\n        The following exceptions were raised as we tried to load libtorchcodec:\n        \n[start of libtorchcodec loading traceback]\nFFmpeg version 9:\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1587, in load_library\n    ctypes.CDLL(path)\n  File \"/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py\", line 376, in __init__\n    self._handle = _dlopen(self._name, mode)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^\nOSError: libavutil.so.61: cannot open shared object file: No such file or directory\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py\", line 132, in load_core_libraries\n    torch.ops.load_library(core_library_path)\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1589, in load_library\n    raise OSError(f\"Could not load this library: {path}\") from e\nOSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core9.so\n\nFFmpeg version 8:\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1587, in load_library\n    ctypes.CDLL(path)\n  File \"/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py\", line 376, in __init__\n    self._handle = _dlopen(self._name, mode)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^\nOSError: libavutil.so.60: cannot open shared object file: No such file or directory\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py\", line 132, in load_core_libraries\n    torch.ops.load_library(core_library_path)\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1589, in load_library\n    raise OSError(f\"Could not load this library: {path}\") from e\nOSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core8.so\n\nFFmpeg version 7:\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1587, in load_library\n    ctypes.CDLL(path)\n  File \"/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py\", line 376, in __init__\n    self._handle = _dlopen(self._name, mode)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^\nOSError: libavutil.so.59: cannot open shared object file: No such file or directory\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py\", line 132, in load_core_libraries\n    torch.ops.load_library(core_library_path)\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1589, in load_library\n    raise OSError(f\"Could not load this library: {path}\") from e\nOSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core7.so\n\nFFmpeg version 6:\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1587, in load_library\n    ctypes.CDLL(path)\n  File \"/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py\", line 376, in __init__\n    self._handle = _dlopen(self._name, mode)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^\nOSError: libavutil.so.58: cannot open shared object file: No such file or directory\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py\", line 132, in load_core_libraries\n    torch.ops.load_library(core_library_path)\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1589, in load_library\n    raise OSError(f\"Could not load this library: {path}\") from e\nOSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core6.so\n\nFFmpeg version 5:\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1587, in load_library\n    ctypes.CDLL(path)\n  File \"/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py\", line 376, in __init__\n    self._handle = _dlopen(self._name, mode)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^\nOSError: libavutil.so.57: cannot open shared object file: No such file or directory\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py\", line 132, in load_core_libraries\n    torch.ops.load_library(core_library_path)\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1589, in load_library\n    raise OSError(f\"Could not load this library: {path}\") from e\nOSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core5.so\n\nFFmpeg version 4:\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1587, in load_library\n    ctypes.CDLL(path)\n  File \"/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py\", line 376, in __init__\n    self._handle = _dlopen(self._name, mode)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^\nOSError: libavutil.so.56: cannot open shared object file: No such file or directory\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py\", line 132, in load_core_libraries\n    torch.ops.load_library(core_library_path)\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1589, in load_library\n    raise OSError(f\"Could not load this library: {path}\") from e\nOSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core4.so\n[end of libtorchcodec loading traceback].",
-  "voxcpm_locked_t2": "RuntimeError: Failed to create AudioDecoder for /home/runner/work/_temp/r1/reference_locked_voice.wav: Could not load libtorchcodec. Likely causes:\n          1. FFmpeg is not properly installed in your environment. We support\n             versions 4, 5, 6, 7, 8, and 9, and we attempt to load libtorchcodec\n             for each of those versions. Errors for versions not installed on\n             your system are expected; only the error for your installed FFmpeg\n             version is relevant. On Windows, ensure you've installed the\n             \"full-shared\" version which ships DLLs.\n          2. The PyTorch version (2.14.1+cpu) is not compatible with\n             this version of TorchCodec. Refer to the version compatibility\n             table:\n             https://github.com/pytorch/torchcodec?tab=readme-ov-file#installing-torchcodec.\n          3. Another runtime dependency; see exceptions below.\n\n        The following exceptions were raised as we tried to load libtorchcodec:\n        \n[start of libtorchcodec loading traceback]\nFFmpeg version 9:\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1587, in load_library\n    ctypes.CDLL(path)\n  File \"/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py\", line 376, in __init__\n    self._handle = _dlopen(self._name, mode)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^\nOSError: libavutil.so.61: cannot open shared object file: No such file or directory\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py\", line 132, in load_core_libraries\n    torch.ops.load_library(core_library_path)\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1589, in load_library\n    raise OSError(f\"Could not load this library: {path}\") from e\nOSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core9.so\n\nFFmpeg version 8:\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1587, in load_library\n    ctypes.CDLL(path)\n  File \"/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py\", line 376, in __init__\n    self._handle = _dlopen(self._name, mode)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^\nOSError: libavutil.so.60: cannot open shared object file: No such file or directory\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py\", line 132, in load_core_libraries\n    torch.ops.load_library(core_library_path)\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1589, in load_library\n    raise OSError(f\"Could not load this library: {path}\") from e\nOSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core8.so\n\nFFmpeg version 7:\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1587, in load_library\n    ctypes.CDLL(path)\n  File \"/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py\", line 376, in __init__\n    self._handle = _dlopen(self._name, mode)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^\nOSError: libavutil.so.59: cannot open shared object file: No such file or directory\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py\", line 132, in load_core_libraries\n    torch.ops.load_library(core_library_path)\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1589, in load_library\n    raise OSError(f\"Could not load this library: {path}\") from e\nOSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core7.so\n\nFFmpeg version 6:\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1587, in load_library\n    ctypes.CDLL(path)\n  File \"/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py\", line 376, in __init__\n    self._handle = _dlopen(self._name, mode)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^\nOSError: libavutil.so.58: cannot open shared object file: No such file or directory\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py\", line 132, in load_core_libraries\n    torch.ops.load_library(core_library_path)\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1589, in load_library\n    raise OSError(f\"Could not load this library: {path}\") from e\nOSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core6.so\n\nFFmpeg version 5:\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1587, in load_library\n    ctypes.CDLL(path)\n  File \"/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py\", line 376, in __init__\n    self._handle = _dlopen(self._name, mode)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^\nOSError: libavutil.so.57: cannot open shared object file: No such file or directory\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py\", line 132, in load_core_libraries\n    torch.ops.load_library(core_library_path)\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1589, in load_library\n    raise OSError(f\"Could not load this library: {path}\") from e\nOSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core5.so\n\nFFmpeg version 4:\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1587, in load_library\n    ctypes.CDLL(path)\n  File \"/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py\", line 376, in __init__\n    self._handle = _dlopen(self._name, mode)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^\nOSError: libavutil.so.56: cannot open shared object file: No such file or directory\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py\", line 132, in load_core_libraries\n    torch.ops.load_library(core_library_path)\n  File \"/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py\", line 1589, in load_library\n    raise OSError(f\"Could not load this library: {path}\") from e\nOSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core4.so\n[end of libtorchcodec loading traceback]."
- },
+ "missing_variants": [],
+ "failed_takes": {},
  "all_takes": {
   "chatterbox_builtin_t2": {
    "variant": "chatterbox_builtin",
@@ -149,7 +164,7 @@
   "turbo_locked_t1": {
    "variant": "turbo_locked",
    "take": 1,
-   "seconds_to_make": 61.7,
+   "seconds_to_make": 56.4,
    "sr": 24000,
    "file": "r2/voice2-turbo/turbo_locked_t1.wav",
    "seconds": 20.0,
@@ -166,7 +181,7 @@
   "turbo_locked_t2": {
    "variant": "turbo_locked",
    "take": 2,
-   "seconds_to_make": 47.5,
+   "seconds_to_make": 44.5,
    "sr": 24000,
    "file": "r2/voice2-turbo/turbo_locked_t2.wav",
    "seconds": 19.24,
@@ -179,13 +194,47 @@
    "pitch_movement_semitones": 4.75,
    "female_range": true,
    "words_per_minute": 165.3
+  },
+  "voxcpm_locked_t1": {
+   "variant": "voxcpm_locked",
+   "take": 1,
+   "seconds_to_make": 95.5,
+   "sr": 48000,
+   "file": "r2/voice2-voxcpm/voxcpm_locked_t1.wav",
+   "seconds": 15.68,
+   "said": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need 10 outfits. You need three and one really good hat. We tried it last summer and honestly, it changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 288.2,
+   "pitch_movement_semitones": 4.03,
+   "female_range": true,
+   "words_per_minute": 202.8
+  },
+  "voxcpm_locked_t2": {
+   "variant": "voxcpm_locked",
+   "take": 2,
+   "seconds_to_make": 98.5,
+   "sr": 48000,
+   "file": "r2/voice2-voxcpm/voxcpm_locked_t2.wav",
+   "seconds": 17.92,
+   "said": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need ten outfits, you need three and one really good hat. We tried it last summer, and honestly, it changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 231.4,
+   "pitch_movement_semitones": 7.38,
+   "female_range": true,
+   "words_per_minute": 177.5
   }
  },
  "licenses": {
   "kokoro": "Kokoro-82M: Apache-2.0 (misaki uses espeak-ng: GPL-3 - check before shipping)",
   "chatterbox": "Chatterbox: MIT (outputs carry Resemble's inaudible Perth watermark)",
   "qwen": "Qwen3-TTS: Apache-2.0",
-  "voxcpm": "VoxCPM 1.5: Apache-2.0 (code and weights)"
+  "voxcpm": "VoxCPM2: Apache-2.0"
  },
  "round1": "branch mediaengine-voice-lab latest/ (run 39197836516)",
  "music": {

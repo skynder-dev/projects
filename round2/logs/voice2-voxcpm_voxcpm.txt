@@ -1,259 +1,15 @@
 /home/runner/work/_temp/v/lib/python3.11/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
   warnings.warn(
-Fetching 10 files:   0%|          | 0/10 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Fetching 10 files:  40%|████      | 4/10 [00:00<00:00, 39.03it/s]Fetching 10 files:  80%|████████  | 8/10 [00:00<00:00, 20.34it/s]Fetching 10 files: 100%|██████████| 10/10 [00:08<00:00,  1.24it/s]
-voxcpm_model_path: /home/runner/.cache/huggingface/hub/models--openbmb--VoxCPM1.5/snapshots/8cdc403854cda0e3af12252d27da038fda5982ac, zipenhancer_model_path: None, enable_denoiser: False
+Fetching 9 files:   0%|          | 0/9 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Fetching 9 files:  22%|██▏       | 2/9 [00:00<00:00, 19.32it/s]Fetching 9 files:  89%|████████▉ | 8/9 [00:03<00:00,  1.96it/s]Fetching 9 files: 100%|██████████| 9/9 [00:28<00:00,  4.42s/it]Fetching 9 files: 100%|██████████| 9/9 [00:28<00:00,  3.16s/it]
+voxcpm_model_path: /home/runner/.cache/huggingface/hub/models--openbmb--VoxCPM2/snapshots/32279effe8c19989596f05d353d1447f51d9e915, zipenhancer_model_path: None, enable_denoiser: False
 /home/runner/work/_temp/v/lib/python3.11/site-packages/torch/nn/utils/weight_norm.py:145: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
   WeightNorm.apply(module, name, dim)
-Loading AudioVAE from pytorch: /home/runner/.cache/huggingface/hub/models--openbmb--VoxCPM1.5/snapshots/8cdc403854cda0e3af12252d27da038fda5982ac/audiovae.pth
+Loading AudioVAE from pytorch: /home/runner/.cache/huggingface/hub/models--openbmb--VoxCPM2/snapshots/32279effe8c19989596f05d353d1447f51d9e915/audiovae.pth
 Running on device: cpu, dtype: bfloat16
-Loading model from safetensors: /home/runner/.cache/huggingface/hub/models--openbmb--VoxCPM1.5/snapshots/8cdc403854cda0e3af12252d27da038fda5982ac/model.safetensors
-Loaded VoxCPMModel
-06:14:52 FAILED voxcpm_locked_t1: Failed to create AudioDecoder for /home/runner/work/_temp/r1/reference_locked_voice.wav: Could not load libtorchcodec. Likely causes:
-          1. FFmpeg is not properly installed in your environment. We support
-             versions 4, 5, 6, 7, 8, and 9, and we attempt to load libtorchcodec
-             for each of those versions. Errors for versions not installed on
-             your system are expected; only the error for your installed FFmpeg
-             version is relevant. On Windows, ensure you've installed the
-             "full-shared" version which ships DLLs.
-          2. The PyTorch version (2.14.1+cpu) is not compatible with
-             this version of TorchCodec. Refer to the version compatibility
-             table:
-             https://github.com/pytorch/torchcodec?tab=readme-ov-file#installing-torchcodec.
-          3. Another runtime dependency; see exceptions below.
-
-        The following exceptions were raised as we tried to load libtorchcodec:
-        
-[start of libtorchcodec loading traceback]
-FFmpeg version 9:
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1587, in load_library
-    ctypes.CDLL(path)
-  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py", line 376, in __init__
-    self._handle = _dlopen(self._name, mode)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^
-OSError: libavutil.so.61: cannot open shared object file: No such file or directory
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py", line 132, in load_core_libraries
-    torch.ops.load_library(core_library_path)
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1589, in load_library
-    raise OSError(f"Could not load this library: {path}") from e
-OSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core9.so
-
-FFmpeg version 8:
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1587, in load_library
-    ctypes.CDLL(path)
-  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py", line 376, in __init__
-    self._handle = _dlopen(self._name, mode)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^
-OSError: libavutil.so.60: cannot open shared object file: No such file or directory
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py", line 132, in load_core_libraries
-    torch.ops.load_library(core_library_path)
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1589, in load_library
-    raise OSError(f"Could not load this library: {path}") from e
-OSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core8.so
-
-FFmpeg version 7:
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1587, in load_library
-    ctypes.CDLL(path)
-  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py", line 376, in __init__
-    self._handle = _dlopen(self._name, mode)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^
-OSError: libavutil.so.59: cannot open shared object file: No such file or directory
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py", line 132, in load_core_libraries
-    torch.ops.load_library(core_library_path)
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1589, in load_library
-    raise OSError(f"Could not load this library: {path}") from e
-OSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core7.so
-
-FFmpeg version 6:
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1587, in load_library
-    ctypes.CDLL(path)
-  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py", line 376, in __init__
-    self._handle = _dlopen(self._name, mode)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^
-OSError: libavutil.so.58: cannot open shared object file: No such file or directory
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py", line 132, in load_core_libraries
-    torch.ops.load_library(core_library_path)
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1589, in load_library
-    raise OSError(f"Could not load this library: {path}") from e
-OSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core6.so
-
-FFmpeg version 5:
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1587, in load_library
-    ctypes.CDLL(path)
-  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py", line 376, in __init__
-    self._handle = _dlopen(self._name, mode)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^
-OSError: libavutil.so.57: cannot open shared object file: No such file or directory
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py", line 132, in load_core_libraries
-    torch.ops.load_library(core_library_path)
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1589, in load_library
-    raise OSError(f"Could not load this library: {path}") from e
-OSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core5.so
-
-FFmpeg version 4:
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1587, in load_library
-    ctypes.CDLL(path)
-  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py", line 376, in __init__
-    self._handle = _dlopen(self._name, mode)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^
-OSError: libavutil.so.56: cannot open shared object file: No such file or directory
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py", line 132, in load_core_libraries
-    torch.ops.load_library(core_library_path)
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1589, in load_library
-    raise OSError(f"Could not load this library: {path}") from e
-OSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core4.so
-[end of libtorchcodec loading traceback].
-06:14:52 FAILED voxcpm_locked_t2: Failed to create AudioDecoder for /home/runner/work/_temp/r1/reference_locked_voice.wav: Could not load libtorchcodec. Likely causes:
-          1. FFmpeg is not properly installed in your environment. We support
-             versions 4, 5, 6, 7, 8, and 9, and we attempt to load libtorchcodec
-             for each of those versions. Errors for versions not installed on
-             your system are expected; only the error for your installed FFmpeg
-             version is relevant. On Windows, ensure you've installed the
-             "full-shared" version which ships DLLs.
-          2. The PyTorch version (2.14.1+cpu) is not compatible with
-             this version of TorchCodec. Refer to the version compatibility
-             table:
-             https://github.com/pytorch/torchcodec?tab=readme-ov-file#installing-torchcodec.
-          3. Another runtime dependency; see exceptions below.
-
-        The following exceptions were raised as we tried to load libtorchcodec:
-        
-[start of libtorchcodec loading traceback]
-FFmpeg version 9:
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1587, in load_library
-    ctypes.CDLL(path)
-  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py", line 376, in __init__
-    self._handle = _dlopen(self._name, mode)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^
-OSError: libavutil.so.61: cannot open shared object file: No such file or directory
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py", line 132, in load_core_libraries
-    torch.ops.load_library(core_library_path)
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1589, in load_library
-    raise OSError(f"Could not load this library: {path}") from e
-OSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core9.so
-
-FFmpeg version 8:
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1587, in load_library
-    ctypes.CDLL(path)
-  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py", line 376, in __init__
-    self._handle = _dlopen(self._name, mode)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^
-OSError: libavutil.so.60: cannot open shared object file: No such file or directory
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py", line 132, in load_core_libraries
-    torch.ops.load_library(core_library_path)
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1589, in load_library
-    raise OSError(f"Could not load this library: {path}") from e
-OSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core8.so
-
-FFmpeg version 7:
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1587, in load_library
-    ctypes.CDLL(path)
-  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py", line 376, in __init__
-    self._handle = _dlopen(self._name, mode)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^
-OSError: libavutil.so.59: cannot open shared object file: No such file or directory
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py", line 132, in load_core_libraries
-    torch.ops.load_library(core_library_path)
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1589, in load_library
-    raise OSError(f"Could not load this library: {path}") from e
-OSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core7.so
-
-FFmpeg version 6:
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1587, in load_library
-    ctypes.CDLL(path)
-  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py", line 376, in __init__
-    self._handle = _dlopen(self._name, mode)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^
-OSError: libavutil.so.58: cannot open shared object file: No such file or directory
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py", line 132, in load_core_libraries
-    torch.ops.load_library(core_library_path)
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1589, in load_library
-    raise OSError(f"Could not load this library: {path}") from e
-OSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core6.so
-
-FFmpeg version 5:
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1587, in load_library
-    ctypes.CDLL(path)
-  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py", line 376, in __init__
-    self._handle = _dlopen(self._name, mode)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^
-OSError: libavutil.so.57: cannot open shared object file: No such file or directory
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py", line 132, in load_core_libraries
-    torch.ops.load_library(core_library_path)
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1589, in load_library
-    raise OSError(f"Could not load this library: {path}") from e
-OSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core5.so
-
-FFmpeg version 4:
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1587, in load_library
-    ctypes.CDLL(path)
-  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/ctypes/__init__.py", line 376, in __init__
-    self._handle = _dlopen(self._name, mode)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^
-OSError: libavutil.so.56: cannot open shared object file: No such file or directory
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/_internally_replaced_utils.py", line 132, in load_core_libraries
-    torch.ops.load_library(core_library_path)
-  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/_ops.py", line 1589, in load_library
-    raise OSError(f"Could not load this library: {path}") from e
-OSError: Could not load this library: /home/runner/work/_temp/v/lib/python3.11/site-packages/torchcodec/libtorchcodec_core4.so
-[end of libtorchcodec loading traceback].
+Loading model from safetensors: /home/runner/.cache/huggingface/hub/models--openbmb--VoxCPM2/snapshots/32279effe8c19989596f05d353d1447f51d9e915/model.safetensors
+Loaded VoxCPM2Model
+  0%|          | 0/424 [00:00<?, ?it/s]  0%|          | 1/424 [00:00<05:39,  1.25it/s]  0%|          | 2/424 [00:01<05:33,  1.27it/s]  1%|          | 3/424 [00:02<05:35,  1.25it/s]  1%|          | 4/424 [00:03<05:34,  1.26it/s]  1%|          | 5/424 [00:03<05:31,  1.26it/s]  1%|▏         | 6/424 [00:04<05:29,  1.27it/s]  2%|▏         | 7/424 [00:05<05:27,  1.27it/s]  2%|▏         | 8/424 [00:06<05:26,  1.27it/s]  2%|▏         | 9/424 [00:07<05:26,  1.27it/s]  2%|▏         | 10/424 [00:07<05:24,  1.28it/s]  3%|▎         | 11/424 [00:08<05:23,  1.28it/s]  3%|▎         | 12/424 [00:09<05:22,  1.28it/s]  3%|▎         | 13/424 [00:10<05:24,  1.27it/s]  3%|▎         | 14/424 [00:11<05:26,  1.25it/s]  4%|▎         | 15/424 [00:11<05:26,  1.25it/s]  4%|▍         | 16/424 [00:12<05:26,  1.25it/s]  4%|▍         | 17/424 [00:13<05:25,  1.25it/s]  4%|▍         | 18/424 [00:14<05:23,  1.25it/s]  4%|▍         | 19/424 [00:15<05:20,  1.26it/s]  5%|▍         | 20/424 [00:15<05:19,  1.27it/s]  5%|▍         | 21/424 [00:16<05:18,  1.26it/s]  5%|▌         | 22/424 [00:17<05:20,  1.26it/s]  5%|▌         | 23/424 [00:18<05:23,  1.24it/s]  6%|▌         | 24/424 [00:19<05:22,  1.24it/s]  6%|▌         | 25/424 [00:19<05:25,  1.23it/s]  6%|▌         | 26/424 [00:20<05:22,  1.24it/s]  6%|▋         | 27/424 [00:21<05:18,  1.25it/s]  7%|▋         | 28/424 [00:22<05:16,  1.25it/s]  7%|▋         | 29/424 [00:23<05:19,  1.24it/s]  7%|▋         | 30/424 [00:23<05:20,  1.23it/s]  7%|▋         | 31/424 [00:24<05:16,  1.24it/s]  8%|▊         | 32/424 [00:25<05:15,  1.24it/s]  8%|▊         | 33/424 [00:26<05:16,  1.24it/s]  8%|▊         | 34/424 [00:27<05:13,  1.24it/s]  8%|▊         | 35/424 [00:27<05:14,  1.24it/s]  8%|▊         | 36/424 [00:28<05:10,  1.25it/s]  9%|▊         | 37/424 [00:29<05:10,  1.25it/s]  9%|▉         | 38/424 [00:30<05:08,  1.25it/s]  9%|▉         | 39/424 [00:31<05:07,  1.25it/s]  9%|▉         | 40/424 [00:31<05:07,  1.25it/s] 10%|▉         | 41/424 [00:32<05:07,  1.25it/s] 10%|▉         | 42/424 [00:33<05:08,  1.24it/s] 10%|█         | 43/424 [00:34<05:09,  1.23it/s] 10%|█         | 44/424 [00:35<05:08,  1.23it/s] 11%|█         | 45/424 [00:35<05:06,  1.24it/s] 11%|█         | 46/424 [00:36<05:04,  1.24it/s] 11%|█         | 47/424 [00:37<05:02,  1.25it/s] 11%|█▏        | 48/424 [00:38<05:01,  1.25it/s] 12%|█▏        | 49/424 [00:39<04:59,  1.25it/s] 12%|█▏        | 50/424 [00:39<04:56,  1.26it/s] 12%|█▏        | 51/424 [00:40<04:55,  1.26it/s] 12%|█▏        | 52/424 [00:41<04:54,  1.26it/s] 12%|█▎        | 53/424 [00:42<04:54,  1.26it/s] 13%|█▎        | 54/424 [00:43<04:54,  1.26it/s] 13%|█▎        | 55/424 [00:43<04:52,  1.26it/s] 13%|█▎        | 56/424 [00:44<04:53,  1.25it/s] 13%|█▎        | 57/424 [00:45<04:51,  1.26it/s] 14%|█▎        | 58/424 [00:46<04:53,  1.25it/s] 14%|█▍        | 59/424 [00:47<04:52,  1.25it/s] 14%|█▍        | 60/424 [00:47<04:50,  1.25it/s] 14%|█▍        | 61/424 [00:48<04:48,  1.26it/s] 15%|█▍        | 62/424 [00:49<04:47,  1.26it/s] 15%|█▍        | 63/424 [00:50<04:46,  1.26it/s] 15%|█▌        | 64/424 [00:51<04:45,  1.26it/s] 15%|█▌        | 65/424 [00:51<04:45,  1.26it/s] 16%|█▌        | 66/424 [00:52<04:44,  1.26it/s] 16%|█▌        | 67/424 [00:53<04:43,  1.26it/s] 16%|█▌        | 68/424 [00:54<04:41,  1.27it/s] 16%|█▋        | 69/424 [00:55<04:40,  1.27it/s] 17%|█▋        | 70/424 [00:55<04:39,  1.27it/s] 17%|█▋        | 71/424 [00:56<04:40,  1.26it/s] 17%|█▋        | 72/424 [00:57<04:40,  1.26it/s] 17%|█▋        | 73/424 [00:58<04:39,  1.26it/s] 17%|█▋        | 74/424 [00:59<04:37,  1.26it/s] 18%|█▊        | 75/424 [00:59<04:37,  1.26it/s] 18%|█▊        | 76/424 [01:00<04:35,  1.26it/s] 18%|█▊        | 77/424 [01:01<04:35,  1.26it/s] 18%|█▊        | 78/424 [01:02<04:33,  1.26it/s] 19%|█▊        | 79/424 [01:02<04:32,  1.26it/s] 19%|█▉        | 80/424 [01:03<04:31,  1.26it/s] 19%|█▉        | 81/424 [01:04<04:31,  1.26it/s] 19%|█▉        | 82/424 [01:05<04:30,  1.26it/s] 20%|█▉        | 83/424 [01:06<04:30,  1.26it/s] 20%|█▉        | 84/424 [01:06<04:29,  1.26it/s] 20%|██        | 85/424 [01:07<04:28,  1.26it/s] 20%|██        | 86/424 [01:08<04:27,  1.27it/s] 21%|██        | 87/424 [01:09<04:28,  1.25it/s] 21%|██        | 88/424 [01:10<04:27,  1.26it/s] 21%|██        | 89/424 [01:10<04:25,  1.26it/s] 21%|██        | 90/424 [01:11<04:26,  1.25it/s] 21%|██▏       | 91/424 [01:12<04:26,  1.25it/s] 22%|██▏       | 92/424 [01:13<04:24,  1.25it/s] 22%|██▏       | 93/424 [01:14<04:24,  1.25it/s] 22%|██▏       | 94/424 [01:14<04:23,  1.25it/s] 22%|██▏       | 95/424 [01:15<04:22,  1.25it/s] 23%|██▎       | 96/424 [01:16<04:22,  1.25it/s] 23%|██▎       | 97/424 [01:17<04:22,  1.25it/s] 23%|██▎       | 97/424 [01:17<04:21,  1.25it/s]
+06:26:52 made voxcpm_locked_t1 in 95 s
+  0%|          | 0/424 [00:00<?, ?it/s]  0%|          | 1/424 [00:00<05:42,  1.23it/s]  0%|          | 2/424 [00:01<05:37,  1.25it/s]  1%|          | 3/424 [00:02<05:36,  1.25it/s]  1%|          | 4/424 [00:03<05:35,  1.25it/s]  1%|          | 5/424 [00:04<05:38,  1.24it/s]  1%|▏         | 6/424 [00:04<05:36,  1.24it/s]  2%|▏         | 7/424 [00:05<05:36,  1.24it/s]  2%|▏         | 8/424 [00:06<05:35,  1.24it/s]  2%|▏         | 9/424 [00:07<05:33,  1.25it/s]  2%|▏         | 10/424 [00:08<05:47,  1.19it/s]  3%|▎         | 11/424 [00:08<05:46,  1.19it/s]  3%|▎         | 12/424 [00:09<05:48,  1.18it/s]  3%|▎         | 13/424 [00:10<05:50,  1.17it/s]  3%|▎         | 14/424 [00:11<05:52,  1.16it/s]  4%|▎         | 15/424 [00:12<05:53,  1.16it/s]  4%|▍         | 16/424 [00:13<05:53,  1.15it/s]  4%|▍         | 17/424 [00:14<05:56,  1.14it/s]  4%|▍         | 18/424 [00:15<05:53,  1.15it/s]  4%|▍         | 19/424 [00:15<05:50,  1.16it/s]  5%|▍         | 20/424 [00:16<05:47,  1.16it/s]  5%|▍         | 21/424 [00:17<05:45,  1.17it/s]  5%|▌         | 22/424 [00:18<05:39,  1.19it/s]  5%|▌         | 23/424 [00:19<05:37,  1.19it/s]  6%|▌         | 24/424 [00:20<05:36,  1.19it/s]  6%|▌         | 25/424 [00:20<05:37,  1.18it/s]  6%|▌         | 26/424 [00:21<05:34,  1.19it/s]  6%|▋         | 27/424 [00:22<05:31,  1.20it/s]  7%|▋         | 28/424 [00:23<05:29,  1.20it/s]  7%|▋         | 29/424 [00:24<05:28,  1.20it/s]  7%|▋         | 30/424 [00:25<05:25,  1.21it/s]  7%|▋         | 31/424 [00:25<05:23,  1.21it/s]  8%|▊         | 32/424 [00:26<05:21,  1.22it/s]  8%|▊         | 33/424 [00:27<05:22,  1.21it/s]  8%|▊         | 34/424 [00:28<05:22,  1.21it/s]  8%|▊         | 35/424 [00:29<05:21,  1.21it/s]  8%|▊         | 36/424 [00:30<05:20,  1.21it/s]  9%|▊         | 37/424 [00:30<05:19,  1.21it/s]  9%|▉         | 38/424 [00:31<05:17,  1.22it/s]  9%|▉         | 39/424 [00:32<05:18,  1.21it/s]  9%|▉         | 40/424 [00:33<05:16,  1.21it/s] 10%|▉         | 41/424 [00:34<05:15,  1.21it/s] 10%|▉         | 42/424 [00:34<05:13,  1.22it/s] 10%|█         | 43/424 [00:35<05:17,  1.20it/s] 10%|█         | 44/424 [00:36<05:13,  1.21it/s] 11%|█         | 45/424 [00:37<05:12,  1.21it/s] 11%|█         | 46/424 [00:38<05:10,  1.22it/s] 11%|█         | 47/424 [00:39<05:09,  1.22it/s] 11%|█▏        | 48/424 [00:39<05:08,  1.22it/s] 12%|█▏        | 49/424 [00:40<05:08,  1.22it/s] 12%|█▏        | 50/424 [00:41<05:09,  1.21it/s] 12%|█▏        | 51/424 [00:42<05:07,  1.21it/s] 12%|█▏        | 52/424 [00:43<05:05,  1.22it/s] 12%|█▎        | 53/424 [00:44<05:04,  1.22it/s] 13%|█▎        | 54/424 [00:44<05:01,  1.23it/s] 13%|█▎        | 55/424 [00:45<04:59,  1.23it/s] 13%|█▎        | 56/424 [00:46<04:57,  1.24it/s] 13%|█▎        | 57/424 [00:47<04:55,  1.24it/s] 14%|█▎        | 58/424 [00:48<04:54,  1.24it/s] 14%|█▍        | 59/424 [00:48<04:53,  1.24it/s] 14%|█▍        | 60/424 [00:49<04:55,  1.23it/s] 14%|█▍        | 61/424 [00:50<04:54,  1.23it/s] 15%|█▍        | 62/424 [00:51<04:54,  1.23it/s] 15%|█▍        | 63/424 [00:52<04:54,  1.23it/s] 15%|█▌        | 64/424 [00:52<04:54,  1.22it/s] 15%|█▌        | 65/424 [00:53<04:54,  1.22it/s] 16%|█▌        | 66/424 [00:54<04:53,  1.22it/s] 16%|█▌        | 67/424 [00:55<04:51,  1.22it/s] 16%|█▌        | 68/424 [00:56<04:50,  1.22it/s] 16%|█▋        | 69/424 [00:57<04:50,  1.22it/s] 17%|█▋        | 70/424 [00:57<04:52,  1.21it/s] 17%|█▋        | 71/424 [00:58<04:49,  1.22it/s] 17%|█▋        | 72/424 [00:59<04:48,  1.22it/s] 17%|█▋        | 73/424 [01:00<04:47,  1.22it/s] 17%|█▋        | 74/424 [01:01<04:45,  1.23it/s] 18%|█▊        | 75/424 [01:01<04:43,  1.23it/s] 18%|█▊        | 76/424 [01:02<04:46,  1.22it/s] 18%|█▊        | 77/424 [01:03<04:43,  1.22it/s] 18%|█▊        | 78/424 [01:04<04:42,  1.23it/s] 19%|█▊        | 79/424 [01:05<04:40,  1.23it/s] 19%|█▉        | 80/424 [01:06<04:41,  1.22it/s] 19%|█▉        | 81/424 [01:06<04:41,  1.22it/s] 19%|█▉        | 82/424 [01:07<04:42,  1.21it/s] 20%|█▉        | 83/424 [01:08<04:41,  1.21it/s] 20%|█▉        | 84/424 [01:09<04:44,  1.19it/s] 20%|██        | 85/424 [01:10<04:41,  1.21it/s] 20%|██        | 86/424 [01:11<04:41,  1.20it/s] 21%|██        | 87/424 [01:11<04:39,  1.20it/s] 21%|██        | 88/424 [01:12<04:40,  1.20it/s] 21%|██        | 89/424 [01:13<04:37,  1.21it/s] 21%|██        | 90/424 [01:14<04:35,  1.21it/s] 21%|██▏       | 91/424 [01:15<04:36,  1.21it/s] 22%|██▏       | 92/424 [01:16<04:34,  1.21it/s] 22%|██▏       | 93/424 [01:16<04:32,  1.21it/s] 22%|██▏       | 94/424 [01:17<04:32,  1.21it/s] 22%|██▏       | 95/424 [01:18<04:34,  1.20it/s] 23%|██▎       | 96/424 [01:19<04:32,  1.20it/s] 23%|██▎       | 97/424 [01:20<04:30,  1.21it/s] 23%|██▎       | 98/424 [01:20<04:28,  1.22it/s] 23%|██▎       | 99/424 [01:21<04:33,  1.19it/s] 24%|██▎       | 100/424 [01:22<04:30,  1.20it/s] 24%|██▍       | 101/424 [01:23<04:28,  1.20it/s] 24%|██▍       | 102/424 [01:24<04:26,  1.21it/s] 24%|██▍       | 103/424 [01:25<04:23,  1.22it/s] 25%|██▍       | 104/424 [01:25<04:22,  1.22it/s] 25%|██▍       | 105/424 [01:26<04:21,  1.22it/s] 25%|██▌       | 106/424 [01:27<04:21,  1.21it/s] 25%|██▌       | 107/424 [01:28<04:22,  1.21it/s] 25%|██▌       | 108/424 [01:29<04:19,  1.22it/s] 26%|██▌       | 109/424 [01:30<04:18,  1.22it/s] 26%|██▌       | 110/424 [01:30<04:18,  1.22it/s] 26%|██▌       | 111/424 [01:31<04:17,  1.22it/s] 26%|██▌       | 111/424 [01:32<04:19,  1.21it/s]
+06:28:31 made voxcpm_locked_t2 in 99 s
