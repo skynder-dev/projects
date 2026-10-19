@@ -72,20 +72,26 @@ _CURRENT: dict = {}
 _WAKE = threading.Event()
 _THREAD: list[threading.Thread] = []
 
-# the owner's pick so far (voice lab round 3, 2026-10-19: "3.1 - intonation not bad, breaths, ...") - a voice made from
-# this description; "friend" keeps the very voice of that take (its recording ships with the program)
-FRIEND = ("A friendly American woman in her late twenties with a clear, natural everyday voice, medium pitch, not "
-          "breathy, telling her best friend a little secret: casual, playful, a bit amused, relaxed pace, real pauses")
-FRIEND_REF_TEXT = ("Okay... so here's something nobody tells you about packing for a beach trip. "
-                   "You don't need ten outfits. Seriously. You need, like, three. And one really good hat. "
-                   "We tried it last summer and, honestly? It changed everything. "
-                   "Less stuff... more time in the water. So, would you try it? Tell me in the comments!")
+# The owner's picks from the voice lab (round 4, 2026-10-19 15:41: "4_4 will do, 4_2 OK"; 3.1 "sounds like sex",
+# its locked copy "too squeaky for business info"): the very takes 4_4 and 4_2 ship with the program (FLAC) and every
+# voice-over in them is that same voice (VoxCPM2 ultimate cloning: the recording, its exact words, the same recording
+# as the timbre). Both recordings say this text:
+HOST_REF_TEXT = ("Okay... so here's something nobody tells you about packing for a beach trip. "
+                 "You don't need ten outfits. Seriously. You need, like, three. And one really good hat. "
+                 "We tried it last summer and, honestly? It changed everything. "
+                 "Less stuff... more time in the water. So, would you try it? Tell me in the comments!")
 VOICES = {
-    "friend": {"label": "Friend - always the same voice (the voice of 3.1)", "ref": "friend_3_1.flac", "ref_text": FRIEND_REF_TEXT},
-    "friend_new": {"label": "Friend - a voice from the description (a little different each time)", "description": FRIEND},
+    "host_4_4": {"label": "Host - the voice of 4_4", "ref": "host_4_4.flac", "ref_text": HOST_REF_TEXT},
+    "host_4_2": {"label": "Host - the voice of 4_2", "ref": "host_4_2.flac", "ref_text": HOST_REF_TEXT},
     "describe": {"label": "My description of a voice (English works best)"},
     "own": {"label": "A voice from a recording (a person who agreed to it)"},
 }
+DEFAULT_VOICE = "host_4_4"
+# "microphone" finishing (round 4: the same take was "too tired" as made and "will do" with it): a gentle roll-off of
+# the highest frequencies (where a neural vocoder's glassy sheen is), a touch of tape-like saturation, a small room,
+# light compression. Nothing is cut or moved in time (the captions' word times stay right).
+MIC_CHAIN = ("highpass=f=80,lowpass=f=11000:p=1,asoftclip=type=tanh:threshold=0.9,aecho=0.9:0.9:23|37|53:0.06|0.045|0.03,"
+             "acompressor=threshold=-22dB:ratio=2:attack=10:release=150:makeup=1.3,")
 
 
 class VoiceError(Exception):
@@ -632,7 +638,7 @@ def _submit(job: dict) -> str:
 
 
 def new_voiceover(text: str, voice: str, description: str = "", ref_path: str = "", ref_text: str = "",
-                  language: str = "") -> str:
+                  language: str = "", mic: bool = True) -> str:
     _need_addon()
     text = str(text or "").strip()
     if not text:
@@ -642,13 +648,11 @@ def new_voiceover(text: str, voice: str, description: str = "", ref_path: str = 
     if voice not in VOICES:
         raise VoiceError("Choose a voice.")
     v: dict = {"key": voice}
-    if voice == "friend":
-        ref = ASSETS / VOICES["friend"]["ref"]
+    if VOICES[voice].get("ref"):
+        ref = ASSETS / VOICES[voice]["ref"]
         if not ref.is_file():
-            raise VoiceError("The recording of the voice 3.1 is missing from this version of MediaEngine.")
-        v.update(ref_wav=str(ref), ref_text=VOICES["friend"]["ref_text"])
-    elif voice == "friend_new":
-        v["description"] = FRIEND
+            raise VoiceError("The recording of this voice is missing from this version of MediaEngine.")
+        v.update(ref_wav=str(ref), ref_text=VOICES[voice]["ref_text"])
     elif voice == "describe":
         description = re.sub(r"[()\r\n]+", " ", str(description or "")).strip()
         if len(description) < 10:
@@ -662,7 +666,7 @@ def new_voiceover(text: str, voice: str, description: str = "", ref_path: str = 
     lang = str(language or "").strip().lower()
     if lang and not re.fullmatch(r"[a-z]{2}", lang):
         lang = ""
-    return _submit({"kind": "voiceover", "text": text, "voice": v, "language": lang or None,
+    return _submit({"kind": "voiceover", "text": text, "voice": v, "language": lang or None, "mic": bool(mic),
                     "title": re.sub(r"\s+", " ", text)[:60]})
 
 
@@ -765,7 +769,8 @@ def _do(jid: str) -> dict:
             return res
         _CURRENT.update(step="finishing", progress=0.97)
         cp = subprocess.run([_ffmpeg(), "-hide_banner", "-nostdin", "-y", "-v", "error", "-i", str(d / "voice_raw.wav"),
-                             "-af", "loudnorm=I=-16:TP=-1.5:LRA=11", "-ar", "48000", "-ac", "1", "-c:a", "pcm_s16le",
+                             "-af", (MIC_CHAIN if job.get("mic", True) else "") + "loudnorm=I=-16:TP=-1.5:LRA=11",
+                             "-ar", "48000", "-ac", "1", "-c:a", "pcm_s16le",
                              str(d / "voice.wav")], **process_kwargs(dict(capture_output=True, timeout=600)))
         if cp.returncode != 0:
             return {"ok": False, "error": "The voice-over could not be finished (loudness)."}

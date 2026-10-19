@@ -68,11 +68,12 @@ def main() -> int:
     H = {"Host": f"127.0.0.1:{PORT}", "Origin": f"http://127.0.0.1:{PORT}"}
     r = c.get("/auto/voice", headers=H)
     check("page without the add-on: install card", r.status_code == 200 and "Install the voice add-on" in r.get_data(as_text=True))
-    r = c.post("/auto/voice/new", data={"text": "Hello there.", "voice": "friend"}, headers=H)
+    r = c.post("/auto/voice/new", data={"text": "Hello there.", "voice": vo.DEFAULT_VOICE}, headers=H)
     check("a voice-over before installing: refused in words", r.status_code == 400 and "Install the voice add-on first" in r.get_data(as_text=True))
     check("the home of Auto Edit links the page only when it is released", ("/auto/voice" in c.get("/auto", headers=H).get_data(as_text=True))
           == vo.SHOW_ON_HOME)
-    check("the recording of voice 3.1 ships with the program", (vo.ASSETS / vo.VOICES["friend"]["ref"]).is_file(), vo.ASSETS)
+    check("the recordings of the ready voices ship with the program", all((vo.ASSETS / v["ref"]).is_file()
+          for v in vo.VOICES.values() if v.get("ref")), vo.ASSETS)
 
     ff = _ffmpeg_exe()
     (vo.SITE).mkdir(parents=True, exist_ok=True)
@@ -111,7 +112,7 @@ def main() -> int:
             time.sleep(0.3)
         return vo.read_job(jid)
 
-    r = c.post("/auto/voice/new", data={"text": "Okay, so here's something. You don't need ten outfits!", "voice": "friend",
+    r = c.post("/auto/voice/new", data={"text": "Okay, so here's something. You don't need ten outfits!", "voice": vo.DEFAULT_VOICE,
                                         "language": "en"}, headers=H)
     check("a voice-over is accepted", r.status_code == 302, r.status_code)
     jid = vo.list_jobs()[0]["id"]
@@ -122,7 +123,9 @@ def main() -> int:
     check("its WAV, words and captions are there", (d / "voice.wav").is_file() and (d / "captions.srt").is_file()
           and (d / "words.json").is_file())
     job = json.loads((d / "job.json").read_text("utf-8"))
-    check("voice 3.1 is used with its own words", job["voice"].get("ref_text") == vo.FRIEND_REF_TEXT)
+    check("the default voice is used with its own words", job["voice"].get("ref_text") == vo.HOST_REF_TEXT
+          and job["voice"].get("key") == vo.DEFAULT_VOICE)
+    check("microphone finishing is on by default", job.get("mic") is True, job.get("mic"))
     r = c.get(f"/auto/voice/{jid}/file/voice.wav", headers={**H, "Range": "bytes=0-99"})
     check("the player gets the sound in pieces (Range)", r.status_code == 206 and len(r.data) == 100, r.status_code)
     r = c.get(f"/auto/voice/{jid}/file/captions.srt?download=1", headers=H)
@@ -203,10 +206,10 @@ def main() -> int:
     check("captions for a video's own speech", cj["state"] == "done" and (Path(cj["dir"]) / "video.mp4").is_file(), cj.get("result"))
 
     # odd input: words, never a server error
-    for name, data in [("no text", {"text": "", "voice": "friend"}), ("unknown voice", {"text": "Hi.", "voice": "x"}),
+    for name, data in [("no text", {"text": "", "voice": vo.DEFAULT_VOICE}), ("unknown voice", {"text": "Hi.", "voice": "x"}),
                        ("short description", {"text": "Hi.", "voice": "describe", "description": "a"}),
                        ("missing recording", {"text": "Hi.", "voice": "own", "ref_path": str(home / "nope.wav")}),
-                       ("too long", {"text": "a " * 3000, "voice": "friend"})]:
+                       ("too long", {"text": "a " * 3000, "voice": vo.DEFAULT_VOICE})]:
         r = c.post("/auto/voice/new", data=data, headers=H)
         check(f"refused in words: {name}", r.status_code == 400 and "errbox" in r.get_data(as_text=True), r.status_code)
     r = c.post("/auto/voice/20990101-000000-abcdef/dub", data={"video": str(video)}, headers=H)

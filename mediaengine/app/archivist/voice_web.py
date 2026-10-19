@@ -132,7 +132,7 @@ def register(app, page, err_page, e, human_bytes):
 
     def _voice_form() -> str:
         radios = "".join(
-            f"<label><input type='radio' name='voice' value='{k}'{' checked' if k == 'friend' else ''}> {e(v['label'])}</label>"
+            f"<label><input type='radio' name='voice' value='{k}'{' checked' if k == vo.DEFAULT_VOICE else ''}> {e(v['label'])}</label>"
             for k, v in vo.VOICES.items())
         langs = _lang_options()
         return (f"<div class='card'><h2 style='margin-top:0'>New voice-over</h2>"
@@ -149,6 +149,8 @@ def register(app, page, err_page, e, human_bytes):
                 f"placeholder='The exact words said in the recording (optional: the voice is copied more closely)'>"
                 f"<div class='muted vo-sub'>Use only the voice of a person who agreed to it.</div></div>"
                 f"<div class='vo-row' style='margin-top:10px'><span>Language of the text</span><select name='language'>{langs}</select></div>"
+                f"<label style='display:block;margin-top:8px'><input type='checkbox' name='mic' value='1' checked> "
+                f"Microphone finishing (sounds more like a real recording)</label><input type='hidden' name='mic_shown' value='1'>"
                 f"<div style='margin-top:12px'><button class='ae-big'>Make the voice-over</button> "
                 f"<span class='muted vo-sub' data-msg></span></div></form></div>")
 
@@ -304,7 +306,8 @@ def register(app, page, err_page, e, human_bytes):
         f = request.form
         try:
             vo.new_voiceover(f.get("text", ""), f.get("voice", ""), f.get("description", ""), f.get("ref_path", ""),
-                             f.get("ref_text", ""), f.get("language", ""))
+                             f.get("ref_text", ""), f.get("language", ""),
+                             mic=f.get("mic") == "1" or not f.get("mic_shown"))
         except vo.VoiceError as exc:
             return err_page(str(exc), "/auto/voice")
         return redirect("/auto/voice")

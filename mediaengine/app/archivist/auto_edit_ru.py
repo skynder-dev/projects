@@ -669,8 +669,9 @@ PHRASES = {
     "Write it the way it is said: short sentences, commas and dots where the pauses are.":
         "Пиши так, как говорят вслух: короткие фразы, запятые и точки там, где паузы.",
     "Voice": "Голос",
-    "Friend - always the same voice (the voice of 3.1)": "Подруга — всегда один и тот же голос (голос из 3.1)",
-    "Friend - a voice from the description (a little different each time)": "Подруга — голос по описанию (каждый раз немного другой)",
+    "Host - the voice of 4_4": "Ведущая — голос 4_4", "Host - the voice of 4_2": "Ведущая — голос 4_2",
+    "Microphone finishing (sounds more like a real recording)": "Обработка «под микрофон» (больше похоже на настоящую запись)",
+    "The recording of this voice is missing from this version of MediaEngine.": "В этой версии MediaEngine нет записи этого голоса.",
     "My description of a voice (English works best)": "Свой голос по описанию (лучше писать по-английски)",
     "A voice from a recording (a person who agreed to it)": "Голос из записи (человека, который на это согласен)",
     "For example: a calm man in his forties with a deep, warm voice, slow pace":
@@ -715,9 +716,11 @@ PHRASES = {
     "The voice add-on is being installed. Wait until it is ready.": "Модуль озвучки устанавливается. Подожди, пока он будет готов.",
     "The voice add-on is already installed.": "Модуль озвучки уже установлен.",
     "The start of the voice must be a number of seconds, for example 0.5.": "Начало голоса — это число секунд, например 0,5.",
-    "Voice-over (Auto Edit → Voice-over, an add-on installed with a button): a text read by a voice - voice 3.1 by default - checked word by word, captions timed to the words, the voice and captions put onto a video.":
-        "Озвучка (Автомонтаж → Озвучка, модуль ставится кнопкой): текст читает голос — по умолчанию голос 3.1 — с проверкой "
-        "каждого слова, субтитры точно по словам, голос и субтитры накладываются на видео.",
+    "Voice-over (Auto Edit → Voice-over, an add-on installed with a button): a text read by a voice, checked word by word, captions timed to the words, the voice and captions put onto a video.":
+        "Озвучка (Автомонтаж → Озвучка, модуль ставится кнопкой): текст читает голос с проверкой каждого слова, "
+        "субтитры точно по словам, голос и субтитры накладываются на видео.",
+    "Voice-over: your picks from the voice test, the voices 4_4 and 4_2, instead of 3.1; “microphone finishing” on by default.":
+        "Озвучка: твой выбор из пробы голосов — голоса 4_4 и 4_2 вместо 3.1; обработка «под микрофон» включена по умолчанию.",
     "Captions for your own videos: the speech becomes captions burned into a copy (Auto Edit → Voice-over).":
         "Субтитры для твоих видео: речь превращается в субтитры, вшитые в копию (Автомонтаж → Озвучка).",
     "A Windows window is open — it may be behind this window.": "Открыто окно Windows — оно может быть за этим окном.",
@@ -728,7 +731,6 @@ PHRASES = {
     "The text is too long for one voice-over (at most 5000 characters): split it into parts.":
         "Текст слишком длинный для одной озвучки (не больше 5000 знаков): раздели его на части.",
     "Choose a voice.": "Выбери голос.",
-    "The recording of the voice 3.1 is missing from this version of MediaEngine.": "В этой версии MediaEngine нет записи голоса 3.1.",
     "Describe the voice in a few words (for example: a calm man in his forties, deep voice).":
         "Опиши голос несколькими словами (например: a calm man in his forties, deep voice).",
     "Choose the recording of the voice (a WAV, MP3 or M4A of 5-30 seconds of one person speaking).":

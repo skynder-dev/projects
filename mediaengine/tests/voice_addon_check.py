@@ -1,5 +1,5 @@
 """The voice-over add-on for real, through the program's own pages: Install (pip + models from the internet, as the
-owner's button does - here with CPU torch), a voice-over in voice 3.1 listened to word by word, that voice burned
+owner's button does - here with CPU torch), a voice-over in the default voice (4_4) listened to word by word, that voice burned
 onto a video with captions, captions for the video's own speech. Slow on a CPU (minutes per sentence).
 
   python tests/voice_addon_check.py --home <empty dir> --video <a short video> --out <dir>
@@ -85,9 +85,9 @@ def main() -> int:
             time.sleep(3)
         return vo.read_job(jid)
 
-    # 2. a voice-over in voice 3.1
+    # 2. a voice-over in the default voice
     t0 = time.time()
-    r = c.post("/auto/voice/new", data={"text": TEXT, "voice": "friend", "language": "en"}, headers=H)
+    r = c.post("/auto/voice/new", data={"text": TEXT, "voice": vo.DEFAULT_VOICE, "language": "en"}, headers=H)
     check("a voice-over is accepted", r.status_code == 302, r.status_code)
     jid = vo.list_jobs()[0]["id"]
     j = wait(jid, 3 * 3600)
@@ -107,7 +107,7 @@ def main() -> int:
 
     # 2b. Russian (the words go through the worker's output in UTF-8 whatever the Windows code page)
     t0 = time.time()
-    c.post("/auto/voice/new", data={"text": "Привет! Это короткая проверка голоса.", "voice": "friend", "language": "ru"}, headers=H)
+    c.post("/auto/voice/new", data={"text": "Привет! Это короткая проверка голоса.", "voice": vo.DEFAULT_VOICE, "language": "ru"}, headers=H)
     rj = wait(vo.list_jobs()[0]["id"], 3 * 3600)
     timings["russian_s"] = round(time.time() - t0)
     rres = rj.get("result") or {}

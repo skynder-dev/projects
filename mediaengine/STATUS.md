@@ -568,6 +568,12 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   Published: Windows CI run 39258002103 (b158, commit a77f3df) fully green (voice 51/51 in it), served from
   raw.githubusercontent.com (b158 ZIP 3,237,959 bytes, SHA-256 matches; same runtime - the Update button works);
   the real add-on run 39258002105 green (12/12 with the Russian voice-over).
+  Round 4 verdict (15:41): 4_4 "will do", 4_2 "OK"; 4_1 / 3.1 "sounds like sex - we don't need that"; 4_5 "too
+  squeaky for business info"; 4_3 "too tired". So 3.1 leaves the program; the voices of 4_4 and 4_2 are locked as
+  recordings (assets/voice/host_4_4.flac, host_4_2.flac; 4_4 is the default) and the "microphone finishing" (no time
+  shift; highpass/lowpass, soft clip, a small room, gentle compression) is on by default, can be switched off.
+  Round 5 (run 39321688115, round5/): both locked voices on a business-info text, plain and with the microphone
+  finishing; both say every word (Whisper only wrote "twenty percent" as "20%"). Sent to the owner to pick the default.
 
 ## Evidence
 

@@ -2513,8 +2513,9 @@ WHATS_NEW_ITEMS = [
     ("2026-10-18", "The “Update” button at the top: MediaEngine finds a newer version on GitHub and installs it itself (only when you press it)."),
     ("2026-10-18", "Settings: start MediaEngine in the background when you sign in to Windows (off unless you turn it on); reels waiting from before a restart go on."),
     ("2026-10-18", "A reel being made when the PC restarts (or MediaEngine stops without Quit) is made again by itself at the next start, once."),
-    ("2026-10-19", "Voice-over (Auto Edit → Voice-over, an add-on installed with a button): a text read by a voice - voice 3.1 by default - checked word by word, captions timed to the words, the voice and captions put onto a video."),
+    ("2026-10-19", "Voice-over (Auto Edit → Voice-over, an add-on installed with a button): a text read by a voice, checked word by word, captions timed to the words, the voice and captions put onto a video."),
     ("2026-10-19", "Captions for your own videos: the speech becomes captions burned into a copy (Auto Edit → Voice-over)."),
+    ("2026-10-19b", "Voice-over: your picks from the voice test, the voices 4_4 and 4_2, instead of 3.1; “microphone finishing” on by default."),
 ]
 WHATS_NEW_ID = max(d for d, _ in WHATS_NEW_ITEMS)
 WHATS_NEW = [t for _, t in WHATS_NEW_ITEMS]
