@@ -189,7 +189,9 @@ def transcribe(job: dict) -> dict:
 
 
 def selftest(job: dict) -> dict:
-    import torch, voxcpm, faster_whisper  # noqa: F401
+    import torch, librosa, soundfile  # noqa: F401
+    from voxcpm import VoxCPM  # noqa: F401          (the whole model code, not only the package name)
+    from faster_whisper import WhisperModel  # noqa: F401
     from importlib import metadata
     cuda = bool(torch.cuda.is_available())
     return {"ok": True, "torch": torch.__version__, "cuda": cuda,

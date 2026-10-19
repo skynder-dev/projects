@@ -40,7 +40,23 @@ WORKER = Path(__file__).resolve().with_name("voice_worker.py")
 ASSETS = Path(__file__).resolve().parent / "assets" / "voice"
 
 TORCH = "2.8.0"
-PACKAGES = [f"torch=={TORCH}", f"torchaudio=={TORCH}", "voxcpm==2.0.3", "faster-whisper==1.2.1", "soundfile==0.14.0"]
+# Exactly the packages a voice-over really imports (measured on Windows: a VoxCPM2 voice-over in voice 3.1 and its
+# Whisper check, run 39244854463), with their versions, installed without dependency resolution (--no-deps) and only
+# as ready-made wheels: VoxCPM2's own list also pulls a web UI, a denoiser and cloud SDKs, five of them only as
+# source code that needs a compiler on the PC. torch / torchaudio come from torch's CUDA index on an NVIDIA PC.
+PACKAGES = [
+    "annotated-types==0.8.0", "anyio==4.15.1", "audioread==3.1.0", "av==18.1.0", "brotli==1.2.0", "certifi==2026.10.18",
+    "cffi==2.1.1", "charset-normalizer==3.5.2", "cloudpickle==3.1.2", "colorama==0.4.6", "ctranslate2==4.8.3",
+    "decorator==5.3.1", "dill==0.3.8", "einops==0.8.2", "faster-whisper==1.2.1", "filelock==4.2.4", "fsspec==2025.3.0",
+    "h11==0.16.0", "hf-xet==1.7.0", "httpcore2==2.14.0", "httpx2==2.14.0", "huggingface-hub==2.2.0", "idna==3.20",
+    "jinja2==3.1.6", "joblib==1.6.0", "lazy-loader==0.6", "librosa==0.11.0", "llvmlite==0.50.0", "markupsafe==3.0.4",
+    "mpmath==1.3.0", "msgpack==1.2.3", "networkx==3.6.1", "numba==0.68.0", "numpy==2.4.6", "onnxruntime==1.31.0",
+    "packaging==26.3", "pillow==12.3.0", "platformdirs==4.13.5", "pooch==1.9.0", "pycparser==3.11", "pydantic==2.14.1",
+    "pydantic-core==2.50.1", "pyyaml==6.0.3", "regex==2026.9.29", "requests==2.34.2", "safetensors==0.8.0",
+    "scipy==1.17.1", "setuptools==84.0.0", "soundfile==0.14.0", "soxr==1.1.0", "sympy==1.14.0", "tokenizers==0.23.3",
+    f"torch=={TORCH}", f"torchaudio=={TORCH}", "tqdm==4.70.1", "transformers==5.20.1", "truststore==0.10.5",
+    "typing-extensions==4.16.0", "typing-inspection==0.4.4", "urllib3==2.8.0", "voxcpm==2.0.3", "xxhash==4.0.2",
+]
 CUDA_INDEX = "https://download.pytorch.org/whl/cu126"      # RTX 20xx-50xx (torch's CUDA 12.6 build)
 VOXCPM_REPO, VOXCPM_REV = "openbmb/VoxCPM2", "32279effe8c19989596f05d353d1447f51d9e915"
 WHISPER_REPO, WHISPER_REV = "Systran/faster-whisper-small", "536b0662742c02347bc0e980a01041f333bce120"
@@ -197,7 +213,7 @@ def _pip(site_dir: Path, cpu: bool, log: Path) -> None:
     tmp = ROOT / "tmp"
     tmp.mkdir(parents=True, exist_ok=True)
     cmd = [_python(), "-m", "pip", "install", "--disable-pip-version-check", "--no-warn-script-location", "--no-input",
-           "--progress-bar", "off", "--no-cache-dir", "--only-binary", ":all:", "--target", str(site_dir),
+           "--progress-bar", "off", "--no-cache-dir", "--only-binary", ":all:", "--no-deps", "--target", str(site_dir),
            "--index-url", "https://pypi.org/simple"]
     if not cpu:
         cmd += ["--extra-index-url", CUDA_INDEX]

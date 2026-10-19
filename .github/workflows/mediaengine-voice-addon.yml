@@ -1,0 +1,53 @@
+name: mediaengine-voice-addon
+# The voice-over add-on for real on Windows, through the program's own pages: the Install button (pip + the two
+# models from the internet, CPU torch here - the runner has no GPU), a voice-over in voice 3.1 listened to word by
+# word, that voice burned onto a test video with captions, and captions for that video's own speech. Synthetic
+# videos and text only; nothing paid. Slow on a CPU. Results: branch mediaengine-voice-lab addon/ (the sound and
+# the videos to look at, the checks, the install and worker logs).
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'mediaengine/app/archivist/voice.py'
+      - 'mediaengine/app/archivist/voice_worker.py'
+      - 'mediaengine/tests/voice_addon_check.py'
+      - '.github/workflows/mediaengine-voice-addon.yml'
+permissions:
+  contents: write
+concurrency:
+  group: mediaengine-voice-addon-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  addon:
+    runs-on: windows-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: The program's own packages
+        shell: pwsh
+        run: |
+          python -m pip install --disable-pip-version-check -q -r mediaengine/requirements.txt
+          New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\out" | Out-Null
+          python mediaengine/tests/make_fixtures.py "$env:RUNNER_TEMP\fx" | Out-Null
+      - name: Install the add-on with the button, a voice-over, onto a video, captions of its speech
+        shell: pwsh
+        run: |
+          $v = (Get-ChildItem "$env:RUNNER_TEMP\fx\two" -File | Select-Object -First 1).FullName
+          python mediaengine/tests/voice_addon_check.py --home "$env:RUNNER_TEMP\home-voice" --video $v --out "$env:RUNNER_TEMP\out" --cpu 2>&1 | Tee-Object "$env:RUNNER_TEMP\out\voice_addon.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Publish to branch mediaengine-voice-lab (addon/)
+        if: always()
+        shell: bash
+        run: |
+          pub="$RUNNER_TEMP/pub"; rm -rf "$pub"
+          git clone -q --depth 1 --branch mediaengine-voice-lab "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "$pub"
+          rm -rf "$pub/addon"; mkdir -p "$pub/addon"
+          cp "$RUNNER_TEMP"/out/* "$pub/addon/" 2>/dev/null || true
+          printf 'run=%s\nsha=%s\nstatus=%s\n' "${{ github.run_id }}" "${{ github.sha }}" "${{ job.status }}" > "$pub/addon/RUN.txt"
+          cd "$pub"; git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
+          git add -A; git commit -q -m "mediaengine voice add-on run ${{ github.run_id }} ${{ job.status }}"; git push -q origin HEAD:mediaengine-voice-lab
