@@ -724,6 +724,68 @@ def round4(src: Path, out: Path, branch: Path) -> int:
     return 0 if len(chosen) >= 3 else 1
 
 
+# ---------------------------------------------------------------------------------------------------------- round 5
+# Round 4 verdict (2026-10-19 15:41): 4_1 and 3.1 "sound like sex - we don't need that", 4_5 (3.1 locked) "too squeaky,
+# not for business info", 4_3 "too tired", 4_4 (the same take as 4_3 with the microphone finishing) "will do", 4_2
+# "OK". Round 5: the voices of 4_2 and 4_4 locked (ultimate cloning of those very takes) on a business-info text,
+# each plain and with the microphone finishing - the owner picks the program's default voice.
+
+BUSINESS = ("Here's what you need to know this week. First, flights to Europe got almost twenty percent cheaper. "
+            "Second, if you book before Friday, most airlines let you change the dates for free. "
+            "And third, the best deals are on Tuesday and Wednesday. Save this, and send it to someone who's planning a trip.")
+ROUND5_REFS = {"v42": "r4_direction_cfg16_t1.wav", "v44": "r4_best_of_six_t2.wav"}
+
+
+def vox5one(out: Path, voice: str, take: int, ref: Path) -> None:
+    import torch
+    m, sr = _vox2()
+
+    def make(t):
+        torch.manual_seed(1000 + 10 * list(ROUND5_REFS).index(voice) + t)
+        return m.generate(text=BUSINESS, cfg_value=2.0, inference_timesteps=STEPS4, prompt_wav_path=str(ref),
+                          prompt_text=SPOKEN, reference_wav_path=str(ref)), sr
+
+    _take(out, f"r5_{voice}", take, make)
+
+
+def round5(src: Path, out: Path) -> int:
+    from faster_whisper import WhisperModel
+    out.mkdir(parents=True, exist_ok=True)
+    gen = {}
+    for p in src.rglob("gen.json"):
+        gen.update(json.loads(p.read_text("utf-8")))
+    asr = WhisperModel("small.en", device="cpu", compute_type="int8")
+    takes, chosen = {}, {}
+    for w in sorted(src.rglob("r5_*_t[0-9].wav")):
+        takes[w.stem] = _analyze(asr, w, src, gen, BUSINESS)
+    for voice in ROUND5_REFS:
+        have = [i for n, i in takes.items() if n.startswith(f"r5_{voice}_t")]
+        if have:
+            chosen[voice] = min(have, key=lambda i: (i["word_errors"], i.get("take", 9)))
+    files = {}
+    n = 0
+    for voice, label in (("v42", "the voice of 4_2"), ("v44", "the voice of 4_4")):
+        if voice not in chosen:
+            continue
+        for mic in (False, True):
+            n += 1
+            mp3 = out / f"voice5_{n}.mp3"
+            (produce_mic if mic else produce_plain)(src / chosen[voice]["file"], mp3)
+            files[mp3.name] = f"{label}, {'microphone finishing' if mic else 'as made'}"
+    failed = {k: str(v.get("error")).splitlines()[0][:300] for k, v in gen.items() if v.get("error")}
+    res = {"round": 5, "text": BUSINESS, "files": files, "chosen": chosen, "all_takes": takes, "failed_takes": failed}
+    (out / "results.json").write_text(json.dumps(res, indent=1, ensure_ascii=False), "utf-8")
+    md = ["# Voice lab - round 5 (4_2 and 4_4 locked, business text)", "", f"Text: {BUSINESS}", ""]
+    md += [f"- {k}: {v}" for k, v in files.items()]
+    md += ["", "| voice | take | words wrong | seconds | pitch Hz |", "|---|---|---|---|---|"]
+    md += [f"| {v} | {c.get('take')} | {c['word_errors']} | {c['seconds']} | {c['pitch_median_hz']} |" for v, c in chosen.items()]
+    if failed:
+        md += ["", "Failed takes:"] + [f"- {k}: {e}" for k, e in failed.items()]
+    (out / "RESULTS.md").write_text("\n".join(md) + "\n", "utf-8")
+    print(json.dumps({"files": len(files), "failed_takes": len(failed)}))
+    return 0 if len(files) >= 2 else 1
+
+
 def check(src: Path, out: Path) -> int:
     import numpy as np, librosa
     from faster_whisper import WhisperModel
@@ -801,6 +863,10 @@ def main() -> int:
         vox4a(out, Path(sys.argv[3]).resolve())
     elif cmd == "vox4b":
         vox4b(out)
+    elif cmd == "vox5one":
+        vox5one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve())
+    elif cmd == "round5":
+        return round5(out, Path(sys.argv[3]).resolve())
     elif cmd == "vox4one":
         vox4one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve())
     elif cmd == "round4":
