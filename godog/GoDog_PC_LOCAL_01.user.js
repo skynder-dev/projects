@@ -346,7 +346,7 @@
     return disabledCandidate;
   }
   function getNativeStopButton() {
-    return document.querySelector('[data-testid="stop-button"], button[aria-label="Stop generating"], button[aria-label="Stop generation"], button[aria-label="Stop response"]');
+    return document.querySelector('[data-testid="stop-button"], button[aria-label="Stop"], button[aria-label="Stop generating"], button[aria-label="Stop generation"], button[aria-label="Stop response"]');
   }
   function isBusy() {
     return !!getNativeStopButton();
