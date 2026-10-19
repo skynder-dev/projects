@@ -538,6 +538,14 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   (VoxCPM2 designed "friend with a secret" and "travel vlogger", VoxCPM2 directing voice B, Chatterbox voice B and
   Turbo voice D/E on the spoken script), no music; all 5 say every word. Asked him whether a real human voice sample
   (with that person's consent) is possible - the AI-designed reference passes its AI sound to every copy.
+  Round 3 verdict (02:51): 3.3 and 3.4 bad, 3.5 tolerable ("AI noticeable"), 3.1 (VoxCPM2 designed "friend")
+  "interesting - intonation not bad, breaths and so on, but you can tell it is AI; can it be improved?".
+  Round 4 (run 39226841245, round4/; one CI job per take - the first try 39219048133 in two jobs was too slow and was
+  cancelled; a VoxCPM2 take at 30 steps takes ~8 min on a CPU runner): 3.1 at 30 steps (same seed), a sharper
+  direction at cfg 1.6, the best of six by UTMOS, that take with a "microphone" finishing, 3.1's voice locked on a new
+  text; all say every word. Finding: UTMOS does NOT agree with his ear - Kokoro F (rejected) scores highest (4.53),
+  his favourite 3.1 almost lowest (3.10); it rates clean read speech, not lively speech. So the "best of six" pick is
+  not trusted; his ear decides.
 
 ## Evidence
 
