@@ -26,6 +26,12 @@ He was right (three of five were round 1's very takes). Round 3 works on the voi
   python voice_lab.py cb3    <out> <voice_de.wav>  (Chatterbox: voice B on the spoken script; Turbo: voice D/E)
   python voice_lab.py round3 <in> <out>            (word check against the spoken script, best take, voice3_N.mp3)
 
+Round 3 verdict: only 3.1 (VoxCPM2 designed "friend") is worth working on. Round 4 improves it:
+
+  python voice_lab.py vox4a  <out> <3.1.wav>       (3.1 at 30 steps; sharper direction; 3.1's voice on a new text)
+  python voice_lab.py vox4b  <out>                 (six takes of the sharper direction)
+  python voice_lab.py round4 <in> <out> <branch>   (UTMOS checked against his verdicts, best take, voice4_N.mp3)
+
 Each engine runs in its own venv (their pins clash); CPU only (GitHub runners have no GPU). Synthetic voices only:
 no recordings of real people, no owner data.
 """
@@ -544,6 +550,160 @@ def round3(src: Path, out: Path) -> int:
     return 0 if len(chosen) >= 3 else 1
 
 
+# ---------------------------------------------------------------------------------------------------------- round 4
+# Round 3 verdict: 3.3 and 3.4 bad, 3.5 tolerable ("AI noticeable"), 3.1 (VoxCPM2 designed "friend with a secret")
+# "interesting - intonation not bad, breaths and so on, but you can tell it is AI; can it be improved?". Round 4 works
+# only on 3.1: more diffusion steps, a sharper direction, best of six takes by a naturalness predictor (UTMOS, checked
+# against his earlier verdicts), the same take with and without a "microphone" finishing, and the 3.1 voice locked on
+# a new text. Voice only, no music; finishing is loudness only unless the file says otherwise.
+
+FRIEND2 = ("(A friendly American woman in her late twenties with a clear, natural everyday voice, medium pitch, not "
+           "breathy, sending a voice message to her best friend: spontaneous and unscripted, casual, playful, a bit "
+           "amused, relaxed pace, real pauses and small natural imperfections)")
+NEW_TEXT = ("Hey, quick one. You know that feeling when you pack the night before... and still forget your charger? "
+            "Yeah. Me too. So now I keep a tiny bag that never gets unpacked. Charger, sunscreen, snacks. Done. "
+            "Honestly? Game changer.")
+STEPS4 = 30
+ROUND4 = {
+    "r4_same_more_steps": ("3.1 again (same direction, same seed), 30 steps instead of 10", SPOKEN),
+    "r4_direction_cfg16": ("3.1's character, sharper direction ('voice message, unscripted'), 30 steps, cfg 1.6", SPOKEN),
+    "r4_best_of_six": ("sharper direction, 30 steps: the best of six takes by the naturalness predictor", SPOKEN),
+    "r4_best_of_six_mic": ("the very same take as the best of six, with a 'microphone' finishing", SPOKEN),
+    "r4_locked_new_text": ("3.1's own voice locked (ultimate cloning) on a new text, 30 steps", NEW_TEXT),
+}
+
+
+def _vox2(cpu_model=True):
+    _threads()
+    from voxcpm import VoxCPM
+    m = VoxCPM.from_pretrained("openbmb/VoxCPM2", **_kwargs_that_fit(
+        VoxCPM.from_pretrained, {"load_denoiser": False, "optimize": False, "device": "cpu"}))
+    return m, int(getattr(getattr(m, "tts_model", None), "sample_rate", 0) or 48000)
+
+
+def vox4a(out: Path, ref31: Path) -> None:
+    import torch
+    m, sr = _vox2()
+
+    def make(seed, text, cfg=2.0, **kw):
+        torch.manual_seed(seed)
+        return m.generate(text=text, cfg_value=cfg, inference_timesteps=STEPS4, **kw), sr
+
+    _take(out, "r4_same_more_steps", 1, lambda t: make(801, FRIEND + SPOKEN))     # 3.1 was seed 801, 10 steps
+    _take(out, "r4_direction_cfg16", 1, lambda t: make(901, FRIEND2 + SPOKEN, cfg=1.6))
+    for take in TAKES:
+        _take(out, "r4_locked_new_text", take, lambda t: make(
+            920 + t, NEW_TEXT, prompt_wav_path=str(ref31), prompt_text=SPOKEN, reference_wav_path=str(ref31)))
+
+
+def vox4b(out: Path) -> None:
+    import torch
+    m, sr = _vox2()
+    for take in range(1, 7):
+        _take(out, "r4_best_of_six", take, lambda t: (torch.manual_seed(910 + t), (
+            m.generate(text=FRIEND2 + SPOKEN, cfg_value=2.0, inference_timesteps=STEPS4), sr))[1])
+
+
+def _utmos():
+    """UTMOS22 (strong learner): a predictor of how natural speech sounds, 1-5 (the VoiceMOS 2022 winner)."""
+    import torch
+    return torch.hub.load("tarepan/SpeechMOS:v1.2.0", "utmos22_strong", trust_repo=True)
+
+
+def _mos(pred, wav: Path) -> float:
+    import torch, librosa
+    y, sr = librosa.load(str(wav), sr=16000, mono=True)
+    with torch.no_grad():
+        return round(float(pred(torch.from_numpy(y).unsqueeze(0), 16000).item()), 3)
+
+
+def produce_plain(wav: Path, mp3: Path) -> None:
+    """Loudness only (-16 LUFS), silence at the ends trimmed: the model as it is."""
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(wav), "-af",
+                    "silenceremove=start_periods=1:start_threshold=-50dB,areverse,silenceremove=start_periods=1:"
+                    "start_threshold=-50dB,areverse,adelay=200,apad=pad_dur=0.5,loudnorm=I=-16:TP=-1.5:LRA=11",
+                    "-ar", "48000", "-ac", "1", "-b:a", "192k", str(mp3)], check=True)
+
+
+MIC = ("'microphone' finishing: gentle roll-off above 11 kHz (where a neural vocoder's glassy sheen lives), a touch of "
+       "tape-like saturation, a small room 24 dB under the voice, light compression, loudness -16 LUFS")
+
+
+def produce_mic(wav: Path, mp3: Path) -> None:
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(wav), "-af",
+                    "silenceremove=start_periods=1:start_threshold=-50dB,areverse,silenceremove=start_periods=1:"
+                    "start_threshold=-50dB,areverse,adelay=200,apad=pad_dur=0.5,highpass=f=80,"
+                    "lowpass=f=11000:p=1,asoftclip=type=tanh:threshold=0.9,"
+                    "aecho=0.9:0.9:23|37|53:0.06|0.045|0.03,"
+                    "acompressor=threshold=-22dB:ratio=2:attack=10:release=150:makeup=1.3,"
+                    "loudnorm=I=-16:TP=-1.5:LRA=11", "-ar", "48000", "-ac", "1", "-b:a", "192k", str(mp3)], check=True)
+
+
+# the owner's verdicts on files he heard (to check the predictor against his ear before trusting it)
+VERDICTS = {"latest/voice_A.mp3": "bad", "latest/voice_C.mp3": "bad (too sexy)", "latest/voice_F.mp3": "bad",
+            "latest/voice_B.mp3": "good", "latest/voice_D.mp3": "good", "latest/voice_E.mp3": "good",
+            "round3/voice3_3.mp3": "bad", "round3/voice3_4.mp3": "bad", "round3/voice3_5.mp3": "tolerable",
+            "round3/voice3_1.mp3": "interesting (best)"}
+
+
+def round4(src: Path, out: Path, branch: Path) -> int:
+    from faster_whisper import WhisperModel
+    out.mkdir(parents=True, exist_ok=True)
+    gen = {}
+    for p in src.rglob("gen.json"):
+        gen.update(json.loads(p.read_text("utf-8")))
+    asr = WhisperModel("small.en", device="cpu", compute_type="int8")
+    pred = _utmos()
+    calib = {}
+    for rel, verdict in VERDICTS.items():
+        f = branch / rel
+        if f.exists():
+            calib[rel] = {"verdict": verdict, "utmos": _mos(pred, f)}
+            _log(f"calibration {rel}: {verdict} -> UTMOS {calib[rel]['utmos']}")
+    takes = {}
+    for w in sorted(src.rglob("r4_*_t[0-9].wav")):
+        v = w.stem.rsplit("_t", 1)[0]
+        info = _analyze(asr, w, src, gen, ROUND4.get(v, ("", SPOKEN))[1])
+        info["utmos"] = _mos(pred, w)
+        takes[w.stem] = info
+        _log(f"  {w.stem}: UTMOS {info['utmos']}")
+    chosen = {}
+    for v, (what, _text) in ROUND4.items():
+        if v == "r4_best_of_six_mic":
+            continue
+        have = [i for n, i in takes.items() if n.rsplit("_t", 1)[0] == v]
+        fit = [i for i in have if i["word_errors"] == 0 and 170 <= i["pitch_median_hz"] <= 320] or have
+        if fit:
+            chosen[v] = dict(max(fit, key=lambda i: i["utmos"]), what=what)
+    if "r4_best_of_six" in chosen:
+        chosen["r4_best_of_six_mic"] = dict(chosen["r4_best_of_six"], what=ROUND4["r4_best_of_six_mic"][0])
+    files = {}
+    for i, v in enumerate([v for v in ROUND4 if v in chosen], 1):
+        mp3 = out / f"voice4_{i}.mp3"
+        (produce_mic if v.endswith("_mic") else produce_plain)(src / chosen[v]["file"], mp3)
+        chosen[v]["file_sent"] = mp3.name
+        chosen[v]["utmos_sent_file"] = _mos(pred, mp3)
+        files[mp3.name] = v
+    failed = {k: str(v.get("error")).splitlines()[0][:300] for k, v in gen.items()
+              if v.get("error") and k.startswith("r4_")}
+    res = {"round": 4, "spoken_text": SPOKEN, "new_text": NEW_TEXT, "direction_3_1": FRIEND, "direction_r4": FRIEND2,
+           "steps": STEPS4, "mic_finishing": MIC, "files": files, "variants": chosen, "all_takes": takes,
+           "failed_takes": failed, "utmos_vs_owner": calib,
+           "note": "UTMOS is a machine estimate of naturalness (1-5); it only helps pick among takes - the owner's ear decides."}
+    (out / "results.json").write_text(json.dumps(res, indent=1, ensure_ascii=False), "utf-8")
+    md = ["# Voice lab - round 4 (3.1 improved)", "", "| file | what | words wrong | seconds | pitch Hz | UTMOS |",
+          "|---|---|---|---|---|---|"]
+    for v, b in chosen.items():
+        md.append(f"| {b['file_sent']} | {b['what']} | {b['word_errors']} | {b['seconds']} | {b['pitch_median_hz']} | "
+                  f"{b.get('utmos_sent_file')} |")
+    md += ["", "UTMOS against the owner's verdicts:", ""] + [f"- {k}: {c['verdict']} -> {c['utmos']}" for k, c in calib.items()]
+    if failed:
+        md += ["", "Failed takes:"] + [f"- {k}: {e}" for k, e in failed.items()]
+    (out / "RESULTS.md").write_text("\n".join(md) + "\n", "utf-8")
+    print(json.dumps({"made": len(chosen), "of": len(ROUND4), "failed_takes": len(failed)}))
+    return 0 if len(chosen) >= 3 else 1
+
+
 def check(src: Path, out: Path) -> int:
     import numpy as np, librosa
     from faster_whisper import WhisperModel
@@ -617,6 +777,12 @@ def main() -> int:
         cb3(out, Path(sys.argv[3]).resolve())
     elif cmd == "round3":
         return round3(out, Path(sys.argv[3]).resolve())
+    elif cmd == "vox4a":
+        vox4a(out, Path(sys.argv[3]).resolve())
+    elif cmd == "vox4b":
+        vox4b(out)
+    elif cmd == "round4":
+        return round4(out, Path(sys.argv[3]).resolve(), Path(sys.argv[4]).resolve())
     else:
         raise SystemExit(f"unknown command {cmd}")
     return 0
