@@ -1,0 +1,38 @@
+{
+ "qwen_design_warm_t1": {
+  "variant": "qwen_design_warm",
+  "take": 1,
+  "seconds_to_make": 155.7,
+  "sr": 24000
+ },
+ "qwen_design_upbeat_t1": {
+  "variant": "qwen_design_upbeat",
+  "take": 1,
+  "seconds_to_make": 130.2,
+  "sr": 24000
+ },
+ "qwen_design_warm_t2": {
+  "variant": "qwen_design_warm",
+  "take": 2,
+  "seconds_to_make": 129.5,
+  "sr": 24000
+ },
+ "qwen_design_upbeat_t2": {
+  "variant": "qwen_design_upbeat",
+  "take": 2,
+  "seconds_to_make": 119.8,
+  "sr": 24000
+ },
+ "qwen_locked_t1": {
+  "variant": "qwen_locked",
+  "take": 1,
+  "seconds_to_make": 117.4,
+  "sr": 24000
+ },
+ "qwen_locked_t2": {
+  "variant": "qwen_locked",
+  "take": 2,
+  "seconds_to_make": 112.5,
+  "sr": 24000
+ }
+}

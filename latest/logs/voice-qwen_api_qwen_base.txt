@@ -1,0 +1,11 @@
+create_voice_clone_prompt(ref_audio: Union[str, numpy.ndarray, Tuple[numpy.ndarray, int], List[Union[str, numpy.ndarray, Tuple[numpy.ndarray, int]]]], ref_text: Union[str, List[Optional[str]], NoneType] = None, x_vector_only_mode: Union[bool, List[bool]] = False) -> List[qwen_tts.inference.qwen3_tts_model.VoiceClonePromptItem]
+device
+from_pretrained(pretrained_model_name_or_path: str, **kwargs) -> 'Qwen3TTSModel'
+generate_custom_voice(text: Union[str, List[str]], speaker: Union[str, List[str]], language: Union[str, List[str]] = None, instruct: Union[str, List[str], NoneType] = None, non_streaming_mode: bool = True, **kwargs) -> Tuple[List[numpy.ndarray], int]
+generate_defaults
+generate_voice_clone(text: Union[str, List[str]], language: Union[str, List[str]] = None, ref_audio: Union[str, numpy.ndarray, Tuple[numpy.ndarray, int], List[Union[str, numpy.ndarray, Tuple[numpy.ndarray, int]]], NoneType] = None, ref_text: Union[str, List[Optional[str]], NoneType] = None, x_vector_only_mode: Union[bool, List[bool]] = False, voice_clone_prompt: Union[Dict[str, Any], List[qwen_tts.inference.qwen3_tts_model.VoiceClonePromptItem], NoneType] = None, non_streaming_mode: bool = False, **kwargs) -> Tuple[List[numpy.ndarray], int]
+generate_voice_design(text: Union[str, List[str]], instruct: Union[str, List[str]], language: Union[str, List[str]] = None, non_streaming_mode: bool = True, **kwargs) -> Tuple[List[numpy.ndarray], int]
+get_supported_languages() -> Optional[List[str]]
+get_supported_speakers() -> Optional[List[str]]
+model(*args, **kwargs)
+processor(text=None, **kwargs) -> transformers.feature_extraction_utils.BatchFeature

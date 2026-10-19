@@ -1,0 +1,24 @@
+[0;93m2026-10-19 04:08:06.654115661 [W:onnxruntime:Default, device_discovery.cc:95 GetPciBusId] Skipping pci_bus_id for PCI path at "/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/5620e0c7-8062-4dce-aeb7-520c7ef76171" because filename "5620e0c7-8062-4dce-aeb7-520c7ef76171" did not match expected pattern of [0-9a-f]+:[0-9a-f]+:[0-9a-f]+[.][0-9a-f]+[m
+
+********
+Warning: flash-attn is not installed. Will only run the manual PyTorch version. Please install flash-attn for faster inference.
+********
+ 
+04:08:06 loading Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign
+Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]Fetching 4 files:  25%|██▌       | 1/4 [00:00<00:00,  8.02it/s]Fetching 4 files: 100%|██████████| 4/4 [00:06<00:00,  1.61s/it]Fetching 4 files: 100%|██████████| 4/4 [00:06<00:00,  1.61s/it]
+Setting `pad_token_id` to `eos_token_id`:2150 for open-end generation.
+04:09:23 made the locked reference voice
+Setting `pad_token_id` to `eos_token_id`:2150 for open-end generation.
+04:11:59 made qwen_design_warm_t1 in 156 s
+Setting `pad_token_id` to `eos_token_id`:2150 for open-end generation.
+04:14:09 made qwen_design_upbeat_t1 in 130 s
+Setting `pad_token_id` to `eos_token_id`:2150 for open-end generation.
+04:16:18 made qwen_design_warm_t2 in 130 s
+Setting `pad_token_id` to `eos_token_id`:2150 for open-end generation.
+04:18:18 made qwen_design_upbeat_t2 in 120 s
+04:18:18 loading Qwen/Qwen3-TTS-12Hz-1.7B-Base
+Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]Fetching 4 files:  25%|██▌       | 1/4 [00:00<00:00,  7.81it/s]Fetching 4 files: 100%|██████████| 4/4 [00:04<00:00,  1.01s/it]Fetching 4 files: 100%|██████████| 4/4 [00:04<00:00,  1.01s/it]
+Setting `pad_token_id` to `eos_token_id`:2150 for open-end generation.
+04:20:52 made qwen_locked_t1 in 117 s
+Setting `pad_token_id` to `eos_token_id`:2150 for open-end generation.
+04:22:45 made qwen_locked_t2 in 113 s

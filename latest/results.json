@@ -1,0 +1,379 @@
+{
+ "text": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need ten outfits. You need three, and one really good hat. We tried it last summer, and honestly? It changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments!",
+ "reference_text": "Hi! I'm so glad you're here. Today I want to show you something simple that made my mornings so much easier.",
+ "descriptions": {
+  "warm": "A warm, friendly young American woman in her late twenties, talking casually to a good friend. She smiles while she talks, with natural rises and falls in pitch, a relaxed pace and small natural pauses. Never flat, never like reading an announcement.",
+  "upbeat": "An upbeat, energetic young female social media host from California. Bright and expressive, playful emphasis on key words, lively but clear, a medium-fast pace."
+ },
+ "blind": {
+  "A": "qwen_design_upbeat",
+  "B": "chatterbox_builtin",
+  "C": "qwen_design_warm",
+  "D": "qwen_locked",
+  "E": "chatterbox_locked",
+  "F": "kokoro_af_heart"
+ },
+ "variants": {
+  "kokoro_af_heart": {
+   "what": "Kokoro-82M, voice af_heart, speed 1.0 (what Social uses now)",
+   "variant": "kokoro_af_heart",
+   "take": 1,
+   "seconds_to_make": 6.7,
+   "sr": 24000,
+   "file": "voice-kokoro/kokoro_af_heart_t1.wav",
+   "seconds": 16.57,
+   "said": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need ten outfits. You need three and one really good hat. We tried it last summer and honestly, it changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 204.4,
+   "pitch_movement_semitones": 2.88,
+   "female_range": true,
+   "words_per_minute": 191.9,
+   "letter": "F"
+  },
+  "chatterbox_builtin": {
+   "what": "Chatterbox, built-in voice, exaggeration 0.7, cfg 0.3 (more expressive than default)",
+   "variant": "chatterbox_builtin",
+   "take": 2,
+   "seconds_to_make": 134.0,
+   "sr": 24000,
+   "file": "voice-chatterbox/chatterbox_builtin_t2.wav",
+   "seconds": 19.16,
+   "said": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need ten outfits, you need three and one really good hat. We tried it last summer, and honestly, it changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 283.3,
+   "pitch_movement_semitones": 4.66,
+   "female_range": true,
+   "words_per_minute": 166.0,
+   "letter": "B"
+  },
+  "chatterbox_locked": {
+   "what": "Chatterbox, the locked designed voice as reference, exaggeration 0.6, cfg 0.4",
+   "variant": "chatterbox_locked",
+   "take": 1,
+   "seconds_to_make": 136.9,
+   "sr": 24000,
+   "file": "voice-chatterbox/chatterbox_locked_t1.wav",
+   "seconds": 19.12,
+   "said": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need ten outfits. You need three, and one really good hat. We tried it last summer, and honestly, it changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments!",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 252.4,
+   "pitch_movement_semitones": 4.77,
+   "female_range": true,
+   "words_per_minute": 166.3,
+   "letter": "E"
+  },
+  "qwen_design_warm": {
+   "what": "Qwen3-TTS 1.7B VoiceDesign, 'warm friendly young American woman, casual'",
+   "variant": "qwen_design_warm",
+   "take": 1,
+   "seconds_to_make": 155.7,
+   "sr": 24000,
+   "file": "voice-qwen/qwen_design_warm_t1.wav",
+   "seconds": 21.28,
+   "said": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need 10 outfits. You need three and one really good hat. We tried it last summer, and honestly, it changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments.",
+   "word_errors": 1,
+   "word_error_rate": 0.019,
+   "missing": [
+    "ten"
+   ],
+   "extra": [
+    "10"
+   ],
+   "pitch_median_hz": 278.4,
+   "pitch_movement_semitones": 3.64,
+   "female_range": true,
+   "words_per_minute": 149.4,
+   "letter": "C"
+  },
+  "qwen_design_upbeat": {
+   "what": "Qwen3-TTS 1.7B VoiceDesign, 'upbeat energetic social media host'",
+   "variant": "qwen_design_upbeat",
+   "take": 2,
+   "seconds_to_make": 119.8,
+   "sr": 24000,
+   "file": "voice-qwen/qwen_design_upbeat_t2.wav",
+   "seconds": 17.44,
+   "said": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need 10 outfits. You need three and one really good hat. We tried it last summer, and honestly, it changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments.",
+   "word_errors": 1,
+   "word_error_rate": 0.019,
+   "missing": [
+    "ten"
+   ],
+   "extra": [
+    "10"
+   ],
+   "pitch_median_hz": 334.9,
+   "pitch_movement_semitones": 3.21,
+   "female_range": false,
+   "words_per_minute": 182.3,
+   "letter": "A"
+  },
+  "qwen_locked": {
+   "what": "Qwen3-TTS 1.7B Base, cloning the locked designed voice (the same character every time)",
+   "variant": "qwen_locked",
+   "take": 1,
+   "seconds_to_make": 117.4,
+   "sr": 24000,
+   "file": "voice-qwen/qwen_locked_t1.wav",
+   "seconds": 17.04,
+   "said": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need ten outfits, you need three, and one really good hat. We tried it last summer, and honestly, it changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 239.6,
+   "pitch_movement_semitones": 4.57,
+   "female_range": true,
+   "words_per_minute": 186.6,
+   "letter": "D"
+  }
+ },
+ "missing_variants": [],
+ "failed_takes": {},
+ "all_takes": {
+  "chatterbox_builtin_t1": {
+   "variant": "chatterbox_builtin",
+   "take": 1,
+   "seconds_to_make": 96.6,
+   "sr": 24000,
+   "file": "voice-chatterbox/chatterbox_builtin_t1.wav",
+   "seconds": 12.48,
+   "said": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need 10 outfits, you need 3 and one really good hat. We tried it last summer and honestly, it changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments!",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "ten",
+    "three"
+   ],
+   "extra": [
+    "10",
+    "3"
+   ],
+   "pitch_median_hz": 157.1,
+   "pitch_movement_semitones": 5.38,
+   "female_range": false,
+   "words_per_minute": 254.8
+  },
+  "chatterbox_builtin_t2": {
+   "variant": "chatterbox_builtin",
+   "take": 2,
+   "seconds_to_make": 134.0,
+   "sr": 24000,
+   "file": "voice-chatterbox/chatterbox_builtin_t2.wav",
+   "seconds": 19.16,
+   "said": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need ten outfits, you need three and one really good hat. We tried it last summer, and honestly, it changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 283.3,
+   "pitch_movement_semitones": 4.66,
+   "female_range": true,
+   "words_per_minute": 166.0,
+   "letter": "B"
+  },
+  "chatterbox_locked_t1": {
+   "variant": "chatterbox_locked",
+   "take": 1,
+   "seconds_to_make": 136.9,
+   "sr": 24000,
+   "file": "voice-chatterbox/chatterbox_locked_t1.wav",
+   "seconds": 19.12,
+   "said": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need ten outfits. You need three, and one really good hat. We tried it last summer, and honestly, it changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments!",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 252.4,
+   "pitch_movement_semitones": 4.77,
+   "female_range": true,
+   "words_per_minute": 166.3,
+   "letter": "E"
+  },
+  "chatterbox_locked_t2": {
+   "variant": "chatterbox_locked",
+   "take": 2,
+   "seconds_to_make": 138.6,
+   "sr": 24000,
+   "file": "voice-chatterbox/chatterbox_locked_t2.wav",
+   "seconds": 20.04,
+   "said": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need 10 outfits. You need 3 and 1 really good hat. We tried it last summer, and honestly, it changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments.",
+   "word_errors": 3,
+   "word_error_rate": 0.057,
+   "missing": [
+    "ten",
+    "three",
+    "one"
+   ],
+   "extra": [
+    "10",
+    "3",
+    "1"
+   ],
+   "pitch_median_hz": 265.8,
+   "pitch_movement_semitones": 4.74,
+   "female_range": true,
+   "words_per_minute": 158.7
+  },
+  "kokoro_af_heart_t1": {
+   "variant": "kokoro_af_heart",
+   "take": 1,
+   "seconds_to_make": 6.7,
+   "sr": 24000,
+   "file": "voice-kokoro/kokoro_af_heart_t1.wav",
+   "seconds": 16.57,
+   "said": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need ten outfits. You need three and one really good hat. We tried it last summer and honestly, it changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 204.4,
+   "pitch_movement_semitones": 2.88,
+   "female_range": true,
+   "words_per_minute": 191.9,
+   "letter": "F"
+  },
+  "qwen_design_upbeat_t1": {
+   "variant": "qwen_design_upbeat",
+   "take": 1,
+   "seconds_to_make": 130.2,
+   "sr": 24000,
+   "file": "voice-qwen/qwen_design_upbeat_t1.wav",
+   "seconds": 18.56,
+   "said": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need 10 outfits. You need three in one really good hat. We tried it last summer and honestly, it changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "ten",
+    "and"
+   ],
+   "extra": [
+    "10",
+    "in"
+   ],
+   "pitch_median_hz": 340.8,
+   "pitch_movement_semitones": 3.78,
+   "female_range": false,
+   "words_per_minute": 171.3
+  },
+  "qwen_design_upbeat_t2": {
+   "variant": "qwen_design_upbeat",
+   "take": 2,
+   "seconds_to_make": 119.8,
+   "sr": 24000,
+   "file": "voice-qwen/qwen_design_upbeat_t2.wav",
+   "seconds": 17.44,
+   "said": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need 10 outfits. You need three and one really good hat. We tried it last summer, and honestly, it changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments.",
+   "word_errors": 1,
+   "word_error_rate": 0.019,
+   "missing": [
+    "ten"
+   ],
+   "extra": [
+    "10"
+   ],
+   "pitch_median_hz": 334.9,
+   "pitch_movement_semitones": 3.21,
+   "female_range": false,
+   "words_per_minute": 182.3,
+   "letter": "A"
+  },
+  "qwen_design_warm_t1": {
+   "variant": "qwen_design_warm",
+   "take": 1,
+   "seconds_to_make": 155.7,
+   "sr": 24000,
+   "file": "voice-qwen/qwen_design_warm_t1.wav",
+   "seconds": 21.28,
+   "said": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need 10 outfits. You need three and one really good hat. We tried it last summer, and honestly, it changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments.",
+   "word_errors": 1,
+   "word_error_rate": 0.019,
+   "missing": [
+    "ten"
+   ],
+   "extra": [
+    "10"
+   ],
+   "pitch_median_hz": 278.4,
+   "pitch_movement_semitones": 3.64,
+   "female_range": true,
+   "words_per_minute": 149.4,
+   "letter": "C"
+  },
+  "qwen_design_warm_t2": {
+   "variant": "qwen_design_warm",
+   "take": 2,
+   "seconds_to_make": 129.5,
+   "sr": 24000,
+   "file": "voice-qwen/qwen_design_warm_t2.wav",
+   "seconds": 19.12,
+   "said": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need 10 outfits. You need three and one really good hat. We tried it last summer and honestly, it changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments.",
+   "word_errors": 1,
+   "word_error_rate": 0.019,
+   "missing": [
+    "ten"
+   ],
+   "extra": [
+    "10"
+   ],
+   "pitch_median_hz": 261.2,
+   "pitch_movement_semitones": 3.59,
+   "female_range": true,
+   "words_per_minute": 166.3
+  },
+  "qwen_locked_t1": {
+   "variant": "qwen_locked",
+   "take": 1,
+   "seconds_to_make": 117.4,
+   "sr": 24000,
+   "file": "voice-qwen/qwen_locked_t1.wav",
+   "seconds": 17.04,
+   "said": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need ten outfits, you need three, and one really good hat. We tried it last summer, and honestly, it changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 239.6,
+   "pitch_movement_semitones": 4.57,
+   "female_range": true,
+   "words_per_minute": 186.6,
+   "letter": "D"
+  },
+  "qwen_locked_t2": {
+   "variant": "qwen_locked",
+   "take": 2,
+   "seconds_to_make": 112.5,
+   "sr": 24000,
+   "file": "voice-qwen/qwen_locked_t2.wav",
+   "seconds": 16.32,
+   "said": "Okay, so here's something nobody tells you about packing for a beach trip. You don't need 10 outfits. You need three and one really good hat. We tried it last summer, and honestly, it changed everything. Less stuff, more time in the water. Would you try it? Let me know in the comments.",
+   "word_errors": 1,
+   "word_error_rate": 0.019,
+   "missing": [
+    "ten"
+   ],
+   "extra": [
+    "10"
+   ],
+   "pitch_median_hz": 259.7,
+   "pitch_movement_semitones": 4.04,
+   "female_range": true,
+   "words_per_minute": 194.9
+  }
+ },
+ "licenses": {
+  "kokoro": "Kokoro-82M: Apache-2.0 (misaki uses espeak-ng: GPL-3 - check before shipping)",
+  "chatterbox": "Chatterbox: MIT (outputs carry Resemble's inaudible Perth watermark)",
+  "qwen": "Qwen3-TTS: Apache-2.0"
+ },
+ "note": "CPU only (GitHub runner); seconds_to_make on the owner's RTX 3060 will be far lower. Loudness of every file evened out (-16 LUFS) so that no voice wins by being louder."
+}

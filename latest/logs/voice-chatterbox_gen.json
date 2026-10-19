@@ -1,0 +1,26 @@
+{
+ "chatterbox_builtin_t1": {
+  "variant": "chatterbox_builtin",
+  "take": 1,
+  "seconds_to_make": 96.6,
+  "sr": 24000
+ },
+ "chatterbox_locked_t1": {
+  "variant": "chatterbox_locked",
+  "take": 1,
+  "seconds_to_make": 136.9,
+  "sr": 24000
+ },
+ "chatterbox_builtin_t2": {
+  "variant": "chatterbox_builtin",
+  "take": 2,
+  "seconds_to_make": 134.0,
+  "sr": 24000
+ },
+ "chatterbox_locked_t2": {
+  "variant": "chatterbox_locked",
+  "take": 2,
+  "seconds_to_make": 138.6,
+  "sr": 24000
+ }
+}
