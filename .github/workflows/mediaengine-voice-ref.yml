@@ -1,0 +1,37 @@
+name: mediaengine-voice-ref
+# The recording of voice 3.1 (voice lab round 3, VoxCPM2 "friend" - the owner's pick, 2026-10-19) as FLAC for the
+# program's voice add-on (its "always the same voice"). A synthetic voice (no real person). Published to branch
+# mediaengine-voice-lab ref/ and copied into app/archivist/assets/voice by hand.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/mediaengine-voice-ref.yml'
+permissions:
+  contents: write
+  actions: read
+jobs:
+  ref:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: voice3-vox
+          path: ${{ runner.temp }}/r3
+          run-id: '39214928456'
+          github-token: ${{ github.token }}
+      - name: FLAC of take 3.1 (lossless)
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
+          mkdir -p "$RUNNER_TEMP/out"
+          ffmpeg -v error -i "$RUNNER_TEMP/r3/vox_friend_t1.wav" -c:a flac -compression_level 8 "$RUNNER_TEMP/out/friend_3_1.flac"
+          sha256sum "$RUNNER_TEMP/r3/vox_friend_t1.wav" "$RUNNER_TEMP/out/friend_3_1.flac" > "$RUNNER_TEMP/out/SHA256.txt"
+          ffmpeg -i "$RUNNER_TEMP/out/friend_3_1.flac" 2>&1 | grep -E "Duration|Stream" >> "$RUNNER_TEMP/out/SHA256.txt" || true
+      - name: Publish to branch mediaengine-voice-lab (ref/)
+        run: |
+          pub="$RUNNER_TEMP/pub"
+          git clone -q --depth 1 --branch mediaengine-voice-lab "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "$pub"
+          rm -rf "$pub/ref"; mkdir -p "$pub/ref"; cp "$RUNNER_TEMP"/out/* "$pub/ref/"
+          cd "$pub"; git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
+          git add -A; git commit -q -m "mediaengine voice ref (take 3.1)"; git push -q origin HEAD:mediaengine-voice-lab
