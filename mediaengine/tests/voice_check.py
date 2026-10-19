@@ -164,6 +164,30 @@ def main() -> int:
     check("a copy is saved next to the reels ('<name> - voice.mp4')", dres.get("saved", "").endswith("clip - voice.mp4")
           and Path(dres["saved"]).is_file(), dres.get("saved"))
 
+    # the sound of the new video: AAC at 48 kHz (not the 192 kHz of the loudness filter)
+    head = subprocess.run([ff, "-hide_banner", "-i", str(Path(dj["dir"]) / "video.mp4")], capture_output=True, text=True).stderr
+    rates = re.findall(r"Audio: (\w+).*?(\d+) Hz", head)
+    check("its sound is AAC at 48 kHz", rates == [("aac", "48000")], rates)
+
+    # a video with an odd width and height (H.264 needs even ones), a start time written with a comma
+    odd = home / "odd size.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=539x959:rate=25:duration=1", "-c:v", "libx264",
+                    "-pix_fmt", "yuv444p", str(odd)], check=True)
+    r = c.post(f"/auto/voice/{jid}/dub", data={"video": str(odd), "captions": "1", "start": "0,5"}, headers=H)
+    oj = wait(vo.list_jobs()[0]["id"])
+    ores = oj.get("result") or {}
+    ojob = json.loads((Path(oj["dir"]) / "job.json").read_text("utf-8"))
+    check("an odd-sized video without sound gets the voice (made even)", oj["state"] == "done" and ores.get("width") == 538
+          and ores.get("height") == 958, ores)
+    check("'0,5' is half a second", abs(float(ojob.get("start_s") or 0) - 0.5) < 1e-9, ojob.get("start_s"))
+    r = c.post(f"/auto/voice/{jid}/dub", data={"video": str(odd), "start": "soon"}, headers=H)
+    check("a start time that is not a number: refused in words", r.status_code == 400, r.status_code)
+
+    # Try again: a finished job made again in its own folder
+    r = c.post(f"/auto/voice/{oj['id']}/retry", headers=H)
+    rj = wait(oj["id"])
+    check("Try again makes it again", r.status_code == 302 and rj["state"] == "done", rj.get("result"))
+
     # captions for the video's own speech
     r = c.post("/auto/voice/captions", data={"path": str(video), "language": "", "position": "middle"}, headers=H)
     cj = wait(vo.list_jobs()[0]["id"])

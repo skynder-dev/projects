@@ -105,6 +105,19 @@ def main() -> int:
     shutil.copy2(d / "captions.srt", out / "voice.srt")
     timings["voiceover"] = {k: res.get(k) for k in ("device", "seconds", "load_s", "steps", "chunks")}
 
+    # 2b. Russian (the words go through the worker's output in UTF-8 whatever the Windows code page)
+    t0 = time.time()
+    c.post("/auto/voice/new", data={"text": "Привет! Это короткая проверка голоса.", "voice": "friend", "language": "ru"}, headers=H)
+    rj = wait(vo.list_jobs()[0]["id"], 3 * 3600)
+    timings["russian_s"] = round(time.time() - t0)
+    rres = rj.get("result") or {}
+    said = str(rres.get("said") or "")
+    import re as _re
+    check("a Russian voice-over in the same voice, heard back in Cyrillic", rj["state"] == "done"
+          and len(_re.findall(r"[а-яё]+", said.lower())) >= 3 and int(rres.get("word_errors") or 0) <= 2, rres.get("said") or rres.get("error"))
+    if rj["state"] == "done":
+        shutil.copy2(Path(rj["dir"]) / "voice.wav", out / "voice_ru.wav")
+
     # 3. onto a video, with captions
     t0 = time.time()
     r = c.post(f"/auto/voice/{jid}/dub", data={"video": a.video, "keep_sound": "1", "captions": "1", "position": "bottom",

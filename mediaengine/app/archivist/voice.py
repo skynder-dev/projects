@@ -57,7 +57,8 @@ PACKAGES = [
     f"torch=={TORCH}", f"torchaudio=={TORCH}", "tqdm==4.70.1", "transformers==5.20.1", "truststore==0.10.5",
     "typing-extensions==4.16.0", "typing-inspection==0.4.4", "urllib3==2.8.0", "voxcpm==2.0.3", "xxhash==4.0.2",
 ]
-CUDA_INDEX = "https://download.pytorch.org/whl/cu126"      # RTX 20xx-50xx (torch's CUDA 12.6 build)
+CUDA_INDEX = "https://download.pytorch.org/whl/cu126"      # GTX 10xx - RTX 40xx (torch's CUDA 12.6 build)
+CUDA_INDEX_NEW = "https://download.pytorch.org/whl/cu128"  # RTX 50xx (Blackwell needs CUDA 12.8)
 VOXCPM_REPO, VOXCPM_REV = "openbmb/VoxCPM2", "32279effe8c19989596f05d353d1447f51d9e915"
 WHISPER_REPO, WHISPER_REV = "Systran/faster-whisper-small", "536b0662742c02347bc0e980a01041f333bce120"
 NEED_FREE = 20 * 10 ** 9            # packages (2.8 GB with CPU torch, ~5 GB with CUDA) + models (5.4 GB) + room
@@ -164,6 +165,8 @@ def start_install(cpu: bool = False) -> None:
     with _LOCK:
         if INSTALL["state"] == "running":
             raise VoiceError("The voice add-on is already being installed.")
+        if installed() and not cpu:
+            raise VoiceError("The voice add-on is already installed.")
         if busy():
             raise VoiceError("A voice-over is being made. Install when it is ready.")
         INSTALL.update(state="running", step="checking", done=0, total=0, error="", detail="", started=time.time())
@@ -216,7 +219,7 @@ def _pip(site_dir: Path, cpu: bool, log: Path) -> None:
            "--progress-bar", "off", "--no-cache-dir", "--only-binary", ":all:", "--no-deps", "--target", str(site_dir),
            "--index-url", "https://pypi.org/simple"]
     if not cpu:
-        cmd += ["--extra-index-url", CUDA_INDEX]
+        cmd += ["--extra-index-url", CUDA_INDEX_NEW if re.search(r"RTX\s*50\d0", _nvidia_name(), re.I) else CUDA_INDEX]
     cmd += PACKAGES
     env = dict(os.environ, TMP=str(tmp), TEMP=str(tmp), PIP_NO_INPUT="1", PYTHONNOUSERSITE="1")
     env.pop("PYTHONPATH", None)
@@ -226,6 +229,7 @@ def _pip(site_dir: Path, cpu: bool, log: Path) -> None:
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, text=True,
                                 encoding="utf-8", errors="replace", env=env, **process_kwargs(below_normal=True))
         ae._attach_job_object(proc)
+        threading.Thread(target=lambda: (_STOP.wait(), proc.poll() is None and proc.kill()), daemon=True).start()
         for line in proc.stdout:
             lf.write(line)
             m = re.match(r"\s*(Collecting|Downloading|Installing collected packages|Successfully installed)\s*(\S*)", line)
@@ -245,6 +249,12 @@ def _pip(site_dir: Path, cpu: bool, log: Path) -> None:
 
 
 def _install(cpu: bool) -> None:
+    from .platform_adapter import keep_awake
+    with keep_awake():                       # a PC that sleeps drops the download (pip would start over)
+        _install_now(cpu)
+
+
+def _install_now(cpu: bool) -> None:
     import http.client, socket, urllib.error
     from . import auto_edit as ae
     log = ROOT / "install.log"
@@ -271,6 +281,9 @@ def _install(cpu: bool) -> None:
             dst = MODELS / (key + ".__install__") / name
             dst.parent.mkdir(parents=True, exist_ok=True)
             INSTALL.update(detail=Path(name).name)
+            have = MODELS / key / name
+            if not _file_ok(dst, size, kind, want) and _file_ok(have, size, kind, want):
+                ae._replace_retry(have, dst)              # from an earlier install: moved, not downloaded again
             if not _file_ok(dst, size, kind, want):
                 part = dst.with_name(dst.name + ".part")
                 base = done
@@ -287,12 +300,19 @@ def _install(cpu: bool) -> None:
             fin = MODELS / key
             if fin.exists():
                 shutil.rmtree(fin, ignore_errors=True)
-            os.replace(MODELS / (key + ".__install__"), fin)
+            ae._replace_retry(MODELS / (key + ".__install__"), fin, tries=30)
+        old = None
         if SITE.exists():
             old = ROOT / f"site.__old__{int(time.time())}"
-            os.replace(SITE, old)
+            ae._replace_retry(SITE, old, tries=30)
+        try:
+            ae._replace_retry(new_site, SITE, tries=30)
+        except Exception:
+            if old is not None and not SITE.exists():
+                ae._replace_retry(old, SITE, tries=30)          # the add-on as it was
+            raise
+        if old is not None:
             shutil.rmtree(old, ignore_errors=True)
-        os.replace(new_site, SITE)
         test = _run_worker({"task": "selftest"}, ROOT / "selftest", timeout=600)
         if not test.get("ok"):
             raise VoiceError("The voice add-on was installed but does not start: " + str(test.get("error") or "")[:300])
@@ -339,6 +359,8 @@ def remove_addon() -> None:
         raise VoiceError("The voice add-on is busy. Wait until it has finished.")
     for name in ("site", "models", "site.__install__", "tmp", "selftest"):
         shutil.rmtree(ROOT / name, ignore_errors=True)
+    for old in ROOT.glob("site.__old__*"):
+        shutil.rmtree(old, ignore_errors=True)
     MANIFEST.unlink(missing_ok=True)
     INSTALL.update(state="idle", step="", error="", detail="", done=0, total=0)
 
@@ -352,12 +374,13 @@ def _run_worker(job: dict, work: Path, timeout: float = 3600, on_line=None) -> d
                work_dir=str(work))
     jf = work / "worker_job.json"
     jf.write_text(json.dumps(job, ensure_ascii=False, indent=1), "utf-8")
-    env = {k: v for k, v in os.environ.items() if not k.upper().startswith(("PYTHON", "HF_", "TRANSFORMERS"))}
+    env = {k: v for k, v in os.environ.items() if not k.upper().startswith(("PYTHON", "HF_", "TRANSFORMERS"))
+           and k.upper() not in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS", "NUMEXPR_NUM_THREADS")}
     env.update(HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1", PYTHONIOENCODING="utf-8", PYTHONUTF8="1")
     log = work.parent / "worker.log"          # next to the work folder: kept when the pieces are cleaned away
     res: dict = {}
     with log.open("a", encoding="utf-8", errors="replace") as lf:
-        proc = subprocess.Popen([_python(), "-S", "-E", "-B", str(WORKER), str(jf)], stdout=subprocess.PIPE,
+        proc = subprocess.Popen([_python(), "-S", "-E", "-B", "-X", "utf8", str(WORKER), str(jf)], stdout=subprocess.PIPE,
                                 stderr=lf, stdin=subprocess.DEVNULL, text=True, encoding="utf-8", errors="replace", env=env,
                                 cwd=str(work), **process_kwargs(below_normal=True))
         ae._attach_job_object(proc)
@@ -442,11 +465,22 @@ def align(script: str, heard: list[dict]) -> list[dict]:
             n = i2 - i1
             for k in range(n):
                 times[i1 + k] = (s + (e - s) * k / n, s + (e - s) * (k + 1) / n)
-    for i, t in enumerate(times):                  # not heard: between the neighbours
-        if t is None:
-            prev = next((times[j][1] for j in range(i - 1, -1, -1) if times[j]), 0.0)
-            nxt = next((times[j][0] for j in range(i + 1, len(times)) if times[j]), prev + 0.3)
-            times[i] = (prev, max(prev + 0.05, min(nxt, prev + 0.3)))
+    i = 0
+    while i < len(times):                          # words not heard: spread evenly between their neighbours
+        if times[i] is not None:
+            i += 1
+            continue
+        j = i
+        while j < len(times) and times[j] is None:
+            j += 1
+        prev = times[i - 1][1] if i > 0 else (times[j][0] - 0.3 * (j - i) if j < len(times) else 0.0)
+        prev = max(0.0, prev)
+        nxt = times[j][0] if j < len(times) else prev + 0.3 * (j - i)
+        step = max(0.05, (nxt - prev) / (j - i)) if nxt > prev else 0.05
+        for k in range(i, j):
+            s0 = prev + step * (k - i)
+            times[k] = (s0, s0 + step)
+        i = j
     return [{"w": t, "s": round(times[i][0], 3), "e": round(max(times[i][1], times[i][0] + 0.05), 3)} for i, t in enumerate(toks)]
 
 
@@ -463,10 +497,10 @@ def cues(words: list[dict], max_words: int = 4, max_s: float = 1.8) -> list[dict
         out.append(cur)
     res = []
     for i, c in enumerate(out):
-        end = c[-1]["e"] + 0.15
-        if i + 1 < len(out):
+        end = max(c[-1]["e"] + 0.15, c[0]["s"] + 0.3)       # long enough to read...
+        if i + 1 < len(out):                                 # ...but never over the next caption (two lines would stack)
             end = min(end, out[i + 1][0]["s"] - 0.01)
-        res.append({"s": c[0]["s"], "e": max(end, c[0]["s"] + 0.3), "words": c})
+        res.append({"s": c[0]["s"], "e": max(end, c[0]["s"] + 0.05), "words": c})
     return res
 
 
@@ -581,6 +615,8 @@ def _need_addon() -> None:
 
 def _submit(job: dict) -> str:
     _need_addon()
+    if installing():
+        raise VoiceError("The voice add-on is being installed. Wait until it is ready.")
     jid = _new_id()
     d = JOBS / jid
     d.mkdir(parents=True, exist_ok=True)
@@ -622,8 +658,6 @@ def new_voiceover(text: str, voice: str, description: str = "", ref_path: str = 
         p = Path(str(ref_path or "").strip().strip('"'))
         if not p.is_file():
             raise VoiceError("Choose the recording of the voice (a WAV, MP3 or M4A of 5-30 seconds of one person speaking).")
-        if p.suffix.lower() not in (".wav", ".mp3", ".m4a", ".flac", ".ogg", ".aac"):
-            raise VoiceError("The recording must be a sound file (WAV, MP3, M4A, FLAC, OGG).")
         v.update(ref_source=str(p), ref_text=re.sub(r"\s+", " ", str(ref_text or "")).strip()[:1000])
     lang = str(language or "").strip().lower()
     if lang and not re.fullmatch(r"[a-z]{2}", lang):
@@ -652,9 +686,9 @@ def new_dub(jid: str, video: str, keep_sound: bool = True, captions: bool = True
     if not p.is_file():
         raise VoiceError("Choose the video (its full path).")
     try:
-        start_s = max(0.0, min(60.0, float(start_s)))
+        start_s = max(0.0, min(60.0, float(str(start_s).strip().replace(",", ".") or 0.3)))
     except (TypeError, ValueError):
-        start_s = 0.3
+        raise VoiceError("The start of the voice must be a number of seconds, for example 0.5.")
     return _submit({"kind": "dub", "voiceover": jid, "video": str(p), "keep_sound": bool(keep_sound),
                     "captions": bool(captions), "position": position if position in ("bottom", "middle", "top") else "bottom",
                     "start_s": start_s, "title": p.name[:60]})
@@ -675,7 +709,9 @@ def _loop() -> None:
         _CURRENT.clear()
         _CURRENT.update(id=jid, progress=0.0, step="starting")
         try:
-            res = _do(jid)
+            from .platform_adapter import keep_awake
+            with keep_awake():
+                res = _do(jid)
         except Exception as exc:
             res = {"ok": False, "error": str(exc)[:500]}
         res["finished_at"] = now_iso()
@@ -720,9 +756,10 @@ def _do(jid: str) -> dict:
                 return {"ok": False, "error": "The recording of the voice could not be read."}
             v["ref_wav"] = str(ref)
         cfg = (load_config().get("voice") or {})
+        device = cfg.get("device") or ("cuda" if manifest().get("cuda") else "cpu")
         res = _run_worker({"task": "tts", "chunks": chunks(job["text"]), "voice": v, "language": job.get("language"),
                            "out_wav": str(d / "voice_raw.wav"), "seed": int(cfg.get("seed") or 1),
-                           "steps": cfg.get("steps"), "device": cfg.get("device")}, d / "work", timeout=6 * 3600,
+                           "steps": cfg.get("steps"), "device": device}, d / "work", timeout=6 * 3600,
                           on_line=_progress)
         if not res.get("ok"):
             return res
@@ -817,6 +854,9 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
         (d / "captions.ass").write_text(ass(cs, w, h, offset=offset, position=position), "utf-8")
         (d / "captions.srt").write_text(srt(cs, offset=offset), "utf-8")
         vf.append("ass=captions.ass" + (":fontsdir=fonts" if _caption_font(d) else ""))
+    if w % 2 or h % 2:                    # H.264 (4:2:0) needs an even width and height
+        vf.insert(0, "scale=trunc(iw/2)*2:trunc(ih/2)*2")
+        w, h = w // 2 * 2, h // 2 * 2
     vf.append("format=yuv420p")
     cmd = [_ffmpeg(), "-hide_banner", "-nostdin", "-y", "-i", str(video)]
     fc = [f"[0:v]{','.join(vf)}[v]"]
@@ -836,7 +876,7 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
     cmd += ["-filter_complex", ";".join(fc), "-map", "[v]"]
     if amap:
         cmd += ["-map", amap]
-    cmd += ["-t", f"{length:.3f}", "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-c:a", "aac", "-b:a", "192k",
+    cmd += ["-t", f"{length:.3f}", "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
             "-movflags", "+faststart", "video.mp4"]
     log = d / "ffmpeg.log"
     with log.open("a", encoding="utf-8", errors="replace") as lf:
@@ -899,6 +939,25 @@ def resume_after_restart() -> None:
             if not _THREAD or not _THREAD[0].is_alive():
                 _THREAD[:] = [threading.Thread(target=_loop, name="voice-jobs", daemon=True)]
                 _THREAD[0].start()
+
+
+def retry_job(jid: str) -> None:
+    """Make again a job that was interrupted (or failed): its own settings, its own folder."""
+    j = read_job(jid)
+    if j["state"] in ("working", "waiting"):
+        return
+    _need_addon()
+    d = _job_dir(jid)
+    with _LOCK:
+        (d / "result.json").unlink(missing_ok=True)
+        job = json.loads((d / "job.json").read_text("utf-8"))
+        job["resumed"] = False
+        (d / "job.json").write_text(json.dumps(job, ensure_ascii=False, indent=1), "utf-8")
+        _QUEUE.append(jid)
+        if not _THREAD or not _THREAD[0].is_alive():
+            _THREAD[:] = [threading.Thread(target=_loop, name="voice-jobs", daemon=True)]
+            _THREAD[0].start()
+    _WAKE.set()
 
 
 def delete_job(jid: str) -> None:

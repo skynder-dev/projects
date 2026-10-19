@@ -147,10 +147,14 @@ def register(app, page, err_page, e, human_bytes):
                 label += f" <span translate='no'>{e(part)}</span>"
             body = (f"<div class='ae-bar' style='margin-top:6px'><i style='width:{int(100 * float(j.get('progress') or 0))}%'></i></div>"
                     f"<div class='muted vo-sub'>{label}</div>")
+        elif st == "interrupted" and j.get("resumed"):
+            body = (f"<div class='errbox' style='margin-top:6px'>Interrupted again (MediaEngine was closed).</div>"
+                    f"<form method='post' action='/auto/voice/{jid}/retry' style='margin-top:6px'><button>Try again</button></form>")
         elif st in ("waiting", "interrupted"):
             body = f"<div class='muted vo-sub'>{e(_STATE[st])}</div>"
         elif st == "failed":
-            body = f"<div class='errbox' style='margin-top:6px'>{e(res.get('error') or 'Failed')}</div>"
+            body = (f"<div class='errbox' style='margin-top:6px'>{e(res.get('error') or 'Failed')}</div>"
+                    f"<form method='post' action='/auto/voice/{jid}/retry' style='margin-top:6px'><button class='btn2'>Try again</button></form>")
         elif st == "done" and j.get("kind") == "voiceover":
             n, bad = int(res.get("words") or 0), int(res.get("word_errors") or 0)
             check = ("<span>Every word was said (checked by listening).</span>" if bad == 0 else
@@ -202,20 +206,21 @@ def register(app, page, err_page, e, human_bytes):
                 + "".join(parts) + "<div class='row' id='voBack' style='margin-top:14px'><a class='btn btn2' href='/auto'>Back</a></div>")
         steps = json.dumps({**_INSTALL_STEP})
         script = (
-            "let dirty=false;document.querySelectorAll('form textarea,form input').forEach(x=>x.addEventListener('input',()=>{dirty=true}));"
+            "let dirty=false;document.addEventListener('input',ev=>{if(ev.target.closest('form'))dirty=true});"
             "document.querySelectorAll('input[name=voice]').forEach(r=>r.addEventListener('change',()=>{"
             "document.querySelectorAll('[data-for]').forEach(d=>{d.hidden=!document.querySelector('input[name=voice][value='+d.dataset.for+']:checked')})}));"
-            "document.querySelectorAll('[data-pick]').forEach(b=>b.onclick=async()=>{const f=b.closest('form'),m=f.querySelector('[data-msg]');"
+            "document.addEventListener('click',async ev=>{const b=ev.target.closest('[data-pick]');if(!b)return;const f=b.closest('form'),m=f.querySelector('[data-msg]');"
             "if(m)m.textContent=window.ME_L?ME_L('A Windows window is open — it may be behind this window.'):'A Windows window is open — it may be behind this window.';"
             "try{const r=await fetch('/api/auto/pick-voice-file',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind:b.dataset.pick})});"
-            "const x=await r.json();if(x.path){b.parentNode.querySelector('input').value=x.path;if(m)m.textContent=''}else if(m)m.textContent=x.error||''}catch(err){}});"
+            "const x=await r.json();if(x.path){b.parentNode.querySelector('input').value=x.path;dirty=true;if(m)m.textContent=''}else if(m)m.textContent=x.error||''}catch(err){}});"
             "const ST=" + steps + ";"
             "let sig=null;async function poll(){try{const r=await fetch('/api/voice/status',{cache:'no-store'});const x=await r.json();"
             "const now=JSON.stringify([x.install.state,x.install.installed,x.jobs.map(j=>j.id+j.state)]);"
             # a finished job: the page is shown again - but never over something being typed (only the list is renewed then)
             "if(sig!==null&&now!==sig){if(!dirty){location.reload();return}"
             "try{const h=await (await fetch('/auto/voice',{cache:'no-store'})).text();const n=new DOMParser().parseFromString(h,'text/html').getElementById('voJobs');"
-            "const o=document.getElementById('voJobs');if(n&&o)o.replaceWith(n);"
+            "const o=document.getElementById('voJobs');const busyIn=o&&(o.contains(document.activeElement)||[...o.querySelectorAll('details[open] input')].some(i=>i.value&&i.name!=='start'));"
+            "if(n&&o&&!busyIn)o.replaceWith(n);"
             "else if(n){const back=document.getElementById('voBack');if(back)back.before(n)}}catch(err){}}sig=now;"
             "const bar=document.getElementById('voBar');if(bar&&x.install.state==='running'){"
             "bar.style.width=(x.install.step==='models'&&x.install.total?Math.round(100*x.install.done/x.install.total):5)+'%';"
@@ -282,6 +287,14 @@ def register(app, page, err_page, e, human_bytes):
         try:
             vo.new_dub(jid, f.get("video", ""), keep_sound=f.get("keep_sound") == "1", captions=f.get("captions") == "1",
                        position=f.get("position", "bottom"), start_s=f.get("start", "0.3"))
+        except vo.VoiceError as exc:
+            return err_page(str(exc), "/auto/voice")
+        return redirect("/auto/voice")
+
+    @app.post("/auto/voice/<jid>/retry")
+    def voice_retry(jid):
+        try:
+            vo.retry_job(jid)
         except vo.VoiceError as exc:
             return err_page(str(exc), "/auto/voice")
         return redirect("/auto/voice")

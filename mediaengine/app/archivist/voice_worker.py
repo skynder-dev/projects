@@ -99,6 +99,7 @@ def _trim(y, sr: int, top_db: float = 45.0):
 
 def tts(job: dict) -> dict:
     import numpy as np, soundfile as sf, torch
+    torch.set_num_threads(max(1, (os.cpu_count() or 2) - 1))
     _patch_torchaudio()
     from voxcpm import VoxCPM
     dev = _device(job)
@@ -152,7 +153,20 @@ def tts(job: dict) -> dict:
             else:                               # a voice from a description (the first chunk; the rest copy it)
                 g["text"] = ("(" + voice["description"] + ")" if voice.get("description") else "") + text
             t1 = time.time()
-            y = np.asarray(model.generate(**g), dtype="float32").reshape(-1)
+            try:
+                y = np.asarray(model.generate(**g), dtype="float32").reshape(-1)
+            except Exception as exc:              # the graphics card fails while speaking (memory, an unsupported card)
+                if dev != "cuda":
+                    raise
+                say(progress=0.05, step="loading", device="cpu", note=f"graphics card: {type(exc).__name__}: {str(exc)[:200]}")
+                model = None
+                import gc
+                gc.collect()
+                torch.cuda.empty_cache()
+                dev, steps = "cpu", min(steps, 10)
+                g["inference_timesteps"] = steps
+                model = load(dev)
+                y = np.asarray(model.generate(**g), dtype="float32").reshape(-1)
             gen_s = time.time() - t1
             y = _trim(y, sr)
             p = out_dir / f"chunk_{i + 1:03d}_try{attempt + 1}.wav"
@@ -206,13 +220,25 @@ def selftest(job: dict) -> dict:
     from faster_whisper import WhisperModel  # noqa: F401
     from importlib import metadata
     cuda = bool(torch.cuda.is_available())
-    return {"ok": True, "torch": torch.__version__, "cuda": cuda,
+    note = ""
+    if cuda:
+        try:                                     # a card torch sees but cannot compute on (no kernels for it)
+            x = torch.ones(256, 256, device="cuda", dtype=torch.bfloat16)
+            float((x @ x).float().sum().item())
+        except Exception as exc:
+            cuda, note = False, f"{type(exc).__name__}: {str(exc)[:200]}"
+    return {"ok": True, "torch": torch.__version__, "cuda": cuda, "cuda_note": note,
             "gpu": torch.cuda.get_device_name(0) if cuda else "",
             "vram_gb": round(torch.cuda.get_device_properties(0).total_memory / 2 ** 30, 1) if cuda else 0,
             "voxcpm": metadata.version("voxcpm"), "faster_whisper": metadata.version("faster-whisper")}
 
 
 def main() -> int:
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")   # Cyrillic words and paths, whatever the code page
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
     job = json.loads(Path(sys.argv[1]).read_text("utf-8"))
     site.addsitedir(job["site"])
     os.environ.setdefault("HF_HUB_OFFLINE", "1")              # the models are on disk; the worker never goes online

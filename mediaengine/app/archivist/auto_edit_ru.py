@@ -707,6 +707,10 @@ PHRASES = {
     "Make the video": "Сделать видео", "checked: plays to the end": "проверено: проигрывается до конца",
     "Delete it?": "Удалить?", "Saved:": "Сохранено:",
     "Install for the processor (slower)": "Установить для процессора (медленнее)",
+    "Interrupted again (MediaEngine was closed).": "Снова прервано (MediaEngine был закрыт).",
+    "The voice add-on is being installed. Wait until it is ready.": "Модуль озвучки устанавливается. Подожди, пока он будет готов.",
+    "The voice add-on is already installed.": "Модуль озвучки уже установлен.",
+    "The start of the voice must be a number of seconds, for example 0.5.": "Начало голоса — это число секунд, например 0,5.",
     "Voice-over (Auto Edit → Voice-over, an add-on installed with a button): a text read by a voice - voice 3.1 by default - checked word by word, captions timed to the words, the voice and captions put onto a video.":
         "Озвучка (Автомонтаж → Озвучка, модуль ставится кнопкой): текст читает голос — по умолчанию голос 3.1 — с проверкой "
         "каждого слова, субтитры точно по словам, голос и субтитры накладываются на видео.",

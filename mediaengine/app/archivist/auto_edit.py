@@ -3500,7 +3500,8 @@ def _dialog_title(en: str) -> str:
           "Choose the folder that contains the FAST_LOCAL model": "Выбери папку, в которой лежит модель FAST_LOCAL",
           "Choose a folder for the exported reel": "Выбери папку для готового ролика",
           "Choose the folder with the AI+ model files": "Выбери папку с файлами модели ИИ+",
-          "Choose music for the reel": "Выбери музыку для ролика"}
+          "Choose music for the reel": "Выбери музыку для ролика",
+          "Choose the recording of the voice": "Выбери запись голоса", "Choose a video": "Выбери видео"}
     try:
         return ru.get(en, en) if ui_language() == "ru" else en
     except Exception:
