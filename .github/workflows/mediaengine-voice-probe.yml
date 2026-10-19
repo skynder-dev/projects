@@ -1,0 +1,111 @@
+name: mediaengine-voice-probe
+# Facts for MediaEngine's voice-over add-on, on a real Windows runner (manual): can VoxCPM2 + faster-whisper be installed
+# with pip --target next to the program's own Python 3.11 (CPU torch here; the owner's PC gets the CUDA build), how
+# big is it, does it import in an isolated interpreter (-S, add-on folder only), which Hugging Face commits and files
+# the models have, does a short voice-over come out, and can the program's FFmpeg burn subtitles. Results: branch
+# mediaengine-voice-lab probe/. Synthetic text only; no owner data.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/mediaengine-voice-probe.yml'
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: windows-latest
+    timeout-minutes: 120
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: FFmpeg of the program (imageio-ffmpeg 0.6.0) - subtitles, ass, sidechaincompress
+        run: |
+          New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\out" | Out-Null
+          python -m pip install -q imageio-ffmpeg==0.6.0
+          $ff = python -c "import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())"
+          & $ff -hide_banner -version | Select-Object -First 3 | Tee-Object "$env:RUNNER_TEMP\out\ffmpeg.txt"
+          & $ff -hide_banner -filters 2>&1 | Select-String -Pattern ' (subtitles|ass|sidechaincompress|loudnorm|drawtext) ' | Tee-Object -Append "$env:RUNNER_TEMP\out\ffmpeg.txt"
+          (& $ff -hide_banner -version | Select-Object -Skip 2 -First 1) -split ' ' | Select-String -Pattern 'libass|freetype|fontconfig|harfbuzz' | Tee-Object -Append "$env:RUNNER_TEMP\out\ffmpeg.txt"
+      - name: Hugging Face - commits and files of the models
+        run: |
+          foreach ($m in @('openbmb/VoxCPM2', 'Systran/faster-whisper-small')) {
+            $n = $m -replace '/', '__'
+            Invoke-WebRequest -UseBasicParsing "https://huggingface.co/api/models/$m`?blobs=true" -OutFile "$env:RUNNER_TEMP\out\hf_$n.json"
+          }
+      - name: pip --target (CPU torch 2.8.0, voxcpm 2.0.3, faster-whisper 1.2.1)
+        run: |
+          $t = Get-Date
+          python -m pip install --disable-pip-version-check --no-warn-script-location --progress-bar off --target "$env:RUNNER_TEMP\addon\site" "torch==2.8.0" "torchaudio==2.8.0" "voxcpm==2.0.3" "faster-whisper==1.2.1" soundfile 2>&1 | Tee-Object "$env:RUNNER_TEMP\out\pip.txt" | Select-Object -Last 5
+          "seconds: $(((Get-Date) - $t).TotalSeconds)" | Tee-Object -Append "$env:RUNNER_TEMP\out\pip.txt"
+          $b = (Get-ChildItem -Recurse -File "$env:RUNNER_TEMP\addon\site" | Measure-Object -Sum Length).Sum
+          "bytes: $b" | Tee-Object -Append "$env:RUNNER_TEMP\out\pip.txt"
+      - name: Isolated import (-S, the add-on folder only) and the API
+        run: |
+          $code = @'
+          import sys, site, json, inspect
+          site.addsitedir(sys.argv[1])
+          import torch, torchaudio, faster_whisper, soundfile
+          import voxcpm
+          from voxcpm import VoxCPM
+          from importlib import metadata
+          out = {"python": sys.version, "torch": torch.__version__, "torchaudio": torchaudio.__version__,
+                 "voxcpm": metadata.version("voxcpm"), "faster_whisper": metadata.version("faster-whisper"),
+                 "from_pretrained": inspect.getsource(VoxCPM.from_pretrained)[:6000],
+                 "generate_sig": str(inspect.signature(VoxCPM.generate)),
+                 "dists": sorted(f"{d.metadata['Name']}=={d.version}" for d in metadata.distributions(path=[sys.argv[1]]))}
+          try:
+              out["generate_src"] = inspect.getsource(VoxCPM.generate)[:4000]
+              out["_generate_src"] = inspect.getsource(VoxCPM._generate)[:8000]
+          except Exception as exc:
+              out["generate_src_error"] = repr(exc)
+          json.dump(out, open(sys.argv[2], "w"), indent=1)
+          print("import ok", torch.__version__)
+          '@
+          Set-Content -Path "$env:RUNNER_TEMP\imp.py" -Value $code -Encoding utf8
+          python -S -E -B "$env:RUNNER_TEMP\imp.py" "$env:RUNNER_TEMP\addon\site" "$env:RUNNER_TEMP\out\import.json"
+      - name: A short voice-over on the CPU (VoxCPM2, 10 steps) and its words (faster-whisper small)
+        continue-on-error: true
+        run: |
+          $code = @'
+          import sys, site, time, json
+          site.addsitedir(sys.argv[1])
+          import numpy as np, soundfile as sf, torch, torchaudio
+          def _load(path, *a, **k):          # torchaudio 2.8 may want FFmpeg libraries (torchcodec); soundfile is enough here
+              d, sr = sf.read(str(path), dtype="float32", always_2d=True)
+              return torch.from_numpy(d.T.copy()), sr
+          torchaudio.load = _load
+          from voxcpm import VoxCPM
+          t = time.time()
+          m = VoxCPM.from_pretrained("openbmb/VoxCPM2", load_denoiser=False, optimize=False, device="cpu")
+          load_s = time.time() - t; t = time.time()
+          wav = m.generate(text="(A friendly young American woman, casual and relaxed)Hi! This is a quick test of the voice.", cfg_value=2.0, inference_timesteps=10)
+          gen_s = time.time() - t
+          sr = m.tts_model.sample_rate
+          sf.write(sys.argv[2], np.asarray(wav, dtype="float32"), sr)
+          from faster_whisper import WhisperModel
+          w = WhisperModel("small", device="cpu", compute_type="int8")
+          segs, info = w.transcribe(sys.argv[2], word_timestamps=True, vad_filter=True)
+          words = [{"w": x.word, "s": round(x.start, 2), "e": round(x.end, 2)} for s in segs for x in (s.words or [])]
+          json.dump({"load_s": load_s, "gen_s": gen_s, "sr": sr, "seconds": len(wav) / sr, "language": info.language, "words": words},
+                    open(sys.argv[3], "w"), indent=1)
+          print("voice ok", len(wav) / sr, "s; words:", " ".join(x["w"] for x in words))
+          '@
+          Set-Content -Path "$env:RUNNER_TEMP\gen.py" -Value $code -Encoding utf8
+          python -S -E -B "$env:RUNNER_TEMP\gen.py" "$env:RUNNER_TEMP\addon\site" "$env:RUNNER_TEMP\out\test.wav" "$env:RUNNER_TEMP\out\gen.json" 2>&1 | Tee-Object "$env:RUNNER_TEMP\out\gen.txt" | Select-Object -Last 15
+      - name: Publish to branch mediaengine-voice-lab (probe/)
+        if: always()
+        shell: bash
+        run: |
+          pub="$RUNNER_TEMP/pub"; rm -rf "$pub"
+          git clone -q --depth 1 --branch mediaengine-voice-lab "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "$pub"
+          rm -rf "$pub/probe"; mkdir -p "$pub/probe"
+          cp "$RUNNER_TEMP"/out/* "$pub/probe/" 2>/dev/null || true
+          printf 'run=%s\nsha=%s\n' "${{ github.run_id }}" "${{ github.sha }}" > "$pub/probe/RUN.txt"
+          cd "$pub"
+          git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
+          git add -A; git commit -q -m "mediaengine voice probe run ${{ github.run_id }}"
+          git push -q origin HEAD:mediaengine-voice-lab
