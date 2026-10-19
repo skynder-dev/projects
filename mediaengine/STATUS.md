@@ -513,6 +513,13 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   Then: Russian decimal comma also in clock times (0:14,5) and scores of the replace list; quality badges show a
   whole number. Still left (low value, risk to proven logic): which of two identical videos counts as the duplicate,
   the small copy not listed under saved exports.
+  The first push of that (0da7fb8, run 39168738820) failed the compile step: Python 3.11 cannot nest the same quotes
+  in an f-string (the sandbox's python3 is 3.13). Fixed in c318c28; Windows CI run 39179653701 (b153) fully green,
+  published and served from raw.githubusercontent.com (b153 ZIP 2,351,470 bytes, SHA-256 matches). Every push is now
+  compiled with python3.11 first.
+  Social <-> MedEng link discussed 2026-10-18 (analysis only, nothing built - the owner said wait). His decision:
+  voice-over, processing and text in the video belong to MedEng. MedEng today renders orders with a ready sound track
+  and title / subtitle text; it does not make voice-over or subtitles itself.
 
 ## Evidence
 
