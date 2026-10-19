@@ -19,6 +19,13 @@ A (Qwen VoiceDesign upbeat), C (VoiceDesign warm: "too sexy") and F (Kokoro). Ro
   python voice_lab.py round2 <in> <out>           (the very takes B, D, E he heard + the two new engines, all with
                                                    the same voice-over finishing; blind letters G-K)
 
+Round 2 (run 39209510581): "they are so alike - I thought you would work on the voices, you just put random music".
+He was right (three of five were round 1's very takes). Round 3 works on the voice itself (see SPOKEN below):
+
+  python voice_lab.py vox3   <out> <voice_b.wav>   (VoxCPM2: two designed characters + voice B, directed)
+  python voice_lab.py cb3    <out> <voice_de.wav>  (Chatterbox: voice B on the spoken script; Turbo: voice D/E)
+  python voice_lab.py round3 <in> <out>            (word check against the spoken script, best take, voice3_N.mp3)
+
 Each engine runs in its own venv (their pins clash); CPU only (GitHub runners have no GPU). Synthetic voices only:
 no recordings of real people, no owner data.
 """
@@ -287,11 +294,11 @@ def _diff(ref: list[str], hyp: list[str]) -> tuple[int, list[str], list[str]]:
 _NUMBERS = {"10": "ten", "3": "three"}       # the checker writes "10" for a spoken "ten": not a wrong word
 
 
-def _analyze(asr, wav: Path, src: Path, gen: dict) -> dict:
+def _analyze(asr, wav: Path, src: Path, gen: dict, text: str = TEXT) -> dict:
     """What a take really says (faster-whisper), how long it is, how high the voice is and how much it moves."""
     import numpy as np, librosa
     name = wav.stem
-    ref_words = _words(TEXT)
+    ref_words = _words(re.sub(r"\[[a-z ]+\]|\([^)]*\)", " ", text))
     y, sr = librosa.load(str(wav), sr=16000, mono=True)
     dur = len(y) / sr
     segs, _ = asr.transcribe(str(wav), language="en", beam_size=5, vad_filter=True)
@@ -441,6 +448,102 @@ def round2(src: Path, out: Path) -> int:
     return 0 if len(order) >= 3 else 1
 
 
+# ---------------------------------------------------------------------------------------------------------- round 3
+# Round 2 was too alike (three of five were round 1's very takes, all one voice) and only the sound was finished, not
+# the voice. Round 3 works on the voice itself: a script written to be SAID (pauses, "like", "seriously" - the same
+# message), distinct characters, direction (VoxCPM2 takes a style note; Turbo a [chuckle]), no music.
+
+SPOKEN = ("Okay... so here's something nobody tells you about packing for a beach trip. "
+          "You don't need ten outfits. Seriously. You need, like, three. And one really good hat. "
+          "We tried it last summer and, honestly? It changed everything. "
+          "Less stuff... more time in the water. So, would you try it? Tell me in the comments!")
+SPOKEN_TURBO = SPOKEN.replace("honestly? It", "honestly? [chuckle] It")
+FRIEND = ("(A friendly American woman in her late twenties with a clear, natural everyday voice, medium pitch, not breathy, "
+          "telling her best friend a little secret: casual, playful, a bit amused, relaxed pace, real pauses)")
+VLOGGER = ("(A confident American travel vlogger in her early thirties, medium pitch, bright but natural, talking straight "
+           "to the camera: expressive, quick but clear, a smile in her voice, never shouting)")
+CASUAL = "(Casual and playful, a bit amused, like talking to a good friend, relaxed pace, real pauses)"
+ROUND3 = {
+    "vox_friend": "VoxCPM2: a new voice from a description - a friend telling a little secret",
+    "vox_vlogger": "VoxCPM2: a new voice from a description - a travel vlogger talking to the camera",
+    "vox_voice_b": "VoxCPM2: voice B of round 1, directed 'casual, playful, like talking to a good friend'",
+    "chatterbox_b_spoken": "Chatterbox: voice B of round 1 itself on the spoken script (exaggeration 0.6, cfg 0.35)",
+    "turbo_de_spoken": "Chatterbox Turbo: voice D/E of round 1 on the spoken script, a [chuckle] after 'honestly?'",
+}
+
+
+def vox3(out: Path, ref_b: Path) -> None:
+    _threads()
+    import torch
+    from voxcpm import VoxCPM
+    m = VoxCPM.from_pretrained("openbmb/VoxCPM2", **_kwargs_that_fit(
+        VoxCPM.from_pretrained, {"load_denoiser": False, "optimize": False, "device": "cpu"}))
+    sr = int(getattr(getattr(m, "tts_model", None), "sample_rate", 0) or 48000)
+
+    def make(seed, text, **kw):
+        torch.manual_seed(seed)
+        return m.generate(text=text, cfg_value=2.0, inference_timesteps=10, **kw), sr
+
+    for take in TAKES:
+        _take(out, "vox_friend", take, lambda t: make(800 + t, FRIEND + SPOKEN))
+        _take(out, "vox_vlogger", take, lambda t: make(810 + t, VLOGGER + SPOKEN))
+        if ref_b.exists():
+            _take(out, "vox_voice_b", take, lambda t: make(820 + t, CASUAL + SPOKEN, reference_wav_path=str(ref_b)))
+
+
+def cb3(out: Path, ref_de: Path) -> None:
+    _threads()
+    import torch
+    from chatterbox.tts import ChatterboxTTS
+    from chatterbox.tts_turbo import ChatterboxTurboTTS
+    m = ChatterboxTTS.from_pretrained(device="cpu")
+    for take in TAKES:
+        _take(out, "chatterbox_b_spoken", take, lambda t: (torch.manual_seed(830 + t), (
+            m.generate(SPOKEN, exaggeration=0.6, cfg_weight=0.35, temperature=0.85), m.sr))[1])
+    del m
+    gc.collect()
+    tm = ChatterboxTurboTTS.from_pretrained(device="cpu")
+    for take in TAKES:
+        _take(out, "turbo_de_spoken", take, lambda t: (torch.manual_seed(840 + t), (
+            tm.generate(SPOKEN_TURBO, audio_prompt_path=str(ref_de)), tm.sr))[1])
+
+
+def round3(src: Path, out: Path) -> int:
+    from faster_whisper import WhisperModel
+    out.mkdir(parents=True, exist_ok=True)
+    gen = {}
+    for p in src.rglob("gen.json"):
+        gen.update(json.loads(p.read_text("utf-8")))
+    wavs = {w.stem: w for w in src.rglob("*_t[0-9].wav") if w.stem.rsplit("_t", 1)[0] in ROUND3}
+    asr = WhisperModel("small.en", device="cpu", compute_type="int8")
+    takes, chosen = {}, {}
+    for n, w in sorted(wavs.items()):
+        takes[n] = _analyze(asr, w, src, gen, SPOKEN)
+    for v, what in ROUND3.items():
+        have = [i for n, i in takes.items() if n.rsplit("_t", 1)[0] == v]
+        if have:
+            chosen[v] = dict(min(have, key=lambda i: (i["word_errors"], i.get("take", 9))), what=what)
+    for i, v in enumerate([v for v in ROUND3 if v in chosen], 1):
+        produce(src / chosen[v]["file"], out / f"voice3_{i}.mp3", 950 + i)
+        chosen[v]["file_sent"] = f"voice3_{i}.mp3"
+    failed = {k: str(v.get("error")).splitlines()[0][:300] for k, v in gen.items()
+              if v.get("error") and k.rsplit("_t", 1)[0] in ROUND3}
+    res = {"round": 3, "spoken_text": SPOKEN, "turbo_text": SPOKEN_TURBO, "directions": {"friend": FRIEND,
+           "vlogger": VLOGGER, "casual": CASUAL}, "finishing": FINISHING, "variants": chosen, "failed_takes": failed,
+           "all_takes": takes, "missing_variants": [v for v in ROUND3 if v not in chosen]}
+    (out / "results.json").write_text(json.dumps(res, indent=1, ensure_ascii=False), "utf-8")
+    md = ["# Voice lab - round 3 (the voice itself)", "", f"Spoken script: {SPOKEN}", "",
+          "| file | what | words wrong | seconds | pitch Hz | pitch moves (st) |", "|---|---|---|---|---|---|"]
+    for v, b in chosen.items():
+        md.append(f"| {b['file_sent']} | {b['what']} | {b['word_errors']} | {b['seconds']} | {b['pitch_median_hz']} | "
+                  f"{b['pitch_movement_semitones']} |")
+    if failed:
+        md += ["", "Failed takes:"] + [f"- {k}: {e}" for k, e in failed.items()]
+    (out / "RESULTS.md").write_text("\n".join(md) + "\n", "utf-8")
+    print(json.dumps({"made": len(chosen), "of": len(ROUND3), "failed_takes": len(failed)}))
+    return 0 if len(chosen) >= 3 else 1
+
+
 def check(src: Path, out: Path) -> int:
     import numpy as np, librosa
     from faster_whisper import WhisperModel
@@ -508,6 +611,12 @@ def main() -> int:
         voxcpm(out, Path(sys.argv[3]).resolve())
     elif cmd == "round2":
         return round2(out, Path(sys.argv[3]).resolve())
+    elif cmd == "vox3":
+        vox3(out, Path(sys.argv[3]).resolve())
+    elif cmd == "cb3":
+        cb3(out, Path(sys.argv[3]).resolve())
+    elif cmd == "round3":
+        return round3(out, Path(sys.argv[3]).resolve())
     else:
         raise SystemExit(f"unknown command {cmd}")
     return 0

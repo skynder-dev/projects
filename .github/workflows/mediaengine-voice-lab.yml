@@ -6,9 +6,12 @@ name: mediaengine-voice-lab
 #
 # Round 1 (run 39197836516, kept on branch mediaengine-voice-lab latest/): Kokoro, Qwen3-TTS VoiceDesign / Base,
 # Chatterbox. The owner kept B, D, E ("still feels like AI, but good intonations").
-# Round 2 (this file, results in round2/): the very takes B, D, E (from round 1's artifacts) + Chatterbox Turbo and
+# Round 2 (run 39209510581, results in round2/): the very takes B, D, E (from round 1's artifacts) + Chatterbox Turbo and
 # VoxCPM2 with the same locked voice, all with the same voice-over finishing, alone and over free-licence music.
-# The voice_lab.py commands of round 1 stay (kokoro / qwen / chatterbox / check) for a rerun from git history.
+# Round 2 was too alike ("you just put random music") - three of five were round 1's very takes, all one voice.
+# Round 3 (this file, results in round3/): the voice itself - a script written to be said, distinct characters,
+# direction (VoxCPM2 style notes, a Turbo [chuckle]), no music. Earlier rounds' jobs are in git history; their
+# voice_lab.py commands stay.
 on:
   workflow_dispatch:
   push:
@@ -27,39 +30,7 @@ env:
   PIP_PROGRESS_BAR: 'off'
   ROUND1_RUN: '39197836516'
 jobs:
-  turbo:
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: The locked voice (round 1's reference)
-        uses: actions/download-artifact@v4
-        with:
-          name: voice-qwen
-          path: ${{ runner.temp }}/r1
-          run-id: ${{ env.ROUND1_RUN }}
-          github-token: ${{ github.token }}
-      - name: Chatterbox (Turbo) in its own venv (CPU torch 2.6, its pin)
-        run: |
-          python -m venv "$RUNNER_TEMP/v"
-          "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" "torch==2.6.0" "torchaudio==2.6.0"
-          "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" chatterbox-tts soundfile
-      - name: Turbo, locked voice, a [chuckle]
-        run: |
-          mkdir -p "$RUNNER_TEMP/out"
-          "$RUNNER_TEMP/v/bin/python" -m pip freeze > "$RUNNER_TEMP/out/freeze_turbo.txt"
-          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py turbo "$RUNNER_TEMP/out" "$RUNNER_TEMP/r1/reference_locked_voice.wav" 2>&1 | tee "$RUNNER_TEMP/out/turbo.txt"
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: voice2-turbo
-          path: ${{ runner.temp }}/out
-  voxcpm:
+  vox3:
     runs-on: ubuntu-latest
     timeout-minutes: 240
     steps:
@@ -69,10 +40,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: The locked voice (round 1's reference)
+      - name: Voice B (round 1's take)
         uses: actions/download-artifact@v4
         with:
-          name: voice-qwen
+          name: voice-chatterbox
           path: ${{ runner.temp }}/r1
           run-id: ${{ env.ROUND1_RUN }}
           github-token: ${{ github.token }}
@@ -82,18 +53,49 @@ jobs:
           python -m venv "$RUNNER_TEMP/v"
           "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" torch torchaudio
           "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" voxcpm soundfile
-      - name: VoxCPM2, locked voice
+      - name: VoxCPM2 - two designed characters and voice B, directed, on the spoken script
         run: |
           mkdir -p "$RUNNER_TEMP/out"
-          "$RUNNER_TEMP/v/bin/python" -m pip freeze > "$RUNNER_TEMP/out/freeze_voxcpm.txt"
-          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py voxcpm "$RUNNER_TEMP/out" "$RUNNER_TEMP/r1/reference_locked_voice.wav" 2>&1 | tee "$RUNNER_TEMP/out/voxcpm.txt"
+          "$RUNNER_TEMP/v/bin/python" -m pip freeze > "$RUNNER_TEMP/out/freeze_vox3.txt"
+          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py vox3 "$RUNNER_TEMP/out" "$RUNNER_TEMP/r1/chatterbox_builtin_t2.wav" 2>&1 | tee "$RUNNER_TEMP/out/vox3.txt"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: voice2-voxcpm
+          name: voice3-vox
+          path: ${{ runner.temp }}/out
+  cb3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Voice D/E (round 1's locked reference)
+        uses: actions/download-artifact@v4
+        with:
+          name: voice-qwen
+          path: ${{ runner.temp }}/r1
+          run-id: ${{ env.ROUND1_RUN }}
+          github-token: ${{ github.token }}
+      - name: Chatterbox in its own venv (CPU torch 2.6, its pin)
+        run: |
+          python -m venv "$RUNNER_TEMP/v"
+          "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" "torch==2.6.0" "torchaudio==2.6.0"
+          "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" chatterbox-tts soundfile
+      - name: Chatterbox voice B and Turbo voice D/E on the spoken script
+        run: |
+          mkdir -p "$RUNNER_TEMP/out"
+          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py cb3 "$RUNNER_TEMP/out" "$RUNNER_TEMP/r1/reference_locked_voice.wav" 2>&1 | tee "$RUNNER_TEMP/out/cb3.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: voice3-cb
           path: ${{ runner.temp }}/out
   finish:
-    needs: [turbo, voxcpm]
+    needs: [vox3, cb3]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -104,27 +106,20 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Round 1's takes (B, D, E as the owner heard them)
-        uses: actions/download-artifact@v4
-        with:
-          pattern: voice-*
-          path: ${{ runner.temp }}/in/r1
-          run-id: ${{ env.ROUND1_RUN }}
-          github-token: ${{ github.token }}
       - uses: actions/download-artifact@v4
         with:
-          pattern: voice2-*
-          path: ${{ runner.temp }}/in/r2
+          pattern: voice3-*
+          path: ${{ runner.temp }}/in
       - name: Checker and finishing in their own venv (faster-whisper 1.2.1, librosa, scipy)
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
           python -m venv "$RUNNER_TEMP/v"
           "$RUNNER_TEMP/v/bin/python" -m pip install -q "faster-whisper==1.2.1" librosa scipy soundfile
-      - name: Word check, best take, the same finishing, alone and over music, blind letters G-K
+      - name: Word check against the spoken script, best take, voice3_N.mp3
         run: |
-          mkdir -p "$RUNNER_TEMP/res/round2"
-          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py round2 "$RUNNER_TEMP/in" "$RUNNER_TEMP/res/round2" 2>&1 | tee "$RUNNER_TEMP/res/round2/round2.txt"
-      - name: Publish to branch mediaengine-voice-lab (round2/, round 1 stays in latest/)
+          mkdir -p "$RUNNER_TEMP/res/round3"
+          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py round3 "$RUNNER_TEMP/in" "$RUNNER_TEMP/res/round3" 2>&1 | tee "$RUNNER_TEMP/res/round3/round3.txt"
+      - name: Publish to branch mediaengine-voice-lab (round3/; earlier rounds stay)
         if: success() || failure()
         env:
           RUN_ID: ${{ github.run_id }}
@@ -133,14 +128,14 @@ jobs:
         run: |
           pub="$RUNNER_TEMP/pub"; rm -rf "$pub"
           git clone -q --depth 1 --branch mediaengine-voice-lab "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "$pub"
-          rm -rf "$pub/round2"; mkdir -p "$pub/round2/logs"
-          cp "$RUNNER_TEMP"/res/round2/*.mp3 "$RUNNER_TEMP"/res/round2/*.json "$RUNNER_TEMP"/res/round2/*.md "$RUNNER_TEMP"/res/round2/*.txt "$pub/round2/" 2>/dev/null || true
-          for d in "$RUNNER_TEMP"/in/r2/*/; do
+          rm -rf "$pub/round3"; mkdir -p "$pub/round3/logs"
+          cp "$RUNNER_TEMP"/res/round3/*.mp3 "$RUNNER_TEMP"/res/round3/*.json "$RUNNER_TEMP"/res/round3/*.md "$RUNNER_TEMP"/res/round3/*.txt "$pub/round3/" 2>/dev/null || true
+          for d in "$RUNNER_TEMP"/in/*/; do
             n=$(basename "$d")
-            for f in "$d"*.txt "$d"*.json; do [ -f "$f" ] && cp "$f" "$pub/round2/logs/${n}_$(basename "$f")"; done
+            for f in "$d"*.txt "$d"*.json; do [ -f "$f" ] && cp "$f" "$pub/round3/logs/${n}_$(basename "$f")"; done
           done
-          printf 'sha=%s\nrun=%s\nstatus=%s\n' "$SRC_SHA" "$RUN_ID" "$JOB_STATUS" > "$pub/round2/RUN.txt"
+          printf 'sha=%s\nrun=%s\nstatus=%s\n' "$SRC_SHA" "$RUN_ID" "$JOB_STATUS" > "$pub/round3/RUN.txt"
           cd "$pub"
           git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
-          git add -A; git commit -q -m "mediaengine voice lab round 2 run $RUN_ID ($SRC_SHA) $JOB_STATUS"
+          git add -A; git commit -q -m "mediaengine voice lab round 3 run $RUN_ID ($SRC_SHA) $JOB_STATUS"
           git push -q origin HEAD:mediaengine-voice-lab
