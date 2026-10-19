@@ -104,11 +104,23 @@ def tts(job: dict) -> dict:
     dev = _device(job)
     say(progress=0.02, step="loading", device=dev)
     t0 = time.time()
-    kw = {"load_denoiser": False, "optimize": False, "device": dev}
+    def load(device):
+        kw = {"load_denoiser": False, "optimize": False, "device": device}
+        try:
+            return VoxCPM.from_pretrained(job["model_dir"], local_files_only=True, **kw)
+        except TypeError:
+            return VoxCPM.from_pretrained(job["model_dir"], **kw)
     try:
-        model = VoxCPM.from_pretrained(job["model_dir"], local_files_only=True, **kw)
-    except TypeError:
-        model = VoxCPM.from_pretrained(job["model_dir"], **kw)
+        model = load(dev)
+    except Exception as exc:                 # the graphics card refused (too old a driver, too little memory): the processor
+        if dev != "cuda":
+            raise
+        say(progress=0.03, step="loading", device="cpu", note=f"graphics card: {type(exc).__name__}: {str(exc)[:200]}")
+        import gc
+        gc.collect()
+        torch.cuda.empty_cache()
+        dev = "cpu"
+        model = load(dev)
     sr = int(model.tts_model.sample_rate)
     asr = _whisper(job)
     load_s = time.time() - t0

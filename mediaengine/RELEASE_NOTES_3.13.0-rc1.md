@@ -66,6 +66,29 @@ not read — reading even their first bytes would make Windows download them all
 in the cloud (OneDrive)…"); a folder that is entirely in the cloud says to choose "Always keep on this device"
 first. After the download the same reel is built again with them.
 
+## Voice-over and captions - an add-on installed with a button (2026-10-19)
+
+The owner: "voice-over, processing and text in the video - MedEng". **Auto Edit → Voice-over**:
+- **Install the voice add-on** downloads it once into the data folder (online only then): the program's own Python 3.11
+  gets the 62 packages a voice-over really imports (measured on Windows; pinned, ready-made wheels only - no compiler
+  needed), CUDA torch on a PC with an NVIDIA card, CPU torch otherwise; VoxCPM2 (Apache-2.0) and faster-whisper small
+  (MIT) at pinned Hugging Face commits, every file hash-checked; a self-test at the end. About 7.6 GB. "Remove the
+  add-on" frees it. If the graphics-card version does not start: "Install for the processor".
+- **New voice-over**: the text in pieces the model says well, in one voice: "Friend" = voice 3.1 from the voice lab
+  (the owner's pick; its recording ships with the program, FLAC), a voice from a description, or from a recording of a
+  person who agreed to it. A separate Python process that sees only the add-on does the work; every piece is listened
+  to (Whisper) and made again when words are missing. WAV + captions (SRT) from the real times of the words.
+- **Put it on a video**: the video's own sound ducked under the voice (or muted), captions burned in (ASS, the word
+  being said turns yellow), the last picture held when the voice is longer; checked (H.264 + AAC, plays to the end);
+  a copy saved next to the reels ("<name> - voice.mp4").
+- **Captions for a video**: the speech of any video into captions burned into a copy (Whisper's languages).
+- Quit / Update / switching builds ask while a voice-over is being made; one interrupted by a closed program is made
+  again once.
+- Proof: tests/voice_check.py (45 checks, every CI run: pieces, word times, captions visible in the picture, the page
+  in both languages, odd input) and mediaengine-voice-addon.yml (the real Install through the page on Windows in 103 s,
+  a voice-over in voice 3.1 on the CPU with every word, onto a video with captions, captions of its speech: 11/11).
+  Not yet seen: the graphics-card (CUDA) version on the owner's PC.
+
 ## Orders from other programs; night review fixes (2026-10-17)
 
 - **Orders** (Auto Edit → Orders): another program on this PC puts an order folder into

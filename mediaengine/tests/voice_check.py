@@ -161,6 +161,8 @@ def main() -> int:
     check("the captions can be seen in the picture (not only written)", changed > 0.02,            # ~5% with captions, ~0% without (glyphs over a busy test picture)
           f"{100 * changed:.1f}% of the caption band changed ({first.get('position')})")
     check("the original video was only read", video.is_file() and video.stat().st_size > 0)
+    check("a copy is saved next to the reels ('<name> - voice.mp4')", dres.get("saved", "").endswith("clip - voice.mp4")
+          and Path(dres["saved"]).is_file(), dres.get("saved"))
 
     # captions for the video's own speech
     r = c.post("/auto/voice/captions", data={"path": str(video), "language": "", "position": "middle"}, headers=H)

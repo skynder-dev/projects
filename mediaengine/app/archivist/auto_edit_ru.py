@@ -705,7 +705,13 @@ PHRASES = {
     "Keep the video's own sound (quieter while the voice speaks)": "Оставить звук видео (тише, пока говорит голос)",
     "Captions with the words": "Субтитры со словами", "The voice starts at": "Голос начинается на",
     "Make the video": "Сделать видео", "checked: plays to the end": "проверено: проигрывается до конца",
-    "Delete it?": "Удалить?",
+    "Delete it?": "Удалить?", "Saved:": "Сохранено:",
+    "Install for the processor (slower)": "Установить для процессора (медленнее)",
+    "Voice-over (Auto Edit → Voice-over, an add-on installed with a button): a text read by a voice - voice 3.1 by default - checked word by word, captions timed to the words, the voice and captions put onto a video.":
+        "Озвучка (Автомонтаж → Озвучка, модуль ставится кнопкой): текст читает голос — по умолчанию голос 3.1 — с проверкой "
+        "каждого слова, субтитры точно по словам, голос и субтитры накладываются на видео.",
+    "Captions for your own videos: the speech becomes captions burned into a copy (Auto Edit → Voice-over).":
+        "Субтитры для твоих видео: речь превращается в субтитры, вшитые в копию (Автомонтаж → Озвучка).",
     "A Windows window is open — it may be behind this window.": "Открыто окно Windows — оно может быть за этим окном.",
     "Nothing chosen. You can also paste the path.": "Ничего не выбрано. Можно вставить путь вручную.",
     "Choose the recording of the voice": "Выбери запись голоса", "Choose a video": "Выбери видео",

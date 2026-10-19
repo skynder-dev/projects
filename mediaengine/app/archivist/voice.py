@@ -28,9 +28,9 @@ from .db import now_iso
 from .platform_adapter import process_kwargs
 
 ADDON_VERSION = 1
-# The Voice-over button on the Auto Edit page: on once a real install of the add-on and a real voice-over have passed
-# on Windows (mediaengine-voice-addon.yml); until then the page is only reached by its address.
-SHOW_ON_HOME = False
+# The Voice-over button on the Auto Edit page: on since a real install through the page and a real voice-over in voice
+# 3.1, put onto a video with captions, passed on Windows (mediaengine-voice-addon.yml run 39247474464, 11/11).
+SHOW_ON_HOME = True
 ROOT = HOME / "addons" / "voice"
 SITE = ROOT / "site"
 MODELS = ROOT / "models"
@@ -308,7 +308,9 @@ def _install(cpu: bool) -> None:
         INSTALL.update(state="done", step="", detail="", done=INSTALL["total"])
     except Exception as exc:
         msg = str(exc)
-        if isinstance(exc, urllib.error.HTTPError):
+        if _STOP.is_set():
+            msg = "Installation cancelled."
+        elif isinstance(exc, urllib.error.HTTPError):
             msg = f"The download answered HTTP {exc.code}. Try again later."
         elif isinstance(exc, (urllib.error.URLError, socket.timeout, ConnectionError, TimeoutError, http.client.HTTPException)):
             msg = "No connection to the internet (or the site did not answer). Check the connection and try again."
@@ -583,8 +585,8 @@ def _submit(job: dict) -> str:
     d = JOBS / jid
     d.mkdir(parents=True, exist_ok=True)
     job = dict(job, id=jid, created_at=now_iso())
-    (d / "job.json").write_text(json.dumps(job, ensure_ascii=False, indent=1), "utf-8")
-    with _LOCK:
+    with _LOCK:                         # written and queued in one step: a page never sees it "interrupted"
+        (d / "job.json").write_text(json.dumps(job, ensure_ascii=False, indent=1), "utf-8")
         _QUEUE.append(jid)
         if not _THREAD or not _THREAD[0].is_alive():
             _THREAD[:] = [threading.Thread(target=_loop, name="voice-jobs", daemon=True)]
@@ -853,12 +855,34 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
         bad = next(c for c in checks if not c["pass"])
         (d / "video.mp4").replace(d / "video_failed_check.mp4")
         raise VoiceError(f"The new video did not pass its check ({bad['check']}: {bad['detail']}).")
+    saved = _save_copy(d / "video.mp4", video.stem, "voice" if voice_wav is not None else "captions")
     return {"files": {"video": "video.mp4", **({"srt": "captions.srt"} if cs else {})}, "seconds": round(length, 2),
-            "checks": checks, "captions": len(cs), "width": w, "height": h}
+            "checks": checks, "captions": len(cs), "width": w, "height": h, "saved": saved}
+
+
+def _save_copy(src: Path, stem: str, what: str) -> str:
+    """A copy next to the saved reels (Exports, or the folder used last), never over another file: '<name> - voice.mp4'."""
+    from . import auto_edit as ae
+    try:
+        folder = ae.default_export_dir()
+        folder.mkdir(parents=True, exist_ok=True)
+        word = {"voice": "озвучка", "captions": "субтитры"}[what] if ae._ui_ru() else what
+        base = ae.safe_filename(f"{stem[:60]} - {word}", "MediaEngine " + what)
+        dst = folder / f"{base}.mp4"
+        n = 2
+        while dst.exists():
+            dst = folder / f"{base} ({n}).mp4"
+            n += 1
+        shutil.copy2(src, dst)
+        return str(dst)
+    except Exception:
+        return ""
 
 
 def resume_after_restart() -> None:
     """Jobs left without an answer by a closed program are made again once (their files were not finished)."""
+    if not installed():
+        return
     for j in list_jobs(200):
         if j["state"] == "interrupted" and not j.get("resumed"):
             try:
@@ -870,7 +894,7 @@ def resume_after_restart() -> None:
                     _QUEUE.append(j["id"])
             except Exception:
                 pass
-    if _QUEUE and installed():
+    if _QUEUE:
         with _LOCK:
             if not _THREAD or not _THREAD[0].is_alive():
                 _THREAD[:] = [threading.Thread(target=_loop, name="voice-jobs", daemon=True)]

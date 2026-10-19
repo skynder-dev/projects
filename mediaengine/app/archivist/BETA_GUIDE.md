@@ -73,6 +73,22 @@ Another program on this PC can order a video (**Auto Edit → Orders**). It puts
 and a narration with their times). New orders start at once or wait for your OK. MediaEngine publishes nothing.
 The format for whoever writes the other program: `Orders\ORDERS.md`.
 
+## Voice-over and captions
+
+**Auto Edit → Voice-over.** A text read by a voice, with captions timed to the words; and captions for your own
+videos. It is an add-on: the first time press "Install the voice add-on". It downloads about 8 GB once into the data
+folder (MediaEngine goes online for it only then; free open models, nothing is sent anywhere). With an NVIDIA graphics
+card the voice is made on it (seconds per sentence); without one, on the processor (about a minute per sentence).
+
+- **New voice-over**: write the text the way it is said (short sentences; commas and dots where the pauses are) and
+  choose a voice: "Friend" (always the same voice - the voice of 3.1 from the voice test), a voice from a description,
+  or a voice from a recording of a person who agreed to it. Every piece is listened to; a piece with missing words is
+  made again. Then listen, download the WAV and the captions (SRT), or **Put it on a video**: the video's own sound gets
+  quieter while the voice speaks and the captions are burned in (the word being said turns yellow).
+- **Captions for a video**: the speech in your video becomes captions burned into a copy.
+
+The new videos are saved next to your reels; your files are only read. "Remove the add-on" frees the space.
+
 ## What can leave this PC
 
 Nothing leaves this PC by default. If you explicitly connect a provider or start an optional upload, authentication data, selected uploads, and provider analytics can be sent to that service.

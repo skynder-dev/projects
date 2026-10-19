@@ -74,6 +74,10 @@ def register(app, page, err_page, e, human_bytes):
         if s["state"] == "failed":
             err = f"<div class='errbox' style='margin-bottom:10px'>{e(s.get('error') or '')}</div>"
         again = "Try again" if s["state"] == "failed" else "Install the voice add-on"
+        cpu_btn = ""
+        if s["state"] == "failed" and s.get("nvidia"):     # the graphics card version did not start: the processor one
+            cpu_btn = ("<form method='post' action='/auto/voice/install' style='display:inline;margin-left:8px'>"
+                       "<input type='hidden' name='cpu' value='1'><button class='btn2'>Install for the processor (slower)</button></form>")
         if s.get("needs_reinstall"):
             err += "<div class='errbox' style='margin-bottom:10px'>This MediaEngine uses another Python: install the add-on again.</div>"
         if why:
@@ -88,9 +92,9 @@ def register(app, page, err_page, e, human_bytes):
                 f"<div style='margin-top:8px'>{gpu_line}</div>"
                 f"<div class='muted vo-sub'><span>Free space there:</span> <span>{e(_gb(s.get('free')))}</span></div>"
                 + ("<div class='errbox' style='margin-top:8px'>Not enough free space: about 20 GB are needed while installing.</div>" if low else "")
-                + f"<form method='post' action='/auto/voice/install' style='margin-top:12px' "
+                + f"<div style='margin-top:12px'><form method='post' action='/auto/voice/install' style='display:inline' "
                   f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
-                  f"<button class='ae-big'>{again}</button></form></div>")
+                  f"<button class='ae-big'>{again}</button></form>{cpu_btn}</div></div>")
 
     def _lang_options() -> str:
         return "".join(f"<option value='{c}'" + (" translate='no'" if c else "") + f">{e(n)}</option>" for c, n in _LANGS)
@@ -172,6 +176,9 @@ def register(app, page, err_page, e, human_bytes):
             body = (f"<video controls preload='metadata' src='/auto/voice/{jid}/file/video.mp4' style='max-width:360px;max-height:420px;margin-top:6px'></video>"
                     f"<div class='muted vo-sub'><span translate='no'>{e(str(res.get('seconds') or ''))}</span> <span>s</span> · "
                     f"<span>checked: plays to the end</span></div>"
+                    + (f"<div class='muted vo-sub'><span>Saved:</span> <span class='ae-path' translate='no'>{e(res['saved'])}</span></div>"
+                       if res.get("saved") else "")
+                    +
                     f"<div class='vo-row' style='margin-top:6px'><form method='post' action='/auto/voice/{jid}/reveal' style='margin:0'>"
                     f"<button class='btn2'>Show in folder</button></form>"
                     + (f"<a class='btn btn2' href='/auto/voice/{jid}/file/captions.srt?download=1'>Download captions (SRT)</a>" if (res.get("files") or {}).get("srt") else "")
@@ -189,12 +196,13 @@ def register(app, page, err_page, e, human_bytes):
         if s.get("installed"):
             parts += [_voice_form(), _captions_form()]
         if jobs:
-            parts.append("<div class='card'><h2 style='margin-top:0'>Made</h2>" + "".join(_job_html(j) for j in jobs) + "</div>")
+            parts.append("<div class='card' id='voJobs'><h2 style='margin-top:0'>Made</h2>" + "".join(_job_html(j) for j in jobs) + "</div>")
         body = ("<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Voice-over</h1>"
                 "<div class='lead'>A text read by a voice, with captions timed to the words; captions for your own videos.</div></div>"
-                + "".join(parts) + "<div class='row' style='margin-top:14px'><a class='btn btn2' href='/auto'>Back</a></div>")
+                + "".join(parts) + "<div class='row' id='voBack' style='margin-top:14px'><a class='btn btn2' href='/auto'>Back</a></div>")
         steps = json.dumps({**_INSTALL_STEP})
         script = (
+            "let dirty=false;document.querySelectorAll('form textarea,form input').forEach(x=>x.addEventListener('input',()=>{dirty=true}));"
             "document.querySelectorAll('input[name=voice]').forEach(r=>r.addEventListener('change',()=>{"
             "document.querySelectorAll('[data-for]').forEach(d=>{d.hidden=!document.querySelector('input[name=voice][value='+d.dataset.for+']:checked')})}));"
             "document.querySelectorAll('[data-pick]').forEach(b=>b.onclick=async()=>{const f=b.closest('form'),m=f.querySelector('[data-msg]');"
@@ -204,7 +212,11 @@ def register(app, page, err_page, e, human_bytes):
             "const ST=" + steps + ";"
             "let sig=null;async function poll(){try{const r=await fetch('/api/voice/status',{cache:'no-store'});const x=await r.json();"
             "const now=JSON.stringify([x.install.state,x.install.installed,x.jobs.map(j=>j.id+j.state)]);"
-            "if(sig!==null&&now!==sig){location.reload();return}sig=now;"
+            # a finished job: the page is shown again - but never over something being typed (only the list is renewed then)
+            "if(sig!==null&&now!==sig){if(!dirty){location.reload();return}"
+            "try{const h=await (await fetch('/auto/voice',{cache:'no-store'})).text();const n=new DOMParser().parseFromString(h,'text/html').getElementById('voJobs');"
+            "const o=document.getElementById('voJobs');if(n&&o)o.replaceWith(n);"
+            "else if(n){const back=document.getElementById('voBack');if(back)back.before(n)}}catch(err){}}sig=now;"
             "const bar=document.getElementById('voBar');if(bar&&x.install.state==='running'){"
             "bar.style.width=(x.install.step==='models'&&x.install.total?Math.round(100*x.install.done/x.install.total):5)+'%';"
             "const s=document.getElementById('voStep'),tx=ST[x.install.step]||'';s.textContent=window.ME_L?ME_L(tx):tx;"
@@ -289,7 +301,11 @@ def register(app, page, err_page, e, human_bytes):
             d = vo._job_dir(jid)
         except vo.VoiceError as exc:
             return err_page(str(exc), "/auto/voice")
-        target = d / "video.mp4"
+        try:
+            saved = Path(str((vo.read_job(jid).get("result") or {}).get("saved") or ""))
+        except vo.VoiceError:
+            saved = Path("")
+        target = saved if saved.name and saved.is_file() else d / "video.mp4"
         ae.open_path(target if target.is_file() else d, reveal=target.is_file())
         return redirect("/auto/voice")
 
@@ -305,14 +321,13 @@ def register(app, page, err_page, e, human_bytes):
             return "not found", 404
         dl = request.args.get("download") == "1"
         nice = None
-        if dl:
+        if dl:                                   # "<title> - voice.wav": the first words of the text, or the video's name
             try:
                 title = vo.read_job(jid).get("title") or "voice"
             except vo.VoiceError:
                 title = "voice"
             from .auto_edit import safe_filename
-            nice = safe_filename(Path(title).stem[:40] or "voice", "voice") + ("" if name == "video.mp4" else " - ") + \
-                ({"voice.wav": "voice.wav", "captions.srt": "captions.srt", "video.mp4": " voice.mp4"}[name])
+            nice = f"{safe_filename(Path(title).stem[:40], 'voice')} - {name}"
         return send_file(p, mimetype=_FILES[name], as_attachment=dl, download_name=nice, conditional=True, max_age=0)
 
     @app.post("/api/auto/pick-voice-file")
