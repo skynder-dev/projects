@@ -15,7 +15,7 @@ D (Qwen Base, locked voice) and E (Chatterbox, locked voice) - "still feels like
 A (Qwen VoiceDesign upbeat), C (VoiceDesign warm: "too sexy") and F (Kokoro). Round 2 aims at "less like AI":
 
   python voice_lab.py turbo  <out> <ref.wav>      (Chatterbox Turbo, locked voice, a [chuckle] tag)
-  python voice_lab.py voxcpm <out> <ref.wav>      (VoxCPM 1.5, 44.1 kHz, locked voice)
+  python voice_lab.py voxcpm <out> <ref.wav>      (VoxCPM2, 48 kHz, locked voice)
   python voice_lab.py round2 <in> <out>           (the very takes B, D, E he heard + the two new engines, all with
                                                    the same voice-over finishing; blind letters G-K)
 
@@ -234,19 +234,20 @@ def turbo(out: Path, ref: Path) -> None:
 
 
 def voxcpm(out: Path, ref: Path) -> None:
+    """VoxCPM2 (2B, 48 kHz, Apache-2.0; ~8 GB on a GPU): 'ultimate cloning' - the reference clip, its exact words and
+    the same clip as the timbre reference, as its model card advises for the closest voice."""
     _threads()
     import torch
     from voxcpm import VoxCPM
-    m = VoxCPM.from_pretrained("openbmb/VoxCPM1.5",
-                               **_kwargs_that_fit(VoxCPM.from_pretrained, {"load_denoiser": False, "optimize": False}))
+    m = VoxCPM.from_pretrained("openbmb/VoxCPM2", **_kwargs_that_fit(
+        VoxCPM.from_pretrained, {"load_denoiser": False, "optimize": False, "device": "cpu"}))
     _api_dump(out, m, "voxcpm")
-    sr = int(getattr(getattr(m, "tts_model", None), "sample_rate", 0) or getattr(m, "sample_rate", 0) or 44100)
+    sr = int(getattr(getattr(m, "tts_model", None), "sample_rate", 0) or getattr(m, "sample_rate", 0) or 48000)
 
     def make(take):
         torch.manual_seed(700 + take)
-        kw = _kwargs_that_fit(m.generate, {"text": TEXT, "prompt_wav_path": str(ref), "prompt_text": REF_TEXT,
-                                           "cfg_value": 2.0, "inference_timesteps": 10, "denoise": False})
-        return m.generate(**kw), sr
+        return m.generate(text=TEXT, prompt_wav_path=str(ref), prompt_text=REF_TEXT, reference_wav_path=str(ref),
+                          cfg_value=2.0, inference_timesteps=10), sr
 
     for take in TAKES:
         _take(out, "voxcpm_locked", take, make)
@@ -385,7 +386,7 @@ ROUND2 = {   # round 1's very takes the owner kept (results.json of run 39197836
     "qwen_locked": ("qwen_locked_t1", "D of round 1: Qwen3-TTS 1.7B Base, the locked designed voice"),
     "chatterbox_locked": ("chatterbox_locked_t1", "E of round 1: Chatterbox, the locked designed voice"),
     "turbo_locked": (None, "Chatterbox Turbo, the locked designed voice, a [chuckle] after 'honestly?'"),
-    "voxcpm_locked": (None, "VoxCPM 1.5 (44.1 kHz), the locked designed voice"),
+    "voxcpm_locked": (None, "VoxCPM2 (2B, 48 kHz), the locked designed voice (ultimate cloning)"),
 }
 
 
@@ -421,7 +422,7 @@ def round2(src: Path, out: Path) -> int:
     failed = {k: v.get("error") for k, v in gen.items() if v.get("error") and k.rsplit("_t", 1)[0] in ROUND2}
     res = {"round": 2, "text": TEXT, "turbo_text": TURBO_TEXT, "finishing": FINISHING, "blind": blind,
            "variants": chosen, "missing_variants": [v for v in ROUND2 if v not in chosen], "failed_takes": failed,
-           "all_takes": takes, "licenses": {**LICENSES, "voxcpm": "VoxCPM 1.5: Apache-2.0 (code and weights)"},
+           "all_takes": takes, "licenses": {**LICENSES, "voxcpm": "VoxCPM2: Apache-2.0"},
            "round1": "branch mediaengine-voice-lab latest/ (run 39197836516)",
            "music": {**MUSIC, "used": music is not None, "mix": "starts 1 s before the voice, 13 dB down and ducked "
                      "under the voice, fades out 1.5 s after it; whole mix -14 LUFS"}}
@@ -434,7 +435,7 @@ def round2(src: Path, out: Path) -> int:
     md += ["", "music_<letter>.mp3: the same voice over music - " + f"{MUSIC['title'][5:]} by {MUSIC['author']}, "
            f"{MUSIC['licence']} ({MUSIC['page']}).", "", "Which letter is which: results.json -> blind."]
     if failed:
-        md += ["", "Failed takes:"] + [f"- {k}: {e}" for k, e in failed.items()]
+        md += ["", "Failed takes:"] + [f"- {k}: {str(e).splitlines()[0][:300]}" for k, e in failed.items()]
     (out / "RESULTS.md").write_text("\n".join(md) + "\n", "utf-8")
     print(json.dumps({"made": len(order), "of": len(ROUND2), "failed_takes": len(failed)}))
     return 0 if len(order) >= 3 else 1
@@ -483,7 +484,7 @@ def check(src: Path, out: Path) -> int:
         md.append(f"| {letter} | {b['word_errors']} | {b['seconds']} | {b['pitch_median_hz']} | {b['pitch_movement_semitones']} |")
     md += ["", "Which letter is which engine: results.json -> blind (kept out of this table on purpose)."]
     if failed:
-        md += ["", "Failed takes:"] + [f"- {k}: {e}" for k, e in failed.items()]
+        md += ["", "Failed takes:"] + [f"- {k}: {str(e).splitlines()[0][:300]}" for k, e in failed.items()]
     (out / "RESULTS.md").write_text("\n".join(md) + "\n", "utf-8")
     print(json.dumps({"made": len(order), "of": len(VARIANTS), "failed_takes": len(failed)}))
     return 0 if order else 1

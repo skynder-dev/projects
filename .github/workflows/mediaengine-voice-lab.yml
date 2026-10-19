@@ -7,7 +7,7 @@ name: mediaengine-voice-lab
 # Round 1 (run 39197836516, kept on branch mediaengine-voice-lab latest/): Kokoro, Qwen3-TTS VoiceDesign / Base,
 # Chatterbox. The owner kept B, D, E ("still feels like AI, but good intonations").
 # Round 2 (this file, results in round2/): the very takes B, D, E (from round 1's artifacts) + Chatterbox Turbo and
-# VoxCPM 1.5 with the same locked voice, all with the same voice-over finishing, alone and over free-licence music.
+# VoxCPM2 with the same locked voice, all with the same voice-over finishing, alone and over free-licence music.
 # The voice_lab.py commands of round 1 stay (kokoro / qwen / chatterbox / check) for a rerun from git history.
 on:
   workflow_dispatch:
@@ -61,7 +61,7 @@ jobs:
           path: ${{ runner.temp }}/out
   voxcpm:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@v4
         with:
@@ -76,12 +76,13 @@ jobs:
           path: ${{ runner.temp }}/r1
           run-id: ${{ env.ROUND1_RUN }}
           github-token: ${{ github.token }}
-      - name: VoxCPM in its own venv (CPU torch)
+      - name: VoxCPM in its own venv (CPU torch; FFmpeg libraries for torchaudio's decoder)
         run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
           python -m venv "$RUNNER_TEMP/v"
           "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" torch torchaudio
           "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" voxcpm soundfile
-      - name: VoxCPM 1.5, locked voice
+      - name: VoxCPM2, locked voice
         run: |
           mkdir -p "$RUNNER_TEMP/out"
           "$RUNNER_TEMP/v/bin/python" -m pip freeze > "$RUNNER_TEMP/out/freeze_voxcpm.txt"
