@@ -1,12 +1,12 @@
 
 Fetching 9 files:   0%|          | 0/9 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
 
-Fetching 9 files:  11%|#1        | 1/9 [00:00<00:01,  6.57it/s]
-Fetching 9 files:  67%|######6   | 6/9 [00:00<00:00, 24.25it/s]
-Fetching 9 files:  78%|#######7  | 7/9 [00:20<00:00, 24.25it/s]
-Fetching 9 files:  89%|########8 | 8/9 [00:33<00:05,  5.57s/it]
-Fetching 9 files: 100%|##########| 9/9 [02:25<00:00, 26.10s/it]
-Fetching 9 files: 100%|##########| 9/9 [02:25<00:00, 16.18s/it]
+Fetching 9 files:  11%|#1        | 1/9 [00:00<00:01,  5.92it/s]
+Fetching 9 files:  44%|####4     | 4/9 [00:00<00:00, 14.03it/s]
+Fetching 9 files:  78%|#######7  | 7/9 [00:00<00:00, 17.02it/s]
+Fetching 9 files:  89%|########8 | 8/9 [00:20<00:00, 17.02it/s]
+Fetching 9 files: 100%|##########| 9/9 [01:34<00:00, 15.98s/it]
+Fetching 9 files: 100%|##########| 9/9 [01:34<00:00, 10.53s/it]
 voxcpm_model_path: C:\Users\runneradmin\.cache\huggingface\hub\models--openbmb--VoxCPM2\snapshots\32279effe8c19989596f05d353d1447f51d9e915, zipenhancer_model_path: None, enable_denoiser: False
 D:\a\_temp\addon\site\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
   WeightNorm.apply(module, name, dim)
@@ -16,22 +16,23 @@ Loading model from safetensors: C:\Users\runneradmin\.cache\huggingface\hub\mode
 Loaded VoxCPM2Model
 
   0%|          | 0/76 [00:00<?, ?it/s]
-  1%|1         | 1/76 [00:11<14:11, 11.36s/it]
-  3%|2         | 2/76 [00:19<12:01,  9.75s/it]
-  4%|3         | 3/76 [00:27<10:43,  8.82s/it]
-  5%|5         | 4/76 [00:38<11:38,  9.70s/it]
-  7%|6         | 5/76 [00:49<12:07, 10.25s/it]
-  8%|7         | 6/76 [00:59<11:41, 10.02s/it]
-  9%|9         | 7/76 [01:07<10:52,  9.46s/it]
- 11%|#         | 8/76 [01:18<11:02,  9.75s/it]
- 12%|#1        | 9/76 [01:29<11:24, 10.22s/it]
- 13%|#3        | 10/76 [01:39<11:09, 10.14s/it]
- 14%|#4        | 11/76 [01:47<10:13,  9.45s/it]
- 16%|#5        | 12/76 [01:58<10:32,  9.88s/it]
- 17%|#7        | 13/76 [02:09<10:53, 10.37s/it]
- 18%|#8        | 14/76 [02:20<10:44, 10.40s/it]
- 20%|#9        | 15/76 [02:28<09:53,  9.73s/it]
- 21%|##1       | 16/76 [02:37<09:36,  9.61s/it]
- 21%|##1       | 16/76 [02:47<10:28, 10.48s/it]
-voice ok 2.72 s; words:  Hi!  This  is  a  quick  test  of  the  voice.
+  1%|1         | 1/76 [00:01<02:01,  1.62s/it]
+  3%|2         | 2/76 [00:03<01:56,  1.57s/it]
+  4%|3         | 3/76 [00:04<01:51,  1.53s/it]
+  5%|5         | 4/76 [00:06<01:50,  1.53s/it]
+  7%|6         | 5/76 [00:07<01:47,  1.52s/it]
+  8%|7         | 6/76 [00:09<01:46,  1.52s/it]
+  9%|9         | 7/76 [00:10<01:44,  1.51s/it]
+ 11%|#         | 8/76 [00:12<01:42,  1.51s/it]
+ 12%|#1        | 9/76 [00:13<01:41,  1.51s/it]
+ 13%|#3        | 10/76 [00:15<01:41,  1.53s/it]
+ 14%|#4        | 11/76 [00:17<01:45,  1.63s/it]
+ 16%|#5        | 12/76 [00:18<01:48,  1.69s/it]
+ 17%|#7        | 13/76 [00:20<01:48,  1.72s/it]
+ 18%|#8        | 14/76 [00:22<01:44,  1.68s/it]
+ 20%|#9        | 15/76 [00:23<01:39,  1.64s/it]
+ 21%|##1       | 16/76 [00:25<01:36,  1.60s/it]
+ 22%|##2       | 17/76 [00:27<01:36,  1.63s/it]
+ 22%|##2       | 17/76 [00:27<01:35,  1.63s/it]
+voice ok 2.88 s; words:  Hi,  this  is  a  quick  test  of  the  voice.
 imported: Jinja2 MarkupSafe PyYAML annotated-types anyio audioread av brotli cffi charset-normalizer cloudpickle colorama ctranslate2 decorator dill einops faster-whisper filelock h11 hf-xet httpcore2 httpx2 huggingface_hub idna joblib lazy-loader librosa llvmlite msgpack numba numpy onnxruntime packaging pillow platformdirs pooch pycparser pydantic pydantic_core regex safetensors scipy setuptools soundfile soxr tokenizers torch torchaudio tqdm transformers truststore typing-inspection typing_extensions voxcpm xxhash
