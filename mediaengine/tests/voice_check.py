@@ -88,6 +88,9 @@ def main() -> int:
         if on_line:
             on_line({"progress": 0.5, "step": "speaking", "chunk": 1, "chunks": 1})
         if job["task"] == "tts":
+            ref = (job.get("voice") or {}).get("ref_wav")
+            if ref and not Path(ref).is_file():         # as the real worker: it cannot clone a voice from no recording
+                return {"ok": False, "error": f"FileNotFoundError: {ref}"}
             n = sum(len(ch["text"].split()) for ch in job["chunks"])
             secs = max(1.0, 0.35 * n)
             subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", f"sine=f=220:d={secs:.2f}", "-ar", "48000", job["out_wav"]],
@@ -216,6 +219,21 @@ def main() -> int:
     check("a voice-over that does not exist", r.status_code == 400, r.status_code)
     r = c.post(f"/auto/voice/{jid}/dub", data={"video": str(home / "none.mp4")}, headers=H)
     check("a video that does not exist", r.status_code == 400, r.status_code)
+
+    # a voice-over made by an older build: its stored recording path is that build's (maybe removed since)
+    def old_job(key, ref):
+        jj = json.loads((d / "job.json").read_text("utf-8"))
+        jj["voice"].update(key=key, ref_wav=ref)
+        (d / "job.json").write_text(json.dumps(jj), "utf-8")
+    old_job("friend", str(home / "MediaEngine-b158" / "assets" / "voice" / "friend_3_1.flac"))       # 3.1, gone now
+    c.post(f"/auto/voice/{jid}/retry", headers=H)
+    fj = wait(jid)
+    check("Try again on a voice this version no longer has: said in words", fj["state"] == "failed"
+          and "recording of this voice is missing" in str((fj.get("result") or {}).get("error")), fj.get("result"))
+    old_job(vo.DEFAULT_VOICE, str(home / "MediaEngine-b158" / "assets" / "voice" / vo.VOICES[vo.DEFAULT_VOICE]["ref"]))
+    c.post(f"/auto/voice/{jid}/retry", headers=H)
+    fj = wait(jid)
+    check("Try again after an update: the voice's recording of this build", fj["state"] == "done", fj.get("result"))
 
     # Russian
     c.post("/lang", data={"back": "/auto/voice"}, headers=H)

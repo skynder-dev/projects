@@ -759,6 +759,11 @@ def _do(jid: str) -> dict:
             if cp.returncode != 0 or not ref.is_file():
                 return {"ok": False, "error": "The recording of the voice could not be read."}
             v["ref_wav"] = str(ref)
+        elif v.get("ref_wav"):                       # a voice of the program: its file in THIS build (a job made by an
+            if (VOICES.get(v.get("key")) or {}).get("ref"):   # older build keeps that build's path, maybe removed since)
+                v["ref_wav"] = str(ASSETS / VOICES[v["key"]]["ref"])
+            if not Path(v["ref_wav"]).is_file():     # a voice this version no longer has (3.1): say so, not a worker error
+                return {"ok": False, "error": "The recording of this voice is missing from this version of MediaEngine."}
         cfg = (load_config().get("voice") or {})
         device = cfg.get("device") or ("cuda" if manifest().get("cuda") else "cpu")
         res = _run_worker({"task": "tts", "chunks": chunks(job["text"]), "voice": v, "language": job.get("language"),
