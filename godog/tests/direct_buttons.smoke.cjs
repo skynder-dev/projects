@@ -8,7 +8,7 @@ for(const required of [
   '// @name:en      GoDog',
   '// @name:ru      GoDog',
   '// @namespace    GoDog.constitution',
-  '// @version      7.0.8',
+  '// @version      7.0.9',
   '// @grant        none',
   '// @updateURL    http://127.0.0.1:43129/godog.meta.js',
   '// @downloadURL  http://127.0.0.1:43129/godog.user.js'
@@ -65,12 +65,15 @@ const composerParent=new Element('DIV');composerParent.isConnected=true;
 composerParent.appendChild(composerSurface);
 composerSurface.rect={left:130,right:1090,top:69,bottom:161,width:960,height:92};
 editor.isConnected=true;
-editor.closest=selector=>selector==='[data-type="unified-composer"]' ? composerSurface : null;
+const submitForm=new Element('FORM');
+submitForm.requestSubmit=()=>send.click();
+editor.closest=selector=>selector==='[data-type="unified-composer"]' ? composerSurface : selector==='form' ? submitForm : null;
 
 const send=new Element('BUTTON');
+send.disabled=true; // React leaves native Send disabled until it accepts editor input.
 send.rect={left:1030,right:1070,top:117,bottom:157,width:40,height:40};
 let submitted=[],stopNativeClicked=0,generating=false,observerCb=null,navCount=0;
-let assistantMessages=[],userMessages=[];
+let assistantMessages=[],userMessages=[],findSend=true;
 send.click=()=>{
   submitted.push(editor.innerText);
   userMessages.push(Object.assign(new Element(),{innerText:editor.innerText,attributes:{'data-message-id':'U'+userMessages.length}}));
@@ -90,7 +93,7 @@ const document={
   execCommand(cmd,mode,data){assert.equal(cmd,'insertText');editor.innerText=data;return true;},
   querySelector(selector) {
     if(selector==='#prompt-textarea')return editor;
-    if(selector.includes('send-button'))return send;
+    if(selector.includes('send-button'))return findSend?send:null;
     if(selector.includes('stop-button'))return generating?nativeStop:null;
     return null;
   },
@@ -101,32 +104,47 @@ const document={
   },
   addEventListener(){}
 };
-const win={innerWidth:1220,innerHeight:250,addEventListener(){},getComputedStyle(el){return {position:'static',backgroundColor:'rgb(33, 33, 33)',borderTopLeftRadius:'26px',borderTopRightRadius:'26px',borderBottomLeftRadius:'26px',borderBottomRightRadius:'26px',borderLeftWidth:'1px',borderLeftColor:'rgba(255, 255, 255, 0.1)',borderRightWidth:'1px',borderRightColor:'rgba(255, 255, 255, 0.1)',borderBottomWidth:'1px',borderBottomColor:'rgba(255, 255, 255, 0.1)',borderTopWidth:'1px',borderTopColor:'rgba(255, 255, 255, 0.1)'}}};win.top=win;win.self=win;win.getSelection=()=>({removeAllRanges(){},addRange(){}});
+const win={innerWidth:1220,innerHeight:250,addEventListener(){},getComputedStyle(el){return {position:'static',backgroundColor:'rgb(33, 33, 33)',borderTopLeftRadius:'26px',borderTopRightRadius:'26px',borderBottomLeftRadius:'26px',borderBottomRightRadius:'26px',borderLeftWidth:'1px',borderLeftColor:'rgba(255, 255, 255, 0.1)',borderRightWidth:'1px',borderRightColor:'rgba(255, 255, 255, 0.1)',borderBottomWidth:'1px',borderBottomColor:'rgba(255, 255, 255, 0.1)',borderTopWidth:'1px',borderTopColor:'rgba(255, 255, 255, 0.1)'}}};win.top=win;win.self=win;win.getSelection=()=>({removeAllRanges(){},addRange(){}});win.requestAnimationFrame=fn=>queueMicrotask(()=>fn(16));
 const ctx={window:win,document,location:loc,sessionStorage:storage(session),localStorage:storage(local),
   queueMicrotask,MutationObserver:class{constructor(fn){observerCb=fn;}observe(){}},
   Event:class{},InputEvent:class{},KeyboardEvent:class{},console,
   HTMLTextAreaElement:class{},HTMLInputElement:class{}};
 vm.runInNewContext(src,ctx,{timeout:3000});
 assert.equal(buttons['.cg-status'].textContent,'DISARMED','restored original initial status');
-assert.equal(buttons['.cg-version'].textContent,'GoDog 7.0.8','restored original version chip');
+assert.equal(buttons['.cg-version'].textContent,'GoDog 7.0.9','restored original version chip');
 assert.equal(buttons['.cg-project'].textContent,'GoDog','restored original project chip');
 assert.equal(buttons['.cg-auto'].textContent,'AUTO','restored original AUTO label');
 assert.equal(buttons['.cg-timer'].textContent,'','no fake LOCAL timer');
 
 
-// Direct GO is fully synchronous, one native click, zero waits.
+// Native Send starts DISABLED, just like React's real input re-render.
 buttons['.cg-go'].click();
-assert.deepEqual(submitted,['GO']);
-// STOP does not click native stop.
-buttons['.cg-stop'].click();
-assert.equal(stopNativeClicked,0);
-
-// AUTO on idle dispatches once NOW, then once only after a finished assistant turn.
-buttons['.cg-auto'].click();
-assert.deepEqual(submitted,['GO','GO']);
-generating=true;observerCb();
+assert.equal(editor.innerText,'GO','GO typed into native editor');
+assert.deepEqual(submitted,[],'must NOT claim synthetic Enter sent the message');
+assert.equal(buttons['.cg-status'].textContent,'GO → INPUT','no false CLICK before native submission');
+buttons['.cg-go'].click(); // second GO before React commit must NOT duplicate
+assert.deepEqual(submitted,[],'pending single-flight GO, no double send');
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 (async()=>{
+  await flush();
+  assert.deepEqual(submitted,[],'native button still disabled');
+  // Actual React state commit: enable native Send and notify the observer.
+  send.disabled=false;
+  observerCb();
+  await flush();
+  assert.deepEqual(submitted,['GO'],'after React enables native Send, exactly one click');
+  observerCb(); await flush();
+  assert.deepEqual(submitted,['GO'],'repeated DOM updates must not duplicate a submitted GO');
+
+  // STOP never clicks the native ChatGPT stop.
+  buttons['.cg-stop'].click();
+  assert.equal(stopNativeClicked,0);
+
+  // AUTO sends exactly one native GO when idle.
+  buttons['.cg-auto'].click();
+  await flush();
+  assert.deepEqual(submitted,['GO','GO']);
+  generating=true;observerCb();
   await flush();
   assert.equal(root.style.props.left,'130px','dock aligned to composer left');
 assert.equal(root.style.props.width,'960px','dock width equals composer, never full viewport');
@@ -168,5 +186,16 @@ assert.equal(root.style.props.bottom,'auto','dock not full-width bottom bar');
   assert.ok(!session.has('godog-pc-local-v7-handoff'),'handoff consumed once');
   observerCb(); await flush();
   assert.equal(submitted.length,4,'no duplicate handoff');
-  console.log('GoDog PC LOCAL: direct GO, AUTO one-per-turn, STOP, NEW handoff, no timers/network: PASS');
+  // If ChatGPT changes the Send button markup, use its real form requestSubmit.
+  findSend=false;
+  buttons['.cg-go'].click();
+  await flush();
+  assert.deepEqual(submitted.length,5,'native requestSubmit fallback sends GO exactly once');
+  assert.equal(submitted[4],'GO');
+  observerCb();await flush();
+  assert.equal(submitted.length,5,'requestSubmit must never double send');
+
+  // Version 7.0.8 falsely reported GO CLICK after a synthetic keyboard event.
+  assert.ok(!src.includes("new KeyboardEvent('keydown'"),'untrusted Enter is not a valid submit proof');
+  console.log('GoDog PC LOCAL 7.0.9: disabled React Send → enabled native click, requestSubmit fallback, AUTO, STOP, NEW, frozen visual: PASS');
 })().catch(err=>{console.error(err);process.exitCode=1;});
