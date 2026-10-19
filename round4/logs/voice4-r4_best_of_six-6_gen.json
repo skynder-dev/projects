@@ -1,0 +1,8 @@
+{
+ "r4_best_of_six_t6": {
+  "variant": "r4_best_of_six",
+  "take": 6,
+  "seconds_to_make": 1890.5,
+  "sr": 48000
+ }
+}

@@ -3,22 +3,36 @@ Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF
   WeightNorm.apply(module, name, dim)
 Downloading: "https://github.com/tarepan/SpeechMOS/zipball/v1.2.0" to /home/runner/.cache/torch/hub/v1.2.0.zip
 Downloading: "https://github.com/tarepan/SpeechMOS/releases/download/v1.0.0/utmos22_strong_step7459_v1.pt" to /home/runner/.cache/torch/hub/checkpoints/utmos22_strong_step7459_v1.pt
-  0%|          | 0.00/392M [00:00<?, ?B/s]  0%|          | 1.88M/392M [00:00<00:21, 19.4MB/s]  8%|▊         | 31.9M/392M [00:00<00:01, 192MB/s]  25%|██▌       | 99.1M/392M [00:00<00:00, 425MB/s] 42%|████▏     | 166M/392M [00:00<00:00, 534MB/s]  57%|█████▋    | 222M/392M [00:00<00:00, 552MB/s] 71%|███████   | 278M/392M [00:00<00:00, 564MB/s] 85%|████████▍ | 332M/392M [00:00<00:00, 566MB/s] 98%|█████████▊| 386M/392M [00:00<00:00, 547MB/s]100%|██████████| 392M/392M [00:00<00:00, 500MB/s]
-09:03:02 calibration latest/voice_A.mp3: bad -> UTMOS 2.328
-09:03:04 calibration latest/voice_C.mp3: bad (too sexy) -> UTMOS 4.281
-09:03:06 calibration latest/voice_F.mp3: bad -> UTMOS 4.529
-09:03:08 calibration latest/voice_B.mp3: good -> UTMOS 4.326
-09:03:10 calibration latest/voice_D.mp3: good -> UTMOS 4.495
-09:03:12 calibration latest/voice_E.mp3: good -> UTMOS 4.282
-09:03:14 calibration round3/voice3_3.mp3: bad -> UTMOS 4.116
-09:03:16 calibration round3/voice3_4.mp3: bad -> UTMOS 4.225
-09:03:18 calibration round3/voice3_5.mp3: tolerable -> UTMOS 3.881
-09:03:21 calibration round3/voice3_1.mp3: interesting (best) -> UTMOS 3.099
-[0;93m2026-10-19 09:03:21.258167027 [W:onnxruntime:Default, device_discovery.cc:95 GetPciBusId] Skipping pci_bus_id for PCI path at "/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/5620e0c7-8062-4dce-aeb7-520c7ef76171" because filename "5620e0c7-8062-4dce-aeb7-520c7ef76171" did not match expected pattern of [0-9a-f]+:[0-9a-f]+:[0-9a-f]+[.][0-9a-f]+[m
-09:03:31 r4_same_more_steps_t1: 23.4 s, 0 word errors, pitch 302 Hz +-3.2 st
-09:03:34   r4_same_more_steps_t1: UTMOS 3.554
-09:03:47 r4_best_of_six_t1: 22.7 s, 0 word errors, pitch 216 Hz +-3.6 st
-09:03:50   r4_best_of_six_t1: UTMOS 4.423
-09:03:56 r4_best_of_six_t2: 20.8 s, 0 word errors, pitch 209 Hz +-4.1 st
-09:03:58   r4_best_of_six_t2: UTMOS 4.505
-{"made": 3, "of": 5, "failed_takes": 0}
+  0%|          | 0.00/392M [00:00<?, ?B/s] 11%|█         | 42.5M/392M [00:00<00:00, 427MB/s] 22%|██▏       | 85.9M/392M [00:00<00:00, 443MB/s] 34%|███▍      | 134M/392M [00:00<00:00, 473MB/s]  48%|████▊     | 187M/392M [00:00<00:00, 504MB/s] 62%|██████▏   | 242M/392M [00:00<00:00, 529MB/s] 75%|███████▍  | 292M/392M [00:00<00:00, 521MB/s] 89%|████████▊ | 348M/392M [00:00<00:00, 540MB/s]100%|██████████| 392M/392M [00:00<00:00, 518MB/s]
+09:43:02 calibration latest/voice_A.mp3: bad -> UTMOS 2.328
+09:43:05 calibration latest/voice_C.mp3: bad (too sexy) -> UTMOS 4.281
+09:43:07 calibration latest/voice_F.mp3: bad -> UTMOS 4.529
+09:43:09 calibration latest/voice_B.mp3: good -> UTMOS 4.326
+09:43:10 calibration latest/voice_D.mp3: good -> UTMOS 4.495
+09:43:13 calibration latest/voice_E.mp3: good -> UTMOS 4.282
+09:43:15 calibration round3/voice3_3.mp3: bad -> UTMOS 4.116
+09:43:17 calibration round3/voice3_4.mp3: bad -> UTMOS 4.225
+09:43:19 calibration round3/voice3_5.mp3: tolerable -> UTMOS 3.881
+09:43:21 calibration round3/voice3_1.mp3: interesting (best) -> UTMOS 3.099
+[0;93m2026-10-19 09:43:21.936344053 [W:onnxruntime:Default, device_discovery.cc:95 GetPciBusId] Skipping pci_bus_id for PCI path at "/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/5620e0c7-8062-4dce-aeb7-520c7ef76171" because filename "5620e0c7-8062-4dce-aeb7-520c7ef76171" did not match expected pattern of [0-9a-f]+:[0-9a-f]+:[0-9a-f]+[.][0-9a-f]+[m
+09:43:34 r4_best_of_six_t1: 22.6 s, 0 word errors, pitch 225 Hz +-4.6 st
+09:43:36   r4_best_of_six_t1: UTMOS 4.412
+09:43:42 r4_best_of_six_t2: 20.8 s, 0 word errors, pitch 209 Hz +-4.1 st
+09:43:44   r4_best_of_six_t2: UTMOS 4.505
+09:43:53 r4_best_of_six_t3: 23.8 s, 0 word errors, pitch 225 Hz +-3.3 st
+09:43:55   r4_best_of_six_t3: UTMOS 4.427
+09:44:01 r4_best_of_six_t4: 21.6 s, 0 word errors, pitch 285 Hz +-3.7 st
+09:44:04   r4_best_of_six_t4: UTMOS 4.479
+09:44:10 r4_best_of_six_t5: 22.2 s, 0 word errors, pitch 264 Hz +-4.4 st
+09:44:12   r4_best_of_six_t5: UTMOS 4.368
+09:44:18 r4_best_of_six_t6: 22.9 s, 0 word errors, pitch 257 Hz +-3.5 st
+09:44:20   r4_best_of_six_t6: UTMOS 4.482
+09:44:26 r4_direction_cfg16_t1: 20.6 s, 0 word errors, pitch 299 Hz +-3.6 st
+09:44:29   r4_direction_cfg16_t1: UTMOS 4.388
+09:44:34 r4_locked_new_text_t1: 15.4 s, 0 word errors, pitch 305 Hz +-3.0 st
+09:44:35   r4_locked_new_text_t1: UTMOS 3.414
+09:44:40 r4_locked_new_text_t2: 17.3 s, 0 word errors, pitch 287 Hz +-3.1 st
+09:44:42   r4_locked_new_text_t2: UTMOS 3.452
+09:44:48 r4_same_more_steps_t1: 23.4 s, 0 word errors, pitch 302 Hz +-3.2 st
+09:44:51   r4_same_more_steps_t1: UTMOS 3.554
+{"made": 5, "of": 5, "failed_takes": 0}
