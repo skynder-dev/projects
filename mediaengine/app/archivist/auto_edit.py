@@ -2469,6 +2469,18 @@ def system_check() -> list[dict]:
                 add("Memory (RAM)", tot >= 6, f"{tot:.0f} GB" + ("" if tot >= 6 else " - less than 6 GB, long 4K videos may be slow"))
         except Exception:
             pass
+    try:                                     # the voice-over add-on (optional, installed with a button)
+        from . import voice as _vo
+        m = _vo.manifest()
+        if _vo.installed():
+            add("Voice-over add-on (optional)", True, ("graphics card " + (m.get("gpu") or "")) if m.get("cuda")
+                else "on the processor")
+        elif m:
+            add("Voice-over add-on (optional)", False, "needs to be installed again (Auto Edit → Voice-over)")
+        else:
+            add("Voice-over add-on (optional)", True, "not installed - Auto Edit → Voice-over", "info")
+    except Exception:
+        pass
     import platform
     from .config import BUILD, VERSION
     add("MediaEngine version", True, f"{VERSION} {BUILD}".strip())

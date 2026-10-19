@@ -138,6 +138,15 @@ def main() -> int:
     subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=540x960:rate=30:duration=2",
                     "-f", "lavfi", "-i", "sine=f=440:duration=2", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac",
                     "-shortest", str(video)], check=True)
+    from archivist.db import db, now_iso
+    from archivist import auto_edit as ae
+    ae.ensure_schema()
+    with db() as con:              # a saved reel: offered in the video fields without typing its path
+        con.execute("INSERT INTO ae_exports(project_id, revision_id, path, sha256, bytes, created_at) VALUES(1,1,?,?,?,?)",
+                    (str(video), "x", 1, now_iso()))
+        con.commit()
+    page = c.get("/auto/voice", headers=H).get_data(as_text=True)
+    check("a reel saved lately is offered in the video fields", "select data-fill" in page and "clip.mp4" in page)
     r = c.post(f"/auto/voice/{jid}/dub", data={"video": str(video), "keep_sound": "1", "captions": "1", "position": "bottom",
                                                "start": "0.3"}, headers=H)
     check("the voice onto a video is accepted", r.status_code == 302, r.status_code)

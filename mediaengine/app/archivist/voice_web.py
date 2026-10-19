@@ -26,7 +26,10 @@ PAGE_CSS = """<style>
 .vo-job{border-top:1px solid #2a2f37;padding:12px 0}
 .vo-job:first-child{border-top:0}
 .vo-sub{font-size:13px}
-textarea.vo-text{width:100%;min-height:130px;font:15px system-ui;box-sizing:border-box}
+textarea.vo-text{width:100%;min-height:130px;font:15px/1.45 system-ui;box-sizing:border-box;background:#0e131a;color:#fff;
+border:1px solid #364150;border-radius:9px;padding:9px 10px;outline:none}
+textarea.vo-text:focus{border-color:#5b86d8;box-shadow:0 0 0 3px #4a82f420}
+.vo-job form.vo-del{display:inline;margin:0}
 input.vo-wide{width:100%;max-width:640px;box-sizing:border-box}
 </style>"""
 
@@ -96,6 +99,34 @@ def register(app, page, err_page, e, human_bytes):
                   f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
                   f"<button class='ae-big'>{again}</button></form>{cpu_btn}</div></div>")
 
+    def _recent_reels(limit: int = 12) -> list[str]:
+        """The reels saved last (that are still there): one click instead of typing a path."""
+        from .db import db
+        out, seen = [], set()
+        try:
+            with db() as con:
+                rows = con.execute("SELECT path FROM ae_exports ORDER BY id DESC LIMIT 80").fetchall()
+        except Exception:
+            rows = []
+        for r in rows:
+            p = str(r["path"] or "")
+            if not p or p.lower() in seen:
+                continue
+            seen.add(p.lower())
+            if Path(p).is_file():
+                out.append(p)
+                if len(out) >= limit:
+                    break
+        return out
+
+    def _reel_select() -> str:
+        reels = _recent_reels()
+        if not reels:
+            return ""
+        opts = "".join(f"<option value='{e(p)}' translate='no'>{e(Path(p).name)}</option>" for p in reels)
+        return (f"<div class='vo-row' style='margin-top:6px'><span>or a reel saved lately:</span>"
+                f"<select data-fill><option value=''>—</option>{opts}</select></div>")
+
     def _lang_options() -> str:
         return "".join(f"<option value='{c}'" + (" translate='no'" if c else "") + f">{e(n)}</option>" for c, n in _LANGS)
 
@@ -128,7 +159,7 @@ def register(app, page, err_page, e, human_bytes):
                 f"burned into a copy of the video. The video itself is only read.</div>"
                 f"<form method='post' action='/auto/voice/captions' style='margin-top:8px'>"
                 f"<div class='vo-row'><input class='vo-wide' name='path' required placeholder='The video, e.g. D:\\Videos\\talk.mp4'>"
-                f"<button type='button' class='btn2' data-pick='video'>Choose…</button></div>"
+                f"<button type='button' class='btn2' data-pick='video'>Choose…</button></div>{_reel_select()}"
                 f"<div class='vo-row' style='margin-top:8px'><span>Language of the speech</span><select name='language'>{langs}</select>"
                 f"<span>Captions</span><select name='position'><option value='bottom'>at the bottom</option>"
                 f"<option value='middle'>in the middle</option><option value='top'>at the top</option></select></div>"
@@ -164,11 +195,11 @@ def register(app, page, err_page, e, human_bytes):
                     f"<div class='muted vo-sub'><span translate='no'>{e(str(res.get('seconds') or ''))}</span> <span>s</span> · {check} · "
                     f"<span>made on</span> <span>{dev}</span></div>"
                     f"<div class='vo-row' style='margin-top:6px'><a class='btn btn2' href='/auto/voice/{jid}/file/voice.wav?download=1'>Download WAV</a>"
-                    f"<a class='btn btn2' href='/auto/voice/{jid}/file/captions.srt?download=1'>Download captions (SRT)</a></div>"
+                    f"<a class='btn btn2' href='/auto/voice/{jid}/file/captions.srt?download=1'>Download captions (SRT)</a><!--actions--></div>"
                     f"<details style='margin-top:8px'><summary>Put it on a video</summary>"
                     f"<form method='post' action='/auto/voice/{jid}/dub' style='margin-top:8px'>"
                     f"<div class='vo-row'><input class='vo-wide' name='video' required placeholder='The video, e.g. D:\\Exports\\reel.mp4'>"
-                    f"<button type='button' class='btn2' data-pick='video'>Choose…</button></div>"
+                    f"<button type='button' class='btn2' data-pick='video'>Choose…</button></div>{_reel_select()}"
                     f"<label style='display:block;margin-top:6px'><input type='checkbox' name='keep_sound' value='1' checked> "
                     f"Keep the video's own sound (quieter while the voice speaks)</label>"
                     f"<label style='display:block'><input type='checkbox' name='captions' value='1' checked> Captions with the words</label>"
@@ -186,11 +217,15 @@ def register(app, page, err_page, e, human_bytes):
                     f"<div class='vo-row' style='margin-top:6px'><form method='post' action='/auto/voice/{jid}/reveal' style='margin:0'>"
                     f"<button class='btn2'>Show in folder</button></form>"
                     + (f"<a class='btn btn2' href='/auto/voice/{jid}/file/captions.srt?download=1'>Download captions (SRT)</a>" if (res.get("files") or {}).get("srt") else "")
-                    + "</div>")
+                    + "<!--actions--></div>")
         delete = ("" if st == "working" else
-                  f"<form method='post' action='/auto/voice/{jid}/delete' style='margin-top:6px' "
+                  f"<form method='post' action='/auto/voice/{jid}/delete' class='vo-del' "
                   f"onsubmit=\"return confirm(window.ME_L?ME_L('Delete it?'):'Delete it?')\"><button class='btn2'>Delete</button></form>")
-        return f"<div class='vo-job' id='j-{jid}' data-state='{st}'>{head}{body}{delete}</div>"
+        if delete and "<!--actions-->" in body:
+            body = body.replace("<!--actions-->", delete)
+        elif delete:
+            body += f"<div class='vo-row' style='margin-top:6px'>{delete}</div>"
+        return f"<div class='vo-job' id='j-{jid}' data-state='{st}'>{head}{body}</div>"
 
     @app.get("/auto/voice")
     def voice_page():
@@ -207,6 +242,8 @@ def register(app, page, err_page, e, human_bytes):
         steps = json.dumps({**_INSTALL_STEP})
         script = (
             "let dirty=false;document.addEventListener('input',ev=>{if(ev.target.closest('form'))dirty=true});"
+            "document.addEventListener('change',ev=>{const sl=ev.target.closest('select[data-fill]');if(!sl||!sl.value)return;"
+            "const i=sl.closest('form').querySelector('input[name=video],input[name=path]');if(i){i.value=sl.value;dirty=true}});"
             "document.querySelectorAll('input[name=voice]').forEach(r=>r.addEventListener('change',()=>{"
             "document.querySelectorAll('[data-for]').forEach(d=>{d.hidden=!document.querySelector('input[name=voice][value='+d.dataset.for+']:checked')})}));"
             "document.addEventListener('click',async ev=>{const b=ev.target.closest('[data-pick]');if(!b)return;const f=b.closest('form'),m=f.querySelector('[data-msg]');"

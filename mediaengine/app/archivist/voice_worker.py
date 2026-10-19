@@ -99,7 +99,8 @@ def _trim(y, sr: int, top_db: float = 45.0):
 
 def tts(job: dict) -> dict:
     import numpy as np, soundfile as sf, torch
-    torch.set_num_threads(max(1, (os.cpu_count() or 2) - 1))
+    # (torch's own thread count: the program's OMP_NUM_THREADS=2 is not passed to the worker; setting one less than all
+    #  cores made a CPU voice 4x slower on a 4-core runner - runs 39247474464 vs 39251509089)
     _patch_torchaudio()
     from voxcpm import VoxCPM
     dev = _device(job)
