@@ -532,6 +532,12 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   Chatterbox Turbo and VoxCPM2 (2B, 48 kHz, Apache-2.0) with the same locked voice, all with one voice-over finishing
   (room, room tone, compression, de-essing) and over a CC BY music bed with ducking (his idea); all 5 say every word.
   Sent blind as G-K.
+  Owner 02:12: "they are so alike - I thought you would work on the voices, you just put random music". Right: three
+  of five were round 1's very takes, all one voice; only the sound was finished. Round 3 (run 39214928456, round3/):
+  the voice itself - a script written to be said (pauses, "like", "seriously"; same message), distinct characters
+  (VoxCPM2 designed "friend with a secret" and "travel vlogger", VoxCPM2 directing voice B, Chatterbox voice B and
+  Turbo voice D/E on the spoken script), no music; all 5 say every word. Asked him whether a real human voice sample
+  (with that person's consent) is possible - the AI-designed reference passes its AI sound to every copy.
 
 ## Evidence
 
