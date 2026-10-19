@@ -3,7 +3,7 @@
 // @name:en      GoDog
 // @name:ru      GoDog
 // @namespace    GoDog.constitution
-// @version      7.0.8
+// @version      7.0.9
 // @description  GoDog for ChatGPT: GO, AUTO, NEW, STOP. Local updates, original UI.
 // @match        https://chatgpt.com/*
 // @run-at       document-idle
@@ -19,7 +19,7 @@
   // LOCAL ONLY. No fetch, XMLHttpRequest, GM_xmlhttpRequest, WebSocket, heartbeat or cloud endpoint.
   // Direct controls: GO -> native submit, STOP -> local AUTO off,
   // NEW -> same-tab native new chat with local handoff, AUTO -> event-driven next GO.
-  const VERSION = '7.0.8';
+  const VERSION = '7.0.9';
   const STATE_KEY = 'godog-pc-local-v7-session';
   const NEW_KEY = 'godog-pc-local-v7-handoff';
   const VERSION_KEY = 'godog-pc-local-v7-version-seen';
@@ -302,8 +302,48 @@
     else clearIntegration();
     root.style.setProperty('visibility','visible','important');
   }
+  // Find ChatGPT's actual send control, prioritizing the active composer.
+  // The global selector alone missed buttons introduced by newer ChatGPT UI builds.
+  const NATIVE_SEND_SELECTOR = [
+    'button[data-testid="send-button"]',
+    'button[data-testid="composer-send-button"]',
+    'button[data-testid$="send-button"]',
+    'button[aria-label="Send prompt"]',
+    'button[aria-label="Send message"]',
+    'button[aria-label="Send"]',
+    'button[title="Send"]',
+    'button[aria-label="Submit"]',
+    'button[type="submit"]'
+  ].join(', ');
+  function nativeEditor() {
+    return document.querySelector('#prompt-textarea, [data-testid="composer-text-input"], [contenteditable="true"][aria-label="Ask ChatGPT"], [contenteditable][role="textbox"], textarea[placeholder="Ask ChatGPT"]');
+  }
+  function isNativeSendReady(b) {
+    return !!b && !b.disabled && b.getAttribute('aria-disabled')!=='true' &&
+      b.getAttribute('data-disabled')!=='true' && b.getAttribute('type')!=='hidden';
+  }
   function getSendButton() {
-    return document.querySelector('[data-testid="send-button"], button[aria-label="Send prompt"], button[aria-label="Send message"], button[aria-label="Send"], button[title="Send"]');
+    const editor=nativeEditor();
+    const form=editor?.closest?.('form')||null;
+    const surface=editor?.closest?.('[data-type="unified-composer"]')||null;
+    const scopes=[form,surface,document].filter(Boolean);
+    let disabledCandidate=null;
+    for(const scope of scopes) {
+      const nodes=Array.from(scope.querySelectorAll?.(NATIVE_SEND_SELECTOR)||[]);
+      if(!nodes.length) {
+        const b=scope.querySelector?.(NATIVE_SEND_SELECTOR);
+        if(b) nodes.push(b);
+      }
+      for(const b of nodes) {
+        if(!b || b.closest?.('#chatgpt-go-watchdog')) continue;
+        const label=String((b.getAttribute?.('aria-label')||'')+' '+(b.getAttribute?.('title')||'')).trim();
+        if(/^(stop|cancel|dictate|record|attach)\b/i.test(label)) continue;
+        if(isNativeSendReady(b)) return b;
+        if(!disabledCandidate) disabledCandidate=b;
+      }
+      if(disabledCandidate && scope!==document) return disabledCandidate;
+    }
+    return disabledCandidate;
   }
   function getNativeStopButton() {
     return document.querySelector('[data-testid="stop-button"], button[aria-label="Stop generating"], button[aria-label="Stop generation"], button[aria-label="Stop response"]');
@@ -371,47 +411,103 @@
       return getDraft()===message;
     } finally { ownInput=false; }
   }
-  function pressNativeSend() {
-    const b=getSendButton();
-    if(b && !b.disabled && b.getAttribute('aria-disabled')!=='true') {
-      b.click();
-      return 'button';
+  // A single native submission intent, NOT a clock, queue, polling loop or
+  // synthetic Enter event. React may enable Send only after the input commit.
+  let pendingNativeSend=null;
+  function maybeSubmitNative() {
+    const intent=pendingNativeSend;
+    if(!intent||!intent.armed) return false;
+    if(getDraft()!==intent.text) {
+      pendingNativeSend=null;
+      status('SEND CANCELLED');
+      if(intent.cause==='auto'||intent.cause==='handoff') {
+        auto=false;awaitReply=false;savedState();paint();
+      }
+      return false;
     }
-    const ed=composer();
-    if(!ed) return null;
-    // One immediate native-enter fallback, no timer, no retry loop.
-    ed.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',bubbles:true,cancelable:true,keyCode:13,which:13}));
-    return 'enter';
+    if(lastMessage('user')!==intent.previousUser) {
+      pendingNativeSend=null;
+      status('SENT');
+      return true; // A new user message already appeared: never send twice.
+    }
+    if(isBusy()) {
+      pendingNativeSend=null;
+      status('CHAT BUSY');
+      return false;
+    }
+    const button=getSendButton();
+    if(button && isNativeSendReady(button)) {
+      pendingNativeSend=null; // remove intent BEFORE invoking a native callback
+      pendingAck={text:intent.text,previousUser:intent.previousUser,route:'button'};
+      try {button.click();}
+      catch(_) {pendingAck=null;status('SEND FAILED');return false;}
+      status(intent.cause==='handoff'?'NEW → CLICK':'GO → CLICK');
+      return true;
+    }
+    // requestSubmit invokes the genuine form submit path. Unlike synthetic
+    // KeyboardEvent('Enter'), it does not pretend that an untrusted key was pressed.
+    // Never bypass an explicitly disabled native send button.
+    if(!button && intent.framePassed) {
+      const form=composer()?.closest?.('form');
+      if(form&&typeof form.requestSubmit==='function') {
+        pendingNativeSend=null;
+        pendingAck={text:intent.text,previousUser:intent.previousUser,route:'form'};
+        try {form.requestSubmit();}
+        catch(_) {pendingAck=null;status('SEND FAILED');return false;}
+        status(intent.cause==='handoff'?'NEW → SUBMIT':'GO → SUBMIT');
+        return true;
+      }
+    }
+    return false;
   }
   function sendNow(message, cause) {
-    if(isBusy()) {status('CHAT BUSY'); return false;}
-    const ed=composer();
-    if(!ed) {status('NO COMPOSER'); return false;}
-    const draft=getDraft();
-    if(draft && draft!==message) {
-      safeStorage.set(DRAFT_KEY,draft); // never silently discard a manual draft
+    if(pendingNativeSend) {
+      status('GO → INPUT');
+      return pendingNativeSend.text===message; // no second intent / no duplicate
     }
-    if(!putComposer(message)) {status('INPUT FAILED'); return false;}
-    // Fire the native submission immediately. No go queue, cooldown, counter, polling or timeout.
-    const route=pressNativeSend();
-    if(!route) {status('SEND UNAVAILABLE'); return false;}
-    pendingAck={text:message,previousUser: lastMessage('user'),route};
-    awaitReply=auto && cause!=='manual';
+    if(isBusy()) {status('CHAT BUSY');return false;}
+    const ed=composer();
+    if(!ed) {status('NO COMPOSER');return false;}
+    const draft=getDraft();
+    if(pendingAck && draft===message) {
+      status('SEND UNCONFIRMED');
+      return false; // previous native click may still be processing
+    }
+    if(draft&&draft!==message) {
+      safeStorage.set(DRAFT_KEY,draft); // preserve the user's manual draft
+    }
+    // Record readiness BEFORE replacing the draft: an already enabled control
+    // can still have the OLD React form state until the next rendering frame.
+    const alreadyReady=isNativeSendReady(getSendButton());
+    const priorUser=lastMessage('user');
+    if(!putComposer(message)) {status('INPUT FAILED');return false;}
+    const intent={text:message,cause,previousUser:priorUser,
+      armed:!alreadyReady,framePassed:false};
+    pendingNativeSend=intent;
+    pendingAck=null;
+    awaitReply=auto&&cause!=='manual';
     busySeen=false;
     lastAssistantSignature=assistantSignature();
     savedState();
-    status(cause==='handoff' ? 'NEW → CLICK' : 'GO → CLICK');
-    // ChatGPT may enable Send only after updating React state: one microtask recheck, not a timer.
-    if(route==='enter') queueMicrotask(() => {
-      const b=getSendButton();
-      if(b && !b.disabled && b.getAttribute('aria-disabled')!=='true' && getDraft()===message && !isBusy()) {
-        b.click(); pendingAck.route='button';
-      }
-    });
+    status(cause==='handoff'?'NEW → INPUT':'GO → INPUT');
+    // Disabled controls become enabled through React's DOM commit. The existing
+    // MutationObserver sees that exact change and invokes maybeSubmitNative().
+    // One rendering frame also catches React updates that leave attributes fixed.
+    const arm=()=>{
+      if(pendingNativeSend!==intent) return;
+      intent.armed=true;intent.framePassed=true;
+      requestTick();
+    };
+    if(typeof window.requestAnimationFrame==='function')
+      window.requestAnimationFrame(arm);
+    else queueMicrotask(arm);
+    if(intent.armed) requestTick();
     return true;
   }
   function pauseAuto(reason) {
     auto=false; awaitReply=false; busySeen=false;
+    // STOP cancels an AUTO-owned GO that React has not submitted yet.
+    if(pendingNativeSend&&pendingNativeSend.cause!=='manual') pendingNativeSend=null;
     savedState(); paint(); status(reason || 'STOPPED');
   }
   function sendGo(manual) {
@@ -442,6 +538,7 @@
       'Выполни следующий полезный конкретный шаг, сохрани контрольную точку в ответе. Не выдумывай доступ к отсутствующим инструментам.';
   }
   function goNewChat() {
+    pendingNativeSend=null;
     newHandoff=takeSnapshot();
     safeStorage.set(NEW_KEY,JSON.stringify(newHandoff));
     auto=false; awaitReply=false; savedState(); paint(); status('NEW → CHAT');
@@ -484,7 +581,7 @@
     }
   }
   function maybeContinueAuto() {
-    if(!auto || !awaitReply) return;
+    if(!auto || !awaitReply || pendingNativeSend || pendingAck) return;
     if(isBusy()) {busySeen=true; savedState();return;}
     const s=assistantSignature();
     if(!s || s===lastAssistantSignature) return;
@@ -500,6 +597,7 @@
     mount();
     alignDockToComposer();
     if(newHandoff) maybeSendHandoff();
+    if(pendingNativeSend) maybeSubmitNative();
     maybeConfirm();
     if(auto) maybeContinueAuto();
   }
@@ -545,6 +643,6 @@
   } catch(_){}
   // Observer is LOCAL and event-driven. No timers, no remote requests.
   const observer=new MutationObserver(requestTick);
-  observer.observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['disabled','aria-disabled']});
+  observer.observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['disabled','aria-disabled','data-disabled','data-state','data-testid','aria-label']});
   requestTick();
 })();
