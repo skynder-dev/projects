@@ -1,0 +1,38 @@
+
+Fetching 9 files:   0%|          | 0/9 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Fetching 9 files:  11%|#1        | 1/9 [00:00<00:00,  8.31it/s]
+Fetching 9 files:  89%|########8 | 8/9 [00:13<00:01,  1.81s/it]
+Fetching 9 files: 100%|##########| 9/9 [01:11<00:00, 10.48s/it]
+Fetching 9 files: 100%|##########| 9/9 [01:11<00:00,  7.91s/it]
+voxcpm_model_path: C:\Users\runneradmin\.cache\huggingface\hub\models--openbmb--VoxCPM2\snapshots\32279effe8c19989596f05d353d1447f51d9e915, zipenhancer_model_path: None, enable_denoiser: False
+D:\a\_temp\addon\site\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+Loading AudioVAE from pytorch: C:\Users\runneradmin\.cache\huggingface\hub\models--openbmb--VoxCPM2\snapshots\32279effe8c19989596f05d353d1447f51d9e915\audiovae.pth
+Running on device: cpu, dtype: bfloat16
+Loading model from safetensors: C:\Users\runneradmin\.cache\huggingface\hub\models--openbmb--VoxCPM2\snapshots\32279effe8c19989596f05d353d1447f51d9e915\model.safetensors
+Loaded VoxCPM2Model
+
+  0%|          | 0/142 [00:00<?, ?it/s]
+  1%|          | 1/142 [00:07<18:32,  7.89s/it]
+  1%|1         | 2/142 [00:15<18:08,  7.77s/it]
+  2%|2         | 3/142 [00:23<18:37,  8.04s/it]
+  3%|2         | 4/142 [00:33<19:51,  8.64s/it]
+  4%|3         | 5/142 [00:43<21:02,  9.22s/it]
+  4%|4         | 6/142 [00:52<20:27,  9.02s/it]
+  5%|4         | 7/142 [01:00<19:44,  8.77s/it]
+  6%|5         | 8/142 [01:08<18:50,  8.44s/it]
+  6%|6         | 9/142 [01:15<18:08,  8.19s/it]
+  7%|7         | 10/142 [01:23<17:40,  8.03s/it]
+  8%|7         | 11/142 [01:31<17:24,  7.97s/it]
+  8%|8         | 12/142 [01:39<17:02,  7.86s/it]
+  9%|9         | 13/142 [01:47<17:19,  8.06s/it]
+ 10%|9         | 14/142 [01:57<18:38,  8.74s/it]
+ 11%|#         | 15/142 [02:09<20:13,  9.55s/it]
+ 11%|#1        | 16/142 [02:20<21:05, 10.04s/it]
+ 12%|#1        | 17/142 [02:31<21:36, 10.37s/it]
+ 13%|#2        | 18/142 [02:40<20:31,  9.93s/it]
+ 13%|#3        | 19/142 [02:48<19:19,  9.43s/it]
+ 14%|#4        | 20/142 [02:56<18:06,  8.91s/it]
+ 14%|#4        | 20/142 [03:03<18:39,  9.17s/it]
+voice ok 3.36 s; words:  Hi!  This  is  a  quick  test  of  the  voice.
