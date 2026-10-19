@@ -1,0 +1,11 @@
+denoiser
+from_pretrained(hf_model_id: str = 'openbmb/VoxCPM2', load_denoiser: bool = True, zipenhancer_model_id: str = 'iic/speech_zipenhancer_ans_multiloss_16k_base', cache_dir: str = None, local_files_only: bool = False, optimize: bool = True, device: str | None = None, lora_config: Optional[voxcpm.model.voxcpm.LoRAConfig] = None, lora_weights_path: Optional[str] = None, **kwargs)
+generate(*args, **kwargs) -> numpy.ndarray
+generate_streaming(*args, **kwargs) -> Generator[numpy.ndarray, NoneType, NoneType]
+get_lora_state_dict() -> dict
+load_lora(lora_weights_path: str) -> tuple
+lora_enabled
+set_lora_enabled(enabled: bool)
+text_normalizer
+tts_model(*args, **kwargs)
+unload_lora()

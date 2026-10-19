@@ -1,0 +1,14 @@
+{
+ "turbo_locked_t1": {
+  "variant": "turbo_locked",
+  "take": 1,
+  "seconds_to_make": 61.7,
+  "sr": 24000
+ },
+ "turbo_locked_t2": {
+  "variant": "turbo_locked",
+  "take": 2,
+  "seconds_to_make": 47.5,
+  "sr": 24000
+ }
+}
