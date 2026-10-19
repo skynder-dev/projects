@@ -20,6 +20,7 @@ on:
       - '!mediaengine/tests/beat_probe.py'           # mediaengine-probe.yml (manual)
       - '!mediaengine/tests/drone_theme_check.py'    # mediaengine-drone.yml
       - '!mediaengine/tests/drone_manifest.json'
+      - '!mediaengine/tests/voice_lab.py'            # mediaengine-voice-lab.yml
       - '.github/workflows/mediaengine-windows.yml'
   workflow_dispatch:
 permissions:

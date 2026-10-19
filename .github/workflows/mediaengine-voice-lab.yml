@@ -1,0 +1,151 @@
+name: mediaengine-voice-lab
+# Voice lab for MediaEngine's coming voice-over: free local engines (Kokoro, Qwen3-TTS VoiceDesign, Chatterbox) say one
+# English test text in a female American voice; every take is checked by machine (faster-whisper: the words really
+# said; pitch; length), the better of two takes is kept, loudness is evened out, and the files get blind letters for the
+# owner to pick by ear. CPU only (no GPU on GitHub runners). Synthetic voices only - no recordings of real people, no
+# owner data, no secrets, nothing paid. Not the product: it decides which engine the product will use.
+# Results: branch mediaengine-voice-lab (MP3 per letter, results.json, RESULTS.md).
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'mediaengine/tests/voice_lab.py'
+      - '.github/workflows/mediaengine-voice-lab.yml'
+permissions:
+  contents: write
+concurrency:
+  group: mediaengine-voice-lab-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  CPU_TORCH: https://download.pytorch.org/whl/cpu
+  PIP_DISABLE_PIP_VERSION_CHECK: '1'
+  PIP_PROGRESS_BAR: 'off'
+jobs:
+  kokoro:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Kokoro 0.9.4 in its own venv (CPU torch)
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq espeak-ng > /dev/null
+          python -m venv "$RUNNER_TEMP/v"
+          "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" torch
+          "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" "kokoro==0.9.4" soundfile
+      - name: Kokoro af_heart (the voice the owner found flat - the reference)
+        run: |
+          mkdir -p "$RUNNER_TEMP/out"
+          "$RUNNER_TEMP/v/bin/python" -m pip freeze > "$RUNNER_TEMP/out/freeze_kokoro.txt"
+          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py kokoro "$RUNNER_TEMP/out" 2>&1 | tee "$RUNNER_TEMP/out/kokoro.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: voice-kokoro
+          path: ${{ runner.temp }}/out
+  qwen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Qwen3-TTS in its own venv (CPU torch)
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq sox libsox-fmt-all > /dev/null
+          python -m venv "$RUNNER_TEMP/v"
+          "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" torch torchaudio
+          "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" qwen-tts soundfile
+      - name: VoiceDesign (warm, upbeat) and the locked voice (Base, cloning the designed reference)
+        run: |
+          mkdir -p "$RUNNER_TEMP/out"
+          "$RUNNER_TEMP/v/bin/python" -m pip freeze > "$RUNNER_TEMP/out/freeze_qwen.txt"
+          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py qwen "$RUNNER_TEMP/out" 2>&1 | tee "$RUNNER_TEMP/out/qwen.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: voice-qwen
+          path: ${{ runner.temp }}/out
+  chatterbox:
+    needs: qwen
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: voice-qwen
+          path: ${{ runner.temp }}/qwen
+      - name: Chatterbox in its own venv (CPU torch 2.6, its pin)
+        run: |
+          python -m venv "$RUNNER_TEMP/v"
+          "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" "torch==2.6.0" "torchaudio==2.6.0"
+          "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" chatterbox-tts soundfile
+      - name: Built-in voice (more expressive) and the locked designed voice as reference
+        run: |
+          mkdir -p "$RUNNER_TEMP/out"
+          "$RUNNER_TEMP/v/bin/python" -m pip freeze > "$RUNNER_TEMP/out/freeze_chatterbox.txt"
+          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py chatterbox "$RUNNER_TEMP/out" "$RUNNER_TEMP/qwen/reference_locked_voice.wav" 2>&1 | tee "$RUNNER_TEMP/out/chatterbox.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: voice-chatterbox
+          path: ${{ runner.temp }}/out
+  check:
+    needs: [kokoro, qwen, chatterbox]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: voice-*
+          path: ${{ runner.temp }}/in
+      - name: Checker in its own venv (faster-whisper 1.2.1, librosa)
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
+          python -m venv "$RUNNER_TEMP/v"
+          "$RUNNER_TEMP/v/bin/python" -m pip install -q "faster-whisper==1.2.1" librosa soundfile
+      - name: Words really said, pitch, length; best take; even loudness; blind letters
+        run: |
+          mkdir -p "$RUNNER_TEMP/res"
+          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py check "$RUNNER_TEMP/in" "$RUNNER_TEMP/res" 2>&1 | tee "$RUNNER_TEMP/res/check.txt"
+          exit ${PIPESTATUS[0]}
+      - name: Publish results to branch mediaengine-voice-lab
+        if: success() || failure()
+        env:
+          RUN_ID: ${{ github.run_id }}
+          SRC_SHA: ${{ github.sha }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          pub="$RUNNER_TEMP/pub"; rm -rf "$pub"; mkdir -p "$pub/latest/logs"
+          cp "$RUNNER_TEMP"/res/* "$pub/latest/" 2>/dev/null || true
+          for d in "$RUNNER_TEMP"/in/*/; do
+            n=$(basename "$d")
+            for f in "$d"*.txt "$d"*.json; do [ -f "$f" ] && cp "$f" "$pub/latest/logs/${n}_$(basename "$f")"; done
+          done
+          printf 'sha=%s\nrun=%s\nstatus=%s\n' "$SRC_SHA" "$RUN_ID" "$JOB_STATUS" > "$pub/latest/RUN.txt"
+          cd "$pub"; git init -q; git checkout -q -b mediaengine-voice-lab
+          git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
+          git add -A; git commit -q -m "mediaengine voice lab run $RUN_ID ($SRC_SHA) $JOB_STATUS"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" mediaengine-voice-lab
