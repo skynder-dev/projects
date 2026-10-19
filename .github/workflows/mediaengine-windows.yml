@@ -168,6 +168,11 @@ jobs:
         run: |
           python mediaengine/tests/orders_check.py --home "$env:RUNNER_TEMP\home-orders" --videos "$env:RUNNER_TEMP\fx\two" --out "$env:OUT\orders.json" 2>&1 | Tee-Object "$env:OUT\orders.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Voice-over add-on without its models - text pieces, word times, captions, the page in both languages, the voice burned onto a video
+        shell: pwsh
+        run: |
+          python mediaengine/tests/voice_check.py --home "$env:RUNNER_TEMP\home-voice" --out "$env:OUT\voice.json" 2>&1 | Tee-Object "$env:OUT\voice.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Real AI models from Hugging Face - AI and AI+ test reels, an AI+ reel, its AI variant, blind comparison
         id: models
         timeout-minutes: 75

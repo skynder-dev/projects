@@ -517,6 +517,16 @@ APP_PHRASES: dict[str, str] = {
 
 APP_PATTERNS: list[tuple[str, str]] = [
     (r"Folder not found: (.+)", r"Папка не найдена: \1"),
+    # voice-over add-on (voice.py)
+    (r"The download answered HTTP (\d+)\. Try again later\.", r"Сайт ответил ошибкой HTTP \1. Попробуй позже."),
+    (r"A downloaded model file is not the exact file \((.+)\)\. Try again\.", r"Скачанный файл модели не совпал с нужным (\1). Попробуй ещё раз."),
+    (r"The voice add-on was installed but does not start: (.*)", r"Модуль озвучки установлен, но не запускается: \1"),
+    (r"The new video did not pass its check \((.+)\)\.", r"Новое видео не прошло проверку (\1)."),
+    (r"The video could not be read: (.+)", r"Не удалось прочитать видео: \1"),
+    (r"huggingface\.co did not give the pinned version of (.+)\.", r"huggingface.co не отдал нужную версию \1."),
+    (r"huggingface\.co listed no files for (.+)\.", r"huggingface.co не показал файлы \1."),
+    (r"The sound could not be read: (.+)", r"Не удалось прочитать звук: \1"),
+    (r"FFmpeg could not make the video \((.+)\)\.", r"FFmpeg не смог сделать видео (\1)."),
     # Library search and Remove (QA review 2026-10-17)
     (r"(\d+) result\(s\)", r"Найдено: \1"),
     (r"match ([\d.]+)", r"совпадение \1"),

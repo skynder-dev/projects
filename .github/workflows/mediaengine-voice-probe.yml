@@ -19,6 +19,9 @@ jobs:
       run:
         shell: pwsh
     steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -67,22 +70,24 @@ jobs:
           '@
           Set-Content -Path "$env:RUNNER_TEMP\imp.py" -Value $code -Encoding utf8
           python -S -E -B "$env:RUNNER_TEMP\imp.py" "$env:RUNNER_TEMP\addon\site" "$env:RUNNER_TEMP\out\import.json"
-      - name: A short voice-over on the CPU (VoxCPM2, 10 steps) and its words (faster-whisper small)
+      - name: A short voice-over on the CPU in voice 3.1 (VoxCPM2 ultimate cloning, 10 steps), its words, and every package it imported
         continue-on-error: true
         run: |
           $code = @'
           import sys, site, time, json
           site.addsitedir(sys.argv[1])
           import numpy as np, soundfile as sf, torch, torchaudio
-          def _load(path, *a, **k):          # torchaudio 2.8 may want FFmpeg libraries (torchcodec); soundfile is enough here
+          def _load(path, *a, **k):
               d, sr = sf.read(str(path), dtype="float32", always_2d=True)
               return torch.from_numpy(d.T.copy()), sr
           torchaudio.load = _load
           from voxcpm import VoxCPM
+          ref, ref_text = sys.argv[4], sys.argv[5]
           t = time.time()
           m = VoxCPM.from_pretrained("openbmb/VoxCPM2", load_denoiser=False, optimize=False, device="cpu")
           load_s = time.time() - t; t = time.time()
-          wav = m.generate(text="(A friendly young American woman, casual and relaxed)Hi! This is a quick test of the voice.", cfg_value=2.0, inference_timesteps=10)
+          wav = m.generate(text="Hi! This is a quick test of the voice.", prompt_wav_path=ref, prompt_text=ref_text,
+                           reference_wav_path=ref, cfg_value=2.0, inference_timesteps=10)
           gen_s = time.time() - t
           sr = m.tts_model.sample_rate
           sf.write(sys.argv[2], np.asarray(wav, dtype="float32"), sr)
@@ -90,12 +95,18 @@ jobs:
           w = WhisperModel("small", device="cpu", compute_type="int8")
           segs, info = w.transcribe(sys.argv[2], word_timestamps=True, vad_filter=True)
           words = [{"w": x.word, "s": round(x.start, 2), "e": round(x.end, 2)} for s in segs for x in (s.words or [])]
-          json.dump({"load_s": load_s, "gen_s": gen_s, "sr": sr, "seconds": len(wav) / sr, "language": info.language, "words": words},
-                    open(sys.argv[3], "w"), indent=1)
+          from importlib import metadata
+          pd = metadata.packages_distributions()
+          mods = sorted({k.split(".")[0] for k in list(sys.modules)})
+          used = sorted({d for k in mods for d in pd.get(k, [])})
+          json.dump({"load_s": load_s, "gen_s": gen_s, "sr": sr, "seconds": len(wav) / sr, "language": info.language, "words": words,
+                     "imported_distributions": used}, open(sys.argv[3], "w"), indent=1)
           print("voice ok", len(wav) / sr, "s; words:", " ".join(x["w"] for x in words))
+          print("imported:", " ".join(used))
           '@
           Set-Content -Path "$env:RUNNER_TEMP\gen.py" -Value $code -Encoding utf8
-          python -S -E -B "$env:RUNNER_TEMP\gen.py" "$env:RUNNER_TEMP\addon\site" "$env:RUNNER_TEMP\out\test.wav" "$env:RUNNER_TEMP\out\gen.json" 2>&1 | Tee-Object "$env:RUNNER_TEMP\out\gen.txt" | Select-Object -Last 15
+          $reftext = "Okay... so here's something nobody tells you about packing for a beach trip. You don't need ten outfits. Seriously. You need, like, three. And one really good hat. We tried it last summer and, honestly? It changed everything. Less stuff... more time in the water. So, would you try it? Tell me in the comments!"
+          python -S -E -B "$env:RUNNER_TEMP\gen.py" "$env:RUNNER_TEMP\addon\site" "$env:RUNNER_TEMP\out\test.wav" "$env:RUNNER_TEMP\out\gen.json" "$env:GITHUB_WORKSPACE\mediaengine\app\archivist\assets\voice\friend_3_1.flac" "$reftext" 2>&1 | Tee-Object "$env:RUNNER_TEMP\out\gen.txt" | Select-Object -Last 15
       - name: Publish to branch mediaengine-voice-lab (probe/)
         if: always()
         shell: bash

@@ -634,6 +634,121 @@ PHRASES = {
         "Новая версия готова в своей папке, но не запустилась вместо этой. Нажми «Обновить сейчас», чтобы попробовать снова.",
     "The new version did not start, so this version is running again. Details for support are in the logs folder.":
         "Новая версия не запустилась, поэтому снова работает эта. Подробности для поддержки — в папке logs.",
+    # voice-over and captions (voice.py, voice_web.py)
+    "Voice-over": "Озвучка", "Voice-over · MediaEngine": "Озвучка · MediaEngine",
+    "A text read by a voice, with captions timed to the words; captions for your own videos.":
+        "Текст, прочитанный голосом, и субтитры точно по словам; субтитры для твоих видео.",
+    "Installing the voice add-on": "Устанавливается модуль озвучки",
+    "Checking the PC…": "Проверяю компьютер…",
+    "Downloading and installing the add-on's Python parts (about 3 GB)…": "Скачиваю и ставлю части модуля для Python (около 3 ГБ)…",
+    "Downloading the voice models (about 5 GB)…": "Скачиваю голосовые модели (около 5 ГБ)…",
+    "Starting the add-on for a test…": "Пробный запуск модуля…",
+    "This takes from a few minutes to an hour, depending on the internet. You can use MediaEngine meanwhile; closing it stops the installation (it continues where it stopped when you press Install again).":
+        "Это займёт от нескольких минут до часа — смотря какой интернет. MediaEngine пока можно пользоваться; если закрыть его, "
+        "установка остановится (и продолжится с того же места, когда снова нажмёшь «Установить»).",
+    "The voice add-on is installed.": "Модуль озвучки установлен.", "It works on": "Работает на",
+    "the graphics card": "видеокарте", "the processor (slow)": "процессоре (медленно)", "the processor": "процессоре",
+    "Size:": "Размер:", "Remove the add-on": "Удалить модуль",
+    "Frees the disk space. The voice-overs and videos made with it stay.": "Освобождает место на диске. Сделанные озвучки и видео останутся.",
+    "Remove the voice add-on?": "Удалить модуль озвучки?",
+    "Graphics card:": "Видеокарта:", "— the voice is made on it (fast).": "— голос делается на ней (быстро).",
+    "No NVIDIA graphics card was found: the voice is made on the processor (slow: about a minute for every sentence).":
+        "Видеокарта NVIDIA не найдена: голос будет делаться на процессоре (медленно: около минуты на каждое предложение).",
+    "Install the voice add-on": "Установить модуль озвучки",
+    "This MediaEngine uses another Python: install the add-on again.": "Этот MediaEngine работает на другом Python: установи модуль заново.",
+    "The voice add-on is not installed.": "Модуль озвучки не установлен.",
+    "It is downloaded once: about 8 GB (the add-on's Python parts and two models: VoxCPM2 for the voice, Whisper for checking the words and for captions). It goes into the data folder:":
+        "Он скачивается один раз: около 8 ГБ (части для Python и две модели: VoxCPM2 — голос, Whisper — проверка слов и субтитры). "
+        "Он ставится в папку данных:",
+    "MediaEngine goes online for it only when you press the button (pypi.org, download.pytorch.org, huggingface.co). Free and open models; nothing is sent anywhere.":
+        "MediaEngine выходит в интернет для этого только по нажатию кнопки (pypi.org, download.pytorch.org, huggingface.co). "
+        "Модели бесплатные и открытые; никуда ничего не отправляется.",
+    "Free space there:": "Свободно там:",
+    "Not enough free space: about 20 GB are needed while installing.": "Мало свободного места: на время установки нужно около 20 ГБ.",
+    "New voice-over": "Новая озвучка", "The text to be said…": "Текст, который нужно сказать…",
+    "Write it the way it is said: short sentences, commas and dots where the pauses are.":
+        "Пиши так, как говорят вслух: короткие фразы, запятые и точки там, где паузы.",
+    "Voice": "Голос",
+    "Friend - always the same voice (the voice of 3.1)": "Подруга — всегда один и тот же голос (голос из 3.1)",
+    "Friend - a voice from the description (a little different each time)": "Подруга — голос по описанию (каждый раз немного другой)",
+    "My description of a voice (English works best)": "Свой голос по описанию (лучше писать по-английски)",
+    "A voice from a recording (a person who agreed to it)": "Голос из записи (человека, который на это согласен)",
+    "For example: a calm man in his forties with a deep, warm voice, slow pace":
+        "Например: спокойный мужчина лет сорока, низкий тёплый голос, не спеша (по-английски получается лучше)",
+    "The recording: 5-30 seconds of one person speaking, e.g. D:\\Voice\\anna.wav":
+        "Запись: 5–30 секунд речи одного человека, например D:\\Голос\\anna.wav",
+    "Choose…": "Выбрать…",
+    "The exact words said in the recording (optional: the voice is copied more closely)":
+        "Точные слова из записи (не обязательно: так голос получится ближе)",
+    "Use only the voice of a person who agreed to it.": "Используй голос только того человека, который на это согласен.",
+    "Language of the text": "Язык текста", "Detect by itself": "Определить автоматически",
+    "Make the voice-over": "Сделать озвучку",
+    "Captions for a video": "Субтитры для видео",
+    "The speech in your video is turned into captions with the words timed to it and burned into a copy of the video. The video itself is only read.":
+        "Речь в твоём видео превращается в субтитры точно по словам и вшивается в копию видео. Само видео только читается.",
+    "The video, e.g. D:\\Videos\\talk.mp4": "Видео, например D:\\Видео\\разговор.mp4",
+    "The video, e.g. D:\\Exports\\reel.mp4": "Видео, например D:\\Экспорт\\ролик.mp4",
+    "Language of the speech": "Язык речи", "Captions": "Субтитры",
+    "at the bottom": "внизу", "in the middle": "посередине", "at the top": "вверху",
+    "Make captions": "Сделать субтитры", "Made": "Сделано",
+    "Voice-over on a video": "Озвучка на видео", "Working": "Делается",
+    "Interrupted (MediaEngine was closed): it is made again at the next start":
+        "Прервано (MediaEngine был закрыт): будет сделано заново при следующем запуске",
+    "Starting…": "Запуск…", "Loading the voice model…": "Загружаю голосовую модель…", "Speaking…": "Озвучиваю…",
+    "Joining the parts…": "Соединяю части…", "Listening to check every word…": "Слушаю, все ли слова сказаны…",
+    "Finishing the sound…": "Довожу звук…", "Reading the sound of the video…": "Читаю звук видео…",
+    "Making the video…": "Делаю видео…", "Checking the video…": "Проверяю видео…",
+    "Every word was said (checked by listening).": "Все слова сказаны (проверено на слух).",
+    "Words not clear when listening:": "Неразборчивых слов:", "of": "из", "made on": "сделано на",
+    "Download WAV": "Скачать WAV", "Download captions (SRT)": "Скачать субтитры (SRT)",
+    "Put it on a video": "Наложить на видео",
+    "Keep the video's own sound (quieter while the voice speaks)": "Оставить звук видео (тише, пока говорит голос)",
+    "Captions with the words": "Субтитры со словами", "The voice starts at": "Голос начинается на",
+    "Make the video": "Сделать видео", "checked: plays to the end": "проверено: проигрывается до конца",
+    "Delete it?": "Удалить?",
+    "A Windows window is open — it may be behind this window.": "Открыто окно Windows — оно может быть за этим окном.",
+    "Nothing chosen. You can also paste the path.": "Ничего не выбрано. Можно вставить путь вручную.",
+    "Choose the recording of the voice": "Выбери запись голоса", "Choose a video": "Выбери видео",
+    "Install the voice add-on first.": "Сначала установи модуль озвучки.",
+    "Type the text of the voice-over first.": "Сначала напиши текст озвучки.",
+    "The text is too long for one voice-over (at most 5000 characters): split it into parts.":
+        "Текст слишком длинный для одной озвучки (не больше 5000 знаков): раздели его на части.",
+    "Choose a voice.": "Выбери голос.",
+    "The recording of the voice 3.1 is missing from this version of MediaEngine.": "В этой версии MediaEngine нет записи голоса 3.1.",
+    "Describe the voice in a few words (for example: a calm man in his forties, deep voice).":
+        "Опиши голос несколькими словами (например: a calm man in his forties, deep voice).",
+    "Choose the recording of the voice (a WAV, MP3 or M4A of 5-30 seconds of one person speaking).":
+        "Выбери запись голоса (WAV, MP3 или M4A: 5–30 секунд речи одного человека).",
+    "The recording must be a sound file (WAV, MP3, M4A, FLAC, OGG).": "Запись должна быть звуковым файлом (WAV, MP3, M4A, FLAC, OGG).",
+    "Choose a video (its full path) to make captions for.": "Выбери видео (полный путь), для которого нужны субтитры.",
+    "This voice-over is not ready.": "Эта озвучка ещё не готова.", "Choose the video (its full path).": "Выбери видео (полный путь).",
+    "No such voice-over.": "Такой озвучки нет.", "This one is being made now.": "Она сейчас делается.",
+    "The voice add-on is already being installed.": "Модуль озвучки уже устанавливается.",
+    "A voice-over is being made. Install when it is ready.": "Сейчас делается озвучка. Установи, когда она будет готова.",
+    "The voice add-on is busy. Wait until it has finished.": "Модуль озвучки занят. Подожди, пока он закончит.",
+    "The voice add-on needs MediaEngine's own Python 3.11.": "Модулю озвучки нужен собственный Python 3.11 из MediaEngine.",
+    "The voice add-on is turned off on this PC (MEDIAENGINE_VOICE=off).": "Модуль озвучки выключен на этом компьютере (MEDIAENGINE_VOICE=off).",
+    "Installation cancelled.": "Установка отменена.",
+    "The add-on's Python parts could not be installed. Check the internet connection and try again (details for support: install.log in the add-on folder).":
+        "Не удалось установить части модуля для Python. Проверь интернет и попробуй ещё раз (подробности для поддержки — install.log в папке модуля).",
+    "Not enough free space on the disk of the data folder: the voice add-on needs about 20 GB free.":
+        "Мало места на диске папки данных: модулю озвучки нужно около 20 ГБ свободного места.",
+    "Not enough free space left for the voice models.": "Не хватает места для голосовых моделей.",
+    "No connection to the internet (or the site did not answer). Check the connection and try again.":
+        "Нет связи с интернетом (или сайт не ответил). Проверь подключение и попробуй ещё раз.",
+    "The voice worker took too long and was stopped.": "Озвучка шла слишком долго и была остановлена.",
+    "The voice worker stopped without an answer (details: worker.log in the job folder).":
+        "Модуль озвучки остановился без ответа (подробности — worker.log в папке задания).",
+    "The recording of the voice could not be read.": "Не удалось прочитать запись голоса.",
+    "The voice-over could not be finished (loudness).": "Не удалось довести звук озвучки.",
+    "No speech was found in this video.": "В этом видео не найдено речи.",
+    "This file has no picture: choose a video.": "В этом файле нет картинки: выбери видео.",
+    "The length of this video could not be read.": "Не удалось узнать длину этого видео.",
+    "FFmpeg is missing from this MediaEngine.": "В этом MediaEngine нет FFmpeg.",
+    "The voice add-on is being installed (Auto Edit → Voice-over)": "Устанавливается модуль озвучки (Автомонтаж → Озвучка)",
+    "A voice-over is being made (Auto Edit → Voice-over)": "Делается озвучка (Автомонтаж → Озвучка)",
+    "A voice-over is being made (or the voice add-on installed). Switch when it is ready.":
+        "Делается озвучка (или ставится модуль озвучки). Переключись, когда закончится.",
 }
 
 import html as _html

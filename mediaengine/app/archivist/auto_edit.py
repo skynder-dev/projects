@@ -2826,6 +2826,12 @@ def app_busy() -> str:
     except Exception:
         pass
     try:
+        from . import voice as _vo
+        if _vo.busy():
+            return "A voice-over is being made (or the voice add-on installed). Switch when it is ready."
+    except Exception:
+        pass
+    try:
         from . import composer as _cp
         with _cp._ACTIVE_LOCK:
             if _cp._ACTIVE:

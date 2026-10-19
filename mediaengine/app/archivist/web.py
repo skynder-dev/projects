@@ -327,6 +327,12 @@ def busy_reason() -> str:
     except Exception:
         pass
     try:
+        from . import voice as _vo
+        if _vo.installing(): return "The voice add-on is being installed (Auto Edit → Voice-over)"
+        if _vo.busy(): return "A voice-over is being made (Auto Edit → Voice-over)"
+    except Exception:
+        pass
+    try:
         from . import composer as _cp
         with _cp._ACTIVE_LOCK:
             if _cp._ACTIVE: return "A composition is being rendered (Composer)"

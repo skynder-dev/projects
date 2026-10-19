@@ -62,6 +62,15 @@ def status_pct(s: dict) -> int:
 
 _STAGE_SEEN: dict = {}
 _RESUMED: list = []
+_VOICE_RESUMED: list = []
+
+
+def _voice_on_home() -> bool:
+    try:
+        from . import voice as _vo
+        return _vo.SHOW_ON_HOME or _vo.installed()
+    except Exception:
+        return False
 
 
 def stage_eta_s(j: dict, now: float | None = None):
@@ -287,6 +296,13 @@ def register(app, layout, e, human_bytes):
                     pass
         except Exception:
             pass
+        try:          # voice-overs left unfinished by a closed program: made again (once)
+            if not _VOICE_RESUMED:
+                _VOICE_RESUMED.append(1)
+                from . import voice as _vo
+                _vo.resume_after_restart()
+        except Exception:
+            pass
         try:          # orders from other programs (Orders\\Inbox): watched while the app runs
             from . import orders
             orders.start()
@@ -354,6 +370,7 @@ def register(app, layout, e, human_bytes):
         check_btn = ("<div class='row' style='float:right;gap:8px'>"
                      + ("<form method='post' action='/auto/exports/open' style='margin:0'><button class='btn2'>Exported reels</button></form>"
                         if has_exports else "")
+                     + ("<a class='btn btn2' href='/auto/voice'>Voice-over</a>" if _voice_on_home() else "")
                      + "<a class='btn btn2' href='/auto/orders'>Orders"
                      + (f" <span class='badge review' translate='no'>{n_orders}</span>" if n_orders else "") + "</a>"
                      + "<a class='btn btn2' href='/auto/check'>Check this PC</a></div>")
@@ -1442,6 +1459,8 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
 
     from . import orders_web       # orders from other programs
     orders_web.register(app, page, err_page, e, _error_html)
+    from . import voice_web        # voice-over and captions (an add-on installed with a button)
+    voice_web.register(app, page, err_page, e, human_bytes)
 
 
 AI_LABEL = "AI — as before (fast)"
