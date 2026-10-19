@@ -1,0 +1,1 @@
+{"result": {"ok": true, "torch": "2.8.0+cpu", "cuda": false, "cuda_note": "", "gpu": "", "vram_gb": 0, "voxcpm": "2.0.3", "faster_whisper": "1.2.1"}}
