@@ -546,6 +546,25 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   text; all say every word. Finding: UTMOS does NOT agree with his ear - Kokoro F (rejected) scores highest (4.53),
   his favourite 3.1 almost lowest (3.10); it rates clean read speech, not lively speech. So the "best of six" pick is
   not trusted; his ear decides.
+  Night 2026-10-19 ("find work for 10+ hours"): the voice-over add-on in MedEng (Auto Edit → Voice-over).
+  Facts first (mediaengine-voice-probe.yml, Windows): pip --target with the program's Python 3.11 works (CPU torch
+  2.8 + VoxCPM2 2.0.3 + faster-whisper 1.2.1, 287 s, 2.8 GB); it imports in an isolated interpreter (-S); a voice
+  in voice 3.1 (VoxCPM2 ultimate cloning) on a Windows CPU with every word heard back; the program's FFmpeg 7.1
+  (gyan) has libass/fontconfig/sidechaincompress; the 62 packages a voice-over really imports are pinned (VoxCPM2's
+  own list pulls gradio / funasr / modelscope / cloud SDKs, 5 of them source-only = a compiler on the PC).
+  Built: voice.py (installer: online only on Install, pinned wheels --no-deps, CUDA torch for NVIDIA (cu126; cu128
+  for RTX 50xx), models at pinned HF commits hash-checked, self-test computing on the card; jobs one at a time,
+  resumed once, Try again; Quit/switch ask), voice_worker.py (separate -S -X utf8 process; every piece listened to
+  by Whisper and remade when words are missing; GPU failure -> CPU), voice_web.py (page en/ru), voice 3.1 shipped
+  as FLAC (assets/voice), captions from real word times (SRT; ASS with the spoken word highlighted, burned with
+  Arial on Windows), voice onto a video (own sound ducked, last picture held, checked, copy saved to Exports),
+  captions for a video's own speech. An independent review found 15 problems (UTF-8 worker output on Russian
+  Windows, 2 threads, RTX 50xx, AAC 96 kHz, odd sizes, Cancel, re-download, folder swaps, stacked captions, page
+  refresh, ...) - all fixed (066605b).
+  Proof: tests/voice_check.py 50/50 (in the Windows CI; stand-in worker, real FFmpeg, captions visible in the
+  picture); mediaengine-voice-addon.yml, the real Install through the page on Windows: run 39247474464 11/11
+  (install 103 s, 7.6 GB; 8 s voice in voice 3.1 on the CPU in 253 s with every word; onto a video; captions of its
+  speech), run 39248662670 green. Not yet seen: the graphics-card version on the owner's PC.
 
 ## Evidence
 
