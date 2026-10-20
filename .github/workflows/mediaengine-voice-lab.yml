@@ -21,7 +21,9 @@ name: mediaengine-voice-lab
 # Round 7 (this file, results in round7/): 4_2's way of talking was liked but its voice is "squeaky"; shifting the
 # finished sound was rejected ("as if drowned in a toilet"). So the MODEL says the business text lower in 4_2's voice:
 # a style note on 4_2's timbre, a continuation from 4_2's recording made 2 semitones lower (PSOLA), 4_2's own recipe
-# described lower. 4_2's recording is the program's assets/voice/host_4_2.flac.
+# described lower. 4_2's recording is the program's assets/voice/host_4_2.flac. Run 39359044602.
+# Round 8 (this file, results in round8/): 7_1 "good but squeaky", 7_2 / 7_3 "robot voice" - only 7_1's way, pushed
+# further (a calmer note; 7_1 itself as the voice), more takes, the lowest natural take of each way picked by pitch.
 on:
   workflow_dispatch:
   push:
@@ -41,6 +43,7 @@ env:
   ROUND1_RUN: '39197836516'
   ROUND3_RUN: '39214928456'
   ROUND4_RUN: '39226841245'
+  ROUND7_RUN: '39359044602'
 jobs:
   gen:
     runs-on: ubuntu-latest
@@ -48,8 +51,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        variant: [r7_ctrl_lower, r7_low_ref, r7_design_low]
-        take: [1, 2]
+        include:
+          - {variant: r8_ctrl, take: 1}
+          - {variant: r8_ctrl, take: 2}
+          - {variant: r8_ctrl, take: 3}
+          - {variant: r8_ctrl, take: 4}
+          - {variant: r8_ctrl, take: 5}
+          - {variant: r8_calm, take: 1}
+          - {variant: r8_calm, take: 2}
+          - {variant: r8_calm, take: 3}
+          - {variant: r8_calm, take: 4}
+          - {variant: r8_calm, take: 5}
+          - {variant: r8_from71, take: 1}
+          - {variant: r8_from71, take: 2}
+          - {variant: r8_from71, take: 3}
+          - {variant: r8_from71, take: 4}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -57,21 +73,29 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: VoxCPM in its own venv (CPU torch; FFmpeg libraries for torchaudio's decoder; Praat for the lowered reference)
+      - uses: actions/download-artifact@v4
+        if: matrix.variant == 'r8_from71'
+        with:
+          name: voice7-r7_ctrl_lower-1
+          path: ${{ runner.temp }}/r7
+          run-id: ${{ env.ROUND7_RUN }}
+          github-token: ${{ github.token }}
+      - name: VoxCPM in its own venv (CPU torch; FFmpeg libraries for torchaudio's decoder)
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
           python -m venv "$RUNNER_TEMP/v"
           "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" torch torchaudio
-          "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" voxcpm soundfile praat-parselmouth
-          ffmpeg -v error -i mediaengine/app/archivist/assets/voice/host_4_2.flac "$RUNNER_TEMP/host_4_2.wav"
+          "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" voxcpm soundfile
+          if [ "${{ matrix.variant }}" = "r8_from71" ]; then cp "$RUNNER_TEMP/r7/r7_ctrl_lower_t1.wav" "$RUNNER_TEMP/voice.wav"
+          else ffmpeg -v error -i mediaengine/app/archivist/assets/voice/host_4_2.flac "$RUNNER_TEMP/voice.wav"; fi
       - name: One take (${{ matrix.variant }} ${{ matrix.take }}) of the business text
         run: |
           mkdir -p "$RUNNER_TEMP/out"
-          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py vox7one "$RUNNER_TEMP/out" ${{ matrix.variant }} ${{ matrix.take }} "$RUNNER_TEMP/host_4_2.wav" 2>&1 | tee "$RUNNER_TEMP/out/${{ matrix.variant }}_${{ matrix.take }}.txt"
+          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py vox8one "$RUNNER_TEMP/out" ${{ matrix.variant }} ${{ matrix.take }} "$RUNNER_TEMP/voice.wav" 2>&1 | tee "$RUNNER_TEMP/out/${{ matrix.variant }}_${{ matrix.take }}.txt"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: voice7-${{ matrix.variant }}-${{ matrix.take }}
+          name: voice8-${{ matrix.variant }}-${{ matrix.take }}
           path: ${{ runner.temp }}/out
   finish:
     needs: [gen]
@@ -87,26 +111,25 @@ jobs:
           python-version: '3.11'
       - uses: actions/download-artifact@v4
         with:
-          pattern: voice7-*
+          pattern: voice8-*
           path: ${{ runner.temp }}/in
       - name: Checker in its own venv (faster-whisper 1.2.1, librosa)
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
           python -m venv "$RUNNER_TEMP/v"
           "$RUNNER_TEMP/v/bin/python" -m pip install -q "faster-whisper==1.2.1" librosa scipy soundfile
-      - name: Words and pitch, the best take per way - voice7_1..3
+      - name: Words and pitch, the lowest natural take per way - voice8_1..3
         run: |
-          mkdir -p "$RUNNER_TEMP/res/round7"
-          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py round7 "$RUNNER_TEMP/in" "$RUNNER_TEMP/res/round7" 2>&1 | tee "$RUNNER_TEMP/res/round7/round7.txt"
-      - name: Publish to branch mediaengine-voice-lab (round7/; earlier rounds stay)
+          mkdir -p "$RUNNER_TEMP/res/round8"
+          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py round8 "$RUNNER_TEMP/in" "$RUNNER_TEMP/res/round8" 2>&1 | tee "$RUNNER_TEMP/res/round8/round8.txt"
+      - name: Publish to branch mediaengine-voice-lab (round8/; earlier rounds stay)
         if: success() || failure()
         run: |
           pub="$RUNNER_TEMP/pub"; rm -rf "$pub"
           git clone -q --depth 1 --branch mediaengine-voice-lab "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "$pub"
-          rm -rf "$pub/round7"; mkdir -p "$pub/round7"
-          cp "$RUNNER_TEMP"/res/round7/* "$pub/round7/" 2>/dev/null || true
-          find "$RUNNER_TEMP/in" -name host_4_2_lower.wav -exec ffmpeg -v error -y -i {} -b:a 160k "$pub/round7/reference_lowered.mp3" \; -quit
-          printf 'run=%s\nsha=%s\n' "${{ github.run_id }}" "${{ github.sha }}" > "$pub/round7/RUN.txt"
+          rm -rf "$pub/round8"; mkdir -p "$pub/round8"
+          cp "$RUNNER_TEMP"/res/round8/* "$pub/round8/" 2>/dev/null || true
+          printf 'run=%s\nsha=%s\n' "${{ github.run_id }}" "${{ github.sha }}" > "$pub/round8/RUN.txt"
           cd "$pub"; git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
-          git add -A; git commit -q -m "mediaengine voice lab round 7 run ${{ github.run_id }}"
+          git add -A; git commit -q -m "mediaengine voice lab round 8 run ${{ github.run_id }}"
           for i in 1 2 3; do git push -q origin HEAD:mediaengine-voice-lab && break; git pull -q --rebase origin mediaengine-voice-lab; done

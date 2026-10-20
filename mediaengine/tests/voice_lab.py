@@ -879,6 +879,75 @@ def round7(src: Path, out: Path) -> int:
     return 0 if files else 1
 
 
+# ---------------------------------------------------------------------------------------------------------- round 8
+# Round 7 verdict (2026-10-19 23:16): 7_1 (4_2's timbre + a style note asking for a lower, calmer voice) "good but
+# squeaky"; 7_2 (continued from a PSOLA-lowered recording) and 7_3 (4_2's recipe described lower) "robot voice". So
+# only 7_1's way, pushed further, with more takes, and the lowest natural ones picked by pitch (target ~205-230 Hz;
+# 7_1 was 237 Hz):
+#   r8_ctrl    - 7_1's very way (4_2's timbre, the same note), new seeds
+#   r8_calm    - 4_2's timbre, a stronger note: calm, lower, a little slower (excited talk goes up in pitch)
+#   r8_from71  - 7_1 itself as the timbre, the same note again (one more step down, still made by the model)
+
+CALM = ("(A calm, confident woman with a lower, warm voice, speaking a little slower and relaxed, like a friendly "
+        "podcast host sharing a tip)")
+ROUND8 = {
+    "r8_ctrl": "7_1's way again (4_2's voice, asked for a lower, calmer voice), the lowest natural take",
+    "r8_calm": "4_2's voice, asked for a calm, lower, a little slower voice, the lowest natural take",
+    "r8_from71": "7_1 itself as the voice, asked once more for a lower, calmer voice, the lowest natural take",
+}
+
+
+def vox8one(out: Path, variant: str, take: int, ref: Path) -> None:
+    import torch
+    m, sr = _vox2()
+    seed = {"r8_ctrl": 1200, "r8_calm": 1300, "r8_from71": 1400}[variant]
+    note = CALM if variant == "r8_calm" else LOWER
+
+    def make(t):
+        torch.manual_seed(seed + t)
+        return m.generate(text=note + BUSINESS, cfg_value=2.0, inference_timesteps=STEPS4, reference_wav_path=str(ref)), sr
+
+    _take(out, variant, take, make)
+
+
+def round8(src: Path, out: Path) -> int:
+    from faster_whisper import WhisperModel
+    out.mkdir(parents=True, exist_ok=True)
+    gen = {}
+    for p in src.rglob("gen.json"):
+        gen.update(json.loads(p.read_text("utf-8")))
+    asr = WhisperModel("small.en", device="cpu", compute_type="int8")
+    takes, chosen, files = {}, {}, {}
+    for w in sorted(src.rglob("r8_*_t[0-9].wav")):
+        takes[w.stem] = _analyze(asr, w, src, gen, BUSINESS)
+
+    def rank(i):        # every word; a natural pitch movement (not a squeal); as low as possible within 200-232 Hz
+        hz = i.get("pitch_median_hz") or 0
+        return (i["word_errors"] > 2, i.get("pitch_movement_semitones", 9) > 5.5, 0 if 200 <= hz <= 232 else 1, hz,
+                i.get("take", 9))
+    for n, v in enumerate(ROUND8, 1):
+        have = [i for k, i in takes.items() if k.startswith(f"{v}_t")]
+        if not have:
+            continue
+        chosen[v] = min(have, key=rank)
+        mp3 = out / f"voice8_{n}.mp3"
+        produce_plain(src / chosen[v]["file"], mp3)
+        files[mp3.name] = ROUND8[v]
+    failed = {k: str(v.get("error")).splitlines()[0][:300] for k, v in gen.items() if v.get("error")}
+    res = {"round": 8, "text": BUSINESS, "files": files, "chosen": chosen, "all_takes": takes, "failed_takes": failed}
+    (out / "results.json").write_text(json.dumps(res, indent=1, ensure_ascii=False), "utf-8")
+    md = ["# Voice lab - round 8 (7_1's way, lower)", "", f"Text: {BUSINESS}", ""]
+    md += [f"- {k}: {v} ({chosen[list(ROUND8)[int(k[7]) - 1]]['file']})" for k, v in files.items()]
+    md += ["", "| take | words wrong | seconds | pitch Hz | pitch moves (st) |", "|---|---|---|---|---|"]
+    md += [f"| {k} | {i['word_errors']} | {i['seconds']} | {i['pitch_median_hz']} | {i['pitch_movement_semitones']} |"
+           for k, i in sorted(takes.items())]
+    if failed:
+        md += ["", "Failed takes:"] + [f"- {k}: {e}" for k, e in failed.items()]
+    (out / "RESULTS.md").write_text("\n".join(md) + "\n", "utf-8")
+    print(json.dumps({"files": len(files), "failed_takes": len(failed)}))
+    return 0 if files else 1
+
+
 def check(src: Path, out: Path) -> int:
     import numpy as np, librosa
     from faster_whisper import WhisperModel
@@ -964,6 +1033,10 @@ def main() -> int:
         vox7one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve())
     elif cmd == "round7":
         return round7(out, Path(sys.argv[3]).resolve())
+    elif cmd == "vox8one":
+        vox8one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve())
+    elif cmd == "round8":
+        return round8(out, Path(sys.argv[3]).resolve())
     elif cmd == "vox4one":
         vox4one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve())
     elif cmd == "round4":
