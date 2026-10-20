@@ -619,7 +619,12 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   A second independent review found 7 real problems (speech captions 0.3 s late, a silent video without a voice,
   a voice not made called 'deleted', preview of >246 lines, Enter in the look name submitted the form, typed text
   cut off, Georgian/Greek titles as boxes) - all fixed with checks (f4d3986); voice_check 103/103, fuzz 0 errors.
-  Voice lab round 10 (run 39396387033): 20 more seeds of 4_2's recipe, kept for after his round 9 verdict.
+  Voice lab round 10 (run 39396387033, round10/): 20 more seeds of 4_2's recipe; the three lowest natural ones
+  (voice10_1..3, 230 Hz; two at ~190 Hz left out as 'robot lows' risk) kept for after his round 9 verdict.
+  Then: music under a video on the Finish page (looped, evened out, quiet/medium/loud, ducked under the voice;
+  ef197f8), *stars* keep words in the color in captions and Save as a cover (25f9355), a third review's findings
+  fixed (music alone at its loudness, a moved song, nudge kept colored words, star edge cases; a91884c), a small copy
+  for messengers of these videos (ba18e4f). voice_check 113/113 locally, fuzz 0 errors, i18n 0 English left.
 
 ## Evidence
 
@@ -812,7 +817,7 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-Windows CI for f4d3986 -> when green it is published (everything above); tell the owner to press Update and try
+Windows CI for ba18e4f -> when green it is published (everything above); tell the owner to press Update and try
 a saved reel -> "Text, captions, voice-over" (Finish a video). Still open: his pick of the default voice (round 9
 voice9_1..3; round 10 ready); the first voice-over on his RTX 3060. Social integration paused by the owner (do not
 touch Social). Through the app's pages in the desktop app's browser pane only (never computer use).
