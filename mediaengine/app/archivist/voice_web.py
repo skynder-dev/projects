@@ -6,6 +6,7 @@ from pathlib import Path
 
 from flask import jsonify, redirect, request, send_file
 
+from . import textfx as tf
 from . import voice as vo
 
 _INSTALL_STEP = {"checking": "Checking the PC…", "packages": "Downloading and installing the add-on's Python parts (about 3 GB)…",
@@ -13,7 +14,8 @@ _INSTALL_STEP = {"checking": "Checking the PC…", "packages": "Downloading and 
 _JOB_STEP = {"starting": "Starting…", "loading": "Loading the voice model…", "speaking": "Speaking…",
              "joining": "Joining the parts…", "listening": "Listening to check every word…", "finishing": "Finishing the sound…",
              "reading": "Reading the sound of the video…", "video": "Making the video…", "checking": "Checking the video…"}
-_KIND = {"voiceover": "Voice-over", "captions": "Captions for a video", "dub": "Voice-over on a video"}
+_KIND = {"voiceover": "Voice-over", "captions": "Captions for a video", "dub": "Voice-over on a video",
+         "render": "Video with text and captions"}
 _STATE = {"waiting": "Waiting", "working": "Working", "done": "Ready", "failed": "Failed",
           "interrupted": "Interrupted (MediaEngine was closed): it is made again at the next start"}
 _FILES = {"voice.wav": "audio/wav", "captions.srt": "text/plain", "video.mp4": "video/mp4"}
@@ -31,6 +33,15 @@ border:1px solid #364150;border-radius:9px;padding:9px 10px;outline:none}
 textarea.vo-text:focus{border-color:#5b86d8;box-shadow:0 0 0 3px #4a82f420}
 .vo-job form.vo-del{display:inline;margin:0}
 input.vo-wide{width:100%;max-width:640px;box-sizing:border-box}
+.vo-styles label{display:block;margin:3px 0}
+.vo-trow{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:6px 0}
+.vo-trow input[name=t_text]{flex:1 1 260px;min-width:200px}
+.vo-cues{max-height:420px;overflow:auto;border:1px solid #2a2f37;border-radius:9px;padding:6px 10px}
+.vo-cue{display:flex;gap:8px;align-items:center;margin:4px 0}
+.vo-cue input{flex:1}
+.vo-prev img{max-width:100%;max-height:560px;border-radius:8px;display:block;margin-top:8px}
+.vo-edit{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,380px);gap:16px;align-items:start}
+@media (max-width:900px){.vo-edit{grid-template-columns:1fr}}
 </style>"""
 
 
@@ -160,10 +171,84 @@ def register(app, page, err_page, e, human_bytes):
                 f"<form method='post' action='/auto/voice/captions' style='margin-top:8px'>"
                 f"<div class='vo-row'><input class='vo-wide' name='path' required placeholder='The video, e.g. D:\\Videos\\talk.mp4'>"
                 f"<button type='button' class='btn2' data-pick='video'>Choose…</button></div>{_reel_select()}"
-                f"<div class='vo-row' style='margin-top:8px'><span>Language of the speech</span><select name='language'>{langs}</select>"
-                f"<span>Captions</span><select name='position'><option value='bottom'>at the bottom</option>"
-                f"<option value='middle'>in the middle</option><option value='top'>at the top</option></select></div>"
+                f"<div class='vo-row' style='margin-top:8px'><span>Language of the speech</span><select name='language'>{langs}</select></div>"
+                f"{_style_controls(tf.options())}{_quick_texts()}"
                 f"<div style='margin-top:10px'><button>Make captions</button> <span class='muted vo-sub' data-msg></span></div></form></div>")
+
+    def _style_controls(o: dict, captions: bool = True) -> str:
+        """Captions style (when there are captions), color, size and where the captions go."""
+        styles = "".join(f"<label><input type='radio' name='style' value='{k}'{' checked' if k == o['style'] else ''}> "
+                         f"{e(v['label'])}</label>" for k, v in tf.STYLES.items())
+        colors = "".join(f"<option value='{k}'{' selected' if k == o['color'] else ''}>{e(v[0])}</option>"
+                         for k, v in tf.COLORS.items())
+        sizes = "".join(f"<option value='{k}'{' selected' if k == o['size'] else ''}>{e(v[0])}</option>"
+                        for k, v in tf.SIZES.items())
+        pos = "".join(f"<option value='{k}'{' selected' if k == o['position'] else ''}>{e(v)}</option>"
+                      for k, v in tf.POSITIONS.items())
+        return ((f"<div class='vo-styles' style='margin-top:8px'><b>Look of the captions</b>{styles}</div>" if captions else "")
+                + f"<div class='vo-row' style='margin-top:6px'><span>Color</span><select name='color'>{colors}</select>"
+                  f"<span>Size</span><select name='size'>{sizes}</select>"
+                + (f"<span>Captions</span><select name='position'>{pos}</select>" if captions else "") + "</div>")
+
+    def _num(v) -> str:
+        """Seconds as typed back into a field: 3, 2.5, 1:05, 1:05.5."""
+        if v is None or v == "":
+            return ""
+        x = round(float(v), 1)
+        if x < 60:
+            return f"{x:g}"
+        m = int(x // 60)
+        sec = f"{x - 60 * m:04.1f}"
+        return f"{m}:{sec[:-2] if sec.endswith('.0') else sec}"
+
+    def _text_row(t: dict) -> str:
+        where = "".join(f"<option value='{k}'{' selected' if k == (t.get('where') or 'top') else ''}>{e(v)}</option>"
+                        for k, v in tf.POSITIONS.items())
+        look = "".join(f"<option value='{k}'{' selected' if k == (t.get('look') or 'banner') else ''}>{e(v)}</option>"
+                       for k, v in tf.LOOKS.items())
+        start = "end" if t.get("at_end") else _num(t.get("start"))
+        end = "" if t.get("at_end") else _num(t.get("end"))
+        return (f"<div class='vo-trow'><input name='t_text' maxlength='{tf.TEXT_MAX}' value='{e(t.get('text') or '')}' "
+                f"placeholder='The text, e.g. 3 ways to fly cheaper'>"
+                f"<span>from</span><input name='t_start' size='4' value='{e(start)}' placeholder='0'>"
+                f"<span>to</span><input name='t_end' size='4' value='{e(end)}' placeholder='3'>"
+                f"<select name='t_where'>{where}</select><select name='t_look'>{look}</select>"
+                f"<button type='button' class='btn2' data-trow-del title='Remove this text'>×</button></div>")
+
+    def _text_rows(texts: list[dict], header: bool = True) -> str:
+        rows = "".join(_text_row(t) for t in texts) or _text_row({"start": 0, "end": 3})
+        return (f"<div class='vo-texts' style='margin-top:10px'>{'<b>Text on the video</b>' if header else ''}"
+                f"<div class='muted vo-sub'>From and to: seconds of the finished video (2.5 or 0:12). “end” in “from” = the "
+                f"last 3 seconds; an empty “to” = 3 seconds later. An empty text is left out.</div>"
+                f"<div data-trows>{rows}</div><template data-trow-tpl>{_text_row({})}</template>"
+                f"<button type='button' class='btn2' data-trow-add>Add a text</button></div>")
+
+    def _preview_box() -> str:
+        return (f"<div class='vo-prev card' style='margin:0'><b>Preview</b>"
+                f"<div class='muted vo-sub'>One picture of the finished video, with the captions and texts as they will be.</div>"
+                f"<div class='vo-row' style='margin-top:6px'><span>At</span><input name='at' value='1' size='4'><span>s</span>"
+                f"<button type='button' class='btn2' data-preview>Show</button></div>"
+                f"<div class='muted vo-sub' data-pmsg></div><img data-pimg alt='' hidden></div>")
+
+    def _quick_texts() -> str:
+        return (f"<div class='vo-row' style='margin-top:6px'><span>Title at the top (first 3 s)</span>"
+                f"<input name='hook' maxlength='{tf.TEXT_MAX}' size='34' placeholder='optional'></div>"
+                f"<div class='vo-row' style='margin-top:6px'><span>Text at the end (last 3 s)</span>"
+                f"<input name='end_text' maxlength='{tf.TEXT_MAX}' size='34' placeholder='optional, e.g. Follow for more'></div>")
+
+    def _text_form() -> str:
+        """Text on any video - no add-on needed."""
+        o = tf.options()
+        return (f"<div class='card'><h2 style='margin-top:0'>Text on a video</h2>"
+                f"<div class='muted vo-sub'>Titles and lines of text on your video, at the moments you choose. The video itself "
+                f"is only read; a copy with the text is made.</div>"
+                f"<form method='post' action='/auto/text/new' style='margin-top:8px' data-textform>"
+                f"<div class='vo-edit'><div>"
+                f"<div class='vo-row'><input class='vo-wide' name='video' required placeholder='The video, e.g. D:\\Exports\\reel.mp4'>"
+                f"<button type='button' class='btn2' data-pick='video'>Choose…</button></div>{_reel_select()}"
+                f"{_text_rows([], header=False)}{_style_controls(o, captions=False)}"
+                f"<div style='margin-top:12px'><button class='ae-big'>Make the video</button> "
+                f"<span class='muted vo-sub' data-msg></span></div></div>{_preview_box()}</div></form></div>")
 
     def _job_html(j: dict) -> str:
         jid, st, res = j["id"], j["state"], j.get("result") or {}
@@ -203,9 +288,8 @@ def register(app, page, err_page, e, human_bytes):
                     f"<label style='display:block;margin-top:6px'><input type='checkbox' name='keep_sound' value='1' checked> "
                     f"Keep the video's own sound (quieter while the voice speaks)</label>"
                     f"<label style='display:block'><input type='checkbox' name='captions' value='1' checked> Captions with the words</label>"
-                    f"<div class='vo-row' style='margin-top:6px'><span>Captions</span><select name='position'><option value='bottom'>at the bottom</option>"
-                    f"<option value='middle'>in the middle</option><option value='top'>at the top</option></select>"
-                    f"<span>The voice starts at</span><input name='start' value='0.3' size='4'><span>s</span></div>"
+                    f"<div class='vo-row' style='margin-top:6px'><span>The voice starts at</span><input name='start' value='0.3' size='4'><span>s</span></div>"
+                    f"{_style_controls(tf.options())}{_quick_texts()}"
                     f"<div style='margin-top:8px'><button>Make the video</button></div></form></details>")
         elif st == "done":
             body = (f"<video controls preload='metadata' src='/auto/voice/{jid}/file/video.mp4' style='max-width:360px;max-height:420px;margin-top:6px'></video>"
@@ -214,7 +298,8 @@ def register(app, page, err_page, e, human_bytes):
                     + (f"<div class='muted vo-sub'><span>Saved:</span> <span class='ae-path' translate='no'>{e(res['saved'])}</span></div>"
                        if res.get("saved") else "")
                     +
-                    f"<div class='vo-row' style='margin-top:6px'><form method='post' action='/auto/voice/{jid}/reveal' style='margin:0'>"
+                    f"<div class='vo-row' style='margin-top:6px'><a class='btn' href='/auto/voice/{jid}/edit'>Edit text and captions</a>"
+                    f"<form method='post' action='/auto/voice/{jid}/reveal' style='margin:0'>"
                     f"<button class='btn2'>Show in folder</button></form>"
                     + (f"<a class='btn btn2' href='/auto/voice/{jid}/file/captions.srt?download=1'>Download captions (SRT)</a>" if (res.get("files") or {}).get("srt") else "")
                     + "<!--actions--></div>")
@@ -234,10 +319,11 @@ def register(app, page, err_page, e, human_bytes):
         parts = [_install_card(s)]
         if s.get("installed"):
             parts += [_voice_form(), _captions_form()]
+        parts.append(_text_form())
         if jobs:
             parts.append("<div class='card' id='voJobs'><h2 style='margin-top:0'>Made</h2>" + "".join(_job_html(j) for j in jobs) + "</div>")
         body = ("<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Voice-over</h1>"
-                "<div class='lead'>A text read by a voice, with captions timed to the words; captions for your own videos.</div></div>"
+                "<div class='lead'>A text read by a voice, with captions timed to the words; captions and text for your own videos.</div></div>"
                 + "".join(parts) + "<div class='row' id='voBack' style='margin-top:14px'><a class='btn btn2' href='/auto'>Back</a></div>")
         steps = json.dumps({**_INSTALL_STEP})
         script = (
@@ -267,7 +353,7 @@ def register(app, page, err_page, e, human_bytes):
             "if(el){const i=el.querySelector('.ae-bar i');if(i)i.style.width=Math.round(100*j.progress)+'%'}}"
             "}catch(err){}const busy=document.querySelector('#voInstall,[data-state=working],[data-state=waiting]');setTimeout(poll,busy?1500:15000)}"
             "poll();")
-        return page("Voice-over", PAGE_CSS + body, script)
+        return page("Voice-over", PAGE_CSS + body, script + _EDIT_JS)
 
     @app.get("/api/voice/status")
     def voice_status():
@@ -313,8 +399,9 @@ def register(app, page, err_page, e, human_bytes):
     def voice_captions():
         f = request.form
         try:
-            vo.new_captions(f.get("path", ""), f.get("language", ""), f.get("position", "bottom"))
-        except vo.VoiceError as exc:
+            vo.new_captions(f.get("path", ""), f.get("language", ""), f.get("position", "bottom"), opts=_opts(f),
+                            texts=tf.hook_and_end(f.get("hook", ""), f.get("end_text", "")))
+        except (vo.VoiceError, tf.TextError) as exc:
             return err_page(str(exc), "/auto/voice")
         return redirect("/auto/voice")
 
@@ -323,9 +410,114 @@ def register(app, page, err_page, e, human_bytes):
         f = request.form
         try:
             vo.new_dub(jid, f.get("video", ""), keep_sound=f.get("keep_sound") == "1", captions=f.get("captions") == "1",
-                       position=f.get("position", "bottom"), start_s=f.get("start", "0.3"))
+                       position=f.get("position", "bottom"), start_s=f.get("start", "0.3"), opts=_opts(f),
+                       texts=tf.hook_and_end(f.get("hook", ""), f.get("end_text", "")))
+        except (vo.VoiceError, tf.TextError) as exc:
+            return err_page(str(exc), "/auto/voice")
+        return redirect("/auto/voice")
+
+    def _opts(f) -> dict:
+        return tf.options(f.get("style"), f.get("color"), f.get("size"), f.get("position"))
+
+    def _edited_cues(f, base: dict) -> list[dict]:
+        """The captions of the editor: unchanged ones regrouped for the chosen style; edited ones keep their time."""
+        if f.get("captions_on") != "1":
+            return []
+        src = base.get("cues") or []
+        texts = f.getlist("c_text")
+        if len(texts) != len(src):                # the page was made for other captions: keep them as they were
+            texts = [" ".join(w["w"] for w in c["words"]) for c in src]
+        edited = any(" ".join(t.split()) != " ".join(w["w"] for w in c["words"]) for t, c in zip(texts, src))
+        if not edited:                              # untouched: grouped the way the chosen style shows words
+            words = [w for c in src for w in c["words"]]
+            return vo.style_cues(words, _opts(f))
+        out = []
+        for t, c in zip(texts, src):
+            nc = tf.retime(c, t)
+            if nc:
+                out.append(nc)
+        return out
+
+    def _payload(f, base: dict | None) -> dict:
+        """Everything a render (or its preview) needs, from the editor or the text form."""
+        texts = tf.parse_texts(tf.rows_from_form(f))
+        if base:
+            return {"video": base["video"], "cues": _edited_cues(f, base), "opts": _opts(f), "texts": texts,
+                    "voice_from": base.get("voice_from") or "", "start_s": base.get("start_s") or 0.0,
+                    "keep_sound": base.get("keep_sound", True), "title": base.get("title") or ""}
+        return {"video": f.get("video", ""), "cues": [], "opts": _opts(f), "texts": texts, "voice_from": "",
+                "start_s": 0.0, "keep_sound": True, "title": ""}
+
+    @app.post("/auto/text/new")
+    def text_new():
+        try:
+            pl = _payload(request.form, None)
+            vo.new_render(pl["video"], [], pl["opts"], pl["texts"])
+        except (vo.VoiceError, tf.TextError) as exc:
+            return err_page(str(exc), "/auto/voice")
+        return redirect("/auto/voice")
+
+    @app.post("/api/text/preview")
+    def text_preview():
+        f = request.form
+        try:
+            base = vo.editor_base(f["jid"]) if f.get("jid") else None
+            pl = _payload(f, base)
+            at = float(str(f.get("at") or "1").replace(",", ".") or 1)
+            pic = vo.preview_frame(pl["video"], pl["cues"], pl["opts"], pl["texts"], offset=pl["start_s"], at=at,
+                                   voice_from=pl["voice_from"])
+        except (vo.VoiceError, tf.TextError) as exc:
+            return jsonify({"error": str(exc)})
+        except Exception:                              # a picture is a convenience: never a server error page
+            return jsonify({"error": "The picture could not be made."})
+        return jsonify({"url": f"/api/text/preview/{pic.parent.name}.jpg"})
+
+    @app.get("/api/text/preview/<name>.jpg")
+    def text_preview_file(name):
+        import re as _re
+        p = vo.PREVIEWS / name / "frame.jpg"
+        if not _re.fullmatch(r"\d{8}-\d{6}-[0-9a-f]{6}", name) or not p.is_file():
+            return "not found", 404
+        return send_file(p, mimetype="image/jpeg", max_age=0)
+
+    @app.get("/auto/voice/<jid>/edit")
+    def voice_edit(jid):
+        try:
+            base = vo.editor_base(jid)
         except vo.VoiceError as exc:
             return err_page(str(exc), "/auto/voice")
+        o = base["opts"]
+        cues = base.get("cues") or []
+        rows = "".join(f"<div class='vo-cue'><span class='muted vo-sub' translate='no'>{e(_num(round(c['s'] + base['start_s'], 1)))}</span>"
+                       f"<input name='c_text' value='{e(' '.join(w['w'] for w in c['words']))}' maxlength='200'></div>"
+                       for c in cues)
+        cap = ""
+        if cues:
+            cap = (f"<label style='display:block;margin-top:8px'><input type='checkbox' name='captions_on' value='1'"
+                   f"{' checked' if base.get('captions_on', True) else ''}> Captions with the words</label>"
+                   f"<div class='muted vo-sub'>Fix a word right in its line; an emptied line is left out. The times stay.</div>"
+                   f"<div class='vo-cues'>{rows}</div>{_style_controls(o)}")
+        else:
+            cap = _style_controls(o, captions=False)
+        body = (f"<div class='pagehead'><div class='eyebrow'>Voice-over</div><h1>Edit text and captions</h1>"
+                f"<div class='lead'><span translate='no'>{e(Path(base['video']).name)}</span></div></div>"
+                f"<form method='post' action='/auto/voice/{jid}/render' class='card' data-textform>"
+                f"<input type='hidden' name='jid' value='{e(jid)}'>"
+                f"<div class='vo-edit'><div>{cap}{_text_rows(base.get('texts') or [])}"
+                f"<div style='margin-top:12px'><button class='ae-big'>Make the video</button> "
+                f"<span class='muted vo-sub'>A new video is made; this one stays.</span></div></div>{_preview_box()}</div></form>"
+                f"<div class='row' style='margin-top:14px'><a class='btn btn2' href='/auto/voice'>Back</a></div>")
+        return page("Edit text and captions", PAGE_CSS + body, _EDIT_JS)
+
+    @app.post("/auto/voice/<jid>/render")
+    def voice_render(jid):
+        try:
+            base = vo.editor_base(jid)
+            pl = _payload(request.form, base)
+            vo.new_render(pl["video"], pl["cues"], pl["opts"], pl["texts"], voice_from=pl["voice_from"],
+                          start_s=pl["start_s"], keep_sound=pl["keep_sound"], title=pl["title"])
+        except (vo.VoiceError, tf.TextError) as exc:
+            return err_page(str(exc), f"/auto/voice/{jid}/edit")
         return redirect("/auto/voice")
 
     @app.post("/auto/voice/<jid>/retry")
@@ -391,3 +583,18 @@ def register(app, page, err_page, e, human_bytes):
         if files:
             return jsonify({"path": files[0]})
         return jsonify({"path": None, "error": "Nothing chosen. You can also paste the path."})
+
+
+# The editor's and the text form's script: add / remove text rows, the preview picture (the form as it is now).
+_EDIT_JS = (
+    "document.addEventListener('click',async ev=>{"
+    "const add=ev.target.closest('[data-trow-add]');if(add){const box=add.closest('.vo-texts');"
+    "box.querySelector('[data-trows]').appendChild(box.querySelector('template[data-trow-tpl]').content.cloneNode(true));return}"
+    "const del=ev.target.closest('[data-trow-del]');if(del){del.closest('.vo-trow').remove();return}"
+    "const pv=ev.target.closest('[data-preview]');if(!pv)return;const f=pv.closest('form'),m=f.querySelector('[data-pmsg]'),"
+    "img=f.querySelector('[data-pimg]');const say=t=>{m.textContent=window.ME_L?ME_L(t):t};"
+    "say('Making the picture…');pv.disabled=true;"
+    "try{const r=await fetch('/api/text/preview',{method:'POST',body:new FormData(f)});const x=await r.json();"
+    "if(x.url){img.src=x.url+'?'+Date.now();img.hidden=false;m.textContent=''}else say(x.error||'The picture could not be made.')}"
+    "catch(err){say('The picture could not be made.')}pv.disabled=false});"
+)

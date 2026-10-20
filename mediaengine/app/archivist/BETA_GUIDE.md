@@ -84,8 +84,15 @@ card the voice is made on it (seconds per sentence); without one, on the process
   choose a voice: "Host - the voice of 4_4" or "4_2" (your picks from the voice test; always the same voice), a voice from a description,
   or a voice from a recording of a person who agreed to it. Every piece is listened to; a piece with missing words is
   made again. Then listen, download the WAV and the captions (SRT), or **Put it on a video**: the video's own sound gets
-  quieter while the voice speaks and the captions are burned in (the word being said turns yellow).
+  quieter while the voice speaks and the captions are burned in.
 - **Captions for a video**: the speech in your video becomes captions burned into a copy.
+- **Look of the captions**: bold capitals with the word being said in color (like Reels), on a dark box, classic, or
+  calm (business); a color, a size, a place. A title at the top for the first 3 seconds and a text at the end can be
+  added at once. The font (Montserrat, with Cyrillic) ships with the program.
+- **Text on a video** (no add-on needed): titles and lines of text on any video at the seconds you choose - on a
+  colored stripe, a dark box or in big letters. "Preview" shows a picture in a second, before the video is made.
+- **Edit text and captions** (on a finished video): fix a word right in its line, change the look, add a text - a new
+  video is made, the old one stays.
 
 The new videos are saved next to your reels; your files are only read. "Remove the add-on" frees the space.
 

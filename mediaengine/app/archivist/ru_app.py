@@ -527,6 +527,8 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"huggingface\.co listed no files for (.+)\.", r"huggingface.co не показал файлы \1."),
     (r"The sound could not be read: (.+)", r"Не удалось прочитать звук: \1"),
     (r"FFmpeg could not make the video \((.+)\)\.", r"FFmpeg не смог сделать видео (\1)."),
+    (r"The picture could not be made \((.+)\)\.", r"Не удалось сделать кадр (\1)."),
+    (r"The video of this one is no longer there: (.+)", r"Видео для этого больше нет на месте: \1"),
     (r"graphics card (.+)", r"видеокарта \1"),
     # Library search and Remove (QA review 2026-10-17)
     (r"(\d+) result\(s\)", r"Найдено: \1"),

@@ -636,8 +636,8 @@ PHRASES = {
         "Новая версия не запустилась, поэтому снова работает эта. Подробности для поддержки — в папке logs.",
     # voice-over and captions (voice.py, voice_web.py)
     "Voice-over": "Озвучка", "Voice-over · MediaEngine": "Озвучка · MediaEngine",
-    "A text read by a voice, with captions timed to the words; captions for your own videos.":
-        "Текст, прочитанный голосом, и субтитры точно по словам; субтитры для твоих видео.",
+    "A text read by a voice, with captions timed to the words; captions and text for your own videos.":
+        "Текст, прочитанный голосом, и субтитры точно по словам; субтитры и текст для твоих видео.",
     "Installing the voice add-on": "Устанавливается модуль озвучки",
     "Checking the PC…": "Проверяю компьютер…",
     "Downloading and installing the add-on's Python parts (about 3 GB)…": "Скачиваю и ставлю части модуля для Python (около 3 ГБ)…",
@@ -764,6 +764,55 @@ PHRASES = {
     "A voice-over is being made (Auto Edit → Voice-over)": "Делается озвучка (Автомонтаж → Озвучка)",
     "A voice-over is being made (or the voice add-on installed). Switch when it is ready.":
         "Делается озвучка (или ставится модуль озвучки). Переключись, когда закончится.",
+    # text on video and caption styles (textfx.py, voice_web.py)
+    "Video with text and captions": "Видео с текстом и субтитрами",
+    "Look of the captions": "Вид субтитров",
+    "Bold capitals, the word being said in color (like Reels)": "Крупные жирные буквы, сказанное слово цветом (как в Reels)",
+    "On a dark box, the word being said in color": "На тёмной плашке, сказанное слово цветом",
+    "Classic: white with an outline, the words said turn to the color": "Классика: белые с обводкой, сказанные слова становятся цветными",
+    "Calm: white with a soft shadow, no highlight (business)": "Спокойные: белые с мягкой тенью, без подсветки (деловой стиль)",
+    "Color": "Цвет", "Yellow": "Жёлтый", "Green": "Зелёный", "Pink": "Розовый", "Blue": "Синий", "Orange": "Оранжевый",
+    "White": "Белый", "Small": "Маленький", "Medium": "Средний", "Large": "Крупный",
+    "On a colored stripe": "На цветной плашке", "Big white letters": "Крупные белые буквы", "On a dark box": "На тёмной плашке",
+    "The text, e.g. 3 ways to fly cheaper": "Текст, например: 3 способа летать дешевле",
+    "Remove this text": "Убрать этот текст",
+    "Text on the video": "Текст на видео",
+    "From and to: seconds of the finished video (2.5 or 0:12). “end” in “from” = the last 3 seconds; an empty “to” = 3 seconds later. An empty text is left out.":
+        "«С» и «по» — секунды готового видео (2,5 или 0:12). «конец» в поле «с» — последние 3 секунды; пустое «по» — "
+        "через 3 секунды. Пустой текст не добавляется.",
+    "Add a text": "Добавить текст",
+    "Preview": "Просмотр",
+    "One picture of the finished video, with the captions and texts as they will be.":
+        "Один кадр готового видео — с субтитрами и текстом, как они будут.",
+    "At": "На", "Show": "Показать",
+    "Making the picture…": "Делаю кадр…", "The picture could not be made.": "Не удалось сделать кадр.",
+    "Title at the top (first 3 s)": "Заголовок вверху (первые 3 сек)",
+    "optional": "не обязательно",
+    "Text at the end (last 3 s)": "Текст в конце (последние 3 сек)",
+    "optional, e.g. Follow for more": "не обязательно, например: Подпишись, будет больше",
+    "Text on a video": "Текст на видео",
+    "Titles and lines of text on your video, at the moments you choose. The video itself is only read; a copy with the text is made.":
+        "Заголовки и строки текста на твоём видео в нужные моменты. Само видео только читается — делается копия с текстом.",
+    "Edit text and captions": "Изменить текст и субтитры",
+    "Edit text and captions · MediaEngine": "Изменить текст и субтитры · MediaEngine",
+    "Fix a word right in its line; an emptied line is left out. The times stay.":
+        "Исправь слово прямо в строке; пустая строка убирается. Время остаётся прежним.",
+    "A new video is made; this one stays.": "Делается новое видео, это остаётся.",
+    "Add a text (or captions) first.": "Сначала добавь текст (или субтитры).",
+    "Only a finished video can be edited.": "Изменить можно только готовое видео.",
+    "The voice-over of this video was deleted, so the video cannot be made again with its voice.":
+        "Озвучка этого видео удалена, поэтому сделать его заново с голосом нельзя.",
+    "The voice-over of this video was deleted.": "Озвучка этого видео удалена.",
+    "When the text appears: write seconds, for example 2.5 or 0:12.": "Когда появляется текст: напиши секунды, например 2,5 или 0:12.",
+    "When the text goes: write seconds, for example 2.5 or 0:12.": "Когда исчезает текст: напиши секунды, например 2,5 или 0:12.",
+    "Text on a video (Auto Edit → Voice-over): titles and lines of text at the moments you choose, on a colored stripe, a dark box or in big letters - no add-on needed.":
+        "Текст на видео (Автомонтаж → Озвучка): заголовки и строки текста в нужные моменты — на цветной плашке, на тёмной плашке "
+        "или крупными буквами; модуль озвучки не нужен.",
+    "Captions in four looks (the word being said in color like Reels, on a dark box, classic, calm), with a color and a size; Edit text and captions fixes a word and shows a preview picture before the video is made.":
+        "Субтитры в четырёх видах (сказанное слово цветом как в Reels, на тёмной плашке, классика, спокойные), с выбором цвета и "
+        "размера; «Изменить текст и субтитры» — исправить слово и посмотреть кадр до того, как делать видео.",
+    "A text must be on the screen for at least 0.3 s (check its times).":
+        "Текст должен быть на экране хотя бы 0,3 сек (проверь время).",
 }
 
 import html as _html

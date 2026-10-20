@@ -6,7 +6,7 @@ for the add-on's worker (the real VoxCPM2 / Whisper run is mediaengine-voice-add
 """
 from __future__ import annotations
 
-import argparse, json, os, re, subprocess, sys, time
+import argparse, json, os, re, shutil, subprocess, sys, time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -54,8 +54,12 @@ def main() -> int:
     check("captions never overlap", all(cues[i]["e"] <= cues[i + 1]["s"] for i in range(len(cues) - 1)))
     s = vo.srt(cues, offset=0.3)
     check("SRT numbered with times (offset added)", s.startswith("1\n00:00:00,400 --> ") and "\n\n2\n" in s, s[:120])
-    sa = vo.ass(cues, 1080, 1920)
-    check("ASS: the frame size, karaoke words", "PlayResX: 1080" in sa and "PlayResY: 1920" in sa and "{\\k" in sa)
+    sa = vo.ass(cues, 1080, 1920, style="classic")
+    check("ASS: the frame size, karaoke words (classic)", "PlayResX: 1080" in sa and "PlayResY: 1920" in sa and "{\\k" in sa)
+    sp = vo.ass(cues, 1080, 1920)
+    check("ASS: the default style shows each word in color in turn, with the program's font",
+          sp.count("Dialogue:") >= len([w for c in cues for w in c["words"]]) and "\\fnMontserrat Black" in sp
+          and "{\\k" not in sp, sp[-300:])
     check("ASS: a brace in the text cannot become a tag", "{x}" not in vo.ass(vo.cues([{"w": "{x}", "s": 0, "e": 1}]), 640, 360))
 
     # 3. the page and the jobs, with a stand-in worker
@@ -209,6 +213,80 @@ def main() -> int:
     cj = wait(vo.list_jobs()[0]["id"])
     check("captions for a video's own speech", cj["state"] == "done" and (Path(cj["dir"]) / "video.mp4").is_file(), cj.get("result"))
 
+    # text and captions: text on any video (no add-on), the font really used, a preview picture, the editor
+    from archivist import textfx as tf
+
+    def band_changed(a_, b_, r0, r1):          # share of the grey 108x192 picture's rows r0..r1 that changed
+        a_, b_ = a_[108 * r0:108 * r1], b_[108 * r0:108 * r1]
+        return sum(1 for x, y in zip(a_, b_) if abs(x - y) > 50) / max(1, len(a_)) if a_ and b_ else 0
+    real_installed = vo.installed
+    vo.installed = lambda: False                # the text needs no add-on
+    try:
+        r = c.post("/auto/text/new", data={"video": str(video), "t_text": ["Три способа летать дешевле", ""],
+                                           "t_start": ["0", ""], "t_end": ["1.5", ""], "t_where": ["top", "top"],
+                                           "t_look": ["banner", "banner"], "color": "yellow", "size": "medium"}, headers=H)
+        tj = wait(vo.list_jobs()[0]["id"])
+        page_wo = c.get("/auto/voice", headers=H).get_data(as_text=True)
+    finally:
+        vo.installed = real_installed
+    tres = tj.get("result") or {}
+    check("text on a video without the voice add-on", r.status_code == 302 and tj["state"] == "done"
+          and tj.get("kind") == "render" and tres.get("texts") == 1, tres)
+    check("the text form is on the page without the add-on", "/auto/text/new" in page_wo and "Install the voice add-on" in page_wo)
+    tvid = Path(tj["dir"]) / "video.mp4"
+    check("the title can be seen at the top (and is gone after its time)",
+          band_changed(frame(video, 0.8), frame(tvid, 0.8), 8, 32) > 0.03
+          and band_changed(frame(video, 1.9), frame(tvid, 1.9), 8, 32) < 0.005,
+          (band_changed(frame(video, 0.8), frame(tvid, 0.8), 8, 32), band_changed(frame(video, 1.9), frame(tvid, 1.9), 8, 32)))
+    fdir = home / "fontcheck"
+    fdir.mkdir(exist_ok=True)
+    shutil.copy2(Path(tj["dir"]) / "captions.ass", fdir / "c.ass")
+    tf.install_fonts(fdir)
+    rep = subprocess.run([ff, "-v", "verbose", "-f", "lavfi", "-i", "color=c=gray:s=540x960:d=1", "-vf", "ass=c.ass:fontsdir=fonts",
+                          "-frames:v", "25", "-f", "null", "-"], cwd=str(fdir), capture_output=True, text=True,
+                         encoding="utf-8", errors="replace").stderr
+    picked = re.findall(r"fontselect: \(([^,]+),[^)]*\) -> ([^,\s]+)", rep)
+    check("the program's own font is the one drawn (Montserrat, with Cyrillic)",
+          picked and all(fam.startswith("Montserrat") and f.startswith("Montserrat-") for fam, f in picked), picked or rep[-400:])
+    r = c.post("/api/text/preview", data={"video": str(video), "t_text": "Hello there", "t_start": "0", "t_end": "2",
+                                          "t_where": "middle", "t_look": "box", "at": "1"}, headers=H)
+    url = (r.get_json() or {}).get("url") or ""
+    img = c.get(url, headers=H) if url else None
+    check("a preview picture of the text", bool(url) and img.status_code == 200 and img.mimetype == "image/jpeg"
+          and len(img.data) > 2000, r.get_json())
+    r = c.post("/api/text/preview", data={"video": str(home / "none.mp4"), "t_text": "x"}, headers=H)
+    check("a preview of a missing video: said in words", "error" in (r.get_json() or {}), r.get_json())
+    r = c.post("/auto/text/new", data={"video": str(video), "t_text": "x", "t_start": "soon"}, headers=H)
+    check("a text time that is not a number: refused in words", r.status_code == 400, r.status_code)
+
+    # the editor on the voice-over video: a word fixed, another style, a text at the end; the voice stays
+    r = c.get(f"/auto/voice/{dj['id']}/edit", headers=H)
+    ep = r.get_data(as_text=True)
+    import html as _html
+    lines = [_html.unescape(x) for x in re.findall(r"name='c_text' value='([^']*)'", ep)]     # as a browser sends them
+    check("the editor lists the captions", r.status_code == 200 and len(lines) >= 2 and "data-preview" in ep, (r.status_code, lines))
+    new_first = "Hey " + " ".join(lines[0].split()[1:]) if lines else "Hey"
+    r = c.post(f"/api/text/preview", data={"jid": dj["id"], "captions_on": "1", "c_text": [new_first] + lines[1:],
+                                           "style": "box", "color": "green", "at": "0.6"}, headers=H)
+    check("the editor's preview", bool((r.get_json() or {}).get("url")), r.get_json())
+    r = c.post(f"/auto/voice/{dj['id']}/render", data={"captions_on": "1", "c_text": [new_first] + lines[1:], "style": "box",
+                                                         "color": "green", "size": "large", "position": "bottom",
+                                                         "t_text": "Follow for more", "t_start": "end", "t_where": "middle",
+                                                         "t_look": "banner"}, headers=H)
+    ej = wait(vo.list_jobs()[0]["id"])
+    eres = ej.get("result") or {}
+    eass = (Path(ej["dir"]) / "captions.ass").read_text("utf-8") if (Path(ej["dir"]) / "captions.ass").is_file() else ""
+    check("the edited video is made with the voice, checked", r.status_code == 302 and ej["state"] == "done"
+          and all(x["pass"] for x in eres.get("checks", [])) and abs(eres.get("seconds", 0) - dres.get("seconds", 0)) < 0.05, eres)
+    check("the fixed word, the chosen style and the text at the end are in it", "Hey" in eass and "&#x27;" not in eass
+          and "\\fnMontserrat ExtraBold" in eass and "Follow for more" in eass and eres.get("texts") == 1, eass[-500:])
+    ejob = json.loads((Path(ej["dir"]) / "job.json").read_text("utf-8"))
+    check("the end text sits in the last 3 seconds", any(t.get("at_end") for t in ejob.get("texts", [])), ejob.get("texts"))
+    r = c.get(f"/auto/voice/{cj['id']}/edit", headers=H)
+    check("the editor of a video's own captions (its words kept)", r.status_code == 200 and "name='c_text'" in r.get_data(as_text=True))
+    r = c.get(f"/auto/voice/{jid}/edit", headers=H)
+    check("a voice-over itself (no video) is not edited here: said in words", r.status_code == 400, r.status_code)
+
     # odd input: words, never a server error
     for name, data in [("no text", {"text": "", "voice": vo.DEFAULT_VOICE}), ("unknown voice", {"text": "Hi.", "voice": "x"}),
                        ("short description", {"text": "Hi.", "voice": "describe", "description": "a"}),
@@ -240,9 +318,16 @@ def main() -> int:
     c.post("/lang", data={"back": "/auto/voice"}, headers=H)
     ru = c.get("/auto/voice", headers=H).get_data(as_text=True)
     check("the page in Russian", "Озвучка" in ru and "Наложить на видео" in ru and "Новая озвучка" in ru)
-    left = [t for t in ("Put it on a video", "New voice-over", "Make the voice-over", "Captions for a video") if t in
-            re.sub(r"<script.*?</script>", "", ru, flags=re.S)]
+    left = [t for t in ("Put it on a video", "New voice-over", "Make the voice-over", "Captions for a video", "Text on a video",
+                        "Look of the captions", "Add a text", "Edit text and captions", "Bold capitals", "On a colored stripe",
+                        "Title at the top") if t in re.sub(r"<script.*?</script>|<template.*?</template>", "", ru, flags=re.S)]
     check("no English left of the main texts", not left, left)
+    rue = c.get(f"/auto/voice/{dj['id']}/edit", headers=H).get_data(as_text=True)
+    rue_vis = re.sub(r"<script.*?</script>", "", rue, flags=re.S)
+    left = [t for t in ("Edit text and captions", "Text on the video", "Preview", "One picture of the finished video",
+                        "Fix a word right in its line", "A new video is made", "Make the video", "Add a text", "Color")
+            if t in rue_vis]
+    check("the editor in Russian", "Изменить текст и субтитры" in rue and not left, left)
 
     # delete
     r = c.post(f"/auto/voice/{jid}/delete", headers=H)

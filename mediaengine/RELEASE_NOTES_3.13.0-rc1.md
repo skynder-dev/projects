@@ -82,6 +82,18 @@ The owner: "voice-over, processing and text in the video - MedEng". **Auto Edit 
 - **Put it on a video**: the video's own sound ducked under the voice (or muted), captions burned in (ASS, the word
   being said turns yellow), the last picture held when the voice is longer; checked (H.264 + AAC, plays to the end);
   a copy saved next to the reels ("<name> - voice.mp4").
+- **Text on video and caption looks** (textfx.py; no add-on needed for text): one ASS document burned by libass with
+  the program's own fonts (Montserrat Black / ExtraBold / SemiBold, SIL OFL 1.1, Latin + Cyrillic, assets/fonts). Lines
+  are laid out by MediaEngine (measured with Pillow from the same font files): a rounded box behind exactly the text,
+  a too-long word made smaller instead of running off, the said word highlighted without the line re-wrapping.
+  Caption looks: "pop" (capitals, the word being said in color, a small pop), "box", "classic" (karaoke), "minimal";
+  6 colors, 3 sizes, 3 places. Text blocks: on a colored stripe, big white letters, on a dark box; from/to in
+  seconds or m:ss, "end" = the last 3 s of the finished video. Quick fields on the voice and captions forms: a title
+  for the first 3 s and a text at the end. **Edit text and captions** on a finished video: fix words (an edited line
+  keeps its time; its new words share it by length), another look (untouched captions are regrouped for it), texts;
+  a new "render" job (the voice and the words are already there - nothing is spoken or listened to again). A preview
+  picture of the finished video at any second (one FFmpeg frame with the same ASS and fonts). Captions jobs keep
+  their words (words.json) for the editor; older ones are read back from their SRT.
 - **Captions for a video**: the speech of any video into captions burned into a copy (Whisper's languages).
 - Quit / Update / switching builds ask while a voice-over is being made; one interrupted by a closed program is made
   again once.

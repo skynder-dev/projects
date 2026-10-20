@@ -23,6 +23,7 @@ from __future__ import annotations
 import difflib, hashlib, json, os, re, shutil, subprocess, sys, threading, time, uuid
 from pathlib import Path
 
+from . import textfx as tf
 from .config import HOME, load_config
 from .db import now_iso
 from .platform_adapter import process_kwargs
@@ -536,30 +537,16 @@ def _ass_text(t: str) -> str:
     return t.replace("\\", "⧵").replace("{", "(").replace("}", ")").replace("\n", " ")
 
 
-def ass(cs: list[dict], width: int, height: int, offset: float = 0.0, position: str = "bottom") -> str:
-    """Captions for burning in: big bold white words with a dark outline; the word being said turns yellow."""
-    size = max(18, int(min(width, height) * (0.075 if height > width else 0.06)))
-    margin = int(height * (0.20 if position == "bottom" else 0.42 if position == "middle" else 0.10))
-    align_no = 2 if position == "bottom" else 5 if position == "middle" else 8
-    head = ("[Script Info]\nScriptType: v4.00+\nWrapStyle: 0\nScaledBorderAndShadow: yes\n"
-            f"PlayResX: {width}\nPlayResY: {height}\n\n[V4+ Styles]\n"
-            "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, "
-            "Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, "
-            "MarginR, MarginV, Encoding\n"
-            f"Style: Cap,Arial,{size},&H0000E5FF,&H00FFFFFF,&H00101010,&H80000000,-1,0,0,0,100,100,0,0,1,"
-            f"{max(2, size // 14)},{max(1, size // 28)},{align_no},{int(width * 0.08)},{int(width * 0.08)},{margin},1\n\n"
-            "[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n")
-    lines = []
-    for c in cs:
-        parts, t = [], c["s"]
-        for w in c["words"]:
-            gap = max(0.0, w["s"] - t)
-            if gap > 0.005:
-                parts.append("{\\k%d}" % round(gap * 100))
-            parts.append("{\\k%d}%s " % (max(1, round((w["e"] - max(w["s"], t)) * 100)), _ass_text(w["w"])))
-            t = max(t, w["e"])
-        lines.append(f"Dialogue: 0,{_ass_time(c['s'] + offset)},{_ass_time(c['e'] + offset)},Cap,,0,0,0,,{''.join(parts).rstrip()}")
-    return head + "\n".join(lines) + "\n"
+def ass(cs: list[dict], width: int, height: int, offset: float = 0.0, position: str = "bottom", style: str | None = None,
+        texts: list[dict] | None = None, color: str | None = None, size: str | None = None) -> str:
+    """Captions (and text blocks) for burning in, in one of the styles of textfx (Montserrat, shipped)."""
+    return tf.document(width, height, cs, texts, tf.options(style, color, size, position), offset)
+
+
+def style_cues(words: list[dict], opts: dict | None) -> list[dict]:
+    """The words grouped into captions the way the style shows them (fewer words for big capitals)."""
+    st = tf.STYLES[tf.options(**(opts or {}))["style"]]
+    return cues(words, max_words=st["words"])
 
 
 # ---------------------------------------------------------------- jobs (one at a time, in a background thread)
@@ -617,10 +604,11 @@ def _need_addon() -> None:
         raise VoiceError("Install the voice add-on first.")
 
 
-def _submit(job: dict) -> str:
-    _need_addon()
-    if installing():
-        raise VoiceError("The voice add-on is being installed. Wait until it is ready.")
+def _submit(job: dict, addon: bool = True) -> str:
+    if addon:
+        _need_addon()
+        if installing():
+            raise VoiceError("The voice add-on is being installed. Wait until it is ready.")
     jid = _new_id()
     d = JOBS / jid
     d.mkdir(parents=True, exist_ok=True)
@@ -668,17 +656,19 @@ def new_voiceover(text: str, voice: str, description: str = "", ref_path: str = 
                     "title": re.sub(r"\s+", " ", text)[:60]})
 
 
-def new_captions(source: str, language: str = "", position: str = "bottom") -> str:
+def new_captions(source: str, language: str = "", position: str = "bottom", opts: dict | None = None,
+                 texts: list[dict] | None = None) -> str:
     _need_addon()
     p = Path(str(source or "").strip().strip('"'))
     if not p.is_file():
         raise VoiceError("Choose a video (its full path) to make captions for.")
+    o = tf.options(**{**(opts or {}), "position": position if position in tf.POSITIONS else (opts or {}).get("position")})
     return _submit({"kind": "captions", "source": str(p), "language": (language or "").strip().lower()[:2] or None,
-                    "position": position if position in ("bottom", "middle", "top") else "bottom", "title": p.name[:60]})
+                    "position": o["position"], "opts": o, "texts": list(texts or []), "title": p.name[:60]})
 
 
 def new_dub(jid: str, video: str, keep_sound: bool = True, captions: bool = True, position: str = "bottom",
-            start_s: float = 0.3) -> str:
+            start_s: float = 0.3, opts: dict | None = None, texts: list[dict] | None = None) -> str:
     """The voice-over `jid` onto a video: a new MP4 (the video itself is only read)."""
     _need_addon()
     src = read_job(jid)
@@ -691,9 +681,49 @@ def new_dub(jid: str, video: str, keep_sound: bool = True, captions: bool = True
         start_s = max(0.0, min(60.0, float(str(start_s).strip().replace(",", ".") or 0.3)))
     except (TypeError, ValueError):
         raise VoiceError("The start of the voice must be a number of seconds, for example 0.5.")
+    o = tf.options(**{**(opts or {}), "position": position if position in tf.POSITIONS else (opts or {}).get("position")})
     return _submit({"kind": "dub", "voiceover": jid, "video": str(p), "keep_sound": bool(keep_sound),
-                    "captions": bool(captions), "position": position if position in ("bottom", "middle", "top") else "bottom",
+                    "captions": bool(captions), "position": o["position"], "opts": o, "texts": list(texts or []),
                     "start_s": start_s, "title": p.name[:60]})
+
+
+def _clean_cues(raw) -> list[dict]:
+    """Captions sent back by the editor: numbers and words only, in time order, never overlapping."""
+    out = []
+    for c in (raw or [])[:3000]:
+        try:
+            words = [{"w": tf.clean_text(w.get("w"), 60), "s": float(w["s"]), "e": float(w["e"])} for w in c.get("words") or []]
+        except (TypeError, ValueError, KeyError, AttributeError):
+            continue
+        words = [w for w in words if w["w"] and 0 <= w["s"] <= w["e"] < 36000]
+        if words:
+            s0 = min(w["s"] for w in words)
+            e0 = max(float(c.get("e") or 0), max(w["e"] for w in words))
+            out.append({"s": s0, "e": e0, "words": words})
+    out.sort(key=lambda c: c["s"])
+    for i in range(len(out) - 1):                      # a caption ends before the next one starts (no stacking)
+        out[i]["e"] = max(out[i]["s"] + 0.05, min(out[i]["e"], out[i + 1]["s"] - 0.01))
+    return out
+
+
+def new_render(video: str, cues_: list[dict] | None = None, opts: dict | None = None, texts: list[dict] | None = None,
+               voice_from: str = "", start_s: float = 0.0, keep_sound: bool = True, title: str = "") -> str:
+    """A video with text and/or (edited) captions, and the voice of a made voice-over if any: no add-on needed (nothing
+    is spoken or listened to - the words and their times are already there)."""
+    p = Path(str(video or "").strip().strip('"'))
+    if not p.is_file():
+        raise VoiceError("Choose the video (its full path).")
+    if voice_from:
+        src = read_job(voice_from)
+        if src.get("kind") != "voiceover" or not (_job_dir(voice_from) / "voice.wav").is_file():
+            raise VoiceError("This voice-over is not ready.")
+    cs = _clean_cues(cues_)
+    tx = list(texts or [])
+    if not cs and not tx and not voice_from:
+        raise VoiceError("Add a text (or captions) first.")
+    return _submit({"kind": "render", "video": str(p), "cues": cs, "opts": tf.options(**(opts or {})), "texts": tx,
+                    "voice_from": voice_from or "", "start_s": max(0.0, min(60.0, float(start_s or 0))),
+                    "keep_sound": bool(keep_sound), "title": (title or p.name)[:60]}, addon=False)
 
 
 def _loop() -> None:
@@ -797,16 +827,28 @@ def _do(jid: str) -> dict:
         words = align("", res.get("words") or [])
         if not words:
             return {"ok": False, "error": "No speech was found in this video."}
-        cs = cues(words)
+        (d / "words.json").write_text(json.dumps(words, ensure_ascii=False), "utf-8")     # for the editor
+        opts = job.get("opts") or tf.options(position=job.get("position"))
+        cs = style_cues(words, opts)
         (d / "captions.srt").write_text(srt(cs), "utf-8")
-        out = _burn(Path(job["source"]), None, cs, d, keep_sound=True, position=job.get("position") or "bottom", offset=0.0)
+        out = _burn(Path(job["source"]), None, cs, d, keep_sound=True, offset=0.0, opts=opts, texts=job.get("texts"))
         return {"ok": True, "said": res.get("said"), "language": res.get("language"), "words": len(words), **out}
     if job["kind"] == "dub":
         vo = JOBS / job["voiceover"]
         words = json.loads((vo / "words.json").read_text("utf-8"))
-        cs = cues(words) if job.get("captions") else []
+        opts = job.get("opts") or tf.options(position=job.get("position"))
+        cs = style_cues(words, opts) if job.get("captions") else []
         out = _burn(Path(job["video"]), vo / "voice.wav", cs, d, keep_sound=job.get("keep_sound", True),
-                    position=job.get("position") or "bottom", offset=float(job.get("start_s") or 0.0))
+                    offset=float(job.get("start_s") or 0.0), opts=opts, texts=job.get("texts"))
+        return {"ok": True, **out}
+    if job["kind"] == "render":
+        voice = None
+        if job.get("voice_from"):
+            voice = _job_dir(job["voice_from"]) / "voice.wav"
+            if not voice.is_file():
+                return {"ok": False, "error": "The voice-over of this video was deleted."}
+        out = _burn(Path(job["video"]), voice, job.get("cues") or [], d, keep_sound=job.get("keep_sound", True),
+                    offset=float(job.get("start_s") or 0.0), opts=job.get("opts"), texts=job.get("texts"))
         return {"ok": True, **out}
     return {"ok": False, "error": "Unknown job."}
 
@@ -828,8 +870,8 @@ def _caption_font(d: Path) -> bool:
     return False
 
 
-def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sound: bool, position: str,
-          offset: float) -> dict:
+def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sound: bool, offset: float,
+          opts: dict | None = None, texts: list[dict] | None = None, position: str | None = None) -> dict:
     """The video with the voice (its own sound ducked under it, or none) and the captions burned in -> d/video.mp4,
     checked (H.264 + AAC, plays to the end)."""
     from . import auto_edit as ae, orders as od
@@ -858,10 +900,15 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
     vf = []
     if length > vlen + 0.05:
         vf.append(f"tpad=stop_mode=clone:stop_duration={length - vlen:.3f}")
-    if cs:
-        (d / "captions.ass").write_text(ass(cs, w, h, offset=offset, position=position), "utf-8")
-        (d / "captions.srt").write_text(srt(cs, offset=offset), "utf-8")
-        vf.append("ass=captions.ass" + (":fontsdir=fonts" if _caption_font(d) else ""))
+    o = tf.options(**{**(opts or {}), **({"position": position} if position else {})})
+    tx = tf.resolve_texts(texts, length)
+    if cs or tx:
+        (d / "captions.ass").write_text(tf.document(w, h, cs, tx, o, offset), "utf-8")
+        if cs:
+            (d / "captions.srt").write_text(srt(cs, offset=offset), "utf-8")
+        fonts = tf.install_fonts(d)
+        fonts = _caption_font(d) or fonts           # Windows: Arial too, for a letter Montserrat does not have
+        vf.append("ass=captions.ass" + (":fontsdir=fonts" if fonts else ""))
     if w % 2 or h % 2:                    # H.264 (4:2:0) needs an even width and height
         vf.insert(0, "scale=trunc(iw/2)*2:trunc(ih/2)*2")
         w, h = w // 2 * 2, h // 2 * 2
@@ -903,9 +950,121 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
         bad = next(c for c in checks if not c["pass"])
         (d / "video.mp4").replace(d / "video_failed_check.mp4")
         raise VoiceError(f"The new video did not pass its check ({bad['check']}: {bad['detail']}).")
-    saved = _save_copy(d / "video.mp4", video.stem, "voice" if voice_wav is not None else "captions")
+    saved = _save_copy(d / "video.mp4", video.stem, "voice" if voice_wav is not None else "captions" if cs else "text")
     return {"files": {"video": "video.mp4", **({"srt": "captions.srt"} if cs else {})}, "seconds": round(length, 2),
-            "checks": checks, "captions": len(cs), "width": w, "height": h, "saved": saved}
+            "checks": checks, "captions": len(cs), "texts": len(tx), "width": w, "height": h, "saved": saved}
+
+
+PREVIEWS = HOME / "voice_previews"
+
+
+def _words_from_srt(text: str) -> list[dict]:
+    """Captions made before their words were kept (only the SRT): each line's words share its time by length."""
+    out = []
+    for block in re.split(r"\n\s*\n", text.replace("\r", "")):
+        m = re.search(r"(\d+):(\d+):(\d+)[,.](\d+)\s*-->\s*(\d+):(\d+):(\d+)[,.](\d+)\s*\n(.+)", block, re.S)
+        if not m:
+            continue
+        g = [int(x) for x in m.groups()[:8]]
+        s0 = g[0] * 3600 + g[1] * 60 + g[2] + g[3] / 1000
+        e0 = g[4] * 3600 + g[5] * 60 + g[6] + g[7] / 1000
+        cue = tf.retime({"words": [{"w": "x", "s": s0, "e": e0}]}, " ".join(m.group(9).split()))
+        out += (cue or {}).get("words", [])
+    return out
+
+
+def editor_base(jid: str) -> dict:
+    """What the text-and-captions editor starts from for a made video: the source video, the voice (if any) and its
+    start, the captions grouped as its style shows them, its texts."""
+    j = read_job(jid)
+    if j["state"] != "done" or j.get("kind") not in ("dub", "captions", "render"):
+        raise VoiceError("Only a finished video can be edited.")
+    d = _job_dir(jid)
+    opts = tf.options(**(j.get("opts") or {"position": j.get("position")}))
+    base = {"jid": jid, "opts": opts, "texts": list(j.get("texts") or []), "voice_from": "", "start_s": 0.0,
+            "keep_sound": True, "captions_on": True, "title": j.get("title") or ""}
+    if j["kind"] == "dub":
+        vo_dir = _job_dir(j["voiceover"])
+        if not (vo_dir / "voice.wav").is_file() or not (vo_dir / "words.json").is_file():
+            raise VoiceError("The voice-over of this video was deleted, so the video cannot be made again with its voice.")
+        words = json.loads((vo_dir / "words.json").read_text("utf-8"))
+        base.update(video=j["video"], voice_from=j["voiceover"],
+                    start_s=float(j.get("start_s") or 0), keep_sound=bool(j.get("keep_sound", True)),
+                    captions_on=bool(j.get("captions", True)), cues=style_cues(words, opts))
+    elif j["kind"] == "captions":
+        if (d / "words.json").is_file():
+            words = json.loads((d / "words.json").read_text("utf-8"))
+        else:
+            words = _words_from_srt((d / "captions.srt").read_text("utf-8")) if (d / "captions.srt").is_file() else []
+        base.update(video=j["source"], cues=style_cues(words, opts))
+    else:
+        if j.get("voice_from") and not (_job_dir(j["voice_from"]) / "voice.wav").is_file():
+            raise VoiceError("The voice-over of this video was deleted, so the video cannot be made again with its voice.")
+        base.update(video=j["video"], voice_from=j.get("voice_from") or "", start_s=float(j.get("start_s") or 0),
+                    keep_sound=bool(j.get("keep_sound", True)), cues=list(j.get("cues") or []),
+                    captions_on=bool(j.get("cues")))
+    if not Path(base["video"]).is_file():
+        raise VoiceError("The video of this one is no longer there: " + str(base["video"]))
+    return base
+
+
+def video_size(video: Path) -> tuple[int, int, float]:
+    """Width and height as shown (a phone video stored on its side counts upright) and the length in seconds."""
+    from . import auto_edit as ae, orders as od
+    try:
+        info = ae._probe(video)
+    except Exception as exc:
+        raise VoiceError("The video could not be read: " + str(exc)[:200])
+    streams = info.get("streams", []) if isinstance(info, dict) else []
+    vs = next((s for s in streams if s.get("codec_type") == "video"), None)
+    if not vs:
+        raise VoiceError("This file has no picture: choose a video.")
+    vlen = float((info.get("format") or {}).get("duration") or 0)
+    if vlen <= 0:
+        vlen = float(od._decode_info(video, timeout=1800).get("seconds") or 0)
+    w, h = int(vs.get("width") or 1080), int(vs.get("height") or 1920)
+    if int(info.get("rotation") or 0) in (90, 270):
+        w, h = h, w
+    return w, h, vlen
+
+
+def preview_frame(video: str, cues_: list[dict] | None, opts: dict | None, texts: list[dict] | None,
+                  offset: float = 0.0, at: float = 1.0, voice_from: str = "") -> Path:
+    """One picture of the finished video at `at` seconds - the same captions and texts, the same fonts - in a second
+    or two instead of a whole render. Kept in voice_previews (the ten newest)."""
+    from . import orders as od
+    p = Path(str(video or "").strip().strip('"'))
+    if not p.is_file():
+        raise VoiceError("Choose the video (its full path).")
+    w, h, vlen = video_size(p)
+    length = vlen
+    if voice_from:
+        wav = _job_dir(voice_from) / "voice.wav"
+        if wav.is_file():
+            length = max(vlen, offset + float(od._decode_info(wav, timeout=300).get("seconds") or 0) + 0.5)
+    t = max(0.0, min(float(at or 0), max(0.0, length - 0.05)))
+    seek = max(0.0, min(t, vlen - 0.1))
+    d = PREVIEWS / _new_id()
+    d.mkdir(parents=True, exist_ok=True)
+    doc = tf.document(w, h, _clean_cues(cues_), tf.resolve_texts(texts, length), tf.options(**(opts or {})), offset)
+    (d / "preview.ass").write_text(doc, "utf-8")
+    fonts = tf.install_fonts(d)
+    fonts = _caption_font(d) or fonts
+    vf = (f"setpts=PTS-STARTPTS+{t:.3f}/TB,ass=preview.ass" + (":fontsdir=fonts" if fonts else "")
+          + ",scale=-2:'min(ih,960)'")
+    cp = subprocess.run([_ffmpeg(), "-hide_banner", "-nostdin", "-y", "-v", "error", "-ss", f"{seek:.3f}", "-i", str(p),
+                         "-vf", vf, "-frames:v", "1", "-q:v", "3", "frame.jpg"], cwd=str(d), capture_output=True,
+                        **process_kwargs(dict(timeout=120)))
+    shutil.rmtree(d / "fonts", ignore_errors=True)
+    if cp.returncode != 0 or not (d / "frame.jpg").is_file():
+        raise VoiceError("The picture could not be made (" + (cp.stderr.decode("utf-8", "replace").strip()[-200:] or "?") + ").")
+    try:                                   # only the ten newest previews are kept
+        old = sorted((x for x in PREVIEWS.iterdir() if x.is_dir()), key=lambda x: x.name)[:-10]
+        for x in old:
+            shutil.rmtree(x, ignore_errors=True)
+    except OSError:
+        pass
+    return d / "frame.jpg"
 
 
 def _save_copy(src: Path, stem: str, what: str) -> str:
@@ -914,7 +1073,7 @@ def _save_copy(src: Path, stem: str, what: str) -> str:
     try:
         folder = ae.default_export_dir()
         folder.mkdir(parents=True, exist_ok=True)
-        word = {"voice": "озвучка", "captions": "субтитры"}[what] if ae._ui_ru() else what
+        word = {"voice": "озвучка", "captions": "субтитры", "text": "текст"}[what] if ae._ui_ru() else what
         base = ae.safe_filename(f"{stem[:60]} - {word}", "MediaEngine " + what)
         dst = folder / f"{base}.mp4"
         n = 2
@@ -929,10 +1088,9 @@ def _save_copy(src: Path, stem: str, what: str) -> str:
 
 def resume_after_restart() -> None:
     """Jobs left without an answer by a closed program are made again once (their files were not finished)."""
-    if not installed():
-        return
+    have = installed()
     for j in list_jobs(200):
-        if j["state"] == "interrupted" and not j.get("resumed"):
+        if j["state"] == "interrupted" and not j.get("resumed") and (have or j.get("kind") == "render"):
             try:
                 d = JOBS / j["id"]
                 job = json.loads((d / "job.json").read_text("utf-8"))
@@ -954,7 +1112,8 @@ def retry_job(jid: str) -> None:
     j = read_job(jid)
     if j["state"] in ("working", "waiting"):
         return
-    _need_addon()
+    if j.get("kind") != "render":
+        _need_addon()
     d = _job_dir(jid)
     with _LOCK:
         (d / "result.json").unlink(missing_ok=True)
