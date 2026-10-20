@@ -707,7 +707,8 @@ def _clean_cues(raw) -> list[dict]:
     import math
     for c in (raw or [])[:3000]:
         try:
-            words = [{"w": tf.clean_text(w.get("w"), 60), "s": float(w["s"]), "e": float(w["e"])} for w in c.get("words") or []]
+            words = [{"w": tf.clean_text(w.get("w"), 60).replace("*", ""), "s": float(w["s"]), "e": float(w["e"]),
+                      **({"em": True} if w.get("em") is True else {})} for w in c.get("words") or []]
             float(c.get("e") or 0)
         except (TypeError, ValueError, KeyError, AttributeError, OverflowError):
             continue
@@ -894,7 +895,7 @@ def _do(jid: str) -> dict:
                 return {"ok": False, "error": "The recording of this voice is missing from this version of MediaEngine."}
         cfg = (load_config().get("voice") or {})
         device = cfg.get("device") or ("cuda" if manifest().get("cuda") else "cpu")
-        res = _run_worker({"task": "tts", "chunks": chunks(job["text"]), "voice": v, "language": job.get("language"),
+        res = _run_worker({"task": "tts", "chunks": chunks(job["text"].replace("*", "")), "voice": v, "language": job.get("language"),
                            "out_wav": str(d / "voice_raw.wav"), "seed": int(cfg.get("seed") or 1),
                            "steps": cfg.get("steps"), "device": device}, d / "work", timeout=6 * 3600,
                           on_line=_progress)
@@ -907,7 +908,7 @@ def _do(jid: str) -> dict:
                              str(d / "voice.wav")], **process_kwargs(dict(capture_output=True, timeout=600)))
         if cp.returncode != 0:
             return {"ok": False, "error": "The voice-over could not be finished (loudness)."}
-        words = align(job["text"], res.get("words") or [])
+        words = tf.mark_emphasis(align(job["text"], res.get("words") or []))   # *words* -> shown in the color
         (d / "words.json").write_text(json.dumps(words, ensure_ascii=False), "utf-8")
         (d / "captions.srt").write_text(srt(cues(words)), "utf-8")
         if not cfg.get("keep_work"):                      # the pieces and tries (kept only when asked, for support)
@@ -1196,7 +1197,7 @@ def video_size(video: Path, picture_len: bool = False):
 
 
 def preview_frame(video: str, cues_: list[dict] | None, opts: dict | None, texts: list[dict] | None,
-                  offset: float = 0.0, at: float = 1.0, voice_from: str = "", safe: bool = False) -> Path:
+                  offset: float = 0.0, at: float = 1.0, voice_from: str = "", safe: bool = False, full: bool = False) -> Path:
     """One picture of the finished video at `at` seconds - the same captions and texts, the same fonts - in a second
     or two instead of a whole render. Kept in voice_previews (the ten newest)."""
     from . import orders as od
@@ -1220,7 +1221,7 @@ def preview_frame(video: str, cues_: list[dict] | None, opts: dict | None, texts
     boxes = "".join(f",drawbox=x={x}:y={y}:w={bw}:h={bh}:color=red@0.28:t=fill" for x, y, bw, bh in tf.safe_boxes(w, h)) \
         if safe else ""                       # where the platforms put their buttons and text (a tall video)
     vf = (f"setpts=PTS-STARTPTS+{t:.3f}/TB,ass=preview.ass" + (":fontsdir=fonts" if fonts else "") + boxes
-          + ",scale=-2:'min(ih,960)'")
+          + ("" if full else ",scale=-2:'min(ih,960)'"))    # a cover: the video's own size
     ff = _ffmpeg()
     run = lambda args: subprocess.run([ff, "-hide_banner", "-nostdin", "-y", "-v", "error", *args], cwd=str(d),
                                       capture_output=True, **process_kwargs(dict(timeout=120)))
@@ -1243,18 +1244,30 @@ def preview_frame(video: str, cues_: list[dict] | None, opts: dict | None, texts
     return d / "frame.jpg"
 
 
+def save_cover(video: str, cues_: list[dict] | None, opts: dict | None, texts: list[dict] | None, offset: float = 0.0,
+               at: float = 1.0, voice_from: str = "") -> str:
+    """The picture at `at` with its texts (and captions), full size, saved next to the reels as a cover."""
+    pic = preview_frame(video, cues_, opts, texts, offset=offset, at=at, voice_from=voice_from, full=True)
+    saved = _save_copy(pic, Path(str(video).strip().strip('"')).stem, "cover")
+    if not saved:
+        raise VoiceError("The cover could not be saved.")
+    return saved
+
+
 def _save_copy(src: Path, stem: str, what: str) -> str:
-    """A copy next to the saved reels (Exports, or the folder used last), never over another file: '<name> - voice.mp4'."""
+    """A copy next to the saved reels (Exports, or the folder used last), never over another file: '<name> - voice.mp4'
+    (a cover: '<name> - cover.jpg')."""
     from . import auto_edit as ae
     try:
         folder = ae.default_export_dir()
         folder.mkdir(parents=True, exist_ok=True)
-        word = {"voice": "озвучка", "captions": "субтитры", "text": "текст"}[what] if ae._ui_ru() else what
+        word = {"voice": "озвучка", "captions": "субтитры", "text": "текст", "cover": "обложка"}[what] if ae._ui_ru() else what
         base = ae.safe_filename(f"{stem[:60]} - {word}", "MediaEngine " + what)
-        dst = folder / f"{base}.mp4"
+        ext = src.suffix.lower() or ".mp4"
+        dst = folder / f"{base}{ext}"
         n = 2
         while dst.exists():
-            dst = folder / f"{base} ({n}).mp4"
+            dst = folder / f"{base} ({n}){ext}"
             n += 1
         shutil.copy2(src, dst)
         return str(dst)

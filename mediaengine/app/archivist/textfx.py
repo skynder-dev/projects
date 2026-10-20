@@ -265,16 +265,42 @@ def rows_from_form(f) -> list[dict]:
              "look": get(cols[4], i)} for i in range(n)]
 
 
+def mark_emphasis(words: list[dict]) -> list[dict]:
+    """*word* or *a few words* in a script or a caption line: those words stay in the color in the captions (the stars
+    are not said and not shown)."""
+    out, on = [], False
+    for w in words:
+        t = str(w.get("w") or "")
+        starts = t.startswith("*")
+        ends = t.rstrip(".,!?;:…»)\"'").endswith("*") and (len(t.strip("*")) > 0 or not starts)
+        if starts:
+            on = True
+        em = on
+        if ends:
+            on = False
+        clean = t.replace("*", "")
+        if clean:
+            nw = {k: v for k, v in w.items() if k != "em"}
+            out.append({**nw, "w": clean, **({"em": True} if em else {})})
+    return out
+
+
+def shown_words(words: list[dict]) -> str:
+    """A caption line as the editor shows it: emphasized words between stars."""
+    return " ".join(f"*{w['w']}*" if w.get("em") else str(w["w"]) for w in words)
+
+
 def retime(cue: dict, text: str) -> dict | None:
-    """A caption whose words were edited: the same time span, the new words share it by their length."""
+    """A caption whose words were edited: the same time span, the new words share it by their length (*stars* mark
+    the words shown in the color)."""
     words = clean_text(text, 200).split()
     if not words:
         return None
     old = cue["words"]
-    if [w["w"] for w in old] == words:
+    if shown_words(old) == " ".join(words):
         return cue
     if len(words) == len(old):
-        return {**cue, "words": [{**o, "w": w} for o, w in zip(old, words)]}
+        return {**cue, "words": mark_emphasis([{**{k: v for k, v in o.items() if k != "em"}, "w": w} for o, w in zip(old, words)])}
     s, e = old[0]["s"], old[-1]["e"]
     total = sum(len(w) + 1 for w in words)
     out, t = [], s
@@ -282,7 +308,8 @@ def retime(cue: dict, text: str) -> dict | None:
         d = (e - s) * (len(w) + 1) / total
         out.append({"w": w, "s": round(t, 3), "e": round(t + d, 3)})
         t += d
-    return {**cue, "words": out}
+    out = mark_emphasis(out)
+    return {**cue, "words": out} if out else None
 
 
 def install_fonts(d: Path) -> bool:
@@ -372,7 +399,7 @@ def _captions(cues: list[dict], W: int, H: int, base: int, o: dict, offset: floa
     for cue in cues:
         pairs = []                           # each word as one token the wrap cannot split (a no-break space, ...)
         for w in cue["words"]:
-            sh = "".join(clean_text(w.get("w"), 60).split())
+            sh = "".join(clean_text(str(w.get("w") or "").replace("*", ""), 60).split())
             if sh:
                 pairs.append((w, sh.upper() if st["upper"] else sh))
         if not pairs:
@@ -407,14 +434,18 @@ def _captions(cues: list[dict], W: int, H: int, base: int, o: dict, offset: floa
                     gap = max(0.0, w["s"] - t)
                     if gap > 0.005:
                         parts.append("{\\k%d}" % round(gap * 100))
-                    parts.append("{\\k%d}%s" % (max(1, round((w["e"] - max(w["s"], t)) * 100)), shown[j]))
+                    em_ = "{\\2c%s}" % tag_color(accent) if w.get("em") else ""    # emphasized: in the color before too
+                    parts.append("{\\k%d}%s%s%s" % (max(1, round((w["e"] - max(w["s"], t)) * 100)), em_, shown[j],
+                                                      "{\\2c&HFFFFFF&}" if em_ else ""))
                     parts.append(" " if j != idx[-1] else "")
                     t = max(t, w["e"])
                 out.append(f"Dialogue: 1,{_t(s0)},{_t(e0)},Base,,0,0,0,,{{{at(li)}{look}\\1c{tag_color(accent)}"
                            f"\\2c&HFFFFFF&\\fad(80,0)}}{''.join(parts)}")
             continue
         if st["mode"] == "plain":
-            for li, ln in enumerate(lines):
+            for li, idx in enumerate(per_line):
+                ln = " ".join(f"{{\\1c{tag_color(accent)}}}{shown[k]}{{\\1c&HFFFFFF&}}" if words[k].get("em") else shown[k]
+                              for k in idx)
                 out.append(f"Dialogue: 1,{_t(s0)},{_t(e0)},Base,,0,0,0,,{{{at(li)}{look}\\fad(120,80)}}{ln}")
             continue
         # "word": the cue shown once per word, that word in the color (and popping a little in 'pop')
@@ -428,6 +459,8 @@ def _captions(cues: list[dict], W: int, H: int, base: int, o: dict, offset: floa
                     if k == j:
                         pop = ("\\fscx112\\fscy112\\t(0,120,\\fscx104\\fscy104)" if o["style"] == "pop" else "")
                         row.append(f"{{\\1c{tag_color(accent)}{pop}}}{shown[k]}{{\\1c&HFFFFFF&\\fscx100\\fscy100}}")
+                    elif words[k].get("em"):          # emphasized: in the color all the time
+                        row.append(f"{{\\1c{tag_color(accent)}}}{shown[k]}{{\\1c&HFFFFFF&}}")
                     else:
                         row.append(shown[k])
                 out.append(f"Dialogue: 1,{_t(a + offset)},{_t(b + offset)},Base,,0,0,0,,{{{at(li)}{look}{fade}}}"

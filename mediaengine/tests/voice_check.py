@@ -359,6 +359,12 @@ def main() -> int:
     check("a look without a name: said in words", "error" in (c.post("/api/text/looks", json={"name": " "}, headers=H).get_json() or {}))
     check("odd looks sent by hand: no server error", all(c.post("/api/text/looks", json=x, headers=H).status_code == 200
                                                          for x in ([1, 2], {"name": {"x": 1}}, {"name": "a", "style": ["pop"]})))
+    r = c.post("/api/text/preview", data={"video": str(video), "t_text": "Обложка", "t_start": "0", "t_end": "2",
+                                          "t_where": "middle", "t_look": "banner", "at": "1", "cover": "1"}, headers=H)
+    cov = Path((r.get_json() or {}).get("saved") or "")
+    from PIL import Image as _Img
+    check("a cover picture, full size, saved next to the reels", cov.suffix == ".jpg" and cov.is_file()
+          and _Img.open(cov).size == (540, 960) and ("cover" in cov.name or "обложка" in cov.name), (r.get_json(), cov.name))
     r = c.post("/api/text/preview", data={"video": str(home / "none.mp4"), "t_text": "x"}, headers=H)
     check("a preview of a missing video: said in words", "error" in (r.get_json() or {}), r.get_json())
     r = c.post("/auto/text/new", data={"video": str(video), "t_text": "x", "t_start": "soon"}, headers=H)
@@ -462,7 +468,7 @@ def main() -> int:
           and fjob.get("cues"), fres)
     check("and it can be edited afterwards", c.get(f"/auto/voice/{fj['id']}/edit", headers=H).status_code == 200)
     before = {j["id"] for j in vo.list_jobs(500)}
-    r = c.post("/auto/finish", data={**base_f, "voice": "new", "text": "Hello there, my friend. This is new.",
+    r = c.post("/auto/finish", data={**base_f, "voice": "new", "text": "Hello there, my *friend*. This is new.",
                                      "nvoice": vo.DEFAULT_VOICE, "voice_from": ""}, headers=H)
     new_ids = [j["id"] for j in vo.list_jobs(500) if j["id"] not in before]       # newest first
     jobs_now = [vo.read_job(x) for x in new_ids] + [{}, {}]
@@ -473,6 +479,14 @@ def main() -> int:
           and json.loads((Path(nj["dir"]) / "job.json").read_text("utf-8")).get("voice_from") == nv["id"],
           (nj.get("result"), nv.get("state")))
     before = {j["id"] for j in vo.list_jobs(500)}
+    if len(new_ids) > 1:
+        nvw = json.loads((vo._job_dir(new_ids[1]) / "words.json").read_text("utf-8"))
+        nres = vo.read_job(new_ids[1]).get("result") or {}
+        nass = (Path(vo._job_dir(new_ids[0])) / "captions.ass").read_text("utf-8")
+        check("*stars* in a script: not said, the word kept in the color in the captions",
+              "*" not in str(nres.get("said")) and [w["w"] for w in nvw if w.get("em")] == ["friend."]
+              and nass.count("FRIEND.") >= 2 and all("*" not in x for x in re.findall(r"\}([^{}]+)$", nass, re.M)),
+              ([w for w in nvw if w.get("em")], nres.get("said")))
     r = c.post("/auto/finish", data={"video": str(video), "voice": "none", "captions": "speech"}, headers=H)
     sj = wait(next(j["id"] for j in vo.list_jobs(500) if j["id"] not in before))
     check("captions of the video's own speech on the same page", r.status_code == 302 and sj["state"] == "done"

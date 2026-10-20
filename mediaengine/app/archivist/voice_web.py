@@ -151,7 +151,8 @@ def register(app, page, err_page, e, human_bytes):
         return (f"<div class='card' id='voNew'><h2 style='margin-top:0'>New voice-over</h2>"
                 f"<form method='post' action='/auto/voice/new' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
                 f"<textarea class='vo-text' name='text' maxlength='{vo.MAX_TEXT}' required placeholder='The text to be said…'></textarea>"
-                f"<div class='muted vo-sub'>Write it the way it is said: short sentences, commas and dots where the pauses are.</div>"
+                f"<div class='muted vo-sub'>Write it the way it is said: short sentences, commas and dots where the pauses are. "
+                f"Words between *stars* are shown in the color in the captions.</div>"
                 f"<div class='vo-voices' style='margin-top:10px'><b>Voice</b>{radios}</div>"
                 f"<div data-for='describe' hidden style='margin:6px 0 0 22px'><input class='vo-wide' name='description' maxlength='400' "
                 f"placeholder='For example: a calm man in his forties with a deep, warm voice, slow pace'></div>"
@@ -255,7 +256,9 @@ def register(app, page, err_page, e, human_bytes):
         return (f"<div class='vo-prev card' style='margin:0'><b>Preview</b>"
                 f"<div class='muted vo-sub'>One picture of the finished video, with the captions and texts as they will be.</div>"
                 f"<div class='vo-row' style='margin-top:6px'><span>At</span><input name='at' value='1' size='4'><span>s</span>"
-                f"<button type='button' class='btn2' data-preview>Show</button></div>"
+                f"<button type='button' class='btn2' data-preview>Show</button>"
+                f"<button type='button' class='btn2' data-preview='cover' title='This picture, full size, saved next to the reels'>"
+                f"Save as a cover</button></div>"
                 f"<label class='muted vo-sub' style='display:block;margin-top:4px'><input type='checkbox' name='safe' value='1'> "
                 f"Show where Reels, TikTok and Shorts put their own buttons and text (red)</label>"
                 f"<div class='muted vo-sub' data-pmsg></div><img data-pimg alt='' hidden></div>")
@@ -479,7 +482,7 @@ def register(app, page, err_page, e, human_bytes):
         Turned off, they are still kept with the video (so its editor can turn them on again)."""
         src = base.get("cues") or []
         texts, ss, es, ws = f.getlist("c_text"), f.getlist("c_s"), f.getlist("c_e"), f.getlist("c_w")
-        joined = lambda c: " ".join(w["w"] for w in c["words"])
+        joined = lambda c: tf.shown_words(c["words"])
         if not ss or len(ss) != len(texts):           # a page without line times: by position, as before
             texts = texts if len(texts) == len(src) else [joined(c) for c in src]
             rows = [(t, c["s"], c["e"], c["words"]) for t, c in zip(texts, src)]
@@ -506,8 +509,8 @@ def register(app, page, err_page, e, human_bytes):
         out = []
         for t, s_, e_, words in rows:
             try:
-                same = words and " ".join(str(w.get("w")) for w in words) == " ".join(t.split())
-            except AttributeError:
+                same = words and tf.shown_words(words) == " ".join(t.split())
+            except (AttributeError, KeyError, TypeError):
                 same = False
             if same:                               # the line's own start leads: its words move with it
                 try:
@@ -650,6 +653,9 @@ def register(app, page, err_page, e, human_bytes):
                 start = float(str(f.get("start") or "0.3").replace(",", ".") or 0.3)
                 cues = vo.style_cues(vo.voiceover_words(vf), o) if vf and f.get("captions") == "voice" else []
                 at = float(str(f.get("at") or "1").replace(",", ".") or 1)
+                if f.get("cover") == "1":
+                    return jsonify({"saved": vo.save_cover(f.get("video", ""), cues, o, tf.parse_texts(tf.rows_from_form(f)),
+                                                           offset=start, at=at, voice_from=vf)})
                 pic = vo.preview_frame(f.get("video", ""), cues, o, tf.parse_texts(tf.rows_from_form(f)),
                                        offset=start, at=at, voice_from=vf, safe=f.get("safe") == "1")
                 return jsonify({"url": f"/api/text/preview/{pic.parent.name}.jpg"})
@@ -658,6 +664,10 @@ def register(app, page, err_page, e, human_bytes):
                 words = vo.voiceover_words(f["voice_from"])
                 start = float(str(f.get("start") or "0.3").replace(",", ".") or 0.3)
                 at = float(str(f.get("at") or "1").replace(",", ".") or 1)
+                if f.get("cover") == "1":
+                    return jsonify({"saved": vo.save_cover(f.get("video", ""), vo.style_cues(words, o) if f.get("captions") == "1"
+                                                           else [], o, tf.hook_and_end(f.get("hook", ""), f.get("end_text", "")),
+                                                           offset=start, at=at, voice_from=f["voice_from"])})
                 pic = vo.preview_frame(f.get("video", ""), vo.style_cues(words, o) if f.get("captions") == "1" else [],
                                        o, tf.hook_and_end(f.get("hook", ""), f.get("end_text", "")), offset=start, at=at,
                                        voice_from=f["voice_from"], safe=f.get("safe") == "1")
@@ -665,6 +675,9 @@ def register(app, page, err_page, e, human_bytes):
             base = vo.editor_base(f["jid"]) if f.get("jid") else None
             pl = _payload(f, base)
             at = float(str(f.get("at") or "1").replace(",", ".") or 1)
+            if f.get("cover") == "1":
+                return jsonify({"saved": vo.save_cover(pl["video"], pl["cues"] if pl["captions_on"] else [], pl["opts"],
+                                                       pl["texts"], offset=pl["start_s"], at=at, voice_from=pl["voice_from"])})
             pic = vo.preview_frame(pl["video"], pl["cues"] if pl["captions_on"] else [], pl["opts"], pl["texts"],
                                    offset=pl["start_s"], at=at,
                                    voice_from=pl["voice_from"], safe=f.get("safe") == "1")
@@ -693,11 +706,11 @@ def register(app, page, err_page, e, human_bytes):
         o = base["opts"]
         cues = base.get("cues") or []
         def cue_row(c) -> str:
-            ws_ = json.dumps([{"w": w["w"], "s": round(float(w["s"]), 3), "e": round(float(w["e"]), 3)} for w in c["words"]],
-                             ensure_ascii=False)
+            ws_ = json.dumps([{"w": w["w"], "s": round(float(w["s"]), 3), "e": round(float(w["e"]), 3),
+                               **({"em": True} if w.get("em") else {})} for w in c["words"]], ensure_ascii=False)
             return (f"<div class='vo-cue' data-cue><span class='muted vo-sub' translate='no' data-t>"
                     f"{e(_num(round(c['s'] + base['start_s'], 1)))}</span>"
-                    f"<input name='c_text' value='{e(' '.join(w['w'] for w in c['words']))}' maxlength='200'>"
+                    f"<input name='c_text' value='{e(tf.shown_words(c['words']))}' maxlength='200'>"
                     f"<input type='hidden' name='c_s' value='{c['s']:.3f}'><input type='hidden' name='c_e' value='{c['e']:.3f}'>"
                     f"<input type='hidden' name='c_w' value='{e(ws_)}'>"
                     f"<button type='button' class='btn2 vo-mini' data-cue-act='earlier' title='0.1 s earlier' translate='no'>−0.1</button>"
@@ -710,7 +723,7 @@ def register(app, page, err_page, e, human_bytes):
         if cues:
             cap = (f"<label style='display:block;margin-top:8px'><input type='checkbox' name='captions_on' value='1'"
                    f"{' checked' if base.get('captions_on', True) else ''}> Captions with the words</label>"
-                   f"<div class='muted vo-sub'>Fix a word right in its line; an emptied line is left out. −0.1 and +0.1 move a line "
+                   f"<div class='muted vo-sub'>Fix a word right in its line (*word* = in the color); an emptied line is left out. −0.1 and +0.1 move a line "
                    f"by 0.1 s, ✂ splits it where the cursor is, ⤓ joins it with the next one, ＋ adds a line.</div>"
                    f"<div class='vo-cues' data-offset='{base['start_s']:.3f}'>{rows}</div>{_style_controls(o)}")
         else:
@@ -814,12 +827,12 @@ _EDIT_JS = (
     "q('c_w').value=ws?JSON.stringify(ws):'';if(txt!==undefined)q('c_text').value=txt;const off=+(row.closest('[data-offset]')||{dataset:{offset:0}}).dataset.offset||0;"
     "row.querySelector('[data-t]').textContent=(Math.round((s+off)*10)/10).toString()}"
     "function cueGet(row){const q=n=>row.querySelector('[name='+n+']');let ws=[];try{ws=q('c_w').value?JSON.parse(q('c_w').value):[]}catch(x){}"
-    "const t=q('c_text').value,same=ws.length&&ws.map(w=>w.w).join(' ')===t.trim().split(/\\s+/).join(' ');return{s:+q('c_s').value,e:+q('c_e').value,ws:same?ws:null,t:t}}"
+    "const t=q('c_text').value,same=ws.length&&ws.map(w=>w.em?'*'+w.w+'*':w.w).join(' ')===t.trim().split(/\\s+/).join(' ');return{s:+q('c_s').value,e:+q('c_e').value,ws:same?ws:null,t:t}}"
     "document.addEventListener('click',ev=>{const b=ev.target.closest('[data-cue-act]');if(!b)return;const row=b.closest('[data-cue]'),c=cueGet(row),a=b.dataset.cueAct;"
     "if(a==='earlier'||a==='later'){const d=a==='earlier'?-0.1:0.1;if(c.s+d<0)return;cueSet(row,c.s+d,c.e+d,c.ws&&c.ws.map(w=>({w:w.w,s:+(w.s+d).toFixed(3),e:+(w.e+d).toFixed(3)})))}"
     "else if(a==='split'){const inp=row.querySelector('[name=c_text]');const pos=inp.selectionStart||Math.floor(c.t.length/2);"
     "const left=c.t.slice(0,pos).trim(),right=c.t.slice(pos).trim();if(!left||!right)return;const k=left.split(/\\s+/).length;"
-    "let mid=c.s+(c.e-c.s)*left.length/(left.length+right.length),w1=null,w2=null;if(c.ws&&left.split(/\\s+/).join(' ')===c.ws.slice(0,k).map(w=>w.w).join(' ')){w1=c.ws.slice(0,k);w2=c.ws.slice(k);mid=w2[0].s}"
+    "let mid=c.s+(c.e-c.s)*left.length/(left.length+right.length),w1=null,w2=null;if(c.ws&&left.split(/\\s+/).join(' ')===c.ws.slice(0,k).map(w=>w.em?'*'+w.w+'*':w.w).join(' ')){w1=c.ws.slice(0,k);w2=c.ws.slice(k);mid=w2[0].s}"
     "const nr=row.cloneNode(true);row.after(nr);cueSet(row,c.s,Math.max(c.s+0.05,mid-0.01),w1,left);cueSet(nr,mid,c.e,w2,right)}"
     "else if(a==='join'){const nx=row.nextElementSibling;if(!nx||!nx.matches('[data-cue]'))return;const n=cueGet(nx);"
     "cueSet(row,c.s,n.e,c.ws&&n.ws?c.ws.concat(n.ws):null,(c.t.trim()+' '+n.t.trim()).trim());nx.remove()}"
@@ -848,9 +861,10 @@ _EDIT_JS = (
     "const del=ev.target.closest('[data-trow-del]');if(del){del.closest('.vo-trow').remove();return}"
     "const pv=ev.target.closest('[data-preview]');if(!pv)return;const f=pv.closest('form'),m=f.querySelector('[data-pmsg]'),"
     "img=f.querySelector('[data-pimg]');const say=t=>{m.textContent=window.ME_L?ME_L(t):t};"
-    "say('Making the picture…');pv.disabled=true;"
-    "try{const r=await fetch('/api/text/preview',{method:'POST',body:new URLSearchParams(new FormData(f))});const x=await r.json();"
-    "if(x.url){img.src=x.url+'?'+Date.now();img.hidden=false;m.textContent=''}else say(x.error||'The picture could not be made.')}"
+    "say('Making the picture…');pv.disabled=true;const body=new URLSearchParams(new FormData(f));if(pv.dataset.preview==='cover')body.set('cover','1');"
+    "try{const r=await fetch('/api/text/preview',{method:'POST',body:body});const x=await r.json();"
+    "if(x.saved){m.textContent=(window.ME_L?ME_L('Saved:'):'Saved:')+' '+x.saved}"
+    "else if(x.url){img.src=x.url+'?'+Date.now();img.hidden=false;m.textContent=''}else say(x.error||'The picture could not be made.')}"
     "catch(err){say('The picture could not be made.')}pv.disabled=false});"
 )
 

@@ -666,6 +666,8 @@ PHRASES = {
     "Free space there:": "Свободно там:",
     "Not enough free space: about 20 GB are needed while installing.": "Мало свободного места: на время установки нужно около 20 ГБ.",
     "New voice-over": "Новая озвучка", "The text to be said…": "Текст, который нужно сказать…",
+    "Write it the way it is said: short sentences, commas and dots where the pauses are. Words between *stars* are shown in the color in the captions.":
+        "Пиши так, как говорят вслух: короткие фразы, запятые и точки там, где паузы. Слова между *звёздочками* в субтитрах будут цветными.",
     "Write it the way it is said: short sentences, commas and dots where the pauses are.":
         "Пиши так, как говорят вслух: короткие фразы, запятые и точки там, где паузы.",
     "Voice": "Голос",
@@ -796,9 +798,11 @@ PHRASES = {
         "Заголовки и строки текста на твоём видео в нужные моменты. Само видео только читается — делается копия с текстом.",
     "Edit text and captions": "Изменить текст и субтитры",
     "Edit text and captions · MediaEngine": "Изменить текст и субтитры · MediaEngine",
-    "Fix a word right in its line; an emptied line is left out. −0.1 and +0.1 move a line by 0.1 s, ✂ splits it where the cursor is, ⤓ joins it with the next one, ＋ adds a line.":
-        "Исправь слово прямо в строке; пустая строка убирается. −0.1 и +0.1 сдвигают строку на 0,1 сек, ✂ разрезает её там, где "
+    "Fix a word right in its line (*word* = in the color); an emptied line is left out. −0.1 and +0.1 move a line by 0.1 s, ✂ splits it where the cursor is, ⤓ joins it with the next one, ＋ adds a line.":
+        "Исправь слово прямо в строке (*слово* — цветом); пустая строка убирается. −0.1 и +0.1 сдвигают строку на 0,1 сек, ✂ разрезает её там, где "
         "курсор, ⤓ склеивает со следующей, ＋ добавляет строку.",
+    "Save as a cover": "Сохранить как обложку", "This picture, full size, saved next to the reels": "Этот кадр в полном размере — рядом с роликами",
+    "The cover could not be saved.": "Не удалось сохранить обложку.",
     "6. Music under it": "6. Музыка под видео", "(optional)": "(не обязательно)",
     "A song, e.g. D:\\Music\\calm.mp3": "Песня, например D:\\Музыка\\спокойная.mp3",
     "Loudness": "Громкость", "quiet": "тихо", "medium": "средне", "loud": "громко",
