@@ -1525,11 +1525,13 @@ def full_quality_clip(v52,e,work_dir,hdr=None,deinterlace=False,square=False):
 # ---------------------------------------------------------------- titles and own music (optional, the owner's choice)
 MUSIC_EXT={".mp3",".m4a",".aac",".wav",".flac",".ogg",".opus",".wma"}
 def _font_files(bold):
-    """Windows fonts with Cyrillic first (segoeui, arial), then Linux (CI) ones."""
+    """The program's own font first (Montserrat, with Cyrillic - the same as the text and captions of Voice-over and
+    text), then Windows fonts with Cyrillic (segoeui, arial), then Linux (CI) ones."""
+    own=Path(__file__).resolve().parent.parent/"assets"/"fonts"/("Montserrat-ExtraBold.ttf" if bold else "Montserrat-SemiBold.ttf")
     win=Path(os.environ.get("WINDIR") or r"C:\Windows")/"Fonts"
     names=("segoeuib.ttf","arialbd.ttf") if bold else ("segoeui.ttf","arial.ttf")
     linux=("DejaVuSans-Bold.ttf",) if bold else ("DejaVuSans.ttf",)
-    return [str(win/n) for n in names]+[f"{d}/{n}" for n in linux for d in ("/usr/share/fonts/truetype/dejavu","/usr/share/fonts/dejavu")]
+    return [str(own)]+[str(win/n) for n in names]+[f"{d}/{n}" for n in linux for d in ("/usr/share/fonts/truetype/dejavu","/usr/share/fonts/dejavu")]
 
 TITLE_SHOW_S=3.2
 

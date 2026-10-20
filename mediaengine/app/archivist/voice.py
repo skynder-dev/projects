@@ -985,6 +985,15 @@ def _words_from_srt(text: str) -> list[dict]:
     return out
 
 
+def voiceover_words(jid: str) -> list[dict]:
+    """The timed words of a finished voice-over (for captions and a preview before its video is made)."""
+    j = read_job(jid)
+    d = _job_dir(jid)
+    if j.get("kind") != "voiceover" or j["state"] != "done" or not (d / "words.json").is_file():
+        raise VoiceError("This voice-over is not ready.")
+    return json.loads((d / "words.json").read_text("utf-8"))
+
+
 def editor_base(jid: str) -> dict:
     """What the text-and-captions editor starts from for a made video: the source video, the voice (if any) and its
     start, the captions grouped as its style shows them, its texts."""

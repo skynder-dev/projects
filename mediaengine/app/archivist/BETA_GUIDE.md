@@ -75,7 +75,7 @@ The format for whoever writes the other program: `Orders\ORDERS.md`.
 
 ## Voice-over and captions
 
-**Auto Edit → Voice-over.** A text read by a voice, with captions timed to the words; and captions for your own
+**Auto Edit → Voice-over and text.** A text read by a voice, with captions timed to the words; and captions for your own
 videos. It is an add-on: the first time press "Install the voice add-on". It downloads about 8 GB once into the data
 folder (MediaEngine goes online for it only then; free open models, nothing is sent anywhere). With an NVIDIA graphics
 card the voice is made on it (seconds per sentence); without one, on the processor (about a minute per sentence).

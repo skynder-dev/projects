@@ -2516,7 +2516,7 @@ WHATS_NEW_ITEMS = [
     ("2026-10-19", "Voice-over (Auto Edit → Voice-over, an add-on installed with a button): a text read by a voice, checked word by word, captions timed to the words, the voice and captions put onto a video."),
     ("2026-10-19", "Captions for your own videos: the speech becomes captions burned into a copy (Auto Edit → Voice-over)."),
     ("2026-10-19b", "Voice-over: your picks from the voice test, the voices 4_4 and 4_2, instead of 3.1."),
-    ("2026-10-20", "Text on a video (Auto Edit → Voice-over): titles and lines of text at the moments you choose, on a colored stripe, a dark box or in big letters - no add-on needed."),
+    ("2026-10-20", "Text on a video (Auto Edit → Voice-over and text): titles and lines of text at the moments you choose, on a colored stripe, a dark box or in big letters - no add-on needed."),
     ("2026-10-20", "Captions in four looks (the word being said in color like Reels, on a dark box, classic, calm), with a color and a size; Edit text and captions fixes a word and shows a preview picture before the video is made."),
 ]
 WHATS_NEW_ID = max(d for d, _ in WHATS_NEW_ITEMS)

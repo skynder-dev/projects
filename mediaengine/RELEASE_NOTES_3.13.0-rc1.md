@@ -93,7 +93,10 @@ The owner: "voice-over, processing and text in the video - MedEng". **Auto Edit 
   keeps its time; its new words share it by length), another look (untouched captions are regrouped for it), texts;
   a new "render" job (the voice and the words are already there - nothing is spoken or listened to again). A preview
   picture of the finished video at any second (one FFmpeg frame with the same ASS and fonts). Captions jobs keep
-  their words (words.json) for the editor; older ones are read back from their SRT.
+  their words (words.json) for the editor; older ones are read back from their SRT. Wrapped lines are evened out
+  (no word alone on a line); the look chosen last is what the next form starts with; the page is "Voice-over and
+  text" (quick links to its parts); a saved reel has "Text, captions, voice-over" (its path filled in). The reel
+  title of Auto Edit ("Music and title") is drawn with the same Montserrat.
 - **Captions for a video**: the speech of any video into captions burned into a copy (Whisper's languages).
 - Quit / Update / switching builds ask while a voice-over is being made; one interrupted by a closed program is made
   again once.

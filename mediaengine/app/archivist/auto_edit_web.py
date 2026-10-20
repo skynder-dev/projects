@@ -370,7 +370,7 @@ def register(app, layout, e, human_bytes):
         check_btn = ("<div class='row' style='float:right;gap:8px'>"
                      + ("<form method='post' action='/auto/exports/open' style='margin:0'><button class='btn2'>Exported reels</button></form>"
                         if has_exports else "")
-                     + ("<a class='btn btn2' href='/auto/voice'>Voice-over</a>" if _voice_on_home() else "")
+                     + ("<a class='btn btn2' href='/auto/voice'>Voice-over and text</a>" if _voice_on_home() else "")
                      + "<a class='btn btn2' href='/auto/orders'>Orders"
                      + (f" <span class='badge review' translate='no'>{n_orders}</span>" if n_orders else "") + "</a>"
                      + "<a class='btn btn2' href='/auto/check'>Check this PC</a></div>")

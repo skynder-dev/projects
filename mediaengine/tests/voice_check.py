@@ -158,6 +158,9 @@ def main() -> int:
         con.commit()
     page = c.get("/auto/voice", headers=H).get_data(as_text=True)
     check("a reel saved lately is offered in the video fields", "select data-fill" in page and "clip.mp4" in page)
+    r = c.post("/api/text/preview", data={"voice_from": jid, "video": str(video), "captions": "1", "start": "0.3",
+                                          "hook": "Привет", "at": "0.5"}, headers=H)
+    check("a preview before the voice is put on the video", bool((r.get_json() or {}).get("url")), r.get_json())
     r = c.post(f"/auto/voice/{jid}/dub", data={"video": str(video), "keep_sound": "1", "captions": "1", "position": "bottom",
                                                "start": "0.3"}, headers=H)
     check("the voice onto a video is accepted", r.status_code == 302, r.status_code)
@@ -331,6 +334,9 @@ def main() -> int:
           and all(x["pass"] for x in eres.get("checks", [])) and abs(eres.get("seconds", 0) - dres.get("seconds", 0)) < 0.05, eres)
     check("the fixed word, the chosen style and the text at the end are in it", "Hey" in eass and "&#x27;" not in eass
           and "\\fnMontserrat ExtraBold" in eass and "Follow for more" in eass and eres.get("texts") == 1, eass[-500:])
+    vp = c.get("/auto/voice", headers=H).get_data(as_text=True)
+    check("the next forms start with the look chosen last", "value='box' checked" in vp and "value='green' selected" in vp
+          and "value='large' selected" in vp, re.findall(r"value='(\w+)' (?:checked|selected)", vp)[:12])
     ejob = json.loads((Path(ej["dir"]) / "job.json").read_text("utf-8"))
     check("the end text sits in the last 3 seconds", any(t.get("at_end") for t in ejob.get("texts", [])), ejob.get("texts"))
     r = c.get(f"/auto/voice/{cj['id']}/edit", headers=H)

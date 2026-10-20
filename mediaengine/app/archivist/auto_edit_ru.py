@@ -766,6 +766,7 @@ PHRASES = {
         "Делается озвучка (или ставится модуль озвучки). Переключись, когда закончится.",
     # text on video and caption styles (textfx.py, voice_web.py)
     "Video with text and captions": "Видео с текстом и субтитрами",
+    "Voice-over and text": "Озвучка и текст", "Voice-over and text · MediaEngine": "Озвучка и текст · MediaEngine",
     "Look of the captions": "Вид субтитров",
     "Bold capitals, the word being said in color (like Reels)": "Крупные жирные буквы, сказанное слово цветом (как в Reels)",
     "On a dark box, the word being said in color": "На тёмной плашке, сказанное слово цветом",
@@ -805,8 +806,8 @@ PHRASES = {
     "The voice-over of this video was deleted.": "Озвучка этого видео удалена.",
     "When the text appears: write seconds, for example 2.5 or 0:12.": "Когда появляется текст: напиши секунды, например 2,5 или 0:12.",
     "When the text goes: write seconds, for example 2.5 or 0:12.": "Когда исчезает текст: напиши секунды, например 2,5 или 0:12.",
-    "Text on a video (Auto Edit → Voice-over): titles and lines of text at the moments you choose, on a colored stripe, a dark box or in big letters - no add-on needed.":
-        "Текст на видео (Автомонтаж → Озвучка): заголовки и строки текста в нужные моменты — на цветной плашке, на тёмной плашке "
+    "Text on a video (Auto Edit → Voice-over and text): titles and lines of text at the moments you choose, on a colored stripe, a dark box or in big letters - no add-on needed.":
+        "Текст на видео (Автомонтаж → Озвучка и текст): заголовки и строки текста в нужные моменты — на цветной плашке, на тёмной плашке "
         "или крупными буквами; модуль озвучки не нужен.",
     "Captions in four looks (the word being said in color like Reels, on a dark box, classic, calm), with a color and a size; Edit text and captions fixes a word and shows a preview picture before the video is made.":
         "Субтитры в четырёх видах (сказанное слово цветом как в Reels, на тёмной плашке, классика, спокойные), с выбором цвета и "
