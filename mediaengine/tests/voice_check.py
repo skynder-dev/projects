@@ -357,6 +357,8 @@ def main() -> int:
     r = c.post("/api/text/looks", json={"name": "Деловой", "delete": True}, headers=H)
     check("and deleted", "data-name='Деловой'" not in c.get("/auto/voice", headers=H).get_data(as_text=True))
     check("a look without a name: said in words", "error" in (c.post("/api/text/looks", json={"name": " "}, headers=H).get_json() or {}))
+    check("odd looks sent by hand: no server error", all(c.post("/api/text/looks", json=x, headers=H).status_code == 200
+                                                         for x in ([1, 2], {"name": {"x": 1}}, {"name": "a", "style": ["pop"]})))
     r = c.post("/api/text/preview", data={"video": str(home / "none.mp4"), "t_text": "x"}, headers=H)
     check("a preview of a missing video: said in words", "error" in (r.get_json() or {}), r.get_json())
     r = c.post("/auto/text/new", data={"video": str(video), "t_text": "x", "t_start": "soon"}, headers=H)
@@ -475,6 +477,35 @@ def main() -> int:
     sj = wait(next(j["id"] for j in vo.list_jobs(500) if j["id"] not in before))
     check("captions of the video's own speech on the same page", r.status_code == 302 and sj["state"] == "done"
           and (sj.get("result") or {}).get("captions", 0) > 0, sj.get("result"))
+    srt_ = (Path(sj["dir"]) / "captions.srt").read_text("utf-8") if (Path(sj["dir"]) / "captions.srt").is_file() else ""
+    check("speech captions keep the speech's own times (no voice start added)", "00:00:00,200 -->" in srt_, srt_[:80])
+    before = {j["id"] for j in vo.list_jobs(500)}
+    r = c.post("/auto/finish", data={"video": str(video), "voice": "none", "captions": "none", "t_text": "Hi", "start": "0.3",
+                                     "keep_sound": ""}, headers=H)          # (the hidden 'keep sound' left unticked)
+    kj2 = wait(next(j["id"] for j in vo.list_jobs(500) if j["id"] not in before))
+    check("no voice keeps the video's own sound", kj2["state"] == "done"
+          and any(x["check"] == "sound" and x["pass"] for x in (kj2.get("result") or {}).get("checks", [])), kj2.get("result"))
+    if new_ids and len(new_ids) > 1:                 # a video whose voice-over was interrupted: said so, not 'deleted'
+        keep_ = (Path(vo._job_dir(new_ids[1])) / "result.json").read_bytes()
+        (Path(vo._job_dir(new_ids[1])) / "result.json").unlink(missing_ok=True)
+        c.post(f"/auto/voice/{new_ids[0]}/retry", headers=H)
+        rj_ = wait(new_ids[0])
+        (Path(vo._job_dir(new_ids[1])) / "result.json").write_bytes(keep_)     # (made again: no job left interrupted)
+        check("a video whose voice-over is not made: said so", rj_["state"] == "failed"
+              and "was not made" in str((rj_.get("result") or {}).get("error")), rj_.get("result"))
+    r = c.post("/api/text/preview", data={"jid": cj["id"], "captions_on": "1", "c_text": ["line"] * 300,
+                                          "c_s": [str(i * 0.5) for i in range(300)], "c_e": [str(i * 0.5 + 0.4) for i in range(300)],
+                                          "c_w": [""] * 300, "at": "1"}, headers=H)
+    check("a preview with 300 caption lines", bool((r.get_json() or {}).get("url")), r.get_json())
+    r = c.post(f"/auto/voice/{cj['id']}/render", data={"captions_on": "1", "c_text": ["a", "b"], "c_s": ["0", "inf"],
+                                                         "c_e": ["1e308"], "c_w": ["[" * 5000 + "]" * 5000, ""]}, headers=H)
+    check("odd caption times sent to the editor: no server error", r.status_code in (302, 400), r.status_code)
+    if r.status_code == 302:
+        oj_ = wait(vo.list_jobs()[0]["id"])
+        check("and the video is still made", oj_["state"] == "done", oj_.get("result"))
+    typed = tf.document(1080, 1920, [], [{"text": "x" * 38, "start": 0, "end": 1, "where": "top", "look": "bold", "anim": "type"}])
+    last = max(int(m_) for m_ in re.findall(r"\\t\((\d+),", typed))
+    check("typed text is complete while it is shown, its shadow appears with each letter", last < 1000 and "\\4a&HFF&" in typed, last)
     r = c.post("/auto/finish", data={"video": str(video), "voice": "none", "captions": "voice"}, headers=H)
     check("captions of a voice without a voice: refused in words", r.status_code == 400, r.status_code)
     r = c.post("/auto/finish", data={"video": str(video), "voice": "none", "captions": "none"}, headers=H)

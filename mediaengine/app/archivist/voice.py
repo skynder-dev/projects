@@ -704,15 +704,18 @@ def new_dub(jid: str, video: str, keep_sound: bool = True, captions: bool = True
 def _clean_cues(raw) -> list[dict]:
     """Captions sent back by the editor: numbers and words only, in time order, never overlapping."""
     out = []
+    import math
     for c in (raw or [])[:3000]:
         try:
             words = [{"w": tf.clean_text(w.get("w"), 60), "s": float(w["s"]), "e": float(w["e"])} for w in c.get("words") or []]
-        except (TypeError, ValueError, KeyError, AttributeError):
+            float(c.get("e") or 0)
+        except (TypeError, ValueError, KeyError, AttributeError, OverflowError):
             continue
-        words = [w for w in words if w["w"] and 0 <= w["s"] <= w["e"] < 36000]
+        words = [w for w in words if w["w"] and -60 <= w["s"] <= w["e"] < 36000 and math.isfinite(w["e"])]
         if words:
             s0 = min(w["s"] for w in words)
-            e0 = max(float(c.get("e") or 0), max(w["e"] for w in words))
+            ce = float(c.get("e") or 0)
+            e0 = max(ce if math.isfinite(ce) and ce < 36000 else 0, max(w["e"] for w in words))
             out.append({"s": s0, "e": e0, "words": words})
     out.sort(key=lambda c: c["s"])
     for i in range(len(out) - 1):                      # a caption ends before the next one starts (no stacking)
@@ -769,7 +772,7 @@ def new_finish(video: str, voice: str = "none", voice_from: str = "", new_voice:
             raise VoiceError("Choose the voice-over.")
         voiceover_words(voice_from)                     # ready, with its words (or said in words)
     elif voice != "new":
-        voice_from = ""
+        voice_from, start, keep_sound = "", 0.0, True   # no voice: no start to wait for, the video's own sound
     if captions == "voice" and voice == "none":
         raise VoiceError("Captions of the voice need a voice: choose one, or captions of the video's speech.")
     if captions == "speech" or voice == "new":
@@ -917,7 +920,7 @@ def _do(jid: str) -> dict:
         voice = None
         if job.get("voice_from"):
             vj = read_job(job["voice_from"]) if (JOBS / job["voice_from"]).is_dir() else {"state": "gone"}
-            if vj["state"] == "failed":
+            if vj["state"] not in ("done", "gone"):     # failed, interrupted or still waiting: not made
                 return {"ok": False, "error": "The voice-over was not made, so this video was not made either: "
                                               + str((vj.get("result") or {}).get("error") or "")[:300]}
             voice = _job_dir(job["voice_from"]) / "voice.wav"
@@ -936,6 +939,8 @@ def _do(jid: str) -> dict:
                 words = align("", res.get("words") or [])
                 if not words:
                     return {"ok": False, "error": "No speech was found in this video."}
+                sh = float(job.get("start_s") or 0.0)    # the video's own times; captions are drawn at +start_s
+                words = [{**w, "s": w["s"] - sh, "e": w["e"] - sh} for w in words]
             job["cues"] = style_cues(words, opts)          # kept: the editor of this video starts from them
             _write_job(d, job)
         out = _burn(Path(job["video"]), voice, (job.get("cues") or []) if job.get("captions_on", True) else [], d,

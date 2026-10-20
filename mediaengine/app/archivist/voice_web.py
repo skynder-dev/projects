@@ -484,14 +484,19 @@ def register(app, page, err_page, e, human_bytes):
             texts = texts if len(texts) == len(src) else [joined(c) for c in src]
             rows = [(t, c["s"], c["e"], c["words"]) for t, c in zip(texts, src)]
         else:
+            import math
             rows = []
-            for i, t in enumerate(texts):
+            for i, t in enumerate(texts[:3000]):
                 try:
-                    s_, e_ = float(ss[i]), float(es[i])
-                    words = json.loads(ws[i]) if i < len(ws) and ws[i] else []
-                    if not isinstance(words, list):
+                    s_, e_ = float(ss[i]), float(es[i] if i < len(es) else ss[i])
+                    if not (math.isfinite(s_) and math.isfinite(e_)) or not -60 <= s_ < 36000:
+                        continue
+                    e_ = min(max(e_, s_ + 0.05), s_ + 60)
+                    raw = ws[i] if i < len(ws) else ""
+                    words = json.loads(raw) if raw and len(raw) < 20000 else []
+                    if not isinstance(words, list) or not all(isinstance(w, dict) for w in words):
                         words = []
-                except (TypeError, ValueError):
+                except (TypeError, ValueError, RecursionError, OverflowError):
                     continue
                 rows.append((t, s_, e_, words))
         untouched = len(rows) == len(src) and all(
@@ -508,7 +513,7 @@ def register(app, page, err_page, e, human_bytes):
                 try:
                     shift = s_ - min(float(w["s"]) for w in words)
                     words = [{**w, "s": float(w["s"]) + shift, "e": float(w["e"]) + shift} for w in words]
-                except (TypeError, ValueError, KeyError):
+                except (TypeError, ValueError, KeyError, OverflowError):
                     same = False
             nc = {"s": s_, "e": e_, "words": words} if same else \
                 tf.retime({"s": s_, "e": e_, "words": [{"w": "", "s": s_, "e": max(e_, s_ + 0.3)}]}, t)
@@ -598,8 +603,9 @@ def register(app, page, err_page, e, human_bytes):
     def text_looks():
         """Save (name + look) or delete (name, delete) one of "My looks"; at most 12, kept in the settings."""
         from .config import update_config
-        d = request.get_json(silent=True) or {}
-        name = " ".join(tf.clean_text(d.get("name") or "", 40).split())
+        d = request.get_json(silent=True)
+        d = d if isinstance(d, dict) else {}
+        name = " ".join(tf.clean_text(d.get("name") if isinstance(d.get("name"), str) else "", 40).split())
         if not name:
             return jsonify({"error": "Give the look a name."})
         o = tf.options(d.get("style"), d.get("color"), d.get("size"), d.get("position"))
@@ -810,6 +816,8 @@ _EDIT_JS = (
     # a pause after this line: the new one fills it; none: this line's time is shared with the new one
     "if(ns-c.e>=0.5)cueSet(nr,c.e+0.01,Math.min(ns-0.01,c.e+2),null,'');else{const mid=(c.s+c.e)/2;cueSet(row,c.s,mid-0.01,null);cueSet(nr,mid,c.e,null,'')}"
     "nr.querySelector('[name=c_text]').focus()}});"
+    "document.addEventListener('keydown',ev=>{if(ev.key==='Enter'&&ev.target.closest('[data-look-name]')){ev.preventDefault();"
+    "ev.target.closest('[data-looks]').querySelector('[data-look-save]').click()}});"
     "document.addEventListener('change',ev=>{const sl=ev.target.closest('[data-look-use]');if(!sl||!sl.value)return;const o=JSON.parse(sl.value),f=sl.closest('form');"
     "const r=f.querySelector('input[name=style][value='+o.style+']');if(r)r.checked=true;"
     "for(const k of ['color','size','position']){const x=f.querySelector('select[name='+k+']');if(x)x.value=o[k]}});"
@@ -830,7 +838,7 @@ _EDIT_JS = (
     "const pv=ev.target.closest('[data-preview]');if(!pv)return;const f=pv.closest('form'),m=f.querySelector('[data-pmsg]'),"
     "img=f.querySelector('[data-pimg]');const say=t=>{m.textContent=window.ME_L?ME_L(t):t};"
     "say('Making the picture…');pv.disabled=true;"
-    "try{const r=await fetch('/api/text/preview',{method:'POST',body:new FormData(f)});const x=await r.json();"
+    "try{const r=await fetch('/api/text/preview',{method:'POST',body:new URLSearchParams(new FormData(f))});const x=await r.json();"
     "if(x.url){img.src=x.url+'?'+Date.now();img.hidden=false;m.textContent=''}else say(x.error||'The picture could not be made.')}"
     "catch(err){say('The picture could not be made.')}pv.disabled=false});"
 )

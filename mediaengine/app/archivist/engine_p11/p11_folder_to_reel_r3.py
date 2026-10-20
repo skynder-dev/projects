@@ -1565,12 +1565,42 @@ def load_dress(path,ffmpeg):
         out["music_sha256"]=sha256_file(p); out["music_name"]=p.name
     return out if (out["title"] or out["subtitle"] or out["music"]) else None
 
-def _font(bold,size):
+_CMAP={}
+
+def _covers(path,text):
+    """Has the font a glyph for every letter of text (its cmap: format 4 or 12)? Unknown = yes."""
+    import struct
+    if path not in _CMAP:
+        cps=set()
+        try:
+            data=Path(path).read_bytes()
+            n=struct.unpack(">H",data[4:6])[0]
+            off=next(struct.unpack(">I",data[12+16*i+8:12+16*i+12])[0] for i in range(n) if data[12+16*i:12+16*i+4]==b"cmap")
+            subs=struct.unpack(">H",data[off+2:off+4])[0]
+            for i in range(subs):
+                pid,eid,so=struct.unpack(">HHI",data[off+4+8*i:off+12+8*i]); t=off+so
+                fmt=struct.unpack(">H",data[t:t+2])[0]
+                if fmt==12:
+                    for g in range(struct.unpack(">I",data[t+12:t+16])[0]):
+                        a_,b_,_=struct.unpack(">III",data[t+16+12*g:t+28+12*g]); cps.update(range(a_,b_+1))
+                elif fmt==4 and pid==3:
+                    seg=struct.unpack(">H",data[t+6:t+8])[0]//2
+                    ends=struct.unpack(">%dH"%seg,data[t+14:t+14+2*seg]); starts=struct.unpack(">%dH"%seg,data[t+16+2*seg:t+16+4*seg])
+                    for a_,b_ in zip(starts,ends): cps.update(range(a_,b_+1))
+        except Exception:
+            cps=None
+        _CMAP[path]=cps
+    cps=_CMAP[path]
+    return cps is None or all(ord(ch) in cps for ch in str(text or "") if not ch.isspace())
+
+def _font(bold,size,text=""):
+    """The first font that has every letter of the text (Montserrat has Latin and Cyrillic; Georgian, Greek, Hebrew,
+    Arabic... go to Segoe UI / Arial)."""
     from PIL import ImageFont
-    for c in _font_files(bold)+_font_files(not bold):
-        if Path(c).is_file():
-            try: return ImageFont.truetype(c,size)
-            except Exception: continue
+    files=[c for c in _font_files(bold)+_font_files(not bold) if Path(c).is_file()]
+    for c in [c for c in files if _covers(c,text)]+files:
+        try: return ImageFont.truetype(c,size)
+        except Exception: continue
     return None
 
 def title_text(t):
@@ -1615,7 +1645,7 @@ def title_png(title,subtitle,w,h,out):
     for text,bold,size,maxlines in ((title,True,int(base*.085),2),(subtitle,False,int(base*.05),1)):
         if not text: continue
         while True:
-            f=_font(bold,max(10,size))
+            f=_font(bold,max(10,size),text)
             if f is None: return False
             lines=_wrap(dr,text,f,maxw)
             if (len(lines)<=maxlines and all(dr.textlength(x,font=f)<=maxw for x in lines)) or size<=max(12,base//40): break

@@ -188,8 +188,9 @@ def _rounded(w: float, h: float, r: float) -> str:
 
 def options(style: str | None = None, color: str | None = None, size: str | None = None,
             position: str | None = None) -> dict:
-    return {"style": style if style in STYLES else DEFAULT_STYLE, "color": color if color in COLORS else DEFAULT_COLOR,
-            "size": size if size in SIZES else DEFAULT_SIZE, "position": position if position in POSITIONS else "bottom"}
+    ok = lambda v, d: isinstance(v, str) and v in d          # anything else (a list sent by hand...) = the default
+    return {"style": style if ok(style, STYLES) else DEFAULT_STYLE, "color": color if ok(color, COLORS) else DEFAULT_COLOR,
+            "size": size if ok(size, SIZES) else DEFAULT_SIZE, "position": position if ok(position, POSITIONS) else "bottom"}
 
 
 def _secs(v, what: str) -> float | None:
@@ -364,7 +365,9 @@ def _captions(cues: list[dict], W: int, H: int, base: int, o: dict, offset: floa
     fam = FONTS[key][0]
     accent = COLORS[o["color"]][1]
     size0 = _ass_size(key, base * st["em"] * SIZES[o["size"]][1])
-    maxw = W * (0.78 if tall(W, H) else 0.86)          # a tall video: clear of the buttons on the right
+    maxw = W * (0.70 if tall(W, H) else 0.86)          # a tall video: clear of the buttons on the right (0.86 W on)
+    if st.get("box"):                                  # the box's padding is inside that width too
+        maxw -= 2 * 0.55 * base * st["em"] * SIZES[o["size"]][1]
     out = []
     for cue in cues:
         pairs = []                           # each word as one token the wrap cannot split (a no-break space, ...)
@@ -437,7 +440,8 @@ def _text_block(t: dict, W: int, H: int, base: int, o: dict, zone: tuple | None 
     key = "black" if look in ("banner", "bold") else "extrabold"
     em0 = base * {"banner": 0.054, "bold": 0.07, "box": 0.05}[look] * SIZES[o["size"]][1]
     pad_x_em, pad_y_em = 0.6, 0.48
-    maxw = W * 0.88 - (2 * pad_x_em * em0 if look != "bold" else 0)
+    side = W * (0.70 if tall(W, H) and t.get("where") in ("middle", "bottom") else 0.88)   # the buttons' height
+    maxw = side - (2 * pad_x_em * em0 if look != "bold" else 0)
     lines, size = fit_lines(t["text"], key, _ass_size(key, em0), maxw, max_lines=3)
     blk = _Block(lines, key, size)
     vis_top = _vis_top(t.get("where") or "top", W, H, blk.vis_h + (2 * pad_y_em * blk.em if look != "bold" else 0),
@@ -465,13 +469,14 @@ def _text_block(t: dict, W: int, H: int, base: int, o: dict, zone: tuple | None 
         style = (f"\\bord{blk.em * 0.17:.1f}\\shad{blk.em * 0.07:.1f}\\1c&HFFFFFF&\\3c&H000000&\\4c&H000000&"
                  f"\\4a&H30&")
     total = sum(len(x) for x in lines)
-    per = min(0.06, 1.0 / max(1, total))           # typing: all letters within a second at most
+    per = min(0.06, min(1.0, 0.6 * (e - s)) / max(1, total))   # typing: done within a second and while it is shown
+    sh_a = "&H30&" if look == "bold" else "&H00&"
     done = 0
     for li, ln in enumerate(lines):          # one line per event: each sits exactly where its box was measured
         body = ln
         if kind == "type":                   # each letter appears in turn (invisible until its moment: no re-wrap)
-            body = "".join("{\\alpha&HFF&\\t(%d,%d,\\alpha&H00&)}%s" % (int(1000 * per * (done + k)) + 120,
-                                                                      int(1000 * per * (done + k)) + 121, ch)
+            body = "".join("{\\1a&HFF&\\3a&HFF&\\4a&HFF&\\t(%d,%d,\\1a&H00&\\3a&H00&\\4a%s)}%s"
+                           % (int(1000 * per * (done + k)) + 120, int(1000 * per * (done + k)) + 121, sh_a, ch)
                            for k, ch in enumerate(ln))
             done += len(ln)
         out.append(f"Dialogue: 3,{_t(s)},{_t(e)},Base,,0,0,0,,{{\\an8{move(W / 2, blk.line_y(vis_top, li))}"
