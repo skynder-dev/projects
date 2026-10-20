@@ -1310,7 +1310,10 @@ def _save_copy(src: Path, stem: str, what: str) -> str:
         while dst.exists():
             dst = folder / f"{base} ({n}){ext}"
             n += 1
-        shutil.copy2(src, dst)
+        try:                                   # the same disk: one file with two names (no second copy on the disk)
+            os.link(src, dst)
+        except OSError:
+            shutil.copy2(src, dst)
         return str(dst)
     except Exception:
         return ""

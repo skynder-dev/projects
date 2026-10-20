@@ -186,6 +186,8 @@ def main() -> int:
     check("the original video was only read", video.is_file() and video.stat().st_size > 0)
     check("a copy is saved next to the reels ('<name> - voice.mp4')", dres.get("saved", "").endswith("clip - voice.mp4")
           and Path(dres["saved"]).is_file(), dres.get("saved"))
+    check("that copy takes no second place on the same disk (one file, two names)",
+          os.stat(dres["saved"]).st_nlink >= 2 if dres.get("saved") else False, dres.get("saved"))
 
     # the sound of the new video: AAC at 48 kHz (not the 192 kHz of the loudness filter)
     head = subprocess.run([ff, "-hide_banner", "-i", str(Path(dj["dir"]) / "video.mp4")], capture_output=True, text=True).stderr
