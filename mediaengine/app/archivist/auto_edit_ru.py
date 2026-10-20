@@ -796,8 +796,12 @@ PHRASES = {
         "Заголовки и строки текста на твоём видео в нужные моменты. Само видео только читается — делается копия с текстом.",
     "Edit text and captions": "Изменить текст и субтитры",
     "Edit text and captions · MediaEngine": "Изменить текст и субтитры · MediaEngine",
-    "Fix a word right in its line; an emptied line is left out. The times stay.":
-        "Исправь слово прямо в строке; пустая строка убирается. Время остаётся прежним.",
+    "Fix a word right in its line; an emptied line is left out. −0.1 and +0.1 move a line by 0.1 s, ✂ splits it where the cursor is, ⤓ joins it with the next one, ＋ adds a line.":
+        "Исправь слово прямо в строке; пустая строка убирается. −0.1 и +0.1 сдвигают строку на 0,1 сек, ✂ разрезает её там, где "
+        "курсор, ⤓ склеивает со следующей, ＋ добавляет строку.",
+    "0.1 s earlier": "На 0,1 сек раньше", "0.1 s later": "На 0,1 сек позже",
+    "Split this line where the cursor is": "Разрезать строку там, где курсор", "Join with the next line": "Склеить со следующей строкой",
+    "Add a line after this one": "Добавить строку после этой",
     "A new video is made; this one stays.": "Делается новое видео, это остаётся.",
     "Add a text (or captions) first.": "Сначала добавь текст (или субтитры).",
     "Only a finished video can be edited.": "Изменить можно только готовое видео.",

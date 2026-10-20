@@ -38,8 +38,9 @@ input.vo-wide{width:100%;max-width:640px;box-sizing:border-box}
 .vo-trow{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:6px 0}
 .vo-trow input[name=t_text]{flex:1 1 260px;min-width:200px}
 .vo-cues{max-height:420px;overflow:auto;border:1px solid #2a2f37;border-radius:9px;padding:6px 10px}
-.vo-cue{display:flex;gap:8px;align-items:center;margin:4px 0}
-.vo-cue input{flex:1}
+.vo-cue{display:flex;gap:6px;align-items:center;margin:4px 0;flex-wrap:wrap}
+.vo-cue input{flex:1 1 200px;min-width:0}
+.vo-mini{padding:3px 8px;font-size:13px;min-width:28px}
 .vo-prev img{max-width:100%;max-height:560px;border-radius:8px;display:block;margin-top:8px}
 .vo-edit{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,380px);gap:16px;align-items:start}
 @media (max-width:900px){.vo-edit{grid-template-columns:1fr}}
@@ -452,19 +453,45 @@ def register(app, page, err_page, e, human_bytes):
         return o
 
     def _edited_cues(f, base: dict) -> list[dict]:
-        """The captions of the editor: unchanged ones regrouped for the chosen style; edited ones keep their time.
+        """The captions of the editor. Each line carries its time and its words with theirs (c_s, c_e, c_w), so lines
+        can be split, joined, moved and added on the page. Untouched, they are regrouped the way the chosen style shows
+        words; a line whose words were changed shares its time among the new words by their length.
         Turned off, they are still kept with the video (so its editor can turn them on again)."""
         src = base.get("cues") or []
-        texts = f.getlist("c_text")
-        if len(texts) != len(src):                # the page was made for other captions: keep them as they were
-            texts = [" ".join(w["w"] for w in c["words"]) for c in src]
-        edited = any(" ".join(t.split()) != " ".join(w["w"] for w in c["words"]) for t, c in zip(texts, src))
-        if not edited:                              # untouched: grouped the way the chosen style shows words
-            words = [w for c in src for w in c["words"]]
-            return vo.style_cues(words, _opts(f))
+        texts, ss, es, ws = f.getlist("c_text"), f.getlist("c_s"), f.getlist("c_e"), f.getlist("c_w")
+        joined = lambda c: " ".join(w["w"] for w in c["words"])
+        if not ss or len(ss) != len(texts):           # a page without line times: by position, as before
+            texts = texts if len(texts) == len(src) else [joined(c) for c in src]
+            rows = [(t, c["s"], c["e"], c["words"]) for t, c in zip(texts, src)]
+        else:
+            rows = []
+            for i, t in enumerate(texts):
+                try:
+                    s_, e_ = float(ss[i]), float(es[i])
+                    words = json.loads(ws[i]) if i < len(ws) and ws[i] else []
+                    if not isinstance(words, list):
+                        words = []
+                except (TypeError, ValueError):
+                    continue
+                rows.append((t, s_, e_, words))
+        untouched = len(rows) == len(src) and all(
+            " ".join(t.split()) == joined(c) and abs(s_ - c["s"]) < 1e-3 for (t, s_, _e, _w), c in zip(rows, src))
+        if untouched:                               # grouped the way the chosen style shows words
+            return vo.style_cues([w for c in src for w in c["words"]], _opts(f))
         out = []
-        for t, c in zip(texts, src):
-            nc = tf.retime(c, t)
+        for t, s_, e_, words in rows:
+            try:
+                same = words and " ".join(str(w.get("w")) for w in words) == " ".join(t.split())
+            except AttributeError:
+                same = False
+            if same:                               # the line's own start leads: its words move with it
+                try:
+                    shift = s_ - min(float(w["s"]) for w in words)
+                    words = [{**w, "s": float(w["s"]) + shift, "e": float(w["e"]) + shift} for w in words]
+                except (TypeError, ValueError, KeyError):
+                    same = False
+            nc = {"s": s_, "e": e_, "words": words} if same else \
+                tf.retime({"s": s_, "e": e_, "words": [{"w": "", "s": s_, "e": max(e_, s_ + 0.3)}]}, t)
             if nc:
                 out.append(nc)
         return out
@@ -608,15 +635,27 @@ def register(app, page, err_page, e, human_bytes):
             return err_page(str(exc), "/auto/voice")
         o = base["opts"]
         cues = base.get("cues") or []
-        rows = "".join(f"<div class='vo-cue'><span class='muted vo-sub' translate='no'>{e(_num(round(c['s'] + base['start_s'], 1)))}</span>"
-                       f"<input name='c_text' value='{e(' '.join(w['w'] for w in c['words']))}' maxlength='200'></div>"
-                       for c in cues)
+        def cue_row(c) -> str:
+            ws_ = json.dumps([{"w": w["w"], "s": round(float(w["s"]), 3), "e": round(float(w["e"]), 3)} for w in c["words"]],
+                             ensure_ascii=False)
+            return (f"<div class='vo-cue' data-cue><span class='muted vo-sub' translate='no' data-t>"
+                    f"{e(_num(round(c['s'] + base['start_s'], 1)))}</span>"
+                    f"<input name='c_text' value='{e(' '.join(w['w'] for w in c['words']))}' maxlength='200'>"
+                    f"<input type='hidden' name='c_s' value='{c['s']:.3f}'><input type='hidden' name='c_e' value='{c['e']:.3f}'>"
+                    f"<input type='hidden' name='c_w' value='{e(ws_)}'>"
+                    f"<button type='button' class='btn2 vo-mini' data-cue-act='earlier' title='0.1 s earlier' translate='no'>−0.1</button>"
+                    f"<button type='button' class='btn2 vo-mini' data-cue-act='later' title='0.1 s later' translate='no'>+0.1</button>"
+                    f"<button type='button' class='btn2 vo-mini' data-cue-act='split' title='Split this line where the cursor is'>✂</button>"
+                    f"<button type='button' class='btn2 vo-mini' data-cue-act='join' title='Join with the next line'>⤓</button>"
+                    f"<button type='button' class='btn2 vo-mini' data-cue-act='add' title='Add a line after this one'>＋</button></div>")
+        rows = "".join(cue_row(c) for c in cues)
         cap = ""
         if cues:
             cap = (f"<label style='display:block;margin-top:8px'><input type='checkbox' name='captions_on' value='1'"
                    f"{' checked' if base.get('captions_on', True) else ''}> Captions with the words</label>"
-                   f"<div class='muted vo-sub'>Fix a word right in its line; an emptied line is left out. The times stay.</div>"
-                   f"<div class='vo-cues'>{rows}</div>{_style_controls(o)}")
+                   f"<div class='muted vo-sub'>Fix a word right in its line; an emptied line is left out. −0.1 and +0.1 move a line "
+                   f"by 0.1 s, ✂ splits it where the cursor is, ⤓ joins it with the next one, ＋ adds a line.</div>"
+                   f"<div class='vo-cues' data-offset='{base['start_s']:.3f}'>{rows}</div>{_style_controls(o)}")
         else:
             cap = _style_controls(o, captions=False)
         body = (f"<div class='pagehead'><div class='eyebrow'>Voice-over</div><h1>Edit text and captions</h1>"
@@ -711,6 +750,23 @@ _EDIT_JS = (
     "function meWhen(){document.querySelectorAll('[data-when]').forEach(d=>{const f=d.closest('form');"
     "d.hidden=!d.dataset.when.split(' ').some(c=>{const [n,v]=c.split('=');const r=f.querySelector('input[name='+n+']:checked');"
     "return r&&r.value===v})})}document.addEventListener('change',ev=>{if(ev.target.type==='radio')meWhen()});meWhen();"
+    "function cueSet(row,s,e,ws,txt){const q=n=>row.querySelector('[name='+n+']');q('c_s').value=s.toFixed(3);q('c_e').value=e.toFixed(3);"
+    "q('c_w').value=ws?JSON.stringify(ws):'';if(txt!==undefined)q('c_text').value=txt;const off=+(row.closest('[data-offset]')||{dataset:{offset:0}}).dataset.offset||0;"
+    "row.querySelector('[data-t]').textContent=(Math.round((s+off)*10)/10).toString()}"
+    "function cueGet(row){const q=n=>row.querySelector('[name='+n+']');let ws=[];try{ws=q('c_w').value?JSON.parse(q('c_w').value):[]}catch(x){}"
+    "const t=q('c_text').value,same=ws.length&&ws.map(w=>w.w).join(' ')===t.trim().split(/\\s+/).join(' ');return{s:+q('c_s').value,e:+q('c_e').value,ws:same?ws:null,t:t}}"
+    "document.addEventListener('click',ev=>{const b=ev.target.closest('[data-cue-act]');if(!b)return;const row=b.closest('[data-cue]'),c=cueGet(row),a=b.dataset.cueAct;"
+    "if(a==='earlier'||a==='later'){const d=a==='earlier'?-0.1:0.1;if(c.s+d<0)return;cueSet(row,c.s+d,c.e+d,c.ws&&c.ws.map(w=>({w:w.w,s:+(w.s+d).toFixed(3),e:+(w.e+d).toFixed(3)})))}"
+    "else if(a==='split'){const inp=row.querySelector('[name=c_text]');const pos=inp.selectionStart||Math.floor(c.t.length/2);"
+    "const left=c.t.slice(0,pos).trim(),right=c.t.slice(pos).trim();if(!left||!right)return;const k=left.split(/\\s+/).length;"
+    "let mid=c.s+(c.e-c.s)*left.length/(left.length+right.length),w1=null,w2=null;if(c.ws&&left.split(/\\s+/).join(' ')===c.ws.slice(0,k).map(w=>w.w).join(' ')){w1=c.ws.slice(0,k);w2=c.ws.slice(k);mid=w2[0].s}"
+    "const nr=row.cloneNode(true);row.after(nr);cueSet(row,c.s,Math.max(c.s+0.05,mid-0.01),w1,left);cueSet(nr,mid,c.e,w2,right)}"
+    "else if(a==='join'){const nx=row.nextElementSibling;if(!nx||!nx.matches('[data-cue]'))return;const n=cueGet(nx);"
+    "cueSet(row,c.s,n.e,c.ws&&n.ws?c.ws.concat(n.ws):null,(c.t.trim()+' '+n.t.trim()).trim());nx.remove()}"
+    "else if(a==='add'){const nx=row.nextElementSibling,ns=nx&&nx.matches('[data-cue]')?cueGet(nx).s:c.e+2;const nr=row.cloneNode(true);row.after(nr);"
+    # a pause after this line: the new one fills it; none: this line's time is shared with the new one
+    "if(ns-c.e>=0.5)cueSet(nr,c.e+0.01,Math.min(ns-0.01,c.e+2),null,'');else{const mid=(c.s+c.e)/2;cueSet(row,c.s,mid-0.01,null);cueSet(nr,mid,c.e,null,'')}"
+    "nr.querySelector('[name=c_text]').focus()}});"
     "document.addEventListener('click',async ev=>{"
     "const add=ev.target.closest('[data-trow-add]');if(add){const box=add.closest('.vo-texts');"
     "box.querySelector('[data-trows]').appendChild(box.querySelector('template[data-trow-tpl]').content.cloneNode(true));return}"

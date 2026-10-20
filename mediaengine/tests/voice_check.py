@@ -341,6 +341,28 @@ def main() -> int:
     check("the end text sits in the last 3 seconds", any(t.get("at_end") for t in ejob.get("texts", [])), ejob.get("texts"))
     r = c.get(f"/auto/voice/{cj['id']}/edit", headers=H)
     check("the editor of a video's own captions (its words kept)", r.status_code == 200 and "name='c_text'" in r.get_data(as_text=True))
+    # lines split, moved and added on the page come back with their own times (the page's buttons do this)
+    cp_ = r.get_data(as_text=True)
+    cs_ = [float(x) for x in re.findall(r"name='c_s' value='([^']*)'", cp_)]
+    ce_ = [float(x) for x in re.findall(r"name='c_e' value='([^']*)'", cp_)]
+    cw_ = [_html.unescape(x) for x in re.findall(r"name='c_w' value='([^']*)'", cp_)]
+    ct_ = [_html.unescape(x) for x in re.findall(r"name='c_text' value='([^']*)'", cp_)]
+    if cs_ and len(cs_) == len(ct_) == len(cw_):
+        mid = (cs_[0] + ce_[0]) / 2
+        rows_ = {"c_text": ["first half", "second half"] + ct_[1:] + ["an added line"],
+                 "c_s": [str(cs_[0]), str(mid)] + [str(x + 0.1) for x in cs_[1:]] + [str(ce_[-1] + 0.5)],
+                 "c_e": [str(mid - 0.01), str(ce_[0])] + [str(x + 0.1) for x in ce_[1:]] + [str(ce_[-1] + 1.2)],
+                 "c_w": ["", ""] + cw_[1:] + [""]}
+        r = c.post(f"/auto/voice/{cj['id']}/render", data={"captions_on": "1", "style": "classic", **rows_}, headers=H)
+        kj = wait(vo.list_jobs()[0]["id"])
+        kc = json.loads((Path(kj["dir"]) / "job.json").read_text("utf-8")).get("cues", [])
+        lines_ = [" ".join(w["w"] for w in c_["words"]) for c_ in kc]
+        moved = [c_["s"] for c_ in kc if " ".join(w["w"] for w in c_["words"]) == ct_[1]] if len(ct_) > 1 else [cs_[0] + 0.1]
+        check("lines split, moved and added keep their own times", r.status_code == 302 and kj["state"] == "done"
+              and lines_[:2] == ["first half", "second half"] and "an added line" in lines_
+              and moved and abs(moved[0] - (cs_[1] + 0.1 if len(cs_) > 1 else moved[0])) < 0.02, (lines_, kc[:3]))
+    else:
+        check("lines split, moved and added keep their own times", False, (cs_, ce_, len(cw_), ct_))
     r = c.get(f"/auto/voice/{jid}/edit", headers=H)
     check("a voice-over itself (no video) is not edited here: said in words", r.status_code == 400, r.status_code)
 
