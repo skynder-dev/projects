@@ -1023,6 +1023,51 @@ def round9(src: Path, out: Path) -> int:
     return 0 if files else 1
 
 
+# ---------------------------------------------------------------------------------------------------------- round 10
+# Round 9 (run 39372109372) sent voice9_1..3 (4_2's recipe, other seeds, 221-233 Hz); no verdict yet. Round 10 widens
+# the same search (20 more seeds, the same recipe and text) so that, whatever he says of round 9, the next three
+# naturally lower voices are ready (picked by the same rule; not sent unless asked).
+
+def vox10one(out: Path, take: int) -> None:
+    import torch
+    m, sr = _vox2()
+
+    def make(t):
+        torch.manual_seed(1700 + t)
+        return m.generate(text=FRIEND2 + BUSINESS, cfg_value=1.6, inference_timesteps=STEPS4), sr
+
+    _take(out, "r10_design", take, make)
+
+
+def round10(src: Path, out: Path) -> int:
+    from faster_whisper import WhisperModel
+    out.mkdir(parents=True, exist_ok=True)
+    gen = {}
+    for p in src.rglob("gen.json"):
+        gen.update(json.loads(p.read_text("utf-8")))
+    asr = WhisperModel("small.en", device="cpu", compute_type="int8")
+    takes = {w.stem: _analyze(asr, w, src, gen, BUSINESS) for w in sorted(src.rglob("r10_design_t*.wav"))}
+    ok = [i for i in takes.values() if i["word_errors"] <= 2 and i.get("pitch_movement_semitones", 9) <= 5.5
+          and 195 <= (i.get("pitch_median_hz") or 0) <= 232]
+    picked = sorted(ok, key=lambda i: i["pitch_median_hz"])[:3]
+    files = {}
+    for n, i in enumerate(picked, 1):
+        mp3 = out / f"voice10_{n}.mp3"
+        produce_plain(src / i["file"], mp3)
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(src / i["file"]), "-c:a", "flac", "-compression_level", "8",
+                        str(out / f"voice10_{n}.flac")], check=True)
+        files[mp3.name] = f"4_2's recipe, another voice: {Path(i['file']).stem} ({i['pitch_median_hz']} Hz)"
+    failed = {k: str(v.get("error")).splitlines()[0][:300] for k, v in gen.items() if v.get("error")}
+    (out / "results.json").write_text(json.dumps({"round": 10, "files": files, "picked": picked, "all_takes": takes,
+                                                  "failed_takes": failed}, indent=1, ensure_ascii=False), "utf-8")
+    md = ["# Voice lab - round 10 (4_2's recipe, 20 more seeds)", ""] + [f"- {k}: {v}" for k, v in files.items()]
+    md += ["", "| take | words wrong | pitch Hz | pitch moves (st) |", "|---|---|---|---|"]
+    md += [f"| {k} | {i['word_errors']} | {i['pitch_median_hz']} | {i['pitch_movement_semitones']} |" for k, i in sorted(takes.items())]
+    (out / "RESULTS.md").write_text("\n".join(md) + "\n", "utf-8")
+    print(json.dumps({"files": len(files), "failed_takes": len(failed)}))
+    return 0 if files else 1
+
+
 def check(src: Path, out: Path) -> int:
     import numpy as np, librosa
     from faster_whisper import WhisperModel
@@ -1116,6 +1161,10 @@ def main() -> int:
         vox9one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve() if len(sys.argv) > 5 else None)
     elif cmd == "round9":
         return round9(out, Path(sys.argv[3]).resolve())
+    elif cmd == "vox10one":
+        vox10one(out, int(sys.argv[3]))
+    elif cmd == "round10":
+        return round10(out, Path(sys.argv[3]).resolve())
     elif cmd == "vox4one":
         vox4one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve())
     elif cmd == "round4":
