@@ -371,6 +371,44 @@ def main() -> int:
     fj = wait(jid)
     check("Try again after an update: the voice's recording of this build", fj["state"] == "done", fj.get("result"))
 
+    # Finish a video: everything on one page
+    fp = c.get("/auto/finish?video=" + quote(str(video)), headers=H).get_data(as_text=True)
+    check("the one-page form: the video filled in, a made voice-over offered, a new one possible",
+          "value='" + _h0.escape(str(video), quote=True) + "'" in fp and "value='made'" in fp and "value='new'" in fp
+          and f"value='{jid}'" in fp and "data-preview" in fp)
+    base_f = {"finish": "1", "video": str(video), "voice": "made", "voice_from": jid, "captions": "voice", "start": "0.2",
+              "keep_sound": "1", "style": "pop", "color": "pink", "t_text": "Итог недели", "t_start": "0", "t_end": "2",
+              "t_where": "top", "t_look": "banner", "at": "0.8"}
+    r = c.post("/api/text/preview", data=base_f, headers=H)
+    check("its preview shows the voice's captions and the text", bool((r.get_json() or {}).get("url")), r.get_json())
+    r = c.post("/auto/finish", data=base_f, headers=H)
+    fj = wait(vo.list_jobs()[0]["id"])
+    fres, fjob = fj.get("result") or {}, json.loads((Path(fj["dir"]) / "job.json").read_text("utf-8"))
+    check("a video with a made voice, its captions and a text, in one go", r.status_code == 302 and fj["state"] == "done"
+          and fres.get("captions", 0) > 0 and fres.get("texts") == 1 and all(x["pass"] for x in fres.get("checks", []))
+          and fjob.get("cues"), fres)
+    check("and it can be edited afterwards", c.get(f"/auto/voice/{fj['id']}/edit", headers=H).status_code == 200)
+    before = {j["id"] for j in vo.list_jobs(500)}
+    r = c.post("/auto/finish", data={**base_f, "voice": "new", "text": "Hello there, my friend. This is new.",
+                                     "nvoice": vo.DEFAULT_VOICE, "voice_from": ""}, headers=H)
+    new_ids = [j["id"] for j in vo.list_jobs(500) if j["id"] not in before]       # newest first
+    jobs_now = [vo.read_job(x) for x in new_ids] + [{}, {}]
+    nj, nv = (wait(jobs_now[0]["id"]) if new_ids else {"state": "?"}), (vo.read_job(new_ids[1]) if len(new_ids) > 1 else {})
+    n_before = 0
+    check("a new voice-over is made first, then the video with it", r.status_code == 302 and len(new_ids) == 2
+          and nv.get("kind") == "voiceover" and nv["state"] == "done" and nj["state"] == "done"
+          and json.loads((Path(nj["dir"]) / "job.json").read_text("utf-8")).get("voice_from") == nv["id"],
+          (nj.get("result"), nv.get("state")))
+    before = {j["id"] for j in vo.list_jobs(500)}
+    r = c.post("/auto/finish", data={"video": str(video), "voice": "none", "captions": "speech"}, headers=H)
+    sj = wait(next(j["id"] for j in vo.list_jobs(500) if j["id"] not in before))
+    check("captions of the video's own speech on the same page", r.status_code == 302 and sj["state"] == "done"
+          and (sj.get("result") or {}).get("captions", 0) > 0, sj.get("result"))
+    r = c.post("/auto/finish", data={"video": str(video), "voice": "none", "captions": "voice"}, headers=H)
+    check("captions of a voice without a voice: refused in words", r.status_code == 400, r.status_code)
+    r = c.post("/auto/finish", data={"video": str(video), "voice": "none", "captions": "none"}, headers=H)
+    check("nothing to add: refused in words", r.status_code == 400, r.status_code)
+
     # Russian
     c.post("/lang", data={"back": "/auto/voice"}, headers=H)
     ru = c.get("/auto/voice", headers=H).get_data(as_text=True)
@@ -385,6 +423,10 @@ def main() -> int:
                         "Fix a word right in its line", "A new video is made", "Make the video", "Add a text", "Color")
             if t in rue_vis]
     check("the editor in Russian", "Изменить текст и субтитры" in rue and not left, left)
+    ruf = re.sub(r"<script.*?</script>", "", c.get("/auto/finish", headers=H).get_data(as_text=True), flags=re.S)
+    left = [t for t in ("Finish a video", "The voice", "No voice", "A voice-over made already", "No captions",
+                        "The words of the voice", "The look", "Make the video") if t in ruf]
+    check("the one-page form in Russian", "Доделать видео" in ruf and not left, left)
 
     # delete
     r = c.post(f"/auto/voice/{jid}/delete", headers=H)

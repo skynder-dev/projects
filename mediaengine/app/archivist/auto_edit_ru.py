@@ -813,6 +813,26 @@ PHRASES = {
         "Субтитры в четырёх видах (сказанное слово цветом как в Reels, на тёмной плашке, классика, спокойные), с выбором цвета и "
         "размера; «Изменить текст и субтитры» — исправить слово и посмотреть кадр до того, как делать видео.",
     "Text, captions, voice-over": "Текст, субтитры, озвучка",
+    "Finish a video: a saved reel → “Text, captions, voice-over” - the voice, captions, look and texts on one page, with a preview.":
+        "Доделать видео: у сохранённого ролика → «Текст, субтитры, озвучка» — голос, субтитры, вид и текст на одной странице, "
+        "с просмотром кадра.",
+    "Finish a video": "Доделать видео", "Finish a video · MediaEngine": "Доделать видео · MediaEngine",
+    "Finish a video - all on one page": "Доделать видео — всё на одной странице",
+    "A voice, captions and text for one video, with their look - on one page.":
+        "Голос, субтитры и текст для одного видео, вместе с их видом — на одной странице.",
+    "1. The video": "1. Видео", "2. The voice": "2. Голос", "3. Captions": "3. Субтитры", "4. The look": "4. Вид",
+    "5. Text on the video": "5. Текст на видео",
+    "No voice (the video's own sound)": "Без голоса (свой звук видео)",
+    "A voice-over made already": "Уже сделанная озвучка",
+    "A new voice-over (made first, then the video)": "Новая озвучка (сначала она, потом видео)",
+    "A new voice-over and captions of the speech need the voice add-on (Voice-over and text → Install the voice add-on).":
+        "Для новой озвучки и субтитров речи нужен модуль озвучки (Озвучка и текст → Установить модуль озвучки).",
+    "No captions": "Без субтитров", "The words of the voice": "Слова озвучки",
+    "The speech in the video (heard when it is made)": "Речь в видео (распознаётся, когда делается видео)",
+    "Choose the voice-over.": "Выбери озвучку.",
+    "Captions of the voice need a voice: choose one, or captions of the video's speech.":
+        "Для субтитров озвучки нужен голос: выбери его или субтитры речи в видео.",
+    "Add a text, captions or a voice first.": "Сначала добавь текст, субтитры или голос.",
     "The video:": "Видео:",
     "It is already filled in below: put text on it, make captions of its speech, or put a voice-over on it (Made → a voice-over → Put it on a video).":
         "Оно уже подставлено ниже: можно добавить на него текст, сделать субтитры его речи или наложить озвучку "

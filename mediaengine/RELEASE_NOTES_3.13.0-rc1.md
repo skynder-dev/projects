@@ -96,7 +96,11 @@ The owner: "voice-over, processing and text in the video - MedEng". **Auto Edit 
   their words (words.json) for the editor; older ones are read back from their SRT. Wrapped lines are evened out
   (no word alone on a line); the look chosen last is what the next form starts with; the page is "Voice-over and
   text" (quick links to its parts); a saved reel has "Text, captions, voice-over" (its path filled in). The reel
-  title of Auto Edit ("Music and title") is drawn with the same Montserrat.
+  title of Auto Edit ("Music and title") is drawn with the same Montserrat. **Finish a video** (/auto/finish, from a
+  saved reel's "Text, captions, voice-over"): one page for one video - the voice (none / a voice-over made already /
+  a new one, made first and then the video), captions (none / the voice's words / the video's speech, heard when it
+  is made), the look and the texts, a preview, one button. Jobs run strictly in the order they were made (also when
+  resumed after a restart); job files are replaced in one step (a page never reads half of one).
 - **Captions for a video**: the speech of any video into captions burned into a copy (Whisper's languages).
 - Quit / Update / switching builds ask while a voice-over is being made; one interrupted by a closed program is made
   again once.

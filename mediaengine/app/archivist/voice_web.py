@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from urllib.parse import quote
 
 from flask import jsonify, redirect, request, send_file
 
@@ -340,8 +341,10 @@ def register(app, page, err_page, e, human_bytes):
             parts.append("<div class='card' id='voJobs'><h2 style='margin-top:0'>Made</h2>" + "".join(_job_html(j, pre) for j in jobs) + "</div>")
         links = ([("voNew", "New voice-over"), ("voCaps", "Captions for a video")] if s.get("installed") else []) \
             + [("voText", "Text on a video")] + ([("voJobs", "Made")] if jobs else [])
-        jump = ("<div class='vo-row' style='margin:-4px 0 12px'>" + "".join(f"<a class='btn btn2' href='#{k}'>{e(t)}</a>"
-                                                                       for k, t in links) + "</div>")
+        fin = "/auto/finish" + (("?video=" + quote(pre)) if pre else "")
+        jump = ("<div class='vo-row' style='margin:-4px 0 12px'>"
+                f"<a class='btn' href='{e(fin)}'>Finish a video - all on one page</a>"
+                + "".join(f"<a class='btn btn2' href='#{k}'>{e(t)}</a>" for k, t in links) + "</div>")
         body = ("<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Voice-over and text</h1>"
                 "<div class='lead'>A text read by a voice, with captions timed to the words; captions and text for your own videos.</div></div>"
                 + jump + "".join(parts) + "<div class='row' id='voBack' style='margin-top:14px'><a class='btn btn2' href='/auto'>Back</a></div>")
@@ -477,6 +480,73 @@ def register(app, page, err_page, e, human_bytes):
         return {"video": f.get("video", ""), "cues": [], "captions_on": False, "opts": _opts(f), "texts": texts,
                 "voice_from": "", "start_s": 0.0, "keep_sound": True, "title": ""}
 
+    def _finish_page(pre: str = "") -> str:
+        s_ = vo.status()
+        made = [j for j in vo.list_jobs(50) if j.get("kind") == "voiceover" and j["state"] == "done"]
+        vopts = "".join(f"<option value='{e(j['id'])}' translate='no'>{e(j.get('title') or '')} · "
+                        f"{e(str(j.get('created_at') or '')[:16].replace('T', ' '))}</option>" for j in made)
+        voices = "".join(f"<label><input type='radio' name='nvoice' value='{k}'{' checked' if k == vo.DEFAULT_VOICE else ''}> "
+                         f"{e(v['label'])}</label>" for k, v in vo.VOICES.items() if k != "own")
+        new_ok = bool(s_.get("installed"))
+        voice = (f"<div class='vo-styles' style='margin-top:12px'><b>2. The voice</b>"
+                 f"<label><input type='radio' name='voice' value='none' checked> No voice (the video's own sound)</label>"
+                 + (f"<label><input type='radio' name='voice' value='made'> A voice-over made already</label>"
+                    f"<div data-when='voice=made' hidden style='margin:4px 0 0 22px'><select name='voice_from'>{vopts}</select></div>"
+                    if made else "")
+                 + (f"<label><input type='radio' name='voice' value='new'> A new voice-over (made first, then the video)</label>"
+                    f"<div data-when='voice=new' hidden style='margin:4px 0 0 22px'>"
+                    f"<textarea class='vo-text' name='text' maxlength='{vo.MAX_TEXT}' placeholder='The text to be said…'></textarea>"
+                    f"<div class='vo-voices'>{voices}</div>"
+                    f"<input class='vo-wide' name='description' maxlength='400' placeholder='For example: a calm man in his "
+                    f"forties with a deep, warm voice, slow pace'>"
+                    f"<div class='vo-row' style='margin-top:6px'><span>Language of the text</span><select name='language'>"
+                    f"{_lang_options()}</select></div></div>"
+                    if new_ok else "")
+                 + f"<div data-when='voice=made voice=new' hidden><label style='display:block;margin-top:6px'><input type='checkbox' "
+                   f"name='keep_sound' value='1' checked> Keep the video's own sound (quieter while the voice speaks)</label>"
+                   f"<div class='vo-row'><span>The voice starts at</span><input name='start' value='0.3' size='4'><span>s</span></div></div>"
+                 + ("" if new_ok else "<div class='muted vo-sub'>A new voice-over and captions of the speech need the "
+                                      "voice add-on (Voice-over and text → Install the voice add-on).</div>")
+                 + "</div>")
+        caps = (f"<div class='vo-styles' style='margin-top:12px'><b>3. Captions</b>"
+                f"<label><input type='radio' name='captions' value='none' checked> No captions</label>"
+                f"<label><input type='radio' name='captions' value='voice'> The words of the voice</label>"
+                + (f"<label><input type='radio' name='captions' value='speech'> The speech in the video (heard when it is made)</label>"
+                   if new_ok else "") + "</div>")
+        return (f"<div class='pagehead'><div class='eyebrow'>Voice-over and text</div><h1>Finish a video</h1>"
+                f"<div class='lead'>A voice, captions and text for one video, with their look - on one page.</div></div>"
+                f"<form method='post' action='/auto/finish' class='card' data-textform "
+                f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button:not([type=button])').forEach(x=>x.disabled=true),0)\">"
+                f"<input type='hidden' name='finish' value='1'><div class='vo-edit'><div>"
+                f"<b>1. The video</b><div class='vo-row' style='margin-top:4px'><input class='vo-wide' name='video' required "
+                f"value='{e(pre)}' placeholder='The video, e.g. D:\\Exports\\reel.mp4'>"
+                f"<button type='button' class='btn2' data-pick='video'>Choose…</button></div>{_reel_select()}"
+                f"{voice}{caps}<div style='margin-top:12px'><b>4. The look</b></div>{_style_controls(_last_opts())}"
+                f"<div style='margin-top:6px'><b>5. Text on the video</b></div>{_text_rows([], header=False)}"
+                f"<div style='margin-top:14px'><button class='ae-big'>Make the video</button> "
+                f"<span class='muted vo-sub' data-msg></span></div></div>{_preview_box()}</div></form>"
+                f"<div class='row' style='margin-top:14px'><a class='btn btn2' href='/auto/voice'>Voice-over and text</a></div>")
+
+    @app.get("/auto/finish")
+    def finish_page():
+        pre = str(request.args.get("video") or "")
+        if pre and not Path(pre).is_file():
+            pre = ""
+        return page("Finish a video", PAGE_CSS + _finish_page(pre), _PICK_JS + _EDIT_JS)
+
+    @app.post("/auto/finish")
+    def finish_new():
+        f = request.form
+        try:
+            vo.new_finish(f.get("video", ""), voice=f.get("voice", "none"), voice_from=f.get("voice_from", ""),
+                          new_voice={"text": f.get("text", ""), "voice": f.get("nvoice", ""),
+                                     "description": f.get("description", ""), "language": f.get("language", "")},
+                          captions=f.get("captions", "none"), opts=_opts(f), texts=tf.parse_texts(tf.rows_from_form(f)),
+                          start_s=f.get("start", "0.3"), keep_sound=f.get("keep_sound") == "1")
+        except (vo.VoiceError, tf.TextError) as exc:
+            return err_page(str(exc), "/auto/finish")
+        return redirect("/auto/voice#voJobs")
+
     @app.post("/auto/text/new")
     def text_new():
         try:
@@ -490,6 +560,15 @@ def register(app, page, err_page, e, human_bytes):
     def text_preview():
         f = request.form
         try:
+            if f.get("finish"):                                    # the one-page form: what is known before making
+                o = _opts(f)
+                vf = f.get("voice_from", "") if f.get("voice") == "made" else ""
+                start = float(str(f.get("start") or "0.3").replace(",", ".") or 0.3)
+                cues = vo.style_cues(vo.voiceover_words(vf), o) if vf and f.get("captions") == "voice" else []
+                at = float(str(f.get("at") or "1").replace(",", ".") or 1)
+                pic = vo.preview_frame(f.get("video", ""), cues, o, tf.parse_texts(tf.rows_from_form(f)),
+                                       offset=start, at=at, voice_from=vf)
+                return jsonify({"url": f"/api/text/preview/{pic.parent.name}.jpg"})
             if f.get("voice_from") and not f.get("jid"):          # the "Put it on a video" form, before it is made
                 o = _opts(f)
                 words = vo.voiceover_words(f["voice_from"])
@@ -629,6 +708,9 @@ def register(app, page, err_page, e, human_bytes):
 
 # The editor's and the text form's script: add / remove text rows, the preview picture (the form as it is now).
 _EDIT_JS = (
+    "function meWhen(){document.querySelectorAll('[data-when]').forEach(d=>{const f=d.closest('form');"
+    "d.hidden=!d.dataset.when.split(' ').some(c=>{const [n,v]=c.split('=');const r=f.querySelector('input[name='+n+']:checked');"
+    "return r&&r.value===v})})}document.addEventListener('change',ev=>{if(ev.target.type==='radio')meWhen()});meWhen();"
     "document.addEventListener('click',async ev=>{"
     "const add=ev.target.closest('[data-trow-add]');if(add){const box=add.closest('.vo-texts');"
     "box.querySelector('[data-trows]').appendChild(box.querySelector('template[data-trow-tpl]').content.cloneNode(true));return}"
@@ -639,4 +721,16 @@ _EDIT_JS = (
     "try{const r=await fetch('/api/text/preview',{method:'POST',body:new FormData(f)});const x=await r.json();"
     "if(x.url){img.src=x.url+'?'+Date.now();img.hidden=false;m.textContent=''}else say(x.error||'The picture could not be made.')}"
     "catch(err){say('The picture could not be made.')}pv.disabled=false});"
+)
+
+# Choose… (a Windows file window) and the reels saved lately, on pages other than the Voice-over page itself.
+_PICK_JS = (
+    "document.addEventListener('change',ev=>{const sl=ev.target.closest('select[data-fill]');if(!sl||!sl.value)return;"
+    "const i=sl.closest('form').querySelector('input[name=video],input[name=path]');if(i)i.value=sl.value});"
+    "document.addEventListener('click',async ev=>{const b=ev.target.closest('[data-pick]');if(!b)return;const f=b.closest('form'),"
+    "m=f.querySelector('[data-msg]');if(m)m.textContent=window.ME_L?ME_L('A Windows window is open — it may be behind this window.'):"
+    "'A Windows window is open — it may be behind this window.';"
+    "try{const r=await fetch('/api/auto/pick-voice-file',{method:'POST',headers:{'Content-Type':'application/json'},"
+    "body:JSON.stringify({kind:b.dataset.pick})});const x=await r.json();if(x.path){b.parentNode.querySelector('input').value=x.path;"
+    "if(m)m.textContent=''}else if(m)m.textContent=x.error||''}catch(err){}});"
 )

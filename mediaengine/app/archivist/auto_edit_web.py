@@ -1600,7 +1600,7 @@ def _text_link(path, e) -> str:
     from . import voice as vo
     if not vo.SHOW_ON_HOME:
         return ""
-    return f"<a class='btn btn2' href='/auto/voice?video={e(quote(str(path)))}'>Text, captions, voice-over</a>"
+    return f"<a class='btn btn2' href='/auto/finish?video={e(quote(str(path)))}'>Text, captions, voice-over</a>"
 
 
 def _dress_fields(e, s=None, date_hint=""):

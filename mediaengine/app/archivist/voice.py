@@ -587,6 +587,7 @@ def list_jobs(limit: int = 50) -> list[dict]:
             out.append(read_job(n))
         except VoiceError:
             pass
+    out.sort(key=lambda j: (j["id"][:15], int(j.get("created_ns") or 0)), reverse=True)   # newest first, exactly
     return out
 
 
@@ -604,6 +605,19 @@ def _need_addon() -> None:
         raise VoiceError("Install the voice add-on first.")
 
 
+def _write_job(d: Path, job: dict) -> None:
+    """job.json replaced in one step: a page reading the list at that moment never sees half a file."""
+    tmp = d / f"job.json.{threading.get_ident()}.tmp"
+    tmp.write_text(json.dumps(job, ensure_ascii=False, indent=1), "utf-8")
+    for i in range(20):                 # Windows: a reader holding the file a moment
+        try:
+            os.replace(tmp, d / "job.json")
+            return
+        except PermissionError:
+            time.sleep(0.05 * (i + 1))
+    os.replace(tmp, d / "job.json")
+
+
 def _submit(job: dict, addon: bool = True) -> str:
     if addon:
         _need_addon()
@@ -612,9 +626,9 @@ def _submit(job: dict, addon: bool = True) -> str:
     jid = _new_id()
     d = JOBS / jid
     d.mkdir(parents=True, exist_ok=True)
-    job = dict(job, id=jid, created_at=now_iso())
+    job = dict(job, id=jid, created_at=now_iso(), created_ns=time.time_ns())   # the order within one second too
     with _LOCK:                         # written and queued in one step: a page never sees it "interrupted"
-        (d / "job.json").write_text(json.dumps(job, ensure_ascii=False, indent=1), "utf-8")
+        _write_job(d, job)
         _QUEUE.append(jid)
         if not _THREAD or not _THREAD[0].is_alive():
             _THREAD[:] = [threading.Thread(target=_loop, name="voice-jobs", daemon=True)]
@@ -737,6 +751,53 @@ def new_render(video: str, cues_: list[dict] | None = None, opts: dict | None = 
                     "start_s": start_s, "keep_sound": bool(keep_sound), "title": (title or p.name)[:60]}, addon=False)
 
 
+def new_finish(video: str, voice: str = "none", voice_from: str = "", new_voice: dict | None = None,
+               captions: str = "none", opts: dict | None = None, texts: list[dict] | None = None, start_s=0.3,
+               keep_sound: bool = True) -> str:
+    """Everything for one video in one go: a voice (none / a voice-over made already / a new one, made first), captions
+    (none / the voice's words / the video's own speech, heard when the video is made), a look and texts. A new voice
+    and captions of the speech need the add-on; the rest does not."""
+    p = Path(str(video or "").strip().strip('"'))
+    if not p.is_file():
+        raise VoiceError("Choose the video (its full path).")
+    try:
+        start = max(0.0, min(60.0, float(str(start_s).strip().replace(",", ".") or 0.3)))
+    except (TypeError, ValueError):
+        raise VoiceError("The start of the voice must be a number of seconds, for example 0.5.")
+    if voice == "made":
+        if not voice_from:
+            raise VoiceError("Choose the voice-over.")
+        voiceover_words(voice_from)                     # ready, with its words (or said in words)
+    elif voice != "new":
+        voice_from = ""
+    if captions == "voice" and voice == "none":
+        raise VoiceError("Captions of the voice need a voice: choose one, or captions of the video's speech.")
+    if captions == "speech" or voice == "new":
+        _need_addon()
+        if installing():
+            raise VoiceError("The voice add-on is being installed. Wait until it is ready.")
+    tx = list(texts or [])
+    if voice == "none" and captions == "none" and not tx:
+        raise VoiceError("Add a text, captions or a voice first.")
+    if voice == "new":                                    # made first: the jobs run one after another, in order
+        nv = new_voice or {}
+        voice_from = new_voiceover(nv.get("text", ""), nv.get("voice", ""), nv.get("description", ""),
+                                   nv.get("ref_path", ""), nv.get("ref_text", ""), nv.get("language", ""))
+    elif any(t.get("start") is not None and not t.get("at_end") for t in tx):
+        from . import orders as od
+        length = video_size(p)[2]
+        if voice_from:
+            length = max(length, start + float(od._decode_info(_job_dir(voice_from) / "voice.wav", timeout=300)
+                                               .get("seconds") or 0) + 0.5)
+        if any(float(t["start"]) >= length - 0.2 for t in tx if t.get("start") is not None and not t.get("at_end")):
+            raise VoiceError(f"A text starts after the end of the video (the video is {length:.1f} s long).")
+    return _submit({"kind": "render", "video": str(p), "cues": [], "captions_on": captions in ("voice", "speech"),
+                    "captions_from": captions if captions in ("voice", "speech") else None,
+                    "needs_addon": captions == "speech", "opts": tf.options(**(opts or {})), "texts": tx,
+                    "voice_from": voice_from or "", "start_s": start, "keep_sound": bool(keep_sound),
+                    "title": p.name[:60]}, addon=False)
+
+
 def _loop() -> None:
     while True:
         with _LOCK:
@@ -855,9 +916,28 @@ def _do(jid: str) -> dict:
     if job["kind"] == "render":
         voice = None
         if job.get("voice_from"):
+            vj = read_job(job["voice_from"]) if (JOBS / job["voice_from"]).is_dir() else {"state": "gone"}
+            if vj["state"] == "failed":
+                return {"ok": False, "error": "The voice-over was not made, so this video was not made either: "
+                                              + str((vj.get("result") or {}).get("error") or "")[:300]}
             voice = _job_dir(job["voice_from"]) / "voice.wav"
             if not voice.is_file():
                 return {"ok": False, "error": "The voice-over of this video was deleted."}
+        if job.get("captions_from") and not job.get("cues"):          # captions decided when the video is made
+            opts = tf.options(**(job.get("opts") or {}))
+            if job["captions_from"] == "voice":
+                words = voiceover_words(job["voice_from"])
+            else:
+                res = _run_worker({"task": "transcribe", "source": job["video"], "wav16": str(d / "sound16k.wav"),
+                                   "ffmpeg": _ffmpeg(), "language": None}, d / "work", timeout=6 * 3600, on_line=_progress)
+                (d / "sound16k.wav").unlink(missing_ok=True)
+                if not res.get("ok"):
+                    return res
+                words = align("", res.get("words") or [])
+                if not words:
+                    return {"ok": False, "error": "No speech was found in this video."}
+            job["cues"] = style_cues(words, opts)          # kept: the editor of this video starts from them
+            _write_job(d, job)
         out = _burn(Path(job["video"]), voice, (job.get("cues") or []) if job.get("captions_on", True) else [], d,
                     keep_sound=job.get("keep_sound", True),
                     offset=float(job.get("start_s") or 0.0), opts=job.get("opts"), texts=job.get("texts"))
@@ -1124,13 +1204,14 @@ def _save_copy(src: Path, stem: str, what: str) -> str:
 def resume_after_restart() -> None:
     """Jobs left without an answer by a closed program are made again once (their files were not finished)."""
     have = installed()
-    for j in list_jobs(200):
-        if j["state"] == "interrupted" and not j.get("resumed") and (have or j.get("kind") == "render"):
+    for j in reversed(list_jobs(200)):                          # oldest first: a voice before the video using it
+        if j["state"] == "interrupted" and not j.get("resumed") and (
+                have or (j.get("kind") == "render" and not j.get("needs_addon"))):
             try:
                 d = JOBS / j["id"]
                 job = json.loads((d / "job.json").read_text("utf-8"))
                 job["resumed"] = True
-                (d / "job.json").write_text(json.dumps(job, ensure_ascii=False, indent=1), "utf-8")
+                _write_job(d, job)
                 with _LOCK:
                     _QUEUE.append(j["id"])
             except Exception:
@@ -1147,14 +1228,14 @@ def retry_job(jid: str) -> None:
     j = read_job(jid)
     if j["state"] in ("working", "waiting"):
         return
-    if j.get("kind") != "render":
+    if j.get("kind") != "render" or j.get("needs_addon"):
         _need_addon()
     d = _job_dir(jid)
     with _LOCK:
         (d / "result.json").unlink(missing_ok=True)
         job = json.loads((d / "job.json").read_text("utf-8"))
         job["resumed"] = False
-        (d / "job.json").write_text(json.dumps(job, ensure_ascii=False, indent=1), "utf-8")
+        _write_job(d, job)
         _QUEUE.append(jid)
         if not _THREAD or not _THREAD[0].is_alive():
             _THREAD[:] = [threading.Thread(target=_loop, name="voice-jobs", daemon=True)]
