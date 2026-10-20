@@ -628,6 +628,11 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   Captions of the speech from my own text, timed to the speech (388d490). Published: Windows CI run 39404253268
   (b173, commit 388d490) fully green, served (ZIP 4,712,003 bytes; same runtime - the Update button works); the real
   add-on run 39404253339 green.
+  Then: videos bigger than 1080p made at a short side of 1080 (381bccf); the Edge check runs the Finish page
+  (32c5283); the copy next to the reels is a second name of the same file on the same disk (d8dc3ea); NVIDIA
+  encoding (h264_nvenc, tried once; any failure -> libx264; a91884c..a5b4c55). Published: Windows CI run 39421128794
+  (b176, commit a5b4c55) fully green incl. the Edge Finish-page check, served (ZIP 4,713,751 bytes; same runtime);
+  the real add-on run green.
 
 ## Evidence
 
@@ -820,7 +825,7 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-b173 is published (everything above); tell the owner to press Update and try
+b176 is published (everything above); tell the owner to press Update and try
 a saved reel -> "Text, captions, voice-over" (Finish a video). Still open: his pick of the default voice (round 9
 voice9_1..3; round 10 ready); the first voice-over on his RTX 3060. Social integration paused by the owner (do not
 touch Social). Through the app's pages in the desktop app's browser pane only (never computer use).
