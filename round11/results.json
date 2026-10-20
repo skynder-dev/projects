@@ -1,0 +1,91 @@
+{
+ "round": 11,
+ "files": {
+  "voice11_1a.mp3": "9_3 locked, take 1 (another English text), de-esser a",
+  "voice11_1b.mp3": "9_3 locked, take 1 (another English text), de-esser b",
+  "voice11_2a.mp3": "9_3 locked, take 2 (another English text), de-esser a",
+  "voice11_2b.mp3": "9_3 locked, take 2 (another English text), de-esser b",
+  "voice11_3a.mp3": "9_3 locked, take 3 (Russian), de-esser a",
+  "voice11_3b.mp3": "9_3 locked, take 3 (Russian), de-esser b"
+ },
+ "rows": {
+  "reference 9_3": {
+   "pitch_median_hz": 232.7,
+   "sibilance_db": -16.1
+  },
+  "r11_lock93_t1": {
+   "variant": "r11_lock93",
+   "take": 1,
+   "seconds_to_make": 1119.6,
+   "sr": 48000,
+   "file": "voice11-1/r11_lock93_t1.wav",
+   "seconds": 12.48,
+   "said": "Quick update for anyone planning a summer trip. Hotel prices usually drop about three weeks before the date, so don't book too early. And if a price looks too good, check the reviews first. Follow for more tips like this.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 235.5,
+   "pitch_movement_semitones": 3.55,
+   "female_range": true,
+   "words_per_minute": 192.3,
+   "sibilance_db": -16.4
+  },
+  "r11_lock93_t2": {
+   "variant": "r11_lock93",
+   "take": 2,
+   "seconds_to_make": 1054.2,
+   "sr": 48000,
+   "file": "voice11-2/r11_lock93_t2.wav",
+   "seconds": 11.68,
+   "said": "Quick update for anyone planning a summer trip. Hotel prices usually drop about three weeks before the date, so don't book too early. And if a price looks too good, check the reviews first. Follow for more tips like this.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 275.2,
+   "pitch_movement_semitones": 4.04,
+   "female_range": true,
+   "words_per_minute": 205.5,
+   "sibilance_db": -15.4
+  },
+  "r11_lock93_t3": {
+   "variant": "r11_lock93",
+   "take": 3,
+   "seconds_to_make": 332.4,
+   "sr": 48000,
+   "file": "voice11-3/r11_lock93_t3.wav",
+   "seconds": 6.88,
+   "said": "In short, that's what's important to know this week. The tickets in Europe were cheaper by almost 20%.",
+   "word_errors": 18,
+   "word_error_rate": 18.0,
+   "missing": [],
+   "extra": [
+    "in",
+    "short",
+    "that's",
+    "what's",
+    "important",
+    "to",
+    "know",
+    "this",
+    "week",
+    "the",
+    "tickets",
+    "in",
+    "europe",
+    "were",
+    "cheaper",
+    "by",
+    "almost",
+    "20"
+   ],
+   "pitch_median_hz": 221.0,
+   "pitch_movement_semitones": 3.76,
+   "female_range": true,
+   "words_per_minute": 0.0,
+   "sibilance_db": -14.5
+  }
+ },
+ "failed_takes": {}
+}
