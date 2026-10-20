@@ -776,7 +776,7 @@ def new_finish(video: str, voice: str = "none", voice_from: str = "", new_voice:
             raise VoiceError("Choose the voice-over.")
         voiceover_words(voice_from)                     # ready, with its words (or said in words)
     elif voice != "new":
-        voice_from, start, keep_sound = "", 0.0, True   # no voice: no start to wait for, the video's own sound
+        voice_from, start = "", 0.0                     # no voice: no start to wait for
     if captions == "voice" and voice == "none":
         raise VoiceError("Captions of the voice need a voice: choose one, or captions of the video's speech.")
     if captions == "speech" or voice == "new":
@@ -1076,8 +1076,10 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
                       f"afade=t=out:st={max(0.0, length - 1.6):.3f}:d=1.5,apad=whole_dur={length:.3f}[mu]")
             n_in += 1
             parts.append(duck("[mu]"))
+        only_music = voice_wav is None and not (keep_sound and has_audio)
+        target = {"quiet": -22, "medium": -18, "loud": -14}.get(music_level, -18) if only_music else -14
         fc.append("".join(parts) + (f"amix=inputs={len(parts)}:duration=longest:normalize=0," if len(parts) > 1 else "")
-                  + "loudnorm=I=-14:TP=-1.5:LRA=11[a]")
+                  + f"loudnorm=I={target}:TP=-1.5:LRA=11[a]")     # music alone: its loudness is the one chosen
         amap = "[a]"
     cmd += ["-filter_complex", ";".join(fc), "-map", "[v]"]
     if amap:
@@ -1101,7 +1103,8 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
         bad = next(c for c in checks if not c["pass"])
         (d / "video.mp4").replace(d / "video_failed_check.mp4")
         raise VoiceError(f"The new video did not pass its check ({bad['check']}: {bad['detail']}).")
-    saved = _save_copy(d / "video.mp4", video.stem, "voice" if voice_wav is not None else "captions" if cs else "text")
+    saved = _save_copy(d / "video.mp4", video.stem, "voice" if voice_wav is not None else "captions" if cs else
+                       "text" if tx else "music" if music else "text")
     return {"files": {"video": "video.mp4", **({"srt": "captions.srt"} if cs else {})}, "seconds": round(length, 2),
             "checks": checks, "captions": len(cs), "texts": len(tx), "width": w, "height": h, "saved": saved}
 
@@ -1160,7 +1163,8 @@ def editor_base(jid: str) -> dict:
     else:
         if j.get("voice_from") and not (_job_dir(j["voice_from"]) / "voice.wav").is_file():
             raise VoiceError("The voice-over of this video was deleted, so the video cannot be made again with its voice.")
-        base.update(music=j.get("music") or "", music_level=j.get("music_level") or "medium")
+        m_ = j.get("music") or ""
+        base.update(music=m_ if m_ and Path(m_).is_file() else "", music_level=j.get("music_level") or "medium")
         base.update(video=j["video"], voice_from=j.get("voice_from") or "", start_s=float(j.get("start_s") or 0),
                     keep_sound=bool(j.get("keep_sound", True)), cues=list(j.get("cues") or []),
                     captions_on=bool(j.get("cues")) and bool(j.get("captions_on", True)))
@@ -1261,7 +1265,8 @@ def _save_copy(src: Path, stem: str, what: str) -> str:
     try:
         folder = ae.default_export_dir()
         folder.mkdir(parents=True, exist_ok=True)
-        word = {"voice": "озвучка", "captions": "субтитры", "text": "текст", "cover": "обложка"}[what] if ae._ui_ru() else what
+        word = {"voice": "озвучка", "captions": "субтитры", "text": "текст", "cover": "обложка", "music": "музыка"}[what] \
+            if ae._ui_ru() else what
         base = ae.safe_filename(f"{stem[:60]} - {word}", "MediaEngine " + what)
         ext = src.suffix.lower() or ".mp4"
         dst = folder / f"{base}{ext}"

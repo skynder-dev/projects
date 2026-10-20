@@ -267,21 +267,25 @@ def rows_from_form(f) -> list[dict]:
 
 def mark_emphasis(words: list[dict]) -> list[dict]:
     """*word* or *a few words* in a script or a caption line: those words stay in the color in the captions (the stars
-    are not said and not shown)."""
+    are not said and not shown). A lone '*' (5 * 3) marks nothing; a run left open ends with its sentence."""
     out, on = [], False
     for w in words:
         t = str(w.get("w") or "")
-        starts = t.startswith("*")
-        ends = t.rstrip(".,!?;:…»)\"'").endswith("*") and (len(t.strip("*")) > 0 or not starts)
+        if t.strip("*") == "":                         # a star alone: not a mark (and not a word)
+            continue
+        core = t.lstrip("«„“\"'([")
+        starts = core.startswith("*")
+        ends = t.rstrip(".,!?;:…»”\"')]").endswith("*")
         if starts:
             on = True
         em = on
         if ends:
             on = False
         clean = t.replace("*", "")
-        if clean:
-            nw = {k: v for k, v in w.items() if k != "em"}
-            out.append({**nw, "w": clean, **({"em": True} if em else {})})
+        if re.search(r"[.!?…]$", clean.rstrip("»”\"')]")):     # a sentence ends: so does an open mark
+            on = False
+        nw = {k: v for k, v in w.items() if k != "em"}
+        out.append({**nw, "w": clean, **({"em": True} if em else {})})
     return out
 
 

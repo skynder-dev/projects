@@ -495,10 +495,13 @@ def main() -> int:
     check("speech captions keep the speech's own times (no voice start added)", "00:00:00,200 -->" in srt_, srt_[:80])
     before = {j["id"] for j in vo.list_jobs(500)}
     r = c.post("/auto/finish", data={"video": str(video), "voice": "none", "captions": "none", "t_text": "Hi", "start": "0.3",
-                                     "keep_sound": ""}, headers=H)          # (the hidden 'keep sound' left unticked)
+                                     "keep_sound": "1"}, headers=H)
     kj2 = wait(next(j["id"] for j in vo.list_jobs(500) if j["id"] not in before))
-    check("no voice keeps the video's own sound", kj2["state"] == "done"
+    check("no voice: the video's own sound kept", kj2["state"] == "done"
           and any(x["check"] == "sound" and x["pass"] for x in (kj2.get("result") or {}).get("checks", [])), kj2.get("result"))
+    fp2 = c.get("/auto/finish", headers=H).get_data(as_text=True)
+    check("'keep the video's own sound' is shown with no voice too (not a hidden field)",
+          "data-when='voice=made voice=new' hidden><label" not in fp2 and "name='keep_sound'" in fp2)
     if new_ids and len(new_ids) > 1:                 # a video whose voice-over was interrupted: said so, not 'deleted'
         keep_ = (Path(vo._job_dir(new_ids[1])) / "result.json").read_bytes()
         (Path(vo._job_dir(new_ids[1])) / "result.json").unlink(missing_ok=True)
@@ -531,6 +534,28 @@ def main() -> int:
     mv = re.search(r"mean_volume: (-?[\d.]+) dB", tail_s)
     check("music under the voice, looped to the end", mj["state"] == "done" and all(x["pass"] for x in mres.get("checks", []))
           and mv and float(mv.group(1)) > -45, (mres.get("error"), mv and mv.group(1)))
+    song2 = home / "song moved.mp3"
+    song.rename(song2)                         # the song moved after the video was made: it can still be edited
+    r = c.post(f"/auto/voice/{mj['id']}/render", data={"captions_on": "", "t_text": "Again", "t_start": "0"}, headers=H)
+    check("a video whose song was moved can still be made again (without it)", r.status_code == 302, r.status_code)
+    if r.status_code == 302:
+        wait(vo.list_jobs()[0]["id"])
+    song2.rename(song)
+
+    def music_only(level):
+        before_ = {j["id"] for j in vo.list_jobs(500)}
+        c.post("/auto/finish", data={"video": str(video), "voice": "none", "captions": "none", "music": str(song),
+                                     "music_level": level}, headers=H)       # (no 'keep sound': only the music)
+        j_ = wait(next(j["id"] for j in vo.list_jobs(500) if j["id"] not in before_))
+        o_ = subprocess.run([ff, "-hide_banner", "-nostats", "-i", str(Path(j_["dir"]) / "video.mp4"), "-af", "volumedetect",
+                             "-f", "null", "-"], capture_output=True, text=True).stderr
+        m_ = re.search(r"mean_volume: (-?[\d.]+) dB", o_)
+        return float(m_.group(1)) if m_ else None
+    q_, l_ = music_only("quiet"), music_only("loud")
+    check("music alone: quiet is quieter than loud", q_ is not None and l_ is not None and l_ - q_ > 4, (q_, l_))
+    em2 = tf.mark_emphasis([{"w": x, "s": 0, "e": 1} for x in "«*слово*» 5 * 3 = 15. *open run. next".split()])
+    check("emphasis: after a quote; a lone star marks nothing; an open mark ends with its sentence",
+          [w["w"] for w in em2 if w.get("em")] == ["«слово»", "open", "run."], [(w["w"], w.get("em")) for w in em2])
     r = c.post("/auto/finish", data={**base_f, "music": str(home / "nope.mp3")}, headers=H)
     check("a music file that is not there: refused in words", r.status_code == 400, r.status_code)
     r = c.post("/auto/finish", data={"video": str(video), "voice": "none", "captions": "voice"}, headers=H)

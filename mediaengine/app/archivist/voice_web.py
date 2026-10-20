@@ -558,8 +558,9 @@ def register(app, page, err_page, e, human_bytes):
                     f"<div class='vo-row' style='margin-top:6px'><span>Language of the text</span><select name='language'>"
                     f"{_lang_options()}</select></div></div>"
                     if new_ok else "")
-                 + f"<div data-when='voice=made voice=new' hidden><label style='display:block;margin-top:6px'><input type='checkbox' "
-                   f"name='keep_sound' value='1' checked> Keep the video's own sound (quieter while the voice speaks)</label>"
+                 + f"<label style='display:block;margin-top:6px'><input type='checkbox' name='keep_sound' value='1' checked> "
+                   f"Keep the video's own sound (quieter while the voice speaks)</label>"
+                   f"<div data-when='voice=made voice=new' hidden>"
                    f"<div class='vo-row'><span>The voice starts at</span><input name='start' value='0.3' size='4'><span>s</span></div></div>"
                  + ("" if new_ok else "<div class='muted vo-sub'>A new voice-over and captions of the speech need the "
                                       "voice add-on (Voice-over and text → Install the voice add-on).</div>")
@@ -829,7 +830,7 @@ _EDIT_JS = (
     "function cueGet(row){const q=n=>row.querySelector('[name='+n+']');let ws=[];try{ws=q('c_w').value?JSON.parse(q('c_w').value):[]}catch(x){}"
     "const t=q('c_text').value,same=ws.length&&ws.map(w=>w.em?'*'+w.w+'*':w.w).join(' ')===t.trim().split(/\\s+/).join(' ');return{s:+q('c_s').value,e:+q('c_e').value,ws:same?ws:null,t:t}}"
     "document.addEventListener('click',ev=>{const b=ev.target.closest('[data-cue-act]');if(!b)return;const row=b.closest('[data-cue]'),c=cueGet(row),a=b.dataset.cueAct;"
-    "if(a==='earlier'||a==='later'){const d=a==='earlier'?-0.1:0.1;if(c.s+d<0)return;cueSet(row,c.s+d,c.e+d,c.ws&&c.ws.map(w=>({w:w.w,s:+(w.s+d).toFixed(3),e:+(w.e+d).toFixed(3)})))}"
+    "if(a==='earlier'||a==='later'){const d=a==='earlier'?-0.1:0.1;if(c.s+d<0)return;cueSet(row,c.s+d,c.e+d,c.ws&&c.ws.map(w=>Object.assign({},w,{s:+(w.s+d).toFixed(3),e:+(w.e+d).toFixed(3)})))}"
     "else if(a==='split'){const inp=row.querySelector('[name=c_text]');const pos=inp.selectionStart||Math.floor(c.t.length/2);"
     "const left=c.t.slice(0,pos).trim(),right=c.t.slice(pos).trim();if(!left||!right)return;const k=left.split(/\\s+/).length;"
     "let mid=c.s+(c.e-c.s)*left.length/(left.length+right.length),w1=null,w2=null;if(c.ws&&left.split(/\\s+/).join(' ')===c.ws.slice(0,k).map(w=>w.em?'*'+w.w+'*':w.w).join(' ')){w1=c.ws.slice(0,k);w2=c.ws.slice(k);mid=w2[0].s}"
