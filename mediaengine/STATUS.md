@@ -598,7 +598,17 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   other voices, the three lowest natural ones sent (voice9_1 221 Hz, voice9_2 / 9_3 233 Hz; all words). Lossless
   FLACs of them and of 7_1 (host_7_1.flac) are on the lab branch for the program. Found: 7_1 locked the program's way
   (ultimate cloning) on another text came out at ~250 Hz (7_1: 237) - a locked voice can drift up on a new text, so a
-  picked voice gets that check before it ships. The checkbox removal is done locally, waiting to ship with his pick.
+  picked voice gets that check before it ships. The checkbox removal shipped in 5d6ef5f (build cancelled by the next).
+  Owner 2026-10-20 00:53: "analyse everything, what else is needed; can we put text into the video nicely? captions?"
+  Answer: captions yes (one plain style), nice text no. Built (de606fa, 9969e5b, 28e9558, b41e89e): textfx.py - one
+  ASS document burned by libass with the program's own fonts (Montserrat Black/ExtraBold/SemiBold, SIL OFL 1.1, with
+  Cyrillic, assets/fonts); lines laid out here with the renderer's real font size (OS/2 win metrics - libass sizes
+  by them; an independent review caught Pillow's 28% error), balanced wraps, a box exactly behind the text. Captions
+  in 4 looks (pop: capitals, the said word in color; box; classic karaoke; minimal), 6 colors, 3 sizes, 3 places.
+  Text blocks (stripe / big letters / dark box) with from-to or 'end', kept off the captions. Text on any video needs
+  no add-on (job kind 'render'). Edit text and captions on a finished video (fix words, change look, add texts, a
+  preview frame). Quick title/end fields on the voice and captions forms. A saved reel links to it with its path
+  filled in. voice_check 77/77 locally; review findings all fixed.
 
 ## Evidence
 
@@ -791,7 +801,7 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-Owner: press Update (b160: the voices 4_4 - default - and 4_2, microphone finishing on). His pick of the default
-from round 5 (voice5_1..4) is still open - one line in voice.py (DEFAULT_VOICE). The voice add-on is already
-installed on his RTX 3060; the first voice-over made on the card is the next proof. Social integration paused by
-the owner (do not touch Social). Through the app's pages in the desktop app's browser pane only (never computer use).
+Windows CI for b41e89e (text and captions) -> when green it is published; tell the owner to press Update and try
+Auto Edit -> Voice-over -> Text on a video / Edit text and captions. Still open: his pick of the default voice
+(round 9: voice9_1..3, or 7_1 / 4_4 / 4_2); the first voice-over on his RTX 3060. Social integration paused by the
+owner (do not touch Social). Through the app's pages in the desktop app's browser pane only (never computer use).
