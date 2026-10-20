@@ -950,6 +950,79 @@ def round8(src: Path, out: Path) -> int:
     return 0 if files else 1
 
 
+# ---------------------------------------------------------------------------------------------------------- round 9
+# Round 8 (run 39368973655): 14 more takes of 7_1's way all landed at 237-280 Hz - the model does not take 4_2's timbre
+# lower without the robot sound, so they were not sent. Round 9: 4_2's own recipe (its description and cfg 1.6 - "the
+# talking itself is better than the others") with other seeds = other women's voices, some naturally lower; the three
+# lowest natural ones (all words, 200-232 Hz, a natural pitch movement) are sent. Also checked (not sent): 7_1 locked
+# the program's way (ultimate cloning of 7_1's very recording) on another text keeps 7_1's pitch.
+
+BUSINESS2 = ("Quick update for anyone planning a summer trip. Hotel prices usually drop about three weeks before the "
+             "date, so don't book too early. And if a price looks too good, check the reviews first. Follow for more tips "
+             "like this.")
+
+
+def vox9one(out: Path, variant: str, take: int, ref: Path | None) -> None:
+    import torch
+    m, sr = _vox2()
+
+    def make(t):
+        if variant == "r9_design":
+            torch.manual_seed(1500 + t)
+            return m.generate(text=FRIEND2 + BUSINESS, cfg_value=1.6, inference_timesteps=STEPS4), sr
+        torch.manual_seed(1600 + t)                       # r9_lock71: the program's way of keeping a voice
+        return m.generate(text=BUSINESS2, cfg_value=2.0, inference_timesteps=STEPS4, prompt_wav_path=str(ref),
+                          prompt_text=BUSINESS, reference_wav_path=str(ref)), sr
+
+    _take(out, variant, take, make)
+
+
+def round9(src: Path, out: Path) -> int:
+    from faster_whisper import WhisperModel
+    out.mkdir(parents=True, exist_ok=True)
+    gen = {}
+    for p in src.rglob("gen.json"):
+        gen.update(json.loads(p.read_text("utf-8")))
+    asr = WhisperModel("small.en", device="cpu", compute_type="int8")
+    takes = {}
+    for w in sorted(src.rglob("r9_design_t*.wav")):
+        takes[w.stem] = _analyze(asr, w, src, gen, BUSINESS)
+    for w in sorted(src.rglob("r9_lock71_t*.wav")):
+        takes[w.stem] = _analyze(asr, w, src, gen, BUSINESS2)
+    design = [i for k, i in takes.items() if k.startswith("r9_design_t")]
+    ok = [i for i in design if i["word_errors"] <= 2 and i.get("pitch_movement_semitones", 9) <= 5.5
+          and 195 <= (i.get("pitch_median_hz") or 0) <= 232]
+    picked = sorted(ok, key=lambda i: i["pitch_median_hz"])[:3]
+    if len(picked) < 3:                                   # fewer than three in the band: the next lowest natural ones
+        rest = sorted((i for i in design if i not in picked and i["word_errors"] <= 2), key=lambda i: i["pitch_median_hz"])
+        picked += [i for i in rest if i["pitch_median_hz"] >= 195][:3 - len(picked)]
+    files = {}
+    for n, i in enumerate(picked, 1):
+        mp3 = out / f"voice9_{n}.mp3"
+        produce_plain(src / i["file"], mp3)
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(src / i["file"]), "-c:a", "flac", "-compression_level", "8",
+                        str(out / f"voice9_{n}.flac")], check=True)
+        files[mp3.name] = f"4_2's recipe, another voice: {Path(i['file']).stem} ({i['pitch_median_hz']} Hz)"
+    lock = [i for k, i in takes.items() if k.startswith("r9_lock71_t")]
+    for i in lock:
+        produce_plain(src / i["file"], out / f"check_{Path(i['file']).stem}.mp3")
+    failed = {k: str(v.get("error")).splitlines()[0][:300] for k, v in gen.items() if v.get("error")}
+    res = {"round": 9, "text": BUSINESS, "files": files, "picked": picked, "lock71": lock, "all_takes": takes,
+           "failed_takes": failed}
+    (out / "results.json").write_text(json.dumps(res, indent=1, ensure_ascii=False), "utf-8")
+    md = ["# Voice lab - round 9 (4_2's recipe, naturally lower voices; 7_1 locked the program's way)", "",
+          f"Text: {BUSINESS}", ""]
+    md += [f"- {k}: {v}" for k, v in files.items()]
+    md += ["", "| take | words wrong | seconds | pitch Hz | pitch moves (st) |", "|---|---|---|---|---|"]
+    md += [f"| {k} | {i['word_errors']} | {i['seconds']} | {i['pitch_median_hz']} | {i['pitch_movement_semitones']} |"
+           for k, i in sorted(takes.items())]
+    if failed:
+        md += ["", "Failed takes:"] + [f"- {k}: {e}" for k, e in failed.items()]
+    (out / "RESULTS.md").write_text("\n".join(md) + "\n", "utf-8")
+    print(json.dumps({"files": len(files), "failed_takes": len(failed)}))
+    return 0 if files else 1
+
+
 def check(src: Path, out: Path) -> int:
     import numpy as np, librosa
     from faster_whisper import WhisperModel
@@ -1039,6 +1112,10 @@ def main() -> int:
         vox8one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve())
     elif cmd == "round8":
         return round8(out, Path(sys.argv[3]).resolve())
+    elif cmd == "vox9one":
+        vox9one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve() if len(sys.argv) > 5 else None)
+    elif cmd == "round9":
+        return round9(out, Path(sys.argv[3]).resolve())
     elif cmd == "vox4one":
         vox4one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve())
     elif cmd == "round4":
