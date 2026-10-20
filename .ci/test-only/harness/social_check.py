@@ -1,7 +1,7 @@
 from pathlib import Path
 import sys,os,json,hashlib,time,uuid,copy,shutil
 from unittest.mock import patch
-home=Path(sys.argv[1]);sys.path[:0]=[str(home),str(home/'app')]
+home=Path(sys.argv[1]).resolve();sys.path[:0]=[str(home),str(home/'app')]
 os.environ.update(SOCIAL_AI_HOME=str(home/'fake-ai'),SOCIAL_RUNTIME_PATHS=str(home/'runtime-ci.json'),SOCIAL_VOICE_CACHE=str(home/'voice'),HF_HOME=str(home/'hf'))
 (home/'runtime-ci.json').write_text('{"ai_home":"MISSING_AI","ffmpeg":"MISSING_FFMPEG","ffprobe":"MISSING_FFPROBE"}')
 from socialreel.jobs import JobStore
@@ -19,7 +19,7 @@ with patch('socialreel.packages.verify_package',return_value={'pass':True,'error
  # Media verification stubs: this test concerns relocation/selection, not media integrity.
  original=(run/'script.json').read_bytes();dest=home/'relocated';copy_backend(store,dest,[jid]);assert (dest/'socialreel/owner_ru.json').read_bytes()==(home/'socialreel/owner_ru.json').read_bytes();assert json.loads((dest/'config.json').read_bytes())==cfg
  shutil.copytree(home/'app',dest/'app')
- target=JobStore(dest/'data/jobs');assert (target.root/'workflow_selection.json').read_bytes()==(store.root/'workflow_selection.json').read_bytes();assert Path(target.get(jid)['run_dir']).is_relative_to(dest)
+ target=JobStore(dest/'data/jobs');assert (target.root/'workflow_selection.json').read_bytes()==(store.root/'workflow_selection.json').read_bytes();assert Path(target.get(jid)['run_dir']).is_relative_to(dest.resolve())
  from socialreel.workflow import restore_workflow
  restore_workflow(target)
  bridge=LocalBridge(target);selection=bridge.get('/local/selection');assert selection['selection']['job_id']==jid

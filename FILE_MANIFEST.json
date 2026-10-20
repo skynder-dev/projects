@@ -13,7 +13,7 @@
   ".ci/test-only/harness/reveng/worker_child.py": "2485f0630f36ffd74cd5a03fc58d4634f483fa827207e386774444ed0ccf02e8",
   ".ci/test-only/harness/reveng_check.py": "8bf3d8c1af3cf103312d76d2a568b38b38357701f709bd6f1481f345a61ad8e2",
   ".ci/test-only/harness/run.py": "636796263dc8e127fd16648aadf6f09fee0fa8a137ede2ddf0851b984d68e2df",
-  ".ci/test-only/harness/social_check.py": "ff6237ccc72c3080dc13e7ec89db4b7d1070390c93881e3894fbc87ee3ee7a56",
+  ".ci/test-only/harness/social_check.py": "466e7e63d71f9f823316a3151463486b146850b919a8bfa91a9da959309088e3",
   ".ci/test-only/harness/social_reopen.py": "0bcc4f1b9cc034dc6c870d3e3d31ead2e271ed6d01db758d73953ffc32321b51",
   ".ci/test-only/harness/verify_files.py": "59ec04efdaac9a088459c70a7a7cde9858115aa978c70d71177dab77be60c7b5",
   ".ci/test-only/production/forgeAlphaZero/MerchForgeAutoResearchWorker.ps1": "f4e3668672d0e446724075af803714d05b2ddbadf03e8a0344ce0a77aed7606a",
