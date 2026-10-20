@@ -786,6 +786,99 @@ def round5(src: Path, out: Path) -> int:
     return 0 if len(files) >= 2 else 1
 
 
+# ---------------------------------------------------------------------------------------------------------- round 7
+# Round 5 verdict (2026-10-19 21:22): 5_1 / 5_2 (the voice of 4_2) "squeaky, but the talking itself is better than the
+# others"; 4_4 "a low timbre, or something that makes the robot audible in the lows". A pitch shift of the finished
+# sound (rubberband, sent as voice6_1..3 from the sandbox) was rejected at once: "as if drowned in a toilet". So round 7
+# makes the MODEL itself say the business text lower in 4_2's voice, three ways (no shifting of the finished sound):
+#   r7_ctrl_lower  - controllable cloning: 4_2's recording as the timbre, a style note asking for a lower, calmer voice
+#   r7_low_ref     - ultimate cloning from 4_2's recording made 2 semitones lower (Praat PSOLA, formants kept) - the
+#                    model continues from it in its own sound
+#   r7_design_low  - 4_2's own recipe (its description, cfg 1.6, its seed) with "low-medium pitch, a warm voice"
+# Target: about 215-235 Hz (4_2 is ~260 Hz, 4_4 ~205 Hz). Loudness finishing only.
+
+LOWER = "(A slightly lower, warmer, calm voice; relaxed and natural, like telling a friend)"
+FRIEND_LOW = FRIEND2.replace("medium pitch, not breathy", "low-medium pitch, a warm and slightly deep voice, not breathy")
+ROUND7 = {
+    "r7_ctrl_lower": "4_2's voice as the timbre, the model asked for a lower, calmer voice",
+    "r7_low_ref": "4_2's voice continued from its recording made 2 semitones lower",
+    "r7_design_low": "4_2's own recipe with a lower, warmer voice described",
+}
+SEMITONES_DOWN = 2.0
+
+
+def lower_ref(ref: Path, out_wav: Path, semitones: float = SEMITONES_DOWN) -> dict:
+    """The reference made lower by PSOLA (Praat 'Change gender', formant ratio 1: the same throat, a lower note)."""
+    import parselmouth
+    from parselmouth.praat import call
+    snd = parselmouth.Sound(str(ref))
+    med = call(call(snd, "To Pitch", 0.0, 75, 600), "Get quantile", 0, 0, 0.5, "Hertz")
+    new = call(snd, "Change gender", 75, 600, 1.0, med * 2 ** (-semitones / 12), 1.0, 1.0)
+    call(new, "Save as WAV file", str(out_wav))
+    after = call(call(new, "To Pitch", 0.0, 75, 600), "Get quantile", 0, 0, 0.5, "Hertz")
+    return {"median_before_hz": round(med, 1), "median_after_hz": round(after, 1)}
+
+
+def vox7one(out: Path, variant: str, take: int, ref: Path) -> None:
+    import torch
+    m, sr = _vox2()
+    if variant == "r7_low_ref":
+        low = out / "host_4_2_lower.wav"
+        _record(out, "lowered_reference", lower_ref(ref, low))
+    seed = {"r7_ctrl_lower": 1100, "r7_low_ref": 1110, "r7_design_low": 900}[variant]
+
+    def make(t):
+        torch.manual_seed(seed + t)          # r7_design_low take 1 = seed 901, 4_2's own
+        if variant == "r7_ctrl_lower":
+            return m.generate(text=LOWER + BUSINESS, cfg_value=2.0, inference_timesteps=STEPS4,
+                              reference_wav_path=str(ref)), sr
+        if variant == "r7_low_ref":
+            return m.generate(text=BUSINESS, cfg_value=2.0, inference_timesteps=STEPS4, prompt_wav_path=str(low),
+                              prompt_text=SPOKEN, reference_wav_path=str(low)), sr
+        return m.generate(text=FRIEND_LOW + BUSINESS, cfg_value=1.6, inference_timesteps=STEPS4), sr
+
+    _take(out, variant, take, make)
+
+
+def round7(src: Path, out: Path) -> int:
+    from faster_whisper import WhisperModel
+    out.mkdir(parents=True, exist_ok=True)
+    gen = {}
+    for p in src.rglob("gen.json"):
+        gen.update(json.loads(p.read_text("utf-8")))
+    asr = WhisperModel("small.en", device="cpu", compute_type="int8")
+    takes, chosen, files = {}, {}, {}
+    for w in sorted(src.rglob("r7_*_t[0-9].wav")):
+        takes[w.stem] = _analyze(asr, w, src, gen, BUSINESS)
+
+    def rank(i):                              # every word first, then a pitch in the target band, then take 1
+        hz = i.get("pitch_median_hz") or 0
+        return (i["word_errors"] > 2, 0 if 210 <= hz <= 240 else 1, abs(hz - 225), i.get("take", 9))
+    for n, v in enumerate(ROUND7, 1):
+        have = [i for k, i in takes.items() if k.startswith(f"{v}_t")]
+        if not have:
+            continue
+        chosen[v] = min(have, key=rank)
+        mp3 = out / f"voice7_{n}.mp3"
+        produce_plain(src / chosen[v]["file"], mp3)
+        files[mp3.name] = ROUND7[v]
+    failed = {k: str(v.get("error")).splitlines()[0][:300] for k, v in gen.items() if v.get("error")}
+    res = {"round": 7, "text": BUSINESS, "files": files, "chosen": chosen, "all_takes": takes, "failed_takes": failed,
+           "lowered_reference": gen.get("lowered_reference")}
+    (out / "results.json").write_text(json.dumps(res, indent=1, ensure_ascii=False), "utf-8")
+    md = ["# Voice lab - round 7 (4_2's way of talking, lower - made by the model, not shifted afterwards)", "",
+          f"Text: {BUSINESS}", ""]
+    md += [f"- {k}: {v}" for k, v in files.items()]
+    md += ["", "| variant | take | words wrong | seconds | pitch Hz |", "|---|---|---|---|---|"]
+    md += [f"| {v} | {i.get('take')} | {i['word_errors']} | {i['seconds']} | {i['pitch_median_hz']} |"
+           for v, i in sorted(takes.items())]
+    if failed:
+        md += ["", "Failed takes:"] + [f"- {k}: {e}" for k, e in failed.items()]
+    (out / "RESULTS.md").write_text("\n".join(md) + "\n", "utf-8")
+    print(json.dumps({"files": len(files), "failed_takes": len(failed)}))
+    return 0 if files else 1
+
+
 def check(src: Path, out: Path) -> int:
     import numpy as np, librosa
     from faster_whisper import WhisperModel
@@ -867,6 +960,10 @@ def main() -> int:
         vox5one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve())
     elif cmd == "round5":
         return round5(out, Path(sys.argv[3]).resolve())
+    elif cmd == "vox7one":
+        vox7one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve())
+    elif cmd == "round7":
+        return round7(out, Path(sys.argv[3]).resolve())
     elif cmd == "vox4one":
         vox4one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve())
     elif cmd == "round4":

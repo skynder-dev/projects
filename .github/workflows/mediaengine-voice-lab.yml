@@ -17,7 +17,11 @@ name: mediaengine-voice-lab
 # "microphone" finishing, and 3.1's voice locked on a new text (run 39226841245, results in round4/).
 # Round 5 (this file, results in round5/ and ref/): the owner kept 4_2 and 4_4 ("3.1 sounds like sex, 4_5 squeaky,
 # 4_3 tired"); their very takes become locked voices (FLAC in ref/, for the program) and say a business-info text,
-# plain and with the microphone finishing. One CI job per take (30 steps on a CPU are slow).
+# plain and with the microphone finishing. One CI job per take (30 steps on a CPU are slow). Run 39321688115.
+# Round 7 (this file, results in round7/): 4_2's way of talking was liked but its voice is "squeaky"; shifting the
+# finished sound was rejected ("as if drowned in a toilet"). So the MODEL says the business text lower in 4_2's voice:
+# a style note on 4_2's timbre, a continuation from 4_2's recording made 2 semitones lower (PSOLA), 4_2's own recipe
+# described lower. 4_2's recording is the program's assets/voice/host_4_2.flac.
 on:
   workflow_dispatch:
   push:
@@ -38,45 +42,14 @@ env:
   ROUND3_RUN: '39214928456'
   ROUND4_RUN: '39226841245'
 jobs:
-  refs:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: voice4-r4_direction_cfg16-1
-          path: ${{ runner.temp }}/a
-          run-id: ${{ env.ROUND4_RUN }}
-          github-token: ${{ github.token }}
-      - uses: actions/download-artifact@v4
-        with:
-          name: voice4-r4_best_of_six-2
-          path: ${{ runner.temp }}/b
-          run-id: ${{ env.ROUND4_RUN }}
-          github-token: ${{ github.token }}
-      - name: The two kept voices as FLAC (for the program) - published to ref/
-        run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
-          mkdir -p "$RUNNER_TEMP/ref"
-          ffmpeg -v error -i "$RUNNER_TEMP/a/r4_direction_cfg16_t1.wav" -c:a flac -compression_level 8 "$RUNNER_TEMP/ref/host_4_2.flac"
-          ffmpeg -v error -i "$RUNNER_TEMP/b/r4_best_of_six_t2.wav" -c:a flac -compression_level 8 "$RUNNER_TEMP/ref/host_4_4.flac"
-          sha256sum "$RUNNER_TEMP"/ref/*.flac > "$RUNNER_TEMP/ref/SHA256_hosts.txt"
-          pub="$RUNNER_TEMP/pub"
-          git clone -q --depth 1 --branch mediaengine-voice-lab "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "$pub"
-          mkdir -p "$pub/ref"; cp "$RUNNER_TEMP"/ref/* "$pub/ref/"
-          cd "$pub"; git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
-          git add -A; git commit -q -m "mediaengine voice ref: 4_2 and 4_4"; git push -q origin HEAD:mediaengine-voice-lab
   gen:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - {voice: v42, take: 1, art: voice4-r4_direction_cfg16-1, wav: r4_direction_cfg16_t1.wav}
-          - {voice: v42, take: 2, art: voice4-r4_direction_cfg16-1, wav: r4_direction_cfg16_t1.wav}
-          - {voice: v44, take: 1, art: voice4-r4_best_of_six-2, wav: r4_best_of_six_t2.wav}
-          - {voice: v44, take: 2, art: voice4-r4_best_of_six-2, wav: r4_best_of_six_t2.wav}
+        variant: [r7_ctrl_lower, r7_low_ref, r7_design_low]
+        take: [1, 2]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -84,26 +57,21 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - uses: actions/download-artifact@v4
-        with:
-          name: ${{ matrix.art }}
-          path: ${{ runner.temp }}/r4
-          run-id: ${{ env.ROUND4_RUN }}
-          github-token: ${{ github.token }}
-      - name: VoxCPM in its own venv (CPU torch; FFmpeg libraries for torchaudio's decoder)
+      - name: VoxCPM in its own venv (CPU torch; FFmpeg libraries for torchaudio's decoder; Praat for the lowered reference)
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
           python -m venv "$RUNNER_TEMP/v"
           "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" torch torchaudio
-          "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" voxcpm soundfile
-      - name: One take (${{ matrix.voice }} ${{ matrix.take }}) of the business text
+          "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" voxcpm soundfile praat-parselmouth
+          ffmpeg -v error -i mediaengine/app/archivist/assets/voice/host_4_2.flac "$RUNNER_TEMP/host_4_2.wav"
+      - name: One take (${{ matrix.variant }} ${{ matrix.take }}) of the business text
         run: |
           mkdir -p "$RUNNER_TEMP/out"
-          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py vox5one "$RUNNER_TEMP/out" ${{ matrix.voice }} ${{ matrix.take }} "$RUNNER_TEMP/r4/${{ matrix.wav }}" 2>&1 | tee "$RUNNER_TEMP/out/${{ matrix.voice }}_${{ matrix.take }}.txt"
+          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py vox7one "$RUNNER_TEMP/out" ${{ matrix.variant }} ${{ matrix.take }} "$RUNNER_TEMP/host_4_2.wav" 2>&1 | tee "$RUNNER_TEMP/out/${{ matrix.variant }}_${{ matrix.take }}.txt"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: voice5-${{ matrix.voice }}-${{ matrix.take }}
+          name: voice7-${{ matrix.variant }}-${{ matrix.take }}
           path: ${{ runner.temp }}/out
   finish:
     needs: [gen]
@@ -119,25 +87,26 @@ jobs:
           python-version: '3.11'
       - uses: actions/download-artifact@v4
         with:
-          pattern: voice5-*
+          pattern: voice7-*
           path: ${{ runner.temp }}/in
       - name: Checker in its own venv (faster-whisper 1.2.1, librosa)
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
           python -m venv "$RUNNER_TEMP/v"
           "$RUNNER_TEMP/v/bin/python" -m pip install -q "faster-whisper==1.2.1" librosa scipy soundfile
-      - name: Words, best take per voice, plain and microphone finishing - voice5_1..4
+      - name: Words and pitch, the best take per way - voice7_1..3
         run: |
-          mkdir -p "$RUNNER_TEMP/res/round5"
-          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py round5 "$RUNNER_TEMP/in" "$RUNNER_TEMP/res/round5" 2>&1 | tee "$RUNNER_TEMP/res/round5/round5.txt"
-      - name: Publish to branch mediaengine-voice-lab (round5/; earlier rounds stay)
+          mkdir -p "$RUNNER_TEMP/res/round7"
+          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py round7 "$RUNNER_TEMP/in" "$RUNNER_TEMP/res/round7" 2>&1 | tee "$RUNNER_TEMP/res/round7/round7.txt"
+      - name: Publish to branch mediaengine-voice-lab (round7/; earlier rounds stay)
         if: success() || failure()
         run: |
           pub="$RUNNER_TEMP/pub"; rm -rf "$pub"
           git clone -q --depth 1 --branch mediaengine-voice-lab "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "$pub"
-          rm -rf "$pub/round5"; mkdir -p "$pub/round5"
-          cp "$RUNNER_TEMP"/res/round5/* "$pub/round5/" 2>/dev/null || true
-          printf 'run=%s\nsha=%s\n' "${{ github.run_id }}" "${{ github.sha }}" > "$pub/round5/RUN.txt"
+          rm -rf "$pub/round7"; mkdir -p "$pub/round7"
+          cp "$RUNNER_TEMP"/res/round7/* "$pub/round7/" 2>/dev/null || true
+          find "$RUNNER_TEMP/in" -name host_4_2_lower.wav -exec ffmpeg -v error -y -i {} -b:a 160k "$pub/round7/reference_lowered.mp3" \; -quit
+          printf 'run=%s\nsha=%s\n' "${{ github.run_id }}" "${{ github.sha }}" > "$pub/round7/RUN.txt"
           cd "$pub"; git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
-          git add -A; git commit -q -m "mediaengine voice lab round 5 run ${{ github.run_id }}"
+          git add -A; git commit -q -m "mediaengine voice lab round 7 run ${{ github.run_id }}"
           for i in 1 2 3; do git push -q origin HEAD:mediaengine-voice-lab && break; git pull -q --rebase origin mediaengine-voice-lab; done
