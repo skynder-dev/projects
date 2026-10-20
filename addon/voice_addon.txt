@@ -1,42 +1,29 @@
 PASS Install starts
-06:33:32 running packages  0/0 MB
-06:33:37 running packages Downloading voxcpm-2.0.3-py3-none-any.whl.metadata 0/0 MB
-06:33:42 running packages Installing : 0/0 MB
-06:34:33 running models audiovae.pth 98/5446 MB
-06:34:38 running models model.safetensors 767/5446 MB
-06:34:43 running models model.safetensors 1430/5446 MB
-06:34:48 running models model.safetensors 2463/5446 MB
-06:34:53 running models model.safetensors 3656/5446 MB
-06:34:58 running models model.safetensors 4489/5446 MB
-06:35:03 running models model.safetensors 4957/5446 MB
-06:35:08 running models model.bin 4960/5446 MB
-06:35:13 running checking_addon  5446/5446 MB
-06:35:18 done   5446/5446 MB
+08:53:34 running packages  0/0 MB
+08:53:39 running packages Downloading scipy-1.17.1-cp311-cp311-win_amd64.whl 0/0 MB
+08:53:44 running packages Installing : 0/0 MB
+08:54:35 running models audiovae.pth 130/5446 MB
+08:54:40 running models model.safetensors 706/5446 MB
+08:54:45 running models model.safetensors 1587/5446 MB
+08:54:50 running models model.safetensors 2623/5446 MB
+08:54:55 running models model.safetensors 3530/5446 MB
+08:55:00 running models model.safetensors 4364/5446 MB
+08:55:05 running models model.safetensors 4957/5446 MB
+08:55:10 running models special_tokens_map.json 4957/5446 MB
+08:55:15 running models model.bin 5444/5446 MB
+08:55:20 running checking_addon  5446/5446 MB
+08:55:25 done   5446/5446 MB
 PASS the add-on is installed
 PASS its manifest: version, Python, torch, models
 PASS the page shows the forms once installed
 PASS a voice-over is accepted
-06:35:18 20261020-063518-6cb9bd working starting 0%
-06:35:24 20261020-063518-6cb9bd working loading 2%
-06:36:23 20261020-063518-6cb9bd working speaking 1/1 5%
-06:46:35 20261020-063518-6cb9bd working listening 95%
-06:46:44 20261020-063518-6cb9bd done  0%
+08:55:25 20261020-085525-b45d5b working starting 0%
+08:55:31 20261020-085525-b45d5b working loading 2%
+08:56:26 20261020-085525-b45d5b working speaking 1/1 5%
+09:01:05 20261020-085525-b45d5b working listening 95%
+09:01:14 20261020-085525-b45d5b done  0%
 PASS the voice-over is made
 PASS every word said (listened to)
 PASS a plausible length
-06:46:44 20261020-064644-34b6b7 working starting 0%
-06:46:53 20261020-064644-34b6b7 working loading 2%
-06:47:53 20261020-064644-34b6b7 working speaking 1/1 5%
-06:53:38 20261020-064644-34b6b7 working listening 95%
-06:53:44 20261020-064644-34b6b7 done  0%
-PASS a Russian voice-over in the same voice, heard back in Cyrillic
-06:53:44 20261020-065344-c3c169 working video 50%
-06:53:50 20261020-065344-c3c169 done  0%
-PASS the voice onto the video, captions burned, checked
-06:53:50 20261020-065350-4e8ece working starting 0%
-06:53:53 20261020-065350-4e8ece working listening 20%
-06:53:59 20261020-065350-4e8ece working video 50%
-06:54:02 20261020-065350-4e8ece done  0%
-PASS captions from the video's own speech hear the voice-over
-PASS the page in Russian with a finished voice-over
-{"passed": 12, "total": 12}
+09:01:14 20261020-090114-7b6c20 working starting 0%
+09:01:20 20261020-090114-7b6c20 working loading 2%
