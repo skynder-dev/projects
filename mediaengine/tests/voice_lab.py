@@ -1068,6 +1068,81 @@ def round10(src: Path, out: Path) -> int:
     return 0 if files else 1
 
 
+# ---------------------------------------------------------------------------------------------------------- round 11
+# Round 9 verdict (2026-10-20 18:03): 9_2 "a cleaner voice, not bad, but a shade of AI"; 9_3 "good, but lisping - sh,
+# ch, s too bright; if that can be fixed, 9_3 is better than 9_2". A de-esser (FFmpeg deesser: only the moments of
+# s/sh, no change of pitch or timing) was sent as voice9_3a (i=0.6) / 9_3b (i=1). Round 11 checks the program's way:
+# 9_3's very recording locked (ultimate cloning) on other texts keeps its voice - pitch and the s/sh brightness.
+
+RU_TEXT = "Короче, вот что важно знать на этой неделе. Билеты в Европу подешевели почти на двадцать процентов."
+
+
+def vox11one(out: Path, take: int, ref: Path) -> None:
+    import torch
+    m, sr = _vox2()
+    text = {1: BUSINESS2, 2: BUSINESS2, 3: RU_TEXT}[take]
+
+    def make(t):
+        torch.manual_seed(1800 + t)
+        return m.generate(text=text, cfg_value=2.0, inference_timesteps=STEPS4, prompt_wav_path=str(ref),
+                          prompt_text=BUSINESS, reference_wav_path=str(ref)), sr
+
+    _take(out, "r11_lock93", take, make)
+
+
+def _sibilance(wav: Path) -> float:
+    """How loud the s/sh peaks (4.5-10 kHz) are against the voice, dB (9_3 -16, 9_2 -20)."""
+    import numpy as np
+    b = subprocess.run(["ffmpeg", "-v", "error", "-i", str(wav), "-ac", "1", "-ar", "48000", "-f", "f32le", "-"],
+                       capture_output=True).stdout
+    x = np.frombuffer(b, np.float32)
+    n, hop = 1024, 512
+    win, fr = np.hanning(n), np.fft.rfftfreq(n, 1 / 48000)
+    sib, tot = [], []
+    for i in range(0, len(x) - n, hop):
+        sp = np.abs(np.fft.rfft(x[i:i + n] * win)) ** 2
+        if sp.sum() < 1e-4:
+            continue
+        sib.append(sp[(fr >= 4500) & (fr <= 10000)].sum())
+        tot.append(sp.sum())
+    if not sib:
+        return 0.0
+    return round(float(np.percentile(10 * np.log10(np.array(sib) + 1e-12), 98)
+                       - np.percentile(10 * np.log10(np.array(tot) + 1e-12), 90)), 1)
+
+
+def round11(src: Path, out: Path, ref: Path) -> int:
+    from faster_whisper import WhisperModel
+    out.mkdir(parents=True, exist_ok=True)
+    gen = {}
+    for p in src.rglob("gen.json"):
+        gen.update(json.loads(p.read_text("utf-8")))
+    asr = WhisperModel("small", device="cpu", compute_type="int8")
+    rows, files = {}, {}
+    rows["reference 9_3"] = {"pitch_median_hz": 232.7, "sibilance_db": _sibilance(ref)}
+    for w in sorted(src.rglob("r11_lock93_t*.wav")):
+        take = int(w.stem.rsplit("_t", 1)[1])
+        info = _analyze(asr, w, src, gen, RU_TEXT if take == 3 else BUSINESS2)
+        info["sibilance_db"] = _sibilance(w)
+        rows[w.stem] = info
+        for tag, ds in (("a", "deesser=i=0.6:m=0.5:f=0.5,"), ("b", "deesser=i=1:m=0.8:f=0.45,")):
+            mp3 = out / f"voice11_{take}{tag}.mp3"
+            subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(w), "-af", ds + "loudnorm=I=-16:TP=-1.5:LRA=11",
+                            "-ar", "48000", "-ac", "1", "-b:a", "192k", str(mp3)], check=True)
+            files[mp3.name] = f"9_3 locked, take {take} ({'Russian' if take == 3 else 'another English text'}), de-esser {tag}"
+    failed = {k: str(v.get("error")).splitlines()[0][:300] for k, v in gen.items() if v.get("error")}
+    (out / "results.json").write_text(json.dumps({"round": 11, "files": files, "rows": rows, "failed_takes": failed},
+                                                 indent=1, ensure_ascii=False), "utf-8")
+    md = ["# Voice lab - round 11 (9_3 locked the program's way; de-esser a / b)", ""] + [f"- {k}: {v}" for k, v in files.items()]
+    md += ["", "| take | words wrong | pitch Hz | s/sh peaks dB |", "|---|---|---|---|"]
+    md += [f"| {k} | {i.get('word_errors', '-')} | {i.get('pitch_median_hz')} | {i.get('sibilance_db')} |" for k, i in rows.items()]
+    if failed:
+        md += ["", "Failed takes:"] + [f"- {k}: {e}" for k, e in failed.items()]
+    (out / "RESULTS.md").write_text("\n".join(md) + "\n", "utf-8")
+    print(json.dumps({"files": len(files), "failed_takes": len(failed)}))
+    return 0 if files else 1
+
+
 def check(src: Path, out: Path) -> int:
     import numpy as np, librosa
     from faster_whisper import WhisperModel
@@ -1161,6 +1236,10 @@ def main() -> int:
         vox9one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve() if len(sys.argv) > 5 else None)
     elif cmd == "round9":
         return round9(out, Path(sys.argv[3]).resolve())
+    elif cmd == "vox11one":
+        vox11one(out, int(sys.argv[3]), Path(sys.argv[4]).resolve())
+    elif cmd == "round11":
+        return round11(out, Path(sys.argv[3]).resolve(), Path(sys.argv[4]).resolve())
     elif cmd == "vox10one":
         vox10one(out, int(sys.argv[3]))
     elif cmd == "round10":
