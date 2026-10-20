@@ -1,0 +1,109 @@
+{
+ "round": 12,
+ "files": {
+  "voice12_1.mp3": "9_2 locked, take 1 (another English text)",
+  "voice12_2.mp3": "9_2 locked, take 2 (another English text)",
+  "voice12_3.mp3": "9_2 locked, take 3 (another English text)",
+  "voice12_4.mp3": "9_2 locked, take 4 (another English text)",
+  "voice12_5.mp3": "9_2 locked, take 5 (Russian)"
+ },
+ "rows": {
+  "reference 9_2": {
+   "pitch_median_hz": 232.7,
+   "sibilance_db": -19.9
+  },
+  "r12_lock92_t1": {
+   "variant": "r12_lock92",
+   "take": 1,
+   "seconds_to_make": 1214.4,
+   "sr": 48000,
+   "file": "voice12-1/r12_lock92_t1.wav",
+   "seconds": 13.6,
+   "said": "Quick update for anyone planning a summer trip. Hotel prices usually drop about three weeks before the date, so don't book too early. And if a price looks too good, check the reviews first. Follow for more tips like this.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 261.2,
+   "pitch_movement_semitones": 3.29,
+   "female_range": true,
+   "words_per_minute": 176.5,
+   "sibilance_db": -22.6
+  },
+  "r12_lock92_t2": {
+   "variant": "r12_lock92",
+   "take": 2,
+   "seconds_to_make": 225.0,
+   "sr": 48000,
+   "file": "voice12-2/r12_lock92_t2.wav",
+   "seconds": 14.4,
+   "said": "Quick update for anyone planning a summer trip. Hotel prices usually drop about three weeks before the date, so don't book too early. And if a price looks too good, check the reviews first. Follow for more tips like this.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 235.5,
+   "pitch_movement_semitones": 4.14,
+   "female_range": true,
+   "words_per_minute": 166.7,
+   "sibilance_db": -20.9
+  },
+  "r12_lock92_t3": {
+   "variant": "r12_lock92",
+   "take": 3,
+   "seconds_to_make": 206.9,
+   "sr": 48000,
+   "file": "voice12-3/r12_lock92_t3.wav",
+   "seconds": 13.44,
+   "said": "Quick update for anyone planning a summer trip. Hotel prices usually drop about three weeks before the date, so don't book too early. And if a price looks too good, check the reviews first. Follow for more tips like this.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 252.4,
+   "pitch_movement_semitones": 3.69,
+   "female_range": true,
+   "words_per_minute": 178.6,
+   "sibilance_db": -22.7
+  },
+  "r12_lock92_t4": {
+   "variant": "r12_lock92",
+   "take": 4,
+   "seconds_to_make": 142.1,
+   "sr": 48000,
+   "file": "voice12-4/r12_lock92_t4.wav",
+   "seconds": 13.12,
+   "said": "Quick update for anyone planning a summer trip. Hotel prices usually drop about three weeks before the date, so don't book too early. And if a price looks too good, check the reviews first. Follow for more tips like this.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 245.2,
+   "pitch_movement_semitones": 3.65,
+   "female_range": true,
+   "words_per_minute": 182.9,
+   "sibilance_db": -22.8
+  },
+  "r12_lock92_t5": {
+   "variant": "r12_lock92",
+   "take": 5,
+   "seconds_to_make": 467.9,
+   "sr": 48000,
+   "file": "voice12-5/r12_lock92_t5.wav",
+   "seconds": 7.68,
+   "said": "Короче, вот что важно знать на этой неделе. Билеты в Европу подешевели почти на 20%.",
+   "word_errors": 1,
+   "word_error_rate": 1.0,
+   "missing": [],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 222.9,
+   "pitch_movement_semitones": 4.43,
+   "female_range": true,
+   "words_per_minute": 0.0,
+   "sibilance_db": -22.7
+  }
+ },
+ "failed_takes": {}
+}
