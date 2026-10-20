@@ -1,29 +1,28 @@
 PASS Install starts
-08:53:34 running packages  0/0 MB
-08:53:39 running packages Downloading scipy-1.17.1-cp311-cp311-win_amd64.whl 0/0 MB
-08:53:44 running packages Installing : 0/0 MB
-08:54:35 running models audiovae.pth 130/5446 MB
-08:54:40 running models model.safetensors 706/5446 MB
-08:54:45 running models model.safetensors 1587/5446 MB
-08:54:50 running models model.safetensors 2623/5446 MB
-08:54:55 running models model.safetensors 3530/5446 MB
-08:55:00 running models model.safetensors 4364/5446 MB
-08:55:05 running models model.safetensors 4957/5446 MB
-08:55:10 running models special_tokens_map.json 4957/5446 MB
-08:55:15 running models model.bin 5444/5446 MB
-08:55:20 running checking_addon  5446/5446 MB
-08:55:25 done   5446/5446 MB
+09:05:04 running checking  0/0 MB
+09:05:09 running packages Downloading xxhash-4.0.2-cp311-cp311-win_amd64.whl 0/0 MB
+09:05:14 running packages Installing : 0/0 MB
+09:05:59 running models  0/0 MB
+09:06:04 running models model.safetensors 551/5446 MB
+09:06:09 running models model.safetensors 1862/5446 MB
+09:06:14 running models model.safetensors 3219/5446 MB
+09:06:19 running models model.safetensors 4570/5446 MB
+09:06:24 running models model.safetensors 4957/5446 MB
+09:06:29 running models model.bin 5265/5446 MB
+09:06:34 running checking_addon  5446/5446 MB
+09:06:39 done   5446/5446 MB
 PASS the add-on is installed
 PASS its manifest: version, Python, torch, models
 PASS the page shows the forms once installed
 PASS a voice-over is accepted
-08:55:25 20261020-085525-b45d5b working starting 0%
-08:55:31 20261020-085525-b45d5b working loading 2%
-08:56:26 20261020-085525-b45d5b working speaking 1/1 5%
-09:01:05 20261020-085525-b45d5b working listening 95%
-09:01:14 20261020-085525-b45d5b done  0%
+09:06:39 20261020-090639-a901c8 working starting 0%
+09:06:45 20261020-090639-a901c8 working loading 2%
+09:07:37 20261020-090639-a901c8 working speaking 1/1 5%
+09:17:29 20261020-090639-a901c8 working listening 95%
+09:17:38 20261020-090639-a901c8 done  0%
 PASS the voice-over is made
 PASS every word said (listened to)
 PASS a plausible length
-09:01:14 20261020-090114-7b6c20 working starting 0%
-09:01:20 20261020-090114-7b6c20 working loading 2%
+09:17:38 20261020-091738-490de0 working starting 0%
+09:17:44 20261020-091738-490de0 working loading 2%
+09:18:44 20261020-091738-490de0 working speaking 1/1 5%
