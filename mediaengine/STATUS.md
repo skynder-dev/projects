@@ -581,6 +581,9 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   build's stored path of the voice recording (3.1 is gone; an old build folder can be removed) -> a raw worker error,
   on CUDA even a second model load on the CPU. Fixed in c8364aa (this build's recording by the voice's key; a voice no
   longer shipped is said in words); voice_check's stand-in worker now fails like the real one (54/54).
+  Published: Windows CI run 39327230110 (b160, commit c8364aa) fully green, served from raw.githubusercontent.com
+  (b160 ZIP 4,043,553 bytes; runtime b9810d447e8c86c5 - the Update button works); the real add-on run 39327230144
+  12/12 with the default voice 4_4 (7.7 s made in 97.5 s on a CPU runner; Russian too).
 
 ## Evidence
 
@@ -773,8 +776,7 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-Owner: b131 is installed. Optional: install `MediaEngine-3.13.0-rc1-b137-Setup` (run 39083521797) when nothing is
-being built - it adds rounds 12-16 and the guides. Old versions b28-b122 (~430 MB each) can be removed on Check this PC
-(his choice). The sending side of orders in the owner's Social project is not started (only with his permission).
-Moment quality on his own footage stays his call (blind comparison is built in). Through the app's pages in the
-desktop app's browser pane only (never computer use).
+Owner: press Update (b160: the voices 4_4 - default - and 4_2, microphone finishing on). His pick of the default
+from round 5 (voice5_1..4) is still open - one line in voice.py (DEFAULT_VOICE). The voice add-on is already
+installed on his RTX 3060; the first voice-over made on the card is the next proof. Social integration paused by
+the owner (do not touch Social). Through the app's pages in the desktop app's browser pane only (never computer use).
