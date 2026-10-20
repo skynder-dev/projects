@@ -370,6 +370,18 @@ def main() -> int:
     r = c.post("/auto/text/new", data={"video": str(video), "t_text": "x", "t_start": "soon"}, headers=H)
     check("a text time that is not a number: refused in words", r.status_code == 400, r.status_code)
 
+    # a video bigger than the platforms show: made at a short side of 1080 (faster), the text laid out for that size
+    big = home / "big 2k.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=1440x2560:rate=25:duration=1", "-c:v", "libx264",
+                    "-pix_fmt", "yuv420p", "-preset", "ultrafast", str(big)], check=True)
+    before = {j["id"] for j in vo.list_jobs(500)}
+    c.post("/auto/text/new", data={"video": str(big), "t_text": "Big", "t_start": "0", "t_end": "1"}, headers=H)
+    bj = wait(next(j["id"] for j in vo.list_jobs(500) if j["id"] not in before))
+    bres = bj.get("result") or {}
+    bass = (Path(bj["dir"]) / "captions.ass").read_text("utf-8") if (Path(bj["dir"]) / "captions.ass").is_file() else ""
+    check("a 2K video is made at 1080x1920 with its text laid out for it", bj["state"] == "done" and bres.get("width") == 1080
+          and bres.get("height") == 1920 and "PlayResX: 1080" in bass, (bres.get("width"), bres.get("height")))
+
     # a small copy for messengers of a made video
     r = c.post(f"/auto/voice/{dj['id']}/small", headers=H)
     from urllib.parse import unquote as _unq

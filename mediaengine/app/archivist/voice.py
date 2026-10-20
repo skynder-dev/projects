@@ -1029,6 +1029,13 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
     vf = []
     if length > vlen + 0.05:
         vf.append(f"tpad=stop_mode=clone:stop_duration={length - vlen:.3f}")
+    # the size of the new video: what Reels / TikTok / Shorts show (a short side of at most 1080: a 4K phone video is
+    # made several times faster), always even (H.264 4:2:0); the text is laid out for exactly this size
+    k = min(1.0, MAX_SHORT_SIDE / max(1, min(w, h)))
+    tw, th = int(w * k) // 2 * 2, int(h * k) // 2 * 2
+    if (tw, th) != (w, h):
+        vf.append(f"scale={tw}:{th}:flags=lanczos,setsar=1")
+        w, h = tw, th
     o = tf.options(**{**(opts or {}), **({"position": position} if position else {})})
     tx = tf.resolve_texts(texts, length)
     if cs or tx:
@@ -1038,9 +1045,6 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
         fonts = tf.install_fonts(d)
         fonts = _caption_font(d) or fonts           # Windows: Arial too, for a letter Montserrat does not have
         vf.append("ass=captions.ass" + (":fontsdir=fonts" if fonts else ""))
-    if w % 2 or h % 2:                    # H.264 (4:2:0) needs an even width and height
-        vf.insert(0, "scale=trunc(iw/2)*2:trunc(ih/2)*2")
-        w, h = w // 2 * 2, h // 2 * 2
     vf.append("format=yuv420p")
     cmd = [_ffmpeg(), "-hide_banner", "-nostdin", "-y", "-i", str(video)]
     fc = [f"[0:v]{','.join(vf)}[v]"]
@@ -1112,6 +1116,7 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
 
 
 PREVIEWS = HOME / "voice_previews"
+MAX_SHORT_SIDE = 1080
 
 
 def _words_from_srt(text: str) -> list[dict]:
