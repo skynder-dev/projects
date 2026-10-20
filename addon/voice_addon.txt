@@ -1,17 +1,29 @@
 PASS Install starts
-09:28:34 running checking  0/0 MB
-09:28:39 running packages Installing : 0/0 MB
-09:29:14 running models config.json 376/5446 MB
-09:29:19 running models model.safetensors 1247/5446 MB
-09:29:24 running models model.safetensors 2486/5446 MB
-09:29:29 running models model.safetensors 3642/5446 MB
-09:29:34 running models model.safetensors 4617/5446 MB
-09:29:39 running models model.safetensors 4957/5446 MB
-09:29:44 running models tokenizer.json 5445/5446 MB
-09:29:49 done   5446/5446 MB
+09:33:49 running checking  0/0 MB
+09:33:54 running packages Downloading torch-2.8.0-cp311-cp311-win_amd64.whl 0/0 MB
+09:33:59 running packages Installing : 0/0 MB
+09:34:54 running models audiovae.pth 0/5446 MB
+09:34:59 running models model.safetensors 890/5446 MB
+09:35:04 running models model.safetensors 2184/5446 MB
+09:35:09 running models model.safetensors 3466/5446 MB
+09:35:14 running models model.safetensors 4650/5446 MB
+09:35:19 running models model.safetensors 4957/5446 MB
+09:35:24 running models model.bin 5077/5446 MB
+09:35:29 running checking_addon  5446/5446 MB
+09:35:34 done   5446/5446 MB
 PASS the add-on is installed
 PASS its manifest: version, Python, torch, models
 PASS the page shows the forms once installed
 PASS a voice-over is accepted
-09:29:49 20261020-092949-7b91b0 working starting 0%
-09:29:52 20261020-092949-7b91b0 working loading 2%
+09:35:34 20261020-093534-5feac1 working starting 0%
+09:35:40 20261020-093534-5feac1 working loading 2%
+09:36:49 20261020-093534-5feac1 working speaking 1/1 5%
+09:47:25 20261020-093534-5feac1 working listening 95%
+09:47:31 20261020-093534-5feac1 working finishing 97%
+09:47:34 20261020-093534-5feac1 done  0%
+PASS the voice-over is made
+PASS every word said (listened to)
+PASS a plausible length
+09:47:34 20261020-094734-64a274 working starting 0%
+09:47:43 20261020-094734-64a274 working loading 2%
+09:48:53 20261020-094734-64a274 working speaking 1/1 5%
