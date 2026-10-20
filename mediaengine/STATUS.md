@@ -609,6 +609,17 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   no add-on (job kind 'render'). Edit text and captions on a finished video (fix words, change look, add texts, a
   preview frame). Quick title/end fields on the voice and captions forms. A saved reel links to it with its path
   filled in. voice_check 77/77 locally; review findings all fixed.
+  b165 (b41e89e) published 2026-10-20 08:48 UTC with all of it. Owner 03:28 local: "find work for 10+ hours" -
+  plan sent (finish page, caption editing, animations, safe zones, my looks, voice round 10, review). Done since:
+  the last look remembered, quick links, a preview before a voice goes on a video, the reel title in Montserrat
+  (c8a25f3); Finish a video - voice (none / made / new, made first), captions (voice / speech), look, texts,
+  preview, one button; jobs in exact order (created_ns), job files replaced in one step (1596b8b); the caption
+  editor moves / splits / joins / adds lines (64e6563); texts pop / slide / fade / type, tall videos keep captions
+  and texts clear of the Reels/TikTok/Shorts zones, the preview can show them (4b5bd3b); My looks (b0502f8).
+  A second independent review found 7 real problems (speech captions 0.3 s late, a silent video without a voice,
+  a voice not made called 'deleted', preview of >246 lines, Enter in the look name submitted the form, typed text
+  cut off, Georgian/Greek titles as boxes) - all fixed with checks (f4d3986); voice_check 103/103, fuzz 0 errors.
+  Voice lab round 10 (run 39396387033): 20 more seeds of 4_2's recipe, kept for after his round 9 verdict.
 
 ## Evidence
 
@@ -801,7 +812,7 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-Windows CI for b41e89e (text and captions) -> when green it is published; tell the owner to press Update and try
-Auto Edit -> Voice-over -> Text on a video / Edit text and captions. Still open: his pick of the default voice
-(round 9: voice9_1..3, or 7_1 / 4_4 / 4_2); the first voice-over on his RTX 3060. Social integration paused by the
-owner (do not touch Social). Through the app's pages in the desktop app's browser pane only (never computer use).
+Windows CI for f4d3986 -> when green it is published (everything above); tell the owner to press Update and try
+a saved reel -> "Text, captions, voice-over" (Finish a video). Still open: his pick of the default voice (round 9
+voice9_1..3; round 10 ready); the first voice-over on his RTX 3060. Social integration paused by the owner (do not
+touch Social). Through the app's pages in the desktop app's browser pane only (never computer use).
