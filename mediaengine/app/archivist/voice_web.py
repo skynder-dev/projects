@@ -335,6 +335,9 @@ def register(app, page, err_page, e, human_bytes):
                     f"<div class='vo-row' style='margin-top:6px'><a class='btn' href='/auto/voice/{jid}/edit'>Edit text and captions</a>"
                     f"<form method='post' action='/auto/voice/{jid}/reveal' style='margin:0'>"
                     f"<button class='btn2'>Show in folder</button></form>"
+                    f"<form method='post' action='/auto/voice/{jid}/small' style='margin:0' onsubmit=\"setTimeout(()=>"
+                    f"this.querySelectorAll('button').forEach(b=>b.disabled=true),0)\"><button class='btn2' "
+                    f"title='About 720p, a much smaller file'>Small copy for messengers</button></form>"
                     + (f"<a class='btn btn2' href='/auto/voice/{jid}/file/captions.srt?download=1'>Download captions (SRT)</a>" if (res.get("files") or {}).get("srt") else "")
                     + "<!--actions--></div>")
         delete = ("" if st == "working" else
@@ -354,6 +357,10 @@ def register(app, page, err_page, e, human_bytes):
         if pre and not Path(pre).is_file():
             pre = ""
         parts = [_install_card(s)]
+        small = str(request.args.get("small") or "")
+        if small and Path(small).is_file():
+            parts.insert(0, f"<div class='card ae-done'><span>Small copy saved:</span> <span class='ae-path' translate='no'>"
+                            f"{e(small)}</span></div>")
         if pre:
             parts.insert(0, f"<div class='card'><span>The video:</span> <b class='ae-path' translate='no'>{e(Path(pre).name)}</b>"
                             f"<div class='muted vo-sub'>It is already filled in below: put text on it, make captions of its speech, "
@@ -767,6 +774,14 @@ def register(app, page, err_page, e, human_bytes):
         except vo.VoiceError as exc:
             return err_page(str(exc), "/auto/voice")
         return redirect("/auto/voice")
+
+    @app.post("/auto/voice/<jid>/small")
+    def voice_small(jid):
+        try:
+            saved = vo.small_copy(jid)
+        except vo.VoiceError as exc:
+            return err_page(str(exc), "/auto/voice")
+        return redirect("/auto/voice?small=" + quote(saved) + "#voJobs")
 
     @app.post("/auto/voice/<jid>/reveal")
     def voice_reveal(jid):

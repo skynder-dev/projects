@@ -370,6 +370,14 @@ def main() -> int:
     r = c.post("/auto/text/new", data={"video": str(video), "t_text": "x", "t_start": "soon"}, headers=H)
     check("a text time that is not a number: refused in words", r.status_code == 400, r.status_code)
 
+    # a small copy for messengers of a made video
+    r = c.post(f"/auto/voice/{dj['id']}/small", headers=H)
+    from urllib.parse import unquote as _unq
+    loc = _unq(r.headers.get("Location", "").split("small=", 1)[-1].split("#")[0])
+    check("a small copy for messengers, next to the reels", r.status_code == 302 and Path(loc).is_file()
+          and Path(loc).stat().st_size > 1000 and Path(loc).suffix == ".mp4", loc)
+    check("the page says where it is", "ae-done" in c.get(r.headers.get("Location", ""), headers=H).get_data(as_text=True))
+
     # the editor on the voice-over video: a word fixed, another style, a text at the end; the voice stays
     r = c.get(f"/auto/voice/{dj['id']}/edit", headers=H)
     ep = r.get_data(as_text=True)

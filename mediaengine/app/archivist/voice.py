@@ -1248,6 +1248,34 @@ def preview_frame(video: str, cues_: list[dict] | None, opts: dict | None, texts
     return d / "frame.jpg"
 
 
+def small_copy(jid: str) -> str:
+    """A small copy of a made video for messengers (long side at most 1280 px, a lower bit rate), next to the reels:
+    the same encode as Auto Edit's small copy."""
+    from . import auto_edit as ae
+    j = read_job(jid)
+    src = _job_dir(jid) / "video.mp4"
+    if j["state"] != "done" or not src.is_file():
+        raise VoiceError("Only a finished video can be copied.")
+    d = PREVIEWS / _new_id()
+    d.mkdir(parents=True, exist_ok=True)
+    L = getattr(ae, "SMALL_LONG_SIDE", 1280)
+    out = d / "small.mp4"
+    cp = subprocess.run([_ffmpeg(), "-hide_banner", "-loglevel", "error", "-nostdin", "-y", "-i", str(src), "-map", "0:v:0",
+                         "-map", "0:a:0?", "-vf", f"scale='if(gte(iw,ih),min(iw,{L}),-2)':'if(gte(iw,ih),-2,min(ih,{L}))'",
+                         "-c:v", "libx264", "-preset", "veryfast", "-crf", "26", "-pix_fmt", "yuv420p", "-c:a", "aac",
+                         "-b:a", "128k", "-movflags", "+faststart", str(out)], capture_output=True,
+                        **process_kwargs(dict(timeout=1800)))
+    if cp.returncode != 0 or not out.is_file() or out.stat().st_size < 1000:
+        shutil.rmtree(d, ignore_errors=True)
+        raise VoiceError("The small copy could not be made.")
+    stem = Path(str(j.get("video") or j.get("source") or j.get("title") or "video")).stem
+    saved = _save_copy(out, stem, "small")
+    shutil.rmtree(d, ignore_errors=True)
+    if not saved:
+        raise VoiceError("The small copy could not be made.")
+    return saved
+
+
 def save_cover(video: str, cues_: list[dict] | None, opts: dict | None, texts: list[dict] | None, offset: float = 0.0,
                at: float = 1.0, voice_from: str = "") -> str:
     """The picture at `at` with its texts (and captions), full size, saved next to the reels as a cover."""
@@ -1265,7 +1293,8 @@ def _save_copy(src: Path, stem: str, what: str) -> str:
     try:
         folder = ae.default_export_dir()
         folder.mkdir(parents=True, exist_ok=True)
-        word = {"voice": "озвучка", "captions": "субтитры", "text": "текст", "cover": "обложка", "music": "музыка"}[what] \
+        word = {"voice": "озвучка", "captions": "субтитры", "text": "текст", "cover": "обложка", "music": "музыка",
+                "small": "маленькая копия"}[what] \
             if ae._ui_ru() else what
         base = ae.safe_filename(f"{stem[:60]} - {word}", "MediaEngine " + what)
         ext = src.suffix.lower() or ".mp4"

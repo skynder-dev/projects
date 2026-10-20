@@ -801,6 +801,8 @@ PHRASES = {
     "Fix a word right in its line (*word* = in the color); an emptied line is left out. −0.1 and +0.1 move a line by 0.1 s, ✂ splits it where the cursor is, ⤓ joins it with the next one, ＋ adds a line.":
         "Исправь слово прямо в строке (*слово* — цветом); пустая строка убирается. −0.1 и +0.1 сдвигают строку на 0,1 сек, ✂ разрезает её там, где "
         "курсор, ⤓ склеивает со следующей, ＋ добавляет строку.",
+    "Only a finished video can be copied.": "Копию можно сделать только из готового видео.",
+    "The small copy could not be made.": "Не удалось сделать маленькую копию.",
     "Save as a cover": "Сохранить как обложку", "This picture, full size, saved next to the reels": "Этот кадр в полном размере — рядом с роликами",
     "The cover could not be saved.": "Не удалось сохранить обложку.",
     "6. Music under it": "6. Музыка под видео", "(optional)": "(не обязательно)",
