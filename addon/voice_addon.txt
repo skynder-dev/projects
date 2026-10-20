@@ -1,5 +1,0 @@
-PASS Install starts
-12:14:19 running checking  0/0 MB
-12:14:24 running packages Downloading regex-2026.9.29-cp311-cp311-win_amd64.whl 0/0 MB
-12:14:29 running packages Installing : 0/0 MB
-
