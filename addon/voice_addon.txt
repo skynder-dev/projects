@@ -1,0 +1,44 @@
+PASS Install starts
+12:21:02 running packages  0/0 MB
+12:21:07 running packages Downloading packaging-26.3-py3-none-any.whl 0/0 MB
+12:21:12 running packages Installing : 0/0 MB
+12:22:07 running models audiovae.pth 0/5446 MB
+12:22:12 running models model.safetensors 376/5446 MB
+12:22:17 running models model.safetensors 1030/5446 MB
+12:22:22 running models model.safetensors 1688/5446 MB
+12:22:27 running models model.safetensors 2522/5446 MB
+12:22:32 running models model.safetensors 3297/5446 MB
+12:22:37 running models model.safetensors 3997/5446 MB
+12:22:42 running models model.safetensors 4815/5446 MB
+12:22:47 running models model.safetensors 4957/5446 MB
+12:22:52 running models model.bin 4960/5446 MB
+12:22:57 running checking_addon  5446/5446 MB
+12:23:02 done   5446/5446 MB
+PASS the add-on is installed
+PASS its manifest: version, Python, torch, models
+PASS the page shows the forms once installed
+PASS a voice-over is accepted
+12:23:02 20261020-122302-68b769 working starting 0%
+12:23:08 20261020-122302-68b769 working loading 2%
+12:24:08 20261020-122302-68b769 working speaking 1/1 5%
+12:29:15 20261020-122302-68b769 working listening 95%
+12:29:24 20261020-122302-68b769 done  0%
+PASS the voice-over is made
+PASS every word said (listened to)
+PASS a plausible length
+12:29:24 20261020-122924-a3b5da working starting 0%
+12:29:30 20261020-122924-a3b5da working loading 2%
+12:30:48 20261020-122924-a3b5da working speaking 1/1 5%
+12:33:40 20261020-122924-a3b5da working listening 95%
+12:33:46 20261020-122924-a3b5da done  0%
+PASS a Russian voice-over in the same voice, heard back in Cyrillic
+12:33:46 20261020-123346-fa3b51 working video 50%
+12:33:52 20261020-123346-fa3b51 done  0%
+PASS the voice onto the video, captions burned, checked
+12:33:52 20261020-123352-2b52f6 working starting 0%
+12:33:55 20261020-123352-2b52f6 working listening 20%
+12:34:01 20261020-123352-2b52f6 working video 50%
+12:34:04 20261020-123352-2b52f6 done  0%
+PASS captions from the video's own speech hear the voice-over
+PASS the page in Russian with a finished voice-over
+{"passed": 12, "total": 12}
