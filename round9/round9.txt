@@ -1,0 +1,17 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[0;93m2026-10-20 05:26:02.614778694 [W:onnxruntime:Default, device_discovery.cc:95 GetPciBusId] Skipping pci_bus_id for PCI path at "/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/5620e0c7-8062-4dce-aeb7-520c7ef76171" because filename "5620e0c7-8062-4dce-aeb7-520c7ef76171" did not match expected pattern of [0-9a-f]+:[0-9a-f]+:[0-9a-f]+[.][0-9a-f]+[m
+05:26:12 r9_design_t1: 16.6 s, 2 word errors, pitch 249 Hz +-3.7 st
+05:26:17 r9_design_t10: 18.1 s, 2 word errors, pitch 245 Hz +-4.3 st
+05:26:22 r9_design_t11: 19.0 s, 2 word errors, pitch 233 Hz +-4.1 st
+05:26:28 r9_design_t12: 17.8 s, 2 word errors, pitch 221 Hz +-3.8 st
+05:26:33 r9_design_t2: 15.0 s, 2 word errors, pitch 257 Hz +-3.4 st
+05:26:38 r9_design_t3: 17.6 s, 2 word errors, pitch 251 Hz +-3.4 st
+05:26:43 r9_design_t4: 18.1 s, 2 word errors, pitch 247 Hz +-4.6 st
+05:26:48 r9_design_t5: 16.6 s, 2 word errors, pitch 233 Hz +-4.1 st
+05:26:53 r9_design_t6: 17.3 s, 2 word errors, pitch 272 Hz +-3.8 st
+05:26:58 r9_design_t7: 16.8 s, 2 word errors, pitch 254 Hz +-3.7 st
+05:27:04 r9_design_t8: 16.8 s, 2 word errors, pitch 277 Hz +-4.1 st
+05:27:09 r9_design_t9: 19.5 s, 2 word errors, pitch 241 Hz +-4.1 st
+05:27:13 r9_lock71_t1: 12.6 s, 0 word errors, pitch 251 Hz +-6.0 st
+05:27:18 r9_lock71_t2: 12.0 s, 0 word errors, pitch 249 Hz +-6.2 st
+{"files": 3, "failed_takes": 0}
