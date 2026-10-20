@@ -633,6 +633,12 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   encoding (h264_nvenc, tried once; any failure -> libx264; a91884c..a5b4c55). Published: Windows CI run 39421128794
   (b176, commit a5b4c55) fully green incl. the Edge Finish-page check, served (ZIP 4,713,751 bytes; same runtime);
   the real add-on run green.
+  Owner 2026-10-20 18:03: "9_2 cleaner, not bad, a shade of AI; 9_3 good but lisping - sh, ch, s too bright; if
+  fixable 9_3 is better". A de-esser (voice9_3a / 3b) did not cure it (18:16 "they hiss too") - it is how the voice
+  says them. So 9_2 (his rule). Round 11 (run 39512712859): 9_3 locked drifts 221-275 Hz with the seed. Round 12
+  (run 39515480136): 9_2 locked: all words, 235-261 Hz in English, Russian works (223 Hz, 1 word). Shipped: host_9_2
+  (round 9 r9_design_t11 FLAC, sha 903393c1...) the only ready voice (4_4 / 4_2 removed), and the worker keeps every
+  piece within 1.5 semitones of the voice's own pitch (up to 3 tries when the words are right).
 
 ## Evidence
 

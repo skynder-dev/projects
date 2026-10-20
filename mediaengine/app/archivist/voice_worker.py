@@ -97,6 +97,20 @@ def _trim(y, sr: int, top_db: float = 45.0):
     return y[a:b]
 
 
+def _pitch(y, sr: int) -> float:
+    """The median pitch of a voice, Hz (0 = none found)."""
+    import numpy as np, librosa
+    y = np.asarray(y, dtype="float32").reshape(-1)
+    if sr != 16000:
+        y = librosa.resample(y, orig_sr=sr, target_sr=16000)
+    f0, voiced, _ = librosa.pyin(y, fmin=70, fmax=450, sr=16000, frame_length=1024)
+    f = f0[voiced & ~np.isnan(f0)] if f0 is not None else np.array([])
+    return float(np.median(f)) if f.size else 0.0
+
+
+PITCH_OFF_ST = 1.5          # a piece more than this many semitones off the voice's own pitch is made again
+
+
 def tts(job: dict) -> dict:
     import numpy as np, soundfile as sf, torch
     # (torch's own thread count: the program's OMP_NUM_THREADS=2 is not passed to the worker; setting one less than all
@@ -131,7 +145,8 @@ def tts(job: dict) -> dict:
     steps = int(job.get("steps") or (30 if dev == "cuda" else 10))
     cfg = float(job.get("cfg") or 2.0)
     seed = int(job.get("seed") or 1)
-    tries_max = 3
+    tries_max = 4
+    ref_hz = 0.0                            # the locked voice's own pitch: every piece is kept near it (a seed can lift it)
     out_dir = Path(job["work_dir"])
     out_dir.mkdir(parents=True, exist_ok=True)
     ref_wav, ref_text = voice.get("ref_wav"), voice.get("ref_text") or ""
@@ -175,13 +190,27 @@ def tts(job: dict) -> dict:
             said, _w, _lang = _listen(asr, str(p), job.get("language"))
             errs = word_errors(text, said)
             n = max(1, len(_words(text)))
+            off = 0.0
+            if ref_wav:
+                try:
+                    if not ref_hz:
+                        ry, rsr = sf.read(str(ref_wav), dtype="float32", always_2d=True)
+                        ref_hz = _pitch(ry.mean(axis=1), rsr) or -1.0
+                    hz = _pitch(y, sr) if ref_hz > 0 else 0.0
+                    off = abs(12 * float(np.log2(hz / ref_hz))) if hz > 0 and ref_hz > 0 else 0.0
+                except Exception:
+                    off = 0.0                      # (no pitch check rather than no voice)
             row = {"chunk": i + 1, "attempt": attempt + 1, "seconds": round(y.size / sr, 2), "make_s": round(gen_s, 1),
-                   "said": said, "word_errors": errs, "words": n, "file": p.name}
-            if best is None or errs < best["word_errors"]:
-                best = row | {"audio": y}
-            if errs <= max(0, n // 25):          # every word (or almost: 1 in 25) is there
+                   "said": said, "word_errors": errs, "words": n, "file": p.name, "pitch_off_st": round(off, 2)}
+            ok_words = errs <= max(0, n // 25)    # every word (or almost: 1 in 25) is there
+            score = (not ok_words, errs, off > PITCH_OFF_ST, off)
+            if best is None or score < best["_score"]:
+                best = row | {"audio": y, "_score": score}
+            if ok_words and off <= PITCH_OFF_ST:   # and the voice is its own height
                 break
-        report.append({k: v for k, v in best.items() if k != "audio"})
+            if ok_words and attempt >= 2:          # words right twice over: the closest height is good enough
+                break
+        report.append({k: v for k, v in best.items() if k not in ("audio", "_score")})
         pieces.append((best["audio"], ch.get("pause_after", 0.35)))
         if not ref_wav and voice.get("lock_after_first", True) and i == 0 and total > 1:
             ref_wav, ref_text = str(out_dir / best["file"]), text     # one voice for the whole text

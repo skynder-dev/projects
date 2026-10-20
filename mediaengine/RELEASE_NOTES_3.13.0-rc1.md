@@ -74,9 +74,10 @@ The owner: "voice-over, processing and text in the video - MedEng". **Auto Edit 
   needed), CUDA torch on a PC with an NVIDIA card, CPU torch otherwise; VoxCPM2 (Apache-2.0) and faster-whisper small
   (MIT) at pinned Hugging Face commits, every file hash-checked; a self-test at the end. About 7.6 GB. "Remove the
   add-on" frees it. If the graphics-card version does not start: "Install for the processor".
-- **New voice-over**: the text in pieces the model says well, in one voice: "Host - the voice of 4_4" (default) or
-  "4_2" - the owner's picks from voice lab round 4 (3.1 first; then "3.1 sounds like sex, too squeaky for business
-  info"); their very takes ship with the program (FLAC) - a voice from a description, or from a recording of a person
+- **New voice-over**: the text in pieces the model says well, in one voice: "Host - the voice of 9_2" - the owner's
+  pick from voice lab round 9 (3.1, then 4_4 / 4_2, then 9_3 were turned down: "sounds like sex", "robot in the lows",
+  "squeaky", "lisping on s/sh/ch"); its very take ships with the program (FLAC), every piece kept within 1.5 semitones
+  of its pitch (a seed can lift a locked voice: round 11 saw 221-275 Hz) - a voice from a description, or from a recording of a person
   who agreed to it. Loudness finishing only (a "microphone" finishing was tried and dropped: no audible difference). A separate Python process that sees only the add-on does the work; every piece is listened
   to (Whisper) and made again when words are missing. WAV + captions (SRT) from the real times of the words.
 - **Put it on a video**: the video's own sound ducked under the voice (or muted), captions burned in (ASS, the word

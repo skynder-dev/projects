@@ -73,21 +73,20 @@ _CURRENT: dict = {}
 _WAKE = threading.Event()
 _THREAD: list[threading.Thread] = []
 
-# The owner's picks from the voice lab (round 4, 2026-10-19 15:41: "4_4 will do, 4_2 OK"; 3.1 "sounds like sex",
-# its locked copy "too squeaky for business info"): the very takes 4_4 and 4_2 ship with the program (FLAC) and every
-# voice-over in them is that same voice (VoxCPM2 ultimate cloning: the recording, its exact words, the same recording
-# as the timbre). Both recordings say this text:
-HOST_REF_TEXT = ("Okay... so here's something nobody tells you about packing for a beach trip. "
-                 "You don't need ten outfits. Seriously. You need, like, three. And one really good hat. "
-                 "We tried it last summer and, honestly? It changed everything. "
-                 "Less stuff... more time in the water. So, would you try it? Tell me in the comments!")
+# The owner's pick from the voice lab (2026-10-20 18:03 / 18:16): 9_2 - "a cleaner voice, not bad" (9_3 was better but
+# "lisping" on s / sh / ch, which a de-esser did not cure; 4_4 "robot in the lows", 4_2 "squeaky", 3.1 "sounds like
+# sex"). Its very take (voice lab round 9, r9_design_t11: 4_2's recipe with another seed) ships with the program (FLAC)
+# and every voice-over in it is that same voice (VoxCPM2 ultimate cloning: the recording, its exact words, the same
+# recording as the timbre; each piece kept near its pitch by the worker). The recording says this text:
+HOST_REF_TEXT = ("Here's what you need to know this week. First, flights to Europe got almost twenty percent cheaper. "
+                 "Second, if you book before Friday, most airlines let you change the dates for free. "
+                 "And third, the best deals are on Tuesday and Wednesday. Save this, and send it to someone who's planning a trip.")
 VOICES = {
-    "host_4_4": {"label": "Host - the voice of 4_4", "ref": "host_4_4.flac", "ref_text": HOST_REF_TEXT},
-    "host_4_2": {"label": "Host - the voice of 4_2", "ref": "host_4_2.flac", "ref_text": HOST_REF_TEXT},
+    "host_9_2": {"label": "Host - the voice of 9_2", "ref": "host_9_2.flac", "ref_text": HOST_REF_TEXT},
     "describe": {"label": "My description of a voice (English works best)"},
     "own": {"label": "A voice from a recording (a person who agreed to it)"},
 }
-DEFAULT_VOICE = "host_4_4"
+DEFAULT_VOICE = "host_9_2"
 # Finishing: loudness only. A "microphone" finishing (roll-off, saturation, small room, compression) was tried and
 # dropped - the owner heard no difference (round 5, 2026-10-19: "what the hell is the difference between 5_1 and 5_2");
 # shifting the finished voice's pitch was rejected outright ("as if drowned in a toilet") - never done here.

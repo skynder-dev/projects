@@ -671,7 +671,7 @@ PHRASES = {
     "Write it the way it is said: short sentences, commas and dots where the pauses are.":
         "Пиши так, как говорят вслух: короткие фразы, запятые и точки там, где паузы.",
     "Voice": "Голос",
-    "Host - the voice of 4_4": "Ведущая — голос 4_4", "Host - the voice of 4_2": "Ведущая — голос 4_2",
+    "Host - the voice of 9_2": "Ведущая — голос 9_2",
     "The recording of this voice is missing from this version of MediaEngine.": "В этой версии MediaEngine нет записи этого голоса.",
     "My description of a voice (English works best)": "Свой голос по описанию (лучше писать по-английски)",
     "A voice from a recording (a person who agreed to it)": "Голос из записи (человека, который на это согласен)",
@@ -722,6 +722,9 @@ PHRASES = {
         "субтитры точно по словам, голос и субтитры накладываются на видео.",
     "Voice-over: your picks from the voice test, the voices 4_4 and 4_2, instead of 3.1.":
         "Озвучка: твой выбор из пробы голосов — голоса 4_4 и 4_2 вместо 3.1.",
+    "Voice-over: the voice 9_2 (your pick: cleaner; 9_3 lisped on s/sh/ch) - the only ready voice now; every piece of a voice-over is kept at the voice's own pitch.":
+        "Озвучка: голос 9_2 (твой выбор: чище; 9_3 шепелявил на с/ш/ч) — теперь единственный готовый голос; каждый кусок озвучки "
+        "держится на высоте этого голоса.",
     "Captions for your own videos: the speech becomes captions burned into a copy (Auto Edit → Voice-over).":
         "Субтитры для твоих видео: речь превращается в субтитры, вшитые в копию (Автомонтаж → Озвучка).",
     "A Windows window is open — it may be behind this window.": "Открыто окно Windows — оно может быть за этим окном.",

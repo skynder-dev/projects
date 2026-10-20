@@ -28,7 +28,7 @@ name: mediaengine-voice-lab
 # Round 9 (this file, results in round9/): 4_2's own recipe with other seeds (other, naturally lower voices), the three
 # lowest natural ones sent; 7_1 locked the program's way on another text (a check), 7_1's recording as FLAC.
 # Run 39372109372. Round 10 (results in round10/, run 39396387033): 20 more seeds of the same recipe.
-# Round 11 (this file, results in round12/): 9_3 ("good but lisping") locked the program's way on other texts
+# Round 11 (results in round11/): 9_3 ("good but lisping") locked the program's way on other texts
 # (English and Russian), each with the de-esser a / b. Run 39512712859.
 # Round 12 (this file, results in round12/): 9_2 locked the program's way, 4 English takes + Russian (steadiness).
 on:

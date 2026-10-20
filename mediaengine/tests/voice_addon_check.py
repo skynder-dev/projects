@@ -1,5 +1,5 @@
 """The voice-over add-on for real, through the program's own pages: Install (pip + models from the internet, as the
-owner's button does - here with CPU torch), a voice-over in the default voice (4_4) listened to word by word, that voice burned
+owner's button does - here with CPU torch), a voice-over in the default voice (9_2) listened to word by word, that voice burned
 onto a video with captions, captions for the video's own speech. Slow on a CPU (minutes per sentence).
 
   python tests/voice_addon_check.py --home <empty dir> --video <a short video> --out <dir>

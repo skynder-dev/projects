@@ -81,7 +81,7 @@ folder (MediaEngine goes online for it only then; free open models, nothing is s
 card the voice is made on it (seconds per sentence); without one, on the processor (about a minute per sentence).
 
 - **New voice-over**: write the text the way it is said (short sentences; commas and dots where the pauses are) and
-  choose a voice: "Host - the voice of 4_4" or "4_2" (your picks from the voice test; always the same voice), a voice from a description,
+  choose a voice: "Host - the voice of 9_2" (your pick from the voice test; always the same voice, each piece at its own pitch), a voice from a description,
   or a voice from a recording of a person who agreed to it. Every piece is listened to; a piece with missing words is
   made again. Then listen, download the WAV and the captions (SRT), or **Put it on a video**: the video's own sound gets
   quieter while the voice speaks and the captions are burned in.
