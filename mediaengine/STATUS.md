@@ -584,6 +584,14 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   Published: Windows CI run 39327230110 (b160, commit c8364aa) fully green, served from raw.githubusercontent.com
   (b160 ZIP 4,043,553 bytes; runtime b9810d447e8c86c5 - the Update button works); the real add-on run 39327230144
   12/12 with the default voice 4_4 (7.7 s made in 97.5 s on a CPU runner; Russian too).
+  Round 5 verdict (21:22): 5_1/5_2 (4_2) "squeaky, but the talking is better than the others"; 4_4 "low timbre or
+  something makes the robot audible in the lows"; 5_1 vs 5_2 "what the hell is the difference" - the microphone
+  finishing is inaudible, so its checkbox goes (next product build). A pitch shift of the finished sound (rubberband,
+  sandbox, voice6_1..3) was rejected at once ("as if drowned in a toilet") - never shift the finished voice.
+  Round 7 (run 39359044602, round7/): the model itself says it lower in 4_2's voice, all words said: voice7_1 a
+  style note on 4_2's timbre (237 Hz), voice7_2 continued from 4_2's recording made 2 semitones lower by PSOLA
+  (244 Hz - the model drifts back up), voice7_3 4_2's own recipe (its seed, cfg 1.6) described lower (221 Hz).
+  Sent; his pick becomes the program's default voice (a new FLAC) together with the checkbox removal.
 
 ## Evidence
 
