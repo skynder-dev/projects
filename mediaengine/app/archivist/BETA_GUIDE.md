@@ -92,8 +92,8 @@ card the voice is made on it (seconds per sentence); without one, on the process
 - **Text on a video** (no add-on needed): titles and lines of text on any video at the seconds you choose - on a
   colored stripe, a dark box or in big letters. "Preview" shows a picture in a second, before the video is made.
 - **Finish a video** (a saved reel → "Text, captions, voice-over"): everything for one video on one page - a voice
-  (none, one made already or a new one), captions (the voice's words or the video's speech), the look, texts, a
-  preview, one button.
+  (none, one made already or a new one), captions (the voice's words or the video's speech), the look, texts,
+  music under it (quieter while the voice speaks), a preview, one button.
 - **Edit text and captions** (on a finished video): fix a word right in its line, change the look, add a text - a new
   video is made, the old one stays.
 

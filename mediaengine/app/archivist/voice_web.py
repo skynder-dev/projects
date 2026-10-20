@@ -528,7 +528,8 @@ def register(app, page, err_page, e, human_bytes):
             on = f.get("captions_on") == "1"
             return {"video": base["video"], "cues": _edited_cues(f, base), "captions_on": on, "opts": _opts(f),
                     "texts": texts, "voice_from": base.get("voice_from") or "", "start_s": base.get("start_s") or 0.0,
-                    "keep_sound": base.get("keep_sound", True), "title": base.get("title") or ""}
+                    "keep_sound": base.get("keep_sound", True), "title": base.get("title") or "",
+                    "music": base.get("music") or "", "music_level": base.get("music_level") or "medium"}
         return {"video": f.get("video", ""), "cues": [], "captions_on": False, "opts": _opts(f), "texts": texts,
                 "voice_from": "", "start_s": 0.0, "keep_sound": True, "title": ""}
 
@@ -575,6 +576,12 @@ def register(app, page, err_page, e, human_bytes):
                 f"<button type='button' class='btn2' data-pick='video'>Choose…</button></div>{_reel_select()}"
                 f"{voice}{caps}<div style='margin-top:12px'><b>4. The look</b></div>{_style_controls(_last_opts())}"
                 f"<div style='margin-top:6px'><b>5. Text on the video</b></div>{_text_rows([], header=False)}"
+                f"<div style='margin-top:12px'><b>6. Music under it</b> <span class='muted vo-sub'>(optional)</span></div>"
+                f"<div class='vo-row' style='margin-top:4px'><input class='vo-wide' name='music' "
+                f"placeholder='A song, e.g. D:\\Music\\calm.mp3'><button type='button' class='btn2' data-pick='music'>Choose…</button></div>"
+                f"<div class='vo-row' style='margin-top:6px'><span>Loudness</span><select name='music_level'>"
+                f"<option value='quiet'>quiet</option><option value='medium' selected>medium</option><option value='loud'>loud</option>"
+                f"</select><span class='muted vo-sub'>It gets quieter while the voice speaks.</span></div>"
                 f"<div style='margin-top:14px'><button class='ae-big'>Make the video</button> "
                 f"<span class='muted vo-sub' data-msg></span></div></div>{_preview_box()}</div></form>"
                 f"<div class='row' style='margin-top:14px'><a class='btn btn2' href='/auto/voice'>Voice-over and text</a></div>")
@@ -594,7 +601,8 @@ def register(app, page, err_page, e, human_bytes):
                           new_voice={"text": f.get("text", ""), "voice": f.get("nvoice", ""),
                                      "description": f.get("description", ""), "language": f.get("language", "")},
                           captions=f.get("captions", "none"), opts=_opts(f), texts=tf.parse_texts(tf.rows_from_form(f)),
-                          start_s=f.get("start", "0.3"), keep_sound=f.get("keep_sound") == "1")
+                          start_s=f.get("start", "0.3"), keep_sound=f.get("keep_sound") == "1",
+                          music=f.get("music", ""), music_level=f.get("music_level", "medium"))
         except (vo.VoiceError, tf.TextError) as exc:
             return err_page(str(exc), "/auto/finish")
         return redirect("/auto/voice#voJobs")
@@ -724,7 +732,8 @@ def register(app, page, err_page, e, human_bytes):
             pl = _payload(request.form, base)
             vo.new_render(pl["video"], pl["cues"], pl["opts"], pl["texts"], voice_from=pl["voice_from"],
                           start_s=pl["start_s"], keep_sound=pl["keep_sound"], title=pl["title"],
-                          captions_on=pl["captions_on"])
+                          captions_on=pl["captions_on"], music=pl.get("music") or "",
+                          music_level=pl.get("music_level") or "medium")
         except (vo.VoiceError, tf.TextError) as exc:
             return err_page(str(exc), f"/auto/voice/{jid}/edit")
         return redirect("/auto/voice")
@@ -787,6 +796,8 @@ def register(app, page, err_page, e, human_bytes):
         kind = (request.get_json(silent=True) or {}).get("kind")
         if kind == "audio":
             files = ae.pick_files("Choose the recording of the voice", kind="audio")
+        elif kind == "music":
+            files = ae.pick_files("Choose the music", kind="audio")
         else:
             files = ae.pick_files("Choose a video", initial=str(ae.default_export_dir()))
         if files:

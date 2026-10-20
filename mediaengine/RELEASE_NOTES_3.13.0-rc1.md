@@ -104,7 +104,9 @@ The owner: "voice-over, processing and text in the video - MedEng". **Auto Edit 
   moves a line by 0.1 s, splits it where the cursor is, joins it with the next, adds one (each line carries its own
   time and words). Texts pop in, slide up, fade in or are typed letter by letter. On a tall video captions and texts
   keep clear of the zones where Reels / TikTok / Shorts put their own buttons and text (the preview can show them in
-  red). "My looks": a look saved with a name, chosen in one click.
+  red). "My looks": a look saved with a name, chosen in one click. Music under a video (Finish a video, 6): a song
+  looped to the end, evened out (loudnorm), quiet / medium / loud, faded in and out, ducked under the voice like the
+  video's own sound; kept when the video is edited again.
 - **Captions for a video**: the speech of any video into captions burned into a copy (Whisper's languages).
 - Quit / Update / switching builds ask while a voice-over is being made; one interrupted by a closed program is made
   again once.

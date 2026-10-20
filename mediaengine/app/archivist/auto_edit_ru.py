@@ -799,6 +799,15 @@ PHRASES = {
     "Fix a word right in its line; an emptied line is left out. −0.1 and +0.1 move a line by 0.1 s, ✂ splits it where the cursor is, ⤓ joins it with the next one, ＋ adds a line.":
         "Исправь слово прямо в строке; пустая строка убирается. −0.1 и +0.1 сдвигают строку на 0,1 сек, ✂ разрезает её там, где "
         "курсор, ⤓ склеивает со следующей, ＋ добавляет строку.",
+    "6. Music under it": "6. Музыка под видео", "(optional)": "(не обязательно)",
+    "A song, e.g. D:\\Music\\calm.mp3": "Песня, например D:\\Музыка\\спокойная.mp3",
+    "Loudness": "Громкость", "quiet": "тихо", "medium": "средне", "loud": "громко",
+    "It gets quieter while the voice speaks.": "Пока говорит голос, она становится тише.",
+    "Choose the music": "Выбери музыку",
+    "Choose the music file (its full path).": "Выбери файл музыки (полный путь).",
+    "The music must be a sound file (MP3, M4A, WAV, FLAC, OGG).": "Музыка должна быть звуковым файлом (MP3, M4A, WAV, FLAC, OGG).",
+    "This music file has no sound that can be played.": "В этом файле музыки нет звука, который можно проиграть.",
+    "Add a text, captions, a voice or music first.": "Сначала добавь текст, субтитры, голос или музыку.",
     "My looks:": "Мои виды:", "Delete the chosen look": "Удалить выбранный вид", "Name for this look": "Название этого вида",
     "Save the look": "Сохранить вид", "Give the look a name.": "Дай виду название.", "Saved.": "Сохранено.",
     "Pops in": "Выпрыгивает", "Slides up": "Выезжает снизу", "Fades in": "Проявляется", "Typed letter by letter": "Печатается по буквам",

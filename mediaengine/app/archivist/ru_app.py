@@ -528,6 +528,7 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"The sound could not be read: (.+)", r"Не удалось прочитать звук: \1"),
     (r"FFmpeg could not make the video \((.+)\)\.", r"FFmpeg не смог сделать видео (\1)."),
     (r"The picture could not be made \((.+)\)\.", r"Не удалось сделать кадр (\1)."),
+    (r"The music file is no longer there: (.+)", r"Файла музыки больше нет на месте: \1"),
     (r"The voice-over was not made, so this video was not made either:\s*(.*)",
      r"Озвучка не получилась, поэтому и это видео не сделано: \1"),
     (r"The video of this one is no longer there: (.+)", r"Видео для этого больше нет на месте: \1"),

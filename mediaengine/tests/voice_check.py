@@ -506,6 +506,19 @@ def main() -> int:
     typed = tf.document(1080, 1920, [], [{"text": "x" * 38, "start": 0, "end": 1, "where": "top", "look": "bold", "anim": "type"}])
     last = max(int(m_) for m_ in re.findall(r"\\t\((\d+),", typed))
     check("typed text is complete while it is shown, its shadow appears with each letter", last < 1000 and "\\4a&HFF&" in typed, last)
+    song = home / "song.mp3"                   # a 1-second song: it must loop under the whole video
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "sine=f=660:duration=1", "-c:a", "libmp3lame", str(song)], check=True)
+    before = {j["id"] for j in vo.list_jobs(500)}
+    r = c.post("/auto/finish", data={**base_f, "music": str(song), "music_level": "loud"}, headers=H)
+    mj = wait(next(j["id"] for j in vo.list_jobs(500) if j["id"] not in before))
+    mres = mj.get("result") or {}
+    tail_s = subprocess.run([ff, "-hide_banner", "-nostats", "-sseof", "-0.9", "-i", str(Path(mj["dir"]) / "video.mp4"), "-t", "0.4",
+                             "-af", "volumedetect", "-f", "null", "-"], capture_output=True, text=True).stderr
+    mv = re.search(r"mean_volume: (-?[\d.]+) dB", tail_s)
+    check("music under the voice, looped to the end", mj["state"] == "done" and all(x["pass"] for x in mres.get("checks", []))
+          and mv and float(mv.group(1)) > -45, (mres.get("error"), mv and mv.group(1)))
+    r = c.post("/auto/finish", data={**base_f, "music": str(home / "nope.mp3")}, headers=H)
+    check("a music file that is not there: refused in words", r.status_code == 400, r.status_code)
     r = c.post("/auto/finish", data={"video": str(video), "voice": "none", "captions": "voice"}, headers=H)
     check("captions of a voice without a voice: refused in words", r.status_code == 400, r.status_code)
     r = c.post("/auto/finish", data={"video": str(video), "voice": "none", "captions": "none"}, headers=H)

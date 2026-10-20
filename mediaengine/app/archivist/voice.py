@@ -725,7 +725,7 @@ def _clean_cues(raw) -> list[dict]:
 
 def new_render(video: str, cues_: list[dict] | None = None, opts: dict | None = None, texts: list[dict] | None = None,
                voice_from: str = "", start_s: float = 0.0, keep_sound: bool = True, title: str = "",
-               captions_on: bool = True) -> str:
+               captions_on: bool = True, music: str = "", music_level: str = "medium") -> str:
     """A video with text and/or (edited) captions, and the voice of a made voice-over if any: no add-on needed (nothing
     is spoken or listened to - the words and their times are already there)."""
     p = Path(str(video or "").strip().strip('"'))
@@ -737,7 +737,7 @@ def new_render(video: str, cues_: list[dict] | None = None, opts: dict | None = 
             raise VoiceError("This voice-over is not ready.")
     cs = _clean_cues(cues_)
     tx = list(texts or [])
-    if not (cs and captions_on) and not tx and not voice_from:
+    if not (cs and captions_on) and not tx and not voice_from and not music:
         raise VoiceError("Add a text (or captions) first.")
     start_s = max(0.0, min(60.0, float(start_s or 0)))
     late = [t for t in tx if t.get("start") is not None and not t.get("at_end")]
@@ -749,14 +749,17 @@ def new_render(video: str, cues_: list[dict] | None = None, opts: dict | None = 
                                                  .get("seconds") or 0) + 0.5)
         if any(float(t["start"]) >= length - 0.2 for t in late):
             raise VoiceError(f"A text starts after the end of the video (the video is {length:.1f} s long).")
+    music = _check_music(music)
     return _submit({"kind": "render", "video": str(p), "cues": cs, "captions_on": bool(captions_on),
                     "opts": tf.options(**(opts or {})), "texts": tx, "voice_from": voice_from or "",
-                    "start_s": start_s, "keep_sound": bool(keep_sound), "title": (title or p.name)[:60]}, addon=False)
+                    "start_s": start_s, "keep_sound": bool(keep_sound), "music": music,
+                    "music_level": music_level if music_level in ("quiet", "medium", "loud") else "medium",
+                    "title": (title or p.name)[:60]}, addon=False)
 
 
 def new_finish(video: str, voice: str = "none", voice_from: str = "", new_voice: dict | None = None,
                captions: str = "none", opts: dict | None = None, texts: list[dict] | None = None, start_s=0.3,
-               keep_sound: bool = True) -> str:
+               keep_sound: bool = True, music: str = "", music_level: str = "medium") -> str:
     """Everything for one video in one go: a voice (none / a voice-over made already / a new one, made first), captions
     (none / the voice's words / the video's own speech, heard when the video is made), a look and texts. A new voice
     and captions of the speech need the add-on; the rest does not."""
@@ -780,8 +783,9 @@ def new_finish(video: str, voice: str = "none", voice_from: str = "", new_voice:
         if installing():
             raise VoiceError("The voice add-on is being installed. Wait until it is ready.")
     tx = list(texts or [])
-    if voice == "none" and captions == "none" and not tx:
-        raise VoiceError("Add a text, captions or a voice first.")
+    music = _check_music(music)
+    if voice == "none" and captions == "none" and not tx and not music:
+        raise VoiceError("Add a text, captions, a voice or music first.")
     if voice == "new":                                    # made first: the jobs run one after another, in order
         nv = new_voice or {}
         voice_from = new_voiceover(nv.get("text", ""), nv.get("voice", ""), nv.get("description", ""),
@@ -798,7 +802,28 @@ def new_finish(video: str, voice: str = "none", voice_from: str = "", new_voice:
                     "captions_from": captions if captions in ("voice", "speech") else None,
                     "needs_addon": captions == "speech", "opts": tf.options(**(opts or {})), "texts": tx,
                     "voice_from": voice_from or "", "start_s": start, "keep_sound": bool(keep_sound),
+                    "music": music, "music_level": music_level if music_level in ("quiet", "medium", "loud") else "medium",
                     "title": p.name[:60]}, addon=False)
+
+
+MUSIC_EXT = {".mp3", ".m4a", ".aac", ".wav", ".flac", ".ogg", ".opus", ".wma"}
+
+
+def _check_music(music: str) -> str:
+    """A song under the video: a sound file that really plays (its first second decodes), or '' for none."""
+    m = str(music or "").strip().strip('"')
+    if not m:
+        return ""
+    p = Path(m)
+    if not p.is_file():
+        raise VoiceError("Choose the music file (its full path).")
+    if p.suffix.lower() not in MUSIC_EXT:
+        raise VoiceError("The music must be a sound file (MP3, M4A, WAV, FLAC, OGG).")
+    cp = subprocess.run([_ffmpeg(), "-v", "error", "-i", str(p), "-map", "0:a:0", "-t", "1", "-ac", "1", "-ar", "8000",
+                         "-f", "s16le", "-"], capture_output=True, **process_kwargs(dict(timeout=120)))
+    if cp.returncode != 0 or len(cp.stdout) < 800:
+        raise VoiceError("This music file has no sound that can be played.")
+    return str(p)
 
 
 def _loop() -> None:
@@ -943,8 +968,11 @@ def _do(jid: str) -> dict:
                 words = [{**w, "s": w["s"] - sh, "e": w["e"] - sh} for w in words]
             job["cues"] = style_cues(words, opts)          # kept: the editor of this video starts from them
             _write_job(d, job)
+        if job.get("music") and not Path(job["music"]).is_file():
+            return {"ok": False, "error": "The music file is no longer there: " + str(job["music"])}
         out = _burn(Path(job["video"]), voice, (job.get("cues") or []) if job.get("captions_on", True) else [], d,
-                    keep_sound=job.get("keep_sound", True),
+                    keep_sound=job.get("keep_sound", True), music=job.get("music") or None,
+                    music_level=job.get("music_level") or "medium",
                     offset=float(job.get("start_s") or 0.0), opts=job.get("opts"), texts=job.get("texts"))
         return {"ok": True, **out}
     return {"ok": False, "error": "Unknown job."}
@@ -968,7 +996,8 @@ def _caption_font(d: Path) -> bool:
 
 
 def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sound: bool, offset: float,
-          opts: dict | None = None, texts: list[dict] | None = None, position: str | None = None) -> dict:
+          opts: dict | None = None, texts: list[dict] | None = None, position: str | None = None,
+          music: str | None = None, music_level: str = "medium") -> dict:
     """The video with the voice (its own sound ducked under it, or none) and the captions burned in -> d/video.mp4,
     checked (H.264 + AAC, plays to the end)."""
     from . import auto_edit as ae, orders as od
@@ -1012,19 +1041,43 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
     vf.append("format=yuv420p")
     cmd = [_ffmpeg(), "-hide_banner", "-nostdin", "-y", "-i", str(video)]
     fc = [f"[0:v]{','.join(vf)}[v]"]
-    if voice_wav is not None:
-        cmd += ["-i", str(voice_wav)]
-        ms = int(offset * 1000)
-        fc.append(f"[1:a]adelay={ms}|{ms},apad=whole_dur={length:.3f},asplit=2[vo][sc]")
-        if keep_sound and has_audio:
-            fc.append(f"[0:a]aresample=48000,aformat=channel_layouts=stereo,apad=whole_dur={length:.3f},volume=-4dB[bg]")
-            fc.append("[bg][sc]sidechaincompress=threshold=0.02:ratio=6:attack=20:release=400[bgd]")
-            fc.append("[bgd][vo]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=11[a]")
-        else:
-            fc.append("[sc]anullsink;[vo]aformat=channel_layouts=stereo,loudnorm=I=-14:TP=-1.5:LRA=11[a]")
-        amap = "[a]"
-    else:
+    mus = Path(music) if music else None
+    if voice_wav is None and mus is None:
         amap = "0:a?" if keep_sound else None
+    else:
+        parts, n_in = [], 1                                    # the streams mixed, each ducked under the voice
+        bed = (keep_sound and has_audio) + (mus is not None)
+        if voice_wav is not None:
+            cmd += ["-i", str(voice_wav)]
+            ms = int(offset * 1000)
+            fc.append(f"[{n_in}:a]adelay={ms}|{ms},aformat=channel_layouts=stereo,apad=whole_dur={length:.3f},"
+                      f"asplit={bed + 1}" + "".join(f"[sc{i}]" for i in range(bed)) + "[vo]")
+            n_in += 1
+            parts.append("[vo]")
+        k = 0
+
+        def duck(label: str) -> str:
+            nonlocal k
+            if voice_wav is None:
+                return label
+            fc.append(f"{label}[sc{k}]sidechaincompress=threshold=0.02:ratio=6:attack=20:release=400[d{k}]")
+            k += 1
+            return f"[d{k - 1}]"
+        if keep_sound and has_audio:
+            fc.append(f"[0:a]aresample=48000,aformat=channel_layouts=stereo,apad=whole_dur={length:.3f},"
+                      f"volume={'-4dB' if voice_wav is not None else '0dB'}[bg]")
+            parts.append(duck("[bg]"))
+        if mus is not None:
+            cmd += ["-stream_loop", "-1", "-i", str(mus)]
+            gain = {"quiet": -16, "medium": -11, "loud": -6}.get(music_level, -11) + (0 if voice_wav is not None else 4)
+            fc.append(f"[{n_in}:a]aresample=48000,aformat=sample_rates=48000:channel_layouts=stereo,atrim=0:{length:.3f},"
+                      f"asetpts=N/SR/TB,loudnorm=I=-16:TP=-2:LRA=11,aresample=48000,volume={gain}dB,afade=t=in:d=0.6,"
+                      f"afade=t=out:st={max(0.0, length - 1.6):.3f}:d=1.5,apad=whole_dur={length:.3f}[mu]")
+            n_in += 1
+            parts.append(duck("[mu]"))
+        fc.append("".join(parts) + (f"amix=inputs={len(parts)}:duration=longest:normalize=0," if len(parts) > 1 else "")
+                  + "loudnorm=I=-14:TP=-1.5:LRA=11[a]")
+        amap = "[a]"
     cmd += ["-filter_complex", ";".join(fc), "-map", "[v]"]
     if amap:
         cmd += ["-map", amap]
@@ -1041,7 +1094,7 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
         tail = [x for x in log.read_text("utf-8", errors="replace").splitlines() if x.strip()][-1:] or ["?"]
         raise VoiceError("FFmpeg could not make the video (" + tail[0][:200] + ").")
     _CURRENT.update(step="checking", progress=0.9)
-    with_sound = voice_wav is not None or (keep_sound and has_audio)
+    with_sound = voice_wav is not None or (keep_sound and has_audio) or bool(music)
     checks = od._check_output(d / "video.mp4", {"seconds": length, "tolerance": 0.25, "audio": with_sound})
     if not all(c["pass"] for c in checks):
         bad = next(c for c in checks if not c["pass"])
@@ -1106,6 +1159,7 @@ def editor_base(jid: str) -> dict:
     else:
         if j.get("voice_from") and not (_job_dir(j["voice_from"]) / "voice.wav").is_file():
             raise VoiceError("The voice-over of this video was deleted, so the video cannot be made again with its voice.")
+        base.update(music=j.get("music") or "", music_level=j.get("music_level") or "medium")
         base.update(video=j["video"], voice_from=j.get("voice_from") or "", start_s=float(j.get("start_s") or 0),
                     keep_sound=bool(j.get("keep_sound", True)), cues=list(j.get("cues") or []),
                     captions_on=bool(j.get("cues")) and bool(j.get("captions_on", True)))
