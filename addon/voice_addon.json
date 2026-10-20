@@ -30,32 +30,32 @@
   {
    "check": "the voice-over is made",
    "pass": true,
-   "detail": "{'ok': True, 'seconds': 8.23, 'device': 'cpu', 'said': \"Okay, so here's the thing, packing light changed every trip we took. Three outfits, one good hat, and more time in the water.\", 'word_errors': 0, 'words': 23, 'chunks': [{'chunk': 1, 'attempt': 1, 'seconds': 7.68, 'make_s': 117.1, 'said': \"Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water.\", 'word_errors': 0, 'words': 23, 'file': 'chunk_001_try1.wav'}], 'load_s': 55.8, 'steps': 10, 'language': 'en', 'files': {'voice': 'voice.wav', 'srt': 'captions.srt'}, 'finished_"
+   "detail": "{'ok': True, 'seconds': 7.91, 'device': 'cpu', 'said': \"Okay, so here's the thing packing light changed every trip we took three outfits one good hat and more time in the water\", 'word_errors': 0, 'words': 23, 'chunks': [{'chunk': 1, 'attempt': 1, 'seconds': 7.36, 'make_s': 608.1, 'said': \"Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water.\", 'word_errors': 0, 'words': 23, 'file': 'chunk_001_try1.wav'}], 'load_s': 60.2, 'steps': 10, 'language': 'en', 'files': {'voice': 'voice.wav', 'srt': 'captions.srt'}, 'finished_at': "
   },
   {
    "check": "every word said (listened to)",
    "pass": true,
-   "detail": "Okay, so here's the thing, packing light changed every trip we took. Three outfits, one good hat, and more time in the water."
+   "detail": "Okay, so here's the thing packing light changed every trip we took three outfits one good hat and more time in the water"
   },
   {
    "check": "a plausible length",
    "pass": true,
-   "detail": "8.23"
+   "detail": "7.91"
   },
   {
    "check": "a Russian voice-over in the same voice, heard back in Cyrillic",
    "pass": true,
-   "detail": "Привет! Это короткая проверка голоса."
+   "detail": "Привет, это короткая проверка голоса."
   },
   {
    "check": "the voice onto the video, captions burned, checked",
    "pass": true,
-   "detail": "{'ok': True, 'files': {'video': 'video.mp4', 'srt': 'captions.srt'}, 'seconds': 14.0, 'checks': [{'check': 'video', 'pass': True, 'detail': 'h264'}, {'check': 'length', 'pass': True, 'detail': '14.000 s (planned 14.000 s)'}, {'check': 'sound', 'pass': True, 'detail': 'aac'}, {'check': 'plays_to_the_end', 'pass': True, 'detail': 'decoded completely'}], 'captions': 10, 'texts': 0, 'width': 640, 'height': 360, 'saved': 'D:\\\\a\\\\_temp\\\\home-voice\\\\Exports\\\\clip_1 - voice.mp4', 'finished_at': '2026-10-20T06:21:55'}"
+   "detail": "{'ok': True, 'files': {'video': 'video.mp4', 'srt': 'captions.srt'}, 'seconds': 14.0, 'checks': [{'check': 'video', 'pass': True, 'detail': 'h264'}, {'check': 'length', 'pass': True, 'detail': '14.000 s (planned 14.000 s)'}, {'check': 'sound', 'pass': True, 'detail': 'aac'}, {'check': 'plays_to_the_end', 'pass': True, 'detail': 'decoded completely'}], 'captions': 10, 'texts': 0, 'width': 640, 'height': 360, 'saved': 'D:\\\\a\\\\_temp\\\\home-voice\\\\Exports\\\\clip_1 - voice.mp4', 'finished_at': '2026-10-20T06:53:49'}"
   },
   {
    "check": "captions from the video's own speech hear the voice-over",
    "pass": true,
-   "detail": "Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water."
+   "detail": "Okay, so here's the thing, packing light changed every trip we took. Three outfits, one good hat, and more time in the water."
   },
   {
    "check": "the page in Russian with a finished voice-over",
@@ -64,19 +64,19 @@
   }
  ],
  "timings": {
-  "install_s": 93,
-  "voiceover_s": 194,
+  "install_s": 108,
+  "voiceover_s": 686,
   "voiceover": {
    "device": "cpu",
-   "seconds": 8.23,
-   "load_s": 55.8,
+   "seconds": 7.91,
+   "load_s": 60.2,
    "steps": 10,
    "chunks": [
     {
      "chunk": 1,
      "attempt": 1,
-     "seconds": 7.68,
-     "make_s": 117.1,
+     "seconds": 7.36,
+     "make_s": 608.1,
      "said": "Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water.",
      "word_errors": 0,
      "words": 23,
@@ -84,9 +84,9 @@
     }
    ]
   },
-  "russian_s": 159,
-  "dub_s": 10,
-  "captions_s": 9
+  "russian_s": 420,
+  "dub_s": 6,
+  "captions_s": 12
  },
  "manifest": {
   "version": 1,
@@ -169,7 +169,7 @@
     "536b0662742c02347bc0e980a01041f333bce120"
    ]
   },
-  "installed_at": "2026-10-20T06:15:51",
+  "installed_at": "2026-10-20T06:35:15",
   "bytes": 7615126211
  }
 }
