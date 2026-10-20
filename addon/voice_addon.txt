@@ -1,18 +1,17 @@
 PASS Install starts
-09:24:17 running checking  0/0 MB
-09:24:22 running packages Installing : 0/0 MB
-09:25:02 running models  0/0 MB
-09:25:07 running models model.safetensors 762/5446 MB
-09:25:12 running models model.safetensors 2027/5446 MB
-09:25:17 running models model.safetensors 3579/5446 MB
-09:25:22 running models model.safetensors 4397/5446 MB
-09:25:27 running models model.safetensors 4769/5446 MB
-09:25:32 running models model.safetensors 4957/5446 MB
-09:25:37 running checking_addon  5446/5446 MB
-09:25:42 done   5446/5446 MB
+09:28:34 running checking  0/0 MB
+09:28:39 running packages Installing : 0/0 MB
+09:29:14 running models config.json 376/5446 MB
+09:29:19 running models model.safetensors 1247/5446 MB
+09:29:24 running models model.safetensors 2486/5446 MB
+09:29:29 running models model.safetensors 3642/5446 MB
+09:29:34 running models model.safetensors 4617/5446 MB
+09:29:39 running models model.safetensors 4957/5446 MB
+09:29:44 running models tokenizer.json 5445/5446 MB
+09:29:49 done   5446/5446 MB
 PASS the add-on is installed
 PASS its manifest: version, Python, torch, models
 PASS the page shows the forms once installed
 PASS a voice-over is accepted
-09:25:42 20261020-092542-0c8000 working starting 0%
-09:25:45 20261020-092542-0c8000 working loading 2%
+09:29:49 20261020-092949-7b91b0 working starting 0%
+09:29:52 20261020-092949-7b91b0 working loading 2%
