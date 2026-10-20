@@ -77,7 +77,7 @@ The owner: "voice-over, processing and text in the video - MedEng". **Auto Edit 
 - **New voice-over**: the text in pieces the model says well, in one voice: "Host - the voice of 4_4" (default) or
   "4_2" - the owner's picks from voice lab round 4 (3.1 first; then "3.1 sounds like sex, too squeaky for business
   info"); their very takes ship with the program (FLAC) - a voice from a description, or from a recording of a person
-  who agreed to it. "Microphone finishing" on by default (the same take was "too tired" without it, "will do" with it). A separate Python process that sees only the add-on does the work; every piece is listened
+  who agreed to it. Loudness finishing only (a "microphone" finishing was tried and dropped: no audible difference). A separate Python process that sees only the add-on does the work; every piece is listened
   to (Whisper) and made again when words are missing. WAV + captions (SRT) from the real times of the words.
 - **Put it on a video**: the video's own sound ducked under the voice (or muted), captions burned in (ASS, the word
   being said turns yellow), the last picture held when the voice is longer; checked (H.264 + AAC, plays to the end);

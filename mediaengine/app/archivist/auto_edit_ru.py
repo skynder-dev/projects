@@ -670,7 +670,6 @@ PHRASES = {
         "Пиши так, как говорят вслух: короткие фразы, запятые и точки там, где паузы.",
     "Voice": "Голос",
     "Host - the voice of 4_4": "Ведущая — голос 4_4", "Host - the voice of 4_2": "Ведущая — голос 4_2",
-    "Microphone finishing (sounds more like a real recording)": "Обработка «под микрофон» (больше похоже на настоящую запись)",
     "The recording of this voice is missing from this version of MediaEngine.": "В этой версии MediaEngine нет записи этого голоса.",
     "My description of a voice (English works best)": "Свой голос по описанию (лучше писать по-английски)",
     "A voice from a recording (a person who agreed to it)": "Голос из записи (человека, который на это согласен)",
@@ -719,8 +718,8 @@ PHRASES = {
     "Voice-over (Auto Edit → Voice-over, an add-on installed with a button): a text read by a voice, checked word by word, captions timed to the words, the voice and captions put onto a video.":
         "Озвучка (Автомонтаж → Озвучка, модуль ставится кнопкой): текст читает голос с проверкой каждого слова, "
         "субтитры точно по словам, голос и субтитры накладываются на видео.",
-    "Voice-over: your picks from the voice test, the voices 4_4 and 4_2, instead of 3.1; “microphone finishing” on by default.":
-        "Озвучка: твой выбор из пробы голосов — голоса 4_4 и 4_2 вместо 3.1; обработка «под микрофон» включена по умолчанию.",
+    "Voice-over: your picks from the voice test, the voices 4_4 and 4_2, instead of 3.1.":
+        "Озвучка: твой выбор из пробы голосов — голоса 4_4 и 4_2 вместо 3.1.",
     "Captions for your own videos: the speech becomes captions burned into a copy (Auto Edit → Voice-over).":
         "Субтитры для твоих видео: речь превращается в субтитры, вшитые в копию (Автомонтаж → Озвучка).",
     "A Windows window is open — it may be behind this window.": "Открыто окно Windows — оно может быть за этим окном.",

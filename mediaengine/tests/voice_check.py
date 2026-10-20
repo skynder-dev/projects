@@ -128,7 +128,8 @@ def main() -> int:
     job = json.loads((d / "job.json").read_text("utf-8"))
     check("the default voice is used with its own words", job["voice"].get("ref_text") == vo.HOST_REF_TEXT
           and job["voice"].get("key") == vo.DEFAULT_VOICE)
-    check("microphone finishing is on by default", job.get("mic") is True, job.get("mic"))
+    check("loudness finishing only (no 'microphone' option)", "mic" not in job and "name='mic'" not in
+          c.get("/auto/voice", headers=H).get_data(as_text=True), job.get("mic"))
     r = c.get(f"/auto/voice/{jid}/file/voice.wav", headers={**H, "Range": "bytes=0-99"})
     check("the player gets the sound in pieces (Range)", r.status_code == 206 and len(r.data) == 100, r.status_code)
     r = c.get(f"/auto/voice/{jid}/file/captions.srt?download=1", headers=H)

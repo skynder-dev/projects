@@ -87,11 +87,9 @@ VOICES = {
     "own": {"label": "A voice from a recording (a person who agreed to it)"},
 }
 DEFAULT_VOICE = "host_4_4"
-# "microphone" finishing (round 4: the same take was "too tired" as made and "will do" with it): a gentle roll-off of
-# the highest frequencies (where a neural vocoder's glassy sheen is), a touch of tape-like saturation, a small room,
-# light compression. Nothing is cut or moved in time (the captions' word times stay right).
-MIC_CHAIN = ("highpass=f=80,lowpass=f=11000:p=1,asoftclip=type=tanh:threshold=0.9,aecho=0.9:0.9:23|37|53:0.06|0.045|0.03,"
-             "acompressor=threshold=-22dB:ratio=2:attack=10:release=150:makeup=1.3,")
+# Finishing: loudness only. A "microphone" finishing (roll-off, saturation, small room, compression) was tried and
+# dropped - the owner heard no difference (round 5, 2026-10-19: "what the hell is the difference between 5_1 and 5_2");
+# shifting the finished voice's pitch was rejected outright ("as if drowned in a toilet") - never done here.
 
 
 class VoiceError(Exception):
@@ -638,7 +636,7 @@ def _submit(job: dict) -> str:
 
 
 def new_voiceover(text: str, voice: str, description: str = "", ref_path: str = "", ref_text: str = "",
-                  language: str = "", mic: bool = True) -> str:
+                  language: str = "") -> str:
     _need_addon()
     text = str(text or "").strip()
     if not text:
@@ -666,7 +664,7 @@ def new_voiceover(text: str, voice: str, description: str = "", ref_path: str = 
     lang = str(language or "").strip().lower()
     if lang and not re.fullmatch(r"[a-z]{2}", lang):
         lang = ""
-    return _submit({"kind": "voiceover", "text": text, "voice": v, "language": lang or None, "mic": bool(mic),
+    return _submit({"kind": "voiceover", "text": text, "voice": v, "language": lang or None,
                     "title": re.sub(r"\s+", " ", text)[:60]})
 
 
@@ -774,7 +772,7 @@ def _do(jid: str) -> dict:
             return res
         _CURRENT.update(step="finishing", progress=0.97)
         cp = subprocess.run([_ffmpeg(), "-hide_banner", "-nostdin", "-y", "-v", "error", "-i", str(d / "voice_raw.wav"),
-                             "-af", (MIC_CHAIN if job.get("mic", True) else "") + "loudnorm=I=-16:TP=-1.5:LRA=11",
+                             "-af", "loudnorm=I=-16:TP=-1.5:LRA=11",
                              "-ar", "48000", "-ac", "1", "-c:a", "pcm_s16le",
                              str(d / "voice.wav")], **process_kwargs(dict(capture_output=True, timeout=600)))
         if cp.returncode != 0:
