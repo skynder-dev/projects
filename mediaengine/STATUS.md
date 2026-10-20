@@ -592,6 +592,13 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   style note on 4_2's timbre (237 Hz), voice7_2 continued from 4_2's recording made 2 semitones lower by PSOLA
   (244 Hz - the model drifts back up), voice7_3 4_2's own recipe (its seed, cfg 1.6) described lower (221 Hz).
   Sent; his pick becomes the program's default voice (a new FLAC) together with the checkbox removal.
+  Round 7 verdict (23:16): 7_1 "good but squeaky", 7_2 / 7_3 "robot voice". Round 8 (run 39368973655): 14 more
+  takes of 7_1's way (same note, a calmer note, 7_1 itself as the timbre) all at 237-280 Hz - 4_2's timbre does not go
+  lower naturally; not sent (told him so). Round 9 (run 39372109372, round9/): 4_2's own recipe with 12 other seeds =
+  other voices, the three lowest natural ones sent (voice9_1 221 Hz, voice9_2 / 9_3 233 Hz; all words). Lossless
+  FLACs of them and of 7_1 (host_7_1.flac) are on the lab branch for the program. Found: 7_1 locked the program's way
+  (ultimate cloning) on another text came out at ~250 Hz (7_1: 237) - a locked voice can drift up on a new text, so a
+  picked voice gets that check before it ships. The checkbox removal is done locally, waiting to ship with his pick.
 
 ## Evidence
 
