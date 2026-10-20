@@ -420,9 +420,8 @@ def register(app, page, err_page, e, human_bytes):
         return tf.options(f.get("style"), f.get("color"), f.get("size"), f.get("position"))
 
     def _edited_cues(f, base: dict) -> list[dict]:
-        """The captions of the editor: unchanged ones regrouped for the chosen style; edited ones keep their time."""
-        if f.get("captions_on") != "1":
-            return []
+        """The captions of the editor: unchanged ones regrouped for the chosen style; edited ones keep their time.
+        Turned off, they are still kept with the video (so its editor can turn them on again)."""
         src = base.get("cues") or []
         texts = f.getlist("c_text")
         if len(texts) != len(src):                # the page was made for other captions: keep them as they were
@@ -442,11 +441,12 @@ def register(app, page, err_page, e, human_bytes):
         """Everything a render (or its preview) needs, from the editor or the text form."""
         texts = tf.parse_texts(tf.rows_from_form(f))
         if base:
-            return {"video": base["video"], "cues": _edited_cues(f, base), "opts": _opts(f), "texts": texts,
-                    "voice_from": base.get("voice_from") or "", "start_s": base.get("start_s") or 0.0,
+            on = f.get("captions_on") == "1"
+            return {"video": base["video"], "cues": _edited_cues(f, base), "captions_on": on, "opts": _opts(f),
+                    "texts": texts, "voice_from": base.get("voice_from") or "", "start_s": base.get("start_s") or 0.0,
                     "keep_sound": base.get("keep_sound", True), "title": base.get("title") or ""}
-        return {"video": f.get("video", ""), "cues": [], "opts": _opts(f), "texts": texts, "voice_from": "",
-                "start_s": 0.0, "keep_sound": True, "title": ""}
+        return {"video": f.get("video", ""), "cues": [], "captions_on": False, "opts": _opts(f), "texts": texts,
+                "voice_from": "", "start_s": 0.0, "keep_sound": True, "title": ""}
 
     @app.post("/auto/text/new")
     def text_new():
@@ -464,7 +464,8 @@ def register(app, page, err_page, e, human_bytes):
             base = vo.editor_base(f["jid"]) if f.get("jid") else None
             pl = _payload(f, base)
             at = float(str(f.get("at") or "1").replace(",", ".") or 1)
-            pic = vo.preview_frame(pl["video"], pl["cues"], pl["opts"], pl["texts"], offset=pl["start_s"], at=at,
+            pic = vo.preview_frame(pl["video"], pl["cues"] if pl["captions_on"] else [], pl["opts"], pl["texts"],
+                                   offset=pl["start_s"], at=at,
                                    voice_from=pl["voice_from"])
         except (vo.VoiceError, tf.TextError) as exc:
             return jsonify({"error": str(exc)})
@@ -515,7 +516,8 @@ def register(app, page, err_page, e, human_bytes):
             base = vo.editor_base(jid)
             pl = _payload(request.form, base)
             vo.new_render(pl["video"], pl["cues"], pl["opts"], pl["texts"], voice_from=pl["voice_from"],
-                          start_s=pl["start_s"], keep_sound=pl["keep_sound"], title=pl["title"])
+                          start_s=pl["start_s"], keep_sound=pl["keep_sound"], title=pl["title"],
+                          captions_on=pl["captions_on"])
         except (vo.VoiceError, tf.TextError) as exc:
             return err_page(str(exc), f"/auto/voice/{jid}/edit")
         return redirect("/auto/voice")

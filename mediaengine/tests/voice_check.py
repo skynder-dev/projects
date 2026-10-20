@@ -254,6 +254,49 @@ def main() -> int:
     img = c.get(url, headers=H) if url else None
     check("a preview picture of the text", bool(url) and img.status_code == 200 and img.mimetype == "image/jpeg"
           and len(img.data) > 2000, r.get_json())
+    # the box is measured right: in the rendered picture it reaches past its text by its padding, not by a quarter more
+    bdir = home / "boxcheck"
+    bdir.mkdir(exist_ok=True)
+    (bdir / "b.ass").write_text(tf.document(1080, 1920, [], [{"text": "Подпишись на канал", "start": 0, "end": 2,
+                                                               "where": "middle", "look": "box"}]), "utf-8")
+    tf.install_fonts(bdir)
+    raw = subprocess.run([ff, "-v", "error", "-f", "lavfi", "-i", "color=c=0x808080:s=1080x1920:d=1", "-vf",
+                          "ass=b.ass:fontsdir=fonts,format=gray", "-ss", "0.6", "-frames:v", "1", "-f", "rawvideo", "-"],
+                         cwd=str(bdir), capture_output=True).stdout
+    if len(raw) == 1080 * 1920:
+        rows = [raw[y * 1080:(y + 1) * 1080] for y in range(1920)]
+        white = [x for r_ in rows for x in range(1080) if r_[x] > 200]
+        dark = [x for r_ in rows for x in range(1080) if r_[x] < 60]
+        tw, bw = (max(white) - min(white)) if white else 0, (max(dark) - min(dark)) if dark else 0
+    else:
+        tw = bw = 0
+    em = 1080 * 0.05
+    check("a box hugs its text (the renderer's own font size, measured)", tw > 300 and 0.6 * em < bw - tw < 1.8 * em,
+          {"text": tw, "box": bw, "pad_expected": round(1.2 * em)})
+    # a title at the top with captions at the top: next to them, not over them; odd words do not break a style
+    one = [{"s": 0.0, "e": 2.0, "words": [{"w": "first", "s": 0.0, "e": 0.9}, {"w": "line", "s": 1.0, "e": 1.9}]}]
+    doc = tf.document(1080, 1920, one, [{"text": "Title", "start": 0, "end": 2, "where": "top", "look": "banner"}],
+                      {"style": "pop", "position": "top"})
+    ys = lambda layer: [int(m_.group(1)) for m_ in re.finditer(r"Dialogue: %d,.*?\\pos\(\d+,(-?\d+)\)" % layer, doc)]
+    check("a title in the captions' place goes next to them", ys(1) and ys(3) and min(ys(3)) > max(ys(1)) + 100,
+          {"captions": ys(1), "title": ys(3)})
+    odd = [{"s": 0.0, "e": 2.0, "words": [{"w": "a\xa0b", "s": 0.0, "e": 0.5}, {"w": "\U0001F600", "s": 0.5, "e": 1.0},
+                                          {"w": "end", "s": 1.0, "e": 1.5}]}]
+    try:
+        okd = all("A" in tf.document(1080, 1920, odd, None, {"style": st_}) or "a" in tf.document(1080, 1920, odd, None, {"style": st_})
+                  for st_ in tf.STYLES)
+    except Exception as exc:
+        okd = repr(exc)
+    check("a word with a no-break space or only an emoji breaks no style", okd is True, okd)
+    # a preview past the end of a video whose sound is longer than its picture: its last picture
+    longer = home / "longer sound.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=540x960:rate=30:duration=2", "-f", "lavfi",
+                    "-i", "sine=f=330:duration=3", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac", str(longer)], check=True)
+    r = c.post("/api/text/preview", data={"video": str(longer), "t_text": "The end", "t_start": "end", "at": "99"}, headers=H)
+    check("a preview at the very end (sound longer than the picture)", bool((r.get_json() or {}).get("url")), r.get_json())
+    r = c.post("/auto/text/new", data={"video": str(video), "t_text": "Too late", "t_start": "30"}, headers=H)
+    check("a text after the end of the video: refused in words", r.status_code == 400 and "after the end" in r.get_data(as_text=True),
+          r.status_code)
     r = c.post("/api/text/preview", data={"video": str(home / "none.mp4"), "t_text": "x"}, headers=H)
     check("a preview of a missing video: said in words", "error" in (r.get_json() or {}), r.get_json())
     r = c.post("/auto/text/new", data={"video": str(video), "t_text": "x", "t_start": "soon"}, headers=H)

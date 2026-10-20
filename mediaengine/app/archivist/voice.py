@@ -707,7 +707,8 @@ def _clean_cues(raw) -> list[dict]:
 
 
 def new_render(video: str, cues_: list[dict] | None = None, opts: dict | None = None, texts: list[dict] | None = None,
-               voice_from: str = "", start_s: float = 0.0, keep_sound: bool = True, title: str = "") -> str:
+               voice_from: str = "", start_s: float = 0.0, keep_sound: bool = True, title: str = "",
+               captions_on: bool = True) -> str:
     """A video with text and/or (edited) captions, and the voice of a made voice-over if any: no add-on needed (nothing
     is spoken or listened to - the words and their times are already there)."""
     p = Path(str(video or "").strip().strip('"'))
@@ -719,11 +720,21 @@ def new_render(video: str, cues_: list[dict] | None = None, opts: dict | None = 
             raise VoiceError("This voice-over is not ready.")
     cs = _clean_cues(cues_)
     tx = list(texts or [])
-    if not cs and not tx and not voice_from:
+    if not (cs and captions_on) and not tx and not voice_from:
         raise VoiceError("Add a text (or captions) first.")
-    return _submit({"kind": "render", "video": str(p), "cues": cs, "opts": tf.options(**(opts or {})), "texts": tx,
-                    "voice_from": voice_from or "", "start_s": max(0.0, min(60.0, float(start_s or 0))),
-                    "keep_sound": bool(keep_sound), "title": (title or p.name)[:60]}, addon=False)
+    start_s = max(0.0, min(60.0, float(start_s or 0)))
+    late = [t for t in tx if t.get("start") is not None and not t.get("at_end")]
+    if late:                                   # a text after the end would be left out without a word
+        from . import orders as od
+        length = video_size(p)[2]
+        if voice_from:
+            length = max(length, start_s + float(od._decode_info(_job_dir(voice_from) / "voice.wav", timeout=300)
+                                                 .get("seconds") or 0) + 0.5)
+        if any(float(t["start"]) >= length - 0.2 for t in late):
+            raise VoiceError(f"A text starts after the end of the video (the video is {length:.1f} s long).")
+    return _submit({"kind": "render", "video": str(p), "cues": cs, "captions_on": bool(captions_on),
+                    "opts": tf.options(**(opts or {})), "texts": tx, "voice_from": voice_from or "",
+                    "start_s": start_s, "keep_sound": bool(keep_sound), "title": (title or p.name)[:60]}, addon=False)
 
 
 def _loop() -> None:
@@ -847,7 +858,8 @@ def _do(jid: str) -> dict:
             voice = _job_dir(job["voice_from"]) / "voice.wav"
             if not voice.is_file():
                 return {"ok": False, "error": "The voice-over of this video was deleted."}
-        out = _burn(Path(job["video"]), voice, job.get("cues") or [], d, keep_sound=job.get("keep_sound", True),
+        out = _burn(Path(job["video"]), voice, (job.get("cues") or []) if job.get("captions_on", True) else [], d,
+                    keep_sound=job.get("keep_sound", True),
                     offset=float(job.get("start_s") or 0.0), opts=job.get("opts"), texts=job.get("texts"))
         return {"ok": True, **out}
     return {"ok": False, "error": "Unknown job."}
@@ -1002,14 +1014,15 @@ def editor_base(jid: str) -> dict:
             raise VoiceError("The voice-over of this video was deleted, so the video cannot be made again with its voice.")
         base.update(video=j["video"], voice_from=j.get("voice_from") or "", start_s=float(j.get("start_s") or 0),
                     keep_sound=bool(j.get("keep_sound", True)), cues=list(j.get("cues") or []),
-                    captions_on=bool(j.get("cues")))
+                    captions_on=bool(j.get("cues")) and bool(j.get("captions_on", True)))
     if not Path(base["video"]).is_file():
         raise VoiceError("The video of this one is no longer there: " + str(base["video"]))
     return base
 
 
-def video_size(video: Path) -> tuple[int, int, float]:
-    """Width and height as shown (a phone video stored on its side counts upright) and the length in seconds."""
+def video_size(video: Path, picture_len: bool = False):
+    """Width and height as shown (a phone video stored on its side counts upright) and the length in seconds; with
+    picture_len also the length of the picture itself (its sound can run longer than its last frame)."""
     from . import auto_edit as ae, orders as od
     try:
         info = ae._probe(video)
@@ -1025,6 +1038,12 @@ def video_size(video: Path) -> tuple[int, int, float]:
     w, h = int(vs.get("width") or 1080), int(vs.get("height") or 1920)
     if int(info.get("rotation") or 0) in (90, 270):
         w, h = h, w
+    if picture_len:
+        try:
+            plen = float(vs.get("duration") or 0)
+        except (TypeError, ValueError):
+            plen = 0.0
+        return w, h, vlen, (min(plen, vlen) if plen > 0 else vlen)
     return w, h, vlen
 
 
@@ -1036,14 +1055,14 @@ def preview_frame(video: str, cues_: list[dict] | None, opts: dict | None, texts
     p = Path(str(video or "").strip().strip('"'))
     if not p.is_file():
         raise VoiceError("Choose the video (its full path).")
-    w, h, vlen = video_size(p)
+    w, h, vlen, plen = video_size(p, picture_len=True)
     length = vlen
     if voice_from:
         wav = _job_dir(voice_from) / "voice.wav"
         if wav.is_file():
             length = max(vlen, offset + float(od._decode_info(wav, timeout=300).get("seconds") or 0) + 0.5)
     t = max(0.0, min(float(at or 0), max(0.0, length - 0.05)))
-    seek = max(0.0, min(t, vlen - 0.1))
+    seek = max(0.0, min(t, plen - 0.15))             # past the last picture: the last picture (as the video holds it)
     d = PREVIEWS / _new_id()
     d.mkdir(parents=True, exist_ok=True)
     doc = tf.document(w, h, _clean_cues(cues_), tf.resolve_texts(texts, length), tf.options(**(opts or {})), offset)
@@ -1052,9 +1071,16 @@ def preview_frame(video: str, cues_: list[dict] | None, opts: dict | None, texts
     fonts = _caption_font(d) or fonts
     vf = (f"setpts=PTS-STARTPTS+{t:.3f}/TB,ass=preview.ass" + (":fontsdir=fonts" if fonts else "")
           + ",scale=-2:'min(ih,960)'")
-    cp = subprocess.run([_ffmpeg(), "-hide_banner", "-nostdin", "-y", "-v", "error", "-ss", f"{seek:.3f}", "-i", str(p),
-                         "-vf", vf, "-frames:v", "1", "-q:v", "3", "frame.jpg"], cwd=str(d), capture_output=True,
-                        **process_kwargs(dict(timeout=120)))
+    ff = _ffmpeg()
+    run = lambda args: subprocess.run([ff, "-hide_banner", "-nostdin", "-y", "-v", "error", *args], cwd=str(d),
+                                      capture_output=True, **process_kwargs(dict(timeout=120)))
+    cp = run(["-ss", f"{seek:.3f}", "-i", str(p), "-vf", vf, "-frames:v", "1", "-q:v", "3", "frame.jpg"])
+    if not (cp.returncode == 0 and (d / "frame.jpg").is_file()):
+        # past the last picture (its sound runs longer; the stream's own length is not known here): the last
+        # picture of the last seconds, then the text drawn on it - as the finished video holds that picture
+        run(["-ss", f"{max(0.0, seek - 8):.3f}", "-i", str(p), "-an", "-update", "1", "-q:v", "2", "last.jpg"])
+        if (d / "last.jpg").is_file():
+            cp = run(["-loop", "1", "-i", "last.jpg", "-vf", vf, "-frames:v", "1", "-q:v", "3", "frame.jpg"])
     shutil.rmtree(d / "fonts", ignore_errors=True)
     if cp.returncode != 0 or not (d / "frame.jpg").is_file():
         raise VoiceError("The picture could not be made (" + (cp.stderr.decode("utf-8", "replace").strip()[-200:] or "?") + ").")

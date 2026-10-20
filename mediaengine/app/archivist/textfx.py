@@ -26,13 +26,13 @@ SIZES = {"small": ("Small", 0.82), "medium": ("Medium", 1.0), "large": ("Large",
 POSITIONS = {"bottom": "at the bottom", "middle": "in the middle", "top": "at the top"}
 STYLES = {
     "pop": {"label": "Bold capitals, the word being said in color (like Reels)", "font": "black", "upper": True, "words": 3,
-            "mode": "word", "size": 0.08, "outline": 0.12, "shadow": 0.05},
+            "mode": "word", "em": 0.064, "outline": 0.18, "shadow": 0.07},
     "box": {"label": "On a dark box, the word being said in color", "font": "extrabold", "upper": False, "words": 4,
-            "mode": "word", "size": 0.07, "box": True},
+            "mode": "word", "em": 0.056, "box": True},
     "classic": {"label": "Classic: white with an outline, the words said turn to the color", "font": "extrabold",
-                "upper": False, "words": 4, "mode": "karaoke", "size": 0.076, "outline": 0.09, "shadow": 0.03},
+                "upper": False, "words": 4, "mode": "karaoke", "em": 0.06, "outline": 0.13, "shadow": 0.05},
     "minimal": {"label": "Calm: white with a soft shadow, no highlight (business)", "font": "semibold", "upper": False,
-                "words": 6, "mode": "plain", "size": 0.062, "outline": 0.035, "shadow": 0.07},
+                "words": 6, "mode": "plain", "em": 0.05, "outline": 0.05, "shadow": 0.1},
 }
 DEFAULT_STYLE, DEFAULT_COLOR, DEFAULT_SIZE = "pop", "yellow", "medium"
 LOOKS = {"banner": "On a colored stripe", "bold": "Big white letters", "box": "On a dark box"}
@@ -84,17 +84,55 @@ def _pil_font(key: str, size: int):
 
 
 @lru_cache(maxsize=8)
-def _em_ratio(key: str) -> float:
-    """The renderer's font size is the line height (ascent + descent); Pillow's is the em: the factor between them."""
-    f = _pil_font(key, 1000)
-    asc, desc = f.getmetrics()
-    return 1000.0 / max(1, asc + desc)
+def metrics(key: str) -> dict:
+    """The font's vertical measures as parts of the renderer's font size. libass makes the size = usWinAscent +
+    usWinDescent of the OS/2 table (for Montserrat 1109 + 453 = 1562 units, the em is 1000): measured against its
+    rendering, not Pillow's ascent (which would make every box 28% too wide)."""
+    import struct
+    data = (FONT_DIR / FONTS[key][1]).read_bytes()
+    n = struct.unpack(">H", data[4:6])[0]
+    tables = {}
+    for i in range(n):
+        tag, _cs, off, ln = struct.unpack(">4sIII", data[12 + 16 * i:28 + 16 * i])
+        tables[tag] = off
+    head, os2 = tables[b"head"], tables[b"OS/2"]
+    upem = struct.unpack(">H", data[head + 18:head + 20])[0]
+    version = struct.unpack(">H", data[os2:os2 + 2])[0]
+    wa, wd = struct.unpack(">HH", data[os2 + 74:os2 + 78])
+    cap = struct.unpack(">h", data[os2 + 88:os2 + 90])[0] if version >= 2 else int(upem * 0.7)
+    tot = float(max(1, wa + wd))
+    return {"em": upem / tot, "asc": wa / tot, "cap": cap / tot}
 
 
 def text_width(text: str, key: str, size: float) -> float:
+    """The width the renderer gives `text` at font size `size` (Pillow at the same em, 4x for precision)."""
     if not text:
         return 0.0
-    return float(_pil_font(key, max(4, int(round(size * _em_ratio(key) * 4)))).getlength(text)) / 4.0
+    return float(_pil_font(key, max(4, int(round(size * metrics(key)["em"] * 4)))).getlength(text)) / 4.0
+
+
+def _ass_size(key: str, em_px: float) -> float:
+    """The renderer's font size that gives letters of this em (in pixels)."""
+    return em_px / metrics(key)["em"]
+
+
+class _Block:
+    """Lines of one size laid out top-down: where each line's event goes, and the visible height (cap top of the
+    first line to the baseline of the last)."""
+
+    def __init__(self, lines: list[str], key: str, size: float, pitch_em: float = 1.28):
+        m = metrics(key)
+        self.lines, self.key, self.size = lines, key, size
+        self.pitch = pitch_em * m["em"] * size
+        self.over = (m["asc"] - m["cap"]) * size                   # from the event's y down to the capitals' top
+        self.vis_h = (len(lines) - 1) * self.pitch + m["cap"] * size
+        self.em = m["em"] * size
+
+    def line_y(self, vis_top: float, i: int) -> float:
+        return vis_top - self.over + i * self.pitch
+
+    def width(self) -> float:
+        return max(text_width(x, self.key, self.size) for x in self.lines)
 
 
 def fit_lines(text: str, key: str, size: float, maxw: float, max_lines: int = 3) -> tuple[list[str], float]:
@@ -244,7 +282,8 @@ def install_fonts(d: Path) -> bool:
 # ------------------------------------------------------------------------------------------------- the document
 def document(width: int, height: int, cues: list[dict] | None = None, texts: list[dict] | None = None,
              opts: dict | None = None, offset: float = 0.0) -> str:
-    """One ASS document: the captions (cues of timed words) in the chosen style, and the text blocks."""
+    """One ASS document: the captions (cues of timed words) in the chosen style, and the text blocks - a text in the
+    captions' place is moved next to them, never over them."""
     o = options(**(opts or {}))
     W, H = int(width), int(height)
     base = min(W, H)
@@ -256,21 +295,31 @@ def document(width: int, height: int, cues: list[dict] | None = None, texts: lis
             "Style: Base,Montserrat ExtraBold,40,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,0,0,"
             "5,0,0,0,1\n\n[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n")
     ev: list[str] = []
+    zone = None
     if cues:
+        st = STYLES[o["style"]]
+        em = base * st["em"] * SIZES[o["size"]][1]
+        two = _Block(["x", "x"], st["font"], _ass_size(st["font"], em))
+        zone = (o["position"], two.vis_h + 2 * 0.4 * em)          # the most the captions take (two lines and a box)
         ev += _captions(cues, W, H, base, o, offset)
     for t in texts or []:
         if t.get("start") is not None and t.get("end") is not None:     # 'at the end' ones are resolved first
-            ev += _text_block(t, W, H, base, o)
+            ev += _text_block(t, W, H, base, o, zone)
     return head + "\n".join(ev) + "\n"
 
 
-def _block_y(where: str, H: int, block_h: float, captions: bool) -> float:
-    """The top of a block of height block_h."""
+def _vis_top(where: str, H: int, vis_h: float, captions: bool, zone: tuple | None = None) -> float:
+    """The top of the visible text of a block: captions at the bottom (a fifth above the edge, clear of the
+    platforms' buttons), in the middle or at the top; a text block in the captions' place goes next to them."""
+    gap = H * 0.025
+    if captions:
+        return {"top": H * 0.10, "middle": H * 0.50 - vis_h / 2}.get(where, H * 0.80 - vis_h)
+    cz = zone[0] if zone else None
     if where == "top":
-        return H * 0.09
+        return H * 0.08 + ((zone[1] + gap + H * 0.02) if cz == "top" else 0)
     if where == "middle":
-        return H * (0.50 if captions else 0.40) - block_h / 2
-    return H * 0.80 - block_h
+        return (H * 0.50 - zone[1] / 2 - gap - vis_h) if cz == "middle" else H * 0.40 - vis_h / 2
+    return (H * 0.80 - zone[1] - gap - vis_h) if cz == "bottom" else H * 0.80 - vis_h
 
 
 def _captions(cues: list[dict], W: int, H: int, base: int, o: dict, offset: float) -> list[str]:
@@ -278,40 +327,42 @@ def _captions(cues: list[dict], W: int, H: int, base: int, o: dict, offset: floa
     key = st["font"]
     fam = FONTS[key][0]
     accent = COLORS[o["color"]][1]
-    size0 = base * st["size"] * SIZES[o["size"]][1]
-    maxw = W * 0.84
+    size0 = _ass_size(key, base * st["em"] * SIZES[o["size"]][1])
+    maxw = W * 0.86
     out = []
     for cue in cues:
-        words = [w for w in cue["words"] if str(w.get("w") or "").strip()]
-        if not words:
+        pairs = []                           # each word as one token the wrap cannot split (a no-break space, ...)
+        for w in cue["words"]:
+            sh = "".join(clean_text(w.get("w"), 60).split())
+            if sh:
+                pairs.append((w, sh.upper() if st["upper"] else sh))
+        if not pairs:
             continue
-        shown = [clean_text(w["w"], 60) for w in words]
-        shown = [x.upper() if st["upper"] else x for x in shown]
+        words, shown = [p[0] for p in pairs], [p[1] for p in pairs]
         lines, size = fit_lines(" ".join(shown), key, size0, maxw, max_lines=2 if st["mode"] != "plain" else 3)
-        # which words are on which line (the wrap works on the same words, so they map in order)
-        per_line, i = [], 0
+        per_line, i = [], 0                  # which words are on which line (the wrap keeps the tokens in order)
         for ln in lines:
             n = len(ln.split())
             per_line.append(list(range(i, i + n)))
             i += n
-        line_h = size
-        block_h = line_h * len(lines)
-        top = _block_y(o["position"], H, block_h, captions=True)
+        blk = _Block(lines, key, size)
+        vis_top = _vis_top(o["position"], H, blk.vis_h, captions=True)
         s0, e0 = cue["s"] + offset, cue["e"] + offset
-        bord = max(1.0, size * st.get("outline", 0))
-        shad = max(0.0, size * st.get("shadow", 0))
-        common = (f"\\an8\\pos({W / 2:.0f},{top:.0f})\\fn{fam}\\fs{size:.0f}\\bord{bord:.1f}\\shad{shad:.1f}"
-                  f"\\1c&HFFFFFF&\\3c&H000000&\\4c&H000000&\\4a&H{'60' if st['mode'] == 'plain' else '30'}&")
+        bord = max(1.0, blk.em * st.get("outline", 0))
+        shad = max(0.0, blk.em * st.get("shadow", 0))
+        look = (f"\\fn{fam}\\fs{size:.0f}\\bord{bord:.1f}\\shad{shad:.1f}\\1c&HFFFFFF&\\3c&H000000&\\4c&H000000&"
+                f"\\4a&H{'60' if st['mode'] == 'plain' else '30'}&")
         if st.get("box"):              # one rounded dark box behind exactly these lines (layer 0), the words on layer 1
-            pad_x, pad_y = size * 0.38, size * 0.16
-            lw = max(text_width(ln, key, size) for ln in lines)
-            bx, by = W / 2 - lw / 2 - pad_x, top - pad_y
-            out.append(f"Dialogue: 0,{_t(s0)},{_t(e0)},Base,,0,0,0,,{{\\an7\\pos({bx:.0f},{by:.0f})\\p1\\bord0\\shad0"
-                       f"\\1c&H000000&\\1a&H40&\\fad(80,0)}}{_rounded(lw + 2 * pad_x, block_h + 2 * pad_y, size * 0.28)}{{\\p0}}")
-            common = common.replace(f"\\bord{bord:.1f}\\shad{shad:.1f}", "\\bord0\\shad0")
-        if st["mode"] == "karaoke":        # one line of the whole cue: words fill with the color as they are said
-            parts, t = [], cue["s"]
+            pad_x, pad_y = blk.em * 0.55, blk.em * 0.42
+            lw = blk.width()
+            out.append(f"Dialogue: 0,{_t(s0)},{_t(e0)},Base,,0,0,0,,{{\\an7\\pos({W / 2 - lw / 2 - pad_x:.0f},"
+                       f"{vis_top - pad_y:.0f})\\p1\\bord0\\shad0\\1c&H000000&\\1a&H40&\\fad(80,0)}}"
+                       f"{_rounded(lw + 2 * pad_x, blk.vis_h + 2 * pad_y, blk.em * 0.4)}{{\\p0}}")
+            look = look.replace(f"\\bord{bord:.1f}\\shad{shad:.1f}", "\\bord0\\shad0")
+        at = lambda li: f"\\an8\\pos({W / 2:.0f},{blk.line_y(vis_top, li):.0f})"
+        if st["mode"] == "karaoke":        # each line: its words fill with the color as they are said
             for li, idx in enumerate(per_line):
+                parts, t = [], cue["s"]
                 for j in idx:
                     w = words[j]
                     gap = max(0.0, w["s"] - t)
@@ -320,20 +371,18 @@ def _captions(cues: list[dict], W: int, H: int, base: int, o: dict, offset: floa
                     parts.append("{\\k%d}%s" % (max(1, round((w["e"] - max(w["s"], t)) * 100)), shown[j]))
                     parts.append(" " if j != idx[-1] else "")
                     t = max(t, w["e"])
-                if li < len(per_line) - 1:
-                    parts.append("\\N")
-            out.append(f"Dialogue: 1,{_t(s0)},{_t(e0)},Base,,0,0,0,,{{{common}\\1c{tag_color(accent)}"
-                       f"\\2c&HFFFFFF&\\fad(80,0)}}{''.join(parts)}")
+                out.append(f"Dialogue: 1,{_t(s0)},{_t(e0)},Base,,0,0,0,,{{{at(li)}{look}\\1c{tag_color(accent)}"
+                           f"\\2c&HFFFFFF&\\fad(80,0)}}{''.join(parts)}")
             continue
         if st["mode"] == "plain":
-            body = "\\N".join(lines)
-            out.append(f"Dialogue: 1,{_t(s0)},{_t(e0)},Base,,0,0,0,,{{{common}\\fad(120,80)}}{body}")
+            for li, ln in enumerate(lines):
+                out.append(f"Dialogue: 1,{_t(s0)},{_t(e0)},Base,,0,0,0,,{{{at(li)}{look}\\fad(120,80)}}{ln}")
             continue
         # "word": the cue shown once per word, that word in the color (and popping a little in 'pop')
         marks = [cue["s"]] + [w["s"] for w in words[1:]] + [cue["e"]]
         for j in range(len(words)):
             a, b = max(marks[j], cue["s"]), max(marks[j + 1], marks[j] + 0.01)
-            pieces = []
+            fade = "\\fad(80,0)" if j == 0 else ""
             for li, idx in enumerate(per_line):
                 row = []
                 for k in idx:
@@ -342,38 +391,40 @@ def _captions(cues: list[dict], W: int, H: int, base: int, o: dict, offset: floa
                         row.append(f"{{\\1c{tag_color(accent)}{pop}}}{shown[k]}{{\\1c&HFFFFFF&\\fscx100\\fscy100}}")
                     else:
                         row.append(shown[k])
-                pieces.append(" ".join(row))
-            fade = "\\fad(80,0)" if j == 0 else ""
-            out.append(f"Dialogue: 1,{_t(a + offset)},{_t(b + offset)},Base,,0,0,0,,{{{common}{fade}}}" + "\\N".join(pieces))
+                out.append(f"Dialogue: 1,{_t(a + offset)},{_t(b + offset)},Base,,0,0,0,,{{{at(li)}{look}{fade}}}"
+                           + " ".join(row))
     return out
 
 
-def _text_block(t: dict, W: int, H: int, base: int, o: dict) -> list[str]:
+def _text_block(t: dict, W: int, H: int, base: int, o: dict, zone: tuple | None = None) -> list[str]:
     look = t.get("look") if t.get("look") in LOOKS else "banner"
     key = "black" if look in ("banner", "bold") else "extrabold"
-    size0 = base * {"banner": 0.062, "bold": 0.082, "box": 0.056}[look] * SIZES[o["size"]][1]
-    lines, size = fit_lines(t["text"], key, size0, W * (0.80 if look != "bold" else 0.86), max_lines=3)
-    line_h = size * (1.08 if look != "bold" else 1.0)
-    block_h = line_h * len(lines)
-    top = _block_y(t.get("where") or "top", H, block_h, captions=False)
+    em0 = base * {"banner": 0.054, "bold": 0.07, "box": 0.05}[look] * SIZES[o["size"]][1]
+    pad_x_em, pad_y_em = 0.6, 0.48
+    maxw = W * 0.88 - (2 * pad_x_em * em0 if look != "bold" else 0)
+    lines, size = fit_lines(t["text"], key, _ass_size(key, em0), maxw, max_lines=3)
+    blk = _Block(lines, key, size)
+    vis_top = _vis_top(t.get("where") or "top", H, blk.vis_h + (2 * pad_y_em * blk.em if look != "bold" else 0),
+                       captions=False, zone=zone) + (pad_y_em * blk.em if look != "bold" else 0)
     s, e = float(t["start"]), float(t["end"])
     accent = COLORS[o["color"]][1]
     fam = FONTS[key][0]
     anim = "\\fad(120,150)\\fscx86\\fscy86\\t(0,160,\\fscx100\\fscy100)"
     out = []
     if look in ("banner", "box"):
-        pad_x, pad_y = size * 0.45, size * 0.22
+        pad_x, pad_y = blk.em * pad_x_em, blk.em * pad_y_em
         fill, alpha = (tag_color(accent), "&H00&") if look == "banner" else ("&H000000&", "&H38&")
-        lw = max(text_width(ln, key, size) for ln in lines)     # one box for the whole block
-        bx, by = W / 2 - lw / 2 - pad_x, top - pad_y
-        out.append(f"Dialogue: 2,{_t(s)},{_t(e)},Base,,0,0,0,,{{\\an7\\pos({bx:.0f},{by:.0f})\\p1\\bord0\\shad0"
-                   f"\\1c{fill}\\1a{alpha}\\fad(120,150)}}{_rounded(lw + 2 * pad_x, block_h + 2 * pad_y, size * 0.3)}{{\\p0}}")
+        lw = blk.width()                     # one box for the whole block
+        out.append(f"Dialogue: 2,{_t(s)},{_t(e)},Base,,0,0,0,,{{\\an7\\pos({W / 2 - lw / 2 - pad_x:.0f},{vis_top - pad_y:.0f})"
+                   f"\\p1\\bord0\\shad0\\1c{fill}\\1a{alpha}\\fad(120,150)}}"
+                   f"{_rounded(lw + 2 * pad_x, blk.vis_h + 2 * pad_y, blk.em * 0.45)}{{\\p0}}")
         ink = "&H101010&" if look == "banner" else "&HFFFFFF&"     # dark on the colored stripe, white on the dark box
         anim = "\\fad(120,150)"           # a box and its words appear together (a scaled word would leave its box)
         style = f"\\bord0\\shad0\\1c{ink}"
     else:
-        style = f"\\bord{size * 0.11:.1f}\\shad{size * 0.05:.1f}\\1c&HFFFFFF&\\3c&H000000&\\4c&H000000&\\4a&H30&"
-    for li, ln in enumerate(lines):          # one line per event: each sits exactly on its own box
-        out.append(f"Dialogue: 3,{_t(s)},{_t(e)},Base,,0,0,0,,{{\\an8\\pos({W / 2:.0f},{top + li * line_h:.0f})"
+        style = (f"\\bord{blk.em * 0.17:.1f}\\shad{blk.em * 0.07:.1f}\\1c&HFFFFFF&\\3c&H000000&\\4c&H000000&"
+                 f"\\4a&H30&")
+    for li, ln in enumerate(lines):          # one line per event: each sits exactly where its box was measured
+        out.append(f"Dialogue: 3,{_t(s)},{_t(e)},Base,,0,0,0,,{{\\an8\\pos({W / 2:.0f},{blk.line_y(vis_top, li):.0f})"
                    f"\\fn{fam}\\fs{size:.0f}{style}{anim}}}{ln}")
     return out

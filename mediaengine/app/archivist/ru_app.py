@@ -529,6 +529,8 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"FFmpeg could not make the video \((.+)\)\.", r"FFmpeg не смог сделать видео (\1)."),
     (r"The picture could not be made \((.+)\)\.", r"Не удалось сделать кадр (\1)."),
     (r"The video of this one is no longer there: (.+)", r"Видео для этого больше нет на месте: \1"),
+    (r"A text starts after the end of the video \(the video is ([\d.]+) s long\)\.",
+     r"Текст начинается после конца видео (видео длится \1 сек)."),
     (r"graphics card (.+)", r"видеокарта \1"),
     # Library search and Remove (QA review 2026-10-17)
     (r"(\d+) result\(s\)", r"Найдено: \1"),
