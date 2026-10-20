@@ -384,6 +384,19 @@ def main() -> int:
     check("a 2K video is made at 1080x1920 with its text laid out for it", bj["state"] == "done" and bres.get("width") == 1080
           and bres.get("height") == 1920 and "PlayResX: 1080" in bass, (bres.get("width"), bres.get("height")))
 
+    # an NVIDIA encoder that is reported but fails (a driver problem): the processor makes the video instead
+    keep_nv = list(vo._NVENC)
+    vo._NVENC[:] = [True]
+    try:
+        before = {j["id"] for j in vo.list_jobs(500)}
+        c.post("/auto/text/new", data={"video": str(video), "t_text": "GPU or not", "t_start": "0", "t_end": "1"}, headers=H)
+        gj = wait(next(j["id"] for j in vo.list_jobs(500) if j["id"] not in before))
+    finally:
+        vo._NVENC[:] = keep_nv
+    glog = (Path(gj["dir"]) / "ffmpeg.log").read_text("utf-8", errors="replace")
+    check("a failing graphics-card encoder falls back to the processor", gj["state"] == "done" and "h264_nvenc" in glog
+          and "libx264" in glog, (gj.get("result"), glog.count("$ ")))
+
     # a small copy for messengers of a made video
     r = c.post(f"/auto/voice/{dj['id']}/small", headers=H)
     from urllib.parse import unquote as _unq

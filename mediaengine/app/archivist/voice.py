@@ -1090,14 +1090,22 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
     cmd += ["-filter_complex", ";".join(fc), "-map", "[v]"]
     if amap:
         cmd += ["-map", amap]
-    cmd += ["-t", f"{length:.3f}", "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
-            "-movflags", "+faststart", "video.mp4"]
+    tail_args = ["-t", f"{length:.3f}", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", "video.mp4"]
+    cpu = ["-c:v", "libx264", "-preset", "medium", "-crf", "18"]
+    gpu = ["-c:v", "h264_nvenc", "-preset", "p5", "-rc", "vbr", "-cq", "19", "-b:v", "0", "-profile:v", "high"]
     log = d / "ffmpeg.log"
-    with log.open("a", encoding="utf-8", errors="replace") as lf:
-        lf.write("$ " + " ".join(cmd) + "\n")
-        lf.flush()
-        cp = subprocess.run(cmd, cwd=str(d), stdout=lf, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL,
-                            **process_kwargs(dict(timeout=6 * 3600)))
+    tries = ([gpu] if nvenc_ok() else []) + [cpu]           # an NVIDIA card makes the picture; any failure: the processor
+    for i, enc in enumerate(tries):
+        full = cmd + enc + tail_args
+        with log.open("a", encoding="utf-8", errors="replace") as lf:
+            lf.write("$ " + " ".join(full) + "\n")
+            lf.flush()
+            cp = subprocess.run(full, cwd=str(d), stdout=lf, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL,
+                                **process_kwargs(dict(timeout=6 * 3600)))
+        if cp.returncode == 0 and (d / "video.mp4").is_file() and (d / "video.mp4").stat().st_size > 1000:
+            break
+        if i < len(tries) - 1:
+            (d / "video.mp4").unlink(missing_ok=True)
     shutil.rmtree(d / "fonts", ignore_errors=True)
     if cp.returncode != 0 or not (d / "video.mp4").is_file():
         tail = [x for x in log.read_text("utf-8", errors="replace").splitlines() if x.strip()][-1:] or ["?"]
@@ -1291,6 +1299,27 @@ def save_cover(video: str, cues_: list[dict] | None, opts: dict | None, texts: l
     if not saved:
         raise VoiceError("The cover could not be saved.")
     return saved
+
+
+_NVENC: list = []
+
+
+def nvenc_ok() -> bool:
+    """Can this PC's FFmpeg encode H.264 on an NVIDIA card (tried once: a fraction of a second of picture)? Turned
+    off with the setting voice.encoder = "cpu"."""
+    if (load_config().get("voice") or {}).get("encoder") == "cpu":
+        return False
+    if not _NVENC:
+        ok = False
+        try:
+            cp = subprocess.run([_ffmpeg(), "-hide_banner", "-nostdin", "-v", "error", "-f", "lavfi", "-i",
+                                 "color=c=gray:s=256x256:r=25:d=0.2", "-c:v", "h264_nvenc", "-f", "null", "-"],
+                                capture_output=True, **process_kwargs(dict(timeout=60)))
+            ok = cp.returncode == 0
+        except Exception:
+            ok = False
+        _NVENC.append(ok)
+    return _NVENC[0]
 
 
 def _save_copy(src: Path, stem: str, what: str) -> str:

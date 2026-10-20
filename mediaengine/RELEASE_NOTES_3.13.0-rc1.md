@@ -112,7 +112,9 @@ The owner: "voice-over, processing and text in the video - MedEng". **Auto Edit 
   speech can come from my own text, timed to the speech. A video bigger than the platforms show is made at a short
   side of 1080 (a 4K phone video several times faster; the text laid out for that size). A small copy for
   messengers of these videos. The real-browser check (Edge in the Windows CI) now runs the Finish page: the preview
-  picture, a look saved with Enter, the video made, its editor.
+  picture, a look saved with Enter, the video made, its editor. On a PC with an NVIDIA card these videos are encoded
+  on it (h264_nvenc, tried once per start); any failure there makes the same video on the processor. The copy next to
+  the reels is the same file under a second name when it is on the same disk (no double space).
 - **Captions for a video**: the speech of any video into captions burned into a copy (Whisper's languages).
 - Quit / Update / switching builds ask while a voice-over is being made; one interrupted by a closed program is made
   again once.
