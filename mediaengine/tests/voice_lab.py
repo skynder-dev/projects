@@ -300,14 +300,14 @@ def _diff(ref: list[str], hyp: list[str]) -> tuple[int, list[str], list[str]]:
 _NUMBERS = {"10": "ten", "3": "three"}       # the checker writes "10" for a spoken "ten": not a wrong word
 
 
-def _analyze(asr, wav: Path, src: Path, gen: dict, text: str = TEXT) -> dict:
+def _analyze(asr, wav: Path, src: Path, gen: dict, text: str = TEXT, language: str = "en") -> dict:
     """What a take really says (faster-whisper), how long it is, how high the voice is and how much it moves."""
     import numpy as np, librosa
     name = wav.stem
     ref_words = _words(re.sub(r"\[[a-z ]+\]|\([^)]*\)", " ", text))
     y, sr = librosa.load(str(wav), sr=16000, mono=True)
     dur = len(y) / sr
-    segs, _ = asr.transcribe(str(wav), language="en", beam_size=5, vad_filter=True)
+    segs, _ = asr.transcribe(str(wav), language=language, beam_size=5, vad_filter=True)
     said = " ".join(s.text.strip() for s in segs)
     dist, missing, extra = _diff(ref_words, [_NUMBERS.get(w, w) for w in _words(said)])
     f0, voiced, _ = librosa.pyin(y, fmin=70, fmax=450, sr=sr, frame_length=1024)
@@ -1143,6 +1143,56 @@ def round11(src: Path, out: Path, ref: Path) -> int:
     return 0 if files else 1
 
 
+# ---------------------------------------------------------------------------------------------------------- round 12
+# Round 11 (run 39512712859): 9_3 locked keeps its s/sh (-16 dB, "lisping" - the owner: "3a / 3b hiss too": it is how
+# the voice says them, not how loud) and its pitch drifts with the seed (235 / 275 / 221 Hz). The owner's rule: "if 9_3
+# can be fixed, 9_3, else 9_2" -> 9_2. Round 12: 9_2 locked the program's way, 4 English takes (seeds) + Russian:
+# how steady is it (pitch per take), are all words said.
+
+def vox12one(out: Path, take: int, ref: Path) -> None:
+    import torch
+    m, sr = _vox2()
+    text = RU_TEXT if take == 5 else BUSINESS2
+
+    def make(t):
+        torch.manual_seed(1900 + t)
+        return m.generate(text=text, cfg_value=2.0, inference_timesteps=STEPS4, prompt_wav_path=str(ref),
+                          prompt_text=BUSINESS, reference_wav_path=str(ref)), sr
+
+    _take(out, "r12_lock92", take, make)
+
+
+def round12(src: Path, out: Path, ref: Path) -> int:
+    from faster_whisper import WhisperModel
+    out.mkdir(parents=True, exist_ok=True)
+    gen = {}
+    for p in src.rglob("gen.json"):
+        gen.update(json.loads(p.read_text("utf-8")))
+    asr = WhisperModel("small", device="cpu", compute_type="int8")
+    rows, files = {"reference 9_2": {"pitch_median_hz": 232.7, "sibilance_db": _sibilance(ref)}}, {}
+    for w in sorted(src.rglob("r12_lock92_t*.wav")):
+        take = int(w.stem.rsplit("_t", 1)[1])
+        ru = take == 5
+        info = _analyze(asr, w, src, gen, RU_TEXT if ru else BUSINESS2, language="ru" if ru else "en")
+        info["sibilance_db"] = _sibilance(w)
+        rows[w.stem] = info
+        mp3 = out / f"voice12_{take}.mp3"
+        produce_plain(w, mp3)
+        files[mp3.name] = f"9_2 locked, take {take} ({'Russian' if ru else 'another English text'})"
+    failed = {k: str(v.get("error")).splitlines()[0][:300] for k, v in gen.items() if v.get("error")}
+    (out / "results.json").write_text(json.dumps({"round": 12, "files": files, "rows": rows, "failed_takes": failed},
+                                                 indent=1, ensure_ascii=False), "utf-8")
+    md = ["# Voice lab - round 12 (9_2 locked the program's way)", ""] + [f"- {k}: {v}" for k, v in files.items()]
+    md += ["", "| take | words wrong | pitch Hz | s/sh peaks dB | said |", "|---|---|---|---|---|"]
+    md += [f"| {k} | {i.get('word_errors', '-')} | {i.get('pitch_median_hz')} | {i.get('sibilance_db')} | {str(i.get('said', ''))[:70]} |"
+           for k, i in rows.items()]
+    if failed:
+        md += ["", "Failed takes:"] + [f"- {k}: {e}" for k, e in failed.items()]
+    (out / "RESULTS.md").write_text("\n".join(md) + "\n", "utf-8")
+    print(json.dumps({"files": len(files), "failed_takes": len(failed)}))
+    return 0 if files else 1
+
+
 def check(src: Path, out: Path) -> int:
     import numpy as np, librosa
     from faster_whisper import WhisperModel
@@ -1236,6 +1286,10 @@ def main() -> int:
         vox9one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve() if len(sys.argv) > 5 else None)
     elif cmd == "round9":
         return round9(out, Path(sys.argv[3]).resolve())
+    elif cmd == "vox12one":
+        vox12one(out, int(sys.argv[3]), Path(sys.argv[4]).resolve())
+    elif cmd == "round12":
+        return round12(out, Path(sys.argv[3]).resolve(), Path(sys.argv[4]).resolve())
     elif cmd == "vox11one":
         vox11one(out, int(sys.argv[3]), Path(sys.argv[4]).resolve())
     elif cmd == "round11":

@@ -28,8 +28,9 @@ name: mediaengine-voice-lab
 # Round 9 (this file, results in round9/): 4_2's own recipe with other seeds (other, naturally lower voices), the three
 # lowest natural ones sent; 7_1 locked the program's way on another text (a check), 7_1's recording as FLAC.
 # Run 39372109372. Round 10 (results in round10/, run 39396387033): 20 more seeds of the same recipe.
-# Round 11 (this file, results in round11/): 9_3 ("good but lisping") locked the program's way on other texts
-# (English and Russian), each with the de-esser a / b.
+# Round 11 (this file, results in round12/): 9_3 ("good but lisping") locked the program's way on other texts
+# (English and Russian), each with the de-esser a / b. Run 39512712859.
+# Round 12 (this file, results in round12/): 9_2 locked the program's way, 4 English takes + Russian (steadiness).
 on:
   workflow_dispatch:
   push:
@@ -57,7 +58,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        take: [1, 2, 3]
+        take: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -65,23 +66,23 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: VoxCPM in its own venv (CPU torch; FFmpeg libraries for torchaudio's decoder); 9_3's recording
+      - name: VoxCPM in its own venv (CPU torch; FFmpeg libraries for torchaudio's decoder); 9_2's recording
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
           python -m venv "$RUNNER_TEMP/v"
           "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" torch torchaudio
           "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" voxcpm soundfile
           git fetch -q --depth 1 origin mediaengine-voice-lab
-          git show FETCH_HEAD:round9/voice9_3.flac > "$RUNNER_TEMP/v93.flac"
+          git show FETCH_HEAD:round9/voice9_2.flac > "$RUNNER_TEMP/v93.flac"
           ffmpeg -v error -i "$RUNNER_TEMP/v93.flac" "$RUNNER_TEMP/voice.wav"
-      - name: One take (${{ matrix.take }}) in 9_3's locked voice
+      - name: One take (${{ matrix.take }}) in 9_2's locked voice
         run: |
           mkdir -p "$RUNNER_TEMP/out"
-          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py vox11one "$RUNNER_TEMP/out" ${{ matrix.take }} "$RUNNER_TEMP/voice.wav" 2>&1 | tee "$RUNNER_TEMP/out/t${{ matrix.take }}.txt"
+          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py vox12one "$RUNNER_TEMP/out" ${{ matrix.take }} "$RUNNER_TEMP/voice.wav" 2>&1 | tee "$RUNNER_TEMP/out/t${{ matrix.take }}.txt"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: voice11-${{ matrix.take }}
+          name: voice12-${{ matrix.take }}
           path: ${{ runner.temp }}/out
   finish:
     needs: [gen]
@@ -97,7 +98,7 @@ jobs:
           python-version: '3.11'
       - uses: actions/download-artifact@v4
         with:
-          pattern: voice11-*
+          pattern: voice12-*
           path: ${{ runner.temp }}/in
       - name: Checker in its own venv (faster-whisper 1.2.1, librosa)
         run: |
@@ -105,19 +106,19 @@ jobs:
           python -m venv "$RUNNER_TEMP/v"
           "$RUNNER_TEMP/v/bin/python" -m pip install -q "faster-whisper==1.2.1" librosa scipy soundfile
           git fetch -q --depth 1 origin mediaengine-voice-lab
-          git show FETCH_HEAD:round9/voice9_3.flac > "$RUNNER_TEMP/v93.flac"
-      - name: Words, pitch and s/sh brightness of each take - voice11_<take><a|b>
+          git show FETCH_HEAD:round9/voice9_2.flac > "$RUNNER_TEMP/v93.flac"
+      - name: Words, pitch and s/sh of each take - voice12_<take>
         run: |
-          mkdir -p "$RUNNER_TEMP/res/round11"
-          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py round11 "$RUNNER_TEMP/in" "$RUNNER_TEMP/res/round11" "$RUNNER_TEMP/v93.flac" 2>&1 | tee "$RUNNER_TEMP/res/round11/round11.txt"
-      - name: Publish to branch mediaengine-voice-lab (round11/; earlier rounds stay)
+          mkdir -p "$RUNNER_TEMP/res/round12"
+          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py round12 "$RUNNER_TEMP/in" "$RUNNER_TEMP/res/round12" "$RUNNER_TEMP/v93.flac" 2>&1 | tee "$RUNNER_TEMP/res/round12/round12.txt"
+      - name: Publish to branch mediaengine-voice-lab (round12/; earlier rounds stay)
         if: success() || failure()
         run: |
           pub="$RUNNER_TEMP/pub"; rm -rf "$pub"
           git clone -q --depth 1 --branch mediaengine-voice-lab "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "$pub"
-          rm -rf "$pub/round11"; mkdir -p "$pub/round11"
-          cp "$RUNNER_TEMP"/res/round11/* "$pub/round11/" 2>/dev/null || true
-          printf 'run=%s\nsha=%s\n' "${{ github.run_id }}" "${{ github.sha }}" > "$pub/round11/RUN.txt"
+          rm -rf "$pub/round12"; mkdir -p "$pub/round12"
+          cp "$RUNNER_TEMP"/res/round12/* "$pub/round12/" 2>/dev/null || true
+          printf 'run=%s\nsha=%s\n' "${{ github.run_id }}" "${{ github.sha }}" > "$pub/round12/RUN.txt"
           cd "$pub"; git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
-          git add -A; git commit -q -m "mediaengine voice lab round 11 run ${{ github.run_id }}"
+          git add -A; git commit -q -m "mediaengine voice lab round 12 run ${{ github.run_id }}"
           for i in 1 2 3; do git push -q origin HEAD:mediaengine-voice-lab && break; git pull -q --rebase origin mediaengine-voice-lab; done
