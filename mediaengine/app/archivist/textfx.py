@@ -135,27 +135,44 @@ class _Block:
         return max(text_width(x, self.key, self.size) for x in self.lines)
 
 
+def _wrap(paras: list[list[str]], key: str, s: float, maxw: float) -> list[str]:
+    lines: list[str] = []
+    for words in paras:
+        cur = ""
+        for w in words:
+            t = (cur + " " + w).strip()
+            if not cur or text_width(t, key, s) <= maxw:
+                cur = t
+            else:
+                lines.append(cur)
+                cur = w
+        if cur:
+            lines.append(cur)
+    return lines
+
+
 def fit_lines(text: str, key: str, size: float, maxw: float, max_lines: int = 3) -> tuple[list[str], float]:
-    """Greedy wrap at `size`; smaller (down to 55%) while a word is wider than the line or there are too many lines."""
+    """Wrap at `size`, smaller (down to 55%) while a word is wider than the line or there are too many lines; then
+    the lines are evened out (the narrowest width that keeps their number), so no single word hangs on a line."""
     paras = [p.split() for p in text.split("\n") if p.strip()]
     s = size
     while True:
-        lines: list[str] = []
-        for words in paras:
-            cur = ""
-            for w in words:
-                t = (cur + " " + w).strip()
-                if not cur or text_width(t, key, s) <= maxw:
-                    cur = t
-                else:
-                    lines.append(cur)
-                    cur = w
-            if cur:
-                lines.append(cur)
+        lines = _wrap(paras, key, s, maxw)
         widest = max((text_width(x, key, s) for x in lines), default=0)
         if (widest <= maxw and len(lines) <= max_lines) or s <= size * 0.55:
-            return lines, s
+            break
         s *= 0.92
+    if len(lines) > len(paras):              # balance: the narrowest line width that still gives as many lines
+        lo = max(text_width(w, key, s) for p in paras for w in p)
+        hi = max(widest, lo)
+        for _ in range(14):
+            mid = (lo + hi) / 2
+            if len(_wrap(paras, key, s, mid)) <= len(lines):
+                hi = mid
+            else:
+                lo = mid
+        lines = _wrap(paras, key, s, hi)
+    return lines, s
 
 
 def _rounded(w: float, h: float, r: float) -> str:
