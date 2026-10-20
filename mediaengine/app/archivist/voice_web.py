@@ -216,13 +216,15 @@ def register(app, page, err_page, e, human_bytes):
                         for k, v in tf.POSITIONS.items())
         look = "".join(f"<option value='{k}'{' selected' if k == (t.get('look') or 'banner') else ''}>{e(v)}</option>"
                        for k, v in tf.LOOKS.items())
+        anim = "".join(f"<option value='{k}'{' selected' if k == (t.get('anim') or 'pop') else ''}>{e(v)}</option>"
+                       for k, v in tf.ANIMS.items())
         start = "end" if t.get("at_end") else _num(t.get("start"))
         end = "" if t.get("at_end") else _num(t.get("end"))
         return (f"<div class='vo-trow'><input name='t_text' maxlength='{tf.TEXT_MAX}' value='{e(t.get('text') or '')}' "
                 f"placeholder='The text, e.g. 3 ways to fly cheaper'>"
                 f"<span>from</span><input name='t_start' size='4' value='{e(start)}' placeholder='0'>"
                 f"<span>to</span><input name='t_end' size='4' value='{e(end)}' placeholder='3'>"
-                f"<select name='t_where'>{where}</select><select name='t_look'>{look}</select>"
+                f"<select name='t_where'>{where}</select><select name='t_look'>{look}</select><select name='t_anim'>{anim}</select>"
                 f"<button type='button' class='btn2' data-trow-del title='Remove this text'>×</button></div>")
 
     def _text_rows(texts: list[dict], header: bool = True) -> str:
@@ -238,6 +240,8 @@ def register(app, page, err_page, e, human_bytes):
                 f"<div class='muted vo-sub'>One picture of the finished video, with the captions and texts as they will be.</div>"
                 f"<div class='vo-row' style='margin-top:6px'><span>At</span><input name='at' value='1' size='4'><span>s</span>"
                 f"<button type='button' class='btn2' data-preview>Show</button></div>"
+                f"<label class='muted vo-sub' style='display:block;margin-top:4px'><input type='checkbox' name='safe' value='1'> "
+                f"Show where Reels, TikTok and Shorts put their own buttons and text (red)</label>"
                 f"<div class='muted vo-sub' data-pmsg></div><img data-pimg alt='' hidden></div>")
 
     def _quick_texts() -> str:
@@ -594,7 +598,7 @@ def register(app, page, err_page, e, human_bytes):
                 cues = vo.style_cues(vo.voiceover_words(vf), o) if vf and f.get("captions") == "voice" else []
                 at = float(str(f.get("at") or "1").replace(",", ".") or 1)
                 pic = vo.preview_frame(f.get("video", ""), cues, o, tf.parse_texts(tf.rows_from_form(f)),
-                                       offset=start, at=at, voice_from=vf)
+                                       offset=start, at=at, voice_from=vf, safe=f.get("safe") == "1")
                 return jsonify({"url": f"/api/text/preview/{pic.parent.name}.jpg"})
             if f.get("voice_from") and not f.get("jid"):          # the "Put it on a video" form, before it is made
                 o = _opts(f)
@@ -603,14 +607,14 @@ def register(app, page, err_page, e, human_bytes):
                 at = float(str(f.get("at") or "1").replace(",", ".") or 1)
                 pic = vo.preview_frame(f.get("video", ""), vo.style_cues(words, o) if f.get("captions") == "1" else [],
                                        o, tf.hook_and_end(f.get("hook", ""), f.get("end_text", "")), offset=start, at=at,
-                                       voice_from=f["voice_from"])
+                                       voice_from=f["voice_from"], safe=f.get("safe") == "1")
                 return jsonify({"url": f"/api/text/preview/{pic.parent.name}.jpg"})
             base = vo.editor_base(f["jid"]) if f.get("jid") else None
             pl = _payload(f, base)
             at = float(str(f.get("at") or "1").replace(",", ".") or 1)
             pic = vo.preview_frame(pl["video"], pl["cues"] if pl["captions_on"] else [], pl["opts"], pl["texts"],
                                    offset=pl["start_s"], at=at,
-                                   voice_from=pl["voice_from"])
+                                   voice_from=pl["voice_from"], safe=f.get("safe") == "1")
         except (vo.VoiceError, tf.TextError) as exc:
             return jsonify({"error": str(exc)})
         except ValueError:

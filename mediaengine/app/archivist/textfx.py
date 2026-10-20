@@ -36,6 +36,7 @@ STYLES = {
 }
 DEFAULT_STYLE, DEFAULT_COLOR, DEFAULT_SIZE = "pop", "yellow", "medium"
 LOOKS = {"banner": "On a colored stripe", "bold": "Big white letters", "box": "On a dark box"}
+ANIMS = {"pop": "Pops in", "slide": "Slides up", "fade": "Fades in", "type": "Typed letter by letter"}
 TEXT_MAX = 120
 TEXTS_MAX = 12
 
@@ -211,6 +212,7 @@ def parse_texts(rows: list[dict]) -> list[dict]:
             continue
         start_raw = str(r.get("start") or "").strip().lower()
         item = {"text": text, "where": r.get("where") if r.get("where") in POSITIONS else "top",
+                "anim": r.get("anim") if r.get("anim") in ANIMS else "pop",
                 "look": r.get("look") if r.get("look") in LOOKS else "banner"}
         if start_raw in ("end", "конец"):
             item.update(at_end=True, start=None, end=None)
@@ -254,10 +256,11 @@ def hook_and_end(hook: str = "", end: str = "") -> list[dict]:
 
 def rows_from_form(f) -> list[dict]:
     """The text rows of a form (lists t_text, t_start, t_end, t_where, t_look of the same length)."""
-    cols = [f.getlist(k) for k in ("t_text", "t_start", "t_end", "t_where", "t_look")]
+    cols = [f.getlist(k) for k in ("t_text", "t_start", "t_end", "t_where", "t_look", "t_anim")]
     n = max((len(c) for c in cols), default=0)
     get = lambda c, i: c[i] if i < len(c) else ""
     return [{"text": get(cols[0], i), "start": get(cols[1], i), "end": get(cols[2], i), "where": get(cols[3], i),
+             "anim": get(cols[5], i),
              "look": get(cols[4], i)} for i in range(n)]
 
 
@@ -325,18 +328,34 @@ def document(width: int, height: int, cues: list[dict] | None = None, texts: lis
     return head + "\n".join(ev) + "\n"
 
 
-def _vis_top(where: str, H: int, vis_h: float, captions: bool, zone: tuple | None = None) -> float:
+def tall(W: int, H: int) -> bool:
+    """A vertical video for Reels / TikTok / Shorts (their buttons sit on the right, their text at the bottom)."""
+    return H > W * 1.3
+
+
+def safe_boxes(W: int, H: int) -> list[tuple[int, int, int, int]]:
+    """Where Reels, TikTok and Shorts put their own things on a tall video (x, y, w, h; roughly the union of the
+    three): the buttons on the right, the name and text at the bottom, the bar at the top."""
+    if not tall(W, H):
+        return []
+    return [(int(W * 0.86), int(H * 0.40), W - int(W * 0.86), int(H * 0.48)), (0, int(H * 0.82), W, H - int(H * 0.82)),
+            (0, 0, W, int(H * 0.07))]
+
+
+def _vis_top(where: str, W: int, H: int, vis_h: float, captions: bool, zone: tuple | None = None) -> float:
     """The top of the visible text of a block: captions at the bottom (a fifth above the edge, clear of the
     platforms' buttons), in the middle or at the top; a text block in the captions' place goes next to them."""
     gap = H * 0.025
+    low = H * (0.76 if tall(W, H) else 0.80)     # a tall video: above the platforms' name, text and buttons
+    top0 = H * (0.12 if tall(W, H) else 0.08)
     if captions:
-        return {"top": H * 0.10, "middle": H * 0.50 - vis_h / 2}.get(where, H * 0.80 - vis_h)
+        return {"top": top0 + H * 0.02, "middle": H * 0.50 - vis_h / 2}.get(where, low - vis_h)
     cz = zone[0] if zone else None
     if where == "top":
-        return H * 0.08 + ((zone[1] + gap + H * 0.02) if cz == "top" else 0)
+        return top0 + ((zone[1] + gap + H * 0.02) if cz == "top" else 0)
     if where == "middle":
         return (H * 0.50 - zone[1] / 2 - gap - vis_h) if cz == "middle" else H * 0.40 - vis_h / 2
-    return (H * 0.80 - zone[1] - gap - vis_h) if cz == "bottom" else H * 0.80 - vis_h
+    return (low - zone[1] - gap - vis_h) if cz == "bottom" else low - vis_h
 
 
 def _captions(cues: list[dict], W: int, H: int, base: int, o: dict, offset: float) -> list[str]:
@@ -345,7 +364,7 @@ def _captions(cues: list[dict], W: int, H: int, base: int, o: dict, offset: floa
     fam = FONTS[key][0]
     accent = COLORS[o["color"]][1]
     size0 = _ass_size(key, base * st["em"] * SIZES[o["size"]][1])
-    maxw = W * 0.86
+    maxw = W * (0.78 if tall(W, H) else 0.86)          # a tall video: clear of the buttons on the right
     out = []
     for cue in cues:
         pairs = []                           # each word as one token the wrap cannot split (a no-break space, ...)
@@ -363,7 +382,7 @@ def _captions(cues: list[dict], W: int, H: int, base: int, o: dict, offset: floa
             per_line.append(list(range(i, i + n)))
             i += n
         blk = _Block(lines, key, size)
-        vis_top = _vis_top(o["position"], H, blk.vis_h, captions=True)
+        vis_top = _vis_top(o["position"], W, H, blk.vis_h, captions=True)
         s0, e0 = cue["s"] + offset, cue["e"] + offset
         bord = max(1.0, blk.em * st.get("outline", 0))
         shad = max(0.0, blk.em * st.get("shadow", 0))
@@ -421,27 +440,40 @@ def _text_block(t: dict, W: int, H: int, base: int, o: dict, zone: tuple | None 
     maxw = W * 0.88 - (2 * pad_x_em * em0 if look != "bold" else 0)
     lines, size = fit_lines(t["text"], key, _ass_size(key, em0), maxw, max_lines=3)
     blk = _Block(lines, key, size)
-    vis_top = _vis_top(t.get("where") or "top", H, blk.vis_h + (2 * pad_y_em * blk.em if look != "bold" else 0),
+    vis_top = _vis_top(t.get("where") or "top", W, H, blk.vis_h + (2 * pad_y_em * blk.em if look != "bold" else 0),
                        captions=False, zone=zone) + (pad_y_em * blk.em if look != "bold" else 0)
     s, e = float(t["start"]), float(t["end"])
     accent = COLORS[o["color"]][1]
     fam = FONTS[key][0]
-    anim = "\\fad(120,150)\\fscx86\\fscy86\\t(0,160,\\fscx100\\fscy100)"
+    kind = t.get("anim") if t.get("anim") in ANIMS else "pop"
+    rise = blk.em * 0.9
+    move = lambda x, y: (f"\\move({x:.0f},{y + rise:.0f},{x:.0f},{y:.0f},0,260)" if kind == "slide" else f"\\pos({x:.0f},{y:.0f})")
+    fade = "\\fad(260,180)" if kind in ("fade", "slide") else "\\fad(120,150)"
+    anim = fade + ("\\fscx86\\fscy86\\t(0,160,\\fscx100\\fscy100)" if kind == "pop" else "")
     out = []
     if look in ("banner", "box"):
         pad_x, pad_y = blk.em * pad_x_em, blk.em * pad_y_em
         fill, alpha = (tag_color(accent), "&H00&") if look == "banner" else ("&H000000&", "&H38&")
         lw = blk.width()                     # one box for the whole block
-        out.append(f"Dialogue: 2,{_t(s)},{_t(e)},Base,,0,0,0,,{{\\an7\\pos({W / 2 - lw / 2 - pad_x:.0f},{vis_top - pad_y:.0f})"
-                   f"\\p1\\bord0\\shad0\\1c{fill}\\1a{alpha}\\fad(120,150)}}"
+        out.append(f"Dialogue: 2,{_t(s)},{_t(e)},Base,,0,0,0,,{{\\an7{move(W / 2 - lw / 2 - pad_x, vis_top - pad_y)}"
+                   f"\\p1\\bord0\\shad0\\1c{fill}\\1a{alpha}{fade}}}"
                    f"{_rounded(lw + 2 * pad_x, blk.vis_h + 2 * pad_y, blk.em * 0.45)}{{\\p0}}")
         ink = "&H101010&" if look == "banner" else "&HFFFFFF&"     # dark on the colored stripe, white on the dark box
-        anim = "\\fad(120,150)"           # a box and its words appear together (a scaled word would leave its box)
+        anim = fade                       # a box and its words appear together (a scaled word would leave its box)
         style = f"\\bord0\\shad0\\1c{ink}"
     else:
         style = (f"\\bord{blk.em * 0.17:.1f}\\shad{blk.em * 0.07:.1f}\\1c&HFFFFFF&\\3c&H000000&\\4c&H000000&"
                  f"\\4a&H30&")
+    total = sum(len(x) for x in lines)
+    per = min(0.06, 1.0 / max(1, total))           # typing: all letters within a second at most
+    done = 0
     for li, ln in enumerate(lines):          # one line per event: each sits exactly where its box was measured
-        out.append(f"Dialogue: 3,{_t(s)},{_t(e)},Base,,0,0,0,,{{\\an8\\pos({W / 2:.0f},{blk.line_y(vis_top, li):.0f})"
-                   f"\\fn{fam}\\fs{size:.0f}{style}{anim}}}{ln}")
+        body = ln
+        if kind == "type":                   # each letter appears in turn (invisible until its moment: no re-wrap)
+            body = "".join("{\\alpha&HFF&\\t(%d,%d,\\alpha&H00&)}%s" % (int(1000 * per * (done + k)) + 120,
+                                                                      int(1000 * per * (done + k)) + 121, ch)
+                           for k, ch in enumerate(ln))
+            done += len(ln)
+        out.append(f"Dialogue: 3,{_t(s)},{_t(e)},Base,,0,0,0,,{{\\an8{move(W / 2, blk.line_y(vis_top, li))}"
+                   f"\\fn{fam}\\fs{size:.0f}{style}{anim if kind != 'type' else fade}}}{body}")
     return out

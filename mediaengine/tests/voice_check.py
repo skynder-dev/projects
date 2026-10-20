@@ -308,6 +308,47 @@ def main() -> int:
     pv = c.get("/auto/voice?video=" + quote(str(home / "gone.mp4")), headers=H).get_data(as_text=True)
     check("a path that is not a file is not filled in",
           not re.search(r"name='(?:video|path)' required value='[^']*gone\.mp4", pv) and "gone.mp4</b>" not in pv)
+    # animations: typed text is not there at its start and complete a second later; sliding text moves up into place
+    adir = home / "animcheck"
+    adir.mkdir(exist_ok=True)
+    (adir / "a.ass").write_text(tf.document(540, 960, [], [
+        {"text": "Typed text here", "start": 0, "end": 3, "where": "middle", "look": "bold", "anim": "type"},
+        {"text": "Sliding", "start": 0, "end": 3, "where": "top", "look": "banner", "anim": "slide"}]), "utf-8")
+    tf.install_fonts(adir)
+
+    def gray_at(t):
+        out = subprocess.run([ff, "-v", "error", "-f", "lavfi", "-i", "color=c=0x404040:s=540x960:d=3", "-vf",
+                              f"ass=a.ass:fontsdir=fonts,format=gray", "-ss", f"{t:.2f}", "-frames:v", "1", "-f", "rawvideo", "-"],
+                             cwd=str(adir), capture_output=True).stdout
+        return out if len(out) == 540 * 960 else b""
+
+    def lit(img, r0, r1):               # bright pixels in rows r0..r1
+        return sum(1 for x in img[540 * r0:540 * r1] if x > 200) if img else -1
+    early, late = gray_at(0.15), gray_at(1.6)
+    mid_rows = (300, 480)
+    check("typed text: hardly any letters at first, all of them a second later",
+          0 <= lit(early, *mid_rows) < lit(late, *mid_rows) * 0.25 and lit(late, *mid_rows) > 500,
+          (lit(early, *mid_rows), lit(late, *mid_rows)))
+    def first_row(img, color_min=150):   # the top of the stripe (the banner is bright yellow -> light grey)
+        for y in range(0, 400):
+            if img and sum(1 for x in img[540 * y:540 * y + 540] if x > color_min) > 40:
+                return y
+        return -1
+    check("sliding text comes up into its place", first_row(gray_at(0.18), 110) > first_row(gray_at(1.0), 110) >= 0,
+          (first_row(gray_at(0.18), 110), first_row(gray_at(1.0), 110)))
+    tall_v = home / "tall.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "color=c=0x3060a0:s=540x960:rate=25:duration=2", "-c:v",
+                    "libx264", "-pix_fmt", "yuv420p", str(tall_v)], check=True)
+    r = c.post("/api/text/preview", data={"video": str(tall_v), "t_text": "Hello", "safe": "1", "at": "1"}, headers=H)
+    purl = (r.get_json() or {}).get("url") or ""
+    red = 0
+    if purl:
+        from PIL import Image
+        import io
+        im = Image.open(io.BytesIO(c.get(purl, headers=H).data)).convert("RGB")
+        px = im.getpixel((int(im.width * 0.93), int(im.height * 0.6)))
+        red = px[0] - px[2]
+    check("the preview can show where the platforms' buttons are", red > 30, (purl, red))
     r = c.post("/api/text/preview", data={"video": str(home / "none.mp4"), "t_text": "x"}, headers=H)
     check("a preview of a missing video: said in words", "error" in (r.get_json() or {}), r.get_json())
     r = c.post("/auto/text/new", data={"video": str(video), "t_text": "x", "t_start": "soon"}, headers=H)

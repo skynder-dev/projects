@@ -1137,7 +1137,7 @@ def video_size(video: Path, picture_len: bool = False):
 
 
 def preview_frame(video: str, cues_: list[dict] | None, opts: dict | None, texts: list[dict] | None,
-                  offset: float = 0.0, at: float = 1.0, voice_from: str = "") -> Path:
+                  offset: float = 0.0, at: float = 1.0, voice_from: str = "", safe: bool = False) -> Path:
     """One picture of the finished video at `at` seconds - the same captions and texts, the same fonts - in a second
     or two instead of a whole render. Kept in voice_previews (the ten newest)."""
     from . import orders as od
@@ -1158,7 +1158,9 @@ def preview_frame(video: str, cues_: list[dict] | None, opts: dict | None, texts
     (d / "preview.ass").write_text(doc, "utf-8")
     fonts = tf.install_fonts(d)
     fonts = _caption_font(d) or fonts
-    vf = (f"setpts=PTS-STARTPTS+{t:.3f}/TB,ass=preview.ass" + (":fontsdir=fonts" if fonts else "")
+    boxes = "".join(f",drawbox=x={x}:y={y}:w={bw}:h={bh}:color=red@0.28:t=fill" for x, y, bw, bh in tf.safe_boxes(w, h)) \
+        if safe else ""                       # where the platforms put their buttons and text (a tall video)
+    vf = (f"setpts=PTS-STARTPTS+{t:.3f}/TB,ass=preview.ass" + (":fontsdir=fonts" if fonts else "") + boxes
           + ",scale=-2:'min(ih,960)'")
     ff = _ffmpeg()
     run = lambda args: subprocess.run([ff, "-hide_banner", "-nostdin", "-y", "-v", "error", *args], cwd=str(d),

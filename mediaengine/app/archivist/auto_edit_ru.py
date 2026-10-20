@@ -799,6 +799,9 @@ PHRASES = {
     "Fix a word right in its line; an emptied line is left out. −0.1 and +0.1 move a line by 0.1 s, ✂ splits it where the cursor is, ⤓ joins it with the next one, ＋ adds a line.":
         "Исправь слово прямо в строке; пустая строка убирается. −0.1 и +0.1 сдвигают строку на 0,1 сек, ✂ разрезает её там, где "
         "курсор, ⤓ склеивает со следующей, ＋ добавляет строку.",
+    "Pops in": "Выпрыгивает", "Slides up": "Выезжает снизу", "Fades in": "Проявляется", "Typed letter by letter": "Печатается по буквам",
+    "Show where Reels, TikTok and Shorts put their own buttons and text (red)":
+        "Показать, где Reels, TikTok и Shorts ставят свои кнопки и подписи (красным)",
     "0.1 s earlier": "На 0,1 сек раньше", "0.1 s later": "На 0,1 сек позже",
     "Split this line where the cursor is": "Разрезать строку там, где курсор", "Join with the next line": "Склеить со следующей строкой",
     "Add a line after this one": "Добавить строку после этой",
