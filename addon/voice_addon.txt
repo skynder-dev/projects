@@ -1,42 +1,5 @@
 PASS Install starts
-09:58:27 running checking  0/0 MB
-09:58:32 running packages Installing : 0/0 MB
-09:59:17 running models audiovae.pth 0/5446 MB
-09:59:22 running models model.safetensors 519/5446 MB
-09:59:27 running models model.safetensors 1596/5446 MB
-09:59:32 running models model.safetensors 2630/5446 MB
-09:59:37 running models model.safetensors 3568/5446 MB
-09:59:42 running models model.safetensors 4327/5446 MB
-09:59:47 running models model.safetensors 4957/5446 MB
-09:59:52 running models model.bin 4968/5446 MB
-09:59:57 running checking_addon  5446/5446 MB
-10:00:02 done   5446/5446 MB
-PASS the add-on is installed
-PASS its manifest: version, Python, torch, models
-PASS the page shows the forms once installed
-PASS a voice-over is accepted
-10:00:02 20261020-100002-780987 working starting 0%
-10:00:05 20261020-100002-780987 working loading 2%
-10:01:12 20261020-100002-780987 working speaking 1/1 5%
-10:03:25 20261020-100002-780987 working listening 95%
-10:03:31 20261020-100002-780987 done  0%
-PASS the voice-over is made
-PASS every word said (listened to)
-PASS a plausible length
-10:03:31 20261020-100331-2f2a29 working starting 0%
-10:03:37 20261020-100331-2f2a29 working loading 2%
-10:04:22 20261020-100331-2f2a29 working speaking 1/1 5%
-10:06:01 20261020-100331-2f2a29 working listening 95%
-10:06:04 20261020-100331-2f2a29 done  0%
-PASS a Russian voice-over in the same voice, heard back in Cyrillic
-10:06:04 20261020-100604-7ad8de working video 50%
-10:06:07 20261020-100604-7ad8de working checking 90%
-10:06:10 20261020-100604-7ad8de done  0%
-PASS the voice onto the video, captions burned, checked
-10:06:10 20261020-100610-c46eb5 working starting 0%
-10:06:13 20261020-100610-c46eb5 working listening 20%
-10:06:16 20261020-100610-c46eb5 working video 50%
-10:06:19 20261020-100610-c46eb5 done  0%
-PASS captions from the video's own speech hear the voice-over
-PASS the page in Russian with a finished voice-over
-{"passed": 12, "total": 12}
+12:14:19 running checking  0/0 MB
+12:14:24 running packages Downloading regex-2026.9.29-cp311-cp311-win_amd64.whl 0/0 MB
+12:14:29 running packages Installing : 0/0 MB
+
