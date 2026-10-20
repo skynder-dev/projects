@@ -100,7 +100,11 @@ The owner: "voice-over, processing and text in the video - MedEng". **Auto Edit 
   saved reel's "Text, captions, voice-over"): one page for one video - the voice (none / a voice-over made already /
   a new one, made first and then the video), captions (none / the voice's words / the video's speech, heard when it
   is made), the look and the texts, a preview, one button. Jobs run strictly in the order they were made (also when
-  resumed after a restart); job files are replaced in one step (a page never reads half of one).
+  resumed after a restart); job files are replaced in one step (a page never reads half of one). The caption editor
+  moves a line by 0.1 s, splits it where the cursor is, joins it with the next, adds one (each line carries its own
+  time and words). Texts pop in, slide up, fade in or are typed letter by letter. On a tall video captions and texts
+  keep clear of the zones where Reels / TikTok / Shorts put their own buttons and text (the preview can show them in
+  red). "My looks": a look saved with a name, chosen in one click.
 - **Captions for a video**: the speech of any video into captions burned into a copy (Whisper's languages).
 - Quit / Update / switching builds ask while a voice-over is being made; one interrupted by a closed program is made
   again once.
