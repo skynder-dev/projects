@@ -811,6 +811,11 @@ PHRASES = {
     "Captions in four looks (the word being said in color like Reels, on a dark box, classic, calm), with a color and a size; Edit text and captions fixes a word and shows a preview picture before the video is made.":
         "Субтитры в четырёх видах (сказанное слово цветом как в Reels, на тёмной плашке, классика, спокойные), с выбором цвета и "
         "размера; «Изменить текст и субтитры» — исправить слово и посмотреть кадр до того, как делать видео.",
+    "Text, captions, voice-over": "Текст, субтитры, озвучка",
+    "The video:": "Видео:",
+    "It is already filled in below: put text on it, make captions of its speech, or put a voice-over on it (Made → a voice-over → Put it on a video).":
+        "Оно уже подставлено ниже: можно добавить на него текст, сделать субтитры его речи или наложить озвучку "
+        "(Сделано → озвучка → Наложить на видео).",
     "A text must be on the screen for at least 0.3 s (check its times).":
         "Текст должен быть на экране хотя бы 0,3 сек (проверь время).",
 }

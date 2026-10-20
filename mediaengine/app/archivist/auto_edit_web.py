@@ -1076,7 +1076,7 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
 <div class='row' style='margin-top:10px;flex-wrap:wrap'><form method='post' action='/auto/export/{done_x['id']}/open'><button class='ae-big'>Open video</button></form>
 <form method='post' action='/auto/export/{done_x['id']}/reveal'><button class='btn2'>Show in folder</button></form>
 <button type='button' class='btn2' id='copyDone' data-path='{e(done_x['path'])}'>Copy path</button>
-<a class='btn btn2' href='/auto'>All projects</a></div></div>""")
+{_text_link(done_x['path'], e)}<a class='btn btn2' href='/auto'>All projects</a></div></div>""")
         prep_job = ae.prepared_job(p) if not active else None
         if prep_job:
             parts.append(_prepared_html(prep_job, e))
@@ -1594,6 +1594,15 @@ def _mode_choice(ai_ready, plus_ready, e, current=None, allow_technical=False, h
     return (f"<h2>How moments are chosen</h2>" if heading else "") + f"<div class='ae-choices'>{radios}</div>"
 
 
+def _text_link(path, e) -> str:
+    """From a saved reel to text, captions and a voice-over on it (the Voice-over page with this video filled in)."""
+    from urllib.parse import quote
+    from . import voice as vo
+    if not vo.SHOW_ON_HOME:
+        return ""
+    return f"<a class='btn btn2' href='/auto/voice?video={e(quote(str(path)))}'>Text, captions, voice-over</a>"
+
+
 def _dress_fields(e, s=None, date_hint=""):
     """Music and title (optional) on the new-reel page and for a variant: closed unless the reel has them."""
     s = s or {}
@@ -1929,7 +1938,8 @@ def _review_html(p, rev, e, building=False):
             exp_html += (f"<div class='card' style='margin-top:10px'><b>Exported</b><div class='ae-path'>{e(last['path'])}</div>"
                          f"<div class='row' style='margin-top:8px;flex-wrap:wrap'><form method='post' action='/auto/export/{last['id']}/open'><button>Open video</button></form>"
                          f"<form method='post' action='/auto/export/{last['id']}/reveal'><button class='btn2'>Show in folder</button></form>"
-                         f"<button type='button' class='btn2' id='copyPath' data-path='{e(last['path'])}'>Copy path</button></div></div>")
+                         f"<button type='button' class='btn2' id='copyPath' data-path='{e(last['path'])}'>Copy path</button>"
+                         f"{_text_link(last['path'], e)}</div></div>")
     undo = "Revert" if ae.previous_accepted(p["id"]) else "Undo accept"     # with no earlier one, Revert just un-accepts
     actions = (f"<span class='badge ready'>Accepted</span><form method='post' action='/auto/p/{p['id']}/revert' "
                f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(b=>b.disabled=true),0)\">"

@@ -297,6 +297,14 @@ def main() -> int:
     r = c.post("/auto/text/new", data={"video": str(video), "t_text": "Too late", "t_start": "30"}, headers=H)
     check("a text after the end of the video: refused in words", r.status_code == 400 and "after the end" in r.get_data(as_text=True),
           r.status_code)
+    from urllib.parse import quote
+    pv = c.get("/auto/voice?video=" + quote(str(video)), headers=H).get_data(as_text=True)
+    import html as _h0
+    check("from a saved reel: its path is filled in the video fields", pv.count("value='" + _h0.escape(str(video), quote=True) + "'") >= 2,
+          pv.count(_h0.escape(str(video), quote=True)))
+    pv = c.get("/auto/voice?video=" + quote(str(home / "gone.mp4")), headers=H).get_data(as_text=True)
+    check("a path that is not a file is not filled in",
+          not re.search(r"name='(?:video|path)' required value='[^']*gone\.mp4", pv) and "gone.mp4</b>" not in pv)
     r = c.post("/api/text/preview", data={"video": str(home / "none.mp4"), "t_text": "x"}, headers=H)
     check("a preview of a missing video: said in words", "error" in (r.get_json() or {}), r.get_json())
     r = c.post("/auto/text/new", data={"video": str(video), "t_text": "x", "t_start": "soon"}, headers=H)

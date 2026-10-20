@@ -163,13 +163,13 @@ def register(app, page, err_page, e, human_bytes):
                 f"<div style='margin-top:12px'><button class='ae-big'>Make the voice-over</button> "
                 f"<span class='muted vo-sub' data-msg></span></div></form></div>")
 
-    def _captions_form() -> str:
+    def _captions_form(pre: str = "") -> str:
         langs = _lang_options()
         return (f"<div class='card'><h2 style='margin-top:0'>Captions for a video</h2>"
                 f"<div class='muted vo-sub'>The speech in your video is turned into captions with the words timed to it and "
                 f"burned into a copy of the video. The video itself is only read.</div>"
                 f"<form method='post' action='/auto/voice/captions' style='margin-top:8px'>"
-                f"<div class='vo-row'><input class='vo-wide' name='path' required placeholder='The video, e.g. D:\\Videos\\talk.mp4'>"
+                f"<div class='vo-row'><input class='vo-wide' name='path' required value='{e(pre)}' placeholder='The video, e.g. D:\\Videos\\talk.mp4'>"
                 f"<button type='button' class='btn2' data-pick='video'>Choose…</button></div>{_reel_select()}"
                 f"<div class='vo-row' style='margin-top:8px'><span>Language of the speech</span><select name='language'>{langs}</select></div>"
                 f"{_style_controls(tf.options())}{_quick_texts()}"
@@ -236,7 +236,7 @@ def register(app, page, err_page, e, human_bytes):
                 f"<div class='vo-row' style='margin-top:6px'><span>Text at the end (last 3 s)</span>"
                 f"<input name='end_text' maxlength='{tf.TEXT_MAX}' size='34' placeholder='optional, e.g. Follow for more'></div>")
 
-    def _text_form() -> str:
+    def _text_form(pre: str = "") -> str:
         """Text on any video - no add-on needed."""
         o = tf.options()
         return (f"<div class='card'><h2 style='margin-top:0'>Text on a video</h2>"
@@ -244,13 +244,13 @@ def register(app, page, err_page, e, human_bytes):
                 f"is only read; a copy with the text is made.</div>"
                 f"<form method='post' action='/auto/text/new' style='margin-top:8px' data-textform>"
                 f"<div class='vo-edit'><div>"
-                f"<div class='vo-row'><input class='vo-wide' name='video' required placeholder='The video, e.g. D:\\Exports\\reel.mp4'>"
+                f"<div class='vo-row'><input class='vo-wide' name='video' required value='{e(pre)}' placeholder='The video, e.g. D:\\Exports\\reel.mp4'>"
                 f"<button type='button' class='btn2' data-pick='video'>Choose…</button></div>{_reel_select()}"
                 f"{_text_rows([], header=False)}{_style_controls(o, captions=False)}"
                 f"<div style='margin-top:12px'><button class='ae-big'>Make the video</button> "
                 f"<span class='muted vo-sub' data-msg></span></div></div>{_preview_box()}</div></form></div>")
 
-    def _job_html(j: dict) -> str:
+    def _job_html(j: dict, pre: str = "") -> str:
         jid, st, res = j["id"], j["state"], j.get("result") or {}
         head = (f"<div class='vo-row'><b>{e(_KIND.get(j.get('kind'), ''))}</b><span class='muted' translate='no'>{e(j.get('title') or '')}</span>"
                 f"<span class='muted vo-sub' translate='no'>{e(str(j.get('created_at') or '')[:16].replace('T', ' '))}</span></div>")
@@ -283,7 +283,7 @@ def register(app, page, err_page, e, human_bytes):
                     f"<a class='btn btn2' href='/auto/voice/{jid}/file/captions.srt?download=1'>Download captions (SRT)</a><!--actions--></div>"
                     f"<details style='margin-top:8px'><summary>Put it on a video</summary>"
                     f"<form method='post' action='/auto/voice/{jid}/dub' style='margin-top:8px'>"
-                    f"<div class='vo-row'><input class='vo-wide' name='video' required placeholder='The video, e.g. D:\\Exports\\reel.mp4'>"
+                    f"<div class='vo-row'><input class='vo-wide' name='video' required value='{e(pre)}' placeholder='The video, e.g. D:\\Exports\\reel.mp4'>"
                     f"<button type='button' class='btn2' data-pick='video'>Choose…</button></div>{_reel_select()}"
                     f"<label style='display:block;margin-top:6px'><input type='checkbox' name='keep_sound' value='1' checked> "
                     f"Keep the video's own sound (quieter while the voice speaks)</label>"
@@ -316,12 +316,19 @@ def register(app, page, err_page, e, human_bytes):
     def voice_page():
         s = vo.status()
         jobs = vo.list_jobs()
+        pre = str(request.args.get("video") or "")         # from a saved reel: its path already in the video fields
+        if pre and not Path(pre).is_file():
+            pre = ""
         parts = [_install_card(s)]
+        if pre:
+            parts.insert(0, f"<div class='card'><span>The video:</span> <b class='ae-path' translate='no'>{e(Path(pre).name)}</b>"
+                            f"<div class='muted vo-sub'>It is already filled in below: put text on it, make captions of its speech, "
+                            f"or put a voice-over on it (Made → a voice-over → Put it on a video).</div></div>")
         if s.get("installed"):
-            parts += [_voice_form(), _captions_form()]
-        parts.append(_text_form())
+            parts += [_voice_form(), _captions_form(pre)]
+        parts.append(_text_form(pre))
         if jobs:
-            parts.append("<div class='card' id='voJobs'><h2 style='margin-top:0'>Made</h2>" + "".join(_job_html(j) for j in jobs) + "</div>")
+            parts.append("<div class='card' id='voJobs'><h2 style='margin-top:0'>Made</h2>" + "".join(_job_html(j, pre) for j in jobs) + "</div>")
         body = ("<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Voice-over</h1>"
                 "<div class='lead'>A text read by a voice, with captions timed to the words; captions and text for your own videos.</div></div>"
                 + "".join(parts) + "<div class='row' id='voBack' style='margin-top:14px'><a class='btn btn2' href='/auto'>Back</a></div>")
