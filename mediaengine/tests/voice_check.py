@@ -349,6 +349,14 @@ def main() -> int:
         px = im.getpixel((int(im.width * 0.93), int(im.height * 0.6)))
         red = px[0] - px[2]
     check("the preview can show where the platforms' buttons are", red > 30, (purl, red))
+    # "My looks": saved with a name, offered in the forms, deleted
+    r = c.post("/api/text/looks", json={"name": "Деловой", "style": "minimal", "color": "white", "size": "small",
+                                        "position": "bottom"}, headers=H)
+    lp = c.get("/auto/voice", headers=H).get_data(as_text=True)
+    check("a look saved with a name is offered in the forms", (r.get_json() or {}).get("ok") and "data-name='Деловой'" in lp)
+    r = c.post("/api/text/looks", json={"name": "Деловой", "delete": True}, headers=H)
+    check("and deleted", "data-name='Деловой'" not in c.get("/auto/voice", headers=H).get_data(as_text=True))
+    check("a look without a name: said in words", "error" in (c.post("/api/text/looks", json={"name": " "}, headers=H).get_json() or {}))
     r = c.post("/api/text/preview", data={"video": str(home / "none.mp4"), "t_text": "x"}, headers=H)
     check("a preview of a missing video: said in words", "error" in (r.get_json() or {}), r.get_json())
     r = c.post("/auto/text/new", data={"video": str(video), "t_text": "x", "t_start": "soon"}, headers=H)

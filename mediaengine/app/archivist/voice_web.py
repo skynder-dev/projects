@@ -195,10 +195,26 @@ def register(app, page, err_page, e, human_bytes):
                         for k, v in tf.SIZES.items())
         pos = "".join(f"<option value='{k}'{' selected' if k == o['position'] else ''}>{e(v)}</option>"
                       for k, v in tf.POSITIONS.items())
+        looks = _saved_looks()
+        mine = "".join(f"<option value='{e(json.dumps(v))}' data-name='{e(k)}' translate='no'>{e(k)}</option>" for k, v in looks.items())
+        saved = (f"<div class='vo-row vo-sub' style='margin-top:6px' data-looks><span>My looks:</span>"
+                 + f"<select data-look-use><option value=''>—</option>{mine}</select>"
+                   f"<button type='button' class='btn2 vo-mini' data-look-del title='Delete the chosen look'>×</button>"
+                 + f"<input data-look-name maxlength='40' size='16' placeholder='Name for this look'>"
+                   f"<button type='button' class='btn2 vo-mini' data-look-save>Save the look</button><span data-look-msg></span></div>")
         return ((f"<div class='vo-styles' style='margin-top:8px'><b>Look of the captions</b>{styles}</div>" if captions else "")
                 + f"<div class='vo-row' style='margin-top:6px'><span>Color</span><select name='color'>{colors}</select>"
                   f"<span>Size</span><select name='size'>{sizes}</select>"
-                + (f"<span>Captions</span><select name='position'>{pos}</select>" if captions else "") + "</div>")
+                + (f"<span>Captions</span><select name='position'>{pos}</select>" if captions else "") + "</div>" + saved)
+
+    def _saved_looks() -> dict:
+        try:
+            from .config import load_config
+            raw = load_config().get("text_looks_saved") or {}
+            return {str(k)[:40]: tf.options(**{x: y for x, y in v.items() if x in ("style", "color", "size", "position")})
+                    for k, v in list(raw.items())[:12] if isinstance(v, dict)}
+        except Exception:
+            return {}
 
     def _num(v) -> str:
         """Seconds as typed back into a field: 3, 2.5, 1:05, 1:05.5."""
@@ -578,6 +594,29 @@ def register(app, page, err_page, e, human_bytes):
             return err_page(str(exc), "/auto/finish")
         return redirect("/auto/voice#voJobs")
 
+    @app.post("/api/text/looks")
+    def text_looks():
+        """Save (name + look) or delete (name, delete) one of "My looks"; at most 12, kept in the settings."""
+        from .config import update_config
+        d = request.get_json(silent=True) or {}
+        name = " ".join(tf.clean_text(d.get("name") or "", 40).split())
+        if not name:
+            return jsonify({"error": "Give the look a name."})
+        o = tf.options(d.get("style"), d.get("color"), d.get("size"), d.get("position"))
+
+        def change(c):
+            looks = {k: v for k, v in (c.get("text_looks_saved") or {}).items() if isinstance(v, dict)}
+            if d.get("delete"):
+                looks.pop(name, None)
+            else:
+                looks.pop(name, None)
+                looks[name] = o
+                while len(looks) > 12:
+                    looks.pop(next(iter(looks)))
+            c["text_looks_saved"] = looks
+        update_config(change)
+        return jsonify({"ok": True, "looks": list(_saved_looks())})
+
     @app.post("/auto/text/new")
     def text_new():
         try:
@@ -771,6 +810,19 @@ _EDIT_JS = (
     # a pause after this line: the new one fills it; none: this line's time is shared with the new one
     "if(ns-c.e>=0.5)cueSet(nr,c.e+0.01,Math.min(ns-0.01,c.e+2),null,'');else{const mid=(c.s+c.e)/2;cueSet(row,c.s,mid-0.01,null);cueSet(nr,mid,c.e,null,'')}"
     "nr.querySelector('[name=c_text]').focus()}});"
+    "document.addEventListener('change',ev=>{const sl=ev.target.closest('[data-look-use]');if(!sl||!sl.value)return;const o=JSON.parse(sl.value),f=sl.closest('form');"
+    "const r=f.querySelector('input[name=style][value='+o.style+']');if(r)r.checked=true;"
+    "for(const k of ['color','size','position']){const x=f.querySelector('select[name='+k+']');if(x)x.value=o[k]}});"
+    "document.addEventListener('click',async ev=>{const b=ev.target.closest('[data-look-save],[data-look-del]');if(!b)return;"
+    "const f=b.closest('form'),box=b.closest('[data-looks]'),m=box.querySelector('[data-look-msg]');const v=n=>{const x=f.querySelector('[name='+n+']:checked')||f.querySelector('select[name='+n+']');return x?x.value:''};"
+    "let body;if(b.matches('[data-look-del]')){const sl=box.querySelector('[data-look-use]'),op=sl&&sl.selectedOptions[0];if(!op||!op.dataset.name)return;"
+    "body={name:op.dataset.name,delete:true}}else body={name:box.querySelector('[data-look-name]').value,style:v('style'),color:v('color'),size:v('size'),position:v('position')};"
+    "try{const r=await fetch('/api/text/looks',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const x=await r.json();"
+    "if(x.error){m.textContent=window.ME_L?ME_L(x.error):x.error;return}"
+    "if(body.delete){box.querySelector('[data-look-use]').selectedOptions[0].remove()}else{let sl=box.querySelector('[data-look-use]');"
+    "if(sl){[...sl.options].filter(o=>o.dataset.name===body.name).forEach(o=>o.remove());const op=document.createElement('option');"
+    "op.value=JSON.stringify({style:body.style||'pop',color:body.color,size:body.size,position:body.position||'bottom'});op.dataset.name=body.name;op.textContent=body.name;sl.appendChild(op);sl.value=op.value}"
+    "box.querySelector('[data-look-name]').value='';const t=window.ME_L?ME_L('Saved.'):'Saved.';m.textContent=' '+t}}catch(err){}});"
     "document.addEventListener('click',async ev=>{"
     "const add=ev.target.closest('[data-trow-add]');if(add){const box=add.closest('.vo-texts');"
     "box.querySelector('[data-trows]').appendChild(box.querySelector('template[data-trow-tpl]').content.cloneNode(true));return}"
