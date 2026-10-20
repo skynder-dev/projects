@@ -933,6 +933,8 @@ def round8(src: Path, out: Path) -> int:
         mp3 = out / f"voice8_{n}.mp3"
         produce_plain(src / chosen[v]["file"], mp3)
         files[mp3.name] = ROUND8[v]
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(src / chosen[v]["file"]), "-c:a", "flac",   # the take
+                        "-compression_level", "8", str(out / f"voice8_{n}.flac")], check=True)  # as the program's voice
     failed = {k: str(v.get("error")).splitlines()[0][:300] for k, v in gen.items() if v.get("error")}
     res = {"round": 8, "text": BUSINESS, "files": files, "chosen": chosen, "all_takes": takes, "failed_takes": failed}
     (out / "results.json").write_text(json.dumps(res, indent=1, ensure_ascii=False), "utf-8")
