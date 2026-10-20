@@ -108,7 +108,11 @@ The owner: "voice-over, processing and text in the video - MedEng". **Auto Edit 
   looped to the end, evened out (loudnorm), quiet / medium / loud, faded in and out, ducked under the voice like the
   video's own sound; kept when the video is edited again. *Stars* around words in a voice-over's text (or in a
   caption line of the editor) keep those words in the color in the captions (not said, not shown). "Save as a cover":
-  the preview's picture, full size, with its texts, saved next to the reels ("<name> - cover.jpg").
+  the preview's picture, full size, with its texts, saved next to the reels ("<name> - cover.jpg"). Captions of the
+  speech can come from my own text, timed to the speech. A video bigger than the platforms show is made at a short
+  side of 1080 (a 4K phone video several times faster; the text laid out for that size). A small copy for
+  messengers of these videos. The real-browser check (Edge in the Windows CI) now runs the Finish page: the preview
+  picture, a look saved with Enter, the video made, its editor.
 - **Captions for a video**: the speech of any video into captions burned into a copy (Whisper's languages).
 - Quit / Update / switching builds ask while a voice-over is being made; one interrupted by a closed program is made
   again once.

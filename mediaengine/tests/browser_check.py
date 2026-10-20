@@ -143,6 +143,48 @@ def main():
         done = (orders.done_dir() / "browser-1" / "video.mp4").is_file()
         check("orders_run_button_in_a_real_browser", ran is True and done, (ran, done))
         orders.set_auto_run(True)
+        # Finish a video (text on a video needs no add-on): the preview picture, a saved look, the video made, its editor
+        from urllib.parse import quote
+        from archivist import voice as vo
+        clip = sorted(src.glob("*.mp4"))[0]
+        pg.goto(base + "/auto/finish?video=" + quote(str(clip)))
+        try:
+            pg.fill("input[name=t_text]", "Три способа летать дешевле")
+            pg.click("[data-preview]:not([data-preview=cover])")
+            pg.wait_for_selector("[data-pimg]:not([hidden])", timeout=60_000)
+            shown = pg.evaluate("document.querySelector('[data-pimg]').naturalWidth") > 100
+        except Exception as exc:
+            shown = str(exc)[:200]
+        check("finish_page_preview_in_a_real_browser", shown is True, shown)
+        try:
+            box = pg.locator("[data-looks]").first
+            box.locator("[data-look-name]").fill("Мой вид")
+            box.locator("[data-look-name]").press("Enter")
+            pg.wait_for_function("document.querySelector('[data-look-use]').options.length > 1", timeout=20_000)
+            looked = "/auto/finish" in pg.url
+        except Exception as exc:
+            looked = str(exc)[:200]
+        check("finish_page_saves_a_look_without_leaving", looked is True, looked)
+        before = {j["id"] for j in vo.list_jobs(500)}
+        with pg.expect_navigation():
+            pg.click("button.ae-big")
+        new = [j["id"] for j in vo.list_jobs(500) if j["id"] not in before]
+        end = time.time() + 300
+        while new and time.time() < end and vo.read_job(new[0])["state"] not in ("done", "failed"):
+            time.sleep(1)
+        made = vo.read_job(new[0]) if new else {}
+        check("finish_page_makes_the_video", made.get("state") == "done", (new, made.get("result")))
+        if made.get("state") == "done":
+            pg.goto(base + f"/auto/voice/{made['id']}/edit")
+            n0 = pg.locator(".vo-trow").count()
+            pg.click("[data-trow-add]")
+            pg.click("[data-preview]:not([data-preview=cover])")
+            try:
+                pg.wait_for_selector("[data-pimg]:not([hidden])", timeout=60_000)
+                ed = pg.locator(".vo-trow").count() == n0 + 1
+            except Exception as exc:
+                ed = str(exc)[:200]
+            check("editor_adds_a_text_and_previews", ed is True, ed)
         check("no_script_errors", not errors, errors[:5])
         b.close()
     out = {"passed": sum(c["pass"] for c in checks), "total": len(checks), "checks": checks}
