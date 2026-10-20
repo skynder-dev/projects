@@ -1,0 +1,519 @@
+{
+ "round": 10,
+ "files": {
+  "voice10_1.mp3": "4_2's recipe, another voice: r10_design_t17 (230.1 Hz)",
+  "voice10_2.mp3": "4_2's recipe, another voice: r10_design_t4 (230.1 Hz)",
+  "voice10_3.mp3": "4_2's recipe, another voice: r10_design_t8 (230.1 Hz)"
+ },
+ "picked": [
+  {
+   "variant": "r10_design",
+   "take": 17,
+   "seconds_to_make": 1574.8,
+   "sr": 48000,
+   "file": "voice10-r10_design-17/r10_design_t17.wav",
+   "seconds": 18.88,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 230.1,
+   "pitch_movement_semitones": 4.11,
+   "female_range": true,
+   "words_per_minute": 168.4
+  },
+  {
+   "variant": "r10_design",
+   "take": 4,
+   "seconds_to_make": 244.2,
+   "sr": 48000,
+   "file": "voice10-r10_design-4/r10_design_t4.wav",
+   "seconds": 19.04,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 230.1,
+   "pitch_movement_semitones": 3.64,
+   "female_range": true,
+   "words_per_minute": 167.0
+  },
+  {
+   "variant": "r10_design",
+   "take": 8,
+   "seconds_to_make": 984.3,
+   "sr": 48000,
+   "file": "voice10-r10_design-8/r10_design_t8.wav",
+   "seconds": 18.88,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 230.1,
+   "pitch_movement_semitones": 4.35,
+   "female_range": true,
+   "words_per_minute": 168.4
+  }
+ ],
+ "all_takes": {
+  "r10_design_t1": {
+   "variant": "r10_design",
+   "take": 1,
+   "seconds_to_make": 226.3,
+   "sr": 48000,
+   "file": "voice10-r10_design-1/r10_design_t1.wav",
+   "seconds": 17.44,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 235.5,
+   "pitch_movement_semitones": 3.62,
+   "female_range": true,
+   "words_per_minute": 182.3
+  },
+  "r10_design_t10": {
+   "variant": "r10_design",
+   "take": 10,
+   "seconds_to_make": 208.1,
+   "sr": 48000,
+   "file": "voice10-r10_design-10/r10_design_t10.wav",
+   "seconds": 16.16,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 190.1,
+   "pitch_movement_semitones": 2.84,
+   "female_range": true,
+   "words_per_minute": 196.8
+  },
+  "r10_design_t11": {
+   "variant": "r10_design",
+   "take": 11,
+   "seconds_to_make": 666.6,
+   "sr": 48000,
+   "file": "voice10-r10_design-11/r10_design_t11.wav",
+   "seconds": 16.64,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 242.4,
+   "pitch_movement_semitones": 3.76,
+   "female_range": true,
+   "words_per_minute": 191.1
+  },
+  "r10_design_t12": {
+   "variant": "r10_design",
+   "take": 12,
+   "seconds_to_make": 146.0,
+   "sr": 48000,
+   "file": "voice10-r10_design-12/r10_design_t12.wav",
+   "seconds": 16.64,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 272.0,
+   "pitch_movement_semitones": 3.73,
+   "female_range": true,
+   "words_per_minute": 191.1
+  },
+  "r10_design_t13": {
+   "variant": "r10_design",
+   "take": 13,
+   "seconds_to_make": 1501.6,
+   "sr": 48000,
+   "file": "voice10-r10_design-13/r10_design_t13.wav",
+   "seconds": 17.92,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 239.6,
+   "pitch_movement_semitones": 4.21,
+   "female_range": true,
+   "words_per_minute": 177.5
+  },
+  "r10_design_t14": {
+   "variant": "r10_design",
+   "take": 14,
+   "seconds_to_make": 155.5,
+   "sr": 48000,
+   "file": "voice10-r10_design-14/r10_design_t14.wav",
+   "seconds": 17.44,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 238.2,
+   "pitch_movement_semitones": 3.41,
+   "female_range": true,
+   "words_per_minute": 182.3
+  },
+  "r10_design_t15": {
+   "variant": "r10_design",
+   "take": 15,
+   "seconds_to_make": 1567.2,
+   "sr": 48000,
+   "file": "voice10-r10_design-15/r10_design_t15.wav",
+   "seconds": 18.88,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 264.3,
+   "pitch_movement_semitones": 3.48,
+   "female_range": true,
+   "words_per_minute": 168.4
+  },
+  "r10_design_t16": {
+   "variant": "r10_design",
+   "take": 16,
+   "seconds_to_make": 941.9,
+   "sr": 48000,
+   "file": "voice10-r10_design-16/r10_design_t16.wav",
+   "seconds": 18.08,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 235.5,
+   "pitch_movement_semitones": 4.13,
+   "female_range": true,
+   "words_per_minute": 175.9
+  },
+  "r10_design_t17": {
+   "variant": "r10_design",
+   "take": 17,
+   "seconds_to_make": 1574.8,
+   "sr": 48000,
+   "file": "voice10-r10_design-17/r10_design_t17.wav",
+   "seconds": 18.88,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 230.1,
+   "pitch_movement_semitones": 4.11,
+   "female_range": true,
+   "words_per_minute": 168.4
+  },
+  "r10_design_t18": {
+   "variant": "r10_design",
+   "take": 18,
+   "seconds_to_make": 151.3,
+   "sr": 48000,
+   "file": "voice10-r10_design-18/r10_design_t18.wav",
+   "seconds": 16.8,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 272.0,
+   "pitch_movement_semitones": 3.67,
+   "female_range": true,
+   "words_per_minute": 189.3
+  },
+  "r10_design_t19": {
+   "variant": "r10_design",
+   "take": 19,
+   "seconds_to_make": 163.1,
+   "sr": 48000,
+   "file": "voice10-r10_design-19/r10_design_t19.wav",
+   "seconds": 18.4,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 291.6,
+   "pitch_movement_semitones": 4.36,
+   "female_range": true,
+   "words_per_minute": 172.8
+  },
+  "r10_design_t2": {
+   "variant": "r10_design",
+   "take": 2,
+   "seconds_to_make": 162.6,
+   "sr": 48000,
+   "file": "voice10-r10_design-2/r10_design_t2.wav",
+   "seconds": 18.56,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 258.2,
+   "pitch_movement_semitones": 4.11,
+   "female_range": true,
+   "words_per_minute": 171.3
+  },
+  "r10_design_t20": {
+   "variant": "r10_design",
+   "take": 20,
+   "seconds_to_make": 1541.3,
+   "sr": 48000,
+   "file": "voice10-r10_design-20/r10_design_t20.wav",
+   "seconds": 18.72,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 238.2,
+   "pitch_movement_semitones": 4.8,
+   "female_range": true,
+   "words_per_minute": 169.9
+  },
+  "r10_design_t3": {
+   "variant": "r10_design",
+   "take": 3,
+   "seconds_to_make": 151.9,
+   "sr": 48000,
+   "file": "voice10-r10_design-3/r10_design_t3.wav",
+   "seconds": 18.08,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 235.5,
+   "pitch_movement_semitones": 3.6,
+   "female_range": true,
+   "words_per_minute": 175.9
+  },
+  "r10_design_t4": {
+   "variant": "r10_design",
+   "take": 4,
+   "seconds_to_make": 244.2,
+   "sr": 48000,
+   "file": "voice10-r10_design-4/r10_design_t4.wav",
+   "seconds": 19.04,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 230.1,
+   "pitch_movement_semitones": 3.64,
+   "female_range": true,
+   "words_per_minute": 167.0
+  },
+  "r10_design_t5": {
+   "variant": "r10_design",
+   "take": 5,
+   "seconds_to_make": 1534.4,
+   "sr": 48000,
+   "file": "voice10-r10_design-5/r10_design_t5.wav",
+   "seconds": 18.4,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 250.9,
+   "pitch_movement_semitones": 3.68,
+   "female_range": true,
+   "words_per_minute": 172.8
+  },
+  "r10_design_t6": {
+   "variant": "r10_design",
+   "take": 6,
+   "seconds_to_make": 1412.2,
+   "sr": 48000,
+   "file": "voice10-r10_design-6/r10_design_t6.wav",
+   "seconds": 16.8,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 236.8,
+   "pitch_movement_semitones": 4.55,
+   "female_range": true,
+   "words_per_minute": 189.3
+  },
+  "r10_design_t7": {
+   "variant": "r10_design",
+   "take": 7,
+   "seconds_to_make": 769.1,
+   "sr": 48000,
+   "file": "voice10-r10_design-7/r10_design_t7.wav",
+   "seconds": 17.28,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 192.4,
+   "pitch_movement_semitones": 4.8,
+   "female_range": true,
+   "words_per_minute": 184.0
+  },
+  "r10_design_t8": {
+   "variant": "r10_design",
+   "take": 8,
+   "seconds_to_make": 984.3,
+   "sr": 48000,
+   "file": "voice10-r10_design-8/r10_design_t8.wav",
+   "seconds": 18.88,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 230.1,
+   "pitch_movement_semitones": 4.35,
+   "female_range": true,
+   "words_per_minute": 168.4
+  },
+  "r10_design_t9": {
+   "variant": "r10_design",
+   "take": 9,
+   "seconds_to_make": 1420.1,
+   "sr": 48000,
+   "file": "voice10-r10_design-9/r10_design_t9.wav",
+   "seconds": 17.12,
+   "said": "Here's what you need to know this week. First, flights to Europe got almost 20% cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this and send it to someone who's planning a trip.",
+   "word_errors": 2,
+   "word_error_rate": 0.038,
+   "missing": [
+    "twenty",
+    "percent"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 249.5,
+   "pitch_movement_semitones": 4.21,
+   "female_range": true,
+   "words_per_minute": 185.7
+  }
+ },
+ "failed_takes": {}
+}
