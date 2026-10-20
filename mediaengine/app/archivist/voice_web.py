@@ -576,6 +576,10 @@ def register(app, page, err_page, e, human_bytes):
                 f"<label><input type='radio' name='captions' value='none' checked> No captions</label>"
                 f"<label><input type='radio' name='captions' value='voice'> The words of the voice</label>"
                 + (f"<label><input type='radio' name='captions' value='speech'> The speech in the video (heard when it is made)</label>"
+                   f"<div data-when='captions=speech' hidden style='margin:4px 0 0 22px'>"
+                   f"<textarea class='vo-text' name='script' maxlength='{vo.MAX_TEXT}' style='min-height:70px' "
+                   f"placeholder='Optional: the exact text that is said - then the captions show it word for word, timed to the speech'>"
+                   f"</textarea></div>"
                    if new_ok else "") + "</div>")
         return (f"<div class='pagehead'><div class='eyebrow'>Voice-over and text</div><h1>Finish a video</h1>"
                 f"<div class='lead'>A voice, captions and text for one video, with their look - on one page.</div></div>"
@@ -613,7 +617,7 @@ def register(app, page, err_page, e, human_bytes):
                                      "description": f.get("description", ""), "language": f.get("language", "")},
                           captions=f.get("captions", "none"), opts=_opts(f), texts=tf.parse_texts(tf.rows_from_form(f)),
                           start_s=f.get("start", "0.3"), keep_sound=f.get("keep_sound") == "1",
-                          music=f.get("music", ""), music_level=f.get("music_level", "medium"))
+                          music=f.get("music", ""), music_level=f.get("music_level", "medium"), script=f.get("script", ""))
         except (vo.VoiceError, tf.TextError) as exc:
             return err_page(str(exc), "/auto/finish")
         return redirect("/auto/voice#voJobs")

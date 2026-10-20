@@ -803,6 +803,8 @@ PHRASES = {
         "курсор, ⤓ склеивает со следующей, ＋ добавляет строку.",
     "Only a finished video can be copied.": "Копию можно сделать только из готового видео.",
     "The small copy could not be made.": "Не удалось сделать маленькую копию.",
+    "Optional: the exact text that is said - then the captions show it word for word, timed to the speech":
+        "Не обязательно: точный текст того, что говорится, — тогда субтитры покажут его слово в слово, по времени речи",
     "Save as a cover": "Сохранить как обложку", "This picture, full size, saved next to the reels": "Этот кадр в полном размере — рядом с роликами",
     "The cover could not be saved.": "Не удалось сохранить обложку.",
     "6. Music under it": "6. Музыка под видео", "(optional)": "(не обязательно)",

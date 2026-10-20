@@ -760,7 +760,7 @@ def new_render(video: str, cues_: list[dict] | None = None, opts: dict | None = 
 
 def new_finish(video: str, voice: str = "none", voice_from: str = "", new_voice: dict | None = None,
                captions: str = "none", opts: dict | None = None, texts: list[dict] | None = None, start_s=0.3,
-               keep_sound: bool = True, music: str = "", music_level: str = "medium") -> str:
+               keep_sound: bool = True, music: str = "", music_level: str = "medium", script: str = "") -> str:
     """Everything for one video in one go: a voice (none / a voice-over made already / a new one, made first), captions
     (none / the voice's words / the video's own speech, heard when the video is made), a look and texts. A new voice
     and captions of the speech need the add-on; the rest does not."""
@@ -785,6 +785,7 @@ def new_finish(video: str, voice: str = "none", voice_from: str = "", new_voice:
             raise VoiceError("The voice add-on is being installed. Wait until it is ready.")
     tx = list(texts or [])
     music = _check_music(music)
+    script = str(script or "").strip()[:MAX_TEXT] if captions == "speech" else ""
     if voice == "none" and captions == "none" and not tx and not music:
         raise VoiceError("Add a text, captions, a voice or music first.")
     if voice == "new":                                    # made first: the jobs run one after another, in order
@@ -804,7 +805,7 @@ def new_finish(video: str, voice: str = "none", voice_from: str = "", new_voice:
                     "needs_addon": captions == "speech", "opts": tf.options(**(opts or {})), "texts": tx,
                     "voice_from": voice_from or "", "start_s": start, "keep_sound": bool(keep_sound),
                     "music": music, "music_level": music_level if music_level in ("quiet", "medium", "loud") else "medium",
-                    "title": p.name[:60]}, addon=False)
+                    "script": script, "title": p.name[:60]}, addon=False)
 
 
 MUSIC_EXT = {".mp3", ".m4a", ".aac", ".wav", ".flac", ".ogg", ".opus", ".wma"}
@@ -962,7 +963,8 @@ def _do(jid: str) -> dict:
                 (d / "sound16k.wav").unlink(missing_ok=True)
                 if not res.get("ok"):
                     return res
-                words = align("", res.get("words") or [])
+                words = align(job.get("script") or "", res.get("words") or [])   # my text, timed to the speech
+                words = tf.mark_emphasis(words) if job.get("script") else words
                 if not words:
                     return {"ok": False, "error": "No speech was found in this video."}
                 sh = float(job.get("start_s") or 0.0)    # the video's own times; captions are drawn at +start_s

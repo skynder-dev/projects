@@ -566,6 +566,14 @@ def main() -> int:
           [w["w"] for w in em2 if w.get("em")] == ["«слово»", "open", "run."], [(w["w"], w.get("em")) for w in em2])
     r = c.post("/auto/finish", data={**base_f, "music": str(home / "nope.mp3")}, headers=H)
     check("a music file that is not there: refused in words", r.status_code == 400, r.status_code)
+    before = {j["id"] for j in vo.list_jobs(500)}
+    r = c.post("/auto/finish", data={"video": str(video), "voice": "none", "captions": "speech",
+                                     "script": "Hello, world from *this* video."}, headers=H)
+    pj = wait(next(j["id"] for j in vo.list_jobs(500) if j["id"] not in before))
+    pw = [w for c_ in json.loads((Path(pj["dir"]) / "job.json").read_text("utf-8")).get("cues", []) for w in c_["words"]]
+    check("my text timed to the speech: its own words (and marks), the speech's times",
+          [w["w"] for w in pw] == ["Hello,", "world", "from", "this", "video."] and pw[3].get("em") and abs(pw[0]["s"] - 0.2) < 0.01,
+          [(w["w"], w["s"], w.get("em")) for w in pw])
     r = c.post("/auto/finish", data={"video": str(video), "voice": "none", "captions": "voice"}, headers=H)
     check("captions of a voice without a voice: refused in words", r.status_code == 400, r.status_code)
     r = c.post("/auto/finish", data={"video": str(video), "voice": "none", "captions": "none"}, headers=H)
