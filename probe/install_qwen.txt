@@ -1,0 +1,424 @@
++ python -m venv 'D:\a\_temp/v'
++ PY='D:\a\_temp/v/Scripts/python.exe'
++ 'D:\a\_temp/v/Scripts/python.exe' -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.8.0 torchaudio==2.8.0
+Looking in indexes: https://download.pytorch.org/whl/cpu
+Collecting torch==2.8.0
+  Downloading https://download-r2.pytorch.org/whl/cpu/torch-2.8.0%2Bcpu-cp311-cp311-win_amd64.whl.metadata (29 kB)
+Collecting torchaudio==2.8.0
+  Downloading https://download-r2.pytorch.org/whl/cpu/torchaudio-2.8.0%2Bcpu-cp311-cp311-win_amd64.whl.metadata (7.4 kB)
+Collecting filelock (from torch==2.8.0)
+  Downloading filelock-3.32.3-py3-none-any.whl.metadata (2.0 kB)
+Collecting typing-extensions>=4.10.0 (from torch==2.8.0)
+  Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting sympy>=1.13.3 (from torch==2.8.0)
+  Downloading sympy-1.14.0-py3-none-any.whl.metadata (12 kB)
+Collecting networkx (from torch==2.8.0)
+  Downloading networkx-3.6.1-py3-none-any.whl.metadata (6.8 kB)
+Collecting jinja2 (from torch==2.8.0)
+  Downloading https://download.pytorch.org/whl/jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting fsspec (from torch==2.8.0)
+  Downloading fsspec-2026.7.0-py3-none-any.whl.metadata (10 kB)
+Collecting mpmath<1.4,>=1.1.0 (from sympy>=1.13.3->torch==2.8.0)
+  Downloading mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
+Collecting MarkupSafe>=2.0 (from jinja2->torch==2.8.0)
+  Downloading https://download.pytorch.org/whl/markupsafe-3.0.3-cp311-cp311-win_amd64.whl.metadata (2.8 kB)
+Downloading https://download-r2.pytorch.org/whl/cpu/torch-2.8.0%2Bcpu-cp311-cp311-win_amd64.whl (619.4 MB)
+Downloading https://download-r2.pytorch.org/whl/cpu/torchaudio-2.8.0%2Bcpu-cp311-cp311-win_amd64.whl (2.5 MB)
+Downloading sympy-1.14.0-py3-none-any.whl (6.3 MB)
+Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Downloading filelock-3.32.3-py3-none-any.whl (98 kB)
+Downloading fsspec-2026.7.0-py3-none-any.whl (206 kB)
+Downloading https://download.pytorch.org/whl/jinja2-3.1.6-py3-none-any.whl (134 kB)
+Downloading networkx-3.6.1-py3-none-any.whl (2.1 MB)
+Downloading https://download.pytorch.org/whl/markupsafe-3.0.3-cp311-cp311-win_amd64.whl (15 kB)
+Downloading mpmath-1.3.0-py3-none-any.whl (536 kB)
+Installing collected packages: mpmath, typing-extensions, sympy, networkx, MarkupSafe, fsspec, filelock, jinja2, torch, torchaudio
+Successfully installed MarkupSafe-3.0.3 filelock-3.32.3 fsspec-2026.7.0 jinja2-3.1.6 mpmath-1.3.0 networkx-3.6.1 sympy-1.14.0 torch-2.8.0+cpu torchaudio-2.8.0+cpu typing-extensions-4.16.0
++ printf 'torch==2.8.0\ntorchaudio==2.8.0\n'
++ '[' qwen = qwen ']'
++ 'D:\a\_temp/v/Scripts/python.exe' -m pip install --extra-index-url https://download.pytorch.org/whl/cpu -c 'D:\a\_temp/pin.txt' qwen-tts soundfile
+Looking in indexes: https://pypi.org/simple, https://download.pytorch.org/whl/cpu
+Collecting qwen-tts
+  Downloading qwen_tts-0.1.1-py3-none-any.whl.metadata (61 kB)
+Collecting soundfile
+  Downloading soundfile-0.14.0-py2.py3-none-win_amd64.whl.metadata (18 kB)
+Collecting transformers==4.57.3 (from qwen-tts)
+  Downloading transformers-4.57.3-py3-none-any.whl.metadata (43 kB)
+Collecting accelerate==1.12.0 (from qwen-tts)
+  Downloading accelerate-1.12.0-py3-none-any.whl.metadata (19 kB)
+Collecting gradio (from qwen-tts)
+  Downloading gradio-6.30.0-py3-none-any.whl.metadata (16 kB)
+Collecting librosa (from qwen-tts)
+  Downloading librosa-0.11.0-py3-none-any.whl.metadata (8.7 kB)
+Requirement already satisfied: torchaudio in d:\a\_temp\v\lib\site-packages (from qwen-tts) (2.8.0+cpu)
+Collecting sox (from qwen-tts)
+  Downloading sox-1.5.0.tar.gz (63 kB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Collecting onnxruntime (from qwen-tts)
+  Downloading onnxruntime-1.31.0-cp311-cp311-win_amd64.whl.metadata (6.0 kB)
+Collecting einops (from qwen-tts)
+  Downloading einops-0.8.2-py3-none-any.whl.metadata (13 kB)
+Collecting numpy>=1.17 (from accelerate==1.12.0->qwen-tts)
+  Downloading numpy-2.4.6-cp311-cp311-win_amd64.whl.metadata (6.6 kB)
+Collecting packaging>=20.0 (from accelerate==1.12.0->qwen-tts)
+  Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+Collecting psutil (from accelerate==1.12.0->qwen-tts)
+  Downloading psutil-7.2.2-cp37-abi3-win_amd64.whl.metadata (22 kB)
+Collecting pyyaml (from accelerate==1.12.0->qwen-tts)
+  Downloading pyyaml-6.0.3-cp311-cp311-win_amd64.whl.metadata (2.4 kB)
+Requirement already satisfied: torch>=2.0.0 in d:\a\_temp\v\lib\site-packages (from accelerate==1.12.0->qwen-tts) (2.8.0+cpu)
+Collecting huggingface_hub>=0.21.0 (from accelerate==1.12.0->qwen-tts)
+  Downloading huggingface_hub-2.2.0-py3-none-any.whl.metadata (16 kB)
+Collecting safetensors>=0.4.3 (from accelerate==1.12.0->qwen-tts)
+  Downloading safetensors-0.8.0-cp310-abi3-win_amd64.whl.metadata (4.2 kB)
+Requirement already satisfied: filelock in d:\a\_temp\v\lib\site-packages (from transformers==4.57.3->qwen-tts) (3.32.3)
+Collecting huggingface_hub>=0.21.0 (from accelerate==1.12.0->qwen-tts)
+  Downloading huggingface_hub-0.36.2-py3-none-any.whl.metadata (15 kB)
+Collecting regex!=2019.12.17 (from transformers==4.57.3->qwen-tts)
+  Downloading regex-2026.9.29-cp311-cp311-win_amd64.whl.metadata (41 kB)
+Collecting requests (from transformers==4.57.3->qwen-tts)
+  Downloading requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+Collecting tokenizers<=0.23.0,>=0.22.0 (from transformers==4.57.3->qwen-tts)
+  Downloading tokenizers-0.22.2-cp39-abi3-win_amd64.whl.metadata (7.4 kB)
+Collecting tqdm>=4.27 (from transformers==4.57.3->qwen-tts)
+  Downloading tqdm-4.70.1-py3-none-any.whl.metadata (57 kB)
+Collecting cffi>=1.0 (from soundfile)
+  Downloading cffi-2.1.1-cp311-cp311-win_amd64.whl.metadata (2.6 kB)
+Requirement already satisfied: typing-extensions in d:\a\_temp\v\lib\site-packages (from soundfile) (4.16.0)
+Collecting pycparser (from cffi>=1.0->soundfile)
+  Downloading pycparser-3.11-py3-none-any.whl.metadata (8.2 kB)
+Collecting anyio<5.0,>=3.0 (from gradio->qwen-tts)
+  Downloading anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)
+Collecting brotli>=1.1.0 (from gradio->qwen-tts)
+  Downloading brotli-1.2.0-cp311-cp311-win_amd64.whl.metadata (6.3 kB)
+Collecting fastapi<1.0,>=0.115.2 (from gradio->qwen-tts)
+  Downloading fastapi-0.156.8-py3-none-any.whl.metadata (26 kB)
+Collecting gradio-client==2.7.2 (from gradio->qwen-tts)
+  Downloading gradio_client-2.7.2-py3-none-any.whl.metadata (7.1 kB)
+Collecting groovy~=0.1 (from gradio->qwen-tts)
+  Downloading groovy-0.1.2-py3-none-any.whl.metadata (6.1 kB)
+Collecting hf-gradio<1.0,>=0.4.1 (from gradio->qwen-tts)
+  Downloading hf_gradio-0.4.1-py3-none-any.whl.metadata (428 bytes)
+Collecting httpx<1.0,>=0.24.1 (from gradio->qwen-tts)
+  Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+INFO: pip is looking at multiple versions of gradio to determine which version is compatible with other requirements. This could take a while.
+Collecting gradio (from qwen-tts)
+  Downloading gradio-6.29.1-py3-none-any.whl.metadata (16 kB)
+  Downloading gradio-6.29.0-py3-none-any.whl.metadata (16 kB)
+Collecting gradio-client==2.7.1 (from gradio->qwen-tts)
+  Downloading gradio_client-2.7.1-py3-none-any.whl.metadata (7.1 kB)
+Collecting gradio (from qwen-tts)
+  Downloading gradio-6.28.0-py3-none-any.whl.metadata (16 kB)
+  Downloading gradio-6.27.0-py3-none-any.whl.metadata (17 kB)
+Collecting gradio-client==2.7.0 (from gradio->qwen-tts)
+  Downloading gradio_client-2.7.0-py3-none-any.whl.metadata (7.1 kB)
+Collecting gradio (from qwen-tts)
+  Downloading gradio-6.26.0-py3-none-any.whl.metadata (17 kB)
+Collecting gradio-client==2.6.1 (from gradio->qwen-tts)
+  Downloading gradio_client-2.6.1-py3-none-any.whl.metadata (7.1 kB)
+Collecting gradio (from qwen-tts)
+  Downloading gradio-6.25.0-py3-none-any.whl.metadata (17 kB)
+Collecting gradio-client==2.6.0 (from gradio->qwen-tts)
+  Downloading gradio_client-2.6.0-py3-none-any.whl.metadata (7.1 kB)
+Collecting gradio (from qwen-tts)
+  Downloading gradio-6.24.0-py3-none-any.whl.metadata (17 kB)
+INFO: pip is still looking at multiple versions of gradio to determine which version is compatible with other requirements. This could take a while.
+  Downloading gradio-6.23.1-py3-none-any.whl.metadata (17 kB)
+  Downloading gradio-6.22.0-py3-none-any.whl.metadata (17 kB)
+  Downloading gradio-6.21.0-py3-none-any.whl.metadata (17 kB)
+  Downloading gradio-6.20.0-py3-none-any.whl.metadata (17 kB)
+Collecting gradio-client==2.5.0 (from gradio->qwen-tts)
+  Downloading gradio_client-2.5.0-py3-none-any.whl.metadata (7.1 kB)
+Collecting gradio (from qwen-tts)
+  Downloading gradio-6.19.0-py3-none-any.whl.metadata (17 kB)
+INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+  Downloading gradio-6.18.0-py3-none-any.whl.metadata (17 kB)
+  Downloading gradio-6.17.3-py3-none-any.whl.metadata (17 kB)
+Requirement already satisfied: jinja2<4.0 in d:\a\_temp\v\lib\site-packages (from gradio->qwen-tts) (3.1.6)
+Requirement already satisfied: markupsafe<4.0,>=2.0 in d:\a\_temp\v\lib\site-packages (from gradio->qwen-tts) (3.0.3)
+Collecting orjson~=3.0 (from gradio->qwen-tts)
+  Downloading orjson-3.13.0-cp311-cp311-win_amd64.whl.metadata (43 kB)
+Collecting pandas<4.0,>=1.0 (from gradio->qwen-tts)
+  Downloading pandas-3.0.6-cp311-cp311-win_amd64.whl.metadata (19 kB)
+Collecting pillow<13.0,>=8.0 (from gradio->qwen-tts)
+  Downloading pillow-12.3.0-cp311-cp311-win_amd64.whl.metadata (9.3 kB)
+Collecting pydantic<=3.0,>=2.0 (from gradio->qwen-tts)
+  Downloading pydantic-2.14.1-py3-none-any.whl.metadata (133 kB)
+Collecting pydub<1.0 (from gradio->qwen-tts)
+  Downloading pydub-0.25.1-py2.py3-none-any.whl.metadata (1.4 kB)
+Collecting python-multipart<1.0,>=0.0.18 (from gradio->qwen-tts)
+  Downloading python_multipart-0.0.32-py3-none-any.whl.metadata (2.1 kB)
+Collecting pytz>=2017.2 (from gradio->qwen-tts)
+  Downloading pytz-2026.5-py2.py3-none-any.whl.metadata (22 kB)
+Collecting safehttpx<0.2.0,>=0.1.7 (from gradio->qwen-tts)
+  Downloading safehttpx-0.1.7-py3-none-any.whl.metadata (4.2 kB)
+Collecting semantic-version~=2.0 (from gradio->qwen-tts)
+  Downloading semantic_version-2.10.0-py2.py3-none-any.whl.metadata (9.7 kB)
+Collecting starlette<2.0,>=1.0.1 (from gradio->qwen-tts)
+  Downloading starlette-1.9.0-py3-none-any.whl.metadata (6.6 kB)
+Collecting tomlkit<0.15.0,>=0.12.0 (from gradio->qwen-tts)
+  Downloading tomlkit-0.14.0-py3-none-any.whl.metadata (2.8 kB)
+Collecting typer<1.0,>=0.12 (from gradio->qwen-tts)
+  Downloading typer-0.27.3-py3-none-any.whl.metadata (16 kB)
+Collecting uvicorn>=0.14.0 (from gradio->qwen-tts)
+  Downloading uvicorn-0.54.0-py3-none-any.whl.metadata (6.6 kB)
+Requirement already satisfied: fsspec in d:\a\_temp\v\lib\site-packages (from gradio-client==2.5.0->gradio->qwen-tts) (2026.7.0)
+Collecting audioread>=2.1.9 (from librosa->qwen-tts)
+  Downloading audioread-3.1.0-py3-none-any.whl.metadata (9.0 kB)
+Collecting numba>=0.51.0 (from librosa->qwen-tts)
+  Downloading numba-0.68.0-cp311-cp311-win_amd64.whl.metadata (2.9 kB)
+Collecting scipy>=1.6.0 (from librosa->qwen-tts)
+  Downloading scipy-1.17.1-cp311-cp311-win_amd64.whl.metadata (60 kB)
+Collecting scikit-learn>=1.1.0 (from librosa->qwen-tts)
+  Downloading scikit_learn-1.9.1-cp311-cp311-win_amd64.whl.metadata (9.3 kB)
+Collecting joblib>=1.0 (from librosa->qwen-tts)
+  Downloading joblib-1.6.0-py3-none-any.whl.metadata (6.5 kB)
+Collecting decorator>=4.3.0 (from librosa->qwen-tts)
+  Downloading decorator-5.3.1-py3-none-any.whl.metadata (3.9 kB)
+Collecting pooch>=1.1 (from librosa->qwen-tts)
+  Downloading pooch-1.9.0-py3-none-any.whl.metadata (10 kB)
+Collecting soxr>=0.3.2 (from librosa->qwen-tts)
+  Downloading soxr-1.1.0-cp311-cp311-win_amd64.whl.metadata (5.8 kB)
+Collecting lazy_loader>=0.1 (from librosa->qwen-tts)
+  Downloading lazy_loader-0.6-py3-none-any.whl.metadata (6.0 kB)
+Collecting msgpack>=1.0 (from librosa->qwen-tts)
+  Downloading msgpack-1.2.3-cp311-cp311-win_amd64.whl.metadata (8.5 kB)
+Collecting flatbuffers (from onnxruntime->qwen-tts)
+  Downloading flatbuffers-25.12.19-py2.py3-none-any.whl.metadata (1.0 kB)
+Collecting protobuf>=4.25.8 (from onnxruntime->qwen-tts)
+  Downloading protobuf-7.36.2-cp310-abi3-win_amd64.whl.metadata (595 bytes)
+Requirement already satisfied: sympy>=1.13.3 in d:\a\_temp\v\lib\site-packages (from torch>=2.0.0->accelerate==1.12.0->qwen-tts) (1.14.0)
+Requirement already satisfied: networkx in d:\a\_temp\v\lib\site-packages (from torch>=2.0.0->accelerate==1.12.0->qwen-tts) (3.6.1)
+Collecting idna>=2.8 (from anyio<5.0,>=3.0->gradio->qwen-tts)
+  Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+Collecting typing-inspection>=0.4.2 (from fastapi<1.0,>=0.115.2->gradio->qwen-tts)
+  Downloading typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+Collecting annotated-doc>=0.0.2 (from fastapi<1.0,>=0.115.2->gradio->qwen-tts)
+  Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+Collecting opentelemetry-api>=1.44.0 (from fastapi<1.0,>=0.115.2->gradio->qwen-tts)
+  Downloading opentelemetry_api-1.45.1-py3-none-any.whl.metadata (1.4 kB)
+Collecting certifi (from httpx<1.0,>=0.24.1->gradio->qwen-tts)
+  Downloading certifi-2026.10.19-py3-none-any.whl.metadata (2.5 kB)
+Collecting httpcore==1.* (from httpx<1.0,>=0.24.1->gradio->qwen-tts)
+  Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Collecting h11>=0.16 (from httpcore==1.*->httpx<1.0,>=0.24.1->gradio->qwen-tts)
+  Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Collecting cloudpickle>=3.0 (from joblib>=1.0->librosa->qwen-tts)
+  Downloading cloudpickle-3.1.2-py3-none-any.whl.metadata (7.1 kB)
+Collecting llvmlite<0.51,>=0.50.0dev0 (from numba>=0.51.0->librosa->qwen-tts)
+  Downloading llvmlite-0.50.0-cp311-cp311-win_amd64.whl.metadata (5.0 kB)
+Collecting python-dateutil>=2.8.2 (from pandas<4.0,>=1.0->gradio->qwen-tts)
+  Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+Collecting tzdata (from pandas<4.0,>=1.0->gradio->qwen-tts)
+  Downloading tzdata-2026.5-py2.py3-none-any.whl.metadata (1.4 kB)
+Collecting platformdirs>=2.5.0 (from pooch>=1.1->librosa->qwen-tts)
+  Downloading platformdirs-4.13.5-py3-none-any.whl.metadata (5.5 kB)
+Collecting annotated-types>=0.6.0 (from pydantic<=3.0,>=2.0->gradio->qwen-tts)
+  Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+Collecting pydantic-core==2.50.1 (from pydantic<=3.0,>=2.0->gradio->qwen-tts)
+  Downloading pydantic_core-2.50.1-cp311-cp311-win_amd64.whl.metadata (6.7 kB)
+Collecting charset_normalizer<4,>=2 (from requests->transformers==4.57.3->qwen-tts)
+  Downloading charset_normalizer-3.5.2-cp311-cp311-win_amd64.whl.metadata (47 kB)
+Collecting urllib3<3,>=1.26 (from requests->transformers==4.57.3->qwen-tts)
+  Downloading urllib3-2.8.0-py3-none-any.whl.metadata (7.4 kB)
+Collecting narwhals>=2.0.1 (from scikit-learn>=1.1.0->librosa->qwen-tts)
+  Downloading narwhals-2.27.1-py3-none-any.whl.metadata (15 kB)
+Collecting threadpoolctl>=3.5.0 (from scikit-learn>=1.1.0->librosa->qwen-tts)
+  Downloading threadpoolctl-3.7.0-py3-none-any.whl.metadata (24 kB)
+Collecting colorama (from tqdm>=4.27->transformers==4.57.3->qwen-tts)
+  Downloading https://download.pytorch.org/whl/colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+Collecting shellingham>=1.3.0 (from typer<1.0,>=0.12->gradio->qwen-tts)
+  Downloading shellingham-1.5.4-py2.py3-none-any.whl.metadata (3.5 kB)
+Collecting rich>=13.8.0 (from typer<1.0,>=0.12->gradio->qwen-tts)
+  Downloading rich-15.0.0-py3-none-any.whl.metadata (18 kB)
+Collecting click>=7.0 (from uvicorn>=0.14.0->gradio->qwen-tts)
+  Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+Collecting six>=1.5 (from python-dateutil>=2.8.2->pandas<4.0,>=1.0->gradio->qwen-tts)
+  Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+Collecting markdown-it-py>=2.2.0 (from rich>=13.8.0->typer<1.0,>=0.12->gradio->qwen-tts)
+  Downloading markdown_it_py-4.2.0-py3-none-any.whl.metadata (7.4 kB)
+Collecting pygments<3.0.0,>=2.13.0 (from rich>=13.8.0->typer<1.0,>=0.12->gradio->qwen-tts)
+  Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+Requirement already satisfied: mpmath<1.4,>=1.1.0 in d:\a\_temp\v\lib\site-packages (from sympy>=1.13.3->torch>=2.0.0->accelerate==1.12.0->qwen-tts) (1.3.0)
+Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=13.8.0->typer<1.0,>=0.12->gradio->qwen-tts)
+  Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Downloading qwen_tts-0.1.1-py3-none-any.whl (113 kB)
+Downloading accelerate-1.12.0-py3-none-any.whl (380 kB)
+Downloading transformers-4.57.3-py3-none-any.whl (12.0 MB)
+Downloading soundfile-0.14.0-py2.py3-none-win_amd64.whl (1.0 MB)
+Downloading cffi-2.1.1-cp311-cp311-win_amd64.whl (185 kB)
+Downloading numpy-2.4.6-cp311-cp311-win_amd64.whl (12.6 MB)
+Downloading einops-0.8.2-py3-none-any.whl (65 kB)
+Downloading gradio-6.17.3-py3-none-any.whl (32.3 MB)
+Downloading gradio_client-2.5.0-py3-none-any.whl (59 kB)
+Downloading librosa-0.11.0-py3-none-any.whl (260 kB)
+Downloading onnxruntime-1.31.0-cp311-cp311-win_amd64.whl (14.9 MB)
+Downloading anyio-4.15.1-py3-none-any.whl (132 kB)
+Downloading audioread-3.1.0-py3-none-any.whl (23 kB)
+Downloading brotli-1.2.0-cp311-cp311-win_amd64.whl (369 kB)
+Downloading decorator-5.3.1-py3-none-any.whl (10 kB)
+Downloading fastapi-0.156.8-py3-none-any.whl (147 kB)
+Downloading groovy-0.1.2-py3-none-any.whl (14 kB)
+Downloading hf_gradio-0.4.1-py3-none-any.whl (4.5 kB)
+Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+Downloading huggingface_hub-0.36.2-py3-none-any.whl (566 kB)
+Downloading joblib-1.6.0-py3-none-any.whl (306 kB)
+Downloading lazy_loader-0.6-py3-none-any.whl (8.8 kB)
+Downloading msgpack-1.2.3-cp311-cp311-win_amd64.whl (75 kB)
+Downloading numba-0.68.0-cp311-cp311-win_amd64.whl (2.8 MB)
+Downloading orjson-3.13.0-cp311-cp311-win_amd64.whl (121 kB)
+Downloading packaging-26.3-py3-none-any.whl (129 kB)
+Downloading pandas-3.0.6-cp311-cp311-win_amd64.whl (9.9 MB)
+Downloading pillow-12.3.0-cp311-cp311-win_amd64.whl (7.2 MB)
+Downloading pooch-1.9.0-py3-none-any.whl (67 kB)
+Downloading protobuf-7.36.2-cp310-abi3-win_amd64.whl (456 kB)
+Downloading pydantic-2.14.1-py3-none-any.whl (488 kB)
+Downloading pydantic_core-2.50.1-cp311-cp311-win_amd64.whl (2.2 MB)
+Downloading pydub-0.25.1-py2.py3-none-any.whl (32 kB)
+Downloading python_multipart-0.0.32-py3-none-any.whl (30 kB)
+Downloading pytz-2026.5-py2.py3-none-any.whl (506 kB)
+Downloading pyyaml-6.0.3-cp311-cp311-win_amd64.whl (158 kB)
+Downloading regex-2026.9.29-cp311-cp311-win_amd64.whl (280 kB)
+Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+Downloading safehttpx-0.1.7-py3-none-any.whl (9.0 kB)
+Downloading safetensors-0.8.0-cp310-abi3-win_amd64.whl (355 kB)
+Downloading scikit_learn-1.9.1-cp311-cp311-win_amd64.whl (8.3 MB)
+Downloading scipy-1.17.1-cp311-cp311-win_amd64.whl (36.6 MB)
+Downloading semantic_version-2.10.0-py2.py3-none-any.whl (15 kB)
+Downloading soxr-1.1.0-cp311-cp311-win_amd64.whl (176 kB)
+Downloading starlette-1.9.0-py3-none-any.whl (80 kB)
+Downloading tokenizers-0.22.2-cp39-abi3-win_amd64.whl (2.7 MB)
+Downloading tomlkit-0.14.0-py3-none-any.whl (39 kB)
+Downloading tqdm-4.70.1-py3-none-any.whl (80 kB)
+Downloading typer-0.27.3-py3-none-any.whl (123 kB)
+Downloading uvicorn-0.54.0-py3-none-any.whl (87 kB)
+Downloading flatbuffers-25.12.19-py2.py3-none-any.whl (26 kB)
+Downloading psutil-7.2.2-cp37-abi3-win_amd64.whl (137 kB)
+Downloading pycparser-3.11-py3-none-any.whl (51 kB)
+Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+Downloading certifi-2026.10.19-py3-none-any.whl (136 kB)
+Downloading charset_normalizer-3.5.2-cp311-cp311-win_amd64.whl (214 kB)
+Downloading click-8.5.0-py3-none-any.whl (125 kB)
+Downloading cloudpickle-3.1.2-py3-none-any.whl (22 kB)
+Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+Downloading idna-3.20-py3-none-any.whl (69 kB)
+Downloading llvmlite-0.50.0-cp311-cp311-win_amd64.whl (41.9 MB)
+Downloading narwhals-2.27.1-py3-none-any.whl (483 kB)
+Downloading opentelemetry_api-1.45.1-py3-none-any.whl (60 kB)
+Downloading platformdirs-4.13.5-py3-none-any.whl (32 kB)
+Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Downloading rich-15.0.0-py3-none-any.whl (310 kB)
+Downloading shellingham-1.5.4-py2.py3-none-any.whl (9.8 kB)
+Downloading threadpoolctl-3.7.0-py3-none-any.whl (26 kB)
+Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+Downloading urllib3-2.8.0-py3-none-any.whl (135 kB)
+Downloading tzdata-2026.5-py2.py3-none-any.whl (347 kB)
+Downloading markdown_it_py-4.2.0-py3-none-any.whl (91 kB)
+Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Building wheels for collected packages: sox
+  Building wheel for sox (pyproject.toml): started
+  Building wheel for sox (pyproject.toml): finished with status 'done'
+  Created wheel for sox: filename=sox-1.5.0-py3-none-any.whl size=40164 sha256=2d5ffd419f5c7100981d19b0d4c357c14c40b658262efbce921b1cfa0b83a887
+  Stored in directory: c:\users\runneradmin\appdata\local\pip\cache\wheels\74\89\93\023fcdacaec4e5471e78b43992515e8500cc2505b307e2e6b7
+Successfully built sox
+Installing collected packages: pytz, pydub, flatbuffers, brotli, urllib3, tzdata, typing-inspection, tomlkit, threadpoolctl, six, shellingham, semantic-version, safetensors, regex, pyyaml, python-multipart, pygments, pydantic-core, pycparser, psutil, protobuf, platformdirs, pillow, packaging, orjson, opentelemetry-api, numpy, narwhals, msgpack, mdurl, llvmlite, idna, h11, groovy, einops, decorator, colorama, cloudpickle, click, charset_normalizer, certifi, audioread, annotated-types, annotated-doc, uvicorn, tqdm, soxr, sox, scipy, requests, python-dateutil, pydantic, onnxruntime, numba, markdown-it-py, lazy_loader, joblib, httpcore, cffi, anyio, starlette, soundfile, scikit-learn, rich, pooch, pandas, huggingface_hub, httpx, typer, tokenizers, safehttpx, librosa, gradio-client, fastapi, accelerate, transformers, hf-gradio, gradio, qwen-tts
+Successfully installed accelerate-1.12.0 annotated-doc-0.0.5 annotated-types-0.8.0 anyio-4.15.1 audioread-3.1.0 brotli-1.2.0 certifi-2026.10.19 cffi-2.1.1 charset_normalizer-3.5.2 click-8.5.0 cloudpickle-3.1.2 colorama-0.4.6 decorator-5.3.1 einops-0.8.2 fastapi-0.156.8 flatbuffers-25.12.19 gradio-6.17.3 gradio-client-2.5.0 groovy-0.1.2 h11-0.16.0 hf-gradio-0.4.1 httpcore-1.0.9 httpx-0.28.1 huggingface_hub-0.36.2 idna-3.20 joblib-1.6.0 lazy_loader-0.6 librosa-0.11.0 llvmlite-0.50.0 markdown-it-py-4.2.0 mdurl-0.1.2 msgpack-1.2.3 narwhals-2.27.1 numba-0.68.0 numpy-2.4.6 onnxruntime-1.31.0 opentelemetry-api-1.45.1 orjson-3.13.0 packaging-26.3 pandas-3.0.6 pillow-12.3.0 platformdirs-4.13.5 pooch-1.9.0 protobuf-7.36.2 psutil-7.2.2 pycparser-3.11 pydantic-2.14.1 pydantic-core-2.50.1 pydub-0.25.1 pygments-2.21.0 python-dateutil-2.9.0.post0 python-multipart-0.0.32 pytz-2026.5 pyyaml-6.0.3 qwen-tts-0.1.1 regex-2026.9.29 requests-2.34.2 rich-15.0.0 safehttpx-0.1.7 safetensors-0.8.0 scikit-learn-1.9.1 scipy-1.17.1 semantic-version-2.10.0 shellingham-1.5.4 six-1.17.0 soundfile-0.14.0 sox-1.5.0 soxr-1.1.0 starlette-1.9.0 threadpoolctl-3.7.0 tokenizers-0.22.2 tomlkit-0.14.0 tqdm-4.70.1 transformers-4.57.3 typer-0.27.3 typing-inspection-0.4.4 tzdata-2026.5 urllib3-2.8.0 uvicorn-0.54.0
++ 'D:\a\_temp/v/Scripts/python.exe' -m pip freeze
+accelerate==1.12.0
+annotated-doc==0.0.5
+annotated-types==0.8.0
+anyio==4.15.1
+audioread==3.1.0
+brotli==1.2.0
+certifi==2026.10.19
+cffi==2.1.1
+charset-normalizer==3.5.2
+click==8.5.0
+cloudpickle==3.1.2
+colorama==0.4.6
+decorator==5.3.1
+einops==0.8.2
+fastapi==0.156.8
+filelock==3.32.3
+flatbuffers==25.12.19
+fsspec==2026.7.0
+gradio==6.17.3
+gradio_client==2.5.0
+groovy==0.1.2
+h11==0.16.0
+hf-gradio==0.4.1
+httpcore==1.0.9
+httpx==0.28.1
+huggingface_hub==0.36.2
+idna==3.20
+Jinja2==3.1.6
+joblib==1.6.0
+lazy-loader==0.6
+librosa==0.11.0
+llvmlite==0.50.0
+markdown-it-py==4.2.0
+MarkupSafe==3.0.3
+mdurl==0.1.2
+mpmath==1.3.0
+msgpack==1.2.3
+narwhals==2.27.1
+networkx==3.6.1
+numba==0.68.0
+numpy==2.4.6
+onnxruntime==1.31.0
+opentelemetry-api==1.45.1
+orjson==3.13.0
+packaging==26.3
+pandas==3.0.6
+pillow==12.3.0
+platformdirs==4.13.5
+pooch==1.9.0
+protobuf==7.36.2
+psutil==7.2.2
+pycparser==3.11
+pydantic==2.14.1
+pydantic_core==2.50.1
+pydub==0.25.1
+Pygments==2.21.0
+python-dateutil==2.9.0.post0
+python-multipart==0.0.32
+pytz==2026.5
+PyYAML==6.0.3
+qwen-tts==0.1.1
+regex==2026.9.29
+requests==2.34.2
+rich==15.0.0
+safehttpx==0.1.7
+safetensors==0.8.0
+scikit-learn==1.9.1
+scipy==1.17.1
+semantic-version==2.10.0
+shellingham==1.5.4
+six==1.17.0
+soundfile==0.14.0
+sox==1.5.0
+soxr==1.1.0
+starlette==1.9.0
+sympy==1.14.0
+threadpoolctl==3.7.0
+tokenizers==0.22.2
+tomlkit==0.14.0
+torch==2.8.0+cpu
+torchaudio==2.8.0+cpu
+tqdm==4.70.1
+transformers==4.57.3
+typer==0.27.3
+typing-inspection==0.4.4
+typing_extensions==4.16.0
+tzdata==2026.5
+urllib3==2.8.0
+uvicorn==0.54.0
