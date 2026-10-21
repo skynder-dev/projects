@@ -1,43 +1,40 @@
 PASS Install starts
-04:43:16 running packages  0/0 MB
-04:43:21 running packages Installing : 0/0 MB
-04:43:46 running models model.safetensors 437/5446 MB
-04:43:51 running models model.safetensors 1324/5446 MB
-04:43:56 running models model.safetensors 2185/5446 MB
-04:44:01 running models model.safetensors 3066/5446 MB
-04:44:06 running models model.safetensors 3928/5446 MB
-04:44:11 running models model.safetensors 4742/5446 MB
-04:44:16 running models model.safetensors 4957/5446 MB
-04:44:21 running models model.bin 5444/5446 MB
-04:44:26 running checking_addon  5446/5446 MB
-04:44:31 done   5446/5446 MB
+09:44:06 running packages  0/0 MB
+09:44:11 running packages Downloading xxhash-4.0.2-cp311-cp311-win_amd64.whl 0/0 MB
+09:44:16 running packages Installing : 0/0 MB
+09:45:06 running models model.safetensors 612/5446 MB
+09:45:11 running models model.safetensors 2077/5446 MB
+09:45:16 running models model.safetensors 3449/5446 MB
+09:45:21 running models model.safetensors 4812/5446 MB
+09:45:26 running models model.safetensors 4957/5446 MB
+09:45:31 running checking_addon  5446/5446 MB
+09:45:36 done   5446/5446 MB
 PASS the add-on is installed
 PASS its manifest: version, Python, torch, models
 PASS the page shows the forms once installed
 PASS a voice-over is accepted
-04:44:31 20261021-044431-ea5c49 working starting 0%
-04:44:34 20261021-044431-ea5c49 working loading 2%
-04:45:55 20261021-044431-ea5c49 working speaking 1/1 5%
-04:49:27 20261021-044431-ea5c49 working listening 95%
-04:49:48 20261021-044431-ea5c49 working finishing 97%
-04:49:51 20261021-044431-ea5c49 done  0%
+09:45:36 20261021-094536-51f077 working starting 0%
+09:45:42 20261021-094536-51f077 working loading 2%
+09:46:56 20261021-094536-51f077 working speaking 1/1 5%
+09:57:35 20261021-094536-51f077 working listening 95%
+09:57:44 20261021-094536-51f077 working finishing 97%
+09:57:47 20261021-094536-51f077 done  0%
 PASS the voice-over is made
 PASS every word said (listened to)
 PASS a plausible length
-04:49:52 20261021-044952-b55570 working starting 0%
-04:49:58 20261021-044952-b55570 working loading 2%
-04:50:31 20261021-044952-b55570 working speaking 1/1 5%
-04:51:46 20261021-044952-b55570 working speaking 1/1 15%
-04:52:46 20261021-044952-b55570 working speaking 1/1 26%
-04:53:40 20261021-044952-b55570 working listening 95%
-04:53:46 20261021-044952-b55570 done  0%
+09:57:47 20261021-095747-dc3765 working starting 0%
+09:57:56 20261021-095747-dc3765 working loading 2%
+09:59:12 20261021-095747-dc3765 working speaking 1/1 5%
+10:04:48 20261021-095747-dc3765 working listening 95%
+10:04:57 20261021-095747-dc3765 done  0%
 PASS a Russian voice-over in the same voice, heard back in Cyrillic
-04:53:48 20261021-045347-242118 working video 50%
-04:53:54 20261021-045347-242118 done  0%
+10:04:58 20261021-100458-37b24f working video 50%
+10:05:04 20261021-100458-37b24f done  0%
 PASS the voice onto the video, captions burned, checked
-04:53:54 20261021-045354-024c40 working starting 0%
-04:53:57 20261021-045354-024c40 working listening 20%
-04:54:03 20261021-045354-024c40 done  0%
+10:05:04 20261021-100504-7fe637 working starting 0%
+10:05:13 20261021-100504-7fe637 working listening 20%
+10:05:22 20261021-100504-7fe637 working video 50%
+10:05:25 20261021-100504-7fe637 done  0%
 PASS captions from the video's own speech hear the voice-over
 PASS the page in Russian with a finished voice-over
 {"passed": 12, "total": 12}
