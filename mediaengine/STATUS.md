@@ -679,6 +679,21 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
     gets its own folder in the add-on, its exact imported list installed as wheels without resolution.
   Published: Windows CI run 39601510358 (b182, commit 371fa20) fully green, served (ZIP 3,854,994 bytes; the same
   runtime b9810d447e8c86c5 - the Update button is enough).
+  Owner 15:44 (Chicago): "davai 145" - Qwen3-TTS 1.7B Base. Built (544b504, 5176f98): Qwen3-TTS says every voice
+  cloned from a recording (9_2 with its words; saved voices; a recording - timbre only without its words) in its ten
+  languages (or 'detect by itself' when every letter is theirs); VoxCPM2 stays for a voice from a description and
+  other languages (Ukrainian, Polish ...). Model pinned (Qwen/Qwen3-TTS-12Hz-1.7B-Base fd4b2543, 4.54 GB, Apache-2.0,
+  not gated - CI run 39673271414). Its packages in site_qwen (put first for its worker only): what it imported on
+  Windows that the main folder lacks in that version (transformers 4.57.3, huggingface-hub 0.36.2, tokenizers 0.22.2,
+  accelerate, pandas, scikit-learn ...; 'sox' has no wheel -> a stub). A fresh install: the main part whole and
+  recorded first, then the engine (its failure keeps a working add-on); an installed add-on gets "Download the new
+  voice engine" (4.7 GB). bf16 on cards that have it (RTX 30xx+), else fp32; CPU fp32.
+  The real add-on run 39674738998 (544b504) on Windows: 16/16 - install 163 s, the English voice-over by Qwen3-TTS
+  in 9_2's voice (all words, 0.4 semitones off, 119 s on the runner's CPU), Russian a bit faster with long pauses,
+  a voice from a description still by VoxCPM2, onto a video, captions of the speech. Sent the owner both sounds.
+  An independent review of 544b504 found 5 problems (auto language sent Ukrainian to Qwen; Try again during the
+  engine download; a failed engine on a fresh install lost the main part; size 0 GB; wrong download labels) and
+  lesser ones - all fixed in 5176f98 with checks (voice_check 169/169: install flows with pip/HF/worker stood in).
 
 ## Evidence
 
@@ -871,9 +886,7 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-b182 is published (the pace of a voice-over, several videos on the Finish page, saved voices, the job-order fix);
-the owner presses Update. Waiting for his pick among the voices 14_1 (CosyVoice3) / 14_2, 14_3 (Chatterbox
-Multilingual V3) / 14_5 (Qwen3-TTS Base) against 14_0 (the program now, VoxCPM2 9_2 cfg 1.6): the picked engine goes
-into the add-on as its own engine folder (the probe's import list), 14_0 stays if none is livelier. Still open: the
-first voice-over on his RTX 3060. Social integration paused by the owner (do not touch Social). Through the app's
-pages in the desktop app's browser pane only (never computer use).
+Windows CI of 5176f98 (the Qwen3-TTS engine for 9_2 + review fixes) -> publish -> the owner presses Update and on
+Voice-over and text either installs the add-on (about 13 GB, both engines) or presses "Download the new voice engine"
+(4.7 GB). Still open: the first voice-over on his RTX 3060. Social integration paused by the owner (do not touch
+Social). Through the app's pages in the desktop app's browser pane only (never computer use).
