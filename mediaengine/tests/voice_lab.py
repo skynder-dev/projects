@@ -1269,6 +1269,7 @@ def round13(src: Path, out: Path, ref: Path) -> int:
 #   r14_neu    - NeuTTS Air (Neuphonic; weights Apache-2.0, code free under $5M revenue a year): the recording's
 #                first 11.3 s (it wants 3-15 s) + their words; English only
 #   r14_qwen   - Qwen3-TTS 1.7B Base (Alibaba, Apache-2.0): cloning (the recording + its words)
+# (Run 39597794361: neuphonic/neutts-air has become a gated download - a sign-up - so r14_neu is not made, like Orpheus.)
 # Not tried: Orpheus and TADA (Meta's Llama licence, behind a sign-up), Fish S2 / F5 / XTTS / OmniVoice / Raon
 # (non-commercial), ZONOS2 and MOSS-TTS (8B: too big for a CPU runner), Kokoro (no cloning; round 1: "flat").
 
