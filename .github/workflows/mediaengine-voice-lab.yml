@@ -34,6 +34,8 @@ name: mediaengine-voice-lab
 # Round 13 (results in round13/): 9_2 locked was "too robotic" - three other ways to keep its voice; the owner: 13_3.
 # Round 14 (this file, results in round14/): other free engines whose licence allows working use (CosyVoice3, Chatterbox
 # Multilingual V3, NeuTTS Air, Qwen3-TTS Base), each cloning the very same 9_2 recording on round 13's text.
+# Run 39593883089: Chatterbox and Qwen made (round14/); CosyVoice3's install and NeuTTS (torchtune vs a newer torchao)
+# failed. Round 14b (this file, results in round14b/): only those two again, every install logged into the results.
 on:
   workflow_dispatch:
   push:
@@ -64,15 +66,22 @@ jobs:
           python-version: '3.10'
       - name: Fun-CosyVoice3 0.5B in its own venv (CPU torch 2.3.1; its requirements without the GPU-only ones)
         run: |
+          set -o pipefail
+          mkdir -p "$RUNNER_TEMP/out"
+          {
+          set -ex
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg sox libsox-dev > /dev/null
           git clone -q --depth 1 --recursive https://github.com/FunAudioLLM/CosyVoice.git "$RUNNER_TEMP/cosy"
           python -m venv "$RUNNER_TEMP/v"
-          "$RUNNER_TEMP/v/bin/python" -m pip install -q --index-url "$CPU_TORCH" "torch==2.3.1" "torchaudio==2.3.1"
+          "$RUNNER_TEMP/v/bin/python" -m pip install -U pip setuptools wheel
+          "$RUNNER_TEMP/v/bin/python" -m pip install --extra-index-url "$CPU_TORCH" "torch==2.3.1+cpu" "torchaudio==2.3.1+cpu"
           grep -vE '^(--extra-index-url|deepspeed|onnxruntime|tensorrt|torch|gradio|fastapi|uvicorn|grpcio)' "$RUNNER_TEMP/cosy/requirements.txt" > "$RUNNER_TEMP/req.txt"
-          printf 'torch==2.3.1\ntorchaudio==2.3.1\n' > "$RUNNER_TEMP/pin.txt"
-          "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" -c "$RUNNER_TEMP/pin.txt" -r "$RUNNER_TEMP/req.txt" "onnxruntime==1.18.0" huggingface_hub
+          cat "$RUNNER_TEMP/req.txt"
+          printf 'torch==2.3.1+cpu\ntorchaudio==2.3.1+cpu\n' > "$RUNNER_TEMP/pin.txt"
+          "$RUNNER_TEMP/v/bin/python" -m pip install --extra-index-url "$CPU_TORCH" -c "$RUNNER_TEMP/pin.txt" -r "$RUNNER_TEMP/req.txt" "onnxruntime==1.18.0" huggingface_hub
           "$RUNNER_TEMP/v/bin/python" -c "from huggingface_hub import snapshot_download as d; d('FunAudioLLM/Fun-CosyVoice3-0.5B-2512', local_dir='$RUNNER_TEMP/cv3')"
           ffmpeg -v error -i "$REF92" -ac 1 "$RUNNER_TEMP/voice.wav"
+          } 2>&1 | tail -c 200000 > "$RUNNER_TEMP/out/install_cosy.txt"
       - name: CosyVoice3 cloning 9_2 (English takes 1-2, Russian take 9)
         run: |
           mkdir -p "$RUNNER_TEMP/out"
@@ -81,32 +90,6 @@ jobs:
         if: always()
         with:
           name: voice14-cosy
-          path: ${{ runner.temp }}/out
-  chatterbox:
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Chatterbox Multilingual V3 in its own venv (CPU torch 2.6.0; the package from its GitHub, with V3)
-        run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
-          python -m venv "$RUNNER_TEMP/v"
-          "$RUNNER_TEMP/v/bin/python" -m pip install -q --index-url "$CPU_TORCH" "torch==2.6.0" "torchaudio==2.6.0"
-          "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" "chatterbox-tts @ git+https://github.com/resemble-ai/chatterbox.git" soundfile
-          ffmpeg -v error -i "$REF92" -ac 1 "$RUNNER_TEMP/voice.wav"
-      - name: Chatterbox cloning 9_2, default and livelier (English takes 1-2, Russian take 9)
-        run: |
-          mkdir -p "$RUNNER_TEMP/out"
-          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py cb14 "$RUNNER_TEMP/out" "$RUNNER_TEMP/voice.wav" 2>&1 | tee "$RUNNER_TEMP/out/cb.txt"
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: voice14-chatterbox
           path: ${{ runner.temp }}/out
   neutts:
     runs-on: ubuntu-latest
@@ -118,13 +101,21 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: NeuTTS Air in its own venv (CPU torch; espeak-ng for its phonemes)
+      - name: NeuTTS Air in its own venv (CPU torch 2.8; torchao 0.12 - torchtune needs its nf4tensor; espeak-ng)
         run: |
+          set -o pipefail
+          mkdir -p "$RUNNER_TEMP/out"
+          {
+          set -ex
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg espeak-ng cmake > /dev/null
           python -m venv "$RUNNER_TEMP/v"
-          "$RUNNER_TEMP/v/bin/python" -m pip install -q --index-url "$CPU_TORCH" torch torchaudio
-          "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" neutts soundfile
+          "$RUNNER_TEMP/v/bin/python" -m pip install -q --index-url "$CPU_TORCH" "torch==2.8.0" "torchaudio==2.8.0"
+          printf 'torch==2.8.0\ntorchaudio==2.8.0\ntorchao==0.12.0\n' > "$RUNNER_TEMP/pin.txt"
+          "$RUNNER_TEMP/v/bin/python" -m pip install --extra-index-url "$CPU_TORCH" -c "$RUNNER_TEMP/pin.txt" neutts "torchao==0.12.0" soundfile
+          "$RUNNER_TEMP/v/bin/python" -m pip list
+          "$RUNNER_TEMP/v/bin/python" -c "import neutts; print('neutts imports')"
           ffmpeg -v error -i "$REF92" -t 11.3 -ac 1 "$RUNNER_TEMP/voice_short.wav"
+          } 2>&1 | tail -c 200000 > "$RUNNER_TEMP/out/install_neu.txt"
       - name: NeuTTS Air cloning the first 11.3 s of 9_2 (English takes 1-2)
         run: |
           mkdir -p "$RUNNER_TEMP/out"
@@ -134,34 +125,8 @@ jobs:
         with:
           name: voice14-neutts
           path: ${{ runner.temp }}/out
-  qwen:
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Qwen3-TTS in its own venv (CPU torch; sox for its audio tools)
-        run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg sox libsox-fmt-all > /dev/null
-          python -m venv "$RUNNER_TEMP/v"
-          "$RUNNER_TEMP/v/bin/python" -m pip install -q --index-url "$CPU_TORCH" torch torchaudio
-          "$RUNNER_TEMP/v/bin/python" -m pip install -q --extra-index-url "$CPU_TORCH" qwen-tts soundfile
-          ffmpeg -v error -i "$REF92" -ac 1 "$RUNNER_TEMP/voice.wav"
-      - name: Qwen3-TTS 1.7B Base cloning 9_2 (English takes 1-2, Russian take 9)
-        run: |
-          mkdir -p "$RUNNER_TEMP/out"
-          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py qwen14 "$RUNNER_TEMP/out" "$RUNNER_TEMP/voice.wav" 2>&1 | tee "$RUNNER_TEMP/out/qwen.txt"
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: voice14-qwen
-          path: ${{ runner.temp }}/out
   finish:
-    needs: [cosy, chatterbox, neutts, qwen]
+    needs: [cosy, neutts]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -186,16 +151,16 @@ jobs:
       - name: Words and pitch of each take - voice14_<n>[_ru]
         run: |
           mkdir -p "$RUNNER_TEMP/res/round14"
-          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py round14 "$RUNNER_TEMP/in" "$RUNNER_TEMP/res/round14" "$REF92" "$RUNNER_TEMP/now.mp3" 2>&1 | tee "$RUNNER_TEMP/res/round14/round14.txt"
-      - name: Publish to branch mediaengine-voice-lab (round14/; earlier rounds stay)
+          "$RUNNER_TEMP/v/bin/python" mediaengine/tests/voice_lab.py round14 "$RUNNER_TEMP/in" "$RUNNER_TEMP/res/round14" "$REF92" 2>&1 | tee "$RUNNER_TEMP/res/round14/round14.txt"
+      - name: Publish to branch mediaengine-voice-lab (round14b/; earlier rounds stay)
         if: success() || failure()
         run: |
           pub="$RUNNER_TEMP/pub"; rm -rf "$pub"
           git clone -q --depth 1 --branch mediaengine-voice-lab "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "$pub"
-          rm -rf "$pub/round14"; mkdir -p "$pub/round14"
-          cp "$RUNNER_TEMP"/res/round14/* "$pub/round14/" 2>/dev/null || true
-          for f in "$RUNNER_TEMP"/in/*/*.txt; do [ -f "$f" ] && cp "$f" "$pub/round14/log_$(basename "$(dirname "$f")")_$(basename "$f")"; done
-          printf 'run=%s\nsha=%s\n' "${{ github.run_id }}" "${{ github.sha }}" > "$pub/round14/RUN.txt"
+          rm -rf "$pub/round14b"; mkdir -p "$pub/round14b"
+          cp "$RUNNER_TEMP"/res/round14/* "$pub/round14b/" 2>/dev/null || true
+          for f in "$RUNNER_TEMP"/in/*/*.txt; do [ -f "$f" ] && cp "$f" "$pub/round14b/log_$(basename "$(dirname "$f")")_$(basename "$f")"; done
+          printf 'run=%s\nsha=%s\n' "${{ github.run_id }}" "${{ github.sha }}" > "$pub/round14b/RUN.txt"
           cd "$pub"; git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
-          git add -A; git commit -q -m "mediaengine voice lab round 14 run ${{ github.run_id }}"
+          git add -A; git commit -q -m "mediaengine voice lab round 14b run ${{ github.run_id }}"
           for i in 1 2 3; do git push -q origin HEAD:mediaengine-voice-lab && break; git pull -q --rebase origin mediaengine-voice-lab; done
