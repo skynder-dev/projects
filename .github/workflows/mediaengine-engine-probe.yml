@@ -1,0 +1,69 @@
+name: mediaengine-engine-probe
+# Can another free voice engine run the way MediaEngine's voice add-on runs - Windows, Python 3.11, CPU torch 2.8 (the
+# add-on's own torch) - and what exactly does it import? One sentence in the program's 9_2 voice (a designed voice, no
+# person), the time on a CPU, the distributions really imported. Not the product: it tells what shipping the engine
+# the owner picks from voice lab round 14 would take. Results: branch mediaengine-voice-lab probe/.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'mediaengine/tests/engine_probe.py'
+      - '.github/workflows/mediaengine-engine-probe.yml'
+permissions:
+  contents: write
+concurrency:
+  group: mediaengine-engine-probe-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  CPU_TORCH: https://download.pytorch.org/whl/cpu
+  PIP_DISABLE_PIP_VERSION_CHECK: '1'
+  PIP_PROGRESS_BAR: 'off'
+jobs:
+  probe:
+    runs-on: windows-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [qwen, chatterbox]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: ${{ matrix.engine }} in its own venv on CPU torch 2.8.0 (the add-on's torch)
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/out"
+          {
+          set -ex
+          python -m venv "$RUNNER_TEMP/v"
+          PY="$RUNNER_TEMP/v/Scripts/python.exe"
+          "$PY" -m pip install --index-url "$CPU_TORCH" "torch==2.8.0" "torchaudio==2.8.0"
+          printf 'torch==2.8.0\ntorchaudio==2.8.0\n' > "$RUNNER_TEMP/pin.txt"
+          if [ "${{ matrix.engine }}" = "qwen" ]; then
+            "$PY" -m pip install --extra-index-url "$CPU_TORCH" -c "$RUNNER_TEMP/pin.txt" qwen-tts soundfile
+          else
+            "$PY" -m pip install --no-deps "chatterbox-tts @ git+https://github.com/resemble-ai/chatterbox.git"
+            "$PY" -m pip install --extra-index-url "$CPU_TORCH" -c "$RUNNER_TEMP/pin.txt" "numpy<2" "librosa==0.11.0" s3tokenizer "transformers==5.2.0" "diffusers==0.29.0" "resemble-perth @ git+https://github.com/resemble-ai/Perth.git@master" "conformer==0.3.2" safetensors spacy-pkuseg "pykakasi==2.3.0" pyloudnorm omegaconf soundfile
+          fi
+          "$PY" -m pip freeze
+          } > "$RUNNER_TEMP/out/install_${{ matrix.engine }}.txt" 2>&1
+      - name: One sentence in 9_2's voice
+        shell: bash
+        run: |
+          "$RUNNER_TEMP/v/Scripts/python.exe" mediaengine/tests/engine_probe.py ${{ matrix.engine }} mediaengine/app/archivist/assets/voice/host_9_2.flac "$RUNNER_TEMP/out" 2>&1 | tee "$RUNNER_TEMP/out/run_${{ matrix.engine }}.txt"
+      - name: Publish to branch mediaengine-voice-lab (probe/)
+        if: always()
+        shell: bash
+        run: |
+          pub="$RUNNER_TEMP/pub"; rm -rf "$pub"
+          git clone -q --depth 1 --branch mediaengine-voice-lab "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "$pub"
+          mkdir -p "$pub/probe"; rm -f "$pub/probe/"*"${{ matrix.engine }}"*
+          cp "$RUNNER_TEMP"/out/* "$pub/probe/" 2>/dev/null || true
+          printf 'run=%s\nsha=%s\nstatus=%s\n' "${{ github.run_id }}" "${{ github.sha }}" "${{ job.status }}" > "$pub/probe/RUN_${{ matrix.engine }}.txt"
+          cd "$pub"; git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
+          git add -A; git commit -q -m "mediaengine engine probe ${{ matrix.engine }} run ${{ github.run_id }} ${{ job.status }}"
+          for i in 1 2 3; do git push -q origin HEAD:mediaengine-voice-lab && break; git pull -q --rebase origin mediaengine-voice-lab; done

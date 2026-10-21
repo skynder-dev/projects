@@ -21,6 +21,7 @@ on:
       - '!mediaengine/tests/drone_theme_check.py'    # mediaengine-drone.yml
       - '!mediaengine/tests/drone_manifest.json'
       - '!mediaengine/tests/voice_lab.py'            # mediaengine-voice-lab.yml
+      - '!mediaengine/tests/engine_probe.py'         # mediaengine-engine-probe.yml
       - '.github/workflows/mediaengine-windows.yml'
   workflow_dispatch:
 permissions:
