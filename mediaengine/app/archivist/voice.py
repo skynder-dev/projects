@@ -82,7 +82,8 @@ HOST_REF_TEXT = ("Here's what you need to know this week. First, flights to Euro
                  "Second, if you book before Friday, most airlines let you change the dates for free. "
                  "And third, the best deals are on Tuesday and Wednesday. Save this, and send it to someone who's planning a trip.")
 VOICES = {
-    "host_9_2": {"label": "Host - the voice of 9_2", "ref": "host_9_2.flac", "ref_text": HOST_REF_TEXT},
+    # cfg 1.6 (the setting 9_2 itself was made with): "a little more pleasant" than 2.0 (voice lab round 13, 23:39)
+    "host_9_2": {"label": "Host - the voice of 9_2", "ref": "host_9_2.flac", "ref_text": HOST_REF_TEXT, "cfg": 1.6},
     "describe": {"label": "My description of a voice (English works best)"},
     "own": {"label": "A voice from a recording (a person who agreed to it)"},
 }

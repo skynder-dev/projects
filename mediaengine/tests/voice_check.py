@@ -132,6 +132,7 @@ def main() -> int:
     job = json.loads((d / "job.json").read_text("utf-8"))
     check("the default voice is used with its own words", job["voice"].get("ref_text") == vo.HOST_REF_TEXT
           and job["voice"].get("key") == vo.DEFAULT_VOICE)
+    check("the ready voice goes with its own setting (cfg 1.6)", job["voice"].get("cfg") == 1.6, job["voice"])
     check("loudness finishing only (no 'microphone' option)", "mic" not in job and "name='mic'" not in
           c.get("/auto/voice", headers=H).get_data(as_text=True), job.get("mic"))
     r = c.get(f"/auto/voice/{jid}/file/voice.wav", headers={**H, "Range": "bytes=0-99"})

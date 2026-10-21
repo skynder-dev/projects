@@ -641,6 +641,8 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   piece within 1.5 semitones of the voice's own pitch (up to 3 tries when the words are right).
   Published: Windows CI run 39518308673 (b177, commit 49fc37b) fully green, served (same runtime); the real add-on
   run 39518308594 12/12 in the 9_2 voice (English and Russian; the pitch check kept the first try, 1.2 semitones off).
+  Owner 22:52: the program's 9_2 "too robotic". Round 13 (run 39541053077): the timbre only / timbre + its recipe /
+  ultimate cloning at cfg 1.6 - 23:39 "13_3 a little more pleasant" -> host_9_2 now at cfg 1.6.
 
 ## Evidence
 
