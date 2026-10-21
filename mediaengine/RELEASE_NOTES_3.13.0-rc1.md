@@ -117,7 +117,12 @@ The owner: "voice-over, processing and text in the video - MedEng". **Auto Edit 
   on it (h264_nvenc, tried once per start); any failure there makes the same video on the processor. The copy next to
   the reels is the same file under a second name when it is on the same disk (no double space). A voice from a
   recording can be kept in the voice list ("Keep this voice in the list, named"; at most 20, each a clean mono WAV of
-  at most 30 s in the data folder); the voice used last is the one the next form starts with.
+  at most 30 s in the data folder); the voice used last is the one the next form starts with. The pace of a voice-over:
+  a bit slower / normal / a bit faster / faster (FFmpeg atempo 0.92-1.15 on the finished voice: the pitch stays, the
+  words' times scale with it) and short / normal / long pauses between the pieces (x0.6 / 1 / 1.6); the pace used last
+  comes first. Finish a video for several videos at once (at most 30): every video checked first (nothing is made unless
+  all can be; an error names the video), then one render job per video in order; a new voice-over is made once and put
+  on each; captions of the speech are each video's own.
 - **Captions for a video**: the speech of any video into captions burned into a copy (Whisper's languages).
 - Quit / Update / switching builds ask while a voice-over is being made; one interrupted by a closed program is made
   again once.

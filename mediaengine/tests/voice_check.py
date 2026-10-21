@@ -87,7 +87,10 @@ def main() -> int:
                                        "cuda": False, "bytes": 123}), "utf-8")
     check("a stand-in add-on counts as installed", vo.installed())
 
+    sent = []                    # what the program asked the worker for (the last one at the end)
+
     def fake_worker(job, work, timeout=3600, on_line=None):
+        sent.append(job)
         work.mkdir(parents=True, exist_ok=True)
         if on_line:
             on_line({"progress": 0.5, "step": "speaking", "chunk": 1, "chunks": 1})
@@ -144,6 +147,32 @@ def main() -> int:
           and c.get("/auto/voice/..%2F..%2Fx/file/voice.wav", headers=H).status_code == 404)
     page = c.get("/auto/voice", headers=H).get_data(as_text=True)
     check("the page lists it with a player and 'Put it on a video'", f"/auto/voice/{jid}/file/voice.wav" in page and "Put it on a video" in page)
+    check("normal pace by default (no speed change, the pieces' own pauses)", job.get("speed") == 1.0 and job.get("pauses") == 1.0
+          and "name='speed'" in page and "<option value='normal' selected>normal speed" in page, (job.get("speed"), job.get("pauses")))
+
+    # the pace: a bit faster with long pauses - the voice keeps its pitch, the captions follow the faster voice
+    r = c.post("/auto/voice/new", data={"text": "First sentence here. Second one comes next. And a third one.",
+                                        "voice": vo.DEFAULT_VOICE, "language": "en", "speed": "faster", "pauses": "long"}, headers=H)
+    pj = wait(vo.list_jobs()[0]["id"])
+    pd = Path(pj["dir"])
+    pjob = json.loads((pd / "job.json").read_text("utf-8"))
+    tts_job = [x for x in sent if x["task"] == "tts"][-1]
+    plain = vo.chunks("First sentence here. Second one comes next. And a third one.")
+    check("pace: a bit faster with long pauses kept with the job", pj["state"] == "done" and pjob.get("speed") == 1.08
+          and pjob.get("pauses") == 1.6, (pj["state"], pjob.get("speed"), pjob.get("pauses")))
+    check("pace: the pauses between the pieces are longer", [x["pause_after"] for x in tts_job["chunks"]]
+          == [round(x["pause_after"] * 1.6, 3) for x in plain], [x["pause_after"] for x in tts_job["chunks"]])
+    from archivist import orders as _od
+    raw_s = float(_od._decode_info(pd / "voice_raw.wav", timeout=60).get("seconds") or 0)
+    fin_s = float(_od._decode_info(pd / "voice.wav", timeout=60).get("seconds") or 0)
+    check("pace: the voice is 8% shorter (faster, by time-stretch)", raw_s > 0 and abs(fin_s - raw_s / 1.08) < 0.08, (raw_s, fin_s))
+    pw = json.loads((pd / "words.json").read_text("utf-8"))
+    check("pace: the captions' times follow the faster voice", pw and abs(pw[-1]["e"] - (0.35 * (len(pw) - 1) + 0.3) / 1.08) < 0.01,
+          pw[-1] if pw else None)
+    page = c.get("/auto/voice", headers=H).get_data(as_text=True)
+    check("pace: the next form starts with the pace used last", "<option value='faster' selected>" in page
+          and "<option value='long' selected>" in page)
+    check("pace: anything unknown is the normal pace", vo.pace("x' onload", "") == ("normal", "normal"))
 
     # a real video (vertical, with sound) and the voice burned onto it
     video = home / "clip.mp4"
@@ -636,6 +665,53 @@ def main() -> int:
     r = c.post("/auto/finish", data={"video": str(video), "voice": "none", "captions": "none"}, headers=H)
     check("nothing to add: refused in words", r.status_code == 400, r.status_code)
 
+    # several videos finished the same way
+    v2, v3 = home / "clip two.mp4", home / "clip3.mp4"
+    for vv, dur in ((v2, 3), (v3, 2)):
+        subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", f"testsrc2=size=480x854:rate=25:duration={dur}",
+                        "-f", "lavfi", "-i", f"sine=f=300:duration={dur}", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac",
+                        "-shortest", str(vv)], check=True)
+    fpm = c.get("/auto/finish", headers=H).get_data(as_text=True)
+    check("several videos: the form offers more videos (paths, Choose…, saved reels)", "name='videos_more'" in fpm
+          and "data-pick='videos'" in fpm and "name='more'" in fpm)
+    before = {j["id"] for j in vo.list_jobs(500)}
+    many = {"video": str(video), "videos_more": f"{v2}\r\n\r\n{v3}\r\n{video}", "voice": "none", "captions": "speech",
+            "style": "box", "t_text": "Итог недели", "t_start": "0", "t_end": "1.5", "t_where": "top", "t_look": "banner",
+            "music": str(song), "music_level": "quiet", "keep_sound": "1"}
+    r = c.post("/auto/finish", data=many, headers=H)
+    mids = [j["id"] for j in vo.list_jobs(500) if j["id"] not in before][::-1]          # oldest first
+    mj = [wait(x) for x in mids]
+    mvids = [json.loads((Path(x["dir"]) / "job.json").read_text("utf-8")).get("video") for x in mj]
+    check("several videos: one new video each, in order (a video twice: once)", r.status_code == 302
+          and mvids == [str(video), str(v2), str(v3)], mvids)
+    check("several videos: each made with its own speech's captions, the text and the music",
+          all(x["state"] == "done" and (x.get("result") or {}).get("captions", 0) > 0 and (x.get("result") or {}).get("texts") == 1
+              and all(k["pass"] for k in (x.get("result") or {}).get("checks", [])) for x in mj),
+          [(x["state"], (x.get("result") or {}).get("captions")) for x in mj])
+    check("several videos: each lasts as long as its own video", len(mj) == 3 and abs(float((mj[1].get("result") or {})
+          .get("seconds", 0)) - 3.0) < 0.3 and abs(float((mj[2].get("result") or {}).get("seconds", 0)) - 2.0) < 0.3,
+          [(x.get("result") or {}).get("seconds") for x in mj])
+    before = {j["id"] for j in vo.list_jobs(500)}
+    r = c.post("/auto/finish", data={**many, "videos_more": f"{v2}\n{home / 'gone.mp4'}"}, headers=H)
+    check("several videos: one missing - nothing made, said which", r.status_code == 400 and "gone.mp4" in r.get_data(as_text=True)
+          and not [j for j in vo.list_jobs(500) if j["id"] not in before], r.status_code)
+    r = c.post("/auto/finish", data={**many, "video": str(v2), "t_start": "2.5", "t_end": "2.9", "videos_more": str(v3)}, headers=H)
+    check("several videos: a text after the end of one of them - refused, naming it",
+          r.status_code == 400 and "clip3.mp4" in r.get_data(as_text=True)
+          and not [j for j in vo.list_jobs(500) if j["id"] not in before], r.get_data(as_text=True)[-300:])
+    r = c.post("/auto/finish", data={**many, "videos_more": "\n".join(str(home / f"x{i}.mp4") for i in range(40))}, headers=H)
+    check("several videos: at most 30 at once", r.status_code == 400 and "At most 30" in r.get_data(as_text=True))
+    before = {j["id"] for j in vo.list_jobs(500)}
+    r = c.post("/auto/finish", data={**many, "voice": "new", "text": "One voice for both.", "nvoice": vo.DEFAULT_VOICE,
+                                     "captions": "voice", "videos_more": str(v2)}, headers=H)
+    nids = [j["id"] for j in vo.list_jobs(500) if j["id"] not in before][::-1]
+    njobs = [wait(x) for x in nids]
+    kinds = [x.get("kind") for x in njobs]
+    vfs = [json.loads((Path(x["dir"]) / "job.json").read_text("utf-8")).get("voice_from") for x in njobs[1:]]
+    check("several videos with a new voice: made once, then put on each", r.status_code == 302
+          and kinds == ["voiceover", "render", "render"] and vfs == [nids[0], nids[0]]
+          and all(x["state"] == "done" for x in njobs), (kinds, vfs, [x["state"] for x in njobs]))
+
     # Russian
     c.post("/lang", data={"back": "/auto/voice"}, headers=H)
     ru = c.get("/auto/voice", headers=H).get_data(as_text=True)
@@ -652,7 +728,8 @@ def main() -> int:
     check("the editor in Russian", "Изменить текст и субтитры" in rue and not left, left)
     ruf = re.sub(r"<script.*?</script>", "", c.get("/auto/finish", headers=H).get_data(as_text=True), flags=re.S)
     left = [t for t in ("Finish a video", "The voice", "No voice", "A voice-over made already", "No captions",
-                        "The words of the voice", "The look", "Make the video") if t in ruf]
+                        "The words of the voice", "The look", "Make the video", "More videos", "or reels saved lately",
+                        "Pace", "normal speed", "long pauses") if t in ruf]
     check("the one-page form in Russian", "Доделать видео" in ruf and not left, left)
 
     # delete

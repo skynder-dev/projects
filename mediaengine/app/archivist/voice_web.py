@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from urllib.parse import quote
 
@@ -151,6 +152,22 @@ def register(app, page, err_page, e, human_bytes):
             last = ""
         return last if last in voices else vo.DEFAULT_VOICE
 
+    def _pace_controls() -> str:
+        """Speed of the voice and pauses between sentences (the last ones used come first)."""
+        try:
+            from .config import load_config
+            c = load_config().get("voice") or {}
+        except Exception:
+            c = {}
+        sk, pk = vo.pace(c.get("speed", ""), c.get("pauses", ""))
+        sp = {"slower": "a bit slower", "normal": "normal speed", "faster": "a bit faster", "fastest": "faster"}
+        pa = {"short": "short pauses", "normal": "normal pauses", "long": "long pauses"}
+        so = "".join(f"<option value='{k}'{' selected' if k == sk else ''}>{v}</option>" for k, v in sp.items())
+        po = "".join(f"<option value='{k}'{' selected' if k == pk else ''}>{v}</option>" for k, v in pa.items())
+        return (f"<div class='vo-row' style='margin-top:6px'><span>Pace</span><select name='speed'>{so}</select>"
+                f"<select name='pauses'>{po}</select><span class='muted vo-sub'>between sentences; the voice keeps its "
+                f"own pitch</span></div>")
+
     def _voice_form() -> str:
         voices = vo.all_voices()
         last = _last_voice(voices)
@@ -181,6 +198,7 @@ def register(app, page, err_page, e, human_bytes):
                 f"<input name='save_as' maxlength='60' size='20' placeholder='optional, e.g. Anna'></div>"
                 f"<div class='muted vo-sub'>Use only the voice of a person who agreed to it. A saved voice stays in this list.</div></div>"
                 f"<div class='vo-row' style='margin-top:10px'><span>Language of the text</span><select name='language'>{langs}</select></div>"
+                f"{_pace_controls()}"
                 f"<div style='margin-top:12px'><button class='ae-big'>Make the voice-over</button> "
                 f"<span class='muted vo-sub' data-msg></span></div></form></div>")
 
@@ -462,7 +480,8 @@ def register(app, page, err_page, e, human_bytes):
         f = request.form
         try:
             vo.new_voiceover(f.get("text", ""), f.get("voice", ""), f.get("description", ""), f.get("ref_path", ""),
-                             f.get("ref_text", ""), f.get("language", ""), save_as=f.get("save_as", ""))
+                             f.get("ref_text", ""), f.get("language", ""), save_as=f.get("save_as", ""),
+                             speed=f.get("speed", ""), pauses=f.get("pauses", ""))
         except vo.VoiceError as exc:
             return err_page(str(exc), "/auto/voice")
         return redirect("/auto/voice")
@@ -561,6 +580,21 @@ def register(app, page, err_page, e, human_bytes):
         return {"video": f.get("video", ""), "cues": [], "captions_on": False, "opts": _opts(f), "texts": texts,
                 "voice_from": "", "start_s": 0.0, "keep_sound": True, "title": ""}
 
+    def _more_videos() -> str:
+        """More videos finished the same way: paths one per line (Choose… takes several), or saved reels ticked."""
+        reels = _recent_reels()
+        ticks = "".join(f"<label><input type='checkbox' name='more' value='{e(p)}'> <span translate='no'>{e(Path(p).name)}</span></label>"
+                        for p in reels)
+        return (f"<details style='margin-top:8px' data-more><summary>More videos, finished the same way</summary>"
+                f"<div class='muted vo-sub'>The same voice, captions, look, texts and music on each; one new video per video "
+                f"(at most {vo.FINISH_MANY_MAX}). The preview shows the first one.</div>"
+                f"<div class='vo-row' style='margin-top:4px;align-items:flex-start'><textarea class='vo-text' name='videos_more' rows='3' "
+                f"style='min-height:64px;flex:1;margin:0' "
+                f"placeholder='One video per line, e.g. D:\\Exports\\reel2.mp4'></textarea>"
+                f"<button type='button' class='btn2' data-pick='videos'>Choose…</button></div>"
+                + (f"<div class='vo-voices' style='margin-top:4px'><span class='muted vo-sub'>or reels saved lately:</span>{ticks}</div>"
+                   if ticks else "") + "</details>")
+
     def _finish_page(pre: str = "") -> str:
         s_ = vo.status()
         made = [j for j in vo.list_jobs(50) if j.get("kind") == "voiceover" and j["state"] == "done"]
@@ -584,7 +618,7 @@ def register(app, page, err_page, e, human_bytes):
                     f"<input class='vo-wide' name='description' maxlength='400' placeholder='For example: a calm man in his "
                     f"forties with a deep, warm voice, slow pace'>"
                     f"<div class='vo-row' style='margin-top:6px'><span>Language of the text</span><select name='language'>"
-                    f"{_lang_options()}</select></div></div>"
+                    f"{_lang_options()}</select></div>{_pace_controls()}</div>"
                     if new_ok else "")
                  + f"<label style='display:block;margin-top:6px'><input type='checkbox' name='keep_sound' value='1' checked> "
                    f"Keep the video's own sound (quieter while the voice speaks)</label>"
@@ -609,7 +643,7 @@ def register(app, page, err_page, e, human_bytes):
                 f"<input type='hidden' name='finish' value='1'><div class='vo-edit'><div>"
                 f"<b>1. The video</b><div class='vo-row' style='margin-top:4px'><input class='vo-wide' name='video' required "
                 f"value='{e(pre)}' placeholder='The video, e.g. D:\\Exports\\reel.mp4'>"
-                f"<button type='button' class='btn2' data-pick='video'>Choose…</button></div>{_reel_select()}"
+                f"<button type='button' class='btn2' data-pick='video'>Choose…</button></div>{_reel_select()}{_more_videos()}"
                 f"{voice}{caps}<div style='margin-top:12px'><b>4. The look</b></div>{_style_controls(_last_opts())}"
                 f"<div style='margin-top:6px'><b>5. Text on the video</b></div>{_text_rows([], header=False)}"
                 f"<div style='margin-top:12px'><b>6. Music under it</b> <span class='muted vo-sub'>(optional)</span></div>"
@@ -632,13 +666,20 @@ def register(app, page, err_page, e, human_bytes):
     @app.post("/auto/finish")
     def finish_new():
         f = request.form
+        more = [x for x in re.split(r"[\r\n]+", str(f.get("videos_more") or "")) if x.strip()] + f.getlist("more")
+        common = dict(voice=f.get("voice", "none"), voice_from=f.get("voice_from", ""),
+                      new_voice={"text": f.get("text", ""), "voice": f.get("nvoice", ""),
+                                 "description": f.get("description", ""), "language": f.get("language", ""),
+                                 "speed": f.get("speed", ""), "pauses": f.get("pauses", "")},
+                      captions=f.get("captions", "none"), opts=_opts(f), start_s=f.get("start", "0.3"),
+                      keep_sound=f.get("keep_sound") == "1", music=f.get("music", ""),
+                      music_level=f.get("music_level", "medium"))
         try:
-            vo.new_finish(f.get("video", ""), voice=f.get("voice", "none"), voice_from=f.get("voice_from", ""),
-                          new_voice={"text": f.get("text", ""), "voice": f.get("nvoice", ""),
-                                     "description": f.get("description", ""), "language": f.get("language", "")},
-                          captions=f.get("captions", "none"), opts=_opts(f), texts=tf.parse_texts(tf.rows_from_form(f)),
-                          start_s=f.get("start", "0.3"), keep_sound=f.get("keep_sound") == "1",
-                          music=f.get("music", ""), music_level=f.get("music_level", "medium"), script=f.get("script", ""))
+            texts = tf.parse_texts(tf.rows_from_form(f))
+            if more:
+                vo.new_finish_many([f.get("video", "")] + more, texts=texts, **common)
+            else:
+                vo.new_finish(f.get("video", ""), texts=texts, script=f.get("script", ""), **common)
         except (vo.VoiceError, tf.TextError) as exc:
             return err_page(str(exc), "/auto/finish")
         return redirect("/auto/voice#voJobs")
@@ -860,6 +901,10 @@ def register(app, page, err_page, e, human_bytes):
             files = ae.pick_files("Choose the recording of the voice", kind="audio")
         elif kind == "music":
             files = ae.pick_files("Choose the music", kind="audio")
+        elif kind == "videos":
+            files = ae.pick_files("Choose the videos", initial=str(ae.default_export_dir()))
+            if files:
+                return jsonify({"path": None, "paths": files})
         else:
             files = ae.pick_files("Choose a video", initial=str(ae.default_export_dir()))
         if files:
@@ -925,6 +970,8 @@ _PICK_JS = (
     "m=f.querySelector('[data-msg]');if(m)m.textContent=window.ME_L?ME_L('A Windows window is open — it may be behind this window.'):"
     "'A Windows window is open — it may be behind this window.';"
     "try{const r=await fetch('/api/auto/pick-voice-file',{method:'POST',headers:{'Content-Type':'application/json'},"
-    "body:JSON.stringify({kind:b.dataset.pick})});const x=await r.json();if(x.path){b.parentNode.querySelector('input').value=x.path;"
+    "body:JSON.stringify({kind:b.dataset.pick})});const x=await r.json();if(x.paths){const t=b.parentNode.querySelector('textarea');"
+    "t.value=(t.value.trim()?t.value.trim()+'\\n':'')+x.paths.join('\\n');if(m)m.textContent=''}"
+    "else if(x.path){b.parentNode.querySelector('input').value=x.path;"
     "if(m)m.textContent=''}else if(m)m.textContent=x.error||''}catch(err){}});"
 )

@@ -82,7 +82,8 @@ card the voice is made on it (seconds per sentence); without one, on the process
 
 - **New voice-over**: write the text the way it is said (short sentences; commas and dots where the pauses are) and
   choose a voice: "Host - the voice of 9_2" (your pick from the voice test; always the same voice, each piece at its own pitch), a voice from a description,
-  or a voice from a recording of a person who agreed to it. Every piece is listened to; a piece with missing words is
+  or a voice from a recording of a person who agreed to it. "Pace": a bit slower or faster, shorter or longer pauses
+  between sentences (the voice keeps its pitch). Every piece is listened to; a piece with missing words is
   made again. Then listen, download the WAV and the captions (SRT), or **Put it on a video**: the video's own sound gets
   quieter while the voice speaks and the captions are burned in.
 - **Captions for a video**: the speech in your video becomes captions burned into a copy.
@@ -93,7 +94,9 @@ card the voice is made on it (seconds per sentence); without one, on the process
   colored stripe, a dark box or in big letters. "Preview" shows a picture in a second, before the video is made.
 - **Finish a video** (a saved reel → "Text, captions, voice-over"): everything for one video on one page - a voice
   (none, one made already or a new one), captions (the voice's words or the video's speech), the look, texts,
-  music under it (quieter while the voice speaks), a preview, one button.
+  music under it (quieter while the voice speaks), a preview, one button. "More videos, finished the same way": several
+  videos at once (paths, Choose… for several, or saved reels ticked) - one new video each, with the same voice
+  (a new voice-over is made once), captions, look, texts and music.
 - **Edit text and captions** (on a finished video): fix a word right in its line, change the look, add a text - a new
   video is made, the old one stays.
 

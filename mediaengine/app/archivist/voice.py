@@ -417,6 +417,19 @@ def _run_worker(job: dict, work: Path, timeout: float = 3600, on_line=None) -> d
 
 # ---------------------------------------------------------------- text, captions
 
+# How fast the voice speaks and how long it breathes between sentences (the model has one pace of its own): the
+# finished voice is made a little faster or slower by FFmpeg's atempo - the pitch stays (never a shifted voice: the owner
+# heard one "as if drowned in a toilet") - and the pauses between the model's pieces are made shorter or longer.
+# The captions follow (the words' times are scaled with the voice).
+SPEEDS = {"slower": 0.92, "normal": 1.0, "faster": 1.08, "fastest": 1.15}
+PAUSES = {"short": 0.6, "normal": 1.0, "long": 1.6}
+
+
+def pace(speed: str = "", pauses: str = "") -> tuple[str, str]:
+    """The chosen speed and pauses, each one of the known choices (anything else: normal)."""
+    return (speed if speed in SPEEDS else "normal"), (pauses if pauses in PAUSES else "normal")
+
+
 def chunks(text: str, limit: int = 220) -> list[dict]:
     """The text in pieces the model says well (sentences, at most ~220 characters), each with the pause after it."""
     text = str(text or "").replace("\r\n", "\n").strip()
@@ -701,7 +714,7 @@ def delete_my_voice(key: str) -> None:
 
 
 def new_voiceover(text: str, voice: str, description: str = "", ref_path: str = "", ref_text: str = "",
-                  language: str = "", save_as: str = "") -> str:
+                  language: str = "", save_as: str = "", speed: str = "", pauses: str = "") -> str:
     _need_addon()
     text = str(text or "").strip()
     if not text:
@@ -739,12 +752,14 @@ def new_voiceover(text: str, voice: str, description: str = "", ref_path: str = 
     lang = str(language or "").strip().lower()
     if lang and not re.fullmatch(r"[a-z]{2}", lang):
         lang = ""
-    try:                                           # the next form starts with this voice
+    sk, pk = pace(speed, pauses)
+    try:                                           # the next form starts with this voice, speed and pauses
         from .config import update_config
-        update_config(lambda c: c.setdefault("voice", {}).__setitem__("last", voice))
+        update_config(lambda c: c.setdefault("voice", {}).update(last=voice, speed=sk, pauses=pk))
     except Exception:
         pass
     return _submit({"kind": "voiceover", "text": text, "voice": v, "language": lang or None,
+                    "speed": SPEEDS[sk], "pauses": PAUSES[pk], "pace": [sk, pk],
                     "title": re.sub(r"\s+", " ", text)[:60]})
 
 
@@ -836,12 +851,10 @@ def new_render(video: str, cues_: list[dict] | None = None, opts: dict | None = 
                     "title": (title or p.name)[:60]}, addon=False)
 
 
-def new_finish(video: str, voice: str = "none", voice_from: str = "", new_voice: dict | None = None,
-               captions: str = "none", opts: dict | None = None, texts: list[dict] | None = None, start_s=0.3,
-               keep_sound: bool = True, music: str = "", music_level: str = "medium", script: str = "") -> str:
-    """Everything for one video in one go: a voice (none / a voice-over made already / a new one, made first), captions
-    (none / the voice's words / the video's own speech, heard when the video is made), a look and texts. A new voice
-    and captions of the speech need the add-on; the rest does not."""
+def _finish_job(video: str, voice: str = "none", voice_from: str = "", captions: str = "none",
+                opts: dict | None = None, texts: list[dict] | None = None, start_s=0.3, keep_sound: bool = True,
+                music: str = "", music_level: str = "medium", script: str = "") -> dict:
+    """One video's job, every choice checked (nothing made yet; a new voice-over is made by the caller)."""
     p = Path(str(video or "").strip().strip('"'))
     if not p.is_file():
         raise VoiceError("Choose the video (its full path).")
@@ -866,11 +879,7 @@ def new_finish(video: str, voice: str = "none", voice_from: str = "", new_voice:
     script = str(script or "").strip()[:MAX_TEXT] if captions == "speech" else ""
     if voice == "none" and captions == "none" and not tx and not music:
         raise VoiceError("Add a text, captions, a voice or music first.")
-    if voice == "new":                                    # made first: the jobs run one after another, in order
-        nv = new_voice or {}
-        voice_from = new_voiceover(nv.get("text", ""), nv.get("voice", ""), nv.get("description", ""),
-                                   nv.get("ref_path", ""), nv.get("ref_text", ""), nv.get("language", ""))
-    elif any(t.get("start") is not None and not t.get("at_end") for t in tx):
+    if voice != "new" and any(t.get("start") is not None and not t.get("at_end") for t in tx):
         from . import orders as od
         length = video_size(p)[2]
         if voice_from:
@@ -878,12 +887,72 @@ def new_finish(video: str, voice: str = "none", voice_from: str = "", new_voice:
                                                .get("seconds") or 0) + 0.5)
         if any(float(t["start"]) >= length - 0.2 for t in tx if t.get("start") is not None and not t.get("at_end")):
             raise VoiceError(f"A text starts after the end of the video (the video is {length:.1f} s long).")
-    return _submit({"kind": "render", "video": str(p), "cues": [], "captions_on": captions in ("voice", "speech"),
-                    "captions_from": captions if captions in ("voice", "speech") else None,
-                    "needs_addon": captions == "speech", "opts": tf.options(**(opts or {})), "texts": tx,
-                    "voice_from": voice_from or "", "start_s": start, "keep_sound": bool(keep_sound),
-                    "music": music, "music_level": music_level if music_level in ("quiet", "medium", "loud") else "medium",
-                    "script": script, "title": p.name[:60]}, addon=False)
+    return {"kind": "render", "video": str(p), "cues": [], "captions_on": captions in ("voice", "speech"),
+            "captions_from": captions if captions in ("voice", "speech") else None,
+            "needs_addon": captions == "speech", "opts": tf.options(**(opts or {})), "texts": tx,
+            "voice_from": voice_from or "", "start_s": start, "keep_sound": bool(keep_sound),
+            "music": music, "music_level": music_level if music_level in ("quiet", "medium", "loud") else "medium",
+            "script": script, "title": p.name[:60]}
+
+
+def _new_voice_for(nv: dict | None) -> str:
+    nv = nv or {}
+    return new_voiceover(nv.get("text", ""), nv.get("voice", ""), nv.get("description", ""),
+                         nv.get("ref_path", ""), nv.get("ref_text", ""), nv.get("language", ""),
+                         speed=nv.get("speed", ""), pauses=nv.get("pauses", ""))
+
+
+def new_finish(video: str, voice: str = "none", voice_from: str = "", new_voice: dict | None = None,
+               captions: str = "none", opts: dict | None = None, texts: list[dict] | None = None, start_s=0.3,
+               keep_sound: bool = True, music: str = "", music_level: str = "medium", script: str = "") -> str:
+    """Everything for one video in one go: a voice (none / a voice-over made already / a new one, made first), captions
+    (none / the voice's words / the video's own speech, heard when the video is made), a look and texts. A new voice
+    and captions of the speech need the add-on; the rest does not."""
+    job = _finish_job(video, voice, voice_from, captions, opts, texts, start_s, keep_sound, music, music_level, script)
+    if voice == "new":                                    # made first: the jobs run one after another, in order
+        job["voice_from"] = _new_voice_for(new_voice)
+    return _submit(job, addon=False)
+
+
+FINISH_MANY_MAX = 30
+
+
+def new_finish_many(videos: list[str], voice: str = "none", voice_from: str = "", new_voice: dict | None = None,
+                    captions: str = "none", opts: dict | None = None, texts: list[dict] | None = None, start_s=0.3,
+                    keep_sound: bool = True, music: str = "", music_level: str = "medium") -> list[str]:
+    """Several videos finished the same way (the same voice, captions, look, texts and music): every video is checked
+    first - nothing is made unless all of them can be - then one job per video, in order. A new voice-over is made
+    once and put on each of them. Captions of the speech are each video's own speech (no shared script)."""
+    paths, seen = [], set()
+    for v in videos or []:
+        v = str(v or "").strip().strip('"')
+        k = v.lower()
+        if v and k not in seen:
+            seen.add(k)
+            paths.append(v)
+    if not paths:
+        raise VoiceError("Choose the video (its full path).")
+    if len(paths) > FINISH_MANY_MAX:
+        raise VoiceError(f"At most {FINISH_MANY_MAX} videos at once: split them into groups.")
+    if len(paths) == 1:
+        return [new_finish(paths[0], voice, voice_from, new_voice, captions, opts, texts, start_s, keep_sound,
+                           music, music_level)]
+    for v in paths:
+        if not Path(v).is_file():
+            raise VoiceError(f"This video is not there: {v}")
+    jobs = []
+    for v in paths:
+        try:
+            jobs.append(_finish_job(v, voice, voice_from, captions, opts, texts, start_s, keep_sound, music,
+                                    music_level, ""))
+        except VoiceError as exc:
+            msg = str(exc)
+            raise VoiceError(msg if Path(v).name in msg else f"{msg} ({Path(v).name})")
+    if voice == "new":                                    # one new voice-over, made first, on every video
+        vf = _new_voice_for(new_voice)
+        for j in jobs:
+            j["voice_from"] = vf
+    return [_submit(j, addon=False) for j in jobs]
 
 
 MUSIC_EXT = {".mp3", ".m4a", ".aac", ".wav", ".flac", ".ogg", ".opus", ".wma"}
@@ -975,7 +1044,9 @@ def _do(jid: str) -> dict:
                 return {"ok": False, "error": "The recording of this voice is missing from this version of MediaEngine."}
         cfg = (load_config().get("voice") or {})
         device = cfg.get("device") or ("cuda" if manifest().get("cuda") else "cpu")
-        res = _run_worker({"task": "tts", "chunks": chunks(job["text"].replace("*", "")), "voice": v, "language": job.get("language"),
+        pf = min(2.0, max(0.3, float(job.get("pauses") or 1.0)))
+        pieces = [dict(c, pause_after=round(float(c["pause_after"]) * pf, 3)) for c in chunks(job["text"].replace("*", ""))]
+        res = _run_worker({"task": "tts", "chunks": pieces, "voice": v, "language": job.get("language"),
                            "out_wav": str(d / "voice_raw.wav"), "seed": int(cfg.get("seed") or 1),
                            "steps": cfg.get("steps"), "device": device, "cfg": v.get("cfg") or cfg.get("cfg")},
                           d / "work", timeout=6 * 3600,
@@ -983,19 +1054,24 @@ def _do(jid: str) -> dict:
         if not res.get("ok"):
             return res
         _CURRENT.update(step="finishing", progress=0.97)
+        sp = min(1.25, max(0.8, float(job.get("speed") or 1.0)))
+        sp = 1.0 if abs(sp - 1.0) < 0.001 else sp
         cp = subprocess.run([_ffmpeg(), "-hide_banner", "-nostdin", "-y", "-v", "error", "-i", str(d / "voice_raw.wav"),
-                             "-af", "loudnorm=I=-16:TP=-1.5:LRA=11",
+                             "-af", (f"atempo={sp:.3f}," if sp != 1.0 else "") + "loudnorm=I=-16:TP=-1.5:LRA=11",
                              "-ar", "48000", "-ac", "1", "-c:a", "pcm_s16le",
                              str(d / "voice.wav")], **process_kwargs(dict(capture_output=True, timeout=600)))
         if cp.returncode != 0:
             return {"ok": False, "error": "The voice-over could not be finished (loudness)."}
-        words = tf.mark_emphasis(align(job["text"], res.get("words") or []))   # *words* -> shown in the color
+        heard = [dict(w, s=round(float(w["s"]) / sp, 3), e=round(float(w["e"]) / sp, 3)) for w in (res.get("words") or [])]
+        words = tf.mark_emphasis(align(job["text"], heard))   # *words* -> shown in the color
         (d / "words.json").write_text(json.dumps(words, ensure_ascii=False), "utf-8")
         (d / "captions.srt").write_text(srt(cues(words)), "utf-8")
         if not cfg.get("keep_work"):                      # the pieces and tries (kept only when asked, for support)
             shutil.rmtree(d / "work", ignore_errors=True)
         n = max(1, len(re.findall(r"[\w']+", job["text"])))
-        return {"ok": True, "seconds": res.get("seconds"), "device": res.get("device"), "said": res.get("said"),
+        secs = res.get("seconds")
+        return {"ok": True, "seconds": round(float(secs) / sp, 2) if secs else secs, "device": res.get("device"),
+                "said": res.get("said"), "speed": sp,
                 "word_errors": res.get("word_errors"), "words": n, "chunks": res.get("chunks"), "load_s": res.get("load_s"),
                 "steps": res.get("steps"), "language": res.get("language"),
                 "files": {"voice": "voice.wav", "srt": "captions.srt"}}

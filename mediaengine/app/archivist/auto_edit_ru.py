@@ -877,6 +877,21 @@ PHRASES = {
         "(Сделано → озвучка → Наложить на видео).",
     "A text must be on the screen for at least 0.3 s (check its times).":
         "Текст должен быть на экране хотя бы 0,3 сек (проверь время).",
+    "Pace": "Темп", "a bit slower": "чуть медленнее", "normal speed": "обычная скорость", "a bit faster": "чуть быстрее",
+    "faster": "быстрее", "short pauses": "короткие паузы", "normal pauses": "обычные паузы", "long pauses": "длинные паузы",
+    "between sentences; the voice keeps its own pitch": "между предложениями; высота голоса не меняется",
+    "More videos, finished the same way": "Ещё видео — доделать так же",
+    "The same voice, captions, look, texts and music on each; one new video per video (at most 30). The preview shows the first one.":
+        "На каждое — тот же голос, субтитры, вид, текст и музыка; для каждого видео делается своё новое (не больше 30). "
+        "Кадр для просмотра — из первого.",
+    "One video per line, e.g. D:\\Exports\\reel2.mp4": "По одному видео в строке, например D:\\Экспорт\\ролик2.mp4",
+    "or reels saved lately:": "или недавно сохранённые ролики:", "Choose the videos": "Выбери видео",
+    "At most 30 videos at once: split them into groups.": "Не больше 30 видео за раз: раздели их на группы.",
+    "Finish a video: several videos at once - the same voice, captions, look, texts and music on each (one new video per video).":
+        "Доделать видео: сразу несколько — на каждое тот же голос, субтитры, вид, текст и музыка (для каждого — своё новое видео).",
+    "Voice-over: its pace - a bit slower or faster, shorter or longer pauses between sentences (the voice keeps its pitch, the captions follow); a voice from a recording can be kept in the voice list.":
+        "Озвучка: темп — чуть медленнее или быстрее, короче или длиннее паузы между предложениями (высота голоса не меняется, "
+        "субтитры следуют за голосом); голос из записи можно сохранить в списке голосов.",
 }
 
 import html as _html
