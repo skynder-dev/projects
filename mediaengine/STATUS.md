@@ -677,6 +677,8 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
     transformers 4.57.3) and Chatterbox Multilingual V3 (load 51 s, 60 s; 65, numpy 1.26 + transformers 5.2.0) say
     a sentence in 9_2's voice. Neither fits VoxCPM2's package set (transformers 5.20, numpy 2.4): a picked engine
     gets its own folder in the add-on, its exact imported list installed as wheels without resolution.
+  Published: Windows CI run 39601510358 (b182, commit 371fa20) fully green, served (ZIP 3,854,994 bytes; the same
+  runtime b9810d447e8c86c5 - the Update button is enough).
 
 ## Evidence
 
@@ -869,6 +871,9 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-b177 is published (everything above, with the voice 9_2); tell the owner to press Update and try
-a saved reel -> "Text, captions, voice-over" (Finish a video). Still open: the first voice-over on his RTX 3060 (and the NVIDIA encoder there). Social integration paused by the owner (do not
-touch Social). Through the app's pages in the desktop app's browser pane only (never computer use).
+b182 is published (the pace of a voice-over, several videos on the Finish page, saved voices, the job-order fix);
+the owner presses Update. Waiting for his pick among the voices 14_1 (CosyVoice3) / 14_2, 14_3 (Chatterbox
+Multilingual V3) / 14_5 (Qwen3-TTS Base) against 14_0 (the program now, VoxCPM2 9_2 cfg 1.6): the picked engine goes
+into the add-on as its own engine folder (the probe's import list), 14_0 stays if none is livelier. Still open: the
+first voice-over on his RTX 3060. Social integration paused by the owner (do not touch Social). Through the app's
+pages in the desktop app's browser pane only (never computer use).
