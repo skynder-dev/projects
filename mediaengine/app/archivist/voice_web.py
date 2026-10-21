@@ -160,8 +160,10 @@ def register(app, page, err_page, e, human_bytes):
         except Exception:
             c = {}
         sk, pk = vo.pace(c.get("speed", ""), c.get("pauses", ""))
-        sp = {"slower": "a bit slower", "normal": "normal speed", "faster": "a bit faster", "fastest": "faster"}
-        pa = {"short": "short pauses", "normal": "normal pauses", "long": "long pauses"}
+        sp = {"normal": "normal speed", **_PACE_SPEED}
+        pa = {"normal": "normal pauses", **_PACE_PAUSES}
+        sp = {k: sp[k] for k in vo.SPEEDS}
+        pa = {k: pa[k] for k in vo.PAUSES}
         so = "".join(f"<option value='{k}'{' selected' if k == sk else ''}>{v}</option>" for k, v in sp.items())
         po = "".join(f"<option value='{k}'{' selected' if k == pk else ''}>{v}</option>" for k, v in pa.items())
         return (f"<div class='vo-row' style='margin-top:6px'><span>Pace</span><select name='speed'>{so}</select>"
@@ -345,9 +347,11 @@ def register(app, page, err_page, e, human_bytes):
             check = ("<span>Every word was said (checked by listening).</span>" if bad == 0 else
                      f"<span>Words not clear when listening:</span> <b translate='no'>{bad}</b> <span>of</span> <span translate='no'>{n}</span>")
             dev = "the graphics card" if res.get("device") == "cuda" else "the processor"
+            sk, pk = (list(j.get("pace") or []) + ["normal", "normal"])[:2]
+            pace = "".join(f" · <span>{lab}</span>" for lab in (_PACE_SPEED.get(sk), _PACE_PAUSES.get(pk)) if lab)
             body = (f"<audio controls preload='none' src='/auto/voice/{jid}/file/voice.wav' style='width:100%;max-width:640px;margin-top:6px'></audio>"
                     f"<div class='muted vo-sub'><span translate='no'>{e(str(res.get('seconds') or ''))}</span> <span>s</span> · {check} · "
-                    f"<span>made on</span> <span>{dev}</span></div>"
+                    f"<span>made on</span> <span>{dev}</span>{pace}</div>"
                     f"<div class='vo-row' style='margin-top:6px'><a class='btn btn2' href='/auto/voice/{jid}/file/voice.wav?download=1'>Download WAV</a>"
                     f"<a class='btn btn2' href='/auto/voice/{jid}/file/captions.srt?download=1'>Download captions (SRT)</a><!--actions--></div>"
                     f"<details style='margin-top:8px'><summary>Put it on a video</summary>"
@@ -910,6 +914,11 @@ def register(app, page, err_page, e, human_bytes):
         if files:
             return jsonify({"path": files[0]})
         return jsonify({"path": None, "error": "Nothing chosen. You can also paste the path."})
+
+
+# the pace of a voice-over in words (normal: not said in the list)
+_PACE_SPEED = {"slower": "a bit slower", "faster": "a bit faster", "fastest": "faster"}
+_PACE_PAUSES = {"short": "short pauses", "long": "long pauses"}
 
 
 # The editor's and the text form's script: add / remove text rows, the preview picture (the form as it is now).

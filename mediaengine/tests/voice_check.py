@@ -172,6 +172,8 @@ def main() -> int:
     page = c.get("/auto/voice", headers=H).get_data(as_text=True)
     check("pace: the next form starts with the pace used last", "<option value='faster' selected>" in page
           and "<option value='long' selected>" in page)
+    check("pace: the list says it (normal is not said)", " · <span>a bit faster</span> · <span>long pauses</span>" in page
+          and page.count("<span>normal speed</span>") == 0)
     check("pace: anything unknown is the normal pace", vo.pace("x' onload", "") == ("normal", "normal"))
 
     # a real video (vertical, with sound) and the voice burned onto it
