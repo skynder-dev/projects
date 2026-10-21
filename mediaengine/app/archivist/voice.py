@@ -1558,19 +1558,29 @@ def resume_after_restart() -> None:
 
 
 def retry_job(jid: str) -> None:
-    """Make again a job that was interrupted (or failed): its own settings, its own folder."""
+    """Make again a job that was interrupted (or failed): its own settings, its own folder. A voice-over made again
+    takes along the videos that were to get it and stopped because it was not made (one Try again, not one per
+    video)."""
     j = read_job(jid)
     if j["state"] in ("working", "waiting"):
         return
     if j.get("kind") != "render" or j.get("needs_addon"):
         _need_addon()
-    d = _job_dir(jid)
+    again = [jid]
+    if j.get("kind") == "voiceover":
+        waiting_for_it = [x for x in list_jobs(500) if x.get("kind") == "render" and x.get("voice_from") == jid
+                          and (x["state"] == "interrupted" or (x["state"] == "failed" and str((x.get("result") or {})
+                               .get("error") or "").startswith("The voice-over was not made")))]
+        again += [x["id"] for x in sorted(waiting_for_it, key=lambda x: (x["id"][:15], int(x.get("created_ns") or 0)))]
     with _LOCK:
-        (d / "result.json").unlink(missing_ok=True)
-        job = json.loads((d / "job.json").read_text("utf-8"))
-        job["resumed"] = False
-        _write_job(d, job)
-        _QUEUE.append(jid)
+        for k in again:
+            d = _job_dir(k)
+            (d / "result.json").unlink(missing_ok=True)
+            job = json.loads((d / "job.json").read_text("utf-8"))
+            job["resumed"] = False
+            _write_job(d, job)
+            if k not in _QUEUE:
+                _QUEUE.append(k)
         if not _THREAD or not _THREAD[0].is_alive():
             _THREAD[:] = [threading.Thread(target=_loop, name="voice-jobs", daemon=True)]
             _THREAD[0].start()

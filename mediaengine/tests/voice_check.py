@@ -89,9 +89,13 @@ def main() -> int:
 
     sent = []                    # what the program asked the worker for (the last one at the end)
 
+    fail_tts = [False]           # a voice-over that fails (to see what waits for it)
+
     def fake_worker(job, work, timeout=3600, on_line=None):
         sent.append(job)
         work.mkdir(parents=True, exist_ok=True)
+        if job["task"] == "tts" and fail_tts[0]:
+            return {"ok": False, "error": "RuntimeError: the graphics card ran out of memory (test)"}
         if on_line:
             on_line({"progress": 0.5, "step": "speaking", "chunk": 1, "chunks": 1})
         if job["task"] == "tts":
@@ -739,6 +743,21 @@ def main() -> int:
     check("several videos with a new voice: made once, then put on each", r.status_code == 302
           and kinds == ["voiceover", "render", "render"] and vfs == [nids[0], nids[0]]
           and all(x["state"] == "done" for x in njobs), (kinds, vfs, [x["state"] for x in njobs]))
+    before = {j["id"] for j in vo.list_jobs(500)}
+    fail_tts[0] = True
+    r = c.post("/auto/finish", data={**many, "voice": "new", "text": "This voice fails first.", "nvoice": vo.DEFAULT_VOICE,
+                                     "captions": "voice", "videos_more": str(v2)}, headers=H)
+    fids = [j["id"] for j in vo.list_jobs(500) if j["id"] not in before][::-1]
+    fjobs = [wait(x) for x in fids]
+    fail_tts[0] = False
+    check("a shared voice-over that fails: the videos waiting for it say so", len(fjobs) == 3
+          and [x["state"] for x in fjobs] == ["failed"] * 3
+          and all(str((x.get("result") or {}).get("error", "")).startswith("The voice-over was not made") for x in fjobs[1:]),
+          [(x["state"], (x.get("result") or {}).get("error")) for x in fjobs])
+    r = c.post(f"/auto/voice/{fids[0]}/retry", headers=H) if fids else None
+    again = [wait(x) for x in fids]
+    check("one Try again on the voice-over makes it and the videos that waited for it", r is not None and r.status_code == 302
+          and [x["state"] for x in again] == ["done"] * 3, [(x["state"], (x.get("result") or {}).get("error")) for x in again])
     nvj = json.loads((Path(njobs[0]["dir"]) / "job.json").read_text("utf-8")) if njobs else {}
     check("the pace chosen on the one-page form goes with the new voice", nvj.get("speed") == 0.92 and nvj.get("pauses") == 0.6,
           (nvj.get("speed"), nvj.get("pauses")))
