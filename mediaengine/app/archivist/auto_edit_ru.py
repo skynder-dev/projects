@@ -808,6 +808,15 @@ PHRASES = {
     "The small copy could not be made.": "Не удалось сделать маленькую копию.",
     "Optional: the exact text that is said - then the captions show it word for word, timed to the speech":
         "Не обязательно: точный текст того, что говорится, — тогда субтитры покажут его слово в слово, по времени речи",
+    "(saved from a recording)": "(сохранён из записи)", "Delete this saved voice": "Удалить этот сохранённый голос",
+    "Delete this saved voice?": "Удалить этот сохранённый голос?",
+    "Keep this voice in the list, named": "Сохранить голос в списке с названием", "optional, e.g. Anna": "не обязательно, например: Анна",
+    "Use only the voice of a person who agreed to it. A saved voice stays in this list.":
+        "Используй голос только того человека, который на это согласен. Сохранённый голос останется в этом списке.",
+    "Give the voice a name.": "Дай голосу название.", "No such voice.": "Такого голоса нет.",
+    "There are already 20 saved voices: delete one first.": "Уже сохранено 20 голосов: сначала удали один.",
+    "The recording of the voice could not be read (it needs at least a few seconds of speech).":
+        "Не удалось прочитать запись голоса (нужно хотя бы несколько секунд речи).",
     "Save as a cover": "Сохранить как обложку", "This picture, full size, saved next to the reels": "Этот кадр в полном размере — рядом с роликами",
     "The cover could not be saved.": "Не удалось сохранить обложку.",
     "6. Music under it": "6. Музыка под видео", "(optional)": "(не обязательно)",

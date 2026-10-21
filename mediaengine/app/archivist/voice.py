@@ -637,22 +637,82 @@ def _submit(job: dict, addon: bool = True) -> str:
     return jid
 
 
+MY_VOICES = HOME / "voices"
+MY_MAX = 20
+
+
+def my_voices() -> dict:
+    """Voices saved from recordings (of people who agreed to it; "my_<id>"): the recording (a clean mono WAV of at most 30 s) and,
+    when given, its exact words. Newest last."""
+    out = {}
+    try:
+        dirs = sorted((d for d in MY_VOICES.iterdir() if d.is_dir() and (d / "voice.wav").is_file()), key=lambda d: d.name)
+    except OSError:
+        dirs = []
+    for d in dirs:
+        try:
+            meta = json.loads((d / "voice.json").read_text("utf-8"))
+        except Exception:
+            meta = {}
+        out["my_" + d.name] = {"label": str(meta.get("name") or d.name)[:60], "ref_path": str(d / "voice.wav"),
+                               "ref_text": str(meta.get("ref_text") or ""), "mine": True}
+    return out
+
+
+def all_voices() -> dict:
+    """The ready voices, then my saved ones, then a voice from a description or from a recording."""
+    ready = {k: v for k, v in VOICES.items() if v.get("ref")}
+    return {**ready, **my_voices(), **{k: v for k, v in VOICES.items() if not v.get("ref")}}
+
+
+def save_my_voice(source: str, name: str, ref_text: str = "") -> str:
+    """A recording kept as one of my voices (converted once: mono, 24 kHz, at most 30 s); returns its key."""
+    p = Path(str(source or "").strip().strip('"'))
+    if not p.is_file():
+        raise VoiceError("Choose the recording of the voice (a WAV, MP3 or M4A of 5-30 seconds of one person speaking).")
+    name = " ".join(tf.clean_text(name, 60).split())
+    if not name:
+        raise VoiceError("Give the voice a name.")
+    if len(my_voices()) >= MY_MAX:
+        raise VoiceError("There are already 20 saved voices: delete one first.")
+    vid = _new_id()
+    d = MY_VOICES / vid
+    d.mkdir(parents=True, exist_ok=True)
+    cp = subprocess.run([_ffmpeg(), "-hide_banner", "-nostdin", "-y", "-v", "error", "-i", str(p), "-t", "30", "-ac", "1",
+                         "-ar", "24000", str(d / "voice.wav")], **process_kwargs(dict(capture_output=True, timeout=120)))
+    if cp.returncode != 0 or not (d / "voice.wav").is_file() or (d / "voice.wav").stat().st_size < 24000 * 2 * 3:
+        shutil.rmtree(d, ignore_errors=True)
+        raise VoiceError("The recording of the voice could not be read (it needs at least a few seconds of speech).")
+    (d / "voice.json").write_text(json.dumps({"name": name, "ref_text": re.sub(r"\s+", " ", str(ref_text or "")).strip()[:1000],
+                                              "source": p.name, "created_at": now_iso()}, ensure_ascii=False), "utf-8")
+    return "my_" + vid
+
+
+def delete_my_voice(key: str) -> None:
+    if not re.fullmatch(r"my_\d{8}-\d{6}-[0-9a-f]{6}", str(key or "")):
+        raise VoiceError("No such voice.")
+    shutil.rmtree(MY_VOICES / key[3:], ignore_errors=True)
+
+
 def new_voiceover(text: str, voice: str, description: str = "", ref_path: str = "", ref_text: str = "",
-                  language: str = "") -> str:
+                  language: str = "", save_as: str = "") -> str:
     _need_addon()
     text = str(text or "").strip()
     if not text:
         raise VoiceError("Type the text of the voice-over first.")
     if len(text) > MAX_TEXT:
         raise VoiceError("The text is too long for one voice-over (at most 5000 characters): split it into parts.")
-    if voice not in VOICES:
+    if voice == "own" and str(save_as or "").strip():          # the recording kept as one of my voices, then used
+        voice = save_my_voice(ref_path, save_as, ref_text)
+    voices = all_voices()
+    if voice not in voices:
         raise VoiceError("Choose a voice.")
     v: dict = {"key": voice}
-    if VOICES[voice].get("ref"):
-        ref = ASSETS / VOICES[voice]["ref"]
+    if voices[voice].get("ref") or voices[voice].get("ref_path"):
+        pv = voices[voice]
+        ref = ASSETS / pv["ref"] if pv.get("ref") else Path(pv["ref_path"])
         if not ref.is_file():
             raise VoiceError("The recording of this voice is missing from this version of MediaEngine.")
-        pv = VOICES[voice]
         v.update(ref_wav=str(ref))
         if pv.get("ref_text"):                # its recording continued (ultimate cloning) - or, without, the timbre only
             v["ref_text"] = pv["ref_text"]
@@ -673,6 +733,11 @@ def new_voiceover(text: str, voice: str, description: str = "", ref_path: str = 
     lang = str(language or "").strip().lower()
     if lang and not re.fullmatch(r"[a-z]{2}", lang):
         lang = ""
+    try:                                           # the next form starts with this voice
+        from .config import update_config
+        update_config(lambda c: c.setdefault("voice", {}).__setitem__("last", voice))
+    except Exception:
+        pass
     return _submit({"kind": "voiceover", "text": text, "voice": v, "language": lang or None,
                     "title": re.sub(r"\s+", " ", text)[:60]})
 
@@ -897,8 +962,9 @@ def _do(jid: str) -> dict:
                 return {"ok": False, "error": "The recording of the voice could not be read."}
             v["ref_wav"] = str(ref)
         elif v.get("ref_wav"):                       # a voice of the program: its file in THIS build (a job made by an
-            if (VOICES.get(v.get("key")) or {}).get("ref"):   # older build keeps that build's path, maybe removed since)
-                v["ref_wav"] = str(ASSETS / VOICES[v["key"]]["ref"])
+            pv = all_voices().get(v.get("key")) or {}       # older build keeps that build's path, maybe removed since)
+            if pv.get("ref"):
+                v["ref_wav"] = str(ASSETS / pv["ref"])
             if not Path(v["ref_wav"]).is_file():     # a voice this version no longer has (3.1): say so, not a worker error
                 return {"ok": False, "error": "The recording of this voice is missing from this version of MediaEngine."}
         cfg = (load_config().get("voice") or {})

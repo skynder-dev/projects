@@ -115,7 +115,9 @@ The owner: "voice-over, processing and text in the video - MedEng". **Auto Edit 
   messengers of these videos. The real-browser check (Edge in the Windows CI) now runs the Finish page: the preview
   picture, a look saved with Enter, the video made, its editor. On a PC with an NVIDIA card these videos are encoded
   on it (h264_nvenc, tried once per start); any failure there makes the same video on the processor. The copy next to
-  the reels is the same file under a second name when it is on the same disk (no double space).
+  the reels is the same file under a second name when it is on the same disk (no double space). A voice from a
+  recording can be kept in the voice list ("Keep this voice in the list, named"; at most 20, each a clean mono WAV of
+  at most 30 s in the data folder); the voice used last is the one the next form starts with.
 - **Captions for a video**: the speech of any video into captions burned into a copy (Whisper's languages).
 - Quit / Update / switching builds ask while a voice-over is being made; one interrupted by a closed program is made
   again once.

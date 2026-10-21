@@ -143,10 +143,26 @@ def register(app, page, err_page, e, human_bytes):
     def _lang_options() -> str:
         return "".join(f"<option value='{c}'" + (" translate='no'" if c else "") + f">{e(n)}</option>" for c, n in _LANGS)
 
+    def _last_voice(voices: dict) -> str:
+        try:
+            from .config import load_config
+            last = str((load_config().get("voice") or {}).get("last") or "")
+        except Exception:
+            last = ""
+        return last if last in voices else vo.DEFAULT_VOICE
+
     def _voice_form() -> str:
-        radios = "".join(
-            f"<label><input type='radio' name='voice' value='{k}'{' checked' if k == vo.DEFAULT_VOICE else ''}> {e(v['label'])}</label>"
-            for k, v in vo.VOICES.items())
+        voices = vo.all_voices()
+        last = _last_voice(voices)
+
+        def radio(k, v):
+            mine = (f" <span class='muted vo-sub'>(saved from a recording)</span> <button class='btn2 vo-mini' formaction='/auto/voice/my/{k}/delete' "
+                    f"formnovalidate title='Delete this saved voice' "
+                    f"onclick=\"return confirm(window.ME_L?ME_L('Delete this saved voice?'):'Delete this saved voice?')\">×</button>"
+                    if v.get("mine") else "")
+            label = f"<span translate='no'>{e(v['label'])}</span>" if v.get("mine") else e(v["label"])
+            return f"<label><input type='radio' name='voice' value='{k}'{' checked' if k == last else ''}> {label}{mine}</label>"
+        radios = "".join(radio(k, v) for k, v in voices.items())
         langs = _lang_options()
         return (f"<div class='card' id='voNew'><h2 style='margin-top:0'>New voice-over</h2>"
                 f"<form method='post' action='/auto/voice/new' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
@@ -161,7 +177,9 @@ def register(app, page, err_page, e, human_bytes):
                 f"<button type='button' class='btn2' data-pick='audio'>Choose…</button></div>"
                 f"<input class='vo-wide' name='ref_text' maxlength='1000' style='margin-top:6px' "
                 f"placeholder='The exact words said in the recording (optional: the voice is copied more closely)'>"
-                f"<div class='muted vo-sub'>Use only the voice of a person who agreed to it.</div></div>"
+                f"<div class='vo-row' style='margin-top:6px'><span>Keep this voice in the list, named</span>"
+                f"<input name='save_as' maxlength='60' size='20' placeholder='optional, e.g. Anna'></div>"
+                f"<div class='muted vo-sub'>Use only the voice of a person who agreed to it. A saved voice stays in this list.</div></div>"
                 f"<div class='vo-row' style='margin-top:10px'><span>Language of the text</span><select name='language'>{langs}</select></div>"
                 f"<div style='margin-top:12px'><button class='ae-big'>Make the voice-over</button> "
                 f"<span class='muted vo-sub' data-msg></span></div></form></div>")
@@ -444,7 +462,7 @@ def register(app, page, err_page, e, human_bytes):
         f = request.form
         try:
             vo.new_voiceover(f.get("text", ""), f.get("voice", ""), f.get("description", ""), f.get("ref_path", ""),
-                             f.get("ref_text", ""), f.get("language", ""))
+                             f.get("ref_text", ""), f.get("language", ""), save_as=f.get("save_as", ""))
         except vo.VoiceError as exc:
             return err_page(str(exc), "/auto/voice")
         return redirect("/auto/voice")
@@ -548,8 +566,11 @@ def register(app, page, err_page, e, human_bytes):
         made = [j for j in vo.list_jobs(50) if j.get("kind") == "voiceover" and j["state"] == "done"]
         vopts = "".join(f"<option value='{e(j['id'])}' translate='no'>{e(j.get('title') or '')} · "
                         f"{e(str(j.get('created_at') or '')[:16].replace('T', ' '))}</option>" for j in made)
-        voices = "".join(f"<label><input type='radio' name='nvoice' value='{k}'{' checked' if k == vo.DEFAULT_VOICE else ''}> "
-                         f"{e(v['label'])}</label>" for k, v in vo.VOICES.items() if k != "own")
+        allv = {k: v for k, v in vo.all_voices().items() if k != "own"}
+        lastv = _last_voice(allv)
+        voices = "".join(f"<label><input type='radio' name='nvoice' value='{k}'{' checked' if k == lastv else ''}> "
+                         + (f"<span translate='no'>{e(v['label'])}</span>" if v.get("mine") else e(v["label"])) + "</label>"
+                         for k, v in allv.items())
         new_ok = bool(s_.get("installed"))
         voice = (f"<div class='vo-styles' style='margin-top:12px'><b>2. The voice</b>"
                  f"<label><input type='radio' name='voice' value='none' checked> No voice (the video's own sound)</label>"
@@ -762,6 +783,14 @@ def register(app, page, err_page, e, human_bytes):
         except (vo.VoiceError, tf.TextError) as exc:
             return err_page(str(exc), f"/auto/voice/{jid}/edit")
         return redirect("/auto/voice")
+
+    @app.post("/auto/voice/my/<key>/delete")
+    def voice_my_delete(key):
+        try:
+            vo.delete_my_voice(key)
+        except vo.VoiceError as exc:
+            return err_page(str(exc), "/auto/voice")
+        return redirect("/auto/voice#voNew")
 
     @app.post("/auto/voice/<jid>/retry")
     def voice_retry(jid):

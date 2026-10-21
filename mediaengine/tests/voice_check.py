@@ -459,6 +459,35 @@ def main() -> int:
     r = c.get(f"/auto/voice/{jid}/edit", headers=H)
     check("a voice-over itself (no video) is not edited here: said in words", r.status_code == 400, r.status_code)
 
+    # my voices: a recording saved once (as a clean mono WAV), then in the list like a ready voice; deleted
+    rec = home / "моя запись.m4a"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "sine=f=200:duration=6", "-c:a", "aac", str(rec)], check=True)
+    before = {j["id"] for j in vo.list_jobs(500)}
+    r = c.post("/auto/voice/new", data={"text": "Hello from my own voice.", "voice": "own", "ref_path": str(rec),
+                                        "ref_text": "Some words", "save_as": "Мой голос"}, headers=H)
+    mjv = wait(next(j["id"] for j in vo.list_jobs(500) if j["id"] not in before))
+    mine = {k: v for k, v in vo.my_voices().items()}
+    mkey = next(iter(mine), "")
+    mjob = json.loads((Path(mjv["dir"]) / "job.json").read_text("utf-8"))
+    vp = c.get("/auto/voice", headers=H).get_data(as_text=True)
+    check("a recording saved as my voice, used at once and listed (chosen next time)", r.status_code == 302 and mjv["state"] == "done"
+          and mkey and mjob["voice"].get("key") == mkey and mjob["voice"].get("ref_text") == "Some words"
+          and f"value='{mkey}' checked" in vp and "Мой голос" in vp, (mine, mjob.get("voice")))
+    before = {j["id"] for j in vo.list_jobs(500)}
+    r = c.post("/auto/voice/new", data={"text": "Again in my voice.", "voice": mkey}, headers=H)
+    mj2 = wait(next(j["id"] for j in vo.list_jobs(500) if j["id"] not in before))
+    check("my voice is chosen like a ready one", mj2["state"] == "done", mj2.get("result"))
+    fpv = c.get("/auto/finish", headers=H).get_data(as_text=True)
+    check("my voice on the one-page form too", f"name='nvoice' value='{mkey}'" in fpv)
+    r = c.post(f"/auto/voice/my/{mkey}/delete", headers=H)
+    check("a saved voice is deleted", r.status_code == 302 and mkey not in vo.my_voices())
+    short = home / "short.wav"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "sine=f=200:duration=1", str(short)], check=True)
+    r = c.post("/auto/voice/new", data={"text": "x", "voice": "own", "ref_path": str(short), "save_as": "Short"}, headers=H)
+    check("a recording too short to keep: said in words", r.status_code == 400, r.status_code)
+    r = c.post("/auto/voice/my/../x/delete", headers=H)
+    check("a wrong saved-voice name: no harm", r.status_code in (400, 404), r.status_code)
+
     # odd input: words, never a server error
     for name, data in [("no text", {"text": "", "voice": vo.DEFAULT_VOICE}), ("unknown voice", {"text": "Hi.", "voice": "x"}),
                        ("short description", {"text": "Hi.", "voice": "describe", "description": "a"}),
