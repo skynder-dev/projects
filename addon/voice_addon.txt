@@ -1,40 +1,43 @@
 PASS Install starts
-04:19:55 running packages  0/0 MB
-04:20:00 running packages Downloading torch-2.8.0-cp311-cp311-win_amd64.whl 0/0 MB
-04:20:05 running packages Installing : 0/0 MB
-04:20:40 running models audiovae.pth 66/5446 MB
-04:20:45 running models model.safetensors 1147/5446 MB
-04:20:50 running models model.safetensors 2555/5446 MB
-04:20:55 running models model.safetensors 3895/5446 MB
-04:21:00 running models model.safetensors 4957/5446 MB
-04:21:05 running models tokenizer.json 4958/5446 MB
-04:21:10 running checking_addon  5446/5446 MB
-04:21:15 done   5446/5446 MB
+04:43:16 running packages  0/0 MB
+04:43:21 running packages Installing : 0/0 MB
+04:43:46 running models model.safetensors 437/5446 MB
+04:43:51 running models model.safetensors 1324/5446 MB
+04:43:56 running models model.safetensors 2185/5446 MB
+04:44:01 running models model.safetensors 3066/5446 MB
+04:44:06 running models model.safetensors 3928/5446 MB
+04:44:11 running models model.safetensors 4742/5446 MB
+04:44:16 running models model.safetensors 4957/5446 MB
+04:44:21 running models model.bin 5444/5446 MB
+04:44:26 running checking_addon  5446/5446 MB
+04:44:31 done   5446/5446 MB
 PASS the add-on is installed
 PASS its manifest: version, Python, torch, models
 PASS the page shows the forms once installed
 PASS a voice-over is accepted
-04:21:15 20261021-042115-f00b26 working starting 0%
-04:21:18 20261021-042115-f00b26 working loading 2%
-04:22:01 20261021-042115-f00b26 working speaking 1/1 5%
-04:23:37 20261021-042115-f00b26 working listening 95%
-04:23:43 20261021-042115-f00b26 done  0%
+04:44:31 20261021-044431-ea5c49 working starting 0%
+04:44:34 20261021-044431-ea5c49 working loading 2%
+04:45:55 20261021-044431-ea5c49 working speaking 1/1 5%
+04:49:27 20261021-044431-ea5c49 working listening 95%
+04:49:48 20261021-044431-ea5c49 working finishing 97%
+04:49:51 20261021-044431-ea5c49 done  0%
 PASS the voice-over is made
 PASS every word said (listened to)
 PASS a plausible length
-04:23:43 20261021-042343-82eba4 working starting 0%
-04:23:49 20261021-042343-82eba4 working loading 2%
-04:24:07 20261021-042343-82eba4 working speaking 1/1 5%
-04:24:56 20261021-042343-82eba4 working listening 95%
-04:24:59 20261021-042343-82eba4 done  0%
+04:49:52 20261021-044952-b55570 working starting 0%
+04:49:58 20261021-044952-b55570 working loading 2%
+04:50:31 20261021-044952-b55570 working speaking 1/1 5%
+04:51:46 20261021-044952-b55570 working speaking 1/1 15%
+04:52:46 20261021-044952-b55570 working speaking 1/1 26%
+04:53:40 20261021-044952-b55570 working listening 95%
+04:53:46 20261021-044952-b55570 done  0%
 PASS a Russian voice-over in the same voice, heard back in Cyrillic
-04:24:59 20261021-042459-b26acc working starting 0%
-04:25:02 20261021-042459-b26acc working video 50%
-04:25:05 20261021-042459-b26acc done  0%
+04:53:48 20261021-045347-242118 working video 50%
+04:53:54 20261021-045347-242118 done  0%
 PASS the voice onto the video, captions burned, checked
-04:25:05 20261021-042505-24f959 working starting 0%
-04:25:08 20261021-042505-24f959 working listening 20%
-04:25:11 20261021-042505-24f959 done  0%
+04:53:54 20261021-045354-024c40 working starting 0%
+04:53:57 20261021-045354-024c40 working listening 20%
+04:54:03 20261021-045354-024c40 done  0%
 PASS captions from the video's own speech hear the voice-over
 PASS the page in Russian with a finished voice-over
 {"passed": 12, "total": 12}
