@@ -13,6 +13,110 @@ ROOT = Path(__file__).resolve().parents[1]
 PORT = 18791
 
 
+def install_flows(home: Path, check) -> None:
+    """The add-on's install with pip, Hugging Face and the worker stood in (another folder): the main part whole and
+    recorded first, the new engine (Qwen3-TTS) on its own - its failure keeps a working add-on; an installed add-on
+    gets only the engine; nothing is downloaded twice."""
+    import contextlib, hashlib
+    from archivist import voice as vo, auto_edit as ae, platform_adapter as pa
+    names = ("ROOT", "SITE", "SITE_QWEN", "MODELS", "MANIFEST", "_pip", "_hf_files", "_run_worker", "_free", "_nvidia_name")
+    saved = {k: getattr(vo, k) for k in names}
+    saved_fetch, saved_awake, saved_install = ae._fetch_resumable, pa.keep_awake, dict(vo.INSTALL)
+    root = home / "addon-flows"
+    vo.ROOT, vo.SITE, vo.SITE_QWEN, vo.MODELS, vo.MANIFEST = (root, root / "site", root / "site_qwen", root / "models",
+                                                              root / "addon.json")
+    log, fail = [], set()
+    files = {"voxcpm": [("model.safetensors", 10), ("config.json", 3)], "whisper": [("model.bin", 5)],
+             "qwen3tts": [("model.safetensors", 7), ("speech_tokenizer/config.json", 2)]}
+    key_of = {vo.VOXCPM_REPO: "voxcpm", vo.WHISPER_REPO: "whisper", vo.QWEN_REPO: "qwen3tts"}
+
+    def data(key, name, size):
+        return (key + name).encode()[:size].ljust(size, b"x")
+
+    def pip(site_dir, cpu, logp, packages=None):
+        part = "qwen" if packages else "main"
+        log.append(("pip", part, cpu))
+        if "pip_" + part in fail:
+            raise vo.VoiceError("pip failed (test)")
+        site_dir.mkdir(parents=True, exist_ok=True)
+
+    def hf(repo, rev):
+        k = key_of[repo]
+        return [(n, sz, "sha256", hashlib.sha256(data(k, n, sz)).hexdigest()) for n, sz in files[k]]
+
+    def fetch(url, part, size, progress, stop=None, tries=4):
+        k = next(v for r, v in key_of.items() if r in url)
+        name = url.split("/resolve/")[1].split("/", 1)[1]
+        log.append(("fetch", k))
+        if "fetch_" + k in fail:
+            raise ConnectionError("the internet went away (test)")
+        part.parent.mkdir(parents=True, exist_ok=True)
+        part.write_bytes(data(k, name, size))
+
+    def worker(job, work, timeout=3600, on_line=None):
+        eng = job.get("engine") or "main"
+        log.append(("selftest", eng))
+        if "selftest_" + eng in fail:
+            return {"ok": False, "error": "ImportError: test"}
+        return {"ok": True, "torch": "2.8.0", "qwen_tts": "0.1.1"} if eng == "qwen" else \
+            {"ok": True, "torch": "2.8.0+cu126", "cuda": True, "gpu": "RTX 3060", "vram_gb": 12}
+
+    def run(cpu=False):
+        log.clear()
+        vo.INSTALL.update(state="running", error="", step="checking", total=0, done=0)
+        vo._STOP.clear()
+        vo._install_now(cpu)
+        return vo.INSTALL["state"]
+
+    vo._pip, vo._hf_files, vo._run_worker, vo._free, vo._nvidia_name = pip, hf, worker, (lambda p: 100 * 10 ** 9), (lambda: "")
+    ae._fetch_resumable, pa.keep_awake = fetch, contextlib.nullcontext
+    try:
+        st = run()
+        m = vo.manifest()
+        check("install: a fresh install - both parts, recorded, the engine's packages never from the CUDA index",
+              st == "done" and vo.installed() and vo.qwen_installed() and m.get("bytes", 0) > 0
+              and ("pip", "qwen", True) in log and (vo.SITE_QWEN / "sox" / "__init__.py").is_file(), (st, log, m))
+        vo.remove_addon()
+        fail.add("pip_qwen")
+        st = run()
+        check("install: the new engine fails on a fresh install - the main part works (recorded with its size)",
+              st == "failed" and vo.installed() and not vo.qwen_installed() and vo.manifest().get("bytes", 0) > 0,
+              (st, vo.INSTALL.get("error"), vo.manifest()))
+        fail.clear()
+        st = run()
+        check("install: then only the new engine (the main part kept, no model downloaded twice)",
+              st == "done" and vo.qwen_installed() and ("pip", "main", False) not in log
+              and [x for x in log if x[0] == "fetch"] == [("fetch", "qwen3tts")] * 2, log)
+        m = vo.manifest()
+        m.pop("qwen")                            # an add-on from before the pick: no engine, no model yet
+        vo._write_manifest(m)
+        import shutil as _sh
+        _sh.rmtree(vo.SITE_QWEN, ignore_errors=True)
+        _sh.rmtree(vo.MODELS / "qwen3tts", ignore_errors=True)
+        fail.add("fetch_qwen3tts")
+        st = run()
+        check("install: the internet gone while the engine downloads - the add-on still works",
+              st == "failed" and vo.installed() and not vo.qwen_installed() and "internet" in vo.INSTALL.get("error", ""),
+              (st, vo.INSTALL.get("error")))
+        fail.clear()
+        vo.remove_addon()
+        fail.add("selftest_qwen")
+        st = run()
+        check("install: the engine does not start - the main part kept, said in words", st == "failed" and vo.installed()
+              and "new voice engine" in vo.INSTALL.get("error", "") and vo.manifest().get("bytes", 0) > 0,
+              vo.INSTALL.get("error"))
+        fail.clear()
+        vo.remove_addon()
+        check("install: Remove takes both parts away", not vo.installed() and not vo.SITE_QWEN.exists()
+              and not vo.MODELS.exists())
+    finally:
+        for k, v in saved.items():
+            setattr(vo, k, v)
+        ae._fetch_resumable, pa.keep_awake = saved_fetch, saved_awake
+        vo.INSTALL.clear()
+        vo.INSTALL.update(saved_install)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--home", required=True); ap.add_argument("--out", default="")
@@ -213,7 +317,10 @@ def main() -> int:
     for text, voice, lang, want, qlang in (("Hello from the new engine.", vo.DEFAULT_VOICE, "en", "qwen", "English"),
                                            ("Привет от нового движка.", vo.DEFAULT_VOICE, "ru", "qwen", "Russian"),
                                            ("Detect it by itself.", vo.DEFAULT_VOICE, "", "qwen", None),
-                                           ("Привіт, як справи?", vo.DEFAULT_VOICE, "uk", "voxcpm", None)):
+                                           ("Привіт, як справи?", vo.DEFAULT_VOICE, "uk", "voxcpm", None),
+                                           ("Привіт, як справи? Їжак.", vo.DEFAULT_VOICE, "", "voxcpm", None),
+                                           ("Dzień dobry, jak się masz?", vo.DEFAULT_VOICE, "", "voxcpm", None),
+                                           ("Ça va très bien, merci.", vo.DEFAULT_VOICE, "", "qwen", None)):
         c.post("/auto/voice/new", data={"text": text, "voice": voice, "language": lang}, headers=H)
         wj = wait(vo.list_jobs()[0]["id"])
         tj = tts_jobs()[-1]
@@ -225,6 +332,18 @@ def main() -> int:
     wait(vo.list_jobs()[0]["id"])
     check("engine: a voice from a description stays on VoxCPM2", tts_jobs()[-1].get("engine") == "voxcpm"
           and tts_jobs()[-1]["voice"].get("description"))
+    vo.INSTALL.update(state="running")          # the new engine being downloaded beside an installed add-on
+    try:
+        last_vo = vo.list_jobs()[0]["id"]
+        refused = ""
+        try:
+            vo.retry_job(last_vo)
+        except vo.VoiceError as exc:
+            refused = str(exc)
+        check("Try again waits while the add-on is being installed (the new engine too)", "being installed" in refused
+              and vo.read_job(last_vo)["state"] == "done", refused)
+    finally:
+        vo.INSTALL.update(state="idle")
 
     # a real video (vertical, with sound) and the voice burned onto it
     video = home / "clip.mp4"
@@ -807,6 +926,8 @@ def main() -> int:
     nvj = json.loads((Path(njobs[0]["dir"]) / "job.json").read_text("utf-8")) if njobs else {}
     check("the pace chosen on the one-page form goes with the new voice", nvj.get("speed") == 0.92 and nvj.get("pauses") == 0.6,
           (nvj.get("speed"), nvj.get("pauses")))
+
+    install_flows(home, check)
 
     # Russian
     c.post("/lang", data={"back": "/auto/voice"}, headers=H)

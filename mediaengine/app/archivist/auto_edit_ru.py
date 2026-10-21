@@ -887,6 +887,10 @@ PHRASES = {
         "в ту же папку. До этого они звучат на прежнем движке.",
     "Not enough free space: about 8 GB are needed while downloading.": "Мало свободного места: на время скачивания нужно около 8 ГБ.",
     "Download the new voice engine": "Скачать новый движок голоса",
+    "Downloading the new voice engine": "Скачивается новый движок голоса",
+    "Downloading the new voice engine's Python parts (about 0.2 GB)…": "Скачиваю части нового движка для Python (около 0,2 ГБ)…",
+    "Downloading the new voice engine (Qwen3-TTS, about 4.5 GB)…": "Скачиваю новый движок голоса (Qwen3-TTS, около 4,5 ГБ)…",
+    "The voice add-on's record could not be read. Try again.": "Не удалось прочитать запись о модуле озвучки. Попробуй ещё раз.",
     "Voice-over: the voice 9_2 is said by a new, livelier engine (Qwen3-TTS - your pick 14_5); an installed voice add-on downloads it with one button (about 4.7 GB).":
         "Озвучка: голос 9_2 теперь говорит на новом, более живом движке (Qwen3-TTS — твой выбор 14_5); установленный модуль "
         "озвучки докачивает его одной кнопкой (около 4,7 ГБ).",

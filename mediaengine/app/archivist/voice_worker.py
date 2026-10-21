@@ -120,9 +120,12 @@ class _Qwen:
     def __init__(self, model_dir: str, device: str, language: str | None):
         import torch
         from qwen_tts import Qwen3TTSModel
-        if device == "cuda":
-            dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
-            kw = {"device_map": "cuda:0", "dtype": dtype}
+        if device == "cuda":                       # bf16 where the card has it (RTX 30xx and newer); else full
+            try:                                   # precision (fp16 may overflow; emulated bf16 is slow)
+                native = torch.cuda.is_bf16_supported(including_emulation=False)
+            except TypeError:
+                native = torch.cuda.get_device_capability(0)[0] >= 8
+            kw = {"device_map": "cuda:0", "dtype": torch.bfloat16 if native else torch.float32}
         else:
             kw = {"device_map": "cpu", "dtype": torch.float32}
         try:

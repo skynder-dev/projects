@@ -12,7 +12,9 @@ from . import textfx as tf
 from . import voice as vo
 
 _INSTALL_STEP = {"checking": "Checking the PC…", "packages": "Downloading and installing the add-on's Python parts (about 3 GB)…",
-                 "models": "Downloading the voice models (about 5 GB)…", "checking_addon": "Starting the add-on for a test…"}
+                 "models": "Downloading the voice models (about 5 GB)…", "checking_addon": "Starting the add-on for a test…",
+                 "qwen_packages": "Downloading the new voice engine's Python parts (about 0.2 GB)…",
+                 "qwen_models": "Downloading the new voice engine (Qwen3-TTS, about 4.5 GB)…"}
 _JOB_STEP = {"starting": "Starting…", "loading": "Loading the voice model…", "speaking": "Speaking…",
              "joining": "Joining the parts…", "listening": "Listening to check every word…", "finishing": "Finishing the sound…",
              "reading": "Reading the sound of the video…", "video": "Making the video…", "checking": "Checking the video…"}
@@ -64,8 +66,9 @@ def register(app, page, err_page, e, human_bytes):
         why = vo.why_not_install()
         if s["state"] == "running":
             pct = int(100 * s["done"] / s["total"]) if s.get("total") else 0
-            return (f"<div class='card' id='voInstall'><h2 style='margin-top:0'>Installing the voice add-on</h2>"
-                    f"<div class='ae-bar'><i id='voBar' style='width:{pct if s.get('step') == 'models' else 5}%'></i></div>"
+            title = "Downloading the new voice engine" if s.get("mode") == "engine" else "Installing the voice add-on"
+            return (f"<div class='card' id='voInstall'><h2 style='margin-top:0'>{title}</h2>"
+                    f"<div class='ae-bar'><i id='voBar' style='width:{pct if s.get('step') in ('models', 'qwen_models') else 5}%'></i></div>"
                     f"<div style='margin-top:8px'><span id='voStep'>{e(_INSTALL_STEP.get(s.get('step'), ''))}</span></div>"
                     f"<div class='muted ae-path vo-sub' id='voDetail' translate='no'>{e(s.get('detail') or '')}</div>"
                     f"<div class='muted vo-sub' style='margin-top:6px'>This takes from a few minutes to an hour, depending on the "
@@ -77,7 +80,7 @@ def register(app, page, err_page, e, human_bytes):
             where = (f"<span>the graphics card</span> <span translate='no'>{e(m.get('gpu') or '')}</span>" if m.get("cuda")
                      else "<span>the processor (slow)</span>")
             upd = ""
-            if not s.get("qwen"):            # an add-on from before the owner's pick: the new engine, once
+            if not s.get("qwen") and not why:   # an add-on from before the owner's pick: the new engine, once
                 failed = (f"<div class='errbox' style='margin-bottom:10px'>{e(s.get('error') or '')}</div>"
                           if s["state"] == "failed" else "")
                 low = s.get("free", 0) < vo.NEED_FREE_QWEN
@@ -458,7 +461,7 @@ def register(app, page, err_page, e, human_bytes):
             "if(n&&o&&!busyIn)o.replaceWith(n);"
             "else if(n){const back=document.getElementById('voBack');if(back)back.before(n)}}catch(err){}}sig=now;"
             "const bar=document.getElementById('voBar');if(bar&&x.install.state==='running'){"
-            "bar.style.width=(x.install.step==='models'&&x.install.total?Math.round(100*x.install.done/x.install.total):5)+'%';"
+            "bar.style.width=((x.install.step==='models'||x.install.step==='qwen_models')&&x.install.total?Math.round(100*x.install.done/x.install.total):5)+'%';"
             "const s=document.getElementById('voStep'),tx=ST[x.install.step]||'';s.textContent=window.ME_L?ME_L(tx):tx;"
             "document.getElementById('voDetail').textContent=x.install.detail||''}"
             "for(const j of x.jobs){if(j.state!=='working')continue;const el=document.getElementById('j-'+j.id);"
