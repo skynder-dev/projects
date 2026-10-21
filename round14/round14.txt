@@ -1,0 +1,12 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[0;93m2026-10-21 11:56:25.330305894 [W:onnxruntime:Default, device_discovery.cc:95 GetPciBusId] Skipping pci_bus_id for PCI path at "/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/5620e0c7-8062-4dce-aeb7-520c7ef76171" because filename "5620e0c7-8062-4dce-aeb7-520c7ef76171" did not match expected pattern of [0-9a-f]+:[0-9a-f]+:[0-9a-f]+[.][0-9a-f]+[m
+11:56:29 r14_cb_t1: 13.2 s, 0 word errors, pitch 247 Hz +-3.6 st
+11:56:34 r14_cb_t2: 12.8 s, 0 word errors, pitch 231 Hz +-3.9 st
+11:56:37 r14_cb_t9: 9.4 s, 3 word errors, pitch 210 Hz +-4.5 st
+11:56:41 r14_cblive_t1: 12.2 s, 0 word errors, pitch 248 Hz +-4.1 st
+11:56:46 r14_cblive_t2: 13.5 s, 0 word errors, pitch 255 Hz +-4.2 st
+11:56:49 r14_cblive_t9: 11.1 s, 3 word errors, pitch 244 Hz +-5.5 st
+11:56:54 r14_qwen_t1: 11.8 s, 0 word errors, pitch 210 Hz +-3.7 st
+11:56:58 r14_qwen_t2: 12.0 s, 0 word errors, pitch 205 Hz +-4.4 st
+11:57:01 r14_qwen_t9: 7.0 s, 2 word errors, pitch 215 Hz +-3.5 st
+{"files": 7, "failed_takes": 0}

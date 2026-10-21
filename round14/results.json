@@ -1,0 +1,199 @@
+{
+ "round": 14,
+ "files": {
+  "voice14_0_now.mp3": "the program's voice today (VoxCPM2, 9_2 at cfg 1.6 - round 13's 13_3), the same text",
+  "voice14_2.mp3": "Chatterbox Multilingual V3 (MIT), cloning 9_2's recording, default settings (r14_cb_t2)",
+  "voice14_2_ru.mp3": "Chatterbox Multilingual V3 (MIT), cloning 9_2's recording, default settings (Russian)",
+  "voice14_3.mp3": "Chatterbox Multilingual V3 (MIT), cloning 9_2's recording, livelier (exaggeration 0.7, cfg 0.3) (r14_cblive_t1)",
+  "voice14_3_ru.mp3": "Chatterbox Multilingual V3 (MIT), cloning 9_2's recording, livelier (exaggeration 0.7, cfg 0.3) (Russian)",
+  "voice14_5.mp3": "Qwen3-TTS 1.7B Base (Apache-2.0), cloning 9_2's recording (r14_qwen_t1)",
+  "voice14_5_ru.mp3": "Qwen3-TTS 1.7B Base (Apache-2.0), cloning 9_2's recording (Russian)"
+ },
+ "rows": {
+  "reference 9_2": {
+   "pitch_median_hz": 232.7
+  },
+  "r14_cb_t1": {
+   "variant": "r14_cb",
+   "take": 1,
+   "seconds_to_make": 121.9,
+   "sr": 24000,
+   "file": "voice14-chatterbox/r14_cb_t1.wav",
+   "seconds": 13.24,
+   "said": "quick update for anyone planning a summer trip. Hotel prices usually drop about three weeks before the date, so don't book too early. And if a price looks too good, check the reviews first. Follow for more tips like this.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 246.6,
+   "pitch_movement_semitones": 3.6,
+   "female_range": true,
+   "words_per_minute": 181.3,
+   "off_9_2_semitones": 1.0
+  },
+  "r14_cb_t2": {
+   "variant": "r14_cb",
+   "take": 2,
+   "seconds_to_make": 103.0,
+   "sr": 24000,
+   "file": "voice14-chatterbox/r14_cb_t2.wav",
+   "seconds": 12.84,
+   "said": "quick update for anyone planning a summer trip. Hotel prices usually drop about three weeks before the date, so don't book too early. And if a price looks too good, check the reviews first. Follow for more tips like this.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 231.4,
+   "pitch_movement_semitones": 3.89,
+   "female_range": true,
+   "words_per_minute": 186.9,
+   "off_9_2_semitones": -0.1
+  },
+  "r14_cb_t9": {
+   "variant": "r14_cb",
+   "take": 9,
+   "seconds_to_make": 79.3,
+   "sr": 24000,
+   "file": "voice14-chatterbox/r14_cb_t9.wav",
+   "seconds": 9.44,
+   "said": "Короче, вот что важна знать на этой неделе. Билеты в Европу подешевели почти на 20%.",
+   "word_errors": 3,
+   "word_error_rate": 0.188,
+   "missing": [
+    "важно",
+    "двадцать",
+    "процентов"
+   ],
+   "extra": [
+    "важна",
+    "20"
+   ],
+   "pitch_median_hz": 210.4,
+   "pitch_movement_semitones": 4.45,
+   "female_range": true,
+   "words_per_minute": 101.7,
+   "off_9_2_semitones": -1.75
+  },
+  "r14_cblive_t1": {
+   "variant": "r14_cblive",
+   "take": 1,
+   "seconds_to_make": 98.9,
+   "sr": 24000,
+   "file": "voice14-chatterbox/r14_cblive_t1.wav",
+   "seconds": 12.2,
+   "said": "quick update for anyone planning a summer trip. Hotel prices usually drop about three weeks before the date, so don't book too early. And if a price looks too good, check the reviews first. Follow for more tips like this.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 248.0,
+   "pitch_movement_semitones": 4.12,
+   "female_range": true,
+   "words_per_minute": 196.7,
+   "off_9_2_semitones": 1.1
+  },
+  "r14_cblive_t2": {
+   "variant": "r14_cblive",
+   "take": 2,
+   "seconds_to_make": 107.4,
+   "sr": 24000,
+   "file": "voice14-chatterbox/r14_cblive_t2.wav",
+   "seconds": 13.48,
+   "said": "quick update for anyone planning a summer trip. Hotel prices usually drop about three weeks before the date, so don't book too early. And if a price looks too good, check the reviews first. Follow for more tips like this.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 255.3,
+   "pitch_movement_semitones": 4.18,
+   "female_range": true,
+   "words_per_minute": 178.0,
+   "off_9_2_semitones": 1.6
+  },
+  "r14_cblive_t9": {
+   "variant": "r14_cblive",
+   "take": 9,
+   "seconds_to_make": 88.0,
+   "sr": 24000,
+   "file": "voice14-chatterbox/r14_cblive_t9.wav",
+   "seconds": 11.08,
+   "said": "Короче, вот что важна знать на этой неделе. Билеты в Европу подешевели почти на 20%.",
+   "word_errors": 3,
+   "word_error_rate": 0.188,
+   "missing": [
+    "важно",
+    "двадцать",
+    "процентов"
+   ],
+   "extra": [
+    "важна",
+    "20"
+   ],
+   "pitch_median_hz": 243.8,
+   "pitch_movement_semitones": 5.48,
+   "female_range": true,
+   "words_per_minute": 86.6,
+   "off_9_2_semitones": 0.8
+  },
+  "r14_qwen_t1": {
+   "variant": "r14_qwen",
+   "take": 1,
+   "seconds_to_make": 110.5,
+   "sr": 24000,
+   "file": "voice14-qwen/r14_qwen_t1.wav",
+   "seconds": 11.84,
+   "said": "Quick update for anyone planning a summer trip. Hotel prices usually drop about three weeks before the date, so don't book too early, and if a price looks too good, check the reviews first. Follow for more tips like this.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 209.8,
+   "pitch_movement_semitones": 3.71,
+   "female_range": true,
+   "words_per_minute": 202.7,
+   "off_9_2_semitones": -1.8
+  },
+  "r14_qwen_t2": {
+   "variant": "r14_qwen",
+   "take": 2,
+   "seconds_to_make": 112.2,
+   "sr": 24000,
+   "file": "voice14-qwen/r14_qwen_t2.wav",
+   "seconds": 12.0,
+   "said": "Quick update for anyone planning a summer trip. Hotel prices usually drop about three weeks before the date, so don't book too early. And if a price looks too good, check the reviews first. Follow for more tips like this.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 205.0,
+   "pitch_movement_semitones": 4.37,
+   "female_range": true,
+   "words_per_minute": 200.0,
+   "off_9_2_semitones": -2.2
+  },
+  "r14_qwen_t9": {
+   "variant": "r14_qwen",
+   "take": 9,
+   "seconds_to_make": 71.3,
+   "sr": 24000,
+   "file": "voice14-qwen/r14_qwen_t9.wav",
+   "seconds": 6.96,
+   "said": "Короче, вот что важно знать на этой неделе. Билеты в Европу подешевели почти на 20%.",
+   "word_errors": 2,
+   "word_error_rate": 0.125,
+   "missing": [
+    "двадцать",
+    "процентов"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 215.3,
+   "pitch_movement_semitones": 3.46,
+   "female_range": true,
+   "words_per_minute": 137.9,
+   "off_9_2_semitones": -1.35
+  }
+ },
+ "failed_takes": {}
+}

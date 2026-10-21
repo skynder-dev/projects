@@ -1,0 +1,15 @@
+DEC_COND_LEN
+ENC_COND_LEN
+conds
+device
+from_local(ckpt_dir, device, t3_model: str | None = None) -> 'ChatterboxMultilingualTTS'
+from_pretrained(device: torch.device, t3_model: str | None = None) -> 'ChatterboxMultilingualTTS'
+generate(text, language_id, audio_prompt_path=None, exaggeration=0.5, cfg_weight=0.5, temperature=0.8, repetition_penalty=1.2, min_p=0.05, top_p=1.0)
+get_supported_languages()
+prepare_conditionals(wav_fpath, exaggeration=0.5)
+s3gen(*args, **kwargs)
+sr
+t3(*args, **kwargs)
+tokenizer
+ve(*args, **kwargs)
+watermarker

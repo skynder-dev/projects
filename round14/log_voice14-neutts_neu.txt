@@ -1,0 +1,40 @@
+W1021 11:44:38.976000 3750 torch/utils/_pytree.py:630] <enum 'KernelPreference'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+W1021 11:44:39.005000 3750 torch/utils/_pytree.py:630] <enum 'ScaleCalculationMode'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+/home/runner/work/_temp/v/lib/python3.11/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+Traceback (most recent call last):
+  File "/home/runner/work/projects/projects/mediaengine/tests/voice_lab.py", line 1566, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/runner/work/projects/projects/mediaengine/tests/voice_lab.py", line 1534, in main
+    neu14(out, Path(sys.argv[3]).resolve())
+  File "/home/runner/work/projects/projects/mediaengine/tests/voice_lab.py", line 1340, in neu14
+    from neutts import NeuTTS
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/neutts/__init__.py", line 1, in <module>
+    from .neutts import NeuTTS, BACKBONE_LANGUAGE_MAP  # noqa
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/neutts/neutts.py", line 13, in <module>
+    from neucodec import NeuCodec, DistillNeuCodec
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/neucodec/__init__.py", line 1, in <module>
+    from .model import NeuCodec, DistillNeuCodec, NeuCodecOnnxDecoder
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/neucodec/model.py", line 14, in <module>
+    from .codec_decoder_vocos import CodecDecoderVocos
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/neucodec/codec_decoder_vocos.py", line 5, in <module>
+    from torchtune.modules import RotaryPositionalEmbeddings
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torchtune/__init__.py", line 38, in <module>
+    from torchtune import datasets, generation, models, modules, utils
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torchtune/datasets/__init__.py", line 7, in <module>
+    from torchtune.datasets import multimodal
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torchtune/datasets/multimodal/__init__.py", line 7, in <module>
+    from ._llava_instruct import llava_instruct_dataset
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torchtune/datasets/multimodal/_llava_instruct.py", line 10, in <module>
+    from torchtune.data._messages import ShareGPTToMessages
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torchtune/data/__init__.py", line 7, in <module>
+    from torchtune.data._collate import (
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torchtune/data/_collate.py", line 12, in <module>
+    from torchtune.modules.attention_utils import packed_block_causal_mask
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torchtune/modules/__init__.py", line 9, in <module>
+    from .common_utils import (
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/torchtune/modules/common_utils.py", line 19, in <module>
+    from torchao.dtypes.nf4tensor import NF4Tensor
+ModuleNotFoundError: No module named 'torchao.dtypes.nf4tensor'
