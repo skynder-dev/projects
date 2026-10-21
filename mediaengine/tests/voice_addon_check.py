@@ -20,6 +20,11 @@ def main() -> int:
     ap.add_argument("--home", required=True); ap.add_argument("--video", required=True); ap.add_argument("--out", required=True)
     ap.add_argument("--cpu", action="store_true", help="CPU torch even with an NVIDIA card")
     a = ap.parse_args()
+    try:                     # Cyrillic in a detail must not stop the check (a Windows console is cp1252)
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
     home, out = Path(a.home).resolve(), Path(a.out).resolve()
     home.mkdir(parents=True, exist_ok=True); out.mkdir(parents=True, exist_ok=True)
     os.environ.update(ARCHIVIST_HOME=str(home), ARCHIVIST_PORT=str(PORT), MEDIAENGINE_NO_BROWSER="1", MEDIAENGINE_UPDATES="off")
@@ -116,6 +121,9 @@ def main() -> int:
     timings["russian_s"] = round(time.time() - t0)
     rres = rj.get("result") or {}
     said = str(rres.get("said") or "")
+    timings["russian"] = {k: rres.get(k) for k in ("engine", "said", "word_errors", "words", "chunks", "error")}
+    if (Path(rj["dir"]) / "worker.log").is_file():
+        shutil.copy2(Path(rj["dir"]) / "worker.log", out / "worker_ru.log")
     import re as _re
     check("a Russian voice-over in the same voice, heard back in Cyrillic", rj["state"] == "done"
           and len(_re.findall(r"[а-яё]+", said.lower())) >= 3 and int(rres.get("word_errors") or 0) <= 2, rres.get("said") or rres.get("error"))
