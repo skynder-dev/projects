@@ -639,14 +639,13 @@ def _submit(job: dict, addon: bool = True) -> str:
         _need_addon()
         if installing():
             raise VoiceError("The voice add-on is being installed. Wait until it is ready.")
-    jid = _new_id()
-    d = JOBS / jid
-    d.mkdir(parents=True, exist_ok=True)
-    with _LOCK:                         # the order within one second too - strictly increasing (Windows' clock can
-        ns = max(time.time_ns(), _LAST_NS[0] + 1)   # give two jobs made one after the other the same reading)
+    with _LOCK:                         # named, written and queued in one step: a page never sees it "interrupted",
+        jid = _new_id()                 # and the order within one second too is strictly increasing (Windows' clock
+        d = JOBS / jid                  # can give two jobs made one after the other the same reading)
+        d.mkdir(parents=True, exist_ok=True)
+        ns = max(time.time_ns(), _LAST_NS[0] + 1)
         _LAST_NS[0] = ns
-    job = dict(job, id=jid, created_at=now_iso(), created_ns=ns)
-    with _LOCK:                         # written and queued in one step: a page never sees it "interrupted"
+        job = dict(job, id=jid, created_at=now_iso(), created_ns=ns)
         _write_job(d, job)
         _QUEUE.append(jid)
         if not _THREAD or not _THREAD[0].is_alive():
@@ -851,17 +850,17 @@ def new_render(video: str, cues_: list[dict] | None = None, opts: dict | None = 
                     "title": (title or p.name)[:60]}, addon=False)
 
 
-def _finish_job(video: str, voice: str = "none", voice_from: str = "", captions: str = "none",
-                opts: dict | None = None, texts: list[dict] | None = None, start_s=0.3, keep_sound: bool = True,
-                music: str = "", music_level: str = "medium", script: str = "") -> dict:
-    """One video's job, every choice checked (nothing made yet; a new voice-over is made by the caller)."""
-    p = Path(str(video or "").strip().strip('"'))
-    if not p.is_file():
-        raise VoiceError("Choose the video (its full path).")
+def _finish_shared(voice: str = "none", voice_from: str = "", captions: str = "none", texts: list[dict] | None = None,
+                   start_s=0.3, music: str = "", music_level: str = "medium", script: str = "") -> dict:
+    """The choices that are the same for every video, checked once (nothing made yet; a new voice-over is made by the
+    caller)."""
+    voice = voice if voice in ("none", "made", "new") else "none"
+    captions = captions if captions in ("none", "voice", "speech") else "none"
     try:
         start = max(0.0, min(60.0, float(str(start_s).strip().replace(",", ".") or 0.3)))
     except (TypeError, ValueError):
         raise VoiceError("The start of the voice must be a number of seconds, for example 0.5.")
+    voice_seconds = 0.0
     if voice == "made":
         if not voice_from:
             raise VoiceError("Choose the voice-over.")
@@ -879,20 +878,44 @@ def _finish_job(video: str, voice: str = "none", voice_from: str = "", captions:
     script = str(script or "").strip()[:MAX_TEXT] if captions == "speech" else ""
     if voice == "none" and captions == "none" and not tx and not music:
         raise VoiceError("Add a text, captions, a voice or music first.")
-    if voice != "new" and any(t.get("start") is not None and not t.get("at_end") for t in tx):
+    timed = voice != "new" and any(t.get("start") is not None and not t.get("at_end") for t in tx)
+    if timed and voice_from:                            # a text may run on while the voice still speaks
         from . import orders as od
-        length = video_size(p)[2]
-        if voice_from:
-            length = max(length, start + float(od._decode_info(_job_dir(voice_from) / "voice.wav", timeout=300)
-                                               .get("seconds") or 0) + 0.5)
+        voice_seconds = float(od._decode_info(_job_dir(voice_from) / "voice.wav", timeout=300).get("seconds") or 0)
+    return {"voice": voice, "voice_from": voice_from or "", "captions": captions, "start": start, "texts": tx,
+            "music": music, "music_level": music_level if music_level in ("quiet", "medium", "loud") else "medium",
+            "script": script, "timed": timed, "voice_seconds": voice_seconds}
+
+
+def _finish_video(video: str, sh: dict, opts: dict | None, keep_sound: bool) -> dict:
+    """One video's job with the shared choices: the video itself checked (a picture; sound for captions of its
+    speech; every timed text inside it)."""
+    p = Path(str(video or "").strip().strip('"'))
+    if not p.is_file():
+        raise VoiceError("Choose the video (its full path).")
+    if sh["captions"] == "speech":
+        from . import auto_edit as ae
+        try:
+            info = ae._probe(p)
+        except Exception as exc:
+            raise VoiceError("The video could not be read: " + str(exc)[:200])
+        streams = info.get("streams", []) if isinstance(info, dict) else []
+        if not any(x.get("codec_type") == "video" for x in streams):
+            raise VoiceError("This file has no picture: choose a video.")
+        if not any(x.get("codec_type") == "audio" for x in streams):
+            raise VoiceError("This video has no sound, so there is no speech to make captions of.")
+    length = video_size(p)[2]                           # a picture to put things on (and its length)
+    if sh["timed"]:
+        if sh["voice_from"]:
+            length = max(length, sh["start"] + sh["voice_seconds"] + 0.5)
+        tx = sh["texts"]
         if any(float(t["start"]) >= length - 0.2 for t in tx if t.get("start") is not None and not t.get("at_end")):
             raise VoiceError(f"A text starts after the end of the video (the video is {length:.1f} s long).")
-    return {"kind": "render", "video": str(p), "cues": [], "captions_on": captions in ("voice", "speech"),
-            "captions_from": captions if captions in ("voice", "speech") else None,
-            "needs_addon": captions == "speech", "opts": tf.options(**(opts or {})), "texts": tx,
-            "voice_from": voice_from or "", "start_s": start, "keep_sound": bool(keep_sound),
-            "music": music, "music_level": music_level if music_level in ("quiet", "medium", "loud") else "medium",
-            "script": script, "title": p.name[:60]}
+    return {"kind": "render", "video": str(p), "cues": [], "captions_on": sh["captions"] in ("voice", "speech"),
+            "captions_from": sh["captions"] if sh["captions"] in ("voice", "speech") else None,
+            "needs_addon": sh["captions"] == "speech", "opts": tf.options(**(opts or {})), "texts": sh["texts"],
+            "voice_from": sh["voice_from"], "start_s": sh["start"], "keep_sound": bool(keep_sound),
+            "music": sh["music"], "music_level": sh["music_level"], "script": sh["script"], "title": p.name[:60]}
 
 
 def _new_voice_for(nv: dict | None) -> str:
@@ -908,8 +931,11 @@ def new_finish(video: str, voice: str = "none", voice_from: str = "", new_voice:
     """Everything for one video in one go: a voice (none / a voice-over made already / a new one, made first), captions
     (none / the voice's words / the video's own speech, heard when the video is made), a look and texts. A new voice
     and captions of the speech need the add-on; the rest does not."""
-    job = _finish_job(video, voice, voice_from, captions, opts, texts, start_s, keep_sound, music, music_level, script)
-    if voice == "new":                                    # made first: the jobs run one after another, in order
+    if not Path(str(video or "").strip().strip('"')).is_file():
+        raise VoiceError("Choose the video (its full path).")
+    sh = _finish_shared(voice, voice_from, captions, texts, start_s, music, music_level, script)
+    job = _finish_video(video, sh, opts, keep_sound)
+    if sh["voice"] == "new":                              # made first: the jobs run one after another, in order
         job["voice_from"] = _new_voice_for(new_voice)
     return _submit(job, addon=False)
 
@@ -917,18 +943,22 @@ def new_finish(video: str, voice: str = "none", voice_from: str = "", new_voice:
 FINISH_MANY_MAX = 30
 
 
+def _same_file_key(v: str) -> str:
+    return os.path.normcase(os.path.abspath(v))
+
+
 def new_finish_many(videos: list[str], voice: str = "none", voice_from: str = "", new_voice: dict | None = None,
                     captions: str = "none", opts: dict | None = None, texts: list[dict] | None = None, start_s=0.3,
-                    keep_sound: bool = True, music: str = "", music_level: str = "medium") -> list[str]:
-    """Several videos finished the same way (the same voice, captions, look, texts and music): every video is checked
-    first - nothing is made unless all of them can be - then one job per video, in order. A new voice-over is made
-    once and put on each of them. Captions of the speech are each video's own speech (no shared script)."""
+                    keep_sound: bool = True, music: str = "", music_level: str = "medium", script: str = "") -> list[str]:
+    """Several videos finished the same way (the same voice, captions, look, texts and music): the shared choices and
+    then every video are checked first - nothing is made unless all of them can be - then one job per video, in order.
+    A new voice-over is made once and put on each of them. Captions of the speech are each video's own speech; the
+    exact text of a speech is for one video only."""
     paths, seen = [], set()
     for v in videos or []:
         v = str(v or "").strip().strip('"')
-        k = v.lower()
-        if v and k not in seen:
-            seen.add(k)
+        if v and _same_file_key(v) not in seen:         # the same file written two ways counts once
+            seen.add(_same_file_key(v))
             paths.append(v)
     if not paths:
         raise VoiceError("Choose the video (its full path).")
@@ -936,19 +966,20 @@ def new_finish_many(videos: list[str], voice: str = "none", voice_from: str = ""
         raise VoiceError(f"At most {FINISH_MANY_MAX} videos at once: split them into groups.")
     if len(paths) == 1:
         return [new_finish(paths[0], voice, voice_from, new_voice, captions, opts, texts, start_s, keep_sound,
-                           music, music_level)]
+                           music, music_level, script)]
+    if captions == "speech" and str(script or "").strip():
+        raise VoiceError("The exact text of the speech is for one video: clear it, or finish the videos one by one.")
     for v in paths:
         if not Path(v).is_file():
             raise VoiceError(f"This video is not there: {v}")
+    sh = _finish_shared(voice, voice_from, captions, texts, start_s, music, music_level, "")
     jobs = []
     for v in paths:
         try:
-            jobs.append(_finish_job(v, voice, voice_from, captions, opts, texts, start_s, keep_sound, music,
-                                    music_level, ""))
+            jobs.append(_finish_video(v, sh, opts, keep_sound))
         except VoiceError as exc:
-            msg = str(exc)
-            raise VoiceError(msg if Path(v).name in msg else f"{msg} ({Path(v).name})")
-    if voice == "new":                                    # one new voice-over, made first, on every video
+            raise VoiceError(f"{exc} ({Path(v).name})")
+    if sh["voice"] == "new":                              # one new voice-over, made first, on every video
         vf = _new_voice_for(new_voice)
         for j in jobs:
             j["voice_from"] = vf

@@ -675,15 +675,18 @@ def main() -> int:
     check("several videos: the form offers more videos (paths, Choose…, saved reels)", "name='videos_more'" in fpm
           and "data-pick='videos'" in fpm and "name='more'" in fpm)
     before = {j["id"] for j in vo.list_jobs(500)}
-    many = {"video": str(video), "videos_more": f"{v2}\r\n\r\n{v3}\r\n{video}", "voice": "none", "captions": "speech",
+    n_sent = len(sent)
+    many = {"video": str(video), "videos_more": f"{v2}\r\n\r\n{v3}\r\n{video}\r\n{home}/./clip3.mp4", "voice": "none", "captions": "speech",
             "style": "box", "t_text": "Итог недели", "t_start": "0", "t_end": "1.5", "t_where": "top", "t_look": "banner",
             "music": str(song), "music_level": "quiet", "keep_sound": "1"}
     r = c.post("/auto/finish", data=many, headers=H)
     mids = [j["id"] for j in vo.list_jobs(500) if j["id"] not in before][::-1]          # oldest first
     mj = [wait(x) for x in mids]
     mvids = [json.loads((Path(x["dir"]) / "job.json").read_text("utf-8")).get("video") for x in mj]
-    check("several videos: one new video each, in order (a video twice: once)", r.status_code == 302
+    check("several videos: one new video each, in order (a video twice, also written another way: once)", r.status_code == 302
           and mvids == [str(video), str(v2), str(v3)], mvids)
+    srcs = [Path(x.get("source", "")).name for x in sent[n_sent:] if x["task"] == "transcribe"]
+    check("several videos: each video's own speech is heard", srcs == [video.name, v2.name, v3.name], srcs)
     check("several videos: each made with its own speech's captions, the text and the music",
           all(x["state"] == "done" and (x.get("result") or {}).get("captions", 0) > 0 and (x.get("result") or {}).get("texts") == 1
               and all(k["pass"] for k in (x.get("result") or {}).get("checks", [])) for x in mj),
@@ -699,11 +702,34 @@ def main() -> int:
     check("several videos: a text after the end of one of them - refused, naming it",
           r.status_code == 400 and "clip3.mp4" in r.get_data(as_text=True)
           and not [j for j in vo.list_jobs(500) if j["id"] not in before], r.get_data(as_text=True)[-300:])
+    notes = home / "notes.txt"
+    notes.write_text("not a video", "utf-8")
+    r = c.post("/auto/finish", data={**many, "videos_more": f"{v2}\n{notes}"}, headers=H)
+    check("several videos: a file that is not a video - nothing made, said which", r.status_code == 400
+          and "notes.txt" in r.get_data(as_text=True) and not [j for j in vo.list_jobs(500) if j["id"] not in before],
+          r.get_data(as_text=True)[-300:])
+    r = c.post("/auto/finish", data={**many, "videos_more": str(v2), "music": str(home / "nope.mp3")}, headers=H)
+    check("several videos: a shared choice wrong - said without blaming a video", r.status_code == 400
+          and "music" in r.get_data(as_text=True) and "(clip.mp4)" not in r.get_data(as_text=True))
+    r = c.post("/auto/finish", data={**many, "videos_more": str(v2), "script": "Hello world from the video."}, headers=H)
+    check("several videos: the exact text of a speech is for one video - refused in words", r.status_code == 400
+          and "for one video" in r.get_data(as_text=True))
+    r = c.post("/auto/finish", data={**many, "videos_more": "", "more": str(video), "script": "Hello world from the video."},
+               headers=H)
+    one = [j for j in vo.list_jobs(500) if j["id"] not in before]
+    check("one video ticked twice: still one, its exact text kept", r.status_code == 302 and len(one) == 1
+          and json.loads((Path(one[0]["dir"]) / "job.json").read_text("utf-8")).get("script") == "Hello world from the video.",
+          [x.get("id") for x in one])
+    wait(one[0]["id"]) if one else None
+    before = {j["id"] for j in vo.list_jobs(500)}
+    r = c.post("/auto/finish", data={"video": str(video), "voice": "bogus", "captions": "voice"}, headers=H)
+    check("an unknown voice choice: no voice (captions of a voice refused)", r.status_code == 400
+          and not [j for j in vo.list_jobs(500) if j["id"] not in before])
     r = c.post("/auto/finish", data={**many, "videos_more": "\n".join(str(home / f"x{i}.mp4") for i in range(40))}, headers=H)
     check("several videos: at most 30 at once", r.status_code == 400 and "At most 30" in r.get_data(as_text=True))
     before = {j["id"] for j in vo.list_jobs(500)}
     r = c.post("/auto/finish", data={**many, "voice": "new", "text": "One voice for both.", "nvoice": vo.DEFAULT_VOICE,
-                                     "captions": "voice", "videos_more": str(v2)}, headers=H)
+                                     "captions": "voice", "videos_more": str(v2), "speed": "slower", "pauses": "short"}, headers=H)
     nids = [j["id"] for j in vo.list_jobs(500) if j["id"] not in before][::-1]
     njobs = [wait(x) for x in nids]
     kinds = [x.get("kind") for x in njobs]
@@ -711,6 +737,9 @@ def main() -> int:
     check("several videos with a new voice: made once, then put on each", r.status_code == 302
           and kinds == ["voiceover", "render", "render"] and vfs == [nids[0], nids[0]]
           and all(x["state"] == "done" for x in njobs), (kinds, vfs, [x["state"] for x in njobs]))
+    nvj = json.loads((Path(njobs[0]["dir"]) / "job.json").read_text("utf-8")) if njobs else {}
+    check("the pace chosen on the one-page form goes with the new voice", nvj.get("speed") == 0.92 and nvj.get("pauses") == 0.6,
+          (nvj.get("speed"), nvj.get("pauses")))
 
     # Russian
     c.post("/lang", data={"back": "/auto/voice"}, headers=H)

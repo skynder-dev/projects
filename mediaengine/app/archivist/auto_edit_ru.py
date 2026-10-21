@@ -885,7 +885,11 @@ PHRASES = {
         "На каждое — тот же голос, субтитры, вид, текст и музыка; для каждого видео делается своё новое (не больше 30). "
         "Кадр для просмотра — из первого.",
     "One video per line, e.g. D:\\Exports\\reel2.mp4": "По одному видео в строке, например D:\\Экспорт\\ролик2.mp4",
-    "or reels saved lately:": "или недавно сохранённые ролики:", "Choose the videos": "Выбери видео",
+    "or reels saved lately:": "или недавно сохранённые ролики:",
+    "The exact text of the speech is for one video: clear it, or finish the videos one by one.":
+        "Точный текст речи — только для одного видео: очисти его или доделай видео по одному.",
+    "This video has no sound, so there is no speech to make captions of.":
+        "В этом видео нет звука, поэтому нет речи для субтитров.",
     "At most 30 videos at once: split them into groups.": "Не больше 30 видео за раз: раздели их на группы.",
     "Finish a video: several videos at once - the same voice, captions, look, texts and music on each (one new video per video).":
         "Доделать видео: сразу несколько — на каждое тот же голос, субтитры, вид, текст и музыка (для каждого — своё новое видео).",

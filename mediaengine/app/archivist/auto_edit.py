@@ -3520,7 +3520,9 @@ def _dialog_title(en: str) -> str:
           "Choose a folder for the exported reel": "Выбери папку для готового ролика",
           "Choose the folder with the AI+ model files": "Выбери папку с файлами модели ИИ+",
           "Choose music for the reel": "Выбери музыку для ролика",
-          "Choose the recording of the voice": "Выбери запись голоса", "Choose a video": "Выбери видео"}
+          "Choose the recording of the voice": "Выбери запись голоса", "Choose a video": "Выбери видео",
+          "Choose the videos (Ctrl+click for several)": "Выбери видео (Ctrl+щелчок — несколько)",
+          "Choose the music": "Выбери музыку"}
     try:
         return ru.get(en, en) if ui_language() == "ru" else en
     except Exception:

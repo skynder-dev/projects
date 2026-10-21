@@ -677,7 +677,7 @@ def register(app, page, err_page, e, human_bytes):
         try:
             texts = tf.parse_texts(tf.rows_from_form(f))
             if more:
-                vo.new_finish_many([f.get("video", "")] + more, texts=texts, **common)
+                vo.new_finish_many([f.get("video", "")] + more, texts=texts, script=f.get("script", ""), **common)
             else:
                 vo.new_finish(f.get("video", ""), texts=texts, script=f.get("script", ""), **common)
         except (vo.VoiceError, tf.TextError) as exc:
@@ -902,7 +902,7 @@ def register(app, page, err_page, e, human_bytes):
         elif kind == "music":
             files = ae.pick_files("Choose the music", kind="audio")
         elif kind == "videos":
-            files = ae.pick_files("Choose the videos", initial=str(ae.default_export_dir()))
+            files = ae.pick_files("Choose the videos (Ctrl+click for several)", initial=str(ae.default_export_dir()))
             if files:
                 return jsonify({"path": None, "paths": files})
         else:
