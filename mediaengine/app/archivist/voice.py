@@ -651,7 +651,14 @@ def new_voiceover(text: str, voice: str, description: str = "", ref_path: str = 
         ref = ASSETS / VOICES[voice]["ref"]
         if not ref.is_file():
             raise VoiceError("The recording of this voice is missing from this version of MediaEngine.")
-        v.update(ref_wav=str(ref), ref_text=VOICES[voice]["ref_text"])
+        pv = VOICES[voice]
+        v.update(ref_wav=str(ref))
+        if pv.get("ref_text"):                # its recording continued (ultimate cloning) - or, without, the timbre only
+            v["ref_text"] = pv["ref_text"]
+        if pv.get("style"):                   # the timbre + a note on the manner (controllable cloning)
+            v["style"] = pv["style"]
+        if pv.get("cfg"):
+            v["cfg"] = float(pv["cfg"])
     elif voice == "describe":
         description = re.sub(r"[()\r\n]+", " ", str(description or "")).strip()
         if len(description) < 10:
@@ -897,7 +904,8 @@ def _do(jid: str) -> dict:
         device = cfg.get("device") or ("cuda" if manifest().get("cuda") else "cpu")
         res = _run_worker({"task": "tts", "chunks": chunks(job["text"].replace("*", "")), "voice": v, "language": job.get("language"),
                            "out_wav": str(d / "voice_raw.wav"), "seed": int(cfg.get("seed") or 1),
-                           "steps": cfg.get("steps"), "device": device}, d / "work", timeout=6 * 3600,
+                           "steps": cfg.get("steps"), "device": device, "cfg": v.get("cfg") or cfg.get("cfg")},
+                          d / "work", timeout=6 * 3600,
                           on_line=_progress)
         if not res.get("ok"):
             return res
