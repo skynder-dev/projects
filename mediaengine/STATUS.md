@@ -643,6 +643,9 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   run 39518308594 12/12 in the 9_2 voice (English and Russian; the pitch check kept the first try, 1.2 semitones off).
   Owner 22:52: the program's 9_2 "too robotic". Round 13 (run 39541053077): the timbre only / timbre + its recipe /
   ultimate cloning at cfg 1.6 - 23:39 "13_3 a little more pleasant" -> host_9_2 now at cfg 1.6.
+  Published: b179 (commit 141e0d4, 2026-10-21 06:55 UTC). Suggested a real recording of a consenting person's voice
+  ("A voice from a recording") for a voice without the AI sound; owner 00:37: "just a recording of any phrases, and any
+  text from it?" - yes (15-30 s, quiet, the manner wanted, the language of the reels).
 
 ## Evidence
 
