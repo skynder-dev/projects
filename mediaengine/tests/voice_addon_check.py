@@ -107,7 +107,8 @@ def main() -> int:
 
     # 2b. Russian (the words go through the worker's output in UTF-8 whatever the Windows code page)
     t0 = time.time()
-    c.post("/auto/voice/new", data={"text": "Привет! Это короткая проверка голоса.", "voice": vo.DEFAULT_VOICE, "language": "ru"}, headers=H)
+    c.post("/auto/voice/new", data={"text": "Привет! Это короткая проверка голоса.", "voice": vo.DEFAULT_VOICE, "language": "ru",
+                                    "speed": "faster", "pauses": "long"}, headers=H)       # with a pace: a bit faster
     rj = wait(vo.list_jobs()[0]["id"], 3 * 3600)
     timings["russian_s"] = round(time.time() - t0)
     rres = rj.get("result") or {}
@@ -117,6 +118,13 @@ def main() -> int:
           and len(_re.findall(r"[а-яё]+", said.lower())) >= 3 and int(rres.get("word_errors") or 0) <= 2, rres.get("said") or rres.get("error"))
     if rj["state"] == "done":
         shutil.copy2(Path(rj["dir"]) / "voice.wav", out / "voice_ru.wav")
+        from archivist import orders as _od
+        raw_s = float(_od._decode_info(Path(rj["dir"]) / "voice_raw.wav", timeout=120).get("seconds") or 0)
+        fin_s = float(_od._decode_info(Path(rj["dir"]) / "voice.wav", timeout=120).get("seconds") or 0)
+        rw = json.loads((Path(rj["dir"]) / "words.json").read_text("utf-8"))
+        check("its pace: a bit faster (8% shorter), the captions within the faster voice",
+              raw_s > 0 and abs(fin_s - raw_s / 1.08) < 0.1 and rw and rw[-1]["e"] <= fin_s + 0.05, (raw_s, fin_s, rw[-1:] if rw else None))
+        timings["russian_pace"] = {"raw_s": raw_s, "final_s": fin_s}
 
     # 3. onto a video, with captions
     t0 = time.time()
