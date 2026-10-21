@@ -1193,6 +1193,70 @@ def round12(src: Path, out: Path, ref: Path) -> int:
     return 0 if files else 1
 
 
+# ---------------------------------------------------------------------------------------------------------- round 13
+# Round 12 verdict (2026-10-20 22:52): 9_2 locked the program's way (ultimate cloning: its recording + its words + its
+# timbre) is "too robotic". Earlier hints: 7_1 (controllable cloning: the timbre only, plus a style note) was "good";
+# every ultimate-cloned voice was turned down (4_5, 5_x). Round 13 keeps 9_2's voice three other ways, same new text:
+#   r13_ctrl      - controllable cloning: 9_2's recording as the timbre only
+#   r13_ctrl_note - the same with 9_2's own recipe as the style note (the casual, unscripted description)
+#   r13_ult_cfg16 - ultimate cloning as now, but at cfg 1.6 (the recipe 9_2 itself was made with)
+
+ROUND13 = {"r13_ctrl": "9_2's recording as the timbre only (controllable cloning)",
+           "r13_ctrl_note": "9_2's timbre + its own recipe as the style note",
+           "r13_ult_cfg16": "9_2 locked as now (ultimate cloning), cfg 1.6"}
+
+
+def vox13one(out: Path, variant: str, take: int, ref: Path) -> None:
+    import torch
+    m, sr = _vox2()
+    text = RU_TEXT if take == 9 else BUSINESS2
+
+    def make(t):
+        torch.manual_seed(2000 + t)
+        if variant == "r13_ctrl":
+            return m.generate(text=text, cfg_value=2.0, inference_timesteps=STEPS4, reference_wav_path=str(ref)), sr
+        if variant == "r13_ctrl_note":
+            return m.generate(text=FRIEND2 + text, cfg_value=1.6, inference_timesteps=STEPS4, reference_wav_path=str(ref)), sr
+        return m.generate(text=text, cfg_value=1.6, inference_timesteps=STEPS4, prompt_wav_path=str(ref),
+                          prompt_text=BUSINESS, reference_wav_path=str(ref)), sr
+
+    _take(out, variant, take, make)
+
+
+def round13(src: Path, out: Path, ref: Path) -> int:
+    from faster_whisper import WhisperModel
+    out.mkdir(parents=True, exist_ok=True)
+    gen = {}
+    for p in src.rglob("gen.json"):
+        gen.update(json.loads(p.read_text("utf-8")))
+    asr = WhisperModel("small", device="cpu", compute_type="int8")
+    rows, files = {}, {}
+    for w in sorted(src.rglob("r13_*_t[0-9].wav")):
+        take = int(w.stem.rsplit("_t", 1)[1])
+        ru = take == 9
+        info = _analyze(asr, w, src, gen, RU_TEXT if ru else BUSINESS2, language="ru" if ru else "en")
+        rows[w.stem] = info
+    for n, v in enumerate(ROUND13, 1):
+        for take, tag in ((1, ""), (9, "_ru")):
+            i = rows.get(f"{v}_t{take}")
+            if not i:
+                continue
+            mp3 = out / f"voice13_{n}{tag}.mp3"
+            produce_plain(src / i["file"], mp3)
+            files[mp3.name] = ROUND13[v] + (" (Russian)" if tag else "")
+    failed = {k: str(v.get("error")).splitlines()[0][:300] for k, v in gen.items() if v.get("error")}
+    (out / "results.json").write_text(json.dumps({"round": 13, "files": files, "rows": rows, "failed_takes": failed},
+                                                 indent=1, ensure_ascii=False), "utf-8")
+    md = ["# Voice lab - round 13 (9_2 kept three other ways)", ""] + [f"- {k}: {v}" for k, v in files.items()]
+    md += ["", "| take | words wrong | pitch Hz | said |", "|---|---|---|---|"]
+    md += [f"| {k} | {i.get('word_errors')} | {i.get('pitch_median_hz')} | {str(i.get('said', ''))[:70]} |" for k, i in rows.items()]
+    if failed:
+        md += ["", "Failed takes:"] + [f"- {k}: {e}" for k, e in failed.items()]
+    (out / "RESULTS.md").write_text("\n".join(md) + "\n", "utf-8")
+    print(json.dumps({"files": len(files), "failed_takes": len(failed)}))
+    return 0 if files else 1
+
+
 def check(src: Path, out: Path) -> int:
     import numpy as np, librosa
     from faster_whisper import WhisperModel
@@ -1286,6 +1350,10 @@ def main() -> int:
         vox9one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve() if len(sys.argv) > 5 else None)
     elif cmd == "round9":
         return round9(out, Path(sys.argv[3]).resolve())
+    elif cmd == "vox13one":
+        vox13one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve())
+    elif cmd == "round13":
+        return round13(out, Path(sys.argv[3]).resolve(), Path(sys.argv[4]).resolve())
     elif cmd == "vox12one":
         vox12one(out, int(sys.argv[3]), Path(sys.argv[4]).resolve())
     elif cmd == "round12":
