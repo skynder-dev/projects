@@ -269,8 +269,9 @@ def voxcpm(out: Path, ref: Path) -> None:
 # ---------------------------------------------------------------------------------------------------------- check
 
 def _words(s: str) -> list[str]:
-    s = s.lower().replace("’", "'")
-    return re.findall(r"[a-z0-9']+", s)
+    """Words of a text, any alphabet (Russian included; rounds before 14 checked Russian words as none)."""
+    s = s.lower().replace("’", "'").replace("ё", "е")
+    return [w.strip("'") for w in re.findall(r"[^\W_]+(?:'[^\W_]+)*", s) if w.strip("'")]
 
 
 def _diff(ref: list[str], hyp: list[str]) -> tuple[int, list[str], list[str]]:
@@ -1257,6 +1258,181 @@ def round13(src: Path, out: Path, ref: Path) -> int:
     return 0 if files else 1
 
 
+# ---------------------------------------------------------------------------------------------------------- round 14
+# The owner (2026-10-21): 9_2 (VoxCPM2) is the cleanest voice, but at every setting tried it "still has an AI shade" /
+# is "too robotic" (13_3 at cfg 1.6 "a little more pleasant" - the program's voice now). Round 14 tries OTHER free
+# engines whose licence allows working use, each one cloning the very same 9_2 recording (the program's
+# assets/voice/host_9_2.flac) on the same text as round 13, plus the Russian line where the engine speaks Russian:
+#   r14_cosy   - Fun-CosyVoice3 0.5B (Alibaba, Apache-2.0): zero-shot cloning (the recording + its words)
+#   r14_cb     - Chatterbox Multilingual V3 (Resemble AI, MIT; an inaudible watermark): defaults
+#   r14_cblive - the same, livelier (exaggeration 0.7, cfg 0.3 - round 1's B, which the owner kept)
+#   r14_neu    - NeuTTS Air (Neuphonic; weights Apache-2.0, code free under $5M revenue a year): the recording's
+#                first 11.3 s (it wants 3-15 s) + their words; English only
+#   r14_qwen   - Qwen3-TTS 1.7B Base (Alibaba, Apache-2.0): cloning (the recording + its words)
+# Not tried: Orpheus and TADA (Meta's Llama licence, behind a sign-up), Fish S2 / F5 / XTTS / OmniVoice / Raon
+# (non-commercial), ZONOS2 and MOSS-TTS (8B: too big for a CPU runner), Kokoro (no cloning; round 1: "flat").
+
+ROUND14 = {"r14_cosy": "Fun-CosyVoice3 0.5B (Apache-2.0), cloning 9_2's recording",
+           "r14_cb": "Chatterbox Multilingual V3 (MIT), cloning 9_2's recording, default settings",
+           "r14_cblive": "Chatterbox Multilingual V3 (MIT), cloning 9_2's recording, livelier (exaggeration 0.7, cfg 0.3)",
+           "r14_neu": "NeuTTS Air (Apache-2.0 weights), cloning the first 11 s of 9_2's recording",
+           "r14_qwen": "Qwen3-TTS 1.7B Base (Apache-2.0), cloning 9_2's recording"}
+REF92_SHORT_S = 11.3          # the end of the third sentence (the pause at 11.0-11.6 s)
+REF92_SHORT_TEXT = ("Here's what you need to know this week. First, flights to Europe got almost twenty percent cheaper. "
+                    "Second, if you book before Friday, most airlines let you change the dates for free.")
+R14_TAKES = (1, 2)            # English takes (other seeds); take 9 is the Russian line
+R14_RU = 9
+
+
+def _seed_all(seed: int) -> None:
+    import numpy as np, torch
+    random.seed(seed)
+    np.random.seed(seed % (2 ** 32))
+    torch.manual_seed(seed)
+
+
+def cosy14(out: Path, ref: Path, cosy_dir: Path, model_dir: Path) -> None:
+    _threads()
+    sys.path[:0] = [str(cosy_dir), str(cosy_dir / "third_party" / "Matcha-TTS")]
+    import torch
+    from cosyvoice.cli.cosyvoice import AutoModel
+    m = AutoModel(model_dir=str(model_dir))
+    _api_dump(out, m, "cosyvoice3")
+    prompt = "You are a helpful assistant.<|endofprompt|>" + BUSINESS
+
+    def make(text):
+        def f(t):
+            _seed_all(2100 + t)
+            parts = [j["tts_speech"] for j in m.inference_zero_shot(text, prompt, str(ref), stream=False)]
+            return torch.cat(parts, dim=1), m.sample_rate
+        return f
+
+    for take in R14_TAKES:
+        _take(out, "r14_cosy", take, make(BUSINESS2))
+    _take(out, "r14_cosy", R14_RU, make(RU_TEXT))
+
+
+def cb14(out: Path, ref: Path) -> None:
+    _threads()
+    from chatterbox.mtl_tts import ChatterboxMultilingualTTS
+    try:
+        m = ChatterboxMultilingualTTS.from_pretrained(device="cpu", t3_model="v3")
+    except TypeError:                                   # an older package without the V3 choice
+        m = ChatterboxMultilingualTTS.from_pretrained(device="cpu")
+    _api_dump(out, m, "chatterbox_mtl")
+
+    def make(text, lang, **kw):
+        def f(t):
+            _seed_all(2200 + t)
+            return m.generate(text, language_id=lang, audio_prompt_path=str(ref), **kw), m.sr
+        return f
+
+    for v, kw in (("r14_cb", dict(exaggeration=0.5, cfg_weight=0.5)),
+                  ("r14_cblive", dict(exaggeration=0.7, cfg_weight=0.3))):
+        for take in R14_TAKES:
+            _take(out, v, take, make(BUSINESS2, "en", **kw))
+        # an English reference for Russian words: cfg 0 keeps its accent out (the Chatterbox README's advice)
+        _take(out, v, R14_RU, make(RU_TEXT, "ru", exaggeration=kw["exaggeration"], cfg_weight=0.0))
+
+
+def neu14(out: Path, ref_short: Path) -> None:
+    _threads()
+    from neutts import NeuTTS
+    m = NeuTTS(backbone_repo="neuphonic/neutts-air", backbone_device="cpu",
+               codec_repo="neuphonic/neucodec", codec_device="cpu")
+    _api_dump(out, m, "neutts")
+    codes = m.encode_reference(str(ref_short))
+
+    def f(t):
+        _seed_all(2300 + t)
+        return m.infer(BUSINESS2, codes, REF92_SHORT_TEXT), m.sample_rate
+
+    for take in R14_TAKES:
+        _take(out, "r14_neu", take, f)
+
+
+def qwen14(out: Path, ref: Path) -> None:
+    _threads()
+    import torch
+    from qwen_tts import Qwen3TTSModel
+    try:
+        m = Qwen3TTSModel.from_pretrained("Qwen/Qwen3-TTS-12Hz-1.7B-Base", device_map="cpu", dtype=torch.float32)
+    except TypeError:
+        m = Qwen3TTSModel.from_pretrained("Qwen/Qwen3-TTS-12Hz-1.7B-Base", device_map="cpu", torch_dtype=torch.float32)
+    _api_dump(out, m, "qwen_base")
+    prompt = m.create_voice_clone_prompt(ref_audio=str(ref), ref_text=BUSINESS)
+
+    def make(text, lang):
+        def f(t):
+            _seed_all(2400 + t)
+            wavs, sr = m.generate_voice_clone(text=text, language=lang, voice_clone_prompt=prompt)
+            return wavs[0], sr
+        return f
+
+    for take in R14_TAKES:
+        _take(out, "r14_qwen", take, make(BUSINESS2, "English"))
+    _take(out, "r14_qwen", R14_RU, make(RU_TEXT, "Russian"))
+
+
+def _pitch_median(wav: Path) -> float:
+    import numpy as np, librosa
+    y, sr = librosa.load(str(wav), sr=16000, mono=True)
+    f0, voiced, _ = librosa.pyin(y, fmin=70, fmax=450, sr=sr, frame_length=1024)
+    f0v = f0[voiced & ~np.isnan(f0)]
+    return float(np.median(f0v)) if f0v.size else 0.0
+
+
+def round14(src: Path, out: Path, ref: Path, now_mp3: Path | None) -> int:
+    """Words and pitch of every take; per engine the English take with the fewest wrong words (then the pitch
+    nearest 9_2's own) and its Russian take; voice14_0_now.mp3 = the program's voice today (round 13's 13_3)."""
+    import math, shutil
+    from faster_whisper import WhisperModel
+    out.mkdir(parents=True, exist_ok=True)
+    gen = {}
+    for p in src.rglob("gen.json"):
+        gen.update(json.loads(p.read_text("utf-8")))
+    asr = WhisperModel("small", device="cpu", compute_type="int8")
+    ref_hz = _pitch_median(ref)
+    rows, files = {"reference 9_2": {"pitch_median_hz": round(ref_hz, 1)}}, {}
+    for w in sorted(src.rglob("r14_*_t[0-9].wav")):
+        take = int(w.stem.rsplit("_t", 1)[1])
+        ru = take == R14_RU
+        info = _analyze(asr, w, src, gen, RU_TEXT if ru else BUSINESS2, language="ru" if ru else "en")
+        hz = info.get("pitch_median_hz") or 0
+        info["off_9_2_semitones"] = round(12 * math.log2(hz / ref_hz), 2) if hz and ref_hz else None
+        rows[w.stem] = info
+    if now_mp3 is not None and now_mp3.exists():
+        shutil.copyfile(now_mp3, out / "voice14_0_now.mp3")
+        files["voice14_0_now.mp3"] = "the program's voice today (VoxCPM2, 9_2 at cfg 1.6 - round 13's 13_3), the same text"
+    for n, v in enumerate(ROUND14, 1):
+        en = [i for k, i in rows.items() if k.startswith(v + "_t") and not k.endswith(f"_t{R14_RU}")]
+        if en:
+            best = min(en, key=lambda i: (i["word_errors"], 9 if i.get("off_9_2_semitones") is None
+                                              else abs(i["off_9_2_semitones"])))
+            mp3 = out / f"voice14_{n}.mp3"
+            produce_plain(src / best["file"], mp3)
+            files[mp3.name] = ROUND14[v] + f" ({Path(best['file']).stem})"
+        ru = rows.get(f"{v}_t{R14_RU}")
+        if ru:
+            mp3 = out / f"voice14_{n}_ru.mp3"
+            produce_plain(src / ru["file"], mp3)
+            files[mp3.name] = ROUND14[v] + " (Russian)"
+    failed = {k: str(v.get("error")).splitlines()[0][:300] for k, v in gen.items() if v.get("error")}
+    (out / "results.json").write_text(json.dumps({"round": 14, "files": files, "rows": rows, "failed_takes": failed},
+                                                 indent=1, ensure_ascii=False), "utf-8")
+    md = ["# Voice lab - round 14 (other free engines cloning 9_2)", ""] + [f"- {k}: {v}" for k, v in files.items()]
+    md += ["", "| take | words wrong | seconds | pitch Hz | off 9_2 (semitones) | made in s | said |",
+           "|---|---|---|---|---|---|---|"]
+    md += [f"| {k} | {i.get('word_errors', '-')} | {i.get('seconds', '-')} | {i.get('pitch_median_hz')} | "
+           f"{i.get('off_9_2_semitones', '-')} | {i.get('seconds_to_make', '-')} | {str(i.get('said', ''))[:70]} |"
+           for k, i in rows.items()]
+    if failed:
+        md += ["", "Failed takes:"] + [f"- {k}: {e}" for k, e in failed.items()]
+    (out / "RESULTS.md").write_text("\n".join(md) + "\n", "utf-8")
+    print(json.dumps({"files": len(files), "failed_takes": len(failed)}))
+    return 0 if len(files) > 1 else 1
+
+
 def check(src: Path, out: Path) -> int:
     import numpy as np, librosa
     from faster_whisper import WhisperModel
@@ -1350,6 +1526,17 @@ def main() -> int:
         vox9one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve() if len(sys.argv) > 5 else None)
     elif cmd == "round9":
         return round9(out, Path(sys.argv[3]).resolve())
+    elif cmd == "cosy14":
+        cosy14(out, Path(sys.argv[3]).resolve(), Path(sys.argv[4]).resolve(), Path(sys.argv[5]).resolve())
+    elif cmd == "cb14":
+        cb14(out, Path(sys.argv[3]).resolve())
+    elif cmd == "neu14":
+        neu14(out, Path(sys.argv[3]).resolve())
+    elif cmd == "qwen14":
+        qwen14(out, Path(sys.argv[3]).resolve())
+    elif cmd == "round14":
+        return round14(out, Path(sys.argv[3]).resolve(), Path(sys.argv[4]).resolve(),
+                       Path(sys.argv[5]).resolve() if len(sys.argv) > 5 else None)
     elif cmd == "vox13one":
         vox13one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve())
     elif cmd == "round13":
