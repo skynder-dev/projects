@@ -30,17 +30,17 @@
   {
    "check": "the voice-over is made",
    "pass": true,
-   "detail": "{'ok': True, 'seconds': 7.79, 'device': 'cpu', 'said': \"Okay, so here's the thing, packing light changed every trip we took. Three outfits, one good hat, and more time in the water.\", 'word_errors': 0, 'words': 23, 'chunks': [{'chunk': 1, 'attempt': 1, 'seconds': 7.24, 'make_s': 301.1, 'said': \"Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water.\", 'word_errors': 0, 'words': 23, 'file': 'chunk_001_try1.wav'}], 'load_s': 62.5, 'steps': 10, 'language': 'en', 'files': {'voice': 'voice.wav', 'srt': 'captions.srt'}, 'finished_"
+   "detail": "{'ok': True, 'seconds': 8.87, 'device': 'cpu', 'said': \"Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water.\", 'word_errors': 0, 'words': 23, 'chunks': [{'chunk': 1, 'attempt': 1, 'seconds': 8.32, 'make_s': 638.5, 'said': \"Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water.\", 'word_errors': 0, 'words': 23, 'file': 'chunk_001_try1.wav', 'pitch_off_st': 1.2}], 'load_s': 56.9, 'steps': 10, 'language': 'en', 'files': {'voice': 'voice.wav', 'srt': 'capti"
   },
   {
    "check": "every word said (listened to)",
    "pass": true,
-   "detail": "Okay, so here's the thing, packing light changed every trip we took. Three outfits, one good hat, and more time in the water."
+   "detail": "Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water."
   },
   {
    "check": "a plausible length",
    "pass": true,
-   "detail": "7.79"
+   "detail": "8.87"
   },
   {
    "check": "a Russian voice-over in the same voice, heard back in Cyrillic",
@@ -50,7 +50,7 @@
   {
    "check": "the voice onto the video, captions burned, checked",
    "pass": true,
-   "detail": "{'ok': True, 'files': {'video': 'video.mp4', 'srt': 'captions.srt'}, 'seconds': 14.0, 'checks': [{'check': 'video', 'pass': True, 'detail': 'h264'}, {'check': 'length', 'pass': True, 'detail': '14.000 s (planned 14.000 s)'}, {'check': 'sound', 'pass': True, 'detail': 'aac'}, {'check': 'plays_to_the_end', 'pass': True, 'detail': 'decoded completely'}], 'captions': 10, 'texts': 0, 'width': 640, 'height': 360, 'saved': 'D:\\\\a\\\\_temp\\\\home-voice\\\\Exports\\\\clip_1 - voice.mp4', 'finished_at': '2026-10-20T12:33:51'}"
+   "detail": "{'ok': True, 'files': {'video': 'video.mp4', 'srt': 'captions.srt'}, 'seconds': 14.0, 'checks': [{'check': 'video', 'pass': True, 'detail': 'h264'}, {'check': 'length', 'pass': True, 'detail': '14.000 s (planned 14.000 s)'}, {'check': 'sound', 'pass': True, 'detail': 'aac'}, {'check': 'plays_to_the_end', 'pass': True, 'detail': 'decoded completely'}], 'captions': 10, 'texts': 0, 'width': 640, 'height': 360, 'saved': 'D:\\\\a\\\\_temp\\\\home-voice\\\\Exports\\\\clip_1 - voice.mp4', 'finished_at': '2026-10-21T00:20:48'}"
   },
   {
    "check": "captions from the video's own speech hear the voice-over",
@@ -64,27 +64,28 @@
   }
  ],
  "timings": {
-  "install_s": 124,
-  "voiceover_s": 381,
+  "install_s": 103,
+  "voiceover_s": 722,
   "voiceover": {
    "device": "cpu",
-   "seconds": 7.79,
-   "load_s": 62.5,
+   "seconds": 8.87,
+   "load_s": 56.9,
    "steps": 10,
    "chunks": [
     {
      "chunk": 1,
      "attempt": 1,
-     "seconds": 7.24,
-     "make_s": 301.1,
+     "seconds": 8.32,
+     "make_s": 638.5,
      "said": "Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water.",
      "word_errors": 0,
      "words": 23,
-     "file": "chunk_001_try1.wav"
+     "file": "chunk_001_try1.wav",
+     "pitch_off_st": 1.2
     }
    ]
   },
-  "russian_s": 262,
+  "russian_s": 409,
   "dub_s": 6,
   "captions_s": 12
  },
@@ -169,7 +170,7 @@
     "536b0662742c02347bc0e980a01041f333bce120"
    ]
   },
-  "installed_at": "2026-10-20T12:23:01",
+  "installed_at": "2026-10-21T00:01:47",
   "bytes": 7615126211
  }
 }
