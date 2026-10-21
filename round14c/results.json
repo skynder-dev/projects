@@ -1,0 +1,74 @@
+{
+ "round": 14,
+ "files": {
+  "voice14_1.mp3": "Fun-CosyVoice3 0.5B (Apache-2.0), cloning 9_2's recording (r14_cosy_t1)",
+  "voice14_1_ru.mp3": "Fun-CosyVoice3 0.5B (Apache-2.0), cloning 9_2's recording (Russian)"
+ },
+ "rows": {
+  "reference 9_2": {
+   "pitch_median_hz": 232.7
+  },
+  "r14_cosy_t1": {
+   "variant": "r14_cosy",
+   "take": 1,
+   "seconds_to_make": 169.9,
+   "sr": 24000,
+   "file": "voice14-cosy/r14_cosy_t1.wav",
+   "seconds": 12.36,
+   "said": "Quick update for anyone planning a summer trip. Hotel prices usually drop about three weeks before the date, so don't book too early. And if a price looks too good, check the reviews first. Follow for more tips like this.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 231.4,
+   "pitch_movement_semitones": 3.49,
+   "female_range": true,
+   "words_per_minute": 194.2,
+   "off_9_2_semitones": -0.1
+  },
+  "r14_cosy_t2": {
+   "variant": "r14_cosy",
+   "take": 2,
+   "seconds_to_make": 178.3,
+   "sr": 24000,
+   "file": "voice14-cosy/r14_cosy_t2.wav",
+   "seconds": 13.36,
+   "said": "Quick update for anyone planning a summer trip. Hotel prices usually drop about three weeks before the date, so don't book too early. And if a price looks too good, check the reviews first. Follow for more tips like this.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 245.2,
+   "pitch_movement_semitones": 4.11,
+   "female_range": true,
+   "words_per_minute": 179.6,
+   "off_9_2_semitones": 0.9
+  },
+  "r14_cosy_t9": {
+   "variant": "r14_cosy",
+   "take": 9,
+   "seconds_to_make": 138.8,
+   "sr": 24000,
+   "file": "voice14-cosy/r14_cosy_t9.wav",
+   "seconds": 8.56,
+   "said": "Короче, вот что важно знать на этой неделе. Билеты в Европу подешевили почти на 20%.",
+   "word_errors": 3,
+   "word_error_rate": 0.188,
+   "missing": [
+    "подешевели",
+    "двадцать",
+    "процентов"
+   ],
+   "extra": [
+    "подешевили",
+    "20"
+   ],
+   "pitch_median_hz": 218.4,
+   "pitch_movement_semitones": 3.8,
+   "female_range": true,
+   "words_per_minute": 112.1,
+   "off_9_2_semitones": -1.1
+  }
+ },
+ "failed_takes": {}
+}

@@ -1,0 +1,56 @@
+Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
+2026-10-21 12:21:13,439 WARNING Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
+2026-10-21 12:21:17,271 INFO input frame rate=25
+/home/runner/work/_temp/v/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:28: UserWarning: torch.nn.utils.weight_norm is deprecated in favor of torch.nn.utils.parametrizations.weight_norm.
+  warnings.warn("torch.nn.utils.weight_norm is deprecated in favor of torch.nn.utils.parametrizations.weight_norm.")
+2026-10-21 12:21:20,917 DEBUG Starting new HTTPS connection (1): www.modelscope.cn:443
+2026-10-21 12:21:21,929 DEBUG https://www.modelscope.cn:443 "GET /api/v1/models/pengzhendong/wetext/revisions HTTP/1.1" 200 222
+2026-10-21 12:21:22,204 DEBUG https://www.modelscope.cn:443 "GET /api/v1/models/pengzhendong/wetext/repo/files?Revision=master&Recursive=True HTTP/1.1" 200 None
+Downloading Model to directory: /home/runner/.cache/modelscope/hub/pengzhendong/wetext
+Downloading [README.md]:   0%|          | 0.00/1.36k [00:00<?, ?B/s]2026-10-21 12:21:22,212 DEBUG Starting new HTTPS connection (1): www.modelscope.cn:443
+2026-10-21 12:21:22,924 DEBUG https://www.modelscope.cn:443 "GET /api/v1/models/pengzhendong/wetext/repo?Revision=master&FilePath=README.md HTTP/1.1" 200 1389
+Downloading [README.md]: 100%|██████████| 1.36k/1.36k [00:00<00:00, 1.95kB/s]Downloading [README.md]: 100%|██████████| 1.36k/1.36k [00:00<00:00, 1.94kB/s]
+Downloading [__init__.py]:   0%|          | 0.00/1.00 [00:00<?, ?B/s]Downloading [__init__.py]: 100%|██████████| 1.00/1.00 [00:00<00:00, 10.0kB/s]
+Downloading [configuration.json]:   0%|          | 0.00/36.0 [00:00<?, ?B/s]2026-10-21 12:21:22,929 DEBUG Starting new HTTPS connection (1): www.modelscope.cn:443
+2026-10-21 12:21:24,123 DEBUG https://www.modelscope.cn:443 "GET /api/v1/models/pengzhendong/wetext/repo?Revision=master&FilePath=configuration.json HTTP/1.1" 200 36
+Downloading [configuration.json]: 100%|██████████| 36.0/36.0 [00:01<00:00, 30.1B/s]Downloading [configuration.json]: 100%|██████████| 36.0/36.0 [00:01<00:00, 30.1B/s]
+Downloading [en/itn/prefix.fst]:   0%|          | 0.00/648k [00:00<?, ?B/s]2026-10-21 12:21:24,127 DEBUG Starting new HTTPS connection (1): www.modelscope.cn:443
+2026-10-21 12:21:24,806 DEBUG https://www.modelscope.cn:443 "GET /api/v1/models/pengzhendong/wetext/repo?Revision=master&FilePath=en%2Fitn%2Fprefix.fst HTTP/1.1" 403 137
+2026-10-21 12:21:24,806 DEBUG Incremented Retry for (url='https://www.modelscope.cn/api/v1/models/pengzhendong/wetext/repo?Revision=master&FilePath=en%2Fitn%2Fprefix.fst'): Retry(total=4, connect=None, read=None, redirect=None, status=None)
+
+Downloading [en/itn/prefix.fst]:   0%|          | 0.00/648k [00:00<?, ?B/s][ADownloading [en/itn/prefix.fst]:   0%|          | 0.00/648k [00:00<?, ?B/s]
+2026-10-21 12:21:24,808 DEBUG Starting new HTTPS connection (1): www.modelscope.cn:443
+2026-10-21 12:21:25,575 DEBUG https://www.modelscope.cn:443 "GET /api/v1/models/pengzhendong/wetext/repo?Revision=master&FilePath=en%2Fitn%2Fprefix.fst HTTP/1.1" 403 137
+2026-10-21 12:21:25,576 DEBUG Incremented Retry for (url='https://www.modelscope.cn/api/v1/models/pengzhendong/wetext/repo?Revision=master&FilePath=en%2Fitn%2Fprefix.fst'): Retry(total=3, connect=None, read=None, redirect=None, status=None)
+Downloading [en/itn/prefix.fst]:   0%|          | 0.00/648k [00:00<?, ?B/s]Downloading [en/itn/prefix.fst]:   0%|          | 0.00/648k [00:02<?, ?B/s]
+2026-10-21 12:21:27,579 DEBUG Starting new HTTPS connection (1): www.modelscope.cn:443
+2026-10-21 12:21:28,612 DEBUG https://www.modelscope.cn:443 "GET /api/v1/models/pengzhendong/wetext/repo?Revision=master&FilePath=en%2Fitn%2Fprefix.fst HTTP/1.1" 403 137
+2026-10-21 12:21:28,613 DEBUG Incremented Retry for (url='https://www.modelscope.cn/api/v1/models/pengzhendong/wetext/repo?Revision=master&FilePath=en%2Fitn%2Fprefix.fst'): Retry(total=2, connect=None, read=None, redirect=None, status=None)
+
+Downloading [en/itn/prefix.fst]:   0%|          | 0.00/648k [00:00<?, ?B/s][ADownloading [en/itn/prefix.fst]:   0%|          | 0.00/648k [00:05<?, ?B/s]
+2026-10-21 12:21:32,619 DEBUG Starting new HTTPS connection (1): www.modelscope.cn:443
+2026-10-21 12:21:33,567 DEBUG https://www.modelscope.cn:443 "GET /api/v1/models/pengzhendong/wetext/repo?Revision=master&FilePath=en%2Fitn%2Fprefix.fst HTTP/1.1" 403 137
+2026-10-21 12:21:33,567 DEBUG Incremented Retry for (url='https://www.modelscope.cn/api/v1/models/pengzhendong/wetext/repo?Revision=master&FilePath=en%2Fitn%2Fprefix.fst'): Retry(total=1, connect=None, read=None, redirect=None, status=None)
+Downloading [en/itn/prefix.fst]:   0%|          | 0.00/648k [00:00<?, ?B/s]Downloading [en/itn/prefix.fst]:   0%|          | 0.00/648k [00:08<?, ?B/s]
+2026-10-21 12:21:41,577 DEBUG Starting new HTTPS connection (1): www.modelscope.cn:443
+2026-10-21 12:21:42,172 DEBUG https://www.modelscope.cn:443 "GET /api/v1/models/pengzhendong/wetext/repo?Revision=master&FilePath=en%2Fitn%2Fprefix.fst HTTP/1.1" 403 137
+2026-10-21 12:21:42,173 DEBUG Incremented Retry for (url='https://www.modelscope.cn/api/v1/models/pengzhendong/wetext/repo?Revision=master&FilePath=en%2Fitn%2Fprefix.fst'): Retry(total=0, connect=None, read=None, redirect=None, status=None)
+
+Downloading [en/itn/prefix.fst]:   0%|          | 0.00/648k [00:00<?, ?B/s][ADownloading [en/itn/prefix.fst]:   0%|          | 0.00/648k [00:16<?, ?B/s]
+2026-10-21 12:21:58,191 DEBUG Starting new HTTPS connection (1): www.modelscope.cn:443
+2026-10-21 12:21:58,831 DEBUG https://www.modelscope.cn:443 "GET /api/v1/models/pengzhendong/wetext/repo?Revision=master&FilePath=en%2Fitn%2Fprefix.fst HTTP/1.1" 403 137
+2026-10-21 12:21:58,831 INFO no frontend is avaliable
+  0%|          | 0/1 [00:00<?, ?it/s]2026-10-21 12:22:06,950 INFO synthesis text Quick update for anyone planning a summer trip. Hotel prices usually drop about three weeks before the date, so don't book too early. And if a price looks too good, check the reviews first. Follow for more tips like this.
+2026-10-21 12:24:53,654 INFO yield speech len 12.36, rtf 13.487426189157183
+100%|██████████| 1/1 [02:49<00:00, 169.87s/it]100%|██████████| 1/1 [02:49<00:00, 169.87s/it]
+12:24:53 made r14_cosy_t1 in 170 s
+  0%|          | 0/1 [00:00<?, ?it/s]Downloading [en/itn/prefix.fst]:   0%|          | 0.00/648k [02:55<?, ?B/s]
+2026-10-21 12:24:56,761 INFO synthesis text Quick update for anyone planning a summer trip. Hotel prices usually drop about three weeks before the date, so don't book too early. And if a price looks too good, check the reviews first. Follow for more tips like this.
+2026-10-21 12:27:51,943 INFO yield speech len 13.36, rtf 13.112433834704097
+100%|██████████| 1/1 [02:58<00:00, 178.28s/it]100%|██████████| 1/1 [02:58<00:00, 178.28s/it]
+12:27:51 made r14_cosy_t2 in 178 s
+  0%|          | 0/1 [00:00<?, ?it/s]2026-10-21 12:27:51,955 WARNING synthesis text Короче, вот что важно знать на этой неделе. Билеты в Европу подешевели почти на двадцать процентов. too short than prompt text You are a helpful assistant.<|endofprompt|>Here's what you need to know this week. First, flights to Europe got almost twenty percent cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this, and send it to someone who's planning a trip., this may lead to bad performance
+2026-10-21 12:27:55,047 INFO synthesis text Короче, вот что важно знать на этой неделе. Билеты в Европу подешевели почти на двадцать процентов.
+2026-10-21 12:30:10,743 INFO yield speech len 8.56, rtf 15.852353561704403
+100%|██████████| 1/1 [02:18<00:00, 138.79s/it]100%|██████████| 1/1 [02:18<00:00, 138.79s/it]
+12:30:10 made r14_cosy_t9 in 139 s
