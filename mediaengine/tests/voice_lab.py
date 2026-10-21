@@ -1434,6 +1434,81 @@ def round14(src: Path, out: Path, ref: Path, now_mp3: Path | None) -> int:
     return 0 if len(files) > 1 else 1
 
 
+# ---------------------------------------------------------------------------------------------------------- round 15
+# The owner picked 14_5 (Qwen3-TTS) and it is the program's engine for 9_2 (b184). The real add-on run on Windows
+# (39695153819): its Russian "Привет! Это короткая проверка голоса." was heard back as "... Киротка Япровьерка
+# Галлесса" - 9_2's recording is English, and Qwen3-TTS continuing it (the recording + its English words, 'ICL')
+# carries the English accent into Russian. Round 15: the same voice in Russian two ways - ICL as now, and the
+# voice's timbre only ('x-vector only': no English words to continue) - on three Russian texts, two seeds each.
+
+RU15 = {"a": "Привет! Это короткая проверка голоса.",
+        "b": RU_TEXT,
+        "c": ("Сохрани это видео, чтобы не потерять. Отели дешевеют примерно за три недели до поездки, "
+              "так что не спеши с бронированием.")}
+
+
+def qwen15(out: Path, ref: Path) -> None:
+    _threads()
+    import torch
+    from qwen_tts import Qwen3TTSModel
+    try:
+        m = Qwen3TTSModel.from_pretrained("Qwen/Qwen3-TTS-12Hz-1.7B-Base", device_map="cpu", dtype=torch.float32)
+    except TypeError:
+        m = Qwen3TTSModel.from_pretrained("Qwen/Qwen3-TTS-12Hz-1.7B-Base", device_map="cpu", torch_dtype=torch.float32)
+    prompts = {"icl": m.create_voice_clone_prompt(ref_audio=str(ref), ref_text=BUSINESS),
+               "xvec": m.create_voice_clone_prompt(ref_audio=str(ref), x_vector_only_mode=True)}
+    for mode, prompt in prompts.items():
+        for key, text in RU15.items():
+            for seed in (1, 2):
+                def make(t, text=text, prompt=prompt, seed=seed):
+                    _seed_all(2500 + seed)
+                    wavs, sr = m.generate_voice_clone(text=text, language="Russian", voice_clone_prompt=prompt)
+                    return wavs[0], sr
+                _take(out, f"r15_{mode}_{key}", seed, make)
+
+
+def round15(src: Path, out: Path, ref: Path) -> int:
+    import math
+    from faster_whisper import WhisperModel
+    out.mkdir(parents=True, exist_ok=True)
+    gen = {}
+    for p in src.rglob("gen.json"):
+        gen.update(json.loads(p.read_text("utf-8")))
+    asr = WhisperModel("small", device="cpu", compute_type="int8")     # the program's own listener
+    ref_hz = _pitch_median(ref)
+    rows, files, total = {}, {}, {"icl": [0, 0], "xvec": [0, 0]}
+    for w in sorted(src.rglob("r15_*_t[0-9].wav")):
+        mode, key = w.stem.split("_")[1], w.stem.split("_")[2]
+        info = _analyze(asr, w, src, gen, RU15[key], language="ru")
+        hz = info.get("pitch_median_hz") or 0
+        info["off_9_2_semitones"] = round(12 * math.log2(hz / ref_hz), 2) if hz and ref_hz else None
+        rows[w.stem] = info
+        total[mode][0] += info["word_errors"]
+        total[mode][1] += len(_words(RU15[key]))
+    for mode in ("icl", "xvec"):
+        for key in RU15:
+            takes = [i for k, i in rows.items() if k.startswith(f"r15_{mode}_{key}_t")]
+            if takes:
+                best = min(takes, key=lambda i: i["word_errors"])
+                mp3 = out / f"voice15_{mode}_{key}.mp3"
+                produce_plain(src / best["file"], mp3)
+                files[mp3.name] = f"9_2 in Russian, {'as now (ICL)' if mode == 'icl' else 'timbre only (x-vector)'}, text {key}"
+    failed = {k: str(v.get("error")).splitlines()[0][:300] for k, v in gen.items() if v.get("error")}
+    summary = {m: {"word_errors": e, "words": n, "rate": round(e / max(1, n), 3)} for m, (e, n) in total.items()}
+    (out / "results.json").write_text(json.dumps({"round": 15, "summary": summary, "files": files, "rows": rows,
+                                                  "failed_takes": failed}, indent=1, ensure_ascii=False), "utf-8")
+    md = ["# Voice lab - round 15 (9_2 in Russian: ICL vs timbre only)", "", json.dumps(summary, ensure_ascii=False), ""]
+    md += [f"- {k}: {v}" for k, v in files.items()]
+    md += ["", "| take | words wrong | pitch Hz | off 9_2 | said |", "|---|---|---|---|---|"]
+    md += [f"| {k} | {i['word_errors']} | {i['pitch_median_hz']} | {i['off_9_2_semitones']} | {i['said'][:80]} |"
+           for k, i in rows.items()]
+    if failed:
+        md += ["", "Failed takes:"] + [f"- {k}: {e}" for k, e in failed.items()]
+    (out / "RESULTS.md").write_text("\n".join(md) + "\n", "utf-8")
+    print(json.dumps(summary))
+    return 0 if rows else 1
+
+
 def check(src: Path, out: Path) -> int:
     import numpy as np, librosa
     from faster_whisper import WhisperModel
@@ -1527,6 +1602,10 @@ def main() -> int:
         vox9one(out, sys.argv[3], int(sys.argv[4]), Path(sys.argv[5]).resolve() if len(sys.argv) > 5 else None)
     elif cmd == "round9":
         return round9(out, Path(sys.argv[3]).resolve())
+    elif cmd == "qwen15":
+        qwen15(out, Path(sys.argv[3]).resolve())
+    elif cmd == "round15":
+        return round15(out, Path(sys.argv[3]).resolve(), Path(sys.argv[4]).resolve())
     elif cmd == "cosy14":
         cosy14(out, Path(sys.argv[3]).resolve(), Path(sys.argv[4]).resolve(), Path(sys.argv[5]).resolve())
     elif cmd == "cb14":
