@@ -639,6 +639,8 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   (run 39515480136): 9_2 locked: all words, 235-261 Hz in English, Russian works (223 Hz, 1 word). Shipped: host_9_2
   (round 9 r9_design_t11 FLAC, sha 903393c1...) the only ready voice (4_4 / 4_2 removed), and the worker keeps every
   piece within 1.5 semitones of the voice's own pitch (up to 3 tries when the words are right).
+  Published: Windows CI run 39518308673 (b177, commit 49fc37b) fully green, served (same runtime); the real add-on
+  run 39518308594 12/12 in the 9_2 voice (English and Russian; the pitch check kept the first try, 1.2 semitones off).
 
 ## Evidence
 
@@ -831,7 +833,6 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-b176 is published (everything above); tell the owner to press Update and try
-a saved reel -> "Text, captions, voice-over" (Finish a video). Still open: his pick of the default voice (round 9
-voice9_1..3; round 10 ready); the first voice-over on his RTX 3060. Social integration paused by the owner (do not
+b177 is published (everything above, with the voice 9_2); tell the owner to press Update and try
+a saved reel -> "Text, captions, voice-over" (Finish a video). Still open: the first voice-over on his RTX 3060 (and the NVIDIA encoder there). Social integration paused by the owner (do not
 touch Social). Through the app's pages in the desktop app's browser pane only (never computer use).
