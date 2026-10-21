@@ -1,0 +1,88 @@
+WARNING:torchao.kernel.intmm:Warning: Detected no triton, on systems without Triton certain kernels will not work
+Loading backbone from: neuphonic/neutts-air on cpu ...
+httpx.HTTPStatusError: Client error '401 Unauthorized' for url 'https://huggingface.co/neuphonic/neutts-air/resolve/main/config.json'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+
+The above exception was the direct cause of the following exception:
+
+huggingface_hub.errors.GatedRepoError: 401 Client Error. (Request ID: Root=1-6ad8ac9b-1c35d527178253526ac084e4;4fec1024-e001-47a9-9723-4da379cced1c)
+
+Cannot access gated repo for url https://huggingface.co/neuphonic/neutts-air/resolve/main/config.json.
+Access to model neuphonic/neutts-air is restricted. You must have access to it and be authenticated to access it. Please log in.
+
+The above exception was the direct cause of the following exception:
+
+OSError: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/neuphonic/neutts-air.
+401 Client Error. (Request ID: Root=1-6ad8ac9b-1c35d527178253526ac084e4;4fec1024-e001-47a9-9723-4da379cced1c)
+
+Cannot access gated repo for url https://huggingface.co/neuphonic/neutts-air/resolve/main/config.json.
+Access to model neuphonic/neutts-air is restricted. You must have access to it and be authenticated to access it. Please log in.
+
+During handling of the above exception, another exception occurred:
+
+httpx.HTTPStatusError: Client error '401 Unauthorized' for url 'https://huggingface.co/neuphonic/neutts-air/resolve/main/config.json'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/transformers/utils/hub.py", line 419, in cached_files
+    hf_hub_download(
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py", line 89, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 266, in _inner
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1047, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1194, in _hf_hub_download_to_cache_dir
+    _raise_on_head_call_error(head_call_error, force_download, local_files_only)
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1953, in _raise_on_head_call_error
+    raise head_call_error
+huggingface_hub.errors.GatedRepoError: 401 Client Error. (Request ID: Root=1-6ad8ac9b-41a22fb33c947a347dca01fb;b487cded-3f3b-4438-ba8b-c90a835e23a5)
+
+Cannot access gated repo for url https://huggingface.co/neuphonic/neutts-air/resolve/main/config.json.
+Access to model neuphonic/neutts-air is restricted. You must have access to it and be authenticated to access it. Please log in.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/work/projects/projects/mediaengine/tests/voice_lab.py", line 1566, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/runner/work/projects/projects/mediaengine/tests/voice_lab.py", line 1534, in main
+    neu14(out, Path(sys.argv[3]).resolve())
+  File "/home/runner/work/projects/projects/mediaengine/tests/voice_lab.py", line 1341, in neu14
+    m = NeuTTS(backbone_repo="neuphonic/neutts-air", backbone_device="cpu",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/neutts/neutts.py", line 158, in __init__
+    self._load_backbone(backbone_repo, backbone_device)
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/neutts/neutts.py", line 248, in _load_backbone
+    self.tokenizer = AutoTokenizer.from_pretrained(backbone_repo)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/transformers/models/auto/tokenization_auto.py", line 620, in from_pretrained
+    config = PreTrainedConfig.from_pretrained(pretrained_model_name_or_path, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/transformers/configuration_utils.py", line 531, in from_pretrained
+    config_dict, kwargs = cls.get_config_dict(pretrained_model_name_or_path, **kwargs)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/transformers/configuration_utils.py", line 569, in get_config_dict
+    config_dict, kwargs = cls._get_config_dict(pretrained_model_name_or_path, **kwargs)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/transformers/configuration_utils.py", line 624, in _get_config_dict
+    resolved_config_file = cached_file(
+                           ^^^^^^^^^^^^
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/transformers/utils/hub.py", line 276, in cached_file
+    file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/v/lib/python3.11/site-packages/transformers/utils/hub.py", line 483, in cached_files
+    raise OSError(
+OSError: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/neuphonic/neutts-air.
+401 Client Error. (Request ID: Root=1-6ad8ac9b-41a22fb33c947a347dca01fb;b487cded-3f3b-4438-ba8b-c90a835e23a5)
+
+Cannot access gated repo for url https://huggingface.co/neuphonic/neutts-air/resolve/main/config.json.
+Access to model neuphonic/neutts-air is restricted. You must have access to it and be authenticated to access it. Please log in.
