@@ -605,6 +605,9 @@ def _need_addon() -> None:
         raise VoiceError("Install the voice add-on first.")
 
 
+_LAST_NS = [0]
+
+
 def _write_job(d: Path, job: dict) -> None:
     """job.json replaced in one step: a page reading the list at that moment never sees half a file."""
     tmp = d / f"job.json.{threading.get_ident()}.tmp"
@@ -626,7 +629,10 @@ def _submit(job: dict, addon: bool = True) -> str:
     jid = _new_id()
     d = JOBS / jid
     d.mkdir(parents=True, exist_ok=True)
-    job = dict(job, id=jid, created_at=now_iso(), created_ns=time.time_ns())   # the order within one second too
+    with _LOCK:                         # the order within one second too - strictly increasing (Windows' clock can
+        ns = max(time.time_ns(), _LAST_NS[0] + 1)   # give two jobs made one after the other the same reading)
+        _LAST_NS[0] = ns
+    job = dict(job, id=jid, created_at=now_iso(), created_ns=ns)
     with _LOCK:                         # written and queued in one step: a page never sees it "interrupted"
         _write_job(d, job)
         _QUEUE.append(jid)
