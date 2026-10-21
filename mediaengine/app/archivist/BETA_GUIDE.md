@@ -76,8 +76,10 @@ The format for whoever writes the other program: `Orders\ORDERS.md`.
 ## Voice-over and captions
 
 **Auto Edit → Voice-over and text.** A text read by a voice, with captions timed to the words; and captions for your own
-videos. It is an add-on: the first time press "Install the voice add-on". It downloads about 8 GB once into the data
-folder (MediaEngine goes online for it only then; free open models, nothing is sent anywhere). With an NVIDIA graphics
+videos. It is an add-on: the first time press "Install the voice add-on". It downloads about 13 GB once into the data
+folder (MediaEngine goes online for it only then; free open models, nothing is sent anywhere). An add-on installed
+before 21 October offers "Download the new voice engine" (Qwen3-TTS, about 4.7 GB): the voice 9_2 and the voices from
+a recording are then said by it - livelier (your pick 14_5); a voice from a description stays on VoxCPM2. With an NVIDIA graphics
 card the voice is made on it (seconds per sentence); without one, on the processor (about a minute per sentence).
 
 - **New voice-over**: write the text the way it is said (short sentences; commas and dots where the pauses are) and

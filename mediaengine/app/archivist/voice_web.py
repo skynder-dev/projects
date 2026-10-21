@@ -76,8 +76,25 @@ def register(app, page, err_page, e, human_bytes):
             m = s.get("manifest") or {}
             where = (f"<span>the graphics card</span> <span translate='no'>{e(m.get('gpu') or '')}</span>" if m.get("cuda")
                      else "<span>the processor (slow)</span>")
-            return (f"<div class='card'><div><b>The voice add-on is installed.</b> <span>It works on</span> {where}. "
-                    f"<span class='muted'>Size:</span> <span>{e(_gb(m.get('bytes')))}</span></div>"
+            upd = ""
+            if not s.get("qwen"):            # an add-on from before the owner's pick: the new engine, once
+                failed = (f"<div class='errbox' style='margin-bottom:10px'>{e(s.get('error') or '')}</div>"
+                          if s["state"] == "failed" else "")
+                low = s.get("free", 0) < vo.NEED_FREE_QWEN
+                upd = (f"<div class='card' id='voEngine'>{failed}<div><b>A livelier engine for the voices from a recording "
+                       f"(the voice 9_2 - your pick 14_5)</b></div>"
+                       f"<div style='margin-top:6px'>Qwen3-TTS says the voice 9_2, saved voices and voices from a recording "
+                       f"more naturally. It is downloaded once: about 4.7 GB, into the same folder. Until then they are "
+                       f"said by the engine they had.</div>"
+                       + ("<div class='errbox' style='margin-top:8px'>Not enough free space: about 8 GB are needed while "
+                          "downloading.</div>" if low else "")
+                       + f"<div style='margin-top:10px'><form method='post' action='/auto/voice/install' style='display:inline' "
+                         f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
+                         f"<button class='ae-big'>Download the new voice engine</button></form></div></div>")
+            engines = ("<div class='muted vo-sub' style='margin-top:4px'>Voices from a recording (9_2 too): Qwen3-TTS. "
+                       "A voice from a description: VoxCPM2.</div>" if s.get("qwen") else "")
+            return (upd + f"<div class='card'><div><b>The voice add-on is installed.</b> <span>It works on</span> {where}. "
+                    f"<span class='muted'>Size:</span> <span>{e(_gb(m.get('bytes')))}</span></div>{engines}"
                     f"<details style='margin-top:8px'><summary class='muted'>Remove the add-on</summary>"
                     f"<div class='muted vo-sub'>Frees the disk space. The voice-overs and videos made with it stay.</div>"
                     f"<form method='post' action='/auto/voice/remove' style='margin-top:8px' "
@@ -101,14 +118,15 @@ def register(app, page, err_page, e, human_bytes):
             return f"<div class='card'><div class='errbox'>{e(why)}</div></div>"
         low = s.get("free", 0) < vo.NEED_FREE
         return (f"<div class='card'>{err}<div><b>The voice add-on is not installed.</b></div>"
-                f"<div style='margin-top:6px'>It is downloaded once: about 8 GB (the add-on's Python parts and two models: "
-                f"VoxCPM2 for the voice, Whisper for checking the words and for captions). It goes into the data folder:</div>"
+                f"<div style='margin-top:6px'>It is downloaded once: about 13 GB (the add-on's Python parts and three models: "
+                f"Qwen3-TTS for the voices from a recording, the voice 9_2 too; VoxCPM2 for a voice from a description; "
+                f"Whisper for checking the words and for captions). It goes into the data folder:</div>"
                 f"<div class='ae-path' translate='no'>{e(str(vo.ROOT))}</div>"
                 f"<div class='muted vo-sub' style='margin-top:6px'>MediaEngine goes online for it only when you press the button "
                 f"(pypi.org, download.pytorch.org, huggingface.co). Free and open models; nothing is sent anywhere.</div>"
                 f"<div style='margin-top:8px'>{gpu_line}</div>"
                 f"<div class='muted vo-sub'><span>Free space there:</span> <span>{e(_gb(s.get('free')))}</span></div>"
-                + ("<div class='errbox' style='margin-top:8px'>Not enough free space: about 20 GB are needed while installing.</div>" if low else "")
+                + ("<div class='errbox' style='margin-top:8px'>Not enough free space: about 26 GB are needed while installing.</div>" if low else "")
                 + f"<div style='margin-top:12px'><form method='post' action='/auto/voice/install' style='display:inline' "
                   f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
                   f"<button class='ae-big'>{again}</button></form>{cpu_btn}</div></div>")

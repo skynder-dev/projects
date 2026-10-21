@@ -657,14 +657,14 @@ PHRASES = {
     "Install the voice add-on": "Установить модуль озвучки",
     "This MediaEngine uses another Python: install the add-on again.": "Этот MediaEngine работает на другом Python: установи модуль заново.",
     "The voice add-on is not installed.": "Модуль озвучки не установлен.",
-    "It is downloaded once: about 8 GB (the add-on's Python parts and two models: VoxCPM2 for the voice, Whisper for checking the words and for captions). It goes into the data folder:":
-        "Он скачивается один раз: около 8 ГБ (части для Python и две модели: VoxCPM2 — голос, Whisper — проверка слов и субтитры). "
-        "Он ставится в папку данных:",
+    "It is downloaded once: about 13 GB (the add-on's Python parts and three models: Qwen3-TTS for the voices from a recording, the voice 9_2 too; VoxCPM2 for a voice from a description; Whisper for checking the words and for captions). It goes into the data folder:":
+        "Он скачивается один раз: около 13 ГБ (части для Python и три модели: Qwen3-TTS — голоса из записи, в том числе голос 9_2; "
+        "VoxCPM2 — голос по описанию; Whisper — проверка слов и субтитры). Он ставится в папку данных:",
     "MediaEngine goes online for it only when you press the button (pypi.org, download.pytorch.org, huggingface.co). Free and open models; nothing is sent anywhere.":
         "MediaEngine выходит в интернет для этого только по нажатию кнопки (pypi.org, download.pytorch.org, huggingface.co). "
         "Модели бесплатные и открытые; никуда ничего не отправляется.",
     "Free space there:": "Свободно там:",
-    "Not enough free space: about 20 GB are needed while installing.": "Мало свободного места: на время установки нужно около 20 ГБ.",
+    "Not enough free space: about 26 GB are needed while installing.": "Мало свободного места: на время установки нужно около 26 ГБ.",
     "New voice-over": "Новая озвучка", "The text to be said…": "Текст, который нужно сказать…",
     "Write it the way it is said: short sentences, commas and dots where the pauses are. Words between *stars* are shown in the color in the captions.":
         "Пиши так, как говорят вслух: короткие фразы, запятые и точки там, где паузы. Слова между *звёздочками* в субтитрах будут цветными.",
@@ -751,8 +751,10 @@ PHRASES = {
     "Installation cancelled.": "Установка отменена.",
     "The add-on's Python parts could not be installed. Check the internet connection and try again (details for support: install.log in the add-on folder).":
         "Не удалось установить части модуля для Python. Проверь интернет и попробуй ещё раз (подробности для поддержки — install.log в папке модуля).",
-    "Not enough free space on the disk of the data folder: the voice add-on needs about 20 GB free.":
-        "Мало места на диске папки данных: модулю озвучки нужно около 20 ГБ свободного места.",
+    "Not enough free space on the disk of the data folder: the voice add-on needs about 26 GB free.":
+        "Мало места на диске папки данных: модулю озвучки нужно около 26 ГБ свободного места.",
+    "Not enough free space on the disk of the data folder: the voice add-on needs about 8 GB free.":
+        "Мало места на диске папки данных: модулю озвучки нужно около 8 ГБ свободного места.",
     "Not enough free space left for the voice models.": "Не хватает места для голосовых моделей.",
     "No connection to the internet (or the site did not answer). Check the connection and try again.":
         "Нет связи с интернетом (или сайт не ответил). Проверь подключение и попробуй ещё раз.",
@@ -877,7 +879,20 @@ PHRASES = {
         "(Сделано → озвучка → Наложить на видео).",
     "A text must be on the screen for at least 0.3 s (check its times).":
         "Текст должен быть на экране хотя бы 0,3 сек (проверь время).",
-    "Pace": "Темп", "a bit slower": "чуть медленнее", "normal speed": "обычная скорость", "a bit faster": "чуть быстрее",
+    "Pace": "Темп",
+    "A livelier engine for the voices from a recording (the voice 9_2 - your pick 14_5)":
+        "Более живой движок для голосов из записи (голос 9_2 — твой выбор 14_5)",
+    "Qwen3-TTS says the voice 9_2, saved voices and voices from a recording more naturally. It is downloaded once: about 4.7 GB, into the same folder. Until then they are said by the engine they had.":
+        "Qwen3-TTS говорит голосом 9_2, сохранёнными голосами и голосами из записи естественнее. Скачивается один раз: около 4,7 ГБ, "
+        "в ту же папку. До этого они звучат на прежнем движке.",
+    "Not enough free space: about 8 GB are needed while downloading.": "Мало свободного места: на время скачивания нужно около 8 ГБ.",
+    "Download the new voice engine": "Скачать новый движок голоса",
+    "Voice-over: the voice 9_2 is said by a new, livelier engine (Qwen3-TTS - your pick 14_5); an installed voice add-on downloads it with one button (about 4.7 GB).":
+        "Озвучка: голос 9_2 теперь говорит на новом, более живом движке (Qwen3-TTS — твой выбор 14_5); установленный модуль "
+        "озвучки докачивает его одной кнопкой (около 4,7 ГБ).",
+    "Voices from a recording (9_2 too): Qwen3-TTS. A voice from a description: VoxCPM2.":
+        "Голоса из записи (и 9_2): Qwen3-TTS. Голос по описанию: VoxCPM2.",
+    "The new voice engine was installed but does not start:": "Новый движок голоса установлен, но не запускается:", "a bit slower": "чуть медленнее", "normal speed": "обычная скорость", "a bit faster": "чуть быстрее",
     "faster": "быстрее", "short pauses": "короткие паузы", "normal pauses": "обычные паузы", "long pauses": "длинные паузы",
     "between sentences; the voice keeps its own pitch": "между предложениями; высота голоса не меняется",
     "More videos, finished the same way": "Ещё видео — доделать так же",

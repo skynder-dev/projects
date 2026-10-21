@@ -69,6 +69,8 @@ def main() -> int:
     m = vo.manifest()
     check("its manifest: version, Python, torch, models", m.get("version") == vo.ADDON_VERSION and m.get("torch")
           and m.get("models", {}).get("voxcpm", [None, None])[1] == vo.VOXCPM_REV, m)
+    check("the new engine (Qwen3-TTS, the owner's pick 14_5) is installed with it", vo.qwen_installed()
+          and (m.get("qwen") or {}).get("model", [None, None])[1] == vo.QWEN_REV, m.get("qwen"))
     page = c.get("/auto/voice", headers=H).get_data(as_text=True)
     check("the page shows the forms once installed", "New voice-over" in page and "Captions for a video" in page)
 
@@ -100,6 +102,7 @@ def main() -> int:
         return finish()
     check("every word said (listened to)", int(res.get("word_errors") or 0) <= 1, res.get("said"))
     check("a plausible length", 5 <= float(res.get("seconds") or 0) <= 30, res.get("seconds"))
+    check("said by the new engine (Qwen3-TTS) in the voice 9_2", res.get("engine") == "qwen", res.get("engine"))
     d = Path(j["dir"])
     shutil.copy2(d / "voice.wav", out / "voice.wav")
     shutil.copy2(d / "captions.srt", out / "voice.srt")
@@ -125,6 +128,16 @@ def main() -> int:
         check("its pace: a bit faster (8% shorter), the captions within the faster voice",
               raw_s > 0 and abs(fin_s - raw_s / 1.08) < 0.1 and rw and rw[-1]["e"] <= fin_s + 0.05, (raw_s, fin_s, rw[-1:] if rw else None))
         timings["russian_pace"] = {"raw_s": raw_s, "final_s": fin_s}
+
+    # 2c. a voice from a description: still VoxCPM2 (its own packages, not the new engine's)
+    t0 = time.time()
+    c.post("/auto/voice/new", data={"text": "This voice was made from a description.", "voice": "describe", "language": "en",
+                                    "description": "a calm woman in her thirties, warm clear voice"}, headers=H)
+    xj = wait(vo.list_jobs()[0]["id"], 3 * 3600)
+    timings["described_s"] = round(time.time() - t0)
+    xres = xj.get("result") or {}
+    check("a voice from a description is still made (VoxCPM2)", xj["state"] == "done" and xres.get("engine") == "voxcpm"
+          and int(xres.get("word_errors") or 0) <= 1, xres.get("said") or xres.get("error"))
 
     # 3. onto a video, with captions
     t0 = time.time()

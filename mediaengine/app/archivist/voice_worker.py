@@ -4,12 +4,13 @@
 
 Started by voice.py with the program's own Python 3.11 but without its site-packages (-S): the add-on brings its own
 torch / VoxCPM2 / faster-whisper (DATA\\addons\\voice\\site) and must never mix with the program's pinned packages.
+A voice cloned from a recording is said by Qwen3-TTS (engine 'qwen'): its own folder (site_qwen) goes first.
 Prints one JSON object per line on stdout ({"progress": 0.4, "step": "..."}, then {"result": {...}}); writes the
 files the job names. Only standard library imports at the top: the add-on folder is added first.
 
 Tasks:
-  tts         text (in chunks) -> one WAV in one voice; every chunk is listened to (faster-whisper) and made again
-              (up to 2 more times) when words are missing
+  tts         text (in chunks) -> one WAV in one voice (VoxCPM2, or Qwen3-TTS for engine 'qwen'); every chunk is
+              listened to (faster-whisper) and made again (up to 3 more times) when words are missing or the pitch drifts
   transcribe  a sound / video file -> the words said with their times (for captions)
   selftest    the add-on loads and sees the GPU (no model run)
 """
@@ -111,16 +112,56 @@ def _pitch(y, sr: int) -> float:
 PITCH_OFF_ST = 1.5          # a piece more than this many semitones off the voice's own pitch is made again
 
 
+class _Qwen:
+    """Qwen3-TTS 1.7B Base (the owner's pick, voice lab 14_5) behind the same two calls the worker makes of VoxCPM2:
+    generate(text=..., reference_wav_path=..., prompt_text=...) -> samples at tts_model.sample_rate. The voice is
+    taken from the recording once (its words too, when known: the closest voice) and reused for every piece."""
+
+    def __init__(self, model_dir: str, device: str, language: str | None):
+        import torch
+        from qwen_tts import Qwen3TTSModel
+        if device == "cuda":
+            dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
+            kw = {"device_map": "cuda:0", "dtype": dtype}
+        else:
+            kw = {"device_map": "cpu", "dtype": torch.float32}
+        try:
+            self.m = Qwen3TTSModel.from_pretrained(model_dir, **kw)
+        except TypeError:
+            kw["torch_dtype"] = kw.pop("dtype")
+            self.m = Qwen3TTSModel.from_pretrained(model_dir, **kw)
+        self.language = language
+        self.prompt, self.prompt_key = None, None
+        self.tts_model = self                      # the worker reads tts_model.sample_rate
+        self.sample_rate = 24000
+
+    def generate(self, text: str, reference_wav_path: str, prompt_text: str = "", **_ignored):
+        import numpy as np
+        key = (str(reference_wav_path), prompt_text or "")
+        if self.prompt is None or self.prompt_key != key:
+            if prompt_text:
+                self.prompt = self.m.create_voice_clone_prompt(ref_audio=str(reference_wav_path), ref_text=prompt_text)
+            else:                                   # a recording without its words: the voice's timbre only
+                self.prompt = self.m.create_voice_clone_prompt(ref_audio=str(reference_wav_path), x_vector_only_mode=True)
+            self.prompt_key = key
+        wavs, sr = self.m.generate_voice_clone(text=text, language=self.language, voice_clone_prompt=self.prompt)
+        self.sample_rate = int(sr)
+        return np.asarray(wavs[0], dtype="float32").reshape(-1)
+
+
 def tts(job: dict) -> dict:
     import numpy as np, soundfile as sf, torch
     # (torch's own thread count: the program's OMP_NUM_THREADS=2 is not passed to the worker; setting one less than all
     #  cores made a CPU voice 4x slower on a 4-core runner - runs 39247474464 vs 39251509089)
     _patch_torchaudio()
-    from voxcpm import VoxCPM
+    qwen = job.get("engine") == "qwen"
     dev = _device(job)
     say(progress=0.02, step="loading", device=dev)
     t0 = time.time()
     def load(device):
+        if qwen:
+            return _Qwen(job["qwen_dir"], device, job.get("qwen_language"))
+        from voxcpm import VoxCPM
         kw = {"load_denoiser": False, "optimize": False, "device": device}
         try:
             return VoxCPM.from_pretrained(job["model_dir"], local_files_only=True, **kw)
@@ -160,7 +201,9 @@ def tts(job: dict) -> dict:
             say(progress=0.05 + 0.85 * (i + attempt / tries_max / 2) / total, step="speaking", chunk=i + 1, chunks=total,
                 attempt=attempt + 1)
             g = {"cfg_value": cfg, "inference_timesteps": steps}
-            if ref_wav:                         # the locked voice: its own recording and words
+            if qwen:                            # Qwen3-TTS: the recording (and its words, when known)
+                g = {"text": text, "reference_wav_path": str(ref_wav), "prompt_text": ref_text}
+            elif ref_wav:                       # the locked voice: its own recording and words
                 g.update(text=text, reference_wav_path=str(ref_wav))
                 if ref_text:
                     g.update(prompt_wav_path=str(ref_wav), prompt_text=ref_text)
@@ -180,10 +223,13 @@ def tts(job: dict) -> dict:
                 gc.collect()
                 torch.cuda.empty_cache()
                 dev, steps = "cpu", min(steps, 10)
-                g["inference_timesteps"] = steps
+                if not qwen:
+                    g["inference_timesteps"] = steps
                 model = load(dev)
                 y = np.asarray(model.generate(**g), dtype="float32").reshape(-1)
             gen_s = time.time() - t1
+            if qwen:                            # its rate as it says it (24 kHz)
+                sr = int(model.sample_rate)
             y = _trim(y, sr)
             p = out_dir / f"chunk_{i + 1:03d}_try{attempt + 1}.wav"
             sf.write(str(p), y, sr)
@@ -226,7 +272,8 @@ def tts(job: dict) -> dict:
     say(progress=0.95, step="listening")
     said, words, lang = _listen(asr, job["out_wav"], job.get("language"))
     return {"ok": True, "device": dev, "sample_rate": sr, "seconds": round(full.size / sr, 2), "load_s": round(load_s, 1),
-            "said": said, "words": words, "language": lang, "chunks": report, "steps": steps, "cfg": cfg,
+            "said": said, "words": words, "language": lang, "chunks": report, "steps": None if qwen else steps,
+            "cfg": None if qwen else cfg, "engine": "qwen" if qwen else "voxcpm",
             "word_errors": word_errors(" ".join(c["text"] for c in chunks), said)}
 
 
@@ -246,9 +293,14 @@ def transcribe(job: dict) -> dict:
 
 def selftest(job: dict) -> dict:
     import torch, librosa, soundfile  # noqa: F401
+    from importlib import metadata
+    if job.get("engine") == "qwen":              # the new engine's folder first: its whole model code imports
+        from qwen_tts import Qwen3TTSModel  # noqa: F401
+        from faster_whisper import WhisperModel  # noqa: F401
+        return {"ok": True, "torch": torch.__version__, "qwen_tts": metadata.version("qwen-tts"),
+                "transformers": metadata.version("transformers")}
     from voxcpm import VoxCPM  # noqa: F401          (the whole model code, not only the package name)
     from faster_whisper import WhisperModel  # noqa: F401
-    from importlib import metadata
     cuda = bool(torch.cuda.is_available())
     note = ""
     if cuda:
@@ -271,6 +323,10 @@ def main() -> int:
         pass
     job = json.loads(Path(sys.argv[1]).read_text("utf-8"))
     site.addsitedir(job["site"])
+    if job.get("engine") == "qwen" and job.get("site_qwen"):   # its own versions (transformers 4.57) win
+        site.addsitedir(job["site_qwen"])
+        q = os.path.normcase(os.path.abspath(job["site_qwen"]))
+        sys.path[:] = [job["site_qwen"]] + [x for x in sys.path if os.path.normcase(os.path.abspath(x)) != q]
     os.environ.setdefault("HF_HUB_OFFLINE", "1")              # the models are on disk; the worker never goes online
     os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
     os.environ.setdefault("HF_HUB_DISABLE_TELEMETRY", "1")

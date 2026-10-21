@@ -62,7 +62,30 @@ CUDA_INDEX = "https://download.pytorch.org/whl/cu126"      # GTX 10xx - RTX 40xx
 CUDA_INDEX_NEW = "https://download.pytorch.org/whl/cu128"  # RTX 50xx (Blackwell needs CUDA 12.8)
 VOXCPM_REPO, VOXCPM_REV = "openbmb/VoxCPM2", "32279effe8c19989596f05d353d1447f51d9e915"
 WHISPER_REPO, WHISPER_REV = "Systran/faster-whisper-small", "536b0662742c02347bc0e980a01041f333bce120"
-NEED_FREE = 20 * 10 ** 9            # packages (2.8 GB with CPU torch, ~5 GB with CUDA) + models (5.4 GB) + room
+# The owner's pick (2026-10-21, voice lab round 14: "14_5" over the program's VoxCPM2 voice and CosyVoice3 /
+# Chatterbox): Qwen3-TTS 1.7B Base (Alibaba, Apache-2.0) cloning 9_2's recording. It says every voice cloned from a
+# recording (the ready 9_2, saved voices, a recording) in the languages it knows; VoxCPM2 stays for a voice from a
+# description (and languages Qwen3-TTS does not speak). Its own folder of packages, put first for its worker: exactly
+# the distributions it imported on Windows (engine probe run 39601510428) that the main folder does not have in the
+# same version (transformers 4.57.3 there, 5.20.1 here); torch, numpy, librosa ... come from the main folder. Its
+# 'sox' (imported by its 25 Hz tokenizer, never used by the 12 Hz model) has no wheel: a stub stands in (_SOX_STUB).
+QWEN_VERSION = 1
+SITE_QWEN = ROOT / "site_qwen"
+QWEN_REPO, QWEN_REV = "Qwen/Qwen3-TTS-12Hz-1.7B-Base", "fd4b254389122332181a7c3db7f27e918eec64e3"   # 4.54 GB
+QWEN_PACKAGES = [
+    "accelerate==1.12.0", "filelock==3.32.3", "huggingface-hub==0.36.2", "narwhals==2.27.1", "opentelemetry-api==1.45.1",
+    "pandas==3.0.6", "protobuf==7.36.2", "psutil==7.2.2", "python-dateutil==2.9.0.post0", "pytz==2026.5",
+    "qwen-tts==0.1.1", "rich==15.0.0", "scikit-learn==1.9.1", "six==1.17.0", "threadpoolctl==3.7.0",
+    "tokenizers==0.22.2", "transformers==4.57.3",
+]
+# the languages it speaks (the form's codes -> its names; '' = it finds out by itself)
+QWEN_LANGS = {"": None, "en": "English", "ru": "Russian", "de": "German", "fr": "French", "es": "Spanish",
+              "it": "Italian", "pt": "Portuguese", "zh": "Chinese", "ja": "Japanese", "ko": "Korean"}
+_SOX_STUB = ('"""Stand-in for the \'sox\' package (no wheel): Qwen3-TTS imports it for its 25 Hz tokenizer, which the 12 Hz '
+             'model never uses."""\n\n\nclass Transformer:\n    def __init__(self, *a, **k):\n        raise RuntimeError('
+             '"SoX is not part of MediaEngine\'s voice add-on")\n')
+NEED_FREE = 26 * 10 ** 9            # packages (2.8 GB with CPU torch, ~5 GB with CUDA) + models (10 GB) + room
+NEED_FREE_QWEN = 8 * 10 ** 9        # the new engine alone: its packages (~0.2 GB) + its model (4.5 GB) + room
 MAX_TEXT = 5000
 
 _LOCK = threading.Lock()
@@ -76,8 +99,9 @@ _THREAD: list[threading.Thread] = []
 # The owner's pick from the voice lab (2026-10-20 18:03 / 18:16): 9_2 - "a cleaner voice, not bad" (9_3 was better but
 # "lisping" on s / sh / ch, which a de-esser did not cure; 4_4 "robot in the lows", 4_2 "squeaky", 3.1 "sounds like
 # sex"). Its very take (voice lab round 9, r9_design_t11: 4_2's recipe with another seed) ships with the program (FLAC)
-# and every voice-over in it is that same voice (VoxCPM2 ultimate cloning: the recording, its exact words, the same
-# recording as the timbre; each piece kept near its pitch by the worker). The recording says this text:
+# and every voice-over in it is that same voice: since 2026-10-21 said by Qwen3-TTS from the recording and its exact
+# words (his pick 14_5 - "livelier" than VoxCPM2's ultimate cloning, which stays when Qwen3-TTS is not there yet);
+# each piece kept near its pitch by the worker. The recording says this text:
 HOST_REF_TEXT = ("Here's what you need to know this week. First, flights to Europe got almost twenty percent cheaper. "
                  "Second, if you book before Friday, most airlines let you change the dates for free. "
                  "And third, the best deals are on Tuesday and Wednesday. Save this, and send it to someone who's planning a trip.")
@@ -119,10 +143,17 @@ def installed() -> bool:
                 and SITE.is_dir() and (MODELS / "voxcpm").is_dir() and (MODELS / "whisper").is_dir())
 
 
+def qwen_installed() -> bool:
+    """The engine of the voices cloned from a recording (Qwen3-TTS) is there, beside an installed add-on."""
+    q = manifest().get("qwen") or {}
+    return bool(installed() and q.get("version") == QWEN_VERSION and SITE_QWEN.is_dir() and (MODELS / "qwen3tts").is_dir())
+
+
 def status() -> dict:
     m = manifest()
     s = dict(INSTALL)
-    s.update(installed=installed(), manifest=m, needs_reinstall=bool(m) and not installed() and s["state"] != "running",
+    s.update(installed=installed(), qwen=qwen_installed(), manifest=m,
+             needs_reinstall=bool(m) and not installed() and s["state"] != "running",
              nvidia=_nvidia_name(), free=_free(ROOT))
     return s
 
@@ -170,7 +201,7 @@ def start_install(cpu: bool = False) -> None:
     with _LOCK:
         if INSTALL["state"] == "running":
             raise VoiceError("The voice add-on is already being installed.")
-        if installed() and not cpu:
+        if installed() and qwen_installed() and not cpu:
             raise VoiceError("The voice add-on is already installed.")
         if busy():
             raise VoiceError("A voice-over is being made. Install when it is ready.")
@@ -216,7 +247,7 @@ def _file_ok(p: Path, size: int, kind: str, want: str) -> bool:
     return h.hexdigest() == want
 
 
-def _pip(site_dir: Path, cpu: bool, log: Path) -> None:
+def _pip(site_dir: Path, cpu: bool, log: Path, packages: list[str] | None = None) -> None:
     from . import auto_edit as ae
     tmp = ROOT / "tmp"
     tmp.mkdir(parents=True, exist_ok=True)
@@ -225,7 +256,7 @@ def _pip(site_dir: Path, cpu: bool, log: Path) -> None:
            "--index-url", "https://pypi.org/simple"]
     if not cpu:
         cmd += ["--extra-index-url", CUDA_INDEX_NEW if re.search(r"RTX\s*50\d0", _nvidia_name(), re.I) else CUDA_INDEX]
-    cmd += PACKAGES
+    cmd += list(packages or PACKAGES)
     env = dict(os.environ, TMP=str(tmp), TEMP=str(tmp), PIP_NO_INPUT="1", PYTHONNOUSERSITE="1")
     env.pop("PYTHONPATH", None)
     with log.open("a", encoding="utf-8", errors="replace") as lf:
@@ -265,17 +296,26 @@ def _install_now(cpu: bool) -> None:
     log = ROOT / "install.log"
     try:
         ROOT.mkdir(parents=True, exist_ok=True)
-        if _free(ROOT) < NEED_FREE:
-            raise VoiceError("Not enough free space on the disk of the data folder: the voice add-on needs about 20 GB free.")
+        core = cpu or not installed()           # the main part (VoxCPM2, Whisper, torch) - kept when it is there
+        if _free(ROOT) < (NEED_FREE if core else NEED_FREE_QWEN):
+            raise VoiceError("Not enough free space on the disk of the data folder: the voice add-on needs about "
+                             + ("26" if core else "8") + " GB free.")
         gpu = "" if cpu else _nvidia_name()
-        new_site = ROOT / "site.__install__"
-        if new_site.exists():
-            shutil.rmtree(new_site, ignore_errors=True)
+        new_site, new_qsite = ROOT / "site.__install__", ROOT / "site_qwen.__install__"
+        for d in ((new_site, new_qsite) if core else (new_qsite,)):
+            if d.exists():
+                shutil.rmtree(d, ignore_errors=True)
         INSTALL.update(step="packages", detail="")
-        _pip(new_site, cpu or not gpu, log)
+        if core:
+            _pip(new_site, cpu or not gpu, log)
+        _pip(new_qsite, cpu or not gpu, log, QWEN_PACKAGES)
+        (new_qsite / "sox").mkdir(parents=True, exist_ok=True)
+        (new_qsite / "sox" / "__init__.py").write_text(_SOX_STUB, "utf-8")
         INSTALL.update(step="models", detail="")
+        parts = ([("voxcpm", VOXCPM_REPO, VOXCPM_REV), ("whisper", WHISPER_REPO, WHISPER_REV)] if core else [])
+        parts.append(("qwen3tts", QWEN_REPO, QWEN_REV))
         files = []
-        for key, repo, rev in (("voxcpm", VOXCPM_REPO, VOXCPM_REV), ("whisper", WHISPER_REPO, WHISPER_REV)):
+        for key, repo, rev in parts:
             files += [(key, repo, rev, *f) for f in _hf_files(repo, rev)]
         total = sum(f[4] for f in files)
         if _free(ROOT) < total + 1_000_000_000:
@@ -301,34 +341,42 @@ def _install_now(cpu: bool) -> None:
             done += size
             INSTALL.update(done=done)
         INSTALL.update(step="checking_addon", detail="")
-        for key in ("voxcpm", "whisper"):
+        for key, _repo, _rev in parts:
             fin = MODELS / key
             if fin.exists():
                 shutil.rmtree(fin, ignore_errors=True)
             ae._replace_retry(MODELS / (key + ".__install__"), fin, tries=30)
-        old = None
-        if SITE.exists():
-            old = ROOT / f"site.__old__{int(time.time())}"
-            ae._replace_retry(SITE, old, tries=30)
-        try:
-            ae._replace_retry(new_site, SITE, tries=30)
-        except Exception:
-            if old is not None and not SITE.exists():
-                ae._replace_retry(old, SITE, tries=30)          # the add-on as it was
-            raise
-        if old is not None:
-            shutil.rmtree(old, ignore_errors=True)
-        test = _run_worker({"task": "selftest"}, ROOT / "selftest", timeout=600)
+        for new, final in (((new_site, SITE), (new_qsite, SITE_QWEN)) if core else ((new_qsite, SITE_QWEN),)):
+            old = None
+            if final.exists():
+                old = ROOT / f"{final.name}.__old__{int(time.time())}"
+                ae._replace_retry(final, old, tries=30)
+            try:
+                ae._replace_retry(new, final, tries=30)
+            except Exception:
+                if old is not None and not final.exists():
+                    ae._replace_retry(old, final, tries=30)          # the add-on as it was
+                raise
+            if old is not None:
+                shutil.rmtree(old, ignore_errors=True)
+        m = manifest()
+        if core:
+            test = _run_worker({"task": "selftest"}, ROOT / "selftest", timeout=600)
+            if not test.get("ok"):
+                raise VoiceError("The voice add-on was installed but does not start: " + str(test.get("error") or "")[:300])
+            m = {"version": ADDON_VERSION, "python": f"{sys.version_info[0]}.{sys.version_info[1]}", "packages": PACKAGES,
+                 "torch": test.get("torch"), "cuda": bool(test.get("cuda")), "gpu": test.get("gpu") or "",
+                 "vram_gb": test.get("vram_gb") or 0, "models": {"voxcpm": [VOXCPM_REPO, VOXCPM_REV],
+                                                                 "whisper": [WHISPER_REPO, WHISPER_REV]},
+                 "installed_at": now_iso()}
+            _write_manifest(m)                    # the main part works even if the new engine fails below
+        test = _run_worker({"task": "selftest", "engine": "qwen"}, ROOT / "selftest", timeout=600)
         if not test.get("ok"):
-            raise VoiceError("The voice add-on was installed but does not start: " + str(test.get("error") or "")[:300])
-        m = {"version": ADDON_VERSION, "python": f"{sys.version_info[0]}.{sys.version_info[1]}", "packages": PACKAGES,
-             "torch": test.get("torch"), "cuda": bool(test.get("cuda")), "gpu": test.get("gpu") or "",
-             "vram_gb": test.get("vram_gb") or 0, "models": {"voxcpm": [VOXCPM_REPO, VOXCPM_REV],
-                                                             "whisper": [WHISPER_REPO, WHISPER_REV]},
-             "installed_at": now_iso(), "bytes": _tree_bytes(ROOT)}
-        tmp = MANIFEST.with_suffix(".tmp")
-        tmp.write_text(json.dumps(m, indent=1), "utf-8")
-        os.replace(tmp, MANIFEST)
+            raise VoiceError("The new voice engine was installed but does not start: " + str(test.get("error") or "")[:300])
+        m["qwen"] = {"version": QWEN_VERSION, "packages": QWEN_PACKAGES, "model": [QWEN_REPO, QWEN_REV],
+                     "qwen_tts": test.get("qwen_tts"), "installed_at": now_iso()}
+        m["bytes"] = _tree_bytes(ROOT)
+        _write_manifest(m)
         shutil.rmtree(ROOT / "tmp", ignore_errors=True)
         INSTALL.update(state="done", step="", detail="", done=INSTALL["total"])
     except Exception as exc:
@@ -347,6 +395,12 @@ def _install_now(cpu: bool) -> None:
             pass
 
 
+def _write_manifest(m: dict) -> None:
+    tmp = MANIFEST.with_suffix(".tmp")
+    tmp.write_text(json.dumps(m, indent=1), "utf-8")
+    os.replace(tmp, MANIFEST)
+
+
 def _tree_bytes(p: Path) -> int:
     n = 0
     for root, _dirs, files in os.walk(p):
@@ -362,9 +416,9 @@ def remove_addon() -> None:
     """Delete the add-on (packages and models; the voice-overs made with it stay)."""
     if installing() or busy():
         raise VoiceError("The voice add-on is busy. Wait until it has finished.")
-    for name in ("site", "models", "site.__install__", "tmp", "selftest"):
+    for name in ("site", "site_qwen", "models", "site.__install__", "site_qwen.__install__", "tmp", "selftest"):
         shutil.rmtree(ROOT / name, ignore_errors=True)
-    for old in ROOT.glob("site.__old__*"):
+    for old in list(ROOT.glob("site.__old__*")) + list(ROOT.glob("site_qwen.__old__*")):
         shutil.rmtree(old, ignore_errors=True)
     MANIFEST.unlink(missing_ok=True)
     INSTALL.update(state="idle", step="", error="", detail="", done=0, total=0)
@@ -376,7 +430,7 @@ def _run_worker(job: dict, work: Path, timeout: float = 3600, on_line=None) -> d
     from . import auto_edit as ae
     work.mkdir(parents=True, exist_ok=True)
     job = dict(job, site=str(SITE), model_dir=str(MODELS / "voxcpm"), whisper_dir=str(MODELS / "whisper"),
-               work_dir=str(work))
+               site_qwen=str(SITE_QWEN), qwen_dir=str(MODELS / "qwen3tts"), work_dir=str(work))
     jf = work / "worker_job.json"
     jf.write_text(json.dumps(job, ensure_ascii=False, indent=1), "utf-8")
     env = {k: v for k, v in os.environ.items() if not k.upper().startswith(("PYTHON", "HF_", "TRANSFORMERS"))
@@ -1075,11 +1129,14 @@ def _do(jid: str) -> dict:
                 return {"ok": False, "error": "The recording of this voice is missing from this version of MediaEngine."}
         cfg = (load_config().get("voice") or {})
         device = cfg.get("device") or ("cuda" if manifest().get("cuda") else "cpu")
+        lang = str(job.get("language") or "")
+        engine = "qwen" if v.get("ref_wav") and lang in QWEN_LANGS and qwen_installed() else "voxcpm"
         pf = min(2.0, max(0.3, float(job.get("pauses") or 1.0)))
         pieces = [dict(c, pause_after=round(float(c["pause_after"]) * pf, 3)) for c in chunks(job["text"].replace("*", ""))]
         res = _run_worker({"task": "tts", "chunks": pieces, "voice": v, "language": job.get("language"),
                            "out_wav": str(d / "voice_raw.wav"), "seed": int(cfg.get("seed") or 1),
-                           "steps": cfg.get("steps"), "device": device, "cfg": v.get("cfg") or cfg.get("cfg")},
+                           "steps": cfg.get("steps"), "device": device, "cfg": v.get("cfg") or cfg.get("cfg"),
+                           "engine": engine, "qwen_language": QWEN_LANGS.get(lang)},
                           d / "work", timeout=6 * 3600,
                           on_line=_progress)
         if not res.get("ok"):
@@ -1102,7 +1159,7 @@ def _do(jid: str) -> dict:
         n = max(1, len(re.findall(r"[\w']+", job["text"])))
         secs = res.get("seconds")
         return {"ok": True, "seconds": round(float(secs) / sp, 2) if secs else secs, "device": res.get("device"),
-                "said": res.get("said"), "speed": sp,
+                "said": res.get("said"), "speed": sp, "engine": engine,
                 "word_errors": res.get("word_errors"), "words": n, "chunks": res.get("chunks"), "load_s": res.get("load_s"),
                 "steps": res.get("steps"), "language": res.get("language"),
                 "files": {"voice": "voice.wav", "srt": "captions.srt"}}

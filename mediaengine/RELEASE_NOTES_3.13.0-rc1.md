@@ -122,7 +122,13 @@ The owner: "voice-over, processing and text in the video - MedEng". **Auto Edit 
   words' times scale with it) and short / normal / long pauses between the pieces (x0.6 / 1 / 1.6); the pace used last
   comes first. Finish a video for several videos at once (at most 30): every video checked first (nothing is made unless
   all can be; an error names the video), then one render job per video in order; a new voice-over is made once and put
-  on each; captions of the speech are each video's own.
+  on each; captions of the speech are each video's own. The owner's pick from voice lab round 14 (14_5): Qwen3-TTS 1.7B Base
+  (Apache-2.0, pinned commit fd4b2543) says every voice cloned from a recording (the ready 9_2 with its words, saved
+  voices, a recording; its own languages: en ru de fr es it pt zh ja ko, or found by itself); VoxCPM2 stays for a
+  voice from a description and other languages. Its packages go into their own folder (site_qwen, put first for its
+  worker: exactly what it imported on Windows - engine probe run 39601510428 - that the main folder lacks in that
+  version; a stub for 'sox', which has no wheel and is never used by the 12 Hz model). A fresh install takes both
+  (about 13 GB); an installed add-on gets "Download the new voice engine" (4.7 GB) and keeps everything else.
 - **Captions for a video**: the speech of any video into captions burned into a copy (Whisper's languages).
 - Quit / Update / switching builds ask while a voice-over is being made; one interrupted by a closed program is made
   again once.

@@ -180,6 +180,52 @@ def main() -> int:
           and page.count("<span>normal speed</span>") == 0)
     check("pace: anything unknown is the normal pace", vo.pace("x' onload", "") == ("normal", "normal"))
 
+    # the engine the owner picked (14_5, Qwen3-TTS) for voices from a recording; VoxCPM2 for a description
+    page = c.get("/auto/voice", headers=H).get_data(as_text=True)
+    check("an add-on from before the pick offers the new engine (once, a button)", "id='voEngine'" in page
+          and "Download the new voice engine" in page and not vo.qwen_installed())
+    tts_jobs = lambda: [x for x in sent if x["task"] == "tts"]
+    check("without it, the voice 9_2 is said as before (VoxCPM2)", tts_jobs()[-1].get("engine") == "voxcpm")
+    started = []
+    real_install = vo._install
+    vo._install = lambda cpu: (started.append(cpu), vo.INSTALL.update(state="done"))
+    try:
+        vo.start_install()
+        time.sleep(0.3)
+        check("the button installs only what is missing (the add-on is there)", started == [False], started)
+        man = json.loads(vo.MANIFEST.read_text("utf-8"))
+        man["qwen"] = {"version": vo.QWEN_VERSION, "packages": vo.QWEN_PACKAGES, "model": [vo.QWEN_REPO, vo.QWEN_REV]}
+        vo.MANIFEST.write_text(json.dumps(man), "utf-8")
+        vo.SITE_QWEN.mkdir(parents=True, exist_ok=True)
+        (vo.MODELS / "qwen3tts").mkdir(parents=True, exist_ok=True)
+        refused = ""
+        try:
+            vo.start_install()
+        except vo.VoiceError as exc:
+            refused = str(exc)
+        check("with both there: 'already installed'", "already installed" in refused, refused)
+    finally:
+        vo._install = real_install
+        vo.INSTALL.update(state="idle")
+    page = c.get("/auto/voice", headers=H).get_data(as_text=True)
+    check("with the new engine: no offer, the page says which voice goes where", "id='voEngine'" not in page
+          and "Voices from a recording (9_2 too): Qwen3-TTS" in page and vo.qwen_installed())
+    for text, voice, lang, want, qlang in (("Hello from the new engine.", vo.DEFAULT_VOICE, "en", "qwen", "English"),
+                                           ("Привет от нового движка.", vo.DEFAULT_VOICE, "ru", "qwen", "Russian"),
+                                           ("Detect it by itself.", vo.DEFAULT_VOICE, "", "qwen", None),
+                                           ("Привіт, як справи?", vo.DEFAULT_VOICE, "uk", "voxcpm", None)):
+        c.post("/auto/voice/new", data={"text": text, "voice": voice, "language": lang}, headers=H)
+        wj = wait(vo.list_jobs()[0]["id"])
+        tj = tts_jobs()[-1]
+        check(f"engine: the voice 9_2 in '{lang or 'auto'}' -> {want}", wj["state"] == "done" and tj.get("engine") == want
+              and tj.get("qwen_language") == qlang and (wj.get("result") or {}).get("engine") == want,
+              (tj.get("engine"), tj.get("qwen_language"), (wj.get("result") or {}).get("engine")))
+    c.post("/auto/voice/new", data={"text": "A described voice says this.", "voice": "describe", "language": "en",
+                                    "description": "a calm man in his forties, deep warm voice"}, headers=H)
+    wait(vo.list_jobs()[0]["id"])
+    check("engine: a voice from a description stays on VoxCPM2", tts_jobs()[-1].get("engine") == "voxcpm"
+          and tts_jobs()[-1]["voice"].get("description"))
+
     # a real video (vertical, with sound) and the voice burned onto it
     video = home / "clip.mp4"
     subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=540x960:rate=30:duration=2",
