@@ -1,7 +1,7 @@
 name: test-only-social246
 on:
   pull_request:
-    paths: ['.ci/test-only/**', '.github/workflows/test-only-social246.yml']
+    paths: ['.ci/test-only/**', '.github/workflows/test-only-*.yml', 'FILE_MANIFEST.json', 'README.txt', 'LOCAL_VALIDATION.json', 'SENSITIVE_DATA_REVIEW.json']
   workflow_dispatch:
 permissions:
   contents: read
@@ -26,5 +26,6 @@ jobs:
           python-version: '3.11'
       - run: python -m pip install Pillow==12.3.0
       - run: python -B .ci/test-only/harness/verify_files.py
+      - run: python -B .ci/test-only/harness/test_workflow_paths.py
       - run: python -X utf8 -B .ci/test-only/harness/run.py social246
         shell: powershell
