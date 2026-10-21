@@ -1,42 +1,61 @@
 PASS Install starts
-12:43:35 running checking  0/0 MB
-12:43:40 running packages Installing : 0/0 MB
-12:44:30 running packages Installed annotated-types-0.8.0 0/0 MB
-12:44:35 running models model.safetensors 450/5446 MB
-12:44:40 running models model.safetensors 2010/5446 MB
-12:44:45 running models model.safetensors 3345/5446 MB
-12:44:50 running models model.safetensors 4811/5446 MB
-12:44:55 running models model.safetensors 4957/5446 MB
-12:45:00 running models model.bin 5320/5446 MB
-12:45:05 running checking_addon  5446/5446 MB
-12:45:10 done   5446/5446 MB
+21:00:09 running packages  0/0 MB
+21:00:14 running packages Downloading voxcpm-2.0.3-py3-none-any.whl.metadata 0/0 MB
+21:00:19 running packages Downloading xxhash-4.0.2-cp311-cp311-win_amd64.whl 0/0 MB
+21:00:24 running packages Installing : 0/0 MB
+21:01:14 running packages Downloading protobuf-7.36.2-cp310-abi3-win_amd64.whl.metadata 0/0 MB
+21:01:19 running packages Installing : 0/0 MB
+21:01:39 running models model.safetensors 556/9991 MB
+21:01:44 running models model.safetensors 1281/9991 MB
+21:01:49 running models model.safetensors 2392/9991 MB
+21:01:54 running models model.safetensors 3753/9991 MB
+21:01:59 running models model.safetensors 4957/9991 MB
+21:02:04 running models tokenizer_config.json 4960/9991 MB
+21:02:09 running models model.safetensors 5448/9991 MB
+21:02:14 running models model.safetensors 7087/9991 MB
+21:02:19 running models model.safetensors 8886/9991 MB
+21:02:24 running models model.safetensors 9306/9991 MB
+21:02:29 running models model.safetensors 9988/9991 MB
+21:02:34 running checking_addon  9991/9991 MB
+21:02:49 done   9991/9991 MB
 PASS the add-on is installed
 PASS its manifest: version, Python, torch, models
+PASS the new engine (Qwen3-TTS, the owner's pick 14_5) is installed with it
 PASS the page shows the forms once installed
 PASS a voice-over is accepted
-12:45:10 20261021-124510-f4c7a4 working starting 0%
-12:45:16 20261021-124510-f4c7a4 working loading 2%
-12:46:27 20261021-124510-f4c7a4 working speaking 1/1 5%
-12:57:16 20261021-124510-f4c7a4 working listening 95%
-12:57:22 20261021-124510-f4c7a4 working finishing 97%
-12:57:25 20261021-124510-f4c7a4 done  0%
+21:02:49 20261021-210249-7a2f04 working starting 0%
+21:02:52 20261021-210249-7a2f04 working loading 2%
+21:03:25 20261021-210249-7a2f04 working speaking 1/1 5%
+21:05:37 20261021-210249-7a2f04 working listening 95%
+21:05:43 20261021-210249-7a2f04 working finishing 97%
+21:05:46 20261021-210249-7a2f04 done  0%
 PASS the voice-over is made
 PASS every word said (listened to)
 PASS a plausible length
-12:57:25 20261021-125725-3505c9 working starting 0%
-12:57:34 20261021-125725-3505c9 working loading 2%
-12:58:40 20261021-125725-3505c9 working speaking 1/1 5%
-13:04:10 20261021-125725-3505c9 working listening 95%
-13:04:16 20261021-125725-3505c9 done  0%
+PASS said by the new engine (Qwen3-TTS) in the voice 9_2
+21:05:46 20261021-210546-9b506a working starting 0%
+21:05:49 20261021-210546-9b506a working loading 2%
+21:06:40 20261021-210546-9b506a working speaking 1/1 5%
+21:07:52 20261021-210546-9b506a working speaking 1/1 15%
+21:08:40 20261021-210546-9b506a working speaking 1/1 26%
+21:09:28 20261021-210546-9b506a working speaking 1/1 36%
+21:10:22 20261021-210546-9b506a working listening 95%
+21:10:28 20261021-210546-9b506a done  0%
 PASS a Russian voice-over in the same voice, heard back in Cyrillic
 PASS its pace: a bit faster (8% shorter), the captions within the faster voice
-13:04:16 20261021-130416-74ba0b working video 50%
-13:04:22 20261021-130416-74ba0b done  0%
+21:10:28 20261021-211028-c587b2 working starting 0%
+21:10:31 20261021-211028-c587b2 working loading 2%
+21:11:52 20261021-211028-c587b2 working speaking 1/1 5%
+21:14:46 20261021-211028-c587b2 working listening 95%
+21:14:52 20261021-211028-c587b2 done  0%
+PASS a voice from a description is still made (VoxCPM2)
+21:14:52 20261021-211452-fe7180 working video 50%
+21:14:58 20261021-211452-fe7180 done  0%
 PASS the voice onto the video, captions burned, checked
-13:04:22 20261021-130422-fa49eb working starting 0%
-13:04:25 20261021-130422-fa49eb working listening 20%
-13:04:31 20261021-130422-fa49eb working video 50%
-13:04:34 20261021-130422-fa49eb done  0%
+21:14:58 20261021-211458-6e7350 working starting 0%
+21:15:01 20261021-211458-6e7350 working listening 20%
+21:15:19 20261021-211458-6e7350 working video 50%
+21:15:22 20261021-211458-6e7350 done  0%
 PASS captions from the video's own speech hear the voice-over
 PASS the page in Russian with a finished voice-over
-{"passed": 13, "total": 13}
+{"passed": 16, "total": 16}

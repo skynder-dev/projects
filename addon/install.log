@@ -188,3 +188,58 @@ Downloading voxcpm-2.0.3-py3-none-any.whl (88 kB)
 Downloading xxhash-4.0.2-cp311-cp311-win_amd64.whl (36 kB)
 Installing collected packages: torchaudio, mpmath, brotli, xxhash, voxcpm, urllib3, typing-inspection, typing-extensions, truststore, transformers, tqdm, torch, tokenizers, sympy, soxr, soundfile, setuptools, scipy, safetensors, requests, regex, pyyaml, pydantic-core, pydantic, pycparser, pooch, platformdirs, pillow, packaging, onnxruntime, numpy, numba, networkx, msgpack, markupsafe, llvmlite, librosa, lazy-loader, joblib, jinja2, idna, huggingface-hub, httpx2, httpcore2, hf-xet, h11, fsspec, filelock, faster-whisper, einops, dill, decorator, ctranslate2, colorama, cloudpickle, charset-normalizer, cffi, certifi, av, audioread, anyio, annotated-types
 Successfully installed annotated-types-0.8.0 anyio-4.15.1 audioread-3.1.0 av-18.1.0 brotli-1.2.0 certifi-2026.10.18 cffi-2.1.1 charset-normalizer-3.5.2 cloudpickle-3.1.2 colorama-0.4.6 ctranslate2-4.8.3 decorator-5.3.1 dill-0.3.8 einops-0.8.2 faster-whisper-1.2.1 filelock-4.2.4 fsspec-2025.3.0 h11-0.16.0 hf-xet-1.7.0 httpcore2-2.14.0 httpx2-2.14.0 huggingface-hub-2.2.0 idna-3.20 jinja2-3.1.6 joblib-1.6.0 lazy-loader-0.6 librosa-0.11.0 llvmlite-0.50.0 markupsafe-3.0.4 mpmath-1.3.0 msgpack-1.2.3 networkx-3.6.1 numba-0.68.0 numpy-2.4.6 onnxruntime-1.31.0 packaging-26.3 pillow-12.3.0 platformdirs-4.13.5 pooch-1.9.0 pycparser-3.11 pydantic-2.14.1 pydantic-core-2.50.1 pyyaml-6.0.3 regex-2026.9.29 requests-2.34.2 safetensors-0.8.0 scipy-1.17.1 setuptools-84.0.0 soundfile-0.14.0 soxr-1.1.0 sympy-1.14.0 tokenizers-0.23.3 torch-2.8.0 torchaudio-2.8.0 tqdm-4.70.1 transformers-5.20.1 truststore-0.10.5 typing-extensions-4.16.0 typing-inspection-0.4.4 urllib3-2.8.0 voxcpm-2.0.3 xxhash-4.0.2
+
+$ C:\hostedtoolcache\windows\Python\3.11.9\x64\python.exe -m pip install --disable-pip-version-check --no-warn-script-location --no-input --progress-bar off --no-cache-dir --only-binary :all: --no-deps --target D:\a\_temp\home-voice\addons\voice\site_qwen.__install__ --index-url https://pypi.org/simple accelerate==1.12.0 filelock==3.32.3 huggingface-hub==0.36.2 narwhals==2.27.1 opentelemetry-api==1.45.1 pandas==3.0.6 protobuf==7.36.2 psutil==7.2.2 python-dateutil==2.9.0.post0 pytz==2026.5 qwen-tts==0.1.1 rich==15.0.0 scikit-learn==1.9.1 six==1.17.0 threadpoolctl==3.7.0 tokenizers==0.22.2 transformers==4.57.3
+Collecting accelerate==1.12.0
+  Downloading accelerate-1.12.0-py3-none-any.whl.metadata (19 kB)
+Collecting filelock==3.32.3
+  Downloading filelock-3.32.3-py3-none-any.whl.metadata (2.0 kB)
+Collecting huggingface-hub==0.36.2
+  Downloading huggingface_hub-0.36.2-py3-none-any.whl.metadata (15 kB)
+Collecting narwhals==2.27.1
+  Downloading narwhals-2.27.1-py3-none-any.whl.metadata (15 kB)
+Collecting opentelemetry-api==1.45.1
+  Downloading opentelemetry_api-1.45.1-py3-none-any.whl.metadata (1.4 kB)
+Collecting pandas==3.0.6
+  Downloading pandas-3.0.6-cp311-cp311-win_amd64.whl.metadata (19 kB)
+Collecting protobuf==7.36.2
+  Downloading protobuf-7.36.2-cp310-abi3-win_amd64.whl.metadata (595 bytes)
+Collecting psutil==7.2.2
+  Downloading psutil-7.2.2-cp37-abi3-win_amd64.whl.metadata (22 kB)
+Collecting python-dateutil==2.9.0.post0
+  Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+Collecting pytz==2026.5
+  Downloading pytz-2026.5-py2.py3-none-any.whl.metadata (22 kB)
+Collecting qwen-tts==0.1.1
+  Downloading qwen_tts-0.1.1-py3-none-any.whl.metadata (61 kB)
+Collecting rich==15.0.0
+  Downloading rich-15.0.0-py3-none-any.whl.metadata (18 kB)
+Collecting scikit-learn==1.9.1
+  Downloading scikit_learn-1.9.1-cp311-cp311-win_amd64.whl.metadata (9.3 kB)
+Collecting six==1.17.0
+  Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+Collecting threadpoolctl==3.7.0
+  Downloading threadpoolctl-3.7.0-py3-none-any.whl.metadata (24 kB)
+Collecting tokenizers==0.22.2
+  Downloading tokenizers-0.22.2-cp39-abi3-win_amd64.whl.metadata (7.4 kB)
+Collecting transformers==4.57.3
+  Downloading transformers-4.57.3-py3-none-any.whl.metadata (43 kB)
+Downloading accelerate-1.12.0-py3-none-any.whl (380 kB)
+Downloading filelock-3.32.3-py3-none-any.whl (98 kB)
+Downloading huggingface_hub-0.36.2-py3-none-any.whl (566 kB)
+Downloading narwhals-2.27.1-py3-none-any.whl (483 kB)
+Downloading opentelemetry_api-1.45.1-py3-none-any.whl (60 kB)
+Downloading pandas-3.0.6-cp311-cp311-win_amd64.whl (9.9 MB)
+Downloading protobuf-7.36.2-cp310-abi3-win_amd64.whl (456 kB)
+Downloading psutil-7.2.2-cp37-abi3-win_amd64.whl (137 kB)
+Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Downloading pytz-2026.5-py2.py3-none-any.whl (506 kB)
+Downloading qwen_tts-0.1.1-py3-none-any.whl (113 kB)
+Downloading rich-15.0.0-py3-none-any.whl (310 kB)
+Downloading scikit_learn-1.9.1-cp311-cp311-win_amd64.whl (8.3 MB)
+Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+Downloading threadpoolctl-3.7.0-py3-none-any.whl (26 kB)
+Downloading tokenizers-0.22.2-cp39-abi3-win_amd64.whl (2.7 MB)
+Downloading transformers-4.57.3-py3-none-any.whl (12.0 MB)
+Installing collected packages: pytz, transformers, tokenizers, threadpoolctl, six, scikit-learn, rich, qwen-tts, python-dateutil, psutil, protobuf, pandas, opentelemetry-api, narwhals, huggingface-hub, filelock, accelerate
+Successfully installed accelerate-1.12.0 filelock-3.32.3 huggingface-hub-0.36.2 narwhals-2.27.1 opentelemetry-api-1.45.1 pandas-3.0.6 protobuf-7.36.2 psutil-7.2.2 python-dateutil-2.9.0.post0 pytz-2026.5 qwen-tts-0.1.1 rich-15.0.0 scikit-learn-1.9.1 six-1.17.0 threadpoolctl-3.7.0 tokenizers-0.22.2 transformers-4.57.3
