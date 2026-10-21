@@ -929,6 +929,7 @@ def _translate_text(t: str) -> str:
 
 # messages written by the page scripts (only these exact quoted strings are replaced inside <script>)
 JS_PHRASES = {
+    "' videos'": "' видео'",
     "' elapsed'": "' прошло'", "' · about '": "' · примерно '", "' min left'": "' мин осталось'",
     "' · less than a minute left'": "' · меньше минуты осталось'",
     "' · finding moments: '": "' · поиск моментов: '", "'less than a minute left'": "'меньше минуты осталось'",

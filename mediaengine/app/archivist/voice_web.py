@@ -657,7 +657,7 @@ def register(app, page, err_page, e, human_bytes):
                 f"<option value='quiet'>quiet</option><option value='medium' selected>medium</option><option value='loud'>loud</option>"
                 f"</select><span class='muted vo-sub'>It gets quieter while the voice speaks.</span></div>"
                 f"<div style='margin-top:14px'><button class='ae-big'>Make the video</button> "
-                f"<span class='muted vo-sub' data-msg></span></div></div>{_preview_box()}</div></form>"
+                f"<b class='vo-sub' data-count></b> <span class='muted vo-sub' data-msg></span></div></div>{_preview_box()}</div></form>"
                 f"<div class='row' style='margin-top:14px'><a class='btn btn2' href='/auto/voice'>Voice-over and text</a></div>")
 
     @app.get("/auto/finish")
@@ -973,14 +973,21 @@ _EDIT_JS = (
 
 # Choose… (a Windows file window) and the reels saved lately, on pages other than the Voice-over page itself.
 _PICK_JS = (
+    # how many videos the one-page form will make (the main one + more, each once)
+    "function meCount(){const f=document.querySelector('form[data-textform]'),b=f&&f.querySelector('[data-count]');if(!b)return;"
+    "const k=x=>x.trim().replace(/^\"|\"$/g,'').replace(/\\//g,'\\\\').toLowerCase(),s=new Set();"
+    "const v=f.querySelector('input[name=video]');if(v&&v.value.trim())s.add(k(v.value));"
+    "const t=f.querySelector('textarea[name=videos_more]');if(t)t.value.split(/\\r?\\n/).filter(x=>x.trim()).forEach(x=>s.add(k(x)));"
+    "f.querySelectorAll('input[name=more]:checked').forEach(x=>s.add(k(x.value)));b.textContent=s.size>1?s.size+' videos':''}"
+    "document.addEventListener('input',meCount);document.addEventListener('change',meCount);"
     "document.addEventListener('change',ev=>{const sl=ev.target.closest('select[data-fill]');if(!sl||!sl.value)return;"
-    "const i=sl.closest('form').querySelector('input[name=video],input[name=path]');if(i)i.value=sl.value});"
+    "const i=sl.closest('form').querySelector('input[name=video],input[name=path]');if(i)i.value=sl.value;meCount()});"
     "document.addEventListener('click',async ev=>{const b=ev.target.closest('[data-pick]');if(!b)return;const f=b.closest('form'),"
     "m=f.querySelector('[data-msg]');if(m)m.textContent=window.ME_L?ME_L('A Windows window is open — it may be behind this window.'):"
     "'A Windows window is open — it may be behind this window.';"
     "try{const r=await fetch('/api/auto/pick-voice-file',{method:'POST',headers:{'Content-Type':'application/json'},"
     "body:JSON.stringify({kind:b.dataset.pick})});const x=await r.json();if(x.paths){const t=b.parentNode.querySelector('textarea');"
-    "t.value=(t.value.trim()?t.value.trim()+'\\n':'')+x.paths.join('\\n');if(m)m.textContent=''}"
+    "t.value=(t.value.trim()?t.value.trim()+'\\n':'')+x.paths.join('\\n');if(m)m.textContent='';meCount()}"
     "else if(x.path){b.parentNode.querySelector('input').value=x.path;"
     "if(m)m.textContent=''}else if(m)m.textContent=x.error||''}catch(err){}});"
 )

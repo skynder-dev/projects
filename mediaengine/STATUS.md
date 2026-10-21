@@ -646,6 +646,30 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   Published: b179 (commit 141e0d4, 2026-10-21 06:55 UTC). Suggested a real recording of a consenting person's voice
   ("A voice from a recording") for a voice without the AI sound; owner 00:37: "just a recording of any phrases, and any
   text from it?" - yes (15-30 s, quiet, the manner wanted, the language of the reels).
+  Owner (2026-10-21): he is not going to record his own voice (only asked whether a short talk is enough to clone a
+  whole voice - yes, 15-30 s of one consenting person). The feature is called "saved voices" (9fe6f6b): a voice from
+  a recording can be kept in the list. Windows CI on 9fe6f6b caught two jobs with the same clock reading -> a strictly
+  increasing creation counter (f7bef92).
+  Owner: "find work for 10 hours" - plan sent: the failed build, other free engines for a livelier voice, the pace of
+  the voice, several videos at once, a review. Done:
+  - Voice lab round 14 (runs 39593883089 / 39597794361 / 39598526677; round14/, round14b/, round14c/): free engines
+    whose licence allows working use, each cloning the same 9_2 recording on round 13's text: Fun-CosyVoice3 0.5B
+    (Apache-2.0; 14_1), Chatterbox Multilingual V3 (MIT, default 14_2 / livelier 14_3), Qwen3-TTS 1.7B Base
+    (Apache-2.0; 14_5); all words said, pitch 205-255 Hz (9_2: 233). Not tried: NeuTTS Air (now a gated download),
+    Orpheus / TADA (Meta's licence behind a sign-up), Fish S2 / F5 / XTTS / OmniVoice / Raon (non-commercial),
+    ZONOS2 / MOSS-TTS (8B, too big for a CPU runner). Sent 14_0 (the program now) + 14_1/2/3/5 for his ear.
+  - The pace of a voice-over (b61a1e9): a bit slower / normal / a bit faster / faster (FFmpeg atempo 0.92-1.15 on the
+    finished voice; the pitch stays - measured 219.6-220.3 Hz for a 220 Hz tone; word times scaled) and short /
+    normal / long pauses (x0.6 / 1 / 1.6); remembered; shown in the list (624f652); the real add-on check makes its
+    Russian voice-over faster with long pauses (length and captions checked).
+  - Finish a video for several videos at once (b61a1e9, 03e7d6a): paths, Choose… for several, or saved reels ticked;
+    the shared choices checked once and every video read (a picture; sound for captions of its speech) before
+    anything is made; one job per video in order; a new voice-over made once; the exact speech text for one video
+    only; the same file written two ways counts once. Try again on a failed voice-over also makes the videos that
+    waited for it (8af2663).
+  - An independent review (all findings fixed: a non-video in a batch, the dropped exact text, errors blaming a
+    video, path duplicates, picker titles in Russian; one lock for naming/writing/queueing a job).
+    voice_check 149/149, unit 144/144, fuzz 0 errors, i18n 0 English left.
 
 ## Evidence
 
