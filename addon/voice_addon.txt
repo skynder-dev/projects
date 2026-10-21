@@ -1,55 +1,69 @@
 PASS Install starts
-21:22:50 running checking  0/0 MB
-21:22:55 running packages Downloading torch-2.8.0-cp311-cp311-win_amd64.whl 0/0 MB
-21:23:00 running packages Installing : 0/0 MB
-21:23:35 running models  0/0 MB
-21:23:40 running models model.safetensors 541/5446 MB
-21:23:45 running models model.safetensors 1529/5446 MB
-21:23:50 running models model.safetensors 2399/5446 MB
-21:23:55 running models model.safetensors 3254/5446 MB
-21:24:00 running models model.safetensors 4210/5446 MB
-21:24:05 running models model.safetensors 4883/5446 MB
-21:24:10 running models tokenizer_config.json 4960/5446 MB
-21:24:15 running checking_addon  5446/5446 MB
-21:24:20 running qwen_packages Downloading transformers-4.57.3-py3-none-any.whl 0/0 MB
-21:24:25 running qwen_packages Installing : 0/0 MB
-21:24:35 running qwen_models model.safetensors 46/4544 MB
-21:24:40 running qwen_models model.safetensors 1950/4544 MB
-21:24:45 running qwen_models model.safetensors 3859/4544 MB
-21:24:55 running checking_addon  4544/4544 MB
-21:25:05 done   4544/4544 MB
+23:45:01 running checking  0/0 MB
+23:45:06 running packages Downloading numpy-2.4.6-cp311-cp311-win_amd64.whl 0/0 MB
+23:45:11 running packages Downloading truststore-0.10.5-py3-none-any.whl 0/0 MB
+23:45:16 running packages Installing : 0/0 MB
+23:45:56 running models audiovae.pth 150/5446 MB
+23:46:01 running models model.safetensors 735/5446 MB
+23:46:07 running models model.safetensors 1575/5446 MB
+23:46:12 running models model.safetensors 2475/5446 MB
+23:46:17 running models model.safetensors 3253/5446 MB
+23:46:22 running models model.safetensors 3991/5446 MB
+23:46:27 running models model.safetensors 4733/5446 MB
+23:46:32 running models model.safetensors 4957/5446 MB
+23:46:37 running models tokenizer.json 5444/5446 MB
+23:46:42 running checking_addon  5446/5446 MB
+23:46:52 running qwen_packages Looking for filelock==3.32.3 0/0 MB
+23:46:57 running qwen_packages Installing : 0/0 MB
+23:47:12 running qwen_models model.safetensors 1/4544 MB
+23:47:17 running qwen_models model.safetensors 469/4544 MB
+23:47:22 running qwen_models model.safetensors 1444/4544 MB
+23:47:27 running qwen_models model.safetensors 2202/4544 MB
+23:47:32 running qwen_models model.safetensors 2616/4544 MB
+23:47:37 running qwen_models model.safetensors 3451/4544 MB
+23:47:42 running qwen_models model.safetensors 3859/4544 MB
+23:47:47 running qwen_models model.safetensors 4173/4544 MB
+23:47:52 running checking_addon  4544/4544 MB
+23:48:02 done   4544/4544 MB
 PASS the add-on is installed
 PASS its manifest: version, Python, torch, models
 PASS the new engine (Qwen3-TTS, the owner's pick 14_5) is installed with it
 PASS the page shows the forms once installed
 PASS a voice-over is accepted
-21:25:06 20261021-212506-213981 working starting 0%
-21:25:09 20261021-212506-213981 working loading 2%
-21:25:21 20261021-212506-213981 working speaking 1/1 5%
-21:27:09 20261021-212506-213981 working listening 95%
-21:27:12 20261021-212506-213981 done  0%
+23:48:02 20261021-234802-06116a working starting 0%
+23:48:05 20261021-234802-06116a working loading 2%
+23:48:29 20261021-234802-06116a working speaking 1/1 5%
+23:50:32 20261021-234802-06116a working listening 95%
+23:50:41 20261021-234802-06116a working finishing 97%
+23:50:48 20261021-234802-06116a done  0%
 PASS the voice-over is made
 PASS every word said (listened to)
 PASS a plausible length
 PASS said by the new engine (Qwen3-TTS) in the voice 9_2
-21:27:12 20261021-212712-db67b9 working starting 0%
-21:27:15 20261021-212712-db67b9 working loading 2%
-21:27:33 20261021-212712-db67b9 working speaking 1/1 5%
-21:28:18 20261021-212712-db67b9 working speaking 1/1 15%
-21:28:57 20261021-212712-db67b9 working speaking 1/1 26%
-21:29:36 20261021-212712-db67b9 working speaking 1/1 36%
-21:30:21 20261021-212712-db67b9 working listening 95%
-21:30:24 20261021-212712-db67b9 working finishing 97%
-21:30:39 20261021-212712-db67b9 done  0%
-Traceback (most recent call last):
-  File "D:\a\projects\projects\mediaengine\tests\voice_addon_check.py", line 172, in <module>
-    sys.exit(main())
-             ^^^^^^
-  File "D:\a\projects\projects\mediaengine\tests\voice_addon_check.py", line 120, in main
-    check("a Russian voice-over in the same voice, heard back in Cyrillic", rj["state"] == "done"
-  File "D:\a\projects\projects\mediaengine\tests\voice_addon_check.py", line 39, in check
-    print(("PASS " if ok else "FAIL ") + name + ("" if ok else f"  {detail}"), flush=True)
-  File "C:\hostedtoolcache\windows\Python\3.11.9\x64\Lib\encodings\cp1252.py", line 19, in encode
-    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-UnicodeEncodeError: 'charmap' codec can't encode characters in position 69-74: character maps to <undefined>
+23:50:49 20261021-235049-d3b161 working starting 0%
+23:50:55 20261021-235049-d3b161 working loading 2%
+23:51:22 20261021-235049-d3b161 working speaking 1/1 5%
+23:52:16 20261021-235049-d3b161 working speaking 1/1 15%
+23:53:01 20261021-235049-d3b161 working speaking 1/1 26%
+23:53:52 20261021-235049-d3b161 working speaking 1/1 36%
+23:54:43 20261021-235049-d3b161 working listening 95%
+23:54:49 20261021-235049-d3b161 working finishing 97%
+23:54:52 20261021-235049-d3b161 done  0%
+FAIL a Russian voice-over in the same voice, heard back in Cyrillic  Привет! Это Киротка Япровьерка Галлесса.
+PASS its pace: a bit faster (8% shorter), the captions within the faster voice
+23:54:54 20261021-235454-8354c7 working starting 0%
+23:55:00 20261021-235454-8354c7 working loading 2%
+23:56:12 20261021-235454-8354c7 working speaking 1/1 5%
+23:57:36 20261021-235454-8354c7 working listening 95%
+23:57:48 20261021-235454-8354c7 done  0%
+PASS a voice from a description is still made (VoxCPM2)
+23:57:50 20261021-235750-0e16d8 working video 50%
+23:57:56 20261021-235750-0e16d8 done  0%
+PASS the voice onto the video, captions burned, checked
+23:57:56 20261021-235756-b25281 working starting 0%
+23:57:59 20261021-235756-b25281 working listening 20%
+23:58:02 20261021-235756-b25281 working video 50%
+23:58:05 20261021-235756-b25281 done  0%
+PASS captions from the video's own speech hear the voice-over
+PASS the page in Russian with a finished voice-over
+{"passed": 15, "total": 16}
