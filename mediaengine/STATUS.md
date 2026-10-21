@@ -670,6 +670,13 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   - An independent review (all findings fixed: a non-video in a batch, the dropped exact text, errors blaming a
     video, path duplicates, picker titles in Russian; one lock for naming/writing/queueing a job).
     voice_check 149/149, unit 144/144, fuzz 0 errors, i18n 0 English left.
+  - Pushed 371fa20 (the f7bef92 Windows run was replaced by it). The real add-on run 39601510649: 13/13, incl. its
+    Russian voice-over a bit faster with long pauses (8% shorter, captions inside the voice).
+  - Engine probe (run 39601510428, probe/ on branch mediaengine-voice-lab): on Windows, Python 3.11, CPU torch 2.8
+    (the add-on's own torch) both Qwen3-TTS 1.7B Base (load 33 s, two sentences 77 s; imports 58 distributions,
+    transformers 4.57.3) and Chatterbox Multilingual V3 (load 51 s, 60 s; 65, numpy 1.26 + transformers 5.2.0) say
+    a sentence in 9_2's voice. Neither fits VoxCPM2's package set (transformers 5.20, numpy 2.4): a picked engine
+    gets its own folder in the add-on, its exact imported list installed as wheels without resolution.
 
 ## Evidence
 
