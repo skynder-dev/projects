@@ -19,13 +19,11 @@ env:
   PIP_DISABLE_PIP_VERSION_CHECK: '1'
   PIP_PROGRESS_BAR: 'off'
 jobs:
-  probe:
-    runs-on: windows-latest
-    timeout-minutes: 120
-    strategy:
-      fail-fast: false
-      matrix:
-        engine: [qwen, chatterbox]
+  # Run 39601510428 (probe/): both Qwen3-TTS and Chatterbox ran on Windows on CPU torch 2.8. The owner picked 14_5
+  # (Qwen3-TTS) on 2026-10-21. Now: the pinned commit and the exact files of the Qwen model, for the add-on.
+  info:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,37 +31,24 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: ${{ matrix.engine }} in its own venv on CPU torch 2.8.0 (the add-on's torch)
-        shell: bash
+      - name: The Qwen3-TTS 1.7B Base model at its current commit (files, sizes, hashes) - what the add-on will pin
         run: |
+          python -m pip install -q "huggingface_hub>=0.36"
           mkdir -p "$RUNNER_TEMP/out"
-          {
-          set -ex
-          python -m venv "$RUNNER_TEMP/v"
-          PY="$RUNNER_TEMP/v/Scripts/python.exe"
-          "$PY" -m pip install --index-url "$CPU_TORCH" "torch==2.8.0" "torchaudio==2.8.0"
-          printf 'torch==2.8.0\ntorchaudio==2.8.0\n' > "$RUNNER_TEMP/pin.txt"
-          if [ "${{ matrix.engine }}" = "qwen" ]; then
-            "$PY" -m pip install --extra-index-url "$CPU_TORCH" -c "$RUNNER_TEMP/pin.txt" qwen-tts soundfile
-          else
-            "$PY" -m pip install --no-deps "chatterbox-tts @ git+https://github.com/resemble-ai/chatterbox.git"
-            "$PY" -m pip install --extra-index-url "$CPU_TORCH" -c "$RUNNER_TEMP/pin.txt" "numpy<2" "librosa==0.11.0" s3tokenizer "transformers==5.2.0" "diffusers==0.29.0" "resemble-perth @ git+https://github.com/resemble-ai/Perth.git@master" "conformer==0.3.2" safetensors spacy-pkuseg "pykakasi==2.3.0" pyloudnorm omegaconf soundfile
-          fi
-          "$PY" -m pip freeze
-          } > "$RUNNER_TEMP/out/install_${{ matrix.engine }}.txt" 2>&1
-      - name: One sentence in 9_2's voice
-        shell: bash
-        run: |
-          "$RUNNER_TEMP/v/Scripts/python.exe" mediaengine/tests/engine_probe.py ${{ matrix.engine }} mediaengine/app/archivist/assets/voice/host_9_2.flac "$RUNNER_TEMP/out" 2>&1 | tee "$RUNNER_TEMP/out/run_${{ matrix.engine }}.txt"
-      - name: Publish to branch mediaengine-voice-lab (probe/)
+          python - <<'PY' > "$RUNNER_TEMP/out/model_info_qwen.json"
+          import json
+          from huggingface_hub import HfApi
+          i = HfApi().model_info("Qwen/Qwen3-TTS-12Hz-1.7B-Base", files_metadata=True)
+          print(json.dumps({"repo": i.id, "sha": i.sha, "license": (i.card_data or {}).get("license") if i.card_data else None,
+                            "gated": i.gated, "files": [{"name": s.rfilename, "size": s.size, "lfs_sha256": (s.lfs or {}).get("sha256") if isinstance(s.lfs, dict) else getattr(s.lfs, "sha256", None), "blob": s.blob_id} for s in i.siblings]}, indent=1))
+          PY
+          cat "$RUNNER_TEMP/out/model_info_qwen.json"
+      - name: Publish to branch mediaengine-voice-lab (probe/model_info_qwen.json)
         if: always()
-        shell: bash
         run: |
           pub="$RUNNER_TEMP/pub"; rm -rf "$pub"
           git clone -q --depth 1 --branch mediaengine-voice-lab "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "$pub"
-          mkdir -p "$pub/probe"; rm -f "$pub/probe/"*"${{ matrix.engine }}"*
-          cp "$RUNNER_TEMP"/out/* "$pub/probe/" 2>/dev/null || true
-          printf 'run=%s\nsha=%s\nstatus=%s\n' "${{ github.run_id }}" "${{ github.sha }}" "${{ job.status }}" > "$pub/probe/RUN_${{ matrix.engine }}.txt"
+          mkdir -p "$pub/probe"; cp "$RUNNER_TEMP"/out/* "$pub/probe/" 2>/dev/null || true
           cd "$pub"; git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
-          git add -A; git commit -q -m "mediaengine engine probe ${{ matrix.engine }} run ${{ github.run_id }} ${{ job.status }}"
+          git add -A; git commit -q -m "mediaengine Qwen model info run ${{ github.run_id }}" || true
           for i in 1 2 3; do git push -q origin HEAD:mediaengine-voice-lab && break; git pull -q --rebase origin mediaengine-voice-lab; done
