@@ -284,7 +284,7 @@ function Open-ResearchDraftItem($Item,[bool]$Force=$false) {
             $OverviewStatus.Text=Get-UiText 'draft.state' 'Research draft'
             # Checks tab: show the draft's own reasoning instead of empty server-analysis sections.
             $dash='—'; $AnalysisPurchase.Text=if([string]$c.purchase_reason){[string]$c.purchase_reason}else{$dash}; $AnalysisContext.Text=if([string]$c.target_buyer){[string]$c.target_buyer}else{$dash}; $AnalysisMeaning.Text=if([string]$c.concept_text){[string]$c.concept_text}else{$dash}
-            $OverviewWarnings.Text=(Format-ForgeOwnerLanguageReview $c)+"`n`n"+(Get-ResearchDraftProvenanceText $d)
+            $OverviewWarnings.Text=(Format-ForgeOwnerLanguageReview $c)+"`n`n"+(Get-ResearchDraftProvenanceText $d)+"`n`nUnsaved edits exist only in memory. Use Save to keep them. After closing or a crash, only the last successfully saved revision can be restored."
             $missing=@(Get-ResearchDraftMissing $c); $next=Get-UiText 'draft.next' 'Review this draft.'
             if($missing.Count){$next=((Get-UiText 'draft.missing' 'Still missing before artwork: {0}.') -f ($missing -join ', '))+' '+$next}
             $OverviewNext.Text=$next

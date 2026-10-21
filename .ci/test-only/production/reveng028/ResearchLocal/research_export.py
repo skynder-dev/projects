@@ -5,6 +5,8 @@ import manual_hypotheses,analysis_readiness,legacy_candidate_reviews,editor_reco
 from pathlib import Path,PurePosixPath
 from datetime import datetime,timezone
 LIMIT=32*1024*1024
+# Every structured JSON decode uses the existing strict local-data decoder.
+# It rejects root/nested/escaped-equivalent keys without rewriting saved bytes.
 def sha(raw):return hashlib.sha256(raw).hexdigest()
 def canonical(x):return json.dumps(x,sort_keys=True,ensure_ascii=False).encode()
 SENSITIVE={'apikey','accesstoken','refreshtoken','authorization','password','privatekey','clientsecret','cookie','connectionstring','servicerolekey'}
@@ -24,10 +26,10 @@ def signed(data):
 def check_lineage(fetch,names):
  records={PurePosixPath(n).stem:n for n in names if n.startswith('analysis-lineage/')}
  if 'analysis-lineage-index.json' in names:
-  index=json.loads(fetch('analysis-lineage-index.json'));signed(index)
+  index=manual_hypotheses.loads(fetch('analysis-lineage-index.json'));signed(index)
   if not set(index.get('events',[]))<=set(records):raise ValueError('Analysis lineage event missing from export')
  for id,name in records.items():
-  data=json.loads(fetch(name));signed(data)
+  data=manual_hypotheses.loads(fetch(name));signed(data)
   if data.get('integrity_sha256')!=id or data.get('kind')!='preparation_superseded':raise ValueError('Invalid analysis lineage identity')
   old=data.get('superseded_input','');new=data.get('completed_input','')
   if not all(re.fullmatch('[0-9a-f]{64}',x) for x in [old,new]):raise ValueError('Invalid analysis lineage input')
@@ -35,14 +37,14 @@ def check_lineage(fetch,names):
    path='analysis-inputs/'+job+'.json'
    if path not in names or sha(fetch(path))!=data[key]:raise ValueError('Lineage input bytes mismatch')
   result='analysis-results/'+new+'.json'
-  if result not in names or sha(fetch(result))!=data['completed_result_sha256'] or json.loads(fetch(result)).get('model_output',{}).get('source_job')!=new:raise ValueError('Lineage completed result mismatch')
+  if result not in names or sha(fetch(result))!=data['completed_result_sha256'] or manual_hypotheses.loads(fetch(result)).get('model_output',{}).get('source_job')!=new:raise ValueError('Lineage completed result mismatch')
   if 'analysis-results/'+old+'.json' in names:raise ValueError('Lineage cannot supersede a completed result')
 
 def check_workspace(fetch,names):
  if 'evidence-workspace.json' not in names:return None
- wrapper=json.loads(fetch('evidence-workspace.json'));payload=wrapper.get('payload_json')
+ wrapper=manual_hypotheses.loads(fetch('evidence-workspace.json'));payload=wrapper.get('payload_json')
  if not isinstance(payload,str) or sha(payload.encode())!=wrapper.get('payload_sha256'):raise ValueError('Evidence workspace payload mismatch')
- graph=json.loads(payload)
+ graph=manual_hypotheses.loads(payload)
  if graph.get('schema')!='reveng-evidence-workspace-v1' or graph.get('auto_admission') is not False:raise ValueError('Unsupported evidence workspace policy')
  inputs=graph.get('inputs',{})
  if not {'research-candidate-reviews.json','research-output-cards.json'}<=set(inputs):raise ValueError('Required evidence inputs missing')
@@ -60,7 +62,7 @@ def check_workspace(fetch,names):
   for origin in m.get('origins',[]):
    name=origin['container'];field=origin['source_field']
    if name not in inputs:raise ValueError('Archived field container outside evidence inputs')
-   obj=json.loads(fetch(name))
+   obj=manual_hypotheses.loads(fetch(name))
    if name.startswith('attribution-cases/'):
     row=obj['sources'][origin['evidence_id']]['fields'][field];actual=row.get('text',row.get('full_text'))
    else:
@@ -80,7 +82,7 @@ def check_attribution(fetch,names):
  if index not in names:
   if actual:raise ValueError('Attribution cases have no index')
   return 0
- data=json.loads(fetch(index));wanted={index};seen=set()
+ data=manual_hypotheses.loads(fetch(index));wanted={index};seen=set()
  if data.get('schema')!='saved-attribution-cases-v1':raise ValueError('Unsupported attribution case schema')
  for case in data.get('cases',[]):
   id=case.get('id','')
@@ -93,13 +95,13 @@ def check_attribution(fetch,names):
    if path not in names:raise ValueError('Attribution evidence missing: '+path)
    raw=fetch(path)
    if len(raw)>8*1024*1024 or sha(raw)!=case.get(key+'_sha256'):raise ValueError('Attribution case bytes mismatch: '+path)
-   loaded[key]=json.loads(raw.decode('utf-8-sig'))
+   loaded[key]=manual_hypotheses.loads(raw.decode('utf-8-sig'))
   user=[m for m in loaded['input'].get('messages',[]) if m.get('role')=='user']
   if not user:raise ValueError('Attribution input user message missing')
   content=user[-1]['content'];start=content.find('{')
-  if start<0 or json.loads(content[start:])!=loaded['catalog']:raise ValueError('Attribution input/catalog snapshot mismatch')
+  if start<0 or manual_hypotheses.loads(content[start:])!=loaded['catalog']:raise ValueError('Attribution input/catalog snapshot mismatch')
   choices=loaded['response'].get('choices',[])
-  if not choices or choices[0].get('finish_reason')!='stop' or json.loads(choices[0]['message']['content'])!=loaded['output']:raise ValueError('Attribution raw response/output mismatch')
+  if not choices or choices[0].get('finish_reason')!='stop' or manual_hypotheses.loads(choices[0]['message']['content'])!=loaded['output']:raise ValueError('Attribution raw response/output mismatch')
  if actual!=wanted:raise ValueError('Unlisted attribution case content')
  return len(seen)
 
@@ -131,7 +133,7 @@ def received_references(value):
 def check_portable_sources(fetch,names):
  refs=[]
  for name in ['candidates.json','research-output-cards.json']:
-  if name in names:refs+=list(received_references(json.loads(fetch(name))))
+  if name in names:refs+=list(received_references(manual_hypotheses.loads(fetch(name))))
  wanted=set()
  for r in refs:
   name=r['payload_file'];wanted.add(name)
@@ -143,7 +145,7 @@ def check_portable_sources(fetch,names):
  ids=[]
  if 'official-observations.json'in names:
   import official_observations
-  ids=official_observations.verify_projection(json.loads(fetch('official-observations.json')))
+  ids=official_observations.verify_projection(manual_hypotheses.loads(fetch('official-observations.json')))
  return {'schema':'reveng-portable-source-evidence-v1','official_observation_ids':ids,'received_payload_files':sorted(wanted),'receipt_references':len(refs),'meaning':'Exact received bytes and structured summaries; no source truth, customer, ranking or execution authority inferred'}
 
 def export(root,output):
@@ -173,7 +175,7 @@ def _export_locked(root,output):
    absent.add(name);return None
   with p.open('rb') as stream:raw=stream.read(LIMIT+1)
   if len(raw)>LIMIT:raise ValueError('Research evidence exceeds bounded size')
-  obj=json.loads(raw.decode('utf-8-sig'));scan(obj,name)
+  obj=manual_hypotheses.loads(raw.decode('utf-8-sig'));scan(obj,name)
   if verify_signed:signed(obj)
   files[name]=raw;captured[name]=sha(raw);return obj
  candidates=add('candidates.json');research=add('research-output-cards.json',verify_signed=True);queue=add('analysis-queue.json',verify_signed=True)
@@ -279,9 +281,9 @@ def _export_locked(root,output):
  for note in manual_drafts:
   source=note['source_snapshot'];writer.writerow([cell(v) for v in ['manual_hypothesis_draft',note['id'],note['title'],note.get('buyer_role','unknown'),note['interpretation'],note['next_action'],'DRAFT_UNVERIFIED',note['assumptions'],{'source_snapshot_reference':{k:v for k,v in source.items() if k!='text'},'field_role':source.get('kind'),'reported_author':source.get('author'),'author_status':'reported_metadata_not_verified_person','quote_reference':note['reference'],'meaning':'Exact stored manual reference; no person/customer independence inferred'},[],{'owner_decision':'UNCHANGED','supersedes':note.get('supersedes')}]] )
  if 'legacy-candidate-reviews.json' in files:
-  wrapper=json.loads(files['legacy-candidate-reviews.json']);plans=json.loads(wrapper['payload_json']);current_candidates={c['candidate_id']:c for c in candidates}
+  wrapper=manual_hypotheses.loads(files['legacy-candidate-reviews.json']);plans=manual_hypotheses.loads(wrapper['payload_json']);current_candidates={c['candidate_id']:c for c in candidates}
   for plan in plans['reviews']:
-   original=json.loads(plan['candidate_snapshot_json']);matching=current_candidates.get(plan['candidate_id'])==original;assessment=plan['assessment'];refs=[{'url':r['url'],'saved_title_sha256':r['saved_title_sha256'],'original_input_scope':r['old_input_scope'],'additional_original_body_available':bool(r.get('additional_saved_original')),'additional_original_reference':{k:v for k,v in (r.get('additional_saved_original') or {}).items() if k!='text'},'additional_original_meaning':'Later saved source revision, not retroactive model input or independent person'} for r in plan['source_references']];docs=[{'url':r['url'],'body_evidence':r['body_evidence'],'task_fit':'not automatically verified','preserved_field_reference':{k:v for k,v in (r.get('preserved_snapshot') or {}).items() if k!='text'},'literal_fragments':r.get('saved_fragments',[])} for r in plan['documents']]
+   original=manual_hypotheses.loads(plan['candidate_snapshot_json']);matching=current_candidates.get(plan['candidate_id'])==original;assessment=plan['assessment'];refs=[{'url':r['url'],'saved_title_sha256':r['saved_title_sha256'],'original_input_scope':r['old_input_scope'],'additional_original_body_available':bool(r.get('additional_saved_original')),'additional_original_reference':{k:v for k,v in (r.get('additional_saved_original') or {}).items() if k!='text'},'additional_original_meaning':'Later saved source revision, not retroactive model input or independent person'} for r in plan['source_references']];docs=[{'url':r['url'],'body_evidence':r['body_evidence'],'task_fit':'not automatically verified','preserved_field_reference':{k:v for k,v in (r.get('preserved_snapshot') or {}).items() if k!='text'},'literal_fragments':r.get('saved_fragments',[])} for r in plan['documents']]
    writer.writerow([cell(v) for v in ['assistant_manual_acceptance_plan_not_execution',plan['candidate_id']+'@'+plan['candidate_snapshot_sha256'][:12],original['title'],'UNVERIFIED',assessment['alignment'],assessment['next_action'],'MANUAL_PLAN_ONLY_CURRENT_SNAPSHOT' if matching else 'HISTORICAL_PLAN_CANDIDATE_CHANGED',{'market_gap':assessment['market_gap'],'permission_boundary':assessment['permission_boundary']},refs,docs,{'owner_decision':'UNCHANGED; this is not an owner decision','execution':'NOT_EXECUTED'}]])
  # Owner declarations and open conditions must survive the human-facing summary too.
  review_summary_count=0
@@ -348,7 +350,7 @@ def verify(path):
    p=PurePosixPath(name)
    if p.is_absolute() or '..' in p.parts or '\\' in name:raise ValueError('Unsafe archive path')
   if sum(i.file_size for i in z.infolist())>128*1024*1024:raise ValueError('Oversized export')
-  manifest=json.loads(z.read('manifest.json'));expected={f['path']:f for f in manifest['files']}
+  manifest=manual_hypotheses.loads(z.read('manifest.json'));expected={f['path']:f for f in manifest['files']}
   if manifest.get('kind')!='reveng-local-research-export':raise ValueError('Unsupported export kind')
   for name in expected:
    if name=='official-observations.json'or re.fullmatch(r'buyer-source-payloads/[0-9a-f]{64}\.raw',name):continue
@@ -363,7 +365,7 @@ def verify(path):
    raw=z.read(name)
    if len(raw)!=info['bytes'] or sha(raw)!=info['sha256']:raise ValueError('Export checksum mismatch: '+name)
    if name.endswith('.json'):
-    data=json.loads(raw.decode('utf-8-sig'));scan(data,name)
+    data=manual_hypotheses.loads(raw.decode('utf-8-sig'));scan(data,name)
     if name=='observation-index.json' or name.startswith('observation-snapshots/'):
      signed(data)
      if name.startswith('observation-snapshots/') and PurePosixPath(name).stem!=data.get('integrity_sha256'):raise ValueError('Snapshot identity mismatch')

@@ -196,12 +196,12 @@ def wages_record(parsed):
  if not fields.get('employer_search'):raise PipelineError('Employer-search evidence missing; do not invent a search step')
  claims=[]
  def add(key,text,accent,field,values=None):
-  claims.append({'key':key,'statement':text,'accent':accent,'values':values or {},'must_disclose':True,'reviewed_statement_sha256':sha(text),'source':{**fields[field]['source'],'origin_field':field,'rule':'dol_wow_recovered_wages_v1','snapshot_sha256':parsed['content_sha256']}})
+  claims.append({'key':key,'statement':text,'accent':accent,'values':values or {},'must_disclose':True,'reviewed_statement_sha256':sha(text),'source':{**fields[field]['source'],'origin_field':field,'rule':'dol_wow_recovered_wages_v2_conditional_transfer','snapshot_sha256':parsed['content_sha256']}})
  add('money_hook','Could you be owed unpaid wages?','unpaid wages','identity')
  add('recovered_funds','The Labor Department has already recovered money from employers.','already recovered money','purpose')
  claims[-1]['source']['supporting_sources']=[fields['agency']['source'],fields['employer_search']['source']]
  add('one_action','Search Workers Owed Wages for your employer.','Workers Owed Wages','employer_search')
- add('holding_period','The agency holds funds for 3 years.','3 years','holding_period_years',{'holding_period_years':3,'scope':'agency holding period, not a calendar deadline'})
+ add('holding_period',"Unlocated workers' wages go to Treasury after 3 years.","Unlocated workers' wages",'holding_period_years',{'holding_period_years':3,'scope':'conditional agency transfer after person remains unfound; no personal calendar deadline or guaranteed fixed holding duration'})
  add('cta','The official link is in the description.','official link is in the description','identity')
  add('individual_unknown','An employer/worker match and individual balance have not been established.','individual balance','employer_search')
  add('period_scope','The holding period is not a new deadline counted from this video.','not a new deadline','holding_period_years')

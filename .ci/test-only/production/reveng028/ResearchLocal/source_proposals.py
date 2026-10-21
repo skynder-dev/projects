@@ -7,6 +7,7 @@ def bind_v1(cat,contract,allow_historical=False):
  for id,field in contract['source_packet']['sources'].items():
   m=actual.get(id)
   if l.rawsha(field['text'].encode())!=field['text_sha256']:raise ValueError('Stored source snapshot text hash mismatch')
+  if not allow_historical and not field['metadata'].get('origins'):raise ValueError('Origin-bound import requires saved provenance; missing origins remain unknown/unverified')
   if m is None:
    if allow_historical:continue
    raise ValueError('Cannot import a proposal for a source absent from current catalog')
@@ -19,14 +20,15 @@ def load(root,cat):
  if data['schema']!='reveng-saved-source-proposals-v1' or data['automatic_admission'] is not False:raise ValueError('Invalid proposal policy')
  for w in data['entries']:
   row=l.unseal(w);bind(cat,row['contract'],allow_historical=True);validation=validate_row_result(row)
+  if 'contract_provenance_pin' in row and row['contract_provenance_pin']!=contract_pin(row['contract']):raise ValueError('Saved contract/provenance pin mismatch')
   if row['semantic_status']!='UNVERIFIED_MODEL_PROPOSAL' or row['execution_receipt_verified'] is not False or row['automatic_admission'] is not False or row['literal_validation']!=validation:raise ValueError('Imported proposal cannot claim verified runtime/meaning')
  return data
 def import_v1(root,contract,result,label):
  l.require_writable(root)
  root=Path(root).resolve();cat=l.catalog(root);bind(cat,contract);validation=model_contract.validate_result(contract,result)
  with l.writer_lock(root/'.source-proposal-write-v2.lock'):
-  data=load(root,cat);row={'contract':contract,'result':result,'declared_model_label':label,'semantic_status':'UNVERIFIED_MODEL_PROPOSAL','execution_receipt_verified':False,'automatic_admission':False,'literal_validation':validation};w=l.seal(row)
-  if any(x['payload_sha256']==w['payload_sha256'] for x in data['entries']):raise ValueError('Saved proposal already imported')
+  data=load(root,cat);row={'contract':contract,'result':result,'declared_model_label':label,'semantic_status':'UNVERIFIED_MODEL_PROPOSAL','execution_receipt_verified':False,'automatic_admission':False,'literal_validation':validation};row['contract_provenance_pin']=contract_pin(contract);w=l.seal(row)
+  if any(import_identity(l.unseal(x))==import_identity(row) for x in data['entries']):raise ValueError('Saved proposal already imported')
   data['entries'].append(w);l.write(root/'source-model-proposals.json',l.seal(data));return {'status':'SAVED_UNVERIFIED_PROPOSAL_ONLY','entry_id':w['payload_sha256'],'model_calls':0,'automatic_admission':False}
 def strict_json(raw):
  def pairs(values):
@@ -40,8 +42,16 @@ def strict_json(raw):
 import base64,contract_v2,contract_v3,contract_v4
 import response_diagnostics as rd
 def is_v2(contract):return contract.get('contract_version')==contract_v2.VERSION
-def is_v3(contract):return contract.get('contract_version')==contract_v3.VERSION
+def is_v3(contract):return contract.get('contract_version') in {contract_v3.VERSION,contract_v3.LEGACY_VERSION,'reveng-source-unit-contract-v3.2','reveng-source-unit-contract-v3.3'}
 def is_v4(contract):return contract.get('contract_version')==contract_v4.VERSION
+
+def catalog_material_id(field):
+ # Field catalogs use material-id:field-id, whereas the saved ledger keys the
+ # material itself. Resolve only this explicit identity, never by equal text.
+ identity=field.get('metadata',{}).get('id');source=field['source_id']
+ if source==identity:return identity
+ if isinstance(identity,str) and source==identity+':'+field['field_id']:return identity
+ raise ValueError('Source field identity is not its exact saved material/field')
 def validate_v2_contract(contract):
  fields=contract['source_catalog']
  expected=contract_v2.make(fields);expected['source_catalog']=fields
@@ -67,13 +77,19 @@ def bind(cat,contract,allow_historical=False):
  if len({(f['source_id'],f['field_id']) for f in fields})!=len(fields):raise ValueError('Duplicate source/field')
  for f in fields:
   if f['field_id']!=f['metadata'].get('source_field','text'):raise ValueError('Field identity differs from source metadata')
-  m=actual.get(f['source_id'])
+  identity=catalog_material_id(f);m=actual.get(identity)
+  if not allow_historical and not f['metadata'].get('origins'):raise ValueError('Origin-bound import requires saved provenance; missing origins remain unknown/unverified')
   if m is None:
    if allow_historical:continue
    raise ValueError('V2 source absent from current catalog')
-  snapshot={'id':f['source_id'],'text':f['text'],'text_sha256':f['text_sha256'],'metadata':f['metadata']}
+  snapshot={'id':identity,'text':f['text'],'text_sha256':f['text_sha256'],'metadata':f['metadata']}
   if not l.same_source_revision(m,snapshot):raise ValueError('V2 source revision/origins differ')
-  expected=[{'fragment_id':u['id'],'start':u['start'],'end':u['end'],'quote':u['quote']} for u in m['units']]
+  # A field-qualified identity also qualifies its mechanical unit hashes.
+  # Require the same boundaries/quotes as the real material, then recompute
+  # field IDs rather than trusting supplied fragment IDs.
+  fieldunits=l.units(m['text'],f['source_id'])
+  if [(u['start'],u['end'],u['quote']) for u in fieldunits]!=[(u['start'],u['end'],u['quote']) for u in m['units']]:raise ValueError('Field/material partition differs')
+  expected=[{'fragment_id':u['id'],'start':u['start'],'end':u['end'],'quote':u['quote']} for u in fieldunits]
   if f['fragments']!=expected:raise ValueError('V2 premarked fragments differ from catalog')
 def derive_v2(contract,raw):
  fields=validate_v2_contract(contract)
@@ -104,12 +120,28 @@ def validate_row_result(row):
  result,journal,validation=derive_v2(row['contract'],raw)
  if result!=row['result'] or journal!=row['computed_binding_journal'] or row['semantic_review']!={'status':'NOT_REVIEWED','PASS':False}:raise ValueError('V2 derived binding/meaning changed')
  return validation
+def import_identity(row):
+ # The optional local migration pin is derived integrity metadata, not a new
+ # proposal. Call only after load() has validated any existing pin. Preserve
+ # all contract/provenance, exact raw, label and validation fields in identity.
+ return l.rawsha(l.canonical({k:v for k,v in row.items() if k!='contract_provenance_pin'}))
+
+def contract_pin(contract):
+ # Local immutable sealed-row pin, not publisher authentication or semantic proof.
+ return {'contract_sha256':l.rawsha(l.canonical(contract)),'provenance_sha256':l.rawsha(l.canonical([f['metadata'] for f in contract['source_catalog']] if 'source_catalog' in contract else {k:v['metadata'] for k,v in contract['source_packet']['sources'].items()}))}
+
 def bindings(data,cat):
- ids={m['id'] for m in cat['materials']};out=[]
+ actual={m['id']:m for m in cat['materials']};ids=set(actual);out=[]
  for w in data['entries']:
   row=l.unseal(w);c=row['contract'];sourceids=[f['source_id'] for f in c['source_catalog']] if is_v2(c) or is_v3(c) or is_v4(c) else list(c['source_packet']['sources'])
   import proposal_quality
-  out.append({'entry_id':w['payload_sha256'],'contract_version':c.get('contract_version',c.get('schema')),'sources':{id:'EXACT_SOURCE_BYTES_AND_SAVED_ORIGINS_MATCH' if id in ids else 'HISTORICAL_NOT_CURRENTLY_RESOLVABLE_UNVERIFIED' for id in sourceids},'review_diagnostics':proposal_quality.for_row(row)})
+  materialids={f['source_id']:catalog_material_id(f) for f in c['source_catalog']} if is_v2(c) or is_v3(c) or is_v4(c) else {id:id for id in sourceids}
+  fields={f['source_id']:f for f in c['source_catalog']} if 'source_catalog' in c else c['source_packet']['sources']
+  statuses={}
+  for id in sourceids:
+   f=fields[id];identity=materialids[id];snapshot={'id':identity,'text':f['text'],'text_sha256':f['text_sha256'],'metadata':f['metadata']}
+   statuses[id]=l.provenance_status(actual[identity],snapshot) if identity in actual else 'HISTORICAL_NOT_CURRENTLY_RESOLVABLE_UNVERIFIED'
+  out.append({'entry_id':w['payload_sha256'],'contract_version':c.get('contract_version',c.get('schema')),'sources':statuses,'review_diagnostics':proposal_quality.for_row(row)})
  return out
 def import_saved(root,contract,result,label):
  l.require_writable(root)
@@ -126,8 +158,8 @@ def import_v3_raw(root,contract,raw,label):
  derived=(contract_v4 if is_v4(contract) else contract_v3).derive(contract,rd.unwrap(raw))
  row={'contract':contract,'result':derived['result'],'declared_model_label':label,'semantic_status':'UNVERIFIED_MODEL_PROPOSAL','execution_receipt_verified':False,'automatic_admission':False,'literal_validation':derived['validation'],'raw_response_base64':base64.b64encode(raw).decode('ascii'),'raw_response_sha256':l.rawsha(raw),'computed_binding_journal':derived['binding_journal'],'semantic_review':{'status':'NOT_REVIEWED','PASS':False}}
  with l.writer_lock(root/'.source-proposal-write-v2.lock'):
-  data=load(root,cat);w=l.seal(row)
-  if any(x['payload_sha256']==w['payload_sha256'] for x in data['entries']):raise ValueError('Saved proposal already imported')
+  data=load(root,cat);row['contract_provenance_pin']=contract_pin(contract);w=l.seal(row)
+  if any(import_identity(l.unseal(x))==import_identity(row) for x in data['entries']):raise ValueError('Saved proposal already imported')
   data['entries'].append(w);l.write(root/'source-model-proposals.json',l.seal(data))
  return {'status':'SAVED_UNVERIFIED_PROPOSAL_ONLY','entry_id':w['payload_sha256'],'model_calls':0,'automatic_admission':False,'semantic_PASS':False}
 def import_v2_raw(root,contract,raw,label):
@@ -137,8 +169,8 @@ def import_v2_raw(root,contract,raw,label):
  row={'contract':contract,'result':result,'declared_model_label':label,'semantic_status':'UNVERIFIED_MODEL_PROPOSAL','execution_receipt_verified':False,'automatic_admission':False,'literal_validation':validation,
       'raw_response_base64':base64.b64encode(raw).decode('ascii'),'raw_response_sha256':l.rawsha(raw),'computed_binding_journal':journal,'semantic_review':{'status':'NOT_REVIEWED','PASS':False}}
  with l.writer_lock(root/'.source-proposal-write-v2.lock'):
-  data=load(root,cat);w=l.seal(row)
-  if any(x['payload_sha256']==w['payload_sha256'] for x in data['entries']):raise ValueError('Saved proposal already imported')
+  data=load(root,cat);row['contract_provenance_pin']=contract_pin(contract);w=l.seal(row)
+  if any(import_identity(l.unseal(x))==import_identity(row) for x in data['entries']):raise ValueError('Saved proposal already imported')
   data['entries'].append(w);l.write(root/'source-model-proposals.json',l.seal(data))
   return {'status':'SAVED_UNVERIFIED_PROPOSAL_ONLY','entry_id':w['payload_sha256'],'model_calls':0,'automatic_admission':False,'semantic_PASS':False,'binding_journal_sha256':l.rawsha(json.dumps(journal,sort_keys=True,ensure_ascii=False).encode())}
 def cli():

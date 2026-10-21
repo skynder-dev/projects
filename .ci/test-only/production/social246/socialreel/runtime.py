@@ -24,7 +24,7 @@ def load_config(path=None):
 
 def validate_config(cfg,require_models=True):
     policy=cfg.get('local_editorial',{})
-    if not isinstance(policy,dict) or any(type(policy.get(k,False)) is not bool for k in ['enabled','execution_authorized']):raise PipelineError('Local editorial policy needs explicit boolean flags')
+    if not isinstance(policy,dict) or any(type(policy.get(k,False)) is not bool for k in ['enabled','execution_authorized','cache_only']):raise PipelineError('Local editorial policy needs explicit boolean flags')
     hold=cfg.get('generation_hold')
     if hold is not None and (not isinstance(hold,str) or not hold.strip() or len(hold)>500):raise PipelineError('Generation hold must be a nonempty reason of at most 500 characters')
     if cfg.get('llm', {}).get('allow_spend'):

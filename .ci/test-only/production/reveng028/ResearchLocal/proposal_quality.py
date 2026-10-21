@@ -13,7 +13,9 @@ def audit(contract,output):
    same=[uid for uid,u in units.items()if u['source_alias']==sid and q in u['fragment']['quote']]
    quoted.append({'record':path,'quoted_text':q,'status':'QUOTE_OUTSIDE_SELECTED_SPANS'if same else'QUOTED_TEXT_NOT_VERBATIM_SOURCE_REVIEW_REQUIRED','selected_units':list(ids),'other_matching_units_DIAGNOSTIC_ONLY':same,'verdict_changed':False})
  for sid,row in output['sources'].items():
-  for n,a in enumerate(row.get('annotations',[])):
+  records=row.get('annotations',[])
+  records=([(uid,dict(a,unit_ids=[uid]+a['context_unit_ids'])) for uid,a in records.items()] if isinstance(records,dict) else list(enumerate(records)))
+  for n,a in records:
    ids=a['unit_ids'];annotations.update(ids);all_refs.update(ids)
    if len(ids)>1:groups.append({'record':sid+'/annotations/'+str(n),'units':ids,'status':'MULTI_UNIT_INTERPRETATION_REQUIRES_COVERAGE_REVIEW'})
    check_text(sid+'/annotations/'+str(n),a['AI_reading_unverified'],ids,sid)

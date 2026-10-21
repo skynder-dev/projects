@@ -1,4 +1,5 @@
 ﻿. (Join-Path $PSScriptRoot 'Forge.ColourReview.ps1')
+. (Join-Path $PSScriptRoot 'Forge.InstrumentalClaims.ps1')
 # Owner explanations are Russian; US print wording is a separate exact English field.
 # Pure validation/prompt/presentation. No network, image generation, state or approval writes.
 function Get-ForgeOwnerLanguageInstruction {
@@ -139,6 +140,7 @@ function Get-ForgeUnsupportedClaimIssues([string]$Prose){
    if(!$direct-and!$reported){$issues+='Обнаружено неподтверждённое психологическое или медицинское действие; метафору нельзя выдавать за эффект одежды.'}
   }
  }
+ $issues+=@(Get-ForgeInstrumentalEffectIssues $Prose)
  return @($issues|Select-Object -Unique)
 }
 function Assert-ForgeAIResponseReview($Fields){
@@ -178,6 +180,11 @@ function Get-ForgeAIEvidenceFields($Fields){
 }
 function Format-ForgeAIRejection($ErrorObject){
  $message=if($ErrorObject-is[string]){$ErrorObject}else{[string]$ErrorObject.Message}
+ $timedOut=$message-match'(?i)HttpClient\.Timeout|\btimed?\s*out\b|\btimeout\b'
+ $probe=if($ErrorObject-is[Exception]){$ErrorObject}else{$null};$depth=0
+ while($null-ne$probe-and$depth-lt8){if($probe-is[TimeoutException]-or$probe.Message-match'(?i)HttpClient\.Timeout|\btimed?\s*out\b'){$timedOut=$true};$probe=$probe.InnerException;$depth++}
+ if($timedOut){return 'Превышен лимит времени ожидания локального запроса. Проверьте сохранённое состояние перед повтором; автоматического повторного запроса нет.'}
+ if($message-match'^AI request cancelled\.?$'){return 'Локальный запрос отменён. Нового черновика и автоматического повторного запроса нет.'}
  if($message-match'^(OWNER_LANGUAGE_(?:RU_REQUIRED|PRINT_EN_REQUIRED)|AI_RESPONSE_REVIEW_REQUIRED):\s*(.*)$'){return ('Ответ AI отклонён. '+$Matches[2]+' Оригинальный ответ не является одобрением; существующая карточка не заменена.')}
  if($message-match'DRAFT_STALE|User edits were made') {return 'Ответ AI не сохранён: карточка или ручные правки изменились во время запроса. Откройте актуальную версию; существующие данные сохранены.'}
  if($message-match'AI_SCHEMA_CONTRACT_VIOLATION|Invalid AI|Incomplete AI|AI idea description|AI palette|duplicate.*JSON|Duplicate AI|Local AI response is too large') {return 'Ответ AI отклонён: неполная или некорректная структура JSON, обязательные поля или спецификация. Существующая карточка не заменена.'}

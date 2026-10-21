@@ -114,10 +114,23 @@ def append(root,proposal):
   wrap=seal(entry)
   if any(r['payload_sha256']==wrap['payload_sha256'] for r in data['entries']):raise ValueError('Same quotation/category already recorded')
   data['entries'].append(wrap);write(root/'source-ledger.json',seal(data));return {'status':'SAVED_EXACT_QUOTATION_ONLY','entry_id':wrap['payload_sha256'],'ledger_sha256':rawsha((root/'source-ledger.json').read_bytes()),'automatic_admission':False}
+def provenance_status(actual,snapshot):
+ # Text identity and provenance confidence are distinct. Empty provenance is
+ # never evidence of an origin match, even though the empty set is a subset.
+ if not same_source_revision(actual,snapshot):return 'SOURCE_REVISION_MISMATCH'
+ a=actual['metadata'];s=snapshot['metadata']
+ if not s.get('origins'):return 'SOURCE_BYTES_MATCH_PROVENANCE_UNKNOWN_UNVERIFIED'
+ if all({canonical(x) for x in s.get(k,[])}=={canonical(x) for x in a.get(k,[])} for k in ['origins','card_ids','version_ids']):return 'EXACT_SOURCE_BYTES_AND_SAVED_ORIGINS_MATCH'
+ return 'EXACT_SOURCE_BYTES_AND_PRESERVED_ORIGINS_SUBSET_MATCH'
+
 def same_source_revision(actual,snapshot):
  if any(actual.get(k)!=snapshot.get(k) for k in ['id','text','text_sha256']):return False
  a=actual['metadata'];s=snapshot['metadata'];derived={'origins','card_ids','version_ids','author'}
  if {k:v for k,v in a.items() if k not in derived}!={k:v for k,v in s.items() if k not in derived}:return False
+ for metadata in [a,s]:
+  for k in ['origins','card_ids','version_ids']:
+   if not isinstance(metadata.get(k,[]),list):return False
+  if any(not isinstance(x,dict) or not x for x in metadata.get('origins',[])):return False
  for k in ['origins','card_ids','version_ids']:
   if not {canonical(x) for x in s.get(k,[])}<={canonical(x) for x in a.get(k,[])}:return False
  if a.get('author')!=s.get('author'):
@@ -142,7 +155,7 @@ def verify_notes(cat,data):
  for wrap in data['entries']:
   row=unseal(wrap);s=row['source_snapshot'];actual=materials.get(s['id'])
   if actual is not None and not same_source_revision(actual,s):raise ValueError('Saved note snapshot differs from exact source material; preserve and inspect, do not reclassify')
-  statuses.append({'entry_id':wrap['payload_sha256'],'source_status':'EXACT_SOURCE_BYTES_AND_SAVED_ORIGINS_MATCH' if actual is not None else 'HISTORICAL_SNAPSHOT_NOT_CURRENTLY_RESOLVABLE_NO_FACT_VERIFICATION'})
+  statuses.append({'entry_id':wrap['payload_sha256'],'source_status':provenance_status(actual,s) if actual is not None else 'HISTORICAL_SNAPSHOT_NOT_CURRENTLY_RESOLVABLE_NO_FACT_VERIFICATION'})
  return statuses
 def view(root):
  cat=catalog(root);ledger_error=None;proposal_error=None

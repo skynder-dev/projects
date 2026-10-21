@@ -17,8 +17,11 @@ if project in ['social246','reveng028']:
 else:
  # Use an owned portable copy so test receipts never enter shipped source.
  lab=home/'forge-lab';shutil.copytree(P/'harness/forge',lab/'harness/forge');shutil.copytree(P/'fixtures/forge',lab/'fixtures/forge');shutil.copytree(product,lab/'production/forgeAlphaZero')
- shell=Path(os.environ['SystemRoot'])/'System32/WindowsPowerShell/v1.0/powershell.exe'
- for name in ['Test-AlphaZero.ps1','Test-AlphaZeroHandler.ps1','Test-CausalContract.ps1']:run([shell,'-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',lab/'harness/forge'/name])
+ shell=shutil.which('pwsh');assert shell,'PowerShell7.5+ required'
+ run([shell,'-NoLogo','-NoProfile','-NonInteractive','-Command',"if($PSVersionTable.PSVersion -lt [version]'7.5'){throw 'PowerShell7.5+ required'}"])
+ for name in ['Test-AlphaZero.ps1','Test-AlphaZeroHandler.ps1','Test-CausalContract.ps1']:run([shell,'-NoLogo','-NoProfile','-NonInteractive','-File',lab/'harness/forge'/name])
 for name,h in pins['files'].items():assert hashlib.sha256((P/name).read_bytes()).hexdigest()==h
 print('PASS',project,'pinned source unchanged; output remains in owned temp root')
 
+
+run([sys.executable,"-I","-B",P/"harness/offline_regressions.py",project,product,home/"regressions"])

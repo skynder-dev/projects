@@ -1,13 +1,14 @@
-﻿# Advisory concept comparison only. Never changes approvals, acceptance or print checks.
+﻿. (Join-Path $PSScriptRoot 'Forge.BriefApproval.ps1')
+# Advisory concept comparison only. Never changes approvals, acceptance or print checks.
 function Get-ForgeVisionSchema {
     return @{type='object';properties=@{verdict=@{type='string';enum=@('matches','mismatch','uncertain')};observed_text=@{type='string'};observed_elements=@{type='string'};composition=@{type='string'};findings=@{type='array';items=@{type='string'};maxItems=12}};required=@('verdict','observed_text','observed_elements','composition','findings');additionalProperties=$false}
 }
 function ConvertFrom-ForgeVisionContent([string]$Content,[string]$ExpectedText) {
-    if($Content.Length-gt16000-or!$Content.TrimStart().StartsWith('{')){throw 'Invalid vision report object.'}
+    if($Content.Length-gt16000){throw 'Invalid vision report object.'}
     # No nested objects in this schema. Reject duplicate keys before JSON collapses them.
     $keys=New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
     foreach($m in [regex]::Matches($Content,'("(?:[^"\\]|\\.)*")\s*:')){if(!$keys.Add([string](ConvertFrom-Json $m.Groups[1].Value))){throw 'Duplicate vision report key.'}}
-    $r=ConvertFrom-Json $Content -ErrorAction Stop
+    $r=ConvertFrom-ForgeJsonObjectStrict $Content
     $required=@('verdict','observed_text','observed_elements','composition','findings')
     if($r-isnot[pscustomobject]-or@($r.PSObject.Properties).Count-ne5){throw 'Invalid vision report fields.'}
     foreach($n in $required){if(@($r.PSObject.Properties.Name)-cnotcontains$n){throw 'Missing vision report field.'}}
@@ -140,7 +141,7 @@ function Complete-ForgeVisionReview {
     try{
         if($request.Task.IsCanceled){throw 'AI comparison cancelled.'}
         $res=$request.Task.GetAwaiter().GetResult();try{if(!$res.IsSuccessStatusCode){throw 'Local Ollama rejected vision comparison; explicit retry is available.'};$raw=$res.Content.ReadAsStringAsync().GetAwaiter().GetResult()}finally{$res.Dispose()}
-        $outer=$raw|ConvertFrom-Json
+        $outer=ConvertFrom-ForgeJsonObjectStrict $raw
         if($outer.model-cne'qwen3.5:9b'-or$outer.done-isnot[bool]-or!$outer.done-or$outer.done_reason-cne'stop'){throw 'Incomplete or wrong-model vision response.'}
         # Re-read approval, current saved brief and exact artwork after inference.
         $selected=Get-ForgeVisionSelectedContext

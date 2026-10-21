@@ -42,29 +42,9 @@ def validate_prompt(contract):
  expected=make([{'id':id,'text':m['text'],'text_sha256':m['text_sha256'],'metadata':m['metadata'],'units':m['mechanical_units']} for id,m in fields.items()])
  if contract['format']!=expected['format'] or contract['messages']!=expected['messages']:raise ValueError('Unsupported/modified v1 contract; do not silently ignore schema or prompt changes')
 def shape(schema,value,path='$'):
- """Validator only for the exact generated v1 schema, not arbitrary JSON Schema."""
- if 'oneOf' in schema:
-  matched=0
-  for branch in schema['oneOf']:
-   try:shape(branch,value,path);matched+=1
-   except ValueError:pass
-  if matched!=1:raise ValueError('Exactly one contract alternative required at '+path)
-  return
- if 'const' in schema and (type(value)is not type(schema['const']) or value!=schema['const']):raise ValueError('Exact constant required at '+path)
- if 'enum' in schema and not any(type(value)is type(x) and value==x for x in schema['enum']):raise ValueError('Invalid enumeration at '+path)
- kind=schema.get('type')
- if kind=='object':
-  if not isinstance(value,dict) or set(value)!=set(schema['properties']):raise ValueError('Exact object fields required at '+path)
-  for k,v in value.items():shape(schema['properties'][k],v,path+'.'+k)
- elif kind=='array':
-  if not isinstance(value,list) or len(value)<schema.get('minItems',0):raise ValueError('Array contract failed at '+path)
-  for i,v in enumerate(value):shape(schema['items'],v,path+'['+str(i)+']')
- elif kind=='string':
-  if not isinstance(value,str) or len(value)<schema.get('minLength',0) or len(value)>schema.get('maxLength',len(value)):raise ValueError('String contract failed at '+path)
-  try:value.encode('utf-8',errors='strict')
-  except UnicodeEncodeError:raise ValueError('Invalid Unicode scalar at '+path)
- elif kind=='integer':
-  if type(value)is not int or not schema.get('minimum',value)<=value<=schema.get('maximum',value):raise ValueError('Integer/range contract failed at '+path)
+ from json_contract import validate_node
+ return validate_node(schema,value,path)
+
 def validate_result(contract,result):
  validate_prompt(contract);shape(contract['format'],result);count=0
  for id,row in result['sources'].items():

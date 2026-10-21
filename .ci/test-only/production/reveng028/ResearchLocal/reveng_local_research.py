@@ -1,3 +1,4 @@
+import json_contract
 """Bounded local discovery for the existing RevEng Research page. No paid provider."""
 import source_context
 import quote_contract
@@ -167,6 +168,7 @@ def schema(ids):
  return {'type':'object','properties':{'hypotheses':{'type':'array','minItems':0,'maxItems':3,'items':item}},'required':['hypotheses'],'additionalProperties':False}
 
 def validate_cards(obj, observations):
+ json_contract.validate_node(schema([x['evidence_id'] for x in observations]),obj)
  if not isinstance(obj,dict) or set(obj)!= {'hypotheses'} or not isinstance(obj['hypotheses'],list) or not 0<=len(obj['hypotheses'])<=3:raise ValueError('Expected zero to three complete hypotheses; abstention is allowed')
  ids={x['evidence_id']:x for x in observations};cards=[];quote_budgets={}
  expected=set(schema(list(ids))['properties']['hypotheses']['items']['properties'])
@@ -216,9 +218,9 @@ async def ask_qwen(observations, run, stats):
    if response.status!=200:raise ValueError('Local Qwen HTTP '+str(response.status))
    raw=await read_bounded(response.content,131072)
  (run/'model-response.raw.json').write_bytes(raw)
- obj=json.loads(raw);dump(run/'model-response.json',obj)
+ obj=json_contract.strict_loads(raw);dump(run/'model-response.json',obj)
  if obj.get('model')!='qwen3.5:9b' or obj.get('done') is not True or obj.get('done_reason')!='stop':raise ValueError('Incomplete/wrong model response')
- return validate_cards(json.loads(obj['message']['content']),observations)
+ return validate_cards(json_contract.strict_loads(obj['message']['content']),observations)
 
 async def read_bounded(stream, cap):
  parts=[];size=0

@@ -51,7 +51,7 @@ def inspect(store,id,draft):
    saved=read_json(p);decisions.append({'scope':saved.get('scope') or saved.get('schema'),'decision':saved.get('decision'),'reviewer':saved.get('reviewer'),'reason':saved.get('reason'),'concept_version':saved.get('concept_version'),'package_id':saved.get('package_id'),'scope_note':'Saved decision reference; current version validity is checked by the existing review controls'})
  value={'schema':'SOCIAL_EDITORIAL_CARD_V1','job_id':id,'script_state':draft['state'],'manual_revision':draft['revision'],'configured_audience':configured or 'not_recorded','audience_fit':fits,'saved_editorial_angle':angle,'applicant_evidence':applicant,'benefit_evidence':purpose,'benefit_scope':'Applicant eligibility is not a personal entitlement; beneficiary/use remains unknown unless evidenced above','hook':{'scene_id':hook['id'],'voiceover':hook.get('voiceover'),'screen_text':screen,'evidence':proof,'missing_claim_keys':missing,'critical_changes':change,'source_constraints_require_human_comparison':True},'description':{'text':description,'mapped_hook_claims':mapped,'unmapped_hook_claims':unmapped,'mapping_is_not_semantic_approval':True},'warnings':list(dict.fromkeys(warnings)),'saved_decisions':decisions,'source_revision_pending':(draft.get('source_history') or {}).get('requires_review',False),'evidence_currentness':'saved_only_not_rechecked','semantic_entailment_verified':False,'editorial_approved':False,'publication_authorized':False,'predicted_engagement_or_virality':None}
  alignment=script_alignment(script,claims)
- value['screen_alignment']=alignment;value['hook']['screen_relation_audit']=hook_alignment;value['diagnostic_revision']='editorial-integrity218'
+ value['screen_alignment']=alignment;value['hook']['screen_relation_audit']=hook_alignment;value['diagnostic_revision']='editorial-metadata252'
  for row in alignment['scenes']:
   if row.get('missing_screen'):value['warnings'].append('Scene '+str(row['scene_id'])+': screen field missing')
   for field,audit in row['fields'].items():
@@ -59,7 +59,7 @@ def inspect(store,id,draft):
  model_path=root/'editorial_analysis.json'
  if model_path.is_file():
   if model_path.stat().st_size>512*1024:raise PipelineError('Saved model editorial evidence exceeds review budget')
-  model=read_json(model_path);value['local_model_editorial']={'analysis':model.get('editorial_analysis'),'execution':model.get('local_editorial'),'scope':'Saved model advice and alternatives; not source fact, approved script or measured engagement'}
- value['version']=sha256_bytes(stable_json({'diagnostic_revision':'editorial-integrity218','original':draft['original'],'manual_revision':draft['revision'],'source_history':draft.get('source_history'),'script':script}).encode())
+  model=read_json(model_path);value['local_model_editorial']={'analysis':model.get('editorial_analysis'),'presentation':model.get('editorial_presentation'),'program_metadata':model.get('editorial_metadata'),'execution':model.get('local_editorial'),'scope':'Saved model advice and alternatives; not source fact, approved script or measured engagement'}
+ value['version']=sha256_bytes(stable_json({'diagnostic_revision':'editorial-metadata252','original':draft['original'],'manual_revision':draft['revision'],'source_history':draft.get('source_history'),'script':script}).encode())
  from .owner_locale import present
  return present(value)

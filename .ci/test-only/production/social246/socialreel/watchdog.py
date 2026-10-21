@@ -42,6 +42,16 @@ class WindowsJob:
             self.handle = None
 
 
+def _resume_windows_worker(process):
+    """Resume only the process we created suspended, after its job is assigned."""
+    api = ctypes.WinDLL('ntdll', use_last_error=True)
+    api.NtResumeProcess.argtypes = [wintypes.HANDLE]
+    api.NtResumeProcess.restype = wintypes.LONG
+    status = api.NtResumeProcess(wintypes.HANDLE(process._handle))
+    if status != 0:
+        raise OSError('Own suspended worker could not resume: NTSTATUS ' + hex(status & 0xffffffff))
+
+
 def run_command(command, log, timeout=900, cancel_file=None, env=None, cwd=None):
     if cancel_file and Path(cancel_file).is_file():
         return 130
@@ -53,10 +63,11 @@ def run_command(command, log, timeout=900, cancel_file=None, env=None, cwd=None)
     job = None
     with log.open('w', encoding='utf-8') as output:
         proc = subprocess.Popen(command, stdout=output, stderr=subprocess.STDOUT, env=env, cwd=cwd,
-                                creationflags=0x08000000 if os.name == 'nt' else 0)
+                                creationflags=(0x08000000 | 0x00000004) if os.name == 'nt' else 0)
         try:
             if os.name == 'nt':
                 job = WindowsJob(proc)
+                _resume_windows_worker(proc)
             while proc.poll() is None:
                 if cancel_file and Path(cancel_file).is_file():
                     output.write('\nPIPELINE CANCELLED\n')
@@ -69,9 +80,15 @@ def run_command(command, log, timeout=900, cancel_file=None, env=None, cwd=None)
         finally:
             if job:
                 job.close()
-            if proc.poll() is None:
+            elif proc.poll() is None:
                 proc.terminate()
-            proc.wait(timeout=10)
+            try:
+                proc.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                # Only this own worker is addressed; a job-close race must not
+                # turn a cancellation/deadline receipt into a stray live worker.
+                proc.kill()
+                proc.wait(timeout=10)
 
 
 def managed_run(out, timeout, cancel_file):

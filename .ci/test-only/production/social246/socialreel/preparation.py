@@ -96,6 +96,18 @@ def verify_preparation(directory):
             raise PipelineError('Preparation input changed or unsafe: '+entry['path'])
     identity=sha256_bytes('\n'.join(e['path']+' '+e['sha256'] for e in files).encode())
     if identity!=manifest['preparation_id']:raise PipelineError('Preparation identity mismatch')
+    # Readiness is metadata, not a second source of authority. Compare it with
+    # the actual production plan already included in the immutable file set.
+    plan=read_json(root/'production_plan.json')
+    if plan.get('schema') not in {'SOCIAL_PREPARATION_V1','SOCIAL_SOURCE_ONLY_PLAN_V1'}:raise PipelineError('Unknown sealed preparation plan')
+    for flag in ['ready_for_generation','accepted','model_execution_started']:
+        if type(manifest.get(flag)) is not bool or type(plan.get(flag)) is not bool or manifest[flag]!=plan[flag]:raise PipelineError('Preparation metadata differs from sealed plan: '+flag)
+    if manifest.get('generation_blockers')!=plan.get('generation_blockers'):raise PipelineError('Preparation blockers differ from sealed plan')
+    if plan.get('schema')=='SOCIAL_PREPARATION_V1':
+        if manifest.get('state')!='prepared_awaiting_generation':raise PipelineError('Unknown preparation lifecycle state')
+        for field in ['opportunity_id','writer','editorial_inference','model_execution_scope']:
+            if manifest.get(field)!=plan.get(field):raise PipelineError('Preparation metadata differs from sealed plan: '+field)
+        if plan.get('ready_for_publication') is not False:raise PipelineError('A preparation cannot authorize publication')
     if (root/'source/dependencies/dependency_graph.json').is_file():
         graph=read_json(root/'source/dependencies/dependency_graph.json')
         declared={e['path'] for e in files}

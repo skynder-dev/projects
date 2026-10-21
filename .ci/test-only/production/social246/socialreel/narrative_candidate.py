@@ -1,7 +1,9 @@
 """OFFLINE Social216 request compiler. No transport, model, UI or production activation."""
 if __package__:
+ from . import json_contract
  from .narrative_checks import guarantee_risk,facet_binding,screen_field,narration_signals,uncovered_narration_words,has_spoken_content
 else:
+ import json_contract
  from narrative_checks import guarantee_risk,facet_binding,screen_field,narration_signals,uncovered_narration_words,has_spoken_content
 import json,re,hashlib
 
@@ -39,6 +41,7 @@ def build_critic_for_writer(case,out,controls,draft_id):
  actual={'draft_id':draft_id,'voice':out['narration'],'screens':[s['text'] for s in out['screen_suggestions']]}
  return build_critic(case,[actual]+controls)
 def validate_writer(case,out):
+ json_contract.validate_node(writer_schema(case),out)
  if not isinstance(out,dict) or set(out)!={'narration','evidence','screen_suggestions'}:raise ValueError('Writer shape')
  voice=out['narration'];valid={c['key'] for c in case['claims']}
  if not has_spoken_content(voice) or not 1<=len(voice)<=2000:raise ValueError('Narration bounds')
@@ -79,6 +82,7 @@ def known_risks(case,voice,screens):
    if 'pensions' in lower and 'unclaimed' not in lower:add('pension_scope_review')
  return issues
 def validate_critic(case,drafts,out):
+ json_contract.validate_node(critic_schema(case,[d['draft_id'] for d in drafts]),out)
  valid={c['key']:c for c in case['claims']};by={d['draft_id']:d for d in drafts};boundaries={x['id'] for x in case['boundaries']}
  if not isinstance(out,dict) or set(out)!={'drafts'} or not isinstance(out['drafts'],list):raise ValueError('Critic shape')
  seen=set();uncertain=False

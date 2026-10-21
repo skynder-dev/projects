@@ -1,3 +1,4 @@
+import json_contract
 """Tiny official-page profiles + evidence-checked Qwen comparisons. Never revenue estimates."""
 import json,re,time,hashlib,asyncio,os
 import plan_mapping
@@ -75,6 +76,7 @@ def response_schema(ids):
  p={'pair_id':{'type':'string','enum':ids},'function_relation':{'type':'string','enum':['same-task','adjacent','unrelated','unknown']},'buyer_relation':{'type':'string','enum':['same','adjacent','unrelated','unknown']},'reason':{'type':'string'},'evidence_ids':{'type':'array','items':{'type':'string'}},'missing':{'type':'array','items':{'type':'string'}}}
  return {'type':'object','properties':{'comparisons':{'type':'array','minItems':len(ids),'maxItems':len(ids),'items':{'type':'object','properties':p,'required':list(p),'additionalProperties':False}}},'required':['comparisons'],'additionalProperties':False}
 def check_output(obj,pairs,profiles):
+ json_contract.validate_node(response_schema([p['id'] for p in pairs]),obj)
  byid={p['id']:p for p in pairs};rows=obj.get('comparisons',[]);out=[]
  if len(rows)!=len(pairs) or set(r.get('pair_id') for r in rows)!=set(byid):raise ValueError('Missing/duplicate comparison')
  for row in rows:
@@ -107,6 +109,7 @@ async def compare_with_qwen(m,pairs,profiles,run,stats):
   async with session.post('http://127.0.0.1:11434/api/chat',json=body,allow_redirects=False) as r:
    if r.status!=200:raise ValueError('Local Qwen comparison failed')
    raw=await m.read_bounded(r.content,131072)
- obj=json.loads(raw);m.dump(run/'comparison-model-response.json',obj)
+ (run/'comparison-model-response.raw.json').write_bytes(raw)
+ obj=json_contract.strict_loads(raw);m.dump(run/'comparison-model-response.json',obj)
  if obj.get('done') is not True or obj.get('done_reason')!='stop' or obj.get('model')!='qwen3.5:9b':raise ValueError('Incomplete comparison response')
- return check_output(json.loads(obj['message']['content']),pairs,profiles)
+ return check_output(json_contract.strict_loads(obj['message']['content']),pairs,profiles)

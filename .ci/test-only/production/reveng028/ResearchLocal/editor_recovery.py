@@ -1,5 +1,6 @@
 """Incomplete editor work: portable recovery only, never source/customer/model proof."""
 import hashlib,json,re
+from manual_hypotheses import loads as strict_loads
 FIELDS={'title','interpretation','assumptions','buyer_role','next_action','success','failure'}
 def verify(fetch,names):
  paths=sorted(n for n in names if n.startswith('manual-editor-recovery/'))
@@ -8,9 +9,9 @@ def verify(fetch,names):
   if not re.fullmatch(r'manual-editor-recovery/[0-9a-f]{32}\.json',path):raise ValueError('Invalid recovery path')
   raw=fetch(path)
   if len(raw)>1048576:raise ValueError('Recovery exceeds1MiB')
-  wrap=json.loads(raw.decode('utf-8-sig'));payload=wrap.get('payload_json')
+  wrap=strict_loads(raw.decode('utf-8-sig'));payload=wrap.get('payload_json')
   if not isinstance(payload,str) or hashlib.sha256(payload.encode()).hexdigest()!=wrap.get('payload_sha256'):raise ValueError('Recovery hash mismatch')
-  d=json.loads(payload)
+  d=strict_loads(payload)
   if d.get('schema')!='reveng-editor-recovery-v1' or d.get('status')!='INCOMPLETE_EDITOR_WORK_NOT_HYPOTHESIS' or d.get('auto_admission') is not False:raise ValueError('Recovery policy mismatch')
   if set(d)!={'schema','status','auto_admission','saved_at','source_snapshot','previous_id','start','end','fields'}:raise ValueError('Unexpected recovery property')
   if not isinstance(d['previous_id'],str) or d['previous_id'] and not re.fullmatch('[0-9a-f]{64}',d['previous_id']):raise ValueError('Invalid prior note identity')

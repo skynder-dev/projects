@@ -1,4 +1,5 @@
-﻿. (Join-Path $PSScriptRoot 'Forge.ColourReview.ps1')
+﻿. (Join-Path $PSScriptRoot 'Forge.StrictJsonSyntax.ps1')
+. (Join-Path $PSScriptRoot 'Forge.ColourReview.ps1')
 . (Join-Path $PSScriptRoot 'Forge.OwnerLanguage.ps1')
 # Shared, deterministic full-brief approval contract. No network or implicit approval.
 function Get-ForgeBriefValue($Object,[string]$Name) {
@@ -54,6 +55,12 @@ function Read-ForgeStateFileSnapshot([string]$Path,[bool]$AllowLegacy=$false) {
     return $capture
 }
 function ConvertFrom-ForgeJsonObjectStrict([string]$Text) {
+    # Ignore only a single transport BOM; never strip or rewrite string contents.
+    if($null-ne$Text-and$Text.Length-gt0-and[int]$Text[0]-eq0xFEFF){$Text=$Text.Substring(1)}
+    Assert-ForgeStrictJsonSyntax $Text
+    # DateKind String is required: automatic ISO-date coercion violates JSON
+    # string schemas and changes content. Fail closed on unsupported runtimes.
+    if(!(Get-Command ConvertFrom-Json).Parameters.ContainsKey('DateKind')){throw 'Strict type-preserving JSON conversion requires PowerShell 7.5 or newer.'}
     if([string]::IsNullOrWhiteSpace($Text)-or!$Text.TrimStart().StartsWith('{')){throw 'JSON root must be an object.'}
     $stack=New-Object 'Collections.Generic.Stack[Collections.Generic.HashSet[string]]'
     $tokens=[regex]::Matches($Text,'"(?:[^"\\]|\\.)*"|[{}\[\]:,]|[^\s{}\[\]:,]+')
@@ -62,11 +69,12 @@ function ConvertFrom-ForgeJsonObjectStrict([string]$Text) {
         if($t-eq'{'){$stack.Push((New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)))}
         elseif($t-eq'}'){if(!$stack.Count){throw 'Invalid JSON object structure.'};$null=$stack.Pop()}
         elseif($t.StartsWith('"')-and$i+1-lt$tokens.Count-and$tokens[$i+1].Value-eq':'){
-            if(!$stack.Count){throw 'Invalid JSON property.'};$key=[string](ConvertFrom-Json $t)
+            if(!$stack.Count){throw 'Invalid JSON property.'};$key=[string](ConvertFrom-Json ([ForgeStrictJsonSyntaxV1]::ConversionText($t)) -DateKind String)
             if(!$stack.Peek().Add($key)){throw 'Duplicate JSON object property; no ambiguous value was accepted.'}
         }
     }
-    $value=ConvertFrom-Json -InputObject $Text -ErrorAction Stop
+    $conversionText=[ForgeStrictJsonSyntaxV1]::ConversionText($Text)
+    $value=ConvertFrom-Json -InputObject $conversionText -DateKind String -ErrorAction Stop
     if($value-isnot[pscustomobject]){throw 'JSON root must be an object.'}
     return $value
 }

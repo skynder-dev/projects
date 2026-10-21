@@ -1,3 +1,4 @@
+from . import json_contract
 """CPU Qwen writes a narrative plan from a verified phrasing bank; no new facts allowed."""
 import copy
 import hashlib
@@ -84,7 +85,7 @@ def request_json(base, path, body=None, timeout=30):
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     try:
         with opener.open(req, timeout=timeout) as response:
-            return json.load(response)
+            return json_contract.strict_loads(response.read())
     except (OSError,ValueError,urllib.error.URLError) as error:
         raise PipelineError('Local Ollama service unavailable or returned invalid data; no model download/fallback. Safe retry after service recovery.') from error
 
@@ -157,14 +158,16 @@ def qwen_script(template, claims, cfg, report):
                 if own is not None: break
         if own is None or own.get('size_vram',0) != 0:
             raise PipelineError('Cannot confirm CPU-only Qwen runner; result refused')
-        if not generated.get('done') or generated.get('done_reason')=='length':
+        if generated.get('done') is not True or generated.get('done_reason')!='stop' or generated.get('model')!=model:
             raise PipelineError('Qwen response incomplete')
-        payload = {'plan':json.loads(generated['response']), 'model_digest':identity['digest'],
+        payload = {'plan':json_contract.strict_loads(generated['response']), 'model_digest':identity['digest'],
                    'before_ps':before,'after_ps':after,'request_options':body['options'],
                    'eval_count':generated.get('eval_count'), 'total_duration':generated.get('total_duration')}
+        json_contract.validate_node(schema,payload['plan'])
         cache.parent.mkdir(parents=True, exist_ok=True)
         # Cache only after composition and grounding validation below.
         report['qwen_cache_hit'] = False
+    json_contract.validate_node(schema,payload['plan'])
     plan = payload['plan'].get('segments',[])
     by_id = {s['id']:s for s in template['segments']}
     options = {s['id']:s for s in bank}

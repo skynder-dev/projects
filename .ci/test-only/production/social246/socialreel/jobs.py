@@ -28,10 +28,12 @@ def process_token(pid):
         handle = api.OpenProcess(0x1000, False, int(pid))
         if not handle:
             # Access denied is uncertain, never interpreted as a dead owner.
-            return 'unknown' if ctypes.get_last_error() == 5 else None
+            return None if ctypes.get_last_error() == 87 else 'unknown'
         try:
             code = wintypes.DWORD()
-            if not api.GetExitCodeProcess(handle, ctypes.byref(code)) or code.value != 259:
+            if not api.GetExitCodeProcess(handle, ctypes.byref(code)):
+                return 'unknown'
+            if code.value != 259:
                 return None
             values = [wintypes.FILETIME() for _ in range(4)]
             if not api.GetProcessTimes(handle, *(ctypes.byref(v) for v in values)):
@@ -240,6 +242,8 @@ class JobStore:
                 directory=Path(result['run_dir']).resolve()
                 if not directory.is_relative_to((folder/'runs').resolve()):raise PipelineError('Prepared run outside owned job')
                 manifest=verify_preparation(directory)
+                from .preparation_binding import verify_request
+                result['preparation_request_binding']=verify_request(self,job_id,directory,manifest)
                 from .claims import validate_script
                 errors=validate_script(read_json(directory/'script.json'),read_json(directory/'claims.json')['claims'])
                 if errors:raise PipelineError('; '.join(errors))
@@ -388,13 +392,19 @@ class JobStore:
 
     def prepared_package(self,job_id):
         from .preparation import verify_preparation
+        from .preparation_binding import verify_request
         from .claims import validate_script
+        diagnostics=[]
         for path in sorted((self.folder(job_id)/'runs').glob('prepared_*/prepared.json')):
             try:
+                if not path.parent.resolve().is_relative_to((self.folder(job_id)/'runs').resolve()):raise PipelineError('Prepared path escaped owned job')
                 manifest=verify_preparation(path.parent)
+                verify_request(self,job_id,path.parent,manifest)
                 if not validate_script(read_json(path.parent/'script.json'),read_json(path.parent/'claims.json')['claims']):
+                    self._preparation_diagnostics=getattr(self,'_preparation_diagnostics',{});self._preparation_diagnostics[job_id]=diagnostics
                     return path.parent,manifest
-            except (PipelineError,OSError,ValueError,KeyError,TypeError):pass
+            except (PipelineError,OSError,ValueError,KeyError,TypeError) as error:diagnostics.append(str(error)[:300])
+        self._preparation_diagnostics=getattr(self,'_preparation_diagnostics',{});self._preparation_diagnostics[job_id]=diagnostics
         return None,None
 
     def recover(self):
@@ -409,13 +419,21 @@ class JobStore:
             if (self.folder(row['id']) / 'cancel').exists():
                 recovered.append(self.finish(row['id'], 'cancelled', detail='Cancellation preserved after owner exit'))
                 continue
-            try:target=json.loads(row['request_json']).get('stop_after')
-            except (ValueError,TypeError,AttributeError):target=None
+            try:
+                request=json.loads(row['request_json'])
+                if not isinstance(request,dict) or request.get('config')!=read_json(self.folder(row['id'])/'config.json') or request.get('stop_after') not in (None,'script'):raise PipelineError('Durable recovery request/config invalid')
+                target=request.get('stop_after')
+            except (PipelineError,OSError,ValueError,TypeError,AttributeError) as error:
+                recovered.append(self.finish(row['id'],'interrupted',detail='Recovery request unavailable/changed; original bytes preserved, no output adoption or replay: '+str(error)[:300]))
+                continue
             if target=='script':
                 prepared,manifest=self.prepared_package(row['id'])
                 if manifest:
                     recovered.append(self.finish(row['id'],'prepared',run_dir=prepared,detail='Recovered verified preparation; generation not started'))
                     continue
+                reasons=getattr(self,'_preparation_diagnostics',{}).get(row['id'],[])
+                recovered.append(self.finish(row['id'],'interrupted',detail='No request-bound preparation after owner exit; no replay. '+('; '.join(reasons))[:500]))
+                continue
             directory, result = self.completed_package(row['id'])
             if result:
                 from .packages import source_freshness
@@ -498,7 +516,7 @@ class JobStore:
         try:
             from .common import ROOT
             code = run_command(command, folder / 'worker.log', request['timeout'], folder / 'cancel', env, cwd=ROOT)
-            directory, result = self.completed_package(job_id)
+            directory, result = self.completed_package(job_id) if request.get('stop_after')!='script' else (None,None)
             prepared,manifest=self.prepared_package(job_id) if request.get('stop_after')=='script' else (None,None)
             if code == 130 or (request.get('public_source') and (folder/'cancel').exists()):
                 state, detail = 'cancelled', 'Cancelled own worker and descendants'

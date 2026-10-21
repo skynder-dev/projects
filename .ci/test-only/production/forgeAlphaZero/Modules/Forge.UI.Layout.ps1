@@ -1,5 +1,13 @@
 ﻿# Merch Forge · UI layout boundary
 # Owns responsive layout primitives and concept-content navigation only.
+function Confirm-ForgeWindowClose($EventArgs) {
+    if(($script:Dirty-or$script:PublicationDirty)-and!(Confirm 'Close and discard unsaved creative/publication edits? Unsaved text is only in memory and cannot be recovered after closing or a crash. Explicitly save first to keep it.')){$EventArgs.Cancel=$true}
+}
+function Initialize-ForgeUnsavedCloseGuard($HostWindow) {
+    if($null-eq$HostWindow-or[object]::ReferenceEquals($script:UnsavedGuardWindow,$HostWindow)){return}
+    $HostWindow.add_Closing({param($sender,$eventArgs) Confirm-ForgeWindowClose $eventArgs})
+    $script:UnsavedGuardWindow=$HostWindow
+}
 function Set-Thickness([double]$All) { return New-Object Windows.Thickness -ArgumentList $All }
 function Set-GridLength([double]$Value) { return New-Object Windows.GridLength -ArgumentList $Value }
 function New-StarGridLength([double]$Value) { return [System.Activator]::CreateInstance([Windows.GridLength],[object[]]@([double]$Value,[Windows.GridUnitType]::Star)) }
@@ -74,6 +82,7 @@ function Set-ConceptTabsEnabled([bool]$Enabled) {
 # R2O module: Forge.ProductNavigation.ps1
 function Update-MainTabUi {
     if($null -eq $MainTabs -or $null -eq $MainTabs.SelectedItem){return}
+    Initialize-ForgeUnsavedCloseGuard ([Windows.Window]::GetWindow($MainTabs))
     $isEdit=((Get-MainTabKey $MainTabs.SelectedItem) -eq 'edit')
     $SaveButton.Visibility=if($isEdit){'Visible'}else{'Collapsed'}
     $DirtyLabel.Visibility=if($isEdit){'Visible'}else{'Collapsed'}
