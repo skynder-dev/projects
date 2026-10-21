@@ -1,0 +1,407 @@
++ python -m venv 'D:\a\_temp/v'
++ PY='D:\a\_temp/v/Scripts/python.exe'
++ 'D:\a\_temp/v/Scripts/python.exe' -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.8.0 torchaudio==2.8.0
+Looking in indexes: https://download.pytorch.org/whl/cpu
+Collecting torch==2.8.0
+  Downloading https://download-r2.pytorch.org/whl/cpu/torch-2.8.0%2Bcpu-cp311-cp311-win_amd64.whl.metadata (29 kB)
+Collecting torchaudio==2.8.0
+  Downloading https://download-r2.pytorch.org/whl/cpu/torchaudio-2.8.0%2Bcpu-cp311-cp311-win_amd64.whl.metadata (7.4 kB)
+Collecting filelock (from torch==2.8.0)
+  Downloading filelock-3.32.3-py3-none-any.whl.metadata (2.0 kB)
+Collecting typing-extensions>=4.10.0 (from torch==2.8.0)
+  Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting sympy>=1.13.3 (from torch==2.8.0)
+  Downloading sympy-1.14.0-py3-none-any.whl.metadata (12 kB)
+Collecting networkx (from torch==2.8.0)
+  Downloading networkx-3.6.1-py3-none-any.whl.metadata (6.8 kB)
+Collecting jinja2 (from torch==2.8.0)
+  Downloading https://download.pytorch.org/whl/jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting fsspec (from torch==2.8.0)
+  Downloading fsspec-2026.7.0-py3-none-any.whl.metadata (10 kB)
+Collecting mpmath<1.4,>=1.1.0 (from sympy>=1.13.3->torch==2.8.0)
+  Downloading mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
+Collecting MarkupSafe>=2.0 (from jinja2->torch==2.8.0)
+  Downloading https://download.pytorch.org/whl/markupsafe-3.0.3-cp311-cp311-win_amd64.whl.metadata (2.8 kB)
+Downloading https://download-r2.pytorch.org/whl/cpu/torch-2.8.0%2Bcpu-cp311-cp311-win_amd64.whl (619.4 MB)
+Downloading https://download-r2.pytorch.org/whl/cpu/torchaudio-2.8.0%2Bcpu-cp311-cp311-win_amd64.whl (2.5 MB)
+Downloading sympy-1.14.0-py3-none-any.whl (6.3 MB)
+Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Downloading filelock-3.32.3-py3-none-any.whl (98 kB)
+Downloading fsspec-2026.7.0-py3-none-any.whl (206 kB)
+Downloading https://download.pytorch.org/whl/jinja2-3.1.6-py3-none-any.whl (134 kB)
+Downloading networkx-3.6.1-py3-none-any.whl (2.1 MB)
+Downloading https://download.pytorch.org/whl/markupsafe-3.0.3-cp311-cp311-win_amd64.whl (15 kB)
+Downloading mpmath-1.3.0-py3-none-any.whl (536 kB)
+Installing collected packages: mpmath, typing-extensions, sympy, networkx, MarkupSafe, fsspec, filelock, jinja2, torch, torchaudio
+Successfully installed MarkupSafe-3.0.3 filelock-3.32.3 fsspec-2026.7.0 jinja2-3.1.6 mpmath-1.3.0 networkx-3.6.1 sympy-1.14.0 torch-2.8.0+cpu torchaudio-2.8.0+cpu typing-extensions-4.16.0
++ printf 'torch==2.8.0\ntorchaudio==2.8.0\n'
++ '[' chatterbox = qwen ']'
++ 'D:\a\_temp/v/Scripts/python.exe' -m pip install --no-deps 'chatterbox-tts @ git+https://github.com/resemble-ai/chatterbox.git'
+Collecting chatterbox-tts@ git+https://github.com/resemble-ai/chatterbox.git
+  Cloning https://github.com/resemble-ai/chatterbox.git to c:\users\runneradmin\appdata\local\temp\pip-install-q3kn1uxm\chatterbox-tts_7af5d55aca8c4c00a3759c7d0c338c3c
+  Running command git clone --filter=blob:none --quiet https://github.com/resemble-ai/chatterbox.git 'C:\Users\runneradmin\AppData\Local\Temp\pip-install-q3kn1uxm\chatterbox-tts_7af5d55aca8c4c00a3759c7d0c338c3c'
+  Resolved https://github.com/resemble-ai/chatterbox.git to commit 5de7a54aa4e5e2baadb0182dde554908b48b85c2
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: chatterbox-tts
+  Building wheel for chatterbox-tts (pyproject.toml): started
+  Building wheel for chatterbox-tts (pyproject.toml): finished with status 'done'
+  Created wheel for chatterbox-tts: filename=chatterbox_tts-0.1.7-py3-none-any.whl size=107939 sha256=e402373c8ccfb22e35d9848f052f1a4ac955234b0fe99ceb75b4d61365939ed9
+  Stored in directory: C:\Users\runneradmin\AppData\Local\Temp\pip-ephem-wheel-cache-e050nf_e\wheels\65\5d\7c\132ad9ae44731884c97c250c1f01b2d9b9edd98cb61e413599
+Successfully built chatterbox-tts
+Installing collected packages: chatterbox-tts
+Successfully installed chatterbox-tts-0.1.7
++ 'D:\a\_temp/v/Scripts/python.exe' -m pip install --extra-index-url https://download.pytorch.org/whl/cpu -c 'D:\a\_temp/pin.txt' 'numpy<2' librosa==0.11.0 s3tokenizer transformers==5.2.0 diffusers==0.29.0 'resemble-perth @ git+https://github.com/resemble-ai/Perth.git@master' conformer==0.3.2 safetensors spacy-pkuseg pykakasi==2.3.0 pyloudnorm omegaconf soundfile
+Looking in indexes: https://pypi.org/simple, https://download.pytorch.org/whl/cpu
+Collecting resemble-perth@ git+https://github.com/resemble-ai/Perth.git@master
+  Cloning https://github.com/resemble-ai/Perth.git (to revision master) to c:\users\runneradmin\appdata\local\temp\pip-install-y8ca4p11\resemble-perth_fe38a0461c7b48998d79d3a64c08684b
+  Running command git clone --filter=blob:none --quiet https://github.com/resemble-ai/Perth.git 'C:\Users\runneradmin\AppData\Local\Temp\pip-install-y8ca4p11\resemble-perth_fe38a0461c7b48998d79d3a64c08684b'
+  Resolved https://github.com/resemble-ai/Perth.git to commit ff1c8ac55a976971245cdd53c18d6131ca00d993
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Collecting numpy<2
+  Downloading numpy-1.26.4-cp311-cp311-win_amd64.whl.metadata (61 kB)
+Collecting librosa==0.11.0
+  Downloading librosa-0.11.0-py3-none-any.whl.metadata (8.7 kB)
+Collecting s3tokenizer
+  Downloading s3tokenizer-0.3.0-py3-none-any.whl.metadata (7.2 kB)
+Collecting transformers==5.2.0
+  Downloading transformers-5.2.0-py3-none-any.whl.metadata (32 kB)
+Collecting diffusers==0.29.0
+  Downloading diffusers-0.29.0-py3-none-any.whl.metadata (19 kB)
+Collecting conformer==0.3.2
+  Downloading conformer-0.3.2-py3-none-any.whl.metadata (631 bytes)
+Collecting safetensors
+  Downloading safetensors-0.8.0-cp310-abi3-win_amd64.whl.metadata (4.2 kB)
+Collecting spacy-pkuseg
+  Downloading spacy_pkuseg-1.0.1-cp311-cp311-win_amd64.whl.metadata (13 kB)
+Collecting pykakasi==2.3.0
+  Downloading pykakasi-2.3.0-py3-none-any.whl.metadata (5.9 kB)
+Collecting pyloudnorm
+  Downloading pyloudnorm-0.2.0-py3-none-any.whl.metadata (6.6 kB)
+Collecting omegaconf
+  Downloading omegaconf-2.4.0-py3-none-any.whl.metadata (4.9 kB)
+Collecting soundfile
+  Downloading soundfile-0.14.0-py2.py3-none-win_amd64.whl.metadata (18 kB)
+Collecting audioread>=2.1.9 (from librosa==0.11.0)
+  Downloading audioread-3.1.0-py3-none-any.whl.metadata (9.0 kB)
+Collecting numba>=0.51.0 (from librosa==0.11.0)
+  Downloading numba-0.68.0-cp311-cp311-win_amd64.whl.metadata (2.9 kB)
+Collecting scipy>=1.6.0 (from librosa==0.11.0)
+  Downloading scipy-1.17.1-cp311-cp311-win_amd64.whl.metadata (60 kB)
+Collecting scikit-learn>=1.1.0 (from librosa==0.11.0)
+  Downloading scikit_learn-1.9.1-cp311-cp311-win_amd64.whl.metadata (9.3 kB)
+Collecting joblib>=1.0 (from librosa==0.11.0)
+  Downloading joblib-1.6.0-py3-none-any.whl.metadata (6.5 kB)
+Collecting decorator>=4.3.0 (from librosa==0.11.0)
+  Downloading decorator-5.3.1-py3-none-any.whl.metadata (3.9 kB)
+Collecting pooch>=1.1 (from librosa==0.11.0)
+  Downloading pooch-1.9.0-py3-none-any.whl.metadata (10 kB)
+Collecting soxr>=0.3.2 (from librosa==0.11.0)
+  Downloading soxr-1.1.0-cp311-cp311-win_amd64.whl.metadata (5.8 kB)
+Requirement already satisfied: typing_extensions>=4.1.1 in d:\a\_temp\v\lib\site-packages (from librosa==0.11.0) (4.16.0)
+Collecting lazy_loader>=0.1 (from librosa==0.11.0)
+  Downloading lazy_loader-0.6-py3-none-any.whl.metadata (6.0 kB)
+Collecting msgpack>=1.0 (from librosa==0.11.0)
+  Downloading msgpack-1.2.3-cp311-cp311-win_amd64.whl.metadata (8.5 kB)
+Collecting huggingface-hub<2.0,>=1.3.0 (from transformers==5.2.0)
+  Downloading huggingface_hub-1.33.0-py3-none-any.whl.metadata (16 kB)
+Collecting packaging>=20.0 (from transformers==5.2.0)
+  Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+Collecting pyyaml>=5.1 (from transformers==5.2.0)
+  Downloading pyyaml-6.0.3-cp311-cp311-win_amd64.whl.metadata (2.4 kB)
+Collecting regex!=2019.12.17 (from transformers==5.2.0)
+  Downloading regex-2026.9.29-cp311-cp311-win_amd64.whl.metadata (41 kB)
+Collecting tokenizers<=0.23.0,>=0.22.0 (from transformers==5.2.0)
+  Downloading tokenizers-0.22.2-cp39-abi3-win_amd64.whl.metadata (7.4 kB)
+Collecting typer-slim (from transformers==5.2.0)
+  Downloading typer_slim-0.24.0-py3-none-any.whl.metadata (4.2 kB)
+Collecting tqdm>=4.27 (from transformers==5.2.0)
+  Downloading tqdm-4.70.1-py3-none-any.whl.metadata (57 kB)
+Collecting importlib-metadata (from diffusers==0.29.0)
+  Downloading importlib_metadata-9.0.1-py3-none-any.whl.metadata (4.5 kB)
+Requirement already satisfied: filelock in d:\a\_temp\v\lib\site-packages (from diffusers==0.29.0) (3.32.3)
+Collecting requests (from diffusers==0.29.0)
+  Downloading requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+Collecting Pillow (from diffusers==0.29.0)
+  Downloading pillow-13.0.0-cp311-cp311-win_amd64.whl.metadata (9.3 kB)
+Collecting einops>=0.6.1 (from conformer==0.3.2)
+  Downloading einops-0.8.2-py3-none-any.whl.metadata (13 kB)
+Requirement already satisfied: torch in d:\a\_temp\v\lib\site-packages (from conformer==0.3.2) (2.8.0+cpu)
+Collecting jaconv (from pykakasi==2.3.0)
+  Downloading jaconv-0.5.0-py3-none-any.whl.metadata (8.9 kB)
+Collecting deprecated (from pykakasi==2.3.0)
+  Downloading deprecated-1.3.1-py2.py3-none-any.whl.metadata (5.9 kB)
+Collecting pre-commit (from s3tokenizer)
+  Downloading pre_commit-4.7.0-py2.py3-none-any.whl.metadata (1.2 kB)
+Collecting onnx (from s3tokenizer)
+  Downloading onnx-1.23.2-cp311-cp311-win_amd64.whl.metadata (8.7 kB)
+Requirement already satisfied: torchaudio in d:\a\_temp\v\lib\site-packages (from s3tokenizer) (2.8.0+cpu)
+Collecting pydub>=0.25.1 (from resemble-perth@ git+https://github.com/resemble-ai/Perth.git@master)
+  Downloading pydub-0.25.1-py2.py3-none-any.whl.metadata (1.4 kB)
+Collecting srsly<3.0.0,>=2.3.0 (from spacy-pkuseg)
+  Downloading srsly-2.5.4-cp311-cp311-win_amd64.whl.metadata (20 kB)
+Collecting cffi>=1.0 (from soundfile)
+  Downloading cffi-2.1.1-cp311-cp311-win_amd64.whl.metadata (2.6 kB)
+Collecting pycparser (from cffi>=1.0->soundfile)
+  Downloading pycparser-3.11-py3-none-any.whl.metadata (8.2 kB)
+Collecting click<9.0.0,>=8.4.2 (from huggingface-hub<2.0,>=1.3.0->transformers==5.2.0)
+  Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+Requirement already satisfied: fsspec>=2023.5.0 in d:\a\_temp\v\lib\site-packages (from huggingface-hub<2.0,>=1.3.0->transformers==5.2.0) (2026.7.0)
+Collecting hf-xet<2.0.0,>=1.6.0 (from huggingface-hub<2.0,>=1.3.0->transformers==5.2.0)
+  Downloading hf_xet-1.7.0-cp38-abi3-win_amd64.whl.metadata (4.9 kB)
+Collecting httpx<1,>=0.23.0 (from huggingface-hub<2.0,>=1.3.0->transformers==5.2.0)
+  Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+Collecting cloudpickle>=3.0 (from joblib>=1.0->librosa==0.11.0)
+  Downloading cloudpickle-3.1.2-py3-none-any.whl.metadata (7.1 kB)
+Collecting llvmlite<0.51,>=0.50.0dev0 (from numba>=0.51.0->librosa==0.11.0)
+  Downloading llvmlite-0.50.0-cp311-cp311-win_amd64.whl.metadata (5.0 kB)
+Collecting platformdirs>=2.5.0 (from pooch>=1.1->librosa==0.11.0)
+  Downloading platformdirs-4.13.5-py3-none-any.whl.metadata (5.5 kB)
+Collecting charset_normalizer<4,>=2 (from requests->diffusers==0.29.0)
+  Downloading charset_normalizer-3.5.2-cp311-cp311-win_amd64.whl.metadata (47 kB)
+Collecting idna<4,>=2.5 (from requests->diffusers==0.29.0)
+  Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+Collecting urllib3<3,>=1.26 (from requests->diffusers==0.29.0)
+  Downloading urllib3-2.8.0-py3-none-any.whl.metadata (7.4 kB)
+Collecting certifi>=2023.5.7 (from requests->diffusers==0.29.0)
+  Downloading certifi-2026.10.19-py3-none-any.whl.metadata (2.5 kB)
+Collecting narwhals>=2.0.1 (from scikit-learn>=1.1.0->librosa==0.11.0)
+  Downloading narwhals-2.27.1-py3-none-any.whl.metadata (15 kB)
+Collecting threadpoolctl>=3.5.0 (from scikit-learn>=1.1.0->librosa==0.11.0)
+  Downloading threadpoolctl-3.7.0-py3-none-any.whl.metadata (24 kB)
+Collecting catalogue<2.1.0,>=2.0.3 (from srsly<3.0.0,>=2.3.0->spacy-pkuseg)
+  Downloading catalogue-2.0.10-py3-none-any.whl.metadata (14 kB)
+Requirement already satisfied: sympy>=1.13.3 in d:\a\_temp\v\lib\site-packages (from torch->conformer==0.3.2) (1.14.0)
+Requirement already satisfied: networkx in d:\a\_temp\v\lib\site-packages (from torch->conformer==0.3.2) (3.6.1)
+Requirement already satisfied: jinja2 in d:\a\_temp\v\lib\site-packages (from torch->conformer==0.3.2) (3.1.6)
+Collecting colorama (from tqdm>=4.27->transformers==5.2.0)
+  Downloading https://download.pytorch.org/whl/colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+Collecting wrapt<3,>=1.10 (from deprecated->pykakasi==2.3.0)
+  Downloading wrapt-2.5.1-cp311-cp311-win_amd64.whl.metadata (7.7 kB)
+Collecting zipp>=3.20 (from importlib-metadata->diffusers==0.29.0)
+  Downloading zipp-4.1.1-py3-none-any.whl.metadata (3.6 kB)
+Collecting protobuf>=6.31.1 (from onnx->s3tokenizer)
+  Downloading protobuf-7.36.2-cp310-abi3-win_amd64.whl.metadata (595 bytes)
+Collecting ml_dtypes>=0.5.4 (from onnx->s3tokenizer)
+  Downloading ml_dtypes-0.6.0-cp311-cp311-win_amd64.whl.metadata (8.8 kB)
+Collecting cfgv>=2.0.0 (from pre-commit->s3tokenizer)
+  Downloading cfgv-3.5.0-py2.py3-none-any.whl.metadata (8.9 kB)
+Collecting identify>=1.0.0 (from pre-commit->s3tokenizer)
+  Downloading identify-2.6.20-py2.py3-none-any.whl.metadata (4.4 kB)
+Collecting nodeenv>=0.11.1 (from pre-commit->s3tokenizer)
+  Downloading nodeenv-1.11.0-py2.py3-none-any.whl.metadata (40 kB)
+Collecting virtualenv>=20.10.0 (from pre-commit->s3tokenizer)
+  Downloading virtualenv-21.14.12-py3-none-any.whl.metadata (4.1 kB)
+Collecting typer>=0.24.0 (from typer-slim->transformers==5.2.0)
+  Downloading typer-0.27.3-py3-none-any.whl.metadata (16 kB)
+Collecting anyio (from httpx<1,>=0.23.0->huggingface-hub<2.0,>=1.3.0->transformers==5.2.0)
+  Downloading anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)
+Collecting httpcore==1.* (from httpx<1,>=0.23.0->huggingface-hub<2.0,>=1.3.0->transformers==5.2.0)
+  Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Collecting h11>=0.16 (from httpcore==1.*->httpx<1,>=0.23.0->huggingface-hub<2.0,>=1.3.0->transformers==5.2.0)
+  Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+INFO: pip is looking at multiple versions of ml-dtypes to determine which version is compatible with other requirements. This could take a while.
+Collecting ml_dtypes>=0.5.4 (from onnx->s3tokenizer)
+  Downloading ml_dtypes-0.5.4-cp311-cp311-win_amd64.whl.metadata (9.2 kB)
+Requirement already satisfied: mpmath<1.4,>=1.1.0 in d:\a\_temp\v\lib\site-packages (from sympy>=1.13.3->torch->conformer==0.3.2) (1.3.0)
+Collecting shellingham>=1.3.0 (from typer>=0.24.0->typer-slim->transformers==5.2.0)
+  Downloading shellingham-1.5.4-py2.py3-none-any.whl.metadata (3.5 kB)
+Collecting rich>=13.8.0 (from typer>=0.24.0->typer-slim->transformers==5.2.0)
+  Downloading rich-15.0.0-py3-none-any.whl.metadata (18 kB)
+Collecting annotated-doc>=0.0.2 (from typer>=0.24.0->typer-slim->transformers==5.2.0)
+  Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+Collecting distlib<1,>=0.4.3 (from virtualenv>=20.10.0->pre-commit->s3tokenizer)
+  Downloading distlib-0.4.4-py2.py3-none-any.whl.metadata (5.3 kB)
+Collecting python-discovery>=1.6.1 (from virtualenv>=20.10.0->pre-commit->s3tokenizer)
+  Downloading python_discovery-1.6.4-py3-none-any.whl.metadata (5.1 kB)
+Requirement already satisfied: MarkupSafe>=2.0 in d:\a\_temp\v\lib\site-packages (from jinja2->torch->conformer==0.3.2) (3.0.3)
+Collecting markdown-it-py>=2.2.0 (from rich>=13.8.0->typer>=0.24.0->typer-slim->transformers==5.2.0)
+  Downloading markdown_it_py-4.2.0-py3-none-any.whl.metadata (7.4 kB)
+Collecting pygments<3.0.0,>=2.13.0 (from rich>=13.8.0->typer>=0.24.0->typer-slim->transformers==5.2.0)
+  Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=13.8.0->typer>=0.24.0->typer-slim->transformers==5.2.0)
+  Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Downloading librosa-0.11.0-py3-none-any.whl (260 kB)
+Downloading transformers-5.2.0-py3-none-any.whl (10.4 MB)
+Downloading diffusers-0.29.0-py3-none-any.whl (2.2 MB)
+Downloading conformer-0.3.2-py3-none-any.whl (4.3 kB)
+Downloading pykakasi-2.3.0-py3-none-any.whl (2.4 MB)
+Downloading numpy-1.26.4-cp311-cp311-win_amd64.whl (15.8 MB)
+Downloading s3tokenizer-0.3.0-py3-none-any.whl (226 kB)
+Downloading safetensors-0.8.0-cp310-abi3-win_amd64.whl (355 kB)
+Downloading spacy_pkuseg-1.0.1-cp311-cp311-win_amd64.whl (2.4 MB)
+Downloading pyloudnorm-0.2.0-py3-none-any.whl (10 kB)
+Downloading omegaconf-2.4.0-py3-none-any.whl (254 kB)
+Downloading soundfile-0.14.0-py2.py3-none-win_amd64.whl (1.0 MB)
+Downloading audioread-3.1.0-py3-none-any.whl (23 kB)
+Downloading cffi-2.1.1-cp311-cp311-win_amd64.whl (185 kB)
+Downloading decorator-5.3.1-py3-none-any.whl (10 kB)
+Downloading einops-0.8.2-py3-none-any.whl (65 kB)
+Downloading huggingface_hub-1.33.0-py3-none-any.whl (846 kB)
+Downloading joblib-1.6.0-py3-none-any.whl (306 kB)
+Downloading lazy_loader-0.6-py3-none-any.whl (8.8 kB)
+Downloading msgpack-1.2.3-cp311-cp311-win_amd64.whl (75 kB)
+Downloading numba-0.68.0-cp311-cp311-win_amd64.whl (2.8 MB)
+Downloading packaging-26.3-py3-none-any.whl (129 kB)
+Downloading pooch-1.9.0-py3-none-any.whl (67 kB)
+Downloading pydub-0.25.1-py2.py3-none-any.whl (32 kB)
+Downloading pyyaml-6.0.3-cp311-cp311-win_amd64.whl (158 kB)
+Downloading regex-2026.9.29-cp311-cp311-win_amd64.whl (280 kB)
+Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+Downloading scikit_learn-1.9.1-cp311-cp311-win_amd64.whl (8.3 MB)
+Downloading scipy-1.17.1-cp311-cp311-win_amd64.whl (36.6 MB)
+Downloading soxr-1.1.0-cp311-cp311-win_amd64.whl (176 kB)
+Downloading srsly-2.5.4-cp311-cp311-win_amd64.whl (674 kB)
+Downloading tokenizers-0.22.2-cp39-abi3-win_amd64.whl (2.7 MB)
+Downloading tqdm-4.70.1-py3-none-any.whl (80 kB)
+Downloading deprecated-1.3.1-py2.py3-none-any.whl (11 kB)
+Downloading importlib_metadata-9.0.1-py3-none-any.whl (27 kB)
+Downloading jaconv-0.5.0-py3-none-any.whl (16 kB)
+Downloading onnx-1.23.2-cp311-cp311-win_amd64.whl (7.9 MB)
+Downloading pillow-13.0.0-cp311-cp311-win_amd64.whl (7.3 MB)
+Downloading pre_commit-4.7.0-py2.py3-none-any.whl (226 kB)
+Downloading typer_slim-0.24.0-py3-none-any.whl (3.4 kB)
+Downloading catalogue-2.0.10-py3-none-any.whl (17 kB)
+Downloading certifi-2026.10.19-py3-none-any.whl (136 kB)
+Downloading cfgv-3.5.0-py2.py3-none-any.whl (7.4 kB)
+Downloading charset_normalizer-3.5.2-cp311-cp311-win_amd64.whl (214 kB)
+Downloading click-8.5.0-py3-none-any.whl (125 kB)
+Downloading cloudpickle-3.1.2-py3-none-any.whl (22 kB)
+Downloading hf_xet-1.7.0-cp38-abi3-win_amd64.whl (3.8 MB)
+Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+Downloading identify-2.6.20-py2.py3-none-any.whl (99 kB)
+Downloading idna-3.20-py3-none-any.whl (69 kB)
+Downloading llvmlite-0.50.0-cp311-cp311-win_amd64.whl (41.9 MB)
+Downloading ml_dtypes-0.5.4-cp311-cp311-win_amd64.whl (210 kB)
+Downloading narwhals-2.27.1-py3-none-any.whl (483 kB)
+Downloading nodeenv-1.11.0-py2.py3-none-any.whl (34 kB)
+Downloading platformdirs-4.13.5-py3-none-any.whl (32 kB)
+Downloading protobuf-7.36.2-cp310-abi3-win_amd64.whl (456 kB)
+Downloading threadpoolctl-3.7.0-py3-none-any.whl (26 kB)
+Downloading typer-0.27.3-py3-none-any.whl (123 kB)
+Downloading urllib3-2.8.0-py3-none-any.whl (135 kB)
+Downloading virtualenv-21.14.12-py3-none-any.whl (5.6 MB)
+Downloading wrapt-2.5.1-cp311-cp311-win_amd64.whl (105 kB)
+Downloading zipp-4.1.1-py3-none-any.whl (10 kB)
+Downloading pycparser-3.11-py3-none-any.whl (51 kB)
+Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+Downloading distlib-0.4.4-py2.py3-none-any.whl (472 kB)
+Downloading python_discovery-1.6.4-py3-none-any.whl (39 kB)
+Downloading rich-15.0.0-py3-none-any.whl (310 kB)
+Downloading shellingham-1.5.4-py2.py3-none-any.whl (9.8 kB)
+Downloading anyio-4.15.1-py3-none-any.whl (132 kB)
+Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+Downloading markdown_it_py-4.2.0-py3-none-any.whl (91 kB)
+Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Building wheels for collected packages: resemble-perth
+  Building wheel for resemble-perth (pyproject.toml): started
+  Building wheel for resemble-perth (pyproject.toml): finished with status 'done'
+  Created wheel for resemble-perth: filename=resemble_perth-1.1.0-py3-none-any.whl size=34367616 sha256=ecd32edb1e5560bc338423f5a27691dbc10da8db18a6ef267eafc6d516e493e1
+  Stored in directory: C:\Users\runneradmin\AppData\Local\Temp\pip-ephem-wheel-cache-o97etedg\wheels\2b\60\fa\2a0f114ad74a20ab4a5297e8381c46891687821b593ee77aa9
+Successfully built resemble-perth
+Installing collected packages: pydub, jaconv, distlib, zipp, wrapt, urllib3, threadpoolctl, shellingham, safetensors, regex, pyyaml, python-discovery, pygments, pycparser, protobuf, platformdirs, Pillow, packaging, numpy, nodeenv, narwhals, msgpack, mdurl, llvmlite, idna, identify, hf-xet, h11, einops, decorator, colorama, cloudpickle, click, charset_normalizer, cfgv, certifi, catalogue, audioread, annotated-doc, virtualenv, tqdm, srsly, soxr, scipy, requests, omegaconf, numba, ml_dtypes, markdown-it-py, lazy_loader, joblib, importlib-metadata, httpcore, deprecated, cffi, anyio, spacy-pkuseg, soundfile, scikit-learn, rich, pyloudnorm, pykakasi, pre-commit, pooch, onnx, httpx, conformer, typer, s3tokenizer, librosa, huggingface-hub, typer-slim, tokenizers, resemble-perth, diffusers, transformers
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+chatterbox-tts 0.1.7 requires gradio==6.8.0, which is not installed.
+chatterbox-tts 0.1.7 requires safetensors==0.5.3, but you have safetensors 0.8.0 which is incompatible.
+chatterbox-tts 0.1.7 requires torch==2.6.0; python_version < "3.14", but you have torch 2.8.0+cpu which is incompatible.
+chatterbox-tts 0.1.7 requires torchaudio==2.6.0; python_version < "3.14", but you have torchaudio 2.8.0+cpu which is incompatible.
+Successfully installed Pillow-13.0.0 annotated-doc-0.0.5 anyio-4.15.1 audioread-3.1.0 catalogue-2.0.10 certifi-2026.10.19 cffi-2.1.1 cfgv-3.5.0 charset_normalizer-3.5.2 click-8.5.0 cloudpickle-3.1.2 colorama-0.4.6 conformer-0.3.2 decorator-5.3.1 deprecated-1.3.1 diffusers-0.29.0 distlib-0.4.4 einops-0.8.2 h11-0.16.0 hf-xet-1.7.0 httpcore-1.0.9 httpx-0.28.1 huggingface-hub-1.33.0 identify-2.6.20 idna-3.20 importlib-metadata-9.0.1 jaconv-0.5.0 joblib-1.6.0 lazy_loader-0.6 librosa-0.11.0 llvmlite-0.50.0 markdown-it-py-4.2.0 mdurl-0.1.2 ml_dtypes-0.5.4 msgpack-1.2.3 narwhals-2.27.1 nodeenv-1.11.0 numba-0.68.0 numpy-1.26.4 omegaconf-2.4.0 onnx-1.23.2 packaging-26.3 platformdirs-4.13.5 pooch-1.9.0 pre-commit-4.7.0 protobuf-7.36.2 pycparser-3.11 pydub-0.25.1 pygments-2.21.0 pykakasi-2.3.0 pyloudnorm-0.2.0 python-discovery-1.6.4 pyyaml-6.0.3 regex-2026.9.29 requests-2.34.2 resemble-perth-1.1.0 rich-15.0.0 s3tokenizer-0.3.0 safetensors-0.8.0 scikit-learn-1.9.1 scipy-1.17.1 shellingham-1.5.4 soundfile-0.14.0 soxr-1.1.0 spacy-pkuseg-1.0.1 srsly-2.5.4 threadpoolctl-3.7.0 tokenizers-0.22.2 tqdm-4.70.1 transformers-5.2.0 typer-0.27.3 typer-slim-0.24.0 urllib3-2.8.0 virtualenv-21.14.12 wrapt-2.5.1 zipp-4.1.1
++ 'D:\a\_temp/v/Scripts/python.exe' -m pip freeze
+annotated-doc==0.0.5
+anyio==4.15.1
+audioread==3.1.0
+catalogue==2.0.10
+certifi==2026.10.19
+cffi==2.1.1
+cfgv==3.5.0
+charset-normalizer==3.5.2
+chatterbox-tts @ git+https://github.com/resemble-ai/chatterbox.git@5de7a54aa4e5e2baadb0182dde554908b48b85c2
+click==8.5.0
+cloudpickle==3.1.2
+colorama==0.4.6
+conformer==0.3.2
+decorator==5.3.1
+Deprecated==1.3.1
+diffusers==0.29.0
+distlib==0.4.4
+einops==0.8.2
+filelock==3.32.3
+fsspec==2026.7.0
+h11==0.16.0
+hf-xet==1.7.0
+httpcore==1.0.9
+httpx==0.28.1
+huggingface_hub==1.33.0
+identify==2.6.20
+idna==3.20
+importlib_metadata==9.0.1
+jaconv==0.5.0
+Jinja2==3.1.6
+joblib==1.6.0
+lazy-loader==0.6
+librosa==0.11.0
+llvmlite==0.50.0
+markdown-it-py==4.2.0
+MarkupSafe==3.0.3
+mdurl==0.1.2
+ml_dtypes==0.5.4
+mpmath==1.3.0
+msgpack==1.2.3
+narwhals==2.27.1
+networkx==3.6.1
+nodeenv==1.11.0
+numba==0.68.0
+numpy==1.26.4
+omegaconf==2.4.0
+onnx==1.23.2
+packaging==26.3
+pillow==13.0.0
+platformdirs==4.13.5
+pooch==1.9.0
+pre_commit==4.7.0
+protobuf==7.36.2
+pycparser==3.11
+pydub==0.25.1
+Pygments==2.21.0
+pykakasi==2.3.0
+pyloudnorm==0.2.0
+python-discovery==1.6.4
+PyYAML==6.0.3
+regex==2026.9.29
+requests==2.34.2
+resemble-perth @ git+https://github.com/resemble-ai/Perth.git@ff1c8ac55a976971245cdd53c18d6131ca00d993
+rich==15.0.0
+s3tokenizer==0.3.0
+safetensors==0.8.0
+scikit-learn==1.9.1
+scipy==1.17.1
+shellingham==1.5.4
+soundfile==0.14.0
+soxr==1.1.0
+spacy_pkuseg==1.0.1
+srsly==2.5.4
+sympy==1.14.0
+threadpoolctl==3.7.0
+tokenizers==0.22.2
+torch==2.8.0+cpu
+torchaudio==2.8.0+cpu
+tqdm==4.70.1
+transformers==5.2.0
+typer==0.27.3
+typer-slim==0.24.0
+typing_extensions==4.16.0
+urllib3==2.8.0
+virtualenv==21.14.12
+wrapt==2.5.1
+zipp==4.1.1
