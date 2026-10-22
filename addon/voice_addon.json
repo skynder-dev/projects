@@ -20,7 +20,7 @@
   {
    "check": "the new engine (Qwen3-TTS, the owner's pick 14_5) is installed with it",
    "pass": true,
-   "detail": "{'version': 1, 'packages': ['accelerate==1.12.0', 'filelock==3.32.3', 'huggingface-hub==0.36.2', 'narwhals==2.27.1', 'opentelemetry-api==1.45.1', 'pandas==3.0.6', 'protobuf==7.36.2', 'psutil==7.2.2', 'python-dateutil==2.9.0.post0', 'pytz==2026.5', 'qwen-tts==0.1.1', 'rich==15.0.0', 'scikit-learn==1.9.1', 'six==1.17.0', 'threadpoolctl==3.7.0', 'tokenizers==0.22.2', 'transformers==4.57.3'], 'model': ['Qwen/Qwen3-TTS-12Hz-1.7B-Base', 'fd4b254389122332181a7c3db7f27e918eec64e3'], 'qwen_tts': '0.1.1', 'installed_at': '2026-10-22T06:21:25'}"
+   "detail": "{'version': 1, 'packages': ['accelerate==1.12.0', 'filelock==3.32.3', 'huggingface-hub==0.36.2', 'narwhals==2.27.1', 'opentelemetry-api==1.45.1', 'pandas==3.0.6', 'protobuf==7.36.2', 'psutil==7.2.2', 'python-dateutil==2.9.0.post0', 'pytz==2026.5', 'qwen-tts==0.1.1', 'rich==15.0.0', 'scikit-learn==1.9.1', 'six==1.17.0', 'threadpoolctl==3.7.0', 'tokenizers==0.22.2', 'transformers==4.57.3'], 'model': ['Qwen/Qwen3-TTS-12Hz-1.7B-Base', 'fd4b254389122332181a7c3db7f27e918eec64e3'], 'qwen_tts': '0.1.1', 'installed_at': '2026-10-22T06:51:11'}"
   },
   {
    "check": "the page shows the forms once installed",
@@ -35,17 +35,17 @@
   {
    "check": "the voice-over is made",
    "pass": true,
-   "detail": "{'ok': True, 'seconds': 8.79, 'device': 'cpu', 'said': \"Okay, so here's the thing packing light changed every trip we took three outfits one good hat and more time in the water\", 'speed': 1.0, 'engine': 'qwen', 'word_errors': 0, 'words': 23, 'chunks': [{'chunk': 1, 'attempt': 1, 'seconds': 8.24, 'make_s': 113.4, 'said': \"Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water.\", 'word_errors': 0, 'words': 23, 'file': 'chunk_001_try1.wav', 'pitch_off_st': 0.4}], 'load_s': 30.7, 'steps': None, 'language': 'en', 'files': {'voice"
+   "detail": "{'ok': True, 'seconds': 9.49, 'device': 'cpu', 'said': \"Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water.\", 'speed': 1.0, 'engine': 'qwen', 'word_errors': 0, 'words': 23, 'chunks': [{'chunk': 1, 'attempt': 2, 'seconds': 8.94, 'make_s': 89.7, 'said': \"Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water.\", 'word_errors': 0, 'words': 23, 'file': 'chunk_001_try2.wav', 'pitch_off_st': 1.15}], 'load_s': 14.4, 'steps': None, 'language': 'en', 'files': {'"
   },
   {
    "check": "every word said (listened to)",
    "pass": true,
-   "detail": "Okay, so here's the thing packing light changed every trip we took three outfits one good hat and more time in the water"
+   "detail": "Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water."
   },
   {
    "check": "a plausible length",
    "pass": true,
-   "detail": "8.79"
+   "detail": "9.49"
   },
   {
    "check": "said by the new engine (Qwen3-TTS) in the voice 9_2",
@@ -70,12 +70,12 @@
   {
    "check": "the voice onto the video, captions burned, checked",
    "pass": true,
-   "detail": "{'ok': True, 'files': {'video': 'video.mp4', 'srt': 'captions.srt'}, 'seconds': 14.0, 'checks': [{'check': 'video', 'pass': True, 'detail': 'h264'}, {'check': 'length', 'pass': True, 'detail': '14.000 s (planned 14.000 s)'}, {'check': 'sound', 'pass': True, 'detail': 'aac'}, {'check': 'plays_to_the_end', 'pass': True, 'detail': 'decoded completely'}], 'captions': 10, 'texts': 0, 'width': 640, 'height': 360, 'saved': 'D:\\\\a\\\\_temp\\\\home-voice\\\\Exports\\\\clip_1 - voice.mp4', 'finished_at': '2026-10-22T06:30:22'}"
+   "detail": "{'ok': True, 'files': {'video': 'video.mp4', 'srt': 'captions.srt'}, 'seconds': 14.0, 'checks': [{'check': 'video', 'pass': True, 'detail': 'h264'}, {'check': 'length', 'pass': True, 'detail': '14.000 s (planned 14.000 s)'}, {'check': 'sound', 'pass': True, 'detail': 'aac'}, {'check': 'plays_to_the_end', 'pass': True, 'detail': 'decoded completely'}], 'captions': 10, 'texts': 0, 'width': 640, 'height': 360, 'saved': 'D:\\\\a\\\\_temp\\\\home-voice\\\\Exports\\\\clip_1 - voice.mp4', 'finished_at': '2026-10-22T06:58:49'}"
   },
   {
    "check": "captions from the video's own speech hear the voice-over",
    "pass": true,
-   "detail": "Okay, so here's the thing, packing light changed every trip we took. Three outfits, one good hat, and more time in the water."
+   "detail": "Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water."
   },
   {
    "check": "the page in Russian with a finished voice-over",
@@ -84,28 +84,28 @@
   }
  ],
  "timings": {
-  "install_s": 148,
-  "voiceover_s": 168,
+  "install_s": 144,
+  "voiceover_s": 225,
   "voiceover": {
    "device": "cpu",
-   "seconds": 8.79,
-   "load_s": 30.7,
+   "seconds": 9.49,
+   "load_s": 14.4,
    "steps": null,
    "chunks": [
     {
      "chunk": 1,
-     "attempt": 1,
-     "seconds": 8.24,
-     "make_s": 113.4,
+     "attempt": 2,
+     "seconds": 8.94,
+     "make_s": 89.7,
      "said": "Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water.",
      "word_errors": 0,
      "words": 23,
-     "file": "chunk_001_try1.wav",
-     "pitch_off_st": 0.4
+     "file": "chunk_001_try2.wav",
+     "pitch_off_st": 1.15
     }
    ]
   },
-  "russian_s": 93,
+  "russian_s": 90,
   "russian": {
    "engine": "qwen",
    "said": "Привет! Это короткая проверка голоса.",
@@ -116,7 +116,7 @@
      "chunk": 1,
      "attempt": 1,
      "seconds": 2.92,
-     "make_s": 37.4,
+     "make_s": 36.1,
      "said": "Привет! Это короткая проверка голоса.",
      "word_errors": 0,
      "words": 5,
@@ -130,9 +130,9 @@
    "raw_s": 3.71,
    "final_s": 3.41
   },
-  "described_s": 268,
-  "dub_s": 7,
-  "captions_s": 12
+  "described_s": 133,
+  "dub_s": 3,
+  "captions_s": 6
  },
  "manifest": {
   "version": 1,
@@ -215,7 +215,7 @@
     "536b0662742c02347bc0e980a01041f333bce120"
    ]
   },
-  "installed_at": "2026-10-22T06:20:33",
+  "installed_at": "2026-10-22T06:50:15",
   "bytes": 12414698381,
   "qwen": {
    "version": 1,
@@ -243,7 +243,7 @@
     "fd4b254389122332181a7c3db7f27e918eec64e3"
    ],
    "qwen_tts": "0.1.1",
-   "installed_at": "2026-10-22T06:21:25"
+   "installed_at": "2026-10-22T06:51:11"
   }
  }
 }
