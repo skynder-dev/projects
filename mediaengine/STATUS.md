@@ -702,6 +702,27 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   Published: Windows CI run 39699108979 (b186, commit 6bac170) fully green, served (same runtime b9810d447e8c86c5);
   the real add-on run 39699108972 16/16 (install, English by Qwen3-TTS in 9_2's voice, a described voice by VoxCPM2,
   the pace, onto a video, captions of the speech).
+  Night 2026-10-22 (owner: "find work for 10+ hours"; plan sent: loudness, a walk through the pages, an independent
+  review of the whole voice/text module, one build):
+  - Review of the whole module (5 defects + 3 smaller, all fixed, b6c8772): a video made again wrote into the file the
+    copy next to the reels shares (os.link) - now a new file is put in place, the old copy untouched; a picture that
+    ends before its sound lost its end texts/captions - the last picture is held (tpad always + -t); FFmpeg kept
+    running after Quit - a tracked child with a job object, Quit stops it, a Stop / Don't make it button; a video
+    retried before its voice-over failed - it waits behind it; a time typed as 400 digits broke the editor; dub /
+    captions accept only a video (with sound for captions); words in brackets kept in captions and the check; double
+    clicks guarded; older jobs one click away ("Show the older ones too"); reels looked up once per page.
+  - Square pixels (1440x1080 HDV 4:3 -> 1920x1080; SAR read from FFmpeg's text of the real video stream, not a cover).
+  - Loudness (4e627b1): a finished video with a voice measures -14 LUFS, peaks -1.5 dBTP; music under a voice now
+    comes back up where nobody speaks (-19 LUFS medium; it sat at -27 to the end) and stays 15 / 13 / 10 dB under the
+    voice (quiet / medium / loud); checks prove the song loops to the end and the loudness.
+  - Pages: every page without an id fits 1280 and 420 px in Russian and English (the header wrapped off at 1280 in
+    Russian on More pages; pagers, theme chips, grids) - now a check in the Edge run (browser_check 17/17 locally).
+  - Each made video says what it got (a voice-over / captions / text / music); download names keep the whole title.
+  - A second review of the night's diff (4 defects, fixed in 9734242): Stop before the process registered, a Stop
+    during the check turned a made video into "Stopped.", the preview/cover not at the shown size for non-square
+    pixels, SAR from a cover picture; lesser: the song-as-video message, job handles closed, page parameters kept.
+  - voice_check 188/188, unit 144/144, fuzz (now with the voice module's fields and real job ids) 0 errors, i18n 0.
+  - The real add-on check now makes its English voice-over with the form's default language (Qwen3-TTS "Auto").
 
 ## Evidence
 
