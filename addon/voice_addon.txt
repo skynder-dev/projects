@@ -1,69 +1,63 @@
 PASS Install starts
-23:45:01 running checking  0/0 MB
-23:45:06 running packages Downloading numpy-2.4.6-cp311-cp311-win_amd64.whl 0/0 MB
-23:45:11 running packages Downloading truststore-0.10.5-py3-none-any.whl 0/0 MB
-23:45:16 running packages Installing : 0/0 MB
-23:45:56 running models audiovae.pth 150/5446 MB
-23:46:01 running models model.safetensors 735/5446 MB
-23:46:07 running models model.safetensors 1575/5446 MB
-23:46:12 running models model.safetensors 2475/5446 MB
-23:46:17 running models model.safetensors 3253/5446 MB
-23:46:22 running models model.safetensors 3991/5446 MB
-23:46:27 running models model.safetensors 4733/5446 MB
-23:46:32 running models model.safetensors 4957/5446 MB
-23:46:37 running models tokenizer.json 5444/5446 MB
-23:46:42 running checking_addon  5446/5446 MB
-23:46:52 running qwen_packages Looking for filelock==3.32.3 0/0 MB
-23:46:57 running qwen_packages Installing : 0/0 MB
-23:47:12 running qwen_models model.safetensors 1/4544 MB
-23:47:17 running qwen_models model.safetensors 469/4544 MB
-23:47:22 running qwen_models model.safetensors 1444/4544 MB
-23:47:27 running qwen_models model.safetensors 2202/4544 MB
-23:47:32 running qwen_models model.safetensors 2616/4544 MB
-23:47:37 running qwen_models model.safetensors 3451/4544 MB
-23:47:42 running qwen_models model.safetensors 3859/4544 MB
-23:47:47 running qwen_models model.safetensors 4173/4544 MB
-23:47:52 running checking_addon  4544/4544 MB
-23:48:02 done   4544/4544 MB
+00:23:38 running checking  0/0 MB
+00:23:43 running packages Downloading transformers-5.20.1-py3-none-any.whl.metadata 0/0 MB
+00:23:48 running packages Downloading scipy-1.17.1-cp311-cp311-win_amd64.whl 0/0 MB
+00:23:53 running packages Installing : 0/0 MB
+00:24:43 running models model.safetensors 446/5446 MB
+00:24:48 running models model.safetensors 1558/5446 MB
+00:24:53 running models model.safetensors 2791/5446 MB
+00:24:58 running models model.safetensors 4015/5446 MB
+00:25:03 running models model.safetensors 4957/5446 MB
+00:25:09 running models tokenization_voxcpm2.py 4957/5446 MB
+00:25:14 running models tokenizer.json 5444/5446 MB
+00:25:19 running qwen_packages  0/0 MB
+00:25:24 running qwen_packages Downloading pandas-3.0.6-cp311-cp311-win_amd64.whl 0/0 MB
+00:25:29 running qwen_packages Installing : 0/0 MB
+00:25:44 running qwen_models model.safetensors 171/4544 MB
+00:25:49 running qwen_models model.safetensors 715/4544 MB
+00:25:54 running qwen_models model.safetensors 1287/4544 MB
+00:25:59 running qwen_models model.safetensors 2399/4544 MB
+00:26:04 running qwen_models model.safetensors 3437/4544 MB
+00:26:09 running qwen_models model.safetensors 3859/4544 MB
+00:26:14 running qwen_models tokenizer_config.json 4541/4544 MB
+00:26:19 running checking_addon  4544/4544 MB
+00:26:24 done   4544/4544 MB
 PASS the add-on is installed
 PASS its manifest: version, Python, torch, models
 PASS the new engine (Qwen3-TTS, the owner's pick 14_5) is installed with it
 PASS the page shows the forms once installed
 PASS a voice-over is accepted
-23:48:02 20261021-234802-06116a working starting 0%
-23:48:05 20261021-234802-06116a working loading 2%
-23:48:29 20261021-234802-06116a working speaking 1/1 5%
-23:50:32 20261021-234802-06116a working listening 95%
-23:50:41 20261021-234802-06116a working finishing 97%
-23:50:48 20261021-234802-06116a done  0%
+00:26:24 20261022-002624-276f83 working starting 0%
+00:26:27 20261022-002624-276f83 working loading 2%
+00:26:51 20261022-002624-276f83 working speaking 1/1 5%
+00:29:12 20261022-002624-276f83 working listening 95%
+00:29:28 20261022-002624-276f83 working finishing 97%
+00:29:31 20261022-002624-276f83 done  0%
 PASS the voice-over is made
 PASS every word said (listened to)
 PASS a plausible length
 PASS said by the new engine (Qwen3-TTS) in the voice 9_2
-23:50:49 20261021-235049-d3b161 working starting 0%
-23:50:55 20261021-235049-d3b161 working loading 2%
-23:51:22 20261021-235049-d3b161 working speaking 1/1 5%
-23:52:16 20261021-235049-d3b161 working speaking 1/1 15%
-23:53:01 20261021-235049-d3b161 working speaking 1/1 26%
-23:53:52 20261021-235049-d3b161 working speaking 1/1 36%
-23:54:43 20261021-235049-d3b161 working listening 95%
-23:54:49 20261021-235049-d3b161 working finishing 97%
-23:54:52 20261021-235049-d3b161 done  0%
-FAIL a Russian voice-over in the same voice, heard back in Cyrillic  Привет! Это Киротка Япровьерка Галлесса.
+00:29:31 20261022-002931-cc0702 working starting 0%
+00:29:34 20261022-002931-cc0702 working loading 2%
+00:30:11 20261022-002931-cc0702 working speaking 1/1 5%
+00:30:53 20261022-002931-cc0702 working listening 95%
+00:31:08 20261022-002931-cc0702 working finishing 97%
+00:31:15 20261022-002931-cc0702 done  0%
+PASS a Russian voice-over in the same voice, heard back in Cyrillic
 PASS its pace: a bit faster (8% shorter), the captions within the faster voice
-23:54:54 20261021-235454-8354c7 working starting 0%
-23:55:00 20261021-235454-8354c7 working loading 2%
-23:56:12 20261021-235454-8354c7 working speaking 1/1 5%
-23:57:36 20261021-235454-8354c7 working listening 95%
-23:57:48 20261021-235454-8354c7 done  0%
+00:31:19 20261022-003118-3e85e8 working starting 0%
+00:31:28 20261022-003118-3e85e8 working loading 2%
+00:32:39 20261022-003118-3e85e8 working speaking 1/1 5%
+00:33:43 20261022-003118-3e85e8 working listening 95%
+00:33:52 20261022-003118-3e85e8 done  0%
 PASS a voice from a description is still made (VoxCPM2)
-23:57:50 20261021-235750-0e16d8 working video 50%
-23:57:56 20261021-235750-0e16d8 done  0%
+00:33:53 20261022-003353-080e05 working video 50%
+00:33:59 20261022-003353-080e05 done  0%
 PASS the voice onto the video, captions burned, checked
-23:57:56 20261021-235756-b25281 working starting 0%
-23:57:59 20261021-235756-b25281 working listening 20%
-23:58:02 20261021-235756-b25281 working video 50%
-23:58:05 20261021-235756-b25281 done  0%
+00:33:59 20261022-003359-de098a working starting 0%
+00:34:02 20261022-003359-de098a working listening 20%
+00:34:08 20261022-003359-de098a working video 50%
+00:34:11 20261022-003359-de098a done  0%
 PASS captions from the video's own speech hear the voice-over
 PASS the page in Russian with a finished voice-over
-{"passed": 15, "total": 16}
+{"passed": 16, "total": 16}
