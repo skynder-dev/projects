@@ -185,6 +185,29 @@ def main():
             except Exception as exc:
                 ed = str(exc)[:200]
             check("editor_adds_a_text_and_previews", ed is True, ed)
+        # every page without an id fits the window: 1280 px and a narrow 420 px, in Russian (the longer words) and English
+        from archivist import i18n as _i18n
+        skip = ("/api", "/static", "/media", "/diagnostics", "/auto/exports/open", "/thumb", "/stream", "/file")
+        plain = sorted({r.rule for r in app.url_map.iter_rules() if "GET" in r.methods and not r.arguments
+                        and not r.rule.startswith(skip) and not r.rule.endswith((".json", ".csv", ".zip", ".png", ".jpg", ".js", ".css", ".ico"))})
+        wide = []
+        for lang in ("ru", "en"):
+            _i18n.set_ui_language(lang)
+            for vw in (1280, 420):
+                pv = b.new_page(viewport={"width": vw, "height": 900})
+                for u in plain:
+                    try:
+                        rr = pv.goto(base + u, timeout=30_000)
+                    except Exception:
+                        continue
+                    if not rr or not rr.headers.get("content-type", "").startswith("text/html"):
+                        continue
+                    sw = pv.evaluate("document.documentElement.scrollWidth")
+                    if sw > vw + 2:
+                        wide.append(f"{lang} {vw}px {u}: {sw}px")
+                pv.close()
+        _i18n.set_ui_language("en")
+        check("pages_fit_the_window_wide_and_narrow", not wide, wide[:10])
         check("no_script_errors", not errors, errors[:5])
         b.close()
     out = {"passed": sum(c["pass"] for c in checks), "total": len(checks), "checks": checks}
