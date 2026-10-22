@@ -94,7 +94,8 @@ def main() -> int:
 
     # 2. a voice-over in the default voice
     t0 = time.time()
-    r = c.post("/auto/voice/new", data={"text": TEXT, "voice": vo.DEFAULT_VOICE, "language": "en"}, headers=H)
+    # the form's own default language ("Detect by itself"): Qwen3-TTS finds the language itself ('Auto')
+    r = c.post("/auto/voice/new", data={"text": TEXT, "voice": vo.DEFAULT_VOICE, "language": ""}, headers=H)
     check("a voice-over is accepted", r.status_code == 302, r.status_code)
     jid = vo.list_jobs()[0]["id"]
     j = wait(jid, 3 * 3600)
