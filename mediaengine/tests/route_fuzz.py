@@ -32,7 +32,12 @@ FIELDS = ["folder", "files", "ids", "id", "length", "format", "sound", "mode", "
           "action", "value", "on", "auto_run", "selection", "exclude", "trims", "start", "end", "q", "music", "music_mode", "lang",
           "framing", "text", "subtitle", "choice", "note", "rid", "side", "page", "type", "limit", "offset", "status", "source",
           "days", "day", "state", "prepare", "beat_sync", "beat_sync_shown", "rights", "kind", "preset", "preset_choice",
-          "presetChoice", "clip_ids", "order", "csv", "metric", "views", "url", "folder_id", "key", "to", "from", "position"]
+          "presetChoice", "clip_ids", "order", "csv", "metric", "views", "url", "folder_id", "key", "to", "from", "position",
+          # Voice-over and text (the voice page, Finish a video, the caption editor)
+          "video", "voice", "voice_from", "nvoice", "description", "ref_path", "ref_text", "save_as", "speed", "pauses",
+          "captions", "captions_on", "keep_sound", "style", "color", "size", "t_text", "t_start", "t_end", "t_where", "t_look",
+          "t_anim", "c_text", "c_s", "c_e", "c_w", "hook", "end_text", "at", "cover", "safe", "script", "music_level",
+          "videos_more", "more", "language", "cpu", "jid"]
 
 
 def main():
@@ -76,6 +81,11 @@ def main():
             slow.append({"method": method, "url": url[:300], "seconds": round(dt, 1)})
             print(f"SLOW {dt:.0f}s {method} {url[:160]}", flush=True)
 
+    try:                                       # voice jobs that exist (a home that has some): their ids first
+        from archivist import voice as _vo
+        jids = [j["id"] for j in _vo.list_jobs(4)]
+    except Exception:
+        jids = []
     rules = sorted(app.url_map.iter_rules(), key=lambda r: r.rule)
     for rule in rules:
         if time.time() > t_end:
@@ -99,6 +109,8 @@ def main():
                     vals = ["run", "reject", "retry", "stop", "delete", "accept", "x", ".."]
                 if name in ("state", "aspect", "side", "lang"):
                     vals = ["x", "16:9", "9:16", "left", "right", "queued", "posted", ".."]
+                if name == "jid" and jids:
+                    vals = jids + STRS
                 v = vals[k % len(vals)]
                 if name == "action" and v in SKIP_ACTIONS:
                     skip = True

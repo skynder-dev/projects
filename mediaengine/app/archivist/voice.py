@@ -1459,9 +1459,9 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
     checks = od._check_output(new_out, {"seconds": length, "tolerance": 0.25, "audio": with_sound})
     if not all(c["pass"] for c in checks):
         bad = next(c for c in checks if not c["pass"])
-        os.replace(new_out, d / "video_failed_check.mp4")
+        ae._replace_retry(new_out, d / "video_failed_check.mp4")
         raise VoiceError(f"The new video did not pass its check ({bad['check']}: {bad['detail']}).")
-    os.replace(new_out, d / "video.mp4")
+    ae._replace_retry(new_out, d / "video.mp4", tries=30)    # (Windows: the old one may be playing on a page a moment)
     saved = _save_copy(d / "video.mp4", video.stem, "voice" if voice_wav is not None else "captions" if cs else
                        "text" if tx else "music" if music else "text")
     return {"files": {"video": "video.mp4", **({"srt": "captions.srt"} if cs else {})}, "seconds": round(length, 2),

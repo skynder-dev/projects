@@ -968,7 +968,8 @@ def register(app, page, err_page, e, human_bytes):
             except vo.VoiceError:
                 title = "voice"
             from .auto_edit import safe_filename
-            nice = f"{safe_filename(Path(title).stem[:40], 'voice')} - {name}"
+            base = re.sub(r"\.(mp4|mov|m4v|mkv|webm|avi|mts|m2ts|3gp|wmv|flv|mpg|mpeg)$", "", str(title), flags=re.I)
+            nice = f"{safe_filename(base.replace('/', ' ').replace(chr(92), ' ')[:40].strip(), 'voice')} - {name}"
         return send_file(p, mimetype=_FILES[name], as_attachment=dl, download_name=nice, conditional=True, max_age=0)
 
     @app.post("/api/auto/pick-voice-file")
