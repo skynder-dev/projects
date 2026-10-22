@@ -1411,7 +1411,11 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
             parts.append(duck("[bg]"))
         if mus is not None:
             cmd += ["-stream_loop", "-1", "-i", str(mus)]
-            gain = {"quiet": -16, "medium": -11, "loud": -6}.get(music_level, -11) + (0 if voice_wav is not None else 4)
+            # with a voice: the music's own level where nobody speaks (about -22 / -19 / -16 LUFS), pressed down under
+            # the voice by the sidechain - measured 15 / 13 / 10 dB under the voice; it comes back up when the voice
+            # stops (it used to sit at -32 / -27 / -22 LUFS and stay there: the end of a video went nearly silent)
+            gain = {"quiet": -6, "medium": -3, "loud": 0}.get(music_level, -3) if voice_wav is not None else \
+                {"quiet": -12, "medium": -7, "loud": -2}.get(music_level, -7)
             fc.append(f"[{n_in}:a]aresample=48000,aformat=sample_rates=48000:channel_layouts=stereo,atrim=0:{length:.3f},"
                       f"asetpts=N/SR/TB,loudnorm=I=-16:TP=-2:LRA=11,aresample=48000,volume={gain}dB,afade=t=in:d=0.6,"
                       f"afade=t=out:st={max(0.0, length - 1.6):.3f}:d=1.5,apad=whole_dur={length:.3f}[mu]")

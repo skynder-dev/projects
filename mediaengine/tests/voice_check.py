@@ -825,8 +825,25 @@ def main() -> int:
     tail_s = subprocess.run([ff, "-hide_banner", "-nostats", "-sseof", "-0.9", "-i", str(Path(mj["dir"]) / "video.mp4"), "-t", "0.4",
                              "-af", "volumedetect", "-f", "null", "-"], capture_output=True, text=True).stderr
     mv = re.search(r"mean_volume: (-?[\d.]+) dB", tail_s)
-    check("music under the voice, looped to the end", mj["state"] == "done" and all(x["pass"] for x in mres.get("checks", []))
-          and mv and float(mv.group(1)) > -45, (mres.get("error"), mv and mv.group(1)))
+    def band660(path):                         # the song's tone (660 Hz) in the last moment, where the voice (220 Hz) is over
+        out = subprocess.run([ff, "-hide_banner", "-nostats", "-sseof", "-0.45", "-i", str(path), "-t", "0.3", "-af",
+                              "bandpass=f=660:width_type=h:w=60,bandpass=f=660:width_type=h:w=60,volumedetect", "-f", "null", "-"],
+                             capture_output=True, text=True).stderr
+        m_ = re.search(r"mean_volume: (-?[\d.]+) dB", out)
+        return float(m_.group(1)) if m_ else -200.0
+    b0 = {j["id"] for j in vo.list_jobs(500)}
+    c.post("/auto/finish", data=base_f, headers=H)                  # the same video without the song
+    nm = wait(next(j["id"] for j in vo.list_jobs(500) if j["id"] not in b0))
+    with_m, without_m = band660(Path(mj["dir"]) / "video.mp4"), band660(Path(nm["dir"]) / "video.mp4")
+    check("music under the voice, looped to the end (the song is there at the very end, the 1-s song looped)",
+          mj["state"] == "done" and all(x["pass"] for x in mres.get("checks", [])) and with_m > without_m + 20,            # (fading out: quieter at the very end)
+          (mres.get("error"), with_m, without_m))
+    lu = subprocess.run([ff, "-hide_banner", "-nostats", "-i", str(Path(mj["dir"]) / "video.mp4"), "-vn", "-af", "ebur128=peak=true",
+                         "-f", "null", "-"], capture_output=True, text=True).stderr
+    I_ = [float(x) for x in re.findall(r"I:\s+(-?[\d.]+) LUFS", lu)][-1:] or [0.0]
+    TP_ = [float(x) for x in re.findall(r"Peak:\s+(-?[\d.]+) dBFS", lu)][-1:] or [0.0]
+    check("a video with a voice is at the platforms' loudness (about -14 LUFS, peaks under -1 dB)",
+          -16.0 <= I_[0] <= -12.5 and TP_[0] <= -0.9, (I_, TP_))
     song2 = home / "song moved.mp3"
     song.rename(song2)                         # the song moved after the video was made: it can still be edited
     r = c.post(f"/auto/voice/{mj['id']}/render", data={"captions_on": "", "t_text": "Again", "t_start": "0"}, headers=H)
