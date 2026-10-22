@@ -471,7 +471,8 @@ def register(app, page, err_page, e, human_bytes):
             parts += [_voice_form(), _captions_form(pre)]
         parts.append(_text_form(pre))
         if jobs:
-            older = (f"<div class='vo-row' style='margin-top:10px'><a class='btn btn2' href='/auto/voice?all=1#voJobs'>"
+            older = (f"<div class='vo-row' style='margin-top:10px'><a class='btn btn2' "
+                     f"href='/auto/voice?all=1{('&amp;video=' + e(quote(pre))) if pre else ''}#voJobs'>"
                      f"<span>Show the older ones too</span> (<span translate='no'>{more}</span>)</a></div>" if more > 0 else "")
             parts.append("<div class='card' id='voJobs'><h2 style='margin-top:0'>Made</h2>" + "".join(_job_html(j, pre) for j in jobs)
                          + older + "</div>")
@@ -500,7 +501,7 @@ def register(app, page, err_page, e, human_bytes):
             "const now=JSON.stringify([x.install.state,x.install.installed,x.jobs.map(j=>j.id+j.state)]);"
             # a finished job: the page is shown again - but never over something being typed (only the list is renewed then)
             "if(sig!==null&&now!==sig){if(!dirty){location.reload();return}"
-            "try{const h=await (await fetch('/auto/voice',{cache:'no-store'})).text();const n=new DOMParser().parseFromString(h,'text/html').getElementById('voJobs');"
+            "try{const h=await (await fetch('/auto/voice'+location.search,{cache:'no-store'})).text();const n=new DOMParser().parseFromString(h,'text/html').getElementById('voJobs');"
             "const o=document.getElementById('voJobs');const busyIn=o&&(o.contains(document.activeElement)||[...o.querySelectorAll('details[open] input')].some(i=>i.value&&i.name!=='start'));"
             "if(n&&o&&!busyIn)o.replaceWith(n);"
             "else if(n){const back=document.getElementById('voBack');if(back)back.before(n)}}catch(err){}}sig=now;"

@@ -53,7 +53,7 @@ def install_flows(home: Path, check) -> None:
         part.parent.mkdir(parents=True, exist_ok=True)
         part.write_bytes(data(k, name, size))
 
-    def worker(job, work, timeout=3600, on_line=None):
+    def worker(job, work, timeout=3600, on_line=None, track=True):
         eng = job.get("engine") or "main"
         log.append(("selftest", eng))
         if "selftest_" + eng in fail:
@@ -195,7 +195,7 @@ def main() -> int:
 
     fail_tts = [False]           # a voice-over that fails (to see what waits for it)
 
-    def fake_worker(job, work, timeout=3600, on_line=None):
+    def fake_worker(job, work, timeout=3600, on_line=None, track=True):
         sent.append(job)
         work.mkdir(parents=True, exist_ok=True)
         if job["task"] == "tts" and fail_tts[0]:
@@ -1051,15 +1051,42 @@ def main() -> int:
     check("Don't make it: a waiting job leaves the queue, said 'Stopped.'", r1.status_code == 302 and w2["state"] == "failed"
           and (w2.get("result") or {}).get("error") == "Stopped.", (w2["state"], w2.get("result")))
     time.sleep(1.0)
+    t_stop = time.time()
     r0 = c.post(f"/auto/voice/{long_ids[0]}/stop", headers=H)
     w1 = wait(long_ids[0], 60)
-    check("Stop: the video being made stops (its FFmpeg ended), said 'Stopped.'", r0.status_code == 302
-          and w1["state"] == "failed" and (w1.get("result") or {}).get("error") == "Stopped."
-          and not (Path(w1["dir"]) / "video.new.mp4").exists(), w1.get("result"))
+    took = time.time() - t_stop
+    flog = (Path(w1["dir"]) / "ffmpeg.log").read_text("utf-8", errors="replace") if (Path(w1["dir"]) / "ffmpeg.log").is_file() else ""
+    check("Stop: the video being made stops at once (its FFmpeg killed, not run to the end), said 'Stopped.'",
+          r0.status_code == 302 and w1["state"] == "failed" and (w1.get("result") or {}).get("error") == "Stopped."
+          and took < 10 and "muxing overhead" not in flog and not (Path(w1["dir"]) / "video.new.mp4").exists(),
+          (w1.get("result"), round(took, 1)))
     if len(pair) == 2:
         pv, pr = wait(pair[0]), wait(pair[1])
         check("Try again on the video, then on its voice-over: both made (the video waits for its voice)",
               pv["state"] == "done" and pr["state"] == "done", (pv["state"], pr["state"], (pr.get("result") or {}).get("error")))
+
+    # Stop pressed in the moment before the job's FFmpeg starts: it is stopped as soon as it starts
+    vo._CURRENT.update(cancel=True)
+    rc_ = vo._run_ffmpeg([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=320x240:rate=25:duration=30", "-f", "null", "-"],
+                         home, home / "stop_early.log", 60)
+    vo._CURRENT.pop("cancel", None)
+    check("Stop before the process starts still stops it", rc_ != 0, rc_)
+    covered = home / "with cover.mp4"
+    pic = home / "cover.jpg"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "color=c=red:s=200x100", "-vf", "setsar=2/1", "-frames:v", "1", str(pic)], check=True)
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=640x360:rate=25:duration=1", "-i", str(pic),
+                    "-map", "0:v", "-map", "1:v", "-c:v:0", "libx264", "-pix_fmt:v:0", "yuv420p", "-c:v:1", "mjpeg",
+                    "-disposition:v:1", "attached_pic", str(covered)], check=True)
+    check("pixel shape read from the video itself, not its cover picture", vo.video_size(covered)[:2] == (640, 360),
+          vo.video_size(covered))
+    song_mp3 = home / "a song.mp3"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "sine=f=300:duration=1", str(song_mp3)], check=True)
+    said = ""
+    try:
+        vo.video_size(song_mp3)
+    except vo.VoiceError as exc:
+        said = str(exc)
+    check("a song chosen as the video: said in words (not FFmpeg's code)", said == "This file has no picture: choose a video.", said)
 
     install_flows(home, check)
 

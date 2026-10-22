@@ -426,7 +426,7 @@ def _install_core(cpu: bool, log: Path) -> None:
     _models([("voxcpm", VOXCPM_REPO, VOXCPM_REV), ("whisper", WHISPER_REPO, WHISPER_REV)])
     INSTALL.update(step="checking_addon", detail="")
     _swap(new_site, SITE)
-    test = _run_worker({"task": "selftest"}, ROOT / "selftest", timeout=600)
+    test = _run_worker({"task": "selftest"}, ROOT / "selftest", timeout=600, track=False)
     if not test.get("ok"):
         raise VoiceError("The voice add-on was installed but does not start: " + str(test.get("error") or "")[:300])
     m = {"version": ADDON_VERSION, "python": f"{sys.version_info[0]}.{sys.version_info[1]}", "packages": PACKAGES,
@@ -456,7 +456,7 @@ def _install_qwen(log: Path) -> None:
     _models([("qwen3tts", QWEN_REPO, QWEN_REV)])
     INSTALL.update(step="checking_addon", detail="")
     _swap(new_qsite, SITE_QWEN)
-    test = _run_worker({"task": "selftest", "engine": "qwen"}, ROOT / "selftest", timeout=600)
+    test = _run_worker({"task": "selftest", "engine": "qwen"}, ROOT / "selftest", timeout=600, track=False)
     if not test.get("ok"):
         raise VoiceError("The new voice engine was installed but does not start: " + str(test.get("error") or "")[:300])
     m["qwen"] = {"version": QWEN_VERSION, "packages": QWEN_PACKAGES, "model": [QWEN_REPO, QWEN_REV],
@@ -496,7 +496,7 @@ def remove_addon() -> None:
 
 # ---------------------------------------------------------------- the worker process
 
-def _run_worker(job: dict, work: Path, timeout: float = 3600, on_line=None) -> dict:
+def _run_worker(job: dict, work: Path, timeout: float = 3600, on_line=None, track: bool = True) -> dict:
     from . import auto_edit as ae
     work.mkdir(parents=True, exist_ok=True)
     job = dict(job, site=str(SITE), model_dir=str(MODELS / "voxcpm"), whisper_dir=str(MODELS / "whisper"),
@@ -513,7 +513,7 @@ def _run_worker(job: dict, work: Path, timeout: float = 3600, on_line=None) -> d
                                 stderr=lf, stdin=subprocess.DEVNULL, text=True, encoding="utf-8", errors="replace", env=env,
                                 cwd=str(work), **process_kwargs(below_normal=True))
         ae._attach_job_object(proc)
-        _CURRENT["proc"] = proc
+        _track(proc, track)
         t0 = time.time()
         killer = threading.Timer(timeout, proc.kill)
         killer.start()
@@ -531,7 +531,7 @@ def _run_worker(job: dict, work: Path, timeout: float = 3600, on_line=None) -> d
             proc.wait()
         finally:
             killer.cancel()
-            _CURRENT.pop("proc", None)
+            _untrack(proc, track)
     if not res:
         cut = time.time() - t0 >= timeout
         res = {"ok": False, "error": "The voice worker took too long and was stopped." if cut else
@@ -1035,13 +1035,20 @@ def _finish_video(video: str, sh: dict, opts: dict | None, keep_sound: bool) -> 
             "music": sh["music"], "music_level": sh["music_level"], "script": sh["script"], "title": p.name[:60]}
 
 
+def _no_picture(exc: Exception) -> VoiceError:
+    """The probe's answer for a file without a picture (a song, a recording) in words; anything else as it is."""
+    if "VIDEO_STREAM_MISSING" in str(exc):
+        return VoiceError("This file has no picture: choose a video.")
+    return VoiceError("The video could not be read: " + str(exc)[:200])
+
+
 def _check_video(p: Path, need_sound: bool = False) -> None:
     """A file with a picture (and sound, for captions of its speech) - said before a job is made of it."""
     from . import auto_edit as ae
     try:
         info = ae._probe(p)
     except Exception as exc:
-        raise VoiceError("The video could not be read: " + str(exc)[:200])
+        raise _no_picture(exc)
     streams = info.get("streams", []) if isinstance(info, dict) else []
     if not any(x.get("codec_type") == "video" for x in streams):
         raise VoiceError("This file has no picture: choose a video.")
@@ -1141,6 +1148,9 @@ def _loop() -> None:
     while True:
         with _LOCK:
             jid = _QUEUE[0] if _QUEUE else None
+            if jid:                                  # named at once: a Stop from now on reaches it (not the queue)
+                _CURRENT.clear()
+                _CURRENT.update(id=jid, progress=0.0, step="starting")
         if not jid:
             _WAKE.wait(5)
             _WAKE.clear()
@@ -1149,15 +1159,13 @@ def _loop() -> None:
                     _THREAD.clear()
                     return
             continue
-        _CURRENT.clear()
-        _CURRENT.update(id=jid, progress=0.0, step="starting")
         try:
             from .platform_adapter import keep_awake
             with keep_awake():
                 res = _do(jid)
         except Exception as exc:
             res = {"ok": False, "error": str(exc)[:500]}
-        if _CURRENT.get("cancel"):
+        if _CURRENT.get("cancel") and not res.get("ok"):    # (made already when Stop came: it stays made)
             res = {"ok": False, "error": "Stopped."}
         if res.get("_requeue"):                          # behind the job it waits for (no result written)
             with _LOCK:
@@ -1343,7 +1351,7 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
     try:
         info = _probe_video(video)
     except Exception as exc:
-        raise VoiceError("The video could not be read: " + str(exc)[:200])
+        raise _no_picture(exc)
     streams = info.get("streams", []) if isinstance(info, dict) else []
     vs = next((s for s in streams if s.get("codec_type") == "video"), None)
     has_audio = any(s.get("codec_type") == "audio" for s in streams)
@@ -1468,7 +1476,7 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
             "checks": checks, "captions": len(cs), "texts": len(tx), "width": w, "height": h, "saved": saved}
 
 
-_SAR_RE = re.compile(r"Video:.*?\[SAR (\d+):(\d+)")
+_SAR_RE = re.compile(r"\[SAR (\d+):(\d+)")
 
 
 def _probe_video(video: Path) -> dict:
@@ -1477,7 +1485,8 @@ def _probe_video(video: Path) -> dict:
     from . import auto_edit as ae
     info = ae._probe(video)
     text = (getattr(ae._PROBE_TEXT, "text", "") or "").split("Stream mapping:", 1)[0]
-    m = _SAR_RE.search(text)
+    line = next((x for x in text.splitlines() if re.search(r"Stream #\d+:\d+.*: Video:", x) and "attached pic" not in x), "")
+    m = _SAR_RE.search(line)                          # the first real video stream's own pixels only
     if m and isinstance(info, dict):
         for st in info.get("streams", []) or []:
             if st.get("codec_type") == "video":
@@ -1514,15 +1523,55 @@ def _run_ffmpeg(cmd: list[str], cwd: Path, log: Path, timeout: float) -> int:
         proc = subprocess.Popen(cmd, cwd=str(cwd), stdout=lf, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL,
                                 **process_kwargs({}))
         ae._attach_job_object(proc)
-        _CURRENT["proc"] = proc
+        _track(proc)
         try:
             proc.wait(timeout=timeout)
         except subprocess.TimeoutExpired:
             proc.kill()
             proc.wait()
         finally:
-            _CURRENT.pop("proc", None)
+            _untrack(proc)
     return proc.returncode
+
+
+def _kill(proc) -> None:
+    """The process and what it started (Windows: its job object - the voice worker's own FFmpeg too)."""
+    from . import auto_edit as ae
+    try:
+        if os.name == "nt":
+            ae._kill_tree(proc)
+        else:
+            proc.kill()
+    except Exception:
+        try:
+            proc.kill()
+        except Exception:
+            pass
+
+
+def _track(proc, track: bool = True) -> None:
+    """The job's process, where Stop and Quit reach it; a Stop pressed just before it started stops it at once."""
+    with _LOCK:
+        if track:
+            _CURRENT["proc"] = proc
+        stop = track and bool(_CURRENT.get("cancel"))
+    if stop:
+        _kill(proc)
+
+
+def _untrack(proc, track: bool = True) -> None:
+    from . import auto_edit as ae
+    with _LOCK:
+        if track and _CURRENT.get("proc") is proc:
+            _CURRENT.pop("proc", None)
+    h = ae._JOB_HANDLES.pop(proc.pid, None)          # (Windows: the job object's handle closed, as for orders)
+    if h is not None:
+        try:
+            import ctypes
+            from ctypes import wintypes
+            ctypes.windll.kernel32.CloseHandle(wintypes.HANDLE(h))
+        except Exception:
+            pass
 
 
 _CHILDREN: set = set()
@@ -1542,6 +1591,7 @@ def _run_child(cmd: list[str], timeout: float) -> int:
         proc.wait()
     finally:
         _CHILDREN.discard(proc)
+        _untrack(proc, track=False)
     return proc.returncode
 
 
@@ -1563,20 +1613,14 @@ def cancel_job(jid: str) -> None:
         else:
             return
     if p is not None:
-        try:
-            p.kill()
-        except Exception:
-            pass
+        _kill(p)
 
 
 def shutdown() -> None:
     """Quit: the voice worker or FFmpeg being run now ends with the program (the job is made again at the next start)."""
     for p in [_CURRENT.get("proc"), *list(_CHILDREN)]:
         if p is not None:
-            try:
-                p.kill()
-            except Exception:
-                pass
+            _kill(p)
 
 
 PREVIEWS = HOME / "voice_previews"
@@ -1651,7 +1695,7 @@ def video_size(video: Path, picture_len: bool = False):
     try:
         info = _probe_video(video)
     except Exception as exc:
-        raise VoiceError("The video could not be read: " + str(exc)[:200])
+        raise _no_picture(exc)
     streams = info.get("streams", []) if isinstance(info, dict) else []
     vs = next((s for s in streams if s.get("codec_type") == "video"), None)
     if not vs:
@@ -1693,7 +1737,7 @@ def preview_frame(video: str, cues_: list[dict] | None, opts: dict | None, texts
     fonts = _caption_font(d) or fonts
     boxes = "".join(f",drawbox=x={x}:y={y}:w={bw}:h={bh}:color=red@0.28:t=fill" for x, y, bw, bh in tf.safe_boxes(w, h)) \
         if safe else ""                       # where the platforms put their buttons and text (a tall video)
-    vf = (f"setpts=PTS-STARTPTS+{t:.3f}/TB,ass=preview.ass" + (":fontsdir=fonts" if fonts else "") + boxes
+    vf = (f"setpts=PTS-STARTPTS+{t:.3f}/TB,scale={w}:{h},setsar=1,ass=preview.ass" + (":fontsdir=fonts" if fonts else "") + boxes
           + ("" if full else ",scale=-2:'min(ih,960)'"))    # a cover: the video's own size
     ff = _ffmpeg()
     run = lambda args: subprocess.run([ff, "-hide_banner", "-nostdin", "-y", "-v", "error", *args], cwd=str(d),

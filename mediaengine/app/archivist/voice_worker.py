@@ -112,6 +112,13 @@ def _pitch(y, sr: int) -> float:
 PITCH_OFF_ST = 1.5          # a piece more than this many semitones off the voice's own pitch is made again
 
 
+def _said(text: str) -> str:
+    """The words for VoxCPM2: brackets as pauses (it takes a text that starts with "(...)" for a direction and would
+    not say it)."""
+    t = re.sub(r"\s*[()]\s*", ", ", str(text)).strip(" ,")
+    return re.sub(r",\s*([,.!?;:])", r"\1", t)
+
+
 class _Qwen:
     """Qwen3-TTS 1.7B Base (the owner's pick, voice lab 14_5) behind the same two calls the worker makes of VoxCPM2:
     generate(text=..., reference_wav_path=..., prompt_text=...) -> samples at tts_model.sample_rate. The voice is
@@ -208,13 +215,13 @@ def tts(job: dict) -> dict:
                 g = {"text": text, "reference_wav_path": str(ref_wav),
                      "prompt_text": ref_text if job.get("qwen_icl", True) else ""}
             elif ref_wav:                       # the locked voice: its own recording and words
-                g.update(text=text, reference_wav_path=str(ref_wav))
+                g.update(text=_said(text), reference_wav_path=str(ref_wav))
                 if ref_text:
                     g.update(prompt_wav_path=str(ref_wav), prompt_text=ref_text)
                 elif voice.get("style"):
-                    g["text"] = "(" + voice["style"] + ")" + text
+                    g["text"] = "(" + voice["style"] + ")" + _said(text)
             else:                               # a voice from a description (the first chunk; the rest copy it)
-                g["text"] = ("(" + voice["description"] + ")" if voice.get("description") else "") + text
+                g["text"] = ("(" + voice["description"] + ")" if voice.get("description") else "") + _said(text)
             t1 = time.time()
             try:
                 y = np.asarray(model.generate(**g), dtype="float32").reshape(-1)
