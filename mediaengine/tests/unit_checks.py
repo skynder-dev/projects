@@ -877,6 +877,42 @@ def main():
           and (fold_ / "VID_0001.mp4").read_bytes() == bytes([0]) * 10, taken_)
     update_config(lambda c: c.update(archive_root=str(work / "Архив")))
     check("archive folder: one reading for the whole app", archive_root() == work / "Архив")
+    # converted files: each one has "Show in folder" / "Open video" (found by its job and place, never by a path from
+    # the page), the Convert page opens the Converted folder, and a finished job keeps its list after the page reloads
+    import json as _js
+    from archivist import auto_edit as _ae2, config as _cfg2
+    conv_ = _cfg2.HOME / "Converted"; conv_.mkdir(parents=True, exist_ok=True)
+    made_ = conv_ / "работа_share_1080p.mp4"; made_.write_bytes(b"x" * 10)
+    outs_ = [{"source": "C:\\work\\работа.mp4", "output": str(made_), "source_bytes": 50 * 2**20, "output_bytes": 2 * 2**20, "saved_percent": 96.0},
+             {"source": "C:\\work\\broken.mp4", "error": "Could not read video duration"},
+             {"source": "C:\\work\\gone.mp4", "output": str(conv_ / "gone_share_1080p.mp4"), "source_bytes": 9, "output_bytes": 3, "saved_percent": 66.7}]
+    with _db() as con:
+        cj_ = con.execute("INSERT INTO jobs(kind,status,created_at,finished_at,stage,message,total,done,success,failed,bytes_total,bytes_done,options_json) "
+                          "VALUES('convert','finished',?,?,'done','Finished',3,3,2,1,1,1,?)", (_now(), _now(), _js.dumps({"outputs": outs_}))).lastrowid
+        con.commit()
+    opened_ = []
+    real_open_ = _ae2.open_path
+    _ae2.open_path = lambda path, reveal=False: opened_.append((str(path), reveal))
+    try:
+        H_ = {"Host": "127.0.0.1:8765"}
+        with _ca().test_client() as _c:
+            r1 = _c.post("/api/convert/reveal", json={"job": cj_, "i": 0}, headers=H_)
+            r2 = _c.post("/api/convert/reveal", json={"job": cj_, "i": 0, "open": True}, headers=H_)
+            r3 = _c.post("/api/convert/reveal", json={"job": cj_, "i": 1}, headers=H_)        # a failed one: no file
+            r4 = _c.post("/api/convert/reveal", json={"job": cj_, "i": 2}, headers=H_)        # the file was deleted
+            r5 = _c.post("/api/convert/reveal", json={"job": "x", "i": 0, "path": "C:\\Windows"}, headers=H_)
+            r6 = _c.post("/api/convert/reveal", json={"job": cj_, "i": -1}, headers=H_)
+            r7 = _c.post("/api/convert/open-folder", headers=H_)
+            page_ = _c.get("/convert", headers=H_).get_data(as_text=True)
+        check("convert: show a converted file in its folder, play it, open the Converted folder",
+              [x.status_code for x in (r1, r2, r3, r4, r5, r6, r7)] == [200, 200, 404, 404, 400, 404, 200]
+              and opened_ == [(str(made_), True), (str(made_), False), (str(conv_), False)], ([x.status_code for x in (r1, r2, r3, r4, r5, r6, r7)], opened_))
+        check("convert: the last job keeps its files with the buttons after a reload",
+              f"data-job='{cj_}' data-done='1'" in page_ and "data-cv='reveal' data-i='0'" in page_ and "data-i='1'" not in page_
+              and "data-i='2'" not in page_ and "The file is no longer there." in page_ and "data-cv='folder'" in page_
+              and "broken.mp4" in page_ and str(made_) in page_, page_[page_.find("convertStatus") - 40:][:600])
+    finally:
+        _ae2.open_path = real_open_
     print({"passed": sum(checks), "total": len(checks)})
     return 0 if all(checks) else 1
 

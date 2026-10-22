@@ -185,8 +185,45 @@ def main():
             except Exception as exc:
                 ed = str(exc)[:200]
             check("editor_adds_a_text_and_previews", ed is True, ed)
-        # every page without an id fits the window: 1280 px and a narrow 420 px, in Russian (the longer words) and English
+        # converted files: when a running converter job ends, each file gets "Show in folder" / "Open video" (on the
+        # Russian page), and a click asks for that file by its job and place - the request is caught here, so no
+        # Explorer window opens on the test machine
         from archivist import i18n as _i18n
+        from archivist.db import db as _db, now_iso as _now
+        with _db() as con:
+            cj = con.execute("INSERT INTO jobs(kind,status,created_at,started_at,stage,message,total,done,success,failed,bytes_total,"
+                             "bytes_done,options_json) VALUES('convert','running',?,?,'convert','Converting',1,0,0,0,100,10,'{}')",
+                             (_now(), _now())).lastrowid
+            con.commit()
+        _i18n.set_ui_language("ru")
+        sent = []
+
+        def _caught(route):
+            sent.append(route.request.post_data_json)
+            route.fulfill(status=200, content_type="application/json", body='{"ok":true}')
+        pg.route("**/api/convert/reveal", _caught)
+        pg.goto(base + "/convert")
+        outs = [{"source": str(src / "a.mp4"), "output": str(work / "home" / "Converted" / "работа_share_1080p.mp4"),
+                 "source_bytes": 50 * 2**20, "output_bytes": 2 * 2**20, "saved_percent": 96.0}]
+        with _db() as con:
+            con.execute("UPDATE jobs SET status='finished',bytes_done=100,options_json=? WHERE id=?", (json.dumps({"outputs": outs}), cj))
+            con.commit()
+        try:
+            pg.wait_for_selector("[data-cv=reveal]", timeout=15_000)
+            pg.wait_for_timeout(300)
+            txt = pg.inner_text("#convertResults")
+            pg.click("[data-cv=reveal]")
+            pg.click("[data-cv=open]")
+            pg.wait_for_timeout(800)
+            cv = ("Показать в папке" in txt and "Открыть видео" in txt and "меньше на" in txt and "МБ" in txt
+                  and sent == [{"job": cj, "i": 0, "open": False}, {"job": cj, "i": 0, "open": True}]
+                  and "Открыть папку" in pg.inner_text(".pagehead"))
+        except Exception as exc:
+            cv = str(exc)[:200]
+        check("converted_files_show_in_folder_in_a_real_browser", cv is True, (cv, sent, pg.inner_text("#convertResults")[:300] if pg.query_selector("#convertResults") else None))
+        pg.unroute("**/api/convert/reveal")
+        _i18n.set_ui_language("en")
+        # every page without an id fits the window: 1280 px and a narrow 420 px, in Russian (the longer words) and English
         skip = ("/api", "/static", "/media", "/diagnostics", "/auto/exports/open", "/thumb", "/stream", "/file")
         plain = sorted({r.rule for r in app.url_map.iter_rules() if "GET" in r.methods and not r.arguments
                         and not r.rule.startswith(skip) and not r.rule.endswith((".json", ".csv", ".zip", ".png", ".jpg", ".js", ".css", ".ico"))})
