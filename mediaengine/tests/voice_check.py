@@ -327,6 +327,13 @@ def main() -> int:
         check(f"engine: the voice 9_2 in '{lang or 'auto'}' -> {want}", wj["state"] == "done" and tj.get("engine") == want
               and tj.get("qwen_language") == qlang and (wj.get("result") or {}).get("engine") == want,
               (tj.get("engine"), tj.get("qwen_language"), (wj.get("result") or {}).get("engine")))
+    by_text = {" ".join(ch["text"] for ch in x["chunks"]): x.get("qwen_icl") for x in tts_jobs() if x.get("engine") == "qwen"}
+    check("engine: 9_2 continues its English recording in English, takes only its timbre in Russian (round 15)",
+          by_text.get("Hello from the new engine.") is True and by_text.get("Привет от нового движка.") is False
+          and by_text.get("Ça va très bien, merci.") is True, by_text)
+    check("engine: a voice recorded in Russian continues its recording in Russian",
+          vo.qwen_icl("Привет, это я.", "Это моя запись голоса.") and not vo.qwen_icl("Hello there.", "Это запись.")
+          and not vo.qwen_icl("Привет.", ""))
     c.post("/auto/voice/new", data={"text": "A described voice says this.", "voice": "describe", "language": "en",
                                     "description": "a calm man in his forties, deep warm voice"}, headers=H)
     wait(vo.list_jobs()[0]["id"])

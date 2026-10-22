@@ -204,8 +204,9 @@ def tts(job: dict) -> dict:
             say(progress=0.05 + 0.85 * (i + attempt / tries_max / 2) / total, step="speaking", chunk=i + 1, chunks=total,
                 attempt=attempt + 1)
             g = {"cfg_value": cfg, "inference_timesteps": steps}
-            if qwen:                            # Qwen3-TTS: the recording (and its words, when known)
-                g = {"text": text, "reference_wav_path": str(ref_wav), "prompt_text": ref_text}
+            if qwen:                            # Qwen3-TTS: the recording (and its words, when in the same writing)
+                g = {"text": text, "reference_wav_path": str(ref_wav),
+                     "prompt_text": ref_text if job.get("qwen_icl", True) else ""}
             elif ref_wav:                       # the locked voice: its own recording and words
                 g.update(text=text, reference_wav_path=str(ref_wav))
                 if ref_text:

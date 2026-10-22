@@ -161,6 +161,25 @@ def qwen_can_say(text: str) -> bool:
     return True
 
 
+def _script(text: str) -> str:
+    """The writing a text is mostly in: 'cyr', 'lat', 'cjk' ('' without letters)."""
+    n = {"cyr": 0, "lat": 0, "cjk": 0}
+    for ch in str(text or ""):
+        if not ch.isalpha():
+            continue
+        o = ord(ch)
+        n["cyr" if 0x400 <= o <= 0x4FF else "lat" if o < 0x250 else "cjk"] += 1
+    best = max(n, key=n.get)
+    return best if n[best] else ""
+
+
+def qwen_icl(text: str, ref_text: str) -> bool:
+    """Qwen3-TTS continues the voice's recording and its words only in the same writing as those words; otherwise it
+    takes the voice's timbre alone. Voice lab round 15 (run 39696944139): 9_2's English recording continued in Russian
+    carried the English accent (14 of 82 words heard wrong, "голоса" as "Галлесса"); the timbre alone 7 of 82."""
+    return bool(ref_text) and _script(text) == _script(ref_text)
+
+
 def qwen_installed() -> bool:
     """The engine of the voices cloned from a recording (Qwen3-TTS) is there, beside an installed add-on."""
     q = manifest().get("qwen") or {}
@@ -1188,7 +1207,8 @@ def _do(jid: str) -> dict:
         res = _run_worker({"task": "tts", "chunks": pieces, "voice": v, "language": job.get("language"),
                            "out_wav": str(d / "voice_raw.wav"), "seed": int(cfg.get("seed") or 1),
                            "steps": cfg.get("steps"), "device": device, "cfg": v.get("cfg") or cfg.get("cfg"),
-                           "engine": engine, "qwen_language": QWEN_LANGS.get(lang)},
+                           "engine": engine, "qwen_language": QWEN_LANGS.get(lang),
+                           "qwen_icl": qwen_icl(job["text"], v.get("ref_text") or "")},
                           d / "work", timeout=6 * 3600,
                           on_line=_progress)
         if not res.get("ok"):
