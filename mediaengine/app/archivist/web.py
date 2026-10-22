@@ -411,6 +411,11 @@ def _exit_soon(close_windows=False):
         _cv.shutdown()
     except Exception:
         pass
+    try:                                  # a voice-over's worker or a video's FFmpeg too (made again at the next start)
+        from . import voice as _vo
+        _vo.shutdown()
+    except Exception:
+        pass
     os._exit(0)
 
 

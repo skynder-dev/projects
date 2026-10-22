@@ -673,6 +673,8 @@ PHRASES = {
     "Voice": "Голос",
     "Host - the voice of 9_2": "Ведущая — голос 9_2",
     "The recording of this voice is missing from this version of MediaEngine.": "В этой версии MediaEngine нет записи этого голоса.",
+    "The recording of this voice is no longer there (a saved voice deleted, or a voice this version of MediaEngine does not have).":
+        "Записи этого голоса больше нет (сохранённый голос удалён или в этой версии MediaEngine такого голоса нет).",
     "My description of a voice (English works best)": "Свой голос по описанию (лучше писать по-английски)",
     "A voice from a recording (a person who agreed to it)": "Голос из записи (человека, который на это согласен)",
     "For example: a calm man in his forties with a deep, warm voice, slow pace":
@@ -887,6 +889,7 @@ PHRASES = {
         "в ту же папку. До этого они звучат на прежнем движке.",
     "Not enough free space: about 8 GB are needed while downloading.": "Мало свободного места: на время скачивания нужно около 8 ГБ.",
     "Download the new voice engine": "Скачать новый движок голоса",
+    "Don't make it": "Не делать", "Stopped.": "Остановлено.", "Show the older ones too": "Показать и более старые",
     "Downloading the new voice engine": "Скачивается новый движок голоса",
     "Downloading the new voice engine's Python parts (about 0.2 GB)…": "Скачиваю части нового движка для Python (около 0,2 ГБ)…",
     "Downloading the new voice engine (Qwen3-TTS, about 4.5 GB)…": "Скачиваю новый движок голоса (Qwen3-TTS, около 4,5 ГБ)…",

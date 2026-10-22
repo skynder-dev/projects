@@ -592,7 +592,7 @@ def _norm(w: str) -> str:
 def align(script: str, heard: list[dict]) -> list[dict]:
     """The script's own words (as written) with the times the listener heard them; words it did not hear get times
     between their neighbours. Without a script: what was heard."""
-    toks = [t for t in re.split(r"\s+", re.sub(r"\([^)]*\)|\[[a-z ]+\]", " ", str(script or ""))) if _norm(t)]
+    toks = [t for t in re.split(r"\s+", str(script or "")) if _norm(t)]      # words in brackets are said too
     if not toks:
         return [{"w": h["w"], "s": h["s"], "e": h["e"]} for h in heard if _norm(h["w"])]
     hw = [h for h in heard if _norm(h["w"])]
@@ -892,6 +892,7 @@ def new_captions(source: str, language: str = "", position: str = "bottom", opts
     p = Path(str(source or "").strip().strip('"'))
     if not p.is_file():
         raise VoiceError("Choose a video (its full path) to make captions for.")
+    _check_video(p, need_sound=True)                  # a video with sound, said now rather than after listening
     o = tf.options(**{**(opts or {}), "position": position if position in tf.POSITIONS else (opts or {}).get("position")})
     return _submit({"kind": "captions", "source": str(p), "language": (language or "").strip().lower()[:2] or None,
                     "position": o["position"], "opts": o, "texts": list(texts or []), "title": p.name[:60]})
@@ -907,6 +908,7 @@ def new_dub(jid: str, video: str, keep_sound: bool = True, captions: bool = True
     p = Path(str(video or "").strip().strip('"'))
     if not p.is_file():
         raise VoiceError("Choose the video (its full path).")
+    _check_video(p)
     try:
         start_s = max(0.0, min(60.0, float(str(start_s).strip().replace(",", ".") or 0.3)))
     except (TypeError, ValueError):
@@ -1018,16 +1020,7 @@ def _finish_video(video: str, sh: dict, opts: dict | None, keep_sound: bool) -> 
     if not p.is_file():
         raise VoiceError("Choose the video (its full path).")
     if sh["captions"] == "speech":
-        from . import auto_edit as ae
-        try:
-            info = ae._probe(p)
-        except Exception as exc:
-            raise VoiceError("The video could not be read: " + str(exc)[:200])
-        streams = info.get("streams", []) if isinstance(info, dict) else []
-        if not any(x.get("codec_type") == "video" for x in streams):
-            raise VoiceError("This file has no picture: choose a video.")
-        if not any(x.get("codec_type") == "audio" for x in streams):
-            raise VoiceError("This video has no sound, so there is no speech to make captions of.")
+        _check_video(p, need_sound=True)
     length = video_size(p)[2]                           # a picture to put things on (and its length)
     if sh["timed"]:
         if sh["voice_from"]:
@@ -1040,6 +1033,20 @@ def _finish_video(video: str, sh: dict, opts: dict | None, keep_sound: bool) -> 
             "needs_addon": sh["captions"] == "speech", "opts": tf.options(**(opts or {})), "texts": sh["texts"],
             "voice_from": sh["voice_from"], "start_s": sh["start"], "keep_sound": bool(keep_sound),
             "music": sh["music"], "music_level": sh["music_level"], "script": sh["script"], "title": p.name[:60]}
+
+
+def _check_video(p: Path, need_sound: bool = False) -> None:
+    """A file with a picture (and sound, for captions of its speech) - said before a job is made of it."""
+    from . import auto_edit as ae
+    try:
+        info = ae._probe(p)
+    except Exception as exc:
+        raise VoiceError("The video could not be read: " + str(exc)[:200])
+    streams = info.get("streams", []) if isinstance(info, dict) else []
+    if not any(x.get("codec_type") == "video" for x in streams):
+        raise VoiceError("This file has no picture: choose a video.")
+    if need_sound and not any(x.get("codec_type") == "audio" for x in streams):
+        raise VoiceError("This video has no sound, so there is no speech to make captions of.")
 
 
 def _new_voice_for(nv: dict | None) -> str:
@@ -1150,6 +1157,15 @@ def _loop() -> None:
                 res = _do(jid)
         except Exception as exc:
             res = {"ok": False, "error": str(exc)[:500]}
+        if _CURRENT.get("cancel"):
+            res = {"ok": False, "error": "Stopped."}
+        if res.get("_requeue"):                          # behind the job it waits for (no result written)
+            with _LOCK:
+                if _QUEUE and _QUEUE[0] == jid:
+                    _QUEUE.pop(0)
+                    _QUEUE.append(jid)
+            _CURRENT.clear()
+            continue
         res["finished_at"] = now_iso()
         try:
             d = JOBS / jid
@@ -1195,8 +1211,9 @@ def _do(jid: str) -> dict:
             pv = all_voices().get(v.get("key")) or {}       # older build keeps that build's path, maybe removed since)
             if pv.get("ref"):
                 v["ref_wav"] = str(ASSETS / pv["ref"])
-            if not Path(v["ref_wav"]).is_file():     # a voice this version no longer has (3.1): say so, not a worker error
-                return {"ok": False, "error": "The recording of this voice is missing from this version of MediaEngine."}
+            if not Path(v["ref_wav"]).is_file():     # a voice this version no longer has (3.1), or a saved voice deleted
+                return {"ok": False, "error": "The recording of this voice is no longer there (a saved voice deleted, "
+                                              "or a voice this version of MediaEngine does not have)."}
         cfg = (load_config().get("voice") or {})
         device = cfg.get("device") or ("cuda" if manifest().get("cuda") else "cpu")
         lang = str(job.get("language") or "")
@@ -1263,6 +1280,8 @@ def _do(jid: str) -> dict:
         voice = None
         if job.get("voice_from"):
             vj = read_job(job["voice_from"]) if (JOBS / job["voice_from"]).is_dir() else {"state": "gone"}
+            if vj["state"] == "waiting":                 # its voice-over is still to be made: after it
+                return {"_requeue": True}
             if vj["state"] not in ("done", "gone"):     # failed, interrupted or still waiting: not made
                 return {"ok": False, "error": "The voice-over was not made, so this video was not made either: "
                                               + str((vj.get("result") or {}).get("error") or "")[:300]}
@@ -1322,7 +1341,7 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
     from . import auto_edit as ae, orders as od
     _CURRENT.update(step="video", progress=0.5)
     try:
-        info = ae._probe(video)
+        info = _probe_video(video)
     except Exception as exc:
         raise VoiceError("The video could not be read: " + str(exc)[:200])
     streams = info.get("streams", []) if isinstance(info, dict) else []
@@ -1335,23 +1354,23 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
         vlen = float(od._decode_info(video, timeout=1800).get("seconds") or 0)
     if vlen <= 0:
         raise VoiceError("The length of this video could not be read.")
-    w, h = int(vs.get("width") or 1080), int(vs.get("height") or 1920)
-    if int(info.get("rotation") or 0) in (90, 270):          # a phone video stored on its side: shown upright
-        w, h = h, w
+    sw, sh = int(vs.get("width") or 1080), int(vs.get("height") or 1920)
+    w, h = _display_size(vs, info)                         # upright, square pixels: as a player shows it
     voice_len = 0.0
     if voice_wav is not None:
         voice_len = float(od._decode_info(voice_wav, timeout=300).get("seconds") or 0)
     length = max(vlen, offset + voice_len + 0.5) if voice_wav is not None else vlen
-    vf = []
-    if length > vlen + 0.05:
-        vf.append(f"tpad=stop_mode=clone:stop_duration={length - vlen:.3f}")
+    # its last picture held to the end, whatever the picture's own length (a picture can end before its sound, and the
+    # file's length is the longer of the two): the new video is cut at `length` (-t)
+    vf = [f"tpad=stop_mode=clone:stop_duration={length:.3f}"]
     # the size of the new video: what Reels / TikTok / Shorts show (a short side of at most 1080: a 4K phone video is
     # made several times faster), always even (H.264 4:2:0); the text is laid out for exactly this size
     k = min(1.0, MAX_SHORT_SIDE / max(1, min(w, h)))
     tw, th = int(w * k) // 2 * 2, int(h * k) // 2 * 2
-    if (tw, th) != (w, h):
+    turned = int(info.get("rotation") or 0) in (90, 270)
+    if (tw, th) != ((sh, sw) if turned else (sw, sh)) or _sar(vs) != 1.0:
         vf.append(f"scale={tw}:{th}:flags=lanczos,setsar=1")
-        w, h = tw, th
+    w, h = tw, th
     o = tf.options(**{**(opts or {}), **({"position": position} if position else {})})
     tx = tf.resolve_texts(texts, length)
     if cs or tx:
@@ -1406,37 +1425,154 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
     cmd += ["-filter_complex", ";".join(fc), "-map", "[v]"]
     if amap:
         cmd += ["-map", amap]
-    tail_args = ["-t", f"{length:.3f}", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", "video.mp4"]
+    # a new file, put in place of video.mp4 only when made and checked: the copy saved next to the reels is a second
+    # name of the earlier video.mp4 (os.link) - writing into video.mp4 itself would change (or break) that copy
+    new_out = d / "video.new.mp4"
+    new_out.unlink(missing_ok=True)
+    tail_args = ["-t", f"{length:.3f}", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", new_out.name]
     cpu = ["-c:v", "libx264", "-preset", "medium", "-crf", "18"]
     gpu = ["-c:v", "h264_nvenc", "-preset", "p5", "-rc", "vbr", "-cq", "19", "-b:v", "0", "-profile:v", "high"]
     log = d / "ffmpeg.log"
     tries = ([gpu] if nvenc_ok() else []) + [cpu]           # an NVIDIA card makes the picture; any failure: the processor
+    rc = -1
     for i, enc in enumerate(tries):
-        full = cmd + enc + tail_args
-        with log.open("a", encoding="utf-8", errors="replace") as lf:
-            lf.write("$ " + " ".join(full) + "\n")
-            lf.flush()
-            cp = subprocess.run(full, cwd=str(d), stdout=lf, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL,
-                                **process_kwargs(dict(timeout=6 * 3600)))
-        if cp.returncode == 0 and (d / "video.mp4").is_file() and (d / "video.mp4").stat().st_size > 1000:
+        rc = _run_ffmpeg(cmd + enc + tail_args, d, log, 6 * 3600)
+        if rc == 0 and new_out.is_file() and new_out.stat().st_size > 1000:
             break
-        if i < len(tries) - 1:
-            (d / "video.mp4").unlink(missing_ok=True)
+        new_out.unlink(missing_ok=True)
+        if _CURRENT.get("cancel"):
+            break
     shutil.rmtree(d / "fonts", ignore_errors=True)
-    if cp.returncode != 0 or not (d / "video.mp4").is_file():
-        tail = [x for x in log.read_text("utf-8", errors="replace").splitlines() if x.strip()][-1:] or ["?"]
-        raise VoiceError("FFmpeg could not make the video (" + tail[0][:200] + ").")
+    if _CURRENT.get("cancel"):
+        new_out.unlink(missing_ok=True)
+        raise VoiceError("Stopped.")
+    if rc != 0 or not new_out.is_file():
+        lines = [x for x in log.read_text("utf-8", errors="replace").splitlines() if x.strip()]
+        why = next((x for x in reversed(lines) if not re.match(r"\s*(frame=|size=|\$ )", x)), lines[-1] if lines else "?")
+        raise VoiceError("FFmpeg could not make the video (" + why[:200] + ").")
     _CURRENT.update(step="checking", progress=0.9)
     with_sound = voice_wav is not None or (keep_sound and has_audio) or bool(music)
-    checks = od._check_output(d / "video.mp4", {"seconds": length, "tolerance": 0.25, "audio": with_sound})
+    checks = od._check_output(new_out, {"seconds": length, "tolerance": 0.25, "audio": with_sound})
     if not all(c["pass"] for c in checks):
         bad = next(c for c in checks if not c["pass"])
-        (d / "video.mp4").replace(d / "video_failed_check.mp4")
+        os.replace(new_out, d / "video_failed_check.mp4")
         raise VoiceError(f"The new video did not pass its check ({bad['check']}: {bad['detail']}).")
+    os.replace(new_out, d / "video.mp4")
     saved = _save_copy(d / "video.mp4", video.stem, "voice" if voice_wav is not None else "captions" if cs else
                        "text" if tx else "music" if music else "text")
     return {"files": {"video": "video.mp4", **({"srt": "captions.srt"} if cs else {})}, "seconds": round(length, 2),
             "checks": checks, "captions": len(cs), "texts": len(tx), "width": w, "height": h, "saved": saved}
+
+
+_SAR_RE = re.compile(r"Video:.*?\[SAR (\d+):(\d+)")
+
+
+def _probe_video(video: Path) -> dict:
+    """The program's probe, with the shape of the picture's pixels (SAR) of its first video stream added from the
+    same FFmpeg answer (the probe itself leaves it out)."""
+    from . import auto_edit as ae
+    info = ae._probe(video)
+    text = (getattr(ae._PROBE_TEXT, "text", "") or "").split("Stream mapping:", 1)[0]
+    m = _SAR_RE.search(text)
+    if m and isinstance(info, dict):
+        for st in info.get("streams", []) or []:
+            if st.get("codec_type") == "video":
+                st.setdefault("sample_aspect_ratio", f"{m.group(1)}:{m.group(2)}")
+                break
+    return info
+
+
+def _sar(vs: dict) -> float:
+    """The shape of a stored pixel (1 = square; a 1440x1080 camcorder video with 4:3 pixels is shown 1920 wide)."""
+    try:
+        a, b = (int(x) for x in str(vs.get("sample_aspect_ratio") or "1:1").split(":"))
+        r = a / b if a > 0 and b > 0 else 1.0
+    except (ValueError, ZeroDivisionError):
+        r = 1.0
+    return r if 0.25 <= r <= 4.0 and abs(r - 1.0) > 0.01 else 1.0
+
+
+def _display_size(vs: dict, info: dict) -> tuple[int, int]:
+    """Width and height as a player shows the picture: square pixels, a phone video stored on its side upright."""
+    w, h = int(vs.get("width") or 1080), int(vs.get("height") or 1920)
+    w = int(round(w * _sar(vs)))
+    if int(info.get("rotation") or 0) in (90, 270):
+        w, h = h, w
+    return w, h
+
+
+def _run_ffmpeg(cmd: list[str], cwd: Path, log: Path, timeout: float) -> int:
+    """FFmpeg as a child that ends with the program (a Windows job object; Quit and Stop kill it) - its return code."""
+    from . import auto_edit as ae
+    with log.open("a", encoding="utf-8", errors="replace") as lf:
+        lf.write("$ " + " ".join(cmd) + "\n")
+        lf.flush()
+        proc = subprocess.Popen(cmd, cwd=str(cwd), stdout=lf, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL,
+                                **process_kwargs({}))
+        ae._attach_job_object(proc)
+        _CURRENT["proc"] = proc
+        try:
+            proc.wait(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            proc.wait()
+        finally:
+            _CURRENT.pop("proc", None)
+    return proc.returncode
+
+
+_CHILDREN: set = set()
+
+
+def _run_child(cmd: list[str], timeout: float) -> int:
+    """A longer FFmpeg run outside the job queue (the small copy): it too ends with the program."""
+    from . import auto_edit as ae
+    proc = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL,
+                            **process_kwargs({}))
+    ae._attach_job_object(proc)
+    _CHILDREN.add(proc)
+    try:
+        proc.wait(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+        proc.wait()
+    finally:
+        _CHILDREN.discard(proc)
+    return proc.returncode
+
+
+def cancel_job(jid: str) -> None:
+    """Stop: a job being made is stopped (its FFmpeg or voice worker killed, said 'Stopped.'); a waiting one leaves the
+    queue. A stopped job can be made again with Try again."""
+    with _LOCK:
+        if _CURRENT.get("id") == jid:
+            _CURRENT["cancel"] = True
+            p = _CURRENT.get("proc")
+        elif jid in _QUEUE:
+            _QUEUE.remove(jid)
+            p = None
+            d = _job_dir(jid)
+            tmp = d / "result.json.tmp"
+            tmp.write_text(json.dumps({"ok": False, "error": "Stopped.", "finished_at": now_iso()}), "utf-8")
+            os.replace(tmp, d / "result.json")
+            return
+        else:
+            return
+    if p is not None:
+        try:
+            p.kill()
+        except Exception:
+            pass
+
+
+def shutdown() -> None:
+    """Quit: the voice worker or FFmpeg being run now ends with the program (the job is made again at the next start)."""
+    for p in [_CURRENT.get("proc"), *list(_CHILDREN)]:
+        if p is not None:
+            try:
+                p.kill()
+            except Exception:
+                pass
 
 
 PREVIEWS = HOME / "voice_previews"
@@ -1509,7 +1645,7 @@ def video_size(video: Path, picture_len: bool = False):
     picture_len also the length of the picture itself (its sound can run longer than its last frame)."""
     from . import auto_edit as ae, orders as od
     try:
-        info = ae._probe(video)
+        info = _probe_video(video)
     except Exception as exc:
         raise VoiceError("The video could not be read: " + str(exc)[:200])
     streams = info.get("streams", []) if isinstance(info, dict) else []
@@ -1519,9 +1655,7 @@ def video_size(video: Path, picture_len: bool = False):
     vlen = float((info.get("format") or {}).get("duration") or 0)
     if vlen <= 0:
         vlen = float(od._decode_info(video, timeout=1800).get("seconds") or 0)
-    w, h = int(vs.get("width") or 1080), int(vs.get("height") or 1920)
-    if int(info.get("rotation") or 0) in (90, 270):
-        w, h = h, w
+    w, h = _display_size(vs, info)
     if picture_len:
         try:
             plen = float(vs.get("duration") or 0)
@@ -1591,12 +1725,11 @@ def small_copy(jid: str) -> str:
     d.mkdir(parents=True, exist_ok=True)
     L = getattr(ae, "SMALL_LONG_SIDE", 1280)
     out = d / "small.mp4"
-    cp = subprocess.run([_ffmpeg(), "-hide_banner", "-loglevel", "error", "-nostdin", "-y", "-i", str(src), "-map", "0:v:0",
-                         "-map", "0:a:0?", "-vf", f"scale='if(gte(iw,ih),min(iw,{L}),-2)':'if(gte(iw,ih),-2,min(ih,{L}))'",
-                         "-c:v", "libx264", "-preset", "veryfast", "-crf", "26", "-pix_fmt", "yuv420p", "-c:a", "aac",
-                         "-b:a", "128k", "-movflags", "+faststart", str(out)], capture_output=True,
-                        **process_kwargs(dict(timeout=1800)))
-    if cp.returncode != 0 or not out.is_file() or out.stat().st_size < 1000:
+    rc = _run_child([_ffmpeg(), "-hide_banner", "-loglevel", "error", "-nostdin", "-y", "-i", str(src), "-map", "0:v:0",
+                     "-map", "0:a:0?", "-vf", f"scale='if(gte(iw,ih),min(iw,{L}),-2)':'if(gte(iw,ih),-2,min(ih,{L}))'",
+                     "-c:v", "libx264", "-preset", "veryfast", "-crf", "26", "-pix_fmt", "yuv420p", "-c:a", "aac",
+                     "-b:a", "128k", "-movflags", "+faststart", str(out)], 1800)
+    if rc != 0 or not out.is_file() or out.stat().st_size < 1000:
         shutil.rmtree(d, ignore_errors=True)
         raise VoiceError("The small copy could not be made.")
     stem = Path(str(j.get("video") or j.get("source") or j.get("title") or "video")).stem
@@ -1664,10 +1797,17 @@ def _save_copy(src: Path, stem: str, what: str) -> str:
         return ""
 
 
+_RESUME_DONE: list = []
+
+
 def resume_after_restart() -> None:
     """Jobs left without an answer by a closed program are made again once (their files were not finished)."""
+    with _LOCK:                                                 # once per start, whoever asks first
+        if _RESUME_DONE:
+            return
+        _RESUME_DONE.append(1)
     have = installed()
-    for j in reversed(list_jobs(200)):                          # oldest first: a voice before the video using it
+    for j in reversed(list_jobs(500)):                          # oldest first: a voice before the video using it
         if j["state"] == "interrupted" and not j.get("resumed") and (
                 have or (j.get("kind") == "render" and not j.get("needs_addon"))):
             try:
@@ -1676,7 +1816,8 @@ def resume_after_restart() -> None:
                 job["resumed"] = True
                 _write_job(d, job)
                 with _LOCK:
-                    _QUEUE.append(j["id"])
+                    if j["id"] not in _QUEUE:
+                        _QUEUE.append(j["id"])
             except Exception:
                 pass
     if _QUEUE:
@@ -1691,7 +1832,7 @@ def retry_job(jid: str) -> None:
     takes along the videos that were to get it and stopped because it was not made (one Try again, not one per
     video)."""
     j = read_job(jid)
-    if j["state"] in ("working", "waiting"):
+    if j["state"] in ("working", "waiting", "done"):     # (done: a page left open long ago - nothing to make again)
         return
     if j.get("kind") != "render" or j.get("needs_addon"):
         _need_addon()
@@ -1710,8 +1851,14 @@ def retry_job(jid: str) -> None:
             job = json.loads((d / "job.json").read_text("utf-8"))
             job["resumed"] = False
             _write_job(d, job)
+            if k in _QUEUE and k != _CURRENT.get("id"):       # a video waiting already goes behind its voice-over
+                _QUEUE.remove(k)
             if k not in _QUEUE:
-                _QUEUE.append(k)
+                vf = job.get("voice_from") if job.get("kind") == "render" else ""
+                if vf and vf in _QUEUE and vf != _CURRENT.get("id"):
+                    _QUEUE.insert(_QUEUE.index(vf) + 1, k)     # its voice-over waits: right after it
+                else:
+                    _QUEUE.append(k)
         if not _THREAD or not _THREAD[0].is_alive():
             _THREAD[:] = [threading.Thread(target=_loop, name="voice-jobs", daemon=True)]
             _THREAD[0].start()

@@ -197,10 +197,13 @@ def _secs(v, what: str) -> float | None:
     s = str(v if v is not None else "").strip().replace(",", ".")
     if not s:
         return None
-    m = re.fullmatch(r"(?:(\d+):)?(\d+(?:\.\d+)?)", s)
+    m = re.fullmatch(r"(?:(\d{1,4}):)?(\d{1,6}(?:\.\d{1,3})?)", s)
     if not m:
         raise TextError(f"{what}: write seconds, for example 2.5 or 0:12.")
-    return int(m.group(1) or 0) * 60 + float(m.group(2))
+    t = int(m.group(1) or 0) * 60 + float(m.group(2))
+    if not 0 <= t <= 36000:                      # at most 10 hours (a typo of many digits is not a time)
+        raise TextError(f"{what}: write seconds, for example 2.5 or 0:12.")
+    return t
 
 
 def parse_texts(rows: list[dict]) -> list[dict]:

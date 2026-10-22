@@ -342,13 +342,16 @@ def main() -> int:
     vo.INSTALL.update(state="running")          # the new engine being downloaded beside an installed add-on
     try:
         last_vo = vo.list_jobs()[0]["id"]
+        keep_res = (vo._job_dir(last_vo) / "result.json").read_bytes()
+        (vo._job_dir(last_vo) / "result.json").write_text(json.dumps({"ok": False, "error": "x"}), "utf-8")
         refused = ""
         try:
             vo.retry_job(last_vo)
         except vo.VoiceError as exc:
             refused = str(exc)
         check("Try again waits while the add-on is being installed (the new engine too)", "being installed" in refused
-              and vo.read_job(last_vo)["state"] == "done", refused)
+              and vo.read_job(last_vo)["state"] == "failed" and last_vo not in vo._QUEUE, refused)
+        (vo._job_dir(last_vo) / "result.json").write_bytes(keep_res)
     finally:
         vo.INSTALL.update(state="idle")
 
@@ -357,6 +360,8 @@ def main() -> int:
     subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=540x960:rate=30:duration=2",
                     "-f", "lavfi", "-i", "sine=f=440:duration=2", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac",
                     "-shortest", str(video)], check=True)
+    import hashlib as _hl0
+    video_sha = _hl0.sha256(video.read_bytes()).hexdigest()
     from archivist.db import db, now_iso
     from archivist import auto_edit as ae
     ae.ensure_schema()
@@ -416,10 +421,23 @@ def main() -> int:
     r = c.post(f"/auto/voice/{jid}/dub", data={"video": str(odd), "start": "soon"}, headers=H)
     check("a start time that is not a number: refused in words", r.status_code == 400, r.status_code)
 
-    # Try again: a finished job made again in its own folder
+    # Try again: a job that failed is made again in its own folder; the copy saved by an earlier make stays as it was
+    import hashlib as _hl
+    sha = lambda f: _hl.sha256(Path(f).read_bytes()).hexdigest()
+    saved0 = (oj.get("result") or {}).get("saved") or ""
+    h0 = sha(saved0) if saved0 and Path(saved0).is_file() else ""
+    (Path(oj["dir"]) / "result.json").write_text(json.dumps({"ok": False, "error": "a test failure"}), "utf-8")
     r = c.post(f"/auto/voice/{oj['id']}/retry", headers=H)
     rj = wait(oj["id"])
     check("Try again makes it again", r.status_code == 302 and rj["state"] == "done", rj.get("result"))
+    saved1 = (rj.get("result") or {}).get("saved") or ""
+    check("the copy saved by the earlier make is not touched (the new video gets its own copy)",
+          h0 and sha(saved0) == h0 and saved1 and saved1 != saved0 and Path(saved1).is_file(), (saved0, saved1))
+    before_ns = json.loads((Path(oj["dir"]) / "result.json").read_text("utf-8")).get("finished_at")
+    r = c.post(f"/auto/voice/{oj['id']}/retry", headers=H)
+    time.sleep(1.0)
+    check("Try again from an old page on a finished job does nothing", r.status_code == 302 and vo.read_job(oj["id"])["state"] == "done"
+          and json.loads((Path(oj["dir"]) / "result.json").read_text("utf-8")).get("finished_at") == before_ns)
 
     # captions for the video's own speech
     r = c.post("/auto/voice/captions", data={"path": str(video), "language": "", "position": "middle"}, headers=H)
@@ -708,15 +726,16 @@ def main() -> int:
     check("a video that does not exist", r.status_code == 400, r.status_code)
 
     # a voice-over made by an older build: its stored recording path is that build's (maybe removed since)
-    def old_job(key, ref):
+    def old_job(key, ref):                      # (and it failed, so the page offers Try again)
         jj = json.loads((d / "job.json").read_text("utf-8"))
         jj["voice"].update(key=key, ref_wav=ref)
         (d / "job.json").write_text(json.dumps(jj), "utf-8")
+        (d / "result.json").write_text(json.dumps({"ok": False, "error": "a test failure"}), "utf-8")
     old_job("friend", str(home / "MediaEngine-b158" / "assets" / "voice" / "friend_3_1.flac"))       # 3.1, gone now
     c.post(f"/auto/voice/{jid}/retry", headers=H)
     fj = wait(jid)
     check("Try again on a voice this version no longer has: said in words", fj["state"] == "failed"
-          and "recording of this voice is missing" in str((fj.get("result") or {}).get("error")), fj.get("result"))
+          and "recording of this voice is no longer there" in str((fj.get("result") or {}).get("error")), fj.get("result"))
     old_job(vo.DEFAULT_VOICE, str(home / "MediaEngine-b158" / "assets" / "voice" / vo.VOICES[vo.DEFAULT_VOICE]["ref"]))
     c.post(f"/auto/voice/{jid}/retry", headers=H)
     fj = wait(jid)
@@ -777,6 +796,8 @@ def main() -> int:
     if new_ids and len(new_ids) > 1:                 # a video whose voice-over was interrupted: said so, not 'deleted'
         keep_ = (Path(vo._job_dir(new_ids[1])) / "result.json").read_bytes()
         (Path(vo._job_dir(new_ids[1])) / "result.json").unlink(missing_ok=True)
+        keep0 = (Path(vo._job_dir(new_ids[0])) / "result.json").read_bytes()
+        (Path(vo._job_dir(new_ids[0])) / "result.json").write_text(json.dumps({"ok": False, "error": "x"}), "utf-8")
         c.post(f"/auto/voice/{new_ids[0]}/retry", headers=H)
         rj_ = wait(new_ids[0])
         (Path(vo._job_dir(new_ids[1])) / "result.json").write_bytes(keep_)     # (made again: no job left interrupted)
@@ -933,6 +954,95 @@ def main() -> int:
     nvj = json.loads((Path(njobs[0]["dir"]) / "job.json").read_text("utf-8")) if njobs else {}
     check("the pace chosen on the one-page form goes with the new voice", nvj.get("speed") == 0.92 and nvj.get("pauses") == 0.6,
           (nvj.get("speed"), nvj.get("pauses")))
+
+    check("the original video is byte for byte as it was after everything", _hl0.sha256(video.read_bytes()).hexdigest() == video_sha)
+
+    # a picture that ends before its sound: held to the end, the text at the end on it
+    short_pic = home / "short picture.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=540x960:rate=25:duration=2",
+                    "-f", "lavfi", "-i", "sine=f=300:duration=6", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac",
+                    str(short_pic)], check=True)
+    before = {j["id"] for j in vo.list_jobs(500)}
+    r = c.post("/auto/text/new", data={"video": str(short_pic), "t_text": "THE END", "t_start": "end", "t_where": "middle",
+                                       "t_look": "box"}, headers=H)
+    sp = wait(next(j["id"] for j in vo.list_jobs(500) if j["id"] not in before))
+    out_sp = Path(sp["dir"]) / "video.mp4"
+    late, last_pic = frame(out_sp, 5.0), frame(out_sp, 1.95)          # the held last picture, with and without the text
+    diff = sum(1 for x, y in zip(late, last_pic) if abs(x - y) > 50) / max(1, len(late)) if late and last_pic else 0
+    check("a picture shorter than its sound is held to the end, with the end text on it", sp["state"] == "done"
+          and bool(late) and diff > 0.005, (sp.get("result") or {}).get("error") or f"{100 * diff:.1f}%")
+
+    # non-square pixels (a 1440x1080 camcorder video with 4:3 pixels is 1920x1080 on screen)
+    hdv = home / "hdv.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=1440x1080:rate=25:duration=1",
+                    "-vf", "setsar=4/3", "-c:v", "libx264", "-pix_fmt", "yuv420p", str(hdv)], check=True)
+    before = {j["id"] for j in vo.list_jobs(500)}
+    c.post("/auto/text/new", data={"video": str(hdv), "t_text": "Wide", "t_start": "0", "t_end": "1"}, headers=H)
+    hj = wait(next(j["id"] for j in vo.list_jobs(500) if j["id"] not in before))
+    hres = hj.get("result") or {}
+    sar = subprocess.run([ff.replace("ffmpeg", "ffprobe") if Path(ff.replace("ffmpeg", "ffprobe")).exists() else "ffprobe",
+                          "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=sample_aspect_ratio,width,height",
+                          "-of", "csv=p=0", str(Path(hj["dir"]) / "video.mp4")], capture_output=True, text=True).stdout.strip()
+    check("non-square pixels: made 1920x1080 with square pixels (not stretched)", hj["state"] == "done"
+          and (hres.get("width"), hres.get("height")) == (1920, 1080) and sar.startswith("1920,1080"), (hres.get("width"), sar))
+
+    # odd input that used to break a page or a request
+    r = c.post("/auto/text/new", data={"video": str(video), "t_text": "x", "t_start": "0", "t_end": "9" * 400}, headers=H)
+    check("a time typed as hundreds of digits: refused in words", r.status_code == 400, r.status_code)
+    r = c.post("/api/auto/pick-voice-file", data=json.dumps(["video"]), headers={**H, "Content-Type": "application/json"})
+    check("the file picker with an odd request: an answer, not a server error", r.status_code == 200, r.status_code)
+    song_only = home / "only sound.mp3"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "sine=f=300:duration=2", str(song_only)], check=True)
+    r = c.post(f"/auto/voice/{jid}/dub", data={"video": str(song_only)}, headers=H)
+    check("a voice onto a sound file (no picture): refused before anything is made", r.status_code == 400, r.status_code)
+    silent = home / "silent.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=320x240:rate=25:duration=1", "-c:v", "libx264",
+                    "-pix_fmt", "yuv420p", str(silent)], check=True)
+    r = c.post("/auto/voice/captions", data={"path": str(silent)}, headers=H)
+    check("captions of a video without sound: refused before listening", r.status_code == 400
+          and "no sound" in r.get_data(as_text=True), r.status_code)
+    words_b = vo.align("Prices rose (by 20 percent) this week [and more].", [])
+    check("words in brackets stay in the captions (they are said)", [w["w"] for w in words_b]
+          == ["Prices", "rose", "(by", "20", "percent)", "this", "week", "[and", "more]."], [w["w"] for w in words_b])
+
+    # a long job running: a video waits behind its voice-over; Stop for a waiting job and for the one being made
+    big = home / "long.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=1080x1920:rate=30:duration=40",
+                    "-f", "lavfi", "-i", "sine=f=200:duration=40", "-c:v", "libx264", "-preset", "ultrafast",
+                    "-pix_fmt", "yuv420p", "-c:a", "aac", str(big)], check=True)
+    before = {j["id"] for j in vo.list_jobs(500)}
+    fail_tts[0] = True
+    c.post("/auto/finish", data={"video": str(video), "voice": "new", "text": "Wait for me.", "nvoice": vo.DEFAULT_VOICE,
+                                 "captions": "voice"}, headers=H)
+    pair = [j["id"] for j in vo.list_jobs(500) if j["id"] not in before][::-1]          # voice-over, video
+    for x in pair:
+        wait(x)
+    fail_tts[0] = False
+    long_ids = []
+    for _ in range(2):
+        b0 = {j["id"] for j in vo.list_jobs(500)}
+        c.post("/auto/text/new", data={"video": str(big), "t_text": "Long", "t_start": "0", "t_end": "3"}, headers=H)
+        long_ids.append(next(j["id"] for j in vo.list_jobs(500) if j["id"] not in b0))
+    t_end = time.time() + 30
+    while vo.read_job(long_ids[0])["state"] != "working" and time.time() < t_end:
+        time.sleep(0.2)
+    if len(pair) == 2:
+        c.post(f"/auto/voice/{pair[1]}/retry", headers=H)        # the video first ...
+        c.post(f"/auto/voice/{pair[0]}/retry", headers=H)        # ... then its voice-over
+    r1 = c.post(f"/auto/voice/{long_ids[1]}/stop", headers=H)
+    w2 = vo.read_job(long_ids[1])
+    check("Don't make it: a waiting job leaves the queue, said 'Stopped.'", r1.status_code == 302 and w2["state"] == "failed"
+          and (w2.get("result") or {}).get("error") == "Stopped.", (w2["state"], w2.get("result")))
+    time.sleep(1.0)
+    r0 = c.post(f"/auto/voice/{long_ids[0]}/stop", headers=H)
+    w1 = wait(long_ids[0], 60)
+    check("Stop: the video being made stops (its FFmpeg ended), said 'Stopped.'", r0.status_code == 302
+          and w1["state"] == "failed" and (w1.get("result") or {}).get("error") == "Stopped."
+          and not (Path(w1["dir"]) / "video.new.mp4").exists(), w1.get("result"))
+    if len(pair) == 2:
+        pv, pr = wait(pair[0]), wait(pair[1])
+        check("Try again on the video, then on its voice-over: both made (the video waits for its voice)",
+              pv["state"] == "done" and pr["state"] == "done", (pv["state"], pr["state"], (pr.get("result") or {}).get("error")))
 
     install_flows(home, check)
 

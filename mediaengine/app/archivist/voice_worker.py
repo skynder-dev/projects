@@ -25,7 +25,7 @@ def say(**kw) -> None:
 
 
 def _words(s: str) -> list[str]:
-    s = re.sub(r"\([^)]*\)|\[[a-z ]+\]", " ", str(s).lower().replace("’", "'"))
+    s = str(s).lower().replace("’", "'")                  # words in brackets are said too (and checked)
     return re.findall(r"[\w']+", s)
 
 

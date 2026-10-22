@@ -135,7 +135,17 @@ def register(app, page, err_page, e, human_bytes):
                   f"<button class='ae-big'>{again}</button></form>{cpu_btn}</div></div>")
 
     def _recent_reels(limit: int = 12) -> list[str]:
-        """The reels saved last (that are still there): one click instead of typing a path."""
+        """The reels saved last (that are still there): one click instead of typing a path. Looked up once for a page
+        (a page with many finished voice-overs offers them in every one of its forms)."""
+        from flask import g, has_request_context
+        if not has_request_context():
+            return _recent_reels_now(limit)
+        cache = g.setdefault("me_recent_reels", {})
+        if limit not in cache:
+            cache[limit] = _recent_reels_now(limit)
+        return list(cache[limit])
+
+    def _recent_reels_now(limit: int) -> list[str]:
         from .db import db
         out, seen = [], set()
         try:
@@ -230,7 +240,7 @@ def register(app, page, err_page, e, human_bytes):
         return (f"<div class='card' id='voCaps'><h2 style='margin-top:0'>Captions for a video</h2>"
                 f"<div class='muted vo-sub'>The speech in your video is turned into captions with the words timed to it and "
                 f"burned into a copy of the video. The video itself is only read.</div>"
-                f"<form method='post' action='/auto/voice/captions' style='margin-top:8px'>"
+                f"<form method='post' action='/auto/voice/captions' style='margin-top:8px' onsubmit=\"setTimeout(()=>this.querySelectorAll('button:not([type=button])').forEach(x=>x.disabled=true),0)\">"
                 f"<div class='vo-row'><input class='vo-wide' name='path' required value='{e(pre)}' placeholder='The video, e.g. D:\\Videos\\talk.mp4'>"
                 f"<button type='button' class='btn2' data-pick='video'>Choose…</button></div>{_reel_select()}"
                 f"<div class='vo-row' style='margin-top:8px'><span>Language of the speech</span><select name='language'>{langs}</select></div>"
@@ -280,7 +290,12 @@ def register(app, page, err_page, e, human_bytes):
         """Seconds as typed back into a field: 3, 2.5, 1:05, 1:05.5."""
         if v is None or v == "":
             return ""
-        x = round(float(v), 1)
+        try:
+            x = round(float(v), 1)
+        except (TypeError, ValueError):
+            return ""
+        if not 0 <= x <= 36000:                  # (nan / inf from an old job: an empty field, not a broken page)
+            return ""
         if x < 60:
             return f"{x:g}"
         m = int(x // 60)
@@ -334,7 +349,7 @@ def register(app, page, err_page, e, human_bytes):
         return (f"<div class='card' id='voText'><h2 style='margin-top:0'>Text on a video</h2>"
                 f"<div class='muted vo-sub'>Titles and lines of text on your video, at the moments you choose. The video itself "
                 f"is only read; a copy with the text is made.</div>"
-                f"<form method='post' action='/auto/text/new' style='margin-top:8px' data-textform>"
+                f"<form method='post' action='/auto/text/new' style='margin-top:8px' data-textform onsubmit=\"setTimeout(()=>this.querySelectorAll('button:not([type=button])').forEach(x=>x.disabled=true),0)\">"
                 f"<div class='vo-edit'><div>"
                 f"<div class='vo-row'><input class='vo-wide' name='video' required value='{e(pre)}' placeholder='The video, e.g. D:\\Exports\\reel.mp4'>"
                 f"<button type='button' class='btn2' data-pick='video'>Choose…</button></div>{_reel_select()}"
@@ -353,16 +368,21 @@ def register(app, page, err_page, e, human_bytes):
             label = e(_JOB_STEP.get(key, "Working…"))
             if part:
                 label += f" <span translate='no'>{e(part)}</span>"
+            stop = (f"<form method='post' action='/auto/voice/{jid}/stop' style='margin-top:6px' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
+                    f"<button class='btn2 vo-mini'>Stop</button></form>")
             body = (f"<div class='ae-bar' style='margin-top:6px'><i style='width:{int(100 * float(j.get('progress') or 0))}%'></i></div>"
-                    f"<div class='muted vo-sub'>{label}</div>")
+                    f"<div class='muted vo-sub'>{label}</div>{stop}")
         elif st == "interrupted" and j.get("resumed"):
             body = (f"<div class='errbox' style='margin-top:6px'>Interrupted again (MediaEngine was closed).</div>"
-                    f"<form method='post' action='/auto/voice/{jid}/retry' style='margin-top:6px'><button>Try again</button></form>")
+                    f"<form method='post' action='/auto/voice/{jid}/retry' style='margin-top:6px' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\"><button>Try again</button></form>")
         elif st in ("waiting", "interrupted"):
             body = f"<div class='muted vo-sub'>{e(_STATE[st])}</div>"
+            if st == "waiting":
+                body += (f"<form method='post' action='/auto/voice/{jid}/stop' style='margin-top:6px' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
+                         f"<button class='btn2 vo-mini'>Don't make it</button></form>")
         elif st == "failed":
             body = (f"<div class='errbox' style='margin-top:6px'>{e(res.get('error') or 'Failed')}</div>"
-                    f"<form method='post' action='/auto/voice/{jid}/retry' style='margin-top:6px'><button class='btn2'>Try again</button></form>")
+                    f"<form method='post' action='/auto/voice/{jid}/retry' style='margin-top:6px' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\"><button class='btn2'>Try again</button></form>")
         elif st == "done" and j.get("kind") == "voiceover":
             n, bad = int(res.get("words") or 0), int(res.get("word_errors") or 0)
             check = ("<span>Every word was said (checked by listening).</span>" if bad == 0 else
@@ -376,7 +396,7 @@ def register(app, page, err_page, e, human_bytes):
                     f"<div class='vo-row' style='margin-top:6px'><a class='btn btn2' href='/auto/voice/{jid}/file/voice.wav?download=1'>Download WAV</a>"
                     f"<a class='btn btn2' href='/auto/voice/{jid}/file/captions.srt?download=1'>Download captions (SRT)</a><!--actions--></div>"
                     f"<details style='margin-top:8px'><summary>Put it on a video</summary>"
-                    f"<form method='post' action='/auto/voice/{jid}/dub' style='margin-top:8px'>"
+                    f"<form method='post' action='/auto/voice/{jid}/dub' style='margin-top:8px' onsubmit=\"setTimeout(()=>this.querySelectorAll('button:not([type=button])').forEach(x=>x.disabled=true),0)\">"
                     f"<div class='vo-row'><input class='vo-wide' name='video' required value='{e(pre)}' placeholder='The video, e.g. D:\\Exports\\reel.mp4'>"
                     f"<button type='button' class='btn2' data-pick='video'>Choose…</button></div>{_reel_select()}"
                     f"<label style='display:block;margin-top:6px'><input type='checkbox' name='keep_sound' value='1' checked> "
@@ -413,7 +433,15 @@ def register(app, page, err_page, e, human_bytes):
     @app.get("/auto/voice")
     def voice_page():
         s = vo.status()
-        jobs = vo.list_jobs()
+        show_all = request.args.get("all") == "1"
+        jobs = vo.list_jobs(100000 if show_all else 51)
+        more = 0
+        if not show_all and len(jobs) > 50:                 # the newest 50; the rest one click away
+            jobs = jobs[:50]
+            try:
+                more = sum(1 for x in vo.JOBS.iterdir() if x.is_dir()) - 50
+            except OSError:
+                more = 0
         pre = str(request.args.get("video") or "")         # from a saved reel: its path already in the video fields
         if pre and not Path(pre).is_file():
             pre = ""
@@ -430,7 +458,10 @@ def register(app, page, err_page, e, human_bytes):
             parts += [_voice_form(), _captions_form(pre)]
         parts.append(_text_form(pre))
         if jobs:
-            parts.append("<div class='card' id='voJobs'><h2 style='margin-top:0'>Made</h2>" + "".join(_job_html(j, pre) for j in jobs) + "</div>")
+            older = (f"<div class='vo-row' style='margin-top:10px'><a class='btn btn2' href='/auto/voice?all=1#voJobs'>"
+                     f"<span>Show the older ones too</span> (<span translate='no'>{more}</span>)</a></div>" if more > 0 else "")
+            parts.append("<div class='card' id='voJobs'><h2 style='margin-top:0'>Made</h2>" + "".join(_job_html(j, pre) for j in jobs)
+                         + older + "</div>")
         links = ([("voNew", "New voice-over"), ("voCaps", "Captions for a video")] if s.get("installed") else []) \
             + [("voText", "Text on a video")] + ([("voJobs", "Made")] if jobs else [])
         fin = "/auto/finish" + (("?video=" + quote(pre)) if pre else "")
@@ -829,7 +860,7 @@ def register(app, page, err_page, e, human_bytes):
             cap = _style_controls(o, captions=False)
         body = (f"<div class='pagehead'><div class='eyebrow'>Voice-over</div><h1>Edit text and captions</h1>"
                 f"<div class='lead'><span translate='no'>{e(Path(base['video']).name)}</span></div></div>"
-                f"<form method='post' action='/auto/voice/{jid}/render' class='card' data-textform>"
+                f"<form method='post' action='/auto/voice/{jid}/render' class='card' data-textform onsubmit=\"setTimeout(()=>this.querySelectorAll('button:not([type=button])').forEach(x=>x.disabled=true),0)\">"
                 f"<input type='hidden' name='jid' value='{e(jid)}'>"
                 f"<div class='vo-edit'><div>{cap}{_text_rows(base.get('texts') or [])}"
                 f"<div style='margin-top:12px'><button class='ae-big'>Make the video</button> "
@@ -857,6 +888,15 @@ def register(app, page, err_page, e, human_bytes):
         except vo.VoiceError as exc:
             return err_page(str(exc), "/auto/voice")
         return redirect("/auto/voice#voNew")
+
+    @app.post("/auto/voice/<jid>/stop")
+    def voice_stop(jid):
+        try:
+            vo.read_job(jid)
+            vo.cancel_job(jid)
+        except vo.VoiceError as exc:
+            return err_page(str(exc), "/auto/voice")
+        return redirect("/auto/voice#voJobs")
 
     @app.post("/auto/voice/<jid>/retry")
     def voice_retry(jid):
@@ -921,7 +961,8 @@ def register(app, page, err_page, e, human_bytes):
     @app.post("/api/auto/pick-voice-file")
     def voice_pick():
         from . import auto_edit as ae
-        kind = (request.get_json(silent=True) or {}).get("kind")
+        body = request.get_json(silent=True)
+        kind = body.get("kind") if isinstance(body, dict) else None
         if kind == "audio":
             files = ae.pick_files("Choose the recording of the voice", kind="audio")
         elif kind == "music":
