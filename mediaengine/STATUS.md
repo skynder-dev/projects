@@ -694,6 +694,14 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   An independent review of 544b504 found 5 problems (auto language sent Ukrainian to Qwen; Try again during the
   engine download; a failed engine on a fresh install lost the main part; size 0 GB; wrong download labels) and
   lesser ones - all fixed in 5176f98 with checks (voice_check 169/169: install flows with pip/HF/worker stood in).
+  Published b184 (5176f98). Its real add-on run heard Qwen's Russian as "... Галлесса" (the check then crashed
+  printing Cyrillic on a cp1252 console - fixed, 1415aa2). Voice lab round 15 (run 39696944139): 9_2 in Russian
+  continuing its English recording 14 of 82 words wrong, the timbre alone 7 of 82 -> Qwen3-TTS continues a recording
+  only in the same writing as its words (6bac170). Owner 20:49 (Chicago): "bad - but we don't need Russian for now,
+  I did not ask for a Russian voice" -> no more Russian voice work or samples; English only.
+  Published: Windows CI run 39699108979 (b186, commit 6bac170) fully green, served (same runtime b9810d447e8c86c5);
+  the real add-on run 39699108972 16/16 (install, English by Qwen3-TTS in 9_2's voice, a described voice by VoxCPM2,
+  the pace, onto a video, captions of the speech).
 
 ## Evidence
 
@@ -886,7 +894,8 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-Windows CI of 5176f98 (the Qwen3-TTS engine for 9_2 + review fixes) -> publish -> the owner presses Update and on
-Voice-over and text either installs the add-on (about 13 GB, both engines) or presses "Download the new voice engine"
-(4.7 GB). Still open: the first voice-over on his RTX 3060. Social integration paused by the owner (do not touch
-Social). Through the app's pages in the desktop app's browser pane only (never computer use).
+b186 is published (Qwen3-TTS for 9_2 - the owner's pick 14_5; the pace; several videos at once). The owner presses
+Update; on Voice-over and text he installs the add-on (about 13 GB, both engines) or presses "Download the new voice
+engine" (4.7 GB). English only - he does not need a Russian voice. Still open: the first voice-over on his RTX 3060.
+Social integration paused by the owner (do not touch Social). Through the app's pages in the desktop app's browser
+pane only (never computer use).
