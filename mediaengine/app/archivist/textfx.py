@@ -33,6 +33,10 @@ STYLES = {
                 "upper": False, "words": 4, "mode": "karaoke", "em": 0.06, "outline": 0.13, "shadow": 0.05},
     "minimal": {"label": "Calm: white with a soft shadow, no highlight (business)", "font": "semibold", "upper": False,
                 "words": 6, "mode": "plain", "em": 0.05, "outline": 0.05, "shadow": 0.1},
+    "single": {"label": "One word at a time, big (like TikTok)", "font": "black", "upper": True, "words": 1,
+               "mode": "single", "em": 0.085, "outline": 0.16, "shadow": 0.07},
+    "block": {"label": "The word being said on a color block", "font": "black", "upper": True, "words": 3,
+              "mode": "block", "em": 0.062, "outline": 0.12, "shadow": 0.05},
 }
 DEFAULT_STYLE, DEFAULT_COLOR, DEFAULT_SIZE = "pop", "yellow", "medium"
 LOOKS = {"banner": "On a colored stripe", "bold": "Big white letters", "box": "On a dark box"}
@@ -403,7 +407,7 @@ def _captions(cues: list[dict], W: int, H: int, base: int, o: dict, offset: floa
     if st.get("box"):                                  # the box's padding is inside that width too
         maxw -= 2 * 0.55 * base * st["em"] * SIZES[o["size"]][1]
     out = []
-    for cue in cues:
+    for ci, cue in enumerate(cues):
         pairs = []                           # each word as one token the wrap cannot split (a no-break space, ...)
         for w in cue["words"]:
             sh = "".join(clean_text(str(w.get("w") or "").replace("*", ""), 60).split())
@@ -455,8 +459,52 @@ def _captions(cues: list[dict], W: int, H: int, base: int, o: dict, offset: floa
                               for k in idx)
                 out.append(f"Dialogue: 1,{_t(s0)},{_t(e0)},Base,,0,0,0,,{{{at(li)}{look}\\fad(120,80)}}{ln}")
             continue
-        # "word": the cue shown once per word, that word in the color (and popping a little in 'pop')
+        if st["mode"] == "single":         # one word at a time, big, popping in; held until the next word unless a pause
+            nxt = cues[ci + 1]["s"] if ci + 1 < len(cues) else None        # (a caption of several words - edited, or
+            ends = [w["s"] for w in words[1:]] + [cue["e"]]                 #  made in another look - shows them in turn)
+            if nxt is not None and nxt - cue["e"] < 0.7:
+                ends[-1] = max(cue["e"], nxt - 0.01)
+            for j, w in enumerate(words):
+                a, b = max(w["s"], cue["s"]) if j else cue["s"], max(ends[j], w["s"] + 0.05)
+                wl, wsize = fit_lines(shown[j], key, size0, maxw, max_lines=1)
+                wb = _Block(wl, key, wsize)
+                top = _vis_top(o["position"], W, H, wb.vis_h, captions=True)
+                ink = tag_color(accent) if w.get("em") else "&HFFFFFF&"
+                look1 = look.replace(f"\\fs{size:.0f}", f"\\fs{wsize:.0f}")
+                out.append(f"Dialogue: 1,{_t(a + offset)},{_t(b + offset)},Base,,0,0,0,,{{\\an8\\pos({W / 2:.0f},"
+                           f"{wb.line_y(top, 0):.0f}){look1}\\1c{ink}\\fscx118\\fscy118\\t(0,90,\\fscx100\\fscy100)}}"
+                           + " ".join(wl))
+            continue
         marks = [cue["s"]] + [w["s"] for w in words[1:]] + [cue["e"]]
+        if st["mode"] == "block":          # the word being said in dark letters on a block of the color
+            m = metrics(key)
+            pad_x, pad_y = blk.em * 0.22, blk.em * 0.2
+            for j in range(len(words)):
+                a, b = max(marks[j], cue["s"]), max(marks[j + 1], marks[j] + 0.01)
+                fade = "\\fad(80,0)" if j == 0 else ""
+                for li, idx in enumerate(per_line):
+                    line_text = " ".join(shown[k] for k in idx)
+                    if j in idx:              # the block exactly behind this word (its letters' cap height)
+                        left = W / 2 - text_width(line_text, key, size) / 2
+                        pre = " ".join(shown[k] for k in idx[:idx.index(j)])
+                        x = left + (text_width(pre + " ", key, size) if pre else 0.0)
+                        ww = text_width(shown[j], key, size)
+                        top = vis_top + li * blk.pitch
+                        out.append(f"Dialogue: 0,{_t(a + offset)},{_t(b + offset)},Base,,0,0,0,,{{\\an7"
+                                   f"\\pos({x - pad_x:.0f},{top - pad_y:.0f})\\p1\\bord0\\shad0\\1c{tag_color(accent)}"
+                                   f"\\1a&H00&}}{_rounded(ww + 2 * pad_x, m['cap'] * size + 2 * pad_y, blk.em * 0.18)}{{\\p0}}")
+                    row = []
+                    for k in idx:
+                        if k == j:
+                            row.append(f"{{\\1c&H101010&\\bord0\\shad0}}{shown[k]}{{\\1c&HFFFFFF&\\bord{bord:.1f}\\shad{shad:.1f}}}")
+                        elif words[k].get("em"):
+                            row.append(f"{{\\1c{tag_color(accent)}}}{shown[k]}{{\\1c&HFFFFFF&}}")
+                        else:
+                            row.append(shown[k])
+                    out.append(f"Dialogue: 1,{_t(a + offset)},{_t(b + offset)},Base,,0,0,0,,{{{at(li)}{look}{fade}}}"
+                               + " ".join(row))
+            continue
+        # "word": the cue shown once per word, that word in the color (and popping a little in 'pop')
         for j in range(len(words)):
             a, b = max(marks[j], cue["s"]), max(marks[j + 1], marks[j] + 0.01)
             fade = "\\fad(80,0)" if j == 0 else ""

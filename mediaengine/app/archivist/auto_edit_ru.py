@@ -890,6 +890,10 @@ PHRASES = {
     "Not enough free space: about 8 GB are needed while downloading.": "Мало свободного места: на время скачивания нужно около 8 ГБ.",
     "Download the new voice engine": "Скачать новый движок голоса",
     "Don't make it": "Не делать", "Stopped.": "Остановлено.",
+    "One word at a time, big (like TikTok)": "По одному слову, крупно (как в TikTok)",
+    "The word being said on a color block": "Сказанное слово на цветной плашке",
+    "Captions in two more looks: one word at a time, big (like TikTok), and the word being said on a color block.":
+        "Ещё два вида субтитров: по одному слову, крупно (как в TikTok), и сказанное слово на цветной плашке.",
     "Video with a voice-over": "Видео с озвучкой", "Video with captions": "Видео с субтитрами",
     "Video with captions and text": "Видео с субтитрами и текстом", "Video with music": "Видео с музыкой",
     "Video with text": "Видео с текстом", "Show the older ones too": "Показать и более старые",

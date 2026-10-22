@@ -2517,6 +2517,7 @@ WHATS_NEW_ITEMS = [
     ("2026-10-19", "Captions for your own videos: the speech becomes captions burned into a copy (Auto Edit → Voice-over)."),
     ("2026-10-19b", "Voice-over: your picks from the voice test, the voices 4_4 and 4_2, instead of 3.1."),
     ("2026-10-20", "Text on a video (Auto Edit → Voice-over and text): titles and lines of text at the moments you choose, on a colored stripe, a dark box or in big letters - no add-on needed."),
+    ("2026-10-22", "Captions in two more looks: one word at a time, big (like TikTok), and the word being said on a color block."),
     ("2026-10-21b", "Voice-over: the voice 9_2 is said by a new, livelier engine (Qwen3-TTS - your pick 14_5); an installed voice add-on downloads it with one button (about 4.7 GB)."),
     ("2026-10-21", "Finish a video: several videos at once - the same voice, captions, look, texts and music on each (one new video per video)."),
     ("2026-10-21", "Voice-over: its pace - a bit slower or faster, shorter or longer pauses between sentences (the voice keeps its pitch, the captions follow); a voice from a recording can be kept in the voice list."),

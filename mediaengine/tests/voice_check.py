@@ -164,6 +164,27 @@ def main() -> int:
     check("ASS: the default style shows each word in color in turn, with the program's font",
           sp.count("Dialogue:") >= len([w for c in cues for w in c["words"]]) and "\\fnMontserrat Black" in sp
           and "{\\k" not in sp, sp[-300:])
+    from archivist import textfx as tf0
+    one = vo.style_cues([{"w": w, "s": i * 0.4, "e": i * 0.4 + 0.35} for i, w in enumerate("one two three four".split())],
+                        tf0.options(style="single"))
+    sd = tf0.document(1080, 1920, one, [], tf0.options(style="single"), 0.0)
+    dl = [x for x in sd.splitlines() if x.startswith("Dialogue:")]
+    shown_ = [re.sub(r"\{[^}]*\}", "", x.split(",", 9)[9]).split() for x in dl]
+    check("look 'one word at a time': one word per caption, held until the next word", len(one) == 4 and len(dl) == 4
+          and all(len(x) == 1 for x in shown_) and dl[0].split(",")[2] == "0:00:00.39", (shown_, dl[:1]))
+    multi = tf0.document(1080, 1920, [{"s": 0.0, "e": 1.2, "words": [{"w": w, "s": i * 0.4, "e": i * 0.4 + 0.35}
+                                                                     for i, w in enumerate("made in pop".split())]}],
+                         [], tf0.options(style="single"), 0.0)
+    md_ = [re.sub(r"\{[^}]*\}", "", x.split(",", 9)[9]) for x in multi.splitlines() if x.startswith("Dialogue:")]
+    check("look 'one word at a time' on a caption of several words (edited, or made in another look): in turn",
+          md_ == ["MADE", "IN", "POP"], md_)
+    bd = tf0.document(1080, 1920, vo.style_cues([{"w": w, "s": i * 0.4, "e": i * 0.4 + 0.35} for i, w in
+                                                 enumerate("one two three".split())], tf0.options(style="block", color="green")),
+                      [], tf0.options(style="block", color="green"), 0.0)
+    blocks = [x for x in bd.splitlines() if "\\p1" in x]
+    check("look 'word on a color block': a block of the color behind each word as it is said, the word dark on it",
+          len(blocks) == 3 and all(tf0.tag_color(tf0.COLORS["green"][1]) in x for x in blocks) and bd.count("\\1c&H101010&") == 3,
+          (len(blocks), bd.count("\\1c&H101010&")))
     check("ASS: a brace in the text cannot become a tag", "{x}" not in vo.ass(vo.cues([{"w": "{x}", "s": 0, "e": 1}]), 640, 360))
 
     # 3. the page and the jobs, with a stand-in worker

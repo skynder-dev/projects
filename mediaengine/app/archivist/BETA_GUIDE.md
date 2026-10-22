@@ -89,8 +89,8 @@ card the voice is made on it (seconds per sentence); without one, on the process
   made again. Then listen, download the WAV and the captions (SRT), or **Put it on a video**: the video's own sound gets
   quieter while the voice speaks and the captions are burned in.
 - **Captions for a video**: the speech in your video becomes captions burned into a copy.
-- **Look of the captions**: bold capitals with the word being said in color (like Reels), on a dark box, classic, or
-  calm (business); a color, a size, a place. A title at the top for the first 3 seconds and a text at the end can be
+- **Look of the captions**: bold capitals with the word being said in color (like Reels), on a dark box, classic,
+  calm (business), one word at a time (like TikTok), or the word being said on a color block; a color, a size, a place. A title at the top for the first 3 seconds and a text at the end can be
   added at once. The font (Montserrat, with Cyrillic) ships with the program.
 - **Text on a video** (no add-on needed): titles and lines of text on any video at the seconds you choose - on a
   colored stripe, a dark box or in big letters. "Preview" shows a picture in a second, before the video is made.
