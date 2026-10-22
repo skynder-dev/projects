@@ -1,63 +1,58 @@
 PASS Install starts
-00:23:38 running checking  0/0 MB
-00:23:43 running packages Downloading transformers-5.20.1-py3-none-any.whl.metadata 0/0 MB
-00:23:48 running packages Downloading scipy-1.17.1-cp311-cp311-win_amd64.whl 0/0 MB
-00:23:53 running packages Installing : 0/0 MB
-00:24:43 running models model.safetensors 446/5446 MB
-00:24:48 running models model.safetensors 1558/5446 MB
-00:24:53 running models model.safetensors 2791/5446 MB
-00:24:58 running models model.safetensors 4015/5446 MB
-00:25:03 running models model.safetensors 4957/5446 MB
-00:25:09 running models tokenization_voxcpm2.py 4957/5446 MB
-00:25:14 running models tokenizer.json 5444/5446 MB
-00:25:19 running qwen_packages  0/0 MB
-00:25:24 running qwen_packages Downloading pandas-3.0.6-cp311-cp311-win_amd64.whl 0/0 MB
-00:25:29 running qwen_packages Installing : 0/0 MB
-00:25:44 running qwen_models model.safetensors 171/4544 MB
-00:25:49 running qwen_models model.safetensors 715/4544 MB
-00:25:54 running qwen_models model.safetensors 1287/4544 MB
-00:25:59 running qwen_models model.safetensors 2399/4544 MB
-00:26:04 running qwen_models model.safetensors 3437/4544 MB
-00:26:09 running qwen_models model.safetensors 3859/4544 MB
-00:26:14 running qwen_models tokenizer_config.json 4541/4544 MB
-00:26:19 running checking_addon  4544/4544 MB
-00:26:24 done   4544/4544 MB
+06:19:02 running checking  0/0 MB
+06:19:07 running packages Downloading torch-2.8.0-cp311-cp311-win_amd64.whl 0/0 MB
+06:19:12 running packages Installing : 0/0 MB
+06:20:02 running models audiovae.pth 202/5446 MB
+06:20:07 running models model.safetensors 1253/5446 MB
+06:20:12 running models model.safetensors 2691/5446 MB
+06:20:17 running models model.safetensors 4175/5446 MB
+06:20:22 running models model.safetensors 4957/5446 MB
+06:20:27 running models model.bin 5169/5446 MB
+06:20:32 running checking_addon  5446/5446 MB
+06:20:37 running qwen_packages Downloading transformers-4.57.3-py3-none-any.whl 0/0 MB
+06:20:42 running qwen_packages Installing : 0/0 MB
+06:20:57 running qwen_models model.safetensors 1/4544 MB
+06:21:02 running qwen_models model.safetensors 1919/4544 MB
+06:21:07 running qwen_models model.safetensors 3479/4544 MB
+06:21:12 running qwen_models model.safetensors 3859/4544 MB
+06:21:17 running qwen_models tokenizer_config.json 4541/4544 MB
+06:21:22 running checking_addon  4544/4544 MB
+06:21:27 done   4544/4544 MB
 PASS the add-on is installed
 PASS its manifest: version, Python, torch, models
 PASS the new engine (Qwen3-TTS, the owner's pick 14_5) is installed with it
 PASS the page shows the forms once installed
 PASS a voice-over is accepted
-00:26:24 20261022-002624-276f83 working starting 0%
-00:26:27 20261022-002624-276f83 working loading 2%
-00:26:51 20261022-002624-276f83 working speaking 1/1 5%
-00:29:12 20261022-002624-276f83 working listening 95%
-00:29:28 20261022-002624-276f83 working finishing 97%
-00:29:31 20261022-002624-276f83 done  0%
+06:21:27 20261022-062127-98102e working starting 0%
+06:21:30 20261022-062127-98102e working loading 2%
+06:22:00 20261022-062127-98102e working speaking 1/1 5%
+06:24:06 20261022-062127-98102e working listening 95%
+06:24:12 20261022-062127-98102e working finishing 97%
+06:24:15 20261022-062127-98102e done  0%
 PASS the voice-over is made
 PASS every word said (listened to)
 PASS a plausible length
 PASS said by the new engine (Qwen3-TTS) in the voice 9_2
-00:29:31 20261022-002931-cc0702 working starting 0%
-00:29:34 20261022-002931-cc0702 working loading 2%
-00:30:11 20261022-002931-cc0702 working speaking 1/1 5%
-00:30:53 20261022-002931-cc0702 working listening 95%
-00:31:08 20261022-002931-cc0702 working finishing 97%
-00:31:15 20261022-002931-cc0702 done  0%
+06:24:15 20261022-062415-09b100 working starting 0%
+06:24:18 20261022-062415-09b100 working loading 2%
+06:24:57 20261022-062415-09b100 working speaking 1/1 5%
+06:25:42 20261022-062415-09b100 working listening 95%
+06:25:48 20261022-062415-09b100 done  0%
 PASS a Russian voice-over in the same voice, heard back in Cyrillic
 PASS its pace: a bit faster (8% shorter), the captions within the faster voice
-00:31:19 20261022-003118-3e85e8 working starting 0%
-00:31:28 20261022-003118-3e85e8 working loading 2%
-00:32:39 20261022-003118-3e85e8 working speaking 1/1 5%
-00:33:43 20261022-003118-3e85e8 working listening 95%
-00:33:52 20261022-003118-3e85e8 done  0%
+06:25:48 20261022-062548-0e77e4 working starting 0%
+06:26:03 20261022-062548-0e77e4 working loading 2%
+06:27:16 20261022-062548-0e77e4 working speaking 1/1 5%
+06:30:10 20261022-062548-0e77e4 working listening 95%
+06:30:16 20261022-062548-0e77e4 done  0%
 PASS a voice from a description is still made (VoxCPM2)
-00:33:53 20261022-003353-080e05 working video 50%
-00:33:59 20261022-003353-080e05 done  0%
+06:30:17 20261022-063017-6eae9c working video 50%
+06:30:23 20261022-063017-6eae9c done  0%
 PASS the voice onto the video, captions burned, checked
-00:33:59 20261022-003359-de098a working starting 0%
-00:34:02 20261022-003359-de098a working listening 20%
-00:34:08 20261022-003359-de098a working video 50%
-00:34:11 20261022-003359-de098a done  0%
+06:30:23 20261022-063023-827b7d working starting 0%
+06:30:26 20261022-063023-827b7d working listening 20%
+06:30:32 20261022-063023-827b7d working video 50%
+06:30:35 20261022-063023-827b7d done  0%
 PASS captions from the video's own speech hear the voice-over
 PASS the page in Russian with a finished voice-over
 {"passed": 16, "total": 16}
