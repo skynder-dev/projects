@@ -1,0 +1,15 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[0;93m2026-10-22 00:13:36.522499078 [W:onnxruntime:Default, device_discovery.cc:95 GetPciBusId] Skipping pci_bus_id for PCI path at "/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/5620e0c7-8062-4dce-aeb7-520c7ef76171" because filename "5620e0c7-8062-4dce-aeb7-520c7ef76171" did not match expected pattern of [0-9a-f]+:[0-9a-f]+:[0-9a-f]+[.][0-9a-f]+[m
+00:13:39 r15_icl_a_t1: 3.4 s, 2 word errors, pitch 218 Hz +-3.8 st
+00:13:42 r15_icl_a_t2: 3.3 s, 1 word errors, pitch 220 Hz +-3.0 st
+00:13:45 r15_icl_b_t1: 7.7 s, 2 word errors, pitch 216 Hz +-3.4 st
+00:13:48 r15_icl_b_t2: 7.7 s, 3 word errors, pitch 216 Hz +-4.4 st
+00:13:52 r15_icl_c_t1: 8.2 s, 0 word errors, pitch 198 Hz +-3.8 st
+00:13:56 r15_icl_c_t2: 9.0 s, 6 word errors, pitch 210 Hz +-4.6 st
+00:13:59 r15_xvec_a_t1: 3.3 s, 0 word errors, pitch 233 Hz +-4.4 st
+00:14:01 r15_xvec_a_t2: 3.3 s, 0 word errors, pitch 210 Hz +-4.3 st
+00:14:04 r15_xvec_b_t1: 6.5 s, 2 word errors, pitch 230 Hz +-3.9 st
+00:14:08 r15_xvec_b_t2: 6.4 s, 1 word errors, pitch 206 Hz +-3.5 st
+00:14:11 r15_xvec_c_t1: 7.8 s, 2 word errors, pitch 205 Hz +-5.0 st
+00:14:15 r15_xvec_c_t2: 8.1 s, 2 word errors, pitch 224 Hz +-4.4 st
+{"icl": {"word_errors": 14, "words": 82, "rate": 0.171}, "xvec": {"word_errors": 7, "words": 82, "rate": 0.085}}

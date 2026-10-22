@@ -1,0 +1,296 @@
+{
+ "round": 15,
+ "summary": {
+  "icl": {
+   "word_errors": 14,
+   "words": 82,
+   "rate": 0.171
+  },
+  "xvec": {
+   "word_errors": 7,
+   "words": 82,
+   "rate": 0.085
+  }
+ },
+ "files": {
+  "voice15_icl_a.mp3": "9_2 in Russian, as now (ICL), text a",
+  "voice15_icl_b.mp3": "9_2 in Russian, as now (ICL), text b",
+  "voice15_icl_c.mp3": "9_2 in Russian, as now (ICL), text c",
+  "voice15_xvec_a.mp3": "9_2 in Russian, timbre only (x-vector), text a",
+  "voice15_xvec_b.mp3": "9_2 in Russian, timbre only (x-vector), text b",
+  "voice15_xvec_c.mp3": "9_2 in Russian, timbre only (x-vector), text c"
+ },
+ "rows": {
+  "r15_icl_a_t1": {
+   "variant": "r15_icl_a",
+   "take": 1,
+   "seconds_to_make": 33.3,
+   "sr": 24000,
+   "file": "voice15-qwen/r15_icl_a_t1.wav",
+   "seconds": 3.44,
+   "said": "Привет! Это Киротка Яправьерка Голоса.",
+   "word_errors": 2,
+   "word_error_rate": 0.4,
+   "missing": [
+    "короткая",
+    "проверка"
+   ],
+   "extra": [
+    "киротка",
+    "яправьерка"
+   ],
+   "pitch_median_hz": 218.4,
+   "pitch_movement_semitones": 3.79,
+   "female_range": true,
+   "words_per_minute": 87.2,
+   "off_9_2_semitones": -1.1
+  },
+  "r15_icl_a_t2": {
+   "variant": "r15_icl_a",
+   "take": 2,
+   "seconds_to_make": 32.4,
+   "sr": 24000,
+   "file": "voice15-qwen/r15_icl_a_t2.wav",
+   "seconds": 3.28,
+   "said": "Привет. Это Короткий Проверка Голоса.",
+   "word_errors": 1,
+   "word_error_rate": 0.2,
+   "missing": [
+    "короткая"
+   ],
+   "extra": [
+    "короткий"
+   ],
+   "pitch_median_hz": 219.7,
+   "pitch_movement_semitones": 2.97,
+   "female_range": true,
+   "words_per_minute": 91.5,
+   "off_9_2_semitones": -1.0
+  },
+  "r15_icl_b_t1": {
+   "variant": "r15_icl_b",
+   "take": 1,
+   "seconds_to_make": 65.1,
+   "sr": 24000,
+   "file": "voice15-qwen/r15_icl_b_t1.wav",
+   "seconds": 7.68,
+   "said": "Короче, вот что важно знать на этой неделе. Билеты в Европу подешевели почти на 20%.",
+   "word_errors": 2,
+   "word_error_rate": 0.125,
+   "missing": [
+    "двадцать",
+    "процентов"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 215.9,
+   "pitch_movement_semitones": 3.4,
+   "female_range": true,
+   "words_per_minute": 125.0,
+   "off_9_2_semitones": -1.3
+  },
+  "r15_icl_b_t2": {
+   "variant": "r15_icl_b",
+   "take": 2,
+   "seconds_to_make": 64.5,
+   "sr": 24000,
+   "file": "voice15-qwen/r15_icl_b_t2.wav",
+   "seconds": 7.68,
+   "said": "Короче, вот что важно знать на этой неделе. Билейте в Европу подешевели почти на 20%.",
+   "word_errors": 3,
+   "word_error_rate": 0.188,
+   "missing": [
+    "билеты",
+    "двадцать",
+    "процентов"
+   ],
+   "extra": [
+    "билейте",
+    "20"
+   ],
+   "pitch_median_hz": 215.9,
+   "pitch_movement_semitones": 4.44,
+   "female_range": true,
+   "words_per_minute": 125.0,
+   "off_9_2_semitones": -1.3
+  },
+  "r15_icl_c_t1": {
+   "variant": "r15_icl_c",
+   "take": 1,
+   "seconds_to_make": 71.4,
+   "sr": 24000,
+   "file": "voice15-qwen/r15_icl_c_t1.wav",
+   "seconds": 8.24,
+   "said": "Сохрани это видео, чтобы не потерять. Отели дешевеют примерно за три недели до поездки, так что не спеши с бронированием.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 198.0,
+   "pitch_movement_semitones": 3.83,
+   "female_range": true,
+   "words_per_minute": 145.6,
+   "off_9_2_semitones": -2.8
+  },
+  "r15_icl_c_t2": {
+   "variant": "r15_icl_c",
+   "take": 2,
+   "seconds_to_make": 77.3,
+   "sr": 24000,
+   "file": "voice15-qwen/r15_icl_c_t2.wav",
+   "seconds": 8.96,
+   "said": "Сокрани это видео, что банипитират, отели дешевеет примерно за три недели до поиски, так что не спеши с бронированием.",
+   "word_errors": 6,
+   "word_error_rate": 0.3,
+   "missing": [
+    "сохрани",
+    "чтобы",
+    "не",
+    "потерять",
+    "дешевеют",
+    "поездки"
+   ],
+   "extra": [
+    "сокрани",
+    "что",
+    "банипитират",
+    "дешевеет",
+    "поиски"
+   ],
+   "pitch_median_hz": 209.8,
+   "pitch_movement_semitones": 4.57,
+   "female_range": true,
+   "words_per_minute": 133.9,
+   "off_9_2_semitones": -1.8
+  },
+  "r15_xvec_a_t1": {
+   "variant": "r15_xvec_a",
+   "take": 1,
+   "seconds_to_make": 24.7,
+   "sr": 24000,
+   "file": "voice15-qwen/r15_xvec_a_t1.wav",
+   "seconds": 3.28,
+   "said": "Привет! Это короткая проверка голоса.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 232.7,
+   "pitch_movement_semitones": 4.38,
+   "female_range": true,
+   "words_per_minute": 91.5,
+   "off_9_2_semitones": -0.0
+  },
+  "r15_xvec_a_t2": {
+   "variant": "r15_xvec_a",
+   "take": 2,
+   "seconds_to_make": 24.5,
+   "sr": 24000,
+   "file": "voice15-qwen/r15_xvec_a_t2.wav",
+   "seconds": 3.28,
+   "said": "Привет! Это короткая проверка голоса.",
+   "word_errors": 0,
+   "word_error_rate": 0.0,
+   "missing": [],
+   "extra": [],
+   "pitch_median_hz": 209.8,
+   "pitch_movement_semitones": 4.28,
+   "female_range": true,
+   "words_per_minute": 91.5,
+   "off_9_2_semitones": -1.8
+  },
+  "r15_xvec_b_t1": {
+   "variant": "r15_xvec_b",
+   "take": 1,
+   "seconds_to_make": 47.8,
+   "sr": 24000,
+   "file": "voice15-qwen/r15_xvec_b_t1.wav",
+   "seconds": 6.48,
+   "said": "Короче, вот что важно знать на этой неделе. Билеты в Европу подешевели почти на 20%.",
+   "word_errors": 2,
+   "word_error_rate": 0.125,
+   "missing": [
+    "двадцать",
+    "процентов"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 230.1,
+   "pitch_movement_semitones": 3.89,
+   "female_range": true,
+   "words_per_minute": 148.1,
+   "off_9_2_semitones": -0.2
+  },
+  "r15_xvec_b_t2": {
+   "variant": "r15_xvec_b",
+   "take": 2,
+   "seconds_to_make": 46.8,
+   "sr": 24000,
+   "file": "voice15-qwen/r15_xvec_b_t2.wav",
+   "seconds": 6.4,
+   "said": "короче, вот что важно знать на этой неделе. Билеты в Европу подешевели почти на 20 процентов.",
+   "word_errors": 1,
+   "word_error_rate": 0.062,
+   "missing": [
+    "двадцать"
+   ],
+   "extra": [
+    "20"
+   ],
+   "pitch_median_hz": 206.2,
+   "pitch_movement_semitones": 3.51,
+   "female_range": true,
+   "words_per_minute": 150.0,
+   "off_9_2_semitones": -2.1
+  },
+  "r15_xvec_c_t1": {
+   "variant": "r15_xvec_c",
+   "take": 1,
+   "seconds_to_make": 55.5,
+   "sr": 24000,
+   "file": "voice15-qwen/r15_xvec_c_t1.wav",
+   "seconds": 7.76,
+   "said": "Сохрани это видео, чтобы не потерять, а теле дешевеют примерно за три недели до поездки, так что не спеши с бронированием.",
+   "word_errors": 2,
+   "word_error_rate": 0.1,
+   "missing": [
+    "отели"
+   ],
+   "extra": [
+    "а",
+    "теле"
+   ],
+   "pitch_median_hz": 205.0,
+   "pitch_movement_semitones": 4.97,
+   "female_range": true,
+   "words_per_minute": 154.6,
+   "off_9_2_semitones": -2.2
+  },
+  "r15_xvec_c_t2": {
+   "variant": "r15_xvec_c",
+   "take": 2,
+   "seconds_to_make": 58.8,
+   "sr": 24000,
+   "file": "voice15-qwen/r15_xvec_c_t2.wav",
+   "seconds": 8.08,
+   "said": "Сохрани это видео, чтобы не потерять, а теле дешевеют примерно за три недели до поездки, так что не спеши с бронированием.",
+   "word_errors": 2,
+   "word_error_rate": 0.1,
+   "missing": [
+    "отели"
+   ],
+   "extra": [
+    "а",
+    "теле"
+   ],
+   "pitch_median_hz": 223.5,
+   "pitch_movement_semitones": 4.4,
+   "female_range": true,
+   "words_per_minute": 148.5,
+   "off_9_2_semitones": -0.7
+  }
+ },
+ "failed_takes": {}
+}
