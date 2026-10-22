@@ -20,6 +20,19 @@ _JOB_STEP = {"starting": "Starting…", "loading": "Loading the voice model…",
              "reading": "Reading the sound of the video…", "video": "Making the video…", "checking": "Checking the video…"}
 _KIND = {"voiceover": "Voice-over", "captions": "Captions for a video", "dub": "Voice-over on a video",
          "render": "Video with text and captions"}
+def _kind_label(j: dict) -> str:
+    """What the job makes, in words: a video's label says what it got (voice / captions / text / music)."""
+    if j.get("kind") != "render":
+        return _KIND.get(j.get("kind"), "")
+    if j.get("voice_from"):
+        return "Video with a voice-over"
+    if j.get("captions_on") or j.get("cues"):
+        return "Video with captions" + (" and text" if j.get("texts") else "")
+    if j.get("music") and not j.get("texts"):
+        return "Video with music"
+    return "Video with text"
+
+
 _STATE = {"waiting": "Waiting", "working": "Working", "done": "Ready", "failed": "Failed",
           "interrupted": "Interrupted (MediaEngine was closed): it is made again at the next start"}
 _FILES = {"voice.wav": "audio/wav", "captions.srt": "text/plain", "video.mp4": "video/mp4"}
@@ -359,7 +372,7 @@ def register(app, page, err_page, e, human_bytes):
 
     def _job_html(j: dict, pre: str = "") -> str:
         jid, st, res = j["id"], j["state"], j.get("result") or {}
-        head = (f"<div class='vo-row'><b>{e(_KIND.get(j.get('kind'), ''))}</b><span class='muted' translate='no'>{e(j.get('title') or '')}</span>"
+        head = (f"<div class='vo-row'><b>{e(_kind_label(j))}</b><span class='muted' translate='no'>{e(j.get('title') or '')}</span>"
                 f"<span class='muted vo-sub' translate='no'>{e(str(j.get('created_at') or '')[:16].replace('T', ' '))}</span></div>")
         body = ""
         if st == "working":
@@ -858,7 +871,7 @@ def register(app, page, err_page, e, human_bytes):
                    f"<div class='vo-cues' data-offset='{base['start_s']:.3f}'>{rows}</div>{_style_controls(o)}")
         else:
             cap = _style_controls(o, captions=False)
-        body = (f"<div class='pagehead'><div class='eyebrow'>Voice-over</div><h1>Edit text and captions</h1>"
+        body = (f"<div class='pagehead'><div class='eyebrow'>Voice-over and text</div><h1>Edit text and captions</h1>"
                 f"<div class='lead'><span translate='no'>{e(Path(base['video']).name)}</span></div></div>"
                 f"<form method='post' action='/auto/voice/{jid}/render' class='card' data-textform onsubmit=\"setTimeout(()=>this.querySelectorAll('button:not([type=button])').forEach(x=>x.disabled=true),0)\">"
                 f"<input type='hidden' name='jid' value='{e(jid)}'>"
