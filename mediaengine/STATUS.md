@@ -723,6 +723,12 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
     pixels, SAR from a cover picture; lesser: the song-as-video message, job handles closed, page parameters kept.
   - voice_check 188/188, unit 144/144, fuzz (now with the voice module's fields and real job ids) 0 errors, i18n 0.
   - The real add-on check now makes its English voice-over with the form's default language (Qwen3-TTS "Auto").
+  The first night build (9734242) failed only on a new check that called ffprobe (not in the program, not on the
+  Windows runner) - the check reads FFmpeg's own text now (f72cc67). Its other new checks all passed on Windows
+  (the copy saved before untouched by a re-make with hard links, the held last picture, loudness, the music loop).
+  The real add-on run 39736103001 (9734242): 16/16, the English voice-over with the default language by Qwen3-TTS.
+  Published: Windows CI run 39753397088 (b189, commit f72cc67) fully green, served (ZIP 3,881,488 bytes; the same
+  runtime b9810d447e8c86c5 - the Update button is enough).
 
 ## Evidence
 
@@ -915,8 +921,8 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-b186 is published (Qwen3-TTS for 9_2 - the owner's pick 14_5; the pace; several videos at once). The owner presses
-Update; on Voice-over and text he installs the add-on (about 13 GB, both engines) or presses "Download the new voice
-engine" (4.7 GB). English only - he does not need a Russian voice. Still open: the first voice-over on his RTX 3060.
-Social integration paused by the owner (do not touch Social). Through the app's pages in the desktop app's browser
-pane only (never computer use).
+b189 is published (the night's fixes: safe re-makes, Stop, held last picture, square pixels, loudness and the music
+bed, pages that fit narrow windows; Qwen3-TTS for 9_2 since b184). The owner presses Update; on Voice-over and text
+he installs the add-on (about 13 GB, both engines) or presses "Download the new voice engine" (4.7 GB). English only.
+Still open: the first voice-over on his RTX 3060. Social integration paused by the owner (do not touch Social).
+Through the app's pages in the desktop app's browser pane only (never computer use).
