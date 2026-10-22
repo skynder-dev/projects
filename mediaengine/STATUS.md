@@ -729,6 +729,15 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   The real add-on run 39736103001 (9734242): 16/16, the English voice-over with the default language by Qwen3-TTS.
   Published: Windows CI run 39753397088 (b189, commit f72cc67) fully green, served (ZIP 3,881,488 bytes; the same
   runtime b9810d447e8c86c5 - the Update button is enough).
+- 2026-10-22 b191 - two more caption looks, converted files reachable from the Convert page.
+  - Captions (1582499): "single" - one word at a time, big (like TikTok); "block" - the word being said on a color
+    block; the preview the same as the video.
+  - Convert (1e5db12, the owner asked: why search for the converted files): "Show in folder" (Explorer with the file
+    selected) and "Open video" at each converted file, "Open the folder" (Converted) at the top; the file is found by
+    its job and place, never by a path from the page; the last job keeps its list after a reload (a deleted file says
+    so); the results line fully Russian. unit 146/146, browser_check 18/18 (the click caught, no Explorer), i18n 0.
+  Published: Windows CI run 39845714051 (b191, commit 1e5db12) fully green, served (ZIP 3,888,876 bytes; the same
+  runtime b9810d447e8c86c5 - the Update button is enough).
 
 ## Evidence
 
@@ -921,8 +930,8 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-b189 is published (the night's fixes: safe re-makes, Stop, held last picture, square pixels, loudness and the music
-bed, pages that fit narrow windows; Qwen3-TTS for 9_2 since b184). The owner presses Update; on Voice-over and text
+b191 is published (Convert: Show in folder / Open video / Open the folder; two more caption looks; b189's night
+fixes; Qwen3-TTS for 9_2 since b184). The owner presses Update; on Voice-over and text
 he installs the add-on (about 13 GB, both engines) or presses "Download the new voice engine" (4.7 GB). English only.
 Still open: the first voice-over on his RTX 3060. Social integration paused by the owner (do not touch Social).
 Through the app's pages in the desktop app's browser pane only (never computer use).
