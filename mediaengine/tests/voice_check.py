@@ -997,11 +997,11 @@ def main() -> int:
     c.post("/auto/text/new", data={"video": str(hdv), "t_text": "Wide", "t_start": "0", "t_end": "1"}, headers=H)
     hj = wait(next(j["id"] for j in vo.list_jobs(500) if j["id"] not in before))
     hres = hj.get("result") or {}
-    sar = subprocess.run([ff.replace("ffmpeg", "ffprobe") if Path(ff.replace("ffmpeg", "ffprobe")).exists() else "ffprobe",
-                          "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=sample_aspect_ratio,width,height",
-                          "-of", "csv=p=0", str(Path(hj["dir"]) / "video.mp4")], capture_output=True, text=True).stdout.strip()
+    head_ = subprocess.run([ff, "-hide_banner", "-i", str(Path(hj["dir"]) / "video.mp4")], capture_output=True, text=True).stderr
+    vline = next((x for x in head_.splitlines() if "Video:" in x), "")      # (no ffprobe in the program: FFmpeg's own text)
     check("non-square pixels: made 1920x1080 with square pixels (not stretched)", hj["state"] == "done"
-          and (hres.get("width"), hres.get("height")) == (1920, 1080) and sar.startswith("1920,1080"), (hres.get("width"), sar))
+          and (hres.get("width"), hres.get("height")) == (1920, 1080) and "1920x1080" in vline
+          and ("SAR" not in vline or "SAR 1:1" in vline), (hres.get("width"), vline[-80:]))
 
     # odd input that used to break a page or a request
     r = c.post("/auto/text/new", data={"video": str(video), "t_text": "x", "t_start": "0", "t_end": "9" * 400}, headers=H)
