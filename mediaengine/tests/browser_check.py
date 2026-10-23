@@ -287,6 +287,18 @@ def main():
         except Exception as exc:
             cut_ok = str(exc)[:300]
         check("convert_a_part_of_a_video_in_a_real_browser", cut_ok is True, cut_ok)
+        # the cut panel open in a narrow window (420 px): nothing wider than the window
+        try:
+            pn = b.new_page(viewport={"width": 420, "height": 900})
+            pn.goto(base + f"/convert?ids={vid}")
+            pn.click(f"[data-cut-for='{vid}']")
+            pn.wait_for_selector(f"#cvCut{vid}", timeout=10_000)
+            pn.wait_for_timeout(1500)
+            sw = pn.evaluate("document.documentElement.scrollWidth")
+            pn.close()
+        except Exception as exc:
+            sw = str(exc)[:200]
+        check("convert_cut_panel_fits_a_narrow_window", isinstance(sw, int) and sw <= 422, sw)
         _i18n.set_ui_language("en")
         # every page without an id fits the window: 1280 px and a narrow 420 px, in Russian (the longer words) and English
         skip = ("/api", "/static", "/media", "/diagnostics", "/auto/exports/open", "/thumb", "/stream", "/file")

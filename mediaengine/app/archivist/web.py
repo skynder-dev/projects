@@ -1376,8 +1376,8 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
 <input type='checkbox' name='ids' value='{int(r['id'])}' class='convertCheck' data-name='{e(r['filename'])}' data-folder='{e(str(Path(local_path).parent) if local_path else "")}' data-size='{int(r['size_bytes'] or 0)}' data-duration-ms='{int(r['duration_ms'] or 0)}' data-width='{int(r['width'] or 0)}' data-height='{int(r['height'] or 0)}' {prechecked} {disabled}>
 <div class='convertThumbWrap' style='width:92px;height:58px;position:relative'><img class='convertThumb' data-id='{int(r['id'])}' src='/thumb/{int(r['id'])}' style='width:92px;height:58px;object-fit:cover;border-radius:7px;background:#090b0e'><span class='storybadge convertStoryBadge' style='left:4px;top:4px'></span></div>
 <div style='min-width:0'><b style='display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis' translate='no'>{e(r['filename'])}</b>
-<div class='small muted'><span translate='no'>{e(r['source_label'])}</span> · <span>{human_duration(r['duration_ms'])}</span> · <span>{human_bytes(r['size_bytes'])}</span>{"" if not available else " · <button type='button' class='btn2 cvCutBtn' data-cut-for='"+str(int(r['id']))+"' style='padding:1px 8px'>Cut…</button> <span class='cvCutNote'></span>"}</div>{unavailable}</div>
-<div style='text-align:right'><span class='badge'>#{int(r['id'])}</span><div class='small muted estimateOne' style='margin-top:5px'></div></div></label>"""
+<div class='small muted'><span translate='no'>{e(r['source_label'])}</span> · <span>{human_duration(r['duration_ms'])}</span> · <span>{human_bytes(r['size_bytes'])}</span></div><div class='small cvCutNote' style='color:#9db4ff'></div>{unavailable}</div>
+<div style='text-align:right'><span class='badge'>#{int(r['id'])}</span><div class='small muted estimateOne' style='margin-top:5px'></div>{"" if not available else "<button type='button' class='btn2 cvCutBtn' data-cut-for='"+str(int(r['id']))+"' style='padding:2px 10px;margin-top:4px'>Cut…</button>"}</div></label>"""
         if not cards:
             cards=("<div class='card muted'>None of the selected videos are currently accessible. Restore/reconnect the source, or choose another local video.</div>" if preselect_ids else "<div class='card muted'>No accessible videos on this catalog page. Reconnect/restore the source, choose another page, or clear the filter.</div>")
         selection_notice=(f"<div class='card' style='border-color:#6f5c31;background:#1d1a12'><b>{skipped_preselected} selected video{'s' if skipped_preselected!=1 else ''} skipped</b><div class='small muted'>The item is no longer eligible for Convert or its local file is not currently accessible, so it was skipped safely.</div></div>" if skipped_preselected else "")
@@ -1555,13 +1555,13 @@ document.addEventListener('click',ev=>{const b=ev.target.closest('.cvCutBtn');if
  const id=b.dataset.cutFor,ch=document.querySelector(".convertCheck[value='"+id+"']"),row=ch&&ch.closest('.convertRow');if(!row)return;
  let pan=document.getElementById('cvCut'+id);if(pan){pan.remove();return}
  const full=Number(ch.dataset.durationMs||0)/1000;
- pan=document.createElement('div');pan.id='cvCut'+id;pan.className='card';pan.style.margin='-4px 0 4px';
+ pan=document.createElement('div');pan.id='cvCut'+id;pan.className='card';pan.style.margin='-4px 0 4px';pan.style.minWidth='0';
  pan.innerHTML="<video controls preload='metadata' style='width:100%;max-height:320px;background:#000;border-radius:8px'></video>"
-  +"<div class='small muted cvNoPlay' style='display:none'></div>"
-  +"<div class='toolbar' style='margin-top:6px'><button type='button' class='btn2' data-set='s'>Start here</button><input class='cvS' style='width:90px' placeholder='0:00'>"
+  +"<div class='small muted cvNoPlay' style='display:none;white-space:normal'></div>"
+  +"<div class='toolbar' style='margin-top:6px;flex-wrap:wrap'><button type='button' class='btn2' data-set='s'>Start here</button><input class='cvS' style='width:90px' placeholder='0:00'>"
   +"<button type='button' class='btn2' data-set='e'>End here</button><input class='cvE' style='width:90px'>"
   +"<button type='button' class='btn2' data-set='x'>Whole video</button></div>"
-  +"<div class='small muted'>Only the part between start and end is converted.</div>";
+  +"<div class='small muted' style='white-space:normal'>Only the part between start and end is converted.</div>";
  row.after(pan);const v=pan.querySelector('video'),S=pan.querySelector('.cvS'),E=pan.querySelector('.cvE');v.src='/media/'+id;if(full>0)E.placeholder=fmtT(full);
  v.addEventListener('error',()=>{const n=pan.querySelector('.cvNoPlay');n.style.display='block';n.textContent='This video does not play here - type the start and end (minutes:seconds).';v.style.display='none';pan.querySelectorAll("[data-set='s'],[data-set='e']").forEach(x=>x.style.display='none')});
  const c0=cutOf(ch);if(c0){S.value=fmtT(c0[0]);E.value=fmtT(c0[1])}
