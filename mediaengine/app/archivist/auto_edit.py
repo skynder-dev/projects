@@ -2518,6 +2518,7 @@ WHATS_NEW_ITEMS = [
     ("2026-10-19b", "Voice-over: your picks from the voice test, the voices 4_4 and 4_2, instead of 3.1."),
     ("2026-10-20", "Text on a video (Auto Edit → Voice-over and text): titles and lines of text at the moments you choose, on a colored stripe, a dark box or in big letters - no add-on needed."),
     ("2026-10-22", "Captions in two more looks: one word at a time, big (like TikTok), and the word being said on a color block."),
+    ("2026-10-23e", "Reels, finished videos and converted copies made from GoPro or phone footage keep normal brightness levels (dark and bright parts as filmed on every screen)."),
     ("2026-10-23d", "Convert: “Turn the picture” - 90° right or left, or upside down (a camera mounted the other way)."),
     ("2026-10-23d", "Convert: “Save this picture” in Cut… - a photo of the moment in the player, at the video's full size, into the folder of converted videos."),
     ("2026-10-23c", "Convert: “Without sound” - the copy has no sound at all (wind, voices on site)."),

@@ -8,7 +8,7 @@ the VFR clip from <fixtures_dir>/phone. Checks: output size cap, frame rate kept
 """
 from __future__ import annotations
 
-import hashlib, json, os, subprocess, sys, time
+import hashlib, json, os, shutil, subprocess, sys, time
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -312,6 +312,23 @@ def main():
     gk = convert_file(gparts[0], "keep_resolution", output_dir=out_dir, cut=(0.5, 1.5))
     gkok, gklv = tv_of(gparts[0], 1.0, gk["output"], 0.5)
     check("convert_full_range_camera_video_to_tv_levels_without_resize", gkok, gklv)
+    # the Auto Edit reel and a finished video (Voice-over and text) from a camera's full-range pieces: TV levels too
+    import types
+    sys.path.insert(0, str(ROOT / "app" / "archivist" / "engine_p11"))
+    import p11_folder_to_reel_r3 as r3
+    reel2 = out_dir / "reel_two_pieces.mp4"
+    r3.render_dissolve_block(types.SimpleNamespace(FFMPEG=ff), [str(gparts[0]), str(gparts[1])], [2.0, 2.0],
+                             [{"duration_s": 0.5}], reel2)
+    reel1 = out_dir / "reel_one_piece.mp4"
+    r3.render_dissolve_block(types.SimpleNamespace(FFMPEG=ff), [str(gparts[0])], [2.0], [], reel1)
+    ok2, lv2 = tv_of(gparts[0], 0.5, reel2, 0.5)
+    ok1, lv1 = tv_of(gparts[0], 0.5, reel1, 0.5)
+    from archivist import voice as vo
+    fin = out_dir / "finish_probe"
+    shutil.rmtree(fin, ignore_errors=True); fin.mkdir()
+    vo._burn(Path(gparts[0]), None, [], fin, keep_sound=True, offset=0.0)
+    ok3, lv3 = tv_of(gparts[0], 0.5, fin / "video.mp4", 0.5)
+    check("reel_and_finished_video_from_full_range_footage_at_tv_levels", ok1 and ok2 and ok3, (lv1, lv2, lv3))
     # (not counted) the Auto Edit engine's way of making a piece ("-vf ...,format=yuv420p ... -pix_fmt yuv420p"): does
     # this FFmpeg keep a camera's full range there? Reported for the next step.
     eng = out_dir / "engine_way_probe.mp4"
