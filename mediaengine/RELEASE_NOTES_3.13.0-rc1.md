@@ -137,6 +137,28 @@ The owner: "voice-over, processing and text in the video - MedEng". **Auto Edit 
   a voice-over in voice 3.1 on the CPU with every word, onto a video with captions, captions of its speech: 11/11).
   Not yet seen: the graphics-card (CUDA) version on the owner's PC.
 
+## Convert - whole videos, smaller (2026-10-22/23, after the owner's first real use)
+
+The owner converted work videos (GoPro, 4K) and asked why he had to search for the results. **Media → Convert**:
+- Each converted file: **Show in folder** (Explorer with the file selected), **Open video**, **Copy file** (Ctrl+V
+  into a folder, an e-mail or a messenger - the file on the Windows clipboard as Explorer's Ctrl+C); **Open the
+  folder** at the top; the last job keeps its list until **Remove from the page**. Files are found by their job and
+  place in it, never by a path sent from the page.
+- **Join into one video**: parts of one recording (a GoPro splits a long one into 4 GB files GX010044, GX020044 ...;
+  older GoPros GOPR0044, GP010044 ...) become one video in the recording's order (FFmpeg's concat demuxer); several
+  recordings - one video each; the same number in another folder is another recording; other videos - one video of
+  all, by name (numbers as numbers). Parts of another kind (size, format, sound) are refused at once, naming the
+  file. Checked: split -> join keeps the whole length, every frame and the sound in step after every join.
+- **Choose videos on this PC…**: any video, through the Windows Open window, without adding it to the library.
+- **Cut…**: only the part between start and end (the player's Start here / End here, or typed m:ss).
+- **Without sound**; **Change…** the output folder (not a library folder, not a memory card, not the program folder;
+  after a restart only the converter's own leftovers are removed from it).
+- **Stop** on a running job, the time left, a Windows notification when a conversion over a minute ends.
+- **NVIDIA**: 8-bit H.264/HEVC made smaller is decoded, scaled and encoded on the card (TV levels made on the
+  processor at the small size); any error, or a result whose picture is not as long as expected, makes the same
+  conversion on the processor (two failures in a row: the processor only until a restart; convert.gpu = false).
+  Not yet measured on the owner's RTX 3060.
+
 ## Orders from other programs; night review fixes (2026-10-17)
 
 - **Orders** (Auto Edit → Orders): another program on this PC puts an order folder into
