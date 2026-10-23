@@ -281,18 +281,46 @@ def main():
     subprocess.run([ff, "-v", "error", "-y", "-i", str(gw), "-map", "0:v", "-map", "0:a", "-c", "copy", "-f", "segment", "-segment_times", "2",
                     "-segment_start_number", "1", "-reset_timestamps", "1", "-segment_format", "mp4", str(gp / "GX%02d0012.MP4")], check=True)
     gw.unlink()
+    def levels(y):                         # the darkest and brightest 1 % of the picture (an encoder's ringing aside)
+        ys = sorted(y)
+        return (ys[len(ys) // 100], ys[-len(ys) // 100]) if ys else (None, None)
+
+    def tv_of(src, t, out, t_out):
+        """The copy's levels are the source's full-range levels put into 16-235 (not kept full range)."""
+        sy = subprocess.run([ff, "-v", "error", "-ss", str(t), "-i", str(src), "-frames:v", "1", "-vf", "scale=960:540",
+                             "-f", "rawvideo", "-pix_fmt", "yuvj420p", "-"], capture_output=True).stdout[: 960 * 540]
+        desc = subprocess.run([ff, "-hide_banner", "-i", str(out)], capture_output=True, text=True).stderr
+        vline = next((x for x in desc.splitlines() if " Video: " in x), "")
+        full = "(pc" in vline or "yuvj" in vline          # tagged full range: not what a copy must be
+        # the stored values as they are (read in the tagged range: no conversion by the reading FFmpeg either)
+        oy = subprocess.run([ff, "-v", "error", "-ss", str(t_out), "-i", str(out), "-frames:v", "1", "-vf",
+                             "scale=960:540:in_range=tv:out_range=tv", "-f", "rawvideo", "-pix_fmt", "yuv420p", "-"],
+                            capture_output=True).stdout[: 960 * 540]
+        (slo, shi), (olo, ohi) = levels(sy), levels(oy)
+        want = (16 + slo * 219 / 255, 16 + shi * 219 / 255)
+        return (not full and abs(olo - want[0]) <= 6 and abs(ohi - want[1]) <= 6 and shi - want[1] > 8), (vline.strip()[:90], slo, shi, olo, ohi)
     gparts = sorted(gp.glob("GX*.MP4"), key=lambda q: part_key(q.name))
     t0 = time.time()
     g4 = join_files(gparts, "share_1080p", output_dir=out_dir)
     g4s = time.time() - t0
     g4v = [x for x in _probe(Path(g4["output"])).get("streams", []) if x.get("codec_type") == "video"][0]
     g4d = float(_probe(Path(g4["output"]))["format"]["duration"])
-    g4y = subprocess.run([ff, "-v", "error", "-ss", "1", "-i", g4["output"], "-frames:v", "1", "-f", "rawvideo", "-pix_fmt", "yuv420p", "-"],
-                         capture_output=True).stdout[: 1920 * 1080]
+    g4ok, g4lv = tv_of(gparts[0], 1, g4["output"], 1)
     check("join_gopro_like_4k_hevc_parts", len(gparts) == 2 and (int(g4v["width"]), int(g4v["height"])) == (1920, 1080) and abs(g4d - 4.0) <= 0.1
-          and frames(ff, g4["output"]) >= 239 and g4y and min(g4y) >= 14 and max(g4y) <= 237,
-          ([q.name for q in gparts], g4v.get("width"), g4d, frames(ff, g4["output"]), g4y and (min(g4y), max(g4y))))
+          and frames(ff, g4["output"]) >= 239 and g4ok, ([q.name for q in gparts], g4v.get("width"), g4d, frames(ff, g4["output"]), g4lv))
     print(f"INFO 4K HEVC 60 fps, 4 s in two parts -> 1080p: {g4s:.1f} s on this machine ({g4.get('made_on')})", flush=True)
+    gk = convert_file(gparts[0], "keep_resolution", output_dir=out_dir, cut=(0.5, 1.5))
+    gkok, gklv = tv_of(gparts[0], 1.0, gk["output"], 0.5)
+    check("convert_full_range_camera_video_to_tv_levels_without_resize", gkok, gklv)
+    # (not counted) the Auto Edit engine's way of making a piece ("-vf ...,format=yuv420p ... -pix_fmt yuv420p"): does
+    # this FFmpeg keep a camera's full range there? Reported for the next step.
+    eng = out_dir / "engine_way_probe.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-ss", "0.5", "-i", str(gparts[0]), "-t", "1", "-vf", "scale=1920:1080,format=yuv420p",
+                    "-c:v", "libx264", "-preset", "veryfast", "-crf", "18", "-pix_fmt", "yuv420p", "-an", str(eng)], check=False)
+    if eng.is_file():
+        eok, elv = tv_of(gparts[0], 1.0, eng, 0.5)
+        print(f"INFO the engine's way with a full-range camera video: {'TV levels' if eok else 'FULL RANGE KEPT'} {elv}", flush=True)
+        eng.unlink()
     jn = wait_job(start_convert_job([], "small_720p", paths=[str(parts[0]), str(parts[1])]))
     outs = (jn.get("options") or {}).get("outputs") or []
     check("convert_job_of_chosen_files_one_by_one", jn["status"] == "finished" and len(outs) == 2 and not any(o.get("joined") for o in outs)

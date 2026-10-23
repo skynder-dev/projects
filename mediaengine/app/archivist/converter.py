@@ -218,11 +218,15 @@ def _scale_args(preset: str, hdr: str | None = None, interlaced: bool = False, t
     parts = ["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if interlaced else []   # camcorder fields -> frames
     parts += [HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []
     parts += [TURNS[turn]] if turn in TURNS else []           # "Turn the picture" (after the video's own rotation)
+    # TV levels in every copy (16-235, as players, TVs and messengers expect): a camera's full-range picture (GoPro,
+    # phones: yuvj420p) is converted. FFmpeg 7.1 negotiates the range and would keep full range otherwise (seen on
+    # the Windows runner: Y 2..240 in a converted GoPro-like clip; FFmpeg 7.0 converted it by itself).
     if cap:
         # Cap the long edge. 1920 => 1920x1080 landscape or 1080x1920 portrait.
-        parts.append(f"scale='min({int(cap)},iw)':'min({int(cap)},ih)':force_original_aspect_ratio=decrease:force_divisible_by=2")
-    if not parts:
-        return []
+        parts.append(f"scale='min({int(cap)},iw)':'min({int(cap)},ih)':force_original_aspect_ratio=decrease:force_divisible_by=2"
+                     ":out_range=tv")
+    else:
+        parts.append("scale=out_range=tv")
     tags = ["-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709"] if hdr in HDR_TO_SDR else []
     return ["-vf", ",".join(parts), *tags]
 
@@ -578,7 +582,7 @@ def gpu_plan(sig: dict, preset: str, hdr=None, interlaced=False) -> dict | None:
     W, H = (cap, int(h * k) // 2 * 2) if w >= h else (int(w * k) // 2 * 2, cap)
     return {"pre": ["-hwaccel", "cuda", "-hwaccel_output_format", "cuda"],
             "vf": f"scale_cuda={W}:{H},hwdownload,format=nv12,scale=in_range=auto:out_range=tv,format=yuv420p",
-            "codec": ["-c:v", "h264_nvenc", "-preset", "p5", "-tune", "hq", "-rc", "vbr",
+            "codec": ["-color_range", "tv", "-c:v", "h264_nvenc", "-preset", "p5", "-tune", "hq", "-rc", "vbr",
                       "-cq", str(int(PRESETS[preset]["crf"]) + _GPU_CQ_STEP), "-b:v", "0", "-profile:v", "high"],
             "size": (W, H)}
 
@@ -603,7 +607,7 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
         common = [
             str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", *input_args,
             "-map", "0:v:0", *amap, *_scale_args(preset, hdr, interlaced, turn),
-            "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "veryfast",
+            "-c:v", "libx264", "-pix_fmt", "yuv420p", "-color_range", "tv", "-preset", "veryfast",
         ]
 
         if target_mb:
@@ -615,7 +619,7 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
             pass1 = [
                 str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", *input_args,
                 "-map", "0:v:0", *_scale_args(preset, hdr, interlaced, turn),
-                "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "veryfast",
+                "-c:v", "libx264", "-pix_fmt", "yuv420p", "-color_range", "tv", "-preset", "veryfast",
                 "-b:v", f"{video_k}k", "-maxrate", f"{int(video_k*1.25)}k", "-bufsize", f"{int(video_k*2)}k",
                 "-pass", "1", "-passlogfile", passlog, "-an", "-f", "null", os.devnull
             ]

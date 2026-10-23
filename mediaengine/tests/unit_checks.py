@@ -1067,8 +1067,11 @@ def main():
             except ValueError as exc:
                 bad_turns_.append(str(exc))
         t45_ = bad_turns_[0] if set(bad_turns_) == {"Unknown turn"} else bad_turns_
-        check("convert: only whole quarter turns", t45_ == "Unknown turn" and _cv._scale_args("keep_resolution", turn=90) == ["-vf", "transpose=1"]
-              and _cv._scale_args("keep_resolution", turn=180) == ["-vf", "hflip,vflip"] and _cv._scale_args("keep_resolution") == [], t45_)
+        check("convert: only whole quarter turns; every copy at TV levels",
+              t45_ == "Unknown turn" and _cv._scale_args("keep_resolution", turn=90) == ["-vf", "transpose=1,scale=out_range=tv"]
+              and _cv._scale_args("keep_resolution", turn=180) == ["-vf", "hflip,vflip,scale=out_range=tv"]
+              and _cv._scale_args("keep_resolution") == ["-vf", "scale=out_range=tv"]
+              and _cv._scale_args("share_1080p")[1].endswith(":out_range=tv"), (t45_, _cv._scale_args("keep_resolution")))
         check("convert: a join needs two videos; a chosen file that is gone is named", one_ == "Choose at least two videos to join into one"
               and gone2_ == "This video is not there: nothing here.mp4", (one_, gone2_))
         with _db() as con:
