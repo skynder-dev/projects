@@ -765,6 +765,16 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
     420 px; the small-size warning), public repo 0.
   Published: Windows CI run 39954150176 (b201, commit 79b241c) fully green, served (ZIP 3,943,861 bytes; the same
   runtime b9810d447e8c86c5 - the Update button is enough).
+- 2026-10-23 later (in CI): Save this picture (Cut… panel: the picture shown at that moment, full size, square
+  pixels, true BT.709 colors, fields made whole), Turn the picture (90° right / left, 180°), TV levels in every
+  copy. FFmpeg 7.1 (the program's) keeps a camera's full range (GoPro / phones: yuvj420p) unless told: the Windows
+  run of 78acb39 found a GoPro-like 4K clip converted to Y 2..240; fixed in a9661ad (out_range=tv, -color_range tv),
+  convert 45/45 on Windows; 4K60 HEVC 4 s in two parts -> 1080p: 3.9 s on the runner's processor. Run 40018917779
+  (06a07fe: only the Edge check's expectation of which picture is saved changed) builds it.
+  **Found by the same run - the Auto Edit engine's way ("format=yuv420p ... -pix_fmt yuv420p") keeps full range on
+  7.1 too** (the probe's piece came out yuvj420p(pc)): reels from GoPro / phone footage are made of full-range
+  pieces. Not fixed yet - it touches every cut of the engine (candidate pieces, manual trims, previews, the render)
+  and the clip caches' keys; to do with the engine regression and E2E checks.
 
 ## Evidence
 
@@ -961,5 +971,7 @@ b201 is published (Convert: join parts of a recording, choose on this PC, own fo
 time left, NVIDIA; b193 Show in folder / Open video; two more caption looks; b189's night
 fixes; Qwen3-TTS for 9_2 since b184). The owner presses Update; on Voice-over and text
 he installs the add-on (about 13 GB, both engines) or presses "Download the new voice engine" (4.7 GB). English only.
-Still open: the first voice-over on his RTX 3060; Convert on his PC (Explorer, clipboard, the NVIDIA way's speed). Social integration paused by the owner (do not touch Social).
+Next: when run 40018917779 is green, tell the owner (Save this picture, Turn, TV levels); then the engine's TV
+levels for full-range footage (every cut + cache keys, engine regression / E2E). Still open: the first voice-over on
+his RTX 3060; Convert on his PC (Explorer, clipboard, the NVIDIA way's speed). Social integration paused by the owner (do not touch Social).
 Through the app's pages in the desktop app's browser pane only (never computer use).
