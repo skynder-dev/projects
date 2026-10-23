@@ -743,6 +743,28 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   "меньше на 95,6%" with a Russian decimal comma. unit 147/147, browser_check 18/18, fuzz 0 errors, i18n 0.
   Published: Windows CI run 39884706224 (b193, commit 5a43c0c) fully green, served (ZIP 3,890,228 bytes; the same
   runtime b9810d447e8c86c5 - the Update button is enough).
+- 2026-10-23 b201 - Convert for real work (the owner's GoPro work videos; "found 10 hours of work").
+  - Join into one video (277c498, 6a30be5, 894393c): GoPro chapters (GX010044, GX020044 ...; GOPR/GP01) in the
+    recording's order, one video per recording (folder + number: two cards never mixed), other videos one of all;
+    FFmpeg concat demuxer; parts of another kind refused at once naming the file.
+  - Choose videos on this PC (Windows Open window, not added to the library), own output folder (Change… / Back to
+    Converted; not a library folder, not a card, not the program folder), Copy file (CF_HDROP, Ctrl+V anywhere), Cut…
+    (player Start/End here or typed m:ss; -ss/-t, everything re-encoded), Without sound, Stop, time left, a too-small
+    size target said, a Windows notification when a conversion over a minute ends.
+  - NVIDIA: 8-bit H.264/HEVC made smaller - decode, scale_cuda, hwdownload, TV levels on the CPU at the small size,
+    h264_nvenc (cq = crf + 3), -xerror; the result's picture length must match; any failure -> the same conversion
+    on the processor (two in a row: processor only until restart; convert.gpu = false). Not measured on his RTX 3060.
+  - Two independent reviews (277c498: Python 3.11 f-string that stopped web.py importing - caught before release by
+    CI's compile step and the review; GPU length check by the file's length; done 2/1; watchdog; order mismatch.
+    fbcc361..445d09d: cards allowed as output folder, time formats 0:010.0, notification counts, resume time left,
+    public check gaps) - all fixed. public_repo_check.py (I23): binaries pinned by SHA-256, secrets, e-mails; a CI step.
+  - CI run 39954150176 (79b241c): convert_check 40/40 (split -> join: whole length, every frame, sound in step after
+    every join; a card of two recordings; cut 3.3-9.3 s in step; without sound; a resumed job in a chosen folder;
+    the card's failure falls back), unit 169/169 (Copy file put the file on the Windows clipboard; a notification can
+    be shown), Edge browser 20/20 (the cut set with the player on the Russian page and converted; the panel fits
+    420 px; the small-size warning), public repo 0.
+  Published: Windows CI run 39954150176 (b201, commit 79b241c) fully green, served (ZIP 3,943,861 bytes; the same
+  runtime b9810d447e8c86c5 - the Update button is enough).
 
 ## Evidence
 
@@ -935,8 +957,9 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-b193 is published (Convert: Show in folder / Open video / Open the folder / Remove from the page; two more caption looks; b189's night
+b201 is published (Convert: join parts of a recording, choose on this PC, own folder, Copy file, Cut…, Without sound, Stop,
+time left, NVIDIA; b193 Show in folder / Open video; two more caption looks; b189's night
 fixes; Qwen3-TTS for 9_2 since b184). The owner presses Update; on Voice-over and text
 he installs the add-on (about 13 GB, both engines) or presses "Download the new voice engine" (4.7 GB). English only.
-Still open: the first voice-over on his RTX 3060. Social integration paused by the owner (do not touch Social).
+Still open: the first voice-over on his RTX 3060; Convert on his PC (Explorer, clipboard, the NVIDIA way's speed). Social integration paused by the owner (do not touch Social).
 Through the app's pages in the desktop app's browser pane only (never computer use).
