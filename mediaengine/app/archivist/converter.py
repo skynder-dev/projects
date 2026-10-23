@@ -147,6 +147,8 @@ def _run_progress(cmd, duration_s: float, progress_cb=None, cancel_cb=None, phas
 
 def _run_progress_inner(cmd, duration_s: float, progress_cb=None, cancel_cb=None, phase_base=0.0, phase_span=1.0, job_id=None):
     global _CURRENT_PROCESS, _CURRENT_PROCESS_JOB_ID
+    if _EXITING.is_set():                  # the app is quitting: nothing new starts (the job resumes at the next start)
+        raise RuntimeError("cancelled")
     flags, si = _flags()
     full = [str(x) for x in cmd[:-1]] + ["-progress", "pipe:1", "-nostats", str(cmd[-1])]
     errors = []
@@ -316,18 +318,21 @@ def media_sig(ffmpeg, source) -> dict:
     return sig
 
 
-def join_check(ffmpeg, sources) -> None:
+def join_check(ffmpeg, sources, beat=None) -> None:
     """Raises ValueError naming the first part that differs from the first one (they could not be joined as they are)."""
     sources = [Path(x) for x in sources]
     first = media_sig(ffmpeg, sources[0])
     for src in sources[1:]:
+        if beat:
+            beat()
         other = media_sig(ffmpeg, src)
         if {k: v for k, v in other.items() if k != "fps"} != {k: v for k, v in first.items() if k != "fps"}:
             raise ValueError("Only videos of the same kind (picture size and format, sound) can be joined into one - like "
                              "parts of one recording. Different: " + src.name)
 
 
-def join_files(sources, preset="share_1080p", target_mb=None, progress_cb=None, cancel_cb=None, output_dir=None, job_id=None):
+def join_files(sources, preset="share_1080p", target_mb=None, progress_cb=None, cancel_cb=None, output_dir=None, job_id=None,
+               beat=None):
     """Several parts of one recording, in the given order, as ONE converted video (FFmpeg's concat demuxer: the parts
     follow each other with their own timing; the picture and sound are then made like any converted video)."""
     sources = [Path(x) for x in sources]
@@ -341,9 +346,11 @@ def join_files(sources, preset="share_1080p", target_mb=None, progress_cb=None, 
     ffmpeg = _ffmpeg_exe()
     if not ffmpeg:
         raise RuntimeError("FFmpeg is not available")
-    join_check(ffmpeg, sources)
+    join_check(ffmpeg, sources, beat)
     duration = 0.0
     for src in sources:
+        if beat:
+            beat()
         d = float(probe_duration(src) or 0.0)
         if d <= 0:
             raise RuntimeError("Could not read video duration")
@@ -384,10 +391,31 @@ def join_files(sources, preset="share_1080p", target_mb=None, progress_cb=None, 
 # Off with the setting convert.gpu = false.
 _GPU: list = []
 _GPU_CQ_STEP = 3           # NVIDIA's constant quality N gives about the size of x264's CRF N-3
+_GPU_FAILS: list = [0]     # attempts on the card that failed in a row: after two, the processor only (until a restart)
+_TIME_RE = re.compile(r"time=\s*(\d+):(\d+):(\d+(?:\.\d+)?)")
+
+
+def _picture_seconds(ffmpeg, path) -> float:
+    """How long the picture itself is (its packets read without decoding; the file's length can be the sound's)."""
+    try:
+        cp = subprocess.run([str(ffmpeg), "-hide_banner", "-nostdin", "-i", str(path), "-map", "0:v:0", "-c", "copy", "-f", "null", "-"],
+                            capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=600, **process_kwargs())
+        m = _TIME_RE.findall(cp.stderr or "")
+        return int(m[-1][0]) * 3600 + int(m[-1][1]) * 60 + float(m[-1][2]) if m else 0.0
+    except Exception:
+        return 0.0
+
+
+def _watchdog_pending(job_id) -> bool:
+    if not job_id:
+        return False
+    with db() as con:
+        r = con.execute("SELECT watchdog_retry_requested FROM jobs WHERE id=?", (int(job_id),)).fetchone()
+    return bool(r and int(r["watchdog_retry_requested"] or 0))
 
 
 def gpu_ok() -> bool:
-    if (load_config().get("convert") or {}).get("gpu") is False:
+    if (load_config().get("convert") or {}).get("gpu") is False or _GPU_FAILS[0] >= 2:
         return False
     if not _GPU:
         ok = False
@@ -470,18 +498,21 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
             except Exception:
                 plan = None
             if plan:
-                gcmd = [str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", *plan["pre"], *input_args,
+                gcmd = [str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-xerror", *plan["pre"], *input_args,
                         "-map", "0:v:0", "-map", "0:a?", "-vf", plan["vf"], *plan["codec"],
                         "-c:a", "aac", "-b:a", f"{int(cfg['audio_k'])}k", "-movflags", "+faststart", str(part)]
                 try:
                     _run_progress(gcmd, duration, progress_cb, cancel_cb, job_id=job_id)
                     got = float(probe_duration(part) or 0.0)
-                    if abs(got - duration) > max(0.5, 0.01 * duration):
-                        raise RuntimeError(f"length {got:.2f} s instead of {duration:.2f} s")
+                    pic = _picture_seconds(ffmpeg, part)
+                    if abs(got - duration) > max(0.5, 0.01 * duration) or pic < got - max(0.5, 0.01 * got):
+                        raise RuntimeError(f"length {got:.2f} s (picture {pic:.2f} s) instead of {duration:.2f} s")
                     made_on = "nvidia"
+                    _GPU_FAILS[0] = 0
                 except Exception as exc:
-                    if str(exc).lower() == "cancelled" or (cancel_cb and cancel_cb()) or _EXITING.is_set():
-                        raise
+                    if str(exc).lower() == "cancelled" or (cancel_cb and cancel_cb()) or _EXITING.is_set() or _watchdog_pending(job_id):
+                        raise                  # stopped, quitting, or the watchdog's restart: not the card's failure
+                    _GPU_FAILS[0] += 1
                     try:
                         part.unlink(missing_ok=True)
                     except Exception:
@@ -628,7 +659,8 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
                             message=f"Joining {len(parts)} parts · {pct:.0f}%")
             while True:
                 try:
-                    outputs.append(join_files(parts, preset, target_mb, progress_cb=prog_join, cancel_cb=lambda: _cancelled(job_id), job_id=job_id))
+                    outputs.append(join_files(parts, preset, target_mb, progress_cb=prog_join, cancel_cb=lambda: _cancelled(job_id), job_id=job_id,
+                                              beat=lambda: _job_update(job_id, stage="converting")))
                     success += 1
                     break
                 except Exception as exc:
@@ -690,7 +722,7 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
             _job_update(job_id, done=len(done), success=success, failed=failed, bytes_done=processed_bytes, options_json=opts())
         status = "finished" if failed == 0 else ("finished" if success else "failed")
         _job_update(job_id, status=status, stage="done", finished_at=_now(), current_inventory_id=None,
-                    current_filename=None, done=len(done), success=success, failed=failed, bytes_done=total_bytes,
+                    current_filename=None, done=1 if join else len(done), success=success, failed=failed, bytes_done=total_bytes,
                     message=(f"Joined {len(done)} parts into one video" if join and success else f"Converted {success}; failed {failed}"),
                     options_json=opts())
         _notify_end(job_id, success, failed, len(done) if join else 0)

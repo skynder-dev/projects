@@ -193,7 +193,8 @@ def main():
     outs = (jj.get("options") or {}).get("outputs") or []
     check("join_job_of_chosen_files", jj["status"] == "finished" and len(outs) == 1 and outs[0].get("joined") == 3
           and [Path(x).name for x in outs[0].get("sources", [])] == ["GX010077.MP4", "GX020077.MP4", "GX030077.MP4"]
-          and jj["message"] == "Joined 3 parts into one video" and Path(outs[0]["output"]).is_file(), (jj["status"], jj["message"], outs))
+          and jj["message"] == "Joined 3 parts into one video" and Path(outs[0]["output"]).is_file()
+          and (jj["done"], jj["total"]) == (1, 1), (jj["status"], jj["message"], jj["done"], jj["total"], outs))
     jn = wait_job(start_convert_job([], "small_720p", paths=[str(parts[0]), str(parts[1])]))
     outs = (jn.get("options") or {}).get("outputs") or []
     check("convert_job_of_chosen_files_one_by_one", jn["status"] == "finished" and len(outs) == 2 and not any(o.get("joined") for o in outs)
@@ -205,6 +206,14 @@ def main():
         said = str(exc)
     check("join_job_refused_at_once", bool(said) and other.name in said, said)
     check("join_leaves_no_part_list", not list((work / "home" / "data").glob("join-*.txt")))
+    # the card's result is checked by the picture's own length (a file's length can be its sound's)
+    short_pic = src_dir / "pic2_sound6.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=320x180:rate=30:d=2", "-f", "lavfi", "-i",
+                    "sine=frequency=440:sample_rate=48000:d=6", "-c:v", "libx264", "-preset", "ultrafast", "-c:a", "aac", str(short_pic)], check=True)
+    from archivist.media import probe_duration
+    ps = cv0._picture_seconds(ff, short_pic)
+    check("convert_picture_length_read_apart_from_sound", abs(ps - 2.0) <= 0.1 and abs(float(probe_duration(short_pic)) - 6.0) <= 0.1,
+          (ps, probe_duration(short_pic)))
     print(json.dumps({"passed": sum(checks), "total": len(checks)}))
     return 0 if all(checks) else 1
 
