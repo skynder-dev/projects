@@ -1748,7 +1748,10 @@ def render_dissolve_block(v52,segs,durs,trans,out,dress=None,frames=None):
         # never keeps reading a file whose rest the graph does not take (same frames and sound as before)
         if frames and i in frames: args += ["-t",f"{(int(frames[i])+2)/30.0:.6f}"]
         args += ["-i",str(p)]
-    if len(segs)==1 and not dress:
+    # TV levels in the reel: a piece of a camera's full-range video (GoPro, phones: yuvj420p) is put into 16-235 here;
+    # FFmpeg 7.1 (the program's) keeps full range through "format=yuv420p" (seen on the Windows runner, 2026-10-23)
+    full=lambda p:("(pc" in _video_line(v52.FFMPEG,p)) or ("yuvj" in _video_line(v52.FFMPEG,p))
+    if len(segs)==1 and not dress and not full(segs[0]):
         args += ["-filter_complex",_fit_audio(0,float(durs[0])),"-map","0:v","-map","[n0]","-c:v","copy",
                  "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(out)]
         cp=run_ffmpeg_watched(args)
@@ -1761,7 +1764,7 @@ def render_dissolve_block(v52,segs,durs,trans,out,dress=None,frames=None):
     cut=lambda i:f"setpts=N/30/TB,trim=end_frame={int(frames[i])},fps=30," if frames and i in frames else ""
     # a segment's own sound cut at the beat ends inside its fade-out: a short fade at the new end (no click)
     fit=lambda i,d:(_fit_audio(i,d)[:-len(f"[n{i}]")]+f",afade=t=out:st={max(0.0,d-0.03):.6f}:d=0.03[n{i}]") if frames and i in frames else _fit_audio(i,d)
-    filters=[fit(i,float(d)) for i,d in enumerate(durs)]+[f"[{i}:v]{cut(i)}setsar=1,format=yuv420p,settb=AVTB[w{i}]" for i in range(len(segs))]
+    filters=[fit(i,float(d)) for i,d in enumerate(durs)]+[f"[{i}:v]{cut(i)}setsar=1,scale=out_range=tv,format=yuv420p,settb=AVTB[w{i}]" for i in range(len(segs))]
     vprev="w0"; aprev="n0"; cum=float(durs[0])
     for i in range(1,len(segs)):
         td=float(trans[i-1]["duration_s"]); vl=f"v{i}"; al=f"a{i}"; off=max(0.0,cum-td)
@@ -1778,7 +1781,7 @@ def render_dissolve_block(v52,segs,durs,trans,out,dress=None,frames=None):
         dargs,dfilt,vprev,aprev=dress_filters(dress,len(segs),vprev,aprev,cum)
         args += dargs; filters += dfilt
     args += ["-filter_complex",";".join(filters),"-map",f"[{vprev}]","-map",f"[{aprev}]",
-             "-c:v","libx264","-preset","medium","-crf","18","-pix_fmt","yuv420p",
+             "-c:v","libx264","-preset","medium","-crf","18","-pix_fmt","yuv420p","-color_range","tv",
              "-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(out)]
     cp=run_ffmpeg_watched(args)
     if cp.returncode!=0: raise RuntimeError("DISSOLVE_BLOCK_RENDER_FAILED:"+cp.stderr[-800:])

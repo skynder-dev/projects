@@ -1379,6 +1379,9 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
     if (tw, th) != ((sh, sw) if turned else (sw, sh)) or _sar(vs) != 1.0:
         vf.append(f"scale={tw}:{th}:flags=lanczos,setsar=1")
     w, h = tw, th
+    # TV levels (16-235) before the text is drawn: a camera's full-range video (GoPro, phones) would otherwise stay
+    # full range with FFmpeg 7.1 (the program's), and the text would be drawn into those levels
+    vf.append("scale=out_range=tv")
     o = tf.options(**{**(opts or {}), **({"position": position} if position else {})})
     tx = tf.resolve_texts(texts, length)
     if cs or tx:
@@ -1442,8 +1445,8 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
     new_out = d / "video.new.mp4"
     new_out.unlink(missing_ok=True)
     tail_args = ["-t", f"{length:.3f}", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", new_out.name]
-    cpu = ["-c:v", "libx264", "-preset", "medium", "-crf", "18"]
-    gpu = ["-c:v", "h264_nvenc", "-preset", "p5", "-rc", "vbr", "-cq", "19", "-b:v", "0", "-profile:v", "high"]
+    cpu = ["-color_range", "tv", "-c:v", "libx264", "-preset", "medium", "-crf", "18"]
+    gpu = ["-color_range", "tv", "-c:v", "h264_nvenc", "-preset", "p5", "-rc", "vbr", "-cq", "19", "-b:v", "0", "-profile:v", "high"]
     log = d / "ffmpeg.log"
     tries = ([gpu] if nvenc_ok() else []) + [cpu]           # an NVIDIA card makes the picture; any failure: the processor
     rc = -1
