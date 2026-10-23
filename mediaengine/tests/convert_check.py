@@ -267,6 +267,32 @@ def main():
           and [Path(x).name for x in og[0].get("sources", [])] == ["GX010078.MP4", "GX020078.MP4"] and not og[1].get("joined")
           and Path(og[1]["source"]).name == "GX010079.MP4" and abs(durs[0] - 14.0) <= 0.2 and (jg["done"], jg["total"]) == (2, 2)
           and jg["message"] == "Joined into 2 videos (3 parts)", (jg["status"], jg["message"], jg["done"], jg["total"], durs, og))
+    # GoPro-like parts: 4K 60 fps HEVC, full-range picture, stereo sound, a timecode track; split as the camera does,
+    # joined into one 1080p video - whole length, every frame, TV levels
+    gp = src_dir / "gopro4k"
+    gp.mkdir(exist_ok=True)
+    for f in gp.glob("*"):
+        f.unlink()
+    gw = gp / "whole.mov"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=3840x2160:rate=60", "-f", "lavfi", "-i",
+                    "sine=frequency=500:sample_rate=48000", "-t", "4", "-c:v", "libx265", "-preset", "ultrafast", "-x265-params",
+                    "log-level=error:keyint=60", "-tag:v", "hvc1", "-pix_fmt", "yuvj420p", "-color_range", "pc", "-c:a", "aac", "-ac", "2",
+                    "-timecode", "00:00:00:00", "-f", "mov", str(gw)], check=True)
+    subprocess.run([ff, "-v", "error", "-y", "-i", str(gw), "-map", "0:v", "-map", "0:a", "-c", "copy", "-f", "segment", "-segment_times", "2",
+                    "-segment_start_number", "1", "-reset_timestamps", "1", "-segment_format", "mp4", str(gp / "GX%02d0012.MP4")], check=True)
+    gw.unlink()
+    gparts = sorted(gp.glob("GX*.MP4"), key=lambda q: part_key(q.name))
+    t0 = time.time()
+    g4 = join_files(gparts, "share_1080p", output_dir=out_dir)
+    g4s = time.time() - t0
+    g4v = [x for x in _probe(Path(g4["output"])).get("streams", []) if x.get("codec_type") == "video"][0]
+    g4d = float(_probe(Path(g4["output"]))["format"]["duration"])
+    g4y = subprocess.run([ff, "-v", "error", "-ss", "1", "-i", g4["output"], "-frames:v", "1", "-f", "rawvideo", "-pix_fmt", "yuv420p", "-"],
+                         capture_output=True).stdout[: 1920 * 1080]
+    check("join_gopro_like_4k_hevc_parts", len(gparts) == 2 and (int(g4v["width"]), int(g4v["height"])) == (1920, 1080) and abs(g4d - 4.0) <= 0.1
+          and frames(ff, g4["output"]) >= 239 and g4y and min(g4y) >= 14 and max(g4y) <= 237,
+          ([q.name for q in gparts], g4v.get("width"), g4d, frames(ff, g4["output"]), g4y and (min(g4y), max(g4y))))
+    print(f"INFO 4K HEVC 60 fps, 4 s in two parts -> 1080p: {g4s:.1f} s on this machine ({g4.get('made_on')})", flush=True)
     jn = wait_job(start_convert_job([], "small_720p", paths=[str(parts[0]), str(parts[1])]))
     outs = (jn.get("options") or {}).get("outputs") or []
     check("convert_job_of_chosen_files_one_by_one", jn["status"] == "finished" and len(outs) == 2 and not any(o.get("joined") for o in outs)
