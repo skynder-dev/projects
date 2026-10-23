@@ -1,0 +1,237 @@
+{
+  "base_commit": "3270642235a529a85187cf0e0fdf1e778482d204",
+  "branch": "ci/github-core-20261022",
+  "workflows": [
+    {
+      "path": ".github/workflows/forge-windows.yml",
+      "sha256": "4b83f4b188878c2898619f27cdf53a56ad2a0584a341c5f4eacc46b03603f575",
+      "eligible_offline": false,
+      "jobs": {
+        "windows": {
+          "original_if_line": null,
+          "original_condition": "success()",
+          "guard_line": "    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}\n"
+        }
+      }
+    },
+    {
+      "path": ".github/workflows/godog-local-source-package.yml",
+      "sha256": "ba2c657a67ae0991e9225cc0619c44f6f683946b7db4bb225cbd7f1c702b8652",
+      "eligible_offline": false,
+      "jobs": {
+        "source": {
+          "original_if_line": null,
+          "original_condition": "success()",
+          "guard_line": "    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}\n"
+        }
+      }
+    },
+    {
+      "path": ".github/workflows/godog-pc-local.yml",
+      "sha256": "3f5dc5c25b0cd2cef31c8b47a67175cfda79e3828fd66552775a3a95106cc610",
+      "eligible_offline": false,
+      "jobs": {
+        "syntax-and-direct-controls": {
+          "original_if_line": null,
+          "original_condition": "success()",
+          "guard_line": "    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}\n"
+        }
+      }
+    },
+    {
+      "path": ".github/workflows/mediaengine-drone.yml",
+      "sha256": "a9c066fdfdbfd18cb05d11e5721f213edf43c06f87239b455c30b76f329e87ad",
+      "eligible_offline": false,
+      "jobs": {
+        "windows": {
+          "original_if_line": null,
+          "original_condition": "success()",
+          "guard_line": "    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}\n"
+        }
+      }
+    },
+    {
+      "path": ".github/workflows/mediaengine-model-lab.yml",
+      "sha256": "4d5a44c723b93c830e78ce2161c63415f0ad552272c753f0f7c4e78af4083de3",
+      "eligible_offline": false,
+      "jobs": {
+        "windows": {
+          "original_if_line": "    if: always()\n",
+          "original_condition": "always()",
+          "guard_line": "    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (always()) }}\n"
+        },
+        "linux": {
+          "original_if_line": null,
+          "original_condition": "success()",
+          "guard_line": "    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}\n"
+        }
+      }
+    },
+    {
+      "path": ".github/workflows/mediaengine-probe.yml",
+      "sha256": "3dfc157f287b714247df3a373a76da4a7027993e0e80df35bad8a134437bacd9",
+      "eligible_offline": false,
+      "jobs": {
+        "windows": {
+          "original_if_line": null,
+          "original_condition": "success()",
+          "guard_line": "    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}\n"
+        }
+      }
+    },
+    {
+      "path": ".github/workflows/mediaengine-realfootage.yml",
+      "sha256": "5cc204135df666ee680f0fefc5f550e16121be4990f2b1bf8d775df278a08b92",
+      "eligible_offline": false,
+      "jobs": {
+        "windows": {
+          "original_if_line": null,
+          "original_condition": "success()",
+          "guard_line": "    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}\n"
+        }
+      }
+    },
+    {
+      "path": ".github/workflows/mediaengine-realmusic.yml",
+      "sha256": "55fa790e1c4e1e0215300647fd7b8593dc38da4e7517e2d04c156ebaf31455c8",
+      "eligible_offline": false,
+      "jobs": {
+        "linux": {
+          "original_if_line": null,
+          "original_condition": "success()",
+          "guard_line": "    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}\n"
+        }
+      }
+    },
+    {
+      "path": ".github/workflows/mediaengine-scale.yml",
+      "sha256": "38fcb6f838898beb25bec04419fd374f87361d431f6ecf1d05c53464d1c8c5ba",
+      "eligible_offline": false,
+      "jobs": {
+        "windows": {
+          "original_if_line": null,
+          "original_condition": "success()",
+          "guard_line": "    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}\n"
+        }
+      }
+    },
+    {
+      "path": ".github/workflows/mediaengine-voice-addon.yml",
+      "sha256": "98c2aa672b517a7e8ac037b9c8ccee5791c2f762244da25097c5a562f869583f",
+      "eligible_offline": false,
+      "jobs": {
+        "addon": {
+          "original_if_line": null,
+          "original_condition": "success()",
+          "guard_line": "    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}\n"
+        }
+      }
+    },
+    {
+      "path": ".github/workflows/mediaengine-voice-lab.yml",
+      "sha256": "e309063625f6c986497a19035f60aace909b60a112f78af2962bd3ec2777f471",
+      "eligible_offline": false,
+      "jobs": {
+        "finish": {
+          "original_if_line": "    if: always()\n",
+          "original_condition": "always()",
+          "guard_line": "    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (always()) }}\n"
+        },
+        "gen": {
+          "original_if_line": null,
+          "original_condition": "success()",
+          "guard_line": "    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}\n"
+        },
+        "refs": {
+          "original_if_line": null,
+          "original_condition": "success()",
+          "guard_line": "    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}\n"
+        }
+      }
+    },
+    {
+      "path": ".github/workflows/mediaengine-voice-probe.yml",
+      "sha256": "58686784929cce5522202fc8918719a4e9fee55d1db93fb89e43dfcb66613557",
+      "eligible_offline": false,
+      "jobs": {
+        "probe": {
+          "original_if_line": null,
+          "original_condition": "success()",
+          "guard_line": "    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}\n"
+        }
+      }
+    },
+    {
+      "path": ".github/workflows/mediaengine-voice-ref.yml",
+      "sha256": "5592f4815ca1b559e06dff8e53f5a3dfc0a6180f31212efc0107a7d6e0bed6a8",
+      "eligible_offline": false,
+      "jobs": {
+        "ref": {
+          "original_if_line": null,
+          "original_condition": "success()",
+          "guard_line": "    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}\n"
+        }
+      }
+    },
+    {
+      "path": ".github/workflows/mediaengine-windows.yml",
+      "sha256": "1968d1d0f450065eec7054d904f10199cd95a4a23974f9a6c096c8ec4a12cdc9",
+      "eligible_offline": false,
+      "jobs": {
+        "windows": {
+          "original_if_line": null,
+          "original_condition": "success()",
+          "guard_line": "    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}\n"
+        }
+      }
+    },
+    {
+      "path": ".github/workflows/scan.yml",
+      "sha256": "dbf22a782d17b2be405375b8791ab8d19376258695662ec66ba9c0a71e0a977d",
+      "eligible_offline": false,
+      "jobs": {
+        "scan": {
+          "original_if_line": null,
+          "original_condition": "success()",
+          "guard_line": "    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}\n"
+        }
+      }
+    },
+    {
+      "path": ".github/workflows/social-reel.yml",
+      "sha256": "5907ee78702d0eb16c33911c54fdcfdefcb9393a34a06a1c6c0e20a66f3627eb",
+      "eligible_offline": false,
+      "jobs": {
+        "reel": {
+          "original_if_line": null,
+          "original_condition": "success()",
+          "guard_line": "    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}\n"
+        }
+      }
+    },
+    {
+      "path": ".github/workflows/test-only-forgeAlphaZero.yml",
+      "sha256": "a4fbad42767edb0b5d913129c0c7fa7689e22da53fefa476af43e2545c74369a",
+      "eligible_offline": true,
+      "jobs": {}
+    },
+    {
+      "path": ".github/workflows/test-only-reveng028.yml",
+      "sha256": "d381701a846a7501b56da59da39ac112dc6def8881166b14602ee140bd47defa",
+      "eligible_offline": true,
+      "jobs": {}
+    },
+    {
+      "path": ".github/workflows/test-only-social246.yml",
+      "sha256": "146b9b65f8c262285a48667de3a7cf31d4e2d77f5a81359a6ea6252dc5fb7314",
+      "eligible_offline": true,
+      "jobs": {}
+    }
+  ],
+  "immutable_baseline_files": {
+    ".ci/test-only/CANDIDATE_PINS.json": "bc3135a0508747a7da2bf8dad3284997bff08e7dcc131130e0757074fcdca905",
+    ".ci/test-only/SOURCE_SANITIZATION.json": "13352a5a0651301f296b58e91d5e9a8dfdf2a634181ae9121905507fe952bed2",
+    ".ci/test-only/harness/run.py": "83dc40a0d5d7eeb47509ab93a19ada2fbd93e038c6710bebbdb85f223747d0a8",
+    ".ci/test-only/harness/offline_regressions.py": "8f9d117f632a7fbbe270008998d703d8daa2cd26f1cdb39705ef98d82de2266c"
+  }
+}

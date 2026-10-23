@@ -17,10 +17,11 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: social-reel
+  group: ${{ (github.ref == 'refs/heads/ci/github-core-20261022' || github.head_ref == 'ci/github-core-20261022') && format('social-reel-recovery-{0}-{1}', github.run_id, github.run_attempt) || 'social-reel' }}
   cancel-in-progress: false
 jobs:
   reel:
+    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     defaults:
