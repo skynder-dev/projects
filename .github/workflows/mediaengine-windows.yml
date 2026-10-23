@@ -54,6 +54,11 @@ jobs:
       - name: Compile all sources (CPython 3.11)
         shell: pwsh
         run: python -m compileall -q mediaengine/app mediaengine/engine mediaengine/tests
+      - name: Public repository - nothing private in MediaEngine's files (owner media, models, secrets, e-mail addresses)
+        shell: pwsh
+        run: |
+          python mediaengine/tests/public_repo_check.py 2>&1 | Tee-Object "$env:OUT\public_repo_check.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Fast helper checks (times, file names, lengths, versions, chosen files)
         shell: pwsh
         run: |
