@@ -1450,8 +1450,14 @@ function updSel(){
   const target=Number(document.getElementById('targetMb').value||0)||0;
   const delta=src-est,pct=src>0?Math.round(delta/src*100):0;
   if(target){
-    if(out)out.textContent=n+' video'+(n===1?'':'s')+' · '+hb(src)+' → target ≤ '+hb(est)+' total';
-    if(note)note.textContent=target+' MB per file · save up to '+hb(Math.max(0,delta))+(pct>0?' / '+pct+'%':'')+'.';
+    // joined: one file per recording (each at most the size); a size too small for the length: said
+    const jo=document.getElementById('joinOne'),join=jo&&jo.checked&&n>1,files=join?Math.max(1,joinGroups(xs.map(x=>({name:x.dataset.name||'',folder:x.dataset.folder||''}))).length):n;
+    const tot=join?Math.min(src,files*target*1024*1024):est,d=xs.map(ch=>{const c=cutOf(ch);return c?c[1]-c[0]:Number(ch.dataset.durationMs||0)/1000});
+    const longest=join?d.reduce((a,b)=>a+b,0)/files:Math.max(0,...d),mute=(document.getElementById('muteOut')||{}).checked;
+    const kbps=longest>0?target*8*1024*1024*0.94/longest/1000-(mute?0:128):Infinity,low=preset==='small_720p'?350:(preset==='keep_resolution'?1500:700);
+    if(out)out.textContent=n+' video'+(n===1?'':'s')+' · '+hb(src)+' → target ≤ '+hb(tot)+' total';
+    if(note)note.textContent=kbps<low?'This size is small for videos this long: the picture will be blurry.':
+      target+' MB per file · save up to '+hb(Math.max(0,src-tot))+(src>0&&src-tot>0?' / '+Math.round((src-tot)/src*100)+'%':'')+'.';
   }else{
     if(out)out.textContent=n+' video'+(n===1?'':'s')+' · '+hb(src)+' → estimated ≈ '+hb(est);
     if(note)note.textContent=(delta>=0?'Estimated saving '+hb(delta)+(pct>0?' / '+pct+'%':''):'Estimated output may be larger than source')+(unknown?' · refining from video duration…':' · actual size can vary by about 20–30%.');
@@ -1541,7 +1547,7 @@ function updJoin(){const box=document.getElementById('joinHint'),j=document.getE
  if(j.checked){if(groups.length>1){h+="<span>Each recording becomes one video:</span>";for(const g of groups)h+="<br><span translate='no'>"+g.map(esc).join(' → ')+"</span>"}
   else h+="<span>Order:</span> <span translate='no'>"+groups[0].map(esc).join(' → ')+"</span>"}
  box.innerHTML=h;box.style.display='block'}
-document.getElementById('joinOne').addEventListener('change',updJoin);allChecks.forEach(x=>x.addEventListener('change',updJoin));updJoin();
+document.getElementById('joinOne').addEventListener('change',()=>{updJoin();updSel()});document.getElementById('muteOut').addEventListener('change',updSel);allChecks.forEach(x=>x.addEventListener('change',updJoin));updJoin();
 function convOpts(){const preset=(document.querySelector('input[name=presetChoice]:checked')||{}).value||'';
  return {preset,target_mb:Number(document.getElementById('targetMb').value||0)||null,join:document.getElementById('joinOne').checked,mute:document.getElementById('muteOut').checked}}
 // a cut: only the part between start and end is converted (the player, or the times typed as m:ss / seconds)

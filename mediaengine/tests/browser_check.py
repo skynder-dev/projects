@@ -295,7 +295,15 @@ def main():
             pn.wait_for_selector(f"#cvCut{vid}", timeout=10_000)
             pn.wait_for_timeout(1500)
             sw = pn.evaluate("document.documentElement.scrollWidth")
+            # a size target too small for the length is said (a 50-minute video in 50 MB)
+            pn.check("input[name=presetChoice][value=share_1080p]")
+            pn.evaluate(f"(()=>{{const c=document.querySelector(\".convertCheck[value='{vid}']\");c.checked=true;c.dataset.durationMs='3000000';"
+                        "const t=document.getElementById('targetMb');t.value='50';t.dispatchEvent(new Event('input'))})()")
+            pn.wait_for_timeout(300)
+            small_note = pn.inner_text("#estimateNote")
             pn.close()
+            if "размытой" not in small_note:
+                sw = f"no warning for a small size: {small_note}"
         except Exception as exc:
             sw = str(exc)[:200]
         check("convert_cut_panel_fits_a_narrow_window", isinstance(sw, int) and sw <= 422, sw)
