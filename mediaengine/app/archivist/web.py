@@ -1541,11 +1541,12 @@ document.getElementById('joinOne').addEventListener('change',updJoin);allChecks.
 function convOpts(){const preset=(document.querySelector('input[name=presetChoice]:checked')||{}).value||'';
  return {preset,target_mb:Number(document.getElementById('targetMb').value||0)||null,join:document.getElementById('joinOne').checked}}
 // a cut: only the part between start and end is converted (the player, or the times typed as m:ss / seconds)
-function fmtT(t){t=Math.max(0,Number(t)||0);const m=Math.floor(t/60),x=t-m*60;return m+':'+(x<10?'0':'')+x.toFixed(1)}
+function fmtT(t){t=Math.round(Math.max(0,Number(t)||0)*10)/10;const m=Math.floor(t/60),x=Math.round((t-m*60)*10)/10;return m+':'+(x<10?'0':'')+x.toFixed(1)}
+function fmtS(t){t=Math.round(Math.max(0,Number(t)||0));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')}
 function parseT(v){v=String(v||'').trim().replace(',','.');if(!v)return null;const p=v.split(':').map(Number);if(p.some(x=>!Number.isFinite(x)||x<0))return NaN;
  return p.reduce((a,x)=>a*60+x,0)}
 function showCut(ch){const row=ch.closest('.convertRow'),note=row&&row.querySelector('.cvCutNote'),c=cutOf(ch);
- if(note)note.textContent=c?'cut '+fmtT(c[0]).replace(/\\.\\d$/,'')+'–'+fmtT(c[1]).replace(/\\.\\d$/,''):''}
+ if(note)note.textContent=c?'cut '+fmtS(c[0])+'–'+fmtS(c[1]):''}
 document.addEventListener('click',ev=>{const b=ev.target.closest('.cvCutBtn');if(!b)return;ev.preventDefault();ev.stopPropagation();
  const id=b.dataset.cutFor,ch=document.querySelector(".convertCheck[value='"+id+"']"),row=ch&&ch.closest('.convertRow');if(!row)return;
  let pan=document.getElementById('cvCut'+id);if(pan){pan.remove();return}
@@ -1558,9 +1559,9 @@ document.addEventListener('click',ev=>{const b=ev.target.closest('.cvCutBtn');if
   +"<button type='button' class='btn2' data-set='x'>Whole video</button></div>"
   +"<div class='small muted'>Only the part between start and end is converted.</div>";
  row.after(pan);const v=pan.querySelector('video'),S=pan.querySelector('.cvS'),E=pan.querySelector('.cvE');v.src='/media/'+id;if(full>0)E.placeholder=fmtT(full);
- v.addEventListener('error',()=>{const n=pan.querySelector('.cvNoPlay');n.style.display='block';n.textContent='This video does not play here - type the start and end (minutes:seconds).';v.style.display='none'});
+ v.addEventListener('error',()=>{const n=pan.querySelector('.cvNoPlay');n.style.display='block';n.textContent='This video does not play here - type the start and end (minutes:seconds).';v.style.display='none';pan.querySelectorAll("[data-set='s'],[data-set='e']").forEach(x=>x.style.display='none')});
  const c0=cutOf(ch);if(c0){S.value=fmtT(c0[0]);E.value=fmtT(c0[1])}
- function apply(){const a=parseT(S.value),z=parseT(E.value);const s=a===null?0:a,e=z===null?(full>0?full:NaN):z;
+ function apply(){const a=parseT(S.value),z=parseT(E.value);const s=a===null?0:a,e=z===null?(full>0?full:NaN):(full>0?Math.min(z,full):z);
   if(a===null&&z===null){delete ch.dataset.cutStart;delete ch.dataset.cutEnd}
   else if(Number.isFinite(s)&&Number.isFinite(e)&&e-s>=0.5){ch.dataset.cutStart=String(s);ch.dataset.cutEnd=String(e);if(!ch.checked){ch.checked=true;ch.dispatchEvent(new Event('change'))}}
   else{toast('The start must be at least half a second before the end.');return}
@@ -1581,7 +1582,7 @@ document.getElementById('pickConvert').onclick=async ev=>{const o=convOpts();if(
   if(x.job_id){toast('Conversion started');location.href='/convert';return}if(x.error)toast(x.error)}catch(e){toast(e.message||String(e))}b.disabled=false};
 const winPC=%s;
 function hb(n){n=Number(n||0);for(const u of ['B','KB','MB','GB','TB']){if(n<1024||u==='TB')return (u==='B'||u==='KB'?n.toFixed(0):n.toFixed(1))+' '+u;n/=1024}}
-async function pollConvert(){const box=document.getElementById('convertStatus');if(!box||box.dataset.done)return;const id=box.dataset.job;try{const r=await fetch('/api/convert/status?id='+id,{cache:'no-store'});const x=await r.json();if(!x.job)return;const j=x.job;document.getElementById('convertMsg').textContent=j.message||j.status;document.getElementById('convertPct').style.width=(j.percent||0)+'%';const et=document.getElementById('convertEta');if(et){const t=Number(j.eta_s);const v=!(t>=0)||j.eta_s===null?'':(t<60?'less than a minute left':(Math.round(t/60)<60?'about '+Math.max(1,Math.round(t/60))+' min left':'about '+Math.floor(Math.round(t/60)/60)+' h '+(Math.round(t/60)%60)+' min left'));if(et.dataset.v!==v){et.dataset.v=v;et.textContent=v}}if(['finished','failed','cancelled','partial'].includes(j.status)){const st=document.getElementById('convertStop');if(st)st.remove();const et2=document.getElementById('convertEta');if(et2)et2.remove();const outs=((j.options||{}).outputs||[]);let h='';const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let i=-1;for(const o of outs){i++;const nm=String(o.source||'').split(String.fromCharCode(92)).join('/').split('/').pop();if(o.error){h+="<div class='small error'><span>Failed:</span> <span translate='no'>"+esc(nm)+"</span> — <span>"+esc(o.error)+"</span></div>"}else{h+="<div class='cv-out'><div class='small'><b><span>"+hb(o.source_bytes)+"</span> → <span>"+hb(o.output_bytes)+"</span></b> · <span>smaller by "+esc(o.saved_percent)+"%</span>"+(o.joined?" · <span>joined from "+Number(o.joined)+" parts</span>":"")+(o.made_on==='nvidia'?" · <span>made on the graphics card</span>":"")+(Array.isArray(o.cut)?" · <span>cut "+fmtT(o.cut[0]).replace(/\\.\\d$/,'')+"–"+fmtT(o.cut[1]).replace(/\\.\\d$/,'')+"</span>":"")+"<br><span class='muted ae-path' translate='no'>"+esc(o.output)+"</span></div><div class='row' style='margin:4px 0 8px'><button class='btn btn2' type='button' data-cv='reveal' data-i='"+i+"'>Show in folder</button><button class='btn btn2' type='button' data-cv='open' data-i='"+i+"'>Open video</button>"+(winPC?"<button class='btn btn2' type='button' data-cv='copy' data-i='"+i+"'>Copy file</button>":"")+"</div></div>"}}h+="<div class='row' style='justify-content:flex-end'><button class='btn btn2' type='button' data-cv='hide'>Remove from the page</button></div>";document.getElementById('convertResults').innerHTML=h;return}}catch(e){}setTimeout(pollConvert,1000)}
+async function pollConvert(){const box=document.getElementById('convertStatus');if(!box||box.dataset.done)return;const id=box.dataset.job;try{const r=await fetch('/api/convert/status?id='+id,{cache:'no-store'});const x=await r.json();if(!x.job)return;const j=x.job;document.getElementById('convertMsg').textContent=j.message||j.status;document.getElementById('convertPct').style.width=(j.percent||0)+'%';const et=document.getElementById('convertEta');if(et){const t=Number(j.eta_s);const v=!(t>=0)||j.eta_s===null?'':(t<60?'less than a minute left':(Math.round(t/60)<60?'about '+Math.max(1,Math.round(t/60))+' min left':'about '+Math.floor(Math.round(t/60)/60)+' h '+(Math.round(t/60)%60)+' min left'));if(et.dataset.v!==v){et.dataset.v=v;et.textContent=v}}if(['finished','failed','cancelled','partial'].includes(j.status)){const st=document.getElementById('convertStop');if(st)st.remove();const et2=document.getElementById('convertEta');if(et2)et2.remove();const outs=((j.options||{}).outputs||[]);let h='';const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let i=-1;for(const o of outs){i++;const nm=String(o.source||'').split(String.fromCharCode(92)).join('/').split('/').pop();if(o.error){h+="<div class='small error'><span>Failed:</span> <span translate='no'>"+esc(nm)+"</span> — <span>"+esc(o.error)+"</span></div>"}else{h+="<div class='cv-out'><div class='small'><b><span>"+hb(o.source_bytes)+"</span> → <span>"+hb(o.output_bytes)+"</span></b> · <span>smaller by "+esc(o.saved_percent)+"%</span>"+(o.joined?" · <span>joined from "+Number(o.joined)+" parts</span>":"")+(o.made_on==='nvidia'?" · <span>made on the graphics card</span>":"")+(Array.isArray(o.cut)?" · <span>cut "+fmtS(o.cut[0])+"–"+fmtS(o.cut[1])+"</span>":"")+"<br><span class='muted ae-path' translate='no'>"+esc(o.output)+"</span></div><div class='row' style='margin:4px 0 8px'><button class='btn btn2' type='button' data-cv='reveal' data-i='"+i+"'>Show in folder</button><button class='btn btn2' type='button' data-cv='open' data-i='"+i+"'>Open video</button>"+(winPC?"<button class='btn btn2' type='button' data-cv='copy' data-i='"+i+"'>Copy file</button>":"")+"</div></div>"}}h+="<div class='row' style='justify-content:flex-end'><button class='btn btn2' type='button' data-cv='hide'>Remove from the page</button></div>";document.getElementById('convertResults').innerHTML=h;return}}catch(e){}setTimeout(pollConvert,1000)}
 document.addEventListener('click',async ev=>{const b=ev.target.closest('[data-cv]');if(!b)return;const box=document.getElementById('convertStatus');
  if(b.dataset.cv==='stop'){if(!box)return;b.disabled=true;try{await fetch('/api/jobs/'+Number(box.dataset.job)+'/cancel',{method:'POST'})}catch(e){}return}
  if(b.dataset.cv==='outdir'||b.dataset.cv==='outdir-reset'){b.disabled=true;try{const r=await fetch('/api/convert/output-folder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reset:b.dataset.cv==='outdir-reset'})});const x=await r.json();if(x.ok){location.reload();return}if(x.error)toast(x.error)}catch(e){}b.disabled=false;return}
@@ -1642,7 +1643,7 @@ pollConvert();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='
                 more=(f" · <span>joined from {int(o.get('joined'))} parts</span>" if str(o.get('joined') or '').isdigit() else '')
                 more+=(" · <span>made on the graphics card</span>" if o.get('made_on')=='nvidia' else '')
                 if isinstance(o.get('cut'),list) and len(o['cut'])==2:
-                    fm=lambda t:f"{int(float(t))//60}:{int(float(t))%60:02d}"
+                    fm=lambda t:f"{int(round(float(t)))//60}:{int(round(float(t)))%60:02d}"
                     more+=f" · <span>cut {fm(o['cut'][0])}–{fm(o['cut'][1])}</span>"
                 h.append(f"<div class='cv-out'><div class='small'><b><span>{human_bytes(o.get('source_bytes'))}</span> → <span>{human_bytes(o.get('output_bytes'))}</span></b> · <span>smaller by {e(o.get('saved_percent'))}%</span>{more}<br><span class='muted ae-path' translate='no'>{e(o.get('output'))}</span></div>"
                          +(f"<div class='row' style='margin:4px 0 8px'><button class='btn btn2' type='button' data-cv='reveal' data-i='{i}'>Show in folder</button><button class='btn btn2' type='button' data-cv='open' data-i='{i}'>Open video</button>{copy_btn.format(i=i)}</div></div>"
@@ -1706,11 +1707,15 @@ pollConvert();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='
                 a.relative_to(b);return True
             except ValueError:
                 return False
-        for src in load_config().get('sources',[]) or []:
-            raw=str((src or {}).get('path') or '').strip()
+        from .service import configured_sources
+        for src in configured_sources(load_config()):
+            raw=os.path.expanduser(os.path.expandvars(str((src or {}).get('path') or '').strip()))
             if raw and inside(d,Path(raw).resolve()):
+                if src.get('kind')=='removable':
+                    return jsonify({'ok':False,'error':'This is a memory card or USB stick: MediaEngine never writes to cards. Choose a folder on the computer.'})
                 return jsonify({'ok':False,'error':'This folder is in the library: converted copies would be found as new videos. Choose another folder.'})
-        if inside(d,Path(INSTALL).resolve()):
+        inst,home=Path(INSTALL).resolve(),Path(HOME).resolve()
+        if inside(d,inst) and not inside(d,home):
             return jsonify({'ok':False,'error':'This is the program folder (updates replace it). Choose another folder.'})
         try:
             d.mkdir(parents=True,exist_ok=True)

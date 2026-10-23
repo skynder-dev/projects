@@ -3,7 +3,7 @@
   python mediaengine/tests/public_repo_check.py            (from the repository root; exit 1 when something is found)
 
 Checks every file git tracks under mediaengine/ (and MediaEngine's workflows):
-  - no media or model files except the program's own synthetic ones (listed below with their SHA-256): no owner
+  - no media, model or other binary files except the program's own (listed below with their SHA-256): no owner
     video, photo, recording or model weights in git;
   - no file bigger than 5 MB;
   - no secrets: GitHub / Hugging Face / OpenAI / AWS / Slack tokens, private keys, JWTs (Supabase keys are JWTs),
@@ -13,21 +13,26 @@ Checks every file git tracks under mediaengine/ (and MediaEngine's workflows):
 """
 from __future__ import annotations
 
-import json, re, subprocess, sys
+import hashlib, json, re, subprocess, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 MAX_BYTES = 5 * 1024 * 1024
-# the program's own synthetic files (made by its tests or designed - no person, no owner footage)
-ALLOWED_MEDIA = {
-    "mediaengine/app/archivist/assets/browser_fixture_h264.mp4": "2s test pattern for the browser check",
-    "mediaengine/app/archivist/assets/hevc_fixture.mp4": "2s HEVC test pattern",
-    "mediaengine/app/archivist/assets/voice/host_9_2.flac": "designed voice (VoxCPM2 voice design, no person)",
+# the program's own files that are not text (made by its tests, designed, or free fonts - no person, no owner
+# footage), each pinned by its SHA-256: the same name with other content is found too
+ALLOWED_BINARY = {
+    "mediaengine/app/archivist/assets/browser_fixture_h264.mp4": "ec28d0ce0eac16dd6a4461e9f29cacfed9b1e58b2ff0b9ef1bb5a5c7b8712727",
+    "mediaengine/app/archivist/assets/hevc_fixture.mp4": "d4a98ef2f4d5f3eba0c1f9bd017e2c9b4c6fcc7fa7e02842200fdb2a37aac27d",
+    "mediaengine/app/archivist/assets/voice/host_9_2.flac": "903393c1db8026703450208bf6d084e0c2d9ee83d07afac16c473116b1abecc7",
+    "mediaengine/app/archivist/assets/fonts/Montserrat-Black.ttf": "ea67b37f8776eebea135cd1fe9adeaf6f9427683e8dc11ab8398b6be5f102c60",
+    "mediaengine/app/archivist/assets/fonts/Montserrat-ExtraBold.ttf": "d3ac6a843d3ba6d5cafd44cf39e437055c8aed7e261010f595f57d3c7b3e2c1b",
+    "mediaengine/app/archivist/assets/fonts/Montserrat-SemiBold.ttf": "b4e1563393d73fdff491a869441245aef31add2ec03d9c97a6dae4de07c52fd0",
 }
-MEDIA_EXT = {".mp4", ".mov", ".mts", ".m2ts", ".avi", ".mkv", ".webm", ".3gp", ".insv", ".lrv", ".jpg", ".jpeg", ".png",
-             ".heic", ".gif", ".webp", ".dng", ".raw", ".wav", ".flac", ".mp3", ".m4a", ".aac", ".ogg", ".opus",
-             ".onnx", ".bin", ".safetensors", ".pt", ".pth", ".ckpt", ".gguf", ".zip", ".7z", ".rar", ".exe", ".dll",
-             ".db", ".sqlite", ".sqlite3"}
+MEDIA_EXT = {".mp4", ".m4v", ".mov", ".mts", ".m2ts", ".mpg", ".mpeg", ".avi", ".wmv", ".mkv", ".webm", ".3gp", ".insv",
+             ".lrv", ".thm", ".jpg", ".jpeg", ".png", ".heic", ".gif", ".webp", ".bmp", ".tif", ".tiff", ".dng", ".raw",
+             ".cr2", ".cr3", ".nef", ".arw", ".wav", ".flac", ".mp3", ".m4a", ".aac", ".ogg", ".opus", ".onnx", ".bin",
+             ".safetensors", ".pt", ".pth", ".ckpt", ".gguf", ".npy", ".npz", ".pkl", ".h5", ".tflite", ".zip", ".7z",
+             ".rar", ".exe", ".dll", ".db", ".sqlite", ".sqlite3", ".db-wal", ".db-shm", ".ttf", ".otf", ".woff", ".woff2"}
 SECRETS = [
     ("GitHub token", re.compile(r"\b(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{30,}\b|\bgithub_pat_[A-Za-z0-9_]{40,}")),
     ("Hugging Face token", re.compile(r"\bhf_[A-Za-z0-9]{30,}\b")),
@@ -58,14 +63,14 @@ def scan(files: list[str], root: Path = ROOT) -> list[str]:
         size = path.stat().st_size
         if size > MAX_BYTES:
             found.append(f"{rel}: {size} bytes (over {MAX_BYTES})")
-        if path.suffix.lower() in MEDIA_EXT and rel not in ALLOWED_MEDIA:
-            found.append(f"{rel}: a media / model / binary file that is not one of the program's own synthetic files")
-            continue
-        if rel in ALLOWED_MEDIA or path.suffix.lower() in MEDIA_EXT:
-            continue
         data = path.read_bytes()
-        if b"\0" in data[:4096]:
-            continue                                    # another binary (fonts, icons): sizes are checked above
+        binary = b"\0" in data[:8192] or path.suffix.lower() in MEDIA_EXT
+        if binary:
+            if rel not in ALLOWED_BINARY:
+                found.append(f"{rel}: a media / model / binary file that is not one of the program's own files")
+            elif hashlib.sha256(data).hexdigest() != ALLOWED_BINARY[rel]:
+                found.append(f"{rel}: not the program's own file (its content changed - SHA-256 differs)")
+            continue
         text = data.decode("utf-8", "replace")
         for name, rx in SECRETS:
             m = rx.search(text)
@@ -84,12 +89,12 @@ def self_test() -> list[str]:
     import tempfile
     bad = {"a.py": 'token = "ghp_' + "A" * 36 + '"\n', "b.md": "write to " + "someone" + "@" + "gmail.com\n",
            "c.json": '{"key": "' + ".".join(["eyJ" + "h" * 20, "eyJ" + "r" * 20, "s" * 16]) + '"}',
-           "own.MP4": "x", "ok.py": 'mail = "alice.private@example.com"\npassword = ""\n'}
+           "own.MP4": "x", "blob.dat": "a\0b", "ok.py": 'mail = "alice.private@example.com"\npassword = ""\n'}
     with tempfile.TemporaryDirectory() as d:
         for name, text in bad.items():
             (Path(d) / name).write_text(text, "utf-8")
         got = scan(list(bad), Path(d))
-    want = {"a.py", "b.md", "c.json", "own.MP4"}
+    want = {"a.py", "b.md", "c.json", "own.MP4", "blob.dat"}
     hit = {g.split(":")[0] for g in got}
     return [] if hit == want else [f"self-test: found {sorted(hit)}, expected {sorted(want)}"]
 

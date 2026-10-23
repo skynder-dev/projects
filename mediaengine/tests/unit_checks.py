@@ -951,11 +951,16 @@ def main():
         real_pf_ = _ae2.pick_folder
         lib_ = work / "lib_src"; lib_.mkdir(exist_ok=True)
         mine_ = work / "Мои сжатые"
-        answers_ = [None, str(lib_ / "sub"), str(_cfg3.INSTALL / "x"), str(mine_)]
+        card_ = work / "CARD_E"; card_.mkdir(exist_ok=True)
+        answers_ = [str(card_ / "Converted"), None, str(lib_ / "sub"), str(_cfg3.INSTALL / "x"), str(mine_)]
         update_config(lambda c: c.update(sources=[{"label": "lib", "path": str(lib_)}]))
+        from archivist import service as _svc
+        real_drives_ = _svc.windows_drives
         try:
             _ae2.pick_folder = lambda *a, **k: answers_.pop(0)
+            _svc.windows_drives = lambda: [{"root": str(card_), "kind": "removable"}]
             with _ca().test_client() as _c:
+                f0 = _c.post("/api/convert/output-folder", json={}, headers=H_).get_json()
                 f1 = _c.post("/api/convert/output-folder", json={}, headers=H_).get_json()
                 f2 = _c.post("/api/convert/output-folder", json={}, headers=H_).get_json()
                 f3 = _c.post("/api/convert/output-folder", json={}, headers=H_).get_json()
@@ -966,12 +971,13 @@ def main():
                 pg2_ = _c.get("/convert", headers=H_).get_data(as_text=True)
         finally:
             _ae2.pick_folder = real_pf_
+            _svc.windows_drives = real_drives_
             update_config(lambda c: c.update(sources=[]))
-        check("convert: the output folder is chosen in the folder window, never a library or program folder; back to Converted",
-              f1 == {"ok": False, "error": "No folder chosen."} and "in the library" in f2["error"] and "program folder" in f3["error"]
+        check("convert: the output folder is chosen in the folder window, never a card, a library or program folder; back to Converted",
+              "memory card" in f0.get("error", "") and f1 == {"ok": False, "error": "No folder chosen."} and "in the library" in f2["error"] and "program folder" in f3["error"]
               and f4 == {"ok": True, "path": str(mine_.resolve())} and now_ == mine_.resolve() and str(mine_.resolve()) in pg_
               and "data-cv='outdir-reset'" in pg_ and f5["ok"] and _cv.output_folder() == _cfg3.HOME / "Converted"
-              and "data-cv='outdir-reset'" not in pg2_, (f1, f2, f3, f4, now_, f5))
+              and "data-cv='outdir-reset'" not in pg2_, (f0, f1, f2, f3, f4, now_, f5))
         # "Copy file": the file on the Windows clipboard as Explorer's Ctrl+C puts it (a name with Cyrillic letters)
         okc_ = False
         if os.name == "nt":

@@ -285,6 +285,8 @@ APP_PHRASES: dict[str, str] = {
     "Converted files go into:": "Готовые файлы попадают в папку:", "Change…": "Изменить…", "Back to Converted": "Вернуть Converted",
     "This folder is in the library: converted copies would be found as new videos. Choose another folder.":
         "Эта папка в медиатеке: сжатые копии нашлись бы как новые видео. Выбери другую папку.",
+    "This is a memory card or USB stick: MediaEngine never writes to cards. Choose a folder on the computer.":
+        "Это карта памяти или флешка: MediaEngine никогда не записывает на карты. Выбери папку на компьютере.",
     "This is the program folder (updates replace it). Choose another folder.":
         "Это папка программы (обновления её заменяют). Выбери другую папку.",
     "MediaEngine cannot write into this folder. Choose another folder.": "MediaEngine не может записывать в эту папку. Выбери другую.",

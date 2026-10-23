@@ -267,6 +267,8 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
         input_args, tag, duration = ["-ss", f"{start:.3f}", "-t", f"{end - start:.3f}", "-i", str(source)], "cut", end - start
     out, made_on = _encode(ffmpeg, input_args, source, duration, preset, target_mb, progress_cb, cancel_cb, output_dir, job_id, tag=tag)
     src_size = source.stat().st_size
+    if cut:                                    # the part's share of the file (the saving of the part, not of the whole)
+        src_size = int(src_size * min(1.0, duration / max(0.001, float(probe_duration(source) or duration))))
     out_size = out.stat().st_size
     return {
         "source": str(source),
@@ -697,7 +699,8 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
     try:
         ordered = _job_items(inventory_ids, paths)
         total_bytes = sum(size for _, _, _, size in ordered)
-        _RUN_START[int(job_id)] = (time.time(), sum(size for key, _, _, size in ordered if key in done) if not join else 0)
+        _RUN_START[int(job_id)] = (time.time(), sum(size for key, _, _, size in ordered if key in done) if not join else
+                                   sum(sum(it[3] for it in g) for g in join_groups(ordered) if all(it[0] in done for it in g)))
         if join:
             groups = join_groups(ordered)           # GoPro: one video per recording; other videos: one video of all
             n_groups = len(groups)
@@ -804,7 +807,7 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
                              f"Joined into {success} videos ({len(done)} parts)" if join and success and not failed else
                              f"Converted {success}; failed {failed}"),
                     options_json=opts())
-        _notify_end(job_id, success, failed, len(done) if join else 0)
+        _notify_end(job_id, success, failed, len(done) if join and n_items == 1 else 0)
     except Exception as exc:
         if _EXITING.is_set():
             return                         # the app quits: the job stays 'running' and resumes at the next start
