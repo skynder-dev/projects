@@ -738,6 +738,11 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
     so); the results line fully Russian. unit 146/146, browser_check 18/18 (the click caught, no Explorer), i18n 0.
   Published: Windows CI run 39845714051 (b191, commit 1e5db12) fully green, served (ZIP 3,888,876 bytes; the same
   runtime b9810d447e8c86c5 - the Update button is enough).
+- 2026-10-23 b193 - Convert (5a43c0c, the owner asked whether the list stays forever): only the last job's list is
+  shown (a new job replaces it); "Remove from the page" takes it off and it stays off (the files stay in Converted);
+  "меньше на 95,6%" with a Russian decimal comma. unit 147/147, browser_check 18/18, fuzz 0 errors, i18n 0.
+  Published: Windows CI run 39884706224 (b193, commit 5a43c0c) fully green, served (ZIP 3,890,228 bytes; the same
+  runtime b9810d447e8c86c5 - the Update button is enough).
 
 ## Evidence
 
@@ -930,7 +935,7 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 
 ## Next exact action
 
-b191 is published (Convert: Show in folder / Open video / Open the folder; two more caption looks; b189's night
+b193 is published (Convert: Show in folder / Open video / Open the folder / Remove from the page; two more caption looks; b189's night
 fixes; Qwen3-TTS for 9_2 since b184). The owner presses Update; on Voice-over and text
 he installs the add-on (about 13 GB, both engines) or presses "Download the new voice engine" (4.7 GB). English only.
 Still open: the first voice-over on his RTX 3060. Social integration paused by the owner (do not touch Social).
