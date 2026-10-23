@@ -238,6 +238,52 @@ def main():
             cv = str(exc)[:200]
         check("converted_files_show_in_folder_in_a_real_browser", cv is True, (cv, sent, pg.inner_text("#convertResults")[:300] if pg.query_selector("#convertResults") else None))
         pg.unroute("**/api/convert/reveal")
+        # Cut…: the player, "Start here" at 2 s, "End here" at 5 s (Russian page) -> the job converts only that part
+        clip = sorted(src.glob("*.mp4"))[0]
+        with _db() as con:
+            vid = con.execute("INSERT INTO inventory(source_key,source_id,source_label,source_kind,path,filename,media_type,size_bytes,"
+                              "duration_ms,width,height,mtime,discovered_at,last_seen_at) VALUES('bc-cut','t','t','fixed',?,?,'video',?,14000,640,360,0,?,?)",
+                              (str(clip), clip.name, clip.stat().st_size, _now(), _now())).lastrowid
+            con.commit()
+        try:
+            pg.goto(base + f"/convert?ids={vid}")
+            pg.click(f"[data-cut-for='{vid}']")
+            # Edge plays H.264 (the player is used); Playwright's own Chromium does not (the times are typed, as the page says)
+            pg.wait_for_function(f"document.querySelector('#cvCut{vid} video').readyState>=1||"
+                                 f"document.querySelector('#cvCut{vid} .cvNoPlay').style.display==='block'", timeout=20_000)
+            played = pg.evaluate(f"document.querySelector('#cvCut{vid} video').readyState>=1")
+            if played:
+                pg.evaluate(f"document.querySelector('#cvCut{vid} video').currentTime=2")
+                pg.wait_for_timeout(400)
+                pg.click(f"#cvCut{vid} [data-set=s]")
+                pg.evaluate(f"document.querySelector('#cvCut{vid} video').currentTime=5")
+                pg.wait_for_timeout(400)
+                pg.click(f"#cvCut{vid} [data-set=e]")
+            else:
+                pg.fill(f"#cvCut{vid} .cvS", "0:02")
+                pg.dispatch_event(f"#cvCut{vid} .cvS", "change")
+                pg.fill(f"#cvCut{vid} .cvE", "5")
+                pg.dispatch_event(f"#cvCut{vid} .cvE", "change")
+                print("INFO this browser does not play H.264: the cut's times were typed", flush=True)
+            note = pg.inner_text(f".convertRow:has(.convertCheck[value='{vid}']) .cvCutNote")
+            pg.check("input[name=presetChoice][value=small_720p]")
+            pg.click("#startConvert")
+            pg.wait_for_url("**/convert", timeout=15_000)
+            for _ in range(120):
+                with _db() as con:
+                    jr = con.execute("SELECT status,options_json FROM jobs WHERE kind='convert' ORDER BY id DESC LIMIT 1").fetchone()
+                if jr and jr["status"] in ("finished", "failed", "cancelled"):
+                    break
+                time.sleep(0.5)
+            jo = json.loads(jr["options_json"] or "{}")
+            outc = (jo.get("outputs") or [{}])[0]
+            from archivist.auto_edit import _probe as _pr
+            cdur = float(_pr(Path(outc["output"]))["format"]["duration"]) if outc.get("output") else 0
+            cut_ok = (note == "фрагмент 0:02–0:05" and jr["status"] == "finished" and jo.get("cuts") == {str(vid): [2.0, 5.0]}
+                      and abs(cdur - 3.0) <= 0.1) or (note, jr["status"], jo.get("cuts"), cdur, outc)
+        except Exception as exc:
+            cut_ok = str(exc)[:300]
+        check("convert_a_part_of_a_video_in_a_real_browser", cut_ok is True, cut_ok)
         _i18n.set_ui_language("en")
         # every page without an id fits the window: 1280 px and a narrow 420 px, in Russian (the longer words) and English
         skip = ("/api", "/static", "/media", "/diagnostics", "/auto/exports/open", "/thumb", "/stream", "/file")

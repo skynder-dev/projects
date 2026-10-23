@@ -269,6 +269,12 @@ APP_PHRASES: dict[str, str] = {
     "These videos are parts of one GoPro recording - they can be joined into one video.":
         "Эти видео — части одной записи GoPro: их можно склеить в одно видео.",
     "Order:": "Порядок:",
+    "Cut…": "Обрезать…", "Start here": "Начало здесь", "End here": "Конец здесь", "Whole video": "Всё видео",
+    "Only the part between start and end is converted.": "Конвертируется только часть между началом и концом.",
+    "This video does not play here - type the start and end (minutes:seconds).": "Это видео здесь не воспроизводится — впиши начало и конец (минуты:секунды).",
+    "The start must be at least half a second before the end.": "Начало должно быть хотя бы на полсекунды раньше конца.",
+    "A cut works when the videos are converted one by one (not joined into one).": "Обрезка работает, когда видео конвертируются по одному (не склеиваются).",
+    "Unknown cut": "Непонятная обрезка", "The cut must be at least half a second inside the video": "Обрезанная часть должна быть внутри видео и не короче полсекунды",
     "These videos are parts of GoPro recordings - each recording can be joined into one video.":
         "Эти видео — части записей GoPro: каждую запись можно склеить в одно видео.",
     "Each recording becomes one video:": "Каждая запись станет одним видео:",
@@ -637,6 +643,9 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"smaller by (\d+)%", r"меньше на \1%"),
     (r"about (\d+) min left", r"примерно \1 мин осталось"), (r"about (\d+) h (\d+) min left", r"примерно \1 ч \2 мин осталось"),
     (r"joined from (\d+) parts", r"склеено из \1 ⟪\1|части|частей|частей⟫"),
+    (r"cut (\d+:\d\d)–(\d+:\d\d)", r"фрагмент \1–\2"),
+    (r"The cut starts after the end of the video: (.+)", r"Обрезка начинается после конца видео: \1"),
+    (r"The cut must be at least half a second: (.+)", r"Обрезанная часть должна быть не короче полсекунды: \1"),
     (r"Joining (\d+) parts into one video…", r"Склеиваю \1 ⟪\1|часть|части|частей⟫ в одно видео…"),
     (r"Joining (\d+) parts · (\d+)%", r"Склеиваю \1 ⟪\1|часть|части|частей⟫ · \2%"),
     (r"Joined (\d+) parts into one video", r"Склеено в одно видео: \1 ⟪\1|часть|части|частей⟫"),

@@ -244,7 +244,9 @@ def _run_progress_inner(cmd, duration_s: float, progress_cb=None, cancel_cb=None
                 con.execute("UPDATE jobs SET worker_pid=NULL,heartbeat_at=? WHERE id=? AND worker_pid=?",(_now(),int(job_id),int(p.pid)));con.commit()
 
 
-def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None, cancel_cb=None, output_dir=None, job_id=None):
+def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None, cancel_cb=None, output_dir=None, job_id=None,
+                 cut=None):
+    """One video converted (cut = (start, end) in seconds: only that part)."""
     source = Path(source)
     if preset not in PRESETS:
         raise ValueError("Unknown preset")
@@ -256,7 +258,14 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
     duration = float(probe_duration(source) or 0.0)
     if duration <= 0:
         raise RuntimeError("Could not read video duration")
-    out, made_on = _encode(ffmpeg, ["-i", str(source)], source, duration, preset, target_mb, progress_cb, cancel_cb, output_dir, job_id)
+    input_args, tag = ["-i", str(source)], ""
+    if cut:
+        start, end = float(cut[0]), min(float(cut[1]), duration)
+        if not (0 <= start < end) or end - start < 0.5:
+            raise ValueError("The cut must be at least half a second inside the video")
+        # FFmpeg seeks to the start (the picture from exactly there: everything is re-encoded) and reads that long
+        input_args, tag, duration = ["-ss", f"{start:.3f}", "-t", f"{end - start:.3f}", "-i", str(source)], "cut", end - start
+    out, made_on = _encode(ffmpeg, input_args, source, duration, preset, target_mb, progress_cb, cancel_cb, output_dir, job_id, tag=tag)
     src_size = source.stat().st_size
     out_size = out.stat().st_size
     return {
@@ -268,6 +277,7 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
         "preset": preset,
         "target_mb": int(target_mb) if target_mb else None,
         "made_on": made_on,
+        **({"cut": [round(float(cut[0]), 3), round(min(float(cut[1]), float(probe_duration(source) or cut[1])), 3)]} if cut else {}),
     }
 
 
@@ -656,10 +666,11 @@ def _job_items(inventory_ids, paths):
     return items
 
 
-def _options(preset, target_mb, inventory_ids, paths, join, done, outputs, output_dir=None) -> str:
+def _options(preset, target_mb, inventory_ids, paths, join, done, outputs, output_dir=None, cuts=None) -> str:
     return json.dumps({"preset": preset, "target_mb": target_mb, "inventory_ids": list(inventory_ids or []),
                        "paths": [str(x) for x in (paths or [])], "join": bool(join),
                        **({"output_dir": str(output_dir)} if output_dir else {}),
+                       **({"cuts": cuts} if cuts else {}),
                        "finished_ids": sorted(k for k in done if isinstance(k, int)),
                        "finished_paths": sorted(k[2:] for k in done if isinstance(k, str)),
                        "outputs": outputs}, ensure_ascii=False)
@@ -681,7 +692,8 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
     failed=sum(1 for x in outputs if x.get("error"))
     processed_bytes = 0
     output_dir=str(prior.get("output_dir") or "") or None
-    opts=lambda: _options(preset,target_mb,inventory_ids,paths,join,done,outputs,output_dir)
+    cuts=prior.get("cuts") if isinstance(prior.get("cuts"),dict) else {}
+    opts=lambda: _options(preset,target_mb,inventory_ids,paths,join,done,outputs,output_dir,cuts)
     try:
         ordered = _job_items(inventory_ids, paths)
         total_bytes = sum(size for _, _, _, size in ordered)
@@ -765,7 +777,7 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
             while True:
                 try:
                     result = convert_file(src, preset, target_mb, progress_cb=prog, cancel_cb=lambda: _cancelled(job_id), job_id=job_id,
-                                          output_dir=output_dir)
+                                          output_dir=output_dir, cut=cuts.get(str(key)) if isinstance(key, int) else None)
                     outputs.append(result); success += 1
                     break
                 except Exception as exc:
@@ -967,7 +979,40 @@ def eta_seconds(job: dict) -> int | None:
         return None
 
 
-def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, paths=None, join=False):
+def _clean_cuts(cuts, ids) -> dict:
+    """{"<library id>": [start, end]} for the selected videos only; numbers, start before end, at least half a second,
+    not after the video's end (an end a moment after it is the end)."""
+    out = {}
+    if not cuts:
+        return out
+    if not isinstance(cuts, dict):
+        raise ValueError("Unknown cut")
+    durations = {}
+    if ids:
+        with db() as con:
+            for r in con.execute(f"SELECT id,duration_ms,filename FROM inventory WHERE id IN ({','.join('?' for _ in ids)})", ids):
+                durations[int(r["id"])] = (int(r["duration_ms"] or 0) / 1000.0, r["filename"])
+    for k, v in cuts.items():
+        try:
+            i, start, end = int(k), float(v[0]), float(v[1])
+        except (TypeError, ValueError, IndexError, KeyError):
+            raise ValueError("Unknown cut")
+        if i not in ids:
+            continue
+        if not (start == start and end == end) or start < 0 or end > 360000:
+            raise ValueError("Unknown cut")
+        dur, name = durations.get(i, (0.0, str(i)))
+        if dur > 0:
+            if start >= dur - 0.5:
+                raise ValueError("The cut starts after the end of the video: " + name)
+            end = min(end, dur)
+        if end - start < 0.5:
+            raise ValueError("The cut must be at least half a second: " + name)
+        out[str(i)] = [round(start, 3), round(end, 3)]
+    return out
+
+
+def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, paths=None, join=False, cuts=None):
     ids = []
     seen = set()
     for x in inventory_ids or []:
@@ -996,6 +1041,9 @@ def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, 
     if target_mb is not None and not (50 <= target_mb <= 100000):
         raise ValueError("Target size must be between 50 MB and 100000 MB")
     join = bool(join)
+    cuts = _clean_cuts(cuts, ids)
+    if cuts and join:
+        raise ValueError("A cut works when the videos are converted one by one (not joined into one).")
     n_groups = 0
     if join:
         if len(ids) + len(files) < 2:
@@ -1035,7 +1083,7 @@ def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, 
         cur = con.execute(
             "INSERT INTO jobs(kind,status,created_at,started_at,stage,message,total,done,success,failed,bytes_total,bytes_done,options_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
             ("convert", "running", _now(), _now(), "starting", "Starting converter…", n_groups if join else n, 0, 0, 0, 0, 0,
-             _options(preset, target_mb, ids, [str(f) for f in files], join, set(), [], output_folder()))
+             _options(preset, target_mb, ids, [str(f) for f in files], join, set(), [], output_folder(), cuts))
         )
         job_id = int(cur.lastrowid)
         con.commit()

@@ -929,7 +929,7 @@ def main():
             with _ca().test_client() as _c:
                 n1 = _c.post("/api/convert/pick", json={"preset": "small_720p"}, headers=H_).get_json()
             _ae2.pick_files = lambda *a, **k: ["C:\\Work\\GX020044.MP4", "C:\\Work\\GX010044.MP4"]
-            _web.start_convert_job = lambda ids, preset, target, paths=None, join=False: calls_.append((ids, preset, target, paths, join)) or 77
+            _web.start_convert_job = lambda ids, preset, target, paths=None, join=False, cuts=None: calls_.append((ids, preset, target, paths, join)) or 77
             with _ca().test_client() as _c:
                 n2 = _c.post("/api/convert/pick", json={"preset": "small_720p", "target_mb": 300, "join": True}, headers=H_).get_json()
                 n3 = _c.post("/api/convert/start", json={"ids": [5, 6], "preset": "hq_1080p", "join": "yes"}, headers=H_).get_json()
@@ -993,6 +993,37 @@ def main():
         _cv._sweep_ours(sw_)
         check("convert: after a restart only the converter's own leftovers go from a chosen folder",
               sorted(x.name for x in sw_.iterdir()) == ["c_small_720p_2.mp4", "holiday.mp4"], sorted(x.name for x in sw_.iterdir()))
+        # a cut (start, end) only for the selected library videos, checked against the video's length
+        with _db() as con:
+            vid_ = con.execute("INSERT INTO inventory(source_key,source_id,source_label,source_kind,path,filename,media_type,size_bytes,duration_ms,mtime,discovered_at,last_seen_at) "
+                               "VALUES('cut-test','t','t','fixed',?,'cutme.mp4','video',1000,60000,0,?,?)", (str(made_), _now(), _now())).lastrowid
+            con.commit()
+        cc1 = _cv._clean_cuts({str(vid_): [5, 61], "999999": [1, 2]}, [vid_])
+        msgs_ = []
+        for bad_ in ({str(vid_): [59.8, 70]}, {str(vid_): [10, 10.2]}, {str(vid_): ["x", 3]}, [1, 2]):
+            try:
+                _cv._clean_cuts(bad_, [vid_]); msgs_.append(None)
+            except ValueError as exc:
+                msgs_.append(str(exc))
+        try:
+            _cv.start_convert_job([vid_, vid_ + 1], "small_720p", join=True, cuts={str(vid_): [1, 5]}); jc_ = None
+        except ValueError as exc:
+            jc_ = str(exc)
+        check("convert: a cut is checked (inside the video, half a second at least) and not with a join",
+              cc1 == {str(vid_): [5.0, 60.0]} and msgs_ == ["The cut starts after the end of the video: cutme.mp4",
+                                                            "The cut must be at least half a second: cutme.mp4", "Unknown cut", "Unknown cut"]
+              and jc_ == "A cut works when the videos are converted one by one (not joined into one).", (cc1, msgs_, jc_))
+        calls2_ = []
+        real_start2_ = _web.start_convert_job
+        _web.start_convert_job = lambda ids, preset, target, paths=None, join=False, cuts=None: calls2_.append((ids, cuts)) or 5
+        try:
+            with _ca().test_client() as _c:
+                _c.post("/api/convert/start", json={"ids": [vid_], "preset": "small_720p", "cuts": {str(vid_): [1.5, 7]}}, headers=H_)
+                cpage_ = _c.get("/convert", headers=H_).get_data(as_text=True)
+        finally:
+            _web.start_convert_job = real_start2_
+        check("convert: the page's cuts reach the job; a video on the page has Cut…",
+              calls2_ == [([vid_], {str(vid_): [1.5, 7]})] and f"data-cut-for='{vid_}'" in cpage_, (calls2_, f"data-cut-for='{vid_}'" in cpage_))
         gp_ = lambda **k: _cv.gpu_plan({"video": "hevc", "pix": "yuvj420p", "size": "3840x2160", "sar": "1:1", "rotation": 0, **k}, "share_1080p")
         check("convert: the NVIDIA way only for what it does surely (8-bit H.264/HEVC made smaller, upright, square pixels)",
               gp_()["size"] == (1920, 1080) and gp_(size="2160x3840")["size"] == (1080, 1920) and gp_(size="2704x1520")["size"] == (1920, 1078)

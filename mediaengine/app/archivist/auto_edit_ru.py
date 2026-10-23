@@ -894,6 +894,8 @@ PHRASES = {
     "The word being said on a color block": "Сказанное слово на цветной плашке",
     "Captions in two more looks: one word at a time, big (like TikTok), and the word being said on a color block.":
         "Ещё два вида субтитров: по одному слову, крупно (как в TikTok), и сказанное слово на цветной плашке.",
+    "Convert: “Cut…” next to a video - only the part between start and end is converted (set with the player or typed as minutes:seconds).":
+        "Конвертация: «Обрезать…» у видео — конвертируется только часть между началом и концом (задаётся плеером или вписывается как минуты:секунды).",
     "Convert: “Change…” - converted videos can go into a folder of yours (not a library folder); “Copy file” next to each one: Ctrl+V pastes it into a folder, an e-mail or a messenger.":
         "Конвертация: «Изменить…» — сжатые видео можно сохранять в свою папку (не в папку медиатеки); «Копировать файл» у каждого: Ctrl+V вставит его в папку, письмо или мессенджер.",
     "Convert: “Join into one video” - parts of one recording (a GoPro splits a long one into files of 4 GB: GX010044, GX020044 …) become one video, in the recording's order; several GoPro recordings - one video each.":

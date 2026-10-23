@@ -1376,7 +1376,7 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
 <input type='checkbox' name='ids' value='{int(r['id'])}' class='convertCheck' data-name='{e(r['filename'])}' data-size='{int(r['size_bytes'] or 0)}' data-duration-ms='{int(r['duration_ms'] or 0)}' data-width='{int(r['width'] or 0)}' data-height='{int(r['height'] or 0)}' {prechecked} {disabled}>
 <div class='convertThumbWrap' style='width:92px;height:58px;position:relative'><img class='convertThumb' data-id='{int(r['id'])}' src='/thumb/{int(r['id'])}' style='width:92px;height:58px;object-fit:cover;border-radius:7px;background:#090b0e'><span class='storybadge convertStoryBadge' style='left:4px;top:4px'></span></div>
 <div style='min-width:0'><b style='display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis' translate='no'>{e(r['filename'])}</b>
-<div class='small muted'><span translate='no'>{e(r['source_label'])}</span> · <span>{human_duration(r['duration_ms'])}</span> · <span>{human_bytes(r['size_bytes'])}</span></div>{unavailable}</div>
+<div class='small muted'><span translate='no'>{e(r['source_label'])}</span> · <span>{human_duration(r['duration_ms'])}</span> · <span>{human_bytes(r['size_bytes'])}</span>{"" if not available else " · <button type='button' class='btn2 cvCutBtn' data-cut-for='"+str(int(r['id']))+"' style='padding:1px 8px'>Cut…</button> <span class='cvCutNote'></span>"}</div>{unavailable}</div>
 <div style='text-align:right'><span class='badge'>#{int(r['id'])}</span><div class='small muted estimateOne' style='margin-top:5px'></div></div></label>"""
         if not cards:
             cards=("<div class='card muted'>None of the selected videos are currently accessible. Restore/reconnect the source, or choose another local video.</div>" if preselect_ids else "<div class='card muted'>No accessible videos on this catalog page. Reconnect/restore the source, choose another page, or clear the filter.</div>")
@@ -1418,8 +1418,10 @@ const allChecks=[...document.querySelectorAll('.convertCheck')];
 const presetKbps={share_1080p:4800,small_720p:2400,hq_1080p:8500};
 const presetFallback={share_1080p:.20,small_720p:.11,hq_1080p:.34,keep_resolution:.58};
 function chosenPreset(){return (document.querySelector('input[name=presetChoice]:checked')||{}).value||''}
+function cutOf(ch){const a=Number(ch.dataset.cutStart),b=Number(ch.dataset.cutEnd);return (ch.dataset.cutStart!==undefined&&ch.dataset.cutEnd!==undefined&&b>a)?[a,b]:null}
 function estimateBytes(ch){
-  const size=Number(ch.dataset.size||0),dur=Math.max(0,Number(ch.dataset.durationMs||0)/1000),target=Number(document.getElementById('targetMb').value||0)||0;
+  const full=Math.max(0,Number(ch.dataset.durationMs||0)/1000),c=cutOf(ch),frac=(c&&full>0)?Math.min(1,Math.max(0,(c[1]-c[0])/full)):1;
+  const size=Number(ch.dataset.size||0)*frac,dur=c?(c[1]-c[0]):full,target=Number(document.getElementById('targetMb').value||0)||0;
   if(target)return Math.min(size||Infinity,target*1024*1024);
   const p=chosenPreset();
   if(!p)return null;
@@ -1538,9 +1540,38 @@ function updJoin(){const box=document.getElementById('joinHint'),j=document.getE
 document.getElementById('joinOne').addEventListener('change',updJoin);allChecks.forEach(x=>x.addEventListener('change',updJoin));updJoin();
 function convOpts(){const preset=(document.querySelector('input[name=presetChoice]:checked')||{}).value||'';
  return {preset,target_mb:Number(document.getElementById('targetMb').value||0)||null,join:document.getElementById('joinOne').checked}}
+// a cut: only the part between start and end is converted (the player, or the times typed as m:ss / seconds)
+function fmtT(t){t=Math.max(0,Number(t)||0);const m=Math.floor(t/60),x=t-m*60;return m+':'+(x<10?'0':'')+x.toFixed(1)}
+function parseT(v){v=String(v||'').trim().replace(',','.');if(!v)return null;const p=v.split(':').map(Number);if(p.some(x=>!Number.isFinite(x)||x<0))return NaN;
+ return p.reduce((a,x)=>a*60+x,0)}
+function showCut(ch){const row=ch.closest('.convertRow'),note=row&&row.querySelector('.cvCutNote'),c=cutOf(ch);
+ if(note)note.textContent=c?'cut '+fmtT(c[0]).replace(/\\.\\d$/,'')+'–'+fmtT(c[1]).replace(/\\.\\d$/,''):''}
+document.addEventListener('click',ev=>{const b=ev.target.closest('.cvCutBtn');if(!b)return;ev.preventDefault();ev.stopPropagation();
+ const id=b.dataset.cutFor,ch=document.querySelector(".convertCheck[value='"+id+"']"),row=ch&&ch.closest('.convertRow');if(!row)return;
+ let pan=document.getElementById('cvCut'+id);if(pan){pan.remove();return}
+ const full=Number(ch.dataset.durationMs||0)/1000;
+ pan=document.createElement('div');pan.id='cvCut'+id;pan.className='card';pan.style.margin='-4px 0 4px';
+ pan.innerHTML="<video controls preload='metadata' style='width:100%;max-height:320px;background:#000;border-radius:8px'></video>"
+  +"<div class='small muted cvNoPlay' style='display:none'></div>"
+  +"<div class='toolbar' style='margin-top:6px'><button type='button' class='btn2' data-set='s'>Start here</button><input class='cvS' style='width:90px' placeholder='0:00'>"
+  +"<button type='button' class='btn2' data-set='e'>End here</button><input class='cvE' style='width:90px'>"
+  +"<button type='button' class='btn2' data-set='x'>Whole video</button></div>"
+  +"<div class='small muted'>Only the part between start and end is converted.</div>";
+ row.after(pan);const v=pan.querySelector('video'),S=pan.querySelector('.cvS'),E=pan.querySelector('.cvE');v.src='/media/'+id;if(full>0)E.placeholder=fmtT(full);
+ v.addEventListener('error',()=>{const n=pan.querySelector('.cvNoPlay');n.style.display='block';n.textContent='This video does not play here - type the start and end (minutes:seconds).';v.style.display='none'});
+ const c0=cutOf(ch);if(c0){S.value=fmtT(c0[0]);E.value=fmtT(c0[1])}
+ function apply(){const a=parseT(S.value),z=parseT(E.value);const s=a===null?0:a,e=z===null?(full>0?full:NaN):z;
+  if(a===null&&z===null){delete ch.dataset.cutStart;delete ch.dataset.cutEnd}
+  else if(Number.isFinite(s)&&Number.isFinite(e)&&e-s>=0.5){ch.dataset.cutStart=String(s);ch.dataset.cutEnd=String(e);if(!ch.checked){ch.checked=true;ch.dispatchEvent(new Event('change'))}}
+  else{toast('The start must be at least half a second before the end.');return}
+  showCut(ch);updSel()}
+ pan.addEventListener('click',e2=>{const t=e2.target.closest('[data-set]');if(!t)return;
+  if(t.dataset.set==='s')S.value=fmtT(v.currentTime||0);else if(t.dataset.set==='e')E.value=fmtT(v.currentTime||0);else{S.value='';E.value=''}apply()});
+ S.addEventListener('change',apply);E.addEventListener('change',apply)});
 async function startConv(){const ids=checks().map(x=>Number(x.value));if(!ids.length){toast('Select at least one video');return}
  const o=convOpts();if(!o.preset){toast('Choose a preset first');return}
  if(o.join&&ids.length<2){toast('Choose at least two videos to join into one');return}
+ const cuts={};for(const ch of checks()){const c=cutOf(ch);if(c)cuts[ch.value]=c}if(Object.keys(cuts).length)o.cuts=cuts;
  const b=document.getElementById('startConvert');b.disabled=true;
  try{const r=await fetch('/api/convert/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids,...o})});const x=await r.json();if(!r.ok)throw new Error(x.error||'Could not start');toast('Conversion started');location.href='/convert'}catch(e){toast(e.message||String(e));b.disabled=false}}
 document.getElementById('startConvert').onclick=startConv;
@@ -1550,7 +1581,7 @@ document.getElementById('pickConvert').onclick=async ev=>{const o=convOpts();if(
   if(x.job_id){toast('Conversion started');location.href='/convert';return}if(x.error)toast(x.error)}catch(e){toast(e.message||String(e))}b.disabled=false};
 const winPC=%s;
 function hb(n){n=Number(n||0);for(const u of ['B','KB','MB','GB','TB']){if(n<1024||u==='TB')return (u==='B'||u==='KB'?n.toFixed(0):n.toFixed(1))+' '+u;n/=1024}}
-async function pollConvert(){const box=document.getElementById('convertStatus');if(!box||box.dataset.done)return;const id=box.dataset.job;try{const r=await fetch('/api/convert/status?id='+id,{cache:'no-store'});const x=await r.json();if(!x.job)return;const j=x.job;document.getElementById('convertMsg').textContent=j.message||j.status;document.getElementById('convertPct').style.width=(j.percent||0)+'%';const et=document.getElementById('convertEta');if(et){const t=Number(j.eta_s);const v=!(t>=0)||j.eta_s===null?'':(t<60?'less than a minute left':(Math.round(t/60)<60?'about '+Math.max(1,Math.round(t/60))+' min left':'about '+Math.floor(Math.round(t/60)/60)+' h '+(Math.round(t/60)%60)+' min left'));if(et.dataset.v!==v){et.dataset.v=v;et.textContent=v}}if(['finished','failed','cancelled','partial'].includes(j.status)){const st=document.getElementById('convertStop');if(st)st.remove();const et2=document.getElementById('convertEta');if(et2)et2.remove();const outs=((j.options||{}).outputs||[]);let h='';const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let i=-1;for(const o of outs){i++;const nm=String(o.source||'').split(String.fromCharCode(92)).join('/').split('/').pop();if(o.error){h+="<div class='small error'><span>Failed:</span> <span translate='no'>"+esc(nm)+"</span> — <span>"+esc(o.error)+"</span></div>"}else{h+="<div class='cv-out'><div class='small'><b><span>"+hb(o.source_bytes)+"</span> → <span>"+hb(o.output_bytes)+"</span></b> · <span>smaller by "+esc(o.saved_percent)+"%</span>"+(o.joined?" · <span>joined from "+Number(o.joined)+" parts</span>":"")+(o.made_on==='nvidia'?" · <span>made on the graphics card</span>":"")+"<br><span class='muted ae-path' translate='no'>"+esc(o.output)+"</span></div><div class='row' style='margin:4px 0 8px'><button class='btn btn2' type='button' data-cv='reveal' data-i='"+i+"'>Show in folder</button><button class='btn btn2' type='button' data-cv='open' data-i='"+i+"'>Open video</button>"+(winPC?"<button class='btn btn2' type='button' data-cv='copy' data-i='"+i+"'>Copy file</button>":"")+"</div></div>"}}h+="<div class='row' style='justify-content:flex-end'><button class='btn btn2' type='button' data-cv='hide'>Remove from the page</button></div>";document.getElementById('convertResults').innerHTML=h;return}}catch(e){}setTimeout(pollConvert,1000)}
+async function pollConvert(){const box=document.getElementById('convertStatus');if(!box||box.dataset.done)return;const id=box.dataset.job;try{const r=await fetch('/api/convert/status?id='+id,{cache:'no-store'});const x=await r.json();if(!x.job)return;const j=x.job;document.getElementById('convertMsg').textContent=j.message||j.status;document.getElementById('convertPct').style.width=(j.percent||0)+'%';const et=document.getElementById('convertEta');if(et){const t=Number(j.eta_s);const v=!(t>=0)||j.eta_s===null?'':(t<60?'less than a minute left':(Math.round(t/60)<60?'about '+Math.max(1,Math.round(t/60))+' min left':'about '+Math.floor(Math.round(t/60)/60)+' h '+(Math.round(t/60)%60)+' min left'));if(et.dataset.v!==v){et.dataset.v=v;et.textContent=v}}if(['finished','failed','cancelled','partial'].includes(j.status)){const st=document.getElementById('convertStop');if(st)st.remove();const et2=document.getElementById('convertEta');if(et2)et2.remove();const outs=((j.options||{}).outputs||[]);let h='';const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let i=-1;for(const o of outs){i++;const nm=String(o.source||'').split(String.fromCharCode(92)).join('/').split('/').pop();if(o.error){h+="<div class='small error'><span>Failed:</span> <span translate='no'>"+esc(nm)+"</span> — <span>"+esc(o.error)+"</span></div>"}else{h+="<div class='cv-out'><div class='small'><b><span>"+hb(o.source_bytes)+"</span> → <span>"+hb(o.output_bytes)+"</span></b> · <span>smaller by "+esc(o.saved_percent)+"%</span>"+(o.joined?" · <span>joined from "+Number(o.joined)+" parts</span>":"")+(o.made_on==='nvidia'?" · <span>made on the graphics card</span>":"")+(Array.isArray(o.cut)?" · <span>cut "+fmtT(o.cut[0]).replace(/\\.\\d$/,'')+"–"+fmtT(o.cut[1]).replace(/\\.\\d$/,'')+"</span>":"")+"<br><span class='muted ae-path' translate='no'>"+esc(o.output)+"</span></div><div class='row' style='margin:4px 0 8px'><button class='btn btn2' type='button' data-cv='reveal' data-i='"+i+"'>Show in folder</button><button class='btn btn2' type='button' data-cv='open' data-i='"+i+"'>Open video</button>"+(winPC?"<button class='btn btn2' type='button' data-cv='copy' data-i='"+i+"'>Copy file</button>":"")+"</div></div>"}}h+="<div class='row' style='justify-content:flex-end'><button class='btn btn2' type='button' data-cv='hide'>Remove from the page</button></div>";document.getElementById('convertResults').innerHTML=h;return}}catch(e){}setTimeout(pollConvert,1000)}
 document.addEventListener('click',async ev=>{const b=ev.target.closest('[data-cv]');if(!b)return;const box=document.getElementById('convertStatus');
  if(b.dataset.cv==='stop'){if(!box)return;b.disabled=true;try{await fetch('/api/jobs/'+Number(box.dataset.job)+'/cancel',{method:'POST'})}catch(e){}return}
  if(b.dataset.cv==='outdir'||b.dataset.cv==='outdir-reset'){b.disabled=true;try{const r=await fetch('/api/convert/output-folder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reset:b.dataset.cv==='outdir-reset'})});const x=await r.json();if(x.ok){location.reload();return}if(x.error)toast(x.error)}catch(e){}b.disabled=false;return}
@@ -1573,7 +1604,7 @@ pollConvert();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='
         payload=_json_obj()
         try:
             job_id=start_convert_job(payload.get('ids') or [],payload.get('preset') or 'share_1080p',payload.get('target_mb'),
-                                     join=payload.get('join') is True)
+                                     join=payload.get('join') is True,cuts=payload.get('cuts') or None)
             return jsonify({'ok':True,'job_id':job_id})
         except Exception as exc:
             return jsonify({'ok':False,'error':str(exc)}),409
@@ -1610,6 +1641,9 @@ pollConvert();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='
                 there=Path(str(o['output'])).is_file()
                 more=(f" · <span>joined from {int(o.get('joined'))} parts</span>" if str(o.get('joined') or '').isdigit() else '')
                 more+=(" · <span>made on the graphics card</span>" if o.get('made_on')=='nvidia' else '')
+                if isinstance(o.get('cut'),list) and len(o['cut'])==2:
+                    fm=lambda t:f"{int(float(t))//60}:{int(float(t))%60:02d}"
+                    more+=f" · <span>cut {fm(o['cut'][0])}–{fm(o['cut'][1])}</span>"
                 h.append(f"<div class='cv-out'><div class='small'><b><span>{human_bytes(o.get('source_bytes'))}</span> → <span>{human_bytes(o.get('output_bytes'))}</span></b> · <span>smaller by {e(o.get('saved_percent'))}%</span>{more}<br><span class='muted ae-path' translate='no'>{e(o.get('output'))}</span></div>"
                          +(f"<div class='row' style='margin:4px 0 8px'><button class='btn btn2' type='button' data-cv='reveal' data-i='{i}'>Show in folder</button><button class='btn btn2' type='button' data-cv='open' data-i='{i}'>Open video</button>{copy_btn.format(i=i)}</div></div>"
                            if there else "<div class='small muted' style='margin:2px 0 8px'>The file is no longer there.</div></div>"))

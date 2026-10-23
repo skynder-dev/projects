@@ -195,6 +195,13 @@ def main():
           and [Path(x).name for x in outs[0].get("sources", [])] == ["GX010077.MP4", "GX020077.MP4", "GX030077.MP4"]
           and jj["message"] == "Joined 3 parts into one video" and Path(outs[0]["output"]).is_file()
           and (jj["done"], jj["total"]) == (1, 1), (jj["status"], jj["message"], jj["done"], jj["total"], outs))
+    # a cut: only 3.3 s .. 9.3 s of the video, from exactly there, the sound in step
+    cres = convert_file(whole, "share_1080p", output_dir=out_dir, cut=(3.3, 9.3))
+    cdur = float(_probe(Path(cres["output"]))["format"]["duration"])
+    cfl, cbp = flashes(ff, cres["output"]), beeps(ff, cres["output"])
+    coffs = [min((b - f for b in cbp), key=abs) for f in cfl] if cbp else []
+    check("convert_cut_only_that_part_in_step", abs(cdur - 6.0) <= 0.1 and cres["cut"] == [3.3, 9.3] and "_cut_" in Path(cres["output"]).name
+          and len(cfl) >= 5 and abs(cfl[0]) <= 0.04 and all(-0.025 <= o <= 0.040 for o in coffs), (cdur, cres.get("cut"), [round(x, 3) for x in cfl], [round(o, 3) for o in coffs]))
     # a card with two recordings (0078 in two parts, 0079 in one): one video per recording, each in its order
     card = src_dir / "card"
     card.mkdir(exist_ok=True)
