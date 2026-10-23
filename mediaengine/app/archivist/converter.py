@@ -294,6 +294,21 @@ def part_key(name: str) -> tuple:
     return (1, _natural(stem), 0, stem.casefold())
 
 
+def join_groups(items) -> list:
+    """The videos made by a join, each a list of job items in order: parts of GoPro recordings - one video per
+    recording (a card with recordings 0044 and 0045 gives two videos); recordings of one file each, or any other
+    videos - one video of all."""
+    items = sorted(items, key=lambda it: part_key(it[1]))
+    keys = [part_key(it[1]) for it in items]
+    if items and all(k[0] == 0 for k in keys):
+        groups: dict = {}
+        for it, k in zip(items, keys):
+            groups.setdefault(k[1], []).append(it)
+        if any(len(g) > 1 for g in groups.values()):
+            return list(groups.values())
+    return [items] if items else []
+
+
 def gopro_recording(names) -> str | None:
     """The recording number when the files are two or more parts of one GoPro recording, else None."""
     recs, parts = set(), set()
@@ -672,45 +687,66 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
         total_bytes = sum(size for _, _, _, size in ordered)
         _RUN_START[int(job_id)] = (time.time(), sum(size for key, _, _, size in ordered if key in done) if not join else 0)
         if join:
-            ordered.sort(key=lambda it: part_key(it[1]))     # the order of the recording (as when the job was made)
-            parts = [src for _, _, src, _ in ordered]
-            missing = [name for _, name, src, _ in ordered if not src]
-            _job_update(job_id, total=1, bytes_total=total_bytes, bytes_done=0, stage="converting",
-                        message=f"Joining {len(ordered)} parts into one video…")
-            if missing:
-                raise RuntimeError("A part is not on this computer now: " + missing[0])
+            groups = join_groups(ordered)           # GoPro: one video per recording; other videos: one video of all
+            n_groups = len(groups)
+            _job_update(job_id, total=n_groups, bytes_total=total_bytes, bytes_done=0, stage="converting",
+                        message=(f"Joining {len(ordered)} parts into one video…" if n_groups == 1
+                                 else f"Joining the parts of {n_groups} recordings…"))
+            for gi, grp in enumerate(groups, start=1):
+                gsize = sum(it[3] for it in grp)
+                if all(it[0] in done for it in grp):
+                    processed_bytes += gsize
+                    continue
+                if _cancelled(job_id):
+                    raise RuntimeError("cancelled")
+                parts = [src for _, _, src, _ in grp]
+                missing = [name for _, name, src, _ in grp if not src]
+                if missing and n_groups == 1:
+                    raise RuntimeError("A part is not on this computer now: " + missing[0])
 
-            def prog_join(pct):
-                _job_update(job_id, bytes_done=int(total_bytes * max(0.0, min(100.0, pct)) / 100.0),
-                            message=f"Joining {len(parts)} parts · {pct:.0f}%")
-            while True:
-                try:
-                    outputs.append(join_files(parts, preset, target_mb, progress_cb=prog_join, cancel_cb=lambda: _cancelled(job_id), job_id=job_id,
-                                              output_dir=output_dir,
-                                              beat=lambda: _job_update(job_id, stage="converting")))
-                    success += 1
-                    break
-                except Exception as exc:
-                    if str(exc).lower() == "cancelled" or _EXITING.is_set():
-                        raise
-                    request=_consume_watchdog_request(job_id)
-                    if request==1:
-                        _job_update(job_id,stage="watchdog_retry",message="Converter stalled; process restarted automatically",error=None)
-                        continue
-                    if request==2:
-                        _job_update(job_id,stage="watchdog_app_restart",message="Converter stalled; restarting MediaEngine automatically…",error=None)
-                        return
-                    failed += 1
-                    outputs.append({"source": str(parts[0]), "sources": [str(x) for x in parts], "joined": len(parts), "error": str(exc)[:1000]})
-                    break
-            for key, _, _, _ in ordered:
-                done.add(key)
+                def prog_join(pct, gi=gi, n=len(grp), base=processed_bytes, gsize=gsize):
+                    _job_update(job_id, bytes_done=base + int(gsize * max(0.0, min(100.0, pct)) / 100.0),
+                                message=(f"Joining {n} parts · {pct:.0f}%" if n_groups == 1 else
+                                         f"Recording {gi}/{n_groups} · {n} parts · {pct:.0f}%" if n > 1 else
+                                         f"Recording {gi}/{n_groups} · {pct:.0f}%"))
+                while True:
+                    try:
+                        if missing:
+                            raise RuntimeError("A part is not on this computer now: " + missing[0])
+                        if len(parts) == 1:              # a recording of one file: converted as it is
+                            res = convert_file(parts[0], preset, target_mb, progress_cb=prog_join, cancel_cb=lambda: _cancelled(job_id),
+                                               job_id=job_id, output_dir=output_dir)
+                        else:
+                            res = join_files(parts, preset, target_mb, progress_cb=prog_join, cancel_cb=lambda: _cancelled(job_id),
+                                             job_id=job_id, output_dir=output_dir, beat=lambda: _job_update(job_id, stage="converting"))
+                        outputs.append(res)
+                        success += 1
+                        break
+                    except Exception as exc:
+                        if str(exc).lower() == "cancelled" or _EXITING.is_set():
+                            raise
+                        request=_consume_watchdog_request(job_id)
+                        if request==1:
+                            _job_update(job_id,stage="watchdog_retry",message="Converter stalled; process restarted automatically",error=None)
+                            continue
+                        if request==2:
+                            _job_update(job_id,stage="watchdog_app_restart",message="Converter stalled; restarting MediaEngine automatically…",error=None)
+                            return
+                        failed += 1
+                        first = parts[0] if parts[0] else Path(grp[0][1])
+                        outputs.append({"source": str(first), "sources": [str(x) for x in parts if x], "joined": len(grp), "error": str(exc)[:1000]})
+                        break
+                for it in grp:
+                    done.add(it[0])
+                processed_bytes += gsize
+                _job_update(job_id, done=gi, success=success, failed=failed, bytes_done=processed_bytes, options_json=opts())
             ordered = []
         for r in ordered:
             if r[0] in done:
                 processed_bytes += r[3]
-        _job_update(job_id, total=len(ordered) or 1, bytes_total=total_bytes, bytes_done=processed_bytes if ordered else total_bytes,
-                    stage="converting", **({"message": f"Preparing {len(ordered)} video(s)…"} if ordered else {}))
+        if not join:
+            _job_update(job_id, total=len(ordered) or 1, bytes_total=total_bytes, bytes_done=processed_bytes if ordered else total_bytes,
+                        stage="converting", **({"message": f"Preparing {len(ordered)} video(s)…"} if ordered else {}))
         for index, (key, filename, src, size) in enumerate(ordered, start=1):
             if key in done:
                 continue
@@ -749,9 +785,12 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
             processed_bytes += size
             _job_update(job_id, done=len(done), success=success, failed=failed, bytes_done=processed_bytes, options_json=opts())
         status = "finished" if failed == 0 else ("finished" if success else "failed")
+        n_items = len(join_groups(_job_items(inventory_ids, paths))) if join else len(done)
         _job_update(job_id, status=status, stage="done", finished_at=_now(), current_inventory_id=None,
-                    current_filename=None, done=1 if join else len(done), success=success, failed=failed, bytes_done=total_bytes,
-                    message=(f"Joined {len(done)} parts into one video" if join and success else f"Converted {success}; failed {failed}"),
+                    current_filename=None, done=n_items, success=success, failed=failed, bytes_done=total_bytes,
+                    message=(f"Joined {len(done)} parts into one video" if join and success and not failed and n_items == 1 else
+                             f"Joined into {success} videos ({len(done)} parts)" if join and success and not failed else
+                             f"Converted {success}; failed {failed}"),
                     options_json=opts())
         _notify_end(job_id, success, failed, len(done) if join else 0)
     except Exception as exc:
@@ -957,6 +996,7 @@ def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, 
     if target_mb is not None and not (50 <= target_mb <= 100000):
         raise ValueError("Target size must be between 50 MB and 100000 MB")
     join = bool(join)
+    n_groups = 0
     if join:
         if len(ids) + len(files) < 2:
             raise ValueError("Choose at least two videos to join into one")
@@ -966,11 +1006,15 @@ def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, 
         missing = [name for _, name, src, _ in items if not src]
         if missing:
             raise ValueError("This video is not there: " + missing[0])
-        items.sort(key=lambda it: part_key(it[1]))           # the order of the recording (GoPro), else by name
+        groups = join_groups(items)                            # the order of each recording (GoPro), else by name
         ffmpeg = _ffmpeg_exe()
         if not ffmpeg:
             raise RuntimeError("FFmpeg is not available")
-        join_check(ffmpeg, [src for _, _, src, _ in items])    # said now, not after an hour
+        for g in groups:
+            if len(g) > 1:
+                join_check(ffmpeg, [src for _, _, src, _ in g])   # said now, not after an hour
+        items = [it for g in groups for it in g]
+        n_groups = len(groups)
         ids = [k for k, _, _, _ in items if isinstance(k, int)]
         files = [Path(k[2:]) for k, _, _, _ in items if isinstance(k, str)]
     with db() as con:
@@ -990,7 +1034,7 @@ def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, 
         n = len(ids) + len(files)
         cur = con.execute(
             "INSERT INTO jobs(kind,status,created_at,started_at,stage,message,total,done,success,failed,bytes_total,bytes_done,options_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
-            ("convert", "running", _now(), _now(), "starting", "Starting converter…", 1 if join else n, 0, 0, 0, 0, 0,
+            ("convert", "running", _now(), _now(), "starting", "Starting converter…", n_groups if join else n, 0, 0, 0, 0, 0,
              _options(preset, target_mb, ids, [str(f) for f in files], join, set(), [], output_folder()))
         )
         job_id = int(cur.lastrowid)

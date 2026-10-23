@@ -269,6 +269,9 @@ APP_PHRASES: dict[str, str] = {
     "These videos are parts of one GoPro recording - they can be joined into one video.":
         "Эти видео — части одной записи GoPro: их можно склеить в одно видео.",
     "Order:": "Порядок:",
+    "These videos are parts of GoPro recordings - each recording can be joined into one video.":
+        "Эти видео — части записей GoPro: каждую запись можно склеить в одно видео.",
+    "Each recording becomes one video:": "Каждая запись станет одним видео:",
     "Copy file": "Копировать файл",
     "Copied: paste it with Ctrl+V into a folder, an e-mail or a messenger.": "Скопировано: вставь через Ctrl+V в папку, письмо или мессенджер.",
     "The file could not be copied (the clipboard is busy?). Try again.": "Не удалось скопировать файл (буфер обмена занят?). Попробуй ещё раз.",
@@ -637,6 +640,10 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"Joining (\d+) parts into one video…", r"Склеиваю \1 ⟪\1|часть|части|частей⟫ в одно видео…"),
     (r"Joining (\d+) parts · (\d+)%", r"Склеиваю \1 ⟪\1|часть|части|частей⟫ · \2%"),
     (r"Joined (\d+) parts into one video", r"Склеено в одно видео: \1 ⟪\1|часть|части|частей⟫"),
+    (r"Joining the parts of (\d+) recordings…", r"Склеиваю части \1 ⟪\1|записи|записей|записей⟫…"),
+    (r"Recording (\d+)/(\d+) · (\d+) parts · (\d+)%", r"Запись \1/\2 · \3 ⟪\3|часть|части|частей⟫ · \4%"),
+    (r"Recording (\d+)/(\d+) · (\d+)%", r"Запись \1/\2 · \3%"),
+    (r"Joined into (\d+) videos \((\d+) parts\)", r"Склеено в \1 видео (\2 ⟪\2|часть|части|частей⟫)"),
     (r"A part is not on this computer now: (.+)", r"Одной из частей сейчас нет на компьютере: \1"),
     (r"No picture in (.+)", r"Нет изображения в файле \1"),
     (r"Only videos of the same kind \(picture size and format, sound\) can be joined into one - like parts of one recording\. Different: (.+)",

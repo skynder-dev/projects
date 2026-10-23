@@ -1522,14 +1522,18 @@ function partKey(n){const st=String(n||'').replace(/\\.[^.]*$/,'');let m=/^G[XHP
 function cmpKey(x,y){if(Array.isArray(x)&&Array.isArray(y)){for(let k=0;k<Math.min(x.length,y.length);k++){const c=cmpKey(x[k],y[k]);if(c)return c}return x.length-y.length}
  return x<y?-1:(x>y?1:0)}
 function joinOrder(names){return names.slice().sort((a,b)=>cmpKey(partKey(a),partKey(b)))}
+// the videos a join makes (converter.join_groups): GoPro parts - one per recording; else one of all
+function joinGroups(names){const ord=joinOrder(names);const ks=ord.map(partKey);if(ord.length&&ks.every(k=>k[0]===0)){const g=new Map();
+ ord.forEach((n,i)=>{const r=ks[i][1];if(!g.has(r))g.set(r,[]);g.get(r).push(n)});const v=[...g.values()];if(v.some(x=>x.length>1))return v}return ord.length?[ord]:[]}
 function updJoin(){const box=document.getElementById('joinHint'),j=document.getElementById('joinOne');if(!box||!j)return;
- const names=checks().map(x=>x.dataset.name||'');const ks=names.map(partKey);const recs=new Set(ks.map(k=>k[0]===0?k[1]:'-'));
- const gopro=names.length>=2&&!recs.has('-')&&recs.size===1;
+ const names=checks().map(x=>x.dataset.name||'');const groups=joinGroups(names);
+ const parts=names.length>=2&&groups.some(g=>g.length>1)&&names.every(n=>partKey(n)[0]===0);
  if(names.length<2){box.style.display='none';box.innerHTML='';return}
- if(!j.checked&&!gopro){box.style.display='none';box.innerHTML='';return}
+ if(!j.checked&&!parts){box.style.display='none';box.innerHTML='';return}
  const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- let h='';if(gopro&&!j.checked)h+="<span>These videos are parts of one GoPro recording - they can be joined into one video.</span> ";
- if(j.checked)h+="<span>Order:</span> <span translate='no'>"+joinOrder(names).map(esc).join(' → ')+"</span>";
+ let h='';if(parts&&!j.checked)h+=(groups.length>1?"<span>These videos are parts of GoPro recordings - each recording can be joined into one video.</span> ":"<span>These videos are parts of one GoPro recording - they can be joined into one video.</span> ");
+ if(j.checked){if(groups.length>1){h+="<span>Each recording becomes one video:</span>";for(const g of groups)h+="<br><span translate='no'>"+g.map(esc).join(' → ')+"</span>"}
+  else h+="<span>Order:</span> <span translate='no'>"+groups[0].map(esc).join(' → ')+"</span>"}
  box.innerHTML=h;box.style.display='block'}
 document.getElementById('joinOne').addEventListener('change',updJoin);allChecks.forEach(x=>x.addEventListener('change',updJoin));updJoin();
 function convOpts(){const preset=(document.querySelector('input[name=presetChoice]:checked')||{}).value||'';

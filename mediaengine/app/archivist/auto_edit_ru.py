@@ -896,8 +896,8 @@ PHRASES = {
         "Ещё два вида субтитров: по одному слову, крупно (как в TikTok), и сказанное слово на цветной плашке.",
     "Convert: “Change…” - converted videos can go into a folder of yours (not a library folder); “Copy file” next to each one: Ctrl+V pastes it into a folder, an e-mail or a messenger.":
         "Конвертация: «Изменить…» — сжатые видео можно сохранять в свою папку (не в папку медиатеки); «Копировать файл» у каждого: Ctrl+V вставит его в папку, письмо или мессенджер.",
-    "Convert: “Join into one video” - parts of one recording (a GoPro splits a long one into files of 4 GB: GX010044, GX020044 …) become one video, in the recording's order.":
-        "Конвертация: «Склеить в одно видео» — части одной записи (GoPro делит длинную запись на файлы по 4 ГБ: GX010044, GX020044 …) становятся одним видео, в порядке записи.",
+    "Convert: “Join into one video” - parts of one recording (a GoPro splits a long one into files of 4 GB: GX010044, GX020044 …) become one video, in the recording's order; several GoPro recordings - one video each.":
+        "Конвертация: «Склеить в одно видео» — части одной записи (GoPro делит длинную запись на файлы по 4 ГБ: GX010044, GX020044 …) становятся одним видео, в порядке записи; несколько записей GoPro — по видео на каждую.",
     "Convert: “Choose videos on this PC…” converts any video on the computer without adding it to the library; “Stop” on a running conversion; the time left.":
         "Конвертация: «Выбрать видео на компьютере…» сжимает любое видео без добавления в медиатеку; «Остановить» во время конвертации; сколько осталось.",
     "Convert: big videos made smaller on an NVIDIA graphics card (much faster; if the card can't, the processor makes them as before); a Windows notification when a long conversion is ready.":

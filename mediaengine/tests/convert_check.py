@@ -195,6 +195,22 @@ def main():
           and [Path(x).name for x in outs[0].get("sources", [])] == ["GX010077.MP4", "GX020077.MP4", "GX030077.MP4"]
           and jj["message"] == "Joined 3 parts into one video" and Path(outs[0]["output"]).is_file()
           and (jj["done"], jj["total"]) == (1, 1), (jj["status"], jj["message"], jj["done"], jj["total"], outs))
+    # a card with two recordings (0078 in two parts, 0079 in one): one video per recording, each in its order
+    card = src_dir / "card"
+    card.mkdir(exist_ok=True)
+    for f in card.glob("*"):
+        f.unlink()
+    subprocess.run([ff, "-v", "error", "-y", "-i", str(whole), "-map", "0", "-c", "copy", "-f", "segment", "-segment_times", "7",
+                    "-segment_start_number", "1", "-reset_timestamps", "1", str(card / "GX%02d0078.MP4")], check=True)
+    import shutil as _sh
+    _sh.copy(parts[0], card / "GX010079.MP4")
+    jg = wait_job(start_convert_job([], "small_720p", paths=[str(x) for x in sorted(card.glob("*.MP4"), reverse=True)], join=True))
+    og = (jg.get("options") or {}).get("outputs") or []
+    durs = [round(float(_probe(Path(o["output"]))["format"]["duration"]), 1) for o in og if o.get("output")]
+    check("join_one_video_per_recording", jg["status"] == "finished" and len(og) == 2 and og[0].get("joined") == 2
+          and [Path(x).name for x in og[0].get("sources", [])] == ["GX010078.MP4", "GX020078.MP4"] and not og[1].get("joined")
+          and Path(og[1]["source"]).name == "GX010079.MP4" and abs(durs[0] - 14.0) <= 0.2 and (jg["done"], jg["total"]) == (2, 2)
+          and jg["message"] == "Joined into 2 videos (3 parts)", (jg["status"], jg["message"], jg["done"], jg["total"], durs, og))
     jn = wait_job(start_convert_job([], "small_720p", paths=[str(parts[0]), str(parts[1])]))
     outs = (jn.get("options") or {}).get("outputs") or []
     check("convert_job_of_chosen_files_one_by_one", jn["status"] == "finished" and len(outs) == 2 and not any(o.get("joined") for o in outs)
