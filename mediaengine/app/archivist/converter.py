@@ -1,11 +1,11 @@
 from __future__ import annotations
 from .platform_adapter import keep_awake, process_kwargs
 
-import json, os, shutil, subprocess, threading, time
+import json, os, re, shutil, subprocess, threading, time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .config import HOME
+from .config import HOME, load_config
 from .db import db
 from .media import _ffmpeg_exe, probe_duration
 
@@ -41,7 +41,7 @@ def _local_path(row):
     return None
 
 
-def _unique_output(source: Path, preset: str, target_mb: int | None, output_dir: Path | None = None) -> Path:
+def _unique_output(source: Path, preset: str, target_mb: int | None, output_dir: Path | None = None, tag: str = "") -> Path:
     """A new output name, reserved at once (an empty file): two conversions never pick the same name. A very long
     source name is shortened (the whole name must stay within 255 characters)."""
     cfg = PRESETS[preset]
@@ -53,7 +53,7 @@ def _unique_output(source: Path, preset: str, target_mb: int | None, output_dir:
         folder = HOME / "Converted"
         folder.mkdir(parents=True, exist_ok=True)
     suffix = f"target_{int(target_mb)}mb" if target_mb else cfg["suffix"]
-    stem = source.stem[:150]
+    stem = source.stem[:150] + (f"_{tag}" if tag else "")
     n = 1
     while True:
         p = folder / (f"{stem}_{suffix}.mp4" if n == 1 else f"{stem}_{suffix}_{n}.mp4")
@@ -77,11 +77,12 @@ def _sweep_converted(folder: Path | None = None) -> None:
                     f.unlink()
             except OSError:
                 pass
-        for f in (HOME / "data").glob("ffmpeg2pass-*"):    # two-pass logs of a conversion that did not finish
-            try:
-                f.unlink()
-            except OSError:
-                pass
+        for pat in ("ffmpeg2pass-*", "join-*.txt"):     # two-pass logs / part lists of a conversion that did not finish
+            for f in (HOME / "data").glob(pat):
+                try:
+                    f.unlink()
+                except OSError:
+                    pass
     except OSError:
         pass
 
@@ -229,16 +230,215 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
     duration = float(probe_duration(source) or 0.0)
     if duration <= 0:
         raise RuntimeError("Could not read video duration")
+    out, made_on = _encode(ffmpeg, ["-i", str(source)], source, duration, preset, target_mb, progress_cb, cancel_cb, output_dir, job_id)
+    src_size = source.stat().st_size
+    out_size = out.stat().st_size
+    return {
+        "source": str(source),
+        "output": str(out),
+        "source_bytes": src_size,
+        "output_bytes": out_size,
+        "saved_percent": round(max(0.0, (1.0 - out_size / max(1, src_size)) * 100.0), 1),
+        "preset": preset,
+        "target_mb": int(target_mb) if target_mb else None,
+        "made_on": made_on,
+    }
+
+
+# Parts of one recording. A camera splits a long recording into files of about 4 GB (GoPro: GX010044.MP4,
+# GX020044.MP4 ... - chapter 01, 02 of recording 0044; older GoPros: GOPR0044.MP4 then GP010044.MP4 ...). Joined
+# in the order of the recording, everything else by name (numbers as numbers: clip 2 before clip 10).
+_GOPRO_PART = re.compile(r"^G[XHP](\d{2})(\d{4})$", re.I)
+_GOPRO_FIRST = re.compile(r"^GOPR(\d{4})$", re.I)
+
+
+def _natural(text: str) -> tuple:
+    return tuple((1, int(t), "") if t.isdigit() else (0, 0, t) for t in re.split(r"(\d+)", text.casefold()) if t)
+
+
+def part_key(name: str) -> tuple:
+    """Sort key of one file for joining: GoPro recordings by recording number and chapter, other files by name."""
+    stem = Path(str(name)).stem
+    m = _GOPRO_PART.match(stem)
+    if m:
+        return (0, m.group(2), int(m.group(1)), stem.casefold())
+    m = _GOPRO_FIRST.match(stem)
+    if m:
+        return (0, m.group(1), 0, stem.casefold())
+    return (1, _natural(stem), 0, stem.casefold())
+
+
+def gopro_recording(names) -> str | None:
+    """The recording number when the files are two or more parts of one GoPro recording, else None."""
+    recs, parts = set(), set()
+    for n in names:
+        k = part_key(n)
+        if k[0] != 0:
+            return None
+        recs.add(k[1]); parts.add(k[2])
+    names = list(names)
+    return recs.pop() if len(recs) == 1 and len(names) >= 2 and len(parts) == len(names) else None
+
+
+_SIZE_RE = re.compile(r"(?<![\dx])(\d{2,5})x(\d{2,5})(?![\dx])")
+_PIX_RE = re.compile(r"\b((?:yuvj?|nv|p0|gbr|rgb|bgr|gray|ya)[a-z0-9_]*)\b")
+_ROT_RE = re.compile(r"rotation of (-?\d+(?:\.\d+)?) degrees")
+
+
+def media_sig(ffmpeg, source) -> dict:
+    """What has to be the same in every part for a join: the picture (codec, pixel format, size, rotation) and the
+    sound (codec, rate, channels; or none). The frame rate is told too (a recording with a varying rate may differ a
+    little from part to part; that joins fine). Read from FFmpeg's own description."""
+    cp = subprocess.run([str(ffmpeg), "-hide_banner", "-i", str(source)], capture_output=True, text=True, encoding="utf-8",
+                        errors="replace", timeout=60, **process_kwargs())
+    text = (cp.stderr or "").split("Stream mapping:", 1)[0]
+    lines = text.splitlines()
+    v = next((l for l in lines if " Video: " in l and "attached pic" not in l), "")
+    a = next((l for l in lines if " Audio: " in l), "")
+    if not v:
+        raise RuntimeError("No picture in " + Path(str(source)).name)
+    vc = v.split(" Video: ", 1)[1]
+    size = _SIZE_RE.search(vc)
+    pix = _PIX_RE.search(vc.split(",", 1)[1] if "," in vc else "")
+    fps = re.search(r"([\d.]+) (?:fps|tbr)", vc)
+    rot = _ROT_RE.search(text)
+    sar = re.search(r"SAR (\d+):(\d+)", vc)
+    sig = {"video": vc.split()[0].strip(","), "pix": pix.group(1) if pix else "", "size": size.group(0) if size else "",
+           "sar": f"{sar.group(1)}:{sar.group(2)}" if sar else "",
+           "fps": round(float(fps.group(1)), 2) if fps else 0.0, "rotation": int(round(float(rot.group(1)))) % 360 if rot else 0}
+    if a:
+        ac = a.split(" Audio: ", 1)[1]
+        hz = re.search(r"(\d+) Hz", ac)
+        lay = ac.split(",")[2].strip() if len(ac.split(",")) > 2 else ""
+        sig.update(audio=ac.split()[0].strip(","), hz=int(hz.group(1)) if hz else 0, channels=lay)
+    else:
+        sig.update(audio=None, hz=0, channels="")
+    return sig
+
+
+def join_check(ffmpeg, sources) -> None:
+    """Raises ValueError naming the first part that differs from the first one (they could not be joined as they are)."""
+    sources = [Path(x) for x in sources]
+    first = media_sig(ffmpeg, sources[0])
+    for src in sources[1:]:
+        other = media_sig(ffmpeg, src)
+        if {k: v for k, v in other.items() if k != "fps"} != {k: v for k, v in first.items() if k != "fps"}:
+            raise ValueError("Only videos of the same kind (picture size and format, sound) can be joined into one - like "
+                             "parts of one recording. Different: " + src.name)
+
+
+def join_files(sources, preset="share_1080p", target_mb=None, progress_cb=None, cancel_cb=None, output_dir=None, job_id=None):
+    """Several parts of one recording, in the given order, as ONE converted video (FFmpeg's concat demuxer: the parts
+    follow each other with their own timing; the picture and sound are then made like any converted video)."""
+    sources = [Path(x) for x in sources]
+    if preset not in PRESETS:
+        raise ValueError("Unknown preset")
+    if len(sources) < 2:
+        raise ValueError("Choose at least two videos to join into one")
+    for src in sources:
+        if not src.is_file():
+            raise FileNotFoundError(str(src))
+    ffmpeg = _ffmpeg_exe()
+    if not ffmpeg:
+        raise RuntimeError("FFmpeg is not available")
+    join_check(ffmpeg, sources)
+    duration = 0.0
+    for src in sources:
+        d = float(probe_duration(src) or 0.0)
+        if d <= 0:
+            raise RuntimeError("Could not read video duration")
+        duration += d
+    listfile = (HOME / "data" / f"join-{os.getpid()}-{threading.get_ident()}.txt").resolve()
+    listfile.parent.mkdir(parents=True, exist_ok=True)
+    # one line per part; inside '...' nothing is special except the quote itself
+    listfile.write_text("".join("file '" + str(src.resolve()).replace("'", "'\\''") + "'\n" for src in sources), "utf-8")
+    try:
+        out, made_on = _encode(ffmpeg, ["-f", "concat", "-safe", "0", "-i", str(listfile)], sources[0], duration, preset, target_mb,
+                               progress_cb, cancel_cb, output_dir, job_id, tag="joined")
+    finally:
+        try:
+            listfile.unlink()
+        except OSError:
+            pass
+    src_size = sum(src.stat().st_size for src in sources)
+    out_size = out.stat().st_size
+    return {
+        "source": str(sources[0]),
+        "sources": [str(src) for src in sources],
+        "joined": len(sources),
+        "output": str(out),
+        "source_bytes": src_size,
+        "output_bytes": out_size,
+        "saved_percent": round(max(0.0, (1.0 - out_size / max(1, src_size)) * 100.0), 1),
+        "preset": preset,
+        "target_mb": int(target_mb) if target_mb else None,
+        "made_on": made_on,
+    }
+
+
+# An NVIDIA card makes a smaller copy of a big video much faster: it decodes the 4K picture, scales it down and
+# encodes it; only the small picture passes through the processor (for the exact TV levels of the picture, as the
+# processor path makes them). Used only for what it does surely: H.264 / HEVC, 8-bit 4:2:0, square pixels, upright,
+# not HDR, not interlaced, made smaller (a 1080p / 720p preset), no size target. Tried once whether this PC's FFmpeg
+# can encode on the card; any error, or a result of the wrong length: the same conversion on the processor.
+# Off with the setting convert.gpu = false.
+_GPU: list = []
+_GPU_CQ_STEP = 3           # NVIDIA's constant quality N gives about the size of x264's CRF N-3
+
+
+def gpu_ok() -> bool:
+    if (load_config().get("convert") or {}).get("gpu") is False:
+        return False
+    if not _GPU:
+        ok = False
+        try:
+            cp = subprocess.run([str(_ffmpeg_exe()), "-hide_banner", "-nostdin", "-v", "error", "-f", "lavfi", "-i",
+                                 "color=c=gray:s=256x256:r=25:d=0.2", "-c:v", "h264_nvenc", "-f", "null", "-"],
+                                capture_output=True, timeout=60, **process_kwargs())
+            ok = cp.returncode == 0
+        except Exception:
+            ok = False
+        _GPU.append(ok)
+    return _GPU[0]
+
+
+def gpu_plan(sig: dict, preset: str, hdr=None, interlaced=False) -> dict | None:
+    """The card's way for this video and preset, or None (the processor makes it)."""
+    cap = PRESETS[preset]["cap"]
+    if not cap or hdr or interlaced or sig.get("rotation") or sig.get("sar") not in ("", "1:1"):
+        return None
+    if sig.get("video") not in ("h264", "hevc") or sig.get("pix") not in ("yuv420p", "yuvj420p", "nv12"):
+        return None
+    try:
+        w, h = (int(x) for x in str(sig.get("size") or "").split("x"))
+    except ValueError:
+        return None
+    if max(w, h) <= cap:
+        return None                            # not made smaller: the processor path is as quick
+    k = cap / max(w, h)
+    W, H = (cap, int(h * k) // 2 * 2) if w >= h else (int(w * k) // 2 * 2, cap)
+    return {"pre": ["-hwaccel", "cuda", "-hwaccel_output_format", "cuda"],
+            "vf": f"scale_cuda={W}:{H},hwdownload,format=nv12,scale=in_range=auto:out_range=tv,format=yuv420p",
+            "codec": ["-c:v", "h264_nvenc", "-preset", "p5", "-tune", "hq", "-rc", "vbr",
+                      "-cq", str(int(PRESETS[preset]["crf"]) + _GPU_CQ_STEP), "-b:v", "0", "-profile:v", "high"],
+            "size": (W, H)}
+
+
+def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb, progress_cb, cancel_cb, output_dir, job_id,
+            tag: str = "") -> Path:
+    """The picture and sound made with the preset (or to a size, two passes) into a new file in Converted; returns it
+    and where the picture was made ("nvidia" / "cpu")."""
     hdr = _hdr_kind(ffmpeg, source)
     interlaced = _is_interlaced(ffmpeg, source)
     target_mb = int(target_mb) if target_mb else None
-    out = _unique_output(source, preset, target_mb, Path(output_dir) if output_dir else None)   # reserved (empty)
+    out = _unique_output(source, preset, target_mb, Path(output_dir) if output_dir else None, tag)   # reserved (empty)
     part = out.with_name(out.stem + ".part.mp4")       # its own name: the output name is this conversion's alone
     passlog = None
+    made_on = "cpu"
     try:
         cfg = PRESETS[preset]
         common = [
-            str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-i", str(source),
+            str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", *input_args,
             "-map", "0:v:0", "-map", "0:a?", *_scale_args(preset, hdr, interlaced),
             "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "veryfast",
         ]
@@ -250,7 +450,7 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
             passlog = str((HOME / "data" / f"ffmpeg2pass-{os.getpid()}-{threading.get_ident()}").resolve())
             Path(passlog).parent.mkdir(parents=True, exist_ok=True)
             pass1 = [
-                str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-i", str(source),
+                str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", *input_args,
                 "-map", "0:v:0", *_scale_args(preset, hdr, interlaced),
                 "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "veryfast",
                 "-b:v", f"{video_k}k", "-maxrate", f"{int(video_k*1.25)}k", "-bufsize", f"{int(video_k*2)}k",
@@ -264,27 +464,42 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
             ]
             _run_progress(pass2, duration, progress_cb, cancel_cb, 0.50, 0.50, job_id=job_id)
         else:
-            cmd = common + [
-                "-crf", str(int(cfg["crf"])),
-                "-c:a", "aac", "-b:a", f"{int(cfg['audio_k'])}k",
-                "-movflags", "+faststart", str(part)
-            ]
-            _run_progress(cmd, duration, progress_cb, cancel_cb, job_id=job_id)
+            plan = None
+            try:
+                plan = gpu_plan(media_sig(ffmpeg, source), preset, hdr, interlaced) if gpu_ok() else None
+            except Exception:
+                plan = None
+            if plan:
+                gcmd = [str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", *plan["pre"], *input_args,
+                        "-map", "0:v:0", "-map", "0:a?", "-vf", plan["vf"], *plan["codec"],
+                        "-c:a", "aac", "-b:a", f"{int(cfg['audio_k'])}k", "-movflags", "+faststart", str(part)]
+                try:
+                    _run_progress(gcmd, duration, progress_cb, cancel_cb, job_id=job_id)
+                    got = float(probe_duration(part) or 0.0)
+                    if abs(got - duration) > max(0.5, 0.01 * duration):
+                        raise RuntimeError(f"length {got:.2f} s instead of {duration:.2f} s")
+                    made_on = "nvidia"
+                except Exception as exc:
+                    if str(exc).lower() == "cancelled" or (cancel_cb and cancel_cb()) or _EXITING.is_set():
+                        raise
+                    try:
+                        part.unlink(missing_ok=True)
+                    except Exception:
+                        pass
+                    if progress_cb:
+                        progress_cb(0.0)
+            if made_on != "nvidia":
+                cmd = common + [
+                    "-crf", str(int(cfg["crf"])),
+                    "-c:a", "aac", "-b:a", f"{int(cfg['audio_k'])}k",
+                    "-movflags", "+faststart", str(part)
+                ]
+                _run_progress(cmd, duration, progress_cb, cancel_cb, job_id=job_id)
 
         if cancel_cb and cancel_cb():
             raise RuntimeError("cancelled")
         part.replace(out)
-        src_size = source.stat().st_size
-        out_size = out.stat().st_size
-        return {
-            "source": str(source),
-            "output": str(out),
-            "source_bytes": src_size,
-            "output_bytes": out_size,
-            "saved_percent": round(max(0.0, (1.0 - out_size / max(1, src_size)) * 100.0), 1),
-            "preset": preset,
-            "target_mb": target_mb,
-        }
+        return out, made_on
     except BaseException:
         # never leave a half-written .part file behind (it would be re-discovered as media), nor the empty reserved name
         try:
@@ -346,51 +561,112 @@ def terminate_current_process(job_id):
         except Exception:return False
 
 
-def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_mb: int | None):
+def _job_items(inventory_ids, paths):
+    """The job's videos in its order: (key, file name, local file or None, size). Library videos by their id (their
+    local file found now), files chosen on this PC by their path."""
+    items = []
+    ids = [int(i) for i in (inventory_ids or [])]
+    if ids:
+        with db() as con:
+            rows = con.execute(
+                f"SELECT * FROM inventory WHERE id IN ({','.join('?' for _ in ids)}) AND excluded=0 AND media_type='video' AND COALESCE(analysis_status,'')<>'private' AND private_path IS NULL",
+                ids,
+            ).fetchall()
+        by_id = {int(r["id"]): r for r in rows}
+        for i in ids:
+            r = by_id.get(i)
+            if r is None:
+                continue
+            src = _local_path(r)
+            items.append((i, r["filename"], src, int(r["size_bytes"] or (src.stat().st_size if src and src.exists() else 0))))
+    for raw in paths or []:
+        src = Path(str(raw))
+        there = src.is_file()
+        items.append(("p:" + str(src), src.name, src if there else None, src.stat().st_size if there else 0))
+    return items
+
+
+def _options(preset, target_mb, inventory_ids, paths, join, done, outputs) -> str:
+    return json.dumps({"preset": preset, "target_mb": target_mb, "inventory_ids": list(inventory_ids or []),
+                       "paths": [str(x) for x in (paths or [])], "join": bool(join),
+                       "finished_ids": sorted(k for k in done if isinstance(k, int)),
+                       "finished_paths": sorted(k[2:] for k in done if isinstance(k, str)),
+                       "outputs": outputs}, ensure_ascii=False)
+
+
+def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_mb: int | None, paths=None, join=False):
     with db() as con:
         jr=con.execute("SELECT options_json FROM jobs WHERE id=?",(int(job_id),)).fetchone()
     try: prior=json.loads(jr["options_json"] or "{}") if jr else {}
     except Exception: prior={}
     outputs=list(prior.get("outputs") or [])
-    finished_ids=set()
+    done=set()
     for x in (prior.get("finished_ids") or []):
-        try:finished_ids.add(int(x))
+        try:done.add(int(x))
         except Exception:pass
+    for x in (prior.get("finished_paths") or []):
+        done.add("p:"+str(x))
     success=sum(1 for x in outputs if not x.get("error"))
     failed=sum(1 for x in outputs if x.get("error"))
     processed_bytes = 0
+    opts=lambda: _options(preset,target_mb,inventory_ids,paths,join,done,outputs)
     try:
-        with db() as con:
-            rows = con.execute(
-                f"SELECT * FROM inventory WHERE id IN ({','.join('?' for _ in inventory_ids)}) AND excluded=0 AND media_type='video' AND COALESCE(analysis_status,'')<>'private' AND private_path IS NULL",
-                inventory_ids,
-            ).fetchall()
-        by_id = {int(r["id"]): r for r in rows}
-        ordered = [by_id[i] for i in inventory_ids if i in by_id]
-        total_bytes = sum(int(r["size_bytes"] or 0) for r in ordered)
+        ordered = _job_items(inventory_ids, paths)
+        total_bytes = sum(size for _, _, _, size in ordered)
+        _RUN_START[int(job_id)] = (time.time(), sum(size for key, _, _, size in ordered if key in done) if not join else 0)
+        if join:
+            ordered.sort(key=lambda it: part_key(it[1]))     # the order of the recording (as when the job was made)
+            parts = [src for _, _, src, _ in ordered]
+            missing = [name for _, name, src, _ in ordered if not src]
+            _job_update(job_id, total=1, bytes_total=total_bytes, bytes_done=0, stage="converting",
+                        message=f"Joining {len(ordered)} parts into one video…")
+            if missing:
+                raise RuntimeError("A part is not on this computer now: " + missing[0])
+
+            def prog_join(pct):
+                _job_update(job_id, bytes_done=int(total_bytes * max(0.0, min(100.0, pct)) / 100.0),
+                            message=f"Joining {len(parts)} parts · {pct:.0f}%")
+            while True:
+                try:
+                    outputs.append(join_files(parts, preset, target_mb, progress_cb=prog_join, cancel_cb=lambda: _cancelled(job_id), job_id=job_id))
+                    success += 1
+                    break
+                except Exception as exc:
+                    if str(exc).lower() == "cancelled" or _EXITING.is_set():
+                        raise
+                    request=_consume_watchdog_request(job_id)
+                    if request==1:
+                        _job_update(job_id,stage="watchdog_retry",message="Converter stalled; process restarted automatically",error=None)
+                        continue
+                    if request==2:
+                        _job_update(job_id,stage="watchdog_app_restart",message="Converter stalled; restarting MediaEngine automatically…",error=None)
+                        return
+                    failed += 1
+                    outputs.append({"source": str(parts[0]), "sources": [str(x) for x in parts], "joined": len(parts), "error": str(exc)[:1000]})
+                    break
+            for key, _, _, _ in ordered:
+                done.add(key)
+            ordered = []
         for r in ordered:
-            if int(r["id"]) in finished_ids:
-                processed_bytes += int(r["size_bytes"] or 0)
-        _job_update(job_id, total=len(ordered), bytes_total=total_bytes, bytes_done=processed_bytes, stage="converting",
-                    message=f"Preparing {len(ordered)} video(s)…")
-        for index, row in enumerate(ordered, start=1):
-            inv_id=int(row["id"])
-            if inv_id in finished_ids:
+            if r[0] in done:
+                processed_bytes += r[3]
+        _job_update(job_id, total=len(ordered) or 1, bytes_total=total_bytes, bytes_done=processed_bytes if ordered else total_bytes,
+                    stage="converting", **({"message": f"Preparing {len(ordered)} video(s)…"} if ordered else {}))
+        for index, (key, filename, src, size) in enumerate(ordered, start=1):
+            if key in done:
                 continue
             if _cancelled(job_id):
                 raise RuntimeError("cancelled")
-            src = _local_path(row)
             if not src:
                 failed += 1
-                _job_update(job_id, failed=failed, done=index, message=f"Skipped missing local file: {row['filename']}")
+                _job_update(job_id, failed=failed, done=index, message=f"Skipped missing local file: {filename}")
                 continue
-            size = int(row["size_bytes"] or (src.stat().st_size if src.exists() else 0))
-            _job_update(job_id, current_inventory_id=int(row["id"]), current_filename=row["filename"],
-                        message=f"Converting {index}/{len(ordered)} · {row['filename']}")
+            _job_update(job_id, current_inventory_id=key if isinstance(key, int) else None, current_filename=filename,
+                        message=f"Converting {index}/{len(ordered)} · {filename}")
             def prog(pct):
                 approx = processed_bytes + int(size * max(0.0, min(100.0, pct)) / 100.0)
                 _job_update(job_id, bytes_done=approx,
-                            message=f"Converting {index}/{len(ordered)} · {pct:.0f}% · {row['filename']}")
+                            message=f"Converting {index}/{len(ordered)} · {pct:.0f}% · {filename}")
             while True:
                 try:
                     result = convert_file(src, preset, target_mb, progress_cb=prog, cancel_cb=lambda: _cancelled(job_id), job_id=job_id)
@@ -409,15 +685,15 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
                     failed += 1
                     outputs.append({"source": str(src), "error": str(exc)[:1000]})
                     break
-            finished_ids.add(inv_id)
+            done.add(key)
             processed_bytes += size
-            _job_update(job_id, done=len(finished_ids), success=success, failed=failed, bytes_done=processed_bytes,
-                        options_json=json.dumps({"preset":preset,"target_mb":target_mb,"inventory_ids":inventory_ids,
-                                                "finished_ids":sorted(finished_ids),"outputs":outputs},ensure_ascii=False))
+            _job_update(job_id, done=len(done), success=success, failed=failed, bytes_done=processed_bytes, options_json=opts())
         status = "finished" if failed == 0 else ("finished" if success else "failed")
         _job_update(job_id, status=status, stage="done", finished_at=_now(), current_inventory_id=None,
-                    current_filename=None, message=f"Converted {success}; failed {failed}",
-                    options_json=json.dumps({"preset": preset, "target_mb": target_mb, "inventory_ids": inventory_ids, "finished_ids": sorted(finished_ids), "outputs": outputs}, ensure_ascii=False))
+                    current_filename=None, done=len(done), success=success, failed=failed, bytes_done=total_bytes,
+                    message=(f"Joined {len(done)} parts into one video" if join and success else f"Converted {success}; failed {failed}"),
+                    options_json=opts())
+        _notify_end(job_id, success, failed, len(done) if join else 0)
     except Exception as exc:
         if _EXITING.is_set():
             return                         # the app quits: the job stays 'running' and resumes at the next start
@@ -425,7 +701,29 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
         _job_update(job_id, status="cancelled" if cancelled else "failed", stage="cancelled" if cancelled else "error",
                     finished_at=_now(), error=None if cancelled else str(exc)[:1500],
                     message="Conversion cancelled" if cancelled else f"Conversion failed: {str(exc)[:300]}",
-                    options_json=json.dumps({"preset": preset, "target_mb": target_mb, "inventory_ids": inventory_ids, "finished_ids": sorted(finished_ids), "outputs": outputs}, ensure_ascii=False))
+                    options_json=opts())
+        if not cancelled:
+            _notify_end(job_id, success, max(1, failed), 0)
+    finally:
+        _RUN_START.pop(int(job_id), None)
+
+
+def _notify_end(job_id, ok, failed, joined) -> None:
+    """A Windows notification when a conversion that took more than a minute ends (Settings: notifications)."""
+    try:
+        from . import notify
+        from .config import APP_PORT
+        from .i18n import ui_language
+        with db() as con:
+            r = con.execute("SELECT started_at FROM jobs WHERE id=?", (int(job_id),)).fetchone()
+        t0 = _RUN_START.get(int(job_id), (time.time(), 0))[0]
+        try:
+            t0 = min(t0, datetime.fromisoformat(str(r["started_at"])).timestamp()) if r and r["started_at"] else t0
+        except Exception:
+            pass
+        notify.convert_finished(ok, failed, joined, time.time() - t0, f"http://127.0.0.1:{APP_PORT}/convert", ui_language() == "ru")
+    except Exception:
+        pass
 
 
 def recover_convert_jobs():
@@ -460,12 +758,13 @@ def recover_convert_jobs():
             except Exception:
                 continue
             if i>0 and i not in ids: ids.append(i)
+        paths=[str(x) for x in (opts.get("paths") or []) if str(x).strip()]
         preset=str(opts.get("preset") or "")
         target_mb=opts.get("target_mb")
-        if ids and preset in PRESETS:
+        if (ids or paths) and preset in PRESETS:
             _job_update(int(d["id"]),status="running",stage="resuming",message="Resuming conversion after restart…",
                         started_at=d.get("started_at") or _now(),finished_at=None,error=None,worker_pid=None,watchdog_retry_requested=0)
-            threading.Thread(target=_convert_worker,args=(int(d["id"]),ids,preset,target_mb),daemon=True,
+            threading.Thread(target=_convert_worker,args=(int(d["id"]),ids,preset,target_mb,paths,bool(opts.get("join"))),daemon=True,
                              name=f"ArchivistConvert{int(d['id'])}").start()
             resumed+=1
         else:
@@ -546,44 +845,96 @@ def probe_local_media_meta(inventory_ids):
 def probe_local_durations(inventory_ids):
     return {k:int(v.get('duration_ms') or 0) for k,v in probe_local_media_meta(inventory_ids).items()}
 
-def start_convert_job(inventory_ids, preset="share_1080p", target_mb=None):
+MAX_FILES = 50
+_RUN_START: dict = {}          # job id -> (when this run started, bytes done then): the time left is measured from it
+
+
+def eta_seconds(job: dict) -> int | None:
+    """About how long the running job still needs (from its pace in this run), or None while that is not known yet."""
+    try:
+        if str(job.get("status")) != "running":
+            return None
+        t0, b0 = _RUN_START.get(int(job["id"])) or (None, 0)
+        total, done = int(job.get("bytes_total") or 0), int(job.get("bytes_done") or 0)
+        if t0 is None or total <= 0:
+            return None
+        el, moved = time.time() - t0, done - b0
+        if el < 15 or moved <= 0 or moved < 0.02 * max(1, total - b0):
+            return None
+        return int(el * max(0, total - done) / moved)
+    except Exception:
+        return None
+
+
+def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, paths=None, join=False):
     ids = []
     seen = set()
-    for x in inventory_ids:
+    for x in inventory_ids or []:
         try:
             i = int(x)
         except Exception:
             continue
         if i > 0 and i not in seen:
             ids.append(i); seen.add(i)
-    if not ids:
+    files, seen_f = [], set()
+    for x in paths or []:
+        f = Path(str(x))
+        k = os.path.normcase(str(f))
+        if k in seen_f:
+            continue
+        if not f.is_file():
+            raise ValueError("This video is not there: " + f.name)
+        files.append(f); seen_f.add(k)
+    if not ids and not files:
         raise ValueError("Select at least one video")
-    if len(ids) > 50:
-        raise ValueError("Convert up to 50 videos at once")
+    if len(ids) + len(files) > MAX_FILES:
+        raise ValueError(f"Convert up to {MAX_FILES} videos at once")
     if preset not in PRESETS:
         raise ValueError("Unknown preset")
     target_mb = int(target_mb) if target_mb else None
     if target_mb is not None and not (50 <= target_mb <= 100000):
         raise ValueError("Target size must be between 50 MB and 100000 MB")
+    join = bool(join)
+    if join:
+        if len(ids) + len(files) < 2:
+            raise ValueError("Choose at least two videos to join into one")
+        items = _job_items(ids, [str(f) for f in files])
+        if len(items) < len(ids) + len(files):
+            raise ValueError("None of the selected videos can be converted (private, rejected or removed)")
+        missing = [name for _, name, src, _ in items if not src]
+        if missing:
+            raise ValueError("This video is not there: " + missing[0])
+        items.sort(key=lambda it: part_key(it[1]))           # the order of the recording (GoPro), else by name
+        ffmpeg = _ffmpeg_exe()
+        if not ffmpeg:
+            raise RuntimeError("FFmpeg is not available")
+        join_check(ffmpeg, [src for _, _, src, _ in items])    # said now, not after an hour
+        ids = [k for k, _, _, _ in items if isinstance(k, int)]
+        files = [Path(k[2:]) for k, _, _, _ in items if isinstance(k, str)]
     with db() as con:
         con.execute("BEGIN IMMEDIATE")     # the "nothing runs" check and the new job as one step (two clicks: one job)
-        ok_ids = {int(r["id"]) for r in con.execute(
-            f"SELECT id FROM inventory WHERE id IN ({','.join('?' for _ in ids)}) AND excluded=0 AND media_type='video' "
-            "AND COALESCE(analysis_status,'')<>'private' AND private_path IS NULL AND rejected_path IS NULL", ids).fetchall()}
-        ids = [i for i in ids if i in ok_ids]
-        if not ids:
+        if ids:
+            ok_ids = {int(r["id"]) for r in con.execute(
+                f"SELECT id FROM inventory WHERE id IN ({','.join('?' for _ in ids)}) AND excluded=0 AND media_type='video' "
+                "AND COALESCE(analysis_status,'')<>'private' AND private_path IS NULL AND rejected_path IS NULL", ids).fetchall()}
+            if join and len(ok_ids) < len(ids):
+                raise ValueError("None of the selected videos can be converted (private, rejected or removed)")
+            ids = [i for i in ids if i in ok_ids]
+        if not ids and not files:
             raise ValueError("None of the selected videos can be converted (private, rejected or removed)")
         busy = con.execute("SELECT id,kind FROM jobs WHERE status IN ('running','queued') ORDER BY id LIMIT 1").fetchone()
         if busy:
             raise RuntimeError(f"Job #{busy['id']} ({busy['kind']}) is already running")
+        n = len(ids) + len(files)
         cur = con.execute(
             "INSERT INTO jobs(kind,status,created_at,started_at,stage,message,total,done,success,failed,bytes_total,bytes_done,options_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
-            ("convert", "running", _now(), _now(), "starting", "Starting converter…", len(ids), 0, 0, 0, 0, 0,
-             json.dumps({"preset": preset, "target_mb": target_mb, "inventory_ids": ids, "finished_ids": [], "outputs": []}))
+            ("convert", "running", _now(), _now(), "starting", "Starting converter…", 1 if join else n, 0, 0, 0, 0, 0,
+             _options(preset, target_mb, ids, [str(f) for f in files], join, set(), []))
         )
         job_id = int(cur.lastrowid)
         con.commit()
-    threading.Thread(target=_convert_worker, args=(job_id, ids, preset, target_mb), daemon=True, name=f"ArchivistConvert{job_id}").start()
+    threading.Thread(target=_convert_worker, args=(job_id, ids, preset, target_mb, [str(f) for f in files], join), daemon=True,
+                     name=f"ArchivistConvert{job_id}").start()
     return job_id
 
 
@@ -615,4 +966,5 @@ def convert_job_snapshot(job_id=None):
     total_bytes = int(d.get("bytes_total") or 0)
     done_bytes = int(d.get("bytes_done") or 0)
     d["percent"] = round(done_bytes * 100.0 / total_bytes, 1) if total_bytes else (100.0 if d.get("status") == "finished" else 0.0)
+    d["eta_s"] = eta_seconds(d)
     return d

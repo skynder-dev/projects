@@ -894,6 +894,12 @@ PHRASES = {
     "The word being said on a color block": "Сказанное слово на цветной плашке",
     "Captions in two more looks: one word at a time, big (like TikTok), and the word being said on a color block.":
         "Ещё два вида субтитров: по одному слову, крупно (как в TikTok), и сказанное слово на цветной плашке.",
+    "Convert: “Join into one video” - parts of one recording (a GoPro splits a long one into files of 4 GB: GX010044, GX020044 …) become one video, in the recording's order.":
+        "Конвертация: «Склеить в одно видео» — части одной записи (GoPro делит длинную запись на файлы по 4 ГБ: GX010044, GX020044 …) становятся одним видео, в порядке записи.",
+    "Convert: “Choose videos on this PC…” converts any video on the computer without adding it to the library; “Stop” on a running conversion; the time left.":
+        "Конвертация: «Выбрать видео на компьютере…» сжимает любое видео без добавления в медиатеку; «Остановить» во время конвертации; сколько осталось.",
+    "Convert: big videos made smaller on an NVIDIA graphics card (much faster; if the card can't, the processor makes them as before); a Windows notification when a long conversion is ready.":
+        "Конвертация: большие видео сжимаются на видеокарте NVIDIA (намного быстрее; если видеокарта не может — процессором, как раньше); уведомление Windows, когда долгая конвертация готова.",
     "Convert: “Show in folder” and “Open video” next to each converted file, and “Open the folder” at the top; the last job keeps its list of files until “Remove from the page” (the files stay in the folder).":
         "Конвертация: «Показать в папке» и «Открыть видео» у каждого готового файла и «Открыть папку» вверху; список последней конвертации остаётся, пока не нажать «Убрать со страницы» (файлы остаются в папке).",
     "Video with a voice-over": "Видео с озвучкой", "Video with captions": "Видео с субтитрами",

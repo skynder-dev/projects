@@ -84,3 +84,23 @@ def reel_finished(project_title: str, ok: bool, elapsed_s: float, url: str, ru: 
     text = (project_title or "MediaEngine") + (" · нажми, чтобы открыть" if ru else " · click to open")
     threading.Thread(target=show, args=(title, text, url), daemon=True, name="notify").start()
     return True
+
+
+def convert_finished(ok: int, failed: int, joined: int, elapsed_s: float, url: str, ru: bool) -> bool:
+    """A conversion (Convert page) that took more than a minute ended: how many videos are ready, a click opens the
+    page with their "Show in folder" buttons. In the background; True when a notification was started."""
+    if not enabled() or float(elapsed_s or 0) < MIN_SECONDS or ok + failed <= 0:
+        return False
+    if not ok:
+        title = "Конвертация не удалась" if ru else "The conversion failed"
+    elif failed:
+        title = (f"Готово: {ok}, не получилось: {failed}" if ru else f"Ready: {ok}, failed: {failed}")
+    else:
+        title = "Конвертация готова" if ru else "Your videos are converted"
+    if joined and ok:
+        what = (f"Склеено в одно видео ({joined} ч.)" if ru else f"{joined} parts joined into one video")
+    else:
+        what = (f"Видео: {ok}" if ru else f"{ok} video{'s' if ok != 1 else ''}")
+    text = what + (" · нажми, чтобы открыть" if ru else " · click to open")
+    threading.Thread(target=show, args=(title, text, url), daemon=True, name="notify").start()
+    return True

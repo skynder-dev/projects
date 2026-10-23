@@ -8,7 +8,7 @@ the VFR clip from <fixtures_dir>/phone. Checks: output size cap, frame rate kept
 """
 from __future__ import annotations
 
-import hashlib, json, os, subprocess, sys
+import hashlib, json, os, subprocess, sys, time
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -86,6 +86,18 @@ def main():
         px = lambda x, y: tuple(raw[(y * 128 + x) * 3:(y * 128 + x) * 3 + 3]) if len(raw) == 128 * 72 * 3 else None
         red, grey = px(12, 8), px(115, 8)
         check("convert_hdr_hlg_normal_colours", red and grey and red[0] >= 160 and red[1] <= 70 and 100 <= grey[1] <= 160, (red, grey))
+    # the NVIDIA way taken where this PC has no such card (as on the test machine): the conversion is made on the
+    # processor instead, whole and right
+    from archivist import converter as cv0
+    cv0._GPU[:] = [True]
+    try:
+        gres = convert_file(big, "share_1080p", output_dir=out_dir)
+    finally:
+        cv0._GPU[:] = []
+    gv = [x for x in _probe(Path(gres["output"])).get("streams", []) if x.get("codec_type") == "video"][0]
+    gdur = float(_probe(Path(gres["output"]))["format"]["duration"])
+    check("convert_card_failure_falls_back_to_processor", gres["made_on"] in ("cpu", "nvidia") and (int(gv["width"]), int(gv["height"])) == (1920, 1080)
+          and abs(gdur - 8.0) <= 0.15 and frames(ff, gres["output"]) >= frames(ff, big) - 1, (gres["made_on"], gv.get("width"), gv.get("height"), gdur))
     check("convert_no_part_files", not list(out_dir.glob("*.part*")))
     # two conversions of one video at the same moment: two outputs (each name reserved), both whole
     import threading
@@ -122,6 +134,77 @@ def main():
     cv._sweep_converted(out_dir)
     check("convert_start_sweeps_interrupted_names_only", not (out_dir / "x_share_1080p.mp4").exists()
           and not (out_dir / "y_share_1080p.part.mp4").exists() and all(Path(o).is_file() for o in both))
+    # parts of one recording, as a GoPro splits a long one (GX010077, GX020077, GX030077), joined into one video: the
+    # whole length, every frame, the sound in step after every join; the parts in a folder with an apostrophe
+    from archivist.converter import join_files, join_check, part_key, gopro_recording, start_convert_job, convert_job_snapshot
+    sys.path.insert(0, str(HERE))
+    from av_sync_check import flashes, beeps
+    whole = src_dir / "whole_sync.mp4"
+    if not whole.exists():
+        subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=640x360:rate=30", "-f", "lavfi", "-i",
+                        "aevalsrc='0.3*sin(2*PI*260*t)+if(lt(mod(t-0.3,1),0.04),0.9*sin(2*PI*1000*t),0)':s=48000", "-t", "14",
+                        "-vf", "drawbox=x=0:y=0:w=iw:h=ih:color=white:t=fill:enable='lt(mod(t-0.3,1),0.0333)'",
+                        "-c:v", "libx264", "-preset", "ultrafast", "-g", "30", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k",
+                        "-shortest", str(whole)], check=True)
+    rec = src_dir / "O'Brien — части"
+    rec.mkdir(exist_ok=True)
+    for f in rec.glob("*"):
+        f.unlink()
+    subprocess.run([ff, "-v", "error", "-y", "-i", str(whole), "-map", "0", "-c", "copy", "-f", "segment", "-segment_times", "4.6,9.4",
+                    "-segment_start_number", "1", "-reset_timestamps", "1", str(rec / "GX%02d0077.MP4")], check=True)
+    parts = sorted(rec.glob("GX*.MP4"), key=lambda q: part_key(q.name), reverse=False)
+    check("join_parts_in_recording_order", [q.name for q in parts] == ["GX010077.MP4", "GX020077.MP4", "GX030077.MP4"]
+          and gopro_recording([q.name for q in parts]) == "0077", [q.name for q in parts])
+    res = join_files(parts, "share_1080p", output_dir=out_dir)
+    jo = Path(res["output"])
+    dur = float(_probe(jo)["format"]["duration"])
+    check("join_whole_length_one_file", abs(dur - 14.0) <= 0.15 and res["joined"] == 3 and "_joined_" in jo.name
+          and res["source_bytes"] == sum(q.stat().st_size for q in parts), (dur, jo.name, res["source_bytes"]))
+    fs, fo = frames(ff, whole), frames(ff, jo)
+    check("join_every_frame", abs(fo - fs) <= 2, (fs, fo))
+    fl, bp = flashes(ff, jo), beeps(ff, jo)
+    offs = [min((b - f for b in bp), key=abs) for f in fl] if bp else []
+    n_src = len(flashes(ff, whole))       # (a flash frame may fall between frames in the source too)
+    check("join_sound_in_step_after_every_join", n_src >= 10 and len(fl) == n_src and bool(offs) and all(-0.025 <= o <= 0.040 for o in offs),
+          (n_src, len(fl), [round(o, 3) for o in offs]))
+    vd_j, ad_j = av_durations(jo, ff, 30.0)
+    dec = subprocess.run([ff, "-v", "error", "-i", str(jo), "-f", "null", "-"], capture_output=True, text=True)
+    check("join_sound_as_long_as_picture_decodes_clean", ad_j is not None and abs(vd_j - ad_j) <= 0.1 and not dec.stderr.strip(),
+          (vd_j, ad_j, dec.stderr[-300:]))
+    other = fx / "phone" / "Отпуск — пляж.mp4"
+    try:
+        join_check(ff, [parts[0], other])
+        refused = None
+    except ValueError as exc:
+        refused = str(exc)
+    check("join_refuses_different_videos_naming_one", bool(refused) and refused.endswith("Different: " + other.name), refused)
+    # the same through a converter job of files chosen on this PC (not in the library), given in the wrong order
+    from archivist.db import init_db
+    init_db()
+
+    def wait_job(jid):
+        for _ in range(600):
+            j = convert_job_snapshot(jid)
+            if j["status"] in ("finished", "failed", "cancelled"):
+                return j
+            time.sleep(0.5)
+        return convert_job_snapshot(jid)
+    jj = wait_job(start_convert_job([], "small_720p", paths=[str(q) for q in reversed(parts)], join=True))
+    outs = (jj.get("options") or {}).get("outputs") or []
+    check("join_job_of_chosen_files", jj["status"] == "finished" and len(outs) == 1 and outs[0].get("joined") == 3
+          and [Path(x).name for x in outs[0].get("sources", [])] == ["GX010077.MP4", "GX020077.MP4", "GX030077.MP4"]
+          and jj["message"] == "Joined 3 parts into one video" and Path(outs[0]["output"]).is_file(), (jj["status"], jj["message"], outs))
+    jn = wait_job(start_convert_job([], "small_720p", paths=[str(parts[0]), str(parts[1])]))
+    outs = (jn.get("options") or {}).get("outputs") or []
+    check("convert_job_of_chosen_files_one_by_one", jn["status"] == "finished" and len(outs) == 2 and not any(o.get("joined") for o in outs)
+          and all(Path(o["output"]).is_file() for o in outs), (jn["status"], outs))
+    try:
+        start_convert_job([], "small_720p", paths=[str(parts[0]), str(other)], join=True)
+        said = None
+    except ValueError as exc:
+        said = str(exc)
+    check("join_job_refused_at_once", bool(said) and other.name in said, said)
+    check("join_leaves_no_part_list", not list((work / "home" / "data").glob("join-*.txt")))
     print(json.dumps({"passed": sum(checks), "total": len(checks)}))
     return 0 if all(checks) else 1
 

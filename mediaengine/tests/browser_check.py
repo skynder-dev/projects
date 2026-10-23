@@ -204,7 +204,8 @@ def main():
         pg.route("**/api/convert/reveal", _caught)
         pg.goto(base + "/convert")
         outs = [{"source": str(src / "a.mp4"), "output": str(work / "home" / "Converted" / "работа_share_1080p.mp4"),
-                 "source_bytes": 50 * 2**20, "output_bytes": 2 * 2**20, "saved_percent": 95.6}]
+                 "source_bytes": 50 * 2**20, "output_bytes": 2 * 2**20, "saved_percent": 95.6, "joined": 4}]
+        stop_shown = pg.query_selector("[data-cv=stop]") is not None
         with _db() as con:
             con.execute("UPDATE jobs SET status='finished',bytes_done=100,options_json=? WHERE id=?", (json.dumps({"outputs": outs}), cj))
             con.commit()
@@ -217,13 +218,18 @@ def main():
             pg.wait_for_timeout(800)
             cv = ("Показать в папке" in txt and "Открыть видео" in txt and "меньше на 95,6%" in txt and "МБ" in txt
                   and sent == [{"job": cj, "i": 0, "open": False}, {"job": cj, "i": 0, "open": True}]
-                  and "Открыть папку" in pg.inner_text(".pagehead") and "Убрать со страницы" in txt and "95.6" not in txt)
+                  and "Открыть папку" in pg.inner_text(".pagehead") and "Убрать со страницы" in txt and "95.6" not in txt
+                  and "склеено из 4 частей" in txt and stop_shown and pg.query_selector("[data-cv=stop]") is None)
             if cv is True:                      # "Remove from the page": the list goes, and stays gone after a reload
                 pg.click("[data-cv=hide]")
                 pg.wait_for_timeout(800)
                 gone = pg.query_selector("#convertStatus") is None
                 pg.goto(base + "/convert")
                 cv = gone and pg.query_selector("#convertStatus") is None or f"still shown (gone={gone})"
+            if cv is True:                      # join into one / choose on this PC, in Russian; the order of a recording
+                order = pg.evaluate("joinOrder(['GX020044.MP4','GX100044.MP4','GX010044.MP4','GOPR0012.MP4','GP010012.MP4'])")
+                cv = ("Склеить в одно видео" in pg.inner_text("label[title]") and "Выбрать видео на компьютере" in pg.inner_text("#pickConvert")
+                      and order == ["GOPR0012.MP4", "GP010012.MP4", "GX010044.MP4", "GX020044.MP4", "GX100044.MP4"]) or f"join controls: {order}"
         except Exception as exc:
             cv = str(exc)[:200]
         check("converted_files_show_in_folder_in_a_real_browser", cv is True, (cv, sent, pg.inner_text("#convertResults")[:300] if pg.query_selector("#convertResults") else None))

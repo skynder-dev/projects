@@ -918,6 +918,99 @@ def main():
             gone_ = "data-done='1'" not in _c.get("/convert", headers=H_).get_data(as_text=True)
         check("convert: a finished job's list can be taken off the page (files stay)", (h1, h2, h3, gone_) == (400, 404, 200, True)
               and made_.is_file(), (h1, h2, h3, gone_))
+        # "Choose videos on this PC…": the Windows Open window gives the files (never the page); nothing chosen says so;
+        # the page's preset, size and "Join into one video" go with them; the order of a GoPro recording; Stop on a
+        # running job's card, the join choice and the hint on the page
+        from archivist import converter as _cv
+        calls_ = []
+        real_pick_, real_start_ = _ae2.pick_files, _web.start_convert_job
+        try:
+            _ae2.pick_files = lambda *a, **k: []
+            with _ca().test_client() as _c:
+                n1 = _c.post("/api/convert/pick", json={"preset": "small_720p"}, headers=H_).get_json()
+            _ae2.pick_files = lambda *a, **k: ["C:\\Work\\GX020044.MP4", "C:\\Work\\GX010044.MP4"]
+            _web.start_convert_job = lambda ids, preset, target, paths=None, join=False: calls_.append((ids, preset, target, paths, join)) or 77
+            with _ca().test_client() as _c:
+                n2 = _c.post("/api/convert/pick", json={"preset": "small_720p", "target_mb": 300, "join": True}, headers=H_).get_json()
+                n3 = _c.post("/api/convert/start", json={"ids": [5, 6], "preset": "hq_1080p", "join": "yes"}, headers=H_).get_json()
+        finally:
+            _ae2.pick_files, _web.start_convert_job = real_pick_, real_start_
+        check("convert: files chosen on this PC go with the page's choices; nothing chosen says so",
+              n1 == {"ok": False, "error": "No videos chosen."} and n2 == {"ok": True, "job_id": 77} and n3 == {"ok": True, "job_id": 77}
+              and calls_ == [([], "small_720p", 300, ["C:\\Work\\GX020044.MP4", "C:\\Work\\GX010044.MP4"], True),
+                             ([5, 6], "hq_1080p", None, None, False)], (n1, n2, n3, calls_))
+        order_ = sorted(["GX040044.MP4", "GX010044.MP4", "GX030044.MP4", "GX020044.MP4"], key=_cv.part_key)
+        check("convert: parts of one GoPro recording in its order (older GoPros too), other files by name",
+              order_ == ["GX010044.MP4", "GX020044.MP4", "GX030044.MP4", "GX040044.MP4"]
+              and sorted(["GP010012.MP4", "GOPR0012.MP4"], key=_cv.part_key) == ["GOPR0012.MP4", "GP010012.MP4"]
+              and sorted(["clip 10.mp4", "clip 2.mp4"], key=_cv.part_key) == ["clip 2.mp4", "clip 10.mp4"]
+              and _cv.gopro_recording(order_) == "0044" and _cv.gopro_recording(["GX010044.MP4", "GX010045.MP4"]) is None
+              and _cv.gopro_recording(["GX010044.MP4"]) is None, order_)
+        gp_ = lambda **k: _cv.gpu_plan({"video": "hevc", "pix": "yuvj420p", "size": "3840x2160", "sar": "1:1", "rotation": 0, **k}, "share_1080p")
+        check("convert: the NVIDIA way only for what it does surely (8-bit H.264/HEVC made smaller, upright, square pixels)",
+              gp_()["size"] == (1920, 1080) and gp_(size="2160x3840")["size"] == (1080, 1920) and gp_(size="2704x1520")["size"] == (1920, 1078)
+              and "out_range=tv" in gp_()["vf"] and gp_()["codec"][gp_()["codec"].index("-cq") + 1] == "27"
+              and gp_(pix="yuv420p10le") is None and gp_(rotation=90) is None and gp_(sar="4:3") is None and gp_(video="prores") is None
+              and gp_(size="1920x1080") is None
+              and _cv.gpu_plan({"video": "h264", "pix": "yuv420p", "size": "3840x2160", "sar": "1:1", "rotation": 0}, "keep_resolution") is None
+              and _cv.gpu_plan({"video": "h264", "pix": "yuv420p", "size": "3840x2160", "sar": "1:1", "rotation": 0}, "share_1080p", hdr="HLG") is None,
+              gp_())
+        update_config(lambda c: c.setdefault("convert", {}).update(gpu=False))
+        off_ = _cv.gpu_ok()
+        update_config(lambda c: c["convert"].pop("gpu", None))
+        check("convert: the NVIDIA way can be turned off (convert.gpu = false)", off_ is False, off_)
+        try:
+            _cv.start_convert_job([], "small_720p", paths=[str(made_)], join=True)
+            one_ = None
+        except ValueError as exc:
+            one_ = str(exc)
+        try:
+            _cv.start_convert_job([], "small_720p", paths=[str(conv_ / "nothing here.mp4")])
+            gone2_ = None
+        except ValueError as exc:
+            gone2_ = str(exc)
+        check("convert: a join needs two videos; a chosen file that is gone is named", one_ == "Choose at least two videos to join into one"
+              and gone2_ == "This video is not there: nothing here.mp4", (one_, gone2_))
+        with _db() as con:
+            rj_ = con.execute("INSERT INTO jobs(kind,status,created_at,started_at,stage,message,total,done,success,failed,bytes_total,bytes_done,options_json) "
+                              "VALUES('convert','running',?,?,'converting','Joining 4 parts · 12%',1,0,0,0,100,12,?)", (_now(), _now(), _js.dumps({"join": True}))).lastrowid
+            con.commit()
+        with _ca().test_client() as _c:
+            page2_ = _c.get("/convert", headers=H_).get_data(as_text=True)
+        with _db() as con:
+            con.execute("UPDATE jobs SET status='cancelled' WHERE id=?", (rj_,)); con.commit()
+        import time as _tm
+        from archivist import notify as _nf
+        _cv._RUN_START[999] = (_tm.time() - 60, 0)
+        eta_ = _cv.eta_seconds({"id": 999, "status": "running", "bytes_total": 1000, "bytes_done": 250})
+        eta_new_ = _cv.eta_seconds({"id": 999, "status": "running", "bytes_total": 1000, "bytes_done": 10})
+        _cv._RUN_START[999] = (_tm.time() - 5, 0)
+        eta_early_ = _cv.eta_seconds({"id": 999, "status": "running", "bytes_total": 1000, "bytes_done": 500})
+        _cv._RUN_START.pop(999, None)
+        check("convert: time left from this run's pace (not in the first seconds, not before 2%)",
+              eta_ is not None and 175 <= eta_ <= 185 and eta_new_ is None and eta_early_ is None, (eta_, eta_new_, eta_early_))
+        shown_ = []
+        real_show_ = _nf.show
+        _nf.show = lambda title, text, url="", timeout_s=20: shown_.append((title, text, url)) or True
+        try:
+            import threading as _th
+            a_ = _nf.convert_finished(4, 0, 0, 300, "http://127.0.0.1:8775/convert", True)
+            b_ = _nf.convert_finished(1, 0, 4, 300, "u", False)
+            c_ = _nf.convert_finished(4, 0, 0, 20, "u", True)            # under a minute: watched anyway
+            update_config(lambda c: c.setdefault("auto_edit", {}).update(notify=False))
+            d_ = _nf.convert_finished(4, 0, 0, 300, "u", True)
+            update_config(lambda c: c.setdefault("auto_edit", {}).update(notify=True))
+            for t_ in _th.enumerate():
+                if t_.name == "notify":
+                    t_.join(5)
+        finally:
+            _nf.show = real_show_
+        check("convert: a Windows notification when a long conversion ends (off in Settings, not for a short one)",
+              (a_, b_, c_, d_) == (True, True, False, False) and ("Конвертация готова", "Видео: 4 · нажми, чтобы открыть", "http://127.0.0.1:8775/convert") in shown_
+              and ("Your videos are converted", "4 parts joined into one video · click to open", "u") in shown_, (a_, b_, c_, d_, shown_))
+        check("convert: a running job has Stop; the page has Join into one video and Choose videos on this PC",
+              f"data-job='{rj_}'" in page2_ and "data-cv='stop'" in page2_ and "id='joinOne'" in page2_ and "id='pickConvert'" in page2_,
+              page2_[page2_.find("convertStatus") - 40:][:300])
     finally:
         _ae2.open_path = real_open_
     print({"passed": sum(checks), "total": len(checks)})
