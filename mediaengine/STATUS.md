@@ -769,12 +769,16 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   pixels, true BT.709 colors, fields made whole), Turn the picture (90° right / left, 180°), TV levels in every
   copy. FFmpeg 7.1 (the program's) keeps a camera's full range (GoPro / phones: yuvj420p) unless told: the Windows
   run of 78acb39 found a GoPro-like 4K clip converted to Y 2..240; fixed in a9661ad (out_range=tv, -color_range tv),
-  convert 45/45 on Windows; 4K60 HEVC 4 s in two parts -> 1080p: 3.9 s on the runner's processor. Run 40018917779
-  (06a07fe: only the Edge check's expectation of which picture is saved changed) builds it.
+  convert 45/45 on Windows; 4K60 HEVC 4 s in two parts -> 1080p: 3.9 s on the runner's processor.
+  Published: Windows CI run 40018917779 (b205, commit 06a07fe) fully green, served (ZIP 3,951,960 bytes; the same
+  runtime b9810d447e8c86c5 - the Update button is enough).
   **Found by the same run - the Auto Edit engine's way ("format=yuv420p ... -pix_fmt yuv420p") keeps full range on
   7.1 too** (the probe's piece came out yuvj420p(pc)): reels from GoPro / phone footage are made of full-range
-  pieces. Not fixed yet - it touches every cut of the engine (candidate pieces, manual trims, previews, the render)
-  and the clip caches' keys; to do with the engine regression and E2E checks.
+  pieces. Fixed where the picture leaves the engine (7ec7507): the reel render puts every piece into 16-235
+  (scale=out_range=tv before format=yuv420p, -color_range tv; a single full-range piece re-encoded, not copied) - so
+  cached pieces from earlier builds need no new keys; Voice-over and text (_burn) the same before the text is drawn.
+  convert_check builds a two-piece reel with a dissolve, a one-piece reel and a finished video from full-range 4K
+  parts (the real test is FFmpeg 7.1 on Windows); locally convert 46/46, voice 191/191, av_sync PASS.
 
 ## Evidence
 
@@ -971,7 +975,7 @@ b201 is published (Convert: join parts of a recording, choose on this PC, own fo
 time left, NVIDIA; b193 Show in folder / Open video; two more caption looks; b189's night
 fixes; Qwen3-TTS for 9_2 since b184). The owner presses Update; on Voice-over and text
 he installs the add-on (about 13 GB, both engines) or presses "Download the new voice engine" (4.7 GB). English only.
-Next: when run 40018917779 is green, tell the owner (Save this picture, Turn, TV levels); then the engine's TV
-levels for full-range footage (every cut + cache keys, engine regression / E2E). Still open: the first voice-over on
+b205 is published (Save this picture, Turn the picture, TV levels in converted copies). Next: the Windows run of
+7ec7507 (TV levels in reels and finished videos) - when green, tell the owner. Still open: the first voice-over on
 his RTX 3060; Convert on his PC (Explorer, clipboard, the NVIDIA way's speed). Social integration paused by the owner (do not touch Social).
 Through the app's pages in the desktop app's browser pane only (never computer use).
