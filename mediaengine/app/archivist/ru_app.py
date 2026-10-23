@@ -269,6 +269,10 @@ APP_PHRASES: dict[str, str] = {
     "These videos are parts of one GoPro recording - they can be joined into one video.":
         "Эти видео — части одной записи GoPro: их можно склеить в одно видео.",
     "Order:": "Порядок:",
+    "Save this picture": "Сохранить кадр", "That moment is not in the video": "Такого момента в видео нет",
+    "This video is not on this computer now.": "Этого видео сейчас нет на компьютере.", "Could not save": "Не удалось сохранить",
+    "Only the part between start and end is converted. Save this picture: a photo of the moment in the player (or at the start), into the folder of converted videos.":
+        "Конвертируется только часть между началом и концом. «Сохранить кадр» — фото момента в плеере (или в начале) в папку готовых файлов.",
     "This size is small for videos this long: the picture will be blurry.": "Для такой длины это маленький размер: картинка будет размытой.", "Without sound": "Без звука", "without sound": "без звука",
     "Cut…": "Обрезать…", "Start here": "Начало здесь", "End here": "Конец здесь", "Whole video": "Всё видео",
     "Only the part between start and end is converted.": "Конвертируется только часть между началом и концом.",
@@ -647,6 +651,7 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"about (\d+) min left", r"примерно \1 мин осталось"), (r"about (\d+) h (\d+) min left", r"примерно \1 ч \2 мин осталось"),
     (r"joined from (\d+) parts", r"склеено из \1 ⟪\1|части|частей|частей⟫"),
     (r"cut (\d+:\d\d)–(\d+:\d\d)", r"фрагмент \1–\2"),
+    (r"Saved: (.+)", r"Сохранено: \1"),
     (r"The cut starts after the end of the video: (.+)", r"Обрезка начинается после конца видео: \1"),
     (r"The cut must be at least half a second: (.+)", r"Обрезанная часть должна быть не короче полсекунды: \1"),
     (r"Joining (\d+) parts into one video…", r"Склеиваю \1 ⟪\1|часть|части|частей⟫ в одно видео…"),

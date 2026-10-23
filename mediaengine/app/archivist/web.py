@@ -1566,8 +1566,8 @@ document.addEventListener('click',ev=>{const b=ev.target.closest('.cvCutBtn');if
   +"<div class='small muted cvNoPlay' style='display:none;white-space:normal'></div>"
   +"<div class='toolbar' style='margin-top:6px;flex-wrap:wrap'><button type='button' class='btn2' data-set='s'>Start here</button><input class='cvS' style='width:90px' placeholder='0:00'>"
   +"<button type='button' class='btn2' data-set='e'>End here</button><input class='cvE' style='width:90px'>"
-  +"<button type='button' class='btn2' data-set='x'>Whole video</button></div>"
-  +"<div class='small muted' style='white-space:normal'>Only the part between start and end is converted.</div>";
+  +"<button type='button' class='btn2' data-set='x'>Whole video</button><button type='button' class='btn2' data-set='f'>Save this picture</button></div>"
+  +"<div class='small muted' style='white-space:normal'>Only the part between start and end is converted. Save this picture: a photo of the moment in the player (or at the start), into the folder of converted videos.</div>";
  row.after(pan);const v=pan.querySelector('video'),S=pan.querySelector('.cvS'),E=pan.querySelector('.cvE');v.src='/media/'+id;if(full>0)E.placeholder=fmtT(full);
  v.addEventListener('error',()=>{const n=pan.querySelector('.cvNoPlay');n.style.display='block';n.textContent='This video does not play here - type the start and end (minutes:seconds).';v.style.display='none';pan.querySelectorAll("[data-set='s'],[data-set='e']").forEach(x=>x.style.display='none')});
  const c0=cutOf(ch);if(c0){S.value=fmtT(c0[0]);E.value=fmtT(c0[1])}
@@ -1577,6 +1577,9 @@ document.addEventListener('click',ev=>{const b=ev.target.closest('.cvCutBtn');if
   else{toast('The start must be at least half a second before the end.');return}
   showCut(ch);updSel()}
  pan.addEventListener('click',e2=>{const t=e2.target.closest('[data-set]');if(!t)return;
+  if(t.dataset.set==='f'){const at=(v.style.display!=='none'&&v.readyState>=1)?(v.currentTime||0):(parseT(S.value)||0);t.disabled=true;
+   fetch('/api/convert/frame',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:Number(id),t:at})}).then(r=>r.json())
+   .then(x=>{toast(x.ok?'Saved: '+x.name:(x.error||'Could not save'))}).catch(e=>toast(String(e))).finally(()=>{t.disabled=false});return}
   if(t.dataset.set==='s')S.value=fmtT(v.currentTime||0);else if(t.dataset.set==='e')E.value=fmtT(v.currentTime||0);else{S.value='';E.value=''}apply()});
  S.addEventListener('change',apply);E.addEventListener('change',apply)});
 async function startConv(){const ids=checks().map(x=>Number(x.value));if(!ids.length){toast('Select at least one video');return}
@@ -1685,6 +1688,30 @@ pollConvert();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='
         from .auto_edit import open_path
         open_path(p,reveal=payload.get('open') is not True)
         return jsonify({'ok':True})
+
+    @app.post('/api/convert/frame')
+    def convert_frame():
+        """'Save this picture': one frame of a library video at the second shown in the player, as a JPEG in the
+        folder of converted videos."""
+        payload=_json_obj()
+        try:
+            iid,t=int(payload.get('id')),float(payload.get('t'))
+        except (TypeError,ValueError):
+            return jsonify({'ok':False,'error':'That moment is not in the video'}),400
+        with db() as con:
+            r=con.execute("SELECT * FROM inventory WHERE id=? AND excluded=0 AND media_type='video' AND private_path IS NULL "
+                          "AND rejected_path IS NULL AND COALESCE(analysis_status,'')<>'private'",(iid,)).fetchone()
+        src=next((Path(r[k]) for k in ('staging_path','archive_path','path') if r and r[k] and Path(r[k]).is_file()),None)
+        if not src:
+            return jsonify({'ok':False,'error':'This video is not on this computer now.'}),404
+        from .converter import save_frame
+        try:
+            out=save_frame(src,t)
+        except ValueError as exc:
+            return jsonify({'ok':False,'error':str(exc)}),400
+        except Exception as exc:
+            return jsonify({'ok':False,'error':str(exc)[:300]}),409
+        return jsonify({'ok':True,'name':out.name})
 
     @app.post('/api/convert/hide')
     def convert_hide():

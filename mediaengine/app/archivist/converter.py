@@ -47,6 +47,50 @@ def output_folder() -> Path:
     return Path(raw) if raw else HOME / "Converted"
 
 
+def save_frame(source, t: float, output_dir=None) -> Path:
+    """One picture of a video at t seconds, at the video's full size, as a JPEG next to the converted videos
+    ('<name>_frame_1m05s.jpg'; never over another file). Upright as the video is shown; HDR made normal."""
+    source = Path(source)
+    if not source.is_file():
+        raise FileNotFoundError(str(source))
+    ffmpeg = _ffmpeg_exe()
+    if not ffmpeg:
+        raise RuntimeError("FFmpeg is not available")
+    duration = float(probe_duration(source) or 0.0)
+    t = float(t)
+    if not (t == t) or t < 0 or (duration > 0 and t > duration):
+        raise ValueError("That moment is not in the video")
+    if duration > 0:
+        t = min(t, max(0.0, duration - 0.05))          # the very end: the last picture
+    folder = Path(output_dir) if output_dir else output_folder()
+    folder.mkdir(parents=True, exist_ok=True)
+    stem = f"{source.stem[:150]}_frame_{int(t) // 60}m{int(t) % 60:02d}s"
+    for n in range(1, 1000):
+        out = folder / (f"{stem}.jpg" if n == 1 else f"{stem}_{n}.jpg")
+        try:
+            with open(out, "xb"):
+                break
+        except FileExistsError:
+            continue
+    else:
+        raise RuntimeError("No free name in " + str(folder))
+    hdr = _hdr_kind(ffmpeg, source)
+    vf = ([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []) + ["format=yuvj420p"]
+    try:
+        cp = subprocess.run([str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-ss", f"{t:.3f}", "-i", str(source),
+                             "-frames:v", "1", "-vf", ",".join(vf), "-q:v", "2", "-update", "1", str(out)],
+                            capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=300, **process_kwargs())
+        if cp.returncode != 0 or not out.is_file() or out.stat().st_size < 100:
+            raise RuntimeError("FFmpeg could not take the picture: " + (cp.stderr or "").strip()[-300:])
+    except BaseException:
+        try:
+            out.unlink()
+        except OSError:
+            pass
+        raise
+    return out
+
+
 # the names this converter gives (a sweep in a folder of the person's own touches only these)
 _OUR_NAME = re.compile(r"_(?:share_1080p|small_720p|hq_1080p|keep|target_\d+mb)(?:_\d+)?(?:\.part)?\.mp4$", re.I)
 

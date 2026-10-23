@@ -202,6 +202,21 @@ def main():
     coffs = [min((b - f for b in cbp), key=abs) for f in cfl] if cbp else []
     check("convert_cut_only_that_part_in_step", abs(cdur - 6.0) <= 0.1 and cres["cut"] == [3.3, 9.3] and "_cut_" in Path(cres["output"]).name
           and len(cfl) >= 5 and abs(cfl[0]) <= 0.04 and all(-0.025 <= o <= 0.040 for o in coffs), (cdur, cres.get("cut"), [round(x, 3) for x in cfl], [round(o, 3) for o in coffs]))
+    # "Save this picture": a photo of one moment at the video's full size, upright, next to the converted videos
+    from archivist.converter import save_frame
+    from PIL import Image
+    ph = save_frame(whole, 3.3, out_dir)
+    with Image.open(ph) as im:
+        psize, light = im.size, sum(im.convert("L").resize((8, 8)).tobytes()) / 64
+    up = save_frame(fx / "phone" / "Отпуск — пляж.mp4", 1.0, out_dir)
+    with Image.open(up) as im:
+        usize = im.size
+    try:
+        save_frame(whole, 99, out_dir); beyond = None
+    except ValueError as exc:
+        beyond = str(exc)
+    check("save_a_picture_of_a_moment", ph.name == "whole_sync_frame_0m03s.jpg" and psize == (640, 360) and light > 200
+          and usize == (720, 1280) and beyond == "That moment is not in the video", (ph.name, psize, light, usize, beyond))
     # "Without sound": the copy has no sound at all (one video, and joined parts)
     mres = convert_file(parts[0], "small_720p", output_dir=out_dir, mute=True)
     jm = join_files(parts, "small_720p", output_dir=out_dir, mute=True)

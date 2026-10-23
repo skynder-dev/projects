@@ -269,6 +269,9 @@ def main():
                 pg.dispatch_event(f"#cvCut{vid} .cvE", "change")
                 print("INFO this browser does not play H.264: the cut's times were typed", flush=True)
             note = pg.inner_text(f".convertRow:has(.convertCheck[value='{vid}']) .cvCutNote")
+            pg.click(f"#cvCut{vid} [data-set=f]")                     # "Save this picture" (at 2 s)
+            pg.wait_for_function("document.getElementById('toast').textContent.indexOf('Сохранено')>=0", timeout=20_000)
+            pics = sorted(x.name for x in (work / "home" / "Converted").glob("*_frame_*.jpg"))
             pg.check("input[name=presetChoice][value=small_720p]")
             pg.click("#startConvert")
             pg.wait_for_url("**/convert", timeout=15_000)
@@ -283,7 +286,7 @@ def main():
             from archivist.auto_edit import _probe as _pr
             cdur = float(_pr(Path(outc["output"]))["format"]["duration"]) if outc.get("output") else 0
             cut_ok = (note == "фрагмент 0:02–0:05" and jr["status"] == "finished" and jo.get("cuts") == {str(vid): [2.0, 5.0]}
-                      and abs(cdur - 3.0) <= 0.1) or (note, jr["status"], jo.get("cuts"), cdur, outc)
+                      and abs(cdur - 3.0) <= 0.1 and pics == [clip.stem + "_frame_0m02s.jpg"]) or (note, jr["status"], jo.get("cuts"), cdur, outc, pics)
         except Exception as exc:
             cut_ok = str(exc)[:300]
         check("convert_a_part_of_a_video_in_a_real_browser", cut_ok is True, cut_ok)
