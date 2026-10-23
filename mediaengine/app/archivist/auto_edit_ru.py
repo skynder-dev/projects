@@ -894,6 +894,8 @@ PHRASES = {
     "The word being said on a color block": "Сказанное слово на цветной плашке",
     "Captions in two more looks: one word at a time, big (like TikTok), and the word being said on a color block.":
         "Ещё два вида субтитров: по одному слову, крупно (как в TikTok), и сказанное слово на цветной плашке.",
+    "Convert: “Turn the picture” - 90° right or left, or upside down (a camera mounted the other way).":
+        "Конвертация: «Повернуть картинку» — на 90° вправо или влево или вверх ногами (камера стояла иначе).",
     "Convert: “Save this picture” in Cut… - a photo of the moment in the player, at the video's full size, into the folder of converted videos.":
         "Конвертация: «Сохранить кадр» в «Обрезать…» — фото момента из плеера в полном размере видео, в папку готовых файлов.",
     "Convert: “Without sound” - the copy has no sound at all (wind, voices on site).":

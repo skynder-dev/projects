@@ -187,10 +187,14 @@ def _hdr_kind(ffmpeg, source) -> str | None:
         return None
 
 
-def _scale_args(preset: str, hdr: str | None = None, interlaced: bool = False):
+TURNS = {90: "transpose=1", 270: "transpose=2", 180: "hflip,vflip"}   # clockwise degrees -> FFmpeg filter
+
+
+def _scale_args(preset: str, hdr: str | None = None, interlaced: bool = False, turn: int = 0):
     cap = PRESETS[preset]["cap"]
     parts = ["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if interlaced else []   # camcorder fields -> frames
     parts += [HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []
+    parts += [TURNS[turn]] if turn in TURNS else []           # "Turn the picture" (after the video's own rotation)
     if cap:
         # Cap the long edge. 1920 => 1920x1080 landscape or 1080x1920 portrait.
         parts.append(f"scale='min({int(cap)},iw)':'min({int(cap)},ih)':force_original_aspect_ratio=decrease:force_divisible_by=2")
@@ -289,7 +293,7 @@ def _run_progress_inner(cmd, duration_s: float, progress_cb=None, cancel_cb=None
 
 
 def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None, cancel_cb=None, output_dir=None, job_id=None,
-                 cut=None, mute=False):
+                 cut=None, mute=False, turn=0):
     """One video converted (cut = (start, end) in seconds: only that part)."""
     source = Path(source)
     if preset not in PRESETS:
@@ -310,7 +314,7 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
         # FFmpeg seeks to the start (the picture from exactly there: everything is re-encoded) and reads that long
         input_args, tag, duration = ["-ss", f"{start:.3f}", "-t", f"{end - start:.3f}", "-i", str(source)], "cut", end - start
     out, made_on = _encode(ffmpeg, input_args, source, duration, preset, target_mb, progress_cb, cancel_cb, output_dir, job_id, tag=tag,
-                           mute=bool(mute))
+                           mute=bool(mute), turn=turn)
     src_size = source.stat().st_size
     if cut:                                    # the part's share of the file (the saving of the part, not of the whole)
         src_size = int(src_size * min(1.0, duration / max(0.001, float(probe_duration(source) or duration))))
@@ -325,6 +329,7 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
         "target_mb": int(target_mb) if target_mb else None,
         "made_on": made_on,
         **({"mute": True} if mute else {}),
+        **({"turn": int(turn)} if int(turn or 0) in TURNS else {}),
         **({"cut": [round(float(cut[0]), 3), round(min(float(cut[1]), float(probe_duration(source) or cut[1])), 3)]} if cut else {}),
     }
 
@@ -433,7 +438,7 @@ def join_check(ffmpeg, sources, beat=None) -> None:
 
 
 def join_files(sources, preset="share_1080p", target_mb=None, progress_cb=None, cancel_cb=None, output_dir=None, job_id=None,
-               beat=None, mute=False):
+               beat=None, mute=False, turn=0):
     """Several parts of one recording, in the given order, as ONE converted video (FFmpeg's concat demuxer: the parts
     follow each other with their own timing; the picture and sound are then made like any converted video)."""
     sources = [Path(x) for x in sources]
@@ -462,7 +467,7 @@ def join_files(sources, preset="share_1080p", target_mb=None, progress_cb=None, 
     listfile.write_text("".join("file '" + str(src.resolve()).replace("'", "'\\''") + "'\n" for src in sources), "utf-8")
     try:
         out, made_on = _encode(ffmpeg, ["-f", "concat", "-safe", "0", "-i", str(listfile)], sources[0], duration, preset, target_mb,
-                               progress_cb, cancel_cb, output_dir, job_id, tag="joined", mute=bool(mute))
+                               progress_cb, cancel_cb, output_dir, job_id, tag="joined", mute=bool(mute), turn=turn)
     finally:
         try:
             listfile.unlink()
@@ -475,6 +480,7 @@ def join_files(sources, preset="share_1080p", target_mb=None, progress_cb=None, 
         "sources": [str(src) for src in sources],
         "joined": len(sources),
         **({"mute": True} if mute else {}),
+        **({"turn": int(turn)} if int(turn or 0) in TURNS else {}),
         "output": str(out),
         "source_bytes": src_size,
         "output_bytes": out_size,
@@ -555,13 +561,14 @@ def gpu_plan(sig: dict, preset: str, hdr=None, interlaced=False) -> dict | None:
 
 
 def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb, progress_cb, cancel_cb, output_dir, job_id,
-            tag: str = "", mute: bool = False) -> Path:
+            tag: str = "", mute: bool = False, turn: int = 0) -> Path:
     """The picture and sound made with the preset (or to a size, two passes) into a new file in Converted; returns it
     and where the picture was made ("nvidia" / "cpu")."""
     hdr = _hdr_kind(ffmpeg, source)
     interlaced = _is_interlaced(ffmpeg, source)
     target_mb = int(target_mb) if target_mb else None
-    tag = "_".join(x for x in (tag, "nosound" if mute else "") if x)
+    turn = int(turn or 0) if int(turn or 0) in TURNS else 0
+    tag = "_".join(x for x in (tag, "turned" if turn else "", "nosound" if mute else "") if x)
     out = _unique_output(source, preset, target_mb, Path(output_dir) if output_dir else None, tag)   # reserved (empty)
     amap = [] if mute else ["-map", "0:a?"]                # "Without sound": no sound in the copy at all
     aenc = (lambda k: ["-an"]) if mute else (lambda k: ["-c:a", "aac", "-b:a", f"{int(k)}k"])
@@ -572,7 +579,7 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
         cfg = PRESETS[preset]
         common = [
             str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", *input_args,
-            "-map", "0:v:0", *amap, *_scale_args(preset, hdr, interlaced),
+            "-map", "0:v:0", *amap, *_scale_args(preset, hdr, interlaced, turn),
             "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "veryfast",
         ]
 
@@ -584,7 +591,7 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
             Path(passlog).parent.mkdir(parents=True, exist_ok=True)
             pass1 = [
                 str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", *input_args,
-                "-map", "0:v:0", *_scale_args(preset, hdr, interlaced),
+                "-map", "0:v:0", *_scale_args(preset, hdr, interlaced, turn),
                 "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "veryfast",
                 "-b:v", f"{video_k}k", "-maxrate", f"{int(video_k*1.25)}k", "-bufsize", f"{int(video_k*2)}k",
                 "-pass", "1", "-passlogfile", passlog, "-an", "-f", "null", os.devnull
@@ -599,7 +606,7 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
         else:
             plan = None
             try:
-                plan = gpu_plan(media_sig(ffmpeg, source), preset, hdr, interlaced) if gpu_ok() else None
+                plan = gpu_plan(media_sig(ffmpeg, source), preset, hdr, interlaced) if gpu_ok() and not turn else None
             except Exception:
                 plan = None
             if plan:
@@ -722,11 +729,12 @@ def _job_items(inventory_ids, paths):
     return items
 
 
-def _options(preset, target_mb, inventory_ids, paths, join, done, outputs, output_dir=None, cuts=None, mute=False) -> str:
+def _options(preset, target_mb, inventory_ids, paths, join, done, outputs, output_dir=None, cuts=None, mute=False, turn=0) -> str:
     return json.dumps({"preset": preset, "target_mb": target_mb, "inventory_ids": list(inventory_ids or []),
                        "paths": [str(x) for x in (paths or [])], "join": bool(join),
                        **({"output_dir": str(output_dir)} if output_dir else {}),
                        **({"cuts": cuts} if cuts else {}), **({"mute": True} if mute else {}),
+                       **({"turn": int(turn)} if int(turn or 0) in TURNS else {}),
                        "finished_ids": sorted(k for k in done if isinstance(k, int)),
                        "finished_paths": sorted(k[2:] for k in done if isinstance(k, str)),
                        "outputs": outputs}, ensure_ascii=False)
@@ -753,7 +761,8 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
         _sweep_ours(Path(sweep_first))     # a slow network folder never holds up the start; nothing is written meanwhile)
     cuts=prior.get("cuts") if isinstance(prior.get("cuts"),dict) else {}
     mute=prior.get("mute") is True
-    opts=lambda: _options(preset,target_mb,inventory_ids,paths,join,done,outputs,output_dir,cuts,mute)
+    turn=int(prior.get("turn") or 0) if str(prior.get("turn") or 0).isdigit() and int(prior.get("turn") or 0) in TURNS else 0
+    opts=lambda: _options(preset,target_mb,inventory_ids,paths,join,done,outputs,output_dir,cuts,mute,turn)
     try:
         ordered = _job_items(inventory_ids, paths)
         total_bytes = sum(size for _, _, _, size in ordered)
@@ -788,11 +797,11 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
                             raise RuntimeError("A part is not on this computer now: " + missing[0])
                         if len(parts) == 1:              # a recording of one file: converted as it is
                             res = convert_file(parts[0], preset, target_mb, progress_cb=prog_join, cancel_cb=lambda: _cancelled(job_id),
-                                               job_id=job_id, output_dir=output_dir, mute=mute)
+                                               job_id=job_id, output_dir=output_dir, mute=mute, turn=turn)
                         else:
                             res = join_files(parts, preset, target_mb, progress_cb=prog_join, cancel_cb=lambda: _cancelled(job_id),
                                              job_id=job_id, output_dir=output_dir, beat=lambda: _job_update(job_id, stage="converting"),
-                                             mute=mute)
+                                             mute=mute, turn=turn)
                         outputs.append(res)
                         success += 1
                         break
@@ -839,7 +848,8 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
             while True:
                 try:
                     result = convert_file(src, preset, target_mb, progress_cb=prog, cancel_cb=lambda: _cancelled(job_id), job_id=job_id,
-                                          output_dir=output_dir, cut=cuts.get(str(key)) if isinstance(key, int) else None, mute=mute)
+                                          output_dir=output_dir, cut=cuts.get(str(key)) if isinstance(key, int) else None, mute=mute,
+                                          turn=turn)
                     outputs.append(result); success += 1
                     break
                 except Exception as exc:
@@ -1073,7 +1083,8 @@ def _clean_cuts(cuts, ids) -> dict:
     return out
 
 
-def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, paths=None, join=False, cuts=None, mute=False):
+def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, paths=None, join=False, cuts=None, mute=False,
+                      turn=0):
     ids = []
     seen = set()
     for x in inventory_ids or []:
@@ -1102,6 +1113,12 @@ def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, 
     if target_mb is not None and not (50 <= target_mb <= 100000):
         raise ValueError("Target size must be between 50 MB and 100000 MB")
     join = bool(join)
+    try:
+        turn = int(turn or 0)
+    except (TypeError, ValueError):
+        turn = -1
+    if turn not in (0, *TURNS):
+        raise ValueError("Unknown turn")
     cuts = _clean_cuts(cuts, ids)
     if cuts and join:
         raise ValueError("A cut works when the videos are converted one by one (not joined into one).")
@@ -1144,7 +1161,7 @@ def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, 
         cur = con.execute(
             "INSERT INTO jobs(kind,status,created_at,started_at,stage,message,total,done,success,failed,bytes_total,bytes_done,options_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
             ("convert", "running", _now(), _now(), "starting", "Starting converter…", n_groups if join else n, 0, 0, 0, 0, 0,
-             _options(preset, target_mb, ids, [str(f) for f in files], join, set(), [], output_folder(), cuts, bool(mute)))
+             _options(preset, target_mb, ids, [str(f) for f in files], join, set(), [], output_folder(), cuts, bool(mute), turn))
         )
         job_id = int(cur.lastrowid)
         con.commit()

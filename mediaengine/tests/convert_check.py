@@ -217,6 +217,19 @@ def main():
         beyond = str(exc)
     check("save_a_picture_of_a_moment", ph.name == "whole_sync_frame_0m03s.jpg" and psize == (640, 360) and light > 200
           and usize == (720, 1280) and beyond == "That moment is not in the video", (ph.name, psize, light, usize, beyond))
+    # "Turn the picture": 90° right (a landscape video becomes portrait; a phone video turned after its own rotation)
+    tr = convert_file(whole, "share_1080p", output_dir=out_dir, turn=90)
+    tv = [x for x in _probe(Path(tr["output"])).get("streams", []) if x.get("codec_type") == "video"][0]
+    tp = convert_file(fx / "phone" / "Отпуск — пляж.mp4", "share_1080p", output_dir=out_dir, turn=90)
+    tpv = [x for x in _probe(Path(tp["output"])).get("streams", []) if x.get("codec_type") == "video"][0]
+    t1 = subprocess.run([ff, "-v", "error", "-ss", "1", "-i", tr["output"], "-frames:v", "1", "-vf", "scale=36:64", "-f", "rawvideo",
+                         "-pix_fmt", "rgb24", "-"], capture_output=True).stdout
+    t0 = subprocess.run([ff, "-v", "error", "-ss", "1", "-i", str(whole), "-frames:v", "1", "-vf", "transpose=1,scale=36:64", "-f", "rawvideo",
+                         "-pix_fmt", "rgb24", "-"], capture_output=True).stdout
+    diff = sum(abs(a - b) for a, b in zip(t0, t1)) / max(1, len(t0))
+    check("convert_turn_the_picture", (int(tv["width"]), int(tv["height"])) == (360, 640) and (int(tpv["width"]), int(tpv["height"])) == (1280, 720)
+          and tr.get("turn") == 90 and "_turned_" in Path(tr["output"]).name and len(t0) == len(t1) == 36 * 64 * 3 and diff < 20,
+          (tv.get("width"), tv.get("height"), tpv.get("width"), tpv.get("height"), Path(tr["output"]).name, diff))
     # "Without sound": the copy has no sound at all (one video, and joined parts)
     mres = convert_file(parts[0], "small_720p", output_dir=out_dir, mute=True)
     jm = join_files(parts, "small_720p", output_dir=out_dir, mute=True)

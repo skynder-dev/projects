@@ -269,6 +269,8 @@ APP_PHRASES: dict[str, str] = {
     "These videos are parts of one GoPro recording - they can be joined into one video.":
         "Эти видео — части одной записи GoPro: их можно склеить в одно видео.",
     "Order:": "Порядок:",
+    "Turn the picture": "Повернуть картинку", "as it is": "как есть", "90° right": "на 90° вправо", "90° left": "на 90° влево",
+    "upside down (180°)": "вверх ногами (180°)", "Unknown turn": "Непонятный поворот",
     "Save this picture": "Сохранить кадр", "That moment is not in the video": "Такого момента в видео нет",
     "This video is not on this computer now.": "Этого видео сейчас нет на компьютере.", "Could not save": "Не удалось сохранить",
     "Only the part between start and end is converted. Save this picture: a photo of the moment in the player (or at the start), into the folder of converted videos.":
@@ -652,6 +654,7 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"joined from (\d+) parts", r"склеено из \1 ⟪\1|части|частей|частей⟫"),
     (r"cut (\d+:\d\d)–(\d+:\d\d)", r"фрагмент \1–\2"),
     (r"Saved: (.+)", r"Сохранено: \1"),
+    (r"turned (\d+)°", r"повёрнуто на \1°"),
     (r"The cut starts after the end of the video: (.+)", r"Обрезка начинается после конца видео: \1"),
     (r"The cut must be at least half a second: (.+)", r"Обрезанная часть должна быть не короче полсекунды: \1"),
     (r"Joining (\d+) parts into one video…", r"Склеиваю \1 ⟪\1|часть|части|частей⟫ в одно видео…"),
