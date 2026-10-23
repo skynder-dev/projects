@@ -2518,6 +2518,7 @@ WHATS_NEW_ITEMS = [
     ("2026-10-19b", "Voice-over: your picks from the voice test, the voices 4_4 and 4_2, instead of 3.1."),
     ("2026-10-20", "Text on a video (Auto Edit → Voice-over and text): titles and lines of text at the moments you choose, on a colored stripe, a dark box or in big letters - no add-on needed."),
     ("2026-10-22", "Captions in two more looks: one word at a time, big (like TikTok), and the word being said on a color block."),
+    ("2026-10-23b", "Convert: “Change…” - converted videos can go into a folder of yours (not a library folder); “Copy file” next to each one: Ctrl+V pastes it into a folder, an e-mail or a messenger."),
     ("2026-10-23", "Convert: “Join into one video” - parts of one recording (a GoPro splits a long one into files of 4 GB: GX010044, GX020044 …) become one video, in the recording's order."),
     ("2026-10-23", "Convert: “Choose videos on this PC…” converts any video on the computer without adding it to the library; “Stop” on a running conversion; the time left."),
     ("2026-10-23", "Convert: big videos made smaller on an NVIDIA graphics card (much faster; if the card can't, the processor makes them as before); a Windows notification when a long conversion is ready."),
@@ -3529,6 +3530,7 @@ def _dialog_title(en: str) -> str:
           "Choose the recording of the voice": "Выбери запись голоса", "Choose a video": "Выбери видео",
           "Choose the videos (Ctrl+click for several)": "Выбери видео (Ctrl+щелчок — несколько)",
           "Choose videos to convert (Ctrl+click for several)": "Выбери видео для конвертации (Ctrl+щелчок — несколько)",
+          "Choose a folder for converted videos": "Выбери папку для сжатых видео",
           "Choose the music": "Выбери музыку"}
     try:
         return ru.get(en, en) if ui_language() == "ru" else en

@@ -946,6 +946,53 @@ def main():
               and sorted(["clip 10.mp4", "clip 2.mp4"], key=_cv.part_key) == ["clip 2.mp4", "clip 10.mp4"]
               and _cv.gopro_recording(order_) == "0044" and _cv.gopro_recording(["GX010044.MP4", "GX010045.MP4"]) is None
               and _cv.gopro_recording(["GX010044.MP4"]) is None, order_)
+        # the folder converted videos go into: chosen in the folder window, not in the library, not the program folder
+        from archivist import config as _cfg3
+        real_pf_ = _ae2.pick_folder
+        lib_ = work / "lib_src"; lib_.mkdir(exist_ok=True)
+        mine_ = work / "Мои сжатые"
+        answers_ = [None, str(lib_ / "sub"), str(_cfg3.INSTALL / "x"), str(mine_)]
+        update_config(lambda c: c.update(sources=[{"label": "lib", "path": str(lib_)}]))
+        try:
+            _ae2.pick_folder = lambda *a, **k: answers_.pop(0)
+            with _ca().test_client() as _c:
+                f1 = _c.post("/api/convert/output-folder", json={}, headers=H_).get_json()
+                f2 = _c.post("/api/convert/output-folder", json={}, headers=H_).get_json()
+                f3 = _c.post("/api/convert/output-folder", json={}, headers=H_).get_json()
+                f4 = _c.post("/api/convert/output-folder", json={}, headers=H_).get_json()
+                pg_ = _c.get("/convert", headers=H_).get_data(as_text=True)
+                now_ = _cv.output_folder()
+                f5 = _c.post("/api/convert/output-folder", json={"reset": True}, headers=H_).get_json()
+                pg2_ = _c.get("/convert", headers=H_).get_data(as_text=True)
+        finally:
+            _ae2.pick_folder = real_pf_
+            update_config(lambda c: c.update(sources=[]))
+        check("convert: the output folder is chosen in the folder window, never a library or program folder; back to Converted",
+              f1 == {"ok": False, "error": "No folder chosen."} and "in the library" in f2["error"] and "program folder" in f3["error"]
+              and f4 == {"ok": True, "path": str(mine_.resolve())} and now_ == mine_.resolve() and str(mine_.resolve()) in pg_
+              and "data-cv='outdir-reset'" in pg_ and f5["ok"] and _cv.output_folder() == _cfg3.HOME / "Converted"
+              and "data-cv='outdir-reset'" not in pg2_, (f1, f2, f3, f4, now_, f5))
+        # "Copy file": the file on the Windows clipboard as Explorer's Ctrl+C puts it (a name with Cyrillic letters)
+        okc_ = False
+        if os.name == "nt":
+            from archivist.platform_adapter import copy_files_to_clipboard, clipboard_files
+            okc_ = copy_files_to_clipboard([made_])
+            back_ = clipboard_files()
+            if okc_:
+                check("convert: Copy file puts the file on the Windows clipboard (Ctrl+V pastes it)", back_ == [str(made_.resolve())], back_)
+            else:
+                print("INFO no clipboard on this machine (no desktop): Copy file not checked here", flush=True)
+        with _ca().test_client() as _c:
+            cr_ = _c.post("/api/convert/reveal", json={"job": cj_, "i": 0, "copy": True}, headers=H_)
+        check("convert: Copy file asks for the file by its job and place (no clipboard: said, not a crash)",
+              cr_.status_code == (200 if okc_ else 409), (cr_.status_code, cr_.get_json()))
+        sw_ = work / "sweep_mine"; sw_.mkdir(exist_ok=True)
+        for n_, data_ in (("a_share_1080p.mp4", b""), ("b_share_1080p.part.mp4", b"x"), ("holiday.mp4", b""), ("c_small_720p_2.mp4", b"x"),
+                          ("d_target_300mb.mp4", b"")):
+            (sw_ / n_).write_bytes(data_)
+        _cv._sweep_ours(sw_)
+        check("convert: after a restart only the converter's own leftovers go from a chosen folder",
+              sorted(x.name for x in sw_.iterdir()) == ["c_small_720p_2.mp4", "holiday.mp4"], sorted(x.name for x in sw_.iterdir()))
         gp_ = lambda **k: _cv.gpu_plan({"video": "hevc", "pix": "yuvj420p", "size": "3840x2160", "sar": "1:1", "rotation": 0, **k}, "share_1080p")
         check("convert: the NVIDIA way only for what it does surely (8-bit H.264/HEVC made smaller, upright, square pixels)",
               gp_()["size"] == (1920, 1080) and gp_(size="2160x3840")["size"] == (1080, 1920) and gp_(size="2704x1520")["size"] == (1920, 1078)

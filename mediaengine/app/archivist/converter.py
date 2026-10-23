@@ -41,6 +41,30 @@ def _local_path(row):
     return None
 
 
+def output_folder() -> Path:
+    """Where converted videos go: the folder chosen on the Convert page, else Converted in the data folder."""
+    raw = str((load_config().get("convert") or {}).get("output_dir") or "").strip()
+    return Path(raw) if raw else HOME / "Converted"
+
+
+# the names this converter gives (a sweep in a folder of the person's own touches only these)
+_OUR_NAME = re.compile(r"_(?:share_1080p|small_720p|hq_1080p|keep|target_\d+mb)(?:_\d+)?(?:\.part)?\.mp4$", re.I)
+
+
+def _sweep_ours(folder: Path) -> None:
+    """A chosen output folder after a restart: only this converter's half-written files (.part.mp4) and the empty
+    names it had reserved go; nothing else in the folder is touched."""
+    try:
+        for f in folder.glob("*.mp4"):
+            try:
+                if _OUR_NAME.search(f.name) and (f.name.lower().endswith(".part.mp4") or f.stat().st_size == 0):
+                    f.unlink()
+            except OSError:
+                pass
+    except OSError:
+        pass
+
+
 def _unique_output(source: Path, preset: str, target_mb: int | None, output_dir: Path | None = None, tag: str = "") -> Path:
     """A new output name, reserved at once (an empty file): two conversions never pick the same name. A very long
     source name is shortened (the whole name must stay within 255 characters)."""
@@ -617,9 +641,10 @@ def _job_items(inventory_ids, paths):
     return items
 
 
-def _options(preset, target_mb, inventory_ids, paths, join, done, outputs) -> str:
+def _options(preset, target_mb, inventory_ids, paths, join, done, outputs, output_dir=None) -> str:
     return json.dumps({"preset": preset, "target_mb": target_mb, "inventory_ids": list(inventory_ids or []),
                        "paths": [str(x) for x in (paths or [])], "join": bool(join),
+                       **({"output_dir": str(output_dir)} if output_dir else {}),
                        "finished_ids": sorted(k for k in done if isinstance(k, int)),
                        "finished_paths": sorted(k[2:] for k in done if isinstance(k, str)),
                        "outputs": outputs}, ensure_ascii=False)
@@ -640,7 +665,8 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
     success=sum(1 for x in outputs if not x.get("error"))
     failed=sum(1 for x in outputs if x.get("error"))
     processed_bytes = 0
-    opts=lambda: _options(preset,target_mb,inventory_ids,paths,join,done,outputs)
+    output_dir=str(prior.get("output_dir") or "") or None
+    opts=lambda: _options(preset,target_mb,inventory_ids,paths,join,done,outputs,output_dir)
     try:
         ordered = _job_items(inventory_ids, paths)
         total_bytes = sum(size for _, _, _, size in ordered)
@@ -660,6 +686,7 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
             while True:
                 try:
                     outputs.append(join_files(parts, preset, target_mb, progress_cb=prog_join, cancel_cb=lambda: _cancelled(job_id), job_id=job_id,
+                                              output_dir=output_dir,
                                               beat=lambda: _job_update(job_id, stage="converting")))
                     success += 1
                     break
@@ -701,7 +728,8 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
                             message=f"Converting {index}/{len(ordered)} · {pct:.0f}% · {filename}")
             while True:
                 try:
-                    result = convert_file(src, preset, target_mb, progress_cb=prog, cancel_cb=lambda: _cancelled(job_id), job_id=job_id)
+                    result = convert_file(src, preset, target_mb, progress_cb=prog, cancel_cb=lambda: _cancelled(job_id), job_id=job_id,
+                                          output_dir=output_dir)
                     outputs.append(result); success += 1
                     break
                 except Exception as exc:
@@ -793,6 +821,8 @@ def recover_convert_jobs():
         paths=[str(x) for x in (opts.get("paths") or []) if str(x).strip()]
         preset=str(opts.get("preset") or "")
         target_mb=opts.get("target_mb")
+        if opts.get("output_dir") and Path(str(opts["output_dir"])) != HOME / "Converted":
+            _sweep_ours(Path(str(opts["output_dir"])))
         if (ids or paths) and preset in PRESETS:
             _job_update(int(d["id"]),status="running",stage="resuming",message="Resuming conversion after restart…",
                         started_at=d.get("started_at") or _now(),finished_at=None,error=None,worker_pid=None,watchdog_retry_requested=0)
@@ -961,7 +991,7 @@ def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, 
         cur = con.execute(
             "INSERT INTO jobs(kind,status,created_at,started_at,stage,message,total,done,success,failed,bytes_total,bytes_done,options_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
             ("convert", "running", _now(), _now(), "starting", "Starting converter…", 1 if join else n, 0, 0, 0, 0, 0,
-             _options(preset, target_mb, ids, [str(f) for f in files], join, set(), []))
+             _options(preset, target_mb, ids, [str(f) for f in files], join, set(), [], output_folder()))
         )
         job_id = int(cur.lastrowid)
         con.commit()

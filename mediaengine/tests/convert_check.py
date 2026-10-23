@@ -199,6 +199,17 @@ def main():
     outs = (jn.get("options") or {}).get("outputs") or []
     check("convert_job_of_chosen_files_one_by_one", jn["status"] == "finished" and len(outs) == 2 and not any(o.get("joined") for o in outs)
           and all(Path(o["output"]).is_file() for o in outs), (jn["status"], outs))
+    # a folder of the person's own for the converted videos: the job writes there (and keeps it when resumed)
+    from archivist.config import update_config
+    own = work / "Мои сжатые видео"
+    update_config(lambda c: c.setdefault("convert", {}).update(output_dir=str(own)))
+    try:
+        jo2 = wait_job(start_convert_job([], "small_720p", paths=[str(parts[2])]))
+    finally:
+        update_config(lambda c: c["convert"].pop("output_dir", None))
+    o2 = ((jo2.get("options") or {}).get("outputs") or [{}])[0]
+    check("convert_into_a_chosen_folder", jo2["status"] == "finished" and Path(o2.get("output", "")).parent == own
+          and Path(o2["output"]).is_file() and (jo2.get("options") or {}).get("output_dir") == str(own), (jo2["status"], o2))
     try:
         start_convert_job([], "small_720p", paths=[str(parts[0]), str(other)], join=True)
         said = None

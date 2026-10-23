@@ -533,3 +533,91 @@ def platform_capabilities() -> dict:
         "background_work": background_work,
         "macos_contract": macos_adapter_contract(),
     }
+
+
+def copy_files_to_clipboard(paths) -> bool:
+    """Puts files on the Windows clipboard as Explorer does with Ctrl+C (CF_HDROP, "copy"): Ctrl+V then pastes them
+    into a folder, an e-mail or a messenger. False when it could not (not Windows, the clipboard busy)."""
+    if not is_windows():
+        return False
+    import ctypes, struct, time as _time
+    from ctypes import wintypes
+    files = [str(Path(p).resolve()) for p in paths]
+    if not files or not all(Path(f).is_file() for f in files):
+        return False
+    k32, u32 = ctypes.windll.kernel32, ctypes.windll.user32
+    k32.GlobalAlloc.restype = wintypes.HGLOBAL
+    k32.GlobalAlloc.argtypes = [wintypes.UINT, ctypes.c_size_t]
+    k32.GlobalLock.restype = ctypes.c_void_p
+    k32.GlobalLock.argtypes = [wintypes.HGLOBAL]
+    k32.GlobalUnlock.argtypes = [wintypes.HGLOBAL]
+    k32.GlobalFree.argtypes = [wintypes.HGLOBAL]
+    u32.SetClipboardData.restype = wintypes.HANDLE
+    u32.SetClipboardData.argtypes = [wintypes.UINT, wintypes.HANDLE]
+    u32.RegisterClipboardFormatW.restype = wintypes.UINT
+    u32.OpenClipboard.argtypes = [wintypes.HWND]
+
+    def block(data: bytes):
+        h = k32.GlobalAlloc(0x0042, len(data))          # GMEM_MOVEABLE | GMEM_ZEROINIT
+        if not h:
+            return None
+        ptr = k32.GlobalLock(h)
+        ctypes.memmove(ptr, data, len(data))
+        k32.GlobalUnlock(h)
+        return h
+    # DROPFILES: offset of the list, a point, fNC, fWide; then the names, each ending in a 0, and one more 0
+    drop = struct.pack("<IiiII", 20, 0, 0, 0, 1) + ("\0".join(files) + "\0\0").encode("utf-16-le")
+    effect = struct.pack("<I", 1)                        # DROPEFFECT_COPY
+    # the clipboard needs an owner window (with none, SetClipboardData may fail): a hidden one for this moment
+    u32.CreateWindowExW.restype = wintypes.HWND
+    u32.CreateWindowExW.argtypes = [wintypes.DWORD, wintypes.LPCWSTR, wintypes.LPCWSTR, wintypes.DWORD, ctypes.c_int, ctypes.c_int,
+                                    ctypes.c_int, ctypes.c_int, wintypes.HWND, wintypes.HMENU, wintypes.HINSTANCE, wintypes.LPVOID]
+    u32.DestroyWindow.argtypes = [wintypes.HWND]
+    hwnd = u32.CreateWindowExW(0, "STATIC", None, 0, 0, 0, 0, 0, None, None, None, None)
+    for _ in range(10):                                   # another program may hold the clipboard for a moment
+        if u32.OpenClipboard(hwnd):
+            break
+        _time.sleep(0.05)
+    else:
+        if hwnd:
+            u32.DestroyWindow(hwnd)
+        return False
+    try:
+        u32.EmptyClipboard()
+        ok = True
+        for fmt, data in ((15, drop), (u32.RegisterClipboardFormatW("Preferred DropEffect"), effect)):   # 15 = CF_HDROP
+            h = block(data)
+            if not h or not u32.SetClipboardData(fmt, h):
+                if h:
+                    k32.GlobalFree(h)
+                ok = False
+        return ok
+    finally:
+        u32.CloseClipboard()
+        if hwnd:
+            u32.DestroyWindow(hwnd)
+
+
+def clipboard_files() -> list[str]:
+    """The files on the Windows clipboard (CF_HDROP), for checks."""
+    if not is_windows():
+        return []
+    import ctypes
+    from ctypes import wintypes
+    u32, sh = ctypes.windll.user32, ctypes.windll.shell32
+    u32.GetClipboardData.restype = wintypes.HANDLE
+    sh.DragQueryFileW.argtypes = [wintypes.HANDLE, wintypes.UINT, wintypes.LPWSTR, wintypes.UINT]
+    out = []
+    if not u32.OpenClipboard(None):
+        return out
+    try:
+        h = u32.GetClipboardData(15)
+        if h:
+            n = sh.DragQueryFileW(h, 0xFFFFFFFF, None, 0)
+            for i in range(n):
+                buf = ctypes.create_unicode_buffer(sh.DragQueryFileW(h, i, None, 0) + 1)
+                sh.DragQueryFileW(h, i, buf, len(buf))
+                out.append(buf.value)
+    finally:
+        u32.CloseClipboard()
+    return out

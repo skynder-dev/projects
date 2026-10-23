@@ -268,7 +268,18 @@ APP_PHRASES: dict[str, str] = {
     "Any video on this computer, without adding it to the library.": "Любое видео на этом компьютере, без добавления в медиатеку.",
     "These videos are parts of one GoPro recording - they can be joined into one video.":
         "Эти видео — части одной записи GoPro: их можно склеить в одно видео.",
-    "Order:": "Порядок:", "made on the graphics card": "сделано на видеокарте", "Choose at least two videos to join into one": "Для склейки выбери хотя бы два видео",
+    "Order:": "Порядок:",
+    "Copy file": "Копировать файл",
+    "Copied: paste it with Ctrl+V into a folder, an e-mail or a messenger.": "Скопировано: вставь через Ctrl+V в папку, письмо или мессенджер.",
+    "The file could not be copied (the clipboard is busy?). Try again.": "Не удалось скопировать файл (буфер обмена занят?). Попробуй ещё раз.",
+    "Make smaller shareable copies without touching originals.": "Делает уменьшенные копии, чтобы делиться, не трогая оригиналы.",
+    "Converted files go into:": "Готовые файлы попадают в папку:", "Change…": "Изменить…", "Back to Converted": "Вернуть Converted",
+    "This folder is in the library: converted copies would be found as new videos. Choose another folder.":
+        "Эта папка в медиатеке: сжатые копии нашлись бы как новые видео. Выбери другую папку.",
+    "This is the program folder (updates replace it). Choose another folder.":
+        "Это папка программы (обновления её заменяют). Выбери другую папку.",
+    "MediaEngine cannot write into this folder. Choose another folder.": "MediaEngine не может записывать в эту папку. Выбери другую.",
+    "The folder is not there now (a disk not connected?).": "Этой папки сейчас нет (диск не подключён?).", "made on the graphics card": "сделано на видеокарте", "Choose at least two videos to join into one": "Для склейки выбери хотя бы два видео",
     "One video from all chosen ones, one after another": "Одно видео из всех выбранных, одно за другим",
     "Show in folder": "Показать в папке", "Open video": "Открыть видео", "Remove from the page": "Убрать со страницы", "Failed:": "Ошибка:",
     "The file is no longer there.": "Этого файла больше нет.",

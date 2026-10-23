@@ -217,7 +217,7 @@ def main():
             pg.click("[data-cv=open]")
             pg.wait_for_timeout(800)
             cv = ("Показать в папке" in txt and "Открыть видео" in txt and "меньше на 95,6%" in txt and "МБ" in txt
-                  and sent == [{"job": cj, "i": 0, "open": False}, {"job": cj, "i": 0, "open": True}]
+                  and sent == [{"job": cj, "i": 0, "open": False, "copy": False}, {"job": cj, "i": 0, "open": True, "copy": False}]
                   and "Открыть папку" in pg.inner_text(".pagehead") and "Убрать со страницы" in txt and "95.6" not in txt
                   and "склеено из 4 частей" in txt and stop_shown and pg.query_selector("[data-cv=stop]") is None)
             if cv is True:                      # "Remove from the page": the list goes, and stays gone after a reload

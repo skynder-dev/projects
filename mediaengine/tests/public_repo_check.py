@@ -83,7 +83,7 @@ def self_test() -> list[str]:
     """The check finds what it must (planted in a temporary folder, never in git)."""
     import tempfile
     bad = {"a.py": 'token = "ghp_' + "A" * 36 + '"\n', "b.md": "write to " + "someone" + "@" + "gmail.com\n",
-           "c.json": '{"key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTZ9.abcdefghijklmnop"}',
+           "c.json": '{"key": "' + ".".join(["eyJ" + "h" * 20, "eyJ" + "r" * 20, "s" * 16]) + '"}',
            "own.MP4": "x", "ok.py": 'mail = "alice.private@example.com"\npassword = ""\n'}
     with tempfile.TemporaryDirectory() as d:
         for name, text in bad.items():
