@@ -240,6 +240,25 @@ def main():
     o2 = ((jo2.get("options") or {}).get("outputs") or [{}])[0]
     check("convert_into_a_chosen_folder", jo2["status"] == "finished" and Path(o2.get("output", "")).parent == own
           and Path(o2["output"]).is_file() and (jo2.get("options") or {}).get("output_dir") == str(own), (jo2["status"], o2))
+    # the app closed during a conversion into that folder: at the next start the job resumes there, its own leftovers
+    # (a reserved empty name, a half-written .part) go, the person's files stay
+    from archivist.converter import recover_convert_jobs
+    from archivist.db import db as _db, now_iso as _now
+    (own / "GX030077_small_720p_9.mp4").write_bytes(b"")
+    (own / "GX030077_small_720p_8.part.mp4").write_bytes(b"x" * 50)
+    (own / "notes.mp4").write_bytes(b"")
+    with _db() as con:
+        rj = con.execute("INSERT INTO jobs(kind,status,created_at,started_at,stage,message,total,done,success,failed,bytes_total,bytes_done,options_json) "
+                         "VALUES('convert','running',?,?,'converting','x',1,0,0,0,1,0,?)",
+                         (_now(), _now(), json.dumps({"preset": "small_720p", "paths": [str(parts[1])], "output_dir": str(own), "outputs": []}))).lastrowid
+        con.commit()
+    rr = recover_convert_jobs()
+    jr = wait_job(rj)
+    ro = ((jr.get("options") or {}).get("outputs") or [{}])[0]
+    left = sorted(x.name for x in own.iterdir())
+    check("convert_resumed_in_a_chosen_folder_sweeps_only_its_own", rr.get("resumed") == 1 and jr["status"] == "finished"
+          and Path(ro.get("output", "")).parent == own and "notes.mp4" in left and "GX030077_small_720p_9.mp4" not in left
+          and "GX030077_small_720p_8.part.mp4" not in left, (rr, jr["status"], ro, left))
     try:
         start_convert_job([], "small_720p", paths=[str(parts[0]), str(other)], join=True)
         said = None

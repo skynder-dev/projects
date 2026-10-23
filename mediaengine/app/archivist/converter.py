@@ -688,7 +688,8 @@ def _options(preset, target_mb, inventory_ids, paths, join, done, outputs, outpu
                        "outputs": outputs}, ensure_ascii=False)
 
 
-def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_mb: int | None, paths=None, join=False):
+def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_mb: int | None, paths=None, join=False,
+                    sweep_first=None):
     with db() as con:
         jr=con.execute("SELECT options_json FROM jobs WHERE id=?",(int(job_id),)).fetchone()
     try: prior=json.loads(jr["options_json"] or "{}") if jr else {}
@@ -704,6 +705,8 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
     failed=sum(1 for x in outputs if x.get("error"))
     processed_bytes = 0
     output_dir=str(prior.get("output_dir") or "") or None
+    if sweep_first:                        # resumed in a folder of the person's own: its leftovers first (in this thread:
+        _sweep_ours(Path(sweep_first))     # a slow network folder never holds up the start; nothing is written meanwhile)
     cuts=prior.get("cuts") if isinstance(prior.get("cuts"),dict) else {}
     mute=prior.get("mute") is True
     opts=lambda: _options(preset,target_mb,inventory_ids,paths,join,done,outputs,output_dir,cuts,mute)
@@ -887,12 +890,11 @@ def recover_convert_jobs():
         paths=[str(x) for x in (opts.get("paths") or []) if str(x).strip()]
         preset=str(opts.get("preset") or "")
         target_mb=opts.get("target_mb")
-        if opts.get("output_dir") and Path(str(opts["output_dir"])) != HOME / "Converted":
-            _sweep_ours(Path(str(opts["output_dir"])))
+        own = str(opts["output_dir"]) if opts.get("output_dir") and Path(str(opts["output_dir"])) != HOME / "Converted" else None
         if (ids or paths) and preset in PRESETS:
             _job_update(int(d["id"]),status="running",stage="resuming",message="Resuming conversion after restart…",
                         started_at=d.get("started_at") or _now(),finished_at=None,error=None,worker_pid=None,watchdog_retry_requested=0)
-            threading.Thread(target=_convert_worker,args=(int(d["id"]),ids,preset,target_mb,paths,bool(opts.get("join"))),daemon=True,
+            threading.Thread(target=_convert_worker,args=(int(d["id"]),ids,preset,target_mb,paths,bool(opts.get("join")),own),daemon=True,
                              name=f"ArchivistConvert{int(d['id'])}").start()
             resumed+=1
         else:
