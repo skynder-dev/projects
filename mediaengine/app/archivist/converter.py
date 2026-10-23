@@ -48,8 +48,10 @@ def output_folder() -> Path:
 
 
 def save_frame(source, t: float, output_dir=None) -> Path:
-    """One picture of a video at t seconds, at the video's full size, as a JPEG next to the converted videos
-    ('<name>_frame_1m05s.jpg'; never over another file). Upright as the video is shown; HDR made normal."""
+    """One picture of a video at t seconds - the picture shown at that moment (the last one at or before t) - at the
+    video's full size, as a JPEG next to the converted videos ('<name>_frame_1m05s.jpg'; never over another file).
+    Upright as the video is shown, square pixels, camcorder fields made whole, HDR made normal, the colors of an HD
+    video kept (its YUV goes through RGB into the JPEG's own)."""
     source = Path(source)
     if not source.is_file():
         raise FileNotFoundError(str(source))
@@ -58,12 +60,14 @@ def save_frame(source, t: float, output_dir=None) -> Path:
         raise RuntimeError("FFmpeg is not available")
     duration = float(probe_duration(source) or 0.0)
     t = float(t)
-    if not (t == t) or t < 0 or (duration > 0 and t > duration):
+    if not (t == t) or t < 0 or (duration > 0 and t > duration + 0.05):
         raise ValueError("That moment is not in the video")
-    if duration > 0:
-        t = min(t, max(0.0, duration - 0.05))          # the very end: the last picture
     folder = Path(output_dir) if output_dir else output_folder()
-    folder.mkdir(parents=True, exist_ok=True)
+    try:
+        folder.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        folder = HOME / "Converted"                     # the chosen folder is not there now (a disk not connected)
+        folder.mkdir(parents=True, exist_ok=True)
     stem = f"{source.stem[:150]}_frame_{int(t) // 60}m{int(t) % 60:02d}s"
     for n in range(1, 1000):
         out = folder / (f"{stem}.jpg" if n == 1 else f"{stem}_{n}.jpg")
@@ -75,13 +79,19 @@ def save_frame(source, t: float, output_dir=None) -> Path:
     else:
         raise RuntimeError("No free name in " + str(folder))
     hdr = _hdr_kind(ffmpeg, source)
-    vf = ([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []) + ["format=yuvj420p"]
+    vf = (["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if _is_interlaced(ffmpeg, source) else []) \
+        + ([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []) \
+        + ["scale='trunc(iw*sar/2)*2':ih", "setsar=1", "format=gbrp", "format=yuvj420p"]
+    # from a little before t to t: every picture overwrites the file, so the last one at or before t stays (the one
+    # the player shows; also at the very end, where the sound may run a moment longer than the picture)
+    start = max(0.0, t - 1.1)
     try:
-        cp = subprocess.run([str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-ss", f"{t:.3f}", "-i", str(source),
-                             "-frames:v", "1", "-vf", ",".join(vf), "-q:v", "2", "-update", "1", str(out)],
-                            capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=300, **process_kwargs())
+        cp = subprocess.run([str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-ss", f"{start:.3f}", "-i", str(source),
+                             "-t", f"{t - start + 0.001:.3f}", "-map", "0:v:0", "-vf", ",".join(vf), "-q:v", "2", "-update", "1",
+                             str(out)], capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=300,
+                            **process_kwargs())
         if cp.returncode != 0 or not out.is_file() or out.stat().st_size < 100:
-            raise RuntimeError("FFmpeg could not take the picture: " + (cp.stderr or "").strip()[-300:])
+            raise RuntimeError("There is no picture at that moment")
     except BaseException:
         try:
             out.unlink()
@@ -92,6 +102,7 @@ def save_frame(source, t: float, output_dir=None) -> Path:
 
 
 # the names this converter gives (a sweep in a folder of the person's own touches only these)
+_OUR_FRAME = re.compile(r"_frame_\d+m\d\ds(?:_\d+)?\.jpg$", re.I)
 _OUR_NAME = re.compile(r"_(?:share_1080p|small_720p|hq_1080p|keep|target_\d+mb)(?:_\d+)?(?:\.part)?\.mp4$", re.I)
 
 
@@ -102,6 +113,12 @@ def _sweep_ours(folder: Path) -> None:
         for f in folder.glob("*.mp4"):
             try:
                 if _OUR_NAME.search(f.name) and (f.name.lower().endswith(".part.mp4") or f.stat().st_size == 0):
+                    f.unlink()
+            except OSError:
+                pass
+        for f in folder.glob("*_frame_*.jpg"):
+            try:
+                if _OUR_FRAME.search(f.name) and f.stat().st_size == 0:
                     f.unlink()
             except OSError:
                 pass
@@ -142,6 +159,12 @@ def _sweep_converted(folder: Path | None = None) -> None:
         for f in folder.glob("*.mp4"):
             try:
                 if f.name.endswith(".part.mp4") or f.stat().st_size == 0:
+                    f.unlink()
+            except OSError:
+                pass
+        for f in folder.glob("*_frame_*.jpg"):              # a picture being saved when the app closed
+            try:
+                if _OUR_FRAME.search(f.name) and f.stat().st_size == 0:
                     f.unlink()
             except OSError:
                 pass
@@ -1114,8 +1137,8 @@ def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, 
         raise ValueError("Target size must be between 50 MB and 100000 MB")
     join = bool(join)
     try:
-        turn = int(turn or 0)
-    except (TypeError, ValueError):
+        turn = int(turn) if isinstance(turn, (int, float, str)) and not isinstance(turn, bool) and float(turn) == int(float(turn)) else -1
+    except (TypeError, ValueError, OverflowError):
         turn = -1
     if turn not in (0, *TURNS):
         raise ValueError("Unknown turn")

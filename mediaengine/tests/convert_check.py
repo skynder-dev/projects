@@ -215,6 +215,20 @@ def main():
         save_frame(whole, 99, out_dir); beyond = None
     except ValueError as exc:
         beyond = str(exc)
+    # the picture shown at the moment (a 1-picture-a-second clip at 2.5 s: picture 2, not 3); the very end; square
+    # pixels (HDV 1440x1080 with 4:3 pixels -> 1920x1080)
+    slow = src_dir / "one_per_second.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=320x180:rate=1:d=6", "-vf",
+                    "drawbox=x=0:y=0:w=iw:h=ih:color=white@1:t=fill:enable='eq(n,2)'", "-c:v", "libx264", "-preset", "ultrafast",
+                    "-pix_fmt", "yuv420p", str(slow)], check=True)
+    from archivist.media import probe_duration as _pd
+    with Image.open(save_frame(slow, 2.5, out_dir)) as im:
+        at25 = sum(im.convert("L").resize((8, 8)).tobytes()) / 64
+    last = save_frame(whole, float(_pd(whole)), out_dir)
+    with Image.open(save_frame(fx / "anamorphic" / "HDV_1440.mp4", 1.0, out_dir)) as im:
+        hdv = im.size
+    check("save_the_picture_shown_at_that_moment", at25 > 200 and last.is_file() and last.stat().st_size > 100 and hdv == (1920, 1080),
+          (at25, last.name, hdv))
     check("save_a_picture_of_a_moment", ph.name == "whole_sync_frame_0m03s.jpg" and psize == (640, 360) and light > 200
           and usize == (720, 1280) and beyond == "That moment is not in the video", (ph.name, psize, light, usize, beyond))
     # "Turn the picture": 90° right (a landscape video becomes portrait; a phone video turned after its own rotation)

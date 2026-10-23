@@ -1060,10 +1060,13 @@ def main():
             gone2_ = None
         except ValueError as exc:
             gone2_ = str(exc)
-        try:
-            _cv.start_convert_job([], "small_720p", paths=[str(made_)], turn=45); t45_ = None
-        except ValueError as exc:
-            t45_ = str(exc)
+        bad_turns_ = []
+        for tv_ in (45, True, 90.7, float("inf"), -90, "abc"):
+            try:
+                _cv.start_convert_job([], "small_720p", paths=[str(made_)], turn=tv_); bad_turns_.append(None)
+            except ValueError as exc:
+                bad_turns_.append(str(exc))
+        t45_ = bad_turns_[0] if set(bad_turns_) == {"Unknown turn"} else bad_turns_
         check("convert: only whole quarter turns", t45_ == "Unknown turn" and _cv._scale_args("keep_resolution", turn=90) == ["-vf", "transpose=1"]
               and _cv._scale_args("keep_resolution", turn=180) == ["-vf", "hflip,vflip"] and _cv._scale_args("keep_resolution") == [], t45_)
         check("convert: a join needs two videos; a chosen file that is gone is named", one_ == "Choose at least two videos to join into one"
