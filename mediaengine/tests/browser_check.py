@@ -230,10 +230,13 @@ def main():
                 order = pg.evaluate("joinOrder(['GX020044.MP4','GX100044.MP4','GX010044.MP4','GOPR0012.MP4','GP010012.MP4'])")
                 groups = pg.evaluate("joinGroups(['GX020044.MP4','GX010045.MP4','GX010044.MP4','GX020045.MP4','GX010046.MP4'])")
                 singles = pg.evaluate("joinGroups(['GX010045.MP4','GX010044.MP4'])")
+                cards = pg.evaluate("joinGroups([{name:'GX020044.MP4',folder:'D:\\\\card2'},{name:'GX010044.MP4',folder:'D:\\\\card1'},"
+                                    "{name:'GX010044.MP4',folder:'D:\\\\card2'},{name:'GX020044.MP4',folder:'D:\\\\card1'}])")
                 cv = ("Склеить в одно видео" in pg.inner_text("label[title]") and "Выбрать видео на компьютере" in pg.inner_text("#pickConvert")
                       and order == ["GOPR0012.MP4", "GP010012.MP4", "GX010044.MP4", "GX020044.MP4", "GX100044.MP4"]
                       and groups == [["GX010044.MP4", "GX020044.MP4"], ["GX010045.MP4", "GX020045.MP4"], ["GX010046.MP4"]]
-                      and singles == [["GX010044.MP4", "GX010045.MP4"]]) or f"join controls: {order} {groups} {singles}"
+                      and singles == [["GX010044.MP4", "GX010045.MP4"]]
+                      and cards == [["GX010044.MP4", "GX020044.MP4"], ["GX010044.MP4", "GX020044.MP4"]]) or f"join controls: {order} {groups} {singles} {cards}"
         except Exception as exc:
             cv = str(exc)[:200]
         check("converted_files_show_in_folder_in_a_real_browser", cv is True, (cv, sent, pg.inner_text("#convertResults")[:300] if pg.query_selector("#convertResults") else None))

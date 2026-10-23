@@ -306,18 +306,22 @@ def part_key(name: str) -> tuple:
     return (1, _natural(stem), 0, stem.casefold())
 
 
+def _folder_of(it) -> str:
+    return os.path.normcase(str(Path(it[2]).parent)) if it[2] else ""
+
+
 def join_groups(items) -> list:
     """The videos made by a join, each a list of job items in order: parts of GoPro recordings - one video per
-    recording (a card with recordings 0044 and 0045 gives two videos); recordings of one file each, or any other
-    videos - one video of all."""
-    items = sorted(items, key=lambda it: part_key(it[1]))
+    recording (a card with recordings 0044 and 0045 gives two videos; the same number in another folder - another
+    card, another day - is another recording); recordings of one file each, or any other videos - one video of all."""
     keys = [part_key(it[1]) for it in items]
     if items and all(k[0] == 0 for k in keys):
         groups: dict = {}
-        for it, k in zip(items, keys):
-            groups.setdefault(k[1], []).append(it)
+        for it, k in sorted(zip(items, keys), key=lambda x: (_folder_of(x[0]), x[1])):
+            groups.setdefault((_folder_of(it), k[1]), []).append(it)
         if any(len(g) > 1 for g in groups.values()):
             return list(groups.values())
+    items = sorted(items, key=lambda it: part_key(it[1]))
     return [items] if items else []
 
 

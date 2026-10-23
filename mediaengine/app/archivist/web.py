@@ -1373,7 +1373,7 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
             disabled='' if available else 'disabled'
             unavailable='' if available else "<div class='small error'>Local file unavailable — reconnect the source or restore the file.</div>"
             cards+=f"""<label class='card convertRow' data-size='{int(r['size_bytes'] or 0)}' data-duration-ms='{int(r['duration_ms'] or 0)}' data-width='{int(r['width'] or 0)}' data-height='{int(r['height'] or 0)}' style='display:grid;grid-template-columns:auto 92px 1fr auto;gap:12px;align-items:center;padding:10px;cursor:pointer;opacity:{1 if available else .55}'>
-<input type='checkbox' name='ids' value='{int(r['id'])}' class='convertCheck' data-name='{e(r['filename'])}' data-size='{int(r['size_bytes'] or 0)}' data-duration-ms='{int(r['duration_ms'] or 0)}' data-width='{int(r['width'] or 0)}' data-height='{int(r['height'] or 0)}' {prechecked} {disabled}>
+<input type='checkbox' name='ids' value='{int(r['id'])}' class='convertCheck' data-name='{e(r['filename'])}' data-folder='{e(str(Path(local_path).parent) if local_path else "")}' data-size='{int(r['size_bytes'] or 0)}' data-duration-ms='{int(r['duration_ms'] or 0)}' data-width='{int(r['width'] or 0)}' data-height='{int(r['height'] or 0)}' {prechecked} {disabled}>
 <div class='convertThumbWrap' style='width:92px;height:58px;position:relative'><img class='convertThumb' data-id='{int(r['id'])}' src='/thumb/{int(r['id'])}' style='width:92px;height:58px;object-fit:cover;border-radius:7px;background:#090b0e'><span class='storybadge convertStoryBadge' style='left:4px;top:4px'></span></div>
 <div style='min-width:0'><b style='display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis' translate='no'>{e(r['filename'])}</b>
 <div class='small muted'><span translate='no'>{e(r['source_label'])}</span> · <span>{human_duration(r['duration_ms'])}</span> · <span>{human_bytes(r['size_bytes'])}</span>{"" if not available else " · <button type='button' class='btn2 cvCutBtn' data-cut-for='"+str(int(r['id']))+"' style='padding:1px 8px'>Cut…</button> <span class='cvCutNote'></span>"}</div>{unavailable}</div>
@@ -1525,10 +1525,14 @@ function cmpKey(x,y){if(Array.isArray(x)&&Array.isArray(y)){for(let k=0;k<Math.m
  return x<y?-1:(x>y?1:0)}
 function joinOrder(names){return names.slice().sort((a,b)=>cmpKey(partKey(a),partKey(b)))}
 // the videos a join makes (converter.join_groups): GoPro parts - one per recording; else one of all
-function joinGroups(names){const ord=joinOrder(names);const ks=ord.map(partKey);if(ord.length&&ks.every(k=>k[0]===0)){const g=new Map();
- ord.forEach((n,i)=>{const r=ks[i][1];if(!g.has(r))g.set(r,[]);g.get(r).push(n)});const v=[...g.values()];if(v.some(x=>x.length>1))return v}return ord.length?[ord]:[]}
+function joinGroups(xs){const it=xs.map(x=>typeof x==='string'?{name:x,folder:''}:x),ks=it.map(o=>partKey(o.name));
+ if(it.length&&ks.every(k=>k[0]===0)){const arr=it.map((o,i)=>({o,k:ks[i],f:String(o.folder||'').toLowerCase()}));
+  arr.sort((a,b)=>a.f<b.f?-1:(a.f>b.f?1:cmpKey(a.k,b.k)));const g=new Map();
+  for(const a of arr){const key=a.f+'|'+a.k[1];if(!g.has(key))g.set(key,[]);g.get(key).push(a.o.name)}
+  const v=[...g.values()];if(v.some(x=>x.length>1))return v}
+ return it.length?[joinOrder(it.map(o=>o.name))]:[]}
 function updJoin(){const box=document.getElementById('joinHint'),j=document.getElementById('joinOne');if(!box||!j)return;
- const names=checks().map(x=>x.dataset.name||'');const groups=joinGroups(names);
+ const sel=checks().map(x=>({name:x.dataset.name||'',folder:x.dataset.folder||''})),names=sel.map(o=>o.name);const groups=joinGroups(sel);
  const parts=names.length>=2&&groups.some(g=>g.length>1)&&names.every(n=>partKey(n)[0]===0);
  if(names.length<2){box.style.display='none';box.innerHTML='';return}
  if(!j.checked&&!parts){box.style.display='none';box.innerHTML='';return}

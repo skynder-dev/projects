@@ -940,6 +940,13 @@ def main():
               and calls_ == [([], "small_720p", 300, ["C:\\Work\\GX020044.MP4", "C:\\Work\\GX010044.MP4"], True),
                              ([5, 6], "hq_1080p", None, None, False)], (n1, n2, n3, calls_))
         order_ = sorted(["GX040044.MP4", "GX010044.MP4", "GX030044.MP4", "GX020044.MP4"], key=_cv.part_key)
+        it_ = lambda folder, name: (name, name, Path(folder) / name, 1)
+        two_cards_ = _cv.join_groups([it_("D:/card2", "GX020044.MP4"), it_("D:/card1", "GX010044.MP4"), it_("D:/card2", "GX010044.MP4"),
+                                      it_("D:/card1", "GX020044.MP4")])
+        check("convert: the same GoPro number in another folder (another card) is another recording",
+              [[str(x[2]).replace("\\", "/") for x in g] for g in two_cards_] == [["D:/card1/GX010044.MP4", "D:/card1/GX020044.MP4"],
+                                                                                ["D:/card2/GX010044.MP4", "D:/card2/GX020044.MP4"]],
+              [[str(x[2]) for x in g] for g in two_cards_])
         check("convert: parts of one GoPro recording in its order (older GoPros too), other files by name",
               order_ == ["GX010044.MP4", "GX020044.MP4", "GX030044.MP4", "GX040044.MP4"]
               and sorted(["GP010012.MP4", "GOPR0012.MP4"], key=_cv.part_key) == ["GOPR0012.MP4", "GP010012.MP4"]
