@@ -264,7 +264,7 @@ APP_PHRASES: dict[str, str] = {
     "Estimate is shown before conversion and may vary with image complexity.": "Оценка размера показана заранее и может отличаться.",
     "Select videos to see estimated output size.": "Выбери видео, чтобы увидеть примерный размер.", "Convert selected": "Конвертировать выбранные",
     "Converted": "Готово", "Open the folder": "Открыть папку", "No such file.": "Такого файла нет.",
-    "Show in folder": "Показать в папке", "Open video": "Открыть видео", "smaller by": "меньше на", "Failed:": "Ошибка:",
+    "Show in folder": "Показать в папке", "Open video": "Открыть видео", "Remove from the page": "Убрать со страницы", "Failed:": "Ошибка:",
     "The file is no longer there.": "Этого файла больше нет.",
     "Search your footage": "Поиск по съёмкам", "Local Search / M7": "Поиск на компьютере",
     "Describe useful properties of the media. Search runs locally and uses MediaEngine's existing Media Brain and catalog signals.":
@@ -612,7 +612,8 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"(\d+) rows · (\d+) views · (\d+) engagements", r"строк: \1 · просмотров: \2 · реакций: \3"),
     (r"ER (.*) · avg (.*) · 3s (.*) · completion (.*)", r"ER \1 · средн. \2 · 3 с \3 · досмотры \4"),
     (r"(16:9|9:16|1:1|4:5) Smart Crop", r"\1 умное кадрирование"),
-    (r"Job #(\d+)", r"Задача №\1"), (r"Job (\d+)", r"Задача \1"), (r"Converter job #(\d+)", r"Конвертация №\1"), (r"Last converter job #(\d+)", r"Последняя конвертация №\1"), (r"· Elapsed (\d+)s", r"· Длительность \1 с"),
+    (r"Job #(\d+)", r"Задача №\1"), (r"Job (\d+)", r"Задача \1"), (r"Converter job #(\d+)", r"Конвертация №\1"), (r"Last converter job #(\d+)", r"Последняя конвертация №\1"), (r"smaller by (\d+)\.(\d+)%", r"меньше на \1,\2%"),
+    (r"smaller by (\d+)%", r"меньше на \1%"), (r"· Elapsed (\d+)s", r"· Длительность \1 с"),
     (r"· Elapsed (\d+)m (\d+)s", r"· Длительность \1 мин \2 с"), (r"· Elapsed (\d+)h (\d+)m", r"· Длительность \1 ч \2 мин"),
     (r"· Elapsed (.+)", r"· Длительность \1"),
     (r"Converted (\d+) files?", r"Сконвертировано: \1"), (r"Converted (\d+); failed (\d+)", r"Сконвертировано: \1; ошибок: \2"),

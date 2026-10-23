@@ -911,6 +911,13 @@ def main():
               f"data-job='{cj_}' data-done='1'" in page_ and "data-cv='reveal' data-i='0'" in page_ and "data-i='1'" not in page_
               and "data-i='2'" not in page_ and "The file is no longer there." in page_ and "data-cv='folder'" in page_
               and "broken.mp4" in page_ and str(made_) in page_, page_[page_.find("convertStatus") - 40:][:600])
+        with _ca().test_client() as _c:
+            h1 = _c.post("/api/convert/hide", json={"job": "x"}, headers=H_).status_code
+            h2 = _c.post("/api/convert/hide", json={"job": cj_ + 99}, headers=H_).status_code
+            h3 = _c.post("/api/convert/hide", json={"job": cj_}, headers=H_).status_code
+            gone_ = "data-done='1'" not in _c.get("/convert", headers=H_).get_data(as_text=True)
+        check("convert: a finished job's list can be taken off the page (files stay)", (h1, h2, h3, gone_) == (400, 404, 200, True)
+              and made_.is_file(), (h1, h2, h3, gone_))
     finally:
         _ae2.open_path = real_open_
     print({"passed": sum(checks), "total": len(checks)})

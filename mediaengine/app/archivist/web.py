@@ -1380,12 +1380,18 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
             cards=("<div class='card muted'>None of the selected videos are currently accessible. Restore/reconnect the source, or choose another local video.</div>" if preselect_ids else "<div class='card muted'>No accessible videos on this catalog page. Reconnect/restore the source, choose another page, or clear the filter.</div>")
         selection_notice=(f"<div class='card' style='border-color:#6f5c31;background:#1d1a12'><b>{skipped_preselected} selected video{'s' if skipped_preselected!=1 else ''} skipped</b><div class='small muted'>The item is no longer eligible for Convert or its local file is not currently accessible, so it was skipped safely.</div></div>" if skipped_preselected else "")
         active=''
+        try:
+            hidden_job=int(load_config().get('convert_hidden_job') or 0)
+        except (TypeError,ValueError):
+            hidden_job=0
         if latest:
             terminal=str(latest.get('status') or '') in ('finished','failed','cancelled','partial')
-            if terminal:
+            if terminal and int(latest['id'])<=hidden_job:
+                pass
+            elif terminal:
                 tone='error' if str(latest.get('status')) in ('failed','cancelled') else 'ready'
                 err=(f"<div class='small error' style='margin-top:6px'>{e(latest.get('error'))}</div>" if latest.get('error') and latest.get('error')!='interrupted_by_restart' else '')
-                active=f"<div class='card' id='convertStatus' data-job='{int(latest['id'])}' data-done='1'><div class='row space'><b>Last converter job #{int(latest['id'])}</b><span class='badge {tone}'>{e(latest.get('status'))}</span></div><div class='muted'>{e(latest.get('message') or latest.get('status'))}</div>{err}<div id='convertResults' style='margin-top:8px'>{_convert_outputs_html(latest)}</div></div>"
+                active=f"<div class='card' id='convertStatus' data-job='{int(latest['id'])}' data-done='1'><div class='row space'><b>Last converter job #{int(latest['id'])}</b><div class='row'><span class='badge {tone}'>{e(latest.get('status'))}</span><button class='btn btn2' type='button' data-cv='hide'>Remove from the page</button></div></div><div class='muted'>{e(latest.get('message') or latest.get('status'))}</div>{err}<div id='convertResults' style='margin-top:8px'>{_convert_outputs_html(latest)}</div></div>"
             else:
                 active=f"<div id='convertStatus' class='card' data-job='{int(latest['id'])}'><b>Converter job #{int(latest['id'])}</b><div class='muted' id='convertMsg'>{e(latest.get('message') or latest.get('status'))}</div><div class='progress'><i id='convertPct' style='width:{float(latest.get('percent') or 0):.1f}%'></i></div><div id='convertResults'></div></div>"
         body=f"""<div class='pagehead row space'><div><div class='eyebrow'>Local video utility</div><h1>Convert</h1><div class='lead'><span>Make smaller shareable copies without touching originals. Converted files go into the folder</span> <b translate='no'>Converted</b> <span>in the data folder:</span> <span class='ae-path'>{e(str(HOME/'Converted'))}</span><br><span>Source folders and cards are never written to.</span></div></div><div class='row'><button class='btn' type='button' data-cv='folder'>Open the folder</button><a class='btn btn2' href='/import'>Add / discover a folder</a></div></div>
@@ -1512,8 +1518,9 @@ async function startConv(){const ids=checks().map(x=>Number(x.value));if(!ids.le
  try{const r=await fetch('/api/convert/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids,preset,target_mb:target})});const x=await r.json();if(!r.ok)throw new Error(x.error||'Could not start');toast('Conversion started');location.href='/convert'}catch(e){toast(e.message||String(e));b.disabled=false}}
 document.getElementById('startConvert').onclick=startConv;
 function hb(n){n=Number(n||0);for(const u of ['B','KB','MB','GB','TB']){if(n<1024||u==='TB')return (u==='B'||u==='KB'?n.toFixed(0):n.toFixed(1))+' '+u;n/=1024}}
-async function pollConvert(){const box=document.getElementById('convertStatus');if(!box||box.dataset.done)return;const id=box.dataset.job;try{const r=await fetch('/api/convert/status?id='+id,{cache:'no-store'});const x=await r.json();if(!x.job)return;const j=x.job;document.getElementById('convertMsg').textContent=j.message||j.status;document.getElementById('convertPct').style.width=(j.percent||0)+'%';if(['finished','failed','cancelled','partial'].includes(j.status)){const outs=((j.options||{}).outputs||[]);let h='';const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let i=-1;for(const o of outs){i++;const nm=String(o.source||'').split(String.fromCharCode(92)).join('/').split('/').pop();if(o.error){h+="<div class='small error'><span>Failed:</span> <span translate='no'>"+esc(nm)+"</span> — <span>"+esc(o.error)+"</span></div>"}else{h+="<div class='cv-out'><div class='small'><b><span>"+hb(o.source_bytes)+"</span> → <span>"+hb(o.output_bytes)+"</span></b> · <span>smaller by</span> "+esc(o.saved_percent)+"%<br><span class='muted ae-path' translate='no'>"+esc(o.output)+"</span></div><div class='row' style='margin:4px 0 8px'><button class='btn btn2' type='button' data-cv='reveal' data-i='"+i+"'>Show in folder</button><button class='btn btn2' type='button' data-cv='open' data-i='"+i+"'>Open video</button></div></div>"}}document.getElementById('convertResults').innerHTML=h;return}}catch(e){}setTimeout(pollConvert,1000)}
+async function pollConvert(){const box=document.getElementById('convertStatus');if(!box||box.dataset.done)return;const id=box.dataset.job;try{const r=await fetch('/api/convert/status?id='+id,{cache:'no-store'});const x=await r.json();if(!x.job)return;const j=x.job;document.getElementById('convertMsg').textContent=j.message||j.status;document.getElementById('convertPct').style.width=(j.percent||0)+'%';if(['finished','failed','cancelled','partial'].includes(j.status)){const outs=((j.options||{}).outputs||[]);let h='';const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let i=-1;for(const o of outs){i++;const nm=String(o.source||'').split(String.fromCharCode(92)).join('/').split('/').pop();if(o.error){h+="<div class='small error'><span>Failed:</span> <span translate='no'>"+esc(nm)+"</span> — <span>"+esc(o.error)+"</span></div>"}else{h+="<div class='cv-out'><div class='small'><b><span>"+hb(o.source_bytes)+"</span> → <span>"+hb(o.output_bytes)+"</span></b> · <span>smaller by "+esc(o.saved_percent)+"%</span><br><span class='muted ae-path' translate='no'>"+esc(o.output)+"</span></div><div class='row' style='margin:4px 0 8px'><button class='btn btn2' type='button' data-cv='reveal' data-i='"+i+"'>Show in folder</button><button class='btn btn2' type='button' data-cv='open' data-i='"+i+"'>Open video</button></div></div>"}}h+="<div class='row' style='justify-content:flex-end'><button class='btn btn2' type='button' data-cv='hide'>Remove from the page</button></div>";document.getElementById('convertResults').innerHTML=h;return}}catch(e){}setTimeout(pollConvert,1000)}
 document.addEventListener('click',async ev=>{const b=ev.target.closest('[data-cv]');if(!b)return;const box=document.getElementById('convertStatus');
+ if(b.dataset.cv==='hide'){try{const r=await fetch('/api/convert/hide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({job:box?Number(box.dataset.job):0})});if(r.ok&&box)box.remove()}catch(e){}return}
  try{const r=await fetch(b.dataset.cv==='folder'?'/api/convert/open-folder':'/api/convert/reveal',{method:'POST',headers:{'Content-Type':'application/json'},
  body:JSON.stringify({job:box?Number(box.dataset.job):0,i:Number(b.dataset.i||0),open:b.dataset.cv==='open'})});const x=await r.json();if(!x.ok&&x.error)toast(x.error)}catch(e){}});
 pollConvert();"""
@@ -1548,7 +1555,7 @@ pollConvert();"""
                 h.append(f"<div class='small error'><span>Failed:</span> <span translate='no'>{e(Path(str(o.get('source') or '')).name)}</span> — <span>{e(o.get('error'))}</span></div>")
             elif o.get('output'):
                 there=Path(str(o['output'])).is_file()
-                h.append(f"<div class='cv-out'><div class='small'><b><span>{human_bytes(o.get('source_bytes'))}</span> → <span>{human_bytes(o.get('output_bytes'))}</span></b> · <span>smaller by</span> {e(o.get('saved_percent'))}%<br><span class='muted ae-path' translate='no'>{e(o.get('output'))}</span></div>"
+                h.append(f"<div class='cv-out'><div class='small'><b><span>{human_bytes(o.get('source_bytes'))}</span> → <span>{human_bytes(o.get('output_bytes'))}</span></b> · <span>smaller by {e(o.get('saved_percent'))}%</span><br><span class='muted ae-path' translate='no'>{e(o.get('output'))}</span></div>"
                          +(f"<div class='row' style='margin:4px 0 8px'><button class='btn btn2' type='button' data-cv='reveal' data-i='{i}'>Show in folder</button><button class='btn btn2' type='button' data-cv='open' data-i='{i}'>Open video</button></div></div>"
                            if there else "<div class='small muted' style='margin:2px 0 8px'>The file is no longer there.</div></div>"))
         return ''.join(h)
@@ -1571,6 +1578,19 @@ pollConvert();"""
             return jsonify({'ok':False,'error':'The file is no longer there.'}),404
         from .auto_edit import open_path
         open_path(p,reveal=payload.get('open') is not True)
+        return jsonify({'ok':True})
+
+    @app.post('/api/convert/hide')
+    def convert_hide():
+        """A finished job's list off the Convert page (its files stay in Converted); a newer job shows again."""
+        try:
+            jid=int(_json_obj().get('job'))
+        except (TypeError,ValueError):
+            return jsonify({'ok':False,'error':'No such file.'}),400
+        job=convert_job_snapshot(jid) if jid>0 else None
+        if not job or str(job.get('status') or '') not in ('finished','failed','cancelled','partial'):
+            return jsonify({'ok':False,'error':'No such file.'}),404
+        update_config(lambda c: c.__setitem__('convert_hidden_job',max(jid,int(c.get('convert_hidden_job') or 0))))
         return jsonify({'ok':True})
 
     @app.post('/api/convert/open-folder')

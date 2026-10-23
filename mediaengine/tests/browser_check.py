@@ -204,7 +204,7 @@ def main():
         pg.route("**/api/convert/reveal", _caught)
         pg.goto(base + "/convert")
         outs = [{"source": str(src / "a.mp4"), "output": str(work / "home" / "Converted" / "работа_share_1080p.mp4"),
-                 "source_bytes": 50 * 2**20, "output_bytes": 2 * 2**20, "saved_percent": 96.0}]
+                 "source_bytes": 50 * 2**20, "output_bytes": 2 * 2**20, "saved_percent": 95.6}]
         with _db() as con:
             con.execute("UPDATE jobs SET status='finished',bytes_done=100,options_json=? WHERE id=?", (json.dumps({"outputs": outs}), cj))
             con.commit()
@@ -215,9 +215,15 @@ def main():
             pg.click("[data-cv=reveal]")
             pg.click("[data-cv=open]")
             pg.wait_for_timeout(800)
-            cv = ("Показать в папке" in txt and "Открыть видео" in txt and "меньше на" in txt and "МБ" in txt
+            cv = ("Показать в папке" in txt and "Открыть видео" in txt and "меньше на 95,6%" in txt and "МБ" in txt
                   and sent == [{"job": cj, "i": 0, "open": False}, {"job": cj, "i": 0, "open": True}]
-                  and "Открыть папку" in pg.inner_text(".pagehead"))
+                  and "Открыть папку" in pg.inner_text(".pagehead") and "Убрать со страницы" in txt and "95.6" not in txt)
+            if cv is True:                      # "Remove from the page": the list goes, and stays gone after a reload
+                pg.click("[data-cv=hide]")
+                pg.wait_for_timeout(800)
+                gone = pg.query_selector("#convertStatus") is None
+                pg.goto(base + "/convert")
+                cv = gone and pg.query_selector("#convertStatus") is None or f"still shown (gone={gone})"
         except Exception as exc:
             cv = str(exc)[:200]
         check("converted_files_show_in_folder_in_a_real_browser", cv is True, (cv, sent, pg.inner_text("#convertResults")[:300] if pg.query_selector("#convertResults") else None))
