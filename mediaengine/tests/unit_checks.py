@@ -929,16 +929,16 @@ def main():
             with _ca().test_client() as _c:
                 n1 = _c.post("/api/convert/pick", json={"preset": "small_720p"}, headers=H_).get_json()
             _ae2.pick_files = lambda *a, **k: ["C:\\Work\\GX020044.MP4", "C:\\Work\\GX010044.MP4"]
-            _web.start_convert_job = lambda ids, preset, target, paths=None, join=False, cuts=None: calls_.append((ids, preset, target, paths, join)) or 77
+            _web.start_convert_job = lambda ids, preset, target, paths=None, join=False, cuts=None, mute=False: calls_.append((ids, preset, target, paths, join, mute)) or 77
             with _ca().test_client() as _c:
-                n2 = _c.post("/api/convert/pick", json={"preset": "small_720p", "target_mb": 300, "join": True}, headers=H_).get_json()
+                n2 = _c.post("/api/convert/pick", json={"preset": "small_720p", "target_mb": 300, "join": True, "mute": True}, headers=H_).get_json()
                 n3 = _c.post("/api/convert/start", json={"ids": [5, 6], "preset": "hq_1080p", "join": "yes"}, headers=H_).get_json()
         finally:
             _ae2.pick_files, _web.start_convert_job = real_pick_, real_start_
         check("convert: files chosen on this PC go with the page's choices; nothing chosen says so",
               n1 == {"ok": False, "error": "No videos chosen."} and n2 == {"ok": True, "job_id": 77} and n3 == {"ok": True, "job_id": 77}
-              and calls_ == [([], "small_720p", 300, ["C:\\Work\\GX020044.MP4", "C:\\Work\\GX010044.MP4"], True),
-                             ([5, 6], "hq_1080p", None, None, False)], (n1, n2, n3, calls_))
+              and calls_ == [([], "small_720p", 300, ["C:\\Work\\GX020044.MP4", "C:\\Work\\GX010044.MP4"], True, True),
+                             ([5, 6], "hq_1080p", None, None, False, False)], (n1, n2, n3, calls_))
         order_ = sorted(["GX040044.MP4", "GX010044.MP4", "GX030044.MP4", "GX020044.MP4"], key=_cv.part_key)
         it_ = lambda folder, name: (name, name, Path(folder) / name, 1)
         two_cards_ = _cv.join_groups([it_("D:/card2", "GX020044.MP4"), it_("D:/card1", "GX010044.MP4"), it_("D:/card2", "GX010044.MP4"),
@@ -1028,7 +1028,7 @@ def main():
               and jc_ == "A cut works when the videos are converted one by one (not joined into one).", (cc1, msgs_, jc_))
         calls2_ = []
         real_start2_ = _web.start_convert_job
-        _web.start_convert_job = lambda ids, preset, target, paths=None, join=False, cuts=None: calls2_.append((ids, cuts)) or 5
+        _web.start_convert_job = lambda ids, preset, target, paths=None, join=False, cuts=None, mute=False: calls2_.append((ids, cuts)) or 5
         try:
             with _ca().test_client() as _c:
                 _c.post("/api/convert/start", json={"ids": [vid_], "preset": "small_720p", "cuts": {str(vid_): [1.5, 7]}}, headers=H_)

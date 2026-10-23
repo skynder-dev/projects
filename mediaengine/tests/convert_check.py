@@ -202,6 +202,13 @@ def main():
     coffs = [min((b - f for b in cbp), key=abs) for f in cfl] if cbp else []
     check("convert_cut_only_that_part_in_step", abs(cdur - 6.0) <= 0.1 and cres["cut"] == [3.3, 9.3] and "_cut_" in Path(cres["output"]).name
           and len(cfl) >= 5 and abs(cfl[0]) <= 0.04 and all(-0.025 <= o <= 0.040 for o in coffs), (cdur, cres.get("cut"), [round(x, 3) for x in cfl], [round(o, 3) for o in coffs]))
+    # "Without sound": the copy has no sound at all (one video, and joined parts)
+    mres = convert_file(parts[0], "small_720p", output_dir=out_dir, mute=True)
+    jm = join_files(parts, "small_720p", output_dir=out_dir, mute=True)
+    no_a = lambda f: not [x for x in _probe(Path(f)).get("streams", []) if x.get("codec_type") == "audio"]
+    check("convert_without_sound", no_a(mres["output"]) and no_a(jm["output"]) and mres.get("mute") is True and jm.get("mute") is True
+          and "_nosound_" in Path(mres["output"]).name and "_joined_nosound_" in Path(jm["output"]).name
+          and abs(float(_probe(Path(jm["output"]))["format"]["duration"]) - 14.0) <= 0.15, (mres["output"], jm["output"]))
     # a card with two recordings (0078 in two parts, 0079 in one): one video per recording, each in its order
     card = src_dir / "card"
     card.mkdir(exist_ok=True)

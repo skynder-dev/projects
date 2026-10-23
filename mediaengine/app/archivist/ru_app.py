@@ -268,7 +268,7 @@ APP_PHRASES: dict[str, str] = {
     "Any video on this computer, without adding it to the library.": "Любое видео на этом компьютере, без добавления в медиатеку.",
     "These videos are parts of one GoPro recording - they can be joined into one video.":
         "Эти видео — части одной записи GoPro: их можно склеить в одно видео.",
-    "Order:": "Порядок:",
+    "Order:": "Порядок:", "Without sound": "Без звука", "without sound": "без звука",
     "Cut…": "Обрезать…", "Start here": "Начало здесь", "End here": "Конец здесь", "Whole video": "Всё видео",
     "Only the part between start and end is converted.": "Конвертируется только часть между началом и концом.",
     "This video does not play here - type the start and end (minutes:seconds).": "Это видео здесь не воспроизводится — впиши начало и конец (минуты:секунды).",

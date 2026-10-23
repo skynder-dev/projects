@@ -894,6 +894,8 @@ PHRASES = {
     "The word being said on a color block": "Сказанное слово на цветной плашке",
     "Captions in two more looks: one word at a time, big (like TikTok), and the word being said on a color block.":
         "Ещё два вида субтитров: по одному слову, крупно (как в TikTok), и сказанное слово на цветной плашке.",
+    "Convert: “Without sound” - the copy has no sound at all (wind, voices on site).":
+        "Конвертация: «Без звука» — в копии совсем нет звука (ветер, разговоры на объекте).",
     "Convert: “Cut…” next to a video - only the part between start and end is converted (set with the player or typed as minutes:seconds).":
         "Конвертация: «Обрезать…» у видео — конвертируется только часть между началом и концом (задаётся плеером или вписывается как минуты:секунды).",
     "Convert: “Change…” - converted videos can go into a folder of yours (not a library folder); “Copy file” next to each one: Ctrl+V pastes it into a folder, an e-mail or a messenger.":
