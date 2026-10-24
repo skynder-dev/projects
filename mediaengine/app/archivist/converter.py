@@ -263,6 +263,9 @@ def _sweep_converted(folder: Path | None = None) -> None:
                     f.unlink()
                 except OSError:
                     pass
+        for f in (HOME / "data").glob("clock-*"):        # the date-and-time folder of one (the fonts and subtitles)
+            if f.is_dir():
+                shutil.rmtree(f, ignore_errors=True)
     except OSError:
         pass
 
@@ -451,7 +454,7 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
         "made_on": made_on,
         **({"mute": True} if mute else {}),
         **({"turn": int(turn)} if int(turn or 0) in TURNS else {}),
-        **({"extra": dict(extra)} if extra else {}),
+        **({"extra": shown_extra(extra, mute)} if extra else {}),
         **({"cut": [round(float(cut[0]), 3), round(min(float(cut[1]), float(probe_duration(source) or cut[1])), 3)]} if cut else {}),
         **({"clock": how} if how else {}),
     }
@@ -607,7 +610,7 @@ def join_files(sources, preset="share_1080p", target_mb=None, progress_cb=None, 
         "joined": len(sources),
         **({"mute": True} if mute else {}),
         **({"turn": int(turn)} if int(turn or 0) in TURNS else {}),
-        **({"extra": dict(extra)} if extra else {}),
+        **({"extra": shown_extra(extra, mute)} if extra else {}),
         "output": str(out),
         "source_bytes": src_size,
         "output_bytes": out_size,
@@ -921,10 +924,11 @@ def job_logo() -> dict:
 
 
 # Date and time of the recording in a corner (Convert → More): when it was filmed, every second, as the clock of the
-# place showed it. Cameras (GoPro, DJI) write their own clock's time marked as UTC - shown as written; phones write
-# UTC - shown in this PC's time zone; an iPhone also writes the local time with its zone - shown as written. Without
-# a time in the file: the file's own date (the end of the recording) minus its length.
-_CAMERA_CLOCK = re.compile(r"gopro|\bdji\b|dji[._]|insta360", re.I)
+# place showed it. Cameras (GoPro, DJI, other cameras, dashcams) write their own clock's time marked as UTC - shown as
+# written. Phones write real UTC - shown in this PC's time zone: an iPhone also writes the local time with its zone
+# (shown as written); an Android phone writes the time the recording STOPPED (its length is taken off). Without a
+# time in the file: the file's own date (the end of the recording) minus its length.
+_PHONE_TAG = re.compile(r"^\s*(com\.android\.[\w.]*|com\.apple\.[\w.]*)\s*:", re.M)
 _TIME_TAG = re.compile(r"^\s*(creation_time|com\.apple\.quicktime\.creationdate)\s*:\s*(\d{4})-(\d\d)-(\d\d)[T ](\d\d):(\d\d):(\d\d)", re.M)
 
 
@@ -945,15 +949,24 @@ def recording_start(ffmpeg, source, duration: float | None = None) -> tuple:
             continue
         if 1995 <= when.year <= 2100:                  # (an unset camera clock gives 1904 / 1970 / 2000-01-01)
             found.setdefault(m.group(1), when)
+    def length():
+        return float(duration if duration is not None else (probe_duration(source) or 0.0))
     if "com.apple.quicktime.creationdate" in found:
         return found["com.apple.quicktime.creationdate"], "phone"
     if "creation_time" in found:
-        if _CAMERA_CLOCK.search(text) or _GOPRO_PART.match(source.stem) or _GOPRO_FIRST.match(source.stem) \
-                or source.stem.upper().startswith("DJI_"):
+        phone = {m.group(1).split(".")[1] for m in _PHONE_TAG.finditer(text)}   # (tags only - never the file's name or folder)
+        if not phone:
             return found["creation_time"], "camera"
-        return found["creation_time"].replace(tzinfo=timezone.utc).astimezone().replace(tzinfo=None), "phone"
+        when = found["creation_time"]
+        if "android" in phone and "apple" not in phone:
+            from datetime import timedelta
+            try:
+                when -= timedelta(seconds=round(max(0.0, length())))
+            except (OSError, ValueError, OverflowError):
+                pass
+        return when.replace(tzinfo=timezone.utc).astimezone().replace(tzinfo=None), "phone"
     try:
-        d = float(duration if duration is not None else (probe_duration(source) or 0.0))
+        d = length()
         return datetime.fromtimestamp(source.stat().st_mtime - max(0.0, d)).replace(microsecond=0), "file"
     except (OSError, ValueError, OverflowError):
         return None, ""
@@ -1019,10 +1032,19 @@ def clock_parts(ffmpeg, sources, durations, cut=None) -> tuple:
     return parts, ("file" if "file" in hows else hows[0] if hows else "")
 
 
+def shown_extra(extra, mute=False) -> dict:
+    """The options as the copy has them: without sound (Without sound, 4x, 8x, ¼×) no "less wind" / "even sound"."""
+    ex = dict(extra or {})
+    if mute or float(ex.get("speed") or 1) not in (0.5, 1, 2):
+        ex.pop("wind", None)
+        ex.pop("loud", None)
+    return ex
+
+
 def _speed_filters(sig: dict, speed: float) -> list[str]:
     """Faster: the picture's times divided, 30 pictures a second (pictures between them left out). Slow motion: the
-    times multiplied - every picture of a 60 fps video shown at 30 a second (½×), of a 120 fps one at ¼×; 60 a second
-    when there are enough (120 fps at ½×); a 30 fps video at ½× shows each picture twice."""
+    times multiplied - every picture of a 60 fps video shown at 30 a second (½×), of a 120 fps one at ¼×; 50 fps at
+    ½×: 25 a second; at most 60 a second (120 fps at ½×); a 30 fps video at ½× shows each picture twice."""
     if speed > 1:
         return [f"setpts=PTS/{int(speed)}", "fps=30"]
     if 0 < speed < 1:
@@ -1031,7 +1053,10 @@ def _speed_filters(sig: dict, speed: float) -> list[str]:
             fps = float(sig.get("fps") or 0)
         except (TypeError, ValueError):
             fps = 0.0
-        return [f"setpts=PTS*{k}", "fps=60" if fps / k >= 50 else "fps=30"]
+        # every picture once: the source's rate / k (50 fps at ½×: 25 a second, not 25 padded to 30); at most 60; a
+        # source too slow for that (30 fps at ½×): 30 a second, pictures shown twice
+        rate = round(min(60.0, fps / k), 3) if fps / k >= 23.5 else 30
+        return [f"setpts=PTS*{k}", f"fps={rate:g}"]
     return []
 
 
@@ -1044,7 +1069,7 @@ def _extra_graph(sig: dict, preset: str, hdr, interlaced: bool, turn: int, extra
     lg = extra.get("logo") if isinstance(extra.get("logo"), dict) else (logo_saved() if extra.get("logo") else {})
     if extra.get("logo") and not (lg and Path(str(lg.get("path") or "")).is_file()):
         raise RuntimeError("The logo of this conversion is not there any more - choose the logo again and convert again")
-    square = (vert or lg) and abs(_sar(sig) - 1.0) > 0.01      # 4:3 pixels of HDV / DV: square before cutting or a logo
+    square = (vert or lg or extra.get("clock")) and abs(_sar(sig) - 1.0) > 0.01   # 4:3 pixels of HDV / DV: square first
     pre = (["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if interlaced else []) \
         + ([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []) \
         + (["scale='trunc(iw*sar/2)*2':ih", "setsar=1"] if square else []) \
@@ -1082,10 +1107,12 @@ def _extra_graph(sig: dict, preset: str, hdr, interlaced: bool, turn: int, extra
     g += f";[{last}]scale=out_range=tv,format=yuv420p[v]"
     sound = not mute and bool(sig.get("audio")) and speed in (0.5, 1, 2)
     # the sound at 2x / half speed: atempo, its start moved like the picture's (setpts) - else a sound that starts after
-    # the picture would be late (or early) in the copy
+    # the picture would be late (or early) in the copy; a gap in the sound (between joined parts) filled first, as
+    # atempo counts its samples from the start
     af = (["highpass=f=100", "afftdn=nf=-25"] if extra.get("wind") else []) \
         + (LOUD if extra.get("loud") else []) \
-        + ({2: ["atempo=2.0", "asetpts=PTS-STARTPTS/2"], 0.5: ["atempo=0.5", "asetpts=PTS+STARTPTS"]}.get(speed) or [])
+        + ({2: ["aresample=async=1", "atempo=2.0", "asetpts=PTS-STARTPTS/2"],
+            0.5: ["aresample=async=1", "atempo=0.5", "asetpts=PTS+STARTPTS"]}.get(speed) or [])
     through = sound and bool(af)                          # unchanged sound: every track kept as it is mapped
     ga = g + (f";[0:a:0]{','.join(af)}[a]" if through else "")
     return ga, g, sound, through
@@ -1103,9 +1130,10 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
     extra = dict(extra or {})
     speed = float(extra.get("speed") or 1)
     sp_tag = f"x{int(speed)}" if speed > 1 else (f"slow{int(round(1 / speed))}x" if 0 < speed < 1 else "")
+    keeps_sound = not mute and speed in (0.5, 1, 2)       # (4x, 8x, ¼×: no sound - no "less wind" / "even sound")
     tag = "_".join(x for x in (tag, sp_tag, "vertical" if extra.get("vertical") else "",
-                                  "logo" if extra.get("logo") else "", "lesswind" if extra.get("wind") else "",
-                                  "evensound" if extra.get("loud") else "", "clock" if extra.get("clock") else "",
+                                  "logo" if extra.get("logo") else "", "lesswind" if extra.get("wind") and keeps_sound else "",
+                                  "evensound" if extra.get("loud") and keeps_sound else "", "clock" if extra.get("clock") else "",
                                   "turned" if turn else "", "nosound" if mute else "") if x)
     duration = duration / speed                            # the copy's own length (faster: shorter; slow motion: longer)
     out = Path(os.path.abspath(_unique_output(source, preset, target_mb, Path(output_dir) if output_dir else None, tag)))   # reserved

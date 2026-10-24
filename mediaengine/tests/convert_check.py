@@ -312,7 +312,7 @@ def main():
     h2d = float(_probe(Path(h2["output"]))["format"]["duration"])
     bh = beeps(ff, h2["output"])
     oh = [min((b - (k + 0.3) * 2 for b in bh), key=abs) for k in range(5)] if bh else []
-    h4 = convert_file(s60, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"speed": 0.25}))
+    h4 = convert_file(s60, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"speed": 0.25, "loud": True}))
     h4d = float(_probe(Path(h4["output"]))["format"]["duration"])
     s120 = src_dir / "fast_120fps.mp4"
     subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=320x180:rate=120", "-t", "2", "-c:v", "libx264",
@@ -322,9 +322,16 @@ def main():
     check("convert_slow_motion", abs(h2d - 10.0) <= 0.15 and h2v.get("r_frame_rate") == "30/1" and frames(ff, h2["output"]) >= frames(ff, s60) - 1
           and len(oh) == 5 and all(-0.03 <= o <= 0.045 for o in oh) and "_slow2x_" in Path(h2["output"]).name
           and abs(h4d - 20.0) <= 0.2 and no_a(h4["output"]) and "_slow4x_" in Path(h4["output"]).name
+          and "evensound" not in Path(h4["output"]).name and h4["extra"] == {"speed": 0.25}
           and h1v.get("r_frame_rate") == "60/1" and frames(ff, h1["output"]) >= frames(ff, s120) - 1,
           (h2d, h2v.get("r_frame_rate"), frames(ff, h2["output"]), frames(ff, s60), [round(o, 3) for o in oh], h4d, h1v.get("r_frame_rate"),
            frames(ff, h1["output"]), frames(ff, s120)))
+    # two videos joined at ½× (the second one's sound starts 1 s after its picture): the second one in step too
+    hj = join_files([whole, late], "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"speed": 0.5}))
+    bj = beeps(ff, hj["output"])
+    oj = [min((b - t for b in bj), key=abs) for t in [(k + 0.3) * 2 for k in range(14)] + [(14 + k + 0.3) * 2 for k in range(1, 13)]] if bj else []
+    check("convert_joined_at_half_speed_in_step", len(oj) == 26 and all(-0.04 <= o <= 0.06 for o in oj)
+          and abs(float(_probe(Path(hj["output"]))["format"]["duration"]) - 56.0) <= 0.3, [round(o, 3) for o in oj])
     # "Even out the sound": a quiet recording (sound starting 1 s after the picture) made as loud as players play it
     # (-16 LUFS), in step; at 2x with less wind too
     def lufs(f):
@@ -358,15 +365,20 @@ def main():
                         "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p", str(f)], check=True)
         return f
     cg = tagged("camera_clock.mp4", "-metadata", "creation_time=2026-10-23T14:05:07Z", "-metadata:s:v", "handler_name=GoPro H.265")
-    cp = tagged("phone_utc.mp4", "-metadata", "creation_time=2026-10-23T11:05:07Z")
+    pfold = src_dir / "GoPro backup"                    # (a folder's name says nothing of the video)
+    pfold.mkdir(exist_ok=True)
+    cp = tagged("GoPro backup/phone_android.mp4", "-movflags", "use_metadata_tags", "-metadata", "com.android.version=14",
+                "-metadata", "creation_time=2026-10-23T11:05:11Z")
+    cc = tagged("dashcam.mp4", "-metadata", "creation_time=2026-10-23T14:05:07Z")
     ci = tagged("iphone.mov", "-movflags", "use_metadata_tags", "-metadata", "com.apple.quicktime.creationdate=2026-10-23T14:05:07+0300",
                 "-metadata", "creation_time=2026-10-23T11:05:07Z")
     cn = tagged("no_time.mp4", "-map_metadata", "-1", "-fflags", "+bitexact")
     os.utime(cn, (1792764000, 1792764000))
     later = tagged("later.mp4", "-metadata", "creation_time=2026-10-23T15:00:00Z", "-metadata:s:v", "handler_name=GoPro H.265", d=2)
-    rs = [cvx.recording_start(ff, x) for x in (cg, cp, ci, cn)]
+    rs = [cvx.recording_start(ff, x) for x in (cg, cp, ci, cn, cc)]
+    # (an Android phone writes when the recording stopped: 11:05:11 UTC, 4 s long -> started 11:05:07 UTC)
     want_rs = [(_dt(2026, 10, 23, 14, 5, 7), "camera"), (_dt(2026, 10, 23, 11, 5, 7, tzinfo=_tz.utc).astimezone().replace(tzinfo=None), "phone"),
-               (_dt(2026, 10, 23, 14, 5, 7), "phone"), (_dt.fromtimestamp(1792764000 - 4), "file")]
+               (_dt(2026, 10, 23, 14, 5, 7), "phone"), (_dt.fromtimestamp(1792764000 - 4), "file"), (_dt(2026, 10, 23, 14, 5, 7), "camera")]
     jp, jh = cvx.clock_parts(ff, [cg, later], [4.0, 2.0])
     cut_p, _h = cvx.clock_parts(ff, [cg], [4.0], (1.5, 3.0))
     ass2 = cvx.clock_ass([(0.0, 3.0, _dt(2026, 10, 23, 23, 59, 58, 500000))], 2, (1920, 1080))
@@ -379,6 +391,8 @@ def main():
     cdiff = lambda a, b: sum(abs(x - y) for x, y in zip(a, b)) / max(1, len(a))
     # (a grey picture: the box shows, and only its seconds change)
     c05, c15, p05 = corner(ck["output"], 0.5, 0), corner(ck["output"], 1.5, 0), corner(plain["output"], 0.5, 0)
+    hc = convert_file(fx / "anamorphic" / "HDV_1440.mp4", "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"clock": True}))
+    hcs = [x for x in _probe(Path(hc["output"])).get("streams", []) if x.get("codec_type") == "video"][0]
     check("convert_date_and_time_in_the_corner", rs == want_rs and jh == "camera"
           and [(round(a, 2), round(b, 2), w) for a, b, w in jp] == [(0.0, 4.0, _dt(2026, 10, 23, 14, 5, 7)), (4.0, 2.0, _dt(2026, 10, 23, 15, 0))]
           and cut_p == [(0.0, 1.5, _dt(2026, 10, 23, 14, 5, 8, 500000))]
@@ -387,8 +401,9 @@ def main():
                          "Dialogue: 0,0:00:00.75,0:00:01.25,Clock,,0,0,0,,24.10.2026  00:00:00",
                          "Dialogue: 0,0:00:01.25,0:00:01.50,Clock,,0,0,0,,24.10.2026  00:00:01"]
           and ck.get("clock") == "camera" and "_clock_" in Path(ck["output"]).name and cdiff(c05, p05) > 10 and cdiff(c05, c15) > 0.2
-          and not list((_H / "data").glob("clock-*")),
-          (rs, jh, jp, cut_p, lines2, ck.get("clock"), cdiff(c05, p05), cdiff(c05, c15)))
+          and not list((_H / "data").glob("clock-*")) and (int(hcs["width"]), int(hcs["height"])) == (1920, 1080)
+          and str(hcs.get("sample_aspect_ratio") or "1:1") in ("1:1", "N/A"),
+          (rs, jh, jp, cut_p, lines2, ck.get("clock"), cdiff(c05, p05), cdiff(c05, c15), hcs.get("width"), hcs.get("sample_aspect_ratio")))
     # pictures every N seconds (a report): a folder of JPEGs named by their moment, through a converter job
     jf = wait_job(start_convert_job([], "share_1080p", paths=[str(whole)], extra={"frames": 5}))
     of = ((jf.get("options") or {}).get("outputs") or [{}])[0]
