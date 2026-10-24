@@ -896,6 +896,7 @@ PHRASES = {
         "Ещё два вида субтитров: по одному слову, крупно (как в TikTok), и сказанное слово на цветной плашке.",
     "Convert: pictures every 5 / 10 / 30 / 60 seconds of the selected videos (photos for a report) and a list of earlier conversions with their buttons.":
         "Конвертация: кадры каждые 5 / 10 / 30 / 60 секунд выбранных видео (фото для отчёта) и список прошлых конвертаций с их кнопками.",
+    "Convert → More: “Brighter” for videos filmed in the dark.": "Конвертация → «Ещё»: «Светлее» — для видео, снятых в темноте.",
     "Convert: a conversion started while another one runs waits in line and starts by itself after it (“Take out of the line” removes it).":
         "Конвертация: если запустить новую, пока идёт другая, она встанет в очередь и начнётся сама («Убрать из очереди» — убрать её).",
     "Convert: “Save pictures of the selected videos” also makes one PDF of them (A4 pages, each picture with its moment and, when chosen, the date and time; your report title on top) - ready for a report.":

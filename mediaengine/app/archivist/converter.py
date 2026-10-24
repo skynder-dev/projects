@@ -997,6 +997,7 @@ SPEEDS = (1, 2, 4, 8, 0.5, 0.25)
 # the sound made even: quiet speech louder, loud parts softer (EBU R128, -16 LUFS as phones and players play it), back
 # at 48 kHz (loudnorm works at 192 kHz)
 LOUD = ["loudnorm=I=-16:TP=-1.5:LRA=11", "aresample=48000"]
+BRIGHTER = "normalize=blackpt=black:whitept=white:smoothing=30:independence=0,eq=gamma=1.15"
 VERTICALS = ("", "crop", "blur")
 LOGO_CORNERS = ("bottom-right", "bottom-left", "top-right", "top-left")
 LOGO_FILE = "convert_logo.png"
@@ -1052,6 +1053,8 @@ def clean_extra(extra) -> dict:
         out["loud"] = True
     if extra.get("clock") is True:
         out["clock"] = True
+    if extra.get("bright") is True:
+        out["bright"] = True
     fr = extra.get("frames")
     if fr not in (None, 0, "", False):
         try:
@@ -1280,6 +1283,9 @@ def _extra_graph(sig: dict, preset: str, hdr, interlaced: bool, turn: int, extra
                       if cap else [])
         g = f"[0:v:0]{','.join(body) if body else 'null'}[vb]"
     last = "vb"
+    if extra.get("bright"):                # a dark video lighter: its own darkest-to-brightest stretched over the whole
+        g += f";[{last}]{BRIGHTER}[vbr]"   # range (smoothed over a second), then a little gamma lift
+        last = "vbr"
     if lg:
         W, H = _out_size(sig, preset, turn, vert)
         lw = max(16, int(W * lg["size"] / 100) // 2 * 2)
@@ -1288,7 +1294,7 @@ def _extra_graph(sig: dict, preset: str, hdr, interlaced: bool, turn: int, extra
         x = f"W-w-{m}" if lg["corner"].endswith("right") else f"{m}"
         y = f"H-h-{m}" if lg["corner"].startswith("bottom") else f"{m}"
         g += (f";[{logo_index}:v]scale={lw}:{lh}:force_original_aspect_ratio=decrease,format=rgba[lg];"
-              f"[vb][lg]overlay={x}:{y}:format=auto:eof_action=repeat[vl]")
+              f"[{last}][lg]overlay={x}:{y}:format=auto:eof_action=repeat[vl]")
         last = "vl"
     if extra.get("clock"):                 # the date and time (subtitles in the job's own folder, the program's font)
         g += f";[{last}]ass=clock.ass:fontsdir=fonts[vk]"
@@ -1323,6 +1329,7 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
     tag = "_".join(x for x in (tag, sp_tag, "vertical" if extra.get("vertical") else "",
                                   "logo" if extra.get("logo") else "", "lesswind" if extra.get("wind") and keeps_sound else "",
                                   "evensound" if extra.get("loud") and keeps_sound else "", "clock" if extra.get("clock") else "",
+                                  "brighter" if extra.get("bright") else "",
                                   "turned" if turn else "", "nosound" if mute else "") if x)
     duration = duration / speed                            # the copy's own length (faster: shorter; slow motion: longer)
     out = Path(os.path.abspath(_unique_output(source, preset, target_mb, Path(output_dir) if output_dir else None, tag)))   # reserved

@@ -354,6 +354,21 @@ def main():
           and all(-0.03 <= o <= 0.045 for o in oq) and "_evensound_" in Path(ev["output"]).name
           and abs(float(_probe(Path(ev2["output"]))["format"]["duration"]) - 7.0) <= 0.15,
           (l0, l1, l2, [round(o, 3) for o in oq], Path(ev["output"]).name))
+    # "Brighter": a video filmed in the dark comes out lighter (also with a logo on it); a normal one is not washed out
+    dark = src_dir / "dark.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=640x360:rate=30,eq=brightness=-0.3:contrast=0.5", "-t", "3",
+                    "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p", str(dark)], check=True)
+    def yavg(f):
+        t = subprocess.run([ff, "-hide_banner", "-i", str(f), "-vf", "signalstats,metadata=print:key=lavfi.signalstats.YAVG:file=-",
+                            "-f", "null", "-"], capture_output=True, text=True).stdout
+        v = re.findall(r"YAVG=([\d.]+)", t)
+        return sum(float(x) for x in v) / len(v) if v else 0.0
+    br = convert_file(dark, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"bright": True}))
+    brl = convert_file(dark, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"bright": True, "logo": True}))
+    brn = convert_file(whole, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"bright": True}))
+    y0, y1, y2, yn0, yn1 = yavg(dark), yavg(br["output"]), yavg(brl["output"]), yavg(whole), yavg(brn["output"])
+    check("convert_brighter", y1 - y0 >= 25 and y2 - y0 >= 25 and yn1 - yn0 <= 25 and "_brighter_" in Path(br["output"]).name,
+          (round(y0, 1), round(y1, 1), round(y2, 1), round(yn0, 1), round(yn1, 1)))
     # "Date and time in the corner": the recording's time read as each maker writes it (GoPro / DJI: their clock as
     # written; a phone: UTC shown in this PC's zone; an iPhone: its local time; nothing: the file's date minus the
     # length), shown every second - at 2x the clock runs twice as fast, a cut starts at its start, joined videos each
