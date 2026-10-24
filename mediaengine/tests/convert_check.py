@@ -431,8 +431,15 @@ def main():
     shutil.copy(slow, pct)
     pp = cvx.save_frames_every(pct, 2, out_dir)
     pdfb = Path(of["pdf"]).read_bytes() if of.get("pdf") and Path(of["pdf"]).is_file() else b""
+    # (a long video: 2160 pictures on 270 pages, written in one pass, in about the time of the pictures themselves)
+    many = [(Path(of["output"]) / pics[k % len(pics)], float(k * 5)) for k in range(2160)] if pics else []
+    t_pdf = time.time()
+    bigp = cvx.pictures_pdf(work / "many_pictures.pdf", many, "three hours.mp4", 5, None) if many else None
+    t_pdf = time.time() - t_pdf
+    bigb = bigp.read_bytes() if bigp else b""
     check("pictures_in_one_pdf", pdfb[:5] == b"%PDF-" and len(re.findall(rb"/Type\s*/Page(?!s)", pdfb)) == 1
-          and Path(of["pdf"]).parent == Path(of["output"]) and Path(of["pdf"]).name == "whole_sync_pictures.pdf", (of.get("pdf"), len(pdfb)))
+          and len(re.findall(rb"/Type\s*/Page(?!s)", bigb)) == 270 and b"/Count 270" in bigb and t_pdf < 240
+          and Path(of["pdf"]).parent == Path(of["output"]) and Path(of["pdf"]).name == "whole_sync_pictures.pdf", (of.get("pdf"), len(pdfb), len(bigb), round(t_pdf, 1)))
     check("pictures_every_n_seconds", jf["status"] == "finished" and of.get("frames") == 3 and pics == ["whole_sync_00m00s.jpg", "whole_sync_00m05s.jpg",
           "whole_sync_00m10s.jpg"] and psz == (640, 360) and Path(of["output"]).name == "whole_sync_pictures_every_5s"
           and sorted(x.name for x in Path(pp["output"]).glob("*.jpg")) == ["Sale 20% off_00m00s.jpg", "Sale 20% off_00m02s.jpg", "Sale 20% off_00m04s.jpg"]

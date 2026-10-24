@@ -1622,7 +1622,7 @@ document.addEventListener('click',ev=>{const b=ev.target.closest('.cvCutBtn');if
  row.after(pan);const v=pan.querySelector('video'),S=pan.querySelector('.cvS'),E=pan.querySelector('.cvE');v.src='/media/'+id;if(full>0)E.placeholder=fmtT(full);
  v.addEventListener('error',()=>{const n=pan.querySelector('.cvNoPlay');n.style.display='block';n.textContent='This video does not play here - type the start and end (minutes:seconds).';v.style.display='none';pan.querySelectorAll("[data-set='s'],[data-set='e']").forEach(x=>x.style.display='none')});
  const c0=cutOf(ch);if(c0){S.value=fmtT(c0[0]);E.value=fmtT(c0[1])}
- fetch('/api/convert/when?id='+Number(id),{cache:'no-store'}).then(r=>r.json()).then(x=>{if(!x.ok)return;const w=pan.querySelector('.cvWhen'),m=String(x.start).match(/^(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)$/);if(!w||!m)return;
+ fetch('/api/convert/when?id='+Number(id),{cache:'no-store'}).then(r=>r.json()).then(x=>{if(!x.ok)return;const w=pan.querySelector('.cvWhen'),m=String(x.start).match(/^(\\d{4})-(\\d\\d)-(\\d\\d)T(\\d\\d):(\\d\\d):(\\d\\d)$/);if(!w||!m)return;
   const t0=Date.UTC(+m[1],+m[2]-1,+m[3],+m[4],+m[5],+m[6]),p2=n=>String(n).padStart(2,'0'),f=ms=>{const d=new Date(ms);return p2(d.getUTCDate())+'.'+p2(d.getUTCMonth()+1)+'.'+d.getUTCFullYear()+' '+p2(d.getUTCHours())+':'+p2(d.getUTCMinutes())+':'+p2(d.getUTCSeconds())};
   const who={camera:"the camera's clock",phone:"the phone's time",file:"the file's date"}[x.how]||'';
   w.innerHTML="<span>Filmed:</span> <span translate='no'>"+f(t0)+"</span>"+(who?" (<span>"+who+"</span>)":"")+" · <span>in the player:</span> <span translate='no' class='cvNow'>"+f(t0)+"</span>";

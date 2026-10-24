@@ -640,13 +640,15 @@ def main():
         if not st_:
             continue                                           # a damaged file (skipped by the app too)
         has_a = any(s_.get("codec_type") == "audio" for s_ in st_)
-        src_sound = src_sound and has_a and (loudness(x)[1] or -200.0) > -60
+        pk_ = loudness(x)[1]
+        src_sound = src_sound and has_a and pk_ is not None and pk_ > -60
     lv = []
     for rr in ae.project(pid)["revisions"]:
         rv = ae.revision(rr["id"])
         if rv and rv.get("video_path") and Path(rv["video_path"]).is_file():
             li, lm = loudness(rv["video_path"])
-            lv.append((rv["id"], (rv.get("settings") or {}).get("sound"), li, lm))
+            au_ = (rv.get("result") or {}).get("audio")          # the sound the engine applied ("auto" may mute)
+            lv.append((rv["id"], au_.get("applied") if isinstance(au_, dict) else (rv.get("settings") or {}).get("sound"), li, lm))
     check("reel_sound_even_or_silent", lv and all((sd == "mute" and (lm is None or lm <= -60)) or
                                                   (sd != "mute" and (not src_sound or (li is not None and -21.5 <= li <= -14.5)))
                                                   for _, sd, li, lm in lv), (src_sound, lv))

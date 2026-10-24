@@ -159,28 +159,33 @@ def save_frames_every(source, every: int, output_dir=None, progress_cb=None, can
     else:
         raise RuntimeError("No free name in " + str(base))
     folder = Path(os.path.abspath(str(folder)))
-    hdr = _hdr_kind(ffmpeg, source)
-    cwd, how = None, ""
-    if clock:                              # the clock's subtitles and font in a folder of their own (FFmpeg runs there)
-        parts, how = clock_parts(ffmpeg, [source], [duration])
-        cwd = (HOME / "data" / f"clock-{os.getpid()}-{threading.get_ident()}-{time.time_ns()}").resolve()
-        cwd.mkdir(parents=True, exist_ok=True)
-        (cwd / "clock.ass").write_text(clock_ass(parts, 1, _out_size(media_sig(ffmpeg, source), "keep_resolution", 0, "")), "utf-8")
-        from .textfx import install_fonts
-        install_fonts(cwd)
-    # the choice first (whole fields are needed for it), then only the chosen pictures are converted (HDR is slow)
-    vf = (["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if _is_interlaced(ffmpeg, source) else []) \
-        + [f"select='isnan(prev_selected_t)+gt(floor(t/{every})\\,floor(prev_selected_t/{every}))'"] \
-        + ([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []) \
-        + ["scale='trunc(iw*sar/2)*2':ih", "setsar=1"] + (["ass=clock.ass:fontsdir=fonts"] if cwd else []) \
-        + ["format=gbrp", "format=yuvj420p"]
-    pattern = str(folder).replace("%", "%%") + os.sep + "p_%05d.jpg"    # a % in a name is not a number pattern
+    cwd, how, parts = None, "", []
     try:
+        hdr = _hdr_kind(ffmpeg, source)
+        if clock:                          # the clock's subtitles and font in a folder of their own (FFmpeg runs there)
+            parts, how = clock_parts(ffmpeg, [source], [duration])
+            cwd = (HOME / "data" / f"clock-{os.getpid()}-{threading.get_ident()}-{time.time_ns()}").resolve()
+            cwd.mkdir(parents=True, exist_ok=True)
+            (cwd / "clock.ass").write_text(clock_ass(parts, 1, _out_size(media_sig(ffmpeg, source), "keep_resolution", 0, "")), "utf-8")
+            from .textfx import install_fonts
+            install_fonts(cwd)
+        # the choice first (whole fields are needed for it), then only the chosen pictures are converted (HDR is slow)
+        vf = (["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if _is_interlaced(ffmpeg, source) else []) \
+            + [f"select='isnan(prev_selected_t)+gt(floor(t/{every})\\,floor(prev_selected_t/{every}))'"] \
+            + ([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []) \
+            + ["scale='trunc(iw*sar/2)*2':ih", "setsar=1"] + (["ass=clock.ass:fontsdir=fonts"] if cwd else []) \
+            + ["format=gbrp", "format=yuvj420p"]
+        pattern = str(folder).replace("%", "%%") + os.sep + "p_%05d.jpg"    # a % in a name is not a number pattern
         _run_progress([str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-i", str(source), "-map", "0:v:0", "-vf", ",".join(vf),
                        "-fps_mode", "vfr", "-frame_pts", "1", "-q:v", "2", pattern], duration, progress_cb, cancel_cb, job_id=job_id, cwd=cwd)
         if cancel_cb and cancel_cb():
             raise RuntimeError("cancelled")
-        pics = sorted(folder.glob("p_*.jpg"))
+        def num(f):                        # (by the number: p_100000 comes after p_99999)
+            try:
+                return int(f.stem.split("_", 1)[1])
+            except (ValueError, IndexError):
+                return -1
+        pics = sorted(folder.glob("p_*.jpg"), key=lambda f: (num(f), f.name))
         if not pics:
             raise RuntimeError("No pictures were made")
         # each picture's number is its own time in frames of the video's rate (frame_pts): named by its stretch
@@ -203,28 +208,63 @@ def save_frames_every(source, every: int, output_dir=None, progress_cb=None, can
             dst = folder / f"{name}.jpg"
             f.replace(dst)
             total += dst.stat().st_size
-            made.append((dst, float(t)))
+            made.append((dst, float(ts)))
+        pdf = None
+        try:                               # all of them on A4 pages, for a report (the pictures stay without it)
+            pdf = pictures_pdf(folder / f"{stem}_pictures.pdf", made, source.name, every, parts[0][2] if parts else None,
+                               progress_cb, cancel_cb)
+        except Exception as exc:
+            if str(exc) == "cancelled" or (cancel_cb and cancel_cb()):
+                raise
+            pdf = None
     except BaseException:
         shutil.rmtree(folder, ignore_errors=True)
         raise
     finally:
         if cwd:
             shutil.rmtree(cwd, ignore_errors=True)
-    pdf = None
-    try:                                   # all of them on A4 pages, for a report (the pictures stay without it)
-        start = parts[0][2] if clock and parts else None
-        pdf = pictures_pdf(folder / f"{stem}_pictures.pdf", made, source.name, every, start)
-    except Exception:
-        pdf = None
     return {"source": str(source), "output": str(folder), "frames": len(pics), "every": every,
             "source_bytes": source.stat().st_size, "output_bytes": total, "saved_percent": 0.0, **({"clock": how} if how else {}),
             **({"pdf": str(pdf)} if pdf else {})}
 
 
-def pictures_pdf(path: Path, pics: list, title: str, every: int, start=None) -> Path | None:
+def _pdf_of_jpegs(path: Path, pages, dpi: int = 150) -> None:
+    """A PDF written in one pass: each page one JPEG picture (as it is, DCTDecode) filling the page. pages yields
+    (jpeg bytes, width px, height px); only one page is in memory at a time."""
+    offsets, kids = {}, []
+    with open(path, "wb") as f:
+        def obj(n: int, body: bytes, stream: bytes | None = None) -> None:
+            offsets[n] = f.tell()
+            f.write(f"{n} 0 obj\n".encode() + body)
+            if stream is not None:
+                f.write(b"\nstream\n" + stream + b"\nendstream")
+            f.write(b"\nendobj\n")
+        f.write(b"%PDF-1.4\n%\xe2\xe3\xcf\xd3\n")
+        obj(1, b"<< /Type /Catalog /Pages 2 0 R >>")
+        n = 3
+        for jpg, w, h in pages:
+            pw, ph = w * 72.0 / dpi, h * 72.0 / dpi
+            obj(n, f"<< /Type /XObject /Subtype /Image /Width {w} /Height {h} /ColorSpace /DeviceRGB /BitsPerComponent 8 "
+                   f"/Filter /DCTDecode /Length {len(jpg)} >>".encode(), jpg)
+            draw = f"q {pw:.2f} 0 0 {ph:.2f} 0 0 cm /Im0 Do Q".encode()
+            obj(n + 1, f"<< /Length {len(draw)} >>".encode(), draw)
+            obj(n + 2, f"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {pw:.2f} {ph:.2f}] /Resources << /XObject << /Im0 {n} 0 R >> >> "
+                       f"/Contents {n + 1} 0 R >>".encode())
+            kids.append(n + 2)
+            n += 3
+        obj(2, f"<< /Type /Pages /Kids [{' '.join(f'{k} 0 R' for k in kids)}] /Count {len(kids)} >>".encode())
+        xref = f.tell()
+        f.write(f"xref\n0 {n}\n0000000000 65535 f \n".encode())
+        for i in range(1, n):
+            f.write(f"{offsets[i]:010d} 00000 n \n".encode())
+        f.write(f"trailer\n<< /Size {n} /Root 1 0 R >>\nstartxref\n{xref}\n%%EOF\n".encode())
+
+
+def pictures_pdf(path: Path, pics: list, title: str, every: int, start=None, progress_cb=None, cancel_cb=None) -> Path | None:
     """The pictures of one video on A4 pages (150 dpi): the video's name, how often, and under each picture its moment
-    in the video (and the clock's time when it is known). Pages are written one by one (a long video's hundreds of
-    pictures never sit in memory together). In the program's language."""
+    in the video (and the clock's time when it is known). Written in one pass, page by page (a long video's hundreds
+    of pictures never sit in memory together; each page tells the job it is alive; Stop stops it). In the program's
+    language."""
     if not pics:
         return None
     from PIL import Image, ImageDraw, ImageFont
@@ -259,8 +299,12 @@ def pictures_pdf(path: Path, pics: list, title: str, every: int, start=None) -> 
     probe_d = ImageDraw.Draw(Image.new("RGB", (8, 8)))
     while len(title) > 8 and probe_d.textlength(title, font=f_title) > W - 2 * M:     # a long name: shortened with …
         title = title[:-6] + "…"
-    try:
+
+    def made_pages():
+        import io
         for pg in range(pages):
+            if cancel_cb and cancel_cb():
+                raise RuntimeError("cancelled")
             page = Image.new("RGB", (W, H), "white")
             d = ImageDraw.Draw(page)
             d.text((M, M), title, font=f_title, fill=(20, 20, 20))
@@ -268,10 +312,13 @@ def pictures_pdf(path: Path, pics: list, title: str, every: int, start=None) -> 
             for k, (pic, t) in enumerate(pics[pg * per:(pg + 1) * per]):
                 x = M + (k % cols) * (cw + GAP)
                 y = top + (k // cols) * (ph + CAP + GAP)
-                with Image.open(pic) as im:
-                    im.draft("RGB", (cw, ph))
-                    th = im.convert("RGB").resize((cw, ph), Image.LANCZOS)
-                page.paste(th, (x, y))
+                try:
+                    with Image.open(pic) as im:
+                        im.draft("RGB", (cw, ph))
+                        th = im.convert("RGB").resize((cw, ph), Image.LANCZOS)
+                    page.paste(th, (x, y))
+                except (OSError, ValueError):      # (a picture that cannot be read: its place stays grey)
+                    d.rectangle((x, y, x + cw, y + ph), fill=(225, 225, 225))
                 ti = int(t)
                 cap = f"{ti // 3600}:{ti // 60 % 60:02d}:{ti % 60:02d}" if ti >= 3600 else f"{ti // 60}:{ti % 60:02d}"
                 if start:
@@ -279,8 +326,14 @@ def pictures_pdf(path: Path, pics: list, title: str, every: int, start=None) -> 
                 d.text((x, y + ph + 6), cap, font=f_cap, fill=(40, 40, 40))
             foot = (f"стр. {pg + 1} из {pages}" if ru else f"page {pg + 1} of {pages}")
             d.text((W - M - d.textlength(foot, font=f_cap), H - M - 10), foot, font=f_cap, fill=(120, 120, 120))
-            page.save(tmp, "PDF", resolution=150, append=pg > 0, quality=85)
+            buf = io.BytesIO()
+            page.save(buf, "JPEG", quality=85)
             page.close()
+            if progress_cb:
+                progress_cb(100.0)
+            yield buf.getvalue(), W, H
+    try:
+        _pdf_of_jpegs(tmp, made_pages())
         os.replace(tmp, path)
         return path
     except BaseException:
@@ -326,8 +379,19 @@ def _sweep_ours(folder: Path) -> None:
                     f.unlink()
             except OSError:
                 pass
+        _sweep_pdf_parts(folder)
     except OSError:
         pass
+
+
+def _sweep_pdf_parts(folder: Path) -> None:
+    """A pictures PDF the app was closed while writing (in a pictures folder of ours)."""
+    for d in folder.glob("*_pictures_every_*s*"):
+        for f in d.glob("*_pictures.part.pdf") if d.is_dir() else []:
+            try:
+                f.unlink()
+            except OSError:
+                pass
 
 
 def _unique_output(source: Path, preset: str, target_mb: int | None, output_dir: Path | None = None, tag: str = "") -> Path:
@@ -381,6 +445,7 @@ def _sweep_converted(folder: Path | None = None) -> None:
         for f in (HOME / "data").glob("clock-*"):        # the date-and-time folder of one (the fonts and subtitles)
             if f.is_dir():
                 shutil.rmtree(f, ignore_errors=True)
+        _sweep_pdf_parts(folder)
     except OSError:
         pass
 
