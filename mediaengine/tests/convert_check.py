@@ -468,6 +468,46 @@ def main():
           and str(jb.get("started_at") or "") >= str(ja.get("finished_at") or "~")
           and ((jb.get("options") or {}).get("outputs") or [{}])[0].get("frames") == 1,
           (qb_first, ja["status"], jb["status"], ja.get("finished_at"), jb.get("started_at")))
+    # a video gone before its job starts (a card not put back yet): a "Failed" line with its name, counted as done
+    qa2 = start_convert_job([], "small_720p", paths=[str(whole)])
+    gone = src_dir / "gone soon.mp4"
+    shutil.copy(parts[0], gone)
+    qb2 = start_convert_job([], "small_720p", paths=[str(parts[1]), str(gone)])
+    qb2_first = convert_job_snapshot(qb2)["status"]
+    gone.unlink()
+    jb2 = wait_job(qb2); wait_job(qa2)
+    outs2 = (jb2.get("options") or {}).get("outputs") or []
+    check("a_missing_video_is_named", qb2_first == "waiting" and jb2["status"] == "finished" and (jb2["done"], jb2["total"]) == (2, 2)
+          and jb2["failed"] == 1 and any(o.get("error") == "This video is not on this computer now" and o.get("source") == "gone soon.mp4"
+                                          for o in outs2), (qb2_first, jb2["status"], jb2["done"], jb2["total"], jb2["failed"], outs2))
+    # a size target: a phone video with a varying frame rate, joined chapters whose sound runs a little longer than
+    # the picture (both used to fail: two passes saw different frames), a video without sound (its share not taken)
+    tvfr = convert_file(fx / "phone" / "переменная частота.mp4", "share_1080p", target_mb=1, output_dir=out_dir)
+    chd = src_dir / "chapters_long_sound"
+    chd.mkdir(exist_ok=True)
+    for f in chd.glob("*"):
+        f.unlink()
+    for n in (1, 2):
+        subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=640x360:rate=30:d=3", "-f", "lavfi", "-i",
+                        "sine=frequency=500:sample_rate=48000:d=3.05", "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p",
+                        "-c:a", "aac", str(chd / f"GX0{n}0044.MP4")], check=True)
+    tjn = join_files(sorted(chd.glob("*.MP4")), "share_1080p", target_mb=2, output_dir=out_dir)
+    sil = src_dir / "drone_no_sound.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=1280x720:rate=30:d=20", "-c:v", "libx264", "-preset",
+                    "ultrafast", "-pix_fmt", "yuv420p", str(sil)], check=True)
+    tsil = convert_file(sil, "share_1080p", target_mb=3, output_dir=out_dir)
+    sil_mb = Path(tsil["output"]).stat().st_size / 2**20
+    check("size_target_with_gaps_and_without_sound", Path(tvfr["output"]).is_file() and Path(tjn["output"]).is_file()
+          and abs(float(_probe(Path(tjn["output"]))["format"]["duration"]) - 6.05) <= 0.2 and 2.4 <= sil_mb <= 3.1,
+          (tvfr.get("output"), tjn.get("output"), round(sil_mb, 2)))
+    # a half-copied video (its index at the front, as a messenger download has): the copy is made and says it is short
+    front = src_dir / "front_index.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-i", str(whole), "-c", "copy", "-movflags", "+faststart", str(front)], check=True)
+    halfv = src_dir / "half copied.mp4"
+    halfv.write_bytes(front.read_bytes()[: front.stat().st_size // 2])
+    hshort, hfull = convert_file(halfv, "small_720p", output_dir=out_dir), convert_file(front, "small_720p", output_dir=out_dir)
+    check("a_half_copied_video_is_said_short", isinstance(hshort.get("short"), list) and hshort["short"][0] < 10
+          and hshort["short"][1] >= 13.5 and "short" not in hfull, (hshort.get("short"), hfull.get("short")))
     # "Without sound": the copy has no sound at all (one video, and joined parts)
     mres = convert_file(parts[0], "small_720p", output_dir=out_dir, mute=True)
     jm = join_files(parts, "small_720p", output_dir=out_dir, mute=True)

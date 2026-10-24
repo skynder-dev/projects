@@ -545,6 +545,7 @@ def _run_progress_inner(cmd, duration_s: float, progress_cb=None, cancel_cb=None
         ts=_now()
         with db() as con:
             con.execute("UPDATE jobs SET worker_pid=?,heartbeat_at=?,progress_at=? WHERE id=?",(int(p.pid),ts,ts,int(job_id)));con.commit()
+    finishing = None                       # from 99 %: the file's end (and +faststart's rewrite) may take minutes, silently
     try:
         if p.stdout:
             for raw in p.stdout:
@@ -567,10 +568,15 @@ def _run_progress_inner(cmd, duration_s: float, progress_cb=None, cancel_cb=None
                             frac = 0 if duration_s <= 0 else max(0.0, min(1.0, sec / duration_s))
                             if progress_cb:
                                 progress_cb((phase_base + phase_span * frac) * 100.0)
+                            if frac >= 0.99 and finishing is None and job_id:
+                                finishing = _Keepalive(job_id).__enter__()
                         except Exception:
                             pass
-                    elif k == "progress" and v == "end" and progress_cb:
-                        progress_cb((phase_base + phase_span) * 100.0)
+                    elif k == "progress" and v == "end":
+                        if progress_cb:
+                            progress_cb((phase_base + phase_span) * 100.0)
+                        if finishing is None and job_id:
+                            finishing = _Keepalive(job_id).__enter__()
                 elif line:
                     errors.append(line[-500:])
                     if len(errors) > 12:
@@ -579,6 +585,8 @@ def _run_progress_inner(cmd, duration_s: float, progress_cb=None, cancel_cb=None
         if code != 0:
             raise RuntimeError(("FFmpeg failed: " + " | ".join(errors[-4:]))[:1200])
     finally:
+        if finishing is not None:
+            finishing.__exit__()
         with _LOCK:
             if _CURRENT_PROCESS is p:
                 _CURRENT_PROCESS = None
@@ -624,7 +632,7 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
         input_args, tag, duration = ["-ss", f"{start:.3f}", "-t", f"{end - start:.3f}", "-i", str(source)], "cut", end - start
     clock, how = (clock_parts(ffmpeg, [source], [float(probe_duration(source) or duration)], cut) if extra and extra.get("clock")
                   else (None, ""))
-    out, made_on = _encode(ffmpeg, input_args, source, duration, preset, target_mb, progress_cb, cancel_cb, output_dir, job_id, tag=tag,
+    out, made_on, short = _encode(ffmpeg, input_args, source, duration, preset, target_mb, progress_cb, cancel_cb, output_dir, job_id, tag=tag,
                            mute=bool(mute), turn=turn, prefer=prefer, extra=extra, clock=clock)
     src_size = source.stat().st_size
     if cut:                                    # the part's share of the file (the saving of the part, not of the whole)
@@ -644,6 +652,7 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
         **({"extra": shown_extra(extra, mute)} if extra else {}),
         **({"cut": [round(float(cut[0]), 3), round(min(float(cut[1]), float(probe_duration(source) or cut[1])), 3)]} if cut else {}),
         **({"clock": how} if how else {}),
+        **({"short": short} if short else {}),
     }
 
 
@@ -781,7 +790,7 @@ def join_files(sources, preset="share_1080p", target_mb=None, progress_cb=None, 
     # one line per part; inside '...' nothing is special except the quote itself
     listfile.write_text("".join("file '" + str(src.resolve()).replace("'", "'\\''") + "'\n" for src in sources), "utf-8")
     try:
-        out, made_on = _encode(ffmpeg, ["-f", "concat", "-safe", "0", "-i", str(listfile)], sources[0], duration, preset, target_mb,
+        out, made_on, short = _encode(ffmpeg, ["-f", "concat", "-safe", "0", "-i", str(listfile)], sources[0], duration, preset, target_mb,
                                progress_cb, cancel_cb, output_dir, job_id, tag="joined", mute=bool(mute), turn=turn, extra=extra,
                                clock=clock)
     finally:
@@ -806,6 +815,7 @@ def join_files(sources, preset="share_1080p", target_mb=None, progress_cb=None, 
         "target_mb": int(target_mb) if target_mb else None,
         "made_on": made_on,
         **({"clock": how} if how else {}),
+        **({"short": short} if short else {}),
     }
 
 
@@ -1344,6 +1354,7 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
         vsel = ["-map", "0:v:0", *amap, *_scale_args(preset, hdr, interlaced, turn)]     # the picture as before
         vsel1 = ["-map", "0:v:0", *_scale_args(preset, hdr, interlaced, turn)]            # (first pass: no sound)
         logo_in = []
+        through = False
         if extra:                                                   # More options: one filter graph
             sig = media_sig(ffmpeg, source)
             if extra.get("logo"):
@@ -1373,7 +1384,9 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
         ]
 
         if target_mb:
-            audio_k = 0 if mute else int(cfg["audio_k"])
+            # the sound's share: each sound track the copy will have (none: a drone video, Without sound, 4x)
+            tracks = 0 if mute else (1 if through else _audio_tracks(ffmpeg, source))
+            audio_k = int(cfg["audio_k"]) * tracks
             total_bits = float(target_mb) * 1024 * 1024 * 8 * 0.94
             video_k = max(250, int(total_bits / duration / 1000.0 - audio_k))
             passlog = str((HOME / "data" / f"ffmpeg2pass-{os.getpid()}-{threading.get_ident()}").resolve())
@@ -1382,13 +1395,13 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
                 str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", *input_args, *vsel1,
                 "-c:v", "libx264", "-pix_fmt", "yuv420p", "-color_range", "tv", "-preset", "veryfast",
                 "-b:v", f"{video_k}k", "-maxrate", f"{int(video_k*1.25)}k", "-bufsize", f"{int(video_k*2)}k",
-                "-pass", "1", "-passlogfile", passlog, "-an", "-f", "null", os.devnull
+                "-pass", "1", "-passlogfile", passlog, "-fps_mode", "cfr", "-an", "-f", "null", os.devnull
             ]
             _run_progress(pass1, duration, progress_cb, cancel_cb, 0.0, 0.48, job_id=job_id, cwd=cwd)
             pass2 = common + [
                 "-b:v", f"{video_k}k", "-maxrate", f"{int(video_k*1.25)}k", "-bufsize", f"{int(video_k*2)}k",
-                "-pass", "2", "-passlogfile", passlog,
-                *aenc(audio_k), "-movflags", "+faststart", str(part)
+                "-pass", "2", "-passlogfile", passlog, "-fps_mode", "cfr",   # (the frames of pass 1, also with gaps)
+                *aenc(cfg["audio_k"]), "-movflags", "+faststart", str(part)
             ]
             _run_progress(pass2, duration, progress_cb, cancel_cb, 0.50, 0.50, job_id=job_id, cwd=cwd)
         else:
@@ -1405,8 +1418,9 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
                         *aenc(cfg["audio_k"]), "-movflags", "+faststart", str(part)]
                 try:
                     _run_progress(gcmd, duration, progress_cb, cancel_cb, job_id=job_id)
-                    got = float(probe_duration(part) or 0.0)
-                    pic = _picture_seconds(ffmpeg, part)
+                    with _Keepalive(job_id):
+                        got = float(probe_duration(part) or 0.0)
+                        pic = _picture_seconds(ffmpeg, part)
                     if abs(got - duration) > max(0.5, 0.01 * duration) or pic < got - max(0.5, 0.01 * got):
                         raise RuntimeError(f"length {got:.2f} s (picture {pic:.2f} s) instead of {duration:.2f} s")
                     made_on = "nvidia"
@@ -1432,8 +1446,24 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
 
         if cancel_cb and cancel_cb():
             raise RuntimeError("cancelled")
-        part.replace(out)
-        return out, made_on
+        short = None
+        with _Keepalive(job_id):
+            if not mute:                   # a copy shorter than the video: a damaged or half-copied source (said, kept)
+                try:
+                    got = float(probe_duration(part) or 0.0)
+                    if 0 < got < duration - max(1.0, 0.02 * duration):
+                        short = [round(got, 1), round(duration, 1)]
+                except Exception:
+                    pass
+            for k in range(20):            # (Windows: Explorer or an antivirus may hold the name a moment)
+                try:
+                    part.replace(out)
+                    break
+                except OSError:
+                    if k == 19:
+                        raise
+                    time.sleep(0.5)
+        return out, made_on, short
     except BaseException:
         # never leave a half-written .part file behind (it would be re-discovered as media), nor the empty reserved name
         try:
@@ -1455,6 +1485,45 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
                     f.unlink()
                 except Exception:
                     pass
+
+
+class _Keepalive:
+    """The job told alive every 15 s while it does a silent step that is not stuck (FFmpeg moving its index to the
+    front of a big file on a slow disk, the checks of a finished file): the watchdog restarts only a stalled job.
+    Bounded (30 min) - a step that never ends still counts as stalled after that."""
+    def __init__(self, job_id, limit_s: float = 1800.0, every: float = 15.0):
+        self.job_id, self.limit_s, self.every = job_id, limit_s, every
+        self.stop = threading.Event()
+
+    def __enter__(self):
+        if self.job_id:
+            t_end = time.time() + self.limit_s
+            def beat():
+                while not self.stop.wait(self.every) and time.time() < t_end:
+                    try:
+                        ts = _now()
+                        with db() as con:
+                            con.execute("UPDATE jobs SET progress_at=?,heartbeat_at=? WHERE id=? AND status='running'",
+                                        (ts, ts, int(self.job_id)))
+                            con.commit()
+                    except Exception:
+                        pass
+            threading.Thread(target=beat, daemon=True, name="ConvertKeepalive").start()
+        return self
+
+    def __exit__(self, *exc):
+        self.stop.set()
+        return False
+
+
+def _audio_tracks(ffmpeg, source) -> int:
+    """How many sound tracks a video has (FFmpeg's own description)."""
+    try:
+        cp = subprocess.run([str(ffmpeg), "-hide_banner", "-i", str(source)], capture_output=True, text=True, encoding="utf-8",
+                            errors="replace", timeout=60, **process_kwargs())
+        return sum(1 for l in (cp.stderr or "").split("Stream mapping:", 1)[0].splitlines() if " Audio: " in l)
+    except Exception:
+        return 1
 
 
 def _job_update(job_id, **fields):
@@ -1631,9 +1700,13 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
                 continue
             if _cancelled(job_id):
                 raise RuntimeError("cancelled")
-            if not src:
+            if not src:                    # (a card not put back yet): said with its name, kept after a restart too
                 failed += 1
-                _job_update(job_id, failed=failed, done=index, message=f"Skipped missing local file: {filename}")
+                outputs.append({"source": str(filename), "error": "This video is not on this computer now"})
+                done.add(key)
+                processed_bytes += size
+                _job_update(job_id, failed=failed, done=len(done), bytes_done=processed_bytes, options_json=opts(),
+                            message=f"Skipped missing local file: {filename}")
                 continue
             _job_update(job_id, current_inventory_id=key if isinstance(key, int) else None, current_filename=filename,
                         message=f"Converting {index}/{len(ordered)} · {filename}")
@@ -1956,7 +2029,7 @@ def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, 
             raise ValueError("None of the selected videos can be converted (private, rejected or removed)")
         # something runs (or conversions wait already): this one waits in line and starts by itself after them
         busy = con.execute("SELECT id,kind FROM jobs WHERE status IN ('running','queued') OR (kind='convert' AND status='waiting' "
-                           "AND cancel_requested=0) ORDER BY id LIMIT 1").fetchone()
+                           "AND cancel_requested=0) ORDER BY id LIMIT 1").fetchone() or (True if _GT.get("running") else None)
         n = len(ids) + len(files)
         cur = con.execute(
             "INSERT INTO jobs(kind,status,created_at,started_at,stage,message,total,done,success,failed,bytes_total,bytes_done,options_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -1982,7 +2055,7 @@ _QUEUE: dict = {"thread": None}
 
 def dispatch_waiting():
     """The first conversion waiting in line started, when no job runs: its id, else None."""
-    if _EXITING.is_set():
+    if _EXITING.is_set() or _GT.get("running"):          # (the card test of Check this PC runs: after it)
         return None
     with db() as con:                      # (a plain look first: no write lock every 2 s while a job runs)
         if con.execute("SELECT 1 FROM jobs WHERE status IN ('running','queued') LIMIT 1").fetchone() or not con.execute(

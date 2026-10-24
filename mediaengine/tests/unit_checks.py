@@ -1090,6 +1090,16 @@ def main():
             _cv._convert_worker = real_qw_
         with _ca().test_client() as _c:                     # one taken out of the line is not "the last job" on the page
             qpage2_ = _c.get("/convert", headers=H_).get_data(as_text=True)
+        with _qdb() as con:                                  # a silent finishing step keeps its job alive for the watchdog
+            kj_ = con.execute("INSERT INTO jobs(kind,status,created_at,started_at,stage,message,progress_at) VALUES('convert','running',?,?,'x','x',?)",
+                              ("2026-10-24T00:00:00+00:00",) * 3).lastrowid
+            con.commit()
+        with _cv._Keepalive(kj_, every=0.2):
+            __import__("time").sleep(0.8)
+        with _qdb() as con:
+            kp_ = con.execute("SELECT progress_at FROM jobs WHERE id=?", (kj_,)).fetchone()[0]
+            con.execute("UPDATE jobs SET status='finished' WHERE id=?", (kj_,)); con.commit()
+        check("convert: a finishing conversion stays alive for the watchdog", str(kp_) > "2026-10-24T00:00:00+00:00", kp_)
         check("convert: a job taken out of the line never shows as the last conversion",
               f"Last converter job #{qb_}" not in qpage2_ and f"Last converter job #{qa_}" in qpage2_, qpage2_[-300:])
         check("convert: a second conversion waits in line and starts by itself after the job before it",
