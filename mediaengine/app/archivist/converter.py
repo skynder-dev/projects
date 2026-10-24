@@ -104,11 +104,11 @@ def save_frame(source, t: float, output_dir=None) -> Path:
 FRAME_STEPS = (5, 10, 30, 60)
 
 
-def save_frames_every(source, every: int, output_dir=None, progress_cb=None, cancel_cb=None, job_id=None) -> dict:
+def save_frames_every(source, every: int, output_dir=None, progress_cb=None, cancel_cb=None, job_id=None, clock=False) -> dict:
     """A picture every N seconds of a video (for a report): the first picture of each N-second stretch (0-N, N-2N,
     ...), at the video's full size, in a new folder next to the converted videos ('<name>_pictures_every_10s'), each
-    named by the start of its stretch ('<name>_01m30s.jpg')."""
-    source = Path(source)
+    named by the start of its stretch ('<name>_01m30s.jpg'); clock: the date and time of that moment on it."""
+    source = Path(os.path.abspath(str(source)))
     if not source.is_file():
         raise FileNotFoundError(str(source))
     ffmpeg = _ffmpeg_exe()
@@ -134,16 +134,26 @@ def save_frames_every(source, every: int, output_dir=None, progress_cb=None, can
             continue
     else:
         raise RuntimeError("No free name in " + str(base))
+    folder = Path(os.path.abspath(str(folder)))
     hdr = _hdr_kind(ffmpeg, source)
+    cwd, how = None, ""
+    if clock:                              # the clock's subtitles and font in a folder of their own (FFmpeg runs there)
+        parts, how = clock_parts(ffmpeg, [source], [duration])
+        cwd = (HOME / "data" / f"clock-{os.getpid()}-{threading.get_ident()}-{time.time_ns()}").resolve()
+        cwd.mkdir(parents=True, exist_ok=True)
+        (cwd / "clock.ass").write_text(clock_ass(parts, 1, _out_size(media_sig(ffmpeg, source), "keep_resolution", 0, "")), "utf-8")
+        from .textfx import install_fonts
+        install_fonts(cwd)
     # the choice first (whole fields are needed for it), then only the chosen pictures are converted (HDR is slow)
     vf = (["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if _is_interlaced(ffmpeg, source) else []) \
         + [f"select='isnan(prev_selected_t)+gt(floor(t/{every})\\,floor(prev_selected_t/{every}))'"] \
         + ([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []) \
-        + ["scale='trunc(iw*sar/2)*2':ih", "setsar=1", "format=gbrp", "format=yuvj420p"]
+        + ["scale='trunc(iw*sar/2)*2':ih", "setsar=1"] + (["ass=clock.ass:fontsdir=fonts"] if cwd else []) \
+        + ["format=gbrp", "format=yuvj420p"]
     pattern = str(folder).replace("%", "%%") + os.sep + "p_%05d.jpg"    # a % in a name is not a number pattern
     try:
         _run_progress([str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-i", str(source), "-map", "0:v:0", "-vf", ",".join(vf),
-                       "-fps_mode", "vfr", "-frame_pts", "1", "-q:v", "2", pattern], duration, progress_cb, cancel_cb, job_id=job_id)
+                       "-fps_mode", "vfr", "-frame_pts", "1", "-q:v", "2", pattern], duration, progress_cb, cancel_cb, job_id=job_id, cwd=cwd)
         if cancel_cb and cancel_cb():
             raise RuntimeError("cancelled")
         pics = sorted(folder.glob("p_*.jpg"))
@@ -172,8 +182,11 @@ def save_frames_every(source, every: int, output_dir=None, progress_cb=None, can
     except BaseException:
         shutil.rmtree(folder, ignore_errors=True)
         raise
+    finally:
+        if cwd:
+            shutil.rmtree(cwd, ignore_errors=True)
     return {"source": str(source), "output": str(folder), "frames": len(pics), "every": every,
-            "source_bytes": source.stat().st_size, "output_bytes": total, "saved_percent": 0.0}
+            "source_bytes": source.stat().st_size, "output_bytes": total, "saved_percent": 0.0, **({"clock": how} if how else {})}
 
 
 def _stream_time_base(ffmpeg, source) -> float:
@@ -416,7 +429,7 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
     """One video converted (cut = (start, end) in seconds: only that part). extra {"frames": N}: pictures every N s
     instead of a video."""
     if extra and extra.get("frames"):
-        return save_frames_every(source, int(extra["frames"]), output_dir, progress_cb, cancel_cb, job_id)
+        return save_frames_every(source, int(extra["frames"]), output_dir, progress_cb, cancel_cb, job_id, clock=bool(extra.get("clock")))
     source = Path(os.path.abspath(str(source)))          # (FFmpeg may run in another folder: the clock's)
     if preset not in PRESETS:
         raise ValueError("Unknown preset")
@@ -831,7 +844,7 @@ def logo_saved() -> dict:
 
 def clean_extra(extra) -> dict:
     """The page's choices, checked: {"speed": 2|4|8|0.5|0.25, "vertical": "crop"|"blur", "logo": {...}, "wind": True,
-    "loud": True} (only what is chosen); or {"frames": N} alone."""
+    "loud": True} (only what is chosen); or {"frames": N} (with "clock": True when chosen) alone."""
     out = {}
     if not extra:
         return out
@@ -873,7 +886,7 @@ def clean_extra(extra) -> dict:
             fr = -1
         if fr not in FRAME_STEPS:
             raise ValueError("Unknown option")
-        out = {"frames": fr}                    # pictures: the other options do not apply
+        out = {"frames": fr, **({"clock": True} if extra.get("clock") is True else {})}   # pictures: only the clock applies
     return out
 
 

@@ -1072,7 +1072,7 @@ def main():
                _cv._speed_filters({"fps": 30}, 2), _cv._speed_filters({}, 1.0), _cv._speed_filters({"fps": 50}, 0.5),
                _cv._speed_filters({"fps": 30}, 0.5), _cv._speed_filters({"fps": 240}, 0.5))
         shx_ = (_cv.shown_extra({"speed": 4, "loud": True, "wind": True, "clock": True}), _cv.shown_extra({"loud": True}, mute=True),
-                _cv.shown_extra({"speed": 0.5, "loud": True}))
+                _cv.shown_extra({"speed": 0.5, "loud": True}), _cv.clean_extra({"frames": 10, "clock": True, "speed": 2, "loud": True}))
         from PIL import Image as _Im
         lpic_ = work / "my logo.jpg"
         _Im.new("RGB", (640, 320), (10, 200, 30)).save(lpic_)
@@ -1096,7 +1096,7 @@ def main():
               and slow_x_ == ({"speed": 0.5, "loud": True}, {"speed": 0.25}, {})
               and sf_ == (["setpts=PTS*2", "fps=29.97"], ["setpts=PTS*2", "fps=59.94"], ["setpts=PTS*4", "fps=29.97"], ["setpts=PTS/2", "fps=30"], [],
                           ["setpts=PTS*2", "fps=25"], ["setpts=PTS*2", "fps=30"], ["setpts=PTS*2", "fps=60"])
-              and shx_ == ({"speed": 4, "clock": True}, {}, {"speed": 0.5, "loud": True})
+              and shx_ == ({"speed": 4, "clock": True}, {}, {"speed": 0.5, "loud": True}, {"frames": 10, "clock": True})
               and lsaved_.get("corner") == "top-left" and lsaved_.get("size") == 40 and lpng_.status_code == 200
               and lpng_.data[:8] == b"\x89PNG\r\n\x1a\n" and "id='logoOut'" in lpage_
               and set(ok_x_.get("logo") or {}) == {"path", "corner", "size"} and "convert_logos" in ok_x_["logo"]["path"]
