@@ -279,7 +279,7 @@ APP_PHRASES: dict[str, str] = {
     "More: speed, vertical 9:16, logo, date and time, sound": "Ещё: скорость, вертикально 9:16, логотип, дата и время, звук",
     "Date and time in the corner": "Дата и время в углу", "date and time": "дата и время",
     "Open the PDF": "Открыть PDF",
-    "Starting converter…": "Запускаю конвертацию…", "The next conversion has started.": "Началась следующая конвертация.", "Show it": "Показать", "Waiting in line": "В очереди", "Take out of the line": "Убрать из очереди", "into one video": "в одно видео",
+    "Starting converter…": "Запускаю конвертацию…", "The next conversion has started.": "Началась следующая конвертация.", "Show it": "Показать", "Waiting in line": "В очереди", "Report title (optional)": "Заголовок отчёта (необязательно)", "Take out of the line": "Убрать из очереди", "into one video": "в одно видео",
     "They start one by one, by themselves, when the job before them ends.": "Начнутся сами, по очереди, когда закончится задача перед ними.",
     "Added to the line: it starts when the job before it ends.": "Добавлено в очередь: начнётся, когда закончится задача перед ней.",
     "Waiting for the job before it": "Ждёт задачу перед собой", "waiting": "ждёт", "Sound:": "Звук:", "Filmed:": "Снято:", "in the player:": "в плеере:", "the camera's clock": "по часам камеры", "the phone's time": "по времени телефона",

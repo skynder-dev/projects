@@ -434,7 +434,7 @@ def main():
     # (a long video: 2160 pictures on 270 pages, written in one pass, in about the time of the pictures themselves)
     many = [(Path(of["output"]) / pics[k % len(pics)], float(k * 5)) for k in range(2160)] if pics else []
     t_pdf = time.time()
-    bigp = cvx.pictures_pdf(work / "many_pictures.pdf", many, "three hours.mp4", 5, None) if many else None
+    bigp = cvx.pictures_pdf(work / "many_pictures.pdf", many, "three hours.mp4", 5, None, report="Site 7 - roof, October") if many else None
     t_pdf = time.time() - t_pdf
     bigb = bigp.read_bytes() if bigp else b""
     check("pictures_in_one_pdf", pdfb[:5] == b"%PDF-" and len(re.findall(rb"/Type\s*/Page(?!s)", pdfb)) == 1

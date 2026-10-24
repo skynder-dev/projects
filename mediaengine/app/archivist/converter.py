@@ -128,7 +128,8 @@ def save_frame(source, t: float, output_dir=None, clock=False) -> Path:
 FRAME_STEPS = (5, 10, 30, 60)
 
 
-def save_frames_every(source, every: int, output_dir=None, progress_cb=None, cancel_cb=None, job_id=None, clock=False) -> dict:
+def save_frames_every(source, every: int, output_dir=None, progress_cb=None, cancel_cb=None, job_id=None, clock=False,
+                      title: str = "") -> dict:
     """A picture every N seconds of a video (for a report): the first picture of each N-second stretch (0-N, N-2N,
     ...), at the video's full size, in a new folder next to the converted videos ('<name>_pictures_every_10s'), each
     named by the start of its stretch ('<name>_01m30s.jpg'); clock: the date and time of that moment on it."""
@@ -212,7 +213,7 @@ def save_frames_every(source, every: int, output_dir=None, progress_cb=None, can
         pdf = None
         try:                               # all of them on A4 pages, for a report (the pictures stay without it)
             pdf = pictures_pdf(folder / f"{stem}_pictures.pdf", made, source.name, every, parts[0][2] if parts else None,
-                               progress_cb, cancel_cb)
+                               progress_cb, cancel_cb, report=title)
         except Exception as exc:
             if str(exc) == "cancelled" or (cancel_cb and cancel_cb()):
                 raise
@@ -260,7 +261,8 @@ def _pdf_of_jpegs(path: Path, pages, dpi: int = 150) -> None:
         f.write(f"trailer\n<< /Size {n} /Root 1 0 R >>\nstartxref\n{xref}\n%%EOF\n".encode())
 
 
-def pictures_pdf(path: Path, pics: list, title: str, every: int, start=None, progress_cb=None, cancel_cb=None) -> Path | None:
+def pictures_pdf(path: Path, pics: list, title: str, every: int, start=None, progress_cb=None, cancel_cb=None,
+                 report: str = "") -> Path | None:
     """The pictures of one video on A4 pages (150 dpi): the video's name, how often, and under each picture its moment
     in the video (and the clock's time when it is known). Written in one pass, page by page (a long video's hundreds
     of pictures never sit in memory together; each page tells the job it is alive; Stop stops it). In the program's
@@ -295,10 +297,14 @@ def pictures_pdf(path: Path, pics: list, title: str, every: int, start=None, pro
     count = (f"{n} " + ru_plural(n, "кадр", "кадра", "кадров")) if ru and ru_plural else f"{n} picture{'s' if n != 1 else ''}"
     sub = (f"Кадры каждые {every} с · {count}" if ru else f"Pictures every {every} s · {count}") \
         + ((" · снято " if ru else " · filmed ") + f"{start:%d.%m.%Y %H:%M:%S}" if start else "")
+    if report:                             # the report's own title on top; the video's name goes under it
+        title, sub = report, f"{title} · {sub}"
     tmp = path.with_name(path.stem + ".part.pdf")
     probe_d = ImageDraw.Draw(Image.new("RGB", (8, 8)))
     while len(title) > 8 and probe_d.textlength(title, font=f_title) > W - 2 * M:     # a long name: shortened with …
         title = title[:-6] + "…"
+    while len(sub) > 8 and probe_d.textlength(sub, font=f_sub) > W - 2 * M:
+        sub = sub[:-6] + "…"
 
     def made_pages():
         import io
@@ -596,7 +602,8 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
     """One video converted (cut = (start, end) in seconds: only that part). extra {"frames": N}: pictures every N s
     instead of a video."""
     if extra and extra.get("frames"):
-        return save_frames_every(source, int(extra["frames"]), output_dir, progress_cb, cancel_cb, job_id, clock=bool(extra.get("clock")))
+        return save_frames_every(source, int(extra["frames"]), output_dir, progress_cb, cancel_cb, job_id, clock=bool(extra.get("clock")),
+                                 title=str(extra.get("title") or ""))
     source = Path(os.path.abspath(str(source)))          # (FFmpeg may run in another folder: the clock's)
     if preset not in PRESETS:
         raise ValueError("Unknown preset")
@@ -1053,7 +1060,9 @@ def clean_extra(extra) -> dict:
             fr = -1
         if fr not in FRAME_STEPS:
             raise ValueError("Unknown option")
-        out = {"frames": fr, **({"clock": True} if extra.get("clock") is True else {})}   # pictures: only the clock applies
+        title = re.sub(r"[\x00-\x1f\x7f]+", " ", extra.get("title")).strip()[:120] if isinstance(extra.get("title"), str) else ""
+        out = {"frames": fr, **({"clock": True} if extra.get("clock") is True else {}),      # pictures: the clock and
+               **({"title": title} if title else {})}                                        # the report's title apply
     return out
 
 

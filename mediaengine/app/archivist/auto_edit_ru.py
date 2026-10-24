@@ -898,8 +898,8 @@ PHRASES = {
         "Конвертация: кадры каждые 5 / 10 / 30 / 60 секунд выбранных видео (фото для отчёта) и список прошлых конвертаций с их кнопками.",
     "Convert: a conversion started while another one runs waits in line and starts by itself after it (“Take out of the line” removes it).":
         "Конвертация: если запустить новую, пока идёт другая, она встанет в очередь и начнётся сама («Убрать из очереди» — убрать её).",
-    "Convert: “Save pictures of the selected videos” also makes one PDF of them (A4 pages, each picture with its moment and, when chosen, the date and time) - ready for a report.":
-        "Конвертация: «Сохранить кадры выбранных видео» теперь делает и один PDF (листы A4, у каждого кадра его момент и, если выбрано, дата и время) — готово для отчёта.",
+    "Convert: “Save pictures of the selected videos” also makes one PDF of them (A4 pages, each picture with its moment and, when chosen, the date and time; your report title on top) - ready for a report.":
+        "Конвертация: «Сохранить кадры выбранных видео» теперь делает и один PDF (листы A4, у каждого кадра его момент и, если выбрано, дата и время; сверху — ваш заголовок отчёта) — готово для отчёта.",
     "Convert → More: “Date and time in the corner” - when it was filmed, every second, from the camera or phone clock (for reports).":
         "Конвертация → «Ещё»: «Дата и время в углу» — когда снято, каждую секунду, по часам камеры или телефона (для отчётов).",
     "Convert → More: slow motion ½× and ¼× (smooth from 60 / 120 fps videos) and “Even out the sound” (quiet speech louder, loud parts softer).":

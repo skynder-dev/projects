@@ -1478,7 +1478,7 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
 <label title='When it was filmed, every second, from the camera or phone clock - for reports'><input type='checkbox' id='clockOut'> <span>Date and time in the corner</span></label></div>
 <div class='toolbar' style='margin-top:6px;flex-wrap:wrap'><span>Sound:</span><label><input type='checkbox' id='windOut'> <span>Less wind noise</span></label>
 <label title='Quiet speech louder, loud parts softer - as loud as phones and players play videos'><input type='checkbox' id='loudOut'> <span>Even out the sound</span></label></div>
-<div class='toolbar' style='margin-top:6px;flex-wrap:wrap'><label><span>Pictures every</span> <select id='framesEvery'><option value='5'>5 s</option><option value='10' selected>10 s</option><option value='30'>30 s</option><option value='60'>60 s</option></select></label><button id='framesStart' class='btn btn2' type='button' disabled>Save pictures of the selected videos</button><span class='muted small'>Photos for a report, into a folder next to the converted videos - and all of them in one PDF.</span></div>
+<div class='toolbar' style='margin-top:6px;flex-wrap:wrap'><label><span>Pictures every</span> <select id='framesEvery'><option value='5'>5 s</option><option value='10' selected>10 s</option><option value='30'>30 s</option><option value='60'>60 s</option></select></label><input id='framesTitle' maxlength='120' placeholder='Report title (optional)' style='width:220px'><button id='framesStart' class='btn btn2' type='button' disabled>Save pictures of the selected videos</button><span class='muted small'>Photos for a report, into a folder next to the converted videos - and all of them in one PDF.</span></div>
 <div class='toolbar' style='margin-top:6px;flex-wrap:wrap'>{logo_html}</div></details></div>
 {active}{history}
 {selection_notice}
@@ -1675,7 +1675,7 @@ async function startConv(){const ids=checks().map(x=>Number(x.value));if(!ids.le
 document.getElementById('startConvert').onclick=startConv;
 document.getElementById('framesStart').onclick=async ev=>{const ids=checks().map(x=>Number(x.value));if(!ids.length){toast('Select at least one video');return}
  const b=ev.currentTarget;b.disabled=true;
- try{const r=await fetch('/api/convert/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids,preset:'share_1080p',extra:{frames:Number(document.getElementById('framesEvery').value),clock:!!(document.getElementById('clockOut')||{}).checked}})});
+ try{const r=await fetch('/api/convert/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids,preset:'share_1080p',extra:{frames:Number(document.getElementById('framesEvery').value),clock:!!(document.getElementById('clockOut')||{}).checked,title:((document.getElementById('framesTitle')||{}).value||'').trim()}})});
   const x=await r.json();if(!r.ok)throw new Error(x.error||'Could not start');toast(x.waiting?'Added to the line: it starts when the job before it ends.':'Saving pictures');setTimeout(()=>{location.href='/convert'},x.waiting?1200:0)}catch(e){toast(e.message||String(e));b.disabled=false}};
 document.getElementById('pickConvert').onclick=async ev=>{const o=convOpts();if(!o.preset){toast('Choose a preset first');return}
  const b=ev.currentTarget;b.disabled=true;
