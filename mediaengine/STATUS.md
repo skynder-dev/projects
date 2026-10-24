@@ -779,6 +779,10 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   cached pieces from earlier builds need no new keys; Voice-over and text (_burn) the same before the text is drawn.
   convert_check builds a two-piece reel with a dissolve, a one-piece reel and a finished video from full-range 4K
   parts (the real test is FFmpeg 7.1 on Windows); locally convert 46/46, voice 191/191, av_sync PASS.
+  Published: Windows CI run 40037060483 (b207, commit 717eec6) fully green - on FFmpeg 7.1 the reel / finished
+  video check PASS (convert 46/46; the INFO probe of a raw piece still says full range: the pieces are put into TV
+  levels at the render), served (ZIP 3,952,934 bytes; the same runtime). A leftover branch mediaengine-levels-check
+  (same commit as main) could not be deleted from the session (proxy 403) - harmless.
 
 ## Evidence
 
@@ -975,7 +979,7 @@ b201 is published (Convert: join parts of a recording, choose on this PC, own fo
 time left, NVIDIA; b193 Show in folder / Open video; two more caption looks; b189's night
 fixes; Qwen3-TTS for 9_2 since b184). The owner presses Update; on Voice-over and text
 he installs the add-on (about 13 GB, both engines) or presses "Download the new voice engine" (4.7 GB). English only.
-b205 is published (Save this picture, Turn the picture, TV levels in converted copies). Next: the Windows run of
-7ec7507 (TV levels in reels and finished videos) - when green, tell the owner. Still open: the first voice-over on
+b207 is published (b205: Save this picture, Turn the picture, TV levels in converted copies; b207: TV levels in
+reels and finished videos from GoPro / phone footage). Still open: the first voice-over on
 his RTX 3060; Convert on his PC (Explorer, clipboard, the NVIDIA way's speed). Social integration paused by the owner (do not touch Social).
 Through the app's pages in the desktop app's browser pane only (never computer use).
