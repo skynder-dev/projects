@@ -1736,6 +1736,7 @@ def recover_convert_jobs():
                         message="Conversion interrupted by app restart. Start it again.",
                         error="interrupted_by_restart",finished_at=_now())
             interrupted+=1
+    _queue_runner_start()                  # conversions that waited in line when the app closed go on
     return {"resumed":resumed,"interrupted":interrupted}
 
 
@@ -1937,20 +1938,91 @@ def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, 
             ids = [i for i in ids if i in ok_ids]
         if not ids and not files:
             raise ValueError("None of the selected videos can be converted (private, rejected or removed)")
-        busy = con.execute("SELECT id,kind FROM jobs WHERE status IN ('running','queued') ORDER BY id LIMIT 1").fetchone()
-        if busy:
-            raise RuntimeError(f"Job #{busy['id']} ({busy['kind']}) is already running")
+        # something runs (or conversions wait already): this one waits in line and starts by itself after them
+        busy = con.execute("SELECT id,kind FROM jobs WHERE status IN ('running','queued') OR (kind='convert' AND status='waiting' "
+                           "AND cancel_requested=0) ORDER BY id LIMIT 1").fetchone()
         n = len(ids) + len(files)
         cur = con.execute(
             "INSERT INTO jobs(kind,status,created_at,started_at,stage,message,total,done,success,failed,bytes_total,bytes_done,options_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
-            ("convert", "running", _now(), _now(), "starting", "Starting converter…", n_groups if join else n, 0, 0, 0, 0, 0,
+            ("convert", "waiting" if busy else "running", _now(), None if busy else _now(), "waiting" if busy else "starting",
+             "Waiting for the job before it" if busy else "Starting converter…", n_groups if join else n, 0, 0, 0, 0, 0,
              _options(preset, target_mb, ids, [str(f) for f in files], join, set(), [], output_folder(), cuts, bool(mute), turn, extra))
         )
         job_id = int(cur.lastrowid)
         con.commit()
-    threading.Thread(target=_convert_worker, args=(job_id, ids, preset, target_mb, [str(f) for f in files], join), daemon=True,
-                     name=f"ArchivistConvert{job_id}").start()
+    if busy:
+        _queue_runner_start()
+    else:
+        threading.Thread(target=_convert_worker, args=(job_id, ids, preset, target_mb, [str(f) for f in files], join), daemon=True,
+                         name=f"ArchivistConvert{job_id}").start()
     return job_id
+
+
+# Conversions started while something else runs wait in line (status "waiting" - never "queued", which the library's
+# worker takes) and start one by one, by themselves, when nothing runs; Remove (cancel) takes one out of the line.
+_QLOCK = threading.Lock()
+_QUEUE: dict = {"thread": None}
+
+
+def dispatch_waiting():
+    """The first conversion waiting in line started, when no job runs: its id, else None."""
+    if _EXITING.is_set():
+        return None
+    with db() as con:
+        con.execute("BEGIN IMMEDIATE")
+        if con.execute("SELECT 1 FROM jobs WHERE status IN ('running','queued') LIMIT 1").fetchone():
+            con.commit()
+            return None
+        r = con.execute("SELECT * FROM jobs WHERE kind='convert' AND status='waiting' AND cancel_requested=0 ORDER BY id LIMIT 1").fetchone()
+        if not r:
+            con.commit()
+            return None
+        ts = _now()
+        con.execute("UPDATE jobs SET status='running',stage='starting',message='Starting converter…',started_at=?,progress_at=?,"
+                    "heartbeat_at=? WHERE id=? AND status='waiting'", (ts, ts, ts, int(r["id"])))
+        con.commit()
+    jid = int(r["id"])
+    try:
+        opts = json.loads(r["options_json"] or "{}")
+    except Exception:
+        opts = {}
+    ids = [int(x) for x in (opts.get("inventory_ids") or []) if str(x).isdigit() and int(x) > 0]
+    paths = [str(x) for x in (opts.get("paths") or []) if str(x).strip()]
+    preset = str(opts.get("preset") or "")
+    if not (ids or paths) or preset not in PRESETS:
+        _job_update(jid, status="failed", stage="done", message="Nothing to convert", error="nothing_to_convert", finished_at=_now())
+        return None
+    threading.Thread(target=_convert_worker, args=(jid, ids, preset, opts.get("target_mb"), paths, bool(opts.get("join"))),
+                     daemon=True, name=f"ArchivistConvert{jid}").start()
+    return jid
+
+
+def _queue_loop():
+    while not _EXITING.is_set():
+        try:
+            dispatch_waiting()
+        except Exception:
+            pass
+        with _QLOCK:                       # (the last look and "no runner" as one step: a job added meanwhile starts one)
+            try:
+                with db() as con:
+                    left = con.execute("SELECT 1 FROM jobs WHERE kind='convert' AND status='waiting' AND cancel_requested=0 LIMIT 1").fetchone()
+            except Exception:
+                left = True
+            if not left:
+                _QUEUE["thread"] = None
+                return
+        time.sleep(2)
+
+
+def _queue_runner_start() -> None:
+    with _QLOCK:
+        t = _QUEUE.get("thread")
+        if t is not None and t.is_alive():
+            return
+        t = threading.Thread(target=_queue_loop, daemon=True, name="ArchivistConvertQueue")
+        _QUEUE["thread"] = t
+        t.start()
 
 
 def shutdown() -> None:

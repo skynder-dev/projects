@@ -444,6 +444,15 @@ def main():
           "whole_sync_00m10s.jpg"] and psz == (640, 360) and Path(of["output"]).name == "whole_sync_pictures_every_5s"
           and sorted(x.name for x in Path(pp["output"]).glob("*.jpg")) == ["Sale 20% off_00m00s.jpg", "Sale 20% off_00m02s.jpg", "Sale 20% off_00m04s.jpg"]
           and fj and "whole videos" in fj, (jf["status"], of, pics, psz, fj))
+    # two conversions started one after the other: the second waits in line and starts by itself when the first ends
+    qa = start_convert_job([], "small_720p", paths=[str(whole)])
+    qb = start_convert_job([], "small_720p", paths=[str(parts[0])], extra={"frames": 5})
+    qb_first = convert_job_snapshot(qb)["status"]
+    ja, jb = wait_job(qa), wait_job(qb)
+    check("conversions_wait_in_line", qb_first == "waiting" and ja["status"] == "finished" and jb["status"] == "finished"
+          and str(jb.get("started_at") or "") >= str(ja.get("finished_at") or "~")
+          and ((jb.get("options") or {}).get("outputs") or [{}])[0].get("frames") == 1,
+          (qb_first, ja["status"], jb["status"], ja.get("finished_at"), jb.get("started_at")))
     # "Without sound": the copy has no sound at all (one video, and joined parts)
     mres = convert_file(parts[0], "small_720p", output_dir=out_dir, mute=True)
     jm = join_files(parts, "small_720p", output_dir=out_dir, mute=True)

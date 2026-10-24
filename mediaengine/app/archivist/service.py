@@ -737,16 +737,16 @@ def _cancel_requested(job_id: int) -> bool:
 def cancel_job(job_id: int) -> bool:
     with db() as con:
         r = con.execute("SELECT status FROM jobs WHERE id=?", (job_id,)).fetchone()
-        if not r or r["status"] not in ("queued", "running"):
+        if not r or r["status"] not in ("queued", "running", "waiting"):
             return False
-        if r["status"] == "queued":
+        if r["status"] in ("queued", "waiting"):             # ("waiting": a conversion in line)
             # not started yet: cancelled at once (the worker only takes jobs without a cancel request, so a queued
             # job would otherwise stay "queued" forever and block previews, discovery and Convert)
             now = now_iso()
             con.execute("UPDATE job_items SET status='skipped',phase='cancelled',error='cancelled',finished_at=? "
                         "WHERE job_id=? AND status IN ('queued','running')", (now, job_id))
             con.execute("UPDATE jobs SET cancel_requested=1,status='cancelled',stage='done',message='Cancelled',finished_at=? "
-                        "WHERE id=? AND status='queued'", (now, job_id))
+                        "WHERE id=? AND status IN ('queued','waiting')", (now, job_id))
             con.commit()
             return True
         con.execute("UPDATE jobs SET cancel_requested=1,message='Cancelling after current operation…' WHERE id=?", (job_id,))

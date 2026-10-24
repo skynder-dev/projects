@@ -936,7 +936,7 @@ def main():
         finally:
             _ae2.pick_files, _web.start_convert_job = real_pick_, real_start_
         check("convert: files chosen on this PC go with the page's choices; nothing chosen says so",
-              n1 == {"ok": False, "error": "No videos chosen."} and n2 == {"ok": True, "job_id": 77} and n3 == {"ok": True, "job_id": 77}
+              n1 == {"ok": False, "error": "No videos chosen."} and n2 == {"ok": True, "job_id": 77, "waiting": False} and n3 == {"ok": True, "job_id": 77, "waiting": False}
               and calls_ == [([], "small_720p", 300, ["C:\\Work\\GX020044.MP4", "C:\\Work\\GX010044.MP4"], True, True, 180),
                              ([5, 6], "hq_1080p", None, None, False, False, 0)], (n1, n2, n3, calls_))
         order_ = sorted(["GX040044.MP4", "GX010044.MP4", "GX030044.MP4", "GX020044.MP4"], key=_cv.part_key)
@@ -1057,6 +1057,41 @@ def main():
             hp2_ = _c.get("/convert", headers=H_).get_data(as_text=True)
         check("convert: removing the newest conversion from the page keeps the earlier ones",
               f"data-job='{hj_[2]}'" not in hp2_ and f"data-job-box='{hj_[0]}'" in hp2_ and f"data-job-box='{hj_[1]}'" in hp2_, hj_)
+        # a conversion started while another job runs waits in line (not refused) and starts by itself after it;
+        # "Take out of the line" cancels one that waits
+        from archivist.db import db as _qdb
+        from archivist.service import cancel_job as _qcancel
+        qf_ = work / "queue me.mp4"; qf_.write_bytes(b"x" * 64)
+        real_qw_ = _cv._convert_worker; qstarted_ = []
+        _cv._convert_worker = lambda *a, **k: qstarted_.append(a[0])
+        try:
+            with _qdb() as con:
+                qbusy_ = con.execute("INSERT INTO jobs(kind,status,created_at,started_at,stage,message) VALUES('import','running',?,?,'x','x')",
+                                     ("2026-10-24T00:00:00+00:00", "2026-10-24T00:00:00+00:00")).lastrowid
+                con.commit()
+            qa_ = _cv.start_convert_job([], "share_1080p", paths=[str(qf_)])
+            qb_ = _cv.start_convert_job([], "small_720p", paths=[str(qf_)], extra={"frames": 10})
+            with _ca().test_client() as _c:
+                qpage_ = _c.get("/convert", headers=H_).get_data(as_text=True)
+                qapi_ = _c.get("/api/convert/queue", headers=H_).get_json()
+            qd0_ = _cv.dispatch_waiting()
+            qc_ = _qcancel(qb_)
+            with _qdb() as con:
+                con.execute("UPDATE jobs SET status='finished' WHERE id=?", (qbusy_,)); con.commit()
+            qd1_ = _cv.dispatch_waiting()               # (or the line's own runner, every 2 s, took it first)
+            for _ in range(40):
+                if qstarted_:
+                    break
+                __import__("time").sleep(0.1)
+            with _qdb() as con:
+                qst_ = {int(r["id"]): r["status"] for r in con.execute("SELECT id,status FROM jobs WHERE id IN (?,?)", (qa_, qb_))}
+                con.execute("UPDATE jobs SET status='finished' WHERE id=?", (qa_,)); con.commit()
+        finally:
+            _cv._convert_worker = real_qw_
+        check("convert: a second conversion waits in line and starts by itself after the job before it",
+              qd0_ is None and qc_ is True and qd1_ in (qa_, None) and qstarted_ == [qa_] and qst_ == {qa_: "running", qb_: "cancelled"}
+              and qapi_ == {"running": None, "waiting": [qa_, qb_]} and "Waiting in line" in qpage_ and f"data-wait='{qb_}'" in qpage_
+              and "pictures every 10 s" in qpage_, (qd0_, qc_, qd1_, qstarted_, qst_, qapi_))
         with _ca().test_client() as _c:                     # when it was filmed: only a library video on this PC
             wb_ = (_c.get("/api/convert/when?id=x", headers=H_).status_code, _c.get("/api/convert/when?id=999999", headers=H_).status_code)
         check("convert: 'when it was filmed' answers only for a library video", wb_ == (400, 404), wb_)
