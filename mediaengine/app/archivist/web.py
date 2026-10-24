@@ -1361,16 +1361,21 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
         skipped_preselected=max(0,len(preselect_ids)-len(local)) if preselect_ids else 0
         total_local=len(local)
         latest=convert_job_snapshot()
-        # earlier conversions (the last ten after the one shown, not those taken off the page): their files and buttons
+        # the jobs taken off the page ("Remove from the page": each one by itself; an older build kept only the highest)
+        _hc=load_config()
+        hidden_jobs={int(x) for x in (_hc.get('convert_hidden_jobs') or []) if str(x).isdigit()}
+        if str(_hc.get('convert_hidden_job') or '').isdigit():
+            hidden_jobs.add(int(_hc['convert_hidden_job']))
+        # earlier conversions (the last ten before the one shown, not those taken off the page): their files and buttons
         history=''
         try:
             with db() as con:
-                hrows=con.execute("SELECT id FROM jobs WHERE kind='convert' AND status IN ('finished','failed','partial') AND id>? "
-                                  "ORDER BY id DESC LIMIT 11",(int(load_config().get('convert_hidden_job') or 0),)).fetchall()
+                hrows=con.execute("SELECT id FROM jobs WHERE kind='convert' AND status IN ('finished','failed','partial') "
+                                  "ORDER BY id DESC LIMIT 40").fetchall()
             hparts=[]
             for hr in hrows:
                 hid=int(hr['id'])
-                if latest and hid==int(latest['id']):
+                if (latest and hid==int(latest['id'])) or hid in hidden_jobs:
                     continue
                 hj=convert_job_snapshot(hid); inner=_convert_outputs_html(hj)
                 if not inner or len(hparts)>=10:
@@ -1394,7 +1399,7 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
         logo_html=(("<label><input type='checkbox' id='logoOut'> <span>Logo</span></label>"
                     f"<img src='/api/convert/logo.png?v={int(Path(lg['path']).stat().st_mtime)}' alt='' style='height:28px;max-width:90px;object-fit:contain;background:#555;border-radius:4px'>"
                     "<select id='logoCorner'>"+''.join(f"<option value='{c}' {'selected' if c==lg['corner'] else ''}>{corner_names[c]}</option>" for c in LOGO_CORNERS)+"</select>"
-                    "<select id='logoSize'>"+''.join(f"<option value='{z}' {'selected' if z==lg['size'] else ''}>{z}%</option>" for z in (8,12,16,20,25))+"</select>"
+                    "<select id='logoSize'>"+''.join(f"<option value='{z}' {'selected' if z==lg['size'] else ''}>{z}%</option>" for z in sorted({8,12,16,20,25,int(lg['size'])}))+"</select>"
                     "<button class='btn2' type='button' data-cv='logo-pick'>Another logo…</button><button class='btn2' type='button' data-cv='logo-clear'>Remove the logo</button>")
                    if lg else "<button class='btn2' type='button' data-cv='logo-pick'>Choose a logo…</button><span class='muted small'>Your logo in a corner of every video (chosen once).</span>")
         srcopts="<option value=''>All local sources</option>"+''.join(f"<option value='{e(k)}' translate='no' {'selected' if k==source_id else ''}>{e(v)}</option>" for k,v in sorted(sources.items(),key=lambda x:x[1].lower()))
@@ -1416,13 +1421,9 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
             cards=("<div class='card muted'>None of the selected videos are currently accessible. Restore/reconnect the source, or choose another local video.</div>" if preselect_ids else "<div class='card muted'>No accessible videos on this catalog page. Reconnect/restore the source, choose another page, or clear the filter.</div>")
         selection_notice=(f"<div class='card' style='border-color:#6f5c31;background:#1d1a12'><b>{skipped_preselected} selected video{'s' if skipped_preselected!=1 else ''} skipped</b><div class='small muted'>The item is no longer eligible for Convert or its local file is not currently accessible, so it was skipped safely.</div></div>" if skipped_preselected else "")
         active=''
-        try:
-            hidden_job=int(load_config().get('convert_hidden_job') or 0)
-        except (TypeError,ValueError):
-            hidden_job=0
         if latest:
             terminal=str(latest.get('status') or '') in ('finished','failed','cancelled','partial')
-            if terminal and int(latest['id'])<=hidden_job:
+            if terminal and int(latest['id']) in hidden_jobs:
                 pass
             elif terminal:
                 tone='error' if str(latest.get('status')) in ('failed','cancelled') else 'ready'
@@ -1494,7 +1495,8 @@ function updSel(){
   if(target){
     // joined: one file per recording (each at most the size); a size too small for the length: said
     const jo=document.getElementById('joinOne'),join=jo&&jo.checked&&n>1,files=join?Math.max(1,joinGroups(xs.map(x=>({name:x.dataset.name||'',folder:x.dataset.folder||''}))).length):n;
-    const tot=join?Math.min(src,files*target*1024*1024):est,d=xs.map(ch=>{const c=cutOf(ch);return c?c[1]-c[0]:Number(ch.dataset.durationMs||0)/1000});
+    const spd=Math.max(1,Number((document.getElementById('speedOut')||{}).value||1));
+    const tot=join?Math.min(src,files*target*1024*1024):est,d=xs.map(ch=>{const c=cutOf(ch);return (c?c[1]-c[0]:Number(ch.dataset.durationMs||0)/1000)/spd});
     const longest=join?d.reduce((a,b)=>a+b,0)/files:Math.max(0,...d),mute=(document.getElementById('muteOut')||{}).checked;
     const kbps=longest>0?target*8*1024*1024*0.94/longest/1000-(mute?0:128):Infinity,low=preset==='small_720p'?350:(preset==='keep_resolution'?1500:700);
     if(out)out.textContent=n+' video'+(n===1?'':'s')+' · '+hb(src)+' → target ≤ '+hb(tot)+' total';
@@ -1782,10 +1784,12 @@ pollConvert();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='
         if not files:
             return jsonify({'ok':False,'error':'No picture chosen.'})
         try:
-            from PIL import Image
-            with Image.open(files[0]) as im:
-                im=im.convert('RGBA')
+            from PIL import Image, ImageOps
+            with Image.open(files[0]) as im0:
+                im0.draft('RGB',(2000,2000))
+                im=ImageOps.exif_transpose(im0)
                 if max(im.size)>2000: im.thumbnail((2000,2000))
+                im=im.convert('RGBA')
                 dst.parent.mkdir(parents=True,exist_ok=True)
                 tmp=dst.with_suffix('.part.png'); im.save(tmp,'PNG'); os.replace(tmp,dst)
         except Exception:
@@ -1836,7 +1840,10 @@ pollConvert();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='
         job=convert_job_snapshot(jid) if jid>0 else None
         if not job or str(job.get('status') or '') not in ('finished','failed','cancelled','partial'):
             return jsonify({'ok':False,'error':'No such file.'}),404
-        update_config(lambda c: c.__setitem__('convert_hidden_job',max(jid,int(c.get('convert_hidden_job') or 0))))
+        def hide(c):
+            ids=[int(x) for x in (c.get('convert_hidden_jobs') or []) if str(x).isdigit()]
+            c['convert_hidden_jobs']=(ids+[jid])[-200:]
+        update_config(hide)
         return jsonify({'ok':True})
 
     @app.post('/api/convert/output-folder')

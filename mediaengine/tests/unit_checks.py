@@ -1052,6 +1052,11 @@ def main():
         check("convert: earlier conversions listed with their own buttons (the last one shown above)",
               "Earlier conversions" in hp_ and f"data-job-box='{hj_[0]}'" in hp_ and f"data-job-box='{hj_[1]}'" in hp_
               and f"data-job-box='{hj_[2]}'" not in hp_ and f"data-job='{hj_[2]}'" in hp_ and "b.closest('[data-job-box]')" in hp_, hj_)
+        with _ca().test_client() as _c:                     # "Remove from the page" takes off that one job only
+            _c.post("/api/convert/hide", json={"job": hj_[2]}, headers=H_)
+            hp2_ = _c.get("/convert", headers=H_).get_data(as_text=True)
+        check("convert: removing the newest conversion from the page keeps the earlier ones",
+              f"data-job='{hj_[2]}'" not in hp2_ and f"data-job-box='{hj_[0]}'" in hp2_ and f"data-job-box='{hj_[1]}'" in hp2_, hj_)
         # More options: checked choices; the logo chosen in the Windows Open window kept as a PNG, its corner and size
         bad_x_ = []
         for bx_ in ({"speed": 3}, {"speed": True}, {"vertical": "side"}, {"logo": True}, "x"):
@@ -1081,8 +1086,10 @@ def main():
               bad_x_ == ["Unknown speed", "Unknown speed", "Unknown vertical", "Choose a logo first", "Unknown option"]
               and good_x_ == {"speed": 4, "vertical": "blur", "wind": True} and l1_ == {"ok": True} and l2_ == {"ok": True}
               and lsaved_.get("corner") == "top-left" and lsaved_.get("size") == 40 and lpng_.status_code == 200
-              and lpng_.data[:8] == b"\x89PNG\r\n\x1a\n" and "id='logoOut'" in lpage_ and ok_x_ == {"logo": True}
-              and l3_ == {"ok": True} and lgone_ == {}, (bad_x_, good_x_, l1_, lsaved_, lpng_.status_code, l3_, lgone_))
+              and lpng_.data[:8] == b"\x89PNG\r\n\x1a\n" and "id='logoOut'" in lpage_
+              and set(ok_x_.get("logo") or {}) == {"path", "corner", "size"} and "convert_logos" in ok_x_["logo"]["path"]
+              and Path(ok_x_["logo"]["path"]).is_file() and l3_ == {"ok": True} and lgone_ == {},
+              (bad_x_, good_x_, l1_, lsaved_, lpng_.status_code, ok_x_, l3_, lgone_))
         gp_ = lambda **k: _cv.gpu_plan({"video": "hevc", "pix": "yuvj420p", "size": "3840x2160", "sar": "1:1", "rotation": 0, **k}, "share_1080p")
         check("convert: the NVIDIA way only for what it does surely (8-bit H.264/HEVC made smaller, upright, square pixels)",
               gp_()["size"] == (1920, 1080) and gp_(size="2160x3840")["size"] == (1080, 1920) and gp_(size="2704x1520")["size"] == (1920, 1078)

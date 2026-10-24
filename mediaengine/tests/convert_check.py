@@ -258,6 +258,14 @@ def main():
     o2 = [min((b - f for b in b2), key=abs) for f in f2] if b2 else []
     s4 = convert_file(whole, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"speed": 4}))
     s4d = float(_probe(Path(s4["output"]))["format"]["duration"])
+    # (a sound that starts 1 s after its picture - as cameras do - stays in step at 2x too)
+    late = src_dir / "late_sound_1s.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-i", str(whole), "-map", "0:v", "-map", "0:a", "-c:v", "copy", "-af", "atrim=start=1.0",
+                    "-c:a", "aac", str(late)], check=True)
+    sl = convert_file(late, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"speed": 2}))
+    bl = beeps(ff, sl["output"])
+    ol = [min((b - f for b in bl), key=abs) for f in [(k + 0.3) / 2 for k in range(1, 13)]] if bl else []
+    o2 = o2 + ol
     check("convert_faster_2x_in_step_4x_without_sound", abs(s2d - 7.0) <= 0.1 and len(f2) >= 10 and o2 and all(-0.03 <= o <= 0.045 for o in o2)
           and abs(s4d - 3.5) <= 0.1 and no_a(s4["output"]) and "_x4_" in Path(s4["output"]).name,
           (s2d, len(f2), [round(o, 3) for o in o2], s4d, Path(s4["output"]).name))
@@ -265,8 +273,15 @@ def main():
     vb = convert_file(whole, "small_720p", output_dir=out_dir, extra=cvx.clean_extra({"vertical": "blur"}))
     vcs = [x for x in _probe(Path(vc["output"])).get("streams", []) if x.get("codec_type") == "video"][0]
     vbs = [x for x in _probe(Path(vb["output"])).get("streams", []) if x.get("codec_type") == "video"][0]
+    # 4:3 pixels (HDV 1440x1080 shown 1920x1080): squared before the vertical cut - a circle stays round
+    hv = convert_file(fx / "anamorphic" / "HDV_1440.mp4", "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"vertical": "blur"}))
+    hvs = [x for x in _probe(Path(hv["output"])).get("streams", []) if x.get("codec_type") == "video"][0]
+    tt = convert_file(fx / "formats" / "two_tracks.mp4", "small_720p", output_dir=out_dir, extra=cvx.clean_extra({"vertical": "crop"}))
+    tracks = len([x for x in _probe(Path(tt["output"])).get("streams", []) if x.get("codec_type") == "audio"])
     check("convert_vertical_9_16", (int(vcs["width"]), int(vcs["height"])) == (1080, 1920) and (int(vbs["width"]), int(vbs["height"])) == (720, 1280)
-          and abs(float(_probe(Path(vc["output"]))["format"]["duration"]) - 14.0) <= 0.15, (vcs.get("width"), vcs.get("height"), vbs.get("width"), vbs.get("height")))
+          and (int(hvs["width"]), int(hvs["height"])) == (1080, 1920) and str(hvs.get("sample_aspect_ratio") or "1:1") in ("1:1", "N/A")
+          and tracks == 2
+          and abs(float(_probe(Path(vc["output"]))["format"]["duration"]) - 14.0) <= 0.15, (vcs.get("width"), vcs.get("height"), vbs.get("width"), vbs.get("height"), hvs, tracks))
     (_H / "data").mkdir(parents=True, exist_ok=True)
     Image.new("RGBA", (300, 100), (255, 0, 255, 255)).save(_H / "data" / cvx.LOGO_FILE)
     lgo = convert_file(whole, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"logo": True}))
@@ -296,8 +311,12 @@ def main():
         start_convert_job([], "share_1080p", paths=[str(parts[0]), str(parts[1])], join=True, extra={"frames": 10}); fj = None
     except ValueError as exc:
         fj = str(exc)
-    check("pictures_every_n_seconds", jf["status"] == "finished" and of.get("frames") == 3 and pics == ["whole_sync_0m00s.jpg", "whole_sync_0m05s.jpg",
-          "whole_sync_0m10s.jpg"] and psz == (640, 360) and Path(of["output"]).name == "whole_sync_pictures_every_5s"
+    pct = src_dir / "Sale 20% off.mp4"                  # a % in the name is not a number pattern
+    shutil.copy(slow, pct)
+    pp = cvx.save_frames_every(pct, 2, out_dir)
+    check("pictures_every_n_seconds", jf["status"] == "finished" and of.get("frames") == 3 and pics == ["whole_sync_00m00s.jpg", "whole_sync_00m05s.jpg",
+          "whole_sync_00m10s.jpg"] and psz == (640, 360) and Path(of["output"]).name == "whole_sync_pictures_every_5s"
+          and sorted(x.name for x in Path(pp["output"]).glob("*.jpg")) == ["Sale 20% off_00m00s.jpg", "Sale 20% off_00m02s.jpg", "Sale 20% off_00m04s.jpg"]
           and fj and "whole videos" in fj, (jf["status"], of, pics, psz, fj))
     # "Without sound": the copy has no sound at all (one video, and joined parts)
     mres = convert_file(parts[0], "small_720p", output_dir=out_dir, mute=True)

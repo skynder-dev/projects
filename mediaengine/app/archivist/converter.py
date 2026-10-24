@@ -105,8 +105,9 @@ FRAME_STEPS = (5, 10, 30, 60)
 
 
 def save_frames_every(source, every: int, output_dir=None, progress_cb=None, cancel_cb=None, job_id=None) -> dict:
-    """A picture every N seconds of a video (for a report): JPEGs at the video's full size in a new folder next to
-    the converted videos ('<name>_pictures_every_10s'), each named by its moment ('<name>_1m30s.jpg')."""
+    """A picture every N seconds of a video (for a report): the first picture of each N-second stretch (0-N, N-2N,
+    ...), at the video's full size, in a new folder next to the converted videos ('<name>_pictures_every_10s'), each
+    named by the start of its stretch ('<name>_01m30s.jpg')."""
     source = Path(source)
     if not source.is_file():
         raise FileNotFoundError(str(source))
@@ -116,9 +117,14 @@ def save_frames_every(source, every: int, output_dir=None, progress_cb=None, can
     duration = float(probe_duration(source) or 0.0)
     if duration <= 0:
         raise RuntimeError("Could not read video duration")
+    every = int(every)
     base = Path(output_dir) if output_dir else output_folder()
-    base.mkdir(parents=True, exist_ok=True)
-    stem = source.stem[:150]
+    try:
+        base.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        base = HOME / "Converted"                       # the chosen folder is not there now (a disk not connected)
+        base.mkdir(parents=True, exist_ok=True)
+    stem = source.stem[:80]                              # folder and file names well inside Windows' path length
     for n in range(1, 1000):
         folder = base / (f"{stem}_pictures_every_{every}s" + ("" if n == 1 else f"_{n}"))
         try:
@@ -129,30 +135,59 @@ def save_frames_every(source, every: int, output_dir=None, progress_cb=None, can
     else:
         raise RuntimeError("No free name in " + str(base))
     hdr = _hdr_kind(ffmpeg, source)
+    # the choice first (whole fields are needed for it), then only the chosen pictures are converted (HDR is slow)
     vf = (["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if _is_interlaced(ffmpeg, source) else []) \
+        + [f"select='isnan(prev_selected_t)+gt(floor(t/{every})\\,floor(prev_selected_t/{every}))'"] \
         + ([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []) \
-        + [f"select='isnan(prev_selected_t)+gte(t-prev_selected_t\\,{int(every)}-0.001)'", "scale='trunc(iw*sar/2)*2':ih", "setsar=1",
-           "format=gbrp", "format=yuvj420p"]
+        + ["scale='trunc(iw*sar/2)*2':ih", "setsar=1", "format=gbrp", "format=yuvj420p"]
+    pattern = str(folder).replace("%", "%%") + os.sep + "p_%05d.jpg"    # a % in a name is not a number pattern
     try:
-        # the first picture, then the first one at least N s after the one before (each picture's own moment)
         _run_progress([str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-i", str(source), "-map", "0:v:0", "-vf", ",".join(vf),
-                       "-fps_mode", "vfr", "-q:v", "2", str(folder / "p_%05d.jpg")], duration, progress_cb, cancel_cb, job_id=job_id)
+                       "-fps_mode", "vfr", "-frame_pts", "1", "-q:v", "2", pattern], duration, progress_cb, cancel_cb, job_id=job_id)
         if cancel_cb and cancel_cb():
             raise RuntimeError("cancelled")
         pics = sorted(folder.glob("p_*.jpg"))
         if not pics:
             raise RuntimeError("No pictures were made")
-        total = 0
-        for i, f in enumerate(pics):                       # picture i is the moment i * N seconds
-            t = i * int(every)
-            dst = folder / f"{stem}_{t // 60}m{t % 60:02d}s.jpg"
+        # each picture's number is its own time in frames of the video's rate (frame_pts): named by its stretch
+        # (each picture is the first of a later stretch than the one before, so the stretches only go up)
+        tb = _stream_time_base(ffmpeg, source)
+        wid = 3 if duration >= 6000 else 2
+        total, used, prev = 0, set(), -1
+        for i, f in enumerate(pics):
+            try:
+                ts = int(f.stem.split("_", 1)[1]) * tb
+            except (ValueError, IndexError):
+                ts = i * every
+            k = max(prev + 1, int((ts + tb / 2) // every))
+            prev = k
+            t = k * every
+            name = f"{stem}_{t // 60:0{wid}d}m{t % 60:02d}s"
+            while name in used:
+                name += "_2"
+            used.add(name)
+            dst = folder / f"{name}.jpg"
             f.replace(dst)
             total += dst.stat().st_size
     except BaseException:
         shutil.rmtree(folder, ignore_errors=True)
         raise
-    return {"source": str(source), "output": str(folder), "frames": len(pics), "every": int(every),
+    return {"source": str(source), "output": str(folder), "frames": len(pics), "every": every,
             "source_bytes": source.stat().st_size, "output_bytes": total, "saved_percent": 0.0}
+
+
+def _stream_time_base(ffmpeg, source) -> float:
+    """Seconds per number of -frame_pts: one frame at the video's rate (e.g. 1/30; 29.97 fps -> 1001/30000)."""
+    cp = subprocess.run([str(ffmpeg), "-hide_banner", "-i", str(source)], capture_output=True, text=True, encoding="utf-8",
+                        errors="replace", timeout=60, **process_kwargs())
+    line = next((l for l in (cp.stderr or "").splitlines() if " Video: " in l), "")
+    m = re.search(r"(\d+(?:\.\d+)?)(k?) fps", line) or re.search(r"(\d+(?:\.\d+)?)(k?) tbr", line)
+    if not m:
+        return 1 / 30
+    v = float(m.group(1)) * (1000 if m.group(2) else 1)
+    if abs(v - 29.97) < 0.01 or abs(v - 59.94) < 0.01 or abs(v - 23.98) < 0.01:
+        v = {29.97: 30000 / 1001, 59.94: 60000 / 1001, 23.98: 24000 / 1001}[round(v, 2)]
+    return 1.0 / v if v > 0 else 1 / 30
 
 
 # the names this converter gives (a sweep in a folder of the person's own touches only these)
@@ -805,10 +840,11 @@ def clean_extra(extra) -> dict:
         raise ValueError("Unknown vertical")
     if v:
         out["vertical"] = v
-    if extra.get("logo") is True:
-        if not logo_saved():
+    if extra.get("logo") is True or isinstance(extra.get("logo"), dict):
+        lg = job_logo()
+        if not lg:
             raise ValueError("Choose a logo first")
-        out["logo"] = True
+        out["logo"] = lg                        # the job's own copy (a later change of the logo is not this job's)
     if extra.get("wind") is True:
         out["wind"] = True
     fr = extra.get("frames")
@@ -823,8 +859,16 @@ def clean_extra(extra) -> dict:
     return out
 
 
+def _sar(sig: dict) -> float:
+    try:
+        a, b = (int(x) for x in str(sig.get("sar") or "1:1").split(":"))
+        return a / b if a > 0 and b > 0 else 1.0
+    except ValueError:
+        return 1.0
+
+
 def _out_size(sig: dict, preset: str, turn: int, vertical: str) -> tuple[int, int]:
-    """The size of the converted picture (as the filters below make it), for the logo's size."""
+    """The size of the converted picture (as the filters below make it: square pixels first), for the logo's size."""
     cap = PRESETS[preset]["cap"]
     if vertical:
         return (720, 1280) if cap == 1280 else (1080, 1920)
@@ -832,6 +876,7 @@ def _out_size(sig: dict, preset: str, turn: int, vertical: str) -> tuple[int, in
         w, h = (int(x) for x in str(sig.get("size") or "1920x1080").split("x"))
     except ValueError:
         w, h = 1920, 1080
+    w = int(w * _sar(sig)) // 2 * 2                      # the picture as shown (HDV 1440x1080 at 4:3 pixels: 1920)
     if int(sig.get("rotation") or 0) in (90, 270):
         w, h = h, w
     if turn in (90, 270):
@@ -842,15 +887,40 @@ def _out_size(sig: dict, preset: str, turn: int, vertical: str) -> tuple[int, in
     return w, h
 
 
+def job_logo() -> dict:
+    """The logo as it is now, copied for one job (a logo removed or replaced while the job waits or runs changes
+    nothing for it): {"path", "corner", "size"} or {}."""
+    lg = logo_saved()
+    if not lg:
+        return {}
+    import hashlib
+    data = Path(lg["path"]).read_bytes()
+    d = HOME / "data" / "convert_logos"
+    d.mkdir(parents=True, exist_ok=True)
+    f = d / (hashlib.sha256(data).hexdigest()[:20] + ".png")
+    if not f.is_file():
+        tmp = f.with_suffix(".part")
+        tmp.write_bytes(data)
+        os.replace(tmp, f)
+    return {"path": str(f), "corner": lg["corner"], "size": lg["size"]}
+
+
 def _extra_graph(sig: dict, preset: str, hdr, interlaced: bool, turn: int, extra: dict, mute: bool, logo_index: int):
-    """The filter graph for the More options: ([v] and, when there is sound, [a]); also without the sound branch
-    (the first pass of a size target). Returns (graph with sound, graph without sound, sound kept)."""
+    """The filter graph for the More options: [v] and, when the sound is changed (speed, wind), [a]; also without
+    the sound branch (the first pass of a size target). Returns (graph with sound, graph without sound, sound kept,
+    sound through the graph)."""
     speed = int(extra.get("speed") or 1)
+    vert = extra.get("vertical") or ""
+    lg = extra.get("logo") if isinstance(extra.get("logo"), dict) else (logo_saved() if extra.get("logo") else {})
+    if extra.get("logo") and not (lg and Path(str(lg.get("path") or "")).is_file()):
+        raise RuntimeError("The logo of this conversion is not there any more - choose the logo again and convert again")
+    square = (vert or lg) and abs(_sar(sig) - 1.0) > 0.01      # 4:3 pixels of HDV / DV: square before cutting or a logo
     pre = (["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if interlaced else []) \
-        + ([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []) + ([TURNS[turn]] if turn in TURNS else []) \
+        + ([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []) \
+        + (["scale='trunc(iw*sar/2)*2':ih", "setsar=1"] if square else []) \
+        + ([TURNS[turn]] if turn in TURNS else []) \
         + ([f"setpts=PTS/{speed}", "fps=30"] if speed > 1 else [])
     cap = PRESETS[preset]["cap"]
-    vert = extra.get("vertical") or ""
     if vert:
         VW, VH = (720, 1280) if cap == 1280 else (1080, 1920)
         if vert == "crop":                 # the middle of the picture, the sides cut off
@@ -866,20 +936,25 @@ def _extra_graph(sig: dict, preset: str, hdr, interlaced: bool, turn: int, extra
                       if cap else [])
         g = f"[0:v:0]{','.join(body) if body else 'null'}[vb]"
     last = "vb"
-    if extra.get("logo"):
-        lg = logo_saved()
+    if lg:
         W, H = _out_size(sig, preset, turn, vert)
         lw = max(16, int(W * lg["size"] / 100) // 2 * 2)
+        lh = max(16, int(H * 0.3) // 2 * 2)                # a tall logo never covers more than 30 % of the height
         m = max(8, int(min(W, H) * 0.03))
         x = f"W-w-{m}" if lg["corner"].endswith("right") else f"{m}"
         y = f"H-h-{m}" if lg["corner"].startswith("bottom") else f"{m}"
-        g += f";[{logo_index}:v]scale={lw}:-1,format=rgba[lg];[vb][lg]overlay={x}:{y}:format=auto:eof_action=repeat[vl]"
+        g += (f";[{logo_index}:v]scale={lw}:{lh}:force_original_aspect_ratio=decrease,format=rgba[lg];"
+              f"[vb][lg]overlay={x}:{y}:format=auto:eof_action=repeat[vl]")
         last = "vl"
     g += f";[{last}]scale=out_range=tv,format=yuv420p[v]"
     sound = not mute and bool(sig.get("audio")) and speed <= 2
-    af = (["highpass=f=100", "afftdn=nf=-25"] if extra.get("wind") else []) + (["atempo=2.0"] if speed == 2 else [])
-    ga = g + (f";[0:a:0]{','.join(af) if af else 'anull'}[a]" if sound else "")
-    return ga, g, sound
+    # the sound at 2x: atempo, its start moved like the picture's (setpts=PTS/2) - else a sound that starts after the
+    # picture would be late in the copy
+    af = (["highpass=f=100", "afftdn=nf=-25"] if extra.get("wind") else []) \
+        + (["atempo=2.0", "asetpts=PTS-STARTPTS/2"] if speed == 2 else [])
+    through = sound and bool(af)                          # unchanged sound: every track kept as it is mapped
+    ga = g + (f";[0:a:0]{','.join(af)}[a]" if through else "")
+    return ga, g, sound, through
 
 
 def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb, progress_cb, cancel_cb, output_dir, job_id,
@@ -910,9 +985,13 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
         if extra:                                                   # More options: one filter graph
             sig = media_sig(ffmpeg, source)
             if extra.get("logo"):
-                logo_in = ["-i", logo_saved()["path"]]
-            ga, gv, sound = _extra_graph(sig, preset, hdr, interlaced, turn, extra, mute, 1)
-            vsel = [*logo_in, "-filter_complex", ga, "-map", "[v]", *(["-map", "[a]"] if sound else [])]
+                lgx = extra["logo"] if isinstance(extra.get("logo"), dict) else logo_saved()
+                if not (lgx and Path(str(lgx.get("path") or "")).is_file()):
+                    raise RuntimeError("The logo of this conversion is not there any more - choose the logo again and convert again")
+                logo_in = ["-i", str(lgx["path"])]
+            ga, gv, sound, through = _extra_graph(sig, preset, hdr, interlaced, turn, extra, mute, 1)
+            vsel = [*logo_in, "-filter_complex", ga, "-map", "[v]",
+                    *((["-map", "[a]"] if through else ["-map", "0:a?"]) if sound else [])]
             vsel1 = [*logo_in, "-filter_complex", gv, "-map", "[v]"]
             if not sound:
                 mute = True
