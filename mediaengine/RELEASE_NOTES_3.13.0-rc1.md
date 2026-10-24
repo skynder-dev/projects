@@ -175,7 +175,14 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   **Save this picture** carry it too when chosen; the Cut… panel says when the video was filmed and the time at the
   player's moment. A copy bigger than its source says "larger than the original".
 - **Save pictures** also makes one PDF of them (b213): A4 pages, each picture with its moment and, when chosen, the
-  date and time; written page by page (270 pages in about 30 s); **Open the PDF**. **Earlier conversions**: the last 10 jobs with their buttons.
+  date and time; written page by page (270 pages in about 30 s); **Open the PDF**.
+- b215: a conversion started while another job runs **waits in line** and starts by itself ("Take out of the line");
+  the page shows the running job, the last finished one and the line. A **report title** on the pictures PDF.
+  **Brighter** (dark videos). **Select all / Clear the selection**. Fixes from a review of the whole module: a size
+  target works with phone videos and joined chapters (frame gaps) and counts only the copy's sound tracks; a big file
+  being finished on a slow disk is not taken for a stalled job; a copy shorter than its video (damaged or
+  half-copied) says so; a video missing when its job starts gets a "Failed" line; conversions wait while the card
+  test runs. **Earlier conversions**: the last 10 jobs with their buttons.
 
 ## Orders from other programs; night review fixes (2026-10-17)
 

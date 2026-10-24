@@ -806,8 +806,16 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   convert 57/57, unit 175/175, Edge 20/20, E2E seven 88/88, two 91/91, phone 80/80 (reel_sound_even_or_silent in all
   three), route fuzz 0, Russian 217 pages 0 English, public repo 0.
   Published: b213 (commit 3bd75ab), ZIP 4,018,525 bytes, the same runtime.
-  Next in CI: conversions wait in line (status 'waiting', started one by one; reviewed: cancel as one step with the
-  start, a removed one never shown as the last), a report title on the pictures PDF, Brighter.
+  Then: conversions wait in line (status 'waiting', started one by one; reviewed: cancel as one step with the start,
+  a removed one never shown as the last, no reload while choosing, waits for reels / orders / renders), a report
+  title on the pictures PDF, Brighter, Select all, and a whole-module review (two-pass with frame gaps failed with
+  "Incomplete MB-tree stats" on phone videos and joined chapters; +faststart on a slow disk could look stalled to the
+  watchdog; half-copied sources made short copies silently; a missing video left no Failed line; sound share of a
+  silent video) fixed. Windows run 40118244060 (050824c): convert 62/62, unit 178/178, Edge 20/20, E2E 88/91/80,
+  route fuzz 0, Russian 217 pages 0 English, public repo 0.
+  Published: b215 (commit 050824c), ZIP 4,033,358 bytes, the same runtime.
+  Next in CI: the remembered Convert choices; pictures by seeking (about 10x faster for long 4K videos, byte-identical
+  to decoding; only for containers with an exact seek and progressive video - reviewed).
 
 ## Evidence
 
@@ -1010,6 +1018,7 @@ a 4K test clip by the processor and the NVIDIA card, Convert uses the card only 
 the Windows runner, no NVIDIA card: said and remembered in 14 s, CI run 40070321577, ZIP 3,963,041 bytes, same
 runtime). Asked the owner to press the test and send its line. b211 is published (Convert → More: speed, vertical 9:16, logo, less wind;
 pictures every N s; earlier conversions). b212 is published (slow motion, Even out the sound, Date and time in the
-corner, on pictures too; "Filmed:" in Cut…). b213 is published (the pictures in one PDF). Still open: the first voice-over on
+corner, on pictures too; "Filmed:" in Cut…). b213 is published (the pictures in one PDF). b215 is published (the waiting line, report title, Brighter, Select all,
+whole-module review fixes). Still open: the first voice-over on
 his RTX 3060; Convert on his PC (Explorer, clipboard, the NVIDIA way's speed). Social integration paused by the owner (do not touch Social).
 Through the app's pages in the desktop app's browser pane only (never computer use).
