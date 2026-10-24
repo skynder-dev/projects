@@ -256,6 +256,9 @@ def pictures_pdf(path: Path, pics: list, title: str, every: int, start=None) -> 
     sub = (f"Кадры каждые {every} с · {count}" if ru else f"Pictures every {every} s · {count}") \
         + ((" · снято " if ru else " · filmed ") + f"{start:%d.%m.%Y %H:%M:%S}" if start else "")
     tmp = path.with_name(path.stem + ".part.pdf")
+    probe_d = ImageDraw.Draw(Image.new("RGB", (8, 8)))
+    while len(title) > 8 and probe_d.textlength(title, font=f_title) > W - 2 * M:     # a long name: shortened with …
+        title = title[:-6] + "…"
     try:
         for pg in range(pages):
             page = Image.new("RGB", (W, H), "white")
