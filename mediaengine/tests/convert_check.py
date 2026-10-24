@@ -8,7 +8,7 @@ the VFR clip from <fixtures_dir>/phone. Checks: output size cap, frame rate kept
 """
 from __future__ import annotations
 
-import hashlib, json, os, shutil, subprocess, sys, time
+import hashlib, json, os, re, shutil, subprocess, sys, time
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -244,6 +244,48 @@ def main():
     check("convert_turn_the_picture", (int(tv["width"]), int(tv["height"])) == (360, 640) and (int(tpv["width"]), int(tpv["height"])) == (1280, 720)
           and tr.get("turn") == 90 and "_turned_" in Path(tr["output"]).name and len(t0) == len(t1) == 36 * 64 * 3 and diff < 20,
           (tv.get("width"), tv.get("height"), tpv.get("width"), tpv.get("height"), Path(tr["output"]).name, diff))
+    # More options: speed (2x with its sound in step, 4x without sound), vertical 9:16 (cut / blurred background), a logo
+    # in a corner, less wind noise (a 50 Hz hum taken down)
+    from archivist import converter as cvx
+    from archivist.config import HOME as _H
+    no_a = lambda f: not [x for x in _probe(Path(f)).get("streams", []) if x.get("codec_type") == "audio"]
+    s2 = convert_file(whole, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"speed": 2}))
+    s2d = float(_probe(Path(s2["output"]))["format"]["duration"])
+    # (a one-frame flash may be one of the frames a faster copy leaves out: the beeps are compared with their times,
+    # every second at k + 0.3 s in the source -> (k + 0.3) / 2 in the copy)
+    b2 = beeps(ff, s2["output"])
+    f2 = [(k + 0.3) / 2 for k in range(14)]
+    o2 = [min((b - f for b in b2), key=abs) for f in f2] if b2 else []
+    s4 = convert_file(whole, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"speed": 4}))
+    s4d = float(_probe(Path(s4["output"]))["format"]["duration"])
+    check("convert_faster_2x_in_step_4x_without_sound", abs(s2d - 7.0) <= 0.1 and len(f2) >= 10 and o2 and all(-0.03 <= o <= 0.045 for o in o2)
+          and abs(s4d - 3.5) <= 0.1 and no_a(s4["output"]) and "_x4_" in Path(s4["output"]).name,
+          (s2d, len(f2), [round(o, 3) for o in o2], s4d, Path(s4["output"]).name))
+    vc = convert_file(whole, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"vertical": "crop"}))
+    vb = convert_file(whole, "small_720p", output_dir=out_dir, extra=cvx.clean_extra({"vertical": "blur"}))
+    vcs = [x for x in _probe(Path(vc["output"])).get("streams", []) if x.get("codec_type") == "video"][0]
+    vbs = [x for x in _probe(Path(vb["output"])).get("streams", []) if x.get("codec_type") == "video"][0]
+    check("convert_vertical_9_16", (int(vcs["width"]), int(vcs["height"])) == (1080, 1920) and (int(vbs["width"]), int(vbs["height"])) == (720, 1280)
+          and abs(float(_probe(Path(vc["output"]))["format"]["duration"]) - 14.0) <= 0.15, (vcs.get("width"), vcs.get("height"), vbs.get("width"), vbs.get("height")))
+    (_H / "data").mkdir(parents=True, exist_ok=True)
+    Image.new("RGBA", (300, 100), (255, 0, 255, 255)).save(_H / "data" / cvx.LOGO_FILE)
+    lgo = convert_file(whole, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"logo": True}))
+    px = subprocess.run([ff, "-v", "error", "-ss", "2", "-i", lgo["output"], "-frames:v", "1", "-vf", "crop=8:8:iw-40:ih-20", "-f", "rawvideo",
+                         "-pix_fmt", "rgb24", "-"], capture_output=True).stdout
+    mag = (sum(px[0::3]) / 64, sum(px[1::3]) / 64, sum(px[2::3]) / 64) if len(px) == 192 else None
+    check("convert_logo_in_the_corner", mag and mag[0] > 180 and mag[2] > 180 and mag[1] < 80 and "_logo_" in Path(lgo["output"]).name, mag)
+    hum = src_dir / "hum.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=320x180:rate=30:d=4", "-f", "lavfi", "-i",
+                    "aevalsrc='0.5*sin(2*PI*50*t)+0.2*sin(2*PI*1000*t)':s=48000:d=4", "-c:v", "libx264", "-preset", "ultrafast", "-c:a", "aac",
+                    "-shortest", str(hum)], check=True)
+    def low_rms(f):
+        t = subprocess.run([ff, "-hide_banner", "-i", str(f), "-map", "0:a:0", "-af", "lowpass=f=80,astats=metadata=0", "-f", "null", "-"],
+                           capture_output=True, text=True).stderr
+        m = re.findall(r"RMS level dB:\s*(-?[\d.]+|-inf)", t)
+        return float(m[-1]) if m and m[-1] != "-inf" else -200.0
+    wnd = convert_file(hum, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"wind": True}))
+    before, after = low_rms(hum), low_rms(wnd["output"])
+    check("convert_less_wind_noise", before - after >= 12 and not no_a(wnd["output"]), (before, after))
     # "Without sound": the copy has no sound at all (one video, and joined parts)
     mres = convert_file(parts[0], "small_720p", output_dir=out_dir, mute=True)
     jm = join_files(parts, "small_720p", output_dir=out_dir, mute=True)

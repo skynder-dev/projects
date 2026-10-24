@@ -894,6 +894,8 @@ PHRASES = {
     "The word being said on a color block": "Сказанное слово на цветной плашке",
     "Captions in two more looks: one word at a time, big (like TikTok), and the word being said on a color block.":
         "Ещё два вида субтитров: по одному слову, крупно (как в TikTok), и сказанное слово на цветной плашке.",
+    "Convert → More: speed (2×, 4×, 8× faster), vertical 9:16 for Reels / TikTok (the middle, or the whole picture on a blurred background), your logo in a corner, less wind noise.":
+        "Конвертация → Ещё: скорость (в 2, 4, 8 раз быстрее), вертикально 9:16 для Reels / TikTok (середина или вся картинка на размытом фоне), ваш логотип в углу, меньше шума ветра.",
     "Check this PC: “Test converting on the graphics card” - a short 4K test clip made smaller with the processor and with the NVIDIA card; Convert uses the card only if it was faster with the same picture.":
         "Проверка этого ПК: «Проверить конвертацию на видеокарте» — короткий тестовый 4K-клип сжимается процессором и видеокартой NVIDIA; конвертация берёт видеокарту, только если она быстрее и картинка та же.",
     "Reels, finished videos and converted copies made from GoPro or phone footage keep normal brightness levels (dark and bright parts as filmed on every screen).":

@@ -320,7 +320,7 @@ def _run_progress_inner(cmd, duration_s: float, progress_cb=None, cancel_cb=None
 
 
 def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None, cancel_cb=None, output_dir=None, job_id=None,
-                 cut=None, mute=False, turn=0, prefer=None):
+                 cut=None, mute=False, turn=0, prefer=None, extra=None):
     """One video converted (cut = (start, end) in seconds: only that part)."""
     source = Path(source)
     if preset not in PRESETS:
@@ -341,7 +341,7 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
         # FFmpeg seeks to the start (the picture from exactly there: everything is re-encoded) and reads that long
         input_args, tag, duration = ["-ss", f"{start:.3f}", "-t", f"{end - start:.3f}", "-i", str(source)], "cut", end - start
     out, made_on = _encode(ffmpeg, input_args, source, duration, preset, target_mb, progress_cb, cancel_cb, output_dir, job_id, tag=tag,
-                           mute=bool(mute), turn=turn, prefer=prefer)
+                           mute=bool(mute), turn=turn, prefer=prefer, extra=extra)
     src_size = source.stat().st_size
     if cut:                                    # the part's share of the file (the saving of the part, not of the whole)
         src_size = int(src_size * min(1.0, duration / max(0.001, float(probe_duration(source) or duration))))
@@ -357,6 +357,7 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
         "made_on": made_on,
         **({"mute": True} if mute else {}),
         **({"turn": int(turn)} if int(turn or 0) in TURNS else {}),
+        **({"extra": dict(extra)} if extra else {}),
         **({"cut": [round(float(cut[0]), 3), round(min(float(cut[1]), float(probe_duration(source) or cut[1])), 3)]} if cut else {}),
     }
 
@@ -465,7 +466,7 @@ def join_check(ffmpeg, sources, beat=None) -> None:
 
 
 def join_files(sources, preset="share_1080p", target_mb=None, progress_cb=None, cancel_cb=None, output_dir=None, job_id=None,
-               beat=None, mute=False, turn=0):
+               beat=None, mute=False, turn=0, extra=None):
     """Several parts of one recording, in the given order, as ONE converted video (FFmpeg's concat demuxer: the parts
     follow each other with their own timing; the picture and sound are then made like any converted video)."""
     sources = [Path(x) for x in sources]
@@ -494,7 +495,7 @@ def join_files(sources, preset="share_1080p", target_mb=None, progress_cb=None, 
     listfile.write_text("".join("file '" + str(src.resolve()).replace("'", "'\\''") + "'\n" for src in sources), "utf-8")
     try:
         out, made_on = _encode(ffmpeg, ["-f", "concat", "-safe", "0", "-i", str(listfile)], sources[0], duration, preset, target_mb,
-                               progress_cb, cancel_cb, output_dir, job_id, tag="joined", mute=bool(mute), turn=turn)
+                               progress_cb, cancel_cb, output_dir, job_id, tag="joined", mute=bool(mute), turn=turn, extra=extra)
     finally:
         try:
             listfile.unlink()
@@ -508,6 +509,7 @@ def join_files(sources, preset="share_1080p", target_mb=None, progress_cb=None, 
         "joined": len(sources),
         **({"mute": True} if mute else {}),
         **({"turn": int(turn)} if int(turn or 0) in TURNS else {}),
+        **({"extra": dict(extra)} if extra else {}),
         "output": str(out),
         "source_bytes": src_size,
         "output_bytes": out_size,
@@ -701,15 +703,133 @@ def gpu_plan(sig: dict, preset: str, hdr=None, interlaced=False) -> dict | None:
             "size": (W, H)}
 
 
+# More options of Convert ("extra"): speed, vertical 9:16, a logo, less wind noise.
+SPEEDS = (1, 2, 4, 8)
+VERTICALS = ("", "crop", "blur")
+LOGO_CORNERS = ("bottom-right", "bottom-left", "top-right", "top-left")
+LOGO_FILE = "convert_logo.png"
+
+
+def logo_saved() -> dict:
+    """The logo chosen once on the Convert page (a PNG kept in the data folder), its corner and size (% of the width)."""
+    cfg = dict((load_config().get("convert") or {}).get("logo") or {})
+    f = HOME / "data" / LOGO_FILE
+    if not f.is_file():
+        return {}
+    corner = cfg.get("corner") if cfg.get("corner") in LOGO_CORNERS else "bottom-right"
+    try:
+        size = min(40, max(5, int(cfg.get("size") or 12)))
+    except (TypeError, ValueError):
+        size = 12
+    return {"path": str(f), "corner": corner, "size": size}
+
+
+def clean_extra(extra) -> dict:
+    """The page's choices, checked: {"speed": 2|4|8, "vertical": "crop"|"blur", "logo": True, "wind": True} (only what
+    is chosen)."""
+    out = {}
+    if not extra:
+        return out
+    if not isinstance(extra, dict):
+        raise ValueError("Unknown option")
+    sp = extra.get("speed", 1)
+    if isinstance(sp, bool) or not isinstance(sp, (int, float, str)):
+        raise ValueError("Unknown speed")
+    try:
+        sp = int(sp) if float(sp) == int(float(sp)) else -1
+    except (TypeError, ValueError, OverflowError):
+        sp = -1
+    if sp not in SPEEDS:
+        raise ValueError("Unknown speed")
+    if sp > 1:
+        out["speed"] = sp
+    v = extra.get("vertical") or ""
+    if v not in VERTICALS:
+        raise ValueError("Unknown vertical")
+    if v:
+        out["vertical"] = v
+    if extra.get("logo") is True:
+        if not logo_saved():
+            raise ValueError("Choose a logo first")
+        out["logo"] = True
+    if extra.get("wind") is True:
+        out["wind"] = True
+    return out
+
+
+def _out_size(sig: dict, preset: str, turn: int, vertical: str) -> tuple[int, int]:
+    """The size of the converted picture (as the filters below make it), for the logo's size."""
+    cap = PRESETS[preset]["cap"]
+    if vertical:
+        return (720, 1280) if cap == 1280 else (1080, 1920)
+    try:
+        w, h = (int(x) for x in str(sig.get("size") or "1920x1080").split("x"))
+    except ValueError:
+        w, h = 1920, 1080
+    if int(sig.get("rotation") or 0) in (90, 270):
+        w, h = h, w
+    if turn in (90, 270):
+        w, h = h, w
+    if cap and max(w, h) > cap:
+        k = cap / max(w, h)
+        w, h = int(w * k) // 2 * 2, int(h * k) // 2 * 2
+    return w, h
+
+
+def _extra_graph(sig: dict, preset: str, hdr, interlaced: bool, turn: int, extra: dict, mute: bool, logo_index: int):
+    """The filter graph for the More options: ([v] and, when there is sound, [a]); also without the sound branch
+    (the first pass of a size target). Returns (graph with sound, graph without sound, sound kept)."""
+    speed = int(extra.get("speed") or 1)
+    pre = (["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if interlaced else []) \
+        + ([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []) + ([TURNS[turn]] if turn in TURNS else []) \
+        + ([f"setpts=PTS/{speed}", "fps=30"] if speed > 1 else [])
+    cap = PRESETS[preset]["cap"]
+    vert = extra.get("vertical") or ""
+    if vert:
+        VW, VH = (720, 1280) if cap == 1280 else (1080, 1920)
+        if vert == "crop":                 # the middle of the picture, the sides cut off
+            g = f"[0:v:0]{','.join(pre + [f'scale={VW}:{VH}:force_original_aspect_ratio=increase', f'crop={VW}:{VH}', 'setsar=1'])}[vb]"
+        else:                              # the whole picture on a blurred, enlarged copy of itself
+            head = ",".join(pre) if pre else "null"
+            g = (f"[0:v:0]{head},split[va][vf0];"
+                 f"[va]scale={VW // 4}:{VH // 4}:force_original_aspect_ratio=increase,crop={VW // 4}:{VH // 4},boxblur=6:2,"
+                 f"scale={VW}:{VH},setsar=1[bg];[vf0]scale={VW}:{VH}:force_original_aspect_ratio=decrease,setsar=1[fg];"
+                 f"[bg][fg]overlay=(W-w)/2:(H-h)/2[vb]")
+    else:
+        body = pre + ([f"scale='min({int(cap)},iw)':'min({int(cap)},ih)':force_original_aspect_ratio=decrease:force_divisible_by=2"]
+                      if cap else [])
+        g = f"[0:v:0]{','.join(body) if body else 'null'}[vb]"
+    last = "vb"
+    if extra.get("logo"):
+        lg = logo_saved()
+        W, H = _out_size(sig, preset, turn, vert)
+        lw = max(16, int(W * lg["size"] / 100) // 2 * 2)
+        m = max(8, int(min(W, H) * 0.03))
+        x = f"W-w-{m}" if lg["corner"].endswith("right") else f"{m}"
+        y = f"H-h-{m}" if lg["corner"].startswith("bottom") else f"{m}"
+        g += f";[{logo_index}:v]scale={lw}:-1,format=rgba[lg];[vb][lg]overlay={x}:{y}:format=auto:eof_action=repeat[vl]"
+        last = "vl"
+    g += f";[{last}]scale=out_range=tv,format=yuv420p[v]"
+    sound = not mute and bool(sig.get("audio")) and speed <= 2
+    af = (["highpass=f=100", "afftdn=nf=-25"] if extra.get("wind") else []) + (["atempo=2.0"] if speed == 2 else [])
+    ga = g + (f";[0:a:0]{','.join(af) if af else 'anull'}[a]" if sound else "")
+    return ga, g, sound
+
+
 def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb, progress_cb, cancel_cb, output_dir, job_id,
-            tag: str = "", mute: bool = False, turn: int = 0, prefer: str | None = None) -> Path:
+            tag: str = "", mute: bool = False, turn: int = 0, prefer: str | None = None, extra: dict | None = None) -> Path:
     """The picture and sound made with the preset (or to a size, two passes) into a new file in Converted; returns it
     and where the picture was made ("nvidia" / "cpu")."""
     hdr = _hdr_kind(ffmpeg, source)
     interlaced = _is_interlaced(ffmpeg, source)
     target_mb = int(target_mb) if target_mb else None
     turn = int(turn or 0) if int(turn or 0) in TURNS else 0
-    tag = "_".join(x for x in (tag, "turned" if turn else "", "nosound" if mute else "") if x)
+    extra = dict(extra or {})
+    speed = int(extra.get("speed") or 1)
+    tag = "_".join(x for x in (tag, f"x{speed}" if speed > 1 else "", "vertical" if extra.get("vertical") else "",
+                                  "logo" if extra.get("logo") else "", "lesswind" if extra.get("wind") else "",
+                                  "turned" if turn else "", "nosound" if mute else "") if x)
+    duration = duration / speed                            # the copy's own length (a faster copy is shorter)
     out = _unique_output(source, preset, target_mb, Path(output_dir) if output_dir else None, tag)   # reserved (empty)
     amap = [] if mute else ["-map", "0:a?"]                # "Without sound": no sound in the copy at all
     aenc = (lambda k: ["-an"]) if mute else (lambda k: ["-c:a", "aac", "-b:a", f"{int(k)}k"])
@@ -718,9 +838,21 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
     made_on = "cpu"
     try:
         cfg = PRESETS[preset]
+        vsel = ["-map", "0:v:0", *amap, *_scale_args(preset, hdr, interlaced, turn)]     # the picture as before
+        vsel1 = ["-map", "0:v:0", *_scale_args(preset, hdr, interlaced, turn)]            # (first pass: no sound)
+        logo_in = []
+        if extra:                                                   # More options: one filter graph
+            sig = media_sig(ffmpeg, source)
+            if extra.get("logo"):
+                logo_in = ["-i", logo_saved()["path"]]
+            ga, gv, sound = _extra_graph(sig, preset, hdr, interlaced, turn, extra, mute, 1)
+            vsel = [*logo_in, "-filter_complex", ga, "-map", "[v]", *(["-map", "[a]"] if sound else [])]
+            vsel1 = [*logo_in, "-filter_complex", gv, "-map", "[v]"]
+            if not sound:
+                mute = True
+                aenc = lambda k: ["-an"]
         common = [
-            str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", *input_args,
-            "-map", "0:v:0", *amap, *_scale_args(preset, hdr, interlaced, turn),
+            str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", *input_args, *vsel,
             "-c:v", "libx264", "-pix_fmt", "yuv420p", "-color_range", "tv", "-preset", "veryfast",
         ]
 
@@ -731,8 +863,7 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
             passlog = str((HOME / "data" / f"ffmpeg2pass-{os.getpid()}-{threading.get_ident()}").resolve())
             Path(passlog).parent.mkdir(parents=True, exist_ok=True)
             pass1 = [
-                str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", *input_args,
-                "-map", "0:v:0", *_scale_args(preset, hdr, interlaced, turn),
+                str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", *input_args, *vsel1,
                 "-c:v", "libx264", "-pix_fmt", "yuv420p", "-color_range", "tv", "-preset", "veryfast",
                 "-b:v", f"{video_k}k", "-maxrate", f"{int(video_k*1.25)}k", "-bufsize", f"{int(video_k*2)}k",
                 "-pass", "1", "-passlogfile", passlog, "-an", "-f", "null", os.devnull
@@ -748,7 +879,7 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
             plan = None
             try:
                 # prefer: "cpu" / "gpu" only for the card test of Check this PC (both ways on the same clip)
-                use = (_nvenc_works() if prefer == "gpu" else False if prefer == "cpu" else gpu_ok()) and not turn
+                use = (_nvenc_works() if prefer == "gpu" else False if prefer == "cpu" else gpu_ok()) and not turn and not extra
                 plan = gpu_plan(media_sig(ffmpeg, source), preset, hdr, interlaced) if use else None
             except Exception:
                 plan = None
@@ -873,12 +1004,14 @@ def _job_items(inventory_ids, paths):
     return items
 
 
-def _options(preset, target_mb, inventory_ids, paths, join, done, outputs, output_dir=None, cuts=None, mute=False, turn=0) -> str:
+def _options(preset, target_mb, inventory_ids, paths, join, done, outputs, output_dir=None, cuts=None, mute=False, turn=0,
+             extra=None) -> str:
     return json.dumps({"preset": preset, "target_mb": target_mb, "inventory_ids": list(inventory_ids or []),
                        "paths": [str(x) for x in (paths or [])], "join": bool(join),
                        **({"output_dir": str(output_dir)} if output_dir else {}),
                        **({"cuts": cuts} if cuts else {}), **({"mute": True} if mute else {}),
                        **({"turn": int(turn)} if int(turn or 0) in TURNS else {}),
+                       **({"extra": extra} if extra else {}),
                        "finished_ids": sorted(k for k in done if isinstance(k, int)),
                        "finished_paths": sorted(k[2:] for k in done if isinstance(k, str)),
                        "outputs": outputs}, ensure_ascii=False)
@@ -906,7 +1039,8 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
     cuts=prior.get("cuts") if isinstance(prior.get("cuts"),dict) else {}
     mute=prior.get("mute") is True
     turn=int(prior.get("turn") or 0) if str(prior.get("turn") or 0).isdigit() and int(prior.get("turn") or 0) in TURNS else 0
-    opts=lambda: _options(preset,target_mb,inventory_ids,paths,join,done,outputs,output_dir,cuts,mute,turn)
+    extra=prior.get("extra") if isinstance(prior.get("extra"),dict) else {}
+    opts=lambda: _options(preset,target_mb,inventory_ids,paths,join,done,outputs,output_dir,cuts,mute,turn,extra)
     try:
         ordered = _job_items(inventory_ids, paths)
         total_bytes = sum(size for _, _, _, size in ordered)
@@ -941,11 +1075,11 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
                             raise RuntimeError("A part is not on this computer now: " + missing[0])
                         if len(parts) == 1:              # a recording of one file: converted as it is
                             res = convert_file(parts[0], preset, target_mb, progress_cb=prog_join, cancel_cb=lambda: _cancelled(job_id),
-                                               job_id=job_id, output_dir=output_dir, mute=mute, turn=turn)
+                                               job_id=job_id, output_dir=output_dir, mute=mute, turn=turn, extra=extra)
                         else:
                             res = join_files(parts, preset, target_mb, progress_cb=prog_join, cancel_cb=lambda: _cancelled(job_id),
                                              job_id=job_id, output_dir=output_dir, beat=lambda: _job_update(job_id, stage="converting"),
-                                             mute=mute, turn=turn)
+                                             mute=mute, turn=turn, extra=extra)
                         outputs.append(res)
                         success += 1
                         break
@@ -993,7 +1127,7 @@ def _convert_worker(job_id: int, inventory_ids: list[int], preset: str, target_m
                 try:
                     result = convert_file(src, preset, target_mb, progress_cb=prog, cancel_cb=lambda: _cancelled(job_id), job_id=job_id,
                                           output_dir=output_dir, cut=cuts.get(str(key)) if isinstance(key, int) else None, mute=mute,
-                                          turn=turn)
+                                          turn=turn, extra=extra)
                     outputs.append(result); success += 1
                     break
                 except Exception as exc:
@@ -1228,7 +1362,7 @@ def _clean_cuts(cuts, ids) -> dict:
 
 
 def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, paths=None, join=False, cuts=None, mute=False,
-                      turn=0):
+                      turn=0, extra=None):
     ids = []
     seen = set()
     for x in inventory_ids or []:
@@ -1264,6 +1398,7 @@ def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, 
     if turn not in (0, *TURNS):
         raise ValueError("Unknown turn")
     cuts = _clean_cuts(cuts, ids)
+    extra = clean_extra(extra)
     if cuts and join:
         raise ValueError("A cut works when the videos are converted one by one (not joined into one).")
     n_groups = 0
@@ -1305,7 +1440,7 @@ def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, 
         cur = con.execute(
             "INSERT INTO jobs(kind,status,created_at,started_at,stage,message,total,done,success,failed,bytes_total,bytes_done,options_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
             ("convert", "running", _now(), _now(), "starting", "Starting converter…", n_groups if join else n, 0, 0, 0, 0, 0,
-             _options(preset, target_mb, ids, [str(f) for f in files], join, set(), [], output_folder(), cuts, bool(mute), turn))
+             _options(preset, target_mb, ids, [str(f) for f in files], join, set(), [], output_folder(), cuts, bool(mute), turn, extra))
         )
         job_id = int(cur.lastrowid)
         con.commit()

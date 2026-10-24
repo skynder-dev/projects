@@ -1361,8 +1361,16 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
         skipped_preselected=max(0,len(preselect_ids)-len(local)) if preselect_ids else 0
         total_local=len(local)
         latest=convert_job_snapshot()
-        from .converter import output_folder
+        from .converter import output_folder, logo_saved, LOGO_CORNERS
         out_dir=output_folder()
+        lg=logo_saved()
+        corner_names={'bottom-right':'bottom right','bottom-left':'bottom left','top-right':'top right','top-left':'top left'}
+        logo_html=(("<label><input type='checkbox' id='logoOut'> <span>Logo</span></label>"
+                    f"<img src='/api/convert/logo.png?v={int(Path(lg['path']).stat().st_mtime)}' alt='' style='height:28px;max-width:90px;object-fit:contain;background:#555;border-radius:4px'>"
+                    "<select id='logoCorner'>"+''.join(f"<option value='{c}' {'selected' if c==lg['corner'] else ''}>{corner_names[c]}</option>" for c in LOGO_CORNERS)+"</select>"
+                    "<select id='logoSize'>"+''.join(f"<option value='{z}' {'selected' if z==lg['size'] else ''}>{z}%</option>" for z in (8,12,16,20,25))+"</select>"
+                    "<button class='btn2' type='button' data-cv='logo-pick'>Another logo…</button><button class='btn2' type='button' data-cv='logo-clear'>Remove the logo</button>")
+                   if lg else "<button class='btn2' type='button' data-cv='logo-pick'>Choose a logo…</button><span class='muted small'>Your logo in a corner of every video (chosen once).</span>")
         srcopts="<option value=''>All local sources</option>"+''.join(f"<option value='{e(k)}' translate='no' {'selected' if k==source_id else ''}>{e(v)}</option>" for k,v in sorted(sources.items(),key=lambda x:x[1].lower()))
         cards=''
         for r in local:
@@ -1408,7 +1416,12 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
 </div>
 <div class='toolbar'><label>Fit under (optional) <input id='targetMb' type='number' min='50' step='50' placeholder='500' style='width:120px'> <span>MB</span></label><button id='startConvert' class='btn' disabled>Convert selected</button><span class='muted small'>Target size uses two-pass encoding and may take longer.</span></div>
 <div class='toolbar' style='margin-top:4px'><label title='One video from all chosen ones, one after another'><input type='checkbox' id='joinOne'> <span>Join into one video</span></label><label><input type='checkbox' id='muteOut'> <span>Without sound</span></label><label><span>Turn the picture</span> <select id='turnOut'><option value='0'>as it is</option><option value='90'>90° right</option><option value='270'>90° left</option><option value='180'>upside down (180°)</option></select></label><button id='pickConvert' class='btn btn2' type='button'>Choose videos on this PC…</button><span class='muted small'>Any video on this computer, without adding it to the library.</span></div>
-<div id='joinHint' class='small' style='display:none;margin-top:4px;white-space:normal'></div></div>
+<div id='joinHint' class='small' style='display:none;margin-top:4px;white-space:normal'></div>
+<details id='cvMore' style='margin-top:6px'><summary class='small'>More: speed, vertical 9:16, logo, wind</summary>
+<div class='toolbar' style='margin-top:6px;flex-wrap:wrap'><label><span>Speed</span> <select id='speedOut'><option value='1'>as it is</option><option value='2'>2× faster</option><option value='4'>4× faster (no sound)</option><option value='8'>8× faster (no sound)</option></select></label>
+<label><span>Vertical 9:16</span> <select id='vertOut'><option value=''>as it is</option><option value='crop'>the middle, sides cut off</option><option value='blur'>the whole picture on a blurred background</option></select></label>
+<label><input type='checkbox' id='windOut'> <span>Less wind noise</span></label></div>
+<div class='toolbar' style='margin-top:6px;flex-wrap:wrap'>{logo_html}</div></details></div>
 {active}
 {selection_notice}
 <form class='toolbar' method='get' action='/convert'><input name='q' value='{e(q)}' placeholder='Search local videos'><select name='scope'><option value='all' {'selected' if scope=='all' else ''}>All accessible videos</option><option value='library' {'selected' if scope=='library' else ''}>Library only</option></select><select name='source_kind'><option value='' {'selected' if not source_kind else ''}>Any origin</option><option value='fixed' {'selected' if source_kind=='fixed' else ''}>Local folders</option><option value='android' {'selected' if source_kind=='android' else ''}>Android</option><option value='removable' {'selected' if source_kind=='removable' else ''}>SD/USB</option></select><select name='source_id'>{srcopts}</select><select name='sort'><option value='date_desc' {'selected' if sort=='date_desc' else ''}>Newest</option><option value='date_asc' {'selected' if sort=='date_asc' else ''}>Oldest</option><option value='size_desc' {'selected' if sort=='size_desc' else ''}>Largest</option><option value='size_asc' {'selected' if sort=='size_asc' else ''}>Smallest</option><option value='duration_desc' {'selected' if sort=='duration_desc' else ''}>Longest</option><option value='name' {'selected' if sort=='name' else ''}>Name</option><option value='source' {'selected' if sort=='source' else ''}>Source</option></select><button class='btn2'>Filter</button><a class='btn2' href='/convert'>Clear</a></form>
@@ -1421,7 +1434,8 @@ function chosenPreset(){return (document.querySelector('input[name=presetChoice]
 function cutOf(ch){const a=Number(ch.dataset.cutStart),b=Number(ch.dataset.cutEnd);return (ch.dataset.cutStart!==undefined&&ch.dataset.cutEnd!==undefined&&b>a)?[a,b]:null}
 function estimateBytes(ch){
   const full=Math.max(0,Number(ch.dataset.durationMs||0)/1000),c=cutOf(ch),frac=(c&&full>0)?Math.min(1,Math.max(0,(c[1]-c[0])/full)):1;
-  const size=Number(ch.dataset.size||0)*frac,dur=c?(c[1]-c[0]):full,target=Number(document.getElementById('targetMb').value||0)||0;
+  const sp=Math.max(1,Number((document.getElementById('speedOut')||{}).value||1));
+  const size=Number(ch.dataset.size||0)*frac/sp,dur=(c?(c[1]-c[0]):full)/sp,target=Number(document.getElementById('targetMb').value||0)||0;
   if(target)return Math.min(size||Infinity,target*1024*1024);
   const p=chosenPreset();
   if(!p)return null;
@@ -1547,9 +1561,14 @@ function updJoin(){const box=document.getElementById('joinHint'),j=document.getE
  if(j.checked){if(groups.length>1){h+="<span>Each recording becomes one video:</span>";for(const g of groups)h+="<br><span translate='no'>"+g.map(esc).join(' → ')+"</span>"}
   else h+="<span>Order:</span> <span translate='no'>"+groups[0].map(esc).join(' → ')+"</span>"}
  box.innerHTML=h;box.style.display='block'}
-document.getElementById('joinOne').addEventListener('change',()=>{updJoin();updSel()});document.getElementById('muteOut').addEventListener('change',updSel);allChecks.forEach(x=>x.addEventListener('change',updJoin));updJoin();
+document.getElementById('joinOne').addEventListener('change',()=>{updJoin();updSel()});
+['logoCorner','logoSize'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',()=>{fetch('/api/convert/logo',{method:'POST',headers:{'Content-Type':'application/json'},
+ body:JSON.stringify({action:'set',corner:document.getElementById('logoCorner').value,size:Number(document.getElementById('logoSize').value)})}).catch(()=>{});const lo=document.getElementById('logoOut');if(lo)lo.checked=true})});
+['speedOut'].forEach(id=>document.getElementById(id).addEventListener('change',updSel));document.getElementById('muteOut').addEventListener('change',updSel);allChecks.forEach(x=>x.addEventListener('change',updJoin));updJoin();
 function convOpts(){const preset=(document.querySelector('input[name=presetChoice]:checked')||{}).value||'';
- return {preset,target_mb:Number(document.getElementById('targetMb').value||0)||null,join:document.getElementById('joinOne').checked,mute:document.getElementById('muteOut').checked,turn:Number(document.getElementById('turnOut').value||0)}}
+ return {preset,target_mb:Number(document.getElementById('targetMb').value||0)||null,join:document.getElementById('joinOne').checked,mute:document.getElementById('muteOut').checked,turn:Number(document.getElementById('turnOut').value||0),
+ extra:{speed:Number(document.getElementById('speedOut').value||1),vertical:document.getElementById('vertOut').value||'',wind:document.getElementById('windOut').checked,
+ logo:!!(document.getElementById('logoOut')||{}).checked}}}
 // a cut: only the part between start and end is converted (the player, or the times typed as m:ss / seconds)
 function fmtT(t){t=Math.round(Math.max(0,Number(t)||0)*10)/10;const m=Math.floor(t/60),x=Math.round((t-m*60)*10)/10;return m+':'+(x<10?'0':'')+x.toFixed(1)}
 function fmtS(t){t=Math.round(Math.max(0,Number(t)||0));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')}
@@ -1595,8 +1614,9 @@ document.getElementById('pickConvert').onclick=async ev=>{const o=convOpts();if(
   if(x.job_id){toast('Conversion started');location.href='/convert';return}if(x.error)toast(x.error)}catch(e){toast(e.message||String(e))}b.disabled=false};
 const winPC=%s;
 function hb(n){n=Number(n||0);for(const u of ['B','KB','MB','GB','TB']){if(n<1024||u==='TB')return (u==='B'||u==='KB'?n.toFixed(0):n.toFixed(1))+' '+u;n/=1024}}
-async function pollConvert(){const box=document.getElementById('convertStatus');if(!box||box.dataset.done)return;const id=box.dataset.job;try{const r=await fetch('/api/convert/status?id='+id,{cache:'no-store'});const x=await r.json();if(!x.job)return;const j=x.job;document.getElementById('convertMsg').textContent=j.message||j.status;document.getElementById('convertPct').style.width=(j.percent||0)+'%';const et=document.getElementById('convertEta');if(et){const t=Number(j.eta_s);const v=!(t>=0)||j.eta_s===null?'':(t<60?'less than a minute left':(Math.round(t/60)<60?'about '+Math.max(1,Math.round(t/60))+' min left':'about '+Math.floor(Math.round(t/60)/60)+' h '+(Math.round(t/60)%60)+' min left'));if(et.dataset.v!==v){et.dataset.v=v;et.textContent=v}}if(['finished','failed','cancelled','partial'].includes(j.status)){const st=document.getElementById('convertStop');if(st)st.remove();const et2=document.getElementById('convertEta');if(et2)et2.remove();const outs=((j.options||{}).outputs||[]);let h='';const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let i=-1;for(const o of outs){i++;const nm=String(o.source||'').split(String.fromCharCode(92)).join('/').split('/').pop();if(o.error){h+="<div class='small error'><span>Failed:</span> <span translate='no'>"+esc(nm)+"</span> — <span>"+esc(o.error)+"</span></div>"}else{h+="<div class='cv-out'><div class='small'><b><span>"+hb(o.source_bytes)+"</span> → <span>"+hb(o.output_bytes)+"</span></b> · <span>smaller by "+esc(o.saved_percent)+"%</span>"+(o.joined?" · <span>joined from "+Number(o.joined)+" parts</span>":"")+(o.made_on==='nvidia'?" · <span>made on the graphics card</span>":"")+(o.mute===true?" · <span>without sound</span>":"")+({90:" · <span>turned right</span>",270:" · <span>turned left</span>",180:" · <span>turned upside down</span>"}[Number(o.turn)]||"")+(Array.isArray(o.cut)?" · <span>cut "+fmtS(o.cut[0])+"–"+fmtS(o.cut[1])+"</span>":"")+"<br><span class='muted ae-path' translate='no'>"+esc(o.output)+"</span></div><div class='row' style='margin:4px 0 8px'><button class='btn btn2' type='button' data-cv='reveal' data-i='"+i+"'>Show in folder</button><button class='btn btn2' type='button' data-cv='open' data-i='"+i+"'>Open video</button>"+(winPC?"<button class='btn btn2' type='button' data-cv='copy' data-i='"+i+"'>Copy file</button>":"")+"</div></div>"}}h+="<div class='row' style='justify-content:flex-end'><button class='btn btn2' type='button' data-cv='hide'>Remove from the page</button></div>";document.getElementById('convertResults').innerHTML=h;return}}catch(e){}setTimeout(pollConvert,1000)}
+async function pollConvert(){const box=document.getElementById('convertStatus');if(!box||box.dataset.done)return;const id=box.dataset.job;try{const r=await fetch('/api/convert/status?id='+id,{cache:'no-store'});const x=await r.json();if(!x.job)return;const j=x.job;document.getElementById('convertMsg').textContent=j.message||j.status;document.getElementById('convertPct').style.width=(j.percent||0)+'%';const et=document.getElementById('convertEta');if(et){const t=Number(j.eta_s);const v=!(t>=0)||j.eta_s===null?'':(t<60?'less than a minute left':(Math.round(t/60)<60?'about '+Math.max(1,Math.round(t/60))+' min left':'about '+Math.floor(Math.round(t/60)/60)+' h '+(Math.round(t/60)%60)+' min left'));if(et.dataset.v!==v){et.dataset.v=v;et.textContent=v}}if(['finished','failed','cancelled','partial'].includes(j.status)){const st=document.getElementById('convertStop');if(st)st.remove();const et2=document.getElementById('convertEta');if(et2)et2.remove();const outs=((j.options||{}).outputs||[]);let h='';const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let i=-1;for(const o of outs){i++;const nm=String(o.source||'').split(String.fromCharCode(92)).join('/').split('/').pop();if(o.error){h+="<div class='small error'><span>Failed:</span> <span translate='no'>"+esc(nm)+"</span> — <span>"+esc(o.error)+"</span></div>"}else{h+="<div class='cv-out'><div class='small'><b><span>"+hb(o.source_bytes)+"</span> → <span>"+hb(o.output_bytes)+"</span></b> · <span>smaller by "+esc(o.saved_percent)+"%</span>"+(o.joined?" · <span>joined from "+Number(o.joined)+" parts</span>":"")+(o.made_on==='nvidia'?" · <span>made on the graphics card</span>":"")+(o.mute===true?" · <span>without sound</span>":"")+(()=>{const x=o.extra||{};return ([2,4,8].includes(Number(x.speed))?" · <span>"+Number(x.speed)+"× faster</span>":"")+(x.vertical?" · <span>vertical 9:16</span>":"")+(x.logo?" · <span>logo</span>":"")+(x.wind?" · <span>less wind</span>":"")})()+({90:" · <span>turned right</span>",270:" · <span>turned left</span>",180:" · <span>turned upside down</span>"}[Number(o.turn)]||"")+(Array.isArray(o.cut)?" · <span>cut "+fmtS(o.cut[0])+"–"+fmtS(o.cut[1])+"</span>":"")+"<br><span class='muted ae-path' translate='no'>"+esc(o.output)+"</span></div><div class='row' style='margin:4px 0 8px'><button class='btn btn2' type='button' data-cv='reveal' data-i='"+i+"'>Show in folder</button><button class='btn btn2' type='button' data-cv='open' data-i='"+i+"'>Open video</button>"+(winPC?"<button class='btn btn2' type='button' data-cv='copy' data-i='"+i+"'>Copy file</button>":"")+"</div></div>"}}h+="<div class='row' style='justify-content:flex-end'><button class='btn btn2' type='button' data-cv='hide'>Remove from the page</button></div>";document.getElementById('convertResults').innerHTML=h;return}}catch(e){}setTimeout(pollConvert,1000)}
 document.addEventListener('click',async ev=>{const b=ev.target.closest('[data-cv]');if(!b)return;const box=document.getElementById('convertStatus');
+ if(b.dataset.cv==='logo-pick'||b.dataset.cv==='logo-clear'){b.disabled=true;try{const r=await fetch('/api/convert/logo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:b.dataset.cv==='logo-pick'?'pick':'clear'})});const x=await r.json();if(x.ok){location.reload();return}if(x.error)toast(x.error)}catch(e){}b.disabled=false;return}
  if(b.dataset.cv==='stop'){if(!box)return;b.disabled=true;try{await fetch('/api/jobs/'+Number(box.dataset.job)+'/cancel',{method:'POST'})}catch(e){}return}
  if(b.dataset.cv==='outdir'||b.dataset.cv==='outdir-reset'){b.disabled=true;try{const r=await fetch('/api/convert/output-folder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reset:b.dataset.cv==='outdir-reset'})});const x=await r.json();if(x.ok){location.reload();return}if(x.error)toast(x.error)}catch(e){}b.disabled=false;return}
  if(b.dataset.cv==='hide'){try{const r=await fetch('/api/convert/hide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({job:box?Number(box.dataset.job):0})});if(r.ok&&box)box.remove()}catch(e){}return}
@@ -1619,7 +1639,7 @@ pollConvert();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='
         try:
             job_id=start_convert_job(payload.get('ids') or [],payload.get('preset') or 'share_1080p',payload.get('target_mb'),
                                      join=payload.get('join') is True,cuts=payload.get('cuts') or None,mute=payload.get('mute') is True,
-                                     turn=payload.get('turn') or 0)
+                                     turn=payload.get('turn') or 0,extra=payload.get('extra') or None)
             return jsonify({'ok':True,'job_id':job_id})
         except Exception as exc:
             return jsonify({'ok':False,'error':str(exc)}),409
@@ -1635,7 +1655,8 @@ pollConvert();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='
             return jsonify({'ok':False,'error':'No videos chosen.'})
         try:
             job_id=start_convert_job([],payload.get('preset') or 'share_1080p',payload.get('target_mb'),paths=files,
-                                     join=payload.get('join') is True,mute=payload.get('mute') is True,turn=payload.get('turn') or 0)
+                                     join=payload.get('join') is True,mute=payload.get('mute') is True,turn=payload.get('turn') or 0,
+                                     extra=payload.get('extra') or None)
             return jsonify({'ok':True,'job_id':job_id})
         except Exception as exc:
             return jsonify({'ok':False,'error':str(exc)}),409
@@ -1657,6 +1678,10 @@ pollConvert();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='
                 more=(f" · <span>joined from {int(o.get('joined'))} parts</span>" if str(o.get('joined') or '').isdigit() else '')
                 more+=(" · <span>made on the graphics card</span>" if o.get('made_on')=='nvidia' else '')
                 more+=(" · <span>without sound</span>" if o.get('mute') is True else '')
+                ex=o.get('extra') if isinstance(o.get('extra'),dict) else {}
+                more+=(f" · <span>{int(ex['speed'])}× faster</span>" if str(ex.get('speed') or '') in ('2','4','8') else '')
+                more+=(" · <span>vertical 9:16</span>" if ex.get('vertical') else '')+(" · <span>logo</span>" if ex.get('logo') else '')
+                more+=(" · <span>less wind</span>" if ex.get('wind') else '')
                 more+=({'90':" · <span>turned right</span>",'270':" · <span>turned left</span>",'180':" · <span>turned upside down</span>"}.get(str(o.get('turn') or ''),''))
                 if isinstance(o.get('cut'),list) and len(o['cut'])==2:
                     fm=lambda t:f"{int(round(float(t)))//60}:{int(round(float(t)))%60:02d}"
@@ -1690,6 +1715,47 @@ pollConvert();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='
         from .auto_edit import open_path
         open_path(p,reveal=payload.get('open') is not True)
         return jsonify({'ok':True})
+
+    @app.post('/api/convert/logo')
+    def convert_logo():
+        """The logo for converted videos: chosen in the Windows Open window (any picture, kept as a PNG in the data
+        folder), its corner and size, or removed."""
+        from .converter import LOGO_FILE, LOGO_CORNERS
+        payload=_json_obj(); action=payload.get('action'); dst=HOME/'data'/LOGO_FILE
+        if action=='clear':
+            try: dst.unlink()
+            except OSError: pass
+            return jsonify({'ok':True})
+        if action=='set':
+            corner=payload.get('corner') if payload.get('corner') in LOGO_CORNERS else 'bottom-right'
+            try: size=min(40,max(5,int(payload.get('size') or 12)))
+            except (TypeError,ValueError): size=12
+            update_config(lambda c: c.setdefault('convert',{}).__setitem__('logo',{'corner':corner,'size':size}))
+            return jsonify({'ok':True})
+        if action!='pick':
+            return jsonify({'ok':False,'error':'Unknown option'}),400
+        from . import auto_edit as _ae
+        files=_ae.pick_files("Choose your logo (a PNG with a transparent background looks best)",kind="image")
+        if not files:
+            return jsonify({'ok':False,'error':'No picture chosen.'})
+        try:
+            from PIL import Image
+            with Image.open(files[0]) as im:
+                im=im.convert('RGBA')
+                if max(im.size)>2000: im.thumbnail((2000,2000))
+                dst.parent.mkdir(parents=True,exist_ok=True)
+                tmp=dst.with_suffix('.part.png'); im.save(tmp,'PNG'); os.replace(tmp,dst)
+        except Exception:
+            return jsonify({'ok':False,'error':'This picture cannot be read. Choose a PNG or JPG.'}),400
+        return jsonify({'ok':True})
+
+    @app.get('/api/convert/logo.png')
+    def convert_logo_png():
+        from .converter import LOGO_FILE
+        f=HOME/'data'/LOGO_FILE
+        if not f.is_file():
+            return 'Not found',404
+        return send_file(str(f),mimetype='image/png',max_age=0)
 
     @app.post('/api/convert/frame')
     def convert_frame():

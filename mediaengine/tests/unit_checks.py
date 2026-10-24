@@ -929,7 +929,7 @@ def main():
             with _ca().test_client() as _c:
                 n1 = _c.post("/api/convert/pick", json={"preset": "small_720p"}, headers=H_).get_json()
             _ae2.pick_files = lambda *a, **k: ["C:\\Work\\GX020044.MP4", "C:\\Work\\GX010044.MP4"]
-            _web.start_convert_job = lambda ids, preset, target, paths=None, join=False, cuts=None, mute=False, turn=0: calls_.append((ids, preset, target, paths, join, mute, turn)) or 77
+            _web.start_convert_job = lambda ids, preset, target, paths=None, join=False, cuts=None, mute=False, turn=0, extra=None: calls_.append((ids, preset, target, paths, join, mute, turn)) or 77
             with _ca().test_client() as _c:
                 n2 = _c.post("/api/convert/pick", json={"preset": "small_720p", "target_mb": 300, "join": True, "mute": True, "turn": 180}, headers=H_).get_json()
                 n3 = _c.post("/api/convert/start", json={"ids": [5, 6], "preset": "hq_1080p", "join": "yes"}, headers=H_).get_json()
@@ -1028,7 +1028,7 @@ def main():
               and jc_ == "A cut works when the videos are converted one by one (not joined into one).", (cc1, msgs_, jc_))
         calls2_ = []
         real_start2_ = _web.start_convert_job
-        _web.start_convert_job = lambda ids, preset, target, paths=None, join=False, cuts=None, mute=False, turn=0: calls2_.append((ids, cuts)) or 5
+        _web.start_convert_job = lambda ids, preset, target, paths=None, join=False, cuts=None, mute=False, turn=0, extra=None: calls2_.append((ids, cuts)) or 5
         try:
             with _ca().test_client() as _c:
                 _c.post("/api/convert/start", json={"ids": [vid_], "preset": "small_720p", "cuts": {str(vid_): [1.5, 7]}}, headers=H_)
@@ -1037,6 +1037,37 @@ def main():
             _web.start_convert_job = real_start2_
         check("convert: the page's cuts reach the job; a video on the page has Cut…",
               calls2_ == [([vid_], {str(vid_): [1.5, 7]})] and f"data-cut-for='{vid_}'" in cpage_, (calls2_, f"data-cut-for='{vid_}'" in cpage_))
+        # More options: checked choices; the logo chosen in the Windows Open window kept as a PNG, its corner and size
+        bad_x_ = []
+        for bx_ in ({"speed": 3}, {"speed": True}, {"vertical": "side"}, {"logo": True}, "x"):
+            try:
+                _cv.clean_extra(bx_); bad_x_.append(None)
+            except ValueError as exc:
+                bad_x_.append(str(exc))
+        good_x_ = _cv.clean_extra({"speed": "4", "vertical": "blur", "wind": True, "logo": False})
+        from PIL import Image as _Im
+        lpic_ = work / "my logo.jpg"
+        _Im.new("RGB", (640, 320), (10, 200, 30)).save(lpic_)
+        real_pick2_ = _ae2.pick_files
+        try:
+            _ae2.pick_files = lambda *a, **k: [str(lpic_)] if k.get("kind") == "image" else None
+            with _ca().test_client() as _c:
+                l1_ = _c.post("/api/convert/logo", json={"action": "pick"}, headers=H_).get_json()
+                l2_ = _c.post("/api/convert/logo", json={"action": "set", "corner": "top-left", "size": 99}, headers=H_).get_json()
+                lsaved_ = _cv.logo_saved()
+                lpng_ = _c.get("/api/convert/logo.png", headers=H_)
+                lpage_ = _c.get("/convert", headers=H_).get_data(as_text=True)
+                ok_x_ = _cv.clean_extra({"logo": True})
+                l3_ = _c.post("/api/convert/logo", json={"action": "clear"}, headers=H_).get_json()
+                lgone_ = _cv.logo_saved()
+        finally:
+            _ae2.pick_files = real_pick2_
+        check("convert: More options checked; the logo chosen once (a PNG), its corner and size; removed",
+              bad_x_ == ["Unknown speed", "Unknown speed", "Unknown vertical", "Choose a logo first", "Unknown option"]
+              and good_x_ == {"speed": 4, "vertical": "blur", "wind": True} and l1_ == {"ok": True} and l2_ == {"ok": True}
+              and lsaved_.get("corner") == "top-left" and lsaved_.get("size") == 40 and lpng_.status_code == 200
+              and lpng_.data[:8] == b"\x89PNG\r\n\x1a\n" and "id='logoOut'" in lpage_ and ok_x_ == {"logo": True}
+              and l3_ == {"ok": True} and lgone_ == {}, (bad_x_, good_x_, l1_, lsaved_, lpng_.status_code, l3_, lgone_))
         gp_ = lambda **k: _cv.gpu_plan({"video": "hevc", "pix": "yuvj420p", "size": "3840x2160", "sar": "1:1", "rotation": 0, **k}, "share_1080p")
         check("convert: the NVIDIA way only for what it does surely (8-bit H.264/HEVC made smaller, upright, square pixels)",
               gp_()["size"] == (1920, 1080) and gp_(size="2160x3840")["size"] == (1080, 1920) and gp_(size="2704x1520")["size"] == (1920, 1078)

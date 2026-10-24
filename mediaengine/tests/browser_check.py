@@ -297,7 +297,12 @@ def main():
             pn.click(f"[data-cut-for='{vid}']")
             pn.wait_for_selector(f"#cvCut{vid}", timeout=10_000)
             pn.wait_for_timeout(1500)
+            pn.evaluate("document.getElementById('cvMore').open=true")      # the More options open too
+            pn.wait_for_timeout(300)
             sw = pn.evaluate("document.documentElement.scrollWidth")
+            more_txt = pn.inner_text("#cvMore")
+            if "Скорость" not in more_txt or "Вертикально 9:16" not in more_txt or "Выбрать логотип" not in more_txt:
+                sw = f"More options not in Russian: {more_txt[:200]}"
             # a size target too small for the length is said (a 50-minute video in 50 MB)
             pn.check("input[name=presetChoice][value=share_1080p]")
             pn.evaluate(f"(()=>{{const c=document.querySelector(\".convertCheck[value='{vid}']\");c.checked=true;c.dataset.durationMs='3000000';"

@@ -2518,6 +2518,7 @@ WHATS_NEW_ITEMS = [
     ("2026-10-19b", "Voice-over: your picks from the voice test, the voices 4_4 and 4_2, instead of 3.1."),
     ("2026-10-20", "Text on a video (Auto Edit → Voice-over and text): titles and lines of text at the moments you choose, on a colored stripe, a dark box or in big letters - no add-on needed."),
     ("2026-10-22", "Captions in two more looks: one word at a time, big (like TikTok), and the word being said on a color block."),
+    ("2026-10-24b", "Convert → More: speed (2×, 4×, 8× faster), vertical 9:16 for Reels / TikTok (the middle, or the whole picture on a blurred background), your logo in a corner, less wind noise."),
     ("2026-10-24", "Check this PC: “Test converting on the graphics card” - a short 4K test clip made smaller with the processor and with the NVIDIA card; Convert uses the card only if it was faster with the same picture."),
     ("2026-10-23e", "Reels, finished videos and converted copies made from GoPro or phone footage keep normal brightness levels (dark and bright parts as filmed on every screen)."),
     ("2026-10-23d", "Convert: “Turn the picture” - 90° right or left, or upside down (a camera mounted the other way)."),
@@ -3537,6 +3538,7 @@ def _dialog_title(en: str) -> str:
           "Choose the videos (Ctrl+click for several)": "Выбери видео (Ctrl+щелчок — несколько)",
           "Choose videos to convert (Ctrl+click for several)": "Выбери видео для конвертации (Ctrl+щелчок — несколько)",
           "Choose a folder for converted videos": "Выбери папку для сжатых видео",
+          "Choose your logo (a PNG with a transparent background looks best)": "Выбери свой логотип (лучше всего PNG с прозрачным фоном)",
           "Choose the music": "Выбери музыку"}
     try:
         return ru.get(en, en) if ui_language() == "ru" else en
@@ -3568,7 +3570,9 @@ def pick_files(title="Choose videos for one reel", initial: str | None = None, k
         size = 65536
         buf = ctypes.create_unicode_buffer(size)
         ru = ui_language() == "ru"
-        exts, what = (MUSIC_EXT, ("Музыка" if ru else "Music")) if kind == "audio" else (SUPPORTED, ("Видео" if ru else "Videos"))
+        exts, what = ((MUSIC_EXT, ("Музыка" if ru else "Music")) if kind == "audio" else
+                      ({".png", ".jpg", ".jpeg", ".webp", ".bmp"}, ("Картинки" if ru else "Pictures")) if kind == "image" else
+                      (SUPPORTED, ("Видео" if ru else "Videos")))
         flt = what + "\0" + ";".join("*" + x for x in sorted(exts)) + "\0" + ("Все файлы" if ru else "All files") + "\0*.*\0\0"
         ofn = OPENFILENAMEW()
         ofn.lStructSize = ctypes.sizeof(OPENFILENAMEW)
@@ -3580,7 +3584,7 @@ def pick_files(title="Choose videos for one reel", initial: str | None = None, k
         if initial and Path(initial).is_dir():
             ofn.lpstrInitialDir = str(initial)
         # OFN_ALLOWMULTISELECT (videos only) | OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR
-        ofn.Flags = (0x200 if kind != "audio" else 0) | 0x80000 | 0x1000 | 0x800 | 0x8
+        ofn.Flags = (0x200 if kind == "video" else 0) | 0x80000 | 0x1000 | 0x800 | 0x8
         if ctypes.windll.comdlg32.GetOpenFileNameW(ctypes.byref(ofn)):
             parts = ctypes.wstring_at(ctypes.addressof(buf), size).split("\0")
             parts = parts[: parts.index("")] if "" in parts else parts
