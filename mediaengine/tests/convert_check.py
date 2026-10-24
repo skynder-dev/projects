@@ -301,6 +301,52 @@ def main():
     wnd = convert_file(hum, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"wind": True}))
     before, after = low_rms(hum), low_rms(wnd["output"])
     check("convert_less_wind_noise", before - after >= 12 and not no_a(wnd["output"]), (before, after))
+    # slow motion: a 60 fps video at half speed - every picture shown, at 30 a second, twice as long, its sound in step;
+    # 120 fps at half speed: 60 a second; at a quarter: 4x as long, no sound
+    s60 = src_dir / "sync_60fps.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=320x180:rate=60", "-f", "lavfi", "-i",
+                    "aevalsrc='0.3*sin(2*PI*260*t)+if(lt(mod(t-0.3,1),0.04),0.9*sin(2*PI*1000*t),0)':s=48000", "-t", "5",
+                    "-c:v", "libx264", "-preset", "ultrafast", "-g", "60", "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest", str(s60)], check=True)
+    h2 = convert_file(s60, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"speed": 0.5}))
+    h2v = [x for x in _probe(Path(h2["output"])).get("streams", []) if x.get("codec_type") == "video"][0]
+    h2d = float(_probe(Path(h2["output"]))["format"]["duration"])
+    bh = beeps(ff, h2["output"])
+    oh = [min((b - (k + 0.3) * 2 for b in bh), key=abs) for k in range(5)] if bh else []
+    h4 = convert_file(s60, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"speed": 0.25}))
+    h4d = float(_probe(Path(h4["output"]))["format"]["duration"])
+    s120 = src_dir / "fast_120fps.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=320x180:rate=120", "-t", "2", "-c:v", "libx264",
+                    "-preset", "ultrafast", "-pix_fmt", "yuv420p", str(s120)], check=True)
+    h1 = convert_file(s120, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"speed": 0.5}))
+    h1v = [x for x in _probe(Path(h1["output"])).get("streams", []) if x.get("codec_type") == "video"][0]
+    check("convert_slow_motion", abs(h2d - 10.0) <= 0.15 and h2v.get("r_frame_rate") == "30/1" and frames(ff, h2["output"]) >= frames(ff, s60) - 1
+          and len(oh) == 5 and all(-0.03 <= o <= 0.045 for o in oh) and "_slow2x_" in Path(h2["output"]).name
+          and abs(h4d - 20.0) <= 0.2 and no_a(h4["output"]) and "_slow4x_" in Path(h4["output"]).name
+          and h1v.get("r_frame_rate") == "60/1" and frames(ff, h1["output"]) >= frames(ff, s120) - 1,
+          (h2d, h2v.get("r_frame_rate"), frames(ff, h2["output"]), frames(ff, s60), [round(o, 3) for o in oh], h4d, h1v.get("r_frame_rate"),
+           frames(ff, h1["output"]), frames(ff, s120)))
+    # "Even out the sound": a quiet recording (sound starting 1 s after the picture) made as loud as players play it
+    # (-16 LUFS), in step; at 2x with less wind too
+    def lufs(f):
+        t = subprocess.run([ff, "-hide_banner", "-nostats", "-i", str(f), "-map", "0:a:0", "-af", "ebur128=framelog=quiet", "-f", "null", "-"],
+                           capture_output=True, text=True).stderr
+        m = re.findall(r"I:\s*(-?[\d.]+) LUFS", t)
+        return float(m[-1]) if m else 0.0
+    def a_start(f):
+        st = [x for x in _probe(Path(f)).get("streams", []) if x.get("codec_type") == "audio"]
+        return float(st[0].get("start_time") or 0) if st else 0.0
+    quiet = src_dir / "quiet_late_sound.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-i", str(whole), "-map", "0:v", "-map", "0:a", "-c:v", "copy", "-af",
+                    "atrim=start=1.0,volume=0.03", "-c:a", "aac", str(quiet)], check=True)
+    ev = convert_file(quiet, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"loud": True}))
+    bq = [b + a_start(ev["output"]) for b in beeps(ff, ev["output"])]
+    oq = [min((b - (k + 0.3) for b in bq), key=abs) for k in range(1, 13)] if bq else []
+    ev2 = convert_file(quiet, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"loud": True, "speed": 2, "wind": True}))
+    l0, l1, l2 = lufs(quiet), lufs(ev["output"]), lufs(ev2["output"])
+    check("convert_even_out_the_sound", l0 < -35 and abs(l1 + 16) <= 1.5 and abs(l2 + 16) <= 2.0 and len(oq) == 12
+          and all(-0.03 <= o <= 0.045 for o in oq) and "_evensound_" in Path(ev["output"]).name
+          and abs(float(_probe(Path(ev2["output"]))["format"]["duration"]) - 7.0) <= 0.15,
+          (l0, l1, l2, [round(o, 3) for o in oq], Path(ev["output"]).name))
     # pictures every N seconds (a report): a folder of JPEGs named by their moment, through a converter job
     jf = wait_job(start_convert_job([], "share_1080p", paths=[str(whole)], extra={"frames": 5}))
     of = ((jf.get("options") or {}).get("outputs") or [{}])[0]

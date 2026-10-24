@@ -896,6 +896,8 @@ PHRASES = {
         "Ещё два вида субтитров: по одному слову, крупно (как в TikTok), и сказанное слово на цветной плашке.",
     "Convert: pictures every 5 / 10 / 30 / 60 seconds of the selected videos (photos for a report) and a list of earlier conversions with their buttons.":
         "Конвертация: кадры каждые 5 / 10 / 30 / 60 секунд выбранных видео (фото для отчёта) и список прошлых конвертаций с их кнопками.",
+    "Convert → More: slow motion ½× and ¼× (smooth from 60 / 120 fps videos) and “Even out the sound” (quiet speech louder, loud parts softer).":
+        "Конвертация → «Ещё»: замедление ½× и ¼× (плавно из видео 60 / 120 кадров/с) и «Выровнять звук» (тихая речь громче, громкое тише).",
     "Convert → More: speed (2×, 4×, 8× faster), vertical 9:16 for Reels / TikTok (the middle, or the whole picture on a blurred background), your logo in a corner, less wind noise.":
         "Конвертация → Ещё: скорость (в 2, 4, 8 раз быстрее), вертикально 9:16 для Reels / TikTok (середина или вся картинка на размытом фоне), ваш логотип в углу, меньше шума ветра.",
     "Check this PC: “Test converting on the graphics card” - a short 4K test clip made smaller with the processor and with the NVIDIA card; Convert uses the card only if it was faster with the same picture.":

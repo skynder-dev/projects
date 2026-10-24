@@ -795,8 +795,11 @@ def gpu_plan(sig: dict, preset: str, hdr=None, interlaced=False) -> dict | None:
             "size": (W, H)}
 
 
-# More options of Convert ("extra"): speed, vertical 9:16, a logo, less wind noise.
-SPEEDS = (1, 2, 4, 8)
+# More options of Convert ("extra"): speed (faster, or slow motion), vertical 9:16, a logo, less wind noise, an even sound.
+SPEEDS = (1, 2, 4, 8, 0.5, 0.25)
+# the sound made even: quiet speech louder, loud parts softer (EBU R128, -16 LUFS as phones and players play it), back
+# at 48 kHz (loudnorm works at 192 kHz)
+LOUD = ["loudnorm=I=-16:TP=-1.5:LRA=11", "aresample=48000"]
 VERTICALS = ("", "crop", "blur")
 LOGO_CORNERS = ("bottom-right", "bottom-left", "top-right", "top-left")
 LOGO_FILE = "convert_logo.png"
@@ -817,8 +820,8 @@ def logo_saved() -> dict:
 
 
 def clean_extra(extra) -> dict:
-    """The page's choices, checked: {"speed": 2|4|8, "vertical": "crop"|"blur", "logo": True, "wind": True} (only what
-    is chosen)."""
+    """The page's choices, checked: {"speed": 2|4|8|0.5|0.25, "vertical": "crop"|"blur", "logo": {...}, "wind": True,
+    "loud": True} (only what is chosen); or {"frames": N} alone."""
     out = {}
     if not extra:
         return out
@@ -828,12 +831,13 @@ def clean_extra(extra) -> dict:
     if isinstance(sp, bool) or not isinstance(sp, (int, float, str)):
         raise ValueError("Unknown speed")
     try:
-        sp = int(sp) if float(sp) == int(float(sp)) else -1
+        spf = float(sp)
     except (TypeError, ValueError, OverflowError):
-        sp = -1
-    if sp not in SPEEDS:
+        spf = -1.0
+    sp = next((x for x in SPEEDS if abs(spf - x) < 1e-9), None)     # (NaN / inf match nothing)
+    if sp is None:
         raise ValueError("Unknown speed")
-    if sp > 1:
+    if sp != 1:
         out["speed"] = sp
     v = extra.get("vertical") or ""
     if v not in VERTICALS:
@@ -847,6 +851,8 @@ def clean_extra(extra) -> dict:
         out["logo"] = lg                        # the job's own copy (a later change of the logo is not this job's)
     if extra.get("wind") is True:
         out["wind"] = True
+    if extra.get("loud") is True:
+        out["loud"] = True
     fr = extra.get("frames")
     if fr not in (None, 0, "", False):
         try:
@@ -905,11 +911,27 @@ def job_logo() -> dict:
     return {"path": str(f), "corner": lg["corner"], "size": lg["size"]}
 
 
+def _speed_filters(sig: dict, speed: float) -> list[str]:
+    """Faster: the picture's times divided, 30 pictures a second (pictures between them left out). Slow motion: the
+    times multiplied - every picture of a 60 fps video shown at 30 a second (½×), of a 120 fps one at ¼×; 60 a second
+    when there are enough (120 fps at ½×); a 30 fps video at ½× shows each picture twice."""
+    if speed > 1:
+        return [f"setpts=PTS/{int(speed)}", "fps=30"]
+    if 0 < speed < 1:
+        k = int(round(1 / speed))
+        try:
+            fps = float(sig.get("fps") or 0)
+        except (TypeError, ValueError):
+            fps = 0.0
+        return [f"setpts=PTS*{k}", "fps=60" if fps / k >= 50 else "fps=30"]
+    return []
+
+
 def _extra_graph(sig: dict, preset: str, hdr, interlaced: bool, turn: int, extra: dict, mute: bool, logo_index: int):
     """The filter graph for the More options: [v] and, when the sound is changed (speed, wind), [a]; also without
     the sound branch (the first pass of a size target). Returns (graph with sound, graph without sound, sound kept,
     sound through the graph)."""
-    speed = int(extra.get("speed") or 1)
+    speed = float(extra.get("speed") or 1)
     vert = extra.get("vertical") or ""
     lg = extra.get("logo") if isinstance(extra.get("logo"), dict) else (logo_saved() if extra.get("logo") else {})
     if extra.get("logo") and not (lg and Path(str(lg.get("path") or "")).is_file()):
@@ -919,7 +941,7 @@ def _extra_graph(sig: dict, preset: str, hdr, interlaced: bool, turn: int, extra
         + ([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []) \
         + (["scale='trunc(iw*sar/2)*2':ih", "setsar=1"] if square else []) \
         + ([TURNS[turn]] if turn in TURNS else []) \
-        + ([f"setpts=PTS/{speed}", "fps=30"] if speed > 1 else [])
+        + _speed_filters(sig, speed)
     cap = PRESETS[preset]["cap"]
     if vert:
         VW, VH = (720, 1280) if cap == 1280 else (1080, 1920)
@@ -947,11 +969,12 @@ def _extra_graph(sig: dict, preset: str, hdr, interlaced: bool, turn: int, extra
               f"[vb][lg]overlay={x}:{y}:format=auto:eof_action=repeat[vl]")
         last = "vl"
     g += f";[{last}]scale=out_range=tv,format=yuv420p[v]"
-    sound = not mute and bool(sig.get("audio")) and speed <= 2
-    # the sound at 2x: atempo, its start moved like the picture's (setpts=PTS/2) - else a sound that starts after the
-    # picture would be late in the copy
+    sound = not mute and bool(sig.get("audio")) and speed in (0.5, 1, 2)
+    # the sound at 2x / half speed: atempo, its start moved like the picture's (setpts) - else a sound that starts after
+    # the picture would be late (or early) in the copy
     af = (["highpass=f=100", "afftdn=nf=-25"] if extra.get("wind") else []) \
-        + (["atempo=2.0", "asetpts=PTS-STARTPTS/2"] if speed == 2 else [])
+        + (LOUD if extra.get("loud") else []) \
+        + ({2: ["atempo=2.0", "asetpts=PTS-STARTPTS/2"], 0.5: ["atempo=0.5", "asetpts=PTS+STARTPTS"]}.get(speed) or [])
     through = sound and bool(af)                          # unchanged sound: every track kept as it is mapped
     ga = g + (f";[0:a:0]{','.join(af)}[a]" if through else "")
     return ga, g, sound, through
@@ -966,11 +989,13 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
     target_mb = int(target_mb) if target_mb else None
     turn = int(turn or 0) if int(turn or 0) in TURNS else 0
     extra = dict(extra or {})
-    speed = int(extra.get("speed") or 1)
-    tag = "_".join(x for x in (tag, f"x{speed}" if speed > 1 else "", "vertical" if extra.get("vertical") else "",
+    speed = float(extra.get("speed") or 1)
+    sp_tag = f"x{int(speed)}" if speed > 1 else (f"slow{int(round(1 / speed))}x" if 0 < speed < 1 else "")
+    tag = "_".join(x for x in (tag, sp_tag, "vertical" if extra.get("vertical") else "",
                                   "logo" if extra.get("logo") else "", "lesswind" if extra.get("wind") else "",
+                                  "evensound" if extra.get("loud") else "",
                                   "turned" if turn else "", "nosound" if mute else "") if x)
-    duration = duration / speed                            # the copy's own length (a faster copy is shorter)
+    duration = duration / speed                            # the copy's own length (faster: shorter; slow motion: longer)
     out = _unique_output(source, preset, target_mb, Path(output_dir) if output_dir else None, tag)   # reserved (empty)
     amap = [] if mute else ["-map", "0:a?"]                # "Without sound": no sound in the copy at all
     aenc = (lambda k: ["-an"]) if mute else (lambda k: ["-c:a", "aac", "-b:a", f"{int(k)}k"])

@@ -276,7 +276,12 @@ APP_PHRASES: dict[str, str] = {
     "Photos for a report, into a folder next to the converted videos.": "Фото для отчёта — в папку рядом с готовыми видео.",
     "Saving pictures": "Сохраняю кадры", "Pictures are taken from whole videos, one by one (not joined, not cut).":
         "Кадры берутся из целых видео, по одному (без склейки и обрезки).", "No pictures were made": "Кадры не получились",
-    "More: speed, vertical 9:16, logo, wind": "Ещё: скорость, вертикально 9:16, логотип, ветер", "Speed": "Скорость",
+    "More: speed, slow motion, vertical 9:16, logo, sound": "Ещё: скорость, замедление, вертикально 9:16, логотип, звук",
+    "½× slow motion (for 60 fps videos)": "замедление ½× (для видео 60 кадров/с)",
+    "¼× slow motion (no sound, for 120 fps)": "замедление ¼× (без звука, для 120 кадров/с)",
+    "Even out the sound": "Выровнять звук", "even sound": "ровный звук", "½× slow motion": "замедление ½×", "¼× slow motion": "замедление ¼×",
+    "Quiet speech louder, loud parts softer - as loud as phones and players play videos": "Тихая речь громче, громкое тише — с громкостью, как в телефонах и плеерах",
+    "larger than the original": "больше оригинала", "Speed": "Скорость",
     "2× faster": "в 2 раза быстрее", "4× faster (no sound)": "в 4 раза быстрее (без звука)", "8× faster (no sound)": "в 8 раз быстрее (без звука)",
     "Vertical 9:16": "Вертикально 9:16", "the middle, sides cut off": "середина, края обрезаны",
     "the whole picture on a blurred background": "вся картинка на размытом фоне", "Less wind noise": "Меньше шума ветра",

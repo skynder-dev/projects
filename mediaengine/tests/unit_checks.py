@@ -1059,12 +1059,17 @@ def main():
               f"data-job='{hj_[2]}'" not in hp2_ and f"data-job-box='{hj_[0]}'" in hp2_ and f"data-job-box='{hj_[1]}'" in hp2_, hj_)
         # More options: checked choices; the logo chosen in the Windows Open window kept as a PNG, its corner and size
         bad_x_ = []
-        for bx_ in ({"speed": 3}, {"speed": True}, {"vertical": "side"}, {"logo": True}, "x"):
+        for bx_ in ({"speed": 3}, {"speed": True}, {"speed": 0.3}, {"speed": float("nan")}, {"speed": "inf"}, {"vertical": "side"},
+                    {"logo": True}, "x"):
             try:
                 _cv.clean_extra(bx_); bad_x_.append(None)
             except ValueError as exc:
                 bad_x_.append(str(exc))
         good_x_ = _cv.clean_extra({"speed": "4", "vertical": "blur", "wind": True, "logo": False})
+        slow_x_ = (_cv.clean_extra({"speed": "0.5", "loud": True}), _cv.clean_extra({"speed": 0.25, "loud": "yes"}),
+                   _cv.clean_extra({"speed": 1.0}))
+        sf_ = (_cv._speed_filters({"fps": 59.94}, 0.5), _cv._speed_filters({"fps": 119.88}, 0.5), _cv._speed_filters({"fps": 119.88}, 0.25),
+               _cv._speed_filters({"fps": 30}, 2), _cv._speed_filters({}, 1.0))
         from PIL import Image as _Im
         lpic_ = work / "my logo.jpg"
         _Im.new("RGB", (640, 320), (10, 200, 30)).save(lpic_)
@@ -1083,13 +1088,15 @@ def main():
         finally:
             _ae2.pick_files = real_pick2_
         check("convert: More options checked; the logo chosen once (a PNG), its corner and size; removed",
-              bad_x_ == ["Unknown speed", "Unknown speed", "Unknown vertical", "Choose a logo first", "Unknown option"]
+              bad_x_ == ["Unknown speed"] * 5 + ["Unknown vertical", "Choose a logo first", "Unknown option"]
               and good_x_ == {"speed": 4, "vertical": "blur", "wind": True} and l1_ == {"ok": True} and l2_ == {"ok": True}
+              and slow_x_ == ({"speed": 0.5, "loud": True}, {"speed": 0.25}, {})
+              and sf_ == (["setpts=PTS*2", "fps=30"], ["setpts=PTS*2", "fps=60"], ["setpts=PTS*4", "fps=30"], ["setpts=PTS/2", "fps=30"], [])
               and lsaved_.get("corner") == "top-left" and lsaved_.get("size") == 40 and lpng_.status_code == 200
               and lpng_.data[:8] == b"\x89PNG\r\n\x1a\n" and "id='logoOut'" in lpage_
               and set(ok_x_.get("logo") or {}) == {"path", "corner", "size"} and "convert_logos" in ok_x_["logo"]["path"]
               and Path(ok_x_["logo"]["path"]).is_file() and l3_ == {"ok": True} and lgone_ == {},
-              (bad_x_, good_x_, l1_, lsaved_, lpng_.status_code, ok_x_, l3_, lgone_))
+              (bad_x_, good_x_, slow_x_, sf_, l1_, lsaved_, lpng_.status_code, ok_x_, l3_, lgone_))
         gp_ = lambda **k: _cv.gpu_plan({"video": "hevc", "pix": "yuvj420p", "size": "3840x2160", "sar": "1:1", "rotation": 0, **k}, "share_1080p")
         check("convert: the NVIDIA way only for what it does surely (8-bit H.264/HEVC made smaller, upright, square pixels)",
               gp_()["size"] == (1920, 1080) and gp_(size="2160x3840")["size"] == (1080, 1920) and gp_(size="2704x1520")["size"] == (1920, 1078)
