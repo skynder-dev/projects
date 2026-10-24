@@ -1,0 +1,14 @@
+setup: MediaEngine-3.13.0-rc1-b217-Setup.exe 131.4 MB; exit code 0
+build folder: True; Start-menu shortcut: True; uninstaller: True
+Start-menu shortcut: C:\Windows\System32\wscript.exe "D:\a\_temp\inst\Мои программы\MediaEngine\MediaEngine-3.13.0-rc1-b217\Start MediaEngine.vbs" in D:\a\_temp\inst\Мои программы\MediaEngine\MediaEngine-3.13.0-rc1-b217
+started from the shortcut: True {"build": "b217", "install": "D:\\a\\_temp\\inst\\Мои программы\\MediaEngine\\MediaEngine-3.13.0-rc1-b217", "ok": true, "tray": "shown", "version": "3.13.0-rc1"}
+first start in the Setup language (Russian): True
+auto page: 200; data next to the build: True; build folder untouched: True
+start at sign-in: off before: True; on: True D:\a\_temp\inst\Мои программы\MediaEngine\MediaEngine-3.13.0-rc1-b217\.venv\Scripts\pythonw.exe -B -s -E "D:\a\_temp\inst\Мои программы\MediaEngine\MediaEngine-3.13.0-rc1-b217\launcher.py" --no-browser --at-sign-in
+uninstall while running: exit 1; build kept: True
+tray icon: shown; its window found: True; Quit from the tray stopped MediaEngine: True
+processes of the build still running after Quit: 
+files written into the build folder while it ran: 0 
+after Quit + uninstall: build removed: True; shortcut removed: True; data kept: True
+uninstall removed the start-at-sign-in shortcut: True
+installer smoke PASS

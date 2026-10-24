@@ -1,0 +1,31 @@
+A/V length: R2 picture 9.800 s sound 9.813 s | R3 picture 9.733 s sound 9.749 s
+PASS module_identical:medeng_batch_supervisor_v10.py
+PASS module_identical:medeng_event_export_v12.py
+PASS module_identical:medeng_event_library_v20.py
+PASS module_identical:medeng_event_semantic_v7.py
+PASS module_identical:medeng_media_probe_v41.py
+PASS module_identical:medeng_realmedia_pipeline_v14.py
+PASS module_identical:medeng_targeted_auto_edit_v26.py
+PASS module_identical:p11_audio_coherence_shadow_v2.py
+PASS module_identical:p11_camera_drop_trim_shadow_v1.py
+PASS module_identical:p11_montage_pacing_shadow_v1.py
+PASS module_identical:p11_montage_sequence_shadow_v4.py
+PASS adapter_identical:p11_fast_onnx_adapter.py
+PASS adapter_identical:validate_p11_model_contract.py
+PASS pinned_sha:medeng_event_semantic_v7.py
+PASS pinned_sha:p11_fast_onnx_adapter.py
+PASS pinned_sha:validate_p11_model_contract.py
+PASS r2_orchestrator_is_windows_proven
+PASS same_decision:selected_event_ids
+PASS same_decision:selected_scores
+PASS same_decision:selected_sources
+PASS same_decision:event_count
+PASS same_decision:boundary
+PASS same_decision:sequence
+PASS same_decision:pacing
+PASS same_decision:selection_mode
+PASS same_audio_decision
+PASS same_duration
+PASS r3_sound_as_long_as_picture
+PASS r3_reports_segments
+{"r2_reel": "5dacf8fd0790b834d60a309dc5d608a0197a4a9f31b2c42c430e08966e81214e", "r3_reel": "6ef08617aa345eada822e1a27246ca5d6977ef65c14385880978ac9c73a1fcdd", "byte_equal": false, "passed": 29, "total": 29}

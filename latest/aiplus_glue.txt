@@ -1,0 +1,119 @@
+PASS aiplus_missing_model_refused_no_fallback
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\aiplusglue\\out1\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\aiplusglue\\out1\\MediaEngine Result.json",
+  "selection_mode": "PE_CORE_L14_SEMANTIC_V1",
+  "semantic": true,
+  "boundary_trimmed": 0,
+  "duration_s": 10.0,
+  "target_error_s": 0.0,
+  "selected_count": 2,
+  "audio": "source"
+}
+PASS aiplus_mode_label
+PASS aiplus_own_caches
+PASS aiplus_report_has_ranked_windows
+PASS aiplus_reel_built_sound_fits
+PASS aiplus_model_loaded_once
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\aiplusglue\\out2\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\aiplusglue\\out2\\MediaEngine Result.json",
+  "selection_mode": "PE_CORE_L14_SEMANTIC_V1",
+  "semantic": true,
+  "boundary_trimmed": 0,
+  "duration_s": 5.0,
+  "target_error_s": 0.0,
+  "selected_count": 1,
+  "audio": "source"
+}
+PASS aiplus_second_build_reuses_analysis
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\aiplusglue\\out3\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\aiplusglue\\out3\\MediaEngine Result.json",
+  "selection_mode": "ACCEPTED_V52_TECHNICAL_AESTHETIC",
+  "semantic": false,
+  "boundary_trimmed": 0,
+  "duration_s": 10.0,
+  "target_error_s": 0.0,
+  "selected_count": 2,
+  "audio": "source"
+}
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\aiplusglue\\out_theme\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\aiplusglue\\out_theme\\MediaEngine Result.json",
+  "selection_mode": "PE_CORE_L14_SEMANTIC_V1",
+  "semantic": true,
+  "boundary_trimmed": 0,
+  "duration_s": 10.0,
+  "target_error_s": 0.0,
+  "selected_count": 2,
+  "audio": "source"
+}
+PASS aiplus_theme_reel_built
+PASS aiplus_theme_needs_no_frame_encoding
+PASS aiplus_theme_cached_per_theme
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\aiplusglue\\out_theme2\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\aiplusglue\\out_theme2\\MediaEngine Result.json",
+  "selection_mode": "PE_CORE_L14_SEMANTIC_V1",
+  "semantic": true,
+  "boundary_trimmed": 0,
+  "duration_s": 10.0,
+  "target_error_s": 0.0,
+  "selected_count": 2,
+  "audio": "source"
+}
+PASS aiplus_rerank_needs_no_model_load
+PASS aiplus_rerank_same_moments
+PASS aiplus_unknown_theme_refused
+PASS technical_mode_unchanged
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\aiplusglue\\proj_a\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\aiplusglue\\proj_a\\MediaEngine Result.json",
+  "selection_mode": "PE_CORE_L14_SEMANTIC_V1",
+  "semantic": true,
+  "boundary_trimmed": 0,
+  "duration_s": 10.0,
+  "target_error_s": 0.0,
+  "selected_count": 2,
+  "audio": "source"
+}
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\aiplusglue\\proj_b\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\aiplusglue\\proj_b\\MediaEngine Result.json",
+  "selection_mode": "PE_CORE_L14_SEMANTIC_V1",
+  "semantic": true,
+  "boundary_trimmed": 0,
+  "duration_s": 10.0,
+  "target_error_s": 0.0,
+  "selected_count": 2,
+  "audio": "source"
+}
+PASS aiplus_second_project_reuses_what_the_model_saw
+PASS prepare_looks_at_every_video_once
+PASS prepare_stops_on_the_stop_file
+skipped: clip_3.mp4 changed_since_analysis
+PASS prepare_never_looks_at_private_reports_changed
+PASS prepare_writes_the_key_file
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\aiplusglue\\proj_prepared\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\aiplusglue\\proj_prepared\\MediaEngine Result.json",
+  "selection_mode": "PE_CORE_L14_SEMANTIC_V1",
+  "semantic": true,
+  "boundary_trimmed": 0,
+  "duration_s": 10.0,
+  "target_error_s": 0.0,
+  "selected_count": 2,
+  "audio": "source"
+}
+PASS reel_after_prepare_looks_at_no_frame
+PASS aiplus_model_start_failure_is_one_clear_error
+{"passed": 21, "total": 21}

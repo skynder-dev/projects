@@ -1,0 +1,173 @@
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\dress\\plain\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\dress\\plain\\MediaEngine Result.json",
+  "selection_mode": "ACCEPTED_V52_TECHNICAL_AESTHETIC",
+  "semantic": false,
+  "boundary_trimmed": 0,
+  "duration_s": 10.0,
+  "target_error_s": 0.0,
+  "selected_count": 2,
+  "audio": "source"
+}
+PASS plain_reel_has_no_dress
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\dress\\empty_dress\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\dress\\empty_dress\\MediaEngine Result.json",
+  "selection_mode": "ACCEPTED_V52_TECHNICAL_AESTHETIC",
+  "semantic": false,
+  "boundary_trimmed": 0,
+  "duration_s": 10.0,
+  "target_error_s": 0.0,
+  "selected_count": 2,
+  "audio": "source"
+}
+PASS nothing_set_is_the_plain_reel
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\dress\\title\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\dress\\title\\MediaEngine Result.json",
+  "selection_mode": "ACCEPTED_V52_TECHNICAL_AESTHETIC",
+  "semantic": false,
+  "boundary_trimmed": 0,
+  "duration_s": 10.0,
+  "target_error_s": 0.0,
+  "selected_count": 2,
+  "audio": "source"
+}
+PASS title_is_shown_at_the_start
+PASS title_is_gone_later
+PASS title_keeps_the_length
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\dress\\music_only\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\dress\\music_only\\MediaEngine Result.json",
+  "selection_mode": "ACCEPTED_V52_TECHNICAL_AESTHETIC",
+  "semantic": false,
+  "boundary_trimmed": 0,
+  "duration_s": 10.0,
+  "target_error_s": 0.0,
+  "selected_count": 2,
+  "audio": "source"
+}
+PASS music_only_is_the_music_and_loops
+PASS music_ends_with_the_picture
+PASS music_only_result_length_is_the_pictures
+PASS music_repeats_without_a_gap
+PASS music_fades_in
+PASS music_named_in_the_result
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\dress\\music_mix\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\dress\\music_mix\\MediaEngine Result.json",
+  "selection_mode": "ACCEPTED_V52_TECHNICAL_AESTHETIC",
+  "semantic": false,
+  "boundary_trimmed": 0,
+  "duration_s": 10.0,
+  "target_error_s": 0.0,
+  "selected_count": 2,
+  "audio": "source"
+}
+PASS music_mix_has_the_music_and_the_videos_sound
+PASS music_mix_ends_with_the_picture
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\dress\\one_moment\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\dress\\one_moment\\MediaEngine Result.json",
+  "selection_mode": "ACCEPTED_V52_TECHNICAL_AESTHETIC",
+  "semantic": false,
+  "boundary_trimmed": 0,
+  "duration_s": 5.0,
+  "target_error_s": 2.0,
+  "selected_count": 1,
+  "audio": "source"
+}
+PASS one_moment_reel_with_title_and_music
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\dress\\emoji_title\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\dress\\emoji_title\\MediaEngine Result.json",
+  "selection_mode": "ACCEPTED_V52_TECHNICAL_AESTHETIC",
+  "semantic": false,
+  "boundary_trimmed": 0,
+  "duration_s": 10.0,
+  "target_error_s": 0.0,
+  "selected_count": 2,
+  "audio": "source"
+}
+PASS emoji_left_out_and_said
+PASS long_word_stays_in_the_frame
+PASS music_missing_is_a_clear_error
+PASS music_not_audio_is_a_clear_error
+PASS music_without_sound_is_a_clear_error
+PASS music_file_unchanged
+PASS music_without_a_clear_beat_keeps_the_cuts
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\dress\\beat_plain\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\dress\\beat_plain\\MediaEngine Result.json",
+  "selection_mode": "ACCEPTED_V52_TECHNICAL_AESTHETIC",
+  "semantic": false,
+  "boundary_trimmed": 0,
+  "duration_s": 20.0,
+  "target_error_s": 0.0,
+  "selected_count": 4,
+  "audio": "source"
+}
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\dress\\beat_off\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\dress\\beat_off\\MediaEngine Result.json",
+  "selection_mode": "ACCEPTED_V52_TECHNICAL_AESTHETIC",
+  "semantic": false,
+  "boundary_trimmed": 0,
+  "duration_s": 20.0,
+  "target_error_s": 0.0,
+  "selected_count": 4,
+  "audio": "source"
+}
+PASS beat_sync_off_keeps_the_cuts
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\dress\\beat_on\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\dress\\beat_on\\MediaEngine Result.json",
+  "selection_mode": "ACCEPTED_V52_TECHNICAL_AESTHETIC",
+  "semantic": false,
+  "boundary_trimmed": 0,
+  "duration_s": 19.6,
+  "target_error_s": 0.4,
+  "selected_count": 4,
+  "audio": "source"
+}
+PASS beat_found_in_the_music
+PASS cuts_on_the_beat
+PASS picture_changes_on_the_beat
+PASS music_in_the_reel_is_on_time
+PASS beat_reel_length_kept_sound_ends_with_picture
+{
+  "status": "PASS",
+  "video": "D:\\a\\_temp\\dress\\beat_loop\\MediaEngine Reel.mp4",
+  "result": "D:\\a\\_temp\\dress\\beat_loop\\MediaEngine Result.json",
+  "selection_mode": "ACCEPTED_V52_TECHNICAL_AESTHETIC",
+  "semantic": false,
+  "boundary_trimmed": 0,
+  "duration_s": 20.17,
+  "target_error_s": 0.17,
+  "selected_count": 4,
+  "audio": "source"
+}
+PASS beats_follow_a_repeated_short_song
+PASS setup_offers_music_and_title
+PASS music_and_title_in_russian
+PASS reel_with_title_and_music_created
+PASS revision_has_title_and_music
+PASS review_names_title_and_music
+PASS beat_sync_off_from_the_form
+PASS music_change_is_a_quick_new_version
+PASS editor_keeps_title_and_music
+PASS removing_music_and_title_gives_the_plain_reel
+PASS horizontal_full_hd_variant
+PASS missing_music_refused_before_building
+PASS vertical_with_blurred_edges
+{"passed": 40, "total": 40}

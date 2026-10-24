@@ -1,0 +1,182 @@
+PASS parse_seconds '12.5'
+PASS parse_seconds '12,5'
+PASS parse_seconds '0:12.5'
+PASS parse_seconds '1:05'
+PASS parse_seconds '1:02:03'
+PASS parse_seconds ' 7 '
+PASS parse_seconds 3
+PASS parse_seconds rejects ''
+PASS parse_seconds rejects 'abc'
+PASS parse_seconds rejects '-1'
+PASS parse_seconds rejects 'nan'
+PASS parse_seconds rejects 'inf'
+PASS parse_seconds rejects '1:70'
+PASS parse_seconds rejects '1::2'
+PASS parse_seconds rejects '1:2:3:4'
+PASS safe_filename 'CON'
+PASS safe_filename 'con.mp4'
+PASS safe_filename 'Trip: day/1?'
+PASS safe_filename 'aaaaaaaaaaaaaaaaaaaa'
+PASS safe_filename 'name. . .'
+PASS safe_filename '  '
+PASS safe_filename 'COM1 - Social HD'
+PASS safe_filename 'end.xxxxxxxxxxxxxxxx'
+PASS recommend_length 9.3
+PASS recommend_length 28
+PASS recommend_length 30
+PASS recommend_length 89
+PASS recommend_length 90
+PASS recommend_length 600
+PASS version_key orders pre-releases
+PASS switch_question: newer switches, older or unknown asks
+PASS tray: own app windows only
+PASS version order with alpha / beta numbers (launcher)
+PASS launcher finds the same windows as the tray
+PASS launcher: nothing to focus or close off Windows
+PASS launcher at sign-in: no other build to follow / no data drive to wait for here
+PASS tray: NOTIFYICONDATAW / WNDCLASSEXW sizes
+PASS tray: idle home - nothing runs
+PASS tray: a reel being made is named, Quit asks
+PASS friendly_skip PRIVATE
+PASS friendly_skip NO_MOMENTS
+PASS friendly_skip STATIC_VIDEO
+PASS friendly_skip TOO_SHORT_FOR_ANALYSIS
+PASS friendly_skip ANALYSIS_TIMEOUT
+PASS friendly_skip ANALYSIS_FAILED:X
+PASS friendly_skip DUPLICATE_OF:a.mp4
+PASS same file names from two folders: both used, named apart
+PASS input list: odd line breaks inside names, leading spaces kept
+PASS free: the cache folder is moved aside in one step
+PASS free: half-deleted folders are swept at start, nothing else
+PASS a finished reel that is gone is built again
+PASS check_files refuses non-video
+PASS check_files refuses missing
+PASS check_files refuses relative
+PASS check_files accepts one
+PASS subfolders_with_videos
+PASS camera card: deep video folders found
+PASS Private folder is never offered as a video folder
+PASS cloud-only files are skipped with their reason, not read
+PASS wrong model folder refused, nothing copied
+PASS a video stored on its side is listed upright
+PASS recording without a length: usable, measured
+PASS recording without a length: fixed copy has the length, original untouched, copy reused, old copies gone
+PASS recording without a length: a damaged stamp makes a new copy, never a failed build
+PASS recording without a length: its copy stays while the card is unplugged, reused when it is back
+PASS recording without a length: Library and Convert get its length too
+PASS recording without a length marked Private: never copied, the earlier copy deleted
+PASS recording without a length: Cancel stops the preparation
+PASS AI+ themes: app and engine lists are the same
+PASS AI+ themes: every description is plain English (the model's tokenizer)
+PASS AI+ themes: the theme's own bad descriptions are plain English and belong to a theme
+PASS aerial theme: take-off / landing frames are bad frames for it, the general bad frames too
+PASS a theme is dropped without AI+
+PASS prepare in advance: a flag of its own; not with a hand-made selection
+PASS prepare in advance: finding moments is nearly the whole bar
+PASS prepare in advance: a prepared project says so
+PASS prepare in advance: still prepared after a cancelled or failed build
+PASS prepare in advance: the engine only analyses (no title / music step)
+PASS an unknown theme is refused
+PASS AI+ download continues after a dropped connection (Range)
+PASS AI+ download: a server without Range starts the file again
+PASS running job elapsed time is local, not UTC
+PASS time left is estimated per stage from its real rate
+PASS the engine's time left is counted down, none before it knows
+PASS shared AI cache: Private videos (and their stand-ins) go, the longest unused clips go over the limit
+PASS graphics card: the identical and faster method is chosen
+PASS graphics card: summary lines
+PASS graphics card: only the kinds of video it decoded identically go to it
+PASS graphics card: a result of the older, weaker test (b122) is never used - test again
+PASS graphics card: a result with load numbers proves its kinds
+PASS graphics card: a chosen and proven method reaches the engine
+PASS graphics card: a changed FFmpeg is said on Check this PC
+PASS graphics card: not used after FFmpeg changed (test again)
+INFO graphics card test: {"gpu": ["Microsoft Hyper-V Video - 10.0.26100.1150"], "use": "", "seconds": 65.4, "error": null} {'d3d11va': (0, True, 0.0), 'cuda': (0, True, 0.0), 'qsv': (0, True, 0.0), 'd3d12va': (0, True, 0.0), 'dxva2': (0, True, 0.0), 'vaapi': (0, True, 0.0)}
+PASS graphics card test runs on Windows and decides
+PASS notification text is escaped
+PASS no notification after a short build
+PASS no notification after a short preparation
+INFO a Windows notification could be shown on this PC: True
+PASS cloud-only attribute detected
+PASS videos_by_day groups a big folder, newest day first
+PASS recording time read from the video header (moov at the end or first, 32/64-bit)
+PASS a copied video is grouped by the day it was recorded
+PASS a day's videos are listed newest first (tick the newest)
+PASS big folder is offered as a choice, not refused
+PASS full drive refuses a build
+PASS normal drive allows a build
+PASS other_builds lists only real other builds
+PASS a build is offered for switching only when its launcher can be asked to
+PASS switching to a version that is not there is refused
+PASS delete_build refuses this build and the data folder
+PASS delete_build removes an older build
+PASS a build folder holding projects is never offered for removal
+PASS a version folder with the owner's files in it (or a Library source) is never offered for removal
+PASS unicode shortcut round trip
+PASS desktop and start-menu folders found
+PASS shortcut carries the app id
+PASS ru plural forms
+PASS dialog titles follow the language
+PASS ru page: phrases and patterns translated
+PASS ru page: user content, values, protected text and code untouched
+PASS ru page: confirm texts in handlers; script-made texts via the in-page dictionary
+PASS restart: the running build is interrupted, waiting builds keep waiting
+PASS cut pieces of other projects kept to a limit, oldest first, never the one being built
+PASS a reel with a video marked Private since is not kept or saved
+PASS times never show 0:60.0
+PASS paths in error messages stay as they are in Russian
+PASS crashed build is marked interrupted by the first request
+PASS Setup language applies once per Setup run
+PASS ru: every engine progress message translated
+PASS ru: file name kept exactly (Дача 15.08 с мамой.webm)
+PASS ru: file name kept exactly (клип 1.5 МБ (копия).mp4)
+PASS ru: decimal comma with units
+PASS ru: preparing a recording without a length (file name kept)
+PASS ru: short-reel note fully Russian
+PASS backup: daily copy once, build copy on a different build
+PASS missing data folder said on every page
+PASS folder window: Select Folder returns the folder it opened in
+PASS folder window: closing it returns nothing
+PASS file window: opens in the given folder and returns the chosen video
+PASS keep_awake set on Windows
+PASS beats: click track found to within 10 ms
+PASS beats: a 0.3 s jingle has no beat and is no error
+PASS beats: a 0.05 s blip has no beat and is no error
+PASS beats: a 10 s tone has no beat and is no error
+PASS beats: the reel stays within a beat and a half of its planned length
+PASS an unreadable path is simply not there
+PASS settings: a source is an existing full folder, added once
+PASS settings: Remove takes exactly the row that was shown
+PASS watchdog: hashing moves the alive counter; late tasks are restarted only when nothing says they live
+PASS swapped card: a new file at a known path is new (not Rejected, not Private); an hour shift is the same file
+PASS Private / Rejected names never repeat; a move never replaces a different file
+PASS archive folder: one reading for the whole app
+PASS convert: show a converted file in its folder, play it, open the Converted folder
+PASS convert: the last job keeps its files with the buttons after a reload
+PASS convert: a finished job's list can be taken off the page (files stay)
+PASS convert: files chosen on this PC go with the page's choices; nothing chosen says so
+PASS convert: the same GoPro number in another folder (another card) is another recording
+PASS convert: parts of one GoPro recording in its order (older GoPros too), other files by name
+PASS convert: the output folder is chosen in the folder window, never a card, a library or program folder; back to Converted
+PASS convert: Copy file puts the file on the Windows clipboard (Ctrl+V pastes it)
+PASS convert: Copy file asks for the file by its job and place (no clipboard: said, not a crash)
+PASS convert: after a restart only the converter's own leftovers go from a chosen folder
+PASS convert: a cut is checked (inside the video, half a second at least) and not with a join
+PASS convert: the page's cuts reach the job; a video on the page has Cut…
+PASS convert: earlier conversions listed with their own buttons (the last one shown above)
+PASS convert: removing the newest conversion from the page keeps the earlier ones
+PASS convert: a finishing conversion stays alive for the watchdog
+PASS convert: an NVIDIA card never tested for converting - the test offered on the page, gone once tested
+PASS convert: a job taken out of the line never shows as the last conversion
+PASS convert: a second conversion waits in line and starts by itself after the job before it
+PASS convert: 'when it was filmed' answers only for a library video
+PASS convert: More options checked; the logo chosen once (a PNG), its corner and size; removed
+PASS convert: the NVIDIA way only for what it does surely (8-bit H.264/HEVC made smaller, upright, square pixels)
+PASS convert: the NVIDIA way can be turned off (convert.gpu = false)
+PASS convert: the card test's result is said on Check this PC; a slower card is not used
+PASS convert: only whole quarter turns; every copy at TV levels
+PASS convert: a join needs two videos; a chosen file that is gone is named
+PASS convert: time left from this run's pace (not in the first seconds, not before 2%)
+PASS convert: a Windows notification when a long conversion ends (off in Settings, not for a short one)
+PASS convert: a running job has Stop; the page has Join into one video and Choose videos on this PC
+{'passed': 179, 'total': 179}

@@ -1,0 +1,956 @@
+{
+ "passed": 190,
+ "total": 190,
+ "checks": [
+  {
+   "check": "pieces of at most ~220 characters",
+   "pass": true,
+   "detail": "[81, 16, 211, 211, 14]"
+  },
+  {
+   "check": "no word lost or doubled in the pieces",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "a longer pause after a paragraph",
+   "pass": true,
+   "detail": "{'text': \"Okay... so here's something nobody tells you. You don't need ten outfits! Really?\", 'pause_after': 0.6}"
+  },
+  {
+   "check": "empty text: no pieces",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "script words kept as written ('here's', 'ten')",
+   "pass": true,
+   "detail": "['Okay...', 'so', \"here's\", 'something', 'nobody', 'tells', 'you.', 'You', \"don't\", 'need', 'ten', 'outfits!', 'Really?']"
+  },
+  {
+   "check": "a word not heard gets a time after its neighbour",
+   "pass": true,
+   "detail": "{'w': 'Really?', 's': 3.7, 'e': 4.0}"
+  },
+  {
+   "check": "times never go backwards",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "without a script: what was heard",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "captions of at most 4 words, a phrase ends at punctuation",
+   "pass": true,
+   "detail": "[['Okay...'], ['so', \"here's\", 'something', 'nobody'], ['tells', 'you.'], ['You', \"don't\", 'need', 'ten'], ['outfits!'], ['Really?']]"
+  },
+  {
+   "check": "captions never overlap",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "SRT numbered with times (offset added)",
+   "pass": true,
+   "detail": "1\n00:00:00,400 --> 00:00:00,790\nOkay...\n\n2\n00:00:00,800 --> 00:00:01,990\nso here's something nobody\n\n3\n00:00:02,000 --> "
+  },
+  {
+   "check": "ASS: the frame size, karaoke words (classic)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "ASS: the default style shows each word in color in turn, with the program's font",
+   "pass": true,
+   "detail": "04)}OUTFITS!{\\1c&HFFFFFF&\\fscx100\\fscy100}\nDialogue: 1,0:00:03.70,0:00:04.15,Base,,0,0,0,,{\\an8\\pos(540,1383)\\fnMontserrat Black\\fs108\\bord12.4\\shad4.8\\1c&HFFFFFF&\\3c&H000000&\\4c&H000000&\\4a&H30&\\fad(80,0)}{\\1c&H0AD6FF&\\fscx112\\fscy112\\t(0,120,\\fscx104\\fscy104)}REALLY?{\\1c&HFFFFFF&\\fscx100\\fscy100}\n"
+  },
+  {
+   "check": "look 'one word at a time': one word per caption, held until the next word",
+   "pass": true,
+   "detail": "([['ONE'], ['TWO'], ['THREE'], ['FOUR']], ['Dialogue: 1,0:00:00.00,0:00:00.39,Base,,0,0,0,,{\\\\an8\\\\pos(540,1357)\\\\fnMontserrat Black\\\\fs143\\\\bord14.7\\\\shad6.4\\\\1c&HFFFFFF&\\\\3c&H000000&\\\\4c&H000000&\\\\4a&H30&\\\\1c&HFFFFFF&\\\\fscx118\\\\fscy118\\\\t(0,90,\\\\fscx100\\\\fscy100)}ONE'])"
+  },
+  {
+   "check": "look 'one word at a time' on a caption of several words (edited, or made in another look): in turn",
+   "pass": true,
+   "detail": "['MADE', 'IN', 'POP']"
+  },
+  {
+   "check": "look 'word on a color block': a block of the color behind each word as it is said, the word dark on it",
+   "pass": true,
+   "detail": "(3, 3)"
+  },
+  {
+   "check": "ASS: a brace in the text cannot become a tag",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "page without the add-on: install card",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "a voice-over before installing: refused in words",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "the home of Auto Edit links the page only when it is released",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "the recordings of the ready voices ship with the program",
+   "pass": true,
+   "detail": "D:\\a\\projects\\projects\\mediaengine\\app\\archivist\\assets\\voice"
+  },
+  {
+   "check": "a stand-in add-on counts as installed",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "a voice-over is accepted",
+   "pass": true,
+   "detail": "302"
+  },
+  {
+   "check": "the voice-over is made",
+   "pass": true,
+   "detail": "{'ok': True, 'seconds': 3.15, 'device': 'cpu', 'said': \"Okay, so here's something. You don't need ten outfits!\", 'speed': 1.0, 'engine': 'voxcpm', 'word_errors': 0, 'words': 9, 'chunks': [], 'load_s': None, 'steps': 10, 'language': None, 'files': {'voice': 'voice.wav', 'srt': 'captions.srt'}, 'finished_at': '2026-10-24T21:27:49'}"
+  },
+  {
+   "check": "its WAV, words and captions are there",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "the default voice is used with its own words",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "the ready voice goes with its own setting (cfg 1.6)",
+   "pass": true,
+   "detail": "{'key': 'host_9_2', 'ref_wav': 'D:\\\\a\\\\projects\\\\projects\\\\mediaengine\\\\app\\\\archivist\\\\assets\\\\voice\\\\host_9_2.flac', 'ref_text': \"Here's what you need to know this week. First, flights to Europe got almost twenty percent cheaper. Second, if you book before Friday, most airlines let you change the dates for free. And third, the best deals are on Tuesday and Wednesday. Save this, and send it to so"
+  },
+  {
+   "check": "loudness finishing only (no 'microphone' option)",
+   "pass": true,
+   "detail": "None"
+  },
+  {
+   "check": "the player gets the sound in pieces (Range)",
+   "pass": true,
+   "detail": "206"
+  },
+  {
+   "check": "captions download with a readable name",
+   "pass": true,
+   "detail": "attachment; filename=\"Okay, so here's something. You don't nee - captions.srt\""
+  },
+  {
+   "check": "only the job's own files are served",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "the page lists it with a player and 'Put it on a video'",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "normal pace by default (no speed change, the pieces' own pauses)",
+   "pass": true,
+   "detail": "(1.0, 1.0)"
+  },
+  {
+   "check": "pace: a bit faster with long pauses kept with the job",
+   "pass": true,
+   "detail": "('done', 1.08, 1.6)"
+  },
+  {
+   "check": "pace: the pauses between the pieces are longer",
+   "pass": true,
+   "detail": "[0.64]"
+  },
+  {
+   "check": "pace: the voice is 8% shorter (faster, by time-stretch)",
+   "pass": true,
+   "detail": "(3.85, 3.56)"
+  },
+  {
+   "check": "pace: the captions' times follow the faster voice",
+   "pass": true,
+   "detail": "{'w': 'one.', 's': 3.241, 'e': 3.519}"
+  },
+  {
+   "check": "pace: the next form starts with the pace used last",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "pace: the list says it (normal is not said)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "pace: anything unknown is the normal pace",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "an add-on from before the pick offers the new engine (once, a button)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "without it, the voice 9_2 is said as before (VoxCPM2)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "the button installs only what is missing (the add-on is there)",
+   "pass": true,
+   "detail": "[False]"
+  },
+  {
+   "check": "with both there: 'already installed'",
+   "pass": true,
+   "detail": "The voice add-on is already installed."
+  },
+  {
+   "check": "with the new engine: no offer, the page says which voice goes where",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "engine: the voice 9_2 in 'en' -> qwen",
+   "pass": true,
+   "detail": "('qwen', 'English', 'qwen')"
+  },
+  {
+   "check": "engine: the voice 9_2 in 'ru' -> qwen",
+   "pass": true,
+   "detail": "('qwen', 'Russian', 'qwen')"
+  },
+  {
+   "check": "engine: the voice 9_2 in 'auto' -> qwen",
+   "pass": true,
+   "detail": "('qwen', None, 'qwen')"
+  },
+  {
+   "check": "engine: the voice 9_2 in 'uk' -> voxcpm",
+   "pass": true,
+   "detail": "('voxcpm', None, 'voxcpm')"
+  },
+  {
+   "check": "engine: the voice 9_2 in 'auto' -> voxcpm",
+   "pass": true,
+   "detail": "('voxcpm', None, 'voxcpm')"
+  },
+  {
+   "check": "engine: the voice 9_2 in 'auto' -> voxcpm",
+   "pass": true,
+   "detail": "('voxcpm', None, 'voxcpm')"
+  },
+  {
+   "check": "engine: the voice 9_2 in 'auto' -> qwen",
+   "pass": true,
+   "detail": "('qwen', None, 'qwen')"
+  },
+  {
+   "check": "engine: 9_2 continues its English recording in English, takes only its timbre in Russian (round 15)",
+   "pass": true,
+   "detail": "{'Hello from the new engine.': True, 'Привет от нового движка.': False, 'Detect it by itself.': True, 'Ça va très bien, merci.': True}"
+  },
+  {
+   "check": "engine: a voice recorded in Russian continues its recording in Russian",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "engine: a voice from a description stays on VoxCPM2",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "Try again waits while the add-on is being installed (the new engine too)",
+   "pass": true,
+   "detail": "The voice add-on is being installed. Wait until it is ready."
+  },
+  {
+   "check": "a reel saved lately is offered in the video fields",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "a preview before the voice is put on the video",
+   "pass": true,
+   "detail": "{'url': '/api/text/preview/20261024-212752-9268fe.jpg'}"
+  },
+  {
+   "check": "the voice onto a video is accepted",
+   "pass": true,
+   "detail": "302"
+  },
+  {
+   "check": "the video with the voice is made and checked",
+   "pass": true,
+   "detail": "{'ok': True, 'files': {'video': 'video.mp4', 'srt': 'captions.srt'}, 'seconds': 3.95, 'checks': [{'check': 'video', 'pass': True, 'detail': 'h264'}, {'check': 'length', 'pass': True, 'detail': '3.970 s (planned 3.950 s)'}, {'check': 'sound', 'pass': True, 'detail': 'aac'}, {'check': 'plays_to_the_end', 'pass': True, 'detail': 'decoded completely'}], 'captions': 4, 'texts': 0, 'width': 540, 'height"
+  },
+  {
+   "check": "it lasts as long as the voice (the video's last picture held)",
+   "pass": true,
+   "detail": "3.95"
+  },
+  {
+   "check": "captions were burned (ASS written)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "the captions can be seen in the picture (not only written)",
+   "pass": true,
+   "detail": "13.3% of the caption band changed (bottom)"
+  },
+  {
+   "check": "the original video was only read",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "a copy is saved next to the reels ('<name> - voice.mp4')",
+   "pass": true,
+   "detail": "D:\\a\\_temp\\home-voice\\Exports\\clip - voice.mp4"
+  },
+  {
+   "check": "that copy takes no second place on the same disk (one file, two names)",
+   "pass": true,
+   "detail": "D:\\a\\_temp\\home-voice\\Exports\\clip - voice.mp4"
+  },
+  {
+   "check": "its sound is AAC at 48 kHz",
+   "pass": true,
+   "detail": "[('aac', '48000')]"
+  },
+  {
+   "check": "an odd-sized video without sound gets the voice (made even)",
+   "pass": true,
+   "detail": "{'ok': True, 'files': {'video': 'video.mp4', 'srt': 'captions.srt'}, 'seconds': 4.15, 'checks': [{'check': 'video', 'pass': True, 'detail': 'h264'}, {'check': 'length', 'pass': True, 'detail': '4.160 s (planned 4.150 s)'}, {'check': 'sound', 'pass': True, 'detail': 'aac'}, {'check': 'plays_to_the_end', 'pass': True, 'detail': 'decoded completely'}], 'captions': 4, 'texts': 0, 'width': 538, 'height"
+  },
+  {
+   "check": "'0,5' is half a second",
+   "pass": true,
+   "detail": "0.5"
+  },
+  {
+   "check": "a start time that is not a number: refused in words",
+   "pass": true,
+   "detail": "400"
+  },
+  {
+   "check": "Try again makes it again",
+   "pass": true,
+   "detail": "{'ok': True, 'files': {'video': 'video.mp4', 'srt': 'captions.srt'}, 'seconds': 4.15, 'checks': [{'check': 'video', 'pass': True, 'detail': 'h264'}, {'check': 'length', 'pass': True, 'detail': '4.160 s (planned 4.150 s)'}, {'check': 'sound', 'pass': True, 'detail': 'aac'}, {'check': 'plays_to_the_end', 'pass': True, 'detail': 'decoded completely'}], 'captions': 4, 'texts': 0, 'width': 538, 'height"
+  },
+  {
+   "check": "the copy saved by the earlier make is not touched (the new video gets its own copy)",
+   "pass": true,
+   "detail": "('D:\\\\a\\\\_temp\\\\home-voice\\\\Exports\\\\odd size - voice.mp4', 'D:\\\\a\\\\_temp\\\\home-voice\\\\Exports\\\\odd size - voice (2).mp4')"
+  },
+  {
+   "check": "Try again from an old page on a finished job does nothing",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "captions for a video's own speech",
+   "pass": true,
+   "detail": "{'ok': True, 'said': 'hello world from the video', 'language': 'en', 'words': 5, 'files': {'video': 'video.mp4', 'srt': 'captions.srt'}, 'seconds': 2.0, 'checks': [{'check': 'video', 'pass': True, 'detail': 'h264'}, {'check': 'length', 'pass': True, 'detail': '2.000 s (planned 2.000 s)'}, {'check': 'sound', 'pass': True, 'detail': 'aac'}, {'check': 'plays_to_the_end', 'pass': True, 'detail': 'deco"
+  },
+  {
+   "check": "text on a video without the voice add-on",
+   "pass": true,
+   "detail": "{'ok': True, 'files': {'video': 'video.mp4'}, 'seconds': 2.0, 'checks': [{'check': 'video', 'pass': True, 'detail': 'h264'}, {'check': 'length', 'pass': True, 'detail': '2.000 s (planned 2.000 s)'}, {'check': 'sound', 'pass': True, 'detail': 'aac'}, {'check': 'plays_to_the_end', 'pass': True, 'detail': 'decoded completely'}], 'captions': 0, 'texts': 1, 'width': 540, 'height': 960, 'saved': 'D:\\\\a\\"
+  },
+  {
+   "check": "the text form is on the page without the add-on",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "the title can be seen at the top (and is gone after its time)",
+   "pass": true,
+   "detail": "(0.14390432098765432, 0.0)"
+  },
+  {
+   "check": "the program's own font is the one drawn (Montserrat, with Cyrillic)",
+   "pass": true,
+   "detail": "[('Montserrat ExtraBold', 'Montserrat-ExtraBold'), ('Montserrat Black', 'Montserrat-Black')]"
+  },
+  {
+   "check": "a preview picture of the text",
+   "pass": true,
+   "detail": "{'url': '/api/text/preview/20261024-212800-e1bfdb.jpg'}"
+  },
+  {
+   "check": "a box hugs its text (the renderer's own font size, measured)",
+   "pass": true,
+   "detail": "{'text': 621, 'box': 695, 'pad_expected': 65}"
+  },
+  {
+   "check": "a title in the captions' place goes next to them",
+   "pass": true,
+   "detail": "{'captions': [241, 241], 'title': [513]}"
+  },
+  {
+   "check": "a word with a no-break space or only an emoji breaks no style",
+   "pass": true,
+   "detail": "True"
+  },
+  {
+   "check": "a preview at the very end (sound longer than the picture)",
+   "pass": true,
+   "detail": "{'url': '/api/text/preview/20261024-212801-36b232.jpg'}"
+  },
+  {
+   "check": "a text after the end of the video: refused in words",
+   "pass": true,
+   "detail": "400"
+  },
+  {
+   "check": "from a saved reel: its path is filled in the video fields",
+   "pass": true,
+   "detail": "24"
+  },
+  {
+   "check": "a path that is not a file is not filled in",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "typed text: hardly any letters at first, all of them a second later",
+   "pass": true,
+   "detail": "(304, 4208)"
+  },
+  {
+   "check": "sliding text comes up into its place",
+   "pass": true,
+   "detail": "(121, 115)"
+  },
+  {
+   "check": "the preview can show where the platforms' buttons are",
+   "pass": true,
+   "detail": "('/api/text/preview/20261024-212802-35b2c4.jpg', 157)"
+  },
+  {
+   "check": "a look saved with a name is offered in the forms",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "and deleted",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "a look without a name: said in words",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "odd looks sent by hand: no server error",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "a cover picture, full size, saved next to the reels",
+   "pass": true,
+   "detail": "({'saved': 'D:\\\\a\\\\_temp\\\\home-voice\\\\Exports\\\\clip - cover.jpg'}, 'clip - cover.jpg')"
+  },
+  {
+   "check": "a preview of a missing video: said in words",
+   "pass": true,
+   "detail": "{'error': 'Choose the video (its full path).'}"
+  },
+  {
+   "check": "a text time that is not a number: refused in words",
+   "pass": true,
+   "detail": "400"
+  },
+  {
+   "check": "a 2K video is made at 1080x1920 with its text laid out for it",
+   "pass": true,
+   "detail": "(1080, 1920)"
+  },
+  {
+   "check": "a failing graphics-card encoder falls back to the processor",
+   "pass": true,
+   "detail": "({'ok': True, 'files': {'video': 'video.mp4'}, 'seconds': 2.0, 'checks': [{'check': 'video', 'pass': True, 'detail': 'h264'}, {'check': 'length', 'pass': True, 'detail': '2.000 s (planned 2.000 s)'}, {'check': 'sound', 'pass': True, 'detail': 'aac'}, {'check': 'plays_to_the_end', 'pass': True, 'detail': 'decoded completely'}], 'captions': 0, 'texts': 1, 'width': 540, 'height': 960, 'saved': 'D:\\\\a"
+  },
+  {
+   "check": "a small copy for messengers, next to the reels",
+   "pass": true,
+   "detail": "D:\\a\\_temp\\home-voice\\Exports\\clip - small.mp4"
+  },
+  {
+   "check": "the page says where it is",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "the editor lists the captions",
+   "pass": true,
+   "detail": "(200, ['Okay,', \"so here's something.\", \"You don't need\", 'ten outfits!'])"
+  },
+  {
+   "check": "the editor's preview",
+   "pass": true,
+   "detail": "{'url': '/api/text/preview/20261024-212806-2375a0.jpg'}"
+  },
+  {
+   "check": "the edited video is made with the voice, checked",
+   "pass": true,
+   "detail": "{'ok': True, 'files': {'video': 'video.mp4', 'srt': 'captions.srt'}, 'seconds': 3.95, 'checks': [{'check': 'video', 'pass': True, 'detail': 'h264'}, {'check': 'length', 'pass': True, 'detail': '3.970 s (planned 3.950 s)'}, {'check': 'sound', 'pass': True, 'detail': 'aac'}, {'check': 'plays_to_the_end', 'pass': True, 'detail': 'decoded completely'}], 'captions': 4, 'texts': 1, 'width': 540, 'height"
+  },
+  {
+   "check": "the fixed word, the chosen style and the text at the end are in it",
+   "pass": true,
+   "detail": "H000000&\\4c&H000000&\\4a&H30&}ten {\\1c&H84DC3D&}outfits!{\\1c&HFFFFFF&\\fscx100\\fscy100}\nDialogue: 2,0:00:00.95,0:00:03.95,Base,,0,0,0,,{\\an7\\pos(98,355)\\p1\\bord0\\shad0\\1c&H84DC3D&\\1a&H00&\\fad(120,150)}m 15.7 0 l 328.2 0 b 336.9 0 344 7.1 344 15.7 l 344 42.3 b 344 51 336.9 58.1 328.2 58.1 l 15.7 58.1 b 7.1 58.1 0 51 0 42.3 l 0 15.7 b 0 7.1 7.1 0 15.7 0{\\p0}\nDialogue: 3,0:00:00.95,0:00:03.95,Base,,0,0"
+  },
+  {
+   "check": "the next forms start with the look chosen last",
+   "pass": true,
+   "detail": "['describe', 'normal', 'normal', 'box', 'green', 'large', 'bottom', 'top', 'banner', 'pop', 'top', 'banner']"
+  },
+  {
+   "check": "the end text sits in the last 3 seconds",
+   "pass": true,
+   "detail": "[{'text': 'Follow for more', 'where': 'middle', 'anim': 'pop', 'look': 'banner', 'at_end': True, 'start': None, 'end': None}]"
+  },
+  {
+   "check": "the editor of a video's own captions (its words kept)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "lines split, moved and added keep their own times",
+   "pass": true,
+   "detail": "(['first half', 'second half', 'the video', 'an added line'], [{'s': 0.2, 'e': 0.785, 'words': [{'w': 'first', 's': 0.2, 'e': 0.519}, {'w': 'half', 's': 0.519, 'e': 0.785}]}, {'s': 0.795, 'e': 1.39, 'words': [{'w': 'second', 's': 0.795, 'e': 1.142}, {'w': 'half', 's': 1.142, 'e': 1.39}]}, {'s': 1.5, 'e': 2.35, 'words': [{'w': 'the', 's': 1.5, 'e': 1.8}, {'w': 'video', 's': 1.9000000000000001, 'e':"
+  },
+  {
+   "check": "a voice-over itself (no video) is not edited here: said in words",
+   "pass": true,
+   "detail": "400"
+  },
+  {
+   "check": "a recording saved as my voice, used at once and listed (chosen next time)",
+   "pass": true,
+   "detail": "({'my_20261024-212808-11ff12': {'label': 'Мой голос', 'ref_path': 'D:\\\\a\\\\_temp\\\\home-voice\\\\voices\\\\20261024-212808-11ff12\\\\voice.wav', 'ref_text': 'Some words', 'mine': True}}, {'key': 'my_20261024-212808-11ff12', 'ref_wav': 'D:\\\\a\\\\_temp\\\\home-voice\\\\voices\\\\20261024-212808-11ff12\\\\voice.wav', 'ref_text': 'Some words'})"
+  },
+  {
+   "check": "my voice is chosen like a ready one",
+   "pass": true,
+   "detail": "{'ok': True, 'seconds': 1.4, 'device': 'cpu', 'said': 'Again in my voice.', 'speed': 1.0, 'engine': 'qwen', 'word_errors': 0, 'words': 4, 'chunks': [], 'load_s': None, 'steps': 10, 'language': None, 'files': {'voice': 'voice.wav', 'srt': 'captions.srt'}, 'finished_at': '2026-10-24T21:28:09'}"
+  },
+  {
+   "check": "my voice on the one-page form too",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "a saved voice is deleted",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "a recording too short to keep: said in words",
+   "pass": true,
+   "detail": "400"
+  },
+  {
+   "check": "a wrong saved-voice name: no harm",
+   "pass": true,
+   "detail": "404"
+  },
+  {
+   "check": "refused in words: no text",
+   "pass": true,
+   "detail": "400"
+  },
+  {
+   "check": "refused in words: unknown voice",
+   "pass": true,
+   "detail": "400"
+  },
+  {
+   "check": "refused in words: short description",
+   "pass": true,
+   "detail": "400"
+  },
+  {
+   "check": "refused in words: missing recording",
+   "pass": true,
+   "detail": "400"
+  },
+  {
+   "check": "refused in words: too long",
+   "pass": true,
+   "detail": "400"
+  },
+  {
+   "check": "a voice-over that does not exist",
+   "pass": true,
+   "detail": "400"
+  },
+  {
+   "check": "a video that does not exist",
+   "pass": true,
+   "detail": "400"
+  },
+  {
+   "check": "Try again on a voice this version no longer has: said in words",
+   "pass": true,
+   "detail": "{'ok': False, 'error': 'The recording of this voice is no longer there (a saved voice deleted, or a voice this version of MediaEngine does not have).', 'finished_at': '2026-10-24T21:28:09'}"
+  },
+  {
+   "check": "Try again after an update: the voice's recording of this build",
+   "pass": true,
+   "detail": "{'ok': True, 'seconds': 3.15, 'device': 'cpu', 'said': \"Okay, so here's something. You don't need ten outfits!\", 'speed': 1.0, 'engine': 'qwen', 'word_errors': 0, 'words': 9, 'chunks': [], 'load_s': None, 'steps': 10, 'language': None, 'files': {'voice': 'voice.wav', 'srt': 'captions.srt'}, 'finished_at': '2026-10-24T21:28:09'}"
+  },
+  {
+   "check": "the one-page form: the video filled in, a made voice-over offered, a new one possible",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "its preview shows the voice's captions and the text",
+   "pass": true,
+   "detail": "{'url': '/api/text/preview/20261024-212809-cfa25e.jpg'}"
+  },
+  {
+   "check": "a video with a made voice, its captions and a text, in one go",
+   "pass": true,
+   "detail": "{'ok': True, 'files': {'video': 'video.mp4', 'srt': 'captions.srt'}, 'seconds': 3.85, 'checks': [{'check': 'video', 'pass': True, 'detail': 'h264'}, {'check': 'length', 'pass': True, 'detail': '3.870 s (planned 3.850 s)'}, {'check': 'sound', 'pass': True, 'detail': 'aac'}, {'check': 'plays_to_the_end', 'pass': True, 'detail': 'decoded completely'}], 'captions': 4, 'texts': 1, 'width': 540, 'height"
+  },
+  {
+   "check": "and it can be edited afterwards",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "a new voice-over is made first, then the video with it",
+   "pass": true,
+   "detail": "({'ok': True, 'files': {'video': 'video.mp4', 'srt': 'captions.srt'}, 'seconds': 3.15, 'checks': [{'check': 'video', 'pass': True, 'detail': 'h264'}, {'check': 'length', 'pass': True, 'detail': '3.170 s (planned 3.150 s)'}, {'check': 'sound', 'pass': True, 'detail': 'aac'}, {'check': 'plays_to_the_end', 'pass': True, 'detail': 'decoded completely'}], 'captions': 3, 'texts': 1, 'width': 540, 'heigh"
+  },
+  {
+   "check": "*stars* in a script: not said, the word kept in the color in the captions",
+   "pass": true,
+   "detail": "([{'w': 'friend.', 's': 1.05, 'e': 1.35, 'em': True}], 'Hello there, my friend. This is new.')"
+  },
+  {
+   "check": "captions of the video's own speech on the same page",
+   "pass": true,
+   "detail": "{'ok': True, 'files': {'video': 'video.mp4', 'srt': 'captions.srt'}, 'seconds': 2.0, 'checks': [{'check': 'video', 'pass': True, 'detail': 'h264'}, {'check': 'length', 'pass': True, 'detail': '2.000 s (planned 2.000 s)'}, {'check': 'plays_to_the_end', 'pass': True, 'detail': 'decoded completely'}], 'captions': 2, 'texts': 0, 'width': 540, 'height': 960, 'saved': 'D:\\\\a\\\\_temp\\\\home-voice\\\\Exports\\"
+  },
+  {
+   "check": "speech captions keep the speech's own times (no voice start added)",
+   "pass": true,
+   "detail": "1\n00:00:00,200 --> 00:00:01,390\nhello world from\n\n2\n00:00:01,400 --> 00:00:02,25"
+  },
+  {
+   "check": "no voice: the video's own sound kept",
+   "pass": true,
+   "detail": "{'ok': True, 'files': {'video': 'video.mp4'}, 'seconds': 2.0, 'checks': [{'check': 'video', 'pass': True, 'detail': 'h264'}, {'check': 'length', 'pass': True, 'detail': '2.000 s (planned 2.000 s)'}, {'check': 'sound', 'pass': True, 'detail': 'aac'}, {'check': 'plays_to_the_end', 'pass': True, 'detail': 'decoded completely'}], 'captions': 0, 'texts': 1, 'width': 540, 'height': 960, 'saved': 'D:\\\\a\\"
+  },
+  {
+   "check": "'keep the video's own sound' is shown with no voice too (not a hidden field)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "a video whose voice-over is not made: said so",
+   "pass": true,
+   "detail": "{'ok': False, 'error': 'The voice-over was not made, so this video was not made either: ', 'finished_at': '2026-10-24T21:28:14'}"
+  },
+  {
+   "check": "a preview with 300 caption lines",
+   "pass": true,
+   "detail": "{'url': '/api/text/preview/20261024-212814-2df676.jpg'}"
+  },
+  {
+   "check": "odd caption times sent to the editor: no server error",
+   "pass": true,
+   "detail": "400"
+  },
+  {
+   "check": "typed text is complete while it is shown, its shadow appears with each letter",
+   "pass": true,
+   "detail": "704"
+  },
+  {
+   "check": "music under the voice, looped to the end (the song is there at the very end, the 1-s song looped)",
+   "pass": true,
+   "detail": "(None, -43.8, -91.0)"
+  },
+  {
+   "check": "a video with a voice is at the platforms' loudness (about -14 LUFS, peaks under -1 dB)",
+   "pass": true,
+   "detail": "([-14.1], [-11.7])"
+  },
+  {
+   "check": "a video whose song was moved can still be made again (without it)",
+   "pass": true,
+   "detail": "302"
+  },
+  {
+   "check": "music alone: quiet is quieter than loud",
+   "pass": true,
+   "detail": "(-25.6, -17.6)"
+  },
+  {
+   "check": "emphasis: after a quote; a lone star marks nothing; an open mark ends with its sentence",
+   "pass": true,
+   "detail": "[('«слово»', True), ('5', None), ('3', None), ('=', None), ('15.', None), ('open', True), ('run.', True), ('next', None)]"
+  },
+  {
+   "check": "a music file that is not there: refused in words",
+   "pass": true,
+   "detail": "400"
+  },
+  {
+   "check": "my text timed to the speech: its own words (and marks), the speech's times",
+   "pass": true,
+   "detail": "[('Hello,', 0.2, None), ('world', 0.6, None), ('from', 1.0, None), ('this', 1.4, True), ('video.', 1.8, None)]"
+  },
+  {
+   "check": "captions of a voice without a voice: refused in words",
+   "pass": true,
+   "detail": "400"
+  },
+  {
+   "check": "nothing to add: refused in words",
+   "pass": true,
+   "detail": "400"
+  },
+  {
+   "check": "several videos: the form offers more videos (paths, Choose…, saved reels)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "several videos: one new video each, in order (a video twice, also written another way: once)",
+   "pass": true,
+   "detail": "['D:\\\\a\\\\_temp\\\\home-voice\\\\clip.mp4', 'D:\\\\a\\\\_temp\\\\home-voice\\\\clip two.mp4', 'D:\\\\a\\\\_temp\\\\home-voice\\\\clip3.mp4']"
+  },
+  {
+   "check": "several videos: each video's own speech is heard",
+   "pass": true,
+   "detail": "['clip.mp4', 'clip two.mp4', 'clip3.mp4']"
+  },
+  {
+   "check": "several videos: each made with its own speech's captions, the text and the music",
+   "pass": true,
+   "detail": "[('done', 2), ('done', 2), ('done', 2)]"
+  },
+  {
+   "check": "several videos: each lasts as long as its own video",
+   "pass": true,
+   "detail": "[2.0, 3.0, 2.0]"
+  },
+  {
+   "check": "several videos: one missing - nothing made, said which",
+   "pass": true,
+   "detail": "400"
+  },
+  {
+   "check": "several videos: a text after the end of one of them - refused, naming it",
+   "pass": true,
+   "detail": "ventListener('submit',ev=>{ev.target.querySelectorAll('button:not([disabled])').forEach(b=>b.dataset.reen='1')},true);\nwindow.addEventListener('pageshow',ev=>{if(ev.persisted)document.querySelectorAll('button[data-reen]').forEach(b=>{b.disabled=false;delete b.dataset.reen})});</script></body></html>"
+  },
+  {
+   "check": "several videos: a file that is not a video - nothing made, said which",
+   "pass": true,
+   "detail": "ventListener('submit',ev=>{ev.target.querySelectorAll('button:not([disabled])').forEach(b=>b.dataset.reen='1')},true);\nwindow.addEventListener('pageshow',ev=>{if(ev.persisted)document.querySelectorAll('button[data-reen]').forEach(b=>{b.disabled=false;delete b.dataset.reen})});</script></body></html>"
+  },
+  {
+   "check": "several videos: a shared choice wrong - said without blaming a video",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "several videos: the exact text of a speech is for one video - refused in words",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "one video ticked twice: still one, its exact text kept",
+   "pass": true,
+   "detail": "['20261024-212826-9b6fd5']"
+  },
+  {
+   "check": "an unknown voice choice: no voice (captions of a voice refused)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "several videos: at most 30 at once",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "several videos with a new voice: made once, then put on each",
+   "pass": true,
+   "detail": "(['voiceover', 'render', 'render'], ['20261024-212827-cd9eba', '20261024-212827-cd9eba'], ['done', 'done', 'done'])"
+  },
+  {
+   "check": "a shared voice-over that fails: the videos waiting for it say so",
+   "pass": true,
+   "detail": "[('failed', 'RuntimeError: the graphics card ran out of memory (test)'), ('failed', 'The voice-over was not made, so this video was not made either: RuntimeError: the graphics card ran out of memory (test)'), ('failed', 'The voice-over was not made, so this video was not made either: RuntimeError: the graphics card ran out of memory (test)')]"
+  },
+  {
+   "check": "one Try again on the voice-over makes it and the videos that waited for it",
+   "pass": true,
+   "detail": "[('done', None), ('done', None), ('done', None)]"
+  },
+  {
+   "check": "the pace chosen on the one-page form goes with the new voice",
+   "pass": true,
+   "detail": "(0.92, 0.6)"
+  },
+  {
+   "check": "the original video is byte for byte as it was after everything",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "a picture shorter than its sound is held to the end, with the end text on it",
+   "pass": true,
+   "detail": "1.2%"
+  },
+  {
+   "check": "non-square pixels: made 1920x1080 with square pixels (not stretched)",
+   "pass": true,
+   "detail": "(1920, 'e), 1920x1080 [SAR 1:1 DAR 16:9], 7231 kb/s, 25 fps, 25 tbr, 12800 tbn (default)')"
+  },
+  {
+   "check": "a time typed as hundreds of digits: refused in words",
+   "pass": true,
+   "detail": "400"
+  },
+  {
+   "check": "the file picker with an odd request: an answer, not a server error",
+   "pass": true,
+   "detail": "200"
+  },
+  {
+   "check": "a voice onto a sound file (no picture): refused before anything is made",
+   "pass": true,
+   "detail": "400"
+  },
+  {
+   "check": "captions of a video without sound: refused before listening",
+   "pass": true,
+   "detail": "400"
+  },
+  {
+   "check": "words in brackets stay in the captions (they are said)",
+   "pass": true,
+   "detail": "['Prices', 'rose', '(by', '20', 'percent)', 'this', 'week', '[and', 'more].']"
+  },
+  {
+   "check": "Don't make it: a waiting job leaves the queue, said 'Stopped.'",
+   "pass": true,
+   "detail": "('failed', {'ok': False, 'error': 'Stopped.', 'finished_at': '2026-10-24T21:38:38'})"
+  },
+  {
+   "check": "Stop: the video being made stops at once (its FFmpeg killed, not run to the end), said 'Stopped.'",
+   "pass": true,
+   "detail": "({'ok': False, 'error': 'Stopped.', 'finished_at': '2026-10-24T21:38:39'}, 0.3)"
+  },
+  {
+   "check": "Try again on the video, then on its voice-over: both made (the video waits for its voice)",
+   "pass": true,
+   "detail": "('done', 'done', None)"
+  },
+  {
+   "check": "Stop before the process starts still stops it",
+   "pass": true,
+   "detail": "1"
+  },
+  {
+   "check": "pixel shape read from the video itself, not its cover picture",
+   "pass": true,
+   "detail": "(640, 360, 1.0)"
+  },
+  {
+   "check": "a song chosen as the video: said in words (not FFmpeg's code)",
+   "pass": true,
+   "detail": "This file has no picture: choose a video."
+  },
+  {
+   "check": "install: a fresh install - both parts, recorded, the engine's packages never from the CUDA index",
+   "pass": true,
+   "detail": "('done', [('pip', 'main', True), ('fetch', 'voxcpm'), ('fetch', 'voxcpm'), ('fetch', 'whisper'), ('selftest', 'main'), ('pip', 'qwen', True), ('fetch', 'qwen3tts'), ('fetch', 'qwen3tts'), ('selftest', 'qwen')], {'version': 1, 'python': '3.11', 'packages': ['annotated-types==0.8.0', 'anyio==4.15.1', 'audioread==3.1.0', 'av==18.1.0', 'brotli==1.2.0', 'certifi==2026.10.18', 'cffi==2.1.1', 'charset-no"
+  },
+  {
+   "check": "install: the new engine fails on a fresh install - the main part works (recorded with its size)",
+   "pass": true,
+   "detail": "('failed', 'pip failed (test)', {'version': 1, 'python': '3.11', 'packages': ['annotated-types==0.8.0', 'anyio==4.15.1', 'audioread==3.1.0', 'av==18.1.0', 'brotli==1.2.0', 'certifi==2026.10.18', 'cffi==2.1.1', 'charset-normalizer==3.5.2', 'cloudpickle==3.1.2', 'colorama==0.4.6', 'ctranslate2==4.8.3', 'decorator==5.3.1', 'dill==0.3.8', 'einops==0.8.2', 'faster-whisper==1.2.1', 'filelock==4.2.4', 'f"
+  },
+  {
+   "check": "install: then only the new engine (the main part kept, no model downloaded twice)",
+   "pass": true,
+   "detail": "[('pip', 'qwen', True), ('fetch', 'qwen3tts'), ('fetch', 'qwen3tts'), ('selftest', 'qwen')]"
+  },
+  {
+   "check": "install: the internet gone while the engine downloads - the add-on still works",
+   "pass": true,
+   "detail": "('failed', 'No connection to the internet (or the site did not answer). Check the connection and try again.')"
+  },
+  {
+   "check": "install: the engine does not start - the main part kept, said in words",
+   "pass": true,
+   "detail": "The new voice engine was installed but does not start: ImportError: test"
+  },
+  {
+   "check": "install: Remove takes both parts away",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "the page in Russian",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "no English left of the main texts",
+   "pass": true,
+   "detail": "[]"
+  },
+  {
+   "check": "the editor in Russian",
+   "pass": true,
+   "detail": "[]"
+  },
+  {
+   "check": "the one-page form in Russian",
+   "pass": true,
+   "detail": "[]"
+  },
+  {
+   "check": "delete removes the job's folder",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "busy is empty when nothing runs",
+   "pass": true,
+   "detail": ""
+  }
+ ]
+}

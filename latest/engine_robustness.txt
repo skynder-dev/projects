@@ -1,0 +1,36 @@
+PASS still_video_skipped_reel_built
+PASS skipped_file_not_in_inputs
+PASS unusable_file_does_not_break_the_analysis_cache
+PASS private_file_ignored_with_old_analysis_present
+PASS limited_footage_gives_shorter_reel
+PASS damaged_segment_cache_rebuilt
+PASS horizontal_full_hd_1920x1080
+PASS phone_files_build
+PASS phone_short_clip_reported
+PASS phone_reel_audio_video_same_length
+PASS rotated_phone_video_upright_9x16_social_hd
+PASS rotated_phone_video_upright_9x16_standard
+PASS rotated_phone_video_upright_16x9_standard
+PASS hdr_hlg_normal_colours
+PASS hdr_pq_normal_colours
+PASS camcorder_mts_used_and_deinterlaced
+PASS camcorder_mts_hand_trim_has_picture
+PASS anamorphic_keeps_shape_16x9
+PASS anamorphic_keeps_shape_9x16
+PASS other_formats_analysed
+PASS other_formats_used
+PASS other_formats_sound_as_long_as_picture
+formats: 11 used: 11 stage seconds: {'analyze': 25.01, 'finish': 15.76, 'inputs': 0.89, 'render': 24.26, 'select': 0.0, 'trim': 6.66}
+PASS older_formats_analysed_and_used
+PASS older_formats_wide_ones_widened
+older formats: 7 used: 7 widened: ['MOV001.MOD', 'MOV002.TOD', 'hdv_tape.m2t', 'tape.dv']
+PASS sound_levels_evened_out
+levels: sources 22.1 dB apart; in the reel 0.2 dB
+PASS camera_cases_analysed_and_used
+PASS odd_size_video_used
+PASS upside_down_upright_9x16_social_hd
+PASS upside_down_upright_16x9_standard
+PASS portrait_cw_upright_9x16_social_hd
+PASS portrait_cw_upright_16x9_standard
+PASS vertical_crop_follows_the_subject
+{"passed": 32, "total": 32}

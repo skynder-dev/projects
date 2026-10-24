@@ -1,0 +1,485 @@
+{
+ "pass": true,
+ "checks": [
+  {
+   "name": "orders_page_renders_and_starts_watching",
+   "pass": true,
+   "detail": 200
+  },
+  {
+   "name": "orders_folders_made",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "name": "auto_home_links_orders",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "name": "plan_done",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "name": "plan_receipt_sha_matches_file",
+   "pass": true,
+   "detail": {
+    "file": "video.mp4",
+    "sha256": "a4dd95d12e32631b6a3df7447aeb97f64c6f6233687a5b5ad8acc7cce66c52c0",
+    "bytes": 1667182,
+    "duration_s": 8.0,
+    "width": 1080,
+    "height": 1920
+   }
+  },
+  {
+   "name": "plan_all_checks_pass",
+   "pass": true,
+   "detail": [
+    {
+     "check": "video",
+     "pass": true,
+     "detail": "h264"
+    },
+    {
+     "check": "size",
+     "pass": true,
+     "detail": "1080x1920"
+    },
+    {
+     "check": "length",
+     "pass": true,
+     "detail": "8.000 s (planned 8.000 s)"
+    },
+    {
+     "check": "sound",
+     "pass": true,
+     "detail": "aac"
+    },
+    {
+     "check": "plays_to_the_end",
+     "pass": true,
+     "detail": "decoded completely"
+    }
+   ]
+  },
+  {
+   "name": "plan_size_1080x1920",
+   "pass": true,
+   "detail": {
+    "file": "video.mp4",
+    "sha256": "a4dd95d12e32631b6a3df7447aeb97f64c6f6233687a5b5ad8acc7cce66c52c0",
+    "bytes": 1667182,
+    "duration_s": 8.0,
+    "width": 1080,
+    "height": 1920
+   }
+  },
+  {
+   "name": "plan_frame_exact_length",
+   "pass": true,
+   "detail": "240 frames, planned 240"
+  },
+  {
+   "name": "plan_receipt_has_order_identity",
+   "pass": true,
+   "detail": "8e5d4b5001367e7c4e28bdcdd4864ff04c814c21ed321ee55971ff941d9290c6"
+  },
+  {
+   "name": "plan_order_files_kept_in_received",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "name": "plan_no_partial_left",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "name": "plan_from_file_done_720x1280_audio_cut_to_plan",
+   "pass": true,
+   "detail": {
+    "file": "video.mp4",
+    "sha256": "027afda6a9352aaaa9f91bf7388687f1930e025a8cbf1b6eaa164e88a552ce33",
+    "bytes": 118562,
+    "duration_s": 3.0,
+    "width": 720,
+    "height": 1280
+   }
+  },
+  {
+   "name": "bad_orders_refused_with_the_right_code (30)",
+   "pass": true,
+   "detail": {}
+  },
+  {
+   "name": "bad_id_refused_kept_aside",
+   "pass": true,
+   "detail": {
+    "code": "ORDER_ID_INVALID",
+    "message": "The order id (folder or file name) may only have letters, digits, spaces, . - _ ( ) and at most 80 characters"
+   }
+  },
+  {
+   "name": "used_id_refused_first_answer_untouched",
+   "pass": true,
+   "detail": {
+    "code": "ORDER_ID_ALREADY_USED",
+    "message": "An order with the id 'plan-1' was already received. Every order needs a new id."
+   }
+  },
+  {
+   "name": "order_without_order_json_waits",
+   "pass": true,
+   "detail": [
+    {
+     "from": "",
+     "id": "arriving",
+     "kind": null,
+     "state": "arriving",
+     "time": 1792877047.0428874,
+     "title": "",
+     "waiting_for": "order.json"
+    }
+   ]
+  },
+  {
+   "name": "reel_order_done",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "name": "reel_order_is_a_project_with_that_version",
+   "pass": true,
+   "detail": [
+    {
+     "id": 1,
+     "url": "http://127.0.0.1:8765/auto/p/1",
+     "version": 1
+    },
+    "3fcc62730536b848a515e1bd71f7b0fd6cb3153a92a7035d7fdead261eef46be"
+   ]
+  },
+  {
+   "name": "reel_order_used_videos_listed",
+   "pass": true,
+   "detail": [
+    "clip_1.mp4"
+   ]
+  },
+  {
+   "name": "reel_order_checks_pass",
+   "pass": true,
+   "detail": [
+    {
+     "check": "video",
+     "pass": true,
+     "detail": "h264"
+    },
+    {
+     "check": "size",
+     "pass": true,
+     "detail": "540x960"
+    },
+    {
+     "check": "length",
+     "pass": true,
+     "detail": "5.000 s (planned 5.000 s)"
+    },
+    {
+     "check": "same_as_reel",
+     "pass": true,
+     "detail": "SHA-256 of the project's version"
+    },
+    {
+     "check": "plays_to_the_end",
+     "pass": true,
+     "detail": "decoded completely"
+    }
+   ]
+  },
+  {
+   "name": "reel_order_title_kept",
+   "pass": true,
+   "detail": {
+    "exclude": [],
+    "format": "vertical",
+    "length": 5,
+    "mode": "technical",
+    "sound": "auto",
+    "title": "Заказ 1"
+   }
+  },
+  {
+   "name": "planted_state_file_ignored",
+   "pass": true,
+   "detail": [
+    "failed",
+    {
+     "code": "VIDEOS_NOT_USABLE",
+     "message": "Folder not found"
+    },
+    null
+   ]
+  },
+  {
+   "name": "damaged_video_left_out_not_refused",
+   "pass": true,
+   "detail": [
+    "done",
+    null,
+    [
+     "broken.mp4"
+    ],
+    [
+     "clip_1.mp4"
+    ]
+   ]
+  },
+  {
+   "name": "missing_video_left_out_first_try",
+   "pass": true,
+   "detail": [
+    "done",
+    null,
+    [
+     "gone since.mp4"
+    ]
+   ]
+  },
+  {
+   "name": "setting_wait_for_ok_saved",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "name": "orders_wait_for_ok",
+   "pass": true,
+   "detail": {
+    "wait-2": "new",
+    "wait-1": "new",
+    "reel-gone": "done",
+    "reel-damaged": "done",
+    "planted-1": "failed",
+    "reel-1": "done",
+    "plan-1 (2)": "failed",
+    "bad-slash-unc": "failed",
+    "bad-quoted-unc": "failed",
+    "bad-music-unc": "failed",
+    "bad-huge-picture": "failed",
+    "order -dash": "failed",
+    "bad-reel-playlist": "failed",
+    "bad-hls-sound": "failed",
+    "bad-concat": "failed",
+    "bad-reel-two-sources": "failed",
+    "bad-hls-as-mp4": "failed",
+    "bad-hls": "failed",
+    "bad-reel-length": "failed",
+    "bad-reel-folder": "failed",
+    "bad-noclips": "failed",
+    "bad-from": "failed",
+    "bad-audio": "failed",
+    "bad-picture": "failed",
+    "bad-long": "failed",
+    "bad-odd": "failed",
+    "bad-both": "failed",
+    "bad-short": "failed",
+    "bad-start": "failed",
+    "bad-gap": "failed",
+    "bad-missing": "failed",
+    "bad-network": "failed",
+    "bad-absolute": "failed",
+    "bad-outside": "failed",
+    "bad-kind": "failed",
+    "bad-schema": "failed",
+    "bad-array": "failed",
+    "bad-json": "failed",
+    "plan-file": "done",
+    "plan-1": "done"
+   }
+  },
+  {
+   "name": "page_offers_run_and_reject",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "name": "rejected_order_answered",
+   "pass": true,
+   "detail": {
+    "code": "REJECTED_BY_OWNER",
+    "message": "The owner rejected this order on the Orders page"
+   }
+  },
+  {
+   "name": "rejected_order_not_done_again",
+   "pass": true,
+   "detail": 400
+  },
+  {
+   "name": "run_after_ok",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "name": "answers_taken_away_are_not_done_again",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "taken_answers_listed_and_deletable",
+   "pass": true,
+   "detail": [
+    {
+     "wait-1": "taken",
+     "wait-2": "taken"
+    },
+    302
+   ]
+  },
+  {
+   "name": "an_unmovable_order_does_not_block_others",
+   "pass": true,
+   "detail": [
+    "done",
+    true,
+    "done"
+   ]
+  },
+  {
+   "name": "busy_while_an_order_is_done",
+   "pass": true,
+   "detail": "An order from another program is being done. Switch when it is ready."
+  },
+  {
+   "name": "reject_does_not_wait_for_a_render",
+   "pass": true,
+   "detail": [
+    302,
+    0.0,
+    true
+   ]
+  },
+  {
+   "name": "stop_in_the_middle",
+   "pass": true,
+   "detail": [
+    true,
+    "failed",
+    {
+     "code": "STOPPED_BY_OWNER",
+     "message": "Stopped on the Orders page"
+    }
+   ]
+  },
+  {
+   "name": "page_offers_run_again",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "name": "run_again_after_stop",
+   "pass": true,
+   "detail": {
+    "file": "video.mp4",
+    "sha256": "6d6398901c8fddf7152b6561d6d63aa080d6c72306b9bc2362031511217e0742",
+    "bytes": 28959204,
+    "duration_s": 60.0,
+    "width": 1080,
+    "height": 1920
+   }
+  },
+  {
+   "name": "fix_and_try_again",
+   "pass": true,
+   "detail": [
+    "failed",
+    "done",
+    null
+   ]
+  },
+  {
+   "name": "interrupted_order_done_again",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "name": "stuck_order_waits_for_owner",
+   "pass": true,
+   "detail": [
+    {
+     "can_retry": true,
+     "error": {
+      "code": "INTERRUPTED",
+      "message": "Started 3 times without finishing (MediaEngine was closed or stopped each time)"
+     },
+     "finished_at": null,
+     "from": "",
+     "id": "stuck-1",
+     "kind": null,
+     "progress": "",
+     "project_id": null,
+     "state": "stuck",
+     "time": 1792877243.7331944,
+     "title": ""
+    }
+   ]
+  },
+  {
+   "name": "stuck_order_try_again",
+   "pass": true,
+   "detail": [
+    302,
+    "done"
+   ]
+  },
+  {
+   "name": "id_with_two_dots_done_and_deleted",
+   "pass": true,
+   "detail": [
+    "done",
+    302
+   ]
+  },
+  {
+   "name": "page_lists_ready_and_failed",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "name": "api_counts",
+   "pass": true,
+   "detail": {
+    "arriving": 0,
+    "done": 11,
+    "failed": 34,
+    "new": 0,
+    "stuck": 0,
+    "taken": 1,
+    "waiting": 0,
+    "working": 0
+   }
+  },
+  {
+   "name": "delete_removes_only_order_folders",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "name": "delete_refuses_paths",
+   "pass": true,
+   "detail": 400
+  },
+  {
+   "name": "buttons_refuse_other_sites",
+   "pass": true,
+   "detail": 403
+  },
+  {
+   "name": "test_videos_unchanged",
+   "pass": true,
+   "detail": null
+  }
+ ]
+}

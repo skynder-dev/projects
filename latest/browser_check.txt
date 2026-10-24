@@ -1,0 +1,23 @@
+ * Serving Flask app 'archivist.web'
+ * Debug mode: off
+PASS auto_page_opens
+PASS form_button_works_in_a_real_browser
+PASS more_shows_the_other_pages
+PASS framing_choice_only_for_vertical
+PASS create_reel_in_a_real_browser
+PASS reel_progress_on_other_pages
+PASS reel_built
+PASS save_mp4_in_a_real_browser
+PASS small_copy_for_messengers
+PASS check_this_pc_in_the_background
+PASS orders_run_button_in_a_real_browser
+PASS finish_page_preview_in_a_real_browser
+PASS finish_page_saves_a_look_without_leaving
+PASS finish_page_makes_the_video
+PASS editor_adds_a_text_and_previews
+PASS converted_files_show_in_folder_in_a_real_browser
+PASS convert_a_part_of_a_video_in_a_real_browser
+PASS convert_cut_panel_fits_a_narrow_window
+PASS pages_fit_the_window_wide_and_narrow
+PASS no_script_errors
+{"passed": 20, "total": 20}
