@@ -255,6 +255,11 @@ def main():
             sel_all = pg.evaluate("[...document.querySelectorAll('.convertCheck')].filter(x=>!x.disabled).every(x=>x.checked)")
             pg.click("#cvNone")
             sel_none = pg.evaluate("![...document.querySelectorAll('.convertCheck')].some(x=>x.checked)")
+            # a lasting choice (Date and time) is remembered after a reload, the More panel open; then taken off again
+            pg.evaluate("(()=>{const c=document.getElementById('clockOut');c.checked=true;c.dispatchEvent(new Event('change'))})()")
+            pg.reload()
+            remembered = pg.evaluate("document.getElementById('clockOut').checked&&document.getElementById('cvMore').open")
+            pg.evaluate("(()=>{const c=document.getElementById('clockOut');c.checked=false;c.dispatchEvent(new Event('change'))})()")
             pg.click(f"[data-cut-for='{vid}']")
             # Edge plays H.264 (the player is used); Playwright's own Chromium does not (the times are typed, as the page says)
             pg.wait_for_function(f"document.querySelector('#cvCut{vid} video').readyState>=1||"
@@ -293,7 +298,7 @@ def main():
             outc = (jo.get("outputs") or [{}])[0]
             from archivist.auto_edit import _probe as _pr
             cdur = float(_pr(Path(outc["output"]))["format"]["duration"]) if outc.get("output") else 0
-            cut_ok = (note == "фрагмент 0:02–0:05" and sel_all and sel_none and jr["status"] == "finished" and re.search(r"Снято: \d\d\.\d\d\.\d{4} \d\d:\d\d:\d\d", when_txt) and jo.get("cuts") == {str(vid): [2.0, 5.0]}
+            cut_ok = (note == "фрагмент 0:02–0:05" and sel_all and sel_none and remembered and jr["status"] == "finished" and re.search(r"Снято: \d\d\.\d\d\.\d{4} \d\d:\d\d:\d\d", when_txt) and jo.get("cuts") == {str(vid): [2.0, 5.0]}
                       and abs(cdur - 3.0) <= 0.1 and pics == [clip.stem + ("_frame_0m05s.jpg" if played else "_frame_0m02s.jpg")]) or (note, when_txt, jr["status"], jo.get("cuts"), cdur, outc, pics)
         except Exception as exc:
             cut_ok = str(exc)[:300]
