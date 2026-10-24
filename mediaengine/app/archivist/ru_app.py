@@ -276,7 +276,10 @@ APP_PHRASES: dict[str, str] = {
     "Photos for a report, into a folder next to the converted videos.": "Фото для отчёта — в папку рядом с готовыми видео.",
     "Saving pictures": "Сохраняю кадры", "Pictures are taken from whole videos, one by one (not joined, not cut).":
         "Кадры берутся из целых видео, по одному (без склейки и обрезки).", "No pictures were made": "Кадры не получились",
-    "More: speed, slow motion, vertical 9:16, logo, sound": "Ещё: скорость, замедление, вертикально 9:16, логотип, звук",
+    "More: speed, vertical 9:16, logo, date and time, sound": "Ещё: скорость, вертикально 9:16, логотип, дата и время, звук",
+    "Date and time in the corner": "Дата и время в углу", "date and time": "дата и время",
+    "date and time (from the file's date)": "дата и время (по дате файла)",
+    "When it was filmed, every second, from the camera or phone clock - for reports": "Когда снято, каждую секунду — по часам камеры или телефона, для отчётов",
     "½× slow motion (for 60 fps videos)": "замедление ½× (для видео 60 кадров/с)",
     "¼× slow motion (no sound, for 120 fps)": "замедление ¼× (без звука, для 120 кадров/с)",
     "Even out the sound": "Выровнять звук", "even sound": "ровный звук", "½× slow motion": "замедление ½×", "¼× slow motion": "замедление ¼×",

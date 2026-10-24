@@ -328,12 +328,12 @@ def _cancelled(job_id: int | None):
     return bool(r and r["cancel_requested"])
 
 
-def _run_progress(cmd, duration_s: float, progress_cb=None, cancel_cb=None, phase_base=0.0, phase_span=1.0, job_id=None):
+def _run_progress(cmd, duration_s: float, progress_cb=None, cancel_cb=None, phase_base=0.0, phase_span=1.0, job_id=None, cwd=None):
     with keep_awake():   # a long conversion must not be cut by Windows going to sleep
-        return _run_progress_inner(cmd, duration_s, progress_cb, cancel_cb, phase_base, phase_span, job_id)
+        return _run_progress_inner(cmd, duration_s, progress_cb, cancel_cb, phase_base, phase_span, job_id, cwd)
 
 
-def _run_progress_inner(cmd, duration_s: float, progress_cb=None, cancel_cb=None, phase_base=0.0, phase_span=1.0, job_id=None):
+def _run_progress_inner(cmd, duration_s: float, progress_cb=None, cancel_cb=None, phase_base=0.0, phase_span=1.0, job_id=None, cwd=None):
     global _CURRENT_PROCESS, _CURRENT_PROCESS_JOB_ID
     if _EXITING.is_set():                  # the app is quitting: nothing new starts (the job resumes at the next start)
         raise RuntimeError("cancelled")
@@ -342,7 +342,7 @@ def _run_progress_inner(cmd, duration_s: float, progress_cb=None, cancel_cb=None
     errors = []
     p = subprocess.Popen(
         full, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace",
-        creationflags=flags, startupinfo=si, close_fds=True
+        creationflags=flags, startupinfo=si, close_fds=True, cwd=str(cwd) if cwd else None
     )
     try:                                   # Windows: FFmpeg dies with the app (never a second writer after a restart)
         from .auto_edit import _attach_job_object
@@ -414,7 +414,7 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
     instead of a video."""
     if extra and extra.get("frames"):
         return save_frames_every(source, int(extra["frames"]), output_dir, progress_cb, cancel_cb, job_id)
-    source = Path(source)
+    source = Path(os.path.abspath(str(source)))          # (FFmpeg may run in another folder: the clock's)
     if preset not in PRESETS:
         raise ValueError("Unknown preset")
     if not source.exists() or not source.is_file():
@@ -432,8 +432,10 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
             raise ValueError("The cut must be at least half a second inside the video")
         # FFmpeg seeks to the start (the picture from exactly there: everything is re-encoded) and reads that long
         input_args, tag, duration = ["-ss", f"{start:.3f}", "-t", f"{end - start:.3f}", "-i", str(source)], "cut", end - start
+    clock, how = (clock_parts(ffmpeg, [source], [float(probe_duration(source) or duration)], cut) if extra and extra.get("clock")
+                  else (None, ""))
     out, made_on = _encode(ffmpeg, input_args, source, duration, preset, target_mb, progress_cb, cancel_cb, output_dir, job_id, tag=tag,
-                           mute=bool(mute), turn=turn, prefer=prefer, extra=extra)
+                           mute=bool(mute), turn=turn, prefer=prefer, extra=extra, clock=clock)
     src_size = source.stat().st_size
     if cut:                                    # the part's share of the file (the saving of the part, not of the whole)
         src_size = int(src_size * min(1.0, duration / max(0.001, float(probe_duration(source) or duration))))
@@ -451,6 +453,7 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
         **({"turn": int(turn)} if int(turn or 0) in TURNS else {}),
         **({"extra": dict(extra)} if extra else {}),
         **({"cut": [round(float(cut[0]), 3), round(min(float(cut[1]), float(probe_duration(source) or cut[1])), 3)]} if cut else {}),
+        **({"clock": how} if how else {}),
     }
 
 
@@ -573,7 +576,7 @@ def join_files(sources, preset="share_1080p", target_mb=None, progress_cb=None, 
     if not ffmpeg:
         raise RuntimeError("FFmpeg is not available")
     join_check(ffmpeg, sources, beat)
-    duration = 0.0
+    duration, durs = 0.0, []
     for src in sources:
         if beat:
             beat()
@@ -581,13 +584,16 @@ def join_files(sources, preset="share_1080p", target_mb=None, progress_cb=None, 
         if d <= 0:
             raise RuntimeError("Could not read video duration")
         duration += d
+        durs.append(d)
+    clock, how = clock_parts(ffmpeg, sources, durs) if extra and extra.get("clock") else (None, "")
     listfile = (HOME / "data" / f"join-{os.getpid()}-{threading.get_ident()}.txt").resolve()
     listfile.parent.mkdir(parents=True, exist_ok=True)
     # one line per part; inside '...' nothing is special except the quote itself
     listfile.write_text("".join("file '" + str(src.resolve()).replace("'", "'\\''") + "'\n" for src in sources), "utf-8")
     try:
         out, made_on = _encode(ffmpeg, ["-f", "concat", "-safe", "0", "-i", str(listfile)], sources[0], duration, preset, target_mb,
-                               progress_cb, cancel_cb, output_dir, job_id, tag="joined", mute=bool(mute), turn=turn, extra=extra)
+                               progress_cb, cancel_cb, output_dir, job_id, tag="joined", mute=bool(mute), turn=turn, extra=extra,
+                               clock=clock)
     finally:
         try:
             listfile.unlink()
@@ -609,6 +615,7 @@ def join_files(sources, preset="share_1080p", target_mb=None, progress_cb=None, 
         "preset": preset,
         "target_mb": int(target_mb) if target_mb else None,
         "made_on": made_on,
+        **({"clock": how} if how else {}),
     }
 
 
@@ -853,6 +860,8 @@ def clean_extra(extra) -> dict:
         out["wind"] = True
     if extra.get("loud") is True:
         out["loud"] = True
+    if extra.get("clock") is True:
+        out["clock"] = True
     fr = extra.get("frames")
     if fr not in (None, 0, "", False):
         try:
@@ -909,6 +918,105 @@ def job_logo() -> dict:
         tmp.write_bytes(data)
         os.replace(tmp, f)
     return {"path": str(f), "corner": lg["corner"], "size": lg["size"]}
+
+
+# Date and time of the recording in a corner (Convert → More): when it was filmed, every second, as the clock of the
+# place showed it. Cameras (GoPro, DJI) write their own clock's time marked as UTC - shown as written; phones write
+# UTC - shown in this PC's time zone; an iPhone also writes the local time with its zone - shown as written. Without
+# a time in the file: the file's own date (the end of the recording) minus its length.
+_CAMERA_CLOCK = re.compile(r"gopro|\bdji\b|dji[._]|insta360", re.I)
+_TIME_TAG = re.compile(r"^\s*(creation_time|com\.apple\.quicktime\.creationdate)\s*:\s*(\d{4})-(\d\d)-(\d\d)[T ](\d\d):(\d\d):(\d\d)", re.M)
+
+
+def recording_start(ffmpeg, source, duration: float | None = None) -> tuple:
+    """(naive datetime of the first picture as the local clock showed it, "camera" | "phone" | "file")."""
+    source = Path(str(source))
+    try:
+        cp = subprocess.run([str(ffmpeg), "-hide_banner", "-i", str(source)], capture_output=True, text=True, encoding="utf-8",
+                            errors="replace", timeout=60, **process_kwargs())
+        text = (cp.stderr or "").split("Stream mapping:", 1)[0]
+    except Exception:
+        text = ""
+    found = {}
+    for m in _TIME_TAG.finditer(text):
+        try:
+            when = datetime(*(int(x) for x in m.groups()[1:]))
+        except ValueError:
+            continue
+        if 1995 <= when.year <= 2100:                  # (an unset camera clock gives 1904 / 1970 / 2000-01-01)
+            found.setdefault(m.group(1), when)
+    if "com.apple.quicktime.creationdate" in found:
+        return found["com.apple.quicktime.creationdate"], "phone"
+    if "creation_time" in found:
+        if _CAMERA_CLOCK.search(text) or _GOPRO_PART.match(source.stem) or _GOPRO_FIRST.match(source.stem) \
+                or source.stem.upper().startswith("DJI_"):
+            return found["creation_time"], "camera"
+        return found["creation_time"].replace(tzinfo=timezone.utc).astimezone().replace(tzinfo=None), "phone"
+    try:
+        d = float(duration if duration is not None else (probe_duration(source) or 0.0))
+        return datetime.fromtimestamp(source.stat().st_mtime - max(0.0, d)).replace(microsecond=0), "file"
+    except (OSError, ValueError, OverflowError):
+        return None, ""
+
+
+def _ass_time(cs: int) -> str:
+    return f"{cs // 360000}:{cs // 6000 % 60:02d}:{cs // 100 % 60:02d}.{cs % 100:02d}"
+
+
+def clock_ass(parts, speed: float, size: tuple, corner: str = "bottom-left") -> str:
+    """Subtitles showing the date and time, a line per second: parts = [(where in the copy before any speed change,
+    seconds, the clock at that moment)]; the copy's times divided by the speed."""
+    W, H = int(size[0]), int(size[1])
+    fs = max(14, int(round(min(W, H) * 0.045)))
+    m = max(6, int(round(min(W, H) * 0.03)))
+    align = {"bottom-left": 1, "bottom-right": 3, "top-left": 7, "top-right": 9}.get(corner, 1)
+    out = ["[Script Info]", "ScriptType: v4.00+", f"PlayResX: {W}", f"PlayResY: {H}", "WrapStyle: 2", "ScaledBorderAndShadow: yes", "",
+           "[V4+ Styles]",
+           "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, "
+           "StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding",
+           f"Style: Clock,Montserrat SemiBold,{fs},&H00FFFFFF,&H00FFFFFF,&H5A000000,&H5A000000,0,0,0,0,100,100,0,0,3,"
+           f"{max(2, fs // 5)},0,{align},{m},{m},{m},1", "", "[Events]",
+           "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"]
+    from datetime import timedelta
+    sp = float(speed or 1) or 1.0
+    for at, length, when in parts:
+        if when is None or length <= 0:
+            continue
+        frac = when.microsecond / 1e6
+        shown = when.replace(microsecond=0)
+        t, nxt = 0.0, (1.0 - frac) if frac > 0 else 1.0
+        while t < length - 1e-6:
+            end = min(length, nxt)
+            a, b = int(round((at + t) / sp * 100)), int(round((at + end) / sp * 100))
+            if b > a:
+                out.append(f"Dialogue: 0,{_ass_time(a)},{_ass_time(b)},Clock,,0,0,0,,{shown:%d.%m.%Y}  {shown:%H:%M:%S}")
+            t, nxt, shown = end, nxt + 1.0, shown + timedelta(seconds=1)
+    return "\n".join(out) + "\n"
+
+
+def clock_parts(ffmpeg, sources, durations, cut=None) -> tuple:
+    """The clock of a copy: ([(where, seconds, clock)], how). Parts of one GoPro recording follow each other (the
+    first part's time); other joined videos each with their own time; a cut starts at its start."""
+    sources = [Path(str(x)) for x in sources]
+    if len(sources) > 1 and gopro_recording([x.name for x in sources]):
+        first, how = recording_start(ffmpeg, sources[0], durations[0])
+        from datetime import timedelta
+        parts, at = [], 0.0
+        for d in durations:
+            parts.append((at, d, first + timedelta(seconds=at) if first else None))
+            at += d
+        return parts, how
+    parts, hows, at = [], [], 0.0
+    for src, d in zip(sources, durations):
+        when, how = recording_start(ffmpeg, src, d)
+        hows.append(how)
+        if cut and len(sources) == 1:
+            from datetime import timedelta
+            when = when + timedelta(seconds=float(cut[0])) if when else None
+            d = float(cut[1]) - float(cut[0])
+        parts.append((at, d, when))
+        at += d
+    return parts, ("file" if "file" in hows else hows[0] if hows else "")
 
 
 def _speed_filters(sig: dict, speed: float) -> list[str]:
@@ -968,6 +1076,9 @@ def _extra_graph(sig: dict, preset: str, hdr, interlaced: bool, turn: int, extra
         g += (f";[{logo_index}:v]scale={lw}:{lh}:force_original_aspect_ratio=decrease,format=rgba[lg];"
               f"[vb][lg]overlay={x}:{y}:format=auto:eof_action=repeat[vl]")
         last = "vl"
+    if extra.get("clock"):                 # the date and time (subtitles in the job's own folder, the program's font)
+        g += f";[{last}]ass=clock.ass:fontsdir=fonts[vk]"
+        last = "vk"
     g += f";[{last}]scale=out_range=tv,format=yuv420p[v]"
     sound = not mute and bool(sig.get("audio")) and speed in (0.5, 1, 2)
     # the sound at 2x / half speed: atempo, its start moved like the picture's (setpts) - else a sound that starts after
@@ -981,7 +1092,8 @@ def _extra_graph(sig: dict, preset: str, hdr, interlaced: bool, turn: int, extra
 
 
 def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb, progress_cb, cancel_cb, output_dir, job_id,
-            tag: str = "", mute: bool = False, turn: int = 0, prefer: str | None = None, extra: dict | None = None) -> Path:
+            tag: str = "", mute: bool = False, turn: int = 0, prefer: str | None = None, extra: dict | None = None,
+            clock=None) -> Path:
     """The picture and sound made with the preset (or to a size, two passes) into a new file in Converted; returns it
     and where the picture was made ("nvidia" / "cpu")."""
     hdr = _hdr_kind(ffmpeg, source)
@@ -993,15 +1105,16 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
     sp_tag = f"x{int(speed)}" if speed > 1 else (f"slow{int(round(1 / speed))}x" if 0 < speed < 1 else "")
     tag = "_".join(x for x in (tag, sp_tag, "vertical" if extra.get("vertical") else "",
                                   "logo" if extra.get("logo") else "", "lesswind" if extra.get("wind") else "",
-                                  "evensound" if extra.get("loud") else "",
+                                  "evensound" if extra.get("loud") else "", "clock" if extra.get("clock") else "",
                                   "turned" if turn else "", "nosound" if mute else "") if x)
     duration = duration / speed                            # the copy's own length (faster: shorter; slow motion: longer)
-    out = _unique_output(source, preset, target_mb, Path(output_dir) if output_dir else None, tag)   # reserved (empty)
+    out = Path(os.path.abspath(_unique_output(source, preset, target_mb, Path(output_dir) if output_dir else None, tag)))   # reserved
     amap = [] if mute else ["-map", "0:a?"]                # "Without sound": no sound in the copy at all
     aenc = (lambda k: ["-an"]) if mute else (lambda k: ["-c:a", "aac", "-b:a", f"{int(k)}k"])
     part = out.with_name(out.stem + ".part.mp4")       # its own name: the output name is this conversion's alone
     passlog = None
     made_on = "cpu"
+    cwd = None                                             # the clock's folder (FFmpeg runs there: no path to escape)
     try:
         cfg = PRESETS[preset]
         vsel = ["-map", "0:v:0", *amap, *_scale_args(preset, hdr, interlaced, turn)]     # the picture as before
@@ -1014,6 +1127,15 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
                 if not (lgx and Path(str(lgx.get("path") or "")).is_file()):
                     raise RuntimeError("The logo of this conversion is not there any more - choose the logo again and convert again")
                 logo_in = ["-i", str(lgx["path"])]
+            if extra.get("clock"):
+                parts = clock if clock is not None else clock_parts(ffmpeg, [source], [duration * speed])[0]
+                lgc = (extra.get("logo") or {}).get("corner") if isinstance(extra.get("logo"), dict) else ""
+                cwd = (HOME / "data" / f"clock-{os.getpid()}-{threading.get_ident()}-{time.time_ns()}").resolve()
+                cwd.mkdir(parents=True, exist_ok=True)
+                (cwd / "clock.ass").write_text(clock_ass(parts, speed, _out_size(sig, preset, turn, extra.get("vertical") or ""),
+                                                         "bottom-right" if lgc == "bottom-left" else "bottom-left"), "utf-8")
+                from .textfx import install_fonts
+                install_fonts(cwd)
             ga, gv, sound, through = _extra_graph(sig, preset, hdr, interlaced, turn, extra, mute, 1)
             vsel = [*logo_in, "-filter_complex", ga, "-map", "[v]",
                     *((["-map", "[a]"] if through else ["-map", "0:a?"]) if sound else [])]
@@ -1038,13 +1160,13 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
                 "-b:v", f"{video_k}k", "-maxrate", f"{int(video_k*1.25)}k", "-bufsize", f"{int(video_k*2)}k",
                 "-pass", "1", "-passlogfile", passlog, "-an", "-f", "null", os.devnull
             ]
-            _run_progress(pass1, duration, progress_cb, cancel_cb, 0.0, 0.48, job_id=job_id)
+            _run_progress(pass1, duration, progress_cb, cancel_cb, 0.0, 0.48, job_id=job_id, cwd=cwd)
             pass2 = common + [
                 "-b:v", f"{video_k}k", "-maxrate", f"{int(video_k*1.25)}k", "-bufsize", f"{int(video_k*2)}k",
                 "-pass", "2", "-passlogfile", passlog,
                 *aenc(audio_k), "-movflags", "+faststart", str(part)
             ]
-            _run_progress(pass2, duration, progress_cb, cancel_cb, 0.50, 0.50, job_id=job_id)
+            _run_progress(pass2, duration, progress_cb, cancel_cb, 0.50, 0.50, job_id=job_id, cwd=cwd)
         else:
             plan = None
             try:
@@ -1082,7 +1204,7 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
                     *aenc(cfg["audio_k"]),
                     "-movflags", "+faststart", str(part)
                 ]
-                _run_progress(cmd, duration, progress_cb, cancel_cb, job_id=job_id)
+                _run_progress(cmd, duration, progress_cb, cancel_cb, job_id=job_id, cwd=cwd)
 
         if cancel_cb and cancel_cb():
             raise RuntimeError("cancelled")
@@ -1101,6 +1223,8 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
             pass
         raise
     finally:
+        if cwd:
+            shutil.rmtree(cwd, ignore_errors=True)
         if passlog:                        # two-pass logs (with .temp files while a pass runs): also after Cancel
             for f in Path(passlog).parent.glob(Path(passlog).name + "*"):
                 try:

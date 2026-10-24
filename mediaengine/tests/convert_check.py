@@ -347,6 +347,48 @@ def main():
           and all(-0.03 <= o <= 0.045 for o in oq) and "_evensound_" in Path(ev["output"]).name
           and abs(float(_probe(Path(ev2["output"]))["format"]["duration"]) - 7.0) <= 0.15,
           (l0, l1, l2, [round(o, 3) for o in oq], Path(ev["output"]).name))
+    # "Date and time in the corner": the recording's time read as each maker writes it (GoPro / DJI: their clock as
+    # written; a phone: UTC shown in this PC's zone; an iPhone: its local time; nothing: the file's date minus the
+    # length), shown every second - at 2x the clock runs twice as fast, a cut starts at its start, joined videos each
+    # with their own time, parts of one GoPro recording one after another
+    from datetime import datetime as _dt, timezone as _tz, timedelta as _td
+    def tagged(name, *meta, d=4):
+        f = src_dir / name
+        subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "color=c=0x808080:size=640x360:rate=30", "-t", str(d), *meta,
+                        "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p", str(f)], check=True)
+        return f
+    cg = tagged("camera_clock.mp4", "-metadata", "creation_time=2026-10-23T14:05:07Z", "-metadata:s:v", "handler_name=GoPro H.265")
+    cp = tagged("phone_utc.mp4", "-metadata", "creation_time=2026-10-23T11:05:07Z")
+    ci = tagged("iphone.mov", "-movflags", "use_metadata_tags", "-metadata", "com.apple.quicktime.creationdate=2026-10-23T14:05:07+0300",
+                "-metadata", "creation_time=2026-10-23T11:05:07Z")
+    cn = tagged("no_time.mp4", "-map_metadata", "-1", "-fflags", "+bitexact")
+    os.utime(cn, (1792764000, 1792764000))
+    later = tagged("later.mp4", "-metadata", "creation_time=2026-10-23T15:00:00Z", "-metadata:s:v", "handler_name=GoPro H.265", d=2)
+    rs = [cvx.recording_start(ff, x) for x in (cg, cp, ci, cn)]
+    want_rs = [(_dt(2026, 10, 23, 14, 5, 7), "camera"), (_dt(2026, 10, 23, 11, 5, 7, tzinfo=_tz.utc).astimezone().replace(tzinfo=None), "phone"),
+               (_dt(2026, 10, 23, 14, 5, 7), "phone"), (_dt.fromtimestamp(1792764000 - 4), "file")]
+    jp, jh = cvx.clock_parts(ff, [cg, later], [4.0, 2.0])
+    cut_p, _h = cvx.clock_parts(ff, [cg], [4.0], (1.5, 3.0))
+    ass2 = cvx.clock_ass([(0.0, 3.0, _dt(2026, 10, 23, 23, 59, 58, 500000))], 2, (1920, 1080))
+    lines2 = [x for x in ass2.splitlines() if x.startswith("Dialogue:")]
+    ck = convert_file(cg, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"clock": True}))
+    plain = convert_file(cg, "share_1080p", output_dir=out_dir)
+    def corner(f, t, x0):
+        return subprocess.run([ff, "-v", "error", "-ss", str(t), "-i", str(f), "-frames:v", "1", "-vf", f"crop=200:40:{x0}:310", "-f", "rawvideo",
+                               "-pix_fmt", "gray", "-"], capture_output=True).stdout
+    cdiff = lambda a, b: sum(abs(x - y) for x, y in zip(a, b)) / max(1, len(a))
+    # (a grey picture: the box shows, and only its seconds change)
+    c05, c15, p05 = corner(ck["output"], 0.5, 0), corner(ck["output"], 1.5, 0), corner(plain["output"], 0.5, 0)
+    check("convert_date_and_time_in_the_corner", rs == want_rs and jh == "camera"
+          and [(round(a, 2), round(b, 2), w) for a, b, w in jp] == [(0.0, 4.0, _dt(2026, 10, 23, 14, 5, 7)), (4.0, 2.0, _dt(2026, 10, 23, 15, 0))]
+          and cut_p == [(0.0, 1.5, _dt(2026, 10, 23, 14, 5, 8, 500000))]
+          and lines2 == ["Dialogue: 0,0:00:00.00,0:00:00.25,Clock,,0,0,0,,23.10.2026  23:59:58",
+                         "Dialogue: 0,0:00:00.25,0:00:00.75,Clock,,0,0,0,,23.10.2026  23:59:59",
+                         "Dialogue: 0,0:00:00.75,0:00:01.25,Clock,,0,0,0,,24.10.2026  00:00:00",
+                         "Dialogue: 0,0:00:01.25,0:00:01.50,Clock,,0,0,0,,24.10.2026  00:00:01"]
+          and ck.get("clock") == "camera" and "_clock_" in Path(ck["output"]).name and cdiff(c05, p05) > 10 and cdiff(c05, c15) > 0.2
+          and not list((_H / "data").glob("clock-*")),
+          (rs, jh, jp, cut_p, lines2, ck.get("clock"), cdiff(c05, p05), cdiff(c05, c15)))
     # pictures every N seconds (a report): a folder of JPEGs named by their moment, through a converter job
     jf = wait_job(start_convert_job([], "share_1080p", paths=[str(whole)], extra={"frames": 5}))
     of = ((jf.get("options") or {}).get("outputs") or [{}])[0]

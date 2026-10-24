@@ -896,6 +896,8 @@ PHRASES = {
         "Ещё два вида субтитров: по одному слову, крупно (как в TikTok), и сказанное слово на цветной плашке.",
     "Convert: pictures every 5 / 10 / 30 / 60 seconds of the selected videos (photos for a report) and a list of earlier conversions with their buttons.":
         "Конвертация: кадры каждые 5 / 10 / 30 / 60 секунд выбранных видео (фото для отчёта) и список прошлых конвертаций с их кнопками.",
+    "Convert → More: “Date and time in the corner” - when it was filmed, every second, from the camera or phone clock (for reports).":
+        "Конвертация → «Ещё»: «Дата и время в углу» — когда снято, каждую секунду, по часам камеры или телефона (для отчётов).",
     "Convert → More: slow motion ½× and ¼× (smooth from 60 / 120 fps videos) and “Even out the sound” (quiet speech louder, loud parts softer).":
         "Конвертация → «Ещё»: замедление ½× и ¼× (плавно из видео 60 / 120 кадров/с) и «Выровнять звук» (тихая речь громче, громкое тише).",
     "Convert → More: speed (2×, 4×, 8× faster), vertical 9:16 for Reels / TikTok (the middle, or the whole picture on a blurred background), your logo in a corner, less wind noise.":
