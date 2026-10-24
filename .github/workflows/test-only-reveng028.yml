@@ -1,7 +1,7 @@
 name: test-only-reveng028
 on:
   pull_request:
-    paths: ['.ci/test-only/**', '.github/workflows/test-only-*.yml', 'FILE_MANIFEST.json', 'README.txt', 'LOCAL_VALIDATION.json', 'SENSITIVE_DATA_REVIEW.json']
+    paths: ['social/socialreel/**', 'social/tests/**', 'social/CONCEPT_CORE_OFFLINE.md', '.ci/tests/**', '.ci/test-only/**', 'forge/tests/**', 'forge/tools/build_release.py', 'reveng/ResearchLocal/**', 'reveng/tests/**', 'reveng/RESEARCH_LOCAL_SOURCE_MANIFEST.json', '.github/workflows/*.yml', '.github/workflows/*.yaml', 'FILE_MANIFEST.json', 'README.txt', 'LOCAL_VALIDATION.json', 'SENSITIVE_DATA_REVIEW.json']
   workflow_dispatch:
 permissions:
   contents: read
@@ -25,7 +25,9 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install beautifulsoup4==4.15.0
+      - run: python -m pip install --only-binary=PyYAML --no-deps PyYAML==6.0.3
       - run: python -B .ci/test-only/harness/verify_files.py
+      - run: python -B .ci/test-only/harness/test_recovery_workflow_gates.py
       - run: python -B .ci/test-only/harness/test_workflow_paths.py
       - run: python -X utf8 -B .ci/test-only/harness/run.py reveng028
         shell: powershell

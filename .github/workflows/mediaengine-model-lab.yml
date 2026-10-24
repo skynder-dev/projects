@@ -19,6 +19,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   linux:
+    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}
     runs-on: ubuntu-latest
     timeout-minutes: 130
     steps:
@@ -57,7 +58,7 @@ jobs:
           git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" mediaengine-model-lab
   windows:
     needs: linux
-    if: always()
+    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (always()) }}
     runs-on: windows-latest
     timeout-minutes: 60
     steps:

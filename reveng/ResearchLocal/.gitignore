@@ -1,0 +1,7 @@
+# This canonical directory contains flat source files, not a runtime workspace.
+# Add new source formats explicitly rather than committing generated/private data.
+/*
+!/*.py
+!/*.cs
+!/.gitignore
+!/README.md

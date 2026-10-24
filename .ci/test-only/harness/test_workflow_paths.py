@@ -57,12 +57,13 @@ class WorkflowPathsTest(unittest.TestCase):
         for workflow in WORKFLOWS:
             for changed in ('.ci/test-only/new-fixture.json',
                             '.ci/test-only/harness/nested/new_check.py',
+                            'social/socialreel/new_core.py', 'social/tests/new_case.py', '.ci/tests/new_guard.py',
                             '.github/workflows/test-only-new.yml'):
                 with self.subTest(workflow=workflow, changed=changed):
                     self.assertTrue(triggers(read_paths(workflow), [changed]))
 
     def test_unrelated_and_near_miss_paths_do_not_trigger(self):
-        unrelated = ('social/socialreel/pipeline.py', 'forge/README.md',
+        unrelated = ('social/config.json', 'forge/README.md',
                      'reveng/src/pipeline.js', '.github/workflows/production.yml',
                      '.github/workflows/nested/test-only-new.yml',
                      '.ci/test-only-other/check.py', 'docs/README.txt',
@@ -70,10 +71,21 @@ class WorkflowPathsTest(unittest.TestCase):
         for workflow in WORKFLOWS:
             patterns = read_paths(workflow)
             self.assertFalse(triggers(patterns, []))
-            self.assertFalse(triggers(patterns, unrelated))
-            for changed in unrelated:
+            applicable = tuple(path for path in unrelated if not (workflow.endswith('reveng028.yml') and path == '.github/workflows/production.yml'))
+            self.assertFalse(triggers(patterns, applicable))
+            for changed in applicable:
                 with self.subTest(workflow=workflow, changed=changed):
                     self.assertFalse(triggers(patterns, [changed]))
+
+    def test_guard_workflow_covers_shared_workflows_and_guard_inputs(self):
+        patterns = read_paths('.github/workflows/test-only-reveng028.yml')
+        for changed in ('.github/workflows/production.yml',
+                        '.github/workflows/escape.yaml',
+                        '.github/workflows/test-only-social246.yml',
+                        '.ci/test-only/harness/test_recovery_workflow_gates.py',
+                        '.ci/test-only/fixtures/recovery_workflow_baseline.json'):
+            with self.subTest(changed=changed):
+                self.assertTrue(triggers(patterns, [changed]))
 
     def test_mixed_change_set_triggers(self):
         for workflow in WORKFLOWS:

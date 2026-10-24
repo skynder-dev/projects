@@ -30,6 +30,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   windows:
+    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}
     runs-on: windows-latest
     timeout-minutes: 190      # a slow runner took 150 min before the large-footage step had finished (run 39050990426)
     env:

@@ -19,6 +19,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   addon:
+    if: ${{ github.ref != 'refs/heads/ci/github-core-20261022' && github.head_ref != 'ci/github-core-20261022' && (success()) }}
     runs-on: windows-latest
     timeout-minutes: 350
     steps:
