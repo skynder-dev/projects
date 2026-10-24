@@ -173,7 +173,9 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   other cameras as their clock wrote it, an iPhone its local time, an Android phone its stop time minus the length
   (in this PC's zone), else the file's date minus the length; speed, cut and joins keep it right. Saved pictures and
   **Save this picture** carry it too when chosen; the Cut… panel says when the video was filmed and the time at the
-  player's moment. A copy bigger than its source says "larger than the original". **Earlier conversions**: the last 10 jobs with their buttons.
+  player's moment. A copy bigger than its source says "larger than the original".
+- **Save pictures** also makes one PDF of them (b213): A4 pages, each picture with its moment and, when chosen, the
+  date and time; written page by page (270 pages in about 30 s); **Open the PDF**. **Earlier conversions**: the last 10 jobs with their buttons.
 
 ## Orders from other programs; night review fixes (2026-10-17)
 
