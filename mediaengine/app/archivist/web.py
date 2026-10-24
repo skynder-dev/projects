@@ -1399,6 +1399,18 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
                          f"{''.join(hparts)}</details>")
         except Exception:
             history=''
+        # an NVIDIA card that was never tested for converting: the one-minute test offered here (then used by itself)
+        gpu_hint=''
+        try:
+            from .converter import gpu_test_saved
+            from . import hwdecode as _hwd
+            if not gpu_test_saved() and any('NVIDIA' in str(n).upper() for n in (_hwd.saved().get('gpu') or [])):
+                gpu_hint=("<div class='card' style='margin-top:10px'><b>This PC has an NVIDIA graphics card</b>"
+                          "<div class='small muted' style='white-space:normal'>A one-minute test shows whether converting on it is faster with the same picture; "
+                          "after that, Convert uses it by itself. Your videos are not used.</div>"
+                          "<form method='post' action='/auto/check/convert-gpu-test' style='margin:6px 0 0'><button class='btn2'>Test converting on the graphics card</button></form></div>")
+        except Exception:
+            gpu_hint=''
         from .converter import output_folder, logo_saved, LOGO_CORNERS
         out_dir=output_folder()
         lg=logo_saved()
@@ -1481,7 +1493,7 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
 <label title='Quiet speech louder, loud parts softer - as loud as phones and players play videos'><input type='checkbox' id='loudOut'> <span>Even out the sound</span></label></div>
 <div class='toolbar' style='margin-top:6px;flex-wrap:wrap'><label><span>Pictures every</span> <select id='framesEvery'><option value='5'>5 s</option><option value='10' selected>10 s</option><option value='30'>30 s</option><option value='60'>60 s</option></select></label><input id='framesTitle' maxlength='120' placeholder='Report title (optional)' style='width:260px;max-width:100%'><button id='framesStart' class='btn btn2' type='button' disabled>Save pictures of the selected videos</button><span class='muted small'>Photos for a report, into a folder next to the converted videos - and all of them in one PDF.</span></div>
 <div class='toolbar' style='margin-top:6px;flex-wrap:wrap'>{logo_html}</div></details></div>
-{active}{history}
+{active}{history}{gpu_hint}
 {selection_notice}
 <form class='toolbar' method='get' action='/convert'><input name='q' value='{e(q)}' placeholder='Search local videos'><select name='scope'><option value='all' {'selected' if scope=='all' else ''}>All accessible videos</option><option value='library' {'selected' if scope=='library' else ''}>Library only</option></select><select name='source_kind'><option value='' {'selected' if not source_kind else ''}>Any origin</option><option value='fixed' {'selected' if source_kind=='fixed' else ''}>Local folders</option><option value='android' {'selected' if source_kind=='android' else ''}>Android</option><option value='removable' {'selected' if source_kind=='removable' else ''}>SD/USB</option></select><select name='source_id'>{srcopts}</select><select name='sort'><option value='date_desc' {'selected' if sort=='date_desc' else ''}>Newest</option><option value='date_asc' {'selected' if sort=='date_asc' else ''}>Oldest</option><option value='size_desc' {'selected' if sort=='size_desc' else ''}>Largest</option><option value='size_asc' {'selected' if sort=='size_asc' else ''}>Smallest</option><option value='duration_desc' {'selected' if sort=='duration_desc' else ''}>Longest</option><option value='name' {'selected' if sort=='name' else ''}>Name</option><option value='source' {'selected' if sort=='source' else ''}>Source</option></select><button class='btn2'>Filter</button><a class='btn2' href='/convert'>Clear</a></form>
 <div class='row space section-title'><span>{'Selected videos currently accessible' if preselect_ids else 'Accessible on this catalog page'} <span id='convertTotal' class='badge'>{total_local}</span></span><span class='row'><button class='btn2' type='button' id='cvAll'>Select all</button><button class='btn2' type='button' id='cvNone'>Clear the selection</button>{"<a class='btn btn2' href='/convert'>Show all local videos</a>" if preselect_ids else ''}</span></div><div class='small muted' style='margin:-6px 0 10px'>{"Only the selected IDs were checked for local availability." if preselect_ids else f"{total_catalog} matching catalog videos · local availability is checked only for the current page."}</div><div style='display:grid;gap:8px'>{cards}</div>"""

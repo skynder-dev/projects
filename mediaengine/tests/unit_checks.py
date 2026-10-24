@@ -1100,6 +1100,18 @@ def main():
             kp_ = con.execute("SELECT progress_at FROM jobs WHERE id=?", (kj_,)).fetchone()[0]
             con.execute("UPDATE jobs SET status='finished' WHERE id=?", (kj_,)); con.commit()
         check("convert: a finishing conversion stays alive for the watchdog", str(kp_) > "2026-10-24T00:00:00+00:00", kp_)
+        from archivist.config import update_config as _uc
+        _uc(lambda c: (c.setdefault("auto_edit", {}).__setitem__("hw_decode", {"gpu": ["NVIDIA GeForce RTX 3060"]}),
+                       c.setdefault("convert", {}).pop("gpu_test", None)))
+        with _ca().test_client() as _c:
+            gh1_ = _c.get("/convert", headers=H_).get_data(as_text=True)
+        _uc(lambda c: c.setdefault("convert", {}).__setitem__("gpu_test", {"tested_at": "2026-10-24 20:00", "use": False}))
+        with _ca().test_client() as _c:
+            gh2_ = _c.get("/convert", headers=H_).get_data(as_text=True)
+        _uc(lambda c: (c.setdefault("auto_edit", {}).pop("hw_decode", None), c.setdefault("convert", {}).pop("gpu_test", None)))
+        check("convert: an NVIDIA card never tested for converting - the test offered on the page, gone once tested",
+              "This PC has an NVIDIA graphics card" in gh1_ and "/auto/check/convert-gpu-test" in gh1_
+              and "This PC has an NVIDIA graphics card" not in gh2_)
         check("convert: a job taken out of the line never shows as the last conversion",
               f"Last converter job #{qb_}" not in qpage2_ and f"Last converter job #{qa_}" in qpage2_, qpage2_[-300:])
         check("convert: a second conversion waits in line and starts by itself after the job before it",
