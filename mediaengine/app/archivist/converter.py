@@ -128,6 +128,105 @@ def save_frame(source, t: float, output_dir=None, clock=False) -> Path:
 FRAME_STEPS = (5, 10, 30, 60)
 
 
+def _pictures_by_seeking(ffmpeg, source, every, duration, interlaced, tail, folder, name_of, progress_cb, cancel_cb, cwd) -> list:
+    """Pictures at 0, N, 2N ... s, each read by a seek (the first picture at or after that moment), three at a time:
+    [(file, moment)], or [] when this video cannot be read that way (then it is decoded whole)."""
+    from concurrent.futures import ThreadPoolExecutor
+    times = [k * every for k in range(int(duration // every) + 1) if k * every < duration - 0.02]
+
+    def one(t):
+        if (cancel_cb and cancel_cb()) or _EXITING.is_set():
+            return None
+        out = folder / f"{name_of(t)}.jpg"
+        # (the clock's subtitles count from the video's start: the picture's own time put back after the seek)
+        # (showinfo: the picture's own time after the seek - a stretch without any picture, in a video with gaps, gets none)
+        vf = ["showinfo"] + (["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if interlaced else []) \
+            + ([f"setpts=PTS+{t}/TB"] if cwd else []) + tail
+        try:
+            cp = subprocess.run([str(ffmpeg), "-y", "-hide_banner", "-loglevel", "info", "-nostats", "-ss", f"{t:.3f}", "-i", str(source),
+                                 "-map", "0:v:0", "-frames:v", "1", "-vf", ",".join(vf), "-q:v", "2", str(out)],
+                                capture_output=True, timeout=300, cwd=str(cwd) if cwd else None, **process_kwargs())
+        except (subprocess.TimeoutExpired, OSError):
+            return False
+        if cp.returncode != 0:
+            return False
+        if not (out.is_file() and out.stat().st_size > 100):
+            return None                                   # (no picture there: the end)
+        m = re.search(rb"pts_time:\s*(-?[\d.]+)", cp.stderr or b"")
+        dt = float(m.group(1)) if m else 0.0
+        if dt >= every - 0.001:                           # the next picture is in a later stretch: none for this one
+            try:
+                out.unlink()
+            except OSError:
+                pass
+            return None
+        return out, float(t) + max(0.0, dt)
+
+    made, failed, n = [], 0, max(1, len(times))
+    with ThreadPoolExecutor(3) as ex:
+        for i, r in enumerate(ex.map(one, times)):
+            if r is False:
+                failed += 1
+            elif r:
+                made.append(r)
+            if progress_cb:
+                progress_cb(100.0 * (i + 1) / n)
+    if failed or (times and not made):                # not read this way: the whole video instead
+        for f, _ in made:
+            try:
+                f.unlink()
+            except OSError:
+                pass
+        return []
+    return made
+
+
+def _pictures_by_decoding(ffmpeg, source, every, duration, interlaced, tail, folder, name_of, progress_cb, cancel_cb, job_id, cwd) -> list:
+    """The whole video decoded once, the first picture of each N-second stretch kept: [(file, moment)]. Each chosen
+    picture's own time is written by FFmpeg (metadata print) - right for videos with a varying frame rate too."""
+    own = None
+    if not cwd:                            # (the times' file by a relative name: no path to escape in the filter)
+        own = cwd = (HOME / "data" / f"pics-{os.getpid()}-{threading.get_ident()}-{time.time_ns()}").resolve()
+        cwd.mkdir(parents=True, exist_ok=True)
+    try:
+        times_f = Path(cwd) / "times.txt"
+        times_f.unlink(missing_ok=True)
+        # the choice first (whole fields are needed for it), then only the chosen pictures are converted (HDR is slow)
+        vf = (["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if interlaced else []) \
+            + [f"select='isnan(prev_selected_t)+gt(floor(t/{every})\\,floor(prev_selected_t/{every}))'",
+               "metadata=mode=add:key=me:value=1", "metadata=mode=print:file=times.txt"] + tail
+        pattern = str(folder).replace("%", "%%") + os.sep + "p_%05d.jpg"    # a % in a name is not a number pattern
+        _run_progress([str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-i", str(source), "-map", "0:v:0", "-vf", ",".join(vf),
+                       "-fps_mode", "vfr", "-q:v", "2", pattern], duration, progress_cb, cancel_cb, job_id=job_id, cwd=cwd)
+        if cancel_cb and cancel_cb():
+            raise RuntimeError("cancelled")
+        stamps = [float(x) for x in re.findall(r"pts_time:\s*(-?[\d.]+)", times_f.read_text("utf-8", "replace"))] \
+            if times_f.is_file() else []
+    finally:
+        if own:
+            shutil.rmtree(own, ignore_errors=True)
+    def num(f):                            # (by the number: p_100000 comes after p_99999)
+        try:
+            return int(f.stem.split("_", 1)[1])
+        except (ValueError, IndexError):
+            return -1
+    pics = sorted(folder.glob("p_*.jpg"), key=lambda f: (num(f), f.name))
+    # each picture named by its stretch (each is the first of a later stretch than the one before)
+    used, prev, made = set(), -1, []
+    for i, f in enumerate(pics):
+        ts = stamps[i] if i < len(stamps) else float(i * every)
+        k = max(prev + 1, int((ts + 1e-6) // every))
+        prev = k
+        name = name_of(k * every)
+        while name in used:
+            name += "_2"
+        used.add(name)
+        dst = folder / f"{name}.jpg"
+        f.replace(dst)
+        made.append((dst, max(0.0, ts)))
+    return made
+
+
 def save_frames_every(source, every: int, output_dir=None, progress_cb=None, cancel_cb=None, job_id=None, clock=False,
                       title: str = "") -> dict:
     """A picture every N seconds of a video (for a report): the first picture of each N-second stretch (0-N, N-2N,
@@ -170,46 +269,25 @@ def save_frames_every(source, every: int, output_dir=None, progress_cb=None, can
             (cwd / "clock.ass").write_text(clock_ass(parts, 1, _out_size(media_sig(ffmpeg, source), "keep_resolution", 0, "")), "utf-8")
             from .textfx import install_fonts
             install_fonts(cwd)
-        # the choice first (whole fields are needed for it), then only the chosen pictures are converted (HDR is slow)
-        vf = (["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if _is_interlaced(ffmpeg, source) else []) \
-            + [f"select='isnan(prev_selected_t)+gt(floor(t/{every})\\,floor(prev_selected_t/{every}))'"] \
-            + ([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []) \
+        interlaced = _is_interlaced(ffmpeg, source)
+        tail = ([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []) \
             + ["scale='trunc(iw*sar/2)*2':ih", "setsar=1"] + (["ass=clock.ass:fontsdir=fonts"] if cwd else []) \
             + ["format=gbrp", "format=yuvj420p"]
-        pattern = str(folder).replace("%", "%%") + os.sep + "p_%05d.jpg"    # a % in a name is not a number pattern
-        _run_progress([str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-i", str(source), "-map", "0:v:0", "-vf", ",".join(vf),
-                       "-fps_mode", "vfr", "-frame_pts", "1", "-q:v", "2", pattern], duration, progress_cb, cancel_cb, job_id=job_id, cwd=cwd)
+        wid = 3 if duration >= 6000 else 2
+        name_of = lambda t: f"{stem}_{t // 60:0{wid}d}m{t % 60:02d}s"
+        # each picture by itself: FFmpeg goes to the stretch's start and decodes only from the key picture before it
+        # (the same picture as decoding the whole video, about ten times faster for a long 4K video); a video that
+        # will not be read that way: the whole video decoded once and the pictures chosen on the way
+        made = _pictures_by_seeking(ffmpeg, source, every, duration, interlaced, tail, folder, name_of, progress_cb, cancel_cb, cwd)
         if cancel_cb and cancel_cb():
             raise RuntimeError("cancelled")
-        def num(f):                        # (by the number: p_100000 comes after p_99999)
-            try:
-                return int(f.stem.split("_", 1)[1])
-            except (ValueError, IndexError):
-                return -1
-        pics = sorted(folder.glob("p_*.jpg"), key=lambda f: (num(f), f.name))
-        if not pics:
+        if not made:
+            made = _pictures_by_decoding(ffmpeg, source, every, duration, interlaced, tail, folder, name_of, progress_cb, cancel_cb,
+                                         job_id, cwd)
+        if not made:
             raise RuntimeError("No pictures were made")
-        # each picture's number is its own time in frames of the video's rate (frame_pts): named by its stretch
-        # (each picture is the first of a later stretch than the one before, so the stretches only go up)
-        tb = _stream_time_base(ffmpeg, source)
-        wid = 3 if duration >= 6000 else 2
-        total, used, prev, made = 0, set(), -1, []
-        for i, f in enumerate(pics):
-            try:
-                ts = int(f.stem.split("_", 1)[1]) * tb
-            except (ValueError, IndexError):
-                ts = i * every
-            k = max(prev + 1, int((ts + tb / 2) // every))
-            prev = k
-            t = k * every
-            name = f"{stem}_{t // 60:0{wid}d}m{t % 60:02d}s"
-            while name in used:
-                name += "_2"
-            used.add(name)
-            dst = folder / f"{name}.jpg"
-            f.replace(dst)
-            total += dst.stat().st_size
-            made.append((dst, float(ts)))
+        pics = [m[0] for m in made]
+        total = sum(m[0].stat().st_size for m in made)
         pdf = None
         try:                               # all of them on A4 pages, for a report (the pictures stay without it)
             pdf = pictures_pdf(folder / f"{stem}_pictures.pdf", made, source.name, every, parts[0][2] if parts else None,

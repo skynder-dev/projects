@@ -455,6 +455,26 @@ def main():
     check("pictures_in_one_pdf", pdfb[:5] == b"%PDF-" and len(re.findall(rb"/Type\s*/Page(?!s)", pdfb)) == 1
           and len(re.findall(rb"/Type\s*/Page(?!s)", bigb)) == 270 and b"/Count 270" in bigb and t_pdf < 240
           and Path(of["pdf"]).parent == Path(of["output"]) and Path(of["pdf"]).name == "whole_sync_pictures.pdf", (of.get("pdf"), len(pdfb), len(bigb), round(t_pdf, 1)))
+    # pictures by seeking (each read from the key picture before its moment) = the same pictures as decoding the
+    # whole video; a video with a 3 s gap in its pictures: no picture for the empty stretches, by either way
+    gapv = src_dir / "gap_3s.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=320x180:rate=30:d=4", "-vf",
+                    "setpts='if(gte(T,2),PTS+3/TB,PTS)'", "-fps_mode", "vfr", "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p",
+                    str(gapv)], check=True)
+    def both(src, every):
+        dur_ = float(_pd(src)); tail_ = ["scale='trunc(iw*sar/2)*2':ih", "setsar=1", "format=gbrp", "format=yuvj420p"]
+        got = []
+        for mode in ("seek", "dec"):
+            d = work / "pics_both" / f"{src.stem}_{mode}"
+            shutil.rmtree(d, ignore_errors=True); d.mkdir(parents=True)
+            nm = lambda t: f"p{int(t):05d}"
+            got.append(cvx._pictures_by_seeking(ff, src, every, dur_, False, tail_, d, nm, None, None, None) if mode == "seek" else
+                       cvx._pictures_by_decoding(ff, src, every, dur_, False, tail_, d, nm, None, None, None, None))
+        same = len(got[0]) == len(got[1]) and all(a[0].name == b[0].name and a[0].read_bytes() == b[0].read_bytes() for a, b in zip(*got))
+        return same, [x[0].name for x in got[0]], [x[0].name for x in got[1]]
+    bw, bg = both(whole, 5), both(gapv, 1)
+    check("pictures_by_seeking_are_the_same", bw[0] and bw[1] == ["p00000.jpg", "p00005.jpg", "p00010.jpg"] and bg[0]
+          and bg[1] == ["p00000.jpg", "p00001.jpg", "p00005.jpg", "p00006.jpg"], (bw, bg))
     check("pictures_every_n_seconds", jf["status"] == "finished" and of.get("frames") == 3 and pics == ["whole_sync_00m00s.jpg", "whole_sync_00m05s.jpg",
           "whole_sync_00m10s.jpg"] and psz == (640, 360) and Path(of["output"]).name == "whole_sync_pictures_every_5s"
           and sorted(x.name for x in Path(pp["output"]).glob("*.jpg")) == ["Sale 20% off_00m00s.jpg", "Sale 20% off_00m02s.jpg", "Sale 20% off_00m04s.jpg"]

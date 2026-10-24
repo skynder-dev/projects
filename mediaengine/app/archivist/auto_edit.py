@@ -2518,6 +2518,7 @@ WHATS_NEW_ITEMS = [
     ("2026-10-19b", "Voice-over: your picks from the voice test, the voices 4_4 and 4_2, instead of 3.1."),
     ("2026-10-20", "Text on a video (Auto Edit → Voice-over and text): titles and lines of text at the moments you choose, on a colored stripe, a dark box or in big letters - no add-on needed."),
     ("2026-10-22", "Captions in two more looks: one word at a time, big (like TikTok), and the word being said on a color block."),
+    ("2026-10-24j", "Convert: pictures from long videos are saved many times faster (each picture read from its own moment, not the whole video decoded)."),
     ("2026-10-24i", "Convert: Select all / Clear the selection; the preset and the lasting choices (sound, date and time, Brighter, logo, how often pictures are taken) are remembered; a copy shorter than its video (a damaged or half-copied file) says so."),
     ("2026-10-24h", "Convert → More: “Brighter” for videos filmed in the dark."),
     ("2026-10-24g", "Convert: a conversion started while another one runs waits in line and starts by itself after it (“Take out of the line” removes it)."),
