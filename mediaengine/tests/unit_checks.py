@@ -1057,6 +1057,9 @@ def main():
             hp2_ = _c.get("/convert", headers=H_).get_data(as_text=True)
         check("convert: removing the newest conversion from the page keeps the earlier ones",
               f"data-job='{hj_[2]}'" not in hp2_ and f"data-job-box='{hj_[0]}'" in hp2_ and f"data-job-box='{hj_[1]}'" in hp2_, hj_)
+        with _ca().test_client() as _c:                     # when it was filmed: only a library video on this PC
+            wb_ = (_c.get("/api/convert/when?id=x", headers=H_).status_code, _c.get("/api/convert/when?id=999999", headers=H_).status_code)
+        check("convert: 'when it was filmed' answers only for a library video", wb_ == (400, 404), wb_)
         # More options: checked choices; the logo chosen in the Windows Open window kept as a PNG, its corner and size
         bad_x_ = []
         for bx_ in ({"speed": 3}, {"speed": True}, {"speed": 0.3}, {"speed": float("nan")}, {"speed": "inf"}, {"vertical": "side"},

@@ -9,7 +9,7 @@ Needs: pip install playwright (on Windows the installed Edge is used; elsewhere 
 """
 from __future__ import annotations
 
-import argparse, json, os, shutil, sys, threading, time
+import argparse, json, os, re, shutil, sys, threading, time
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -269,6 +269,9 @@ def main():
                 pg.dispatch_event(f"#cvCut{vid} .cvE", "change")
                 print("INFO this browser does not play H.264: the cut's times were typed", flush=True)
             note = pg.inner_text(f".convertRow:has(.convertCheck[value='{vid}']) .cvCutNote")
+            # when it was filmed, under the player (the recording's time, else the file's date)
+            pg.wait_for_function(f"(document.querySelector('#cvCut{vid} .cvWhen')||{{}}).textContent.indexOf('Снято')>=0", timeout=10_000)
+            when_txt = pg.inner_text(f"#cvCut{vid} .cvWhen")
             pg.click(f"#cvCut{vid} [data-set=f]")    # "Save this picture": the player's moment (5 s), else the typed start (2 s)
             pg.wait_for_function("document.getElementById('toast').textContent.indexOf('Сохранено')>=0", timeout=20_000)
             pics = sorted(x.name for x in (work / "home" / "Converted").glob("*_frame_*.jpg"))
@@ -285,8 +288,8 @@ def main():
             outc = (jo.get("outputs") or [{}])[0]
             from archivist.auto_edit import _probe as _pr
             cdur = float(_pr(Path(outc["output"]))["format"]["duration"]) if outc.get("output") else 0
-            cut_ok = (note == "фрагмент 0:02–0:05" and jr["status"] == "finished" and jo.get("cuts") == {str(vid): [2.0, 5.0]}
-                      and abs(cdur - 3.0) <= 0.1 and pics == [clip.stem + ("_frame_0m05s.jpg" if played else "_frame_0m02s.jpg")]) or (note, jr["status"], jo.get("cuts"), cdur, outc, pics)
+            cut_ok = (note == "фрагмент 0:02–0:05" and jr["status"] == "finished" and re.search(r"Снято: \d\d\.\d\d\.\d{4} \d\d:\d\d:\d\d", when_txt) and jo.get("cuts") == {str(vid): [2.0, 5.0]}
+                      and abs(cdur - 3.0) <= 0.1 and pics == [clip.stem + ("_frame_0m05s.jpg" if played else "_frame_0m02s.jpg")]) or (note, when_txt, jr["status"], jo.get("cuts"), cdur, outc, pics)
         except Exception as exc:
             cut_ok = str(exc)[:300]
         check("convert_a_part_of_a_video_in_a_real_browser", cut_ok is True, cut_ok)

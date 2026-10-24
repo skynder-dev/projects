@@ -1614,7 +1614,7 @@ document.addEventListener('click',ev=>{const b=ev.target.closest('.cvCutBtn');if
  const full=Number(ch.dataset.durationMs||0)/1000;
  pan=document.createElement('div');pan.id='cvCut'+id;pan.className='card';pan.style.margin='-4px 0 4px';pan.style.minWidth='0';
  pan.innerHTML="<video controls preload='metadata' style='width:100%;max-height:320px;background:#000;border-radius:8px'></video>"
-  +"<div class='small muted cvNoPlay' style='display:none;white-space:normal'></div>"
+  +"<div class='small muted cvNoPlay' style='display:none;white-space:normal'></div><div class='small muted cvWhen' style='white-space:normal'></div>"
   +"<div class='toolbar' style='margin-top:6px;flex-wrap:wrap'><button type='button' class='btn2' data-set='s'>Start here</button><input class='cvS' style='width:90px' placeholder='0:00'>"
   +"<button type='button' class='btn2' data-set='e'>End here</button><input class='cvE' style='width:90px'>"
   +"<button type='button' class='btn2' data-set='x'>Whole video</button><button type='button' class='btn2' data-set='f'>Save this picture</button></div>"
@@ -1622,6 +1622,11 @@ document.addEventListener('click',ev=>{const b=ev.target.closest('.cvCutBtn');if
  row.after(pan);const v=pan.querySelector('video'),S=pan.querySelector('.cvS'),E=pan.querySelector('.cvE');v.src='/media/'+id;if(full>0)E.placeholder=fmtT(full);
  v.addEventListener('error',()=>{const n=pan.querySelector('.cvNoPlay');n.style.display='block';n.textContent='This video does not play here - type the start and end (minutes:seconds).';v.style.display='none';pan.querySelectorAll("[data-set='s'],[data-set='e']").forEach(x=>x.style.display='none')});
  const c0=cutOf(ch);if(c0){S.value=fmtT(c0[0]);E.value=fmtT(c0[1])}
+ fetch('/api/convert/when?id='+Number(id),{cache:'no-store'}).then(r=>r.json()).then(x=>{if(!x.ok)return;const w=pan.querySelector('.cvWhen'),m=String(x.start).match(/^(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)$/);if(!w||!m)return;
+  const t0=Date.UTC(+m[1],+m[2]-1,+m[3],+m[4],+m[5],+m[6]),p2=n=>String(n).padStart(2,'0'),f=ms=>{const d=new Date(ms);return p2(d.getUTCDate())+'.'+p2(d.getUTCMonth()+1)+'.'+d.getUTCFullYear()+' '+p2(d.getUTCHours())+':'+p2(d.getUTCMinutes())+':'+p2(d.getUTCSeconds())};
+  const who={camera:"the camera's clock",phone:"the phone's time",file:"the file's date"}[x.how]||'';
+  w.innerHTML="<span>Filmed:</span> <span translate='no'>"+f(t0)+"</span>"+(who?" (<span>"+who+"</span>)":"")+" · <span>in the player:</span> <span translate='no' class='cvNow'>"+f(t0)+"</span>";
+  const upd=()=>{const n=w.querySelector('.cvNow');if(n)n.textContent=f(t0+Math.floor(v.currentTime||0)*1000)};v.addEventListener('timeupdate',upd);v.addEventListener('seeked',upd)}).catch(()=>{});
  function apply(){const a=parseT(S.value),z=parseT(E.value);const s=a===null?0:a,e=z===null?(full>0?full:NaN):(full>0?Math.min(z,full):z);
   if(a===null&&z===null){delete ch.dataset.cutStart;delete ch.dataset.cutEnd}
   else if(Number.isFinite(s)&&Number.isFinite(e)&&e-s>=0.5){ch.dataset.cutStart=String(s);ch.dataset.cutEnd=String(e);if(!ch.checked){ch.checked=true;ch.dispatchEvent(new Event('change'))}}
@@ -1819,6 +1824,33 @@ pollConvert();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='
         # the bytes, not the open file: on Windows an open file could not be removed by "Remove the logo"
         return Response(f.read_bytes(),mimetype='image/png',headers={'Cache-Control':'no-store'})
 
+    @app.get('/api/convert/when')
+    def convert_when():
+        """When a library video was filmed (for "Date and time in the corner"): its first picture's time as the clock
+        showed it, and whose clock that is."""
+        try:
+            iid=int(request.args.get('id',''))
+        except (TypeError,ValueError):
+            return jsonify({'ok':False}),400
+        if not 0<iid<2**62:
+            return jsonify({'ok':False}),404
+        with db() as con:
+            r=con.execute("SELECT * FROM inventory WHERE id=? AND excluded=0 AND media_type='video' AND private_path IS NULL "
+                          "AND rejected_path IS NULL AND COALESCE(analysis_status,'')<>'private' "
+                          "AND COALESCE(sha256,'') NOT IN (SELECT sha256 FROM ignored_hashes)",(iid,)).fetchone()
+        src=next((Path(r[k]) for k in ('staging_path','archive_path','path') if r and r[k] and Path(r[k]).is_file()),None)
+        if not src:
+            return jsonify({'ok':False}),404
+        from .converter import recording_start
+        from .media import _ffmpeg_exe
+        try:
+            when,how=recording_start(_ffmpeg_exe(),src)
+        except Exception:
+            when,how=None,''
+        if not when:
+            return jsonify({'ok':False}),404
+        return jsonify({'ok':True,'start':when.isoformat(timespec='seconds'),'how':how})
+
     @app.post('/api/convert/frame')
     def convert_frame():
         """'Save this picture': one frame of a library video at the second shown in the player, as a JPEG in the
@@ -1826,8 +1858,10 @@ pollConvert();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='
         payload=_json_obj()
         try:
             iid,t=int(payload.get('id')),float(payload.get('t'))
-        except (TypeError,ValueError):
+        except (TypeError,ValueError,OverflowError):
             return jsonify({'ok':False,'error':'That moment is not in the video'}),400
+        if not 0<iid<2**62:
+            return jsonify({'ok':False,'error':'This video is not on this computer now.'}),404
         with db() as con:
             r=con.execute("SELECT * FROM inventory WHERE id=? AND excluded=0 AND media_type='video' AND private_path IS NULL "
                           "AND rejected_path IS NULL AND COALESCE(analysis_status,'')<>'private' "

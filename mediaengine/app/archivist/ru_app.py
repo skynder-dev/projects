@@ -278,6 +278,8 @@ APP_PHRASES: dict[str, str] = {
         "Кадры берутся из целых видео, по одному (без склейки и обрезки).", "No pictures were made": "Кадры не получились",
     "More: speed, vertical 9:16, logo, date and time, sound": "Ещё: скорость, вертикально 9:16, логотип, дата и время, звук",
     "Date and time in the corner": "Дата и время в углу", "date and time": "дата и время",
+    "Filmed:": "Снято:", "in the player:": "в плеере:", "the camera's clock": "по часам камеры", "the phone's time": "по времени телефона",
+    "the file's date": "по дате файла",
     "date and time (from the file's date)": "дата и время (по дате файла)",
     "When it was filmed, every second, from the camera or phone clock - for reports": "Когда снято, каждую секунду — по часам камеры или телефона, для отчётов",
     "½× slow motion (for 60 fps videos)": "замедление ½× (для видео 60 кадров/с)",
