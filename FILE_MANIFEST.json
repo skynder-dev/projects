@@ -407,7 +407,7 @@
   "reveng/ResearchLocal/manual_hypotheses.py": "f5810fb5a315d7c09f071b911a54f85d21bd96434917efdc706bc42da9f1e307",
   "reveng/tests/test_researchlocal_offline.py": "895df7c543d573fe5e50dbe1005bf0153e902ddbec8cd89e4469ab6b26937b40",
   ".ci/test-only/harness/canonical_source.py": "aef1372e9355ae1ea050cbfd4b69c954d15d3eed513073ce47c9381ae3f28ad4",
-  ".ci/test-only/harness/test_canonical_source.py": "8cdf6859c80e4d76fd01d3b7d461a373a1a79cc0db9537b42315680e0c875301",
+  ".ci/test-only/harness/test_canonical_source.py": "4a04a17a863948133fd4cd5f42bc81dd10db44a3c76579ead9b38bab188439bc",
   "forge/tests/test_release_packaging.py": "378d69afb071886a5ba92ecd1d14e77f06aba2529947b1bcb0b6dc0aced9ea34",
   "forge/tools/build_release.py": "0db57200d30e110ac1c3d1f3d112cf293a65cc5390508c17c7191e90bebac4b8",
   "social/CONCEPT_CORE_OFFLINE.md": "475f7ba70ec4364b5611d92b9e903d3330c8f99b414c800f6b8c3369eb5de839",

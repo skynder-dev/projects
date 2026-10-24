@@ -6,7 +6,7 @@ from canonical_source import verify_researchlocal
 class CanonicalSourceTests(unittest.TestCase):
  def setUp(self):
   self.temp=tempfile.TemporaryDirectory(prefix='canonical-contract-');self.addCleanup(self.temp.cleanup)
-  self.repo=Path(self.temp.name);self.root=self.repo/'reveng/ResearchLocal';self.root.mkdir(parents=True)
+  self.repo=Path(self.temp.name).resolve();self.root=self.repo/'reveng/ResearchLocal';self.root.mkdir(parents=True)
   self.file=self.root/'example.py';self.file.write_bytes(b'# synthetic\n')
   content=self.file.read_bytes();self.row={'path':'reveng/ResearchLocal/example.py','bytes':len(content),'sha256':hashlib.sha256(content).hexdigest()};self.save([self.row])
  def save(self,rows):
