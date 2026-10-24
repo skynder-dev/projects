@@ -268,7 +268,12 @@ APP_PHRASES: dict[str, str] = {
     "Any video on this computer, without adding it to the library.": "Любое видео на этом компьютере, без добавления в медиатеку.",
     "These videos are parts of one GoPro recording - they can be joined into one video.":
         "Эти видео — части одной записи GoPro: их можно склеить в одно видео.",
-    "Order:": "Порядок:",
+    "Order:": "Порядок:", "Earlier conversions": "Прошлые конвертации", "Conversion": "Конвертация",
+    "Pictures every": "Кадры каждые", "5 s": "5 с", "10 s": "10 с", "30 s": "30 с", "60 s": "60 с",
+    "Save pictures of the selected videos": "Сохранить кадры выбранных видео",
+    "Photos for a report, into a folder next to the converted videos.": "Фото для отчёта — в папку рядом с готовыми видео.",
+    "Saving pictures": "Сохраняю кадры", "Pictures are taken from whole videos, one by one (not joined, not cut).":
+        "Кадры берутся из целых видео, по одному (без склейки и обрезки).", "No pictures were made": "Кадры не получились",
     "More: speed, vertical 9:16, logo, wind": "Ещё: скорость, вертикально 9:16, логотип, ветер", "Speed": "Скорость",
     "2× faster": "в 2 раза быстрее", "4× faster (no sound)": "в 4 раза быстрее (без звука)", "8× faster (no sound)": "в 8 раз быстрее (без звука)",
     "Vertical 9:16": "Вертикально 9:16", "the middle, sides cut off": "середина, края обрезаны",
@@ -677,6 +682,7 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"joined from (\d+) parts", r"склеено из \1 ⟪\1|части|частей|частей⟫"),
     (r"cut (\d+:\d\d)–(\d+:\d\d)", r"фрагмент \1–\2"),
     (r"Saved: (.+)", r"Сохранено: \1"),
+    (r"(\d+) pictures", r"\1 ⟪\1|кадр|кадра|кадров⟫"), (r"every (\d+) s", r"каждые \1 с"),
     (r"(\d+)× faster", r"в \1 ⟪\1|раз|раза|раз⟫ быстрее"),
     (r"Used: ([\d.]+) s instead of ([\d.]+) s on the processor \(([\d.]+)x faster\), the same picture\.",
      r"Используется: \1 с вместо \2 с на процессоре (в \3 раза быстрее), картинка та же."),

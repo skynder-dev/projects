@@ -1037,6 +1037,21 @@ def main():
             _web.start_convert_job = real_start2_
         check("convert: the page's cuts reach the job; a video on the page has Cut…",
               calls2_ == [([vid_], {str(vid_): [1.5, 7]})] and f"data-cut-for='{vid_}'" in cpage_, (calls2_, f"data-cut-for='{vid_}'" in cpage_))
+        # earlier conversions: the ones before the last, with their files and buttons (each button knows its job)
+        hj_ = []
+        with _db() as con:
+            for k_ in range(3):
+                f_ = conv_ / f"old_{k_}_share_1080p.mp4"; f_.write_bytes(b"x" * 10)
+                hj_.append(con.execute("INSERT INTO jobs(kind,status,created_at,finished_at,stage,message,total,done,success,failed,bytes_total,bytes_done,options_json) "
+                                       "VALUES('convert','finished',?,?,'done','Converted 1; failed 0',1,1,1,0,1,1,?)",
+                                       (_now(), _now(), _js.dumps({"outputs": [{"source": "C:\\v.mp4", "output": str(f_), "source_bytes": 100, "output_bytes": 10,
+                                                                               "saved_percent": 90.0}]}))).lastrowid)
+            con.commit()
+        with _ca().test_client() as _c:
+            hp_ = _c.get("/convert", headers=H_).get_data(as_text=True)
+        check("convert: earlier conversions listed with their own buttons (the last one shown above)",
+              "Earlier conversions" in hp_ and f"data-job-box='{hj_[0]}'" in hp_ and f"data-job-box='{hj_[1]}'" in hp_
+              and f"data-job-box='{hj_[2]}'" not in hp_ and f"data-job='{hj_[2]}'" in hp_ and "b.closest('[data-job-box]')" in hp_, hj_)
         # More options: checked choices; the logo chosen in the Windows Open window kept as a PNG, its corner and size
         bad_x_ = []
         for bx_ in ({"speed": 3}, {"speed": True}, {"vertical": "side"}, {"logo": True}, "x"):

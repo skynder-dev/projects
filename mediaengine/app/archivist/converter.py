@@ -101,6 +101,60 @@ def save_frame(source, t: float, output_dir=None) -> Path:
     return out
 
 
+FRAME_STEPS = (5, 10, 30, 60)
+
+
+def save_frames_every(source, every: int, output_dir=None, progress_cb=None, cancel_cb=None, job_id=None) -> dict:
+    """A picture every N seconds of a video (for a report): JPEGs at the video's full size in a new folder next to
+    the converted videos ('<name>_pictures_every_10s'), each named by its moment ('<name>_1m30s.jpg')."""
+    source = Path(source)
+    if not source.is_file():
+        raise FileNotFoundError(str(source))
+    ffmpeg = _ffmpeg_exe()
+    if not ffmpeg:
+        raise RuntimeError("FFmpeg is not available")
+    duration = float(probe_duration(source) or 0.0)
+    if duration <= 0:
+        raise RuntimeError("Could not read video duration")
+    base = Path(output_dir) if output_dir else output_folder()
+    base.mkdir(parents=True, exist_ok=True)
+    stem = source.stem[:150]
+    for n in range(1, 1000):
+        folder = base / (f"{stem}_pictures_every_{every}s" + ("" if n == 1 else f"_{n}"))
+        try:
+            folder.mkdir()
+            break
+        except FileExistsError:
+            continue
+    else:
+        raise RuntimeError("No free name in " + str(base))
+    hdr = _hdr_kind(ffmpeg, source)
+    vf = (["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if _is_interlaced(ffmpeg, source) else []) \
+        + ([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []) \
+        + [f"select='isnan(prev_selected_t)+gte(t-prev_selected_t\\,{int(every)}-0.001)'", "scale='trunc(iw*sar/2)*2':ih", "setsar=1",
+           "format=gbrp", "format=yuvj420p"]
+    try:
+        # the first picture, then the first one at least N s after the one before (each picture's own moment)
+        _run_progress([str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-i", str(source), "-map", "0:v:0", "-vf", ",".join(vf),
+                       "-fps_mode", "vfr", "-q:v", "2", str(folder / "p_%05d.jpg")], duration, progress_cb, cancel_cb, job_id=job_id)
+        if cancel_cb and cancel_cb():
+            raise RuntimeError("cancelled")
+        pics = sorted(folder.glob("p_*.jpg"))
+        if not pics:
+            raise RuntimeError("No pictures were made")
+        total = 0
+        for i, f in enumerate(pics):                       # picture i is the moment i * N seconds
+            t = i * int(every)
+            dst = folder / f"{stem}_{t // 60}m{t % 60:02d}s.jpg"
+            f.replace(dst)
+            total += dst.stat().st_size
+    except BaseException:
+        shutil.rmtree(folder, ignore_errors=True)
+        raise
+    return {"source": str(source), "output": str(folder), "frames": len(pics), "every": int(every),
+            "source_bytes": source.stat().st_size, "output_bytes": total, "saved_percent": 0.0}
+
+
 # the names this converter gives (a sweep in a folder of the person's own touches only these)
 _OUR_FRAME = re.compile(r"_frame_\d+m\d\ds(?:_\d+)?\.jpg$", re.I)
 _OUR_NAME = re.compile(r"_(?:share_1080p|small_720p|hq_1080p|keep|target_\d+mb)(?:_\d+)?(?:\.part)?\.mp4$", re.I)
@@ -321,7 +375,10 @@ def _run_progress_inner(cmd, duration_s: float, progress_cb=None, cancel_cb=None
 
 def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None, cancel_cb=None, output_dir=None, job_id=None,
                  cut=None, mute=False, turn=0, prefer=None, extra=None):
-    """One video converted (cut = (start, end) in seconds: only that part)."""
+    """One video converted (cut = (start, end) in seconds: only that part). extra {"frames": N}: pictures every N s
+    instead of a video."""
+    if extra and extra.get("frames"):
+        return save_frames_every(source, int(extra["frames"]), output_dir, progress_cb, cancel_cb, job_id)
     source = Path(source)
     if preset not in PRESETS:
         raise ValueError("Unknown preset")
@@ -754,6 +811,15 @@ def clean_extra(extra) -> dict:
         out["logo"] = True
     if extra.get("wind") is True:
         out["wind"] = True
+    fr = extra.get("frames")
+    if fr not in (None, 0, "", False):
+        try:
+            fr = int(fr) if not isinstance(fr, bool) and float(fr) == int(float(fr)) else -1
+        except (TypeError, ValueError, OverflowError):
+            fr = -1
+        if fr not in FRAME_STEPS:
+            raise ValueError("Unknown option")
+        out = {"frames": fr}                    # pictures: the other options do not apply
     return out
 
 
@@ -1399,6 +1465,8 @@ def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, 
         raise ValueError("Unknown turn")
     cuts = _clean_cuts(cuts, ids)
     extra = clean_extra(extra)
+    if extra.get("frames") and (join or cuts):
+        raise ValueError("Pictures are taken from whole videos, one by one (not joined, not cut).")
     if cuts and join:
         raise ValueError("A cut works when the videos are converted one by one (not joined into one).")
     n_groups = 0

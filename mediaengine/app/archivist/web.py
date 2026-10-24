@@ -1361,6 +1361,32 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
         skipped_preselected=max(0,len(preselect_ids)-len(local)) if preselect_ids else 0
         total_local=len(local)
         latest=convert_job_snapshot()
+        # earlier conversions (the last ten after the one shown, not those taken off the page): their files and buttons
+        history=''
+        try:
+            with db() as con:
+                hrows=con.execute("SELECT id FROM jobs WHERE kind='convert' AND status IN ('finished','failed','partial') AND id>? "
+                                  "ORDER BY id DESC LIMIT 11",(int(load_config().get('convert_hidden_job') or 0),)).fetchall()
+            hparts=[]
+            for hr in hrows:
+                hid=int(hr['id'])
+                if latest and hid==int(latest['id']):
+                    continue
+                hj=convert_job_snapshot(hid); inner=_convert_outputs_html(hj)
+                if not inner or len(hparts)>=10:
+                    continue
+                try:
+                    from datetime import datetime as _dt
+                    when=_dt.fromisoformat(str(hj.get('finished_at') or '')).astimezone().strftime('%Y-%m-%d %H:%M')
+                except Exception:
+                    when=''
+                hparts.append(f"<div data-job-box='{hid}' style='margin-top:10px'><div class='small muted'><span>Conversion</span> #{hid}"
+                              f"{(' · <span translate=no>'+e(when)+'</span>') if when else ''}</div>{inner}</div>")
+            if hparts:
+                history=(f"<details class='card' style='margin-top:10px'><summary><b>Earlier conversions</b> <span class='badge'>{len(hparts)}</span></summary>"
+                         f"{''.join(hparts)}</details>")
+        except Exception:
+            history=''
         from .converter import output_folder, logo_saved, LOGO_CORNERS
         out_dir=output_folder()
         lg=logo_saved()
@@ -1421,8 +1447,9 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
 <div class='toolbar' style='margin-top:6px;flex-wrap:wrap'><label><span>Speed</span> <select id='speedOut'><option value='1'>as it is</option><option value='2'>2× faster</option><option value='4'>4× faster (no sound)</option><option value='8'>8× faster (no sound)</option></select></label>
 <label><span>Vertical 9:16</span> <select id='vertOut'><option value=''>as it is</option><option value='crop'>the middle, sides cut off</option><option value='blur'>the whole picture on a blurred background</option></select></label>
 <label><input type='checkbox' id='windOut'> <span>Less wind noise</span></label></div>
+<div class='toolbar' style='margin-top:6px;flex-wrap:wrap'><label><span>Pictures every</span> <select id='framesEvery'><option value='5'>5 s</option><option value='10' selected>10 s</option><option value='30'>30 s</option><option value='60'>60 s</option></select></label><button id='framesStart' class='btn btn2' type='button' disabled>Save pictures of the selected videos</button><span class='muted small'>Photos for a report, into a folder next to the converted videos.</span></div>
 <div class='toolbar' style='margin-top:6px;flex-wrap:wrap'>{logo_html}</div></details></div>
-{active}
+{active}{history}
 {selection_notice}
 <form class='toolbar' method='get' action='/convert'><input name='q' value='{e(q)}' placeholder='Search local videos'><select name='scope'><option value='all' {'selected' if scope=='all' else ''}>All accessible videos</option><option value='library' {'selected' if scope=='library' else ''}>Library only</option></select><select name='source_kind'><option value='' {'selected' if not source_kind else ''}>Any origin</option><option value='fixed' {'selected' if source_kind=='fixed' else ''}>Local folders</option><option value='android' {'selected' if source_kind=='android' else ''}>Android</option><option value='removable' {'selected' if source_kind=='removable' else ''}>SD/USB</option></select><select name='source_id'>{srcopts}</select><select name='sort'><option value='date_desc' {'selected' if sort=='date_desc' else ''}>Newest</option><option value='date_asc' {'selected' if sort=='date_asc' else ''}>Oldest</option><option value='size_desc' {'selected' if sort=='size_desc' else ''}>Largest</option><option value='size_asc' {'selected' if sort=='size_asc' else ''}>Smallest</option><option value='duration_desc' {'selected' if sort=='duration_desc' else ''}>Longest</option><option value='name' {'selected' if sort=='name' else ''}>Name</option><option value='source' {'selected' if sort=='source' else ''}>Source</option></select><button class='btn2'>Filter</button><a class='btn2' href='/convert'>Clear</a></form>
 <div class='row space section-title'><span>{'Selected videos currently accessible' if preselect_ids else 'Accessible on this catalog page'} <span id='convertTotal' class='badge'>{total_local}</span></span>{"<a class='btn btn2' href='/convert'>Show all local videos</a>" if preselect_ids else ''}</div><div class='small muted' style='margin:-6px 0 10px'>{"Only the selected IDs were checked for local availability." if preselect_ids else f"{total_catalog} matching catalog videos · local availability is checked only for the current page."}</div><div style='display:grid;gap:8px'>{cards}</div>"""
@@ -1459,6 +1486,7 @@ function updSel(){
     }else{if(row)row.classList.remove('convertSelected');if(one)one.textContent=''}
   }
   const preset=chosenPreset(),start=document.getElementById('startConvert');if(start)start.disabled=!(n&&preset);
+  const fs=document.getElementById('framesStart');if(fs)fs.disabled=!n;
   if(!n){if(out)out.textContent='Select videos to see estimated output size.';if(note)note.textContent='Estimate appears after you choose videos and a preset.';return}
   if(!preset){if(out)out.textContent=n+' video'+(n===1?'':'s')+' · '+hb(src)+' · choose a preset';if(note)note.textContent='No compression preset is selected yet.';return}
   const target=Number(document.getElementById('targetMb').value||0)||0;
@@ -1608,20 +1636,24 @@ async function startConv(){const ids=checks().map(x=>Number(x.value));if(!ids.le
  const b=document.getElementById('startConvert');b.disabled=true;
  try{const r=await fetch('/api/convert/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids,...o})});const x=await r.json();if(!r.ok)throw new Error(x.error||'Could not start');toast('Conversion started');location.href='/convert'}catch(e){toast(e.message||String(e));b.disabled=false}}
 document.getElementById('startConvert').onclick=startConv;
+document.getElementById('framesStart').onclick=async ev=>{const ids=checks().map(x=>Number(x.value));if(!ids.length){toast('Select at least one video');return}
+ const b=ev.currentTarget;b.disabled=true;
+ try{const r=await fetch('/api/convert/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids,preset:'share_1080p',extra:{frames:Number(document.getElementById('framesEvery').value)}})});
+  const x=await r.json();if(!r.ok)throw new Error(x.error||'Could not start');toast('Saving pictures');location.href='/convert'}catch(e){toast(e.message||String(e));b.disabled=false}};
 document.getElementById('pickConvert').onclick=async ev=>{const o=convOpts();if(!o.preset){toast('Choose a preset first');return}
  const b=ev.currentTarget;b.disabled=true;
  try{const r=await fetch('/api/convert/pick',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)});const x=await r.json();
   if(x.job_id){toast('Conversion started');location.href='/convert';return}if(x.error)toast(x.error)}catch(e){toast(e.message||String(e))}b.disabled=false};
 const winPC=%s;
 function hb(n){n=Number(n||0);for(const u of ['B','KB','MB','GB','TB']){if(n<1024||u==='TB')return (u==='B'||u==='KB'?n.toFixed(0):n.toFixed(1))+' '+u;n/=1024}}
-async function pollConvert(){const box=document.getElementById('convertStatus');if(!box||box.dataset.done)return;const id=box.dataset.job;try{const r=await fetch('/api/convert/status?id='+id,{cache:'no-store'});const x=await r.json();if(!x.job)return;const j=x.job;document.getElementById('convertMsg').textContent=j.message||j.status;document.getElementById('convertPct').style.width=(j.percent||0)+'%';const et=document.getElementById('convertEta');if(et){const t=Number(j.eta_s);const v=!(t>=0)||j.eta_s===null?'':(t<60?'less than a minute left':(Math.round(t/60)<60?'about '+Math.max(1,Math.round(t/60))+' min left':'about '+Math.floor(Math.round(t/60)/60)+' h '+(Math.round(t/60)%60)+' min left'));if(et.dataset.v!==v){et.dataset.v=v;et.textContent=v}}if(['finished','failed','cancelled','partial'].includes(j.status)){const st=document.getElementById('convertStop');if(st)st.remove();const et2=document.getElementById('convertEta');if(et2)et2.remove();const outs=((j.options||{}).outputs||[]);let h='';const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let i=-1;for(const o of outs){i++;const nm=String(o.source||'').split(String.fromCharCode(92)).join('/').split('/').pop();if(o.error){h+="<div class='small error'><span>Failed:</span> <span translate='no'>"+esc(nm)+"</span> — <span>"+esc(o.error)+"</span></div>"}else{h+="<div class='cv-out'><div class='small'><b><span>"+hb(o.source_bytes)+"</span> → <span>"+hb(o.output_bytes)+"</span></b> · <span>smaller by "+esc(o.saved_percent)+"%</span>"+(o.joined?" · <span>joined from "+Number(o.joined)+" parts</span>":"")+(o.made_on==='nvidia'?" · <span>made on the graphics card</span>":"")+(o.mute===true?" · <span>without sound</span>":"")+(()=>{const x=o.extra||{};return ([2,4,8].includes(Number(x.speed))?" · <span>"+Number(x.speed)+"× faster</span>":"")+(x.vertical?" · <span>vertical 9:16</span>":"")+(x.logo?" · <span>logo</span>":"")+(x.wind?" · <span>less wind</span>":"")})()+({90:" · <span>turned right</span>",270:" · <span>turned left</span>",180:" · <span>turned upside down</span>"}[Number(o.turn)]||"")+(Array.isArray(o.cut)?" · <span>cut "+fmtS(o.cut[0])+"–"+fmtS(o.cut[1])+"</span>":"")+"<br><span class='muted ae-path' translate='no'>"+esc(o.output)+"</span></div><div class='row' style='margin:4px 0 8px'><button class='btn btn2' type='button' data-cv='reveal' data-i='"+i+"'>Show in folder</button><button class='btn btn2' type='button' data-cv='open' data-i='"+i+"'>Open video</button>"+(winPC?"<button class='btn btn2' type='button' data-cv='copy' data-i='"+i+"'>Copy file</button>":"")+"</div></div>"}}h+="<div class='row' style='justify-content:flex-end'><button class='btn btn2' type='button' data-cv='hide'>Remove from the page</button></div>";document.getElementById('convertResults').innerHTML=h;return}}catch(e){}setTimeout(pollConvert,1000)}
+async function pollConvert(){const box=document.getElementById('convertStatus');if(!box||box.dataset.done)return;const id=box.dataset.job;try{const r=await fetch('/api/convert/status?id='+id,{cache:'no-store'});const x=await r.json();if(!x.job)return;const j=x.job;document.getElementById('convertMsg').textContent=j.message||j.status;document.getElementById('convertPct').style.width=(j.percent||0)+'%';const et=document.getElementById('convertEta');if(et){const t=Number(j.eta_s);const v=!(t>=0)||j.eta_s===null?'':(t<60?'less than a minute left':(Math.round(t/60)<60?'about '+Math.max(1,Math.round(t/60))+' min left':'about '+Math.floor(Math.round(t/60)/60)+' h '+(Math.round(t/60)%60)+' min left'));if(et.dataset.v!==v){et.dataset.v=v;et.textContent=v}}if(['finished','failed','cancelled','partial'].includes(j.status)){const st=document.getElementById('convertStop');if(st)st.remove();const et2=document.getElementById('convertEta');if(et2)et2.remove();const outs=((j.options||{}).outputs||[]);let h='';const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let i=-1;for(const o of outs){i++;const nm=String(o.source||'').split(String.fromCharCode(92)).join('/').split('/').pop();if(o.frames&&!o.error){h+="<div class='cv-out'><div class='small'><b><span>"+Number(o.frames)+" pictures</span></b> · <span>every "+Number(o.every||0)+" s</span><br><span class='muted ae-path' translate='no'>"+esc(o.output)+"</span></div><div class='row' style='margin:4px 0 8px'><button class='btn btn2' type='button' data-cv='open' data-i='"+i+"'>Open the folder</button></div></div>";continue}if(o.error){h+="<div class='small error'><span>Failed:</span> <span translate='no'>"+esc(nm)+"</span> — <span>"+esc(o.error)+"</span></div>"}else{h+="<div class='cv-out'><div class='small'><b><span>"+hb(o.source_bytes)+"</span> → <span>"+hb(o.output_bytes)+"</span></b> · <span>smaller by "+esc(o.saved_percent)+"%</span>"+(o.joined?" · <span>joined from "+Number(o.joined)+" parts</span>":"")+(o.made_on==='nvidia'?" · <span>made on the graphics card</span>":"")+(o.mute===true?" · <span>without sound</span>":"")+(()=>{const x=o.extra||{};return ([2,4,8].includes(Number(x.speed))?" · <span>"+Number(x.speed)+"× faster</span>":"")+(x.vertical?" · <span>vertical 9:16</span>":"")+(x.logo?" · <span>logo</span>":"")+(x.wind?" · <span>less wind</span>":"")})()+({90:" · <span>turned right</span>",270:" · <span>turned left</span>",180:" · <span>turned upside down</span>"}[Number(o.turn)]||"")+(Array.isArray(o.cut)?" · <span>cut "+fmtS(o.cut[0])+"–"+fmtS(o.cut[1])+"</span>":"")+"<br><span class='muted ae-path' translate='no'>"+esc(o.output)+"</span></div><div class='row' style='margin:4px 0 8px'><button class='btn btn2' type='button' data-cv='reveal' data-i='"+i+"'>Show in folder</button><button class='btn btn2' type='button' data-cv='open' data-i='"+i+"'>Open video</button>"+(winPC?"<button class='btn btn2' type='button' data-cv='copy' data-i='"+i+"'>Copy file</button>":"")+"</div></div>"}}h+="<div class='row' style='justify-content:flex-end'><button class='btn btn2' type='button' data-cv='hide'>Remove from the page</button></div>";document.getElementById('convertResults').innerHTML=h;return}}catch(e){}setTimeout(pollConvert,1000)}
 document.addEventListener('click',async ev=>{const b=ev.target.closest('[data-cv]');if(!b)return;const box=document.getElementById('convertStatus');
  if(b.dataset.cv==='logo-pick'||b.dataset.cv==='logo-clear'){b.disabled=true;try{const r=await fetch('/api/convert/logo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:b.dataset.cv==='logo-pick'?'pick':'clear'})});const x=await r.json();if(x.ok){location.reload();return}if(x.error)toast(x.error)}catch(e){}b.disabled=false;return}
  if(b.dataset.cv==='stop'){if(!box)return;b.disabled=true;try{await fetch('/api/jobs/'+Number(box.dataset.job)+'/cancel',{method:'POST'})}catch(e){}return}
  if(b.dataset.cv==='outdir'||b.dataset.cv==='outdir-reset'){b.disabled=true;try{const r=await fetch('/api/convert/output-folder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reset:b.dataset.cv==='outdir-reset'})});const x=await r.json();if(x.ok){location.reload();return}if(x.error)toast(x.error)}catch(e){}b.disabled=false;return}
  if(b.dataset.cv==='hide'){try{const r=await fetch('/api/convert/hide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({job:box?Number(box.dataset.job):0})});if(r.ok&&box)box.remove()}catch(e){}return}
  try{const r=await fetch(b.dataset.cv==='folder'?'/api/convert/open-folder':'/api/convert/reveal',{method:'POST',headers:{'Content-Type':'application/json'},
- body:JSON.stringify({job:box?Number(box.dataset.job):0,i:Number(b.dataset.i||0),open:b.dataset.cv==='open',copy:b.dataset.cv==='copy'})});const x=await r.json();if(!x.ok&&x.error)toast(x.error);else if(x.ok&&b.dataset.cv==='copy')toast('Copied: paste it with Ctrl+V into a folder, an e-mail or a messenger.')}catch(e){}});
+ body:JSON.stringify({job:b.closest('[data-job-box]')?Number(b.closest('[data-job-box]').dataset.jobBox):(box?Number(box.dataset.job):0),i:Number(b.dataset.i||0),open:b.dataset.cv==='open',copy:b.dataset.cv==='copy'})});const x=await r.json();if(!x.ok&&x.error)toast(x.error);else if(x.ok&&b.dataset.cv==='copy')toast('Copied: paste it with Ctrl+V into a folder, an e-mail or a messenger.')}catch(e){}});
 pollConvert();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='nt' else "false")+";",1)
         if not preselect_ids and pages>1:
             base={k:v for k,v in request.args.items() if k not in ('page','ids')}
@@ -1673,6 +1705,12 @@ pollConvert();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='
                 continue
             if o.get('error'):
                 h.append(f"<div class='small error'><span>Failed:</span> <span translate='no'>{e(Path(str(o.get('source') or '')).name)}</span> — <span>{e(o.get('error'))}</span></div>")
+            elif o.get('frames') and o.get('output'):
+                there=Path(str(o['output'])).is_dir()
+                h.append(f"<div class='cv-out'><div class='small'><b><span>{int(o['frames'])} pictures</span></b> · <span>every {int(o.get('every') or 0)} s</span>"
+                         f"<br><span class='muted ae-path' translate='no'>{e(o.get('output'))}</span></div>"
+                         +(f"<div class='row' style='margin:4px 0 8px'><button class='btn btn2' type='button' data-cv='open' data-i='{i}'>Open the folder</button></div></div>"
+                           if there else "<div class='small muted' style='margin:2px 0 8px'>The file is no longer there.</div></div>"))
             elif o.get('output'):
                 there=Path(str(o['output'])).is_file()
                 more=(f" · <span>joined from {int(o.get('joined'))} parts</span>" if str(o.get('joined') or '').isdigit() else '')
@@ -1705,9 +1743,9 @@ pollConvert();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='
         if not 0<=i<len(outs) or not outs[i].get('output'):
             return jsonify({'ok':False,'error':'No such file.'}),404
         p=Path(str(outs[i]['output']))
-        if not p.is_file():
+        if not (p.is_file() or (outs[i].get('frames') and p.is_dir())):
             return jsonify({'ok':False,'error':'The file is no longer there.'}),404
-        if payload.get('copy') is True:             # Ctrl+C of the file, as in Explorer
+        if payload.get('copy') is True and p.is_file():   # Ctrl+C of the file, as in Explorer
             from .platform_adapter import copy_files_to_clipboard
             if copy_files_to_clipboard([p]):
                 return jsonify({'ok':True})

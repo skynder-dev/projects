@@ -286,6 +286,19 @@ def main():
     wnd = convert_file(hum, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"wind": True}))
     before, after = low_rms(hum), low_rms(wnd["output"])
     check("convert_less_wind_noise", before - after >= 12 and not no_a(wnd["output"]), (before, after))
+    # pictures every N seconds (a report): a folder of JPEGs named by their moment, through a converter job
+    jf = wait_job(start_convert_job([], "share_1080p", paths=[str(whole)], extra={"frames": 5}))
+    of = ((jf.get("options") or {}).get("outputs") or [{}])[0]
+    pics = sorted(x.name for x in Path(of.get("output", "/nonexistent")).glob("*.jpg")) if of.get("output") else []
+    with Image.open(Path(of["output"]) / pics[0]) if pics else Image.new("RGB", (1, 1)) as im0:
+        psz = im0.size
+    try:
+        start_convert_job([], "share_1080p", paths=[str(parts[0]), str(parts[1])], join=True, extra={"frames": 10}); fj = None
+    except ValueError as exc:
+        fj = str(exc)
+    check("pictures_every_n_seconds", jf["status"] == "finished" and of.get("frames") == 3 and pics == ["whole_sync_0m00s.jpg", "whole_sync_0m05s.jpg",
+          "whole_sync_0m10s.jpg"] and psz == (640, 360) and Path(of["output"]).name == "whole_sync_pictures_every_5s"
+          and fj and "whole videos" in fj, (jf["status"], of, pics, psz, fj))
     # "Without sound": the copy has no sound at all (one video, and joined parts)
     mres = convert_file(parts[0], "small_720p", output_dir=out_dir, mute=True)
     jm = join_files(parts, "small_720p", output_dir=out_dir, mute=True)
