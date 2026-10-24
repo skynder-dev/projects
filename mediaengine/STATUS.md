@@ -979,7 +979,10 @@ b201 is published (Convert: join parts of a recording, choose on this PC, own fo
 time left, NVIDIA; b193 Show in folder / Open video; two more caption looks; b189's night
 fixes; Qwen3-TTS for 9_2 since b184). The owner presses Update; on Voice-over and text
 he installs the add-on (about 13 GB, both engines) or presses "Download the new voice engine" (4.7 GB). English only.
-b207 is published (b205: Save this picture, Turn the picture, TV levels in converted copies; b207: TV levels in
-reels and finished videos from GoPro / phone footage). Still open: the first voice-over on
+b208 is published (b205: Save this picture, Turn the picture, TV levels in converted copies; b207: TV levels in
+reels and finished videos from GoPro / phone footage; b208: Check this PC -> "Test converting on the graphics card" -
+a 4K test clip by the processor and the NVIDIA card, Convert uses the card only if faster with the same picture; on
+the Windows runner, no NVIDIA card: said and remembered in 14 s, CI run 40070321577, ZIP 3,963,041 bytes, same
+runtime). Asked the owner to press the test and send its line. Still open: the first voice-over on
 his RTX 3060; Convert on his PC (Explorer, clipboard, the NVIDIA way's speed). Social integration paused by the owner (do not touch Social).
 Through the app's pages in the desktop app's browser pane only (never computer use).
