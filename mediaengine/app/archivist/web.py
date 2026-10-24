@@ -1625,7 +1625,7 @@ function updJoin(){const box=document.getElementById('joinHint'),j=document.getE
 document.getElementById('joinOne').addEventListener('change',()=>{updJoin();updSel()});
 [['cvAll',true],['cvNone',false]].forEach(([id,on])=>{const b=document.getElementById(id);if(b)b.onclick=()=>{for(const ch of allChecks){if(!ch.disabled&&ch.checked!==on){ch.checked=on}}updJoin();updSel()}});
 ['logoCorner','logoSize'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',()=>{fetch('/api/convert/logo',{method:'POST',headers:{'Content-Type':'application/json'},
- body:JSON.stringify({action:'set',corner:document.getElementById('logoCorner').value,size:Number(document.getElementById('logoSize').value)})}).catch(()=>{});const lo=document.getElementById('logoOut');if(lo)lo.checked=true})});
+ body:JSON.stringify({action:'set',corner:document.getElementById('logoCorner').value,size:Number(document.getElementById('logoSize').value)})}).catch(()=>{});const lo=document.getElementById('logoOut');if(lo&&!lo.checked){lo.checked=true;lo.dispatchEvent(new Event('change'))}})});
 ['speedOut'].forEach(id=>document.getElementById(id).addEventListener('change',updSel));document.getElementById('muteOut').addEventListener('change',updSel);allChecks.forEach(x=>x.addEventListener('change',updJoin));updJoin();
 // the choices one keeps from time to time (the preset, sound and picture fixes, the date and time, the logo, how often
 // pictures are taken) are remembered in this browser, as other programs do; speed, 9:16, turn, cut and join are per job
@@ -1633,7 +1633,7 @@ document.getElementById('joinOne').addEventListener('change',()=>{updJoin();updS
  function save(){try{const o={preset:chosenPreset()};for(const id of ids){const el=document.getElementById(id);if(el)o[id]=el.type==='checkbox'?el.checked:el.value}localStorage.setItem(K,JSON.stringify(o))}catch(e){}}
  try{const o=JSON.parse(localStorage.getItem(K)||'{}');if(o.preset){const r=document.querySelector("input[name=presetChoice][value='"+String(o.preset).replace(/[^a-z0-9_]/g,'')+"']");if(r)r.checked=true}
   for(const id of ids){const el=document.getElementById(id);if(!el||!(id in o))continue;if(el.type==='checkbox')el.checked=!!o[id];else if([...el.options].some(x=>x.value===String(o[id])))el.value=String(o[id])}
-  if(ids.some(id=>id!=='framesEvery'&&o[id]===true)){const m=document.getElementById('cvMore');if(m)m.open=true}}catch(e){}
+  if(ids.some(id=>id!=='framesEvery'&&o[id]===true&&document.getElementById(id))){const m=document.getElementById('cvMore');if(m)m.open=true}}catch(e){}
  document.querySelectorAll("input[name=presetChoice]").forEach(x=>x.addEventListener('change',save));
  for(const id of ids){const el=document.getElementById(id);if(el)el.addEventListener('change',save)}
  updSel()})();

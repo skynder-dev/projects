@@ -128,31 +128,74 @@ def save_frame(source, t: float, output_dir=None, clock=False) -> Path:
 FRAME_STEPS = (5, 10, 30, 60)
 
 
-def _pictures_by_seeking(ffmpeg, source, every, duration, interlaced, tail, folder, name_of, progress_cb, cancel_cb, cwd) -> list:
+# containers with an index FFmpeg seeks exactly in (to the key picture before a moment); others (MPEG-TS / PS: camcorder
+# MTS, DVD VOB / MOD; FLV ...) land on any packet - their pictures are taken by decoding the whole video
+_SEEKABLE = re.compile(r"^Input #0, (mov,mp4,m4a,3gp,3g2,mj2|matroska,webm|avi|asf),", re.M)
+_SEEK_PROCS: set = set()                   # the FFmpegs of a picture each (Quit and the watchdog stop them too)
+
+
+def _seekable(ffmpeg, source) -> bool:
+    try:
+        cp = subprocess.run([str(ffmpeg), "-hide_banner", "-i", str(source)], capture_output=True, text=True, encoding="utf-8",
+                            errors="replace", timeout=60, **process_kwargs())
+        return bool(_SEEKABLE.search(cp.stderr or ""))
+    except Exception:
+        return False
+
+
+def _pictures_by_seeking(ffmpeg, source, every, duration, interlaced, tail, folder, name_of, progress_cb, cancel_cb, cwd,
+                         job_id=None) -> list:
     """Pictures at 0, N, 2N ... s, each read by a seek (the first picture at or after that moment), three at a time:
-    [(file, moment)], or [] when this video cannot be read that way (then it is decoded whole)."""
-    from concurrent.futures import ThreadPoolExecutor
+    [(file, moment)], or [] when this video is not read that way (then it is decoded whole): a container without an
+    exact seek, interlaced video (its fields need the picture before), or any seek that failed."""
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    if interlaced or not _seekable(ffmpeg, source):
+        return []
     times = [k * every for k in range(int(duration // every) + 1) if k * every < duration - 0.02]
 
+    def stopped():
+        return bool((cancel_cb and cancel_cb()) or _EXITING.is_set())
+
     def one(t):
-        if (cancel_cb and cancel_cb()) or _EXITING.is_set():
+        if stopped():
             return None
         out = folder / f"{name_of(t)}.jpg"
-        # (the clock's subtitles count from the video's start: the picture's own time put back after the seek)
-        # (showinfo: the picture's own time after the seek - a stretch without any picture, in a video with gaps, gets none)
-        vf = ["showinfo"] + (["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if interlaced else []) \
-            + ([f"setpts=PTS+{t}/TB"] if cwd else []) + tail
+        # (showinfo: the picture's own time after the seek - a stretch without any picture, in a video with gaps, gets
+        # none; the clock's subtitles count from the video's start: the picture's own time put back after the seek)
+        vf = ["showinfo"] + ([f"setpts=PTS+{t}/TB"] if cwd else []) + tail
         try:
-            cp = subprocess.run([str(ffmpeg), "-y", "-hide_banner", "-loglevel", "info", "-nostats", "-ss", f"{t:.3f}", "-i", str(source),
-                                 "-map", "0:v:0", "-frames:v", "1", "-vf", ",".join(vf), "-q:v", "2", str(out)],
-                                capture_output=True, timeout=300, cwd=str(cwd) if cwd else None, **process_kwargs())
-        except (subprocess.TimeoutExpired, OSError):
+            pr = subprocess.Popen([str(ffmpeg), "-y", "-hide_banner", "-loglevel", "info", "-nostats",
+                                   *(["-ss", f"{t:.3f}"] if t > 0 else []), "-i", str(source), "-map", "0:v:0", "-frames:v", "1",
+                                   "-vf", ",".join(vf), "-q:v", "2", "-update", "1", str(out)],
+                                  stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, cwd=str(cwd) if cwd else None, **process_kwargs())
+        except OSError:
             return False
-        if cp.returncode != 0:
+        try:                               # Windows: it dies with the app
+            from .auto_edit import _attach_job_object
+            _attach_job_object(pr)
+        except Exception:
+            pass
+        with _LOCK:
+            _SEEK_PROCS.add(pr)
+        err, t_end = b"", time.time() + 120
+        try:
+            while True:
+                try:
+                    _, err = pr.communicate(timeout=0.5)
+                    break
+                except subprocess.TimeoutExpired:
+                    if stopped() or time.time() > t_end:          # Stop, Quit, or a seek that hangs
+                        pr.kill()
+                        pr.communicate()
+                        return None if stopped() else False
+        finally:
+            with _LOCK:
+                _SEEK_PROCS.discard(pr)
+        if pr.returncode != 0:
             return False
         if not (out.is_file() and out.stat().st_size > 100):
             return None                                   # (no picture there: the end)
-        m = re.search(rb"pts_time:\s*(-?[\d.]+)", cp.stderr or b"")
+        m = re.search(rb"pts_time:\s*(-?[\d.]+)", err or b"")
         dt = float(m.group(1)) if m else 0.0
         if dt >= every - 0.001:                           # the next picture is in a later stretch: none for this one
             try:
@@ -162,19 +205,29 @@ def _pictures_by_seeking(ffmpeg, source, every, duration, interlaced, tail, fold
             return None
         return out, float(t) + max(0.0, dt)
 
-    made, failed, n = [], 0, max(1, len(times))
-    with ThreadPoolExecutor(3) as ex:
-        for i, r in enumerate(ex.map(one, times)):
+    got, failed, n = {}, 0, max(1, len(times))
+    with _Keepalive(job_id), ThreadPoolExecutor(3) as ex:
+        futs = {ex.submit(one, t): t for t in times}
+        for i, f in enumerate(as_completed(futs)):
+            r = f.result()
             if r is False:
                 failed += 1
             elif r:
-                made.append(r)
+                got[futs[f]] = r
             if progress_cb:
                 progress_cb(100.0 * (i + 1) / n)
-    if failed or (times and not made):                # not read this way: the whole video instead
-        for f, _ in made:
+    made = [got[t] for t in sorted(got)]
+    if stopped():
+        for fpath, _ in made:
             try:
-                f.unlink()
+                fpath.unlink()
+            except OSError:
+                pass
+        raise RuntimeError("cancelled")
+    if failed or (times and not made):                # not read this way: the whole video instead
+        for fpath, _ in made:
+            try:
+                fpath.unlink()
             except OSError:
                 pass
         return []
@@ -278,7 +331,8 @@ def save_frames_every(source, every: int, output_dir=None, progress_cb=None, can
         # each picture by itself: FFmpeg goes to the stretch's start and decodes only from the key picture before it
         # (the same picture as decoding the whole video, about ten times faster for a long 4K video); a video that
         # will not be read that way: the whole video decoded once and the pictures chosen on the way
-        made = _pictures_by_seeking(ffmpeg, source, every, duration, interlaced, tail, folder, name_of, progress_cb, cancel_cb, cwd)
+        made = _pictures_by_seeking(ffmpeg, source, every, duration, interlaced, tail, folder, name_of, progress_cb, cancel_cb, cwd,
+                                    job_id)
         if cancel_cb and cancel_cb():
             raise RuntimeError("cancelled")
         if not made:
@@ -526,7 +580,7 @@ def _sweep_converted(folder: Path | None = None) -> None:
                     f.unlink()
                 except OSError:
                     pass
-        for f in (HOME / "data").glob("clock-*"):        # the date-and-time folder of one (the fonts and subtitles)
+        for f in [*(HOME / "data").glob("clock-*"), *(HOME / "data").glob("pics-*")]:   # (clock fonts; picture times)
             if f.is_dir():
                 shutil.rmtree(f, ignore_errors=True)
         _sweep_pdf_parts(folder)
@@ -2205,6 +2259,13 @@ def _queue_runner_start() -> None:
 def shutdown() -> None:
     """The app quits: the running FFmpeg is stopped (no orphan writing on); the job resumes at the next start."""
     _EXITING.set()
+    with _LOCK:
+        seeks = list(_SEEK_PROCS)
+    for sp in seeks:                       # (the pictures' FFmpegs too)
+        try:
+            sp.kill()
+        except Exception:
+            pass
     with _LOCK:
         p = _CURRENT_PROCESS
     if p is not None:
