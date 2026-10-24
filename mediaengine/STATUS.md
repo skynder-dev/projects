@@ -962,9 +962,9 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 | I18 originals unchanged, path safety, absent drive | PARTIAL | unplugged source drive tested (project says so, nothing deleted, export works, builds again when back) |
 | I19 offline, no Supabase/GoDog | PARTIAL | app process blocked from non-loopback in tests; packaged Python behind a firewall rule on Windows CI |
 | I20 clean package, no Python in user's hands | PARTIAL | per-user Setup.exe (no admin) and ZIP; uninstall keeps the data; switching builds; old builds removable |
-| I21 full-video convert | PARTIAL | Windows CI: 1440p60 → 1080p keeps fps and every frame; portrait upright; HDR colours |
+| I21 full-video convert | PARTIAL | Windows CI: 1440p60 → 1080p keeps fps and every frame; portrait upright; HDR colours; GoPro-like 4K60 HEVC parts joined (length, frames, sound in step, TV levels on FFmpeg 7.1); cut, turn, without sound; owner used it on his work GoPro videos (b189) - the new tools not yet on his PC |
 | I22 other real media | PARTIAL | owner PC: 18 real DJI 4K drone videos (29 GB, 1-2 s shots skipped as too short); synthetic phone/camera files (rotation, HEVC, VFR, HDR, camcorder MTS, 5-min 1080p, wide pixels, 18 more formats) |
-| I23 public git clean | PARTIAL | |
+| I23 public git clean | PASS (CI) | public_repo_check.py in every Windows run: binaries pinned by SHA-256, no tokens / keys / JWTs / passwords, e-mails only example / noreply (273 files, 0 found) |
 
 ## Deferred / waiting
 
