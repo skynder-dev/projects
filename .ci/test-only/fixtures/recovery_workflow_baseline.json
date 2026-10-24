@@ -233,5 +233,12 @@
     ".ci/test-only/SOURCE_SANITIZATION.json": "13352a5a0651301f296b58e91d5e9a8dfdf2a634181ae9121905507fe952bed2",
     ".ci/test-only/harness/run.py": "83dc40a0d5d7eeb47509ab93a19ada2fbd93e038c6710bebbdb85f223747d0a8",
     ".ci/test-only/harness/offline_regressions.py": "8f9d117f632a7fbbe270008998d703d8daa2cd26f1cdb39705ef98d82de2266c"
+  },
+  "reviewed_canonical_integration": {
+    ".ci/test-only/harness/run.py": {
+      "original_sha256": "83dc40a0d5d7eeb47509ab93a19ada2fbd93e038c6710bebbdb85f223747d0a8",
+      "sha256": "0a1bf377d64d4a3def4f660f468cdcb78bae3f91c7c6b8bcab948e9fe56ee099",
+      "reason": "RevEng canonical recovered source, mandatory native40 and API/identity tests, bounded Forge packaging; no snapshot fallback"
+    }
   }
 }

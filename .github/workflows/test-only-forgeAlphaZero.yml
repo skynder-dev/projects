@@ -1,7 +1,7 @@
 name: test-only-forgeAlphaZero
 on:
   pull_request:
-    paths: ['.ci/test-only/**', '.github/workflows/test-only-*.yml', 'FILE_MANIFEST.json', 'README.txt', 'LOCAL_VALIDATION.json', 'SENSITIVE_DATA_REVIEW.json']
+    paths: ['social/socialreel/**', 'social/tests/**', 'social/CONCEPT_CORE_OFFLINE.md', '.ci/tests/**', '.ci/test-only/**', 'forge/tests/**', 'forge/tools/build_release.py', 'reveng/ResearchLocal/**', 'reveng/tests/**', 'reveng/RESEARCH_LOCAL_SOURCE_MANIFEST.json', '.github/workflows/test-only-*.yml', 'FILE_MANIFEST.json', 'README.txt', 'LOCAL_VALIDATION.json', 'SENSITIVE_DATA_REVIEW.json']
   workflow_dispatch:
 permissions:
   contents: read

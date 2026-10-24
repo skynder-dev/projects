@@ -57,12 +57,13 @@ class WorkflowPathsTest(unittest.TestCase):
         for workflow in WORKFLOWS:
             for changed in ('.ci/test-only/new-fixture.json',
                             '.ci/test-only/harness/nested/new_check.py',
+                            'social/socialreel/new_core.py', 'social/tests/new_case.py', '.ci/tests/new_guard.py',
                             '.github/workflows/test-only-new.yml'):
                 with self.subTest(workflow=workflow, changed=changed):
                     self.assertTrue(triggers(read_paths(workflow), [changed]))
 
     def test_unrelated_and_near_miss_paths_do_not_trigger(self):
-        unrelated = ('social/socialreel/pipeline.py', 'forge/README.md',
+        unrelated = ('social/config.json', 'forge/README.md',
                      'reveng/src/pipeline.js', '.github/workflows/production.yml',
                      '.github/workflows/nested/test-only-new.yml',
                      '.ci/test-only-other/check.py', 'docs/README.txt',

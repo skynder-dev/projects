@@ -55,6 +55,9 @@ class RecoveryGates(unittest.TestCase):
   for row in BASE['workflows']:
    with self.subTest(path=row['path']):
     raw=(ROOT/row['path']).read_bytes();s=raw.decode();document=parse(s)
+    s=s.replace("'social/socialreel/**', 'social/tests/**', 'social/CONCEPT_CORE_OFFLINE.md', '.ci/tests/**', ", '')
+    s=s.replace("'forge/tests/**', 'forge/tools/build_release.py', ", '')
+    s=s.replace("'reveng/ResearchLocal/**', 'reveng/tests/**', 'reveng/RESEARCH_LOCAL_SOURCE_MANIFEST.json', ", '')
     if row['eligible_offline']:
      self.assertEqual(document['permissions']['contents'],'read')
      self.assertNotIn('secrets.',s)
@@ -66,7 +69,11 @@ class RecoveryGates(unittest.TestCase):
       restored=restored.replace('      - run: python -m pip install --only-binary=PyYAML --no-deps PyYAML==6.0.3\r\n','')
       restored=restored.replace('      - run: python -B .ci/test-only/harness/test_recovery_workflow_gates.py\r\n','')
       self.assertEqual(hashlib.sha256(restored.encode()).hexdigest(),row['sha256'])
-     else:self.assertEqual(hashlib.sha256(raw).hexdigest(),row['sha256'])
+     elif row['path']=='.github/workflows/test-only-social246.yml':
+      restored=s.replace('      - run: python -m pip install --only-binary=pypdf --no-deps pypdf==6.10.0\r\n','')
+      restored=restored.replace('      - run: python -X utf8 -I -B .ci/test-only/harness/guard.py .ci/tests/run_social_concept_core.py\r\n      - name: Verify canonical sources after concept tests\r\n        run: python -B .ci/test-only/harness/verify_files.py\r\n','')
+      self.assertEqual(hashlib.sha256(restored.encode()).hexdigest(),row['sha256'])
+     else:self.assertEqual(hashlib.sha256(s.encode()).hexdigest(),row['sha256'])
      continue
     self.assertEqual(set(document['jobs']),set(row['jobs']))
     for job,item in row['jobs'].items():
@@ -114,7 +121,11 @@ class RecoveryGates(unittest.TestCase):
 
  def test_original_conditions_and_historical_source_pins_immutable(self):
   # These remain historical source pins, not evidence that canonical recovery is done.
+  self.assertEqual(set(BASE.get('reviewed_canonical_integration',{})),{'.ci/test-only/harness/run.py'})
   for name,digest in BASE['immutable_baseline_files'].items():
+   update=BASE.get('reviewed_canonical_integration',{}).get(name)
+   if update:
+    self.assertEqual(update['original_sha256'],digest);digest=update['sha256']
    self.assertEqual(hashlib.sha256((ROOT/name).read_bytes()).hexdigest(),digest)
   pins=json.loads((P/'CANDIDATE_PINS.json').read_bytes())
   for project,values in pins.items():
@@ -173,6 +184,17 @@ class RecoveryGates(unittest.TestCase):
    fixture=Path(tmp)/'unicode.yaml'
    fixture.write_bytes('name: synthetic-Ж\njobs: {}\n'.encode('utf-8'))
    self.assertEqual(parse(fixture.read_text(encoding='utf-8'))['name'],'synthetic-Ж')
+
+ def test_social_canonical_check_is_mandatory(self):
+  job=parse((ROOT/'.github/workflows/test-only-social246.yml').read_text(encoding='utf-8'))['jobs']['offline']
+  self.assertNotIn('if',job);self.assertNotIn('continue-on-error',job)
+  steps=job['steps'];commands=[step.get('run') for step in steps]
+  dependency='python -m pip install --only-binary=pypdf --no-deps pypdf==6.10.0'
+  command='python -X utf8 -I -B .ci/test-only/harness/guard.py .ci/tests/run_social_concept_core.py'
+  self.assertEqual(commands.count(dependency),1);self.assertEqual(commands.count(command),1)
+  self.assertLess(commands.index(dependency),commands.index(command))
+  self.assertEqual(steps[commands.index(command)],{'run':command})
+  self.assertEqual(steps[commands.index(command)+1],{'name':'Verify canonical sources after concept tests','run':'python -B .ci/test-only/harness/verify_files.py'})
 
  def test_guard_mutations_rejected(self):
   sample=next(item['guard_line'].split('if:',1)[1].strip() for row in BASE['workflows'] for item in row['jobs'].values())
