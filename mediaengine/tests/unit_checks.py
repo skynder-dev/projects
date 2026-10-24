@@ -1085,9 +1085,13 @@ def main():
                 __import__("time").sleep(0.1)
             with _qdb() as con:
                 qst_ = {int(r["id"]): r["status"] for r in con.execute("SELECT id,status FROM jobs WHERE id IN (?,?)", (qa_, qb_))}
-                con.execute("UPDATE jobs SET status='finished' WHERE id=?", (qa_,)); con.commit()
+                con.execute("UPDATE jobs SET status='finished',finished_at='2099-01-01T00:00:00+00:00' WHERE id=?", (qa_,)); con.commit()
         finally:
             _cv._convert_worker = real_qw_
+        with _ca().test_client() as _c:                     # one taken out of the line is not "the last job" on the page
+            qpage2_ = _c.get("/convert", headers=H_).get_data(as_text=True)
+        check("convert: a job taken out of the line never shows as the last conversion",
+              f"Last converter job #{qb_}" not in qpage2_ and f"Last converter job #{qa_}" in qpage2_, qpage2_[-300:])
         check("convert: a second conversion waits in line and starts by itself after the job before it",
               qd0_ is None and qc_ is True and qd1_ in (qa_, None) and qstarted_ == [qa_] and qst_ == {qa_: "running", qb_: "cancelled"}
               and qapi_ == {"running": None, "waiting": [qa_, qb_]} and "Waiting in line" in qpage_ and f"data-wait='{qb_}'" in qpage_

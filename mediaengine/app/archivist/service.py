@@ -736,6 +736,7 @@ def _cancel_requested(job_id: int) -> bool:
 
 def cancel_job(job_id: int) -> bool:
     with db() as con:
+        con.execute("BEGIN IMMEDIATE")     # the look and the change as one step (a waiting conversion may start meanwhile)
         r = con.execute("SELECT status FROM jobs WHERE id=?", (job_id,)).fetchone()
         if not r or r["status"] not in ("queued", "running", "waiting"):
             return False

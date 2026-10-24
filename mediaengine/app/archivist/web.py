@@ -1363,7 +1363,7 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
         with db() as con:
             _rr=con.execute("SELECT id FROM jobs WHERE kind='convert' AND status IN ('running','queued') ORDER BY id DESC LIMIT 1").fetchone()
             _rd=con.execute("SELECT id FROM jobs WHERE kind='convert' AND status IN ('finished','failed','cancelled','partial') "
-                            "ORDER BY id DESC LIMIT 1").fetchone()
+                            "AND NOT (status='cancelled' AND started_at IS NULL) ORDER BY COALESCE(finished_at,'') DESC,id DESC LIMIT 1").fetchone()
             _rw=con.execute("SELECT id,options_json FROM jobs WHERE kind='convert' AND status='waiting' AND cancel_requested=0 ORDER BY id").fetchall()
         running=convert_job_snapshot(int(_rr['id'])) if _rr else None
         last_done=convert_job_snapshot(int(_rd['id'])) if _rd else None
@@ -1695,7 +1695,10 @@ document.addEventListener('click',async ev=>{const b=ev.target.closest('[data-cv
 pollConvert();
 async function pollQueue(){const q=document.getElementById('convertQueue');if(!q)return;try{const r=await fetch('/api/convert/queue',{cache:'no-store'});const x=await r.json();
  const box=document.getElementById('convertStatus'),shown=box&&!box.dataset.done?Number(box.dataset.job):null;
- if(x.running&&x.running!==shown){location.reload();return}if(!x.running&&!(x.waiting||[]).length){q.remove();return}}catch(e){}setTimeout(pollQueue,2000)}
+ if(x.running&&x.running!==shown){
+  // the next conversion started: the page shows it - at once, unless videos are being chosen (nothing chosen is lost)
+  if(!document.querySelector('.convertCheck:checked')&&!document.querySelector("[id^='cvCut']")){location.reload();return}
+  if(!q.querySelector('.cvNext')){const n=document.createElement('div');n.className='row cvNext';n.style.marginTop='6px';n.innerHTML="<span class='small'>The next conversion has started.</span> <button class='btn btn2' type='button' onclick='location.reload()'>Show it</button>";q.prepend(n)}}if(!x.running&&!(x.waiting||[]).length){q.remove();return}}catch(e){}setTimeout(pollQueue,2000)}
 pollQueue();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='nt' else "false")+";",1)
         if not preselect_ids and pages>1:
             base={k:v for k,v in request.args.items() if k not in ('page','ids')}
@@ -1991,7 +1994,7 @@ pollQueue();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='nt
     def convert_queue():
         """The conversion running now and those waiting in line (the page reloads when the next one starts)."""
         with db() as con:
-            r=con.execute("SELECT id FROM jobs WHERE kind='convert' AND status='running' ORDER BY id DESC LIMIT 1").fetchone()
+            r=con.execute("SELECT id FROM jobs WHERE kind='convert' AND status IN ('running','queued') ORDER BY id DESC LIMIT 1").fetchone()
             w=con.execute("SELECT id FROM jobs WHERE kind='convert' AND status='waiting' AND cancel_requested=0 ORDER BY id").fetchall()
         return jsonify({'running':int(r['id']) if r else None,'waiting':[int(x['id']) for x in w]})
 
@@ -2353,7 +2356,7 @@ bindStoryFrames();loadStoryboard();""")
     @app.get('/jobs')
     def jobs():
         js=latest_jobs(30)
-        active_any=any(j['status'] in ('queued','running') for j in js)
+        active_any=any(j['status'] in ('queued','running','waiting') for j in js)
         body="<div class='row space'><div><h1 style='margin:0'>Jobs</h1><div class='muted'>Live queue. Running jobs refresh automatically; completed jobs keep their actual start, finish and elapsed time.</div></div></div><div class='jobs'>"
         for j in js:
             pct=round(100*j['done']/j['total']) if j['total'] else 0
@@ -2368,7 +2371,8 @@ bindStoryFrames();loadStoryboard();""")
             elapsed=_job_elapsed(j)
             started=j.get('started_at') or j.get('created_at') or ''
             finished=j.get('finished_at') or ''
-            timing=f"Started <span data-local-ts='{e(started)}'>{e(started)}</span>"
+            timing=(f"Started <span data-local-ts='{e(started)}'>{e(started)}</span>" if j.get('started_at') or j['status']!='waiting'
+                    else "<span>Waiting in line</span>")
             if finished:
                 timing+=f" · Finished <span data-local-ts='{e(finished)}'>{e(finished)}</span>"
             if elapsed:
@@ -2406,7 +2410,7 @@ bindStoryFrames();loadStoryboard();""")
         body=f"<div class='row space'><div><h1>Job #{jid}</h1><div class='muted'><span>{e(j['kind'])}</span> · <span>{e(j['status'])}</span> · {j['done']}/{j['total']}{(' · <span>'+human_bytes(j['bytes_done'])+'</span>/<span>'+human_bytes(j['bytes_total'])+'</span>') if j['bytes_total'] else ''}{safe}</div></div><div class='row'>"
         if j['failed']:
             body += f"<button onclick=\"jobAction(this,'/api/jobs/{jid}/retry','retry')\" class='warn'>Retry failed</button>"
-        if j['status'] in ('queued','running'):
+        if j['status'] in ('queued','running','waiting'):
             body += f"<button onclick=\"jobAction(this,'/api/jobs/{jid}/cancel','cancel')\" class='danger'>Cancel job</button>"
         body+='</div></div><div class="jobs">'
         for x in d['items']:
@@ -2437,7 +2441,7 @@ async function jobAction(btn,url,mode){
   }
 }
 """
-        if j['status'] in ('queued','running'):
+        if j['status'] in ('queued','running','waiting'):
             script+="setTimeout(()=>{if(!window.jobActionBusy)location.reload()},1500);"
         return layout(f'Job {jid}',body,script)
 

@@ -1968,6 +1968,16 @@ def dispatch_waiting():
     """The first conversion waiting in line started, when no job runs: its id, else None."""
     if _EXITING.is_set():
         return None
+    with db() as con:                      # (a plain look first: no write lock every 2 s while a job runs)
+        if con.execute("SELECT 1 FROM jobs WHERE status IN ('running','queued') LIMIT 1").fetchone() or not con.execute(
+                "SELECT 1 FROM jobs WHERE kind='convert' AND status='waiting' AND cancel_requested=0 LIMIT 1").fetchone():
+            return None
+    try:                                   # a reel, an order, AI+ preparing, a Composer render or an update: after it
+        from .watchdog import _other_work
+        if _other_work():
+            return None
+    except Exception:
+        pass
     with db() as con:
         con.execute("BEGIN IMMEDIATE")
         if con.execute("SELECT 1 FROM jobs WHERE status IN ('running','queued') LIMIT 1").fetchone():
