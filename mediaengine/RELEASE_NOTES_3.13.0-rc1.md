@@ -158,6 +158,15 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   processor at the small size); any error, or a result whose picture is not as long as expected, makes the same
   conversion on the processor (two failures in a row: the processor only until a restart; convert.gpu = false).
   Not yet measured on the owner's RTX 3060.
+- **Save this picture** (in Cut…: a JPEG of the moment shown, full size, upright); **Turn the picture** 90° right /
+  left / 180°. Copies of GoPro / phone video (full-range picture) are made in TV levels, so every player shows the
+  right contrast (FFmpeg 7.1 kept full range before) - also reels and finished videos (b205, b207).
+- Check this PC → **Test converting on the graphics card**: a 5 s 4K clip made smaller by the processor and by the
+  NVIDIA card; Convert uses the card only when it was faster with the same picture (b208).
+- **More** (b211, 2026-10-24): speed 2× / 4× / 8× faster (4× and 8× without sound); vertical 9:16 (the middle, or
+  the whole picture on a blurred background); your logo in a corner (chosen once, kept as a PNG; each job keeps its
+  own copy); less wind noise.
+- **Save pictures of the selected videos** every 5 / 10 / 30 / 60 s into a folder (photos for a report). **Earlier conversions**: the last 10 jobs with their buttons.
 
 ## Orders from other programs; night review fixes (2026-10-17)
 

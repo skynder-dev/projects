@@ -783,6 +783,15 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   video check PASS (convert 46/46; the INFO probe of a raw piece still says full range: the pieces are put into TV
   levels at the render), served (ZIP 3,952,934 bytes; the same runtime). A leftover branch mediaengine-levels-check
   (same commit as main) could not be deleted from the session (proxy 403) - harmless.
+- 2026-10-24: Check this PC -> "Test converting on the graphics card" (b208). Convert → More: speed 2× / 4× / 8×
+  (2× with its sound in step, also a sound that starts after the picture), vertical 9:16 (middle / blurred
+  background; 4:3 pixels squared first), a logo in a corner (the job's own copy; removable on Windows - served as
+  bytes), less wind noise (a 50 Hz hum -12 dB or more); pictures every 5 / 10 / 30 / 60 s (named by their stretch,
+  a % in a name kept); Earlier conversions (last 10, each its own buttons; Remove from the page takes one job).
+  Four independent reviews before publishing. Windows run 40087621620 (585b989): convert 52/52, unit 174/174, Edge
+  browser 20/20, route fuzz 0 errors, Russian 217 pages 0 English, public repo 0.
+  Published: b211 (commit 585b989), ZIP 3,989,701 bytes, the same runtime b9810d447e8c86c5 - the Update button is
+  enough.
 
 ## Evidence
 
@@ -983,6 +992,7 @@ b208 is published (b205: Save this picture, Turn the picture, TV levels in conve
 reels and finished videos from GoPro / phone footage; b208: Check this PC -> "Test converting on the graphics card" -
 a 4K test clip by the processor and the NVIDIA card, Convert uses the card only if faster with the same picture; on
 the Windows runner, no NVIDIA card: said and remembered in 14 s, CI run 40070321577, ZIP 3,963,041 bytes, same
-runtime). Asked the owner to press the test and send its line. Still open: the first voice-over on
+runtime). Asked the owner to press the test and send its line. b211 is published (Convert → More: speed, vertical 9:16, logo, less wind;
+pictures every N s; earlier conversions). Still open: the first voice-over on
 his RTX 3060; Convert on his PC (Explorer, clipboard, the NVIDIA way's speed). Social integration paused by the owner (do not touch Social).
 Through the app's pages in the desktop app's browser pane only (never computer use).
