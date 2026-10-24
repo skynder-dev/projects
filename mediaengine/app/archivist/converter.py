@@ -187,7 +187,7 @@ def save_frames_every(source, every: int, output_dir=None, progress_cb=None, can
         # (each picture is the first of a later stretch than the one before, so the stretches only go up)
         tb = _stream_time_base(ffmpeg, source)
         wid = 3 if duration >= 6000 else 2
-        total, used, prev = 0, set(), -1
+        total, used, prev, made = 0, set(), -1, []
         for i, f in enumerate(pics):
             try:
                 ts = int(f.stem.split("_", 1)[1]) * tb
@@ -203,14 +203,89 @@ def save_frames_every(source, every: int, output_dir=None, progress_cb=None, can
             dst = folder / f"{name}.jpg"
             f.replace(dst)
             total += dst.stat().st_size
+            made.append((dst, float(t)))
     except BaseException:
         shutil.rmtree(folder, ignore_errors=True)
         raise
     finally:
         if cwd:
             shutil.rmtree(cwd, ignore_errors=True)
+    pdf = None
+    try:                                   # all of them on A4 pages, for a report (the pictures stay without it)
+        start = parts[0][2] if clock and parts else None
+        pdf = pictures_pdf(folder / f"{stem}_pictures.pdf", made, source.name, every, start)
+    except Exception:
+        pdf = None
     return {"source": str(source), "output": str(folder), "frames": len(pics), "every": every,
-            "source_bytes": source.stat().st_size, "output_bytes": total, "saved_percent": 0.0, **({"clock": how} if how else {})}
+            "source_bytes": source.stat().st_size, "output_bytes": total, "saved_percent": 0.0, **({"clock": how} if how else {}),
+            **({"pdf": str(pdf)} if pdf else {})}
+
+
+def pictures_pdf(path: Path, pics: list, title: str, every: int, start=None) -> Path | None:
+    """The pictures of one video on A4 pages (150 dpi): the video's name, how often, and under each picture its moment
+    in the video (and the clock's time when it is known). Pages are written one by one (a long video's hundreds of
+    pictures never sit in memory together). In the program's language."""
+    if not pics:
+        return None
+    from PIL import Image, ImageDraw, ImageFont
+    from datetime import timedelta
+    from .textfx import FONT_DIR
+    try:
+        from .i18n import ui_language, ru_plural
+        ru = ui_language() == "ru"
+    except Exception:
+        ru, ru_plural = False, None
+    def font(name, px):
+        try:
+            return ImageFont.truetype(str(FONT_DIR / name), px)
+        except OSError:
+            return ImageFont.load_default()
+    W, H, M, GAP, CAP = 1240, 1754, 60, 24, 34
+    f_title, f_sub, f_cap = font("Montserrat-ExtraBold.ttf", 34), font("Montserrat-SemiBold.ttf", 22), font("Montserrat-SemiBold.ttf", 20)
+    with Image.open(pics[0][0]) as im0:
+        aspect = im0.width / max(1, im0.height)
+    cols = 2 if aspect >= 1.2 else 3
+    cw = (W - 2 * M - (cols - 1) * GAP) // cols
+    ph = int(cw / aspect)
+    top, bottom = M + 110, M + 40
+    rows = max(1, (H - top - bottom + GAP) // (ph + CAP + GAP))
+    per = cols * rows
+    pages = (len(pics) + per - 1) // per
+    n = len(pics)
+    count = (f"{n} " + ru_plural(n, "кадр", "кадра", "кадров")) if ru and ru_plural else f"{n} picture{'s' if n != 1 else ''}"
+    sub = (f"Кадры каждые {every} с · {count}" if ru else f"Pictures every {every} s · {count}") \
+        + ((" · снято " if ru else " · filmed ") + f"{start:%d.%m.%Y %H:%M:%S}" if start else "")
+    tmp = path.with_name(path.stem + ".part.pdf")
+    try:
+        for pg in range(pages):
+            page = Image.new("RGB", (W, H), "white")
+            d = ImageDraw.Draw(page)
+            d.text((M, M), title, font=f_title, fill=(20, 20, 20))
+            d.text((M, M + 50), sub, font=f_sub, fill=(90, 90, 90))
+            for k, (pic, t) in enumerate(pics[pg * per:(pg + 1) * per]):
+                x = M + (k % cols) * (cw + GAP)
+                y = top + (k // cols) * (ph + CAP + GAP)
+                with Image.open(pic) as im:
+                    im.draft("RGB", (cw, ph))
+                    th = im.convert("RGB").resize((cw, ph), Image.LANCZOS)
+                page.paste(th, (x, y))
+                ti = int(t)
+                cap = f"{ti // 3600}:{ti // 60 % 60:02d}:{ti % 60:02d}" if ti >= 3600 else f"{ti // 60}:{ti % 60:02d}"
+                if start:
+                    cap += f"   {start + timedelta(seconds=t):%d.%m.%Y %H:%M:%S}"
+                d.text((x, y + ph + 6), cap, font=f_cap, fill=(40, 40, 40))
+            foot = (f"стр. {pg + 1} из {pages}" if ru else f"page {pg + 1} of {pages}")
+            d.text((W - M - d.textlength(foot, font=f_cap), H - M - 10), foot, font=f_cap, fill=(120, 120, 120))
+            page.save(tmp, "PDF", resolution=150, append=pg > 0, quality=85)
+            page.close()
+        os.replace(tmp, path)
+        return path
+    except BaseException:
+        try:
+            tmp.unlink()
+        except OSError:
+            pass
+        raise
 
 
 def _stream_time_base(ffmpeg, source) -> float:

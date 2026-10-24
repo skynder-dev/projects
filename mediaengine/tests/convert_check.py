@@ -430,6 +430,9 @@ def main():
     pct = src_dir / "Sale 20% off.mp4"                  # a % in the name is not a number pattern
     shutil.copy(slow, pct)
     pp = cvx.save_frames_every(pct, 2, out_dir)
+    pdfb = Path(of["pdf"]).read_bytes() if of.get("pdf") and Path(of["pdf"]).is_file() else b""
+    check("pictures_in_one_pdf", pdfb[:5] == b"%PDF-" and len(re.findall(rb"/Type\s*/Page(?!s)", pdfb)) == 1
+          and Path(of["pdf"]).parent == Path(of["output"]) and Path(of["pdf"]).name == "whole_sync_pictures.pdf", (of.get("pdf"), len(pdfb)))
     check("pictures_every_n_seconds", jf["status"] == "finished" and of.get("frames") == 3 and pics == ["whole_sync_00m00s.jpg", "whole_sync_00m05s.jpg",
           "whole_sync_00m10s.jpg"] and psz == (640, 360) and Path(of["output"]).name == "whole_sync_pictures_every_5s"
           and sorted(x.name for x in Path(pp["output"]).glob("*.jpg")) == ["Sale 20% off_00m00s.jpg", "Sale 20% off_00m02s.jpg", "Sale 20% off_00m04s.jpg"]

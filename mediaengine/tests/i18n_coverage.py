@@ -17,7 +17,7 @@ sys.path.insert(0, str(ROOT / "app"))
 
 KEEP = {  # stays English in Russian too (names, units, formats)
     "MediaEngine", "Archivist", "Social Lab", "Android", "FFmpeg", "FAST_LOCAL", "Social HD", "MP4", "HDR", "HEVC", "AI",
-    "OK", "ID", "GB", "MB", "KB", "TB", "fps", "px", "Edge", "Windows", "USB", "SD", "SD/USB", "ADB", "JSON", "CSV", "ONNX",
+    "OK", "ID", "GB", "MB", "KB", "TB", "fps", "px", "PDF", "Edge", "Windows", "USB", "SD", "SD/USB", "ADB", "JSON", "CSV", "ONNX",
     "OpenCV", "numpy", "YouTube", "TikTok", "Instagram", "Facebook", "Telegram", "VK", "Google", "Supabase", "GoDog",
     "English", "Русский", "MOV", "MTS", "WebM", "Private", "Rejected", "Staging", "Exports", "HD", "Social", "FAST", "LOCAL",
     "SHA", "Runtime", "MP", "rc", "ZIP", "zscale", "iPhone", "iOS", "Share", "Lab", "OAuth", "Client", "API", "AAC", "Reel", "MediaStore", "Meta",
