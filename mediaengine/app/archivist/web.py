@@ -1761,8 +1761,13 @@ pollConvert();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='
         from .converter import LOGO_FILE, LOGO_CORNERS
         payload=_json_obj(); action=payload.get('action'); dst=HOME/'data'/LOGO_FILE
         if action=='clear':
-            try: dst.unlink()
-            except OSError: pass
+            for _ in range(10):
+                try:
+                    dst.unlink(missing_ok=True); break
+                except OSError:
+                    time.sleep(0.2)                  # (Windows: a moment while another reader closes it)
+            if dst.exists():
+                return jsonify({'ok':False,'error':'The logo is in use - try again in a moment.'}),409
             return jsonify({'ok':True})
         if action=='set':
             corner=payload.get('corner') if payload.get('corner') in LOGO_CORNERS else 'bottom-right'
@@ -1793,7 +1798,8 @@ pollConvert();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='
         f=HOME/'data'/LOGO_FILE
         if not f.is_file():
             return 'Not found',404
-        return send_file(str(f),mimetype='image/png',max_age=0)
+        # the bytes, not the open file: on Windows an open file could not be removed by "Remove the logo"
+        return Response(f.read_bytes(),mimetype='image/png',headers={'Cache-Control':'no-store'})
 
     @app.post('/api/convert/frame')
     def convert_frame():

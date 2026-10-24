@@ -268,7 +268,7 @@ APP_PHRASES: dict[str, str] = {
     "Any video on this computer, without adding it to the library.": "Любое видео на этом компьютере, без добавления в медиатеку.",
     "These videos are parts of one GoPro recording - they can be joined into one video.":
         "Эти видео — части одной записи GoPro: их можно склеить в одно видео.",
-    "Order:": "Порядок:", "Earlier conversions": "Прошлые конвертации", "Conversion": "Конвертация",
+    "Order:": "Порядок:", "Earlier conversions": "Прошлые конвертации", "Conversion": "Конвертация", "The logo is in use - try again in a moment.": "Логотип сейчас занят — попробуй ещё раз через секунду.",
     "Pictures every": "Кадры каждые", "5 s": "5 с", "10 s": "10 с", "30 s": "30 с", "60 s": "60 с",
     "Save pictures of the selected videos": "Сохранить кадры выбранных видео",
     "Photos for a report, into a folder next to the converted videos.": "Фото для отчёта — в папку рядом с готовыми видео.",
