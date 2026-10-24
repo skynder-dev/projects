@@ -182,7 +182,11 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   target works with phone videos and joined chapters (frame gaps) and counts only the copy's sound tracks; a big file
   being finished on a slow disk is not taken for a stalled job; a copy shorter than its video (damaged or
   half-copied) says so; a video missing when its job starts gets a "Failed" line; conversions wait while the card
-  test runs. **Earlier conversions**: the last 10 jobs with their buttons.
+  test runs.
+- b217: pictures every N s read each picture from its own moment (a seek - about 10x faster for long 4K videos, the
+  same pictures byte for byte; videos without an exact seek - camcorder MTS, DVD, FLV - and interlaced video are
+  decoded whole, which now reads each picture's real time too); Convert remembers the preset and the lasting choices;
+  on a PC with an NVIDIA card never tested for converting, Convert offers the one-minute test. **Earlier conversions**: the last 10 jobs with their buttons.
 
 ## Orders from other programs; night review fixes (2026-10-17)
 

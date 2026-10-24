@@ -814,8 +814,15 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   silent video) fixed. Windows run 40118244060 (050824c): convert 62/62, unit 178/178, Edge 20/20, E2E 88/91/80,
   route fuzz 0, Russian 217 pages 0 English, public repo 0.
   Published: b215 (commit 050824c), ZIP 4,033,358 bytes, the same runtime.
-  Next in CI: the remembered Convert choices; pictures by seeking (about 10x faster for long 4K videos, byte-identical
-  to decoding; only for containers with an exact seek and progressive video - reviewed).
+  Then: the remembered Convert choices; pictures by seeking (about 10x faster for long 4K videos, byte-identical to
+  decoding; reviewed: only containers with an exact seek and progressive video, % in names, the seek FFmpegs stopped by
+  Stop / Quit); the card test offered on the Convert page. Windows run 40130034406 (1ad6f10): convert 63/63 (incl.
+  pictures_by_seeking_are_the_same on FFmpeg 7.1), unit 179/179, Edge 20/20, E2E 88/91/80, route fuzz 0, Russian 217
+  pages 0 English, public repo 0. Published: b217 (commit 1ad6f10), ZIP 4,043,040 bytes, the same runtime.
+- Owner PC seen through the app's pages (2026-10-24 evening, read only): he runs b213 (pressed Update); the voice
+  add-on is installed but no voice-over has been made yet; "Test converting on the graphics card" not run; his only
+  conversion is from 2026-10-22 (4 videos, Share 1080p, all fine). So none of today's Convert additions is tried on
+  his PC yet.
 
 ## Evidence
 
@@ -1019,6 +1026,7 @@ the Windows runner, no NVIDIA card: said and remembered in 14 s, CI run 40070321
 runtime). Asked the owner to press the test and send its line. b211 is published (Convert → More: speed, vertical 9:16, logo, less wind;
 pictures every N s; earlier conversions). b212 is published (slow motion, Even out the sound, Date and time in the
 corner, on pictures too; "Filmed:" in Cut…). b213 is published (the pictures in one PDF). b215 is published (the waiting line, report title, Brighter, Select all,
-whole-module review fixes). Still open: the first voice-over on
+whole-module review fixes). b217 is published (pictures ~10x faster, remembered choices, card test
+offered on Convert). Still open: the first voice-over on
 his RTX 3060; Convert on his PC (Explorer, clipboard, the NVIDIA way's speed). Social integration paused by the owner (do not touch Social).
 Through the app's pages in the desktop app's browser pane only (never computer use).
