@@ -1,0 +1,285 @@
+{
+ "format": "mediaengine.update/1",
+ "pkg": "MediaEngine-3.13.0-rc1-b217",
+ "version": "3.13.0-rc1",
+ "file": "MediaEngine-3.13.0-rc1-b217-update.zip",
+ "size": 4043040,
+ "sha256": "1d52b3f1dcae9e7fe068282b9552083fe57fb9744e5a081f3c47762f5300b73b",
+ "runtime": "b9810d447e8c86c5",
+ "commit": "1ad6f105f30cde2e6a2a4c2710ebd9d2a2aee3df",
+ "run_url": "https://github.com/skynder-dev/projects/actions/runs/40130034406",
+ "created_at": "2026-10-24T22:24:32+00:00",
+ "files": 178,
+ "notes": [
+  {
+   "since": "2026-10-14",
+   "en": "“Save MP4” in one step on any version (no separate Accept).",
+   "ru": "«Сохранить MP4» одной кнопкой у любой версии (без отдельного «Принять»)."
+  },
+  {
+   "since": "2026-10-14",
+   "en": "A reel for every day of a trip: open a big folder, “A reel for every day”.",
+   "ru": "Ролик на каждый день поездки: открой большую папку → «Ролик на каждый день»."
+  },
+  {
+   "since": "2026-10-14",
+   "en": "Vertical reel from horizontal videos: the whole picture with blurred edges, if you like.",
+   "ru": "Вертикальный ролик из горизонтальных видео: по желанию кадр целиком, края размыты."
+  },
+  {
+   "since": "2026-10-14",
+   "en": "“Small copy for messengers” next to Save MP4.",
+   "ru": "«Маленькая копия для мессенджеров» рядом с «Сохранить MP4»."
+  },
+  {
+   "since": "2026-10-14",
+   "en": "Library: select videos and press “Make a reel”.",
+   "ru": "Библиотека: отметь видео и нажми «Сделать ролик»."
+  },
+  {
+   "since": "2026-10-14",
+   "en": "Reels up to 2 minutes; the new reel starts with your last settings.",
+   "ru": "Ролики до 2 минут; новый ролик начинается с твоих прошлых настроек."
+  },
+  {
+   "since": "2026-10-14",
+   "en": "A reel being made is shown at the top of every page.",
+   "ru": "Ролик, который собирается, виден вверху каждой страницы."
+  },
+  {
+   "since": "2026-10-15",
+   "en": "AI mode is faster with big videos (4K): several videos are analysed at once, moments are cut quicker.",
+   "ru": "ИИ-режим быстрее с большими видео (4K): несколько видео анализируются одновременно, моменты нарезаются быстрее."
+  },
+  {
+   "since": "2026-10-15",
+   "en": "A new reel from videos that were already analysed (another project, a reel for every day) analyses and cuts nothing again.",
+   "ru": "Новый ролик из уже проанализированных видео (другой проект, ролик на каждый день) ничего не анализирует и не нарезает заново."
+  },
+  {
+   "since": "2026-10-15",
+   "en": "While moments are being found: about how many minutes are left.",
+   "ru": "Во время поиска моментов видно, сколько примерно минут осталось."
+  },
+  {
+   "since": "2026-10-15",
+   "en": "A Windows notification when a reel that took more than a minute is ready (can be turned off in Settings).",
+   "ru": "Уведомление Windows, когда готов ролик, который собирался дольше минуты (выключается в Настройках)."
+  },
+  {
+   "since": "2026-10-15b",
+   "en": "AI with 4K videos is faster again: moments are looked at in small copies, the reel is cut from the originals.",
+   "ru": "ИИ с 4K-видео стал ещё быстрее: моменты оцениваются по уменьшенным копиям, а ролик режется из оригиналов."
+  },
+  {
+   "since": "2026-10-15b",
+   "en": "“Prepare in advance” on the new-reel page: the videos are analysed now (for example overnight), the reel is then made in minutes.",
+   "ru": "«Подготовить заранее» на странице нового ролика: видео анализируются сразу (например, ночью), потом ролик собирается за минуты."
+  },
+  {
+   "since": "2026-10-15b",
+   "en": "AI+ theme “Aerial view (drone)”: the view from above, without take-off and landing on the ground.",
+   "ru": "Тема ИИ+ «Вид сверху (дрон)»: вид с высоты, без взлёта и посадки на земле."
+  },
+  {
+   "since": "2026-10-16",
+   "en": "Check this PC can test the graphics card: if it decodes 4K faster with exactly the same picture, the videos are cut with it.",
+   "ru": "«Проверка компьютера» умеет проверить видеокарту: если она разбирает 4K быстрее и с точно такой же картинкой, видео режутся ею."
+  },
+  {
+   "since": "2026-10-16",
+   "en": "Choosing the moments of a new reel length uses several processor cores (the same choice, found faster).",
+   "ru": "Выбор моментов для новой длины ролика идёт на нескольких ядрах процессора (выбор тот же, только быстрее)."
+  },
+  {
+   "since": "2026-10-16",
+   "en": "“Prepare in advance” for a reel for every day of a big folder too.",
+   "ru": "«Подготовить заранее» теперь есть и для роликов на каждый день большой папки."
+  },
+  {
+   "since": "2026-10-17",
+   "en": "Orders from other programs: a program puts an order into the Inbox folder (Auto Edit → Orders), MediaEngine makes the video and puts it into Done.",
+   "ru": "Заказы от других программ: программа кладёт заказ в папку «Входящие» (Автомонтаж → Заказы), MediaEngine делает видео и кладёт его в «Готово»."
+  },
+  {
+   "since": "2026-10-17b",
+   "en": "MediaEngine is in the tray (next to the clock): click it to open the window, right-click → Quit to close the program.",
+   "ru": "MediaEngine в трее (рядом с часами): щелчок открывает окно, правая кнопка → «Выход» закрывает программу."
+  },
+  {
+   "since": "2026-10-17b",
+   "en": "A new version takes over from the old one by itself, without the “switch?” question.",
+   "ru": "Новая версия сама сменяет старую, без вопроса «переключиться?»."
+  },
+  {
+   "since": "2026-10-18",
+   "en": "The “Update” button at the top: MediaEngine finds a newer version on GitHub and installs it itself (only when you press it).",
+   "ru": "Кнопка «Обновить» вверху: MediaEngine сам находит новую версию на GitHub и ставит её (только когда ты её нажмёшь)."
+  },
+  {
+   "since": "2026-10-18",
+   "en": "Settings: start MediaEngine in the background when you sign in to Windows (off unless you turn it on); reels waiting from before a restart go on.",
+   "ru": "Настройки: запуск MediaEngine в фоне при входе в Windows (выключен, пока ты сам не включишь); ролики, ждавшие до перезагрузки, продолжатся."
+  },
+  {
+   "since": "2026-10-18",
+   "en": "A reel being made when the PC restarts (or MediaEngine stops without Quit) is made again by itself at the next start, once.",
+   "ru": "Ролик, который собирался, когда компьютер перезагрузился (или MediaEngine закрылся не через «Выход»), сам собирается заново при следующем запуске — один раз."
+  },
+  {
+   "since": "2026-10-19",
+   "en": "Voice-over (Auto Edit → Voice-over, an add-on installed with a button): a text read by a voice, checked word by word, captions timed to the words, the voice and captions put onto a video.",
+   "ru": "Озвучка (Автомонтаж → Озвучка, модуль ставится кнопкой): текст читает голос с проверкой каждого слова, субтитры точно по словам, голос и субтитры накладываются на видео."
+  },
+  {
+   "since": "2026-10-19",
+   "en": "Captions for your own videos: the speech becomes captions burned into a copy (Auto Edit → Voice-over).",
+   "ru": "Субтитры для твоих видео: речь превращается в субтитры, вшитые в копию (Автомонтаж → Озвучка)."
+  },
+  {
+   "since": "2026-10-19b",
+   "en": "Voice-over: your picks from the voice test, the voices 4_4 and 4_2, instead of 3.1.",
+   "ru": "Озвучка: твой выбор из пробы голосов — голоса 4_4 и 4_2 вместо 3.1."
+  },
+  {
+   "since": "2026-10-20",
+   "en": "Text on a video (Auto Edit → Voice-over and text): titles and lines of text at the moments you choose, on a colored stripe, a dark box or in big letters - no add-on needed.",
+   "ru": "Текст на видео (Автомонтаж → Озвучка и текст): заголовки и строки текста в нужные моменты — на цветной плашке, на тёмной плашке или крупными буквами; модуль озвучки не нужен."
+  },
+  {
+   "since": "2026-10-22",
+   "en": "Captions in two more looks: one word at a time, big (like TikTok), and the word being said on a color block.",
+   "ru": "Ещё два вида субтитров: по одному слову, крупно (как в TikTok), и сказанное слово на цветной плашке."
+  },
+  {
+   "since": "2026-10-24j",
+   "en": "Convert: pictures from long videos are saved many times faster (each picture read from its own moment, not the whole video decoded).",
+   "ru": "Конвертация: кадры из длинных видео сохраняются в разы быстрее (каждый кадр читается со своего момента, а не всё видео целиком)."
+  },
+  {
+   "since": "2026-10-24i",
+   "en": "Convert: Select all / Clear the selection; the preset and the lasting choices (sound, date and time, Brighter, logo, how often pictures are taken) are remembered; a copy shorter than its video (a damaged or half-copied file) says so.",
+   "ru": "Конвертация: «Выбрать все» / «Снять выбор»; пресет и постоянные настройки (звук, дата и время, «Светлее», логотип, как часто брать кадры) запоминаются; если копия короче видео (файл повреждён или скопирован не до конца), об этом сказано."
+  },
+  {
+   "since": "2026-10-24h",
+   "en": "Convert → More: “Brighter” for videos filmed in the dark.",
+   "ru": "Конвертация → «Ещё»: «Светлее» — для видео, снятых в темноте."
+  },
+  {
+   "since": "2026-10-24g",
+   "en": "Convert: a conversion started while another one runs waits in line and starts by itself after it (“Take out of the line” removes it).",
+   "ru": "Конвертация: если запустить новую, пока идёт другая, она встанет в очередь и начнётся сама («Убрать из очереди» — убрать её)."
+  },
+  {
+   "since": "2026-10-24f",
+   "en": "Convert: “Save pictures of the selected videos” also makes one PDF of them (A4 pages, each picture with its moment and, when chosen, the date and time; your report title on top) - ready for a report.",
+   "ru": "Конвертация: «Сохранить кадры выбранных видео» теперь делает и один PDF (листы A4, у каждого кадра его момент и, если выбрано, дата и время; сверху — ваш заголовок отчёта) — готово для отчёта."
+  },
+  {
+   "since": "2026-10-24e",
+   "en": "Convert → More: “Date and time in the corner” - when it was filmed, every second, from the camera or phone clock (for reports).",
+   "ru": "Конвертация → «Ещё»: «Дата и время в углу» — когда снято, каждую секунду, по часам камеры или телефона (для отчётов)."
+  },
+  {
+   "since": "2026-10-24d",
+   "en": "Convert → More: slow motion ½× and ¼× (smooth from 60 / 120 fps videos) and “Even out the sound” (quiet speech louder, loud parts softer).",
+   "ru": "Конвертация → «Ещё»: замедление ½× и ¼× (плавно из видео 60 / 120 кадров/с) и «Выровнять звук» (тихая речь громче, громкое тише)."
+  },
+  {
+   "since": "2026-10-24c",
+   "en": "Convert: pictures every 5 / 10 / 30 / 60 seconds of the selected videos (photos for a report) and a list of earlier conversions with their buttons.",
+   "ru": "Конвертация: кадры каждые 5 / 10 / 30 / 60 секунд выбранных видео (фото для отчёта) и список прошлых конвертаций с их кнопками."
+  },
+  {
+   "since": "2026-10-24b",
+   "en": "Convert → More: speed (2×, 4×, 8× faster), vertical 9:16 for Reels / TikTok (the middle, or the whole picture on a blurred background), your logo in a corner, less wind noise.",
+   "ru": "Конвертация → Ещё: скорость (в 2, 4, 8 раз быстрее), вертикально 9:16 для Reels / TikTok (середина или вся картинка на размытом фоне), ваш логотип в углу, меньше шума ветра."
+  },
+  {
+   "since": "2026-10-24",
+   "en": "Check this PC: “Test converting on the graphics card” - a short 4K test clip made smaller with the processor and with the NVIDIA card; Convert uses the card only if it was faster with the same picture.",
+   "ru": "Проверка этого ПК: «Проверить конвертацию на видеокарте» — короткий тестовый 4K-клип сжимается процессором и видеокартой NVIDIA; конвертация берёт видеокарту, только если она быстрее и картинка та же."
+  },
+  {
+   "since": "2026-10-23e",
+   "en": "Reels, finished videos and converted copies made from GoPro or phone footage keep normal brightness levels (dark and bright parts as filmed on every screen).",
+   "ru": "Ролики, готовые видео и сжатые копии из видео GoPro и телефонов — с нормальными уровнями яркости (тёмное и светлое как снято, на любом экране)."
+  },
+  {
+   "since": "2026-10-23d",
+   "en": "Convert: “Turn the picture” - 90° right or left, or upside down (a camera mounted the other way).",
+   "ru": "Конвертация: «Повернуть картинку» — на 90° вправо или влево или вверх ногами (камера стояла иначе)."
+  },
+  {
+   "since": "2026-10-23d",
+   "en": "Convert: “Save this picture” in Cut… - a photo of the moment in the player, at the video's full size, into the folder of converted videos.",
+   "ru": "Конвертация: «Сохранить кадр» в «Обрезать…» — фото момента из плеера в полном размере видео, в папку готовых файлов."
+  },
+  {
+   "since": "2026-10-23c",
+   "en": "Convert: “Without sound” - the copy has no sound at all (wind, voices on site).",
+   "ru": "Конвертация: «Без звука» — в копии совсем нет звука (ветер, разговоры на объекте)."
+  },
+  {
+   "since": "2026-10-23c",
+   "en": "Convert: “Cut…” next to a video - only the part between start and end is converted (set with the player or typed as minutes:seconds).",
+   "ru": "Конвертация: «Обрезать…» у видео — конвертируется только часть между началом и концом (задаётся плеером или вписывается как минуты:секунды)."
+  },
+  {
+   "since": "2026-10-23b",
+   "en": "Convert: “Change…” - converted videos can go into a folder of yours (not a library folder); “Copy file” next to each one: Ctrl+V pastes it into a folder, an e-mail or a messenger.",
+   "ru": "Конвертация: «Изменить…» — сжатые видео можно сохранять в свою папку (не в папку медиатеки); «Копировать файл» у каждого: Ctrl+V вставит его в папку, письмо или мессенджер."
+  },
+  {
+   "since": "2026-10-23",
+   "en": "Convert: “Join into one video” - parts of one recording (a GoPro splits a long one into files of 4 GB: GX010044, GX020044 …) become one video, in the recording's order; several GoPro recordings - one video each.",
+   "ru": "Конвертация: «Склеить в одно видео» — части одной записи (GoPro делит длинную запись на файлы по 4 ГБ: GX010044, GX020044 …) становятся одним видео, в порядке записи; несколько записей GoPro — по видео на каждую."
+  },
+  {
+   "since": "2026-10-23",
+   "en": "Convert: “Choose videos on this PC…” converts any video on the computer without adding it to the library; “Stop” on a running conversion; the time left.",
+   "ru": "Конвертация: «Выбрать видео на компьютере…» сжимает любое видео без добавления в медиатеку; «Остановить» во время конвертации; сколько осталось."
+  },
+  {
+   "since": "2026-10-23",
+   "en": "Convert: big videos made smaller on an NVIDIA graphics card (much faster; if the card can't, the processor makes them as before); a Windows notification when a long conversion is ready.",
+   "ru": "Конвертация: большие видео сжимаются на видеокарте NVIDIA (намного быстрее; если видеокарта не может — процессором, как раньше); уведомление Windows, когда долгая конвертация готова."
+  },
+  {
+   "since": "2026-10-22b",
+   "en": "Convert: “Show in folder” and “Open video” next to each converted file, and “Open the folder” at the top; the last job keeps its list of files until “Remove from the page” (the files stay in the folder).",
+   "ru": "Конвертация: «Показать в папке» и «Открыть видео» у каждого готового файла и «Открыть папку» вверху; список последней конвертации остаётся, пока не нажать «Убрать со страницы» (файлы остаются в папке)."
+  },
+  {
+   "since": "2026-10-21b",
+   "en": "Voice-over: the voice 9_2 is said by a new, livelier engine (Qwen3-TTS - your pick 14_5); an installed voice add-on downloads it with one button (about 4.7 GB).",
+   "ru": "Озвучка: голос 9_2 теперь говорит на новом, более живом движке (Qwen3-TTS — твой выбор 14_5); установленный модуль озвучки докачивает его одной кнопкой (около 4,7 ГБ)."
+  },
+  {
+   "since": "2026-10-21",
+   "en": "Finish a video: several videos at once - the same voice, captions, look, texts and music on each (one new video per video).",
+   "ru": "Доделать видео: сразу несколько — на каждое тот же голос, субтитры, вид, текст и музыка (для каждого — своё новое видео)."
+  },
+  {
+   "since": "2026-10-21",
+   "en": "Voice-over: its pace - a bit slower or faster, shorter or longer pauses between sentences (the voice keeps its pitch, the captions follow); a voice from a recording can be kept in the voice list.",
+   "ru": "Озвучка: темп — чуть медленнее или быстрее, короче или длиннее паузы между предложениями (высота голоса не меняется, субтитры следуют за голосом); голос из записи можно сохранить в списке голосов."
+  },
+  {
+   "since": "2026-10-20c",
+   "en": "Voice-over: the voice 9_2 (your pick: cleaner; 9_3 lisped on s/sh/ch) - the only ready voice now; every piece of a voice-over is kept at the voice's own pitch.",
+   "ru": "Озвучка: голос 9_2 (твой выбор: чище; 9_3 шепелявил на с/ш/ч) — теперь единственный готовый голос; каждый кусок озвучки держится на высоте этого голоса."
+  },
+  {
+   "since": "2026-10-20b",
+   "en": "Finish a video: a saved reel → “Text, captions, voice-over” - the voice, captions, look and texts on one page, with a preview.",
+   "ru": "Доделать видео: у сохранённого ролика → «Текст, субтитры, озвучка» — голос, субтитры, вид и текст на одной странице, с просмотром кадра."
+  },
+  {
+   "since": "2026-10-20",
+   "en": "Captions in four looks (the word being said in color like Reels, on a dark box, classic, calm), with a color and a size; Edit text and captions fixes a word and shows a preview picture before the video is made.",
+   "ru": "Субтитры в четырёх видах (сказанное слово цветом как в Reels, на тёмной плашке, классика, спокойные), с выбором цвета и размера; «Изменить текст и субтитры» — исправить слово и посмотреть кадр до того, как делать видео."
+  }
+ ]
+}
