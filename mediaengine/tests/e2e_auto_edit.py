@@ -629,6 +629,27 @@ def main():
             else:
                 print("SKIP no_length_recording: this ffmpeg cannot write VP9/Opus WebM")
 
+    # the sound of every version (I08): a kept sound evened out to about -18 LUFS (each cut by itself, so a quiet and
+    # a loud video sit together), Mute silent; measured, not listened to
+    from media_measure import loudness
+    # (the range is checked when every video of the folder has a sound; damaged files aside)
+    vids = [x for x in sorted(folder.iterdir()) if x.suffix.lower() in (".mp4", ".mov", ".m4v", ".mts", ".webm", ".mkv")]
+    src_sound = bool(vids)
+    for x in vids:
+        st_ = probe(x).get("streams") or []
+        if not st_:
+            continue                                           # a damaged file (skipped by the app too)
+        has_a = any(s_.get("codec_type") == "audio" for s_ in st_)
+        src_sound = src_sound and has_a and (loudness(x)[1] or -200.0) > -60
+    lv = []
+    for rr in ae.project(pid)["revisions"]:
+        rv = ae.revision(rr["id"])
+        if rv and rv.get("video_path") and Path(rv["video_path"]).is_file():
+            li, lm = loudness(rv["video_path"])
+            lv.append((rv["id"], (rv.get("settings") or {}).get("sound"), li, lm))
+    check("reel_sound_even_or_silent", lv and all((sd == "mute" and (lm is None or lm <= -60)) or
+                                                  (sd != "mute" and (not src_sound or (li is not None and -21.5 <= li <= -14.5)))
+                                                  for _, sd, li, lm in lv), (src_sound, lv))
     after = {p.name: sha(p) for p in folder.iterdir() if p.is_file()}
     check("sources_unchanged", before == after)
     # restart: a fresh app process sees the same projects and accepted revision

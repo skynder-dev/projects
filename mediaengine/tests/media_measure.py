@@ -25,6 +25,17 @@ def av_durations(path, ff: str | None = None, fps: float = 30.0) -> tuple[float,
     return frames / fps, (samples / 48000.0 if samples else None)
 
 
+def loudness(path, ff: str | None = None) -> tuple[float | None, float | None]:
+    """(integrated loudness in LUFS, loudest sample in dB) of the first sound track; (None, None) without sound."""
+    import re
+    ff = ff or ffmpeg_exe()
+    t = subprocess.run([ff, "-hide_banner", "-nostats", "-i", str(path), "-map", "0:a:0?", "-af", "ebur128=framelog=quiet,volumedetect",
+                        "-f", "null", "-"], capture_output=True, text=True, encoding="utf-8", errors="replace").stderr
+    i = re.findall(r"I:\s*(-?[\d.]+) LUFS", t)
+    m = re.findall(r"max_volume:\s*(-?[\d.]+|-inf) dB", t)
+    return (float(i[-1]) if i else None), (float(m[-1]) if m and m[-1] != "-inf" else (-200.0 if m else None))
+
+
 if __name__ == "__main__":
     import sys
     print(av_durations(Path(sys.argv[1])))

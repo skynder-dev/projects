@@ -1447,9 +1447,9 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
 <details id='cvMore' style='margin-top:6px'><summary class='small'>More: speed, vertical 9:16, logo, date and time, sound</summary>
 <div class='toolbar' style='margin-top:6px;flex-wrap:wrap'><label><span>Speed</span> <select id='speedOut'><option value='1'>as it is</option><option value='2'>2× faster</option><option value='4'>4× faster (no sound)</option><option value='8'>8× faster (no sound)</option><option value='0.5'>½× slow motion (for 60 fps videos)</option><option value='0.25'>¼× slow motion (no sound, for 120 fps)</option></select></label>
 <label><span>Vertical 9:16</span> <select id='vertOut'><option value=''>as it is</option><option value='crop'>the middle, sides cut off</option><option value='blur'>the whole picture on a blurred background</option></select></label>
-<label><input type='checkbox' id='windOut'> <span>Less wind noise</span></label>
-<label title='Quiet speech louder, loud parts softer - as loud as phones and players play videos'><input type='checkbox' id='loudOut'> <span>Even out the sound</span></label>
 <label title='When it was filmed, every second, from the camera or phone clock - for reports'><input type='checkbox' id='clockOut'> <span>Date and time in the corner</span></label></div>
+<div class='toolbar' style='margin-top:6px;flex-wrap:wrap'><span>Sound:</span><label><input type='checkbox' id='windOut'> <span>Less wind noise</span></label>
+<label title='Quiet speech louder, loud parts softer - as loud as phones and players play videos'><input type='checkbox' id='loudOut'> <span>Even out the sound</span></label></div>
 <div class='toolbar' style='margin-top:6px;flex-wrap:wrap'><label><span>Pictures every</span> <select id='framesEvery'><option value='5'>5 s</option><option value='10' selected>10 s</option><option value='30'>30 s</option><option value='60'>60 s</option></select></label><button id='framesStart' class='btn btn2' type='button' disabled>Save pictures of the selected videos</button><span class='muted small'>Photos for a report, into a folder next to the converted videos.</span></div>
 <div class='toolbar' style='margin-top:6px;flex-wrap:wrap'>{logo_html}</div></details></div>
 {active}{history}
