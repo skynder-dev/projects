@@ -1629,7 +1629,7 @@ document.addEventListener('click',ev=>{const b=ev.target.closest('.cvCutBtn');if
   showCut(ch);updSel()}
  pan.addEventListener('click',e2=>{const t=e2.target.closest('[data-set]');if(!t)return;
   if(t.dataset.set==='f'){const at=(v.style.display!=='none'&&v.readyState>=1)?(v.currentTime||0):(parseT(S.value)||0);t.disabled=true;
-   fetch('/api/convert/frame',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:Number(id),t:at})}).then(r=>r.json())
+   fetch('/api/convert/frame',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:Number(id),t:at,clock:!!(document.getElementById('clockOut')||{}).checked})}).then(r=>r.json())
    .then(x=>{toast(x.ok?'Saved: '+x.name:(x.error||'Could not save'))}).catch(e=>toast(String(e))).finally(()=>{t.disabled=false});return}
   if(t.dataset.set==='s')S.value=fmtT(v.currentTime||0);else if(t.dataset.set==='e')E.value=fmtT(v.currentTime||0);else{S.value='';E.value=''}apply()});
  S.addEventListener('change',apply);E.addEventListener('change',apply)});
@@ -1837,7 +1837,7 @@ pollConvert();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='
             return jsonify({'ok':False,'error':'This video is not on this computer now.'}),404
         from .converter import save_frame
         try:
-            out=save_frame(src,t)
+            out=save_frame(src,t,clock=payload.get('clock') is True)
         except ValueError as exc:
             return jsonify({'ok':False,'error':str(exc)}),400
         except Exception as exc:

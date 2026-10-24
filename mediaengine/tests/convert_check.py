@@ -399,6 +399,10 @@ def main():
         with Image.open(fs[0]) as im:
             return im.convert("L").crop((0, 310, 200, 350)).tobytes(), len(fs)
     (pkc, pkn), (pnc, pnn) = pcorner(pk["output"]), pcorner(pn["output"])
+    def fcorner(f):
+        with Image.open(f) as im:
+            return im.convert("L").crop((0, 310, 200, 350)).tobytes()
+    fk, fn = fcorner(save_frame(cg, 1.5, out_dir, clock=True)), fcorner(save_frame(cg, 1.5, out_dir))
     hcs = [x for x in _probe(Path(hc["output"])).get("streams", []) if x.get("codec_type") == "video"][0]
     check("convert_date_and_time_in_the_corner", rs == want_rs and jh == "camera"
           and [(round(a, 2), round(b, 2), w) for a, b, w in jp] == [(0.0, 4.0, _dt(2026, 10, 23, 14, 5, 7)), (4.0, 2.0, _dt(2026, 10, 23, 15, 0))]
@@ -410,9 +414,9 @@ def main():
           and ck.get("clock") == "camera" and "_clock_" in Path(ck["output"]).name and cdiff(c05, p05) > 10 and cdiff(c05, c15) > 0.2
           and not list((_H / "data").glob("clock-*")) and (int(hcs["width"]), int(hcs["height"])) == (1920, 1080)
           and str(hcs.get("sample_aspect_ratio") or "1:1") in ("1:1", "N/A")
-          and pk.get("clock") == "camera" and pkn == pnn == 2 and cdiff(pkc, pnc) > 10 and "clock" not in pn,
+          and pk.get("clock") == "camera" and pkn == pnn == 2 and cdiff(pkc, pnc) > 10 and "clock" not in pn and cdiff(fk, fn) > 10,
           (rs, jh, jp, cut_p, lines2, ck.get("clock"), cdiff(c05, p05), cdiff(c05, c15), hcs.get("width"), hcs.get("sample_aspect_ratio"),
-           pk.get("clock"), pkn, pnn, cdiff(pkc, pnc)))
+           pk.get("clock"), pkn, pnn, cdiff(pkc, pnc), cdiff(fk, fn)))
     # pictures every N seconds (a report): a folder of JPEGs named by their moment, through a converter job
     jf = wait_job(start_convert_job([], "share_1080p", paths=[str(whole)], extra={"frames": 5}))
     of = ((jf.get("options") or {}).get("outputs") or [{}])[0]

@@ -47,12 +47,12 @@ def output_folder() -> Path:
     return Path(raw) if raw else HOME / "Converted"
 
 
-def save_frame(source, t: float, output_dir=None) -> Path:
+def save_frame(source, t: float, output_dir=None, clock=False) -> Path:
     """One picture of a video at t seconds - the picture shown at that moment (the last one at or before t) - at the
     video's full size, as a JPEG next to the converted videos ('<name>_frame_1m05s.jpg'; never over another file).
     Upright as the video is shown, square pixels, camcorder fields made whole, HDR made normal, the colors of an HD
-    video kept (its YUV goes through RGB into the JPEG's own)."""
-    source = Path(source)
+    video kept (its YUV goes through RGB into the JPEG's own). clock: the date and time of that moment on it."""
+    source = Path(os.path.abspath(str(source)))
     if not source.is_file():
         raise FileNotFoundError(str(source))
     ffmpeg = _ffmpeg_exe()
@@ -78,18 +78,39 @@ def save_frame(source, t: float, output_dir=None) -> Path:
             continue
     else:
         raise RuntimeError("No free name in " + str(folder))
-    hdr = _hdr_kind(ffmpeg, source)
-    vf = (["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if _is_interlaced(ffmpeg, source) else []) \
-        + ([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []) \
-        + ["scale='trunc(iw*sar/2)*2':ih", "setsar=1", "format=gbrp", "format=yuvj420p"]
+    out = Path(os.path.abspath(str(out)))
     # from a little before t to t: every picture overwrites the file, so the last one at or before t stays (the one
     # the player shows; also at the very end, where the sound may run a moment longer than the picture)
     start = max(0.0, t - 1.1)
+    cwd = None
+    try:
+        if clock:                          # the clock of the moment (its subtitles and font in a folder of their own)
+            from datetime import timedelta
+            when, _how = recording_start(ffmpeg, source, duration)
+            cwd = (HOME / "data" / f"clock-{os.getpid()}-{threading.get_ident()}-{time.time_ns()}").resolve()
+            cwd.mkdir(parents=True, exist_ok=True)
+            (cwd / "clock.ass").write_text(clock_ass([(0.0, t - start + 1.0, when + timedelta(seconds=start) if when else None)], 1,
+                                                     _out_size(media_sig(ffmpeg, source), "keep_resolution", 0, "")), "utf-8")
+            from .textfx import install_fonts
+            install_fonts(cwd)
+    except BaseException:
+        try:
+            out.unlink()
+        except OSError:
+            pass
+        if cwd:
+            shutil.rmtree(cwd, ignore_errors=True)
+        raise
+    hdr = _hdr_kind(ffmpeg, source)
+    vf = (["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if _is_interlaced(ffmpeg, source) else []) \
+        + ([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []) \
+        + ["scale='trunc(iw*sar/2)*2':ih", "setsar=1"] + (["ass=clock.ass:fontsdir=fonts"] if cwd else []) \
+        + ["format=gbrp", "format=yuvj420p"]
     try:
         cp = subprocess.run([str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-ss", f"{start:.3f}", "-i", str(source),
                              "-t", f"{t - start + 0.001:.3f}", "-map", "0:v:0", "-vf", ",".join(vf), "-q:v", "2", "-update", "1",
                              str(out)], capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=300,
-                            **process_kwargs())
+                            cwd=str(cwd) if cwd else None, **process_kwargs())
         if cp.returncode != 0 or not out.is_file() or out.stat().st_size < 100:
             raise RuntimeError("There is no picture at that moment")
     except BaseException:
@@ -98,6 +119,9 @@ def save_frame(source, t: float, output_dir=None) -> Path:
         except OSError:
             pass
         raise
+    finally:
+        if cwd:
+            shutil.rmtree(cwd, ignore_errors=True)
     return out
 
 
