@@ -166,7 +166,14 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
 - **More** (b211, 2026-10-24): speed 2× / 4× / 8× faster (4× and 8× without sound); vertical 9:16 (the middle, or
   the whole picture on a blurred background); your logo in a corner (chosen once, kept as a PNG; each job keeps its
   own copy); less wind noise.
-- **Save pictures of the selected videos** every 5 / 10 / 30 / 60 s into a folder (photos for a report). **Earlier conversions**: the last 10 jobs with their buttons.
+- **Save pictures of the selected videos** every 5 / 10 / 30 / 60 s into a folder (photos for a report).
+- **More** (b212): slow motion ½× / ¼× (every picture of a 60 / 120 fps video, at the source's own rate; 50 fps at
+  ½× gives 25 a second); **Even out the sound** (quiet speech louder, -16 LUFS, in step with the picture; joined
+  parts stay in step at 2× and ½×); **Date and time in the corner** - the recording's time every second: GoPro / DJI /
+  other cameras as their clock wrote it, an iPhone its local time, an Android phone its stop time minus the length
+  (in this PC's zone), else the file's date minus the length; speed, cut and joins keep it right. Saved pictures and
+  **Save this picture** carry it too when chosen; the Cut… panel says when the video was filmed and the time at the
+  player's moment. A copy bigger than its source says "larger than the original". **Earlier conversions**: the last 10 jobs with their buttons.
 
 ## Orders from other programs; night review fixes (2026-10-17)
 

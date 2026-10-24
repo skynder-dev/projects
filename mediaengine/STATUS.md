@@ -792,6 +792,16 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   browser 20/20, route fuzz 0 errors, Russian 217 pages 0 English, public repo 0.
   Published: b211 (commit 585b989), ZIP 3,989,701 bytes, the same runtime b9810d447e8c86c5 - the Update button is
   enough.
+- 2026-10-24 later: Convert → More: slow motion ½× / ¼×, Even out the sound (-16 LUFS), Date and time in the
+  corner (recording_start: tags only - camera clock as written, Android stop time minus length, iPhone local time,
+  else file date; ASS subtitles one line per second, FFmpeg run in a temp folder so no path is escaped), on saved
+  pictures and Save this picture too; "Filmed:" in the Cut… panel. Fifth review (time source by folder name, Android,
+  joined parts drifting at ½× / 2× - aresample async, 50 fps slow motion, HDV clock, tags without sound, sweep) fixed
+  before publishing. Windows run 40095689355 (3e27edd): convert 56/56, unit 175/175, Edge browser 20/20, route fuzz
+  0, Russian 217 pages 0 English, E2E seven 87/87, public repo 0.
+  Published: b212 (commit 3e27edd), ZIP 4,007,770 bytes, the same runtime - the Update button is enough.
+  Next in CI: the pictures in one PDF (A4, written in one pass), the reel sound measured in E2E (I08: kept sound
+  -18 LUFS from -21.9 LUFS sources, Mute silent), sixth review fixes.
 
 ## Evidence
 
@@ -958,7 +968,7 @@ PARTIAL = passes on a Windows CI runner with synthetic videos; the owner-PC run 
 | I05 960×540 / 540×960 / 1080×1920 | PASS (owner PC) | owner PC: 1920×1080, 1080×1920 and 540×960 (b117, 2026-10-16: the 540×960 variant probed 540×960, 30.0 s) from real 4K; all four in E2E |
 | I06 one preset per run | PASS (owner PC) | every version one format (project 5 on the owner's PC: R001 1920×1080, R004 540×960, R005 60 s 1920×1080) |
 | I07 15/30/60 and 5 for short footage | PASS (owner PC) | owner PC b117: 30 s and a 60 s variant of 13 moments, 59.9 s, in 3 min 19 s (choice 13 s); shortfall shown (E2E) |
-| I08 Sound Source/Auto/Mute | PARTIAL | applied sound shown; no loudness listening test |
+| I08 Sound Source/Auto/Mute | PARTIAL | applied sound shown; loudness measured in E2E (kept sound -18 LUFS, Mute silent; in CI next); no listening test by the owner |
 | I09 selection quality, camera-drop | NOT_STARTED | human blind review pending |
 | I10 player / seek / source links in GUI | PASS (owner PC) | b117 in the app's own browser pane: the reel plays, "show in reel" seeks (14.2 s asked, playing from there), video served with byte ranges (206) |
 | I11 manual override | PASS (owner PC) | b117: a moment removed and another moved up on the page -> R003 has exactly that order, built in 39 s; trim/replace/add in E2E |
@@ -993,6 +1003,7 @@ reels and finished videos from GoPro / phone footage; b208: Check this PC -> "Te
 a 4K test clip by the processor and the NVIDIA card, Convert uses the card only if faster with the same picture; on
 the Windows runner, no NVIDIA card: said and remembered in 14 s, CI run 40070321577, ZIP 3,963,041 bytes, same
 runtime). Asked the owner to press the test and send its line. b211 is published (Convert → More: speed, vertical 9:16, logo, less wind;
-pictures every N s; earlier conversions). Still open: the first voice-over on
+pictures every N s; earlier conversions). b212 is published (slow motion, Even out the sound, Date and time in the
+corner, on pictures too; "Filmed:" in Cut…). Still open: the first voice-over on
 his RTX 3060; Convert on his PC (Explorer, clipboard, the NVIDIA way's speed). Social integration paused by the owner (do not touch Social).
 Through the app's pages in the desktop app's browser pane only (never computer use).
