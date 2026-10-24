@@ -1050,6 +1050,17 @@ def main():
         off_ = _cv.gpu_ok()
         update_config(lambda c: c["convert"].pop("gpu", None))
         check("convert: the NVIDIA way can be turned off (convert.gpu = false)", off_ is False, off_)
+        update_config(lambda c: c.setdefault("convert", {}).__setitem__("gpu_test", {"tested_at": "2026-10-24 02:00", "use": True,
+                                                                                    "cpu_s": 12.4, "gpu_s": 3.1, "psnr": 41.2}))
+        s1_ = _cv.gpu_test_summary(_cv.gpu_test_saved())
+        with _ca().test_client() as _c:
+            chk_ = _c.get("/auto/check", headers=H_).get_data(as_text=True)
+        update_config(lambda c: c["convert"].__setitem__("gpu_test", {"tested_at": "x", "use": False, "cpu_s": 8.0, "gpu_s": 9.0, "psnr": 40.0}))
+        s2_, g2_ = _cv.gpu_test_summary(_cv.gpu_test_saved()), _cv.gpu_ok()
+        update_config(lambda c: c["convert"].pop("gpu_test", None))
+        check("convert: the card test's result is said on Check this PC; a slower card is not used",
+              s1_ == "Used: 3.1 s instead of 12.4 s on the processor (4.0x faster), the same picture." and s1_ in chk_
+              and "action='/auto/check/convert-gpu-test'" in chk_ and s2_.endswith("- not faster.") and g2_ is False, (s1_, s2_, g2_))
         try:
             _cv.start_convert_job([], "small_720p", paths=[str(made_)], join=True)
             one_ = None

@@ -492,7 +492,7 @@ const pf=document.getElementById('projFind');if(pf)pf.oninput=()=>{const q=pf.va
             shared_html = (f"<div class='card ae-done' style='margin-top:14px'><span>Freed:</span> "
                            f"{human_bytes(int(request.args['freed']) if request.args['freed'].isascii() and request.args['freed'].isdigit() else 0)}</div>") + shared_html
         builds_html = shared_html + builds_html
-        hw_html = _hwdecode_html(e)
+        hw_html = _hwdecode_html(e) + _convert_gpu_html(e)
         body = (f"<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Check this PC</h1>"
                 f"<div class='lead'>What MediaEngine needs, and a 5-second test reel made from generated clips (your videos are not used).</div></div>"
                 f"<div class='card'><table class='ae-files'>{table}</table></div>"
@@ -505,6 +505,9 @@ const pf=document.getElementById('projFind');if(pf)pf.oninput=()=>{const q=pf.va
         script = """const hc=document.getElementById('hwRun');
 if(hc){const t0=Date.now()-Number(hc.dataset.el||0)*1000;const tick=async()=>{try{const r=await fetch('/api/auto/hwtest',{cache:'no-store'});const x=await r.json();if(!x.running){location.href='/auto/check';return}
  document.getElementById('hwStep').textContent=x.step||''}catch(e){}document.getElementById('hwSec').textContent=Math.round((Date.now()-t0)/1000);setTimeout(tick,2000)};setTimeout(tick,0)}
+const cg=document.getElementById('cgRun');
+if(cg){const t0=Date.now()-Number(cg.dataset.el||0)*1000;const tick=async()=>{try{const r=await fetch('/api/auto/convert-gpu-test',{cache:'no-store'});const x=await r.json();if(!x.running){location.href='/auto/check';return}
+ document.getElementById('cgStep').textContent=x.step||''}catch(e){}document.getElementById('cgSec').textContent=Math.round((Date.now()-t0)/1000);setTimeout(tick,2000)};setTimeout(tick,0)}
 const tc=document.getElementById('testRun');
 if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{try{const r=await fetch('/api/auto/selftest',{cache:'no-store'});const x=await r.json();if(!x.running){location.href='/auto/check';return}}catch(e){}
  document.getElementById('testSec').textContent=Math.round((Date.now()-t0)/1000);setTimeout(tick,2000)};setTimeout(tick,2000)}"""
@@ -522,6 +525,26 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
             return err_page("FFmpeg not found", "/auto/check")
         hwdecode.start(ff, ae.AE_ROOT / "hwtest")
         return redirect("/auto/check")
+
+    @app.post("/auto/check/convert-gpu-test")
+    def ae_convert_gpu_test():
+        from . import converter as cv, hwdecode
+        if ae.app_busy() or ae.selftest_state()["running"] or hwdecode.state().get("running"):
+            return err_page("Wait until the current build or test has finished", "/auto/check")
+        with ae.db() as con:
+            busy = con.execute("SELECT id FROM jobs WHERE status IN ('running','queued') LIMIT 1").fetchone()
+        if busy:
+            return err_page("Wait until the current job (a conversion or an import) has finished", "/auto/check")
+        cv.start_gpu_test(ae.AE_ROOT / "convert_gpu_test")
+        return redirect("/auto/check")
+
+    @app.get("/api/auto/convert-gpu-test")
+    def ae_convert_gpu_test_state():
+        from . import converter as cv
+        st = cv.gpu_test_state()
+        if request.args.get("full"):
+            return jsonify(cv.gpu_test_saved())
+        return jsonify(st)
 
     @app.post("/auto/check/hwtest-use")
     def ae_hwtest_use():
@@ -1732,6 +1755,25 @@ def _prepared_html(j, e) -> str:
             + f" · <span>took</span> {took_txt} · {_mode_name(j['settings'], e)}</div>"
             f"<div class='muted' style='margin-top:4px'>Now press Build: the reel is made from the prepared videos in minutes. "
             f"Videos added to the folder later are analysed during the build.</div></div>")
+
+
+def _convert_gpu_html(e) -> str:
+    """Check this PC: converting on the graphics card (Convert page) - a test with a 4K clip and its result."""
+    from . import converter as cv
+    st = cv.gpu_test_state()
+    if st["running"]:
+        return (f"<div class='card' id='cgRun' data-el='{st['elapsed_s']}' style='margin-top:14px'><b>Testing converting on the graphics "
+                f"card…</b> <span id='cgSec'>{int(st['elapsed_s'])}</span> s · <span class='muted' id='cgStep'>{e(st.get('step') or '')}</span>"
+                f"<div class='muted' style='margin-top:4px'>About a minute. You can leave this page.</div></div>")
+    r = cv.gpu_test_saved()
+    when = f" <span class='muted'>· tested {e(r['tested_at'])}</span>" if r.get("tested_at") else ""
+    return (f"<div class='card' style='margin-top:14px'><b>Converting on the graphics card</b>{when}"
+            f"<div class='muted' style='margin:4px 0 8px'>{e(cv.gpu_test_summary(r))}</div>"
+            f"<div class='muted' style='margin-bottom:8px;font-size:13px'>The test makes a short 4K test clip smaller with the processor "
+            f"and with the graphics card (NVIDIA) and compares the time and the picture. Convert uses the card only if it was faster "
+            f"with the same picture. Your videos are not used.</div>"
+            f"<form method='post' action='/auto/check/convert-gpu-test' style='margin:0'><button class='btn2'>"
+            f"{'Test again' if r else 'Test converting on the graphics card'}</button></form></div>")
 
 
 def _hwdecode_html(e) -> str:

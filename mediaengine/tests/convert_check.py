@@ -336,8 +336,22 @@ def main():
                     "-c:v", "libx264", "-preset", "veryfast", "-crf", "18", "-pix_fmt", "yuv420p", "-an", str(eng)], check=False)
     if eng.is_file():
         eok, elv = tv_of(gparts[0], 1.0, eng, 0.5)
-        print(f"INFO the engine's way with a full-range camera video: {'TV levels' if eok else 'FULL RANGE KEPT'} {elv}", flush=True)
+        print(f"INFO a raw engine piece (before the reel render puts it into TV levels): {'TV levels' if eok else 'full range'} {elv}", flush=True)
         eng.unlink()
+    # "Check this PC -> Test converting on the graphics card": on a machine without an NVIDIA card the processor's time
+    # is measured, the card is said to be missing, and conversions do not try it afterwards
+    from archivist import converter as cvt
+    from archivist.config import update_config as _uc2
+    t0 = time.time()
+    assert cvt.start_gpu_test(work / "gpu_test")
+    while cvt.gpu_test_state()["running"] and time.time() - t0 < 900:
+        time.sleep(1)
+    gt = cvt.gpu_test_saved()
+    print(f"INFO card test: {gt} ({time.time() - t0:.0f} s)", flush=True)
+    check("convert_card_test_said_and_remembered", bool(gt.get("tested_at")) and gt.get("cpu_s", 0) > 0
+          and (gt.get("use") is True or (gt.get("use") is False and bool(gt.get("error") or gt.get("psnr") is not None)))
+          and (cvt.gpu_ok() is False if gt.get("use") is False else True) and not (work / "gpu_test").exists(), gt)
+    _uc2(lambda c: c.setdefault("convert", {}).pop("gpu_test", None))
     jn = wait_job(start_convert_job([], "small_720p", paths=[str(parts[0]), str(parts[1])]))
     outs = (jn.get("options") or {}).get("outputs") or []
     check("convert_job_of_chosen_files_one_by_one", jn["status"] == "finished" and len(outs) == 2 and not any(o.get("joined") for o in outs)

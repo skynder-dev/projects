@@ -320,7 +320,7 @@ def _run_progress_inner(cmd, duration_s: float, progress_cb=None, cancel_cb=None
 
 
 def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None, cancel_cb=None, output_dir=None, job_id=None,
-                 cut=None, mute=False, turn=0):
+                 cut=None, mute=False, turn=0, prefer=None):
     """One video converted (cut = (start, end) in seconds: only that part)."""
     source = Path(source)
     if preset not in PRESETS:
@@ -341,7 +341,7 @@ def convert_file(source, preset="share_1080p", target_mb=None, progress_cb=None,
         # FFmpeg seeks to the start (the picture from exactly there: everything is re-encoded) and reads that long
         input_args, tag, duration = ["-ss", f"{start:.3f}", "-t", f"{end - start:.3f}", "-i", str(source)], "cut", end - start
     out, made_on = _encode(ffmpeg, input_args, source, duration, preset, target_mb, progress_cb, cancel_cb, output_dir, job_id, tag=tag,
-                           mute=bool(mute), turn=turn)
+                           mute=bool(mute), turn=turn, prefer=prefer)
     src_size = source.stat().st_size
     if cut:                                    # the part's share of the file (the saving of the part, not of the whole)
         src_size = int(src_size * min(1.0, duration / max(0.001, float(probe_duration(source) or duration))))
@@ -527,6 +527,7 @@ def join_files(sources, preset="share_1080p", target_mb=None, progress_cb=None, 
 _GPU: list = []
 _GPU_CQ_STEP = 3           # NVIDIA's constant quality N gives about the size of x264's CRF N-3
 _GPU_FAILS: list = [0]     # attempts on the card that failed in a row: after two, the processor only (until a restart)
+_GPU_LAST_ERROR: list = [""]
 _TIME_RE = re.compile(r"time=\s*(\d+):(\d+):(\d+(?:\.\d+)?)")
 
 
@@ -550,8 +551,17 @@ def _watchdog_pending(job_id) -> bool:
 
 
 def gpu_ok() -> bool:
+    """The card is tried for a conversion: not turned off, not failed twice in a row, not shown slower or different
+    by "Check this PC -> Test converting on the graphics card", and this FFmpeg can encode on an NVIDIA card."""
     if (load_config().get("convert") or {}).get("gpu") is False or _GPU_FAILS[0] >= 2:
         return False
+    t = gpu_test_saved()
+    if t and t.get("use") is False:
+        return False
+    return _nvenc_works()
+
+
+def _nvenc_works() -> bool:
     if not _GPU:
         ok = False
         try:
@@ -563,6 +573,110 @@ def gpu_ok() -> bool:
             ok = False
         _GPU.append(ok)
     return _GPU[0]
+
+
+# "Check this PC -> Test converting on the graphics card": a 5-second 4K HEVC test clip made smaller with the processor
+# and with the card; the times and how alike the two pictures are (PSNR). Saved in the settings; a card that was
+# slower or gave a different picture is not used for conversions (until tested again). No video of the person's used.
+_GT = {"running": False, "started": 0.0, "step": "", "result": None}
+_GT_LOCK = threading.Lock()
+
+
+def gpu_test_saved() -> dict:
+    try:
+        return dict((load_config().get("convert") or {}).get("gpu_test") or {})
+    except Exception:
+        return {}
+
+
+def gpu_test_state() -> dict:
+    with _GT_LOCK:
+        return {"running": _GT["running"], "step": _GT["step"],
+                "elapsed_s": round(time.time() - _GT["started"], 1) if _GT["running"] else 0.0}
+
+
+def _psnr(ffmpeg, a, b) -> float | None:
+    cp = subprocess.run([str(ffmpeg), "-hide_banner", "-nostdin", "-i", str(a), "-i", str(b), "-lavfi", "[0:v][1:v]psnr", "-f", "null", "-"],
+                        capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=600, **process_kwargs())
+    m = re.search(r"average:([\d.]+|inf)", cp.stderr or "")
+    return (99.0 if m.group(1) == "inf" else float(m.group(1))) if m else None
+
+
+def run_gpu_test(folder, step=lambda s: None) -> dict:
+    folder = Path(folder)
+    shutil.rmtree(folder, ignore_errors=True)
+    folder.mkdir(parents=True, exist_ok=True)
+    ffmpeg = _ffmpeg_exe()
+    res = {"tested_at": datetime.now().strftime("%Y-%m-%d %H:%M"), "use": False, "gpu": []}
+    try:
+        from .hwdecode import gpu_names_cached
+        res["gpu"] = gpu_names_cached()
+    except Exception:
+        pass
+    try:
+        step("Making a 4K test clip")
+        clip = folder / "test_4k_hevc.mp4"
+        subprocess.run([str(ffmpeg), "-hide_banner", "-nostdin", "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=3840x2160:rate=60:d=5",
+                        "-f", "lavfi", "-i", "sine=frequency=440:sample_rate=48000:d=5", "-c:v", "libx265", "-preset", "ultrafast",
+                        "-x265-params", "log-level=error:keyint=60", "-tag:v", "hvc1", "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest",
+                        str(clip)], check=True, capture_output=True, timeout=900, **process_kwargs())
+        _GPU.clear(); _GPU_FAILS[0] = 0; _GPU_LAST_ERROR[0] = ""
+        step("Converting with the processor")
+        t0 = time.time()
+        c = convert_file(clip, "share_1080p", output_dir=folder / "out", prefer="cpu")
+        res["cpu_s"] = round(time.time() - t0, 1)
+        if not _nvenc_works():
+            res["error"] = "no NVIDIA graphics card that this FFmpeg can encode on"
+            return res
+        step("Converting with the graphics card")
+        t1 = time.time()
+        g = convert_file(clip, "share_1080p", output_dir=folder / "out", prefer="gpu")
+        res["gpu_s"] = round(time.time() - t1, 1)
+        if g.get("made_on") != "nvidia":
+            res["error"] = "the graphics card could not convert: " + (_GPU_LAST_ERROR[0] or "?")
+            return res
+        step("Comparing the pictures")
+        res["psnr"] = _psnr(ffmpeg, g["output"], c["output"])
+        res["use"] = bool(res["psnr"] and res["psnr"] >= 30 and res["gpu_s"] < res["cpu_s"])
+        return res
+    except Exception as exc:
+        res["error"] = str(exc)[-300:]
+        return res
+    finally:
+        shutil.rmtree(folder, ignore_errors=True)
+        _GPU.clear(); _GPU_FAILS[0] = 0
+
+
+def start_gpu_test(folder) -> bool:
+    with _GT_LOCK:
+        if _GT["running"]:
+            return False
+        _GT.update(running=True, started=time.time(), step="", result=None)
+
+    def work():
+        try:
+            r = run_gpu_test(folder, step=lambda s: _GT.__setitem__("step", s))
+            from .config import update_config
+            update_config(lambda cfg: cfg.setdefault("convert", {}).__setitem__("gpu_test", r))
+            _GT["result"] = r
+        finally:
+            with _GT_LOCK:
+                _GT["running"] = False
+    threading.Thread(target=work, daemon=True, name="ConvertGpuTest").start()
+    return True
+
+
+def gpu_test_summary(r: dict) -> str:
+    """One line for Check this PC."""
+    if not r:
+        return "Not tested yet."
+    if r.get("use"):
+        return (f"Used: {r.get('gpu_s')} s instead of {r.get('cpu_s')} s on the processor "
+                f"({round(float(r.get('cpu_s') or 0) / max(0.1, float(r.get('gpu_s') or 1)), 1)}x faster), the same picture.")
+    if r.get("gpu_s") and r.get("psnr") is not None:
+        return (f"Not used: {r.get('gpu_s')} s on the graphics card, {r.get('cpu_s')} s on the processor"
+                + (" - a different picture." if float(r.get("psnr") or 0) < 30 else " - not faster."))
+    return "Not used: " + str(r.get("error") or "the graphics card could not convert") + "."
 
 
 def gpu_plan(sig: dict, preset: str, hdr=None, interlaced=False) -> dict | None:
@@ -588,7 +702,7 @@ def gpu_plan(sig: dict, preset: str, hdr=None, interlaced=False) -> dict | None:
 
 
 def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb, progress_cb, cancel_cb, output_dir, job_id,
-            tag: str = "", mute: bool = False, turn: int = 0) -> Path:
+            tag: str = "", mute: bool = False, turn: int = 0, prefer: str | None = None) -> Path:
     """The picture and sound made with the preset (or to a size, two passes) into a new file in Converted; returns it
     and where the picture was made ("nvidia" / "cpu")."""
     hdr = _hdr_kind(ffmpeg, source)
@@ -633,7 +747,9 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
         else:
             plan = None
             try:
-                plan = gpu_plan(media_sig(ffmpeg, source), preset, hdr, interlaced) if gpu_ok() and not turn else None
+                # prefer: "cpu" / "gpu" only for the card test of Check this PC (both ways on the same clip)
+                use = (_nvenc_works() if prefer == "gpu" else False if prefer == "cpu" else gpu_ok()) and not turn
+                plan = gpu_plan(media_sig(ffmpeg, source), preset, hdr, interlaced) if use else None
             except Exception:
                 plan = None
             if plan:
@@ -652,6 +768,7 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
                     if str(exc).lower() == "cancelled" or (cancel_cb and cancel_cb()) or _EXITING.is_set() or _watchdog_pending(job_id):
                         raise                  # stopped, quitting, or the watchdog's restart: not the card's failure
                     _GPU_FAILS[0] += 1
+                    _GPU_LAST_ERROR[0] = str(exc)[-300:]
                     try:
                         part.unlink(missing_ok=True)
                     except Exception:

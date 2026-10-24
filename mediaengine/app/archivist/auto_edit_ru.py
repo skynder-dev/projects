@@ -894,6 +894,8 @@ PHRASES = {
     "The word being said on a color block": "Сказанное слово на цветной плашке",
     "Captions in two more looks: one word at a time, big (like TikTok), and the word being said on a color block.":
         "Ещё два вида субтитров: по одному слову, крупно (как в TikTok), и сказанное слово на цветной плашке.",
+    "Check this PC: “Test converting on the graphics card” - a short 4K test clip made smaller with the processor and with the NVIDIA card; Convert uses the card only if it was faster with the same picture.":
+        "Проверка этого ПК: «Проверить конвертацию на видеокарте» — короткий тестовый 4K-клип сжимается процессором и видеокартой NVIDIA; конвертация берёт видеокарту, только если она быстрее и картинка та же.",
     "Reels, finished videos and converted copies made from GoPro or phone footage keep normal brightness levels (dark and bright parts as filmed on every screen).":
         "Ролики, готовые видео и сжатые копии из видео GoPro и телефонов — с нормальными уровнями яркости (тёмное и светлое как снято, на любом экране).",
     "Convert: “Turn the picture” - 90° right or left, or upside down (a camera mounted the other way).":
