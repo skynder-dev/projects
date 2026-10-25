@@ -487,8 +487,9 @@ def pull_original_progress(adb: str, serial: str, remote_path: str | None, conte
                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             timed = monitor(proc)
             out, err = proc.communicate(timeout=5)
-            if timed == "cancelled":
-                errors.append("cancelled")
+            if timed == "cancelled":           # Cancel: stopped here (not tried a second way)
+                dest.unlink(missing_ok=True)
+                return False, "cancelled"
             elif timed == "timeout":
                 errors.append("adb pull timeout")
             elif proc.returncode == 0 and dest.exists() and dest.stat().st_size > 0:
@@ -508,7 +509,8 @@ def pull_original_progress(adb: str, serial: str, remote_path: str | None, conte
                 timed = monitor(proc)
                 _, err = proc.communicate(timeout=5)
             if timed == "cancelled":
-                errors.append("cancelled")
+                dest.unlink(missing_ok=True)
+                return False, "cancelled"
             elif timed == "timeout":
                 errors.append("MediaStore read timeout")
             elif proc.returncode == 0 and dest.exists() and dest.stat().st_size > 0:

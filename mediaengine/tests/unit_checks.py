@@ -913,6 +913,70 @@ def main():
           pv_err_ and pr1_["excluded"] == 1 and pr1_["analysis_status"] == "private" and pr1_["staging_path"] == str(pv_)
           and pr2_["private_path"] and Path(pr2_["private_path"]).is_file() and pr2_["staging_path"] is None and not pv_.exists(),
           (pv_err_, pr1_, pr2_))
+
+    # Library: a card's copy hashed on the way; a half copy never left; the archive folder's problem said in words; a
+    # file replaced in its folder gets its new hash; a folder taken out of the sources is no longer listed
+    import hashlib as _hl2
+    cs_src_ = work / "card_src.mp4"; cs_src_.write_bytes(os.urandom(300_000))
+    got_sha_ = _sv._copy_local_with_progress(cs_src_, work / "card_copy.mp4.part", lambda n: None)
+    check("Library: a card's video is hashed while it is copied (not read again for it)",
+          got_sha_ == _hl2.sha256(cs_src_.read_bytes()).hexdigest() == _hl2.sha256((work / "card_copy.mp4.part").read_bytes()).hexdigest())
+    real_cf_ = _sv.copy_file
+    def _half(src, dst):
+        Path(dst).write_bytes(b"half")
+        raise OSError(28, "No space left on device")
+    _sv.copy_file = _half
+    try:
+        try:
+            _sv._verified_copy(cs_src_, work / "arch" / "a.mp4", got_sha_); half_err_ = ""
+        except OSError as exc:
+            half_err_ = str(exc)
+    finally:
+        _sv.copy_file = real_cf_
+    real_du_ = _sv.shutil.disk_usage
+    _sv.shutil.disk_usage = lambda p_: type("U", (), {"free": 100_000, "total": 1, "used": 1})()
+    try:
+        try:
+            _sv._verified_copy(cs_src_, work / "arch" / "b.mp4", got_sha_); full_err_ = ""
+        except RuntimeError as exc:
+            full_err_ = str(exc)
+    finally:
+        _sv.shutil.disk_usage = real_du_
+    check("Library: a copy cut off (disk full) leaves no .part; no room - refused before copying",
+          half_err_ and not list((work / "arch").glob("*.part")) and "Not enough free space" in full_err_
+          and not (work / "arch" / "b.mp4.part").exists(), (half_err_, full_err_))
+    blocker_ = work / "not_a_folder"; blocker_.write_text("x")
+    check("Library: an archive folder that cannot be made is said in words (not 'Job crashed')",
+          "cannot be made" in _sv._archive_root_problem(blocker_ / "Archive") and _sv._archive_root_problem(work / "Архив2") == "")
+    rp_ = work / "replaced.mp4"; rp_.write_bytes(b"new content")
+    with _db() as con:
+        rid_ = con.execute("INSERT INTO inventory(source_key,source_id,source_label,source_kind,path,filename,media_type,size_bytes,"
+                           "sha256,discovered_at,last_seen_at) VALUES('rp-key','t','t','fixed',?,?,'image',?,?,?,?)",
+                           (str(rp_), rp_.name, rp_.stat().st_size, "0" * 64, _now(), _now())).lastrowid
+        con.commit()
+    _sv._forget_old_content([rid_])
+    import time as _t2
+    end_ = _t2.time() + 10
+    while _t2.time() < end_:
+        with _db() as con:
+            nsha_ = con.execute("SELECT sha256 FROM inventory WHERE id=?", (rid_,)).fetchone()[0]
+        if nsha_:
+            break
+        _t2.sleep(0.1)
+    check("Library: a file replaced in its folder gets the hash of its new content", nsha_ == _hl2.sha256(b"new content").hexdigest(), nsha_)
+    with _db() as con:
+        gone_id_ = con.execute("INSERT INTO inventory(source_key,source_id,source_label,source_kind,path,filename,media_type,size_bytes,"
+                               "discovered_at,last_seen_at) VALUES('gone-key',?,'old','fixed',?,'x.mp4','video',5,?,?)",
+                               (str(work / "removed source"), str(work / "removed source" / "x.mp4"), _now(), _now())).lastrowid
+        keep_id_ = con.execute("INSERT INTO inventory(source_key,source_id,source_label,source_kind,path,filename,media_type,size_bytes,"
+                               "work_selected,discovered_at,last_seen_at) VALUES('keep-key',?,'old','fixed',?,'y.mp4','video',5,1,?,?)",
+                               (str(work / "removed source"), str(work / "removed source" / "y.mp4"), _now(), _now())).lastrowid
+        con.commit()
+    _sv.run_discovery()
+    with _db() as con:
+        left_ = {r[0] for r in con.execute("SELECT id FROM inventory WHERE id IN (?,?)", (gone_id_, keep_id_)).fetchall()}
+    check("Library: a folder taken out of the sources is no longer listed in Import; a Library video of it stays",
+          left_ == {keep_id_}, left_)
     # converted files: each one has "Show in folder" / "Open video" (found by its job and place, never by a path from
     # the page), the Convert page opens the Converted folder, and a finished job keeps its list after the page reloads
     import json as _js

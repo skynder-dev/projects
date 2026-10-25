@@ -135,17 +135,61 @@ def _effective_kind(row: dict) -> str:
     return kind
 
 
+_REHASH: "queue.Queue[int]" = queue.Queue()
+_REHASH_RUNNING = threading.Event()
+
+
+def _rehash_worker() -> None:
+    """The SHA-256 of files replaced in their folder, taken again one by one in the background (the old one would
+    match the old content: a card's copy of it taken as "already here", the old video's frames used for the new)."""
+    try:
+        while True:
+            try:
+                i = _REHASH.get(timeout=5)
+            except queue.Empty:
+                return
+            try:
+                with db() as con:
+                    r = con.execute("SELECT path,size_bytes,sha256 FROM inventory WHERE id=?", (int(i),)).fetchone()
+                if not r or r["sha256"] or not r["path"] or not Path(r["path"]).is_file():
+                    continue
+                f = Path(r["path"])
+                size = f.stat().st_size
+                sha = sha256_file(f)
+                with db() as con:      # only if the file is still the one hashed (not replaced again meanwhile)
+                    con.execute("UPDATE inventory SET sha256=? WHERE id=? AND (sha256 IS NULL OR sha256='') AND size_bytes=?",
+                                (sha, int(i), size))
+                    con.commit()
+            except Exception as exc:
+                log(f"discovery: hash of changed file {i}: {exc}")
+    finally:
+        _REHASH_RUNNING.clear()
+        if not _REHASH.empty() and not _REHASH_RUNNING.is_set():     # (one put just as the worker stopped)
+            _REHASH_RUNNING.set()
+            threading.Thread(target=_rehash_worker, name="rehash", daemon=True).start()
+
+
+def _rehash_later(ids: list[int]) -> None:
+    for i in ids:
+        _REHASH.put(int(i))
+    if not _REHASH_RUNNING.is_set():
+        _REHASH_RUNNING.set()
+        threading.Thread(target=_rehash_worker, name="rehash", daemon=True).start()
+
+
 def _forget_old_content(ids: list[int]) -> None:
-    """A file in a folder source changed (other size or time). Its picture is made again. When its length changed too
-    it is another video: the moments (and crops) made from the old one go and its length is measured again. Same length
-    (tags edited by another program): moments and hand-made crops stay."""
+    """A file in a folder source changed (other size or time). Its picture is made again, its SHA-256 taken again (in
+    the background). When its length changed too it is another video: the moments (and crops) made from the old one
+    go and its length is measured again. Same length (tags edited by another program): moments and hand-made crops
+    stay."""
     from .media import probe_duration
     other = []
     for i in ids:
         try:
             with db() as con:
                 r = con.execute("SELECT path,duration_ms,media_type FROM inventory WHERE id=?", (int(i),)).fetchone()
-                con.execute("UPDATE inventory SET preview_status='pending',preview_path=NULL,storyboard_status='pending' WHERE id=?", (int(i),))
+                con.execute("UPDATE inventory SET preview_status='pending',preview_path=NULL,storyboard_status='pending',"
+                            "sha256=NULL WHERE id=?", (int(i),))
                 con.commit()
             (THUMBS / f"{int(i)}.jpg").unlink(missing_ok=True)
             if not r or r["media_type"] != "video":
@@ -155,6 +199,7 @@ def _forget_old_content(ids: list[int]) -> None:
                 other.append(int(i))      # (a length that cannot be read now never deletes anything)
         except Exception as exc:
             log(f"discovery: changed file {i}: {exc}")
+    _rehash_later(ids)
     if other:
         try:
             from .media_brain import purge_media_brain
@@ -292,6 +337,14 @@ def run_discovery():
                 else:
                     log(f"discovery {label}: {len(walk_errors)} unreadable folder(s); keeping unseen rows")
                 con.commit()
+            # a folder taken out of the sources (Settings): its videos no longer listed in Import - only those never
+            # imported, chosen, archived or made Private (a Library video used in place stays where it is)
+            kept_ids = [str(Path(os.path.expandvars(str(s_.get("path") or ""))).expanduser()) for s_ in cfg.get("sources", [])
+                        if s_.get("path")]
+            con.execute("DELETE FROM inventory WHERE source_kind='fixed' AND source_id NOT IN (" + ",".join("?" * len(kept_ids))
+                        + ") AND staging_path IS NULL AND archive_path IS NULL AND private_path IS NULL AND rejected_path IS NULL "
+                        "AND COALESCE(work_selected,0)=0 AND COALESCE(analysis_status,'')<>'private'", kept_ids)
+            con.commit()
         with STATE.lock: STATE.discovery.update({"running": False, "message": "Discovery finished", "current_source": "", "finished": now_iso()})
     except Exception as exc:
         log(f"Discovery failed: {exc}")
@@ -342,6 +395,17 @@ def cached_thumbnail(inv_id: int) -> Path | None:
     return dest if dest.exists() else None
 
 
+_CLOUD_ONLY_ATTRS = 0x1000 | 0x40000 | 0x400000      # OFFLINE | RECALL_ON_OPEN | RECALL_ON_DATA_ACCESS
+
+
+def _cloud_only(p) -> bool:
+    """A OneDrive (or other cloud) file kept only in the cloud: opening it downloads all of it."""
+    try:
+        return bool(getattr(os.stat(p), "st_file_attributes", 0) & _CLOUD_ONLY_ATTRS)
+    except (OSError, ValueError, TypeError):
+        return False
+
+
 def ensure_thumbnail(inv_id: int) -> Path | None:
     with db() as con:
         rr = con.execute("SELECT * FROM inventory WHERE id=? AND excluded=0", (inv_id,)).fetchone()
@@ -350,8 +414,11 @@ def ensure_thumbnail(inv_id: int) -> Path | None:
     cached = cached_thumbnail(inv_id)
     if cached: return cached
     dest = THUMBS / f"{inv_id}.jpg"; ok = False
+    local = item.get("staging_path") or item.get("archive_path") or item.get("private_path")
+    here = local if local and Path(local).exists() else (item.get("path") if item["source_kind"] != "android" else None)
+    if here and _cloud_only(here):
+        return None       # its picture is not made from the cloud (a whole video downloaded for it): when it is on this PC
     with THUMB_LOCK:
-        local = item.get("staging_path") or item.get("archive_path") or item.get("private_path")
         if local and Path(local).exists(): ok = make_thumbnail(Path(local), item["media_type"], dest)
         elif item["source_kind"] == "android":
             adb = android.find_adb(); devices, _ = android.adb_devices(adb) if adb else ([], None)
@@ -517,7 +584,7 @@ def ensure_storyboard(inv_id: int) -> dict | None:
     if cached:
         return cached
     local = _existing_local_path(row)
-    if not local or not local.exists():
+    if not local or not local.exists() or _cloud_only(local):     # (a cloud-only file: not downloaded for previews)
         return None
     cfg = load_config()
     count = int(cfg.get("analysis", {}).get("storyboard_frames", 8) or 8)
@@ -657,6 +724,52 @@ def _same_volume(a: Path, b: Path) -> bool:
         return False
 
 
+ARCHIVE_RESERVE = 1024 ** 3          # what is left free on the archive's drive after a copy
+
+
+def _copy_or_clean(src: Path, tmp: Path) -> None:
+    """A copy into a ".part" file that never stays half-made: a full disk, an unplugged drive or a read error takes
+    the part away (it used to stay, gigabytes at a time, never used again). Refused before it starts when the drive
+    has no room for it."""
+    try:
+        free = shutil.disk_usage(tmp.parent).free
+    except OSError:
+        free = None
+    size = src.stat().st_size
+    if free is not None and free - size < ARCHIVE_RESERVE:
+        raise RuntimeError(f"Not enough free space on the drive of {tmp.parent}: {size / 1024 ** 3:.1f} GB needed, "
+                           f"{max(0, free) / 1024 ** 3:.1f} GB free")
+    try:
+        copy_file(src, tmp)
+    except BaseException:
+        try:
+            tmp.unlink(missing_ok=True)
+        except OSError:
+            pass
+        raise
+
+
+def _archive_root_problem(root: Path) -> str:
+    """Why the archive folder cannot take videos now ('' when it can): its drive not connected, a memory card or USB
+    stick (MediaEngine never writes to cards), or a folder that cannot be made."""
+    if os.name == "nt":
+        drive = _drive_of(root)
+        if drive and not Path(drive).exists():
+            return (f"The archive folder's drive ({drive.rstrip(chr(92)).upper()}) is not connected: connect it, or choose "
+                    f"another archive folder in Settings.")
+        try:
+            if drive and drive in {d["root"].lower() for d in windows_drives() if d["kind"] == "removable"}:
+                return ("The archive folder is on a memory card or USB stick: MediaEngine never writes to cards. "
+                        "Choose a folder on the computer in Settings.")
+        except Exception:
+            pass
+    try:
+        root.mkdir(parents=True, exist_ok=True)
+    except OSError as exc:
+        return f"The archive folder cannot be made ({exc}): choose another archive folder in Settings."
+    return ""
+
+
 def _verified_move(src: Path, dest: Path, sha: str | None = None) -> None:
     """Move without risking the only local copy on a cross-volume transfer."""
     dest.parent.mkdir(parents=True, exist_ok=True)
@@ -672,7 +785,7 @@ def _verified_move(src: Path, dest: Path, sha: str | None = None) -> None:
         return
     tmp = dest.with_suffix(dest.suffix + ".part")
     tmp.unlink(missing_ok=True)
-    copy_file(src, tmp)
+    _copy_or_clean(src, tmp)
     if tmp.stat().st_size != expected_size or sha256_file(tmp) != expected_sha:
         tmp.unlink(missing_ok=True)
         raise RuntimeError("Cross-volume move verification failed")
@@ -775,9 +888,13 @@ def _check_free_space(expected: int):
         raise RuntimeError(f"Not enough free space: need {expected/(1024**3):.1f} GB plus {reserve/(1024**3):.0f} GB reserve")
 
 
-def _copy_local_with_progress(src: Path, tmp: Path, progress_cb, cancel_cb=None):
+def _copy_local_with_progress(src: Path, tmp: Path, progress_cb, cancel_cb=None) -> str:
+    """Copies a card's file; returns the SHA-256 of what was copied (taken on the way: the copy is not read a second
+    time for it - a 4K card's video is several GB)."""
+    import hashlib
     tmp.parent.mkdir(parents=True, exist_ok=True)
     copied = 0
+    h = hashlib.sha256()
     with src.open("rb") as fi, tmp.open("wb") as fo:
         while True:
             if cancel_cb and cancel_cb():
@@ -786,11 +903,13 @@ def _copy_local_with_progress(src: Path, tmp: Path, progress_cb, cancel_cb=None)
             if not chunk:
                 break
             fo.write(chunk)
+            h.update(chunk)
             copied += len(chunk)
             progress_cb(copied)
         fo.flush()
         os.fsync(fo.fileno())
     shutil.copystat(src, tmp, follow_symlinks=True)
+    return h.hexdigest()
 
 
 def _job_item_bytes(item_id: int) -> int:
@@ -918,6 +1037,7 @@ def _ensure_imported(row: dict, job_id: int, item_id: int) -> Path:
     tmp = dest.with_suffix(dest.suffix + ".part")
     tmp.unlink(missing_ok=True)
     base_done = _job_bytes_done(job_id) - int(_job_item_bytes(item_id))
+    copied_sha = None
     last = {"at": 0.0, "n": -1}
 
     def progress(n):
@@ -951,6 +1071,8 @@ def _ensure_imported(row: dict, job_id: int, item_id: int) -> Path:
                 cancel_cb=lambda: _cancel_requested(job_id),
             )
             if not ok:
+                if err == "cancelled" or _cancel_requested(job_id):
+                    raise RuntimeError("cancelled")     # said as Cancelled, not as a failed copy
                 raise RuntimeError(err or "Android import failed")
             if not expected and not source_sha and row.get("path"):
                 # the phone did not say the size: the copy is checked against the phone's own SHA-256 instead (a cut
@@ -962,20 +1084,20 @@ def _ensure_imported(row: dict, job_id: int, item_id: int) -> Path:
             src = Path(row.get("path") or "")
             if not src.exists():
                 raise RuntimeError("SD/USB source file is unavailable")
-            _copy_local_with_progress(src, tmp, progress, cancel_cb=lambda: _cancel_requested(job_id))
+            copied_sha = _copy_local_with_progress(src, tmp, progress, cancel_cb=lambda: _cancel_requested(job_id))
         else:
             raise RuntimeError(f"Unsupported ingest source: {row.get('source_kind')}")
 
         actual = tmp.stat().st_size
         if expected and actual != expected:
             raise RuntimeError(f"Copy verification failed: expected {expected} bytes, got {actual}")
-        if source_sha and sha256_file(tmp) != source_sha:
+        if source_sha and sha256_file(tmp) != source_sha:      # (the written copy itself, read back)
             raise RuntimeError("Copy verification failed: SHA-256 mismatch")
         tmp.replace(dest)
         with db() as con:
             con.execute(
                 "UPDATE inventory SET staging_path=?,imported_at=?,import_status='imported',import_error=NULL,error=NULL,sha256=COALESCE(sha256,?) WHERE id=?",
-                (str(dest), now_iso(), source_sha, row["id"]),
+                (str(dest), now_iso(), source_sha or copied_sha, row["id"]),
             )
             con.commit()
         _item_update(item_id, bytes_done=actual, phase="imported")
@@ -984,7 +1106,11 @@ def _ensure_imported(row: dict, job_id: int, item_id: int) -> Path:
         if not load_config().get("ingest", {}).get("keep_failed_partials", False):
             tmp.unlink(missing_ok=True)
         with db() as con:
-            con.execute("UPDATE inventory SET import_status='error',import_error=?,error=? WHERE id=?", (str(exc), str(exc), row["id"]))
+            if str(exc).lower() == "cancelled":     # stopped by Cancel: not imported, not an error
+                con.execute("UPDATE inventory SET import_status='not_imported',import_error=NULL WHERE id=? "
+                            "AND import_status='importing'", (row["id"],))
+            else:
+                con.execute("UPDATE inventory SET import_status='error',import_error=?,error=? WHERE id=?", (str(exc), str(exc), row["id"]))
             con.commit()
         raise
 
@@ -1409,7 +1535,7 @@ def _verified_copy(src: Path, dest: Path, sha: str) -> None:
     _no_overwrite(dest, src.stat().st_size, sha)
     tmp = dest.with_suffix(dest.suffix + ".part")
     tmp.unlink(missing_ok=True)
-    copy_file(src, tmp)
+    _copy_or_clean(src, tmp)
     if tmp.stat().st_size != src.stat().st_size or sha256_file(tmp) != sha:
         tmp.unlink(missing_ok=True)
         raise RuntimeError("Archive copy verification failed")
@@ -1419,9 +1545,17 @@ def _verified_copy(src: Path, dest: Path, sha: str) -> None:
 def _run_archive_job(job: dict):
     job_id = int(job["id"])
     from .config import archive_root
-    root = archive_root(); root.mkdir(parents=True, exist_ok=True)
+    root = archive_root()
     with db() as con:
         items = con.execute("SELECT * FROM job_items WHERE job_id=? AND status NOT IN ('done','skipped') ORDER BY seq", (job_id,)).fetchall()
+    why = _archive_root_problem(root)
+    if why:                          # said once, in words, for the whole job (not "Job crashed: [WinError 3]")
+        for ji in items:
+            _item_update(int(ji["id"]), status="error", phase="error", error=why, finished_at=now_iso())
+        _refresh_job_counts(job_id)
+        _job_update(job_id, status="failed", stage="done", message=why, error=why, finished_at=now_iso(),
+                    current_inventory_id=None, current_filename=None)
+        return
     _job_update(job_id, status="running", started_at=job.get("started_at") or now_iso(), stage="archive", message="Archiving", source_releasable=0 if _reads_sources_in_place(job_id) else 1)
     for ji in items:
         iid = int(ji["id"]); inv_id = int(ji["inventory_id"])

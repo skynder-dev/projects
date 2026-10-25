@@ -7,6 +7,7 @@ import os
 import re
 import shutil
 import subprocess
+import time
 from pathlib import Path
 
 import cv2
@@ -275,7 +276,7 @@ def _duration_seconds(path: Path, duration_ms: int | None = None) -> float:
     return float(probe_duration(Path(path)) or 0.0)
 
 
-def _scene_cuts(path: Path, duration: float, progress_cb=None) -> list[float]:
+def _scene_cuts(path: Path, duration: float, progress_cb=None, cancel_cb=None) -> list[float]:
     exe = _ffmpeg_exe()
     if not exe or duration <= 0:
         return []
@@ -288,15 +289,33 @@ def _scene_cuts(path: Path, duration: float, progress_cb=None) -> list[float]:
         # Scene detection does not need 4K pixels or every source frame.
         # Decode once, shrink early, and compare a few frames per second.
         vf = r"scale=320:-2:flags=fast_bilinear,fps=3,select=gt(scene\,0.30),showinfo"
-        r = subprocess.run(
-            [exe, "-hide_banner", "-loglevel", "info", "-i", str(path),
+        # the scan of a long 4K video takes minutes without a line: the job is said to be alive every 15 s (the
+        # watchdog takes a job silent for 5 minutes as stuck and restarts it - a 20-minute video never finished)
+        proc = subprocess.Popen(
+            [exe, "-hide_banner", "-nostdin", "-loglevel", "info", "-i", str(path),
              "-an", "-sn", "-dn", "-filter:v", vf, "-f", "null", "-"],
-            capture_output=True, text=True,
-            timeout=max(60, min(360, int(duration * 0.25) + 45)),
+            stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True, encoding="utf-8", errors="replace",
             **_hidden_kwargs()
         )
+        limit = time.monotonic() + max(60, min(360, int(duration * 0.25) + 45))
+        while True:
+            try:
+                _, err = proc.communicate(timeout=15)
+                break
+            except subprocess.TimeoutExpired:
+                if time.monotonic() > limit or (cancel_cb and cancel_cb()):
+                    proc.kill()
+                    proc.communicate()
+                    if cancel_cb and cancel_cb():
+                        raise RuntimeError("cancelled")
+                    return []
+                if progress_cb:
+                    try:
+                        progress_cb(0, 1, "scene scan")
+                    except Exception:
+                        pass
         cuts = []
-        for m in re.finditer(r"pts_time:([0-9]+(?:\.[0-9]+)?)", r.stderr or ""):
+        for m in re.finditer(r"pts_time:([0-9]+(?:\.[0-9]+)?)", err or ""):
             t = float(m.group(1))
             if 0.5 < t < duration - 0.5:
                 cuts.append(t)
@@ -305,6 +324,10 @@ def _scene_cuts(path: Path, duration: float, progress_cb=None) -> list[float]:
             if not out or t - out[-1] >= 1.25:
                 out.append(t)
         return out
+    except RuntimeError as exc:
+        if str(exc) == "cancelled":
+            raise
+        return []
     except Exception:
         return []
 
@@ -547,7 +570,7 @@ def analyze_video_into_clips(inv_id: int, path: Path, duration_ms: int | None = 
     duration = _duration_seconds(path,duration_ms)
     if duration < 1.0:
         raise RuntimeError("Video duration is unavailable or too short")
-    cuts = _scene_cuts(path,duration,progress_cb=progress_cb)
+    cuts = _scene_cuts(path,duration,progress_cb=progress_cb,cancel_cb=cancel_cb)
     segments = _segments(duration,cuts)
     if not segments:
         raise RuntimeError("No usable virtual clips found")
