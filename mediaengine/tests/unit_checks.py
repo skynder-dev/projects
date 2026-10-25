@@ -1403,6 +1403,15 @@ def main():
         _ae2.open_path = real_open_
 
     from archivist import auto_edit_web as _aew2
+    cam_ = work / "card" / "100MEDIA"; cam_.mkdir(parents=True, exist_ok=True)
+    import time as _t3
+    for nm_, day_ in (("DJI_0001.MP4", "2026-10-14 12:00"), ("DJI_0002.MP4", "2026-10-16 12:00")):
+        (cam_ / nm_).write_bytes(b"\0" * 64)
+        t_ = _t3.mktime(_t3.strptime(day_, "%Y-%m-%d %H:%M"))
+        os.utime(cam_ / nm_, (t_, t_))
+    cpid_ = ae.create_project(str(cam_))
+    ctitle_ = ae.project(cpid_)["title"]
+    check("a camera folder's project is named with the days it was filmed", ctitle_ == "100MEDIA · 2026-10-14 – 2026-10-16", ctitle_)
     wl_ = _aew2._when_label("2026-10-16T18:45:00+00:00")
     check("projects: when the last version was made, in this PC's time", "2026" in wl_ and ":" in wl_ and _aew2._when_label("x") == "", wl_)
     wn_ = ae.whats_new_items()

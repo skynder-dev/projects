@@ -1179,6 +1179,9 @@ def recommend_length(total_s: float) -> int:
 
 # ---------------------------------------------------------------- projects
 
+_CAMERA_FOLDER = re.compile(r"\d{3}[A-Za-z0-9_]{5}|DCIM|Camera|CAMERA|camera|Movies|Video|Videos|VIDEO", re.I)
+
+
 def create_project(folder, title="", files=None) -> int:
     ensure_schema()
     chosen = None
@@ -1192,6 +1195,15 @@ def create_project(folder, title="", files=None) -> int:
             raise ValueError(f"This folder has no supported video files ({SUPPORTED_TEXT})")
     ts = now_iso()
     name = str(title or "").strip()[:80] or folder.name or "Auto Edit"
+    if not str(title or "").strip() and not files and _CAMERA_FOLDER.fullmatch(folder.name or ""):
+        # a camera's own folder name (100MEDIA, 100GOPRO, DCIM, Camera ...): every project of every card would have the
+        # same name - the days it was filmed added ("100MEDIA · 2026-10-14 – 2026-10-16")
+        try:
+            span = sorted(d["day"] for d in videos_by_day(folder))
+            if span:
+                name = f"{name} · {span[0]}" + (f" – {span[-1]}" if span[-1] != span[0] else "")
+        except Exception:
+            pass
     if files and not str(title or "").strip():      # one shooting day picked from a big folder: "Camera 2026-07-14"
         picked = [Path(x) for x in json.loads(chosen)]
         days = {video_day(x, 0) for x in picked}
