@@ -1411,6 +1411,15 @@ def main():
     except _od.OrderError as exc_:
         long_ = str(exc_)
     check("orders: a title longer than a reel takes (80) is refused when the order is read", "at most 80" in long_, long_)
+    real_dir_ = work / "order_real"; real_dir_.mkdir(exist_ok=True)
+    link_dir_ = work / "order_link"
+    try:
+        if not link_dir_.exists():
+            os.symlink(real_dir_, link_dir_, target_is_directory=True)
+        linked_ = _od._is_link(link_dir_)
+    except (OSError, NotImplementedError):
+        linked_ = True                     # (no symlinks allowed here: nothing to check)
+    check("orders: a link in the Inbox is not taken as an order folder; a real folder is", linked_ and not _od._is_link(real_dir_))
     print({"passed": sum(checks), "total": len(checks)})
     return 0 if all(checks) else 1
 

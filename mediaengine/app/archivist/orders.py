@@ -561,7 +561,9 @@ def _is_link(p: Path) -> bool:
         st = os.lstat(p)
     except OSError:
         return False
-    return os.path.islink(p) or bool(getattr(st, "st_file_attributes", 0) & 0x400)     # REPARSE_POINT
+    # a symbolic link or a mount point (junction) only - a OneDrive file kept in the cloud is a reparse point too, and is
+    # an ordinary file here
+    return os.path.islink(p) or getattr(st, "st_reparse_tag", 0) in (0xA000000C, 0xA0000003)
 
 
 def inbox() -> list[dict]:
