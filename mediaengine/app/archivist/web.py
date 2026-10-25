@@ -1434,7 +1434,7 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
 <input type='checkbox' name='ids' value='{int(r['id'])}' class='convertCheck' data-name='{e(r['filename'])}' data-folder='{e(str(Path(local_path).parent) if local_path else "")}' data-size='{int(r['size_bytes'] or 0)}' data-duration-ms='{int(r['duration_ms'] or 0)}' data-width='{int(r['width'] or 0)}' data-height='{int(r['height'] or 0)}' {prechecked} {disabled}>
 <div class='convertThumbWrap' style='width:92px;height:58px;position:relative'><img class='convertThumb' data-id='{int(r['id'])}' src='/thumb/{int(r['id'])}' style='width:92px;height:58px;object-fit:cover;border-radius:7px;background:#090b0e'><span class='storybadge convertStoryBadge' style='left:4px;top:4px'></span></div>
 <div style='min-width:0'><b style='display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis' translate='no'>{e(r['filename'])}</b>
-<div class='small muted'><span translate='no'>{e(r['source_label'])}</span> · <span>{human_duration(r['duration_ms'])}</span> · <span>{human_bytes(r['size_bytes'])}</span></div><div class='small cvCutNote' style='color:#9db4ff'></div>{unavailable}</div>
+<div class='small muted'><span translate='no'>{e(r['source_label'])}</span> · <span>{human_duration(r['duration_ms'])}</span> · <span>{human_bytes(r['size_bytes'])}</span>{_filmed_txt(r)}</div><div class='small cvCutNote' style='color:#9db4ff'></div>{unavailable}</div>
 <div style='text-align:right'><span class='badge'>#{int(r['id'])}</span><div class='small muted estimateOne' style='margin-top:5px'></div>{"" if not available else "<button type='button' class='btn2 cvCutBtn' data-cut-for='"+str(int(r['id']))+"' style='padding:2px 10px;margin-top:4px'>Cut…</button>"}</div></label>"""
         if not cards:
             cards=("<div class='card muted'>None of the selected videos are currently accessible. Restore/reconnect the source, or choose another local video.</div>" if preselect_ids else "<div class='card muted'>No accessible videos on this catalog page. Reconnect/restore the source, choose another page, or clear the filter.</div>")
@@ -1761,6 +1761,14 @@ pollQueue();""".replace("const winPC=%s;","const winPC="+("true" if os.name=='nt
             return jsonify({'ok':True,'job_id':job_id,'waiting':str((convert_job_snapshot(job_id) or {}).get('status'))=='waiting'})
         except Exception as exc:
             return jsonify({'ok':False,'error':str(exc)}),409
+
+    def _filmed_txt(r):
+        """When a library video was filmed (its header's time, else the file's date), on this PC's clock."""
+        try:
+            ts=float(r['date_taken'] or r['mtime'] or 0)
+            return f" · <span translate='no' title='filmed'>{time.strftime('%d.%m.%Y %H:%M',time.localtime(ts))}</span>" if ts>946684800 else ''
+        except Exception:
+            return ''
 
     def _convert_outputs_html(job):
         """The files a converter job made, each with buttons to show it in Explorer or play it (the same markup the
