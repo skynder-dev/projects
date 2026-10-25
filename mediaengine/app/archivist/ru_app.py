@@ -7,8 +7,12 @@ APP_JS: quoted UI messages inside page scripts (only full quoted literals that a
 from __future__ import annotations
 
 APP_PHRASES: dict[str, str] = {
-    "Moments of videos that are now Private or no longer in the Library are not shown, and this composition cannot be made into a video any more:":
-        "Моменты видео, которые теперь приватные или убраны из библиотеки, не показаны, и из этой композиции больше нельзя сделать видео:",
+    "Moments of videos that are now Private or no longer in the Library are not shown, and this composition cannot be made into a video until they are taken out:":
+        "Моменты видео, которые теперь приватные или убраны из библиотеки, не показаны; видео из этой композиции можно сделать, только когда они убраны:",
+    "Take them out": "Убрать их",
+    "Delete this composition": "Удалить эту композицию", "Delete for good": "Удалить насовсем", "Could not delete": "Не удалось удалить",
+    "Its moments stay in the Library; its MP4 files in Exports are deleted.": "Её моменты остаются в библиотеке; её MP4 в Exports удаляются.",
+    "Wait until the video of this composition is made.": "Подожди, пока видео этой композиции будет готово.",
     "This composition has no moments left: its videos are no longer in the catalog.": "В этой композиции не осталось моментов: её видео больше нет в каталоге.",
     "A video of this composition was made Private or removed while it was being made: the new video was not kept.":
         "Одно из видео этой композиции сделали приватным или убрали, пока она делалась: новое видео не сохранено.",

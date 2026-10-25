@@ -23,7 +23,7 @@ from .converter import PRESETS as CONVERT_PRESETS, convert_job_snapshot, start_c
 from .semantic_search import search_library as semantic_search, capabilities as semantic_capabilities
 from .visual_similarity import find_similar
 from .clip_export import EXPORTS, export_by_id, export_clip
-from .composer import EXPORTS as COMPOSER_EXPORTS, composition_detail, create_composition, ensure_schema as ensure_composer_schema, move_item as move_composer_item, start_render as start_composer_render
+from .composer import EXPORTS as COMPOSER_EXPORTS, composition_detail, create_composition, ensure_schema as ensure_composer_schema, move_item as move_composer_item, start_render as start_composer_render, remove_item as remove_composer_item, delete_composition, drop_hidden as drop_composer_hidden
 from .product_foundation import platform_snapshot, setup_catalog
 from .beta_readiness import welcome_body, help_body, guide_body, connection_disclosure_html
 from .platform_adapter import spawn_app_launcher
@@ -1282,13 +1282,17 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
         busy=c.get('status') in ('queued','rendering')      # the order stays as the video being made has it
         for x in c['items']:
             pos=int(x['position']);st=float(x['start_ms'])/1000;en=float(x['end_ms'])/1000
-            moves='' if busy else f"<form method='post' action='/composer/{cid}/move'><input type='hidden' name='position' value='{pos}'><input type='hidden' name='direction' value='up'><button class='btn2'>↑</button></form><form method='post' action='/composer/{cid}/move'><input type='hidden' name='position' value='{pos}'><input type='hidden' name='direction' value='down'><button class='btn2'>↓</button></form>"
+            moves='' if busy else f"<form method='post' action='/composer/{cid}/move'><input type='hidden' name='position' value='{pos}'><input type='hidden' name='direction' value='up'><button class='btn2'>↑</button></form><form method='post' action='/composer/{cid}/move'><input type='hidden' name='position' value='{pos}'><input type='hidden' name='direction' value='down'><button class='btn2'>↓</button></form><form method='post' action='/composer/{cid}/remove'><input type='hidden' name='position' value='{pos}'><button class='btn2'>Remove</button></form>"
             body+=f"<div class='card jobrow'><b>{pos}</b><img src='/clip-preview/{int(x['id'])}' style='width:88px;height:50px;object-fit:cover;border-radius:7px'><span><span translate='no'>{e(x['filename'])}</span><div class='muted'>{int(st//60)}:{int(st%60):02d}–{int(en//60)}:{int(en%60):02d}</div></span><span class='row'>{moves}</span></div>"
-        if c.get('hidden_items'):body+=f"<div class='card muted'><span>Moments of videos that are now Private or no longer in the Library are not shown, and this composition cannot be made into a video any more:</span> {int(c['hidden_items'])}</div>"
+        if c.get('hidden_items'):body+=(f"<div class='card muted'><span>Moments of videos that are now Private or no longer in the Library are not shown, and this composition cannot be made into a video until they are taken out:</span> {int(c['hidden_items'])}"
+                                        + ("" if busy else f"<form method='post' action='/composer/{cid}/drop-hidden' style='margin-top:8px'><button class='btn2'>Take them out</button></form>") + "</div>")
         body+="</div><div class='card' style='margin-top:12px'><b>Render composition</b><div class='muted'>Local MP4 rendered in the background. Every segment is normalized to the target aspect and stereo AAC; silent clips receive a silent track. Existing Smart Crop plans are used when available.</div><form method='post' action='/composer/%d/render' style='margin-top:10px'><button>Render MP4</button></form>"%cid
         if c.get('output_path') and Path(c['output_path']).exists():body+=f"<a class='btn btn2' style='margin-left:8px' href='/composition-file/{cid}'>Open latest MP4</a>"
         if c.get('last_error'):body+=f"<div class='errbox'>{e(c['last_error'])}</div>"
         body+="</div>"
+        if not busy:      # two steps: the button, then "Delete for good"
+            body+=(f"<details class='card' style='margin-top:12px'><summary>Delete this composition</summary><div class='muted' style='margin:8px 0'>Its moments stay in the Library; its MP4 files in Exports are deleted.</div>"
+                   f"<form method='post' action='/composer/{cid}/delete'><button class='btn2'>Delete for good</button></form></details>")
         script="setTimeout(()=>location.reload(),1500);" if c.get('status') in ('queued','rendering') else ''
         return layout('Composition',body,script)
 
@@ -1300,6 +1304,27 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
             if 0<pos<100000:move_composer_item(cid,pos,request.form.get('direction','down'))
         except ValueError:pass          # (a page from before the render started: the order stays as it is being made)
         return redirect(f'/composer/{cid}')
+
+    @app.post('/composer/<int:cid>/remove')
+    def composer_remove(cid):
+        try:pos=int(str(request.form.get('position','0')).strip())
+        except ValueError:pos=0
+        try:
+            if 0<pos<100000:remove_composer_item(cid,pos)
+        except ValueError:pass
+        return redirect(f'/composer/{cid}')
+
+    @app.post('/composer/<int:cid>/drop-hidden')
+    def composer_drop_hidden(cid):
+        drop_composer_hidden(cid)
+        return redirect(f'/composer/{cid}')
+
+    @app.post('/composer/<int:cid>/delete')
+    def composer_delete(cid):
+        try:delete_composition(cid)
+        except ValueError as exc:
+            return layout('Composer',f"<div class='card'><h2>Could not delete</h2><div class='errbox'>{e(str(exc))}</div><a class='btn btn2' href='/composer/{cid}'>Back</a></div>"),400
+        return redirect('/composer')
 
     @app.post('/composer/<int:cid>/render')
     def composer_render(cid):

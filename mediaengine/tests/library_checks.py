@@ -103,6 +103,24 @@ def main():
     left = sorted(x.name for x in composer.EXPORTS.glob(f"composition_{two}_*.mp4"))
     check("composer_private_during_render_not_kept", "made Private" in late and st_["status"] == "failed"
           and left == [Path(r2["output"]).name], (late, dict(st_), left))
+    # a moment taken out; the moments of a video made Private taken out at once; a composition deleted (its MP4s go)
+    three = composer.create_composition([after[0]["id"], after[1]["id"], after[2]["id"] if len(after) > 2 else after[0]["id"]], "1:1", "three")
+    n_before = len(composer.composition_detail(three)["items"])
+    composer.remove_item(three, 1)
+    left_ids = [x["id"] for x in composer.composition_detail(three)["items"]]
+    check("composer_a_moment_taken_out_the_rest_close_up", len(left_ids) == n_before - 1
+          and [x["position"] for x in composer.composition_detail(three)["items"]] == list(range(1, len(left_ids) + 1)), left_ids)
+    with db() as con:
+        con.execute("UPDATE inventory SET analysis_status='private' WHERE id=1"); con.commit()
+    hidden_before = composer.composition_detail(three)["hidden_items"]
+    dropped = composer.drop_hidden(three)
+    with db() as con:
+        con.execute("UPDATE inventory SET analysis_status=? WHERE id=1", (was_status,)); con.commit()
+    check("composer_hidden_moments_taken_out", hidden_before > 0 and dropped == hidden_before
+          and composer.composition_detail(three)["hidden_items"] == 0, (hidden_before, dropped))
+    ok_del = composer.delete_composition(two)
+    check("composer_deleted_with_its_mp4s", ok_del and composer.composition_detail(two) is None
+          and not list(composer.EXPORTS.glob(f"composition_{two}_*.mp4")))
     print({"passed": sum(checks), "total": len(checks)})
     return 0 if all(checks) else 1
 

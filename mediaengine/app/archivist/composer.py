@@ -105,6 +105,62 @@ def move_item(composition_id,position,direction):
         con.execute("UPDATE compositions SET status='draft',output_path=NULL,output_bytes=0,updated_at=? WHERE id=? AND status NOT IN ('queued','rendering')",
                     (now_iso(),int(composition_id)));con.commit()
 
+def remove_item(composition_id,position):
+    """One moment out of a composition (the others close up); never while its video is being made."""
+    ensure_schema();cid=int(composition_id);pos=int(position)
+    with db() as con:
+        con.execute("BEGIN IMMEDIATE")
+        st=con.execute("SELECT status FROM compositions WHERE id=?",(cid,)).fetchone()
+        if not st:con.rollback();raise ValueError("Composition not found")
+        if st["status"] in ("queued","rendering"):
+            con.rollback();raise ValueError("Wait until the video of this composition is made, then change it.")
+        if not con.execute("SELECT 1 FROM composition_items WHERE composition_id=? AND position=?",(cid,pos)).fetchone():
+            con.rollback();return
+        con.execute("DELETE FROM composition_items WHERE composition_id=? AND position=?",(cid,pos))
+        for r in con.execute("SELECT position FROM composition_items WHERE composition_id=? AND position>? ORDER BY position",(cid,pos)).fetchall():
+            con.execute("UPDATE composition_items SET position=? WHERE composition_id=? AND position=?",(int(r["position"])-1,cid,int(r["position"])))
+        con.execute("UPDATE compositions SET status='draft',output_path=NULL,output_bytes=0,last_error=NULL,updated_at=? WHERE id=?",(now_iso(),cid))
+        con.commit()
+
+def drop_hidden(composition_id):
+    """The moments of videos now Private or no longer in the Library taken out (the rest close up in their order)."""
+    ensure_schema();cid=int(composition_id)
+    with db() as con:
+        con.execute("BEGIN IMMEDIATE")
+        st=con.execute("SELECT status FROM compositions WHERE id=?",(cid,)).fetchone()
+        if not st or st["status"] in ("queued","rendering"):
+            con.rollback();return 0
+        rows=con.execute(f"""SELECT ci.position,CASE WHEN {VISIBLE_SQL} THEN 1 ELSE 0 END visible FROM composition_items ci
+          JOIN virtual_clips vc ON vc.id=ci.clip_id JOIN inventory i ON i.id=vc.inventory_id WHERE ci.composition_id=? ORDER BY ci.position""",(cid,)).fetchall()
+        gone=[int(r["position"]) for r in rows if not r["visible"]]
+        if not gone:con.rollback();return 0
+        con.executemany("DELETE FROM composition_items WHERE composition_id=? AND position=?",[(cid,x) for x in gone])
+        left=[int(r["position"]) for r in rows if r["visible"]]
+        for new,old in enumerate(left,1):     # (positions only move down: no clash with a row not moved yet)
+            if new!=old:con.execute("UPDATE composition_items SET position=? WHERE composition_id=? AND position=?",(new,cid,old))
+        con.execute("UPDATE compositions SET status='draft',output_path=NULL,output_bytes=0,last_error=NULL,updated_at=? WHERE id=?",(now_iso(),cid))
+        con.commit()
+    return len(gone)
+
+def delete_composition(composition_id):
+    """A composition forgotten (its moments stay in the Library); its own MP4s in Exports go, unless one was recorded
+    as published or handed off for upload."""
+    ensure_schema();cid=int(composition_id)
+    with db() as con:
+        con.execute("BEGIN IMMEDIATE")
+        st=con.execute("SELECT status FROM compositions WHERE id=?",(cid,)).fetchone()
+        if not st:con.rollback();return False
+        if st["status"] in ("queued","rendering"):
+            con.rollback();raise ValueError("Wait until the video of this composition is made.")
+        con.execute("DELETE FROM composition_items WHERE composition_id=?",(cid,))
+        con.execute("DELETE FROM compositions WHERE id=?",(cid,));con.commit()
+    for old in EXPORTS.glob(f"composition_{cid}_*.mp4"):
+        try:
+            if not _referenced(old,cid):old.unlink()
+        except OSError:
+            pass
+    return True
+
 def _center_plan(width,height,aspect):
     tw,th=ASPECTS[aspect];target=tw/th;sw=max(1.0,float(width or 1));sh=max(1.0,float(height or 1));src=sw/sh
     if src>target:
