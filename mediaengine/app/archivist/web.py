@@ -1501,8 +1501,14 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
                       else f"<span>{e(CONVERT_PRESETS.get(str(wo.get('preset')),{}).get('label') or '')}</span>")
                 wl.append(f"<div class='row space' data-wait='{int(w['id'])}' style='margin-top:6px'><span class='small'>#{int(w['id'])} · <span>{nv} video{'s' if nv!=1 else ''}</span> · {what}"
                           f"{' · <span>into one video</span>' if wo.get('join') else ''}</span><button class='btn btn2' type='button' data-cv='unqueue' data-job='{int(w['id'])}'>Take out of the line</button></div>")
+            try:
+                from .converter import gpu_test_state as _gts
+                card_now=bool(_gts().get('running'))
+            except Exception:
+                card_now=False
             active+=(f"<div class='card' id='convertQueue' style='margin-top:10px'><b>Waiting in line</b> <span class='badge'>{len(wl)}</span>"
-                     f"<div class='small muted'>They start one by one, by themselves, when the job before them ends.</div>{''.join(wl)}</div>")
+                     + ("<div class='small' style='color:#f0b35a'>The graphics card is being tested first (about two minutes, test clips only): then they start, on whichever was faster with the same picture.</div>" if card_now else "")
+                     + f"<div class='small muted'>They start one by one, by themselves, when the job before them ends.</div>{''.join(wl)}</div>")
         body=f"""<div class='pagehead row space'><div><div class='eyebrow'>Local video utility</div><h1>Convert</h1><div class='lead'><span>Make smaller shareable copies without touching originals.</span> <span>Converted files go into:</span> <span class='ae-path'>{e(str(out_dir))}</span> <button class='btn2' type='button' data-cv='outdir' style='padding:2px 10px'>Change…</button>{"<button class='btn2' type='button' data-cv='outdir-reset' style='padding:2px 10px;margin-left:4px'>Back to Converted</button>" if out_dir!=HOME/'Converted' else ''}<br><span>Source folders and cards are never written to.</span></div></div><div class='row'><button class='btn' type='button' data-cv='folder'>Open the folder</button><a class='btn btn2' href='/import'>Add / discover a folder</a></div></div>
 <div class='card'><div class='row space'><div style='min-width:0'><b>Preset</b><div class='muted small' style='white-space:normal'>Choose a preset. For messengers / sharing, Share 1080p is the balanced option.</div></div><span id='selectedCount' class='badge'>0 selected</span></div>
 <div id='estimateSummary' class='card' style='margin-top:10px;padding:10px 12px;background:#111823'><b id='estimateOutput'>Select videos to see estimated output size.</b><div id='estimateNote' class='small muted' style='margin-top:3px'>Estimate is shown before conversion and may vary with image complexity.</div></div>
