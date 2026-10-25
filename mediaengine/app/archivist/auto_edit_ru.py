@@ -925,6 +925,10 @@ PHRASES = {
         'Проверка компьютера: «Удалить старые версии» освобождает место старых версий MediaEngine (две самые новые остаются, чтобы можно было вернуться).',
     'Composer: remove a moment, take out the moments of videos made Private, delete a composition.':
         'Монтаж: убрать момент, убрать моменты видео, ставших приватными, удалить композицию.',
+    "Auto Edit: each project shows when its last version was made; a project from a camera's own folder (100MEDIA, 100GOPRO …) is named with the days it was filmed; a folder that already has a project says so on the new-reel page.":
+        'Автомонтаж: у каждого проекта видно, когда сделана его последняя версия; проект из папки камеры (100MEDIA, 100GOPRO …) называется по дням съёмки; если у папки уже есть проект, страница нового ролика об этом скажет.',
+    'Music for a reel or a video: the window opens in the folder of the music you chose last time.':
+        'Музыка для ролика или видео: окно выбора открывается в папке музыки, выбранной в прошлый раз.',
     "Convert: pictures from long videos are saved many times faster (each picture read from its own moment, not the whole video decoded).":
         "Конвертация: кадры из длинных видео сохраняются в разы быстрее (каждый кадр читается со своего момента, а не всё видео целиком).",
     "Convert: Select all / Clear the selection; the preset and the lasting choices (sound, date and time, Brighter, logo, how often pictures are taken) are remembered; a copy shorter than its video (a damaged or half-copied file) says so.":
