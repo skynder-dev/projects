@@ -238,6 +238,7 @@ def render_composition(composition_id):
 
 def _runner(cid):
     try:render_composition(cid)
+    except Exception:pass       # (its reason is on the composition: last_error / the page)
     finally:
         with _ACTIVE_LOCK:_ACTIVE.discard(int(cid))
 
