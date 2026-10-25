@@ -138,7 +138,8 @@ Provider analytics retain source provenance and are descriptive. MediaEngine doe
 **Update** is a button at the top. Only when you press it does MediaEngine look on GitHub for a newer version; it shows
 what is new, and "Update now" puts it into a new folder next to this one and switches to it (a few MB; the same
 projects). The previous version stays: to go back, "Check this PC" → "Use this version". When the libraries
-themselves changed, it says that the full installer is needed this time.
+themselves changed, it says that the full installer is needed this time. Old versions pile up next to it: "Check this PC" →
+"Remove the older versions" removes them and keeps the two newest (projects and reels are not touched).
 
 Closing the window does not stop MediaEngine (a reel being made goes on): its icon is in the tray next to the clock
 (maybe under the ^ arrow). Click it to open the window, right-click → Quit to stop the program. Settings can start it
