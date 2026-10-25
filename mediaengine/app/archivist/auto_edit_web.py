@@ -830,8 +830,9 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
 
     @app.post("/api/auto/pick-music")
     def ae_pick_music():
-        files = ae.pick_files("Choose music for the reel", kind="audio")
+        files = ae.pick_files("Choose music for the reel", initial=ae.music_folder(), kind="audio")
         if files:
+            ae.remember_music(files[0])        # the next music window opens there
             return jsonify({"path": files[0]})
         return jsonify({"path": None, "error": "No music chosen. You can also paste the path."})
 

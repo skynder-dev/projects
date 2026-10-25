@@ -1402,6 +1402,9 @@ def main():
     finally:
         _ae2.open_path = real_open_
 
+    mus_ = work / "Моя музыка"; mus_.mkdir(exist_ok=True); (mus_ / "song.mp3").write_bytes(b"x")
+    ae.remember_music(mus_ / "song.mp3")
+    check("music: the next music window opens in the folder of the music chosen last", ae.music_folder() == str(mus_), ae.music_folder())
     # Auto Edit: no button that would be refused (more than 31 days); a cut-off build's leftovers and a project deleted
     # half-way are cleared; an order's title as long as a reel takes
     import html as _html

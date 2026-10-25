@@ -986,7 +986,9 @@ def register(app, page, err_page, e, human_bytes):
         if kind == "audio":
             files = ae.pick_files("Choose the recording of the voice", kind="audio")
         elif kind == "music":
-            files = ae.pick_files("Choose the music", kind="audio")
+            files = ae.pick_files("Choose the music", initial=ae.music_folder(), kind="audio")
+            if files:
+                ae.remember_music(files[0])
         elif kind == "videos":
             files = ae.pick_files("Choose the videos (Ctrl+click for several)", initial=str(ae.default_export_dir()))
             if files:

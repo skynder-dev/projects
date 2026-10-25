@@ -3353,6 +3353,28 @@ def last_new_settings() -> dict:
     return {k: d[k] for k, ok in (("format", FORMATS), ("sound", SOUNDS), ("mode", MODES), ("framing", FRAMINGS)) if d.get(k) in ok}
 
 
+def music_folder() -> str | None:
+    """Where the music window opens: the folder of the music chosen last time, else Windows' Music folder."""
+    try:
+        last = Path(str(load_config().get("auto_edit", {}).get("music_dir") or ""))
+        if last.is_absolute() and last.is_dir():
+            return str(last)
+    except Exception:
+        pass
+    m = Path.home() / "Music"
+    return str(m) if m.is_dir() else None
+
+
+def remember_music(path) -> None:
+    try:
+        d = Path(str(path)).parent
+        if d.is_dir():
+            from .config import update_config
+            update_config(lambda cfg: cfg.setdefault("auto_edit", {}).__setitem__("music_dir", str(d)))
+    except Exception:
+        pass
+
+
 def remember_new_settings(settings: dict) -> None:
     try:
         from .config import update_config
