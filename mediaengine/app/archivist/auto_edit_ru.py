@@ -929,6 +929,8 @@ PHRASES = {
         'Автомонтаж: у каждого проекта видно, когда сделана его последняя версия; проект из папки камеры (100MEDIA, 100GOPRO …) называется по дням съёмки; если у папки уже есть проект, страница нового ролика об этом скажет.',
     'Music for a reel or a video: the window opens in the folder of the music you chose last time.':
         'Музыка для ролика или видео: окно выбора открывается в папке музыки, выбранной в прошлый раз.',
+    'Convert: on a PC with an NVIDIA card that was never tested, the first conversion tests the card by itself first (about two minutes), then converts on whichever was faster with the same picture.':
+        'Конвертация: на компьютере с видеокартой NVIDIA, которую ещё не проверяли, первая конвертация сначала сама проверит видеокарту (около двух минут), потом сконвертирует на том, что быстрее с той же картинкой.',
     "Convert: pictures from long videos are saved many times faster (each picture read from its own moment, not the whole video decoded).":
         "Конвертация: кадры из длинных видео сохраняются в разы быстрее (каждый кадр читается со своего момента, а не всё видео целиком).",
     "Convert: Select all / Clear the selection; the preset and the lasting choices (sound, date and time, Brighter, logo, how often pictures are taken) are remembered; a copy shorter than its video (a damaged or half-copied file) says so.":

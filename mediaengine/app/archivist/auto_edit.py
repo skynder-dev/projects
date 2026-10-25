@@ -2531,6 +2531,7 @@ WHATS_NEW_ITEMS = [
     ("2026-10-20", "Text on a video (Auto Edit → Voice-over and text): titles and lines of text at the moments you choose, on a colored stripe, a dark box or in big letters - no add-on needed."),
     ("2026-10-22", "Captions in two more looks: one word at a time, big (like TikTok), and the word being said on a color block."),
     ('2026-10-25c', "Auto Edit: each project shows when its last version was made; a project from a camera's own folder (100MEDIA, 100GOPRO …) is named with the days it was filmed; a folder that already has a project says so on the new-reel page."),
+    ('2026-10-25c', 'Convert: on a PC with an NVIDIA card that was never tested, the first conversion tests the card by itself first (about two minutes), then converts on whichever was faster with the same picture.'),
     ('2026-10-25c', 'Music for a reel or a video: the window opens in the folder of the music you chose last time.'),
     ('2026-10-25b', 'Composer: remove a moment, take out the moments of videos made Private, delete a composition.'),
     ('2026-10-25b', 'Check this PC: “Remove the older versions” frees the space of old MediaEngine versions (the two newest stay, to go back to).'),
