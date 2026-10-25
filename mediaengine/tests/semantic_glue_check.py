@@ -87,6 +87,15 @@ def main():
     os.environ["MEDENG_SEMANTIC_WORKERS"] = "3"
     out_rc, _ = build("reclip")
     os.environ.pop("MEDENG_SEMANTIC_WORKERS", None)
+    # the same on a 16-core PC without a set number: only cutting is left - more cuts at once (memory allowing)
+    os.environ["MEDENG_AI_SHARED_CACHE"] = str(work / "shared_reclip16")
+    shutil.copytree(work / "shared" / "semantic_reports", work / "shared_reclip16" / "semantic_reports")
+    real_cpus = os.cpu_count
+    os.cpu_count = lambda: 16
+    try:
+        out_rc16, r3_16 = build("reclip16")
+    finally:
+        os.cpu_count = real_cpus
     # decoding on the graphics card that fails (here: a method FFmpeg does not know): every cut is made again on the
     # processor - the same reel, nothing left at preview quality
     os.environ["MEDENG_AI_SHARED_CACHE"] = str(work / "shared_hw")
@@ -180,6 +189,12 @@ def main():
     ok_, det_ = same_reel(out, out_rc)
     check("known_reports_missing_clips_cut_in_parallel", rc_.get("videos_analysed") == 0 and rc_.get("clips_cut", 0) > 0
           and rc_.get("workers") == 3 and ok_, (rc_, det_))
+    res16 = json.loads((out_rc16 / "MediaEngine Result.json").read_text(encoding="utf-8"))
+    rc16 = res16.get("semantic_timing") or {}
+    want16 = max(3, min(6, 16 // 3, int(r3_16._total_ram_gb() // 4) or 1, int(res16.get("input_count") or 0)))
+    ok_, det_ = same_reel(out, out_rc16)
+    check("only_cutting_left_more_cuts_at_once_on_16_cores", rc16.get("videos_analysed") == 0 and rc16.get("clips_cut", 0) > 0
+          and rc16.get("workers") == want16 and ok_, (rc16.get("workers"), want16, det_))
     hwres = json.loads((out_hw / "MediaEngine Result.json").read_text(encoding="utf-8"))
     ok_, det_ = same_reel(out, out_hw)
     hd_ = hwres.get("hw_decode") or {}
