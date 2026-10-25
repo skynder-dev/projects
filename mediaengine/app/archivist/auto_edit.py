@@ -2838,7 +2838,48 @@ def other_builds(install: Path | None = None) -> list[dict]:
         except OSError:
             can_switch = False
         out.append({"name": d.name, "path": str(d), "built": built, "bytes": hit[1], "mtime": mt, "can_switch": can_switch})
+    # the newest first, by its build number (by name "b28" came after "b213")
+    def newest(b):
+        m = re.fullmatch(r"MediaEngine-(\d+(?:\.\d+)*)(?:-rc(\d+))?(?:-b(\d+))?", b["name"])
+        if not m:
+            return (0, (), 0, 0, 0, b["mtime"])
+        ver = tuple(int(x) for x in m.group(1).split("."))
+        rc = m.group(2)
+        return (1, ver, 0 if rc else 1, int(rc or 0), int(m.group(3) or 0), b["mtime"])
+    out.sort(key=newest, reverse=True)
     return out
+
+
+_BUILD_NAME = re.compile(r"MediaEngine-(\d+(?:\.\d+)*-rc\d+)-b(\d+)")
+
+
+def old_builds(keep: int = 2, install: Path | None = None) -> list[dict]:
+    """The earlier builds of THIS release line (the same version and candidate, a smaller build number), all but the
+    newest `keep` - what "Remove the older versions" takes. Never another release (a stable version such as 3.12.42
+    is kept whatever happens), never a build newer than this one, never a folder with a name of another form."""
+    from .config import INSTALL
+    me = _BUILD_NAME.fullmatch(Path(install or INSTALL).resolve().name)
+    if not me:
+        return []
+    same = []
+    for b in other_builds(install):
+        m = _BUILD_NAME.fullmatch(b["name"])
+        if m and m.group(1) == me.group(1) and int(m.group(2)) < int(me.group(2)):
+            same.append(b)
+    return same[max(0, int(keep)):]               # (other_builds: the newest first)
+
+
+def remove_old_builds(keep: int = 2, install: Path | None = None) -> tuple[int, int]:
+    """old_builds(keep) removed; returns (removed, bytes freed). One that cannot be removed now (a file of it open)
+    is left as it is."""
+    n = freed = 0
+    for b in old_builds(keep, install):
+        try:
+            freed += int(delete_build(b["name"], install) or 0)
+            n += 1
+        except Exception:
+            pass
+    return n, freed
 
 
 _BUILD_BYTES: dict[str, tuple[float, int]] = {}

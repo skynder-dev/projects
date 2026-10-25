@@ -251,6 +251,9 @@ PHRASES = {
         "В папке больше 64 видео. Нажми «Выбрать видео…» и выбери до 64 из них, или возьми папку, где видео меньше.",
     "Choose at most 64 videos for one reel.": "Для одного ролика можно выбрать не больше 64 видео.",
     "Other MediaEngine versions on this PC": "Другие версии MediaEngine на этом компьютере",
+    "Remove the older versions": "Удалить старые версии", "keeps the two newest before this one; frees": "две самые новые до этой останутся; освободится",
+    "Remove the older versions of MediaEngine? The two newest before this one stay, so you can still go back. Your projects and exports are not affected.":
+        "Удалить старые версии MediaEngine? Две самые новые до этой останутся, чтобы можно было вернуться. Проекты и ролики не пострадают.",
     "This one:": "Эта:",
     "Older versions are kept so you can go back to one; remove the ones you no longer need (projects and exports stay).":
         "Старые версии остаются, чтобы можно было вернуться; удали ненужные (проекты и ролики не пострадают).",

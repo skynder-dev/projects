@@ -464,6 +464,7 @@ const pf=document.getElementById('projFind');if(pf)pf.oninput=()=>{const q=pf.va
             test_html = _selftest_html(st["result"], e)
         from .config import INSTALL
         builds = ae.other_builds()
+        olds = ae.old_builds(2)
         done = request.args.get("removed", "")
         brows = "".join(f"<tr><td><b translate='no'>{e(b['name'])}</b>{(' · built ' + e(b['built'])) if b['built'] else ''}"
                         f"<div class='muted ae-path'>{e(b['path'])}</div></td>"
@@ -479,7 +480,13 @@ const pf=document.getElementById('projFind');if(pf)pf.oninput=()=>{const q=pf.va
                        f"<div class='muted'>This one: <span class='ae-path'>{e(str(INSTALL))}</span>. Older versions are kept so you can go "
                        f"back to one; remove the ones you no longer need (projects and exports stay).</div>"
                        f"<span id='rmq' hidden>Remove this version? Your projects and exports are not affected.</span>"
-                       f"<table class='ae-files' style='margin-top:8px'>{brows}</table></div>") if builds else ""
+                       + (f"<form method='post' action='/auto/check/remove-old-builds' style='margin-top:8px' "
+                          f"onsubmit=\"return confirm(document.getElementById('rmoq').textContent)\"><button class='btn2'>"
+                          f"Remove the older versions</button> <span class='muted'><span>keeps the two newest before this one;"
+                          f" frees</span> {human_bytes(sum(b['bytes'] for b in olds))}</span></form>"
+                          f"<span id='rmoq' hidden>Remove the older versions of MediaEngine? The two newest before this one stay, "
+                          f"so you can still go back. Your projects and exports are not affected.</span>" if olds else "")
+                       + f"<table class='ae-files' style='margin-top:8px'>{brows}</table></div>") if builds else ""
         if done:
             builds_html = f"<div class='card ae-done' style='margin-top:14px'>Removed <span translate='no'>{e(done)}</span>.</div>" + builds_html
         sb = ae.shared_cache_bytes()
@@ -738,6 +745,11 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
         from . import updater as up
         s = up.status()
         return jsonify({k: s.get(k) for k in ("state", "percent", "target", "error")})
+
+    @app.post("/auto/check/remove-old-builds")
+    def ae_remove_old_builds():
+        n, freed = ae.remove_old_builds(2)
+        return redirect("/auto/check?removed=" + urllib.parse.quote(f"{n} × MediaEngine ({human_bytes(freed)})"))
 
     @app.post("/auto/check/remove-build")
     def ae_remove_build():

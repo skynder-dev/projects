@@ -527,6 +527,24 @@ def main():
     (early / "data").mkdir(exist_ok=True); (early / "data" / "archivist.db").write_bytes(b"db")
     check("a build folder holding projects is never offered for removal", early.name not in [b["name"] for b in ae.other_builds(cur)]
           and raises(ae.delete_build, early.name, cur) and (early / "data" / "archivist.db").exists())
+    # "Remove the older versions": only earlier builds of this release line, the two newest of them kept; never a stable
+    # version (3.12.42), a newer candidate or a build newer than this one
+    lb = work / "line"
+    names_ = ["MediaEngine-3.13.0-rc1-b220", "MediaEngine-3.13.0-rc1-b28", "MediaEngine-3.13.0-rc1-b213", "MediaEngine-3.13.0-rc1-b217",
+              "MediaEngine-3.13.0-rc1-b100", "MediaEngine-3.13.0-rc1-b230", "MediaEngine-3.12.42", "MediaEngine-3.13.0-rc2-b5"]
+    for nm_ in names_:
+        (lb / nm_).mkdir(parents=True, exist_ok=True)
+        for n in ae.BUILD_MARKERS:
+            (lb / nm_ / n).write_text("x" * 100, encoding="utf-8")
+    me_ = lb / "MediaEngine-3.13.0-rc1-b220"
+    listed_ = [b["name"] for b in ae.other_builds(me_)]
+    olds_ = [b["name"] for b in ae.old_builds(2, me_)]
+    n_rm_, _ = ae.remove_old_builds(2, me_)
+    left_ = sorted(x.name for x in lb.iterdir())
+    check("older versions: newest first; only this line's older builds removed, two newest kept, stable never",
+          listed_[:3] == ["MediaEngine-3.13.0-rc2-b5", "MediaEngine-3.13.0-rc1-b230", "MediaEngine-3.13.0-rc1-b217"]
+          and olds_ == ["MediaEngine-3.13.0-rc1-b100", "MediaEngine-3.13.0-rc1-b28"] and n_rm_ == 2
+          and left_ == sorted(set(names_) - set(olds_)), (listed_, olds_, left_))
     # the owner's clips kept inside an old version's folder (or a Library source there): that version is never removed
     clips_b = base / "MediaEngine-3.13.0-b0"
     (clips_b / "app").mkdir(parents=True, exist_ok=True)
