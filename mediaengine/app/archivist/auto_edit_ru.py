@@ -909,6 +909,18 @@ PHRASES = {
         "Ещё два вида субтитров: по одному слову, крупно (как в TikTok), и сказанное слово на цветной плашке.",
     "Convert: pictures every 5 / 10 / 30 / 60 seconds of the selected videos (photos for a report) and a list of earlier conversions with their buttons.":
         "Конвертация: кадры каждые 5 / 10 / 30 / 60 секунд выбранных видео (фото для отчёта) и список прошлых конвертаций с их кнопками.",
+    'Convert: the NVIDIA card also for turned videos and the More options (speed, vertical, logo, date and time…) - once “Test converting on the graphics card” made them there with the same picture and faster (press the test once more).':
+        'Конвертация: видеокарта NVIDIA и для повёрнутых видео, и для «Ещё» (скорость, вертикаль, логотип, дата и время…) — когда «Проверить конвертацию на видеокарте» сделала их там с той же картинкой и быстрее (нажми проверку ещё раз).',
+    "GoPro and DJI videos: the time of filming is the camera's own clock (Library dates, the days of a big folder, the date and time in the corner); the Convert list shows when each video was filmed.":
+        'Видео GoPro и DJI: время съёмки — по часам камеры (даты в Библиотеке, дни большой папки, дата и время в углу); в списке «Конвертация» видно, когда снято каждое видео.',
+    'Reels from many 4K videos: their moments are cut more at once on a PC with many cores.':
+        'Ролики из многих 4K-видео: на компьютере с многими ядрами моменты нарезаются одновременно в большем числе.',
+    'Voice-over: the word check reads numbers and signs written either way (20% / twenty percent, e-mail / email, 5 p.m. / five PM) - fewer pieces made again; Russian letters with English chosen are refused in words.':
+        'Озвучка: проверка слов понимает числа и знаки, записанные по-разному (20% / twenty percent, e-mail / email, 5 p.m. / five PM), — меньше кусков переделывается; русские буквы при выбранном английском — отказ с объяснением.',
+    'Check this PC: “Remove the older versions” frees the space of old MediaEngine versions (the two newest stay, to go back to).':
+        'Проверка компьютера: «Удалить старые версии» освобождает место старых версий MediaEngine (две самые новые остаются, чтобы можно было вернуться).',
+    'Composer: remove a moment, take out the moments of videos made Private, delete a composition.':
+        'Монтаж: убрать момент, убрать моменты видео, ставших приватными, удалить композицию.',
     "Convert: pictures from long videos are saved many times faster (each picture read from its own moment, not the whole video decoded).":
         "Конвертация: кадры из длинных видео сохраняются в разы быстрее (каждый кадр читается со своего момента, а не всё видео целиком).",
     "Convert: Select all / Clear the selection; the preset and the lasting choices (sound, date and time, Brighter, logo, how often pictures are taken) are remembered; a copy shorter than its video (a damaged or half-copied file) says so.":

@@ -69,9 +69,11 @@ def main():
     # video under another name, which once made two threads write the same clip file
     os.environ["MEDENG_SEMANTIC_WORKERS"] = "3"
     os.environ["MEDENG_RENDER_WORKERS"] = "3"          # and the pieces cut three at once
+    os.environ["MEDENG_CLIP_WORKERS"] = "2"            # and each video's moments two at a time
     out3, _ = build("three")
     os.environ.pop("MEDENG_SEMANTIC_WORKERS", None)
     os.environ.pop("MEDENG_RENDER_WORKERS", None)
+    os.environ.pop("MEDENG_CLIP_WORKERS", None)
     # what the AI found and the moment clips, shared by all projects (the app sets MEDENG_AI_SHARED_CACHE): a new
     # project from the same videos analyses and cuts nothing; a project made before the cache was shared hands its
     # files over (moved, not analysed again)
@@ -151,7 +153,8 @@ def main():
         return bool(cut and a_md5[0] == a_md5[1] and a_md5[0] and pmin >= 40), (cut, a_md5, pmin)
 
     ok_, det_ = same_reel(out, out3)
-    check("ai_glue_parallel_analysis_same_reel", ok_, det_)
+    t3_ = json.loads((out3 / "MediaEngine Result.json").read_text(encoding="utf-8")).get("semantic_timing") or {}
+    check("ai_glue_parallel_analysis_same_reel", ok_ and t3_.get("clip_workers") == 2, (det_, t3_.get("clip_workers")))
     # the moment clips themselves are bit-identical when cut again (x264 sync-lookahead=0)
     # (cut three times: build "one" - its clips were handed over to shared_adopt -, "three" and "shared_new")
     shas = [{f.name: hashlib.sha256(f.read_bytes()).hexdigest() for f in (work / d / "semantic_previews").glob("*.mp4")}

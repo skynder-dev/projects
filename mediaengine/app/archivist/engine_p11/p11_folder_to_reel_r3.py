@@ -462,6 +462,11 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
 
     timing={"analyse_s":0.0,"clips_s":0.0,"videos_analysed":0,"workers":1}
     tlock=threading.Lock()
+    # moments of one video cut at once: 2 on a PC with 12+ cores and 16+ GB (MEDENG_CLIP_WORKERS sets it)
+    clip_workers=2 if (os.cpu_count() or 1)>=12 and _total_ram_gb()>=16 else 1
+    try: clip_workers=max(1,int(os.environ.get("MEDENG_CLIP_WORKERS") or clip_workers))
+    except ValueError: pass
+    timing["clip_workers"]=clip_workers
 
     def one(row):
         """One video: its AI report (cached by SHA-256) and its candidate clips. Returns (report, row_specs, skip)."""
@@ -499,12 +504,20 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
                     for k_,rk_ in (("scout_s","scout_elapsed_s"),("model_s","semantic_elapsed_s"),("dense_s","dense_refine_elapsed_s")):
                         try: timing[k_]=timing.get(k_,0.0)+float(report.get(rk_) or 0.0)
                         except (TypeError,ValueError): pass
-            row_specs=[]
             t_=time.perf_counter()
+            items=[]
             for rank,c in enumerate(report.get("ranked",[]),1):
-                cc=dict(c); cc["_source_rank"]=rank
-                row_specs.append(extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,
-                                                        legacy_dir=legacy_c,origin_sha=row.get("origin_sha256"),preview=True))
+                cc=dict(c); cc["_source_rank"]=rank; items.append(cc)
+            cut=lambda cc: extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,
+                                                  legacy_dir=legacy_c,origin_sha=row.get("origin_sha256"),preview=True)
+            if clip_workers>1 and len(items)>1:
+                # a video's moments cut two at a time on a big PC (one cut of a 4K video keeps few cores busy); the
+                # same clips in the same order (each moment's file is its own)
+                import concurrent.futures
+                with concurrent.futures.ThreadPoolExecutor(max_workers=min(clip_workers,len(items))) as cx:
+                    row_specs=list(cx.map(cut,items))
+            else:
+                row_specs=[cut(cc) for cc in items]
             with tlock: timing["clips_s"]+=time.perf_counter()-t_
         except Exception as exc:
             # one unreadable file must not sink the whole reel: skip it and say so
