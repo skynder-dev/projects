@@ -1268,6 +1268,23 @@ def main():
         finally:
             _cv.start_gpu_test, _cv._queue_runner_start = real_sgt_, real_qrs_
             _uc(lambda c: (c.setdefault("auto_edit", {}).pop("hw_decode", None), c.setdefault("convert", {}).pop("gpu_test", None)))
+        real_rgt_ = _cv.run_gpu_test
+        def _boom(*a_, **k_):
+            raise OSError("no such FFmpeg filter")
+        _cv.run_gpu_test = _boom
+        try:
+            _uc(lambda c: c.setdefault("convert", {}).pop("gpu_test", None))
+            _cv.start_gpu_test(work / "gt_fail")
+            for _ in range(50):
+                if not _cv.gpu_test_state()["running"]:
+                    break
+                __import__("time").sleep(0.1)
+            failed_saved_ = _cv.gpu_test_saved()
+        finally:
+            _cv.run_gpu_test = real_rgt_
+            _uc(lambda c: c.setdefault("convert", {}).pop("gpu_test", None))
+        check("convert: a card test that cannot run is kept as tried (never started again by itself before each conversion)",
+              failed_saved_.get("use") is False and "could not run" in str(failed_saved_.get("error")), failed_saved_)
         check("convert: the first conversion on an untested NVIDIA PC tests the card first (once), then converts",
               len(auto_t_) == 1 and at_row_["status"] == "waiting" and "graphics card first" in at_row_["message"] and not again_,
               (auto_t_, at_row_, again_))

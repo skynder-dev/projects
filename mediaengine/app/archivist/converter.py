@@ -1143,7 +1143,11 @@ def start_gpu_test(folder) -> bool:
             from .config import update_config
             def keep(r):
                 update_config(lambda cfg: cfg.setdefault("convert", {}).__setitem__("gpu_test", r))
-            r = run_gpu_test(folder, step=lambda s: _GT.__setitem__("step", s), save=keep)
+            try:
+                r = run_gpu_test(folder, step=lambda s: _GT.__setitem__("step", s), save=keep)
+            except Exception as exc:       # said and kept: a test that cannot run is never started again by itself
+                r = {"tested_at": datetime.now().strftime("%Y-%m-%d %H:%M"), "use": False,
+                     "error": f"the test could not run: {type(exc).__name__}: {str(exc)[:200]}"}
             keep(r)
             _GT["result"] = r
         finally:
