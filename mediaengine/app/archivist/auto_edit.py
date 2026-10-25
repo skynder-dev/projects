@@ -665,8 +665,8 @@ from .media import shot_time  # noqa: E402  (recording time from the video heade
 
 def _header_day_time(p: Path, mtime: float) -> float | None:
     """The recording time from the video's header, used for its day only when the file's date looks like the day it
-    was copied (later than the recording). Some cameras write local time there instead of UTC: a file date that
-    agrees with it within a day is kept as it is."""
+    was copied (later than the recording). GoPro / DJI write their own clock there (read as that wall-clock time by
+    shot_time); other cameras that do so: a file date that agrees with it within a day is kept as it is."""
     t = shot_time(p)
     if not t:
         return None

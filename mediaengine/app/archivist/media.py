@@ -778,6 +778,11 @@ import time as _time
 _MP4_EPOCH = 2082844800          # seconds from 1904-01-01 (MP4 / QuickTime clock) to 1970-01-01
 
 
+# names cameras give their videos that write their own clock's time into the header (GoPro: GX010044, GH011234,
+# GOPR0044, GP010044; DJI: DJI_0001, DJI_20261023140507_0001_D)
+_CAMERA_CLOCK_NAME = re.compile(r"^(G[XHP]\d{6}|GOPR\d{4}|DJI_\d{4}|DJI_\d{14}_\d{4}\w*)$", re.I)
+
+
 def shot_time(p) -> float | None:
     """When an MP4 / MOV video was recorded, from its own header (the 'mvhd' box), or None. Copying a video to the PC
     often gives the file a new date; the header keeps the recording time. Reads a few small pieces of the file only."""
@@ -818,7 +823,14 @@ def shot_time(p) -> float | None:
                             ct = int.from_bytes(body[4:12], "big") if body[0] == 1 else int.from_bytes(body[4:8], "big")
                             unix = ct - _MP4_EPOCH
                             # 0 or nonsense (not set by the camera, or a date in the future): no recording time
-                            return float(unix) if 946684800 <= unix <= _time.time() + 86400 else None
+                            if not 946684800 <= unix <= _time.time() + 86400:
+                                return None
+                            if _CAMERA_CLOCK_NAME.match(Path(p).stem):
+                                # a GoPro / DJI camera writes its own clock's time as if it were UTC: the same
+                                # wall-clock time here (a 23:30 recording stays on its own day)
+                                from datetime import datetime, timezone
+                                unix = datetime.fromtimestamp(unix, timezone.utc).replace(tzinfo=None).timestamp()
+                            return float(unix)
                         q += s2
                     return None
                 pos += size

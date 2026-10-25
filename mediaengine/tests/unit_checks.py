@@ -478,6 +478,13 @@ def main():
           ae.shot_time(cam2 / "trip.mp4") == 1_720_000_000.0 and ae.shot_time(cam2 / "trip2.mov") == 1_720_000_000.0
           and ae.shot_time(cam2 / "nodate.mp4") is None and ae.shot_time(cam / "clip.mov") is None,
           (ae.shot_time(cam2 / "trip.mp4"), ae.shot_time(cam2 / "trip2.mov"), ae.shot_time(cam2 / "nodate.mp4")))
+    # a GoPro video: its camera wrote its own clock as if UTC - the same wall-clock time here (00:30 stays on its day)
+    ctg = 1_720_053_000 + 2082844800                  # 2024-07-04 00:30 by the camera's clock
+    gpv = work / "gopro_day" / "GX010044.MP4"; gpv.parent.mkdir(parents=True, exist_ok=True)
+    gpv.write_bytes(box(b"ftyp", b"mp41" + bytes(4) + b"mp41") + box(b"moov", box(b"mvhd", bytes(4) + ctg.to_bytes(4, "big") + ctg.to_bytes(4, "big") + bytes(88))))
+    gpt = ae.shot_time(gpv)
+    check("a GoPro's header time is its own clock (its day stays its day)",
+          gpt is not None and ae.video_day(gpv, gpt) == "2024-07-04" and _tm.strftime("%H:%M", _tm.localtime(gpt)) == "00:30", gpt)
     d2 = {d["day"]: len(d["files"]) for d in ae.videos_by_day(cam2)}
     check("a copied video is grouped by the day it was recorded",
           d2 == {_tm.strftime("%Y-%m-%d", _tm.localtime(1_720_000_000)): 2, _tm.strftime("%Y-%m-%d", _tm.localtime(1_760_000_000)): 1,
