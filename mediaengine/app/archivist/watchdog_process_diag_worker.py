@@ -24,7 +24,7 @@ def main():
                            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                         ("diag:watchdog-process","fixed","diag","Watchdog probe",str(long),long.name,".mp4","video","video/mp4",st.st_size,st.st_mtime,18000,640,360,ts,ts,1))
         iid=int(cur.lastrowid);con.commit()
-    jid=start_convert_job([iid],"hq_1080p",None)
+    jid=start_convert_job([iid],"hq_1080p",None,card_test=False)
     deadline=time.time()+12;pid=0
     while time.time()<deadline:
         with db() as con:row=dict(con.execute("SELECT * FROM jobs WHERE id=?",(jid,)).fetchone())

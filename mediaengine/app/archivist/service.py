@@ -281,7 +281,19 @@ def run_discovery():
     if not DISCOVERY_LOCK.acquire(blocking=False):
         return
     try:
-        init_db(); cfg = load_config(); started = now_iso()
+        init_db(); started = now_iso()
+        # the settings read once, and whether that read was real (a config.json held by an antivirus reads as the
+        # defaults - "no sources" - and must never make every folder's videos vanish from Import)
+        try:
+            from .config import CONFIG_PATH
+            raw_cfg = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+            cfg_read_ok = isinstance(raw_cfg, dict) and isinstance(raw_cfg.get("sources"), list)
+        except Exception:
+            cfg_read_ok = False
+        cfg = load_config()
+        if cfg_read_ok and [s_.get("path") for s_ in cfg.get("sources", [])] != [s_.get("path") for s_ in raw_cfg.get("sources", [])
+                                                                                  if isinstance(s_, dict)]:
+            cfg_read_ok = False            # (the two reads disagree: changed meanwhile - nothing removed this time)
         with STATE.lock:
             STATE.discovery = {"running": True, "message": "Discovering", "found": 0, "current_source": "", "per_source": {}, "errors": 0, "started": started}
         with db() as con:
@@ -383,13 +395,7 @@ def run_discovery():
                         if s_.get("path")]
             # (only rows nothing was done with: never analysed, not removed / rejected, no moment of them kept - a
             # moment in a composition would go with its row)
-            # (only when the settings were really read: a config.json held by an antivirus reads as "no sources")
-            try:
-                from .config import CONFIG_PATH
-                read_ok = isinstance(json.loads(CONFIG_PATH.read_text(encoding="utf-8")).get("sources"), list)
-            except Exception:
-                read_ok = False
-            if read_ok:
+            if cfg_read_ok:
                 clips = con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='virtual_clips'").fetchone()
                 where = ("source_kind='fixed' AND source_id NOT IN (" + ",".join("?" * len(kept_ids))
                          + ") AND staging_path IS NULL AND archive_path IS NULL AND private_path IS NULL AND rejected_path IS NULL "
@@ -400,7 +406,10 @@ def run_discovery():
                     con.execute("DELETE FROM inventory WHERE " + where, kept_ids)
                     con.commit()
                     for gid in gone:       # (a new row may get the same id: never another video's picture)
-                        (THUMBS / f"{gid}.jpg").unlink(missing_ok=True)
+                        try:
+                            (THUMBS / f"{gid}.jpg").unlink(missing_ok=True)
+                        except OSError:
+                            pass
             con.commit()
         with STATE.lock: STATE.discovery.update({"running": False, "message": "Discovery finished", "current_source": "", "finished": now_iso()})
     except Exception as exc:

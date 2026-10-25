@@ -270,7 +270,7 @@ def render_composition(composition_id):
             raise ValueError("Composition is empty")
         ts=now_iso();con.execute("UPDATE compositions SET status='rendering',last_error=NULL,render_started_at=?,render_finished_at=NULL,updated_at=? WHERE id=?",(ts,ts,cid));con.commit()
     total=sum(max(0,int(r["end_ms"])-int(r["start_ms"])) for r in rows)/1000.0
-    out=None;before=comp["output_path"]
+    out=None
     try:      # (everything after 'rendering' inside: any failure is said as itself, not as "interrupted by a restart")
         if len(rows)>MAX_CLIPS or total>MAX_DURATION_S:raise ValueError("Composition exceeds current safe render limits")
         out=_unique_output(cid,aspect)
@@ -306,10 +306,12 @@ def render_composition(composition_id):
     # the video this one replaces goes (it was this composition's previous render, never offered again) - only a file
     # of exactly the name a render gives, never one recorded as published or handed off, never one open in a player;
     # a failure here never touches the new video
-    try:
-        old=Path(before) if before else None
-        if old and old!=out and old.parent.resolve()==EXPORTS.resolve() and _ours(old,cid) and not _recorded(cid):
-            old.unlink()
+    try:      # (also those of before a reorder, which forgot its file: every one of exactly a render's name)
+        if not _recorded(cid):
+            for old in EXPORTS.iterdir():
+                if old!=out and _ours(old,cid):
+                    try:old.unlink()
+                    except OSError:pass
     except Exception:
         pass
     return res

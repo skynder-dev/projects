@@ -1078,7 +1078,7 @@ def main():
         finally:
             _ae2.pick_files, _web.start_convert_job = real_pick_, real_start_
         check("convert: files chosen on this PC go with the page's choices; nothing chosen says so",
-              n1 == {"ok": False, "error": "No videos chosen."} and n2 == {"ok": True, "job_id": 77, "waiting": False} and n3 == {"ok": True, "job_id": 77, "waiting": False}
+              n1 == {"ok": False, "error": "No videos chosen."} and n2 == {"ok": True, "job_id": 77, "waiting": False, "card": False} and n3 == {"ok": True, "job_id": 77, "waiting": False, "card": False}
               and calls_ == [([], "small_720p", 300, ["C:\\Work\\GX020044.MP4", "C:\\Work\\GX010044.MP4"], True, True, 180),
                              ([5, 6], "hq_1080p", None, None, False, False, 0)], (n1, n2, n3, calls_))
         order_ = sorted(["GX040044.MP4", "GX010044.MP4", "GX030044.MP4", "GX020044.MP4"], key=_cv.part_key)
@@ -1259,6 +1259,7 @@ def main():
         _cv.start_gpu_test = lambda folder: (auto_t_.append(str(folder)) or True)
         _cv._queue_runner_start = lambda: None
         try:
+            not_for_ = (_cv._auto_card_test_due("keep_resolution"), _cv._auto_card_test_due("share_1080p", {"frames": 10}))
             at_ = _cv.start_convert_job([], "share_1080p", paths=[str(qf_)])
             with _qdb() as con:
                 at_row_ = dict(con.execute("SELECT status,message FROM jobs WHERE id=?", (at_,)).fetchone())
@@ -1286,8 +1287,8 @@ def main():
         check("convert: a card test that cannot run is kept as tried (never started again by itself before each conversion)",
               failed_saved_.get("use") is False and "could not run" in str(failed_saved_.get("error")), failed_saved_)
         check("convert: the first conversion on an untested NVIDIA PC tests the card first (once), then converts",
-              len(auto_t_) == 1 and at_row_["status"] == "waiting" and "graphics card first" in at_row_["message"] and not again_,
-              (auto_t_, at_row_, again_))
+              len(auto_t_) == 1 and at_row_["status"] == "waiting" and "graphics card first" in at_row_["message"] and not again_
+              and not_for_ == (False, False), (auto_t_, at_row_, again_, not_for_))
         check("convert: an NVIDIA card never tested for converting - the test offered on the page, gone once tested",
               "This PC has an NVIDIA graphics card" in gh1_ and "/auto/check/convert-gpu-test" in gh1_
               and "This PC has an NVIDIA graphics card" not in gh2_)
@@ -1450,7 +1451,9 @@ def main():
     ctitle_ = ae.project(cpid_)["title"]
     check("a camera folder's project is named with the days it was filmed", ctitle_ == "100MEDIA · 2026-10-14 – 2026-10-16", ctitle_)
     wl_ = _aew2._when_label("2026-10-16T18:45:00+00:00")
-    check("projects: when the last version was made, in this PC's time", "2026" in wl_ and ":" in wl_ and _aew2._when_label("x") == "", wl_)
+    check("projects: when the last version was made, in this PC's time (stored local times shown as they are)",
+          "2026" in wl_ and ":" in wl_ and _aew2._when_label("x") == "" and _aew2._when_label("2026-10-16T18:45:00").endswith("18:45"),
+          (wl_, _aew2._when_label("2026-10-16T18:45:00")))
     wn_ = ae.whats_new_items()
     dates_ = {t: d for d, t in ae.WHATS_NEW_ITEMS}
     check("What's new: the newest changes first", wn_ and [dates_[t] for t in wn_] == sorted((dates_[t] for t in wn_), reverse=True))

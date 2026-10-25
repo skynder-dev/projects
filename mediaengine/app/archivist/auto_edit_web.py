@@ -182,13 +182,13 @@ MAX_DAYS = 31                                   # "A reel for every day": at mos
 
 
 def _when_label(iso) -> str:
-    """A stored time (UTC, ISO) as this PC's local day and time: "16 октября 2026, 18:45" / "16 Oct 2026, 18:45"."""
+    """A stored time as this PC's local day and time: "16 октября 2026, 18:45" / "16 Oct 2026, 18:45" (the app stores its
+    own times as local time without a zone; one with a zone is turned into local time)."""
     try:
-        from datetime import datetime, timezone
+        from datetime import datetime
         t = datetime.fromisoformat(str(iso).replace("Z", "+00:00"))
-        if t.tzinfo is None:
-            t = t.replace(tzinfo=timezone.utc)
-        t = t.astimezone()
+        if t.tzinfo is not None:
+            t = t.astimezone()
         return f"{_day_label(t.strftime('%Y-%m-%d'))}, {t:%H:%M}"
     except Exception:
         return ""

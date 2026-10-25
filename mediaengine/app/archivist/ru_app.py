@@ -296,7 +296,8 @@ APP_PHRASES: dict[str, str] = {
     "For videos filmed in the dark: the picture stretched to its full range, a little lighter": "Для видео, снятых в темноте: картинка растянута на весь диапазон и чуть светлее", "Report title (optional)": "Заголовок отчёта (необязательно)", "Take out of the line": "Убрать из очереди", "into one video": "в одно видео",
     "They start one by one, by themselves, when the job before them ends.": "Начнутся сами, по очереди, когда закончится задача перед ними.",
     "Added to the line: it starts when the job before it ends.": "Добавлено в очередь: начнётся, когда закончится задача перед ней.",
-    "Waiting for the job before it": "Ждёт задачу перед собой", "Testing the graphics card first (about two minutes)": "Сначала проверяю видеокарту (около двух минут)", "The graphics card is being tested first (about two minutes, test clips only): then they start, on whichever was faster with the same picture.": "Сначала проверяется видеокарта (около двух минут, только тестовые клипы): потом они начнутся — на том, что быстрее с той же картинкой.", "waiting": "ждёт", "Sound:": "Звук:", "Filmed:": "Снято:", "in the player:": "в плеере:", "the camera's clock": "по часам камеры", "the phone's time": "по времени телефона",
+    "The graphics card is tested first (about two minutes), then it starts.": "Сначала проверяется видеокарта (около двух минут), потом начнётся.",
+    "Waiting for the job before it": "Ждёт задачу перед собой", "Testing the graphics card first (about two minutes)": "Сначала проверяю видеокарту (около двух минут)", "The last test did not finish (press Test again).": "Прошлая проверка не закончилась (нажми проверку ещё раз).", "The graphics card is being tested first (about two minutes, test clips only): then they start, on whichever was faster with the same picture.": "Сначала проверяется видеокарта (около двух минут, только тестовые клипы): потом они начнутся — на том, что быстрее с той же картинкой.", "waiting": "ждёт", "Sound:": "Звук:", "Filmed:": "Снято:", "in the player:": "в плеере:", "the camera's clock": "по часам камеры", "the phone's time": "по времени телефона",
     "the file's date": "по дате файла",
     "date and time (from the file's date)": "дата и время (по дате файла)",
     "When it was filmed, every second, from the camera or phone clock - for reports": "Когда снято, каждую секунду — по часам камеры или телефона, для отчётов",
@@ -791,6 +792,7 @@ APP_PATTERNS: list[tuple[str, str]] = [
 ]
 
 APP_JS: dict[str, str] = {
+    "The graphics card is tested first (about two minutes), then it starts.": "Сначала проверяется видеокарта (около двух минут), потом начнётся.",
     "Quit MediaEngine? Running work stops; you can start it again from the desktop shortcut.":
         "Закрыть MediaEngine? Текущая работа остановится; запустить снова можно с ярлыка.",
     "Work is running.": "Идёт работа.", "A job is running.": "Идёт задача.",

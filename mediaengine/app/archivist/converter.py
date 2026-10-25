@@ -1022,13 +1022,32 @@ _GT = {"running": False, "started": 0.0, "step": "", "result": None}
 _GT_LOCK = threading.Lock()
 
 
-def _auto_card_test_due() -> bool:
-    """An NVIDIA card on this PC, never tested for converting, not turned off (convert.gpu = false), nothing tested now."""
+def _auto_card_test_due(preset: str = "share_1080p", extra: dict | None = None) -> bool:
+    """An NVIDIA card on this PC, never tested for converting, not turned off (convert.gpu = false), for a job the
+    card could make (a smaller copy - not "Original Resolution", not pictures), and nothing else running that would
+    skew the two timings (a reel being made, the PC check's own tests) - the same rules as the test's button."""
     try:
         if gpu_test_saved() or _GT.get("running") or (load_config().get("convert") or {}).get("gpu") is False:
             return False
+        if not (PRESETS.get(preset) or {}).get("cap") or (extra or {}).get("frames"):
+            return False
         from . import hwdecode
-        return any("NVIDIA" in str(n).upper() for n in (hwdecode.saved().get("gpu") or []))
+        if hwdecode.state().get("running"):
+            return False
+        try:
+            from . import auto_edit as _ae
+            if _ae.selftest_state()["running"]:
+                return False
+        except Exception:
+            pass
+        try:
+            from .watchdog import _other_work
+            if _other_work():
+                return False
+        except Exception:
+            pass
+        names = hwdecode.saved().get("gpu") or hwdecode.gpu_names_cached()   # (the decode test may never have run)
+        return any("NVIDIA" in str(n).upper() for n in names)
     except Exception:
         return False
 
@@ -1143,6 +1162,9 @@ def start_gpu_test(folder) -> bool:
             from .config import update_config
             def keep(r):
                 update_config(lambda cfg: cfg.setdefault("convert", {}).__setitem__("gpu_test", r))
+            # a test that never ends (a driver that hangs) or is cut by Quit: tried, so never started again by itself
+            # before every conversion; without a "use" the card is still tried as before the test existed
+            keep({"tested_at": datetime.now().strftime("%Y-%m-%d %H:%M"), "error": "the test did not finish"})
             try:
                 r = run_gpu_test(folder, step=lambda s: _GT.__setitem__("step", s), save=keep)
             except Exception as exc:       # said and kept: a test that cannot run is never started again by itself
@@ -1174,6 +1196,8 @@ def gpu_test_summary(r: dict) -> str:
     if r.get("gpu_s") and r.get("psnr") is not None:
         return (f"Not used: {r.get('gpu_s')} s on the graphics card, {r.get('cpu_s')} s on the processor"
                 + (" - a different picture." if float(r.get("psnr") or 0) < 30 else " - not faster."))
+    if "use" not in r:                     # a test cut short (MediaEngine closed meanwhile): the card is tried as before
+        return "The last test did not finish (press Test again)."
     return "Not used: " + str(r.get("error") or "the graphics card could not convert") + "."
 
 
@@ -2174,7 +2198,7 @@ def _clean_cuts(cuts, ids) -> dict:
 
 
 def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, paths=None, join=False, cuts=None, mute=False,
-                      turn=0, extra=None):
+                      turn=0, extra=None, card_test=True):
     ids = []
     seen = set()
     for x in inventory_ids or []:
@@ -2236,6 +2260,8 @@ def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, 
         n_groups = len(groups)
         ids = [k for k, _, _, _ in items if isinstance(k, int)]
         files = [Path(k[2:]) for k, _, _, _ in items if isinstance(k, str)]
+    # (decided before the write lock: finding the graphics card's name can take PowerShell some seconds)
+    card_due = bool(card_test) and _auto_card_test_due(preset, extra if isinstance(extra, dict) else None)
     with db() as con:
         con.execute("BEGIN IMMEDIATE")     # the "nothing runs" check and the new job as one step (two clicks: one job)
         if ids:
@@ -2254,7 +2280,7 @@ def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, 
         # clips only), then this conversion on whichever was faster with the same picture - it used to stay on the
         # processor until someone found the test on Check this PC
         tested_now = False
-        if not busy and _auto_card_test_due():
+        if not busy and card_due:
             try:
                 from .auto_edit import AE_ROOT
                 tested_now = start_gpu_test(AE_ROOT / "convert_gpu_test")
@@ -2287,8 +2313,8 @@ _QUEUE: dict = {"thread": None}
 
 def dispatch_waiting():
     """The first conversion waiting in line started, when no job runs: its id, else None."""
-    if _EXITING.is_set() or _GT.get("running"):          # (the card test of Check this PC runs: after it)
-        return None
+    if _EXITING.is_set() or (_GT.get("running") and time.time() - float(_GT.get("started") or 0) < 1200):
+        return None                        # (the card test runs: after it - not after one that hangs, 20 minutes)
     with db() as con:                      # (a plain look first: no write lock every 2 s while a job runs)
         if con.execute("SELECT 1 FROM jobs WHERE status IN ('running','queued') LIMIT 1").fetchone() or not con.execute(
                 "SELECT 1 FROM jobs WHERE kind='convert' AND status='waiting' AND cancel_requested=0 LIMIT 1").fetchone():

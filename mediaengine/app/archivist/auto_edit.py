@@ -3395,8 +3395,30 @@ def music_folder() -> str | None:
             return str(last)
     except Exception:
         pass
-    m = Path.home() / "Music"
-    return str(m) if m.is_dir() else None
+    m = _known_music_folder()             # (OneDrive may have moved it: Windows says where it is now)
+    return str(m) if m and m.is_dir() else None
+
+
+def _known_music_folder() -> Path | None:
+    if os.name != "nt":
+        return None
+    try:
+        import ctypes, uuid
+        from ctypes import wintypes
+
+        class GUID(ctypes.Structure):
+            _fields_ = [("Data1", wintypes.DWORD), ("Data2", wintypes.WORD), ("Data3", wintypes.WORD), ("Data4", ctypes.c_ubyte * 8)]
+        u = uuid.UUID("{4BD8D571-6D19-48D3-BE97-422220080E43}")            # FOLDERID_Music
+        g = GUID(u.fields[0], u.fields[1], u.fields[2], (ctypes.c_ubyte * 8).from_buffer_copy(u.bytes[8:]))
+        out = ctypes.c_wchar_p()
+        if ctypes.windll.shell32.SHGetKnownFolderPath(ctypes.byref(g), 0, None, ctypes.byref(out)) != 0:
+            return None
+        try:
+            return Path(out.value) if out.value else None
+        finally:
+            ctypes.windll.ole32.CoTaskMemFree(out)
+    except Exception:
+        return None
 
 
 def remember_music(path) -> None:
