@@ -462,8 +462,9 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
 
     timing={"analyse_s":0.0,"clips_s":0.0,"videos_analysed":0,"workers":1}
     tlock=threading.Lock()
-    # moments of one video cut at once: 2 on a PC with 12+ cores and 16+ GB (MEDENG_CLIP_WORKERS sets it)
-    clip_workers=2 if (os.cpu_count() or 1)>=12 and _total_ram_gb()>=16 else 1
+    # moments of one video cut at once: 2 on a PC with 12+ cores and 32+ GB (MEDENG_CLIP_WORKERS sets it) - each 4K
+    # cut holds about a gigabyte, and several videos are cut at once too
+    clip_workers=2 if (os.cpu_count() or 1)>=12 and _total_ram_gb()>=32 else 1
     try: clip_workers=max(1,int(os.environ.get("MEDENG_CLIP_WORKERS") or clip_workers))
     except ValueError: pass
     timing["clip_workers"]=clip_workers
