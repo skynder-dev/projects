@@ -837,6 +837,18 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   a cancelled phone copy said as cancelled; render plans refuse Private media; order Delete all-or-nothing; Composer
   keeps the clip order while rendering, drops a render whose video turned Private and replaces its earlier MP4; moment
   clips cut 3 -> up to 5 at once on a 16-core PC when only cutting is left (owner's project 4: 90 clips, 15 min, CPU 42 %).
+- 2026-10-25 day: the review fixes above plus a fresh review of them (a hidden Private video's copy moved on Retry
+  and at the next start - the reorder had broken Retry; removed sources drop only untouched rows; hyphens read as
+  spaces in the word check; "no." ends a sentence; rehash after a restart, never cloud-only; a composition's MP4 kept
+  when recorded or handed off); Composer: Remove a moment, take out moments of Private videos, Delete a composition;
+  Check this PC: other versions newest first and "Remove the older versions" (this release line only, the two
+  newest kept, a stable version never); a video's moments cut two at a time on a 12+ core / 32+ GB PC; What's new
+  for b220 and this build; a Convert section in the guide. Run 40189587137 (288a5b9) failed only on the new voice HDR
+  check: its test video had no HLG tags under FFmpeg 7.1 (the frames' own colours are written over -color_trc) -
+  the fixture now sets them on the frames (setparams) and is checked as HLG first. Windows run 40195474129
+  (a51134d): unit 193/193, convert 65/65, Edge 20/20, E2E 88/91/80, AI glue 21/21 (incl. more cuts at once on 16
+  cores), library 10/10, library flow 43/43, orders 52/52, voice 197/197, route fuzz 0, Russian 218 pages 0 English,
+  public repo 0. Published: b223 (commit a51134d), ZIP 4,090,804 bytes, the same runtime - the Update button is enough.
 - Owner PC seen through the app's pages (2026-10-25 morning, read only): b217 installed; 6 projects (100MEDIA);
   16 logical cores, 69 GB RAM, RTX 3060; decoding on the card not used (x0.85); card test for converting not run.
 - Owner PC seen through the app's pages (2026-10-24 evening, read only): he runs b213 (pressed Update); the voice

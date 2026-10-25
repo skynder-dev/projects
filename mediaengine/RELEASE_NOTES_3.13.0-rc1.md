@@ -192,6 +192,13 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   graphics card" made such a clip there with the same picture and faster (an older test result says to test again);
   a GoPro / DJI recording's time is the camera's own clock (Library dates, archive day folders, the days of a big
   folder); the Convert list shows when each video was filmed.
+- b223: fixes after fresh reviews of Voice-over, Auto Edit, Library, Composer and Orders (the voice word check reads
+  20% / twenty percent, e-mail / email, first-class / first class the same; sentences not cut at Mr. / p.m.; Russian
+  letters with English chosen refused in words; HDR phone video in normal colours under captions; a long video's scene
+  scan no longer looks stuck; no half copies left; the archive folder's problems said in words; cloud-only OneDrive
+  files not downloaded for previews; render plans refuse Private media; order Delete all or nothing); Composer:
+  Remove a moment, take out moments of videos made Private, Delete a composition; **Check this PC → Remove the older
+  versions** (the two newest stay); reels from many 4K videos cut their moments more at once on a big PC.
 
 ## Orders from other programs; night review fixes (2026-10-17)
 
