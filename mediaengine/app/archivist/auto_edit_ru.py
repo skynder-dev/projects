@@ -746,6 +746,9 @@ PHRASES = {
     "A reel for every day is made for at most 31 days at once: choose a day below, or put the videos of one trip in a folder of their own.":
         "Ролик на каждый день делается сразу не больше чем для 31 дня: выбери день ниже или положи видео одной поездки в отдельную папку.",
     "Choose a voice.": "Выбери голос.",
+    "This folder already has a project:": "У этой папки уже есть проект:", "and more:": "и ещё:",
+    "Open it to make another length or format as a new version there - everything stays in one place (the videos are not analysed again either way).":
+        "Открой его, чтобы сделать другую длину или формат новой версией там — всё останется в одном месте (видео заново не анализируются в любом случае).",
     "Earlier changes:": "Более ранние изменения:",
     "The disk of the data folder is full. Free some space and press Try again - what was already downloaded is kept.":
         "Диск с папкой данных заполнен. Освободи место и нажми «Повторить» — уже скачанное сохранится.",

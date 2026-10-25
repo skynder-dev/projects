@@ -969,6 +969,22 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
             warn = ("<div class='callout card' style='margin-top:10px'>A lot of video. The first build analyses all of it once and "
                     "can take a long time; later builds and variants reuse that analysis. The PC does not go to sleep while "
                     "MediaEngine works, and you can keep using it.</div>")
+        if not scan["files_chosen"]:     # a folder that has its project already: another version there keeps it in one place
+            try:
+                here_ = os.path.normcase(os.path.abspath(str(scan["folder"])))
+                same_ = [p_ for p_ in ae.list_projects() if not p_.get("files") and p_.get("folder")
+                         and os.path.normcase(os.path.abspath(str(p_["folder"]))) == here_]
+            except Exception:
+                same_ = []
+            if same_:
+                p0_ = same_[0]                 # (the list: the most recently changed first)
+                when0_ = _when_label((p0_["revisions"][-1].get("created_at") if p0_["revisions"] else None) or p0_.get("created_at"))
+                warn += (f"<div class='callout card' style='margin-top:10px'><span>This folder already has a project:</span> "
+                         f"<a href='/auto/p/{int(p0_['id'])}'><b translate='no'>{e(p0_['title'])}</b></a>"
+                         + (f" <span class='muted' translate='no'>({e(when0_)})</span>" if when0_ else "")
+                         + (f" <span class='muted'><span>and more:</span> {len(same_) - 1}</span>" if len(same_) > 1 else "")
+                         + ". <span>Open it to make another length or format as a new version there - everything stays in one "
+                           "place (the videos are not analysed again either way).</span></div>")
         src_hidden = ("".join(f"<input type='hidden' name='file' value='{e(x)}'>" for x in scan["files_chosen"]) if scan["files_chosen"]
                       else f"<input type='hidden' name='folder' value='{e(scan['folder'])}'>")
         where_html = (f"{len(scan['files_chosen'])} chosen video(s) · from <span class='ae-path' translate='no'>{e(scan['folder'])}</span>"
