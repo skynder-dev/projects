@@ -1042,7 +1042,7 @@ def _psnr(ffmpeg, a, b) -> float | None:
     return (99.0 if m.group(1) == "inf" else float(m.group(1))) if m else None
 
 
-def run_gpu_test(folder, step=lambda s: None) -> dict:
+def run_gpu_test(folder, step=lambda s: None, save=None) -> dict:
     folder = Path(folder)
     shutil.rmtree(folder, ignore_errors=True)
     folder.mkdir(parents=True, exist_ok=True)
@@ -1080,17 +1080,30 @@ def run_gpu_test(folder, step=lambda s: None) -> dict:
         res["use"] = bool(res["psnr"] and res["psnr"] >= 30 and res["gpu_s"] < res["cpu_s"])
         if not res["use"]:
             return res
+        if save:                           # (the plain result kept even if the second part never ends)
+            save(dict(res))
         # the More options and a turned picture on the card (decoded and made smaller there, the rest as on the
-        # processor): the same clip turned, at 2x, Brighter, with the date and time - both ways, compared
+        # processor): a full-range clip (as GoPro films), a part of it, turned, at 2x, with a logo and the date and
+        # time - both ways, compared
         try:
-            ex = clean_extra({"speed": 2, "bright": True, "clock": True})
+            step("Making a second test clip")
+            clip2 = folder / "test_4k_hevc_full.mp4"
+            subprocess.run([str(ffmpeg), "-hide_banner", "-nostdin", "-v", "error", "-y", "-f", "lavfi", "-i",
+                            "testsrc2=size=3840x2160:rate=60:d=4", "-f", "lavfi", "-i", "sine=frequency=440:sample_rate=48000:d=4",
+                            "-c:v", "libx265", "-preset", "ultrafast", "-x265-params", "log-level=error:keyint=60", "-tag:v", "hvc1",
+                            "-pix_fmt", "yuvj420p", "-color_range", "pc", "-c:a", "aac", "-shortest", str(clip2)],
+                           check=True, capture_output=True, timeout=900, **process_kwargs())
+            logo = folder / "test_logo.png"
+            from PIL import Image
+            Image.new("RGBA", (300, 100), (255, 0, 255, 255)).save(logo)
+            ex = {**clean_extra({"speed": 2, "clock": True}), "logo": {"path": str(logo), "corner": "bottom-right", "size": 12}}
             step("More options with the processor")
             t2 = time.time()
-            ce = convert_file(clip, "share_1080p", output_dir=folder / "out", prefer="cpu", turn=90, extra=ex)
+            ce = convert_file(clip2, "share_1080p", output_dir=folder / "out", prefer="cpu", turn=90, extra=ex, cut=(0.5, 3.5))
             res["extra_cpu_s"] = round(time.time() - t2, 1)
             step("More options with the graphics card")
             t3 = time.time()
-            ge = convert_file(clip, "share_1080p", output_dir=folder / "out", prefer="gpu", turn=90, extra=ex)
+            ge = convert_file(clip2, "share_1080p", output_dir=folder / "out", prefer="gpu", turn=90, extra=ex, cut=(0.5, 3.5))
             res["extra_gpu_s"] = round(time.time() - t3, 1)
             if ge.get("made_on") != "nvidia":
                 res["extra_error"] = "the graphics card could not do it: " + (_GPU_LAST_ERROR[0] or "?")
@@ -1116,9 +1129,11 @@ def start_gpu_test(folder) -> bool:
 
     def work():
         try:
-            r = run_gpu_test(folder, step=lambda s: _GT.__setitem__("step", s))
             from .config import update_config
-            update_config(lambda cfg: cfg.setdefault("convert", {}).__setitem__("gpu_test", r))
+            def keep(r):
+                update_config(lambda cfg: cfg.setdefault("convert", {}).__setitem__("gpu_test", r))
+            r = run_gpu_test(folder, step=lambda s: _GT.__setitem__("step", s), save=keep)
+            keep(r)
             _GT["result"] = r
         finally:
             with _GT_LOCK:
@@ -1138,6 +1153,8 @@ def gpu_test_summary(r: dict) -> str:
             line += (f" With the More options too: {r.get('extra_gpu_s')} s instead of {r.get('extra_cpu_s')} s.")
         elif "extra_use" in r or r.get("extra_error"):
             line += " The More options stay on the processor."
+        else:                              # (a test from before the More options could go to the card)
+            line += " Test again to use the card for the More options too."
         return line
     if r.get("gpu_s") and r.get("psnr") is not None:
         return (f"Not used: {r.get('gpu_s')} s on the graphics card, {r.get('cpu_s')} s on the processor"
@@ -1159,7 +1176,7 @@ def gpu_plan(sig: dict, preset: str, hdr=None, interlaced=False) -> dict | None:
     if max(w, h) <= cap:
         return None                            # not made smaller: the processor path is as quick
     k = cap / max(w, h)
-    W, H = (cap, int(h * k) // 2 * 2) if w >= h else (int(w * k) // 2 * 2, cap)
+    W, H = (cap, int(round(h * k / 2)) * 2) if w >= h else (int(round(w * k / 2)) * 2, cap)   # (FFmpeg: the nearest even)
     return {"pre": ["-hwaccel", "cuda", "-hwaccel_output_format", "cuda"],
             "vf": f"scale_cuda={W}:{H},hwdownload,format=nv12,scale=in_range=auto:out_range=tv,format=yuv420p",
             # (the More options: decoded and made smaller on the card, the small picture then through the same filters
@@ -1271,7 +1288,7 @@ def _out_size(sig: dict, preset: str, turn: int, vertical: str) -> tuple[int, in
         w, h = h, w
     if cap and max(w, h) > cap:
         k = cap / max(w, h)
-        w, h = int(w * k) // 2 * 2, int(h * k) // 2 * 2
+        w, h = int(round(w * k / 2)) * 2, int(round(h * k / 2)) * 2
     return w, h
 
 

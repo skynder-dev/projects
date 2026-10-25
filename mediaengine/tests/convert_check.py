@@ -394,11 +394,19 @@ def main():
         gb_ = beeps(ff, gx["output"])
         go_ = [min((b - (k + 0.3) / 2 for b in gb_), key=abs) for k in range(6)] if gb_ else []
         gvert = convert_file(sync_big, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"vertical": "crop"}))
+        # (a full-range picture, as GoPro films, a part of it, with the logo: TV levels in the copy, the part's length)
+        fullr = src_dir / "full_range_1440p.mp4"
+        subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=2560x1440:rate=30:d=3", "-c:v", "libx264", "-preset",
+                        "ultrafast", "-pix_fmt", "yuvj420p", "-color_range", "pc", str(fullr)], check=True)
+        gfr = convert_file(fullr, "share_1080p", output_dir=out_dir, cut=(0.5, 2.5), extra=cvx.clean_extra({"speed": 2}))
+        gfr_d = float(_probe(Path(gfr["output"]))["format"]["duration"])      # (its levels: checked below, with tv_of)
     finally:
         cvx.gpu_plan, cvx.gpu_ok, cvx.gpu_extra_ok = real_g
     check("more_options_on_the_card_way", gx.get("made_on") == "nvidia" and (int(gv_["width"]), int(gv_["height"])) == (1080, 1920)
-          and abs(gd_ - 3.0) <= 0.15 and len(go_) == 6 and all(-0.03 <= o <= 0.045 for o in go_) and gvert.get("made_on") == "cpu",
-          (gx.get("made_on"), gv_.get("width"), gv_.get("height"), gd_, [round(o, 3) for o in go_], gvert.get("made_on")))
+          and abs(gd_ - 3.0) <= 0.15 and len(go_) == 6 and all(-0.03 <= o <= 0.045 for o in go_) and gvert.get("made_on") == "cpu"
+          and gfr.get("made_on") == "nvidia" and abs(gfr_d - 1.0) <= 0.15,
+          (gx.get("made_on"), gv_.get("width"), gv_.get("height"), gd_, [round(o, 3) for o in go_], gvert.get("made_on"),
+           gfr.get("made_on"), gfr_d))
     # "Date and time in the corner": the recording's time read as each maker writes it (GoPro / DJI: their clock as
     # written; a phone: UTC shown in this PC's zone; an iPhone: its local time; nothing: the file's date minus the
     # length), shown every second - at 2x the clock runs twice as fast, a cut starts at its start, joined videos each
@@ -624,6 +632,8 @@ def main():
         (slo, shi), (olo, ohi) = levels(sy), levels(oy)
         want = (16 + slo * 219 / 255, 16 + shi * 219 / 255)
         return (not full and abs(olo - want[0]) <= 6 and abs(ohi - want[1]) <= 6 and shi - want[1] > 8), (vline.strip()[:90], slo, shi, olo, ohi)
+    gfr_ok, gfr_lv = tv_of(fullr, 1.5, gfr["output"], 0.5)
+    check("more_options_on_the_card_way_tv_levels", gfr_ok, gfr_lv)
     gparts = sorted(gp.glob("GX*.MP4"), key=lambda q: part_key(q.name))
     t0 = time.time()
     g4 = join_files(gparts, "share_1080p", output_dir=out_dir)

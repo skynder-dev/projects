@@ -1169,7 +1169,7 @@ def main():
               (bad_x_, good_x_, slow_x_, sf_, shx_, l1_, lsaved_, lpng_.status_code, ok_x_, l3_, lgone_))
         gp_ = lambda **k: _cv.gpu_plan({"video": "hevc", "pix": "yuvj420p", "size": "3840x2160", "sar": "1:1", "rotation": 0, **k}, "share_1080p")
         check("convert: the NVIDIA way only for what it does surely (8-bit H.264/HEVC made smaller, upright, square pixels)",
-              gp_()["size"] == (1920, 1080) and gp_(size="2160x3840")["size"] == (1080, 1920) and gp_(size="2704x1520")["size"] == (1920, 1078)
+              gp_()["size"] == (1920, 1080) and gp_(size="2160x3840")["size"] == (1080, 1920) and gp_(size="2704x1520")["size"] == (1920, 1080)
               and "out_range=tv" in gp_()["vf"] and gp_()["codec"][gp_()["codec"].index("-cq") + 1] == "27"
               and gp_(pix="yuv420p10le") is None and gp_(rotation=90) is None and gp_(sar="4:3") is None and gp_(video="prores") is None
               and gp_(size="1920x1080") is None
@@ -1181,7 +1181,8 @@ def main():
         update_config(lambda c: c["convert"].pop("gpu", None))
         check("convert: the NVIDIA way can be turned off (convert.gpu = false)", off_ is False, off_)
         update_config(lambda c: c.setdefault("convert", {}).__setitem__("gpu_test", {"tested_at": "2026-10-24 02:00", "use": True,
-                                                                                    "cpu_s": 12.4, "gpu_s": 3.1, "psnr": 41.2}))
+                                                                                    "cpu_s": 12.4, "gpu_s": 3.1, "psnr": 41.2,
+                                                                                    "extra_use": True, "extra_cpu_s": 9.5, "extra_gpu_s": 4.2}))
         s1_ = _cv.gpu_test_summary(_cv.gpu_test_saved())
         with _ca().test_client() as _c:
             chk_ = _c.get("/auto/check", headers=H_).get_data(as_text=True)
@@ -1189,7 +1190,8 @@ def main():
         s2_, g2_ = _cv.gpu_test_summary(_cv.gpu_test_saved()), _cv.gpu_ok()
         update_config(lambda c: c["convert"].pop("gpu_test", None))
         check("convert: the card test's result is said on Check this PC; a slower card is not used",
-              s1_ == "Used: 3.1 s instead of 12.4 s on the processor (4.0x faster), the same picture." and s1_ in chk_
+              s1_ == "Used: 3.1 s instead of 12.4 s on the processor (4.0x faster), the same picture. With the More options too: 4.2 s instead of 9.5 s."
+              and s1_ in chk_
               and "action='/auto/check/convert-gpu-test'" in chk_ and s2_.endswith("- not faster.") and g2_ is False, (s1_, s2_, g2_))
         try:
             _cv.start_convert_job([], "small_720p", paths=[str(made_)], join=True)

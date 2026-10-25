@@ -1764,7 +1764,7 @@ def _convert_gpu_html(e) -> str:
     if st["running"]:
         return (f"<div class='card' id='cgRun' data-el='{st['elapsed_s']}' style='margin-top:14px'><b>Testing converting on the graphics "
                 f"card…</b> <span id='cgSec'>{int(st['elapsed_s'])}</span> s · <span class='muted' id='cgStep'>{e(st.get('step') or '')}</span>"
-                f"<div class='muted' style='margin-top:4px'>About a minute. You can leave this page.</div></div>")
+                f"<div class='muted' style='margin-top:4px'>About two minutes. You can leave this page.</div></div>")
     r = cv.gpu_test_saved()
     when = f" <span class='muted'>· tested {e(r['tested_at'])}</span>" if r.get("tested_at") else ""
     return (f"<div class='card' style='margin-top:14px'><b>Converting on the graphics card</b>{when}"
