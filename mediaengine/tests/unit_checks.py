@@ -1251,6 +1251,26 @@ def main():
         with _ca().test_client() as _c:
             gh2_ = _c.get("/convert", headers=H_).get_data(as_text=True)
         _uc(lambda c: (c.setdefault("auto_edit", {}).pop("hw_decode", None), c.setdefault("convert", {}).pop("gpu_test", None)))
+        # the first conversion there: the card test starts by itself first, the conversion waits for it
+        _uc(lambda c: (c.setdefault("auto_edit", {}).__setitem__("hw_decode", {"gpu": ["NVIDIA GeForce RTX 3060"]}),
+                       c.setdefault("convert", {}).pop("gpu_test", None)))
+        real_sgt_, real_qrs_ = _cv.start_gpu_test, _cv._queue_runner_start
+        auto_t_ = []
+        _cv.start_gpu_test = lambda folder: (auto_t_.append(str(folder)) or True)
+        _cv._queue_runner_start = lambda: None
+        try:
+            at_ = _cv.start_convert_job([], "share_1080p", paths=[str(qf_)])
+            with _qdb() as con:
+                at_row_ = dict(con.execute("SELECT status,message FROM jobs WHERE id=?", (at_,)).fetchone())
+                con.execute("UPDATE jobs SET status='cancelled',finished_at='2099-01-01T00:00:00+00:00' WHERE id=?", (at_,)); con.commit()
+            _uc(lambda c: c.setdefault("convert", {}).__setitem__("gpu_test", {"tested_at": "2026-10-25 20:00", "use": False}))
+            again_ = _cv._auto_card_test_due()
+        finally:
+            _cv.start_gpu_test, _cv._queue_runner_start = real_sgt_, real_qrs_
+            _uc(lambda c: (c.setdefault("auto_edit", {}).pop("hw_decode", None), c.setdefault("convert", {}).pop("gpu_test", None)))
+        check("convert: the first conversion on an untested NVIDIA PC tests the card first (once), then converts",
+              len(auto_t_) == 1 and at_row_["status"] == "waiting" and "graphics card first" in at_row_["message"] and not again_,
+              (auto_t_, at_row_, again_))
         check("convert: an NVIDIA card never tested for converting - the test offered on the page, gone once tested",
               "This PC has an NVIDIA graphics card" in gh1_ and "/auto/check/convert-gpu-test" in gh1_
               and "This PC has an NVIDIA graphics card" not in gh2_)

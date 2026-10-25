@@ -1434,12 +1434,12 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
         # an NVIDIA card that was never tested for converting: the one-minute test offered here (then used by itself)
         gpu_hint=''
         try:
-            from .converter import gpu_test_saved
+            from .converter import gpu_test_saved, gpu_test_state
             from . import hwdecode as _hwd
-            if not gpu_test_saved() and any('NVIDIA' in str(n).upper() for n in (_hwd.saved().get('gpu') or [])):
+            if not gpu_test_saved() and not gpu_test_state().get('running') and any('NVIDIA' in str(n).upper() for n in (_hwd.saved().get('gpu') or [])):
                 gpu_hint=("<div class='card' style='margin-top:10px'><b>This PC has an NVIDIA graphics card</b>"
-                          "<div class='small muted' style='white-space:normal'>A one-minute test shows whether converting on it is faster with the same picture; "
-                          "after that, Convert uses it by itself. Your videos are not used.</div>"
+                          "<div class='small muted' style='white-space:normal'>A two-minute test shows whether converting on it is faster with the same picture; "
+                          "after that, Convert uses it by itself (the first conversion runs the test by itself). Your videos are not used.</div>"
                           "<form method='post' action='/auto/check/convert-gpu-test' style='margin:6px 0 0'><button class='btn2'>Test converting on the graphics card</button></form></div>")
         except Exception:
             gpu_hint=''

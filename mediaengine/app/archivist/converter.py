@@ -1022,6 +1022,17 @@ _GT = {"running": False, "started": 0.0, "step": "", "result": None}
 _GT_LOCK = threading.Lock()
 
 
+def _auto_card_test_due() -> bool:
+    """An NVIDIA card on this PC, never tested for converting, not turned off (convert.gpu = false), nothing tested now."""
+    try:
+        if gpu_test_saved() or _GT.get("running") or (load_config().get("convert") or {}).get("gpu") is False:
+            return False
+        from . import hwdecode
+        return any("NVIDIA" in str(n).upper() for n in (hwdecode.saved().get("gpu") or []))
+    except Exception:
+        return False
+
+
 def gpu_test_saved() -> dict:
     try:
         return dict((load_config().get("convert") or {}).get("gpu_test") or {})
@@ -2235,11 +2246,23 @@ def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, 
         # something runs (or conversions wait already): this one waits in line and starts by itself after them
         busy = con.execute("SELECT id,kind FROM jobs WHERE status IN ('running','queued') OR (kind='convert' AND status='waiting' "
                            "AND cancel_requested=0) ORDER BY id LIMIT 1").fetchone() or (True if _GT.get("running") else None)
+        # the first conversion on a PC with an NVIDIA card never tested: the card test first (about two minutes, test
+        # clips only), then this conversion on whichever was faster with the same picture - it used to stay on the
+        # processor until someone found the test on Check this PC
+        tested_now = False
+        if not busy and _auto_card_test_due():
+            try:
+                from .auto_edit import AE_ROOT
+                tested_now = start_gpu_test(AE_ROOT / "convert_gpu_test")
+            except Exception:
+                tested_now = False
+            busy = True if tested_now else busy
         n = len(ids) + len(files)
         cur = con.execute(
             "INSERT INTO jobs(kind,status,created_at,started_at,stage,message,total,done,success,failed,bytes_total,bytes_done,options_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
             ("convert", "waiting" if busy else "running", _now(), None if busy else _now(), "waiting" if busy else "starting",
-             "Waiting for the job before it" if busy else "Starting converter…", n_groups if join else n, 0, 0, 0, 0, 0,
+             ("Testing the graphics card first (about two minutes)" if tested_now else "Waiting for the job before it")
+             if busy else "Starting converter…", n_groups if join else n, 0, 0, 0, 0, 0,
              _options(preset, target_mb, ids, [str(f) for f in files], join, set(), [], output_folder(), cuts, bool(mute), turn, extra))
         )
         job_id = int(cur.lastrowid)
