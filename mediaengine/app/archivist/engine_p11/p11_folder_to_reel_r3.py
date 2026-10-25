@@ -523,21 +523,30 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
     # videos analysed before (a report in the cache) or too short to try go first and take seconds; the time left is
     # measured on the new ones only: their average time x how many are left / how many run at once (a mix of 12 known
     # and 6 new 4K videos once said "less than a minute" for 10 minutes of work)
-    def known(row):
-        try:
-            if 0<float(row.get("duration_s") or 0)<2.0: return True
-        except (TypeError,ValueError): pass
+    def report_of(row):
         n=row["sha256"]+".json"
         for f in ((reports_dir/n),)+(((legacy_reports/n),) if shared is not None else ()):
-            try:          # valid as one() takes it (a stale report means analysing again: not quick) and its moment
-                obj=json.loads(f.read_text())        # clips made (cutting them from 4K is not quick either)
+            try:          # valid as one() takes it (a stale report means analysing again: not quick)
+                obj=json.loads(f.read_text())
                 if obj.get("source_sha256")==row["sha256"] and obj.get("hook_sha256")==SEMANTIC_HOOK_SHA and obj.get("model_sha256")==MODEL_SHA:
-                    return all((candidates_dir/(candidate_eid(row["sha256"],c)+".mp4")).is_file()
-                               for c in (obj.get("report") or {}).get("ranked",[]))
+                    return obj
             except Exception:
                 pass
-        return False
+        return None
+    def short(row):
+        try: return 0<float(row.get("duration_s") or 0)<2.0
+        except (TypeError,ValueError): return False
+    def known(row):
+        if short(row): return True
+        obj=report_of(row)          # analysed before, and its moment clips made (cutting them from 4K is not quick either)
+        return obj is not None and all((candidates_dir/(candidate_eid(row["sha256"],c)+".mp4")).is_file()
+                                       for c in (obj.get("report") or {}).get("ranked",[]))
     flags=[known(r) for r in input_rows]
+    # every video analysed before - only moment clips to cut (FFmpeg alone: light on memory, and one cut keeps few
+    # cores busy - the owner's 16-core PC was 42 % busy with 3 at once, 90 clips in 15 minutes): more cuts at once
+    if "MEDENG_SEMANTIC_WORKERS" not in os.environ and all(short(r) or report_of(r) is not None for r in input_rows):
+        workers=max(workers,min(6,(os.cpu_count() or 2)//3,int(_total_ram_gb()//4) or 1,len(input_rows)))
+        timing["workers"]=workers
     order=[i for i in range(len(input_rows)) if flags[i]]+[i for i in range(len(input_rows)) if not flags[i]]
     n_known=sum(flags); new_total=len(input_rows)-n_known; durs=[]
     def eta(k):

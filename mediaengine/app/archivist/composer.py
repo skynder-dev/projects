@@ -111,6 +111,26 @@ def _center_plan(width,height,aspect):
         w=target/src;return {"x":(1-w)/2,"y":0.0,"w":w,"h":1.0}
     h=src/target;return {"x":0.0,"y":(1-h)/2,"w":1.0,"h":h}
 
+class _Done:
+    def __init__(self,returncode,stdout,stderr):self.returncode,self.stdout,self.stderr=returncode,stdout,stderr
+
+def _run(cmd,timeout):
+    """FFmpeg for a render, tied to the app on Windows (a Quit or a crash never leaves it writing into Exports)."""
+    flags,si=_flags()
+    proc=subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding="utf-8",errors="replace",
+                          creationflags=flags,startupinfo=si,close_fds=True)
+    try:
+        from .auto_edit import _attach_job_object
+        _attach_job_object(proc)
+    except Exception:
+        pass
+    try:
+        out,err=proc.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        proc.kill();out,err=proc.communicate()
+        raise RuntimeError("FFmpeg took too long and was stopped")
+    return _Done(proc.returncode,out,err)
+
 def _has_audio(source):
     exe=_ffmpeg_exe()
     if not exe:return False
@@ -135,8 +155,7 @@ def _render_segment(source,start_s,end_s,out,plan,aspect):
               "-map","0:v:0","-map","1:a:0","-vf",vf,"-ac","2","-ar","48000"]
     cmd+=["-c:v","libx264","-preset","veryfast","-crf","22","-pix_fmt","yuv420p","-c:a","aac","-b:a","128k",
           "-t",f"{dur:.3f}","-movflags","+faststart",str(out)]
-    rr=subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding="utf-8",errors="replace",
-      timeout=max(90,int(dur*8)+60),creationflags=flags,startupinfo=si,close_fds=True)
+    rr=_run(cmd,max(90,int(dur*8)+60))
     if rr.returncode!=0 or not out.exists() or out.stat().st_size<1024:raise RuntimeError("segment render failed: "+(rr.stderr or "").strip()[-400:])
 
 def _concat_segments(parts,out):
@@ -146,8 +165,7 @@ def _concat_segments(parts,out):
     flags,si=_flags();lst=Path(parts[0]).parent/"concat.txt";tmp=out.with_name(out.stem+f".{os.getpid()}.part.mp4")
     lst.write_text("".join("file '"+Path(p).resolve().as_posix().replace("'","'\\''")+"'\n" for p in parts),encoding="utf-8")
     try:
-        rr=subprocess.run([str(exe),"-y","-hide_banner","-loglevel","error","-f","concat","-safe","0","-i",str(lst),"-c","copy","-movflags","+faststart",str(tmp)],
-          stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding="utf-8",errors="replace",timeout=120,creationflags=flags,startupinfo=si,close_fds=True)
+        rr=_run([str(exe),"-y","-hide_banner","-loglevel","error","-f","concat","-safe","0","-i",str(lst),"-c","copy","-movflags","+faststart",str(tmp)],120)
         if rr.returncode!=0 or not tmp.exists() or tmp.stat().st_size<1024:raise RuntimeError("composition concat failed: "+(rr.stderr or "").strip()[-400:])
         os.replace(tmp,out)
     finally:
