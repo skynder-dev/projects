@@ -464,7 +464,10 @@ def _reel_spec(order: dict, base: Path) -> dict:
     text = order.get("text") or {}
     if not isinstance(text, dict):
         raise OrderError("ORDER_FIELD_INVALID", 'text must be an object: {"title": ..., "subtitle": ...}')
-    raw["title"], raw["subtitle"] = _text(text.get("title"), "text.title", 200), _text(text.get("subtitle"), "text.subtitle", 200)
+    raw["title"], raw["subtitle"] = _text(text.get("title"), "text.title", 800), _text(text.get("subtitle"), "text.subtitle", 800)
+    for k in ("title", "subtitle"):      # the reel's own limit (a longer one is refused here, not after it was taken)
+        if len(raw[k]) > 80:
+            raise OrderError("ORDER_FIELD_INVALID", f"text.{k} can be at most 80 characters long")
     spec = {"folder": None, "files": None, "library_theme": ""}
     if keys[0] == "folder":
         spec["folder"] = _own_path(base, v["folder"], "videos.folder")

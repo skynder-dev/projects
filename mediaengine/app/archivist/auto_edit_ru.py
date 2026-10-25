@@ -736,6 +736,9 @@ PHRASES = {
     "Type the text of the voice-over first.": "Сначала напиши текст озвучки.",
     "The text is too long for one voice-over (at most 5000 characters): split it into parts.":
         "Текст слишком длинный для одной озвучки (не больше 5000 знаков): раздели его на части.",
+    "This folder has videos of many days:": "В этой папке видео за много дней:",
+    "A reel for every day is made for at most 31 days at once: choose a day below, or put the videos of one trip in a folder of their own.":
+        "Ролик на каждый день делается сразу не больше чем для 31 дня: выбери день ниже или положи видео одной поездки в отдельную папку.",
     "Choose a voice.": "Выбери голос.",
     "The text is written in other letters than the chosen language: choose the language of the text, or \"Detect by itself\".":
         "Текст написан другими буквами, чем у выбранного языка: выбери язык текста или «Определить автоматически».",

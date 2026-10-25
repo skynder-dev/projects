@@ -3087,7 +3087,9 @@ def tidy_shared_cache(private_hashes=(), max_clip_bytes=None, min_free_bytes=10 
 
 
 WORK_CACHE_MAX = 60 * 1024 ** 3          # the full-quality pieces and finished segments of all projects together
-WORK_CACHE_DIRS = ("full_quality", "segment_cache_v2", "in")      # in: stand-ins the analysis made (copies from another drive)
+# in: stand-ins the analysis made (copies from another drive); manual_trims: the moments cut again after Edit (cut
+# again from the source when that reel is built again)
+WORK_CACHE_DIRS = ("full_quality", "segment_cache_v2", "in", "manual_trims")
 
 
 def tidy_work_caches(keep_pid: int | None = None, max_bytes: int | None = None, min_free_bytes: int = 10 * 1024 ** 3) -> int:
@@ -3102,10 +3104,19 @@ def tidy_work_caches(keep_pid: int | None = None, max_bytes: int | None = None, 
                  if x["state"] == "PROCESSING" or (prepared_job(x) and not x.get("archived"))}
     except Exception:
         return 0
-    files = []
+    files, freed_tmp = [], 0
     for pd in AE_ROOT.glob("p*"):
         if not pd.is_dir() or not pd.name[1:].isdigit() or int(pd.name[1:]) in keep:
             continue
+        fin = pd / "work" / "final_v2"           # the last build's temporary files (a reel cut off half-way: a full
+        if fin.is_dir():                         # reel's size left there, never used again)
+            try:
+                gone = sum(x.stat().st_size for x in fin.rglob("*") if x.is_file())
+                shutil.rmtree(fin, ignore_errors=True)
+                if not fin.exists():
+                    freed_tmp += gone
+            except OSError:
+                pass
         for sub in WORK_CACHE_DIRS:
             for f in (pd / "work" / sub).glob("*.mp4" if sub != "in" else "v_*"):
                 if f.suffix.lower() in (".sha256", ".part"):
@@ -3132,7 +3143,7 @@ def tidy_work_caches(keep_pid: int | None = None, max_bytes: int | None = None, 
             except OSError:
                 pass
         freed += size
-    return freed
+    return freed + freed_tmp
 
 
 # A Free (or a project deleted for good) and a build starting at that moment (an order, Retry in another tab): the
@@ -3155,8 +3166,9 @@ def _move_aside(path: Path) -> Path | None:
 
 
 def sweep_deleting() -> None:
-    """Folders left half-deleted by a Free when the app was closed meanwhile (at start, before any build)."""
-    for d in [*AE_ROOT.glob("shared.deleting-*"), *AE_ROOT.glob("p*/work.deleting-*")]:
+    """Folders left half-deleted by a Free (or a project deleted for good) when the app was closed meanwhile (at
+    start, before any build)."""
+    for d in [*AE_ROOT.glob("shared.deleting-*"), *AE_ROOT.glob("p*/work.deleting-*"), *AE_ROOT.glob("p*.deleting")]:
         shutil.rmtree(d, ignore_errors=True)
 
 

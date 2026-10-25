@@ -178,11 +178,19 @@ def _day_label(day: str) -> str:
         return day
 
 
+MAX_DAYS = 31                                   # "A reel for every day": at most this many reels at once
+
+
 def _every_day_form(folder: Path, days: list, e) -> str:
     """A trip or a holiday: one reel for each day at once (built one after another)."""
     usable = [d for d in days if 1 <= len(d["files"]) <= ae.MAX_INPUTS]
     if len(usable) < 2:
         return ""
+    if len(usable) > MAX_DAYS:                  # more than one press makes (the button would only be refused)
+        return (f"<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>A reel for every day</h2>"
+                f"<div class='muted'><span>This folder has videos of many days:</span> {len(usable)}. "
+                f"<span>A reel for every day is made for at most 31 days at once: choose a day below, or put the videos "
+                f"of one trip in a folder of their own.</span></div></div>")
     last = ae.last_new_settings()
     fmt0 = last.get("format", "social_hd")
     lengths = "".join(f"<label><input type='radio' name='length' value='{L}' {'checked' if L == 30 else ''}> {L} s</label>" for L in ae.LENGTHS)
@@ -986,7 +994,7 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
                     days.append({**d, "paths": files})
             if not days:
                 raise ValueError("No day with videos to use.")
-            if len(days) > 31:
+            if len(days) > MAX_DAYS:
                 raise ValueError("More than 31 days: choose the days one by one.")
             for d in days:                  # every day checked before anything is made (no half-made set of projects)
                 ae.check_files(d["paths"])
@@ -1213,8 +1221,11 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
                 # needs other moments: they are chosen again (removed ones stay out) - a hand-made selection would
                 # silently keep the old length.
                 same_len = not bs or str(settings["length"]) == str(bs.get("length"))
-                same_mode = not bs or (settings["mode"] == bs.get("mode")    # AI, AI+ and each theme have their own moments
-                                       and (settings.get("theme") or "") == (bs.get("theme") or ""))
+                # (a theme counts with AI+ only - as the build reads it: a theme left in the form of another mode
+                # must not throw away the hand-made choices)
+                theme_of = lambda x: (x.get("theme") or "") if x.get("mode") == "semantic_plus" else ""
+                same_mode = not bs or (settings["mode"] == (bs.get("mode") or "semantic")  # AI, AI+ and each theme
+                                       and theme_of(settings) == theme_of(bs))              # have their own moments
                 keep = (("exclude", "selection", "trims") if same_len else ("exclude",)) if same_mode else ()
                 settings.update({k: bs[k] for k in keep if bs.get(k)})
             before = {j["id"] for j in ae.project(pid)["jobs"]}

@@ -1295,6 +1295,34 @@ def main():
               page2_[page2_.find("convertStatus") - 40:][:300])
     finally:
         _ae2.open_path = real_open_
+
+    # Auto Edit: no button that would be refused (more than 31 days); a cut-off build's leftovers and a project deleted
+    # half-way are cleared; an order's title as long as a reel takes
+    import html as _html
+    from archivist import auto_edit_web as _aew, orders as _od
+    many_ = [{"day": f"2026-07-{i % 28 + 1:02d}", "files": [{"path": f"C:/v/{i}.mp4", "bytes": 1}]} for i in range(32)]
+    form_ = _aew._every_day_form(work / "trip", many_, _html.escape)
+    check("Auto Edit: more than 31 days - said, no 'Make 32 reels' button that would be refused",
+          "at most 31 days at once" in form_ and "/auto/create-days" not in form_, form_[:300])
+    pw_ = ae.AE_ROOT / "p999999" / "work"
+    for sub_ in ("final_v2/abc_render/blocks", "manual_trims"):
+        (pw_ / sub_).mkdir(parents=True, exist_ok=True)
+    (pw_ / "final_v2" / "abc.mp4").write_bytes(b"x" * 1000)
+    (pw_ / "final_v2" / "abc_render" / "blocks" / "b1.mp4").write_bytes(b"x" * 1000)
+    (pw_ / "manual_trims" / "t1.mp4").write_bytes(b"x" * 1000)
+    freed_ = ae.tidy_work_caches(max_bytes=0)
+    check("Auto Edit: the work tidy clears a cut-off build's final_v2 and old manual trims (not building)",
+          not (pw_ / "final_v2").exists() and not (pw_ / "manual_trims" / "t1.mp4").exists() and freed_ >= 3000, freed_)
+    half_ = ae.AE_ROOT / "p999998.deleting"
+    (half_ / "work").mkdir(parents=True, exist_ok=True)
+    ae.sweep_deleting()
+    check("Auto Edit: a project deleted half-way (the app closed meanwhile) is swept at the next start", not half_.exists())
+    try:
+        _od._reel_spec({"videos": {"folder": "videos"}, "text": {"title": "x" * 81}}, work)
+        long_ = "taken"
+    except _od.OrderError as exc_:
+        long_ = str(exc_)
+    check("orders: a title longer than a reel takes (80) is refused when the order is read", "at most 80" in long_, long_)
     print({"passed": sum(checks), "total": len(checks)})
     return 0 if all(checks) else 1
 
