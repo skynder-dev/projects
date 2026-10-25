@@ -91,6 +91,10 @@ def move_item(composition_id,position,direction):
     ensure_schema();pos=int(position);other=pos+(-1 if str(direction)=="up" else 1)
     if other<1:return
     with db() as con:
+        con.execute("BEGIN IMMEDIATE")
+        st=con.execute("SELECT status FROM compositions WHERE id=?",(int(composition_id),)).fetchone()
+        if st and st["status"] in ("queued","rendering"):     # the video being made keeps the order it started with
+            con.rollback();raise ValueError("Wait until the video of this composition is made, then change the order.")
         a=con.execute("SELECT clip_id FROM composition_items WHERE composition_id=? AND position=?",(int(composition_id),pos)).fetchone()
         b=con.execute("SELECT clip_id FROM composition_items WHERE composition_id=? AND position=?",(int(composition_id),other)).fetchone()
         if not a or not b:return
@@ -133,7 +137,7 @@ def _render_segment(source,start_s,end_s,out,plan,aspect):
           "-t",f"{dur:.3f}","-movflags","+faststart",str(out)]
     rr=subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding="utf-8",errors="replace",
       timeout=max(90,int(dur*8)+60),creationflags=flags,startupinfo=si,close_fds=True)
-    if rr.returncode!=0 or not out.exists() or out.stat().st_size<1024:raise RuntimeError(("segment render failed: "+(rr.stderr or ""))[-700:])
+    if rr.returncode!=0 or not out.exists() or out.stat().st_size<1024:raise RuntimeError("segment render failed: "+(rr.stderr or "").strip()[-400:])
 
 def _concat_segments(parts,out):
     exe=_ffmpeg_exe()
@@ -144,7 +148,7 @@ def _concat_segments(parts,out):
     try:
         rr=subprocess.run([str(exe),"-y","-hide_banner","-loglevel","error","-f","concat","-safe","0","-i",str(lst),"-c","copy","-movflags","+faststart",str(tmp)],
           stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding="utf-8",errors="replace",timeout=120,creationflags=flags,startupinfo=si,close_fds=True)
-        if rr.returncode!=0 or not tmp.exists() or tmp.stat().st_size<1024:raise RuntimeError(("composition concat failed: "+(rr.stderr or ""))[-700:])
+        if rr.returncode!=0 or not tmp.exists() or tmp.stat().st_size<1024:raise RuntimeError("composition concat failed: "+(rr.stderr or "").strip()[-400:])
         os.replace(tmp,out)
     finally:
         tmp.unlink(missing_ok=True)
@@ -174,10 +178,12 @@ def render_composition(composition_id):
         if not rows:raise ValueError("Composition is empty")
         ts=now_iso();con.execute("UPDATE compositions SET status='rendering',last_error=NULL,render_started_at=?,render_finished_at=NULL,updated_at=? WHERE id=?",(ts,ts,cid));con.commit()
     total=sum(max(0,int(r["end_ms"])-int(r["start_ms"])) for r in rows)/1000.0
-    if len(rows)>MAX_CLIPS or total>MAX_DURATION_S:raise ValueError("Composition exceeds current safe render limits")
-    out=_unique_output(cid,aspect)
-    try:
-        with tempfile.TemporaryDirectory(prefix="archivist_composer_") as td:
+    out=None;before=comp["output_path"]
+    try:      # (everything after 'rendering' inside: any failure is said as itself, not as "interrupted by a restart")
+        if len(rows)>MAX_CLIPS or total>MAX_DURATION_S:raise ValueError("Composition exceeds current safe render limits")
+        out=_unique_output(cid,aspect)
+        # (a part file held by an antivirus at the end does not throw the finished video away)
+        with tempfile.TemporaryDirectory(prefix="archivist_composer_",ignore_cleanup_errors=True) as td:
             tdir=Path(td);parts=[]
             for idx,r in enumerate(rows):
                 if int(r["excluded"] or 0) or r["private_path"] or r["rejected_path"] or str(r["analysis_status"] or "")=="private" \
@@ -188,13 +194,26 @@ def render_composition(composition_id):
                 plan={"x":r["x"],"y":r["y"],"w":r["w"],"h":r["h"]} if r["x"] is not None else _center_plan(r["width"],r["height"],aspect)
                 part=tdir/f"{idx:03d}.mp4";_render_segment(src,float(r["start_ms"])/1000,float(r["end_ms"])/1000,part,plan,aspect);parts.append(part)
             _concat_segments(parts,out)
+        ids=[int(r["clip_id"]) for r in rows]
+        with db() as con:      # a video made Private (or removed) while this was made: its picture is not kept
+            q=",".join("?" for _ in ids)
+            still=con.execute(f"SELECT COUNT(*) FROM virtual_clips vc JOIN inventory i ON i.id=vc.inventory_id WHERE vc.id IN ({q}) AND {VISIBLE_SQL}",ids).fetchone()[0]
+        if int(still)!=len(set(ids)):
+            raise ValueError("A video of this composition was made Private or removed while it was being made: the new video was not kept.")
         ts=now_iso()
         with db() as con:
             con.execute("UPDATE compositions SET status='finished',output_path=?,output_bytes=?,last_error=NULL,render_finished_at=?,updated_at=? WHERE id=?",
                         (str(out),int(out.stat().st_size),ts,ts,cid));con.commit()
+        try:      # the earlier video of this composition goes (it was never offered again; open in a player: stays)
+            old=Path(before) if before else None
+            if old and old!=out and old.parent.resolve()==EXPORTS.resolve() and old.name.startswith(f"composition_{cid}_"):
+                old.unlink(missing_ok=True)
+        except OSError:
+            pass
         return {"composition_id":cid,"output":str(out),"output_bytes":int(out.stat().st_size),"clips":len(rows),"duration_s":total,"aspect":aspect,"audio":True}
     except Exception as exc:
-        out.unlink(missing_ok=True);ts=now_iso()
+        if out is not None:out.unlink(missing_ok=True)
+        ts=now_iso()
         with db() as con:
             con.execute("UPDATE compositions SET status='failed',last_error=?,render_finished_at=?,updated_at=? WHERE id=?",(str(exc)[:500],ts,ts,cid));con.commit()
         raise

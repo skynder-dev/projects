@@ -415,6 +415,48 @@ def main():
         check("id_with_two_dots_done_and_deleted", st == "done" and r.status_code == 302 and not (orders.done_dir() / "v1..2").exists(),
               (st, r.status_code))
 
+        # 10d. a plan never uses a Private video or picture of the Library (nor a copy of it)
+        from archivist.db import db as _odb
+        with _odb() as con:
+            prow = con.execute("INSERT INTO inventory(source_key,source_id,source_label,source_kind,path,filename,media_type,"
+                               "size_bytes,sha256,analysis_status,excluded,discovered_at,last_seen_at) VALUES('priv-a','t','t',"
+                               "'fixed',?,?,'image',1,?,'private',1,'t','t')", (str(src / "a.png"), "a.png", sha(src / "a.png"))).lastrowid
+            con.commit()
+        put("plan-priv", PLAN, PLAN_FILES)
+        st, res = answer("plan-priv", 300)
+        with _odb() as con:
+            con.execute("DELETE FROM inventory WHERE id=?", (prow,)); con.commit()
+        check("plan_with_a_private_picture_refused", st == "failed" and res["error"]["code"] == "PLAN_PRIVATE_MEDIA"
+              and not (orders.done_dir() / "plan-priv").exists(), res.get("error"))
+
+        # 10e. a folder order with more videos than a reel takes: said before any video is opened
+        many = home / "many videos"
+        many.mkdir(exist_ok=True)
+        for k in range(ae.MAX_INPUTS + 1):
+            (many / f"v{k:03d}.mp4").write_bytes(b"\0" * 16)
+        put("too-many", {"schema": orders.SCHEMA, "kind": "reel_from_videos", "videos": {"folder": str(many)}, "length": 5,
+                         "mode": "technical"}, single=True)
+        st, res = answer("too-many", 300)
+        check("folder_order_with_too_many_videos_refused_in_order_words", st == "failed"
+              and res["error"]["code"] == "VIDEOS_NOT_USABLE" and "videos.files" in res["error"]["message"], res.get("error"))
+
+        # 10f. Delete is all or nothing: a folder that cannot be moved (a video open in a player) - nothing deleted
+        real_replace = os.replace
+        def _held(a_, b_):
+            if Path(a_).parent == orders.done_dir() and ".deleting." in str(b_):
+                raise PermissionError(13, "The process cannot access the file because it is being used by another process")
+            return real_replace(a_, b_)
+        put("del-held", PLAN, PLAN_FILES)
+        st_h, _ = answer("del-held", 300)
+        os.replace = _held
+        try:
+            r = c.post("/auto/orders/del-held/delete", headers=H)
+        finally:
+            os.replace = real_replace
+        check("delete_with_a_file_held_deletes_nothing_and_says_why", st_h == "done" and r.status_code == 400
+              and "close it and try again" in r.get_data(as_text=True) and (orders.done_dir() / "del-held" / "result.json").is_file()
+              and (orders.received_dir() / "del-held" / "order.json").is_file(), (st_h, r.status_code))
+
         # 11. pages, API, Delete
         page = c.get("/auto/orders", headers=H).data.decode("utf-8", "replace")
         check("page_lists_ready_and_failed", "plan-1" in page and "bad-gap" in page and "/auto/orders/plan-1/open" in page)

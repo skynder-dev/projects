@@ -501,6 +501,7 @@ PHRASES = {
     "Working on it": "Делаю", "Waiting for its turn": "Ждёт очереди", "Open project": "Открыть проект",
     "Run": "Выполнить", "Reject": "Отклонить", "Waiting for your OK": "Ждёт твоего OK", "Starts in a moment": "Сейчас начнётся",
     "Still arriving (order.json is not there yet)": "Ещё приходит (файла заказа пока нет)",
+    "Still arriving (its files are still being written)": "Ещё приходит (его файлы ещё записываются)",
     "Try again": "Повторить", "Run again": "Выполнить снова", "video ready": "видео готово",
     "The order could not be done.": "Заказ не удалось выполнить.",
     "The order file is not valid JSON.": "Файл заказа — не правильный JSON.",
@@ -530,6 +531,8 @@ PHRASES = {
     "This order was started several times and never finished (MediaEngine was closed each time).":
         "Этот заказ запускался несколько раз и ни разу не закончился (MediaEngine каждый раз закрывали).",
     "A picture of the plan is too big.": "Картинка из плана слишком большая.",
+    "A file of this order is open (in a player?): close it and try again.": "Файл этого заказа открыт (в плеере?): закрой его и попробуй снова.",
+    "The plan uses a video or picture marked Private: it is never used.": "В плане есть приватное видео или фото: приватное никогда не используется.",
     # found by the QA review (2026-10-17): messages that stayed English
     "The source folder is not available (disconnected drive?)": "Папка с исходными видео недоступна (диск отключён?)",
     "The source videos are not available (disconnected drive?)": "Исходные видео недоступны (диск отключён?)",

@@ -7,6 +7,10 @@ APP_JS: quoted UI messages inside page scripts (only full quoted literals that a
 from __future__ import annotations
 
 APP_PHRASES: dict[str, str] = {
+    "Moments of videos that are now Private or no longer in the Library are not shown, and this composition cannot be made into a video any more:":
+        "Моменты видео, которые теперь приватные или убраны из библиотеки, не показаны, и из этой композиции больше нельзя сделать видео:",
+    "A video of this composition was made Private or removed while it was being made: the new video was not kept.":
+        "Одно из видео этой композиции сделали приватным или убрали, пока она делалась: новое видео не сохранено.",
     "Best clip": "Лучший клип", "← Video": "← Видео", "Selected files are no longer in the catalog": "Выбранных файлов больше нет в каталоге",
     "No match yet. Try a property such as vertical, high motion, dark, drone, long, Android, audio, safe, or best. Object/people vision search comes in the next semantic layer.":
         "Пока ничего не найдено. Попробуй свойство: вертикальное, много движения, тёмное, дрон, длинное, Android, звук, безопасное или лучшее. Поиск людей и предметов по картинке появится позже.",
@@ -381,7 +385,7 @@ APP_PHRASES: dict[str, str] = {
     "Select existing Virtual Clips, choose one target aspect and build a local composition. Renders run locally in the background with normalized stereo audio; silent clips receive silence so every segment concatenates reliably. Originals stay untouched.":
         "Выбери клипы и формат кадра — получится монтаж. Сборка идёт на компьютере в фоне, звук выравнивается; оригиналы не меняются.",
     "Composition title": "Название", "Create composition": "Создать монтаж", "Recent compositions": "Последние монтажи",
-    "Up to 20 clips / 180 seconds": "До 20 клипов / 180 секунд", "draft": "черновик", "Composition": "Монтаж",
+    "Up to 20 clips / 180 seconds": "До 20 клипов / 180 секунд", "Open latest MP4": "Открыть последний MP4", "draft": "черновик", "Composition": "Монтаж",
     "Render composition": "Собрать монтаж", "Render MP4": "Собрать MP4",
     "Local MP4 rendered in the background. Every segment is normalized to the target aspect and stereo AAC; silent clips receive a silent track. Existing Smart Crop plans are used when available.":
         "MP4 собирается на компьютере в фоне. Каждый кусок приводится к нужному кадру и звуку; используется готовое кадрирование.",
@@ -692,7 +696,11 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"(\d+) virtual clips\. Use Open clip to play only that interval and preview its Smart Crop\.", r"Виртуальных клипов: \1. «Открыть клип» играет только этот отрезок."),
     (r"(\d+) preview frames", r"кадров превью: \1"),
     (r"(16:9|9:16|1:1|4:5) · not rendered", r"\1 · не собран"), (r"(16:9|9:16|1:1|4:5) · (\d+) clips · draft", r"\1 · клипов: \2 · черновик"),
-    (r"(16:9|9:16|1:1|4:5) · (\d+) clips · rendered", r"\1 · клипов: \2 · собран"), (r"(16:9|9:16|1:1|4:5) · (\d+) clips · (\w+)", r"\1 · клипов: \2 · \3"),
+    (r"(16:9|9:16|1:1|4:5) · (\d+) clips · rendered", r"\1 · клипов: \2 · собран"), (r"(16:9|9:16|1:1|4:5) · (\d+) clips · failed", r"\1 · клипов: \2 · ошибка"),
+    (r"(16:9|9:16|1:1|4:5) · (\d+) clips · finished", r"\1 · клипов: \2 · готово"),
+    (r"(16:9|9:16|1:1|4:5) · (\d+) clips · queued", r"\1 · клипов: \2 · в очереди"),
+    (r"(16:9|9:16|1:1|4:5) · (\d+) clips · rendering", r"\1 · клипов: \2 · собираю"),
+    (r"(16:9|9:16|1:1|4:5) · (\d+) clips · (\w+)", r"\1 · клипов: \2 · \3"),
     (r"variants · (\d+) result rows", r"вариантов · строк результатов: \1"),
     (r"(draft|planned|published) · duration (.+) · order (.+)", r"⟦\1⟧ · длительность \2 · порядок \3"), (r"(\d+) results?", r"результатов: \1"),
     (r"Hook: (.*) · Caption: (.*) · Cover: (.*)", r"Начало: \1 · Подпись: \2 · Обложка: \3"),

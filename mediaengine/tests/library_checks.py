@@ -60,6 +60,49 @@ def main():
     check("composition_keeps_its_clip", used["id"] in ids and detail and len(detail.get("items", [])) == 1, detail and detail.get("items"))
     check("hand_made_crop_kept", cropped["id"] in ids and mb.trajectories_for_clip(cropped["id"]))
     check("no_duplicate_moments", len(spans) == len(set(spans)), spans)
+
+    # Composer: a new render replaces the earlier MP4 (no pile in Exports); the order is kept while a render runs; a
+    # video made Private during a render - the new MP4 is not kept
+    two = composer.create_composition([after[0]["id"], after[1]["id"]], "9:16", "two moments")
+    r1 = composer.render_composition(two)
+    r2 = composer.render_composition(two)
+    check("composer_second_render_replaces_the_first", Path(r2["output"]).is_file() and not Path(r1["output"]).exists()
+          and r1["output"] != r2["output"], (r1["output"], r2["output"]))
+    with db() as con:
+        con.execute("UPDATE compositions SET status='rendering' WHERE id=?", (two,)); con.commit()
+    composer._ACTIVE.add(int(two))          # (as start_render marks a render running in this process)
+    try:
+        composer.move_item(two, 1, "down"); moved = "moved"
+    except ValueError as exc:
+        moved = str(exc)
+    finally:
+        composer._ACTIVE.discard(int(two))
+    order_now = [x["id"] for x in composer.composition_detail(two)["items"]]
+    with db() as con:
+        con.execute("UPDATE compositions SET status='finished' WHERE id=?", (two,)); con.commit()
+    check("composer_order_kept_while_rendering", "Wait until" in moved and order_now == [after[0]["id"], after[1]["id"]], (moved, order_now))
+    with db() as con:
+        was_status = con.execute("SELECT analysis_status FROM inventory WHERE id=1").fetchone()[0]
+    real_concat = composer._concat_segments
+
+    def concat_then_private(parts_, out_):
+        real_concat(parts_, out_)
+        with db() as con:
+            con.execute("UPDATE inventory SET analysis_status='private' WHERE id=1"); con.commit()
+    composer._concat_segments = concat_then_private
+    try:
+        try:
+            composer.render_composition(two); late = "kept"
+        except ValueError as exc:
+            late = str(exc)
+    finally:
+        composer._concat_segments = real_concat
+        with db() as con:
+            st_ = con.execute("SELECT status,output_path FROM compositions WHERE id=?", (two,)).fetchone()
+            con.execute("UPDATE inventory SET analysis_status=? WHERE id=1", (was_status,)); con.commit()
+    left = sorted(x.name for x in composer.EXPORTS.glob(f"composition_{two}_*.mp4"))
+    check("composer_private_during_render_not_kept", "made Private" in late and st_["status"] == "failed"
+          and left == [Path(r2["output"]).name], (late, dict(st_), left))
     print({"passed": sum(checks), "total": len(checks)})
     return 0 if all(checks) else 1
 

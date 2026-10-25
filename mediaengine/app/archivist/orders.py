@@ -169,10 +169,14 @@ def _newest_mtime(p: Path, limit: int = 3000) -> float:
                 n += 1
                 if n > limit:
                     return t
+                f = os.path.join(dirpath, name)
                 try:
-                    t = max(t, os.stat(os.path.join(dirpath, name)).st_mtime)
+                    t = max(t, os.stat(f).st_mtime)
                 except OSError:
-                    return time.time()     # a file vanished or is locked: still being written
+                    try:                   # a link to nothing: its own time (it is not being written)
+                        t = max(t, os.lstat(f).st_mtime)
+                    except OSError:
+                        return time.time()     # a file vanished or is locked: still being written
     return t
 
 
@@ -448,6 +452,21 @@ def _plan_spec(order: dict, base: Path) -> dict:
         info = _decode_info(apath, timeout=300, fmt=afmt) if afmt in AUDIO_FORMATS else {"ok": False}
         if not info["ok"] or not _first(info, "audio") or info["seconds"] <= 0:
             raise OrderError("PLAN_AUDIO_UNREADABLE", f"plan.audio: {audio} is not a sound file that can be read")
+    # a Private video of the Library (or a copy of it - same content) is never put in a plan's video: reel orders
+    # leave such videos out by their SHA-256, a plan's own files are checked the same way
+    private = set(ae._private_hashes())
+    if private:
+        from .media import sha256_file
+        named = [(r["n"], r.get("still") or r.get("video")) for r in out] + ([("audio", apath)] if apath else [])
+        seen: dict = {}
+        for n, f in named:
+            k = str(f)
+            if k not in seen:
+                seen[k] = sha256_file(f).lower()
+            if seen[k] in private:
+                where = "plan.audio" if n == "audio" else f"clip {n}"
+                raise OrderError("PLAN_PRIVATE_MEDIA", f"{where}: {Path(f).name} is a video or picture marked Private in the "
+                                                       "Library - Private media is never used")
     return {"width": w, "height": h, "fps": fps, "clips": out, "audio": apath, "audio_fmt": afmt, "frames": prev_frame,
             "total_s": round(prev_frame / fps, 3)}
 
@@ -494,6 +513,9 @@ def _reel_spec(order: dict, base: Path) -> dict:
             paths = [Path(x) for x in (spec["files"] or ae.list_videos(spec["folder"]))]
         except OSError:
             paths = []
+        if spec["folder"] and len(paths) > ae.MAX_INPUTS:     # said before any video is opened, in the order's words
+            raise OrderError("VIDEOS_NOT_USABLE", f"videos.folder has {len(paths)} videos; a reel takes at most "
+                                                  f"{ae.MAX_INPUTS} - name up to {ae.MAX_INPUTS} of them in videos.files")
         keep, left_out = [], []
         for vp in paths:
             if not vp.is_file():
@@ -533,6 +555,15 @@ def _reel_spec(order: dict, base: Path) -> dict:
 
 # ---------------------------------------------------------------- the inbox
 
+def _is_link(p: Path) -> bool:
+    """A symbolic link or a Windows junction (mklink /J needs no admin rights)."""
+    try:
+        st = os.lstat(p)
+    except OSError:
+        return False
+    return os.path.islink(p) or bool(getattr(st, "st_file_attributes", 0) & 0x400)     # REPARSE_POINT
+
+
 def inbox() -> list[dict]:
     """Orders waiting in Inbox, oldest first: {id, path, ready, waiting_for} (ready = order.json there and settled)."""
     ensure_dirs()
@@ -546,6 +577,8 @@ def inbox() -> list[dict]:
         if name.startswith((".", "~", "_")) or name.lower().endswith(_IGNORED_SUFFIX):
             continue
         try:
+            if _is_link(p):        # a junction / link: its "inside" would be another folder (never followed)
+                continue
             if p.is_dir():
                 oid, oj = name, p / "order.json"
             elif p.is_file() and p.suffix.lower() == ".json":
@@ -579,10 +612,10 @@ def _take(entry: dict, tries: int = 4) -> tuple[str, Path | None]:
     if not valid_id(oid):
         return _refuse_unreceived(src, _safe_id(oid), "ORDER_ID_INVALID",
                                   "The order id (folder or file name) may only have letters, digits, spaces, . - _ ( ) "
-                                  "and at most 80 characters")
+                                  "and at most 80 characters", tries)
     if any((d / oid).exists() for d in (received_dir(), done_dir(), failed_dir())):
         return _refuse_unreceived(src, oid, "ORDER_ID_ALREADY_USED",
-                                  f"An order with the id {oid!r} was already received. Every order needs a new id.")
+                                  f"An order with the id {oid!r} was already received. Every order needs a new id.", tries)
     dst = received_dir() / oid
     if src.is_dir():
         _move(src, dst, tries)
@@ -590,18 +623,34 @@ def _take(entry: dict, tries: int = 4) -> tuple[str, Path | None]:
         tmp = received_dir() / f".{oid}.taking"
         shutil.rmtree(tmp, ignore_errors=True)
         tmp.mkdir(parents=True)
-        _move(src, tmp / "order.json", tries)
-        _move(tmp, dst)
+        try:
+            _move(src, tmp / "order.json", tries)
+        except OSError:
+            shutil.rmtree(tmp, ignore_errors=True)
+            raise
+        try:
+            _move(tmp, dst)
+        except OSError:           # never an order gone from the Inbox without an answer: its file goes back
+            try:
+                os.replace(tmp / "order.json", src)
+            except OSError:
+                pass
+            shutil.rmtree(tmp, ignore_errors=True)
+            raise
     _reset_state(dst, {"received_at": now_iso()})       # MediaEngine's own notes, never anything the order brought
     return oid, dst
 
 
-def _refuse_unreceived(src: Path, name: str, code: str, message: str) -> tuple[str, None]:
+def _refuse_unreceived(src: Path, name: str, code: str, message: str, tries: int = 40) -> tuple[str, None]:
     final = _unique(failed_dir(), name)
     part = failed_dir() / f".{final.name}.partial"
     shutil.rmtree(part, ignore_errors=True)
     part.mkdir(parents=True)
-    _move(src, part / ("order" if src.is_dir() else "order.json"))
+    try:
+        _move(src, part / ("order" if src.is_dir() else "order.json"), tries)
+    except OSError:              # a file of it still open: tried again later, no empty hidden folder left behind
+        shutil.rmtree(part, ignore_errors=True)
+        raise
     order = None
     try:
         oj = part / "order" / "order.json" if (part / "order").is_dir() else part / "order.json"
@@ -684,7 +733,7 @@ def _process(oid: str) -> str:
         _CURRENT["stop"] = threading.Event()
         _CURRENT.update(id=oid, proc=None, done=0, total=0, step="")
     order, order_sha, spec = {}, "", None
-    for old in rdir.glob(".work*"):      # an earlier attempt's pieces (a crash, a stop)
+    for old in rdir.glob(".work-*"):     # an earlier attempt's pieces (a crash, a stop)
         shutil.rmtree(old, ignore_errors=True)
     work = rdir / f".work-{int(time.time() * 1000)}"     # a new folder each attempt: nothing left over can mix in
     try:
@@ -1095,6 +1144,7 @@ def start() -> None:
         if t is not None and t.is_alive():
             return
         _STOP_ALL.clear()
+        _sweep_hidden()
         t = threading.Thread(target=_loop, name="orders-watcher", daemon=True)
         _WATCHER["thread"] = t
         t.start()
@@ -1184,18 +1234,47 @@ def delete(oid: str) -> bool:
             return False
         if oid in unfinished() and not stuck(oid):
             return False
-        gone = False
+        # every folder of the order first renamed aside (one step each; a file open in a player makes it fail, and
+        # then nothing is deleted - not half an answer left, nor an order without its order.json done again)
+        moved: list = []
         for d in (received_dir(), done_dir(), failed_dir()):
             p = d / oid
             if p.is_dir() and p.resolve().parent == d.resolve():
-                shutil.rmtree(p, ignore_errors=True)
-                gone = True
-        if gone:
+                aside = p.with_name(f".{oid}.deleting.{time.time_ns()}")
+                try:
+                    os.replace(p, aside)
+                    moved.append((p, aside))
+                except OSError:
+                    for orig, a_ in reversed(moved):
+                        try:
+                            os.replace(a_, orig)
+                        except OSError:
+                            pass
+                    raise OrderBusy("A file of this order is open (in a player?): close it and try again.")
+        if moved:
             try:
                 _state_file(received_dir() / oid).unlink(missing_ok=True)
             except OSError:
                 pass
-        return gone
+            for _, a_ in moved:
+                shutil.rmtree(a_, ignore_errors=True)    # (what cannot go now: swept at the next start)
+        return bool(moved)
+
+
+class OrderBusy(Exception):
+    """An owner's button that cannot be done right now (said in words on the page)."""
+
+
+def _sweep_hidden() -> None:
+    """Answer folders taken back or orders deleted while a file was held (an antivirus, a player): their hidden
+    leftovers go at the next start."""
+    for d in (received_dir(), done_dir(), failed_dir()):
+        try:
+            for x in d.glob(".*"):
+                if x.is_dir() and (".deleting." in x.name or ".retired." in x.name):
+                    shutil.rmtree(x, ignore_errors=True)
+        except OSError:
+            pass
 
 
 def overview(limit: int = 100) -> dict:

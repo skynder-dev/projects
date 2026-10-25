@@ -40,6 +40,7 @@ ERROR_TEXT = {
     "INTERNAL_ERROR": "MediaEngine had an internal error with this order.",
     "INTERRUPTED": "This order was started several times and never finished (MediaEngine was closed each time).",
     "PLAN_IMAGE_TOO_BIG": "A picture of the plan is too big.",
+    "PLAN_PRIVATE_MEDIA": "The plan uses a video or picture marked Private: it is never used.",
 }
 
 
@@ -117,7 +118,8 @@ def register(app, page, err_page, e, error_html):
                     line = ("Waiting for your OK" if not ov["auto_run"] else
                             "Waiting for its turn" if busy_now else "Starts in a moment")
                 else:
-                    line = "Still arriving (order.json is not there yet)"
+                    line = ("Still arriving (order.json is not there yet)" if it.get("waiting_for") == "order.json" else
+                            "Still arriving (its files are still being written)")
                 cards["new"].append(f"<div class='card'>{head(it)}<div class='muted' style='margin-top:6px'>{line}</div>"
                                     f"<div class='row' style='margin-top:8px;gap:6px'>{acts}</div></div>")
             elif st in ("failed", "stuck"):
@@ -225,8 +227,11 @@ def register(app, page, err_page, e, error_html):
         elif action == "stop":
             orders.stop(oid)
         elif action == "delete":
-            if not orders.delete(oid):
-                return err_page("This order cannot be deleted now.", "/auto/orders")
+            try:
+                if not orders.delete(oid):
+                    return err_page("This order cannot be deleted now.", "/auto/orders")
+            except orders.OrderBusy as exc:
+                return err_page(str(exc), "/auto/orders")
         elif action == "open":
             v = orders.result_video(oid)
             if not v or not ae.open_path(v):

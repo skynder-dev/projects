@@ -151,6 +151,7 @@ is left out (`videos_left_out`), as in a reel made in the app; a playlist or man
 | `PLAN_TIMES_INVALID` / `PLAN_TOO_LONG` / `PLAN_TOO_MANY_CLIPS` | the plan's times do not fit / > 10 min / > 300 clips |
 | `PLAN_IMAGE_UNREADABLE` / `PLAN_VIDEO_UNREADABLE` / `PLAN_AUDIO_UNREADABLE` | a file of the plan cannot be read (or is not a plain media file) |
 | `PLAN_IMAGE_TOO_BIG` | a picture has more than 50 megapixels |
+| `PLAN_PRIVATE_MEDIA` | a file of the plan is (a copy of) media marked Private in the Library: never used |
 | `VIDEOS_NOT_USABLE` / `NO_VIDEOS` / `AIPLUS_NOT_READY` | the videos of a reel order cannot be used |
 | `REEL_NOT_STARTED` / `REEL_FAILED` | the reel could not be started / built (the message says why) |
 | `RENDER_FAILED` / `OUTPUT_CHECK_FAILED` / `OUTPUT_COPY_FAILED` | the video could not be made / failed its checks / copied |
