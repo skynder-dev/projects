@@ -746,6 +746,7 @@ PHRASES = {
     "A reel for every day is made for at most 31 days at once: choose a day below, or put the videos of one trip in a folder of their own.":
         "Ролик на каждый день делается сразу не больше чем для 31 дня: выбери день ниже или положи видео одной поездки в отдельную папку.",
     "Choose a voice.": "Выбери голос.",
+    "Earlier changes:": "Более ранние изменения:",
     "The disk of the data folder is full. Free some space and press Try again - what was already downloaded is kept.":
         "Диск с папкой данных заполнен. Освободи место и нажми «Повторить» — уже скачанное сохранится.",
     "The text is written in other letters than the chosen language: choose the language of the text, or \"Detect by itself\".":

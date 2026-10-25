@@ -395,10 +395,14 @@ def register(app, layout, e, human_bytes):
                                  f"href='/auto/new?folder={urllib.parse.quote(f_)}' translate='no'>{e(Path(f_).name or f_)}</a>" for f_ in recent)
                        + "</div>") if recent else ""
         # what changed in this version, once (only for someone who already used MediaEngine)
-        whats_new = "" if (ae.whats_new_seen() or not ae.selftest_passed()) else (
+        wn = [] if (ae.whats_new_seen() or not ae.selftest_passed()) else ae.whats_new_items()
+        whats_new = "" if not wn else (      # the 8 newest; the rest folded away
             "<div class='card callout' style='margin-bottom:14px'><div class='row space'><b>New in this version</b>"
             "<form method='post' action='/auto/whats-new/seen' style='margin:0'><button class='btn2'>OK</button></form></div>"
-            "<ul style='margin:6px 0 0'>" + "".join(f"<li>{e(x)}</li>" for x in ae.whats_new_items()) + "</ul></div>")
+            "<ul style='margin:6px 0 0'>" + "".join(f"<li>{e(x)}</li>" for x in wn[:8]) + "</ul>"
+            + (f"<details style='margin-top:6px'><summary><span>Earlier changes:</span> {len(wn) - 8}</summary><ul style='margin:6px 0 0'>"
+               + "".join(f"<li>{e(x)}</li>" for x in wn[8:]) + "</ul></details>" if len(wn) > 8 else "")
+            + "</div>")
         first = "" if ae.selftest_passed() else (
             "<div class='card callout' style='margin-bottom:14px'><b>First time on this PC?</b> "
             "<span class='muted'>Check this PC first: it shows whether the AI model and video tools are found and builds a 5-second test reel "

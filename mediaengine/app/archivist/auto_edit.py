@@ -2560,7 +2560,8 @@ def whats_new_items() -> list[str]:
         seen = str((load_config().get("auto_edit") or {}).get("whats_new_seen") or "")
     except Exception:
         seen = ""
-    return [t for d, t in WHATS_NEW_ITEMS if d > seen]
+    # the newest first (the list grew in no order of dates; two weeks of changes once came oldest first)
+    return [t for d, t in sorted(((d, t) for d, t in WHATS_NEW_ITEMS if d > seen), key=lambda x: x[0], reverse=True)]
 
 
 def whats_new_seen() -> bool:

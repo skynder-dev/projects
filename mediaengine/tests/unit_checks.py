@@ -1402,6 +1402,9 @@ def main():
     finally:
         _ae2.open_path = real_open_
 
+    wn_ = ae.whats_new_items()
+    dates_ = {t: d for d, t in ae.WHATS_NEW_ITEMS}
+    check("What's new: the newest changes first", wn_ and [dates_[t] for t in wn_] == sorted((dates_[t] for t in wn_), reverse=True))
     mus_ = work / "Моя музыка"; mus_.mkdir(exist_ok=True); (mus_ / "song.mp3").write_bytes(b"x")
     ae.remember_music(mus_ / "song.mp3")
     check("music: the next music window opens in the folder of the music chosen last", ae.music_folder() == str(mus_), ae.music_folder())
