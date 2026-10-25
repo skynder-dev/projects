@@ -79,8 +79,8 @@ nothing is written to cards or source folders.
 - **Pictures every 5/10/30/60 seconds** - pictures and one PDF for a report (with your own title).
 - Conversions run one at a time: the next waits in line ("Take out of the line"). When ready: "Show in folder", "Open
   video", "Copy file" (Ctrl+V pastes it into a messenger or a folder), "Earlier conversions".
-- **NVIDIA graphics card**: "Check this PC → Test converting on the graphics card" (about a minute, your videos are
-  not used). The card is used only if it is faster with the same picture; after this test also for the More options
+- **NVIDIA graphics card**: "Check this PC → Test converting on the graphics card" (about two minutes, your videos are
+  not used; the first conversion runs it by itself). The card is used only if it is faster with the same picture; after this test also for the More options
   and turned videos.
 
 ## Orders from other programs
