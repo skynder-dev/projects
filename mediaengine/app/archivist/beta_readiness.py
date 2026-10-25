@@ -32,8 +32,9 @@ def _inline(text: str) -> str:
 
 
 def guide_html(text: str) -> str:
-    """The guide's small Markdown (## headings, numbered steps, paragraphs, **bold**, `code`) as readable HTML."""
-    out, para, items = [], [], []
+    """The guide's small Markdown (## headings, numbered steps, - bullets, paragraphs, **bold**, `code`) as readable
+    HTML."""
+    out, para, items, bullets = [], [], [], []
 
     def flush():
         if para:
@@ -42,6 +43,9 @@ def guide_html(text: str) -> str:
         if items:
             out.append("<ol>" + "".join("<li>" + _inline(" ".join(i)) + "</li>" for i in items) + "</ol>")
             items.clear()
+        if bullets:
+            out.append("<ul>" + "".join("<li>" + _inline(" ".join(i)) + "</li>" for i in bullets) + "</ul>")
+            bullets.clear()
     for raw in text.splitlines():
         line = raw.strip()
         if not line:
@@ -52,13 +56,17 @@ def guide_html(text: str) -> str:
             flush()
             out.append("<h2>" + _e(line[3:]) + "</h2>")
         elif line[:1].isdigit() and ". " in line[:4]:
-            if para:
+            if para or bullets:
                 flush()
             items.append([line.split(". ", 1)[1]])
-        elif items and raw[:1] in (" ", "\t"):   # continuation of a step
-            items[-1].append(line)
+        elif line.startswith("- "):
+            if para or items:
+                flush()
+            bullets.append([line[2:]])
+        elif (items or bullets) and raw[:1] in (" ", "\t"):   # continuation of a step / a bullet
+            (items or bullets)[-1].append(line)
         else:
-            if items:
+            if items or bullets:
                 flush()
             para.append(line)
     flush()

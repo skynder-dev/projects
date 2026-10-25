@@ -64,6 +64,25 @@ for the first 3 seconds, and your own song under the reel (with the videos' quie
 cuts fall on the beat of the music ("Cuts on the beat of the music"; a song without a clear beat leaves the cuts as
 they were). Changing them later makes a new version quickly.
 
+## Converting videos
+
+**Media → Convert** (or "Convert" on videos chosen in the Library, or "Choose videos on this PC"). The copies go into
+the "Converted" folder in MediaEngine's data folder (or a folder you choose - "Change…"); your videos are only read,
+nothing is written to cards or source folders.
+
+- **Preset**: Share 1080p (messengers and sharing), Small 720p, High Quality 1080p or Original Resolution (the same
+  size). All H.264 + AAC - plays everywhere. "Fit under … MB" picks the quality for a size (for a messenger, say).
+- **Join into one video**: the parts of one GoPro recording in their order; several recordings - one video each.
+- **Cut…**: start and end to the frame; "Save this picture" - a JPG; "Turn the picture"; "Without sound".
+- **More**: faster 2/4/8x or slow motion ½x / ¼x, vertical 9:16, your logo in a corner, less wind, even out the sound,
+  the date and time of filming in a corner (by the camera's or the phone's clock), brighter.
+- **Pictures every 5/10/30/60 seconds** - pictures and one PDF for a report (with your own title).
+- Conversions run one at a time: the next waits in line ("Take out of the line"). When ready: "Show in folder", "Open
+  video", "Copy file" (Ctrl+V pastes it into a messenger or a folder), "Earlier conversions".
+- **NVIDIA graphics card**: "Check this PC → Test converting on the graphics card" (about a minute, your videos are
+  not used). The card is used only if it is faster with the same picture; after this test also for the More options
+  and turned videos.
+
 ## Orders from other programs
 
 Another program on this PC can order a video (**Auto Edit → Orders**). It puts a folder with `order.json` into

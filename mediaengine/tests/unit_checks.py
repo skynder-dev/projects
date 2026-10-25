@@ -966,10 +966,10 @@ def main():
     check("Library: a file replaced in its folder gets the hash of its new content", nsha_ == _hl2.sha256(b"new content").hexdigest(), nsha_)
     with _db() as con:
         gone_id_ = con.execute("INSERT INTO inventory(source_key,source_id,source_label,source_kind,path,filename,media_type,size_bytes,"
-                               "discovered_at,last_seen_at) VALUES('gone-key',?,'old','fixed',?,'x.mp4','video',5,?,?)",
+                               "discovered_at,last_seen_at) VALUES('gone-key',?,'Старая папка','fixed',?,'x.mp4','video',5,?,?)",
                                (str(work / "removed source"), str(work / "removed source" / "x.mp4"), _now(), _now())).lastrowid
         keep_id_ = con.execute("INSERT INTO inventory(source_key,source_id,source_label,source_kind,path,filename,media_type,size_bytes,"
-                               "work_selected,discovered_at,last_seen_at) VALUES('keep-key',?,'old','fixed',?,'y.mp4','video',5,1,?,?)",
+                               "work_selected,discovered_at,last_seen_at) VALUES('keep-key',?,'Старая папка','fixed',?,'y.mp4','video',5,1,?,?)",
                                (str(work / "removed source"), str(work / "removed source" / "y.mp4"), _now(), _now())).lastrowid
         con.commit()
     _sv.run_discovery()
