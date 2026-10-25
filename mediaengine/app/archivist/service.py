@@ -1519,6 +1519,15 @@ def _mark_private_one(inv_id: int) -> str:
         pass
     sha = (sha256_file(local) if (local and changed) else None) or old_sha
     private_path = row.get("private_path")
+    # hidden at once, before its copy is moved: a move that fails (the file in use by a player or a reel, a full disk)
+    # must never leave a Private video visible to the Library and reels (the move is tried again on Retry)
+    with db() as con:
+        con.execute("INSERT OR REPLACE INTO ignored_source_keys(source_key,reason,created_at) VALUES(?,?,?)", (row["source_key"], "private_forever", now_iso()))
+        for h in {x for x in (sha, old_sha) if x}:
+            con.execute("INSERT OR REPLACE INTO ignored_hashes(sha256,reason,created_at) VALUES(?,?,?)", (h, "private_forever", now_iso()))
+        con.execute("UPDATE inventory SET analysis_status='private',privacy_reason='private_forever',sha256=COALESCE(?,sha256),"
+                    "import_status='private',excluded=1,error=NULL WHERE id=?", (sha, inv_id))
+        con.commit()
     # Never move the user's original (phone, card, fixed folder). Only a copy Archivist owns
     # (an existing file inside Staging or the archive root) may move into the private area.
     owned = _owned_copy(row)
@@ -1526,15 +1535,12 @@ def _mark_private_one(inv_id: int) -> str:
         dest = _private_dest(row, owned, sha or "unknown")
         _verified_move(owned, dest, sha)
         private_path = str(dest)
-    with db() as con:
-        con.execute("INSERT OR REPLACE INTO ignored_source_keys(source_key,reason,created_at) VALUES(?,?,?)", (row["source_key"], "private_forever", now_iso()))
-        for h in {x for x in (sha, old_sha) if x}:
-            con.execute("INSERT OR REPLACE INTO ignored_hashes(sha256,reason,created_at) VALUES(?,?,?)", (h, "private_forever", now_iso()))
-        con.execute(
-            "UPDATE inventory SET analysis_status='private',privacy_reason='private_forever',sha256=COALESCE(?,sha256),private_path=COALESCE(?,private_path),staging_path=CASE WHEN ? IS NOT NULL THEN NULL ELSE staging_path END,archive_path=CASE WHEN ? IS NOT NULL THEN NULL ELSE archive_path END,import_status='private',excluded=1,error=NULL WHERE id=?",
-            (sha, private_path, private_path, private_path, inv_id),
-        )
-        con.commit()
+        with db() as con:
+            con.execute(
+                "UPDATE inventory SET private_path=?,staging_path=CASE WHEN staging_path IS NOT NULL THEN NULL ELSE staging_path END,"
+                "archive_path=CASE WHEN archive_path IS NOT NULL THEN NULL ELSE archive_path END WHERE id=?",
+                (private_path, inv_id))
+            con.commit()
     return "private"
 
 

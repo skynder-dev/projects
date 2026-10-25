@@ -524,6 +524,8 @@ def _run_worker(job: dict, work: Path, timeout: float = 3600, on_line=None, trac
                     msg = json.loads(line)
                 except ValueError:
                     continue
+                if not isinstance(msg, dict):      # (a library printing a number or a list: not one of ours)
+                    continue
                 if "result" in msg:
                     res = msg["result"] or {}
                 elif on_line:
@@ -554,6 +556,27 @@ def pace(speed: str = "", pauses: str = "") -> tuple[str, str]:
     return (speed if speed in SPEEDS else "normal"), (pauses if pauses in PAUSES else "normal")
 
 
+_ABBR = {"mr", "mrs", "ms", "dr", "st", "vs", "etc", "no", "jr", "sr", "prof", "mt", "ft", "approx", "e.g", "i.e", "a.m",
+         "p.m", "u.s", "u.k", "inc", "ltd", "co", "fig", "vol", "ca", "cf", "т.е", "т.д", "т.п", "г", "ул", "др", "им"}
+
+
+def _sentences(para: str) -> list[str]:
+    """A paragraph cut into its sentences: after . ! ? … and a space, but not after "Mr." / "e.g." / "a.m." / an
+    initial ("J. Smith"), and not before a small letter or a digit (the sentence goes on)."""
+    out, start = [], 0
+    for m in re.finditer(r"(?<=[.!?…])\s+", para):
+        before, after = para[start:m.start()], para[m.end():]
+        word = re.search(r"([\w.]+)\.$", before)
+        if word and (word.group(1).lower() in _ABBR or re.fullmatch(r"\w", word.group(1))):
+            continue                                   # "Mr. Smith", "e.g. this", "J. Smith"
+        if after[:1].islower() or after[:1].isdigit():
+            continue                                   # "...at 5 p.m. tomorrow", "No. 5"
+        out.append(para[start:m.start()].strip())
+        start = m.end()
+    out.append(para[start:].strip())
+    return [x for x in out if x]
+
+
 def chunks(text: str, limit: int = 220) -> list[dict]:
     """The text in pieces the model says well (sentences, at most ~220 characters), each with the pause after it."""
     text = str(text or "").replace("\r\n", "\n").strip()
@@ -562,7 +585,7 @@ def chunks(text: str, limit: int = 220) -> list[dict]:
         para = re.sub(r"\s+", " ", para).strip()
         if not para:
             continue
-        sentences = re.split(r"(?<=[.!?…])\s+", para)
+        sentences = _sentences(para)
         cur = ""
         for s in sentences:
             while len(s) > limit:                    # a very long sentence: cut at a comma / space
@@ -710,6 +733,7 @@ def read_job(jid: str) -> dict:
     if job["state"] == "working":
         job["progress"] = _CURRENT.get("progress", 0.0)
         job["step"] = _CURRENT.get("step", "")
+        job["note"] = _CURRENT.get("note", "")
     return job
 
 
@@ -875,6 +899,10 @@ def new_voiceover(text: str, voice: str, description: str = "", ref_path: str = 
     lang = str(language or "").strip().lower()
     if lang and not re.fullmatch(r"[a-z]{2}", lang):
         lang = ""
+    wrote = _script(re.sub(r"\[[^\]]*\]|\([^)]*\)", " ", text))     # the letters the words are written in
+    if (lang in ("ru", "uk") and wrote == "lat") or (lang in ("en", "es", "de", "fr", "it", "pt") and wrote == "cyr"):
+        raise VoiceError("The text is written in other letters than the chosen language: choose the language of the "
+                         "text, or \"Detect by itself\".")
     sk, pk = pace(speed, pauses)
     try:                                           # the next form starts with this voice, speed and pauses
         from .config import update_config
@@ -1167,6 +1195,8 @@ def _loop() -> None:
             res = {"ok": False, "error": str(exc)[:500]}
         if _CURRENT.get("cancel") and not res.get("ok"):    # (made already when Stop came: it stays made)
             res = {"ok": False, "error": "Stopped."}
+        if _CURRENT.get("note") and isinstance(res, dict):
+            res.setdefault("card_note", _CURRENT["note"])
         if res.get("_requeue"):                          # behind the job it waits for (no result written)
             with _LOCK:
                 if _QUEUE and _QUEUE[0] == jid:
@@ -1189,6 +1219,8 @@ def _loop() -> None:
 
 
 def _progress(msg: dict) -> None:
+    if msg.get("note"):                    # why the graphics card was not used (the voice goes on, on the processor)
+        _CURRENT["note"] = str(msg["note"])[:300]
     if "progress" in msg:
         _CURRENT["progress"] = float(msg["progress"])
     if msg.get("step"):
@@ -1371,6 +1403,12 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
     # its last picture held to the end, whatever the picture's own length (a picture can end before its sound, and the
     # file's length is the longer of the two): the new video is cut at `length` (-t)
     vf = [f"tpad=stop_mode=clone:stop_duration={length:.3f}"]
+    # an HDR phone video (HLG / PQ) to normal colours first, as the converter and the reels do: kept as-is, a normal
+    # H.264 file shows it grey and dark
+    from .converter import HDR_TO_SDR, _hdr_kind
+    hdr = _hdr_kind(_ffmpeg(), video)
+    if hdr in HDR_TO_SDR:
+        vf.insert(0, HDR_TO_SDR[hdr])
     # the size of the new video: what Reels / TikTok / Shorts show (a short side of at most 1080: a 4K phone video is
     # made several times faster), always even (H.264 4:2:0); the text is laid out for exactly this size
     k = min(1.0, MAX_SHORT_SIDE / max(1, min(w, h)))
@@ -1445,8 +1483,9 @@ def _burn(video: Path, voice_wav: Path | None, cs: list[dict], d: Path, keep_sou
     new_out = d / "video.new.mp4"
     new_out.unlink(missing_ok=True)
     tail_args = ["-t", f"{length:.3f}", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", new_out.name]
-    cpu = ["-color_range", "tv", "-c:v", "libx264", "-preset", "medium", "-crf", "18"]
-    gpu = ["-color_range", "tv", "-c:v", "h264_nvenc", "-preset", "p5", "-rc", "vbr", "-cq", "19", "-b:v", "0", "-profile:v", "high"]
+    tags = ["-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709"] if hdr in HDR_TO_SDR else []
+    cpu = [*tags, "-color_range", "tv", "-c:v", "libx264", "-preset", "medium", "-crf", "18"]
+    gpu = [*tags, "-color_range", "tv", "-c:v", "h264_nvenc", "-preset", "p5", "-rc", "vbr", "-cq", "19", "-b:v", "0", "-profile:v", "high"]
     log = d / "ffmpeg.log"
     tries = ([gpu] if nvenc_ok() else []) + [cpu]           # an NVIDIA card makes the picture; any failure: the processor
     rc = -1

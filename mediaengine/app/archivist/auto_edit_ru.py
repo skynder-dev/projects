@@ -737,6 +737,8 @@ PHRASES = {
     "The text is too long for one voice-over (at most 5000 characters): split it into parts.":
         "Текст слишком длинный для одной озвучки (не больше 5000 знаков): раздели его на части.",
     "Choose a voice.": "Выбери голос.",
+    "The text is written in other letters than the chosen language: choose the language of the text, or \"Detect by itself\".":
+        "Текст написан другими буквами, чем у выбранного языка: выбери язык текста или «Определить автоматически».",
     "Describe the voice in a few words (for example: a calm man in his forties, deep voice).":
         "Опиши голос несколькими словами (например: a calm man in his forties, deep voice).",
     "Choose the recording of the voice (a WAV, MP3 or M4A of 5-30 seconds of one person speaking).":

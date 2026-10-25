@@ -24,19 +24,72 @@ def say(**kw) -> None:
     print(json.dumps(kw, ensure_ascii=False), flush=True)
 
 
+_UNITS = {w: i for i, w in enumerate("zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen "
+                                       "fifteen sixteen seventeen eighteen nineteen".split())}
+_TENS = {w: 10 * (i + 2) for i, w in enumerate("twenty thirty forty fifty sixty seventy eighty ninety".split())}
+_ORD = {w: f"{i + 1}" for i, w in enumerate("first second third fourth fifth sixth seventh eighth ninth tenth eleventh "
+                                            "twelfth".split())}
+_SAME = {"okay": "ok", "mister": "mr", "missus": "mrs", "doctor": "dr", "versus": "vs", "and": "and"}
+
+
 def _words(s: str) -> list[str]:
-    s = str(s).lower().replace("’", "'")                  # words in brackets are said too (and checked)
-    return re.findall(r"[\w']+", s)
-
-
-_NUM = {"0": "zero", "1": "one", "2": "two", "3": "three", "4": "four", "5": "five", "6": "six", "7": "seven",
-        "8": "eight", "9": "nine", "10": "ten", "11": "eleven", "12": "twelve"}
+    """The words of a text in one way of writing, so that the same thing said is the same words: numbers as digits
+    ("twenty five" = "25"), "%" = "percent", "#" = "number", "e-mail" = "email", "p.m." = "pm", "1,000" = "1000",
+    "okay" = "ok", "1st" = "first" (words in brackets are said too, and checked)."""
+    s = str(s).lower().replace("’", "'").replace("%", " percent ").replace("#", " number ")
+    s = re.sub(r"(?<=\d),(?=\d{3}\b)", "", s)            # 1,000 -> 1000
+    s = re.sub(r"(?<=\w)[.\-](?=\w)", "", s)              # e-mail, p.m., U.S., twenty-five
+    out = []
+    for w in re.findall(r"[\w']+", s):
+        w = _SAME.get(w, w)
+        m = re.fullmatch(r"(\d+)(st|nd|rd|th)", w)
+        if m:
+            w = m.group(1)
+        elif w in _ORD:
+            w = _ORD[w]
+        else:                              # twentyfive (from twenty-five): two number words
+            for t, v in _TENS.items():
+                if w.startswith(t) and w[len(t):] in _UNITS and _UNITS[w[len(t):]] < 10:
+                    out.append(t)
+                    w = w[len(t):]
+                    break
+        out.append(w)
+    # runs of number words -> one number ("two hundred and five" = "205", "twenty five" = "25"; "one two three" stays
+    # three numbers, "five and six" stays two)
+    res, i = [], 0
+    while i < len(out):
+        if out[i] not in _UNITS and out[i] not in _TENS:
+            res.append(out[i])
+            i += 1
+            continue
+        total, cur, last, j = 0, 0, None, i
+        while j < len(out):
+            w = out[j]
+            if w in _UNITS and _UNITS[w] < 10 and last in (None, "tens", "hundred", "thousand", "and"):
+                cur, last = cur + _UNITS[w], "unit"
+            elif w in _UNITS and last in (None, "hundred", "thousand", "and"):
+                cur, last = cur + _UNITS[w], "teen"
+            elif w in _TENS and last in (None, "hundred", "thousand", "and"):
+                cur, last = cur + _TENS[w], "tens"
+            elif w == "hundred" and last in ("unit", "teen") and cur % 100 == cur:
+                cur, last = cur * 100, "hundred"
+            elif w == "thousand" and last in ("unit", "teen", "tens", "hundred"):
+                total, cur, last = total + cur * 1000, 0, "thousand"
+            elif (w == "and" and last in ("hundred", "thousand") and j + 1 < len(out)
+                  and (out[j + 1] in _UNITS or out[j + 1] in _TENS)):
+                last = "and"
+            else:
+                break
+            j += 1
+        res.append(str(total + cur))
+        i = j
+    return res
 
 
 def word_errors(ref: str, said: str) -> int:
-    """Word edit distance between the text and what was really said (a spoken "ten" written "10" is not an error)."""
-    a, b = _words(ref), [_NUM.get(w, w) for w in _words(said)]
-    a = [_NUM.get(w, w) for w in a]
+    """Word edit distance between the text and what was really said, both written one way (a spoken "twenty percent"
+    written "20%" is not an error)."""
+    a, b = _words(ref), _words(said)
     prev = list(range(len(b) + 1))
     for i in range(1, len(a) + 1):
         cur = [i] + [0] * len(b)

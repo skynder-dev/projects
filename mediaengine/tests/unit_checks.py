@@ -884,6 +884,35 @@ def main():
           and (fold_ / "VID_0001.mp4").read_bytes() == bytes([0]) * 10, taken_)
     update_config(lambda c: c.update(archive_root=str(work / "Архив")))
     check("archive folder: one reading for the whole app", archive_root() == work / "Архив")
+    # "Private forever": hidden at once even when its copy cannot be moved yet (in use by a player, a full disk); the
+    # move is made on the next try
+    from archivist.config import STAGING as _STG
+    _STG.mkdir(parents=True, exist_ok=True)
+    pv_ = _STG / "pv_copy.mp4"; pv_.write_bytes(b"P" * 300)
+    with _db() as con:
+        pid_ = con.execute("INSERT INTO inventory(source_key,source_id,source_label,source_kind,path,filename,media_type,size_bytes,"
+                           "staging_path,discovered_at,last_seen_at) VALUES('pv-key','t','t','fixed',?,?,'video',300,?,?,?)",
+                           (str(work / "pv_orig.mp4"), "pv_orig.mp4", str(pv_), _now(), _now())).lastrowid
+        con.commit()
+    real_mv_ = _sv._verified_move
+    def _busy(*a, **k):
+        raise RuntimeError("The process cannot access the file because it is being used by another process")
+    _sv._verified_move = _busy
+    try:
+        _sv._mark_private_one(pid_); pv_err_ = None
+    except RuntimeError as exc:
+        pv_err_ = str(exc)
+    finally:
+        _sv._verified_move = real_mv_
+    with _db() as con:
+        pr1_ = dict(con.execute("SELECT excluded,analysis_status,private_path,staging_path FROM inventory WHERE id=?", (pid_,)).fetchone())
+    _sv._mark_private_one(pid_)
+    with _db() as con:
+        pr2_ = dict(con.execute("SELECT excluded,analysis_status,private_path,staging_path FROM inventory WHERE id=?", (pid_,)).fetchone())
+    check("Private: hidden at once even when its copy cannot be moved; moved on the next try",
+          pv_err_ and pr1_["excluded"] == 1 and pr1_["analysis_status"] == "private" and pr1_["staging_path"] == str(pv_)
+          and pr2_["private_path"] and Path(pr2_["private_path"]).is_file() and pr2_["staging_path"] is None and not pv_.exists(),
+          (pv_err_, pr1_, pr2_))
     # converted files: each one has "Show in folder" / "Open video" (found by its job and place, never by a path from
     # the page), the Convert page opens the Converted folder, and a finished job keeps its list after the page reloads
     import json as _js

@@ -141,6 +141,20 @@ def main() -> int:
     check("no word lost or doubled in the pieces", re.findall(r"\S+", " ".join(c["text"] for c in cs)) == re.findall(r"\S+", text))
     check("a longer pause after a paragraph", cs[0]["pause_after"] == 0.6, cs[0])
     check("empty text: no pieces", vo.chunks("  \n ") == [])
+    check("sentences are not cut after Mr. / e.g. / p.m. / an initial",
+          vo._sentences("Mr. Smith came at 5 p.m. today. We met J. R. Smith. See e.g. the photos! Done.")
+          == ["Mr. Smith came at 5 p.m. today.", "We met J. R. Smith.", "See e.g. the photos!", "Done."],
+          vo._sentences("Mr. Smith came at 5 p.m. today. We met J. R. Smith. See e.g. the photos! Done."))
+    sys.path.insert(0, str(ROOT / "app" / "archivist"))
+    import voice_worker as vw
+    same = [("almost twenty percent cheaper", "Almost 20% cheaper."), ("Write an e-mail at 5 p.m.", "Write an email at five PM."),
+            ("Tip #3: okay?", "Tip number three. OK?"), ("It costs 1,000 dollars", "It costs one thousand dollars."),
+            ("twenty-five minutes", "25 minutes"), ("two hundred and five", "205"), ("1, 2, 3, go", "one, two, three, go"),
+            ("5 and 6", "five and six"), ("the 1st day", "the first day")]
+    check("the word check: the same words written another way are not errors (20% / twenty percent, e-mail / email ...)",
+          all(vw.word_errors(r_, s_) == 0 for r_, s_ in same), [(r_, vw.word_errors(r_, s_)) for r_, s_ in same])
+    check("the word check: a missing or wrong word still counts", vw.word_errors("hello world", "hello") == 1
+          and vw.word_errors("twenty five", "thirty five") == 1)
 
     # 2. word times: the script's words as written, times from what was heard
     heard = [{"w": w, "s": s, "e": e} for w, s, e in [("Okay", .1, .4), ("so", .5, .6), ("heres", .6, .9), ("something", .9, 1.3),
@@ -251,6 +265,11 @@ def main() -> int:
             time.sleep(0.3)
         return vo.read_job(jid)
 
+    n_before = len(vo.list_jobs())
+    r = c.post("/auto/voice/new", data={"text": "Привет, это просто проверка.", "voice": vo.DEFAULT_VOICE, "language": "en"}, headers=H)
+    check("Russian letters with English chosen: refused in words (not a voice-over of nonsense)", r.status_code == 400
+          and "other letters than the chosen language" in r.get_data(as_text=True) and len(vo.list_jobs()) == n_before,
+          r.status_code)
     r = c.post("/auto/voice/new", data={"text": "Okay, so here's something. You don't need ten outfits!", "voice": vo.DEFAULT_VOICE,
                                         "language": "en"}, headers=H)
     check("a voice-over is accepted", r.status_code == 302, r.status_code)
@@ -441,6 +460,19 @@ def main() -> int:
     check("'0,5' is half a second", abs(float(ojob.get("start_s") or 0) - 0.5) < 1e-9, ojob.get("start_s"))
     r = c.post(f"/auto/voice/{jid}/dub", data={"video": str(odd), "start": "soon"}, headers=H)
     check("a start time that is not a number: refused in words", r.status_code == 400, r.status_code)
+
+    # an HDR phone video (HLG): normal colours in the new video (BT.709), as the converter and the reels make them
+    hlg = home / "hdr phone.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=640x360:rate=25:duration=1", "-pix_fmt", "yuv420p",
+                    "-c:v", "libx264", "-color_primaries", "bt2020", "-color_trc", "arib-std-b67", "-colorspace", "bt2020nc",
+                    str(hlg)], check=True)
+    r = c.post(f"/auto/voice/{jid}/dub", data={"video": str(hlg), "captions": "1"}, headers=H)
+    hj = wait(vo.list_jobs()[0]["id"])
+    hv = Path(hj["dir"]) / "video.mp4"
+    head_ = subprocess.run([ff, "-hide_banner", "-i", str(hv)], capture_output=True, text=True).stderr if hv.is_file() else ""
+    tags = next((x for x in head_.splitlines() if "Video:" in x), "")   # (no ffprobe in the program: FFmpeg's own text)
+    check("an HDR (HLG) phone video gets normal colours (BT.709)", hj["state"] == "done" and "bt709" in tags
+          and "arib" not in tags and "bt2020" not in tags and "yuv420p" in tags, (hj.get("result"), tags))
 
     # Try again: a job that failed is made again in its own folder; the copy saved by an earlier make stays as it was
     import hashlib as _hl

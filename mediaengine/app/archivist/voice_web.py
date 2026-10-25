@@ -383,8 +383,11 @@ def register(app, page, err_page, e, human_bytes):
                 label += f" <span translate='no'>{e(part)}</span>"
             stop = (f"<form method='post' action='/auto/voice/{jid}/stop' style='margin-top:6px' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
                     f"<button class='btn2 vo-mini'>Stop</button></form>")
+            note = (f"<div class='small' style='margin-top:4px;color:#f0b35a'><span>The graphics card could not be used - the voice is "
+                    f"made on the processor (slower).</span> <span class='muted' translate='no'>{e(j.get('note'))}</span></div>"
+                    if j.get("note") else "")
             body = (f"<div class='ae-bar' style='margin-top:6px'><i style='width:{int(100 * float(j.get('progress') or 0))}%'></i></div>"
-                    f"<div class='muted vo-sub'>{label}</div>{stop}")
+                    f"<div class='muted vo-sub'>{label}</div>{note}{stop}")
         elif st == "interrupted" and j.get("resumed"):
             body = (f"<div class='errbox' style='margin-top:6px'>Interrupted again (MediaEngine was closed).</div>"
                     f"<form method='post' action='/auto/voice/{jid}/retry' style='margin-top:6px' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\"><button>Try again</button></form>")
@@ -406,7 +409,9 @@ def register(app, page, err_page, e, human_bytes):
             body = (f"<audio controls preload='none' src='/auto/voice/{jid}/file/voice.wav' style='width:100%;max-width:640px;margin-top:6px'></audio>"
                     f"<div class='muted vo-sub'><span translate='no'>{e(str(res.get('seconds') or ''))}</span> <span>s</span> · {check} · "
                     f"<span>made on</span> <span>{dev}</span>{pace}</div>"
-                    f"<div class='vo-row' style='margin-top:6px'><a class='btn btn2' href='/auto/voice/{jid}/file/voice.wav?download=1'>Download WAV</a>"
+                    + (f"<div class='small muted' style='margin-top:2px'><span>The graphics card could not be used:</span> "
+                       f"<span translate='no'>{e(res.get('card_note'))}</span></div>" if res.get("card_note") and res.get("device") != "cuda" else "")
+                    + f"<div class='vo-row' style='margin-top:6px'><a class='btn btn2' href='/auto/voice/{jid}/file/voice.wav?download=1'>Download WAV</a>"
                     f"<a class='btn btn2' href='/auto/voice/{jid}/file/captions.srt?download=1'>Download captions (SRT)</a><!--actions--></div>"
                     f"<details style='margin-top:8px'><summary>Put it on a video</summary>"
                     f"<form method='post' action='/auto/voice/{jid}/dub' style='margin-top:8px' onsubmit=\"setTimeout(()=>this.querySelectorAll('button:not([type=button])').forEach(x=>x.disabled=true),0)\">"
