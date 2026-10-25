@@ -369,6 +369,36 @@ def main():
     y0, y1, y2, yn0, yn1 = yavg(dark), yavg(br["output"]), yavg(brl["output"]), yavg(whole), yavg(brn["output"])
     check("convert_brighter", y1 - y0 >= 25 and y2 - y0 >= 25 and yn1 - yn0 <= 25 and "_brighter_" in Path(br["output"]).name,
           (round(y0, 1), round(y1, 1), round(y2, 1), round(yn0, 1), round(yn1, 1)))
+    # the More options and a turned picture on the card's way (decoded and made smaller there, the rest as on the
+    # processor) - the card stood in for by the processor (no NVIDIA card on the test machine): the graph, the sound in
+    # step at 2x, the logo, the clock, Brighter, the turn - all on the "card" picture
+    sync_big = src_dir / "sync_1440p.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=2560x1440:rate=30", "-f", "lavfi", "-i",
+                    "aevalsrc='0.3*sin(2*PI*260*t)+if(lt(mod(t-0.3,1),0.04),0.9*sin(2*PI*1000*t),0)':s=48000", "-t", "6",
+                    "-c:v", "libx264", "-preset", "ultrafast", "-g", "30", "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest", str(sync_big)],
+                   check=True)
+    real_g = (cvx.gpu_plan, cvx.gpu_ok, cvx.gpu_extra_ok)
+    def stand_in(sig_, preset_, hdr_=None, interlaced_=False):
+        pl = real_g[0](sig_, preset_, hdr_, interlaced_)
+        if not pl:
+            return None
+        W_, H_ = pl["size"]
+        return {**pl, "pre": [], "head": f"scale={W_}:{H_},format=nv12",
+                "codec": ["-color_range", "tv", "-c:v", "libx264", "-preset", "ultrafast", "-crf", "23"]}
+    cvx.gpu_plan, cvx.gpu_ok, cvx.gpu_extra_ok = stand_in, (lambda: True), (lambda: True)
+    try:
+        gx = convert_file(sync_big, "share_1080p", output_dir=out_dir, turn=90,
+                          extra=cvx.clean_extra({"speed": 2, "clock": True, "bright": True, "logo": True}))
+        gv_ = [x for x in _probe(Path(gx["output"])).get("streams", []) if x.get("codec_type") == "video"][0]
+        gd_ = float(_probe(Path(gx["output"]))["format"]["duration"])
+        gb_ = beeps(ff, gx["output"])
+        go_ = [min((b - (k + 0.3) / 2 for b in gb_), key=abs) for k in range(6)] if gb_ else []
+        gvert = convert_file(sync_big, "share_1080p", output_dir=out_dir, extra=cvx.clean_extra({"vertical": "crop"}))
+    finally:
+        cvx.gpu_plan, cvx.gpu_ok, cvx.gpu_extra_ok = real_g
+    check("more_options_on_the_card_way", gx.get("made_on") == "nvidia" and (int(gv_["width"]), int(gv_["height"])) == (1080, 1920)
+          and abs(gd_ - 3.0) <= 0.15 and len(go_) == 6 and all(-0.03 <= o <= 0.045 for o in go_) and gvert.get("made_on") == "cpu",
+          (gx.get("made_on"), gv_.get("width"), gv_.get("height"), gd_, [round(o, 3) for o in go_], gvert.get("made_on")))
     # "Date and time in the corner": the recording's time read as each maker writes it (GoPro / DJI: their clock as
     # written; a phone: UTC shown in this PC's zone; an iPhone: its local time; nothing: the file's date minus the
     # length), shown every second - at 2x the clock runs twice as fast, a cut starts at its start, joined videos each

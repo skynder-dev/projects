@@ -960,6 +960,7 @@ def join_files(sources, preset="share_1080p", target_mb=None, progress_cb=None, 
 _GPU: list = []
 _GPU_CQ_STEP = 3           # NVIDIA's constant quality N gives about the size of x264's CRF N-3
 _GPU_FAILS: list = [0]     # attempts on the card that failed in a row: after two, the processor only (until a restart)
+_GPU_FAILS_EXTRA: list = [0]   # the same for the More options / turned way on the card (never stops the plain way)
 _GPU_LAST_ERROR: list = [""]
 _TIME_RE = re.compile(r"time=\s*(\d+):(\d+):(\d+(?:\.\d+)?)")
 
@@ -992,6 +993,12 @@ def gpu_ok() -> bool:
     if t and t.get("use") is False:
         return False
     return _nvenc_works()
+
+
+def gpu_extra_ok() -> bool:
+    """The card for turned videos and the More options too: only after the card test made them on it with the same
+    picture and faster (Check this PC / Convert -> Test converting on the graphics card)."""
+    return gpu_test_saved().get("extra_use") is True and _GPU_FAILS_EXTRA[0] < 2
 
 
 def _nvenc_works() -> bool:
@@ -1071,6 +1078,27 @@ def run_gpu_test(folder, step=lambda s: None) -> dict:
         step("Comparing the pictures")
         res["psnr"] = _psnr(ffmpeg, g["output"], c["output"])
         res["use"] = bool(res["psnr"] and res["psnr"] >= 30 and res["gpu_s"] < res["cpu_s"])
+        if not res["use"]:
+            return res
+        # the More options and a turned picture on the card (decoded and made smaller there, the rest as on the
+        # processor): the same clip turned, at 2x, Brighter, with the date and time - both ways, compared
+        try:
+            ex = clean_extra({"speed": 2, "bright": True, "clock": True})
+            step("More options with the processor")
+            t2 = time.time()
+            ce = convert_file(clip, "share_1080p", output_dir=folder / "out", prefer="cpu", turn=90, extra=ex)
+            res["extra_cpu_s"] = round(time.time() - t2, 1)
+            step("More options with the graphics card")
+            t3 = time.time()
+            ge = convert_file(clip, "share_1080p", output_dir=folder / "out", prefer="gpu", turn=90, extra=ex)
+            res["extra_gpu_s"] = round(time.time() - t3, 1)
+            if ge.get("made_on") != "nvidia":
+                res["extra_error"] = "the graphics card could not do it: " + (_GPU_LAST_ERROR[0] or "?")
+            else:
+                res["extra_psnr"] = _psnr(ffmpeg, ge["output"], ce["output"])
+                res["extra_use"] = bool(res["extra_psnr"] and res["extra_psnr"] >= 30 and res["extra_gpu_s"] < res["extra_cpu_s"])
+        except Exception as exc:
+            res["extra_error"] = str(exc)[-300:]
         return res
     except Exception as exc:
         res["error"] = str(exc)[-300:]
@@ -1104,8 +1132,13 @@ def gpu_test_summary(r: dict) -> str:
     if not r:
         return "Not tested yet."
     if r.get("use"):
-        return (f"Used: {r.get('gpu_s')} s instead of {r.get('cpu_s')} s on the processor "
+        line = (f"Used: {r.get('gpu_s')} s instead of {r.get('cpu_s')} s on the processor "
                 f"({round(float(r.get('cpu_s') or 0) / max(0.1, float(r.get('gpu_s') or 1)), 1)}x faster), the same picture.")
+        if r.get("extra_use"):
+            line += (f" With the More options too: {r.get('extra_gpu_s')} s instead of {r.get('extra_cpu_s')} s.")
+        elif "extra_use" in r or r.get("extra_error"):
+            line += " The More options stay on the processor."
+        return line
     if r.get("gpu_s") and r.get("psnr") is not None:
         return (f"Not used: {r.get('gpu_s')} s on the graphics card, {r.get('cpu_s')} s on the processor"
                 + (" - a different picture." if float(r.get("psnr") or 0) < 30 else " - not faster."))
@@ -1129,6 +1162,9 @@ def gpu_plan(sig: dict, preset: str, hdr=None, interlaced=False) -> dict | None:
     W, H = (cap, int(h * k) // 2 * 2) if w >= h else (int(w * k) // 2 * 2, cap)
     return {"pre": ["-hwaccel", "cuda", "-hwaccel_output_format", "cuda"],
             "vf": f"scale_cuda={W}:{H},hwdownload,format=nv12,scale=in_range=auto:out_range=tv,format=yuv420p",
+            # (the More options: decoded and made smaller on the card, the small picture then through the same filters
+            # as on the processor - turn, speed, Brighter, the logo, the clock)
+            "head": f"scale_cuda={W}:{H},hwdownload,format=nv12",
             "codec": ["-color_range", "tv", "-c:v", "h264_nvenc", "-preset", "p5", "-tune", "hq", "-rc", "vbr",
                       "-cq", str(int(PRESETS[preset]["crf"]) + _GPU_CQ_STEP), "-b:v", "0", "-profile:v", "high"],
             "size": (W, H)}
@@ -1394,7 +1430,8 @@ def _speed_filters(sig: dict, speed: float) -> list[str]:
     return []
 
 
-def _extra_graph(sig: dict, preset: str, hdr, interlaced: bool, turn: int, extra: dict, mute: bool, logo_index: int):
+def _extra_graph(sig: dict, preset: str, hdr, interlaced: bool, turn: int, extra: dict, mute: bool, logo_index: int,
+                 gpu_head: str | None = None):
     """The filter graph for the More options: [v] and, when the sound is changed (speed, wind), [a]; also without
     the sound branch (the first pass of a size target). Returns (graph with sound, graph without sound, sound kept,
     sound through the graph)."""
@@ -1404,13 +1441,21 @@ def _extra_graph(sig: dict, preset: str, hdr, interlaced: bool, turn: int, extra
     if extra.get("logo") and not (lg and Path(str(lg.get("path") or "")).is_file()):
         raise RuntimeError("The logo of this conversion is not there any more - choose the logo again and convert again")
     square = (vert or lg or extra.get("clock")) and abs(_sar(sig) - 1.0) > 0.01   # 4:3 pixels of HDV / DV: square first
+    if gpu_head:                           # the card decoded and scaled it (never HDR, interlaced, 4:3 pixels or 9:16)
+        if vert or interlaced or hdr or square:
+            raise ValueError("not for the graphics card")
+        pre = [gpu_head] + ([TURNS[turn]] if turn in TURNS else []) + _speed_filters(sig, speed)
+        g = f"[0:v:0]{','.join(pre)}[vb]"
+        vert = ""
     pre = (["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if interlaced else []) \
         + ([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []) \
         + (["scale='trunc(iw*sar/2)*2':ih", "setsar=1"] if square else []) \
         + ([TURNS[turn]] if turn in TURNS else []) \
         + _speed_filters(sig, speed)
     cap = PRESETS[preset]["cap"]
-    if vert:
+    if gpu_head:
+        pass
+    elif vert:
         VW, VH = (720, 1280) if cap == 1280 else (1080, 1920)
         if vert == "crop":                 # the middle of the picture, the sides cut off
             g = f"[0:v:0]{','.join(pre + [f'scale={VW}:{VH}:force_original_aspect_ratio=increase', f'crop={VW}:{VH}', 'setsar=1'])}[vb]"
@@ -1538,29 +1583,40 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
             _run_progress(pass2, duration, progress_cb, cancel_cb, 0.50, 0.50, job_id=job_id, cwd=cwd)
         else:
             plan = None
+            filtered = bool(turn or extra)     # turned, or More options: the card's way only once the card test proved it
+            fails = _GPU_FAILS_EXTRA if filtered else _GPU_FAILS
+            gcmd = []
             try:
                 # prefer: "cpu" / "gpu" only for the card test of Check this PC (both ways on the same clip)
-                use = (_nvenc_works() if prefer == "gpu" else False if prefer == "cpu" else gpu_ok()) and not turn and not extra
-                plan = gpu_plan(media_sig(ffmpeg, source), preset, hdr, interlaced) if use else None
+                use = _nvenc_works() if prefer == "gpu" else False if prefer == "cpu" else (gpu_ok() and (not filtered or gpu_extra_ok()))
+                sig_g = media_sig(ffmpeg, source) if use else {}
+                plan = gpu_plan(sig_g, preset, hdr, interlaced) if use and not extra.get("vertical") else None
+                if plan and filtered:
+                    ga_g, _gv, sound_g, through_g = _extra_graph(sig_g, preset, hdr, interlaced, turn, extra, mute, 1, gpu_head=plan["head"])
+                    gcmd = [str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-xerror", *plan["pre"], *input_args, *logo_in,
+                            "-filter_complex", ga_g, "-map", "[v]",
+                            *((["-map", "[a]"] if through_g else ["-map", "0:a?"]) if sound_g else []), *plan["codec"],
+                            *aenc(cfg["audio_k"]), "-movflags", "+faststart", str(part)]
+                elif plan:
+                    gcmd = [str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-xerror", *plan["pre"], *input_args,
+                            "-map", "0:v:0", *amap, "-vf", plan["vf"], *plan["codec"],
+                            *aenc(cfg["audio_k"]), "-movflags", "+faststart", str(part)]
             except Exception:
                 plan = None
-            if plan:
-                gcmd = [str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-xerror", *plan["pre"], *input_args,
-                        "-map", "0:v:0", *amap, "-vf", plan["vf"], *plan["codec"],
-                        *aenc(cfg["audio_k"]), "-movflags", "+faststart", str(part)]
+            if plan and gcmd:
                 try:
-                    _run_progress(gcmd, duration, progress_cb, cancel_cb, job_id=job_id)
+                    _run_progress(gcmd, duration, progress_cb, cancel_cb, job_id=job_id, cwd=cwd if filtered else None)
                     with _Keepalive(job_id):
                         got = float(probe_duration(part) or 0.0)
                         pic = _picture_seconds(ffmpeg, part)
                     if abs(got - duration) > max(0.5, 0.01 * duration) or pic < got - max(0.5, 0.01 * got):
                         raise RuntimeError(f"length {got:.2f} s (picture {pic:.2f} s) instead of {duration:.2f} s")
                     made_on = "nvidia"
-                    _GPU_FAILS[0] = 0
+                    fails[0] = 0
                 except Exception as exc:
                     if str(exc).lower() == "cancelled" or (cancel_cb and cancel_cb()) or _EXITING.is_set() or _watchdog_pending(job_id):
                         raise                  # stopped, quitting, or the watchdog's restart: not the card's failure
-                    _GPU_FAILS[0] += 1
+                    fails[0] += 1
                     _GPU_LAST_ERROR[0] = str(exc)[-300:]
                     try:
                         part.unlink(missing_ok=True)
