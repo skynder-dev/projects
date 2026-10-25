@@ -467,9 +467,14 @@ def main() -> int:
 
     # an HDR phone video (HLG): normal colours in the new video (BT.709), as the converter and the reels make them
     hlg = home / "hdr phone.mp4"
-    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=640x360:rate=25:duration=1", "-pix_fmt", "yuv420p",
+    # (the colours set on the frames themselves: FFmpeg 7.1 writes the frames' own colours over -color_trc & co.)
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=640x360:rate=25:duration=1", "-vf",
+                    "format=yuv420p,setparams=color_primaries=bt2020:color_trc=arib-std-b67:colorspace=bt2020nc:range=tv",
                     "-c:v", "libx264", "-color_primaries", "bt2020", "-color_trc", "arib-std-b67", "-colorspace", "bt2020nc",
                     str(hlg)], check=True)
+    from archivist.converter import _hdr_kind as _hk
+    check("the HDR test video is HLG as FFmpeg reads it (else the next check proves nothing)", _hk(ff, hlg) == "HLG",
+          subprocess.run([ff, "-hide_banner", "-i", str(hlg)], capture_output=True, text=True).stderr[-300:])
     r = c.post(f"/auto/voice/{jid}/dub", data={"video": str(hlg), "captions": "1"}, headers=H)
     hj = wait(vo.list_jobs()[0]["id"])
     hv = Path(hj["dir"]) / "video.mp4"

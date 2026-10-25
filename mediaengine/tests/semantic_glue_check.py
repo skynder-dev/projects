@@ -194,7 +194,8 @@ def main():
           and rc_.get("workers") == 3 and ok_, (rc_, det_))
     res16 = json.loads((out_rc16 / "MediaEngine Result.json").read_text(encoding="utf-8"))
     rc16 = res16.get("semantic_timing") or {}
-    want16 = max(3, min(6, 16 // 3, int(r3_16._total_ram_gb() // 4) or 1, int(res16.get("input_count") or 0)))
+    ram16, n16 = r3_16._total_ram_gb(), int(res16.get("input_count") or 0)
+    want16 = max(max(1, min(3, 16 // 4, int(ram16 // 6) or 1, n16)), min(6, 16 // 3, int(ram16 // 4) or 1, n16))
     ok_, det_ = same_reel(out, out_rc16)
     check("only_cutting_left_more_cuts_at_once_on_16_cores", rc16.get("videos_analysed") == 0 and rc16.get("clips_cut", 0) > 0
           and rc16.get("workers") == want16 and ok_, (rc16.get("workers"), want16, det_))
