@@ -849,6 +849,17 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   (a51134d): unit 193/193, convert 65/65, Edge 20/20, E2E 88/91/80, AI glue 21/21 (incl. more cuts at once on 16
   cores), library 10/10, library flow 43/43, orders 52/52, voice 197/197, route fuzz 0, Russian 218 pages 0 English,
   public repo 0. Published: b223 (commit a51134d), ZIP 4,090,804 bytes, the same runtime - the Update button is enough.
+- 2026-10-25 evening: two more fresh reviews (deletion safety; the newest batch) fixed before publishing - a
+  composition's re-render removes only files of exactly a render's name, never the owner's copies or a published /
+  handed-off one; a half-deleted project still listed gets its folder back; the automatic card test only when nothing
+  else runs and only for jobs the card can make (a cut-short test kept, never waited on > 20 min); project times shown
+  as stored (local). New: the first conversion on a PC with an untested NVIDIA card runs the card test by itself;
+  project cards say when their last version was made; a camera folder's project is named with its filming days
+  ("100MEDIA · 2026-10-14 – 2026-10-16"); the new-reel page of a folder with a project points to it; the music window
+  opens in the last music folder / Windows' Music folder; What's new newest first, 8 shown. Windows run 40212934164
+  (a1fb730): unit 200/200, convert 65/65, Edge 20/20, E2E 88/91/80, AI glue 21/21, library 11/11, library flow 43/43,
+  orders 52/52, voice 197/197, route fuzz 0, Russian 218 pages 0 English, public repo 0.
+  Published: b230 (commit a1fb730), ZIP 4,105,583 bytes, the same runtime - the Update button is enough.
 - Owner PC seen through the app's pages (2026-10-25 morning, read only): b217 installed; 6 projects (100MEDIA);
   16 logical cores, 69 GB RAM, RTX 3060; decoding on the card not used (x0.85); card test for converting not run.
 - Owner PC seen through the app's pages (2026-10-24 evening, read only): he runs b213 (pressed Update); the voice

@@ -199,6 +199,11 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   files not downloaded for previews; render plans refuse Private media; order Delete all or nothing); Composer:
   Remove a moment, take out moments of videos made Private, Delete a composition; **Check this PC → Remove the older
   versions** (the two newest stay); reels from many 4K videos cut their moments more at once on a big PC.
+- b230: the first conversion on a PC with an NVIDIA card never tested runs the card test by itself (about two
+  minutes, only when nothing else runs), then converts on whichever was faster with the same picture; project cards say
+  when their last version was made; a project from a camera's own folder (100MEDIA, 100GOPRO …) is named with the days
+  it was filmed; a folder that already has a project says so on the new-reel page; the music window opens in the last
+  music folder; What's new shows the 8 newest changes first; Composer keeps the owner's own copies in Exports.
 
 ## Orders from other programs; night review fixes (2026-10-17)
 
