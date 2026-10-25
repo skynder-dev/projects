@@ -181,6 +181,19 @@ def _day_label(day: str) -> str:
 MAX_DAYS = 31                                   # "A reel for every day": at most this many reels at once
 
 
+def _when_label(iso) -> str:
+    """A stored time (UTC, ISO) as this PC's local day and time: "16 октября 2026, 18:45" / "16 Oct 2026, 18:45"."""
+    try:
+        from datetime import datetime, timezone
+        t = datetime.fromisoformat(str(iso).replace("Z", "+00:00"))
+        if t.tzinfo is None:
+            t = t.replace(tzinfo=timezone.utc)
+        t = t.astimezone()
+        return f"{_day_label(t.strftime('%Y-%m-%d'))}, {t:%H:%M}"
+    except Exception:
+        return ""
+
+
 def _every_day_form(folder: Path, days: list, e) -> str:
     """A trip or a holiday: one reel for each day at once (built one after another)."""
     usable = [d for d in days if 1 <= len(d["files"]) <= ae.MAX_INPUTS]
@@ -356,7 +369,11 @@ def register(app, layout, e, human_bytes):
             cards += (f"<div class='card'><a href='/auto/p/{p['id']}' style='display:block'>"
                       f"<div class='row space'><b style='font-size:17px' translate='no'>{e(p['title'])}</b><span class='ae-state {p['state']}'>{p['state']}</span></div>"
                       f"<div class='muted' style='margin-top:6px'>{' · '.join(x for x in (str(n_src) + (' chosen video(s)' if p.get('files') else ' video file(s) in folder'), e((preset + ' ' + length).strip()), str(len(p['revisions'])) + ' revision(s)') if x)}</div>"
-                      f"<div class='muted'>{last_txt}</div></a>"
+                      f"<div class='muted'>{last_txt}</div>"
+                      # (several projects of one folder have one name: when the last version was made tells them apart)
+                      + (f"<div class='muted small' translate='no'>{e(when_)}</div>" if (when_ := _when_label(
+                          (p["revisions"][-1].get("created_at") if p["revisions"] else None) or p.get("created_at"))) else "")
+                      + "</a>"
                       + ("" if p["source_present"] else "<div class='errbox' style='margin-top:6px'>Source videos are not available (drive disconnected?)</div>")
                       + f"<div class='row' style='margin-top:10px;flex-wrap:wrap;gap:6px'>{acts}</div></div>")
         if not cards:

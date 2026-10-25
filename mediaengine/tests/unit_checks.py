@@ -1402,6 +1402,9 @@ def main():
     finally:
         _ae2.open_path = real_open_
 
+    from archivist import auto_edit_web as _aew2
+    wl_ = _aew2._when_label("2026-10-16T18:45:00+00:00")
+    check("projects: when the last version was made, in this PC's time", "2026" in wl_ and ":" in wl_ and _aew2._when_label("x") == "", wl_)
     wn_ = ae.whats_new_items()
     dates_ = {t: d for d, t in ae.WHATS_NEW_ITEMS}
     check("What's new: the newest changes first", wn_ and [dates_[t] for t in wn_] == sorted((dates_[t] for t in wn_), reverse=True))
