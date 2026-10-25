@@ -819,6 +819,26 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   Stop / Quit); the card test offered on the Convert page. Windows run 40130034406 (1ad6f10): convert 63/63 (incl.
   pictures_by_seeking_are_the_same on FFmpeg 7.1), unit 179/179, Edge 20/20, E2E 88/91/80, route fuzz 0, Russian 217
   pages 0 English, public repo 0. Published: b217 (commit 1ad6f10), ZIP 4,043,040 bytes, the same runtime.
+- 2026-10-25: the graphics card for turned videos and the More options too (decoded and made smaller on the card,
+  then the same filters as on the processor) - only after the card test (now also a full-range clip, cut, logo,
+  turned, 2x, clock) made them there with the same picture and faster; a GoPro / DJI header time is the camera's own
+  clock (Library date, archive day folders, a big folder's days); the Convert list shows when each video was filmed.
+  Windows run 40177442306 (d3a1aa5): convert 65/65, unit 180/180, Edge 20/20, E2E seven 88/88, two 91/91, phone
+  80/80, library flow 43/43, orders 49/49, route fuzz 0, Russian 217 pages 0 English, public repo 0.
+  Published: b220 (commit d3a1aa5), ZIP 4,048,459 bytes, the same runtime b9810d447e8c86c5 - the Update button is
+  enough. Then (in the next build): fresh-eyes reviews of Voice-over, Auto Edit, Library, Composer and Orders fixed -
+  the voice word check reads 20% / twenty percent, e-mail / email, 5 p.m. / five PM as the same words; sentences not cut
+  at Mr. / e.g. / p.m.; Russian letters with English chosen refused in words; HDR phone video gets normal colours under
+  captions; a reel-for-every-day button that would be refused (>31 days) is not offered; the work tidy clears a
+  cut-off build's final_v2 and old manual trims; a card's video hashed while copied; a replaced file rehashed; the
+  scene scan of a long video keeps the job alive (the watchdog restarted a healthy 20-minute analysis) and stops on
+  Cancel; no half .part copy left; the archive folder's problems said in words (not connected, a card, cannot be
+  made); cloud-only OneDrive files not downloaded for previews; a folder taken out of the sources no longer listed;
+  a cancelled phone copy said as cancelled; render plans refuse Private media; order Delete all-or-nothing; Composer
+  keeps the clip order while rendering, drops a render whose video turned Private and replaces its earlier MP4; moment
+  clips cut 3 -> up to 5 at once on a 16-core PC when only cutting is left (owner's project 4: 90 clips, 15 min, CPU 42 %).
+- Owner PC seen through the app's pages (2026-10-25 morning, read only): b217 installed; 6 projects (100MEDIA);
+  16 logical cores, 69 GB RAM, RTX 3060; decoding on the card not used (x0.85); card test for converting not run.
 - Owner PC seen through the app's pages (2026-10-24 evening, read only): he runs b213 (pressed Update); the voice
   add-on is installed but no voice-over has been made yet; "Test converting on the graphics card" not run; his only
   conversion is from 2026-10-22 (4 videos, Share 1080p, all fine). So none of today's Convert additions is tried on

@@ -187,6 +187,11 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   same pictures byte for byte; videos without an exact seek - camcorder MTS, DVD, FLV - and interlaced video are
   decoded whole, which now reads each picture's real time too); Convert remembers the preset and the lasting choices;
   on a PC with an NVIDIA card never tested for converting, Convert offers the one-minute test. **Earlier conversions**: the last 10 jobs with their buttons.
+- b220: the NVIDIA card also for **turned videos and the More options** (speed, vertical, logo, date and time...):
+  decoded and made smaller on the card, the filters as on the processor - only after "Test converting on the
+  graphics card" made such a clip there with the same picture and faster (an older test result says to test again);
+  a GoPro / DJI recording's time is the camera's own clock (Library dates, archive day folders, the days of a big
+  folder); the Convert list shows when each video was filmed.
 
 ## Orders from other programs; night review fixes (2026-10-17)
 
