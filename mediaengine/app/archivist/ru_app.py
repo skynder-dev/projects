@@ -9,6 +9,7 @@ from __future__ import annotations
 APP_PHRASES: dict[str, str] = {
     "Moments of videos that are now Private or no longer in the Library are not shown, and this composition cannot be made into a video any more:":
         "Моменты видео, которые теперь приватные или убраны из библиотеки, не показаны, и из этой композиции больше нельзя сделать видео:",
+    "This composition has no moments left: its videos are no longer in the catalog.": "В этой композиции не осталось моментов: её видео больше нет в каталоге.",
     "A video of this composition was made Private or removed while it was being made: the new video was not kept.":
         "Одно из видео этой композиции сделали приватным или убрали, пока она делалась: новое видео не сохранено.",
     "Best clip": "Лучший клип", "← Video": "← Видео", "Selected files are no longer in the catalog": "Выбранных файлов больше нет в каталоге",

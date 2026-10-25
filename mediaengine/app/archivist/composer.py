@@ -193,7 +193,10 @@ def render_composition(composition_id):
           JOIN inventory i ON i.id=vc.inventory_id LEFT JOIN crop_plans cp ON cp.id=(
             SELECT id FROM crop_plans x WHERE x.clip_id=vc.id AND x.aspect=? ORDER BY id DESC LIMIT 1)
           WHERE ci.composition_id=? ORDER BY ci.position""",(aspect,cid)).fetchall()]
-        if not rows:raise ValueError("Composition is empty")
+        if not rows:          # (its videos removed from the catalog): said on the page, not only in a log
+            ts=now_iso();con.execute("UPDATE compositions SET status='failed',last_error=?,render_finished_at=?,updated_at=? WHERE id=?",
+                                     ("This composition has no moments left: its videos are no longer in the catalog.",ts,ts,cid));con.commit()
+            raise ValueError("Composition is empty")
         ts=now_iso();con.execute("UPDATE compositions SET status='rendering',last_error=NULL,render_started_at=?,render_finished_at=NULL,updated_at=? WHERE id=?",(ts,ts,cid));con.commit()
     total=sum(max(0,int(r["end_ms"])-int(r["start_ms"])) for r in rows)/1000.0
     out=None;before=comp["output_path"]
