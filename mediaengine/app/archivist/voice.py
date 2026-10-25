@@ -351,6 +351,9 @@ def _install_now(cpu: bool) -> None:
             msg = f"The download answered HTTP {exc.code}. Try again later."
         elif isinstance(exc, (urllib.error.URLError, socket.timeout, ConnectionError, TimeoutError, http.client.HTTPException)):
             msg = "No connection to the internet (or the site did not answer). Check the connection and try again."
+        elif isinstance(exc, OSError) and (getattr(exc, "errno", None) == 28 or getattr(exc, "winerror", None) in (39, 112)):
+            msg = ("The disk of the data folder is full. Free some space and press Try again - what was already "
+                   "downloaded is kept.")
         INSTALL.update(state="failed", error=msg[:400], failed_at=time.time())
         try:
             with log.open("a", encoding="utf-8") as lf:
