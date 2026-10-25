@@ -1439,7 +1439,15 @@ def main():
           not (pw_ / "final_v2").exists() and not (pw_ / "manual_trims" / "t1.mp4").exists() and freed_ >= 3000, freed_)
     half_ = ae.AE_ROOT / "p999998.deleting"
     (half_ / "work").mkdir(parents=True, exist_ok=True)
+    kept_half_ = ae.AE_ROOT / "p999997.deleting"
+    (kept_half_ / "revisions").mkdir(parents=True, exist_ok=True)
+    with _db() as con:
+        con.execute("INSERT INTO ae_projects(id,title,folder,created_at,updated_at) VALUES(999997,'kept','x','t','t')"); con.commit()
     ae.sweep_deleting()
+    back_ = (ae.AE_ROOT / "p999997" / "revisions").is_dir() and not kept_half_.exists()
+    with _db() as con:
+        con.execute("DELETE FROM ae_projects WHERE id=999997"); con.commit()
+    check("Auto Edit: a project still in the list whose delete failed half-way gets its folder back", back_)
     check("Auto Edit: a project deleted half-way (the app closed meanwhile) is swept at the next start", not half_.exists())
     try:
         _od._reel_spec({"videos": {"folder": "videos"}, "text": {"title": "x" * 81}}, work)

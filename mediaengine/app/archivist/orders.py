@@ -1232,9 +1232,14 @@ def retry(oid: str) -> bool:
 def delete(oid: str) -> bool:
     """Forget a finished order: its folders in Orders (never the owner's videos elsewhere, never a project)."""
     with _MOVE_LOCK:
-        if not oid or "/" in oid or "\\" in oid or oid in (".", "..") or busy() == oid:
+        if not oid or "/" in oid or "\\" in oid or oid in (".", ".."):
             return False
-        if oid in unfinished() and not stuck(oid):
+        for d in (received_dir(), done_dir(), failed_dir()):     # the order's own name (Windows: "TRIP" opens "trip")
+            try:
+                oid = next((x.name for x in d.iterdir() if x.name.casefold() == oid.casefold()), oid)
+            except OSError:
+                pass
+        if busy() == oid or (oid in unfinished() and not stuck(oid)):
             return False
         # every folder of the order first renamed aside (one step each; a file open in a player makes it fail, and
         # then nothing is deleted - not half an answer left, nor an order without its order.json done again)

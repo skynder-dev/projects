@@ -3228,8 +3228,26 @@ def _move_aside(path: Path) -> Path | None:
 def sweep_deleting() -> None:
     """Folders left half-deleted by a Free (or a project deleted for good) when the app was closed meanwhile (at
     start, before any build)."""
-    for d in [*AE_ROOT.glob("shared.deleting-*"), *AE_ROOT.glob("p*/work.deleting-*"), *AE_ROOT.glob("p*.deleting")]:
+    for d in [*AE_ROOT.glob("shared.deleting-*"), *AE_ROOT.glob("p*/work.deleting-*")]:
         shutil.rmtree(d, ignore_errors=True)
+    for d in AE_ROOT.glob("p*.deleting"):
+        m = re.fullmatch(r"p(\d+)\.deleting", d.name)
+        if not m or not d.is_dir():
+            continue
+        try:     # a project still in the list (its delete failed half-way): its folder goes back, never away
+            with db() as con:
+                kept = con.execute("SELECT 1 FROM ae_projects WHERE id=?", (int(m.group(1)),)).fetchone() is not None
+        except Exception:
+            continue
+        if kept:
+            home_ = d.with_name(f"p{m.group(1)}")
+            if not home_.exists():
+                try:
+                    os.replace(d, home_)
+                except OSError:
+                    pass
+        else:
+            shutil.rmtree(d, ignore_errors=True)
 
 
 def clear_shared_cache() -> int:

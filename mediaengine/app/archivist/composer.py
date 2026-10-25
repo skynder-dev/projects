@@ -1,6 +1,6 @@
 from __future__ import annotations
 from .platform_adapter import process_kwargs
-import json, os, subprocess, tempfile, threading
+import os, subprocess, tempfile, threading
 from pathlib import Path
 from .config import HOME
 from .db import VISIBLE_SQL, db, now_iso
@@ -105,8 +105,9 @@ def move_item(composition_id,position,direction):
         con.execute("UPDATE compositions SET status='draft',output_path=NULL,output_bytes=0,updated_at=? WHERE id=? AND status NOT IN ('queued','rendering')",
                     (now_iso(),int(composition_id)));con.commit()
 
-def remove_item(composition_id,position):
-    """One moment out of a composition (the others close up); never while its video is being made."""
+def remove_item(composition_id,position,clip_id=None):
+    """One moment out of a composition (the others close up); never while its video is being made. With clip_id: only
+    if that moment is still at that place (a page from before another change removes nothing else)."""
     ensure_schema();cid=int(composition_id);pos=int(position)
     with db() as con:
         con.execute("BEGIN IMMEDIATE")
@@ -114,7 +115,8 @@ def remove_item(composition_id,position):
         if not st:con.rollback();raise ValueError("Composition not found")
         if st["status"] in ("queued","rendering"):
             con.rollback();raise ValueError("Wait until the video of this composition is made, then change it.")
-        if not con.execute("SELECT 1 FROM composition_items WHERE composition_id=? AND position=?",(cid,pos)).fetchone():
+        here=con.execute("SELECT clip_id FROM composition_items WHERE composition_id=? AND position=?",(cid,pos)).fetchone()
+        if not here or (clip_id is not None and int(here["clip_id"])!=int(clip_id)):
             con.rollback();return
         con.execute("DELETE FROM composition_items WHERE composition_id=? AND position=?",(cid,pos))
         for r in con.execute("SELECT position FROM composition_items WHERE composition_id=? AND position>? ORDER BY position",(cid,pos)).fetchall():
@@ -154,9 +156,12 @@ def delete_composition(composition_id):
             con.rollback();raise ValueError("Wait until the video of this composition is made.")
         con.execute("DELETE FROM composition_items WHERE composition_id=?",(cid,))
         con.execute("DELETE FROM compositions WHERE id=?",(cid,));con.commit()
-    for old in EXPORTS.glob(f"composition_{cid}_*.mp4"):
+    if not _recorded(cid):             # (a published or handed-off composition: its videos all stay)
         try:
-            if not _referenced(old,cid):old.unlink()
+            for old in EXPORTS.iterdir():
+                if _ours(old,cid):
+                    try:old.unlink()
+                    except OSError:pass
         except OSError:
             pass
     return True
@@ -265,7 +270,7 @@ def render_composition(composition_id):
             raise ValueError("Composition is empty")
         ts=now_iso();con.execute("UPDATE compositions SET status='rendering',last_error=NULL,render_started_at=?,render_finished_at=NULL,updated_at=? WHERE id=?",(ts,ts,cid));con.commit()
     total=sum(max(0,int(r["end_ms"])-int(r["start_ms"])) for r in rows)/1000.0
-    out=None
+    out=None;before=comp["output_path"]
     try:      # (everything after 'rendering' inside: any failure is said as itself, not as "interrupted by a restart")
         if len(rows)>MAX_CLIPS or total>MAX_DURATION_S:raise ValueError("Composition exceeds current safe render limits")
         out=_unique_output(cid,aspect)
@@ -291,37 +296,44 @@ def render_composition(composition_id):
         with db() as con:
             con.execute("UPDATE compositions SET status='finished',output_path=?,output_bytes=?,last_error=NULL,render_finished_at=?,updated_at=? WHERE id=?",
                         (str(out),int(out.stat().st_size),ts,ts,cid));con.commit()
-        # the earlier videos of this composition go (never offered again) - not one recorded as published or handed
-        # off for upload (its record points at it), not one open in a player
-        for old in EXPORTS.glob(f"composition_{cid}_*.mp4"):
-            try:
-                if old!=out and not _referenced(old,cid):old.unlink()
-            except OSError:
-                pass
-        return {"composition_id":cid,"output":str(out),"output_bytes":int(out.stat().st_size),"clips":len(rows),"duration_s":total,"aspect":aspect,"audio":True}
+        res={"composition_id":cid,"output":str(out),"output_bytes":int(out.stat().st_size),"clips":len(rows),"duration_s":total,"aspect":aspect,"audio":True}
     except Exception as exc:
         if out is not None:out.unlink(missing_ok=True)
         ts=now_iso()
         with db() as con:
             con.execute("UPDATE compositions SET status='failed',last_error=?,render_finished_at=?,updated_at=? WHERE id=?",(str(exc)[:500],ts,ts,cid));con.commit()
         raise
+    # the video this one replaces goes (it was this composition's previous render, never offered again) - only a file
+    # of exactly the name a render gives, never one recorded as published or handed off, never one open in a player;
+    # a failure here never touches the new video
+    try:
+        old=Path(before) if before else None
+        if old and old!=out and old.parent.resolve()==EXPORTS.resolve() and _ours(old,cid) and not _recorded(cid):
+            old.unlink()
+    except Exception:
+        pass
+    return res
 
-def _referenced(path,cid):
-    """A composition's video that a publication record or a manual handoff manifest points at."""
+def _ours(path,cid):
+    """A file of exactly the name render_composition gives this composition's videos (a copy or a renamed file of
+    the owner's in Exports never is)."""
+    import re
+    return re.fullmatch(rf"composition_{int(cid)}_(16x9|9x16|4x5|1x1)(_\d+)?\.mp4",Path(path).name) is not None
+
+def _recorded(cid):
+    """A composition recorded as published or handed off for upload: its videos are kept (a record points at one)."""
     try:
         with db() as con:
-            if con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='social_publications'").fetchone() and \
-                    con.execute("SELECT 1 FROM social_publications WHERE output_path=? LIMIT 1",(str(path),)).fetchone():
-                return True
+            if con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='social_publications'").fetchone():
+                cols={r["name"] for r in con.execute("PRAGMA table_info(social_publications)").fetchall()}
+                if "composition_id" in cols and con.execute("SELECT 1 FROM social_publications WHERE composition_id=? LIMIT 1",(int(cid),)).fetchone():
+                    return True
     except Exception:
         return True
     try:
-        needle=json.dumps(str(path))[1:-1]
-        for f in (HOME/"exports"/"social_handoffs").glob(f"composition-{int(cid)}-*.json"):
-            if needle in f.read_text(encoding="utf-8",errors="replace"):return True
+        return any((HOME/"exports"/"social_handoffs").glob(f"composition-{int(cid)}-*.json"))
     except OSError:
         return True
-    return False
 
 def _runner(cid):
     try:render_composition(cid)

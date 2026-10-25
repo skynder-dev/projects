@@ -383,12 +383,24 @@ def run_discovery():
                         if s_.get("path")]
             # (only rows nothing was done with: never analysed, not removed / rejected, no moment of them kept - a
             # moment in a composition would go with its row)
-            clips = con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='virtual_clips'").fetchone()
-            con.execute("DELETE FROM inventory WHERE source_kind='fixed' AND source_id NOT IN (" + ",".join("?" * len(kept_ids))
-                        + ") AND staging_path IS NULL AND archive_path IS NULL AND private_path IS NULL AND rejected_path IS NULL "
-                        "AND COALESCE(work_selected,0)=0 AND excluded=0 AND COALESCE(analysis_status,'unreviewed')='unreviewed'"
-                        + (" AND NOT EXISTS (SELECT 1 FROM virtual_clips vc WHERE vc.inventory_id=inventory.id)" if clips else ""),
-                        kept_ids)
+            # (only when the settings were really read: a config.json held by an antivirus reads as "no sources")
+            try:
+                from .config import CONFIG_PATH
+                read_ok = isinstance(json.loads(CONFIG_PATH.read_text(encoding="utf-8")).get("sources"), list)
+            except Exception:
+                read_ok = False
+            if read_ok:
+                clips = con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='virtual_clips'").fetchone()
+                where = ("source_kind='fixed' AND source_id NOT IN (" + ",".join("?" * len(kept_ids))
+                         + ") AND staging_path IS NULL AND archive_path IS NULL AND private_path IS NULL AND rejected_path IS NULL "
+                         "AND COALESCE(work_selected,0)=0 AND excluded=0 AND COALESCE(analysis_status,'unreviewed')='unreviewed'"
+                         + (" AND NOT EXISTS (SELECT 1 FROM virtual_clips vc WHERE vc.inventory_id=inventory.id)" if clips else ""))
+                gone = [int(r[0]) for r in con.execute("SELECT id FROM inventory WHERE " + where, kept_ids).fetchall()]
+                if gone:
+                    con.execute("DELETE FROM inventory WHERE " + where, kept_ids)
+                    con.commit()
+                    for gid in gone:       # (a new row may get the same id: never another video's picture)
+                        (THUMBS / f"{gid}.jpg").unlink(missing_ok=True)
             con.commit()
         with STATE.lock: STATE.discovery.update({"running": False, "message": "Discovery finished", "current_source": "", "finished": now_iso()})
     except Exception as exc:

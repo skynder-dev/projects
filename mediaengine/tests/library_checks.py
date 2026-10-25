@@ -68,6 +68,19 @@ def main():
     r2 = composer.render_composition(two)
     check("composer_second_render_replaces_the_first", Path(r2["output"]).is_file() and not Path(r1["output"]).exists()
           and r1["output"] != r2["output"], (r1["output"], r2["output"]))
+    # the owner's own copy of a render in Exports, and a render handed off for upload, are never deleted
+    own_copy = Path(r2["output"]).with_name(Path(r2["output"]).stem + " - Copy.mp4")
+    shutil.copy2(r2["output"], own_copy)
+    r3 = composer.render_composition(two)
+    copy_kept = own_copy.is_file() and not Path(r2["output"]).exists() and Path(r3["output"]).is_file()
+    hand = composer.HOME / "exports" / "social_handoffs"
+    hand.mkdir(parents=True, exist_ok=True)
+    (hand / f"composition-{two}-other-x.json").write_text('{"media_path": "x"}', encoding="utf-8")
+    r4 = composer.render_composition(two)
+    check("composer_owner_copies_and_handed_off_renders_kept", copy_kept and Path(r3["output"]).is_file() and Path(r4["output"]).is_file(),
+          (own_copy.is_file(), r3["output"], r4["output"]))
+    (hand / f"composition-{two}-other-x.json").unlink()
+    r2 = r4
     with db() as con:
         con.execute("UPDATE compositions SET status='rendering' WHERE id=?", (two,)); con.commit()
     composer._ACTIVE.add(int(two))          # (as start_render marks a render running in this process)
@@ -84,6 +97,7 @@ def main():
     with db() as con:
         was_status = con.execute("SELECT analysis_status FROM inventory WHERE id=1").fetchone()[0]
     real_concat = composer._concat_segments
+    files_before = sorted(x.name for x in composer.EXPORTS.glob(f"composition_{two}_*.mp4"))
 
     def concat_then_private(parts_, out_):
         real_concat(parts_, out_)
@@ -102,7 +116,7 @@ def main():
             con.execute("UPDATE inventory SET analysis_status=? WHERE id=1", (was_status,)); con.commit()
     left = sorted(x.name for x in composer.EXPORTS.glob(f"composition_{two}_*.mp4"))
     check("composer_private_during_render_not_kept", "made Private" in late and st_["status"] == "failed"
-          and left == [Path(r2["output"]).name], (late, dict(st_), left))
+          and left == files_before and Path(r2["output"]).name in left, (late, dict(st_), left, files_before))
     # a moment taken out; the moments of a video made Private taken out at once; a composition deleted (its MP4s go)
     three = composer.create_composition([after[0]["id"], after[1]["id"], after[2]["id"] if len(after) > 2 else after[0]["id"]], "1:1", "three")
     n_before = len(composer.composition_detail(three)["items"])
@@ -119,8 +133,9 @@ def main():
     check("composer_hidden_moments_taken_out", hidden_before > 0 and dropped == hidden_before
           and composer.composition_detail(three)["hidden_items"] == 0, (hidden_before, dropped))
     ok_del = composer.delete_composition(two)
-    check("composer_deleted_with_its_mp4s", ok_del and composer.composition_detail(two) is None
-          and not list(composer.EXPORTS.glob(f"composition_{two}_*.mp4")))
+    left_mp4 = sorted(x.name for x in composer.EXPORTS.glob(f"composition_{two}_*.mp4"))
+    check("composer_deleted_with_its_mp4s_not_the_owners_copy", ok_del and composer.composition_detail(two) is None
+          and left_mp4 == [own_copy.name], left_mp4)
     print({"passed": sum(checks), "total": len(checks)})
     return 0 if all(checks) else 1
 

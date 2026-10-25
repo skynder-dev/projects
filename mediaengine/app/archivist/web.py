@@ -1282,7 +1282,7 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
         busy=c.get('status') in ('queued','rendering')      # the order stays as the video being made has it
         for x in c['items']:
             pos=int(x['position']);st=float(x['start_ms'])/1000;en=float(x['end_ms'])/1000
-            moves='' if busy else f"<form method='post' action='/composer/{cid}/move'><input type='hidden' name='position' value='{pos}'><input type='hidden' name='direction' value='up'><button class='btn2'>↑</button></form><form method='post' action='/composer/{cid}/move'><input type='hidden' name='position' value='{pos}'><input type='hidden' name='direction' value='down'><button class='btn2'>↓</button></form><form method='post' action='/composer/{cid}/remove'><input type='hidden' name='position' value='{pos}'><button class='btn2'>Remove</button></form>"
+            moves='' if busy else f"<form method='post' action='/composer/{cid}/move'><input type='hidden' name='position' value='{pos}'><input type='hidden' name='direction' value='up'><button class='btn2'>↑</button></form><form method='post' action='/composer/{cid}/move'><input type='hidden' name='position' value='{pos}'><input type='hidden' name='direction' value='down'><button class='btn2'>↓</button></form><form method='post' action='/composer/{cid}/remove'><input type='hidden' name='position' value='{pos}'><input type='hidden' name='clip' value='{int(x['id'])}'><button class='btn2'>Remove</button></form>"
             body+=f"<div class='card jobrow'><b>{pos}</b><img src='/clip-preview/{int(x['id'])}' style='width:88px;height:50px;object-fit:cover;border-radius:7px'><span><span translate='no'>{e(x['filename'])}</span><div class='muted'>{int(st//60)}:{int(st%60):02d}–{int(en//60)}:{int(en%60):02d}</div></span><span class='row'>{moves}</span></div>"
         if c.get('hidden_items'):body+=(f"<div class='card muted'><span>Moments of videos that are now Private or no longer in the Library are not shown, and this composition cannot be made into a video until they are taken out:</span> {int(c['hidden_items'])}"
                                         + ("" if busy else f"<form method='post' action='/composer/{cid}/drop-hidden' style='margin-top:8px'><button class='btn2'>Take them out</button></form>") + "</div>")
@@ -1309,8 +1309,10 @@ if(MODE==='library'){{const videoCards=cards.filter(c=>c.dataset.type==='video')
     def composer_remove(cid):
         try:pos=int(str(request.form.get('position','0')).strip())
         except ValueError:pos=0
+        try:clip=int(str(request.form.get('clip','')).strip())
+        except ValueError:clip=None
         try:
-            if 0<pos<100000:remove_composer_item(cid,pos)
+            if 0<pos<100000:remove_composer_item(cid,pos,clip if clip and 0<clip<2**62 else None)
         except ValueError:pass
         return redirect(f'/composer/{cid}')
 
