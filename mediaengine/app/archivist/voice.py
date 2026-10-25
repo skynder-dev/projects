@@ -559,8 +559,9 @@ def pace(speed: str = "", pauses: str = "") -> tuple[str, str]:
     return (speed if speed in SPEEDS else "normal"), (pauses if pauses in PAUSES else "normal")
 
 
-_ABBR = {"mr", "mrs", "ms", "dr", "st", "vs", "etc", "no", "jr", "sr", "prof", "mt", "ft", "approx", "e.g", "i.e", "a.m",
-         "p.m", "u.s", "u.k", "inc", "ltd", "co", "fig", "vol", "ca", "cf", "т.е", "т.д", "т.п", "г", "ул", "др", "им"}
+_ABBR = {"mr", "mrs", "ms", "dr", "st", "vs", "etc", "jr", "sr", "prof", "mt", "ft", "approx", "e.g", "i.e", "a.m",
+         "p.m", "u.s", "u.k", "inc", "ltd", "co", "fig", "vol", "ca", "cf", "т.е", "т.д", "т.п", "г", "ул", "др"}
+# ("no." is not here: "Just say no. Then..." ends a sentence; "No. 5" stays one by the digit after it)
 
 
 def _sentences(para: str) -> list[str]:

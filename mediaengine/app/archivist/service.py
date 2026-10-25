@@ -137,11 +137,40 @@ def _effective_kind(row: dict) -> str:
 
 _REHASH: "queue.Queue[int]" = queue.Queue()
 _REHASH_RUNNING = threading.Event()
+_REHASH_LOCK = threading.Lock()
+
+
+def _rehash_file() -> Path:
+    from .config import DATA
+    return DATA / "rehash_pending.json"      # the files still to hash: kept over a restart
+
+
+def _rehash_pending(add=(), drop=()) -> list[int]:
+    with _REHASH_LOCK:
+        f = _rehash_file()
+        try:
+            ids = {int(x) for x in json.loads(f.read_text(encoding="utf-8"))}
+        except Exception:
+            ids = set()
+        ids = (ids | {int(x) for x in add}) - {int(x) for x in drop}
+        if add or drop:
+            try:
+                if ids:
+                    tmp = f.with_suffix(".tmp")
+                    tmp.write_text(json.dumps(sorted(ids)), encoding="utf-8")
+                    os.replace(tmp, f)
+                else:
+                    f.unlink(missing_ok=True)
+            except OSError:
+                pass
+        return sorted(ids)
 
 
 def _rehash_worker() -> None:
     """The SHA-256 of files replaced in their folder, taken again one by one in the background (the old one would
-    match the old content: a card's copy of it taken as "already here", the old video's frames used for the new)."""
+    match the old content: a card's copy of it taken as "already here", the old video's frames used for the new).
+    Never while an import or another job reads the disk, never a file kept only in the cloud (no download for it:
+    hashed when it is on this PC)."""
     try:
         while True:
             try:
@@ -149,29 +178,40 @@ def _rehash_worker() -> None:
             except queue.Empty:
                 return
             try:
+                while active_foreground_job() and not STOP_EVENT.is_set():
+                    time.sleep(2)
+                if STOP_EVENT.is_set():
+                    return
                 with db() as con:
                     r = con.execute("SELECT path,size_bytes,sha256 FROM inventory WHERE id=?", (int(i),)).fetchone()
                 if not r or r["sha256"] or not r["path"] or not Path(r["path"]).is_file():
+                    _rehash_pending(drop=[i])
                     continue
                 f = Path(r["path"])
+                if _cloud_only(f):
+                    continue                 # stays pending: hashed at a later start, once it is on this PC
                 size = f.stat().st_size
                 sha = sha256_file(f)
                 with db() as con:      # only if the file is still the one hashed (not replaced again meanwhile)
                     con.execute("UPDATE inventory SET sha256=? WHERE id=? AND (sha256 IS NULL OR sha256='') AND size_bytes=?",
                                 (sha, int(i), size))
                     con.commit()
+                _rehash_pending(drop=[i])
             except Exception as exc:
                 log(f"discovery: hash of changed file {i}: {exc}")
     finally:
         _REHASH_RUNNING.clear()
-        if not _REHASH.empty() and not _REHASH_RUNNING.is_set():     # (one put just as the worker stopped)
-            _REHASH_RUNNING.set()
+        if not _REHASH.empty() and not _REHASH_RUNNING.is_set() and not STOP_EVENT.is_set():
+            _REHASH_RUNNING.set()            # (one put just as the worker stopped)
             threading.Thread(target=_rehash_worker, name="rehash", daemon=True).start()
 
 
 def _rehash_later(ids: list[int]) -> None:
+    ids = [int(i) for i in ids]
+    if ids:
+        _rehash_pending(add=ids)
     for i in ids:
-        _REHASH.put(int(i))
+        _REHASH.put(i)
     if not _REHASH_RUNNING.is_set():
         _REHASH_RUNNING.set()
         threading.Thread(target=_rehash_worker, name="rehash", daemon=True).start()
@@ -341,9 +381,14 @@ def run_discovery():
             # imported, chosen, archived or made Private (a Library video used in place stays where it is)
             kept_ids = [str(Path(os.path.expandvars(str(s_.get("path") or ""))).expanduser()) for s_ in cfg.get("sources", [])
                         if s_.get("path")]
+            # (only rows nothing was done with: never analysed, not removed / rejected, no moment of them kept - a
+            # moment in a composition would go with its row)
+            clips = con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='virtual_clips'").fetchone()
             con.execute("DELETE FROM inventory WHERE source_kind='fixed' AND source_id NOT IN (" + ",".join("?" * len(kept_ids))
                         + ") AND staging_path IS NULL AND archive_path IS NULL AND private_path IS NULL AND rejected_path IS NULL "
-                        "AND COALESCE(work_selected,0)=0 AND COALESCE(analysis_status,'')<>'private'", kept_ids)
+                        "AND COALESCE(work_selected,0)=0 AND excluded=0 AND COALESCE(analysis_status,'unreviewed')='unreviewed'"
+                        + (" AND NOT EXISTS (SELECT 1 FROM virtual_clips vc WHERE vc.inventory_id=inventory.id)" if clips else ""),
+                        kept_ids)
             con.commit()
         with STATE.lock: STATE.discovery.update({"running": False, "message": "Discovery finished", "current_source": "", "finished": now_iso()})
     except Exception as exc:
@@ -1837,6 +1882,36 @@ def start_workers() -> None:
             # was actually running to 'queued' (breaking the restart guard and the watchdog).
             init_db(); recover_jobs()
             threading.Thread(target=_job_worker,daemon=True,name="ArchivistJobWorker").start(); JOB_WORKER_STARTED=True
+            _finish_private_moves()
+            try:
+                left = _rehash_pending()
+                if left:
+                    _rehash_later(left)
+            except Exception as exc:
+                log(f"rehash at start: {exc}")
+
+
+def _finish_private_moves() -> None:
+    """Private videos already hidden whose own copy (Staging / archive) could not be moved into Private (the file was
+    open in a player, the disk full): moved at the next start, as a job of their own (never left in Staging)."""
+    try:
+        with db() as con:
+            if con.execute("SELECT 1 FROM jobs WHERE kind='private' AND status IN ('queued','running') LIMIT 1").fetchone():
+                return
+            ids = [int(r["id"]) for r in con.execute(
+                "SELECT id FROM inventory WHERE analysis_status='private' AND private_path IS NULL "
+                "AND (staging_path IS NOT NULL OR archive_path IS NOT NULL)").fetchall()]
+        ids = [i for i in ids if _owned_copy(_row_one(i) or {})]
+        if ids:
+            create_job("private", ids, {})      # (the worker is started: not queue_job, which takes its lock)
+    except Exception as exc:
+        log(f"private moves at start: {exc}")
+
+
+def _row_one(inv_id: int) -> dict | None:
+    with db() as con:
+        r = con.execute("SELECT * FROM inventory WHERE id=?", (int(inv_id),)).fetchone()
+    return _row_dict(r) if r else None
 
 
 def queue_job(kind:str, ids:list[int], options:dict|None=None) -> int:

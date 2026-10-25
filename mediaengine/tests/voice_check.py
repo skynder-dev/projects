@@ -141,6 +141,8 @@ def main() -> int:
     check("no word lost or doubled in the pieces", re.findall(r"\S+", " ".join(c["text"] for c in cs)) == re.findall(r"\S+", text))
     check("a longer pause after a paragraph", cs[0]["pause_after"] == 0.6, cs[0])
     check("empty text: no pieces", vo.chunks("  \n ") == [])
+    check("a sentence that ends in 'no.' ends there", vo._sentences("Just say no. Then we go.") == ["Just say no.", "Then we go."],
+          vo._sentences("Just say no. Then we go."))
     check("sentences are not cut after Mr. / e.g. / p.m. / an initial",
           vo._sentences("Mr. Smith came at 5 p.m. today. We met J. R. Smith. See e.g. the photos! Done.")
           == ["Mr. Smith came at 5 p.m. today.", "We met J. R. Smith.", "See e.g. the photos!", "Done."],
@@ -150,7 +152,9 @@ def main() -> int:
     same = [("almost twenty percent cheaper", "Almost 20% cheaper."), ("Write an e-mail at 5 p.m.", "Write an email at five PM."),
             ("Tip #3: okay?", "Tip number three. OK?"), ("It costs 1,000 dollars", "It costs one thousand dollars."),
             ("twenty-five minutes", "25 minutes"), ("two hundred and five", "205"), ("1, 2, 3, go", "one, two, three, go"),
-            ("5 and 6", "five and six"), ("the 1st day", "the first day")]
+            ("5 and 6", "five and six"), ("the 1st day", "the first day"), ("first-class", "first class"),
+            ("well-known", "well known"), ("COVID-19", "COVID 19"), ("at 10:30", "at 10.30"), ("version 2.0", "version 2 0"),
+            ("one of the best", "one of the best"), ("no one", "no one")]
     check("the word check: the same words written another way are not errors (20% / twenty percent, e-mail / email ...)",
           all(vw.word_errors(r_, s_) == 0 for r_, s_ in same), [(r_, vw.word_errors(r_, s_)) for r_, s_ in same])
     check("the word check: a missing or wrong word still counts", vw.word_errors("hello world", "hello") == 1

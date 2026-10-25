@@ -386,7 +386,10 @@ def create_job(kind: str, ids: list[int], options: dict | None = None) -> int:
         raise ValueError("No files selected")
     with db() as con:
         rows = con.execute(
-            f"SELECT id,size_bytes,source_kind,staging_path,archive_path,private_path,path FROM inventory WHERE excluded=0 AND id IN ({','.join('?' for _ in ids)})"
+            # (Private: also a video already hidden whose copy could not be moved yet - Retry moves it)
+            f"SELECT id,size_bytes,source_kind,staging_path,archive_path,private_path,path FROM inventory WHERE "
+            + ("(excluded=0 OR (analysis_status='private' AND private_path IS NULL))" if kind == "private" else "excluded=0")
+            + f" AND id IN ({','.join('?' for _ in ids)})"
             + ("" if kind in ("private", "reject") else " AND COALESCE(analysis_status,'')<>'private'") + " ORDER BY id",
             ids,
         ).fetchall()

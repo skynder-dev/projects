@@ -38,7 +38,9 @@ def _words(s: str) -> list[str]:
     "okay" = "ok", "1st" = "first" (words in brackets are said too, and checked)."""
     s = str(s).lower().replace("’", "'").replace("%", " percent ").replace("#", " number ")
     s = re.sub(r"(?<=\d),(?=\d{3}\b)", "", s)            # 1,000 -> 1000
-    s = re.sub(r"(?<=\w)[.\-](?=\w)", "", s)              # e-mail, p.m., U.S., twenty-five
+    s = re.sub(r"\be-mail", "email", s)
+    s = re.sub(r"(?<=\w)-(?=\w)", " ", s)                  # first-class = first class, twenty-five = twenty five
+    s = re.sub(r"(?<=[^\W\d_])\.(?=[^\W\d_])", "", s)      # p.m. = pm, U.S. = us (not 10.30 or 2.0)
     out = []
     for w in re.findall(r"[\w']+", s):
         w = _SAME.get(w, w)

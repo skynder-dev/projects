@@ -906,6 +906,27 @@ def main():
         _sv._verified_move = real_mv_
     with _db() as con:
         pr1_ = dict(con.execute("SELECT excluded,analysis_status,private_path,staging_path FROM inventory WHERE id=?", (pid_,)).fetchone())
+    # Retry (a new Private job for the same video) and the next start take it although it is hidden already
+    from archivist.db import create_job as _cj
+    made_ = []
+    try:
+        made_.append(_cj("private", [pid_], {}))
+    except ValueError:
+        pass
+    with _db() as con:
+        before_jobs_ = {r[0] for r in con.execute("SELECT id FROM jobs").fetchall()}
+        for j_ in made_:
+            con.execute("DELETE FROM job_items WHERE job_id=?", (j_,)); con.execute("DELETE FROM jobs WHERE id=?", (j_,))
+        con.commit()
+    _sv._finish_private_moves()
+    with _db() as con:
+        start_jobs_ = [r[0] for r in con.execute("SELECT j.id FROM jobs j JOIN job_items ji ON ji.job_id=j.id WHERE j.kind='private' "
+                                                  "AND ji.inventory_id=?", (pid_,)).fetchall()]
+        for j_ in start_jobs_:
+            con.execute("DELETE FROM job_items WHERE job_id=?", (j_,)); con.execute("DELETE FROM jobs WHERE id=?", (j_,))
+        con.commit()
+    check("Private: a hidden video whose copy was not moved - Retry takes it, the next start moves it", len(made_) == 1
+          and len(start_jobs_) == 1, (made_, start_jobs_))
     _sv._mark_private_one(pid_)
     with _db() as con:
         pr2_ = dict(con.execute("SELECT excluded,analysis_status,private_path,staging_path FROM inventory WHERE id=?", (pid_,)).fetchone())
@@ -971,12 +992,15 @@ def main():
         keep_id_ = con.execute("INSERT INTO inventory(source_key,source_id,source_label,source_kind,path,filename,media_type,size_bytes,"
                                "work_selected,discovered_at,last_seen_at) VALUES('keep-key',?,'Старая папка','fixed',?,'y.mp4','video',5,1,?,?)",
                                (str(work / "removed source"), str(work / "removed source" / "y.mp4"), _now(), _now())).lastrowid
+        seen_id_ = con.execute("INSERT INTO inventory(source_key,source_id,source_label,source_kind,path,filename,media_type,size_bytes,"
+                               "analysis_status,discovered_at,last_seen_at) VALUES('seen-key',?,'Старая папка','fixed',?,'z.mp4','video',5,"
+                               "'safe',?,?)", (str(work / "removed source"), str(work / "removed source" / "z.mp4"), _now(), _now())).lastrowid
         con.commit()
     _sv.run_discovery()
     with _db() as con:
-        left_ = {r[0] for r in con.execute("SELECT id FROM inventory WHERE id IN (?,?)", (gone_id_, keep_id_)).fetchall()}
-    check("Library: a folder taken out of the sources is no longer listed in Import; a Library video of it stays",
-          left_ == {keep_id_}, left_)
+        left_ = {r[0] for r in con.execute("SELECT id FROM inventory WHERE id IN (?,?,?)", (gone_id_, keep_id_, seen_id_)).fetchall()}
+    check("Library: a folder taken out of the sources is no longer listed in Import; a Library video or an analysed one stays",
+          left_ == {keep_id_, seen_id_}, left_)
     # converted files: each one has "Show in folder" / "Open video" (found by its job and place, never by a path from
     # the page), the Convert page opens the Converted folder, and a finished job keeps its list after the page reloads
     import json as _js

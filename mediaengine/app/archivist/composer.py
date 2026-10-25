@@ -1,6 +1,6 @@
 from __future__ import annotations
 from .platform_adapter import process_kwargs
-import os, subprocess, tempfile, threading
+import json, os, subprocess, tempfile, threading
 from pathlib import Path
 from .config import HOME
 from .db import VISIBLE_SQL, db, now_iso
@@ -129,6 +129,16 @@ def _run(cmd,timeout):
     except subprocess.TimeoutExpired:
         proc.kill();out,err=proc.communicate()
         raise RuntimeError("FFmpeg took too long and was stopped")
+    finally:      # the job object's handle closed with its FFmpeg (one per segment otherwise, all app long)
+        try:
+            from .auto_edit import _JOB_HANDLES
+            h=_JOB_HANDLES.pop(proc.pid,None)
+            if h is not None:
+                import ctypes
+                from ctypes import wintypes
+                ctypes.windll.kernel32.CloseHandle(wintypes.HANDLE(h))
+        except Exception:
+            pass
     return _Done(proc.returncode,out,err)
 
 def _has_audio(source):
@@ -199,7 +209,7 @@ def render_composition(composition_id):
             raise ValueError("Composition is empty")
         ts=now_iso();con.execute("UPDATE compositions SET status='rendering',last_error=NULL,render_started_at=?,render_finished_at=NULL,updated_at=? WHERE id=?",(ts,ts,cid));con.commit()
     total=sum(max(0,int(r["end_ms"])-int(r["start_ms"])) for r in rows)/1000.0
-    out=None;before=comp["output_path"]
+    out=None
     try:      # (everything after 'rendering' inside: any failure is said as itself, not as "interrupted by a restart")
         if len(rows)>MAX_CLIPS or total>MAX_DURATION_S:raise ValueError("Composition exceeds current safe render limits")
         out=_unique_output(cid,aspect)
@@ -225,12 +235,13 @@ def render_composition(composition_id):
         with db() as con:
             con.execute("UPDATE compositions SET status='finished',output_path=?,output_bytes=?,last_error=NULL,render_finished_at=?,updated_at=? WHERE id=?",
                         (str(out),int(out.stat().st_size),ts,ts,cid));con.commit()
-        try:      # the earlier video of this composition goes (it was never offered again; open in a player: stays)
-            old=Path(before) if before else None
-            if old and old!=out and old.parent.resolve()==EXPORTS.resolve() and old.name.startswith(f"composition_{cid}_"):
-                old.unlink(missing_ok=True)
-        except OSError:
-            pass
+        # the earlier videos of this composition go (never offered again) - not one recorded as published or handed
+        # off for upload (its record points at it), not one open in a player
+        for old in EXPORTS.glob(f"composition_{cid}_*.mp4"):
+            try:
+                if old!=out and not _referenced(old,cid):old.unlink()
+            except OSError:
+                pass
         return {"composition_id":cid,"output":str(out),"output_bytes":int(out.stat().st_size),"clips":len(rows),"duration_s":total,"aspect":aspect,"audio":True}
     except Exception as exc:
         if out is not None:out.unlink(missing_ok=True)
@@ -238,6 +249,23 @@ def render_composition(composition_id):
         with db() as con:
             con.execute("UPDATE compositions SET status='failed',last_error=?,render_finished_at=?,updated_at=? WHERE id=?",(str(exc)[:500],ts,ts,cid));con.commit()
         raise
+
+def _referenced(path,cid):
+    """A composition's video that a publication record or a manual handoff manifest points at."""
+    try:
+        with db() as con:
+            if con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='social_publications'").fetchone() and \
+                    con.execute("SELECT 1 FROM social_publications WHERE output_path=? LIMIT 1",(str(path),)).fetchone():
+                return True
+    except Exception:
+        return True
+    try:
+        needle=json.dumps(str(path))[1:-1]
+        for f in (HOME/"exports"/"social_handoffs").glob(f"composition-{int(cid)}-*.json"):
+            if needle in f.read_text(encoding="utf-8",errors="replace"):return True
+    except OSError:
+        return True
+    return False
 
 def _runner(cid):
     try:render_composition(cid)
