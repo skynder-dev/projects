@@ -335,7 +335,8 @@ def _extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="
     if clip.is_file() and meta.is_file():
         try:
             m=json.loads(meta.read_text())
-            if m.get("clip_sha256")==sha256_file(clip) and m.get("source_sha256")==source_sha:
+            if m.get("clip_sha256")==sha256_file(clip) and m.get("source_sha256")==source_sha and \
+                    not (os.environ.get("MEDENG_NO_PROXY") and m.get("cut_from")):
                 with _CLIP_LOCK: _CLIP_STATS["reused"]+=1
                 try: os.utime(meta)          # last use: the app removes the longest unused clips when the cache is big
                 except OSError: pass
@@ -450,26 +451,44 @@ def _share_fast_session():
     shared._medeng_shared=True
     fa.load_runtime=shared
 
+def _head(ffmpeg,path):
+    """A video's picture size, turn, sound and length as FFmpeg reads its header (nothing decoded)."""
+    cp=subprocess.run([ffmpeg,"-hide_banner","-nostdin","-i",str(path)],capture_output=True,text=True,encoding="utf-8",
+                      errors="replace",timeout=30)
+    err=cp.stderr or ""
+    vline=next((l for l in err.splitlines() if "Video:" in l),"")
+    m=re.search(r", (\d{2,5})x(\d{2,5})",vline)
+    rot=re.search(r"rotation of (-?\d+(?:\.\d+)?) degrees",err)
+    d=re.search(r"Duration: (\d+):(\d+):(\d+(?:\.\d+)?)",err)
+    return {"w":int(m.group(1)) if m else 0,"h":int(m.group(2)) if m else 0,
+            "rot":int(round(float(rot.group(1))))%360 if rot else 0,
+            "audio":any("Audio:" in l for l in err.splitlines() if "Stream #" in l),
+            "dur":(int(d.group(1))*3600+int(d.group(2))*60+float(d.group(3))) if d else 0.0}
+
 def camera_proxy(v52,row):
     """The camera's own small copy of a video, when there is one: DJI drones and Osmo cameras write DJI_0021.LRF
     (about 720p) beside DJI_0021.MP4 - the same recording. The AI looks at it (decoding 4K was most of a first build),
-    the reel is still cut from the original. Only when it really is the same recording: smaller, a picture, the same
-    length (within half a second). MEDENG_NO_PROXY=1 turns it off."""
-    if os.environ.get("MEDENG_NO_PROXY") or row.get("origin_sha256"):
-        return None
-    src=Path(row["path"])
-    q=next((x for x in (src.with_suffix(".LRF"),src.with_suffix(".lrf")) if x.is_file()),None)
-    if q is None: return None
+    the reel is still cut from the original. Only when it really is the same recording: on this PC (not a OneDrive
+    file kept in the cloud), smaller, written at the same time, a picture of the same shape and turn, sound when the
+    original has sound, the same length within half a second. MEDENG_NO_PROXY=1 turns it off."""
     try:
-        if q.stat().st_size>=src.stat().st_size: return None
-        pr=v52.ffprobe(q)
-        if not any(x.get("codec_type")=="video" for x in pr.get("streams",[])): return None
-        dq=float(pr["format"]["duration"])
-        dp=float(row.get("duration_s") or 0) or float(v52.ffprobe(src)["format"]["duration"])
-        if abs(dq-dp)>max(0.5,dp*0.01): return None
+        if os.environ.get("MEDENG_NO_PROXY") or row.get("origin_sha256"):
+            return None
+        src=Path(row["path"])
+        q=next((x for x in (src.with_suffix(".LRF"),src.with_suffix(".lrf")) if x.is_file()),None)
+        if q is None: return None
+        sq,sp=os.stat(q),os.stat(src)
+        if getattr(sq,"st_file_attributes",0)&(0x1000|0x40000|0x400000): return None      # only in the cloud
+        if sq.st_size>=sp.st_size: return None
+        if abs(sq.st_mtime-sp.st_mtime)>900: return None     # (a camera that counts again from 0001: another flight)
+        hq,hp=_head(v52.FFMPEG,q),_head(v52.FFMPEG,src)
+        if not (hq["w"] and hq["h"] and hp["w"] and hp["h"] and hq["dur"] and hp["dur"]): return None
+        if abs(hq["dur"]-hp["dur"])>0.5 or hq["rot"]!=hp["rot"] or hq["audio"]!=hp["audio"]: return None
+        aq,ap=hq["w"]/hq["h"],hp["w"]/hp["h"]
+        if abs(aq-ap)>0.02*ap: return None
+        return q
     except Exception:
         return None
-    return q
 
 def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter_root,skipped=None):
     if str(adapter_root) not in sys.path: sys.path.insert(0,str(adapter_root))
@@ -504,26 +523,34 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
             return None,None,{"name":row["name"],"reason":"TOO_SHORT_FOR_ANALYSIS"}
         rp=reports_dir/(row["sha256"]+".json")
         if shared and not rp.is_file(): _adopt(legacy_reports,reports_dir,(rp.name,))
-        report=None
-        if rp.is_file():
+        def cached_report():
+            if not rp.is_file(): return None
             try:
                 obj=json.loads(rp.read_text())
                 if (obj.get("source_sha256")==row["sha256"] and
                     obj.get("hook_sha256")==SEMANTIC_HOOK_SHA and
-                    obj.get("model_sha256")==MODEL_SHA):
-                    report=obj["report"]
+                    obj.get("model_sha256")==MODEL_SHA and
+                    not (os.environ.get("MEDENG_NO_PROXY") and obj.get("analysed_from"))):
+                    return obj["report"]
             except Exception:
-                report=None   # damaged cache file: analyse again
-        proxy=camera_proxy(v52,row)
-        if proxy is not None:
-            with tlock: timing["proxies"]=timing.get("proxies",0)+1
-        try:
+                pass
+            return None    # damaged cache file (or made from a small copy that is turned off): analyse again
+        def clips_there(rep):
+            return all((candidates_dir/(candidate_eid(row["sha256"],c)+".mp4")).is_file() for c in (rep or {}).get("ranked",[]))
+        rep0=cached_report()
+        # the camera's small copy only when there is something to look at or cut (it is checked by reading it)
+        proxy=camera_proxy(v52,row) if (rep0 is None or not clips_there(rep0)) else None
+        def run(proxy):
+            used=False
+            report=cached_report()
             if report is None:
                 t_=time.perf_counter()
                 report=sem.analyze_video(Path(proxy or row["path"]),"SELECT_BEST","FAST_LOCAL",model_root,
                                          v52.FFMPEG,os.environ.get("MEDENG_FFPROBE","ffprobe"))
                 atomic_json(rp,{"source_sha256":row["sha256"],"hook_sha256":SEMANTIC_HOOK_SHA,
-                                "model_sha256":MODEL_SHA,"report":report})
+                                "model_sha256":MODEL_SHA,"report":report,
+                                **({"analysed_from":Path(proxy).name} if proxy else {})})
+                used=used or proxy is not None
                 if row.get("origin_sha256") and row["origin_sha256"]!=row["sha256"]:
                     # a stand-in (camcorder remux): which real file it is, so the app can forget it with the real file
                     try: rp.with_suffix(".origin").write_text(row["origin_sha256"],encoding="utf-8")
@@ -539,6 +566,8 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
             items=[]
             for rank,c in enumerate(report.get("ranked",[]),1):
                 cc=dict(c); cc["_source_rank"]=rank; items.append(cc)
+            if proxy is not None and not clips_there(report):
+                used=True
             cut=lambda cc: extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,
                                                   legacy_dir=legacy_c,origin_sha=row.get("origin_sha256"),preview=True,
                                                   cut_src=proxy)
@@ -551,6 +580,23 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
             else:
                 row_specs=[cut(cc) for cc in items]
             with tlock: timing["clips_s"]+=time.perf_counter()-t_
+            return report,row_specs,used
+        try:
+            try:
+                report,row_specs,used=run(proxy)
+            except Exception:
+                if proxy is None:
+                    raise
+                # the small copy could not be read to the end (half copied, damaged): the video itself, as without
+                # it - what was made from the copy in this attempt is not kept
+                try:
+                    obj=json.loads(rp.read_text())
+                    if obj.get("analysed_from")==Path(proxy).name: rp.unlink(missing_ok=True)
+                except Exception:
+                    pass
+                report,row_specs,used=run(None)
+            if used:
+                with tlock: timing["proxies"]=timing.get("proxies",0)+1
         except Exception as exc:
             # one unreadable file must not sink the whole reel: skip it and say so
             return None,None,{"name":row["name"],"reason":_semantic_skip_reason(exc,row)}
@@ -854,8 +900,14 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
     def make_spec(row,cc,rank):
         t_=time.perf_counter()
         was=(candidates_dir/(candidate_eid(row["sha256"],cc,"SEMANTIC_PE1")+".mp4")).is_file()
-        spec=extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,"SEMANTIC_PE1",legacy_dir=legacy_c,
-                                    origin_sha=row.get("origin_sha256"),preview=True,cut_src=proxies.get(row["sha256"]))
+        px=proxies.get(row["sha256"])
+        try:
+            spec=extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,"SEMANTIC_PE1",legacy_dir=legacy_c,
+                                        origin_sha=row.get("origin_sha256"),preview=True,cut_src=px)
+        except Exception:
+            if px is None: raise
+            spec=extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,"SEMANTIC_PE1",legacy_dir=legacy_c,
+                                        origin_sha=row.get("origin_sha256"),preview=True)      # (the small copy failed: the video)
         with st_lock:
             SEM_TIMING["clips_s"]+=time.perf_counter()-t_
             SEM_TIMING["clips_cached" if was else "clips_cut"]+=1
@@ -895,7 +947,7 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
         row=input_rows[idx]; fresh=not flags[idx]; t_row=time.perf_counter()
         progress("analyze",pos,n_rows,row["name"],eta_s=eta())
         row_deferred=[]
-        proxy=proxies[row["sha256"]]=camera_proxy(v52,row)
+        proxy=proxies[row["sha256"]]=camera_proxy(v52,row) if not flags[idx] else None   # (looked at only when needed)
         if proxy is not None: SEM_TIMING["proxies"]=SEM_TIMING.get("proxies",0)+1
         try:
             rp=reports_dir/f"{row['sha256']}.{tkey}.json"
@@ -914,11 +966,21 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
                     sc=scorer_with("vision")
                     progress("analyze",pos,n_rows,row["name"],eta_s=eta())
                     t_=time.perf_counter()
-                    info,emb=hook.scout(v7,sc,Path(proxy or row["path"]),v52.FFMPEG,os.environ.get("MEDENG_FFPROBE","ffprobe"))
+                    try:
+                        info,emb=hook.scout(v7,sc,Path(proxy or row["path"]),v52.FFMPEG,os.environ.get("MEDENG_FFPROBE","ffprobe"))
+                    except Exception:
+                        if proxy is None: raise
+                        proxy=proxies[row["sha256"]]=None          # (the small copy could not be read: the video)
+                        info,emb=hook.scout(v7,sc,Path(row["path"]),v52.FFMPEG,os.environ.get("MEDENG_FFPROBE","ffprobe"))
                     SEM_TIMING["scout_embed_s"]+=time.perf_counter()-t_
                     hook.write_scout(scout_dir,row["sha256"],scout_key,info,emb)
                 t_=time.perf_counter()
-                report=hook.rank(v7,texts,Path(proxy or row["path"]),info,emb,theme,v52.FFMPEG)
+                try:
+                    report=hook.rank(v7,texts,Path(proxy or row["path"]),info,emb,theme,v52.FFMPEG)
+                except Exception:
+                    if proxy is None: raise
+                    proxy=proxies[row["sha256"]]=None
+                    report=hook.rank(v7,texts,Path(row["path"]),info,emb,theme,v52.FFMPEG)
                 SEM_TIMING["rank_s"]+=time.perf_counter()-t_
                 atomic_json(rp,{"source_sha256":row["sha256"],"key":rank_key,"report":report})
             row_specs=[]
