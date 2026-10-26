@@ -860,6 +860,19 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   (a1fb730): unit 200/200, convert 65/65, Edge 20/20, E2E 88/91/80, AI glue 21/21, library 11/11, library flow 43/43,
   orders 52/52, voice 197/197, route fuzz 0, Russian 218 pages 0 English, public repo 0.
   Published: b230 (commit a1fb730), ZIP 4,105,583 bytes, the same runtime - the Update button is enough.
+- 2026-10-26: DJI drones and Osmo cameras write a small copy (DJI_0021.LRF, ~720p) beside each video. The AI (and
+  AI+) now finds the moments in that copy and cuts its previews from it; the reel is still cut from the original 4K
+  (full-quality pieces, trims, render). Only the same recording is used: on this PC (not cloud-only), smaller,
+  written within 15 minutes of the video, the same shape, turn and sound, the same length within 0.5 s; looked at
+  only when something is still to be analysed or cut; a copy that cannot be read to the end gives way to the video
+  itself; reports and previews made from a copy are marked. Reviewed (sound of a proxy without audio muting a reel,
+  damaged copy dropping a video, loose length check, shape/turn, a check that could not fail, cloud-only, errors
+  escaping) - all fixed before publishing. The owner's folder D:\100MEDIA is not readable from here, so whether his
+  copies are there shows on his first build (the project page says "moments found in the camera's small copies").
+  Not yet: "Prepare AI+ for the Library" still looks at the originals. Windows run 40287264882 (b7466e5): unit 200/200,
+  convert 65/65, Edge 20/20, E2E 88/91/80, AI glue 22/22 (dji_small_copies_looked_at_reel_cut_from_the_originals),
+  AI+ glue 21/21, library 11/11, library flow 43/43, orders 52/52, voice 197/197, route fuzz 0, Russian 218 pages 0
+  English, public repo 0. Published: b231 (commit b7466e5), ZIP 4,112,542 bytes, the same runtime.
 - Owner PC seen through the app's pages (2026-10-25 morning, read only): b217 installed; 6 projects (100MEDIA);
   16 logical cores, 69 GB RAM, RTX 3060; decoding on the card not used (x0.85); card test for converting not run.
 - Owner PC seen through the app's pages (2026-10-24 evening, read only): he runs b213 (pressed Update); the voice

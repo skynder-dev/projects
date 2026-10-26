@@ -204,6 +204,9 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   when their last version was made; a project from a camera's own folder (100MEDIA, 100GOPRO …) is named with the days
   it was filmed; a folder that already has a project says so on the new-reel page; the music window opens in the last
   music folder; What's new shows the 8 newest changes first; Composer keeps the owner's own copies in Exports.
+- b231: **DJI videos**: when the camera's small copy (.LRF) lies next to a video, the AI finds the moments in it - a
+  first build much faster - and the reel is still cut from the original 4K; only a copy of the same recording is used,
+  a damaged one gives way to the video itself; the project page says how many copies were used.
 
 ## Orders from other programs; night review fixes (2026-10-17)
 
