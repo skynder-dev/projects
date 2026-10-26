@@ -19,7 +19,9 @@ about how long is left once that can be estimated. When a long build (over a min
 the reel (can be turned off in Settings).
 
 The AI analyses each video once and keeps it for every reel: a new reel from the same videos (another project, another
-length, "A reel for every day") analyses nothing again. Big videos (4K) are analysed several at once. "Check this PC"
+length, "A reel for every day") analyses nothing again. Big videos (4K) are analysed several at once. DJI videos
+(drones, Osmo): when the camera's small copy `.LRF` lies next to a video, the AI finds the moments in it - much
+faster - and the reel is still cut from the original 4K. "Check this PC"
 shows how much space this takes ("Free").
 **"Prepare in advance"** (next to "Create reel"): MediaEngine only analyses the videos - for example overnight - and
 the reel is then made from them in minutes ("Build" in the project). Videos added to the folder later are analysed

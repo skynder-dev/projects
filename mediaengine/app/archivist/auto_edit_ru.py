@@ -746,6 +746,7 @@ PHRASES = {
     "A reel for every day is made for at most 31 days at once: choose a day below, or put the videos of one trip in a folder of their own.":
         "Ролик на каждый день делается сразу не больше чем для 31 дня: выбери день ниже или положи видео одной поездки в отдельную папку.",
     "Choose a voice.": "Выбери голос.",
+    "moments found in the camera's small copies (.LRF):": "моменты найдены по маленьким копиям камеры (.LRF):",
     "This folder already has a project:": "У этой папки уже есть проект:", "and more:": "и ещё:",
     "Open it to make another length or format as a new version there - everything stays in one place (the videos are not analysed again either way).":
         "Открой его, чтобы сделать другую длину или формат новой версией там — всё останется в одном месте (видео заново не анализируются в любом случае).",
@@ -931,6 +932,8 @@ PHRASES = {
         'Музыка для ролика или видео: окно выбора открывается в папке музыки, выбранной в прошлый раз.',
     'Convert: on a PC with an NVIDIA card that was never tested, the first conversion tests the card by itself first (about two minutes), then converts on whichever was faster with the same picture.':
         'Конвертация: на компьютере с видеокартой NVIDIA, которую ещё не проверяли, первая конвертация сначала сама проверит видеокарту (около двух минут), потом сконвертирует на том, что быстрее с той же картинкой.',
+    "Auto Edit with DJI videos: when the camera's small copy (.LRF) lies next to a video, the AI finds the moments in it - a first build much faster; the reel is still cut from the original 4K.":
+        'Автомонтаж с видео DJI: если рядом с видео лежит его маленькая копия камеры (.LRF), ИИ ищет моменты по ней — первая сборка намного быстрее; сам ролик по-прежнему режется из оригинала 4K.',
     "Convert: pictures from long videos are saved many times faster (each picture read from its own moment, not the whole video decoded).":
         "Конвертация: кадры из длинных видео сохраняются в разы быстрее (каждый кадр читается со своего момента, а не всё видео целиком).",
     "Convert: Select all / Clear the selection; the preset and the lasting choices (sound, date and time, Brighter, logo, how often pictures are taken) are remembered; a copy shorter than its video (a damaged or half-copied file) says so.":

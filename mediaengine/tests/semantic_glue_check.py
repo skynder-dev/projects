@@ -48,7 +48,7 @@ def main():
     src = work / "in"
     shutil.copytree(fx / "seven", src)
 
-    def build(name, work_name=None, prepare=False):
+    def build(name, work_name=None, prepare=False, input_dir=None):
         spec = importlib.util.spec_from_file_location("r3_under_test_" + name, R3 / "p11_folder_to_reel_r3.py")
         r3 = importlib.util.module_from_spec(spec); spec.loader.exec_module(r3)
         real_load = r3.load_module
@@ -56,7 +56,7 @@ def main():
         r3.semantic_runtime_preflight = lambda runtime, model_root, adapter_root: {"pass": True, "checks": {"stub": True}, "note": "STUB - not the model"}
         out_ = work / ("out" if name == "one" else "out_" + name)
         wd = work / (work_name or ("w" if name == "one" else "w_" + name))
-        args = argparse.Namespace(input_dir=str(src), input_list="", output_dir=str(out_), work_dir=str(wd),
+        args = argparse.Namespace(input_dir=str(input_dir or src), input_list="", output_dir=str(out_), work_dir=str(wd),
                                   runtime_dir=str(R3), target_seconds=30.0, audio="auto", semantic="required", profile="9x16",
                                   resolution="social_hd", progress_file="", exclude_events="", edits="", skip_sha_file="",
                                   prepare_only=prepare)
@@ -98,6 +98,20 @@ def main():
         out_rc16, r3_16 = build("reclip16")
     finally:
         os.cpu_count = real_cpus
+    # a DJI camera's own small copies (.LRF beside each video): the AI looks at them, the reel is cut from the originals;
+    # a copy of another length (not the same recording) is not used
+    src_lrf = work / "in_lrf"
+    shutil.copytree(fx / "seven", src_lrf)
+    lrf_made = []
+    for v in sorted(src_lrf.glob("clip_*.mp4")):
+        if " " in v.stem:
+            continue
+        cut = ["-t", "2"] if v.stem == "clip_7" else []            # the wrong length
+        subprocess.run([ff, "-v", "error", "-y", "-i", str(v), *cut, "-vf", "scale=320:-2", "-c:v", "libx264", "-preset", "ultrafast",
+                        "-c:a", "aac", "-f", "mp4", str(v.with_suffix(".LRF"))], check=True)
+        lrf_made.append(v.stem)
+    os.environ["MEDENG_AI_SHARED_CACHE"] = str(work / "shared_lrf")
+    out_lrf, _ = build("lrf", input_dir=src_lrf)
     # decoding on the graphics card that fails (here: a method FFmpeg does not know): every cut is made again on the
     # processor - the same reel, nothing left at preview quality
     os.environ["MEDENG_AI_SHARED_CACHE"] = str(work / "shared_hw")
@@ -199,6 +213,19 @@ def main():
     ok_, det_ = same_reel(out, out_rc16)
     check("only_cutting_left_more_cuts_at_once_on_16_cores", rc16.get("videos_analysed") == 0 and rc16.get("clips_cut", 0) > 0
           and rc16.get("workers") == want16 and ok_, (rc16.get("workers"), want16, det_))
+    rl = json.loads((out_lrf / "MediaEngine Result.json").read_text(encoding="utf-8"))
+    tl = rl.get("semantic_timing") or {}
+    metas = [json.loads(f.read_text(encoding="utf-8")) for f in (work / "shared_lrf" / "semantic_previews").glob("*.json")]
+    from_lrf = {m_["source_name"] for m_ in metas if str(m_.get("cut_from", "")).endswith(".LRF")}
+    from_orig = {m_["source_name"] for m_ in metas if not m_.get("cut_from")}
+    pv_lrf = [ffprobe_wh(ff, Path(m_["clip_path"])) for m_ in metas if m_.get("cut_from")]
+    # (one of clip_2 and its copy is left out as the same video: the copy has no small copy of its own)
+    check("dji_small_copies_looked_at_reel_cut_from_the_originals", tl.get("proxies") == len(from_lrf) >= 4
+          and "clip_7.mp4" in from_orig and "clip_7.mp4" not in from_lrf
+          and pv_lrf and all(w_ <= 320 for w_, _ in pv_lrf)
+          and rl.get("render_source") == "ORIGINAL_FULL_QUALITY_RECUT" and (rl["output"]["width"], rl["output"]["height"]) == (1080, 1920)
+          and all(str(x["source_name"]).endswith(".mp4") for x in rl.get("segments", [])),
+          (tl.get("proxies"), sorted(from_lrf), sorted(from_orig), pv_lrf[:3], rl.get("render_source")))
     hwres = json.loads((out_hw / "MediaEngine Result.json").read_text(encoding="utf-8"))
     ok_, det_ = same_reel(out, out_hw)
     hd_ = hwres.get("hw_decode") or {}

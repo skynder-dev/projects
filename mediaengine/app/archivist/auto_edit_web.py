@@ -1896,6 +1896,12 @@ def _build_time_html(res) -> str:
     data = f" data-timing='{_h.escape(json.dumps({'stages': st, 'ai': tm, 'hw': res.get('hw_decode')}), quote=True)}'"   # for support: where the AI time went
     hw = res.get("hw_decode") or {}
     gpu = " · <span>cut with the graphics card</span>" if int(hw.get("cuts") or 0) > 0 else ""
+    try:      # the camera's own small copies (DJI .LRF) looked at instead of the 4K videos
+        nprox = int(tm.get("proxies") or 0)
+    except (TypeError, ValueError, AttributeError):
+        nprox = 0
+    if nprox:
+        gpu += f" · <span>moments found in the camera's small copies (.LRF):</span> {nprox}"
     return (f"<div class='muted ae-buildtime' style='font-size:13px'{data}><span>Built in</span> {d(total)}"
             + (" (" + " · ".join(parts) + ")" if parts else "") + gpu + "</div>")
 

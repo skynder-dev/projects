@@ -313,15 +313,19 @@ def candidate_eid(source_sha,c,tag="SEMANTIC_V2"):
 _EID_LOCKS={}
 _EID_LOCKS_GUARD=threading.Lock()
 
-def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="SEMANTIC_V2", legacy_dir=None, origin_sha=None, preview=False):
+def extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="SEMANTIC_V2", legacy_dir=None, origin_sha=None, preview=False,
+                           cut_src=None):
     """One clip at a time per moment id: two threads asked for the same window (AI+ can rank one window twice) never
     cut and rename the same file at once (on Windows the second rename fails while the first is still being read)."""
     key=str(Path(out_dir)/candidate_eid(source_sha,c,tag))
     with _EID_LOCKS_GUARD: lock=_EID_LOCKS.setdefault(key,threading.Lock())
     with lock:
-        return _extract_candidate_clip(v52,src,source_sha,source_name,c,out_dir,tag,legacy_dir,origin_sha,preview)
+        return _extract_candidate_clip(v52,src,source_sha,source_name,c,out_dir,tag,legacy_dir,origin_sha,preview,cut_src)
 
-def _extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="SEMANTIC_V2", legacy_dir=None, origin_sha=None, preview=False):
+def _extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="SEMANTIC_V2", legacy_dir=None, origin_sha=None, preview=False,
+                            cut_src=None):
+    """cut_src: the camera's own small copy of src (a DJI .LRF) the preview is cut from - the clip still belongs to src
+    (its source_path: the reel is cut from the original)."""
     start=float(c["start_s"]); end=float(c["end_s"]); dur=max(.25,end-start)
     eid=candidate_eid(source_sha,c,tag)
     out_dir.mkdir(parents=True,exist_ok=True)
@@ -344,9 +348,10 @@ def _extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="
         clip.unlink(missing_ok=True); meta.unlink(missing_ok=True)
     tmp=out_dir/f".{eid}.{os.getpid()}.{threading.get_ident()}.tmp.mp4"
     if tmp.exists(): tmp.unlink()
-    cp=run_cut(v52.FFMPEG,src,[v52.FFMPEG,"-hide_banner","-loglevel","error","-y"],
-               ["-ss",f"{start:.3f}","-i",str(src),"-t",f"{dur:.3f}",
-                "-map","0:v:0",*sound_args(v52,src,dur),*(["-vf",PREVIEW_VF] if preview else []),"-c:v","libx264",*CANDIDATE_X264,
+    inp=Path(cut_src) if (cut_src and preview) else src
+    cp=run_cut(v52.FFMPEG,inp,[v52.FFMPEG,"-hide_banner","-loglevel","error","-y"],
+               ["-ss",f"{start:.3f}","-i",str(inp),"-t",f"{dur:.3f}",
+                "-map","0:v:0",*sound_args(v52,inp,dur),*(["-vf",PREVIEW_VF] if preview else []),"-c:v","libx264",*CANDIDATE_X264,
                 "-pix_fmt","yuv420p","-c:a","aac","-b:a","192k","-ar","48000","-ac","2",
                 "-movflags","+faststart",str(tmp)],tmp,check=lambda t: Path(t).is_file() and Path(t).stat().st_size>0)
     if cp.returncode!=0: raise RuntimeError("SEMANTIC_CANDIDATE_EXTRACT_FAILED:"+cp.stderr[-800:])
@@ -372,6 +377,7 @@ def _extract_candidate_clip(v52, src, source_sha, source_name, c, out_dir, tag="
     }
     if origin_sha and origin_sha!=source_sha: m["origin_sha256"]=origin_sha   # a stand-in (camcorder remux): the real file
     if preview: m["preview"]=True
+    if inp!=src: m["cut_from"]=Path(inp).name        # (the camera's small copy: a preview, as every preview is)
     atomic_json(meta,m)
     with _CLIP_LOCK: _CLIP_STATS["cut"]+=1
     return m
@@ -444,6 +450,27 @@ def _share_fast_session():
     shared._medeng_shared=True
     fa.load_runtime=shared
 
+def camera_proxy(v52,row):
+    """The camera's own small copy of a video, when there is one: DJI drones and Osmo cameras write DJI_0021.LRF
+    (about 720p) beside DJI_0021.MP4 - the same recording. The AI looks at it (decoding 4K was most of a first build),
+    the reel is still cut from the original. Only when it really is the same recording: smaller, a picture, the same
+    length (within half a second). MEDENG_NO_PROXY=1 turns it off."""
+    if os.environ.get("MEDENG_NO_PROXY") or row.get("origin_sha256"):
+        return None
+    src=Path(row["path"])
+    q=next((x for x in (src.with_suffix(".LRF"),src.with_suffix(".lrf")) if x.is_file()),None)
+    if q is None: return None
+    try:
+        if q.stat().st_size>=src.stat().st_size: return None
+        pr=v52.ffprobe(q)
+        if not any(x.get("codec_type")=="video" for x in pr.get("streams",[])): return None
+        dq=float(pr["format"]["duration"])
+        dp=float(row.get("duration_s") or 0) or float(v52.ffprobe(src)["format"]["duration"])
+        if abs(dq-dp)>max(0.5,dp*0.01): return None
+    except Exception:
+        return None
+    return q
+
 def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter_root,skipped=None):
     if str(adapter_root) not in sys.path: sys.path.insert(0,str(adapter_root))
     sem=load_module("medeng_event_semantic_v7",runtime/"medeng_event_semantic_v7.py")
@@ -487,10 +514,13 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
                     report=obj["report"]
             except Exception:
                 report=None   # damaged cache file: analyse again
+        proxy=camera_proxy(v52,row)
+        if proxy is not None:
+            with tlock: timing["proxies"]=timing.get("proxies",0)+1
         try:
             if report is None:
                 t_=time.perf_counter()
-                report=sem.analyze_video(Path(row["path"]),"SELECT_BEST","FAST_LOCAL",model_root,
+                report=sem.analyze_video(Path(proxy or row["path"]),"SELECT_BEST","FAST_LOCAL",model_root,
                                          v52.FFMPEG,os.environ.get("MEDENG_FFPROBE","ffprobe"))
                 atomic_json(rp,{"source_sha256":row["sha256"],"hook_sha256":SEMANTIC_HOOK_SHA,
                                 "model_sha256":MODEL_SHA,"report":report})
@@ -510,7 +540,8 @@ def build_semantic_candidates(runtime,input_rows,work_dir,v52,model_root,adapter
             for rank,c in enumerate(report.get("ranked",[]),1):
                 cc=dict(c); cc["_source_rank"]=rank; items.append(cc)
             cut=lambda cc: extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,
-                                                  legacy_dir=legacy_c,origin_sha=row.get("origin_sha256"),preview=True)
+                                                  legacy_dir=legacy_c,origin_sha=row.get("origin_sha256"),preview=True,
+                                                  cut_src=proxy)
             if clip_workers>1 and len(items)>1:
                 # a video's moments cut two at a time on a big PC (one cut of a 4K video keeps few cores busy); the
                 # same clips in the same order (each moment's file is its own)
@@ -819,11 +850,12 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
     texts=PeTextCache(text_dir/(scout_key[:24]+".npz"),lambda: scorer_with("text"),identity)
     specs=[]; reports=[]; kept=[]; deferred=[]
     st_lock=threading.Lock()
+    proxies={}         # a camera's own small copy per video (camera_proxy): looked at, its previews cut from it
     def make_spec(row,cc,rank):
         t_=time.perf_counter()
         was=(candidates_dir/(candidate_eid(row["sha256"],cc,"SEMANTIC_PE1")+".mp4")).is_file()
         spec=extract_candidate_clip(v52,Path(row["path"]),row["sha256"],row["name"],cc,candidates_dir,"SEMANTIC_PE1",legacy_dir=legacy_c,
-                                    origin_sha=row.get("origin_sha256"),preview=True)
+                                    origin_sha=row.get("origin_sha256"),preview=True,cut_src=proxies.get(row["sha256"]))
         with st_lock:
             SEM_TIMING["clips_s"]+=time.perf_counter()-t_
             SEM_TIMING["clips_cached" if was else "clips_cut"]+=1
@@ -863,6 +895,8 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
         row=input_rows[idx]; fresh=not flags[idx]; t_row=time.perf_counter()
         progress("analyze",pos,n_rows,row["name"],eta_s=eta())
         row_deferred=[]
+        proxy=proxies[row["sha256"]]=camera_proxy(v52,row)
+        if proxy is not None: SEM_TIMING["proxies"]=SEM_TIMING.get("proxies",0)+1
         try:
             rp=reports_dir/f"{row['sha256']}.{tkey}.json"
             report=None
@@ -880,11 +914,11 @@ def build_semantic_candidates_pe(runtime,input_rows,work_dir,v52,pe_dir,skipped=
                     sc=scorer_with("vision")
                     progress("analyze",pos,n_rows,row["name"],eta_s=eta())
                     t_=time.perf_counter()
-                    info,emb=hook.scout(v7,sc,Path(row["path"]),v52.FFMPEG,os.environ.get("MEDENG_FFPROBE","ffprobe"))
+                    info,emb=hook.scout(v7,sc,Path(proxy or row["path"]),v52.FFMPEG,os.environ.get("MEDENG_FFPROBE","ffprobe"))
                     SEM_TIMING["scout_embed_s"]+=time.perf_counter()-t_
                     hook.write_scout(scout_dir,row["sha256"],scout_key,info,emb)
                 t_=time.perf_counter()
-                report=hook.rank(v7,texts,Path(row["path"]),info,emb,theme,v52.FFMPEG)
+                report=hook.rank(v7,texts,Path(proxy or row["path"]),info,emb,theme,v52.FFMPEG)
                 SEM_TIMING["rank_s"]+=time.perf_counter()-t_
                 atomic_json(rp,{"source_sha256":row["sha256"],"key":rank_key,"report":report})
             row_specs=[]

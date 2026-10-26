@@ -2530,6 +2530,7 @@ WHATS_NEW_ITEMS = [
     ("2026-10-19b", "Voice-over: your picks from the voice test, the voices 4_4 and 4_2, instead of 3.1."),
     ("2026-10-20", "Text on a video (Auto Edit → Voice-over and text): titles and lines of text at the moments you choose, on a colored stripe, a dark box or in big letters - no add-on needed."),
     ("2026-10-22", "Captions in two more looks: one word at a time, big (like TikTok), and the word being said on a color block."),
+    ('2026-10-26', "Auto Edit with DJI videos: when the camera's small copy (.LRF) lies next to a video, the AI finds the moments in it - a first build much faster; the reel is still cut from the original 4K."),
     ('2026-10-25c', "Auto Edit: each project shows when its last version was made; a project from a camera's own folder (100MEDIA, 100GOPRO …) is named with the days it was filmed; a folder that already has a project says so on the new-reel page."),
     ('2026-10-25c', 'Convert: on a PC with an NVIDIA card that was never tested, the first conversion tests the card by itself first (about two minutes), then converts on whichever was faster with the same picture.'),
     ('2026-10-25c', 'Music for a reel or a video: the window opens in the folder of the music you chose last time.'),
