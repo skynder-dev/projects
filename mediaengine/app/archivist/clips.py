@@ -330,7 +330,8 @@ def new_make(find_jid: str, chosen: list[dict], fmt: str = "vertical", framing: 
             raise ClipsError("A clip must be at least 3 seconds long.")
         if e - s > 180.0:
             raise ClipsError("A clip can be at most 3 minutes long.")
-        clean.append({"s": round(s, 2), "e": round(e, 2), "first": tf.clean_text(str(c.get("first") or ""), 200)})
+        clean.append({"s": round(s, 2), "e": round(e, 2), "first": tf.clean_text(str(c.get("first") or ""), 200),
+                      **({"title": tf.clean_text(str(c.get("title") or ""))} if tf.clean_text(str(c.get("title") or "")) else {})})
     if not clean:
         raise ClipsError("Tick the clips to make first.")
     if len(clean) > MAX_CHOSEN:
@@ -362,6 +363,21 @@ def last_choices() -> dict:
             "format": c.get("format") if c.get("format") in FORMATS else "vertical",
             "framing": c.get("framing") if c.get("framing") in FRAMINGS else "face",
             "captions": c.get("captions") is not False, "title": c.get("title") is True}
+
+
+def sweep_orphans() -> int:
+    """Made-clips jobs whose video's job is gone (deleted while they waited): their folders go (the clips saved next to
+    the reels stay)."""
+    n = 0
+    for j in vo.list_jobs(100000):
+        if j.get("kind") == "clips_make" and j["state"] not in ("working", "waiting"):
+            try:
+                if not (vo._job_dir(str(j.get("find") or "")) / "job.json").is_file():
+                    vo.delete_job(j["id"])
+                    n += 1
+            except vo.VoiceError:
+                pass
+    return n
 
 
 def candidates(jid: str) -> list[dict]:
@@ -833,8 +849,9 @@ def _make_one(d: Path, job: dict, n: int, c: dict, src: Path, info: dict, out, p
         o["position"] = "middle"                         # (two faces one above the other: the captions between them)
     cs = vo.style_cues(words_between(words, s, e), o) if job.get("captions", True) else []
     texts = []
-    if job.get("first_as_title") and c.get("first"):
-        texts = tf.parse_texts([{"text": c["first"][: tf.TEXT_MAX], "start": "0", "end": "3", "where": "top", "look": "banner"}])
+    title = c.get("title") or (c.get("first") if job.get("first_as_title") else "")   # (a clip's own title first)
+    if title:
+        texts = tf.parse_texts([{"text": title[: tf.TEXT_MAX], "start": "0", "end": "3", "where": "top", "look": "banner"}])
     chain = ["scale=out_range=tv"]
     if cs or texts:
         (d / "captions.ass").write_text(tf.document(ow, oh, cs, tf.resolve_texts(texts, dur), o, 0.0), "utf-8")

@@ -118,6 +118,10 @@ def register(app, page, err_page, e, human_bytes):
                  "<div class='callout card' style='margin-bottom:12px'><b>Finding clips needs the voice add-on</b> (it listens "
                  "to the speech). It is installed once, free.<div style='margin-top:8px'><a class='btn' href='/auto/voice'>"
                  "Install the voice add-on</a></div></div>")
+        try:
+            cl.sweep_orphans()
+        except Exception:
+            pass
         rows = ""
         for j in _finds():
             res = j.get("result") or {}
@@ -197,6 +201,8 @@ def register(app, page, err_page, e, human_bytes):
                      f"<button type='button' class='btn2 vo-mini' data-play='{cid}'>▶ Play</button>{why}</div>"
                      f"<div class='cl-first' translate='no'>{e(c['first'])}</div>"
                      f"<div class='cl-text' translate='no'>{e(rest[:700])}{'…' if len(rest) > 700 else ''}</div>"
+                     f"<input name='t_{cid}' maxlength='{tf.TEXT_MAX}' placeholder='Title at the top (optional)' "
+                     f"style='margin-top:6px;width:100%;max-width:420px'>"
                      f"<input type='hidden' name='first_{cid}' value='{e(c['first'])}'></div></div>")
         fmts = "".join(f"<label><input type='radio' name='format' value='{k}' {'checked' if k == last['format'] else ''}> {e(v)}</label>"
                        for k, v in cl.FORMAT_LABELS.items())
@@ -248,7 +254,7 @@ def register(app, page, err_page, e, human_bytes):
                   f"<div class='cl-row' style='margin-top:6px;font-size:14px'><span>Color</span><select name='color'>{colors}</select>"
                   f"<span>Size</span><select name='size'>{sizes}</select><select name='position'>{pos}</select></div>"
                   f"<label style='display:block;margin-top:6px'><input type='checkbox' name='title' value='1' {'checked' if last['title'] else ''}> "
-                  f"The first sentence as a title at the top (3 s)</label>"
+                  f"The first sentence as a title at the top (3 s) - when a clip has no title of its own</label>"
                   f"<div style='margin-top:12px'><button class='ae-big'>Make the ticked clips</button></div>"
                   f"<div class='muted' style='font-size:13px;margin-top:6px'>Saved next to the saved reels, in a folder of this video. "
                   f"The face is kept in the frame; two people apart: each in a half, one above the other; more people: the whole "
@@ -276,7 +282,7 @@ def register(app, page, err_page, e, human_bytes):
                 s, en = _secs(f.get(f"s_{cid}")), _secs(f.get(f"e_{cid}"))
                 if s is None or en is None:
                     raise cl.ClipsError("Start and end: write minutes:seconds, for example 12:30.5.")
-                chosen.append({"s": s, "e": en, "first": f.get(f"first_{cid}") or cands[cid]["first"]})
+                chosen.append({"s": s, "e": en, "first": f.get(f"first_{cid}") or cands[cid]["first"], "title": f.get(f"t_{cid}") or ""})
             chosen.sort(key=lambda c: c["s"])
             cl.new_make(jid, chosen, f.get("format", "vertical"), f.get("framing", "face"), f.get("captions") == "1",
                         {"style": f.get("style"), "color": f.get("color"), "size": f.get("size"), "position": f.get("position")},

@@ -237,16 +237,21 @@ def main() -> int:
         check("making: made again, the clips made are kept (nothing made or saved twice)", again.get("ok") and len(again["clips"]) == 4
               and time.time() - t1 < 20 and sorted(x.name for x in folder.iterdir()) == before, (again.get("error"), time.time() - t1))
         # square and as filmed
-        msq = cl.new_make(fid, [chosen[0]], "square", "face", False, {}, False)
+        msq = cl.new_make(fid, [dict(chosen[0], title="My own title")], "square", "face", False, {}, False)
         mor = cl.new_make(fid, [chosen[0]], "original", "face", False, {}, False)
         sq, orr = wait(vo, msq), wait(vo, mor)
         csq = (sq.get("result") or {}).get("clips") or [{}]
         cor = (orr.get("result") or {}).get("clips") or [{}]
         fsq = None
-        if csq[0].get("file"):
-            cp = subprocess.run([ff, "-v", "error", "-ss", "6", "-i", str(vo.JOBS / msq / csq[0]["file"]), "-frames:v", "1",
+
+        def sq_frame(t):
+            cp = subprocess.run([ff, "-v", "error", "-ss", str(t), "-i", str(vo.JOBS / msq / csq[0]["file"]), "-frames:v", "1",
                                  "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], capture_output=True)
-            fsq = np.frombuffer(cp.stdout, np.uint8).reshape(1080, 1080, 3).astype(np.float32)
+            return np.frombuffer(cp.stdout, np.uint8).reshape(1080, 1080, 3).astype(np.float32)
+        if csq[0].get("file"):
+            fsq = sq_frame(6)
+            own = float(np.abs(sq_frame(1.2)[40:260] - fsq[40:260]).mean())
+            check("making: a clip's own title at the top (without the first-sentence choice)", own > 3.0, own)
         check("making: square 1080x1080 (the face kept) and as filmed 1920x1080",
               (csq[0].get("width"), csq[0].get("height")) == (1080, 1080) and (cor[0].get("width"), cor[0].get("height")) == (1920, 1080)
               and fsq is not None and 0.3 <= textured_center(fsq, slice(300, 800)) <= 0.7, (sq.get("result"), orr.get("result")))

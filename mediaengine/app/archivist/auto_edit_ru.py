@@ -1025,7 +1025,9 @@ PHRASES = {
     "Clips of this video are being made: stop them first.": "Клипы этого видео сейчас делаются: сначала останови их.",
     "Private and Rejected videos are not used.": "Видео из «Личного» и «Отклонённых» не используются.",
     "Choose the length of a clip.": "Выбери длину клипа.",
-    "Start": "Начало", "End": "Конец",
+    "Start": "Начало", "End": "Конец", "Title at the top (optional)": "Заголовок сверху (по желанию)",
+    "The first sentence as a title at the top (3 s) - when a clip has no title of its own":
+        "Первая фраза — заголовком сверху (3 с), если у клипа нет своего заголовка",
     "Find clips": "Найти клипы", "Length of a clip": "Длина клипа", "15–30 s": "15–30 с", "30–60 s": "30–60 с", "45–90 s": "45–90 с",
     "Listening takes about 5-15 minutes for an hour of video. You can close this page meanwhile; the PC does not go to sleep.":
         "Прослушивание занимает примерно 5–15 минут на час видео. Эту страницу можно закрыть, компьютер не уснёт.",
