@@ -130,6 +130,8 @@ The usual Auto Edit reel. It also becomes a normal Auto Edit project (the owner 
 - `sound`: `auto`, `source` or `mute`. `mode`: `semantic` (AI), `semantic_plus` (AI+; with `"theme"`), `technical`.
 - `framing` (vertical from horizontal videos): `fill` or `fit_blur`. `text`, `music` (+ `music_mode`: `mix`/`music`,
   `beat_sync`: false) are optional.
+- `look` (the reel's colours, optional): `natural` (as filmed, the default), `vivid` (brighter and richer), `warm` or
+  `film` (cinematic). Only the reel is coloured; the videos are not changed.
 - Videos marked **Private** (also any copy with the same content) and files in MediaEngine's Private and Rejected
   folders are never used. Rejecting moves only MediaEngine's imported copy: the original in a folder you order from
   is still used.

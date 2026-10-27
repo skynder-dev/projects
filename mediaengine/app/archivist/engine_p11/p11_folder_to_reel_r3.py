@@ -1664,14 +1664,24 @@ def music_wav(ffmpeg,music,seconds,out):
     if n<48000*0.05: raise RuntimeError("MUSIC_FILE_NO_SOUND")
     return n/48000.0
 
+# Colour looks of a reel ("look" in --dress): filters on the joined picture, in the reel's single encode, before the
+# title (the title keeps its white) - p13_looks.py (the app's preview pictures use the same filters)
+def _looks():
+    spec=importlib.util.spec_from_file_location("p13_looks",Path(__file__).resolve().parent/"p13_looks.py")
+    mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
+    return dict(mod.LOOKS)
+LOOKS=_looks()
+
 def load_dress(path,ffmpeg):
-    """--dress JSON {title, subtitle, music, music_mode, beat_sync}: nothing set = None (the reel is exactly as without it).
-    beat_sync (default on): with own music, the cuts are placed on its beats (p13_beats)."""
+    """--dress JSON {title, subtitle, music, music_mode, beat_sync, look}: nothing set = None (the reel is exactly as
+    without it). beat_sync (default on): with own music, the cuts are placed on its beats (p13_beats). look: a key of
+    LOOKS (anything else = as filmed)."""
     if not path: return None
     d=json.loads(Path(path).read_text(encoding="utf-8"))
     clean=lambda t:" ".join(str(t or "").replace("\x00"," ").split())[:80]
     out={"title":clean(d.get("title")),"subtitle":clean(d.get("subtitle")),"music":str(d.get("music") or "").strip(),
-         "music_mode":"music" if d.get("music_mode")=="music" else "mix","beat_sync":d.get("beat_sync",True) is not False}
+         "music_mode":"music" if d.get("music_mode")=="music" else "mix","beat_sync":d.get("beat_sync",True) is not False,
+         "look":d.get("look") if d.get("look") in LOOKS else ""}
     if out["music"]:
         p=Path(out["music"])
         if not p.is_file(): raise RuntimeError("MUSIC_FILE_MISSING")
@@ -1682,7 +1692,7 @@ def load_dress(path,ffmpeg):
                           capture_output=True,timeout=120)
         if cp.returncode!=0 or len(cp.stdout)<2*400: raise RuntimeError("MUSIC_FILE_NO_SOUND")
         out["music_sha256"]=sha256_file(p); out["music_name"]=p.name
-    return out if (out["title"] or out["subtitle"] or out["music"]) else None
+    return out if (out["title"] or out["subtitle"] or out["music"] or out["look"]) else None
 
 _CMAP={}
 
@@ -1896,6 +1906,8 @@ def render_dissolve_block(v52,segs,durs,trans,out,dress=None,frames=None):
             filters.append(f"[{vprev}][w{i}]xfade=transition=fade:duration={td:.6f}:offset={max(0.0,off-0.0005):.6f}[{vl}]")
             filters.append(f"[{aprev}][n{i}]acrossfade=ns={max(1,int(round(td*48000)))}:c1=tri:c2=tri[{al}]")
         vprev=vl; aprev=al; cum+=float(durs[i])-max(0.0,td)
+    if dress and dress.get("look") in LOOKS:      # the colour look: the whole reel, before the title is put on
+        filters.append(f"[{vprev}]{LOOKS[dress['look']]}[vlook]"); vprev="vlook"
     if dress:
         dargs,dfilt,vprev,aprev=dress_filters(dress,len(segs),vprev,aprev,cum)
         args += dargs; filters += dfilt
@@ -2440,7 +2452,8 @@ def run(args):
                   "width":out_w,"height":out_h,**({"vertical_framing":framing} if framing!="fill" else {})},
         **({"beat_sync":beat_sync} if beat_sync is not None else {}),
         "dress":({"title":dress["title"] or None,"subtitle":dress["subtitle"] or None,"title_shown":bool(dress.get("title_png")),
-                  "music":({"name":dress["music_name"],"sha256":dress["music_sha256"],"mode":dress["music_mode"]} if dress["music"] else None)}
+                  "music":({"name":dress["music_name"],"sha256":dress["music_sha256"],"mode":dress["music_mode"]} if dress["music"] else None),
+                  **({"look":dress["look"]} if dress.get("look") else {})}
                  if dress else None),
         "source_mutated":False,"network_request_performed":False,
         "semantic_best_moment_claim":bool(use_semantic),
@@ -2476,7 +2489,7 @@ def main():
     ap.add_argument("--exclude-events",default="")
     ap.add_argument("--skip-sha-file",default="",help="text file, one SHA-256 per line: inputs never to use (Private)")
     ap.add_argument("--edits",default="",help="JSON file: {selection:[event ids in order], trims:{id:[source_in_s,source_out_s]}}")
-    ap.add_argument("--dress",default="",help="JSON file: {title, subtitle, music (audio file path), music_mode: mix|music, beat_sync: true|false}")
+    ap.add_argument("--dress",default="",help="JSON file: {title, subtitle, music (audio file path), music_mode: mix|music, beat_sync: true|false, look: vivid|warm|film}")
     ap.add_argument("--prepare-only",action="store_true",help="analyse and choose only (caches for a later build); no reel is made")
     a=ap.parse_args()
     try: run(a)

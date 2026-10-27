@@ -184,6 +184,10 @@ def main():
                                  "mode": "technical", "length": 7}, None, (), "ORDER_FIELD_INVALID"),
             "bad-reel-two-sources": ({"schema": orders.SCHEMA, "kind": "reel_from_videos", "videos": {"folder": str(videos), "library_theme": "sea"},
                                       "mode": "technical"}, None, (), "ORDER_FIELD_INVALID"),
+            "bad-reel-look": ({"schema": orders.SCHEMA, "kind": "reel_from_videos", "videos": {"folder": str(videos)},
+                               "mode": "technical", "length": 5, "look": "sepia"}, None, (), "ORDER_FIELD_INVALID"),
+            "bad-reel-look-list": ({"schema": orders.SCHEMA, "kind": "reel_from_videos", "videos": {"folder": str(videos)},
+                                    "mode": "technical", "length": 5, "look": ["warm"]}, None, (), "ORDER_FIELD_INVALID"),
             # found by review (2026-10-17): a playlist names any file on the PC; a quoted or // network path
             "bad-hls": (plan_of([{"video": "clip.m3u8", "start_s": 0, "end_s": 1}]), None, [("clip.m3u8", src / "playlist.m3u8")], "PLAN_VIDEO_UNREADABLE"),
             "bad-hls-as-mp4": (plan_of([{"video": "clip.mp4", "start_s": 0, "end_s": 1}]), None, [("clip.mp4", src / "playlist.m3u8")], "PLAN_VIDEO_UNREADABLE"),
@@ -233,7 +237,7 @@ def main():
         # 6. a one-file order: a reel from a folder of videos (a normal Auto Edit project)
         put("reel-1", {"schema": orders.SCHEMA, "kind": "reel_from_videos", "from": "orders_check", "title": "Ролик по заказу",
                        "videos": {"folder": str(videos)}, "length": 5, "format": "vertical", "mode": "technical",
-                       "text": {"title": "Заказ 1"}}, single=True)
+                       "text": {"title": "Заказ 1"}, "look": "warm"}, single=True)
         st, res = answer("reel-1", 1800)
         check("reel_order_done", st == "done", res.get("error"))
         if st == "done":
@@ -247,6 +251,8 @@ def main():
             check("reel_order_checks_pass", all(x["pass"] for x in res["checks"]) and (res["video"]["width"], res["video"]["height"]) == (540, 960),
                   res["checks"])
             check("reel_order_title_kept", (rev.get("settings") or {}).get("title") == "Заказ 1", rev.get("settings"))
+            check("reel_order_colours_kept", (rev.get("settings") or {}).get("look") == "warm"
+                  and (((ae.revision(rev["id"]) or {}).get("result") or {}).get("dress") or {}).get("look") == "warm", rev.get("settings"))
             # a file in the order folder posing as MediaEngine's own notes cannot point the order at an existing project
             planted = home / "_planted.json"
             planted.write_text(json.dumps({"project_id": pid, "job_id": 1, "attempts": 0}), encoding="utf-8")

@@ -21,6 +21,7 @@ PAGE_CSS = r"""
  padding:10px 14px;border:1px solid var(--line2);border-radius:12px;cursor:pointer;background:var(--card2)}
 .ae-choices input{accent-color:var(--orange)}.ae-choices label:has(input:checked){border-color:var(--orange);box-shadow:0 0 0 1px var(--orange) inset}
 .ae-choices label.off{opacity:.45;cursor:not-allowed}
+.ae-choices label.ae-look{flex-direction:column;align-items:center;padding:8px}.ae-look-pic{display:block;max-height:180px;max-width:220px;border-radius:8px}
 .ae-big{font-size:17px;padding:12px 22px}
 .ae-bar{height:12px;border-radius:8px;background:#0b1118;border:1px solid var(--line);overflow:hidden}.ae-bar i{display:block;height:100%;background:var(--orange);transition:width .4s}
 .ae-player{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px}@media(max-width:1000px){.ae-player{grid-template-columns:1fr}}
@@ -219,6 +220,7 @@ def _every_day_form(folder: Path, days: list, e) -> str:
             + "</div>"
             f"<input type='hidden' name='folder' value='{e(str(folder))}'><input type='hidden' name='sound' value='{e(last.get('sound', 'auto'))}'>"
             f"<input type='hidden' name='framing' value='{e(last.get('framing', 'fill'))}'>"
+            f"<input type='hidden' name='look' value='{e(last.get('look', 'natural'))}'>"
             f"<div class='ae-choices'>{lengths}</div><div class='ae-choices'>{formats}</div>{mode}"
             f"<div class='row' style='flex-wrap:wrap;gap:10px;align-items:center'><button class='ae-big'>Make {len(usable)} reels</button>"
             f"<button class='btn2 ae-big' name='prepare' value='1'>Prepare in advance</button></div>"
@@ -365,7 +367,7 @@ def register(app, layout, e, human_bytes):
             if p["archived"] and not any(j["status"] in ("queued", "running") for j in p["jobs"]):
                 acts += (f"<form method='post' action='/auto/p/{p['id']}/delete' onsubmit=\"return confirm(document.getElementById('delq').textContent)\">"
                          f"<button class='btn2' title='Saved MP4 files and your original videos stay'>Delete</button></form>")
-            last_txt = ("Last export: <span translate='no'>" + e(Path(exp["path"]).name) + "</span>") if exp else "Not exported yet"
+            last_txt = ("Saved: <span translate='no'>" + e(Path(exp["path"]).name) + "</span>") if exp else "Not saved yet"
             cards += (f"<div class='card'><a href='/auto/p/{p['id']}' style='display:block'>"
                       f"<div class='row space'><b style='font-size:17px' translate='no'>{e(p['title'])}</b><span class='ae-state {p['state']}'>{p['state']}</span></div>"
                       f"<div class='muted' style='margin-top:6px'>{' · '.join(x for x in (str(n_src) + (' chosen video(s)' if p.get('files') else ' video file(s) in folder'), e((preset + ' ' + length).strip()), str(len(p['revisions'])) + ' revision(s)') if x)}</div>"
@@ -1017,7 +1019,8 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
 {src_hidden}
 <h2 style='margin-top:0'>Length</h2><div class='ae-choices'>{lengths}</div>
 <h2>Format</h2><div class='ae-choices'>{formats}</div>{_framing_choice(e, last_new.get("framing", "fill"))}
-<h2>Sound</h2><div class='ae-choices'>{sounds}</div>{mode_html}
+<h2>Sound</h2><div class='ae-choices'>{sounds}</div>
+<h2>Colours</h2>{_look_choice(e, last_new.get("look"))}{mode_html}
 {_dress_fields(e, None, _day_label(next(iter(pdays))) if len(pdays) == 1 else "")}
 <div class='row' style='flex-wrap:wrap;gap:10px;align-items:center'><button class='ae-big'>Create reel</button>{prepare_btn}</div>{prepare_note}</form>{back_html}"""
         return page("New reel", body, _FRAMING_JS)
@@ -1033,7 +1036,7 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
                 raise ValueError("The folder is not available: " + str(folder))
             ae._guard_private(folder)
             settings = {"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound") or "auto",
-                        "mode": f.get("mode"), "framing": f.get("framing"), "theme": "",
+                        "mode": f.get("mode"), "framing": f.get("framing"), "theme": "", "look": f.get("look") or "natural",
                         **({"prepare": True} if f.get("prepare") == "1" else {})}
             ae.normalize_settings(settings, model_ready=ae.model_status()["ready"])
             ae.check_free_space()
@@ -1074,7 +1077,8 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
             ae.start_job(pid, {"length": f.get("length"), "format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode"),
                                "theme": f.get("theme") or "", "framing": f.get("framing"), **dress,
                                **({"prepare": True} if f.get("prepare") == "1" else {})})
-            ae.remember_new_settings({"format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode"), "framing": f.get("framing")})
+            ae.remember_new_settings({"format": f.get("format"), "sound": f.get("sound"), "mode": f.get("mode"), "framing": f.get("framing"),
+                                      "look": f.get("look")})
         except Exception as exc:
             return err_page(str(exc))
         return redirect(f"/auto/p/{pid}")
@@ -1141,19 +1145,22 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
                          f"<input type='hidden' name='sound' value='{e(ls_['sound'])}'><input type='hidden' name='mode' value='technical'>"
                          + "".join(f"<input type='hidden' name='{fld}' value='{e(ls_.get(key) or '')}'>" for fld, key in
                                    (("reel_title", "title"), ("reel_subtitle", "subtitle"), ("music", "music"), ("music_mode", "music_mode"),
-                                    ("framing", "framing")))
+                                    ("framing", "framing"), ("look", "look")))
                          + "<input type='hidden' name='beat_sync_shown' value='1'>"
                          + ("<input type='hidden' name='beat_sync' value='1'>" if ls_.get("beat_sync") is not False else "")
                          + "<button class='btn2'>Build without AI (Technical only)</button></form>")
             head_ = (("Preparing failed" if last_job["status"] == "failed" else "Preparing cancelled") if was_prep else
                      ("Build failed" if last_job["status"] == "failed" else "Build cancelled"))
+            why_ = last_job.get('error') or last_job.get('message') or ''
+            if last_job["status"] == "cancelled" and why_ == "Cancelled by user":      # (the words of what was cancelled)
+                why_ = "You cancelled the preparing." if was_prep else "You cancelled the build."
             parts.append(f"""<div class='card'><b>{head_}</b>
-<div class='{'errbox' if last_job['status']=='failed' else 'muted'}' style='margin:8px 0'>{_error_html(last_job.get('error') or last_job.get('message') or '', e)}</div>
+<div class='{'errbox' if last_job['status']=='failed' else 'muted'}' style='margin:8px 0'>{_error_html(why_, e)}</div>
 <div class='row' style='flex-wrap:wrap'><form method='post' action='/auto/job/{last_job['id']}/retry'><button>Retry</button></form>{no_ai}</div></div>""")
         done_x = ae.export_row(request.args.get("exported", type=int) or 0)
         if done_x and int(done_x["project_id"]) == int(pid):
             parts.append(f"""<div class='card ae-done'><div class='eyebrow'>Done</div><h2 style='margin:4px 0'>Your reel is saved</h2>
-<div class='ae-path'>{e(done_x['path'])}</div><div class='muted'>{human_bytes(done_x['bytes'])} · checked against the accepted version (SHA-256)</div>
+<div class='ae-path'>{e(done_x['path'])}</div><div class='muted'>{human_bytes(done_x['bytes'])} · checked: an exact copy of the version</div>
 <div class='row' style='margin-top:10px;flex-wrap:wrap'><form method='post' action='/auto/export/{done_x['id']}/open'><button class='ae-big'>Open video</button></form>
 <form method='post' action='/auto/export/{done_x['id']}/reveal'><button class='btn2'>Show in folder</button></form>
 <button type='button' class='btn2' id='copyDone' data-path='{e(done_x['path'])}'>Copy path</button>
@@ -1534,6 +1541,16 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
             return "not found", 404
         return send_file(t, mimetype="image/jpeg", max_age=86400)
 
+    @app.get("/auto/rev/<int:rid>/look/<look>.jpg")
+    def ae_rev_look(rid, look):
+        try:
+            t = ae.look_preview(rid, look)
+        except Exception:
+            t = None
+        if not t:
+            return "not found", 404
+        return send_file(t, mimetype="image/jpeg", max_age=86400)
+
     @app.get("/auto/p/<int:pid>/source")
     def ae_source(pid):
         src = ae.source_file(pid, request.args.get("name", ""))
@@ -1728,7 +1745,8 @@ def _dress_from_form(f, base_settings=None):
     return {"title": pick("reel_title", "title"), "subtitle": pick("reel_subtitle", "subtitle"), "music": pick("music", "music"),
             "music_mode": (f.get("music_mode") if "music_mode" in f else bs.get("music_mode")) or "mix",
             # a checkbox is not sent when it is off: the hidden field says the form had it
-            "beat_sync": ("beat_sync" in f) if "beat_sync_shown" in f else bs.get("beat_sync") is not False}
+            "beat_sync": ("beat_sync" in f) if "beat_sync_shown" in f else bs.get("beat_sync") is not False,
+            "look": (f.get("look") if "look" in f else bs.get("look")) or "natural"}
 
 
 def _variant_form(pid, rev, e, first=False, model_ready=True, prefill=None):
@@ -1758,14 +1776,31 @@ def _variant_form(pid, rev, e, first=False, model_ready=True, prefill=None):
         if not mode and cur:              # one way only (the revision's): say so, so the theme box knows the mode
             mode = f"<input type='hidden' name='mode' value='{e(cur)}'>"
         mode += _theme_choice(e, (s.get("theme") or ""), model_ready)
-    note = "" if first else ("The current revision stays as it is. Format and sound variants keep its removed moments and your edits "
+    pic_ = ae.look_source_revision(ae.project(pid) or {}, rev) if rev else None     # the colours shown on a moment
+    pic_rid = pic_["id"] if pic_ else None
+    note = "" if first else ("The current revision stays as it is. Format, sound and colour variants keep its removed moments and your edits "
                              "and reuse the analysis; a new length chooses the moments again (removed ones stay out).")
     return (f"<form method='post' action='/auto/p/{pid}/variant' class='card' style='margin-top:14px' onsubmit=\"this.querySelector('button:not([type=button])').disabled=true\">{base}"
             f"<h2 style='margin-top:0'>{'Build reel' if first else 'Make a variant'}</h2>"
             f"<div class='muted'>{note}</div>"
-            f"<div class='ae-choices'>{lengths}</div><div class='ae-choices'>{formats}</div>{_framing_choice(e, s.get('framing'))}<div class='ae-choices'>{sounds}</div>{mode}"
+            f"<div class='ae-choices'>{lengths}</div><div class='ae-choices'>{formats}</div>{_framing_choice(e, s.get('framing'))}<div class='ae-choices'>{sounds}</div>{_look_choice(e, s.get('look'), label=True, pic_rid=pic_rid)}{mode}"
             f"{_dress_fields(e, rev['settings'] if rev else prefill)}"
             f"<button>{'Build' if first else 'Make variant'}</button></form>")
+
+
+def _look_choice(e, current=None, label=False, pic_rid=None):
+    """The reel's colours: as filmed (the default) or a look; only the reel is coloured, never the videos. pic_rid: a
+    version to show each look on (a small picture of one of its moments, made when the page asks for it)."""
+    cur = current if current in ae.LOOKS else "natural"
+    pic = lambda k: (f"<img class='ae-look-pic' src='/auto/rev/{int(pic_rid)}/look/{k}.jpg' alt='' loading='lazy' "
+                     "onerror=\"this.remove()\">") if pic_rid else ""
+    radio = lambda k, v: f"<input type='radio' name='look' value='{k}' {'checked' if k == cur else ''}> {e(v)}"
+    radios = "".join((f"<label class='ae-look'>{pic(k)}<span class='row' style='gap:8px'>{radio(k, v)}</span></label>" if pic_rid
+                      else f"<label>{radio(k, v)}</label>") for k, v in ae.LOOKS.items())
+    return (("<div class='muted' style='margin:6px 0 4px;font-size:13px'>Colours:</div>" if label else "")
+            + "<div class='ae-choices'>" + radios + "</div>"
+            + ("" if label else "<div class='muted' style='margin:4px 0 0;font-size:13px'>Only the reel is coloured; "
+                                "your videos stay as they are.</div>"))
 
 
 def _framing_choice(e, current="fill"):
@@ -2096,7 +2131,7 @@ def _review_html(p, rev, e, building=False):
     return f"""<div class='ae-player' style='margin-top:14px'>
 <div class='card'><video id='reel' class='ae-video' controls preload='metadata' src='/auto/rev/{rev['id']}/video'></video>
 <div class='ae-strip film'>{strip}</div>
-<div class='muted'>Revision R{int(rev['number']):03d} · {e(fmt.get('short',''))} {rev['width']}×{rev['height']}{" · <span>blurred edges</span>" if rev['settings'].get('framing') == 'fit_blur' else ""} · {total:.2f} s · sound {e(_sound_label(rev['settings']['sound'], res))} · <span>{e(mode)}</span>{(" · <span>theme</span> <span>" + e(theme_name) + "</span>") if theme_name else ""}</div>{_build_time_html(res)}{sound_btn}{short_html}{skipped_html}{skipped_html_extra}
+<div class='muted'>Revision R{int(rev['number']):03d} · {e(fmt.get('short',''))} {rev['width']}×{rev['height']}{" · <span>blurred edges</span>" if rev['settings'].get('framing') == 'fit_blur' else ""}{(" · <span>Colours:</span> <span>" + e(ae.LOOKS[rev['settings']['look']]) + "</span>") if rev['settings'].get('look') in ae.LOOKS else ""} · {total:.2f} s · sound {e(_sound_label(rev['settings']['sound'], res))} · <span>{e(mode)}</span>{(" · <span>theme</span> <span>" + e(theme_name) + "</span>") if theme_name else ""}</div>{_build_time_html(res)}{sound_btn}{short_html}{skipped_html}{skipped_html_extra}
 <div class='row' style='margin-top:12px;flex-wrap:wrap'>{actions}</div>{compare_html}{exp_html}</div>
 {editor}</div>
 {variant}"""

@@ -66,6 +66,10 @@ for the first 3 seconds, and your own song under the reel (with the videos' quie
 cuts fall on the beat of the music ("Cuts on the beat of the music"; a song without a clear beat leaves the cuts as
 they were). Changing them later makes a new version quickly.
 
+**Colours** (new reel or a variant): "As filmed" (nothing changed), "Brighter and richer" (pale drone or phone videos
+come out livelier), "Warm" (golden light) or "Cinematic" (softer contrast, cooler shadows). Only the reel is coloured;
+the videos stay as they are. Another colour later is a new version made in about the time of a variant.
+
 ## Converting videos
 
 **Media → Convert** (or "Convert" on videos chosen in the Library, or "Choose videos on this PC"). The copies go into

@@ -240,6 +240,15 @@ def main():
         got_mine = list(mine.glob("*.mp4"))
         check("export_to_chosen_folder", r.status_code == 302 and len(got_mine) == 1 and sha(got_mine[0]) == rev["video_sha256"]
               and ae.default_export_dir().resolve() == mine.resolve(), [x.name for x in got_mine])
+        # with the program in Russian the saved file is named in Russian too ("… - Вертикально HD - R001.mp4")
+        ru_dir = home / "ru_out"
+        ru_dir.mkdir(exist_ok=True)
+        c.post("/lang", data={"lang": "ru"}, headers=H)
+        r = c.post(f"/auto/p/{pid}/export", data={"dest": str(ru_dir)}, headers=H)
+        c.post("/lang", data={"lang": "en"}, headers=H)
+        got_ru = [x.name for x in ru_dir.glob("*.mp4")]
+        want_ru = f" - {ae._FORMAT_WORD_RU[rev['settings']['format']]} - R{int(rev['number']):03d}.mp4"
+        check("export_name_in_russian", r.status_code == 302 and len(got_ru) == 1 and got_ru[0].endswith(want_ru), (got_ru, want_ru))
         r = c.post(f"/auto/p/{pid}/export", data={"dest": str(folder)}, headers=H)
         check("export_into_source_folder_refused", r.status_code == 400 and not [x for x in folder.iterdir() if x.name not in before], r.status_code)
         # the remembered export folder is this reel's own source folder: plain "Export MP4" falls back to Exports

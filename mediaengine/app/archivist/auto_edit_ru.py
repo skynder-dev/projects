@@ -25,7 +25,7 @@ PHRASES = {
     "AI model (FAST_LOCAL) not found.": "ИИ-модель (FAST_LOCAL) не найдена.",
     "Choose model folder…": "Выбрать папку с моделью…",
     "chosen video(s)": "выбранных видео", "video file(s) in folder": "видео в папке", "revision(s)": "версий",
-    "Not exported yet": "Ещё не экспортирован", "Last export:": "Последний экспорт:",
+    "Not saved yet": "Ещё не сохранён",
     "Source videos are not available (drive disconnected?)": "Исходные видео недоступны (диск отключён?)",
     "Review": "Смотреть", "Open": "Открыть", "Export": "Экспорт", "Open video": "Открыть видео",
     "Show in folder": "Показать в папке", "Archive": "В архив", "Unarchive": "Из архива", "Copy path": "Копировать путь",
@@ -146,7 +146,8 @@ PHRASES = {
     "Build without AI (Technical only)": "Собрать без ИИ (только техника)",
     # project / review
     "All projects": "Все проекты", "Rename": "Переименовать", "Done": "Готово", "Your reel is saved": "Ролик сохранён",
-    "checked against the accepted version (SHA-256)": "проверен: точно совпадает с принятой версией",
+    "checked: an exact copy of the version": "проверен: точная копия версии",
+    "You cancelled the preparing.": "Ты отменил подготовку.", "You cancelled the build.": "Ты отменил сборку.",
     "Moments in this reel": "Моменты в ролике", "Play in reel": "Показать в ролике", "View in source": "Открыть в исходнике",
     "from": "с", "to": "по", "replace with": "заменить на", "— keep —": "— оставить —", "remove": "убрать",
     "add a moment": "добавить момент", "Move up": "Выше", "Move down": "Ниже",
@@ -218,6 +219,11 @@ PHRASES = {
     "Horizontal videos in a vertical reel:": "Горизонтальные видео в вертикальном ролике:",
     "Fill the screen (cropped to the interesting part)": "На весь экран (обрезать до главного)",
     "Whole picture, blurred edges": "Кадр целиком, края размыты",
+    "Colours": "Цвет", "Colours:": "Цвет:", "As filmed": "Как снято", "Brighter and richer": "Ярче и сочнее", "Warm": "Тёплый",
+    "Cinematic": "Кино", "Unknown colours": "Неизвестный цвет",
+    "Only the reel is coloured; your videos stay as they are.": "Цвет меняется только в ролике, твои видео остаются как есть.",
+    "Reel colours: as filmed, brighter and richer, warm or cinematic (a variant shows a small picture of each) - pale drone videos come out livelier. Only the reel is coloured; your videos stay as they are.":
+        "Цвет ролика: как снято, ярче и сочнее, тёплый или кино (у варианта - картинка каждого) - блёклые видео с дрона выглядят живее. Цвет меняется только в ролике, твои видео остаются как есть.",
     "blurred edges": "края размыты",
     "Unknown framing": "Неизвестное кадрирование",
     "Archive the project first": "Сначала отправь проект в архив",
@@ -277,8 +283,8 @@ PHRASES = {
         "Окно можно закрыть: ролик продолжит собираться, а компьютер не уснёт. Когда он будет готов, Windows покажет уведомление — нажми на него, чтобы посмотреть.",
     "You can close this window: the reel keeps building and the PC does not go to sleep. Open MediaEngine again to see it.":
         "Окно можно закрыть: ролик продолжит собираться, а компьютер не уснёт. Чтобы посмотреть, снова открой MediaEngine.",
-    "The current revision stays as it is. Format and sound variants keep its removed moments and your edits and reuse the analysis; a new length chooses the moments again (removed ones stay out).":
-        "Текущая версия не меняется. Варианты с другим форматом или звуком сохраняют убранные моменты и твои правки и используют готовый анализ; при другой длине моменты выбираются заново (убранные так и остаются убранными).",
+    "The current revision stays as it is. Format, sound and colour variants keep its removed moments and your edits and reuse the analysis; a new length chooses the moments again (removed ones stay out).":
+        "Текущая версия не меняется. Варианты с другим форматом, звуком или цветом сохраняют убранные моменты и твои правки и используют готовый анализ; при другой длине моменты выбираются заново (убранные так и остаются убранными).",
     "This version already exists: R": "Такая версия уже есть: R",
     " (the same settings and moments). Change the length, format or sound, or tick “remove” on a moment.":
         " (те же настройки и моменты). Измени длину, формат или звук либо отметь «убрать» у момента.",
@@ -942,13 +948,13 @@ PHRASES = {
     "Convert: a conversion started while another one runs waits in line and starts by itself after it (“Take out of the line” removes it).":
         "Конвертация: если запустить новую, пока идёт другая, она встанет в очередь и начнётся сама («Убрать из очереди» — убрать её).",
     "Convert: “Save pictures of the selected videos” also makes one PDF of them (A4 pages, each picture with its moment and, when chosen, the date and time; your report title on top) - ready for a report.":
-        "Конвертация: «Сохранить кадры выбранных видео» теперь делает и один PDF (листы A4, у каждого кадра его момент и, если выбрано, дата и время; сверху — ваш заголовок отчёта) — готово для отчёта.",
+        "Конвертация: «Сохранить кадры выбранных видео» теперь делает и один PDF (листы A4, у каждого кадра его момент и, если выбрано, дата и время; сверху — твой заголовок отчёта) — готово для отчёта.",
     "Convert → More: “Date and time in the corner” - when it was filmed, every second, from the camera or phone clock (for reports).":
         "Конвертация → «Ещё»: «Дата и время в углу» — когда снято, каждую секунду, по часам камеры или телефона (для отчётов).",
     "Convert → More: slow motion ½× and ¼× (smooth from 60 / 120 fps videos) and “Even out the sound” (quiet speech louder, loud parts softer).":
         "Конвертация → «Ещё»: замедление ½× и ¼× (плавно из видео 60 / 120 кадров/с) и «Выровнять звук» (тихая речь громче, громкое тише).",
     "Convert → More: speed (2×, 4×, 8× faster), vertical 9:16 for Reels / TikTok (the middle, or the whole picture on a blurred background), your logo in a corner, less wind noise.":
-        "Конвертация → Ещё: скорость (в 2, 4, 8 раз быстрее), вертикально 9:16 для Reels / TikTok (середина или вся картинка на размытом фоне), ваш логотип в углу, меньше шума ветра.",
+        "Конвертация → Ещё: скорость (в 2, 4, 8 раз быстрее), вертикально 9:16 для Reels / TikTok (середина или вся картинка на размытом фоне), твой логотип в углу, меньше шума ветра.",
     "Check this PC: “Test converting on the graphics card” - a short 4K test clip made smaller with the processor and with the NVIDIA card; Convert uses the card only if it was faster with the same picture.":
         "Проверка этого ПК: «Проверить конвертацию на видеокарте» — короткий тестовый 4K-клип сжимается процессором и видеокартой NVIDIA; конвертация берёт видеокарту, только если она быстрее и картинка та же.",
     "Reels, finished videos and converted copies made from GoPro or phone footage keep normal brightness levels (dark and bright parts as filmed on every screen).":

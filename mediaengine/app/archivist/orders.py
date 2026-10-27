@@ -480,6 +480,10 @@ def _reel_spec(order: dict, base: Path) -> dict:
         raise OrderError("ORDER_FIELD_INVALID", 'videos needs exactly one of "folder", "files" or "library_theme"')
     raw = {"length": order.get("length", 30), "format": order.get("format", "social_hd"), "sound": order.get("sound", "auto"),
            "mode": order.get("mode", "semantic"), "theme": order.get("theme") or "", "framing": order.get("framing", "fill")}
+    look = order.get("look", "natural")
+    if not isinstance(look, str) or look not in ae.LOOKS:
+        raise OrderError("ORDER_FIELD_INVALID", "look must be one of: " + ", ".join(ae.LOOKS))
+    raw["look"] = look
     text = order.get("text") or {}
     if not isinstance(text, dict):
         raise OrderError("ORDER_FIELD_INVALID", 'text must be an object: {"title": ..., "subtitle": ...}')

@@ -44,6 +44,21 @@ def peak_hz(x):
     return float(np.fft.rfftfreq(len(x), 1 / 48000)[int(np.argmax(spec[20:])) + 20])
 
 
+def colours(ff, video) -> dict:
+    """The video's average picture numbers over all frames (FFmpeg signalstats: YAVG, YLOW, SATAVG, UAVG, VAVG …)."""
+    cp = subprocess.run([ff, "-v", "error", "-i", str(video), "-vf", "signalstats,metadata=print:file=-", "-f", "null", "-"],
+                        capture_output=True, text=True)
+    vals: dict = {}
+    for line in cp.stdout.splitlines():
+        if "signalstats." in line and "=" in line:
+            k, v = line.split("signalstats.", 1)[1].split("=", 1)
+            try:
+                vals.setdefault(k.strip(), []).append(float(v))
+            except ValueError:
+                pass
+    return {k: sum(v) / len(v) for k, v in vals.items() if v}
+
+
 def main():
     fx, work = Path(sys.argv[1]).resolve(), Path(sys.argv[2]).resolve()
     shutil.rmtree(work, ignore_errors=True)
@@ -96,6 +111,27 @@ def main():
     check("title_is_shown_at_the_start", rt["dress"]["title_shown"] and d_title > 4.0, (rt["dress"], d_title))
     check("title_is_gone_later", d_late < 2.5, d_late)
     check("title_keeps_the_length", abs(vt - vb) < 0.05 and at is not None and abs(vt - at) <= 0.05, (vb, vt, at))
+
+    # the reel's colours: each look in the same single encode - its own colours, the same moments and length;
+    # "as filmed" and an unknown look are exactly the plain reel
+    cb = colours(ff, base)
+    for name in ("natural", "sepia"):
+        _, rn = run("look_" + name, {"look": name})
+        check(f"look_{name}_is_the_plain_reel", rn.get("dress") is None and rn["output"]["sha256"] == rb["output"]["sha256"],
+              (rn.get("dress"), rn["output"]["sha256"][:12]))
+    for name, test in (("vivid", lambda c: c["SATAVG"] >= 1.15 * cb["SATAVG"]),
+                       ("warm", lambda c: (c["VAVG"] - c["UAVG"]) - (cb["VAVG"] - cb["UAVG"]) >= 6.0),
+                       ("film", lambda c: c["YLOW"] >= cb["YLOW"] + 3.0 and c["YHIGH"] <= cb["YHIGH"] + 1.0)):
+        lv, rl = run("look_" + name, {"look": name})
+        cl = colours(ff, lv)
+        vl, al = av_durations(lv, ff)
+        check(f"look_{name}_changes_the_colours", (rl.get("dress") or {}).get("look") == name and cl and test(cl)
+              # (no darker blacks or brighter whites than TV levels or the plain reel - the encoder's own ringing aside)
+              and cl["YMIN"] >= min(16.0, cb["YMIN"]) - 1 and cl["YMAX"] <= max(235.0, cb["YMAX"]) + 3,
+              (rl.get("dress"), {k: round(cl.get(k, 0), 1) for k in ("YMIN", "YLOW", "YAVG", "YHIGH", "YMAX", "SATAVG", "UAVG", "VAVG")},
+               {k: round(cb.get(k, 0), 1) for k in ("YLOW", "YHIGH", "SATAVG", "UAVG", "VAVG")}))
+        check(f"look_{name}_keeps_moments_and_length", [x["event_id"] for x in rl["segments"]] == [x["event_id"] for x in rb["segments"]]
+              and abs(vl - vb) < 0.05 and al is not None and abs(vl - al) <= 0.05, (vb, vl, al))
 
     only, ro = run("music_only", {"music": str(music), "music_mode": "music"})
     vo, ao = av_durations(only, ff)
@@ -292,6 +328,7 @@ def app_part(work, src, music, check):
         page = c.get("/auto/new", query_string={"folder": str(src)}, headers=H).data.decode("utf-8", "replace")
         check("setup_offers_music_and_title", "name='reel_title'" in page and "name='music'" in page and "data-pick-music" in page
               and "name='beat_sync' value='1' checked" in page)
+        check("setup_offers_the_colours", "name='look' value='natural' checked" in page and "name='look' value='film'" in page)
         c.post("/lang", data={"lang": "ru"}, headers=H)
         ru = c.get("/auto/new", query_string={"folder": str(src)}, headers=H).data.decode("utf-8", "replace")
         c.post("/lang", data={"lang": "en"}, headers=H)
@@ -338,6 +375,35 @@ def app_part(work, src, music, check):
               and [s_["event_id"] for s_ in rev2["result"]["segments"]] == [s_["event_id"] for s_ in rev1["result"]["segments"]]
               and float(st2.get("analyze", 0)) <= max(3.0, 0.5 * float(st1.get("analyze", 0))),
               (j2.get("status"), j2.get("error"), st1, st2))
+        # the colours change: a quick new version (same moments, no new analysis), the review page names them
+        before = {x["id"] for x in ae.project(pid)["jobs"]}
+        c.post(f"/auto/p/{pid}/variant", data={"base_revision_id": rev1["id"], "length": "15", "format": "vertical", "sound": "auto",
+                                               "mode": "technical", "look": "warm"}, headers=H)
+        jw = [x for x in ae.project(pid)["jobs"] if x["id"] not in before]
+        jw = wait(jw[0]["id"]) if jw else {"status": "missing"}
+        revw = ae.revision(jw.get("revision_id") or 0) if jw.get("status") == "done" else None
+        stw = (revw or {}).get("result", {}).get("stage_seconds") or {}
+        cw, c1 = (colours(ae._ffmpeg() or "ffmpeg", Path(revw["video_path"])) if revw else {}), colours(ae._ffmpeg() or "ffmpeg", Path(rev1["video_path"]))
+        check("colours_variant_is_a_quick_new_version", revw and revw["settings"].get("look") == "warm"
+              and (revw["result"].get("dress") or {}).get("look") == "warm" and (revw["result"]["dress"].get("music") or {}).get("mode") == "mix"
+              and [s_["event_id"] for s_ in revw["result"]["segments"]] == [s_["event_id"] for s_ in rev1["result"]["segments"]]
+              and float(stw.get("analyze", 0)) <= max(3.0, 0.5 * float(st1.get("analyze", 0)))
+              and cw and (cw["VAVG"] - cw["UAVG"]) - (c1["VAVG"] - c1["UAVG"]) >= 6.0,
+              (jw.get("status"), jw.get("error"), revw and revw["settings"], stw))
+        pgw = c.get(f"/auto/p/{pid}", query_string={"rev": revw["id"]} if revw else {}, headers=H).data.decode("utf-8", "replace")
+        check("review_names_the_colours", "<span>Colours:</span> <span>Warm</span>" in pgw and "name='look' value='warm' checked" in pgw)
+        # a small picture of each colour to choose by: on a version without colours of its own (never colours on colours)
+        pics = {k: c.get(f"/auto/rev/{rev1['id']}/look/{k}.jpg", headers=H) for k in ("natural", "film", "warm")}
+        from PIL import Image
+        import io
+        arr = {k: np.asarray(Image.open(io.BytesIO(r_.data)).convert("RGB"), np.float32) for k, r_ in pics.items() if r_.status_code == 200}
+        check("colour_pictures_to_choose_by", len(arr) == 3 and all(r_.mimetype == "image/jpeg" for r_ in pics.values())
+              and float(np.abs(arr["film"] - arr["natural"]).mean()) > 2.0
+              and float((arr["warm"][..., 0] - arr["warm"][..., 2]).mean()) > float((arr["natural"][..., 0] - arr["natural"][..., 2]).mean()) + 3
+              and "/look/film.jpg" in pgw and (not revw or f"/auto/rev/{revw['id']}/look/" not in pgw)
+              and (not revw or c.get(f"/auto/rev/{revw['id']}/look/film.jpg", headers=H).status_code == 404)
+              and c.get(f"/auto/rev/{rev1['id']}/look/sepia.jpg", headers=H).status_code == 404,
+              ({k: r_.status_code for k, r_ in pics.items()}, "/look/film.jpg" in pgw))
         # the editor (remove one moment) keeps the title and the music
         segs = rev2["result"]["segments"] if rev2 else []
         if len(segs) >= 2:

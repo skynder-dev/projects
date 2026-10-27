@@ -292,7 +292,7 @@ APP_PHRASES: dict[str, str] = {
     "The graphics card could not be used - the voice is made on the processor (slower).": "Видеокарту использовать не удалось — голос делается на процессоре (медленнее).",
     "The graphics card could not be used:": "Видеокарту использовать не удалось:", "Converting": "Конвертирую", "converting": "конвертирую", "filmed": "снято", "This PC has an NVIDIA graphics card": "На этом компьютере есть видеокарта NVIDIA",
     "A two-minute test shows whether converting on it is faster with the same picture; after that, Convert uses it by itself (the first conversion runs the test by itself). Your videos are not used.":
-        "Проверка за две минуты покажет, быстрее ли на ней конвертация с той же картинкой; дальше конвертация сама будет её использовать (первая конвертация запустит проверку сама). Ваши видео не используются.", "The video may be damaged or not fully copied": "Видео может быть повреждено или скопировано не полностью", "Select all": "Выбрать все", "Clear the selection": "Снять выбор", "Brighter": "Светлее", "brighter": "светлее",
+        "Проверка за две минуты покажет, быстрее ли на ней конвертация с той же картинкой; дальше конвертация сама будет её использовать (первая конвертация запустит проверку сама). Твои видео не используются.", "The video may be damaged or not fully copied": "Видео может быть повреждено или скопировано не полностью", "Select all": "Выбрать все", "Clear the selection": "Снять выбор", "Brighter": "Светлее", "brighter": "светлее",
     "For videos filmed in the dark: the picture stretched to its full range, a little lighter": "Для видео, снятых в темноте: картинка растянута на весь диапазон и чуть светлее", "Report title (optional)": "Заголовок отчёта (необязательно)", "Take out of the line": "Убрать из очереди", "into one video": "в одно видео",
     "They start one by one, by themselves, when the job before them ends.": "Начнутся сами, по очереди, когда закончится задача перед ними.",
     "Added to the line: it starts when the job before it ends.": "Добавлено в очередь: начнётся, когда закончится задача перед ней.",
@@ -311,7 +311,7 @@ APP_PHRASES: dict[str, str] = {
     "the whole picture on a blurred background": "вся картинка на размытом фоне", "Less wind noise": "Меньше шума ветра",
     "Logo": "Логотип", "bottom right": "внизу справа", "bottom left": "внизу слева", "top right": "вверху справа", "top left": "вверху слева",
     "Another logo…": "Другой логотип…", "Remove the logo": "Убрать логотип", "Choose a logo…": "Выбрать логотип…",
-    "Your logo in a corner of every video (chosen once).": "Ваш логотип в углу каждого видео (выбирается один раз).",
+    "Your logo in a corner of every video (chosen once).": "Твой логотип в углу каждого видео (выбирается один раз).",
     "No picture chosen.": "Картинка не выбрана.", "This picture cannot be read. Choose a PNG or JPG.": "Эту картинку не прочитать. Выбери PNG или JPG.",
     "Choose a logo first": "Сначала выбери логотип", "Unknown speed": "Непонятная скорость", "Unknown vertical": "Непонятный вертикальный вид",
     "Unknown option": "Непонятный выбор", "vertical 9:16": "вертикально 9:16", "logo": "логотип", "less wind": "меньше ветра",
@@ -321,7 +321,7 @@ APP_PHRASES: dict[str, str] = {
     "More options with the graphics card": "«Ещё» на видеокарте",
     "Converting on the graphics card": "Конвертация на видеокарте",
     "The test makes a short 4K test clip smaller with the processor and with the graphics card (NVIDIA) and compares the time and the picture. Convert uses the card only if it was faster with the same picture. Your videos are not used.":
-        "Проверка сжимает короткий тестовый 4K-клип процессором и видеокартой (NVIDIA) и сравнивает время и картинку. Конвертация берёт видеокарту, только если она была быстрее и картинка та же. Ваши видео не используются.",
+        "Проверка сжимает короткий тестовый 4K-клип процессором и видеокартой (NVIDIA) и сравнивает время и картинку. Конвертация берёт видеокарту, только если она была быстрее и картинка та же. Твои видео не используются.",
     "Test converting on the graphics card": "Проверить конвертацию на видеокарте", "Not tested yet.": "Ещё не проверялось.",
     "Making a 4K test clip": "Делаю тестовый 4K-клип", "Converting with the processor": "Сжимаю процессором",
     "Converting with the graphics card": "Сжимаю видеокартой", "Comparing the pictures": "Сравниваю картинку",

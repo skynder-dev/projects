@@ -196,6 +196,37 @@ def main():
           and rp.get("semantic_timing", {}).get("scout_embed_s") == 0
           and [s["event_id"] for s in rp["segments"]] == [s["event_id"] for s in ra["segments"]], (OPENED, rp.get("semantic_timing")))
     os.environ.pop("MEDENG_P13_SCOUT_CACHE")
+    # a DJI camera's own small copy (.LRF) beside a video: "Prepare AI+" and an AI+ reel look at it instead of the
+    # video (stored under the video's SHA-256: a reel afterwards looks at no frame); a copy of another length (another
+    # recording) is not used
+    import subprocess
+    src_lrf = work / "in_lrf"
+    shutil.copytree(fx / "two", src_lrf)
+    for v in sorted(src_lrf.glob("*.mp4")):
+        extra = ["-t", "2"] if v.stem == "clip_3" else []
+        q = v.with_suffix(".LRF")
+        subprocess.run([ff, "-v", "error", "-y", "-i", str(v), *extra, "-vf", "scale=320:-2", "-c:v", "libx264", "-preset", "ultrafast",
+                        "-c:a", "aac", "-movflags", "+faststart", "-f", "mp4", str(q)], check=True)
+        st_v = v.stat()
+        os.utime(q, (st_v.st_atime, st_v.st_mtime))                  # written with its video (a camera writes both)
+    vids_l = sorted(str(p) for p in src_lrf.glob("*.mp4"))
+    r5 = prep.prepare(vids_l, work / "prepared_lrf", R3, StandInScorer, work / "prepare_lrf.json", None, ff, ff)
+    st5 = json.loads((work / "prepare_lrf.json").read_text(encoding="utf-8"))
+    check("prepare_looks_at_the_dji_small_copy", r5["looked"] == len(vids_l) == 2 and r5["small_copies"] == 1 and st5.get("small_copies") == 1
+          and not r5["skipped"], (r5, st5))
+    os.environ["MEDENG_P13_SCOUT_CACHE"] = str(work / "prepared_lrf")
+    vision_before = OPENED["vision"]
+    r3.run(args(work / "proj_lrf_prepared", input_dir=str(src_lrf), work_dir=str(work / "w_lrf_prepared")))
+    rlp = json.loads((work / "proj_lrf_prepared" / "MediaEngine Result.json").read_text(encoding="utf-8"))
+    check("reel_after_small_copy_prepare_looks_at_no_frame", OPENED["vision"] == vision_before and rlp.get("segments")
+          and rlp.get("semantic_timing", {}).get("scout_embed_s") == 0, (OPENED, vision_before, rlp.get("semantic_timing")))
+    os.environ["MEDENG_P13_SCOUT_CACHE"] = str(work / "scout_lrf_fresh")
+    r3.run(args(work / "proj_lrf", input_dir=str(src_lrf), work_dir=str(work / "w_lrf")))
+    rl = json.loads((work / "proj_lrf" / "MediaEngine Result.json").read_text(encoding="utf-8"))
+    vl, al = av_durations(work / "proj_lrf" / "MediaEngine Reel.mp4", ff)
+    check("aiplus_reel_looks_at_the_dji_small_copy", rl.get("semantic_timing", {}).get("proxies") == 1 and rl.get("segments")
+          and al is not None and abs(vl - al) <= 0.05, (rl.get("semantic_timing"), vl, al))
+    os.environ.pop("MEDENG_P13_SCOUT_CACHE")
     # the model cannot start (e.g. not enough memory): one clear error, not "no moments" for every video
     def broken(_pe_dir):
         raise MemoryError("bad allocation")

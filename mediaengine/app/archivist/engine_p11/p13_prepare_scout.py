@@ -13,6 +13,9 @@ Left to the reel itself (the engine analyses a converted copy of them, under ano
 reason in --skipped ({id: reason}): camcorder streams, pictures with an odd width or height. Also listed there:
 videos that cannot be read, and videos whose content changed since the Library analysed them (prepared under their
 new SHA-256, which the Library does not know yet).
+A camera's own small copy beside a video (DJI: DJI_0021.LRF, about 720p) is looked at instead of the 4K video when it
+is the same recording (the reel engine's camera_proxy rules; the result is stored under the video's SHA-256, as the
+reel itself does); a small copy that cannot be read is given up for the video.
 """
 from __future__ import annotations
 
@@ -86,9 +89,19 @@ def prepare(files, cache: Path, runtime: Path, make_scorer, progress: Path | Non
         sys.path.insert(0, str(runtime))
     import p13_event_semantic_pe as hook
     v7 = _load("medeng_event_semantic_v7", runtime / "medeng_event_semantic_v7.py")
+    engine = {}
+
+    def small_copy(path: Path):
+        """The camera's own small copy of this video (same recording), or None - never an error."""
+        try:
+            if "r3" not in engine:
+                engine["r3"] = _load("p11_r3_camera_proxy", runtime / "p11_folder_to_reel_r3.py")
+            return engine["r3"].camera_proxy(type("V", (), {"FFMPEG": ffmpeg}), {"path": str(path)})
+        except Exception:
+            return None
     key = hook.scout_key()
     items = [x if isinstance(x, tuple) else ("", "", Path(x)) for x in files]
-    done = looked = 0
+    done = looked = small = 0
     skipped: dict = {}
     scorer = None
     started = time.time()
@@ -126,8 +139,17 @@ def prepare(files, cache: Path, runtime: Path, make_scorer, progress: Path | Non
                 scorer = make_scorer()
                 getattr(scorer, "vision")
             t0 = time.time()
+            proxy = small_copy(p)
             try:
-                info, emb = hook.scout(v7, scorer, p, ffmpeg, ffprobe)
+                try:
+                    info, emb = hook.scout(v7, scorer, proxy or p, ffmpeg, ffprobe)
+                except MemoryError:
+                    raise
+                except Exception:
+                    if proxy is None:
+                        raise
+                    proxy = None                  # the small copy could not be read: the video itself
+                    info, emb = hook.scout(v7, scorer, p, ffmpeg, ffprobe)
             except MemoryError:
                 raise
             except Exception as exc:          # one video the analysis cannot read does not stop the rest
@@ -144,13 +166,14 @@ def prepare(files, cache: Path, runtime: Path, make_scorer, progress: Path | Non
                 skip(vid, p, "cache_not_writable"); continue
             t_looked += time.time() - t0
             looked += 1
+            small += proxy is not None
         if want_sha and sha != want_sha:
             skip(vid, p, "changed_since_analysis")    # prepared, but under a SHA-256 the Library does not know yet
             continue
         done += 1
     _write(progress, {"state": "done", "done": len(items), "total": len(items), "looked": looked, "skipped": len(skipped), "file": "",
-                      "seconds": round(time.time() - started, 1)})
-    return {"state": "done", "done": done, "looked": looked, "skipped": skipped}
+                      "seconds": round(time.time() - started, 1), "small_copies": small})
+    return {"state": "done", "done": done, "looked": looked, "skipped": skipped, "small_copies": small}
 
 
 def main():

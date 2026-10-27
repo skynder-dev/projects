@@ -310,6 +310,19 @@ def main():
     check("prepare in advance: the engine only analyses (no title / music step)", "--prepare-only" in cmd_ and "--dress" not in cmd_, cmd_[-6:])
     check("an unknown theme is refused", raises(ae.normalize_settings, {"length": 15, "format": "social_hd", "sound": "auto",
                                                                          "mode": "technical", "theme": "moon"}))
+    # the reel's colours: stored only when not "as filmed" (older reels keep their key), asked of the engine through
+    # the dress file even without title or music; an unknown one is refused
+    lk_ = ae.normalize_settings({**base_, "look": "warm"})
+    cmd_lk = ae.engine_command(work, work / "o", work / "w", work / "p.json", lk_, work / "e.json", None, None, work / "d.json")
+    cmd_pl = ae.engine_command(work, work / "o", work / "w", work / "p.json", ae.normalize_settings({**base_, "look": "natural"}),
+                               work / "e.json", None, None, work / "d.json")
+    check("reel colours: stored when chosen, given to the engine",
+          lk_.get("look") == "warm" and "look" not in ae.normalize_settings({**base_, "look": "natural"}) and "look" not in ae.normalize_settings(base_)
+          and "--dress" in cmd_lk and "--dress" not in cmd_pl and raises(ae.normalize_settings, {**base_, "look": "sepia"}), (lk_, cmd_lk[-4:]))
+    from archivist import auto_edit_web as aew_
+    check("reel colours: a variant without the choice keeps the base version's",
+          aew_._dress_from_form({}, {"look": "film"})["look"] == "film" and aew_._dress_from_form({"look": "vivid"}, {"look": "film"})["look"] == "vivid"
+          and aew_._dress_from_form({}, {})["look"] == "natural")
     # AI+ download over a bad connection: the connection drops in the middle, the download continues where it stopped
     # (HTTP Range) instead of starting the 650 MB again; a server without Range support restarts the file cleanly
     import http.server, socketserver, threading as _th, hashlib as _hl
@@ -689,6 +702,8 @@ def main():
     from archivist import i18n as _i18n
     missing = sorted(m for m in msgs if _i18n.translate_json({"message": m})["message"] == m)
     check("ru: every engine progress message translated", bool(msgs) and not missing, missing or len(msgs))
+    check("reel colours: the app's choices are the engine's looks (one list for the reel and the preview pictures)",
+          set(ae.look_filters()) == set(ae.LOOKS) - {"natural"} and "LOOKS=_looks()" in eng, sorted(ae.look_filters()))
     for name in ("Дача 15.08 с мамой.webm", "клип 1.5 МБ (копия).mp4"):     # decimal comma never touches a file name
         got = _i18n.translate_json({"message": "Importing " + name})["message"]
         check(f"ru: file name kept exactly ({name})", got.endswith(" " + name), got)

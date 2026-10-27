@@ -36,6 +36,8 @@ FORMATS = {
     "horizontal": {"profile": "16x9", "resolution": "standard", "label": "Horizontal small 960×540 (quick to send)", "short": "Horizontal small", "size": (960, 540)},
 }
 FRAMINGS = {"fill": "Fill the screen (cropped to the interesting part)", "fit_blur": "Whole picture, blurred edges"}
+# the reel's colours (the engine's LOOKS): "as filmed" changes nothing; the videos themselves are never changed
+LOOKS = {"natural": "As filmed", "vivid": "Brighter and richer", "warm": "Warm", "film": "Cinematic"}
 SOUNDS = {"auto": "Auto (keep source sound, mute if it jumps)", "source": "Source sound", "mute": "Mute"}
 LENGTHS = (5, 15, 30, 60, 120)    # 120 s: about 25 moments (the engine takes up to 30; checked 2026-10-14)
 MODES = {"semantic": "AI moments (FAST_LOCAL)", "semantic_plus": "AI+ moments (PE-Core L/14)", "technical": "Technical only (no AI model)"}
@@ -1389,6 +1391,12 @@ def normalize_settings(raw: dict, *, model_ready: bool | None = None) -> dict:
         raise ValueError("Unknown framing")
     if framing != "fill" and FORMATS[fmt]["profile"] == "9x16":
         out["framing"] = framing
+    # the reel's colours: stored only when not "as filmed" (older reels keep their key)
+    look = str(raw.get("look") or "natural")
+    if look not in LOOKS:
+        raise ValueError("Unknown colours")
+    if look != "natural":
+        out["look"] = look
     # Manual edit: an explicit list of moments in the user's order, optional source-time trims.
     selection = [str(x) for x in (raw.get("selection") or []) if is_id(x)]
     if len(set(selection)) != len(selection):
@@ -1882,7 +1890,7 @@ def engine_command(folder: Path, out_dir: Path, work_dir: Path, progress_file: P
         cmd += ["--skip-sha-file", str(skip_sha_file)]
     if s.get("framing") == "fit_blur":
         cmd += ["--vertical-framing", "fit_blur"]
-    if dress_file is not None and (s.get("title") or s.get("subtitle") or s.get("music")) and not s.get("prepare"):
+    if dress_file is not None and (s.get("title") or s.get("subtitle") or s.get("music") or s.get("look")) and not s.get("prepare"):
         cmd += ["--dress", str(dress_file)]
     if s.get("prepare"):
         cmd += ["--prepare-only"]
@@ -1956,7 +1964,8 @@ def _run_job(jid: int) -> None:
         return
     dress_file = jobs_dir / f"j{jid}.dress.json"
     dress_file.write_text(json.dumps({"title": s.get("title") or "", "subtitle": s.get("subtitle") or "", "music": s.get("music") or "",
-                                      "music_mode": s.get("music_mode") or "mix", "beat_sync": s.get("beat_sync") is not False},
+                                      "music_mode": s.get("music_mode") or "mix", "beat_sync": s.get("beat_sync") is not False,
+                                      "look": s.get("look") or ""},
                                      ensure_ascii=False), encoding="utf-8")
     input_list = None
     note = lambda name: _set(jid, message="Preparing a recording without a length: " + name)
@@ -2398,6 +2407,65 @@ def revision_thumb(rid: int, pos: int) -> Path | None:
     return None
 
 
+_LOOK_FILTERS: dict = {}
+
+
+def look_filters() -> dict:
+    """The engine's colour filters (engine_p11/p13_looks.py): the preview pictures use exactly what the reel gets."""
+    if not _LOOK_FILTERS:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("medeng_p13_looks", ENGINE_DIR / "p13_looks.py")
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        _LOOK_FILTERS.update(mod.LOOKS)
+    return _LOOK_FILTERS
+
+
+def look_source_revision(p: dict, rev: dict | None) -> dict | None:
+    """The version the colour previews are made from: this one when it has no colours of its own, else the newest
+    version of the project without them (colours are never put on top of other colours); None when there is none."""
+    if rev and not (rev.get("settings") or {}).get("look"):
+        return rev
+    plain = [r for r in (p.get("revisions") or []) if not (r.get("settings") or {}).get("look")]
+    return plain[-1] if plain else None
+
+
+def look_preview(rid: int, look: str) -> Path | None:
+    """A small picture of a moment of a version in one of the colour looks (to choose before a new version is
+    made). Cached next to the project's data; made from the version's own file, never from the videos."""
+    r = revision(rid)
+    if not r or look not in LOOKS or (r.get("settings") or {}).get("look"):
+        return None
+    _refuse_private(r)
+    vf_look = "" if look == "natural" else look_filters().get(look)
+    if vf_look is None:
+        return None
+    segs = (r.get("result") or {}).get("segments") or []
+    dur = float(r.get("duration_s") or (r.get("result") or {}).get("actual_duration_s") or 0)
+    seg = segs[1] if len(segs) > 1 else (segs[0] if segs else None)     # (not under the title of the first seconds)
+    t = (float(seg["reel_in_s"]) + float(seg["reel_out_s"])) / 2.0 if seg else dur * 0.4
+    if t < 3.4 and dur > 4.0:
+        t = min(dur - 0.3, 3.6)
+    out = _project_dir(r["project_id"]) / "thumbs" / f"r{int(rid)}_look_{look}.jpg"
+    if out.is_file() and out.stat().st_size > 0:
+        return out
+    out.parent.mkdir(parents=True, exist_ok=True)
+    tmp = out.with_suffix(f".{os.getpid()}.{threading.get_ident()}.part.jpg")
+    vf = ("scale=w='if(gte(iw,ih),320,-2)':h='if(gte(iw,ih),-2,320)',setsar=1,scale=out_range=tv,format=yuv420p"
+          + ("," + vf_look if vf_look else ""))
+    try:
+        subprocess.run([_ffmpeg() or "ffmpeg", "-v", "error", "-y", "-ss", f"{max(0.0, t):.3f}", "-i", str(r["video_path"]), "-frames:v", "1",
+                        "-vf", vf, "-q:v", "3", str(tmp)], **process_kwargs({"capture_output": True, "timeout": 60}))
+        if tmp.is_file() and tmp.stat().st_size > 0:
+            os.replace(tmp, out)
+            return out
+    except Exception:
+        pass
+    finally:
+        tmp.unlink(missing_ok=True)
+    return None
+
+
 # ---------------------------------------------------------------- "Check this PC"
 
 def system_check() -> list[dict]:
@@ -2530,6 +2598,7 @@ WHATS_NEW_ITEMS = [
     ("2026-10-19b", "Voice-over: your picks from the voice test, the voices 4_4 and 4_2, instead of 3.1."),
     ("2026-10-20", "Text on a video (Auto Edit → Voice-over and text): titles and lines of text at the moments you choose, on a colored stripe, a dark box or in big letters - no add-on needed."),
     ("2026-10-22", "Captions in two more looks: one word at a time, big (like TikTok), and the word being said on a color block."),
+    ('2026-10-27', "Reel colours: as filmed, brighter and richer, warm or cinematic (a variant shows a small picture of each) - pale drone videos come out livelier. Only the reel is coloured; your videos stay as they are."),
     ('2026-10-26', "Auto Edit with DJI videos: when the camera's small copy (.LRF) lies next to a video, the AI finds the moments in it - a first build much faster; the reel is still cut from the original 4K."),
     ('2026-10-25c', "Auto Edit: each project shows when its last version was made; a project from a camera's own folder (100MEDIA, 100GOPRO …) is named with the days it was filmed; a folder that already has a project says so on the new-reel page."),
     ('2026-10-25c', 'Convert: on a PC with an NVIDIA card that was never tested, the first conversion tests the card by itself first (about two minutes), then converts on whichever was faster with the same picture.'),
@@ -3385,7 +3454,8 @@ def last_new_settings() -> dict:
         d = dict(load_config().get("auto_edit", {}).get("last_new") or {})
     except Exception:
         return {}
-    return {k: d[k] for k, ok in (("format", FORMATS), ("sound", SOUNDS), ("mode", MODES), ("framing", FRAMINGS)) if d.get(k) in ok}
+    return {k: d[k] for k, ok in (("format", FORMATS), ("sound", SOUNDS), ("mode", MODES), ("framing", FRAMINGS), ("look", LOOKS))
+            if d.get(k) in ok}
 
 
 def music_folder() -> str | None:
@@ -3436,7 +3506,7 @@ def remember_new_settings(settings: dict) -> None:
     try:
         from .config import update_config
         update_config(lambda cfg: cfg.setdefault("auto_edit", {}).__setitem__(
-            "last_new", {k: settings.get(k) for k in ("format", "sound", "mode", "framing") if settings.get(k)}))
+            "last_new", {k: settings.get(k) for k in ("format", "sound", "mode", "framing", "look") if settings.get(k)}))
     except Exception:
         pass
 
