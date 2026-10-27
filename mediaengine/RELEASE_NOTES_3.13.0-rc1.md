@@ -207,6 +207,12 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
 - b231: **DJI videos**: when the camera's small copy (.LRF) lies next to a video, the AI finds the moments in it - a
   first build much faster - and the reel is still cut from the original 4K; only a copy of the same recording is used,
   a damaged one gives way to the video itself; the project page says how many copies were used.
+- b232: **Reel colours** (new reel, a variant, orders `look`): as filmed / brighter and richer / warm / cinematic, in
+  the reel's single encode before the title (engine_p11/p13_looks.py: lutyuv + eq; cinematic through exact RGB LUTs);
+  a small picture of each colour on the variant form (made from a version without colours); a colour variant reuses
+  the analysis. "Prepare AI+ for the Library" looks at the DJI small copy (.LRF) too. Saved reels named in Russian are
+  checked; "Saved: …" / "Not saved yet" on the project cards; "You cancelled the preparing"; informal "you" in all of
+  the Russian; Convert on the home page.
 
 ## Orders from other programs; night review fixes (2026-10-17)
 

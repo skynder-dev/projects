@@ -873,6 +873,22 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   convert 65/65, Edge 20/20, E2E 88/91/80, AI glue 22/22 (dji_small_copies_looked_at_reel_cut_from_the_originals),
   AI+ glue 21/21, library 11/11, library flow 43/43, orders 52/52, voice 197/197, route fuzz 0, Russian 218 pages 0
   English, public repo 0. Published: b231 (commit b7466e5), ZIP 4,112,542 bytes, the same runtime.
+- 2026-10-27: reel colours - as filmed / brighter and richer / warm / cinematic (tuned on public drone, landscape and
+  portrait pictures; TV levels kept; one list p13_looks.py for the engine and the app's preview pictures; measured in
+  dress_check: saturation +15 %, warm V-U +6, cinematic lifted blacks); the variant form shows each colour on a moment
+  of the version; orders take `look`. "Prepare AI+ for the Library" uses the DJI .LRF copies (aiplus_glue: prepare and
+  an AI+ reel with a copy, a reel afterwards looks at no frame). Fresh look at the CI screenshots: clearer words on
+  project cards and cancelled jobs, informal Russian everywhere, Convert on Home. Windows run 40484895728 (e43b55a):
+  unit 203/203, dress 52/52, AI glue 22/22, AI+ glue 24/24, orders 53/53, E2E two 92/92, convert 65/65, Edge 20/20,
+  voice 197/197, library 11/11, library flow 43/43, route fuzz 0, Russian 218 pages 0 English, public repo 0.
+  Published: b232 (commit e43b55a), ZIP 4,124,216 bytes, the same runtime.
+- 2026-10-27, next build: **Clips from a long video** (the owner asked about clipping campaigns, e.g. Whop Content
+  Rewards): clips.py / clips_web.py - Whisper (voice add-on) listens once, in 20-min pieces cut at silences, the first
+  sound track with gaps filled; windows of whole sentences scored from running sums (3.5 h in ~2 s); ticked ones made
+  in the voice queue: per shot crop on the face (OpenCV Haar front + side, read from memory for Cyrillic folders), two
+  people apart one above the other with the captions between, three or more on blurred edges; switches exact to the
+  frame; resumable without duplicates; pages poll instead of reloading. Reviewed by a separate agent (17 findings, all
+  but an orphan sweep on start fixed). clips_check 27/27 locally with a stand-in face finder; the real one on Windows CI.
 - Owner PC seen through the app's pages (2026-10-25 morning, read only): b217 installed; 6 projects (100MEDIA);
   16 logical cores, 69 GB RAM, RTX 3060; decoding on the card not used (x0.85); card test for converting not run.
 - Owner PC seen through the app's pages (2026-10-24 evening, read only): he runs b213 (pressed Update); the voice
