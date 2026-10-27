@@ -18,9 +18,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 MAX_BYTES = 5 * 1024 * 1024
-# the program's own files that are not text (made by its tests, designed, or free fonts - no person, no owner
+# the program's own files that are not text (made by its tests, designed, or free fonts - no private person, no owner
 # footage), each pinned by its SHA-256: the same name with other content is found too
 ALLOWED_BINARY = {
+    # a public-domain NASA portrait (astronaut Eileen Collins; scikit-image's "astronaut"): the face clips_check frames
+    "mediaengine/tests/assets/face_pd.jpg": "622bf8e8fa40a1a2c458832ef5c4bf8a12bcd46696a2991af937901fd3be64d8",
     "mediaengine/app/archivist/assets/browser_fixture_h264.mp4": "ec28d0ce0eac16dd6a4461e9f29cacfed9b1e58b2ff0b9ef1bb5a5c7b8712727",
     "mediaengine/app/archivist/assets/hevc_fixture.mp4": "d4a98ef2f4d5f3eba0c1f9bd017e2c9b4c6fcc7fa7e02842200fdb2a37aac27d",
     "mediaengine/app/archivist/assets/voice/host_9_2.flac": "903393c1db8026703450208bf6d084e0c2d9ee83d07afac16c473116b1abecc7",
