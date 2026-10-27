@@ -11,11 +11,11 @@ so here's the thing.
 Packing light changed every
 
 4
-00:00:04,120 --> 00:00:04,990
+00:00:04,120 --> 00:00:04,970
 trip we took.
 
 5
-00:00:05,500 --> 00:00:06,330
+00:00:05,500 --> 00:00:06,350
 Three outfits,
 
 6
@@ -23,7 +23,7 @@ Three outfits,
 one good hat,
 
 7
-00:00:07,780 --> 00:00:08,530
+00:00:07,800 --> 00:00:08,530
 and more time in
 
 8

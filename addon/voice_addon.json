@@ -1,6 +1,6 @@
 {
- "passed": 16,
- "total": 16,
+ "passed": 23,
+ "total": 23,
  "checks": [
   {
    "check": "Install starts",
@@ -20,7 +20,7 @@
   {
    "check": "the new engine (Qwen3-TTS, the owner's pick 14_5) is installed with it",
    "pass": true,
-   "detail": "{'version': 1, 'packages': ['accelerate==1.12.0', 'filelock==3.32.3', 'huggingface-hub==0.36.2', 'narwhals==2.27.1', 'opentelemetry-api==1.45.1', 'pandas==3.0.6', 'protobuf==7.36.2', 'psutil==7.2.2', 'python-dateutil==2.9.0.post0', 'pytz==2026.5', 'qwen-tts==0.1.1', 'rich==15.0.0', 'scikit-learn==1.9.1', 'six==1.17.0', 'threadpoolctl==3.7.0', 'tokenizers==0.22.2', 'transformers==4.57.3'], 'model': ['Qwen/Qwen3-TTS-12Hz-1.7B-Base', 'fd4b254389122332181a7c3db7f27e918eec64e3'], 'qwen_tts': '0.1.1', 'installed_at': '2026-10-27T13:27:27'}"
+   "detail": "{'version': 1, 'packages': ['accelerate==1.12.0', 'filelock==3.32.3', 'huggingface-hub==0.36.2', 'narwhals==2.27.1', 'opentelemetry-api==1.45.1', 'pandas==3.0.6', 'protobuf==7.36.2', 'psutil==7.2.2', 'python-dateutil==2.9.0.post0', 'pytz==2026.5', 'qwen-tts==0.1.1', 'rich==15.0.0', 'scikit-learn==1.9.1', 'six==1.17.0', 'threadpoolctl==3.7.0', 'tokenizers==0.22.2', 'transformers==4.57.3'], 'model': ['Qwen/Qwen3-TTS-12Hz-1.7B-Base', 'fd4b254389122332181a7c3db7f27e918eec64e3'], 'qwen_tts': '0.1.1', 'installed_at': '2026-10-27T14:18:48'}"
   },
   {
    "check": "the page shows the forms once installed",
@@ -35,7 +35,7 @@
   {
    "check": "the voice-over is made",
    "pass": true,
-   "detail": "{'ok': True, 'seconds': 9.49, 'device': 'cpu', 'said': \"Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water.\", 'speed': 1.0, 'engine': 'qwen', 'word_errors': 0, 'words': 23, 'chunks': [{'chunk': 1, 'attempt': 2, 'seconds': 8.94, 'make_s': 104.7, 'said': \"Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water.\", 'word_errors': 0, 'words': 23, 'file': 'chunk_001_try2.wav', 'pitch_off_st': 1.15}], 'load_s': 35.1, 'steps': None, 'language': 'en', 'files': {"
+   "detail": "{'ok': True, 'seconds': 9.49, 'device': 'cpu', 'said': \"Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water.\", 'speed': 1.0, 'engine': 'qwen', 'word_errors': 0, 'words': 23, 'chunks': [{'chunk': 1, 'attempt': 2, 'seconds': 8.94, 'make_s': 102.2, 'said': \"Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water.\", 'word_errors': 0, 'words': 23, 'file': 'chunk_001_try2.wav', 'pitch_off_st': 1.15}], 'load_s': 27.9, 'steps': None, 'language': 'en', 'files': {"
   },
   {
    "check": "every word said (listened to)",
@@ -70,12 +70,47 @@
   {
    "check": "the voice onto the video, captions burned, checked",
    "pass": true,
-   "detail": "{'ok': True, 'files': {'video': 'video.mp4', 'srt': 'captions.srt'}, 'seconds': 14.0, 'checks': [{'check': 'video', 'pass': True, 'detail': 'h264'}, {'check': 'length', 'pass': True, 'detail': '14.000 s (planned 14.000 s)'}, {'check': 'sound', 'pass': True, 'detail': 'aac'}, {'check': 'plays_to_the_end', 'pass': True, 'detail': 'decoded completely'}], 'captions': 10, 'texts': 0, 'width': 640, 'height': 360, 'saved': 'D:\\\\a\\\\_temp\\\\home-voice\\\\Exports\\\\clip_1 - voice.mp4', 'finished_at': '2026-10-27T13:38:28'}"
+   "detail": "{'ok': True, 'files': {'video': 'video.mp4', 'srt': 'captions.srt'}, 'seconds': 14.0, 'checks': [{'check': 'video', 'pass': True, 'detail': 'h264'}, {'check': 'length', 'pass': True, 'detail': '14.000 s (planned 14.000 s)'}, {'check': 'sound', 'pass': True, 'detail': 'aac'}, {'check': 'plays_to_the_end', 'pass': True, 'detail': 'decoded completely'}], 'captions': 10, 'texts': 0, 'width': 640, 'height': 360, 'saved': 'D:\\\\a\\\\_temp\\\\home-voice\\\\Exports\\\\clip_1 - voice.mp4', 'finished_at': '2026-10-27T14:27:27'}"
   },
   {
    "check": "captions from the video's own speech hear the voice-over",
    "pass": true,
    "detail": "Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water."
+  },
+  {
+   "check": "clips: the NASA interview downloaded (pinned SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "clips: finding starts",
+   "pass": true,
+   "detail": "(302, '/auto/clips/20261027-142744-e988b3')"
+  },
+  {
+   "check": "clips: the 9-minute interview heard (space, station)",
+   "pass": true,
+   "detail": "station. this is houston. are you ready for the event? houston? this is station. i am ready for the event. good morning, america. this is mission control houston. please call station for a voice check. station. this is geo bonita's at abc news. how do you hear me? i hear you loud and clear. i am rea"
+  },
+  {
+   "check": "clips: at least five clips found, each 15-30 s with its words and why",
+   "pass": true,
+   "detail": "[(75.06, 97.57, \"Well, I didn't actually step foot.\"), (27.02, 51.63, 'How do you hear me?'), (201.73, 223.9, 'The first part is to have these ideas an'), (337.45, 358.61, 'What are you most looking forward to?'), (51.6, 67.83, 'I had some pretty high expectations and '), (425.33, 446.18, 'You live life very differently.'), (377.85, 394.28, 'I think it drives home some concepts tha'), (235.53, 261.39, 'What are the projects that you are most ')]"
+  },
+  {
+   "check": "clips: the page lists them with pictures",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "clips: making starts",
+   "pass": true,
+   "detail": "302"
+  },
+  {
+   "check": "clips: two vertical clips made from the interview - the person kept in the frame (crop on the face), captions",
+   "pass": true,
+   "detail": "{'ok': True, 'clips': [{'file': 'clip_01.mp4', 's': 27.02, 'e': 51.63, 'seconds': 24.61, 'saved': 'D:\\\\a\\\\_temp\\\\home-voice\\\\Exports\\\\nasa_interview - clips\\\\01 - How do you hear me.mp4', 'width': 1080, 'height': 1920, 'layouts': ['crop'], 'shots': 1, 'faces': True, 'captions': 24, 'plan': [{'s': 0.0, 'e': 25.61, 'layout': 'crop', 'cx': 0.4969, 'seen': {'1': 74}}], 'n': 1}, {'file': 'clip_02.mp4', 's': 75.06, 'e': 97.57, 'seconds': 22.51, 'saved': \"D:\\\\a\\\\_temp\\\\home-voice\\\\Exports\\\\nasa_interview - clips\\\\02 - Well I didn't actually step foot.mp4\", 'width': 1080, 'height': 1920, 'layouts': ['"
   },
   {
    "check": "the page in Russian with a finished voice-over",
@@ -84,19 +119,19 @@
   }
  ],
  "timings": {
-  "install_s": 217,
-  "voiceover_s": 291,
+  "install_s": 378,
+  "voiceover_s": 282,
   "voiceover": {
    "device": "cpu",
    "seconds": 9.49,
-   "load_s": 35.1,
+   "load_s": 27.9,
    "steps": null,
    "chunks": [
     {
      "chunk": 1,
      "attempt": 2,
      "seconds": 8.94,
-     "make_s": 104.7,
+     "make_s": 102.2,
      "said": "Okay, so here's the thing. Packing light changed every trip we took. Three outfits, one good hat, and more time in the water.",
      "word_errors": 0,
      "words": 23,
@@ -105,7 +140,7 @@
     }
    ]
   },
-  "russian_s": 102,
+  "russian_s": 87,
   "russian": {
    "engine": "qwen",
    "said": "Привет! Это короткая проверка голоса.",
@@ -116,7 +151,7 @@
      "chunk": 1,
      "attempt": 1,
      "seconds": 2.92,
-     "make_s": 36.8,
+     "make_s": 36.3,
      "said": "Привет! Это короткая проверка голоса.",
      "word_errors": 0,
      "words": 5,
@@ -130,9 +165,11 @@
    "raw_s": 3.71,
    "final_s": 3.41
   },
-  "described_s": 261,
+  "described_s": 140,
   "dub_s": 6,
-  "captions_s": 12
+  "captions_s": 12,
+  "clips_find_s": 186,
+  "clips_make_s": 105
  },
  "manifest": {
   "version": 1,
@@ -215,7 +252,7 @@
     "536b0662742c02347bc0e980a01041f333bce120"
    ]
   },
-  "installed_at": "2026-10-27T13:25:51",
+  "installed_at": "2026-10-27T14:17:29",
   "bytes": 12414698381,
   "qwen": {
    "version": 1,
@@ -243,7 +280,7 @@
     "fd4b254389122332181a7c3db7f27e918eec64e3"
    ],
    "qwen_tts": "0.1.1",
-   "installed_at": "2026-10-27T13:27:27"
+   "installed_at": "2026-10-27T14:18:48"
   }
  }
 }
