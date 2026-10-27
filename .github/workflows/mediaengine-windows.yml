@@ -231,14 +231,14 @@ jobs:
           # a project that is still there (the E2E removes the ones it made for its own checks)
           $proj = '/auto'
           try { $m = [regex]::Match((Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8765/auto).Content, "/auto/p/(\d+)"); if ($m.Success) { $proj = '/auto/p/' + $m.Groups[1].Value } } catch {}
-          $pages = @{ 'auto_home'='/auto'; 'auto_project'=$proj; 'auto_setup'=('/auto/new?folder=' + [uri]::EscapeDataString("$env:RUNNER_TEMP\fx\seven")) }
+          $pages = @{ 'auto_home'='/auto'; 'auto_project'=$proj; 'auto_setup'=('/auto/new?folder=' + [uri]::EscapeDataString("$env:RUNNER_TEMP\fx\seven")); 'auto_clips'='/auto/clips' }
           foreach ($k in $pages.Keys) {
             & $edge --headless=new --disable-gpu --hide-scrollbars --window-size=1600,1500 --virtual-time-budget=4000 "--screenshot=$env:OUT\$k.png" ("http://127.0.0.1:8765" + $pages[$k]) | Out-Null
             Start-Sleep 2
           }
           # the same app in Russian (switch in the top bar), Home with "Check this PC", Settings with the language choice
           try { Invoke-WebRequest -UseBasicParsing -Method Post -Uri http://127.0.0.1:8765/lang -Headers @{Origin='http://127.0.0.1:8765'} -Body @{lang='ru'; back='/api/ping'} | Out-Null } catch {}
-          $ru = @{ 'ru_home'='/'; 'ru_auto_home'='/auto'; 'ru_auto_project'=$proj; 'ru_check'='/auto/check'; 'ru_settings'='/settings' }
+          $ru = @{ 'ru_home'='/'; 'ru_auto_home'='/auto'; 'ru_auto_project'=$proj; 'ru_check'='/auto/check'; 'ru_settings'='/settings'; 'ru_clips'='/auto/clips'; 'ru_convert'='/convert' }
           foreach ($k in $ru.Keys) {
             & $edge --headless=new --disable-gpu --hide-scrollbars --window-size=1600,1300 --virtual-time-budget=4000 "--screenshot=$env:OUT\$k.png" ("http://127.0.0.1:8765" + $ru[$k]) | Out-Null
             Start-Sleep 2

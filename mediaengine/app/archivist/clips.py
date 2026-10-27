@@ -561,7 +561,8 @@ def _cascade(cv2, path: str):
 
 
 class _Finder:
-    """Faces looking at the camera and faces turned to a side (people talking to each other) - both sides."""
+    """Faces looking at the camera; with fewer than two of them, also faces turned to a side (people talking to each
+    other) - both sides."""
 
     def __init__(self, front, side):
         self.front, self.side = front, side
@@ -569,7 +570,7 @@ class _Finder:
     def detectMultiScale(self, img, scaleFactor=1.1, minNeighbors=5, minSize=(0, 0)):
         kw = dict(scaleFactor=scaleFactor, minNeighbors=minNeighbors, minSize=minSize)
         found = [tuple(int(v) for v in r) for r in self.front.detectMultiScale(img, **kw)]
-        if self.side is None:
+        if self.side is None or len(found) >= 2:          # (two looking at the camera: enough to choose the layout)
             return found
         import numpy as np
         w = img.shape[1]
