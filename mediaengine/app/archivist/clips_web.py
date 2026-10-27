@@ -33,7 +33,7 @@ CSS = """<style>
 _STEP = {"starting": "Starting…", "reading": "Reading the sound of the video…", "listening": "Listening to the speech…",
          "checking": "Checking the clips…"}
 _WHY = {"a question at the start": "a question at the start", "a strong opening": "a strong opening", "numbers": "numbers",
-        "strong words": "strong words", "lively": "lively"}
+        "strong words": "strong words", "lively": "lively", "laughter": "laughter"}
 _JOB_ID = r"[0-9]{8}-[0-9]{6}-[0-9a-f]{6}"
 
 

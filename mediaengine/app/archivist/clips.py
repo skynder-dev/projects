@@ -42,6 +42,7 @@ _BAD_START = {"and", "but", "so", "because", "or", "which", "that", "then", "als
 _YOU = {"you", "your", "you're", "yourself", "ты", "вы", "тебе", "вам", "тебя", "вас", "твой", "ваш"}
 _NUMBER_WORDS = {"hundred", "thousand", "million", "billion", "percent", "сто", "тысяч", "тысячи", "миллион", "процентов",
                  "процента"}
+_LAUGH = re.compile(r"(?:\b|^)(?:ha){2,}|laugh|applause|chuckl|(?:х[аи]-?){2,}|смех|смеётся|аплодисмент")
 _END = re.compile(r"[.!?…]+[\"'»”)\]]*$")
 
 
@@ -137,6 +138,7 @@ def _features(sents: list[dict]) -> list[dict]:
             "gap": max((float(y["s"]) - float(x["e"]) for x, y in zip(ws, ws[1:])), default=0.0),
             "bad_start": bool(bare) and bare[0] in _BAD_START, "hook": any(x in _HOOK for x in bare[:6]),
             "you": [x in _YOU for x in bare],
+            "laugh": sum(1 for w in ws if _LAUGH.search(str(w["w"]).lower())),
         })
     return out
 
@@ -183,7 +185,7 @@ def find_candidates(words: list[dict], energy: list[float] | None = None, lmin: 
             k += 1
         if any(you[:40]):
             base += 4
-        n = spoken = unsure = strong = excl = 0
+        n = spoken = unsure = strong = excl = laugh = 0
         number = False
         gap = 0.0
         for j in range(i, len(sents)):
@@ -196,6 +198,7 @@ def find_candidates(words: list[dict], energy: list[float] | None = None, lmin: 
             unsure += fj["unsure"]
             strong += fj["strong"]
             excl += fj["excl"]
+            laugh += fj["laugh"]
             number = number or fj["number"]
             gap = max(gap, fj["gap"], (sents[j]["s"] - sents[j - 1]["e"]) if j > i else 0.0)
             dur = e0 - s0
@@ -212,6 +215,9 @@ def find_candidates(words: list[dict], energy: list[float] | None = None, lmin: 
                 if strong >= 2:
                     why.append("strong words")
             score += min(6, 3 * excl)
+            if laugh:                                    # people laughing (Whisper writes "(laughs)", "haha"): a funny moment
+                score += min(12, 6 * laugh)
+                why.append("laughter")
             if fj["quest"] and j > i:
                 score -= 6                               # (ends on an open question: the answer is cut off)
             if dur > 0 and spoken / dur < 0.55:

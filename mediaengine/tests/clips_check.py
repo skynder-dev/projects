@@ -130,6 +130,11 @@ def main() -> int:
     q = next((c for c in found if c["first"].startswith("Why do people")), None)
     check("finding: the question with strong words is the likeliest clip", q is not None and found[0] is q
           and "a question at the start" in q["why"], [(c["first"][:30], c["score"]) for c in found[:4]])
+    lw = transcript(["We talked about the plan for the year."] * 8 + ["He fell off the chair (laughs) and we all laughed.",
+                                                                     "Then we went home."] + ["We talked about the plan for the year."] * 8)
+    lf = cl.find_candidates(lw, None, 15, 30)
+    check("finding: laughter makes a clip likelier", lf and "laughter" in lf[0]["why"] and "(laughs)" in lf[0]["text"],
+          [(c["first"][:30], c["why"]) for c in lf[:3]])
     runon = transcript([" ".join(["word"] * 120)], pause=0)              # speech written without a single stop
     pieces = cl.sentences(runon)
     check("finding: speech without stops is split into pieces", len(pieces) >= 2 and all(p["e"] - p["s"] <= 20.5 for p in pieces),

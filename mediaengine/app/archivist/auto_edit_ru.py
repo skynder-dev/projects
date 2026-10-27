@@ -1041,7 +1041,7 @@ PHRASES = {
         "Самые удачные сверху. Прочитай слова, включи кусок, отметь нужные. Начало и конец можно поменять (минуты:секунды).",
     "▶ Play": "▶ Смотреть", "How likely a good clip": "Насколько вероятно, что клип получится хорошим",
     "a question at the start": "вопрос в начале", "a strong opening": "сильное начало", "numbers": "цифры",
-    "strong words": "сильные слова", "lively": "живо", "Picture": "Картинка",
+    "strong words": "сильные слова", "lively": "живо", "laughter": "смех", "Picture": "Картинка",
     "Vertical 9:16 (TikTok, Reels, Shorts)": "Вертикально 9:16 (TikTok, Reels, Shorts)", "Square 1:1": "Квадрат 1:1",
     "Keep the face in the frame": "Держать лицо в кадре",
     "The first sentence as a title at the top (3 s)": "Первая фраза — заголовком сверху (3 с)",
