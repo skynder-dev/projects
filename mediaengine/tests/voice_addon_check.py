@@ -1,8 +1,10 @@
 """The voice-over add-on for real, through the program's own pages: Install (pip + models from the internet, as the
 owner's button does - here with CPU torch), a voice-over in the default voice (9_2) listened to word by word, that voice burned
-onto a video with captions, captions for the video's own speech. Slow on a CPU (minutes per sentence).
+onto a video with captions, captions for the video's own speech; with --talk, "Clips from a long video" for real: a
+9-minute public-domain NASA interview (Wikimedia Commons, pinned below) heard by Whisper, clips found, two made
+vertical with the face kept and captions. Slow on a CPU (minutes per sentence).
 
-  python tests/voice_addon_check.py --home <empty dir> --video <a short video> --out <dir>
+  python tests/voice_addon_check.py --home <empty dir> --video <a short video> --out <dir> [--talk <work dir>]
 """
 from __future__ import annotations
 
@@ -15,10 +17,41 @@ TEXT = ("Okay, so here's the thing. Packing light changed every trip we took. "
         "Three outfits, one good hat, and more time in the water.")
 
 
+# a crew member of the space station answering a TV show's questions (US government work: public domain)
+TALK = {"title": "SPACE STATION ASTRONAUT DISCUSSES LIFE IN SPACE WITH ABC'S GOOD MORNING AMERICA (NASA, 2022)",
+        "page": "https://commons.wikimedia.org/wiki/File:SPACE_STATION_ASTRONAUT_DISCUSSES_LIFE_IN_SPACE_WITH_ABC%E2%80%99S_GOOD_MORNING_AMERICA_(iss068m263221454-Expedition_68_Inflight_with_ABC%27s_Good_Morning_America_221118_1723170).webm",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/46/SPACE_STATION_ASTRONAUT_DISCUSSES_LIFE_IN_SPACE_WITH_ABC%E2%80%99S_GOOD_MORNING_AMERICA_%28iss068m263221454-Expedition_68_Inflight_with_ABC%27s_Good_Morning_America_221118_1723170%29.webm/SPACE_STATION_ASTRONAUT_DISCUSSES_LIFE_IN_SPACE_WITH_ABC%E2%80%99S_GOOD_MORNING_AMERICA_%28iss068m263221454-Expedition_68_Inflight_with_ABC%27s_Good_Morning_America_221118_1723170%29.webm.480p.vp9.webm",
+        "sha256": "812a2ec9e1bc66c7a6a21d23e2c32b665ac20a98e2bb1b377cad8788dcc63fe7"}
+
+
+def fetch_talk(folder: Path) -> tuple[Path | None, str]:
+    import hashlib, urllib.request
+    folder.mkdir(parents=True, exist_ok=True)
+    dst = folder / "nasa_interview.webm"
+    ua = {"User-Agent": "MediaEngine-CI/1.0 (https://github.com/skynder-dev/projects; automated test, small number of requests)"}
+    for k in range(3):
+        try:
+            if not dst.is_file():
+                with urllib.request.urlopen(urllib.request.Request(TALK["url"], headers=ua), timeout=600) as r, \
+                        open(str(dst) + ".part", "wb") as fh:
+                    shutil.copyfileobj(r, fh, 1 << 20)
+                os.replace(str(dst) + ".part", dst)
+            got = hashlib.sha256(dst.read_bytes()).hexdigest()
+            if got == TALK["sha256"]:
+                return dst, ""
+            dst.unlink()
+            return None, f"the file changed on Commons (SHA-256 {got})"
+        except Exception as exc:
+            err = str(exc)
+            time.sleep(10)
+    return None, err
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--home", required=True); ap.add_argument("--video", required=True); ap.add_argument("--out", required=True)
     ap.add_argument("--cpu", action="store_true", help="CPU torch even with an NVIDIA card")
+    ap.add_argument("--talk", default="", help="a work folder: clips from a real NASA interview (downloaded there)")
     a = ap.parse_args()
     try:                     # Cyrillic in a detail must not stop the check (a Windows console is cp1252)
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -171,10 +204,66 @@ def main() -> int:
               and "water" in heard, cres.get("said") or cres.get("error"))
         if cj["state"] == "done":
             shutil.copy2(Path(cj["dir"]) / "video.mp4", out / "captions_video.mp4")
+    if a.talk:
+        talk_check(c, H, Path(a.talk).resolve(), out, check, timings, wait)
     c.post("/lang", data={"back": "/auto/voice"}, headers=H)
     ru = c.get("/auto/voice", headers=H).get_data(as_text=True)
     check("the page in Russian with a finished voice-over", "Наложить на видео" in ru and "Все слова сказаны" in ru)
     return finish()
+
+
+def talk_check(c, H, work: Path, out: Path, check, timings: dict, wait) -> None:
+    """5. Clips from a long video, for real: the interview heard by Whisper, clips found, the top two made."""
+    from archivist import clips as cl, voice as vo
+    talk, why = fetch_talk(work)
+    check("clips: the NASA interview downloaded (pinned SHA-256)", talk is not None, why)
+    if talk is None:
+        return
+    t0 = time.time()
+    r = c.post("/auto/clips/new", data={"path": str(talk), "length": "short", "language": "en"}, headers=H)
+    fid = (r.headers.get("Location") or "").rstrip("/").split("/")[-1]
+    check("clips: finding starts", r.status_code == 302 and "/auto/clips/" in (r.headers.get("Location") or "") and bool(fid),
+          (r.status_code, r.headers.get("Location")))
+    if not fid:
+        return
+    fj = wait(fid, 3 * 3600)
+    timings["clips_find_s"] = round(time.time() - t0)
+    cands = cl.candidates(fid) if fj["state"] == "done" else []
+    heard = " ".join(str(w.get("w", "")) for w in cl.words_of(fid)).lower()
+    (out / "clips_found.json").write_text(json.dumps({"video": TALK, "result": fj.get("result"), "candidates": cands,
+                                                      "heard_words": len(heard.split())}, indent=1, ensure_ascii=False), "utf-8")
+    check("clips: the 9-minute interview heard (space, station)", "space" in heard and "station" in heard,
+          (fj.get("result") or {}).get("error") or heard[:300])
+    check("clips: at least five clips found, each 15-30 s with its words and why", len(cands) >= 5 and all(
+        14.0 <= x["e"] - x["s"] <= 31.0 and x["text"].strip() and x["first"].strip() for x in cands),
+          [(x["s"], x["e"], x["first"][:40]) for x in cands[:8]])
+    page = c.get(f"/auto/clips/{fid}", headers=H).get_data(as_text=True)
+    check("clips: the page lists them with pictures", all(f"/thumb/{x['id']}.jpg" in page for x in cands[:5]))
+    if len(cands) < 2:
+        return
+    top = cands[:2]
+    data = {"pick": [x["id"] for x in top], "format": "vertical", "framing": "face", "captions": "1", "title": "1",
+            "position": "bottom"}
+    for x in top:
+        data[f"s_{x['id']}"], data[f"e_{x['id']}"] = f"{x['s']:.2f}", f"{x['e']:.2f}"
+    t0 = time.time()
+    r = c.post(f"/auto/clips/{fid}/make", data=data, headers=H)
+    mk = next((j for j in vo.list_jobs() if j.get("kind") == "clips_make" and j.get("find") == fid), None)
+    check("clips: making starts", r.status_code == 302 and mk is not None, r.status_code)
+    if mk is None:
+        return
+    mj = wait(mk["id"], 3600)
+    timings["clips_make_s"] = round(time.time() - t0)
+    res = mj.get("result") or {}
+    made = res.get("clips") or []
+    (out / "clips_made.json").write_text(json.dumps(res, indent=1, ensure_ascii=False), "utf-8")
+    check("clips: two vertical clips made from the interview - the person kept in the frame (crop on the face), captions",
+          mj["state"] == "done" and len(made) == 2 and all(m["width"] == 1080 and m["height"] == 1920 and m["faces"]
+                                                         and m["layouts"] == ["crop"] and m["captions"] > 0 for m in made), res)
+    for m in made:
+        f = Path(mj["dir"]) / m["file"]
+        if f.is_file():
+            shutil.copy2(f, out / f"nasa_{m['file']}")
 
 
 if __name__ == "__main__":
