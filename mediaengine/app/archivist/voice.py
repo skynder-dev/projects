@@ -544,6 +544,56 @@ def _run_worker(job: dict, work: Path, timeout: float = 3600, on_line=None, trac
     return res
 
 
+def _seconds(video) -> float:
+    """A video's length (0 when it cannot be read: the listening then says no progress until it is done)."""
+    try:
+        from . import auto_edit as ae
+        return float((ae._probe(Path(video)).get("format") or {}).get("duration") or 0)
+    except Exception:
+        return 0.0
+
+
+def _whisper_gpu() -> bool:
+    """Listen on the NVIDIA card: the add-on was installed for it, and the card never failed at it on this PC."""
+    if (load_config().get("voice") or {}).get("whisper_gpu") is False:
+        return False
+    return bool(manifest().get("cuda"))
+
+
+def transcribe(wjob: dict, work: Path, timeout: float = 6 * 3600, on_line=None) -> dict:
+    """The voice worker's "transcribe" (Whisper), on the NVIDIA card when it can (a long recording several times faster);
+    a card that fails at it (a library missing...) is remembered, and the processor listens - this time and from now
+    on. The result says where it was listened to ("device")."""
+    seen: dict = {}
+
+    def line(msg):
+        if msg.get("device"):
+            seen["device"] = msg["device"]
+        (on_line or _progress)(msg)
+    gpu = _whisper_gpu()
+    res = _run_worker(dict(wjob, whisper_device="cuda") if gpu else wjob, work, timeout=timeout, on_line=line)
+    if gpu and not res.get("ok") and not _CURRENT.get("cancel"):
+        _remember_whisper(False)
+        try:
+            Path(wjob["wav16"]).unlink(missing_ok=True)
+        except OSError:
+            pass
+        res = _run_worker(wjob, work, timeout=timeout, on_line=line)
+    elif gpu and seen.get("device") == "cuda":
+        _remember_whisper(True)
+    if isinstance(res, dict):
+        res.setdefault("device", seen.get("device") or "cpu")
+    return res
+
+
+def _remember_whisper(ok: bool) -> None:
+    try:
+        from .config import update_config
+        update_config(lambda c: c.setdefault("voice", {}).__setitem__("whisper_gpu", bool(ok)))
+    except Exception:
+        pass
+
+
 # ---------------------------------------------------------------- text, captions
 
 # How fast the voice speaks and how long it breathes between sentences (the model has one pace of its own): the
@@ -1311,9 +1361,9 @@ def _do(jid: str) -> dict:
                 "steps": res.get("steps"), "language": res.get("language"),
                 "files": {"voice": "voice.wav", "srt": "captions.srt"}}
     if job["kind"] == "captions":
-        res = _run_worker({"task": "transcribe", "source": job["source"], "wav16": str(d / "sound16k.wav"),
-                           "ffmpeg": _ffmpeg(), "language": job.get("language")}, d / "work", timeout=6 * 3600,
-                          on_line=_progress)
+        res = transcribe({"task": "transcribe", "source": job["source"], "wav16": str(d / "sound16k.wav"),
+                          "ffmpeg": _ffmpeg(), "language": job.get("language"), "duration": _seconds(job["source"]),
+                          "piece_s": 1200.0}, d / "work")
         (d / "sound16k.wav").unlink(missing_ok=True)
         if not res.get("ok"):
             return res
@@ -1351,8 +1401,9 @@ def _do(jid: str) -> dict:
             if job["captions_from"] == "voice":
                 words = voiceover_words(job["voice_from"])
             else:
-                res = _run_worker({"task": "transcribe", "source": job["video"], "wav16": str(d / "sound16k.wav"),
-                                   "ffmpeg": _ffmpeg(), "language": None}, d / "work", timeout=6 * 3600, on_line=_progress)
+                res = transcribe({"task": "transcribe", "source": job["video"], "wav16": str(d / "sound16k.wav"),
+                                  "ffmpeg": _ffmpeg(), "language": None, "duration": _seconds(job["video"]),
+                                  "piece_s": 1200.0}, d / "work")
                 (d / "sound16k.wav").unlink(missing_ok=True)
                 if not res.get("ok"):
                     return res

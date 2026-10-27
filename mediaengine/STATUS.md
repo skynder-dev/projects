@@ -887,8 +887,12 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   sound track with gaps filled; windows of whole sentences scored from running sums (3.5 h in ~2 s); ticked ones made
   in the voice queue: per shot crop on the face (OpenCV Haar front + side, read from memory for Cyrillic folders), two
   people apart one above the other with the captions between, three or more on blurred edges; switches exact to the
-  frame; resumable without duplicates; pages poll instead of reloading. Reviewed by a separate agent (17 findings, all
-  but an orphan sweep on start fixed). clips_check 27/27 locally with a stand-in face finder; the real one on Windows CI.
+  frame; resumable without duplicates; pages poll instead of reloading. Reviewed by a separate agent (17 findings, all fixed;
+  the orphan sweep runs when the clips page opens). Later the same day: a streamer's camera in a corner of a game -> the camera above, the game below; laughter
+  makes a clip likelier; Whisper on the NVIDIA card when the add-on has CUDA (the processor if it cannot, remembered);
+  a title of its own per clip. clips_check 29/29 locally with a stand-in face finder; the real one on Windows CI.
+  (The first push failed the public repository check: the test face, a public-domain NASA portrait, is now pinned by
+  its SHA-256 in the allow-list - run public_repo_check before pushing new binary files.)
 - Owner PC seen through the app's pages (2026-10-25 morning, read only): b217 installed; 6 projects (100MEDIA);
   16 logical cores, 69 GB RAM, RTX 3060; decoding on the card not used (x0.85); card test for converting not run.
 - Owner PC seen through the app's pages (2026-10-24 evening, read only): he runs b213 (pressed Update); the voice
