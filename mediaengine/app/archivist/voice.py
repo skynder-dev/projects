@@ -761,6 +761,17 @@ def busy() -> str:
     return str(_CURRENT.get("id") or (_QUEUE[0] if _QUEUE else "") or ("install" if installing() else ""))
 
 
+def busy_with_clips() -> bool:
+    """The job being made (or the first waiting) is one of the clips from a long video."""
+    jid = str(_CURRENT.get("id") or (_QUEUE[0] if _QUEUE else ""))
+    if not jid:
+        return False
+    try:
+        return str(json.loads((JOBS / jid / "job.json").read_text("utf-8")).get("kind") or "").startswith("clips_")
+    except Exception:
+        return False
+
+
 def _new_id() -> str:
     return time.strftime("%Y%m%d-%H%M%S") + "-" + uuid.uuid4().hex[:6]
 

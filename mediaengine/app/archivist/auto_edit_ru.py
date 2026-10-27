@@ -795,6 +795,8 @@ PHRASES = {
     "FFmpeg is missing from this MediaEngine.": "В этом MediaEngine нет FFmpeg.",
     "The voice add-on is being installed (Auto Edit → Voice-over)": "Устанавливается модуль озвучки (Автомонтаж → Озвучка)",
     "A voice-over is being made (Auto Edit → Voice-over)": "Делается озвучка (Автомонтаж → Озвучка)",
+    "Clips are being made (Auto Edit → Clips from a long video)": "Делаются клипы (Автомонтаж → Клипы из длинного видео)",
+    "Clips are being made. Switch when they are ready.": "Делаются клипы. Переключи, когда они будут готовы.",
     "A voice-over is being made (or the voice add-on installed). Switch when it is ready.":
         "Делается озвучка (или ставится модуль озвучки). Переключись, когда закончится.",
     # text on video and caption styles (textfx.py, voice_web.py)
@@ -1015,7 +1017,15 @@ PHRASES = {
     "A podcast, a stream or an interview: MediaEngine listens to it once and lists the parts that make good short clips, with their words - the likeliest first. Tick the ones you want: they are made vertical, with the face in the frame, the sound and captions. The video itself is only read.":
         "Подкаст, стрим или интервью: MediaEngine один раз прослушивает видео и показывает куски, из которых получатся хорошие короткие клипы, со словами — самые удачные сверху. Отметь нужные: они делаются вертикальными, с лицом в кадре, со звуком и субтитрами. Само видео только читается.",
     "Finding clips needs the voice add-on": "Для поиска клипов нужен модуль озвучки", "(it listens to the speech).": "(он распознаёт речь).",
-    "Install it on the Voice-over page": "Установи его на странице «Озвучка»", "- once, free.": "— один раз, бесплатно.",
+    "It is installed once, free.": "Он ставится один раз, бесплатно.",
+    "Make the rest": "Доделать остальные", "Find again for this length": "Найти заново для этой длины",
+    "(in a moment: the speech is not listened to again)": "(сразу: речь заново не прослушивается)",
+    "Ready.": "Готово.", "Refresh the page to see it.": "Обнови страницу, чтобы увидеть.", "Refresh": "Обновить",
+    "The long video, for example a podcast episode": "Длинное видео, например выпуск подкаста",
+    "Clips of this video are being made: stop them first.": "Клипы этого видео сейчас делаются: сначала останови их.",
+    "Private and Rejected videos are not used.": "Видео из «Личного» и «Отклонённых» не используются.",
+    "Choose the length of a clip.": "Выбери длину клипа.",
+    "Start": "Начало", "End": "Конец",
     "Find clips": "Найти клипы", "Length of a clip": "Длина клипа", "15–30 s": "15–30 с", "30–60 s": "30–60 с", "45–90 s": "45–90 с",
     "Listening takes about 5-15 minutes for an hour of video. You can close this page meanwhile; the PC does not go to sleep.":
         "Прослушивание занимает примерно 5–15 минут на час видео. Эту страницу можно закрыть, компьютер не уснёт.",
@@ -1034,8 +1044,8 @@ PHRASES = {
     "Keep the face in the frame": "Держать лицо в кадре",
     "The first sentence as a title at the top (3 s)": "Первая фраза — заголовком сверху (3 с)",
     "Make the ticked clips": "Сделать отмеченные клипы",
-    "Saved next to the saved reels, in a folder of this video. The face is kept in the frame; two people apart are shown whole on blurred edges.":
-        "Сохраняются рядом с готовыми роликами, в папке этого видео. Лицо держится в кадре; двое далеко друг от друга показываются целиком на размытом фоне.",
+    "Saved next to the saved reels, in a folder of this video. The face is kept in the frame; two people apart: each in a half, one above the other; more people: the whole picture on blurred edges.":
+        "Сохраняются рядом с готовыми роликами, в папке этого видео. Лицо держится в кадре; двое далеко друг от друга — каждый в своей половине, один над другим; больше людей — кадр целиком на размытом фоне.",
     "Made clips": "Готовые клипы", "Clips:": "Клипы:", "Saved in": "Сохранены в", "No such job.": "Такого задания нет.",
     "Choose the long video (its full path).": "Выбери длинное видео (полный путь к нему).",
     "This video is only in OneDrive (not on this PC): keep it on this PC first.": "Это видео есть только в OneDrive (не на этом компьютере): сначала сохрани его на компьютер.",

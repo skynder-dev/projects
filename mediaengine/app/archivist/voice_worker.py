@@ -125,17 +125,48 @@ def _whisper(job: dict):
                         cpu_threads=max(1, (os.cpu_count() or 2) - 1))
 
 
-def _listen(asr, wav: str, language: str | None, total_s: float = 0.0) -> tuple[str, list[dict], str]:
-    """total_s (a long recording): how far the listening is, said as it goes (from 20 % to 95 %)."""
+def _listen(asr, wav: str, language: str | None, total_s: float = 0.0, offset: float = 0.0) -> tuple[str, list[dict], str]:
+    """total_s (a long recording): how far the listening is, said as it goes (from 20 % to 95 %); offset: where this
+    piece of a long recording starts (added to every word's time)."""
     segs, info = asr.transcribe(wav, language=language or None, word_timestamps=True, vad_filter=True, beam_size=5)
     words = []
     for s in segs:
         if total_s > 0:
-            say(progress=round(0.2 + 0.75 * min(1.0, float(s.end) / total_s), 3))
+            say(progress=round(0.2 + 0.75 * min(1.0, (offset + float(s.end)) / total_s), 3))
         for w in (s.words or []):
-            words.append({"w": w.word.strip(), "s": round(float(w.start), 3), "e": round(float(w.end), 3),
+            words.append({"w": w.word.strip(), "s": round(offset + float(w.start), 3), "e": round(offset + float(w.end), 3),
                           "p": round(float(getattr(w, "probability", 0) or 0), 3)})
     return " ".join(w["w"] for w in words), words, getattr(info, "language", "") or ""
+
+
+def _pieces(wav: str, piece_s: float) -> list[tuple[float, float]]:
+    """A long recording cut into pieces of about piece_s seconds, each cut in the quietest half second near its place
+    (never in the middle of a word): Whisper keeps the whole sound of what it listens to in memory."""
+    import wave
+    import numpy as np
+    with wave.open(wav, "rb") as f:
+        rate, n = f.getframerate(), f.getnframes()
+        total = n / float(rate)
+        if piece_s <= 0 or total <= piece_s * 1.25:
+            return [(0.0, total)]
+        step = max(1, rate // 10)                           # loudness every 0.1 s
+        loud = []
+        while True:
+            b = f.readframes(step)
+            if not b:
+                break
+            a = np.frombuffer(b, dtype="<i2").astype(np.float32)
+            loud.append(float(np.sqrt(np.mean(a * a))) if a.size else 0.0)
+    loud = np.asarray(loud)
+    cuts, at = [0.0], piece_s
+    while at < total - piece_s * 0.25:
+        a, b = int((at - 60) * 10), int((at + 60) * 10)
+        win = np.convolve(loud[max(0, a):b], np.ones(5) / 5, mode="same") if b > a else np.array([])
+        best = (max(0, a) + int(np.argmin(win))) / 10.0 if win.size else at
+        cuts.append(best)
+        at = best + piece_s
+    cuts.append(total)
+    return [(x, y) for x, y in zip(cuts, cuts[1:]) if y - x > 0.5]
 
 
 def _trim(y, sr: int, top_db: float = 45.0):
@@ -349,15 +380,35 @@ def tts(job: dict) -> dict:
 def transcribe(job: dict) -> dict:
     src, wav = job["source"], job["wav16"]
     say(progress=0.05, step="reading")
-    cp = subprocess.run([job["ffmpeg"], "-hide_banner", "-nostdin", "-y", "-v", "error", "-i", src, "-vn", "-ac", "1",
-                         "-ar", "16000", "-c:a", "pcm_s16le", wav], capture_output=True, text=True, errors="replace",
-                        creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+    # the first sound track (the one a clip of the video keeps), its gaps filled with silence: the words' times are the
+    # video's times even when the recording lost some sound (a stream, OBS)
+    cp = subprocess.run([job["ffmpeg"], "-hide_banner", "-nostdin", "-y", "-v", "error", "-i", src, "-vn", "-map", "0:a:0",
+                         "-af", "aresample=async=1:first_pts=0", "-ac", "1", "-ar", "16000", "-c:a", "pcm_s16le", wav],
+                        capture_output=True, text=True, errors="replace", creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
     if cp.returncode != 0 or not Path(wav).is_file():
         return {"ok": False, "error": "The sound could not be read: " + (cp.stderr.strip().splitlines() or ["?"])[-1][:200]}
     say(progress=0.2, step="listening")
     asr = _whisper(job)
-    said, words, lang = _listen(asr, wav, job.get("language"), float(job.get("duration") or 0))
-    return {"ok": True, "said": said, "words": words, "language": lang}
+    total = float(job.get("duration") or 0)
+    parts = _pieces(wav, float(job.get("piece_s") or 0))
+    if len(parts) == 1:
+        said, words, lang = _listen(asr, wav, job.get("language"), total)
+        return {"ok": True, "said": said, "words": words, "language": lang}
+    import wave
+    words, lang = [], job.get("language") or None
+    piece = str(Path(wav).with_name("piece.wav"))
+    with wave.open(wav, "rb") as f:
+        rate, width, ch = f.getframerate(), f.getsampwidth(), f.getnchannels()
+        for a, b in parts:
+            f.setpos(int(a * rate))
+            with wave.open(piece, "wb") as g:
+                g.setnchannels(ch); g.setsampwidth(width); g.setframerate(rate)
+                g.writeframes(f.readframes(int((b - a) * rate)))
+            _said, w, heard_lang = _listen(asr, piece, lang, total or parts[-1][1], offset=a)
+            lang = lang or heard_lang or None              # (the language heard in the first piece, kept for the rest)
+            words += w
+    Path(piece).unlink(missing_ok=True)
+    return {"ok": True, "said": " ".join(x["w"] for x in words), "words": words, "language": lang or ""}
 
 
 def selftest(job: dict) -> dict:

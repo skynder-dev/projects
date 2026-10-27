@@ -3074,7 +3074,8 @@ def app_busy() -> str:
     try:
         from . import voice as _vo
         if _vo.busy():
-            return "A voice-over is being made (or the voice add-on installed). Switch when it is ready."
+            return ("Clips are being made. Switch when they are ready." if _vo.busy_with_clips() else
+                    "A voice-over is being made (or the voice add-on installed). Switch when it is ready.")
     except Exception:
         pass
     try:

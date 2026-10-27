@@ -1,6 +1,7 @@
 """Clips from a long video (clipping): a podcast, a stream or an interview is listened to once; the complete thoughts
 of 15-90 s that make good short clips are listed with their words, the likeliest first; the chosen ones become
-vertical clips with the face in the frame, the video's own sound and captions timed to the words.
+vertical clips with the face in the frame (two people apart: one above the other), the video's own sound and captions
+timed to the words.
 
 The video itself is only read. Listening needs the voice add-on (its Whisper); making the clips does not. The jobs run
 in the voice-over queue (voice.py: one at a time, Stop, made again after a restart); their files are in its folder.
@@ -120,87 +121,121 @@ def energy_db(wav: Path, step: float = 0.5) -> list[float]:
     return out
 
 
-def _score(sents: list[dict], s0: float, e0: float, lmin: float, lmax: float, energy: list[float], med: float,
-           step: float) -> tuple[float, list[str]]:
-    words = [w for s in sents for w in s["words"]]
-    first = sents[0]
-    fw = [_bare(w["w"]) for w in first["words"]]
-    allw = [_bare(w["w"]) for w in words]
-    dur = e0 - s0
-    score, why = 50.0, []
-    if fw and fw[0] in _BAD_START:
-        score -= 12
-    if first["text"].rstrip("\"'»”) ").endswith("?"):
-        score += 10
-        why.append("a question at the start")
-    if any(x in _HOOK for x in fw[:6]):
-        score += 8
-        why.append("a strong opening")
-    if 3 <= len(fw) <= 14:
-        score += 5
-    elif len(fw) > 30:
-        score -= 8
-    if not first.get("whole", True) and len(sents) == 1:
-        score -= 4
-    if any(x in _YOU for x in allw[:40]):
-        score += 4
-    if any(re.search(r"\d", w["w"]) for w in words) or any(x in _NUMBER_WORDS for x in allw):
-        score += 4
-        why.append("numbers")
-    strong = sum(1 for x in allw if x in _STRONG)
-    if strong:
-        score += min(12, 3 * strong)
-        if strong >= 2:
-            why.append("strong words")
-    score += min(6, 3 * sum(1 for s in sents if s["text"].rstrip("\"'»”) ").endswith("!")))
-    if sents[-1]["text"].rstrip("\"'»”) ").endswith("?") and len(sents) > 1:
-        score -= 6                                       # (ends on an open question: the answer is cut off)
-    spoken = sum(max(0.0, float(w["e"]) - float(w["s"])) for w in words)
-    gaps = [float(b["s"]) - float(a["e"]) for a, b in zip(words, words[1:])]
-    if dur > 0 and spoken / dur < 0.55:
-        score -= 10
-    if gaps and max(gaps) > 2.0:
-        score -= 8
-    wps = len(words) / max(1.0, dur)
-    if 2.0 <= wps <= 4.2:
-        score += 4
-    elif wps < 1.4:
-        score -= 8
-    unsure = sum(1 for w in words if float(w.get("p", 1) or 1) < 0.4)
-    if words and unsure / len(words) > 0.25:
-        score -= 10                                      # music, noise or several people at once
-    if energy:
-        a, b = int(s0 / step), max(int(s0 / step) + 1, int(math.ceil(e0 / step)))
-        part = [x for x in energy[a:b] if x > -90]
-        if part:
-            lift = sum(part) / len(part) - med
-            score += max(-8.0, min(10.0, 2.0 * lift))
-            if lift >= 2.0:
-                why.append("lively")
-    mid = (lmin + lmax) / 2
-    score -= 6 * abs(dur - mid) / max(1.0, lmax - lmin)
-    return max(0.0, min(100.0, score)), why
+def _features(sents: list[dict]) -> list[dict]:
+    """What the scoring needs of each sentence, counted once (a window's numbers are then sums, never recounted)."""
+    out = []
+    for st in sents:
+        ws = st["words"]
+        bare = [_bare(w["w"]) for w in ws]
+        tail = st["text"].rstrip("\"'»”) ")
+        out.append({
+            "n": len(ws), "spoken": sum(max(0.0, float(w["e"]) - float(w["s"])) for w in ws),
+            "unsure": sum(1 for w in ws if float(w.get("p", 1) or 1) < 0.4),
+            "strong": sum(1 for x in bare if x in _STRONG),
+            "number": any(re.search(r"\d", w["w"]) for w in ws) or any(x in _NUMBER_WORDS for x in bare),
+            "excl": tail.endswith("!"), "quest": tail.endswith("?"),
+            "gap": max((float(y["s"]) - float(x["e"]) for x, y in zip(ws, ws[1:])), default=0.0),
+            "bad_start": bool(bare) and bare[0] in _BAD_START, "hook": any(x in _HOOK for x in bare[:6]),
+            "you": [x in _YOU for x in bare],
+        })
+    return out
 
 
 def find_candidates(words: list[dict], energy: list[float] | None = None, lmin: float = 30.0, lmax: float = 60.0,
-                    limit: int = MAX_CANDIDATES, step: float = 0.5) -> list[dict]:
+                    limit: int = MAX_CANDIDATES, step: float = 0.5, stop=None) -> list[dict]:
     """The clips worth making: windows of whole sentences of lmin..lmax seconds, scored, the best first, never
-    overlapping each other by more than a second."""
+    overlapping each other by more than a second. Every window is scored from running sums (a six-hour talk in
+    seconds). stop(): asked now and then; True ends the search (a Stop pressed)."""
     sents = sentences(words)
+    ft = _features(sents)
     energy = list(energy or [])
     speech = sorted(x for x in energy if x > -90)
     med = speech[len(speech) // 2] if speech else 0.0
+    ce, cn = [0.0], [0]                                   # running sums of the loudness of speech
+    for x in energy:
+        ce.append(ce[-1] + (x if x > -90 else 0.0))
+        cn.append(cn[-1] + (1 if x > -90 else 0))
+    mid = (lmin + lmax) / 2
     found = []
     for i in range(len(sents)):
+        if stop is not None and i % 200 == 0 and stop():
+            return []
+        f0 = ft[i]
+        s0 = max(0.0, sents[i]["s"] - 0.15)
+        base = 50.0
+        why0 = []
+        if f0["bad_start"]:
+            base -= 12
+        if f0["quest"]:
+            base += 10
+            why0.append("a question at the start")
+        if f0["hook"]:
+            base += 8
+            why0.append("a strong opening")
+        if 3 <= f0["n"] <= 14:
+            base += 5
+        elif f0["n"] > 30:
+            base -= 8
+        you = list(f0["you"])                            # "you" among the first 40 words of the window
+        k = i + 1
+        while len(you) < 40 and k < len(sents):
+            you += ft[k]["you"]
+            k += 1
+        if any(you[:40]):
+            base += 4
+        n = spoken = unsure = strong = excl = 0
+        number = False
+        gap = 0.0
         for j in range(i, len(sents)):
-            s0 = max(0.0, sents[i]["s"] - 0.15)
+            fj = ft[j]
             e0 = sents[j]["e"] + 0.3
             if e0 - s0 > lmax:
                 break
-            if e0 - s0 < lmin:
+            n += fj["n"]
+            spoken += fj["spoken"]
+            unsure += fj["unsure"]
+            strong += fj["strong"]
+            excl += fj["excl"]
+            number = number or fj["number"]
+            gap = max(gap, fj["gap"], (sents[j]["s"] - sents[j - 1]["e"]) if j > i else 0.0)
+            dur = e0 - s0
+            if dur < lmin:
                 continue
-            sc, why = _score(sents[i:j + 1], s0, e0, lmin, lmax, energy, med, step)
-            found.append((sc, i, j, s0, e0, why))
+            score, why = base, list(why0)
+            if not sents[i].get("whole", True) and j == i:
+                score -= 4
+            if number:
+                score += 4
+                why.append("numbers")
+            if strong:
+                score += min(12, 3 * strong)
+                if strong >= 2:
+                    why.append("strong words")
+            score += min(6, 3 * excl)
+            if fj["quest"] and j > i:
+                score -= 6                               # (ends on an open question: the answer is cut off)
+            if dur > 0 and spoken / dur < 0.55:
+                score -= 10
+            if gap > 2.0:
+                score -= 8
+            wps = n / max(1.0, dur)
+            if 2.0 <= wps <= 4.2:
+                score += 4
+            elif wps < 1.4:
+                score -= 8
+            if n and unsure / n > 0.25:
+                score -= 10                              # music, noise or several people at once
+            if energy:
+                a, b = int(s0 / step), max(int(s0 / step) + 1, int(math.ceil(e0 / step)))
+                a, b = min(a, len(energy)), min(b, len(energy))
+                cnt = cn[b] - cn[a]
+                if cnt:
+                    lift = (ce[b] - ce[a]) / cnt - med
+                    score += max(-8.0, min(10.0, 2.0 * lift))
+                    if lift >= 2.0:
+                        why.append("lively")
+            score -= 6 * abs(dur - mid) / max(1.0, lmax - lmin)
+            found.append((max(0.0, min(100.0, score)), i, j, s0, e0, why))
     found.sort(key=lambda x: (-x[0], x[3]))
     chosen: list[tuple] = []
     for c in found:
@@ -243,11 +278,19 @@ def new_find(source: str, length: str = "medium", language: str = "") -> str:
     """Listen to a long video and list the clips worth making (a job; needs the voice add-on)."""
     vo._need_addon()
     p = Path(str(source or "").strip().strip('"'))
-    if not p.is_file():
-        raise ClipsError("Choose the long video (its full path).")
     from . import auto_edit as ae
-    ae._guard_private(p)
-    if ae.cloud_only(p):
+    try:
+        if not p.is_absolute() or not p.is_file():
+            raise ClipsError("Choose the long video (its full path).")
+        ae._guard_private(p)
+        cloud = ae.cloud_only(p)
+    except ClipsError:
+        raise
+    except ValueError:
+        raise ClipsError("Private and Rejected videos are not used.")
+    except OSError:
+        raise ClipsError("Choose the long video (its full path).")
+    if cloud:
         raise ClipsError("This video is only in OneDrive (not on this PC): keep it on this PC first.")
     info = _video_info(p)
     if not info["audio"]:
@@ -328,6 +371,61 @@ def candidates(jid: str) -> list[dict]:
         return []
 
 
+def thumb(jid: str, cid: str) -> Path | None:
+    """A small picture of a found clip (a moment a little after its start), made when the page asks for it."""
+    c = next((x for x in candidates(jid) if x.get("id") == cid), None)
+    if c is None or not re.fullmatch(r"c\d{1,9}", cid):
+        return None
+    d = vo._job_dir(jid)
+    out = d / "thumbs" / f"{cid}.jpg"
+    if out.is_file() and out.stat().st_size > 0:
+        return out
+    try:
+        src = Path(json.loads((d / "job.json").read_text("utf-8"))["source"])
+    except Exception:
+        return None
+    if not src.is_file():
+        return None
+    out.parent.mkdir(exist_ok=True)
+    t = float(c["s"]) + min(2.0, (float(c["e"]) - float(c["s"])) / 3)
+    with _THUMB_LOCK:
+        if out.is_file() and out.stat().st_size > 0:   # (made meanwhile for another request)
+            return out
+        tmp = out.with_suffix(f".{os.getpid()}.{threading.get_ident()}.part.jpg")
+        vf = _hdr_first(src) + ["scale=w='if(gte(iw,ih),240,-2)':h='if(gte(iw,ih),-2,240)'"]
+        try:
+            vo._run_child([vo._ffmpeg(), "-v", "error", "-nostdin", "-y", "-ss", f"{t:.3f}", "-i", str(src), "-frames:v", "1",
+                           "-vf", ",".join(vf), "-q:v", "4", str(tmp)], 60)
+            if tmp.is_file() and tmp.stat().st_size > 0:
+                os.replace(tmp, out)
+                return out
+        except Exception:
+            pass
+        finally:
+            _unlink(tmp)
+    return None
+
+
+_THUMB_LOCK = threading.Lock()
+_HDR: dict = {}
+
+
+def _hdr_first(src: Path) -> list[str]:
+    """An HDR phone video's conversion to normal colours (as the reels and the converter do), asked once per file;
+    a camcorder's interlaced picture made whole frames first."""
+    try:
+        st = src.stat()
+        key = (str(src), st.st_size, st.st_mtime_ns)
+    except OSError:
+        key = (str(src), 0, 0)
+    if key not in _HDR:
+        from .converter import HDR_TO_SDR, _hdr_kind, _is_interlaced
+        hdr = _hdr_kind(vo._ffmpeg(), src)
+        _HDR[key] = (["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if _is_interlaced(vo._ffmpeg(), src) else []) + \
+                    ([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else [])
+    return list(_HDR[key])
+
+
 def words_of(jid: str) -> list[dict]:
     try:
         return list(json.loads((vo._job_dir(jid) / "words.json").read_text("utf-8")))
@@ -344,33 +442,82 @@ def do(jid: str, d: Path, job: dict) -> dict:
 
 def _do_find(d: Path, job: dict) -> dict:
     src = Path(job["source"])
+    heard = d / "heard.json"
+    if heard.is_file():                                   # heard before (Try again): never listened to again
+        try:
+            h = json.loads(heard.read_text("utf-8"))
+            return save_found(d, job, h["words"], h.get("energy") or [], h.get("language") or "")
+        except Exception:
+            pass
     if not src.is_file():
         return {"ok": False, "error": "The video is not there any more: " + str(src)}
     wav = d / "sound16k.wav"
     res = vo._run_worker({"task": "transcribe", "source": str(src), "wav16": str(wav), "ffmpeg": vo._ffmpeg(),
-                          "language": job.get("language"), "duration": float(job.get("duration") or 0)},
-                         d / "work", timeout=12 * 3600, on_line=vo._progress)
+                          "language": job.get("language"), "duration": float(job.get("duration") or 0),
+                          "piece_s": PIECE_S}, d / "work", timeout=12 * 3600, on_line=vo._progress)
     energy = energy_db(wav) if wav.is_file() else []
-    wav.unlink(missing_ok=True)
     if not res.get("ok"):
+        _unlink(wav)
         return res
     words = [{"w": str(w["w"]), "s": float(w["s"]), "e": float(w["e"]), "p": float(w.get("p") or 0)}
              for w in (res.get("words") or []) if str(w.get("w") or "").strip()]
+    if words:                                             # kept before anything else: hours of listening are never lost
+        heard.write_text(json.dumps({"words": words, "energy": energy, "language": res.get("language") or ""},
+                                    ensure_ascii=False), "utf-8")
+    _unlink(wav)
     if not words:
         return {"ok": False, "error": "No speech was found in this video."}
     return save_found(d, job, words, energy, res.get("language") or "")
 
 
+PIECE_S = 1200.0           # Whisper listens to a long video in pieces of about 20 minutes (its memory stays small)
+
+
+def _unlink(p: Path) -> None:
+    try:
+        p.unlink(missing_ok=True)
+    except OSError:                                       # (Windows: a virus scanner reading it - removed later)
+        pass
+
+
 def save_found(d: Path, job: dict, words: list[dict], energy: list[float], language: str = "") -> dict:
     """The words and the clips found in them, kept with the job (also used by the checks without listening)."""
+    if not (d / "heard.json").is_file():
+        (d / "heard.json").write_text(json.dumps({"words": words, "energy": energy, "language": language}, ensure_ascii=False),
+                                      "utf-8")
     lmin, lmax = LENGTHS.get(job.get("length") or "medium", LENGTHS["medium"])
-    found = find_candidates(words, energy, lmin, lmax)
+    found = find_candidates(words, energy, lmin, lmax, stop=lambda: bool(vo._CURRENT.get("cancel")))
+    if vo._CURRENT.get("cancel"):
+        return {"ok": False, "error": "Stopped."}
     (d / "words.json").write_text(json.dumps(words, ensure_ascii=False), "utf-8")
-    (d / "clips.json").write_text(json.dumps({"candidates": found, "length": [lmin, lmax]}, ensure_ascii=False), "utf-8")
+    (d / "clips.json").write_text(json.dumps({"candidates": found, "length": [lmin, lmax], "length_key": job.get("length")},
+                                             ensure_ascii=False), "utf-8")
     if not found:
-        return {"ok": False, "error": "No part of the speech makes a clip of this length: choose shorter or longer clips."}
+        return {"ok": False, "error": "No part of the speech makes a clip of this length: choose shorter or longer clips.",
+                "heard": True, "duration": float(job.get("duration") or 0)}
     return {"ok": True, "language": language, "candidates": len(found), "words": len(words),
             "duration": float(job.get("duration") or 0)}
+
+
+def rescore(jid: str, length: str) -> dict:
+    """Another length of clips for a video heard already: found again from its words, in a moment (no listening)."""
+    if length not in LENGTHS:
+        raise ClipsError("Choose the length of a clip.")
+    j = vo.read_job(jid)
+    d = vo._job_dir(jid)
+    if j.get("kind") != "clips_find" or j["state"] in ("working", "waiting") or not (d / "heard.json").is_file():
+        raise ClipsError("The clips of this video are not found yet.")
+    h = json.loads((d / "heard.json").read_text("utf-8"))
+    job = json.loads((d / "job.json").read_text("utf-8"))
+    job["length"] = length
+    vo._write_job(d, job)
+    res = save_found(d, job, h["words"], h.get("energy") or [], h.get("language") or "")
+    res["finished_at"] = (j.get("result") or {}).get("finished_at") or ""
+    tmp = d / "result.json.tmp"
+    tmp.write_text(json.dumps(res, ensure_ascii=False, indent=1), "utf-8")
+    os.replace(tmp, d / "result.json")
+    _remember(length=length)
+    return res
 
 
 # ------------------------------------------------------------------------------------------ the face in the frame
@@ -378,35 +525,72 @@ def save_found(d: Path, job: dict, words: list[dict], energy: list[float], langu
 _FACES: dict = {}
 
 
+def _cascade(cv2, path: str):
+    """One of OpenCV's face finder files, read by Python and given to OpenCV from memory: OpenCV cannot open a path
+    with Russian letters on Windows (a program folder named so)."""
+    if not os.path.isfile(path):
+        return None
+    try:
+        fs = cv2.FileStorage(Path(path).read_text("utf-8", errors="replace"), cv2.FILE_STORAGE_READ | cv2.FILE_STORAGE_MEMORY)
+        c = cv2.CascadeClassifier()
+        if c.read(fs.getFirstTopLevelNode()) and not c.empty():
+            return c
+    except Exception:
+        pass
+    try:
+        c = cv2.CascadeClassifier(path)
+        return None if c.empty() else c
+    except Exception:
+        return None
+
+
+class _Finder:
+    """Faces looking at the camera and faces turned to a side (people talking to each other) - both sides."""
+
+    def __init__(self, front, side):
+        self.front, self.side = front, side
+
+    def detectMultiScale(self, img, scaleFactor=1.1, minNeighbors=5, minSize=(0, 0)):
+        kw = dict(scaleFactor=scaleFactor, minNeighbors=minNeighbors, minSize=minSize)
+        found = [tuple(int(v) for v in r) for r in self.front.detectMultiScale(img, **kw)]
+        if self.side is None:
+            return found
+        import numpy as np
+        w = img.shape[1]
+        side = [tuple(int(v) for v in r) for r in self.side.detectMultiScale(img, **kw)]
+        side += [(w - int(x) - int(fw), int(y), int(fw), int(fh))
+                 for (x, y, fw, fh) in self.side.detectMultiScale(np.ascontiguousarray(img[:, ::-1]), **kw)]
+        for r in side:                                   # (one face seen twice: once)
+            if all(abs((r[0] + r[2] / 2) - (q[0] + q[2] / 2)) > 0.5 * max(r[2], q[2]) for q in found):
+                found.append(r)
+        return found
+
+
 def face_finder():
-    """OpenCV's frontal face finder (its file shipped with OpenCV), or None. The file is read by Python and given to
-    OpenCV from memory: OpenCV cannot open a path with Russian letters on Windows (a program folder named so)."""
+    """OpenCV's own face finders (their files ship with OpenCV), or None."""
     if "f" in _FACES:
         return _FACES["f"]
     found = None
     try:
         import cv2
-        path = os.environ.get("MEDENG_FACE_CASCADE") or os.path.join(
-            str(getattr(getattr(cv2, "data", None), "haarcascades", "") or ""), "haarcascade_frontalface_default.xml")
-        if hasattr(cv2, "CascadeClassifier") and os.path.isfile(path):
-            text = Path(path).read_text("utf-8", errors="replace")
-            fs = cv2.FileStorage(text, cv2.FILE_STORAGE_READ | cv2.FILE_STORAGE_MEMORY)
-            c = cv2.CascadeClassifier()
-            if c.read(fs.getFirstTopLevelNode()) and not c.empty():
-                found = c
-            else:
-                c = cv2.CascadeClassifier(path)
-                found = None if c.empty() else c
+        if hasattr(cv2, "CascadeClassifier"):
+            base = str(getattr(getattr(cv2, "data", None), "haarcascades", "") or "")
+            front = _cascade(cv2, os.environ.get("MEDENG_FACE_CASCADE") or os.path.join(base, "haarcascade_frontalface_default.xml"))
+            if front is not None:
+                found = _Finder(front, _cascade(cv2, os.path.join(base, "haarcascade_profileface.xml")))
     except Exception:
         found = None
     _FACES["f"] = found
     return found
 
 
-def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: float, framing: str = "face") -> dict:
+def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: float, framing: str = "face",
+               split_ok: bool = True, pre: list[str] | None = None, log: Path | None = None) -> dict:
     """Where the picture of each shot of a clip is cut: one look at the clip (small, grey, 30 pictures a second) finds
-    the cuts between shots; faces are looked for a few times a second. Per shot: the crop's middle on the face, or the
-    whole picture on blurred edges when two faces would not both fit (or none is found and the picture is wide)."""
+    the cuts between shots; faces are looked for a few times a second. Per shot: the crop's middle on the face; two
+    people apart (a podcast's wide shot): each face in its own half, one above the other ("split"; only for a tall
+    clip); three or more: the whole picture on blurred edges. Shot boundaries lie half a frame before the first
+    frame of the new shot (whatever the exact time of the clip's first frame)."""
     W, H = int(info["w"]), int(info["h"])
     cw = min(1.0, (H * out_aspect) / max(1, W))          # the crop's width as a share of the picture's
     plan = {"shots": [], "faces": False, "crop_w": cw}
@@ -417,17 +601,23 @@ def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: floa
     fh = max(2, int(round(fw * H / max(1, W) / 2)) * 2)
     finder = face_finder()
     plan["faces"] = finder is not None
-    pre = "setsar=1," if abs(float(info.get("sar") or 1) - 1) < 0.01 else "scale=trunc(iw*sar/2)*2:ih,setsar=1,"
+    sar = "setsar=1," if abs(float(info.get("sar") or 1) - 1) < 0.01 else "scale=trunc(iw*sar/2)*2:ih,setsar=1,"
+    first = ",".join(pre or [])
     cmd = [vo._ffmpeg(), "-hide_banner", "-nostdin", "-v", "error", "-ss", f"{start:.3f}", "-t", f"{dur:.3f}", "-i", str(src),
-           "-an", "-vf", f"{pre}fps=30,scale={fw}:{fh},format=gray", "-f", "rawvideo", "-"]
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL, **process_kwargs({}))
+           "-an", "-vf", f"{first + ',' if first else ''}{sar}fps=30:start_time=0,scale={fw}:{fh},format=gray", "-f", "rawvideo", "-"]
+    errf = open(log, "ab") if log else subprocess.DEVNULL
+    try:
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=errf, stdin=subprocess.DEVNULL, **process_kwargs({}))
+    finally:
+        if log:
+            errf.close()
     from . import auto_edit as ae
     ae._attach_job_object(proc)
     vo._track(proc)
     import numpy as np
     size = fw * fh
     cuts, samples = [0], []
-    prev, i, last_face = None, 0, -100
+    prev, prev_h, i, last_face = None, None, 0, -100
     try:
         while True:
             b = proc.stdout.read(size)
@@ -437,17 +627,19 @@ def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: floa
                 break
             f = np.frombuffer(b, dtype=np.uint8).reshape(fh, fw)
             small = f[::8, ::8].astype(np.int16)
-            if prev is not None and float(np.mean(np.abs(small - prev))) > 28.0 and i - cuts[-1] >= 8:
-                cuts.append(i)
-                last_face = -100                         # (a new shot: its faces looked for at once)
-            prev = small
+            hist = np.bincount((small // 16).ravel(), minlength=16) / small.size
+            if prev is not None and i - cuts[-1] >= 8 and (float(np.mean(np.abs(small - prev))) > 22.0
+                                                           or float(np.abs(hist - prev_h).sum()) > 0.9):
+                cuts.append(i)                           # a new shot (the picture or its light changed at once)
+                last_face = -100                         # (its faces looked for at once)
+            prev, prev_h = small, hist
             if finder is not None and i - last_face >= 10:
                 last_face = i
                 try:
                     found = finder.detectMultiScale(f, scaleFactor=1.12, minNeighbors=5, minSize=(max(24, fh // 12),) * 2)
                 except Exception:
                     found = ()
-                samples.append((i, [(float(x + w / 2) / fw, float(w) / fw) for (x, y, w, h) in found]))
+                samples.append((i, [(float(x + w / 2) / fw, float(w) / fw, float(y + h / 2) / fh) for (x, y, w, h) in found]))
             i += 1
     finally:
         try:
@@ -458,41 +650,58 @@ def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: floa
         vo._untrack(proc)
     if vo._CURRENT.get("cancel"):
         raise ClipsError("Stopped.")
-    n = max(i, 1)
-    edges = cuts + [n]
+    if i == 0:                                            # nothing could be read: the middle of the picture
+        plan.update(faces=False, read=False, shots=[{"s": 0.0, "e": dur, "layout": "crop", "cx": 0.5}])
+        return plan
+    edges = cuts + [i]
     shots = []
     for a, b in zip(edges, edges[1:]):
         if b <= a:
             continue
         faces = [fs for (k, fs) in samples if a <= k < b]
-        mains, spread_wide = [], 0
+        mains, spread_wide, pairs, many = [], 0, [], 0
         for fs in faces:
             if not fs:
                 continue
             big = max(fs, key=lambda t: t[1])
-            near = [t for t in fs if t[1] >= 0.6 * big[1]]
+            near = sorted((t for t in fs if t[1] >= 0.6 * big[1]), key=lambda t: t[0])
             lo, hi = min(t[0] - t[1] / 2 for t in near), max(t[0] + t[1] / 2 for t in near)
-            if hi - lo > cw * 0.95:
+            if len(near) >= 2 and hi - lo > cw * 0.95:  # (one big face of a close-up fits by itself)
                 spread_wide += 1
-            mains.append(big[0])
+                if len(near) == 2:
+                    pairs.append(near)
+                else:
+                    many += 1
+            mains.append(big)
         seen = [fs for fs in faces if fs]
+        med = lambda xs: sorted(xs)[len(xs) // 2]
+        shot = {"s": 0.0 if a == 0 else round((a - 0.5) / 30.0, 6), "e": round((b - 0.5) / 30.0, 6), "layout": "crop", "cx": 0.5}
         if seen and spread_wide >= max(1, len(seen) / 2):
-            layout, cx = "fit", 0.5                      # two people apart: both stay in the picture
+            if split_ok and pairs and len(pairs) >= many:  # two people apart: each in a half, one above the other
+                shot.update(layout="split", faces=[{"cx": round(med([p[k][0] for p in pairs]), 4),
+                                                    "cy": round(med([p[k][2] for p in pairs]), 4),
+                                                    "size": round(med([p[k][1] for p in pairs]), 4)} for k in (0, 1)])
+            else:                                          # more people: all stay in the picture
+                shot.update(layout="fit")
         elif mains:
-            mains.sort()
-            layout, cx = "crop", mains[len(mains) // 2]
-        else:
-            layout, cx = "crop", 0.5
-        shots.append({"s": round(a / 30.0, 3), "e": round(b / 30.0, 3), "layout": layout, "cx": round(cx, 4)})
-    if not shots:
-        shots = [{"s": 0.0, "e": dur, "layout": "crop", "cx": 0.5}]
-    shots[-1]["e"] = max(shots[-1]["e"], dur)
+            shot.update(cx=round(med([t[0] for t in mains]), 4))
+        shots.append(shot)
+    shots[-1]["e"] = max(shots[-1]["e"], dur + 1.0)
     plan["shots"] = shots
     return plan
 
 
+def _until(shots: list[dict], vals: list) -> str:
+    """A value per shot as an FFmpeg expression of the time t: shot k's value while t < its end."""
+    e_ = str(vals[-1])
+    for sh, v in reversed(list(zip(shots[:-1], vals[:-1]))):
+        e_ = f"if(lt(t,{sh['e']:.6f}),{v},{e_})"
+    return e_
+
+
 def _graph(plan: dict, info: dict, out: tuple[int, int] | None) -> tuple[str, int, int]:
-    """[0:v] -> [pv]: the picture of the clip in its new shape (the shots' crops, the blurred-edges shots laid over)."""
+    """[0:v] -> [pv]: the picture of the clip in its new shape (the shots' crops; the split and blurred-edges shots
+    laid over them at exactly their times)."""
     W, H = int(info["w"]), int(info["h"])
     pre = "setsar=1" if abs(float(info.get("sar") or 1) - 1) < 0.01 else "scale=trunc(iw*sar/2)*2:ih,setsar=1"
     if out is None:                                       # as filmed: at most 1080 on the short side
@@ -504,101 +713,175 @@ def _graph(plan: dict, info: dict, out: tuple[int, int] | None) -> tuple[str, in
     cw = min(W, int(round(H * ow / oh / 2)) * 2)
     ch = H if cw < W else min(H, int(round(W * oh / ow / 2)) * 2)
     xs = [max(0, min(W - cw, int(round(sh["cx"] * W - cw / 2)))) for sh in shots]
-    expr = str(xs[-1])
-    for sh, x in reversed(list(zip(shots[:-1], xs[:-1]))):
-        expr = f"if(lt(t,{sh['e']:.3f}),{x},{expr})"
-    crop = (f"crop=w={cw}:h={ch}:x='{expr}':y={(H - ch) // 2},scale={ow}:{oh}:flags=lanczos,setsar=1")
+    crop = f"crop=w={cw}:h={ch}:x='{_until(shots, xs)}':y={(H - ch) // 2},scale={ow}:{oh}:flags=lanczos,setsar=1"
     fit = (f"split=2[bga][fga];[bga]scale={ow}:{oh}:force_original_aspect_ratio=increase,crop={ow}:{oh},gblur=sigma=28,"
            f"eq=brightness=-0.06[bgb];[fga]scale={ow}:{oh}:force_original_aspect_ratio=decrease:flags=lanczos,setsar=1[fgb];"
            f"[bgb][fgb]overlay=(W-w)/2:(H-h)/2")
-    fits = [sh for sh in shots if sh["layout"] == "fit"]
-    if not fits:
-        return f"[0:v]{pre},{crop}[pv]", ow, oh
-    if len(fits) == len(shots):
-        return f"[0:v]{pre},{fit},setsar=1[pv]", ow, oh
-    on = "+".join(f"between(t,{sh['s']:.3f},{sh['e'] - 0.001:.3f})" for sh in fits)
-    return (f"[0:v]{pre},split=2[ca][fa];[ca]{crop}[cb];[fa]{fit},setsar=1[fb];"
-            f"[cb][fb]overlay=0:0:enable='{on}'[pv]", ow, oh)
+    split = _split_chain(shots, W, H, ow, oh)
+    kinds = {"crop": crop, "fit": fit + ",setsar=1", "split": split}
+    used = [k for k in ("crop", "fit", "split") if any(sh["layout"] == k for sh in shots)]
+    if len(used) == 1:
+        return f"[0:v]{pre},{kinds[used[0]]}[pv]", ow, oh
+    # several layouts: each made for the whole clip, the one of each shot laid over the first - between exactly the
+    # same times as the crop's own switches (no frame in between shows a third picture)
+    parts = [f"[0:v]{pre},split={len(used)}" + "".join(f"[i{k}]" for k in used)]
+    parts += [f"[i{k}]{kinds[k]}[o{k}]" for k in used]
+    cur = f"o{used[0]}"
+    starts = [0.0] + [sh["e"] for sh in shots[:-1]]
+    for k in used[1:]:
+        on = "+".join((f"lt(t,{sh['e']:.6f})" if st <= 0 else f"gte(t,{st:.6f})*lt(t,{sh['e']:.6f})")
+                      for st, sh in zip(starts, shots) if sh["layout"] == k)
+        parts.append(f"[{cur}][o{k}]overlay=0:0:enable='{on}'[m{k}]")
+        cur = f"m{k}"
+    parts[-1] = parts[-1][: parts[-1].rindex("[")] + "[pv]"
+    return ";".join(parts), ow, oh
+
+
+def _split_chain(shots: list[dict], W: int, H: int, ow: int, oh: int) -> str:
+    """Two faces one above the other: each half of the clip a crop around one face (the left one on top), the same
+    size for the whole clip, placed per shot (shots without two faces keep the last place - they are not shown)."""
+    sp = [sh for sh in shots if sh["layout"] == "split"]
+    if not sp:
+        return "null"
+    ph = oh // 2 // 2 * 2
+    aspect = ow / ph
+    out = []
+    for k in (0, 1):
+        sizes = sorted(sh["faces"][k]["size"] * W for sh in sp)
+        ch = int(max(0.42 * H, min(H, 3.4 * sizes[len(sizes) // 2])))
+        cw = int(min(W, ch * aspect)) // 2 * 2
+        ch = int(cw / aspect) // 2 * 2
+        last = sp[0]["faces"][k]
+        xs, ys = [], []
+        for sh in shots:
+            fc = sh["faces"][k] if sh["layout"] == "split" else last
+            last = fc
+            xs.append(max(0, min(W - cw, int(round(fc["cx"] * W - cw / 2)))))
+            ys.append(max(0, min(H - ch, int(round(fc["cy"] * H - 0.42 * ch)))))
+        out.append(f"crop=w={cw}:h={ch}:x='{_until(shots, xs)}':y='{_until(shots, ys)}',scale={ow}:{ph}:flags=lanczos,setsar=1")
+    return f"split=2[sa][sb];[sa]{out[0]}[sta];[sb]{out[1]}[stb];[sta][stb]vstack=2,pad={ow}:{oh}:0:0,setsar=1"
+
+
+def _made_before(d: Path) -> dict:
+    """The clips of this job already made and saved (a job made again after a restart, Stop or Try again goes on
+    where it stopped: nothing made twice, no second copy in the folder)."""
+    try:
+        m = json.loads((d / "made.json").read_text("utf-8"))
+        return {int(k): v for k, v in m.items() if (d / v["file"]).is_file()}
+    except Exception:
+        return {}
+
+
+def _keep_made(d: Path, made: dict) -> None:
+    tmp = d / f"made.json.{threading.get_ident()}.tmp"
+    tmp.write_text(json.dumps({str(k): v for k, v in made.items()}, ensure_ascii=False), "utf-8")
+    os.replace(tmp, d / "made.json")
 
 
 def _do_make(d: Path, job: dict) -> dict:
-    from . import auto_edit as ae, orders as od
     src = Path(job["source"])
+    clips = list(job.get("clips") or [])
+    done = _made_before(d)
+    folder = _out_folder(src)
+    failed = []
     if not src.is_file():
-        return {"ok": False, "error": "The video is not there any more: " + str(src)}
+        return {"ok": False, "error": "The video is not there any more: " + str(src), **_listing(done, folder)}
     words = words_of(job["find"])
     info = _video_info(src)
     out = FORMATS.get(job.get("format") or "vertical")
-    clips = list(job.get("clips") or [])
-    folder = _out_folder(src)
-    made = []
-    from .converter import HDR_TO_SDR, _hdr_kind
-    hdr = _hdr_kind(vo._ffmpeg(), src)
+    pre = _hdr_first(src)
     for n, c in enumerate(clips, 1):
+        if n in done:
+            continue
         if vo._CURRENT.get("cancel"):
-            raise ClipsError("Stopped.")
-        s, e = float(c["s"]), float(c["e"])
-        dur = round(e - s, 3)
+            break
         vo._CURRENT.update(step=f"clip {n}/{len(clips)}", progress=round((n - 1) / max(1, len(clips)), 3))
-        plan = plan_shots(src, s, dur, info, (out[0] / out[1]) if out else 1.0, job.get("framing") or "face") if out else \
-            {"shots": [{"s": 0.0, "e": dur, "layout": "crop", "cx": 0.5}], "faces": False}
-        graph, ow, oh = _graph(plan, info, out)
-        if hdr in HDR_TO_SDR:                             # an HDR phone video: normal colours first
-            graph = graph.replace("[0:v]", f"[0:v]{HDR_TO_SDR[hdr]},", 1)
-        cs = vo.style_cues(words_between(words, s, e), job.get("opts")) if job.get("captions", True) else []
-        texts = []
-        if job.get("first_as_title") and c.get("first"):
-            texts = tf.parse_texts([{"text": c["first"][: tf.TEXT_MAX], "start": "0", "end": "3", "where": "top", "look": "banner"}])
-        chain = ["scale=out_range=tv"]
-        if cs or texts:
-            (d / "captions.ass").write_text(tf.document(ow, oh, cs, tf.resolve_texts(texts, dur), job.get("opts"), 0.0), "utf-8")
-            fonts = tf.install_fonts(d)
-            fonts = vo._caption_font(d) or fonts
-            chain.append("ass=captions.ass" + (":fontsdir=fonts" if fonts else ""))
-        chain.append("format=yuv420p")
-        fc = graph + f";[pv]{','.join(chain)}[v]"
-        cmd = [vo._ffmpeg(), "-hide_banner", "-nostdin", "-y", "-ss", f"{s:.3f}", "-t", f"{dur:.3f}", "-i", str(src),
-               "-filter_complex", fc, "-map", "[v]"]
-        if info["audio"]:
-            fc_a = (f"[0:a:0]aresample=48000,aformat=channel_layouts=stereo,afade=t=in:d=0.06,"
-                    f"afade=t=out:st={max(0.0, dur - 0.15):.3f}:d=0.15,loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[a]")
-            cmd[cmd.index("-filter_complex") + 1] = fc + ";" + fc_a
-            cmd += ["-map", "[a]", "-c:a", "aac", "-b:a", "192k", "-ar", "48000"]
-        tags = ["-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709"] if hdr in HDR_TO_SDR else []
-        name = f"clip_{n:02d}.mp4"
-        tmp = d / f"clip_{n:02d}.new.mp4"
-        tmp.unlink(missing_ok=True)
-        tries = ([[*tags, "-color_range", "tv", "-c:v", "h264_nvenc", "-preset", "p5", "-rc", "vbr", "-cq", "19", "-b:v", "0",
-                   "-profile:v", "high"]] if vo.nvenc_ok() else []) + \
-                [[*tags, "-color_range", "tv", "-c:v", "libx264", "-preset", "medium", "-crf", "18"]]
-        rc = -1
-        for enc in tries:
-            rc = vo._run_ffmpeg(cmd + enc + ["-t", f"{dur:.3f}", "-movflags", "+faststart", tmp.name], d, d / "ffmpeg.log", 3 * 3600)
-            if rc == 0 and tmp.is_file() and tmp.stat().st_size > 1000:
-                break
-            tmp.unlink(missing_ok=True)
+        try:
+            done[n] = _make_one(d, job, n, c, src, info, out, pre, words, folder)
+            _keep_made(d, done)
+        except ClipsError as exc:
             if vo._CURRENT.get("cancel"):
                 break
-        shutil.rmtree(d / "fonts", ignore_errors=True)
-        if vo._CURRENT.get("cancel"):
-            tmp.unlink(missing_ok=True)
-            raise ClipsError("Stopped.")
-        if rc != 0 or not tmp.is_file():
-            lines = [x for x in (d / "ffmpeg.log").read_text("utf-8", errors="replace").splitlines() if x.strip()]
-            why = next((x for x in reversed(lines) if not re.match(r"\s*(frame=|size=|\$ )", x)), lines[-1] if lines else "?")
-            return {"ok": False, "error": f"Clip {n} could not be made (" + why[:200] + ").", "made": made}
-        checks = od._check_output(tmp, {"seconds": dur, "tolerance": 0.3, "audio": info["audio"]})
-        if not all(x["pass"] for x in checks):
-            bad = next(x for x in checks if not x["pass"])
-            ae._replace_retry(tmp, d / f"clip_{n:02d}_failed_check.mp4")
-            return {"ok": False, "error": f"Clip {n} did not pass its check ({bad['check']}: {bad['detail']}).", "made": made}
-        ae._replace_retry(tmp, d / name, tries=30)
-        saved = _save(d / name, folder, n, c.get("first") or "")
-        made.append({"file": name, "s": s, "e": e, "seconds": dur, "saved": saved, "width": ow, "height": oh,
-                     "layouts": sorted({sh["layout"] for sh in plan["shots"]}), "shots": len(plan["shots"]),
-                     "faces": bool(plan.get("faces")), "captions": len(cs)})
+            failed.append({"n": n, "error": str(exc)})    # (the next clips are made all the same)
+    lst = _listing(done, folder)
+    if vo._CURRENT.get("cancel"):
+        return {"ok": False, "error": "Stopped.", **lst}
+    if failed:
+        first = failed[0]["error"]
+        return {"ok": False, "error": first, "failed": failed, **lst}
     vo._CURRENT.update(step="checking", progress=1.0)
-    return {"ok": True, "clips": made, "folder": str(folder) if folder else ""}
+    return {"ok": True, **lst}
+
+
+def _listing(done: dict, folder: Path | None) -> dict:
+    return {"clips": [dict(done[k], n=k) for k in sorted(done)], "folder": str(folder) if folder else ""}
+
+
+def _make_one(d: Path, job: dict, n: int, c: dict, src: Path, info: dict, out, pre: list[str], words: list[dict],
+              folder: Path | None) -> dict:
+    from . import auto_edit as ae, orders as od
+    s, e = float(c["s"]), float(c["e"])
+    dur = round(e - s, 3)
+    plan = plan_shots(src, s, dur, info, (out[0] / out[1]) if out else 1.0, job.get("framing") or "face",
+                      split_ok=bool(out and out[1] > out[0]), pre=pre, log=d / "analysis.log") if out else \
+        {"shots": [{"s": 0.0, "e": dur, "layout": "crop", "cx": 0.5}], "faces": False}
+    graph, ow, oh = _graph(plan, info, out)
+    if pre:                                               # camcorder fields / an HDR phone video: first of all
+        graph = graph.replace("[0:v]", f"[0:v]{','.join(pre)},", 1)
+    o = tf.options(**(job.get("opts") or {}))
+    if o["position"] == "bottom" and any(sh["layout"] == "split" for sh in plan["shots"]):
+        o["position"] = "middle"                         # (two faces one above the other: the captions between them)
+    cs = vo.style_cues(words_between(words, s, e), o) if job.get("captions", True) else []
+    texts = []
+    if job.get("first_as_title") and c.get("first"):
+        texts = tf.parse_texts([{"text": c["first"][: tf.TEXT_MAX], "start": "0", "end": "3", "where": "top", "look": "banner"}])
+    chain = ["scale=out_range=tv"]
+    if cs or texts:
+        (d / "captions.ass").write_text(tf.document(ow, oh, cs, tf.resolve_texts(texts, dur), o, 0.0), "utf-8")
+        fonts = tf.install_fonts(d)
+        fonts = vo._caption_font(d) or fonts
+        chain.append("ass=captions.ass" + (":fontsdir=fonts" if fonts else ""))
+    chain.append("format=yuv420p")
+    fc = graph + f";[pv]{','.join(chain)}[v]"
+    if info["audio"]:                                    # (gaps in the recorded sound filled: the sound stays with the picture)
+        fc += (f";[0:a:0]aresample=48000:async=1:first_pts=0,aformat=channel_layouts=stereo,afade=t=in:d=0.06,"
+               f"afade=t=out:st={max(0.0, dur - 0.15):.3f}:d=0.15,loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[a]")
+    cmd = [vo._ffmpeg(), "-hide_banner", "-nostdin", "-y", "-ss", f"{s:.3f}", "-t", f"{dur:.3f}", "-i", str(src),
+           "-filter_complex", fc, "-map", "[v]"] + (["-map", "[a]", "-c:a", "aac", "-b:a", "192k", "-ar", "48000"] if info["audio"] else [])
+    hdr = any(x.startswith("zscale") for x in pre)
+    tags = ["-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709"] if hdr else []
+    name = f"clip_{n:02d}.mp4"
+    tmp = d / f"clip_{n:02d}.new.mp4"
+    _unlink(tmp)
+    tries = ([[*tags, "-color_range", "tv", "-c:v", "h264_nvenc", "-preset", "p5", "-rc", "vbr", "-cq", "19", "-b:v", "0",
+               "-profile:v", "high"]] if vo.nvenc_ok() else []) + \
+            [[*tags, "-color_range", "tv", "-c:v", "libx264", "-preset", "medium", "-crf", "18"]]
+    rc = -1
+    for enc in tries:
+        rc = vo._run_ffmpeg(cmd + enc + ["-t", f"{dur:.3f}", "-movflags", "+faststart", tmp.name], d, d / "ffmpeg.log", 3 * 3600)
+        if rc == 0 and tmp.is_file() and tmp.stat().st_size > 1000:
+            break
+        _unlink(tmp)
+        if vo._CURRENT.get("cancel"):
+            break
+    shutil.rmtree(d / "fonts", ignore_errors=True)
+    if vo._CURRENT.get("cancel"):
+        _unlink(tmp)
+        raise ClipsError("Stopped.")
+    if rc != 0 or not tmp.is_file():
+        lines = [x for x in (d / "ffmpeg.log").read_text("utf-8", errors="replace").splitlines() if x.strip()]
+        why = next((x for x in reversed(lines) if not re.match(r"\s*(frame=|size=|\$ )", x)), lines[-1] if lines else "?")
+        raise ClipsError(f"Clip {n} could not be made (" + why[:200] + ").")
+    checks = od._check_output(tmp, {"seconds": dur, "tolerance": 0.3, "audio": info["audio"]})
+    if not all(x["pass"] for x in checks):
+        bad = next(x for x in checks if not x["pass"])
+        ae._replace_retry(tmp, d / f"clip_{n:02d}_failed_check.mp4")
+        raise ClipsError(f"Clip {n} did not pass its check ({bad['check']}: {bad['detail']}).")
+    ae._replace_retry(tmp, d / name, tries=30)
+    saved = _save(d / name, folder, n, c.get("first") or "")
+    return {"file": name, "s": s, "e": e, "seconds": dur, "saved": saved, "width": ow, "height": oh,
+            "layouts": sorted({sh["layout"] for sh in plan["shots"]}), "shots": len(plan["shots"]),
+            "faces": bool(plan.get("faces")), "captions": len(cs), "plan": plan["shots"]}
 
 
 def _out_folder(src: Path) -> Path | None:

@@ -452,14 +452,12 @@ def register(app, page, err_page, e, human_bytes):
     def voice_page():
         s = vo.status()
         show_all = request.args.get("all") == "1"
-        jobs = [j for j in vo.list_jobs(100000 if show_all else 51) if not str(j.get("kind") or "").startswith("clips_")]
+        # (clips from a long video are on their own page: never counted here)
+        jobs = [j for j in vo.list_jobs(100000 if show_all else 400) if not str(j.get("kind") or "").startswith("clips_")]
         more = 0
         if not show_all and len(jobs) > 50:                 # the newest 50; the rest one click away
+            more = len(jobs) - 50
             jobs = jobs[:50]
-            try:
-                more = sum(1 for x in vo.JOBS.iterdir() if x.is_dir()) - 50
-            except OSError:
-                more = 0
         pre = str(request.args.get("video") or "")         # from a saved reel: its path already in the video fields
         if pre and not Path(pre).is_file():
             pre = ""
@@ -524,8 +522,9 @@ def register(app, page, err_page, e, human_bytes):
     def voice_status():
         s = vo.status()
         jobs = []
-        for j in vo.list_jobs(20):
-            jobs.append({"id": j["id"], "state": j["state"], "progress": float(j.get("progress") or 0)})
+        for j in vo.list_jobs(60):
+            if not str(j.get("kind") or "").startswith("clips_"):
+                jobs.append({"id": j["id"], "state": j["state"], "progress": float(j.get("progress") or 0)})
         return jsonify({"install": {k: s.get(k) for k in ("state", "step", "done", "total", "detail", "error", "installed")},
                         "jobs": jobs})
 
