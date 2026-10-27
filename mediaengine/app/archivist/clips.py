@@ -622,7 +622,7 @@ def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: floa
     if framing == "blur" or cw >= 0.98:
         plan["shots"] = [{"s": 0.0, "e": dur, "layout": "fit" if framing == "blur" else "crop", "cx": 0.5}]
         return plan
-    fw = 480
+    fw = 960                                              # (a streamer's small camera picture still has a face to find)
     fh = max(2, int(round(fw * H / max(1, W) / 2)) * 2)
     finder = face_finder()
     plan["faces"] = finder is not None
@@ -651,7 +651,7 @@ def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: floa
             if vo._CURRENT.get("cancel"):
                 break
             f = np.frombuffer(b, dtype=np.uint8).reshape(fh, fw)
-            small = f[::8, ::8].astype(np.int16)
+            small = f[::16, ::16].astype(np.int16)
             hist = np.bincount((small // 16).ravel(), minlength=16) / small.size
             if prev is not None and i - cuts[-1] >= 8 and (float(np.mean(np.abs(small - prev))) > 22.0
                                                            or float(np.abs(hist - prev_h).sum()) > 0.9):
@@ -661,10 +661,11 @@ def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: floa
             if finder is not None and i - last_face >= 10:
                 last_face = i
                 try:
-                    found = finder.detectMultiScale(f, scaleFactor=1.12, minNeighbors=5, minSize=(max(24, fh // 12),) * 2)
+                    found = finder.detectMultiScale(f, scaleFactor=1.12, minNeighbors=5, minSize=(max(24, fh // 24),) * 2)
                 except Exception:
                     found = ()
-                samples.append((i, [(float(x + w / 2) / fw, float(w) / fw, float(y + h / 2) / fh) for (x, y, w, h) in found]))
+                samples.append((i, _people([(float(x + w / 2) / fw, float(w) / fw, float(y + h / 2) / fh) for (x, y, w, h) in found],
+                                           fw, fh)))
             i += 1
     finally:
         try:
@@ -700,7 +701,11 @@ def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: floa
             mains.append(big)
         seen = [fs for fs in faces if fs]
         med = lambda xs: sorted(xs)[len(xs) // 2]
-        shot = {"s": 0.0 if a == 0 else round((a - 0.5) / 30.0, 6), "e": round((b - 0.5) / 30.0, 6), "layout": "crop", "cx": 0.5}
+        counts: dict = {}
+        for fs in faces:
+            counts[str(min(len(fs), 3))] = counts.get(str(min(len(fs), 3)), 0) + 1
+        shot = {"s": 0.0 if a == 0 else round((a - 0.5) / 30.0, 6), "e": round((b - 0.5) / 30.0, 6), "layout": "crop", "cx": 0.5,
+                "seen": counts}                          # (how many people each look found: for support)
         if seen and spread_wide >= max(1, len(seen) / 2):
             if split_ok and pairs and len(pairs) >= many:  # two people apart: each in a half, one above the other
                 shot.update(layout="split", faces=[{"cx": round(med([p[k][0] for p in pairs]), 4),
@@ -718,6 +723,18 @@ def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: floa
     shots[-1]["e"] = max(shots[-1]["e"], dur + 1.0)
     plan["shots"] = shots
     return plan
+
+
+def _people(faces: list, fw: int, fh: int) -> list:
+    """The faces found in one picture, one per person: a second find close to a bigger one (the same head found twice,
+    or a find on the same body) is left out. faces: (centre x, width, centre y), x and width as shares of the width."""
+    out = []
+    for f in sorted(faces, key=lambda t: -t[1]):
+        wpx = f[1] * fw
+        if all(abs(f[0] - k[0]) * fw >= 1.5 * k[1] * fw or abs(f[2] - k[2]) * fh >= 2.2 * k[1] * fw for k in out) \
+                or wpx <= 0:
+            out.append(f)
+    return out
 
 
 def _facecam(mains: list, samples: int) -> bool:

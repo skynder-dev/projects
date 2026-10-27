@@ -1,0 +1,54 @@
+name: mediaengine-clips-probe
+# What OpenCV's face finders see in the synthetic shots of clips_check (Windows, the program's own OpenCV): the finds
+# per shot and analysis width, the people they make, the plan of each clip. A quick probe (a few minutes) for tuning
+# "Clips from a long video"; not the product's check (that is clips_check in mediaengine-windows). Synthetic pictures
+# and a public-domain NASA portrait only. Results: branch mediaengine-clips-probe.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'mediaengine/tests/clips_probe.py'
+      - 'mediaengine/app/archivist/clips.py'
+      - '.github/workflows/mediaengine-clips-probe.yml'
+permissions:
+  contents: write
+concurrency:
+  group: mediaengine-clips-probe-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  probe:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    env:
+      PYTHONUTF8: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install the program's pinned environment
+        shell: pwsh
+        run: python -m pip install --disable-pip-version-check -q -r mediaengine/requirements.txt
+      - name: Probe
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\out" | Out-Null
+          python mediaengine/tests/clips_probe.py "$env:RUNNER_TEMP\probe" > "$env:RUNNER_TEMP\out\clips_probe.json" 2> "$env:RUNNER_TEMP\out\clips_probe_stderr.txt"
+          "exit $LASTEXITCODE" | Out-File "$env:RUNNER_TEMP\out\exit.txt"
+      - name: Publish to branch mediaengine-clips-probe
+        if: always()
+        shell: bash
+        env:
+          RUN_ID: ${{ github.run_id }}
+          SRC_SHA: ${{ github.sha }}
+        run: |
+          set -e
+          pub="$RUNNER_TEMP/pub"; rm -rf "$pub"; mkdir -p "$pub"
+          cp "$RUNNER_TEMP"/out/* "$pub/" 2>/dev/null || true
+          printf 'sha=%s\nrun=%s\n' "$SRC_SHA" "$RUN_ID" > "$pub/RUN.txt"
+          cd "$pub"; git init -q; git checkout -q -b mediaengine-clips-probe
+          git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
+          git add -A; git commit -q -m "clips probe $RUN_ID ($SRC_SHA)"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" mediaengine-clips-probe
