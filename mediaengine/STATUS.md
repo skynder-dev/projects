@@ -905,6 +905,10 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   review before publishing found a long pan (~100 points, ~33 s of walking) nesting FFmpeg if()s past its ~100-bracket
   limit (the clip failed) -> flat sums; also no pan between two people seen in turns, phrases tied to their context.
   Sound checks, greetings, goodbyes and sponsor reads rank last.
+- 2026-10-27, **b240** (commit 9a05ac4, ZIP 4,454,095 bytes, the same runtime; run 40568209291: clips 37/37, unit 207,
+  E2E two 92, Russian 226 pages 0 English): Clips - "Make the 5 likeliest" (no ticking; start and end as found when
+  the page does not send them); the help under the button describes the new framing. Asked the owner whether to add
+  "Download a video by a link" (yt-dlp; YouTube's terms forbid downloading) - not built without his "yes".
 - 2026-10-27, a probe (mediaengine-whisper-probe, Linux CPU int8, the 9-minute NASA interview): would a bigger free
   Whisper hear the captions' words better than the add-on's "small"? Against large-v3 (946 s to hear): small 2.5 %
   words otherwise (118 s), distil-large-v3 2.5 % (170 s), large-v3-turbo 1.7 % (215 s). Nearly all of small's

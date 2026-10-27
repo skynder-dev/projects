@@ -250,6 +250,8 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   two people the finder sees in turns are no longer "panned between" (a still crop as before); a pan starts at the
   right look; the greeting / advert phrases are tied to their context ("subscribe to that theory", "по коду",
   "спонсором турнира" are ordinary speech). Windows CI run 40544352387: clips 36/36, unit 207, E2E two 92, Russian 226 pages 0 English.
+- b240: Clips: "Make the 5 likeliest" next to "Make the ticked clips" (the first five of the list, as they are - no
+  ticking needed); the help under the button describes the new framing (someone walking, people side by side). Windows CI run 40568209291: clips 37/37, unit 207, E2E two 92, Russian 226 pages 0 English.
 
 ## Orders from other programs; night review fixes (2026-10-17)
 
