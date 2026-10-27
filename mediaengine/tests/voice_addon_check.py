@@ -230,6 +230,7 @@ def talk_check(c, H, work: Path, out: Path, check, timings: dict, wait) -> None:
     timings["clips_find_s"] = round(time.time() - t0)
     cands = cl.candidates(fid) if fj["state"] == "done" else []
     heard = " ".join(str(w.get("w", "")) for w in cl.words_of(fid)).lower()
+    (out / "clips_words.json").write_text(json.dumps(cl.words_of(fid), ensure_ascii=False), "utf-8")   # (to tune the scoring)
     (out / "clips_found.json").write_text(json.dumps({"video": TALK, "result": fj.get("result"), "candidates": cands,
                                                       "heard_words": len(heard.split())}, indent=1, ensure_ascii=False), "utf-8")
     check("clips: the 9-minute interview heard (space, station)", "space" in heard and "station" in heard,
