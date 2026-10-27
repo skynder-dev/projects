@@ -702,6 +702,12 @@ def main():
     from archivist import i18n as _i18n
     missing = sorted(m for m in msgs if _i18n.translate_json({"message": m})["message"] == m)
     check("ru: every engine progress message translated", bool(msgs) and not missing, missing or len(msgs))
+    from archivist import clips as _clips
+    if os.name == "nt":                  # (the runtime's OpenCV brings its face finder: clips keep the face in the frame)
+        check("clips: OpenCV's face finder is there", _clips.face_finder() is not None)
+    _w = [{"w": w, "s": i * 0.4, "e": i * 0.4 + 0.3} for i, w in enumerate("So what is the point? We tried it. It works well!".split())]
+    check("clips: sentences of the speech", [x["text"] for x in _clips.sentences(_w)] == ["So what is the point?", "We tried it.",
+                                                                                         "It works well!"], _clips.sentences(_w))
     check("reel colours: the app's choices are the engine's looks (one list for the reel and the preview pictures)",
           set(ae.look_filters()) == set(ae.LOOKS) - {"natural"} and "LOOKS=_looks()" in eng, sorted(ae.look_filters()))
     for name in ("Дача 15.08 с мамой.webm", "клип 1.5 МБ (копия).mp4"):     # decimal comma never touches a file name

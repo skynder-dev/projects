@@ -452,7 +452,7 @@ def register(app, page, err_page, e, human_bytes):
     def voice_page():
         s = vo.status()
         show_all = request.args.get("all") == "1"
-        jobs = vo.list_jobs(100000 if show_all else 51)
+        jobs = [j for j in vo.list_jobs(100000 if show_all else 51) if not str(j.get("kind") or "").startswith("clips_")]
         more = 0
         if not show_all and len(jobs) > 50:                 # the newest 50; the rest one click away
             jobs = jobs[:50]

@@ -616,6 +616,9 @@ APP_PHRASES: dict[str, str] = {
 
 APP_PATTERNS: list[tuple[str, str]] = [
     (r"Folder not found: (.+)", r"Папка не найдена: \1"),
+    (r"The video is not there any more: (.+)", r"Видео больше нет на месте: \1"),
+    (r"Clip (\d+) could not be made \((.+)\)\.", r"Клип \1 не получилось сделать (\2)."),
+    (r"Clip (\d+) did not pass its check \((.+)\)\.", r"Клип \1 не прошёл проверку (\2)."),
     # voice-over add-on (voice.py)
     (r"The download answered HTTP (\d+)\. Try again later\.", r"Сайт ответил ошибкой HTTP \1. Попробуй позже."),
     (r"A downloaded model file is not the exact file \((.+)\)\. Try again\.", r"Скачанный файл модели не совпал с нужным (\1). Попробуй ещё раз."),

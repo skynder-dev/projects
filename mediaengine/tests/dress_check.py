@@ -329,6 +329,17 @@ def app_part(work, src, music, check):
         check("setup_offers_music_and_title", "name='reel_title'" in page and "name='music'" in page and "data-pick-music" in page
               and "name='beat_sync' value='1' checked" in page)
         check("setup_offers_the_colours", "name='look' value='natural' checked" in page and "name='look' value='film'" in page)
+        # each colour shown on one of the chosen videos (only for this app's own page; never a network path)
+        import re as _re2
+        srcs = _re2.findall(r"src='(/auto/new/look/(\w+)\.jpg\?src=[^']+)'", page)
+        got = {k: c.get(html.unescape(u), headers=H) for u, k in srcs}
+        H_out = {k: v for k, v in H.items() if k != "Sec-Fetch-Site"}
+        check("setup_shows_each_colour_on_a_video", sorted(got) == sorted(["natural", "vivid", "warm", "film"])
+              and all(r_.status_code == 200 and r_.mimetype == "image/jpeg" and len(r_.data) > 500 for r_ in got.values())
+              and got["natural"].data != got["film"].data
+              and c.get(html.unescape(srcs[0][0]), headers={**H_out, "Sec-Fetch-Site": "cross-site"}).status_code in (403, 404)
+              and c.get("/auto/new/look/film.jpg", query_string={"src": "\\\\server\\share\\a.mp4"}, headers=H).status_code == 404,
+              ({k: r_.status_code for k, r_ in got.items()}, len(srcs)))
         c.post("/lang", data={"lang": "ru"}, headers=H)
         ru = c.get("/auto/new", query_string={"folder": str(src)}, headers=H).data.decode("utf-8", "replace")
         c.post("/lang", data={"lang": "en"}, headers=H)

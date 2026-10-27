@@ -2466,6 +2466,75 @@ def look_preview(rid: int, look: str) -> Path | None:
     return None
 
 
+def look_preview_of_video(path, look: str) -> Path | None:
+    """A small picture of one of the user's videos in a colour look - on the new-reel page, to choose before the first
+    build. One frame (an HDR phone video converted to normal colours first, as the reel does), cached by the file's
+    name, size and time; the video is only read."""
+    if look not in LOOKS:
+        return None
+    src = Path(str(path or "").strip().strip('"'))
+    if not src.is_absolute() or src.suffix.lower() not in SUPPORTED or not src.is_file() or cloud_only(src):
+        return None
+    _guard_private(src)
+    vf_look = "" if look == "natural" else look_filters().get(look)
+    if vf_look is None:
+        return None
+    st = src.stat()
+    key = hashlib.sha256(f"{src}|{st.st_size}|{st.st_mtime_ns}".encode("utf-8", "replace")).hexdigest()[:24]
+    d = AE_ROOT / "look_previews"
+    d.mkdir(parents=True, exist_ok=True)
+    out = d / f"{key}_{look}.jpg"
+    if out.is_file() and out.stat().st_size > 0:
+        return out
+    ff = _ffmpeg() or "ffmpeg"
+    base = d / f"{key}.png"
+    with _LOOK_LOCK:
+        if not (base.is_file() and base.stat().st_size > 0):
+            try:
+                old = sorted(d.glob("*"), key=lambda x: x.stat().st_mtime)
+                for x in old[:-300]:              # a few hundred small pictures at most
+                    x.unlink(missing_ok=True)
+            except OSError:
+                pass
+            from .converter import HDR_TO_SDR, _hdr_kind
+            hdr = _hdr_kind(ff, src)
+            try:
+                dur = float(probe_any(src).get("format", {}).get("duration") or 0)
+            except Exception:
+                dur = 0.0
+            vf0 = ([HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []) + \
+                  ["scale=w='if(gte(iw,ih),320,-2)':h='if(gte(iw,ih),-2,320)'", "setsar=1", "scale=out_range=tv", "format=yuv420p",
+                   "scale=in_range=tv:in_color_matrix=bt709:out_range=pc", "format=rgb24"]      # (back the same way below)
+            tmp = base.with_suffix(f".{os.getpid()}.{threading.get_ident()}.part.png")
+            try:
+                subprocess.run([ff, "-v", "error", "-y", "-ss", f"{max(0.0, dur * 0.4):.3f}", "-i", str(src), "-frames:v", "1",
+                                "-vf", ",".join(vf0), str(tmp)], **process_kwargs({"capture_output": True, "timeout": 120}))
+                if tmp.is_file() and tmp.stat().st_size > 0:
+                    os.replace(tmp, base)
+            except Exception:
+                pass
+            finally:
+                tmp.unlink(missing_ok=True)
+        if not base.is_file():
+            return None
+    tmp = out.with_suffix(f".{os.getpid()}.{threading.get_ident()}.part.jpg")
+    vf = "scale=in_range=pc:out_range=tv:out_color_matrix=bt709,format=yuv420p" + ("," + vf_look if vf_look else "")
+    try:
+        subprocess.run([ff, "-v", "error", "-y", "-i", str(base), "-frames:v", "1", "-vf", vf, "-q:v", "3", str(tmp)],
+                       **process_kwargs({"capture_output": True, "timeout": 60}))
+        if tmp.is_file() and tmp.stat().st_size > 0:
+            os.replace(tmp, out)
+            return out
+    except Exception:
+        pass
+    finally:
+        tmp.unlink(missing_ok=True)
+    return None
+
+
+_LOOK_LOCK = threading.Lock()
+
+
 # ---------------------------------------------------------------- "Check this PC"
 
 def system_check() -> list[dict]:
@@ -2598,6 +2667,7 @@ WHATS_NEW_ITEMS = [
     ("2026-10-19b", "Voice-over: your picks from the voice test, the voices 4_4 and 4_2, instead of 3.1."),
     ("2026-10-20", "Text on a video (Auto Edit → Voice-over and text): titles and lines of text at the moments you choose, on a colored stripe, a dark box or in big letters - no add-on needed."),
     ("2026-10-22", "Captions in two more looks: one word at a time, big (like TikTok), and the word being said on a color block."),
+    ('2026-10-27b', "Clips from a long video (Auto Edit → Clips from a long video): a podcast, stream or interview is listened to once; the parts that make good short clips are listed with their words; the ticked ones become vertical clips with the face in the frame, the sound and captions."),
     ('2026-10-27', "Reel colours: as filmed, brighter and richer, warm or cinematic (a variant shows a small picture of each) - pale drone videos come out livelier. Only the reel is coloured; your videos stay as they are."),
     ('2026-10-26', "Auto Edit with DJI videos: when the camera's small copy (.LRF) lies next to a video, the AI finds the moments in it - a first build much faster; the reel is still cut from the original 4K."),
     ('2026-10-25c', "Auto Edit: each project shows when its last version was made; a project from a camera's own folder (100MEDIA, 100GOPRO …) is named with the days it was filmed; a folder that already has a project says so on the new-reel page."),

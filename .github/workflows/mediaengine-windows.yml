@@ -120,6 +120,11 @@ jobs:
         run: |
           python mediaengine/tests/dress_check.py "$env:RUNNER_TEMP\fx" "$env:RUNNER_TEMP\dress" 2>&1 | Tee-Object "$env:OUT\dress_check.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Clips from a long video (finding, the face kept in the frame by OpenCV, captions, pages)
+        shell: pwsh
+        run: |
+          python mediaengine/tests/clips_check.py "$env:RUNNER_TEMP\clips" 2>&1 | Tee-Object "$env:OUT\clips_check.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Full-video Convert (1440p60, rotated phone clip, VFR)
         shell: pwsh
         run: |

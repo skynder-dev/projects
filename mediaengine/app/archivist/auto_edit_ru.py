@@ -1008,6 +1008,45 @@ PHRASES = {
     "Voice-over: its pace - a bit slower or faster, shorter or longer pauses between sentences (the voice keeps its pitch, the captions follow); a voice from a recording can be kept in the voice list.":
         "Озвучка: темп — чуть медленнее или быстрее, короче или длиннее паузы между предложениями (высота голоса не меняется, "
         "субтитры следуют за голосом); голос из записи можно сохранить в списке голосов.",
+    # clips from a long video (clips.py, clips_web.py)
+    "Clips from a long video": "Клипы из длинного видео",
+    "Clips from a long video (Auto Edit → Clips from a long video): a podcast, stream or interview is listened to once; the parts that make good short clips are listed with their words; the ticked ones become vertical clips with the face in the frame, the sound and captions.":
+        "Клипы из длинного видео (Автомонтаж → Клипы из длинного видео): подкаст, стрим или интервью прослушивается один раз; куски, из которых выйдут хорошие короткие клипы, показываются со словами; отмеченные становятся вертикальными клипами с лицом в кадре, звуком и субтитрами.",
+    "A podcast, a stream or an interview: MediaEngine listens to it once and lists the parts that make good short clips, with their words - the likeliest first. Tick the ones you want: they are made vertical, with the face in the frame, the sound and captions. The video itself is only read.":
+        "Подкаст, стрим или интервью: MediaEngine один раз прослушивает видео и показывает куски, из которых получатся хорошие короткие клипы, со словами — самые удачные сверху. Отметь нужные: они делаются вертикальными, с лицом в кадре, со звуком и субтитрами. Само видео только читается.",
+    "Finding clips needs the voice add-on": "Для поиска клипов нужен модуль озвучки", "(it listens to the speech).": "(он распознаёт речь).",
+    "Install it on the Voice-over page": "Установи его на странице «Озвучка»", "- once, free.": "— один раз, бесплатно.",
+    "Find clips": "Найти клипы", "Length of a clip": "Длина клипа", "15–30 s": "15–30 с", "30–60 s": "30–60 с", "45–90 s": "45–90 с",
+    "Listening takes about 5-15 minutes for an hour of video. You can close this page meanwhile; the PC does not go to sleep.":
+        "Прослушивание занимает примерно 5–15 минут на час видео. Эту страницу можно закрыть, компьютер не уснёт.",
+    "Use only videos you may cut: your own, or footage a clipping campaign gives you to cut.":
+        "Используй только видео, которые тебе можно резать: свои или исходники, которые даёт кампания клиппинга.",
+    "Videos listened to": "Прослушанные видео", "clips found:": "найдено клипов:", "Clips found:": "Найдено клипов:",
+    "Waiting (another voice-over or clip job is being made first).": "Ждёт (сначала делается другая озвучка или клипы).",
+    "Interrupted (MediaEngine was closed).": "Прервано (MediaEngine был закрыт).",
+    "Listening to the speech…": "Слушаю речь…", "Checking the clips…": "Проверяю клипы…", "Clip": "Клип",
+    "The likeliest first. Read the words, play a part, tick the ones to make. Start and end can be changed (minutes:seconds).":
+        "Самые удачные сверху. Прочитай слова, включи кусок, отметь нужные. Начало и конец можно поменять (минуты:секунды).",
+    "▶ Play": "▶ Смотреть", "How likely a good clip": "Насколько вероятно, что клип получится хорошим",
+    "a question at the start": "вопрос в начале", "a strong opening": "сильное начало", "numbers": "цифры",
+    "strong words": "сильные слова", "lively": "живо", "Picture": "Картинка",
+    "Vertical 9:16 (TikTok, Reels, Shorts)": "Вертикально 9:16 (TikTok, Reels, Shorts)", "Square 1:1": "Квадрат 1:1",
+    "Keep the face in the frame": "Держать лицо в кадре",
+    "The first sentence as a title at the top (3 s)": "Первая фраза — заголовком сверху (3 с)",
+    "Make the ticked clips": "Сделать отмеченные клипы",
+    "Saved next to the saved reels, in a folder of this video. The face is kept in the frame; two people apart are shown whole on blurred edges.":
+        "Сохраняются рядом с готовыми роликами, в папке этого видео. Лицо держится в кадре; двое далеко друг от друга показываются целиком на размытом фоне.",
+    "Made clips": "Готовые клипы", "Clips:": "Клипы:", "Saved in": "Сохранены в", "No such job.": "Такого задания нет.",
+    "Choose the long video (its full path).": "Выбери длинное видео (полный путь к нему).",
+    "This video is only in OneDrive (not on this PC): keep it on this PC first.": "Это видео есть только в OneDrive (не на этом компьютере): сначала сохрани его на компьютер.",
+    "This video has no sound: clips are found by what is said.": "В этом видео нет звука: клипы ищутся по тому, что говорят.",
+    "The video is longer than six hours: cut it into parts first (Convert → Cut…).": "Видео длиннее шести часов: сначала разрежь его на части (Конвертация → Вырезать…).",
+    "The video is shorter than one clip: choose a longer video or shorter clips.": "Видео короче одного клипа: выбери видео подлиннее или клипы покороче.",
+    "The clips of this video are not found yet.": "Клипы этого видео ещё не найдены.",
+    "A clip must be at least 3 seconds long.": "Клип должен быть не короче 3 секунд.", "A clip can be at most 3 minutes long.": "Клип может быть не длиннее 3 минут.",
+    "Tick the clips to make first.": "Сначала отметь клипы, которые нужно сделать.", "At most 30 clips at once.": "Не больше 30 клипов за раз.",
+    "Start and end: write minutes:seconds, for example 12:30.5.": "Начало и конец: пиши минуты:секунды, например 12:30.5.",
+    "No part of the speech makes a clip of this length: choose shorter or longer clips.": "Ни один кусок речи не подходит под эту длину: выбери клипы короче или длиннее.",
 }
 
 import html as _html
@@ -1065,6 +1104,9 @@ JS_PHRASES = {
     "' · waiting until the reel is built'": "' · жду, пока соберётся ролик'",
     "' h left'": "' ч осталось'", "'For reels: '": "'Для роликов: '", "'Search: '": "'Поиск: '",
     "'A Windows window is open — it may be behind this window.'": "'Открыто окно Windows — оно может быть за этим окном.'",
+    "'Delete it? The clips saved in the folder stay.'": "'Удалить? Клипы, сохранённые в папке, останутся.'",
+    "'This video cannot be played in the page (its format); the clips are made all the same.'":
+        "'Это видео не показывается на странице (его формат); клипы всё равно делаются.'",
 }
 
 

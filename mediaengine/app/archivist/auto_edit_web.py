@@ -398,6 +398,7 @@ def register(app, layout, e, human_bytes):
                      + ("<form method='post' action='/auto/exports/open' style='margin:0'><button class='btn2'>Exported reels</button></form>"
                         if has_exports else "")
                      + ("<a class='btn btn2' href='/auto/voice'>Voice-over and text</a>" if _voice_on_home() else "")
+                     + "<a class='btn btn2' href='/auto/clips'>Clips from a long video</a>"
                      + "<a class='btn btn2' href='/auto/orders'>Orders"
                      + (f" <span class='badge review' translate='no'>{n_orders}</span>" if n_orders else "") + "</a>"
                      + "<a class='btn btn2' href='/auto/check'>Check this PC</a></div>")
@@ -1020,7 +1021,7 @@ if(tc){const t0=Date.now()-Number(tc.dataset.el||0)*1000;const tick=async()=>{tr
 <h2 style='margin-top:0'>Length</h2><div class='ae-choices'>{lengths}</div>
 <h2>Format</h2><div class='ae-choices'>{formats}</div>{_framing_choice(e, last_new.get("framing", "fill"))}
 <h2>Sound</h2><div class='ae-choices'>{sounds}</div>
-<h2>Colours</h2>{_look_choice(e, last_new.get("look"))}{mode_html}
+<h2>Colours</h2>{_look_choice(e, last_new.get("look"), pic_src=_look_video(scan))}{mode_html}
 {_dress_fields(e, None, _day_label(next(iter(pdays))) if len(pdays) == 1 else "")}
 <div class='row' style='flex-wrap:wrap;gap:10px;align-items:center'><button class='ae-big'>Create reel</button>{prepare_btn}</div>{prepare_note}</form>{back_html}"""
         return page("New reel", body, _FRAMING_JS)
@@ -1541,6 +1542,20 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
             return "not found", 404
         return send_file(t, mimetype="image/jpeg", max_age=86400)
 
+    @app.get("/auto/new/look/<look>.jpg")
+    def ae_new_look(look):
+        # a picture of one of the user's videos: only for this app's own page (an <img> there), never a network path
+        src = str(request.args.get("src", "")).strip().strip('"')
+        if request.headers.get("Sec-Fetch-Site", "") != "same-origin" or src.replace("/", "\\").startswith("\\\\"):
+            return "not found", 404
+        try:
+            t = ae.look_preview_of_video(src, look)
+        except Exception:
+            t = None
+        if not t:
+            return "not found", 404
+        return send_file(t, mimetype="image/jpeg", max_age=3600)
+
     @app.get("/auto/rev/<int:rid>/look/<look>.jpg")
     def ae_rev_look(rid, look):
         try:
@@ -1562,6 +1577,8 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
     orders_web.register(app, page, err_page, e, _error_html)
     from . import voice_web        # voice-over and captions (an add-on installed with a button)
     voice_web.register(app, page, err_page, e, human_bytes)
+    from . import clips_web        # clips from a long video (clipping)
+    clips_web.register(app, page, err_page, e, human_bytes)
 
 
 AI_LABEL = "AI — as before (fast)"
@@ -1788,12 +1805,15 @@ def _variant_form(pid, rev, e, first=False, model_ready=True, prefill=None):
             f"<button>{'Build' if first else 'Make variant'}</button></form>")
 
 
-def _look_choice(e, current=None, label=False, pic_rid=None):
+def _look_choice(e, current=None, label=False, pic_rid=None, pic_src=None):
     """The reel's colours: as filmed (the default) or a look; only the reel is coloured, never the videos. pic_rid: a
-    version to show each look on (a small picture of one of its moments, made when the page asks for it)."""
+    version to show each look on (a small picture of one of its moments, made when the page asks for it); pic_src:
+    else one of the chosen videos (the new-reel page)."""
     cur = current if current in ae.LOOKS else "natural"
-    pic = lambda k: (f"<img class='ae-look-pic' src='/auto/rev/{int(pic_rid)}/look/{k}.jpg' alt='' loading='lazy' "
-                     "onerror=\"this.remove()\">") if pic_rid else ""
+    url = ((lambda k: f"/auto/rev/{int(pic_rid)}/look/{k}.jpg") if pic_rid else
+           (lambda k: f"/auto/new/look/{k}.jpg?src={urllib.parse.quote(str(pic_src))}") if pic_src else None)
+    pic = lambda k: (f"<img class='ae-look-pic' src='{e(url(k))}' alt='' loading='lazy' onerror=\"this.remove()\">") if url else ""
+    pic_rid = pic_rid or pic_src
     radio = lambda k, v: f"<input type='radio' name='look' value='{k}' {'checked' if k == cur else ''}> {e(v)}"
     radios = "".join((f"<label class='ae-look'>{pic(k)}<span class='row' style='gap:8px'>{radio(k, v)}</span></label>" if pic_rid
                       else f"<label>{radio(k, v)}</label>") for k, v in ae.LOOKS.items())
@@ -1801,6 +1821,20 @@ def _look_choice(e, current=None, label=False, pic_rid=None):
             + "<div class='ae-choices'>" + radios + "</div>"
             + ("" if label else "<div class='muted' style='margin:4px 0 0;font-size:13px'>Only the reel is coloured; "
                                 "your videos stay as they are.</div>"))
+
+
+def _look_video(scan) -> str | None:
+    """The video the colours are shown on, on the new-reel page: the longest usable one."""
+    try:
+        ok = [r for r in scan["files"] if r.get("ok")]
+        if not ok:
+            return None
+        best = max(ok, key=lambda r: float(r.get("duration_s") or 0))
+        if scan.get("files_chosen"):
+            return next((str(x) for x in scan["files_chosen"] if Path(x).name == best["name"]), None)
+        return str(Path(scan["folder"]) / best["name"])
+    except Exception:
+        return None
 
 
 def _framing_choice(e, current="fill"):

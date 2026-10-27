@@ -1242,6 +1242,9 @@ def _ffmpeg() -> str:
 def _do(jid: str) -> dict:
     d = JOBS / jid
     job = json.loads((d / "job.json").read_text("utf-8"))
+    if str(job.get("kind") or "").startswith("clips_"):      # clips from a long video (clips.py), in the same queue
+        from . import clips
+        return clips.do(jid, d, job)
     if job["kind"] == "voiceover":
         v = dict(job["voice"])
         if v.get("ref_source"):                      # the owner's recording: a clean mono WAV of at most 30 s
@@ -1903,7 +1906,7 @@ def resume_after_restart() -> None:
     have = installed()
     for j in reversed(list_jobs(500)):                          # oldest first: a voice before the video using it
         if j["state"] == "interrupted" and not j.get("resumed") and (
-                have or (j.get("kind") == "render" and not j.get("needs_addon"))):
+                have or (j.get("kind") in ("render", "clips_make") and not j.get("needs_addon"))):
             try:
                 d = JOBS / j["id"]
                 job = json.loads((d / "job.json").read_text("utf-8"))
@@ -1928,7 +1931,7 @@ def retry_job(jid: str) -> None:
     j = read_job(jid)
     if j["state"] in ("working", "waiting", "done"):     # (done: a page left open long ago - nothing to make again)
         return
-    if j.get("kind") != "render" or j.get("needs_addon"):
+    if j.get("kind") not in ("render", "clips_make") or j.get("needs_addon"):
         _need_addon()
         if installing():                  # (an installed add-on getting the new engine is busy all the same)
             raise VoiceError("The voice add-on is being installed. Wait until it is ready.")

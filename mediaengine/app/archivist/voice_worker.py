@@ -125,10 +125,13 @@ def _whisper(job: dict):
                         cpu_threads=max(1, (os.cpu_count() or 2) - 1))
 
 
-def _listen(asr, wav: str, language: str | None) -> tuple[str, list[dict], str]:
+def _listen(asr, wav: str, language: str | None, total_s: float = 0.0) -> tuple[str, list[dict], str]:
+    """total_s (a long recording): how far the listening is, said as it goes (from 20 % to 95 %)."""
     segs, info = asr.transcribe(wav, language=language or None, word_timestamps=True, vad_filter=True, beam_size=5)
     words = []
     for s in segs:
+        if total_s > 0:
+            say(progress=round(0.2 + 0.75 * min(1.0, float(s.end) / total_s), 3))
         for w in (s.words or []):
             words.append({"w": w.word.strip(), "s": round(float(w.start), 3), "e": round(float(w.end), 3),
                           "p": round(float(getattr(w, "probability", 0) or 0), 3)})
@@ -353,7 +356,7 @@ def transcribe(job: dict) -> dict:
         return {"ok": False, "error": "The sound could not be read: " + (cp.stderr.strip().splitlines() or ["?"])[-1][:200]}
     say(progress=0.2, step="listening")
     asr = _whisper(job)
-    said, words, lang = _listen(asr, wav, job.get("language"))
+    said, words, lang = _listen(asr, wav, job.get("language"), float(job.get("duration") or 0))
     return {"ok": True, "said": said, "words": words, "language": lang}
 
 
