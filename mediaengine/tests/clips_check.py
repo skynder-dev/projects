@@ -9,7 +9,7 @@ are given, as Whisper would give them).
    far apart (a podcast's wide shot), shot C three faces, shot D a streamer's camera in a corner of a game - five clips: shot A (the crop follows the face), shot B
    (each face in its own half, one above the other), one across the A|B cut (switched at the cut), shot C (the whole
    picture on blurred edges). Vertical 1080x1920, the length asked, sound,
-   captions and the title drawn, copies saved next to the reels. The face finder is OpenCV's own (Windows CI); where
+   captions and the title drawn, copies saved next to the reels. The face finder is the program's YuNet; where
    this OpenCV has none, a stand-in that finds the pictures of the faces (the framing logic is the same).
 3. The pages: English and Russian (no English left), a make without ticks refused, deleting a video's job takes its
    made clips' jobs along (the saved files stay).
@@ -80,6 +80,12 @@ def textured_center(img: np.ndarray, rows: slice) -> float:
 class StandInFaces:
     """Finds the face pictures of the synthetic video (detail on a flat background) - only where OpenCV has no face
     finder of its own; the real one is checked on Windows."""
+    kind, width = "stand-in", 960
+
+    def find(self, bgr):
+        import cv2
+        return self.detectMultiScale(cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY))
+
     def detectMultiScale(self, gray, scaleFactor=1.1, minNeighbors=5, minSize=(0, 0)):
         g = gray.astype(np.float32)
         h, w = g.shape
@@ -168,7 +174,8 @@ def main() -> int:
                     str(src)], check=True)
     real = cl.face_finder() is not None
     if os.name == "nt":
-        check("making: OpenCV's face finder is there (Windows)", real)
+        check("making: the face finder is YuNet, the program's own (Windows)", getattr(cl.face_finder(), "kind", "") == "yunet",
+              getattr(cl.face_finder(), "kind", None))
     if not real:
         print("NOTE this OpenCV has no face finder: a stand-in finds the face pictures", flush=True)
         cl._FACES["f"] = StandInFaces()

@@ -703,8 +703,12 @@ def main():
     missing = sorted(m for m in msgs if _i18n.translate_json({"message": m})["message"] == m)
     check("ru: every engine progress message translated", bool(msgs) and not missing, missing or len(msgs))
     from archivist import clips as _clips
-    if os.name == "nt":                  # (the runtime's OpenCV brings its face finder: clips keep the face in the frame)
-        check("clips: OpenCV's face finder is there", _clips.face_finder() is not None)
+    if os.name == "nt":                  # (the runtime's OpenCV runs the program's own YuNet: clips keep the face in the frame)
+        check("clips: the face finder is YuNet (the program's own file)", getattr(_clips.face_finder(), "kind", "") == "yunet",
+              getattr(_clips.face_finder(), "kind", None))
+    import hashlib as _hl
+    check("clips: the face finder's file is the pinned one", _clips.FACE_MODEL.is_file() and _hl.sha256(
+        _clips.FACE_MODEL.read_bytes()).hexdigest() == "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4")
     _w = [{"w": w, "s": i * 0.4, "e": i * 0.4 + 0.3} for i, w in enumerate("So what is the point? We tried it. It works well!".split())]
     check("clips: sentences of the speech", [x["text"] for x in _clips.sentences(_w)] == ["So what is the point?", "We tried it.",
                                                                                          "It works well!"], _clips.sentences(_w))

@@ -4,8 +4,8 @@
   python tests/clips_probe.py <work_dir> --real <out_dir> -> real footage: sheets, JSON, ATTRIBUTION.md in out_dir
 
 For each shot (A one face, B two apart, C three, D a streamer's small camera over a "game") and analysis width
-(480 / 960): the front and side finds, the people they make (clips._people), and the plan clips.plan_shots makes of
-each clip of clips_check. Not a check: it tells how to tune the framing (mediaengine-clips-probe.yml).
+(640 / 960): the faces the program's finder finds (YuNet), the people they make (clips._people), and the plan
+clips.plan_shots makes of each clip of clips_check. Not a check: it tells how to tune the framing (mediaengine-clips-probe.yml).
 
 --real: the same framing on REAL people talking - public-domain videos only (NASA and other US government works on
 Wikimedia Commons: interviews, a crew talking with reporters), found by a Commons search. For three moments of each
@@ -99,7 +99,7 @@ def real(work: Path, out: Path) -> int:
     vids.mkdir(parents=True, exist_ok=True)
     items = discover()
     finder = cl.face_finder()
-    report: dict = {"opencv": cv2.__version__, "finder": finder is not None, "videos": []}
+    report: dict = {"opencv": cv2.__version__, "finder": getattr(finder, "kind", None), "videos": []}
     try:
         font = ImageFont.truetype("arial.ttf", 15)
     except Exception:
@@ -133,14 +133,13 @@ def real(work: Path, out: Path) -> int:
                 subprocess.run([ff, "-v", "error", "-y", "-ss", f"{s + t:.3f}", "-i", str(dst), "-frames:v", "1", str(src_png)], check=True)
                 subprocess.run([ff, "-v", "error", "-y", "-ss", f"{t:.3f}", "-i", str(clip), "-frames:v", "1", str(v_png)], check=True)
                 im = Image.open(src_png).convert("RGB")
-                k = 960 / im.width
-                g = cv2.cvtColor(np.asarray(im.resize((960, int(round(im.height * k / 2)) * 2))), cv2.COLOR_RGB2GRAY)
-                fh = g.shape[0]
-                found = finder.detectMultiScale(g, scaleFactor=1.12, minNeighbors=5, minSize=(max(24, fh // 24),) * 2) if finder else []
+                fwid = int(getattr(finder, "width", 960) or 960)
+                bgr = cv2.cvtColor(np.asarray(im.resize((fwid, int(round(im.height * fwid / im.width / 2)) * 2))), cv2.COLOR_RGB2BGR)
+                found = finder.find(bgr) if finder else []
                 shown = im.resize((480, int(round(im.height * 480 / im.width))))
                 dr = ImageDraw.Draw(shown)
                 for (x, y, w, h) in found:
-                    q = 480 / 960
+                    q = 480 / fwid
                     dr.rectangle([x * q, y * q, (x + w) * q, (y + h) * q], outline=(255, 220, 0), width=2)
                 row.append((shown, Image.open(v_png).convert("RGB").resize((152, 270)),
                             [[int(v) for v in r] for r in found]))
@@ -192,22 +191,15 @@ def main() -> int:
              "C": shot((0x30, 0x50, 0x30), [(32, 240), (700, 240), (1368, 240)], big),
              "D": shot((0x20, 0x28, 0x30), [(40, 40)], small)}
     finder = cl.face_finder()
-    out["finder"] = finder is not None
+    out["finder"] = getattr(finder, "kind", None)
     for name, im in shots.items():
-        g = cv2.cvtColor(np.asarray(im), cv2.COLOR_RGB2GRAY)
-        for fw in (480, 960):
+        rgb = np.asarray(im)
+        for fw in (640, 960):
             fh = int(round(fw * 1080 / 1920 / 2)) * 2
-            f = cv2.resize(g, (fw, fh), interpolation=cv2.INTER_AREA)
-            ms = max(24, fh // (12 if fw == 480 else 24))
-            kw = dict(scaleFactor=1.12, minNeighbors=5, minSize=(ms, ms))
-            front = [list(map(int, r)) for r in finder.front.detectMultiScale(f, **kw)] if finder else []
-            side = [list(map(int, r)) for r in finder.side.detectMultiScale(f, **kw)] if finder and finder.side else []
-            mirror = [list(map(int, r)) for r in finder.side.detectMultiScale(np.ascontiguousarray(f[:, ::-1]), **kw)] \
-                if finder and finder.side else []
-            both = finder.detectMultiScale(f, **kw) if finder else []
+            f = cv2.resize(cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR), (fw, fh), interpolation=cv2.INTER_AREA)
+            both = finder.find(f) if finder else []
             people = cl._people([(float(x + w / 2) / fw, float(w) / fw, float(y + h / 2) / fh) for (x, y, w, h) in both], fw, fh)
-            out[f"{name}_{fw}"] = {"front": front, "side": side, "side_mirrored": mirror, "finder": [list(map(int, r)) for r in both],
-                                   "people": [[round(v, 4) for v in p] for p in people]}
+            out[f"{name}_{fw}"] = {"finder": [list(map(int, r)) for r in both], "people": [[round(v, 4) for v in p] for p in people]}
     # the plans of the clips of clips_check (the same synthetic video)
     ff = ffmpeg_exe()
     src = work / "probe.mp4"

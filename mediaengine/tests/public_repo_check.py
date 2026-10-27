@@ -8,8 +8,8 @@ Checks every file git tracks under mediaengine/ (and MediaEngine's workflows):
   - no file bigger than 5 MB;
   - no secrets: GitHub / Hugging Face / OpenAI / AWS / Slack tokens, private keys, JWTs (Supabase keys are JWTs),
     password or token assignments with a value;
-  - no e-mail addresses except the example ones (example.com / .org / .net), GitHub's noreply addresses and the
-    commit-trailer address.
+  - no e-mail addresses except the example ones (example.com / .org / .net), GitHub's noreply addresses, the
+    commit-trailer address and the copyright line of a licence the program ships (EMAIL_FILES).
 """
 from __future__ import annotations
 
@@ -23,6 +23,8 @@ MAX_BYTES = 5 * 1024 * 1024
 ALLOWED_BINARY = {
     # a public-domain NASA portrait (astronaut Eileen Collins; scikit-image's "astronaut"): the face clips_check frames
     "mediaengine/tests/assets/face_pd.jpg": "622bf8e8fa40a1a2c458832ef5c4bf8a12bcd46696a2991af937901fd3be64d8",
+    # YuNet, the face finder of "Clips from a long video" (OpenCV Zoo, MIT License: assets/faces/LICENSE-YuNet.txt)
+    "mediaengine/app/archivist/assets/faces/face_detection_yunet_2023mar.onnx": "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4",
     "mediaengine/app/archivist/assets/browser_fixture_h264.mp4": "ec28d0ce0eac16dd6a4461e9f29cacfed9b1e58b2ff0b9ef1bb5a5c7b8712727",
     "mediaengine/app/archivist/assets/hevc_fixture.mp4": "d4a98ef2f4d5f3eba0c1f9bd017e2c9b4c6fcc7fa7e02842200fdb2a37aac27d",
     "mediaengine/app/archivist/assets/voice/host_9_2.flac": "903393c1db8026703450208bf6d084e0c2d9ee83d07afac16c473116b1abecc7",
@@ -47,6 +49,7 @@ SECRETS = [
      re.compile(r"""(?i)\b(?:password|passwd|api_key|apikey|secret_key|access_token|auth_token)\b\s*[:=]\s*["'][^"'\s]{8,}["']""")),
 ]
 EMAIL = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}\b")
+EMAIL_FILES = {"mediaengine/app/archivist/assets/faces/LICENSE-YuNet.txt"}   # (a licence's own copyright line, kept as is)
 EMAIL_OK = re.compile(r"(?i)@(?:[a-z0-9-]+\.)*example\.(?:com|org|net)$|^noreply@anthropic\.com$|@(?:users\.)?noreply\.github\.com$")
 
 
@@ -79,7 +82,7 @@ def scan(files: list[str], root: Path = ROOT) -> list[str]:
             if m:
                 line = text.count("\n", 0, m.start()) + 1
                 found.append(f"{rel}:{line}: looks like a {name}")
-        for m in EMAIL.finditer(text):
+        for m in ([] if rel in EMAIL_FILES else EMAIL.finditer(text)):
             if not EMAIL_OK.search(m.group(0)):
                 line = text.count("\n", 0, m.start()) + 1
                 found.append(f"{rel}:{line}: an e-mail address ({m.group(0)})")

@@ -568,12 +568,51 @@ def _cascade(cv2, path: str):
         return None
 
 
+FACE_MODEL = Path(__file__).resolve().parent / "assets" / "faces" / "face_detection_yunet_2023mar.onnx"
+FACE_SCORE = 0.8                                          # (YuNet's own sureness: below it, the "faces" in busy backgrounds)
+
+
+class _YuNet:
+    """YuNet (OpenCV's FaceDetectorYN, a small face finder made for this): faces looking at the camera or turned,
+    small ones (a streamer's camera picture) too; hardly ever a face in a busy background. Looks at a picture about
+    640 wide; a close-up too big for it is looked for again in a half-size picture."""
+    kind = "yunet"
+    width = 640
+
+    def __init__(self, det):
+        self.det, self.size = det, None
+
+    def _run(self, img) -> list:
+        h, w = img.shape[:2]
+        if self.size != (w, h):
+            self.det.setInputSize((w, h))
+            self.size = (w, h)
+        _, faces = self.det.detect(img)
+        return [] if faces is None else [(int(f[0]), int(f[1]), int(f[2]), int(f[3])) for f in faces if float(f[14]) >= FACE_SCORE]
+
+    def find(self, bgr) -> list:
+        found = self._run(bgr)
+        h, w = bgr.shape[:2]
+        if not found and min(w, h) >= 240:
+            import cv2
+            half = cv2.resize(bgr, (w // 2, h // 2), interpolation=cv2.INTER_AREA)
+            found = [(2 * x, 2 * y, 2 * fw, 2 * fh) for (x, y, fw, fh) in self._run(half)]
+        return [f for f in found if f[2] >= max(12, h // 30)]
+
+
 class _Finder:
-    """Faces looking at the camera; with fewer than two of them, also faces turned to a side (people talking to each
-    other) - both sides."""
+    """OpenCV's older face finder files (Haar cascades) - only where YuNet cannot run: faces looking at the camera;
+    with fewer than two of them, also faces turned to a side (people talking to each other) - both sides."""
+    kind = "haar"
+    width = 960
 
     def __init__(self, front, side):
         self.front, self.side = front, side
+
+    def find(self, bgr) -> list:
+        import cv2
+        g = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY) if bgr.ndim == 3 else bgr
+        return self.detectMultiScale(g, scaleFactor=1.12, minNeighbors=5, minSize=(max(24, g.shape[0] // 24),) * 2)
 
     def detectMultiScale(self, img, scaleFactor=1.1, minNeighbors=5, minSize=(0, 0)):
         kw = dict(scaleFactor=scaleFactor, minNeighbors=minNeighbors, minSize=minSize)
@@ -591,14 +630,39 @@ class _Finder:
         return found
 
 
+def _yunet(cv2):
+    """YuNet from the program's own file, given to OpenCV from memory (OpenCV cannot open a path with Russian
+    letters on Windows); None when this OpenCV cannot run it."""
+    path = os.environ.get("MEDENG_FACE_MODEL") or str(FACE_MODEL)
+    if not hasattr(cv2, "FaceDetectorYN") or not os.path.isfile(path):
+        return None
+    import numpy as np
+    try:
+        buf = np.frombuffer(Path(path).read_bytes(), np.uint8)
+        det = cv2.FaceDetectorYN.create("onnx", buf, np.empty(0, np.uint8), (640, 360), FACE_SCORE, 0.3, 50)
+    except Exception:
+        try:
+            det = cv2.FaceDetectorYN.create(path, "", (640, 360), FACE_SCORE, 0.3, 50)
+        except Exception:
+            return None
+    try:                                                  # (it really runs: a blank picture finds nothing)
+        f = _YuNet(det)
+        f._run(np.zeros((360, 640, 3), np.uint8))
+        return f
+    except Exception:
+        return None
+
+
 def face_finder():
-    """OpenCV's own face finders (their files ship with OpenCV), or None."""
+    """The face finder: YuNet (the program's own file), else OpenCV's own Haar files, else None."""
     if "f" in _FACES:
         return _FACES["f"]
     found = None
     try:
         import cv2
-        if hasattr(cv2, "CascadeClassifier"):
+        if os.environ.get("MEDENG_FACE_FINDER") != "haar":
+            found = _yunet(cv2)
+        if found is None and hasattr(cv2, "CascadeClassifier"):
             base = str(getattr(getattr(cv2, "data", None), "haarcascades", "") or "")
             front = _cascade(cv2, os.environ.get("MEDENG_FACE_CASCADE") or os.path.join(base, "haarcascade_frontalface_default.xml"))
             if front is not None:
@@ -611,8 +675,8 @@ def face_finder():
 
 def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: float, framing: str = "face",
                split_ok: bool = True, pre: list[str] | None = None, log: Path | None = None) -> dict:
-    """Where the picture of each shot of a clip is cut: one look at the clip (small, grey, 30 pictures a second) finds
-    the cuts between shots; faces are looked for a few times a second. Per shot: the crop's middle on the face; two
+    """Where the picture of each shot of a clip is cut: one look at the clip (small, 30 pictures a second) finds the
+    cuts between shots; faces are looked for three times a second (YuNet, else OpenCV's Haar files). Per shot: the crop's middle on the face; two
     people apart (a podcast's wide shot): each face in its own half, one above the other ("split"; only for a tall
     clip); three or more: the whole picture on blurred edges. Shot boundaries lie half a frame before the first
     frame of the new shot (whatever the exact time of the clip's first frame)."""
@@ -622,14 +686,16 @@ def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: floa
     if framing == "blur" or cw >= 0.98:
         plan["shots"] = [{"s": 0.0, "e": dur, "layout": "fit" if framing == "blur" else "crop", "cx": 0.5}]
         return plan
-    fw = 960                                              # (a streamer's small camera picture still has a face to find)
-    fh = max(2, int(round(fw * H / max(1, W) / 2)) * 2)
     finder = face_finder()
     plan["faces"] = finder is not None
+    plan["finder"] = getattr(finder, "kind", "") if finder is not None else ""
+    fw = int(getattr(finder, "width", 960) or 960)       # (a streamer's small camera picture still has a face to find)
+    fh = max(2, int(round(fw * H / max(1, W) / 2)) * 2)
+    step = max(8, fw // 60)                               # (the grid the cuts between shots are looked for on)
     sar = "setsar=1," if abs(float(info.get("sar") or 1) - 1) < 0.01 else "scale=trunc(iw*sar/2)*2:ih,setsar=1,"
     first = ",".join(pre or [])
     cmd = [vo._ffmpeg(), "-hide_banner", "-nostdin", "-v", "error", "-ss", f"{start:.3f}", "-t", f"{dur:.3f}", "-i", str(src),
-           "-an", "-vf", f"{first + ',' if first else ''}{sar}fps=30:start_time=0,scale={fw}:{fh},format=gray", "-f", "rawvideo", "-"]
+           "-an", "-vf", f"{first + ',' if first else ''}{sar}fps=30:start_time=0,scale={fw}:{fh},format=bgr24", "-f", "rawvideo", "-"]
     errf = open(log, "ab") if log else subprocess.DEVNULL
     try:
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=errf, stdin=subprocess.DEVNULL, **process_kwargs({}))
@@ -640,7 +706,8 @@ def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: floa
     ae._attach_job_object(proc)
     vo._track(proc)
     import numpy as np
-    size = fw * fh
+    import cv2
+    size = fw * fh * 3
     cuts, samples = [0], []
     prev, prev_h, i, last_face = None, None, 0, -100
     try:
@@ -650,8 +717,8 @@ def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: floa
                 break
             if vo._CURRENT.get("cancel"):
                 break
-            f = np.frombuffer(b, dtype=np.uint8).reshape(fh, fw)
-            small = f[::16, ::16].astype(np.int16)
+            f = np.frombuffer(b, dtype=np.uint8).reshape(fh, fw, 3)
+            small = cv2.cvtColor(f, cv2.COLOR_BGR2GRAY)[::step, ::step].astype(np.int16)
             hist = np.bincount((small // 16).ravel(), minlength=16) / small.size
             if prev is not None and i - cuts[-1] >= 8 and (float(np.mean(np.abs(small - prev))) > 22.0
                                                            or float(np.abs(hist - prev_h).sum()) > 0.9):
@@ -661,7 +728,7 @@ def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: floa
             if finder is not None and i - last_face >= 10:
                 last_face = i
                 try:
-                    found = finder.detectMultiScale(f, scaleFactor=1.12, minNeighbors=5, minSize=(max(24, fh // 24),) * 2)
+                    found = finder.find(f)
                 except Exception:
                     found = ()
                 samples.append((i, _people([(float(x + w / 2) / fw, float(w) / fw, float(y + h / 2) / fh) for (x, y, w, h) in found],
