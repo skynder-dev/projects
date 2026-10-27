@@ -122,7 +122,7 @@ def real(work: Path, out: Path) -> int:
         it = {**it, "sha256": hashlib.sha256(dst.read_bytes()).hexdigest(), "bytes": dst.stat().st_size}
         att.append(f"- real_{n}: [{it['title']}]({it['page']}) - {it['licence']}; {it['author'] or it['credit']}")
         info = cl._video_info(dst)
-        moments = []
+        moments, speakers = [], []
         for share in (0.15, 0.45, 0.75):
             s = round(max(0.0, info["duration"] * share), 1)
             dur = min(20.0, max(4.0, info["duration"] - s - 0.5))
@@ -150,6 +150,28 @@ def real(work: Path, out: Path) -> int:
                 row.append((shown, Image.open(v_png).convert("RGB").resize((152, 270)),
                             [[int(v) for v in r] for r in found]))
             moments.append({"start": s, "seconds": dur, "analysis_s": took, "shots": plan["shots"], "row": row})
+            if any(sh["layout"] in ("fit", "split") for sh in plan["shots"]):   # two or more people: who speaks, close up
+                sp = cl.plan_shots(dst, s, dur, info, 1080 / 1920, "face", split_ok=True, speaker=True)
+                g2, _, _ = cl._graph(sp, info, (540, 960))
+                clip2 = vids / f"real_{n}_{int(s)}_spk.mp4"
+                subprocess.run([ff, "-v", "error", "-y", "-ss", f"{s:.3f}", "-t", f"{dur:.3f}", "-i", str(dst), "-filter_complex", g2,
+                                "-map", "[pv]", "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "23", str(clip2)], check=True)
+                srow = []
+                for k in range(8):
+                    t = dur * (k + 0.5) / 8
+                    src_png, v_png = vids / "s.png", vids / "v.png"
+                    subprocess.run([ff, "-v", "error", "-y", "-ss", f"{s + t:.3f}", "-i", str(dst), "-frames:v", "1", str(src_png)], check=True)
+                    subprocess.run([ff, "-v", "error", "-y", "-ss", f"{t:.3f}", "-i", str(clip2), "-frames:v", "1", str(v_png)], check=True)
+                    im = Image.open(src_png).convert("RGB")
+                    shown = im.resize((320, int(round(im.height * 320 / im.width))))
+                    sh = next((x for x in sp["shots"] if x["s"] <= t < x["e"]), sp["shots"][-1])
+                    dr = ImageDraw.Draw(shown)
+                    if sh.get("speaker"):
+                        cx = sh["cx"] * 320
+                        dr.rectangle([cx - 30, 4, cx + 30, shown.height - 4], outline=(60, 230, 90), width=3)
+                    dr.text((4, 4), f"{t:.1f} s", fill=(255, 255, 255), font=font)
+                    srow.append((shown, Image.open(v_png).convert("RGB").resize((101, 180))))
+                speakers.append({"start": s, "seconds": dur, "shots": sp["shots"], "talk": sp.get("talk"), "row": srow})
         # the sheet: per moment one row (original with the faces found | the vertical clip), three times
         rh = 270
         sheet = Image.new("RGB", (3 * (480 + 152 + 12), len(moments) * (rh + 30) + 10), (18, 20, 26))
@@ -163,9 +185,25 @@ def real(work: Path, out: Path) -> int:
                 sheet.paste(shown, (x, y + (rh - shown.height) // 2))
                 sheet.paste(vert, (x + 480, y))
         sheet.save(out / f"real_{n}.png")
+        if speakers:                                       # who speaks: the crop's middle marked green on the original
+            th = 180
+            sh2 = Image.new("RGB", (4 * (320 + 101 + 10), len(speakers) * (2 * (th + 6) + 30) + 10), (18, 20, 26))
+            d2 = ImageDraw.Draw(sh2)
+            for r_, m in enumerate(speakers):
+                y0 = r_ * (2 * (th + 6) + 30) + 26
+                lay = ", ".join(f"{x['cx']:.2f}@{x['s']:.1f}" if x.get("speaker") else f"{x['layout']}@{x['s']:.1f}" for x in m["shots"])[:160]
+                d2.text((6, y0 - 22), f"real_{n} from {m['start']:.0f} s - the one speaking: {lay}", fill=(230, 230, 230), font=font)
+                for c, (shown, vert) in enumerate(m["row"]):
+                    x = (c % 4) * (320 + 101 + 10)
+                    y = y0 + (c // 4) * (th + 6)
+                    sh2.paste(shown, (x, y + (th - shown.height) // 2))
+                    sh2.paste(vert, (x + 320, y))
+            sh2.save(out / f"real_{n}_speaker.png")
+            for m in speakers:
+                m.pop("row")
         for m in moments:
             m["faces_found"] = [r[2] for r in m.pop("row")]
-        report["videos"].append({**it, "info": info, "moments": moments})
+        report["videos"].append({**it, "info": info, "moments": moments, "speaker": speakers})
         dst.unlink()
     (out / "ATTRIBUTION.md").write_text("\n".join(att) + "\n", "utf-8")
     (out / "real_probe.json").write_text(json.dumps(report, indent=1), "utf-8")

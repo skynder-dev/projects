@@ -20,6 +20,7 @@ LENGTH_LABELS = {"short": "15–30 s", "medium": "30–60 s", "long": "45–90 s
 FORMATS = {"vertical": (1080, 1920), "square": (1080, 1080), "original": None}
 FORMAT_LABELS = {"vertical": "Vertical 9:16 (TikTok, Reels, Shorts)", "square": "Square 1:1", "original": "As filmed"}
 FRAMINGS = {"face": "Keep the face in the frame", "blur": "Whole picture, blurred edges"}
+PEOPLE = {"all": "All of them in the picture", "speaker": "The one speaking, close up"}
 MAX_CANDIDATES = 40
 MAX_CHOSEN = 30
 MAX_SOURCE_S = 6 * 3600            # a recording of at most six hours (Whisper on the processor: still within a night)
@@ -334,7 +335,7 @@ def new_find(source: str, length: str = "medium", language: str = "") -> str:
 
 
 def new_make(find_jid: str, chosen: list[dict], fmt: str = "vertical", framing: str = "face", captions: bool = True,
-             opts: dict | None = None, title: bool = False) -> str:
+             opts: dict | None = None, title: bool = False, people: str = "all") -> str:
     """The chosen clips of a listened video, made one after another (a job; no add-on needed)."""
     fj = vo.read_job(find_jid)
     if fj.get("kind") != "clips_find" or not (fj.get("result") or {}).get("ok"):
@@ -364,10 +365,11 @@ def new_make(find_jid: str, chosen: list[dict], fmt: str = "vertical", framing: 
         raise ClipsError(f"At most {MAX_CHOSEN} clips at once.")
     fmt = fmt if fmt in FORMATS else "vertical"
     framing = framing if framing in FRAMINGS else "face"
+    people = people if people in PEOPLE else "all"
     o = tf.options(**(opts or {}))
-    _remember(format=fmt, framing=framing, captions=bool(captions), title=bool(title))
+    _remember(format=fmt, framing=framing, captions=bool(captions), title=bool(title), people=people)
     return vo._submit({"kind": "clips_make", "find": find_jid, "source": str(src), "clips": clean, "format": fmt,
-                       "framing": framing, "captions": bool(captions), "opts": o, "first_as_title": bool(title),
+                       "framing": framing, "people": people, "captions": bool(captions), "opts": o, "first_as_title": bool(title),
                        "title": src.name[:60], "needs_addon": False}, addon=False)
 
 
@@ -388,7 +390,8 @@ def last_choices() -> dict:
     return {"length": c.get("length") if c.get("length") in LENGTHS else "medium",
             "format": c.get("format") if c.get("format") in FORMATS else "vertical",
             "framing": c.get("framing") if c.get("framing") in FRAMINGS else "face",
-            "captions": c.get("captions") is not False, "title": c.get("title") is True}
+            "captions": c.get("captions") is not False, "title": c.get("title") is True,
+            "people": c.get("people") if c.get("people") in PEOPLE else "all"}
 
 
 def sweep_orphans() -> int:
@@ -602,22 +605,31 @@ class _YuNet:
     def __init__(self, det):
         self.det, self.size = det, None
 
-    def _run(self, img) -> list:
+    def _run_full(self, img) -> list:
         h, w = img.shape[:2]
         if self.size != (w, h):
             self.det.setInputSize((w, h))
             self.size = (w, h)
         _, faces = self.det.detect(img)
-        return [] if faces is None else [(int(f[0]), int(f[1]), int(f[2]), int(f[3])) for f in faces if float(f[14]) >= FACE_SCORE]
+        return [] if faces is None else [((int(f[0]), int(f[1]), int(f[2]), int(f[3])), [float(v) for v in f[4:14]])
+                                         for f in faces if float(f[14]) >= FACE_SCORE]
 
-    def find(self, bgr) -> list:
-        found = self._run(bgr)
+    def _run(self, img) -> list:
+        return [b for b, _ in self._run_full(img)]
+
+    def find_full(self, bgr) -> list:
+        """The faces with their marks: [((x, y, w, h), [right eye x, y, left eye x, y, nose x, y, mouth right x, y,
+        mouth left x, y]), ...] in the picture's pixels."""
+        found = self._run_full(bgr)
         h, w = bgr.shape[:2]
         if not found and min(w, h) >= 240:
             import cv2
             half = cv2.resize(bgr, (w // 2, h // 2), interpolation=cv2.INTER_AREA)
-            found = [(2 * x, 2 * y, 2 * fw, 2 * fh) for (x, y, fw, fh) in self._run(half)]
-        return [f for f in found if f[2] >= max(12, h // 30)]
+            found = [((2 * x, 2 * y, 2 * fw, 2 * fh), [2 * v for v in m]) for ((x, y, fw, fh), m) in self._run_full(half)]
+        return [f for f in found if f[0][2] >= max(12, h // 30)]
+
+    def find(self, bgr) -> list:
+        return [b for b, _ in self.find_full(bgr)]
 
 
 class _Finder:
@@ -694,13 +706,16 @@ def face_finder():
 
 
 def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: float, framing: str = "face",
-               split_ok: bool = True, pre: list[str] | None = None, log: Path | None = None) -> dict:
+               split_ok: bool = True, pre: list[str] | None = None, log: Path | None = None, speaker: bool = False,
+               speech: list | None = None) -> dict:
     """Where the picture of each shot of a clip is cut: one look at the clip (small, 30 pictures a second) finds the
     cuts between shots; faces are looked for three times a second (YuNet, else OpenCV's Haar files). Per shot: the
     crop's middle on the face (going after someone who walks); a group that fits the crop: its middle on the group; two
     people apart (a podcast's wide shot): each face in its own half, one above the other ("split"; only for a tall
-    clip); people side by side or three and more: the group as big as it fits, on blurred edges. Shot boundaries lie
-    half a frame before the first frame of the new shot (whatever the exact time of the clip's first frame)."""
+    clip); people side by side or three and more: the group as big as it fits, on blurred edges - or, with speaker,
+    the one whose mouth moves while words are said, close up (switching when another one speaks; speech: the times
+    words are said, seconds from the clip's start). Shot boundaries lie half a frame before the first frame of the new
+    shot (whatever the exact time of the clip's first frame)."""
     W, H = int(info["w"]), int(info["h"])
     cw = min(1.0, (H * out_aspect) / max(1, W))          # the crop's width as a share of the picture's
     plan = {"shots": [], "faces": False, "crop_w": cw}
@@ -731,6 +746,8 @@ def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: floa
     size = fw * fh * 3
     cuts, samples = [0], []
     prev, prev_h, i, last_face = None, None, 0, -100
+    mouths = speaker and finder is not None
+    regions, greys, acts = [], [], []                     # (speaker: where each mouth is, the last pictures, how much it moves)
     try:
         while True:
             b = proc.stdout.read(size)
@@ -739,21 +756,38 @@ def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: floa
             if vo._CURRENT.get("cancel"):
                 break
             f = np.frombuffer(b, dtype=np.uint8).reshape(fh, fw, 3)
-            small = cv2.cvtColor(f, cv2.COLOR_BGR2GRAY)[::step, ::step].astype(np.int16)
+            grey = cv2.cvtColor(f, cv2.COLOR_BGR2GRAY)
+            small = grey[::step, ::step].astype(np.int16)
             hist = np.bincount((small // 16).ravel(), minlength=16) / small.size
             if prev is not None and i - cuts[-1] >= 8 and (float(np.mean(np.abs(small - prev))) > 22.0
                                                            or float(np.abs(hist - prev_h).sum()) > 0.9):
                 cuts.append(i)                           # a new shot (the picture or its light changed at once)
                 last_face = -100                         # (its faces looked for at once)
+                greys, regions = [], []
             prev, prev_h = small, hist
             if finder is not None and i - last_face >= 10:
                 last_face = i
                 try:
-                    found = finder.find(f)
+                    full = finder.find_full(f) if hasattr(finder, "find_full") else [(r_, None) for r_ in finder.find(f)]
                 except Exception:
-                    found = ()
+                    full = []
+                found = [r_ for r_, _ in full]
                 samples.append((i, _people([(float(x + w / 2) / fw, float(w) / fw, float(y + h / 2) / fh) for (x, y, w, h) in found],
                                            fw, fh)))
+                if mouths:
+                    regions = [_mouth_region(r_, m_, fw, fh) for r_, m_ in full]
+            if mouths:                                     # how much each mouth moves in 0.1 s, less what the whole
+                if len(greys) == 3 and regions and i % 3 == 0:   # face moves (a nod, the camera)
+                    old = greys[0]
+                    vals = []
+                    for cx_, w_, (mx0, my0, mx1, my1), (fx0, fy0, fx1, fy1) in regions:
+                        md = float(cv2.absdiff(grey[my0:my1, mx0:mx1], old[my0:my1, mx0:mx1]).mean())
+                        fd = float(cv2.absdiff(grey[fy0:fy1, fx0:fx1], old[fy0:fy1, fx0:fx1]).mean())
+                        vals.append((cx_, w_, max(0.0, md - 0.8 * fd)))
+                    acts.append((i, vals))
+                greys.append(grey)
+                if len(greys) > 3:
+                    greys.pop(0)
             i += 1
     finally:
         try:
@@ -799,6 +833,17 @@ def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: floa
             counts[str(min(len(fs), 3))] = counts.get(str(min(len(fs), 3)), 0) + 1
         shot = {"s": 0.0 if a == 0 else round((a - 0.5) / 30.0, 6), "e": round((b - 0.5) / 30.0, 6), "layout": "crop", "cx": 0.5,
                 "seen": counts}                          # (how many people each look found: for support)
+        talk: list = []                                    # (for support: how much each mouth moved, who was chosen)
+        segs = (_speakers(timed, [x for x in acts if a <= x[0] < b], a, b, speech, talk)
+                if speaker and seen and len(pairs) + len(groups) >= max(1, len(seen) / 2) else None)
+        if talk:
+            plan.setdefault("talk", []).append({"shot_s": shot["s"], **talk[0], "moves": talk[1:]})
+        if segs:                                           # the one speaking, close up: a crop per stretch of talk
+            for k_, (f0, f1, px) in enumerate(segs):
+                shots.append(dict(shot, s=shot["s"] if k_ == 0 else round((f0 - 0.5) / 30.0, 6),
+                                  e=shot["e"] if k_ == len(segs) - 1 else round((f1 - 0.5) / 30.0, 6), cx=round(px, 4),
+                                  speaker=True))
+            continue
         if seen and len(pairs) + len(groups) >= max(1, len(seen) / 2):
             if split_ok and pairs and len(pairs) >= len(groups):   # two people apart: each in a half, one above the other
                 shot.update(layout="split", faces=[{"cx": round(med([p[0][k][0] for p in pairs]), 4),
@@ -822,6 +867,101 @@ def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: floa
     shots[-1]["e"] = max(shots[-1]["e"], dur + 1.0)
     plan["shots"] = shots
     return plan
+
+
+def _mouth_region(box, marks, fw: int, fh: int) -> tuple:
+    """(face middle x and width as shares of the width, the mouth's box, the face's box) in the analysis picture's
+    pixels. YuNet: from the mouth corners and the nose; otherwise the lower part of the face."""
+    x, y, w, h = [float(v) for v in box]
+    if marks and len(marks) >= 10:
+        nx, ny, rx, ry, lx, ly = marks[4], marks[5], marks[6], marks[7], marks[8], marks[9]
+        mx0, mx1 = min(rx, lx) - 0.12 * w, max(rx, lx) + 0.12 * w
+        my0, my1 = ny + 0.06 * h, max(ry, ly) + 0.22 * h
+    else:
+        mx0, mx1, my0, my1 = x + 0.25 * w, x + 0.75 * w, y + 0.62 * h, y + 0.95 * h
+
+    def clamp(x0, y0, x1, y1):
+        x0, x1 = max(0, min(fw - 2, int(x0))), max(0, min(fw, int(round(x1))))
+        y0, y1 = max(0, min(fh - 2, int(y0))), max(0, min(fh, int(round(y1))))
+        return x0, y0, max(x0 + 2, x1), max(y0 + 2, y1)
+    return ((x + w / 2) / fw, w / fw, clamp(mx0, my0, mx1, my1), clamp(x, y, x + w, y + h))
+
+
+def _speakers(timed: list, acts: list, a: int, b: int, speech: list | None, diag: list | None = None) -> list | None:
+    """Who speaks when, in a shot of two or more people: [(first frame, end frame, face middle x), ...] - stretches of
+    at least 1.5 s, a switch only when another mouth leads for a second - or None when no one clearly speaks."""
+    xs = []
+    for _, fs in timed:
+        if fs:
+            big = max(t[1] for t in fs)
+            xs += [(t[0], t[1]) for t in fs if t[1] >= 0.6 * big]
+    if not xs:
+        return None
+    xs.sort()
+    people, cur = [], [xs[0]]
+    for x in xs[1:]:                                       # (the people: finds close together across the looks)
+        if x[0] - cur[-1][0] > 0.8 * sorted(t[1] for t in cur)[len(cur) // 2]:
+            people.append(cur)
+            cur = [x]
+        else:
+            cur.append(x)
+    people.append(cur)
+    looks = sum(1 for _, fs in timed if fs)
+    people = [(sorted(t[0] for t in g)[len(g) // 2], sorted(t[1] for t in g)[len(g) // 2]) for g in people
+              if len(g) >= 0.3 * looks]
+    if len(people) < 2:
+        return None
+    nwin = max(1, -(-(b - a) // 15))
+    sums = [[0.0] * len(people) for _ in range(nwin)]
+    cnts = [[0] * len(people) for _ in range(nwin)]
+    for fr, vals in acts:
+        k = (fr - a) // 15
+        if not 0 <= k < nwin:
+            continue
+        for cx_, w_, act in vals:
+            j = min(range(len(people)), key=lambda q: abs(people[q][0] - cx_))
+            if abs(people[j][0] - cx_) < 0.6 * max(people[j][1], w_):
+                sums[k][j] += act
+                cnts[k][j] += 1
+    talk = [(float(s_), float(e_)) for s_, e_ in (speech or [])]
+    raw = []
+    for k in range(nwin):
+        t0, t1 = (a + 15 * k) / 30.0, (a + 15 * k + 15) / 30.0
+        if speech is not None and not any(s_ < t1 and e_ > t0 for s_, e_ in talk):
+            raw.append(None)                               # (no word said: whoever it was stays)
+            continue
+        m = [sums[k][j] / cnts[k][j] if cnts[k][j] else 0.0 for j in range(len(people))]
+        order = sorted(range(len(people)), key=lambda j: -m[j])
+        best, second = m[order[0]], m[order[1]]
+        raw.append(order[0] if best >= 0.6 and best >= 1.5 * second + 0.2 else None)
+        if diag is not None:
+            diag.append([round(v, 2) for v in m])
+    if diag is not None:
+        diag.insert(0, {"people": [[round(x, 4), round(w, 4)] for x, w in people], "who": raw})
+    sure = [r for r in raw if r is not None]
+    if len(sure) < 2 or len(sure) < 0.2 * nwin:
+        return None
+    seq, cur = [], sure[0]
+    for k, r in enumerate(raw):                            # (a switch only when the other one leads two looks running)
+        if r is not None and r != cur and k + 1 < nwin and raw[k + 1] == r:
+            cur = r
+        seq.append(cur)
+    segs = []
+    for k, r in enumerate(seq):
+        if segs and segs[-1][2] == r:
+            segs[-1][1] = k + 1
+        else:
+            segs.append([k, k + 1, r])
+    merged = []
+    for sg in segs:                                        # (stretches under 1.5 s go to the one before)
+        if merged and (sg[1] - sg[0] < 3 or merged[-1][2] == sg[2]):
+            merged[-1][1] = sg[1]
+        else:
+            merged.append(sg)
+    if len(merged) > 1 and merged[0][1] - merged[0][0] < 3:
+        merged[1][0] = merged[0][0]
+        merged.pop(0)
+    return [(a + 15 * k0, min(b, a + 15 * k1), people[r][0]) for k0, k1, r in merged]
 
 
 def _follow(track: list, cw: float) -> list | None:
@@ -1068,8 +1208,16 @@ def _make_one(d: Path, job: dict, n: int, c: dict, src: Path, info: dict, out, p
     from . import auto_edit as ae, orders as od
     s, e = float(c["s"]), float(c["e"])
     dur = round(e - s, 3)
+    said = []                                             # (when words are said, from the clip's start: who speaks)
+    for w in words_between(words, s, e):                  # (already from the clip's start)
+        a_, b_ = float(w["s"]), float(w["e"])
+        if said and a_ - said[-1][1] < 0.3:
+            said[-1][1] = max(said[-1][1], b_)
+        else:
+            said.append([a_, b_])
     plan = plan_shots(src, s, dur, info, (out[0] / out[1]) if out else 1.0, job.get("framing") or "face",
-                      split_ok=bool(out and out[1] > out[0]), pre=pre, log=d / "analysis.log") if out else \
+                      split_ok=bool(out and out[1] > out[0]), pre=pre, log=d / "analysis.log",
+                      speaker=job.get("people") == "speaker", speech=said) if out else \
         {"shots": [{"s": 0.0, "e": dur, "layout": "crop", "cx": 0.5}], "faces": False}
     graph, ow, oh = _graph(plan, info, out)
     if pre:                                               # camcorder fields / an HDR phone video: first of all
@@ -1128,7 +1276,8 @@ def _make_one(d: Path, job: dict, n: int, c: dict, src: Path, info: dict, out, p
     saved = _save(d / name, folder, n, c.get("first") or "")
     return {"file": name, "s": s, "e": e, "seconds": dur, "saved": saved, "width": ow, "height": oh,
             "layouts": sorted({sh["layout"] for sh in plan["shots"]}), "shots": len(plan["shots"]),
-            "faces": bool(plan.get("faces")), "captions": len(cs), "plan": plan["shots"]}
+            "faces": bool(plan.get("faces")), "captions": len(cs), "plan": plan["shots"],
+            **({"talk": [{k: v for k, v in t.items() if k != "moves"} for t in plan["talk"]]} if plan.get("talk") else {})}
 
 
 def _out_folder(src: Path) -> Path | None:

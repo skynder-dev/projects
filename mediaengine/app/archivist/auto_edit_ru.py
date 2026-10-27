@@ -1012,6 +1012,8 @@ PHRASES = {
         "субтитры следуют за голосом); голос из записи можно сохранить в списке голосов.",
     # clips from a long video (clips.py, clips_web.py)
     "Clips from a long video": "Клипы из длинного видео",
+    "Clips: \"The one speaking, close up\" - when two or three people stand side by side, the clip shows whoever is talking, close up, and switches when another one talks.":
+        "Клипы: «Тот, кто говорит, крупно» — когда рядом стоят двое или трое, в клипе крупно тот, кто сейчас говорит, и кадр переключается, когда начинает говорить другой.",
     "Clips: the frame goes with someone who walks; people standing side by side all stay in the picture, as big as they fit.":
         "Клипы: кадр идёт за человеком, который ходит; люди, стоящие рядом, все остаются в кадре — так крупно, как помещаются.",
     "Clips from a long video (Auto Edit → Clips from a long video): a podcast, stream or interview is listened to once; the parts that make good short clips are listed with their words; the ticked ones become vertical clips with the face in the frame, the sound and captions.":
@@ -1050,6 +1052,8 @@ PHRASES = {
     "Make the ticked clips": "Сделать отмеченные клипы",
     "Saved next to the saved reels, in a folder of this video. The face is kept in the frame (someone walking: the frame goes with them); two people apart: each in a half, one above the other; people side by side or more: all of them, as big as they fit, on blurred edges; a streamer's camera over a game: the camera above, the game below.":
         "Сохраняются рядом с готовыми роликами, в папке этого видео. Лицо держится в кадре (человек идёт — кадр идёт за ним); двое далеко друг от друга — каждый в своей половине, один над другим; люди рядом или больше — все в кадре, как можно крупнее, на размытом фоне; камера стримера поверх игры — камера сверху, игра снизу.",
+    "Two or more people side by side": "Двое и больше рядом", "All of them in the picture": "Все в кадре",
+    "The one speaking, close up": "Тот, кто говорит, крупно",
     "Make the 5 likeliest": "Сделать 5 самых удачных", "The first five of the list, as they are": "Первые пять из списка, как есть",
     "Made clips": "Готовые клипы", "Clips:": "Клипы:", "Saved in": "Сохранены в", "No such job.": "Такого задания нет.",
     "Choose the long video (its full path).": "Выбери длинное видео (полный путь к нему).",

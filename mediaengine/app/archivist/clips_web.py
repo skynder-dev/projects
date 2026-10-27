@@ -208,6 +208,8 @@ def register(app, page, err_page, e, human_bytes):
                        for k, v in cl.FORMAT_LABELS.items())
         frs = "".join(f"<label><input type='radio' name='framing' value='{k}' {'checked' if k == last['framing'] else ''}> {e(v)}</label>"
                       for k, v in cl.FRAMINGS.items())
+        ppl = "".join(f"<label><input type='radio' name='people' value='{k}' {'checked' if k == last['people'] else ''}> {e(v)}</label>"
+                      for k, v in cl.PEOPLE.items())
         o = tf.options()
         styles = "".join(f"<label style='display:block'><input type='radio' name='style' value='{k}'{' checked' if k == o['style'] else ''}> "
                          f"{e(v['label'])}</label>" for k, v in tf.STYLES.items())
@@ -249,6 +251,7 @@ def register(app, page, err_page, e, human_bytes):
                   f"<div class='muted' style='font-size:12px' data-pmsg></div></div>"
                   f"<div class='card' style='margin-top:12px'><b>Format</b><div class='cl-choices'>{fmts}</div>"
                   f"<b>Picture</b><div class='cl-choices'>{frs}</div>"
+                  f"<b>Two or more people side by side</b><div class='cl-choices'>{ppl}</div>"
                   f"<label style='display:block;margin-top:6px'><input type='checkbox' name='captions' value='1' {'checked' if last['captions'] else ''}> "
                   f"Captions with the words</label><div class='vo-styles' style='margin:6px 0 0 4px;font-size:14px'>{styles}</div>"
                   f"<div class='cl-row' style='margin-top:6px;font-size:14px'><span>Color</span><select name='color'>{colors}</select>"
@@ -294,7 +297,7 @@ def register(app, page, err_page, e, human_bytes):
             chosen.sort(key=lambda c: c["s"])
             cl.new_make(jid, chosen, f.get("format", "vertical"), f.get("framing", "face"), f.get("captions") == "1",
                         {"style": f.get("style"), "color": f.get("color"), "size": f.get("size"), "position": f.get("position")},
-                        f.get("title") == "1")
+                        f.get("title") == "1", f.get("people") or "all")
         except vo.VoiceError as exc:
             return err_page(str(exc), f"/auto/clips/{jid}")
         return redirect(f"/auto/clips/{jid}#made")

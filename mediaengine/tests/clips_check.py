@@ -364,6 +364,38 @@ def main() -> int:
           and pc.get("layouts") == ["fit"] and 0.3 < float(pc["plan"][0].get("box", {}).get("w", 1)) < 0.6 and detail > 600
           and min(halves) > 8, (pm["state"], pc.get("plan") or pm.get("result"), detail, halves))
 
+    # the same two people, the left one talking for 8 s, then the right one ("mouths" opening and closing 5 times a
+    # second): with "the one speaking, close up" the crop is on the one who talks and switches when the other talks
+    talk2 = work / "talk2.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "color=c=0x405060:s=1920x1080:r=30:d=18", "-loop", "1", "-i", str(face),
+                    "-f", "lavfi", "-i", "sine=f=220:d=18", "-filter_complex",
+                    "[1:v]scale=300:346,split=2[p1][p2];[0:v][p1]overlay=620:300:shortest=1[q];[q][p2]overlay=1000:300:shortest=1,"
+                    "drawbox=x=720:y=462:w=32:h=14:color=0x301818:t=fill:enable='lt(t,8.5)*lt(mod(t,0.2),0.1)',"
+                    "drawbox=x=1100:y=462:w=32:h=14:color=0x301818:t=fill:enable='gte(t,8.5)*lt(mod(t,0.2),0.1)',format=yuv420p[v]",
+                    "-map", "[v]", "-map", "2:a", "-t", "18", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-c:a", "aac",
+                    str(talk2)], check=True)
+    sid = vo._new_id()
+    (vo.JOBS / sid).mkdir()
+    sjob = dict(wjob, id=sid, source=str(talk2), title=talk2.name, created_ns=time.time_ns())
+    (vo.JOBS / sid / "job.json").write_text(json.dumps(sjob), "utf-8")
+    (vo.JOBS / sid / "result.json").write_text(json.dumps(cl.save_found(vo.JOBS / sid, sjob, transcript(
+        ["We walk along the beach.", "The water is warm today.", "Look at those waves over there.", "Why is nobody else here?",
+         "It is still early in the morning.", "We will come back tomorrow."], t0=0.4, pause=1.2), [], "en")), "utf-8")
+    sm_ = wait(vo, cl.new_make(sid, [{"s": 0.5, "e": 16.5, "first": "We walk along the beach."}], "vertical", "face", False, {}, False,
+                               "speaker"))
+    sc = ((sm_.get("result") or {}).get("clips") or [{}])[0]
+    sp_shots = sc.get("plan") or []
+    if sc.get("file"):
+        f_a, f_b = frame(ff, vo.JOBS / sm_["id"] / sc["file"], 3.0), frame(ff, vo.JOBS / sm_["id"] / sc["file"], 12.0)
+        ca, cb = textured_center(f_a, slice(600, 1300)), textured_center(f_b, slice(600, 1300))
+    else:
+        ca = cb = -1.0
+    switch = [x["s"] for x in sp_shots[1:]]
+    check("making: \"the one speaking, close up\" - the crop on the one who talks, switching when the other talks",
+          sm_["state"] == "done" and len(sp_shots) == 2 and all(x.get("speaker") and x["layout"] == "crop" for x in sp_shots)
+          and sp_shots[0]["cx"] < sp_shots[1]["cx"] and switch and 7.0 <= switch[0] <= 9.0 and 0.3 <= ca <= 0.7 and 0.3 <= cb <= 0.7
+          and sc.get("talk"), (sm_["state"], sp_shots, round(ca, 3), round(cb, 3), sc.get("talk") or sm_.get("result")))
+
     # ---------------------------------------------------------------- 3. the pages
     app = create_app()
     H = {"Host": "127.0.0.1:8765", "Origin": "http://127.0.0.1:8765", "Sec-Fetch-Site": "same-origin"}
