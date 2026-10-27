@@ -901,6 +901,11 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   the neighbour off and three people shown tiny on the whole wide picture -> a group that fits the crop is centred on
   the group; a wider group: its part of the picture, full height, on blurred edges; the crop pans after someone who
   walks (clips_check 32 locally: a walk across, a close pair). Strong openings: only real hooks.
+- 2026-10-27, a probe (mediaengine-clips-judge, Linux CPU): could a small free local language model rank the clips
+  better than word counting? On the 18 parts found in the NASA interview, Qwen3-1.7B marked every one 8 of 9 (no use);
+  Qwen3-4B-Instruct-2507 put the sound check (3.4) and the goodbye (2.1) last and the rest 7-8.2 - but 83 s per part
+  on a processor and an 8 GB download. Not added: phrases for sound checks, greetings, thanks, goodbyes, "subscribe" and
+  sponsor reads now rank that junk last in the program's own scoring (in the next build after 5c56c6d).
 - Owner PC seen through the app's pages (2026-10-25 morning, read only): b217 installed; 6 projects (100MEDIA);
   16 logical cores, 69 GB RAM, RTX 3060; decoding on the card not used (x0.85); card test for converting not run.
 - Owner PC seen through the app's pages (2026-10-24 evening, read only): he runs b213 (pressed Update); the voice
