@@ -45,6 +45,21 @@ _NUMBER_WORDS = {"hundred", "thousand", "million", "billion", "percent", "сто
                  "процента"}
 _LAUGH = re.compile(r"(?:\b|^)(?:ha){2,}|laugh|applause|chuckl|(?:х[аи]-?){2,}|смех|смеётся|аплодисмент")
 _END = re.compile(r"[.!?…]+[\"'»”)\]]*$")
+# talk that is not content: sound checks, greetings, thanks, goodbyes, "subscribe" (a clip of it is no use) - and
+# sponsor reads (a clip of an advert is worse than none)
+_SMALLTALK = re.compile(
+    r"\b(?:how do you hear me|thanks?(?: you)?(?: so much| very much)? for (?:joining|having|watching|listening|tuning in"
+    r"|coming on)|welcome (?:back )?to (?:the|our|my|this) (?:show|podcast|channel|stream|episode)|"
+    r"that concludes (?:the|this|our|today's) (?:event|show|episode|broadcast|stream|call)|please stand by|"
+    r"see you (?:next time|next week|in the next)|(?:like|hit) (?:and|the) subscribe|subscribe to (?:the|my|our) channel|"
+    r"smash (?:that|the) like|don't forget to (?:like|subscribe)|follow (?:me|us) on (?:instagram|twitter|tiktok|youtube|twitch|x\b)|"
+    r"всем привет|добро пожаловать (?:на|в) (?:канал|стрим|подкаст|выпуск|эфир)|"
+    r"спасибо,? что (?:смотрите|посмотрели|были с нами|слушаете|пришли)|подпишись|подпишитесь|подписывайтесь на|"
+    r"ставь(?:те)? лайк|(?:нажми|нажмите|жми) (?:на )?колокольчик|до (?:новых|скорых) встреч|до встречи(?=[.!,]|$)|всем пока)")
+_AD = re.compile(
+    r"\b(?:sponsored by|today'?s sponsor|(?:episode|video|show|stream) is (?:brought to you by|sponsored)|promo code|"
+    r"use (?:the )?code \w+ (?:at|for|to)\b|discount code|\d+ ?(?:%|percent) off|free trial|link (?:is )?in the (?:description|bio)|"
+    r"dot com slash|промокод|спонсор (?:этого|сегодняшнего|выпуска|видео|канала|подкаста)|ссылка в (?:описании|био))")
 
 
 class ClipsError(vo.VoiceError):
@@ -140,6 +155,7 @@ def _features(sents: list[dict]) -> list[dict]:
             "bad_start": bool(bare) and bare[0] in _BAD_START, "hook": bool(bare) and (bare[0] in _HOOK_FIRST or any(x in _HOOK for x in bare[:6])),
             "you": [x in _YOU for x in bare],
             "laugh": sum(1 for w in ws if _LAUGH.search(str(w["w"]).lower())),
+            "small": len(_SMALLTALK.findall(st["text"].lower())), "ad": len(_AD.findall(st["text"].lower())),
         })
     return out
 
@@ -186,7 +202,7 @@ def find_candidates(words: list[dict], energy: list[float] | None = None, lmin: 
             k += 1
         if any(you[:40]):
             base += 4
-        n = spoken = unsure = strong = excl = laugh = 0
+        n = spoken = unsure = strong = excl = laugh = small = ad = 0
         number = False
         gap = 0.0
         for j in range(i, len(sents)):
@@ -200,6 +216,8 @@ def find_candidates(words: list[dict], energy: list[float] | None = None, lmin: 
             strong += fj["strong"]
             excl += fj["excl"]
             laugh += fj["laugh"]
+            small += fj["small"]
+            ad += fj["ad"]
             number = number or fj["number"]
             gap = max(gap, fj["gap"], (sents[j]["s"] - sents[j - 1]["e"]) if j > i else 0.0)
             dur = e0 - s0
@@ -221,6 +239,7 @@ def find_candidates(words: list[dict], energy: list[float] | None = None, lmin: 
                 why.append("laughter")
             if fj["quest"] and j > i:
                 score -= 6                               # (ends on an open question: the answer is cut off)
+            score -= min(24, 12 * small) + min(40, 25 * ad)   # (sound checks, hellos, goodbyes; adverts above all)
             if dur > 0 and spoken / dur < 0.55:
                 score -= 10
             if gap > 2.0:
@@ -815,6 +834,9 @@ def _follow(track: list, cw: float) -> list | None:
     cut = len(xs) // 10
     if xs[-1 - cut] - xs[cut] <= 0.45 * cw:              # (a still crop keeps the face well inside)
         return None
+    jumps = sum(1 for (t0, x0), (t1, x1) in zip(track, track[1:]) if abs(x1 - x0) > 0.5 * cw and t1 - t0 <= 1.0)
+    if jumps >= 2:                                         # (two people found in turns, not one who walks: a still crop)
+        return None
     sm = []
     for i in range(len(track)):                            # (each look: the middle of the looks around it, about 1.3 s)
         win = sorted(x for _, x in track[max(0, i - 2):i + 3])
@@ -823,11 +845,14 @@ def _follow(track: list, cw: float) -> list | None:
     cam, prev_t = sm[0][1], sm[0][0]
     path = [[round(prev_t, 3), round(cam, 4)]]
     for t, x in sm[1:]:
+        before = cam
         err = x - cam
         if abs(err) > dead:
             step = err - math.copysign(dead, err)
             lim = vmax * max(0.0, t - prev_t)
             cam += max(-lim, min(lim, step))
+        if cam != before and path[-1][0] < prev_t - 1e-6:   # (the pan starts at the look before, not at the last point)
+            path.append([round(prev_t, 3), round(before, 4)])
         prev_t = t
         if abs(cam - path[-1][1]) >= 0.002 or t - path[-1][0] >= 2.0:
             path.append([round(t, 3), round(cam, 4)])
@@ -838,13 +863,15 @@ def _follow(track: list, cw: float) -> list | None:
 
 
 def _path_expr(path: list, W: int, cw: int) -> str:
-    """The crop's left edge over time (straight lines between the points of the path), in pixels."""
+    """The crop's left edge over time (straight lines between the points of the path), in pixels: the first place plus
+    each stretch's move, done between its two times - a flat sum (a long walk would nest too deep for FFmpeg)."""
     px = [(t, max(0, min(W - cw, int(round(x * W - cw / 2))))) for t, x in path]
-    e_ = str(px[-1][1])
-    for (t0, x0), (t1, x1) in reversed(list(zip(px, px[1:]))):
-        part = str(x0) if x1 == x0 or t1 <= t0 else f"{x0}+({x1 - x0})*(t-{t0:.3f})/{t1 - t0:.3f}"
-        e_ = f"if(lt(t,{t1:.3f}),{part},{e_})"
-    return f"if(lt(t,{px[0][0]:.3f}),{px[0][1]},{e_})"
+    out = [str(px[0][1])]
+    for (t0, x0), (t1, x1) in zip(px, px[1:]):
+        if x1 == x0:
+            continue
+        out.append(f"({x1 - x0})*gte(t,{t0:.3f})" if t1 <= t0 else f"({x1 - x0})*clip((t-{t0:.3f})/{t1 - t0:.3f},0,1)")
+    return "+".join(out)
 
 
 def _people(faces: list, fw: int, fh: int) -> list:
@@ -871,11 +898,15 @@ def _facecam(mains: list, samples: int) -> bool:
 
 
 def _until(shots: list[dict], vals: list) -> str:
-    """A value per shot as an FFmpeg expression of the time t: shot k's value while t < its end."""
-    e_ = str(vals[-1])
-    for sh, v in reversed(list(zip(shots[:-1], vals[:-1]))):
-        e_ = f"if(lt(t,{sh['e']:.6f}),{v},{e_})"
-    return e_
+    """A value per shot as an FFmpeg expression of the time t: shot k's value from the end of shot k-1 until its own
+    end. A flat sum, never nested: FFmpeg reads at most about 100 brackets inside each other (a clip of many shots)."""
+    if len(vals) == 1:
+        return str(vals[0])
+    parts = []
+    for k, v in enumerate(vals):
+        on = ([f"gte(t,{shots[k - 1]['e']:.6f})"] if k > 0 else []) + ([f"lt(t,{shots[k]['e']:.6f})"] if k < len(vals) - 1 else [])
+        parts.append(f"({v})*" + "*".join(on))
+    return "+".join(parts)
 
 
 def _graph(plan: dict, info: dict, out: tuple[int, int] | None) -> tuple[str, int, int]:

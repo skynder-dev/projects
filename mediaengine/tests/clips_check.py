@@ -143,6 +143,20 @@ def main() -> int:
     q = next((c for c in found if c["first"].startswith("Why do people")), None)
     check("finding: the question with strong words is the likeliest clip", q is not None and found[0] is q
           and "a question at the start" in q["why"], [(c["first"][:30], c["score"]) for c in found[:4]])
+    jw = transcript(["Welcome back to the show, everybody.", "Thanks so much for joining us today.",
+                     "This episode is sponsored by Shopwise, use code SAVE for 20 percent off.", "Link in the description.",
+                     "We talked about the plan for the year."] * 3
+                    + ["How do you get the first thousand people?", "You talk to every one of them yourself.",
+                       "Nobody tells you that, but it is the whole secret.", "We did it for a year."] + ["We talked about the plan for the year."] * 6)
+    jf = cl.find_candidates(jw, None, 15, 30)
+    check("finding: greetings, thanks and adverts make a clip unlikely", jf and jf[0]["first"].startswith("How do you get")
+          and all(c["score"] < 30 for c in jf if "sponsored" in c["text"] or "Welcome back" in c["first"]),
+          [(c["first"][:30], c["score"]) for c in jf[:4]])
+    plain = ["Давайте пройдёмся по коду.", "You can use the code from the last example.", "Спонсором турнира был банк.",
+             "Мы подписывали контракт.", "I don't subscribe to that theory.", "Follow me on this one.", "До встречи с ним я жил иначе."]
+    check("finding: ordinary speech is not taken for greetings or adverts", not any(
+        cl._SMALLTALK.search(x.lower()) or cl._AD.search(x.lower()) for x in plain),
+          [x for x in plain if cl._SMALLTALK.search(x.lower()) or cl._AD.search(x.lower())])
     lw = transcript(["We talked about the plan for the year."] * 8 + ["He fell off the chair (laughs) and we all laughed.",
                                                                      "Then we went home."] + ["We talked about the plan for the year."] * 8)
     lf = cl.find_candidates(lw, None, 15, 30)
@@ -308,6 +322,20 @@ def main() -> int:
     check("making: someone walking across - the crop goes with them", wm["state"] == "done" and wc.get("layouts") == ["crop"]
           and bool(wc["plan"][0].get("path")) and len(wpos) == 3 and all(0.25 <= x <= 0.75 for x in wpos),
           (wm["state"], wpos, (wc.get("plan") or [{}])[0].get("path", "")[:6] if wc.get("plan") else wm.get("result")))
+
+    # a long walk (a pan of many points) in a clip of many shots: FFmpeg reads the picture's expressions (they are flat
+    # sums - nested ones stop at about 100 brackets); two people found in turns are no walk (no pan between them)
+    many = []
+    for k in range(150):
+        many.append({"s": round(k * 0.4, 6), "e": round(k * 0.4 + 0.4, 6), "layout": "crop", "cx": (k * 37 % 100) / 100})
+    many[70]["path"] = [[28.0 + i * 0.003, 0.2 + 0.6 * i / 119] for i in range(120)]
+    many[-1]["e"] = 999.0
+    g_many, _, _ = cl._graph({"shots": many}, {"w": 1920, "h": 1080, "sar": 1.0}, (540, 960))
+    rc_many = subprocess.run([ff, "-v", "error", "-f", "lavfi", "-i", "testsrc2=s=1920x1080:r=30:d=61", "-filter_complex",
+                              g_many + ";[pv]format=yuv420p[v]", "-map", "[v]", "-f", "null", "-"], capture_output=True, text=True)
+    turns = [(i / 3, 0.3 if (i // 4) % 2 else 0.7) for i in range(40)]
+    check("making: a long walk in a clip of 150 shots is made; two people found in turns are not panned between",
+          rc_many.returncode == 0 and cl._follow(turns, 0.316) is None, (rc_many.returncode, rc_many.stderr[-300:]))
 
     # two people side by side, close: both in the picture, as big as they fit (not a crop cutting one of them)
     pair = work / "pair.mp4"
