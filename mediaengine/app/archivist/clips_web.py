@@ -255,10 +255,12 @@ def register(app, page, err_page, e, human_bytes):
                   f"<span>Size</span><select name='size'>{sizes}</select><select name='position'>{pos}</select></div>"
                   f"<label style='display:block;margin-top:6px'><input type='checkbox' name='title' value='1' {'checked' if last['title'] else ''}> "
                   f"The first sentence as a title at the top (3 s) - when a clip has no title of its own</label>"
-                  f"<div style='margin-top:12px'><button class='ae-big'>Make the ticked clips</button></div>"
+                  f"<div class='cl-row' style='margin-top:12px'><button class='ae-big'>Make the ticked clips</button>"
+                  f"<button class='btn2' name='top' value='5' title='The first five of the list, as they are'>Make the 5 likeliest</button></div>"
                   f"<div class='muted' style='font-size:13px;margin-top:6px'>Saved next to the saved reels, in a folder of this video. "
-                  f"The face is kept in the frame; two people apart: each in a half, one above the other; a streamer's camera "
-                  f"over a game: the camera above, the game below; more people: the whole picture on blurred edges.</div></div></div></form>"
+                  f"The face is kept in the frame (someone walking: the frame goes with them); two people apart: each in a "
+                  f"half, one above the other; people side by side or more: all of them, as big as they fit, on blurred edges; "
+                  f"a streamer's camera over a game: the camera above, the game below.</div></div></div></form>"
                 + f"<div class='card' style='margin-top:14px'>{again}</div>")
         return page("Clips from a long video", body, _PLAYER_JS + _POLL_JS)
 
@@ -274,12 +276,18 @@ def register(app, page, err_page, e, human_bytes):
     def clips_make(jid):
         f = request.form
         try:
-            cands = {c["id"]: c for c in cl.candidates(jid)}
+            ranked = cl.candidates(jid)
+            cands = {c["id"]: c for c in ranked}
             chosen = []
-            for cid in f.getlist("pick"):
+            ids = f.getlist("pick")
+            if f.get("top"):                               # ("Make the 5 likeliest": no ticking needed)
+                n_top = int(f.get("top")) if str(f.get("top")).isdigit() else 5
+                ids = [c["id"] for c in ranked[:max(1, min(cl.MAX_CHOSEN, n_top))]]
+            for cid in ids:
                 if cid not in cands:
                     continue
-                s, en = _secs(f.get(f"s_{cid}")), _secs(f.get(f"e_{cid}"))
+                s = _secs(f.get(f"s_{cid}")) if f.get(f"s_{cid}") is not None else float(cands[cid]["s"])   # (not sent: as found)
+                en = _secs(f.get(f"e_{cid}")) if f.get(f"e_{cid}") is not None else float(cands[cid]["e"])
                 if s is None or en is None:
                     raise cl.ClipsError("Start and end: write minutes:seconds, for example 12:30.5.")
                 chosen.append({"s": s, "e": en, "first": f.get(f"first_{cid}") or cands[cid]["first"], "title": f.get(f"t_{cid}") or ""})

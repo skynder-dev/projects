@@ -390,6 +390,15 @@ def main() -> int:
         c.post(f"/auto/clips/{fid}/length", data={"length": "short"}, headers=H)
         none = c.post(f"/auto/clips/{fid}/make", data={"format": "vertical"}, headers=H)
         check("pages: making without a tick is refused", none.status_code == 400 and b"Tick the clips" in none.data, none.status_code)
+        top = c.post(f"/auto/clips/{fid}/make", data={"format": "vertical", "framing": "face", "top": "5"}, headers=H)
+        tj = next((j for j in vo.list_jobs() if j.get("kind") == "clips_make" and j.get("find") == fid), {})
+        want = sorted(x["s"] for x in cl.candidates(fid)[:5])
+        check("pages: \"Make the 5 likeliest\" makes the first five of the list without ticks", top.status_code == 302
+              and sorted(round(x["s"], 2) for x in tj.get("clips") or []) == sorted(round(x, 2) for x in want) and len(want) >= 1,
+              (top.status_code, tj.get("clips"), want))
+        if tj.get("id"):
+            c.post(f"/auto/clips/{tj['id']}/stop", data={"back": f"/auto/clips/{fid}"}, headers=H)
+            wait(vo, tj["id"], 120)
         nf = c.post("/auto/clips/new", data={"path": str(work / "nope.mp4")}, headers=H)
         check("pages: finding is refused clearly without the add-on or the file", nf.status_code == 400, nf.status_code)
         c.post("/lang", data={"lang": "ru"}, headers=H)

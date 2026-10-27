@@ -1048,8 +1048,9 @@ PHRASES = {
     "Keep the face in the frame": "Держать лицо в кадре",
     "The first sentence as a title at the top (3 s)": "Первая фраза — заголовком сверху (3 с)",
     "Make the ticked clips": "Сделать отмеченные клипы",
-    "Saved next to the saved reels, in a folder of this video. The face is kept in the frame; two people apart: each in a half, one above the other; a streamer's camera over a game: the camera above, the game below; more people: the whole picture on blurred edges.":
-        "Сохраняются рядом с готовыми роликами, в папке этого видео. Лицо держится в кадре; двое далеко друг от друга — каждый в своей половине, один над другим; камера стримера поверх игры — камера сверху, игра снизу; больше людей — кадр целиком на размытом фоне.",
+    "Saved next to the saved reels, in a folder of this video. The face is kept in the frame (someone walking: the frame goes with them); two people apart: each in a half, one above the other; people side by side or more: all of them, as big as they fit, on blurred edges; a streamer's camera over a game: the camera above, the game below.":
+        "Сохраняются рядом с готовыми роликами, в папке этого видео. Лицо держится в кадре (человек идёт — кадр идёт за ним); двое далеко друг от друга — каждый в своей половине, один над другим; люди рядом или больше — все в кадре, как можно крупнее, на размытом фоне; камера стримера поверх игры — камера сверху, игра снизу.",
+    "Make the 5 likeliest": "Сделать 5 самых удачных", "The first five of the list, as they are": "Первые пять из списка, как есть",
     "Made clips": "Готовые клипы", "Clips:": "Клипы:", "Saved in": "Сохранены в", "No such job.": "Такого задания нет.",
     "Choose the long video (its full path).": "Выбери длинное видео (полный путь к нему).",
     "This video is only in OneDrive (not on this PC): keep it on this PC first.": "Это видео есть только в OneDrive (не на этом компьютере): сначала сохрани его на компьютер.",

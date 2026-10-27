@@ -25,6 +25,7 @@ on:
       - '!mediaengine/tests/voice_addon_check.py'    # mediaengine-voice-addon.yml
       - '!mediaengine/tests/clips_probe.py'          # mediaengine-clips-probe.yml
       - '!mediaengine/tests/clips_judge_probe.py'    # mediaengine-clips-judge.yml
+      - '!mediaengine/tests/whisper_probe.py'        # mediaengine-whisper-probe.yml
       - '.github/workflows/mediaengine-windows.yml'
   workflow_dispatch:
 permissions:
