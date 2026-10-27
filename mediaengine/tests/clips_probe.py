@@ -25,8 +25,9 @@ ROOT = HERE.parent
 
 UA = {"User-Agent": "MediaEngine-CI/1.0 (https://github.com/skynder-dev/projects; automated test, small number of requests)"}
 API = "https://commons.wikimedia.org/w/api.php"
-SEARCHES = ['filetype:video "Discusses Life In Space"', 'filetype:video "Talk With" astronauts', "filetype:video NASA interview",
-            "filetype:video podcast NASA", "filetype:video interview public domain"]
+SEARCHES = ['filetype:video "Astronauts Discuss Life In Space"', 'filetype:video "Crew Members Discuss"',
+            'filetype:video "Discusses Life In Space"', "filetype:video NASA interview", "filetype:video podcast NASA"]
+PER_SEARCH = 2                                            # (two or three people side by side first: the split layouts)
 
 
 def _api(params: dict) -> dict:
@@ -52,11 +53,12 @@ def _public_domain(lic: str) -> bool:
     return n.startswith("public domain") or n.startswith("pd") or n.startswith("cc0")
 
 
-def discover(limit: int = 4) -> list[dict]:
+def discover(limit: int = 5) -> list[dict]:
     """Public-domain videos of people talking (60 s - 25 min), a 720p (or 480p) copy each."""
     import time
     picked, seen = [], set()
     for q in SEARCHES:
+        n_q = 0
         res = _api({"action": "query", "generator": "search", "gsrsearch": q, "gsrnamespace": 6, "gsrlimit": 20,
                     "prop": "imageinfo|videoinfo", "iiprop": "url|size|mime|extmetadata|sha1", "viprop": "derivatives|size"})
         for pg in sorted(res.get("query", {}).get("pages", []), key=lambda x: x.get("index", 0)):
@@ -81,8 +83,11 @@ def discover(limit: int = 4) -> list[dict]:
             picked.append({"title": title, "search": q, "duration_s": dur, "url": pick["src"], "page": ii.get("descriptionurl"),
                            "licence": lic, "author": _plain((meta.get("Artist") or {}).get("value", ""))[:200],
                            "credit": _plain((meta.get("Credit") or {}).get("value", ""))[:200], "original_sha1": ii.get("sha1")})
+            n_q += 1
             if len(picked) >= limit:
                 return picked
+            if n_q >= PER_SEARCH:
+                break
         time.sleep(1)
     return picked
 
