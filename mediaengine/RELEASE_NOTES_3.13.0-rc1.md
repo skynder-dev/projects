@@ -213,6 +213,24 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   the analysis. "Prepare AI+ for the Library" looks at the DJI small copy (.LRF) too. Saved reels named in Russian are
   checked; "Saved: …" / "Not saved yet" on the project cards; "You cancelled the preparing"; informal "you" in all of
   the Russian; Convert on the home page.
+- b237: **Clips from a long video** (Auto Edit → Clips from a long video; the owner asked about clipping campaigns):
+  a podcast, stream or interview is listened to once (the voice add-on's Whisper, on the NVIDIA card when it can, in
+  20-minute pieces cut at its quietest moments; the first sound track, its gaps filled so the words keep the video's
+  times); windows of whole sentences of 15–30 / 30–60 / 45–90 s are scored (a question or strong opening, numbers,
+  strong words, laughter, pace, pauses, loudness, unclear speech) and listed with their words and a small picture, the
+  likeliest first; another length is found again from the words in a moment. The ticked ones (start / end editable,
+  a title of their own) are made in the voice-over queue: per shot (cuts found in one small look at the clip) the
+  crop follows the face (YuNet, a small face finder shipped with the program - OpenCV Zoo, MIT - run by its own
+  OpenCV and read from memory so a Cyrillic program folder works; it replaced OpenCV's old Haar files after a probe on
+  real public-domain NASA interviews showed Haar's "faces" in busy backgrounds splitting one person in two; Haar stays
+  the fallback); two people apart one above the other with the captions between; a streamer's camera in a corner of a game
+  above the game; three or more people on blurred edges; switches exact to the frame; vertical 9:16, square or as
+  filmed; captions in the chosen look; sound evened out (-14 LUFS); saved as "<video> - clips/01 - <first words>.mp4"
+  next to the saved reels. Stop, "Make the rest" after a restart or a failed clip (nothing made twice); the page asks
+  how far the jobs are instead of reloading. New-reel page: each colour shown on the longest chosen video. Captions
+  for a video are listened to on the card too. Checked on Windows: clips_check 30/30 with YuNet itself; the voice add-on check made clips from a real
+  9-minute public-domain NASA interview (heard by Whisper on the processor in about 3 minutes, 21 clips found, two made
+  vertical with the face and captions).
 
 ## Orders from other programs; night review fixes (2026-10-17)
 

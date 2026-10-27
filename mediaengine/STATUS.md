@@ -882,17 +882,25 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   unit 203/203, dress 52/52, AI glue 22/22, AI+ glue 24/24, orders 53/53, E2E two 92/92, convert 65/65, Edge 20/20,
   voice 197/197, library 11/11, library flow 43/43, route fuzz 0, Russian 218 pages 0 English, public repo 0.
   Published: b232 (commit e43b55a), ZIP 4,124,216 bytes, the same runtime.
-- 2026-10-27, next build: **Clips from a long video** (the owner asked about clipping campaigns, e.g. Whop Content
-  Rewards): clips.py / clips_web.py - Whisper (voice add-on) listens once, in 20-min pieces cut at silences, the first
-  sound track with gaps filled; windows of whole sentences scored from running sums (3.5 h in ~2 s); ticked ones made
-  in the voice queue: per shot crop on the face (OpenCV Haar front + side, read from memory for Cyrillic folders), two
-  people apart one above the other with the captions between, three or more on blurred edges; switches exact to the
-  frame; resumable without duplicates; pages poll instead of reloading. Reviewed by a separate agent (17 findings, all fixed;
-  the orphan sweep runs when the clips page opens). Later the same day: a streamer's camera in a corner of a game -> the camera above, the game below; laughter
-  makes a clip likelier; Whisper on the NVIDIA card when the add-on has CUDA (the processor if it cannot, remembered);
-  a title of its own per clip. clips_check 29/29 locally with a stand-in face finder; the real one on Windows CI.
-  (The first push failed the public repository check: the test face, a public-domain NASA portrait, is now pinned by
-  its SHA-256 in the allow-list - run public_repo_check before pushing new binary files.)
+- 2026-10-27: **Clips from a long video** (the owner asked about clipping campaigns, e.g. Whop Content Rewards):
+  clips.py / clips_web.py - Whisper (voice add-on) listens once, in 20-min pieces cut at silences, the first sound
+  track with gaps filled; windows of whole sentences scored from running sums (3.5 h in ~2 s); ticked ones made in the
+  voice queue: per shot a crop on the face, two people apart one above the other with the captions between, a
+  streamer's camera above the game, three or more on blurred edges; switches exact to the frame; resumable without
+  duplicates; pages poll instead of reloading. Reviewed by a separate agent (17 findings, all fixed). The face finder:
+  first OpenCV's Haar files; a probe on REAL public-domain footage (mediaengine-clips-probe: NASA interviews from
+  Wikimedia Commons, sheets of the original pictures with the faces found next to the vertical clip) showed Haar
+  finding "faces" in the station's busy walls - one person split in two halves in 2 of 4 videos, a 400 px false box
+  around a body - so the program now ships **YuNet** (OpenCV Zoo, MIT, 232 KB, run by its own OpenCV from memory):
+  every look found exactly the one face, analysis 3-4x faster (640 px). Published: **b237** (commit f9f5a8d), ZIP
+  4,444,464 bytes, the same runtime; CI: unit 207, clips 30 (YuNet on Windows), dress 53, AI glue 22, AI+ glue 24,
+  orders 53, E2E two 92, convert 65, Edge 20, library 11, flow 43, Russian 226 pages 0 English, public 0. The voice
+  add-on check now also makes clips from a real 9-minute NASA interview (pinned SHA-256): heard in ~3 min on the CPU,
+  21 clips found (questions with their answers first), two made vertical with the face and captions.
+- 2026-10-27, next build: the multi-person probe (crews of 2-3 side by side) showed a crop on the biggest face cutting
+  the neighbour off and three people shown tiny on the whole wide picture -> a group that fits the crop is centred on
+  the group; a wider group: its part of the picture, full height, on blurred edges; the crop pans after someone who
+  walks (clips_check 32 locally: a walk across, a close pair). Strong openings: only real hooks.
 - Owner PC seen through the app's pages (2026-10-25 morning, read only): b217 installed; 6 projects (100MEDIA);
   16 logical cores, 69 GB RAM, RTX 3060; decoding on the card not used (x0.85); card test for converting not run.
 - Owner PC seen through the app's pages (2026-10-24 evening, read only): he runs b213 (pressed Update); the voice
