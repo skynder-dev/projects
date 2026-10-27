@@ -468,9 +468,22 @@ def _do_find(d: Path, job: dict) -> dict:
     if not src.is_file():
         return {"ok": False, "error": "The video is not there any more: " + str(src)}
     wav = d / "sound16k.wav"
-    res = vo._run_worker({"task": "transcribe", "source": str(src), "wav16": str(wav), "ffmpeg": vo._ffmpeg(),
-                          "language": job.get("language"), "duration": float(job.get("duration") or 0),
-                          "piece_s": PIECE_S}, d / "work", timeout=12 * 3600, on_line=vo._progress)
+    wjob = {"task": "transcribe", "source": str(src), "wav16": str(wav), "ffmpeg": vo._ffmpeg(),
+            "language": job.get("language"), "duration": float(job.get("duration") or 0), "piece_s": PIECE_S}
+    gpu = _whisper_gpu()
+    seen: dict = {}
+
+    def line(msg):
+        if msg.get("device"):
+            seen["device"] = msg["device"]
+        vo._progress(msg)
+    res = vo._run_worker(dict(wjob, whisper_device="cuda") if gpu else wjob, d / "work", timeout=12 * 3600, on_line=line)
+    if gpu and not res.get("ok") and not vo._CURRENT.get("cancel"):
+        _remember(whisper_gpu=False)                     # the card could not (a library missing...): the processor, from now on
+        _unlink(wav)
+        res = vo._run_worker(wjob, d / "work", timeout=12 * 3600, on_line=line)
+    elif gpu and seen.get("device") == "cuda":
+        _remember(whisper_gpu=True)
     energy = energy_db(wav) if wav.is_file() else []
     if not res.get("ok"):
         _unlink(wav)
@@ -483,7 +496,20 @@ def _do_find(d: Path, job: dict) -> dict:
     _unlink(wav)
     if not words:
         return {"ok": False, "error": "No speech was found in this video."}
-    return save_found(d, job, words, energy, res.get("language") or "")
+    out = save_found(d, job, words, energy, res.get("language") or "")
+    out["device"] = seen.get("device") or "cpu"           # (where it was listened to: for support)
+    return out
+
+
+def _whisper_gpu() -> bool:
+    """Listen on the NVIDIA card: the add-on was installed for it, and the card never failed at it on this PC."""
+    try:
+        from .config import load_config
+        if (load_config().get("clips") or {}).get("whisper_gpu") is False:
+            return False
+    except Exception:
+        pass
+    return bool(vo.manifest().get("cuda"))
 
 
 PIECE_S = 1200.0           # Whisper listens to a long video in pieces of about 20 minutes (its memory stays small)

@@ -119,8 +119,29 @@ def _device(job: dict) -> str:
     return "cuda" if torch.cuda.is_available() else "cpu"
 
 
+_DLL_DIRS: list = []
+
+
 def _whisper(job: dict):
+    """Whisper on the processor; on the NVIDIA card when asked (a long recording: several times faster). The card needs
+    the CUDA libraries that came with the add-on's torch (its lib folder made known to Windows); a card that cannot is
+    said in a note and the processor is used."""
     from faster_whisper import WhisperModel
+    if job.get("whisper_device") == "cuda":
+        try:
+            import torch
+            lib = os.path.join(os.path.dirname(torch.__file__), "lib")
+            if os.name == "nt" and os.path.isdir(lib):
+                _DLL_DIRS.append(os.add_dll_directory(lib))     # (kept: the folder stays known while the worker runs)
+                os.environ["PATH"] = lib + os.pathsep + os.environ.get("PATH", "")
+            if torch.cuda.is_available():
+                m = WhisperModel(job["whisper_dir"], device="cuda", compute_type="float16")
+                say(device="cuda")
+                return m
+            say(note="no CUDA device for Whisper")
+        except Exception as exc:
+            say(note=f"Whisper on the graphics card: {type(exc).__name__}: {str(exc)[:200]}")
+    say(device="cpu")
     return WhisperModel(job["whisper_dir"], device="cpu", compute_type="int8",
                         cpu_threads=max(1, (os.cpu_count() or 2) - 1))
 
