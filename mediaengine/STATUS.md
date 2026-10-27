@@ -905,6 +905,12 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   review before publishing found a long pan (~100 points, ~33 s of walking) nesting FFmpeg if()s past its ~100-bracket
   limit (the clip failed) -> flat sums; also no pan between two people seen in turns, phrases tied to their context.
   Sound checks, greetings, goodbyes and sponsor reads rank last.
+- 2026-10-27, a probe (mediaengine-whisper-probe, Linux CPU int8, the 9-minute NASA interview): would a bigger free
+  Whisper hear the captions' words better than the add-on's "small"? Against large-v3 (946 s to hear): small 2.5 %
+  words otherwise (118 s), distil-large-v3 2.5 % (170 s), large-v3-turbo 1.7 % (215 s). Nearly all of small's
+  differences are "onboard / on board", fillers, a dropped "an"; the one that matters is a name ("Gio Benitez" heard
+  "Geo Bonitas"). Not added: on clear speech "small" is enough; worth a second look only if the owner's podcasts or
+  streams (music, crosstalk) show wrong words in the captions.
 - 2026-10-27, a probe (mediaengine-clips-judge, Linux CPU): could a small free local language model rank the clips
   better than word counting? On the 18 parts found in the NASA interview, Qwen3-1.7B marked every one 8 of 9 (no use);
   Qwen3-4B-Instruct-2507 put the sound check (3.4) and the goodbye (2.1) last and the rest 7-8.2 - but 83 s per part
