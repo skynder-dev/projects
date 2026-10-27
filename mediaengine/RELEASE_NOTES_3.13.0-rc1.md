@@ -231,6 +231,25 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   for a video are listened to on the card too. Checked on Windows: clips_check 30/30 with YuNet itself; the voice add-on check made clips from a real
   9-minute public-domain NASA interview (heard by Whisper on the processor in about 3 minutes, 21 clips found, two made
   vertical with the face and captions).
+- b239: **Clips: framing on real footage** (after probes on public-domain NASA interviews and crews talking with
+  reporters): the crop goes with someone who walks (it stays put while the face is near its middle, then pans after it,
+  at most one crop width a second); a group that fits the crop is centred on the group (not on the biggest face);
+  people side by side or three and more: the part of the picture with all of them, full height, as big as it fits, on
+  blurred edges (before: the whole wide picture, the people small, or a crop cutting one of two people off). Opening
+  words that count as a strong start: only real hooks (secret, never, nobody, mistake ...) anywhere in the first six
+  words, "why / how / what / here's / listen / this ..." only as the first word ("actually", "really" no longer count).
+  Talk that is no clip is ranked last: sound checks ("how do you hear me", "loud and clear"), greetings and thanks
+  ("welcome back to the show", "thanks for joining"), goodbyes and "subscribe" (English and Russian), and above all
+  sponsor reads ("sponsored by", "use code", "promo code", "link in the description"). A probe with small free local
+  language models (mediaengine-clips-judge) found the same junk in the NASA interview but nothing better among the
+  good parts: Qwen3-1.7B marks every part 8 of 9; Qwen3-4B-Instruct-2507 sorts out the junk but takes 83 s per part on
+  a processor (an 8 GB download) - not added; the phrases catch that junk in no time.
+  An independent review before publishing found: a pan of about 100 points or more (some 33 s of steady walking) was
+  written as nested FFmpeg if()s - FFmpeg reads about 100 brackets inside each other, so such a clip failed ("could not
+  be made"); the pan and the per-shot values are now flat sums (a 120-point pan in a clip of 150 shots is made). Also:
+  two people the finder sees in turns are no longer "panned between" (a still crop as before); a pan starts at the
+  right look; the greeting / advert phrases are tied to their context ("subscribe to that theory", "по коду",
+  "спонсором турнира" are ordinary speech). Windows CI run 40544352387: clips 36/36, unit 207, E2E two 92, Russian 226 pages 0 English.
 
 ## Orders from other programs; night review fixes (2026-10-17)
 

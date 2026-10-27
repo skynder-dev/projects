@@ -897,10 +897,14 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   orders 53, E2E two 92, convert 65, Edge 20, library 11, flow 43, Russian 226 pages 0 English, public 0. The voice
   add-on check now also makes clips from a real 9-minute NASA interview (pinned SHA-256): heard in ~3 min on the CPU,
   21 clips found (questions with their answers first), two made vertical with the face and captions.
-- 2026-10-27, next build: the multi-person probe (crews of 2-3 side by side) showed a crop on the biggest face cutting
-  the neighbour off and three people shown tiny on the whole wide picture -> a group that fits the crop is centred on
-  the group; a wider group: its part of the picture, full height, on blurred edges; the crop pans after someone who
-  walks (clips_check 32 locally: a walk across, a close pair). Strong openings: only real hooks.
+- 2026-10-27, **b239** (commit e8fe6c6, ZIP 4,453,120 bytes, the same runtime; run 40544352387: clips 36/36, unit 207,
+  E2E two 92, Russian 226 pages 0 English): the multi-person probe (crews of 2-3 side by side) had shown a crop on the
+  biggest face cutting the neighbour off and three people tiny on the whole wide picture -> a group that fits the crop
+  is centred on the group; a wider group: its part of the picture, full height, on blurred edges (the probe after:
+  pairs and threes shown big, branch mediaengine-clips-probe); the crop pans after someone who walks. An independent
+  review before publishing found a long pan (~100 points, ~33 s of walking) nesting FFmpeg if()s past its ~100-bracket
+  limit (the clip failed) -> flat sums; also no pan between two people seen in turns, phrases tied to their context.
+  Sound checks, greetings, goodbyes and sponsor reads rank last.
 - 2026-10-27, a probe (mediaengine-clips-judge, Linux CPU): could a small free local language model rank the clips
   better than word counting? On the 18 parts found in the NASA interview, Qwen3-1.7B marked every one 8 of 9 (no use);
   Qwen3-4B-Instruct-2507 put the sound check (3.4) and the goodbye (2.1) last and the rest 7-8.2 - but 83 s per part
