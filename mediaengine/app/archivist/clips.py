@@ -732,12 +732,27 @@ def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: floa
                                                     "size": round(med([p[k][1] for p in pairs]), 4)} for k in (0, 1)])
             else:                                          # more people: all stay in the picture
                 shot.update(layout="fit")
+        elif mains and split_ok and _facecam(mains, len(seen)):
+            # a streamer's camera in a corner of the game (small, never moving): the camera above, the game below
+            shot.update(layout="cam", cam={"cx": round(med([t[0] for t in mains]), 4), "cy": round(med([t[2] for t in mains]), 4),
+                                           "size": round(med([t[1] for t in mains]), 4)})
         elif mains:
             shot.update(cx=round(med([t[0] for t in mains]), 4))
         shots.append(shot)
     shots[-1]["e"] = max(shots[-1]["e"], dur + 1.0)
     plan["shots"] = shots
     return plan
+
+
+def _facecam(mains: list, samples: int) -> bool:
+    """One small face that stays where it is near a side of the picture, found in most looks at the shot: the camera
+    picture a streamer puts over a game."""
+    if len(mains) < 3 or len(mains) < 0.7 * samples:
+        return False
+    xs, ys, ss = [t[0] for t in mains], [t[2] for t in mains], [t[1] for t in mains]
+    mx, my, ms = sum(xs) / len(xs), sum(ys) / len(ys), sorted(ss)[len(ss) // 2]
+    still = max(abs(x - mx) for x in xs) < 0.02 and max(abs(y - my) for y in ys) < 0.03
+    return still and ms < 0.09 and (abs(mx - 0.5) > 0.25 or abs(my - 0.5) > 0.25)
 
 
 def _until(shots: list[dict], vals: list) -> str:
@@ -767,8 +782,8 @@ def _graph(plan: dict, info: dict, out: tuple[int, int] | None) -> tuple[str, in
            f"eq=brightness=-0.06[bgb];[fga]scale={ow}:{oh}:force_original_aspect_ratio=decrease:flags=lanczos,setsar=1[fgb];"
            f"[bgb][fgb]overlay=(W-w)/2:(H-h)/2")
     split = _split_chain(shots, W, H, ow, oh)
-    kinds = {"crop": crop, "fit": fit + ",setsar=1", "split": split}
-    used = [k for k in ("crop", "fit", "split") if any(sh["layout"] == k for sh in shots)]
+    kinds = {"crop": crop, "fit": fit + ",setsar=1", "split": split, "cam": _cam_chain(shots, W, H, ow, oh)}
+    used = [k for k in ("crop", "fit", "split", "cam") if any(sh["layout"] == k for sh in shots)]
     if len(used) == 1:
         return f"[0:v]{pre},{kinds[used[0]]}[pv]", ow, oh
     # several layouts: each made for the whole clip, the one of each shot laid over the first - between exactly the
@@ -784,6 +799,31 @@ def _graph(plan: dict, info: dict, out: tuple[int, int] | None) -> tuple[str, in
         cur = f"m{k}"
     parts[-1] = parts[-1][: parts[-1].rindex("[")] + "[pv]"
     return ";".join(parts), ow, oh
+
+
+def _cam_chain(shots: list[dict], W: int, H: int, ow: int, oh: int) -> str:
+    """A streamer's camera above (about two fifths of the clip), the middle of the game below."""
+    sp = [sh for sh in shots if sh["layout"] == "cam"]
+    if not sp:
+        return "null"
+    th = int(oh * 0.42) // 2 * 2
+    bh = oh - th
+    sizes = sorted(sh["cam"]["size"] * W for sh in sp)
+    ch = int(max(0.18 * H, min(H, 2.8 * sizes[len(sizes) // 2])))       # (about the camera picture itself)
+    cw = int(min(W, ch * ow / th)) // 2 * 2
+    ch = int(cw * th / ow) // 2 * 2
+    last = sp[0]["cam"]
+    xs, ys = [], []
+    for sh in shots:
+        fc = sh["cam"] if sh["layout"] == "cam" else last
+        last = fc
+        xs.append(max(0, min(W - cw, int(round(fc["cx"] * W - cw / 2)))))
+        ys.append(max(0, min(H - ch, int(round(fc["cy"] * H - 0.45 * ch)))))
+    gw = int(min(W, H * ow / bh)) // 2 * 2
+    gh = int(min(H, gw * bh / ow)) // 2 * 2
+    top = f"crop=w={cw}:h={ch}:x='{_until(shots, xs)}':y='{_until(shots, ys)}',scale={ow}:{th}:flags=lanczos,setsar=1"
+    game = f"crop=w={gw}:h={gh}:x={(W - gw) // 2}:y={(H - gh) // 2},scale={ow}:{bh}:flags=lanczos,setsar=1"
+    return f"split=2[ca1][cb1];[ca1]{top}[cta];[cb1]{game}[ctb];[cta][ctb]vstack=2,setsar=1"
 
 
 def _split_chain(shots: list[dict], W: int, H: int, ow: int, oh: int) -> str:
@@ -878,7 +918,7 @@ def _make_one(d: Path, job: dict, n: int, c: dict, src: Path, info: dict, out, p
     if pre:                                               # camcorder fields / an HDR phone video: first of all
         graph = graph.replace("[0:v]", f"[0:v]{','.join(pre)},", 1)
     o = tf.options(**(job.get("opts") or {}))
-    if o["position"] == "bottom" and any(sh["layout"] == "split" for sh in plan["shots"]):
+    if o["position"] == "bottom" and any(sh["layout"] in ("split", "cam") for sh in plan["shots"]):
         o["position"] = "middle"                         # (two faces one above the other: the captions between them)
     cs = vo.style_cues(words_between(words, s, e), o) if job.get("captions", True) else []
     texts = []

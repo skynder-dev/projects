@@ -6,7 +6,7 @@ are given, as Whisper would give them).
 1. Finding: sentences, windows of whole sentences within the chosen length, never overlapping, a question at the
    start ranked above a start in the middle of a thought, speech without stops split.
 2. Making (the real FFmpeg): a synthetic 60 s "talking head" video - shot A one face on the right, shot B two faces
-   far apart (a podcast's wide shot), shot C three faces - four clips: shot A (the crop follows the face), shot B
+   far apart (a podcast's wide shot), shot C three faces, shot D a streamer's camera in a corner of a game - five clips: shot A (the crop follows the face), shot B
    (each face in its own half, one above the other), one across the A|B cut (switched at the cut), shot C (the whole
    picture on blurred edges). Vertical 1080x1920, the length asked, sound,
    captions and the title drawn, copies saved next to the reels. The face finder is OpenCV's own (Windows CI); where
@@ -83,19 +83,26 @@ class StandInFaces:
     def detectMultiScale(self, gray, scaleFactor=1.1, minNeighbors=5, minSize=(0, 0)):
         g = gray.astype(np.float32)
         h, w = g.shape
-        band = g[int(h * 0.3):int(h * 0.6)]
-        busy = band.std(axis=0) > 12
-        out, x = [], 0
-        while x < w:
-            if busy[x]:
-                x0 = x
-                while x < w and busy[x]:
-                    x += 1
-                if x - x0 >= 20:
-                    fw = int((x - x0) * 0.5)
-                    out.append((x0 + (x - x0 - fw) // 2, int(h * 0.3), fw, fw))
-            x += 1
-        return tuple(out)
+
+        def runs(r0, r1):
+            busy = g[int(h * r0):int(h * r1)].std(axis=0) > 12
+            out, x = [], 0
+            while x < w:
+                if busy[x]:
+                    x0 = x
+                    while x < w and busy[x]:
+                        x += 1
+                    if x - x0 >= 20:
+                        out.append((x0, x))
+                x += 1
+            return out
+        found = [(x0 + ((x1 - x0) - int((x1 - x0) * 0.5)) // 2, int(h * 0.3), int((x1 - x0) * 0.5), int((x1 - x0) * 0.5))
+                 for x0, x1 in runs(0.3, 0.6)]
+        for x0, x1 in runs(0.04, 0.28):               # (a small camera picture near the top: only where nothing is below)
+            if all(x1 <= f[0] - f[2] or x0 >= f[0] + 2 * f[2] for f in found):
+                fw = int((x1 - x0) * 0.5)
+                found.append((x0 + (x1 - x0 - fw) // 2, int(h * 0.04), fw, fw))
+        return tuple(found)
 
 
 def main() -> int:
@@ -146,14 +153,18 @@ def main() -> int:
     subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "color=c=0x405060:s=1920x1080:r=30:d=20",
                     "-f", "lavfi", "-i", "color=c=0xa08060:s=1920x1080:r=30:d=20",
                     "-f", "lavfi", "-i", "color=c=0x305030:s=1920x1080:r=30:d=20", "-loop", "1", "-i", str(face),
-                    "-f", "lavfi", "-i", "sine=f=220:d=60:sample_rate=48000",
+                    "-f", "lavfi", "-i", "sine=f=220:d=80:sample_rate=48000",
+                    "-f", "lavfi", "-i", "color=c=0x202830:s=1920x1080:r=30:d=20",
                     # (places on multiples of 4 px: the 480 px wide look at the clip sees every copy alike)
                     "-filter_complex", "[3:v]scale=520:600,split=6[f1][f2][f3][f4][f5][f6];[0:v][f1]overlay=1252:240:shortest=1[a];"
                                        "[1:v][f2]overlay=60:240:shortest=1[b0];[b0][f3]overlay=1300:240:shortest=1[b];"
                                        "[2:v][f4]overlay=32:240:shortest=1[c0];[c0][f5]overlay=700:240:shortest=1[c1];"
                                        "[c1][f6]overlay=1368:240:shortest=1[c];"
-                                       "[a][b][c]concat=n=3:v=1:a=0,format=yuv420p[v]",
-                    "-map", "[v]", "-map", "4:a", "-t", "60", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-c:a", "aac",
+                                       # shot D: a "game" (a box running across) with the streamer's camera top left
+                                       "[5:v]drawbox=x='mod(t*300,1700)':y=700:w=160:h=160:color=white:t=fill[g0];"
+                                       "[3:v]scale=240:276[fc];[g0][fc]overlay=40:40:shortest=1[dd];"
+                                       "[a][b][c][dd]concat=n=4:v=1:a=0,format=yuv420p[v]",
+                    "-map", "[v]", "-map", "4:a", "-t", "80", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-c:a", "aac",
                     str(src)], check=True)
     real = cl.face_finder() is not None
     if os.name == "nt":
@@ -171,7 +182,7 @@ def main() -> int:
     fid = vo._new_id()
     d = vo.JOBS / fid
     d.mkdir()
-    job = {"kind": "clips_find", "source": str(src), "length": "short", "language": "en", "duration": 60.0, "title": src.name,
+    job = {"kind": "clips_find", "source": str(src), "length": "short", "language": "en", "duration": 80.0, "title": src.name,
            "id": fid, "created_at": "2026-10-27T10:00:00", "created_ns": time.time_ns()}
     (d / "job.json").write_text(json.dumps(job), "utf-8")
     res = cl.save_found(d, job, talk, [], "en")
@@ -180,13 +191,14 @@ def main() -> int:
     chosen = [{"s": 1.0, "e": 17.0, "first": "Hello and welcome to the show."},
               {"s": 22.0, "e": 38.0, "first": "Two of us are here today."},
               {"s": 12.0, "e": 28.0, "first": "Pay yourself first."},
-              {"s": 42.0, "e": 58.0, "first": "Now three of us."}]
+              {"s": 42.0, "e": 58.0, "first": "Now three of us."},
+              {"s": 62.0, "e": 78.0, "first": "Thank you for listening."}]
     mid = cl.new_make(fid, chosen, "vertical", "face", True, {"style": "pop", "color": "yellow"}, True)
     mj = wait(vo, mid)
     mr = mj.get("result") or {}
     made = mr.get("clips") or []
-    check("making: four clips made", mj["state"] == "done" and len(made) == 4, (mj["state"], mr.get("error")))
-    if len(made) == 4:
+    check("making: five clips made", mj["state"] == "done" and len(made) == 5, (mj["state"], mr.get("error")))
+    if len(made) == 5:
         from archivist import auto_edit as ae
         good = True
         for c, x in zip(chosen, made):
@@ -196,7 +208,7 @@ def main() -> int:
             good &= (int(vs["width"]), int(vs["height"])) == (1080, 1920) and abs(dur - (c["e"] - c["s"])) <= 0.35 \
                 and any(s["codec_type"] == "audio" for s in info["streams"])
         check("making: vertical 1080x1920, the length asked, with sound", good, made)
-        m1, m2, m3, m4 = (vo.JOBS / mid / x["file"] for x in made)
+        m1, m2, m3, m4, m5 = (vo.JOBS / mid / x["file"] for x in made)
         f1 = frame(ff, m1, 6.0)
         c1 = textured_center(f1, slice(600, 1300))
         check("making: the crop follows the face (shot with one face on the right)", made[0]["layouts"] == ["crop"]
@@ -230,7 +242,12 @@ def main() -> int:
         check("making: the first sentence as a title at the top for 3 s", float(np.abs(t_top - t_late).mean()) > 3.0,
               float(np.abs(t_top - t_late).mean()))
         saved = [Path(x["saved"]) for x in made if x.get("saved")]
-        check("making: copies saved next to the reels, named by their words", len(saved) == 4 and all(p.is_file() for p in saved)
+        f5 = frame(ff, m5, 6.0)
+        th5 = int(1920 * 0.42) // 2 * 2
+        check("making: a streamer's camera in a corner - the camera above, the game below", made[4]["layouts"] == ["cam"]
+              and 0.3 <= textured_center(f5, slice(60, th5 - 60)) <= 0.7 and busy(f5, slice(60, th5 - 60)) > 8,
+              (made[4]["plan"], round(textured_center(f5, slice(60, th5 - 60)), 3)))
+        check("making: copies saved next to the reels, named by their words", len(saved) == 5 and all(p.is_file() for p in saved)
               and saved[0].parent.name.startswith("Подкаст выпуск 1 - ") and saved[0].name.startswith("01 - Hello and welcome"),
               [str(p) for p in saved])
         # made again (after a restart, Stop or Try again): the clips made are kept, nothing is made or saved twice
@@ -239,7 +256,7 @@ def main() -> int:
         mjob = json.loads((vo.JOBS / mid / "job.json").read_text("utf-8"))
         t1 = time.time()
         again = cl._do_make(vo.JOBS / mid, mjob)
-        check("making: made again, the clips made are kept (nothing made or saved twice)", again.get("ok") and len(again["clips"]) == 4
+        check("making: made again, the clips made are kept (nothing made or saved twice)", again.get("ok") and len(again["clips"]) == 5
               and time.time() - t1 < 20 and sorted(x.name for x in folder.iterdir()) == before, (again.get("error"), time.time() - t1))
         # square and as filmed
         msq = cl.new_make(fid, [dict(chosen[0], title="My own title")], "square", "face", False, {}, False)

@@ -1046,8 +1046,8 @@ PHRASES = {
     "Keep the face in the frame": "Держать лицо в кадре",
     "The first sentence as a title at the top (3 s)": "Первая фраза — заголовком сверху (3 с)",
     "Make the ticked clips": "Сделать отмеченные клипы",
-    "Saved next to the saved reels, in a folder of this video. The face is kept in the frame; two people apart: each in a half, one above the other; more people: the whole picture on blurred edges.":
-        "Сохраняются рядом с готовыми роликами, в папке этого видео. Лицо держится в кадре; двое далеко друг от друга — каждый в своей половине, один над другим; больше людей — кадр целиком на размытом фоне.",
+    "Saved next to the saved reels, in a folder of this video. The face is kept in the frame; two people apart: each in a half, one above the other; a streamer's camera over a game: the camera above, the game below; more people: the whole picture on blurred edges.":
+        "Сохраняются рядом с готовыми роликами, в папке этого видео. Лицо держится в кадре; двое далеко друг от друга — каждый в своей половине, один над другим; камера стримера поверх игры — камера сверху, игра снизу; больше людей — кадр целиком на размытом фоне.",
     "Made clips": "Готовые клипы", "Clips:": "Клипы:", "Saved in": "Сохранены в", "No such job.": "Такого задания нет.",
     "Choose the long video (its full path).": "Выбери длинное видео (полный путь к нему).",
     "This video is only in OneDrive (not on this PC): keep it on this PC first.": "Это видео есть только в OneDrive (не на этом компьютере): сначала сохрани его на компьютер.",

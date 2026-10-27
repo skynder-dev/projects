@@ -257,8 +257,8 @@ def register(app, page, err_page, e, human_bytes):
                   f"The first sentence as a title at the top (3 s) - when a clip has no title of its own</label>"
                   f"<div style='margin-top:12px'><button class='ae-big'>Make the ticked clips</button></div>"
                   f"<div class='muted' style='font-size:13px;margin-top:6px'>Saved next to the saved reels, in a folder of this video. "
-                  f"The face is kept in the frame; two people apart: each in a half, one above the other; more people: the whole "
-                  f"picture on blurred edges.</div></div></div></form>"
+                  f"The face is kept in the frame; two people apart: each in a half, one above the other; a streamer's camera "
+                  f"over a game: the camera above, the game below; more people: the whole picture on blurred edges.</div></div></div></form>"
                 + f"<div class='card' style='margin-top:14px'>{again}</div>")
         return page("Clips from a long video", body, _PLAYER_JS + _POLL_JS)
 
