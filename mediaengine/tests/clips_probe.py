@@ -27,6 +27,7 @@ UA = {"User-Agent": "MediaEngine-CI/1.0 (https://github.com/skynder-dev/projects
 API = "https://commons.wikimedia.org/w/api.php"
 SEARCHES = ['filetype:video "Astronauts Discuss Life In Space"', 'filetype:video "Crew Members Discuss"',
             'filetype:video "Discusses Life In Space"', "filetype:video NASA interview", "filetype:video podcast NASA"]
+KIDS = __import__("re").compile(r"(?i)student|school|kid|child|youth|scout|camp|teen|girl|boy")   # (no children's faces)
 PER_SEARCH = 2                                            # (two or three people side by side first: the split layouts)
 
 
@@ -63,7 +64,7 @@ def discover(limit: int = 5) -> list[dict]:
                     "prop": "imageinfo|videoinfo", "iiprop": "url|size|mime|extmetadata|sha1", "viprop": "derivatives|size"})
         for pg in sorted(res.get("query", {}).get("pages", []), key=lambda x: x.get("index", 0)):
             title = pg.get("title", "")
-            if title in seen or not pg.get("imageinfo"):
+            if title in seen or not pg.get("imageinfo") or KIDS.search(title):
                 continue
             ii, vi = pg["imageinfo"][0], (pg.get("videoinfo") or [{}])[0]
             meta = ii.get("extmetadata") or {}
