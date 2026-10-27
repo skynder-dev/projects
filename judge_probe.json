@@ -1,0 +1,515 @@
+{
+ "video": {
+  "title": "SPACE STATION ASTRONAUT DISCUSSES LIFE IN SPACE WITH ABC'S GOOD MORNING AMERICA (NASA, 2022)",
+  "page": "https://commons.wikimedia.org/wiki/File:SPACE_STATION_ASTRONAUT_DISCUSSES_LIFE_IN_SPACE_WITH_ABC%E2%80%99S_GOOD_MORNING_AMERICA_(iss068m263221454-Expedition_68_Inflight_with_ABC%27s_Good_Morning_America_221118_1723170).webm",
+  "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/46/SPACE_STATION_ASTRONAUT_DISCUSSES_LIFE_IN_SPACE_WITH_ABC%E2%80%99S_GOOD_MORNING_AMERICA_%28iss068m263221454-Expedition_68_Inflight_with_ABC%27s_Good_Morning_America_221118_1723170%29.webm/SPACE_STATION_ASTRONAUT_DISCUSSES_LIFE_IN_SPACE_WITH_ABC%E2%80%99S_GOOD_MORNING_AMERICA_%28iss068m263221454-Expedition_68_Inflight_with_ABC%27s_Good_Morning_America_221118_1723170%29.webm.480p.vp9.webm",
+  "sha256": "812a2ec9e1bc66c7a6a21d23e2c32b665ac20a98e2bb1b377cad8788dcc63fe7"
+ },
+ "candidates": [
+  {
+   "id": "c42350",
+   "s": 42.35,
+   "e": 67.79,
+   "score": 70,
+   "why": [
+    "a question at the start",
+    "a strong opening",
+    "numbers",
+    "strong words"
+   ],
+   "first": "First tell us what's it like to be up there right now?"
+  },
+  {
+   "id": "c337310",
+   "s": 337.31,
+   "e": 358.63,
+   "score": 65,
+   "why": [
+    "a question at the start",
+    "a strong opening"
+   ],
+   "first": "What are you most looking forward to?"
+  },
+  {
+   "id": "c74980",
+   "s": 74.98,
+   "e": 97.57,
+   "score": 64,
+   "why": [
+    "a strong opening"
+   ],
+   "first": "Well, I didn't actually step foot, I kind of just floated through the hatch, which was an amazing experience."
+  },
+  {
+   "id": "c377890",
+   "s": 377.89,
+   "e": 405.08,
+   "score": 64,
+   "why": [],
+   "first": "I think it drives home some concepts that you're aware of."
+  },
+  {
+   "id": "c425370",
+   "s": 425.37,
+   "e": 446.16,
+   "score": 63,
+   "why": [],
+   "first": "You live life very differently, yes."
+  },
+  {
+   "id": "c24440",
+   "s": 24.44,
+   "e": 42.7,
+   "score": 63,
+   "why": [
+    "a question at the start",
+    "a strong opening"
+   ],
+   "first": "Station, this is Geo Bonita's at ABC News, how do you hear me?"
+  },
+  {
+   "id": "c235210",
+   "s": 235.21,
+   "e": 261.39,
+   "score": 63,
+   "why": [
+    "a question at the start",
+    "a strong opening",
+    "numbers"
+   ],
+   "first": "What are the projects that you're most excited about that you're working on right now?"
+  },
+  {
+   "id": "c187010",
+   "s": 187.01,
+   "e": 212.82,
+   "score": 59,
+   "why": [
+    "a question at the start",
+    "a strong opening"
+   ],
+   "first": "What is your message to the young people who are watching you right now, especially young women?"
+  },
+  {
+   "id": "c478730",
+   "s": 478.73,
+   "e": 498.28,
+   "score": 59,
+   "why": [],
+   "first": "We work closely with the cosmonauts."
+  },
+  {
+   "id": "c153000",
+   "s": 153.0,
+   "e": 175.01,
+   "score": 58,
+   "why": [],
+   "first": "To be honest, I did not."
+  },
+  {
+   "id": "c287700",
+   "s": 287.7,
+   "e": 311.89,
+   "score": 57,
+   "why": [],
+   "first": "I hope the entire world wants to be a part of the Artemis program."
+  },
+  {
+   "id": "c115070",
+   "s": 115.07,
+   "e": 139.94,
+   "score": 57,
+   "why": [],
+   "first": "You know, I think it's great that we recognize first anytime they happen throughout the world."
+  },
+  {
+   "id": "c318650",
+   "s": 318.65,
+   "e": 337.18,
+   "score": 56,
+   "why": [],
+   "first": "I think that is a very true possibility."
+  },
+  {
+   "id": "c445950",
+   "s": 445.95,
+   "e": 463.84,
+   "score": 54,
+   "why": [],
+   "first": "I still smile every time I float through the lab and just marvel at the idea that I'm actually in microgravity."
+  },
+  {
+   "id": "c267040",
+   "s": 267.04,
+   "e": 283.51,
+   "score": 47,
+   "why": [
+    "a strong opening",
+    "numbers"
+   ],
+   "first": "And I really enjoy that because applications involve humans in space and exploration but will also benefit humans back on Earth."
+  },
+  {
+   "id": "c505800",
+   "s": 505.8,
+   "e": 526.94,
+   "score": 46,
+   "why": [],
+   "first": "Thank you very much."
+  },
+  {
+   "id": "c212690",
+   "s": 212.69,
+   "e": 228.98,
+   "score": 43,
+   "why": [],
+   "first": "That starts with a good education and it also starts with relying on people around you that will help you throughout your journey in order to achieve your dreams."
+  },
+  {
+   "id": "c404930",
+   "s": 404.93,
+   "e": 421.76,
+   "score": 27,
+   "why": [],
+   "first": "And it makes it very, very true in your heart how important it is that we take care of our planet and how important it is that we unite as human race."
+  }
+ ],
+ "models": {
+  "Qwen/Qwen3-1.7B": {
+   "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+   "load_s": 16.6,
+   "marks": [
+    {
+     "id": "c42350",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 0.981,
+     "s": 5.27,
+     "tokens": 236
+    },
+    {
+     "id": "c337310",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 0.992,
+     "s": 5.16,
+     "tokens": 232
+    },
+    {
+     "id": "c74980",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 0.983,
+     "s": 5.16,
+     "tokens": 232
+    },
+    {
+     "id": "c377890",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 0.994,
+     "s": 5.62,
+     "tokens": 251
+    },
+    {
+     "id": "c425370",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 0.995,
+     "s": 5.24,
+     "tokens": 233
+    },
+    {
+     "id": "c24440",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 0.969,
+     "s": 5.06,
+     "tokens": 223
+    },
+    {
+     "id": "c235210",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 0.998,
+     "s": 5.16,
+     "tokens": 232
+    },
+    {
+     "id": "c187010",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 0.997,
+     "s": 5.4,
+     "tokens": 239
+    },
+    {
+     "id": "c478730",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 0.989,
+     "s": 5.08,
+     "tokens": 225
+    },
+    {
+     "id": "c153000",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 0.994,
+     "s": 5.15,
+     "tokens": 232
+    },
+    {
+     "id": "c287700",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 0.999,
+     "s": 5.56,
+     "tokens": 252
+    },
+    {
+     "id": "c115070",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 0.996,
+     "s": 5.17,
+     "tokens": 229
+    },
+    {
+     "id": "c318650",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 0.962,
+     "s": 4.83,
+     "tokens": 214
+    },
+    {
+     "id": "c445950",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 0.989,
+     "s": 4.82,
+     "tokens": 214
+    },
+    {
+     "id": "c267040",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 0.996,
+     "s": 4.68,
+     "tokens": 208
+    },
+    {
+     "id": "c505800",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 0.857,
+     "s": 4.87,
+     "tokens": 216
+    },
+    {
+     "id": "c212690",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 0.987,
+     "s": 4.9,
+     "tokens": 218
+    },
+    {
+     "id": "c404930",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 0.999,
+     "s": 5.0,
+     "tokens": 222
+    }
+   ]
+  },
+  "Qwen/Qwen3-4B-Instruct-2507": {
+   "revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+   "load_s": 22.5,
+   "marks": [
+    {
+     "id": "c42350",
+     "mark": 8.01,
+     "top": 8,
+     "sure": 0.99,
+     "digit_share": 1.0,
+     "s": 85.7,
+     "tokens": 232
+    },
+    {
+     "id": "c337310",
+     "mark": 7.56,
+     "top": 8,
+     "sure": 0.56,
+     "digit_share": 1.0,
+     "s": 84.12,
+     "tokens": 228
+    },
+    {
+     "id": "c74980",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 1.0,
+     "s": 84.13,
+     "tokens": 228
+    },
+    {
+     "id": "c377890",
+     "mark": 7.88,
+     "top": 8,
+     "sure": 0.88,
+     "digit_share": 1.0,
+     "s": 91.19,
+     "tokens": 247
+    },
+    {
+     "id": "c425370",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 1.0,
+     "s": 84.53,
+     "tokens": 229
+    },
+    {
+     "id": "c24440",
+     "mark": 3.38,
+     "top": 3,
+     "sure": 0.61,
+     "digit_share": 1.0,
+     "s": 80.87,
+     "tokens": 219
+    },
+    {
+     "id": "c235210",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 1.0,
+     "s": 84.15,
+     "tokens": 228
+    },
+    {
+     "id": "c187010",
+     "mark": 8.18,
+     "top": 8,
+     "sure": 0.82,
+     "digit_share": 1.0,
+     "s": 86.75,
+     "tokens": 235
+    },
+    {
+     "id": "c478730",
+     "mark": 6.99,
+     "top": 7,
+     "sure": 0.99,
+     "digit_share": 1.0,
+     "s": 81.55,
+     "tokens": 221
+    },
+    {
+     "id": "c153000",
+     "mark": 7.08,
+     "top": 7,
+     "sure": 0.92,
+     "digit_share": 1.0,
+     "s": 84.16,
+     "tokens": 228
+    },
+    {
+     "id": "c287700",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 1.0,
+     "s": 91.51,
+     "tokens": 248
+    },
+    {
+     "id": "c115070",
+     "mark": 8.0,
+     "top": 8,
+     "sure": 1.0,
+     "digit_share": 1.0,
+     "s": 83.11,
+     "tokens": 225
+    },
+    {
+     "id": "c318650",
+     "mark": 7.44,
+     "top": 7,
+     "sure": 0.56,
+     "digit_share": 1.0,
+     "s": 77.59,
+     "tokens": 210
+    },
+    {
+     "id": "c445950",
+     "mark": 7.44,
+     "top": 7,
+     "sure": 0.56,
+     "digit_share": 1.0,
+     "s": 77.54,
+     "tokens": 210
+    },
+    {
+     "id": "c267040",
+     "mark": 7.73,
+     "top": 8,
+     "sure": 0.73,
+     "digit_share": 1.0,
+     "s": 75.29,
+     "tokens": 204
+    },
+    {
+     "id": "c505800",
+     "mark": 2.15,
+     "top": 2,
+     "sure": 0.85,
+     "digit_share": 1.0,
+     "s": 78.22,
+     "tokens": 212
+    },
+    {
+     "id": "c212690",
+     "mark": 7.1,
+     "top": 7,
+     "sure": 0.9,
+     "digit_share": 1.0,
+     "s": 78.96,
+     "tokens": 214
+    },
+    {
+     "id": "c404930",
+     "mark": 7.95,
+     "top": 8,
+     "sure": 0.95,
+     "digit_share": 1.0,
+     "s": 80.45,
+     "tokens": 218
+    }
+   ]
+  }
+ }
+}

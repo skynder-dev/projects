@@ -1,0 +1,41 @@
+Fetching 9 files:   0%|          | 0/9 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Fetching 9 files:  67%|██████▋   | 6/9 [00:00<00:00, 45.62it/s]Fetching 9 files: 100%|██████████| 9/9 [00:14<00:00,  1.58s/it]
+Loading weights:   0%|          | 0/311 [00:00<?, ?it/s]Loading weights:   0%|          | 1/311 [00:00<03:15,  1.59it/s]Loading weights:  47%|████▋     | 147/311 [00:00<00:00, 263.31it/s]Loading weights:  71%|███████▏  | 222/311 [00:00<00:00, 307.02it/s]Loading weights:  90%|█████████ | 281/311 [00:01<00:00, 310.67it/s]Loading weights: 100%|██████████| 311/311 [00:01<00:00, 260.21it/s]
+Qwen/Qwen3-1.7B c42350 {'id': 'c42350', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 0.981, 's': 5.27, 'tokens': 236}
+Qwen/Qwen3-1.7B c337310 {'id': 'c337310', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 0.992, 's': 5.16, 'tokens': 232}
+Qwen/Qwen3-1.7B c74980 {'id': 'c74980', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 0.983, 's': 5.16, 'tokens': 232}
+Qwen/Qwen3-1.7B c377890 {'id': 'c377890', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 0.994, 's': 5.62, 'tokens': 251}
+Qwen/Qwen3-1.7B c425370 {'id': 'c425370', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 0.995, 's': 5.24, 'tokens': 233}
+Qwen/Qwen3-1.7B c24440 {'id': 'c24440', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 0.969, 's': 5.06, 'tokens': 223}
+Qwen/Qwen3-1.7B c235210 {'id': 'c235210', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 0.998, 's': 5.16, 'tokens': 232}
+Qwen/Qwen3-1.7B c187010 {'id': 'c187010', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 0.997, 's': 5.4, 'tokens': 239}
+Qwen/Qwen3-1.7B c478730 {'id': 'c478730', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 0.989, 's': 5.08, 'tokens': 225}
+Qwen/Qwen3-1.7B c153000 {'id': 'c153000', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 0.994, 's': 5.15, 'tokens': 232}
+Qwen/Qwen3-1.7B c287700 {'id': 'c287700', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 0.999, 's': 5.56, 'tokens': 252}
+Qwen/Qwen3-1.7B c115070 {'id': 'c115070', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 0.996, 's': 5.17, 'tokens': 229}
+Qwen/Qwen3-1.7B c318650 {'id': 'c318650', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 0.962, 's': 4.83, 'tokens': 214}
+Qwen/Qwen3-1.7B c445950 {'id': 'c445950', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 0.989, 's': 4.82, 'tokens': 214}
+Qwen/Qwen3-1.7B c267040 {'id': 'c267040', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 0.996, 's': 4.68, 'tokens': 208}
+Qwen/Qwen3-1.7B c505800 {'id': 'c505800', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 0.857, 's': 4.87, 'tokens': 216}
+Qwen/Qwen3-1.7B c212690 {'id': 'c212690', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 0.987, 's': 4.9, 'tokens': 218}
+Qwen/Qwen3-1.7B c404930 {'id': 'c404930', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 0.999, 's': 5.0, 'tokens': 222}
+Fetching 10 files:   0%|          | 0/10 [00:00<?, ?it/s]Fetching 10 files:  70%|███████   | 7/10 [00:00<00:00, 63.25it/s]Fetching 10 files:  80%|████████  | 8/10 [00:10<00:00, 63.25it/s]Fetching 10 files:  90%|█████████ | 9/10 [00:21<00:03,  3.09s/it]Fetching 10 files: 100%|██████████| 10/10 [00:21<00:00,  2.14s/it]
+Loading weights:   0%|          | 0/398 [00:00<?, ?it/s]Loading weights: 100%|██████████| 398/398 [00:00<00:00, 4120.53it/s]
+Qwen/Qwen3-4B-Instruct-2507 c42350 {'id': 'c42350', 'mark': 8.01, 'top': 8, 'sure': 0.99, 'digit_share': 1.0, 's': 85.7, 'tokens': 232}
+Qwen/Qwen3-4B-Instruct-2507 c337310 {'id': 'c337310', 'mark': 7.56, 'top': 8, 'sure': 0.56, 'digit_share': 1.0, 's': 84.12, 'tokens': 228}
+Qwen/Qwen3-4B-Instruct-2507 c74980 {'id': 'c74980', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 1.0, 's': 84.13, 'tokens': 228}
+Qwen/Qwen3-4B-Instruct-2507 c377890 {'id': 'c377890', 'mark': 7.88, 'top': 8, 'sure': 0.88, 'digit_share': 1.0, 's': 91.19, 'tokens': 247}
+Qwen/Qwen3-4B-Instruct-2507 c425370 {'id': 'c425370', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 1.0, 's': 84.53, 'tokens': 229}
+Qwen/Qwen3-4B-Instruct-2507 c24440 {'id': 'c24440', 'mark': 3.38, 'top': 3, 'sure': 0.61, 'digit_share': 1.0, 's': 80.87, 'tokens': 219}
+Qwen/Qwen3-4B-Instruct-2507 c235210 {'id': 'c235210', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 1.0, 's': 84.15, 'tokens': 228}
+Qwen/Qwen3-4B-Instruct-2507 c187010 {'id': 'c187010', 'mark': 8.18, 'top': 8, 'sure': 0.82, 'digit_share': 1.0, 's': 86.75, 'tokens': 235}
+Qwen/Qwen3-4B-Instruct-2507 c478730 {'id': 'c478730', 'mark': 6.99, 'top': 7, 'sure': 0.99, 'digit_share': 1.0, 's': 81.55, 'tokens': 221}
+Qwen/Qwen3-4B-Instruct-2507 c153000 {'id': 'c153000', 'mark': 7.08, 'top': 7, 'sure': 0.92, 'digit_share': 1.0, 's': 84.16, 'tokens': 228}
+Qwen/Qwen3-4B-Instruct-2507 c287700 {'id': 'c287700', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 1.0, 's': 91.51, 'tokens': 248}
+Qwen/Qwen3-4B-Instruct-2507 c115070 {'id': 'c115070', 'mark': 8.0, 'top': 8, 'sure': 1.0, 'digit_share': 1.0, 's': 83.11, 'tokens': 225}
+Qwen/Qwen3-4B-Instruct-2507 c318650 {'id': 'c318650', 'mark': 7.44, 'top': 7, 'sure': 0.56, 'digit_share': 1.0, 's': 77.59, 'tokens': 210}
+Qwen/Qwen3-4B-Instruct-2507 c445950 {'id': 'c445950', 'mark': 7.44, 'top': 7, 'sure': 0.56, 'digit_share': 1.0, 's': 77.54, 'tokens': 210}
+Qwen/Qwen3-4B-Instruct-2507 c267040 {'id': 'c267040', 'mark': 7.73, 'top': 8, 'sure': 0.73, 'digit_share': 1.0, 's': 75.29, 'tokens': 204}
+Qwen/Qwen3-4B-Instruct-2507 c505800 {'id': 'c505800', 'mark': 2.15, 'top': 2, 'sure': 0.85, 'digit_share': 1.0, 's': 78.22, 'tokens': 212}
+Qwen/Qwen3-4B-Instruct-2507 c212690 {'id': 'c212690', 'mark': 7.1, 'top': 7, 'sure': 0.9, 'digit_share': 1.0, 's': 78.96, 'tokens': 214}
+Qwen/Qwen3-4B-Instruct-2507 c404930 {'id': 'c404930', 'mark': 7.95, 'top': 8, 'sure': 0.95, 'digit_share': 1.0, 's': 80.45, 'tokens': 218}
