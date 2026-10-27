@@ -1,62 +1,69 @@
 PASS Install starts
-12:23:31 running packages  0/0 MB
-12:23:36 running packages Downloading av-18.1.0-cp311-abi3-win_amd64.whl 0/0 MB
-12:23:41 running packages Downloading torch-2.8.0-cp311-cp311-win_amd64.whl 0/0 MB
-12:23:51 running packages Installing : 0/0 MB
-12:24:41 running models audiovae.pth 68/5446 MB
-12:24:46 running models model.safetensors 715/5446 MB
-12:24:51 running models model.safetensors 1421/5446 MB
-12:24:56 running models model.safetensors 2158/5446 MB
-12:25:01 running models model.safetensors 2927/5446 MB
-12:25:06 running models model.safetensors 3608/5446 MB
-12:25:11 running models model.safetensors 4292/5446 MB
-12:25:16 running models model.safetensors 4957/5446 MB
-12:25:21 running models tokenizer_config.json 4960/5446 MB
-12:25:26 running checking_addon  5446/5446 MB
-12:25:36 running qwen_packages Installing : 0/0 MB
-12:25:56 running qwen_models model.safetensors 1/4544 MB
-12:26:01 running qwen_models model.safetensors 983/4544 MB
-12:26:06 running qwen_models model.safetensors 2652/4544 MB
-12:26:11 running qwen_models model.safetensors 3859/4544 MB
-12:26:16 running qwen_models configuration.json 3859/4544 MB
-12:26:21 running qwen_models vocab.json 4541/4544 MB
-12:26:26 running checking_addon  4544/4544 MB
-12:26:31 done   4544/4544 MB
+13:24:09 running packages  0/0 MB
+13:24:14 running packages Installing : 0/0 MB
+13:24:59 running packages Installed annotated-types-0.8.0 0/0 MB
+13:25:04 running models config.json 376/5446 MB
+13:25:09 running models model.safetensors 882/5446 MB
+13:25:14 running models model.safetensors 1672/5446 MB
+13:25:19 running models model.safetensors 2423/5446 MB
+13:25:24 running models model.safetensors 3136/5446 MB
+13:25:29 running models model.safetensors 3768/5446 MB
+13:25:34 running models model.safetensors 4577/5446 MB
+13:25:39 running models model.safetensors 4957/5446 MB
+13:25:44 running models model.bin 5075/5446 MB
+13:25:49 running checking_addon  5446/5446 MB
+13:25:54 running qwen_packages Downloading pandas-3.0.6-cp311-cp311-win_amd64.whl.metadata 0/0 MB
+13:25:59 running qwen_packages Installing : 0/0 MB
+13:26:19 running qwen_models model.safetensors 165/4544 MB
+13:26:24 running qwen_models model.safetensors 523/4544 MB
+13:26:29 running qwen_models model.safetensors 1385/4544 MB
+13:26:34 running qwen_models model.safetensors 1819/4544 MB
+13:26:39 running qwen_models model.safetensors 2373/4544 MB
+13:26:44 running qwen_models model.safetensors 2418/4544 MB
+13:26:49 running qwen_models model.safetensors 2875/4544 MB
+13:26:54 running qwen_models model.safetensors 3461/4544 MB
+13:26:59 running qwen_models model.safetensors 3859/4544 MB
+13:27:04 running qwen_models model.safetensors 3901/4544 MB
+13:27:09 running qwen_models model.safetensors 4084/4544 MB
+13:27:14 running qwen_models model.safetensors 4168/4544 MB
+13:27:19 running qwen_models vocab.json 4541/4544 MB
+13:27:24 running checking_addon  4544/4544 MB
+13:27:29 done   4544/4544 MB
 PASS the add-on is installed
 PASS its manifest: version, Python, torch, models
 PASS the new engine (Qwen3-TTS, the owner's pick 14_5) is installed with it
 PASS the page shows the forms once installed
 PASS a voice-over is accepted
-12:26:31 20261027-122631-239955 working starting 0%
-12:26:34 20261027-122631-239955 working loading 2%
-12:27:07 20261027-122631-239955 working speaking 1/1 5%
-12:29:16 20261027-122631-239955 working speaking 1/1 15%
-12:31:13 20261027-122631-239955 working listening 95%
-12:31:22 20261027-122631-239955 done  0%
+13:27:29 20261027-132729-7bf7a1 working starting 0%
+13:27:32 20261027-132729-7bf7a1 working loading 2%
+13:28:08 20261027-132729-7bf7a1 working speaking 1/1 5%
+13:30:17 20261027-132729-7bf7a1 working speaking 1/1 15%
+13:32:08 20261027-132729-7bf7a1 working listening 95%
+13:32:20 20261027-132729-7bf7a1 done  0%
 PASS the voice-over is made
 PASS every word said (listened to)
 PASS a plausible length
 PASS said by the new engine (Qwen3-TTS) in the voice 9_2
-12:31:22 20261027-123122-d4cc28 working starting 0%
-12:31:25 20261027-123122-d4cc28 working loading 2%
-12:32:16 20261027-123122-d4cc28 working speaking 1/1 5%
-12:33:01 20261027-123122-d4cc28 working listening 95%
-12:33:04 20261027-123122-d4cc28 done  0%
+13:32:20 20261027-133220-7e0971 working starting 0%
+13:32:23 20261027-133220-7e0971 working loading 2%
+13:33:14 20261027-133220-7e0971 working speaking 1/1 5%
+13:33:56 20261027-133220-7e0971 working listening 95%
+13:34:02 20261027-133220-7e0971 done  0%
 PASS a Russian voice-over in the same voice, heard back in Cyrillic
 PASS its pace: a bit faster (8% shorter), the captions within the faster voice
-12:33:04 20261027-123304-cf28f1 working starting 0%
-12:33:07 20261027-123304-cf28f1 working loading 2%
-12:34:24 20261027-123304-cf28f1 working speaking 1/1 5%
-12:37:19 20261027-123304-cf28f1 working listening 95%
-12:37:25 20261027-123304-cf28f1 done  0%
+13:34:03 20261027-133403-6358d7 working starting 0%
+13:34:06 20261027-133403-6358d7 working loading 2%
+13:35:20 20261027-133403-6358d7 working speaking 1/1 5%
+13:38:17 20261027-133403-6358d7 working listening 95%
+13:38:23 20261027-133403-6358d7 done  0%
 PASS a voice from a description is still made (VoxCPM2)
-12:37:25 20261027-123725-e09bcb working video 50%
-12:37:31 20261027-123725-e09bcb done  0%
+13:38:24 20261027-133824-f646de working video 50%
+13:38:30 20261027-133824-f646de done  0%
 PASS the voice onto the video, captions burned, checked
-12:37:31 20261027-123731-29ad04 working starting 0%
-12:37:34 20261027-123731-29ad04 working listening 20%
-12:37:40 20261027-123731-29ad04 working checking 90%
-12:37:43 20261027-123731-29ad04 done  0%
+13:38:30 20261027-133830-463de9 working starting 0%
+13:38:33 20261027-133830-463de9 working listening 20%
+13:38:39 20261027-133830-463de9 working checking 90%
+13:38:42 20261027-133830-463de9 done  0%
 PASS captions from the video's own speech hear the voice-over
 PASS the page in Russian with a finished voice-over
 {"passed": 16, "total": 16}
