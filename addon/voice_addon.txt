@@ -1,132 +1,87 @@
 PASS Install starts
-14:12:38 running checking  0/0 MB
-14:12:43 running packages Downloading av-18.1.0-cp311-abi3-win_amd64.whl 0/0 MB
-14:12:48 running packages Installing : 0/0 MB
-14:13:43 running models audiovae.pth 6/5446 MB
-14:13:48 running models audiovae.pth 16/5446 MB
-14:13:53 running models audiovae.pth 27/5446 MB
-14:13:58 running models audiovae.pth 36/5446 MB
-14:14:03 running models audiovae.pth 47/5446 MB
-14:14:08 running models audiovae.pth 58/5446 MB
-14:14:13 running models audiovae.pth 69/5446 MB
-14:14:18 running models audiovae.pth 78/5446 MB
-14:14:23 running models audiovae.pth 89/5446 MB
-14:14:28 running models audiovae.pth 99/5446 MB
-14:14:33 running models audiovae.pth 110/5446 MB
-14:14:38 running models audiovae.pth 120/5446 MB
-14:14:43 running models audiovae.pth 131/5446 MB
-14:14:48 running models audiovae.pth 141/5446 MB
-14:14:53 running models audiovae.pth 152/5446 MB
-14:14:58 running models audiovae.pth 162/5446 MB
-14:15:03 running models audiovae.pth 173/5446 MB
-14:15:08 running models audiovae.pth 182/5446 MB
-14:15:13 running models audiovae.pth 192/5446 MB
-14:15:18 running models audiovae.pth 203/5446 MB
-14:15:23 running models audiovae.pth 213/5446 MB
-14:15:28 running models audiovae.pth 224/5446 MB
-14:15:33 running models audiovae.pth 234/5446 MB
-14:15:38 running models audiovae.pth 245/5446 MB
-14:15:43 running models audiovae.pth 255/5446 MB
-14:15:48 running models audiovae.pth 266/5446 MB
-14:15:53 running models audiovae.pth 276/5446 MB
-14:15:58 running models audiovae.pth 287/5446 MB
-14:16:03 running models audiovae.pth 297/5446 MB
-14:16:08 running models audiovae.pth 308/5446 MB
-14:16:13 running models audiovae.pth 318/5446 MB
-14:16:18 running models audiovae.pth 329/5446 MB
-14:16:23 running models audiovae.pth 339/5446 MB
-14:16:28 running models audiovae.pth 350/5446 MB
-14:16:33 running models audiovae.pth 360/5446 MB
-14:16:38 running models audiovae.pth 371/5446 MB
-14:16:43 running models model.safetensors 474/5446 MB
-14:16:48 running models model.safetensors 1323/5446 MB
-14:16:53 running models model.safetensors 2146/5446 MB
-14:16:58 running models model.safetensors 2971/5446 MB
-14:17:03 running models model.safetensors 3785/5446 MB
-14:17:08 running models model.safetensors 4552/5446 MB
-14:17:13 running models model.safetensors 4957/5446 MB
-14:17:18 running models tokenizer.json 4957/5446 MB
-14:17:23 running models model.bin 5420/5446 MB
-14:17:28 running checking_addon  5446/5446 MB
-14:17:33 running qwen_packages Downloading transformers-4.57.3-py3-none-any.whl.metadata 0/0 MB
-14:17:38 running qwen_packages Installing : 0/0 MB
-14:17:58 running qwen_models model.safetensors 279/4544 MB
-14:18:03 running qwen_models model.safetensors 1093/4544 MB
-14:18:08 running qwen_models model.safetensors 2033/4544 MB
-14:18:13 running qwen_models model.safetensors 2745/4544 MB
-14:18:18 running qwen_models model.safetensors 3435/4544 MB
-14:18:23 running qwen_models model.safetensors 3859/4544 MB
-14:18:33 running qwen_models model.safetensors 4541/4544 MB
-14:18:38 running checking_addon  4544/4544 MB
-14:18:53 done   4544/4544 MB
+14:43:15 running checking  0/0 MB
+14:43:20 running packages Installing : 0/0 MB
+14:43:55 running models audiovae.pth 0/5446 MB
+14:44:00 running models model.safetensors 721/5446 MB
+14:44:05 running models model.safetensors 1700/5446 MB
+14:44:10 running models model.safetensors 2668/5446 MB
+14:44:15 running models model.safetensors 3714/5446 MB
+14:44:20 running models model.safetensors 4614/5446 MB
+14:44:25 running models special_tokens_map.json 4957/5446 MB
+14:44:30 running checking_addon  5446/5446 MB
+14:44:35 running qwen_packages Downloading rich-15.0.0-py3-none-any.whl.metadata 0/0 MB
+14:44:40 running qwen_packages Installing : 0/0 MB
+14:44:50 running qwen_models model.safetensors 82/4544 MB
+14:44:55 running qwen_models model.safetensors 851/4544 MB
+14:45:00 running qwen_models model.safetensors 2072/4544 MB
+14:45:05 running qwen_models model.safetensors 3498/4544 MB
+14:45:10 running qwen_models model.safetensors 3859/4544 MB
+14:45:15 running qwen_models model.safetensors 4508/4544 MB
+14:45:20 running checking_addon  4544/4544 MB
+14:45:25 done   4544/4544 MB
 PASS the add-on is installed
 PASS its manifest: version, Python, torch, models
 PASS the new engine (Qwen3-TTS, the owner's pick 14_5) is installed with it
 PASS the page shows the forms once installed
 PASS a voice-over is accepted
-14:18:53 20261027-141853-a7cfda working starting 0%
-14:18:56 20261027-141853-a7cfda working loading 2%
-14:19:23 20261027-141853-a7cfda working speaking 1/1 5%
-14:21:33 20261027-141853-a7cfda working speaking 1/1 15%
-14:23:24 20261027-141853-a7cfda working listening 95%
-14:23:33 20261027-141853-a7cfda working finishing 97%
-14:23:36 20261027-141853-a7cfda done  0%
+14:45:25 20261027-144525-695bfc working starting 0%
+14:45:28 20261027-144525-695bfc working loading 2%
+14:45:41 20261027-144525-695bfc working speaking 1/1 5%
+14:47:23 20261027-144525-695bfc working speaking 1/1 15%
+14:48:53 20261027-144525-695bfc working listening 95%
+14:48:59 20261027-144525-695bfc done  0%
 PASS the voice-over is made
 PASS every word said (listened to)
 PASS a plausible length
 PASS said by the new engine (Qwen3-TTS) in the voice 9_2
-14:23:36 20261027-142336-a0e1dc working starting 0%
-14:23:39 20261027-142336-a0e1dc working loading 2%
-14:24:15 20261027-142336-a0e1dc working speaking 1/1 5%
-14:24:57 20261027-142336-a0e1dc working listening 95%
-14:25:03 20261027-142336-a0e1dc done  0%
+14:48:59 20261027-144859-67b212 working starting 0%
+14:49:02 20261027-144859-67b212 working loading 2%
+14:49:20 20261027-144859-67b212 working speaking 1/1 5%
+14:49:53 20261027-144859-67b212 working listening 95%
+14:49:56 20261027-144859-67b212 done  0%
 PASS a Russian voice-over in the same voice, heard back in Cyrillic
 PASS its pace: a bit faster (8% shorter), the captions within the faster voice
-14:25:03 20261027-142503-bede30 working starting 0%
-14:25:06 20261027-142503-bede30 working loading 2%
-14:26:05 20261027-142503-bede30 working speaking 1/1 5%
-14:27:17 20261027-142503-bede30 working listening 95%
-14:27:23 20261027-142503-bede30 done  0%
+14:49:56 20261027-144956-116838 working starting 0%
+14:49:59 20261027-144956-116838 working loading 2%
+14:50:52 20261027-144956-116838 working speaking 1/1 5%
+14:51:19 20261027-144956-116838 working listening 95%
+14:51:25 20261027-144956-116838 done  0%
 PASS a voice from a description is still made (VoxCPM2)
-14:27:23 20261027-142723-23e5a7 working video 50%
-14:27:29 20261027-142723-23e5a7 done  0%
+14:51:26 20261027-145126-5965eb working video 50%
+14:51:29 20261027-145126-5965eb done  0%
 PASS the voice onto the video, captions burned, checked
-14:27:29 20261027-142729-c4cdc4 working starting 0%
-14:27:32 20261027-142729-c4cdc4 working listening 20%
-14:27:38 20261027-142729-c4cdc4 working video 50%
-14:27:41 20261027-142729-c4cdc4 done  0%
+14:51:29 20261027-145129-e6cfba working starting 0%
+14:51:32 20261027-145129-e6cfba working listening 20%
+14:51:35 20261027-145129-e6cfba done  0%
 PASS captions from the video's own speech hear the voice-over
 PASS clips: the NASA interview downloaded (pinned SHA-256)
 PASS clips: finding starts
-14:27:44 20261027-142744-e988b3 working starting 0%
-14:27:47 20261027-142744-e988b3 working listening 20%
-14:27:59 20261027-142744-e988b3 working listening 26%
-14:28:08 20261027-142744-e988b3 working listening 30%
-14:28:17 20261027-142744-e988b3 working listening 33%
-14:28:29 20261027-142744-e988b3 working listening 37%
-14:28:38 20261027-142744-e988b3 working listening 42%
-14:28:47 20261027-142744-e988b3 working listening 46%
-14:28:59 20261027-142744-e988b3 working listening 50%
-14:29:08 20261027-142744-e988b3 working listening 53%
-14:29:17 20261027-142744-e988b3 working listening 57%
-14:29:29 20261027-142744-e988b3 working listening 61%
-14:29:41 20261027-142744-e988b3 working listening 65%
-14:29:50 20261027-142744-e988b3 working listening 69%
-14:29:59 20261027-142744-e988b3 working listening 73%
-14:30:11 20261027-142744-e988b3 working listening 77%
-14:30:20 20261027-142744-e988b3 working listening 80%
-14:30:29 20261027-142744-e988b3 working listening 84%
-14:30:41 20261027-142744-e988b3 working listening 88%
-14:30:47 20261027-142744-e988b3 working listening 90%
-14:30:50 20261027-142744-e988b3 done  0%
+14:51:38 20261027-145138-53f2b4 working starting 0%
+14:51:41 20261027-145138-53f2b4 working listening 20%
+14:51:47 20261027-145138-53f2b4 working listening 26%
+14:51:53 20261027-145138-53f2b4 working listening 30%
+14:51:59 20261027-145138-53f2b4 working listening 34%
+14:52:02 20261027-145138-53f2b4 working listening 38%
+14:52:08 20261027-145138-53f2b4 working listening 43%
+14:52:14 20261027-145138-53f2b4 working listening 47%
+14:52:23 20261027-145138-53f2b4 working listening 51%
+14:52:26 20261027-145138-53f2b4 working listening 56%
+14:52:35 20261027-145138-53f2b4 working listening 60%
+14:52:41 20261027-145138-53f2b4 working listening 64%
+14:52:47 20261027-145138-53f2b4 working listening 69%
+14:52:53 20261027-145138-53f2b4 working listening 73%
+14:52:59 20261027-145138-53f2b4 working listening 77%
+14:53:05 20261027-145138-53f2b4 working listening 81%
+14:53:11 20261027-145138-53f2b4 working listening 86%
+14:53:17 20261027-145138-53f2b4 done  0%
 PASS clips: the 9-minute interview heard (space, station)
 PASS clips: at least five clips found, each 15-30 s with its words and why
 PASS clips: the page lists them with pictures
 PASS clips: making starts
-14:30:51 20261027-143051-90d435 working starting 0%
-14:30:54 20261027-143051-90d435 working clip 1/2 0%
-14:31:48 20261027-143051-90d435 working clip 2/2 50%
-14:32:36 20261027-143051-90d435 done  0%
+14:53:18 20261027-145318-00460a working starting 0%
+14:53:21 20261027-145318-00460a working clip 1/2 0%
+14:53:51 20261027-145318-00460a working clip 2/2 50%
+14:54:15 20261027-145318-00460a done  0%
 PASS clips: two vertical clips made from the interview - the person kept in the frame (crop on the face), captions
 PASS the page in Russian with a finished voice-over
 {"passed": 23, "total": 23}

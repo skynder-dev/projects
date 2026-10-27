@@ -3,10 +3,10 @@
  "clips": [
   {
    "file": "clip_01.mp4",
-   "s": 27.02,
-   "e": 51.63,
-   "seconds": 24.61,
-   "saved": "D:\\a\\_temp\\home-voice\\Exports\\nasa_interview - clips\\01 - How do you hear me.mp4",
+   "s": 42.35,
+   "e": 67.79,
+   "seconds": 25.44,
+   "saved": "D:\\a\\_temp\\home-voice\\Exports\\nasa_interview - clips\\01 - First tell us what's it like to.mp4",
    "width": 1080,
    "height": 1920,
    "layouts": [
@@ -18,11 +18,11 @@
    "plan": [
     {
      "s": 0.0,
-     "e": 25.61,
+     "e": 26.44,
      "layout": "crop",
-     "cx": 0.4969,
+     "cx": 0.4898,
      "seen": {
-      "1": 74
+      "1": 77
      }
     }
    ],
@@ -30,10 +30,10 @@
   },
   {
    "file": "clip_02.mp4",
-   "s": 75.06,
-   "e": 97.57,
-   "seconds": 22.51,
-   "saved": "D:\\a\\_temp\\home-voice\\Exports\\nasa_interview - clips\\02 - Well I didn't actually step foot.mp4",
+   "s": 337.31,
+   "e": 358.63,
+   "seconds": 21.32,
+   "saved": "D:\\a\\_temp\\home-voice\\Exports\\nasa_interview - clips\\02 - What are you most looking forward to.mp4",
    "width": 1080,
    "height": 1920,
    "layouts": [
@@ -41,15 +41,15 @@
    ],
    "shots": 1,
    "faces": true,
-   "captions": 25,
+   "captions": 23,
    "plan": [
     {
      "s": 0.0,
-     "e": 23.51,
+     "e": 22.32,
      "layout": "crop",
-     "cx": 0.4977,
+     "cx": 0.4938,
      "seen": {
-      "1": 68
+      "1": 64
      }
     }
    ],
@@ -57,5 +57,5 @@
   }
  ],
  "folder": "D:\\a\\_temp\\home-voice\\Exports\\nasa_interview - clips",
- "finished_at": "2026-10-27T14:32:35"
+ "finished_at": "2026-10-27T14:54:14"
 }
