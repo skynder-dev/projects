@@ -2,7 +2,9 @@ name: mediaengine-clips-probe
 # What OpenCV's face finders see in the synthetic shots of clips_check (Windows, the program's own OpenCV): the finds
 # per shot and analysis width, the people they make, the plan of each clip. A quick probe (a few minutes) for tuning
 # "Clips from a long video"; not the product's check (that is clips_check in mediaengine-windows). Synthetic pictures
-# and a public-domain NASA portrait only. Results: branch mediaengine-clips-probe.
+# and a public-domain NASA portrait; then REAL people talking: public-domain videos (US government works) found on
+# Wikimedia Commons, three moments each framed as vertical clips (sheets + plans + ATTRIBUTION.md).
+# Results: branch mediaengine-clips-probe.
 on:
   workflow_dispatch:
   push:
@@ -18,7 +20,7 @@ concurrency:
 jobs:
   probe:
     runs-on: windows-latest
-    timeout-minutes: 30
+    timeout-minutes: 50
     env:
       PYTHONUTF8: '1'
     steps:
@@ -37,6 +39,12 @@ jobs:
           New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\out" | Out-Null
           python mediaengine/tests/clips_probe.py "$env:RUNNER_TEMP\probe" > "$env:RUNNER_TEMP\out\clips_probe.json" 2> "$env:RUNNER_TEMP\out\clips_probe_stderr.txt"
           "exit $LASTEXITCODE" | Out-File "$env:RUNNER_TEMP\out\exit.txt"
+      - name: Real people talking (public-domain videos from Wikimedia Commons)
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          python mediaengine/tests/clips_probe.py "$env:RUNNER_TEMP\probe" --real "$env:RUNNER_TEMP\out" 2> "$env:RUNNER_TEMP\out\real_stderr.txt"
+          "exit $LASTEXITCODE" | Out-File "$env:RUNNER_TEMP\out\real_exit.txt"
       - name: Publish to branch mediaengine-clips-probe
         if: always()
         shell: bash
