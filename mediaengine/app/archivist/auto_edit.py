@@ -2667,6 +2667,7 @@ WHATS_NEW_ITEMS = [
     ("2026-10-19b", "Voice-over: your picks from the voice test, the voices 4_4 and 4_2, instead of 3.1."),
     ("2026-10-20", "Text on a video (Auto Edit → Voice-over and text): titles and lines of text at the moments you choose, on a colored stripe, a dark box or in big letters - no add-on needed."),
     ("2026-10-22", "Captions in two more looks: one word at a time, big (like TikTok), and the word being said on a color block."),
+    ('2026-10-27c', "Clips: the frame goes with someone who walks; people standing side by side all stay in the picture, as big as they fit."),
     ('2026-10-27b', "Clips from a long video (Auto Edit → Clips from a long video): a podcast, stream or interview is listened to once; the parts that make good short clips are listed with their words; the ticked ones become vertical clips with the face in the frame, the sound and captions."),
     ('2026-10-27', "Reel colours: as filmed, brighter and richer, warm or cinematic (a variant shows a small picture of each) - pale drone videos come out livelier. Only the reel is coloured; your videos stay as they are."),
     ('2026-10-26', "Auto Edit with DJI videos: when the camera's small copy (.LRF) lies next to a video, the AI finds the moments in it - a first build much faster; the reel is still cut from the original 4K."),

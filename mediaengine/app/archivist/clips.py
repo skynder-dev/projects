@@ -25,12 +25,13 @@ MAX_CHOSEN = 30
 MAX_SOURCE_S = 6 * 3600            # a recording of at most six hours (Whisper on the processor: still within a night)
 
 # words that make an opening or a moment stronger (English and Russian; lower case, without punctuation)
-_HOOK = {"why", "how", "what", "secret", "never", "nobody", "everyone", "everybody", "imagine", "stop", "truth", "biggest",
-         "best", "worst", "mistake", "mistakes", "nobody's", "here's", "this", "listen", "honestly", "actually", "crazy",
-         "insane", "wrong", "real", "really", "most", "only", "first", "last",
-         "почему", "как", "что", "секрет", "никогда", "никто", "все", "всё", "представь", "представьте", "стоп", "правда",
-         "самый", "самая", "самое", "лучший", "худший", "ошибка", "ошибки", "слушай", "честно", "реально", "главное",
-         "только", "вот"}
+_HOOK = {"secret", "never", "nobody", "nobody's", "everyone", "everybody", "imagine", "truth", "biggest", "best", "worst",
+         "mistake", "mistakes", "crazy", "insane", "wrong",
+         "секрет", "никогда", "никто", "представь", "представьте", "правда", "самый", "самая", "самое", "лучший", "худший",
+         "ошибка", "ошибки", "главное"}
+# ... and words that open strongly only as the first word ("Actually", "really" or "this" later on are just talk)
+_HOOK_FIRST = {"why", "how", "what", "here's", "listen", "stop", "honestly", "this", "imagine",
+               "почему", "как", "зачем", "слушай", "стоп", "честно", "представь"}
 _STRONG = {"amazing", "crazy", "insane", "incredible", "never", "always", "best", "worst", "secret", "mistake", "truth",
            "money", "million", "millions", "billion", "love", "hate", "died", "dead", "killed", "shocked", "scared", "huge",
            "impossible", "fired", "rich", "broke", "free", "war", "lie", "lied", "wow", "unbelievable",
@@ -136,7 +137,7 @@ def _features(sents: list[dict]) -> list[dict]:
             "number": any(re.search(r"\d", w["w"]) for w in ws) or any(x in _NUMBER_WORDS for x in bare),
             "excl": tail.endswith("!"), "quest": tail.endswith("?"),
             "gap": max((float(y["s"]) - float(x["e"]) for x, y in zip(ws, ws[1:])), default=0.0),
-            "bad_start": bool(bare) and bare[0] in _BAD_START, "hook": any(x in _HOOK for x in bare[:6]),
+            "bad_start": bool(bare) and bare[0] in _BAD_START, "hook": bool(bare) and (bare[0] in _HOOK_FIRST or any(x in _HOOK for x in bare[:6])),
             "you": [x in _YOU for x in bare],
             "laugh": sum(1 for w in ws if _LAUGH.search(str(w["w"]).lower())),
         })
@@ -676,10 +677,11 @@ def face_finder():
 def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: float, framing: str = "face",
                split_ok: bool = True, pre: list[str] | None = None, log: Path | None = None) -> dict:
     """Where the picture of each shot of a clip is cut: one look at the clip (small, 30 pictures a second) finds the
-    cuts between shots; faces are looked for three times a second (YuNet, else OpenCV's Haar files). Per shot: the crop's middle on the face; two
+    cuts between shots; faces are looked for three times a second (YuNet, else OpenCV's Haar files). Per shot: the
+    crop's middle on the face (going after someone who walks); a group that fits the crop: its middle on the group; two
     people apart (a podcast's wide shot): each face in its own half, one above the other ("split"; only for a tall
-    clip); three or more: the whole picture on blurred edges. Shot boundaries lie half a frame before the first
-    frame of the new shot (whatever the exact time of the clip's first frame)."""
+    clip); people side by side or three and more: the group as big as it fits, on blurred edges. Shot boundaries lie
+    half a frame before the first frame of the new shot (whatever the exact time of the clip's first frame)."""
     W, H = int(info["w"]), int(info["h"])
     cw = min(1.0, (H * out_aspect) / max(1, W))          # the crop's width as a share of the picture's
     plan = {"shots": [], "faces": False, "crop_w": cw}
@@ -751,21 +753,26 @@ def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: floa
     for a, b in zip(edges, edges[1:]):
         if b <= a:
             continue
-        faces = [fs for (k, fs) in samples if a <= k < b]
-        mains, spread_wide, pairs, many = [], 0, [], 0
-        for fs in faces:
+        timed = [(k, fs) for (k, fs) in samples if a <= k < b]
+        faces = [fs for (_, fs) in timed]
+        mains, pairs, groups, track = [], [], [], []      # (track: where the crop's middle should be, when)
+        for k, fs in timed:
             if not fs:
                 continue
             big = max(fs, key=lambda t: t[1])
             near = sorted((t for t in fs if t[1] >= 0.6 * big[1]), key=lambda t: t[0])
-            lo, hi = min(t[0] - t[1] / 2 for t in near), max(t[0] + t[1] / 2 for t in near)
-            if len(near) >= 2 and hi - lo > cw * 0.95:  # (one big face of a close-up fits by itself)
-                spread_wide += 1
-                if len(near) == 2:
-                    pairs.append(near)
-                else:
-                    many += 1
-            mains.append(big)
+            main = big
+            if len(near) >= 2:                             # (one big face of a close-up counts by itself)
+                lo, hi = min(t[0] - t[1] / 2 for t in near), max(t[0] + t[1] / 2 for t in near)
+                need = hi - lo + 1.6 * sorted(t[1] for t in near)[len(near) // 2]   # the faces and their shoulders
+                if need <= cw:                             # all of them fit the crop: its middle on the group
+                    main = ((lo + hi) / 2, big[1], big[2])
+                elif len(near) == 2 and need * W / max(1, H) > 1.0:
+                    pairs.append((near, ((lo + hi) / 2, need)))   # two people far apart
+                else:                                      # people side by side: the group's picture
+                    groups.append(((lo + hi) / 2, need))
+            mains.append(main)
+            track.append((k / 30.0, main[0]))
         seen = [fs for fs in faces if fs]
         med = lambda xs: sorted(xs)[len(xs) // 2]
         counts: dict = {}
@@ -773,23 +780,71 @@ def plan_shots(src: Path, start: float, dur: float, info: dict, out_aspect: floa
             counts[str(min(len(fs), 3))] = counts.get(str(min(len(fs), 3)), 0) + 1
         shot = {"s": 0.0 if a == 0 else round((a - 0.5) / 30.0, 6), "e": round((b - 0.5) / 30.0, 6), "layout": "crop", "cx": 0.5,
                 "seen": counts}                          # (how many people each look found: for support)
-        if seen and spread_wide >= max(1, len(seen) / 2):
-            if split_ok and pairs and len(pairs) >= many:  # two people apart: each in a half, one above the other
-                shot.update(layout="split", faces=[{"cx": round(med([p[k][0] for p in pairs]), 4),
-                                                    "cy": round(med([p[k][2] for p in pairs]), 4),
-                                                    "size": round(med([p[k][1] for p in pairs]), 4)} for k in (0, 1)])
-            else:                                          # more people: all stay in the picture
-                shot.update(layout="fit")
+        if seen and len(pairs) + len(groups) >= max(1, len(seen) / 2):
+            if split_ok and pairs and len(pairs) >= len(groups):   # two people apart: each in a half, one above the other
+                shot.update(layout="split", faces=[{"cx": round(med([p[0][k][0] for p in pairs]), 4),
+                                                    "cy": round(med([p[0][k][2] for p in pairs]), 4),
+                                                    "size": round(med([p[0][k][1] for p in pairs]), 4)} for k in (0, 1)])
+            else:                                          # people side by side: all of them, as big as they fit,
+                boxes = groups + [p[1] for p in pairs]     # on blurred edges (the whole picture when they fill it)
+                ws = sorted(min(1.0, max(cw, b_[1] * 1.15)) for b_ in boxes)
+                shot.update(layout="fit", box={"cx": round(med([b_[0] for b_ in boxes]), 4),
+                                               "w": round(ws[min(len(ws) - 1, int(len(ws) * 0.8))], 4)})
         elif mains and split_ok and _facecam(mains, len(seen)):
             # a streamer's camera in a corner of the game (small, never moving): the camera above, the game below
             shot.update(layout="cam", cam={"cx": round(med([t[0] for t in mains]), 4), "cy": round(med([t[2] for t in mains]), 4),
                                            "size": round(med([t[1] for t in mains]), 4)})
         elif mains:
             shot.update(cx=round(med([t[0] for t in mains]), 4))
+            path = _follow(track, cw)
+            if path:                                       # (someone walking: the crop goes with them)
+                shot.update(path=path)
         shots.append(shot)
     shots[-1]["e"] = max(shots[-1]["e"], dur + 1.0)
     plan["shots"] = shots
     return plan
+
+
+def _follow(track: list, cw: float) -> list | None:
+    """The crop's middle over a shot when its person moves more than a still crop can hold: [[t, x], ...] (x as a
+    share of the width), or None. The crop stays put while the face is near its middle and then goes after it -
+    smoothly, at most one crop width a second - the way a camera operator pans."""
+    if len(track) < 4:
+        return None
+    xs = sorted(x for _, x in track)
+    cut = len(xs) // 10
+    if xs[-1 - cut] - xs[cut] <= 0.45 * cw:              # (a still crop keeps the face well inside)
+        return None
+    sm = []
+    for i in range(len(track)):                            # (each look: the middle of the looks around it, about 1.3 s)
+        win = sorted(x for _, x in track[max(0, i - 2):i + 3])
+        sm.append((track[i][0], win[len(win) // 2]))
+    dead, vmax = 0.12 * cw, 1.0 * cw
+    cam, prev_t = sm[0][1], sm[0][0]
+    path = [[round(prev_t, 3), round(cam, 4)]]
+    for t, x in sm[1:]:
+        err = x - cam
+        if abs(err) > dead:
+            step = err - math.copysign(dead, err)
+            lim = vmax * max(0.0, t - prev_t)
+            cam += max(-lim, min(lim, step))
+        prev_t = t
+        if abs(cam - path[-1][1]) >= 0.002 or t - path[-1][0] >= 2.0:
+            path.append([round(t, 3), round(cam, 4)])
+    if len(path) > 120:                                   # (an expression FFmpeg reads quickly: at most ~120 points)
+        k = -(-len(path) // 120)
+        path = path[::k] + ([path[-1]] if (len(path) - 1) % k else [])
+    return path if max(p[1] for p in path) - min(p[1] for p in path) > 0.02 else None
+
+
+def _path_expr(path: list, W: int, cw: int) -> str:
+    """The crop's left edge over time (straight lines between the points of the path), in pixels."""
+    px = [(t, max(0, min(W - cw, int(round(x * W - cw / 2))))) for t, x in path]
+    e_ = str(px[-1][1])
+    for (t0, x0), (t1, x1) in reversed(list(zip(px, px[1:]))):
+        part = str(x0) if x1 == x0 or t1 <= t0 else f"{x0}+({x1 - x0})*(t-{t0:.3f})/{t1 - t0:.3f}"
+        e_ = f"if(lt(t,{t1:.3f}),{part},{e_})"
+    return f"if(lt(t,{px[0][0]:.3f}),{px[0][1]},{e_})"
 
 
 def _people(faces: list, fw: int, fh: int) -> list:
@@ -836,9 +891,20 @@ def _graph(plan: dict, info: dict, out: tuple[int, int] | None) -> tuple[str, in
     shots = plan["shots"]
     cw = min(W, int(round(H * ow / oh / 2)) * 2)
     ch = H if cw < W else min(H, int(round(W * oh / ow / 2)) * 2)
-    xs = [max(0, min(W - cw, int(round(sh["cx"] * W - cw / 2)))) for sh in shots]
+    xs = [_path_expr(sh["path"], W, cw) if sh.get("path") else max(0, min(W - cw, int(round(sh["cx"] * W - cw / 2))))
+          for sh in shots]
     crop = f"crop=w={cw}:h={ch}:x='{_until(shots, xs)}':y={(H - ch) // 2},scale={ow}:{oh}:flags=lanczos,setsar=1"
-    fit = (f"split=2[bga][fga];[bga]scale={ow}:{oh}:force_original_aspect_ratio=increase,crop={ow}:{oh},gblur=sigma=28,"
+    fits = [sh for sh in shots if sh["layout"] == "fit"]
+    bw = min(W, int(round(max((sh.get("box") or {}).get("w", 1.0) for sh in fits) * W / 2)) * 2) if fits else W
+    box = ""
+    if bw < W - 2:                                        # (a group: its part of the picture, full height)
+        last, bx = None, []
+        for sh in shots:
+            b_ = sh.get("box") if sh["layout"] == "fit" else last
+            last = b_ or last
+            bx.append(max(0, min(W - bw, int(round((b_ or {"cx": 0.5})["cx"] * W - bw / 2)))))
+        box = f"crop=w={bw}:h={H}:x='{_until(shots, bx)}':y=0,"
+    fit = (f"{box}split=2[bga][fga];[bga]scale={ow}:{oh}:force_original_aspect_ratio=increase,crop={ow}:{oh},gblur=sigma=28,"
            f"eq=brightness=-0.06[bgb];[fga]scale={ow}:{oh}:force_original_aspect_ratio=decrease:flags=lanczos,setsar=1[fgb];"
            f"[bgb][fgb]overlay=(W-w)/2:(H-h)/2")
     split = _split_chain(shots, W, H, ow, oh)

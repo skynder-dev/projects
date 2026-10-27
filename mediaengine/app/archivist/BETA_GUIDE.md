@@ -77,10 +77,10 @@ Auto Edit → **Clips from a long video**: choose a podcast, a stream or an inte
 minutes for an hour of video) and lists the parts that make good short clips - whole sentences, the likeliest first,
 with their words. Read, press ▶ Play to watch a part, change the start or end if you like, tick the ones you want and
 press "Make the ticked clips". Each becomes a vertical 9:16 clip (or square, or as filmed): the face kept in the
-frame (two people apart, as in a podcast: each in its own half, one above the other, the captions between them; three or
-more: the whole picture on blurred edges; a streamer's camera in a corner of a game: the camera above, the game
-below), the video's own sound evened out, captions with the words
-in the look you choose, optionally the first sentence as a title. They are saved next to the saved reels in a folder
+frame (someone walking: the frame goes with them; two people apart, as in a podcast: each in its own half, one above
+the other, the captions between them; people side by side or three and more: all of them, as big as they fit, on
+blurred edges; a streamer's camera in a corner of a game: the camera above, the game below), the video's own sound
+evened out, captions with the words in the look you choose, optionally the first sentence as a title. They are saved next to the saved reels in a folder
 "<video> - clips", named by their first words. Use only videos you may cut (your own, or footage a clipping campaign
 gives you).
 

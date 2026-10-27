@@ -1012,6 +1012,8 @@ PHRASES = {
         "субтитры следуют за голосом); голос из записи можно сохранить в списке голосов.",
     # clips from a long video (clips.py, clips_web.py)
     "Clips from a long video": "Клипы из длинного видео",
+    "Clips: the frame goes with someone who walks; people standing side by side all stay in the picture, as big as they fit.":
+        "Клипы: кадр идёт за человеком, который ходит; люди, стоящие рядом, все остаются в кадре — так крупно, как помещаются.",
     "Clips from a long video (Auto Edit → Clips from a long video): a podcast, stream or interview is listened to once; the parts that make good short clips are listed with their words; the ticked ones become vertical clips with the face in the frame, the sound and captions.":
         "Клипы из длинного видео (Автомонтаж → Клипы из длинного видео): подкаст, стрим или интервью прослушивается один раз; куски, из которых выйдут хорошие короткие клипы, показываются со словами; отмеченные становятся вертикальными клипами с лицом в кадре, звуком и субтитрами.",
     "A podcast, a stream or an interview: MediaEngine listens to it once and lists the parts that make good short clips, with their words - the likeliest first. Tick the ones you want: they are made vertical, with the face in the frame, the sound and captions. The video itself is only read.":

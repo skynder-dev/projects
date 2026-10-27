@@ -24,6 +24,7 @@ on:
       - '!mediaengine/tests/engine_probe.py'         # mediaengine-engine-probe.yml
       - '!mediaengine/tests/voice_addon_check.py'    # mediaengine-voice-addon.yml
       - '!mediaengine/tests/clips_probe.py'          # mediaengine-clips-probe.yml
+      - '!mediaengine/tests/clips_judge_probe.py'    # mediaengine-clips-judge.yml
       - '.github/workflows/mediaengine-windows.yml'
   workflow_dispatch:
 permissions:

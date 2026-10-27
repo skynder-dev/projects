@@ -285,6 +285,57 @@ def main() -> int:
               (csq[0].get("width"), csq[0].get("height")) == (1080, 1080) and (cor[0].get("width"), cor[0].get("height")) == (1920, 1080)
               and fsq is not None and 0.3 <= textured_center(fsq, slice(300, 800)) <= 0.7, (sq.get("result"), orr.get("result")))
 
+    # someone walking across the picture: the crop goes with them (a still crop would lose them)
+    walk = work / "walk.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "color=c=0x405060:s=1920x1080:r=30:d=18", "-loop", "1", "-i", str(face),
+                    "-f", "lavfi", "-i", "sine=f=220:d=18", "-filter_complex",
+                    "[1:v]scale=360:415[f];[0:v][f]overlay=x='80+80*t':y=300:shortest=1,format=yuv420p[v]",
+                    "-map", "[v]", "-map", "2:a", "-t", "18", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-c:a", "aac",
+                    str(walk)], check=True)
+    wid = vo._new_id()
+    (vo.JOBS / wid).mkdir()
+    wjob = dict(job, id=wid, source=str(walk), duration=18.0, title=walk.name, created_ns=time.time_ns())
+    (vo.JOBS / wid / "job.json").write_text(json.dumps(wjob), "utf-8")
+    wres = cl.save_found(vo.JOBS / wid, wjob, transcript(["We walk along the beach.", "The water is warm today.", "Look at those waves over there.",
+                                                                "Why is nobody else here?", "It is still early in the morning.",
+                                                                "We will come back tomorrow."], t0=0.4, pause=1.2), [], "en")
+    (vo.JOBS / wid / "result.json").write_text(json.dumps(wres), "utf-8")
+    check("making: a walk's clips found", wres.get("ok"), wres)
+    wm = wait(vo, cl.new_make(wid, [{"s": 0.5, "e": 16.5, "first": "We walk along the beach."}], "vertical", "face", False, {}, False))
+    wc = ((wm.get("result") or {}).get("clips") or [{}])[0]
+    wpos = [round(textured_center(frame(ff, vo.JOBS / wm["id"] / wc["file"], t), slice(600, 1200)), 3) for t in (1.0, 8.0, 15.0)] \
+        if wc.get("file") else []
+    check("making: someone walking across - the crop goes with them", wm["state"] == "done" and wc.get("layouts") == ["crop"]
+          and bool(wc["plan"][0].get("path")) and len(wpos) == 3 and all(0.25 <= x <= 0.75 for x in wpos),
+          (wm["state"], wpos, (wc.get("plan") or [{}])[0].get("path", "")[:6] if wc.get("plan") else wm.get("result")))
+
+    # two people side by side, close: both in the picture, as big as they fit (not a crop cutting one of them)
+    pair = work / "pair.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "color=c=0x405060:s=1920x1080:r=30:d=18", "-loop", "1", "-i", str(face),
+                    "-f", "lavfi", "-i", "sine=f=220:d=18", "-filter_complex",
+                    "[1:v]scale=300:346,split=2[p1][p2];[0:v][p1]overlay=620:300:shortest=1[q];[q][p2]overlay=1000:300:shortest=1,"
+                    "format=yuv420p[v]", "-map", "[v]", "-map", "2:a", "-t", "18", "-c:v", "libx264", "-preset", "veryfast",
+                    "-crf", "20", "-c:a", "aac", str(pair)], check=True)
+    pid = vo._new_id()
+    (vo.JOBS / pid).mkdir()
+    pjob = dict(wjob, id=pid, source=str(pair), title=pair.name, created_ns=time.time_ns())
+    (vo.JOBS / pid / "job.json").write_text(json.dumps(pjob), "utf-8")
+    (vo.JOBS / pid / "result.json").write_text(json.dumps(cl.save_found(vo.JOBS / pid, pjob, transcript(
+        ["We walk along the beach.", "The water is warm today.", "Look at those waves over there.", "Why is nobody else here?",
+         "It is still early in the morning.", "We will come back tomorrow."], t0=0.4, pause=1.2), [], "en")), "utf-8")
+    pm = wait(vo, cl.new_make(pid, [{"s": 0.5, "e": 16.5, "first": "We walk along the beach."}], "vertical", "face", False, {}, False))
+    pc = ((pm.get("result") or {}).get("clips") or [{}])[0]
+    if pc.get("file"):
+        fp = frame(ff, vo.JOBS / pm["id"] / pc["file"], 8.0)
+        cols = fp[600:1150].mean(axis=2).std(axis=0)
+        detail = int((cols > 12).sum())                  # (columns with a face in them: two faces shown big)
+        halves = (float(fp[600:1150, :540].std()), float(fp[600:1150, 540:].std()))
+    else:
+        detail, halves = 0, (0.0, 0.0)
+    check("making: two people side by side - both in the picture, as big as they fit", pm["state"] == "done"
+          and pc.get("layouts") == ["fit"] and 0.3 < float(pc["plan"][0].get("box", {}).get("w", 1)) < 0.6 and detail > 600
+          and min(halves) > 8, (pm["state"], pc.get("plan") or pm.get("result"), detail, halves))
+
     # ---------------------------------------------------------------- 3. the pages
     app = create_app()
     H = {"Host": "127.0.0.1:8765", "Origin": "http://127.0.0.1:8765", "Sec-Fetch-Site": "same-origin"}
