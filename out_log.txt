@@ -1,0 +1,10 @@
+Fetching 6 files:   0%|          | 0/6 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Fetching 6 files:  17%|█▋        | 1/6 [00:00<00:00,  9.22it/s]Fetching 6 files: 100%|██████████| 6/6 [00:02<00:00,  2.16it/s]Fetching 6 files: 100%|██████████| 6/6 [00:02<00:00,  2.25it/s]
+[0;93m2026-10-27 19:20:51.468881131 [W:onnxruntime:Default, device_discovery.cc:95 GetPciBusId] Skipping pci_bus_id for PCI path at "/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/VMBUS:00/5620e0c7-8062-4dce-aeb7-520c7ef76171" because filename "5620e0c7-8062-4dce-aeb7-520c7ef76171" did not match expected pattern of [0-9a-f]+:[0-9a-f]+:[0-9a-f]+[.][0-9a-f]+[m
+Systran/faster-whisper-small 118.0 s, 1383 words
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  29%|██▊       | 2/7 [00:00<00:00, 19.58it/s]Fetching 7 files: 100%|██████████| 7/7 [00:05<00:00,  1.20it/s]Fetching 7 files: 100%|██████████| 7/7 [00:05<00:00,  1.31it/s]
+Systran/faster-distil-whisper-large-v3 170.4 s, 1388 words
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  29%|██▊       | 2/7 [00:00<00:00, 19.99it/s]Fetching 7 files: 100%|██████████| 7/7 [00:05<00:00,  1.10it/s]Fetching 7 files: 100%|██████████| 7/7 [00:05<00:00,  1.20it/s]
+deepdml/faster-whisper-large-v3-turbo-ct2 214.6 s, 1383 words
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  29%|██▊       | 2/7 [00:00<00:00, 19.91it/s]Fetching 7 files: 100%|██████████| 7/7 [00:09<00:00,  1.51s/it]Fetching 7 files: 100%|██████████| 7/7 [00:09<00:00,  1.38s/it]
+Systran/faster-whisper-large-v3 946.7 s, 1380 words
