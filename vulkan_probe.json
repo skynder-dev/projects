@@ -1,0 +1,14 @@
+{
+ "gpu": {
+  "device": "",
+  "answer": "ready",
+  "load_and_answer_s": 2.7,
+  "speed": 6.746727836999056
+ },
+ "cpu": {
+  "device": "",
+  "answer": "ready",
+  "load_and_answer_s": 2.5,
+  "speed": 6.638078674508451
+ }
+}

@@ -1,0 +1,24 @@
+== --list-devices
+Available devices:
+  (none)
+== --list-devices, GGML_VK_VISIBLE_DEVICES=0
+Available devices:
+  Vulkan0: llvmpipe (LLVM 20.1.2, 256 bits) (15989 MiB, 14842 MiB free)
+== -lv 4 start (20 s)
+0.00.027.582 I ggml_vulkan: No devices found.
+0.00.027.597 I load_backend: loaded Vulkan backend from /home/runner/work/_temp/llama/llama-b11941/libggml-vulkan.so
+0.00.034.762 I load_backend: loaded CPU backend from /home/runner/work/_temp/llama/llama-b11941/libggml-cpu-haswell.so
+0.00.034.854 I cmn  common_param: device_info:
+0.00.034.862 I cmn  common_param:   - CPU     : AMD EPYC 7763 64-Core Processor (15989 MiB, 15989 MiB free)
+0.00.034.911 I cmn  common_param: system_info: n_threads = 2 (n_threads_batch = 2) / 4 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | 
+0.00.036.885 I cmn  common_fit_a: fitting params to device memory ...
+0.00.036.940 I common_params_fit_impl: getting device memory data for initial parameters:
+0.00.210.077 I common_fit_params: successfully fit params to free device memory
+0.00.615.113 I load_tensors: offloading output layer to GPU
+0.00.615.121 I load_tensors: offloading 35 repeating layers to GPU
+0.00.615.121 I load_tensors: offloaded 37/37 layers to GPU
+0.00.615.125 I load_tensors:   CPU_Mapped model buffer size =  4076.43 MiB
+0.00.618.827 I llama_context:        CPU  output buffer size =     2.32 MiB
+0.00.644.482 I llama_kv_cache:        CPU KV buffer size =   288.00 MiB
+0.00.644.498 I llama_kv_cache: size =  288.00 MiB (  2048 cells,  36 layers,  4/1 seqs), K (f16):  144.00 MiB, V (f16):  144.00 MiB
+0.00.648.739 I sched_reserve:        CPU compute buffer size =    84.02 MiB

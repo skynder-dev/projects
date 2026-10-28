@@ -1,0 +1,18 @@
+0.00.000.991 I srv  llama_server: initializing ...
+0.00.035.095 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.035.201 I srv  init_listene: The UI is disabled
+0.00.035.205 I srv  init_listene: Use --ui/--no-ui (or deprecated --webui/--no-webui) to enable/disable
+0.00.036.704 I srv    load_model: loading model '/home/runner/work/_temp/model.gguf'
+0.00.286.372 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.00.724.340 I cmn          init: llama threadpool init, n_threads = 2
+0.01.157.473 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 8192, kv_unified = 'false'
+0.01.162.783 I srv  server_run_i: model loaded
+0.01.162.795 I srv  server_on_li: listening on http://127.0.0.1:44903
+0.01.618.838 I slot get_availabl: id  0 | task -1 | selected slot by LRU, n_tokens = 0, t_last = -1
+0.01.618.894 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.02.515.399 I slot print_timing: id  0 | task 0 | prompt eval time =     748.23 ms /    14 tokens (   53.45 ms per token,    18.71 tokens per second)
+0.02.515.409 I slot print_timing: id  0 | task 0 |        eval time =     148.22 ms /     2 tokens (  148.22 ms per token,     6.75 tokens per second)
+0.02.515.410 I slot print_timing: id  0 | task 0 |       total time =     896.45 ms /    16 tokens
+0.02.515.415 I slot print_timing: id  0 | task 0 |    graphs reused =          1
+0.02.515.416 I slot print_timing: id  0 | task 0 |   graph reallocs =          0    /     0        (same size) / (changed size)
+0.02.515.442 I slot      release: id  0 | task 0 | stop processing: n_tokens = 15, truncated = 0
