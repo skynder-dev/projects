@@ -42,6 +42,14 @@ jobs:
           echo "LLAMA_SERVER=$srv" >> "$GITHUB_ENV"; echo "LLAMA_LIB=$(dirname "$srv")" >> "$GITHUB_ENV"
           curl -sSfL --retry 3 -o "$RUNNER_TEMP/model.gguf" "https://huggingface.co/ggml-org/Qwen3-4B-Instruct-2507-Q8_0-GGUF/resolve/e6f794d44f9395d0184a966c27b5ae99ea356fcb/qwen3-4b-instruct-2507-q8_0.gguf"
           echo "ae916ede1c010a26955ee8ae2e908bf8815a3f135ec860439ab924701c69d5f1  $RUNNER_TEMP/model.gguf" | sha256sum -c
+      - name: What the build lists as devices, and what a more talkative log says
+        run: |
+          export LD_LIBRARY_PATH="$LLAMA_LIB:$LD_LIBRARY_PATH"
+          { echo "== --list-devices"; "$LLAMA_SERVER" --list-devices 2>&1 | head -20
+            echo "== --list-devices, GGML_VK_VISIBLE_DEVICES=0"; GGML_VK_VISIBLE_DEVICES=0 "$LLAMA_SERVER" --list-devices 2>&1 | head -20
+            echo "== -lv 4 start (20 s)"; timeout 25 "$LLAMA_SERVER" -m "$RUNNER_TEMP/model.gguf" -c 2048 --port 8099 -lv 4 2>&1 | grep -i -E "vulkan|device|offload|layers|gpu|cpu" | head -40
+          } > "$RUNNER_TEMP/out/devices.txt" 2>&1 || true
+          cat "$RUNNER_TEMP/out/devices.txt"
       - name: The program's Server on the Vulkan device
         run: |
           export LD_LIBRARY_PATH="$LLAMA_LIB:$LD_LIBRARY_PATH"
