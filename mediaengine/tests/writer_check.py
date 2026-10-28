@@ -223,6 +223,23 @@ def main() -> int:
               j6.get("state") == "done" and (j6.get("result") or {}).get("device") == "" and j7.get("state") == "done"
               and (j7.get("result") or {}).get("device") == "" and no_card == "" and W.gpu_name() == "Fake GPU 3000",
               (j6.get("result"), j7.get("result"), no_card))
+        # the card stops in the middle of a story (a driver reset): written on the processor, remembered
+        os.environ["FAKE_LLAMA_GPU_CRASH"] = "1"
+        r8 = c.post("/auto/cartoon/write", data={"about": "Why a city hospital pays more", "lang": "en"}, headers=H)
+        j8 = wait(vo, (r8.headers.get("Location") or "").rstrip("/").split("/")[-1])
+        r9 = c.post("/auto/cartoon/write", data={"about": "Why a city hospital pays more", "lang": "en"}, headers=H)
+        j9 = wait(vo, (r9.headers.get("Location") or "").rstrip("/").split("/")[-1])
+        os.environ.pop("FAKE_LLAMA_GPU_CRASH")
+        card_page = c.get("/auto/cartoon", headers=H).get_data(as_text=True)
+        remembered = W.gpu_failed()
+        W._remember_gpu(None)
+        check("a graphics card that stops in the middle of a story: the story is finished on the processor, the card is "
+              "not tried again for the next ones (the page says so) until the writer is installed again",
+              j8.get("state") == "done" and (j8.get("result") or {}).get("device") == "" and remembered
+              and j9.get("state") == "done" and (j9.get("result") or {}).get("device") == ""
+              and (vo._job_dir(j8["id"]) / "server-cpu.log").is_file() and not (vo._job_dir(j9["id"]) / "server-cpu.log").is_file()
+              and "stopped while writing a story" in card_page and not W.gpu_failed(),
+              (j8.get("result"), j9.get("result"), remembered))
 
         # a video on this PC: without the voice add-on refused; with it (a stand-in Whisper here) heard, noted, written
         vid = work / "talk.mp4"

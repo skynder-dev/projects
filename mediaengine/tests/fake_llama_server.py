@@ -5,6 +5,7 @@ command line, /health and a streamed /v1/chat/completions that answers with fixe
 
 FAKE_LLAMA_GPU_FAIL=1: exits at once when asked for the graphics card (the writer then starts it on the processor).
 FAKE_LLAMA_RECORD=<dir>: every request is written there (request_<time>.json).
+FAKE_LLAMA_GPU_CRASH=1: on the graphics card, the server dies in the middle of a story (a driver reset).
 """
 from __future__ import annotations
 
@@ -165,8 +166,12 @@ def main() -> int:
             self.send_header("Content-Type", "text/event-stream")
             self.end_headers()
             pieces = [text[i:i + 12] for i in range(0, len(text), 12)]
+            crash = gpu and os.environ.get("FAKE_LLAMA_GPU_CRASH") == "1" and "Answer with one word" not in user
             try:
-                for p in pieces:
+                for k_, p in enumerate(pieces):
+                    if crash and k_ == 5:
+                        self.wfile.flush()
+                        os._exit(3)
                     chunk = {"choices": [{"index": 0, "delta": {"content": p}, "finish_reason": None}]}
                     self.wfile.write(b"data: " + json.dumps(chunk, ensure_ascii=False).encode("utf-8") + b"\n\n")
                     self.wfile.flush()

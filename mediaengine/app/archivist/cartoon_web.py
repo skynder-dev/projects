@@ -277,6 +277,9 @@ def register(app, page, err_page, e, human_bytes):
             m = s.get("manifest") or {}
             where = (f"<span>the graphics card</span> <span translate='no'>{e(m.get('gpu') or '')}</span>" if m.get("gpu")
                      else "<span>the processor</span>")
+            if m.get("gpu") and W.gpu_failed():
+                where = ("<span>the processor</span> <span>(the graphics card stopped while writing a story on this PC; "
+                         "it is tried again when the writer is installed again or its model changed)</span>")
             secs = "".join(f"<option value='{k}' {'selected' if k == '75' else ''}>{e(v)}</option>" for k, v in LEN_LABELS)
             return (f"<div class='card' id='writer'><h2 style='margin-top:0'>Write a story</h2>"
                     f"<form method='post' action='/auto/cartoon/write' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"

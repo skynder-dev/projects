@@ -311,6 +311,7 @@ def _install_now(key: str = "small") -> None:
         tmpm.write_text(json.dumps(m, indent=1), "utf-8")
         os.replace(tmpm, MANIFEST)
         shutil.rmtree(tmp, ignore_errors=True)
+        _remember_gpu(None)                                # (a new model: the card is tried again)
         INSTALL.update(state="done", step="", detail="")
     except Exception as exc:
         msg = str(exc)
@@ -503,10 +504,35 @@ def gpu_name() -> str | None:
     return _DEVICES[key]
 
 
+def gpu_failed() -> bool:
+    """The graphics card stopped while writing a story on this PC (remembered until the writer is installed or its
+    model changed): the stories are written on the processor."""
+    try:
+        from ..config import load_config
+        return (load_config().get("writer") or {}).get("gpu") is False
+    except Exception:
+        return False
+
+
+def _remember_gpu(ok: bool | None) -> None:
+    try:
+        from ..config import update_config
+
+        def change(c):
+            w = c.setdefault("writer", {})
+            if ok is None:
+                w.pop("gpu", None)
+            else:
+                w["gpu"] = bool(ok)
+        update_config(change)
+    except Exception:
+        pass
+
+
 def open_server(stop=lambda: False, track: bool = True, log: Path | None = None, model: Path | None = None) -> Server:
     """On the graphics card when there is one and it starts; the processor otherwise."""
     card = gpu_name()
-    if card == "":                                         # (no card the Vulkan build can use: the processor at once)
+    if card == "" or gpu_failed():                         # (no card the Vulkan build can use, or one that failed: the processor)
         return Server(False, track, log, model).start(stop)
     try:
         srv = Server(True, track, log, model).start(stop)
@@ -745,14 +771,33 @@ def do(jid: str, d: Path, job: dict) -> dict:
         secs = max(30, int(sum(len(ln["text"].split()) for s in src["scenes"] for ln in s["lines"]) / 2.2))
     expect = 1500 if job.get("mode") != "adapt" else max(800, len(str(job.get("source") or "")) // 2)
     vo._CURRENT.update(step="loading", progress=0.02)
-    srv = open_server(stop, log=d / "server.log")
+    box = {"srv": open_server(stop, log=d / "server.log")}
+
+    def ask(messages, **kw):
+        """The model's answer; a graphics card that stops in the middle (a driver reset, its memory taken by another
+        program) is remembered, and the story is asked again on the processor."""
+        import http.client
+        try:
+            return box["srv"].chat(messages, **kw)
+        except WriterError:
+            raise
+        except (OSError, http.client.HTTPException) as exc:
+            s = box["srv"]
+            tail = s._tail(3)
+            s.close()
+            if not s.gpu or stop():
+                raise WriterError("The story writer stopped while writing (" + (tail or str(exc))[:300] + ").")
+            _remember_gpu(False)
+            vo._CURRENT.update(step="loading")
+            box["srv"] = Server(False, log=d / "server-cpu.log").start(stop)
+            return box["srv"].chat(messages, **kw)
     try:
         if len(str(job.get("source") or "")) > MAX_SOURCE and job.get("mode") == "text":   # a long video: its notes
             pieces, notes = _pieces(str(job["source"])), []
             for k, piece in enumerate(pieces):
                 vo._CURRENT.update(step="notes", progress=round(0.4 + 0.2 * k / len(pieces), 3))
-                r = srv.chat([{"role": "user", "content": NOTES.format(k=k + 1, n=len(pieces), text=piece)}], max_tokens=400,
-                             temperature=0.3, seed=int(job.get("seed") or 0) + k, stop=stop)
+                r = ask([{"role": "user", "content": NOTES.format(k=k + 1, n=len(pieces), text=piece)}], max_tokens=400,
+                        temperature=0.3, seed=int(job.get("seed") or 0) + k, stop=stop)
                 notes.append(re.sub(r"(?s)<think>.*?</think>", "", r["text"]).strip())
             job["source"] = "\n".join(notes)[:MAX_SOURCE]
             (d / "notes.txt").write_text(job["source"], "utf-8")
@@ -763,10 +808,10 @@ def do(jid: str, d: Path, job: dict) -> dict:
             used = attempt + 1
             base = first + (0.95 - first) / 2 * attempt
             vo._CURRENT.update(step="writing", progress=base)
-            r = srv.chat(messages, max_tokens=2600, seed=int(job.get("seed") or 0) + attempt,
-                         on_piece=lambda n, base=base, span=(0.95 - first) / 2: vo._CURRENT.update(
-                             progress=round(min(base + span, base + span * n / expect), 3)),
-                         stop=stop)
+            r = ask(messages, max_tokens=2600, seed=int(job.get("seed") or 0) + attempt,
+                    on_piece=lambda n, base=base, span=(0.95 - first) / 2: vo._CURRENT.update(
+                        progress=round(min(base + span, base + span * n / expect), 3)),
+                    stop=stop)
             text = clean(r["text"], job.get("format") or "", job.get("lang") or "")
             info, problem = judge(text, secs, job.get("style") if isinstance(job.get("style"), dict) and job.get("mode") != "adapt" else None)
             if not problem and r.get("finish") == "length":
@@ -780,7 +825,8 @@ def do(jid: str, d: Path, job: dict) -> dict:
                          {"role": "user", "content": f"This script cannot be used: {problem}. Write the whole script again, "
                                                      "exactly in THE FORMAT, with all its scenes."}]
     finally:
-        srv.close()
+        box["srv"].close()
+    srv = box["srv"]
     if best_info.get("scenes", 0) < 3:
         return {"ok": False, "error": "The model did not write a usable story (" + (best_problem or problem or "no scenes") + "). "
                                       "Press Try again, or say the topic in other words."}
