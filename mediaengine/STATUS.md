@@ -909,6 +909,13 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   E2E two 92, Russian 226 pages 0 English): Clips - "Make the 5 likeliest" (no ticking; start and end as found when
   the page does not send them); the help under the button describes the new framing. Asked the owner whether to add
   "Download a video by a link" (yt-dlp; YouTube's terms forbid downloading) - not built without his "yes".
+- 2026-10-28, Romanian voices: with the narrator given a described voice (VoxCPM2) Whisper heard the Romanian cartoon
+  almost word for word ("pretul este de patru ori mai mare decat pe pietan si contractul este aprobat. contribuabilii
+  platezc toata diferenta", voice add-on run 40635146851; 36 min for three lines on the runner's processor). Piper's
+  only Romanian voice (ro_RO mihai, CC0 data, fine-tuned from lessac) heard at 73 % of the words, one man's voice:
+  not added. The writer for real on Windows with both models (run 40637712879): installed in 33 s, the 14B added in
+  75 s (only the model downloaded, the 4B deleted), 4B stories 5-6.5 min, 14B 8.5-11 min on the processor, all read.
+  llama.cpp's log names no device: the card is asked of the Vulkan build (--list-devices, probe run 40636838802).
 - 2026-10-28, the writer probe compared two models on the program's own requests (run 40618245131, Linux CPU):
   Qwen3-4B-Instruct-2507 Q8_0 - good English, Russian/Romanian weaker, ~30 % longer than asked; Qwen3-14B Q4_K_M
   (Qwen's GGUF, pinned 530227a7, 9,001,752,960 bytes) - clearly better Russian and Romanian, characters all people,
