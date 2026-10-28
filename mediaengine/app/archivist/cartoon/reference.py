@@ -1,5 +1,5 @@
 """Reference Lab: a cartoon (or any short video) the owner likes, studied for its rhythm - not copied. Where its shots
-change (FFmpeg's scene detection, the same as Auto Edit's), how long they last, a picture of each (a storyboard), its
+change (hard cuts and soft ones - a cross-fade, a slide), how long they last, a picture of each (a storyboard), its
 main colours; with the voice add-on also what is said in each shot, how fast, how soon the first words come, how much
 of it is speech and whether music or sounds play between the words. Kept with the job (reference.json, frames/), and
 used by the story writer: "Write a story with this rhythm" asks the model for as many scenes, as many words a second
@@ -47,6 +47,69 @@ def new_study(video: str, listen: bool = True) -> str:
 
 def _run(cmd: list, timeout: float = 120) -> subprocess.CompletedProcess:
     return subprocess.run(cmd, capture_output=True, timeout=timeout, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+
+
+SCAN_FPS = 6                      # pictures a second compared
+SCAN_W, SCAN_H = 64, 64           # (small: the cut is in the whole picture, not its details)
+
+
+def _cuts(src: Path, duration: float, ff: str, stop, progress=None) -> list[float]:
+    """Where the shots change: a hard cut (the picture unlike the one before, much more than the movement around it)
+    and a soft one - a cross-fade, a slide or an opening circle of up to half a second (unlike the picture half a
+    second before, the most around). OSError when the video cannot be read (or not quickly enough)."""
+    import time
+    proc = subprocess.Popen([ff, "-hide_banner", "-nostdin", "-v", "error", "-i", str(src), "-an", "-sn", "-dn",
+                             "-vf", f"fps={SCAN_FPS},scale={SCAN_W}:{SCAN_H}:flags=area", "-pix_fmt", "bgr24", "-f", "rawvideo", "-"],
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+    size = SCAN_W * SCAN_H * 3
+    limit = time.monotonic() + 60 + duration * 0.5
+    frames: list = []                                      # (the last few pictures only)
+    d1, d3 = [], []
+    try:
+        while True:
+            buf = proc.stdout.read(size)
+            if len(buf) < size:
+                break
+            if stop() or time.monotonic() > limit:
+                proc.kill()
+                if stop():
+                    return []
+                raise OSError("too slow")
+            f = np.frombuffer(buf, np.uint8).astype(np.int16)
+            frames = (frames + [f])[-4:]
+            d1.append(float(np.abs(f - frames[-2]).mean()) / 255 if len(frames) >= 2 else 0.0)
+            d3.append(float(np.abs(f - frames[0]).mean()) / 255 if len(frames) >= 4 else 0.0)
+            if progress and len(d1) % 60 == 0:
+                progress(min(1.0, len(d1) / max(1.0, duration * SCAN_FPS)))
+        err = proc.stderr.read().decode("utf-8", "replace") if proc.stderr else ""
+        proc.wait(timeout=30)
+    finally:
+        if proc.poll() is None:
+            proc.kill()
+    if proc.returncode and not d1:
+        raise OSError((err.strip().splitlines() or ["FFmpeg failed"])[-1][:200])
+    n = len(d1)
+    found = []
+    for i in range(1, n):
+        around = sorted(d1[max(1, i - 12):i] + d1[i + 1:i + 4])
+        calm = around[len(around) // 2] if around else 0.0      # (the usual change here: movement, not a cut)
+        if d1[i] > max(0.07, 4 * calm):                          # a hard cut
+            found.append((i, d1[i]))
+        elif i >= 3 and d3[i] > max(0.12, 6 * calm) and d3[i] == max(d3[max(3, i - 3):i + 4]) \
+                and max(d1[i - 2:i + 1]) < d3[i] * 0.8:          # a soft one: no single jump, a big change over 0.5 s
+            found.append((i - 1, d3[i]))
+    out: list[float] = []
+    for i, strength in sorted(found):
+        t = i / SCAN_FPS
+        if not (0.3 < t < duration - 0.3):
+            continue
+        if out and t - out[-1][0] < 0.5:                         # (the stronger of two close ones)
+            if strength > out[-1][1]:
+                out[-1] = (t, strength)
+            continue
+        out.append((t, strength))
+    return [round(t, 2) for t, _ in out]
 
 
 def _frames(src: Path, shots: list[dict], out: Path, ff: str, stop) -> list[str]:
@@ -184,7 +247,6 @@ def _first_sentence(words: list[dict]) -> str:
 def do(jid: str, d: Path, job: dict) -> dict:
     """voice._do for a video to study (in the queue's thread)."""
     from .. import auto_edit as ae, voice as vo
-    from ..media_brain import _scene_cuts
     stop = lambda: bool(vo._CURRENT.get("cancel"))      # noqa: E731
     src = Path(str(job.get("video") or ""))
     if not src.is_file():
@@ -207,21 +269,17 @@ def do(jid: str, d: Path, job: dict) -> dict:
         return {"ok": False, "error": "The video is too short to study (a few seconds at least)."}
     if duration > MAX_SECONDS:
         return {"ok": False, "error": "This video is longer than half an hour: choose a cartoon or a short (or a part of a long video)."}
-    failed: list = []
-    try:
-        cuts = _scene_cuts(src, duration, lambda *a: vo._CURRENT.update(step="looking", progress=0.1), stop,
-                           fps=6, min_gap=0.5, failed=failed)   # (a cartoon may cut every second)
-    except RuntimeError:
-        return {"ok": False, "error": "Stopped."}
-    if stop():
-        return {"ok": False, "error": "Stopped."}
-    if failed:                                             # (not "one long shot": the scan itself did not work)
+    ff = vo._ffmpeg()
+    try:                                                   # (not "one long shot" when the scan itself did not work)
+        cuts = _cuts(src, duration, ff, stop, lambda x: vo._CURRENT.update(step="looking", progress=round(0.02 + 0.2 * x, 3)))
+    except (OSError, subprocess.SubprocessError):
         return {"ok": False, "error": "The video's shots could not be found (FFmpeg could not read it quickly enough). "
                                       "Try a shorter video, or convert it first (Media → Convert)."}
+    if stop():
+        return {"ok": False, "error": "Stopped."}
     bounds = [0.0] + [t for t in cuts if 0 < t < duration] + [duration]
     shots = [{"s": round(bounds[i], 2), "e": round(bounds[i + 1], 2)} for i in range(len(bounds) - 1)]
     vo._CURRENT.update(step="pictures", progress=0.25)
-    ff = vo._ffmpeg()
     names = _frames(src, shots, d / "frames", ff, stop)
     for s, n in zip(shots, names):
         s["frame"] = n

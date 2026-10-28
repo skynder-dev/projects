@@ -276,11 +276,7 @@ def _duration_seconds(path: Path, duration_ms: int | None = None) -> float:
     return float(probe_duration(Path(path)) or 0.0)
 
 
-def _scene_cuts(path: Path, duration: float, progress_cb=None, cancel_cb=None, fps: int = 3,
-                min_gap: float = 1.25, failed: list | None = None) -> list[float]:
-    """Where the picture changes (FFmpeg's scene score). fps/min_gap: Auto Edit's 3 a second and 1.25 s apart;
-    Reference Lab (cartoon/reference.py) looks closer, for quick cuts. failed: a list told why when the scan could
-    not be made (it then returns [] as for a video without cuts)."""
+def _scene_cuts(path: Path, duration: float, progress_cb=None, cancel_cb=None) -> list[float]:
     exe = _ffmpeg_exe()
     if not exe or duration <= 0:
         return []
@@ -292,7 +288,7 @@ def _scene_cuts(path: Path, duration: float, progress_cb=None, cancel_cb=None, f
     try:
         # Scene detection does not need 4K pixels or every source frame.
         # Decode once, shrink early, and compare a few frames per second.
-        vf = rf"scale=320:-2:flags=fast_bilinear,fps={int(fps)},select=gt(scene\,0.30),showinfo"
+        vf = r"scale=320:-2:flags=fast_bilinear,fps=3,select=gt(scene\,0.30),showinfo"
         # the scan of a long 4K video takes minutes without a line: the job is said to be alive every 15 s (the
         # watchdog takes a job silent for 5 minutes as stuck and restarts it - a 20-minute video never finished)
         proc = subprocess.Popen(
@@ -312,16 +308,12 @@ def _scene_cuts(path: Path, duration: float, progress_cb=None, cancel_cb=None, f
                     proc.communicate()
                     if cancel_cb and cancel_cb():
                         raise RuntimeError("cancelled")
-                    if failed is not None:
-                        failed.append("too slow")
                     return []
                 if progress_cb:
                     try:
                         progress_cb(0, 1, "scene scan")
                     except Exception:
                         pass
-        if proc.returncode and failed is not None and "pts_time:" not in (err or ""):
-            failed.append((err or "").strip().splitlines()[-1][:200] if (err or "").strip() else "FFmpeg failed")
         cuts = []
         for m in re.finditer(r"pts_time:([0-9]+(?:\.[0-9]+)?)", err or ""):
             t = float(m.group(1))
@@ -329,18 +321,14 @@ def _scene_cuts(path: Path, duration: float, progress_cb=None, cancel_cb=None, f
                 cuts.append(t)
         out = []
         for t in sorted(cuts):
-            if not out or t - out[-1] >= min_gap:
+            if not out or t - out[-1] >= 1.25:
                 out.append(t)
         return out
     except RuntimeError as exc:
         if str(exc) == "cancelled":
             raise
-        if failed is not None:
-            failed.append(str(exc)[:200])
         return []
-    except Exception as exc:
-        if failed is not None:
-            failed.append(str(exc)[:200])
+    except Exception:
         return []
 
 

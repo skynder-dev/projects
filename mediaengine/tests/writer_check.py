@@ -332,6 +332,21 @@ def main() -> int:
               and ref.get("format") == "vertical" and 2.5 < ref.get("shot_avg", 0) < 3.5,
               ((js.get("result") or {}).get("error"), len(shots), ref.get("palette"), ref.get("wps"), ref.get("between"),
                ref.get("opening"), ref.get("shot_avg")))
+        soft = work / "soft.mp4"                           # a cross-fade, then a hard cut; and a busy picture without cuts
+        subprocess.run([ff, "-hide_banner", "-v", "error", "-f", "lavfi", "-i", "testsrc2=s=360x640:d=3.5:r=25", "-f", "lavfi",
+                        "-i", "color=c=0xd03030:s=360x640:d=3:r=25", "-f", "lavfi", "-i", "color=c=0x202860:s=360x640:d=3:r=25",
+                        "-filter_complex", "[0:v]format=yuv420p,setsar=1[a];[1:v]format=yuv420p,setsar=1[b];"
+                        "[2:v]format=yuv420p,setsar=1[c];[a][b]xfade=transition=fade:duration=0.5:offset=3[ab];"
+                        "[ab][c]concat=n=2:v=1:a=0[v]", "-map", "[v]", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-y", str(soft)],
+                       check=True, capture_output=True, timeout=180)
+        busy = work / "busy.mp4"
+        subprocess.run([ff, "-hide_banner", "-v", "error", "-f", "lavfi", "-i", "testsrc2=s=640x360:d=8:r=30", "-c:v", "libx264",
+                        "-pix_fmt", "yuv420p", "-y", str(busy)], check=True, capture_output=True, timeout=180)
+        soft_cuts = R._cuts(soft, 9.0, ff, lambda: False)
+        busy_cuts = R._cuts(busy, 8.0, ff, lambda: False)
+        check("Reference Lab: a cross-fade and a hard cut are both found; a busy moving picture is not taken for cuts",
+              len(soft_cuts) == 2 and 2.9 <= soft_cuts[0] <= 3.6 and abs(soft_cuts[1] - 6.0) < 0.3 and busy_cuts == [],
+              (soft_cuts, busy_cuts))
         spage = c.get(f"/auto/cartoon/{sid}", headers=H).get_data(as_text=True)
         fr = c.get(f"/auto/cartoon/{sid}/frame/{shots[0]['frame']}", headers=H) if shots else None
         bad = c.get(f"/auto/cartoon/{sid}/frame/..%2Fjob.json", headers=H)
