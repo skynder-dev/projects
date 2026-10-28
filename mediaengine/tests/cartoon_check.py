@@ -145,6 +145,25 @@ def main() -> int:
             except Exception as exc:
                 errs.append(f"{fmt} scene {i + 1}: {type(exc).__name__}: {exc}")
     check("example: every scene of 'How a City Loses Millions' draws in both formats", not errs, errs)
+    from archivist.cartoon import bgs
+    bad, looks = [], {}
+    for fmt in ("vertical", "horizontal"):
+        W, H = F.FORMATS[fmt]
+        for name in bgs.BACKGROUNDS:
+            cv = Canvas(W // 4, H // 4, 1920 if W > H else 1080)
+            try:
+                gy = bgs.draw(cv, name, 1.0)
+                if float(cv.img.std()) < 6 or not (cv.SH * 0.6 < gy < cv.SH):
+                    bad.append(f"{fmt} {name}: blank or no floor")
+                looks[(fmt, name)] = cv.img.astype(np.int16)
+            except Exception as exc:
+                bad.append(f"{fmt} {name}: {type(exc).__name__}: {exc}")
+    same = [n for n in ("hospital", "school", "shop", "home") if ("vertical", n) in looks
+            and float(np.abs(looks[("vertical", n)] - looks[("vertical", "office")]).mean()) < 10]
+    doc = ch.make("Dr. Paul", "doctor")
+    check("backgrounds: all twelve draw in both formats (a hospital, a school, a shop, a block of flats among them); "
+          "a doctor wears a white coat", not bad and not same and len(bgs.BACKGROUNDS) == 12 and doc["outfit"] == "coat",
+          (bad, same, doc["outfit"]))
     check("example: 8-12 scenes, 60-120 s, own characters (6)", 8 <= len(film["scenes"]) <= 12 and 60 <= tl2["seconds"] <= 120
           and len(film["cast"]) >= 4, (len(film["scenes"]), tl2["seconds"], len(film["cast"])))
 

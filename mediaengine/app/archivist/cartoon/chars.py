@@ -51,6 +51,9 @@ def make(name: str, role: str = "", seed: str | None = None, **over) -> dict:
                                                  "primar", "funcționar", "director"))
               else "vest" if any(w in role for w in ("worker", "builder", "foreman", "engineer", "рабоч", "строител", "прораб",
                                                      "инженер", "muncitor", "constructor"))
+              else "coat" if any(w in role for w in ("doctor", "nurse", "medic", "surgeon", "pharmacist", "paramedic", "врач",
+                                                     "доктор", "медсестр", "медбрат", "фармацевт", "аптекар", "хирург",
+                                                     "asistent", "farmacist", "chirurg"))
               else "hoodie" if any(w in role for w in ("student", "blogger", "young", "hacker", "студент", "блогер"))
               else rnd.choice(OUTFITS))
     if "female" not in over and re.search(r"(?i)\b(woman|girl|she|mrs|ms|lady|женщин|девушк|она|госпожа|doamna)\b|(?:ова|ева|ина|ская|ая|ка)\b", role + " " + name):
@@ -69,7 +72,7 @@ def make(name: str, role: str = "", seed: str | None = None, **over) -> dict:
         "beard": (rnd.choice(["none", "none", "mustache", "stubble", "full"]) if not female else "none"),
         "glasses": rnd.random() < 0.3,
         "outfit": ("dress" if rnd.random() < 0.4 else "blazer") if female and outfit == "suit" else outfit,
-        "cloth": rnd.choice(CLOTHES), "tie": rnd.choice(["#b8322f", "#d9a72b", "#2f6fb8", "#1f2433"]),
+        "cloth": "#f4f6f8" if outfit == "coat" else rnd.choice(CLOTHES), "tie": rnd.choice(["#b8322f", "#d9a72b", "#2f6fb8", "#1f2433"]),
         "pants": rnd.choice(["#2c2f3d", "#3b4256", "#4a3c30", "#24324d", "#5a5f6a"]),
         "shoes": rnd.choice(["#1f1d22", "#4a2f22", "#2c2c34"]),
         "hat": "hardhat" if any(w in role for w in ("worker", "builder", "foreman", "рабоч", "строител", "прораб", "muncitor")) else "none",
@@ -156,6 +159,16 @@ def _torso(cv: Canvas, c: dict, b: dict, breath: float):
         cv.poly([(26, top + 2), (4, top + 96), (34, top + 54)], dark, INK, 3)
         for yy in (top + 110, top + 140):
             cv.circle(0, yy, 5, shade(cloth, -0.35))
+    elif outfit == "coat":                                 # a doctor's white coat over blue scrubs, a stethoscope
+        cv.poly([(-30, top + 2), (30, top + 2), (0, top + 80)], "#5f9fc8", INK, 3)
+        cv.poly([(-30, top + 2), (-4, top + 118), (-40, top + 70)], "#e3e8ec", INK, 3)
+        cv.poly([(30, top + 2), (4, top + 118), (40, top + 70)], "#e3e8ec", INK, 3)
+        cv.line(arc(0, top + 10, 34, 70, 200, 340, 14), "#3a3f4c", 5)
+        cv.circle(-22, top + 84, 9, "#9aa4b2", INK, 3)
+        cv.rect(w / 2 - 50, top + 100, 30, 34, "#e3e8ec", INK, 3, 4)
+        cv.line([(w / 2 - 40, top + 92), (w / 2 - 40, top + 112)], "#2f6fb8", 4)
+        for yy in (top + 132, top + 162):
+            cv.circle(0, yy, 4, "#9aa4b2")
     elif outfit == "blazer":
         cv.poly([(-30, top + 2), (30, top + 2), (0, top + 70)], "#f2f2ee", INK, 3)
         dark = shade(cloth, -0.18)

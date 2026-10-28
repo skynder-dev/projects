@@ -13,7 +13,8 @@
     Kate: The city pays RoadCo four point eight million.
 
 A scene starts with "==", its background, and after "|" what is shown (title, road, contract, flow, bars, list, counter,
-compare, bag, magnifier). A line is "Name (gesture, feeling): words"; "Name [bubble]: words" shows it in a speech
+compare, bag, magnifier). Backgrounds: City street, Office, City hall, Road, Bank, Night, Board, Paper, Hospital,
+School, Shop, Home (a block of flats). A line is "Name (gesture, feeling): words"; "Name [bubble]: words" shows it in a speech
 bubble. A name not introduced becomes a new character. English or Russian words for backgrounds, gestures, feelings.
 """
 from __future__ import annotations
@@ -29,15 +30,18 @@ BG_WORDS = {
     "road": "road", "дорога": "road", "bank": "bank", "банк": "bank",
     "night": "night", "night street": "night", "ночь": "night", "ночная улица": "night",
     "board": "board", "доска": "board", "схема": "board", "paper": "paper", "бумага": "paper", "тетрадь": "paper",
-    # places a story names that the program draws as the nearest background
-    "hospital": "office", "clinic": "office", "school": "office", "shop": "office", "store": "office", "pharmacy": "office",
-    "home": "office", "flat": "office", "apartment": "office", "kitchen": "office", "classroom": "office", "factory": "office",
-    "больница": "office", "поликлиника": "office", "школа": "office", "магазин": "office", "аптека": "office",
-    "квартира": "office", "дом": "office", "подъезд": "office", "кухня": "office", "завод": "office",
-    "spital": "office", "școală": "office", "școala": "office", "magazin": "office", "farmacie": "office", "birou": "office",
+    # the hospital, the school, the shop and the block of flats; places a story names: the nearest background
+    "hospital": "hospital", "clinic": "hospital", "больница": "hospital", "поликлиника": "hospital", "spital": "hospital",
+    "clinică": "hospital", "school": "school", "classroom": "school", "школа": "school", "класс": "school",
+    "școală": "school", "școala": "school", "scoala": "school", "shop": "shop", "store": "shop", "pharmacy": "shop",
+    "supermarket": "shop", "магазин": "shop", "аптека": "shop", "magazin": "shop", "farmacie": "shop",
+    "home": "home", "block of flats": "home", "house": "home", "apartment block": "home", "stairwell": "home",
+    "дом": "home", "жилой дом": "home", "подъезд": "home", "двор": "home", "bloc": "home", "casă": "home",
+    "flat": "office", "apartment": "office", "kitchen": "office", "factory": "office", "квартира": "office",
+    "кухня": "office", "завод": "office", "birou": "office",
     "court": "city_hall", "ministry": "city_hall", "parliament": "city_hall", "council": "city_hall", "суд": "city_hall",
     "министерство": "city_hall", "primărie": "city_hall", "primăria": "city_hall", "primarie": "city_hall",
-    "square": "city", "market": "city", "park": "city", "yard": "city", "площадь": "city", "рынок": "city", "двор": "city",
+    "square": "city", "market": "city", "park": "city", "yard": "home", "площадь": "city", "рынок": "city",
     "stradă": "city", "strada": "city", "oraș": "city", "drum": "road", "bancă": "bank", "noapte": "night", "tablă": "board",
     "street at night": "night", "chart": "board", "charts": "board", "scheme": "board", "end": "board", "finale": "board",
     "lesson": "board", "конец": "board", "итог": "board", "финал": "board",
@@ -390,7 +394,8 @@ def to_text(sc: dict) -> str:
         else:
             out.append(f"{c.get('name') or k} ({gender}{', ' + role if role else ''})")
     rbg = {"city": "City street", "office": "Office", "city_hall": "City hall", "road": "Road", "bank": "Bank",
-           "night": "Night street", "board": "Board", "paper": "Paper"}
+           "night": "Night street", "board": "Board", "paper": "Paper", "hospital": "Hospital", "school": "School",
+           "shop": "Shop", "home": "Home"}
     for s in sc.get("scenes") or []:
         vis = vis_text(s.get("visual") or {})
         vis = f" | {vis}" if vis else ""

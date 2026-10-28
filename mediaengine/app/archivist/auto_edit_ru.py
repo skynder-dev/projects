@@ -1089,6 +1089,7 @@ PHRASES = {
     "Feeling": "Настроение", "Gesture": "Жест",
     "City street": "Улица", "Office": "Офис", "City hall": "Мэрия", "Road": "Дорога", "Bank": "Банк", "Night street": "Ночная улица",
     "Board (schemes, charts)": "Доска (схемы, графики)", "Paper": "Бумага",
+    "Hospital": "Больница", "School": "Школа", "Shop": "Магазин", "Block of flats": "Жилой дом",
     "calm": "спокойно", "happy": "радостно", "angry": "сердито", "sad": "грустно", "surprised": "удивлённо", "sly": "хитро",
     "worried": "тревожно", "talking": "говорит", "explaining": "объясняет", "pointing": "показывает", "finger up": "палец вверх",
     "shrugging": "пожимает плечами", "arms crossed": "руки скрещены", "thinking": "думает", "waving": "машет",

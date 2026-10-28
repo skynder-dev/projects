@@ -32,7 +32,8 @@ _WR_STEP = {"checking": "Checking the PC…", "program": "Downloading llama.cpp 
             "testing": "Starting the story writer for a test…"}
 LANG_LABELS = {"en": "English", "ru": "Русский", "ro": "Română"}
 BG_LABELS = {"city": "City street", "office": "Office", "city_hall": "City hall", "road": "Road", "bank": "Bank",
-             "night": "Night street", "board": "Board (schemes, charts)", "paper": "Paper"}
+             "night": "Night street", "board": "Board (schemes, charts)", "paper": "Paper", "hospital": "Hospital",
+             "school": "School", "shop": "Shop", "home": "Block of flats"}
 EMO_LABELS = {"": "—", "neutral": "calm", "happy": "happy", "angry": "angry", "sad": "sad", "surprised": "surprised",
               "sly": "sly", "worried": "worried"}
 POSE_LABELS = {"": "—", "talk": "talking", "explain": "explaining", "point": "pointing", "point_up": "finger up",
@@ -45,7 +46,7 @@ STORY_LABELS = {"road_contract": "How a City Loses Millions on a Simple Road Con
 
 HELP_EN = ("First lines: <code>Title:</code>, <code>Format: vertical</code> or <code>wide</code>, <code>Narrator: Name (woman)</code>, "
            "then the characters - <code>Name (man, mayor)</code>. A scene starts with <code>==</code> and its background "
-           "(City street, Office, City hall, Road, Bank, Night, Board, Paper); after <code>|</code> what it shows: "
+           "(City street, Office, City hall, Road, Bank, Night, Board, Paper, Hospital, School, Shop, Home); after <code>|</code> what it shows: "
            "<code>title: …</code>, <code>road</code>, <code>contract: CONTRACT; price $4 800 000; stamp APPROVED</code>, "
            "<code>flow: City -&gt; Company $4.8M; Company -&gt; Officials kickback</code>, <code>bars: fair 1.2, paid 9.6 M</code>, "
            "<code>list: Red flags; one bidder; rushed deadlines</code>, <code>counter: $4 800 000 spent</code>. "
@@ -54,7 +55,7 @@ HELP_EN = ("First lines: <code>Title:</code>, <code>Format: vertical</code> or <
            "sneaky. Feelings: calm, happy, angry, sad, surprised, sly, worried. English or Russian.")
 HELP_RU = ("Первые строки: <code>Название:</code>, <code>Формат: вертикальный</code> или <code>широкий</code>, "
            "<code>Рассказчик: Имя (женщина)</code>, потом персонажи — <code>Имя (мужчина, мэр)</code>. Сцена начинается с "
-           "<code>==</code> и фона (Улица, Офис, Мэрия, Дорога, Банк, Ночь, Доска, Бумага); после <code>|</code> — что в ней "
+           "<code>==</code> и фона (Улица, Офис, Мэрия, Дорога, Банк, Ночь, Доска, Бумага, Больница, Школа, Магазин, Дом); после <code>|</code> — что в ней "
            "показано: <code>заголовок: …</code>, <code>дорога</code>, <code>договор: ДОГОВОР; цена 4 800 000 ₽; печать УТВЕРЖДЕНО</code>, "
            "<code>схема: Бюджет -&gt; Фирма 4,8 млн; Фирма -&gt; Чиновники откат</code>, <code>график: честно 1.2, заплатили 9.6 млн</code>, "
            "<code>список: Признаки; одна заявка; сжатые сроки</code>, <code>сумма: 4 800 000 ₽ потрачено</code>. Реплика: "

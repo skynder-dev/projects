@@ -437,8 +437,8 @@ Narrator: <name> (woman or man, narrator)
 <Name> (<gesture>, <feeling>) [bubble]: <a short exclamation shown in a speech bubble>
 
 Every scene starts with a line "== <Background> | <visual>" (or "== <Background>" alone).
-Backgrounds (exactly one of): City street, Office, City hall, Road, Bank, Night, Board, Paper
-  (a hospital, a school, a shop or a flat: Office; a court or a ministry: City hall; numbers and schemes: Board)
+Backgrounds (exactly one of): City street, Office, City hall, Road, Bank, Night, Board, Paper, Hospital, School, Shop, Home
+  (Home is a block of flats; a court or a ministry: City hall; a pharmacy: Shop; numbers and schemes: Board)
 Gestures (one of): talk, explain, point, point up, shrug, cross, think, wave, hands up, rubs hands, present, facepalm, fist, sneaky
 Feelings (one of): neutral, happy, angry, sad, surprised, sly, worried
 
@@ -504,7 +504,7 @@ def prompt(job: dict) -> str:
             "make sense there, and the local names of offices and jobs.\n"
             f"- Translate everything that is said and every label in the visuals into natural spoken {n} (not word for word).\n"
             "- Keep the format's keywords in English exactly: Title, Format, Narrator, woman, man, ==, the backgrounds "
-            "(City street, Office, City hall, Road, Bank, Night, Board, Paper), the visual kinds (title, flow, contract, "
+            "(City street, Office, City hall, Road, Bank, Night, Board, Paper, Hospital, School, Shop, Home), the visual kinds (title, flow, contract, "
             "tender, bars, counter, compare, list, bag, magnifier, road), CONTRACT, TENDER, APPROVED, price, stamp, [bubble], "
             "the gestures and the feelings in brackets.\n"
             "- In what is said, numbers as words; in the visuals, digits.",
