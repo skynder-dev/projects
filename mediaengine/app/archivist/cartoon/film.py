@@ -43,7 +43,7 @@ def check_script(sc: dict) -> dict:
     if not isinstance(sc, dict) or not isinstance(sc.get("scenes"), list) or not sc["scenes"]:
         raise FilmError("The script has no scenes.")
     out = dict(sc)
-    out["format"] = sc.get("format") if sc.get("format") in FORMATS else "vertical"
+    out["format"] = sc.get("format") if isinstance(sc.get("format"), str) and sc.get("format") in FORMATS else "vertical"
     cast = {}
     for key, spec in (sc.get("cast") if isinstance(sc.get("cast"), dict) else {}).items():
         if not isinstance(spec, dict):
@@ -94,7 +94,7 @@ def check_script(sc: dict) -> dict:
         raise FilmError("The script has no scenes.")
     out["scenes"] = scenes
     out["title"] = str(sc.get("title") or "Cartoon")[:120]
-    out["pace"] = sc.get("pace") if sc.get("pace") in PACES else ""
+    out["pace"] = sc.get("pace") if isinstance(sc.get("pace"), str) and sc.get("pace") in PACES else ""
     out["language"] = str(sc.get("language") or "en")[:5]
     return out
 
@@ -118,7 +118,8 @@ def timeline(sc: dict, voices: dict | None = None) -> dict:
     (word times from the line's start); without one, the line's length is estimated."""
     t = 0.0
     scenes = []
-    gap, pad = PACES.get(sc.get("pace") or "", PACES[""])   # (quick like a reference that cuts often, or calm)
+    pace = sc.get("pace") if isinstance(sc.get("pace"), str) else ""
+    gap, pad = PACES.get(pace, PACES[""])                  # (quick like a reference that cuts often, or calm)
     for i, s in enumerate(sc["scenes"]):
         start = t
         lines = []

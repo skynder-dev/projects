@@ -232,13 +232,15 @@ def main() -> int:
         os.environ.pop("FAKE_LLAMA_GPU_CRASH")
         card_page = c.get("/auto/cartoon", headers=H).get_data(as_text=True)
         remembered = W.gpu_failed()
-        W._remember_gpu(None)
-        check("a graphics card that stops in the middle of a story: the story is finished on the processor, the card is "
-              "not tried again for the next ones (the page says so) until the writer is installed again",
+        again_gpu = c.post("/auto/cartoon/writer/gpu-again", headers=H)
+        check("a graphics card that stops in the middle of a story: the story is finished on the processor (the cut-off "
+              "answer not taken for a story), the card is not tried again for the next ones (the page says so) until "
+              "'Try the graphics card again'",
               j8.get("state") == "done" and (j8.get("result") or {}).get("device") == "" and remembered
               and j9.get("state") == "done" and (j9.get("result") or {}).get("device") == ""
               and (vo._job_dir(j8["id"]) / "server-cpu.log").is_file() and not (vo._job_dir(j9["id"]) / "server-cpu.log").is_file()
-              and "stopped while writing a story" in card_page and not W.gpu_failed(),
+              and "stopped while writing a story" in card_page and "Try the graphics card again" in card_page
+              and (j8.get("result") or {}).get("attempts") == 1 and again_gpu.status_code == 302 and not W.gpu_failed(),
               (j8.get("result"), j9.get("result"), remembered))
 
         # a video on this PC: without the voice add-on refused; with it (a stand-in Whisper here) heard, noted, written

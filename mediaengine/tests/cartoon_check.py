@@ -387,24 +387,29 @@ def main() -> int:
         nkey = (nw.headers.get("Location") or "").rstrip("/").split("/")[-1]
         hs = c.post(f"/auto/cartoon/characters/{nkey}", data={"role": "journalist", "female": "1", "host_form": "1", "host": "1"}, headers=H)
         from archivist.cartoon import library as Lb, writer as Wr
-        hosted = (Lb.host("ru") or {}).get("name")
+        hosted = (Lb.host("en") or {}).get("name")
+        ru_host = (Lb.host("ru") or {}).get("name")         # (a host named in Latin letters: not for a Russian story)
+        c.post("/auto/cartoon/characters/rick", data={"role": "contractor boss", "female": "0", "host_form": "1"}, headers=H)
+        still = (Lb.host("en") or {}).get("name")         # (saving another character keeps the host)
         asked_host = Wr.prompt({"mode": "topic", "topic": "School meals", "lang": "en"})
         lena = F.check_script({"title": "x", "cast": {"lena": {"name": "Lena Petrova"}},
                                "scenes": [{"bg": "office", "lines": [{"who": "lena", "text": "Hello."}]}]})["cast"]["lena"]
         listed = c.get("/auto/cartoon/characters", headers=H).data
         c.post(f"/auto/cartoon/characters/{nkey}", data={"role": "journalist", "female": "1", "host_form": "1"}, headers=H)
         bad_new = c.post("/auto/cartoon/characters/add-one", data={"name": " "}, headers=H)
-        after_host = (Lb.host("ru") or {}).get("name")
+        after_host = (Lb.host("en") or {}).get("name")
         check("characters: one added before any film (its look from its name), made the host - the writer gives new stories "
               "this narrator, a story naming her takes her look; the host taken off again; an empty name refused",
               nw.status_code == 302 and nkey == "lenapetrova" and hs.status_code == 302 and hosted == "Lena Petrova"
               and "The narrator is Lena Petrova (woman, narrator)" in asked_host and lena["female"] is True
+              and ru_host != "Lena Petrova" and still == "Lena Petrova"
               and b"the host" in listed and after_host != "Lena Petrova" and bad_new.status_code == 400,
-              (nw.status_code, nkey, hosted, lena.get("female"), after_host, bad_new.status_code))
+              (nw.status_code, nkey, hosted, ru_host, still, lena.get("female"), after_host, bad_new.status_code))
         shapes = [c.post("/auto/cartoon/new", data={"story": "own", "script": json.dumps(x)}, headers=H).status_code for x in (
             {"cast": ["x"], "scenes": [{"lines": [{"text": "a"}]}]},
             {"cast": {"a": {"name": "A"}}, "scenes": [{"mood": ["x"], "min": "abc", "cast": [["a"]], "lines": {"x": 1}}]},
-            {"cast": {"a": {"name": "A"}}, "narrator": ["a"], "scenes": ["x", {"lines": [{"who": ["a"], "pose": ["x"], "text": "Hi."}]}]})]
+            {"cast": {"a": {"name": "A"}}, "narrator": ["a"], "scenes": ["x", {"lines": [{"who": ["a"], "pose": ["x"], "text": "Hi."}]}]},
+            {"cast": {"a": {"name": "A"}}, "pace": [], "format": {"x": 1}, "camera": [1], "scenes": [{"lines": [{"who": "a", "text": "Hi."}]}]})]
         sid = next((j_["id"] for j_ in vo.list_jobs() if j_.get("kind") == "cartoon_make"), "")
         again_odd = c.post(f"/auto/cartoon/{sid}/again", data={"t_0_0": "Hello."}, headers=H).status_code if sid else 0
         try:                                               # (a finished film of such a script shows it as text)

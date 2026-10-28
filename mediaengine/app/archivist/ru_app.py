@@ -628,6 +628,7 @@ APP_PATTERNS: list[tuple[str, str]] = [
      r"Модель не написала подходящий сюжет (\1). Нажми «Повторить» или скажи тему другими словами."),
     (r"The story writer could not be started: (.*)", r"Сценарист не запустился: \1"),
     (r"The story writer stopped while starting: (.*)", r"Сценарист остановился при запуске: \1"),
+    (r"The story writer stopped while writing \((.*)\)\.", r"Сценарист остановился, пока писал (\1)."),
     (r"Clip (\d+) did not pass its check \((.+)\)\.", r"Клип \1 не прошёл проверку (\2)."),
     # voice-over add-on (voice.py)
     (r"The download answered HTTP (\d+)\. Try again later\.", r"Сайт ответил ошибкой HTTP \1. Попробуй позже."),

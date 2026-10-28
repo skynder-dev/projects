@@ -278,8 +278,9 @@ def register(app, page, err_page, e, human_bytes):
             where = (f"<span>the graphics card</span> <span translate='no'>{e(m.get('gpu') or '')}</span>" if m.get("gpu")
                      else "<span>the processor</span>")
             if m.get("gpu") and W.gpu_failed():
-                where = ("<span>the processor</span> <span>(the graphics card stopped while writing a story on this PC; "
-                         "it is tried again when the writer is installed again or its model changed)</span>")
+                where = ("<span>the processor</span> <span>(the graphics card stopped while writing a story on this PC)</span>"
+                         "<form method='post' action='/auto/cartoon/writer/gpu-again' style='display:inline;margin-left:6px'>"
+                         "<button class='btn2'>Try the graphics card again</button></form>")
             secs = "".join(f"<option value='{k}' {'selected' if k == '75' else ''}>{e(v)}</option>" for k, v in LEN_LABELS)
             return (f"<div class='card' id='writer'><h2 style='margin-top:0'>Write a story</h2>"
                     f"<form method='post' action='/auto/cartoon/write' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
@@ -689,7 +690,8 @@ def register(app, page, err_page, e, human_bytes):
                   "<form method='post' action='/auto/cartoon/characters/add-one' class='ct-row'>"
                   "<input name='name' maxlength='40' placeholder='Name (as stories will call it)' style='width:220px' required>"
                   "<input name='role' maxlength='60' placeholder='Role (journalist, mayor …)' style='width:200px'>"
-                  "<select name='female'><option value='1'>a woman</option><option value='0'>a man</option></select>"
+                  "<select name='female'><option value=''>a man or a woman (from the name)</option>"
+                  "<option value='1'>a woman</option><option value='0'>a man</option></select>"
                   "<button>Add</button></form><div class='muted' style='font-size:13px;margin-top:6px'>Its look is drawn "
                   "from its name; change it on its page. A story that names it uses this look and voice.</div></div>")
         return page("Cartoon Studio", body)
@@ -861,6 +863,11 @@ def register(app, page, err_page, e, human_bytes):
         except W.WriterError as exc:
             return err_page(str(exc), "/auto/cartoon")
         return redirect("/auto/cartoon")
+
+    @app.post("/auto/cartoon/writer/gpu-again")
+    def cartoon_writer_gpu_again():
+        W._remember_gpu(None)
+        return redirect("/auto/cartoon#writer")
 
     @app.post("/auto/cartoon/writer/cancel")
     def cartoon_writer_cancel():

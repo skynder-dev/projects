@@ -1749,8 +1749,12 @@ def cancel_job(jid: str) -> None:
         _kill(p)
 
 
+QUITTING: list = []                 # (set by Quit: a process ended by it is not a crash of a graphics card)
+
+
 def shutdown() -> None:
     """Quit: the voice worker or FFmpeg being run now ends with the program (the job is made again at the next start)."""
+    QUITTING.append(1)
     for p in [_CURRENT.get("proc"), *list(_CHILDREN)]:
         if p is not None:
             _kill(p)

@@ -1321,7 +1321,6 @@ PHRASES = {
     "usual": "обычные",
     "short (quick, like a cartoon that cuts often)": "короткие (быстро, как в мультфильме с частыми склейками)",
     "long (calm)": "длинные (спокойно)",
-    "(the graphics card stopped while writing a story on this PC; it is tried again when the writer is installed again or its model changed)": "(видеокарта остановилась, когда писала сюжет на этом компьютере; её попробуют снова, когда сценарист будет установлен заново или сменится модель)",
     "My cartoons and stories": "Мои мультфильмы и сюжеты",
     "Study a cartoon": "Изучить мультфильм",
     "the host": "ведущий",
@@ -1333,6 +1332,9 @@ PHRASES = {
     "The host of my films: the story writer gives every new story this narrator": "Ведущий моих фильмов: сценарист даёт каждому новому сюжету этого рассказчика",
     "Write the character's name.": "Напиши имя персонажа.",
     "No characters yet: they are added when a cartoon is made - or add one below.": "Персонажей пока нет: они добавляются, когда делается мультфильм, — или добавь ниже.",
+    "(the graphics card stopped while writing a story on this PC)": "(видеокарта остановилась, когда писала сюжет на этом компьютере)",
+    "Try the graphics card again": "Попробовать видеокарту снова",
+    "a man or a woman (from the name)": "мужчина или женщина (по имени)",
     "Or a video on this PC": "Или видео на этом компьютере", "A video whose story to retell (its full path)": "Видео, сюжет которого пересказать (полный путь)",
     "The program listens to it (the voice add-on), notes its facts and numbers and writes a new story with its own characters - not a copy. Listening takes a few minutes for an hour of video.":
         "Программа прослушает его (модуль озвучки), выпишет факты и цифры и напишет новый сюжет со своими персонажами — не копию. Прослушивание — несколько минут на час видео.",

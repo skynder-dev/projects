@@ -295,6 +295,7 @@ def _install_now(key: str = "small") -> None:
                 raise WriterError("The downloaded model is not the exact file. Try again.")
             ae._replace_retry(part, dst, tries=30)
         INSTALL.update(step="testing", detail="", done=total)
+        _remember_gpu(None)                                # (installed again: the card is tried again, and tested now)
         test = selftest(dst, _STOP.is_set)
         if _STOP.is_set():
             raise WriterError("Installation cancelled.")
@@ -311,7 +312,6 @@ def _install_now(key: str = "small") -> None:
         tmpm.write_text(json.dumps(m, indent=1), "utf-8")
         os.replace(tmpm, MANIFEST)
         shutil.rmtree(tmp, ignore_errors=True)
-        _remember_gpu(None)                                # (a new model: the card is tried again)
         INSTALL.update(state="done", step="", detail="")
     except Exception as exc:
         msg = str(exc)
@@ -450,6 +450,12 @@ class Server:
                         if on_piece:
                             on_piece(n)
                     finish = c.get("finish_reason") or finish
+                if msg.get("error"):                       # (the server's own error in the stream)
+                    raise WriterError("The story writer stopped while writing (" + str(msg.get("error"))[:200] + ").")
+            else:
+                if not finish:                             # (cut off without its end: the server went away)
+                    import http.client
+                    raise http.client.IncompleteRead(b"".join(x.encode("utf-8") for x in out))
         return {"text": "".join(out), "pieces": n, "finish": finish, "usage": usage, "timings": timings,
                 "s": round(time.time() - t0, 1)}
 
@@ -653,7 +659,8 @@ def prompt(job: dict) -> str:
         h = None
     if h and job.get("mode") != "adapt":
         who = "woman" if (h.get("look") or {}).get("female") else "man"
-        rules += f"\n- The narrator is {h['name']} ({who}, narrator) - the same host as in the earlier films."
+        rules += (f"\n- The narrator is {h['name']} ({who}, narrator) - the same host as in the earlier films; write "
+                  f"this name exactly as here.")
     country = str(job.get("country") or "").strip() or ("" if lang == "en" else COUNTRY.get(lang, ""))
     where = (f"\nTHE VIEWERS: in {country}; names, money ({money_of(country)}) and offices usual there." if country else "")
     if job.get("mode") == "adapt":
@@ -777,19 +784,26 @@ def do(jid: str, d: Path, job: dict) -> dict:
         """The model's answer; a graphics card that stops in the middle (a driver reset, its memory taken by another
         program) is remembered, and the story is asked again on the processor."""
         import http.client
+        import urllib.error
         try:
             return box["srv"].chat(messages, **kw)
         except WriterError:
             raise
         except (OSError, http.client.HTTPException) as exc:
             s = box["srv"]
+            time.sleep(0.3)
+            died = s.proc is not None and s.proc.poll() is not None
             tail = s._tail(3)
             s.close()
-            if not s.gpu or stop():
-                raise WriterError("The story writer stopped while writing (" + (tail or str(exc))[:300] + ").")
+            on_card = s.gpu and bool(s.device)             # (the card really had the model)
+            if (stop() or vo.QUITTING or not on_card or not died or isinstance(exc, urllib.error.HTTPError)):
+                raise WriterError("Stopped." if stop() else
+                                  "The story writer stopped while writing (" + (tail or str(exc))[:300] + ").")
             _remember_gpu(False)
+            step = vo._CURRENT.get("step") or "writing"
             vo._CURRENT.update(step="loading")
             box["srv"] = Server(False, log=d / "server-cpu.log").start(stop)
+            vo._CURRENT.update(step=step)
             return box["srv"].chat(messages, **kw)
     try:
         if len(str(job.get("source") or "")) > MAX_SOURCE and job.get("mode") == "text":   # a long video: its notes
@@ -810,7 +824,8 @@ def do(jid: str, d: Path, job: dict) -> dict:
             vo._CURRENT.update(step="writing", progress=base)
             r = ask(messages, max_tokens=2600, seed=int(job.get("seed") or 0) + attempt,
                     on_piece=lambda n, base=base, span=(0.95 - first) / 2: vo._CURRENT.update(
-                        progress=round(min(base + span, base + span * n / expect), 3)),
+                        progress=max(float(vo._CURRENT.get("progress") or 0),
+                                     round(min(base + span, base + span * n / expect), 3))),
                     stop=stop)
             text = clean(r["text"], job.get("format") or "", job.get("lang") or "")
             info, problem = judge(text, secs, job.get("style") if isinstance(job.get("style"), dict) and job.get("mode") != "adapt" else None)

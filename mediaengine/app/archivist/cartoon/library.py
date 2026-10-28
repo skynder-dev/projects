@@ -38,9 +38,29 @@ def load() -> dict:
         try:
             data = json.loads(p.read_text("utf-8"))
             _CACHE.update(mtime=m, data=data if isinstance(data, dict) else {})
-        except Exception:
+        except OSError:                    # (held a moment by a virus check or a sync: the last read, not "empty")
+            return _CACHE["data"]
+        except ValueError:
             _CACHE.update(mtime=m, data={})
     return _CACHE["data"]
+
+
+def _fresh() -> dict:
+    """The library read now, for a change (OSError when the file is there but cannot be read: never saved over)."""
+    p = path()
+    for i in range(10):
+        if not p.exists():
+            return {}
+        try:
+            data = json.loads(p.read_text("utf-8"))
+            return dict(data) if isinstance(data, dict) else {}
+        except ValueError:
+            return {}
+        except OSError:
+            if i == 9:
+                raise
+            time.sleep(0.05 * (i + 1))
+    return {}
 
 
 def _save(data: dict) -> None:
@@ -61,7 +81,8 @@ def _save(data: dict) -> None:
 
 
 def entry(name: str) -> dict | None:
-    return load().get(key_of(name))
+    e = load().get(key_of(name))
+    return e if isinstance(e, dict) else None
 
 
 def look_of(name: str) -> dict:
@@ -77,7 +98,7 @@ def voice_of(name: str) -> str:
 def remember(cast: dict, narrator: str = "", lang: str = "") -> None:
     """The characters of a film made: new names kept with the look they had; known ones counted."""
     with _LOCK:
-        data = dict(load())
+        data = _fresh()
         now = time.strftime("%Y-%m-%dT%H:%M:%S")
         for k, c in (cast or {}).items():
             name = str(c.get("name") or k).strip()
@@ -108,7 +129,7 @@ def add(name: str, role: str = "", female: bool | None = None) -> str:
         raise ValueError("Write the character's name.")
     key = key_of(name)
     with _LOCK:
-        data = dict(load())
+        data = _fresh()
         if key not in data:
             over = {} if female is None else {"female": bool(female)}
             c = ch.make(name, str(role or "")[:60], **over)
@@ -121,25 +142,37 @@ def add(name: str, role: str = "", female: bool | None = None) -> str:
 def set_host(key: str, on: bool) -> None:
     """The host of the owner's films: the story writer gives every new story this narrator (one host at a time)."""
     with _LOCK:
-        data = dict(load())
+        data = _fresh()
         if key not in data:
             raise KeyError(key)
-        for k, e in data.items():
-            if e.get("host") and (k != key or not on):
-                data[k] = {kk: vv for kk, vv in e.items() if kk != "host"}
-        if on:
+        if on:                             # (one host: the one before is not the host any more)
+            for k, e in list(data.items()):
+                if k != key and isinstance(e, dict) and e.get("host"):
+                    data[k] = {kk: vv for kk, vv in e.items() if kk != "host"}
             data[key] = dict(data[key], host=True)
+        elif data[key].get("host"):
+            data[key] = {kk: vv for kk, vv in data[key].items() if kk != "host"}
+        else:
+            return
         _save(data)
+
+
+def _fits(name: str, lang: str) -> bool:
+    """A name written in the letters of the language (Cyrillic for Russian, Latin for English and Romanian)."""
+    cyr = bool(re.search(r"[А-Яа-яЁё]", name))
+    return cyr if lang == "ru" else not cyr
 
 
 def host(lang: str) -> dict | None:
     """The host chosen on the Characters page, or else the narrator of the earlier films in this language (the one
     used most): the same host for a series."""
-    chosen = next((e for e in load().values() if e.get("host")), None)
-    if chosen:
-        return chosen
+    chosen = next((e for e in load().values() if isinstance(e, dict) and e.get("host")), None)
+    if chosen and (lang in (chosen.get("langs") or []) or _fits(str(chosen.get("name") or ""), lang)):
+        return chosen                      # (a host named in Cyrillic letters hosts Russian films, in Latin ones the others)
     best = None
     for e in load().values():
+        if not isinstance(e, dict):
+            continue
         if e.get("narrator") and lang in (e.get("langs") or []) and int(e.get("films") or 0) >= 1:
             if best is None or int(e.get("films") or 0) > int(best.get("films") or 0):
                 best = e
@@ -148,7 +181,7 @@ def host(lang: str) -> dict | None:
 
 def update(key: str, role: str | None = None, look: dict | None = None, voice: str | None = None) -> None:
     with _LOCK:
-        data = dict(load())
+        data = _fresh()
         e = dict(data.get(key) or {})
         if not e:
             raise KeyError(key)
@@ -165,7 +198,7 @@ def update(key: str, role: str | None = None, look: dict | None = None, voice: s
 
 def forget(key: str) -> None:
     with _LOCK:
-        data = dict(load())
+        data = _fresh()
         data.pop(key, None)
         _save(data)
 
