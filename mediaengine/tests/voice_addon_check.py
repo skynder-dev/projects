@@ -216,6 +216,7 @@ def main() -> int:
         talk_check(c, H, Path(a.talk).resolve(), out, check, timings, wait)
         crew_check(c, H, Path(a.talk).resolve(), out, check, timings, wait)
     cartoon_voices_check(c, H, out, check, timings, wait)
+    cartoon_romanian_check(c, H, out, check, timings, wait)
     c.post("/lang", data={"back": "/auto/voice"}, headers=H)
     ru = c.get("/auto/voice", headers=H).get_data(as_text=True)
     check("the page in Russian with a finished voice-over", "Наложить на видео" in ru and "Все слова сказаны" in ru)
@@ -384,6 +385,40 @@ def cartoon_voices_check(c, H, out: Path, check, timings: dict, wait) -> None:
     heard = str((cj.get("result") or {}).get("said") or "").lower()
     check("cartoon: the film's voices heard back by Whisper (the lines are said)", cj.get("state") == "done"
           and "price" in heard and "approved" in heard and "taxpayers" in heard, heard[:300] or cj.get("result"))
+
+
+
+def cartoon_romanian_check(c, H, out: Path, check, timings: dict, wait) -> None:
+    """8. A cartoon in Romanian (Cartoon Studio's third language): Qwen3-TTS does not speak it, so the narrator's own
+    voice and a described voice are both said by VoxCPM2; heard back by Whisper in Romanian."""
+    import unicodedata
+    from archivist import voice as vo
+    script = {"title": "Voci in romana", "language": "ro", "format": "vertical", "narrator": "ana",
+              "cast": {"ana": {"name": "Ana", "role": "narrator", "female": True, "voice": {"kind": "host"}},
+                       "radu": {"name": "Radu", "role": "director de firma", "female": False,
+                                "voice": {"kind": "describe", "text": "A confident businessman in his forties, low and smooth."}}},
+              "scenes": [{"bg": "office", "cast": ["radu"], "visual": {"kind": "contract", "price": "4 800 000 lei", "price_at": 0},
+                          "lines": [{"who": "ana", "text": "Prețul este de patru ori mai mare decât pe piață."},
+                                    {"who": "radu", "pose": "count", "emotion": "sly", "text": "Și contractul este aprobat."}]},
+                         {"bg": "board", "cast": [], "lines": [{"who": "ana", "text": "Contribuabilii plătesc toată diferența."}]}]}
+    t0 = time.time()
+    r = c.post("/auto/cartoon/new", data={"story": "own", "script": json.dumps(script), "format": "vertical", "voices": "1",
+                                          "captions": "1"}, headers=H)
+    jid = next((j["id"] for j in vo.list_jobs() if j.get("kind") == "cartoon_make"), "")
+    j = wait(jid, 3 * 3600) if jid else {"state": "failed"}
+    timings["cartoon_ro_s"] = round(time.time() - t0)
+    check("cartoon in Romanian: made with voices", r.status_code == 302 and j.get("state") == "done", (j.get("state"), j.get("result")))
+    if j.get("state") != "done":
+        return
+    film = vo._job_dir(jid) / "film.mp4"
+    shutil.copy2(film, out / "cartoon_voices_ro.mp4")
+    c.post("/auto/voice/captions", data={"path": str(film), "language": "ro"}, headers=H)
+    cj = wait(vo.list_jobs()[0]["id"], 3600)
+    heard = str((cj.get("result") or {}).get("said") or "").lower()
+    plain = "".join(ch for ch in unicodedata.normalize("NFD", heard) if unicodedata.category(ch) != "Mn")
+    want = ["pretul", "patru", "piata", "contractul", "aprobat", "platesc", "diferenta"]
+    got = [w for w in want if w in plain]
+    check("cartoon in Romanian: Whisper hears the Romanian words (5 of 7 at least)", len(got) >= 5, (got, heard[:300]))
 
 
 if __name__ == "__main__":
