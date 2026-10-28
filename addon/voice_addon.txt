@@ -1,148 +1,144 @@
 PASS Install starts
-01:48:52 running packages  0/0 MB
-01:48:57 running packages Downloading pyyaml-6.0.3-cp311-cp311-win_amd64.whl.metadata 0/0 MB
-01:49:02 running packages Downloading numba-0.68.0-cp311-cp311-win_amd64.whl 0/0 MB
-01:49:07 running packages Downloading xxhash-4.0.2-cp311-cp311-win_amd64.whl 0/0 MB
-01:49:12 running packages Installing : 0/0 MB
-01:50:02 running models audiovae.pth 116/5446 MB
-01:50:07 running models model.safetensors 1073/5446 MB
-01:50:12 running models model.safetensors 2267/5446 MB
-01:50:17 running models model.safetensors 3388/5446 MB
-01:50:22 running models model.safetensors 4622/5446 MB
-01:50:27 running models model.safetensors 4957/5446 MB
-01:50:32 running models model.bin 5444/5446 MB
-01:50:37 running checking_addon  5446/5446 MB
-01:50:47 running qwen_packages Downloading six-1.17.0-py2.py3-none-any.whl 0/0 MB
-01:50:52 running qwen_packages Installing : 0/0 MB
-01:51:07 running qwen_models  0/0 MB
-01:51:12 running qwen_models model.safetensors 798/4544 MB
-01:51:17 running qwen_models model.safetensors 1592/4544 MB
-01:51:22 running qwen_models model.safetensors 2672/4544 MB
-01:51:27 running qwen_models model.safetensors 3836/4544 MB
-01:51:32 running qwen_models preprocessor_config.json 3859/4544 MB
-01:51:37 running qwen_models tokenizer_config.json 4541/4544 MB
-01:51:42 running checking_addon  4544/4544 MB
-01:51:52 done   4544/4544 MB
+05:00:17 running packages  0/0 MB
+05:00:22 running packages Looking for truststore==0.10.5 0/0 MB
+05:00:27 running packages Downloading transformers-5.20.1-py3-none-any.whl 0/0 MB
+05:00:32 running packages Installing : 0/0 MB
+05:01:17 running packages Installed annotated-types-0.8.0 0/0 MB
+05:01:22 running models model.safetensors 453/5446 MB
+05:01:27 running models model.safetensors 1857/5446 MB
+05:01:32 running models model.safetensors 2836/5446 MB
+05:01:37 running models model.safetensors 4279/5446 MB
+05:01:42 running models model.safetensors 4957/5446 MB
+05:01:47 running models model.bin 4960/5446 MB
+05:01:52 running checking_addon  5446/5446 MB
+05:01:57 running qwen_packages Looking for accelerate==1.12.0 0/0 MB
+05:02:02 running qwen_packages Installing : 0/0 MB
+05:02:22 running qwen_models model.safetensors 126/4544 MB
+05:02:27 running qwen_models model.safetensors 1387/4544 MB
+05:02:32 running qwen_models model.safetensors 2597/4544 MB
+05:02:37 running qwen_models model.safetensors 3828/4544 MB
+05:02:42 running qwen_models configuration.json 3859/4544 MB
+05:02:47 running qwen_models tokenizer_config.json 4541/4544 MB
+05:02:52 running checking_addon  4544/4544 MB
+05:03:02 done   4544/4544 MB
 PASS the add-on is installed
 PASS its manifest: version, Python, torch, models
 PASS the new engine (Qwen3-TTS, the owner's pick 14_5) is installed with it
 PASS the page shows the forms once installed
 PASS a voice-over is accepted
-01:51:52 20261028-015152-7a41f4 working starting 0%
-01:51:55 20261028-015152-7a41f4 working loading 2%
-01:52:25 20261028-015152-7a41f4 working speaking 1/1 5%
-01:54:37 20261028-015152-7a41f4 working speaking 1/1 15%
-01:56:35 20261028-015152-7a41f4 working listening 95%
-01:56:44 20261028-015152-7a41f4 done  0%
+05:03:02 20261028-050302-d75ac3 working starting 0%
+05:03:05 20261028-050302-d75ac3 working loading 2%
+05:03:41 20261028-050302-d75ac3 working speaking 1/1 5%
+05:05:50 20261028-050302-d75ac3 working speaking 1/1 15%
+05:07:38 20261028-050302-d75ac3 working listening 95%
+05:07:47 20261028-050302-d75ac3 done  0%
 PASS the voice-over is made
 PASS every word said (listened to)
 PASS a plausible length
 PASS said by the new engine (Qwen3-TTS) in the voice 9_2
-01:56:44 20261028-015644-2773f0 working starting 0%
-01:56:47 20261028-015644-2773f0 working loading 2%
-01:57:32 20261028-015644-2773f0 working speaking 1/1 5%
-01:58:14 20261028-015644-2773f0 working listening 95%
-01:58:20 20261028-015644-2773f0 done  0%
+05:07:47 20261028-050747-e22892 working starting 0%
+05:07:50 20261028-050747-e22892 working loading 2%
+05:08:35 20261028-050747-e22892 working speaking 1/1 5%
+05:09:17 20261028-050747-e22892 working listening 95%
+05:09:23 20261028-050747-e22892 done  0%
 PASS a Russian voice-over in the same voice, heard back in Cyrillic
 PASS its pace: a bit faster (8% shorter), the captions within the faster voice
-01:58:20 20261028-015820-9c401c working starting 0%
-01:58:23 20261028-015820-9c401c working loading 2%
-01:59:33 20261028-015820-9c401c working speaking 1/1 5%
-02:02:30 20261028-015820-9c401c working listening 95%
-02:02:36 20261028-015820-9c401c done  0%
+05:09:23 20261028-050923-4232a1 working starting 0%
+05:09:26 20261028-050923-4232a1 working loading 2%
+05:10:33 20261028-050923-4232a1 working speaking 1/1 5%
+05:13:21 20261028-050923-4232a1 working listening 95%
+05:13:27 20261028-050923-4232a1 done  0%
 PASS a voice from a description is still made (VoxCPM2)
-02:02:36 20261028-020236-2092e4 working video 50%
-02:02:42 20261028-020236-2092e4 done  0%
+05:13:27 20261028-051327-be40ff working video 50%
+05:13:34 20261028-051327-be40ff done  0%
 PASS the voice onto the video, captions burned, checked
-02:02:42 20261028-020242-d86999 working starting 0%
-02:02:45 20261028-020242-d86999 working listening 20%
-02:02:51 20261028-020242-d86999 working video 50%
-02:02:54 20261028-020242-d86999 done  0%
+05:13:34 20261028-051334-38be47 working starting 0%
+05:13:37 20261028-051334-38be47 working listening 20%
+05:13:40 20261028-051334-38be47 working video 50%
+05:13:43 20261028-051334-38be47 done  0%
 PASS captions from the video's own speech hear the voice-over
 PASS clips: the NASA interview downloaded (pinned SHA-256)
 PASS clips: finding starts
-02:02:58 20261028-020258-65dcaf working starting 0%
-02:03:01 20261028-020258-65dcaf working listening 20%
-02:03:13 20261028-020258-65dcaf working listening 26%
-02:03:22 20261028-020258-65dcaf working listening 30%
-02:03:31 20261028-020258-65dcaf working listening 34%
-02:03:43 20261028-020258-65dcaf working listening 38%
-02:03:52 20261028-020258-65dcaf working listening 43%
-02:04:04 20261028-020258-65dcaf working listening 47%
-02:04:16 20261028-020258-65dcaf working listening 51%
-02:04:25 20261028-020258-65dcaf working listening 56%
-02:04:37 20261028-020258-65dcaf working listening 60%
-02:04:46 20261028-020258-65dcaf working listening 64%
-02:04:58 20261028-020258-65dcaf working listening 68%
-02:05:07 20261028-020258-65dcaf working listening 73%
-02:05:16 20261028-020258-65dcaf working listening 76%
-02:05:28 20261028-020258-65dcaf working listening 81%
-02:05:40 20261028-020258-65dcaf working listening 85%
-02:05:49 20261028-020258-65dcaf working listening 90%
-02:05:55 20261028-020258-65dcaf done  0%
+05:13:46 20261028-051346-87a3c8 working starting 0%
+05:13:49 20261028-051346-87a3c8 working listening 20%
+05:14:01 20261028-051346-87a3c8 working listening 26%
+05:14:10 20261028-051346-87a3c8 working listening 30%
+05:14:16 20261028-051346-87a3c8 working listening 34%
+05:14:25 20261028-051346-87a3c8 working listening 38%
+05:14:34 20261028-051346-87a3c8 working listening 43%
+05:14:46 20261028-051346-87a3c8 working listening 47%
+05:14:55 20261028-051346-87a3c8 working listening 51%
+05:15:04 20261028-051346-87a3c8 working listening 56%
+05:15:16 20261028-051346-87a3c8 working listening 60%
+05:15:25 20261028-051346-87a3c8 working listening 64%
+05:15:34 20261028-051346-87a3c8 working listening 68%
+05:15:43 20261028-051346-87a3c8 working listening 73%
+05:15:52 20261028-051346-87a3c8 working listening 76%
+05:16:01 20261028-051346-87a3c8 working listening 81%
+05:16:10 20261028-051346-87a3c8 working listening 85%
+05:16:22 20261028-051346-87a3c8 working listening 90%
+05:16:25 20261028-051346-87a3c8 done  0%
 PASS clips: the 9-minute interview heard (space, station)
 PASS clips: at least five clips found, each 15-30 s with its words and why
 PASS clips: the page lists them with pictures
 PASS clips: making starts
-02:05:55 20261028-020555-552b05 working starting 0%
-02:05:58 20261028-020555-552b05 working clip 1/2 0%
-02:06:34 20261028-020555-552b05 working clip 2/2 50%
-02:07:16 20261028-020555-552b05 done  0%
+05:16:25 20261028-051625-046fdc working starting 0%
+05:16:28 20261028-051625-046fdc working clip 1/2 0%
+05:17:04 20261028-051625-046fdc working clip 2/2 50%
+05:17:46 20261028-051625-046fdc done  0%
 PASS clips: two vertical clips made from the interview - the person kept in the frame (crop on the face), captions
 PASS speaker: the crew video downloaded (pinned SHA-256)
-02:07:18 20261028-020718-064a34 working starting 0%
-02:07:21 20261028-020718-064a34 working listening 20%
-02:07:30 20261028-020718-064a34 working listening 32%
-02:07:39 20261028-020718-064a34 working listening 37%
-02:07:48 20261028-020718-064a34 working listening 41%
-02:07:57 20261028-020718-064a34 working listening 45%
-02:08:03 20261028-020718-064a34 working listening 49%
-02:08:15 20261028-020718-064a34 working listening 53%
-02:08:24 20261028-020718-064a34 working listening 58%
-02:08:33 20261028-020718-064a34 working listening 62%
-02:08:42 20261028-020718-064a34 working listening 67%
-02:08:51 20261028-020718-064a34 working listening 71%
-02:09:00 20261028-020718-064a34 working listening 74%
-02:09:09 20261028-020718-064a34 working listening 78%
-02:09:18 20261028-020718-064a34 working listening 82%
-02:09:27 20261028-020718-064a34 working listening 87%
-02:09:36 20261028-020718-064a34 working listening 90%
-02:09:42 20261028-020718-064a34 done  0%
-02:09:42 20261028-020942-1b71dc working starting 0%
-02:09:45 20261028-020942-1b71dc working clip 1/3 0%
-02:10:21 20261028-020942-1b71dc working clip 2/3 33%
-02:10:54 20261028-020942-1b71dc working clip 3/3 66%
-02:11:40 20261028-020942-1b71dc done  0%
+05:17:48 20261028-051748-a7be25 working starting 0%
+05:17:51 20261028-051748-a7be25 working listening 20%
+05:18:00 20261028-051748-a7be25 working listening 32%
+05:18:09 20261028-051748-a7be25 working listening 37%
+05:18:15 20261028-051748-a7be25 working listening 41%
+05:18:24 20261028-051748-a7be25 working listening 45%
+05:18:33 20261028-051748-a7be25 working listening 49%
+05:18:42 20261028-051748-a7be25 working listening 53%
+05:18:51 20261028-051748-a7be25 working listening 58%
+05:19:00 20261028-051748-a7be25 working listening 62%
+05:19:09 20261028-051748-a7be25 working listening 67%
+05:19:15 20261028-051748-a7be25 working listening 71%
+05:19:24 20261028-051748-a7be25 working listening 74%
+05:19:33 20261028-051748-a7be25 working listening 78%
+05:19:42 20261028-051748-a7be25 working listening 82%
+05:19:51 20261028-051748-a7be25 working listening 87%
+05:20:00 20261028-051748-a7be25 working listening 90%
+05:20:06 20261028-051748-a7be25 done  0%
+05:20:06 20261028-052006-94cd6b working starting 0%
+05:20:09 20261028-052006-94cd6b working clip 1/3 0%
+05:20:42 20261028-052006-94cd6b working clip 2/3 33%
+05:21:18 20261028-052006-94cd6b working clip 3/3 66%
+05:22:00 20261028-052006-94cd6b done  0%
 PASS speaker: three clips of the crew made, at least one with the crop on whoever talks
-02:11:54 20261028-021154-9ac31e working voices 2%
-02:14:54 20261028-021154-9ac31e working voices 22%
-02:16:27 20261028-021154-9ac31e working voices 42%
-02:19:52 20261028-021154-9ac31e working drawing 63%
-02:19:55 20261028-021154-9ac31e working drawing 78%
-02:19:58 20261028-021154-9ac31e working drawing 89%
-02:20:01 20261028-021154-9ac31e working checking 98%
-02:20:04 20261028-021154-9ac31e done  0%
+05:22:14 20261028-052214-3215bb working voices 2%
+05:25:05 20261028-052214-3215bb working voices 22%
+05:26:29 20261028-052214-3215bb working voices 42%
+05:29:54 20261028-052214-3215bb working drawing 70%
+05:29:57 20261028-052214-3215bb working drawing 85%
+05:30:00 20261028-052214-3215bb working drawing 93%
+05:30:03 20261028-052214-3215bb done  0%
 PASS cartoon: a film with voices made (the narrator's own voice, a voice from a description), checked
 PASS cartoon: the described voice kept with the character (the same voice in the next episode)
-02:20:04 20261028-022004-c6f954 working starting 0%
-02:20:07 20261028-022004-c6f954 working listening 20%
-02:20:10 20261028-022004-c6f954 working video 50%
-02:20:19 20261028-022004-c6f954 done  0%
+05:30:03 20261028-053003-b38d0b working starting 0%
+05:30:06 20261028-053003-b38d0b working listening 20%
+05:30:09 20261028-053003-b38d0b working video 50%
+05:30:18 20261028-053003-b38d0b done  0%
 PASS cartoon: the film's voices heard back by Whisper (the lines are said)
-02:20:19 20261028-022019-e5b198 working voices 2%
-02:43:02 20261028-022019-e5b198 working voices 22%
-03:03:42 20261028-022019-e5b198 working voices 42%
-03:13:13 20261028-022019-e5b198 working drawing 63%
-03:13:16 20261028-022019-e5b198 working drawing 72%
-03:13:19 20261028-022019-e5b198 working drawing 84%
-03:13:22 20261028-022019-e5b198 working drawing 93%
-03:13:25 20261028-022019-e5b198 done  0%
+05:30:18 20261028-053018-d1f4cc working voices 2%
+05:44:11 20261028-053018-d1f4cc working voices 22%
+05:56:51 20261028-053018-d1f4cc working voices 42%
+06:06:09 20261028-053018-d1f4cc working drawing 69%
+06:06:12 20261028-053018-d1f4cc working drawing 78%
+06:06:15 20261028-053018-d1f4cc working drawing 87%
+06:06:18 20261028-053018-d1f4cc working drawing 93%
+06:06:21 20261028-053018-d1f4cc done  0%
 PASS cartoon in Romanian: made with voices
-03:13:25 20261028-031325-961c3b working starting 0%
-03:13:28 20261028-031325-961c3b working listening 20%
-03:13:34 20261028-031325-961c3b working video 50%
-03:13:40 20261028-031325-961c3b working checking 90%
-03:13:43 20261028-031325-961c3b done  0%
-FAIL cartoon in Romanian: Whisper hears the Romanian words (5 of 7 at least)  (['patru', 'contractul', 'aprobat'], 'pritul state de patru, ori mai mardicat pe pietan. si contractule este aprobat! contribuabili planti chesti toti unde frances.')
+06:06:22 20261028-060622-2c5692 working starting 0%
+06:06:25 20261028-060622-2c5692 working listening 20%
+06:06:31 20261028-060622-2c5692 working video 50%
+06:06:37 20261028-060622-2c5692 done  0%
+PASS cartoon in Romanian: Whisper hears the Romanian words (5 of 7 at least)
 PASS the page in Russian with a finished voice-over
-{"passed": 29, "total": 30}
+{"passed": 30, "total": 30}
