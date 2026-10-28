@@ -676,14 +676,32 @@ def register(app, page, err_page, e, human_bytes):
                      f"<b translate='no'>{e(en.get('name') or key)}</b>"
                      f"<div class='muted' style='font-size:13px' translate='no'>{e(en.get('role') or '')}</div>"
                      f"<div class='muted' style='font-size:13px'><span>Films:</span> <span translate='no'>{int(en.get('films') or 0)}</span>"
-                     + (" · <span>narrator</span>" if en.get("narrator") else "") + "</div>"
+                     + (" · <span>narrator</span>" if en.get("narrator") and not en.get("host") else "")
+                     + (" · <b>the host</b>" if en.get("host") else "") + "</div>"
                      f"<a class='btn btn2' style='margin-top:6px' href='/auto/cartoon/characters/{e(key)}'>Change</a></div></div>")
         body = (f"{CSS}<div class='pagehead'><div class='eyebrow'><a href='/auto/cartoon'>Cartoon Studio</a></div><h1>Characters</h1>"
                 f"<div class='lead'>Everyone your cartoons have used. A character keeps its look and its voice in every new "
                 f"film whose story names it - change them here.</div></div>"
                 + (f"<div class='card'><div class='ct-cast'>{rows}</div></div>" if rows else
-                   "<div class='card'><div class='muted'>No characters yet: they are added when a cartoon is made.</div></div>"))
+                   "<div class='card'><div class='muted'>No characters yet: they are added when a cartoon is made - or "
+                   "add one below.</div></div>")
+                + "<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Add a character</h2>"
+                  "<form method='post' action='/auto/cartoon/characters/add-one' class='ct-row'>"
+                  "<input name='name' maxlength='40' placeholder='Name (as stories will call it)' style='width:220px' required>"
+                  "<input name='role' maxlength='60' placeholder='Role (journalist, mayor …)' style='width:200px'>"
+                  "<select name='female'><option value='1'>a woman</option><option value='0'>a man</option></select>"
+                  "<button>Add</button></form><div class='muted' style='font-size:13px;margin-top:6px'>Its look is drawn "
+                  "from its name; change it on its page. A story that names it uses this look and voice.</div></div>")
         return page("Cartoon Studio", body)
+
+    @app.post("/auto/cartoon/characters/add-one")
+    def cartoon_character_new():
+        f = request.form
+        try:
+            key = L.add(f.get("name") or "", f.get("role") or "", f.get("female") == "1" if f.get("female") in ("0", "1") else None)
+        except ValueError as exc:
+            return err_page(str(exc), "/auto/cartoon/characters")
+        return redirect(f"/auto/cartoon/characters/{key}")
 
     @app.get("/auto/cartoon/characters/<key>.png")
     def cartoon_character_png(key):
@@ -722,6 +740,9 @@ def register(app, page, err_page, e, human_bytes):
                 f"{e(en.get('voice') or '')}</textarea>"
                 f"<div class='muted' style='font-size:13px'>A voice from a description is made once with the voice add-on and kept: "
                 f"the character sounds the same in every film. A new description makes a new voice.</div>"
+                f"<input type='hidden' name='host_form' value='1'><label style='display:block;margin-top:10px'>"
+                f"<input type='checkbox' name='host' value='1' {'checked' if en.get('host') else ''}> The host of my films: "
+                f"the story writer gives every new story this narrator</label>"
                 f"<div style='margin-top:12px' class='ct-row'><button class='ae-big'>Save</button>"
                 f"<a class='btn btn2' href='/auto/cartoon/characters'>Back</a></div></form></div>"
                 f"<form method='post' action='/auto/cartoon/characters/{e(key)}/forget' style='margin-top:12px' "
@@ -744,6 +765,8 @@ def register(app, page, err_page, e, human_bytes):
             look["beard"] = "none"
         L.update(key, role=f.get("role") if f.get("role") is not None else None, look=look,
                  voice=f.get("voice") if f.get("voice") is not None else None)
+        if f.get("host_form") == "1":
+            L.set_host(key, f.get("host") == "1")
         return redirect(f"/auto/cartoon/characters/{key}")
 
     @app.post("/auto/cartoon/characters/<key>/forget")

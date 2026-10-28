@@ -99,8 +99,45 @@ def remember(cast: dict, narrator: str = "", lang: str = "") -> None:
         _save(data)
 
 
+def add(name: str, role: str = "", female: bool | None = None) -> str:
+    """A character made before any film (its look drawn from its name, changed on its page); its key. An existing
+    name: that character's key."""
+    from . import chars as ch
+    name = re.sub(r"\s+", " ", str(name or "")).strip()[:40]
+    if len(name) < 2:
+        raise ValueError("Write the character's name.")
+    key = key_of(name)
+    with _LOCK:
+        data = dict(load())
+        if key not in data:
+            over = {} if female is None else {"female": bool(female)}
+            c = ch.make(name, str(role or "")[:60], **over)
+            data[key] = {"name": name, "role": str(role or "")[:60], "look": {x: c[x] for x in LOOK if x in c}, "voice": "",
+                         "narrator": False, "films": 0, "added": time.strftime("%Y-%m-%dT%H:%M:%S")}
+            _save(data)
+    return key
+
+
+def set_host(key: str, on: bool) -> None:
+    """The host of the owner's films: the story writer gives every new story this narrator (one host at a time)."""
+    with _LOCK:
+        data = dict(load())
+        if key not in data:
+            raise KeyError(key)
+        for k, e in data.items():
+            if e.get("host") and (k != key or not on):
+                data[k] = {kk: vv for kk, vv in e.items() if kk != "host"}
+        if on:
+            data[key] = dict(data[key], host=True)
+        _save(data)
+
+
 def host(lang: str) -> dict | None:
-    """The narrator of the earlier films in this language (the one used most): the same host for a series."""
+    """The host chosen on the Characters page, or else the narrator of the earlier films in this language (the one
+    used most): the same host for a series."""
+    chosen = next((e for e in load().values() if e.get("host")), None)
+    if chosen:
+        return chosen
     best = None
     for e in load().values():
         if e.get("narrator") and lang in (e.get("langs") or []) and int(e.get("films") or 0) >= 1:

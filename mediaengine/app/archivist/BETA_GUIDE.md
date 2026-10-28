@@ -120,7 +120,8 @@ only the rhythm is taken, nothing is copied.
 **Characters** (the button at the top of Cartoon Studio): everyone your cartoons have used, with a picture. A
 character keeps its look and voice in every new film whose story names it; change the skin, hair, hairstyle, beard,
 clothes and their colour, glasses, a hard hat, the role and the voice's description (a new description makes a new
-voice, kept again). Characters walk into a scene they were not in; a scene only the narrator speaks in shows the
+voice, kept again). "Add a character" makes one before any film; "The host of my films" gives every new story written
+by the story writer that narrator. Characters walk into a scene they were not in; a scene only the narrator speaks in shows the
 narrator presenting it. **Music**: a light bed the program makes itself (light, a little suspense or calm), your own
 music file, or none - quiet, softer while someone speaks; a film made again keeps its music. Scenes in another place
 slide in or open as a circle; in a scene without a picture to read, the camera cuts to a close-up of the one speaking

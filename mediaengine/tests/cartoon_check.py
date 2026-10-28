@@ -371,6 +371,24 @@ def main() -> int:
               and sv.status_code == 302 and again["hair"] == ch.HAIRS[4] and again["glasses"] is True and again["beard"] == "full"
               and again["voice"] == {"kind": "describe", "text": "A low, smooth, sly businessman."},
               (sorted(lib), cl.status_code, png.status_code, again.get("hair"), again.get("voice")))
+        nw = c.post("/auto/cartoon/characters/add-one", data={"name": "Lena Petrova", "role": "journalist", "female": "1"}, headers=H)
+        nkey = (nw.headers.get("Location") or "").rstrip("/").split("/")[-1]
+        hs = c.post(f"/auto/cartoon/characters/{nkey}", data={"role": "journalist", "female": "1", "host_form": "1", "host": "1"}, headers=H)
+        from archivist.cartoon import library as Lb, writer as Wr
+        hosted = (Lb.host("ru") or {}).get("name")
+        asked_host = Wr.prompt({"mode": "topic", "topic": "School meals", "lang": "en"})
+        lena = F.check_script({"title": "x", "cast": {"lena": {"name": "Lena Petrova"}},
+                               "scenes": [{"bg": "office", "lines": [{"who": "lena", "text": "Hello."}]}]})["cast"]["lena"]
+        listed = c.get("/auto/cartoon/characters", headers=H).data
+        c.post(f"/auto/cartoon/characters/{nkey}", data={"role": "journalist", "female": "1", "host_form": "1"}, headers=H)
+        bad_new = c.post("/auto/cartoon/characters/add-one", data={"name": " "}, headers=H)
+        after_host = (Lb.host("ru") or {}).get("name")
+        check("characters: one added before any film (its look from its name), made the host - the writer gives new stories "
+              "this narrator, a story naming her takes her look; the host taken off again; an empty name refused",
+              nw.status_code == 302 and nkey == "lenapetrova" and hs.status_code == 302 and hosted == "Lena Petrova"
+              and "The narrator is Lena Petrova (woman, narrator)" in asked_host and lena["female"] is True
+              and b"the host" in listed and after_host != "Lena Petrova" and bad_new.status_code == 400,
+              (nw.status_code, nkey, hosted, lena.get("female"), after_host, bad_new.status_code))
         shapes = [c.post("/auto/cartoon/new", data={"story": "own", "script": json.dumps(x)}, headers=H).status_code for x in (
             {"cast": ["x"], "scenes": [{"lines": [{"text": "a"}]}]},
             {"cast": {"a": {"name": "A"}}, "scenes": [{"mood": ["x"], "min": "abc", "cast": [["a"]], "lines": {"x": 1}}]},
