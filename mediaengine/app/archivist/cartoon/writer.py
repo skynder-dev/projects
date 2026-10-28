@@ -785,9 +785,37 @@ def do(jid: str, d: Path, job: dict) -> dict:
         return {"ok": False, "error": "The model did not write a usable story (" + (best_problem or problem or "no scenes") + "). "
                                       "Press Try again, or say the topic in other words."}
     (d / "story.txt").write_text(best, "utf-8")
-    return {"ok": True, "file": "story.txt", "title": best_info.get("title") or "", "scenes": best_info["scenes"],
-            "words": best_info["words"], "lines": best_info["lines"], "attempts": used, "device": srv.device,
-            **({"note": best_problem} if best_problem else {})}
+    out = {"ok": True, "file": "story.txt", "title": best_info.get("title") or "", "scenes": best_info["scenes"],
+           "words": best_info["words"], "lines": best_info["lines"], "attempts": used, "device": srv.device,
+           **({"note": best_problem} if best_problem else {})}
+    if isinstance(job.get("make"), dict) and not stop():  # the cartoon made at once (a series made while you are away)
+        out.update(_make_film(best, job, best_info.get("title") or job.get("title") or ""))
+    return out
+
+
+def _make_settings(make: dict) -> dict:
+    """How a story's cartoon is made at once: voices (when the voice add-on is there), captions, music, close-ups."""
+    from . import jobs as cj
+    music = make.get("music") if make.get("music") in ("made", "none") else "made"
+    return {"voices": bool(make.get("voices", True)), "captions": make.get("captions") if make.get("captions") in cj.CAPTION_STYLES else None,
+            "music": music, "mood": make.get("mood") if make.get("mood") in cj.MUSIC_MOODS else "light",
+            "camera": "still" if make.get("camera") == "still" else "close"}
+
+
+def _make_film(story: str, job: dict, title: str) -> dict:
+    """The cartoon of a story just written, put in the queue ({"film": id} or {"film_error": why})."""
+    from .. import voice as vo
+    from . import film as F, jobs as cj
+    m = _make_settings(job.get("make") or {})
+    script = T.parse(story)
+    script["format"] = job.get("format") or script.get("format") or "vertical"
+    script["camera"] = m["camera"]
+    try:
+        fid = cj.new_make(script, m["voices"] and vo.installed(), {"style": m["captions"]} if m["captions"] else None,
+                          title=title, music={"kind": "made", "mood": m["mood"]} if m["music"] == "made" else None)
+    except (F.FilmError, vo.VoiceError) as exc:
+        return {"film_error": str(exc)}
+    return {"film": fid}
 
 
 def _listen(d: Path, job: dict) -> dict:
@@ -822,7 +850,8 @@ def _listen(d: Path, job: dict) -> dict:
 
 
 def new_write(mode: str, lang: str = "en", fmt: str = "vertical", secs: int = 75, topic: str = "", source: str = "",
-              country: str = "", title: str = "", video: str = "", style: dict | None = None) -> str:
+              country: str = "", title: str = "", video: str = "", style: dict | None = None,
+              make: dict | None = None) -> str:
     """A story to write (a job of the queue)."""
     from .. import voice as vo
     if not installed():
@@ -853,6 +882,7 @@ def new_write(mode: str, lang: str = "en", fmt: str = "vertical", secs: int = 75
                        "country": str(country or "").strip()[:60], "title": name, "seed": secrets.randbelow(10 ** 6),
                        "video": video if mode == "video" else "",
                        **({"style": style} if isinstance(style, dict) and style and mode != "adapt" else {}),
+                       **({"make": _make_settings(make)} if isinstance(make, dict) else {}),
                        "needs_addon": False}, addon=False)
 
 

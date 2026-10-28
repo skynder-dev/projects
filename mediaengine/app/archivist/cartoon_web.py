@@ -128,11 +128,26 @@ def register(app, page, err_page, e, human_bytes):
         if j["state"] == "done":
             body = (f"<div class='muted' style='font-size:13px;margin-top:4px'><span translate='no'>{int(res.get('scenes') or 0)}</span> "
                     f"<span>scenes</span> · <span translate='no'>{int(res.get('words') or 0)}</span> <span>words</span></div>"
-                    f"<div class='ct-row' style='margin-top:8px'><a class='btn' href='/auto/cartoon/{j['id']}'>Read it and make the cartoon</a>"
+                    + _film_of_story(res)
+                    + f"<div class='ct-row' style='margin-top:8px'><a class='btn{' btn2' if res.get('film') else ''}' "
+                    f"href='/auto/cartoon/{j['id']}'>{'Read the story' if res.get('film') else 'Read it and make the cartoon'}</a>"
                     + _delete(j) + "</div>")
         else:
             body = _state_html(j) + ("" if j["state"] in ("working", "waiting") else f"<div style='margin-top:6px'>{_delete(j)}</div>")
         return _block(j, head + body)
+
+    def _film_of_story(res: dict) -> str:
+        """The cartoon made at once from a story (or why it could not be)."""
+        if res.get("film_error"):
+            return f"<div class='errbox' style='margin-top:6px'>{e(res['film_error'])}</div>"
+        if not res.get("film"):
+            return ""
+        fj = _job(str(res["film"]))
+        if not fj:
+            return "<div class='muted' style='font-size:13px;margin-top:4px'>Its cartoon was deleted.</div>"
+        state = {"done": "ready", "working": "being made", "waiting": "waiting its turn"}.get(fj["state"], "not made")
+        return (f"<div style='margin-top:6px'><span>Its cartoon:</span> <a href='/auto/cartoon/{fj['id']}'><b translate='no'>"
+                f"{e(fj.get('title') or '')}</b></a> <span class='muted'>·</span> <span class='muted'>{e(state)}</span></div>")
 
     def _study_row(j: dict) -> str:
         res = j.get("result") or {}
@@ -275,6 +290,13 @@ def register(app, page, err_page, e, human_bytes):
                     f"<span>Viewers in</span><input name='country' maxlength='60' placeholder='(a country, if it matters)' style='width:200px'>"
                     f"<span>Length</span><select name='secs'>{secs}</select></div>"
                     f"{_rhythm_choice()}"
+                    f"<details style='margin-top:8px'><summary>A series: several topics at once</summary>"
+                    f"<textarea name='topics' rows='4' maxlength='3000' style='width:100%;margin-top:6px' "
+                    f"placeholder='One topic per line (up to 10)'></textarea>"
+                    f"<div class='muted' style='font-size:13px'>A story for every line, one after another - with the cartoon "
+                    f"made at once (below), the whole series is ready when you come back.</div></details>"
+                    f"<label style='display:block;margin-top:8px'><input type='checkbox' name='make' value='1'> Make the cartoon "
+                    f"at once, without reading the story first (voices, captions, the program's music)</label>"
                     f"<div class='ct-choices' style='margin-top:8px'><b>Format</b><br>{_format_choice('vertical')}</div>"
                     f"<div style='margin-top:12px'><button class='ae-big'>Write the story</button></div></form>"
                     f"<div class='muted' style='font-size:13px;margin-top:8px'><span>The free model on this PC</span> "
@@ -507,7 +529,7 @@ def register(app, page, err_page, e, human_bytes):
         fmt = j.get("format") or "vertical"
         note = (f"<div class='callout card' style='margin:8px 0'>The model's story is shorter or simpler than asked: read it and "
                 f"add what is missing before making the cartoon.</div>" if res.get("note") else "")
-        body = (f"<div class='card'><h2 style='margin-top:0'>The story</h2>{note}"
+        body = (f"<div class='card'><h2 style='margin-top:0'>The story</h2>{note}{_film_of_story(res)}"
                 f"<div class='muted' style='font-size:13px'>Read it, change what you like (the words, the people, the scenes), then "
                 f"make the cartoon. How the text is written: see the help below.</div>{_help()}"
                 f"<form method='post' action='/auto/cartoon/new' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
@@ -739,6 +761,19 @@ def register(app, page, err_page, e, human_bytes):
             secs = int(f.get("secs") or 75)
         except ValueError:
             secs = 75
+        make = ({"voices": True, "captions": f.get("style") or "pop", "music": "made", "mood": f.get("mood") or "light",
+                 "camera": "close"} if f.get("make") == "1" else None)
+        topics = [x.strip() for x in str(f.get("topics") or "").splitlines() if len(x.strip()) >= 3][:10]
+        if topics and mode != "adapt":                     # a series: a story (and its cartoon) for every topic
+            ref = str(f.get("ref") or "")
+            style = R.style_of(ref) if re.fullmatch(_JOB_ID, ref) else None
+            try:
+                for tp in topics:
+                    W.new_write("topic", f.get("lang") or "en", f.get("format") or "vertical", secs, topic=tp,
+                                country=f.get("country") or "", style=style or None, make=make)
+            except (W.WriterError, vo.VoiceError) as exc:
+                return err_page(str(exc), "/auto/cartoon")
+            return redirect("/auto/cartoon#films")
         try:
             if mode == "adapt":
                 lang = f.get("lang") or "en"
@@ -750,7 +785,8 @@ def register(app, page, err_page, e, human_bytes):
                 style = R.style_of(ref) if re.fullmatch(_JOB_ID, ref) else None
                 jid = W.new_write(mode, f.get("lang") or "en", f.get("format") or "vertical", secs,
                                   topic=about if mode == "topic" else "", source=about if mode == "text" else "",
-                                  country=f.get("country") or "", video=f.get("video") or "", style=style or None)
+                                  country=f.get("country") or "", video=f.get("video") or "", style=style or None,
+                                  make=make)
         except (W.WriterError, vo.VoiceError) as exc:
             return err_page(str(exc), "/auto/cartoon")
         return redirect(f"/auto/cartoon/{jid}")

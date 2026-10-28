@@ -105,7 +105,9 @@ llama.cpp (MIT), into the data folder; it runs on the graphics card (or the proc
 on this PC (the voice add-on listens to it; the facts the model noted from it are shown under the story) -
 choose the language (English, Russian, Romanian), the viewers' country if it matters, the length and the format, and
 press "Write the story": about a minute on a graphics card, several minutes on the processor. Read the story, change
-what you like and press "Make the cartoon". "Write another version" asks again; "Another language or country" retells
+what you like and press "Make the cartoon" - or tick "Make the cartoon at once" (voices, captions, music), and
+"A series" takes several topics, one per line: the stories and cartoons are made one after another while you are away.
+"Write another version" asks again; "Another language or country" retells
 a story (also a finished cartoon's) with the country's own names, money and offices. Nothing the model writes is a
 fact check: read it before you publish.
 

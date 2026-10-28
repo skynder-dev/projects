@@ -279,6 +279,25 @@ def main() -> int:
         lst = c.get("/auto/cartoon", headers=H).get_data(as_text=True)
         check("the list shows the stories with their state", "Story:" in lst and "Read it and make the cartoon" in lst
               and "Cartoons and stories" in lst, "")
+        # a series: a story for every line, each cartoon made at once (here without voices: no voice add-on)
+        topics = ("Hospital pills that cost three times more", "A bridge that was never built")
+        rs_ = c.post("/auto/cartoon/write", data={"topics": "\n".join(topics) + "\nx\n", "lang": "en", "secs": "60",
+                                                   "make": "1", "style": "box"}, headers=H)
+        series = [j_ for j_ in vo.list_jobs(80) if j_.get("kind") == "cartoon_write" and j_.get("topic") in topics]
+        done = [wait(vo, j_["id"]) for j_ in series]
+        made = [vo.read_job(x["result"]["film"]) for x in done if (x.get("result") or {}).get("film")]
+        for f_ in made:
+            vo.cancel_job(f_["id"])                        # (the films themselves are drawn in cartoon_check)
+        spage2 = c.get(f"/auto/cartoon/{done[0]['id']}", headers=H).get_data(as_text=True) if done else ""
+        lst2 = c.get("/auto/cartoon", headers=H).get_data(as_text=True)
+        check("a series: a story for every topic line (a too short one left out), each with its cartoon made at once "
+              "(captions, the program's music; no voices without the add-on); the story shows its cartoon",
+              rs_.status_code == 302 and len(series) == 2 and all(x.get("state") == "done" for x in done) and len(made) == 2
+              and all(f_.get("kind") == "cartoon_make" and not f_.get("voices") and (f_.get("captions") or {}).get("style") == "box"
+                      and (f_.get("music") or {}).get("kind") == "made" and (f_.get("script") or {}).get("camera") == "close"
+                      for f_ in made)
+              and "Its cartoon:" in spage2 and "Read the story" in lst2 and "A series: several topics at once" in lst2,
+              (rs_.status_code, len(series), [x.get("state") for x in done], [(f_.get("voices"), f_.get("captions"), f_.get("music")) for f_ in made]))
         empty = c.post("/auto/cartoon/write", data={"about": " ", "lang": "en"}, headers=H)
         check("an empty topic is refused clearly", empty.status_code == 400 and b"Write what the cartoon is about" in empty.data,
               empty.status_code)
