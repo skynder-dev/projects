@@ -2667,6 +2667,7 @@ WHATS_NEW_ITEMS = [
     ("2026-10-19b", "Voice-over: your picks from the voice test, the voices 4_4 and 4_2, instead of 3.1."),
     ("2026-10-20", "Text on a video (Auto Edit → Voice-over and text): titles and lines of text at the moments you choose, on a colored stripe, a dark box or in big letters - no add-on needed."),
     ("2026-10-22", "Captions in two more looks: one word at a time, big (like TikTok), and the word being said on a color block."),
+    ("2026-10-28h", "Cartoon Studio: add a character before any film and make it “The host of my films” (every new story gets this narrator); the pauses between lines follow the pace (quick or calm); more sounds - a pop for speech bubbles and pictures, a bell for the magnifier."),
     ("2026-10-28g", "Cartoon Studio: close-ups of the one speaking; the story writer can make the cartoon at once and write a whole series (several topics, one per line) while you are away."),
     ("2026-10-28f", "Cartoon Studio: “Study a cartoon you like” - a video on this PC: where its shots change, a picture of each (a storyboard), its colours and, with the voice add-on, how fast and how soon it speaks; then “Write a story with this rhythm”."),
     ("2026-10-28e", "Cartoon Studio: music under the cartoon - made by the program (light, a little suspense or calm), your own music file or none, softer while someone speaks; scenes slide in or open as a circle; new pictures (a share of a whole, a timeline of dates) and places (a hospital, a school, a shop, a block of flats, a building site)."),

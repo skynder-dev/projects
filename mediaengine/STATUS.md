@@ -916,9 +916,15 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
 - 2026-10-28, **b253** published (commit a7ec3be, ZIP 4,801,818 bytes, the same runtime; run 40653633154: cartoon
   31/31, writer 22/22, Russian 242 pages 0 English, route fuzz 3652 requests 0 errors): Cartoon Studio's music,
   transitions, the percent and timeline pictures, four new places, the second review's fixes.
-- 2026-10-28, pushed after b253: Reference Lab (a video studied for its rhythm; "Write a story with this rhythm"),
+- 2026-10-28, **b254** published (commit 40f52c5, ZIP 4,862,670 bytes, the same runtime; run 40670803073: cartoon
+  33/33, writer 29/29, Russian 242 pages 0 English, route fuzz 3688 requests 0 errors): Reference Lab, close-ups,
+  series and the cartoon made at once, the building site.
+- 2026-10-28, b254's content (pushed after b253): Reference Lab (a video studied for its rhythm; "Write a story with this rhythm"),
   close-ups of the speaker, the cartoon made at once and series in the writer, the building site. The owner's app was
   still b240 at 09:10Z (read-only look at http://127.0.0.1:8775): he has not pressed Update yet.
+- 2026-10-28, pushed after b254: pauses that follow the pace, characters added before a film and the host, more
+  sounds, quick links, the writer finishing on the processor when the card stops; the writer probe gets two stories
+  with a reference's rhythm (does each model follow the scenes asked?).
 - 2026-10-28, Romanian voices: with the narrator given a described voice (VoxCPM2) Whisper heard the Romanian cartoon
   almost word for word ("pretul este de patru ori mai mare decat pe pietan si contractul este aprobat. contribuabilii
   platezc toata diferenta", voice add-on run 40635146851; 36 min for three lines on the runner's processor). Piper's

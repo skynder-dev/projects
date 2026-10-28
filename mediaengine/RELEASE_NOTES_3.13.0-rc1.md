@@ -272,7 +272,8 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   is made again), transitions (a cross-fade in the same place, a slide or an opening circle to another place), the
   pictures "percent" (a share of a whole) and "timeline" (dates), four new places (a hospital, a school, a shop, a
   block of flats); fixes from a second independent review (7).
-- Next build (after b253): **Reference Lab** - "Study a cartoon you like": a video on this PC, its shots found (hard
+- b254 (commit 40f52c5, run 40670803073: cartoon 33/33, writer 29/29, Russian 242 pages 0 English, route fuzz 3688
+  requests 0 errors; the same runtime - the Update button): **Reference Lab** - "Study a cartoon you like": a video on this PC, its shots found (hard
   cuts and soft ones - its own finder: 10 of the 11 cuts of the program's own example film, none on busy moving
   pictures), a picture of each (a storyboard) and a strip of the shots, its colours, and with the voice add-on what is
   said in each shot, words a second, how soon it speaks, music under the words; "Write a story with this rhythm" asks
@@ -281,6 +282,11 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   makes the cartoon at once when asked, and a series of up to ten topics. A building-site background; a video's
   story page shows the facts noted from it. Two independent reviews before pushing (9 + 4 findings, all fixed: a scan
   that could hang the queue on a damaged video, colours from a Cyrillic data folder, a rotated phone video, ...).
+- Next build (after b254): the film's pauses follow the pace (short for a reference that cuts often, long for a calm
+  one; "Pauses between lines"); a character added before any film and "The host of my films" (the writer gives every
+  new story that narrator, in the letters of its name); more sounds (a pop for bubbles and pictures, a bell for the
+  magnifier); quick links at the top of Cartoon Studio; a graphics card that stops in the middle of a story - the
+  story finished on the processor, "Try the graphics card again"; fixes from a third independent review (9).
 
 ## Orders from other programs; night review fixes (2026-10-17)
 

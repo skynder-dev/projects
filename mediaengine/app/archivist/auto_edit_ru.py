@@ -1056,6 +1056,8 @@ PHRASES = {
     "The one speaking, close up": "Тот, кто говорит, крупно",
     "Make the 5 likeliest": "Сделать 5 самых удачных",
     # Cartoon Studio (cartoon_web.py, cartoon/)
+    "Cartoon Studio: add a character before any film and make it “The host of my films” (every new story gets this narrator); the pauses between lines follow the pace (quick or calm); more sounds - a pop for speech bubbles and pictures, a bell for the magnifier.":
+        "Мультстудия: персонажа можно добавить до любого фильма и сделать «Ведущим моих фильмов» (каждый новый сюжет получит этого рассказчика); паузы между репликами следуют темпу (быстро или спокойно); больше звуков — щелчок у облачков и картинок, колокольчик у лупы.",
     "Cartoon Studio: close-ups of the one speaking; the story writer can make the cartoon at once and write a whole series (several topics, one per line) while you are away.":
         "Мультстудия: крупный план того, кто говорит; сценарист может сразу сделать мультфильм и написать целую серию (несколько тем, по одной в строке), пока тебя нет.",
     "Cartoon Studio: “Study a cartoon you like” - a video on this PC: where its shots change, a picture of each (a storyboard), its colours and, with the voice add-on, how fast and how soon it speaks; then “Write a story with this rhythm”.":
