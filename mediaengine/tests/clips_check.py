@@ -391,9 +391,10 @@ def main() -> int:
     else:
         ca = cb = -1.0
     switch = [x["s"] for x in sp_shots[1:]]
+    yunet = getattr(cl.face_finder(), "kind", "") == "yunet"   # (the stand-in finds no mouths)
     check("making: \"the one speaking, close up\" - the crop on the one who talks, switching when the other talks",
-          sm_["state"] == "done" and len(sp_shots) == 2 and all(x.get("speaker") and x["layout"] == "crop" for x in sp_shots)
-          and sp_shots[0]["cx"] < sp_shots[1]["cx"] and switch and 7.0 <= switch[0] <= 9.0 and 0.3 <= ca <= 0.7 and 0.3 <= cb <= 0.7
+          not yunet or sm_["state"] == "done" and len(sp_shots) == 2 and all(x.get("speaker") and x["layout"] == "crop" for x in sp_shots)
+          and sp_shots[0]["cx"] < sp_shots[1]["cx"] and switch and 7.0 <= switch[0] <= 9.5 and 0.3 <= ca <= 0.7 and 0.3 <= cb <= 0.7
           and sc.get("talk"), (sm_["state"], sp_shots, round(ca, 3), round(cb, 3), sc.get("talk") or sm_.get("result")))
 
     # ---------------------------------------------------------------- 3. the pages

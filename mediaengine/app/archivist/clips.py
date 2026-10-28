@@ -888,8 +888,10 @@ def _mouth_region(box, marks, fw: int, fh: int) -> tuple:
 
 
 def _speakers(timed: list, acts: list, a: int, b: int, speech: list | None, diag: list | None = None) -> list | None:
-    """Who speaks when, in a shot of two or more people: [(first frame, end frame, face middle x), ...] - stretches of
-    at least 1.5 s, a switch only when another mouth leads for a second - or None when no one clearly speaks."""
+    """Who speaks when, in a shot of two or more people: [(first frame, end frame, face middle x), ...] covering the
+    shot, stretches of at least 1.5 s - or None when no one clearly speaks. With speech (the times words are said,
+    seconds from the clip's start): one choice per stretch of talk (the mouth that moves most while it is said; the
+    switch just before it starts); without: per half second, a switch only when another mouth leads twice running."""
     xs = []
     for _, fs in timed:
         if fs:
@@ -911,57 +913,79 @@ def _speakers(timed: list, acts: list, a: int, b: int, speech: list | None, diag
               if len(g) >= 0.3 * looks]
     if len(people) < 2:
         return None
-    nwin = max(1, -(-(b - a) // 15))
-    sums = [[0.0] * len(people) for _ in range(nwin)]
-    cnts = [[0] * len(people) for _ in range(nwin)]
-    for fr, vals in acts:
-        k = (fr - a) // 15
-        if not 0 <= k < nwin:
-            continue
-        for cx_, w_, act in vals:
-            j = min(range(len(people)), key=lambda q: abs(people[q][0] - cx_))
-            if abs(people[j][0] - cx_) < 0.6 * max(people[j][1], w_):
-                sums[k][j] += act
-                cnts[k][j] += 1
-    talk = [(float(s_), float(e_)) for s_, e_ in (speech or [])]
+    talk = sorted((float(s_), float(e_)) for s_, e_ in (speech or []))
+    if speech is not None:                                 # the units: stretches of talk within the shot
+        units = [(max(a, int(round(s_ * 30))), min(b, int(round(e_ * 30)))) for s_, e_ in talk]
+        units = [(f0, f1) for f0, f1 in units if f1 - f0 >= 12]
+    else:                                                  # ... or half seconds
+        units = [(f0, min(b, f0 + 15)) for f0 in range(a, b, 15)]
+    if not units:
+        return None
+
+    def moves(f0: int, f1: int) -> list:
+        tot, cnt = [0.0] * len(people), [0] * len(people)
+        for fr, vals in acts:
+            if not f0 <= fr < f1:
+                continue
+            for cx_, w_, act in vals:
+                j = min(range(len(people)), key=lambda q: abs(people[q][0] - cx_))
+                if abs(people[j][0] - cx_) < 0.6 * max(people[j][1], w_):
+                    tot[j] += act
+                    cnt[j] += 1
+        return [tot[j] / cnt[j] if cnt[j] else 0.0 for j in range(len(people))]
     raw = []
-    for k in range(nwin):
-        t0, t1 = (a + 15 * k) / 30.0, (a + 15 * k + 15) / 30.0
-        if speech is not None and not any(s_ < t1 and e_ > t0 for s_, e_ in talk):
-            raw.append(None)                               # (no word said: whoever it was stays)
-            continue
-        m = [sums[k][j] / cnts[k][j] if cnts[k][j] else 0.0 for j in range(len(people))]
+    for f0, f1 in units:
+        m = moves(f0, f1)
         order = sorted(range(len(people)), key=lambda j: -m[j])
         best, second = m[order[0]], m[order[1]]
-        raw.append(order[0] if best >= 0.6 and best >= 1.5 * second + 0.2 else None)
+        if speech is not None:
+            raw.append(order[0] if best >= 0.6 and best >= 1.3 * second + 0.15 else None)
+        else:
+            raw.append(order[0] if best >= 0.6 and best >= 1.5 * second + 0.2 else None)
         if diag is not None:
             diag.append([round(v, 2) for v in m])
     if diag is not None:
-        diag.insert(0, {"people": [[round(x, 4), round(w, 4)] for x, w in people], "who": raw})
+        diag.insert(0, {"people": [[round(x, 4), round(w, 4)] for x, w in people], "who": raw,
+                        "units": [[round(f0 / 30, 2), round(f1 / 30, 2)] for f0, f1 in units]})
     sure = [r for r in raw if r is not None]
-    if len(sure) < 2 or len(sure) < 0.2 * nwin:
+    if not sure or (speech is None and (len(sure) < 2 or len(sure) < 0.2 * len(units))):
         return None
-    seq, cur = [], sure[0]
-    for k, r in enumerate(raw):                            # (a switch only when the other one leads two looks running)
-        if r is not None and r != cur and k + 1 < nwin and raw[k + 1] == r:
-            cur = r
-        seq.append(cur)
-    segs = []
-    for k, r in enumerate(seq):
-        if segs and segs[-1][2] == r:
-            segs[-1][1] = k + 1
+    switches, cur = [(a, sure[0])], sure[0]
+    for k, ((f0, f1), r) in enumerate(zip(units, raw)):
+        if r is None or r == cur:
+            continue
+        if speech is None:                                 # (half seconds: the next sure one must agree)
+            nxt = next((q for q in raw[k + 1:k + 3] if q is not None), None)
+            if nxt != r:
+                continue
+            at = f0
+        else:                                              # (a stretch of talk: just before it starts)
+            at = max(a, f0 - 6)
+        cur = r
+        if at <= switches[-1][0]:
+            switches[-1] = (switches[-1][0], r)
         else:
-            segs.append([k, k + 1, r])
+            switches.append((at, r))
+    segs = []
+    for k, (f0, r) in enumerate(switches):
+        f1 = switches[k + 1][0] if k + 1 < len(switches) else b
+        if segs and segs[-1][2] == r:
+            segs[-1][1] = f1
+        else:
+            segs.append([f0, f1, r])
     merged = []
     for sg in segs:                                        # (stretches under 1.5 s go to the one before)
-        if merged and (sg[1] - sg[0] < 3 or merged[-1][2] == sg[2]):
+        if merged and (sg[1] - sg[0] < 45 or merged[-1][2] == sg[2]):
             merged[-1][1] = sg[1]
         else:
             merged.append(sg)
-    if len(merged) > 1 and merged[0][1] - merged[0][0] < 3:
+    if len(merged) > 1 and merged[0][1] - merged[0][0] < 45:
         merged[1][0] = merged[0][0]
         merged.pop(0)
-    return [(a + 15 * k0, min(b, a + 15 * k1), people[r][0]) for k0, k1, r in merged]
+    if len(merged) > 1 and merged[-1][1] - merged[-1][0] < 45:
+        merged[-2][1] = merged[-1][1]
+        merged.pop()
+    return [(f0, f1, people[r][0]) for f0, f1, r in merged]
 
 
 def _follow(track: list, cw: float) -> list | None:

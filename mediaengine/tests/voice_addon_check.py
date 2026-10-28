@@ -24,20 +24,28 @@ TALK = {"title": "SPACE STATION ASTRONAUT DISCUSSES LIFE IN SPACE WITH ABC'S GOO
         "sha256": "812a2ec9e1bc66c7a6a21d23e2c32b665ac20a98e2bb1b377cad8788dcc63fe7"}
 
 
-def fetch_talk(folder: Path) -> tuple[Path | None, str]:
+# three crew members side by side, answering in turns (each holds the microphone when talking): who speaks, close up
+CREW = {"title": "NASA Astronauts Discuss Life In Space With Fox News (iss073m262461622)",
+        "page": "https://commons.wikimedia.org/wiki/File:NASA_Astronauts_Discuss_Life_In_Space_With_Fox_News_(iss073m262461622).webm",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/05/NASA_Astronauts_Discuss_Life_In_Space_With_Fox_News_%28iss073m262461622%29.webm/NASA_Astronauts_Discuss_Life_In_Space_With_Fox_News_%28iss073m262461622%29.webm.480p.vp9.webm",
+        "sha256": "b6bd93f217199bade8d9fd1a86c519fc9894fab43d6823d7b3583e664404ffe9"}
+
+
+def fetch_talk(folder: Path, talk: dict | None = None, name: str = "nasa_interview.webm") -> tuple[Path | None, str]:
     import hashlib, urllib.request
+    TALK_ = talk or TALK
     folder.mkdir(parents=True, exist_ok=True)
-    dst = folder / "nasa_interview.webm"
+    dst = folder / name
     ua = {"User-Agent": "MediaEngine-CI/1.0 (https://github.com/skynder-dev/projects; automated test, small number of requests)"}
     for k in range(3):
         try:
             if not dst.is_file():
-                with urllib.request.urlopen(urllib.request.Request(TALK["url"], headers=ua), timeout=600) as r, \
+                with urllib.request.urlopen(urllib.request.Request(TALK_["url"], headers=ua), timeout=600) as r, \
                         open(str(dst) + ".part", "wb") as fh:
                     shutil.copyfileobj(r, fh, 1 << 20)
                 os.replace(str(dst) + ".part", dst)
             got = hashlib.sha256(dst.read_bytes()).hexdigest()
-            if got == TALK["sha256"]:
+            if got == TALK_["sha256"]:
                 return dst, ""
             dst.unlink()
             return None, f"the file changed on Commons (SHA-256 {got})"
@@ -206,6 +214,7 @@ def main() -> int:
             shutil.copy2(Path(cj["dir"]) / "video.mp4", out / "captions_video.mp4")
     if a.talk:
         talk_check(c, H, Path(a.talk).resolve(), out, check, timings, wait)
+        crew_check(c, H, Path(a.talk).resolve(), out, check, timings, wait)
     c.post("/lang", data={"back": "/auto/voice"}, headers=H)
     ru = c.get("/auto/voice", headers=H).get_data(as_text=True)
     check("the page in Russian with a finished voice-over", "Наложить на видео" in ru and "Все слова сказаны" in ru)
@@ -269,3 +278,72 @@ def talk_check(c, H, work: Path, out: Path, check, timings: dict, wait) -> None:
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+def crew_check(c, H, work: Path, out: Path, check, timings: dict, wait) -> None:
+    """6. "The one speaking, close up" for real: three crew members side by side answering in turns - found clips made
+    with the crop on whoever talks; a sheet of each clip (the original with the chosen one marked, the clip) to look at."""
+    import subprocess
+    from archivist import clips as cl, voice as vo
+    from PIL import Image, ImageDraw
+    vid, why = fetch_talk(work, CREW, "nasa_crew.webm")
+    check("speaker: the crew video downloaded (pinned SHA-256)", vid is not None, why)
+    if vid is None:
+        return
+    t0 = time.time()
+    r = c.post("/auto/clips/new", data={"path": str(vid), "length": "short", "language": "en"}, headers=H)
+    fid = (r.headers.get("Location") or "").rstrip("/").split("/")[-1]
+    fj = wait(fid, 3 * 3600) if fid else {"state": "failed"}
+    cands = cl.candidates(fid) if fj.get("state") == "done" else []
+    timings["crew_find_s"] = round(time.time() - t0)
+    if len(cands) < 3:
+        check("speaker: clips found in the crew video", False, fj.get("result"))
+        return
+    t0 = time.time()
+    r = c.post(f"/auto/clips/{fid}/make", data={"top": "3", "format": "vertical", "framing": "face", "captions": "1",
+                                                "position": "bottom", "people": "speaker"}, headers=H)
+    mk = next((j for j in vo.list_jobs() if j.get("kind") == "clips_make" and j.get("find") == fid), None)
+    mj = wait(mk["id"], 3600) if mk else {"state": "failed"}
+    timings["crew_make_s"] = round(time.time() - t0)
+    res = mj.get("result") or {}
+    made = res.get("clips") or []
+    (out / "crew_made.json").write_text(json.dumps(res, indent=1, ensure_ascii=False), "utf-8")
+    spk = [m for m in made if any(x.get("speaker") for x in m.get("plan") or [])]
+    check("speaker: three clips of the crew made, at least one with the crop on whoever talks", mj.get("state") == "done"
+          and len(made) == 3 and spk and mk.get("people") == "speaker", [(m.get("layouts"), m.get("talk")) for m in made])
+    ff = vo._ffmpeg()
+    rows = []
+    for m in made:
+        f = Path(mj["dir"]) / m["file"]
+        if not f.is_file():
+            continue
+        shutil.copy2(f, out / f"crew_{m['file']}")
+        tiles = []
+        for k in range(6):
+            t = m["seconds"] * (k + 0.5) / 6
+            sp, vp = out / "_s.png", out / "_v.png"
+            subprocess.run([ff, "-v", "error", "-y", "-ss", f"{m['s'] + t:.3f}", "-i", str(vid), "-frames:v", "1", str(sp)], check=True)
+            subprocess.run([ff, "-v", "error", "-y", "-ss", f"{t:.3f}", "-i", str(f), "-frames:v", "1", str(vp)], check=True)
+            im = Image.open(sp).convert("RGB")
+            im = im.resize((320, int(round(im.height * 320 / im.width))))
+            sh = next((x for x in m["plan"] if x["s"] <= t < x["e"]), m["plan"][-1])
+            d = ImageDraw.Draw(im)
+            if sh.get("speaker"):
+                d.rectangle([sh["cx"] * 320 - 28, 4, sh["cx"] * 320 + 28, im.height - 4], outline=(60, 230, 90), width=3)
+            d.text((4, 4), f"{t:.1f} s", fill=(255, 255, 255))
+            tiles.append((im, Image.open(vp).convert("RGB").resize((101, 180))))
+        rows.append((m, tiles))
+        for x in ("_s.png", "_v.png"):
+            (out / x).unlink(missing_ok=True)
+    if rows:
+        sheet = Image.new("RGB", (6 * (320 + 101 + 8), len(rows) * 210 + 10), (18, 20, 26))
+        d = ImageDraw.Draw(sheet)
+        for r_, (m, tiles) in enumerate(rows):
+            y = r_ * 210 + 22
+            d.text((6, y - 18), f"{m['file']} from {m['s']:.0f} s: " + ", ".join(
+                (f"{x['cx']:.2f}@{x['s']:.1f}" if x.get("speaker") else f"{x['layout']}@{x['s']:.1f}") for x in m["plan"])[:180],
+                   fill=(230, 230, 230))
+            for k, (im, v) in enumerate(tiles):
+                sheet.paste(im, (k * (320 + 101 + 8), y + (180 - im.height) // 2))
+                sheet.paste(v, (k * (320 + 101 + 8) + 320, y))
+        sheet.save(out / "crew_speaker.png")
