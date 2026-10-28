@@ -555,7 +555,7 @@ Narrator: <name> (woman or man, narrator)
 <Name> (<gesture>, <feeling>) [bubble]: <a short exclamation shown in a speech bubble>
 
 Every scene starts with a line "== <Background> | <visual>" (or "== <Background>" alone).
-Backgrounds (exactly one of): City street, Office, City hall, Road, Bank, Night, Board, Paper, Hospital, School, Shop, Home
+Backgrounds (exactly one of): City street, Office, City hall, Road, Bank, Night, Board, Paper, Hospital, School, Shop, Home, Building site
   (Home is a block of flats; a court or a ministry: City hall; a pharmacy: Shop; numbers and schemes: Board)
 Gestures (one of): talk, explain, point, point up, shrug, cross, think, wave, hands up, rubs hands, present, facepalm, fist, sneaky
 Feelings (one of): neutral, happy, angry, sad, surprised, sly, worried
@@ -582,7 +582,8 @@ RULES = """RULES:
 - About {words} spoken words in all ({secs} seconds read aloud).
 - In what is said, write numbers as words (four point eight million); in the visuals use digits ($4.8M).
 - A clear story: the problem, the trick, who gains, who pays, what happens in the end, and how a viewer can spot it.
-- At least five different visuals; never the same visual in two scenes in a row.
+- At least five different visuals; never the same visual in two scenes in a row; no kind of visual more than twice.
+- Every scene moves the story on: no scene repeats what an earlier one showed.
 - The last scene ends with a short lesson for the viewer."""
 
 
@@ -632,7 +633,7 @@ def prompt(job: dict) -> str:
             "make sense there, and the local names of offices and jobs.\n"
             f"- Translate everything that is said and every label in the visuals into natural spoken {n} (not word for word).\n"
             "- Keep the format's keywords in English exactly: Title, Format, Narrator, woman, man, ==, the backgrounds "
-            "(City street, Office, City hall, Road, Bank, Night, Board, Paper, Hospital, School, Shop, Home), the visual kinds (title, flow, contract, "
+            "(City street, Office, City hall, Road, Bank, Night, Board, Paper, Hospital, School, Shop, Home, Building site), the visual kinds (title, flow, contract, "
             "tender, bars, counter, compare, list, bag, magnifier, road, percent, timeline), CONTRACT, TENDER, APPROVED, price, stamp, [bubble], "
             "the gestures and the feelings in brackets.\n"
             "- In what is said, numbers as words; in the visuals, digits.",

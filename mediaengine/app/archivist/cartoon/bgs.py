@@ -1,6 +1,6 @@
 """Backgrounds of the scenes, drawn for the stage the film has (wide 16:9 or tall 9:16): a city street, an office,
 the city hall, a road being repaired, a bank, a night street, a board for schemes and charts, a hospital, a school,
-a shop and a block of flats. Each takes the time
+a shop, a block of flats and a building site. Each takes the time
 (clouds drift, lights blink) and returns where the floor is (the characters stand on it).
 """
 from __future__ import annotations
@@ -272,8 +272,78 @@ def home(cv: Canvas, t: float = 0.0) -> float:
     return gy
 
 
+def site(cv: Canvas, t: float = 0.0) -> float:
+    """A building site: a half-built block in scaffolding, a tower crane with a swinging load, a striped fence, cones."""
+    gy = ground_y(cv)
+    cv.vgradient("#c6e4f5", "#f4f1e4", 0, gy)
+    _clouds(cv, t, 2)
+    bw = min(cv.SW * 0.46, 760)                                        # the half-built block: a concrete frame
+    bx, top = cv.SW * 0.58 - bw / 2, cv.SH * 0.2
+    floors, bays = 6, 4
+    fh, bwid = (gy - 60 - top) / floors, bw / bays
+    for f in range(floors):
+        y = gy - 60 - (f + 1) * fh
+        for b in range(bays):
+            if f < 3 or (f < 5 and b < 3) or (f == 5 and b == 0):     # walls only on the lower floors
+                cv.rect(bx + b * bwid + 6, y + 6, bwid - 12, fh - 12, "#d9cfc0" if f < 3 else "#e7e1d6")
+                if f < 3:
+                    cv.rect(bx + b * bwid + bwid * 0.3, y + fh * 0.3, bwid * 0.4, fh * 0.42, "#9ec2e6", INK, 2)
+        cv.rect(bx - 10, y - 6, bw + 20 if f < 5 else bwid * 1.2, 12, "#b7b2a8", INK, 3)   # the floor slab
+    for b in range(bays + 1):                                          # the columns
+        h = floors * fh if b <= 1 else (5 if b < bays else 4) * fh
+        cv.rect(bx + b * bwid - 7, gy - 60 - h, 14, h, "#a9a49a", INK, 3)
+    sx0, sx1 = bx + bw + 14, bx + bw + 80                              # the scaffolding on its side
+    for x in (sx0, sx1):
+        cv.line([(x, gy - 60), (x, top + fh)], "#e09a2e", 5)
+    for f in range(1, floors):
+        y = gy - 60 - f * fh
+        cv.line([(sx0, y), (sx1, y)], "#e09a2e", 5)
+        cv.line([(sx0, y), (sx1, y + fh)], "#c9862a", 3)
+    mx = cv.SW * 0.16                                                  # the tower crane: a lattice mast
+    mtop = cv.SH * 0.08
+    cv.line([(mx - 18, gy - 60), (mx - 18, mtop)], "#f2c12e", 7)
+    cv.line([(mx + 18, gy - 60), (mx + 18, mtop)], "#f2c12e", 7)
+    y, k = gy - 60, 0
+    while y > mtop + 40:
+        cv.line([(mx - 18, y), (mx + 18, y - 40)] if k % 2 else [(mx + 18, y), (mx - 18, y - 40)], "#d9a91f", 4)
+        y -= 40
+        k += 1
+    jl = min(cv.SW * 0.62, 1100)                                        # the jib, the counterweight, the cab
+    cv.rect(mx - 140, mtop - 16, jl + 140, 18, "#f2c12e", INK, 4)
+    cv.line([(mx, mtop - 70), (mx + jl, mtop - 12)], INK, 3)
+    cv.line([(mx, mtop - 70), (mx - 140, mtop - 12)], INK, 3)
+    cv.line([(mx - 18, mtop - 16), (mx, mtop - 70), (mx + 18, mtop - 16)], "#f2c12e", 7)
+    cv.rect(mx - 140, mtop + 2, 70, 50, "#7d8290", INK, 4)
+    cv.rect(mx + 20, mtop + 2, 54, 46, "#3f7fd6", INK, 4, 4)
+    hx = mx + jl * 0.62                                                 # the load on its cable, swinging a little
+    sway = 10 * math.sin(t * 1.3)
+    ly = top + fh * 0.6
+    cv.line([(hx, mtop + 2), (hx + sway, ly)], INK, 3)
+    cv.rect(hx + sway - 90, ly, 180, 26, "#c2554a", INK, 4)
+    cv.line([(hx + sway, ly), (hx + sway - 80, ly + 2)], INK, 2)
+    cv.line([(hx + sway, ly), (hx + sway + 80, ly + 2)], INK, 2)
+    cv.rect(0, gy - 60, cv.SW, cv.SH - gy + 60, "#b9a184")             # the ground: earth
+    for k in range(9):
+        x = (k * 263) % int(cv.SW)
+        cv.ellipse(x, gy - 30 + (k * 17) % 40, 18, 7, "#a48c70")
+    px = cv.SW * 0.36                                                  # a pile of sand
+    cv.ellipse(px, gy - 58, 150, 70, "#e3c58e", INK, 4, 180, 360)
+    fy = gy - 130                                                      # the fence: orange and white boards
+    for k in range(int(cv.SW // 70) + 1):
+        if abs(k * 70 + 35 - px) < 170:
+            continue
+        cv.rect(k * 70 + 4, fy, 62, 70, "#ef8f3a" if k % 2 else "#f7f2ea", INK, 3)
+    cv.rect(0, fy + 26, cv.SW, 10, "#5d6472")
+    for k, x in enumerate((cv.SW * 0.07, cv.SW * 0.93)):               # cones
+        cv.poly([(x - 30, gy - 60), (x, gy - 150), (x + 30, gy - 60)], "#ef8f3a", INK, 4)
+        cv.rect(x - 18, gy - 115, 36, 14, "#ffffff")
+        cv.rect(x - 40, gy - 66, 80, 12, "#ef8f3a", INK, 3)
+    return gy
+
+
 BACKGROUNDS = {"city": city, "office": office, "city_hall": city_hall, "road": road, "bank": bank, "night": night,
-               "board": board, "paper": paper, "hospital": hospital, "school": school, "shop": shop, "home": home}
+               "board": board, "paper": paper, "hospital": hospital, "school": school, "shop": shop, "home": home,
+               "site": site}
 
 
 def draw(cv: Canvas, name: str, t: float = 0.0) -> float:

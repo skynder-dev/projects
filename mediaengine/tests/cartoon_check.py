@@ -238,11 +238,16 @@ def main() -> int:
                 looks[(fmt, name)] = cv.img.astype(np.int16)
             except Exception as exc:
                 bad.append(f"{fmt} {name}: {type(exc).__name__}: {exc}")
-    same = [n for n in ("hospital", "school", "shop", "home") if ("vertical", n) in looks
+    same = [n for n in ("hospital", "school", "shop", "home", "site") if ("vertical", n) in looks
             and float(np.abs(looks[("vertical", n)] - looks[("vertical", "office")]).mean()) < 10]
     doc = ch.make("Dr. Paul", "doctor")
-    check("backgrounds: all twelve draw in both formats (a hospital, a school, a shop, a block of flats among them); "
-          "a doctor wears a white coat", not bad and not same and len(bgs.BACKGROUNDS) == 12 and doc["outfit"] == "coat",
+    site_bgs = [Tx.parse(f"Title: X\nNarrator: Kate (woman)\n\n== {h}\nKate: Hello there, everyone.\n")["scenes"][0]["bg"]
+                for h in ("Construction site", "Стройка", "Șantier", "Building site, the crane", "Road construction")]
+    if site_bgs != ["site", "site", "site", "site", "road"]:
+        bad.append(f"building site words: {site_bgs}")
+    check("backgrounds: all thirteen draw in both formats (a hospital, a school, a shop, a block of flats, a building site "
+          "among them); "
+          "a doctor wears a white coat", not bad and not same and len(bgs.BACKGROUNDS) == 13 and doc["outfit"] == "coat",
           (bad, same, doc["outfit"]))
     check("example: 8-12 scenes, 60-120 s, own characters (6)", 8 <= len(film["scenes"]) <= 12 and 60 <= tl2["seconds"] <= 120
           and len(film["cast"]) >= 4, (len(film["scenes"]), tl2["seconds"], len(film["cast"])))
@@ -332,11 +337,18 @@ def main() -> int:
             {"cast": {"a": {"name": "A"}}, "narrator": ["a"], "scenes": ["x", {"lines": [{"who": ["a"], "pose": ["x"], "text": "Hi."}]}]})]
         sid = next((j_["id"] for j_ in vo.list_jobs() if j_.get("kind") == "cartoon_make"), "")
         again_odd = c.post(f"/auto/cartoon/{sid}/again", data={"t_0_0": "Hello."}, headers=H).status_code if sid else 0
+        try:                                               # (a finished film of such a script shows it as text)
+            odd_text = all(Tx.to_text(x).startswith("Title:") for x in (
+                {"cast": {"a": {"name": "A"}}, "narrator": ["a"], "scenes": ["x", {"lines": [{"who": ["a"], "pose": ["x"]}]}]},
+                {"cast": [1], "scenes": {"a": 1}}, "x", {"scenes": [{"visual": {"kind": "flow", "nodes": [{}], "edges": 3}, "bg": 5}]}))
+        except Exception as exc:
+            odd_text = repr(exc)
         waiting = vo._submit({"kind": "cartoon_make", "script": SHORT, "voices": False, "title": "w"}, addon=False)
         rev = c.post(f"/auto/cartoon/{waiting}/reveal", headers=H).status_code      # (no result yet)
         vo.cancel_job(waiting)
         check("pages: scripts of odd shapes, a film made of one, Reveal of a film not made - no server error",
-              all(x in (302, 400) for x in shapes) and again_odd in (302, 400) and rev == 302, (shapes, again_odd, rev))
+              all(x in (302, 400) for x in shapes) and again_odd in (302, 400) and rev == 302 and odd_text is True,
+              (shapes, again_odd, rev, odd_text))
         no_file = c.post("/auto/cartoon/new", data={"story": "own", "script": json.dumps(SHORT), "music": "file",
                                                     "music_path": str(work / "nope.mp3")}, headers=H)
         check("pages: a music file that is not there is refused clearly", no_file.status_code == 400

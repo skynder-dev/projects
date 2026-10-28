@@ -39,7 +39,8 @@ _WR_STEP = {"checking": "Checking the PC…", "program": "Downloading llama.cpp 
 LANG_LABELS = {"en": "English", "ru": "Русский", "ro": "Română"}
 BG_LABELS = {"city": "City street", "office": "Office", "city_hall": "City hall", "road": "Road", "bank": "Bank",
              "night": "Night street", "board": "Board (schemes, charts)", "paper": "Paper", "hospital": "Hospital",
-             "school": "School", "shop": "Shop", "home": "Block of flats"}
+             "school": "School", "shop": "Shop", "home": "Block of flats",
+             "site": "Building site"}
 EMO_LABELS = {"": "—", "neutral": "calm", "happy": "happy", "angry": "angry", "sad": "sad", "surprised": "surprised",
               "sly": "sly", "worried": "worried"}
 POSE_LABELS = {"": "—", "talk": "talking", "explain": "explaining", "point": "pointing", "point_up": "finger up",
@@ -52,7 +53,7 @@ STORY_LABELS = {"road_contract": "How a City Loses Millions on a Simple Road Con
 
 HELP_EN = ("First lines: <code>Title:</code>, <code>Format: vertical</code> or <code>wide</code>, <code>Narrator: Name (woman)</code>, "
            "then the characters - <code>Name (man, mayor)</code>. A scene starts with <code>==</code> and its background "
-           "(City street, Office, City hall, Road, Bank, Night, Board, Paper, Hospital, School, Shop, Home); after <code>|</code> what it shows: "
+           "(City street, Office, City hall, Road, Bank, Night, Board, Paper, Hospital, School, Shop, Home, Building site); after <code>|</code> what it shows: "
            "<code>title: …</code>, <code>road</code>, <code>contract: CONTRACT; price $4 800 000; stamp APPROVED</code>, "
            "<code>flow: City -&gt; Company $4.8M; Company -&gt; Officials kickback</code>, <code>bars: fair 1.2, paid 9.6 M</code>, "
            "<code>list: Red flags; one bidder; rushed deadlines</code>, <code>counter: $4 800 000 spent</code>, "
@@ -429,6 +430,10 @@ def register(app, page, err_page, e, human_bytes):
                     f"style='white-space:pre-wrap;font-size:13px' translate='no'>{e(what[:1500])}</div></details></div>")
             return page("Cartoon Studio", head + body, _POLL_JS + _MUSIC_JS)
         story = W.story_of(jid)
+        try:
+            notes = (vo._job_dir(jid) / "notes.txt").read_text("utf-8") if j.get("mode") == "video" else ""
+        except OSError:
+            notes = ""
         fmt = j.get("format") or "vertical"
         note = (f"<div class='callout card' style='margin:8px 0'>The model's story is shorter or simpler than asked: read it and "
                 f"add what is missing before making the cartoon.</div>" if res.get("note") else "")
@@ -446,7 +451,11 @@ def register(app, page, err_page, e, human_bytes):
                 f"<button>Write another version</button></form>{_delete(j)}</div>"
                 f"<details style='margin-top:10px'><summary>Another language or country</summary>"
                 f"{_adapt_form(story, fmt, j.get('title') or '', j.get('lang') or 'en')}</details>"
-                f"<details style='margin-top:8px'><summary class='muted'>What was asked</summary><div class='muted' "
+                + (f"<details style='margin-top:8px'><summary>The facts noted from the video</summary><div class='muted' "
+                   f"style='white-space:pre-wrap;font-size:13px' translate='no'>{e(notes[:4000])}</div>"
+                   f"<div class='muted' style='font-size:13px;margin-top:4px'>Noted by the model from what Whisper heard: "
+                   f"check them before you publish.</div></details>" if notes else "")
+                + f"<details style='margin-top:8px'><summary class='muted'>What was asked</summary><div class='muted' "
                 f"style='white-space:pre-wrap;font-size:13px' translate='no'>{e(what[:1500])}</div></details></div>")
         return page("Cartoon Studio", head + body, _POLL_JS + _MUSIC_JS)
 

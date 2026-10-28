@@ -14,7 +14,7 @@
 
 A scene starts with "==", its background, and after "|" what is shown (title, road, contract, flow, bars, list, counter,
 compare, bag, magnifier). Backgrounds: City street, Office, City hall, Road, Bank, Night, Board, Paper, Hospital,
-School, Shop, Home (a block of flats). A line is "Name (gesture, feeling): words"; "Name [bubble]: words" shows it in a speech
+School, Shop, Home (a block of flats), Building site. A line is "Name (gesture, feeling): words"; "Name [bubble]: words" shows it in a speech
 bubble. A name not introduced becomes a new character. English or Russian words for backgrounds, gestures, feelings.
 """
 from __future__ import annotations
@@ -37,6 +37,9 @@ BG_WORDS = {
     "supermarket": "shop", "магазин": "shop", "аптека": "shop", "magazin": "shop", "farmacie": "shop",
     "home": "home", "block of flats": "home", "house": "home", "apartment block": "home", "stairwell": "home",
     "дом": "home", "жилой дом": "home", "подъезд": "home", "двор": "home", "bloc": "home", "casă": "home",
+    "building site": "site", "construction site": "site", "construction": "site", "builders": "site", "crane": "site",
+    "стройка": "site", "стройплощадка": "site", "строительство": "site", "кран": "site", "șantier": "site",
+    "șantierul": "site", "santier": "site", "construcție": "site", "constructie": "site",
     "flat": "office", "apartment": "office", "kitchen": "office", "factory": "office", "квартира": "office",
     "кухня": "office", "завод": "office", "birou": "office",
     "court": "city_hall", "ministry": "city_hall", "parliament": "city_hall", "council": "city_hall", "суд": "city_hall",
@@ -458,9 +461,10 @@ def vis_text(v: dict) -> str:
 
 def to_text(sc: dict) -> str:
     """A script back as plain text (to change it the same way)."""
+    sc = sc if isinstance(sc, dict) else {}                # (a script of odd shapes: what can be read of it)
     out = [f"Title: {sc.get('title') or 'Cartoon'}", f"Format: {sc.get('format') or 'vertical'}"]
-    cast = sc.get("cast") or {}
-    nar = sc.get("narrator")
+    cast = {k: c for k, c in (sc.get("cast") or {}).items() if isinstance(c, dict)} if isinstance(sc.get("cast"), dict) else {}
+    nar = sc.get("narrator") if isinstance(sc.get("narrator"), str) else None
     for k, c in cast.items():
         gender = "woman" if c.get("female") else "man"
         role = c.get("role") or ""
@@ -470,15 +474,22 @@ def to_text(sc: dict) -> str:
             out.append(f"{c.get('name') or k} ({gender}{', ' + role if role else ''})")
     rbg = {"city": "City street", "office": "Office", "city_hall": "City hall", "road": "Road", "bank": "Bank",
            "night": "Night street", "board": "Board", "paper": "Paper", "hospital": "Hospital", "school": "School",
-           "shop": "Shop", "home": "Home"}
-    for s in sc.get("scenes") or []:
-        vis = vis_text(s.get("visual") or {})
+           "shop": "Shop", "home": "Home", "site": "Building site"}
+    scenes = sc.get("scenes") if isinstance(sc.get("scenes"), list) else []
+    for s in (x for x in scenes if isinstance(x, dict)):
+        try:
+            vis = vis_text(s.get("visual") if isinstance(s.get("visual"), dict) else {})
+        except (TypeError, KeyError, AttributeError, ValueError):
+            vis = ""                                       # (a picture of an odd shape: left out of the text)
         vis = f" | {vis}" if vis else ""
+        bg = s.get("bg") if isinstance(s.get("bg"), str) else "city"
         out.append("")
-        out.append(f"== {rbg.get(s.get('bg'), s.get('bg') or 'city').capitalize()}{vis}")
-        for ln in s.get("lines") or []:
-            who = (cast.get(ln.get("who")) or {}).get("name") or ln.get("who")
-            attrs = [x for x in (ln.get("pose"), ln.get("emotion")) if x]
+        out.append(f"== {rbg.get(bg, bg or 'city').capitalize()}{vis}")
+        lines = s.get("lines") if isinstance(s.get("lines"), list) else []
+        for ln in (x for x in lines if isinstance(x, dict)):
+            w = ln.get("who") if isinstance(ln.get("who"), str) else ""
+            who = (cast.get(w) or {}).get("name") or w or (cast.get(nar) or {}).get("name") or nar or "Narrator"
+            attrs = [x for x in (ln.get("pose"), ln.get("emotion")) if x and isinstance(x, str)]
             out.append(f"{who}" + (f" ({', '.join(attrs)})" if attrs else "") + (" [bubble]" if ln.get("bubble") else "")
                        + f": {ln.get('text') or ''}")
     return "\n".join(out) + "\n"

@@ -250,7 +250,9 @@ def main() -> int:
               and len(notes_asks) >= 2 and "TEXT:" in new_asks[-1]["messages"][-1]["content"] and jv.get("title") == "talk",
               (nv.status_code, jv.get("state"), (jv.get("result") or {}).get("error"), len(notes_asks), len(new_asks)))
         vpage = c.get(f"/auto/cartoon/{jv['id']}", headers=H).get_data(as_text=True)
-        check("a video's story page says what was heard", "Retelling a video" in vpage and "bridge that was never built" in vpage, "")
+        check("a video's story page says what was heard and shows the facts noted from it",
+              "Retelling a video" in vpage and "bridge that was never built" in vpage
+              and "The facts noted from the video" in vpage and "check them before you publish" in vpage, "")
 
         # the other model: only it is downloaded (the program stays), the first one deleted after
         (dl / "Big-Q4_K_M.gguf").write_bytes(b"GGUF" + os.urandom(8192))

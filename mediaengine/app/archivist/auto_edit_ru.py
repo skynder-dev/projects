@@ -1089,7 +1089,7 @@ PHRASES = {
     "Feeling": "Настроение", "Gesture": "Жест",
     "City street": "Улица", "Office": "Офис", "City hall": "Мэрия", "Road": "Дорога", "Bank": "Банк", "Night street": "Ночная улица",
     "Board (schemes, charts)": "Доска (схемы, графики)", "Paper": "Бумага",
-    "Hospital": "Больница", "School": "Школа", "Shop": "Магазин", "Block of flats": "Жилой дом",
+    "Hospital": "Больница", "School": "Школа", "Shop": "Магазин", "Block of flats": "Жилой дом", "Building site": "Стройка",
     "calm": "спокойно", "happy": "радостно", "angry": "сердито", "sad": "грустно", "surprised": "удивлённо", "sly": "хитро",
     "worried": "тревожно", "talking": "говорит", "explaining": "объясняет", "pointing": "показывает", "finger up": "палец вверх",
     "shrugging": "пожимает плечами", "arms crossed": "руки скрещены", "thinking": "думает", "waving": "машет",
@@ -1245,6 +1245,8 @@ PHRASES = {
     "Quiet under the voices; it goes softer while someone speaks.": "Тихо под голосами; когда кто-то говорит, становится ещё тише.",
     "Choose the music file (its full path), or no music.": "Выбери файл с музыкой (полный путь) или «Без музыки».",
     "The music file could not be read.": "Файл с музыкой не удалось прочитать.",
+    "The facts noted from the video": "Факты, выписанные из видео",
+    "Noted by the model from what Whisper heard: check them before you publish.": "Выписаны моделью из того, что услышал Whisper: проверь перед публикацией.",
     "Or a video on this PC": "Или видео на этом компьютере", "A video whose story to retell (its full path)": "Видео, сюжет которого пересказать (полный путь)",
     "The program listens to it (the voice add-on), notes its facts and numbers and writes a new story with its own characters - not a copy. Listening takes a few minutes for an hour of video.":
         "Программа прослушает его (модуль озвучки), выпишет факты и цифры и напишет новый сюжет со своими персонажами — не копию. Прослушивание — несколько минут на час видео.",

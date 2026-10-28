@@ -88,7 +88,8 @@ gives you).
 ## Cartoon Studio
 
 Auto Edit → **Cartoon Studio**: a short 2D cartoon made by MediaEngine itself - its own characters (drawn the same in
-every scene and episode), backgrounds (a street, an office, the city hall, a road, a bank, night, a board for schemes),
+every scene and episode), backgrounds (a street, an office, the city hall, a road, a bank, night, a board for schemes, a hospital, a school,
+a shop, a block of flats, a building site),
 schemes of money with arrows, contracts with a stamp, charts, a road with potholes; the characters' voices (the voice
 add-on: the narrator in the program's own voice, the others in voices from a description, kept for the next
 episode), mouths moving with the words, captions, short sounds. Choose the example story (How a City Loses Millions
@@ -100,7 +101,8 @@ saved reels. The story is plain text: change the example or write your own (the 
 **Write a story** (a free model on this PC): install the story writer once - Qwen3-14B (Alibaba, Apache-2.0, about 9 GB:
 writes better, Russian and Romanian too; for a graphics card with 12 GB) or Qwen3-4B (about 4.3 GB, any PC), with
 llama.cpp (MIT), into the data folder; it runs on the graphics card (or the processor) and sends nothing anywhere;
-"Another model" changes it later. Then write a topic in a few words - or paste a text (an article, notes, what is said in a video) -
+"Another model" changes it later. Then write a topic in a few words - or paste a text (an article, notes, what is said in a video), or choose a video
+on this PC (the voice add-on listens to it; the facts the model noted from it are shown under the story) -
 choose the language (English, Russian, Romanian), the viewers' country if it matters, the length and the format, and
 press "Write the story": about a minute on a graphics card, several minutes on the processor. Read the story, change
 what you like and press "Make the cartoon". "Write another version" asks again; "Another language or country" retells
