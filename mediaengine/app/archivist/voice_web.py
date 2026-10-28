@@ -453,7 +453,7 @@ def register(app, page, err_page, e, human_bytes):
         s = vo.status()
         show_all = request.args.get("all") == "1"
         # (clips from a long video are on their own page: never counted here)
-        jobs = [j for j in vo.list_jobs(100000 if show_all else 400) if not str(j.get("kind") or "").startswith("clips_")]
+        jobs = [j for j in vo.list_jobs(100000 if show_all else 400) if not str(j.get("kind") or "").startswith(("clips_", "cartoon_"))]
         more = 0
         if not show_all and len(jobs) > 50:                 # the newest 50; the rest one click away
             more = len(jobs) - 50
@@ -523,7 +523,7 @@ def register(app, page, err_page, e, human_bytes):
         s = vo.status()
         jobs = []
         for j in vo.list_jobs(60):
-            if not str(j.get("kind") or "").startswith("clips_"):
+            if not str(j.get("kind") or "").startswith(("clips_", "cartoon_")):
                 jobs.append({"id": j["id"], "state": j["state"], "progress": float(j.get("progress") or 0)})
         return jsonify({"install": {k: s.get(k) for k in ("state", "step", "done", "total", "detail", "error", "installed")},
                         "jobs": jobs})

@@ -813,13 +813,19 @@ def busy() -> str:
 
 def busy_with_clips() -> bool:
     """The job being made (or the first waiting) is one of the clips from a long video."""
+    return busy_kind() == "clips"
+
+
+def busy_kind() -> str:
+    """What the job being made (or the first waiting) is: "clips", "cartoon", "voice" or "" (none)."""
     jid = str(_CURRENT.get("id") or (_QUEUE[0] if _QUEUE else ""))
     if not jid:
-        return False
+        return ""
     try:
-        return str(json.loads((JOBS / jid / "job.json").read_text("utf-8")).get("kind") or "").startswith("clips_")
+        k = str(json.loads((JOBS / jid / "job.json").read_text("utf-8")).get("kind") or "")
     except Exception:
-        return False
+        return "voice"
+    return "clips" if k.startswith("clips_") else "cartoon" if k.startswith("cartoon_") else "voice"
 
 
 def _new_id() -> str:
@@ -1306,6 +1312,9 @@ def _do(jid: str) -> dict:
     if str(job.get("kind") or "").startswith("clips_"):      # clips from a long video (clips.py), in the same queue
         from . import clips
         return clips.do(jid, d, job)
+    if str(job.get("kind") or "").startswith("cartoon_"):    # cartoon films (cartoon/jobs.py), in the same queue
+        from .cartoon import jobs as cartoon_jobs
+        return cartoon_jobs.do(jid, d, job)
     if job["kind"] == "voiceover":
         v = dict(job["voice"])
         if v.get("ref_source"):                      # the owner's recording: a clean mono WAV of at most 30 s
@@ -1968,7 +1977,7 @@ def resume_after_restart() -> None:
     have = installed()
     for j in reversed(list_jobs(500)):                          # oldest first: a voice before the video using it
         if j["state"] == "interrupted" and not j.get("resumed") and (
-                have or (j.get("kind") in ("render", "clips_make") and not j.get("needs_addon"))):
+                have or (j.get("kind") in ("render", "clips_make", "cartoon_make") and not j.get("needs_addon"))):
             try:
                 d = JOBS / j["id"]
                 job = json.loads((d / "job.json").read_text("utf-8"))
@@ -1993,7 +2002,7 @@ def retry_job(jid: str) -> None:
     j = read_job(jid)
     if j["state"] in ("working", "waiting", "done"):     # (done: a page left open long ago - nothing to make again)
         return
-    if j.get("kind") not in ("render", "clips_make") or j.get("needs_addon"):
+    if j.get("kind") not in ("render", "clips_make", "cartoon_make") or j.get("needs_addon"):
         _need_addon()
         if installing():                  # (an installed add-on getting the new engine is busy all the same)
             raise VoiceError("The voice add-on is being installed. Wait until it is ready.")

@@ -618,6 +618,9 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"Folder not found: (.+)", r"Папка не найдена: \1"),
     (r"The video is not there any more: (.+)", r"Видео больше нет на месте: \1"),
     (r"Clip (\d+) could not be made \((.+)\)\.", r"Клип \1 не получилось сделать (\2)."),
+    (r"The film could not be encoded \((.+)\)\.", r"Мультфильм не удалось записать (\1)."),
+    (r"The film did not pass its check \((.+)\)\.", r"Мультфильм не прошёл проверку (\1)."),
+    (r"The voice of (.+) could not be made: (.+)", r"Голос персонажа \1 не получилось сделать: \2"),
     (r"Clip (\d+) did not pass its check \((.+)\)\.", r"Клип \1 не прошёл проверку (\2)."),
     # voice-over add-on (voice.py)
     (r"The download answered HTTP (\d+)\. Try again later\.", r"Сайт ответил ошибкой HTTP \1. Попробуй позже."),

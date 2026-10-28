@@ -215,6 +215,7 @@ def main() -> int:
     if a.talk:
         talk_check(c, H, Path(a.talk).resolve(), out, check, timings, wait)
         crew_check(c, H, Path(a.talk).resolve(), out, check, timings, wait)
+    cartoon_voices_check(c, H, out, check, timings, wait)
     c.post("/lang", data={"back": "/auto/voice"}, headers=H)
     ru = c.get("/auto/voice", headers=H).get_data(as_text=True)
     check("the page in Russian with a finished voice-over", "Наложить на видео" in ru and "Все слова сказаны" in ru)
@@ -275,9 +276,6 @@ def talk_check(c, H, work: Path, out: Path, check, timings: dict, wait) -> None:
         if f.is_file():
             shutil.copy2(f, out / f"nasa_{m['file']}")
 
-
-if __name__ == "__main__":
-    sys.exit(main())
 
 
 def crew_check(c, H, work: Path, out: Path, check, timings: dict, wait) -> None:
@@ -347,3 +345,46 @@ def crew_check(c, H, work: Path, out: Path, check, timings: dict, wait) -> None:
                 sheet.paste(im, (k * (320 + 101 + 8), y + (180 - im.height) // 2))
                 sheet.paste(v, (k * (320 + 101 + 8) + 320, y))
         sheet.save(out / "crew_speaker.png")
+
+
+def cartoon_voices_check(c, H, out: Path, check, timings: dict, wait) -> None:
+    """7. Cartoon Studio with voices: the narrator in the program's own voice, a character in a voice from a
+    description (kept with the character for the next episode); the film heard back by Whisper."""
+    from archivist import voice as vo
+    from archivist.config import HOME
+    script = {"title": "Voices test", "language": "en", "format": "vertical", "narrator": "kate",
+              "cast": {"kate": {"name": "Kate", "role": "narrator", "female": True, "voice": {"kind": "host"}},
+                       "rick": {"name": "Rick", "role": "contractor boss", "female": False,
+                                "voice": {"kind": "describe", "text": "A confident, raspy businessman in his forties, low and smooth."}}},
+              "scenes": [{"bg": "office", "cast": ["rick"], "visual": {"kind": "contract", "price": "$4 800 000", "price_at": 0,
+                                                                      "stamp": "APPROVED", "stamp_at": 1},
+                          "lines": [{"who": "kate", "text": "The price is four times higher than the market."},
+                                    {"who": "rick", "pose": "count", "emotion": "sly", "text": "And the contract is approved."}]},
+                         {"bg": "board", "cast": [], "visual": {"kind": "bars", "values": [1.2, 4.8], "labels": ["fair", "paid"],
+                                                                "unit": "M", "at": 0},
+                          "lines": [{"who": "kate", "text": "Taxpayers pay the whole difference."}]}]}
+    t0 = time.time()
+    r = c.post("/auto/cartoon/new", data={"story": "own", "script": json.dumps(script), "format": "vertical", "voices": "1",
+                                          "captions": "1", "style": "pop"}, headers=H)
+    jid = next((j["id"] for j in vo.list_jobs() if j.get("kind") == "cartoon_make"), "")
+    j = wait(jid, 3 * 3600) if jid else {"state": "failed"}
+    timings["cartoon_voices_s"] = round(time.time() - t0)
+    res = j.get("result") or {}
+    lines = sorted((vo._job_dir(jid) / "voices").glob("line_*.wav")) if jid else []
+    kept = (HOME / "cartoon" / "voices" / "rick" / "voice.wav").is_file()
+    check("cartoon: a film with voices made (the narrator's own voice, a voice from a description), checked",
+          r.status_code == 302 and j.get("state") == "done" and res.get("voices") and len(lines) == 3, (j.get("state"), res))
+    check("cartoon: the described voice kept with the character (the same voice in the next episode)", kept)
+    if j.get("state") != "done":
+        return
+    film = vo._job_dir(jid) / "film.mp4"
+    shutil.copy2(film, out / "cartoon_voices.mp4")
+    c.post("/auto/voice/captions", data={"path": str(film), "language": "en"}, headers=H)
+    cj = wait(vo.list_jobs()[0]["id"], 3600)
+    heard = str((cj.get("result") or {}).get("said") or "").lower()
+    check("cartoon: the film's voices heard back by Whisper (the lines are said)", cj.get("state") == "done"
+          and "price" in heard and "approved" in heard and "taxpayers" in heard, heard[:300] or cj.get("result"))
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -128,6 +128,12 @@ jobs:
         run: |
           python mediaengine/tests/clips_check.py "$env:RUNNER_TEMP\clips" 2>&1 | Tee-Object "$env:OUT\clips_check.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Cartoon Studio (characters, scripts, a film in both formats, the example's scenes, the pages)
+        shell: pwsh
+        run: |
+          python mediaengine/tests/cartoon_check.py "$env:RUNNER_TEMP\cartoon" 2>&1 | Tee-Object "$env:OUT\cartoon_check.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          Copy-Item "$env:RUNNER_TEMP\cartoon\short_v.mp4" "$env:OUT\cartoon_short.mp4" -ErrorAction SilentlyContinue
       - name: Full-video Convert (1440p60, rotated phone clip, VFR)
         shell: pwsh
         run: |

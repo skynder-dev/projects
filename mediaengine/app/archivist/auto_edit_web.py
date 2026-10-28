@@ -399,6 +399,7 @@ def register(app, layout, e, human_bytes):
                         if has_exports else "")
                      + ("<a class='btn btn2' href='/auto/voice'>Voice-over and text</a>" if _voice_on_home() else "")
                      + "<a class='btn btn2' href='/auto/clips'>Clips from a long video</a>"
+                     + "<a class='btn btn2' href='/auto/cartoon'>Cartoon Studio</a>"
                      + "<a class='btn btn2' href='/auto/orders'>Orders"
                      + (f" <span class='badge review' translate='no'>{n_orders}</span>" if n_orders else "") + "</a>"
                      + "<a class='btn btn2' href='/auto/check'>Check this PC</a></div>")
@@ -1579,6 +1580,8 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
     voice_web.register(app, page, err_page, e, human_bytes)
     from . import clips_web        # clips from a long video (clipping)
     clips_web.register(app, page, err_page, e, human_bytes)
+    from . import cartoon_web      # cartoon films made by the program (cartoon/)
+    cartoon_web.register(app, page, err_page, e, human_bytes)
 
 
 AI_LABEL = "AI — as before (fast)"

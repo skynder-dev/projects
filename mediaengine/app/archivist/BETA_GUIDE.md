@@ -85,6 +85,18 @@ evened out, captions with the words in the look you choose, optionally the first
 "<video> - clips", named by their first words. Use only videos you may cut (your own, or footage a clipping campaign
 gives you).
 
+## Cartoon Studio
+
+Auto Edit → **Cartoon Studio**: a short 2D cartoon made by MediaEngine itself - its own characters (drawn the same in
+every scene and episode), backgrounds (a street, an office, the city hall, a road, a bank, night, a board for schemes),
+schemes of money with arrows, contracts with a stamp, charts, a road with potholes; the characters' voices (the voice
+add-on: the narrator in the program's own voice, the others in voices from a description, kept for the next
+episode), mouths moving with the words, captions, short sounds. Choose the example story (How a City Loses Millions
+on a Simple Road Contract) or paste a script, vertical 9:16 or wide 16:9, press "Make the cartoon". On the film's page
+change any line, who says it, the feeling, the gesture or a scene's background and press "Make it again" - a new
+version, the old one stays. Without the voice add-on: a quick preview without voices. Saved in "Cartoons" next to the
+saved reels. Next: a script written from a topic, a text or a video, in English, Russian and Romanian.
+
 ## Converting videos
 
 **Media → Convert** (or "Convert" on videos chosen in the Library, or "Choose videos on this PC"). The copies go into
