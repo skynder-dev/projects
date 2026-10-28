@@ -66,7 +66,7 @@ def voice_of(name: str) -> str:
     return str((entry(name) or {}).get("voice") or "")
 
 
-def remember(cast: dict, narrator: str = "") -> None:
+def remember(cast: dict, narrator: str = "", lang: str = "") -> None:
     """The characters of a film made: new names kept with the look they had; known ones counted."""
     with _LOCK:
         data = dict(load())
@@ -83,8 +83,22 @@ def remember(cast: dict, narrator: str = "") -> None:
                      "voice": str(v.get("text") or "") if v.get("kind") == "describe" else "",
                      "narrator": k == narrator, "films": 0, "added": now}
             e = dict(e, films=int(e.get("films") or 0) + 1, last=now)
+            if k == narrator:
+                e["narrator"] = True
+            if lang and lang not in (e.get("langs") or []):
+                e["langs"] = (e.get("langs") or []) + [lang]
             data[key] = e
         _save(data)
+
+
+def host(lang: str) -> dict | None:
+    """The narrator of the earlier films in this language (the one used most): the same host for a series."""
+    best = None
+    for e in load().values():
+        if e.get("narrator") and lang in (e.get("langs") or []) and int(e.get("films") or 0) >= 1:
+            if best is None or int(e.get("films") or 0) > int(best.get("films") or 0):
+                best = e
+    return best
 
 
 def update(key: str, role: str | None = None, look: dict | None = None, voice: str | None = None) -> None:

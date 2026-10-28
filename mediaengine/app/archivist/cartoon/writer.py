@@ -531,6 +531,14 @@ def prompt(job: dict) -> str:
     secs = int(job.get("secs") or 75)
     words = int(secs * 1.9)                                # (the model writes about a third more than asked)
     rules = RULES.format(words=f"{words - 25} to {words + 25}", secs=secs)
+    try:                                                   # the same host as the earlier films in this language
+        from . import library
+        h = library.host(lang)
+    except Exception:
+        h = None
+    if h and job.get("mode") != "adapt":
+        who = "woman" if (h.get("look") or {}).get("female") else "man"
+        rules += f"\n- The narrator is {h['name']} ({who}, narrator) - the same host as in the earlier films."
     country = str(job.get("country") or "").strip() or ("" if lang == "en" else COUNTRY.get(lang, ""))
     where = (f"\nTHE VIEWERS: in {country}; names, money ({money_of(country)}) and offices usual there." if country else "")
     if job.get("mode") == "adapt":

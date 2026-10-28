@@ -67,7 +67,7 @@ def do(jid: str, d: Path, job: dict) -> dict:
     saved = _save(d / "film.mp4", job.get("title") or film["title"])
     try:                                                  # its characters kept in the library (looks, voices)
         from . import library
-        library.remember(film["cast"], film.get("narrator") or "")
+        library.remember(film["cast"], film.get("narrator") or "", str(film.get("language") or "")[:2])
     except Exception:
         pass
     if not (vo.load_config().get("voice") or {}).get("keep_work"):
