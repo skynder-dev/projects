@@ -1,0 +1,47 @@
+name: mediaengine-ro-voice-probe
+# A research probe for Cartoon Studio: a Romanian voice. Qwen3-TTS does not speak Romanian and VoxCPM2 said it poorly;
+# this says three lines with each of Piper's Romanian voices (rhasspy/piper-voices, ONNX, on the processor), saves their
+# model cards (data, licence) and has faster-whisper "small" hear them back. Not part of the program; nothing paid.
+# Results: branch mediaengine-ro-voice (ro_voice_probe.md, the WAVs, the model cards).
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'mediaengine/tests/ro_voice_probe.py'
+      - '.github/workflows/mediaengine-ro-voice-probe.yml'
+permissions:
+  contents: write
+concurrency:
+  group: mediaengine-ro-voice-probe-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  ro:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Packages (Piper, faster-whisper as in the voice add-on)
+        run: python -m pip install --disable-pip-version-check -q piper-tts faster-whisper==1.2.1
+      - name: The voices said and heard
+        run: |
+          mkdir -p "$RUNNER_TEMP/out"
+          python -m pip list 2>/dev/null | grep -i -E "piper|onnx|whisper" > "$RUNNER_TEMP/out/packages.txt" || true
+          python mediaengine/tests/ro_voice_probe.py --out "$RUNNER_TEMP/out" 2>&1 | tee "$RUNNER_TEMP/out/ro_voice_probe.txt"
+      - name: Publish to branch mediaengine-ro-voice
+        if: always()
+        env:
+          RUN_ID: ${{ github.run_id }}
+          SRC_SHA: ${{ github.sha }}
+        run: |
+          pub="$RUNNER_TEMP/pub"; rm -rf "$pub"; mkdir -p "$pub"
+          cp "$RUNNER_TEMP"/out/* "$pub/" 2>/dev/null || true
+          printf 'sha=%s\nrun=%s\n' "$SRC_SHA" "$RUN_ID" > "$pub/RUN.txt"
+          cd "$pub"; git init -q; git checkout -q -b mediaengine-ro-voice
+          git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
+          git add -A; git commit -q -m "ro voice probe $RUN_ID ($SRC_SHA)"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" mediaengine-ro-voice
