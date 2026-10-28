@@ -1298,6 +1298,7 @@ PHRASES = {
     "This video is longer than half an hour: choose a cartoon or a short (or a part of a long video).": "Это видео длиннее получаса: выбери мультфильм или короткий ролик (или часть длинного видео).",
     "The video's shots could not be found (FFmpeg could not read it quickly enough). Try a shorter video, or convert it first (Media → Convert).": "Не удалось найти планы видео (FFmpeg не смог прочитать его достаточно быстро). Попробуй видео покороче или сначала сконвертируй его (Медиа → Конвертация).",
     "Close-ups of the one speaking (in scenes without a picture to read)": "Крупный план того, кто говорит (в сценах без картинки для чтения)",
+    "The shots one after another, as long as they last:": "Планы один за другим, по их длине:",
     "Or a video on this PC": "Или видео на этом компьютере", "A video whose story to retell (its full path)": "Видео, сюжет которого пересказать (полный путь)",
     "The program listens to it (the voice add-on), notes its facts and numbers and writes a new story with its own characters - not a copy. Listening takes a few minutes for an hour of video.":
         "Программа прослушает его (модуль озвучки), выпишет факты и цифры и напишет новый сюжет со своими персонажами — не копию. Прослушивание — несколько минут на час видео.",

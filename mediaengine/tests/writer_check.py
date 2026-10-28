@@ -352,8 +352,9 @@ def main() -> int:
         bad = c.get(f"/auto/cartoon/{sid}/frame/..%2Fjob.json", headers=H)
         bad2 = c.get(f"/auto/cartoon/{sid}/frame/job.json", headers=H)      # (the page's own guard: only its pictures)
         bad3 = c.get(f"/auto/cartoon/{sid}/frame/9999.jpg", headers=H)
-        check("the study's page: the rhythm, the colours, a storyboard with the pictures and the words; a form to write "
-              "with this rhythm", "Storyboard" in spage and "The rhythm" in spage and "Write a story with this rhythm" in spage
+        check("the study's page: the rhythm (a strip of the shots), the colours, a storyboard with the pictures and the "
+              "words; a form to write with this rhythm", "Storyboard" in spage and "The rhythm" in spage
+              and spage.count("href='#shot") == 4 and "id='shot4'" in spage and all(x.get("color") for x in shots) and "Write a story with this rhythm" in spage
               and f"/auto/cartoon/{sid}/frame/0000.jpg" in spage and "Why does a city" in spage and fr is not None
               and fr.status_code == 200 and fr.mimetype == "image/jpeg" and bad.status_code == 404 and bad2.status_code == 404
               and bad3.status_code == 404, (fr and fr.status_code, bad.status_code, bad2.status_code, bad3.status_code))

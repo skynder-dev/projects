@@ -34,6 +34,8 @@ CSS = """<style>
 .ct-nums{display:grid;grid-template-columns:minmax(120px,max-content) minmax(0,1fr);gap:4px 14px}
 .ct-chip{display:inline-flex;align-items:center;gap:6px;margin:3px 12px 3px 0;font-size:13px}
 .ct-chip i{display:inline-block;width:28px;height:20px;border-radius:5px;border:1px solid #0003}
+.ct-strip{display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid var(--line2);margin-top:6px}
+.ct-strip a{display:block;min-width:2px;border-right:2px solid var(--bg,#111)}
 </style>"""
 _JOB_ID = r"[0-9]{8}-[0-9]{6}-[0-9a-f]{6}"
 _STEP = {"starting": "Starting…", "voices": "The characters are speaking…", "drawing": "Drawing the pictures…",
@@ -588,10 +590,15 @@ def register(app, page, err_page, e, human_bytes):
         shots = ""
         for i, s in enumerate(ref.get("shots") or []):
             img = (f"<img loading='lazy' src='/auto/cartoon/{jid}/frame/{e(s['frame'])}' alt=''>" if s.get("frame") else "")
-            shots += (f"<div class='ct-shot'>{img}<div style='margin-top:4px'><b translate='no'>{i + 1}</b> · <span translate='no'>"
+            shots += (f"<div class='ct-shot' id='shot{i + 1}'>{img}<div style='margin-top:4px'><b translate='no'>{i + 1}</b> · <span translate='no'>"
                       f"{_clock(s['s'])}–{_clock(s['e'])} ({float(s['e']) - float(s['s']):.1f} s)</span></div>"
                       + (f"<div class='muted' translate='no'>{e(s['text'])}</div>" if s.get("text") else "") + "</div>")
-        body = (f"<div class='card'><h2 style='margin-top:0'>The rhythm</h2><div class='ct-nums'>{nums}</div>"
+        strip = "".join(f"<a href='#shot{i + 1}' style='flex:{max(0.05, float(s['e']) - float(s['s'])):.2f};"
+                        f"background:{e(s.get('color') or '#888888')}' title='{i + 1}: {float(s['e']) - float(s['s']):.1f} s'></a>"
+                        for i, s in enumerate(ref.get("shots") or []))
+        body = (f"<div class='card'><h2 style='margin-top:0'>The rhythm</h2>"
+                f"<div class='muted' style='font-size:13px'>The shots one after another, as long as they last:</div>"
+                f"<div class='ct-strip'>{strip}</div><div class='ct-nums' style='margin-top:10px'>{nums}</div>"
                 + (f"<div style='margin-top:10px'><b>The main colours</b><div>{chips}</div></div>" if chips else "")
                 + f"</div><div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Write a story with this rhythm</h2>{write}</div>"
                 f"<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Storyboard</h2>"

@@ -135,6 +135,19 @@ def _frames(src: Path, shots: list[dict], out: Path, ff: str, stop) -> list[str]
     return names
 
 
+def _mean_colour(p: Path) -> str:
+    """A picture's average colour (#rrggbb; '' when it cannot be read) - for the strip of the shots on the page."""
+    import cv2
+    try:
+        img = cv2.imdecode(np.fromfile(str(p), np.uint8), cv2.IMREAD_COLOR)
+    except (OSError, ValueError):
+        return ""
+    if img is None:
+        return ""
+    b, g, r = (int(x) for x in img.reshape(-1, 3).mean(axis=0))
+    return f"#{r:02x}{g:02x}{b:02x}"
+
+
 def _palette(folder: Path, names: list[str], k: int = 6) -> list[dict]:
     """The main colours of the pictures (k-means), the most used first, with their shares."""
     import cv2
@@ -283,6 +296,7 @@ def do(jid: str, d: Path, job: dict) -> dict:
     names = _frames(src, shots, d / "frames", ff, stop)
     for s, n in zip(shots, names):
         s["frame"] = n
+        s["color"] = _mean_colour(d / "frames" / n) if n else ""
     palette = _palette(d / "frames", names)
     heard = {}
     if job.get("listen") and not stop():
