@@ -562,6 +562,8 @@ Visuals - what appears on the screen in that scene, written after "|" (a scene m
   list: <title>; <item>; <item>; <item>                      (for example the warning signs, at the end)
   bag: <text>                                                (a bag of money)
   magnifier: <word>                                          (someone checks the papers)
+  percent: <number>% <label>                                 (a share of the whole, e.g. 30% kickback)
+  timeline: <date> <event>; <date> <event>; <date> <event>   (what happened when, 3 to 5 steps)
   road | road: repair | road: holes back                     (only in a story about a road)"""
 
 RULES = """RULES:
@@ -622,7 +624,7 @@ def prompt(job: dict) -> str:
             f"- Translate everything that is said and every label in the visuals into natural spoken {n} (not word for word).\n"
             "- Keep the format's keywords in English exactly: Title, Format, Narrator, woman, man, ==, the backgrounds "
             "(City street, Office, City hall, Road, Bank, Night, Board, Paper, Hospital, School, Shop, Home), the visual kinds (title, flow, contract, "
-            "tender, bars, counter, compare, list, bag, magnifier, road), CONTRACT, TENDER, APPROVED, price, stamp, [bubble], "
+            "tender, bars, counter, compare, list, bag, magnifier, road, percent, timeline), CONTRACT, TENDER, APPROVED, price, stamp, [bubble], "
             "the gestures and the feelings in brackets.\n"
             "- In what is said, numbers as words; in the visuals, digits.",
             "SCRIPT:\n\n" + str(job.get("source") or "").strip()[:MAX_SOURCE], f"Now write the whole script in {n}."])

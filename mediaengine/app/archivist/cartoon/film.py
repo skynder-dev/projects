@@ -330,6 +330,31 @@ def draw_visual(cv: Canvas, v: dict, scene: dict, t: float, box: tuple, cast: di
                 y = -190 + i * 140
                 P.tick(cv, -400, y, 0.85, bool(it.get("ok")), a)
                 cv.text(it.get("text") or "", -320, y, 50, ink, "black", width=780, anchor="lm", alpha=min(1, a * 1.5))
+        elif kind == "percent":                            # a share of a whole: the slice grows to its size
+            a = ease(_appear(scene, v.get("at"), t, 1.4))
+            share = max(0.0, min(1.0, float(v.get("value") or 0) / 100.0))
+            cv.shadow(0, 250, 300, 30, 0.18)
+            cv.circle(0, -20, 250, "#d9dee6", INK, 6)
+            if share * a > 0.002:
+                cv.ellipse(0, -20, 250, 250, P.RED, INK, 6, -90, -90 + 360 * share * a)
+            cv.circle(0, -20, 128, "#ffffff", INK, 5)
+            cv.text(f"{int(round(float(v.get('value') or 0) * a))}%", 0, -20, 74, INK, "black")
+            if v.get("label"):
+                cv.text(v["label"], 0, 320, 54, ink, "black", width=900, alpha=min(1.0, a * 1.5))
+        elif kind == "timeline":                           # dates along a line, one by one
+            steps = v.get("steps") or []
+            n = max(1, len(steps))
+            cv.line([(-430, 0), (430, 0)], ink, 8)
+            for i, stp in enumerate(steps):
+                a = _appear(scene, stp.get("at"), t, 0.5)
+                if a <= 0:
+                    continue
+                x = -430 + 860 * (i + 0.5) / n
+                up = i % 2 == 0
+                cv.circle(x, 0, 26 * back(a), P.RED if stp.get("bad") else P.GOLD, INK, 5)
+                cv.text(stp.get("when") or "", x, -70 if up else 70, 50, ink, "black", width=860 / n + 40, alpha=min(1, a * 1.5))
+                cv.text(stp.get("what") or "", x, -150 if up else 150, 38, ink, "extrabold", width=860 / n + 60,
+                        alpha=min(1, a * 1.5))
         elif kind == "compare":
             for i, side in enumerate(v.get("sides") or []):
                 a = _appear(scene, side.get("at"), t, 0.5)

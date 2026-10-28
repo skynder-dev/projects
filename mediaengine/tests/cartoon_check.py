@@ -177,6 +177,22 @@ def main() -> int:
           abs(float(tr["fade"].mean()) - 100) < 10 and float(tr["slide"][:, :10].mean()) < 5 and float(tr["slide"][:, -10:].mean()) > 195
           and float(tr["iris"][48, 27].mean()) > 195 and float(tr["iris"][0, 0].mean()) < 5
           and np.array_equal(F.transition(a_, b_, 1.0, False, 1), b_), {k: float(v.mean()) for k, v in tr.items()})
+    pv = Tx_ = None
+    from archivist.cartoon import textscript as Tx_
+    pv = Tx_.parse("Title: X\nNarrator: Kate (woman)\n\n== Board | percent: 30% kickback\nKate: Thirty percent.\n\n"
+                   "== Paper | timeline: 2021 contract; 2022 repair; 2023 holes back\nKate: a\nKate: b\nKate: c\n")
+    pfilm = F.check_script(pv)
+    ptl = F.timeline(pfilm)
+    drawn = []
+    for s_ in ptl["scenes"]:
+        cvp = Canvas(270, 480, 1080)
+        F.draw_frame(cvp, pfilm, s_, s_["e"] - 0.3, {})
+        drawn.append(float(cvp.img.std()))
+    check("pictures: a share of a whole (a pie) and a timeline, read from a story and drawn",
+          pv["scenes"][0]["visual"]["kind"] == "percent" and pv["scenes"][0]["visual"]["value"] == 30
+          and [x["when"] for x in pv["scenes"][1]["visual"]["steps"]] == ["2021", "2022", "2023"]
+          and pv["scenes"][1]["visual"]["steps"][2].get("bad") and all(d > 15 for d in drawn)
+          and Tx_.to_text(pv).count("percent: 30% kickback") == 1, (pv["scenes"], drawn))
     from archivist.cartoon import music as Mu
     beds = {m: Mu.made(12, m) for m in Mu.MOODS}
     v = np.zeros(48000 * 12, np.float32)

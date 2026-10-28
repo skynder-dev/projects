@@ -54,8 +54,11 @@ KIND_ALIASES = {                                           # the kinds of pictur
     "счётчик": "counter", "счетчик": "counter", "сумма": "counter", "contor": "counter", "sumă": "counter", "suma": "counter",
     "сравнение": "compare", "comparație": "compare", "comparatie": "compare", "мешок": "bag", "деньги": "bag", "sac": "bag",
     "лупа": "magnifier", "проверка": "magnifier", "lupă": "magnifier", "lupa": "magnifier", "дорога": "road", "drum": "road",
+    "pie": "percent", "share": "percent", "процент": "percent", "доля": "percent", "procent": "percent",
+    "хронология": "timeline", "даты": "timeline", "cronologie": "timeline", "dates": "timeline",
 }
 VISUAL_KINDS = ("title", "flow", "contract", "tender", "bars", "chart", "list", "counter", "compare", "bag", "magnifier", "road",
+                "percent", "timeline",
                 "заголовок", "схема", "договор", "контракт", "тендер", "график", "диаграмма", "список", "счётчик", "счетчик",
                 "сумма", "сравнение", "мешок", "лупа", "проверка", "дорога") + tuple(KIND_ALIASES)
 POSE_WORDS = {
@@ -256,6 +259,20 @@ def _visual(spec: str, n_lines: int) -> dict | None:
         return {"kind": "compare", "sides": sides}
     if kind in ("bag", "мешок", "деньги"):
         return {"kind": "bag", "text": rest[:60], "label": "$"}
+    if kind == "percent":                                  # "30% kickback" / "30 kickback"
+        v_ = _number(rest)
+        if v_ is None:
+            return None
+        return {"kind": "percent", "value": max(0.0, min(100.0, v_)), "at": at(0),
+                "label": re.sub(r"^\s*%?\s*", "", NUM.sub("", rest, count=1)).strip(" -:")[:50]}
+    if kind == "timeline":                                 # "2021 contract; 2022 repair; 2023 holes back"
+        steps = []
+        for k, part in enumerate(p_.strip() for p_ in rest.split(";") if p_.strip()):
+            m = re.match(r"^(\S+(?:\s+\d{4})?)\s+(.*)$", part)
+            when, what = (m.group(1), m.group(2)) if m else (part, "")
+            bad = bool(re.search(r"(?i)holes|broke|again|kickback|bribe|ям|слом|откат|взятк|grop|mită", what))
+            steps.append({"when": when[:16], "what": what[:40], "at": at(k), **({"bad": True} if bad else {})})
+        return {"kind": "timeline", "steps": steps[:5]} if steps else None
     if kind in ("magnifier", "лупа", "проверка"):
         return {"kind": "magnifier", "title": (rest or "TENDER").upper()[:20]}
     return None
@@ -413,6 +430,10 @@ def vis_text(v: dict) -> str:
         return f"bag: {v.get('text') or ''}".rstrip(": ")
     if k == "magnifier":
         return f"magnifier: {v.get('title') or ''}".rstrip(": ")
+    if k == "percent":
+        return f"percent: {_n(v.get('value') or 0)}% {v.get('label') or ''}".rstrip()
+    if k == "timeline":
+        return "timeline: " + "; ".join(f"{st.get('when') or ''} {st.get('what') or ''}".strip() for st in v.get("steps") or [])
     return ""
 
 
