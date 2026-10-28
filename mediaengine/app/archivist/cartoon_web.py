@@ -384,16 +384,23 @@ def register(app, page, err_page, e, human_bytes):
 
     @app.get("/auto/cartoon")
     def cartoon_home():
-        rows = "".join(_film_row(j) for j in cj.films())
+        mine = cj.films()
+        rows = "".join(_film_row(j) for j in mine)
+        jump = ("<div class='ct-row' style='margin-top:10px'>"
+                + (f"<a class='btn' href='#films'><span>My cartoons and stories</span> <span translate='no'>({len(mine)})</span></a>"
+                   if mine else "")
+                + "<a class='btn btn2' href='#writer'>Write a story</a><a class='btn btn2' href='#study'>Study a cartoon</a>"
+                  "<a class='btn btn2' href='#new'>New cartoon</a>"
+                + (f"<a class='btn btn2' href='/auto/cartoon/characters'><span>Characters</span> "
+                   f"<span translate='no'>({len(L.load())})</span></a>" if L.load() else "")
+                + "</div>")
         help_ = _help()
         body = (f"{CSS}<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Cartoon Studio</h1>"
                 f"<div class='lead'>A short 2D cartoon made by MediaEngine: its own characters (the same in every episode), "
                 f"scenes, schemes of money and charts, the characters' voices and captions - one MP4. Change any line, "
-                f"background or feeling and make it again.</div>"
-                + (f"<div style='margin-top:8px'><a class='btn btn2' href='/auto/cartoon/characters'><span>Characters</span> "
-                   f"<span translate='no'>({len(L.load())})</span></a></div>" if L.load() else "")
+                f"background or feeling and make it again.</div>{jump}"
                 + f"</div>{_READY}{_writer_card()}{_study_card()}"
-                f"<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>New cartoon</h2>"
+                f"<div class='card' id='new' style='margin-top:14px'><h2 style='margin-top:0'>New cartoon</h2>"
                 f"<form method='post' action='/auto/cartoon/new' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
                 f"<b>Story</b><div class='muted' style='font-size:13px'>The example below - change it or write your own.</div>{help_}"
                 f"<textarea name='text' rows='16' style='width:100%;font-family:Consolas,monospace;font-size:13px' translate='no'>"
