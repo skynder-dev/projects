@@ -39,7 +39,7 @@ def new_make(script: dict, voices: bool = True, captions: dict | None = None, ti
         p = Path(str(music.get("path") or "").strip().strip('"'))
         if not p.is_file():
             raise F.FilmError("Choose the music file (its full path), or no music.")
-        mus = {"kind": "file", "path": str(p)}
+        mus = {"kind": "file", "path": vo._check_music(str(p))}       # (a file that really plays, checked now)
     return vo._submit({"kind": "cartoon_make", "script": script, "voices": bool(voices), "captions": cap, "music": mus,
                        "title": (title or film["title"])[:60], "format": film["format"], "needs_addon": bool(voices)},
                       addon=bool(voices))

@@ -481,10 +481,19 @@ def gpu_name() -> str | None:
         return None
     key = "|".join(exe)
     if key not in _DEVICES:
+        from .. import auto_edit as ae
+        _DEVICES[key] = None                               # (asked once: a driver that hangs is not asked again)
         try:
-            cp = subprocess.run(exe + ["--list-devices"], capture_output=True, text=True, errors="replace", timeout=90,
-                                cwd=str(Path(exe[-1]).parent), **process_kwargs(below_normal=False))
-            txt = (cp.stdout or "") + (cp.stderr or "")
+            proc = subprocess.Popen(exe + ["--list-devices"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                    stdin=subprocess.DEVNULL, cwd=str(Path(exe[-1]).parent), **process_kwargs(below_normal=False))
+            ae._attach_job_object(proc)                    # (ends with the program)
+            try:
+                out, _ = proc.communicate(timeout=90)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                proc.communicate(timeout=10)
+                return None
+            txt = (out or b"").decode("utf-8", errors="replace")
         except Exception:
             return None
         if "Available devices" not in txt:
@@ -657,8 +666,8 @@ def _pieces(text: str, size: int = 4000, most: int = 8) -> list[str]:
     return out
 
 
-def clean(answer: str, fmt: str = "") -> str:
-    """The story out of the model's answer: no code fences or markdown marks; the format asked for."""
+def clean(answer: str, fmt: str = "", lang: str = "") -> str:
+    """The story out of the model's answer: no code fences or markdown marks; the format and language asked for."""
     out = []
     answer = re.sub(r"(?s)<think>.*?</think>", "", str(answer or ""))
     for ln in answer.replace("\r", "").split("\n"):
@@ -670,10 +679,14 @@ def clean(answer: str, fmt: str = "") -> str:
         s = re.sub(r"^(?:[-*•]|\d{1,2}[.)])\s+(?=\S)", "", s)
         if fmt and re.match(r"(?i)^(format|формат)\s*:", s):
             s = f"Format: {fmt}"
+        if lang and re.match(r"(?i)^(language|язык|limba|limbă)\s*:", s):
+            continue                                       # (said once, below, as asked)
         out.append(s)
     text = "\n".join(out).strip()
     if fmt and not re.search(r"(?im)^(format|формат)\s*:", text):
         text = re.sub(r"(?im)^((?:title|название)\s*:.*)$", lambda m: m.group(1) + f"\nFormat: {fmt}", text, count=1)
+    if lang in LANGS:                                      # (the language asked for, not one guessed from the letters)
+        text = re.sub(r"(?im)^((?:format|формат)\s*:.*)$", lambda m: m.group(1) + f"\nLanguage: {lang}", text, count=1)
     return re.sub(r"\n{3,}", "\n\n", text) + "\n"
 
 
@@ -739,7 +752,7 @@ def do(jid: str, d: Path, job: dict) -> dict:
                          on_piece=lambda n, base=base, span=(0.95 - first) / 2: vo._CURRENT.update(
                              progress=round(min(base + span, base + span * n / expect), 3)),
                          stop=stop)
-            text = clean(r["text"], job.get("format") or "")
+            text = clean(r["text"], job.get("format") or "", job.get("lang") or "")
             info, problem = judge(text, secs)
             if not problem and r.get("finish") == "length":
                 problem = "it was cut off before its end (it is too long): write it shorter"

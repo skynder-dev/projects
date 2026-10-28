@@ -105,16 +105,20 @@ def _fade(a: np.ndarray, fin: float = 1.0, fout: float = 2.0) -> np.ndarray:
 
 
 def from_file(path: str, seconds: float, ffmpeg: str) -> np.ndarray:
-    """The owner's music file, looped to the film's length (mono float32, 48 kHz)."""
-    cp = subprocess.run([ffmpeg, "-hide_banner", "-nostdin", "-v", "error", "-stream_loop", "-1", "-i", str(path),
-                         "-t", f"{seconds:.3f}", "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"], capture_output=True,
-                        timeout=600, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
-    if cp.returncode != 0 or not cp.stdout:
+    """The owner's music file, looped to the film's length (mono float32, 48 kHz). OSError when it cannot be read."""
+    if not Path(path).is_file():
+        raise OSError("the music file is not there any more")
+    try:                                                   # (decoded once, at most ten minutes of it, looped here)
+        cp = subprocess.run([ffmpeg, "-hide_banner", "-nostdin", "-v", "error", "-i", str(path), "-map", "0:a:0",
+                             "-t", f"{min(600.0, max(1.0, seconds)):.3f}", "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"],
+                            capture_output=True, timeout=300, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+    except subprocess.TimeoutExpired:
+        raise OSError("the music took too long to read")
+    a = np.frombuffer(cp.stdout or b"", np.float32)
+    if cp.returncode != 0 or len(a) < SR // 2:
         raise OSError("the music could not be read")
-    a = np.frombuffer(cp.stdout, np.float32)
-    if len(a) < int(seconds * SR):
-        a = np.pad(a, (0, int(seconds * SR) - len(a)))
-    return _fade(a)
+    total = int(seconds * SR)
+    return _fade(np.tile(a, total // len(a) + 1)[:total])
 
 
 def duck(music: np.ndarray, voice: np.ndarray, level: float = 0.22, under: float = 0.35) -> np.ndarray:
@@ -141,7 +145,7 @@ def bed(kind: str, seconds: float, voice: np.ndarray, mood: str = "light", path:
     """The film's music track (None: no music)."""
     if kind == "made":
         m = made(seconds, mood)
-    elif kind == "file" and path and Path(path).is_file():
+    elif kind == "file":
         m = from_file(path, seconds, ffmpeg)
     else:
         return None

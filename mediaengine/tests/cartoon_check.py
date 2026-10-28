@@ -221,7 +221,9 @@ def main() -> int:
           "a bulleted cast, a note that is not a line, a place named in more words",
           nums[0]["to"] == 4800000 and nums[1]["values"] == [1.2, 4.8] and nums[1]["labels"] == ["2023", "2024"]
           and nums[2]["values"] == [30, 1050] and sorted(odd_story["cast"]) == ["kate", "lena"]
-          and [ln["who"] for ln in odd_story["scenes"][0]["lines"]] == ["kate", "lena"] and odd_story["scenes"][0]["bg"] == "city_hall",
+          and [ln["who"] for ln in odd_story["scenes"][0]["lines"]] == ["kate", "lena"] and odd_story["scenes"][0]["bg"] == "city_hall"
+          and Tx.parse("Title: X\nNarrator: Kate (woman)\n\n== City\nKate: We fly to Timișoara and the price is high.\n")["language"] == "en"
+          and Tx.parse("Title: X\nNarrator: Ana (woman)\n\n== City\nAna: Primaria a platit patru milioane de lei pentru un drum.\n")["language"] == "ro",
           (nums, odd_story["cast"], odd_story["scenes"]))
     from archivist.cartoon import bgs
     bad, looks = [], {}
@@ -339,6 +341,16 @@ def main() -> int:
                                                     "music_path": str(work / "nope.mp3")}, headers=H)
         check("pages: a music file that is not there is refused clearly", no_file.status_code == 400
               and b"Choose the music file" in no_file.data, no_file.status_code)
+        # a film without music made again (a form that says nothing about music): still without; its page shows it so
+        quiet_id = next((j_["id"] for j_ in vo.list_jobs() if j_.get("kind") == "cartoon_make" and not j_.get("music")), "")
+        again_q = c.post(f"/auto/cartoon/{quiet_id}/again", data={"t_0_0": "Hello again."}, headers=H) if quiet_id else None
+        new_q = (again_q.headers.get("Location") or "").rstrip("/").split("/")[-1] if again_q is not None else ""
+        page_q = c.get(f"/auto/cartoon/{quiet_id}", headers=H).get_data(as_text=True) if quiet_id else ""
+        check("music: a film without music made again stays without; its page has 'No music' chosen",
+              again_q is not None and again_q.status_code == 302 and new_q and not vo.read_job(new_q).get("music")
+              and "value='none' checked" in page_q, (quiet_id, new_q))
+        if new_q:
+            vo.cancel_job(new_q)
         bad_json = c.post("/auto/cartoon/new", data={"story": "own", "script": "{not json"}, headers=H)
         no_voice = c.post("/auto/cartoon/new", data={"story": "road_contract", "voices": "1"}, headers=H)
         check("pages: a broken script and voices without the add-on are refused clearly",

@@ -161,15 +161,20 @@ def register(app, page, err_page, e, human_bytes):
         return "".join(f"<label><input type='radio' name='format' value='{k}' {'checked' if k == current else ''}> {e(v)}</label>"
                        for k, v in (("vertical", "Vertical 9:16 (TikTok, Reels, Shorts)"), ("horizontal", "Wide 16:9 (YouTube)")))
 
-    def _music_choice() -> str:
-        moods = "".join(f"<option value='{k}'>{e(v)}</option>" for k, v in
+    def _music_choice(current: dict | None | str = "") -> str:
+        """current: the film's own music (None: it had none; "": a new film - the program's)."""
+        cur = current if isinstance(current, dict) else {"kind": "none"} if current is None else {"kind": "made"}
+        kind = cur.get("kind") if cur.get("kind") in ("made", "file") else "none"
+        moods = "".join(f"<option value='{k}' {'selected' if k == cur.get('mood') else ''}>{e(v)}</option>" for k, v in
                         (("light", "light and lively"), ("suspense", "a little suspense"), ("calm", "calm and soft")))
+        chk = lambda k: "checked" if k == kind else ""     # noqa: E731
         return (f"<div style='margin-top:8px'><b>Music</b><div class='ct-choices'>"
-                f"<label><input type='radio' name='music' value='made' checked> Made by the program</label>"
+                f"<label><input type='radio' name='music' value='made' {chk('made')}> Made by the program</label>"
                 f"<select name='mood'>{moods}</select>"
-                f"<label><input type='radio' name='music' value='file'> My music file</label>"
-                f"<label><input type='radio' name='music' value='none'> No music</label></div>"
-                f"<div class='ct-row' style='margin-top:4px'><input name='music_path' placeholder='A music file on this PC (for \"My music file\")' "
+                f"<label><input type='radio' name='music' value='file' {chk('file')}> My music file</label>"
+                f"<label><input type='radio' name='music' value='none' {chk('none')}> No music</label></div>"
+                f"<div class='ct-row' style='margin-top:4px'><input name='music_path' value='{e(cur.get('path') or '')}' translate='no' "
+                f"placeholder='A music file on this PC (for \"My music file\")' "
                 f"style='flex:1;min-width:240px'><button type='button' class='btn2' data-pick-music>Choose…</button></div>"
                 f"<div class='muted' style='font-size:13px'>Quiet under the voices; it goes softer while someone speaks.</div></div>")
 
@@ -309,13 +314,17 @@ def register(app, page, err_page, e, human_bytes):
                 + (f"<div class='card' id='films' style='margin-top:14px'><h2 style='margin-top:0'>Cartoons and stories</h2>{rows}</div>" if rows else ""))
         return page("Cartoon Studio", body, _POLL_JS + _PICK_JS + _MUSIC_JS)
 
-    def _make(script: dict, f) -> str:
+    def _make(script: dict, f, keep: dict | None = None) -> str:
+        """keep: the music of the film made again (used when the form says nothing about music)."""
         script = dict(script)
         if f.get("format") in F.FORMATS:
             script["format"] = f.get("format")
         cap = {"style": f.get("style") or "pop"} if f.get("captions") == "1" else None
-        kind = f.get("music") if f.get("music") in ("made", "file", "none") else "made"
-        music = {"kind": kind, "mood": f.get("mood") or "light", "path": f.get("music_path") or ""} if kind != "none" else None
+        if f.get("music") in ("made", "file", "none"):
+            kind = f.get("music")
+            music = {"kind": kind, "mood": f.get("mood") or "light", "path": f.get("music_path") or ""} if kind != "none" else None
+        else:
+            music = dict(keep) if isinstance(keep, dict) else None
         return cj.new_make(script, f.get("voices") == "1", cap, music=music)
 
     @app.post("/auto/cartoon/new")
@@ -384,7 +393,7 @@ def register(app, page, err_page, e, human_bytes):
                 f"<form method='post' action='/auto/cartoon/{jid}/again' data-dirty-watch "
                 f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">{scenes}"
                 f"<div class='ct-choices' style='margin-top:8px'><b>Format</b><br>{_format_choice(film['format'])}</div>"
-                f"{_voices_choice()}{_captions_choice()}{_music_choice()}"
+                f"{_voices_choice()}{_captions_choice()}{_music_choice(j.get('music'))}"
                 f"<div style='margin-top:12px'><button class='ae-big'>Make it again</button></div></form>"
                 f"<details style='margin-top:12px'><summary>The whole story as text</summary>"
                 f"<form method='post' action='/auto/cartoon/{jid}/again' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
@@ -655,7 +664,7 @@ def register(app, page, err_page, e, human_bytes):
                     if f.get(f"p_{i}_{jn}") is not None:
                         ln["pose"] = f.get(f"p_{i}_{jn}") if f.get(f"p_{i}_{jn}") in ch.POSES else None
                 s["lines"] = kept
-            new = _make(script, f)
+            new = _make(script, f, keep=(_job(jid) or {}).get("music"))
         except (F.FilmError, vo.VoiceError) as exc:
             return err_page(str(exc), f"/auto/cartoon/{jid}")
         return redirect(f"/auto/cartoon/{new}")

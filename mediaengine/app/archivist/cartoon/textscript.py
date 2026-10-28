@@ -115,6 +115,10 @@ MONEY_TAIL = re.compile(r"\s+((?:[$€₽£]\s?)?\d[\d.,\s]*(?:\s?(?:млн|мл
                         r"|kickback|bribe|откат|взятка|mită|comision)\s*$", re.I)
 
 
+RO_WORDS = {"este", "și", "si", "sunt", "pentru", "care", "dar", "nu", "mai", "din", "cu", "pe", "la", "un", "o", "ce",
+            "lei", "primăria", "primaria", "bani", "drum", "firma", "firmă", "orașul", "orasul", "contractul", "plătit", "platit"}
+
+
 def _key(name: str, taken: dict) -> str:
     a, b = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя", "abvgdeejziiklmnoprstufhccss_y_eua"
     base = re.sub(r"[^a-z0-9]", "", name.lower().translate(str.maketrans(a, b)))[:20] or "c"
@@ -259,18 +263,29 @@ def _visual(spec: str, n_lines: int) -> dict | None:
         return {"kind": "compare", "sides": sides}
     if kind in ("bag", "мешок", "деньги"):
         return {"kind": "bag", "text": rest[:60], "label": "$"}
-    if kind == "percent":                                  # "30% kickback" / "30 kickback"
-        v_ = _number(rest)
-        if v_ is None:
-            return None
-        return {"kind": "percent", "value": max(0.0, min(100.0, v_)), "at": at(0),
-                "label": re.sub(r"^\s*%?\s*", "", NUM.sub("", rest, count=1)).strip(" -:")[:50]}
-    if kind == "timeline":                                 # "2021 contract; 2022 repair; 2023 holes back"
+    if kind == "percent":                                  # "30% kickback" / "kickback 30%" / "2/3 of the budget"
+        m = re.search(r"(\d+(?:[.,]\d+)?)\s*%", rest)
+        frac = None if m else re.search(r"(\d+)\s*/\s*(\d+)", rest)
+        if frac:
+            m, v_ = frac, 100.0 * float(frac.group(1)) / max(1.0, float(frac.group(2)))
+        elif m:
+            v_ = _to_float(m.group(1)) or 0.0
+        else:
+            m = NUM.search(rest)
+            if not m:
+                return None
+            v_ = _to_float(m.group(0)) or 0.0
+        label = (rest[:m.start()] + " " + rest[m.end():]).strip(" -:%")
+        return {"kind": "percent", "value": round(max(0.0, min(100.0, v_)), 1), "at": at(0), "label": re.sub(r"\s+", " ", label)[:50]}
+    if kind == "timeline":                                 # "2021 contract; 2022 repair; 5 марта 2023: holes back"
         steps = []
+        month = r"[^\W\d_]{3,12}\.?"
         for k, part in enumerate(p_.strip() for p_ in rest.split(";") if p_.strip()):
-            m = re.match(r"^(\S+(?:\s+\d{4})?)\s+(.*)$", part)
-            when, what = (m.group(1), m.group(2)) if m else (part, "")
-            bad = bool(re.search(r"(?i)holes|broke|again|kickback|bribe|ям|слом|откат|взятк|grop|mită", what))
+            m = (re.match(r"^(\d{1,2}\s+" + month + r"(?:\s+\d{4})?|" + month + r"\s+\d{4}|\d{1,4}(?:[./-]\d{1,4}){0,2})\s*[:\-–—]?\s+(.*)$", part)
+                 or re.match(r"^(\S+)\s*[:\-–—]?\s+(.*)$", part))
+            when, what = (m.group(1).rstrip(":-–— "), m.group(2)) if m else (part, "")
+            bad = bool(re.search(r"(?i)\b(holes?|broken?|broke|again|kickbacks?|bribes?|stolen|fraud)\b|\b(ям|слом|откат|взятк|украл|снова)"
+                                 r"|\b(gropi|mită|mita|furat|iar)\b", what))
             steps.append({"when": when[:16], "what": what[:40], "at": at(k), **({"bad": True} if bad else {})})
         return {"kind": "timeline", "steps": steps[:5]} if steps else None
     if kind in ("magnifier", "лупа", "проверка"):
@@ -378,10 +393,14 @@ def parse(text: str) -> dict:
         m = re.match(r"^([^:(]{1,40}?)\s*\(([^)]*)\)\s*$", s)       # a character introduced: "Mayor Grant (man, mayor)"
         if m and scene is None:
             add(m.group(1), m.group(2).split(","))
-    if not any(re.match(r"(?i)^(language|язык)\s*:", x.strip()) for x in lines):   # the language from the letters
+    if not any(re.match(r"(?i)^(language|язык|limba|limbă)\s*:", x.strip()) for x in lines):   # from the letters
         said = " ".join(ln["text"] for s_ in sc["scenes"] for ln in s_["lines"])
         cyr, lat = len(re.findall(r"[А-Яа-яЁё]", said)), len(re.findall(r"[A-Za-z]", said))
-        sc["language"] = "ru" if cyr > lat else "ro" if re.search(r"[ăâîșşțţ]", said.lower()) else "en"
+        words = re.findall(r"[^\W\d_]+", said.lower())
+        ro_marks = sum(1 for w in words if re.search(r"[ăâîșşțţ]", w))
+        ro_words = sum(1 for w in words if w in RO_WORDS)
+        sc["language"] = ("ru" if cyr > lat else
+                          "ro" if words and (ro_marks + ro_words) / len(words) >= 0.08 and ro_marks + ro_words >= 3 else "en")
     if not sc.get("narrator") and sc["cast"]:
         first = next(iter(sc["cast"]))
         sc["narrator"] = first

@@ -584,10 +584,11 @@ def render(script: dict, out: Path, work: Path, voices: dict | None = None, capt
     if music and music.get("kind") in ("made", "file"):
         from . import music as M
         try:
-            bed = M.bed(music["kind"], len(audio) / SR, audio, music.get("mood") or "light", music.get("path") or "",
-                        vo._ffmpeg())
+            said = mix(tl, sounds=False)                    # (lowered for the voices, not for the whooshes)
+            bed = M.bed(music["kind"], len(audio) / SR, said[:len(audio)], music.get("mood") or "light",
+                        music.get("path") or "", vo._ffmpeg())
         except OSError:
-            raise FilmError("The music file could not be read.")
+            raise FilmError("The music file could not be read (or is not there any more).")
         if bed is not None:
             audio = audio + bed[:len(audio)]
             peak = float(np.max(np.abs(audio))) if len(audio) else 0.0
