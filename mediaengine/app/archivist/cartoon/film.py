@@ -44,7 +44,7 @@ def check_script(sc: dict) -> dict:
     out = dict(sc)
     out["format"] = sc.get("format") if sc.get("format") in FORMATS else "vertical"
     cast = {}
-    for key, spec in (sc.get("cast") or {}).items():
+    for key, spec in (sc.get("cast") if isinstance(sc.get("cast"), dict) else {}).items():
         if not isinstance(spec, dict):
             continue
         key = re.sub(r"[^a-z0-9_]", "", str(key).lower())[:30] or f"c{len(cast)}"
@@ -63,26 +63,32 @@ def check_script(sc: dict) -> dict:
     if not cast:
         raise FilmError("The script has no characters.")
     out["cast"] = cast
-    out["narrator"] = sc.get("narrator") if sc.get("narrator") in cast else next(iter(cast))
+    out["narrator"] = sc.get("narrator") if isinstance(sc.get("narrator"), str) and sc.get("narrator") in cast else next(iter(cast))
     scenes = []
     for s in sc["scenes"][:40]:
         if not isinstance(s, dict):
             continue
         lines = []
-        for ln in (s.get("lines") or [])[:30]:
+        for ln in (s.get("lines") if isinstance(s.get("lines"), list) else [])[:30]:
             if not isinstance(ln, dict) or not str(ln.get("text") or "").strip():
                 continue
-            who = ln.get("who") if ln.get("who") in cast else out["narrator"]
+            who = ln.get("who") if isinstance(ln.get("who"), str) and ln.get("who") in cast else out["narrator"]
             lines.append({"who": who, "text": re.sub(r"\s+", " ", str(ln["text"])).strip()[:400],
-                          "pose": ln.get("pose") if ln.get("pose") in ch.POSES else None,
+                          "pose": ln.get("pose") if isinstance(ln.get("pose"), str) and ln.get("pose") in ch.POSES else None,
                           "emotion": ln.get("emotion") if ln.get("emotion") in ch.EMOTIONS else None,
                           "bubble": bool(ln.get("bubble"))})
+        try:
+            min_s = max(1.0, min(30.0, float(s.get("min") or 3.0)))
+        except (TypeError, ValueError):
+            min_s = 3.0
+        mood = s.get("mood") if isinstance(s.get("mood"), dict) else {}
+        pose = s.get("pose") if isinstance(s.get("pose"), dict) else {}
         scenes.append({"bg": s.get("bg") if s.get("bg") in bgs.BACKGROUNDS else "city",
-                       "cast": [k for k in (s.get("cast") or []) if k in cast][:4],
+                       "cast": [k for k in (s.get("cast") if isinstance(s.get("cast"), list) else []) if isinstance(k, str) and k in cast][:4],
                        "visual": s.get("visual") if isinstance(s.get("visual"), dict) else None,
-                       "lines": lines, "min": float(s.get("min") or 3.0),
-                       "mood": {k: v for k, v in (s.get("mood") or {}).items() if k in cast and v in ch.EMOTIONS},
-                       "pose": {k: v for k, v in (s.get("pose") or {}).items() if k in cast and v in ch.POSES}})
+                       "lines": lines, "min": min_s,
+                       "mood": {k: v for k, v in mood.items() if k in cast and v in ch.EMOTIONS},
+                       "pose": {k: v for k, v in pose.items() if k in cast and v in ch.POSES}})
     if not scenes:
         raise FilmError("The script has no scenes.")
     out["scenes"] = scenes
@@ -495,9 +501,10 @@ def mouth_tracks(tl: dict) -> dict:
 
 # ------------------------------------------------------------------------------------------------- the film
 
-def captions_ass(tl: dict, width: int, height: int, opts: dict, work: Path) -> Path | None:
+def captions_ass(tl: dict, width: int, height: int, opts: dict, work: Path, film: dict | None = None) -> Path | None:
     from .. import textfx as tf, voice as vo
-    words = [w for s in tl["scenes"] for ln in s["lines"] if not ln.get("bubble") for w in ln["words"]]   # (a bubble shows its own)
+    words = [w for s in tl["scenes"] for ln in s["lines"]                 # (a bubble shows its own words - when its speaker
+             if not ln.get("bubble") or ln["who"] not in _shown(film or {}, s) for w in ln["words"]]   # is in the picture)
     if not words:
         return None
     o = tf.options(**opts)
@@ -524,7 +531,7 @@ def render(script: dict, out: Path, work: Path, voices: dict | None = None, capt
         w.writeframes((np.clip(audio, -1, 1) * 32767).astype(np.int16).tobytes())
     vf = []
     if captions is not None:
-        ass = captions_ass(tl, W, H, captions, work)
+        ass = captions_ass(tl, W, H, captions, work, film)
         if ass:
             fonts = tf.install_fonts(work)
             vf.append("ass=captions.ass" + (":fontsdir=fonts" if fonts else ""))

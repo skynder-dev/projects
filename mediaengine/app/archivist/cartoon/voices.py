@@ -114,7 +114,10 @@ def spoken(text: str, lang: str = "en") -> str:
         def en(m):
             sign, num, big = m.group(1), m.group(2), (m.group(3) or "").lower()
             return f"{num}{' ' + _EN_BIG[big] if big else ''} {_EN_MONEY[sign]}"
-        t = re.sub(r"([$€£])\s?(\d[\d,]*(?:\.\d+)?)\s?(k|mn|mln|m|bn|b)?\b", en, t, flags=re.I)
+        t = re.sub(r"([$€£])\s?(\d[\d,.]*\d|\d)\s(thousand|million|billion)\b",      # "$300 million" -> "300 million dollars"
+                   lambda m: f"{m.group(2)} {m.group(3)} {_EN_MONEY[m.group(1)]}", t, flags=re.I)
+        t = re.sub(r"([$€£])\s?(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)(?:\s?(k|mn|mln|m|bn|b)\b)?", en, t,
+                   flags=re.I)
         t = re.sub(r"(\d)\s?%", r"\1 percent", t)
     elif lang == "ru":
         big_w = {"тыс": ("тысяча", "тысячи", "тысяч", "тысячи"), "млн": ("миллион", "миллиона", "миллионов", "миллиона"),
@@ -133,8 +136,10 @@ def spoken(text: str, lang: str = "en") -> str:
             n = num(n_s)
             out = n_s + (" " + _ru_plural(n, *big_w[big]) if big in big_w else "")
             return out + " " + (money_w[cur][2] if big in big_w and cur != "€" else _ru_plural(n, *money_w[cur]))
-        t = re.sub(r"(\d+(?:[  ]\d{3})*(?:[.,]\d+)?)\s?(тыс\.?|млн\.?|млрд\.?)?\s?([₽$€])", ru, t)
-        t = re.sub(r"([$€])\s?(\d+(?:[  ]\d{3})*(?:[.,]\d+)?)(?:\s?(тыс\.?|млн\.?|млрд\.?))?",
+        t = re.sub(r"([$€])\s?(\d+(?:[  ]\d{3})*(?:[.,]\d+)?)\s(тысяч\w*|миллион\w*|миллиард\w*)",          # "$5 тысяч" -> "5 тысяч долларов"
+                   lambda m: f"{m.group(2)} {m.group(3)} " + ("евро" if m.group(1) == "€" else "долларов"), t)
+        t = re.sub(r"(\d+(?:[  ]\d{3})*(?:[.,]\d+)?)(?:\s?(тыс\.?|млн\.?|млрд\.?)(?![а-яё]))?\s?([₽$€])", ru, t)
+        t = re.sub(r"([$€])\s?(\d+(?:[  ]\d{3})*(?:[.,]\d+)?)(?:\s?(тыс\.?|млн\.?|млрд\.?)(?![а-яё]))?",
                    lambda m: ru(type("M", (), {"group": lambda self, k: {1: m.group(2), 2: m.group(3), 3: m.group(1)}[k]})()), t)
 
         def big(m):
@@ -142,7 +147,8 @@ def spoken(text: str, lang: str = "en") -> str:
             keep = dot if dot and not re.match(r"\s+[а-яё]", nxt) else ""
             return f"{n_s} {_ru_plural(num(n_s), *big_w[w])}{keep}{nxt}"
         t = re.sub(r"(\d+(?:[  ]\d{3})*(?:[.,]\d+)?)\s?(млрд|млн|тыс)(\.)?(?![а-яё])(\s*[а-яёА-ЯЁ]?)", big, t)
-        t = re.sub(r"(\d)\s?%", r"\1 процентов", t)
+        t = re.sub(r"(\d+(?:[.,]\d+)?)\s?%", lambda m: m.group(1) + " " + _ru_plural(
+            float(m.group(1).replace(",", ".")), "процент", "процента", "процентов", "процента"), t)
     return t
 
 

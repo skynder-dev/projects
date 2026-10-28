@@ -164,9 +164,23 @@ def main() -> int:
     from archivist.cartoon.voices import spoken
     sp = (spoken("The city pays $4.8M, the crew gets $300K - 30% of it.", "en"),
           spoken("Город платит 480 млн ₽, бригада получает 1,2 млн. Это $300 и 21 млн рублей.", "ru"))
-    check("voices: money written short is said in full (dollars, millions, roubles, percent)",
+    sp2 = (spoken("$300 million, $5 each; it cost $1,000, then 2,000 laptops in 2024.", "en"),
+           spoken("$5 тысяч, €3 тысячи, 1% и 21%, в 2024 году.", "ru"))
+    check("voices: money written short is said in full (dollars, millions, roubles, percent), nothing else touched",
           sp[0] == "The city pays 4.8 million dollars, the crew gets 300 thousand dollars - 30 percent of it."
-          and sp[1] == "Город платит 480 миллионов рублей, бригада получает 1,2 миллиона. Это 300 долларов и 21 миллион рублей.", sp)
+          and sp[1] == "Город платит 480 миллионов рублей, бригада получает 1,2 миллиона. Это 300 долларов и 21 миллион рублей."
+          and sp2[0] == "300 million dollars, 5 dollars each; it cost 1,000 dollars, then 2,000 laptops in 2024."
+          and sp2[1] == "5 тысяч долларов, 3 тысячи евро, 1 процент и 21 процент, в 2024 году.", (sp, sp2))
+    from archivist.cartoon import textscript as Tx
+    nums = [Tx._visual(x, 2) for x in ("counter: $4,800,000 spent", "bars: 2023 1.2, 2024 4.8 M", "bars: pharmacy 30, hospital 1,050")]
+    odd_story = Tx.parse("Title: X\nNarrator: Kate (woman, narrator)\n- Lena (woman, journalist)\n\n== City hall corridor\n"
+                         "Narrator (explain): Hello.\nNote: all names are invented.\nLena: Hi.\n")
+    check("stories: numbers in pictures (4,800,000; a year before a value; 1,050), the narrator named 'Narrator', "
+          "a bulleted cast, a note that is not a line, a place named in more words",
+          nums[0]["to"] == 4800000 and nums[1]["values"] == [1.2, 4.8] and nums[1]["labels"] == ["2023", "2024"]
+          and nums[2]["values"] == [30, 1050] and sorted(odd_story["cast"]) == ["kate", "lena"]
+          and [ln["who"] for ln in odd_story["scenes"][0]["lines"]] == ["kate", "lena"] and odd_story["scenes"][0]["bg"] == "city_hall",
+          (nums, odd_story["cast"], odd_story["scenes"]))
     from archivist.cartoon import bgs
     bad, looks = [], {}
     for fmt in ("vertical", "horizontal"):
@@ -245,7 +259,7 @@ def main() -> int:
         sc3 = json.loads((vo._job_dir(nid2) / "job.json").read_text("utf-8"))["script"] if nid2 and vo._job_dir(nid2).exists() else {}
         check("pages: the film's story changed as text makes a new version (the rest kept)", ag2.status_code == 302 and sc3
               and sc3["scenes"][0]["lines"][0]["text"] == "The price is five times higher."
-              and sc3["scenes"][0]["visual"] == tsc["scenes"][0]["visual"] and sc3["cast"] == tsc["cast"], (ag2.status_code, nid2))
+              and sc3["scenes"][0]["visual"] == tsc["scenes"][0]["visual"] and F.check_script(sc3)["cast"] == F.check_script(tsc)["cast"], (ag2.status_code, nid2))
         if nid2:
             t0 = time.time()
             while vo.read_job(nid2)["state"] in ("waiting", "working") and time.time() - t0 < 900:
@@ -268,6 +282,17 @@ def main() -> int:
               and sv.status_code == 302 and again["hair"] == ch.HAIRS[4] and again["glasses"] is True and again["beard"] == "full"
               and again["voice"] == {"kind": "describe", "text": "A low, smooth, sly businessman."},
               (sorted(lib), cl.status_code, png.status_code, again.get("hair"), again.get("voice")))
+        shapes = [c.post("/auto/cartoon/new", data={"story": "own", "script": json.dumps(x)}, headers=H).status_code for x in (
+            {"cast": ["x"], "scenes": [{"lines": [{"text": "a"}]}]},
+            {"cast": {"a": {"name": "A"}}, "scenes": [{"mood": ["x"], "min": "abc", "cast": [["a"]], "lines": {"x": 1}}]},
+            {"cast": {"a": {"name": "A"}}, "narrator": ["a"], "scenes": ["x", {"lines": [{"who": ["a"], "pose": ["x"], "text": "Hi."}]}]})]
+        sid = next((j_["id"] for j_ in vo.list_jobs() if j_.get("kind") == "cartoon_make"), "")
+        again_odd = c.post(f"/auto/cartoon/{sid}/again", data={"t_0_0": "Hello."}, headers=H).status_code if sid else 0
+        waiting = vo._submit({"kind": "cartoon_make", "script": SHORT, "voices": False, "title": "w"}, addon=False)
+        rev = c.post(f"/auto/cartoon/{waiting}/reveal", headers=H).status_code      # (no result yet)
+        vo.cancel_job(waiting)
+        check("pages: scripts of odd shapes, a film made of one, Reveal of a film not made - no server error",
+              all(x in (302, 400) for x in shapes) and again_odd in (302, 400) and rev == 302, (shapes, again_odd, rev))
         bad_json = c.post("/auto/cartoon/new", data={"story": "own", "script": "{not json"}, headers=H)
         no_voice = c.post("/auto/cartoon/new", data={"story": "road_contract", "voices": "1"}, headers=H)
         check("pages: a broken script and voices without the add-on are refused clearly",

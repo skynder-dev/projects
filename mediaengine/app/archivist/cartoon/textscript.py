@@ -102,7 +102,12 @@ EMO_WORDS = {
 }
 FEMALE = {"woman", "female", "she", "girl", "женщина", "девушка", "она", "femeie", "fată", "fata", "ea"}
 MALE = {"man", "male", "he", "boy", "мужчина", "парень", "он", "bărbat", "barbat", "băiat", "baiat", "el"}
-NUM = re.compile(r"[-+]?\d[\d\s]*(?:[.,]\d+)?")
+# a number: thousands in groups of three (4 800 000, 4,800,000) or plain digits, with a decimal part (4.8, 4,8)
+NUM = re.compile(r"[-+]?(?:\d{1,3}(?:[ \u00a0]\d{3})+|\d{1,3}(?:,\d{3})+(?!\d)|\d+)(?:[.,]\d+)?")
+NOT_SPEAKERS = {"note", "notes", "visual", "visuals", "scene", "image", "picture", "background", "title", "примечание",
+                "сцена", "картинка", "фон", "notă", "nota", "imagine", "fundal"}
+NARRATOR_WORDS = {"narrator", "the narrator", "рассказчик", "рассказчица", "ведущий", "ведущая", "narator", "naratoare",
+                  "naratorul", "voice over", "voiceover", "закадровый голос"}
 MONEY_TAIL = re.compile(r"\s+((?:[$€₽£]\s?)?\d[\d.,\s]*(?:\s?(?:млн|млрд|тыс|million|billion|mln|bn|[MKB]|lei|лей|руб|₽|€|\$)\.?)?"
                         r"|kickback|bribe|откат|взятка|mită|comision)\s*$", re.I)
 
@@ -130,14 +135,20 @@ def _attr(a: str) -> tuple[str, str]:
     return "", ""
 
 
-def _number(s: str) -> float | None:
-    m = NUM.search(s or "")
-    if not m:
-        return None
+def _to_float(t: str) -> float | None:
+    t = t.replace(" ", "").replace("\u00a0", "")
+    if re.fullmatch(r"[-+]?\d{1,3}(?:,\d{3})+(?:\.\d+)?", t):
+        t = t.replace(",", "")                             # 4,800,000 / 1,050.5
     try:
-        return float(m.group(0).replace(" ", "").replace(",", "."))
+        return float(t.replace(",", "."))
     except ValueError:
         return None
+
+
+def _number(s: str, last: bool = False) -> float | None:
+    """The first number in a text (the last one: last=True - "2023 1.2" is 1.2)."""
+    ms = list(NUM.finditer(s or ""))
+    return _to_float(ms[-1 if last else 0].group(0)) if ms else None
 
 
 def _visual(spec: str, n_lines: int) -> dict | None:
@@ -208,11 +219,17 @@ def _visual(spec: str, n_lines: int) -> dict | None:
             rest = rest[: -len(unit)].strip()
         values, labels = [], []
         for p in re.split(r"[;,](?!\d)", rest):            # "a 1.2, b 4.8" or "a 80 000; b 240 000"
-            v = _number(p)
+            ms = list(NUM.finditer(p))
+            v = _to_float(ms[-1].group(0)) if ms else None
             if v is None:
                 continue
             values.append(v)
-            labels.append(NUM.sub("", p).strip()[:20])
+            tail = p[ms[-1].end():]
+            suf = re.match(r"\s*(M|K|B|bn|mln|mn|млн|млрд|тыс|mil)\b\.?", tail)
+            if suf and not unit:
+                unit = suf.group(1)
+            label = p[:ms[-1].start()] + (tail[suf.end():] if suf else tail)
+            labels.append(re.sub(r"[$€₽£]", "", label).strip(" :-")[:20])
         title = ""
         if "/" in rest:
             title = rest.split("/", 1)[0].strip()
@@ -287,7 +304,7 @@ def parse(text: str) -> dict:
         return k
     scene = None
     for raw in lines:
-        s = raw.strip()
+        s = re.sub(r"^(?:[-*•]|\d{1,2}[.)])\s+(?=\S)", "", raw.strip())     # ("- Lena (woman)", "1. Mayor (man)")
         if not s or s.startswith("//"):
             continue
         m = re.match(r"(?i)^(title|название|titlu|format|формат|language|язык|limba|limbă)\s*:\s*(.+)$", s)
@@ -311,8 +328,10 @@ def parse(text: str) -> dict:
             if not vis and re.match(r"^(" + "|".join(VISUAL_KINDS) + r")\s*:", bg_low):
                 bg_low, vis = "board", bg_part                # "== Flow: A -> B" (the picture without a background)
             bg = BG_WORDS.get(bg_low) or (bg_low if bg_low in bgs.BACKGROUNDS else "")
-            if not bg:                                         # "Hospital corridor", "Office of the mayor" ...
-                bg = next((v for k, v in BG_WORDS.items() if len(k) > 3 and re.search(r"\b" + re.escape(k) + r"\b", bg_low)), "")
+            if not bg:                                         # "Hospital corridor", "City hall, council chamber" ...
+                hits = [(m_.start(), -len(k), v) for k, v in BG_WORDS.items() if len(k) > 3
+                        for m_ in [re.search(r"\b" + re.escape(k) + r"\b", bg_low)] if m_]
+                bg = min(hits)[2] if hits else ""           # (the first place named; the longest name there)
             if not bg:
                 kind = vis.partition(":")[0].strip().lower()
                 bg = "board" if kind in ("flow", "bars", "chart", "схема", "график", "диаграмма", "counter", "сумма") else "city"
@@ -321,7 +340,10 @@ def parse(text: str) -> dict:
             continue
         m = re.match(r"^([^:(\[]{1,40}?)\s*(?:\(([^)]*)\))?\s*(\[[^\]]*\])?\s*:\s*(.+)$", s)
         if m and scene is not None:
-            who = add(m.group(1), [])
+            spk = re.sub(r"\s+", " ", m.group(1).strip().lower())
+            if spk in NOT_SPEAKERS:                        # "Note: ...", "Visual: ..." - not a line said
+                continue
+            who = sc["narrator"] if spk in NARRATOR_WORDS and sc.get("narrator") else add(m.group(1), [])
             attrs = [a.strip().lower() for a in (m.group(2) or "").split(",") if a.strip()]
             ln = {"who": who, "text": m.group(4).strip()}
             for a in attrs:

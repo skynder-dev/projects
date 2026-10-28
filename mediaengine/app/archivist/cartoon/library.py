@@ -46,9 +46,17 @@ def load() -> dict:
 def _save(data: dict) -> None:
     p = path()
     p.parent.mkdir(parents=True, exist_ok=True)
-    tmp = p.with_suffix(f".{os.getpid()}.tmp")
+    tmp = p.with_suffix(f".{os.getpid()}.{threading.get_ident()}.tmp")
     tmp.write_text(json.dumps(data, ensure_ascii=False, indent=1), "utf-8")
-    os.replace(tmp, p)
+    for i in range(20):                    # Windows: a page reading the file (or a virus check) holds it a moment
+        try:
+            os.replace(tmp, p)
+            break
+        except PermissionError:
+            if i == 19:
+                tmp.unlink(missing_ok=True)
+                raise
+            time.sleep(0.05 * (i + 1))
     _CACHE["mtime"] = None
 
 

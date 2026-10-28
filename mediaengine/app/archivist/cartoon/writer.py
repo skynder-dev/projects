@@ -110,6 +110,21 @@ def installed() -> bool:
                 and _model_path().is_file())
 
 
+def still_needed(key: str) -> int:
+    """Bytes still to download for a model (what is already on disk - a checked file by its size, a part - counted)."""
+    md = MODELS[key]
+    p = _model_path(key)
+    need = 0 if (p.is_file() and p.stat().st_size == int(md["size"])) else \
+        int(md["size"]) - (p.with_name(p.name + ".part").stat().st_size if p.with_name(p.name + ".part").is_file() else 0)
+    if not _binaries_ok():
+        for z_ in LLAMA["builds"].values():
+            z = ROOT / "tmp" / z_["name"]
+            have = z.stat().st_size if z.is_file() else (z.with_name(z.name + ".part").stat().st_size
+                                                          if z.with_name(z.name + ".part").is_file() else 0)
+            need += max(0, int(z_["size"]) - have)
+    return max(0, need)
+
+
 def _vram_gb() -> float:
     """The graphics card's memory as the voice add-on measured it (0 when not known)."""
     try:
@@ -141,6 +156,7 @@ def status() -> dict:
     s = dict(INSTALL)
     m = manifest()
     s.update(installed=installed(), manifest=m, free=_free(ROOT), which=which() if m else "", recommend=recommend(),
+             needed={k: still_needed(k) for k in MODELS},
              sizes={k: _llama_bytes() + int(v["size"]) for k, v in MODELS.items()}, labels={k: v["label"] for k, v in MODELS.items()},
              vram_gb=_vram_gb(), gpu=str((m or {}).get("gpu") or ""),
              needs_update=bool(m) and not installed() and s["state"] != "running")
@@ -159,7 +175,7 @@ def start_install(key: str = "") -> None:
             raise WriterError("The story writer is already being installed.")
         if installed() and which() == key:
             raise WriterError("The story writer is already installed.")
-        if vo.busy_kind() == "cartoon" and _writing():
+        if _writing() or _stories_waiting():
             raise WriterError("A story is being written. Install when it is ready.")
         INSTALL.update(state="running", step="checking", done=0, total=0, error="", detail="", started=time.time(), which=key)
     _STOP.clear()
@@ -177,6 +193,18 @@ def _writing() -> bool:
         return bool(jid) and json.loads((vo.JOBS / jid / "job.json").read_text("utf-8")).get("kind") == "cartoon_write"
     except Exception:
         return False
+
+
+def _stories_waiting() -> bool:
+    """A story to write is waiting in the queue."""
+    from .. import voice as vo
+    for jid in list(vo._QUEUE):
+        try:
+            if json.loads((vo.JOBS / jid / "job.json").read_text("utf-8")).get("kind") == "cartoon_write":
+                return True
+        except Exception:
+            pass
+    return False
 
 
 def remove() -> None:
@@ -217,9 +245,10 @@ def _install_now(key: str = "small") -> None:
             raise WriterError("This MediaEngine has no story writer to install yet.")
         have_bin = _binaries_ok()                          # (changing the model: the program stays)
         total = (0 if have_bin else _llama_bytes()) + int(MODEL["size"])
-        if _free(ROOT) < total + 1_500_000_000:
+        need = still_needed(key)
+        if _free(ROOT) < need + 1_500_000_000:
             raise WriterError("Not enough free space on the disk of the data folder: the story writer needs about "
-                              f"{round((total + 1_500_000_000) / 1e9)} GB free.")
+                              f"{round((need + 1_500_000_000) / 1e9)} GB free.")
         INSTALL.update(total=total, done=0)
         tmp = ROOT / "tmp"
         tmp.mkdir(parents=True, exist_ok=True)
@@ -266,10 +295,15 @@ def _install_now(key: str = "small") -> None:
                 raise WriterError("The downloaded model is not the exact file. Try again.")
             ae._replace_retry(part, dst, tries=30)
         INSTALL.update(step="testing", detail="", done=total)
-        test = selftest(dst)
+        test = selftest(dst, _STOP.is_set)
+        if _STOP.is_set():
+            raise WriterError("Installation cancelled.")
         for old in MODEL_DIR.glob("*.gguf"):                    # (the other model, or one of an earlier version)
             if old.name != dst.name:
-                old.unlink(missing_ok=True)
+                try:
+                    old.unlink(missing_ok=True)
+                except OSError:                                # (Windows: still open - removed at the next install)
+                    pass
         m = {"version": VERSION, "llama": LLAMA["tag"], "llama_zips": {k: [b["name"], b["sha256"]] for k, b in LLAMA["builds"].items()},
              "which": key, "model": [MODEL["repo"], MODEL["rev"], MODEL["file"]], "model_sha256": MODEL["sha256"],
              "gpu": test.get("gpu") or "", "speed": test.get("speed"), "installed_at": now_iso()}
@@ -345,7 +379,9 @@ class Server:
                 self.close()
                 raise WriterError("Stopped.")
             if self.proc.poll() is not None:
-                raise WriterError("The story writer stopped while starting: " + self._tail())
+                tail = self._tail()
+                self.close()
+                raise WriterError("The story writer stopped while starting: " + tail)
             try:
                 with urllib.request.urlopen(urllib.request.Request(f"http://127.0.0.1:{self.port}/health",
                                                                    headers={"Authorization": f"Bearer {self.key}"}), timeout=5) as r:
@@ -386,7 +422,7 @@ class Server:
                                      {"Content-Type": "application/json", "Authorization": f"Bearer {self.key}"})
         out, n, finish, usage, timings = [], 0, "", {}, {}
         t0 = time.time()
-        with urllib.request.urlopen(req, timeout=300) as r:
+        with urllib.request.urlopen(req, timeout=max(300.0, timeout)) as r:
             for raw in r:
                 if stop():
                     raise WriterError("Stopped.")
@@ -448,11 +484,12 @@ def open_server(stop=lambda: False, track: bool = True, log: Path | None = None,
         raise WriterError(f"{exc} (with the graphics card: {first})")
 
 
-def selftest(model: Path | None = None) -> dict:
+def selftest(model: Path | None = None, stop=lambda: False) -> dict:
     """The server starts and answers a short question (installation)."""
-    srv = open_server(track=False, log=ROOT / "selftest.log", model=model)
+    srv = open_server(stop, track=False, log=ROOT / "selftest.log", model=model)
     try:
-        r = srv.chat([{"role": "user", "content": "Answer with one word: ready"}], max_tokens=8, temperature=0.0, seed=1)
+        r = srv.chat([{"role": "user", "content": "Answer with one word: ready"}], max_tokens=8, temperature=0.0, seed=1,
+                     stop=stop)
         if not r["text"].strip():
             raise WriterError("The story writer started but wrote nothing.")
         return {"gpu": srv.device, "speed": (r.get("timings") or {}).get("predicted_per_second")}
@@ -596,7 +633,7 @@ def clean(answer: str, fmt: str = "") -> str:
             continue
         s = re.sub(r"\*\*|__", "", s)
         s = re.sub(r"^#+\s*", "", s)
-        s = re.sub(r"^[-*]\s+(?=\S+.*:)", "", s)
+        s = re.sub(r"^(?:[-*•]|\d{1,2}[.)])\s+(?=\S)", "", s)
         if fmt and re.match(r"(?i)^(format|формат)\s*:", s):
             s = f"Format: {fmt}"
         out.append(s)
@@ -615,9 +652,9 @@ def judge(text: str, secs: int = 75) -> tuple[dict, str]:
     info = {"title": sc.get("title"), "scenes": len(scenes), "lines": lines, "words": words, "language": sc.get("language"),
             "cast": len(sc.get("cast") or {}), "visuals": sum(1 for s in scenes if s.get("visual"))}
     if len(scenes) < 5:
-        return info, f"it has only {len(scenes)} scenes with lines (9 to 11 are needed, each starting with ==)"
+        return info, f"it has only {len(scenes)} scenes with lines (8 to 10 are needed, each starting with ==)"
     if words < secs * 1.2:
-        return info, f"it is too short: {words} spoken words (about {int(secs * 2.2)} are needed)"
+        return info, f"it is too short: {words} spoken words (about {int(secs * 1.9)} are needed)"
     if info["visuals"] < 3:
         return info, "almost no scene shows a visual after | (title, flow, contract, bars, counter, list ...)"
     return info, ""
@@ -628,9 +665,12 @@ def judge(text: str, secs: int = 75) -> tuple[dict, str]:
 def do(jid: str, d: Path, job: dict) -> dict:
     """voice._do for a story to write (in the queue's thread)."""
     from .. import voice as vo
+    stop = lambda: bool(vo._CURRENT.get("cancel"))      # noqa: E731
+    while installing() and not stop():                    # (a model being changed: the story waits for it)
+        vo._CURRENT.update(step="loading", progress=0.01)
+        time.sleep(1.0)
     if not installed():
         return {"ok": False, "error": "The story writer is not installed: install it on the Cartoon Studio page."}
-    stop = lambda: bool(vo._CURRENT.get("cancel"))      # noqa: E731
     job = dict(job)
     if job.get("mode") == "video":                        # a video on this PC: listened to first (the voice add-on)
         heard = _listen(d, job)
@@ -655,7 +695,7 @@ def do(jid: str, d: Path, job: dict) -> dict:
             job["source"] = "\n".join(notes)[:MAX_SOURCE]
             (d / "notes.txt").write_text(job["source"], "utf-8")
         messages = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": prompt(job)}]
-        best, best_info, problem, used = "", {}, "", 0
+        best, best_info, best_problem, problem, used = "", {}, "", "", 0
         first = 0.6 if (d / "heard.txt").is_file() else 0.05
         for attempt in range(2):
             used = attempt + 1
@@ -667,8 +707,11 @@ def do(jid: str, d: Path, job: dict) -> dict:
                          stop=stop)
             text = clean(r["text"], job.get("format") or "")
             info, problem = judge(text, secs)
-            if not best or info["scenes"] * 1000 + info["words"] > best_info.get("scenes", 0) * 1000 + best_info.get("words", 0):
-                best, best_info = text, info
+            if not problem and r.get("finish") == "length":
+                problem = "it was cut off before its end (it is too long): write it shorter"
+            rank = (not problem, info["scenes"], info["words"])
+            if not best or rank > (not best_problem, best_info.get("scenes", 0), best_info.get("words", 0)):
+                best, best_info, best_problem = text, info, problem
             if not problem:
                 break
             messages += [{"role": "assistant", "content": r["text"]},
@@ -677,12 +720,12 @@ def do(jid: str, d: Path, job: dict) -> dict:
     finally:
         srv.close()
     if best_info.get("scenes", 0) < 3:
-        return {"ok": False, "error": "The model did not write a usable story (" + (problem or "no scenes") + "). "
+        return {"ok": False, "error": "The model did not write a usable story (" + (best_problem or problem or "no scenes") + "). "
                                       "Press Try again, or say the topic in other words."}
     (d / "story.txt").write_text(best, "utf-8")
     return {"ok": True, "file": "story.txt", "title": best_info.get("title") or "", "scenes": best_info["scenes"],
             "words": best_info["words"], "lines": best_info["lines"], "attempts": used, "device": srv.device,
-            **({"note": problem} if problem else {})}
+            **({"note": best_problem} if best_problem else {})}
 
 
 def _listen(d: Path, job: dict) -> dict:

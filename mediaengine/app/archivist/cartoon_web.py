@@ -255,7 +255,7 @@ def register(app, page, err_page, e, human_bytes):
         out = ""
         for k in keys:
             gb = (s["sizes"][k] - (sum(int(b["size"]) for b in W.LLAMA["builds"].values()) if switch else 0)) / 1e9
-            low = s.get("free", 0) < gb * 1e9 + 1_500_000_000
+            low = s.get("free", 0) < (s.get("needed") or {}).get(k, gb * 1e9) + 1_500_000_000
             label = ("Use" if switch else ("Try again with" if s["state"] == "failed" else "Install with"))
             out += (f"<form method='post' action='/auto/cartoon/writer/install' style='margin-top:12px' "
                     f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
@@ -612,8 +612,8 @@ def register(app, page, err_page, e, human_bytes):
         if not re.fullmatch(_JOB_ID, jid):
             return err_page("No such job.", "/auto/cartoon")
         f = request.form
-        script = copy.deepcopy(cj.script_of(jid))
         try:
+            script = F.check_script(copy.deepcopy(cj.script_of(jid)))   # (numbered as the page shows it)
             if str(f.get("text") or "").strip():           # the story as text, changed
                 new = T.parse(f.get("text") or "")
                 if not new["scenes"]:
@@ -689,7 +689,7 @@ def register(app, page, err_page, e, human_bytes):
     @app.post("/auto/cartoon/<jid>/reveal")
     def cartoon_reveal(jid):
         j = _job(jid)
-        saved = Path(str((j or {}).get("result", {}).get("saved") or "")) if j else None
+        saved = Path(str(((j or {}).get("result") or {}).get("saved") or "")) if j else None
         if saved and saved.is_file():
             from . import auto_edit as ae
             ae.open_path(saved, reveal=True)
