@@ -34,7 +34,7 @@ _STEP = {"starting": "Starting…", "voices": "The characters are speaking…", 
          "checking": "Checking the film…", "loading": "Starting the story writer…", "writing": "Writing the story…",
          "listening": "Listening to the video…", "notes": "Noting the video's facts…"}
 _WR_STEP = {"checking": "Checking the PC…", "program": "Downloading llama.cpp (the program that runs the model)…",
-            "model": "Downloading the model (Qwen3-4B, about 4.3 GB)…", "checking_model": "Checking the downloaded model…",
+            "model": "Downloading the language model…", "checking_model": "Checking the downloaded model…",
             "testing": "Starting the story writer for a test…"}
 LANG_LABELS = {"en": "English", "ru": "Русский", "ro": "Română"}
 BG_LABELS = {"city": "City street", "office": "Office", "city_hall": "City hall", "road": "Road", "bank": "Bank",
@@ -224,27 +224,52 @@ def register(app, page, err_page, e, human_bytes):
                     f"<span>Length</span><select name='secs'>{secs}</select></div>"
                     f"<div class='ct-choices' style='margin-top:8px'><b>Format</b><br>{_format_choice('vertical')}</div>"
                     f"<div style='margin-top:12px'><button class='ae-big'>Write the story</button></div></form>"
-                    f"<div class='muted' style='font-size:13px;margin-top:8px'><span>The free model on this PC (Qwen3-4B) writes it on</span> "
+                    f"<div class='muted' style='font-size:13px;margin-top:8px'><span>The free model on this PC</span> "
+                    f"<span translate='no'>({e(s['labels'][s['which']])})</span> <span>writes it on</span> "
                     f"{where}<span>: about a minute on a graphics card, several minutes on the processor. Then read it, change what you "
                     f"like and make the cartoon.</span></div>"
+                    f"<details style='margin-top:8px'><summary class='muted'>Another model</summary>{_model_choice(s, switch=True)}</details>"
                     f"<details style='margin-top:8px'><summary class='muted'>Remove the story writer</summary>"
                     f"<form method='post' action='/auto/cartoon/writer/remove' style='margin-top:8px' "
                     f"onsubmit=\"return confirm(window.ME_L?ME_L('Remove the story writer?'):'Remove the story writer?')\">"
-                    f"<button class='btn2'>Remove</button> <span class='muted' style='font-size:13px'>Frees about 4.4 GB. The stories "
-                    f"and cartoons stay.</span></form></details></div>")
+                    f"<button class='btn2'>Remove</button> <span class='muted' style='font-size:13px'><span>Frees about</span> "
+                    f"<span translate='no'>{s['sizes'][s['which']] / 1e9:.1f}</span> <span>GB. The stories and cartoons stay.</span>"
+                    f"</span></form></details></div>")
         err = f"<div class='errbox' style='margin-bottom:10px'>{e(s.get('error') or '')}</div>" if s["state"] == "failed" else ""
-        low = s.get("free", 0) < s.get("size", 0) + 1_500_000_000
         return (f"<div class='card' id='writer'>{err}<h2 style='margin-top:0'>Write a story with a free model on this PC</h2>"
-                f"<div>The program can write the story itself: from a topic, from a text, or retold for another country - in "
-                f"English, Russian or Romanian. It needs a free language model (Qwen3-4B, Apache-2.0) and llama.cpp (MIT), "
-                f"downloaded once: about 4.4 GB, into the data folder:</div>"
+                f"<div>The program can write the story itself: from a topic, from a text or a video, or retold for another country - "
+                f"in English, Russian or Romanian. It needs a free language model (Qwen, Apache-2.0) and llama.cpp (MIT), "
+                f"downloaded once into the data folder:</div>"
                 f"<div class='ae-path' translate='no'>{e(str(W.ROOT))}</div>"
-                f"<div class='muted' style='font-size:13px;margin-top:6px'>MediaEngine goes online for it only when you press the "
-                f"button (github.com, huggingface.co). It runs on this PC; nothing is sent anywhere.</div>"
-                + ("<div class='errbox' style='margin-top:8px'>Not enough free space: about 6 GB are needed while installing.</div>" if low else "")
-                + f"<form method='post' action='/auto/cartoon/writer/install' style='margin-top:12px' "
-                  f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
-                  f"<button class='ae-big'>{'Try again' if s['state'] == 'failed' else 'Install the story writer'}</button></form></div>")
+                f"<div class='muted' style='font-size:13px;margin-top:6px'>MediaEngine goes online for it only when you press a "
+                f"button (github.com, huggingface.co). It runs on this PC; nothing is sent anywhere.</div>{_model_choice(s)}</div>")
+
+    def _model_choice(s: dict, switch: bool = False) -> str:
+        """A button per model (the one for this PC first); switch: only the model not installed."""
+        keys = [s["recommend"]] + [k for k in s["sizes"] if k != s["recommend"]]
+        if switch:
+            keys = [k for k in keys if k != s["which"]]
+        why = {"big": "Writes better - Russian and Romanian too, and keeps the length. For a graphics card with 12 GB "
+                      "(slow on a processor).",
+               "small": "Smaller and quicker, any PC. English good, Russian and Romanian weaker."}
+        out = ""
+        for k in keys:
+            gb = (s["sizes"][k] - (sum(int(b["size"]) for b in W.LLAMA["builds"].values()) if switch else 0)) / 1e9
+            low = s.get("free", 0) < gb * 1e9 + 1_500_000_000
+            label = ("Use" if switch else ("Try again with" if s["state"] == "failed" else "Install with"))
+            out += (f"<form method='post' action='/auto/cartoon/writer/install' style='margin-top:12px' "
+                    f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
+                    f"<input type='hidden' name='which' value='{k}'>"
+                    f"<button class='{'ae-big' if k == s['recommend'] and not switch else 'btn2'}'><span>{label}</span> "
+                    f"<span translate='no'>{e(s['labels'][k])}</span> <span translate='no'>({gb:.1f}</span> <span>GB)</span></button>"
+                    f"<div class='muted' style='font-size:13px;margin-top:4px'>{e(why[k])}"
+                    + (f" <span>This PC's graphics card has</span> <span translate='no'>{s['vram_gb']:g}</span> <span>GB.</span>"
+                       if k == "big" and s.get("vram_gb") else "")
+                    + (" <span>The model in use now is deleted after.</span>" if switch else "")
+                    + "</div>"
+                    + ("<div class='errbox' style='margin-top:6px'>Not enough free space on the disk of the data folder.</div>" if low else "")
+                    + "</form>")
+        return out
 
     @app.get("/auto/cartoon")
     def cartoon_home():
@@ -551,7 +576,7 @@ def register(app, page, err_page, e, human_bytes):
     @app.post("/auto/cartoon/writer/install")
     def cartoon_writer_install():
         try:
-            W.start_install()
+            W.start_install(request.form.get("which") or "")
         except W.WriterError as exc:
             return err_page(str(exc), "/auto/cartoon")
         return redirect("/auto/cartoon")

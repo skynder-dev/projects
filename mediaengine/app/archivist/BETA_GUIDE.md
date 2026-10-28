@@ -97,9 +97,10 @@ change any line, who says it, the feeling, the gesture or a scene's background a
 version, the old one stays. Without the voice add-on: a quick preview without voices. Saved in "Cartoons" next to the
 saved reels. The story is plain text: change the example or write your own (the help on the page shows how).
 
-**Write a story** (a free model on this PC): press "Install the story writer" once - Qwen3-4B (Alibaba, Apache-2.0)
-and llama.cpp (MIT), about 4.4 GB into the data folder; it runs on the graphics card (or the processor) and sends
-nothing anywhere. Then write a topic in a few words - or paste a text (an article, notes, what is said in a video) -
+**Write a story** (a free model on this PC): install the story writer once - Qwen3-14B (Alibaba, Apache-2.0, about 9 GB:
+writes better, Russian and Romanian too; for a graphics card with 12 GB) or Qwen3-4B (about 4.3 GB, any PC), with
+llama.cpp (MIT), into the data folder; it runs on the graphics card (or the processor) and sends nothing anywhere;
+"Another model" changes it later. Then write a topic in a few words - or paste a text (an article, notes, what is said in a video) -
 choose the language (English, Russian, Romanian), the viewers' country if it matters, the length and the format, and
 press "Write the story": about a minute on a graphics card, several minutes on the processor. Read the story, change
 what you like and press "Make the cartoon". "Write another version" asks again; "Another language or country" retells

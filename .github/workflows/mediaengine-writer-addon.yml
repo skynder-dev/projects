@@ -19,7 +19,7 @@ concurrency:
 jobs:
   writer:
     runs-on: windows-latest
-    timeout-minutes: 180
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,10 +32,10 @@ jobs:
         run: |
           python -m pip install --disable-pip-version-check -q -r mediaengine/requirements.txt
           New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\out" | Out-Null
-      - name: Install the story writer with the button, write three stories, make one into a cartoon
+      - name: Install the story writer with the button, write three stories, make one into a cartoon; then the bigger model, two stories
         shell: pwsh
         run: |
-          python mediaengine/tests/writer_addon_check.py --home "$env:RUNNER_TEMP\home-writer" --out "$env:RUNNER_TEMP\out" 2>&1 | Tee-Object "$env:RUNNER_TEMP\out\writer_addon.txt"
+          python mediaengine/tests/writer_addon_check.py --home "$env:RUNNER_TEMP\home-writer" --out "$env:RUNNER_TEMP\out" --also-big 2>&1 | Tee-Object "$env:RUNNER_TEMP\out\writer_addon.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Publish to branch mediaengine-writer-addon
         if: always()

@@ -55,6 +55,7 @@ def sheet(film_path: Path, script: dict, out: Path) -> None:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--home", required=True); ap.add_argument("--out", required=True)
+    ap.add_argument("--also-big", action="store_true", help="then change to the bigger model and write two stories with it")
     a = ap.parse_args()
     home, out = Path(a.home).resolve(), Path(a.out).resolve()
     shutil.rmtree(home, ignore_errors=True)
@@ -129,6 +130,34 @@ def main() -> int:
             check("the English story made into a cartoon (a preview without voices), 40-120 s",
                   r.status_code == 302 and fj.get("state") == "done" and 40 <= float(res.get("seconds") or 0) <= 120,
                   (fj.get("state"), res.get("seconds"), res.get("error")))
+
+        if a.also_big:                                      # the bigger model: only it downloaded, the small one deleted
+            t0 = time.time()
+            r = c.post("/auto/cartoon/writer/install", data={"which": "big"}, headers=H)
+            while W.installing() and time.time() - t0 < 3600:
+                time.sleep(3)
+            s = W.status()
+            report["big_install_s"] = round(time.time() - t0)
+            report["big_manifest"] = W.manifest()
+            check("the bigger model (Qwen3-14B): downloaded, checked, started for a test; the smaller one deleted",
+                  r.status_code == 302 and s["installed"] and W.which() == "big"
+                  and not (W.MODEL_DIR / W.MODELS["small"]["file"]).exists(), (s.get("state"), s.get("error")))
+            for key, form in (("big_en_topic", dict(asks[0][1])), ("big_ru_topic", {"about": "Как управляющая компания "
+                              "зарабатывает на ремонте подъезда, который так и не сделали", "lang": "ru", "secs": "75"})):
+                t1 = time.time()
+                r = c.post("/auto/cartoon/write", data=form, headers=H)
+                jid = (r.headers.get("Location") or "").rstrip("/").split("/")[-1]
+                j = wait(vo, jid, 5400) if r.status_code == 302 else {}
+                story = W.story_of(jid) if r.status_code == 302 else ""
+                (out / f"story_{key}.txt").write_text(story, "utf-8")
+                sc = T.parse(story) if story else {"scenes": [], "language": ""}
+                info = {"s": round(time.time() - t1), "state": j.get("state"), "result": j.get("result"),
+                        "language": sc.get("language"), "scenes": len(sc["scenes"]),
+                        "visuals": [(x.get("visual") or {}).get("kind", "-") for x in sc["scenes"]]}
+                report["stories"][key] = info
+                check(f"{key}: a story the program reads (5+ scenes, pictures, the language asked)",
+                      j.get("state") == "done" and info["scenes"] >= 5 and sc.get("language") == form["lang"]
+                      and sum(1 for v in info["visuals"] if v != "-") >= 3, info)
     return finish(out, report)
 
 

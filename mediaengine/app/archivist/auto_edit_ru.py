@@ -1056,8 +1056,8 @@ PHRASES = {
     "The one speaking, close up": "Тот, кто говорит, крупно",
     "Make the 5 likeliest": "Сделать 5 самых удачных",
     # Cartoon Studio (cartoon_web.py, cartoon/)
-    "Cartoon Studio: the story can be written by a free model on this PC (Qwen3-4B, installed once with a button, about 4.4 GB) - from a topic, from a pasted text, or a story retold for another country, in English, Russian or Romanian; read it, change it, make the cartoon.":
-        "Мультстудия: сюжет может написать бесплатная модель на этом компьютере (Qwen3-4B, ставится один раз кнопкой, около 4,4 ГБ) — по теме, по вставленному тексту или пересказать сюжет для другой страны, на английском, русском или румынском; прочитай, поменяй и сделай мультфильм.",
+    "Cartoon Studio: the story can be written by a free model on this PC (Qwen3-14B or the smaller Qwen3-4B, installed once with a button) - from a topic, a pasted text or a video on this PC, or a story retold for another country, in English, Russian or Romanian; read it, change it, make the cartoon. Characters keep their look and voice (the Characters page).":
+        "Мультстудия: сюжет может написать бесплатная модель на этом компьютере (Qwen3-14B или поменьше — Qwen3-4B, ставится один раз кнопкой) — по теме, по вставленному тексту или видео с компьютера, или пересказать сюжет для другой страны, на английском, русском или румынском; прочитай, поменяй и сделай мультфильм. Персонажи сохраняют внешность и голос (страница «Персонажи»).",
     "Cartoon Studio (Auto Edit → Cartoon Studio): a 2D cartoon made by MediaEngine - its own characters, scenes, schemes of money, voices and captions; change a line and make it again.":
         "Мультстудия (Автомонтаж → Мультстудия): 2D-мультфильм, который делает сам MediaEngine, — свои персонажи, сцены, схемы денег, голоса и субтитры; поменяй реплику и сделай заново.",
     "How to write a story": "Как написать сюжет", "The example below - change it or write your own.":
@@ -1119,7 +1119,6 @@ PHRASES = {
     # Cartoon Studio: the story writer (cartoon/writer.py)
     "Starting the story writer…": "Запускаю сценариста…", "Writing the story…": "Пишу сюжет…",
     "Downloading llama.cpp (the program that runs the model)…": "Скачиваю llama.cpp (программу, которая запускает модель)…",
-    "Downloading the model (Qwen3-4B, about 4.3 GB)…": "Скачиваю модель (Qwen3-4B, около 4,3 ГБ)…",
     "Checking the downloaded model…": "Проверяю скачанную модель…", "Starting the story writer for a test…": "Пробный запуск сценариста…",
     "about 1 minute": "около 1 минуты", "about 75 seconds": "около 75 секунд", "about 1.5 minutes": "около 1,5 минуты",
     "Story:": "Сюжет:", "words": "слов", "Language": "Язык", "Read it and make the cartoon": "Прочитать и сделать мультфильм",
@@ -1135,17 +1134,10 @@ PHRASES = {
         "Тема в нескольких словах — или вставь текст (статью, заметки, то, что говорят в видео): сюжет перескажет его со своими персонажами.",
     "Why a city hospital pays three times more for the same medicine": "Почему городская больница платит втрое больше за то же лекарство",
     "(a country, if it matters)": "(страна, если важно)", "Write the story": "Написать сюжет",
-    "The free model on this PC (Qwen3-4B) writes it on": "Бесплатная модель на этом компьютере (Qwen3-4B) пишет его на",
     "about a minute on a graphics card, several minutes on the processor. Then read it, change what you like and make the cartoon.":
         "около минуты на видеокарте, несколько минут на процессоре. Потом прочитай, поменяй что хочешь и сделай мультфильм.",
     "Remove the story writer": "Удалить сценариста", "Remove the story writer?": "Удалить сценариста?",
-    "Frees about 4.4 GB. The stories and cartoons stay.": "Освободит около 4,4 ГБ. Сюжеты и мультфильмы останутся.",
     "Write a story with a free model on this PC": "Сюжет пишет бесплатная модель на этом компьютере",
-    "The program can write the story itself: from a topic, from a text, or retold for another country - in English, Russian or Romanian. It needs a free language model (Qwen3-4B, Apache-2.0) and llama.cpp (MIT), downloaded once: about 4.4 GB, into the data folder:":
-        "Программа может сама написать сюжет: по теме, по тексту или пересказать для другой страны — на английском, русском или румынском. Для этого нужна бесплатная языковая модель (Qwen3-4B, Apache-2.0) и llama.cpp (MIT), скачиваются один раз: около 4,4 ГБ, в папку данных:",
-    "MediaEngine goes online for it only when you press the button (github.com, huggingface.co). It runs on this PC; nothing is sent anywhere.":
-        "MediaEngine выходит в интернет для этого, только когда нажмёшь кнопку (github.com, huggingface.co). Работает на этом компьютере; ничего никуда не отправляется.",
-    "Not enough free space: about 6 GB are needed while installing.": "Мало свободного места: при установке нужно около 6 ГБ.",
     "Install the story writer": "Установить сценариста", "Cartoons and stories": "Мультфильмы и сюжеты",
     "Another language or country": "Другой язык или страна", "Topic": "Тема", "Retelling a text": "Пересказ текста",
     "Retelling a story for another country": "Пересказ сюжета для другой страны", "What was asked": "Что просили",
@@ -1226,6 +1218,23 @@ PHRASES = {
     "mustache": "усы",
     "stubble": "щетина",
     "beard": "борода",
+    "Downloading the language model…": "Скачиваю языковую модель…",
+    "The free model on this PC": "Бесплатная модель на этом компьютере",
+    "writes it on": "пишет его на",
+    "Another model": "Другая модель",
+    "Frees about": "Освободит около",
+    "GB. The stories and cartoons stay.": "ГБ. Сюжеты и мультфильмы останутся.",
+    "GB)": "ГБ)",
+    "Use": "Использовать",
+    "Try again with": "Повторить с",
+    "Install with": "Установить с",
+    "Writes better - Russian and Romanian too, and keeps the length. For a graphics card with 12 GB (slow on a processor).": "Пишет лучше — и по-русски, и по-румынски, и держит длину. Для видеокарты с 12 ГБ (на процессоре медленно).",
+    "Smaller and quicker, any PC. English good, Russian and Romanian weaker.": "Меньше и быстрее, для любого компьютера. Английский хороший, русский и румынский слабее.",
+    "This PC's graphics card has": "У видеокарты этого компьютера",
+    "The model in use now is deleted after.": "Нынешняя модель потом удалится.",
+    "Not enough free space on the disk of the data folder.": "Мало свободного места на диске с папкой данных.",
+    "The program can write the story itself: from a topic, from a text or a video, or retold for another country - in English, Russian or Romanian. It needs a free language model (Qwen, Apache-2.0) and llama.cpp (MIT), downloaded once into the data folder:": "Программа может сама написать сюжет: по теме, по тексту или видео, или пересказать для другой страны — на английском, русском или румынском. Для этого нужна бесплатная языковая модель (Qwen, Apache-2.0) и llama.cpp (MIT), скачиваются один раз в папку данных:",
+    "MediaEngine goes online for it only when you press a button (github.com, huggingface.co). It runs on this PC; nothing is sent anywhere.": "MediaEngine выходит в интернет для этого, только когда нажмёшь кнопку (github.com, huggingface.co). Работает на этом компьютере; ничего никуда не отправляется.",
     "Or a video on this PC": "Или видео на этом компьютере", "A video whose story to retell (its full path)": "Видео, сюжет которого пересказать (полный путь)",
     "The program listens to it (the voice add-on), notes its facts and numbers and writes a new story with its own characters - not a copy. Listening takes a few minutes for an hour of video.":
         "Программа прослушает его (модуль озвучки), выпишет факты и цифры и напишет новый сюжет со своими персонажами — не копию. Прослушивание — несколько минут на час видео.",

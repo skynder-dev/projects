@@ -91,9 +91,10 @@ def main() -> int:
     with app.test_client() as c:
         home = c.get("/auto/cartoon", headers=H).get_data(as_text=True)
         no = c.post("/auto/cartoon/write", data={"about": "Why a hospital pays more"}, headers=H)
-        check("not installed: the page offers to install the story writer (4.4 GB, the data folder); writing is refused",
-              "Install the story writer" in home and "4.4 GB" in home and no.status_code == 400
-              and b"Install the story writer first" in no.data, (no.status_code,))
+        check("not installed: the page offers both models (the smaller first on a PC with no known graphics card), "
+              "the data folder; writing is refused",
+              "Install with" in home and "Qwen3-14B" in home and 0 < home.find("Qwen3-4B") < home.find("Qwen3-14B")
+              and str(W.ROOT) in home and no.status_code == 400 and b"Install the story writer first" in no.data, (no.status_code,))
 
         broken["on"] = True
         c.post("/auto/cartoon/writer/install", headers=H)
@@ -240,6 +241,23 @@ def main() -> int:
               (nv.status_code, jv.get("state"), (jv.get("result") or {}).get("error"), len(notes_asks), len(new_asks)))
         vpage = c.get(f"/auto/cartoon/{jv['id']}", headers=H).get_data(as_text=True)
         check("a video's story page says what was heard", "Retelling a video" in vpage and "bridge that was never built" in vpage, "")
+
+        # the other model: only it is downloaded (the program stays), the first one deleted after
+        (dl / "Big-Q4_K_M.gguf").write_bytes(b"GGUF" + os.urandom(8192))
+        W.MODELS["big"].update(repo="test/Big-GGUF", rev="0456def", file="Big-Q4_K_M.gguf",
+                               size=(dl / "Big-Q4_K_M.gguf").stat().st_size, sha256=sha(dl / "Big-Q4_K_M.gguf"))
+        n_asked = len(asked_urls)
+        sw = c.post("/auto/cartoon/writer/install", data={"which": "big"}, headers=H)
+        t0 = time.time()
+        while W.installing() and time.time() - t0 < 120:
+            time.sleep(0.2)
+        new_urls = asked_urls[n_asked:]
+        home2 = c.get("/auto/cartoon", headers=H).get_data(as_text=True)
+        check("another model: only the model is downloaded, the one before deleted; the page says which writes",
+              sw.status_code == 302 and W.installed() and W.which() == "big" and new_urls == [
+                  "https://huggingface.co/test/Big-GGUF/resolve/0456def/Big-Q4_K_M.gguf"]
+              and not (W.MODEL_DIR / "Test-Q8_0.gguf").exists() and (W.MODEL_DIR / "Big-Q4_K_M.gguf").is_file()
+              and "(Qwen3-14B)" in home2 and "Use</span> <span translate='no'>Qwen3-4B" in home2, (W.status().get("error"), new_urls))
 
         rw = c.post(f"/auto/cartoon/{jid}/rewrite", headers=H)
         nid = (rw.headers.get("Location") or "").rstrip("/").split("/")[-1]

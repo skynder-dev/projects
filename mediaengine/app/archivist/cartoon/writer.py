@@ -30,11 +30,19 @@ LLAMA = {"tag": "b11941", "builds": {
                "sha256": "3383efca87453d1d1e564b91d95db16d5b511ec72fad4983fd99ea8774649fd6"},
     "cpu": {"name": "llama-b11941-bin-win-cpu-x64.zip", "size": 24306304,
             "sha256": "67549a639ceca9ac971333b7d5c0a93d080579e1a345b4427deff309c605d864"}}}
-# the model: Qwen3-4B-Instruct-2507 as a Q8_0 GGUF made by llama.cpp's own people (ggml-org), the repository's
-# commit and the file's SHA-256 (the writer probe wrote ten stories with it: run 40613715297)
-MODEL = {"repo": "ggml-org/Qwen3-4B-Instruct-2507-Q8_0-GGUF", "rev": "e6f794d44f9395d0184a966c27b5ae99ea356fcb",
-         "file": "qwen3-4b-instruct-2507-q8_0.gguf", "size": 4280403520,
-         "sha256": "ae916ede1c010a26955ee8ae2e908bf8815a3f135ec860439ab924701c69d5f1"}
+# the models (the repository's commit and the file's SHA-256), one installed at a time:
+# small - Qwen3-4B-Instruct-2507 as a Q8_0 GGUF made by llama.cpp's own people (ggml-org): any PC, quick
+# big   - Qwen3-14B as Qwen's own Q4_K_M GGUF: clearly better Russian and Romanian and lengths kept (the writer probe,
+#         run 40618245131); for a graphics card with 12 GB (slow on a processor)
+MODELS = {
+    "small": {"label": "Qwen3-4B", "repo": "ggml-org/Qwen3-4B-Instruct-2507-Q8_0-GGUF",
+              "rev": "e6f794d44f9395d0184a966c27b5ae99ea356fcb", "file": "qwen3-4b-instruct-2507-q8_0.gguf",
+              "size": 4280403520, "sha256": "ae916ede1c010a26955ee8ae2e908bf8815a3f135ec860439ab924701c69d5f1"},
+    "big": {"label": "Qwen3-14B", "repo": "Qwen/Qwen3-14B-GGUF", "rev": "530227a7d994db8eca5ab5ced2fb692b614357fd",
+            "file": "Qwen3-14B-Q4_K_M.gguf", "size": 9001752960,
+            "sha256": "500a8806e85ee9c83f3ae08420295592451379b4f8cf2d0f41c15dffeb6b81f0"},
+}
+MODEL = MODELS["small"]                  # (the one a check of an older version names)
 NEED_FREE = 6 * 10 ** 9
 CTX = 8192
 LANGS = {"en": "English", "ru": "Russian", "ro": "Romanian"}
@@ -81,15 +89,38 @@ def _server_exe(build: str = "vulkan") -> Path | None:
     return None
 
 
-def _model_path() -> Path:
-    return MODEL_DIR / Path(MODEL["file"] or "model.gguf").name
+def which() -> str:
+    """The model installed ("small" or "big")."""
+    w = manifest().get("which") or "small"
+    return w if w in MODELS else "small"
+
+
+def _model_path(key: str | None = None) -> Path:
+    return MODEL_DIR / Path(MODELS[key or which()]["file"] or "model.gguf").name
+
+
+def _binaries_ok() -> bool:
+    return manifest().get("llama") == LLAMA["tag"] and all(_server_exe(b) is not None for b in LLAMA["builds"])
 
 
 def installed() -> bool:
     m = manifest()
-    return bool(m.get("version") == VERSION and m.get("model") == [MODEL["repo"], MODEL["rev"], MODEL["file"]]
-                and m.get("llama") == LLAMA["tag"] and all(_server_exe(b) is not None for b in LLAMA["builds"])
+    md = MODELS[which()]
+    return bool(m.get("version") == VERSION and m.get("model") == [md["repo"], md["rev"], md["file"]] and _binaries_ok()
                 and _model_path().is_file())
+
+
+def _vram_gb() -> float:
+    """The graphics card's memory as the voice add-on measured it (0 when not known)."""
+    try:
+        from .. import voice as vo
+        return float(vo.manifest().get("vram_gb") or 0)
+    except Exception:
+        return 0.0
+
+
+def recommend() -> str:
+    return "big" if _vram_gb() >= 10 else "small"
 
 
 def installing() -> bool:
@@ -109,25 +140,30 @@ def _free(p: Path) -> int:
 def status() -> dict:
     s = dict(INSTALL)
     m = manifest()
-    s.update(installed=installed(), manifest=m, free=_free(ROOT), size=_llama_bytes() + int(MODEL["size"]),
+    s.update(installed=installed(), manifest=m, free=_free(ROOT), which=which() if m else "", recommend=recommend(),
+             sizes={k: _llama_bytes() + int(v["size"]) for k, v in MODELS.items()}, labels={k: v["label"] for k, v in MODELS.items()},
+             vram_gb=_vram_gb(), gpu=str((m or {}).get("gpu") or ""),
              needs_update=bool(m) and not installed() and s["state"] != "running")
+    s["size"] = s["sizes"][s["which"] or s["recommend"]]
     return s
 
 
-def start_install() -> None:
+def start_install(key: str = "") -> None:
+    """Install the story writer with a model ("small" / "big"), or change to the other model when it is installed."""
     from .. import voice as vo
+    key = key if key in MODELS else recommend()
     if os.environ.get("MEDIAENGINE_WRITER") == "off":
         raise WriterError("The story writer is turned off on this PC (MEDIAENGINE_WRITER=off).")
     with _LOCK:
         if INSTALL["state"] == "running":
             raise WriterError("The story writer is already being installed.")
-        if installed():
+        if installed() and which() == key:
             raise WriterError("The story writer is already installed.")
         if vo.busy_kind() == "cartoon" and _writing():
             raise WriterError("A story is being written. Install when it is ready.")
-        INSTALL.update(state="running", step="checking", done=0, total=0, error="", detail="", started=time.time())
+        INSTALL.update(state="running", step="checking", done=0, total=0, error="", detail="", started=time.time(), which=key)
     _STOP.clear()
-    threading.Thread(target=_install, name="writer-install", daemon=True).start()
+    threading.Thread(target=_install, args=(key,), name="writer-install", daemon=True).start()
 
 
 def cancel_install() -> None:
@@ -164,21 +200,23 @@ def _ok(p: Path, size: int, sha: str) -> bool:
     return p.is_file() and p.stat().st_size == size and _sha256(p) == sha
 
 
-def _install() -> None:
+def _install(key: str = "small") -> None:
     from ..platform_adapter import keep_awake
     with keep_awake():
-        _install_now()
+        _install_now(key)
 
 
-def _install_now() -> None:
+def _install_now(key: str = "small") -> None:
     import http.client, urllib.error
     from .. import auto_edit as ae
     log = ROOT / "install.log"
     try:
         ROOT.mkdir(parents=True, exist_ok=True)
+        MODEL = MODELS[key]
         if not (LLAMA["tag"] and MODEL["rev"]):
             raise WriterError("This MediaEngine has no story writer to install yet.")
-        total = _llama_bytes() + int(MODEL["size"])
+        have_bin = _binaries_ok()                          # (changing the model: the program stays)
+        total = (0 if have_bin else _llama_bytes()) + int(MODEL["size"])
         if _free(ROOT) < total + 1_500_000_000:
             raise WriterError("Not enough free space on the disk of the data folder: the story writer needs about "
                               f"{round((total + 1_500_000_000) / 1e9)} GB free.")
@@ -189,7 +227,7 @@ def _install_now() -> None:
         new_bin = ROOT / "bin.__install__"
         shutil.rmtree(new_bin, ignore_errors=True)
         done = 0
-        for build, z_ in LLAMA["builds"].items():
+        for build, z_ in ({} if have_bin else LLAMA["builds"]).items():
             INSTALL.update(step="program", detail=z_["name"])
             z = tmp / z_["name"]
             if not _ok(z, z_["size"], z_["sha256"]):
@@ -209,14 +247,15 @@ def _install_now() -> None:
                 zf.extractall(new_bin / build)
             if not any((new_bin / build).rglob("llama-server.exe")) and not any((new_bin / build).rglob("llama-server")):
                 raise WriterError("The llama.cpp download has no server in it.")
-        if BIN.exists():
-            shutil.rmtree(BIN, ignore_errors=True)
-        ae._replace_retry(new_bin, BIN, tries=30)
+        if not have_bin:
+            if BIN.exists():
+                shutil.rmtree(BIN, ignore_errors=True)
+            ae._replace_retry(new_bin, BIN, tries=30)
         # the model (a file from huggingface.co at the pinned commit)
         INSTALL.update(step="model", detail=MODEL["file"])
         MODEL_DIR.mkdir(parents=True, exist_ok=True)
-        dst = _model_path()
-        base = _llama_bytes()
+        dst = _model_path(key)
+        base = 0 if have_bin else _llama_bytes()
         if not _ok(dst, MODEL["size"], MODEL["sha256"]):
             part = dst.with_name(dst.name + ".part")
             ae._fetch_resumable(f"https://huggingface.co/{MODEL['repo']}/resolve/{MODEL['rev']}/{MODEL['file']}", part,
@@ -226,13 +265,13 @@ def _install_now() -> None:
                 part.unlink(missing_ok=True)
                 raise WriterError("The downloaded model is not the exact file. Try again.")
             ae._replace_retry(part, dst, tries=30)
-        for old in MODEL_DIR.glob("*.gguf"):                    # (an older model of an earlier version)
+        INSTALL.update(step="testing", detail="", done=total)
+        test = selftest(dst)
+        for old in MODEL_DIR.glob("*.gguf"):                    # (the other model, or one of an earlier version)
             if old.name != dst.name:
                 old.unlink(missing_ok=True)
-        INSTALL.update(step="testing", detail="", done=total)
-        test = selftest()
         m = {"version": VERSION, "llama": LLAMA["tag"], "llama_zips": {k: [b["name"], b["sha256"]] for k, b in LLAMA["builds"].items()},
-             "model": [MODEL["repo"], MODEL["rev"], MODEL["file"]], "model_sha256": MODEL["sha256"],
+             "which": key, "model": [MODEL["repo"], MODEL["rev"], MODEL["file"]], "model_sha256": MODEL["sha256"],
              "gpu": test.get("gpu") or "", "speed": test.get("speed"), "installed_at": now_iso()}
         tmpm = MANIFEST.with_suffix(".tmp")
         tmpm.write_text(json.dumps(m, indent=1), "utf-8")
@@ -268,8 +307,9 @@ def _port() -> int:
 class Server:
     """llama.cpp's server for one story: started, asked, stopped. gpu=False: the processor only."""
 
-    def __init__(self, gpu: bool = True, track: bool = True, log: Path | None = None):
+    def __init__(self, gpu: bool = True, track: bool = True, log: Path | None = None, model: Path | None = None):
         self.gpu, self.track = gpu, track
+        self.model = model or _model_path()
         self.build = "vulkan" if gpu else "cpu"
         self.port, self.key = _port(), secrets.token_hex(16)
         self.log = log or (ROOT / "server.log")
@@ -279,7 +319,7 @@ class Server:
     def _cmd(self) -> list[str]:
         fake = os.environ.get("MEDENG_WRITER_SERVER")         # (the checks: a stand-in server, never set for a person)
         base = fake.split("|") if fake else [str(_server_exe(self.build) or "llama-server")]
-        cmd = base + ["-m", str(_model_path()), "-c", str(CTX), "--host", "127.0.0.1", "--port", str(self.port),
+        cmd = base + ["-m", str(self.model), "-c", str(CTX), "--host", "127.0.0.1", "--port", str(self.port),
                       "--api-key", self.key, "-np", "1", "--jinja", "--no-webui"]
         # the graphics card: as many layers as fit (the server's own 'auto'); the processor: no card at all
         return cmd + ([] if self.gpu else ["-ngl", "0", "--device", "none"])
@@ -392,25 +432,25 @@ class Server:
             self.proc = None
 
 
-def open_server(stop=lambda: False, track: bool = True, log: Path | None = None) -> Server:
+def open_server(stop=lambda: False, track: bool = True, log: Path | None = None, model: Path | None = None) -> Server:
     """On the graphics card when it can; the processor when the card's start fails."""
     try:
-        return Server(True, track, log).start(stop)
+        return Server(True, track, log, model).start(stop)
     except WriterError as exc:
         if str(exc) == "Stopped.":
             raise
         first = str(exc)
     try:
-        return Server(False, track, log).start(stop)
+        return Server(False, track, log, model).start(stop)
     except WriterError as exc:
         if str(exc) == "Stopped.":
             raise
         raise WriterError(f"{exc} (with the graphics card: {first})")
 
 
-def selftest() -> dict:
+def selftest(model: Path | None = None) -> dict:
     """The server starts and answers a short question (installation)."""
-    srv = open_server(track=False, log=ROOT / "selftest.log")
+    srv = open_server(track=False, log=ROOT / "selftest.log", model=model)
     try:
         r = srv.chat([{"role": "user", "content": "Answer with one word: ready"}], max_tokens=8, temperature=0.0, seed=1)
         if not r["text"].strip():
