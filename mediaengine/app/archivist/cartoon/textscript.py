@@ -61,7 +61,7 @@ POSE_WORDS = {
     "talking": "talk", "explaining": "explain", "pointing": "point", "points": "point", "pointing up": "point_up",
     "shrugging": "shrug", "shrugs": "shrug", "crossed arms": "cross", "arms folded": "cross", "thinking": "think",
     "thinks": "think", "waving": "wave", "waves": "wave", "rubbing hands": "count", "rubs his hands": "count",
-    "counting": "count", "counts money": "count", "presenting": "present", "presents": "present", "hand to face": "facepalm",
+    "counting": "count", "counts money": "count", "rub hands": "count", "rubs her hands": "count", "presenting": "present", "presents": "present", "hand to face": "facepalm",
     "sneaking": "sneaky", "whispers": "sneaky", "whispering": "sneaky", "standing": "idle", "shows": "point",
     "raises hands": "hands_up", "hands raised": "hands_up",
     # Romanian (a model told to keep the English words sometimes translates them all the same)
@@ -194,7 +194,7 @@ def _visual(spec: str, n_lines: int) -> dict | None:
             unit = rest.split()[-1]
             rest = rest[: -len(unit)].strip()
         values, labels = [], []
-        for p in rest.split(","):
+        for p in re.split(r"[;,](?!\d)", rest):            # "a 1.2, b 4.8" or "a 80 000; b 240 000"
             v = _number(p)
             if v is None:
                 continue

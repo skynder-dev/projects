@@ -51,9 +51,8 @@ def make(name: str, role: str = "", seed: str | None = None, **over) -> dict:
                                                  "primar", "funcționar", "director"))
               else "vest" if any(w in role for w in ("worker", "builder", "foreman", "engineer", "рабоч", "строител", "прораб",
                                                      "инженер", "muncitor", "constructor"))
-              else "coat" if any(w in role for w in ("doctor", "nurse", "medic", "surgeon", "pharmacist", "paramedic", "врач",
-                                                     "доктор", "медсестр", "медбрат", "фармацевт", "аптекар", "хирург",
-                                                     "asistent", "farmacist", "chirurg"))
+              else "coat" if re.search(r"\b(doctor|nurse|medics?|surgeon|pharmacist|paramedic|asistent[aă]?|farmacist[aă]?|chirurg)\b"
+                                       r"|врач|доктор|медсестр|медбрат|фармацевт|аптекар|хирург", role)
               else "hoodie" if any(w in role for w in ("student", "blogger", "young", "hacker", "студент", "блогер"))
               else rnd.choice(OUTFITS))
     if "female" not in over and re.search(r"(?i)\b(woman|girl|she|mrs|ms|lady|женщин|девушк|она|госпожа|doamna)\b|(?:ова|ева|ина|ская|ая|ка)\b", role + " " + name):

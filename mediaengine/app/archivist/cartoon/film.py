@@ -172,6 +172,7 @@ def _appear(scene: dict, at, t: float, dur: float = 0.6) -> float:
 
 
 DARK = {"board", "night"}
+INDOOR = {"office", "bank", "hospital", "school", "shop", "paper"}     # (a title there gets a card under it)
 
 
 def draw_visual(cv: Canvas, v: dict, scene: dict, t: float, box: tuple, cast: dict):
@@ -310,9 +311,12 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
         with cv.at(-cv.SW / 2, -cv.SH / 2):
             gy = bgs.draw(cv, scene["bg"], t)
             names = scene["cast"]
+            if not names and any(x["who"] == film.get("narrator") for x in scene["lines"]):
+                names = [film["narrator"]]                 # (nobody else there: the narrator presents it)
             xs, sc, box = _layout(cv, len(names), bool(scene.get("visual")))
             if scene.get("visual") and box:
-                if scene["bg"] not in DARK and scene["visual"].get("kind") not in ("road", "title"):
+                if scene["bg"] not in DARK and (scene["visual"].get("kind") not in ("road", "title")
+                                                 or (scene["visual"].get("kind") == "title" and scene["bg"] in INDOOR)):
                     bx, by, bw_, bh_ = box                 # (a light card under a scheme or a paper: it reads on any background)
                     a = ease(min(1.0, (t - scene["s"]) / 0.4))
                     cv.blend("#ffffff", 0.78 * a, rounded(bx - bw_ / 2 + 10, by - bh_ / 2 + 10, bw_ - 20, bh_ - 20, 36))
