@@ -183,6 +183,8 @@ def register(app, page, err_page, e, human_bytes):
                     script = json.loads(f.get("script") or "")
                 except ValueError:
                     raise F.FilmError("The script is not valid JSON.")
+                if not isinstance(script, dict):
+                    raise F.FilmError("The script is not valid JSON.")
             elif str(f.get("text") or "").strip():
                 script = T.parse(f.get("text") or "")
                 if not script["scenes"]:

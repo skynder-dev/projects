@@ -18,6 +18,8 @@ CAPTION_STYLES = ("pop", "box", "classic", "minimal", "single", "block")
 def new_make(script: dict, voices: bool = True, captions: dict | None = None, title: str = "") -> str:
     """A film to make (a job). voices: the characters speak (the voice add-on needed); otherwise a quick preview
     whose line lengths are estimated (silent, captions only)."""
+    if not isinstance(script, dict):
+        raise F.FilmError("The script has no scenes.")
     film = F.check_script(script)                         # (a bad script is refused at once, not in the queue)
     if voices and not vo.installed():
         raise vo.VoiceError("The voices need the voice add-on: install it on the Voice-over page, or make a preview without voices.")
