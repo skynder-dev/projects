@@ -65,6 +65,11 @@ def do(jid: str, d: Path, job: dict) -> dict:
         return {"ok": False, "error": f"The film did not pass its check ({bad['check']}: {bad['detail']}).", "checks": checks}
     ae._replace_retry(tmp, d / "film.mp4", tries=30)
     saved = _save(d / "film.mp4", job.get("title") or film["title"])
+    try:                                                  # its characters kept in the library (looks, voices)
+        from . import library
+        library.remember(film["cast"], film.get("narrator") or "")
+    except Exception:
+        pass
     if not (vo.load_config().get("voice") or {}).get("keep_work"):
         shutil.rmtree(d / "render", ignore_errors=True)
     return {"ok": True, "file": "film.mp4", "seconds": r["seconds"], "scenes": r["scenes"], "lines": r["lines"],

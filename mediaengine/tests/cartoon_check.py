@@ -244,6 +244,24 @@ def main() -> int:
             t0 = time.time()
             while vo.read_job(nid2)["state"] in ("waiting", "working") and time.time() - t0 < 900:
                 time.sleep(1)
+        from archivist.cartoon import library as Lb
+        lib = Lb.load()
+        cl = c.get("/auto/cartoon/characters", headers=H)
+        png = c.get("/auto/cartoon/characters/rick.png", headers=H)
+        ed = c.get("/auto/cartoon/characters/rick", headers=H)
+        sv = c.post("/auto/cartoon/characters/rick", data={"role": "contractor boss", "female": "0", "skin": ch.SKINS[2],
+                                                          "hair": ch.HAIRS[4], "hair_style": "curly", "beard": "full", "outfit": "suit",
+                                                          "cloth": ch.CLOTHES[0], "glasses": "1",
+                                                          "voice": "A low, smooth, sly businessman."}, headers=H)
+        again = F.check_script({"title": "x", "cast": {"rick": {"name": "Rick", "role": "builder"}},
+                                "scenes": [{"bg": "office", "lines": [{"who": "rick", "text": "Hello."}]}]})["cast"]["rick"]
+        check("characters' library: the film's people kept (look, voice); the page lists them with a picture; a changed "
+              "look and voice are used by the next film naming them",
+              "rick" in lib and "kate" in lib and cl.status_code == 200 and b"/auto/cartoon/characters/rick.png" in cl.data
+              and png.status_code == 200 and png.mimetype == "image/png" and len(png.data) > 2000 and ed.status_code == 200
+              and sv.status_code == 302 and again["hair"] == ch.HAIRS[4] and again["glasses"] is True and again["beard"] == "full"
+              and again["voice"] == {"kind": "describe", "text": "A low, smooth, sly businessman."},
+              (sorted(lib), cl.status_code, png.status_code, again.get("hair"), again.get("voice")))
         bad_json = c.post("/auto/cartoon/new", data={"story": "own", "script": "{not json"}, headers=H)
         no_voice = c.post("/auto/cartoon/new", data={"story": "road_contract", "voices": "1"}, headers=H)
         check("pages: a broken script and voices without the add-on are refused clearly",
@@ -253,7 +271,9 @@ def main() -> int:
         st = c.get(f"/api/cartoon/status?ids={jid},{nid},x", headers=H).get_json() or {}
         check("pages: how far the films are, for the page to ask", st.get(jid, {}).get("state") == "done" and st.get("x", {}).get("state") == "gone", st)
         c.post("/lang", data={"lang": "ru"}, headers=H)
-        ru = c.get("/auto/cartoon", headers=H).get_data(as_text=True) + c.get(f"/auto/cartoon/{jid}", headers=H).get_data(as_text=True)
+        ru = (c.get("/auto/cartoon", headers=H).get_data(as_text=True) + c.get(f"/auto/cartoon/{jid}", headers=H).get_data(as_text=True)
+              + c.get("/auto/cartoon/characters", headers=H).get_data(as_text=True)
+              + c.get("/auto/cartoon/characters/rick", headers=H).get_data(as_text=True))
         body = re.sub(r"<(script|style|textarea)[^>]*>.*?</\1>", " ", ru, flags=re.S)
         body = re.sub(r"<[^>]*translate=['\"]no['\"][^>]*>.*?</[a-z0-9]+>", " ", body, flags=re.S)
         txt = re.sub(r"<[^>]+>", "\n", body)

@@ -53,6 +53,12 @@ def check_script(sc: dict) -> dict:
                                                                   "glasses", "outfit", "cloth", "tie", "pants", "shoes", "hat",
                                                                   "height")})
         base["voice"] = spec.get("voice") or {}
+        if not spec.get("keep_look"):                      # the library's look and voice for this name (Characters page)
+            from . import library
+            base.update(library.look_of(base["name"]))
+            lv = library.voice_of(base["name"])
+            if lv:                                         # (the narrator too, when a voice was written for it)
+                base["voice"] = {"kind": "describe", "text": lv}
         cast[key] = base
     if not cast:
         raise FilmError("The script has no characters.")

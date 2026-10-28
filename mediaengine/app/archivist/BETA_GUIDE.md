@@ -106,6 +106,12 @@ what you like and press "Make the cartoon". "Write another version" asks again; 
 a story (also a finished cartoon's) with the country's own names, money and offices. Nothing the model writes is a
 fact check: read it before you publish.
 
+**Characters** (the button at the top of Cartoon Studio): everyone your cartoons have used, with a picture. A
+character keeps its look and voice in every new film whose story names it; change the skin, hair, hairstyle, beard,
+clothes and their colour, glasses, a hard hat, the role and the voice's description (a new description makes a new
+voice, kept again). Characters walk into a scene they were not in; a scene only the narrator speaks in shows the
+narrator presenting it.
+
 ## Converting videos
 
 **Media → Convert** (or "Convert" on videos chosen in the Library, or "Choose videos on this PC"). The copies go into

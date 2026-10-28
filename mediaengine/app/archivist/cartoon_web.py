@@ -11,7 +11,7 @@ from pathlib import Path
 from flask import jsonify, redirect, request, send_file
 
 from . import voice as vo
-from .cartoon import bgs, chars as ch, film as F, jobs as cj, stories, textscript as T, writer as W
+from .cartoon import bgs, chars as ch, film as F, jobs as cj, library as L, stories, textscript as T, writer as W
 
 CSS = """<style>
 .ct-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -23,6 +23,11 @@ CSS = """<style>
 @media(max-width:900px){.ct-line{grid-template-columns:1fr}}
 .ct-line input{width:100%}
 .ct-big video{max-width:100%;max-height:70vh;border-radius:12px;background:#000}
+.ct-cast{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.ct-who{border:1px solid var(--line2);border-radius:12px;padding:10px;display:flex;gap:10px;align-items:flex-start}
+.ct-who img{width:96px;height:120px;border-radius:8px;background:#eef3f8;flex:none}
+.ct-look{display:grid;grid-template-columns:140px minmax(0,1fr);gap:6px 10px;align-items:center}
+.ct-sw{display:inline-block;width:16px;height:16px;border-radius:4px;border:1px solid #0003;vertical-align:middle}
 </style>"""
 _JOB_ID = r"[0-9]{8}-[0-9]{6}-[0-9a-f]{6}"
 _STEP = {"starting": "Starting…", "voices": "The characters are speaking…", "drawing": "Drawing the pictures…",
@@ -248,7 +253,10 @@ def register(app, page, err_page, e, human_bytes):
         body = (f"{CSS}<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Cartoon Studio</h1>"
                 f"<div class='lead'>A short 2D cartoon made by MediaEngine: its own characters (the same in every episode), "
                 f"scenes, schemes of money and charts, the characters' voices and captions - one MP4. Change any line, "
-                f"background or feeling and make it again.</div></div>{_READY}{_writer_card()}"
+                f"background or feeling and make it again.</div>"
+                + (f"<div style='margin-top:8px'><a class='btn btn2' href='/auto/cartoon/characters'><span>Characters</span> "
+                   f"<span translate='no'>({len(L.load())})</span></a></div>" if L.load() else "")
+                + f"</div>{_READY}{_writer_card()}"
                 f"<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>New cartoon</h2>"
                 f"<form method='post' action='/auto/cartoon/new' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
                 f"<b>Story</b><div class='muted' style='font-size:13px'>The example below - change it or write your own.</div>{help_}"
@@ -391,6 +399,110 @@ def register(app, page, err_page, e, human_bytes):
                 f"<details style='margin-top:8px'><summary class='muted'>What was asked</summary><div class='muted' "
                 f"style='white-space:pre-wrap;font-size:13px' translate='no'>{e(what[:1500])}</div></details></div>")
         return page("Cartoon Studio", head + body, _POLL_JS)
+
+    SKIN_L = dict(zip(ch.SKINS, ("very light", "light", "light tan", "tan", "brown", "dark brown", "very dark")))
+    HAIR_L = dict(zip(ch.HAIRS, ("black", "dark brown", "brown", "light brown", "blond", "grey", "white", "red", "jet black")))
+    CLOTH_L = dict(zip(ch.CLOTHES, ("navy", "green", "wine", "grey", "purple", "teal", "mustard", "forest green", "brown", "dark blue")))
+    STYLE_L = {"short": "short", "side": "side parting", "spiky": "spiky", "bob": "bob", "curly": "curly", "ponytail": "ponytail",
+               "bald": "bald", "long": "long", "buzz": "very short"}
+    OUTFIT_L = {"suit": "suit and tie", "blazer": "jacket", "shirt": "shirt", "hoodie": "hoodie", "vest": "work vest",
+                "dress": "dress", "sweater": "sweater", "coat": "doctor's white coat"}
+    BEARD_L = {"none": "none", "mustache": "mustache", "stubble": "stubble", "full": "beard"}
+
+    def _sel(name: str, options: dict, current, swatch: bool = False) -> str:
+        return (f"<select name='{name}'>" + "".join(
+            f"<option value='{e(k)}' {'selected' if k == current else ''}>{e(v)}</option>" for k, v in options.items()) + "</select>"
+            + (f" <span class='ct-sw' style='background:{e(str(current))}'></span>" if swatch and current else ""))
+
+    def _who(key: str, en: dict) -> dict:
+        c = ch.make(en.get("name") or key, en.get("role") or "")
+        c.update(en.get("look") or {})
+        return c
+
+    @app.get("/auto/cartoon/characters")
+    def cartoon_characters():
+        lib = L.load()
+        rows = ""
+        for key, en in sorted(lib.items(), key=lambda kv: (-int(kv[1].get("films") or 0), kv[1].get("name") or "")):
+            c = _who(key, en)
+            rows += (f"<div class='ct-who'><img src='/auto/cartoon/characters/{e(key)}.png' alt=''><div>"
+                     f"<b translate='no'>{e(en.get('name') or key)}</b>"
+                     f"<div class='muted' style='font-size:13px' translate='no'>{e(en.get('role') or '')}</div>"
+                     f"<div class='muted' style='font-size:13px'><span>Films:</span> <span translate='no'>{int(en.get('films') or 0)}</span>"
+                     + (" · <span>narrator</span>" if en.get("narrator") else "") + "</div>"
+                     f"<a class='btn btn2' style='margin-top:6px' href='/auto/cartoon/characters/{e(key)}'>Change</a></div></div>")
+        body = (f"{CSS}<div class='pagehead'><div class='eyebrow'><a href='/auto/cartoon'>Cartoon Studio</a></div><h1>Characters</h1>"
+                f"<div class='lead'>Everyone your cartoons have used. A character keeps its look and its voice in every new "
+                f"film whose story names it - change them here.</div></div>"
+                + (f"<div class='card'><div class='ct-cast'>{rows}</div></div>" if rows else
+                   "<div class='card'><div class='muted'>No characters yet: they are added when a cartoon is made.</div></div>"))
+        return page("Cartoon Studio", body)
+
+    @app.get("/auto/cartoon/characters/<key>.png")
+    def cartoon_character_png(key):
+        en = L.load().get(key)
+        if not en:
+            return ("", 404)
+        from flask import Response
+        return Response(L.portrait(_who(key, en)), mimetype="image/png", headers={"Cache-Control": "no-store"})
+
+    @app.get("/auto/cartoon/characters/<key>")
+    def cartoon_character(key):
+        en = L.load().get(key)
+        if not en:
+            return err_page("No such character.", "/auto/cartoon/characters")
+        c = _who(key, en)
+        look = (f"<div class='ct-look'>"
+                f"<span>Who</span>{_sel('female', {'0': 'a man', '1': 'a woman'}, '1' if c.get('female') else '0')}"
+                f"<span>Skin</span>{_sel('skin', SKIN_L, c.get('skin'), True)}"
+                f"<span>Hair</span>{_sel('hair', HAIR_L, c.get('hair'), True)}"
+                f"<span>Hairstyle</span>{_sel('hair_style', STYLE_L, c.get('hair_style'))}"
+                f"<span>Beard</span>{_sel('beard', BEARD_L, c.get('beard') or 'none')}"
+                f"<span>Clothes</span>{_sel('outfit', OUTFIT_L, c.get('outfit'))}"
+                f"<span>Colour of the clothes</span>{_sel('cloth', {**CLOTH_L, '#f4f6f8': 'white'}, c.get('cloth'), True)}"
+                f"<span>Glasses</span><label><input type='checkbox' name='glasses' value='1' {'checked' if c.get('glasses') else ''}> glasses</label>"
+                f"<span>Hard hat</span><label><input type='checkbox' name='hardhat' value='1' {'checked' if c.get('hat') == 'hardhat' else ''}> a builder's hard hat</label>"
+                f"</div>")
+        body = (f"{CSS}<div class='pagehead'><div class='eyebrow'><a href='/auto/cartoon/characters'>Characters</a></div>"
+                f"<h1 translate='no'>{e(en.get('name') or key)}</h1></div>"
+                f"<div class='card'><div class='ct-row' style='align-items:flex-start;gap:18px'>"
+                f"<img src='/auto/cartoon/characters/{e(key)}.png' alt='' style='width:192px;height:240px;border-radius:10px'>"
+                f"<form method='post' action='/auto/cartoon/characters/{e(key)}' style='flex:1;min-width:280px'>"
+                f"<div class='ct-look'><span>Role</span><input name='role' maxlength='60' value='{e(en.get('role') or '')}' translate='no'></div>"
+                f"<h3>Appearance</h3>{look}<h3>Voice</h3>"
+                f"<textarea name='voice' rows='2' maxlength='300' style='width:100%' translate='no' placeholder="
+                f"'A man in his forties, low and calm, a little sly (empty: the program’s own voice for the narrator)'>"
+                f"{e(en.get('voice') or '')}</textarea>"
+                f"<div class='muted' style='font-size:13px'>A voice from a description is made once with the voice add-on and kept: "
+                f"the character sounds the same in every film. A new description makes a new voice.</div>"
+                f"<div style='margin-top:12px' class='ct-row'><button class='ae-big'>Save</button>"
+                f"<a class='btn btn2' href='/auto/cartoon/characters'>Back</a></div></form></div>"
+                f"<form method='post' action='/auto/cartoon/characters/{e(key)}/forget' style='margin-top:12px' "
+                f"onsubmit=\"return confirm(window.ME_L?ME_L('Forget this character? Films made stay as they are.'):"
+                f"'Forget this character? Films made stay as they are.')\"><button class='btn2'>Forget the character</button></form></div>")
+        return page("Cartoon Studio", body)
+
+    @app.post("/auto/cartoon/characters/<key>")
+    def cartoon_character_save(key):
+        f = request.form
+        if key not in L.load():
+            return err_page("No such character.", "/auto/cartoon/characters")
+        look = {"female": f.get("female") == "1", "glasses": f.get("glasses") == "1",
+                "hat": "hardhat" if f.get("hardhat") == "1" else "none"}
+        for name, allowed in (("skin", ch.SKINS), ("hair", ch.HAIRS), ("hair_style", list(STYLE_L)), ("beard", list(BEARD_L)),
+                              ("outfit", list(OUTFIT_L)), ("cloth", ch.CLOTHES + ["#f4f6f8"])):
+            if f.get(name) in allowed:
+                look[name] = f.get(name)
+        if look.get("female"):
+            look["beard"] = "none"
+        L.update(key, role=f.get("role") if f.get("role") is not None else None, look=look,
+                 voice=f.get("voice") if f.get("voice") is not None else None)
+        return redirect(f"/auto/cartoon/characters/{key}")
+
+    @app.post("/auto/cartoon/characters/<key>/forget")
+    def cartoon_character_forget(key):
+        L.forget(key)
+        return redirect("/auto/cartoon/characters")
 
     @app.post("/auto/cartoon/write")
     def cartoon_write():
