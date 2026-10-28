@@ -88,6 +88,59 @@ def _to48k(src: Path, dst: Path) -> float:
     return len(a) / float(sr)
 
 
+_EN_MONEY = {"$": "dollars", "€": "euros", "£": "pounds"}
+_EN_BIG = {"k": "thousand", "m": "million", "mn": "million", "mln": "million", "b": "billion", "bn": "billion"}
+
+
+def _ru_plural(n: float, one: str, few: str, many: str, frac: str) -> str:
+    if n != int(n):
+        return frac
+    n = int(n)
+    if n % 10 == 1 and n % 100 != 11:
+        return one
+    return few if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14 else many
+
+
+def spoken(text: str, lang: str = "en") -> str:
+    """Money written short said in full: "$4.8M" -> "4.8 million dollars", "$300" -> "300 dollars", "480 млн ₽" ->
+    "480 миллионов рублей" (the numbers themselves the voice says well; the signs and short words it may not)."""
+    t = str(text or "")
+    if lang == "en":
+        def en(m):
+            sign, num, big = m.group(1), m.group(2), (m.group(3) or "").lower()
+            return f"{num}{' ' + _EN_BIG[big] if big else ''} {_EN_MONEY[sign]}"
+        t = re.sub(r"([$€£])\s?(\d[\d,]*(?:\.\d+)?)\s?(k|mn|mln|m|bn|b)?\b", en, t, flags=re.I)
+        t = re.sub(r"(\d)\s?%", r"\1 percent", t)
+    elif lang == "ru":
+        big_w = {"тыс": ("тысяча", "тысячи", "тысяч", "тысячи"), "млн": ("миллион", "миллиона", "миллионов", "миллиона"),
+                 "млрд": ("миллиард", "миллиарда", "миллиардов", "миллиарда")}
+        money_w = {"₽": ("рубль", "рубля", "рублей", "рубля"), "$": ("доллар", "доллара", "долларов", "доллара"),
+                   "€": ("евро",) * 4}
+
+        def num(s_):
+            try:
+                return float(s_.replace(" ", "").replace(",", "."))
+            except ValueError:
+                return 0.0
+
+        def ru(m):
+            n_s, big, cur = m.group(1).strip(), (m.group(2) or "").lower().rstrip("."), m.group(3) or ""
+            n = num(n_s)
+            out = n_s + (" " + _ru_plural(n, *big_w[big]) if big in big_w else "")
+            return out + " " + (money_w[cur][2] if big in big_w and cur != "€" else _ru_plural(n, *money_w[cur]))
+        t = re.sub(r"(\d+(?:[  ]\d{3})*(?:[.,]\d+)?)\s?(тыс\.?|млн\.?|млрд\.?)?\s?([₽$€])", ru, t)
+        t = re.sub(r"([$€])\s?(\d+(?:[  ]\d{3})*(?:[.,]\d+)?)(?:\s?(тыс\.?|млн\.?|млрд\.?))?",
+                   lambda m: ru(type("M", (), {"group": lambda self, k: {1: m.group(2), 2: m.group(3), 3: m.group(1)}[k]})()), t)
+
+        def big(m):
+            n_s, w, dot, nxt = m.group(1).strip(), m.group(2), m.group(3) or "", m.group(4) or ""
+            keep = dot if dot and not re.match(r"\s+[а-яё]", nxt) else ""
+            return f"{n_s} {_ru_plural(num(n_s), *big_w[w])}{keep}{nxt}"
+        t = re.sub(r"(\d+(?:[  ]\d{3})*(?:[.,]\d+)?)\s?(млрд|млн|тыс)(\.)?(?![а-яё])(\s*[а-яёА-ЯЁ]?)", big, t)
+        t = re.sub(r"(\d)\s?%", r"\1 процентов", t)
+    return t
+
+
 def make(film: dict, work: Path, progress=None, stop=None) -> dict:
     """All the lines said: {"<scene>.<line>": {"wav", "seconds", "words"}} (word times from the line's start)."""
     if not vo.installed():
@@ -109,7 +162,7 @@ def make(film: dict, work: Path, progress=None, stop=None) -> dict:
         engine = ("qwen" if v.get("ref_wav") and lang in vo.QWEN_LANGS and vo.qwen_installed() else "voxcpm")
         d = work / f"voice_{_safe(key)}"
         shutil.rmtree(d, ignore_errors=True)
-        chunks = [{"text": t.replace("*", ""), "pause_after": 0.3} for _, _, t in items]
+        chunks = [{"text": spoken(t.replace("*", ""), lang), "pause_after": 0.3} for _, _, t in items]
         all_text = " ".join(c["text"] for c in chunks)
 
         def line(msg, base=done, n=len(items)):

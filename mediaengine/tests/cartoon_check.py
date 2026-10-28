@@ -145,6 +145,22 @@ def main() -> int:
             except Exception as exc:
                 errs.append(f"{fmt} scene {i + 1}: {type(exc).__name__}: {exc}")
     check("example: every scene of 'How a City Loses Millions' draws in both formats", not errs, errs)
+    enter = [x["enter"] for x in tl2["scenes"]]
+    s3 = tl2["scenes"][2]
+    W, H = F.FORMATS["vertical"]
+    early, late = Canvas(W // 4, H // 4, 1080), Canvas(W // 4, H // 4, 1080)
+    F.draw_frame(early, film, s3, s3["s"] + 0.05, {})
+    F.draw_frame(late, film, s3, s3["s"] + 1.2, {})
+    lower = slice(int(H // 4 * 0.6), H // 4)
+    moved = float(np.abs(early.img[lower].astype(np.int16) - late.img[lower].astype(np.int16)).mean())
+    check("animation: a character not in the scene before walks in (the first scene's people are just there)",
+          enter[0] == [] and enter[2] == ["ed"] and moved > 3, (enter[:4], moved))
+    from archivist.cartoon.voices import spoken
+    sp = (spoken("The city pays $4.8M, the crew gets $300K - 30% of it.", "en"),
+          spoken("Город платит 480 млн ₽, бригада получает 1,2 млн. Это $300 и 21 млн рублей.", "ru"))
+    check("voices: money written short is said in full (dollars, millions, roubles, percent)",
+          sp[0] == "The city pays 4.8 million dollars, the crew gets 300 thousand dollars - 30 percent of it."
+          and sp[1] == "Город платит 480 миллионов рублей, бригада получает 1,2 миллиона. Это 300 долларов и 21 миллион рублей.", sp)
     from archivist.cartoon import bgs
     bad, looks = [], {}
     for fmt in ("vertical", "horizontal"):

@@ -119,7 +119,23 @@ def timeline(sc: dict, voices: dict | None = None) -> dict:
             t += dur + GAP
         t = max(t + SCENE_PAD, start + s["min"])
         scenes.append(dict(s, s=round(start, 3), e=round(t, 3), lines=lines))
+    prev: list = []
+    for s in scenes:                                       # who walks in: not in the picture of the scene before
+        shown = _shown(sc, s)
+        s["enter"] = [k for k in shown if k not in prev] if prev else []
+        prev = shown
     return {"scenes": scenes, "seconds": round(t, 3)}
+
+
+def _shown(sc: dict, scene: dict) -> list:
+    """The characters in a scene's picture: its cast, or the narrator presenting a scene nobody else is in."""
+    names = list(scene.get("cast") or [])
+    if not names and any(x["who"] == sc.get("narrator") for x in scene.get("lines") or []):
+        names = [sc["narrator"]]
+    return names
+
+
+WALK_IN = 0.9                  # seconds a character takes to walk in
 
 
 # ------------------------------------------------------------------------------------------------- the picture
@@ -310,9 +326,7 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
     with cv.at(cv.SW / 2, cv.SH / 2, 0, zoom):
         with cv.at(-cv.SW / 2, -cv.SH / 2):
             gy = bgs.draw(cv, scene["bg"], t)
-            names = scene["cast"]
-            if not names and any(x["who"] == film.get("narrator") for x in scene["lines"]):
-                names = [film["narrator"]]                 # (nobody else there: the narrator presents it)
+            names = _shown(film, scene)                    # (nobody else there: the narrator presents it)
             xs, sc, box = _layout(cv, len(names), bool(scene.get("visual")))
             if scene.get("visual") and box:
                 if scene["bg"] not in DARK and (scene["visual"].get("kind") not in ("road", "title")
@@ -335,8 +349,13 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
                 pose = (mine or {}).get("pose") or scene["pose"].get(key) or ("talk" if speaker == key else "idle")
                 emo = (mine or {}).get("emotion") or scene["mood"].get(key) or ("happy" if speaker == key else "neutral")
                 blink = 1.0 if (t * 0.9 + k * 0.37) % 3.7 < 0.12 else 0.0
+                walk = None
+                if key in (scene.get("enter") or []) and st < WALK_IN:     # walking in from the nearer side
+                    side = -1 if x < cv.SW / 2 else 1
+                    x += side * (1 - ease(st / WALK_IN)) * (cv.SW * 0.55)
+                    walk, look, pose, emo = st * 9.0, -side, "idle", emo
                 ch.draw(cv, c, x, gy, sc, look, pose, None, 0.0, emo, mouths.get(key, 0.0) if speaker == key else 0.0, blink,
-                        t + k, None, (0.6 * look, 0.0))
+                        t + k, walk, (0.6 * look, 0.0))
                 if speaker == key and ln.get("bubble"):
                     _bubble_for(cv, ln, x, gy - 600 * sc, t)
 
