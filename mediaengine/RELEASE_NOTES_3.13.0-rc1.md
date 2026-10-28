@@ -252,6 +252,16 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   "спонсором турнира" are ordinary speech). Windows CI run 40544352387: clips 36/36, unit 207, E2E two 92, Russian 226 pages 0 English.
 - b240: Clips: "Make the 5 likeliest" next to "Make the ticked clips" (the first five of the list, as they are - no
   ticking needed); the help under the button describes the new framing (someone walking, people side by side). Windows CI run 40568209291: clips 37/37, unit 207, E2E two 92, Russian 226 pages 0 English.
+- next build (after b240): Clips "The one speaking, close up" (two or three people side by side: the crop on whoever
+  talks, switching when another one talks). **Cartoon Studio** (Auto Edit → Cartoon Studio): a 2D cartoon made by the
+  program (its own characters, poses, feelings, mouths with the words, twelve backgrounds, schemes of money, contracts,
+  charts, a road; voices per character by the voice add-on; captions; sounds), the example "How a City Loses Millions on
+  a Simple Road Contract", the story as plain text to change and make again. **The story writer**: a free model on this
+  PC (Qwen3-4B-Instruct-2507 Q8_0 by ggml-org, run by llama.cpp b11941 - Vulkan build for the graphics card, CPU build
+  otherwise; installed with a button, about 4.4 GB) writes the story from a topic, a pasted text or a video on this PC
+  (listened to by the voice add-on, its facts noted), or retells a story for another country (English, Russian,
+  Romanian). The build of 69c4180 failed at the cartoon check (the check called ffprobe, which a Windows MediaEngine
+  does not have) - the check now uses the program's own probe.
 
 ## Orders from other programs; night review fixes (2026-10-17)
 

@@ -26,7 +26,8 @@ CSS = """<style>
 </style>"""
 _JOB_ID = r"[0-9]{8}-[0-9]{6}-[0-9a-f]{6}"
 _STEP = {"starting": "Starting…", "voices": "The characters are speaking…", "drawing": "Drawing the pictures…",
-         "checking": "Checking the film…", "loading": "Starting the story writer…", "writing": "Writing the story…"}
+         "checking": "Checking the film…", "loading": "Starting the story writer…", "writing": "Writing the story…",
+         "listening": "Listening to the video…", "notes": "Noting the video's facts…"}
 _WR_STEP = {"checking": "Checking the PC…", "program": "Downloading llama.cpp (the program that runs the model)…",
             "model": "Downloading the model (Qwen3-4B, about 4.3 GB)…", "checking_model": "Checking the downloaded model…",
             "testing": "Starting the story writer for a test…"}
@@ -207,6 +208,12 @@ def register(app, page, err_page, e, human_bytes):
                     f"article, notes, what is said in a video): the story retells it with its own characters.</div>"
                     f"<textarea name='about' rows='4' maxlength='5000' style='width:100%' "
                     f"placeholder='Why a city hospital pays three times more for the same medicine'></textarea>"
+                    f"<details style='margin-top:6px'><summary>Or a video on this PC</summary>"
+                    f"<div class='ct-row' style='margin-top:6px'><input name='video' placeholder='A video whose story to retell (its full path)' "
+                    f"style='flex:1;min-width:260px'><button type='button' class='btn2' data-pick='video'>Choose…</button></div>"
+                    f"<div class='muted' style='font-size:13px;margin-top:4px'>The program listens to it (the voice add-on), notes its "
+                    f"facts and numbers and writes a new story with its own characters - not a copy. Listening takes a few minutes "
+                    f"for an hour of video.</div><div class='muted' style='font-size:13px' data-msg></div></details>"
                     f"<div class='ct-row' style='margin-top:8px'><span>Language</span><select name='lang'>{_lang_select()}</select>"
                     f"<span>Viewers in</span><input name='country' maxlength='60' placeholder='(a country, if it matters)' style='width:200px'>"
                     f"<span>Length</span><select name='secs'>{secs}</select></div>"
@@ -253,7 +260,7 @@ def register(app, page, err_page, e, human_bytes):
                 f"{_voices_choice()}{_captions_choice()}"
                 f"<div style='margin-top:12px'><button class='ae-big'>Make the cartoon</button></div></form></div>"
                 + (f"<div class='card' id='films' style='margin-top:14px'><h2 style='margin-top:0'>Cartoons and stories</h2>{rows}</div>" if rows else ""))
-        return page("Cartoon Studio", body, _POLL_JS)
+        return page("Cartoon Studio", body, _POLL_JS + _PICK_JS)
 
     def _make(script: dict, f) -> str:
         script = dict(script)
@@ -347,8 +354,12 @@ def register(app, page, err_page, e, human_bytes):
 
     def _story_page(j: dict):
         jid, res = j["id"], j.get("result") or {}
-        asked = {"topic": "Topic", "text": "Retelling a text", "adapt": "Retelling a story for another country"}.get(j.get("mode"), "")
+        asked = {"topic": "Topic", "text": "Retelling a text", "adapt": "Retelling a story for another country",
+                 "video": "Retelling a video"}.get(j.get("mode"), "")
         what = str(j.get("topic") or j.get("source") or "")
+        if j.get("mode") == "video":
+            heard = vo._job_dir(jid) / "heard.txt"
+            what = str(j.get("video") or "") + ("\n\n" + heard.read_text("utf-8")[:3000] if heard.is_file() else "")
         head = (f"{CSS}<div class='pagehead'><div class='eyebrow'><a href='/auto/cartoon'>Cartoon Studio</a></div>"
                 f"<h1><span>Story:</span> <span translate='no'>{e(j.get('title') or '')}</span></h1>"
                 f"<div class='muted' style='font-size:13px'><span>{e(asked)}</span> · <span translate='no'>"
@@ -385,7 +396,8 @@ def register(app, page, err_page, e, human_bytes):
     def cartoon_write():
         f = request.form
         about = str(f.get("about") or "").strip()
-        mode = f.get("mode") if f.get("mode") == "adapt" else ("text" if len(about) > 280 or about.count("\n") >= 2 else "topic")
+        mode = (f.get("mode") if f.get("mode") == "adapt" else "video" if str(f.get("video") or "").strip()
+                else "text" if len(about) > 280 or about.count("\n") >= 2 else "topic")
         try:
             secs = int(f.get("secs") or 75)
         except ValueError:
@@ -399,7 +411,7 @@ def register(app, page, err_page, e, human_bytes):
             else:
                 jid = W.new_write(mode, f.get("lang") or "en", f.get("format") or "vertical", secs,
                                   topic=about if mode == "topic" else "", source=about if mode == "text" else "",
-                                  country=f.get("country") or "")
+                                  country=f.get("country") or "", video=f.get("video") or "")
         except (W.WriterError, vo.VoiceError) as exc:
             return err_page(str(exc), "/auto/cartoon")
         return redirect(f"/auto/cartoon/{jid}")
@@ -410,9 +422,16 @@ def register(app, page, err_page, e, human_bytes):
         if not j or j.get("kind") != "cartoon_write":
             return redirect("/auto/cartoon")
         try:
-            new = W.new_write(j.get("mode") or "topic", j.get("lang") or "en", j.get("format") or "vertical", j.get("secs") or 75,
+            mode = j.get("mode") or "topic"
+            heard = vo._job_dir(jid) / "heard.txt"
+            if mode == "video" and heard.is_file():            # (the video is not listened to again)
+                mode, j = "text", dict(j, source=heard.read_text("utf-8")[:W.MAX_SOURCE])
+                notes = vo._job_dir(jid) / "notes.txt"
+                if notes.is_file():
+                    j["source"] = notes.read_text("utf-8")
+            new = W.new_write(mode, j.get("lang") or "en", j.get("format") or "vertical", j.get("secs") or 75,
                               topic=j.get("topic") or "", source=j.get("source") or "", country=j.get("country") or "",
-                              title=j.get("title") or "")
+                              title=j.get("title") or "", video=j.get("video") or "")
         except (W.WriterError, vo.VoiceError) as exc:
             return err_page(str(exc), f"/auto/cartoon/{jid}")
         return redirect(f"/auto/cartoon/{new}")
@@ -559,6 +578,12 @@ def register(app, page, err_page, e, human_bytes):
         return jsonify(out)
 
 
+_PICK_JS = ("document.querySelectorAll('[data-pick]').forEach(b=>b.onclick=async()=>{const f=b.closest('form'),"
+            "m=f.querySelector('[data-msg]');if(m)m.textContent=(window.ME_L?ME_L('A Windows window is open — it may be behind this window.'):"
+            "'A Windows window is open — it may be behind this window.');try{const r=await fetch('/api/auto/pick-voice-file',{method:'POST',"
+            "headers:{'Content-Type':'application/json'},body:JSON.stringify({kind:'video'})});const x=await r.json();"
+            "if(x.path){f.querySelector('input[name=video]').value=x.path;if(m)m.textContent=''}else if(m)m.textContent=x.error||''}"
+            "catch(e){if(m)m.textContent=String(e)}});")
 _READY = ("<div class='callout card cl-ready' data-ready hidden><b>Ready.</b> <span>Refresh the page to see it.</span> "
           "<a class='btn btn2' href='javascript:location.reload()'>Refresh</a></div>")
 _POLL_JS = ("(()=>{let dirty=false;document.querySelectorAll('form').forEach(f=>{f.addEventListener('input',()=>dirty=true);"

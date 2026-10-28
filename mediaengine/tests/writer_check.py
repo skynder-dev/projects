@@ -213,6 +213,34 @@ def main() -> int:
         check("a graphics card that fails to start: the story is written on the processor",
               j6.get("state") == "done" and (j6.get("result") or {}).get("device") == "", j6.get("result"))
 
+        # a video on this PC: without the voice add-on refused; with it (a stand-in Whisper here) heard, noted, written
+        vid = work / "talk.mp4"
+        vid.write_bytes(b"not really a video")
+        nv = c.post("/auto/cartoon/write", data={"video": str(vid), "lang": "en"}, headers=H)
+        real = (vo.installed, vo.transcribe, vo._check_video)
+        said = ("The council paid a company owned by the mayor's cousin two million for a bridge that was never built. " * 70).split()
+        vo.installed = lambda: True
+        vo._check_video = lambda p, need_sound=False: None
+        vo.transcribe = lambda wjob, work, timeout=0, on_line=None: (on_line({"progress": 0.5}) if on_line else None,
+                                                                    {"ok": True, "words": [{"w": w, "s": 0, "e": 0} for w in said]})[1]
+        try:
+            before = set(p.name for p in (work / "asked").glob("request_*.json"))
+            rv = c.post("/auto/cartoon/write", data={"video": str(vid), "lang": "en", "secs": "75"}, headers=H)
+            jv = wait(vo, (rv.headers.get("Location") or "").rstrip("/").split("/")[-1])
+        finally:
+            vo.installed, vo.transcribe, vo._check_video = real
+        new_asks = [json.loads(p.read_text("utf-8")) for p in sorted((work / "asked").glob("request_*.json")) if p.name not in before]
+        notes_asks = [a_ for a_ in new_asks if "part 1 of" in a_["messages"][-1]["content"] or "part 2 of" in a_["messages"][-1]["content"]]
+        dv = vo._job_dir(jv["id"])
+        check("a video on this PC: refused without the voice add-on; with it heard once, its facts noted in parts, "
+              "a new story written from the notes",
+              nv.status_code == 400 and b"needs the voice add-on" in nv.data and jv.get("state") == "done"
+              and jv.get("mode") == "video" and (dv / "heard.txt").is_file() and (dv / "notes.txt").is_file()
+              and len(notes_asks) >= 2 and "TEXT:" in new_asks[-1]["messages"][-1]["content"] and jv.get("title") == "talk",
+              (nv.status_code, jv.get("state"), (jv.get("result") or {}).get("error"), len(notes_asks), len(new_asks)))
+        vpage = c.get(f"/auto/cartoon/{jv['id']}", headers=H).get_data(as_text=True)
+        check("a video's story page says what was heard", "Retelling a video" in vpage and "bridge that was never built" in vpage, "")
+
         rw = c.post(f"/auto/cartoon/{jid}/rewrite", headers=H)
         nid = (rw.headers.get("Location") or "").rstrip("/").split("/")[-1]
         jn = wait(vo, nid)

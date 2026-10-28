@@ -518,6 +518,26 @@ def prompt(job: dict) -> str:
                         _lang_rule(lang), FORMAT.format(fmt=fmt), rules, _example(), "Now write the script about the TOPIC."])
 
 
+NOTES = ("Below is part {k} of {n} of what is said in a video (heard by a speech recognizer: some words may be wrong). "
+         "Write down its facts as short notes: who is involved, what happened, the numbers and the money, the scheme or "
+         "trick, who gained and who paid, the result. Notes only, at most 12 short lines, in English.\n\n\"\"\"\n{text}\n\"\"\"")
+
+
+def _pieces(text: str, size: int = 4000, most: int = 8) -> list[str]:
+    """A long transcript in pieces of about `size` characters (cut after a sentence), at most `most`, spread over it."""
+    out, cur = [], ""
+    for sent in re.split(r"(?<=[.!?])\s+", text):
+        if cur and len(cur) + len(sent) > size:
+            out.append(cur.strip())
+            cur = ""
+        cur += sent + " "
+    if cur.strip():
+        out.append(cur.strip())
+    if len(out) > most:
+        out = [out[round(i * (len(out) - 1) / (most - 1))] for i in range(most)]
+    return out
+
+
 def clean(answer: str, fmt: str = "") -> str:
     """The story out of the model's answer: no code fences or markdown marks; the format asked for."""
     out = []
@@ -563,6 +583,12 @@ def do(jid: str, d: Path, job: dict) -> dict:
     if not installed():
         return {"ok": False, "error": "The story writer is not installed: install it on the Cartoon Studio page."}
     stop = lambda: bool(vo._CURRENT.get("cancel"))      # noqa: E731
+    job = dict(job)
+    if job.get("mode") == "video":                        # a video on this PC: listened to first (the voice add-on)
+        heard = _listen(d, job)
+        if not heard.get("ok"):
+            return heard
+        job.update(mode="text", source=heard["text"])
     secs = int(job.get("secs") or 75)
     if job.get("mode") == "adapt":                         # (a retelling: as long as the story retold)
         src = T.parse(str(job.get("source") or ""))
@@ -571,14 +597,25 @@ def do(jid: str, d: Path, job: dict) -> dict:
     vo._CURRENT.update(step="loading", progress=0.02)
     srv = open_server(stop, log=d / "server.log")
     try:
+        if len(str(job.get("source") or "")) > MAX_SOURCE and job.get("mode") == "text":   # a long video: its notes
+            pieces, notes = _pieces(str(job["source"])), []
+            for k, piece in enumerate(pieces):
+                vo._CURRENT.update(step="notes", progress=round(0.4 + 0.2 * k / len(pieces), 3))
+                r = srv.chat([{"role": "user", "content": NOTES.format(k=k + 1, n=len(pieces), text=piece)}], max_tokens=400,
+                             temperature=0.3, seed=int(job.get("seed") or 0) + k, stop=stop)
+                notes.append(re.sub(r"(?s)<think>.*?</think>", "", r["text"]).strip())
+            job["source"] = "\n".join(notes)[:MAX_SOURCE]
+            (d / "notes.txt").write_text(job["source"], "utf-8")
         messages = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": prompt(job)}]
         best, best_info, problem, used = "", {}, "", 0
+        first = 0.6 if (d / "heard.txt").is_file() else 0.05
         for attempt in range(2):
             used = attempt + 1
-            base = 0.05 + 0.45 * attempt
+            base = first + (0.95 - first) / 2 * attempt
             vo._CURRENT.update(step="writing", progress=base)
             r = srv.chat(messages, max_tokens=2600, seed=int(job.get("seed") or 0) + attempt,
-                         on_piece=lambda n, base=base: vo._CURRENT.update(progress=round(min(base + 0.45, base + 0.45 * n / expect), 3)),
+                         on_piece=lambda n, base=base, span=(0.95 - first) / 2: vo._CURRENT.update(
+                             progress=round(min(base + span, base + span * n / expect), 3)),
                          stop=stop)
             text = clean(r["text"], job.get("format") or "")
             info, problem = judge(text, secs)
@@ -600,15 +637,54 @@ def do(jid: str, d: Path, job: dict) -> dict:
             **({"note": problem} if problem else {})}
 
 
+def _listen(d: Path, job: dict) -> dict:
+    """What is said in the job's video (Whisper, the voice add-on), kept in heard.txt (Try again does not listen again)."""
+    from .. import voice as vo
+    kept = d / "heard.txt"
+    if kept.is_file() and kept.stat().st_size > 0:
+        return {"ok": True, "text": kept.read_text("utf-8")}
+    if not vo.installed():
+        return {"ok": False, "error": "Listening to a video needs the voice add-on (Auto Edit → Voice-over → Install)."}
+    src = Path(str(job.get("video") or ""))
+    if not src.is_file():
+        return {"ok": False, "error": "The video is not there any more: " + str(src)}
+    vo._CURRENT.update(step="listening", progress=0.02)
+    wav = d / "sound16k.wav"
+    wjob = {"task": "transcribe", "source": str(src), "wav16": str(wav), "ffmpeg": vo._ffmpeg(), "language": None,
+            "duration": vo._seconds(src), "piece_s": 1200.0}
+
+    def line(msg):
+        if "progress" in msg:
+            vo._CURRENT.update(step="listening", progress=round(0.02 + 0.33 * float(msg["progress"]), 3))
+    res = vo.transcribe(wjob, d / "work", timeout=6 * 3600, on_line=line)
+    wav.unlink(missing_ok=True)
+    shutil.rmtree(d / "work", ignore_errors=True)
+    if not res.get("ok"):
+        return {"ok": False, "error": str(res.get("error") or "The video could not be listened to.")[:300]}
+    text = re.sub(r"\s+", " ", " ".join(str(w.get("w") or "") for w in res.get("words") or [])).strip()
+    if len(text.split()) < 20:
+        return {"ok": False, "error": "Almost nothing is said in this video: there is no story to retell."}
+    kept.write_text(text, "utf-8")
+    return {"ok": True, "text": text}
+
+
 def new_write(mode: str, lang: str = "en", fmt: str = "vertical", secs: int = 75, topic: str = "", source: str = "",
-              country: str = "", title: str = "") -> str:
+              country: str = "", title: str = "", video: str = "") -> str:
     """A story to write (a job of the queue)."""
     from .. import voice as vo
     if not installed():
         raise WriterError("Install the story writer first.")
     if installing():
         raise WriterError("The story writer is being installed. Wait until it is ready.")
-    mode = mode if mode in ("topic", "text", "adapt") else "topic"
+    mode = mode if mode in ("topic", "text", "adapt", "video") else "topic"
+    if mode == "video":
+        p = Path(str(video or "").strip().strip('"'))
+        if not p.is_file():
+            raise WriterError("Choose a video (its full path) whose story to retell.")
+        if not vo.installed():
+            raise WriterError("Listening to a video needs the voice add-on (Auto Edit → Voice-over → Install).")
+        vo._check_video(p, need_sound=True)
+        video = str(p)
     topic, source = str(topic or "").strip()[:MAX_TOPIC], str(source or "").strip()[:MAX_SOURCE]
     if mode == "topic" and len(topic) < 3:
         raise WriterError("Write what the cartoon is about.")
@@ -617,11 +693,12 @@ def new_write(mode: str, lang: str = "en", fmt: str = "vertical", secs: int = 75
     if mode == "adapt" and not T.parse(source)["scenes"]:
         raise WriterError("The story to retell has no scenes.")
     lang = lang if lang in LANGS else "en"
-    name = title or (topic if mode == "topic" else source.split("\n", 1)[0])
+    name = title or (topic if mode == "topic" else Path(video).stem if mode == "video" else source.split("\n", 1)[0])
     name = re.sub(r"(?i)^(title|название)\s*:\s*", "", name).strip()[:60] or "Story"
     return vo._submit({"kind": "cartoon_write", "mode": mode, "lang": lang, "format": fmt if fmt in ("vertical", "horizontal") else "vertical",
                        "secs": max(45, min(120, int(secs or 75))), "topic": topic, "source": source,
                        "country": str(country or "").strip()[:60], "title": name, "seed": secrets.randbelow(10 ** 6),
+                       "video": video if mode == "video" else "",
                        "needs_addon": False}, addon=False)
 
 

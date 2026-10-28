@@ -44,11 +44,11 @@ SHORT = {
 
 
 def probe(ff: str, p: Path) -> dict:
-    out = subprocess.run([ff.replace("ffmpeg", "ffprobe") if Path(ff.replace("ffmpeg", "ffprobe")).exists() else "ffprobe",
-                          "-v", "error", "-show_streams", "-show_format", "-of", "json", str(p)], capture_output=True, text=True)
+    """The program's own probe (FFmpeg only: a Windows MediaEngine has no ffprobe)."""
+    from archivist import auto_edit as ae
     try:
-        return json.loads(out.stdout)
-    except ValueError:
+        return ae._probe(p) or {}
+    except Exception:
         return {}
 
 

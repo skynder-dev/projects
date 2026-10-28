@@ -909,6 +909,19 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   E2E two 92, Russian 226 pages 0 English): Clips - "Make the 5 likeliest" (no ticking; start and end as found when
   the page does not send them); the help under the button describes the new framing. Asked the owner whether to add
   "Download a video by a link" (yt-dlp; YouTube's terms forbid downloading) - not built without his "yes".
+- 2026-10-28, the build of 69c4180 (Cartoon Studio, "The one speaking, close up") failed in Windows CI run 40611547648
+  at the cartoon check only: the check read the film with ffprobe, which a Windows MediaEngine does not have -> the
+  program's own probe. Not published; the next build carries it with the story writer.
+- 2026-10-28, the story writer for Cartoon Studio (`cartoon/writer.py`): the owner chose "a free model on my PC" and
+  "for now I write the story as text". Probe mediaengine-writer-probe (run 40613715297, Linux CPU): Qwen3-4B-Instruct-2507
+  Q8_0 (ggml-org's GGUF, pinned e6f794d4, 4,280,403,520 bytes, SHA-256 ae916ede...) run by llama.cpp b11941 wrote all
+  five tasks in the program's format (10 scenes each, 199-242 words, 9-10 pictures; ~6 tokens/s, ~3.5 min each on 4
+  cores). English good; Russian and Romanian weaker (odd words, the retelling kept dollars and English names) -> the
+  reader accepts the model's variants (places as backgrounds, Romanian/Russian gestures, feelings and genders), the
+  request asks for local money by default, four new backgrounds (hospital, school, shop, block of flats), doctors in
+  white coats. A bigger model (Qwen3-14B Q4_K_M) is being probed for the owner's RTX 3060 (69 GB RAM: a 30B-A3B could
+  run too). Installed with a button: llama.cpp's Windows Vulkan and CPU builds (GitHub release, SHA-256) and the GGUF
+  (Hugging Face, pinned commit, SHA-256), about 4.4 GB, started for one story on 127.0.0.1 with a random port and key.
 - 2026-10-27, a probe (mediaengine-whisper-probe, Linux CPU int8, the 9-minute NASA interview): would a bigger free
   Whisper hear the captions' words better than the add-on's "small"? Against large-v3 (946 s to hear): small 2.5 %
   words otherwise (118 s), distil-large-v3 2.5 % (170 s), large-v3-turbo 1.7 % (215 s). Nearly all of small's

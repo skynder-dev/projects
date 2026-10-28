@@ -1155,6 +1155,14 @@ PHRASES = {
     "Read it, change what you like (the words, the people, the scenes), then make the cartoon. How the text is written: see the help below.":
         "Прочитай, поменяй что хочешь (слова, персонажей, сцены) и сделай мультфильм. Как устроен текст — в подсказке ниже.",
     "Not quite right?": "Не совсем то?", "Write another version": "Написать другой вариант",
+    "Or a video on this PC": "Или видео на этом компьютере", "A video whose story to retell (its full path)": "Видео, сюжет которого пересказать (полный путь)",
+    "The program listens to it (the voice add-on), notes its facts and numbers and writes a new story with its own characters - not a copy. Listening takes a few minutes for an hour of video.":
+        "Программа прослушает его (модуль озвучки), выпишет факты и цифры и напишет новый сюжет со своими персонажами — не копию. Прослушивание — несколько минут на час видео.",
+    "Retelling a video": "Пересказ видео", "Listening to the video…": "Слушаю видео…", "Noting the video's facts…": "Выписываю факты из видео…",
+    "Listening to a video needs the voice add-on (Auto Edit → Voice-over → Install).": "Чтобы прослушать видео, нужен модуль озвучки (Автомонтаж → Озвучка → Установить).",
+    "Choose a video (its full path) whose story to retell.": "Выбери видео (полный путь к нему), сюжет которого пересказать.",
+    "Almost nothing is said in this video: there is no story to retell.": "В этом видео почти ничего не говорят: пересказывать нечего.",
+    "The video could not be listened to.": "Видео не удалось прослушать.",
     "Install the story writer first.": "Сначала установи сценариста.",
     "The story writer is being installed. Wait until it is ready.": "Сценарист устанавливается. Подожди, пока он будет готов.",
     "Write what the cartoon is about.": "Напиши, о чём мультфильм.", "The text is too short to make a story of it.": "Текст слишком короткий, чтобы сделать из него сюжет.",
