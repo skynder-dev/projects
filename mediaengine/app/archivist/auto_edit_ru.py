@@ -1310,6 +1310,7 @@ PHRASES = {
     "waiting its turn": "ждёт очереди",
     "not made": "не сделан",
     "Read the story": "Прочитать сюжет",
+    "Write either one story's topic (or a text, or a video) or a series of topics - not both.": "Напиши либо тему одного сюжета (или текст, или видео), либо серию тем — не то и другое сразу.",
     "Or a video on this PC": "Или видео на этом компьютере", "A video whose story to retell (its full path)": "Видео, сюжет которого пересказать (полный путь)",
     "The program listens to it (the voice add-on), notes its facts and numbers and writes a new story with its own characters - not a copy. Listening takes a few minutes for an hour of video.":
         "Программа прослушает его (модуль озвучки), выпишет факты и цифры и напишет новый сюжет со своими персонажами — не копию. Прослушивание — несколько минут на час видео.",

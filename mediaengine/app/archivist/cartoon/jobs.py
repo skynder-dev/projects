@@ -19,7 +19,7 @@ MUSIC_MOODS = ("light", "suspense", "calm")
 
 
 def new_make(script: dict, voices: bool = True, captions: dict | None = None, title: str = "",
-             music: dict | None = None) -> str:
+             music: dict | None = None, next_up: bool = False) -> str:
     """A film to make (a job). voices: the characters speak (the voice add-on needed); otherwise a quick preview
     whose line lengths are estimated (silent, captions only)."""
     if not isinstance(script, dict):
@@ -42,7 +42,7 @@ def new_make(script: dict, voices: bool = True, captions: dict | None = None, ti
         mus = {"kind": "file", "path": vo._check_music(str(p))}       # (a file that really plays, checked now)
     return vo._submit({"kind": "cartoon_make", "script": script, "voices": bool(voices), "captions": cap, "music": mus,
                        "title": (title or film["title"])[:60], "format": film["format"], "needs_addon": bool(voices)},
-                      addon=bool(voices))
+                      addon=bool(voices), next_up=next_up)
 
 
 def do(jid: str, d: Path, job: dict) -> dict:

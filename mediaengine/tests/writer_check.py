@@ -289,6 +289,7 @@ def main() -> int:
         for f_ in made:
             vo.cancel_job(f_["id"])                        # (the films themselves are drawn in cartoon_check)
         spage2 = c.get(f"/auto/cartoon/{done[0]['id']}", headers=H).get_data(as_text=True) if done else ""
+        both = c.post("/auto/cartoon/write", data={"about": "One story", "topics": "\n".join(topics), "lang": "en"}, headers=H)
         lst2 = c.get("/auto/cartoon", headers=H).get_data(as_text=True)
         check("a series: a story for every topic line (a too short one left out), each with its cartoon made at once "
               "(captions, the program's music; no voices without the add-on); the story shows its cartoon",
@@ -296,7 +297,8 @@ def main() -> int:
               and all(f_.get("kind") == "cartoon_make" and not f_.get("voices") and (f_.get("captions") or {}).get("style") == "box"
                       and (f_.get("music") or {}).get("kind") == "made" and (f_.get("script") or {}).get("camera") == "close"
                       for f_ in made)
-              and "Its cartoon:" in spage2 and "Read the story" in lst2 and "A series: several topics at once" in lst2,
+              and "Its cartoon:" in spage2 and "Read the story" in lst2 and "A series: several topics at once" in lst2
+              and both.status_code == 400 and b"not both" in both.data,
               (rs_.status_code, len(series), [x.get("state") for x in done], [(f_.get("voices"), f_.get("captions"), f_.get("music")) for f_ in made]))
         empty = c.post("/auto/cartoon/write", data={"about": " ", "lang": "en"}, headers=H)
         check("an empty topic is refused clearly", empty.status_code == 400 and b"Write what the cartoon is about" in empty.data,
@@ -363,9 +365,13 @@ def main() -> int:
                         "-pix_fmt", "yuv420p", "-y", str(busy)], check=True, capture_output=True, timeout=180)
         soft_cuts = R._cuts(soft, 9.0, ff, lambda: False)
         busy_cuts = R._cuts(busy, 8.0, ff, lambda: False)
+        import time as _t
+        t_stop = _t.time()
+        stopped = R._cuts(busy, 8.0, ff, lambda: True)     # (Stop: the scan ends at once, whatever FFmpeg does)
+        t_stop = _t.time() - t_stop
         check("Reference Lab: a cross-fade and a hard cut are both found; a busy moving picture is not taken for cuts",
-              len(soft_cuts) == 2 and 2.9 <= soft_cuts[0] <= 3.6 and abs(soft_cuts[1] - 6.0) < 0.3 and busy_cuts == [],
-              (soft_cuts, busy_cuts))
+              len(soft_cuts) == 2 and 2.9 <= soft_cuts[0] <= 3.6 and abs(soft_cuts[1] - 6.0) < 0.3 and busy_cuts == []
+              and stopped == [] and t_stop < 10, (soft_cuts, busy_cuts, stopped, round(t_stop, 1)))
         spage = c.get(f"/auto/cartoon/{sid}", headers=H).get_data(as_text=True)
         fr = c.get(f"/auto/cartoon/{sid}/frame/{shots[0]['frame']}", headers=H) if shots else None
         bad = c.get(f"/auto/cartoon/{sid}/frame/..%2Fjob.json", headers=H)

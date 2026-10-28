@@ -862,7 +862,8 @@ def _write_job(d: Path, job: dict) -> None:
     os.replace(tmp, d / "job.json")
 
 
-def _submit(job: dict, addon: bool = True) -> str:
+def _submit(job: dict, addon: bool = True, next_up: bool = False) -> str:
+    """A job into the queue (last; next_up: right after the job being made - a cartoon after its own story)."""
     if addon:
         _need_addon()
         if installing():
@@ -875,7 +876,10 @@ def _submit(job: dict, addon: bool = True) -> str:
         _LAST_NS[0] = ns
         job = dict(job, id=jid, created_at=now_iso(), created_ns=ns)
         _write_job(d, job)
-        _QUEUE.append(jid)
+        if next_up and _QUEUE:
+            _QUEUE.insert(1, jid)
+        else:
+            _QUEUE.append(jid)
         if not _THREAD or not _THREAD[0].is_alive():
             _THREAD[:] = [threading.Thread(target=_loop, name="voice-jobs", daemon=True)]
             _THREAD[0].start()

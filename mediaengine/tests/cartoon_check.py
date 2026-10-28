@@ -184,9 +184,20 @@ def main() -> int:
     F.draw_frame(wide_c, dict(ex, camera="still"), night, (l1["s"] + l1["e"]) / 2, {})
     F.draw_frame(close_c, ex, night, (l1["s"] + l1["e"]) / 2, {})
     cut = float(np.abs(wide_c.img.astype(np.int16) - close_c.img.astype(np.int16)).mean())
+    from archivist.cartoon import bgs as _bgs
+    t1 = (l1["s"] + l1["e"]) / 2
+    cvv = Canvas(1080, 1920, 1080)
+    nm = F._shown(ex, night)
+    xs_, sc_, _b = F._layout(cvv, len(nm), False)
+    heads = {}
+    for where in ("middle", "bottom"):                     # (the face clear of the captions' band)
+        cx_, cy_, z_ = F._camera(cvv, dict(ex, caption_at=where), night, t1, nm, xs_, sc_)
+        heads[where] = (round(((_bgs.ground_y(cvv) - 530 * sc_ - cy_) * z_ + cvv.SH / 2) / cvv.SH, 3), round(z_, 2))
     check("camera: a cut to a close-up of the one speaking on a scene's second line (not its first, not while a picture "
-          "is to be read, never with the camera still)",
-          shots[0] is None and shots[1] == l1["who"] and shots[2] is None and shots[3] is None and cut > 8, (shots, cut))
+          "is to be read, never with the camera still); the face above captions in the middle",
+          shots[0] is None and shots[1] == l1["who"] and shots[2] is None and shots[3] is None and cut > 8
+          and 0.1 <= heads["middle"][0] <= 0.24 and 0.18 <= heads["bottom"][0] <= 0.32 and heads["middle"][1] >= 2.4,
+          (shots, cut, heads))
     a_, b_ = np.zeros((96, 54, 3), np.uint8), np.full((96, 54, 3), 200, np.uint8)
     tr = {k: F.transition(a_, b_, 0.15, same, i) for k, same, i in (("fade", True, 2), ("slide", False, 1), ("iris", False, 2))}
     check("transitions: a cross-fade in the same place; a slide or an opening circle to another place; then the new scene",

@@ -812,7 +812,8 @@ def _make_film(story: str, job: dict, title: str) -> dict:
     script["camera"] = m["camera"]
     try:
         fid = cj.new_make(script, m["voices"] and vo.installed(), {"style": m["captions"]} if m["captions"] else None,
-                          title=title, music={"kind": "made", "mood": m["mood"]} if m["music"] == "made" else None)
+                          title=title, music={"kind": "made", "mood": m["mood"]} if m["music"] == "made" else None,
+                          next_up=True)                    # (each cartoon right after its story, not after the series)
     except (F.FilmError, vo.VoiceError) as exc:
         return {"film_error": str(exc)}
     return {"film": fid}

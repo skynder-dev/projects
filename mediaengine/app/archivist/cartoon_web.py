@@ -35,7 +35,8 @@ CSS = """<style>
 .ct-chip{display:inline-flex;align-items:center;gap:6px;margin:3px 12px 3px 0;font-size:13px}
 .ct-chip i{display:inline-block;width:28px;height:20px;border-radius:5px;border:1px solid #0003}
 .ct-strip{display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid var(--line2);margin-top:6px}
-.ct-strip a{display:block;min-width:2px;border-right:2px solid var(--bg,#111)}
+.ct-strip a{display:block;min-width:0;border-right:2px solid var(--bg,#111)}
+.ct-strip.dense a{border-right:0}
 </style>"""
 _JOB_ID = r"[0-9]{8}-[0-9]{6}-[0-9a-f]{6}"
 _STEP = {"starting": "Starting…", "voices": "The characters are speaking…", "drawing": "Drawing the pictures…",
@@ -620,7 +621,8 @@ def register(app, page, err_page, e, human_bytes):
                         for i, s in enumerate(ref.get("shots") or []))
         body = (f"<div class='card'><h2 style='margin-top:0'>The rhythm</h2>"
                 f"<div class='muted' style='font-size:13px'>The shots one after another, as long as they last:</div>"
-                f"<div class='ct-strip'>{strip}</div><div class='ct-nums' style='margin-top:10px'>{nums}</div>"
+                f"<div class='ct-strip{' dense' if len(ref.get('shots') or []) > 120 else ''}'>{strip}</div>"
+                f"<div class='ct-nums' style='margin-top:10px'>{nums}</div>"
                 + (f"<div style='margin-top:10px'><b>The main colours</b><div>{chips}</div></div>" if chips else "")
                 + f"</div><div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Write a story with this rhythm</h2>{write}</div>"
                 f"<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Storyboard</h2>"
@@ -764,6 +766,8 @@ def register(app, page, err_page, e, human_bytes):
         make = ({"voices": True, "captions": f.get("style") or "pop", "music": "made", "mood": f.get("mood") or "light",
                  "camera": "close"} if f.get("make") == "1" else None)
         topics = [x.strip() for x in str(f.get("topics") or "").splitlines() if len(x.strip()) >= 3][:10]
+        if topics and mode != "adapt" and (about or str(f.get("video") or "").strip()):
+            return err_page("Write either one story's topic (or a text, or a video) or a series of topics - not both.", "/auto/cartoon")
         if topics and mode != "adapt":                     # a series: a story (and its cartoon) for every topic
             ref = str(f.get("ref") or "")
             style = R.style_of(ref) if re.fullmatch(_JOB_ID, ref) else None

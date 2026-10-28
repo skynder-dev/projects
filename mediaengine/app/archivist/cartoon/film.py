@@ -382,7 +382,7 @@ def _bubble_for(cv: Canvas, ln: dict, x: float, top_y: float, t: float):
         P.bubble(cv, bx, top_y - 130, ln["text"], w, (-1 if bx > x else 1, 1), a, 34)
 
 
-CLOSE = {"vertical": 1.8, "horizontal": 1.65}    # how near a close-up comes
+CLOSE = {"vertical": 2.6, "horizontal": 2.2}     # how near a close-up comes (the head and the chest)
 CLOSE_EMO = {"angry", "surprised", "sad"}           # (a strong feeling: a close-up on it)
 
 
@@ -414,9 +414,13 @@ def _camera(cv: Canvas, film: dict, scene: dict, t: float, names: list, xs: list
     who = close_up(film, scene, t)
     if not who or who not in names:
         return cv.SW / 2, cv.SH / 2, z
-    z = CLOSE["vertical" if cv.SH > cv.SW else "horizontal"] + 0.02 * min(1.0, st / 4.0)
-    head = bgs.ground_y(cv) - 520 * sc                    # (the head a third from the top; captions below it)
-    x, y = xs[names.index(who)], head + 0.15 * cv.SH / z
+    tall = cv.SH > cv.SW
+    z = CLOSE["vertical" if tall else "horizontal"] + 0.02 * min(1.0, st / 4.0)
+    where = film.get("caption_at") or ""                   # (the face kept clear of the captions' band)
+    f = ({"middle": 0.18, "bottom": 0.25, "top": 0.32} if tall else {"middle": 0.12, "bottom": 0.2, "top": 0.3}).get(
+        where, 0.25 if tall else 0.2)                      # where the top of the head comes, a share of the height
+    top = bgs.ground_y(cv) - 530 * sc
+    x, y = xs[names.index(who)], top - (f - 0.5) * cv.SH / z
     hw, hh = cv.SW / (2 * z), cv.SH / (2 * z)
     return min(max(x, hw), cv.SW - hw), min(max(y, hh), cv.SH - hh), z
 
@@ -617,6 +621,8 @@ def render(script: dict, out: Path, work: Path, voices: dict | None = None, capt
     from .. import textfx as tf, voice as vo
     film = check_script(script)
     W, H = FORMATS[film["format"]]
+    film["caption_at"] = (((captions or {}).get("position") or ("middle" if H > W else "bottom")) if captions is not None
+                          else "")                         # (close-ups keep the faces out of the captions)
     tl = timeline(film, voices)
     work.mkdir(parents=True, exist_ok=True)
     audio = mix(tl, sounds)

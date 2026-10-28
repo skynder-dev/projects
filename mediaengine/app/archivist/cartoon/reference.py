@@ -53,17 +53,40 @@ SCAN_FPS = 6                      # pictures a second compared
 SCAN_W, SCAN_H = 64, 64           # (small: the cut is in the whole picture, not its details)
 
 
-def _cuts(src: Path, duration: float, ff: str, stop, progress=None) -> list[float]:
+def _cuts(src: Path, duration: float, ff: str, stop, progress=None, colours: list | None = None) -> list[float]:
     """Where the shots change: a hard cut (the picture unlike the one before, much more than the movement around it)
     and a soft one - a cross-fade, a slide or an opening circle of up to half a second (unlike the picture half a
-    second before, the most around). OSError when the video cannot be read (or not quickly enough)."""
+    second before, the most around). colours: filled with every picture's average colour (b, g, r). OSError when the
+    video cannot be read (or not quickly enough); [] when stopped."""
+    import tempfile
+    import threading
     import time
+    from .. import auto_edit as ae, voice as vo
+    errf = tempfile.TemporaryFile()                        # (FFmpeg's complaints: a file, never a pipe that fills up)
     proc = subprocess.Popen([ff, "-hide_banner", "-nostdin", "-v", "error", "-i", str(src), "-an", "-sn", "-dn",
                              "-vf", f"fps={SCAN_FPS},scale={SCAN_W}:{SCAN_H}:flags=area", "-pix_fmt", "bgr24", "-f", "rawvideo", "-"],
-                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
-    size = SCAN_W * SCAN_H * 3
+                            stdout=subprocess.PIPE, stderr=errf, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+    ae._attach_job_object(proc)                            # (closed with the program; Stop reaches it)
+    queued = threading.current_thread().name == "voice-jobs"   # (the queue's own job: its Stop and Quit reach it)
+    vo._track(proc, queued)
     limit = time.monotonic() + 60 + duration * 0.5
+    why: list = []
+
+    def watch():                                           # (a read that waits for ever is ended too)
+        while proc.poll() is None:
+            if stop():
+                why.append("stop")
+            elif time.monotonic() > limit:
+                why.append("slow")
+            if why:
+                try:
+                    proc.kill()
+                except OSError:
+                    pass
+                return
+            time.sleep(0.5)
+    threading.Thread(target=watch, name="study-scan", daemon=True).start()
+    size = SCAN_W * SCAN_H * 3
     frames: list = []                                      # (the last few pictures only)
     d1, d3 = [], []
     try:
@@ -71,22 +94,27 @@ def _cuts(src: Path, duration: float, ff: str, stop, progress=None) -> list[floa
             buf = proc.stdout.read(size)
             if len(buf) < size:
                 break
-            if stop() or time.monotonic() > limit:
-                proc.kill()
-                if stop():
-                    return []
-                raise OSError("too slow")
             f = np.frombuffer(buf, np.uint8).astype(np.int16)
             frames = (frames + [f])[-4:]
             d1.append(float(np.abs(f - frames[-2]).mean()) / 255 if len(frames) >= 2 else 0.0)
             d3.append(float(np.abs(f - frames[0]).mean()) / 255 if len(frames) >= 4 else 0.0)
+            if colours is not None:
+                colours.append(tuple(float(x) for x in f.reshape(-1, 3).mean(axis=0)))
             if progress and len(d1) % 60 == 0:
                 progress(min(1.0, len(d1) / max(1.0, duration * SCAN_FPS)))
-        err = proc.stderr.read().decode("utf-8", "replace") if proc.stderr else ""
         proc.wait(timeout=30)
+        errf.seek(0)
+        err = errf.read()[-4000:].decode("utf-8", "replace")
     finally:
         if proc.poll() is None:
             proc.kill()
+            proc.wait(timeout=30)
+        vo._untrack(proc, queued)
+        errf.close()
+    if "stop" in why or stop():
+        return []
+    if "slow" in why:
+        raise OSError("too slow")
     if proc.returncode and not d1:
         raise OSError((err.strip().splitlines() or ["FFmpeg failed"])[-1][:200])
     n = len(d1)
@@ -99,7 +127,7 @@ def _cuts(src: Path, duration: float, ff: str, stop, progress=None) -> list[floa
         elif i >= 3 and d3[i] > max(0.12, 6 * calm) and d3[i] == max(d3[max(3, i - 3):i + 4]) \
                 and max(d1[i - 2:i + 1]) < d3[i] * 0.8:          # a soft one: no single jump, a big change over 0.5 s
             found.append((i - 1, d3[i]))
-    out: list[float] = []
+    out: list = []
     for i, strength in sorted(found):
         t = i / SCAN_FPS
         if not (0.3 < t < duration - 0.3):
@@ -133,19 +161,6 @@ def _frames(src: Path, shots: list[dict], out: Path, ff: str, stop) -> list[str]
         if (out / name).is_file() and (out / name).stat().st_size > 0:
             names[i] = name
     return names
-
-
-def _mean_colour(p: Path) -> str:
-    """A picture's average colour (#rrggbb; '' when it cannot be read) - for the strip of the shots on the page."""
-    import cv2
-    try:
-        img = cv2.imdecode(np.fromfile(str(p), np.uint8), cv2.IMREAD_COLOR)
-    except (OSError, ValueError):
-        return ""
-    if img is None:
-        return ""
-    b, g, r = (int(x) for x in img.reshape(-1, 3).mean(axis=0))
-    return f"#{r:02x}{g:02x}{b:02x}"
 
 
 def _palette(folder: Path, names: list[str], k: int = 6) -> list[dict]:
@@ -284,7 +299,9 @@ def do(jid: str, d: Path, job: dict) -> dict:
         return {"ok": False, "error": "This video is longer than half an hour: choose a cartoon or a short (or a part of a long video)."}
     ff = vo._ffmpeg()
     try:                                                   # (not "one long shot" when the scan itself did not work)
-        cuts = _cuts(src, duration, ff, stop, lambda x: vo._CURRENT.update(step="looking", progress=round(0.02 + 0.2 * x, 3)))
+        seen: list = []
+        cuts = _cuts(src, duration, ff, stop, lambda x: vo._CURRENT.update(step="looking", progress=round(0.02 + 0.2 * x, 3)),
+                     colours=seen)
     except (OSError, subprocess.SubprocessError):
         return {"ok": False, "error": "The video's shots could not be found (FFmpeg could not read it quickly enough). "
                                       "Try a shorter video, or convert it first (Media → Convert)."}
@@ -296,7 +313,10 @@ def do(jid: str, d: Path, job: dict) -> dict:
     names = _frames(src, shots, d / "frames", ff, stop)
     for s, n in zip(shots, names):
         s["frame"] = n
-        s["color"] = _mean_colour(d / "frames" / n) if n else ""
+        part = seen[int(s["s"] * SCAN_FPS):max(int(s["s"] * SCAN_FPS) + 1, int(s["e"] * SCAN_FPS))]
+        if part:                                           # (its average colour, every shot - for the strip)
+            b, g, r = (int(sum(c[k] for c in part) / len(part)) for k in range(3))
+            s["color"] = f"#{r:02x}{g:02x}{b:02x}"
     palette = _palette(d / "frames", names)
     heard = {}
     if job.get("listen") and not stop():
