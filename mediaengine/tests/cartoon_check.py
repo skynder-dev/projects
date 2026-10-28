@@ -153,8 +153,14 @@ def main() -> int:
     F.draw_frame(late, film, s3, s3["s"] + 1.2, {})
     lower = slice(int(H // 4 * 0.6), H // 4)
     moved = float(np.abs(early.img[lower].astype(np.int16) - late.img[lower].astype(np.int16)).mean())
-    check("animation: a character not in the scene before walks in (the first scene's people are just there)",
-          enter[0] == [] and enter[2] == ["ed"] and moved > 3, (enter[:4], moved))
+    s5 = tl2["scenes"][4]
+    l_up = next(x for x in s5["lines"] if x.get("pose") == "point_up")
+    grow = F._pose_mix(s5, l_up["who"], l_up["s"] + 0.1, 0)
+    held = F._pose_mix(s5, l_up["who"], l_up["s"] + 1.0, 0)
+    check("animation: a character not in the scene before walks in (the first scene's people are just there); a new "
+          "gesture grows out of the one before; a speaker's arms move a little",
+          enter[0] == [] and enter[2] == ["ed"] and moved > 3 and grow[1] == "point_up" and 0 < grow[2] < 1
+          and held[0] == "point_up", (enter[:4], moved, grow, held))
     from archivist.cartoon.voices import spoken
     sp = (spoken("The city pays $4.8M, the crew gets $300K - 30% of it.", "en"),
           spoken("Город платит 480 млн ₽, бригада получает 1,2 млн. Это $300 и 21 млн рублей.", "ru"))

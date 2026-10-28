@@ -183,6 +183,35 @@ def _line_at(scene: dict, t: float) -> int:
     return k
 
 
+SWAY = {"talk": "explain", "explain": "talk", "idle": "talk", "present": "explain", "point": "explain"}
+BLEND = 0.35                   # seconds a gesture takes to become the next one
+
+
+def _pose_at(scene: dict, key: str, t: float) -> str:
+    """The gesture a character holds at time t: its line's (said now or last), else the scene's, else talking / standing."""
+    j = _line_at(scene, t)
+    last = scene["lines"][j] if j >= 0 else None
+    ln, _ = _speaking(scene, t)
+    mine = last if last and last["who"] == key else None
+    return (mine or {}).get("pose") or scene["pose"].get(key) or ("talk" if ln and ln["who"] == key else "idle")
+
+
+def _pose_mix(scene: dict, key: str, t: float, k: int) -> tuple[str, str | None, float]:
+    """(pose, pose2, mix): a new gesture grows out of the one before (BLEND s); a speaker's arms move a little."""
+    pose = _pose_at(scene, key, t)
+    edges = [x for ln in scene["lines"] for x in (ln["s"] - 0.05, ln["e"] + 0.05) if x <= t]
+    if edges:
+        b = max(edges)
+        if t - b < BLEND:
+            before = _pose_at(scene, key, b - 0.011)
+            if before != pose:
+                return before, pose, (t - b) / BLEND
+    ln, _ = _speaking(scene, t)
+    if ln and ln["who"] == key and pose in SWAY:
+        return pose, SWAY[pose], 0.32 * (0.5 + 0.5 * math.sin(t * 3.3 + k * 1.7))
+    return pose, None, 0.0
+
+
 def _appear(scene: dict, at, t: float, dur: float = 0.6) -> float:
     """How far something that appears with line "at" (an index; None = at once) has come (0..1)."""
     if at is None:
@@ -352,15 +381,15 @@ def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
                 else:
                     look = 1 if x < cv.SW / 2 else -1
                 mine = last if last and last["who"] == key else None
-                pose = (mine or {}).get("pose") or scene["pose"].get(key) or ("talk" if speaker == key else "idle")
+                pose, pose2, mix = _pose_mix(scene, key, t, k)
                 emo = (mine or {}).get("emotion") or scene["mood"].get(key) or ("happy" if speaker == key else "neutral")
                 blink = 1.0 if (t * 0.9 + k * 0.37) % 3.7 < 0.12 else 0.0
                 walk = None
                 if key in (scene.get("enter") or []) and st < WALK_IN:     # walking in from the nearer side
                     side = -1 if x < cv.SW / 2 else 1
                     x += side * (1 - ease(st / WALK_IN)) * (cv.SW * 0.55)
-                    walk, look, pose, emo = st * 9.0, -side, "idle", emo
-                ch.draw(cv, c, x, gy, sc, look, pose, None, 0.0, emo, mouths.get(key, 0.0) if speaker == key else 0.0, blink,
+                    walk, look, pose, pose2, emo = st * 9.0, -side, "idle", None, emo
+                ch.draw(cv, c, x, gy, sc, look, pose, pose2, mix, emo, mouths.get(key, 0.0) if speaker == key else 0.0, blink,
                         t + k, walk, (0.6 * look, 0.0))
                 if speaker == key and ln.get("bubble"):
                     _bubble_for(cv, ln, x, gy - 600 * sc, t)
