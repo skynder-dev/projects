@@ -11,7 +11,7 @@ from pathlib import Path
 from flask import jsonify, redirect, request, send_file
 
 from . import voice as vo
-from .cartoon import bgs, chars as ch, film as F, jobs as cj, library as L, stories, textscript as T, writer as W
+from .cartoon import bgs, chars as ch, film as F, jobs as cj, library as L, reference as R, stories, textscript as T, writer as W
 
 CSS = """<style>
 .ct-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -28,11 +28,18 @@ CSS = """<style>
 .ct-who img{width:96px;height:120px;border-radius:8px;background:#eef3f8;flex:none}
 .ct-look{display:grid;grid-template-columns:140px minmax(0,1fr);gap:6px 10px;align-items:center}
 .ct-sw{display:inline-block;width:16px;height:16px;border-radius:4px;border:1px solid #0003;vertical-align:middle}
+.ct-board{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.ct-shot{border:1px solid var(--line2);border-radius:10px;padding:6px;font-size:13px}
+.ct-shot img{width:100%;max-height:260px;object-fit:contain;border-radius:6px;background:#000;display:block}
+.ct-nums{display:grid;grid-template-columns:minmax(120px,max-content) minmax(0,1fr);gap:4px 14px}
+.ct-chip{display:inline-flex;align-items:center;gap:6px;margin:3px 12px 3px 0;font-size:13px}
+.ct-chip i{display:inline-block;width:28px;height:20px;border-radius:5px;border:1px solid #0003}
 </style>"""
 _JOB_ID = r"[0-9]{8}-[0-9]{6}-[0-9a-f]{6}"
 _STEP = {"starting": "Starting…", "voices": "The characters are speaking…", "drawing": "Drawing the pictures…",
          "checking": "Checking the film…", "loading": "Starting the story writer…", "writing": "Writing the story…",
-         "listening": "Listening to the video…", "notes": "Noting the video's facts…"}
+         "listening": "Listening to the video…", "notes": "Noting the video's facts…",
+         "looking": "Finding where the shots change…", "pictures": "Taking a picture of each shot…"}
 _WR_STEP = {"checking": "Checking the PC…", "program": "Downloading llama.cpp (the program that runs the model)…",
             "model": "Downloading the language model…", "checking_model": "Checking the downloaded model…",
             "testing": "Starting the story writer for a test…"}
@@ -125,9 +132,26 @@ def register(app, page, err_page, e, human_bytes):
             body = _state_html(j) + ("" if j["state"] in ("working", "waiting") else f"<div style='margin-top:6px'>{_delete(j)}</div>")
         return _block(j, head + body)
 
+    def _study_row(j: dict) -> str:
+        res = j.get("result") or {}
+        when = e(str(j.get("created_at") or "")[:16].replace("T", " "))
+        head = (f"<div class='ct-row'><span>Study:</span> <a href='/auto/cartoon/{j['id']}'><b translate='no'>{e(j.get('title') or '')}</b></a>"
+                f"<span class='muted' style='font-size:13px' translate='no'>{when}</span></div>")
+        if j["state"] == "done":
+            body = (f"<div class='muted' style='font-size:13px;margin-top:4px'><span translate='no'>{round(float(res.get('seconds') or 0))}</span> "
+                    f"<span>s</span> · <span translate='no'>{int(res.get('shots') or 0)}</span> <span>shots</span> · "
+                    f"<span>a shot lasts</span> <span translate='no'>{float(res.get('shot_avg') or 0):g}</span> <span>s</span></div>"
+                    f"<div class='ct-row' style='margin-top:8px'><a class='btn' href='/auto/cartoon/{j['id']}'>See the storyboard</a>"
+                    + _delete(j) + "</div>")
+        else:
+            body = _state_html(j) + ("" if j["state"] in ("working", "waiting") else f"<div style='margin-top:6px'>{_delete(j)}</div>")
+        return _block(j, head + body)
+
     def _film_row(j: dict) -> str:
         if j.get("kind") == "cartoon_write":
             return _story_row(j)
+        if j.get("kind") == "cartoon_study":
+            return _study_row(j)
         res = j.get("result") or {}
         when = e(str(j.get("created_at") or "")[:16].replace("T", " "))
         head = (f"<div class='ct-row'><a href='/auto/cartoon/{j['id']}'><b translate='no'>{e(j.get('title') or '')}</b></a>"
@@ -153,7 +177,8 @@ def register(app, page, err_page, e, human_bytes):
     def _delete(j: dict) -> str:
         if j["state"] in ("working", "waiting"):
             return ""
-        q = ("Delete this story?" if j.get("kind") == "cartoon_write" else "Delete it? The film saved in the folder stays.")
+        q = ("Delete this story?" if j.get("kind") == "cartoon_write" else "Delete this study? The video stays." if
+             j.get("kind") == "cartoon_study" else "Delete it? The film saved in the folder stays.")
         return (f"<form method='post' action='/auto/cartoon/{j['id']}/delete' style='margin:0' onsubmit=\"return confirm(window.ME_L?"
                 f"ME_L('{q}'):'{q}')\">"
                 f"<button class='btn2'>Delete</button></form>")
@@ -242,6 +267,7 @@ def register(app, page, err_page, e, human_bytes):
                     f"<div class='ct-row' style='margin-top:8px'><span>Language</span><select name='lang'>{_lang_select()}</select>"
                     f"<span>Viewers in</span><input name='country' maxlength='60' placeholder='(a country, if it matters)' style='width:200px'>"
                     f"<span>Length</span><select name='secs'>{secs}</select></div>"
+                    f"{_rhythm_choice()}"
                     f"<div class='ct-choices' style='margin-top:8px'><b>Format</b><br>{_format_choice('vertical')}</div>"
                     f"<div style='margin-top:12px'><button class='ae-big'>Write the story</button></div></form>"
                     f"<div class='muted' style='font-size:13px;margin-top:8px'><span>The free model on this PC</span> "
@@ -263,6 +289,35 @@ def register(app, page, err_page, e, human_bytes):
                 f"<div class='ae-path' translate='no'>{e(str(W.ROOT))}</div>"
                 f"<div class='muted' style='font-size:13px;margin-top:6px'>MediaEngine goes online for it only when you press a "
                 f"button (github.com, huggingface.co). It runs on this PC; nothing is sent anywhere.</div>{_model_choice(s)}</div>")
+
+    def _rhythm_choice() -> str:
+        """The rhythm of a video studied (Reference Lab), for the story writer: none when nothing is studied."""
+        done = R.studies()[:20]
+        if not done:
+            return ""
+        opts = "".join(f"<option value='{j['id']}' translate='no'>{e(j.get('title') or '')} · "
+                       f"{round(float((j.get('result') or {}).get('seconds') or 0))} s</option>" for j in done)
+        return (f"<div class='ct-row' style='margin-top:8px'><span>Rhythm</span><select name='ref'>"
+                f"<option value=''>The usual</option>{opts}</select>"
+                f"<span class='muted' style='font-size:13px'>like a video you studied: its number of scenes, pace of words and opening</span></div>")
+
+    def _study_card() -> str:
+        have = vo.installed()
+        return (f"<div class='card' id='study' style='margin-top:14px'><h2 style='margin-top:0'>Study a cartoon you like</h2>"
+                f"<div class='muted' style='font-size:13px'>A video on this PC - a cartoon or a short whose rhythm you like. The "
+                f"program finds where its shots change and how long they last, takes a picture of each (a storyboard), its main "
+                f"colours and - with the voice add-on - what is said in each shot, how fast and how soon. Then the story writer "
+                f"can write a new story with the same rhythm. Nothing is copied and nothing is sent anywhere.</div>"
+                f"<form method='post' action='/auto/cartoon/study' style='margin-top:8px' "
+                f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
+                f"<div class='ct-row'><input name='video' placeholder='A video on this PC (its full path)' "
+                f"style='flex:1;min-width:260px'><button type='button' class='btn2' data-pick='video'>Choose…</button></div>"
+                f"<div class='muted' style='font-size:13px' data-msg></div>"
+                f"<label style='display:block;margin-top:6px'><input type='checkbox' name='listen' value='1' "
+                f"{'checked' if have else 'disabled'}> Listen to what is said (the voice add-on)</label>"
+                + ("" if have else "<div class='muted' style='font-size:13px'>Without the voice add-on: the shots, pictures and "
+                                   "colours only. <a href='/auto/voice'>Install the voice add-on</a></div>")
+                + "<div style='margin-top:10px'><button>Study it</button></div></form></div>")
 
     def _model_choice(s: dict, switch: bool = False) -> str:
         """A button per model (the one for this PC first); switch: only the model not installed."""
@@ -301,7 +356,7 @@ def register(app, page, err_page, e, human_bytes):
                 f"background or feeling and make it again.</div>"
                 + (f"<div style='margin-top:8px'><a class='btn btn2' href='/auto/cartoon/characters'><span>Characters</span> "
                    f"<span translate='no'>({len(L.load())})</span></a></div>" if L.load() else "")
-                + f"</div>{_READY}{_writer_card()}"
+                + f"</div>{_READY}{_writer_card()}{_study_card()}"
                 f"<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>New cartoon</h2>"
                 f"<form method='post' action='/auto/cartoon/new' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
                 f"<b>Story</b><div class='muted' style='font-size:13px'>The example below - change it or write your own.</div>{help_}"
@@ -362,6 +417,8 @@ def register(app, page, err_page, e, human_bytes):
             return err_page("No such job.", "/auto/cartoon")
         if j.get("kind") == "cartoon_write":
             return _story_page(j)
+        if j.get("kind") == "cartoon_study":
+            return _study_page(j)
         try:
             film = F.check_script(cj.script_of(jid))
         except F.FilmError as exc:
@@ -423,6 +480,8 @@ def register(app, page, err_page, e, human_bytes):
                 f"<h1><span>Story:</span> <span translate='no'>{e(j.get('title') or '')}</span></h1>"
                 f"<div class='muted' style='font-size:13px'><span>{e(asked)}</span> · <span translate='no'>"
                 f"{e(LANG_LABELS.get(j.get('lang'), ''))}</span>" + (f" · <span translate='no'>{e(j['country'])}</span>" if j.get("country") else "")
+                + (f" · <span>rhythm like</span> <a href='/auto/cartoon/{e((j.get('style') or {}).get('ref') or '')}' translate='no'>"
+                   f"{e((j.get('style') or {}).get('title') or '')}</a>" if isinstance(j.get("style"), dict) and j["style"].get("ref") else "")
                 + f"</div></div>{_READY}")
         if j["state"] != "done":
             body = (f"<div class='card'>{_block(j, _state_html(j) or '')}"
@@ -458,6 +517,78 @@ def register(app, page, err_page, e, human_bytes):
                 + f"<details style='margin-top:8px'><summary class='muted'>What was asked</summary><div class='muted' "
                 f"style='white-space:pre-wrap;font-size:13px' translate='no'>{e(what[:1500])}</div></details></div>")
         return page("Cartoon Studio", head + body, _POLL_JS + _MUSIC_JS)
+
+    def _clock(t) -> str:
+        t = max(0.0, float(t or 0))
+        return f"{int(t // 60)}:{t % 60:04.1f}"
+
+    def _study_page(j: dict):
+        jid, ref = j["id"], R.reference_of(j["id"])
+        head = (f"{CSS}<div class='pagehead'><div class='eyebrow'><a href='/auto/cartoon'>Cartoon Studio</a></div>"
+                f"<h1><span>Study:</span> <span translate='no'>{e(j.get('title') or '')}</span></h1>"
+                f"<div class='muted ae-path' style='font-size:13px' translate='no'>{e(j.get('video') or '')}</div></div>{_READY}")
+        if j["state"] != "done" or not ref:
+            body = f"<div class='card'>{_block(j, _state_html(j) or '')}<div style='margin-top:8px'>{_delete(j)}</div></div>"
+            return page("Cartoon Studio", head + body, _POLL_JS)
+
+        def row(label: str, value: str) -> str:
+            return f"<div class='muted'>{e(label)}</div><div>{value}</div>"
+
+        def num(x) -> str:
+            return f"<span translate='no'>{e(str(x))}</span>"
+        nums = (row("Length", num(f"{float(ref['duration']):g}") + " <span>s</span> · " + num(f"{ref['width']}×{ref['height']}")
+                    + " · <span>" + e("vertical" if ref.get("format") == "vertical" else "wide") + "</span>")
+                + row("Shots", num(len(ref.get("shots") or [])) + " · " + num(f"{float(ref['cuts_per_min']):g}") + " <span>cuts a minute</span>")
+                + row("A shot lasts", "<span>on average</span> " + num(f"{float(ref['shot_avg']):g}") + " <span>s</span> · "
+                      "<span>from</span> " + num(f"{float(ref['shot_min']):g}") + " <span>to</span> " + num(f"{float(ref['shot_max']):g}")
+                      + " <span>s</span>"))
+        if ref.get("listened"):
+            between = {"music": "music or sounds", "quiet": "silence"}.get(ref.get("between") or "", "")
+            nums += (row("Speech", num(f"{float(ref['wps']):g}") + " <span>words a second</span> · " + num(f"{round(100 * float(ref['talk_share']))}%")
+                         + " <span>of the time someone speaks</span>")
+                     + row("The first words", "<span>after</span> " + num(f"{float(ref['first_words_at'] or 0):g}") + " <span>s</span>"
+                           + (f" · <span translate='no'>«{e(ref.get('opening') or '')}»</span>" if ref.get("opening") else ""))
+                     + (row("Between the words", f"<span>{e(between)}</span>") if between else ""))
+        else:
+            why = ref.get("listen_error") or ("The words were not listened to (the voice add-on was not chosen)."
+                                              if not j.get("listen") else "")
+            nums += row("Speech", f"<span>{e(why or 'Nothing is said in it.')}</span>")
+        chips = "".join(f"<span class='ct-chip'><i style='background:{e(c['hex'])}'></i><span translate='no'>{e(c['hex'])} · "
+                        f"{round(100 * float(c['share']))}%</span></span>" for c in ref.get("palette") or [])
+        st = R.style_of(jid)
+        if W.installed():
+            lens = dict(LEN_LABELS)
+            near = str(st.get("secs") or 75)
+            opts = (f"<option value='{near}' selected translate='no'>{near} s</option>" if near not in lens else "") + "".join(
+                f"<option value='{k}' {'selected' if k == near else ''}>{e(v)}</option>" for k, v in LEN_LABELS)
+            write = (f"<form method='post' action='/auto/cartoon/write' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
+                     f"<input type='hidden' name='ref' value='{jid}'>"
+                     f"<b>What is the new story about?</b><textarea name='about' rows='3' maxlength='5000' style='width:100%' "
+                     f"placeholder='Why a city hospital pays three times more for the same medicine'></textarea>"
+                     f"<div class='ct-row' style='margin-top:8px'><span>Language</span><select name='lang'>{_lang_select()}</select>"
+                     f"<span>Viewers in</span><input name='country' maxlength='60' placeholder='(a country, if it matters)' style='width:200px'>"
+                     f"<span>Length</span><select name='secs'>{opts}</select></div>"
+                     f"<div class='ct-choices' style='margin-top:8px'><b>Format</b><br>{_format_choice(st.get('format') or 'vertical')}</div>"
+                     f"<div style='margin-top:10px'><button class='ae-big'>Write a story with this rhythm</button></div>"
+                     f"<div class='muted' style='font-size:13px;margin-top:6px'><span>The story is new: only the rhythm is taken -</span> "
+                     f"<span translate='no'>{int(st.get('scenes') or 0)}</span> <span>scenes, the pace of the words and how soon it speaks.</span></div></form>")
+        else:
+            write = ("<div class='muted'>To write a story with this rhythm, install the story writer: "
+                     "<a href='/auto/cartoon#writer'>Cartoon Studio</a>.</div>")
+        shots = ""
+        for i, s in enumerate(ref.get("shots") or []):
+            img = (f"<img loading='lazy' src='/auto/cartoon/{jid}/frame/{e(s['frame'])}' alt=''>" if s.get("frame") else "")
+            shots += (f"<div class='ct-shot'>{img}<div style='margin-top:4px'><b translate='no'>{i + 1}</b> · <span translate='no'>"
+                      f"{_clock(s['s'])}–{_clock(s['e'])} ({float(s['e']) - float(s['s']):.1f} s)</span></div>"
+                      + (f"<div class='muted' translate='no'>{e(s['text'])}</div>" if s.get("text") else "") + "</div>")
+        body = (f"<div class='card'><h2 style='margin-top:0'>The rhythm</h2><div class='ct-nums'>{nums}</div>"
+                + (f"<div style='margin-top:10px'><b>The main colours</b><div>{chips}</div></div>" if chips else "")
+                + f"</div><div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Write a story with this rhythm</h2>{write}</div>"
+                f"<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Storyboard</h2>"
+                f"<div class='muted' style='font-size:13px;margin-bottom:8px'>A picture from the middle of each shot"
+                + (", with what is said in it" if ref.get("listened") else "") + f".</div><div class='ct-board'>{shots}</div>"
+                f"<div class='ct-row' style='margin-top:12px'>{_delete(j)}</div></div>")
+        return page("Cartoon Studio", head + body, _POLL_JS + _PICK_JS)
 
     SKIN_L = dict(zip(ch.SKINS, ("very light", "light", "light tan", "tan", "brown", "dark brown", "very dark")))
     HAIR_L = dict(zip(ch.HAIRS, ("black", "dark brown", "brown", "light brown", "blond", "grey", "white", "red", "jet black")))
@@ -563,6 +694,24 @@ def register(app, page, err_page, e, human_bytes):
         L.forget(key)
         return redirect("/auto/cartoon/characters")
 
+    @app.post("/auto/cartoon/study")
+    def cartoon_study():
+        try:
+            jid = R.new_study(request.form.get("video") or "", request.form.get("listen") == "1")
+        except (R.StudyError, vo.VoiceError) as exc:
+            return err_page(str(exc), "/auto/cartoon")
+        return redirect(f"/auto/cartoon/{jid}")
+
+    @app.get("/auto/cartoon/<jid>/frame/<name>")
+    def cartoon_frame(jid, name):
+        j = _job(jid)
+        if not j or j.get("kind") != "cartoon_study" or not re.fullmatch(r"[0-9]{3}\.jpg", name):
+            return ("", 404)
+        p = vo._job_dir(jid) / "frames" / name
+        if not p.is_file():
+            return ("", 404)
+        return send_file(p, mimetype="image/jpeg", max_age=3600)
+
     @app.post("/auto/cartoon/write")
     def cartoon_write():
         f = request.form
@@ -580,9 +729,11 @@ def register(app, page, err_page, e, human_bytes):
                 jid = W.new_write("adapt", lang, f.get("format") or "vertical", secs, source=f.get("source") or "",
                                   country=f.get("country") or "", title=(f"{title} ({LANG_LABELS.get(lang, lang)})" if title else ""))
             else:
+                ref = str(f.get("ref") or "")
+                style = R.style_of(ref) if re.fullmatch(_JOB_ID, ref) else None
                 jid = W.new_write(mode, f.get("lang") or "en", f.get("format") or "vertical", secs,
                                   topic=about if mode == "topic" else "", source=about if mode == "text" else "",
-                                  country=f.get("country") or "", video=f.get("video") or "")
+                                  country=f.get("country") or "", video=f.get("video") or "", style=style or None)
         except (W.WriterError, vo.VoiceError) as exc:
             return err_page(str(exc), "/auto/cartoon")
         return redirect(f"/auto/cartoon/{jid}")
@@ -602,7 +753,7 @@ def register(app, page, err_page, e, human_bytes):
                     j["source"] = notes.read_text("utf-8")
             new = W.new_write(mode, j.get("lang") or "en", j.get("format") or "vertical", j.get("secs") or 75,
                               topic=j.get("topic") or "", source=j.get("source") or "", country=j.get("country") or "",
-                              title=j.get("title") or "", video=j.get("video") or "")
+                              title=j.get("title") or "", video=j.get("video") or "", style=j.get("style"))
         except (W.WriterError, vo.VoiceError) as exc:
             return err_page(str(exc), f"/auto/cartoon/{jid}")
         return redirect(f"/auto/cartoon/{new}")

@@ -283,16 +283,90 @@ def main() -> int:
         check("an empty topic is refused clearly", empty.status_code == 400 and b"Write what the cartoon is about" in empty.data,
               empty.status_code)
 
+        # Reference Lab: a video studied for its rhythm - its shots, a picture of each, its colours and (a stand-in Whisper
+        # here) what is said, how fast, how soon; then a new story written with that rhythm
+        import subprocess, wave
+        import numpy as np
+        ff = vo._ffmpeg()
+        liked = work / "liked.mp4"
+        cols = ("0x202860", "0xf0d040", "0xd03030", "0x90f0a0")     # (navy, yellow, red, light green: cut by their brightness)
+        cmd = [ff, "-hide_banner", "-v", "error"]
+        for col in cols:
+            cmd += ["-f", "lavfi", "-i", f"color=c={col}:s=360x640:d=3:r=25"]
+        cmd += ["-f", "lavfi", "-i", "sine=frequency=440:duration=12", "-filter_complex",
+                "[0:v][1:v][2:v][3:v]concat=n=4:v=1:a=0[v]", "-map", "[v]", "-map", "4:a", "-c:v", "libx264",
+                "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest", "-y", str(liked)]
+        subprocess.run(cmd, check=True, capture_output=True, timeout=180)
+        said2 = ("Why does a city pay three times more? Nobody asks. The tender lasts five days and only one firm applies. "
+                 "The price is double. The road breaks in a year. Who wrote the rules?").split()
+
+        def fake_listen(wjob, work_, timeout=0, on_line=None):
+            sr = 16000                                     # (the sound file Whisper makes: here a steady tone - music)
+            tone = (0.2 * np.sin(2 * np.pi * 440 * np.arange(12 * sr) / sr) * 32767).astype(np.int16)
+            with wave.open(str(wjob["wav16"]), "wb") as w_:
+                w_.setnchannels(1); w_.setsampwidth(2); w_.setframerate(sr); w_.writeframes(tone.tobytes())
+            if on_line:
+                on_line({"progress": 0.5})
+            out, t = [], 0.4
+            for w_ in said2:                               # (a word every quarter second, a pause after a sentence)
+                out.append({"w": w_, "s": round(t, 2), "e": round(t + 0.22, 2)})
+                t += 0.25 + (0.6 if w_[-1] in ".?" else 0)
+            return {"ok": True, "language": "en", "words": out}
+        real = (vo.installed, vo.transcribe)
+        vo.installed, vo.transcribe = (lambda: True), fake_listen
+        try:
+            rs = c.post("/auto/cartoon/study", data={"video": str(liked), "listen": "1"}, headers=H)
+            sid = (rs.headers.get("Location") or "").rstrip("/").split("/")[-1]
+            js = wait(vo, sid)
+        finally:
+            vo.installed, vo.transcribe = real
+        from archivist.cartoon import reference as R
+        ref = R.reference_of(sid)
+        shots = ref.get("shots") or []
+        reds = [x for x in ref.get("palette") or [] if int(x["hex"][1:3], 16) > 170 and int(x["hex"][3:5], 16) < 90]
+        check("Reference Lab: a video studied - its four shots found, a picture of each, its colours; what is said in each "
+              "shot, how fast, how soon, the opening question, music under the words",
+              js.get("state") == "done" and len(shots) == 4 and all(x.get("frame") for x in shots) and bool(reds)
+              and shots[0]["text"].startswith("Why does a city") and 2.0 < ref.get("wps", 0) < 3.0
+              and ref.get("first_words_at") == 0.4 and ref.get("opening", "").endswith("more?") and ref.get("between") == "music"
+              and ref.get("format") == "vertical" and 2.5 < ref.get("shot_avg", 0) < 3.5,
+              ((js.get("result") or {}).get("error"), len(shots), ref.get("palette"), ref.get("wps"), ref.get("between"),
+               ref.get("opening"), ref.get("shot_avg")))
+        spage = c.get(f"/auto/cartoon/{sid}", headers=H).get_data(as_text=True)
+        fr = c.get(f"/auto/cartoon/{sid}/frame/{shots[0]['frame']}", headers=H) if shots else None
+        bad = c.get(f"/auto/cartoon/{sid}/frame/..%2Fjob.json", headers=H)
+        check("the study's page: the rhythm, the colours, a storyboard with the pictures and the words; a form to write "
+              "with this rhythm", "Storyboard" in spage and "The rhythm" in spage and "Write a story with this rhythm" in spage
+              and f"/auto/cartoon/{sid}/frame/000.jpg" in spage and "Why does a city" in spage and fr is not None
+              and fr.status_code == 200 and fr.mimetype == "image/jpeg" and bad.status_code == 404, (fr and fr.status_code, bad.status_code))
+        before = set(p.name for p in (work / "asked").glob("request_*.json"))
+        rr = c.post("/auto/cartoon/write", data={"about": "School meals that cost twice as much", "lang": "en", "secs": "45",
+                                                 "ref": sid}, headers=H)
+        jr = wait(vo, (rr.headers.get("Location") or "").rstrip("/").split("/")[-1])
+        asks = [json.loads(p.read_text("utf-8")) for p in sorted((work / "asked").glob("request_*.json")) if p.name not in before]
+        ask_r = asks[0]["messages"][-1]["content"] if asks else ""
+        rpage = c.get(f"/auto/cartoon/{jr['id']}", headers=H).get_data(as_text=True)
+        check("a story written with the studied rhythm: as many scenes for its quick cuts, an opening question; the story "
+              "page says whose rhythm", jr.get("state") == "done" and (jr.get("style") or {}).get("ref") == sid
+              and "13 to 14 scenes, 1 or 2 lines" in ask_r and "with a question" in ask_r and "8 to 10 scenes" not in ask_r
+              and "rhythm like" in rpage and "School meals" in ask_r, (jr.get("state"), jr.get("style"), ask_r[:300]))
+        home3 = c.get("/auto/cartoon", headers=H).get_data(as_text=True)
+        check("the home page: a video to study, the studies listed, the rhythm to choose for a story",
+              "Study a cartoon you like" in home3 and "Study:" in home3 and "See the storyboard" in home3
+              and f"<option value='{sid}'" in home3, "")
+
         c.post("/lang", data={"lang": "ru"}, headers=H)
         ru = (c.get("/auto/cartoon", headers=H).get_data(as_text=True) + c.get(f"/auto/cartoon/{jid}", headers=H).get_data(as_text=True)
-              + c.get(f"/auto/cartoon/{jid5}", headers=H).get_data(as_text=True))
+              + c.get(f"/auto/cartoon/{jid5}", headers=H).get_data(as_text=True)
+              + c.get(f"/auto/cartoon/{sid}", headers=H).get_data(as_text=True)
+              + c.get(f"/auto/cartoon/{jr['id']}", headers=H).get_data(as_text=True))
         body = re.sub(r"<(script|style|textarea)[^>]*>.*?</\1>", " ", ru, flags=re.S)
         body = re.sub(r"<[^>]*translate=['\"]no['\"][^>]*>.*?</[a-z0-9]+>", " ", body, flags=re.S)
         txt = re.sub(r"<[^>]+>", "\n", body)
         left = sorted({x.strip() for x in txt.split("\n") if re.search(r"[A-Za-z]{3,}", x) and not re.search(r"[А-Яа-я]", x)
                        and x.strip() not in ("MediaEngine", "Social Lab", "JSON", "YouTube") and "querySelectorAll" not in x})
         ph = re.findall(r"placeholder='([^']*)'", ru)
-        check("pages: in Russian, no English left (the story writer, a story, a stopped story)",
+        check("pages: in Russian, no English left (the story writer, a story, a stopped story, a study)",
               "Написать сюжет" in ru and not left and not [p for p in ph if re.search(r"[A-Za-z]{4,}", p)], (left[:12], ph))
         c.post("/lang", data={"lang": "en"}, headers=H)
 

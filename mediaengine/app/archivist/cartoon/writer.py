@@ -611,7 +611,15 @@ def prompt(job: dict) -> str:
     lang, fmt = job.get("lang") or "en", job.get("format") or "vertical"
     secs = int(job.get("secs") or 75)
     words = int(secs * 1.9)                                # (the model writes about a third more than asked)
+    style = job.get("style") if isinstance(job.get("style"), dict) else None
+    extra = ""
+    if style and job.get("mode") != "adapt":               # the rhythm of a cartoon studied (reference.py)
+        from . import reference as R
+        extra, w = R.rules_of(style, secs)
+        words = w or words
     rules = RULES.format(words=f"{words - 25} to {words + 25}", secs=secs)
+    if extra:
+        rules = re.sub(r"(?m)^- 8 to 10 scenes.*$", lambda m: extra, rules)
     try:                                                   # the same host as the earlier films in this language
         from . import library
         h = library.host(lang)
@@ -808,7 +816,7 @@ def _listen(d: Path, job: dict) -> dict:
 
 
 def new_write(mode: str, lang: str = "en", fmt: str = "vertical", secs: int = 75, topic: str = "", source: str = "",
-              country: str = "", title: str = "", video: str = "") -> str:
+              country: str = "", title: str = "", video: str = "", style: dict | None = None) -> str:
     """A story to write (a job of the queue)."""
     from .. import voice as vo
     if not installed():
@@ -838,6 +846,7 @@ def new_write(mode: str, lang: str = "en", fmt: str = "vertical", secs: int = 75
                        "secs": max(45, min(120, int(secs or 75))), "topic": topic, "source": source,
                        "country": str(country or "").strip()[:60], "title": name, "seed": secrets.randbelow(10 ** 6),
                        "video": video if mode == "video" else "",
+                       **({"style": style} if isinstance(style, dict) and style and mode != "adapt" else {}),
                        "needs_addon": False}, addon=False)
 
 

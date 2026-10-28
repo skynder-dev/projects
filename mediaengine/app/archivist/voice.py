@@ -1986,7 +1986,7 @@ def resume_after_restart() -> None:
     have = installed()
     for j in reversed(list_jobs(500)):                          # oldest first: a voice before the video using it
         if j["state"] == "interrupted" and not j.get("resumed") and (
-                have or (j.get("kind") in ("render", "clips_make", "cartoon_make", "cartoon_write") and not j.get("needs_addon"))):
+                have or (j.get("kind") in ("render", "clips_make", "cartoon_make", "cartoon_write", "cartoon_study") and not j.get("needs_addon"))):
             try:
                 d = JOBS / j["id"]
                 job = json.loads((d / "job.json").read_text("utf-8"))
@@ -2011,7 +2011,7 @@ def retry_job(jid: str) -> None:
     j = read_job(jid)
     if j["state"] in ("working", "waiting", "done"):     # (done: a page left open long ago - nothing to make again)
         return
-    if j.get("kind") not in ("render", "clips_make", "cartoon_make", "cartoon_write") or j.get("needs_addon"):
+    if j.get("kind") not in ("render", "clips_make", "cartoon_make", "cartoon_write", "cartoon_study") or j.get("needs_addon"):
         _need_addon()
         if installing():                  # (an installed add-on getting the new engine is busy all the same)
             raise VoiceError("The voice add-on is being installed. Wait until it is ready.")

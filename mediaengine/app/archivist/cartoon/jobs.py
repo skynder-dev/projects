@@ -48,6 +48,9 @@ def new_make(script: dict, voices: bool = True, captions: dict | None = None, ti
 def do(jid: str, d: Path, job: dict) -> dict:
     """voice._do for the cartoon jobs (in the queue's thread)."""
     from .. import auto_edit as ae, orders as od
+    if job.get("kind") == "cartoon_study":                # a video studied for its rhythm (reference.py)
+        from . import reference as R
+        return R.do(jid, d, job)
     if job.get("kind") == "cartoon_write":                # a story written by the free model on this PC (writer.py)
         from . import writer as W
         try:

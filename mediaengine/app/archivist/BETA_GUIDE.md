@@ -109,6 +109,12 @@ what you like and press "Make the cartoon". "Write another version" asks again; 
 a story (also a finished cartoon's) with the country's own names, money and offices. Nothing the model writes is a
 fact check: read it before you publish.
 
+**Study a cartoon you like** (Reference Lab): choose a video on this PC - the program finds where its shots change and
+how long they last, takes a picture of each (a storyboard), notes its main colours and, with the voice add-on, what is
+said in each shot, how fast and how soon the first words come. "Write a story with this rhythm" (or "Rhythm" when you
+write a story) asks the model for a new story with as many scenes, the same pace of words and as quick an opening -
+only the rhythm is taken, nothing is copied.
+
 **Characters** (the button at the top of Cartoon Studio): everyone your cartoons have used, with a picture. A
 character keeps its look and voice in every new film whose story names it; change the skin, hair, hairstyle, beard,
 clothes and their colour, glasses, a hard hat, the role and the voice's description (a new description makes a new
