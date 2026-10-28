@@ -1,0 +1,53 @@
+name: mediaengine-writer-addon
+# Cartoon Studio's story writer for real on Windows, through the program's own pages: the Install button (llama.cpp's
+# release build from GitHub, Qwen3-4B-Instruct-2507 as a Q8_0 GGUF from Hugging Face - pinned, SHA-256 checked, about
+# 4.4 GB), then stories written by the model on the runner's processor (a topic in English, a topic in Romanian, the
+# example retold for Russia), read back by the program, the English one made into a cartoon. Nothing paid.
+# Results: branch mediaengine-writer-addon (writer_addon.json, the stories, the film, a picture per scene, the logs).
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'mediaengine/app/archivist/cartoon/writer.py'
+      - 'mediaengine/tests/writer_addon_check.py'
+      - '.github/workflows/mediaengine-writer-addon.yml'
+permissions:
+  contents: write
+concurrency:
+  group: mediaengine-writer-addon-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  writer:
+    runs-on: windows-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: The program's own packages
+        shell: pwsh
+        run: |
+          python -m pip install --disable-pip-version-check -q -r mediaengine/requirements.txt
+          New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\out" | Out-Null
+      - name: Install the story writer with the button, write three stories, make one into a cartoon
+        shell: pwsh
+        run: |
+          python mediaengine/tests/writer_addon_check.py --home "$env:RUNNER_TEMP\home-writer" --out "$env:RUNNER_TEMP\out" 2>&1 | Tee-Object "$env:RUNNER_TEMP\out\writer_addon.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Publish to branch mediaengine-writer-addon
+        if: always()
+        shell: bash
+        env:
+          RUN_ID: ${{ github.run_id }}
+          SRC_SHA: ${{ github.sha }}
+        run: |
+          pub="$RUNNER_TEMP/pub"; rm -rf "$pub"; mkdir -p "$pub"
+          cp "$RUNNER_TEMP"/out/* "$pub/" 2>/dev/null || true
+          printf 'run=%s\nsha=%s\nstatus=%s\n' "$RUN_ID" "$SRC_SHA" "${{ job.status }}" > "$pub/RUN.txt"
+          cd "$pub"; git init -q; git checkout -q -b mediaengine-writer-addon
+          git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
+          git add -A; git commit -q -m "writer add-on $RUN_ID ($SRC_SHA)"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" mediaengine-writer-addon

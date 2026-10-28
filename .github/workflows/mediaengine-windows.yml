@@ -26,6 +26,8 @@ on:
       - '!mediaengine/tests/clips_probe.py'          # mediaengine-clips-probe.yml
       - '!mediaengine/tests/clips_judge_probe.py'    # mediaengine-clips-judge.yml
       - '!mediaengine/tests/whisper_probe.py'        # mediaengine-whisper-probe.yml
+      - '!mediaengine/tests/writer_addon_check.py'   # mediaengine-writer-addon.yml
+      - '!mediaengine/tests/writer_probe.py'         # mediaengine-writer-probe.yml
       - '.github/workflows/mediaengine-windows.yml'
   workflow_dispatch:
 permissions:
@@ -134,6 +136,11 @@ jobs:
           python mediaengine/tests/cartoon_check.py "$env:RUNNER_TEMP\cartoon" 2>&1 | Tee-Object "$env:OUT\cartoon_check.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
           Copy-Item "$env:RUNNER_TEMP\cartoon\short_v.mp4" "$env:OUT\cartoon_short.mp4" -ErrorAction SilentlyContinue
+      - name: Cartoon Studio's story writer (installed, stories from a topic, a text, another country; Stop; a stand-in server)
+        shell: pwsh
+        run: |
+          python mediaengine/tests/writer_check.py "$env:RUNNER_TEMP\writer" 2>&1 | Tee-Object "$env:OUT\writer_check.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Full-video Convert (1440p60, rotated phone clip, VFR)
         shell: pwsh
         run: |

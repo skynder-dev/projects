@@ -29,7 +29,22 @@ BG_WORDS = {
     "road": "road", "дорога": "road", "bank": "bank", "банк": "bank",
     "night": "night", "night street": "night", "ночь": "night", "ночная улица": "night",
     "board": "board", "доска": "board", "схема": "board", "paper": "paper", "бумага": "paper", "тетрадь": "paper",
+    # places a story names that the program draws as the nearest background
+    "hospital": "office", "clinic": "office", "school": "office", "shop": "office", "store": "office", "pharmacy": "office",
+    "home": "office", "flat": "office", "apartment": "office", "kitchen": "office", "classroom": "office", "factory": "office",
+    "больница": "office", "поликлиника": "office", "школа": "office", "магазин": "office", "аптека": "office",
+    "квартира": "office", "дом": "office", "подъезд": "office", "кухня": "office", "завод": "office",
+    "spital": "office", "școală": "office", "școala": "office", "magazin": "office", "farmacie": "office", "birou": "office",
+    "court": "city_hall", "ministry": "city_hall", "parliament": "city_hall", "council": "city_hall", "суд": "city_hall",
+    "министерство": "city_hall", "primărie": "city_hall", "primăria": "city_hall", "primarie": "city_hall",
+    "square": "city", "market": "city", "park": "city", "yard": "city", "площадь": "city", "рынок": "city", "двор": "city",
+    "stradă": "city", "strada": "city", "oraș": "city", "drum": "road", "bancă": "bank", "noapte": "night", "tablă": "board",
+    "street at night": "night", "chart": "board", "charts": "board", "scheme": "board", "end": "board", "finale": "board",
+    "lesson": "board", "конец": "board", "итог": "board", "финал": "board",
 }
+VISUAL_KINDS = ("title", "flow", "contract", "tender", "bars", "chart", "list", "counter", "compare", "bag", "magnifier", "road",
+                "заголовок", "схема", "договор", "контракт", "тендер", "график", "диаграмма", "список", "счётчик", "счетчик",
+                "сумма", "сравнение", "мешок", "лупа", "проверка", "дорога")
 POSE_WORDS = {
     "talk": "talk", "говорит": "talk", "explain": "explain", "объясняет": "explain", "point": "point", "показывает": "point",
     "point up": "point_up", "point_up": "point_up", "палец вверх": "point_up", "shrug": "shrug", "пожимает плечами": "shrug",
@@ -37,16 +52,41 @@ POSE_WORDS = {
     "wave": "wave", "машет": "wave", "hands up": "hands_up", "руки вверх": "hands_up", "count": "count",
     "rubs hands": "count", "потирает руки": "count", "present": "present", "представляет": "present",
     "facepalm": "facepalm", "рука у лица": "facepalm", "fist": "fist", "кулак": "fist", "sneaky": "sneaky", "крадётся": "sneaky",
-    "idle": "idle", "стоит": "idle",
+    "idle": "idle", "стоит": "idle", "считает": "count", "выступает": "present", "указывает": "point",
+    "разводит руками": "shrug", "шепчет": "sneaky", "размышляет": "think", "приветствует": "wave",
+    "talking": "talk", "explaining": "explain", "pointing": "point", "points": "point", "pointing up": "point_up",
+    "shrugging": "shrug", "shrugs": "shrug", "crossed arms": "cross", "arms folded": "cross", "thinking": "think",
+    "thinks": "think", "waving": "wave", "waves": "wave", "rubbing hands": "count", "rubs his hands": "count",
+    "counting": "count", "counts money": "count", "presenting": "present", "presents": "present", "hand to face": "facepalm",
+    "sneaking": "sneaky", "whispers": "sneaky", "whispering": "sneaky", "standing": "idle", "shows": "point",
+    "raises hands": "hands_up", "hands raised": "hands_up",
+    # Romanian (a model told to keep the English words sometimes translates them all the same)
+    "vorbește": "talk", "explică": "explain", "arată": "point", "își arată": "point", "se arată": "point",
+    "arată în sus": "point_up", "își arată sus": "point_up", "ridică din umeri": "shrug", "se întinde": "shrug",
+    "brațe încrucișate": "cross", "gândește": "think", "se gândește": "think", "salută": "wave", "face cu mâna": "wave",
+    "mâinile sus": "hands_up", "numără": "count", "își freacă mâinile": "count", "prezintă": "present",
+    "face palme": "facepalm", "mâna la față": "facepalm", "pumn": "fist", "se strecoară": "sneaky", "stă": "idle",
 }
 EMO_WORDS = {
     "neutral": "neutral", "calm": "neutral", "спокойно": "neutral", "happy": "happy", "радостно": "happy", "весело": "happy",
     "angry": "angry", "сердито": "angry", "зло": "angry", "sad": "sad", "грустно": "sad", "surprised": "surprised",
     "удивлённо": "surprised", "удивленно": "surprised", "sly": "sly", "хитро": "sly", "worried": "worried",
     "тревожно": "worried", "испуганно": "worried",
+    "smile": "happy", "smiling": "happy", "smiles": "happy", "excited": "happy", "proud": "happy", "cheerful": "happy",
+    "clear": "neutral", "serious": "neutral", "confident": "neutral", "upset": "sad", "disappointed": "sad",
+    "furious": "angry", "annoyed": "angry", "shocked": "surprised", "amazed": "surprised", "nervous": "worried",
+    "scared": "worried", "afraid": "worried", "anxious": "worried", "cunning": "sly", "smug": "sly", "greedy": "sly",
+    "улыбается": "happy", "серьёзно": "neutral", "серьезно": "neutral", "возмущённо": "angry", "возмущенно": "angry",
+    "шокирован": "surprised", "нервно": "worried", "хитрый": "sly", "счастливо": "happy", "счастлив": "happy",
+    "с улыбкой": "happy", "улыбка": "happy", "смех": "happy", "смеётся": "happy", "злобно": "angry", "злой": "angry",
+    "грустный": "sad", "печально": "sad", "испуган": "worried", "уверенно": "neutral", "строго": "neutral",
+    "calm": "neutral", "calmă": "neutral", "fericit": "happy", "fericită": "happy", "vesel": "happy", "veselă": "happy",
+    "furios": "angry", "furioasă": "angry", "supărat": "angry", "supărată": "angry", "trist": "sad", "tristă": "sad",
+    "surprins": "surprised", "surprinsă": "surprised", "viclean": "sly", "vicleană": "sly", "subtil": "sly",
+    "îngrijorat": "worried", "îngrijorată": "worried", "speriat": "worried", "speriată": "worried",
 }
-FEMALE = {"woman", "female", "she", "girl", "женщина", "девушка", "она"}
-MALE = {"man", "male", "he", "boy", "мужчина", "парень", "он"}
+FEMALE = {"woman", "female", "she", "girl", "женщина", "девушка", "она", "femeie", "fată", "fata", "ea"}
+MALE = {"man", "male", "he", "boy", "мужчина", "парень", "он", "bărbat", "barbat", "băiat", "baiat", "el"}
 NUM = re.compile(r"[-+]?\d[\d\s]*(?:[.,]\d+)?")
 MONEY_TAIL = re.compile(r"\s+((?:[$€₽£]\s?)?\d[\d.,\s]*(?:\s?(?:млн|млрд|тыс|million|billion|mln|bn|[MKB]|lei|лей|руб|₽|€|\$)\.?)?"
                         r"|kickback|bribe|откат|взятка|mită|comision)\s*$", re.I)
@@ -59,6 +99,20 @@ def _key(name: str, taken: dict) -> str:
     while k in taken:
         k, n = f"{base}{n}", n + 1
     return k
+
+
+def _attr(a: str) -> tuple[str, str]:
+    """(pose, emotion) a word in brackets means: the exact word, else its words one by one ("показывает рукой")."""
+    if a in POSE_WORDS:
+        return POSE_WORDS[a], ""
+    if a in EMO_WORDS:
+        return "", EMO_WORDS[a]
+    for w in re.findall(r"[^\W\d_]+", a):
+        if w in POSE_WORDS:
+            return POSE_WORDS[w], ""
+        if w in EMO_WORDS:
+            return "", EMO_WORDS[w]
+    return "", ""
 
 
 def _number(s: str) -> float | None:
@@ -76,7 +130,7 @@ def _visual(spec: str, n_lines: int) -> dict | None:
     if not spec:
         return None
     kind, _, rest = spec.partition(":")
-    kind, rest = kind.strip().lower(), rest.strip()
+    kind, rest = kind.strip().lower(), re.sub(r'["“”«»]', "", rest).strip()
     at = lambda k: min(k, max(0, n_lines - 1)) if n_lines else None       # noqa: E731
     if kind in ("title", "заголовок"):
         t, _, sub = rest.partition("/")
@@ -189,10 +243,17 @@ def parse(text: str) -> dict:
         roles = []
         for a in attrs:
             al = a.strip().lower()
-            if al in FEMALE:
-                spec["female"] = True
-            elif al in MALE:
+            words = set(re.findall(r"[^\W\d_]+", al))
+            if al in FEMALE or (words & FEMALE and not words & MALE and len(words) <= 3):
+                spec["female"] = True                      # ("женщина-ведущая": a woman too)
+                rest = " ".join(w for w in re.findall(r"[^\W\d_]+", al) if w not in FEMALE)
+                if rest and al not in FEMALE:
+                    roles.append(rest)
+            elif al in MALE or (words & MALE and not words & FEMALE and len(words) <= 3):
                 spec["female"] = False
+                rest = " ".join(w for w in re.findall(r"[^\W\d_]+", al) if w not in MALE)
+                if rest and al not in MALE:
+                    roles.append(rest)
             elif al:
                 roles.append(al)
         if roles:
@@ -212,25 +273,33 @@ def parse(text: str) -> dict:
         s = raw.strip()
         if not s or s.startswith("//"):
             continue
-        m = re.match(r"(?i)^(title|название|format|формат|language|язык)\s*:\s*(.+)$", s)
+        m = re.match(r"(?i)^(title|название|titlu|format|формат|language|язык|limba|limbă)\s*:\s*(.+)$", s)
         if m and scene is None:
             key, val = m.group(1).lower(), m.group(2).strip()
-            if key in ("title", "название"):
+            if key in ("title", "название", "titlu"):
                 sc["title"] = val[:120]
-            elif key in ("format", "формат"):
+            elif key in ("format", "формат"):              # (Romanian "Format" too)
                 sc["format"] = "horizontal" if any(w in val.lower() for w in ("wide", "horizontal", "16", "широк", "гориз")) else "vertical"
             else:
                 sc["language"] = val[:2].lower()
             continue
-        m = re.match(r"(?i)^(narrator|рассказчик)\s*:\s*([^(]+)(?:\((.*)\))?$", s)
+        m = re.match(r"(?i)^(narrator|рассказчик|naratoare|narator)\s*:\s*([^(]+)(?:\((.*)\))?$", s)
         if m and scene is None:
             add(m.group(2), (m.group(3) or "").split(","), narrator=True)
             continue
         if s.startswith("=="):
             head = s.strip("= ").strip()
             bg_part, _, vis = head.partition("|")
-            scene = {"bg": BG_WORDS.get(bg_part.strip().lower(), bg_part.strip().lower() if bg_part.strip().lower() in bgs.BACKGROUNDS
-                                        else "city"), "cast": [], "lines": [], "_vis": vis.strip()}
+            bg_low = re.sub(r"\s+", " ", bg_part.strip().lower())
+            if not vis and re.match(r"^(" + "|".join(VISUAL_KINDS) + r")\s*:", bg_low):
+                bg_low, vis = "board", bg_part                # "== Flow: A -> B" (the picture without a background)
+            bg = BG_WORDS.get(bg_low) or (bg_low if bg_low in bgs.BACKGROUNDS else "")
+            if not bg:                                         # "Hospital corridor", "Office of the mayor" ...
+                bg = next((v for k, v in BG_WORDS.items() if len(k) > 3 and re.search(r"\b" + re.escape(k) + r"\b", bg_low)), "")
+            if not bg:
+                kind = vis.partition(":")[0].strip().lower()
+                bg = "board" if kind in ("flow", "bars", "chart", "схема", "график", "диаграмма", "counter", "сумма") else "city"
+            scene = {"bg": bg, "cast": [], "lines": [], "_vis": vis.strip()}
             sc["scenes"].append(scene)
             continue
         m = re.match(r"^([^:(\[]{1,40}?)\s*(?:\(([^)]*)\))?\s*(\[[^\]]*\])?\s*:\s*(.+)$", s)
@@ -239,10 +308,11 @@ def parse(text: str) -> dict:
             attrs = [a.strip().lower() for a in (m.group(2) or "").split(",") if a.strip()]
             ln = {"who": who, "text": m.group(4).strip()}
             for a in attrs:
-                if a in POSE_WORDS:
-                    ln["pose"] = POSE_WORDS[a]
-                elif a in EMO_WORDS:
-                    ln["emotion"] = EMO_WORDS[a]
+                pose, emo = _attr(a)
+                if pose and not ln.get("pose"):
+                    ln["pose"] = pose
+                elif emo:
+                    ln["emotion"] = emo
             if m.group(3) and any(w in m.group(3).lower() for w in ("bubble", "пузырь", "облако")):
                 ln["bubble"] = True
             scene["lines"].append(ln)
@@ -319,8 +389,8 @@ def to_text(sc: dict) -> str:
             out.append(f"Narrator: {c.get('name') or k} ({gender}{', ' + role if role and role != 'narrator' else ''})")
         else:
             out.append(f"{c.get('name') or k} ({gender}{', ' + role if role else ''})")
-    rbg = {v: k for k, v in BG_WORDS.items() if " " in k or k in ("office", "road", "bank", "night", "board", "paper")}
-    rbg["city"] = "City street"
+    rbg = {"city": "City street", "office": "Office", "city_hall": "City hall", "road": "Road", "bank": "Bank",
+           "night": "Night street", "board": "Board", "paper": "Paper"}
     for s in sc.get("scenes") or []:
         vis = vis_text(s.get("visual") or {})
         vis = f" | {vis}" if vis else ""

@@ -1056,6 +1056,8 @@ PHRASES = {
     "The one speaking, close up": "Тот, кто говорит, крупно",
     "Make the 5 likeliest": "Сделать 5 самых удачных",
     # Cartoon Studio (cartoon_web.py, cartoon/)
+    "Cartoon Studio: the story can be written by a free model on this PC (Qwen3-4B, installed once with a button, about 4.4 GB) - from a topic, from a pasted text, or a story retold for another country, in English, Russian or Romanian; read it, change it, make the cartoon.":
+        "Мультстудия: сюжет может написать бесплатная модель на этом компьютере (Qwen3-4B, ставится один раз кнопкой, около 4,4 ГБ) — по теме, по вставленному тексту или пересказать сюжет для другой страны, на английском, русском или румынском; прочитай, поменяй и сделай мультфильм.",
     "Cartoon Studio (Auto Edit → Cartoon Studio): a 2D cartoon made by MediaEngine - its own characters, scenes, schemes of money, voices and captions; change a line and make it again.":
         "Мультстудия (Автомонтаж → Мультстудия): 2D-мультфильм, который делает сам MediaEngine, — свои персонажи, сцены, схемы денег, голоса и субтитры; поменяй реплику и сделай заново.",
     "How to write a story": "Как написать сюжет", "The example below - change it or write your own.":
@@ -1113,6 +1115,65 @@ PHRASES = {
     "Tick the clips to make first.": "Сначала отметь клипы, которые нужно сделать.", "At most 30 clips at once.": "Не больше 30 клипов за раз.",
     "Start and end: write minutes:seconds, for example 12:30.5.": "Начало и конец: пиши минуты:секунды, например 12:30.5.",
     "No part of the speech makes a clip of this length: choose shorter or longer clips.": "Ни один кусок речи не подходит под эту длину: выбери клипы короче или длиннее.",
+    # Cartoon Studio: the story writer (cartoon/writer.py)
+    "Starting the story writer…": "Запускаю сценариста…", "Writing the story…": "Пишу сюжет…",
+    "Downloading llama.cpp (the program that runs the model)…": "Скачиваю llama.cpp (программу, которая запускает модель)…",
+    "Downloading the model (Qwen3-4B, about 4.3 GB)…": "Скачиваю модель (Qwen3-4B, около 4,3 ГБ)…",
+    "Checking the downloaded model…": "Проверяю скачанную модель…", "Starting the story writer for a test…": "Пробный запуск сценариста…",
+    "about 1 minute": "около 1 минуты", "about 75 seconds": "около 75 секунд", "about 1.5 minutes": "около 1,5 минуты",
+    "Story:": "Сюжет:", "words": "слов", "Language": "Язык", "Read it and make the cartoon": "Прочитать и сделать мультфильм",
+    "Delete this story?": "Удалить этот сюжет?", "Viewers in": "Зрители в стране", "(a country)": "(страна)",
+    "Retell the story": "Пересказать сюжет",
+    "The model translates it and changes the names, the money and the offices to the country's own; the scenes and pictures stay. The new story opens to read before the cartoon.":
+        "Модель переводит его и меняет имена, деньги и учреждения на принятые в этой стране; сцены и картинки остаются. Новый сюжет откроется, чтобы прочитать его до мультфильма.",
+    "Installing the story writer": "Устанавливаю сценариста",
+    "From a few minutes to half an hour, depending on the internet. You can use MediaEngine meanwhile; closing it stops the download (it continues where it stopped when you press Install again).":
+        "От нескольких минут до получаса — зависит от интернета. Пока можно пользоваться MediaEngine; если его закрыть, загрузка остановится (и продолжится с того же места, когда снова нажмёшь «Установить»).",
+    "Write a story": "Написать сюжет", "What is it about?": "О чём он?",
+    "A topic in a few words - or paste a text (an article, notes, what is said in a video): the story retells it with its own characters.":
+        "Тема в нескольких словах — или вставь текст (статью, заметки, то, что говорят в видео): сюжет перескажет его со своими персонажами.",
+    "Why a city hospital pays three times more for the same medicine": "Почему городская больница платит втрое больше за то же лекарство",
+    "(a country, if it matters)": "(страна, если важно)", "Write the story": "Написать сюжет",
+    "The free model on this PC (Qwen3-4B) writes it on": "Бесплатная модель на этом компьютере (Qwen3-4B) пишет его на",
+    "about a minute on a graphics card, several minutes on the processor. Then read it, change what you like and make the cartoon.":
+        "около минуты на видеокарте, несколько минут на процессоре. Потом прочитай, поменяй что хочешь и сделай мультфильм.",
+    "Remove the story writer": "Удалить сценариста", "Remove the story writer?": "Удалить сценариста?",
+    "Frees about 4.4 GB. The stories and cartoons stay.": "Освободит около 4,4 ГБ. Сюжеты и мультфильмы останутся.",
+    "Write a story with a free model on this PC": "Сюжет пишет бесплатная модель на этом компьютере",
+    "The program can write the story itself: from a topic, from a text, or retold for another country - in English, Russian or Romanian. It needs a free language model (Qwen3-4B, Apache-2.0) and llama.cpp (MIT), downloaded once: about 4.4 GB, into the data folder:":
+        "Программа может сама написать сюжет: по теме, по тексту или пересказать для другой страны — на английском, русском или румынском. Для этого нужна бесплатная языковая модель (Qwen3-4B, Apache-2.0) и llama.cpp (MIT), скачиваются один раз: около 4,4 ГБ, в папку данных:",
+    "MediaEngine goes online for it only when you press the button (github.com, huggingface.co). It runs on this PC; nothing is sent anywhere.":
+        "MediaEngine выходит в интернет для этого, только когда нажмёшь кнопку (github.com, huggingface.co). Работает на этом компьютере; ничего никуда не отправляется.",
+    "Not enough free space: about 6 GB are needed while installing.": "Мало свободного места: при установке нужно около 6 ГБ.",
+    "Install the story writer": "Установить сценариста", "Cartoons and stories": "Мультфильмы и сюжеты",
+    "Another language or country": "Другой язык или страна", "Topic": "Тема", "Retelling a text": "Пересказ текста",
+    "Retelling a story for another country": "Пересказ сюжета для другой страны", "What was asked": "Что просили",
+    "The story": "Сюжет",
+    "The model's story is shorter or simpler than asked: read it and add what is missing before making the cartoon.":
+        "Сюжет у модели получился короче или проще, чем просили: прочитай и допиши, чего не хватает, прежде чем делать мультфильм.",
+    "Read it, change what you like (the words, the people, the scenes), then make the cartoon. How the text is written: see the help below.":
+        "Прочитай, поменяй что хочешь (слова, персонажей, сцены) и сделай мультфильм. Как устроен текст — в подсказке ниже.",
+    "Not quite right?": "Не совсем то?", "Write another version": "Написать другой вариант",
+    "Install the story writer first.": "Сначала установи сценариста.",
+    "The story writer is being installed. Wait until it is ready.": "Сценарист устанавливается. Подожди, пока он будет готов.",
+    "Write what the cartoon is about.": "Напиши, о чём мультфильм.", "The text is too short to make a story of it.": "Текст слишком короткий, чтобы сделать из него сюжет.",
+    "The story to retell has no scenes.": "В сюжете для пересказа нет сцен.",
+    "The story writer is turned off on this PC (MEDIAENGINE_WRITER=off).": "Сценарист отключён на этом компьютере (MEDIAENGINE_WRITER=off).",
+    "The story writer is already being installed.": "Сценарист уже устанавливается.", "The story writer is already installed.": "Сценарист уже установлен.",
+    "A story is being written. Install when it is ready.": "Сейчас пишется сюжет. Установи, когда он будет готов.",
+    "The story writer is busy. Wait until it has finished.": "Сценарист занят. Подожди, пока он закончит.",
+    "This MediaEngine has no story writer to install yet.": "В этой версии MediaEngine пока нет сценариста для установки.",
+    "The downloaded llama.cpp is not the exact file. Try again.": "Скачанный llama.cpp не совпал с нужным файлом. Попробуй ещё раз.",
+    "The llama.cpp download has an unexpected file in it.": "В скачанном llama.cpp есть неожиданный файл.",
+    "The llama.cpp download has no server in it.": "В скачанном llama.cpp нет сервера.",
+    "The downloaded model is not the exact file. Try again.": "Скачанная модель не совпала с нужным файлом. Попробуй ещё раз.",
+    "The disk of the data folder is full. Free some space and press Try again - what was downloaded is kept.":
+        "Диск с папкой данных заполнен. Освободи место и нажми «Повторить» — скачанное сохранится.",
+    "The story writer is not installed: install it on the Cartoon Studio page.": "Сценарист не установлен: установи его на странице «Мультстудия».",
+    "The story writer did not start in time.": "Сценарист не запустился вовремя.", "The story writer took too long.": "Сценарист пишет слишком долго.",
+    "The story writer started but wrote nothing.": "Сценарист запустился, но ничего не написал.",
+    "The story writer is being downloaded (Cartoon Studio). Switch when it is ready.": "Скачивается сценарист (Мультстудия). Переключи, когда он будет готов.",
+    "The story writer is being installed (Auto Edit → Cartoon Studio)": "Устанавливается сценарист (Автомонтаж → Мультстудия)",
 }
 
 import html as _html

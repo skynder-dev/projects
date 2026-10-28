@@ -95,7 +95,16 @@ episode), mouths moving with the words, captions, short sounds. Choose the examp
 on a Simple Road Contract) or paste a script, vertical 9:16 or wide 16:9, press "Make the cartoon". On the film's page
 change any line, who says it, the feeling, the gesture or a scene's background and press "Make it again" - a new
 version, the old one stays. Without the voice add-on: a quick preview without voices. Saved in "Cartoons" next to the
-saved reels. Next: a script written from a topic, a text or a video, in English, Russian and Romanian.
+saved reels. The story is plain text: change the example or write your own (the help on the page shows how).
+
+**Write a story** (a free model on this PC): press "Install the story writer" once - Qwen3-4B (Alibaba, Apache-2.0)
+and llama.cpp (MIT), about 4.4 GB into the data folder; it runs on the graphics card (or the processor) and sends
+nothing anywhere. Then write a topic in a few words - or paste a text (an article, notes, what is said in a video) -
+choose the language (English, Russian, Romanian), the viewers' country if it matters, the length and the format, and
+press "Write the story": about a minute on a graphics card, several minutes on the processor. Read the story, change
+what you like and press "Make the cartoon". "Write another version" asks again; "Another language or country" retells
+a story (also a finished cartoon's) with the country's own names, money and offices. Nothing the model writes is a
+fact check: read it before you publish.
 
 ## Converting videos
 

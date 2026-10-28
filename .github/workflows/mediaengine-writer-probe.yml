@@ -1,13 +1,15 @@
 name: mediaengine-writer-probe
-# A research probe for Cartoon Studio: can a small free local language model write the program's plain-text cartoon
-# stories (from a topic, from a text, adapted to another country and language)? Qwen3-4B-Instruct-2507 (Alibaba,
-# Apache-2.0) as a Q8_0 GGUF, run by llama.cpp's server (MIT, the release's Linux build) on the runner's processor.
-# The probe's script is written out below (a workflow-only change starts no Windows build). Not part of the program;
-# nothing paid. Results: branch mediaengine-writer-lab (writer_probe.md, the stories, a picture per scene).
+# A research probe for Cartoon Studio's story writer: which free local model writes the program's plain-text cartoon
+# stories well enough (from a topic, from a text, retold for another country)? The program's own requests
+# (cartoon/writer.py) sent to llama.cpp's server (MIT, the release build the program pins) on the runner's processor,
+# one job per model: Qwen3-4B-Instruct-2507 Q8_0 (the program's) and Qwen3-14B Q4_K_M (Apache-2.0, a bigger one for
+# a graphics card with 12 GB). Not part of the program; nothing paid. Results: branch mediaengine-writer-lab
+# (<model>/writer_probe.md, the stories, a picture per scene).
 on:
   workflow_dispatch:
   push:
     paths:
+      - 'mediaengine/tests/writer_probe.py'
       - '.github/workflows/mediaengine-writer-probe.yml'
 permissions:
   contents: write
@@ -17,7 +19,17 @@ concurrency:
 jobs:
   writer:
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: qwen3-4b-instruct-2507-q8_0
+            repos: ggml-org/Qwen3-4B-Instruct-2507-Q8_0-GGUF
+            want: q8_0
+          - label: qwen3-14b-q4_k_m
+            repos: Qwen/Qwen3-14B-GGUF,ggml-org/Qwen3-14B-GGUF,unsloth/Qwen3-14B-GGUF,lmstudio-community/Qwen3-14B-GGUF
+            want: q4_k_m
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,365 +39,78 @@ jobs:
           python-version: '3.11'
       - name: Packages for drawing the scenes
         run: python -m pip install --disable-pip-version-check -q numpy opencv-python-headless pillow
-      - name: llama.cpp (the newest release with ready-made builds, Linux processor build) and its Windows builds
+      - name: llama.cpp b11941 (the Linux processor build of the release the program pins, SHA-256 checked)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p "$RUNNER_TEMP/out" "$RUNNER_TEMP/llama"
-          gh api 'repos/ggml-org/llama.cpp/releases?per_page=60' > "$RUNNER_TEMP/out/llama_releases.json"
-          python - "$RUNNER_TEMP/out/llama_releases.json" "$RUNNER_TEMP/out/llama_pick.json" <<'PY'
-          import json, re, sys
-          rels = json.load(open(sys.argv[1]))
-          for r in rels[:12]:
-              print(r["tag_name"], r["published_at"], r.get("prerelease"), len(r.get("assets") or []))
-          pick = next(r for r in rels if any(re.search(r"bin-ubuntu-x64[.](zip|tar[.]gz)$", a["name"]) for a in r.get("assets") or []))
-          assets = [{"name": a["name"], "size": a["size"], "digest": a.get("digest"), "url": a["browser_download_url"]}
-                    for a in pick["assets"]]
-          for a in assets:
-              print("  ", a["name"], a["size"], a["digest"])
-          linux = next(a for a in assets if re.search(r"bin-ubuntu-x64[.](zip|tar[.]gz)$", a["name"]))
-          json.dump({"tag": pick["tag_name"], "published": pick["published_at"], "linux": linux, "assets": assets},
-                    open(sys.argv[2], "w"), indent=1)
-          PY
-          tag=$(jq -r .tag "$RUNNER_TEMP/out/llama_pick.json"); asset=$(jq -r .linux.name "$RUNNER_TEMP/out/llama_pick.json")
-          echo "release $tag, asset $asset"
-          cd "$RUNNER_TEMP/llama"
-          gh release download -R ggml-org/llama.cpp "$tag" -p "$asset"
-          case "$asset" in *.zip) unzip -q "$asset" ;; *) tar xzf "$asset" ;; esac
-          srv=$(find . -name llama-server -type f | head -1)
-          echo "LLAMA_SERVER=$RUNNER_TEMP/llama/$srv" >> "$GITHUB_ENV"
-          echo "LLAMA_LIB=$(dirname "$RUNNER_TEMP/llama/$srv")" >> "$GITHUB_ENV"
-      - name: The model (a Q8_0 GGUF of Qwen3-4B-Instruct-2507, pinned to the repository's commit, SHA-256 checked)
+          mkdir -p "$RUNNER_TEMP/out" "$RUNNER_TEMP/llama"; cd "$RUNNER_TEMP/llama"
+          gh release download -R ggml-org/llama.cpp b11941 -p llama-b11941-bin-ubuntu-x64.tar.gz
+          echo "e8a1ee13aa19c6c78f5651457758160da27410301b179d6ef3505c81c8ea31f1  llama-b11941-bin-ubuntu-x64.tar.gz" | sha256sum -c
+          tar xzf llama-b11941-bin-ubuntu-x64.tar.gz
+          srv=$(find "$RUNNER_TEMP/llama" -name llama-server -type f | head -1)
+          echo "LLAMA_SERVER=$srv" >> "$GITHUB_ENV"; echo "LLAMA_LIB=$(dirname "$srv")" >> "$GITHUB_ENV"
+      - name: The model (the repository's commit pinned, SHA-256 checked)
+        env:
+          REPOS: ${{ matrix.repos }}
+          WANT: ${{ matrix.want }}
         run: |
           python - "$RUNNER_TEMP/out/model.json" <<'PY'
-          import json, sys, urllib.request
-          cands = ["ggml-org/Qwen3-4B-Instruct-2507-Q8_0-GGUF", "ggml-org/Qwen3-4B-Instruct-2507-GGUF",
-                   "Qwen/Qwen3-4B-Instruct-2507-GGUF", "lmstudio-community/Qwen3-4B-Instruct-2507-GGUF",
-                   "unsloth/Qwen3-4B-Instruct-2507-GGUF", "bartowski/Qwen_Qwen3-4B-Instruct-2507-GGUF"]
-          found = []
-          for repo in cands:
+          import json, os, sys, urllib.request
+          for repo in os.environ["REPOS"].split(","):
               try:
                   with urllib.request.urlopen(f"https://huggingface.co/api/models/{repo}?blobs=true", timeout=60) as r:
                       info = json.load(r)
               except Exception as exc:
                   print(repo, "-", exc)
                   continue
-              lic = (info.get("cardData") or {}).get("license")
-              for s in info.get("siblings") or []:
-                  n = s["rfilename"]
-                  if n.lower().endswith(".gguf") and ("q8_0" in n.lower() or "q4_k_m" in n.lower()):
-                      found.append({"repo": repo, "sha": info.get("sha"), "file": n, "size": s.get("size"),
-                                    "sha256": (s.get("lfs") or {}).get("sha256"), "license": lic})
-          for f in found:
-              print(f)
-          pick = next(f for f in found if "q8_0" in f["file"].lower())
-          json.dump({"pick": pick, "found": found}, open(sys.argv[1], "w"), indent=1)
+              files = [s for s in info.get("siblings") or [] if s["rfilename"].lower().endswith(".gguf")
+                       and os.environ["WANT"] in s["rfilename"].lower()]
+              if files:
+                  f = files[0]
+                  pick = {"repo": repo, "sha": info.get("sha"), "file": f["rfilename"], "size": f.get("size"),
+                          "sha256": (f.get("lfs") or {}).get("sha256"), "license": (info.get("cardData") or {}).get("license")}
+                  print(pick)
+                  json.dump(pick, open(sys.argv[1], "w"), indent=1)
+                  break
           PY
-          repo=$(jq -r .pick.repo "$RUNNER_TEMP/out/model.json"); sha=$(jq -r .pick.sha "$RUNNER_TEMP/out/model.json")
-          file=$(jq -r .pick.file "$RUNNER_TEMP/out/model.json"); want=$(jq -r .pick.sha256 "$RUNNER_TEMP/out/model.json")
+          repo=$(jq -r .repo "$RUNNER_TEMP/out/model.json"); sha=$(jq -r .sha "$RUNNER_TEMP/out/model.json")
+          file=$(jq -r .file "$RUNNER_TEMP/out/model.json"); want=$(jq -r .sha256 "$RUNNER_TEMP/out/model.json")
           curl -sSfL --retry 3 -o "$RUNNER_TEMP/model.gguf" "https://huggingface.co/$repo/resolve/$sha/$file"
-          got=$(sha256sum "$RUNNER_TEMP/model.gguf" | cut -d' ' -f1)
-          echo "$repo@$sha $file sha256 $got (want $want)"
-          test "$got" = "$want"
+          echo "$want  $RUNNER_TEMP/model.gguf" | sha256sum -c
       - name: The server
         run: |
           export LD_LIBRARY_PATH="$LLAMA_LIB:$LD_LIBRARY_PATH"
-          "$LLAMA_SERVER" --version || true
-          "$LLAMA_SERVER" --help > "$RUNNER_TEMP/out/server_help.txt" 2>&1 || true
-          nohup "$LLAMA_SERVER" -m "$RUNNER_TEMP/model.gguf" -c 8192 -t "$(nproc)" -np 1 --host 127.0.0.1 --port 8090 --jinja \
+          nohup "$LLAMA_SERVER" -m "$RUNNER_TEMP/model.gguf" -c 8192 -np 1 --host 127.0.0.1 --port 8090 --jinja --no-webui \
             > "$RUNNER_TEMP/out/server.log" 2>&1 &
-          for i in $(seq 1 120); do
+          for i in $(seq 1 300); do
             if curl -sf http://127.0.0.1:8090/health >/dev/null; then echo "up after $i s"; break; fi
             sleep 1
           done
           curl -sf http://127.0.0.1:8090/health || { tail -40 "$RUNNER_TEMP/out/server.log"; exit 1; }
       - name: The stories
-        run: |
-          cat > "$RUNNER_TEMP/writer_probe.py" <<'PY'
-          """Can a small free local model (Qwen3-4B-Instruct-2507, Apache-2.0, as a Q8_0 GGUF run by llama.cpp's server) write
-          Cartoon Studio's plain-text stories? (a research probe, not part of the program)
-
-            python writer_probe.py --app <mediaengine/app> --server http://127.0.0.1:8090 --out <dir>
-
-          Per task (a topic, a text to retell, a story to adapt to another country): the prompt, the model's answer as it came,
-          the time and tokens, what the program reads from it (scenes, lines, words, visuals, lines it could not read), and a
-          contact sheet (one picture per scene, drawn by the program). Writes writer_probe.json, writer_probe.md, sheet_<task>.png.
-          """
-          from __future__ import annotations
-
-          import argparse, json, re, sys, time, urllib.request
-          from pathlib import Path
-
-          LANGS = {"en": "English", "ru": "Russian", "ro": "Romanian"}
-
-          SYSTEM = ("You are a screenwriter of short animated explainer cartoons about money: how a scheme works, who pays and who "
-                    "profits. You write in a fixed plain-text format that a program turns into an animated film. You answer with "
-                    "the script only, nothing before or after it, no markdown.")
-
-          FORMAT = """THE FORMAT (keep these English keywords exactly as written here, whatever the language of the story):
-          Title: <the film's title>
-          Format: {fmt}
-          Narrator: <name> (woman or man, narrator)
-          <Name> (woman or man, <role>)      <- 3 to 5 more characters, one per line
-
-          == <Background> | <visual>
-          <Name> (<gesture>, <feeling>): <what they say>
-          <Name> (<gesture>, <feeling>) [bubble]: <a short exclamation shown in a speech bubble>
-
-          Backgrounds (exactly one of): City street, Office, City hall, Road, Bank, Night, Board, Paper
-          Gestures (one of): talk, explain, point, point up, shrug, cross, think, wave, hands up, rubs hands, present, facepalm, fist, sneaky
-          Feelings (one of): neutral, happy, angry, sad, surprised, sly, worried
-
-          Visuals - what appears on the screen in that scene, written after "|" (a scene may have none):
-            title: <main title> / <subtitle>                          (the first scene only)
-            flow: <A> -> <B> <amount>; <B> -> <C> <amount>; ...         (where the money goes: 2 to 4 arrows)
-            contract: CONTRACT; price <amount>; stamp APPROVED; <a condition>
-            tender: TENDER; <condition>; <condition>; <condition>
-            bars: <label> <number>, <label> <number> <unit>             (2 or 3 numbers compared)
-            counter: <amount> <label>                                  (a sum counting up)
-            compare: <thing> <price> vs <thing> <price>
-            list: <title>; <item>; <item>; <item>                      (for example the warning signs, at the end)
-            bag: <text>                                                (a bag of money)
-            magnifier: <word>                                          (someone checks the papers)
-            road | road: repair | road: holes back                     (only in a story about a road)"""
-
-          RULES = """RULES:
-          - Invent everything: the town, the people, the companies. No real people, no real companies.
-          - The narrator tells the story and says about half of the lines; the other characters act it out with short lines.
-          - 9 to 11 scenes, 2 to 4 lines in each; every line one or two short sentences (at most 20 words).
-          - About {words} spoken words in all ({secs} seconds read aloud).
-          - In what is said, write numbers as words (four point eight million); in the visuals use digits ($4.8M).
-          - A clear story: the problem, the trick, who gains, who pays, what happens in the end, and how a viewer can spot it.
-          - At least five different visuals; never the same visual in two scenes in a row.
-          - The last scene ends with a short lesson for the viewer."""
-
-
-          def lang_rule(lang: str) -> str:
-              n = LANGS.get(lang, "English")
-              if lang == "en":
-                  return "LANGUAGE: English."
-              return (f"LANGUAGE: {n}. Everything that is said, the title, the names and every label in the visuals are in {n}; "
-                      "only the format's keywords stay in English (Title, Format, Narrator, woman, man, the backgrounds, the visual "
-                      "kinds, CONTRACT, TENDER, APPROVED, price, stamp, the gestures, the feelings).")
-
-
-          def example(road_text: str) -> str:
-              return ("EXAMPLE of the format (a different story: do not reuse its people, its plot or its sentences):\n\n"
-                      + road_text.strip())
-
-
-          def prompt_topic(topic: str, lang: str, fmt: str, secs: int, road_text: str) -> str:
-              words = int(secs * 2.2)
-              return "\n\n".join([f"Write a new cartoon script.\n\nTOPIC: {topic}", lang_rule(lang),
-                                  FORMAT.format(fmt=fmt), RULES.format(words=f"{words - 25} to {words + 25}", secs=secs),
-                                  example(road_text), "Now write the script about the TOPIC."])
-
-
-          def prompt_text(source: str, lang: str, fmt: str, secs: int, road_text: str) -> str:
-              words = int(secs * 2.2)
-              return "\n\n".join(["Write a new cartoon script that explains what the TEXT below is about. Use its facts and "
-                                  "numbers, but tell it in your own words as a story with invented characters; do not copy its "
-                                  "sentences.", f"TEXT:\n\"\"\"\n{source.strip()}\n\"\"\"", lang_rule(lang),
-                                  FORMAT.format(fmt=fmt), RULES.format(words=f"{words - 25} to {words + 25}", secs=secs),
-                                  example(road_text), "Now write the script about the TEXT."])
-
-
-          def prompt_adapt(script: str, lang: str, country: str, currency: str) -> str:
-              n = LANGS.get(lang, "English")
-              return "\n\n".join([
-                  f"Retell this cartoon script for viewers in {country}, in {n}.",
-                  "RULES:\n"
-                  "- Keep the scheme, the scenes, their order, the backgrounds and the kinds of visuals.\n"
-                  f"- Use first names and surnames usual in {country}, the local money ({currency}) with amounts that make sense "
-                  "there, and the local names of offices and jobs.\n"
-                  f"- Translate everything that is said and every label in the visuals into natural spoken {n} (not word for word).\n"
-                  "- Keep the format's keywords in English exactly: Title, Format, Narrator, woman, man, ==, the backgrounds "
-                  "(City street, Office, City hall, Road, Bank, Night, Board, Paper), the visual kinds (title, flow, contract, tender, "
-                  "bars, counter, compare, list, bag, magnifier, road), CONTRACT, TENDER, APPROVED, price, stamp, [bubble], the gestures "
-                  "and the feelings in brackets.\n"
-                  "- In what is said, numbers as words; in the visuals, digits.",
-                  "SCRIPT:\n\n" + script.strip(), f"Now write the whole script in {n}."])
-
-
-          def clean(answer: str) -> str:
-              """The script out of the model's answer: no code fences, no markdown marks."""
-              out = []
-              for ln in answer.replace("\r", "").split("\n"):
-                  s = ln.strip()
-                  if s.startswith("```"):
-                      continue
-                  s = re.sub(r"\*\*|__", "", s)
-                  s = re.sub(r"^#+\s*", "", s)
-                  s = re.sub(r"^[-*]\s+(?=\S+.*:)", "", s)
-                  out.append(s)
-              return "\n".join(out).strip() + "\n"
-
-
-          def ask(server: str, system: str, user: str, max_tokens: int = 2200, temperature: float = 0.7) -> dict:
-              body = {"messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
-                      "temperature": temperature, "top_p": 0.8, "top_k": 20, "min_p": 0.0, "repeat_penalty": 1.05,
-                      "max_tokens": max_tokens, "stream": False, "seed": 7}
-              req = urllib.request.Request(server.rstrip("/") + "/v1/chat/completions", json.dumps(body).encode("utf-8"),
-                                           {"Content-Type": "application/json"})
-              t0 = time.time()
-              with urllib.request.urlopen(req, timeout=3600) as r:
-                  res = json.load(r)
-              return {"text": res["choices"][0]["message"]["content"], "s": round(time.time() - t0, 1),
-                      "usage": res.get("usage") or {}, "timings": res.get("timings") or {},
-                      "finish": res["choices"][0].get("finish_reason")}
-
-
-          def read_back(app: Path, text: str) -> dict:
-              sys.path.insert(0, str(app))
-              from archivist.cartoon import textscript as T, film as F
-              sc = T.parse(text)
-              rep = {"title": sc.get("title"), "language": sc.get("language"), "cast": {k: [c.get("name"), c.get("role"),
-                                                                                        c.get("female")] for k, c in sc["cast"].items()},
-                     "narrator": sc.get("narrator"), "scenes": len(sc["scenes"]),
-                     "lines": sum(len(s["lines"]) for s in sc["scenes"]),
-                     "words": sum(len(ln["text"].split()) for s in sc["scenes"] for ln in s["lines"]),
-                     "visuals": [(s.get("visual") or {}).get("kind", "-") for s in sc["scenes"]],
-                     "bgs": [s.get("bg") for s in sc["scenes"]],
-                     "narrator_share": 0.0, "ignored": [], "latin_words": 0, "ok": False, "error": ""}
-              nar = sc.get("narrator")
-              if rep["lines"]:
-                  rep["narrator_share"] = round(sum(1 for s in sc["scenes"] for ln in s["lines"] if ln["who"] == nar) / rep["lines"], 2)
-              said = " ".join(ln["text"] for s in sc["scenes"] for ln in s["lines"])
-              if sc.get("language") in ("ru",):
-                  rep["latin_words"] = len(re.findall(r"\b[A-Za-z]{3,}\b", said))
-              # lines the program did not take (not a header, a character, a scene or a line)
-              seen = {ln["text"] for s in sc["scenes"] for ln in s["lines"]}
-              for raw in text.split("\n"):
-                  s = raw.strip()
-                  if not s or s.startswith("==") or re.match(r"(?i)^(title|format|language|narrator|название|формат|язык|рассказчик)\s*:", s):
-                      continue
-                  if re.match(r"^[^:(]{1,40}?\s*\([^)]*\)\s*$", s):
-                      continue
-                  body = s.split(":", 1)[1].strip() if ":" in s else ""
-                  if body and body in seen:
-                      continue
-                  rep["ignored"].append(s[:120])
-              try:
-                  film = F.check_script(sc)
-                  tl = F.timeline(film)
-                  rep["seconds_estimated"] = tl["seconds"]
-                  rep["ok"] = True
-                  rep["_film"], rep["_tl"] = film, tl
-              except Exception as exc:
-                  rep["error"] = f"{type(exc).__name__}: {exc}"
-              return rep
-
-
-          def sheet(app: Path, film: dict, tl: dict, out: Path) -> None:
-              import cv2, numpy as np
-              sys.path.insert(0, str(app))
-              from archivist.cartoon import film as F
-              from archivist.cartoon.draw import Canvas
-              W, H = F.FORMATS[film["format"]]
-              w, h = W // 3, H // 3
-              tiles = []
-              for sc in tl["scenes"]:
-                  cv = Canvas(w, h, 1920 if W >= H else 1080)
-                  t = max(sc["s"] + 0.3, (sc["lines"][-1]["s"] + sc["lines"][-1]["e"]) / 2 if sc["lines"] else sc["e"] - 0.5)
-                  F.draw_frame(cv, film, sc, t, {})
-                  tiles.append(cv.img.copy())
-              cols = 4 if W < H else 3
-              rows = (len(tiles) + cols - 1) // cols
-              grid = np.full((rows * h, cols * w, 3), 255, np.uint8)
-              for i, im in enumerate(tiles):
-                  r, c = divmod(i, cols)
-                  grid[r * h:(r + 1) * h, c * w:(c + 1) * w] = im
-              cv2.imwrite(str(out), grid)
-
-
-          SOURCE = """In 2024 the education department of a mid-sized region bought 2,000 laptops for its schools. The tender was
-          open for only six days and asked for a laptop with a rare combination of features that only one model on the market had.
-          Only one company applied: a firm registered eight months earlier, whose co-owner is the brother-in-law of the
-          department's deputy head. It won at 1,450 dollars per laptop, 2.9 million dollars in total, while the same model sold in
-          ordinary shops for about 600 dollars. Auditors later found that a third of the laptops were never delivered: they exist
-          only in the acceptance papers signed by the department. Teachers say the delivered ones were slow and broke within a year."""
-
-          TASKS = [
-              {"id": "en_topic", "kind": "topic", "lang": "en", "fmt": "vertical", "secs": 75,
-               "topic": "Why a city hospital pays three times more for the same medicine"},
-              {"id": "ru_topic", "kind": "topic", "lang": "ru", "fmt": "vertical", "secs": 75,
-               "topic": "Как управляющая компания зарабатывает на ремонте подъезда, который так и не сделали"},
-              {"id": "en_text", "kind": "text", "lang": "en", "fmt": "horizontal", "secs": 80, "source": SOURCE},
-              {"id": "ro_adapt", "kind": "adapt", "lang": "ro", "country": "Romania", "currency": "lei"},
-              {"id": "ru_adapt", "kind": "adapt", "lang": "ru", "country": "Russia", "currency": "roubles"},
-          ]
-
-
-          def main() -> int:
-              ap = argparse.ArgumentParser()
-              ap.add_argument("--app", required=True); ap.add_argument("--server", required=True); ap.add_argument("--out", required=True)
-              ap.add_argument("--only", default="")
-              a = ap.parse_args()
-              app, out = Path(a.app), Path(a.out)
-              out.mkdir(parents=True, exist_ok=True)
-              sys.path.insert(0, str(app))
-              from archivist.cartoon import textscript as T
-              road = T.ROAD_TEXT
-              report = {"tasks": []}
-              md = ["# Cartoon Studio: stories written by Qwen3-4B-Instruct-2507 (Q8_0, llama.cpp, CPU)\n"]
-              for task in TASKS:
-                  if a.only and task["id"] not in a.only.split(","):
-                      continue
-                  if task["kind"] == "topic":
-                      user = prompt_topic(task["topic"], task["lang"], task["fmt"], task["secs"], road)
-                  elif task["kind"] == "text":
-                      user = prompt_text(task["source"], task["lang"], task["fmt"], task["secs"], road)
-                  else:
-                      user = prompt_adapt(road, task["lang"], task["country"], task["currency"])
-                  print(f"== {task['id']}: asking ({len(user)} characters)", flush=True)
-                  try:
-                      ans = ask(a.server, SYSTEM, user)
-                  except Exception as exc:
-                      print(f"   failed: {exc!r}", flush=True)
-                      report["tasks"].append({"id": task["id"], "error": repr(exc)})
-                      continue
-                  text = clean(ans["text"])
-                  rep = read_back(app, text)
-                  film, tl = rep.pop("_film", None), rep.pop("_tl", None)
-                  if film:
-                      try:
-                          sheet(app, film, tl, out / f"sheet_{task['id']}.png")
-                      except Exception as exc:
-                          rep["sheet_error"] = repr(exc)
-                  (out / f"{task['id']}.txt").write_text(text, "utf-8")
-                  row = {"id": task["id"], "task": {k: v for k, v in task.items() if k != "source"}, "s": ans["s"],
-                         "usage": ans["usage"], "timings": {k: ans["timings"].get(k) for k in ("prompt_per_second", "predicted_per_second",
-                                                                                               "prompt_n", "predicted_n")},
-                         "finish": ans["finish"], "read": rep}
-                  report["tasks"].append(row)
-                  print(f"   {ans['s']} s, {ans['usage']}, scenes {rep['scenes']}, lines {rep['lines']}, words {rep['words']}, "
-                        f"~{rep.get('seconds_estimated')} s, visuals {rep['visuals']}, ignored {len(rep['ignored'])}, "
-                        f"ok {rep['ok']} {rep['error']}", flush=True)
-                  md += [f"## {task['id']}", "", f"- task: {json.dumps(row['task'], ensure_ascii=False)}",
-                         f"- time {ans['s']} s; tokens {ans['usage']}; speed {row['timings']}; finish {ans['finish']}",
-                         f"- read: scenes {rep['scenes']}, lines {rep['lines']}, words {rep['words']}, estimated {rep.get('seconds_estimated')} s, "
-                         f"narrator share {rep['narrator_share']}, visuals {rep['visuals']}, backgrounds {rep['bgs']}, latin words {rep['latin_words']}",
-                         f"- ignored lines: {rep['ignored']}", f"- ok {rep['ok']} {rep['error']}", "", "```", text.strip(), "```", ""]
-              (out / "writer_probe.json").write_text(json.dumps(report, ensure_ascii=False, indent=1), "utf-8")
-              (out / "writer_probe.md").write_text("\n".join(md), "utf-8")
-              return 0
-
-
-          if __name__ == "__main__":
-              sys.exit(main())
-
-          PY
-          python "$RUNNER_TEMP/writer_probe.py" --app mediaengine/app --server http://127.0.0.1:8090 --out "$RUNNER_TEMP/out" 2>&1 | tee "$RUNNER_TEMP/out/writer_probe.txt"
-      - name: Publish to branch mediaengine-writer-lab
+        run: python mediaengine/tests/writer_probe.py --server http://127.0.0.1:8090 --out "$RUNNER_TEMP/out" --label "${{ matrix.label }}" 2>&1 | tee "$RUNNER_TEMP/out/writer_probe.txt"
+      - uses: actions/upload-artifact@v4
         if: always()
+        with:
+          name: writer-${{ matrix.label }}
+          path: ${{ runner.temp }}/out
+  publish:
+    needs: writer
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: ${{ runner.temp }}/pub
+      - name: Publish to branch mediaengine-writer-lab
         env:
           RUN_ID: ${{ github.run_id }}
           SRC_SHA: ${{ github.sha }}
         run: |
-          pub="$RUNNER_TEMP/pub"; rm -rf "$pub"; mkdir -p "$pub"
-          cp "$RUNNER_TEMP"/out/* "$pub/" 2>/dev/null || true
-          printf 'sha=%s\nrun=%s\n' "$SRC_SHA" "$RUN_ID" > "$pub/RUN.txt"
-          cd "$pub"; git init -q; git checkout -q -b mediaengine-writer-lab
+          cd "$RUNNER_TEMP/pub"
+          for d in writer-*; do [ -d "$d" ] && mv "$d" "${d#writer-}"; done
+          printf 'sha=%s\nrun=%s\n' "$SRC_SHA" "$RUN_ID" > RUN.txt
+          git init -q; git checkout -q -b mediaengine-writer-lab
           git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
           git add -A; git commit -q -m "writer probe $RUN_ID ($SRC_SHA)"
           git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" mediaengine-writer-lab

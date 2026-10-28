@@ -36,6 +36,12 @@ def new_make(script: dict, voices: bool = True, captions: dict | None = None, ti
 def do(jid: str, d: Path, job: dict) -> dict:
     """voice._do for the cartoon jobs (in the queue's thread)."""
     from .. import auto_edit as ae, orders as od
+    if job.get("kind") == "cartoon_write":                # a story written by the free model on this PC (writer.py)
+        from . import writer as W
+        try:
+            return W.do(jid, d, job)
+        except W.WriterError as exc:
+            return {"ok": False, "error": str(exc)}
     film = F.check_script(job["script"])
     stop = lambda: bool(vo._CURRENT.get("cancel"))      # noqa: E731
     voices = None
@@ -97,6 +103,7 @@ def _save(made: Path, title: str) -> str:
 
 
 def films(limit: int = 200) -> list[dict]:
+    """The cartoons and the stories written (newest first)."""
     return [j for j in vo.list_jobs(limit) if str(j.get("kind") or "").startswith("cartoon_")]
 
 

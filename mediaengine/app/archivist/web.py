@@ -329,6 +329,7 @@ def busy_reason() -> str:
     try:
         from . import voice as _vo
         if _vo.installing(): return "The voice add-on is being installed (Auto Edit → Voice-over)"
+        if _vo._writer_installing() and not _vo.busy_kind(): return "The story writer is being installed (Auto Edit → Cartoon Studio)"
         if _vo.busy(): return ("Clips are being made (Auto Edit → Clips from a long video)" if _vo.busy_kind() == "clips"
                                else "A cartoon is being made (Auto Edit → Cartoon Studio)" if _vo.busy_kind() == "cartoon"
                                else "A voice-over is being made (Auto Edit → Voice-over)")
