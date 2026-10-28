@@ -252,7 +252,7 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   "спонсором турнира" are ordinary speech). Windows CI run 40544352387: clips 36/36, unit 207, E2E two 92, Russian 226 pages 0 English.
 - b240: Clips: "Make the 5 likeliest" next to "Make the ticked clips" (the first five of the list, as they are - no
   ticking needed); the help under the button describes the new framing (someone walking, people side by side). Windows CI run 40568209291: clips 37/37, unit 207, E2E two 92, Russian 226 pages 0 English.
-- next build (after b240): Clips "The one speaking, close up" (two or three people side by side: the crop on whoever
+- b252 (commit b87c201, run 40637712978: cartoon 26/26, writer 22/22, Russian 242 pages 0 English, route fuzz 0 errors; the same runtime - the Update button): Clips "The one speaking, close up" (two or three people side by side: the crop on whoever
   talks, switching when another one talks). **Cartoon Studio** (Auto Edit → Cartoon Studio): a 2D cartoon made by the
   program (its own characters, poses, feelings, mouths with the words, twelve backgrounds, schemes of money, contracts,
   charts, a road; voices per character by the voice add-on; captions; sounds), the example "How a City Loses Millions on
@@ -262,6 +262,10 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   (listened to by the voice add-on, its facts noted), or retells a story for another country (English, Russian,
   Romanian). The build of 69c4180 failed at the cartoon check (the check called ffprobe, which a Windows MediaEngine
   does not have) - the check now uses the program's own probe.
+  Also in b252: the story writer offers two models (Qwen3-14B, 9 GB, first on a PC whose graphics card has 10 GB or
+  more; Qwen3-4B, 4.3 GB), asks the Vulkan build which card it sees; the Characters page (each character's look and
+  voice kept for every film); characters walk into a scene; gestures blend; a series keeps its narrator; the Romanian
+  narrator gets a described voice; fixes from an independent review (12).
 
 ## Orders from other programs; night review fixes (2026-10-17)
 

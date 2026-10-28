@@ -909,6 +909,10 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   E2E two 92, Russian 226 pages 0 English): Clips - "Make the 5 likeliest" (no ticking; start and end as found when
   the page does not send them); the help under the button describes the new framing. Asked the owner whether to add
   "Download a video by a link" (yt-dlp; YouTube's terms forbid downloading) - not built without his "yes".
+- 2026-10-28, **b252** published (commit b87c201, ZIP 4,779,353 bytes, the same runtime; run 40637712978: cartoon 26/26,
+  writer 22/22, Russian 242 pages 0 English, route fuzz 3652 requests 0 errors): Cartoon Studio with the story writer
+  (two models), the Characters page, "The one speaking, close up" in Clips. The build of 2da449c before it passed
+  every check but stayed unpublished: the Russian page check flagged llama.cpp / github.com / Alibaba / MIT (now known).
 - 2026-10-28, Romanian voices: with the narrator given a described voice (VoxCPM2) Whisper heard the Romanian cartoon
   almost word for word ("pretul este de patru ori mai mare decat pe pietan si contractul este aprobat. contribuabilii
   platezc toata diferenta", voice add-on run 40635146851; 36 min for three lines on the runner's processor). Piper's
