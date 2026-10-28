@@ -1,0 +1,92 @@
+name: mediaengine-writer-vulkan-probe
+# A research probe for Cartoon Studio's story writer: its graphics-card path (llama.cpp's Vulkan build) on a machine
+# with a Vulkan device - Mesa's lavapipe (a software Vulkan device) on a Linux runner, since GitHub's runners have no
+# graphics card. The program's own Server class (cartoon/writer.py) starts the Linux Vulkan build of the same release
+# with the small model: does it find the device, put the layers on it, read the device's name from the server's log,
+# answer? Not part of the program; nothing paid. Results: branch mediaengine-writer-vulkan (vulkan_probe.txt, the log).
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/mediaengine-writer-vulkan-probe.yml'
+permissions:
+  contents: write
+concurrency:
+  group: mediaengine-writer-vulkan-probe-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  vulkan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: A software Vulkan device (Mesa lavapipe) and the program's packages
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q mesa-vulkan-drivers vulkan-tools > /dev/null
+          vulkaninfo --summary 2>&1 | head -30 || true
+          python -m pip install --disable-pip-version-check -q -r mediaengine/requirements.txt
+      - name: llama.cpp b11941 Linux Vulkan build and the small model (SHA-256 checked)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/out" "$RUNNER_TEMP/llama"; cd "$RUNNER_TEMP/llama"
+          gh release download -R ggml-org/llama.cpp b11941 -p llama-b11941-bin-ubuntu-vulkan-x64.tar.gz
+          echo "3f2e79181af739197f1ad6c9d139aae565bc30a9cddcd7ea0db6e61d9c3a4b6b  llama-b11941-bin-ubuntu-vulkan-x64.tar.gz" | sha256sum -c
+          tar xzf llama-b11941-bin-ubuntu-vulkan-x64.tar.gz
+          srv=$(find "$RUNNER_TEMP/llama" -name llama-server -type f | head -1)
+          echo "LLAMA_SERVER=$srv" >> "$GITHUB_ENV"; echo "LLAMA_LIB=$(dirname "$srv")" >> "$GITHUB_ENV"
+          curl -sSfL --retry 3 -o "$RUNNER_TEMP/model.gguf" "https://huggingface.co/ggml-org/Qwen3-4B-Instruct-2507-Q8_0-GGUF/resolve/e6f794d44f9395d0184a966c27b5ae99ea356fcb/qwen3-4b-instruct-2507-q8_0.gguf"
+          echo "ae916ede1c010a26955ee8ae2e908bf8815a3f135ec860439ab924701c69d5f1  $RUNNER_TEMP/model.gguf" | sha256sum -c
+      - name: The program's Server on the Vulkan device
+        run: |
+          export LD_LIBRARY_PATH="$LLAMA_LIB:$LD_LIBRARY_PATH"
+          export ARCHIVIST_HOME="$RUNNER_TEMP/home" MEDENG_WRITER_SERVER="$LLAMA_SERVER"
+          python - "$RUNNER_TEMP/model.gguf" "$RUNNER_TEMP/out" <<'PY' 2>&1 | tee "$RUNNER_TEMP/out/vulkan_probe.txt"
+          import json, shutil, sys, time
+          from pathlib import Path
+          sys.path.insert(0, "mediaengine/app")
+          from archivist.cartoon import writer as W
+          model, out = Path(sys.argv[1]), Path(sys.argv[2])
+          W.ROOT.mkdir(parents=True, exist_ok=True)       # (the server's working folder when no build is installed)
+          res = {}
+          for gpu in (True, False):
+              t0 = time.time()
+              log = out / f"server_{'vulkan' if gpu else 'cpu'}.log"
+              try:
+                  srv = W.Server(gpu, track=False, log=log, model=model).start(timeout=900)
+              except Exception as exc:
+                  res["gpu" if gpu else "cpu"] = {"error": repr(exc)}
+                  print("start failed", gpu, exc, flush=True)
+                  continue
+              try:
+                  r = srv.chat([{"role": "user", "content": "Answer with one word: ready"}], max_tokens=8, temperature=0.0, seed=1)
+                  res["gpu" if gpu else "cpu"] = {"device": srv.device, "answer": r["text"], "load_and_answer_s": round(time.time() - t0, 1),
+                                                   "speed": (r.get("timings") or {}).get("predicted_per_second")}
+              finally:
+                  srv.close()
+              print(json.dumps(res, indent=1), flush=True)
+          lines = [x for x in (out / "server_vulkan.log").read_text("utf-8", errors="replace").splitlines()
+                   if "vulkan" in x.lower() or "offloaded" in x or "layers" in x]
+          print("\n".join(lines[:40]))
+          ok = res.get("gpu", {}).get("device") and res["gpu"].get("answer", "").strip()
+          print("RESULT", "PASS" if ok else "FAIL", json.dumps(res))
+          (out / "vulkan_probe.json").write_text(json.dumps(res, indent=1), "utf-8")
+          PY
+      - name: Publish to branch mediaengine-writer-vulkan
+        if: always()
+        env:
+          RUN_ID: ${{ github.run_id }}
+          SRC_SHA: ${{ github.sha }}
+        run: |
+          pub="$RUNNER_TEMP/pub"; rm -rf "$pub"; mkdir -p "$pub"
+          cp "$RUNNER_TEMP"/out/* "$pub/" 2>/dev/null || true
+          printf 'sha=%s\nrun=%s\n' "$SRC_SHA" "$RUN_ID" > "$pub/RUN.txt"
+          cd "$pub"; git init -q; git checkout -q -b mediaengine-writer-vulkan
+          git config user.name "mediaengine-ci"; git config user.email "mediaengine-ci@users.noreply.github.com"
+          git add -A; git commit -q -m "writer vulkan probe $RUN_ID ($SRC_SHA)"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" mediaengine-writer-vulkan
