@@ -810,6 +810,8 @@ def _make_film(story: str, job: dict, title: str) -> dict:
     script = T.parse(story)
     script["format"] = job.get("format") or script.get("format") or "vertical"
     script["camera"] = m["camera"]
+    from . import reference as R
+    script["pace"] = R.pace_of(job.get("style"))           # (the rhythm of a reference: the film's pauses too)
     try:
         fid = cj.new_make(script, m["voices"] and vo.installed(), {"style": m["captions"]} if m["captions"] else None,
                           title=title, music={"kind": "made", "mood": m["mood"]} if m["music"] == "made" else None,

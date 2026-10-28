@@ -193,6 +193,10 @@ def main() -> int:
     for where in ("middle", "bottom"):                     # (the face clear of the captions' band)
         cx_, cy_, z_ = F._camera(cvv, dict(ex, caption_at=where), night, t1, nm, xs_, sc_)
         heads[where] = (round(((_bgs.ground_y(cvv) - 530 * sc_ - cy_) * z_ + cvv.SH / 2) / cvv.SH, 3), round(z_, 2))
+    lens = {pc: F.timeline(dict(ex, pace=pc))["seconds"] for pc in ("quick", "", "calm")}
+    check("pace: shorter pauses for a quick film, longer for a calm one; an unknown pace is the usual",
+          lens["quick"] < lens[""] < lens["calm"] and F.check_script(dict(_T.parse(_T.ROAD_TEXT), pace="odd"))["pace"] == "",
+          lens)
     check("camera: a cut to a close-up of the one speaking on a scene's second line (not its first, not while a picture "
           "is to be read, never with the camera still); the face above captions in the middle",
           shots[0] is None and shots[1] == l1["who"] and shots[2] is None and shots[3] is None and cut > 8
@@ -310,12 +314,13 @@ def main() -> int:
               and sc2["scenes"][0]["lines"][0]["text"] == "The price is five times higher."
               and sc2["scenes"][0]["lines"][1]["emotion"] == "angry" and sc2["scenes"][1]["bg"] == "paper"
               and sc2.get("camera") != "still" and b"Close-ups of the one speaking" in one.data, (ag.status_code, nid))
-        ag_still = c.post(f"/auto/cartoon/{jid}/again", data={"camera_form": "1", "format": "horizontal"}, headers=H)
+        ag_still = c.post(f"/auto/cartoon/{jid}/again", data={"camera_form": "1", "format": "horizontal", "pace": "calm"}, headers=H)
         nid_s = (ag_still.headers.get("Location") or "").rstrip("/").split("/")[-1]
         sc_s = json.loads((vo._job_dir(nid_s) / "job.json").read_text("utf-8"))["script"] if re.fullmatch(r"[0-9-a-f]{22}", nid_s) else {}
         if nid_s:
             vo.cancel_job(nid_s)
-        check("pages: close-ups turned off are kept in the new version", sc_s.get("camera") == "still"
+        check("pages: close-ups turned off and a calm pace are kept in the new version", sc_s.get("camera") == "still"
+              and sc_s.get("pace") == "calm" and b"<option value='calm' selected>" in c.get(f"/auto/cartoon/{nid_s}", headers=H).data
               and b"name='camera' value='1' checked" not in c.get(f"/auto/cartoon/{nid_s}", headers=H).data, (ag_still.status_code, sc_s.get("camera")))
         if nid:
             t0 = time.time()

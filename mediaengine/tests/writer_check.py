@@ -393,7 +393,8 @@ def main() -> int:
         check("a story written with the studied rhythm: as many scenes for its quick cuts, an opening question; the story "
               "page says whose rhythm", jr.get("state") == "done" and (jr.get("style") or {}).get("ref") == sid
               and "13 to 14 scenes, 1 or 2 lines" in ask_r and "with a question" in ask_r and "8 to 10 scenes" not in ask_r
-              and "rhythm like" in rpage and "School meals" in ask_r, (jr.get("state"), jr.get("style"), ask_r[:300]))
+              and "rhythm like" in rpage and "School meals" in ask_r and "<option value='quick' selected>" in rpage,
+              (jr.get("state"), jr.get("style"), ask_r[:300]))
         slow = {"shot_avg": 10.0, "wps": 1.5, "first_at": 3.0, "opens": "statement"}   # (a calm reference: long shots, slow words)
         rules_slow, w_slow = R.rules_of(slow, 60)
         story_slow = "Title: X\nNarrator: Kate (woman)\n\n" + "".join(f"== Office | bag: money\nKate: {'word ' * 9}one.\n\n" for _ in range(6))

@@ -391,6 +391,14 @@ def style_of(jid: str) -> dict:
             "talk_share": float(ref.get("talk_share") or 0), "format": ref.get("format") or "vertical"}
 
 
+def pace_of(style: dict | None) -> str:
+    """The film's pace for a reference's style: 'quick' (short shots), 'calm' (long ones) or '' (the usual)."""
+    if not isinstance(style, dict) or not style.get("shot_avg"):
+        return ""
+    avg = float(style.get("shot_avg") or 6.0)
+    return "quick" if avg < 4.5 else "calm" if avg >= 9 else ""
+
+
 def scenes_for(secs: float, shot_avg: float) -> int:
     """How many scenes a story of `secs` gets for a reference whose shots last `shot_avg` s on average (a scene of
     the cartoon is a place with a few lines: at least 3 s), 6 to 14."""

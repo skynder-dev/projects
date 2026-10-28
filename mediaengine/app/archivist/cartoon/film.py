@@ -29,6 +29,7 @@ FORMATS = {"vertical": (1080, 1920), "horizontal": (1920, 1080)}
 SR = 48000
 GAP = 0.35                    # silence after each line (s)
 SCENE_PAD = 0.5               # a little air at the end of every scene (s)
+PACES = {"": (GAP, SCENE_PAD), "quick": (0.2, 0.3), "calm": (0.55, 0.8)}   # (after a line, at a scene's end)
 
 
 class FilmError(Exception):
@@ -93,6 +94,7 @@ def check_script(sc: dict) -> dict:
         raise FilmError("The script has no scenes.")
     out["scenes"] = scenes
     out["title"] = str(sc.get("title") or "Cartoon")[:120]
+    out["pace"] = sc.get("pace") if sc.get("pace") in PACES else ""
     out["language"] = str(sc.get("language") or "en")[:5]
     return out
 
@@ -116,6 +118,7 @@ def timeline(sc: dict, voices: dict | None = None) -> dict:
     (word times from the line's start); without one, the line's length is estimated."""
     t = 0.0
     scenes = []
+    gap, pad = PACES.get(sc.get("pace") or "", PACES[""])   # (quick like a reference that cuts often, or calm)
     for i, s in enumerate(sc["scenes"]):
         start = t
         lines = []
@@ -128,8 +131,8 @@ def timeline(sc: dict, voices: dict | None = None) -> dict:
             else:
                 words, dur = estimate_words(ln["text"], t)
             lines.append(dict(ln, s=round(t, 3), e=round(t + dur, 3), words=words, wav=(v or {}).get("wav")))
-            t += dur + GAP
-        t = max(t + SCENE_PAD, start + s["min"])
+            t += dur + gap
+        t = max(t + pad, start + s["min"])
         scenes.append(dict(s, s=round(start, 3), e=round(t, 3), lines=lines))
     prev: list = []
     for s in scenes:                                       # who walks in: not in the picture of the scene before
