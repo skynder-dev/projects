@@ -27,16 +27,27 @@ jobs:
           python-version: '3.11'
       - name: Packages for drawing the scenes
         run: python -m pip install --disable-pip-version-check -q numpy opencv-python-headless pillow
-      - name: llama.cpp (the latest release, Linux processor build) and the Windows builds it offers
+      - name: llama.cpp (the newest release with ready-made builds, Linux processor build) and its Windows builds
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           mkdir -p "$RUNNER_TEMP/out" "$RUNNER_TEMP/llama"
-          gh release view -R ggml-org/llama.cpp --json tagName,publishedAt,assets > "$RUNNER_TEMP/out/llama_release.json"
-          gh api repos/ggml-org/llama.cpp/releases/latest > "$RUNNER_TEMP/out/llama_release_api.json" || true
-          jq -r '.assets[] | "\(.name) \(.size) \(.digest // "")"' "$RUNNER_TEMP/out/llama_release_api.json" || true
-          tag=$(jq -r .tagName "$RUNNER_TEMP/out/llama_release.json")
-          asset=$(jq -r '.assets[].name | select(test("bin-ubuntu-x64[.](zip|tar[.]gz)$"))' "$RUNNER_TEMP/out/llama_release.json" | head -1)
+          gh api 'repos/ggml-org/llama.cpp/releases?per_page=60' > "$RUNNER_TEMP/out/llama_releases.json"
+          python - "$RUNNER_TEMP/out/llama_releases.json" "$RUNNER_TEMP/out/llama_pick.json" <<'PY'
+          import json, re, sys
+          rels = json.load(open(sys.argv[1]))
+          for r in rels[:12]:
+              print(r["tag_name"], r["published_at"], r.get("prerelease"), len(r.get("assets") or []))
+          pick = next(r for r in rels if any(re.search(r"bin-ubuntu-x64[.](zip|tar[.]gz)$", a["name"]) for a in r.get("assets") or []))
+          assets = [{"name": a["name"], "size": a["size"], "digest": a.get("digest"), "url": a["browser_download_url"]}
+                    for a in pick["assets"]]
+          for a in assets:
+              print("  ", a["name"], a["size"], a["digest"])
+          linux = next(a for a in assets if re.search(r"bin-ubuntu-x64[.](zip|tar[.]gz)$", a["name"]))
+          json.dump({"tag": pick["tag_name"], "published": pick["published_at"], "linux": linux, "assets": assets},
+                    open(sys.argv[2], "w"), indent=1)
+          PY
+          tag=$(jq -r .tag "$RUNNER_TEMP/out/llama_pick.json"); asset=$(jq -r .linux.name "$RUNNER_TEMP/out/llama_pick.json")
           echo "release $tag, asset $asset"
           cd "$RUNNER_TEMP/llama"
           gh release download -R ggml-org/llama.cpp "$tag" -p "$asset"
@@ -80,13 +91,14 @@ jobs:
         run: |
           export LD_LIBRARY_PATH="$LLAMA_LIB:$LD_LIBRARY_PATH"
           "$LLAMA_SERVER" --version || true
+          "$LLAMA_SERVER" --help > "$RUNNER_TEMP/out/server_help.txt" 2>&1 || true
           nohup "$LLAMA_SERVER" -m "$RUNNER_TEMP/model.gguf" -c 8192 -t "$(nproc)" -np 1 --host 127.0.0.1 --port 8090 --jinja \
             > "$RUNNER_TEMP/out/server.log" 2>&1 &
           for i in $(seq 1 120); do
             if curl -sf http://127.0.0.1:8090/health >/dev/null; then echo "up after $i s"; break; fi
             sleep 1
           done
-          curl -sf http://127.0.0.1:8090/health
+          curl -sf http://127.0.0.1:8090/health || { tail -40 "$RUNNER_TEMP/out/server.log"; exit 1; }
       - name: The stories
         run: |
           cat > "$RUNNER_TEMP/writer_probe.py" <<'PY'
