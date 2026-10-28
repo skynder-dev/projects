@@ -699,8 +699,14 @@ def clean(answer: str, fmt: str = "", lang: str = "") -> str:
     return re.sub(r"\n{3,}", "\n\n", text) + "\n"
 
 
-def judge(text: str, secs: int = 75) -> tuple[dict, str]:
-    """What the program reads from a story, and what is wrong with it for a film ('' when it is fine)."""
+def judge(text: str, secs: int = 75, style: dict | None = None) -> tuple[dict, str]:
+    """What the program reads from a story, and what is wrong with it for a film ('' when it is fine). style: a
+    reference's rhythm (its scenes and words asked instead of the usual)."""
+    lo, hi, asked = 8, 10, int(secs * 1.9)
+    if style:
+        from . import reference as R
+        lo, hi, w = R.targets(style, secs)
+        asked = w or asked
     sc = T.parse(text)
     scenes = [s for s in sc["scenes"] if s["lines"]]
     lines = sum(len(s["lines"]) for s in scenes)
@@ -708,9 +714,9 @@ def judge(text: str, secs: int = 75) -> tuple[dict, str]:
     info = {"title": sc.get("title"), "scenes": len(scenes), "lines": lines, "words": words, "language": sc.get("language"),
             "cast": len(sc.get("cast") or {}), "visuals": sum(1 for s in scenes if s.get("visual"))}
     if len(scenes) < 5:
-        return info, f"it has only {len(scenes)} scenes with lines (8 to 10 are needed, each starting with ==)"
-    if words < secs * 1.2:
-        return info, f"it is too short: {words} spoken words (about {int(secs * 1.9)} are needed)"
+        return info, f"it has only {len(scenes)} scenes with lines ({lo} to {hi} are needed, each starting with ==)"
+    if words < asked * 0.63:
+        return info, f"it is too short: {words} spoken words (about {asked} are needed)"
     if info["visuals"] < 3:
         return info, "almost no scene shows a visual after | (title, flow, contract, bars, counter, list ...)"
     return info, ""
@@ -762,7 +768,7 @@ def do(jid: str, d: Path, job: dict) -> dict:
                              progress=round(min(base + span, base + span * n / expect), 3)),
                          stop=stop)
             text = clean(r["text"], job.get("format") or "", job.get("lang") or "")
-            info, problem = judge(text, secs)
+            info, problem = judge(text, secs, job.get("style") if isinstance(job.get("style"), dict) and job.get("mode") != "adapt" else None)
             if not problem and r.get("finish") == "length":
                 problem = "it was cut off before its end (it is too long): write it shorter"
             rank = (not problem, info["scenes"], info["words"])

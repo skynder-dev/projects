@@ -467,11 +467,12 @@ def to_text(sc: dict) -> str:
     nar = sc.get("narrator") if isinstance(sc.get("narrator"), str) else None
     for k, c in cast.items():
         gender = "woman" if c.get("female") else "man"
-        role = c.get("role") or ""
+        role = c.get("role") if isinstance(c.get("role"), str) else ""
+        name = c.get("name") if isinstance(c.get("name"), str) and c.get("name") else str(k)
         if k == nar:
-            out.append(f"Narrator: {c.get('name') or k} ({gender}{', ' + role if role and role != 'narrator' else ''})")
+            out.append(f"Narrator: {name} ({gender}{', ' + role if role and role != 'narrator' else ''})")
         else:
-            out.append(f"{c.get('name') or k} ({gender}{', ' + role if role else ''})")
+            out.append(f"{name} ({gender}{', ' + role if role else ''})")
     rbg = {"city": "City street", "office": "Office", "city_hall": "City hall", "road": "Road", "bank": "Bank",
            "night": "Night street", "board": "Board", "paper": "Paper", "hospital": "Hospital", "school": "School",
            "shop": "Shop", "home": "Home", "site": "Building site"}
@@ -488,7 +489,8 @@ def to_text(sc: dict) -> str:
         lines = s.get("lines") if isinstance(s.get("lines"), list) else []
         for ln in (x for x in lines if isinstance(x, dict)):
             w = ln.get("who") if isinstance(ln.get("who"), str) else ""
-            who = (cast.get(w) or {}).get("name") or w or (cast.get(nar) or {}).get("name") or nar or "Narrator"
+            nm = lambda key: (cast.get(key) or {}).get("name") if isinstance((cast.get(key) or {}).get("name"), str) else ""  # noqa: E731
+            who = nm(w) or w or nm(nar) or nar or "Narrator"
             attrs = [x for x in (ln.get("pose"), ln.get("emotion")) if x and isinstance(x, str)]
             out.append(f"{who}" + (f" ({', '.join(attrs)})" if attrs else "") + (" [bubble]" if ln.get("bubble") else "")
                        + f": {ln.get('text') or ''}")

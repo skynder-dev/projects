@@ -18,6 +18,7 @@ from pathlib import Path
 import numpy as np
 
 MAX_FRAMES = 40                   # (a long video: this many pictures, spread over it)
+MAX_SECONDS = 30 * 60             # (a reference is a cartoon or a short: half an hour at most)
 
 
 class StudyError(Exception):
@@ -31,8 +32,16 @@ def new_study(video: str, listen: bool = True) -> str:
     if not p.is_file():
         raise StudyError("Choose a video (its full path) to study.")
     vo._check_video(p)
-    listen = bool(listen) and vo.installed()
-    return vo._submit({"kind": "cartoon_study", "video": str(p), "listen": listen, "title": p.stem[:60] or "Video",
+    from .. import auto_edit as ae
+    try:
+        info = ae._probe(p)
+    except Exception:
+        info = {}
+    if float((info.get("format") or {}).get("duration") or 0) > MAX_SECONDS:
+        raise StudyError("This video is longer than half an hour: choose a cartoon or a short (or a part of a long video).")
+    sound = any(x.get("codec_type") == "audio" for x in (info.get("streams") or [])) if info else True
+    listen = bool(listen) and vo.installed() and sound      # (a video without sound: nothing to listen to)
+    return vo._submit({"kind": "cartoon_study", "video": str(p), "listen": listen, "sound": sound, "title": p.stem[:60] or "Video",
                        "needs_addon": False}, addon=False)
 
 
@@ -51,7 +60,7 @@ def _frames(src: Path, shots: list[dict], out: Path, ff: str, stop) -> list[str]
         if stop():
             break
         s = shots[i]
-        name = f"{i:03d}.jpg"
+        name = f"{i:04d}.jpg"
         t = s["s"] + (s["e"] - s["s"]) * 0.5
         try:
             _run([ff, "-hide_banner", "-nostdin", "-v", "error", "-ss", f"{t:.3f}", "-i", str(src), "-frames:v", "1",
@@ -70,7 +79,10 @@ def _palette(folder: Path, names: list[str], k: int = 6) -> list[dict]:
     for n in names:
         if not n:
             continue
-        img = cv2.imread(str(folder / n))
+        try:                                               # (imread cannot open a path with Cyrillic letters on Windows)
+            img = cv2.imdecode(np.fromfile(str(folder / n), np.uint8), cv2.IMREAD_COLOR)
+        except (OSError, ValueError):
+            img = None
         if img is None:
             continue
         small = cv2.resize(img, (48, 48), interpolation=cv2.INTER_AREA)
@@ -117,9 +129,10 @@ def _listen(src: Path, d: Path, duration: float) -> dict:
             vo._CURRENT.update(step="listening", progress=round(0.35 + 0.5 * float(msg["progress"]), 3))
     res = vo.transcribe(wjob, d / "work", timeout=6 * 3600, on_line=line)
     shutil.rmtree(d / "work", ignore_errors=True)
-    if not res.get("ok"):
+    if not res.get("ok"):                                  # (the shots and pictures are kept; Whisper's own words in detail)
         wav.unlink(missing_ok=True)
-        return {"ok": False, "error": str(res.get("error") or "The video could not be listened to.")[:300]}
+        return {"ok": False, "error": "The words could not be listened to (Whisper stopped).",
+                "detail": str(res.get("error") or "")[:300]}
     words = [{"w": str(w.get("w") or "").strip(), "s": float(w.get("s") or 0), "e": float(w.get("e") or 0)}
              for w in res.get("words") or [] if str(w.get("w") or "").strip()]
     between = _between_words(wav, words, duration)
@@ -184,18 +197,27 @@ def do(jid: str, d: Path, job: dict) -> dict:
     duration = float((info.get("format") or {}).get("duration") or 0)
     vs = next((x for x in info.get("streams") or [] if x.get("codec_type") == "video"), {})
     w, h = int(vs.get("width") or 0), int(vs.get("height") or 0)
-    rot = str((vs.get("tags") or {}).get("rotate") or "")
-    if rot in ("90", "270", "-90"):
+    try:                                                   # (a phone video turned when it is played)
+        rot = int(float(info.get("rotation") or (vs.get("tags") or {}).get("rotate") or 0)) % 360
+    except (TypeError, ValueError):
+        rot = 0
+    if rot in (90, 270):
         w, h = h, w
     if duration < 3:
         return {"ok": False, "error": "The video is too short to study (a few seconds at least)."}
+    if duration > MAX_SECONDS:
+        return {"ok": False, "error": "This video is longer than half an hour: choose a cartoon or a short (or a part of a long video)."}
+    failed: list = []
     try:
         cuts = _scene_cuts(src, duration, lambda *a: vo._CURRENT.update(step="looking", progress=0.1), stop,
-                           fps=6, min_gap=0.5)              # (a cartoon may cut every second)
+                           fps=6, min_gap=0.5, failed=failed)   # (a cartoon may cut every second)
     except RuntimeError:
         return {"ok": False, "error": "Stopped."}
     if stop():
         return {"ok": False, "error": "Stopped."}
+    if failed:                                             # (not "one long shot": the scan itself did not work)
+        return {"ok": False, "error": "The video's shots could not be found (FFmpeg could not read it quickly enough). "
+                                      "Try a shorter video, or convert it first (Media → Convert)."}
     bounds = [0.0] + [t for t in cuts if 0 < t < duration] + [duration]
     shots = [{"s": round(bounds[i], 2), "e": round(bounds[i + 1], 2)} for i in range(len(bounds) - 1)]
     vo._CURRENT.update(step="pictures", progress=0.25)
@@ -269,7 +291,7 @@ def style_of(jid: str) -> dict:
         title = ""
     secs = int(max(45, min(120, round(float(ref.get("duration") or 75)))))
     avg = float(ref.get("shot_avg") or 6.0)
-    scenes = int(max(6, min(14, round(secs / max(3.0, avg)))))
+    scenes = scenes_for(secs, avg)
     opening = str(ref.get("opening") or "")
     return {"ref": jid, "title": title, "secs": secs, "scenes": scenes, "shot_avg": avg,
             "wps": float(ref.get("wps") or 0), "first_at": ref.get("first_words_at"),
@@ -277,19 +299,34 @@ def style_of(jid: str) -> dict:
             "talk_share": float(ref.get("talk_share") or 0), "format": ref.get("format") or "vertical"}
 
 
-def rules_of(style: dict, secs: int) -> tuple[str, int | None]:
-    """The writer's rules from a reference's style: the line about the scenes, and the words to ask for (None: the
-    usual)."""
-    n = int(style.get("scenes") or 9)
+def scenes_for(secs: float, shot_avg: float) -> int:
+    """How many scenes a story of `secs` gets for a reference whose shots last `shot_avg` s on average (a scene of
+    the cartoon is a place with a few lines: at least 3 s), 6 to 14."""
+    return int(max(6, min(14, round(float(secs) / max(3.0, float(shot_avg or 6.0))))))
+
+
+def targets(style: dict | None, secs: int) -> tuple[int, int, int | None]:
+    """The scenes (from, to) and the words (None: the usual) asked of a story of `secs` with a reference's style."""
+    if not style:
+        return 8, 10, None
+    n = scenes_for(secs, float(style.get("shot_avg") or 6.0))
     lo, hi = max(6, n - 1), min(14, n + 1)
-    per = "1 or 2 lines" if n >= 12 else "2 or 3 lines"
     words = None
     wps = float(style.get("wps") or 0)
     if wps > 0:                                            # (the model writes about a third more than asked)
         words = int(max(secs * 1.3, min(secs * 2.3, secs * min(3.2, max(1.6, wps)) * 0.76)))
+    return lo, hi, words
+
+
+def rules_of(style: dict, secs: int) -> tuple[str, int | None]:
+    """The writer's rules from a reference's style: the line about the scenes, and the words to ask for (None: the
+    usual)."""
+    lo, hi, words = targets(style, secs)
+    avg = float(style.get("shot_avg") or 6.0)              # (the pace is the reference's own: how long its shots last)
+    per = "1 or 2 lines" if avg < 4.5 else "2 or 3 lines"
     extra = [f"- {lo} to {hi} scenes, {per} in each; every line one or two short sentences (at most 16 words)."]
-    pace = ("quick cuts: short scenes that change often" if n >= 12 else "an even pace" if n >= 8 else
-            "a calm pace: fewer, longer scenes")
+    pace = ("quick cuts: short scenes that change often" if avg < 4.5 else "an even pace" if avg < 9 else
+            "a calm pace: longer scenes, nothing rushed")
     extra.append(f"- The rhythm of a cartoon the viewer liked: {pace}.")
     first = style.get("first_at")
     if first is not None and float(first) <= 1.5:

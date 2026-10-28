@@ -70,7 +70,7 @@ HELP_EN = ("First lines: <code>Title:</code>, <code>Format: vertical</code> or <
            "sneaky. Feelings: calm, happy, angry, sad, surprised, sly, worried. English or Russian.")
 HELP_RU = ("Первые строки: <code>Название:</code>, <code>Формат: вертикальный</code> или <code>широкий</code>, "
            "<code>Рассказчик: Имя (женщина)</code>, потом персонажи — <code>Имя (мужчина, мэр)</code>. Сцена начинается с "
-           "<code>==</code> и фона (Улица, Офис, Мэрия, Дорога, Банк, Ночь, Доска, Бумага, Больница, Школа, Магазин, Дом); после <code>|</code> — что в ней "
+           "<code>==</code> и фона (Улица, Офис, Мэрия, Дорога, Банк, Ночь, Доска, Бумага, Больница, Школа, Магазин, Дом, Стройка); после <code>|</code> — что в ней "
            "показано: <code>заголовок: …</code>, <code>дорога</code>, <code>договор: ДОГОВОР; цена 4 800 000 ₽; печать УТВЕРЖДЕНО</code>, "
            "<code>схема: Бюджет -&gt; Фирма 4,8 млн; Фирма -&gt; Чиновники откат</code>, <code>график: честно 1.2, заплатили 9.6 млн</code>, "
            "<code>список: Признаки; одна заявка; сжатые сроки</code>, <code>сумма: 4 800 000 ₽ потрачено</code>, "
@@ -550,7 +550,8 @@ def register(app, page, err_page, e, human_bytes):
                            + (f" · <span translate='no'>«{e(ref.get('opening') or '')}»</span>" if ref.get("opening") else ""))
                      + (row("Between the words", f"<span>{e(between)}</span>") if between else ""))
         else:
-            why = ref.get("listen_error") or ("The words were not listened to (the voice add-on was not chosen)."
+            why = ref.get("listen_error") or ("This video has no sound." if j.get("sound") is False else
+                                              "The words were not listened to (the voice add-on was not chosen)."
                                               if not j.get("listen") else "")
             nums += row("Speech", f"<span>{e(why or 'Nothing is said in it.')}</span>")
         chips = "".join(f"<span class='ct-chip'><i style='background:{e(c['hex'])}'></i><span translate='no'>{e(c['hex'])} · "
@@ -705,7 +706,7 @@ def register(app, page, err_page, e, human_bytes):
     @app.get("/auto/cartoon/<jid>/frame/<name>")
     def cartoon_frame(jid, name):
         j = _job(jid)
-        if not j or j.get("kind") != "cartoon_study" or not re.fullmatch(r"[0-9]{3}\.jpg", name):
+        if not j or j.get("kind") != "cartoon_study" or not re.fullmatch(r"[0-9]{3,5}\.jpg", name):
             return ("", 404)
         p = vo._job_dir(jid) / "frames" / name
         if not p.is_file():

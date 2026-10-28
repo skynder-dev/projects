@@ -335,10 +335,13 @@ def main() -> int:
         spage = c.get(f"/auto/cartoon/{sid}", headers=H).get_data(as_text=True)
         fr = c.get(f"/auto/cartoon/{sid}/frame/{shots[0]['frame']}", headers=H) if shots else None
         bad = c.get(f"/auto/cartoon/{sid}/frame/..%2Fjob.json", headers=H)
+        bad2 = c.get(f"/auto/cartoon/{sid}/frame/job.json", headers=H)      # (the page's own guard: only its pictures)
+        bad3 = c.get(f"/auto/cartoon/{sid}/frame/9999.jpg", headers=H)
         check("the study's page: the rhythm, the colours, a storyboard with the pictures and the words; a form to write "
               "with this rhythm", "Storyboard" in spage and "The rhythm" in spage and "Write a story with this rhythm" in spage
-              and f"/auto/cartoon/{sid}/frame/000.jpg" in spage and "Why does a city" in spage and fr is not None
-              and fr.status_code == 200 and fr.mimetype == "image/jpeg" and bad.status_code == 404, (fr and fr.status_code, bad.status_code))
+              and f"/auto/cartoon/{sid}/frame/0000.jpg" in spage and "Why does a city" in spage and fr is not None
+              and fr.status_code == 200 and fr.mimetype == "image/jpeg" and bad.status_code == 404 and bad2.status_code == 404
+              and bad3.status_code == 404, (fr and fr.status_code, bad.status_code, bad2.status_code, bad3.status_code))
         before = set(p.name for p in (work / "asked").glob("request_*.json"))
         rr = c.post("/auto/cartoon/write", data={"about": "School meals that cost twice as much", "lang": "en", "secs": "45",
                                                  "ref": sid}, headers=H)
@@ -350,6 +353,18 @@ def main() -> int:
               "page says whose rhythm", jr.get("state") == "done" and (jr.get("style") or {}).get("ref") == sid
               and "13 to 14 scenes, 1 or 2 lines" in ask_r and "with a question" in ask_r and "8 to 10 scenes" not in ask_r
               and "rhythm like" in rpage and "School meals" in ask_r, (jr.get("state"), jr.get("style"), ask_r[:300]))
+        slow = {"shot_avg": 10.0, "wps": 1.5, "first_at": 3.0, "opens": "statement"}   # (a calm reference: long shots, slow words)
+        rules_slow, w_slow = R.rules_of(slow, 60)
+        story_slow = "Title: X\nNarrator: Kate (woman)\n\n" + "".join(f"== Office | bag: money\nKate: {'word ' * 9}one.\n\n" for _ in range(6))
+        _i, prob_slow = W.judge(story_slow, 60, slow)
+        _i, prob_usual = W.judge(story_slow, 60)
+        check("the rhythm follows the reference's shots and the story's own length: a calm one asks for fewer scenes and "
+              "words, and the writer's own check asks no more than that",
+              "6 to 7 scenes" in rules_slow and "a calm pace" in rules_slow and "grabs attention" not in rules_slow
+              and w_slow == 78 and prob_slow == "" and "too short" in prob_usual
+              and "13 to 14 scenes" in R.rules_of({"shot_avg": 3.0, "wps": 2.8}, 45)[0]
+              and "quick cuts" in R.rules_of({"shot_avg": 3.0}, 120)[0] and "11 to 13 scenes, 2 or 3 lines" in R.rules_of({"shot_avg": 10.0}, 120)[0]
+              and "an even pace" in R.rules_of({"shot_avg": 6.0}, 75)[0], (rules_slow, w_slow, prob_slow, prob_usual))
         home3 = c.get("/auto/cartoon", headers=H).get_data(as_text=True)
         check("the home page: a video to study, the studies listed, the rhythm to choose for a story",
               "Study a cartoon you like" in home3 and "Study:" in home3 and "See the storyboard" in home3

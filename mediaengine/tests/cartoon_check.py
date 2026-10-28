@@ -340,7 +340,9 @@ def main() -> int:
         try:                                               # (a finished film of such a script shows it as text)
             odd_text = all(Tx.to_text(x).startswith("Title:") for x in (
                 {"cast": {"a": {"name": "A"}}, "narrator": ["a"], "scenes": ["x", {"lines": [{"who": ["a"], "pose": ["x"]}]}]},
-                {"cast": [1], "scenes": {"a": 1}}, "x", {"scenes": [{"visual": {"kind": "flow", "nodes": [{}], "edges": 3}, "bg": 5}]}))
+                {"cast": [1], "scenes": {"a": 1}}, "x", {"scenes": [{"visual": {"kind": "flow", "nodes": [{}], "edges": 3}, "bg": 5}]},
+                {"cast": {"a": {"name": ["Ann"], "role": ["mayor"]}, "b": {"name": 5, "role": 7}}, "narrator": "a",
+                 "scenes": [{"lines": [{"who": "a", "text": "Hi"}, {"who": "b", "text": "Yes"}]}]}))
         except Exception as exc:
             odd_text = repr(exc)
         waiting = vo._submit({"kind": "cartoon_make", "script": SHORT, "voices": False, "title": "w"}, addon=False)
