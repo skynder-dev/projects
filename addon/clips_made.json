@@ -3,10 +3,10 @@
  "clips": [
   {
    "file": "clip_01.mp4",
-   "s": 75.06,
-   "e": 97.57,
-   "seconds": 22.51,
-   "saved": "D:\\a\\_temp\\home-voice\\Exports\\nasa_interview - clips\\01 - Well I didn't actually step foot.mp4",
+   "s": 48.44,
+   "e": 67.79,
+   "seconds": 19.35,
+   "saved": "D:\\a\\_temp\\home-voice\\Exports\\nasa_interview - clips\\01 - In one world absolutely incredible.mp4",
    "width": 1080,
    "height": 1920,
    "layouts": [
@@ -14,15 +14,15 @@
    ],
    "shots": 1,
    "faces": true,
-   "captions": 25,
+   "captions": 20,
    "plan": [
     {
      "s": 0.0,
-     "e": 23.51,
+     "e": 20.35,
      "layout": "crop",
-     "cx": 0.4977,
+     "cx": 0.4891,
      "seen": {
-      "1": 68
+      "1": 59
      }
     }
    ],
@@ -30,9 +30,9 @@
   },
   {
    "file": "clip_02.mp4",
-   "s": 337.45,
-   "e": 358.61,
-   "seconds": 21.16,
+   "s": 337.29,
+   "e": 358.63,
+   "seconds": 21.34,
    "saved": "D:\\a\\_temp\\home-voice\\Exports\\nasa_interview - clips\\02 - What are you most looking forward to.mp4",
    "width": 1080,
    "height": 1920,
@@ -45,11 +45,11 @@
    "plan": [
     {
      "s": 0.0,
-     "e": 22.16,
+     "e": 22.34,
      "layout": "crop",
      "cx": 0.4938,
      "seen": {
-      "1": 64
+      "1": 65
      }
     }
    ],
@@ -57,5 +57,5 @@
   }
  ],
  "folder": "D:\\a\\_temp\\home-voice\\Exports\\nasa_interview - clips",
- "finished_at": "2026-10-28T00:37:43"
+ "finished_at": "2026-10-28T01:05:33"
 }

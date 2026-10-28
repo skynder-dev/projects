@@ -1,0 +1,7 @@
+{"result": {"ok": true, "torch": "2.8.0+cpu", "cuda": false, "cuda_note": "", "gpu": "", "vram_gb": 0, "voxcpm": "2.0.3", "faster_whisper": "1.2.1"}}
+
+********
+Warning: flash-attn is not installed. Will only run the manual PyTorch version. Please install flash-attn for faster inference.
+********
+ 
+{"result": {"ok": true, "torch": "2.8.0+cpu", "qwen_tts": "0.1.1", "transformers": "4.57.3"}}
