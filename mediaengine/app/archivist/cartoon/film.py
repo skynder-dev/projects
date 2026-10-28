@@ -501,6 +501,37 @@ def mouth_tracks(tl: dict) -> dict:
 
 # ------------------------------------------------------------------------------------------------- the film
 
+TRANS_S = {"fade": 0.3, "slide": 0.4, "iris": 0.45}
+_IRIS: dict = {}
+
+
+def transition(prev: np.ndarray, cur: np.ndarray, st: float, same_place: bool, index: int) -> np.ndarray:
+    """The first moments of a scene over the last picture of the one before: a cross-fade in the same place; to
+    another place the new scene slides in, or opens as a circle (by turns)."""
+    kind = "fade" if same_place else ("slide" if index % 2 else "iris")
+    dur = TRANS_S[kind]
+    if st >= dur:
+        return cur
+    a = max(0.0, st / dur)
+    e = ease(a)
+    if kind == "fade":
+        return (cur.astype(np.float32) * a + prev.astype(np.float32) * (1 - a)).astype(np.uint8)
+    h, w = cur.shape[:2]
+    if kind == "slide":                                     # the old one out to the left, the new one in from the right
+        off = int(round(w * e))
+        if off <= 0:
+            return prev
+        return np.concatenate([prev[:, off:], cur[:, :off]], axis=1) if off < w else cur
+    key = (h, w)
+    if key not in _IRIS:                                    # each pixel's distance from the middle, 0..1
+        yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+        d = np.sqrt((xx - w / 2) ** 2 + (yy - h / 2) ** 2)
+        _IRIS.clear()
+        _IRIS[key] = d / float(d.max())
+    m = np.clip((e * 1.08 - _IRIS[key]) / 0.04, 0, 1)[..., None]   # (a soft edge)
+    return (cur.astype(np.float32) * m + prev.astype(np.float32) * (1 - m)).astype(np.uint8)
+
+
 def captions_ass(tl: dict, width: int, height: int, opts: dict, work: Path, film: dict | None = None) -> Path | None:
     from .. import textfx as tf, voice as vo
     words = [w for s in tl["scenes"] for ln in s["lines"]                 # (a bubble shows its own words - when its speaker
@@ -584,9 +615,8 @@ def render(script: dict, out: Path, work: Path, voices: dict | None = None, capt
             draw_frame(cv, film, scene, t, m)
             cv.pop()
             st = t - scene["s"]
-            if si > 0 and st < 0.3 and prev_last is not None:   # a quick cross-fade between scenes
-                a = st / 0.3
-                cv.img[:] = (cv.img.astype(np.float32) * a + prev_last.astype(np.float32) * (1 - a)).astype(np.uint8)
+            if si > 0 and prev_last is not None:
+                cv.img[:] = transition(prev_last, cv.img, st, tl["scenes"][si - 1].get("bg") == scene.get("bg"), si)
             if t + 1.0 / FPS * max(1, every) >= scene["e"]:
                 prev_last = cv.img.copy()
             try:

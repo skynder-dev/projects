@@ -171,6 +171,12 @@ def main() -> int:
           and sp[1] == "Город платит 480 миллионов рублей, бригада получает 1,2 миллиона. Это 300 долларов и 21 миллион рублей."
           and sp2[0] == "300 million dollars, 5 dollars each; it cost 1,000 dollars, then 2,000 laptops in 2024."
           and sp2[1] == "5 тысяч долларов, 3 тысячи евро, 1 процент и 21 процент, в 2024 году.", (sp, sp2))
+    a_, b_ = np.zeros((96, 54, 3), np.uint8), np.full((96, 54, 3), 200, np.uint8)
+    tr = {k: F.transition(a_, b_, 0.15, same, i) for k, same, i in (("fade", True, 2), ("slide", False, 1), ("iris", False, 2))}
+    check("transitions: a cross-fade in the same place; a slide or an opening circle to another place; then the new scene",
+          abs(float(tr["fade"].mean()) - 100) < 10 and float(tr["slide"][:, :10].mean()) < 5 and float(tr["slide"][:, -10:].mean()) > 195
+          and float(tr["iris"][48, 27].mean()) > 195 and float(tr["iris"][0, 0].mean()) < 5
+          and np.array_equal(F.transition(a_, b_, 1.0, False, 1), b_), {k: float(v.mean()) for k, v in tr.items()})
     from archivist.cartoon import music as Mu
     beds = {m: Mu.made(12, m) for m in Mu.MOODS}
     v = np.zeros(48000 * 12, np.float32)
