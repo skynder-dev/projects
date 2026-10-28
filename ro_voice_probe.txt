@@ -1,0 +1,7 @@
+piper-voices 5041a7a49ae5b3a0f30e6837769eb03fdbb231bd Romanian: ['ro/ro_RO/mihai/medium']
+[0;93m2026-10-28 04:56:28.087529557 [W:onnxruntime:Default, device_discovery.cc:95 GetPciBusId] Skipping pci_bus_id for PCI path at "/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/5620e0c7-8062-4dce-aeb7-520c7ef76171" because filename "5620e0c7-8062-4dce-aeb7-520c7ef76171" did not match expected pattern of [0-9a-f]+:[0-9a-f]+:[0-9a-f]+[.][0-9a-f]+[m
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+  ro_ro_RO_mihai_medium 1: 0.8 Rețul este de 4 ori mai mare decât pe piață.
+  ro_ro_RO_mihai_medium 2: 0.5 si contactul este apobat.
+  ro_ro_RO_mihai_medium 3: 0.75 Continuabilii plătesc toată diferență.
+  ro_ro_RO_mihai_medium 4: 0.882 Primaria a plătit 4 milioane de lei pentru un drum care s-a sticat după prima iarnă.

@@ -1,0 +1,35 @@
+{
+ "piper_voices_rev": "5041a7a49ae5b3a0f30e6837769eb03fdbb231bd",
+ "voices": {
+  "ro_ro_RO_mihai_medium": {
+   "lines": [
+    {
+     "line": "Prețul este de patru ori mai mare decât pe piață.",
+     "heard": "Rețul este de 4 ori mai mare decât pe piață.",
+     "share": 0.8,
+     "s": 0.06
+    },
+    {
+     "line": "Și contractul este aprobat.",
+     "heard": "si contactul este apobat.",
+     "share": 0.5,
+     "s": 0.04
+    },
+    {
+     "line": "Contribuabilii plătesc toată diferența.",
+     "heard": "Continuabilii plătesc toată diferență.",
+     "share": 0.75,
+     "s": 0.05
+    },
+    {
+     "line": "Primăria a plătit patru milioane de lei pentru un drum care s-a stricat după prima iarnă.",
+     "heard": "Primaria a plătit 4 milioane de lei pentru un drum care s-a sticat după prima iarnă.",
+     "share": 0.882,
+     "s": 0.11
+    }
+   ],
+   "share": 0.733,
+   "card": "# Model card for miahi (medium)\n\n* Language: ro_RO (Romanian, Romania)\n* Speakers: 1\n* Quality: medium\n* Samplerate: 22,050Hz\n\n## Dataset\n\n* URL: https://github.com/OHF-Voice/voice-datasets\n* License: CC0\n\n## Training\n\nFinetuned from U.S. English lessac voice (medium quality).\n"
+  }
+ }
+}
