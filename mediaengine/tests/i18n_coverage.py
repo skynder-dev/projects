@@ -32,6 +32,7 @@ KEEP = {  # stays English in Russian too (names, units, formats)
     "Qwen", "TTS", "VoxCPM",                                                        # the voice engines (Qwen3-TTS, VoxCPM2)
     "Converted", "GoPro", "JPG", "Ctrl",                                            # the Convert folder's name, a camera, a key
     "DJI", "Osmo", "LRF",                                                           # a camera maker, its camera, its small copies
+    "github", "com", "llama", "cpp", "Alibaba", "MIT",                              # the story writer: sites, program, licences
 }
 SKIP_PREFIX = ("/api/", "/static", "/media/", "/thumb/", "/storyboard/", "/clip-preview/", "/export-file/", "/composition-file/",
                "/diagnostics/fixture", "/auto/rev/")

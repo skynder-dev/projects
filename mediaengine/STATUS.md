@@ -909,6 +909,18 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   E2E two 92, Russian 226 pages 0 English): Clips - "Make the 5 likeliest" (no ticking; start and end as found when
   the page does not send them); the help under the button describes the new framing. Asked the owner whether to add
   "Download a video by a link" (yt-dlp; YouTube's terms forbid downloading) - not built without his "yes".
+- 2026-10-28, the writer probe compared two models on the program's own requests (run 40618245131, Linux CPU):
+  Qwen3-4B-Instruct-2507 Q8_0 - good English, Russian/Romanian weaker, ~30 % longer than asked; Qwen3-14B Q4_K_M
+  (Qwen's GGUF, pinned 530227a7, 9,001,752,960 bytes) - clearly better Russian and Romanian, characters all people,
+  lengths kept (~76-86 s), 2x slower on a processor. Both offered; the 14B first when the voice add-on knows a card
+  with 10 GB or more (the owner's RTX 3060: 12 GB). Real Windows run of the writer (run 40618245155): installed in
+  27 s, three stories in 4-6 min each on the runner's processor (the Vulkan start failed there, the CPU build took
+  over), the English one made into an 85 s cartoon. Romanian voice: VoxCPM2 garbled the narrator cloned from the
+  English recording (Whisper heard 3 of 7 words, run 40616952980) -> a described voice for the narrator in languages
+  Qwen3-TTS does not speak; Piper's Romanian voices probed (mediaengine-ro-voice-probe). An independent review of
+  the writer and the library found 12 defects (money words eating the next word, a model change racing a story,
+  the failed story kept over the passed one, numbers in charts, 'Narrator:' lines, 500s on odd JSON scripts and on
+  Reveal) - all fixed with checks.
 - 2026-10-28, the build of 69c4180 (Cartoon Studio, "The one speaking, close up") failed in Windows CI run 40611547648
   at the cartoon check only: the check read the film with ffprobe, which a Windows MediaEngine does not have -> the
   program's own probe. Not published; the next build carries it with the story writer.
