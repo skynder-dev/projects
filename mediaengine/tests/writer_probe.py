@@ -30,6 +30,13 @@ TASKS = [
      "topic": "Как управляющая компания зарабатывает на ремонте подъезда, который так и не сделали"},
     {"id": "en_text", "mode": "text", "lang": "en", "format": "horizontal", "secs": 80, "source": SOURCE},
     {"id": "ro_adapt", "mode": "adapt", "lang": "ro", "country": "Moldova", "format": "vertical"},
+    # the rhythm of a studied reference (Reference Lab): quick cuts and lively speech, then a calm one
+    {"id": "en_quick", "mode": "topic", "lang": "en", "format": "vertical", "secs": 60,
+     "topic": "How a school pays twice for the same meals",
+     "style": {"shot_avg": 3.0, "wps": 2.9, "first_at": 0.4, "opens": "question"}},
+    {"id": "ru_calm", "mode": "topic", "lang": "ru", "format": "horizontal", "secs": 90,
+     "topic": "Как район платит за уборку снега, которой не было",
+     "style": {"shot_avg": 11.0, "wps": 1.9, "first_at": 2.5, "opens": "statement"}},
     {"id": "ru_adapt", "mode": "adapt", "lang": "ru", "country": "Russia", "format": "vertical"},
 ]
 
@@ -100,7 +107,7 @@ def main() -> int:
                 tries.append({"error": repr(exc)})
                 break
             text = W.clean(ans["text"], task["format"])
-            info, problem = W.judge(text, secs)
+            info, problem = W.judge(text, secs, task.get("style"))
             tries.append({"s": ans["s"], "usage": ans["usage"], "finish": ans["finish"], "problem": problem,
                           "speed": {k: ans["timings"].get(k) for k in ("prompt_per_second", "predicted_per_second")}})
             if not problem:
@@ -117,6 +124,10 @@ def main() -> int:
                "poses": sum(1 for ln in lines if ln.get("pose")), "feelings": sum(1 for ln in lines if ln.get("emotion")),
                "cast": {c.get("name"): [c.get("role"), c.get("female")] for c in sc["cast"].values()},
                "language": sc.get("language")}
+        if task.get("style"):                              # (what the rhythm asked: scenes from-to, words)
+            from archivist.cartoon import reference as R
+            lo, hi, w_ = R.targets(task["style"], secs)
+            row["asked"] = {"scenes": [lo, hi], "words": w_, "followed": lo <= len(sc["scenes"]) <= hi}
         if sc["scenes"]:
             try:
                 row["seconds_estimated"] = F.timeline(F.check_script(sc))["seconds"]
