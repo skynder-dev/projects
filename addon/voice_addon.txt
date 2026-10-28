@@ -1,87 +1,103 @@
 PASS Install starts
-14:43:15 running checking  0/0 MB
-14:43:20 running packages Installing : 0/0 MB
-14:43:55 running models audiovae.pth 0/5446 MB
-14:44:00 running models model.safetensors 721/5446 MB
-14:44:05 running models model.safetensors 1700/5446 MB
-14:44:10 running models model.safetensors 2668/5446 MB
-14:44:15 running models model.safetensors 3714/5446 MB
-14:44:20 running models model.safetensors 4614/5446 MB
-14:44:25 running models special_tokens_map.json 4957/5446 MB
-14:44:30 running checking_addon  5446/5446 MB
-14:44:35 running qwen_packages Downloading rich-15.0.0-py3-none-any.whl.metadata 0/0 MB
-14:44:40 running qwen_packages Installing : 0/0 MB
-14:44:50 running qwen_models model.safetensors 82/4544 MB
-14:44:55 running qwen_models model.safetensors 851/4544 MB
-14:45:00 running qwen_models model.safetensors 2072/4544 MB
-14:45:05 running qwen_models model.safetensors 3498/4544 MB
-14:45:10 running qwen_models model.safetensors 3859/4544 MB
-14:45:15 running qwen_models model.safetensors 4508/4544 MB
-14:45:20 running checking_addon  4544/4544 MB
-14:45:25 done   4544/4544 MB
+00:20:49 running checking  0/0 MB
+00:20:54 running packages Downloading httpx2-2.14.0-py3-none-any.whl 0/0 MB
+00:20:59 running packages Installing : 0/0 MB
+00:21:55 running models audiovae.pth 289/5446 MB
+00:22:00 running models model.safetensors 811/5446 MB
+00:22:05 running models model.safetensors 1421/5446 MB
+00:22:10 running models model.safetensors 2076/5446 MB
+00:22:15 running models model.safetensors 2922/5446 MB
+00:22:20 running models model.safetensors 3660/5446 MB
+00:22:25 running models model.safetensors 4492/5446 MB
+00:22:30 running models model.safetensors 4957/5446 MB
+00:22:35 running models tokenizer_config.json 4960/5446 MB
+00:22:40 running checking_addon  5446/5446 MB
+00:22:45 running qwen_packages  0/0 MB
+00:22:50 running qwen_packages Installing : 0/0 MB
+00:23:10 running qwen_models model.safetensors 1/4544 MB
+00:23:15 running qwen_models model.safetensors 594/4544 MB
+00:23:20 running qwen_models model.safetensors 1375/4544 MB
+00:23:25 running qwen_models model.safetensors 2265/4544 MB
+00:23:30 running qwen_models model.safetensors 2947/4544 MB
+00:23:35 running qwen_models model.safetensors 3546/4544 MB
+00:23:40 running qwen_models model.safetensors 3859/4544 MB
+00:23:50 running qwen_models tokenizer_config.json 4541/4544 MB
+00:23:55 running checking_addon  4544/4544 MB
+00:24:00 done   4544/4544 MB
 PASS the add-on is installed
 PASS its manifest: version, Python, torch, models
 PASS the new engine (Qwen3-TTS, the owner's pick 14_5) is installed with it
 PASS the page shows the forms once installed
 PASS a voice-over is accepted
-14:45:25 20261027-144525-695bfc working starting 0%
-14:45:28 20261027-144525-695bfc working loading 2%
-14:45:41 20261027-144525-695bfc working speaking 1/1 5%
-14:47:23 20261027-144525-695bfc working speaking 1/1 15%
-14:48:53 20261027-144525-695bfc working listening 95%
-14:48:59 20261027-144525-695bfc done  0%
+00:24:00 20261028-002400-f315c7 working starting 0%
+00:24:03 20261028-002400-f315c7 working loading 2%
+00:24:30 20261028-002400-f315c7 working speaking 1/1 5%
+00:26:36 20261028-002400-f315c7 working speaking 1/1 15%
+00:28:30 20261028-002400-f315c7 working listening 95%
+00:28:39 20261028-002400-f315c7 working finishing 97%
+00:28:42 20261028-002400-f315c7 done  0%
 PASS the voice-over is made
 PASS every word said (listened to)
 PASS a plausible length
 PASS said by the new engine (Qwen3-TTS) in the voice 9_2
-14:48:59 20261027-144859-67b212 working starting 0%
-14:49:02 20261027-144859-67b212 working loading 2%
-14:49:20 20261027-144859-67b212 working speaking 1/1 5%
-14:49:53 20261027-144859-67b212 working listening 95%
-14:49:56 20261027-144859-67b212 done  0%
+00:28:42 20261028-002842-2d3813 working starting 0%
+00:28:45 20261028-002842-2d3813 working loading 2%
+00:29:27 20261028-002842-2d3813 working speaking 1/1 5%
+00:30:09 20261028-002842-2d3813 working listening 95%
+00:30:15 20261028-002842-2d3813 done  0%
 PASS a Russian voice-over in the same voice, heard back in Cyrillic
 PASS its pace: a bit faster (8% shorter), the captions within the faster voice
-14:49:56 20261027-144956-116838 working starting 0%
-14:49:59 20261027-144956-116838 working loading 2%
-14:50:52 20261027-144956-116838 working speaking 1/1 5%
-14:51:19 20261027-144956-116838 working listening 95%
-14:51:25 20261027-144956-116838 done  0%
+00:30:15 20261028-003015-3afb13 working starting 0%
+00:30:18 20261028-003015-3afb13 working loading 2%
+00:31:29 20261028-003015-3afb13 working speaking 1/1 5%
+00:32:48 20261028-003015-3afb13 working listening 95%
+00:32:54 20261028-003015-3afb13 done  0%
 PASS a voice from a description is still made (VoxCPM2)
-14:51:26 20261027-145126-5965eb working video 50%
-14:51:29 20261027-145126-5965eb done  0%
+00:32:54 20261028-003254-24288c working video 50%
+00:33:00 20261028-003254-24288c done  0%
 PASS the voice onto the video, captions burned, checked
-14:51:29 20261027-145129-e6cfba working starting 0%
-14:51:32 20261027-145129-e6cfba working listening 20%
-14:51:35 20261027-145129-e6cfba done  0%
+00:33:00 20261028-003300-721a59 working starting 0%
+00:33:03 20261028-003300-721a59 working listening 20%
+00:33:09 20261028-003300-721a59 working checking 90%
+00:33:12 20261028-003300-721a59 done  0%
 PASS captions from the video's own speech hear the voice-over
 PASS clips: the NASA interview downloaded (pinned SHA-256)
 PASS clips: finding starts
-14:51:38 20261027-145138-53f2b4 working starting 0%
-14:51:41 20261027-145138-53f2b4 working listening 20%
-14:51:47 20261027-145138-53f2b4 working listening 26%
-14:51:53 20261027-145138-53f2b4 working listening 30%
-14:51:59 20261027-145138-53f2b4 working listening 34%
-14:52:02 20261027-145138-53f2b4 working listening 38%
-14:52:08 20261027-145138-53f2b4 working listening 43%
-14:52:14 20261027-145138-53f2b4 working listening 47%
-14:52:23 20261027-145138-53f2b4 working listening 51%
-14:52:26 20261027-145138-53f2b4 working listening 56%
-14:52:35 20261027-145138-53f2b4 working listening 60%
-14:52:41 20261027-145138-53f2b4 working listening 64%
-14:52:47 20261027-145138-53f2b4 working listening 69%
-14:52:53 20261027-145138-53f2b4 working listening 73%
-14:52:59 20261027-145138-53f2b4 working listening 77%
-14:53:05 20261027-145138-53f2b4 working listening 81%
-14:53:11 20261027-145138-53f2b4 working listening 86%
-14:53:17 20261027-145138-53f2b4 done  0%
+00:33:15 20261028-003315-a92ad7 working starting 0%
+00:33:18 20261028-003315-a92ad7 working listening 20%
+00:33:30 20261028-003315-a92ad7 working listening 26%
+00:33:39 20261028-003315-a92ad7 working listening 30%
+00:33:48 20261028-003315-a92ad7 working listening 33%
+00:33:57 20261028-003315-a92ad7 working listening 37%
+00:34:06 20261028-003315-a92ad7 working listening 42%
+00:34:15 20261028-003315-a92ad7 working listening 46%
+00:34:24 20261028-003315-a92ad7 working listening 50%
+00:34:36 20261028-003315-a92ad7 working listening 53%
+00:34:45 20261028-003315-a92ad7 working listening 57%
+00:34:57 20261028-003315-a92ad7 working listening 61%
+00:35:06 20261028-003315-a92ad7 working listening 65%
+00:35:15 20261028-003315-a92ad7 working listening 69%
+00:35:24 20261028-003315-a92ad7 working listening 73%
+00:35:33 20261028-003315-a92ad7 working listening 77%
+00:35:42 20261028-003315-a92ad7 working listening 80%
+00:35:54 20261028-003315-a92ad7 working listening 84%
+00:36:03 20261028-003315-a92ad7 working listening 88%
+00:36:09 20261028-003315-a92ad7 working listening 90%
+00:36:15 20261028-003315-a92ad7 done  0%
 PASS clips: the 9-minute interview heard (space, station)
 PASS clips: at least five clips found, each 15-30 s with its words and why
 PASS clips: the page lists them with pictures
 PASS clips: making starts
-14:53:18 20261027-145318-00460a working starting 0%
-14:53:21 20261027-145318-00460a working clip 1/2 0%
-14:53:51 20261027-145318-00460a working clip 2/2 50%
-14:54:15 20261027-145318-00460a done  0%
+00:36:15 20261028-003615-e7f7b5 working starting 0%
+00:36:18 20261028-003615-e7f7b5 working clip 1/2 0%
+00:37:04 20261028-003615-e7f7b5 working clip 2/2 50%
+00:37:46 20261028-003615-e7f7b5 done  0%
 PASS clips: two vertical clips made from the interview - the person kept in the frame (crop on the face), captions
-PASS the page in Russian with a finished voice-over
-{"passed": 23, "total": 23}
+Traceback (most recent call last):
+  File "D:\a\projects\projects\mediaengine\tests\voice_addon_check.py", line 280, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "D:\a\projects\projects\mediaengine\tests\voice_addon_check.py", line 217, in main
+    crew_check(c, H, Path(a.talk).resolve(), out, check, timings, wait)
+    ^^^^^^^^^^
+NameError: name 'crew_check' is not defined
