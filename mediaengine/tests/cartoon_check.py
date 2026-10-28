@@ -203,9 +203,9 @@ def main() -> int:
         return float(np.sqrt(np.mean(snd[int(t0 * F.SR):int(t1 * F.SR)] ** 2)))
     b_s = snd_tl["scenes"][0]["lines"][1]["s"]
     m_s = snd_tl["scenes"][1]["s"] + 0.8
-    check("sounds: a speech bubble pops up, a magnifier rings; silence before them",
-          _rms(b_s, b_s + 0.1) > 0.01 and _rms(m_s, m_s + 0.3) > 0.01 and _rms(0.0, 0.5) < 0.001,
-          (_rms(b_s, b_s + 0.1), _rms(m_s, m_s + 0.3), _rms(0.0, 0.5)))
+    check("sounds: a speech bubble pops up (just before its words), a magnifier rings; silence before them",
+          _rms(b_s - 0.15, b_s) > 0.01 and _rms(m_s, m_s + 0.3) > 0.01 and _rms(0.0, 0.5) < 0.001,
+          (_rms(b_s - 0.15, b_s), _rms(m_s, m_s + 0.3), _rms(0.0, 0.5)))
     check("pace: shorter pauses for a quick film, longer for a calm one; an unknown pace is the usual",
           lens["quick"] < lens[""] < lens["calm"] and F.check_script(dict(_T.parse(_T.ROAD_TEXT), pace="odd"))["pace"] == "",
           lens)

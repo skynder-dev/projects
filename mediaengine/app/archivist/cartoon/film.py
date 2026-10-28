@@ -546,13 +546,13 @@ def mix(tl: dict, sounds: bool = True) -> np.ndarray:
         if sounds and v.get("kind") in ("flow", "counter", "bag", "title"):
             put(_sfx("coins"), s["s"] + 0.6, 0.5)
         if sounds and v.get("kind") in ("bars", "percent", "compare", "timeline", "list", "tender", "contract"):
-            put(_sfx("pop"), s["s"] + 0.35, 0.45)          # (a picture appears)
+            put(_sfx("pop"), s["s"] + 0.05, 0.45)          # (a picture appears - over before the first word, at 0.25 s)
         if sounds and v.get("kind") == "magnifier":
             put(_sfx("ding"), s["s"] + 0.8, 0.6)
         if sounds:
             for ln in s["lines"]:                          # (a speech bubble pops up)
-                if ln.get("bubble"):
-                    put(_sfx("pop"), ln["s"], 0.4)
+                if ln.get("bubble"):                       # (just before its words, not on them)
+                    put(_sfx("pop"), max(s["s"], ln["s"] - 0.15), 0.4)
         for ln in s["lines"]:
             if ln.get("wav") and Path(ln["wav"]).is_file():
                 put(_read_wav(ln["wav"]), ln["s"], 1.0)

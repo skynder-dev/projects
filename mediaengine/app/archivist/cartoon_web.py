@@ -15,6 +15,7 @@ from .cartoon import bgs, chars as ch, film as F, jobs as cj, library as L, refe
 
 CSS = """<style>
 .ct-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ct-row select,.ct-row input,.ct-choices select{max-width:100%;min-width:0}
 .ct-choices label{display:inline-flex;gap:6px;align-items:center;margin:3px 14px 3px 0}
 .ct-film{border-top:1px solid var(--line);padding:12px 0}
 .ct-film video{max-width:240px;max-height:320px;border-radius:10px;background:#000}
@@ -232,7 +233,7 @@ def register(app, page, err_page, e, human_bytes):
 
     def _camera_choice(close: bool = True, pace: str = "") -> str:
         paces = "".join(f"<option value='{k}' {'selected' if k == pace else ''}>{e(v)}</option>" for k, v in
-                        (("", "usual"), ("quick", "short (quick, like a cartoon that cuts often)"), ("calm", "long (calm)")))
+                        (("", "usual"), ("quick", "short (quick)"), ("calm", "long (calm)")))
         return (f"<input type='hidden' name='camera_form' value='1'><label style='display:block;margin-top:8px'>"
                 f"<input type='checkbox' name='camera' value='1' {'checked' if close else ''}> Close-ups of the one speaking "
                 f"(in scenes without a picture to read)</label>"
