@@ -364,7 +364,8 @@ class Server:
         lf = self.log.open("w", encoding="utf-8", errors="replace")
         try:
             self.proc = subprocess.Popen(self._cmd(), stdout=lf, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL,
-                                         cwd=str(_server_exe(self.build).parent if _server_exe(self.build) else ROOT),
+                                         cwd=str(_server_exe(self.build).parent if _server_exe(self.build) else
+                                                 ROOT if ROOT.is_dir() else self.log.parent),
                                          **process_kwargs(below_normal=False))
         except OSError as exc:
             lf.close()
