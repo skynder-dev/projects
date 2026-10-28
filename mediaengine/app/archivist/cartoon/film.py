@@ -515,15 +515,28 @@ def captions_ass(tl: dict, width: int, height: int, opts: dict, work: Path, film
 
 
 def render(script: dict, out: Path, work: Path, voices: dict | None = None, captions: dict | None = None,
-           progress=None, stop=None, sounds: bool = True, every: int = 1) -> dict:
+           progress=None, stop=None, sounds: bool = True, every: int = 1, music: dict | None = None) -> dict:
     """The film as an MP4. captions: the look of the captions (textfx options) or None for none. every: draw only
-    every n-th picture (a quick preview); progress(share), stop() -> True ends it."""
+    every n-th picture (a quick preview); progress(share), stop() -> True ends it. music: {"kind": "made" (the
+    program's own, "mood") or "file" ("path")} - quiet, lowered under the voices; None: none."""
     from .. import textfx as tf, voice as vo
     film = check_script(script)
     W, H = FORMATS[film["format"]]
     tl = timeline(film, voices)
     work.mkdir(parents=True, exist_ok=True)
     audio = mix(tl, sounds)
+    if music and music.get("kind") in ("made", "file"):
+        from . import music as M
+        try:
+            bed = M.bed(music["kind"], len(audio) / SR, audio, music.get("mood") or "light", music.get("path") or "",
+                        vo._ffmpeg())
+        except OSError:
+            raise FilmError("The music file could not be read.")
+        if bed is not None:
+            audio = audio + bed[:len(audio)]
+            peak = float(np.max(np.abs(audio))) if len(audio) else 0.0
+            if peak > 0.98:
+                audio *= 0.98 / peak
     with wave.open(str(work / "sound.wav"), "wb") as w:
         w.setnchannels(1)
         w.setsampwidth(2)

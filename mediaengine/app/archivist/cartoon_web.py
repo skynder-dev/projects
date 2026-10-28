@@ -159,6 +159,18 @@ def register(app, page, err_page, e, human_bytes):
         return "".join(f"<label><input type='radio' name='format' value='{k}' {'checked' if k == current else ''}> {e(v)}</label>"
                        for k, v in (("vertical", "Vertical 9:16 (TikTok, Reels, Shorts)"), ("horizontal", "Wide 16:9 (YouTube)")))
 
+    def _music_choice() -> str:
+        moods = "".join(f"<option value='{k}'>{e(v)}</option>" for k, v in
+                        (("light", "light and lively"), ("suspense", "a little suspense"), ("calm", "calm and soft")))
+        return (f"<div style='margin-top:8px'><b>Music</b><div class='ct-choices'>"
+                f"<label><input type='radio' name='music' value='made' checked> Made by the program</label>"
+                f"<select name='mood'>{moods}</select>"
+                f"<label><input type='radio' name='music' value='file'> My music file</label>"
+                f"<label><input type='radio' name='music' value='none'> No music</label></div>"
+                f"<div class='ct-row' style='margin-top:4px'><input name='music_path' placeholder='A music file on this PC (for \"My music file\")' "
+                f"style='flex:1;min-width:240px'><button type='button' class='btn2' data-pick-music>Choose…</button></div>"
+                f"<div class='muted' style='font-size:13px'>Quiet under the voices; it goes softer while someone speaks.</div></div>")
+
     def _captions_choice() -> str:
         styles = "".join(f"<option value='{k}'>{e(v)}</option>" for k, v in
                          (("pop", "Bold capitals, the word said in color"), ("box", "On a dark box"), ("classic", "Classic"),
@@ -290,17 +302,19 @@ def register(app, page, err_page, e, human_bytes):
                 f"<details style='margin-top:6px'><summary>A script as JSON instead</summary>"
                 f"<textarea name='script' rows='6' style='width:100%' placeholder='Paste a script here (only for \"My script\")'></textarea></details>"
                 f"<div class='ct-choices' style='margin-top:8px'><b>Format</b><br>{_format_choice('vertical')}</div>"
-                f"{_voices_choice()}{_captions_choice()}"
+                f"{_voices_choice()}{_captions_choice()}{_music_choice()}"
                 f"<div style='margin-top:12px'><button class='ae-big'>Make the cartoon</button></div></form></div>"
                 + (f"<div class='card' id='films' style='margin-top:14px'><h2 style='margin-top:0'>Cartoons and stories</h2>{rows}</div>" if rows else ""))
-        return page("Cartoon Studio", body, _POLL_JS + _PICK_JS)
+        return page("Cartoon Studio", body, _POLL_JS + _PICK_JS + _MUSIC_JS)
 
     def _make(script: dict, f) -> str:
         script = dict(script)
         if f.get("format") in F.FORMATS:
             script["format"] = f.get("format")
         cap = {"style": f.get("style") or "pop"} if f.get("captions") == "1" else None
-        return cj.new_make(script, f.get("voices") == "1", cap)
+        kind = f.get("music") if f.get("music") in ("made", "file", "none") else "made"
+        music = {"kind": kind, "mood": f.get("mood") or "light", "path": f.get("music_path") or ""} if kind != "none" else None
+        return cj.new_make(script, f.get("voices") == "1", cap, music=music)
 
     @app.post("/auto/cartoon/new")
     def cartoon_new():
@@ -368,7 +382,7 @@ def register(app, page, err_page, e, human_bytes):
                 f"<form method='post' action='/auto/cartoon/{jid}/again' data-dirty-watch "
                 f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">{scenes}"
                 f"<div class='ct-choices' style='margin-top:8px'><b>Format</b><br>{_format_choice(film['format'])}</div>"
-                f"{_voices_choice()}{_captions_choice()}"
+                f"{_voices_choice()}{_captions_choice()}{_music_choice()}"
                 f"<div style='margin-top:12px'><button class='ae-big'>Make it again</button></div></form>"
                 f"<details style='margin-top:12px'><summary>The whole story as text</summary>"
                 f"<form method='post' action='/auto/cartoon/{jid}/again' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
@@ -383,7 +397,7 @@ def register(app, page, err_page, e, human_bytes):
                 + f"<details style='margin-top:8px'><summary>The whole script (JSON)</summary>"
                 f"<textarea readonly rows='12' style='width:100%' translate='no'>{e(json.dumps(cj.script_of(jid), ensure_ascii=False, indent=1))}</textarea>"
                 f"</details></div>")
-        return page("Cartoon Studio", body, _POLL_JS)
+        return page("Cartoon Studio", body, _POLL_JS + _MUSIC_JS)
 
     def _story_page(j: dict):
         jid, res = j["id"], j.get("result") or {}
@@ -402,7 +416,7 @@ def register(app, page, err_page, e, human_bytes):
             body = (f"<div class='card'>{_block(j, _state_html(j) or '')}"
                     f"<details style='margin-top:8px'><summary class='muted'>What was asked</summary><div class='muted' "
                     f"style='white-space:pre-wrap;font-size:13px' translate='no'>{e(what[:1500])}</div></details></div>")
-            return page("Cartoon Studio", head + body, _POLL_JS)
+            return page("Cartoon Studio", head + body, _POLL_JS + _MUSIC_JS)
         story = W.story_of(jid)
         fmt = j.get("format") or "vertical"
         note = (f"<div class='callout card' style='margin:8px 0'>The model's story is shorter or simpler than asked: read it and "
@@ -413,7 +427,7 @@ def register(app, page, err_page, e, human_bytes):
                 f"<form method='post' action='/auto/cartoon/new' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
                 f"<textarea name='text' rows='22' style='width:100%;font-family:Consolas,monospace;font-size:13px' translate='no'>{e(story)}</textarea>"
                 f"<div class='ct-choices' style='margin-top:8px'><b>Format</b><br>{_format_choice(fmt)}</div>"
-                f"{_voices_choice()}{_captions_choice()}"
+                f"{_voices_choice()}{_captions_choice()}{_music_choice()}"
                 f"<div style='margin-top:12px'><button class='ae-big'>Make the cartoon</button></div></form></div>"
                 f"<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Not quite right?</h2>"
                 f"<div class='ct-row'><form method='post' action='/auto/cartoon/{jid}/rewrite' style='margin:0' "
@@ -423,7 +437,7 @@ def register(app, page, err_page, e, human_bytes):
                 f"{_adapt_form(story, fmt, j.get('title') or '', j.get('lang') or 'en')}</details>"
                 f"<details style='margin-top:8px'><summary class='muted'>What was asked</summary><div class='muted' "
                 f"style='white-space:pre-wrap;font-size:13px' translate='no'>{e(what[:1500])}</div></details></div>")
-        return page("Cartoon Studio", head + body, _POLL_JS)
+        return page("Cartoon Studio", head + body, _POLL_JS + _MUSIC_JS)
 
     SKIN_L = dict(zip(ch.SKINS, ("very light", "light", "light tan", "tan", "brown", "dark brown", "very dark")))
     HAIR_L = dict(zip(ch.HAIRS, ("black", "dark brown", "brown", "light brown", "blond", "grey", "white", "red", "jet black")))
@@ -721,6 +735,10 @@ _PICK_JS = ("document.querySelectorAll('[data-pick]').forEach(b=>b.onclick=async
             "headers:{'Content-Type':'application/json'},body:JSON.stringify({kind:'video'})});const x=await r.json();"
             "if(x.path){f.querySelector('input[name=video]').value=x.path;if(m)m.textContent=''}else if(m)m.textContent=x.error||''}"
             "catch(e){if(m)m.textContent=String(e)}});")
+_MUSIC_JS = ("document.querySelectorAll('[data-pick-music]').forEach(b=>b.onclick=async()=>{const f=b.closest('form');"
+             "try{const r=await fetch('/api/auto/pick-voice-file',{method:'POST',headers:{'Content-Type':'application/json'},"
+             "body:JSON.stringify({kind:'music'})});const x=await r.json();if(x.path){f.querySelector('input[name=music_path]').value=x.path;"
+             "const m=f.querySelector('input[name=music][value=file]');if(m)m.checked=true}}catch(e){}});")
 _READY = ("<div class='callout card cl-ready' data-ready hidden><b>Ready.</b> <span>Refresh the page to see it.</span> "
           "<a class='btn btn2' href='javascript:location.reload()'>Refresh</a></div>")
 _POLL_JS = ("(()=>{let dirty=false;document.querySelectorAll('form').forEach(f=>{f.addEventListener('input',()=>dirty=true);"

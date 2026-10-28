@@ -15,7 +15,11 @@ from . import film as F
 CAPTION_STYLES = ("pop", "box", "classic", "minimal", "single", "block")
 
 
-def new_make(script: dict, voices: bool = True, captions: dict | None = None, title: str = "") -> str:
+MUSIC_MOODS = ("light", "suspense", "calm")
+
+
+def new_make(script: dict, voices: bool = True, captions: dict | None = None, title: str = "",
+             music: dict | None = None) -> str:
     """A film to make (a job). voices: the characters speak (the voice add-on needed); otherwise a quick preview
     whose line lengths are estimated (silent, captions only)."""
     if not isinstance(script, dict):
@@ -28,7 +32,15 @@ def new_make(script: dict, voices: bool = True, captions: dict | None = None, ti
         cap = {"style": captions.get("style") if captions.get("style") in CAPTION_STYLES else "pop",
                "color": captions.get("color") or "yellow", "size": captions.get("size") or "medium",
                "position": captions.get("position") or ("middle" if film["format"] == "vertical" else "bottom")}
-    return vo._submit({"kind": "cartoon_make", "script": script, "voices": bool(voices), "captions": cap,
+    mus = None
+    if music and music.get("kind") == "made":
+        mus = {"kind": "made", "mood": music.get("mood") if music.get("mood") in MUSIC_MOODS else "light"}
+    elif music and music.get("kind") == "file":
+        p = Path(str(music.get("path") or "").strip().strip('"'))
+        if not p.is_file():
+            raise F.FilmError("Choose the music file (its full path), or no music.")
+        mus = {"kind": "file", "path": str(p)}
+    return vo._submit({"kind": "cartoon_make", "script": script, "voices": bool(voices), "captions": cap, "music": mus,
                        "title": (title or film["title"])[:60], "format": film["format"], "needs_addon": bool(voices)},
                       addon=bool(voices))
 
@@ -55,7 +67,8 @@ def do(jid: str, d: Path, job: dict) -> dict:
         base = 0.63 if voices else 0.02
         tmp = d / "film.new.mp4"
         r = F.render(job["script"], tmp, d / "render", voices, job.get("captions"),
-                     lambda x: vo._CURRENT.update(step="drawing", progress=round(base + (0.97 - base) * x, 3)), stop)
+                     lambda x: vo._CURRENT.update(step="drawing", progress=round(base + (0.97 - base) * x, 3)), stop,
+                     music=job.get("music"))
     except F.FilmError as exc:
         return {"ok": False, "error": str(exc)}
     vo._CURRENT.update(step="checking", progress=0.98)

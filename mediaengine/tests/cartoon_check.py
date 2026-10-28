@@ -171,6 +171,26 @@ def main() -> int:
           and sp[1] == "Город платит 480 миллионов рублей, бригада получает 1,2 миллиона. Это 300 долларов и 21 миллион рублей."
           and sp2[0] == "300 million dollars, 5 dollars each; it cost 1,000 dollars, then 2,000 laptops in 2024."
           and sp2[1] == "5 тысяч долларов, 3 тысячи евро, 1 процент и 21 процент, в 2024 году.", (sp, sp2))
+    from archivist.cartoon import music as Mu
+    beds = {m: Mu.made(12, m) for m in Mu.MOODS}
+    v = np.zeros(48000 * 12, np.float32)
+    v[48000 * 4:48000 * 7] = 0.3 * np.sin(np.arange(48000 * 3) / 48000 * 2 * np.pi * 200)
+    d = Mu.duck(Mu.made(12), v)
+    rms = lambda a: float(np.sqrt(np.mean(a ** 2)))     # noqa: E731
+    music_film = work / "music_v.mp4"
+    F.render(SHORT, music_film, work / "rm", None, None, music={"kind": "made", "mood": "suspense"})
+    quiet = c_ = None
+    try:
+        raw = subprocess.run([ff, "-v", "error", "-i", str(music_film), "-ac", "1", "-ar", "48000", "-f", "f32le", "-"],
+                             capture_output=True).stdout
+        snd = np.frombuffer(raw, np.float32)
+        quiet = rms(snd[-48000:-24000]) if len(snd) > 48000 else 0.0      # (the scene's air at the end: music only)
+    except Exception as exc:
+        c_ = exc
+    check("music: the program's own bed in three moods, quiet, lowered under a voice, mixed into a film",
+          all(len(b) == 12 * 48000 and 0.4 < float(np.abs(b).max()) <= 0.5 for b in beds.values())
+          and rms(d[48000:48000 * 3]) > 2.5 * rms(d[48000 * 5:48000 * 7]) and quiet is not None and quiet > 0.002,
+          (quiet, c_, rms(d[48000:48000 * 3]), rms(d[48000 * 5:48000 * 7])))
     from archivist.cartoon import textscript as Tx
     nums = [Tx._visual(x, 2) for x in ("counter: $4,800,000 spent", "bars: 2023 1.2, 2024 4.8 M", "bars: pharmacy 30, hospital 1,050")]
     odd_story = Tx.parse("Title: X\nNarrator: Kate (woman, narrator)\n- Lena (woman, journalist)\n\n== City hall corridor\n"
@@ -293,6 +313,10 @@ def main() -> int:
         vo.cancel_job(waiting)
         check("pages: scripts of odd shapes, a film made of one, Reveal of a film not made - no server error",
               all(x in (302, 400) for x in shapes) and again_odd in (302, 400) and rev == 302, (shapes, again_odd, rev))
+        no_file = c.post("/auto/cartoon/new", data={"story": "own", "script": json.dumps(SHORT), "music": "file",
+                                                    "music_path": str(work / "nope.mp3")}, headers=H)
+        check("pages: a music file that is not there is refused clearly", no_file.status_code == 400
+              and b"Choose the music file" in no_file.data, no_file.status_code)
         bad_json = c.post("/auto/cartoon/new", data={"story": "own", "script": "{not json"}, headers=H)
         no_voice = c.post("/auto/cartoon/new", data={"story": "road_contract", "voices": "1"}, headers=H)
         check("pages: a broken script and voices without the add-on are refused clearly",
