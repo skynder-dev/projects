@@ -1058,6 +1058,11 @@ PHRASES = {
     # Cartoon Studio (cartoon_web.py, cartoon/)
     "Cartoon Studio (Auto Edit → Cartoon Studio): a 2D cartoon made by MediaEngine - its own characters, scenes, schemes of money, voices and captions; change a line and make it again.":
         "Мультстудия (Автомонтаж → Мультстудия): 2D-мультфильм, который делает сам MediaEngine, — свои персонажи, сцены, схемы денег, голоса и субтитры; поменяй реплику и сделай заново.",
+    "How to write a story": "Как написать сюжет", "The example below - change it or write your own.":
+        "Ниже пример — поменяй его или напиши свой.", "A script as JSON instead": "Сценарий в виде JSON (вместо текста)",
+    "The whole story as text": "Весь сюжет текстом", "Make it again from this text": "Сделать заново по этому тексту",
+    "The story has no scenes: start each scene with == and its background.":
+        "В сюжете нет сцен: начни каждую сцену с == и названия фона.",
     "Cartoon Studio": "Мультстудия", "Cartoons": "Мультфильмы", "New cartoon": "Новый мультфильм", "Story": "Сюжет",
     "A short 2D cartoon made by MediaEngine: its own characters (the same in every episode), scenes, schemes of money and charts, the characters' voices and captions - one MP4. Change any line, background or feeling and make it again.":
         "Короткий 2D-мультфильм, который делает сам MediaEngine: свои персонажи (одни и те же в каждой серии), сцены, схемы денег и графики, голоса персонажей и субтитры — один MP4. Любую реплику, фон или настроение можно поменять и сделать заново.",

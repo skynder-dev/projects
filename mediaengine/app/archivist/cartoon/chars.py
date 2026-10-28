@@ -9,6 +9,7 @@ from __future__ import annotations
 import hashlib
 import math
 import random
+import re
 
 from .draw import INK, Canvas, arc, bezier, ease, lerp, rounded, shade
 
@@ -45,10 +46,18 @@ def make(name: str, role: str = "", seed: str | None = None, **over) -> dict:
     """A new character from a name (the same name: the same character), a role suggesting clothes, and overrides."""
     rnd = random.Random(int(hashlib.sha256((seed or name).encode("utf-8")).hexdigest()[:12], 16))
     role = (role or "").lower()
-    outfit = ("suit" if any(w in role for w in ("mayor", "official", "boss", "banker", "director", "minister", "lawyer", "ceo"))
-              else "vest" if any(w in role for w in ("worker", "builder", "contractor", "foreman", "engineer"))
-              else "hoodie" if any(w in role for w in ("student", "blogger", "young", "hacker"))
+    outfit = ("suit" if any(w in role for w in ("mayor", "official", "boss", "banker", "director", "minister", "lawyer", "ceo",
+                                                 "мэр", "чиновник", "депутат", "директор", "министр", "банкир", "юрист", "начальник",
+                                                 "primar", "funcționar", "director"))
+              else "vest" if any(w in role for w in ("worker", "builder", "foreman", "engineer", "рабоч", "строител", "прораб",
+                                                     "инженер", "muncitor", "constructor"))
+              else "hoodie" if any(w in role for w in ("student", "blogger", "young", "hacker", "студент", "блогер"))
               else rnd.choice(OUTFITS))
+    if "female" not in over and re.search(r"(?i)\b(woman|girl|she|mrs|ms|lady|женщин|девушк|она|госпожа|doamna)\b|(?:ова|ева|ина|ская|ая|ка)\b", role + " " + name):
+        over["female"] = True
+    elif "female" not in over and re.search(r"(?i)\b(man|he|mr|sir|guy|мужчин|парень|он|господин|domnul)\b|(?:ов|ев|ин|ский|ий)\b",
+                                            role + " " + name):
+        over["female"] = False
     female = over.pop("female", rnd.random() < 0.45)
     style = rnd.choice(["bob", "long", "ponytail", "curly"] if female else ["short", "side", "spiky", "bald", "curly", "buzz"])
     c = {
@@ -63,7 +72,7 @@ def make(name: str, role: str = "", seed: str | None = None, **over) -> dict:
         "cloth": rnd.choice(CLOTHES), "tie": rnd.choice(["#b8322f", "#d9a72b", "#2f6fb8", "#1f2433"]),
         "pants": rnd.choice(["#2c2f3d", "#3b4256", "#4a3c30", "#24324d", "#5a5f6a"]),
         "shoes": rnd.choice(["#1f1d22", "#4a2f22", "#2c2c34"]),
-        "hat": "hardhat" if any(w in role for w in ("worker", "builder", "foreman")) else "none",
+        "hat": "hardhat" if any(w in role for w in ("worker", "builder", "foreman", "рабоч", "строител", "прораб", "muncitor")) else "none",
     }
     c.update(over)
     return c

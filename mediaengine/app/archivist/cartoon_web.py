@@ -11,7 +11,7 @@ from pathlib import Path
 from flask import jsonify, redirect, request, send_file
 
 from . import voice as vo
-from .cartoon import bgs, chars as ch, film as F, jobs as cj, stories
+from .cartoon import bgs, chars as ch, film as F, jobs as cj, stories, textscript as T
 
 CSS = """<style>
 .ct-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -36,6 +36,37 @@ POSE_LABELS = {"": "—", "talk": "talking", "explain": "explaining", "point": "
                "count": "rubbing hands", "present": "presenting", "facepalm": "hand to face", "fist": "fist",
                "sneaky": "sneaky", "idle": "standing"}
 STORY_LABELS = {"road_contract": "How a City Loses Millions on a Simple Road Contract (example, 10 scenes)"}
+
+
+HELP_EN = ("First lines: <code>Title:</code>, <code>Format: vertical</code> or <code>wide</code>, <code>Narrator: Name (woman)</code>, "
+           "then the characters - <code>Name (man, mayor)</code>. A scene starts with <code>==</code> and its background "
+           "(City street, Office, City hall, Road, Bank, Night, Board, Paper); after <code>|</code> what it shows: "
+           "<code>title: …</code>, <code>road</code>, <code>contract: CONTRACT; price $4 800 000; stamp APPROVED</code>, "
+           "<code>flow: City -&gt; Company $4.8M; Company -&gt; Officials kickback</code>, <code>bars: fair 1.2, paid 9.6 M</code>, "
+           "<code>list: Red flags; one bidder; rushed deadlines</code>, <code>counter: $4 800 000 spent</code>. "
+           "A line: <code>Name (gesture, feeling): words</code>; <code>[bubble]</code> shows it in a speech bubble. "
+           "Gestures: talk, explain, point, point up, shrug, cross, think, wave, hands up, rubs hands, present, facepalm, fist, "
+           "sneaky. Feelings: calm, happy, angry, sad, surprised, sly, worried. English or Russian.")
+HELP_RU = ("Первые строки: <code>Название:</code>, <code>Формат: вертикальный</code> или <code>широкий</code>, "
+           "<code>Рассказчик: Имя (женщина)</code>, потом персонажи — <code>Имя (мужчина, мэр)</code>. Сцена начинается с "
+           "<code>==</code> и фона (Улица, Офис, Мэрия, Дорога, Банк, Ночь, Доска, Бумага); после <code>|</code> — что в ней "
+           "показано: <code>заголовок: …</code>, <code>дорога</code>, <code>договор: ДОГОВОР; цена 4 800 000 ₽; печать УТВЕРЖДЕНО</code>, "
+           "<code>схема: Бюджет -&gt; Фирма 4,8 млн; Фирма -&gt; Чиновники откат</code>, <code>график: честно 1.2, заплатили 9.6 млн</code>, "
+           "<code>список: Признаки; одна заявка; сжатые сроки</code>, <code>сумма: 4 800 000 ₽ потрачено</code>. Реплика: "
+           "<code>Имя (жест, настроение): слова</code>; <code>[пузырь]</code> — показать её в облачке. Жесты: говорит, объясняет, "
+           "показывает, палец вверх, пожимает плечами, руки скрещены, думает, машет, руки вверх, потирает руки, представляет, "
+           "рука у лица, кулак, крадётся. Настроения: спокойно, радостно, сердито, грустно, удивлённо, хитро, тревожно. "
+           "По-русски или по-английски.")
+
+
+def _help() -> str:
+    try:
+        from .i18n import ui_language
+        ru = ui_language() == "ru"
+    except Exception:
+        ru = False
+    return ("<details style='margin:6px 0'><summary>How to write a story</summary><div class='muted' style='font-size:13px;"
+            f"line-height:1.5' translate='no'>{HELP_RU if ru else HELP_EN}</div></details>")
 
 
 def _label(j: dict) -> str:
@@ -116,17 +147,18 @@ def register(app, page, err_page, e, human_bytes):
     @app.get("/auto/cartoon")
     def cartoon_home():
         rows = "".join(_film_row(j) for j in cj.films())
-        stories_html = "".join(f"<label><input type='radio' name='story' value='{k}' {'checked' if n == 0 else ''}> {e(v)}</label>"
-                               for n, (k, v) in enumerate(STORY_LABELS.items()))
+        help_ = _help()
         body = (f"{CSS}<div class='pagehead'><div class='eyebrow'>Auto Edit</div><h1>Cartoon Studio</h1>"
                 f"<div class='lead'>A short 2D cartoon made by MediaEngine: its own characters (the same in every episode), "
                 f"scenes, schemes of money and charts, the characters' voices and captions - one MP4. Change any line, "
                 f"background or feeling and make it again.</div></div>{_READY}"
                 f"<div class='card'><h2 style='margin-top:0'>New cartoon</h2>"
                 f"<form method='post' action='/auto/cartoon/new' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
-                f"<b>Story</b><div class='ct-choices' style='margin:4px 0 8px'>{stories_html}"
-                f"<label><input type='radio' name='story' value='own'> My script (JSON)</label></div>"
-                f"<textarea name='script' rows='6' style='width:100%' placeholder='Paste a script here (only for \"My script\")'></textarea>"
+                f"<b>Story</b><div class='muted' style='font-size:13px'>The example below - change it or write your own.</div>{help_}"
+                f"<textarea name='text' rows='16' style='width:100%;font-family:Consolas,monospace;font-size:13px' translate='no'>"
+                f"{e(T.ROAD_TEXT)}</textarea>"
+                f"<details style='margin-top:6px'><summary>A script as JSON instead</summary>"
+                f"<textarea name='script' rows='6' style='width:100%' placeholder='Paste a script here (only for \"My script\")'></textarea></details>"
                 f"<div class='ct-choices' style='margin-top:8px'><b>Format</b><br>{_format_choice('vertical')}</div>"
                 f"{_voices_choice()}{_captions_choice()}"
                 f"<div style='margin-top:12px'><button class='ae-big'>Make the cartoon</button></div></form>"
@@ -146,11 +178,15 @@ def register(app, page, err_page, e, human_bytes):
     def cartoon_new():
         f = request.form
         try:
-            if f.get("story") == "own":
+            if f.get("story") == "own" or str(f.get("script") or "").strip():
                 try:
                     script = json.loads(f.get("script") or "")
                 except ValueError:
                     raise F.FilmError("The script is not valid JSON.")
+            elif str(f.get("text") or "").strip():
+                script = T.parse(f.get("text") or "")
+                if not script["scenes"]:
+                    raise F.FilmError("The story has no scenes: start each scene with == and its background.")
             else:
                 script = copy.deepcopy(stories.STORIES.get(f.get("story") or "", stories.ROAD_CONTRACT))
             jid = _make(script, f)
@@ -202,7 +238,14 @@ def register(app, page, err_page, e, human_bytes):
                 f"<div class='ct-choices' style='margin-top:8px'><b>Format</b><br>{_format_choice(film['format'])}</div>"
                 f"{_voices_choice()}{_captions_choice()}"
                 f"<div style='margin-top:12px'><button class='ae-big'>Make it again</button></div></form>"
-                f"<details style='margin-top:12px'><summary>The whole script (JSON)</summary>"
+                f"<details style='margin-top:12px'><summary>The whole story as text</summary>"
+                f"<form method='post' action='/auto/cartoon/{jid}/again' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
+                f"<textarea name='text' rows='18' style='width:100%;font-family:Consolas,monospace;font-size:13px' translate='no'>"
+                f"{e(T.to_text(cj.script_of(jid)))}</textarea>"
+                f"<input type='hidden' name='format' value='{e(film['format'])}'><input type='hidden' name='captions' value='1'>"
+                + ("<input type='hidden' name='voices' value='1'>" if j.get("voices") else "")
+                + f"<div style='margin-top:8px'><button>Make it again from this text</button></div></form></details>"
+                f"<details style='margin-top:8px'><summary>The whole script (JSON)</summary>"
                 f"<textarea readonly rows='12' style='width:100%' translate='no'>{e(json.dumps(cj.script_of(jid), ensure_ascii=False, indent=1))}</textarea>"
                 f"</details></div>")
         return page("Cartoon Studio", body, _POLL_JS)
@@ -214,6 +257,17 @@ def register(app, page, err_page, e, human_bytes):
         f = request.form
         script = copy.deepcopy(cj.script_of(jid))
         try:
+            if str(f.get("text") or "").strip():           # the story as text, changed
+                new = T.parse(f.get("text") or "")
+                if not new["scenes"]:
+                    raise F.FilmError("The story has no scenes: start each scene with == and its background.")
+                old_cast = {(c.get("name") or "").lower(): c for c in (script.get("cast") or {}).values()}
+                for k, c in new["cast"].items():           # (the characters keep their looks and voices)
+                    prev = old_cast.get((c.get("name") or "").lower())
+                    if prev:
+                        new["cast"][k] = dict(prev)
+                new["format"] = script.get("format") or new["format"]
+                script = new
             for i, s in enumerate(script.get("scenes") or []):
                 if f.get(f"bg_{i}") in bgs.BACKGROUNDS:
                     s["bg"] = f.get(f"bg_{i}")

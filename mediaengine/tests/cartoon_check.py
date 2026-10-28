@@ -154,8 +154,8 @@ def main() -> int:
     H = {"Host": "127.0.0.1:8765", "Origin": "http://127.0.0.1:8765", "Sec-Fetch-Site": "same-origin"}
     with app.test_client() as c:
         home = c.get("/auto/cartoon", headers=H)
-        check("pages: Cartoon Studio opens, with the example story", home.status_code == 200 and b"Make the cartoon" in home.data
-              and b"road_contract" in home.data, home.status_code)
+        check("pages: Cartoon Studio opens, with the example story to change", home.status_code == 200 and b"Make the cartoon" in home.data
+              and b"== Board | flow: City budget -&gt; RoadCo" in home.data, home.status_code)
         r = c.post("/auto/cartoon/new", data={"story": "own", "script": json.dumps(SHORT), "format": "horizontal", "captions": "1",
                                               "style": "box"}, headers=H)
         jid = next((j["id"] for j in vo.list_jobs() if j.get("kind") == "cartoon_make"), "")
@@ -181,6 +181,33 @@ def main() -> int:
         if nid:
             t0 = time.time()
             while vo.read_job(nid)["state"] in ("waiting", "working") and time.time() - t0 < 900:
+                time.sleep(1)
+        story = ("Title: Text test\nNarrator: Kate (woman)\nRick (man, contractor boss)\n\n== Office | contract: CONTRACT; price $4 800 000; "
+                 "stamp APPROVED\nKate: The price is four times higher.\nRick (count, sly) [bubble]: Approved!\n\n"
+                 "== Board | bars: fair 1.2, paid 4.8 M\nKate: Taxpayers pay the difference.\n")
+        tx = c.post("/auto/cartoon/new", data={"text": story, "format": "vertical", "captions": "1"}, headers=H)
+        tid = next((j["id"] for j in vo.list_jobs() if j.get("kind") == "cartoon_make"), "")
+        t0 = time.time()
+        while tid and vo.read_job(tid)["state"] in ("waiting", "working") and time.time() - t0 < 900:
+            time.sleep(1)
+        tsc = json.loads((vo._job_dir(tid) / "job.json").read_text("utf-8"))["script"] if tid else {}
+        check("pages: a story written as plain text becomes a cartoon (scenes, characters, a contract, a chart, a bubble)",
+              tx.status_code == 302 and vo.read_job(tid)["state"] == "done" and len(tsc.get("scenes") or []) == 2
+              and tsc["scenes"][0]["visual"]["kind"] == "contract" and tsc["scenes"][1]["visual"]["values"] == [1.2, 4.8]
+              and tsc["scenes"][0]["lines"][1].get("bubble") and tsc["title"] == "Text test", (tx.status_code, tsc))
+        page_t = c.get(f"/auto/cartoon/{tid}", headers=H).get_data(as_text=True)
+        changed = page_t.split("name='text'", 1)[-1].split(">", 1)[-1].split("</textarea>", 1)[0]
+        import html as _html
+        changed = _html.unescape(changed).replace("four times higher", "five times higher")
+        ag2 = c.post(f"/auto/cartoon/{tid}/again", data={"text": changed, "format": "vertical", "captions": "1"}, headers=H)
+        nid2 = (ag2.headers.get("Location") or "").rstrip("/").split("/")[-1]
+        sc3 = json.loads((vo._job_dir(nid2) / "job.json").read_text("utf-8"))["script"] if nid2 and vo._job_dir(nid2).exists() else {}
+        check("pages: the film's story changed as text makes a new version (the rest kept)", ag2.status_code == 302 and sc3
+              and sc3["scenes"][0]["lines"][0]["text"] == "The price is five times higher."
+              and sc3["scenes"][0]["visual"] == tsc["scenes"][0]["visual"] and sc3["cast"] == tsc["cast"], (ag2.status_code, nid2))
+        if nid2:
+            t0 = time.time()
+            while vo.read_job(nid2)["state"] in ("waiting", "working") and time.time() - t0 < 900:
                 time.sleep(1)
         bad_json = c.post("/auto/cartoon/new", data={"story": "own", "script": "{not json"}, headers=H)
         no_voice = c.post("/auto/cartoon/new", data={"story": "road_contract", "voices": "1"}, headers=H)

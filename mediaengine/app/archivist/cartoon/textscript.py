@@ -1,0 +1,393 @@
+"""A cartoon's script in plain text - what a person writes in a minute (or a small language model writes well):
+
+    Title: How a City Loses Millions
+    Format: vertical
+    Narrator: Kate (woman, narrator)
+    Mayor Grant (man, mayor)
+    Rick Stone (man, contractor boss, sly)
+
+    == City street | title: How a City Loses Millions / on a simple road contract
+    Kate (wave, happy): A road full of holes. Fixing it should be simple, right?
+
+    == Board | flow: City budget -> RoadCo $4.8M; RoadCo -> Cheap crew $1M; RoadCo -> Officials kickback
+    Kate: The city pays RoadCo four point eight million.
+
+A scene starts with "==", its background, and after "|" what is shown (title, road, contract, flow, bars, list, counter,
+compare, bag, magnifier). A line is "Name (gesture, feeling): words"; "Name [bubble]: words" shows it in a speech
+bubble. A name not introduced becomes a new character. English or Russian words for backgrounds, gestures, feelings.
+"""
+from __future__ import annotations
+
+import re
+
+from . import bgs
+
+BG_WORDS = {
+    "city": "city", "street": "city", "city street": "city", "улица": "city", "город": "city",
+    "office": "office", "офис": "office", "кабинет": "office",
+    "city hall": "city_hall", "city_hall": "city_hall", "мэрия": "city_hall", "администрация": "city_hall",
+    "road": "road", "дорога": "road", "bank": "bank", "банк": "bank",
+    "night": "night", "night street": "night", "ночь": "night", "ночная улица": "night",
+    "board": "board", "доска": "board", "схема": "board", "paper": "paper", "бумага": "paper", "тетрадь": "paper",
+}
+POSE_WORDS = {
+    "talk": "talk", "говорит": "talk", "explain": "explain", "объясняет": "explain", "point": "point", "показывает": "point",
+    "point up": "point_up", "point_up": "point_up", "палец вверх": "point_up", "shrug": "shrug", "пожимает плечами": "shrug",
+    "cross": "cross", "arms crossed": "cross", "руки скрещены": "cross", "think": "think", "думает": "think",
+    "wave": "wave", "машет": "wave", "hands up": "hands_up", "руки вверх": "hands_up", "count": "count",
+    "rubs hands": "count", "потирает руки": "count", "present": "present", "представляет": "present",
+    "facepalm": "facepalm", "рука у лица": "facepalm", "fist": "fist", "кулак": "fist", "sneaky": "sneaky", "крадётся": "sneaky",
+    "idle": "idle", "стоит": "idle",
+}
+EMO_WORDS = {
+    "neutral": "neutral", "calm": "neutral", "спокойно": "neutral", "happy": "happy", "радостно": "happy", "весело": "happy",
+    "angry": "angry", "сердито": "angry", "зло": "angry", "sad": "sad", "грустно": "sad", "surprised": "surprised",
+    "удивлённо": "surprised", "удивленно": "surprised", "sly": "sly", "хитро": "sly", "worried": "worried",
+    "тревожно": "worried", "испуганно": "worried",
+}
+FEMALE = {"woman", "female", "she", "girl", "женщина", "девушка", "она"}
+MALE = {"man", "male", "he", "boy", "мужчина", "парень", "он"}
+NUM = re.compile(r"[-+]?\d[\d\s]*(?:[.,]\d+)?")
+MONEY_TAIL = re.compile(r"\s+((?:[$€₽£]\s?)?\d[\d.,\s]*(?:\s?(?:млн|млрд|тыс|million|billion|mln|bn|[MKB]|lei|лей|руб|₽|€|\$)\.?)?"
+                        r"|kickback|bribe|откат|взятка|mită|comision)\s*$", re.I)
+
+
+def _key(name: str, taken: dict) -> str:
+    a, b = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя", "abvgdeejziiklmnoprstufhccss_y_eua"
+    base = re.sub(r"[^a-z0-9]", "", name.lower().translate(str.maketrans(a, b)))[:20] or "c"
+    k, n = base, 2
+    while k in taken:
+        k, n = f"{base}{n}", n + 1
+    return k
+
+
+def _number(s: str) -> float | None:
+    m = NUM.search(s or "")
+    if not m:
+        return None
+    try:
+        return float(m.group(0).replace(" ", "").replace(",", "."))
+    except ValueError:
+        return None
+
+
+def _visual(spec: str, n_lines: int) -> dict | None:
+    """What a scene shows, from "kind: details" after the "|" (the parts appear one per line, in order)."""
+    if not spec:
+        return None
+    kind, _, rest = spec.partition(":")
+    kind, rest = kind.strip().lower(), rest.strip()
+    at = lambda k: min(k, max(0, n_lines - 1)) if n_lines else None       # noqa: E731
+    if kind in ("title", "заголовок"):
+        t, _, sub = rest.partition("/")
+        return {"kind": "title", "title": t.strip(), "sub": sub.strip()}
+    if kind in ("road", "дорога"):
+        v = {"kind": "road", "holes_at": None}
+        low = rest.lower()
+        if any(w in low for w in ("repair", "patch", "ремонт", "заплат")):
+            v.update(patch_at=at(0), truck=True)
+        if any(w in low for w in ("holes back", "ямы вернулись", "again", "снова")):
+            v.update(fresh=True, holes_at=at(1))
+        return v
+    if kind in ("contract", "tender", "договор", "контракт", "тендер"):
+        parts = [p.strip() for p in rest.split(";") if p.strip()]
+        title = (parts[0] if parts else ("TENDER" if kind in ("tender", "тендер") else "CONTRACT")).upper()[:24]
+        v = {"kind": "contract", "title": title, "at": None if kind not in ("tender", "тендер") else at(0)}
+        notes = []
+        for p in parts[1:]:
+            low = p.lower()
+            if low.startswith(("price", "цена")):
+                v.update(price=p.split(" ", 1)[1].strip() if " " in p else "", price_at=at(0))
+            elif low.startswith(("stamp", "печать")):
+                v.update(stamp=(p.split(" ", 1)[1].strip() if " " in p else "APPROVED").upper()[:16], stamp_at=at(1))
+            else:
+                notes.append({"text": p.lstrip("-+ "), "ok": p.startswith("+"), "at": at(len(notes))})
+        if notes:
+            v["notes"] = notes[:4]
+        return v
+    if kind in ("flow", "схема"):
+        nodes, edges, ids = [], [], {}
+        icons = {"city": "city", "budget": "city", "город": "city", "бюджет": "city", "bank": "bank", "банк": "bank",
+                 "official": "person", "чиновник": "person", "депутат": "person", "crew": "shovel", "бригада": "shovel",
+                 "worker": "shovel", "company": "company", "компания": "company", "фирма": "company", "ооо": "company"}
+        colors = ["#3f7fd6", "#7a3b3b", "#4caf6a", "#8a6a2e", "#6a4c8c"]
+
+        def node(name: str, k: int) -> str:
+            name = name.strip()
+            if name not in ids:
+                ids[name] = f"n{len(ids)}"
+                icon = next((v_ for w, v_ in icons.items() if w in name.lower()), "company")
+                nodes.append({"id": ids[name], "label": name[:24], "icon": icon, "color": colors[len(nodes) % len(colors)],
+                              "at": None if not nodes else at(k)})
+            return ids[name]
+        for k, part in enumerate(p for p in rest.split(";") if "->" in p):
+            a, _, b = part.partition("->")
+            b = b.strip()
+            label = ""
+            m = MONEY_TAIL.search(b)
+            if m and m.start() > 0:
+                label, b = m.group(1).strip(), b[:m.start()].strip()
+            edges.append({"from": node(a, k), "to": node(b, k), "label": label, "at": at(k),
+                          **({"tag": "#e0533d"} if label.lower() in ("kickback", "откат", "bribe", "взятка") else {})})
+        return {"kind": "flow", "nodes": nodes[:5], "edges": edges[:6]} if nodes else None
+    if kind in ("bars", "chart", "график", "диаграмма"):
+        unit = ""
+        if rest and rest.split()[-1].isalpha() and len(rest.split()[-1]) <= 3:
+            unit = rest.split()[-1]
+            rest = rest[: -len(unit)].strip()
+        values, labels = [], []
+        for p in rest.split(","):
+            v = _number(p)
+            if v is None:
+                continue
+            values.append(v)
+            labels.append(NUM.sub("", p).strip()[:20])
+        title = ""
+        if "/" in rest:
+            title = rest.split("/", 1)[0].strip()
+        return {"kind": "bars", "values": values[:5], "labels": labels[:5], "unit": unit, "at": at(0),
+                "colors": ["#4caf6a", "#e0533d", "#f2c12e", "#3f7fd6", "#6a4c8c"], **({"title": title} if title else {})} if values else None
+    if kind in ("list", "список"):
+        parts = [p.strip() for p in rest.split(";") if p.strip()]
+        if not parts:
+            return None
+        title, items = parts[0], parts[1:]
+        return {"kind": "list", "title": title, "items": [{"text": it.lstrip("-+ "), "ok": it.startswith("+"), "at": at(k)}
+                                                          for k, it in enumerate(items[:5])]}
+    if kind in ("counter", "счётчик", "счетчик", "sum", "сумма"):
+        v = _number(rest) or 0
+        cur = "$" if "$" in rest else "€" if "€" in rest else "₽" if "₽" in rest else ""
+        label = NUM.sub("", rest).replace("$", "").replace("€", "").replace("₽", "").strip()
+        return {"kind": "counter", "from": 0, "to": v, "prefix": cur, "suffix": "" if cur else "", "label": label[:60], "at": at(0)}
+    if kind in ("compare", "сравнение"):
+        sides = []
+        for k, p in enumerate(rest.split(" vs ")[:2] if " vs " in rest else rest.split(";")[:2]):
+            words = p.strip().split(" ")
+            price = next((w for w in words if re.search(r"\d", w)), "")
+            sides.append({"label": " ".join(w for w in words if w != price)[:30], "price": price, "at": at(k)})
+        return {"kind": "compare", "sides": sides}
+    if kind in ("bag", "мешок", "деньги"):
+        return {"kind": "bag", "text": rest[:60], "label": "$"}
+    if kind in ("magnifier", "лупа", "проверка"):
+        return {"kind": "magnifier", "title": (rest or "TENDER").upper()[:20]}
+    return None
+
+
+def parse(text: str) -> dict:
+    """The script (a dict for film.check_script) from the plain text."""
+    lines = [ln.rstrip() for ln in str(text or "").replace("\r", "").split("\n")]
+    sc: dict = {"title": "Cartoon", "language": "en", "format": "vertical", "cast": {}, "scenes": []}
+    names: dict = {}                                       # name (lower) -> key
+
+    def add(name: str, attrs: list[str], narrator: bool = False) -> str:
+        nm = name.strip()
+        low = nm.lower()
+        if low in names:
+            return names[low]
+        k = _key(nm, sc["cast"])
+        spec: dict = {"name": nm[:30], "role": "narrator" if narrator else ""}
+        roles = []
+        for a in attrs:
+            al = a.strip().lower()
+            if al in FEMALE:
+                spec["female"] = True
+            elif al in MALE:
+                spec["female"] = False
+            elif al:
+                roles.append(al)
+        if roles:
+            spec["role"] = ", ".join(roles)[:60]
+        if narrator:
+            spec["voice"] = {"kind": "host"}
+        else:
+            gender = "woman" if spec.get("female") else "man"
+            spec["voice"] = {"kind": "describe", "text": f"A {gender}, {spec['role'] or 'an ordinary person'}, a clear natural voice."}
+        sc["cast"][k] = spec
+        names[low] = k
+        if narrator:
+            sc["narrator"] = k
+        return k
+    scene = None
+    for raw in lines:
+        s = raw.strip()
+        if not s or s.startswith("//"):
+            continue
+        m = re.match(r"(?i)^(title|название|format|формат|language|язык)\s*:\s*(.+)$", s)
+        if m and scene is None:
+            key, val = m.group(1).lower(), m.group(2).strip()
+            if key in ("title", "название"):
+                sc["title"] = val[:120]
+            elif key in ("format", "формат"):
+                sc["format"] = "horizontal" if any(w in val.lower() for w in ("wide", "horizontal", "16", "широк", "гориз")) else "vertical"
+            else:
+                sc["language"] = val[:2].lower()
+            continue
+        m = re.match(r"(?i)^(narrator|рассказчик)\s*:\s*([^(]+)(?:\((.*)\))?$", s)
+        if m and scene is None:
+            add(m.group(2), (m.group(3) or "").split(","), narrator=True)
+            continue
+        if s.startswith("=="):
+            head = s.strip("= ").strip()
+            bg_part, _, vis = head.partition("|")
+            scene = {"bg": BG_WORDS.get(bg_part.strip().lower(), bg_part.strip().lower() if bg_part.strip().lower() in bgs.BACKGROUNDS
+                                        else "city"), "cast": [], "lines": [], "_vis": vis.strip()}
+            sc["scenes"].append(scene)
+            continue
+        m = re.match(r"^([^:(\[]{1,40}?)\s*(?:\(([^)]*)\))?\s*(\[[^\]]*\])?\s*:\s*(.+)$", s)
+        if m and scene is not None:
+            who = add(m.group(1), [])
+            attrs = [a.strip().lower() for a in (m.group(2) or "").split(",") if a.strip()]
+            ln = {"who": who, "text": m.group(4).strip()}
+            for a in attrs:
+                if a in POSE_WORDS:
+                    ln["pose"] = POSE_WORDS[a]
+                elif a in EMO_WORDS:
+                    ln["emotion"] = EMO_WORDS[a]
+            if m.group(3) and any(w in m.group(3).lower() for w in ("bubble", "пузырь", "облако")):
+                ln["bubble"] = True
+            scene["lines"].append(ln)
+            if who != sc.get("narrator") and who not in scene["cast"]:
+                scene["cast"].append(who)
+            continue
+        m = re.match(r"^([^:(]{1,40}?)\s*\(([^)]*)\)\s*$", s)       # a character introduced: "Mayor Grant (man, mayor)"
+        if m and scene is None:
+            add(m.group(1), m.group(2).split(","))
+    if not any(re.match(r"(?i)^(language|язык)\s*:", x.strip()) for x in lines):   # the language from the letters
+        said = " ".join(ln["text"] for s_ in sc["scenes"] for ln in s_["lines"])
+        cyr, lat = len(re.findall(r"[А-Яа-яЁё]", said)), len(re.findall(r"[A-Za-z]", said))
+        sc["language"] = "ru" if cyr > lat else "ro" if re.search(r"[ăâîșşțţ]", said.lower()) else "en"
+    if not sc.get("narrator") and sc["cast"]:
+        first = next(iter(sc["cast"]))
+        sc["narrator"] = first
+    for s in sc["scenes"]:
+        s["visual"] = _visual(s.pop("_vis"), len(s["lines"]))
+        if s["visual"] is None:
+            s.pop("visual")
+        s["cast"] = s["cast"][:3]
+    return sc
+
+
+def _n(v) -> str:
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return str(v)
+    return str(int(f)) if f == int(f) else f"{f:g}"
+
+
+def vis_text(v: dict) -> str:
+    """What a scene shows, written back the way parse() reads it."""
+    k = v.get("kind")
+    if k == "title":
+        return f"title: {v.get('title') or ''}" + (f" / {v['sub']}" if v.get("sub") else "")
+    if k == "road":
+        return "road" + (": holes back" if v.get("fresh") else ": repair" if v.get("patch_at") is not None else "")
+    if k == "contract":
+        title = v.get("title") or "CONTRACT"
+        parts = [title] + ([f"price {v['price']}"] if v.get("price") else []) + ([f"stamp {v['stamp']}"] if v.get("stamp") else [])
+        parts += [("+" if n.get("ok") else "") + str(n.get("text") or "") for n in v.get("notes") or []]
+        return ("tender" if title.upper() == "TENDER" else "contract") + ": " + "; ".join(parts)
+    if k == "flow":
+        names = {n["id"]: n.get("label") or n["id"] for n in v.get("nodes") or []}
+        return "flow: " + "; ".join(f"{names.get(e['from'], e['from'])} -> {names.get(e['to'], e['to'])}" + (f" {e['label']}" if e.get("label") else "")
+                                    for e in v.get("edges") or [])
+    if k == "bars":
+        return "bars: " + ", ".join(f"{lab} {_n(val)}" for lab, val in zip(v.get("labels") or [], v.get("values") or [])) + \
+            (f" {v['unit']}" if v.get("unit") else "")
+    if k == "list":
+        return "list: " + "; ".join([v.get("title") or ""] + [("+" if it.get("ok") else "") + str(it.get("text") or "") for it in v.get("items") or []])
+    if k == "counter":
+        return f"counter: {v.get('prefix') or ''}{_n(v.get('to') or 0)} {v.get('label') or ''}".rstrip()
+    if k == "compare":
+        return "compare: " + " vs ".join(f"{sd.get('label') or ''} {sd.get('price') or ''}".strip() for sd in v.get("sides") or [])
+    if k == "bag":
+        return f"bag: {v.get('text') or ''}".rstrip(": ")
+    if k == "magnifier":
+        return f"magnifier: {v.get('title') or ''}".rstrip(": ")
+    return ""
+
+
+def to_text(sc: dict) -> str:
+    """A script back as plain text (to change it the same way)."""
+    out = [f"Title: {sc.get('title') or 'Cartoon'}", f"Format: {sc.get('format') or 'vertical'}"]
+    cast = sc.get("cast") or {}
+    nar = sc.get("narrator")
+    for k, c in cast.items():
+        gender = "woman" if c.get("female") else "man"
+        role = c.get("role") or ""
+        if k == nar:
+            out.append(f"Narrator: {c.get('name') or k} ({gender}{', ' + role if role and role != 'narrator' else ''})")
+        else:
+            out.append(f"{c.get('name') or k} ({gender}{', ' + role if role else ''})")
+    rbg = {v: k for k, v in BG_WORDS.items() if " " in k or k in ("office", "road", "bank", "night", "board", "paper")}
+    rbg["city"] = "City street"
+    for s in sc.get("scenes") or []:
+        vis = vis_text(s.get("visual") or {})
+        vis = f" | {vis}" if vis else ""
+        out.append("")
+        out.append(f"== {rbg.get(s.get('bg'), s.get('bg') or 'city').capitalize()}{vis}")
+        for ln in s.get("lines") or []:
+            who = (cast.get(ln.get("who")) or {}).get("name") or ln.get("who")
+            attrs = [x for x in (ln.get("pose"), ln.get("emotion")) if x]
+            out.append(f"{who}" + (f" ({', '.join(attrs)})" if attrs else "") + (" [bubble]" if ln.get("bubble") else "")
+                       + f": {ln.get('text') or ''}")
+    return "\n".join(out) + "\n"
+
+
+ROAD_TEXT = """Title: How a City Loses Millions on a Simple Road Contract
+Format: vertical
+Narrator: Kate (woman, narrator)
+Mayor Grant (man, mayor)
+Deputy Ed (man, official)
+Rick Stone (man, contractor boss)
+Bob (man, road worker)
+Lena (woman, journalist)
+
+== City street | title: How a City Loses Millions / on a simple road contract
+Kate (wave, happy): A road full of holes. Fixing it should be simple, right?
+Kate (explain, sly): Let's see how it ends up costing millions.
+
+== Road | road
+Lena (shrug, angry) [bubble]: This road is a disaster!
+Kate: The city announces a tender to repair two kilometers of road.
+Kate: A fair price is about one point two million dollars.
+
+== Office | tender: TENDER; 10 years of experience; special asphalt brand; 5 days to apply
+Kate: But Deputy Ed writes the tender for one company only.
+Kate: Ten years of experience. A special asphalt brand.
+Kate: And just five days to apply.
+Deputy Ed (present, sly): Perfectly normal requirements!
+
+== Night
+Rick Stone (count, sly) [bubble]: We win, and you will be thanked.
+Deputy Ed (sneaky, happy): I like being thanked.
+Kate: Only Rick's company, RoadCo, fits the rules. What a surprise.
+
+== Office | contract: CONTRACT; price $4 800 000; stamp APPROVED
+Kate: RoadCo wins with a price four times higher. Four point eight million.
+Mayor Grant (point up, happy): Approved! Our city deserves the best!
+
+== Board | flow: City budget -> RoadCo $4.8M; RoadCo -> Cheap crew $1M; RoadCo -> Officials kickback
+Kate: The city pays RoadCo four point eight million.
+Kate: RoadCo hires a cheap crew for one million to do the work.
+Kate: And part of the difference quietly goes back to the officials who signed.
+
+== Road | road: repair
+Bob (shrug, worried) [bubble]: Half the asphalt, the boss said. Saves money.
+Kate: The holes are covered with a thin layer. It looks fine. For now.
+
+== Road | road: holes back
+Kate: Six months and one winter later...
+Lena (facepalm, sad): The holes are back. All of them.
+Kate (sly): Time for a new repair contract. Guess who wins it.
+
+== Board | bars: fair price 1.2, paid twice 9.6 M
+Kate: One road. Paid four times the fair price. Twice.
+Kate: And every dollar of it came from taxpayers.
+
+== City hall | list: Red flags; Only one bidder; Rushed deadlines; Price far above the market
+Lena (explain, angry): How to spot it?
+Lena (point): One bidder and rushed deadlines.
+Lena (point up): And a price far above the market.
+Kate (wave, happy): Follow the money. And ask who wrote the tender.
+"""
