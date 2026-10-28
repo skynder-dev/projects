@@ -266,6 +266,21 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   more; Qwen3-4B, 4.3 GB), asks the Vulkan build which card it sees; the Characters page (each character's look and
   voice kept for every film); characters walk into a scene; gestures blend; a series keeps its narrator; the Romanian
   narrator gets a described voice; fixes from an independent review (12).
+- b253 (commit a7ec3be, run 40653633154: cartoon 31/31, writer 22/22, Russian 242 pages 0 English, route fuzz 3652
+  requests 0 errors; the same runtime - the Update button): Cartoon Studio's music (made by the program - light, a
+  little suspense or calm - the owner's own music file, or none; quiet, lowered while someone speaks; kept when a film
+  is made again), transitions (a cross-fade in the same place, a slide or an opening circle to another place), the
+  pictures "percent" (a share of a whole) and "timeline" (dates), four new places (a hospital, a school, a shop, a
+  block of flats); fixes from a second independent review (7).
+- Next build (after b253): **Reference Lab** - "Study a cartoon you like": a video on this PC, its shots found (hard
+  cuts and soft ones - its own finder: 10 of the 11 cuts of the program's own example film, none on busy moving
+  pictures), a picture of each (a storyboard) and a strip of the shots, its colours, and with the voice add-on what is
+  said in each shot, words a second, how soon it speaks, music under the words; "Write a story with this rhythm" asks
+  the model for as many scenes for the story's length, the same pace of words and as quick an opening (the story new).
+  Close-ups of the one speaking (scenes without a picture to read; the face kept clear of the captions). The writer
+  makes the cartoon at once when asked, and a series of up to ten topics. A building-site background; a video's
+  story page shows the facts noted from it. Two independent reviews before pushing (9 + 4 findings, all fixed: a scan
+  that could hang the queue on a damaged video, colours from a Cyrillic data folder, a rotated phone video, ...).
 
 ## Orders from other programs; night review fixes (2026-10-17)
 
