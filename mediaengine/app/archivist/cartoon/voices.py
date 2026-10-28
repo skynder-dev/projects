@@ -46,9 +46,14 @@ def _safe(key: str) -> str:
     return re.sub(r"[^a-z0-9_]", "", str(key).lower())[:40] or "voice"
 
 
-def _voice_for(c: dict, key: str) -> tuple[dict, str]:
+def _voice_for(c: dict, key: str, lang: str = "en") -> tuple[dict, str]:
     """The voice of a character for the worker, and a description to keep it by ("" for the program's own voice)."""
     v = c.get("voice") or {}
+    if v.get("kind") != "describe" and lang not in vo.QWEN_LANGS:
+        # a language the program's own voice (Qwen3-TTS cloning 9_2) does not speak - Romanian: VoxCPM2 cloning an
+        # English recording garbled it (voice add-on check, run 40616952980); a voice from a description said it
+        who = "woman" if c.get("female") else "man"
+        v = {"kind": "describe", "text": f"A clear, warm {who}'s narrator voice, calm and friendly, speaking naturally."}
     if v.get("kind") == "describe" and str(v.get("text") or "").strip():
         desc = re.sub(r"[()\r\n]+", " ", str(v["text"])).strip()[:400]
         kept = _kept(key, desc)
@@ -158,7 +163,7 @@ def make(film: dict, work: Path, progress=None, stop=None) -> dict:
     for key, items in groups.items():
         if stop is not None and stop():
             raise FilmError("Stopped.")
-        v, desc = _voice_for(film["cast"][key], key)
+        v, desc = _voice_for(film["cast"][key], key, lang)
         engine = ("qwen" if v.get("ref_wav") and lang in vo.QWEN_LANGS and vo.qwen_installed() else "voxcpm")
         d = work / f"voice_{_safe(key)}"
         shutil.rmtree(d, ignore_errors=True)
