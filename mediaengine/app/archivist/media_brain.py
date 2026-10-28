@@ -276,7 +276,10 @@ def _duration_seconds(path: Path, duration_ms: int | None = None) -> float:
     return float(probe_duration(Path(path)) or 0.0)
 
 
-def _scene_cuts(path: Path, duration: float, progress_cb=None, cancel_cb=None) -> list[float]:
+def _scene_cuts(path: Path, duration: float, progress_cb=None, cancel_cb=None, fps: int = 3,
+                min_gap: float = 1.25) -> list[float]:
+    """Where the picture changes (FFmpeg's scene score). fps/min_gap: Auto Edit's 3 a second and 1.25 s apart;
+    Reference Lab (cartoon/reference.py) looks closer, for quick cuts."""
     exe = _ffmpeg_exe()
     if not exe or duration <= 0:
         return []
@@ -288,7 +291,7 @@ def _scene_cuts(path: Path, duration: float, progress_cb=None, cancel_cb=None) -
     try:
         # Scene detection does not need 4K pixels or every source frame.
         # Decode once, shrink early, and compare a few frames per second.
-        vf = r"scale=320:-2:flags=fast_bilinear,fps=3,select=gt(scene\,0.30),showinfo"
+        vf = rf"scale=320:-2:flags=fast_bilinear,fps={int(fps)},select=gt(scene\,0.30),showinfo"
         # the scan of a long 4K video takes minutes without a line: the job is said to be alive every 15 s (the
         # watchdog takes a job silent for 5 minutes as stuck and restarts it - a 20-minute video never finished)
         proc = subprocess.Popen(
@@ -321,7 +324,7 @@ def _scene_cuts(path: Path, duration: float, progress_cb=None, cancel_cb=None) -
                 cuts.append(t)
         out = []
         for t in sorted(cuts):
-            if not out or t - out[-1] >= 1.25:
+            if not out or t - out[-1] >= min_gap:
                 out.append(t)
         return out
     except RuntimeError as exc:

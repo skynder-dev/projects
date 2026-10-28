@@ -190,7 +190,8 @@ def do(jid: str, d: Path, job: dict) -> dict:
     if duration < 3:
         return {"ok": False, "error": "The video is too short to study (a few seconds at least)."}
     try:
-        cuts = _scene_cuts(src, duration, lambda *a: vo._CURRENT.update(step="looking", progress=0.1), stop)
+        cuts = _scene_cuts(src, duration, lambda *a: vo._CURRENT.update(step="looking", progress=0.1), stop,
+                           fps=6, min_gap=0.5)              # (a cartoon may cut every second)
     except RuntimeError:
         return {"ok": False, "error": "Stopped."}
     if stop():
