@@ -510,6 +510,11 @@ def _sfx(kind: str) -> np.ndarray:
         n = int(SR * 0.25)
         tt = np.arange(n) / SR
         return ((np.sin(2 * math.pi * 90 * tt) * 0.8 + rng.standard_normal(n) * 0.15) * np.exp(-tt * 22) * 0.6).astype(np.float32)
+    if kind == "ding":                                     # (a small bell: something found, a lesson)
+        n = int(SR * 0.6)
+        tt = np.arange(n) / SR
+        return ((np.sin(2 * math.pi * 1568 * tt) + 0.4 * np.sin(2 * math.pi * 3136 * tt) + 0.15 * np.sin(2 * math.pi * 4704 * tt))
+                * np.exp(-tt * 7) * 0.18).astype(np.float32)
     if kind == "coins":
         n = int(SR * 0.5)
         out = np.zeros(n, np.float32)
@@ -539,6 +544,14 @@ def mix(tl: dict, sounds: bool = True) -> np.ndarray:
             put(_sfx("stamp"), s["lines"][int(v["stamp_at"])]["s"] + 0.2, 0.8)
         if sounds and v.get("kind") in ("flow", "counter", "bag", "title"):
             put(_sfx("coins"), s["s"] + 0.6, 0.5)
+        if sounds and v.get("kind") in ("bars", "percent", "compare", "timeline", "list", "tender", "contract"):
+            put(_sfx("pop"), s["s"] + 0.35, 0.45)          # (a picture appears)
+        if sounds and v.get("kind") == "magnifier":
+            put(_sfx("ding"), s["s"] + 0.8, 0.6)
+        if sounds:
+            for ln in s["lines"]:                          # (a speech bubble pops up)
+                if ln.get("bubble"):
+                    put(_sfx("pop"), ln["s"], 0.4)
         for ln in s["lines"]:
             if ln.get("wav") and Path(ln["wav"]).is_file():
                 put(_read_wav(ln["wav"]), ln["s"], 1.0)

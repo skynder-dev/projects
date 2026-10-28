@@ -194,6 +194,18 @@ def main() -> int:
         cx_, cy_, z_ = F._camera(cvv, dict(ex, caption_at=where), night, t1, nm, xs_, sc_)
         heads[where] = (round(((_bgs.ground_y(cvv) - 530 * sc_ - cy_) * z_ + cvv.SH / 2) / cvv.SH, 3), round(z_, 2))
     lens = {pc: F.timeline(dict(ex, pace=pc))["seconds"] for pc in ("quick", "", "calm")}
+    snd_tl = F.timeline(F.check_script({"title": "x", "cast": {"a": {"name": "Ann"}, "b": {"name": "Bob"}}, "scenes": [
+        {"bg": "office", "cast": ["a", "b"], "lines": [{"who": "a", "text": "Look at this, it is quite long."},
+                                                         {"who": "b", "text": "Wow!", "bubble": True}]},
+        {"bg": "board", "visual": {"kind": "magnifier", "title": "PRICE"}, "lines": [{"who": "a", "text": "We check the papers."}]}]}))
+    snd = F.mix(snd_tl)
+    def _rms(t0, t1):
+        return float(np.sqrt(np.mean(snd[int(t0 * F.SR):int(t1 * F.SR)] ** 2)))
+    b_s = snd_tl["scenes"][0]["lines"][1]["s"]
+    m_s = snd_tl["scenes"][1]["s"] + 0.8
+    check("sounds: a speech bubble pops up, a magnifier rings; silence before them",
+          _rms(b_s, b_s + 0.1) > 0.01 and _rms(m_s, m_s + 0.3) > 0.01 and _rms(0.0, 0.5) < 0.001,
+          (_rms(b_s, b_s + 0.1), _rms(m_s, m_s + 0.3), _rms(0.0, 0.5)))
     check("pace: shorter pauses for a quick film, longer for a calm one; an unknown pace is the usual",
           lens["quick"] < lens[""] < lens["calm"] and F.check_script(dict(_T.parse(_T.ROAD_TEXT), pace="odd"))["pace"] == "",
           lens)
