@@ -46,9 +46,18 @@ BG_WORDS = {
     "street at night": "night", "chart": "board", "charts": "board", "scheme": "board", "end": "board", "finale": "board",
     "lesson": "board", "конец": "board", "итог": "board", "финал": "board",
 }
+KIND_ALIASES = {                                           # the kinds of pictures written in Russian or Romanian
+    "заголовок": "title", "название": "title", "titlu": "title", "поток": "flow", "денежный поток": "flow", "схема": "flow",
+    "flux": "flow", "schemă": "flow", "schema": "flow", "договор": "contract", "контракт": "contract", "тендер": "tender",
+    "конкурс": "tender", "licitație": "tender", "licitatie": "tender", "график": "bars", "диаграмма": "bars", "столбики": "bars",
+    "столбцы": "bars", "grafic": "bars", "diagramă": "bars", "chart": "bars", "список": "list", "listă": "list", "lista": "list",
+    "счётчик": "counter", "счетчик": "counter", "сумма": "counter", "contor": "counter", "sumă": "counter", "suma": "counter",
+    "сравнение": "compare", "comparație": "compare", "comparatie": "compare", "мешок": "bag", "деньги": "bag", "sac": "bag",
+    "лупа": "magnifier", "проверка": "magnifier", "lupă": "magnifier", "lupa": "magnifier", "дорога": "road", "drum": "road",
+}
 VISUAL_KINDS = ("title", "flow", "contract", "tender", "bars", "chart", "list", "counter", "compare", "bag", "magnifier", "road",
                 "заголовок", "схема", "договор", "контракт", "тендер", "график", "диаграмма", "список", "счётчик", "счетчик",
-                "сумма", "сравнение", "мешок", "лупа", "проверка", "дорога")
+                "сумма", "сравнение", "мешок", "лупа", "проверка", "дорога") + tuple(KIND_ALIASES)
 POSE_WORDS = {
     "talk": "talk", "говорит": "talk", "explain": "explain", "объясняет": "explain", "point": "point", "показывает": "point",
     "point up": "point_up", "point_up": "point_up", "палец вверх": "point_up", "shrug": "shrug", "пожимает плечами": "shrug",
@@ -57,7 +66,8 @@ POSE_WORDS = {
     "rubs hands": "count", "потирает руки": "count", "present": "present", "представляет": "present",
     "facepalm": "facepalm", "рука у лица": "facepalm", "fist": "fist", "кулак": "fist", "sneaky": "sneaky", "крадётся": "sneaky",
     "idle": "idle", "стоит": "idle", "считает": "count", "выступает": "present", "указывает": "point",
-    "разводит руками": "shrug", "шепчет": "sneaky", "размышляет": "think", "приветствует": "wave",
+    "разводит руками": "shrug", "шепчет": "sneaky", "размышляет": "think", "приветствует": "wave", "приветствие": "wave",
+    "указывает вверх": "point_up", "поднимает палец": "point_up", "выговаривает": "talk",
     "talking": "talk", "explaining": "explain", "pointing": "point", "points": "point", "pointing up": "point_up",
     "shrugging": "shrug", "shrugs": "shrug", "crossed arms": "cross", "arms folded": "cross", "thinking": "think",
     "thinks": "think", "waving": "wave", "waves": "wave", "rubbing hands": "count", "rubs his hands": "count",
@@ -84,7 +94,8 @@ EMO_WORDS = {
     "шокирован": "surprised", "нервно": "worried", "хитрый": "sly", "счастливо": "happy", "счастлив": "happy",
     "с улыбкой": "happy", "улыбка": "happy", "смех": "happy", "смеётся": "happy", "злобно": "angry", "злой": "angry",
     "грустный": "sad", "печально": "sad", "испуган": "worried", "уверенно": "neutral", "строго": "neutral",
-    "calm": "neutral", "calmă": "neutral", "fericit": "happy", "fericită": "happy", "vesel": "happy", "veselă": "happy",
+    "злится": "angry", "беспокоится": "worried", "смешно": "happy",
+    "calmă": "neutral", "fericit": "happy", "fericită": "happy", "vesel": "happy", "veselă": "happy",
     "furios": "angry", "furioasă": "angry", "supărat": "angry", "supărată": "angry", "trist": "sad", "tristă": "sad",
     "surprins": "surprised", "surprinsă": "surprised", "viclean": "sly", "vicleană": "sly", "subtil": "sly",
     "îngrijorat": "worried", "îngrijorată": "worried", "speriat": "worried", "speriată": "worried",
@@ -133,8 +144,10 @@ def _visual(spec: str, n_lines: int) -> dict | None:
     """What a scene shows, from "kind: details" after the "|" (the parts appear one per line, in order)."""
     if not spec:
         return None
+    spec = re.sub(r"\s*(?:→|=>|—>|–>|->)\s*", " -> ", spec)        # every kind of arrow
     kind, _, rest = spec.partition(":")
-    kind, rest = kind.strip().lower(), re.sub(r'["“”«»]', "", rest).strip()
+    kind, rest = kind.strip().lower(), re.sub(r'["“”«»„]', "", rest).strip()
+    kind = KIND_ALIASES.get(kind, kind)
     at = lambda k: min(k, max(0, n_lines - 1)) if n_lines else None       # noqa: E731
     if kind in ("title", "заголовок"):
         t, _, sub = rest.partition("/")
@@ -154,9 +167,9 @@ def _visual(spec: str, n_lines: int) -> dict | None:
         notes = []
         for p in parts[1:]:
             low = p.lower()
-            if low.startswith(("price", "цена")):
+            if low.startswith(("price", "цена", "preț", "pret")):
                 v.update(price=p.split(" ", 1)[1].strip() if " " in p else "", price_at=at(0))
-            elif low.startswith(("stamp", "печать")):
+            elif low.startswith(("stamp", "печать", "ștampilă", "stampila", "штамп")):
                 v.update(stamp=(p.split(" ", 1)[1].strip() if " " in p else "APPROVED").upper()[:16], stamp_at=at(1))
             else:
                 notes.append({"text": p.lstrip("-+ "), "ok": p.startswith("+"), "at": at(len(notes))})
