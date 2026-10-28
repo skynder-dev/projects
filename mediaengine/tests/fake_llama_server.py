@@ -101,10 +101,15 @@ Narrator: Катя (woman, narrator)
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("-m"); ap.add_argument("-c"); ap.add_argument("--host", default="127.0.0.1")
-    ap.add_argument("--port", type=int, required=True); ap.add_argument("--api-key", default="")
+    ap.add_argument("--port", type=int, default=0); ap.add_argument("--api-key", default="")
+    ap.add_argument("--list-devices", action="store_true")
     ap.add_argument("-np"); ap.add_argument("--jinja", action="store_true"); ap.add_argument("-ngl", default="99")
     ap.add_argument("--device", default="")
     a, _rest = ap.parse_known_args()
+    if a.list_devices:                                  # (as llama.cpp's own list)
+        print("Available devices:")
+        print("  (none)" if os.environ.get("FAKE_LLAMA_NO_DEVICE") == "1" else "  Vulkan0: Fake GPU 3000 (12288 MiB, 11000 MiB free)")
+        return 0
     gpu = a.ngl != "0" and a.device != "none"
     print(f"main: model {a.m}", flush=True)
     if gpu and os.environ.get("FAKE_LLAMA_GPU_FAIL") == "1":

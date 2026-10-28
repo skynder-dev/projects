@@ -211,8 +211,18 @@ def main() -> int:
         r6 = c.post("/auto/cartoon/write", data={"about": "Why a city hospital pays more", "lang": "en"}, headers=H)
         j6 = wait(vo, (r6.headers.get("Location") or "").rstrip("/").split("/")[-1])
         os.environ.pop("FAKE_LLAMA_GPU_FAIL")
-        check("a graphics card that fails to start: the story is written on the processor",
-              j6.get("state") == "done" and (j6.get("result") or {}).get("device") == "", j6.get("result"))
+        W._DEVICES.clear()
+        os.environ["FAKE_LLAMA_NO_DEVICE"] = "1"
+        r7 = c.post("/auto/cartoon/write", data={"about": "Why a city hospital pays more", "lang": "en"}, headers=H)
+        j7 = wait(vo, (r7.headers.get("Location") or "").rstrip("/").split("/")[-1])
+        os.environ.pop("FAKE_LLAMA_NO_DEVICE")
+        no_card = W.gpu_name()
+        W._DEVICES.clear()
+        check("a graphics card that fails to start: the story is written on the processor; no card the Vulkan build "
+              "sees: the processor at once; a card it sees is named",
+              j6.get("state") == "done" and (j6.get("result") or {}).get("device") == "" and j7.get("state") == "done"
+              and (j7.get("result") or {}).get("device") == "" and no_card == "" and W.gpu_name() == "Fake GPU 3000",
+              (j6.get("result"), j7.get("result"), no_card))
 
         # a video on this PC: without the voice add-on refused; with it (a stand-in Whisper here) heard, noted, written
         vid = work / "talk.mp4"

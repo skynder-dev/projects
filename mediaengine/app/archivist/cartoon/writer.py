@@ -469,10 +469,41 @@ class Server:
             self.proc = None
 
 
+_DEVICES: dict = {}
+
+
+def gpu_name() -> str | None:
+    """The graphics card llama.cpp's Vulkan build sees (its own --list-devices: "Vulkan0: NAME (12288 MiB, ...)");
+    '' when it sees none, None when it could not be asked. Asked once per run of the program."""
+    fake = os.environ.get("MEDENG_WRITER_SERVER")
+    exe = fake.split("|") if fake else ([str(_server_exe("vulkan"))] if _server_exe("vulkan") else [])
+    if not exe:
+        return None
+    key = "|".join(exe)
+    if key not in _DEVICES:
+        try:
+            cp = subprocess.run(exe + ["--list-devices"], capture_output=True, text=True, errors="replace", timeout=90,
+                                cwd=str(Path(exe[-1]).parent), **process_kwargs(below_normal=False))
+            txt = (cp.stdout or "") + (cp.stderr or "")
+        except Exception:
+            return None
+        if "Available devices" not in txt:
+            return None
+        names = re.findall(r"^\s*(?:Vulkan|CUDA|ROCm|SYCL|OpenCL)\d+:\s*(.+?)\s*\(\d+ MiB", txt, re.M)
+        _DEVICES[key] = names[0][:80] if names else ""
+    return _DEVICES[key]
+
+
 def open_server(stop=lambda: False, track: bool = True, log: Path | None = None, model: Path | None = None) -> Server:
-    """On the graphics card when it can; the processor when the card's start fails."""
+    """On the graphics card when there is one and it starts; the processor otherwise."""
+    card = gpu_name()
+    if card == "":                                         # (no card the Vulkan build can use: the processor at once)
+        return Server(False, track, log, model).start(stop)
     try:
-        return Server(True, track, log, model).start(stop)
+        srv = Server(True, track, log, model).start(stop)
+        if card:
+            srv.device = card
+        return srv
     except WriterError as exc:
         if str(exc) == "Stopped.":
             raise
