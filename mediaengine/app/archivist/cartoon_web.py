@@ -47,6 +47,7 @@ _WR_STEP = {"checking": "Checking the PC…", "program": "Downloading llama.cpp 
             "model": "Downloading the language model…", "checking_model": "Checking the downloaded model…",
             "testing": "Starting the story writer for a test…"}
 LANG_LABELS = {"en": "English", "ru": "Русский", "ro": "Română"}
+BUSY = "The characters' file is held by another program a moment (a virus check, a sync). Try again."
 BG_LABELS = {"city": "City street", "office": "Office", "city_hall": "City hall", "road": "Road", "bank": "Bank",
              "night": "Night street", "board": "Board (schemes, charts)", "paper": "Paper", "hospital": "Hospital",
              "school": "School", "shop": "Shop", "home": "Block of flats",
@@ -703,6 +704,8 @@ def register(app, page, err_page, e, human_bytes):
             key = L.add(f.get("name") or "", f.get("role") or "", f.get("female") == "1" if f.get("female") in ("0", "1") else None)
         except ValueError as exc:
             return err_page(str(exc), "/auto/cartoon/characters")
+        except OSError:
+            return err_page(BUSY, "/auto/cartoon/characters")
         return redirect(f"/auto/cartoon/characters/{key}")
 
     @app.get("/auto/cartoon/characters/<key>.png")
@@ -765,15 +768,23 @@ def register(app, page, err_page, e, human_bytes):
                 look[name] = f.get(name)
         if look.get("female"):
             look["beard"] = "none"
-        L.update(key, role=f.get("role") if f.get("role") is not None else None, look=look,
-                 voice=f.get("voice") if f.get("voice") is not None else None)
-        if f.get("host_form") == "1":
-            L.set_host(key, f.get("host") == "1")
+        try:
+            L.update(key, role=f.get("role") if f.get("role") is not None else None, look=look,
+                     voice=f.get("voice") if f.get("voice") is not None else None)
+            if f.get("host_form") == "1":
+                L.set_host(key, f.get("host") == "1")
+        except KeyError:
+            return err_page("No such character.", "/auto/cartoon/characters")
+        except OSError:
+            return err_page(BUSY, f"/auto/cartoon/characters/{key}")
         return redirect(f"/auto/cartoon/characters/{key}")
 
     @app.post("/auto/cartoon/characters/<key>/forget")
     def cartoon_character_forget(key):
-        L.forget(key)
+        try:
+            L.forget(key)
+        except OSError:
+            return err_page(BUSY, "/auto/cartoon/characters")
         return redirect("/auto/cartoon/characters")
 
     @app.post("/auto/cartoon/study")

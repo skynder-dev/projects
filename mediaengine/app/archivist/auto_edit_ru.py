@@ -1335,6 +1335,7 @@ PHRASES = {
     "(the graphics card stopped while writing a story on this PC)": "(видеокарта остановилась, когда писала сюжет на этом компьютере)",
     "Try the graphics card again": "Попробовать видеокарту снова",
     "a man or a woman (from the name)": "мужчина или женщина (по имени)",
+    "The characters' file is held by another program a moment (a virus check, a sync). Try again.": "Файл персонажей на минуту занят другой программой (проверка на вирусы, синхронизация). Попробуй ещё раз.",
     "Or a video on this PC": "Или видео на этом компьютере", "A video whose story to retell (its full path)": "Видео, сюжет которого пересказать (полный путь)",
     "The program listens to it (the voice add-on), notes its facts and numbers and writes a new story with its own characters - not a copy. Listening takes a few minutes for an hour of video.":
         "Программа прослушает его (модуль озвучки), выпишет факты и цифры и напишет новый сюжет со своими персонажами — не копию. Прослушивание — несколько минут на час видео.",
