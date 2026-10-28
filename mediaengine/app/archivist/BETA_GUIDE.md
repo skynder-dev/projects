@@ -121,7 +121,8 @@ clothes and their colour, glasses, a hard hat, the role and the voice's descript
 voice, kept again). Characters walk into a scene they were not in; a scene only the narrator speaks in shows the
 narrator presenting it. **Music**: a light bed the program makes itself (light, a little suspense or calm), your own
 music file, or none - quiet, softer while someone speaks; a film made again keeps its music. Scenes in another place
-slide in or open as a circle; pictures include a share of a whole (30% kickback) and a timeline of dates.
+slide in or open as a circle; in a scene without a picture to read, the camera cuts to a close-up of the one speaking
+on every second line (it can be turned off); pictures include a share of a whole (30% kickback) and a timeline of dates.
 
 ## Converting videos
 

@@ -211,6 +211,11 @@ def register(app, page, err_page, e, human_bytes):
         return (f"<label style='display:block;margin-top:8px'><input type='checkbox' name='captions' value='1' checked> Captions</label>"
                 f"<div class='ct-row' style='margin-top:4px'><span>Look</span><select name='style'>{styles}</select></div>")
 
+    def _camera_choice(close: bool = True) -> str:
+        return (f"<input type='hidden' name='camera_form' value='1'><label style='display:block;margin-top:8px'>"
+                f"<input type='checkbox' name='camera' value='1' {'checked' if close else ''}> Close-ups of the one speaking "
+                f"(in scenes without a picture to read)</label>")
+
     def _voices_choice() -> str:
         have = vo.installed()
         return (f"<label style='display:block;margin-top:8px'><input type='checkbox' name='voices' value='1' {'checked' if have else 'disabled'}> "
@@ -365,7 +370,7 @@ def register(app, page, err_page, e, human_bytes):
                 f"<details style='margin-top:6px'><summary>A script as JSON instead</summary>"
                 f"<textarea name='script' rows='6' style='width:100%' placeholder='Paste a script here (only for \"My script\")'></textarea></details>"
                 f"<div class='ct-choices' style='margin-top:8px'><b>Format</b><br>{_format_choice('vertical')}</div>"
-                f"{_voices_choice()}{_captions_choice()}{_music_choice()}"
+                f"{_voices_choice()}{_captions_choice()}{_camera_choice()}{_music_choice()}"
                 f"<div style='margin-top:12px'><button class='ae-big'>Make the cartoon</button></div></form></div>"
                 + (f"<div class='card' id='films' style='margin-top:14px'><h2 style='margin-top:0'>Cartoons and stories</h2>{rows}</div>" if rows else ""))
         return page("Cartoon Studio", body, _POLL_JS + _PICK_JS + _MUSIC_JS)
@@ -376,6 +381,8 @@ def register(app, page, err_page, e, human_bytes):
         if f.get("format") in F.FORMATS:
             script["format"] = f.get("format")
         cap = {"style": f.get("style") or "pop"} if f.get("captions") == "1" else None
+        if f.get("camera_form") == "1":                    # (a form without the choice keeps the film's camera)
+            script["camera"] = "close" if f.get("camera") == "1" else "still"
         if f.get("music") in ("made", "file", "none"):
             kind = f.get("music")
             music = {"kind": kind, "mood": f.get("mood") or "light", "path": f.get("music_path") or ""} if kind != "none" else None
@@ -451,13 +458,15 @@ def register(app, page, err_page, e, human_bytes):
                 f"<form method='post' action='/auto/cartoon/{jid}/again' data-dirty-watch "
                 f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">{scenes}"
                 f"<div class='ct-choices' style='margin-top:8px'><b>Format</b><br>{_format_choice(film['format'])}</div>"
-                f"{_voices_choice()}{_captions_choice()}{_music_choice(j.get('music'))}"
+                f"{_voices_choice()}{_captions_choice()}{_camera_choice(film.get('camera') != 'still')}{_music_choice(j.get('music'))}"
                 f"<div style='margin-top:12px'><button class='ae-big'>Make it again</button></div></form>"
                 f"<details style='margin-top:12px'><summary>The whole story as text</summary>"
                 f"<form method='post' action='/auto/cartoon/{jid}/again' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
                 f"<textarea name='text' rows='18' style='width:100%;font-family:Consolas,monospace;font-size:13px' translate='no'>"
                 f"{e(T.to_text(cj.script_of(jid)))}</textarea>"
                 f"<input type='hidden' name='format' value='{e(film['format'])}'><input type='hidden' name='captions' value='1'>"
+                f"<input type='hidden' name='camera_form' value='1'>"
+                + ("<input type='hidden' name='camera' value='1'>" if film.get("camera") != "still" else "")
                 + ("<input type='hidden' name='voices' value='1'>" if j.get("voices") else "")
                 + f"<div style='margin-top:8px'><button>Make it again from this text</button></div></form></details>"
                 + (f"<details style='margin-top:8px'><summary>Another language or country</summary>"
@@ -502,7 +511,7 @@ def register(app, page, err_page, e, human_bytes):
                 f"<form method='post' action='/auto/cartoon/new' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
                 f"<textarea name='text' rows='22' style='width:100%;font-family:Consolas,monospace;font-size:13px' translate='no'>{e(story)}</textarea>"
                 f"<div class='ct-choices' style='margin-top:8px'><b>Format</b><br>{_format_choice(fmt)}</div>"
-                f"{_voices_choice()}{_captions_choice()}{_music_choice()}"
+                f"{_voices_choice()}{_captions_choice()}{_camera_choice()}{_music_choice()}"
                 f"<div style='margin-top:12px'><button class='ae-big'>Make the cartoon</button></div></form></div>"
                 f"<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Not quite right?</h2>"
                 f"<div class='ct-row'><form method='post' action='/auto/cartoon/{jid}/rewrite' style='margin:0' "

@@ -382,18 +382,57 @@ def _bubble_for(cv: Canvas, ln: dict, x: float, top_y: float, t: float):
         P.bubble(cv, bx, top_y - 130, ln["text"], w, (-1 if bx > x else 1, 1), a, 34)
 
 
+CLOSE = {"vertical": 1.8, "horizontal": 1.65}    # how near a close-up comes
+CLOSE_EMO = {"angry", "surprised", "sad"}           # (a strong feeling: a close-up on it)
+
+
+def close_up(film: dict, scene: dict, t: float) -> str | None:
+    """Who the camera is close to at film time t (None: the whole scene). A cut to a close-up of the speaker on every
+    second line of a scene - and on a line said with a strong feeling - as cartoons do; never while a picture is to be
+    read (a scene with a visual), in a scene's first moments (its transition, someone walking in), on a short line or a
+    line in a bubble. film["camera"] == "still": never."""
+    if film.get("camera") == "still" or scene.get("visual"):
+        return None
+    j = _line_at(scene, t)
+    if j < 0:
+        return None
+    ln = scene["lines"][j]
+    if ln.get("bubble") or ln["who"] not in _shown(film, scene) or ln["e"] - ln["s"] < 1.2:
+        return None
+    if ln["s"] - scene["s"] < (WALK_IN + 0.3 if scene.get("enter") else 0.8):
+        return None
+    if not (j % 2 == 1 or (ln.get("emotion") in CLOSE_EMO and j > 0)):
+        return None
+    nxt = scene["lines"][j + 1]["s"] if j + 1 < len(scene["lines"]) else scene["e"]
+    return ln["who"] if t < min(nxt, ln["e"] + GAP) else None
+
+
+def _camera(cv: Canvas, film: dict, scene: dict, t: float, names: list, xs: list, sc: float) -> tuple[float, float, float]:
+    """(x, y, zoom) the camera looks at: a slow push-in through the scene, or a close-up of the one speaking."""
+    st = t - scene["s"]
+    z = 1.0 + 0.045 * min(1.0, st / max(1.0, scene["e"] - scene["s"]))
+    who = close_up(film, scene, t)
+    if not who or who not in names:
+        return cv.SW / 2, cv.SH / 2, z
+    z = CLOSE["vertical" if cv.SH > cv.SW else "horizontal"] + 0.02 * min(1.0, st / 4.0)
+    head = bgs.ground_y(cv) - 520 * sc                    # (the head a third from the top; captions below it)
+    x, y = xs[names.index(who)], head + 0.15 * cv.SH / z
+    hw, hh = cv.SW / (2 * z), cv.SH / (2 * z)
+    return min(max(x, hw), cv.SW - hw), min(max(y, hh), cv.SH - hh), z
+
+
 def draw_frame(cv: Canvas, film: dict, scene: dict, t: float, mouths: dict):
     """One picture of a scene at film time t. mouths: who -> mouth opening now."""
     st = t - scene["s"]
-    zoom = 1.0 + 0.045 * min(1.0, st / max(1.0, scene["e"] - scene["s"]))
     cast = film["cast"]
     ln, j = _speaking(scene, t)
     speaker = ln["who"] if ln else None
+    names = _shown(film, scene)                            # (nobody else there: the narrator presents it)
+    xs, sc, box = _layout(cv, len(names), bool(scene.get("visual")))
+    cam_x, cam_y, zoom = _camera(cv, film, scene, t, names, xs, sc)
     with cv.at(cv.SW / 2, cv.SH / 2, 0, zoom):
-        with cv.at(-cv.SW / 2, -cv.SH / 2):
+        with cv.at(-cam_x, -cam_y):
             gy = bgs.draw(cv, scene["bg"], t)
-            names = _shown(film, scene)                    # (nobody else there: the narrator presents it)
-            xs, sc, box = _layout(cv, len(names), bool(scene.get("visual")))
             if scene.get("visual") and box:
                 if scene["bg"] not in DARK and (scene["visual"].get("kind") not in ("road", "title")
                                                  or (scene["visual"].get("kind") == "title" and scene["bg"] in INDOOR)):

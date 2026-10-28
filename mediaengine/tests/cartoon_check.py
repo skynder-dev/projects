@@ -171,6 +171,22 @@ def main() -> int:
           and sp[1] == "Город платит 480 миллионов рублей, бригада получает 1,2 миллиона. Это 300 долларов и 21 миллион рублей."
           and sp2[0] == "300 million dollars, 5 dollars each; it cost 1,000 dollars, then 2,000 laptops in 2024."
           and sp2[1] == "5 тысяч долларов, 3 тысячи евро, 1 процент и 21 процент, в 2024 году.", (sp, sp2))
+    # (the example story: its night scene has no picture)
+    from archivist.cartoon import textscript as _T
+    ex = F.check_script(_T.parse(_T.ROAD_TEXT))
+    ex_tl = F.timeline(ex)
+    night = next(x for x in ex_tl["scenes"] if x["bg"] == "night")
+    l0, l1 = night["lines"][0], night["lines"][1]
+    shots = [F.close_up(ex, night, (l0["s"] + l0["e"]) / 2), F.close_up(ex, night, (l1["s"] + l1["e"]) / 2),
+             F.close_up(dict(ex, camera="still"), night, (l1["s"] + l1["e"]) / 2),
+             F.close_up(ex, next(x for x in ex_tl["scenes"] if x.get("visual")), 3.0)]
+    wide_c, close_c = Canvas(W // 4, H // 4, 1080), Canvas(W // 4, H // 4, 1080)
+    F.draw_frame(wide_c, dict(ex, camera="still"), night, (l1["s"] + l1["e"]) / 2, {})
+    F.draw_frame(close_c, ex, night, (l1["s"] + l1["e"]) / 2, {})
+    cut = float(np.abs(wide_c.img.astype(np.int16) - close_c.img.astype(np.int16)).mean())
+    check("camera: a cut to a close-up of the one speaking on a scene's second line (not its first, not while a picture "
+          "is to be read, never with the camera still)",
+          shots[0] is None and shots[1] == l1["who"] and shots[2] is None and shots[3] is None and cut > 8, (shots, cut))
     a_, b_ = np.zeros((96, 54, 3), np.uint8), np.full((96, 54, 3), 200, np.uint8)
     tr = {k: F.transition(a_, b_, 0.15, same, i) for k, same, i in (("fade", True, 2), ("slide", False, 1), ("iris", False, 2))}
     check("transitions: a cross-fade in the same place; a slide or an opening circle to another place; then the new scene",
@@ -281,7 +297,15 @@ def main() -> int:
         sc2 = json.loads((vo._job_dir(nid) / "job.json").read_text("utf-8"))["script"] if re.fullmatch(r"[0-9-a-f]{22}", nid) else {}
         check("pages: a changed line, feeling and background make a new version", ag.status_code == 302 and sc2
               and sc2["scenes"][0]["lines"][0]["text"] == "The price is five times higher."
-              and sc2["scenes"][0]["lines"][1]["emotion"] == "angry" and sc2["scenes"][1]["bg"] == "paper", (ag.status_code, nid))
+              and sc2["scenes"][0]["lines"][1]["emotion"] == "angry" and sc2["scenes"][1]["bg"] == "paper"
+              and sc2.get("camera") != "still" and b"Close-ups of the one speaking" in one.data, (ag.status_code, nid))
+        ag_still = c.post(f"/auto/cartoon/{jid}/again", data={"camera_form": "1", "format": "horizontal"}, headers=H)
+        nid_s = (ag_still.headers.get("Location") or "").rstrip("/").split("/")[-1]
+        sc_s = json.loads((vo._job_dir(nid_s) / "job.json").read_text("utf-8"))["script"] if re.fullmatch(r"[0-9-a-f]{22}", nid_s) else {}
+        if nid_s:
+            vo.cancel_job(nid_s)
+        check("pages: close-ups turned off are kept in the new version", sc_s.get("camera") == "still"
+              and b"name='camera' value='1' checked" not in c.get(f"/auto/cartoon/{nid_s}", headers=H).data, (ag_still.status_code, sc_s.get("camera")))
         if nid:
             t0 = time.time()
             while vo.read_job(nid)["state"] in ("waiting", "working") and time.time() - t0 < 900:
