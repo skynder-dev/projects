@@ -928,6 +928,13 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
 - 2026-10-29, the owner made his first cartoon (the roads story): "прикольно, мне нравится"; asked for miles in the
   USA (the English example said kilometers) and how to make it in Romanian (Language → Română, or "Another language or
   country" on the story or film); Convert refused 20 MB ("from 50 MB") when he wanted a video for a chat - from 5 MB now.
+- 2026-10-29, **b258** published (commit fa0ab06, ZIP 4,880,125 bytes, the same runtime; run 40808885817: cartoon
+  37/37, writer 31/31, convert 66/66, browser 20/20, Russian 242 pages 0 English, route fuzz 0 errors): miles for the
+  United States, Convert's size from 5 MB, the voices' lines equally loud, the rhythm's scenes asked more firmly.
+- 2026-10-29, the owner asked what making the repository private would cost: told him that private repositories are
+  free, but the checks are not (about 13,500 Windows minutes in the last 20 days - about $200 a month at $0.010 a
+  minute); options (fewer full runs, his PC as the runner, MedEng alone in its own private repository, the Update
+  button then needing a key). Nothing changed: his decision.
 - 2026-10-29, read-only look at the owner's app (http://127.0.0.1:8775/api/cartoon/writer and the Cartoon Studio page):
   the story writer is installed with Qwen3-14B and its install test ran on "NVIDIA GeForce RTX 3060" (llama.cpp's
   Vulkan build) - the graphics-card path proven on his PC; his cartoon: the example story, 94 s, 10 scenes, saved.

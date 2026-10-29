@@ -290,7 +290,8 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   story finished on the processor, "Try the graphics card again"; fixes from a third independent review (9). The
   build of 5f4007d (b255) failed the browser check: the "Pauses between lines" list was wider than a 420 px window in
   Russian - shorter choices, lists that never grow past their row.
-- Next build (after b256), from the owner's first cartoon and his try to send a video to a chat: the story writer uses
+- b258 (commit fa0ab06, run 40808885817: cartoon 37/37, writer 31/31, convert 66/66, browser 20/20, Russian 242 pages
+  0 English, route fuzz 3730 requests 0 errors; the same runtime), from the owner's first cartoon and his try to send a video to a chat: the story writer uses
   the viewers' measures (miles, feet, gallons for the United States - English's default viewers; kilometres elsewhere),
   the English example story in miles; every line of the cartoon's voices as loud as the others; Convert's size target
   from 5 MB (was 50 MB: a 20 MB chat limit could not be met), a small size fitted by a smaller picture (2 min of 1080p:
