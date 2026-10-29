@@ -1,0 +1,333 @@
+{
+ "version": "2026.10.26",
+ "videos": [
+  {
+   "name": "youtube_test",
+   "url": "https://www.youtube.com/watch?v=BaW_jenozKc",
+   "rc": 1,
+   "seconds": 2.5,
+   "ok": false,
+   "error": "ERROR: [youtube] BaW_jenozKc: This video is unavailable"
+  },
+  {
+   "name": "vimeo_test",
+   "url": "https://vimeo.com/56015672",
+   "rc": 1,
+   "seconds": 2.6,
+   "ok": false,
+   "error": "ERROR: [vimeo] 56015672: The web client only works when logged-in. Use --cookies, --cookies-from-browser, --username and --password, --netrc-cmd, or --netrc (vimeo) to provide account credentials. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies"
+  },
+  {
+   "name": "archive_org",
+   "url": "https://archive.org/details/Popeye_forPresident",
+   "rc": 0,
+   "seconds": 4.0,
+   "ok": true,
+   "error": "",
+   "size": 26138707,
+   "ext": ".ogv",
+   "info": {
+    "ffmpeg_info": [
+     "Duration: 00:06:10.30, start: 0.000000, bitrate: 564 kb/s",
+     "Stream #0:0: Video: theora, yuv420p, 400x300, 29.97 tbr, 29.97 tbn",
+     "Stream #0:1: Audio: vorbis, 44100 Hz, stereo, fltp"
+    ]
+   }
+  },
+  {
+   "name": "tiktok_test",
+   "url": "https://www.tiktok.com/@leenabhushan/video/6748451240264420610",
+   "rc": 1,
+   "seconds": 2.3,
+   "ok": false,
+   "error": "ERROR: [TikTok] 6748451240264420610: Your IP address is blocked from accessing this post"
+  },
+  {
+   "name": "youtube_channel_video",
+   "url": "https://www.youtube.com/watch?v=FkgVB19I6xw",
+   "rc": 1,
+   "seconds": 2.8,
+   "ok": false,
+   "error": "WARNING: [youtube] No title found in player responses; falling back to title from initial data. Other metadata may also be missing\nERROR: [youtube] FkgVB19I6xw: Sign in to confirm you�re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies"
+  }
+ ],
+ "lists": [
+  {
+   "name": "youtube_channel",
+   "url": "https://www.youtube.com/@NASA/videos",
+   "rc": 0,
+   "seconds": 2.3,
+   "count": 15,
+   "fields": [
+    "_type",
+    "duration",
+    "id",
+    "ie_key",
+    "thumbnails",
+    "title",
+    "url",
+    "view_count"
+   ],
+   "sample": [
+    {
+     "id": "Zezt6EsG9WE",
+     "title": "NASA Moon Base: Rovers and Lunar Terrain Vehicles (October 2026 Update)",
+     "duration": 558,
+     "view_count": 954000,
+     "upload_date": null,
+     "url": "https://www.youtube.com/watch?v=Zezt6EsG9WE"
+    },
+    {
+     "id": "5b3n-u_0QAI",
+     "title": "Planetary Defenders: This Is Not an Exercise",
+     "duration": 1215,
+     "view_count": 664000,
+     "upload_date": null,
+     "url": "https://www.youtube.com/watch?v=5b3n-u_0QAI"
+    },
+    {
+     "id": "ErAqN6gXqZQ",
+     "title": "NASA's SpaceX Crew-13 Mission (Official NASA Trailer)",
+     "duration": 62,
+     "view_count": 106000,
+     "upload_date": null,
+     "url": "https://www.youtube.com/watch?v=ErAqN6gXqZQ"
+    },
+    {
+     "id": "IwZVXmQdX1E",
+     "title": "NASA Moon Base: The First Six Months",
+     "duration": 67,
+     "view_count": 528000,
+     "upload_date": null,
+     "url": "https://www.youtube.com/watch?v=IwZVXmQdX1E"
+    },
+    {
+     "id": "90Kgw_SvK4w",
+     "title": "What It Takes",
+     "duration": 152,
+     "view_count": 329000,
+     "upload_date": null,
+     "url": "https://www.youtube.com/watch?v=90Kgw_SvK4w"
+    },
+    {
+     "id": "jHKf1eHp3eQ",
+     "title": "Artemis III: Our Next Step Back to the Moon",
+     "duration": 61,
+     "view_count": 155000,
+     "upload_date": null,
+     "url": "https://www.youtube.com/watch?v=jHKf1eHp3eQ"
+    },
+    {
+     "id": "MVt2139voxk",
+     "title": "For Earth, With Love: Artemis II",
+     "duration": 203,
+     "view_count": 439000,
+     "upload_date": null,
+     "url": "https://www.youtube.com/watch?v=MVt2139voxk"
+    },
+    {
+     "id": "_oXt3-YDih4",
+     "title": "Artemis Origins: Humanity's Return to the Moon",
+     "duration": 86,
+     "view_count": 92000,
+     "upload_date": null,
+     "url": "https://www.youtube.com/watch?v=_oXt3-YDih4"
+    },
+    {
+     "id": "6o3m9Bw67Os",
+     "title": "NASA's Nancy Grace Roman Space Telescope Launches (Official NASA Recap)",
+     "duration": 127,
+     "view_count": 214000,
+     "upload_date": null,
+     "url": "https://www.youtube.com/watch?v=6o3m9Bw67Os"
+    },
+    {
+     "id": "8NOLpgadWXc",
+     "title": "NASA's Artemis II Astronauts Receive the Congressional Space Medal of Honor",
+     "duration": 115,
+     "view_count": 90000,
+     "upload_date": null,
+     "url": "https://www.youtube.com/watch?v=8NOLpgadWXc"
+    },
+    {
+     "id": "1icdW32gS8A",
+     "title": "President Donald J. Trump Calls the International Space Station Crew",
+     "duration": 90,
+     "view_count": 118000,
+     "upload_date": null,
+     "url": "https://www.youtube.com/watch?v=1icdW32gS8A"
+    },
+    {
+     "id": "FkgVB19I6xw",
+     "title": "NASA's Roman Space Telescope: A New Perspective on the Cosmos (Official NASA Trailer)",
+     "duration": 46,
+     "view_count": 141000,
+     "upload_date": null,
+     "url": "https://www.youtube.com/watch?v=FkgVB19I6xw"
+    },
+    {
+     "id": "UbAsuvO-164",
+     "title": "MAX POWER at NASA's Kennedy Space Center | Nov. 7-8, 2026",
+     "duration": 77,
+     "view_count": 44000,
+     "upload_date": null,
+     "url": "https://www.youtube.com/watch?v=UbAsuvO-164"
+    },
+    {
+     "id": "Q5_BtWc-G7Y",
+     "title": "How to Photograph a Total Solar Eclipse",
+     "duration": 81,
+     "view_count": 72000,
+     "upload_date": null,
+     "url": "https://www.youtube.com/watch?v=Q5_BtWc-G7Y"
+    },
+    {
+     "id": "Sempwv5MPMQ",
+     "title": "NASA Moon Base: Lunar Landers (August 2026 Update)",
+     "duration": 615,
+     "view_count": 508000,
+     "upload_date": null,
+     "url": "https://www.youtube.com/watch?v=Sempwv5MPMQ"
+    }
+   ],
+   "error": ""
+  },
+  {
+   "name": "vimeo_channel",
+   "url": "https://vimeo.com/channels/staffpicks",
+   "rc": 0,
+   "seconds": 3.1,
+   "count": 15,
+   "fields": [
+    "_type",
+    "id",
+    "ie_key",
+    "title",
+    "url"
+   ],
+   "sample": [
+    {
+     "id": "1226740492",
+     "title": "Sisowath Quay",
+     "duration": null,
+     "view_count": null,
+     "upload_date": null,
+     "url": "https://vimeo.com/channels/staffpicks/1226740492"
+    },
+    {
+     "id": "1227172678",
+     "title": "Galopa",
+     "duration": null,
+     "view_count": null,
+     "upload_date": null,
+     "url": "https://vimeo.com/channels/staffpicks/1227172678"
+    },
+    {
+     "id": "1226731365",
+     "title": "The Life of Death and the Ensh*ttificator",
+     "duration": null,
+     "view_count": null,
+     "upload_date": null,
+     "url": "https://vimeo.com/channels/staffpicks/1226731365"
+    },
+    {
+     "id": "1223839596",
+     "title": "Permanence- Veritus Milller &amp; Ronnie Heard III",
+     "duration": null,
+     "view_count": null,
+     "upload_date": null,
+     "url": "https://vimeo.com/channels/staffpicks/1223839596"
+    },
+    {
+     "id": "1236790091",
+     "title": "Ouais.",
+     "duration": null,
+     "view_count": null,
+     "upload_date": null,
+     "url": "https://vimeo.com/channels/staffpicks/1236790091"
+    },
+    {
+     "id": "1237176348",
+     "title": "Pipes",
+     "duration": null,
+     "view_count": null,
+     "upload_date": null,
+     "url": "https://vimeo.com/channels/staffpicks/1237176348"
+    },
+    {
+     "id": "1238505828",
+     "title": "&iexcl;PIKA! [The Itch]",
+     "duration": null,
+     "view_count": null,
+     "upload_date": null,
+     "url": "https://vimeo.com/channels/staffpicks/1238505828"
+    },
+    {
+     "id": "1224671736",
+     "title": "Iteration",
+     "duration": null,
+     "view_count": null,
+     "upload_date": null,
+     "url": "https://vimeo.com/channels/staffpicks/1224671736"
+    },
+    {
+     "id": "1237757917",
+     "title": "What We Leave Behind",
+     "duration": null,
+     "view_count": null,
+     "upload_date": null,
+     "url": "https://vimeo.com/channels/staffpicks/1237757917"
+    },
+    {
+     "id": "1225933284",
+     "title": "The Art Of Entering The Sea",
+     "duration": null,
+     "view_count": null,
+     "upload_date": null,
+     "url": "https://vimeo.com/channels/staffpicks/1225933284"
+    },
+    {
+     "id": "1237618682",
+     "title": "Nostalgie",
+     "duration": null,
+     "view_count": null,
+     "upload_date": null,
+     "url": "https://vimeo.com/channels/staffpicks/1237618682"
+    },
+    {
+     "id": "1226646947",
+     "title": "Leonie, Skeet and the Piglets",
+     "duration": null,
+     "view_count": null,
+     "upload_date": null,
+     "url": "https://vimeo.com/channels/staffpicks/1226646947"
+    },
+    {
+     "id": "1236356268",
+     "title": "Someone To Steal Horses With",
+     "duration": null,
+     "view_count": null,
+     "upload_date": null,
+     "url": "https://vimeo.com/channels/staffpicks/1236356268"
+    },
+    {
+     "id": "1235421735",
+     "title": "Marriaginalia",
+     "duration": null,
+     "view_count": null,
+     "upload_date": null,
+     "url": "https://vimeo.com/channels/staffpicks/1235421735"
+    },
+    {
+     "id": "1236047508",
+     "title": "The Rockjob",
+     "duration": null,
+     "view_count": null,
+     "upload_date": null,
+     "url": "https://vimeo.com/channels/staffpicks/1236047508"
+    }
+   ],
+   "error": ""
+  }
+ ]
+}

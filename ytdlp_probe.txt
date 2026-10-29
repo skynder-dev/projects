@@ -1,0 +1,9 @@
+yt-dlp 2026.10.26 (rc 0, 2.8 s)
+FAIL youtube_test: rc 1, 2.5 s, None bytes ERROR: [youtube] BaW_jenozKc: This video is unavailable
+FAIL vimeo_test: rc 1, 2.6 s, None bytes ERROR: [vimeo] 56015672: The web client only works when logged-in. Use --cookies, --cookies-from-browser, --username and --password, --netrc-cmd, or --netrc (vimeo) to provide account credentials. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pas
+PASS archive_org: rc 0, 4.0 s, 26138707 bytes 
+FAIL tiktok_test: rc 1, 2.3 s, None bytes ERROR: [TikTok] 6748451240264420610: Your IP address is blocked from accessing this post
+PASS youtube_channel: 15 entries, 2.3 s, fields ['_type', 'duration', 'id', 'ie_key', 'thumbnails', 'title', 'url', 'view_count'] 
+PASS vimeo_channel: 15 entries, 3.1 s, fields ['_type', 'id', 'ie_key', 'title', 'url'] 
+FAIL youtube_channel_video: rc 1, 2.8 s, None bytes WARNING: [youtube] No title found in player responses; falling back to title from initial data. Other metadata may also be missing
+ERROR: [youtube] FkgVB19I6xw: Sign in to confirm you�re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See 

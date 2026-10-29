@@ -1,0 +1,6 @@
+tag=v2.9.7
+file=deno-x86_64-pc-windows-msvc.zip
+size=42630221
+sha256=a0c3101b4158d1dfb7d6a78a7bf0f3de80c96bb423c152beec8beb22786f2238
+listed=a0c3101b4158d1dfb7d6a78a7bf0f3de80c96bb423c152beec8beb22786f2238
+exe_size=97462048
