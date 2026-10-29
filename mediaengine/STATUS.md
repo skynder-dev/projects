@@ -968,6 +968,20 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   Run 40934241652 (e2e3ec9): Qwen3-14B - the translit Russian topic gives a Cyrillic title and names (Ольга, Мэр
   Петров), the translit topic for an English story right, the Cyrillic topic as before; the 4B model's keywords back
   in English (gestures read 18/24 for the Cyrillic topic, 15/27 for the translit one, was 0/37).
+- 2026-10-29, **b263** published (commit e2e3ec9, ZIP 4,953,144 bytes, the same runtime; run 40934241407: cartoon
+  37/37, writer 35/35, download 10/10 on Windows, convert 66/66, browser 20/20, Russian 242 pages 0 English, route fuzz
+  4033 requests 0 errors): Download by a link, an author's style, translit topics.
+- 2026-10-29, the owner: "very much of everything, it is unclear what is where - structure it" (and: similar programs
+  have the menu on the left; "a bit of colour would not hurt, maybe each mode its own range"; "not only a cartoon
+  conveyor"). The interface regrouped without changing any page's address: a menu column on the left (Home; Create -
+  Auto Edit, Clips, Voice-over and text, Cartoon Studio, Edit by hand; Videos - Library, Import, Search, Best Moments,
+  Download by a link; Tools - Convert, Check this PC, Orders; Activity, Settings, More), the open place lit and its parts
+  under it, "☰ Menu" in a narrow window; Home = what to make (six equal tiles) + the recent work of every part (Activity
+  lists all of it); the Library's figures moved to Media; Cartoon Studio's own cartoons right under the writer; colours
+  by kind of work (Create warm, Videos teal, Tools amber) with Settings → Look (also "Neon on black", "Calm night");
+  MediaEngine opens on Home. Local checks: unit 198, browser 20/20 (420 px and 1280 px, ru/en), e2e 79/79, library flow
+  43/43, orders 53/53, voice 198, cartoon 37, clips 37, convert 66, writer 35, download 10, Russian 0 English, route
+  fuzz 4074 requests 0 errors.
 - 2026-10-29, an author's style (step 3 of the owner's "a profile whose videos suit our style"): several studied videos
   together (`cartoon/reference.py`: new_style / author_style; cartoon/styles/<id>.json) - the median of their shot
   length, words a second, first words, the share opening with a question (median: one odd video changes little), their

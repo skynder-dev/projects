@@ -296,6 +296,13 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   the English example story in miles; every line of the cartoon's voices as loud as the others; Convert's size target
   from 5 MB (was 50 MB: a 20 MB chat limit could not be met), a small size fitted by a smaller picture (2 min of 1080p:
   20 MB -> 720p, 5 MB -> 360p).
+- b263 (commit e2e3ec9, run 40934241407: cartoon 37/37, writer 35/35, download 10/10, convert 66/66, browser 20/20,
+  Russian 242 pages 0 English, route fuzz 4033 requests 0 errors; ZIP 4,953,144 bytes, the same runtime): **Download by
+  a link** (Media) - one video or a profile's videos listed (the 10 most viewed, the first 10 or ticked; at most 30,
+  up to 1080p) by yt-dlp 2026.10.26 with deno v2.9.7, installed with a button (GitHub releases, SHA-256 checked), each
+  studied for its rhythm when asked; **an author's style** (several studied videos together: the median of their
+  rhythms, their colours; "Write a story in this style"); a story's topic may be typed in translit (the title and the
+  names then in the story's own letters). Builds b259-b262 were cancelled by newer pushes.
 
 ## Orders from other programs; night review fixes (2026-10-17)
 
