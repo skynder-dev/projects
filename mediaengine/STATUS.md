@@ -928,6 +928,12 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
 - 2026-10-29, the owner made his first cartoon (the roads story): "прикольно, мне нравится"; asked for miles in the
   USA (the English example said kilometers) and how to make it in Romanian (Language → Română, or "Another language or
   country" on the story or film); Convert refused 20 MB ("from 50 MB") when he wanted a video for a chat - from 5 MB now.
+- 2026-10-29, read-only look at the owner's app (http://127.0.0.1:8775/api/cartoon/writer and the Cartoon Studio page):
+  the story writer is installed with Qwen3-14B and its install test ran on "NVIDIA GeForce RTX 3060" (llama.cpp's
+  Vulkan build) - the graphics-card path proven on his PC; his cartoon: the example story, 94 s, 10 scenes, saved.
+- 2026-10-29, writer probe (run 40692181687, both models, CPU) with a studied reference's rhythm: a quick reference
+  (3 s shots) gave 11 scenes (13-14 asked; the usual is 8-10), a calm one 9-10 (7-9 asked); words ~1.4x of those
+  asked, as without a rhythm. The scenes are now asked more firmly.
 - 2026-10-28, pushed after b254: pauses that follow the pace, characters added before a film and the host, more
   sounds, quick links, the writer finishing on the processor when the card stops; the writer probe gets two stories
   with a reference's rhythm (does each model follow the scenes asked?).
