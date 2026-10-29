@@ -652,8 +652,13 @@ def measures_of(country: str) -> str:
     return "kilometres, metres, litres, kilograms and degrees Celsius (never miles or gallons)"
 
 
-TOPIC_NOTE = ("\n(The TOPIC may be written in any language, also in Russian typed in Latin letters - translit, like 'kak gorod "
-              "platit dvazhdy': understand what it means; the LANGUAGE below decides the language of the script.)")
+def _topic_note(lang: str) -> str:
+    """The topic may be typed in any language or in translit (the owner often types Russian in Latin letters): the
+    model understands it, but then copied the translit as the title and gave the people Latin names (probe 40922999385)."""
+    own = (" - for Russian, Cyrillic letters (Анна, not Anna), never translit" if lang == "ru" else "")
+    return ("\n(The TOPIC may be written in any language, also in Russian typed in Latin letters - translit, like 'kak gorod "
+            "platit dvazhdy': understand what it means. The title, the people's names and everything said follow the "
+            f"LANGUAGE rule below, written in that language's own letters{own}.)")
 
 
 def prompt(job: dict) -> str:
@@ -703,7 +708,7 @@ def prompt(job: dict) -> str:
                             "numbers, but tell it in your own words as a story with invented characters; do not copy its "
                             "sentences.", f"TEXT:\n\"\"\"\n{str(job.get('source') or '').strip()[:MAX_SOURCE]}\n\"\"\"" + where,
                             _lang_rule(lang), FORMAT.format(fmt=fmt), rules, _example(), "Now write the script about the TEXT."])
-    return "\n\n".join([f"Write a new cartoon script.\n\nTOPIC: {str(job.get('topic') or '').strip()[:MAX_TOPIC]}" + TOPIC_NOTE + where,
+    return "\n\n".join([f"Write a new cartoon script.\n\nTOPIC: {str(job.get('topic') or '').strip()[:MAX_TOPIC]}" + _topic_note(lang) + where,
                         _lang_rule(lang), FORMAT.format(fmt=fmt), rules, _example(), "Now write the script about the TOPIC."])
 
 
