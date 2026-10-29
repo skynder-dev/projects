@@ -960,7 +960,11 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   tests/download_check.py with a stand-in yt-dlp (no network): 9/9 locally.
 - 2026-10-29, the owner asked whether the story's topic may be typed in translit: the language of the story comes from
   the Language list, the topic may be in any language; the request now tells the model a topic may be Russian typed in
-  Latin letters. Probe: three translit topics (Russian, English and Romanian stories) on both writer models.
+  Latin letters. Probe run 40922999385 (both models, three translit topics): all understood (English and Romanian
+  stories right); Qwen3-14B kept the Russian title in translit and gave the people Latin names -> the note asks for the
+  title and names in the story's own letters (Cyrillic for Russian); run 40927742172: Cyrillic title and names now, but
+  the small 4B model then wrote the format's keywords in Russian even for a Cyrillic topic (gestures 11/24 read, was
+  16/26) -> the note only for a topic that looks like translit, and it says the keywords stay in English.
 - 2026-10-29, an author's style (step 3 of the owner's "a profile whose videos suit our style"): several studied videos
   together (`cartoon/reference.py`: new_style / author_style; cartoon/styles/<id>.json) - the median of their shot
   length, words a second, first words, the share opening with a question (median: one odd video changes little), their

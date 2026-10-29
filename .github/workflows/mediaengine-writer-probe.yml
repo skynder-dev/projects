@@ -15,7 +15,7 @@ permissions:
   contents: write
 env:
   # the tasks of this run (empty: all of them)
-  PROBE_ONLY: 'ru_translit,ru_topic'
+  PROBE_ONLY: 'ru_translit,en_translit,ru_topic'
 concurrency:
   group: mediaengine-writer-probe-${{ github.ref }}
   cancel-in-progress: true

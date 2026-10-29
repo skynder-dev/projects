@@ -433,6 +433,15 @@ def main() -> int:
               and "13 to 14 scenes" in R.rules_of({"shot_avg": 3.0, "wps": 2.8}, 45)[0]
               and "quick cuts" in R.rules_of({"shot_avg": 3.0}, 120)[0] and "11 to 13 scenes" in R.rules_of({"shot_avg": 10.0}, 120)[0] and "2 or 3 lines" in R.rules_of({"shot_avg": 10.0}, 120)[0]
               and "an even pace" in R.rules_of({"shot_avg": 6.0}, 75)[0], (rules_slow, w_slow, prob_slow, prob_usual))
+        tr_ru = W.prompt({"mode": "topic", "lang": "ru", "topic": "kak gorod platit dvazhdy za dorogu", "secs": 75})
+        tr_en = W.prompt({"mode": "topic", "lang": "en", "topic": "pochemu shkola pokupaet noutbuki", "secs": 75})
+        cyr = W.prompt({"mode": "topic", "lang": "ru", "topic": "Как город платит дважды за дорогу", "secs": 75})
+        eng = W.prompt({"mode": "topic", "lang": "en", "topic": "Why a city hospital pays more", "secs": 75})
+        ro = W.prompt({"mode": "topic", "lang": "ro", "topic": "De ce spitalul plătește de trei ori", "secs": 75})
+        check("a topic typed in translit: the model told so (and, for Russian, to write the title and names in Cyrillic); "
+              "a topic in Cyrillic, in English or in Romanian asked as before",
+              "translit" in tr_ru and "Cyrillic" in tr_ru and "keywords stay in English" in tr_ru and "translit" in tr_en
+              and "Cyrillic" not in tr_en and all("translit" not in x for x in (cyr, eng, ro)), "")
         home3 = c.get("/auto/cartoon", headers=H).get_data(as_text=True)
         check("the home page: a video to study, the studies listed, the rhythm to choose for a story",
               "Study a cartoon you like" in home3 and "Study:" in home3 and "See the storyboard" in home3
