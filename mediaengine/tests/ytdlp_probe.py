@@ -17,6 +17,7 @@ VIDEOS = [
     ("youtube_test", "https://www.youtube.com/watch?v=BaW_jenozKc"),      # yt-dlp's own test video (10 s)
     ("vimeo_test", "https://vimeo.com/56015672"),                          # yt-dlp's own test video on Vimeo
     ("archive_org", "https://archive.org/details/Popeye_forPresident"),    # public domain (a cartoon, ~6 min)
+    ("tiktok_test", "https://www.tiktok.com/@leenabhushan/video/6748451240264420610"),   # (yt-dlp's own TikTok test)
 ]
 LISTS = [
     ("youtube_channel", "https://www.youtube.com/@NASA/videos"),
@@ -50,19 +51,21 @@ def probe_file(ffmpeg: str, p: Path) -> dict:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--exe", required=True); ap.add_argument("--ffmpeg", required=True); ap.add_argument("--out", required=True)
+    ap.add_argument("--deno", default="")             # (YouTube needs a JavaScript runtime: deno, given by its path)
     a = ap.parse_args()
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     work = out.parent / "ytdlp_downloads"                  # (outside the published folder: the videos are not kept)
     work.mkdir(parents=True, exist_ok=True)
     rep: dict = {"version": "", "videos": [], "lists": []}
+    js = ["--js-runtimes", f"deno:{a.deno}"] if a.deno else []
     rc, so, se, s = run([a.exe, "--version"], 120)
     rep["version"] = so.strip() or se.strip()[-300:]
     lines = [f"yt-dlp {rep['version']} (rc {rc}, {s} s)"]
     for name, url in VIDEOS:
         dst = work / name
         dst.mkdir(exist_ok=True)
-        cmd = [a.exe, "--no-playlist", "--no-config", "--ignore-config", "-f", FORMAT, "--merge-output-format", "mp4",
+        cmd = [a.exe, *js, "--no-playlist", "--no-config", "--ignore-config", "-f", FORMAT, "--merge-output-format", "mp4",
                "--ffmpeg-location", a.ffmpeg, "--no-part", "--restrict-filenames", "--max-filesize", "400M",
                "-o", str(dst / "%(id)s.%(ext)s"), "--print", "after_move:filepath", "--newline", url]
         rc, so, se, s = run(cmd, 900)
@@ -74,7 +77,7 @@ def main() -> int:
         rep["videos"].append(row)
         lines.append(f"{'PASS' if row['ok'] else 'FAIL'} {name}: rc {rc}, {s} s, {row.get('size')} bytes {row.get('error', '')[:300]}")
     for name, url in LISTS:
-        cmd = [a.exe, "--no-config", "--flat-playlist", "--playlist-end", "15", "-J", url]
+        cmd = [a.exe, *js, "--no-config", "--flat-playlist", "--playlist-end", "15", "-J", url]
         rc, so, se, s = run(cmd, 300)
         try:
             d = json.loads(so)

@@ -16,6 +16,7 @@ concurrency:
   cancel-in-progress: true
 env:
   YTDLP_TAG: '2026.10.26'
+  DENO_TAG: 'v2.9.7'
 jobs:
   probe:
     runs-on: windows-latest
@@ -44,11 +45,25 @@ jobs:
           size=$(stat -c %s yt-dlp.exe)
           printf 'tag=%s\nfile=yt-dlp.exe\nsize=%s\nsha256=%s\nlisted=%s\n' "$YTDLP_TAG" "$size" "$have" "$want" | tee "$RUNNER_TEMP/out/ytdlp_release.txt"
           [ "$want" = "$have" ]
+      - name: deno (the JavaScript runtime yt-dlp needs for YouTube), checked against its SHA-256
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          d="$RUNNER_TEMP/deno"; mkdir -p "$d"; cd "$d"
+          gh release download -R denoland/deno "$DENO_TAG" -p deno-x86_64-pc-windows-msvc.zip -p deno-x86_64-pc-windows-msvc.zip.sha256sum
+          cat deno-x86_64-pc-windows-msvc.zip.sha256sum
+          want=$(grep -oiE '[0-9a-f]{64}' deno-x86_64-pc-windows-msvc.zip.sha256sum | head -1 | tr 'A-F' 'a-f')
+          have=$(sha256sum deno-x86_64-pc-windows-msvc.zip | cut -d' ' -f1)
+          size=$(stat -c %s deno-x86_64-pc-windows-msvc.zip)
+          unzip -q -o deno-x86_64-pc-windows-msvc.zip
+          printf 'tag=%s\nfile=deno-x86_64-pc-windows-msvc.zip\nsize=%s\nsha256=%s\nlisted=%s\nexe_size=%s\n' "$DENO_TAG" "$size" "$have" "$want" "$(stat -c %s deno.exe)" | tee "$RUNNER_TEMP/out/deno_release.txt"
+          [ "$want" = "$have" ]
       - name: Download the test videos, list a channel
         shell: pwsh
         run: |
           $ff = python -c "import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())"
-          python mediaengine/tests/ytdlp_probe.py --exe "$env:RUNNER_TEMP\ytdlp\yt-dlp.exe" --ffmpeg "$ff" --out "$env:RUNNER_TEMP\out" 2>&1 | Tee-Object "$env:RUNNER_TEMP\out\probe_console.txt"
+          python mediaengine/tests/ytdlp_probe.py --exe "$env:RUNNER_TEMP\ytdlp\yt-dlp.exe" --deno "$env:RUNNER_TEMP\deno\deno.exe" --ffmpeg "$ff" --out "$env:RUNNER_TEMP\out" 2>&1 | Tee-Object "$env:RUNNER_TEMP\out\probe_console.txt"
       - name: Publish to branch mediaengine-ytdlp-lab
         if: always()
         shell: bash
