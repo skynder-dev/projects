@@ -86,10 +86,28 @@ def main() -> int:
         ents = d.get("entries") or []
         keys = sorted({k for e in ents for k, v in e.items() if v not in (None, "", [])})
         row = {"name": name, "url": url, "rc": rc, "seconds": s, "count": len(ents), "fields": keys,
-               "sample": [{k: e.get(k) for k in ("id", "title", "duration", "view_count", "upload_date", "url")} for e in ents[:3]],
+               "sample": [{k: e.get(k) for k in ("id", "title", "duration", "view_count", "upload_date", "url")} for e in ents[:15]],
                "error": "" if rc == 0 else "\n".join(se.strip().splitlines()[-4:])[-800:]}
         rep["lists"].append(row)
         lines.append(f"{'PASS' if rc == 0 and ents else 'FAIL'} {name}: {len(ents)} entries, {s} s, fields {keys} {row['error'][:300]}")
+    yt = next((r for r in rep["lists"] if r["name"] == "youtube_channel"), {})
+    if yt.get("sample"):                                  # a real, current YouTube video: the shortest of the channel's
+        cand = sorted((x for x in yt["sample"] if x.get("duration")), key=lambda x: x["duration"])
+        if cand:
+            url = cand[0]["url"]
+            dst = work / "youtube_channel_video"
+            dst.mkdir(exist_ok=True)
+            cmd = [a.exe, *js, "--no-playlist", "--no-config", "-f", "b[height<=360]/bv*[height<=360]+ba/b",
+                   "--merge-output-format", "mp4", "--ffmpeg-location", a.ffmpeg, "--no-part", "-o", str(dst / "%(id)s.%(ext)s"),
+                   "--print", "after_move:filepath", url]
+            rc, so, se, s_ = run(cmd, 900)
+            files = [Path(x.strip()) for x in so.splitlines() if x.strip() and Path(x.strip()).is_file()]
+            row = {"name": "youtube_channel_video", "url": url, "rc": rc, "seconds": s_, "ok": rc == 0 and bool(files),
+                   "error": "" if rc == 0 else "\n".join(se.strip().splitlines()[-4:])[-800:]}
+            if files:
+                row.update(size=files[0].stat().st_size)
+            rep["videos"].append(row)
+            lines.append(f"{'PASS' if row['ok'] else 'FAIL'} youtube_channel_video: rc {rc}, {s_} s, {row.get('size')} bytes {row['error'][:300]}")
     (out / "ytdlp_probe.json").write_text(json.dumps(rep, ensure_ascii=False, indent=1), "utf-8")
     (out / "ytdlp_probe.txt").write_text("\n".join(lines) + "\n", "utf-8")
     print("\n".join(lines))
