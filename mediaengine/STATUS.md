@@ -965,6 +965,9 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
   title and names in the story's own letters (Cyrillic for Russian); run 40927742172: Cyrillic title and names now, but
   the small 4B model then wrote the format's keywords in Russian even for a Cyrillic topic (gestures 11/24 read, was
   16/26) -> the note only for a topic that looks like translit, and it says the keywords stay in English.
+  Run 40934241652 (e2e3ec9): Qwen3-14B - the translit Russian topic gives a Cyrillic title and names (Ольга, Мэр
+  Петров), the translit topic for an English story right, the Cyrillic topic as before; the 4B model's keywords back
+  in English (gestures read 18/24 for the Cyrillic topic, 15/27 for the translit one, was 0/37).
 - 2026-10-29, an author's style (step 3 of the owner's "a profile whose videos suit our style"): several studied videos
   together (`cartoon/reference.py`: new_style / author_style; cartoon/styles/<id>.json) - the median of their shot
   length, words a second, first words, the share opening with a question (median: one odd video changes little), their
