@@ -127,6 +127,16 @@ music file, or none - quiet, softer while someone speaks; a film made again keep
 slide in or open as a circle; in a scene without a picture to read, the camera cuts to a close-up of the one speaking
 on every second line (it can be turned off); pictures include a share of a whole (30% kickback) and a timeline of dates.
 
+## Download by a link
+
+**Media → Download by a link** (also at the top of Cartoon Studio): paste a link to a video - or to a profile, a channel
+or a playlist, then choose its videos (the 10 most viewed, the first 10, or ticked; at most 30 at once, up to 1080p).
+They go into the "Downloaded" folder next to the saved reels; next to each: "Study its rhythm" (Cartoon Studio),
+"Write a story from it" (the story writer listens and retells), "Show in folder". The first time: "Install the
+downloader" - yt-dlp and deno (free, open) from their GitHub pages, about 66 MB, checked. Only public videos: no
+sign-in, no passwords; YouTube may ask to sign in when it takes the program for a robot - then try later. Download only
+videos you may use.
+
 ## Converting videos
 
 **Media → Convert** (or "Convert" on videos chosen in the Library, or "Choose videos on this PC"). The copies go into

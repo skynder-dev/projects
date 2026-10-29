@@ -143,6 +143,11 @@ jobs:
         run: |
           python mediaengine/tests/writer_check.py "$env:RUNNER_TEMP\writer" 2>&1 | Tee-Object "$env:OUT\writer_check.txt"
           if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Download by a link (installed with the button, a video and a profile, chosen videos downloaded and studied; a stand-in yt-dlp)
+        shell: pwsh
+        run: |
+          python mediaengine/tests/download_check.py "$env:RUNNER_TEMP\download" 2>&1 | Tee-Object "$env:OUT\download_check.txt"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
       - name: Full-video Convert (1440p60, rotated phone clip, VFR)
         shell: pwsh
         run: |

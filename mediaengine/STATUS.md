@@ -945,6 +945,22 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
 - 2026-10-29, read-only look at the owner's app (http://127.0.0.1:8775/api/cartoon/writer and the Cartoon Studio page):
   the story writer is installed with Qwen3-14B and its install test ran on "NVIDIA GeForce RTX 3060" (llama.cpp's
   Vulkan build) - the graphics-card path proven on his PC; his cartoon: the example story, 94 s, 10 scenes, saved.
+- 2026-10-29, "Download by a link" (the owner: "да, это надо", also a whole profile when its videos suit our style).
+  Probe mediaengine-ytdlp-probe (Windows runner, branch mediaengine-ytdlp-lab): yt-dlp 2026.10.26's Windows build
+  (yt-dlp.exe 23,575,744 bytes, SHA-256 f5389d36..., = the release's SHA2-256SUMS) with deno v2.9.7 (the JavaScript
+  runtime YouTube now needs; deno-x86_64-pc-windows-msvc.zip 42,630,221 bytes, SHA-256 a0c3101b...). Channel lists
+  (--flat-playlist -J) read with title, length and views; archive.org videos downloaded; from GitHub's runners YouTube
+  asks to "confirm you're not a bot", TikTok blocks the IP and the Vimeo test video needs a login (datacentre IPs - a
+  home PC is usually let through; the page says so plainly when not). Built into Media (`downloader.py`,
+  `download_web.py`): "Install the downloader" (both files from their GitHub releases, size and SHA-256 checked, in the
+  data folder), a link to one video or to a profile/channel/playlist (its videos listed: the 10 most viewed / the first
+  10 / tick; at most 30 at once, up to 1080p), downloads in their own queue into Exports\Downloaded (Скачанные), each
+  then studied for its rhythm (Cartoon Studio) when asked; Stop, Try again, Show in folder, Write a story from it;
+  private videos, sign-in walls and bad links said plainly; every process hidden (no window). Check
+  tests/download_check.py with a stand-in yt-dlp (no network): 9/9 locally.
+- 2026-10-29, the owner asked whether the story's topic may be typed in translit: the language of the story comes from
+  the Language list, the topic may be in any language; the request now tells the model a topic may be Russian typed in
+  Latin letters. Probe: three translit topics (Russian, English and Romanian stories) on both writer models.
 - 2026-10-29, writer probe (run 40692181687, both models, CPU) with a studied reference's rhythm: a quick reference
   (3 s shots) gave 11 scenes (13-14 asked; the usual is 8-10), a calm one 9-10 (7-9 asked); words ~1.4x of those
   asked, as without a rhythm. The scenes are now asked more firmly.

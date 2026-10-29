@@ -1582,6 +1582,8 @@ if(xb)xb.onclick=async()=>{const m=document.getElementById('exportMsg');m.textCo
     clips_web.register(app, page, err_page, e, human_bytes)
     from . import cartoon_web      # cartoon films made by the program (cartoon/)
     cartoon_web.register(app, page, err_page, e, human_bytes)
+    from . import download_web     # videos downloaded by a link (yt-dlp, installed with a button)
+    download_web.register(app, page, err_page, e, human_bytes)
 
 
 AI_LABEL = "AI — as before (fast)"

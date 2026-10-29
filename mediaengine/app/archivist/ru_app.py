@@ -629,6 +629,9 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"The story writer could not be started: (.*)", r"Сценарист не запустился: \1"),
     (r"The story writer stopped while starting: (.*)", r"Сценарист остановился при запуске: \1"),
     (r"The story writer stopped while writing \((.*)\)\.", r"Сценарист остановился, пока писал (\1)."),
+    (r"The link could not be read: (.+)", r"Не удалось прочитать ссылку: \1"),
+    (r"The downloaded (.+) is not the expected file \(its checksum differs\)\.", r"Скачанный \1 — не тот файл (контрольная сумма другая)."),
+    (r"The downloader was installed but does not start: (.*)", r"Загрузчик установлен, но не запускается: \1"),
     (r"Clip (\d+) did not pass its check \((.+)\)\.", r"Клип \1 не прошёл проверку (\2)."),
     # voice-over add-on (voice.py)
     (r"The download answered HTTP (\d+)\. Try again later\.", r"Сайт ответил ошибкой HTTP \1. Попробуй позже."),

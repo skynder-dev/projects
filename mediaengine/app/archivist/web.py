@@ -169,7 +169,7 @@ def _data_note():
 
 def layout(title,body,script="",script_srcs=()):
     path=request.path
-    media_active=(path=='/media' or path.startswith(('/import','/convert','/library','/search','/best','/clip/','/composer','/item/','/similar/','/export-file/','/composition-file/')))
+    media_active=(path=='/media' or path.startswith(('/media/download','/import','/convert','/library','/search','/best','/clip/','/composer','/item/','/similar/','/export-file/','/composition-file/')))
     social_active=path.startswith('/social')
     devices_active=path.startswith('/devices')
     cloud_active=path.startswith('/cloud')
@@ -624,6 +624,7 @@ def create_app():
 <a class='card hubcard tone-amber' href='/auto'><b>Auto Edit</b><span>Folder of videos → finished reel from the best moments.</span></a>
 <a class='card hubcard tone-cyan' href='/composer'><b>Composer</b><span>Build nondestructive multi-clip compositions.</span></a>
 <a class='card hubcard tone-rose' href='/convert'><b>Convert</b><span>Create local derived copies without altering originals.</span></a>
+<a class='card hubcard tone-blue' href='/media/download'><b>Download by a link</b><span>A video or a profile's videos from YouTube, TikTok and other sites.</span></a>
 </div>"""
         return layout('Media',body)
 

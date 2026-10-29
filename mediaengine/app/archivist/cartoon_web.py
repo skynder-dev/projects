@@ -287,7 +287,8 @@ def register(app, page, err_page, e, human_bytes):
             return (f"<div class='card' id='writer'><h2 style='margin-top:0'>Write a story</h2>"
                     f"<form method='post' action='/auto/cartoon/write' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
                     f"<b>What is it about?</b><div class='muted' style='font-size:13px'>A topic in a few words - or paste a text (an "
-                    f"article, notes, what is said in a video): the story retells it with its own characters.</div>"
+                    f"article, notes, what is said in a video): the story retells it with its own characters. In any language, even "
+                    f"in translit; the story's language is chosen below.</div>"
                     f"<textarea name='about' rows='4' maxlength='5000' style='width:100%' "
                     f"placeholder='Why a city hospital pays three times more for the same medicine'></textarea>"
                     f"<details style='margin-top:6px'><summary>Or a video on this PC</summary>"
@@ -393,6 +394,7 @@ def register(app, page, err_page, e, human_bytes):
                 + (f"<a class='btn' href='#films'><span>My cartoons and stories</span> <span translate='no'>({len(mine)})</span></a>"
                    if mine else "")
                 + "<a class='btn btn2' href='#writer'>Write a story</a><a class='btn btn2' href='#study'>Study a cartoon</a>"
+                  "<a class='btn btn2' href='/media/download'>Download by a link</a>"
                   "<a class='btn btn2' href='#new'>New cartoon</a>"
                 + (f"<a class='btn btn2' href='/auto/cartoon/characters'><span>Characters</span> "
                    f"<span translate='no'>({len(L.load())})</span></a>" if L.load() else "")

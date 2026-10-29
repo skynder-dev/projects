@@ -20,7 +20,7 @@ PORT = 18779
 
 # without a "path" these open a Windows folder window (it waits for a person): only odd paths are sent to them
 PATH_ONLY = ("/api/auto/model/import", "/api/auto/aiplus/import")
-SKIP_RULES = ("/api/app-control", "/api/auto/pick-", "/api/convert/pick", "/api/convert/output-folder", "/api/convert/logo", "/auto/check/use-build", "/auto/check/remove-build", "/auto/voice/install", "/auto/cartoon/writer/install",
+SKIP_RULES = ("/api/app-control", "/api/auto/pick-", "/api/convert/pick", "/api/convert/output-folder", "/api/convert/logo", "/auto/check/use-build", "/auto/check/remove-build", "/auto/voice/install", "/auto/cartoon/writer/install", "/media/download/install",
               "/api/auto/model/download", "/api/auto/aiplus/download", "/auto/check/hwtest", "/auto/check/convert-gpu-test", "/auto/exports/open",
               "/auto/orders/open-", "/static/", "/diagnostics/fixture.mp4")
 SKIP_ACTIONS = ("open", "reveal", "open-folder")          # <action> values that start Explorer / a player

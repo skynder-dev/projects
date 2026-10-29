@@ -28,6 +28,7 @@ KEEP = {  # stays English in Russian too (names, units, formats)
     "GitHub", "Setup", "Python", "logs",                                                    # where updates come from, the installer, the runtime
     "NVIDIA", "VoxCPM2", "VoxCPM", "Whisper", "pypi", "org", "download", "pytorch", "WAV", "SRT", "M4A", "FLAC", "OGG", "MP3",
     "MEDIAENGINE_VOICE", "off",                                                     # the voice add-on: models, sites, file types
+    "yt", "dlp", "deno", "archive", "Vimeo",                                       # Download by a link: the downloader and sites
     "Montserrat",                                                                   # the font of text and captions
     "Qwen", "TTS", "VoxCPM",                                                        # the voice engines (Qwen3-TTS, VoxCPM2)
     "Converted", "GoPro", "JPG", "Ctrl",                                            # the Convert folder's name, a camera, a key
