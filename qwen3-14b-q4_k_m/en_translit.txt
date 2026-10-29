@@ -1,0 +1,48 @@
+Title: Why School Buys Laptops Twice as Expensive as in Stores
+Format: vertical
+Narrator: Mark (man, narrator)
+Principal Jane (woman, principal)
+Mr. Lee (man, school administrator)
+Tech Rep (man, vendor)
+Student Sam (boy, student)
+Reporter Lucy (woman, journalist)
+
+== School | title: Why School Buys Laptops / Twice as Expensive as in Stores
+Mark (wave, happy): A school needs new laptops. But why pay twice as much?
+Mark (explain, sly): Let's see who pays and who profits.
+
+== Office | tender: TENDER; 5-year experience; only local vendor; 3 days to apply
+Mark: Principal Jane starts a laptop purchase. A fair price is about one thousand dollars each.
+Mr. Lee (present, sly): The tender rules favor only one vendor.
+
+== Board | flow: School budget -> Tech Rep $2000/laptop; Tech Rep -> Cheap parts $500/laptop; Tech Rep -> Kickback
+Mark: The school buys two thousand dollar laptops. But the market price is half that.
+Tech Rep (rubs hands, sly) [bubble]: Big profit here!
+
+== School | compare: Store laptop $1000 vs School laptop $2000
+Student Sam (sad, worried): My brother bought one for less. Why is this so expensive?
+Mark: The school pays double. But who gets the difference?
+
+== Office | contract: CONTRACT; price $480 000; stamp APPROVED
+Principal Jane (point up, happy): Approved! These are the best laptops on the market.
+Mr. Lee (sneaky, proud): A great deal for our students.
+
+== Board | bars: Market price $1000, school paid $2000
+Mark: The school pays twice as much. But where does the money go?
+Tech Rep (explain, sly) [bubble]: Some goes to parts, some to... other things.
+
+== School | bag: $480 000 in cash
+Mark: The school spends four hundred eighty thousand dollars.
+Tech Rep (hands up, sly): We deliver the laptops. And we deliver a nice profit too.
+
+== Building site | percent: 30% kickback
+Mark: Thirty percent of the extra cost goes to kickbacks.
+Mr. Lee (shrug, neutral): It's just part of doing business.
+
+== School | list: Red flags; Only one vendor; Rushed deadline; Price far above market
+Reporter Lucy (explain, angry): How can schools avoid this?
+Reporter Lucy (point up, worried): Look for only one vendor and a rushed process.
+
+== School | magnifier: Contract
+Mark: Always check the contract. Who wrote it? Who profits?
+Reporter Lucy (wave, happy): Follow the money. And ask who wrote the tender.

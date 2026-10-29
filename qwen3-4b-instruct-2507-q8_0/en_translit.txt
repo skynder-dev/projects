@@ -1,0 +1,56 @@
+Title: Why Schools Buy Laptops Twice as Much as in Stores
+Format: vertical
+Narrator: Maya (woman, narrator)
+Principal Tom (man, school principal)
+Tech Buyer Sue (woman, procurement officer)
+Lenovo Corp (company, tech supplier)
+David (man, student parent)
+
+== School | title: Why Schools Buy Laptops Twice as Much as in Stores / a hidden markup
+Maya (point up, sly): A school buys laptops twice as much as at a store. Why?
+Maya (explain, neutral): Let’s see how the numbers hide a secret.
+
+== Office | compare: Laptop in store $800 vs laptop in school $1,600
+Sue (point, worried): In the store, a laptop costs eight hundred dollars.
+Sue (think, surprised): But at the school, we pay one thousand six hundred.
+
+== Board | flow: School budget -> Lenovo $1.6M; Lenovo -> Retail price $800; Lenovo -> Profit $800K
+Maya: The school pays one point six million for fifty laptops.
+Maya: Each costs only eight hundred in stores.
+Maya: That’s a profit of eight hundred thousand — all from the school’s budget.
+
+== Shop | bag: "Laptops for students"
+David (wave, happy): My son gets a new laptop. He's excited!
+David (rub hands, happy): But I checked — same model, but twice the price.
+
+== Office | tender: TENDER; Must be “education-grade” brand; Minimum five-year warranty; Must include software suite
+Sue (talk, sly): We only accept bids from approved suppliers.
+Sue (point up, happy): Education-grade, five years, full software.
+Tech Buyer Sue (facepalm, sad) [bubble]: Why can’t we just buy from the store?
+
+== Night | magnifier: "Education-grade"
+Maya (magnifier, sly): “Education-grade” isn’t a real standard.
+Maya: It’s just a label. A way to charge more.
+
+== Board | bars: Store price 800, school price 1600, markup 100%
+Maya: The store sells at $800. The school pays $1,600.
+Maya: That’s a hundred percent markup — hidden in the rules.
+
+== City hall | timeline: June – tender issued; July – only one bid from Lenovo; August – contract approved
+Maya (timeline, neutral): June: tender opens.
+Maya: July: only Lenovo responds.
+Maya: August: contract approved. No competition.
+
+== Home | counter: $800 → $1,600 (50 laptops)
+David (think, worried): Fifty laptops at $1,600? That’s eight hundred thousand dollars.
+David (point, angry): My tax dollars pay for a school that buys twice as much.
+
+== Board | list: Red flags; Only one supplier; No price comparison; “Education-grade” label; Software included
+Maya (explain, sly): How to spot it?
+Maya (point): One supplier. No price check.
+Maya (point up): And a fake label like “education-grade.”
+
+== Narrator | final scene
+Maya (wave, happy): Schools don’t need twice the price.
+Maya (firm, clear): Always compare prices. Always ask: Who wrote the rules?
+Maya (hands up, calm): When you see a price double — check the contract. The school pays. The supplier profits. And the public loses.

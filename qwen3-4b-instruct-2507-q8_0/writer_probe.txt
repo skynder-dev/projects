@@ -1,0 +1,6 @@
+== ru_topic: asking
+   {"scenes": 11, "lines": 24, "words": 191, "poses": 18, "feelings": 19, "problem": ""} ~90.112 s, tries [{'s': 329.0, 'usage': {'completion_tokens': 1081, 'prompt_tokens': 1691, 'total_tokens': 2772, 'prompt_tokens_details': {'cached_tokens': 0}}, 'finish': 'stop', 'problem': '', 'speed': {'prompt_per_second': 17.861126980920186, 'predicted_per_second': 4.608294911212259}}]
+== ru_translit: asking
+   {"scenes": 13, "lines": 27, "words": 246, "poses": 15, "feelings": 7, "problem": ""} ~113.815 s, tries [{'s': 431.9, 'usage': {'completion_tokens': 1480, 'prompt_tokens': 1803, 'total_tokens': 3283, 'prompt_tokens_details': {'cached_tokens': 75}}, 'finish': 'stop', 'problem': '', 'speed': {'prompt_per_second': 17.699848368226085, 'predicted_per_second': 4.42702720040942}}]
+== en_translit: asking
+   {"scenes": 11, "lines": 27, "words": 223, "poses": 16, "feelings": 17, "problem": ""} ~103.469 s, tries [{'s': 258.3, 'usage': {'completion_tokens': 788, 'prompt_tokens': 1701, 'total_tokens': 2489, 'prompt_tokens_details': {'cached_tokens': 75}}, 'finish': 'stop', 'problem': '', 'speed': {'prompt_per_second': 17.723212470688846, 'predicted_per_second': 4.730754715753956}}]

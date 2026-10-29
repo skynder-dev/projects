@@ -1,0 +1,8 @@
+{
+ "repo": "ggml-org/Qwen3-4B-Instruct-2507-Q8_0-GGUF",
+ "sha": "e6f794d44f9395d0184a966c27b5ae99ea356fcb",
+ "file": "qwen3-4b-instruct-2507-q8_0.gguf",
+ "size": 4280403520,
+ "sha256": "ae916ede1c010a26955ee8ae2e908bf8815a3f135ec860439ab924701c69d5f1",
+ "license": "apache-2.0"
+}

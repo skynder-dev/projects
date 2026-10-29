@@ -1,0 +1,283 @@
+{
+ "label": "qwen3-4b-instruct-2507-q8_0",
+ "tasks": [
+  {
+   "id": "ru_topic",
+   "task": {
+    "id": "ru_topic",
+    "mode": "topic",
+    "lang": "ru",
+    "format": "vertical",
+    "secs": 75,
+    "topic": "Как управляющая компания зарабатывает на ремонте подъезда, который так и не сделали"
+   },
+   "tries": [
+    {
+     "s": 329.0,
+     "usage": {
+      "completion_tokens": 1081,
+      "prompt_tokens": 1691,
+      "total_tokens": 2772,
+      "prompt_tokens_details": {
+       "cached_tokens": 0
+      }
+     },
+     "finish": "stop",
+     "problem": "",
+     "speed": {
+      "prompt_per_second": 17.861126980920186,
+      "predicted_per_second": 4.608294911212259
+     }
+    }
+   ],
+   "problem": "",
+   "scenes": 11,
+   "lines": 24,
+   "words": 191,
+   "visuals": [
+    "title",
+    "contract",
+    "contract",
+    "contract",
+    "flow",
+    "bag",
+    "bars",
+    "timeline",
+    "list",
+    "-",
+    "list"
+   ],
+   "bgs": [
+    "home",
+    "office",
+    "office",
+    "office",
+    "board",
+    "home",
+    "board",
+    "office",
+    "board",
+    "home",
+    "board"
+   ],
+   "poses": 18,
+   "feelings": 19,
+   "cast": {
+    "Анна": [
+     "жена, рассказчик",
+     null
+    ],
+    "Игорь": [
+     "управляющий",
+     false
+    ],
+    "Мария": [
+     "жительница",
+     true
+    ],
+    "Алексей": [
+     "инженер",
+     false
+    ],
+    "Ольга": [
+     "начальник отдела",
+     true
+    ]
+   },
+   "language": "ru",
+   "seconds_estimated": 90.112
+  },
+  {
+   "id": "ru_translit",
+   "task": {
+    "id": "ru_translit",
+    "mode": "topic",
+    "lang": "ru",
+    "format": "vertical",
+    "secs": 75,
+    "topic": "kak gorod platit dvazhdy za remont odnoi i toi zhe dorogi: snachala podryadchiku za asfalt, cherez polgoda drugoi firme za yamy na tom zhe meste"
+   },
+   "tries": [
+    {
+     "s": 431.9,
+     "usage": {
+      "completion_tokens": 1480,
+      "prompt_tokens": 1803,
+      "total_tokens": 3283,
+      "prompt_tokens_details": {
+       "cached_tokens": 75
+      }
+     },
+     "finish": "stop",
+     "problem": "",
+     "speed": {
+      "prompt_per_second": 17.699848368226085,
+      "predicted_per_second": 4.42702720040942
+     }
+    }
+   ],
+   "problem": "",
+   "scenes": 13,
+   "lines": 27,
+   "words": 246,
+   "visuals": [
+    "-",
+    "contract",
+    "contract",
+    "contract",
+    "road",
+    "contract",
+    "road",
+    "compare",
+    "flow",
+    "bars",
+    "list",
+    "-",
+    "-"
+   ],
+   "bgs": [
+    "city",
+    "office",
+    "night",
+    "office",
+    "road",
+    "office",
+    "road",
+    "board",
+    "board",
+    "board",
+    "board",
+    "office",
+    "office"
+   ],
+   "poses": 15,
+   "feelings": 7,
+   "cast": {
+    "Ирина": [
+     "рассказчица",
+     true
+    ],
+    "Городской инженер Виктор": [
+     "инженер",
+     false
+    ],
+    "Мария": [
+     "начальник отдела",
+     true
+    ],
+    "Компания \"Асфальт-Сити\"": [
+     "компания, подрядчик",
+     null
+    ],
+    "Компания \"Глубины\"": [
+     "компания, подрядчик",
+     null
+    ],
+    "Директор Григорий": [
+     "менеджер",
+     false
+    ],
+    "Виктор": [
+     "",
+     null
+    ],
+    "Григорий": [
+     "",
+     null
+    ]
+   },
+   "language": "ru",
+   "seconds_estimated": 113.815
+  },
+  {
+   "id": "en_translit",
+   "task": {
+    "id": "en_translit",
+    "mode": "topic",
+    "lang": "en",
+    "format": "vertical",
+    "secs": 75,
+    "topic": "pochemu shkola pokupaet noutbuki v dva raza dorozhe chem v magazine i kto poluchaet raznicu"
+   },
+   "tries": [
+    {
+     "s": 258.3,
+     "usage": {
+      "completion_tokens": 788,
+      "prompt_tokens": 1701,
+      "total_tokens": 2489,
+      "prompt_tokens_details": {
+       "cached_tokens": 75
+      }
+     },
+     "finish": "stop",
+     "problem": "",
+     "speed": {
+      "prompt_per_second": 17.723212470688846,
+      "predicted_per_second": 4.730754715753956
+     }
+    }
+   ],
+   "problem": "",
+   "scenes": 11,
+   "lines": 27,
+   "words": 223,
+   "visuals": [
+    "title",
+    "compare",
+    "flow",
+    "bag",
+    "contract",
+    "magnifier",
+    "bars",
+    "timeline",
+    "counter",
+    "list",
+    "-"
+   ],
+   "bgs": [
+    "school",
+    "office",
+    "board",
+    "shop",
+    "office",
+    "night",
+    "board",
+    "city_hall",
+    "home",
+    "board",
+    "city"
+   ],
+   "poses": 16,
+   "feelings": 17,
+   "cast": {
+    "Maya": [
+     "narrator",
+     true
+    ],
+    "Principal Tom": [
+     "school principal",
+     false
+    ],
+    "Tech Buyer Sue": [
+     "procurement officer",
+     true
+    ],
+    "Lenovo Corp": [
+     "company, tech supplier",
+     null
+    ],
+    "David": [
+     "student parent",
+     false
+    ],
+    "Sue": [
+     "",
+     null
+    ]
+   },
+   "language": "en",
+   "seconds_estimated": 103.469
+  }
+ ]
+}
