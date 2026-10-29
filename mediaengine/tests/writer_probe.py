@@ -38,6 +38,14 @@ TASKS = [
      "topic": "Как район платит за уборку снега, которой не было",
      "style": {"shot_avg": 11.0, "wps": 1.9, "first_at": 2.5, "opens": "statement"}},
     {"id": "ru_adapt", "mode": "adapt", "lang": "ru", "country": "Russia", "format": "vertical"},
+    # a topic typed in Russian translit (Latin letters), the way the owner often writes: understood? in each language
+    {"id": "ru_translit", "mode": "topic", "lang": "ru", "format": "vertical", "secs": 75,
+     "topic": "kak gorod platit dvazhdy za remont odnoi i toi zhe dorogi: snachala podryadchiku za asfalt, cherez polgoda "
+              "drugoi firme za yamy na tom zhe meste"},
+    {"id": "en_translit", "mode": "topic", "lang": "en", "format": "vertical", "secs": 75,
+     "topic": "pochemu shkola pokupaet noutbuki v dva raza dorozhe chem v magazine i kto poluchaet raznicu"},
+    {"id": "ro_translit", "mode": "topic", "lang": "ro", "format": "vertical", "secs": 75,
+     "topic": "kak bolnitsa platit za lekarstva v tri raza bolshe, potomu chto tender vyigrala firma rodstvennika direktora"},
 ]
 
 

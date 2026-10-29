@@ -652,6 +652,10 @@ def measures_of(country: str) -> str:
     return "kilometres, metres, litres, kilograms and degrees Celsius (never miles or gallons)"
 
 
+TOPIC_NOTE = ("\n(The TOPIC may be written in any language, also in Russian typed in Latin letters - translit, like 'kak gorod "
+              "platit dvazhdy': understand what it means; the LANGUAGE below decides the language of the script.)")
+
+
 def prompt(job: dict) -> str:
     """The request to the model for a job: mode 'topic', 'text' or 'adapt'."""
     lang, fmt = job.get("lang") or "en", job.get("format") or "vertical"
@@ -699,7 +703,7 @@ def prompt(job: dict) -> str:
                             "numbers, but tell it in your own words as a story with invented characters; do not copy its "
                             "sentences.", f"TEXT:\n\"\"\"\n{str(job.get('source') or '').strip()[:MAX_SOURCE]}\n\"\"\"" + where,
                             _lang_rule(lang), FORMAT.format(fmt=fmt), rules, _example(), "Now write the script about the TEXT."])
-    return "\n\n".join([f"Write a new cartoon script.\n\nTOPIC: {str(job.get('topic') or '').strip()[:MAX_TOPIC]}" + where,
+    return "\n\n".join([f"Write a new cartoon script.\n\nTOPIC: {str(job.get('topic') or '').strip()[:MAX_TOPIC]}" + TOPIC_NOTE + where,
                         _lang_rule(lang), FORMAT.format(fmt=fmt), rules, _example(), "Now write the script about the TOPIC."])
 
 

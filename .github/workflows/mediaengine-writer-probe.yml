@@ -13,6 +13,9 @@ on:
       - '.github/workflows/mediaengine-writer-probe.yml'
 permissions:
   contents: write
+env:
+  # the tasks of this run (empty: all of them)
+  PROBE_ONLY: 'ru_translit,en_translit,ro_translit'
 concurrency:
   group: mediaengine-writer-probe-${{ github.ref }}
   cancel-in-progress: true
@@ -88,7 +91,7 @@ jobs:
           done
           curl -sf http://127.0.0.1:8090/health || { tail -40 "$RUNNER_TEMP/out/server.log"; exit 1; }
       - name: The stories
-        run: python mediaengine/tests/writer_probe.py --server http://127.0.0.1:8090 --out "$RUNNER_TEMP/out" --label "${{ matrix.label }}" 2>&1 | tee "$RUNNER_TEMP/out/writer_probe.txt"
+        run: python mediaengine/tests/writer_probe.py --server http://127.0.0.1:8090 --out "$RUNNER_TEMP/out" --label "${{ matrix.label }}" --only "$PROBE_ONLY" 2>&1 | tee "$RUNNER_TEMP/out/writer_probe.txt"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
