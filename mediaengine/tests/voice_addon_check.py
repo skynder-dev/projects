@@ -186,6 +186,11 @@ def main() -> int:
     xj = wait(vo.list_jobs()[0]["id"], 3 * 3600)
     timings["described_s"] = round(time.time() - t0)
     xres = xj.get("result") or {}
+    if xj.get("state") != "done":                          # (why the worker stopped: its log published with the results)
+        try:
+            shutil.copy2(vo._job_dir(xj["id"]) / "worker.log", out / "worker_described.log")
+        except OSError:
+            pass
     check("a voice from a description is still made (VoxCPM2)", xj["state"] == "done" and xres.get("engine") == "voxcpm"
           and int(xres.get("word_errors") or 0) <= 1, xres.get("said") or xres.get("error"))
 
