@@ -922,6 +922,12 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
 - 2026-10-28, b254's content (pushed after b253): Reference Lab (a video studied for its rhythm; "Write a story with this rhythm"),
   close-ups of the speaker, the cartoon made at once and series in the writer, the building site. The owner's app was
   still b240 at 09:10Z (read-only look at http://127.0.0.1:8775): he has not pressed Update yet.
+- 2026-10-29, **b256** published (commit 1b45fb4, ZIP 4,875,662 bytes, the same runtime; run 40787980396: cartoon
+  36/36, writer 30/30, browser 20/20, Russian 242 pages 0 English, route fuzz 3730 requests 0 errors). The run of
+  5f4007d (b255) failed the browser check (a list wider than a narrow window) - fixed.
+- 2026-10-29, the owner made his first cartoon (the roads story): "прикольно, мне нравится"; asked for miles in the
+  USA (the English example said kilometers) and how to make it in Romanian (Language → Română, or "Another language or
+  country" on the story or film); Convert refused 20 MB ("from 50 MB") when he wanted a video for a chat - from 5 MB now.
 - 2026-10-28, pushed after b254: pauses that follow the pace, characters added before a film and the host, more
   sounds, quick links, the writer finishing on the processor when the card stops; the writer probe gets two stories
   with a reference's rhythm (does each model follow the scenes asked?).

@@ -623,8 +623,10 @@ def _hdr_kind(ffmpeg, source) -> str | None:
 TURNS = {90: "transpose=1", 270: "transpose=2", 180: "hflip,vflip"}   # clockwise degrees -> FFmpeg filter
 
 
-def _scale_args(preset: str, hdr: str | None = None, interlaced: bool = False, turn: int = 0):
+def _scale_args(preset: str, hdr: str | None = None, interlaced: bool = False, turn: int = 0, cap_over: int | None = None):
     cap = PRESETS[preset]["cap"]
+    if cap_over:                                           # (a small size: a smaller picture, sharper than a starved big one)
+        cap = min(cap or cap_over, cap_over)
     parts = ["bwdif=mode=send_frame:parity=auto:deint=interlaced"] if interlaced else []   # camcorder fields -> frames
     parts += [HDR_TO_SDR[hdr]] if hdr in HDR_TO_SDR else []
     parts += [TURNS[turn]] if turn in TURNS else []           # "Turn the picture" (after the video's own rotation)
@@ -1619,9 +1621,18 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
         if target_mb:
             # the sound's share: each sound track the copy will have (none: a drone video, Without sound, 4x)
             tracks = 0 if mute else (1 if through else _audio_tracks(ffmpeg, source))
-            audio_k = int(cfg["audio_k"]) * tracks
             total_bits = float(target_mb) * 1024 * 1024 * 8 * 0.94
-            video_k = max(250, int(total_bits / duration / 1000.0 - audio_k))
+            total_k = total_bits / max(0.1, duration) / 1000.0
+            track_k = int(cfg["audio_k"]) if total_k >= 1200 else min(int(cfg["audio_k"]), 64)   # (a small size: less sound)
+            audio_k = track_k * tracks
+            video_k = max(80, int(total_k - audio_k))
+            # a small size (to send to a chat or a messenger with a limit): the picture made smaller to fit, not starved
+            small_cap = 640 if video_k < 500 else 854 if video_k < 1000 else 1280 if video_k < 1800 else None
+            if small_cap and not extra:
+                vsel = ["-map", "0:v:0", *amap, *_scale_args(preset, hdr, interlaced, turn, small_cap)]
+                vsel1 = ["-map", "0:v:0", *_scale_args(preset, hdr, interlaced, turn, small_cap)]
+                common = [str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", *input_args, *vsel,
+                          "-c:v", "libx264", "-pix_fmt", "yuv420p", "-color_range", "tv", "-preset", "veryfast"]
             passlog = str((HOME / "data" / f"ffmpeg2pass-{os.getpid()}-{threading.get_ident()}").resolve())
             Path(passlog).parent.mkdir(parents=True, exist_ok=True)
             pass1 = [
@@ -1634,7 +1645,7 @@ def _encode(ffmpeg, input_args, source: Path, duration: float, preset, target_mb
             pass2 = common + [
                 "-b:v", f"{video_k}k", "-maxrate", f"{int(video_k*1.25)}k", "-bufsize", f"{int(video_k*2)}k",
                 "-pass", "2", "-passlogfile", passlog, "-fps_mode", "cfr",   # (the frames of pass 1, also with gaps)
-                *aenc(cfg["audio_k"]), "-movflags", "+faststart", str(part)
+                *aenc(track_k), "-movflags", "+faststart", str(part)
             ]
             _run_progress(pass2, duration, progress_cb, cancel_cb, 0.50, 0.50, job_id=job_id, cwd=cwd)
         else:
@@ -2224,8 +2235,8 @@ def start_convert_job(inventory_ids=None, preset="share_1080p", target_mb=None, 
     if preset not in PRESETS:
         raise ValueError("Unknown preset")
     target_mb = int(target_mb) if target_mb else None
-    if target_mb is not None and not (50 <= target_mb <= 100000):
-        raise ValueError("Target size must be between 50 MB and 100000 MB")
+    if target_mb is not None and not (5 <= target_mb <= 100000):
+        raise ValueError("Target size must be between 5 MB and 100000 MB")
     join = bool(join)
     try:
         turn = int(turn) if isinstance(turn, (int, float, str)) and not isinstance(turn, bool) and float(turn) == int(float(turn)) else -1

@@ -1056,6 +1056,10 @@ PHRASES = {
     "The one speaking, close up": "Тот, кто говорит, крупно",
     "Make the 5 likeliest": "Сделать 5 самых удачных",
     # Cartoon Studio (cartoon_web.py, cartoon/)
+    "Convert: the size can be as small as 5 MB (for a chat or a messenger with a limit) - the picture is made smaller so the video fits and stays clear.":
+        "Конвертация: размер можно задать от 5 МБ (для чата или мессенджера с ограничением) — картинка уменьшается, чтобы видео поместилось и оставалось чётким.",
+    "Cartoon Studio: the story writer uses the viewers' measures - miles, feet and gallons for the United States, kilometres elsewhere; the voices of all characters equally loud.":
+        "Мультстудия: сценарист пишет меры страны зрителей — мили, футы и галлоны для США, километры для остальных; голоса всех персонажей одинаково громкие.",
     "Cartoon Studio: add a character before any film and make it “The host of my films” (every new story gets this narrator); the pauses between lines follow the pace (quick or calm); more sounds - a pop for speech bubbles and pictures, a bell for the magnifier.":
         "Мультстудия: персонажа можно добавить до любого фильма и сделать «Ведущим моих фильмов» (каждый новый сюжет получит этого рассказчика); паузы между репликами следуют темпу (быстро или спокойно); больше звуков — щелчок у облачков и картинок, колокольчик у лупы.",
     "Cartoon Studio: close-ups of the one speaking; the story writer can make the cartoon at once and write a whole series (several topics, one per line) while you are away.":

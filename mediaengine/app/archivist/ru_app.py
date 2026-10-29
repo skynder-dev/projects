@@ -584,7 +584,7 @@ APP_PHRASES: dict[str, str] = {
     'Could not read video duration': 'Не удалось прочитать длительность видео',
     'FFmpeg is not available': 'FFmpeg недоступен',
     'None of the selected videos can be converted (private, rejected or removed)': 'Ни одно из выбранных видео нельзя конвертировать (личное, отклонено или убрано)',
-    'Target size must be between 50 MB and 100000 MB': 'Размер должен быть от 50 МБ до 100000 МБ',
+    'Target size must be between 5 MB and 100000 MB': 'Размер должен быть от 5 МБ до 100000 МБ',
     'Unknown preset': 'Неизвестный пресет',
     'interrupted_by_restart': 'прервано перезапуском программы',
     'ADB is not installed or not found': 'ADB не установлен или не найден',

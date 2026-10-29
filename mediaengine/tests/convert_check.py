@@ -569,6 +569,22 @@ def main():
     check("size_target_with_gaps_and_without_sound", Path(tvfr["output"]).is_file() and Path(tjn["output"]).is_file()
           and abs(float(_probe(Path(tjn["output"]))["format"]["duration"]) - 6.05) <= 0.2 and 2.4 <= sil_mb <= 3.1,
           (tvfr.get("output"), tjn.get("output"), round(sil_mb, 2)))
+    # a small size for a chat with a limit (the owner: 20 MB for ChatGPT, the page allowed 50 MB at least): 5 MB allowed,
+    # 4 MB refused; a 1080p video fits by a smaller picture
+    hd = src_dir / "hd_for_chat.mp4"
+    subprocess.run([ff, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=1920x1080:rate=30:d=30", "-f", "lavfi", "-i",
+                    "sine=frequency=400:sample_rate=48000:d=30", "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p",
+                    "-c:a", "aac", "-shortest", str(hd)], check=True)
+    thd = convert_file(hd, "share_1080p", target_mb=5, output_dir=out_dir)
+    hd_mb = Path(thd["output"]).stat().st_size / 2**20
+    hd_w = next(int(x["width"]) for x in _probe(Path(thd["output"]))["streams"] if x.get("codec_type") == "video")
+    try:
+        start_convert_job([], "share_1080p", 4, paths=[str(hd)])
+        four = "accepted"
+    except ValueError as exc:
+        four = str(exc)
+    check("a_small_size_for_a_chat", hd_mb <= 5.2 and hd_w <= 1280 and four == "Target size must be between 5 MB and 100000 MB",
+          (round(hd_mb, 2), hd_w, four))
     # a half-copied video (its index at the front, as a messenger download has): the copy is made and says it is short
     front = src_dir / "front_index.mp4"
     subprocess.run([ff, "-v", "error", "-y", "-i", str(whole), "-c", "copy", "-movflags", "+faststart", str(front)], check=True)

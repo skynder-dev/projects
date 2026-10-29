@@ -282,11 +282,19 @@ The owner converted work videos (GoPro, 4K) and asked why he had to search for t
   makes the cartoon at once when asked, and a series of up to ten topics. A building-site background; a video's
   story page shows the facts noted from it. Two independent reviews before pushing (9 + 4 findings, all fixed: a scan
   that could hang the queue on a damaged video, colours from a Cyrillic data folder, a rotated phone video, ...).
-- Next build (after b254): the film's pauses follow the pace (short for a reference that cuts often, long for a calm
+- b256 (commit 1b45fb4, run 40787980396: cartoon 36/36, writer 30/30, browser 20/20, Russian 242 pages 0 English,
+  route fuzz 3730 requests 0 errors; the same runtime): the film's pauses follow the pace (short for a reference that cuts often, long for a calm
   one; "Pauses between lines"); a character added before any film and "The host of my films" (the writer gives every
   new story that narrator, in the letters of its name); more sounds (a pop for bubbles and pictures, a bell for the
   magnifier); quick links at the top of Cartoon Studio; a graphics card that stops in the middle of a story - the
-  story finished on the processor, "Try the graphics card again"; fixes from a third independent review (9).
+  story finished on the processor, "Try the graphics card again"; fixes from a third independent review (9). The
+  build of 5f4007d (b255) failed the browser check: the "Pauses between lines" list was wider than a 420 px window in
+  Russian - shorter choices, lists that never grow past their row.
+- Next build (after b256), from the owner's first cartoon and his try to send a video to a chat: the story writer uses
+  the viewers' measures (miles, feet, gallons for the United States - English's default viewers; kilometres elsewhere),
+  the English example story in miles; every line of the cartoon's voices as loud as the others; Convert's size target
+  from 5 MB (was 50 MB: a 20 MB chat limit could not be met), a small size fitted by a smaller picture (2 min of 1080p:
+  20 MB -> 720p, 5 MB -> 360p).
 
 ## Orders from other programs; night review fixes (2026-10-17)
 
