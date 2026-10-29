@@ -931,6 +931,13 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
 - 2026-10-29, **b258** published (commit fa0ab06, ZIP 4,880,125 bytes, the same runtime; run 40808885817: cartoon
   37/37, writer 31/31, convert 66/66, browser 20/20, Russian 242 pages 0 English, route fuzz 0 errors): miles for the
   United States, Convert's size from 5 MB, the voices' lines equally loud, the rhythm's scenes asked more firmly.
+- 2026-10-29, voice add-on with b258's code: run 40822920409 failed - VoxCPM2's worker stopped without an answer for
+  every described voice (same pinned packages and model as the runs that passed); the same code again (run
+  40828821012, the failing job's worker log now published): 30/30, the Romanian cartoon heard (5 of 7 words at least)
+  - the runner, not the program. The voices' lines now equally loud; the sounds kept off the first syllable.
+- 2026-10-29, the owner asked who looks at the repository: GitHub's traffic (14 days) - 3 page views by 2 visitors on
+  10-15 (one from Google, Actions run pages), none since; 0 stars, forks, watchers; the ~4,250 clones are the CI's own
+  checkouts. Keeping it public for now (his conclusion: private is not worth it yet).
 - 2026-10-29, the owner asked what making the repository private would cost: told him that private repositories are
   free, but the checks are not (about 13,500 Windows minutes in the last 20 days - about $200 a month at $0.010 a
   minute); options (fewer full runs, his PC as the runner, MedEng alone in its own private repository, the Update
