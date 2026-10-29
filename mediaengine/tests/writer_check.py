@@ -418,7 +418,7 @@ def main() -> int:
         rpage = c.get(f"/auto/cartoon/{jr['id']}", headers=H).get_data(as_text=True)
         check("a story written with the studied rhythm: as many scenes for its quick cuts, an opening question; the story "
               "page says whose rhythm", jr.get("state") == "done" and (jr.get("style") or {}).get("ref") == sid
-              and "13 to 14 scenes, 1 or 2 lines" in ask_r and "with a question" in ask_r and "8 to 10 scenes" not in ask_r
+              and "13 to 14 scenes (count them" in ask_r and "1 or 2 lines in each" in ask_r and "with a question" in ask_r and "8 to 10 scenes" not in ask_r
               and "rhythm like" in rpage and "School meals" in ask_r and "<option value='quick' selected>" in rpage,
               (jr.get("state"), jr.get("style"), ask_r[:300]))
         slow = {"shot_avg": 10.0, "wps": 1.5, "first_at": 3.0, "opens": "statement"}   # (a calm reference: long shots, slow words)
@@ -431,7 +431,7 @@ def main() -> int:
               "6 to 7 scenes" in rules_slow and "a calm pace" in rules_slow and "grabs attention" not in rules_slow
               and w_slow == 78 and prob_slow == "" and "too short" in prob_usual
               and "13 to 14 scenes" in R.rules_of({"shot_avg": 3.0, "wps": 2.8}, 45)[0]
-              and "quick cuts" in R.rules_of({"shot_avg": 3.0}, 120)[0] and "11 to 13 scenes, 2 or 3 lines" in R.rules_of({"shot_avg": 10.0}, 120)[0]
+              and "quick cuts" in R.rules_of({"shot_avg": 3.0}, 120)[0] and "11 to 13 scenes" in R.rules_of({"shot_avg": 10.0}, 120)[0] and "2 or 3 lines" in R.rules_of({"shot_avg": 10.0}, 120)[0]
               and "an even pace" in R.rules_of({"shot_avg": 6.0}, 75)[0], (rules_slow, w_slow, prob_slow, prob_usual))
         home3 = c.get("/auto/cartoon", headers=H).get_data(as_text=True)
         check("the home page: a video to study, the studies listed, the rhythm to choose for a story",

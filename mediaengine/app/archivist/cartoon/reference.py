@@ -424,7 +424,8 @@ def rules_of(style: dict, secs: int) -> tuple[str, int | None]:
     lo, hi, words = targets(style, secs)
     avg = float(style.get("shot_avg") or 6.0)              # (the pace is the reference's own: how long its shots last)
     per = "1 or 2 lines" if avg < 4.5 else "2 or 3 lines"
-    extra = [f"- {lo} to {hi} scenes, {per} in each; every line one or two short sentences (at most 16 words)."]
+    extra = [f"- {lo} to {hi} scenes (count them: this rhythm needs that many, more than usual when it is quick), "
+             f"{per} in each; every line one or two short sentences (at most 16 words)."]
     pace = ("quick cuts: short scenes that change often" if avg < 4.5 else "an even pace" if avg < 9 else
             "a calm pace: longer scenes, nothing rushed")
     extra.append(f"- The rhythm of a cartoon the viewer liked: {pace}.")
