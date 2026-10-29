@@ -4,14 +4,22 @@ main colours; with the voice add-on also what is said in each shot, how fast, ho
 of it is speech and whether music or sounds play between the words. Kept with the job (reference.json, frames/), and
 used by the story writer: "Write a story with this rhythm" asks the model for as many scenes, as many words a second
 and an opening as quick as the reference's - the story itself stays new.
+
+An author's style: several studied videos (say, the ones downloaded from one profile) taken together - the middle of
+their figures (how long a shot lasts, words a second, how soon it speaks, how it opens) and their colours - kept as
+cartoon/styles/<id>.json; the story writer takes it like one reference.
 """
 from __future__ import annotations
 
 import json
+import os
 import re
+import secrets
 import shutil
 import statistics
 import subprocess
+import threading
+import time
 import wave
 from pathlib import Path
 
@@ -23,6 +31,11 @@ MAX_SECONDS = 30 * 60             # (a reference is a cartoon or a short: half a
 
 class StudyError(Exception):
     pass
+
+
+STUDY_ID = re.compile(r"[0-9]{8}-[0-9]{6}-[0-9a-f]{6}")
+STYLE_ID = re.compile(r"s[0-9]{8}-[0-9]{6}-[0-9a-f]{6}")
+MAX_STYLE_VIDEOS = 30
 
 
 def new_study(video: str, listen: bool = True) -> str:
@@ -370,9 +383,17 @@ def studies() -> list[dict]:
     return [j for j in vo.list_jobs(200) if j.get("kind") == "cartoon_study" and j.get("state") == "done"]
 
 
+def is_ref(ref: str) -> bool:
+    """A study's id or an author style's id."""
+    return bool(STUDY_ID.fullmatch(str(ref or "")) or STYLE_ID.fullmatch(str(ref or "")))
+
+
 def style_of(jid: str) -> dict:
     """What the story writer takes from a reference: its length, how many scenes for its pace of cuts, how many
-    words a second, how soon it speaks and how it opens. {} when there is no such study."""
+    words a second, how soon it speaks and how it opens. {} when there is no such study. An author style's id: the
+    same from all its videos (author_style)."""
+    if STYLE_ID.fullmatch(str(jid or "")):
+        return author_style(jid)
     ref = reference_of(jid)
     if not ref:
         return {}
@@ -428,7 +449,8 @@ def rules_of(style: dict, secs: int) -> tuple[str, int | None]:
              f"{per} in each; every line one or two short sentences (at most 16 words)."]
     pace = ("quick cuts: short scenes that change often" if avg < 4.5 else "an even pace" if avg < 9 else
             "a calm pace: longer scenes, nothing rushed")
-    extra.append(f"- The rhythm of a cartoon the viewer liked: {pace}.")
+    whose = ("of an author's cartoons the viewer likes" if style.get("videos") else "of a cartoon the viewer liked")
+    extra.append(f"- The rhythm {whose}: {pace}.")
     first = style.get("first_at")
     if first is not None and float(first) <= 1.5:
         extra.append("- The very first line speaks at once and grabs attention"
@@ -436,3 +458,157 @@ def rules_of(style: dict, secs: int) -> tuple[str, int | None]:
     elif style.get("opens") == "question":
         extra.append("- The first line asks the viewer a question.")
     return "\n".join(extra), words
+
+
+# ---- an author's style: several studied videos together ----------------------------------------------------------
+
+_SLOCK = threading.Lock()
+
+
+def _styles_dir() -> Path:
+    from ..config import HOME
+    return HOME / "cartoon" / "styles"
+
+
+def _save_style(data: dict) -> None:
+    d = _styles_dir()
+    d.mkdir(parents=True, exist_ok=True)
+    p = d / f"{data['id']}.json"
+    tmp = p.with_suffix(f".{os.getpid()}.{threading.get_ident()}.tmp")
+    tmp.write_text(json.dumps(data, ensure_ascii=False, indent=1), "utf-8")
+    for i in range(20):                    # Windows: a page reading the file (or a virus check) holds it a moment
+        try:
+            os.replace(tmp, p)
+            return
+        except PermissionError:
+            if i == 19:
+                tmp.unlink(missing_ok=True)
+                raise
+            time.sleep(0.05 * (i + 1))
+
+
+def _common_name(titles: list[str]) -> str:
+    """The author of downloaded videos ("<author> - <title> [<id>]", as Download by a link names them), else ''."""
+    heads = {t.split(" - ", 1)[0].strip() for t in titles if " - " in t}
+    return heads.pop()[:80] if len(heads) == 1 and all(" - " in t for t in titles) else ""
+
+
+def new_style(refs: list[str], name: str = "", source: str = "") -> str:
+    """An author style from at least two studied videos (their ids); name: whose style ('' - the author of downloaded
+    videos when they share one); source: where it came from ("download:<id>")."""
+    from .. import voice as vo
+    ids: list[str] = []
+    for r in refs or []:
+        r = str(r or "").strip()
+        if STUDY_ID.fullmatch(r) and r not in ids and reference_of(r):
+            ids.append(r)
+    if len(ids) < 2:
+        raise StudyError("Choose at least two studied videos for a common style.")
+    if len(ids) > MAX_STYLE_VIDEOS:
+        raise StudyError(f"At most {MAX_STYLE_VIDEOS} videos in one style.")
+    titles = []
+    for r in ids:
+        try:
+            titles.append(str(vo.read_job(r).get("title") or ""))
+        except Exception:
+            titles.append("")
+    name = re.sub(r"\s+", " ", str(name or "")).strip()[:80] or _common_name(titles)
+    sid = "s" + time.strftime("%Y%m%d-%H%M%S") + "-" + secrets.token_hex(3)
+    with _SLOCK:
+        _save_style({"id": sid, "name": name, "refs": ids, "source": str(source or "")[:200],
+                     "created_at": time.strftime("%Y-%m-%dT%H:%M:%S"), "created_ns": time.time_ns()})
+    return sid
+
+
+def style_entry(sid: str) -> dict:
+    if not STYLE_ID.fullmatch(str(sid or "")):
+        return {}
+    try:
+        data = json.loads((_styles_dir() / f"{sid}.json").read_text("utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return data if isinstance(data, dict) and data.get("id") == sid else {}
+
+
+def styles() -> list[dict]:
+    """The author styles, newest first."""
+    d = _styles_dir()
+    out = []
+    try:
+        names = sorted(d.glob("s*.json"))
+    except OSError:
+        return []
+    for p in names:
+        x = style_entry(p.stem)
+        if x:
+            out.append(x)
+    out.sort(key=lambda x: (int(x.get("created_ns") or 0), x["id"]), reverse=True)
+    return out
+
+
+def delete_style(sid: str) -> None:
+    """The style forgotten (its studies stay)."""
+    if STYLE_ID.fullmatch(str(sid or "")):
+        (_styles_dir() / f"{sid}.json").unlink(missing_ok=True)
+
+
+def style_of_download(did: str) -> dict:
+    """The style made from a download's videos, or {}."""
+    return next((x for x in styles() if x.get("source") == f"download:{did}"), {})
+
+
+def _merge_palette(refs: list[dict], k: int = 6) -> list[dict]:
+    """The colours of several videos together: each video counts the same, nearly the same colours joined."""
+    groups: list[list] = []
+    for ref in refs:
+        for c in ref.get("palette") or []:
+            try:
+                rgb = np.array([int(c["hex"][i:i + 2], 16) for i in (1, 3, 5)], dtype=float)
+                share = float(c.get("share") or 0) / len(refs)
+            except (KeyError, TypeError, ValueError):
+                continue
+            near = next((g for g in groups if float(np.linalg.norm(g[0] - rgb)) < 40), None)
+            if near:                                       # (the colour of the bigger share kept)
+                if share > near[2]:
+                    near[0], near[2] = rgb, share
+                near[1] += share
+            else:
+                groups.append([rgb, share, share])
+    out = []
+    for c, n, _m in sorted(groups, key=lambda g: -g[1])[:k]:
+        r, g_, b = (int(round(x)) for x in c)
+        out.append({"hex": f"#{r:02x}{g_:02x}{b:02x}", "share": round(n, 3)})
+    return out
+
+
+def author_style(sid: str) -> dict:
+    """What the story writer takes from an author style: the middle of its videos' figures. {} when none of its videos
+    is studied any more."""
+    ent = style_entry(sid)
+    refs = []
+    for r in ent.get("refs") or []:
+        x = reference_of(r) if STUDY_ID.fullmatch(str(r)) else {}
+        if x:
+            refs.append((r, x))
+    if not refs:
+        return {}
+    med = statistics.median
+    avgs = [float(x.get("shot_avg") or 6.0) for _r, x in refs]
+    heard = [x for _r, x in refs if x.get("listened") and float(x.get("wps") or 0) > 0]
+    wps = [float(x["wps"]) for x in heard]
+    firsts = [float(x["first_words_at"]) for x in heard if x.get("first_words_at") is not None]
+    openings = [str(x.get("opening") or "").rstrip() for x in heard if x.get("opening")]
+    asks = sum(1 for o in openings if o.endswith("?"))
+    fmts = [str(x.get("format") or "vertical") for _r, x in refs]
+    avg = round(med(avgs), 2)
+    secs = int(max(45, min(120, round(med([float(x.get("duration") or 75) for _r, x in refs])))))
+    return {"ref": sid, "title": ent.get("name") or "", "videos": len(refs), "secs": secs, "scenes": scenes_for(secs, avg),
+            "shot_avg": avg, "wps": round(med(wps), 2) if wps else 0.0, "first_at": round(med(firsts), 2) if firsts else None,
+            "opens": ("question" if asks * 2 > len(openings) else "statement") if openings else "",
+            "talk_share": round(med([float(x.get("talk_share") or 0) for x in heard]), 2) if heard else 0.0,
+            "format": "vertical" if fmts.count("vertical") * 2 >= len(fmts) else "horizontal",
+            "spread": {"shot_avg": [round(min(avgs), 2), round(max(avgs), 2)],
+                       "wps": [round(min(wps), 2), round(max(wps), 2)] if wps else None,
+                       "first_at": [round(min(firsts), 2), round(max(firsts), 2)] if firsts else None,
+                       "asks": asks, "openings": len(openings), "heard": len(heard)},
+            "palette": _merge_palette([x for _r, x in refs])}

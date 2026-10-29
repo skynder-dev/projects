@@ -32,6 +32,7 @@ CSS = """<style>
 .ct-board{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
 .ct-shot{border:1px solid var(--line2);border-radius:10px;padding:6px;font-size:13px}
 .ct-shot img{width:100%;max-height:260px;object-fit:contain;border-radius:6px;background:#000;display:block}
+.ct-vids{width:100%;border-collapse:collapse;font-size:14px}.ct-vids td,.ct-vids th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.ct-vids .n{white-space:nowrap;text-align:right}
 .ct-nums{display:grid;grid-template-columns:minmax(120px,max-content) minmax(0,1fr);gap:4px 14px}
 .ct-chip{display:inline-flex;align-items:center;gap:6px;margin:3px 12px 3px 0;font-size:13px}
 .ct-chip i{display:inline-block;width:28px;height:20px;border-radius:5px;border:1px solid #0003}
@@ -330,13 +331,47 @@ def register(app, page, err_page, e, human_bytes):
                 f"<div class='muted' style='font-size:13px;margin-top:6px'>MediaEngine goes online for it only when you press a "
                 f"button (github.com, huggingface.co). It runs on this PC; nothing is sent anywhere.</div>{_model_choice(s)}</div>")
 
-    def _rhythm_choice() -> str:
-        """The rhythm of a video studied (Reference Lab), for the story writer: none when nothing is studied."""
-        done = R.studies()[:20]
-        if not done:
+    def _style_html(name: str, n: int) -> str:
+        """An author style's name on a page: 'Style: <name> (3 videos)' (the name never translated)."""
+        return ((f"<span>Style:</span> <span translate='no'>{e(name)}</span>" if name else "<span>A common style</span>")
+                + f" (<span translate='no'>{int(n)}</span> <span>videos</span>)")
+
+    def _style_option(x: dict) -> str:
+        """An author style in a list of rhythms (an <option>: its name, never translated; or 'A common style (3 videos)')."""
+        n = len(x.get("refs") or [])
+        if x.get("name"):
+            return f"<option value='{x['id']}' translate='no'>{e(x['name'])} · {n}</option>"
+        return f"<option value='{x['id']}'>A common style ({n} videos)</option>"
+
+    def _style_for_writer(ref) -> dict | None:
+        """The style the story writer is given for a study's or an author style's id (without its colours)."""
+        ref = str(ref or "")
+        if not R.is_ref(ref):
+            return None
+        st = R.style_of(ref)
+        return {k: v for k, v in st.items() if k not in ("palette", "spread")} or None
+
+    def _rhythm_link(st) -> str:
+        """' · rhythm like <the study or the author style>' on a story's page."""
+        if not isinstance(st, dict) or not st.get("ref"):
             return ""
-        opts = "".join(f"<option value='{j['id']}' translate='no'>{e(j.get('title') or '')} · "
-                       f"{round(float((j.get('result') or {}).get('seconds') or 0))} s</option>" for j in done)
+        ref = str(st["ref"])
+        if R.STYLE_ID.fullmatch(ref):
+            return (f" · <span>rhythm like</span> <a href='/auto/cartoon/style/{e(ref)}'>"
+                    f"{_style_html(st.get('title') or '', st.get('videos') or 0)}</a>")
+        return f" · <span>rhythm like</span> <a href='/auto/cartoon/{e(ref)}' translate='no'>{e(st.get('title') or '')}</a>"
+
+    def _rhythm_choice() -> str:
+        """The rhythm of a video studied (Reference Lab) or of an author (several videos), for the story writer: none
+        when nothing is studied."""
+        done = R.studies()[:20]
+        sts = R.styles()[:20]
+        if not done and not sts:
+            return ""
+        one = "".join(f"<option value='{j['id']}' translate='no'>{e(j.get('title') or '')} · "
+                      f"{round(float((j.get('result') or {}).get('seconds') or 0))} s</option>" for j in done)
+        opts = ((f"<optgroup label='Authors&#x27; styles (several videos)'>{''.join(_style_option(x) for x in sts)}</optgroup>"
+                 + (f"<optgroup label='Videos studied'>{one}</optgroup>" if one else "")) if sts else one)
         return (f"<div class='ct-row' style='margin-top:8px'><span>Rhythm</span><select name='ref'>"
                 f"<option value=''>The usual</option>{opts}</select>"
                 f"<span class='muted' style='font-size:13px'>like a video you studied: its number of scenes, pace of words and opening</span></div>")
@@ -357,7 +392,30 @@ def register(app, page, err_page, e, human_bytes):
                 f"{'checked' if have else 'disabled'}> Listen to what is said (the voice add-on)</label>"
                 + ("" if have else "<div class='muted' style='font-size:13px'>Without the voice add-on: the shots, pictures and "
                                    "colours only. <a href='/auto/voice'>Install the voice add-on</a></div>")
-                + "<div style='margin-top:10px'><button>Study it</button></div></form></div>")
+                + "<div style='margin-top:10px'><button>Study it</button></div></form>" + _styles_block() + "</div>")
+
+    def _styles_block() -> str:
+        """The author styles made, and a form to make one from several studied videos (two at least)."""
+        sts = R.styles()
+        done = R.studies()[:R.MAX_STYLE_VIDEOS]
+        links = "".join(f"<div><a href='/auto/cartoon/style/{x['id']}'>{_style_html(x.get('name') or '', len(x.get('refs') or []))}</a></div>"
+                        for x in sts[:20])
+        form = ""
+        if len(done) >= 2:
+            ticks = "".join(f"<label style='display:block'><input type='checkbox' name='ref' value='{j['id']}'> <span translate='no'>"
+                            f"{e(j.get('title') or '')} · {round(float((j.get('result') or {}).get('seconds') or 0))}</span> <span>s</span></label>"
+                            for j in done)
+            form = (f"<details style='margin-top:8px'><summary>Make a common style of several videos</summary>"
+                    f"<form method='post' action='/auto/cartoon/style/new' style='margin-top:6px' "
+                    f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
+                    f"<div style='max-height:240px;overflow:auto'>{ticks}</div>"
+                    f"<div class='ct-row' style='margin-top:6px'><input name='name' maxlength='80' placeholder='Whose style (a name, if you like)' "
+                    f"style='width:240px'><button>Make the common style</button></div></form></details>")
+        if not links and not form:
+            return ""
+        return (f"<div style='margin-top:14px'><b>An author's style</b><div class='muted' style='font-size:13px'>Several videos "
+                f"you studied - say, a few of one author's - taken together: the middle of their rhythms and their colours. "
+                f"A story can then be written in that style.</div>{links}{form}</div>")
 
     def _model_choice(s: dict, switch: bool = False) -> str:
         """A button per model (the one for this PC first); switch: only the model not installed."""
@@ -535,8 +593,7 @@ def register(app, page, err_page, e, human_bytes):
                 f"<h1><span>Story:</span> <span translate='no'>{e(j.get('title') or '')}</span></h1>"
                 f"<div class='muted' style='font-size:13px'><span>{e(asked)}</span> · <span translate='no'>"
                 f"{e(LANG_LABELS.get(j.get('lang'), ''))}</span>" + (f" · <span translate='no'>{e(j['country'])}</span>" if j.get("country") else "")
-                + (f" · <span>rhythm like</span> <a href='/auto/cartoon/{e((j.get('style') or {}).get('ref') or '')}' translate='no'>"
-                   f"{e((j.get('style') or {}).get('title') or '')}</a>" if isinstance(j.get("style"), dict) and j["style"].get("ref") else "")
+                + _rhythm_link(j.get("style"))
                 + f"</div></div>{_READY}")
         if j["state"] != "done":
             body = (f"<div class='card'>{_block(j, _state_html(j) or '')}"
@@ -577,6 +634,27 @@ def register(app, page, err_page, e, human_bytes):
         t = max(0.0, float(t or 0))
         return f"{int(t // 60)}:{t % 60:04.1f}"
 
+    def _write_with(ref: str, st: dict, button: str) -> str:
+        """The form that writes a story with a study's or an author style's rhythm."""
+        if not W.installed():
+            return ("<div class='muted'>To write a story with this rhythm, install the story writer: "
+                    "<a href='/auto/cartoon#writer'>Cartoon Studio</a>.</div>")
+        lens = dict(LEN_LABELS)
+        near = str(st.get("secs") or 75)
+        opts = (f"<option value='{near}' selected translate='no'>{near} s</option>" if near not in lens else "") + "".join(
+            f"<option value='{k}' {'selected' if k == near else ''}>{e(v)}</option>" for k, v in LEN_LABELS)
+        return (f"<form method='post' action='/auto/cartoon/write' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
+                f"<input type='hidden' name='ref' value='{e(ref)}'>"
+                f"<b>What is the new story about?</b><textarea name='about' rows='3' maxlength='5000' style='width:100%' "
+                f"placeholder='Why a city hospital pays three times more for the same medicine'></textarea>"
+                f"<div class='ct-row' style='margin-top:8px'><span>Language</span><select name='lang'>{_lang_select()}</select>"
+                f"<span>Viewers in</span><input name='country' maxlength='60' placeholder='(a country, if it matters)' style='width:200px'>"
+                f"<span>Length</span><select name='secs'>{opts}</select></div>"
+                f"<div class='ct-choices' style='margin-top:8px'><b>Format</b><br>{_format_choice(st.get('format') or 'vertical')}</div>"
+                f"<div style='margin-top:10px'><button class='ae-big'>{e(button)}</button></div>"
+                f"<div class='muted' style='font-size:13px;margin-top:6px'><span>The story is new: only the rhythm is taken -</span> "
+                f"<span translate='no'>{int(st.get('scenes') or 0)}</span> <span>scenes, the pace of the words and how soon it speaks.</span></div></form>")
+
     def _study_page(j: dict):
         jid, ref = j["id"], R.reference_of(j["id"])
         head = (f"{CSS}<div class='pagehead'><div class='eyebrow'><a href='/auto/cartoon'>Cartoon Studio</a></div>"
@@ -611,26 +689,7 @@ def register(app, page, err_page, e, human_bytes):
             nums += row("Speech", f"<span>{e(why or 'Nothing is said in it.')}</span>")
         chips = "".join(f"<span class='ct-chip'><i style='background:{e(c['hex'])}'></i><span translate='no'>{e(c['hex'])} · "
                         f"{round(100 * float(c['share']))}%</span></span>" for c in ref.get("palette") or [])
-        st = R.style_of(jid)
-        if W.installed():
-            lens = dict(LEN_LABELS)
-            near = str(st.get("secs") or 75)
-            opts = (f"<option value='{near}' selected translate='no'>{near} s</option>" if near not in lens else "") + "".join(
-                f"<option value='{k}' {'selected' if k == near else ''}>{e(v)}</option>" for k, v in LEN_LABELS)
-            write = (f"<form method='post' action='/auto/cartoon/write' onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
-                     f"<input type='hidden' name='ref' value='{jid}'>"
-                     f"<b>What is the new story about?</b><textarea name='about' rows='3' maxlength='5000' style='width:100%' "
-                     f"placeholder='Why a city hospital pays three times more for the same medicine'></textarea>"
-                     f"<div class='ct-row' style='margin-top:8px'><span>Language</span><select name='lang'>{_lang_select()}</select>"
-                     f"<span>Viewers in</span><input name='country' maxlength='60' placeholder='(a country, if it matters)' style='width:200px'>"
-                     f"<span>Length</span><select name='secs'>{opts}</select></div>"
-                     f"<div class='ct-choices' style='margin-top:8px'><b>Format</b><br>{_format_choice(st.get('format') or 'vertical')}</div>"
-                     f"<div style='margin-top:10px'><button class='ae-big'>Write a story with this rhythm</button></div>"
-                     f"<div class='muted' style='font-size:13px;margin-top:6px'><span>The story is new: only the rhythm is taken -</span> "
-                     f"<span translate='no'>{int(st.get('scenes') or 0)}</span> <span>scenes, the pace of the words and how soon it speaks.</span></div></form>")
-        else:
-            write = ("<div class='muted'>To write a story with this rhythm, install the story writer: "
-                     "<a href='/auto/cartoon#writer'>Cartoon Studio</a>.</div>")
+        write = _write_with(jid, R.style_of(jid), "Write a story with this rhythm")
         shots = ""
         for i, s in enumerate(ref.get("shots") or []):
             img = (f"<img loading='lazy' src='/auto/cartoon/{jid}/frame/{e(s['frame'])}' alt=''>" if s.get("frame") else "")
@@ -798,6 +857,91 @@ def register(app, page, err_page, e, human_bytes):
             return err_page(str(exc), "/auto/cartoon")
         return redirect(f"/auto/cartoon/{jid}")
 
+    @app.post("/auto/cartoon/style/new")
+    def cartoon_style_new():
+        f = request.form
+        src = str(f.get("source") or "")
+        if not re.fullmatch("download:" + _JOB_ID, src):
+            src = ""
+        if src and R.style_of_download(src.split(":", 1)[1]):      # (pressed twice: the one made)
+            return redirect(f"/auto/cartoon/style/{R.style_of_download(src.split(':', 1)[1])['id']}")
+        try:
+            sid = R.new_style(f.getlist("ref")[:R.MAX_STYLE_VIDEOS + 1], f.get("name") or "", src)
+        except R.StudyError as exc:
+            return err_page(str(exc), "/auto/cartoon#study")
+        except OSError:
+            return err_page("The style could not be saved (the data folder). Try again.", "/auto/cartoon#study")
+        return redirect(f"/auto/cartoon/style/{sid}")
+
+    @app.post("/auto/cartoon/style/<sid>/delete")
+    def cartoon_style_delete(sid):
+        try:
+            R.delete_style(sid)
+        except OSError:
+            return err_page("The style could not be removed (the data folder). Try again.", f"/auto/cartoon/style/{sid}")
+        return redirect("/auto/cartoon#study")
+
+    @app.get("/auto/cartoon/style/<sid>")
+    def cartoon_style_page(sid):
+        ent = R.style_entry(sid)
+        if not ent:
+            return err_page("This style is not there any more.", "/auto/cartoon#study")
+        st = R.author_style(sid)
+        name = ent.get("name") or ""
+        head = (f"{CSS}<div class='pagehead'><div class='eyebrow'><a href='/auto/cartoon'>Cartoon Studio</a></div>"
+                + (f"<h1><span>Style:</span> <span translate='no'>{e(name)}</span></h1>" if name else "<h1>A common style</h1>")
+                + f"<div class='lead'><span>Studied videos taken together:</span> <span translate='no'>{len(ent.get('refs') or [])}</span>"
+                f". <span>Their middle is taken - one video that is different does not change it much.</span></div></div>")
+        forget = (f"<form method='post' action='/auto/cartoon/style/{e(sid)}/delete' class='ct-row' style='margin-top:12px'>"
+                  f"<button class='btn2'>Forget this style</button><span class='muted' style='font-size:13px'>(the videos and "
+                  f"their studies stay)</span></form>")
+        if not st:
+            return page("Cartoon Studio", head + "<div class='card'><div class='muted'>Its videos are not studied any more (their "
+                                                 f"studies were removed).</div>{forget}</div>")
+
+        def row(label: str, value: str) -> str:
+            return f"<div class='muted'>{e(label)}</div><div>{value}</div>"
+
+        def num(x) -> str:
+            return f"<span translate='no'>{e(str(x))}</span>"
+
+        def span(a, b) -> str:
+            return "" if a == b else f" · <span>from</span> {num(f'{a:g}')} <span>to</span> {num(f'{b:g}')}"
+        sp = st.get("spread") or {}
+        nums = row("A shot lasts", "<span>on average</span> " + num(f"{st['shot_avg']:g}") + " <span>s</span>"
+                   + (span(*sp["shot_avg"]) + " <span>s</span>" if span(*sp["shot_avg"]) else ""))
+        if sp.get("wps"):
+            nums += row("Speech", num(f"{st['wps']:g}") + " <span>words a second</span>" + span(*sp["wps"]))
+            if sp.get("first_at"):
+                nums += row("The first words", "<span>after</span> " + num(f"{st['first_at']:g}") + " <span>s</span>"
+                            + (span(*sp["first_at"]) + " <span>s</span>" if span(*sp["first_at"]) else ""))
+            if sp.get("openings"):
+                nums += row("It opens with", f"<span>{'a question' if st.get('opens') == 'question' else 'a statement'}</span>"
+                            f" · <span translate='no'>{int(sp.get('asks') or 0)}/{int(sp['openings'])}</span> <span>open with a question</span>")
+        else:
+            nums += row("Speech", "<span>Not listened to (studied without the voice add-on).</span>")
+        nums += row("Format", f"<span>{e('vertical' if st.get('format') == 'vertical' else 'wide')}</span>")
+        chips = "".join(f"<span class='ct-chip'><i style='background:{e(c['hex'])}'></i><span translate='no'>{e(c['hex'])} · "
+                        f"{round(100 * float(c['share']))}%</span></span>" for c in st.get("palette") or [])
+        vids = ""
+        for r in ent.get("refs") or []:
+            x = R.reference_of(r)
+            if not x:
+                continue
+            j = _job(r) or {}
+            vids += (f"<tr><td><a href='/auto/cartoon/{e(r)}' translate='no'>{e(j.get('title') or r)}</a></td>"
+                     f"<td class='n'><span translate='no'>{float(x.get('duration') or 0):.0f}</span> <span>s</span></td>"
+                     f"<td class='n'><span translate='no'>{float(x.get('shot_avg') or 0):g}</span> <span>s</span></td>"
+                     f"<td class='n' translate='no'>{(str(round(float(x['wps']), 2)) if x.get('listened') else '–')}</td></tr>")
+        body = (f"<div class='card'><h2 style='margin-top:0'>The rhythm</h2><div class='ct-nums'>{nums}</div>"
+                + (f"<div style='margin-top:10px'><b>The main colours</b><div>{chips}</div></div>" if chips else "")
+                + f"</div><div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Write a story in this style</h2>"
+                f"{_write_with(sid, st, 'Write a story in this style')}</div>"
+                f"<div class='card' style='margin-top:14px'><h2 style='margin-top:0'>Its videos</h2><div style='overflow-x:auto'>"
+                f"<table class='ct-vids'><tr><th>Video</th><th class='n'>Length</th><th class='n'>A shot</th>"
+                f"<th class='n'>Words a second</th></tr>{vids}</table></div>{forget}</div>")
+        return page("Cartoon Studio", head + body, _PICK_JS)
+
     @app.get("/auto/cartoon/<jid>/frame/<name>")
     def cartoon_frame(jid, name):
         j = _job(jid)
@@ -824,8 +968,7 @@ def register(app, page, err_page, e, human_bytes):
         if topics and mode != "adapt" and (about or str(f.get("video") or "").strip()):
             return err_page("Write either one story's topic (or a text, or a video) or a series of topics - not both.", "/auto/cartoon")
         if topics and mode != "adapt":                     # a series: a story (and its cartoon) for every topic
-            ref = str(f.get("ref") or "")
-            style = R.style_of(ref) if re.fullmatch(_JOB_ID, ref) else None
+            style = _style_for_writer(f.get("ref"))
             try:
                 for tp in topics:
                     W.new_write("topic", f.get("lang") or "en", f.get("format") or "vertical", secs, topic=tp,
@@ -840,8 +983,7 @@ def register(app, page, err_page, e, human_bytes):
                 jid = W.new_write("adapt", lang, f.get("format") or "vertical", secs, source=f.get("source") or "",
                                   country=f.get("country") or "", title=(f"{title} ({LANG_LABELS.get(lang, lang)})" if title else ""))
             else:
-                ref = str(f.get("ref") or "")
-                style = R.style_of(ref) if re.fullmatch(_JOB_ID, ref) else None
+                style = _style_for_writer(f.get("ref"))
                 jid = W.new_write(mode, f.get("lang") or "en", f.get("format") or "vertical", secs,
                                   topic=about if mode == "topic" else "", source=about if mode == "text" else "",
                                   country=f.get("country") or "", video=f.get("video") or "", style=style or None,

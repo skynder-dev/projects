@@ -132,7 +132,7 @@ def _client_script() -> str:
 # a tag may hold ">" inside a quoted attribute (onclick="...=>..."): match quoted values as a whole
 _TAG = r"""<(?:[^>"']|"[^"]*"|'[^']*')+>"""
 _SPLIT = re.compile(r"(<script\b.*?</script>|<style\b.*?</style>|<textarea\b(?:[^>\"']|\"[^\"]*\"|'[^']*')*>.*?</textarea>|" + _TAG + ")", re.S | re.I)
-_ATTR = re.compile(r"""(\b(?:placeholder|title|aria-label)=)(['"])(.*?)\2""", re.S)
+_ATTR = re.compile(r"""(\b(?:placeholder|title|aria-label|label)=)(['"])(.*?)\2""", re.S)
 _PROTECT = re.compile(r"""<(\w+)\b[^>]*(?:translate=['"]no['"]|class=['"][^'"]*\b(?:ae-path|path|mono)\b[^'"]*['"])[^>]*>.*?</\1>""", re.S)
 _WS = re.compile(r"^(\s*)(.*?)(\s*)$", re.S)
 _ON = re.compile(r"""(\bon[a-z]+=)(["'])(.*?)\2""", re.S)

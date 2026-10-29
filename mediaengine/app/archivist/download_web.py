@@ -68,10 +68,40 @@ def register(app, page, err_page, e, human_bytes):
                 f"<form method='post' action='/media/download/install' style='margin-top:12px'><button class='ae-big'>"
                 f"<span>Install</span> <span translate='no'>({mb:.0f}</span> <span>MB)</span></button></form></div>")
 
+    def _studies_line(j: dict) -> str:
+        """How far the videos' studies are, and - two or more studied - their common style (an author's)."""
+        from .cartoon import reference as R
+        from . import voice as vo
+        ids = [x for x in (j.get("result") or {}).get("studies") or [] if R.STUDY_ID.fullmatch(str(x))]
+        states = []
+        for x in ids:
+            try:
+                states.append(vo.read_job(x).get("state"))
+            except Exception:
+                states.append("gone")
+        done = [x for x, st in zip(ids, states) if st == "done"]
+        busy = sum(1 for st in states if st in ("working", "waiting", "queued", "running"))
+        made = R.style_of_download(j["id"])
+        out = (f"<span>Studied:</span> <span translate='no'>{len(done)}/{len(ids)}</span> "
+               f"<a href='/auto/cartoon#films'>Cartoon Studio</a>")
+        if made:
+            out += (f" · <a href='/auto/cartoon/style/{made['id']}'>Their common style</a>")
+        elif len(done) >= 2 and not busy:
+            refs = "".join(f"<input type='hidden' name='ref' value='{x}'>" for x in done)
+            out += (f"<form method='post' action='/auto/cartoon/style/new' style='margin:6px 0 0'>{refs}"
+                    f"<input type='hidden' name='name' value='{e(j.get('author') or '')}'>"
+                    f"<input type='hidden' name='source' value='download:{j['id']}'>"
+                    f"<button class='btn2'>Make their common style</button></form>")
+        return f"<div class='muted' style='font-size:13px;margin-top:4px'>{out}</div>"
+
     def _job_row(j: dict) -> str:
         res = j.get("result") or {}
         when = e(str(j.get("created_at") or "")[:16].replace("T", " "))
-        head = (f"<div class='dl-row'><b translate='no'>{e(j.get('title') or '')}</b>"
+        n_items = len(j.get("items") or [])
+        who = (f"<span translate='no'>{e(j['author'])}</span> · " if j.get("author") else "")
+        title = (f"<b>{who}<span translate='no'>{n_items}</span> <span>videos</span></b>" if n_items > 1
+                 else f"<b translate='no'>{e(j.get('title') or '')}</b>")
+        head = (f"<div class='dl-row'>{title}"
                 f"<span class='muted' style='font-size:13px' translate='no'>{when}</span></div>")
         st = j["state"]
         if st in ("working", "waiting"):
@@ -84,7 +114,7 @@ def register(app, page, err_page, e, human_bytes):
             for n, f in enumerate(res.get("files") or []):
                 p = str(f.get("file") or "")
                 files += (f"<div class='dl-file'><span translate='no'>{e(Path(p).name)}</span>"
-                          f"<span class='muted' style='font-size:13px' translate='no'>{e(human_bytes(int(f.get('size') or 0)))}</span>"
+                          f"<span class='muted' style='font-size:13px'>{e(human_bytes(int(f.get('size') or 0)))}</span>"
                           f"<form method='post' action='/auto/cartoon/study'><input type='hidden' name='video' value='{e(p)}'>"
                           f"<input type='hidden' name='listen' value='1'><button class='btn2'>Study its rhythm</button></form>"
                           f"<form method='post' action='/auto/cartoon/write'><input type='hidden' name='video' value='{e(p)}'>"
@@ -97,8 +127,7 @@ def register(app, page, err_page, e, human_bytes):
                 msg = "<div class='muted' style='margin-top:6px'>Interrupted (MediaEngine was closed).</div>"
             elif st in ("failed", "stopped") and not res.get("errors"):
                 msg = f"<div class='errbox' style='margin-top:6px'>{e(res.get('error') or 'Failed')}</div>"
-            studies = (f"<div class='muted' style='font-size:13px;margin-top:4px'><span>Being studied:</span> "
-                       f"<a href='/auto/cartoon#films'>Cartoon Studio</a></div>" if res.get("studies") else "")
+            studies = _studies_line(j) if res.get("studies") else ""
             body = (files + errs + msg + studies
                     + "<div class='dl-row' style='margin-top:6px'>"
                     + (f"<form method='post' action='/media/download/{j['id']}/retry' style='margin:0'><button class='btn2'>Try again</button></form>"
@@ -167,7 +196,8 @@ def register(app, page, err_page, e, human_bytes):
                 + (f"<div class='lead'><span translate='no'>{len(ents)}</span> <span>videos</span></div>" if r["kind"] == "list" else "")
                 + f"</div><div class='card'><form method='post' action='/media/download/start' "
                 f"onsubmit=\"setTimeout(()=>this.querySelectorAll('button').forEach(x=>x.disabled=true),0)\">"
-                f"<input type='hidden' name='source' value='{e(r['url'])}'>{hidden}{pick}"
+                f"<input type='hidden' name='source' value='{e(r['url'])}'>"
+                f"<input type='hidden' name='author' value='{e(r.get('uploader') or '')}'>{hidden}{pick}"
                 f"<label style='display:block;margin-top:10px'><input type='checkbox' name='study' value='1'> Study each one's rhythm after "
                 f"(Cartoon Studio: shots, pace, the opening)</label>"
                 f"<div style='margin-top:12px'><button class='ae-big'>Download</button></div></form></div>")
@@ -181,7 +211,7 @@ def register(app, page, err_page, e, human_bytes):
             if re.fullmatch(r"\d{1,3}", str(n)):
                 items.append({"url": f.get(f"u{n}") or "", "title": f.get(f"t{n}") or ""})
         try:
-            D.new_download(items, f.get("study") == "1", f.get("source") or "")
+            D.new_download(items, f.get("study") == "1", f.get("source") or "", f.get("author") or "")
         except D.DownloadError as exc:
             return err_page(str(exc), "/media/download")
         return redirect("/media/download#jobs")

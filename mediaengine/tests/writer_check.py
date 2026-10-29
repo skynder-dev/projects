@@ -438,10 +438,58 @@ def main() -> int:
               "Study a cartoon you like" in home3 and "Study:" in home3 and "See the storyboard" in home3
               and f"<option value='{sid}'" in home3, "")
 
+        # an author's style: three studied videos together (two listened to, one without sound)
+        calm = work / "calm.mp4"
+        subprocess.run([ff, "-hide_banner", "-v", "error", "-f", "lavfi", "-i", "color=c=0x2050a0:s=360x640:d=6:r=25",
+                        "-f", "lavfi", "-i", "color=c=0xe0c040:s=360x640:d=6:r=25", "-f", "lavfi", "-i", "sine=frequency=330:duration=12",
+                        "-filter_complex", "[0:v][1:v]concat=n=2:v=1:a=0[v]", "-map", "[v]", "-map", "2:a", "-c:v", "libx264",
+                        "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest", "-y", str(calm)], check=True, capture_output=True, timeout=180)
+        vo.installed, vo.transcribe = (lambda: True), fake_listen
+        try:
+            sid_calm = R.new_study(str(calm), listen=True)
+            sid_soft = R.new_study(str(soft), listen=True)            # (no sound: not listened to)
+            j_calm, j_soft = wait(vo, sid_calm), wait(vo, sid_soft)
+        finally:
+            vo.installed, vo.transcribe = real
+        one = c.post("/auto/cartoon/style/new", data={"ref": [sid]}, headers=H)
+        mk = c.post("/auto/cartoon/style/new", data={"ref": [sid, sid_calm, sid_soft, "../x"], "name": ""}, headers=H)
+        stid = (mk.headers.get("Location") or "").rstrip("/").split("/")[-1]
+        ast = R.author_style(stid)
+        stpage = c.get(f"/auto/cartoon/style/{stid}", headers=H).get_data(as_text=True)
+        check("an author's style: three studied videos together - the middle of their shots (not the average), the "
+              "listened ones' pace of words and opening question; one video alone refused; its page with the figures, "
+              "the colours, the videos and a form to write in this style",
+              one.status_code == 400 and b"at least two" in one.data and mk.status_code == 302 and R.STYLE_ID.fullmatch(stid)
+              and j_calm.get("state") == "done" and j_soft.get("state") == "done" and ast.get("videos") == 3
+              and 2.5 < ast.get("shot_avg", 0) < 3.6 and ast["spread"]["shot_avg"][1] > 5.5 and ast["spread"]["heard"] == 2
+              and 2.0 < ast.get("wps", 0) < 3.0 and ast.get("opens") == "question" and ast.get("first_at") == 0.4
+              and ast.get("format") == "vertical" and len(ast.get("palette") or []) >= 3
+              and "A common style" in stpage and "Write a story in this style" in stpage and stpage.count("<tr><td><a href='/auto/cartoon/") == 3
+              and "open with a question" in stpage and "ct-chip" in stpage,
+              (one.status_code, mk.status_code, stid, j_calm.get("state"), j_soft.get("state"), {k: v for k, v in ast.items() if k != "palette"}))
+        before = set(p.name for p in (work / "asked").glob("request_*.json"))
+        rs2 = c.post("/auto/cartoon/write", data={"about": "A bridge painted three times in one year", "lang": "en", "secs": "60",
+                                                  "ref": stid}, headers=H)
+        js2 = wait(vo, (rs2.headers.get("Location") or "").rstrip("/").split("/")[-1])
+        asks = [json.loads(p.read_text("utf-8")) for p in sorted((work / "asked").glob("request_*.json")) if p.name not in before]
+        ask_s = asks[0]["messages"][-1]["content"] if asks else ""
+        page2 = c.get(f"/auto/cartoon/{js2['id']}", headers=H).get_data(as_text=True)
+        home4 = c.get("/auto/cartoon", headers=H).get_data(as_text=True)
+        check("a story written in an author's style: the style's rhythm asked (an author's cartoons, quick cuts, an opening "
+              "question), the story page links the style; Cartoon Studio offers the style for a story and lists it",
+              js2.get("state") == "done" and (js2.get("style") or {}).get("ref") == stid and (js2.get("style") or {}).get("videos") == 3
+              and "palette" not in (js2.get("style") or {}) and "of an author's cartoons" in ask_s and "quick cuts" in ask_s
+              and "with a question" in ask_s and f"/auto/cartoon/style/{stid}" in page2 and f"<option value='{stid}'>" in home4
+              and "A common style (3 videos)" in home4 and "Make a common style of several videos" in home4,
+              (js2.get("state"), js2.get("style"), ask_s[-600:]))
+
         c.post("/lang", data={"lang": "ru"}, headers=H)
         ru = (c.get("/auto/cartoon", headers=H).get_data(as_text=True) + c.get(f"/auto/cartoon/{jid}", headers=H).get_data(as_text=True)
               + c.get(f"/auto/cartoon/{jid5}", headers=H).get_data(as_text=True)
               + c.get(f"/auto/cartoon/{sid}", headers=H).get_data(as_text=True)
+              + c.get(f"/auto/cartoon/style/{stid}", headers=H).get_data(as_text=True)
+              + c.get(f"/auto/cartoon/{js2['id']}", headers=H).get_data(as_text=True)
+              + c.post("/auto/cartoon/style/new", data={"ref": [sid]}, headers=H).get_data(as_text=True)
               + c.get(f"/auto/cartoon/{jr['id']}", headers=H).get_data(as_text=True))
         body = re.sub(r"<(script|style|textarea)[^>]*>.*?</\1>", " ", ru, flags=re.S)
         body = re.sub(r"<[^>]*translate=['\"]no['\"][^>]*>.*?</[a-z0-9]+>", " ", body, flags=re.S)
@@ -449,9 +497,13 @@ def main() -> int:
         left = sorted({x.strip() for x in txt.split("\n") if re.search(r"[A-Za-z]{3,}", x) and not re.search(r"[А-Яа-я]", x)
                        and x.strip() not in ("MediaEngine", "Social Lab", "JSON", "YouTube") and "querySelectorAll" not in x})
         ph = re.findall(r"placeholder='([^']*)'", ru)
-        check("pages: in Russian, no English left (the story writer, a story, a stopped story, a study)",
+        check("pages: in Russian, no English left (the story writer, a story, a stopped story, a study, an author's style)",
               "Написать сюжет" in ru and not left and not [p for p in ph if re.search(r"[A-Za-z]{4,}", p)], (left[:12], ph))
         c.post("/lang", data={"lang": "en"}, headers=H)
+        c.post(f"/auto/cartoon/style/{stid}/delete", headers=H)
+        gone = c.get(f"/auto/cartoon/style/{stid}", headers=H)
+        check("an author's style forgotten: its videos' studies stay", not R.style_entry(stid) and gone.status_code == 400
+              and bool(R.reference_of(sid)) and bool(R.reference_of(sid_calm)), gone.status_code)
 
         rm = c.post("/auto/cartoon/writer/remove", headers=H)
         check("Remove: the story writer's files are gone, the stories stay", rm.status_code == 302 and not W.installed()

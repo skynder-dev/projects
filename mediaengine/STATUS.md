@@ -961,6 +961,14 @@ incl. 30 bad or unsafe orders refused with the right code) in Windows CI, also w
 - 2026-10-29, the owner asked whether the story's topic may be typed in translit: the language of the story comes from
   the Language list, the topic may be in any language; the request now tells the model a topic may be Russian typed in
   Latin letters. Probe: three translit topics (Russian, English and Romanian stories) on both writer models.
+- 2026-10-29, an author's style (step 3 of the owner's "a profile whose videos suit our style"): several studied videos
+  together (`cartoon/reference.py`: new_style / author_style; cartoon/styles/<id>.json) - the median of their shot
+  length, words a second, first words, the share opening with a question (median: one odd video changes little), their
+  colours merged; made from a download's row ("Make their common style", named after the profile) or by ticking studies
+  in Cartoon Studio; its page (figures with their spread, colours, the videos, "Write a story in this style", Forget);
+  offered as a Rhythm for any story. Checks: writer_check 34/34 (three studies - the median not the mean, a story in the
+  style asks for an author's quick cuts and the opening question), download_check 10/10 (the style from the row, pressed
+  twice still one), Russian pages 0 English, route fuzz 4053 requests 0 errors.
 - 2026-10-29, writer probe (run 40692181687, both models, CPU) with a studied reference's rhythm: a quick reference
   (3 s shots) gave 11 scenes (13-14 asked; the usual is 8-10), a calm one 9-10 (7-9 asked); words ~1.4x of those
   asked, as without a rhythm. The scenes are now asked more firmly.

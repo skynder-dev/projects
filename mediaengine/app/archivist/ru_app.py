@@ -632,6 +632,8 @@ APP_PATTERNS: list[tuple[str, str]] = [
     (r"The link could not be read: (.+)", r"Не удалось прочитать ссылку: \1"),
     (r"The downloaded (.+) is not the expected file \(its checksum differs\)\.", r"Скачанный \1 — не тот файл (контрольная сумма другая)."),
     (r"The downloader was installed but does not start: (.*)", r"Загрузчик установлен, но не запускается: \1"),
+    # an author's style (cartoon/reference.py: several studied videos together)
+    (r"A common style \((\d+) videos\)", r"Общий стиль (видео: \1)"),
     (r"Clip (\d+) did not pass its check \((.+)\)\.", r"Клип \1 не прошёл проверку (\2)."),
     # voice-over add-on (voice.py)
     (r"The download answered HTTP (\d+)\. Try again later\.", r"Сайт ответил ошибкой HTTP \1. Попробуй позже."),

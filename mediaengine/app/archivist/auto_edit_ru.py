@@ -1056,6 +1056,8 @@ PHRASES = {
     "The one speaking, close up": "Тот, кто говорит, крупно",
     "Make the 5 likeliest": "Сделать 5 самых удачных",
     # Cartoon Studio (cartoon_web.py, cartoon/)
+    "Cartoon Studio: an author's style - several studied videos (say, the ones downloaded from one profile) taken together: the middle of their rhythms and their colours; then “Write a story in this style”. The topic of a story may be typed in any language, even in translit.":
+        "Мультстудия: стиль автора — несколько изученных видео (например, скачанных с одного профиля) вместе: середина их ритмов и их цвета; потом «Написать сюжет в этом стиле». Тему сюжета можно писать на любом языке, даже транслитом.",
     "Download by a link (Media → Download by a link): a video, or chosen videos of a profile or channel, from YouTube, TikTok and other sites into the Downloaded folder - then study its rhythm, write a story from it, cut clips or convert.":
         "Скачать по ссылке (Медиа → Скачать по ссылке): видео или выбранные видео профиля или канала — с YouTube, TikTok и других сайтов в папку «Скачанные»; потом можно изучить ритм, написать по нему сюжет, нарезать клипы или сконвертировать.",
     "Convert: the size can be as small as 5 MB (for a chat or a messenger with a limit) - the picture is made smaller so the video fits and stays clear.":
@@ -1398,6 +1400,27 @@ PHRASES = {
     "The downloader is not installed.": "Загрузчик не установлен.",
     "Nothing was downloaded.": "Ничего не скачалось.",
     "Show the videos": "Показать видео",
+    # an author's style (several studied videos together)
+    "Make a common style of several videos": "Сделать общий стиль из нескольких видео",
+    "Whose style (a name, if you like)": "Чей стиль (имя, если хочешь)",
+    "Make the common style": "Сделать общий стиль", "An author's style": "Стиль автора",
+    "Several videos you studied - say, a few of one author's - taken together: the middle of their rhythms and their colours. A story can then be written in that style.":
+        "Несколько изученных видео — например, несколько роликов одного автора — вместе: середина их ритмов и их цвета. Потом можно написать сюжет в этом стиле.",
+    "The style could not be saved (the data folder). Try again.": "Не получилось сохранить стиль (папка данных). Попробуй ещё раз.",
+    "The style could not be removed (the data folder). Try again.": "Не получилось удалить стиль (папка данных). Попробуй ещё раз.",
+    "This style is not there any more.": "Этого стиля больше нет.", "Style:": "Стиль:", "A common style": "Общий стиль",
+    "Studied videos taken together:": "Изученных видео вместе:",
+    "Their middle is taken - one video that is different does not change it much.": "Берётся их середина — одно непохожее видео почти ничего не меняет.",
+    "Forget this style": "Забыть этот стиль", "(the videos and their studies stay)": "(видео и их разборы останутся)",
+    "Its videos are not studied any more (their studies were removed).": "Его видео больше не изучены (их разборы удалены).",
+    "It opens with": "Начинается с", "a question": "вопроса", "a statement": "утверждения", "open with a question": "начинаются с вопроса",
+    "Not listened to (studied without the voice add-on).": "Не прослушано (изучено без модуля озвучки).",
+    "Write a story in this style": "Написать сюжет в этом стиле", "Its videos": "Его видео", "Video": "Видео", "A shot": "План",
+    "Words a second": "Слов в секунду", "Studied:": "Изучено:", "Their common style": "Их общий стиль",
+    "Make their common style": "Сделать их общий стиль",
+    "Choose at least two studied videos for a common style.": "Выбери хотя бы два изученных видео для общего стиля.",
+    "At most 30 videos in one style.": "Не больше 30 видео в одном стиле.",
+    "Authors' styles (several videos)": "Стили авторов (несколько видео)", "Videos studied": "Изученные видео",
     "Or a video on this PC": "Или видео на этом компьютере", "A video whose story to retell (its full path)": "Видео, сюжет которого пересказать (полный путь)",
     "The program listens to it (the voice add-on), notes its facts and numbers and writes a new story with its own characters - not a copy. Listening takes a few minutes for an hour of video.":
         "Программа прослушает его (модуль озвучки), выпишет факты и цифры и напишет новый сюжет со своими персонажами — не копию. Прослушивание — несколько минут на час видео.",

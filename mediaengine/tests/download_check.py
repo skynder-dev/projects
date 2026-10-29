@@ -108,7 +108,7 @@ def main() -> int:
               and b"starts with https://" in bad_url.data, (bot.status_code, bad_url.status_code))
 
         # 2. three chosen videos downloaded, each then studied for its rhythm (Cartoon Studio)
-        form = {"source": "https://www.youtube.com/@fakecartoons/videos", "study": "1", "pick": ["0", "3", "7"]}
+        form = {"source": "https://www.youtube.com/@fakecartoons/videos", "author": "Fake Cartoons", "study": "1", "pick": ["0", "3", "7"]}
         for n in (0, 3, 7):
             form[f"u{n}"] = f"https://www.youtube.com/watch?v=vid{n:03d}"
             form[f"t{n}"] = f"Episode {n}"
@@ -117,8 +117,9 @@ def main() -> int:
         j = wait_job(jid)
         files = [Path(f["file"]) for f in (j.get("result") or {}).get("files") or []]
         studies = [x for x in vo.list_jobs(50) if x.get("kind") == "cartoon_study"]
-        for x in studies:
-            vo.cancel_job(x["id"])                          # (the studies themselves: writer_check)
+        t0 = time.time()                                    # (the studies themselves: writer_check; here they finish)
+        while any(vo.read_job(x["id"])["state"] in ("waiting", "working") for x in studies) and time.time() - t0 < 240:
+            time.sleep(0.3)
         page = c.get("/media/download", headers=H).get_data(as_text=True)
         check("three chosen videos downloaded into the Downloaded folder, each studied for its rhythm after; the page offers "
               "to study, retell or show each",
@@ -126,6 +127,25 @@ def main() -> int:
               and all(p.parent == D.folder() for p in files) and len(studies) == 3
               and page.count("Study its rhythm") == 3 and "Write a story from it" in page and "Show in folder" in page,
               (j["state"], j.get("result"), len(studies)))
+
+        # their common style (an author's), from the download's row; pressed twice: still one
+        from archivist.cartoon import reference as R
+        frm = re.search(r"<form method='post' action='/auto/cartoon/style/new'.*?</form>", page, re.S)
+        fields: dict = {}
+        for k, v in re.findall(r"<input type='hidden' name='(\w+)' value='([^']*)'>", frm.group(0) if frm else ""):
+            fields.setdefault(k, []).append(v)
+        mk1 = c.post("/auto/cartoon/style/new", data=fields, headers=H)
+        mk2 = c.post("/auto/cartoon/style/new", data=fields, headers=H)
+        sts = R.styles()
+        page_s = c.get("/media/download", headers=H).get_data(as_text=True)
+        check("the three studied: their common style made from the download's row (the author's name, the three videos), "
+              "pressed twice still one; the row then links it",
+              "Fake Cartoons</span> · <span translate='no'>3</span> <span>videos</span>" in page and "Studied:" in page and frm is not None
+              and mk1.status_code == 302 and mk2.headers.get("Location") == mk1.headers.get("Location") and len(sts) == 1
+              and sts[0]["name"] == "Fake Cartoons" and len(sts[0]["refs"]) == 3 and sts[0]["source"] == f"download:{jid}"
+              and "Their common style" in page_s and f"/auto/cartoon/style/{sts[0]['id']}" in page_s
+              and R.author_style(sts[0]["id"]).get("videos") == 3,
+              (frm is not None, mk1.status_code, mk1.headers.get("Location"), mk2.headers.get("Location"), sts))
 
         # 3. a private video among them: said plainly, the others downloaded; Try again
         form2 = {"pick": ["0", "1"], "u0": "https://www.youtube.com/watch?v=private1", "t0": "Secret",

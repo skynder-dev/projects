@@ -286,8 +286,9 @@ def list_jobs(limit: int = 50) -> list[dict]:
     return out[:limit]
 
 
-def new_download(items: list[dict], study: bool = False, source: str = "") -> str:
-    """A download job of up to MAX_VIDEOS links ({url, title}); study: each video studied for its rhythm after."""
+def new_download(items: list[dict], study: bool = False, source: str = "", author: str = "") -> str:
+    """A download job of up to MAX_VIDEOS links ({url, title}); study: each video studied for its rhythm after;
+    author: whose profile they come from (shown, and the name of their common style)."""
     if not installed():
         raise DownloadError("Install the downloader first.")
     clean, seen = [], set()
@@ -308,6 +309,7 @@ def new_download(items: list[dict], study: bool = False, source: str = "") -> st
     d = JOBS / jid
     d.mkdir(parents=True, exist_ok=True)
     _write(d, "job.json", {"id": jid, "items": clean, "study": bool(study), "source": str(source or "")[:600],
+                           "author": re.sub(r"\s+", " ", str(author or "")).strip()[:80],
                            "title": (clean[0]["title"] if len(clean) == 1 else f"{len(clean)} videos")[:120], "created_at": now_iso(),
                            "created_ns": time.time_ns()})
     _enqueue(jid)

@@ -137,6 +137,12 @@ downloader" - yt-dlp and deno (free, open) from their GitHub pages, about 66 MB,
 sign-in, no passwords; YouTube may ask to sign in when it takes the program for a robot - then try later. Download only
 videos you may use.
 
+**An author's style.** Tick "Study each one's rhythm after" when downloading several videos of one author; when they
+are studied, "Make their common style" on the download (or, in Cartoon Studio → Study a cartoon, "Make a common style of
+several videos" and tick them). The style takes the middle of their figures - how long a shot lasts, words a second,
+how soon the first words come, how they open - and their colours; "Write a story in this style" (or choose it as the
+Rhythm of a new story). The story itself is new; nothing of the videos is copied.
+
 ## Converting videos
 
 **Media → Convert** (or "Convert" on videos chosen in the Library, or "Choose videos on this PC"). The copies go into
